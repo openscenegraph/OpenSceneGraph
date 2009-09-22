@@ -199,6 +199,16 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         void setApplication(const std::string& application) { _application = application; }
         const std::string& getApplication() { return _application; }
 
+
+        void setMaxTexturePoolSize(unsigned int size) { _maxTexturePoolSize = size; }
+        unsigned int getMaxTexturePoolSize() const { return _maxTexturePoolSize; }
+
+        void setMaxVBOPoolSize(unsigned int size) { _maxVBOPoolSize = size; }
+        unsigned int getMaxVBOPoolSize() const { return _maxVBOPoolSize; }
+
+        void setMaxFBOPoolSize(unsigned int size) { _maxFBOPoolSize = size; }
+        unsigned int getMaxFBOPoolSize() const { return _maxFBOPoolSize; }
+
     protected:
     
         virtual ~DisplaySettings();
@@ -240,6 +250,9 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         
         std::string                     _application;
 
+        unsigned int                    _maxTexturePoolSize;
+        unsigned int                    _maxVBOPoolSize;
+        unsigned int                    _maxFBOPoolSize;
 };
 
 }

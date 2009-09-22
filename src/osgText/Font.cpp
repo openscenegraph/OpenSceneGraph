@@ -590,7 +590,7 @@ void Font::GlyphTexture::apply(osg::State& state) const
         // being bound for the first time, need to allocate the texture
 
         _textureObjectBuffer[contextID] = textureObject = osg::Texture::generateTextureObject(
-                contextID,GL_TEXTURE_2D,1,GL_ALPHA,getTextureWidth(), getTextureHeight(),1,0);
+                this, contextID,GL_TEXTURE_2D,1,GL_ALPHA,getTextureWidth(), getTextureHeight(),1,0);
 
         textureObject->bind();
 

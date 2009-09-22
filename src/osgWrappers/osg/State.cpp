@@ -696,6 +696,36 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __void__decrementDynamicObjectCount,
 	          "Decrement the number of dynamic objects left to render this frame, and once the count goes to zero call the DynamicObjectRenderingCompletedCallback to inform of completion. ",
 	          "");
+	I_Method1(void, setMaxTexturePoolSize, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __void__setMaxTexturePoolSize__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getMaxTexturePoolSize,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getMaxTexturePoolSize,
+	          "",
+	          "");
+	I_Method1(void, setMaxVBOPoolSize, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __void__setMaxVBOPoolSize__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getMaxVBOPoolSize,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getMaxVBOPoolSize,
+	          "",
+	          "");
+	I_Method1(void, setMaxFBOPoolSize, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __void__setMaxFBOPoolSize__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getMaxFBOPoolSize,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getMaxFBOPoolSize,
+	          "",
+	          "");
 	I_Method1(void, setCheckForGLErrors, IN, osg::State::CheckForGLErrors, check,
 	          Properties::NON_VIRTUAL,
 	          __void__setCheckForGLErrors__CheckForGLErrors,
@@ -850,6 +880,15 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(const osg::Program::PerContextProgram *, LastAppliedProgramObject, 
 	                 __C5_Program_PerContextProgram_P1__getLastAppliedProgramObject, 
 	                 __void__setLastAppliedProgramObject__C5_Program_PerContextProgram_P1);
+	I_SimpleProperty(unsigned int, MaxFBOPoolSize, 
+	                 __unsigned_int__getMaxFBOPoolSize, 
+	                 __void__setMaxFBOPoolSize__unsigned_int);
+	I_SimpleProperty(unsigned int, MaxTexturePoolSize, 
+	                 __unsigned_int__getMaxTexturePoolSize, 
+	                 __void__setMaxTexturePoolSize__unsigned_int);
+	I_SimpleProperty(unsigned int, MaxVBOPoolSize, 
+	                 __unsigned_int__getMaxVBOPoolSize, 
+	                 __void__setMaxVBOPoolSize__unsigned_int);
 	I_IndexedProperty(bool, ModeValidity, 
 	                  __bool__getModeValidity__StateAttribute_GLMode, 
 	                  __void__setModeValidity__StateAttribute_GLMode__bool, 

@@ -834,7 +834,8 @@ void SceneView::cull()
         }
     }
     
-    
+
+
 }
 
 bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& modelview,osgUtil::CullVisitor* cullVisitor, osgUtil::StateGraph* rendergraph, osgUtil::RenderStage* renderStage, osg::Viewport *viewport)
@@ -844,6 +845,12 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
 
     osg::ref_ptr<RefMatrix> proj = new osg::RefMatrix(projection);
     osg::ref_ptr<RefMatrix> mv = new osg::RefMatrix(modelview);
+
+    osg::State* state = _renderInfo.getState();
+    if (state->getMaxTexturePoolSize()!=0)
+    {
+        osg::Texture::getTextureObjectManager(state->getContextID())->setTexturePoolSize(state->getMaxTexturePoolSize());
+    }
 
 
     // collect any occluder in the view frustum.

@@ -256,7 +256,7 @@ void Texture2DArray::apply(State& state) const
     else if (_subloadCallback.valid())
     {
         // generate texture (i.e. glGenTexture) and apply parameters
-        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(contextID, GL_TEXTURE_2D_ARRAY_EXT);
+        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(this, contextID, GL_TEXTURE_2D_ARRAY_EXT);
         textureObject->bind();
         applyTexParameters(GL_TEXTURE_2D_ARRAY_EXT, state);
         _subloadCallback->load(*this,state);
@@ -275,7 +275,7 @@ void Texture2DArray::apply(State& state) const
 
         // create texture object
         textureObject = generateTextureObject(
-                contextID,GL_TEXTURE_2D_ARRAY_EXT,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,_textureDepth,0);
+                this, contextID,GL_TEXTURE_2D_ARRAY_EXT,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,_textureDepth,0);
         
         // bind texture
         textureObject->bind();
@@ -325,7 +325,7 @@ void Texture2DArray::apply(State& state) const
     {
         // generate texture 
         _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
-                contextID, GL_TEXTURE_2D_ARRAY_EXT,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,_textureDepth,0);
+                this, contextID, GL_TEXTURE_2D_ARRAY_EXT,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,_textureDepth,0);
         
         textureObject->bind();
         applyTexParameters(GL_TEXTURE_2D_ARRAY_EXT,state);

@@ -169,7 +169,7 @@ void Texture2D::apply(State& state) const
     else if (_subloadCallback.valid())
     {
 
-        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(contextID,GL_TEXTURE_2D);
+        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(this, contextID,GL_TEXTURE_2D);
 
         textureObject->bind();
 
@@ -199,7 +199,7 @@ void Texture2D::apply(State& state) const
         computeRequiredTextureDimensions(state,*image,_textureWidth, _textureHeight, _numMipmapLevels);
 
         _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
-                contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
+                this, contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
 
         textureObject->bind();
 
@@ -223,7 +223,10 @@ void Texture2D::apply(State& state) const
         // update the modified tag to show that it is upto date.
         getModifiedCount(contextID) = image->getModifiedCount();
 
-        if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded() && image->getDataVariance()==STATIC)
+        if (state.getMaxTexturePoolSize()==0 &&
+            _unrefImageDataAfterApply &&
+            areAllTextureObjectsLoaded() &&
+            image->getDataVariance()==STATIC)
         {
             Texture2D* non_const_this = const_cast<Texture2D*>(this);
             non_const_this->_image = 0;
@@ -239,7 +242,7 @@ void Texture2D::apply(State& state) const
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_internalFormat!=0) )
     {
         _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
-                contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
+                this, contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
         
         textureObject->bind();
 
@@ -312,7 +315,7 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
 
     // switch off mip-mapping.
     //
-    _textureObjectBuffer[contextID] = textureObject = generateTextureObject(contextID,GL_TEXTURE_2D);
+    _textureObjectBuffer[contextID] = textureObject = generateTextureObject(this, contextID,GL_TEXTURE_2D);
 
     textureObject->bind();
     

@@ -496,12 +496,12 @@ void FrameBufferAttachment::createRequiredTexturesAndApplyGenerateMipMap(State &
     if (_ximpl->textureTarget.valid())
     {
         tobj = _ximpl->textureTarget->getTextureObject(contextID);
-        if (!tobj || tobj->_id == 0)
+        if (!tobj || tobj->id() == 0)
         {
             _ximpl->textureTarget->compileGLObjects(state);
             tobj = _ximpl->textureTarget->getTextureObject(contextID);
         }
-        if (!tobj || tobj->_id == 0)
+        if (!tobj || tobj->id() == 0)
             return;
 
         Texture::FilterMode minFilter = _ximpl->textureTarget->getFilter(Texture::MIN_FILTER);
@@ -526,13 +526,13 @@ void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachmen
     if (_ximpl->textureTarget.valid())
     {
         tobj = _ximpl->textureTarget->getTextureObject(contextID);
-        if (!tobj || tobj->_id == 0)
+        if (!tobj || tobj->id() == 0)
         {
             _ximpl->textureTarget->compileGLObjects(state);
             tobj = _ximpl->textureTarget->getTextureObject(contextID);
 
         }
-        if (!tobj || tobj->_id == 0)
+        if (!tobj || tobj->id() == 0)
             return;
     }
     
@@ -543,22 +543,22 @@ void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachmen
         ext->glFramebufferRenderbufferEXT(target, attachment_point, GL_RENDERBUFFER_EXT, _ximpl->renderbufferTarget->getObjectID(contextID, ext));
         break;
     case Pimpl::TEXTURE1D:
-        ext->glFramebufferTexture1DEXT(target, attachment_point, GL_TEXTURE_1D, tobj->_id, _ximpl->level);
+        ext->glFramebufferTexture1DEXT(target, attachment_point, GL_TEXTURE_1D, tobj->id(), _ximpl->level);
         break;
     case Pimpl::TEXTURE2D:
-        ext->glFramebufferTexture2DEXT(target, attachment_point, GL_TEXTURE_2D, tobj->_id, _ximpl->level);
+        ext->glFramebufferTexture2DEXT(target, attachment_point, GL_TEXTURE_2D, tobj->id(), _ximpl->level);
         break;
     case Pimpl::TEXTURE3D:
-        ext->glFramebufferTexture3DEXT(target, attachment_point, GL_TEXTURE_3D, tobj->_id, _ximpl->level, _ximpl->zoffset);
+        ext->glFramebufferTexture3DEXT(target, attachment_point, GL_TEXTURE_3D, tobj->id(), _ximpl->level, _ximpl->zoffset);
         break;
     case Pimpl::TEXTURE2DARRAY:
-        ext->glFramebufferTextureLayerEXT(target, attachment_point, tobj->_id, _ximpl->level, _ximpl->zoffset);
+        ext->glFramebufferTextureLayerEXT(target, attachment_point, tobj->id(), _ximpl->level, _ximpl->zoffset);
         break;
     case Pimpl::TEXTURERECT:
-        ext->glFramebufferTexture2DEXT(target, attachment_point, GL_TEXTURE_RECTANGLE, tobj->_id, 0);
+        ext->glFramebufferTexture2DEXT(target, attachment_point, GL_TEXTURE_RECTANGLE, tobj->id(), 0);
         break;
     case Pimpl::TEXTURECUBE:
-        ext->glFramebufferTexture2DEXT(target, attachment_point, GL_TEXTURE_CUBE_MAP_POSITIVE_X + _ximpl->cubeMapFace, tobj->_id, _ximpl->level);
+        ext->glFramebufferTexture2DEXT(target, attachment_point, GL_TEXTURE_CUBE_MAP_POSITIVE_X + _ximpl->cubeMapFace, tobj->id(), _ximpl->level);
         break;
     }
 }

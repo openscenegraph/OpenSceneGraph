@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -100,7 +100,7 @@ void OpenGLQuerySupport::beginQuery(int frameNumber)
 {
     GLuint query = createQueryObject();
     _extensions->glBeginQuery(GL_TIME_ELAPSED, query);
-    _queryFrameNumberList.push_back(QueryFrameNumberPair(query, frameNumber));        
+    _queryFrameNumberList.push_back(QueryFrameNumberPair(query, frameNumber));
 }
 
 void OpenGLQuerySupport::endQuery()
@@ -143,7 +143,7 @@ osgUtil::SceneView* Renderer::ThreadSafeQueue::takeFront()
     _queue.pop_front();
 
     if (_queue.empty()) _block.set(false);
-    
+
     return front;
 }
 
@@ -199,7 +199,7 @@ Renderer::Renderer(osg::Camera* camera):
 
     _sceneView[0]->setGlobalStateSet(stateset);
     _sceneView[1]->setGlobalStateSet(stateset);
-    
+
     _sceneView[0]->setDefaults(sceneViewOptions);
     _sceneView[1]->setDefaults(sceneViewOptions);
 
@@ -213,7 +213,7 @@ Renderer::Renderer(osg::Camera* camera):
     // prevent the draw traversal from reading from it before the cull traversal has been completed.
     _availableQueue.add(_sceneView[0].get());
     _availableQueue.add(_sceneView[1].get());
-        
+
     DEBUG_MESSAGE<<"_availableQueue.size()="<<_availableQueue._queue.size()<<std::endl;
 
     _flushOperation = new osg::FlushDeletedGLObjectsOperation(0.1);
@@ -240,10 +240,10 @@ void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
     {
         sceneView->setGlobalStateSet(stateset);
     }
-    
+
     osg::GraphicsContext* context = _camera->getGraphicsContext();
     osg::State* state = context ? context->getState() : 0;
-    if (sceneView->getState()!=state) 
+    if (sceneView->getState()!=state)
     {
         sceneView->setState(state);
     }
@@ -255,11 +255,11 @@ void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
 
     osgDB::ImagePager* imagePager = view ? view->getImagePager() : 0;
     sceneView->getCullVisitor()->setImageRequestHandler(imagePager);
-    
+
     sceneView->setFrameStamp(view ? view->getFrameStamp() : state->getFrameStamp());
-    
+
     if (databasePager) databasePager->setCompileGLObjectsForContextID(state->getContextID(), true);
-    
+
     osg::DisplaySettings* ds = _camera->getDisplaySettings() ?  _camera->getDisplaySettings() :
                                ((view &&view->getDisplaySettings()) ?  view->getDisplaySettings() :  osg::DisplaySettings::instance());
 
@@ -273,11 +273,11 @@ void Renderer::compile()
     DEBUG_MESSAGE<<"Renderer::compile()"<<std::endl;
 
     _compileOnNextDraw = false;
-    
+
     osgUtil::SceneView* sceneView = _sceneView[0].get();
     if (!sceneView || _done) return;
 
-    if (sceneView->getSceneData()) 
+    if (sceneView->getSceneData())
     {
         osgUtil::GLObjectsVisitor glov;
         glov.setState(sceneView->getState());
@@ -329,7 +329,7 @@ void Renderer::cull()
         if (stats && stats->collectStats("rendering"))
         {
             DEBUG_MESSAGE<<"Collecting rendering stats"<<std::endl;
-        
+
             stats->setAttribute(frameNumber, "Cull traversal begin time", osg::Timer::instance()->delta_s(_startTick, beforeCullTick));
             stats->setAttribute(frameNumber, "Cull traversal end time", osg::Timer::instance()->delta_s(_startTick, afterCullTick));
             stats->setAttribute(frameNumber, "Cull traversal time taken", osg::Timer::instance()->delta_s(beforeCullTick, afterCullTick));
@@ -339,7 +339,7 @@ void Renderer::cull()
         {
             osgUtil::Statistics sceneStats;
             sceneView->getStats(sceneStats);
-            
+
             stats->setAttribute(frameNumber, "Visible vertex count", static_cast<double>(sceneStats._vertexCount));
             stats->setAttribute(frameNumber, "Visible number of drawables", static_cast<double>(sceneStats.numDrawables));
             stats->setAttribute(frameNumber, "Visible number of lights", static_cast<double>(sceneStats.nlights));
@@ -359,7 +359,7 @@ void Renderer::cull()
             stats->setAttribute(frameNumber, "Visible number of GL_QUADS", static_cast<double>(pcm[GL_QUADS]));
             stats->setAttribute(frameNumber, "Visible number of GL_QUAD_STRIP", static_cast<double>(pcm[GL_QUAD_STRIP]));
             stats->setAttribute(frameNumber, "Visible number of GL_POLYGON", static_cast<double>(pcm[GL_POLYGON]));
-            
+
         }
 
         _drawQueue.add(sceneView);
@@ -393,7 +393,7 @@ void Renderer::draw()
         {
             compile();
         }
-    
+
         osgViewer::View* view = dynamic_cast<osgViewer::View*>(_camera->getView());
         osgDB::DatabasePager* databasePager = view ? view->getDatabasePager() : 0;
 
@@ -432,24 +432,24 @@ void Renderer::draw()
 
         bool acquireGPUStats = stats && _timerQuerySupported && stats->collectStats("gpu");
 
-        if (acquireGPUStats) 
+        if (acquireGPUStats)
         {
             checkQuery(stats);
         }
 
         // do draw traversal
-        if (acquireGPUStats) 
+        if (acquireGPUStats)
         {
             checkQuery(stats);
             beginQuery(frameNumber);
         }
 
         osg::Timer_t beforeDrawTick;
-        
-        
+
+
         bool serializeDraw = sceneView->getDisplaySettings()->getSerializeDrawDispatch();
 
-        if (serializeDraw) 
+        if (serializeDraw)
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_drawSerializerMutex);
             beforeDrawTick = osg::Timer::instance()->tick();
@@ -469,7 +469,7 @@ void Renderer::draw()
 
         // now flush delete OpenGL objects and compile any objects as required by the DatabasePager
         flushAndCompile(dispatchTime, sceneView, databasePager, compileThread);
-    
+
         if (acquireGPUStats)
         {
             endQuery();
@@ -477,7 +477,7 @@ void Renderer::draw()
         }
 
         //glFlush();
-        
+
         osg::Timer_t afterDrawTick = osg::Timer::instance()->tick();
 
 //        osg::notify(osg::NOTICE)<<"Time wait for draw = "<<osg::Timer::instance()->delta_m(startDrawTick, beforeDrawTick)<<std::endl;
@@ -508,7 +508,7 @@ void Renderer::cull_draw()
         osg::notify(osg::INFO)<<"Render::release() causing cull_draw to exit"<<std::endl;
         return;
     }
-    
+
     updateSceneView(sceneView);
 
     if (_compileOnNextDraw)
@@ -540,7 +540,7 @@ void Renderer::cull_draw()
 
     bool acquireGPUStats = stats && _timerQuerySupported && stats->collectStats("gpu");
 
-    if (acquireGPUStats) 
+    if (acquireGPUStats)
     {
         checkQuery(stats);
     }
@@ -576,7 +576,7 @@ void Renderer::cull_draw()
 
 
     // do draw traversal
-    if (acquireGPUStats) 
+    if (acquireGPUStats)
     {
         checkQuery(stats);
         beginQuery(frameNumber);
@@ -586,10 +586,10 @@ void Renderer::cull_draw()
 
     bool serializeDraw = sceneView->getDisplaySettings()->getSerializeDrawDispatch();
 
-    if (serializeDraw) 
+    if (serializeDraw)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_drawSerializerMutex);
-        
+
         beforeDrawTick = osg::Timer::instance()->tick();
         sceneView->draw();
     }
@@ -633,7 +633,7 @@ void Renderer::cull_draw()
 
 void Renderer::flushAndCompile(double currentElapsedFrameTime, osgUtil::SceneView* sceneView, osgDB::DatabasePager* databasePager, osg::GraphicsThread* compileThread)
 {
-    
+
     double targetFrameRate = _targetFrameRate;
     double minimumTimeAvailableForGLCompileAndDeletePerFrame = _minimumTimeAvailableForGLCompileAndDeletePerFrame;
 
@@ -642,7 +642,7 @@ void Renderer::flushAndCompile(double currentElapsedFrameTime, osgUtil::SceneVie
         targetFrameRate = std::min(targetFrameRate, databasePager->getTargetFrameRate());
         minimumTimeAvailableForGLCompileAndDeletePerFrame = std::min(minimumTimeAvailableForGLCompileAndDeletePerFrame, databasePager->getMinimumTimeAvailableForGLCompileAndDeletePerFrame());
     }
-    
+
     double targetFrameTime = 1.0/targetFrameRate;
 
     double availableTime = std::max((targetFrameTime - currentElapsedFrameTime)*_conservativeTimeRatio,
@@ -666,7 +666,7 @@ void Renderer::flushAndCompile(double currentElapsedFrameTime, osgUtil::SceneVie
         sceneView->flushDeletedGLObjects(flushTime);
     }
 
-    // if any time left over from flush add this to compile time.        
+    // if any time left over from flush add this to compile time.
     if (flushTime>0.0) compileTime += flushTime;
 
 #if 0

@@ -86,6 +86,10 @@ State::State():
 
     _glMaxTextureCoords = 1;
     _glMaxTextureUnits = 1;
+
+    _maxTexturePoolSize = 0;
+    _maxVBOPoolSize = 0;
+    _maxFBOPoolSize = 0;
 }
 
 State::~State()
@@ -218,6 +222,24 @@ void State::setInitialViewMatrix(const osg::RefMatrix* matrix)
     else _initialViewMatrix = _identity;
 
     _initialInverseViewMatrix.invert(*_initialViewMatrix);
+}
+
+void State::setMaxTexturePoolSize(unsigned int size)
+{
+    _maxTexturePoolSize = size;
+    osg::notify(osg::NOTICE)<<"_maxTexturePoolSize="<<_maxTexturePoolSize<<std::endl;
+}
+
+void State::setMaxVBOPoolSize(unsigned int size)
+{
+    _maxVBOPoolSize = size;
+    osg::notify(osg::NOTICE)<<"_maxVBOPoolSize="<<_maxVBOPoolSize<<std::endl;
+}
+
+void State::setMaxFBOPoolSize(unsigned int size)
+{
+    _maxFBOPoolSize = size;
+    osg::notify(osg::NOTICE)<<"_maxFBOPoolSize="<<_maxFBOPoolSize<<std::endl;
 }
 
 void State::pushStateSet(const StateSet* dstate)

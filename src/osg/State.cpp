@@ -11,6 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/State>
+#include <osg/Texture>
 #include <osg/Notify>
 #include <osg/GLU>
 #include <osg/GLExtensions>
@@ -227,6 +228,7 @@ void State::setInitialViewMatrix(const osg::RefMatrix* matrix)
 void State::setMaxTexturePoolSize(unsigned int size)
 {
     _maxTexturePoolSize = size;
+    osg::Texture::getTextureObjectManager(getContextID())->setMaxTexturePoolSize(size);
     osg::notify(osg::NOTICE)<<"_maxTexturePoolSize="<<_maxTexturePoolSize<<std::endl;
 }
 

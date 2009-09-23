@@ -846,13 +846,6 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     osg::ref_ptr<RefMatrix> proj = new osg::RefMatrix(projection);
     osg::ref_ptr<RefMatrix> mv = new osg::RefMatrix(modelview);
 
-    osg::State* state = _renderInfo.getState();
-    if (state->getMaxTexturePoolSize()!=0)
-    {
-        osg::Texture::getTextureObjectManager(state->getContextID())->setMaxTexturePoolSize(state->getMaxTexturePoolSize());
-    }
-
-
     // collect any occluder in the view frustum.
     if (_camera->containsOccluderNodes())
     {

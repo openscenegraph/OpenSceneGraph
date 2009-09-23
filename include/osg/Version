@@ -22,7 +22,7 @@ extern "C" {
 #define OPENSCENEGRAPH_MAJOR_VERSION    2
 #define OPENSCENEGRAPH_MINOR_VERSION    9
 #define OPENSCENEGRAPH_PATCH_VERSION    6
-#define OPENSCENEGRAPH_SOVERSION        61
+#define OPENSCENEGRAPH_SOVERSION        62
 
 /* convinience macro that can be used to decide whether a feature is present or not i.e.
  * #if OSG_MIN_VERSION_REQUIRED(2,9,5)

@@ -906,7 +906,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         class TextureObjectSet;
         class TextureObjectManager;
 
-        class TextureObject : public osg::Referenced
+        class OSG_EXPORT TextureObject : public osg::Referenced
         {
         public:
 
@@ -1041,7 +1041,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         };
 
-        class TextureObjectManager : public osg::Referenced
+        class OSG_EXPORT TextureObjectManager : public osg::Referenced
         {
         public:
             TextureObjectManager(unsigned int contextID);

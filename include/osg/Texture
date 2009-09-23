@@ -812,7 +812,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 _width(0),
                 _height(0),
                 _depth(0),
-                _border(0) {}
+                _border(0),
+                _size(0) {}
 
             inline TextureProfile(GLenum    target,
                                  GLint     numMipmapLevels,
@@ -827,7 +828,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 _width(width),
                 _height(height),
                 _depth(depth),
-                _border(border) {}
+                _border(border),
+                _size(0) { computeSize(); }
 
 
             #define LESSTHAN(A,B) if (A<B) return true; if (B<A) return false;
@@ -835,6 +837,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
             bool operator < (const TextureProfile& rhs) const
             {
+                LESSTHAN(_size,rhs._size);
                 LESSTHAN(_target,rhs._target);
                 LESSTHAN(_numMipmapLevels,rhs._numMipmapLevels);
                 LESSTHAN(_internalFormat,rhs._internalFormat);
@@ -887,13 +890,16 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                        (_border == border);
             }
 
-            GLenum      _target;
-            GLint       _numMipmapLevels;
-            GLenum      _internalFormat;
-            GLsizei     _width;
-            GLsizei     _height;
-            GLsizei     _depth;
-            GLint       _border;
+            void computeSize();
+
+            GLenum       _target;
+            GLint        _numMipmapLevels;
+            GLenum       _internalFormat;
+            GLsizei      _width;
+            GLsizei      _height;
+            GLsizei      _depth;
+            GLint        _border;
+            unsigned int _size;
         };
 
         // forward declare
@@ -959,6 +965,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             inline GLenum id() const { return _id; }
             inline GLenum target() const { return _profile._target; }
 
+            inline unsigned int size() const { return _profile._size; }
+
             inline void setTexture(Texture* texture) { _texture = texture; }
             inline Texture* getTexture() const { return _texture; }
 
@@ -1009,7 +1017,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             void moveToBack(TextureObject* to);
             void addToBack(TextureObject* to);
             void orphan(TextureObject* to);
-            unsigned int size() const;
+            unsigned int size() const { return _profile._size * _numOfTextureObjects; }
+
+            bool makeSpace(unsigned int& size);
 
             bool checkConsistency() const;
 
@@ -1038,8 +1048,14 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
             unsigned int getContextID() const { return _contextID; }
 
-            void setTexturePoolSize(unsigned int size);
-            unsigned int getTexturePoolSize() const { return _texturePoolSize; }
+            void setCurrTexturePoolSize(unsigned int size) { _currTexturePoolSize = size; }
+            unsigned int getCurrTexturePoolSize() const { return _currTexturePoolSize; }
+
+            void setMaxTexturePoolSize(unsigned int size);
+            unsigned int getMaxTexturePoolSize() const { return _maxTexturePoolSize; }
+
+            bool hasSpace(unsigned int size) const { return (_currTexturePoolSize+size)<=_maxTexturePoolSize; }
+            bool makeSpace(unsigned int size);
 
             TextureObject* generateTextureObject(const Texture* texture, GLenum target);
             TextureObject* generateTextureObject(const Texture* texture,
@@ -1060,7 +1076,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
             typedef std::map< TextureProfile, osg::ref_ptr<TextureObjectSet> > TextureSetMap;
             unsigned int        _contextID;
-            unsigned int        _texturePoolSize;
+            unsigned int        _currTexturePoolSize;
+            unsigned int        _maxTexturePoolSize;
             TextureSetMap       _textureSetMap;
         };
 

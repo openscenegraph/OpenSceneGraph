@@ -68,7 +68,7 @@ unsigned int Texture::getMinimumNumberOfTextureObjectsToRetainInCache()
 }
 
 
-#define USE_NEW_TEXTURE_POOL 0
+#define USE_NEW_TEXTURE_POOL 1
 
 void Texture::TextureObject::bind()
 {
@@ -76,6 +76,11 @@ void Texture::TextureObject::bind()
     if (_set) _set->moveToBack(this);
 }
 
+void Texture::TextureProfile::computeSize()
+{
+    unsigned int numBitsPerTexel = 32;
+    _size = (_width * _height * _depth * numBitsPerTexel)/8;
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -201,13 +206,6 @@ void Texture::TextureObjectSet::handlePendingOrphandedTextureObjects()
 
 void Texture::TextureObjectSet::flushAllDeletedTextureObjects()
 {
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-        handlePendingOrphandedTextureObjects();
-    }
-
-    return;
-
     for(TextureObjectList::iterator itr = _orphanedTextureObjects.begin();
         itr != _orphanedTextureObjects.end();
         ++itr)
@@ -220,15 +218,21 @@ void Texture::TextureObjectSet::flushAllDeletedTextureObjects()
         glDeleteTextures( 1L, &id);
     }
     _numOfTextureObjects -= _orphanedTextureObjects.size();
-    _orphanedTextureObjects.clear();
+
+    // update the TextureObjectManager's running total of current pool size
+    _parent->setCurrTexturePoolSize( _parent->getCurrTexturePoolSize() - _orphanedTextureObjects.size()*_profile._size );
+
+_orphanedTextureObjects.clear();
 }
 
 void Texture::TextureObjectSet::discardAllDeletedTextureObjects()
 {
     _numOfTextureObjects -= _orphanedTextureObjects.size();
 
+    // update the TextureObjectManager's running total of current pool size
+    _parent->setCurrTexturePoolSize( _parent->getCurrTexturePoolSize() - _orphanedTextureObjects.size()*_profile._size );
+
     // just clear the list as there is nothing else we can do with them when discarding them
-    _pendingOrphanedTextureObjects.clear();
     _orphanedTextureObjects.clear();
 }
 
@@ -238,6 +242,22 @@ void Texture::TextureObjectSet::flushDeletedTextureObjects(double currentTime, d
 
     flushAllDeletedTextureObjects();
 }
+
+bool Texture::TextureObjectSet::makeSpace(unsigned int& size)
+{
+    if (!_orphanedTextureObjects.empty())
+    {
+        unsigned int sizeAvailable = _orphanedTextureObjects.size() * _profile._size;
+        if (size>sizeAvailable) size -= sizeAvailable;
+        else size = 0;
+
+        flushAllDeletedTextureObjects();
+
+    }
+
+    return size==0;
+}
+
 
 Texture::TextureObject* Texture::TextureObjectSet::takeOrGenerate(Texture* texture)
 {
@@ -266,8 +286,8 @@ Texture::TextureObject* Texture::TextureObjectSet::takeOrGenerate(Texture* textu
     }
 
     // see if we can reuse TextureObject by taking the least recently used active TextureObject
-    if ((_parent->getTexturePoolSize()!=0) &&
-        (_numOfTextureObjects > _parent->getTexturePoolSize()) &&
+    if ((_parent->getMaxTexturePoolSize()!=0) &&
+        (!_parent->hasSpace(_profile._size)) &&
         (_numOfTextureObjects>1) &&
         (_head != 0))
     {
@@ -305,6 +325,9 @@ Texture::TextureObject* Texture::TextureObjectSet::takeOrGenerate(Texture* textu
     TextureObject* to = new Texture::TextureObject(const_cast<Texture*>(texture),id,_profile);
     to->_set = this;
     ++_numOfTextureObjects;
+
+    // update the current texture pool size
+    _parent->setCurrTexturePoolSize( _parent->getCurrTexturePoolSize() + _profile._size );
 
     addToBack(to);
 
@@ -426,22 +449,35 @@ void Texture::TextureObjectSet::orphan(Texture::TextureObject* to)
 #endif
 }
 
-unsigned int Texture::TextureObjectSet::size() const
-{
-    osg::notify(osg::NOTICE)<<"Texture::TextureObjectSet::size() Not implemented yet"<<std::endl;
-    return 0;
-}
-
-
 Texture::TextureObjectManager::TextureObjectManager(unsigned int contextID):
     _contextID(contextID),
-    _texturePoolSize(0)
+    _currTexturePoolSize(0),
+    _maxTexturePoolSize(0)
 {
 }
 
-void Texture::TextureObjectManager::setTexturePoolSize(unsigned int size)
+void Texture::TextureObjectManager::setMaxTexturePoolSize(unsigned int size)
 {
-    _texturePoolSize = size;
+    if (_maxTexturePoolSize == size) return;
+
+    if (size>_currTexturePoolSize)
+    {
+        osg::notify(osg::NOTICE)<<"Warning: new MaxTexturePoolSize is smaller than current TexturePoolSize"<<std::endl;
+    }
+
+    _maxTexturePoolSize = size;
+}
+
+bool Texture::TextureObjectManager::makeSpace(unsigned int size)
+{
+    for(TextureSetMap::iterator itr = _textureSetMap.begin();
+        itr != _textureSetMap.end() && size>0;
+        ++itr)
+    {
+        if ((*itr).second->makeSpace(size)) return true;
+    }
+
+    return size==0;
 }
 
 
@@ -477,6 +513,8 @@ void Texture::TextureObjectManager::handlePendingOrphandedTextureObjects()
 
 void Texture::TextureObjectManager::flushAllDeletedTextureObjects()
 {
+    return;
+
     for(TextureSetMap::iterator itr = _textureSetMap.begin();
         itr != _textureSetMap.end();
         ++itr)
@@ -1801,13 +1839,20 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
 
         if (!compressed_image)
         {
+#if 0
+            glTexImage2D( target, 0, _internalFormat,
+                inwidth, inheight, _borderWidth,
+                (GLenum)image->getPixelFormat(),
+                (GLenum)image->getDataType(),
+                data -dataMinusOffset+dataPlusOffset);
+#else
             glTexSubImage2D( target, 0, 
                 0, 0,
                 inwidth, inheight,
                 (GLenum)image->getPixelFormat(),
                 (GLenum)image->getDataType(),
                 data - dataMinusOffset + dataPlusOffset);
-
+#endif
         }
         else if (extensions->isCompressedTexImage2DSupported())
         {        

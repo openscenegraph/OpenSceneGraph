@@ -706,6 +706,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObject)
 	          __GLenum__target,
 	          "",
 	          "");
+	I_Method0(unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__size,
+	          "",
+	          "");
 	I_Method1(void, setTexture, IN, osg::Texture *, texture,
 	          Properties::NON_VIRTUAL,
 	          __void__setTexture__Texture_P1,
@@ -778,14 +783,34 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObjectManager)
 	          __unsigned_int__getContextID,
 	          "",
 	          "");
-	I_Method1(void, setTexturePoolSize, IN, unsigned int, size,
+	I_Method1(void, setCurrTexturePoolSize, IN, unsigned int, size,
 	          Properties::NON_VIRTUAL,
-	          __void__setTexturePoolSize__unsigned_int,
+	          __void__setCurrTexturePoolSize__unsigned_int,
 	          "",
 	          "");
-	I_Method0(unsigned int, getTexturePoolSize,
+	I_Method0(unsigned int, getCurrTexturePoolSize,
 	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getTexturePoolSize,
+	          __unsigned_int__getCurrTexturePoolSize,
+	          "",
+	          "");
+	I_Method1(void, setMaxTexturePoolSize, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __void__setMaxTexturePoolSize__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getMaxTexturePoolSize,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getMaxTexturePoolSize,
+	          "",
+	          "");
+	I_Method1(bool, hasSpace, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __bool__hasSpace__unsigned_int,
+	          "",
+	          "");
+	I_Method1(bool, makeSpace, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __bool__makeSpace__unsigned_int,
 	          "",
 	          "");
 	I_Method2(osg::Texture::TextureObject *, generateTextureObject, IN, const osg::Texture *, texture, IN, GLenum, target,
@@ -826,9 +851,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObjectManager)
 	I_SimpleProperty(unsigned int, ContextID, 
 	                 __unsigned_int__getContextID, 
 	                 0);
-	I_SimpleProperty(unsigned int, TexturePoolSize, 
-	                 __unsigned_int__getTexturePoolSize, 
-	                 __void__setTexturePoolSize__unsigned_int);
+	I_SimpleProperty(unsigned int, CurrTexturePoolSize, 
+	                 __unsigned_int__getCurrTexturePoolSize, 
+	                 __void__setCurrTexturePoolSize__unsigned_int);
+	I_SimpleProperty(unsigned int, MaxTexturePoolSize, 
+	                 __unsigned_int__getMaxTexturePoolSize, 
+	                 __void__setMaxTexturePoolSize__unsigned_int);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObjectSet)
@@ -883,6 +911,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObjectSet)
 	          __unsigned_int__size,
 	          "",
 	          "");
+	I_Method1(bool, makeSpace, IN, unsigned int &, size,
+	          Properties::NON_VIRTUAL,
+	          __bool__makeSpace__unsigned_int_R1,
+	          "",
+	          "");
 	I_Method0(bool, checkConsistency,
 	          Properties::NON_VIRTUAL,
 	          __bool__checkConsistency,
@@ -911,6 +944,11 @@ BEGIN_VALUE_REFLECTOR(osg::Texture::TextureProfile)
 	          __bool__match__GLenum__GLint__GLenum__GLsizei__GLsizei__GLsizei__GLint,
 	          "",
 	          "");
+	I_Method0(void, computeSize,
+	          Properties::NON_VIRTUAL,
+	          __void__computeSize,
+	          "",
+	          "");
 	I_PublicMemberProperty(GLenum, _target);
 	I_PublicMemberProperty(GLint, _numMipmapLevels);
 	I_PublicMemberProperty(GLenum, _internalFormat);
@@ -918,6 +956,7 @@ BEGIN_VALUE_REFLECTOR(osg::Texture::TextureProfile)
 	I_PublicMemberProperty(GLsizei, _height);
 	I_PublicMemberProperty(GLsizei, _depth);
 	I_PublicMemberProperty(GLint, _border);
+	I_PublicMemberProperty(unsigned int, _size);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Texture::TextureObject >)

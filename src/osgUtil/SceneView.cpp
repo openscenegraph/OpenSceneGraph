@@ -849,7 +849,7 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     osg::State* state = _renderInfo.getState();
     if (state->getMaxTexturePoolSize()!=0)
     {
-        osg::Texture::getTextureObjectManager(state->getContextID())->setTexturePoolSize(state->getMaxTexturePoolSize());
+        osg::Texture::getTextureObjectManager(state->getContextID())->setMaxTexturePoolSize(state->getMaxTexturePoolSize());
     }
 
 

@@ -998,6 +998,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             TextureObject*      _next;
             Texture*            _texture;
             bool                _allocated;
+            unsigned int        _frameLastUsed;
             double              _timeStamp;
         };
 
@@ -1013,6 +1014,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             void discardAllDeletedTextureObjects();
             void flushDeletedTextureObjects(double currentTime, double& availableTime);
 
+            TextureObject* takeFromOrphans(Texture* texture);
             TextureObject* takeOrGenerate(Texture* texture);
             void moveToBack(TextureObject* to);
             void addToBack(TextureObject* to);
@@ -1048,7 +1050,18 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
             unsigned int getContextID() const { return _contextID; }
 
+
+
+            void setNumberActiveTextureObjects(unsigned int size) { _numActiveTextureObjects = size; }
+            unsigned int& getNumberActiveTextureObjects() { return _numActiveTextureObjects; }
+            unsigned int getNumberActiveTextureObjects() const { return _numActiveTextureObjects; }
+
+            void setNumberOrphanedTextureObjects(unsigned int size) { _numOrphanedTextureObjects = size; }
+            unsigned int& getNumberOrphanedTextureObjects() { return _numOrphanedTextureObjects; }
+            unsigned int getNumberOrphanedTextureObjects() const { return _numOrphanedTextureObjects; }
+
             void setCurrTexturePoolSize(unsigned int size) { _currTexturePoolSize = size; }
+            unsigned int& getCurrTexturePoolSize() { return _currTexturePoolSize; }
             unsigned int getCurrTexturePoolSize() const { return _currTexturePoolSize; }
 
             void setMaxTexturePoolSize(unsigned int size);
@@ -1072,13 +1085,46 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             void flushDeletedTextureObjects(double currentTime, double& availableTime);
             void releaseTextureObject(TextureObject* to);
 
+
+            void newFrame(osg::FrameStamp* fs);
+            void resetStats();
+            void reportStats();
+
+            unsigned int& getFrameNumber() { return _frameNumber; }
+            unsigned int& getNumberFrames() { return _numFrames; }
+
+            unsigned int& getNumberDeleted() { return _numDeleted; }
+            double& getDeleteTime() { return _deleteTime; }
+
+            unsigned int& getNumberGenerated() { return _numGenerated; }
+            double& getGenerateTime() { return _generateTime; }
+
+            unsigned int& getNumberApplied() { return _numApplied; }
+            double& getApplyTime() { return _applyTime; }
+
+
         protected:
 
             typedef std::map< TextureProfile, osg::ref_ptr<TextureObjectSet> > TextureSetMap;
             unsigned int        _contextID;
+            unsigned int        _numActiveTextureObjects;
+            unsigned int        _numOrphanedTextureObjects;
             unsigned int        _currTexturePoolSize;
             unsigned int        _maxTexturePoolSize;
             TextureSetMap       _textureSetMap;
+
+            unsigned int        _frameNumber;
+
+            unsigned int        _numFrames;
+            unsigned int        _numDeleted;
+            double              _deleteTime;
+
+            unsigned int        _numGenerated;
+            double              _generateTime;
+
+            unsigned int        _numApplied;
+            double              _applyTime;
+
         };
 
         static osg::ref_ptr<Texture::TextureObjectManager>&  getTextureObjectManager(unsigned int contextID);

@@ -1022,6 +1022,9 @@ void SceneView::draw()
     osg::State* state = _renderInfo.getState();
     state->initializeExtensionProcs();
 
+    osg::Texture::TextureObjectManager* tom = osg::Texture::getTextureObjectManager(state->getContextID());
+    tom->newFrame(state->getFrameStamp());
+
     if (!_initCalled) init();
 
     // note, to support multi-pipe systems the deletion of OpenGL display list
@@ -1559,6 +1562,10 @@ void SceneView::draw()
             state->setCheckForGLErrors(osg::State::ONCE_PER_ATTRIBUTE);
         }
     }
+
+#ifdef REPORT_TEXTURE_MANAGER_STATS
+    tom->reportStats();
+#endif
 
     // osg::notify(osg::NOTICE)<<"SceneView  draw() DynamicObjectCount"<<getState()->getDynamicObjectCount()<<std::endl;
 

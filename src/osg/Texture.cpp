@@ -79,7 +79,48 @@ void Texture::TextureObject::bind()
 void Texture::TextureProfile::computeSize()
 {
     unsigned int numBitsPerTexel = 32;
-    _size = (_width * _height * _depth * numBitsPerTexel)/8;
+
+    switch(_internalFormat)
+    {
+        case(1): numBitsPerTexel = 8; break;
+        case(GL_ALPHA): numBitsPerTexel = 8; break;
+        case(GL_LUMINANCE): numBitsPerTexel = 8; break;
+        case(GL_INTENSITY): numBitsPerTexel = 8; break;
+
+        case(GL_LUMINANCE_ALPHA): numBitsPerTexel = 16; break;
+        case(2): numBitsPerTexel = 16; break;
+
+        case(GL_RGB): numBitsPerTexel = 24; break;
+        case(GL_BGR): numBitsPerTexel = 24; break;
+        case(3): numBitsPerTexel = 24; break;
+
+        case(GL_RGBA): numBitsPerTexel = 32; break;
+        case(4): numBitsPerTexel = 32; break;
+
+        case(GL_COMPRESSED_ALPHA_ARB):           numBitsPerTexel = 4; break;
+        case(GL_COMPRESSED_INTENSITY_ARB):       numBitsPerTexel = 4; break;
+        case(GL_COMPRESSED_LUMINANCE_ALPHA_ARB): numBitsPerTexel = 4; break;
+        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):   numBitsPerTexel = 4; break;
+        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):  numBitsPerTexel = 4; break;
+
+        case(GL_COMPRESSED_RGB_ARB):             numBitsPerTexel = 8; break;
+        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):  numBitsPerTexel = 8; break;
+        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):  numBitsPerTexel = 8; break;
+    }
+
+    _size = (unsigned int)(ceil(double(_width * _height * _depth * numBitsPerTexel)/8.0));
+
+    if (_numMipmapLevels>1)
+    {
+        unsigned int mipmapSize = _size / 4;
+        for(GLint i=0; i<_numMipmapLevels && mipmapSize!=0; ++i)
+        {
+            _size += mipmapSize;
+            mipmapSize /= 4;
+        }
+    }
+
+    // osg::notify(osg::NOTICE)<<"TO ("<<_width<<", "<<_height<<", "<<_depth<<") size="<<_size<<" numBitsPerTexel="<<numBitsPerTexel<<std::endl;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -289,9 +330,9 @@ void Texture::TextureObjectSet::flushDeletedTextureObjects(double currentTime, d
         ++numDeleted;
     }
 
-    osg::notify(osg::NOTICE)<<"Size before = "<<_orphanedTextureObjects.size();
+    // osg::notify(osg::NOTICE)<<"Size before = "<<_orphanedTextureObjects.size();
     _orphanedTextureObjects.erase(_orphanedTextureObjects.begin(), itr);
-    osg::notify(osg::NOTICE)<<", after = "<<_orphanedTextureObjects.size()<<" numDeleted = "<<numDeleted<<std::endl;
+    // osg::notify(osg::NOTICE)<<", after = "<<_orphanedTextureObjects.size()<<" numDeleted = "<<numDeleted<<std::endl;
 
     // update the number of TO's in this TextureObjectSet
     _numOfTextureObjects -= numDeleted;
@@ -1568,9 +1609,7 @@ void Texture::computeRequiredTextureDimensions(State& state, const osg::Image& i
     inwidth = width;
     inheight = height;
     
-    bool useHardwareMipMapGeneration = !image.isMipmap() && isHardwareMipmapGenerationEnabled(state);
-
-    if( _min_filter == LINEAR || _min_filter == NEAREST || useHardwareMipMapGeneration )
+    if( _min_filter == LINEAR || _min_filter == NEAREST)
     {
         numMipmapLevels = 1;
     }
@@ -1580,20 +1619,10 @@ void Texture::computeRequiredTextureDimensions(State& state, const osg::Image& i
     }
     else
     {
-        numMipmapLevels = 0;
-        for( ; (width || height) ;++numMipmapLevels)
-        {
-
-            if (width == 0)
-                width = 1;
-            if (height == 0)
-                height = 1;
-
-            width >>= 1;
-            height >>= 1;
-        }    
+        numMipmapLevels = 1;
+        for(int s=1; s<width || s<height; s <<= 1, ++numMipmapLevels) {}
     }
-    
+
     // osg::notify(osg::NOTICE)<<"Texture::computeRequiredTextureDimensions() image.s() "<<image.s()<<" image.t()="<<image.t()<<" width="<<width<<" height="<<height<<" numMipmapLevels="<<numMipmapLevels<<std::endl; 
     // osg::notify(osg::NOTICE)<<"  _resizeNonPowerOfTwoHint="<<_resizeNonPowerOfTwoHint<<" extensions->isNonPowerOfTwoTextureSupported(_min_filter)="<<extensions->isNonPowerOfTwoTextureSupported(_min_filter) <<std::endl; 
 }

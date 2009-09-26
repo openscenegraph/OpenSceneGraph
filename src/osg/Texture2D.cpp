@@ -348,10 +348,14 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
 
     _textureWidth = width;
     _textureHeight = height;
-    _numMipmapLevels = 1;
-    
-    textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
 
+    _numMipmapLevels = 1;
+    if (needHardwareMipMap)
+    {
+        for(int s=1; s<width || s<height; s <<= 1, ++_numMipmapLevels) {}
+    }
+
+    textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
 
     // inform state that this texture is the current one bound.
     state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);

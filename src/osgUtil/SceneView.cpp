@@ -1563,6 +1563,7 @@ void SceneView::draw()
         }
     }
 
+// #define REPORT_TEXTURE_MANAGER_STATS
 #ifdef REPORT_TEXTURE_MANAGER_STATS
     tom->reportStats();
 #endif

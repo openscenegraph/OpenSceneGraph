@@ -20,6 +20,40 @@
 #undef OUT
 #endif
 
+BEGIN_VALUE_REFLECTOR(osg::ElapsedTime)
+	I_DeclaringFile("osg/Timer");
+	I_ConstructorWithDefaults2(IN, double *, elapsedTime, , IN, osg::Timer *, timer, 0,
+	                           ____ElapsedTime__double_P1__osg_Timer_P1,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults1(IN, osg::Timer *, timer, 0,
+	                           Properties::NON_EXPLICIT,
+	                           ____ElapsedTime__osg_Timer_P1,
+	                           "",
+	                           "");
+	I_Method0(void, reset,
+	          Properties::NON_VIRTUAL,
+	          __void__reset,
+	          "",
+	          "");
+	I_Method0(double, elapsedTime,
+	          Properties::NON_VIRTUAL,
+	          __double__elapsedTime,
+	          "",
+	          "");
+	I_Method0(void, finish,
+	          Properties::NON_VIRTUAL,
+	          __void__finish,
+	          "",
+	          "");
+	I_ProtectedMethod1(void, init, IN, osg::Timer *, timer,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__init__osg_Timer_P1,
+	                   "",
+	                   "");
+END_REFLECTOR
+
 BEGIN_VALUE_REFLECTOR(osg::Timer)
 	I_DeclaringFile("osg/Timer");
 	I_Constructor0(____Timer,

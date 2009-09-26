@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
+#include <osg/FrameStamp>
 #include <osg/GraphicsContext>
 #include <osg/Image>
 #include <osg/Object>
@@ -767,6 +768,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObject)
 	I_PublicMemberProperty(osg::Texture::TextureObject *, _next);
 	I_PublicMemberProperty(osg::Texture *, _texture);
 	I_PublicMemberProperty(bool, _allocated);
+	I_PublicMemberProperty(unsigned int, _frameLastUsed);
 	I_PublicMemberProperty(double, _timeStamp);
 END_REFLECTOR
 
@@ -783,9 +785,44 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObjectManager)
 	          __unsigned_int__getContextID,
 	          "",
 	          "");
+	I_Method1(void, setNumberActiveTextureObjects, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __void__setNumberActiveTextureObjects__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int &, getNumberActiveTextureObjects,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int_R1__getNumberActiveTextureObjects,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumberActiveTextureObjects,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getNumberActiveTextureObjects,
+	          "",
+	          "");
+	I_Method1(void, setNumberOrphanedTextureObjects, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __void__setNumberOrphanedTextureObjects__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int &, getNumberOrphanedTextureObjects,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int_R1__getNumberOrphanedTextureObjects,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumberOrphanedTextureObjects,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getNumberOrphanedTextureObjects,
+	          "",
+	          "");
 	I_Method1(void, setCurrTexturePoolSize, IN, unsigned int, size,
 	          Properties::NON_VIRTUAL,
 	          __void__setCurrTexturePoolSize__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int &, getCurrTexturePoolSize,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int_R1__getCurrTexturePoolSize,
 	          "",
 	          "");
 	I_Method0(unsigned int, getCurrTexturePoolSize,
@@ -848,15 +885,100 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObjectManager)
 	          __void__releaseTextureObject__TextureObject_P1,
 	          "",
 	          "");
+	I_Method1(void, newFrame, IN, osg::FrameStamp *, fs,
+	          Properties::NON_VIRTUAL,
+	          __void__newFrame__osg_FrameStamp_P1,
+	          "",
+	          "");
+	I_Method0(void, resetStats,
+	          Properties::NON_VIRTUAL,
+	          __void__resetStats,
+	          "",
+	          "");
+	I_Method0(void, reportStats,
+	          Properties::NON_VIRTUAL,
+	          __void__reportStats,
+	          "",
+	          "");
+	I_Method0(unsigned int &, getFrameNumber,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int_R1__getFrameNumber,
+	          "",
+	          "");
+	I_Method0(unsigned int &, getNumberFrames,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int_R1__getNumberFrames,
+	          "",
+	          "");
+	I_Method0(unsigned int &, getNumberDeleted,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int_R1__getNumberDeleted,
+	          "",
+	          "");
+	I_Method0(double &, getDeleteTime,
+	          Properties::NON_VIRTUAL,
+	          __double_R1__getDeleteTime,
+	          "",
+	          "");
+	I_Method0(unsigned int &, getNumberGenerated,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int_R1__getNumberGenerated,
+	          "",
+	          "");
+	I_Method0(double &, getGenerateTime,
+	          Properties::NON_VIRTUAL,
+	          __double_R1__getGenerateTime,
+	          "",
+	          "");
+	I_Method0(unsigned int &, getNumberApplied,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int_R1__getNumberApplied,
+	          "",
+	          "");
+	I_Method0(double &, getApplyTime,
+	          Properties::NON_VIRTUAL,
+	          __double_R1__getApplyTime,
+	          "",
+	          "");
+	I_SimpleProperty(double &, ApplyTime, 
+	                 __double_R1__getApplyTime, 
+	                 0);
 	I_SimpleProperty(unsigned int, ContextID, 
 	                 __unsigned_int__getContextID, 
 	                 0);
 	I_SimpleProperty(unsigned int, CurrTexturePoolSize, 
 	                 __unsigned_int__getCurrTexturePoolSize, 
 	                 __void__setCurrTexturePoolSize__unsigned_int);
+	I_SimpleProperty(double &, DeleteTime, 
+	                 __double_R1__getDeleteTime, 
+	                 0);
+	I_SimpleProperty(unsigned int &, FrameNumber, 
+	                 __unsigned_int_R1__getFrameNumber, 
+	                 0);
+	I_SimpleProperty(double &, GenerateTime, 
+	                 __double_R1__getGenerateTime, 
+	                 0);
 	I_SimpleProperty(unsigned int, MaxTexturePoolSize, 
 	                 __unsigned_int__getMaxTexturePoolSize, 
 	                 __void__setMaxTexturePoolSize__unsigned_int);
+	I_SimpleProperty(unsigned int, NumberActiveTextureObjects, 
+	                 __unsigned_int__getNumberActiveTextureObjects, 
+	                 __void__setNumberActiveTextureObjects__unsigned_int);
+	I_SimpleProperty(unsigned int &, NumberApplied, 
+	                 __unsigned_int_R1__getNumberApplied, 
+	                 0);
+	I_SimpleProperty(unsigned int &, NumberDeleted, 
+	                 __unsigned_int_R1__getNumberDeleted, 
+	                 0);
+	I_SimpleProperty(unsigned int &, NumberFrames, 
+	                 __unsigned_int_R1__getNumberFrames, 
+	                 0);
+	I_SimpleProperty(unsigned int &, NumberGenerated, 
+	                 __unsigned_int_R1__getNumberGenerated, 
+	                 0);
+	I_SimpleProperty(unsigned int, NumberOrphanedTextureObjects, 
+	                 __unsigned_int__getNumberOrphanedTextureObjects, 
+	                 __void__setNumberOrphanedTextureObjects__unsigned_int);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObjectSet)
@@ -884,6 +1006,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObjectSet)
 	I_Method2(void, flushDeletedTextureObjects, IN, double, currentTime, IN, double &, availableTime,
 	          Properties::NON_VIRTUAL,
 	          __void__flushDeletedTextureObjects__double__double_R1,
+	          "",
+	          "");
+	I_Method1(osg::Texture::TextureObject *, takeFromOrphans, IN, osg::Texture *, texture,
+	          Properties::NON_VIRTUAL,
+	          __TextureObject_P1__takeFromOrphans__Texture_P1,
 	          "",
 	          "");
 	I_Method1(osg::Texture::TextureObject *, takeOrGenerate, IN, osg::Texture *, texture,

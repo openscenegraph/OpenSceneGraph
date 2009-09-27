@@ -76,6 +76,32 @@ void Texture::TextureObject::bind()
     if (_set) _set->moveToBack(this);
 }
 
+void Texture::TextureObject::setAllocated(GLint     numMipmapLevels,
+                                          GLenum    internalFormat,
+                                          GLsizei   width,
+                                          GLsizei   height,
+                                          GLsizei   depth,
+                                          GLint     border)
+{
+    _allocated=true;
+    if (!match(_profile._target,numMipmapLevels,internalFormat,width,height,depth,border))
+    {
+        _profile.set(numMipmapLevels,internalFormat,width,height,depth,border);
+
+        if (_set)
+        {
+            // remove self from original set
+            _set->remove(this);
+
+            // get the new set for the new profile
+            _set = _set->getParent()->getTextureObjectSet(_profile);
+
+            // register self with new set.
+            _set->addToBack(this);
+        }
+    }
+}
+
 void Texture::TextureProfile::computeSize()
 {
     unsigned int numBitsPerTexel = 32;
@@ -209,29 +235,7 @@ void Texture::TextureObjectSet::handlePendingOrphandedTextureObjects()
 
         _orphanedTextureObjects.push_back(to);
 
-        if (to->_previous!=0)
-        {
-            (to->_previous)->_next = to->_next;
-        }
-        else
-        {
-            // 'to' was head so assign _head to the next in list
-            _head = to->_next;
-        }
-
-        if (to->_next!=0)
-        {
-            (to->_next)->_previous = to->_previous;
-        }
-        else
-        {
-            // 'to' was tail so assing tail to the previous in list
-            _tail = to->_previous;
-        }
-
-        // reset the 'to' list pointers as it's no longer in the active list.
-        to->_next = 0;
-        to->_previous = 0;
+        remove(to);
 
 #if 0
         osg::notify(osg::NOTICE)<<"  HPOTO  after  _head = "<<_head<<std::endl;
@@ -571,6 +575,34 @@ void Texture::TextureObjectSet::orphan(Texture::TextureObject* to)
 #endif
 }
 
+void Texture::TextureObjectSet::remove(Texture::TextureObject* to)
+{
+    if (to->_previous!=0)
+    {
+        (to->_previous)->_next = to->_next;
+    }
+    else
+    {
+        // 'to' was head so assign _head to the next in list
+        _head = to->_next;
+    }
+
+    if (to->_next!=0)
+    {
+        (to->_next)->_previous = to->_previous;
+    }
+    else
+    {
+        // 'to' was tail so assing tail to the previous in list
+        _tail = to->_previous;
+    }
+
+    // reset the 'to' list pointers as it's no longer in the active list.
+    to->_next = 0;
+    to->_previous = 0;
+}
+
+
 Texture::TextureObjectManager::TextureObjectManager(unsigned int contextID):
     _contextID(contextID),
     _numActiveTextureObjects(0),
@@ -631,9 +663,15 @@ Texture::TextureObject* Texture::TextureObjectManager::generateTextureObject(con
     ++getNumberGenerated();
 
     Texture::TextureProfile profile(target,numMipmapLevels,internalFormat,width,height,depth,border);
+    TextureObjectSet* tos = getTextureObjectSet(profile);
+    return tos->takeOrGenerate(const_cast<Texture*>(texture));
+}
+
+Texture::TextureObjectSet* Texture::TextureObjectManager::getTextureObjectSet(const TextureProfile& profile)
+{
     osg::ref_ptr<Texture::TextureObjectSet>& tos = _textureSetMap[profile];
     if (!tos) tos = new Texture::TextureObjectSet(this, profile);
-    return tos->takeOrGenerate(const_cast<Texture*>(texture));
+    return tos.get();
 }
 
 void Texture::TextureObjectManager::handlePendingOrphandedTextureObjects()

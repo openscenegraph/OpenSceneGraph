@@ -624,9 +624,9 @@ void Texture::TextureObjectManager::setMaxTexturePoolSize(unsigned int size)
 {
     if (_maxTexturePoolSize == size) return;
 
-    if (size>_currTexturePoolSize)
+    if (size<_currTexturePoolSize)
     {
-        osg::notify(osg::NOTICE)<<"Warning: new MaxTexturePoolSize is smaller than current TexturePoolSize"<<std::endl;
+        osg::notify(osg::NOTICE)<<"Warning: new MaxTexturePoolSize="<<size<<" is smaller than current TexturePoolSize="<<_currTexturePoolSize<<std::endl;
     }
 
     _maxTexturePoolSize = size;

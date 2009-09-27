@@ -975,16 +975,12 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
             inline void setAllocated(bool allocated=true) { _allocated = allocated; }
 
-            inline void setAllocated(GLint     numMipmapLevels,
+            void setAllocated(GLint     numMipmapLevels,
                               GLenum    internalFormat,
                               GLsizei   width,
                               GLsizei   height,
                               GLsizei   depth,
-                              GLint     border)
-            {
-                _allocated=true;
-                _profile.set(numMipmapLevels,internalFormat,width,height,depth,border);
-            }
+                              GLint     border);
 
             inline bool isAllocated() const { return _allocated; }
 
@@ -1019,11 +1015,15 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             void moveToBack(TextureObject* to);
             void addToBack(TextureObject* to);
             void orphan(TextureObject* to);
+            void remove(TextureObject* to);
+
             unsigned int size() const { return _profile._size * _numOfTextureObjects; }
 
             bool makeSpace(unsigned int& size);
 
             bool checkConsistency() const;
+
+            TextureObjectManager* getParent() { return _parent; }
 
         protected:
 
@@ -1085,6 +1085,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             void flushDeletedTextureObjects(double currentTime, double& availableTime);
             void releaseTextureObject(TextureObject* to);
 
+            TextureObjectSet* getTextureObjectSet(const TextureProfile& profile);
 
             void newFrame(osg::FrameStamp* fs);
             void resetStats();

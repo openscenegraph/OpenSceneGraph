@@ -885,6 +885,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObjectManager)
 	          __void__releaseTextureObject__TextureObject_P1,
 	          "",
 	          "");
+	I_Method1(osg::Texture::TextureObjectSet *, getTextureObjectSet, IN, const osg::Texture::TextureProfile &, profile,
+	          Properties::NON_VIRTUAL,
+	          __TextureObjectSet_P1__getTextureObjectSet__C5_TextureProfile_R1,
+	          "",
+	          "");
 	I_Method1(void, newFrame, IN, osg::FrameStamp *, fs,
 	          Properties::NON_VIRTUAL,
 	          __void__newFrame__osg_FrameStamp_P1,
@@ -1033,6 +1038,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObjectSet)
 	          __void__orphan__TextureObject_P1,
 	          "",
 	          "");
+	I_Method1(void, remove, IN, osg::Texture::TextureObject *, to,
+	          Properties::NON_VIRTUAL,
+	          __void__remove__TextureObject_P1,
+	          "",
+	          "");
 	I_Method0(unsigned int, size,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__size,
@@ -1048,6 +1058,14 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObjectSet)
 	          __bool__checkConsistency,
 	          "",
 	          "");
+	I_Method0(osg::Texture::TextureObjectManager *, getParent,
+	          Properties::NON_VIRTUAL,
+	          __TextureObjectManager_P1__getParent,
+	          "",
+	          "");
+	I_SimpleProperty(osg::Texture::TextureObjectManager *, Parent, 
+	                 __TextureObjectManager_P1__getParent, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::Texture::TextureProfile)

@@ -208,6 +208,11 @@ void Texture2DArray::apply(State& state) const
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
+
+    Texture::TextureObjectManager* tom = Texture::getTextureObjectManager(contextID);
+    ElapsedTime elapsedTime(&(tom->getApplyTime()));
+    tom->getNumberApplied()++;
+
     const Extensions* extensions = getExtensions(contextID,true);
 
     // if not supported, then return

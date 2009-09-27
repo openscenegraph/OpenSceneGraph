@@ -124,6 +124,10 @@ void Texture1D::apply(State& state) const
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
 
+    Texture::TextureObjectManager* tom = Texture::getTextureObjectManager(contextID);
+    ElapsedTime elapsedTime(&(tom->getApplyTime()));
+    tom->getNumberApplied()++;
+
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
 

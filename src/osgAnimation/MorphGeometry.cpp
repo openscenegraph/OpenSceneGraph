@@ -261,19 +261,22 @@ bool UpdateMorph::link(osgAnimation::Channel* channel)
 
     if (weightIndex >= 0)
     {
-      osgAnimation::FloatLinearChannel* fc = dynamic_cast<osgAnimation::FloatLinearChannel*>(channel);
-      if (fc)
-      {
-          osgAnimation::FloatTarget* ft = new osgAnimation::FloatTarget;
-          _weightTargets[weightIndex] = ft;
-          ft->setValue(-1);
-          fc->setTarget(ft);
-          return true;
-      }
-  }
+        osgAnimation::FloatLinearChannel* fc = dynamic_cast<osgAnimation::FloatLinearChannel*>(channel);
+        if (fc)
+        {
+            osgAnimation::FloatTarget* ft = _weightTargets[weightIndex].get();
+            if (ft == 0)
+            {
+                ft = new osgAnimation::FloatTarget;
+                _weightTargets[weightIndex] = ft;
+            }
+            fc->setTarget(ft);
+            return true;
+        }
+    }
     else
-  {
-      osg::notify(osg::WARN) << "Channel " << channel->getName() << " does not contain a valid symbolic name for this class" << std::endl;
-  }
-  return false;
+    {
+        osg::notify(osg::WARN) << "Channel " << channel->getName() << " does not contain a valid symbolic name for this class" << std::endl;
+    }
+    return false;
 }

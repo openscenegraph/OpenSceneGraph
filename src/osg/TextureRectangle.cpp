@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -290,19 +290,12 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
         #endif
     }
 
-    unsigned char* dataMinusOffset = 0;
-    unsigned char* dataPlusOffset = 0;
-
-    const PixelBufferObject* pbo = image->getPixelBufferObject();
-    if (pbo && pbo->isPBOSupported(contextID))
+    const unsigned char* dataPtr = image->data();
+    GLBufferObject* pbo = image->getOrCreateGLBufferObject(contextID);
+    if (pbo)
     {
         state.bindPixelBufferObject(pbo);
-        dataMinusOffset = image->data();
-        dataPlusOffset = reinterpret_cast<unsigned char*>(pbo->offset());
-    }
-    else
-    {
-        pbo = 0;
+        dataPtr = reinterpret_cast<unsigned char*>(pbo->getOffset(image->getBufferIndex()));
     }
 
     if(isCompressedInternalFormat(_internalFormat) && extensions->isCompressedTexImage2DSupported())
@@ -310,7 +303,7 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
         extensions->glCompressedTexImage2D(target, 0, _internalFormat, 
           image->s(), image->t(), 0,
           image->getImageSizeInBytes(), 
-          image->data() - dataMinusOffset + dataPlusOffset);                
+          dataPtr);
     }
     else
     {
@@ -318,7 +311,7 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
           image->s(), image->t(), 0,
           (GLenum)image->getPixelFormat(),
           (GLenum)image->getDataType(),
-          image->data() - dataMinusOffset + dataPlusOffset );
+          dataPtr );
     }
     
 
@@ -365,26 +358,21 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
 
 #ifdef DO_TIMING
     osg::Timer_t start_tick = osg::Timer::instance()->tick();
-    osg::notify(osg::NOTICE)<<"glTexSubImage2D pixelFormat = "<<std::hex<<image->getPixelFormat()<<std::dec<<std::endl;
+    osg::notify(osg::NOTICE)<<"TextureRectangle::apply pixelFormat = "<<std::hex<<image->getPixelFormat()<<std::dec<<std::endl;
 #endif
-    unsigned char* dataMinusOffset = 0;
-    unsigned char* dataPlusOffset = 0;
-
-    const PixelBufferObject* pbo = image->getPixelBufferObject();
-    if (pbo && pbo->isPBOSupported(contextID))
+    const unsigned char* dataPtr = image->data();
+    GLBufferObject* pbo = image->getOrCreateGLBufferObject(contextID);
+    if (pbo)
     {
         state.bindPixelBufferObject(pbo);
-        dataMinusOffset = image->data();
-        dataPlusOffset = reinterpret_cast<unsigned char*>(pbo->offset()); // -dataMinusOffset+dataPlusOffset
-
+        dataPtr = reinterpret_cast<unsigned char*>(pbo->getOffset(image->getBufferIndex()));
 #ifdef DO_TIMING
         osg::notify(osg::NOTICE)<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 #endif
-
     }
     else
     {
-        pbo = 0;
+        osg::notify(osg::NOTICE)<<"    no PixelBufferObject "<<image->getBufferObject()<<", "<<image->getPixelBufferObject()<<" pbo="<<pbo<<std::endl;
     }
     
 
@@ -395,7 +383,7 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
           image->s(), image->t(),
           (GLenum)image->getPixelFormat(),
           (GLenum)image->getDataType(),
-          image->data() - dataMinusOffset + dataPlusOffset);                
+          dataPtr);
     }
     else
     {
@@ -404,7 +392,7 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
           image->s(), image->t(),
           (GLenum)image->getPixelFormat(),
           (GLenum)image->getDataType(),
-          image->data() - dataMinusOffset + dataPlusOffset  );
+          dataPtr);
     }
 
     if (pbo)
@@ -415,7 +403,6 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
 #ifdef DO_TIMING
     osg::notify(osg::NOTICE)<<"glTexSubImage2D "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 #endif
-    
 }
 
 void TextureRectangle::computeInternalFormat() const

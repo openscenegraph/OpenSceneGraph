@@ -52,7 +52,7 @@ TYPE_NAME_ALIAS(std::vector< unsigned int >, osg::Image::MipmapDataType)
 
 BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_DeclaringFile("osg/Image");
-	I_BaseType(osg::Object);
+	I_BaseType(osg::BufferData);
 	I_Constructor0(____Image,
 	               "",
 	               "");
@@ -85,6 +85,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method0(const GLvoid *, getDataPointer,
+	          Properties::VIRTUAL,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          Properties::VIRTUAL,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
 	I_Method1(int, compare, IN, const osg::Image &, rhs,
 	          Properties::VIRTUAL,
 	          __int__compare__C5_Image_R1,
@@ -310,21 +320,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	          __void__ensureValidSizeForTexturing__GLint,
 	          "Ensure image dimensions are a power of two. ",
 	          "Mipmapped textures require the image dimensions to be power of two and are within the maxiumum texture size for the host machine. ");
-	I_Method0(void, dirty,
-	          Properties::NON_VIRTUAL,
-	          __void__dirty,
-	          "Dirty the image, which increments the modified count, to force osg::Texture to reload the image. ",
-	          "");
-	I_Method1(void, setModifiedCount, IN, unsigned int, value,
-	          Properties::NON_VIRTUAL,
-	          __void__setModifiedCount__unsigned_int,
-	          "Set the modified count value. ",
-	          "Used by osg::Texture when using texture subloading. ");
-	I_Method0(unsigned int, getModifiedCount,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getModifiedCount,
-	          "Get modified count value. ",
-	          "Used by osg::Texture when using texture subloading. ");
 	I_Method0(bool, isMipmap,
 	          Properties::NON_VIRTUAL,
 	          __bool__isMipmap,
@@ -447,6 +442,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_SimpleProperty(osg::Image::AllocationMode, AllocationMode, 
 	                 __AllocationMode__getAllocationMode, 
 	                 __void__setAllocationMode__AllocationMode);
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
 	I_SimpleProperty(GLenum, DataType, 
 	                 __GLenum__getDataType, 
 	                 __void__setDataType__GLenum);
@@ -465,9 +463,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_SimpleProperty(const osg::Image::MipmapDataType &, MipmapLevels, 
 	                 __C5_MipmapDataType_R1__getMipmapLevels, 
 	                 __void__setMipmapLevels__C5_MipmapDataType_R1);
-	I_SimpleProperty(unsigned int, ModifiedCount, 
-	                 __unsigned_int__getModifiedCount, 
-	                 __void__setModifiedCount__unsigned_int);
 	I_SimpleProperty(osg::Image::Origin, Origin, 
 	                 __Origin__getOrigin, 
 	                 __void__setOrigin__Origin);
@@ -488,6 +483,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	                 0);
 	I_SimpleProperty(unsigned int, RowSizeInBytes, 
 	                 __unsigned_int__getRowSizeInBytes, 
+	                 0);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
 	                 0);
 	I_SimpleProperty(unsigned int, TotalSizeInBytes, 
 	                 __unsigned_int__getTotalSizeInBytes, 

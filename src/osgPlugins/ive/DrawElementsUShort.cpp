@@ -34,7 +34,7 @@ void DrawElementsUShort::write(DataOutputStream* out){
 
     // Write array length and its elements.
     out->writeInt(size());
-    out->writeCharArray((const char*)&front(), size() * SHORTSIZE);
+    if (size()!=0) out->writeCharArray((const char*)&front(), size() * SHORTSIZE);
 }
 
 void DrawElementsUShort::read(DataInputStream* in){

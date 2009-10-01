@@ -34,7 +34,7 @@ void DrawElementsUInt::write(DataOutputStream* out){
 
     // Write array length and its elements.
     out->writeInt(size());
-    out->writeCharArray((const char*)&front(), size() * INTSIZE);
+    if (size()!=0) out->writeCharArray((const char*)&front(), size() * INTSIZE);
 }
 
 void DrawElementsUInt::read(DataInputStream* in)
@@ -55,7 +55,7 @@ void DrawElementsUInt::read(DataInputStream* in)
         // Read array length and its elements.
         int size = in->readInt();
         resize(size);
-        in->readCharArray((char*)&front(), size * INTSIZE);
+        if (size!=0) in->readCharArray((char*)&front(), size * INTSIZE);
 
         if (in->_byteswap)
         {

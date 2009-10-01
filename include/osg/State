@@ -405,13 +405,13 @@ class OSG_EXPORT State : public Referenced, public Observer
         void dirtyAllVertexArrays();
 
 
-        void setCurrentVertexBufferObject(osg::VertexBufferObject* vbo) { _currentVBO = vbo; }
-        const VertexBufferObject* getCurrentVertexBufferObject() { return _currentVBO; }
-        inline void bindVertexBufferObject(const osg::VertexBufferObject* vbo)
+        void setCurrentVertexBufferObject(osg::GLBufferObject* vbo) { _currentVBO = vbo; }
+        const GLBufferObject* getCurrentVertexBufferObject() { return _currentVBO; }
+        inline void bindVertexBufferObject(osg::GLBufferObject* vbo)
         {
             if (vbo == _currentVBO) return;
-            if (vbo->isDirty(_contextID)) vbo->compileBuffer(*this);
-            else _glBindBuffer(GL_ARRAY_BUFFER_ARB,vbo->buffer(_contextID));
+            if (vbo->isDirty()) vbo->compileBuffer();
+            else _glBindBuffer(GL_ARRAY_BUFFER_ARB,vbo->getGLObjectID());
             _currentVBO = vbo;
         }
 
@@ -422,14 +422,14 @@ class OSG_EXPORT State : public Referenced, public Observer
             _currentVBO = 0;
         }
 
-        void setCurrentElementBufferObject(osg::ElementBufferObject* ebo) { _currentEBO = ebo; }
-        const ElementBufferObject* getCurrentElementBufferObject() { return _currentEBO; }
+        void setCurrentElementBufferObject(osg::GLBufferObject* ebo) { _currentEBO = ebo; }
+        const GLBufferObject* getCurrentElementBufferObject() { return _currentEBO; }
 
-        inline void bindElementBufferObject(const osg::ElementBufferObject* ebo)
+        inline void bindElementBufferObject(osg::GLBufferObject* ebo)
         {
             if (ebo == _currentEBO) return;
-            if (ebo->isDirty(_contextID)) ebo->compileBuffer(*this);
-            else _glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,ebo->buffer(_contextID));
+            if (ebo->isDirty()) ebo->compileBuffer();
+            else _glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,ebo->getGLObjectID());
             _currentEBO = ebo;
         }
 
@@ -440,15 +440,15 @@ class OSG_EXPORT State : public Referenced, public Observer
             _currentEBO = 0;
         }
 
-        void setCurrentPixelBufferObject(osg::PixelBufferObject* pbo) { _currentPBO = pbo; }
-        const PixelBufferObject* getCurrentPixelBufferObject() { return _currentPBO; }
+        void setCurrentPixelBufferObject(osg::GLBufferObject* pbo) { _currentPBO = pbo; }
+        const GLBufferObject* getCurrentPixelBufferObject() { return _currentPBO; }
 
-        inline void bindPixelBufferObject(const osg::PixelBufferObject* pbo)
+        inline void bindPixelBufferObject(osg::GLBufferObject* pbo)
         {
             if (pbo == _currentPBO) return;
 
-            if (pbo->isDirty(_contextID)) pbo->compileBuffer(*this);
-            else _glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB,pbo->buffer(_contextID));
+            if (pbo->isDirty()) pbo->compileBuffer();
+            else _glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB,pbo->getGLObjectID());
 
             _currentPBO = pbo;
         }
@@ -485,11 +485,11 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             if (array)
             {
-                const VertexBufferObject* vbo = array->getVertexBufferObject();
+                GLBufferObject* vbo = array->getOrCreateGLBufferObject(_contextID);
                 if (vbo)
                 {
                     bindVertexBufferObject(vbo);
-                    setVertexPointer(array->getDataSize(),array->getDataType(),0,array->getVertexBufferObjectOffset());
+                    setVertexPointer(array->getDataSize(),array->getDataType(),0,(const GLvoid *)(vbo->getOffset(array->getBufferIndex())));
                 }
                 else
                 {
@@ -542,11 +542,11 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             if (array)
             {
-                const VertexBufferObject* vbo = array->getVertexBufferObject();
+                GLBufferObject* vbo = array->getOrCreateGLBufferObject(_contextID);
                 if (vbo)
                 {
                     bindVertexBufferObject(vbo);
-                setNormalPointer(array->getDataType(),0,array->getVertexBufferObjectOffset());
+                    setNormalPointer(array->getDataType(),0,(const GLvoid *)(vbo->getOffset(array->getBufferIndex())));
                 }
                 else
                 {
@@ -598,11 +598,11 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             if (array)
             {
-                const VertexBufferObject* vbo = array->getVertexBufferObject();
+                GLBufferObject* vbo = array->getOrCreateGLBufferObject(_contextID);
                 if (vbo)
                 {
                     bindVertexBufferObject(vbo);
-                    setColorPointer(array->getDataSize(),array->getDataType(),0,array->getVertexBufferObjectOffset());
+                    setColorPointer(array->getDataSize(),array->getDataType(),0,(const GLvoid *)(vbo->getOffset(array->getBufferIndex())));
                 }
                 else
                 {
@@ -659,15 +659,11 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             if (array)
             {
-                const VertexBufferObject* vbo = array->getVertexBufferObject();
+                GLBufferObject* vbo = array->getOrCreateGLBufferObject(_contextID);
                 if (vbo)
                 {
                     bindVertexBufferObject(vbo);
-#if 0
-                    setSecondaryColorPointer(array->getDataSize(),array->getDataType(),0,vbo->getOffset(array->getVertexBufferObjectIndex()));
-#else
-                    setSecondaryColorPointer(array->getDataSize(),array->getDataType(),0,array->getVertexBufferObjectOffset());
-#endif
+                    setSecondaryColorPointer(array->getDataSize(),array->getDataType(),0,(const GLvoid *)(vbo->getOffset(array->getBufferIndex())));
                 }
                 else
                 {
@@ -745,15 +741,11 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             if (array)
             {
-                const VertexBufferObject* vbo = array->getVertexBufferObject();
+                GLBufferObject* vbo = array->getOrCreateGLBufferObject(_contextID);
                 if (vbo)
                 {
                     bindVertexBufferObject(vbo);
-#if 0
-                    setFogCoordPointer(array->getDataType(),0,vbo->getOffset(array->getVertexBufferObjectIndex()));
-#else
-                    setFogCoordPointer(array->getDataType(),0,array->getVertexBufferObjectOffset());
-#endif
+                    setFogCoordPointer(array->getDataType(),0,(const GLvoid *)(vbo->getOffset(array->getBufferIndex())));
                 }
                 else
                 {
@@ -794,15 +786,11 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             if (array)
             {
-                const VertexBufferObject* vbo = array->getVertexBufferObject();
+                GLBufferObject* vbo = array->getOrCreateGLBufferObject(_contextID);
                 if (vbo)
                 {
                     bindVertexBufferObject(vbo);
-#if 0
-                    setTexCoordPointer(unit, array->getDataSize(),array->getDataType(),0,vbo->getOffset(array->getVertexBufferObjectIndex()));
-#else
-                    setTexCoordPointer(unit, array->getDataSize(),array->getDataType(),0,array->getVertexBufferObjectOffset());
-#endif
+                    setTexCoordPointer(unit, array->getDataSize(),array->getDataType(),0, (const GLvoid *)(vbo->getOffset(array->getBufferIndex())));
                 }
                 else
                 {
@@ -916,15 +904,11 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             if (array)
             {
-                const VertexBufferObject* vbo = array->getVertexBufferObject();
+                GLBufferObject* vbo = array->getOrCreateGLBufferObject(_contextID);
                 if (vbo)
                 {
                     bindVertexBufferObject(vbo);
-#if 0
-                    setVertexAttribPointer(unit, array->getDataSize(),array->getDataType(),normalized,0,vbo->getOffset(array->getVertexBufferObjectIndex()));
-#else
-                    setVertexAttribPointer(unit, array->getDataSize(),array->getDataType(),normalized,0,array->getVertexBufferObjectOffset());
-#endif
+                    setVertexAttribPointer(unit, array->getDataSize(),array->getDataType(),normalized,0,(const GLvoid *)(vbo->getOffset(array->getBufferIndex())));
                 }
                 else
                 {
@@ -1279,9 +1263,9 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         unsigned int                    _currentActiveTextureUnit;
         unsigned int                    _currentClientActiveTextureUnit;
-        const VertexBufferObject*       _currentVBO;
-        const ElementBufferObject*      _currentEBO;
-        const PixelBufferObject*        _currentPBO;
+        GLBufferObject*                 _currentVBO;
+        GLBufferObject*                 _currentEBO;
+        GLBufferObject*                 _currentPBO;
 
 
         inline ModeMap& getOrCreateTextureModeMap(unsigned int unit)

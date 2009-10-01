@@ -33,7 +33,7 @@ void DrawElementsUByte::write(DataOutputStream* out){
 
     // Write array length and its elements.
     out->writeInt(size());
-    out->writeCharArray((const char*)&front(), size() * CHARSIZE);
+    if (size()!=0) out->writeCharArray((const char*)&front(), size() * CHARSIZE);
 }
 
 void DrawElementsUByte::read(DataInputStream* in){
@@ -53,7 +53,7 @@ void DrawElementsUByte::read(DataInputStream* in){
         // Read array length and its elements.
         int size = in->readInt();
         resize(size);
-        in->readCharArray((char*)&front(), size * CHARSIZE);
+        if (size!=0) in->readCharArray((char*)&front(), size * CHARSIZE);
 
     }
     else{

@@ -64,7 +64,7 @@ END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Array)
 	I_DeclaringFile("osg/Array");
-	I_BaseType(osg::Object);
+	I_BaseType(osg::BufferData);
 	I_ConstructorWithDefaults3(IN, osg::Array::Type, arrayType, osg::Array::ArrayType, IN, GLint, dataSize, 0, IN, GLenum, dataType, 0,
 	                           ____Array__Type__GLint__GLenum,
 	                           "",
@@ -148,21 +148,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Array)
 	          __void__trim,
 	          "Frees unused space on this vector - i.e. ",
 	          "the difference between size() and max_size() of the underlying vector. ");
-	I_Method0(void, dirty,
-	          Properties::NON_VIRTUAL,
-	          __void__dirty,
-	          "Dirty the primitive, which increments the modified count, to force buffer objects to update. ",
-	          "");
-	I_Method1(void, setModifiedCount, IN, unsigned int, value,
-	          Properties::NON_VIRTUAL,
-	          __void__setModifiedCount__unsigned_int,
-	          "Set the modified count value. ",
-	          "");
-	I_Method0(unsigned int, getModifiedCount,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getModifiedCount,
-	          "Get modified count value. ",
-	          "");
 	I_Method1(void, setVertexBufferObject, IN, osg::VertexBufferObject *, vbo,
 	          Properties::NON_VIRTUAL,
 	          __void__setVertexBufferObject__osg_VertexBufferObject_P1,
@@ -178,16 +163,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Array)
 	          __C5_osg_VertexBufferObject_P1__getVertexBufferObject,
 	          "Get the const VertexBufferObject. ",
 	          "If no VBO is assigned returns NULL ");
-	I_Method1(void, setVertexBufferObjectOffset, IN, const GLvoid *, offset,
-	          Properties::NON_VIRTUAL,
-	          __void__setVertexBufferObjectOffset__C5_GLvoid_P1,
-	          "Set the offset into the VertexBufferObject, if used. ",
-	          "");
-	I_Method0(const GLvoid *, getVertexBufferObjectOffset,
-	          Properties::NON_VIRTUAL,
-	          __C5_GLvoid_P1__getVertexBufferObjectOffset,
-	          "Get the offset into the VertexBufferObject, if used. ",
-	          "");
 	I_SimpleProperty(const GLvoid *, DataPointer, 
 	                 __C5_GLvoid_P1__getDataPointer, 
 	                 0);
@@ -197,9 +172,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Array)
 	I_SimpleProperty(GLenum, DataType, 
 	                 __GLenum__getDataType, 
 	                 0);
-	I_SimpleProperty(unsigned int, ModifiedCount, 
-	                 __unsigned_int__getModifiedCount, 
-	                 __void__setModifiedCount__unsigned_int);
 	I_SimpleProperty(unsigned int, TotalDataSize, 
 	                 __unsigned_int__getTotalDataSize, 
 	                 0);
@@ -209,9 +181,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Array)
 	I_SimpleProperty(osg::VertexBufferObject *, VertexBufferObject, 
 	                 __osg_VertexBufferObject_P1__getVertexBufferObject, 
 	                 __void__setVertexBufferObject__osg_VertexBufferObject_P1);
-	I_SimpleProperty(const GLvoid *, VertexBufferObjectOffset, 
-	                 __C5_GLvoid_P1__getVertexBufferObjectOffset, 
-	                 __void__setVertexBufferObjectOffset__C5_GLvoid_P1);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ArrayVisitor)

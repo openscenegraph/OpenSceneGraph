@@ -33,7 +33,7 @@ using namespace osg;
 using namespace std;
 
 Image::Image()
-    :Object(true),
+    :BufferData(),
     _fileName(""),
     _writeHint(NO_PREFERENCE),
     _origin(BOTTOM_LEFT),
@@ -44,14 +44,13 @@ Image::Image()
     _packing(4),
     _pixelAspectRatio(1.0),
     _allocationMode(USE_NEW_DELETE),
-    _data(0L),
-    _modifiedCount(0)
+    _data(0L)
 {
     setDataVariance(STATIC); 
 }
 
 Image::Image(const Image& image,const CopyOp& copyop):
-    Object(image,copyop),
+    BufferData(image,copyop),
     _fileName(image._fileName),
     _writeHint(image._writeHint),
     _origin(image._origin),
@@ -62,7 +61,6 @@ Image::Image(const Image& image,const CopyOp& copyop):
     _packing(image._packing),
     _pixelAspectRatio(image._pixelAspectRatio),
     _data(0L),
-    _modifiedCount(image._modifiedCount),
     _mipmapData(image._mipmapData)
 {
     if (image._data)

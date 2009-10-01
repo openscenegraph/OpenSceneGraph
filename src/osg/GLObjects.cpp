@@ -23,7 +23,7 @@
 
 void osg::flushDeletedGLObjects(unsigned int contextID, double currentTime, double& availableTime)
 {
-    osg::BufferObject::flushDeletedBufferObjects(contextID,currentTime,availableTime);
+    osg::GLBufferObject::flushDeletedBufferObjects(contextID,currentTime,availableTime);
     osg::Drawable::flushDeletedDisplayLists(contextID,availableTime);
     osg::FragmentProgram::flushDeletedFragmentProgramObjects(contextID,currentTime,availableTime);
     osg::FrameBufferObject::flushDeletedFrameBufferObjects(contextID,currentTime,availableTime);
@@ -39,7 +39,7 @@ void osg::flushAllDeletedGLObjects(unsigned int contextID)
 {
     double currentTime = DBL_MAX;
     double availableTime = DBL_MAX;
-    osg::BufferObject::flushDeletedBufferObjects(contextID,currentTime,availableTime);
+    osg::GLBufferObject::flushDeletedBufferObjects(contextID,currentTime,availableTime);
     osg::Drawable::flushAllDeletedDisplayLists(contextID);
     osg::FragmentProgram::flushDeletedFragmentProgramObjects(contextID,currentTime,availableTime);
     osg::FrameBufferObject::flushDeletedFrameBufferObjects(contextID,currentTime,availableTime);
@@ -53,7 +53,7 @@ void osg::flushAllDeletedGLObjects(unsigned int contextID)
 
 void osg::discardAllDeletedGLObjects(unsigned int contextID)
 {
-    osg::BufferObject::discardDeletedBufferObjects(contextID);
+    osg::GLBufferObject::discardDeletedBufferObjects(contextID);
     osg::Drawable::discardAllDeletedDisplayLists(contextID);
     osg::FragmentProgram::discardDeletedFragmentProgramObjects(contextID);
     osg::FrameBufferObject::discardDeletedFrameBufferObjects(contextID);

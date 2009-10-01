@@ -99,72 +99,75 @@ namespace osg
 {
 
 class State;
+class BufferData;
+class BufferObject;
 
-class OSG_EXPORT BufferObject : public Object
+class OSG_EXPORT GLBufferObject : public Referenced
 {
     public:
 
-        BufferObject();
+        GLBufferObject(unsigned int contextID, BufferObject* bufferObject=0);
 
-        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
-        BufferObject(const BufferObject& bo,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
-
-        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const BufferObject*>(obj)!=NULL; }
-        virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return "BufferObject"; }
-
-        /** Set what type of usage the buffer object will have. Options are: 
-          *          GL_STREAM_DRAW, GL_STREAM_READ, GL_STREAM_COPY, 
-          *          GL_STATIC_DRAW, GL_STATIC_READ, GL_STATIC_COPY, 
-          *          GL_DYNAMIC_DRAW, GL_DYNAMIC_READ, or GL_DYNAMIC_COPY.
-          */
-        void setUsage(GLenum usage) { _usage = usage; }
-        
-        /** Get the type of usage the buffer object has been set up for.*/
-        GLenum getUsage() const { return _usage; }
+        void setBufferObject(BufferObject* bufferObject);
+        BufferObject* getBufferObject() { return _bufferObject; }
 
         struct BufferEntry
         {
-            BufferEntry(): dataSize(0),offset(0) {}
-            BufferEntry(const BufferEntry& be): modifiedCount(be.modifiedCount),dataSize(be.dataSize),offset(be.offset) {}
-        
-            BufferEntry& operator = (const BufferEntry& be) { modifiedCount=be.modifiedCount; dataSize=be.dataSize; offset=be.offset; return *this; }
+            BufferEntry(): modifiedCount(0),dataSize(0),offset(0),dataSource(0) {}
 
-            mutable buffered_value<unsigned int>    modifiedCount;
-            mutable unsigned int                    dataSize;
-            mutable unsigned int                    offset;
+            BufferEntry(const BufferEntry& rhs):
+                modifiedCount(rhs.modifiedCount),
+                dataSize(rhs.dataSize),
+                offset(rhs.offset),
+                dataSource(rhs.dataSource) {}
+
+            BufferEntry& operator = (const BufferEntry& rhs)
+            {
+                if (&rhs==this) return *this;
+                modifiedCount = rhs.modifiedCount;
+                dataSize = rhs.dataSize;
+                offset = rhs.offset;
+                dataSource = rhs.dataSource;
+                return *this;
+            }
+
+            unsigned int        modifiedCount;
+            GLsizeiptrARB       dataSize;
+            GLsizeiptrARB       offset;
+            BufferData*         dataSource;
         };
 
-        inline bool isBufferObjectSupported(unsigned int contextID) const { return getExtensions(contextID,true)->isBufferObjectSupported(); }
-        inline bool isPBOSupported(unsigned int contextID) const { return getExtensions(contextID,true)->isPBOSupported(); }
+        inline unsigned int getContextID() const { return _contextID; }
 
-        inline GLuint& buffer(unsigned int contextID) const { return _bufferObjectList[contextID]; }
-        
-        inline void bindBuffer(unsigned int contextID) const
+        inline GLuint& getGLObjectID() { return _glObjectID; }
+        inline GLuint getGLObjectID() const { return _glObjectID; }
+        inline GLsizeiptrARB getOffset(unsigned int i) const { return _bufferEntries[i].offset; }
+
+        inline void bindBuffer() const
         { 
-            Extensions* extensions = getExtensions(contextID,true);
-            extensions->glBindBuffer(_target,_bufferObjectList[contextID]);
+            _extensions->glBindBuffer(_target,_glObjectID);
         }
 
-        virtual void unbindBuffer(unsigned int contextID) const
+        inline void unbindBuffer() const
         { 
-            Extensions* extensions = getExtensions(contextID,true);
-            extensions->glBindBuffer(_target,0);
+            _extensions->glBindBuffer(_target,0);
         }
 
-        inline void dirty() { _compiledList.setAllElementsTo(0); }
+        inline bool isDirty() const { return _dirty; }
 
-        bool isDirty(unsigned int contextID) const { return _compiledList[contextID]==0; }
+        void dirty() { _dirty = true; }
 
-        virtual void compileBuffer(State& state) const = 0;
-        
-        /** Resize any per context GLObject buffers to specified size. */
-        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+        void clear();
 
-        /** If State is non-zero, this function releases OpenGL objects for
-          * the specified graphics context. Otherwise, releases OpenGL objects
-          * for all graphics contexts. */
-        void releaseGLObjects(State* state=0) const;
+        void compileBuffer();
+
+        void deleteGLObject();
+
+        void assign(BufferObject* bufferObject);
+
+        bool isPBOSupported() const { return _extensions->isPBOSupported(); }
+
+        static GLBufferObject* createGLBufferObject(unsigned int contextID, const BufferObject* bufferObject);
 
 
         /** Use deleteVertexBufferObject instead of glDeleteBuffers to allow
@@ -256,18 +259,147 @@ class OSG_EXPORT BufferObject : public Object
 
     protected:
     
-        virtual ~BufferObject();
-        
-        typedef osg::buffered_value<GLuint> GLObjectList;
-        typedef osg::buffered_value<unsigned int> CompiledList;
+        virtual ~GLBufferObject();
 
-        mutable GLObjectList    _bufferObjectList;
-        mutable CompiledList    _compiledList;
+        unsigned int            _contextID;
+        GLuint                  _glObjectID;
 
         GLenum                  _target;
         GLenum                  _usage;
+
+        bool                    _dirty;
+
         mutable unsigned int    _totalSize;
+
+        typedef std::vector<BufferEntry> BufferEntries;
+        BufferEntries           _bufferEntries;
+
+        BufferObject*           _bufferObject;
+
+    public:
+        Extensions*             _extensions;
+
 };
+
+class OSG_EXPORT BufferObject : public Object
+{
+    public:
+
+        BufferObject();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        BufferObject(const BufferObject& bo,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const BufferObject*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return "BufferObject"; }
+
+        void setTarget(GLenum target) { _target = target; }
+        GLenum getTarget() const { return _target; }
+
+        /** Set what type of usage the buffer object will have. Options are:
+          *          GL_STREAM_DRAW, GL_STREAM_READ, GL_STREAM_COPY,
+          *          GL_STATIC_DRAW, GL_STATIC_READ, GL_STATIC_COPY,
+          *          GL_DYNAMIC_DRAW, GL_DYNAMIC_READ, or GL_DYNAMIC_COPY.
+          */
+        void setUsage(GLenum usage) { _usage = usage; }
+
+        /** Get the type of usage the buffer object has been set up for.*/
+        GLenum getUsage() const { return _usage; }
+
+        void dirty();
+
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
+        /** If State is non-zero, this function releases OpenGL objects for
+          * the specified graphics context. Otherwise, releases OpenGL objects
+          * for all graphics contexts. */
+        void releaseGLObjects(State* state=0) const;
+
+        unsigned int addBufferData(BufferData* bd);
+        void removeBufferData(unsigned int index);
+        void removeBufferData(BufferData* bd);
+
+        void setBufferData(unsigned int index, BufferData* bd);
+        BufferData* getBufferData(unsigned int index) { return _bufferDataList[index]; }
+        const BufferData* getBufferData(unsigned int index) const { return _bufferDataList[index]; }
+
+        unsigned int getNumBufferData() const { return _bufferDataList.size(); }
+
+        GLBufferObject* getGLBufferObject(unsigned int contextID) const { return _glBufferObjects[contextID].get(); }
+
+        GLBufferObject* getOrCreateGLBufferObject(unsigned int contextID) const
+        {
+            if (!_glBufferObjects[contextID]) _glBufferObjects[contextID] = GLBufferObject::createGLBufferObject(contextID, this);
+            return _glBufferObjects[contextID].get();
+        }
+
+    protected:
+
+        ~BufferObject();
+
+        typedef std::vector< BufferData* > BufferDataList;
+        typedef osg::buffered_object< osg::ref_ptr<GLBufferObject> > GLBufferObjects;
+
+        GLenum                  _target;
+        GLenum                  _usage;
+        BufferDataList          _bufferDataList;
+
+        mutable GLBufferObjects _glBufferObjects;
+};
+
+class BufferData : public Object
+{
+    public:
+
+        BufferData():
+            Object(true),
+            _modifiedCount(0),
+            _bufferIndex(0) {}
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        BufferData(const BufferData& bd,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
+            osg::Object(bd,copyop),
+            _modifiedCount(0),
+            _bufferIndex(0) {}
+
+        virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const BufferData*>(obj)!=NULL; }
+        virtual const char* libraryName() const { return "osg"; }
+        virtual const char* className() const { return "BufferData"; }
+
+        virtual const GLvoid*   getDataPointer() const = 0;
+        virtual unsigned int    getTotalDataSize() const = 0;
+
+        void setBufferObject(BufferObject* bufferObject);
+        BufferObject* getBufferObject() { return _bufferObject.get(); }
+        const BufferObject* getBufferObject() const { return _bufferObject.get(); }
+
+        void setBufferIndex(unsigned int index) { _bufferIndex = index; }
+        unsigned int getBufferIndex() const { return _bufferIndex; }
+
+        GLBufferObject* getGLBufferObject(unsigned int contextID) const { return _bufferObject.valid() ? _bufferObject->getGLBufferObject(contextID) : 0; }
+        GLBufferObject* getOrCreateGLBufferObject(unsigned int contextID) const { return _bufferObject.valid() ? _bufferObject->getOrCreateGLBufferObject(contextID) : 0; }
+
+        /** Dirty the primitive, which increments the modified count, to force buffer objects to update. */
+        inline void dirty() { ++_modifiedCount; if (_bufferObject.valid()) _bufferObject->dirty(); }
+
+        /** Set the modified count value.*/
+        inline void setModifiedCount(unsigned int value) { _modifiedCount=value; }
+
+        /** Get modified count value.*/
+        inline unsigned int getModifiedCount() const { return _modifiedCount; }
+
+    protected:
+
+        virtual ~BufferData();
+
+        unsigned int                    _modifiedCount;
+
+        unsigned int                    _bufferIndex;
+        osg::ref_ptr<BufferObject>      _bufferObject;
+};
+
 
 class Array;
 class OSG_EXPORT VertexBufferObject : public BufferObject
@@ -280,29 +412,16 @@ class OSG_EXPORT VertexBufferObject : public BufferObject
         VertexBufferObject(const VertexBufferObject& vbo,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         META_Object(osg,VertexBufferObject);
-        
-        typedef std::pair< BufferEntry, Array* > BufferEntryArrayPair;
-        typedef std::vector< BufferEntryArrayPair > BufferEntryArrayPairs;
 
         unsigned int addArray(osg::Array* array);
         void removeArray(osg::Array* array);
 
         void setArray(unsigned int i, Array* array);
-        Array* getArray(unsigned int i) { return _bufferEntryArrayPairs[i].second; }
-        const Array* getArray(unsigned int i) const { return _bufferEntryArrayPairs[i].second; }
-        
-        const GLvoid* getOffset(unsigned int i) const { return (const GLvoid*)(((char *)0)+(_bufferEntryArrayPairs[i].first.offset)); }
-
-        virtual void compileBuffer(State& state) const;
-
-        /** Resize any per context GLObject buffers to specified size. */
-        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+        Array* getArray(unsigned int i);
+        const Array* getArray(unsigned int i) const;
 
     protected:
-    
         virtual ~VertexBufferObject();
-        
-        BufferEntryArrayPairs _bufferEntryArrayPairs;
 };
 
 class DrawElements;
@@ -317,28 +436,16 @@ class OSG_EXPORT ElementBufferObject : public BufferObject
 
         META_Object(osg,ElementBufferObject);
         
-        typedef std::pair< BufferEntry, DrawElements* > BufferEntryDrawElementsPair;
-        typedef std::vector< BufferEntryDrawElementsPair > BufferEntryDrawElementsPairs;
-
         unsigned int addDrawElements(osg::DrawElements* PrimitiveSet);
         void removeDrawElements(osg::DrawElements* PrimitiveSet);
 
         void setDrawElements(unsigned int i, DrawElements* PrimitiveSet);
-        DrawElements* getDrawElements(unsigned int i) { return _bufferEntryDrawElementsPairs[i].second; }
-        const DrawElements* getDrawElements(unsigned int i) const { return _bufferEntryDrawElementsPairs[i].second; }
-        
-        const GLvoid* getOffset(unsigned int i) const { return (const GLvoid*)(((char *)0)+(_bufferEntryDrawElementsPairs[i].first.offset)); }
-
-        virtual void compileBuffer(State& state) const;
-
-        /** Resize any per context GLObject buffers to specified size. */
-        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+        DrawElements* getDrawElements(unsigned int i);
+        const DrawElements* getDrawElements(unsigned int i) const;
 
     protected:
     
         virtual ~ElementBufferObject();
-        
-        BufferEntryDrawElementsPairs _bufferEntryDrawElementsPairs;
 };
 
 class Image;
@@ -352,26 +459,17 @@ class OSG_EXPORT PixelBufferObject : public BufferObject
         PixelBufferObject(const PixelBufferObject& pbo,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
 
         META_Object(osg,PixelBufferObject);
-        
-        typedef std::pair< BufferEntry, Image* > BufferEntryImagePair;
 
         void setImage(osg::Image* image);
 
-        Image* getImage() { return _bufferEntryImagePair.second; }
-        const Image* getImage() const { return _bufferEntryImagePair.second; }
-        
-        unsigned int offset() const { return _bufferEntryImagePair.first.offset; }
-        
-        virtual void compileBuffer(State& state) const;
+        Image* getImage();
+        const Image* getImage() const;
 
-        /** Resize any per context GLObject buffers to specified size. */
-        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+        bool isPBOSupported(unsigned int contextID) const { return _glBufferObjects[contextID]->isPBOSupported(); }
 
     protected:
     
         virtual ~PixelBufferObject();
-        
-        BufferEntryImagePair _bufferEntryImagePair;
 };
 
 /**
@@ -389,10 +487,10 @@ class OSG_EXPORT PixelDataBufferObject : public BufferObject
         META_Object(osg, PixelDataBufferObject);
 
         //! Set new size of the buffer object. This will reallocate the memory on the next compile
-        inline void setDataSize(unsigned int size) { _bufferData.dataSize = size; dirty(); }
+        inline void setDataSize(unsigned int size) { _dataSize = size; dirty(); }
 
         //! Get data size of the used buffer 
-        inline unsigned int getDataSize() { return _bufferData.dataSize; }
+        inline unsigned int getDataSize() const { return _dataSize; }
 
         //! Compile the buffer (reallocate the memory if buffer is dirty)
         virtual void compileBuffer(State& state) const;
@@ -427,7 +525,7 @@ class OSG_EXPORT PixelDataBufferObject : public BufferObject
 
         virtual ~PixelDataBufferObject();
 
-        BufferEntry _bufferData;
+        unsigned int _dataSize;
 
         typedef osg::buffered_value<unsigned int> ModeList;
         

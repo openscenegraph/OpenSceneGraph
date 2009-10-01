@@ -157,11 +157,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawElements)
 	          __C5_DrawElements_P1__getDrawElements,
 	          "",
 	          "");
-	I_Method0(void, dirty,
-	          Properties::VIRTUAL,
-	          __void__dirty,
-	          "Dirty the primitive, which increments the modified count, to force buffer objects to update. ",
-	          "");
 	I_Method1(void, setElementBufferObject, IN, osg::ElementBufferObject *, ebo,
 	          Properties::NON_VIRTUAL,
 	          __void__setElementBufferObject__osg_ElementBufferObject_P1,
@@ -177,26 +172,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawElements)
 	          __C5_osg_ElementBufferObject_P1__getElementBufferObject,
 	          "Get the const ElementBufferObject. ",
 	          "If no EBO is assigned returns NULL ");
-	I_Method1(void, setElementBufferObjectOffset, IN, const GLvoid *, offset,
-	          Properties::NON_VIRTUAL,
-	          __void__setElementBufferObjectOffset__C5_GLvoid_P1,
-	          "Set the offset into the ElementBufferObject, if used. ",
-	          "");
-	I_Method0(const GLvoid *, getElementBufferObjectOffset,
-	          Properties::NON_VIRTUAL,
-	          __C5_GLvoid_P1__getElementBufferObjectOffset,
-	          "Get the offset into the ElementBufferOffset, if used. ",
-	          "");
-	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
-	          Properties::VIRTUAL,
-	          __void__resizeGLObjectBuffers__unsigned_int,
-	          "Resize any per context GLObject buffers to specified size. ",
-	          "");
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
-	                      Properties::VIRTUAL,
-	                      __void__releaseGLObjects__State_P1,
-	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
-	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
 	I_Method1(void, reserveElements, IN, unsigned int, numIndices,
 	          Properties::PURE_VIRTUAL,
 	          __void__reserveElements__unsigned_int,
@@ -223,9 +198,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawElements)
 	I_SimpleProperty(osg::ElementBufferObject *, ElementBufferObject, 
 	                 __osg_ElementBufferObject_P1__getElementBufferObject, 
 	                 __void__setElementBufferObject__osg_ElementBufferObject_P1);
-	I_SimpleProperty(const GLvoid *, ElementBufferObjectOffset, 
-	                 __C5_GLvoid_P1__getElementBufferObjectOffset, 
-	                 __void__setElementBufferObjectOffset__C5_GLvoid_P1);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(osg::VectorGLubyte, osg::DrawElementsUByte::vector_type)
@@ -429,7 +401,7 @@ END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveSet)
 	I_DeclaringFile("osg/PrimitiveSet");
-	I_BaseType(osg::Object);
+	I_BaseType(osg::BufferData);
 	I_ConstructorWithDefaults3(IN, osg::PrimitiveSet::Type, primType, osg::PrimitiveSet::PrimitiveType, IN, GLenum, mode, 0, IN, int, numInstances, 0,
 	                           ____PrimitiveSet__Type__GLenum__int,
 	                           "",
@@ -538,31 +510,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveSet)
 	          __unsigned_int__getNumPrimitives,
 	          "",
 	          "");
-	I_Method0(void, dirty,
-	          Properties::VIRTUAL,
-	          __void__dirty,
-	          "Dirty the primitive, which increments the modified count, to force buffer objects to update. ",
-	          "");
-	I_Method1(void, setModifiedCount, IN, unsigned int, value,
-	          Properties::NON_VIRTUAL,
-	          __void__setModifiedCount__unsigned_int,
-	          "Set the modified count value. ",
-	          "");
-	I_Method0(unsigned int, getModifiedCount,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getModifiedCount,
-	          "Get modified count value. ",
-	          "");
-	I_Method1(void, resizeGLObjectBuffers, IN, unsigned, int,
-	          Properties::VIRTUAL,
-	          __void__resizeGLObjectBuffers__unsigned,
-	          "Resize any per context GLObject buffers to specified size. ",
-	          "");
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0,
-	                      Properties::VIRTUAL,
-	                      __void__releaseGLObjects__State_P1,
-	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
-	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
 	I_Method0(void, computeRange,
 	          Properties::VIRTUAL,
 	          __void__computeRange,
@@ -577,9 +524,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveSet)
 	I_SimpleProperty(GLenum, Mode, 
 	                 __GLenum__getMode, 
 	                 __void__setMode__GLenum);
-	I_SimpleProperty(unsigned int, ModifiedCount, 
-	                 __unsigned_int__getModifiedCount, 
-	                 __void__setModifiedCount__unsigned_int);
 	I_SimpleProperty(int, NumInstances, 
 	                 0, 
 	                 __void__setNumInstances__int);

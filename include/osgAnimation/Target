@@ -50,7 +50,7 @@ namespace osgAnimation
     {
     public:
             
-        TemplateTarget() {}
+        TemplateTarget() : _target() {}
         TemplateTarget(const T& v) { setValue(v); }
         TemplateTarget(const TemplateTarget& v) { setValue(v.getValue()); }
 

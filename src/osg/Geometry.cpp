@@ -1374,6 +1374,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
         //
         if (usingVertexBufferObjects)
         {
+            // osg::notify(osg::NOTICE)<<"Geometry::drawImplementation() Using VertexBufferObjects"<<std::endl;
 
             //
             // Vertex Buffer Object path for defining vertex arrays.
@@ -1416,7 +1417,6 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
                     }
                 }
                 state.disableVertexAttribPointersAboveAndIncluding( index );
-                
             }
             else if (vertexVertexAttributesSupported)
             {
@@ -1429,7 +1429,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
         }
         else
         {
-            //std::cout << "none VertexBuffer path"<<std::endl;
+            // osg::notify(osg::NOTICE)<<"none VertexBuffer path"<<std::endl;
 
             //
             // Non Vertex Buffer Object path for defining vertex arrays.

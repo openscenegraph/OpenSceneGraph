@@ -46,7 +46,7 @@
 #define GL_STORAGE_SHARED_APPLE           0x85BF
 #endif
 
-//#define DO_TIMING
+// #define DO_TIMING
 
 namespace osg {
 
@@ -1777,15 +1777,12 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     bool useHardwareMipMapGeneration = mipmappingRequired && (!image->isMipmap() && isHardwareMipmapGenerationEnabled(state));
     bool useGluBuildMipMaps = mipmappingRequired && (!useHardwareMipMapGeneration && !image->isMipmap());
 
-    unsigned char* dataMinusOffset = 0;
-    unsigned char* dataPlusOffset = 0;
-
-    const PixelBufferObject* pbo = image->getPixelBufferObject();
-    if (pbo && pbo->isPBOSupported(contextID) && !needImageRescale && !useGluBuildMipMaps)
+    const unsigned char* dataPtr = image->data();
+    GLBufferObject* pbo = image->getOrCreateGLBufferObject(contextID);
+    if (pbo && !needImageRescale && !useGluBuildMipMaps)
     {
         state.bindPixelBufferObject(pbo);
-        dataMinusOffset = data;
-        dataPlusOffset = reinterpret_cast<unsigned char*>(pbo->offset());
+        dataPtr = reinterpret_cast<const unsigned char*>(pbo->getOffset(image->getBufferIndex()));
 #ifdef DO_TIMING
         osg::notify(osg::NOTICE)<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 #endif
@@ -1808,7 +1805,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                 inwidth, inheight, _borderWidth,
                 (GLenum)image->getPixelFormat(),
                 (GLenum)image->getDataType(),
-                data -dataMinusOffset+dataPlusOffset);
+                dataPtr);
 
         }
         else if (extensions->isCompressedTexImage2DSupported())
@@ -1821,7 +1818,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
             extensions->glCompressedTexImage2D(target, 0, _internalFormat, 
                 inwidth, inheight,0, 
                 size, 
-                data-dataMinusOffset+dataPlusOffset);                
+                dataPtr);
         }
 
         mipmapAfterTexImage(state, mipmapResult);
@@ -1853,7 +1850,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                          width, height, _borderWidth,
                         (GLenum)image->getPixelFormat(),
                         (GLenum)image->getDataType(),
-                        image->getMipmapData(k)-dataMinusOffset+dataPlusOffset);
+                        dataPtr + image->getMipmapOffset(k));
 
                     width >>= 1;
                     height >>= 1;
@@ -1874,7 +1871,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                     
                     extensions->glCompressedTexImage2D(target, k, _internalFormat, 
                                                        width, height, _borderWidth, 
-                                                       size, image->getMipmapData(k)-dataMinusOffset+dataPlusOffset);                
+                                                       size, dataPtr + image->getMipmapOffset(k));
 
                     width >>= 1;
                     height >>= 1;
@@ -2027,12 +2024,12 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     unsigned char* dataMinusOffset = 0;
     unsigned char* dataPlusOffset = 0;
     
-    const PixelBufferObject* pbo = image->getPixelBufferObject();
-    if (pbo && pbo->isPBOSupported(contextID) && !needImageRescale && !useGluBuildMipMaps)
+    const unsigned char* dataPtr = image->data();
+    GLBufferObject* pbo = image->getOrCreateGLBufferObject(contextID);
+    if (pbo && !needImageRescale && !useGluBuildMipMaps)
     {
         state.bindPixelBufferObject(pbo);
-        dataMinusOffset = data;
-        dataPlusOffset = reinterpret_cast<unsigned char*>(pbo->offset());
+        dataPtr = reinterpret_cast<unsigned char*>(pbo->getOffset(image->getBufferIndex()));
 #ifdef DO_TIMING
         osg::notify(osg::NOTICE)<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 #endif

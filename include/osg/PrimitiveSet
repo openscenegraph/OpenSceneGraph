@@ -147,7 +147,7 @@ public:
 
 class DrawElements;
 
-class OSG_EXPORT PrimitiveSet : public Object
+class OSG_EXPORT PrimitiveSet : public BufferData
 {
     public:
     
@@ -179,15 +179,13 @@ class OSG_EXPORT PrimitiveSet : public Object
             _primitiveType(primType),
             _numInstances(numInstances),
             _mode(mode),
-            _modifiedCount(0),
             _rangeModifiedCount(0) {}
     
         PrimitiveSet(const PrimitiveSet& prim,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            Object(prim,copyop),
+            BufferData(prim,copyop),
             _primitiveType(prim._primitiveType),
             _numInstances(prim._numInstances),
             _mode(prim._mode),
-            _modifiedCount(0),
             _rangeModifiedCount(0) {}
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const PrimitiveSet*>(obj)!=NULL; }
@@ -219,23 +217,6 @@ class OSG_EXPORT PrimitiveSet : public Object
 
         virtual unsigned int getNumPrimitives() const; 
 
-        /** Dirty the primitive, which increments the modified count, to force buffer objects to update. */
-        virtual void dirty() { ++_modifiedCount; }      
-      
-        /** Set the modified count value.*/
-        inline void setModifiedCount(unsigned int value) { _modifiedCount=value; }
-
-        /** Get modified count value.*/
-        inline unsigned int getModifiedCount() const { return _modifiedCount; }
-
-        /** Resize any per context GLObject buffers to specified size. */
-        virtual void resizeGLObjectBuffers(unsigned int /*maxSize*/) {}
-
-        /** If State is non-zero, this function releases OpenGL objects for
-          * the specified graphics context. Otherwise, releases OpenGL objects
-          * for all graphics contexts. */
-        virtual void releaseGLObjects(State* /*state*/=0) const {}
-
         virtual void computeRange() const {}
 
     protected:
@@ -245,31 +226,7 @@ class OSG_EXPORT PrimitiveSet : public Object
         Type            _primitiveType;
         int             _numInstances;
         GLenum          _mode;
-        unsigned int    _modifiedCount;
         mutable unsigned int    _rangeModifiedCount;
-
-        struct ObjectIDModifiedCountPair
-        {
-            ObjectIDModifiedCountPair():
-                _objectID(0),
-                _modifiedCount(0) {}
-                
-            ObjectIDModifiedCountPair(const ObjectIDModifiedCountPair& obj):
-                _objectID(obj._objectID),
-                _modifiedCount(obj._modifiedCount) {}
-                
-            ObjectIDModifiedCountPair& operator = (const ObjectIDModifiedCountPair& obj)
-            {
-                _objectID = obj._objectID;
-                _modifiedCount = obj._modifiedCount;
-                return *this;
-            }
-
-            GLuint _objectID;
-            unsigned int _modifiedCount;
-        };
-        
-        typedef osg::buffered_object<ObjectIDModifiedCountPair> GLObjectList;
 };
 
 class OSG_EXPORT DrawArrays : public PrimitiveSet
@@ -392,83 +349,32 @@ class DrawElements : public PrimitiveSet
     public:
         
         DrawElements(Type primType=PrimitiveType, GLenum mode=0, int numInstances=0):
-            PrimitiveSet(primType,mode, numInstances),
-            _eboOffset(0) {}
+            PrimitiveSet(primType,mode, numInstances) {}
     
         DrawElements(const DrawElements& copy,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
-            PrimitiveSet(copy,copyop),
-            _eboOffset(0) {}
+            PrimitiveSet(copy,copyop) {}
 
 
         virtual DrawElements* getDrawElements() { return this; }
         virtual const DrawElements* getDrawElements() const { return this; }
 
-        virtual void dirty() { ++_modifiedCount; if (_ebo.valid()) _ebo->dirty(); } 
-
         /** Set the ElementBufferObject.*/
-        inline void setElementBufferObject(osg::ElementBufferObject* ebo)
-        {
-            if (_ebo == ebo) return;
-            
-            if (_ebo.valid())
-            {
-                _ebo->removeDrawElements(this);
-            }
-            
-            _ebo = ebo;
+        inline void setElementBufferObject(osg::ElementBufferObject* ebo) { setBufferObject(ebo); }
 
-            if (_ebo.valid())
-            {
-                _ebo->addDrawElements(this);
-            }
-        }
-        
         /** Get the ElementBufferObject. If no EBO is assigned returns NULL*/
-        inline osg::ElementBufferObject* getElementBufferObject() { return _ebo.get(); }
+        inline osg::ElementBufferObject* getElementBufferObject() { return dynamic_cast<osg::ElementBufferObject*>(_bufferObject.get()); }
 
         /** Get the const ElementBufferObject. If no EBO is assigned returns NULL*/
-        inline const osg::ElementBufferObject* getElementBufferObject() const { return _ebo.get(); }
+        inline const osg::ElementBufferObject* getElementBufferObject() const { return dynamic_cast<const osg::ElementBufferObject*>(_bufferObject.get()); }
 
-        /** Set the offset into the ElementBufferObject, if used.*/
-        inline void setElementBufferObjectOffset(const GLvoid* offset) const { _eboOffset = offset; }
-
-        /** Get the offset into the ElementBufferOffset, if used.*/
-        inline const GLvoid* getElementBufferObjectOffset() const { return _eboOffset; }
-
-
-        /** Resize any per context GLObject buffers to specified size. */
-        virtual void resizeGLObjectBuffers(unsigned int maxSize)
-        {
-            if (_ebo.valid()) _ebo->resizeGLObjectBuffers(maxSize);
-        }
-
-        /** If State is non-zero, this function releases OpenGL objects for
-          * the specified graphics context. Otherwise, releases OpenGL objects
-          * for all graphics contexts. */
-        virtual void releaseGLObjects(State* state=0) const
-        {
-            if (_ebo.valid()) _ebo->releaseGLObjects(state);
-        }
-        
-        
         virtual void reserveElements(unsigned int numIndices) = 0;
         virtual void setElement(unsigned int, unsigned int) = 0;
         virtual unsigned int getElement(unsigned int) = 0;
         virtual void addElement(unsigned int) = 0;
 
     protected:
-    
-        virtual ~DrawElements()
-        {
-            if (_ebo.valid())
-            {
-                _ebo->removeDrawElements(this);
-            }
-        }
 
-        osg::ref_ptr<ElementBufferObject>   _ebo;
-        mutable const GLvoid*               _eboOffset;
-
+        virtual ~DrawElements() {}
 };
 
 class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte

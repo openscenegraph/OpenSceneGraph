@@ -106,7 +106,7 @@ class UniformVarying : public osg::Uniform::Callback
     }
 };
 
-osg::Node* createModel(const std::string& shader, const std::string& textureFileName, const std::string& terrainFileName, bool dynamic, bool vbo)
+osg::Node* createModel(const std::string& shader, const std::string& textureFileName, const std::string& terrainFileName, bool dynamic, bool useVBO)
 {
     osg::Geode* geode = new osg::Geode;
     
@@ -238,10 +238,10 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
 
     geom->setVertexArray(vertices);
 
-    osg::VertexBufferObject* vbObject = new osg::VertexBufferObject;
-    vertices->setVertexBufferObject(vbObject);
+    osg::VertexBufferObject* vbo = useVBO ? new osg::VertexBufferObject : 0;
+    if (vbo) vertices->setVertexBufferObject(vbo);
     
-    osg::ElementBufferObject* ebo = new osg::ElementBufferObject;
+    osg::ElementBufferObject* ebo = useVBO ? new osg::ElementBufferObject : 0;
 
     for(iy=0; iy<num_y-1; ++iy)
     {
@@ -255,7 +255,7 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
         }
         geom->addPrimitiveSet(elements); 
         
-        if (ebo) elements->setElementBufferObject(ebo);   
+        if (ebo) elements->setElementBufferObject(ebo);
     }
     
     geom->setUseVertexBufferObjects(vbo);

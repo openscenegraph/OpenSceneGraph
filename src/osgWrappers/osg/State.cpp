@@ -331,19 +331,19 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __void__dirtyAllVertexArrays,
 	          "dirty the vertex, normal, color, tex coords, secondary color, fog coord and index arrays. ",
 	          "");
-	I_Method1(void, setCurrentVertexBufferObject, IN, osg::VertexBufferObject *, vbo,
+	I_Method1(void, setCurrentVertexBufferObject, IN, osg::GLBufferObject *, vbo,
 	          Properties::NON_VIRTUAL,
-	          __void__setCurrentVertexBufferObject__osg_VertexBufferObject_P1,
+	          __void__setCurrentVertexBufferObject__osg_GLBufferObject_P1,
 	          "",
 	          "");
-	I_Method0(const osg::VertexBufferObject *, getCurrentVertexBufferObject,
+	I_Method0(const osg::GLBufferObject *, getCurrentVertexBufferObject,
 	          Properties::NON_VIRTUAL,
-	          __C5_VertexBufferObject_P1__getCurrentVertexBufferObject,
+	          __C5_GLBufferObject_P1__getCurrentVertexBufferObject,
 	          "",
 	          "");
-	I_Method1(void, bindVertexBufferObject, IN, const osg::VertexBufferObject *, vbo,
+	I_Method1(void, bindVertexBufferObject, IN, osg::GLBufferObject *, vbo,
 	          Properties::NON_VIRTUAL,
-	          __void__bindVertexBufferObject__C5_osg_VertexBufferObject_P1,
+	          __void__bindVertexBufferObject__osg_GLBufferObject_P1,
 	          "",
 	          "");
 	I_Method0(void, unbindVertexBufferObject,
@@ -351,19 +351,19 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __void__unbindVertexBufferObject,
 	          "",
 	          "");
-	I_Method1(void, setCurrentElementBufferObject, IN, osg::ElementBufferObject *, ebo,
+	I_Method1(void, setCurrentElementBufferObject, IN, osg::GLBufferObject *, ebo,
 	          Properties::NON_VIRTUAL,
-	          __void__setCurrentElementBufferObject__osg_ElementBufferObject_P1,
+	          __void__setCurrentElementBufferObject__osg_GLBufferObject_P1,
 	          "",
 	          "");
-	I_Method0(const osg::ElementBufferObject *, getCurrentElementBufferObject,
+	I_Method0(const osg::GLBufferObject *, getCurrentElementBufferObject,
 	          Properties::NON_VIRTUAL,
-	          __C5_ElementBufferObject_P1__getCurrentElementBufferObject,
+	          __C5_GLBufferObject_P1__getCurrentElementBufferObject,
 	          "",
 	          "");
-	I_Method1(void, bindElementBufferObject, IN, const osg::ElementBufferObject *, ebo,
+	I_Method1(void, bindElementBufferObject, IN, osg::GLBufferObject *, ebo,
 	          Properties::NON_VIRTUAL,
-	          __void__bindElementBufferObject__C5_osg_ElementBufferObject_P1,
+	          __void__bindElementBufferObject__osg_GLBufferObject_P1,
 	          "",
 	          "");
 	I_Method0(void, unbindElementBufferObject,
@@ -371,19 +371,19 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __void__unbindElementBufferObject,
 	          "",
 	          "");
-	I_Method1(void, setCurrentPixelBufferObject, IN, osg::PixelBufferObject *, pbo,
+	I_Method1(void, setCurrentPixelBufferObject, IN, osg::GLBufferObject *, pbo,
 	          Properties::NON_VIRTUAL,
-	          __void__setCurrentPixelBufferObject__osg_PixelBufferObject_P1,
+	          __void__setCurrentPixelBufferObject__osg_GLBufferObject_P1,
 	          "",
 	          "");
-	I_Method0(const osg::PixelBufferObject *, getCurrentPixelBufferObject,
+	I_Method0(const osg::GLBufferObject *, getCurrentPixelBufferObject,
 	          Properties::NON_VIRTUAL,
-	          __C5_PixelBufferObject_P1__getCurrentPixelBufferObject,
+	          __C5_GLBufferObject_P1__getCurrentPixelBufferObject,
 	          "",
 	          "");
-	I_Method1(void, bindPixelBufferObject, IN, const osg::PixelBufferObject *, pbo,
+	I_Method1(void, bindPixelBufferObject, IN, osg::GLBufferObject *, pbo,
 	          Properties::NON_VIRTUAL,
-	          __void__bindPixelBufferObject__C5_osg_PixelBufferObject_P1,
+	          __void__bindPixelBufferObject__osg_GLBufferObject_P1,
 	          "",
 	          "");
 	I_Method0(void, unbindPixelBufferObject,
@@ -830,15 +830,15 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(unsigned int, ContextID, 
 	                 __unsigned_int__getContextID, 
 	                 __void__setContextID__unsigned_int);
-	I_SimpleProperty(osg::ElementBufferObject *, CurrentElementBufferObject, 
+	I_SimpleProperty(osg::GLBufferObject *, CurrentElementBufferObject, 
 	                 0, 
-	                 __void__setCurrentElementBufferObject__osg_ElementBufferObject_P1);
-	I_SimpleProperty(osg::PixelBufferObject *, CurrentPixelBufferObject, 
+	                 __void__setCurrentElementBufferObject__osg_GLBufferObject_P1);
+	I_SimpleProperty(osg::GLBufferObject *, CurrentPixelBufferObject, 
 	                 0, 
-	                 __void__setCurrentPixelBufferObject__osg_PixelBufferObject_P1);
-	I_SimpleProperty(osg::VertexBufferObject *, CurrentVertexBufferObject, 
+	                 __void__setCurrentPixelBufferObject__osg_GLBufferObject_P1);
+	I_SimpleProperty(osg::GLBufferObject *, CurrentVertexBufferObject, 
 	                 0, 
-	                 __void__setCurrentVertexBufferObject__osg_VertexBufferObject_P1);
+	                 __void__setCurrentVertexBufferObject__osg_GLBufferObject_P1);
 	I_SimpleProperty(const osg::Viewport *, CurrentViewport, 
 	                 __C5_Viewport_P1__getCurrentViewport, 
 	                 0);

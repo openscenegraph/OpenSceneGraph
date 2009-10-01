@@ -26,6 +26,108 @@
 #undef OUT
 #endif
 
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferData)
+	I_DeclaringFile("osg/BufferObject");
+	I_BaseType(osg::Object);
+	I_Constructor0(____BufferData,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::BufferData &, bd, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____BufferData__C5_BufferData_R1__C5_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method0(const GLvoid *, getDataPointer,
+	          Properties::PURE_VIRTUAL,
+	          __C5_GLvoid_P1__getDataPointer,
+	          "",
+	          "");
+	I_Method0(unsigned int, getTotalDataSize,
+	          Properties::PURE_VIRTUAL,
+	          __unsigned_int__getTotalDataSize,
+	          "",
+	          "");
+	I_Method1(void, setBufferObject, IN, osg::BufferObject *, bufferObject,
+	          Properties::NON_VIRTUAL,
+	          __void__setBufferObject__BufferObject_P1,
+	          "",
+	          "");
+	I_Method0(osg::BufferObject *, getBufferObject,
+	          Properties::NON_VIRTUAL,
+	          __BufferObject_P1__getBufferObject,
+	          "",
+	          "");
+	I_Method0(const osg::BufferObject *, getBufferObject,
+	          Properties::NON_VIRTUAL,
+	          __C5_BufferObject_P1__getBufferObject,
+	          "",
+	          "");
+	I_Method1(void, setBufferIndex, IN, unsigned int, index,
+	          Properties::NON_VIRTUAL,
+	          __void__setBufferIndex__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getBufferIndex,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getBufferIndex,
+	          "",
+	          "");
+	I_Method1(osg::GLBufferObject *, getGLBufferObject, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
+	          __GLBufferObject_P1__getGLBufferObject__unsigned_int,
+	          "",
+	          "");
+	I_Method1(osg::GLBufferObject *, getOrCreateGLBufferObject, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
+	          __GLBufferObject_P1__getOrCreateGLBufferObject__unsigned_int,
+	          "",
+	          "");
+	I_Method0(void, dirty,
+	          Properties::NON_VIRTUAL,
+	          __void__dirty,
+	          "Dirty the primitive, which increments the modified count, to force buffer objects to update. ",
+	          "");
+	I_Method1(void, setModifiedCount, IN, unsigned int, value,
+	          Properties::NON_VIRTUAL,
+	          __void__setModifiedCount__unsigned_int,
+	          "Set the modified count value. ",
+	          "");
+	I_Method0(unsigned int, getModifiedCount,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getModifiedCount,
+	          "Get modified count value. ",
+	          "");
+	I_SimpleProperty(unsigned int, BufferIndex, 
+	                 __unsigned_int__getBufferIndex, 
+	                 __void__setBufferIndex__unsigned_int);
+	I_SimpleProperty(osg::BufferObject *, BufferObject, 
+	                 __BufferObject_P1__getBufferObject, 
+	                 __void__setBufferObject__BufferObject_P1);
+	I_SimpleProperty(const GLvoid *, DataPointer, 
+	                 __C5_GLvoid_P1__getDataPointer, 
+	                 0);
+	I_SimpleProperty(unsigned int, ModifiedCount, 
+	                 __unsigned_int__getModifiedCount, 
+	                 __void__setModifiedCount__unsigned_int);
+	I_SimpleProperty(unsigned int, TotalDataSize, 
+	                 __unsigned_int__getTotalDataSize, 
+	                 0);
+END_REFLECTOR
+
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	I_DeclaringFile("osg/BufferObject");
 	I_BaseType(osg::Object);
@@ -51,6 +153,16 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method1(void, setTarget, IN, GLenum, target,
+	          Properties::NON_VIRTUAL,
+	          __void__setTarget__GLenum,
+	          "",
+	          "");
+	I_Method0(GLenum, getTarget,
+	          Properties::NON_VIRTUAL,
+	          __GLenum__getTarget,
+	          "",
+	          "");
 	I_Method1(void, setUsage, IN, GLenum, usage,
 	          Properties::NON_VIRTUAL,
 	          __void__setUsage__GLenum,
@@ -61,44 +173,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	          __GLenum__getUsage,
 	          "Get the type of usage the buffer object has been set up for. ",
 	          "");
-	I_Method1(bool, isBufferObjectSupported, IN, unsigned int, contextID,
-	          Properties::NON_VIRTUAL,
-	          __bool__isBufferObjectSupported__unsigned_int,
-	          "",
-	          "");
-	I_Method1(bool, isPBOSupported, IN, unsigned int, contextID,
-	          Properties::NON_VIRTUAL,
-	          __bool__isPBOSupported__unsigned_int,
-	          "",
-	          "");
-	I_Method1(GLuint &, buffer, IN, unsigned int, contextID,
-	          Properties::NON_VIRTUAL,
-	          __GLuint_R1__buffer__unsigned_int,
-	          "",
-	          "");
-	I_Method1(void, bindBuffer, IN, unsigned int, contextID,
-	          Properties::NON_VIRTUAL,
-	          __void__bindBuffer__unsigned_int,
-	          "",
-	          "");
-	I_Method1(void, unbindBuffer, IN, unsigned int, contextID,
-	          Properties::VIRTUAL,
-	          __void__unbindBuffer__unsigned_int,
-	          "",
-	          "");
 	I_Method0(void, dirty,
 	          Properties::NON_VIRTUAL,
 	          __void__dirty,
-	          "",
-	          "");
-	I_Method1(bool, isDirty, IN, unsigned int, contextID,
-	          Properties::NON_VIRTUAL,
-	          __bool__isDirty__unsigned_int,
-	          "",
-	          "");
-	I_Method1(void, compileBuffer, IN, osg::State &, state,
-	          Properties::PURE_VIRTUAL,
-	          __void__compileBuffer__State_R1,
 	          "",
 	          "");
 	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
@@ -111,49 +188,65 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	                      __void__releaseGLObjects__State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
 	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
-	I_StaticMethod2(void, deleteBufferObject, IN, unsigned int, contextID, IN, GLuint, globj,
-	                __void__deleteBufferObject__unsigned_int__GLuint_S,
-	                "Use deleteVertexBufferObject instead of glDeleteBuffers to allow OpenGL buffer objects to be cached until they can be deleted by the OpenGL context in which they were created, specified by contextID. ",
-	                "");
-	I_StaticMethod3(void, flushDeletedBufferObjects, IN, unsigned int, contextID, IN, double, x, IN, double &, availableTime,
-	                __void__flushDeletedBufferObjects__unsigned_int__double__double_R1_S,
-	                "flush all the cached display list which need to be deleted in the OpenGL context related to contextID. ",
-	                "");
-	I_StaticMethod1(void, discardDeletedBufferObjects, IN, unsigned int, contextID,
-	                __void__discardDeletedBufferObjects__unsigned_int_S,
-	                "dicard all the cached display list which need to be deleted in the OpenGL context related to contextID. ",
-	                "Note, unlike flush no OpenGL calls are made, instead the handles are all removed. this call is useful for when an OpenGL context has been destroyed. ");
-	I_StaticMethod2(osg::BufferObject::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
-	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
-	                "Function to call to get the extension of a specified context. ",
-	                "If the Extension object for that context has not yet been created and the 'createIfNotInitalized' flag been set to false then returns NULL. If 'createIfNotInitalized' is true then the Extensions object is automatically created. However, in this case the extension object is only created with the graphics context associated with ContextID.. ");
-	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::BufferObject::Extensions *, extensions,
-	                __void__setExtensions__unsigned_int__Extensions_P1_S,
-	                "setExtensions allows users to override the extensions across graphics contexts. ",
-	                "typically used when you have different extensions supported across graphics pipes but need to ensure that they all use the same low common denominator extensions. ");
+	I_Method1(unsigned int, addBufferData, IN, osg::BufferData *, bd,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__addBufferData__BufferData_P1,
+	          "",
+	          "");
+	I_Method1(void, removeBufferData, IN, unsigned int, index,
+	          Properties::NON_VIRTUAL,
+	          __void__removeBufferData__unsigned_int,
+	          "",
+	          "");
+	I_Method1(void, removeBufferData, IN, osg::BufferData *, bd,
+	          Properties::NON_VIRTUAL,
+	          __void__removeBufferData__BufferData_P1,
+	          "",
+	          "");
+	I_Method2(void, setBufferData, IN, unsigned int, index, IN, osg::BufferData *, bd,
+	          Properties::NON_VIRTUAL,
+	          __void__setBufferData__unsigned_int__BufferData_P1,
+	          "",
+	          "");
+	I_Method1(osg::BufferData *, getBufferData, IN, unsigned int, index,
+	          Properties::NON_VIRTUAL,
+	          __BufferData_P1__getBufferData__unsigned_int,
+	          "",
+	          "");
+	I_Method1(const osg::BufferData *, getBufferData, IN, unsigned int, index,
+	          Properties::NON_VIRTUAL,
+	          __C5_BufferData_P1__getBufferData__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumBufferData,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getNumBufferData,
+	          "",
+	          "");
+	I_Method1(osg::GLBufferObject *, getGLBufferObject, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
+	          __GLBufferObject_P1__getGLBufferObject__unsigned_int,
+	          "",
+	          "");
+	I_Method1(osg::GLBufferObject *, getOrCreateGLBufferObject, IN, unsigned int, contextID,
+	          Properties::NON_VIRTUAL,
+	          __GLBufferObject_P1__getOrCreateGLBufferObject__unsigned_int,
+	          "",
+	          "");
+	I_ArrayProperty(osg::BufferData *, BufferData, 
+	                __BufferData_P1__getBufferData__unsigned_int, 
+	                __void__setBufferData__unsigned_int__BufferData_P1, 
+	                __unsigned_int__getNumBufferData, 
+	                __unsigned_int__addBufferData__BufferData_P1, 
+	                0, 
+	                __void__removeBufferData__unsigned_int);
+	I_SimpleProperty(GLenum, Target, 
+	                 __GLenum__getTarget, 
+	                 __void__setTarget__GLenum);
 	I_SimpleProperty(GLenum, Usage, 
 	                 __GLenum__getUsage, 
 	                 __void__setUsage__GLenum);
 END_REFLECTOR
-
-BEGIN_VALUE_REFLECTOR(osg::BufferObject::BufferEntry)
-	I_DeclaringFile("osg/BufferObject");
-	I_Constructor0(____BufferEntry,
-	               "",
-	               "");
-	I_Constructor1(IN, const osg::BufferObject::BufferEntry &, be,
-	               Properties::NON_EXPLICIT,
-	               ____BufferEntry__C5_BufferEntry_R1,
-	               "",
-	               "");
-	I_PublicMemberProperty(osg::buffered_value< unsigned int >, modifiedCount);
-	I_PublicMemberProperty(unsigned int, dataSize);
-	I_PublicMemberProperty(unsigned int, offset);
-END_REFLECTOR
-
-TYPE_NAME_ALIAS(std::pair< osg::BufferObject::BufferEntry COMMA  osg::DrawElements * >, osg::ElementBufferObject::BufferEntryDrawElementsPair)
-
-TYPE_NAME_ALIAS(std::vector< osg::ElementBufferObject::BufferEntryDrawElementsPair >, osg::ElementBufferObject::BufferEntryDrawElementsPairs)
 
 BEGIN_OBJECT_REFLECTOR(osg::ElementBufferObject)
 	I_DeclaringFile("osg/BufferObject");
@@ -215,28 +308,145 @@ BEGIN_OBJECT_REFLECTOR(osg::ElementBufferObject)
 	          __C5_DrawElements_P1__getDrawElements__unsigned_int,
 	          "",
 	          "");
-	I_Method1(const GLvoid *, getOffset, IN, unsigned int, i,
-	          Properties::NON_VIRTUAL,
-	          __C5_GLvoid_P1__getOffset__unsigned_int,
-	          "",
-	          "");
-	I_Method1(void, compileBuffer, IN, osg::State &, state,
-	          Properties::VIRTUAL,
-	          __void__compileBuffer__State_R1,
-	          "",
-	          "");
-	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
-	          Properties::VIRTUAL,
-	          __void__resizeGLObjectBuffers__unsigned_int,
-	          "Resize any per context GLObject buffers to specified size. ",
-	          "");
 	I_IndexedProperty(osg::DrawElements *, DrawElements, 
 	                  __DrawElements_P1__getDrawElements__unsigned_int, 
 	                  __void__setDrawElements__unsigned_int__DrawElements_P1, 
 	                  0);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Image * >, osg::PixelBufferObject::BufferEntryImagePair)
+BEGIN_OBJECT_REFLECTOR(osg::GLBufferObject)
+	I_DeclaringFile("osg/BufferObject");
+	I_BaseType(osg::Referenced);
+	I_ConstructorWithDefaults2(IN, unsigned int, contextID, , IN, osg::BufferObject *, bufferObject, 0,
+	                           ____GLBufferObject__unsigned_int__BufferObject_P1,
+	                           "",
+	                           "");
+	I_Method1(void, setBufferObject, IN, osg::BufferObject *, bufferObject,
+	          Properties::NON_VIRTUAL,
+	          __void__setBufferObject__BufferObject_P1,
+	          "",
+	          "");
+	I_Method0(osg::BufferObject *, getBufferObject,
+	          Properties::NON_VIRTUAL,
+	          __BufferObject_P1__getBufferObject,
+	          "",
+	          "");
+	I_Method0(unsigned int, getContextID,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getContextID,
+	          "",
+	          "");
+	I_Method0(GLuint &, getGLObjectID,
+	          Properties::NON_VIRTUAL,
+	          __GLuint_R1__getGLObjectID,
+	          "",
+	          "");
+	I_Method0(GLuint, getGLObjectID,
+	          Properties::NON_VIRTUAL,
+	          __GLuint__getGLObjectID,
+	          "",
+	          "");
+	I_Method1(GLsizeiptrARB, getOffset, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __GLsizeiptrARB__getOffset__unsigned_int,
+	          "",
+	          "");
+	I_Method0(void, bindBuffer,
+	          Properties::NON_VIRTUAL,
+	          __void__bindBuffer,
+	          "",
+	          "");
+	I_Method0(void, unbindBuffer,
+	          Properties::NON_VIRTUAL,
+	          __void__unbindBuffer,
+	          "",
+	          "");
+	I_Method0(bool, isDirty,
+	          Properties::NON_VIRTUAL,
+	          __bool__isDirty,
+	          "",
+	          "");
+	I_Method0(void, dirty,
+	          Properties::NON_VIRTUAL,
+	          __void__dirty,
+	          "",
+	          "");
+	I_Method0(void, clear,
+	          Properties::NON_VIRTUAL,
+	          __void__clear,
+	          "",
+	          "");
+	I_Method0(void, compileBuffer,
+	          Properties::NON_VIRTUAL,
+	          __void__compileBuffer,
+	          "",
+	          "");
+	I_Method0(void, deleteGLObject,
+	          Properties::NON_VIRTUAL,
+	          __void__deleteGLObject,
+	          "",
+	          "");
+	I_Method1(void, assign, IN, osg::BufferObject *, bufferObject,
+	          Properties::NON_VIRTUAL,
+	          __void__assign__BufferObject_P1,
+	          "",
+	          "");
+	I_Method0(bool, isPBOSupported,
+	          Properties::NON_VIRTUAL,
+	          __bool__isPBOSupported,
+	          "",
+	          "");
+	I_StaticMethod2(osg::GLBufferObject *, createGLBufferObject, IN, unsigned int, contextID, IN, const osg::BufferObject *, bufferObject,
+	                __GLBufferObject_P1__createGLBufferObject__unsigned_int__C5_BufferObject_P1_S,
+	                "",
+	                "");
+	I_StaticMethod2(void, deleteBufferObject, IN, unsigned int, contextID, IN, GLuint, globj,
+	                __void__deleteBufferObject__unsigned_int__GLuint_S,
+	                "Use deleteVertexBufferObject instead of glDeleteBuffers to allow OpenGL buffer objects to be cached until they can be deleted by the OpenGL context in which they were created, specified by contextID. ",
+	                "");
+	I_StaticMethod3(void, flushDeletedBufferObjects, IN, unsigned int, contextID, IN, double, x, IN, double &, availableTime,
+	                __void__flushDeletedBufferObjects__unsigned_int__double__double_R1_S,
+	                "flush all the cached display list which need to be deleted in the OpenGL context related to contextID. ",
+	                "");
+	I_StaticMethod1(void, discardDeletedBufferObjects, IN, unsigned int, contextID,
+	                __void__discardDeletedBufferObjects__unsigned_int_S,
+	                "dicard all the cached display list which need to be deleted in the OpenGL context related to contextID. ",
+	                "Note, unlike flush no OpenGL calls are made, instead the handles are all removed. this call is useful for when an OpenGL context has been destroyed. ");
+	I_StaticMethod2(osg::GLBufferObject::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
+	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
+	                "Function to call to get the extension of a specified context. ",
+	                "If the Extension object for that context has not yet been created and the 'createIfNotInitalized' flag been set to false then returns NULL. If 'createIfNotInitalized' is true then the Extensions object is automatically created. However, in this case the extension object is only created with the graphics context associated with ContextID.. ");
+	I_StaticMethod2(void, setExtensions, IN, unsigned int, contextID, IN, osg::GLBufferObject::Extensions *, extensions,
+	                __void__setExtensions__unsigned_int__Extensions_P1_S,
+	                "setExtensions allows users to override the extensions across graphics contexts. ",
+	                "typically used when you have different extensions supported across graphics pipes but need to ensure that they all use the same low common denominator extensions. ");
+	I_SimpleProperty(osg::BufferObject *, BufferObject, 
+	                 __BufferObject_P1__getBufferObject, 
+	                 __void__setBufferObject__BufferObject_P1);
+	I_SimpleProperty(unsigned int, ContextID, 
+	                 __unsigned_int__getContextID, 
+	                 0);
+	I_SimpleProperty(GLuint, GLObjectID, 
+	                 __GLuint__getGLObjectID, 
+	                 0);
+	I_PublicMemberProperty(osg::GLBufferObject::Extensions *, _extensions);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::GLBufferObject::BufferEntry)
+	I_DeclaringFile("osg/BufferObject");
+	I_Constructor0(____BufferEntry,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::GLBufferObject::BufferEntry &, rhs,
+	               Properties::NON_EXPLICIT,
+	               ____BufferEntry__C5_BufferEntry_R1,
+	               "",
+	               "");
+	I_PublicMemberProperty(unsigned int, modifiedCount);
+	I_PublicMemberProperty(GLsizeiptrARB, dataSize);
+	I_PublicMemberProperty(GLsizeiptrARB, offset);
+	I_PublicMemberProperty(osg::BufferData *, dataSource);
+END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::PixelBufferObject)
 	I_DeclaringFile("osg/BufferObject");
@@ -290,20 +500,10 @@ BEGIN_OBJECT_REFLECTOR(osg::PixelBufferObject)
 	          __C5_Image_P1__getImage,
 	          "",
 	          "");
-	I_Method0(unsigned int, offset,
+	I_Method1(bool, isPBOSupported, IN, unsigned int, contextID,
 	          Properties::NON_VIRTUAL,
-	          __unsigned_int__offset,
+	          __bool__isPBOSupported__unsigned_int,
 	          "",
-	          "");
-	I_Method1(void, compileBuffer, IN, osg::State &, state,
-	          Properties::VIRTUAL,
-	          __void__compileBuffer__State_R1,
-	          "",
-	          "");
-	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
-	          Properties::VIRTUAL,
-	          __void__resizeGLObjectBuffers__unsigned_int,
-	          "Resize any per context GLObject buffers to specified size. ",
 	          "");
 	I_SimpleProperty(osg::Image *, Image, 
 	                 __Image_P1__getImage, 
@@ -397,10 +597,6 @@ BEGIN_OBJECT_REFLECTOR(osg::PixelDataBufferObject)
 	                 __void__setDataSize__unsigned_int);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Array * >, osg::VertexBufferObject::BufferEntryArrayPair)
-
-TYPE_NAME_ALIAS(std::vector< osg::VertexBufferObject::BufferEntryArrayPair >, osg::VertexBufferObject::BufferEntryArrayPairs)
-
 BEGIN_OBJECT_REFLECTOR(osg::VertexBufferObject)
 	I_DeclaringFile("osg/BufferObject");
 	I_BaseType(osg::BufferObject);
@@ -461,34 +657,9 @@ BEGIN_OBJECT_REFLECTOR(osg::VertexBufferObject)
 	          __C5_Array_P1__getArray__unsigned_int,
 	          "",
 	          "");
-	I_Method1(const GLvoid *, getOffset, IN, unsigned int, i,
-	          Properties::NON_VIRTUAL,
-	          __C5_GLvoid_P1__getOffset__unsigned_int,
-	          "",
-	          "");
-	I_Method1(void, compileBuffer, IN, osg::State &, state,
-	          Properties::VIRTUAL,
-	          __void__compileBuffer__State_R1,
-	          "",
-	          "");
-	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
-	          Properties::VIRTUAL,
-	          __void__resizeGLObjectBuffers__unsigned_int,
-	          "Resize any per context GLObject buffers to specified size. ",
-	          "");
 	I_IndexedProperty(osg::Array *, Array, 
 	                  __Array_P1__getArray__unsigned_int, 
 	                  __void__setArray__unsigned_int__Array_P1, 
 	                  0);
 END_REFLECTOR
-
-STD_PAIR_REFLECTOR(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Array * >)
-
-STD_PAIR_REFLECTOR(std::pair< osg::BufferObject::BufferEntry COMMA  osg::DrawElements * >)
-
-STD_PAIR_REFLECTOR(std::pair< osg::BufferObject::BufferEntry COMMA  osg::Image * >)
-
-STD_VECTOR_REFLECTOR(std::vector< osg::ElementBufferObject::BufferEntryDrawElementsPair >)
-
-STD_VECTOR_REFLECTOR(std::vector< osg::VertexBufferObject::BufferEntryArrayPair >)
 

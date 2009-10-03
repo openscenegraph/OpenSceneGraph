@@ -89,8 +89,7 @@ State::State():
     _glMaxTextureUnits = 1;
 
     _maxTexturePoolSize = 0;
-    _maxVBOPoolSize = 0;
-    _maxFBOPoolSize = 0;
+    _maxBufferObjectPoolSize = 0;
 }
 
 State::~State()
@@ -232,16 +231,11 @@ void State::setMaxTexturePoolSize(unsigned int size)
     osg::notify(osg::NOTICE)<<"_maxTexturePoolSize="<<_maxTexturePoolSize<<std::endl;
 }
 
-void State::setMaxVBOPoolSize(unsigned int size)
+void State::setMaxBufferObjectPoolSize(unsigned int size)
 {
-    _maxVBOPoolSize = size;
-    osg::notify(osg::NOTICE)<<"_maxVBOPoolSize="<<_maxVBOPoolSize<<std::endl;
-}
-
-void State::setMaxFBOPoolSize(unsigned int size)
-{
-    _maxFBOPoolSize = size;
-    osg::notify(osg::NOTICE)<<"_maxFBOPoolSize="<<_maxFBOPoolSize<<std::endl;
+    _maxBufferObjectPoolSize = size;
+    osg::GLBufferObjectManager::getGLBufferObjectManager(getContextID())->setMaxGLBufferObjectPoolSize(_maxBufferObjectPoolSize);
+    osg::notify(osg::NOTICE)<<"_maxBufferObjectPoolSize="<<_maxBufferObjectPoolSize<<std::endl;
 }
 
 void State::pushStateSet(const StateSet* dstate)

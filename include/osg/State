@@ -411,7 +411,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             if (vbo == _currentVBO) return;
             if (vbo->isDirty()) vbo->compileBuffer();
-            else _glBindBuffer(GL_ARRAY_BUFFER_ARB,vbo->getGLObjectID());
+            else vbo->bindBuffer();
             _currentVBO = vbo;
         }
 
@@ -429,7 +429,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             if (ebo == _currentEBO) return;
             if (ebo->isDirty()) ebo->compileBuffer();
-            else _glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,ebo->getGLObjectID());
+            else ebo->bindBuffer();
             _currentEBO = ebo;
         }
 
@@ -448,7 +448,7 @@ class OSG_EXPORT State : public Referenced, public Observer
             if (pbo == _currentPBO) return;
 
             if (pbo->isDirty()) pbo->compileBuffer();
-            else _glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB,pbo->getGLObjectID());
+            else pbo->bindBuffer();
 
             _currentPBO = pbo;
         }
@@ -1040,12 +1040,8 @@ class OSG_EXPORT State : public Referenced, public Observer
         void setMaxTexturePoolSize(unsigned int size);
         unsigned int getMaxTexturePoolSize() const { return _maxTexturePoolSize; }
 
-        void setMaxVBOPoolSize(unsigned int size);
-        unsigned int getMaxVBOPoolSize() const { return _maxVBOPoolSize; }
-
-        void setMaxFBOPoolSize(unsigned int size);
-        unsigned int getMaxFBOPoolSize() const { return _maxFBOPoolSize; }
-
+        void setMaxBufferObjectPoolSize(unsigned int size);
+        unsigned int getMaxBufferObjectPoolSize() const { return _maxBufferObjectPoolSize; }
 
 
         enum CheckForGLErrors
@@ -1233,8 +1229,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         StateSetStack                                                   _stateStateStack;
 
         unsigned int                                                    _maxTexturePoolSize;
-        unsigned int                                                    _maxVBOPoolSize;
-        unsigned int                                                    _maxFBOPoolSize;
+        unsigned int                                                    _maxBufferObjectPoolSize;
 
 
         struct EnabledArrayPair

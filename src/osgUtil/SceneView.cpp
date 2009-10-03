@@ -1025,6 +1025,9 @@ void SceneView::draw()
     osg::Texture::TextureObjectManager* tom = osg::Texture::getTextureObjectManager(state->getContextID());
     tom->newFrame(state->getFrameStamp());
 
+    osg::GLBufferObjectManager::GLBufferObjectManager* bom = osg::GLBufferObjectManager::getGLBufferObjectManager(state->getContextID());
+    bom->newFrame(state->getFrameStamp());
+
     if (!_initCalled) init();
 
     // note, to support multi-pipe systems the deletion of OpenGL display list
@@ -1566,6 +1569,7 @@ void SceneView::draw()
 // #define REPORT_TEXTURE_MANAGER_STATS
 #ifdef REPORT_TEXTURE_MANAGER_STATS
     tom->reportStats();
+    bom->reportStats();
 #endif
 
     // osg::notify(osg::NOTICE)<<"SceneView  draw() DynamicObjectCount"<<getState()->getDynamicObjectCount()<<std::endl;

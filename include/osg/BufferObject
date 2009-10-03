@@ -17,6 +17,10 @@
 #include <osg/GL>
 #include <osg/Object>
 #include <osg/buffered_value>
+#include <osg/FrameStamp>
+
+#include <list>
+#include <map>
 
 #ifndef GL_ARB_vertex_buffer_object
 
@@ -102,11 +106,72 @@ class State;
 class BufferData;
 class BufferObject;
 
+class BufferObjectProfile
+{
+    public:
+        BufferObjectProfile():
+            _target(0),
+            _usage(0),
+            _size(0) {}
+
+        BufferObjectProfile(GLenum target, GLenum usage, unsigned int size):
+            _target(target),
+            _usage(usage),
+            _size(size) {}
+
+        BufferObjectProfile(const BufferObjectProfile& bpo):
+            _target(bpo._target),
+            _usage(bpo._usage),
+            _size(bpo._size) {}
+
+        bool operator < (const BufferObjectProfile& rhs) const
+        {
+            if (_target < rhs._target) return true;
+            else if (_target > rhs._target) return false;
+            if (_usage < rhs._usage) return true;
+            else if (_usage > rhs._usage) return false;
+            return _size < rhs._size;
+        }
+
+        bool operator == (const BufferObjectProfile& rhs) const
+        {
+            return (_target == rhs._target) &&
+                   (_usage == rhs._usage) &&
+                   (_size == rhs._size);
+        }
+
+        void setProfile(GLenum target, GLenum usage, unsigned int size)
+        {
+            _target = target;
+            _usage = usage;
+            _size = size;
+        }
+
+        BufferObjectProfile& operator = (const BufferObjectProfile& rhs)
+        {
+            _target = rhs._target;
+            _usage = rhs._usage;
+            _size = rhs._size;
+            return *this;
+        }
+
+        GLenum _target;
+        GLenum _usage;
+        GLenum _size;
+};
+
+// forward declare
+class GLBufferObjectSet;
+class GLBufferObjectManager;
+
 class OSG_EXPORT GLBufferObject : public Referenced
 {
     public:
 
         GLBufferObject(unsigned int contextID, BufferObject* bufferObject=0);
+
+        void setProfile(const BufferObjectProfile& profile) { _profile = profile; }
+        const BufferObjectProfile& getProfile() const { return _profile; }
 
         void setBufferObject(BufferObject* bufferObject);
         BufferObject* getBufferObject() { return _bufferObject; }
@@ -143,14 +208,11 @@ class OSG_EXPORT GLBufferObject : public Referenced
         inline GLuint getGLObjectID() const { return _glObjectID; }
         inline GLsizeiptrARB getOffset(unsigned int i) const { return _bufferEntries[i].offset; }
 
-        inline void bindBuffer() const
-        { 
-            _extensions->glBindBuffer(_target,_glObjectID);
-        }
+        void bindBuffer();
 
-        inline void unbindBuffer() const
+        inline void unbindBuffer()
         { 
-            _extensions->glBindBuffer(_target,0);
+            _extensions->glBindBuffer(_profile._target,0);
         }
 
         inline bool isDirty() const { return _dirty; }
@@ -176,15 +238,10 @@ class OSG_EXPORT GLBufferObject : public Referenced
           * by contextID.*/
         static void deleteBufferObject(unsigned int contextID,GLuint globj);
 
-        /** flush all the cached display list which need to be deleted
-          * in the OpenGL context related to contextID.*/
-        static void flushDeletedBufferObjects(unsigned int contextID,double /*currentTime*/, double& availableTime);
-
-        /** dicard all the cached display list which need to be deleted
-          * in the OpenGL context related to contextID.
-          * Note, unlike flush no OpenGL calls are made, instead the handles are all removed.
-          * this call is useful for when an OpenGL context has been destroyed. */
-        static void discardDeletedBufferObjects(unsigned int contextID);
+        static void flushAllDeletedBufferObjects(unsigned int contextID);
+        static void discardAllDeletedBufferObjects(unsigned int contextID);
+        static void flushDeletedBufferObjects(unsigned int contextID,double currentTime, double& availbleTime);
+        static void releaseGLBufferObject(unsigned int contextID, GLBufferObject* to);
 
         /** Extensions class which encapsulates the querying of extensions and
         * associated function pointers, and provide convenience wrappers to
@@ -264,12 +321,10 @@ class OSG_EXPORT GLBufferObject : public Referenced
         unsigned int            _contextID;
         GLuint                  _glObjectID;
 
-        GLenum                  _target;
-        GLenum                  _usage;
+        BufferObjectProfile     _profile;
+        unsigned int            _allocatedSize;
 
         bool                    _dirty;
-
-        mutable unsigned int    _totalSize;
 
         typedef std::vector<BufferEntry> BufferEntries;
         BufferEntries           _bufferEntries;
@@ -277,9 +332,141 @@ class OSG_EXPORT GLBufferObject : public Referenced
         BufferObject*           _bufferObject;
 
     public:
+
+        GLBufferObjectSet*      _set;
+        GLBufferObject*         _previous;
+        GLBufferObject*         _next;
+        unsigned int            _frameLastUsed;
+
+    public:
         Extensions*             _extensions;
 
 };
+
+typedef std::list< ref_ptr<GLBufferObject> > GLBufferObjectList;
+
+class OSG_EXPORT GLBufferObjectSet : public Referenced
+{
+    public:
+        GLBufferObjectSet(GLBufferObjectManager* parent, const BufferObjectProfile& profile);
+
+        void handlePendingOrphandedGLBufferObjects();
+        void flushAllDeletedGLBufferObjects();
+        void discardAllDeletedGLBufferObjects();
+        void flushDeletedGLBufferObjects(double currentTime, double& availableTime);
+
+        GLBufferObject* takeFromOrphans(BufferObject* bufferObject);
+        GLBufferObject* takeOrGenerate(BufferObject* bufferObject);
+
+        void moveToBack(GLBufferObject* to);
+        void addToBack(GLBufferObject* to);
+        void orphan(GLBufferObject* to);
+        void remove(GLBufferObject* to);
+
+        unsigned int size() const { return _profile._size * _numOfGLBufferObjects; }
+
+        bool makeSpace(unsigned int& size);
+
+        bool checkConsistency() const;
+
+        GLBufferObjectManager* getParent() { return _parent; }
+
+
+    protected:
+
+        virtual ~GLBufferObjectSet();
+
+        OpenThreads::Mutex  _mutex;
+
+        GLBufferObjectManager*  _parent;
+        unsigned int            _contextID;
+        BufferObjectProfile     _profile;
+        unsigned int            _numOfGLBufferObjects;
+        GLBufferObjectList      _orphanedGLBufferObjects;
+        GLBufferObjectList      _pendingOrphanedGLBufferObjects;
+
+        GLBufferObject*         _head;
+        GLBufferObject*         _tail;
+};
+
+class OSG_EXPORT GLBufferObjectManager : public osg::Referenced
+{
+    public:
+        GLBufferObjectManager(unsigned int contextID);
+
+        unsigned int getContextID() const { return _contextID; }
+
+
+        void setNumberActiveGLBufferObjects(unsigned int size) { _numActiveGLBufferObjects = size; }
+        unsigned int& getNumberActiveGLBufferObjects() { return _numActiveGLBufferObjects; }
+        unsigned int getNumberActiveGLBufferObjects() const { return _numActiveGLBufferObjects; }
+
+        void setNumberOrphanedGLBufferObjects(unsigned int size) { _numOrphanedGLBufferObjects = size; }
+        unsigned int& getNumberOrphanedGLBufferObjects() { return _numOrphanedGLBufferObjects; }
+        unsigned int getNumberOrphanedGLBufferObjects() const { return _numOrphanedGLBufferObjects; }
+
+        void setCurrGLBufferObjectPoolSize(unsigned int size) { _currGLBufferObjectPoolSize = size; }
+        unsigned int& getCurrGLBufferObjectPoolSize() { return _currGLBufferObjectPoolSize; }
+        unsigned int getCurrGLBufferObjectPoolSize() const { return _currGLBufferObjectPoolSize; }
+
+        void setMaxGLBufferObjectPoolSize(unsigned int size);
+        unsigned int getMaxGLBufferObjectPoolSize() const { return _maxGLBufferObjectPoolSize; }
+
+        bool hasSpace(unsigned int size) const { return (_currGLBufferObjectPoolSize+size)<=_maxGLBufferObjectPoolSize; }
+        bool makeSpace(unsigned int size);
+
+        GLBufferObject* generateGLBufferObject(const osg::BufferObject* bufferObject);
+
+        void handlePendingOrphandedGLBufferObjects();
+        void flushAllDeletedGLBufferObjects();
+        void discardAllDeletedGLBufferObjects();
+        void flushDeletedGLBufferObjects(double currentTime, double& availableTime);
+        void releaseGLBufferObject(GLBufferObject* to);
+
+        GLBufferObjectSet* getGLBufferObjectSet(const BufferObjectProfile& profile);
+
+        void newFrame(osg::FrameStamp* fs);
+        void resetStats();
+        void reportStats();
+
+        unsigned int& getFrameNumber() { return _frameNumber; }
+        unsigned int& getNumberFrames() { return _numFrames; }
+
+        unsigned int& getNumberDeleted() { return _numDeleted; }
+        double& getDeleteTime() { return _deleteTime; }
+
+        unsigned int& getNumberGenerated() { return _numGenerated; }
+        double& getGenerateTime() { return _generateTime; }
+
+        unsigned int& getNumberApplied() { return _numApplied; }
+        double& getApplyTime() { return _applyTime; }
+
+        static osg::ref_ptr<GLBufferObjectManager>& getGLBufferObjectManager(unsigned int contextID);
+
+    protected:
+
+        typedef std::map< BufferObjectProfile, osg::ref_ptr<GLBufferObjectSet> > GLBufferObjectSetMap;
+        unsigned int            _contextID;
+        unsigned int            _numActiveGLBufferObjects;
+        unsigned int            _numOrphanedGLBufferObjects;
+        unsigned int            _currGLBufferObjectPoolSize;
+        unsigned int            _maxGLBufferObjectPoolSize;
+        GLBufferObjectSetMap    _glBufferObjectSetMap;
+
+        unsigned int            _frameNumber;
+
+        unsigned int            _numFrames;
+        unsigned int            _numDeleted;
+        double                  _deleteTime;
+
+        unsigned int            _numGenerated;
+        double                  _generateTime;
+
+        unsigned int            _numApplied;
+        double                  _applyTime;
+
+};
+
 
 class OSG_EXPORT BufferObject : public Object
 {
@@ -294,18 +481,21 @@ class OSG_EXPORT BufferObject : public Object
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const { return "BufferObject"; }
 
-        void setTarget(GLenum target) { _target = target; }
-        GLenum getTarget() const { return _target; }
+        void setTarget(GLenum target) { _profile._target = target; }
+        GLenum getTarget() const { return _profile._target; }
 
         /** Set what type of usage the buffer object will have. Options are:
           *          GL_STREAM_DRAW, GL_STREAM_READ, GL_STREAM_COPY,
           *          GL_STATIC_DRAW, GL_STATIC_READ, GL_STATIC_COPY,
           *          GL_DYNAMIC_DRAW, GL_DYNAMIC_READ, or GL_DYNAMIC_COPY.
           */
-        void setUsage(GLenum usage) { _usage = usage; }
+        void setUsage(GLenum usage) { _profile._usage = usage; }
 
         /** Get the type of usage the buffer object has been set up for.*/
-        GLenum getUsage() const { return _usage; }
+        GLenum getUsage() const { return _profile._usage; }
+
+        BufferObjectProfile& getProfile() { return _profile; }
+        const BufferObjectProfile& getProfile() const { return _profile; }
 
         void dirty();
 
@@ -327,6 +517,8 @@ class OSG_EXPORT BufferObject : public Object
 
         unsigned int getNumBufferData() const { return _bufferDataList.size(); }
 
+        void setGLBufferObject(unsigned int contextID, GLBufferObject* glbo) { _glBufferObjects[contextID] = glbo; }
+
         GLBufferObject* getGLBufferObject(unsigned int contextID) const { return _glBufferObjects[contextID].get(); }
 
         GLBufferObject* getOrCreateGLBufferObject(unsigned int contextID) const
@@ -335,6 +527,8 @@ class OSG_EXPORT BufferObject : public Object
             return _glBufferObjects[contextID].get();
         }
 
+        unsigned int computeRequiredBufferSize() const;
+
     protected:
 
         ~BufferObject();
@@ -342,8 +536,8 @@ class OSG_EXPORT BufferObject : public Object
         typedef std::vector< BufferData* > BufferDataList;
         typedef osg::buffered_object< osg::ref_ptr<GLBufferObject> > GLBufferObjects;
 
-        GLenum                  _target;
-        GLenum                  _usage;
+        BufferObjectProfile     _profile;
+
         BufferDataList          _bufferDataList;
 
         mutable GLBufferObjects _glBufferObjects;
@@ -487,10 +681,10 @@ class OSG_EXPORT PixelDataBufferObject : public BufferObject
         META_Object(osg, PixelDataBufferObject);
 
         //! Set new size of the buffer object. This will reallocate the memory on the next compile
-        inline void setDataSize(unsigned int size) { _dataSize = size; dirty(); }
+        inline void setDataSize(unsigned int size) { _profile._size = size; dirty(); }
 
         //! Get data size of the used buffer 
-        inline unsigned int getDataSize() const { return _dataSize; }
+        inline unsigned int getDataSize() const { return _profile._size; }
 
         //! Compile the buffer (reallocate the memory if buffer is dirty)
         virtual void compileBuffer(State& state) const;
@@ -524,8 +718,6 @@ class OSG_EXPORT PixelDataBufferObject : public BufferObject
     protected:
 
         virtual ~PixelDataBufferObject();
-
-        unsigned int _dataSize;
 
         typedef osg::buffered_value<unsigned int> ModeList;
         

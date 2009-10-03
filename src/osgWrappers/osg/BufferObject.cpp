@@ -13,6 +13,7 @@
 #include <osg/Array>
 #include <osg/BufferObject>
 #include <osg/CopyOp>
+#include <osg/FrameStamp>
 #include <osg/Image>
 #include <osg/Object>
 #include <osg/PrimitiveSet>
@@ -173,6 +174,16 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	          __GLenum__getUsage,
 	          "Get the type of usage the buffer object has been set up for. ",
 	          "");
+	I_Method0(osg::BufferObjectProfile &, getProfile,
+	          Properties::NON_VIRTUAL,
+	          __BufferObjectProfile_R1__getProfile,
+	          "",
+	          "");
+	I_Method0(const osg::BufferObjectProfile &, getProfile,
+	          Properties::NON_VIRTUAL,
+	          __C5_BufferObjectProfile_R1__getProfile,
+	          "",
+	          "");
 	I_Method0(void, dirty,
 	          Properties::NON_VIRTUAL,
 	          __void__dirty,
@@ -223,6 +234,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	          __unsigned_int__getNumBufferData,
 	          "",
 	          "");
+	I_Method2(void, setGLBufferObject, IN, unsigned int, contextID, IN, osg::GLBufferObject *, glbo,
+	          Properties::NON_VIRTUAL,
+	          __void__setGLBufferObject__unsigned_int__GLBufferObject_P1,
+	          "",
+	          "");
 	I_Method1(osg::GLBufferObject *, getGLBufferObject, IN, unsigned int, contextID,
 	          Properties::NON_VIRTUAL,
 	          __GLBufferObject_P1__getGLBufferObject__unsigned_int,
@@ -233,6 +249,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	          __GLBufferObject_P1__getOrCreateGLBufferObject__unsigned_int,
 	          "",
 	          "");
+	I_Method0(unsigned int, computeRequiredBufferSize,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__computeRequiredBufferSize,
+	          "",
+	          "");
 	I_ArrayProperty(osg::BufferData *, BufferData, 
 	                __BufferData_P1__getBufferData__unsigned_int, 
 	                __void__setBufferData__unsigned_int__BufferData_P1, 
@@ -240,12 +261,43 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	                __unsigned_int__addBufferData__BufferData_P1, 
 	                0, 
 	                __void__removeBufferData__unsigned_int);
+	I_IndexedProperty(osg::GLBufferObject *, GLBufferObject, 
+	                  __GLBufferObject_P1__getGLBufferObject__unsigned_int, 
+	                  __void__setGLBufferObject__unsigned_int__GLBufferObject_P1, 
+	                  0);
+	I_SimpleProperty(osg::BufferObjectProfile &, Profile, 
+	                 __BufferObjectProfile_R1__getProfile, 
+	                 0);
 	I_SimpleProperty(GLenum, Target, 
 	                 __GLenum__getTarget, 
 	                 __void__setTarget__GLenum);
 	I_SimpleProperty(GLenum, Usage, 
 	                 __GLenum__getUsage, 
 	                 __void__setUsage__GLenum);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::BufferObjectProfile)
+	I_DeclaringFile("osg/BufferObject");
+	I_Constructor0(____BufferObjectProfile,
+	               "",
+	               "");
+	I_Constructor3(IN, GLenum, target, IN, GLenum, usage, IN, unsigned int, size,
+	               ____BufferObjectProfile__GLenum__GLenum__unsigned_int,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::BufferObjectProfile &, bpo,
+	               Properties::NON_EXPLICIT,
+	               ____BufferObjectProfile__C5_BufferObjectProfile_R1,
+	               "",
+	               "");
+	I_Method3(void, setProfile, IN, GLenum, target, IN, GLenum, usage, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __void__setProfile__GLenum__GLenum__unsigned_int,
+	          "",
+	          "");
+	I_PublicMemberProperty(GLenum, _target);
+	I_PublicMemberProperty(GLenum, _usage);
+	I_PublicMemberProperty(GLenum, _size);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ElementBufferObject)
@@ -321,6 +373,16 @@ BEGIN_OBJECT_REFLECTOR(osg::GLBufferObject)
 	                           ____GLBufferObject__unsigned_int__BufferObject_P1,
 	                           "",
 	                           "");
+	I_Method1(void, setProfile, IN, const osg::BufferObjectProfile &, profile,
+	          Properties::NON_VIRTUAL,
+	          __void__setProfile__C5_BufferObjectProfile_R1,
+	          "",
+	          "");
+	I_Method0(const osg::BufferObjectProfile &, getProfile,
+	          Properties::NON_VIRTUAL,
+	          __C5_BufferObjectProfile_R1__getProfile,
+	          "",
+	          "");
 	I_Method1(void, setBufferObject, IN, osg::BufferObject *, bufferObject,
 	          Properties::NON_VIRTUAL,
 	          __void__setBufferObject__BufferObject_P1,
@@ -404,14 +466,22 @@ BEGIN_OBJECT_REFLECTOR(osg::GLBufferObject)
 	                __void__deleteBufferObject__unsigned_int__GLuint_S,
 	                "Use deleteVertexBufferObject instead of glDeleteBuffers to allow OpenGL buffer objects to be cached until they can be deleted by the OpenGL context in which they were created, specified by contextID. ",
 	                "");
-	I_StaticMethod3(void, flushDeletedBufferObjects, IN, unsigned int, contextID, IN, double, x, IN, double &, availableTime,
-	                __void__flushDeletedBufferObjects__unsigned_int__double__double_R1_S,
-	                "flush all the cached display list which need to be deleted in the OpenGL context related to contextID. ",
+	I_StaticMethod1(void, flushAllDeletedBufferObjects, IN, unsigned int, contextID,
+	                __void__flushAllDeletedBufferObjects__unsigned_int_S,
+	                "",
 	                "");
-	I_StaticMethod1(void, discardDeletedBufferObjects, IN, unsigned int, contextID,
-	                __void__discardDeletedBufferObjects__unsigned_int_S,
-	                "dicard all the cached display list which need to be deleted in the OpenGL context related to contextID. ",
-	                "Note, unlike flush no OpenGL calls are made, instead the handles are all removed. this call is useful for when an OpenGL context has been destroyed. ");
+	I_StaticMethod1(void, discardAllDeletedBufferObjects, IN, unsigned int, contextID,
+	                __void__discardAllDeletedBufferObjects__unsigned_int_S,
+	                "",
+	                "");
+	I_StaticMethod3(void, flushDeletedBufferObjects, IN, unsigned int, contextID, IN, double, currentTime, IN, double &, availbleTime,
+	                __void__flushDeletedBufferObjects__unsigned_int__double__double_R1_S,
+	                "",
+	                "");
+	I_StaticMethod2(void, releaseGLBufferObject, IN, unsigned int, contextID, IN, osg::GLBufferObject *, to,
+	                __void__releaseGLBufferObject__unsigned_int__GLBufferObject_P1_S,
+	                "",
+	                "");
 	I_StaticMethod2(osg::GLBufferObject::Extensions *, getExtensions, IN, unsigned int, contextID, IN, bool, createIfNotInitalized,
 	                __Extensions_P1__getExtensions__unsigned_int__bool_S,
 	                "Function to call to get the extension of a specified context. ",
@@ -429,6 +499,13 @@ BEGIN_OBJECT_REFLECTOR(osg::GLBufferObject)
 	I_SimpleProperty(GLuint, GLObjectID, 
 	                 __GLuint__getGLObjectID, 
 	                 0);
+	I_SimpleProperty(const osg::BufferObjectProfile &, Profile, 
+	                 __C5_BufferObjectProfile_R1__getProfile, 
+	                 __void__setProfile__C5_BufferObjectProfile_R1);
+	I_PublicMemberProperty(osg::GLBufferObjectSet *, _set);
+	I_PublicMemberProperty(osg::GLBufferObject *, _previous);
+	I_PublicMemberProperty(osg::GLBufferObject *, _next);
+	I_PublicMemberProperty(unsigned int, _frameLastUsed);
 	I_PublicMemberProperty(osg::GLBufferObject::Extensions *, _extensions);
 END_REFLECTOR
 
@@ -446,6 +523,301 @@ BEGIN_VALUE_REFLECTOR(osg::GLBufferObject::BufferEntry)
 	I_PublicMemberProperty(GLsizeiptrARB, dataSize);
 	I_PublicMemberProperty(GLsizeiptrARB, offset);
 	I_PublicMemberProperty(osg::BufferData *, dataSource);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::GLBufferObjectManager)
+	I_DeclaringFile("osg/BufferObject");
+	I_BaseType(osg::Referenced);
+	I_Constructor1(IN, unsigned int, contextID,
+	               Properties::NON_EXPLICIT,
+	               ____GLBufferObjectManager__unsigned_int,
+	               "",
+	               "");
+	I_Method0(unsigned int, getContextID,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getContextID,
+	          "",
+	          "");
+	I_Method1(void, setNumberActiveGLBufferObjects, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __void__setNumberActiveGLBufferObjects__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int &, getNumberActiveGLBufferObjects,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int_R1__getNumberActiveGLBufferObjects,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumberActiveGLBufferObjects,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getNumberActiveGLBufferObjects,
+	          "",
+	          "");
+	I_Method1(void, setNumberOrphanedGLBufferObjects, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __void__setNumberOrphanedGLBufferObjects__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int &, getNumberOrphanedGLBufferObjects,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int_R1__getNumberOrphanedGLBufferObjects,
+	          "",
+	          "");
+	I_Method0(unsigned int, getNumberOrphanedGLBufferObjects,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getNumberOrphanedGLBufferObjects,
+	          "",
+	          "");
+	I_Method1(void, setCurrGLBufferObjectPoolSize, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __void__setCurrGLBufferObjectPoolSize__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int &, getCurrGLBufferObjectPoolSize,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int_R1__getCurrGLBufferObjectPoolSize,
+	          "",
+	          "");
+	I_Method0(unsigned int, getCurrGLBufferObjectPoolSize,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getCurrGLBufferObjectPoolSize,
+	          "",
+	          "");
+	I_Method1(void, setMaxGLBufferObjectPoolSize, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __void__setMaxGLBufferObjectPoolSize__unsigned_int,
+	          "",
+	          "");
+	I_Method0(unsigned int, getMaxGLBufferObjectPoolSize,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getMaxGLBufferObjectPoolSize,
+	          "",
+	          "");
+	I_Method1(bool, hasSpace, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __bool__hasSpace__unsigned_int,
+	          "",
+	          "");
+	I_Method1(bool, makeSpace, IN, unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __bool__makeSpace__unsigned_int,
+	          "",
+	          "");
+	I_Method1(osg::GLBufferObject *, generateGLBufferObject, IN, const osg::BufferObject *, bufferObject,
+	          Properties::NON_VIRTUAL,
+	          __GLBufferObject_P1__generateGLBufferObject__C5_osg_BufferObject_P1,
+	          "",
+	          "");
+	I_Method0(void, handlePendingOrphandedGLBufferObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__handlePendingOrphandedGLBufferObjects,
+	          "",
+	          "");
+	I_Method0(void, flushAllDeletedGLBufferObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__flushAllDeletedGLBufferObjects,
+	          "",
+	          "");
+	I_Method0(void, discardAllDeletedGLBufferObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__discardAllDeletedGLBufferObjects,
+	          "",
+	          "");
+	I_Method2(void, flushDeletedGLBufferObjects, IN, double, currentTime, IN, double &, availableTime,
+	          Properties::NON_VIRTUAL,
+	          __void__flushDeletedGLBufferObjects__double__double_R1,
+	          "",
+	          "");
+	I_Method1(void, releaseGLBufferObject, IN, osg::GLBufferObject *, to,
+	          Properties::NON_VIRTUAL,
+	          __void__releaseGLBufferObject__GLBufferObject_P1,
+	          "",
+	          "");
+	I_Method1(osg::GLBufferObjectSet *, getGLBufferObjectSet, IN, const osg::BufferObjectProfile &, profile,
+	          Properties::NON_VIRTUAL,
+	          __GLBufferObjectSet_P1__getGLBufferObjectSet__C5_BufferObjectProfile_R1,
+	          "",
+	          "");
+	I_Method1(void, newFrame, IN, osg::FrameStamp *, fs,
+	          Properties::NON_VIRTUAL,
+	          __void__newFrame__osg_FrameStamp_P1,
+	          "",
+	          "");
+	I_Method0(void, resetStats,
+	          Properties::NON_VIRTUAL,
+	          __void__resetStats,
+	          "",
+	          "");
+	I_Method0(void, reportStats,
+	          Properties::NON_VIRTUAL,
+	          __void__reportStats,
+	          "",
+	          "");
+	I_Method0(unsigned int &, getFrameNumber,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int_R1__getFrameNumber,
+	          "",
+	          "");
+	I_Method0(unsigned int &, getNumberFrames,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int_R1__getNumberFrames,
+	          "",
+	          "");
+	I_Method0(unsigned int &, getNumberDeleted,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int_R1__getNumberDeleted,
+	          "",
+	          "");
+	I_Method0(double &, getDeleteTime,
+	          Properties::NON_VIRTUAL,
+	          __double_R1__getDeleteTime,
+	          "",
+	          "");
+	I_Method0(unsigned int &, getNumberGenerated,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int_R1__getNumberGenerated,
+	          "",
+	          "");
+	I_Method0(double &, getGenerateTime,
+	          Properties::NON_VIRTUAL,
+	          __double_R1__getGenerateTime,
+	          "",
+	          "");
+	I_Method0(unsigned int &, getNumberApplied,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int_R1__getNumberApplied,
+	          "",
+	          "");
+	I_Method0(double &, getApplyTime,
+	          Properties::NON_VIRTUAL,
+	          __double_R1__getApplyTime,
+	          "",
+	          "");
+	I_StaticMethod1(osg::ref_ptr< osg::GLBufferObjectManager > &, getGLBufferObjectManager, IN, unsigned int, contextID,
+	                __osg_ref_ptrT1_GLBufferObjectManager__R1__getGLBufferObjectManager__unsigned_int_S,
+	                "",
+	                "");
+	I_SimpleProperty(double &, ApplyTime, 
+	                 __double_R1__getApplyTime, 
+	                 0);
+	I_SimpleProperty(unsigned int, ContextID, 
+	                 __unsigned_int__getContextID, 
+	                 0);
+	I_SimpleProperty(unsigned int, CurrGLBufferObjectPoolSize, 
+	                 __unsigned_int__getCurrGLBufferObjectPoolSize, 
+	                 __void__setCurrGLBufferObjectPoolSize__unsigned_int);
+	I_SimpleProperty(double &, DeleteTime, 
+	                 __double_R1__getDeleteTime, 
+	                 0);
+	I_SimpleProperty(unsigned int &, FrameNumber, 
+	                 __unsigned_int_R1__getFrameNumber, 
+	                 0);
+	I_SimpleProperty(double &, GenerateTime, 
+	                 __double_R1__getGenerateTime, 
+	                 0);
+	I_SimpleProperty(unsigned int, MaxGLBufferObjectPoolSize, 
+	                 __unsigned_int__getMaxGLBufferObjectPoolSize, 
+	                 __void__setMaxGLBufferObjectPoolSize__unsigned_int);
+	I_SimpleProperty(unsigned int, NumberActiveGLBufferObjects, 
+	                 __unsigned_int__getNumberActiveGLBufferObjects, 
+	                 __void__setNumberActiveGLBufferObjects__unsigned_int);
+	I_SimpleProperty(unsigned int &, NumberApplied, 
+	                 __unsigned_int_R1__getNumberApplied, 
+	                 0);
+	I_SimpleProperty(unsigned int &, NumberDeleted, 
+	                 __unsigned_int_R1__getNumberDeleted, 
+	                 0);
+	I_SimpleProperty(unsigned int &, NumberFrames, 
+	                 __unsigned_int_R1__getNumberFrames, 
+	                 0);
+	I_SimpleProperty(unsigned int &, NumberGenerated, 
+	                 __unsigned_int_R1__getNumberGenerated, 
+	                 0);
+	I_SimpleProperty(unsigned int, NumberOrphanedGLBufferObjects, 
+	                 __unsigned_int__getNumberOrphanedGLBufferObjects, 
+	                 __void__setNumberOrphanedGLBufferObjects__unsigned_int);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::GLBufferObjectSet)
+	I_DeclaringFile("osg/BufferObject");
+	I_BaseType(osg::Referenced);
+	I_Constructor2(IN, osg::GLBufferObjectManager *, parent, IN, const osg::BufferObjectProfile &, profile,
+	               ____GLBufferObjectSet__GLBufferObjectManager_P1__C5_BufferObjectProfile_R1,
+	               "",
+	               "");
+	I_Method0(void, handlePendingOrphandedGLBufferObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__handlePendingOrphandedGLBufferObjects,
+	          "",
+	          "");
+	I_Method0(void, flushAllDeletedGLBufferObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__flushAllDeletedGLBufferObjects,
+	          "",
+	          "");
+	I_Method0(void, discardAllDeletedGLBufferObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__discardAllDeletedGLBufferObjects,
+	          "",
+	          "");
+	I_Method2(void, flushDeletedGLBufferObjects, IN, double, currentTime, IN, double &, availableTime,
+	          Properties::NON_VIRTUAL,
+	          __void__flushDeletedGLBufferObjects__double__double_R1,
+	          "",
+	          "");
+	I_Method1(osg::GLBufferObject *, takeFromOrphans, IN, osg::BufferObject *, bufferObject,
+	          Properties::NON_VIRTUAL,
+	          __GLBufferObject_P1__takeFromOrphans__BufferObject_P1,
+	          "",
+	          "");
+	I_Method1(osg::GLBufferObject *, takeOrGenerate, IN, osg::BufferObject *, bufferObject,
+	          Properties::NON_VIRTUAL,
+	          __GLBufferObject_P1__takeOrGenerate__BufferObject_P1,
+	          "",
+	          "");
+	I_Method1(void, moveToBack, IN, osg::GLBufferObject *, to,
+	          Properties::NON_VIRTUAL,
+	          __void__moveToBack__GLBufferObject_P1,
+	          "",
+	          "");
+	I_Method1(void, addToBack, IN, osg::GLBufferObject *, to,
+	          Properties::NON_VIRTUAL,
+	          __void__addToBack__GLBufferObject_P1,
+	          "",
+	          "");
+	I_Method1(void, orphan, IN, osg::GLBufferObject *, to,
+	          Properties::NON_VIRTUAL,
+	          __void__orphan__GLBufferObject_P1,
+	          "",
+	          "");
+	I_Method1(void, remove, IN, osg::GLBufferObject *, to,
+	          Properties::NON_VIRTUAL,
+	          __void__remove__GLBufferObject_P1,
+	          "",
+	          "");
+	I_Method0(unsigned int, size,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__size,
+	          "",
+	          "");
+	I_Method1(bool, makeSpace, IN, unsigned int &, size,
+	          Properties::NON_VIRTUAL,
+	          __bool__makeSpace__unsigned_int_R1,
+	          "",
+	          "");
+	I_Method0(bool, checkConsistency,
+	          Properties::NON_VIRTUAL,
+	          __bool__checkConsistency,
+	          "",
+	          "");
+	I_Method0(osg::GLBufferObjectManager *, getParent,
+	          Properties::NON_VIRTUAL,
+	          __GLBufferObjectManager_P1__getParent,
+	          "",
+	          "");
+	I_SimpleProperty(osg::GLBufferObjectManager *, Parent, 
+	                 __GLBufferObjectManager_P1__getParent, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::PixelBufferObject)
@@ -662,4 +1034,88 @@ BEGIN_OBJECT_REFLECTOR(osg::VertexBufferObject)
 	                  __void__setArray__unsigned_int__Array_P1, 
 	                  0);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::GLBufferObject > >, osg::GLBufferObjectList)
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::GLBufferObject >)
+	I_DeclaringFile("osg/ref_ptr");
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::GLBufferObject *, ptr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osg::GLBufferObject > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osg::GLBufferObject *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osg::GLBufferObject *, release,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::GLBufferObject > &, rp,
+	          Properties::NON_VIRTUAL,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osg::GLBufferObject *, , 
+	                 __T_P1__get, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::GLBufferObjectManager >)
+	I_DeclaringFile("osg/ref_ptr");
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::GLBufferObjectManager *, ptr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osg::GLBufferObjectManager > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osg::GLBufferObjectManager *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osg::GLBufferObjectManager *, release,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::GLBufferObjectManager > &, rp,
+	          Properties::NON_VIRTUAL,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osg::GLBufferObjectManager *, , 
+	                 __T_P1__get, 
+	                 0);
+END_REFLECTOR
+
+STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osg::GLBufferObject > >)
 

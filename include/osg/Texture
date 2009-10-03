@@ -1000,7 +1000,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         typedef std::list< ref_ptr<TextureObject> > TextureObjectList;
 
-        class TextureObjectSet : public Referenced
+        class OSG_EXPORT TextureObjectSet : public Referenced
         {
         public:
             TextureObjectSet(TextureObjectManager* parent, const TextureProfile& profile);

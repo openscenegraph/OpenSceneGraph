@@ -481,13 +481,9 @@ void Viewer::realize()
     if (_camera->getDisplaySettings()) maxTexturePoolSize = std::max(maxTexturePoolSize, _camera->getDisplaySettings()->getMaxTexturePoolSize());
     if (_displaySettings.valid()) maxTexturePoolSize = std::max(maxTexturePoolSize, _displaySettings->getMaxTexturePoolSize());
 
-    unsigned int maxVBOPoolSize = osg::DisplaySettings::instance()->getMaxVBOPoolSize();
-    if (_displaySettings.valid()) maxVBOPoolSize = std::max(maxVBOPoolSize, _displaySettings->getMaxVBOPoolSize());
-    if (_camera->getDisplaySettings()) maxVBOPoolSize = std::max(maxVBOPoolSize, _camera->getDisplaySettings()->getMaxVBOPoolSize());
-
-    unsigned int maxFBOPoolSize = osg::DisplaySettings::instance()->getMaxFBOPoolSize();
-    if (_displaySettings.valid()) maxFBOPoolSize = std::max(maxFBOPoolSize, _displaySettings->getMaxFBOPoolSize());
-    if (_camera->getDisplaySettings()) maxFBOPoolSize = std::max(maxFBOPoolSize, _camera->getDisplaySettings()->getMaxFBOPoolSize());
+    unsigned int maxBufferObjectPoolSize = osg::DisplaySettings::instance()->getMaxBufferObjectPoolSize();
+    if (_displaySettings.valid()) maxBufferObjectPoolSize = std::max(maxBufferObjectPoolSize, _displaySettings->getMaxBufferObjectPoolSize());
+    if (_camera->getDisplaySettings()) maxBufferObjectPoolSize = std::max(maxBufferObjectPoolSize, _camera->getDisplaySettings()->getMaxBufferObjectPoolSize());
 
     for(Contexts::iterator citr = contexts.begin();
         citr != contexts.end();
@@ -497,8 +493,7 @@ void Viewer::realize()
 
         // set the pool sizes, 0 the default will result in no GL object pools.
         gc->getState()->setMaxTexturePoolSize(maxTexturePoolSize);
-        gc->getState()->setMaxVBOPoolSize(maxVBOPoolSize);
-        gc->getState()->setMaxFBOPoolSize(maxFBOPoolSize);
+        gc->getState()->setMaxBufferObjectPoolSize(maxBufferObjectPoolSize);
 
         gc->realize();
 

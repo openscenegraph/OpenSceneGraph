@@ -53,7 +53,7 @@ void osg::flushAllDeletedGLObjects(unsigned int contextID)
 
 void osg::discardAllDeletedGLObjects(unsigned int contextID)
 {
-    osg::GLBufferObject::discardDeletedBufferObjects(contextID);
+    osg::GLBufferObject::discardAllDeletedBufferObjects(contextID);
     osg::Drawable::discardAllDeletedDisplayLists(contextID);
     osg::FragmentProgram::discardDeletedFragmentProgramObjects(contextID);
     osg::FrameBufferObject::discardDeletedFrameBufferObjects(contextID);

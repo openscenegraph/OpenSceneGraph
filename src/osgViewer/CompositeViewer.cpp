@@ -541,8 +541,7 @@ void CompositeViewer::realize()
     }
 
     unsigned int maxTexturePoolSize = osg::DisplaySettings::instance()->getMaxTexturePoolSize();
-    unsigned int maxVBOPoolSize = osg::DisplaySettings::instance()->getMaxVBOPoolSize();
-    unsigned int maxFBOPoolSize = osg::DisplaySettings::instance()->getMaxFBOPoolSize();
+    unsigned int maxBufferObjectPoolSize = osg::DisplaySettings::instance()->getMaxBufferObjectPoolSize();
 
     for(Contexts::iterator citr = contexts.begin();
         citr != contexts.end();
@@ -552,8 +551,7 @@ void CompositeViewer::realize()
 
         // set the pool sizes, 0 the default will result in no GL object pools.
         gc->getState()->setMaxTexturePoolSize(maxTexturePoolSize);
-        gc->getState()->setMaxVBOPoolSize(maxVBOPoolSize);
-        gc->getState()->setMaxFBOPoolSize(maxFBOPoolSize);
+        gc->getState()->setMaxBufferObjectPoolSize(maxBufferObjectPoolSize);
 
         gc->realize();
 

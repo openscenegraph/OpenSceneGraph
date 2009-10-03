@@ -82,8 +82,7 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
     _application = vs._application;
 
     _maxTexturePoolSize = vs._maxTexturePoolSize;
-    _maxVBOPoolSize = vs._maxVBOPoolSize;
-    _maxFBOPoolSize = vs._maxFBOPoolSize;
+    _maxBufferObjectPoolSize = vs._maxBufferObjectPoolSize;
 }
 
 void DisplaySettings::merge(const DisplaySettings& vs)
@@ -109,8 +108,7 @@ void DisplaySettings::merge(const DisplaySettings& vs)
     if (_application.empty()) _application = vs._application;
 
     if (vs._maxTexturePoolSize>_maxTexturePoolSize) _maxTexturePoolSize = vs._maxTexturePoolSize;
-    if (vs._maxVBOPoolSize>_maxVBOPoolSize) _maxVBOPoolSize = vs._maxVBOPoolSize;
-    if (vs._maxFBOPoolSize>_maxFBOPoolSize) _maxFBOPoolSize = vs._maxFBOPoolSize;
+    if (vs._maxBufferObjectPoolSize>_maxBufferObjectPoolSize) _maxBufferObjectPoolSize = vs._maxBufferObjectPoolSize;
 }
 
 void DisplaySettings::setDefaults()
@@ -157,8 +155,7 @@ void DisplaySettings::setDefaults()
     _numHttpDatabaseThreadsHint = 1;
 
     _maxTexturePoolSize = 0;
-    _maxVBOPoolSize = 0;
-    _maxFBOPoolSize = 0;
+    _maxBufferObjectPoolSize = 0;
 }
 
 void DisplaySettings::setMaxNumberOfGraphicsContexts(unsigned int num)
@@ -199,7 +196,7 @@ static ApplicationUsageProxy DisplaySetting_e15(ApplicationUsage::ENVIRONMENTAL_
 static ApplicationUsageProxy DisplaySetting_e16(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_NUM_HTTP_DATABASE_THREADS <int>","Set the hint for the total number of threads dedicated to http requests to set up in the DatabasePager.");
 static ApplicationUsageProxy DisplaySetting_e17(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MULTI_SAMPLES <int>","Set the hint for the number of samples to use when multi-sampling.");
 static ApplicationUsageProxy DisplaySetting_e18(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_TEXTURE_POOL_SIZE <int>","Set the hint size of texture pool to manage.");
-static ApplicationUsageProxy DisplaySetting_e19(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_VBO_POOL_SIZE <int>","Set the hint size of vertex buffer object pool to manage.");
+static ApplicationUsageProxy DisplaySetting_e19(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_BUFFER_OBJECT_POOL_SIZE <int>","Set the hint size of vertex buffer object pool to manage.");
 static ApplicationUsageProxy DisplaySetting_e20(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FBO_POOL_SIZE <int>","Set the hint size of frame buffer object pool to manage.");
 
 void DisplaySettings::readEnvironmentalVariables()
@@ -403,14 +400,9 @@ void DisplaySettings::readEnvironmentalVariables()
         _maxTexturePoolSize = atoi(ptr);
     }
 
-    if( (ptr = getenv("OSG_VBO_POOL_SIZE")) != 0)
+    if( (ptr = getenv("OSG_BUFFER_OBJECT_POOL_SIZE")) != 0)
     {
-        _maxVBOPoolSize = atoi(ptr);
-    }
-
-    if( (ptr = getenv("OSG_FBO_POOL_SIZE")) != 0)
-    {
-        _maxFBOPoolSize = atoi(ptr);
+        _maxBufferObjectPoolSize = atoi(ptr);
     }
 }
 
@@ -500,8 +492,7 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
     while(arguments.read("--num-http-threads",_numHttpDatabaseThreadsHint)) {}
 
     while(arguments.read("--texture-pool-size",_maxTexturePoolSize)) {}
-    while(arguments.read("--vbo-pool-size",_maxVBOPoolSize)) {}
-    while(arguments.read("--fbo-pool-size",_maxFBOPoolSize)) {}
+    while(arguments.read("--buffer-object-pool-size",_maxBufferObjectPoolSize)) {}
 
 }
 

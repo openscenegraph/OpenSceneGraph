@@ -1400,7 +1400,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         viewStr << "Lights" << std::endl;
         viewStr << "Bins" << std::endl;
         viewStr << "Depth" << std::endl;
-        viewStr << "Matrices" << std::endl;
+        viewStr << "Materials" << std::endl;
         viewStr << "Imposters" << std::endl;
         viewStr << "Drawables" << std::endl;
         viewStr << "Vertices" << std::endl;

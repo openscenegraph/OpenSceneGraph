@@ -175,7 +175,7 @@ Texture::TextureObjectSet::~TextureObjectSet()
 
 bool Texture::TextureObjectSet::checkConsistency() const
 {
-    return true;
+//    return true;
 
     // osg::notify(osg::NOTICE)<<"TextureObjectSet::checkConsistency()"<<std::endl;
     // check consistency of linked list.
@@ -265,7 +265,7 @@ void Texture::TextureObjectSet::flushAllDeletedTextureObjects()
 
         GLuint id = (*itr)->id();
 
-        // osg::notify(osg::NOTICE)<<"Deleting textureobject id="<<id<<std::endl;
+        osg::notify(osg::NOTICE)<<"Deleting textureobject id="<<id<<std::endl;
 
         glDeleteTextures( 1L, &id);
     }
@@ -327,7 +327,7 @@ void Texture::TextureObjectSet::flushDeletedTextureObjects(double currentTime, d
 
         GLuint id = (*itr)->id();
 
-        // osg::notify(osg::NOTICE)<<"Deleting textureobject id="<<id<<std::endl;
+        osg::notify(osg::NOTICE)<<"Deleting textureobject id="<<id<<std::endl;
 
         glDeleteTextures( 1L, &id);
 

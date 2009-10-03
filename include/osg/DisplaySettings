@@ -203,11 +203,8 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         void setMaxTexturePoolSize(unsigned int size) { _maxTexturePoolSize = size; }
         unsigned int getMaxTexturePoolSize() const { return _maxTexturePoolSize; }
 
-        void setMaxVBOPoolSize(unsigned int size) { _maxVBOPoolSize = size; }
-        unsigned int getMaxVBOPoolSize() const { return _maxVBOPoolSize; }
-
-        void setMaxFBOPoolSize(unsigned int size) { _maxFBOPoolSize = size; }
-        unsigned int getMaxFBOPoolSize() const { return _maxFBOPoolSize; }
+        void setMaxBufferObjectPoolSize(unsigned int size) { _maxBufferObjectPoolSize = size; }
+        unsigned int getMaxBufferObjectPoolSize() const { return _maxBufferObjectPoolSize; }
 
     protected:
     
@@ -251,8 +248,7 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         std::string                     _application;
 
         unsigned int                    _maxTexturePoolSize;
-        unsigned int                    _maxVBOPoolSize;
-        unsigned int                    _maxFBOPoolSize;
+        unsigned int                    _maxBufferObjectPoolSize;
 };
 
 }

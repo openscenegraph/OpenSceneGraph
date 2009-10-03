@@ -1025,7 +1025,7 @@ void SceneView::draw()
     osg::Texture::TextureObjectManager* tom = osg::Texture::getTextureObjectManager(state->getContextID());
     tom->newFrame(state->getFrameStamp());
 
-    osg::GLBufferObjectManager::GLBufferObjectManager* bom = osg::GLBufferObjectManager::getGLBufferObjectManager(state->getContextID());
+    osg::GLBufferObjectManager* bom = osg::GLBufferObjectManager::getGLBufferObjectManager(state->getContextID());
     bom->newFrame(state->getFrameStamp());
 
     if (!_initCalled) init();

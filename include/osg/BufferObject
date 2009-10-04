@@ -543,7 +543,7 @@ class OSG_EXPORT BufferObject : public Object
         mutable GLBufferObjects _glBufferObjects;
 };
 
-class BufferData : public Object
+class OSG_EXPORT BufferData : public Object
 {
     public:
 

@@ -1368,8 +1368,8 @@ void PrimitiveShapeVisitor::createCylinderBody(unsigned int numSegments, float r
         }
 
         // do last point by hand to ensure no round off errors.
-        _functor.vertex(osg::Vec3(r,0.0f,topz));
-        _functor.vertex(osg::Vec3(r,0.0f,basez));
+        _functor.vertex(osg::Vec3(r,0.0f,topz) * matrix);
+        _functor.vertex(osg::Vec3(r,0.0f,basez) * matrix);
     
     _functor.end();
 }

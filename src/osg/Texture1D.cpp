@@ -190,7 +190,7 @@ void Texture1D::apply(State& state) const
     
         _textureObjectBuffer[contextID] = textureObject;
     
-        if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded() && _image->getDataVariance()==STATIC)
+        if (state.getMaxTexturePoolSize()==0 && _unrefImageDataAfterApply && areAllTextureObjectsLoaded() && _image->getDataVariance()==STATIC)
         {
             Texture1D* non_const_this = const_cast<Texture1D*>(this);
             non_const_this->_image = 0;

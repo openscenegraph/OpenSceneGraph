@@ -362,6 +362,7 @@ class OSG_EXPORT GLBufferObjectSet : public Referenced
         void addToBack(GLBufferObject* to);
         void orphan(GLBufferObject* to);
         void remove(GLBufferObject* to);
+        void moveToSet(GLBufferObject* to, GLBufferObjectSet* set);
 
         unsigned int size() const { return _profile._size * _numOfGLBufferObjects; }
 

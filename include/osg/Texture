@@ -1016,6 +1016,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             void addToBack(TextureObject* to);
             void orphan(TextureObject* to);
             void remove(TextureObject* to);
+            void moveToSet(TextureObject* to, TextureObjectSet* set);
 
             unsigned int size() const { return _profile._size * _numOfTextureObjects; }
 

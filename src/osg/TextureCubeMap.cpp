@@ -293,7 +293,7 @@ void TextureCubeMap::apply(State& state) const
 
         _textureObjectBuffer[contextID] = textureObject;
 
-        if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded())
+        if (state.getMaxTexturePoolSize()==0 && _unrefImageDataAfterApply && areAllTextureObjectsLoaded())
         {
             TextureCubeMap* non_const_this = const_cast<TextureCubeMap*>(this);
             for (int n=0; n<6; n++)

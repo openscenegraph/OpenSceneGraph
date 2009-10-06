@@ -311,7 +311,7 @@ void Texture2DArray::apply(State& state) const
         _textureObjectBuffer[contextID] = textureObject;
         
         // no idea what this for ;-)
-        if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded())
+        if (state.getMaxTexturePoolSize()==0 && _unrefImageDataAfterApply && areAllTextureObjectsLoaded())
         {
             Texture2DArray* non_const_this = const_cast<Texture2DArray*>(this);
             for (int n=0; n<_textureDepth; n++)

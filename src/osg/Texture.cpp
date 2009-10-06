@@ -90,14 +90,7 @@ void Texture::TextureObject::setAllocated(GLint     numMipmapLevels,
 
         if (_set)
         {
-            // remove self from original set
-            _set->remove(this);
-
-            // get the new set for the new profile
-            _set = _set->getParent()->getTextureObjectSet(_profile);
-
-            // register self with new set.
-            _set->addToBack(this);
+            _set->moveToSet(this, _set->getParent()->getTextureObjectSet(_profile));
         }
     }
 }
@@ -383,7 +376,7 @@ Texture::TextureObject* Texture::TextureObjectSet::takeFromOrphans(Texture* text
     // place at back of active list
     addToBack(to.get());
 
-    // osg::notify(osg::NOTICE)<<"Reusing orhpahned TextureObject, _numOfTextureObjects="<<_numOfTextureObjects<<std::endl;
+    osg::notify(osg::NOTICE)<<"Reusing orhpahned TextureObject, _numOfTextureObjects="<<_numOfTextureObjects<<std::endl;
 
     return to.release();
 }
@@ -422,11 +415,11 @@ Texture::TextureObject* Texture::TextureObjectSet::takeOrGenerate(Texture* textu
         if (original_texture.valid())
         {
             original_texture->setTextureObject(_contextID,0);
-            // osg::notify(osg::NOTICE)<<"TextureObjectSet="<<this<<": Reusing an active TextureObject "<<to.get()<<" _numOfTextureObjects="<<_numOfTextureObjects<<" width="<<_profile._width<<" height="<<_profile._height<<std::endl;
+            osg::notify(osg::NOTICE)<<"TextureObjectSet="<<this<<": Reusing an active TextureObject "<<to.get()<<" _numOfTextureObjects="<<_numOfTextureObjects<<" width="<<_profile._width<<" height="<<_profile._height<<std::endl;
         }
         else
         {
-            // osg::notify(osg::NOTICE)<<"Reusing a recently orphaned active TextureObject "<<to.get()<<std::endl;
+            osg::notify(osg::NOTICE)<<"Reusing a recently orphaned active TextureObject "<<to.get()<<std::endl;
         }
 
         moveToBack(to.get());
@@ -453,7 +446,7 @@ Texture::TextureObject* Texture::TextureObjectSet::takeOrGenerate(Texture* textu
 
     addToBack(to);
 
-    // osg::notify(osg::NOTICE)<<"Created new TextureObject, _numOfTextureObjects "<<_numOfTextureObjects<<std::endl;
+    osg::notify(osg::NOTICE)<<"Created new TextureObject, _numOfTextureObjects "<<_numOfTextureObjects<<std::endl;
 
     return to;
 }
@@ -600,6 +593,21 @@ void Texture::TextureObjectSet::remove(Texture::TextureObject* to)
     // reset the 'to' list pointers as it's no longer in the active list.
     to->_next = 0;
     to->_previous = 0;
+}
+
+void Texture::TextureObjectSet::moveToSet(TextureObject* to, TextureObjectSet* set)
+{
+    if (set==this) return;
+    if (!set) return;
+
+    // remove 'to' from original set
+    --_numOfTextureObjects;
+    remove(to);
+
+    // register 'to' with new set.
+    to->_set = set;
+    ++set->_numOfTextureObjects;
+    set->addToBack(to);
 }
 
 

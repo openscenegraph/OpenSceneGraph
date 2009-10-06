@@ -174,16 +174,10 @@ void GLBufferObject::compileBuffer()
         osg::notify(osg::NOTICE)<<"newTotalSize="<<newTotalSize<<", _profile._size="<<_profile._size<<std::endl;
 
         _profile._size = newTotalSize;
+
         if (_set)
         {
-            // remove self from original set
-            _set->remove(this);
-
-            // get the new set for the new profile
-            _set = _set->getParent()->getGLBufferObjectSet(_profile);
-
-            // register self with new set.
-            _set->addToBack(this);
+            _set->moveToSet(this, _set->getParent()->getGLBufferObjectSet(_profile));
         }
 
     }
@@ -880,6 +874,23 @@ void GLBufferObjectSet::remove(GLBufferObject* to)
     to->_next = 0;
     to->_previous = 0;
 }
+
+
+void GLBufferObjectSet::moveToSet(GLBufferObject* to, GLBufferObjectSet* set)
+{
+    if (set==this) return;
+    if (!set) return;
+
+    // remove 'to' from original set
+    --_numOfGLBufferObjects;
+    remove(to);
+
+    // register 'to' with new set.
+    to->_set = set;
+    ++set->_numOfGLBufferObjects;
+    set->addToBack(to);
+}
+
 
 
 GLBufferObjectManager::GLBufferObjectManager(unsigned int contextID):

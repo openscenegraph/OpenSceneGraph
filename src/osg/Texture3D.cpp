@@ -278,7 +278,7 @@ void Texture3D::apply(State& state) const
 
         _textureObjectBuffer[contextID] = textureObject;
 
-        if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded() && _image->getDataVariance()==STATIC)
+        if (state.getMaxTexturePoolSize()==0 && _unrefImageDataAfterApply && areAllTextureObjectsLoaded() && _image->getDataVariance()==STATIC)
         {
             Texture3D* non_const_this = const_cast<Texture3D*>(this);
             non_const_this->_image = 0;

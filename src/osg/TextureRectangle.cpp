@@ -211,25 +211,38 @@ void TextureRectangle::apply(State& state) const
     else if (_image.valid() && _image->data())
     {
 
-        // we don't have a applyTexImage1D_subload yet so can't reuse.. so just generate a new texture object.
-        textureObject = generateTextureObject(this, contextID,GL_TEXTURE_RECTANGLE);
-        
+
+        // keep the image around at least till we go out of scope.
+        osg::ref_ptr<osg::Image> image = _image;
+
+        // compute the internal texture format, this set the _internalFormat to an appropriate value.
+        computeInternalFormat();
+
+        _textureWidth = image->s();
+        _textureHeight = image->t();
+
+        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
+                this, contextID,GL_TEXTURE_RECTANGLE,1,_internalFormat,_textureWidth,_textureHeight,1,0);
+
         textureObject->bind();
 
         applyTexParameters(GL_TEXTURE_RECTANGLE, state);
-     
-        applyTexImage_load(GL_TEXTURE_RECTANGLE, _image.get(), state, _textureWidth, _textureHeight);
 
-        textureObject->setAllocated(1,_internalFormat,_textureWidth,_textureHeight,1,0);
-        
-        _textureObjectBuffer[contextID] = textureObject;
+        if (textureObject->isAllocated())
+        {
+            applyTexImage_subload(GL_TEXTURE_RECTANGLE, _image.get(), state, _textureWidth, _textureHeight, _internalFormat);
+        }
+        else
+        {
+            applyTexImage_load(GL_TEXTURE_RECTANGLE, _image.get(), state, _textureWidth, _textureHeight);
+            textureObject->setAllocated(true);
+        }
 
-        if (_unrefImageDataAfterApply && areAllTextureObjectsLoaded() && _image->getDataVariance()==STATIC)
+        if (state.getMaxTexturePoolSize()==0 && _unrefImageDataAfterApply && areAllTextureObjectsLoaded() && _image->getDataVariance()==STATIC)
         {
             TextureRectangle* non_const_this = const_cast<TextureRectangle*>(this);
             non_const_this->_image = 0;
         }
-
 
     }
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_internalFormat!=0) )

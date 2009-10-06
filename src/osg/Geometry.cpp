@@ -1089,20 +1089,16 @@ osg::VertexBufferObject* Geometry::getOrCreateVertexBufferObject()
     ArrayList arrayList;
     getArrayList(arrayList);
 
-    osg::VertexBufferObject* vbo = 0;
-
     ArrayList::iterator vitr;
     for(vitr = arrayList.begin();
-        vitr != arrayList.end() && !vbo;
+        vitr != arrayList.end();
         ++vitr)
     {
         osg::Array* array = *vitr;
-        if (array->getVertexBufferObject()) vbo = array->getVertexBufferObject();
+        if (array->getVertexBufferObject()) return array->getVertexBufferObject();
     }
 
-    if (!vbo) vbo = new osg::VertexBufferObject;
-    
-    return vbo;
+    return new osg::VertexBufferObject;
 }
 
 osg::ElementBufferObject* Geometry::getOrCreateElementBufferObject()
@@ -1110,20 +1106,16 @@ osg::ElementBufferObject* Geometry::getOrCreateElementBufferObject()
     DrawElementsList drawElementsList;
     getDrawElementsList(drawElementsList);
 
-    osg::ElementBufferObject* ebo = 0;
-
     DrawElementsList::iterator deitr;
     for(deitr = drawElementsList.begin();
         deitr != drawElementsList.end();
         ++deitr)
     {
         osg::DrawElements* elements = *deitr;
-        if (!elements->getElementBufferObject()) ebo = elements->getElementBufferObject();
+        if (elements->getElementBufferObject()) return elements->getElementBufferObject();
     }
 
-    if (!ebo) ebo = new osg::ElementBufferObject;
-    
-    return ebo;
+    return new osg::ElementBufferObject;
 }
 
 void Geometry::setUseVertexBufferObjects(bool flag)

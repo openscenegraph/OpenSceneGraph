@@ -1740,7 +1740,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         #endif
     }
     
-    unsigned char* data = (unsigned char*)image->data();
+    unsigned char* dataPtr = (unsigned char*)image->data();
  
     // osg::notify(osg::NOTICE)<<"inwidth="<<inwidth<<" inheight="<<inheight<<" image->getFileName()"<<image->getFileName()<<std::endl;
 
@@ -1762,9 +1762,9 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         }
         
         unsigned int newTotalSize = osg::Image::computeRowWidthInBytes(inwidth,image->getPixelFormat(),image->getDataType(),image->getPacking())*inheight;
-        data = new unsigned char [newTotalSize];
+        dataPtr = new unsigned char [newTotalSize];
         
-        if (!data)
+        if (!dataPtr)
         {
             notify(WARN)<<"Warning:: Not enough memory to resize image, cannot apply to texture."<<std::endl;
             return;
@@ -1777,20 +1777,19 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         glPixelStorei(GL_PACK_ALIGNMENT,image->getPacking());
         gluScaleImage(image->getPixelFormat(),
                       image->s(),image->t(),image->getDataType(),image->data(),
-                      inwidth,inheight,image->getDataType(),data);
-        
-    }    
+                      inwidth,inheight,image->getDataType(),dataPtr);
+
+    }
 
     bool mipmappingRequired = _min_filter != LINEAR && _min_filter != NEAREST;
     bool useHardwareMipMapGeneration = mipmappingRequired && (!image->isMipmap() && isHardwareMipmapGenerationEnabled(state));
     bool useGluBuildMipMaps = mipmappingRequired && (!useHardwareMipMapGeneration && !image->isMipmap());
 
-    const unsigned char* dataPtr = image->data();
     GLBufferObject* pbo = image->getOrCreateGLBufferObject(contextID);
     if (pbo && !needImageRescale && !useGluBuildMipMaps)
     {
         state.bindPixelBufferObject(pbo);
-        dataPtr = reinterpret_cast<const unsigned char*>(pbo->getOffset(image->getBufferIndex()));
+        dataPtr = reinterpret_cast<unsigned char*>(pbo->getOffset(image->getBufferIndex()));
 #ifdef DO_TIMING
         osg::notify(osg::NOTICE)<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 #endif
@@ -1896,7 +1895,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                 gluBuild2DMipmaps( target, _internalFormat,
                     inwidth,inheight,
                     (GLenum)image->getPixelFormat(), (GLenum)image->getDataType(),
-                    data);
+                    dataPtr);
 
                 int width  = image->s();
                 int height = image->t();
@@ -1930,7 +1929,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     if (needImageRescale)
     {
         // clean up the resized image.
-        delete [] data;
+        delete [] dataPtr;
     }
     
     if (useClientStorage)

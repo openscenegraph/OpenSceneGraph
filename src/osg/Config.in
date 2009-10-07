@@ -30,6 +30,6 @@
 #cmakedefine OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION
 #cmakedefine OSG_USE_UTF8_FILENAME
 #cmakedefine OSG_DISABLE_MSVC_WARNINGS
-
+#cmakedefine OSG_GLU_AVAILABLE
 
 #endif

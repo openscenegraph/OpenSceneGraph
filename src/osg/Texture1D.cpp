@@ -299,10 +299,14 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
 
             numMipmapLevels = 1;
 
+#ifdef OSG_GLU_AVAILABLE
             gluBuild1DMipmaps( target, _internalFormat,
                 image->s(),
                 (GLenum)image->getPixelFormat(), (GLenum)image->getDataType(),
                 image->data() );
+#else
+            osg::notify(osg::NOTICE)<<"Warning: gluBuild1DMipmaps(..) not supported."<<std::endl;
+#endif
 
         }
         else

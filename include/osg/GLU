@@ -14,19 +14,25 @@
 #ifndef OSG_GLU
 #define OSG_GLU 1
 
-#include <osg/GL>
+#include <osg/Config>
 
-#if defined(__APPLE__) || \
-    (defined (_AIX) && !defined (_AIX51))
-    #include <OpenGL/glu.h>
-#else
-    #include <GL/glu.h>
-#endif
+#ifdef OSG_GLU_AVAILABLE
 
-#if defined(GLU_TESS_CALLBACK_TRIPLEDOT)
-    typedef void (APIENTRY *GLU_TESS_CALLBACK)(...);
-#else
-    typedef void (APIENTRY *GLU_TESS_CALLBACK)();
+    #include <osg/GL>
+
+    #if defined(__APPLE__) || \
+        (defined (_AIX) && !defined (_AIX51))
+        #include <OpenGL/glu.h>
+    #else
+        #include <GL/glu.h>
+    #endif
+
+    #if defined(GLU_TESS_CALLBACK_TRIPLEDOT)
+        typedef void (APIENTRY *GLU_TESS_CALLBACK)(...);
+    #else
+        typedef void (APIENTRY *GLU_TESS_CALLBACK)();
+    #endif
+
 #endif
 
 #endif  // __osgGLU_h

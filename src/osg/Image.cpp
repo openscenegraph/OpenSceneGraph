@@ -875,124 +875,135 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
     }    
 }
 
-
-void Image::scaleImage(int s,int t,int r, GLenum newDataType)
-{
-    if (_s==s && _t==t && _r==r) return;
-
-    if (_data==NULL)
+#ifdef OSG_GLU_AVAILABLE
+    void Image::scaleImage(int s,int t,int r, GLenum newDataType)
     {
-        notify(WARN) << "Error Image::scaleImage() do not succeed : cannot scale NULL image."<<std::endl;
-        return;
-    }
+        if (_s==s && _t==t && _r==r) return;
 
-    if (_r!=1 || r!=1)
+        if (_data==NULL)
+        {
+            notify(WARN) << "Error Image::scaleImage() do not succeed : cannot scale NULL image."<<std::endl;
+            return;
+        }
+
+        if (_r!=1 || r!=1)
+        {
+            notify(WARN) << "Error Image::scaleImage() do not succeed : scaling of volumes not implemented."<<std::endl;
+            return;
+        }
+
+
+
+        unsigned int newTotalSize = computeRowWidthInBytes(s,_pixelFormat,newDataType,_packing)*t;
+
+        // need to sort out what size to really use...
+        unsigned char* newData = new unsigned char [newTotalSize];
+        if (!newData)
+        {
+            // should we throw an exception???  Just return for time being.
+            notify(FATAL) << "Error Image::scaleImage() do not succeed : out of memory."<<newTotalSize<<std::endl;
+            return;
+        }
+
+        glPixelStorei(GL_PACK_ALIGNMENT,_packing);
+        glPixelStorei(GL_UNPACK_ALIGNMENT,_packing);
+
+        GLint status = gluScaleImage(_pixelFormat,
+            _s,
+            _t,
+            _dataType,
+            _data,
+            s,
+            t,
+            newDataType,
+            newData);
+
+        if (status==0)
+        {
+
+            // free old image.
+            _s = s;
+            _t = t;
+            _dataType = newDataType;
+            setData(newData,USE_NEW_DELETE);
+        }
+        else
+        {
+        delete [] newData;
+
+            notify(WARN) << "Error Image::scaleImage() did not succeed : errorString = "<<gluErrorString((GLenum)status)<<std::endl;
+        }
+
+        dirty();
+    }
+#else
+    void Image::scaleImage(int,int,int, GLenum)
     {
-        notify(WARN) << "Error Image::scaleImage() do not succeed : scaling of volumes not implemented."<<std::endl;
-        return;
+        osg::notify(osg::NOTICE)<<"Warning: Image::scaleImage(int s,int t,int r, GLenum newDataType) not supported."<<std::endl;
     }
+#endif
 
-    
-
-    unsigned int newTotalSize = computeRowWidthInBytes(s,_pixelFormat,newDataType,_packing)*t;
-
-    // need to sort out what size to really use...
-    unsigned char* newData = new unsigned char [newTotalSize];
-    if (!newData)
+#ifdef OSG_GLU_AVAILABLE
+    void Image::copySubImage(int s_offset, int t_offset, int r_offset, const osg::Image* source)
     {
-        // should we throw an exception???  Just return for time being.
-        notify(FATAL) << "Error Image::scaleImage() do not succeed : out of memory."<<newTotalSize<<std::endl;
-        return;
+        if (!source) return;
+        if (s_offset<0 || t_offset<0 || r_offset<0)
+        {
+            notify(WARN)<<"Warning: negative offsets passed to Image::copySubImage(..) not supported, operation ignored."<<std::endl;
+            return;
+        }
+
+        if (!_data)
+        {
+            notify(INFO)<<"allocating image"<<endl;
+            allocateImage(s_offset+source->s(),t_offset+source->t(),r_offset+source->r(),
+                        source->getPixelFormat(),source->getDataType(),
+                        source->getPacking());
+        }
+
+        if (s_offset>=_s || t_offset>=_t  || r_offset>=_r)
+        {
+            notify(WARN)<<"Warning: offsets passed to Image::copySubImage(..) outside destination image, operation ignored."<<std::endl;
+            return;
+        }
+
+
+        if (_pixelFormat != source->getPixelFormat())
+        {
+            notify(WARN)<<"Warning: image with an incompatible pixel formats passed to Image::copySubImage(..), operation ignored."<<std::endl;
+            return;
+        }
+
+        void* data_destination = data(s_offset,t_offset,r_offset);
+
+        glPixelStorei(GL_PACK_ALIGNMENT,source->getPacking());
+        glPixelStorei(GL_PACK_ROW_LENGTH,_s);
+
+        glPixelStorei(GL_UNPACK_ALIGNMENT,_packing);
+
+        GLint status = gluScaleImage(_pixelFormat,
+            source->s(),
+            source->t(),
+            source->getDataType(),
+            source->data(),
+            source->s(),
+            source->t(),
+            _dataType,
+            data_destination);
+
+        glPixelStorei(GL_PACK_ROW_LENGTH,0);
+
+        if (status!=0)
+        {
+            notify(WARN) << "Error Image::scaleImage() do not succeed : errorString = "<<gluErrorString((GLenum)status)<<std::endl;
+        }
     }
-
-    glPixelStorei(GL_PACK_ALIGNMENT,_packing);
-    glPixelStorei(GL_UNPACK_ALIGNMENT,_packing);
-
-    GLint status = gluScaleImage(_pixelFormat,
-        _s,
-        _t,
-        _dataType,
-        _data,
-        s,
-        t,
-        newDataType,
-        newData);
-
-    if (status==0)
+#else
+    void Image::copySubImage(int, int, int, const osg::Image*)
     {
-
-        // free old image.
-        _s = s;
-        _t = t;
-        _dataType = newDataType;
-        setData(newData,USE_NEW_DELETE);
+        osg::notify(osg::NOTICE)<<"Warning: Image::copySubImage(int, int, int, const osg::Image*)) not supported."<<std::endl;
     }
-    else
-    {
-       delete [] newData;
-
-        notify(WARN) << "Error Image::scaleImage() did not succeed : errorString = "<<gluErrorString((GLenum)status)<<std::endl;
-    }
-    
-    dirty();
-}
-
-void Image::copySubImage(int s_offset, int t_offset, int r_offset, const osg::Image* source)
-{
-    if (!source) return;
-    if (s_offset<0 || t_offset<0 || r_offset<0) 
-    {
-        notify(WARN)<<"Warning: negative offsets passed to Image::copySubImage(..) not supported, operation ignored."<<std::endl;
-        return;
-    }
-    
-    if (!_data)
-    {
-        notify(INFO)<<"allocating image"<<endl;
-        allocateImage(s_offset+source->s(),t_offset+source->t(),r_offset+source->r(),
-                    source->getPixelFormat(),source->getDataType(),
-                    source->getPacking());
-    }
-    
-    if (s_offset>=_s || t_offset>=_t  || r_offset>=_r)
-    {
-        notify(WARN)<<"Warning: offsets passed to Image::copySubImage(..) outside destination image, operation ignored."<<std::endl;
-        return;
-    }
-    
-    
-    if (_pixelFormat != source->getPixelFormat())
-    {
-        notify(WARN)<<"Warning: image with an incompatible pixel formats passed to Image::copySubImage(..), operation ignored."<<std::endl;
-        return;
-    }
-
-    void* data_destination = data(s_offset,t_offset,r_offset);
-    
-    glPixelStorei(GL_PACK_ALIGNMENT,source->getPacking());
-    glPixelStorei(GL_PACK_ROW_LENGTH,_s);
-
-    glPixelStorei(GL_UNPACK_ALIGNMENT,_packing);
-    
-    GLint status = gluScaleImage(_pixelFormat,
-        source->s(),
-        source->t(),
-        source->getDataType(),
-        source->data(),
-        source->s(),
-        source->t(),
-        _dataType,
-        data_destination);
-
-    glPixelStorei(GL_PACK_ROW_LENGTH,0);
-
-    if (status!=0)
-    {
-        notify(WARN) << "Error Image::scaleImage() do not succeed : errorString = "<<gluErrorString((GLenum)status)<<std::endl;
-    }
-
-}
-
+#endif
 
 void Image::flipHorizontal()
 {

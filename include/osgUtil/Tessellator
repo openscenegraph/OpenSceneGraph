@@ -42,6 +42,7 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
         ~Tessellator();
 
         /** The winding rule, see red book ch 11. */
+#ifdef OSG_GLU_AVAILABLE
         enum WindingType{
             TESS_WINDING_ODD          = GLU_TESS_WINDING_ODD,
             TESS_WINDING_NONZERO      = GLU_TESS_WINDING_NONZERO     ,
@@ -49,7 +50,15 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
             TESS_WINDING_NEGATIVE     = GLU_TESS_WINDING_NEGATIVE    ,
             TESS_WINDING_ABS_GEQ_TWO  =    GLU_TESS_WINDING_ABS_GEQ_TWO
         } ;
-
+#else
+        enum WindingType{
+            TESS_WINDING_ODD,
+            TESS_WINDING_NONZERO,
+            TESS_WINDING_POSITIVE,
+            TESS_WINDING_NEGATIVE,
+            TESS_WINDING_ABS_GEQ_TWO
+        } ;
+#endif
         /** we interpret all contours in the geometry as a single set to be tessellated or
          * each separate drawable's contours needs to be tessellated. */
         enum TessellationType {
@@ -211,7 +220,11 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
         typedef std::vector<NewVertex> NewVertexList;
         typedef std::vector<Vec3d*> Vec3dList;
 
+#ifdef OSG_GLU_AVAILABLE
         GLUtesselator*  _tobj;
+#else
+        void*           _tobj;
+#endif
         PrimList        _primList;
         Vec3dList       _coordData;
         NewVertexList   _newVertexList;

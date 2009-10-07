@@ -1326,7 +1326,7 @@ PixelBufferObject::PixelBufferObject(osg::Image* image):
     BufferObject()
 {
     setTarget(GL_PIXEL_UNPACK_BUFFER_ARB);
-    setTarget(GL_STREAM_DRAW_ARB);
+    setUsage(GL_STREAM_DRAW_ARB);
 
     osg::notify(osg::NOTICE)<<"Constructing PixelBufferObject for image="<<image<<std::endl;
 

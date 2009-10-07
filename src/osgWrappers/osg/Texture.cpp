@@ -1043,6 +1043,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObjectSet)
 	          __void__remove__TextureObject_P1,
 	          "",
 	          "");
+	I_Method2(void, moveToSet, IN, osg::Texture::TextureObject *, to, IN, osg::Texture::TextureObjectSet *, set,
+	          Properties::NON_VIRTUAL,
+	          __void__moveToSet__TextureObject_P1__TextureObjectSet_P1,
+	          "",
+	          "");
 	I_Method0(unsigned int, size,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__size,

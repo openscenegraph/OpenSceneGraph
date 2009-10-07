@@ -280,6 +280,9 @@ MARK_AS_ADVANCED(OSG_DISABLE_MSVC_WARNINGS)
 
 OPTION(OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION "Set to ON to use the ref_ptr<> T* operator() output conversion. " ON)
 
+OPTION(OSG_GLU_AVAILABLE "Set to OFF to disable use of OpenGL GLU library." ${OPENGL_GLU_FOUND})
+MARK_AS_ADVANCED(OSG_GLU_AVAILABLE)
+
 ################################################################################
 # Set Config file
 

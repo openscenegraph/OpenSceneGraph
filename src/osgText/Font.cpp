@@ -860,7 +860,13 @@ void Font::Glyph::subload() const
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
     {
-        osg::notify(osg::WARN)<<"before Font::Glyph::subload(): detected OpenGL error '"<<gluErrorString(errorNo)<<std::endl;
+#ifdef OSG_GLU_AVAILABLE
+        const GLubyte* msg = gluErrorString(errorNo);
+        if (msg) osg::notify(osg::WARN)<<"before Font::Glyph::subload(): detected OpenGL error: "<<msg<<std::endl;
+        else  osg::notify(osg::WARN)<<"before Font::Glyph::subload(): detected OpenGL error number: "<<errorNo<<std::endl;
+#else
+        osg::notify(osg::WARN)<<"before Font::Glyph::subload(): detected OpenGL error number: "<<errorNo<<std::endl;
+#endif
     }
 
     if(s() <= 0 || t() <= 0)
@@ -882,7 +888,15 @@ void Font::Glyph::subload() const
     if (errorNo!=GL_NO_ERROR)
     {
 
-        osg::notify(osg::WARN)<<"after Font::Glyph::subload() : detected OpenGL error '"<<gluErrorString(errorNo)<<"'"<<std::endl;
+
+#ifdef OSG_GLU_AVAILABLE
+        const GLubyte* msg = gluErrorString(errorNo);
+        if (msg) osg::notify(osg::WARN)<<"after Font::Glyph::subload() : detected OpenGL error: "<<msg<<std::endl;
+        else osg::notify(osg::WARN)<<"after Font::Glyph::subload() : detected OpenGL error number: "<<errorNo<<std::endl;
+#else
+        osg::notify(osg::WARN)<<"after Font::Glyph::subload() : detected OpenGL error number: "<<errorNo<<std::endl;
+#endif
+
         osg::notify(osg::WARN)<< "\tglTexSubImage2D(0x"<<hex<<GL_TEXTURE_2D<<dec<<" ,"<<0<<"\t"<<std::endl<<
                                  "\t                "<<_texturePosX<<" ,"<<_texturePosY<<std::endl<<
                                  "\t                "<<s()<<" ,"<<t()<<std::endl<<hex<<

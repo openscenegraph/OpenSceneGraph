@@ -982,10 +982,13 @@ bool State::checkGLErrors(const char* str) const
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
     {
+#ifdef OSG_GLU_AVAILABLE
         const char* error = (char*)gluErrorString(errorNo);
         if (error) osg::notify(WARN)<<"Warning: detected OpenGL error '" << error<<"'";
         else       osg::notify(WARN)<<"Warning: detected OpenGL error number 0x" << std::hex << errorNo << std::dec;
-
+#else
+        osg::notify(WARN)<<"Warning: detected OpenGL error number 0x" << std::hex << errorNo << std::dec;
+#endif
         if (str) osg::notify(WARN)<<" at "<<str<< std::endl;
         else     osg::notify(WARN)<<" in osg::State."<< std::endl;
 
@@ -999,10 +1002,13 @@ bool State::checkGLErrors(StateAttribute::GLMode mode) const
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
     {
+#ifdef OSG_GLU_AVAILABLE
         const char* error = (char*)gluErrorString(errorNo);
         if (error) osg::notify(WARN)<<"Warning: detected OpenGL error '"<< error <<"' after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
         else       osg::notify(WARN)<<"Warning: detected OpenGL error number 0x"<< std::hex << errorNo <<" after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
-
+#else
+        osg::notify(WARN)<<"Warning: detected OpenGL error number 0x"<< std::hex << errorNo <<" after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
+#endif
         return true;
     }
     return false;
@@ -1013,9 +1019,13 @@ bool State::checkGLErrors(const StateAttribute* attribute) const
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
     {
+#ifdef OSG_GLU_AVAILABLE
         const char* error = (char*)gluErrorString(errorNo);
         if (error) osg::notify(WARN)<<"Warning: detected OpenGL error '"<< error <<"' after applying attribute "<<attribute->className()<<" "<<attribute<< std::endl;
         else       osg::notify(WARN)<<"Warning: detected OpenGL error number 0x"<< std::hex << errorNo <<" after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
+#else
+        osg::notify(WARN)<<"Warning: detected OpenGL error number 0x"<< std::hex << errorNo <<" after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
+#endif
 
         return true;
     }

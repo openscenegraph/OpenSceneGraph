@@ -23,6 +23,19 @@
 
 namespace osgUtil {
 
+#ifndef OSG_GLU_AVAILABLE
+    // as we have no GLU we'll just define the required enum values
+    #define GLU_FALSE           0
+    #define GLU_FILL            100012
+    #define GLU_SMOOTH          100000
+    #define GLU_OUTSIDE         100020
+    #define GLU_NONE            100002
+    #define GLU_POINT           100010
+    #define GLU_LINE            100011
+    #define GLU_FILL            100012
+    #define GLU_SILHOUETTE      100013
+#endif
+
 /** A class for assisting the building ascene graphs that is equivilant to OpenGL 1.0 style calls.
   */
 class OSGUTIL_EXPORT SceneGraphBuilder

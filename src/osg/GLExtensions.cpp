@@ -235,53 +235,61 @@ std::string& osg::getGLExtensionDisableString()
     return s_GLExtensionDisableString;
 }
 
-
-bool osg::isGLUExtensionSupported(unsigned int contextID, const char *extension)
-{
-    ExtensionSet& extensionSet = s_gluExtensionSetList[contextID];
-    std::string& rendererString = s_gluRendererList[contextID];
-
-    // if not already set up, initialize all the per graphic context values.
-    if (!s_gluInitializedList[contextID])
+#ifdef OSG_GLU_AVAILABLE
+    bool osg::isGLUExtensionSupported(unsigned int contextID, const char *extension)
     {
-        s_gluInitializedList[contextID] = 1;
-    
-        // set up the renderer
-        const GLubyte* renderer = glGetString(GL_RENDERER);
-        rendererString = renderer ? (const char*)renderer : "";
+        ExtensionSet& extensionSet = s_gluExtensionSetList[contextID];
+        std::string& rendererString = s_gluRendererList[contextID];
 
-        // get the extension list from OpenGL.
-        const char* extensions = (const char*)gluGetString(GLU_EXTENSIONS);
-        if (extensions==NULL) return false;
+        // if not already set up, initialize all the per graphic context values.
+        if (!s_gluInitializedList[contextID])
+        {
+            s_gluInitializedList[contextID] = 1;
 
-        // insert the ' ' delimiated extensions words into the extensionSet.
-        const char *startOfWord = extensions;
-        const char *endOfWord;
-        while ((endOfWord = strchr(startOfWord,' '))!=NULL)
-        {
-            extensionSet.insert(std::string(startOfWord,endOfWord));
-            startOfWord = endOfWord+1;
+            // set up the renderer
+            const GLubyte* renderer = glGetString(GL_RENDERER);
+            rendererString = renderer ? (const char*)renderer : "";
+
+            // get the extension list from OpenGL.
+            const char* extensions = (const char*)gluGetString(GLU_EXTENSIONS);
+            if (extensions==NULL) return false;
+
+            // insert the ' ' delimiated extensions words into the extensionSet.
+            const char *startOfWord = extensions;
+            const char *endOfWord;
+            while ((endOfWord = strchr(startOfWord,' '))!=NULL)
+            {
+                extensionSet.insert(std::string(startOfWord,endOfWord));
+                startOfWord = endOfWord+1;
+            }
+            if (*startOfWord!=0) extensionSet.insert(std::string(startOfWord));
+
+            osg::notify(INFO)<<"OpenGL extensions supported by installed OpenGL drivers are:"<<std::endl;
+            for(ExtensionSet::iterator itr=extensionSet.begin();
+                itr!=extensionSet.end();
+                ++itr)
+            {
+                osg::notify(INFO)<<"    "<<*itr<<std::endl;
+            }
+
         }
-        if (*startOfWord!=0) extensionSet.insert(std::string(startOfWord));
-        
-        osg::notify(INFO)<<"OpenGL extensions supported by installed OpenGL drivers are:"<<std::endl;
-        for(ExtensionSet::iterator itr=extensionSet.begin();
-            itr!=extensionSet.end();
-            ++itr)
-        {
-            osg::notify(INFO)<<"    "<<*itr<<std::endl;
-        }
-            
+
+        // true if extension found in extensionSet.
+        bool result = extensionSet.find(extension)!=extensionSet.end();
+
+        if (result) osg::notify(INFO)<<"OpenGL utility library extension '"<<extension<<"' is supported."<<std::endl;
+        else osg::notify(INFO)<<"OpenGL utility library extension '"<<extension<<"' is not supported."<<std::endl;
+
+        return result;
     }
+#else
+    bool osg::isGLUExtensionSupported(unsigned int, const char *)
+    {
+        return false;
+    }
+#endif
 
-    // true if extension found in extensionSet.
-    bool result = extensionSet.find(extension)!=extensionSet.end();
 
-    if (result) osg::notify(INFO)<<"OpenGL utility library extension '"<<extension<<"' is supported."<<std::endl;
-    else osg::notify(INFO)<<"OpenGL utility library extension '"<<extension<<"' is not supported."<<std::endl;
-
-    return result;
-}
 
 #if defined(WIN32)
     #define WIN32_LEAN_AND_MEAN

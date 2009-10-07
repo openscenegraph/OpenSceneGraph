@@ -1366,7 +1366,7 @@ const Image* PixelBufferObject::getImage() const
 PixelDataBufferObject::PixelDataBufferObject()
 {
     setTarget(GL_ARRAY_BUFFER_ARB);
-    setTarget(GL_DYNAMIC_DRAW_ARB);
+    setUsage(GL_DYNAMIC_DRAW_ARB);
 }
 
 //--------------------------------------------------------------------------------

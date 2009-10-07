@@ -520,8 +520,8 @@ BEGIN_VALUE_REFLECTOR(osg::GLBufferObject::BufferEntry)
 	               "",
 	               "");
 	I_PublicMemberProperty(unsigned int, modifiedCount);
-	I_PublicMemberProperty(GLsizeiptrARB, dataSize);
-	I_PublicMemberProperty(GLsizeiptrARB, offset);
+	I_PublicMemberProperty(unsigned int, dataSize);
+	I_PublicMemberProperty(unsigned int, offset);
 	I_PublicMemberProperty(osg::BufferData *, dataSource);
 END_REFLECTOR
 
@@ -793,6 +793,11 @@ BEGIN_OBJECT_REFLECTOR(osg::GLBufferObjectSet)
 	I_Method1(void, remove, IN, osg::GLBufferObject *, to,
 	          Properties::NON_VIRTUAL,
 	          __void__remove__GLBufferObject_P1,
+	          "",
+	          "");
+	I_Method2(void, moveToSet, IN, osg::GLBufferObject *, to, IN, osg::GLBufferObjectSet *, set,
+	          Properties::NON_VIRTUAL,
+	          __void__moveToSet__GLBufferObject_P1__GLBufferObjectSet_P1,
 	          "",
 	          "");
 	I_Method0(unsigned int, size,

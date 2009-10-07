@@ -197,8 +197,8 @@ class OSG_EXPORT GLBufferObject : public Referenced
             }
 
             unsigned int        modifiedCount;
-            GLsizeiptrARB       dataSize;
-            GLsizeiptrARB       offset;
+            unsigned int        dataSize;
+            unsigned int        offset;
             BufferData*         dataSource;
         };
 

@@ -48,6 +48,10 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
 
         std::string convertShader(std::string source)
         {
+            // replace ftransform as it only works with built-ins
+            replace(source, "ftransform()", "gl_ModelViewProjectionMatrix * gl_Vertex");
+
+            // replace the vertex attributes
             replace(source, "gl_Vertex", "osg_Vertex");
             replace(source, "gl_Normal", "osg_Normal");
             replace(source, "gl_Color", "osg_Color");
@@ -61,6 +65,12 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
             replace(source, "gl_MultiTexCoord5", "osg_MultiTexCoord5");
             replace(source, "gl_MultiTexCoord6", "osg_MultiTexCoord6");
             replace(source, "gl_MultiTexCoord7", "osg_MultiTexCoord7");
+
+            // replace the modelview and project matrices
+            replace(source, "gl_ModelViewMatrix", "osg_ModeViewMatrix");
+            replace(source, "gl_ModelViewProjectionMatrix", "osg_ModelViewProjectionMatrix");
+            replace(source, "gl_ProjectionMatrix", "osg_ProjectionMatrix");
+
             return source;
         }
 

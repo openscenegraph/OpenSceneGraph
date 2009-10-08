@@ -111,7 +111,7 @@ void GLBufferObject::compileBuffer()
     bool compileAll = false;
     bool offsetChanged = false;
 
-    GLsizeiptrARB newTotalSize = 0;
+    unsigned int newTotalSize = 0;
     unsigned int i=0;
     for(; i<_bufferObject->getNumBufferData(); ++i)
     {

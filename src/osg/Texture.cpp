@@ -376,7 +376,7 @@ Texture::TextureObject* Texture::TextureObjectSet::takeFromOrphans(Texture* text
     // place at back of active list
     addToBack(to.get());
 
-    osg::notify(osg::NOTICE)<<"Reusing orhpahned TextureObject, _numOfTextureObjects="<<_numOfTextureObjects<<std::endl;
+    osg::notify(osg::INFO)<<"Reusing orhpahned TextureObject, _numOfTextureObjects="<<_numOfTextureObjects<<std::endl;
 
     return to.release();
 }
@@ -415,11 +415,11 @@ Texture::TextureObject* Texture::TextureObjectSet::takeOrGenerate(Texture* textu
         if (original_texture.valid())
         {
             original_texture->setTextureObject(_contextID,0);
-            osg::notify(osg::NOTICE)<<"TextureObjectSet="<<this<<": Reusing an active TextureObject "<<to.get()<<" _numOfTextureObjects="<<_numOfTextureObjects<<" width="<<_profile._width<<" height="<<_profile._height<<std::endl;
+            osg::notify(osg::INFO)<<"TextureObjectSet="<<this<<": Reusing an active TextureObject "<<to.get()<<" _numOfTextureObjects="<<_numOfTextureObjects<<" width="<<_profile._width<<" height="<<_profile._height<<std::endl;
         }
         else
         {
-            osg::notify(osg::NOTICE)<<"Reusing a recently orphaned active TextureObject "<<to.get()<<std::endl;
+            osg::notify(osg::INFO)<<"Reusing a recently orphaned active TextureObject "<<to.get()<<std::endl;
         }
 
         moveToBack(to.get());
@@ -446,7 +446,7 @@ Texture::TextureObject* Texture::TextureObjectSet::takeOrGenerate(Texture* textu
 
     addToBack(to);
 
-    osg::notify(osg::NOTICE)<<"Created new TextureObject, _numOfTextureObjects "<<_numOfTextureObjects<<std::endl;
+    osg::notify(osg::INFO)<<"Created new TextureObject, _numOfTextureObjects "<<_numOfTextureObjects<<std::endl;
 
     return to;
 }

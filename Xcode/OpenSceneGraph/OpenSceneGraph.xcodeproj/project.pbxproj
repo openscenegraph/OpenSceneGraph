@@ -2361,7 +2361,6 @@
 		D41887490EDEE6E000C17A84 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB77AAFE841565C02AAC07 /* Carbon.framework */; };
 		D418874A0EDEE6E000C17A84 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0037A1210C18E81E0089AA1C /* AGL.framework */; };
 		D41887BD0EDEE77900C17A84 /* Animation in Headers */ = {isa = PBXBuildFile; fileRef = D41887A80EDEE77800C17A84 /* Animation */; settings = {ATTRIBUTES = (Public, ); }; };
-		D41887BE0EDEE77900C17A84 /* AnimationManager in Headers */ = {isa = PBXBuildFile; fileRef = D41887A90EDEE77800C17A84 /* AnimationManager */; settings = {ATTRIBUTES = (Public, ); }; };
 		D41887BF0EDEE77900C17A84 /* AnimationManagerBase in Headers */ = {isa = PBXBuildFile; fileRef = D41887AA0EDEE77800C17A84 /* AnimationManagerBase */; settings = {ATTRIBUTES = (Public, ); }; };
 		D41887C00EDEE77900C17A84 /* Assert in Headers */ = {isa = PBXBuildFile; fileRef = D41887AB0EDEE77800C17A84 /* Assert */; settings = {ATTRIBUTES = (Public, ); }; };
 		D41887C10EDEE77900C17A84 /* Bone in Headers */ = {isa = PBXBuildFile; fileRef = D41887AC0EDEE77800C17A84 /* Bone */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -2382,7 +2381,6 @@
 		D41887D00EDEE77900C17A84 /* Vec3Packed in Headers */ = {isa = PBXBuildFile; fileRef = D41887BB0EDEE77900C17A84 /* Vec3Packed */; settings = {ATTRIBUTES = (Public, ); }; };
 		D41887D10EDEE77900C17A84 /* VertexInfluence in Headers */ = {isa = PBXBuildFile; fileRef = D41887BC0EDEE77900C17A84 /* VertexInfluence */; settings = {ATTRIBUTES = (Public, ); }; };
 		D41887DE0EDEE7A000C17A84 /* Animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41887D30EDEE79F00C17A84 /* Animation.cpp */; };
-		D41887DF0EDEE7A000C17A84 /* AnimationManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41887D40EDEE79F00C17A84 /* AnimationManager.cpp */; };
 		D41887E00EDEE7A000C17A84 /* AnimationManagerBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41887D50EDEE79F00C17A84 /* AnimationManagerBase.cpp */; };
 		D41887E10EDEE7A000C17A84 /* Bone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41887D60EDEE79F00C17A84 /* Bone.cpp */; };
 		D41887E20EDEE7A000C17A84 /* Channel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41887D70EDEE79F00C17A84 /* Channel.cpp */; };
@@ -6299,7 +6297,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = D47A06550B833F6E00E19024 /* osgManipulator */;
+			remoteGlobalIDString = D47A06550B833F6E00E19024;
 			remoteInfo = osgManipulator;
 		};
 		D43AB5200E2E1D1900623C77 /* PBXContainerItemProxy */ = {
@@ -8300,7 +8298,6 @@
 		D418870E0EDEE64000C17A84 /* VBSPReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VBSPReader.h; sourceTree = "<group>"; };
 		D41887520EDEE6E000C17A84 /* osgAnimation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgAnimation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D41887A80EDEE77800C17A84 /* Animation */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Animation; path = ../../include/osgAnimation/Animation; sourceTree = SOURCE_ROOT; };
-		D41887A90EDEE77800C17A84 /* AnimationManager */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = AnimationManager; path = ../../include/osgAnimation/AnimationManager; sourceTree = SOURCE_ROOT; };
 		D41887AA0EDEE77800C17A84 /* AnimationManagerBase */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = AnimationManagerBase; path = ../../include/osgAnimation/AnimationManagerBase; sourceTree = SOURCE_ROOT; };
 		D41887AB0EDEE77800C17A84 /* Assert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Assert; path = ../../include/osgAnimation/Assert; sourceTree = SOURCE_ROOT; };
 		D41887AC0EDEE77800C17A84 /* Bone */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Bone; path = ../../include/osgAnimation/Bone; sourceTree = SOURCE_ROOT; };
@@ -8321,7 +8318,6 @@
 		D41887BB0EDEE77900C17A84 /* Vec3Packed */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Vec3Packed; path = ../../include/osgAnimation/Vec3Packed; sourceTree = SOURCE_ROOT; };
 		D41887BC0EDEE77900C17A84 /* VertexInfluence */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = VertexInfluence; path = ../../include/osgAnimation/VertexInfluence; sourceTree = SOURCE_ROOT; };
 		D41887D30EDEE79F00C17A84 /* Animation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Animation.cpp; path = ../../src/osgAnimation/Animation.cpp; sourceTree = SOURCE_ROOT; };
-		D41887D40EDEE79F00C17A84 /* AnimationManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AnimationManager.cpp; path = ../../src/osgAnimation/AnimationManager.cpp; sourceTree = SOURCE_ROOT; };
 		D41887D50EDEE79F00C17A84 /* AnimationManagerBase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AnimationManagerBase.cpp; path = ../../src/osgAnimation/AnimationManagerBase.cpp; sourceTree = SOURCE_ROOT; };
 		D41887D60EDEE79F00C17A84 /* Bone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Bone.cpp; path = ../../src/osgAnimation/Bone.cpp; sourceTree = SOURCE_ROOT; };
 		D41887D70EDEE79F00C17A84 /* Channel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Channel.cpp; path = ../../src/osgAnimation/Channel.cpp; sourceTree = SOURCE_ROOT; };
@@ -13940,7 +13936,6 @@
 				D4163D4E0F2A74CE0062226D /* BasicAnimationManager */,
 				D4163D4F0F2A74CE0062226D /* TimelineAnimationManager */,
 				D41887A80EDEE77800C17A84 /* Animation */,
-				D41887A90EDEE77800C17A84 /* AnimationManager */,
 				D41887AA0EDEE77800C17A84 /* AnimationManagerBase */,
 				D41887AB0EDEE77800C17A84 /* Assert */,
 				D41887AC0EDEE77800C17A84 /* Bone */,
@@ -13979,7 +13974,6 @@
 				D4163D520F2A74EC0062226D /* BasicAnimationManager.cpp */,
 				D4163D530F2A74EC0062226D /* TimelineAnimationManager.cpp */,
 				D41887D30EDEE79F00C17A84 /* Animation.cpp */,
-				D41887D40EDEE79F00C17A84 /* AnimationManager.cpp */,
 				D41887D50EDEE79F00C17A84 /* AnimationManagerBase.cpp */,
 				D41887D60EDEE79F00C17A84 /* Bone.cpp */,
 				D41887D70EDEE79F00C17A84 /* Channel.cpp */,
@@ -15996,7 +15990,6 @@
 				D4163D500F2A74CF0062226D /* BasicAnimationManager in Headers */,
 				D4163D510F2A74CF0062226D /* TimelineAnimationManager in Headers */,
 				D41887BD0EDEE77900C17A84 /* Animation in Headers */,
-				D41887BE0EDEE77900C17A84 /* AnimationManager in Headers */,
 				D41887BF0EDEE77900C17A84 /* AnimationManagerBase in Headers */,
 				D41887C00EDEE77900C17A84 /* Assert in Headers */,
 				D41887C10EDEE77900C17A84 /* Bone in Headers */,
@@ -22327,7 +22320,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D41887DE0EDEE7A000C17A84 /* Animation.cpp in Sources */,
-				D41887DF0EDEE7A000C17A84 /* AnimationManager.cpp in Sources */,
 				D41887E00EDEE7A000C17A84 /* AnimationManagerBase.cpp in Sources */,
 				D41887E10EDEE7A000C17A84 /* Bone.cpp in Sources */,
 				D41887E20EDEE7A000C17A84 /* Channel.cpp in Sources */,

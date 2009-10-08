@@ -46,15 +46,105 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
             _texCoordAlias[7] = AttributeAlias(15, "osg_MultiTexCoord7");
         }
 
+        std::string convertShader(std::string source)
+        {
+            replace(source, "gl_Vertex", "osg_Vertex");
+            replace(source, "gl_Normal", "osg_Normal");
+            replace(source, "gl_Color", "osg_Color");
+            replace(source, "gl_SecondaryColor", "osg_SecondaryColor");
+            replace(source, "gl_FogCoord", "osg_FogCoord");
+            replace(source, "gl_MultiTexCoord0", "osg_MultiTexCoord0");
+            replace(source, "gl_MultiTexCoord1", "osg_MultiTexCoord1");
+            replace(source, "gl_MultiTexCoord2", "osg_MultiTexCoord2");
+            replace(source, "gl_MultiTexCoord3", "osg_MultiTexCoord3");
+            replace(source, "gl_MultiTexCoord4", "osg_MultiTexCoord4");
+            replace(source, "gl_MultiTexCoord5", "osg_MultiTexCoord5");
+            replace(source, "gl_MultiTexCoord6", "osg_MultiTexCoord6");
+            replace(source, "gl_MultiTexCoord7", "osg_MultiTexCoord7");
+            return source;
+        }
+
+        virtual void reset()
+        {
+            _visited.clear();
+        }
+
+        void apply(osg::Node& node)
+        {
+            if (_visited.count(&node)!=0) return;
+            _visited.insert(&node);
+
+            if (node.getStateSet()) apply(*(node.getStateSet()));
+            traverse(node);
+        }
 
         void apply(osg::Geode& geode)
         {
+            if (_visited.count(&geode)!=0) return;
+            _visited.insert(&geode);
+
+            if (geode.getStateSet()) apply(*(geode.getStateSet()));
+
             for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
             {
+                if (geode.getDrawable(i)->getStateSet()) apply(*(geode.getDrawable(i)->getStateSet()));
+
                 osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
                 if (geom) apply(*geom);
             }
         }
+
+        void replace(std::string& str, const std::string& original_phrase, const std::string& new_phrase)
+        {
+            std::string::size_type pos = 0;
+            while((pos=str.find(original_phrase, pos))!=std::string::npos)
+            {
+                std::string::size_type endOfPhrasePos = pos+original_phrase.size();
+                if (endOfPhrasePos<str.size())
+                {
+                    char c = str[endOfPhrasePos];
+                    if ((c>='0' && c<='9') ||
+                        (c>='a' && c<='z') ||
+                        (c>='A' && c<='Z'))
+                    {
+                        pos = endOfPhrasePos;
+                        continue;
+                    }
+                }
+
+                str.replace(pos, original_phrase.size(), new_phrase);
+            }
+        }
+
+        void apply(osg::Shader& shader)
+        {
+             if (_visited.count(&shader)!=0) return;
+            _visited.insert(&shader);
+
+            osg::notify(osg::NOTICE)<<"Shader "<<shader.getTypename()<<" ----before-----------"<<std::endl;
+            osg::notify(osg::NOTICE)<<shader.getShaderSource()<<std::endl;
+            shader.setShaderSource(convertShader(shader.getShaderSource()));
+            osg::notify(osg::NOTICE)<<"--after-----------"<<std::endl;
+            osg::notify(osg::NOTICE)<<shader.getShaderSource()<<std::endl;
+            osg::notify(osg::NOTICE)<<"---------------------"<<std::endl;
+        }
+
+        void apply(osg::StateSet& stateset)
+        {
+             if (_visited.count(&stateset)!=0) return;
+            _visited.insert(&stateset);
+
+            osg::notify(osg::NOTICE)<<"Found stateset "<<&stateset<<std::endl;
+            osg::Program* program = dynamic_cast<osg::Program*>(stateset.getAttribute(osg::StateAttribute::PROGRAM));
+            if (program)
+            {
+                osg::notify(osg::NOTICE)<<"   Found Program "<<program<<std::endl;
+                for(unsigned int i=0; i<program->getNumShaders(); ++i)
+                {
+                    apply(*(program->getShader(i)));
+                }
+            }
+       }
 
         void apply(osg::Geometry& geom)
         {
@@ -121,6 +211,10 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
 
             osg::notify(osg::NOTICE)<<"   vertex attrib("<<name<<", index="<<index<<", normalize="<<normalize<<" binding="<<binding<<")"<<std::endl;
         }
+
+
+        typedef std::set<osg::Object*> Visited;
+        Visited         _visited;
 
         AttributeAlias _vertexAlias;
         AttributeAlias _normalAlias;

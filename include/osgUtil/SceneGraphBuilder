@@ -21,8 +21,6 @@
 
 #include <osgUtil/Export>
 
-namespace osgUtil {
-
 #ifndef OSG_GLU_AVAILABLE
     // as we have no GLU we'll just define the required enum values
     #define GLU_FALSE           0
@@ -35,6 +33,8 @@ namespace osgUtil {
     #define GLU_FILL            100012
     #define GLU_SILHOUETTE      100013
 #endif
+
+namespace osgUtil {
 
 /** A class for assisting the building ascene graphs that is equivilant to OpenGL 1.0 style calls.
   */

@@ -1669,7 +1669,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
         bool useVertexAttrib =  _vertexAttribList.size() > 0 &&
                                 _vertexAttribList[0].array.valid() && 
-                                 _vertexAttribList[0].indices->getNumElements();
+                                 _vertexAttribList[0].array->getNumElements()!=0;
 
         ref_ptr<DrawVertexAttrib> drawVertexAttribZero;
         if( useVertexAttrib )

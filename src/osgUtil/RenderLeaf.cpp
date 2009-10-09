@@ -54,7 +54,10 @@ void RenderLeaf::render(osg::RenderInfo& renderInfo,RenderLeaf* previous)
             state.apply(rg->getStateSet());
 
         }
-        
+
+        // if we are using osg::Program which requires OSG's generated uniforms to track
+        // modelview and projection matrices then apply them now.
+        state.applyModelViewAndProjectionUniformsIfRequired();
 
         // draw the drawable
         _drawable->draw(renderInfo);
@@ -69,6 +72,10 @@ void RenderLeaf::render(osg::RenderInfo& renderInfo,RenderLeaf* previous)
         StateGraph::moveStateGraph(state,NULL,_parent->_parent);
 
         state.apply(_parent->getStateSet());
+
+        // if we are using osg::Program which requires OSG's generated uniforms to track
+        // modelview and projection matrices then apply them now.
+        state.applyModelViewAndProjectionUniformsIfRequired();
 
         // draw the drawable
         _drawable->draw(renderInfo);

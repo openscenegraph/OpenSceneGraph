@@ -44,6 +44,10 @@ State::State():
     _projection = _identity;
     _modelView = _identity;
 
+    _modelViewMatrixUniform = new Uniform(Uniform::FLOAT_MAT4,"osg_ModelViewMatrix");
+    _projectionMatrixUniform = new Uniform(Uniform::FLOAT_MAT4,"osg_ProjectionMatrix");
+    _modelViewProjectionMatrixUniform = new Uniform(Uniform::FLOAT_MAT4,"osg_ModelViewProjectionMatrix");
+
     _abortRenderingPtr = false;    
 
     _checkGLErrors = ONCE_PER_FRAME;
@@ -90,6 +94,8 @@ State::State():
 
     _maxTexturePoolSize = 0;
     _maxBufferObjectPoolSize = 0;
+
+
 }
 
 State::~State()
@@ -420,7 +426,7 @@ void State::apply(const StateSet* dstate)
     //apply();
     //popStateSet();
     //return;
-    
+
     if (dstate)
     {
 
@@ -440,41 +446,13 @@ void State::apply(const StateSet* dstate)
             {
                 if (unit<ds_textureModeList.size()) applyModeList(getOrCreateTextureModeMap(unit),ds_textureModeList[unit]);
                 else if (unit<_textureModeMapList.size()) applyModeMap(_textureModeMapList[unit]);
-                
+
                 if (unit<ds_textureAttributeList.size()) applyAttributeList(getOrCreateTextureAttributeMap(unit),ds_textureAttributeList[unit]);
                 else if (unit<_textureAttributeMapList.size()) applyAttributeMap(_textureAttributeMapList[unit]);
             }
         }
-        
-#if 1        
+
         applyUniformList(_uniformMap,dstate->getUniformList());
-#else                
-        if (_lastAppliedProgramObject)
-        {
-            for(StateSetStack::iterator sitr=_stateStateStack.begin();
-                sitr!=_stateStateStack.end();
-                ++sitr)
-            {
-                const StateSet* stateset = *sitr;
-                const StateSet::UniformList& uniformList = stateset->getUniformList();
-                for(StateSet::UniformList::const_iterator itr=uniformList.begin();
-                    itr!=uniformList.end();
-                    ++itr)
-                {
-                    _lastAppliedProgramObject->apply(*(itr->second.first));
-                }
-            }
-
-            const StateSet::UniformList& uniformList = dstate->getUniformList();
-            for(StateSet::UniformList::const_iterator itr=uniformList.begin();
-                itr!=uniformList.end();
-                ++itr)
-            {
-                _lastAppliedProgramObject->apply(*(itr->second.first));
-            }
-        }
-#endif
-
     }
     else
     {
@@ -508,27 +486,7 @@ void State::apply()
         }
     }
 
-#if 1        
     applyUniformMap(_uniformMap);
-#else        
-    if (_lastAppliedProgramObject && !_stateStateStack.empty())
-    {
-        for(StateSetStack::iterator sitr=_stateStateStack.begin();
-            sitr!=_stateStateStack.end();
-            ++sitr)
-        {
-            const StateSet* stateset = *sitr;
-            const StateSet::UniformList& uniformList = stateset->getUniformList();
-            for(StateSet::UniformList::const_iterator itr=uniformList.begin();
-                itr!=uniformList.end();
-                ++itr)
-            {
-                _lastAppliedProgramObject->apply(*(itr->second.first));
-            }
-        }
-    }
-#endif
-
 
     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("end of State::apply()");
 }
@@ -1033,3 +991,11 @@ bool State::checkGLErrors(const StateAttribute* attribute) const
 }
 
 
+void State::applyModelViewAndProjectionUniformsIfRequired()
+{
+    if (!_lastAppliedProgramObject) return;
+
+    if (_modelViewMatrixUniform.valid()) _lastAppliedProgramObject->apply(*_modelViewMatrixUniform);
+    if (_projectionMatrixUniform) _lastAppliedProgramObject->apply(*_projectionMatrixUniform);
+    if (_modelViewProjectionMatrixUniform) _lastAppliedProgramObject->apply(*_modelViewProjectionMatrixUniform);
+}

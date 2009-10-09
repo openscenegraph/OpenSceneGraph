@@ -51,12 +51,20 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
                 program.addBindAttribLocation(alias.second, alias.first);
         }
 
-        void replaceAndBind(osg::Program& program, std::string& source, const std::string& originalStr, const AttributeAlias& alias, const std::string& declarationPrefix)
+        void replaceAndBindAttrib(osg::Program& program, std::string& source, const std::string& originalStr, const AttributeAlias& alias, const std::string& declarationPrefix)
         {
             if (replace(source, originalStr, alias.second))
             {
                 source.insert(0, declarationPrefix + alias.second + std::string(";\n"));
                 bindAttribute(program, alias);
+            }
+        }
+
+        void replaceBuiltInUniform(std::string& source, const std::string& originalStr, const std::string& newStr, const std::string& declarationPrefix)
+        {
+            if (replace(source, originalStr, newStr))
+            {
+                source.insert(0, declarationPrefix + newStr + std::string(";\n"));
             }
         }
 
@@ -67,20 +75,20 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
             // replace ftransform as it only works with built-ins
             replace(source, "ftransform()", "gl_ModelViewProjectionMatrix * gl_Vertex");
 
-            replaceAndBind(program, source, "gl_Normal", _normalAlias, "attribute vec3 ");
-            replaceAndBind(program, source, "gl_Vertex", _vertexAlias, "attribute vec4 ");
-            replaceAndBind(program, source, "gl_Color", _colorAlias, "attribute vec4 ");
-            replaceAndBind(program, source, "gl_SecondaryColor", _secondaryColorAlias, "attribute vec4 ");
-            replaceAndBind(program, source, "gl_FogCoord", _fogCoordAlias, "attribute float ");
+            replaceAndBindAttrib(program, source, "gl_Normal", _normalAlias, "attribute vec3 ");
+            replaceAndBindAttrib(program, source, "gl_Vertex", _vertexAlias, "attribute vec4 ");
+            replaceAndBindAttrib(program, source, "gl_Color", _colorAlias, "attribute vec4 ");
+            replaceAndBindAttrib(program, source, "gl_SecondaryColor", _secondaryColorAlias, "attribute vec4 ");
+            replaceAndBindAttrib(program, source, "gl_FogCoord", _fogCoordAlias, "attribute float ");
 
-            replaceAndBind(program, source, "gl_MultiTexCoord0", _texCoordAlias[0], "attribute vec4 ");
-            replaceAndBind(program, source, "gl_MultiTexCoord1", _texCoordAlias[1], "attribute vec4 ");
-            replaceAndBind(program, source, "gl_MultiTexCoord2", _texCoordAlias[2], "attribute vec4 ");
-            replaceAndBind(program, source, "gl_MultiTexCoord3", _texCoordAlias[3], "attribute vec4 ");
-            replaceAndBind(program, source, "gl_MultiTexCoord4", _texCoordAlias[4], "attribute vec4 ");
-            replaceAndBind(program, source, "gl_MultiTexCoord5", _texCoordAlias[5], "attribute vec4 ");
-            replaceAndBind(program, source, "gl_MultiTexCoord6", _texCoordAlias[6], "attribute vec4 ");
-            replaceAndBind(program, source, "gl_MultiTexCoord7", _texCoordAlias[7], "attribute vec4 ");
+            replaceAndBindAttrib(program, source, "gl_MultiTexCoord0", _texCoordAlias[0], "attribute vec4 ");
+            replaceAndBindAttrib(program, source, "gl_MultiTexCoord1", _texCoordAlias[1], "attribute vec4 ");
+            replaceAndBindAttrib(program, source, "gl_MultiTexCoord2", _texCoordAlias[2], "attribute vec4 ");
+            replaceAndBindAttrib(program, source, "gl_MultiTexCoord3", _texCoordAlias[3], "attribute vec4 ");
+            replaceAndBindAttrib(program, source, "gl_MultiTexCoord4", _texCoordAlias[4], "attribute vec4 ");
+            replaceAndBindAttrib(program, source, "gl_MultiTexCoord5", _texCoordAlias[5], "attribute vec4 ");
+            replaceAndBindAttrib(program, source, "gl_MultiTexCoord6", _texCoordAlias[6], "attribute vec4 ");
+            replaceAndBindAttrib(program, source, "gl_MultiTexCoord7", _texCoordAlias[7], "attribute vec4 ");
 
 
 #if 0
@@ -88,6 +96,11 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
             replace(source, "gl_ModelViewMatrix", "osg_ModeViewMatrix");
             replace(source, "gl_ModelViewProjectionMatrix", "osg_ModelViewProjectionMatrix");
             replace(source, "gl_ProjectionMatrix", "osg_ProjectionMatrix");
+#else
+            // replace built in uniform
+            replaceBuiltInUniform(source, "gl_ModelViewMatrix", "osg_ModeViewMatrix", "uniform mat4 ");
+            replaceBuiltInUniform(source, "gl_ModelViewProjectionMatrix", "osg_ModelViewProjectionMatrix", "uniform mat4 ");
+            replaceBuiltInUniform(source, "gl_ProjectionMatrix", "osg_ProjectionMatrix", "uniform mat4 ");
 #endif
             shader.setShaderSource(source);
         }

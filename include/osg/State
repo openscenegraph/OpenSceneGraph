@@ -166,17 +166,20 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             if (_projection!=matrix)
             {
-                glMatrixMode( GL_PROJECTION );
                 if (matrix)
                 {
                     _projection=matrix;
-                    glLoadMatrix(matrix->ptr());
                 }
                 else
                 {
                     _projection=_identity;
-                    glLoadIdentity();
                 }
+
+                if (_projectionMatrixUniform.valid()) _projectionMatrixUniform->set(*_projection);
+                if (_modelViewProjectionMatrixUniform.valid()) _modelViewProjectionMatrixUniform->set((*_modelView) * (*_projection));
+
+                glMatrixMode( GL_PROJECTION );
+                    glLoadMatrix(_projection->ptr());
                 glMatrixMode( GL_MODELVIEW );
             }
         }
@@ -193,13 +196,16 @@ class OSG_EXPORT State : public Referenced, public Observer
                 if (matrix)
                 {
                     _modelView=matrix;
-                    glLoadMatrix(matrix->ptr());
                 }
                 else
                 {
                     _modelView=_identity;
-                    glLoadIdentity();
                 }
+
+                if (_modelViewMatrixUniform.valid()) _modelViewMatrixUniform->set(*_modelView);
+                if (_modelViewProjectionMatrixUniform.valid()) _modelViewProjectionMatrixUniform->set((*_modelView) * (*_projection));
+
+                glLoadMatrix(_modelView->ptr());
             }
         }
 
@@ -207,6 +213,12 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             return *_modelView;
         }
+
+        void applyModelViewAndProjectionUniformsIfRequired();
+
+        osg::Uniform* getModelViewMatrixUniform() { return _modelViewMatrixUniform.get(); }
+        osg::Uniform* getProjectionMatrixUniform() { return _projectionMatrixUniform.get(); }
+        osg::Uniform* getModelViewProjectionMatrixUniform() { return _modelViewProjectionMatrixUniform.get(); }
 
 
         Polytope getViewFrustum() const;
@@ -1087,6 +1099,10 @@ class OSG_EXPORT State : public Referenced, public Observer
         ref_ptr<const RefMatrix>    _initialViewMatrix;
         ref_ptr<const RefMatrix>    _projection;
         ref_ptr<const RefMatrix>    _modelView;
+
+        ref_ptr<Uniform>            _modelViewMatrixUniform;
+        ref_ptr<Uniform>            _projectionMatrixUniform;
+        ref_ptr<Uniform>            _modelViewProjectionMatrixUniform;
 
         Matrix                      _initialInverseViewMatrix;
 

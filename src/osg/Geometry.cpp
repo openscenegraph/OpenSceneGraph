@@ -2114,7 +2114,16 @@ void Geometry::accept(AttributeFunctor& af)
 {
     AttributeFunctorArrayVisitor afav(af);
 
-    afav.applyArray(VERTICES,_vertexData.array.get());
+    if (_vertexData.array.valid())
+    {
+        afav.applyArray(VERTICES,_vertexData.array.get());
+    }
+    else if (_vertexAttribList.size()>0)
+    {
+        osg::notify(osg::INFO)<<"Geometry::accept(AttributeFunctor& af): Using vertex attribute instead"<<std::endl;
+        afav.applyArray(VERTICES,_vertexAttribList[0].array.get());
+    }
+
     afav.applyArray(NORMALS,_normalData.array.get());
     afav.applyArray(COLORS,_colorData.array.get());
     afav.applyArray(SECONDARY_COLORS,_secondaryColorData.array.get());
@@ -2178,7 +2187,16 @@ void Geometry::accept(ConstAttributeFunctor& af) const
 {
     ConstAttributeFunctorArrayVisitor afav(af);
     
-    afav.applyArray(VERTICES,_vertexData.array.get());
+    if (_vertexData.array.valid())
+    {
+        afav.applyArray(VERTICES,_vertexData.array.get());
+    }
+    else if (_vertexAttribList.size()>0)
+    {
+        osg::notify(osg::INFO)<<"Geometry::accept(ConstAttributeFunctor& af): Using vertex attribute instead"<<std::endl;
+        afav.applyArray(VERTICES,_vertexAttribList[0].array.get());
+    }
+
     afav.applyArray(NORMALS,_normalData.array.get());
     afav.applyArray(COLORS,_colorData.array.get());
     afav.applyArray(SECONDARY_COLORS,_secondaryColorData.array.get());
@@ -2197,32 +2215,42 @@ void Geometry::accept(ConstAttributeFunctor& af) const
 
 void Geometry::accept(PrimitiveFunctor& functor) const
 {
-    if (!_vertexData.array.valid() || _vertexData.array->getNumElements()==0) return;
+    const osg::Array* vertices = _vertexData.array.get();
+    const osg::IndexArray* indices = _vertexData.indices.get();
 
-    if (!_vertexData.indices.valid())
+    if (!vertices && _vertexAttribList.size()>0)
     {
-        switch(_vertexData.array->getType())
+        osg::notify(osg::INFO)<<"Using vertex attribute instead"<<std::endl;
+        vertices = _vertexAttribList[0].array.get();
+        indices = _vertexAttribList[0].indices.get();
+    }
+
+    if (!vertices || vertices->getNumElements()==0) return;
+
+    if (!indices)
+    {
+        switch(vertices->getType())
         {
         case(Array::Vec2ArrayType): 
-            functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec2*>(_vertexData.array->getDataPointer()));
+            functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec2*>(vertices->getDataPointer()));
             break;
         case(Array::Vec3ArrayType): 
-            functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec3*>(_vertexData.array->getDataPointer()));
+            functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec3*>(vertices->getDataPointer()));
             break;
         case(Array::Vec4ArrayType): 
-            functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec4*>(_vertexData.array->getDataPointer()));
+            functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec4*>(vertices->getDataPointer()));
             break;
         case(Array::Vec2dArrayType): 
-            functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec2d*>(_vertexData.array->getDataPointer()));
+            functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec2d*>(vertices->getDataPointer()));
             break;
         case(Array::Vec3dArrayType): 
-            functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec3d*>(_vertexData.array->getDataPointer()));
+            functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec3d*>(vertices->getDataPointer()));
             break;
         case(Array::Vec4dArrayType): 
-            functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec4d*>(_vertexData.array->getDataPointer()));
+            functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec4d*>(vertices->getDataPointer()));
             break;
         default:
-            notify(WARN)<<"Warning: Geometry::accept(PrimitiveFunctor&) cannot handle Vertex Array type"<<_vertexData.array->getType()<<std::endl;
+            notify(WARN)<<"Warning: Geometry::accept(PrimitiveFunctor&) cannot handle Vertex Array type"<<vertices->getType()<<std::endl;
             return;
         }
         
@@ -2241,33 +2269,32 @@ void Geometry::accept(PrimitiveFunctor& functor) const
         const Vec2d* vec2dArray = 0;
         const Vec3d* vec3dArray = 0;
         const Vec4d* vec4dArray = 0;
-        Array::Type type = _vertexData.array->getType();
+        Array::Type type = vertices->getType();
         switch(type)
         {
         case(Array::Vec2ArrayType): 
-            vec2Array = static_cast<const Vec2*>(_vertexData.array->getDataPointer());
+            vec2Array = static_cast<const Vec2*>(vertices->getDataPointer());
             break;
         case(Array::Vec3ArrayType): 
-            vec3Array = static_cast<const Vec3*>(_vertexData.array->getDataPointer());
+            vec3Array = static_cast<const Vec3*>(vertices->getDataPointer());
             break;
         case(Array::Vec4ArrayType): 
-            vec4Array = static_cast<const Vec4*>(_vertexData.array->getDataPointer());
+            vec4Array = static_cast<const Vec4*>(vertices->getDataPointer());
             break;
         case(Array::Vec2dArrayType): 
-            vec2dArray = static_cast<const Vec2d*>(_vertexData.array->getDataPointer());
+            vec2dArray = static_cast<const Vec2d*>(vertices->getDataPointer());
             break;
         case(Array::Vec3dArrayType): 
-            vec3dArray = static_cast<const Vec3d*>(_vertexData.array->getDataPointer());
+            vec3dArray = static_cast<const Vec3d*>(vertices->getDataPointer());
             break;
         case(Array::Vec4dArrayType): 
-            vec4dArray = static_cast<const Vec4d*>(_vertexData.array->getDataPointer());
+            vec4dArray = static_cast<const Vec4d*>(vertices->getDataPointer());
             break;
         default:
-            notify(WARN)<<"Warning: Geometry::accept(PrimitiveFunctor&) cannot handle Vertex Array type"<<_vertexData.array->getType()<<std::endl;
+            notify(WARN)<<"Warning: Geometry::accept(PrimitiveFunctor&) cannot handle Vertex Array type"<<vertices->getType()<<std::endl;
             return;
         }
 
-    
         for(PrimitiveSetList::const_iterator itr=_primitives.begin();
             itr!=_primitives.end();
             ++itr)
@@ -2311,7 +2338,7 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                         }
 
                     }
-                    
+
                     functor.end();
                     break;
                 }
@@ -2354,7 +2381,7 @@ void Geometry::accept(PrimitiveFunctor& functor) const
                             }
                             ++vindex;
                         }
-                        
+
                         functor.end();
 
                     }
@@ -2487,30 +2514,40 @@ void Geometry::accept(PrimitiveFunctor& functor) const
 
 void Geometry::accept(PrimitiveIndexFunctor& functor) const
 {
-    if (!_vertexData.array.valid() || _vertexData.array->getNumElements()==0) return;
+    const osg::Array* vertices = _vertexData.array.get();
+    const osg::IndexArray* indices = _vertexData.indices.get();
 
-    switch(_vertexData.array->getType())
+    if (!vertices && _vertexAttribList.size()>0)
+    {
+        osg::notify(osg::INFO)<<"Geometry::accept(PrimitiveIndexFunctor& functor): Using vertex attribute instead"<<std::endl;
+        vertices = _vertexAttribList[0].array.get();
+        indices = _vertexAttribList[0].indices.get();
+    }
+
+    if (!vertices || vertices->getNumElements()==0) return;
+
+    switch(vertices->getType())
     {
     case(Array::Vec2ArrayType): 
-        functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec2*>(_vertexData.array->getDataPointer()));
+        functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec2*>(vertices->getDataPointer()));
         break;
     case(Array::Vec3ArrayType): 
-        functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec3*>(_vertexData.array->getDataPointer()));
+        functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec3*>(vertices->getDataPointer()));
         break;
     case(Array::Vec4ArrayType): 
-        functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec4*>(_vertexData.array->getDataPointer()));
+        functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec4*>(vertices->getDataPointer()));
         break;
     case(Array::Vec2dArrayType): 
-        functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec2d*>(_vertexData.array->getDataPointer()));
+        functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec2d*>(vertices->getDataPointer()));
         break;
     case(Array::Vec3dArrayType): 
-        functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec3d*>(_vertexData.array->getDataPointer()));
+        functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec3d*>(vertices->getDataPointer()));
         break;
     case(Array::Vec4dArrayType): 
-        functor.setVertexArray(_vertexData.array->getNumElements(),static_cast<const Vec4d*>(_vertexData.array->getDataPointer()));
+        functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec4d*>(vertices->getDataPointer()));
         break;
     default:
-        notify(WARN)<<"Warning: Geometry::accept(PrimitiveIndexFunctor&) cannot handle Vertex Array type"<<_vertexData.array->getType()<<std::endl;
+        notify(WARN)<<"Warning: Geometry::accept(PrimitiveIndexFunctor&) cannot handle Vertex Array type"<<vertices->getType()<<std::endl;
         return;
     }
 

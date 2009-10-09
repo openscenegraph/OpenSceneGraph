@@ -46,32 +46,54 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
             _texCoordAlias[7] = AttributeAlias(15, "osg_MultiTexCoord7");
         }
 
-        std::string convertShader(std::string source)
+        void bindAttribute(osg::Program& program, const AttributeAlias& alias)
         {
+                program.addBindAttribLocation(alias.second, alias.first);
+        }
+
+        void replaceAndBind(osg::Program& program, std::string& source, const std::string& originalStr, const AttributeAlias& alias, const std::string& declarationPrefix)
+        {
+            if (replace(source, originalStr, alias.second))
+            {
+                source.insert(0, declarationPrefix + alias.second + std::string(";\n"));
+                bindAttribute(program, alias);
+            }
+        }
+
+        void convertVertexShader(osg::Program& program, osg::Shader& shader)
+        {
+            std::string source = shader.getShaderSource();
+
             // replace ftransform as it only works with built-ins
             replace(source, "ftransform()", "gl_ModelViewProjectionMatrix * gl_Vertex");
 
-            // replace the vertex attributes
-            replace(source, "gl_Vertex", "osg_Vertex");
-            replace(source, "gl_Normal", "osg_Normal");
-            replace(source, "gl_Color", "osg_Color");
-            replace(source, "gl_SecondaryColor", "osg_SecondaryColor");
-            replace(source, "gl_FogCoord", "osg_FogCoord");
-            replace(source, "gl_MultiTexCoord0", "osg_MultiTexCoord0");
-            replace(source, "gl_MultiTexCoord1", "osg_MultiTexCoord1");
-            replace(source, "gl_MultiTexCoord2", "osg_MultiTexCoord2");
-            replace(source, "gl_MultiTexCoord3", "osg_MultiTexCoord3");
-            replace(source, "gl_MultiTexCoord4", "osg_MultiTexCoord4");
-            replace(source, "gl_MultiTexCoord5", "osg_MultiTexCoord5");
-            replace(source, "gl_MultiTexCoord6", "osg_MultiTexCoord6");
-            replace(source, "gl_MultiTexCoord7", "osg_MultiTexCoord7");
+            replaceAndBind(program, source, "gl_Normal", _normalAlias, "attribute vec3 ");
+            replaceAndBind(program, source, "gl_Vertex", _vertexAlias, "attribute vec4 ");
+            replaceAndBind(program, source, "gl_Color", _colorAlias, "attribute vec4 ");
+            replaceAndBind(program, source, "gl_SecondaryColor", _secondaryColorAlias, "attribute vec4 ");
+            replaceAndBind(program, source, "gl_FogCoord", _fogCoordAlias, "attribute float ");
 
+            replaceAndBind(program, source, "gl_MultiTexCoord0", _texCoordAlias[0], "attribute vec4 ");
+            replaceAndBind(program, source, "gl_MultiTexCoord1", _texCoordAlias[1], "attribute vec4 ");
+            replaceAndBind(program, source, "gl_MultiTexCoord2", _texCoordAlias[2], "attribute vec4 ");
+            replaceAndBind(program, source, "gl_MultiTexCoord3", _texCoordAlias[3], "attribute vec4 ");
+            replaceAndBind(program, source, "gl_MultiTexCoord4", _texCoordAlias[4], "attribute vec4 ");
+            replaceAndBind(program, source, "gl_MultiTexCoord5", _texCoordAlias[5], "attribute vec4 ");
+            replaceAndBind(program, source, "gl_MultiTexCoord6", _texCoordAlias[6], "attribute vec4 ");
+            replaceAndBind(program, source, "gl_MultiTexCoord7", _texCoordAlias[7], "attribute vec4 ");
+
+
+#if 0
             // replace the modelview and project matrices
             replace(source, "gl_ModelViewMatrix", "osg_ModeViewMatrix");
             replace(source, "gl_ModelViewProjectionMatrix", "osg_ModelViewProjectionMatrix");
             replace(source, "gl_ProjectionMatrix", "osg_ProjectionMatrix");
+#endif
+            shader.setShaderSource(source);
+        }
 
-            return source;
+        void convertFragmentShader(osg::Program& program, osg::Shader& shader)
+        {
         }
 
         virtual void reset()
@@ -104,8 +126,9 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
             }
         }
 
-        void replace(std::string& str, const std::string& original_phrase, const std::string& new_phrase)
+        bool replace(std::string& str, const std::string& original_phrase, const std::string& new_phrase)
         {
+            bool replacedStr = false;
             std::string::size_type pos = 0;
             while((pos=str.find(original_phrase, pos))!=std::string::npos)
             {
@@ -122,18 +145,23 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
                     }
                 }
 
+                replacedStr = true;
                 str.replace(pos, original_phrase.size(), new_phrase);
             }
+            return replacedStr;
         }
 
-        void apply(osg::Shader& shader)
+        void apply(osg::Program& program, osg::Shader& shader)
         {
              if (_visited.count(&shader)!=0) return;
             _visited.insert(&shader);
 
             osg::notify(osg::NOTICE)<<"Shader "<<shader.getTypename()<<" ----before-----------"<<std::endl;
             osg::notify(osg::NOTICE)<<shader.getShaderSource()<<std::endl;
-            shader.setShaderSource(convertShader(shader.getShaderSource()));
+
+            if (shader.getType()==osg::Shader::VERTEX) convertVertexShader(program, shader);
+            else if (shader.getType()==osg::Shader::FRAGMENT) convertFragmentShader(program, shader);
+
             osg::notify(osg::NOTICE)<<"--after-----------"<<std::endl;
             osg::notify(osg::NOTICE)<<shader.getShaderSource()<<std::endl;
             osg::notify(osg::NOTICE)<<"---------------------"<<std::endl;
@@ -151,13 +179,16 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
                 osg::notify(osg::NOTICE)<<"   Found Program "<<program<<std::endl;
                 for(unsigned int i=0; i<program->getNumShaders(); ++i)
                 {
-                    apply(*(program->getShader(i)));
+                    apply(*program, *(program->getShader(i)));
                 }
+
             }
        }
 
         void apply(osg::Geometry& geom)
         {
+            geom.setUseDisplayList(false);
+
             osg::notify(osg::NOTICE)<<"Found geometry "<<&geom<<std::endl;
             if (geom.getVertexArray())
             {
@@ -167,19 +198,19 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
 
             if (geom.getNormalArray())
             {
-                setVertexAttrib(geom, _normalAlias, geom.getNormalArray(), true, geom.getNormalBinding());
+                setVertexAttrib(geom, _normalAlias, geom.getNormalArray(), false, geom.getNormalBinding());
                 geom.setNormalArray(0);
             }
 
             if (geom.getColorArray())
             {
-                setVertexAttrib(geom, _colorAlias, geom.getColorArray(), true, geom.getColorBinding());
+                setVertexAttrib(geom, _colorAlias, geom.getColorArray(), false, geom.getColorBinding());
                 geom.setColorArray(0);
             }
 
             if (geom.getSecondaryColorArray())
             {
-                setVertexAttrib(geom, _secondaryColorAlias, geom.getSecondaryColorArray(), true, geom.getSecondaryColorBinding());
+                setVertexAttrib(geom, _secondaryColorAlias, geom.getSecondaryColorArray(), false, geom.getSecondaryColorBinding());
                 geom.setSecondaryColorArray(0);
             }
 
@@ -200,7 +231,7 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
             {
                 if (geom.getTexCoordArray(i))
                 {
-                    setVertexAttrib(geom, _texCoordAlias[i], geom.getTexCoordArray(i), true, geom.getSecondaryColorBinding());
+                    setVertexAttrib(geom, _texCoordAlias[i], geom.getTexCoordArray(i), false, osg::Geometry::BIND_PER_VERTEX);
                     geom.setTexCoordArray(i,0);
                 }
                 else

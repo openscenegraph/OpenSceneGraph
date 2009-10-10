@@ -21,6 +21,7 @@
 #include <osg/State>
 #include <osg/StateAttribute>
 #include <osg/StateSet>
+#include <osg/Uniform>
 #include <osg/Viewport>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -164,6 +165,26 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_Method0(const osg::Matrix &, getModelViewMatrix,
 	          Properties::NON_VIRTUAL,
 	          __C5_osg_Matrix_R1__getModelViewMatrix,
+	          "",
+	          "");
+	I_Method0(void, applyModelViewAndProjectionUniformsIfRequired,
+	          Properties::NON_VIRTUAL,
+	          __void__applyModelViewAndProjectionUniformsIfRequired,
+	          "",
+	          "");
+	I_Method0(osg::Uniform *, getModelViewMatrixUniform,
+	          Properties::NON_VIRTUAL,
+	          __osg_Uniform_P1__getModelViewMatrixUniform,
+	          "",
+	          "");
+	I_Method0(osg::Uniform *, getProjectionMatrixUniform,
+	          Properties::NON_VIRTUAL,
+	          __osg_Uniform_P1__getProjectionMatrixUniform,
+	          "",
+	          "");
+	I_Method0(osg::Uniform *, getModelViewProjectionMatrixUniform,
+	          Properties::NON_VIRTUAL,
+	          __osg_Uniform_P1__getModelViewProjectionMatrixUniform,
 	          "",
 	          "");
 	I_Method0(osg::Polytope, getViewFrustum,
@@ -883,11 +904,20 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(const osg::Matrix &, ModelViewMatrix, 
 	                 __C5_osg_Matrix_R1__getModelViewMatrix, 
 	                 0);
+	I_SimpleProperty(osg::Uniform *, ModelViewMatrixUniform, 
+	                 __osg_Uniform_P1__getModelViewMatrixUniform, 
+	                 0);
+	I_SimpleProperty(osg::Uniform *, ModelViewProjectionMatrixUniform, 
+	                 __osg_Uniform_P1__getModelViewProjectionMatrixUniform, 
+	                 0);
 	I_SimpleProperty(const osg::Array *, NormalPointer, 
 	                 0, 
 	                 __void__setNormalPointer__C5_Array_P1);
 	I_SimpleProperty(const osg::Matrix &, ProjectionMatrix, 
 	                 __C5_osg_Matrix_R1__getProjectionMatrix, 
+	                 0);
+	I_SimpleProperty(osg::Uniform *, ProjectionMatrixUniform, 
+	                 __osg_Uniform_P1__getProjectionMatrixUniform, 
 	                 0);
 	I_SimpleProperty(const osg::Array *, SecondaryColorPointer, 
 	                 0, 

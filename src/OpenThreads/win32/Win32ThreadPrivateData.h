@@ -71,18 +71,21 @@ public:
     struct TlsHolder{ // thread local storage slot
         DWORD getId()
         {
-            static bool initialized = false;
             if (!initialized) {
                 ID = TlsAlloc();
                 initialized = true;
             }
             return ID;
         }
+        TlsHolder() : ID(TLS_OUT_OF_INDEXES), initialized(false) {}
         ~TlsHolder(){
-            TlsFree(ID);
+            if (initialized)
+                TlsFree(ID);
+            ID = TLS_OUT_OF_INDEXES;
         }
     private:
         DWORD ID;
+        bool initialized;
     };
 
     static TlsHolder TLS;

@@ -205,7 +205,10 @@ namespace OpenThreads {
 
 Thread* Thread::CurrentThread()
 {
-    return (Thread* )TlsGetValue(Win32ThreadPrivateData::TLS.getId());
+    DWORD ID = Win32ThreadPrivateData::TLS.getId();
+    if (ID == TLS_OUT_OF_INDEXES)
+        return 0;
+    return (Thread* )TlsGetValue(ID);
 }
 
 //----------------------------------------------------------------------------

@@ -115,6 +115,9 @@ bool Window::EmbeddedWindow::setWindow(Window* win) {
         return false;
     }
 
+    if (_window.valid() && _parent)
+        unparented(_parent);
+
     _window = win;
 
     _window->resize();

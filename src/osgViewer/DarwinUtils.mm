@@ -16,8 +16,8 @@
 
 }
 
--(void) show: (ID) data;
--(void) hide: (ID) data;
+-(void) show: (id) data;
+-(void) hide: (id) data;
 
 @end
 
@@ -25,7 +25,7 @@
 
 
 
--(void) hide:(ID) data 
+-(void) hide:(id) data 
 {
     OSErr error = SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
     if (error) {
@@ -34,7 +34,7 @@
 }
 
 
--(void) show:(ID) data 
+-(void) show:(id) data 
 {
     OSErr error = SetSystemUIMode(kUIModeNormal, 0);
     if (error) {
@@ -281,8 +281,8 @@ void DarwinWindowingSystemInterface::enumerateScreenSettings(const osg::Graphics
         // Warning! This method has not been tested.
         resolutionList.clear();
 
-        CGDirectDisplayID displayID = getDisplayID(screenIdentifier);
-        CFArrayRef availableModes = CGDisplayAvailableModes(displayID);
+        CGDirectDisplayID displayid = getDisplayID(screenIdentifier);
+        CFArrayRef availableModes = CGDisplayAvailableModes(displayid);
         unsigned int numberOfAvailableModes = CFArrayGetCount(availableModes);
         for (unsigned int i=0; i<numberOfAvailableModes; ++i) {
             // look at each mode in the available list
@@ -326,20 +326,20 @@ bool DarwinWindowingSystemInterface::setScreenSettings(const osg::GraphicsContex
 /** implementation of setScreenResolution */
 bool DarwinWindowingSystemInterface::setScreenResolutionImpl(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, unsigned int width, unsigned int height) 
 { 
-    CGDirectDisplayID displayID = getDisplayID(screenIdentifier);
+    CGDirectDisplayID displayid = getDisplayID(screenIdentifier);
     
     // add next line and on following line replace hard coded depth and refresh rate
-    CGRefreshRate refresh =  getDictDouble (CGDisplayCurrentMode(displayID), kCGDisplayRefreshRate);  
+    CGRefreshRate refresh =  getDictDouble (CGDisplayCurrentMode(displayid), kCGDisplayRefreshRate);  
     CFDictionaryRef display_mode_values =
         CGDisplayBestModeForParametersAndRefreshRate(
-                        displayID, 
-                        CGDisplayBitsPerPixel(displayID), 
+                        displayid, 
+                        CGDisplayBitsPerPixel(displayid), 
                         width, height,  
                         refresh,  
                         NULL);
 
                                       
-    CGDisplaySwitchToMode(displayID, display_mode_values);    
+    CGDisplaySwitchToMode(displayid, display_mode_values);    
     return true; 
 }
 
@@ -350,20 +350,20 @@ bool DarwinWindowingSystemInterface::setScreenRefreshRateImpl(const osg::Graphic
     unsigned width, height;
     getScreenResolution(screenIdentifier, width, height);
     
-    CGDirectDisplayID displayID = getDisplayID(screenIdentifier);
+    CGDirectDisplayID displayid = getDisplayID(screenIdentifier);
     
     // add next line and on following line replace hard coded depth and refresh rate
     CFDictionaryRef display_mode_values =
         CGDisplayBestModeForParametersAndRefreshRate(
-                        displayID, 
-                        CGDisplayBitsPerPixel(displayID), 
+                        displayid, 
+                        CGDisplayBitsPerPixel(displayid), 
                         width, height,  
                         refreshRate,  
                         &success);
 
                                       
     if (success)
-        CGDisplaySwitchToMode(displayID, display_mode_values);    
+        CGDisplaySwitchToMode(displayid, display_mode_values);    
         
     return (success != 0);
 }

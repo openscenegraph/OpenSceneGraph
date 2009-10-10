@@ -34,7 +34,7 @@
 
 struct NoseBegin : public osgAnimation::Action::Callback
 {
-    virtual void operator()(osgAnimation::Action* action)
+    virtual void operator()(osgAnimation::Action* action, osgAnimation::ActionVisitor* nv)
     {
         std::cout << "sacrebleu, it scratches my nose, let me scratch it" << std::endl;
         std::cout << "process NoseBegin call back " << action->getName() << std::endl << std::endl;
@@ -43,7 +43,7 @@ struct NoseBegin : public osgAnimation::Action::Callback
 
 struct NoseEnd : public osgAnimation::Action::Callback
 {
-    virtual void operator()(osgAnimation::Action* action)
+    virtual void operator()(osgAnimation::Action* action, osgAnimation::ActionVisitor* nv)
     {
         std::cout << "shhhrt shrrrrt shhhhhhrrrrt, haaa it's better"<< std::endl;
         std::cout << "process NoseEnd call back " << action->getName() << std::endl << std::endl;

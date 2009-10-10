@@ -1,17 +1,11 @@
 #include <iostream>
 #include <osg/Geode>
 #include <osg/TexGen>
-#include <osg/Material>
 #include <osg/Texture2D>
 #include <osg/MatrixTransform>
-#include <osg/ShapeDrawable>
 #include <osg/BlendFunc>
 #include <osgText/Text>
 #include <osgDB/ReadFile>
-#include <osgViewer/Viewer>
-#include <osgViewer/View>
-#include <osgViewer/CompositeViewer>
-#include <osgGA/TrackballManipulator>
 
 #include "VirtualProgram.h"
 
@@ -140,61 +134,6 @@ char PerFragmentDirectionalLightingFragmentShaderSource[] =
 "}                                                                          \n";//18
 
 ////////////////////////////////////////////////////////////////////////////////
-osg::Node * CreateModel( const char * file )
-{
-    if ( file ) {
-        osg::Node * node = NULL;        
-        node = osgDB::readNodeFile( file );
-        if( node )
-            return node;
-    }
-
-    // File not found - create textured sphere 
-    osg::Geode * geode = new osg::Geode;
-    osg::ref_ptr<osg::TessellationHints> hints = new osg::TessellationHints;
-    hints->setDetailRatio( 0.3 );
-
-#if 1
-    osg::ref_ptr<osg::ShapeDrawable> shape = new osg::ShapeDrawable
-        ( new osg::Sphere(osg::Vec3(0.0f, 0.0f, 0.0f), 4.0 ), hints.get() );
-#else
-    osg::ref_ptr<osg::ShapeDrawable> shape = new osg::ShapeDrawable
-        ( new osg::Box( osg::Vec3(-1.0f, -1.0f, -1.0f), 2.0, 2.0, 2.0 ) );
-#endif
-
-    shape->setColor(osg::Vec4(0.8f, 0.8f, 0.8f, 1.0f));
-
-    geode->addDrawable( shape.get() );
-
-    osg::StateSet * stateSet = new osg::StateSet;
-
-    osg::Texture2D * texture =  new osg::Texture2D( 
-        osgDB::readImageFile("Images/land_shallow_topo_2048.jpg") 
-    );
-
-    osg::Material * material = new osg::Material;
-
-    material->setAmbient
-        ( osg::Material::FRONT_AND_BACK, osg::Vec4( 0.9, 0.9, 0.9, 1.0 ) );
-
-    material->setDiffuse
-        ( osg::Material::FRONT_AND_BACK, osg::Vec4( 0.9, 0.9, 0.9, 1.0 ) );
-
-#if 1
-    material->setSpecular
-        ( osg::Material::FRONT_AND_BACK, osg::Vec4( 0.7, 0.3, 0.3, 1.0 ) );
-
-    material->setShininess( osg::Material::FRONT_AND_BACK, 25 );
-
-#endif
-
-    stateSet->setAttributeAndModes( material );
-    stateSet->setTextureAttributeAndModes( 0,texture, osg::StateAttribute::ON );
-
-    geode->setStateSet( stateSet );
-    return geode;
-}
-////////////////////////////////////////////////////////////////////////////////
 // Convenience method to simplify code a little ...
 void SetVirtualProgramShader( VirtualProgram * virtualProgram,
                               std::string shader_semantics,
@@ -240,9 +179,8 @@ void AddLabel( osg::Group * group, const std::string & label, float offset )
     text->setText( label );
 }
 ////////////////////////////////////////////////////////////////////////////////
-osg::Node * CreateAdvancedHierarchy( const char * file = NULL )
+osg::Node * CreateAdvancedHierarchy( osg::Node * model )
 {
-    osg::Node * model = CreateModel( file );
     if( !model ) return NULL;
     float offset = model->getBound().radius() * 1.3; // diameter
 

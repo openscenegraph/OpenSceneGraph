@@ -11,12 +11,10 @@
 using osgCandidate::VirtualProgram;
 
 ////////////////////////////////////////////////////////////////////////////////
-osg::Node * CreateSimpleHierarchy( const char * file )
+osg::Node * CreateSimpleHierarchy( osg::Node * node )
 {
-    osg::Node * node = osgDB::readNodeFile( file );
     if( !node ) return NULL;
     float r = node->getBound().radius(); // diameter
-
     osg::Group * root = new osg::Group();
     osg::Group * group = new osg::Group();
 

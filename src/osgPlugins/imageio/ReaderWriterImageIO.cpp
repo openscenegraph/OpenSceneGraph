@@ -976,7 +976,7 @@ class ReaderWriterImageIO : public osgDB::ReaderWriter
 
 {
 public:
-    ReaderWriterImageIO::ReaderWriterImageIO()
+    ReaderWriterImageIO()
     {
 
          supportsExtension("jpg",   "jpg image file"); 

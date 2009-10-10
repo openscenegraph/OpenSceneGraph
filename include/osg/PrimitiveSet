@@ -172,7 +172,11 @@ class OSG_EXPORT PrimitiveSet : public BufferData
             TRIANGLE_FAN = GL_TRIANGLE_FAN,
             QUADS = GL_QUADS,
             QUAD_STRIP = GL_QUAD_STRIP,
-            POLYGON = GL_POLYGON
+            POLYGON = GL_POLYGON,
+            LINES_ADJACENCY = GL_LINES_ADJACENCY_EXT, 
+            LINE_STRIP_ADJACENCY = GL_LINE_STRIP_ADJACENCY_EXT, 
+            TRIANGLES_ADJACENCY = GL_TRIANGLES_ADJACENCY_EXT, 
+            TRIANGLE_STRIP_ADJECENCY = GL_TRIANGLE_STRIP_ADJACENCY_EXT,
         };
 
         PrimitiveSet(Type primType=PrimitiveType,GLenum mode=0, int numInstances=0):

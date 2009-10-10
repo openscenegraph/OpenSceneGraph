@@ -17,6 +17,7 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
             supportsExtension("gl","OpenGL Shader Language format");
             supportsExtension("frag","OpenGL Shader Language format");
             supportsExtension("vert","OpenGL Shader Language format");
+            supportsExtension("geom","OpenGL Shader Language format");
             supportsExtension("glsl","OpenGL Shader Language format");
         }
     
@@ -71,6 +72,7 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
                     // set type based on filename extension, where possible
                     if (ext == "frag") shader->setType(osg::Shader::FRAGMENT);
                     if (ext == "vert") shader->setType(osg::Shader::VERTEX);
+                    if (ext == "geom") shader->setType(osg::Shader::GEOMETRY);
                 }
             }
             return rr;

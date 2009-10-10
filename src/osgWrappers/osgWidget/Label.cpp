@@ -12,6 +12,7 @@
 
 #include <osg/CopyOp>
 #include <osg/Object>
+#include <osgText/String>
 #include <osgText/Text>
 #include <osgWidget/Label>
 #include <osgWidget/Types>
@@ -79,6 +80,11 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Label)
 	I_Method1(void, setLabel, IN, const std::string &, x,
 	          Properties::NON_VIRTUAL,
 	          __void__setLabel__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method1(void, setLabel, IN, const osgText::String &, x,
+	          Properties::NON_VIRTUAL,
+	          __void__setLabel__C5_osgText_String_R1,
 	          "",
 	          "");
 	I_Method1(void, setFont, IN, const std::string &, x,

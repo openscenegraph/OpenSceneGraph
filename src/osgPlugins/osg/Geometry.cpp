@@ -1441,6 +1441,10 @@ bool Geometry_matchPrimitiveModeStr(const char* str,GLenum& mode)
     else if (strcmp(str,"QUADS")==0)            mode = PrimitiveSet::QUADS;
     else if (strcmp(str,"QUAD_STRIP")==0)       mode = PrimitiveSet::QUAD_STRIP;
     else if (strcmp(str,"POLYGON")==0)          mode = PrimitiveSet::POLYGON;
+    else if (strcmp(str,"LINES_ADJACENCY")==0)          mode = PrimitiveSet::LINES_ADJACENCY;
+    else if (strcmp(str,"LINE_STRIP_ADJACENCY")==0)     mode = PrimitiveSet::LINE_STRIP_ADJACENCY;
+    else if (strcmp(str,"TRIANGLES_ADJACENCY")==0)      mode = PrimitiveSet::TRIANGLES_ADJACENCY;
+    else if (strcmp(str,"TRIANGLE_STRIP_ADJECENCY")==0) mode = PrimitiveSet::TRIANGLE_STRIP_ADJECENCY;
     else return false;
     return true;
 }
@@ -1460,6 +1464,10 @@ const char* Geometry_getPrimitiveModeStr(GLenum mode)
         case (PrimitiveSet::QUADS)             : return "QUADS";
         case (PrimitiveSet::QUAD_STRIP)        : return "QUAD_STRIP";
         case (PrimitiveSet::POLYGON)           : return "POLYGON";
+        case (PrimitiveSet::LINES_ADJACENCY)            : return "LINES_ADJACENCY";
+        case (PrimitiveSet::LINE_STRIP_ADJACENCY)       : return "LINE_STRIP_ADJACENCY";
+        case (PrimitiveSet::TRIANGLES_ADJACENCY)        : return "TRIANGLES_ADJACENCY";
+        case (PrimitiveSet::TRIANGLE_STRIP_ADJECENCY)   : return "TRIANGLE_STRIP_ADJECENCY";
         default                                : return "UnknownPrimitveType";
     }
 }

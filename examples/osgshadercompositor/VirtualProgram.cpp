@@ -68,7 +68,7 @@ osg::Shader * VirtualProgram::setShader
        shaderCurrent = shaderNew;
     }
 
-    return shaderCurrent.release();
+    return shaderCurrent.get();
 }
 ////////////////////////////////////////////////////////////////////////////////
 void VirtualProgram::apply( osg::State & state ) const

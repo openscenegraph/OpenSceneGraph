@@ -8,7 +8,7 @@ namespace osgWidget {
 
 Label::Label(const std::string& name, const std::string& label):
 Widget     (name, 0, 0),
-_text      (new osgText::Text()), 
+_text      (new osgText::Text()),
 _textIndex (0) {
     _text->setAlignment(osgText::Text::LEFT_BOTTOM);
     _text->setDataVariance(osg::Object::DYNAMIC);
@@ -43,7 +43,7 @@ void Label::_calculateSize(const XYCoord& size) {
     // if(size.x() && size.y()) setMinimumSize(size.x(), size.y());
 
     if(getWidth() < size.x()) setWidth(size.x());
-    
+
     if(getHeight() < size.y()) setHeight(size.y());
 }
 
@@ -56,7 +56,7 @@ void Label::parented(Window* parent) {
     // a Window; it'll have a _textIndex, but that _textIndex won't apply to the
     // currently cloned object. In this case, we'll need to check to be SURE.
     osgText::Text* text = dynamic_cast<osgText::Text*>(geode->getDrawable(_textIndex));
-    
+
     if(text) parent->getGeode()->setDrawable(_textIndex, _text.get());
 
     // Otherwise, add it as new.
@@ -108,16 +108,23 @@ void Label::setLabel(const std::string& label) {
     _calculateSize(getTextSize());
 }
 
+void Label::setLabel(const osgText::String& label)
+{
+   _text->setText(label);
+
+   _calculateSize(getTextSize());
+}
+
 void Label::setFont(const std::string& font) {
     _text->setFont(font);
-    
+
     _calculateSize(getTextSize());
 }
 
 void Label::setFontSize(unsigned int size) {
     _text->setCharacterSize(size);
     _text->setFontResolution(size, size);
-    
+
     _calculateSize(getTextSize());
 }
 

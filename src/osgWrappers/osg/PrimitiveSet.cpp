@@ -397,6 +397,10 @@ BEGIN_ENUM_REFLECTOR(osg::PrimitiveSet::Mode)
 	I_EnumLabel(osg::PrimitiveSet::QUADS);
 	I_EnumLabel(osg::PrimitiveSet::QUAD_STRIP);
 	I_EnumLabel(osg::PrimitiveSet::POLYGON);
+	I_EnumLabel(osg::PrimitiveSet::LINES_ADJACENCY);
+	I_EnumLabel(osg::PrimitiveSet::LINE_STRIP_ADJACENCY);
+	I_EnumLabel(osg::PrimitiveSet::TRIANGLES_ADJACENCY);
+	I_EnumLabel(osg::PrimitiveSet::TRIANGLE_STRIP_ADJECENCY);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::PrimitiveSet)

@@ -234,7 +234,8 @@ const char* invalidNames[] =
     "GraphicsWindowWin32",
     "ImageLayer",
     "Xml",
-    "Y"
+    "Y",
+    "UpdateSkeleton"
 };
 
 
@@ -399,7 +400,9 @@ TypoCorrection typoCorrections[] =
     {"Wojiech",        "Wojciech"},
     {"Xennon",         "Hanson"},
     {"Yefrei",         "Yefei"},
-    {"Yfei",           "Yefei"}
+    {"Yfei",           "Yefei"},
+    {"Gurhrie",        "Guthrie"},
+    {"Byran",          "Bryan"}
 };
 
 
@@ -413,10 +416,22 @@ struct NameCorrection
 
 NameCorrection nameCorrections[] =
 {
-    {"Cesar",          "L.B.",
+    {"Thom",           "Carlo",
+     "Thom",           "DeCarlo"},
+    {"Stephan",        "Lamoliatte",
+     "Stephane",       "Lamoliatte"},
+    {"Ronald",         "van",
+     "Ronald",         "van Maarseveen"},
+    {"Lee",            "Bulter",
+     "Lee",            "Butler"},
+    {"Tery",           "Welsh",
+     "Terry",          "Welsh"},
+    {"Cesar",          "L",
      "César",          "L. B. Silveira"},
     {"Marc",           "Sciabica",
      "Mark",           "Sciabica"},
+    {"Tom",            "Moore",
+     "Tim",            "Moore"},
     {"Jean",           "Sebastien",
      "Jean-Sebastien", "Guay"},
     {"Michale",        "Platings",

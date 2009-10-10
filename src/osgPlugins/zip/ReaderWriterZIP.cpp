@@ -85,90 +85,78 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
         {
             ReadResult result = ReadResult(ReadResult::FILE_NOT_HANDLED);
 
-    
-            if (!fin.fail())
+            if (fin.fail()) return result;
+
+            fin.seekg(0,std::ios_base::end);
+            unsigned int ulzipFileLength = fin.tellg();
+            fin.seekg(0,std::ios_base::beg);
+
+            // Need to decouple stream content as I can't see any other way to get access to a byte array
+            // containing the content in the stream. One saving grace here is that we know that the
+            // stream has already been fully read in, hence no need to concern ourselves with asynchronous
+            // reads.
+            char * pMemBuffer = new char [ulzipFileLength];
+            if (!pMemBuffer) return result;
+
+            fin.read(pMemBuffer, ulzipFileLength);
+            if ((unsigned int)fin.gcount() == ulzipFileLength)
             {
-                unsigned int ulzipFileLength;
-                fin.seekg(0,std::ios_base::end);
-                ulzipFileLength = fin.tellg();
-                fin.seekg(0,std::ios_base::beg);
-
-                // Decompress stream to standard stream
-                HZIP hz;
-
-                // Need to decouple stream content as I can't see any other way to get access to a byte array
-                // containing the content in the stream. One saving grace here is that we know that the
-                // stream has already been fully read in, hence no need to concern ourselves with asynchronous
-                // reads.
-
-                //void * pMemBuffer = malloc(ulzipFileLength);
-                char * pMemBuffer = new char [ulzipFileLength];
-                if (pMemBuffer)
+                HZIP hz = OpenZip(pMemBuffer, ulzipFileLength, "");
+                if (hz)
                 {
-                    fin.read(pMemBuffer,ulzipFileLength);
-                    if ((unsigned int)fin.gcount()==ulzipFileLength)
+                    ZIPENTRY ze;
+                    GetZipItem(hz,-1,&ze);
+                    int numitems=ze.index;
+
+                    // Initialise top level group
+                    osg::ref_ptr<osg::Group> grp = new osg::Group;
+                    if (grp.valid())
                     {
-                        hz = OpenZip(pMemBuffer, ulzipFileLength, "");  SetUnzipBaseDir(hz,_T("\\"));
-    
-                        ZIPENTRY ze;
-                        GetZipItem(hz,-1,&ze);
-                        int numitems=ze.index;
-
-                        // Initialise top level group
-                        osg::ref_ptr<osg::Group> grp = new osg::Group;
-                        if (grp.valid())
+                        // Now loop through each file in zip
+                        for (int i = 0; i < numitems; i++)
                         {
-                            // Now loop through each file in zip
-                            for (int i=0; i<numitems; i++)
+                            GetZipItem(hz,i,&ze);
+                            std::string StreamName = ze.name;
+                            std::stringstream buffer;
+
+                            char *ibuf = new char[ze.unc_size];
+                            if (ibuf)
                             {
-                                GetZipItem(hz,i,&ze);
-                                std::string StreamName = ze.name;
-                                std::stringstream buffer;
+                                UnzipItem(hz,i, ibuf, ze.unc_size);
+                                buffer.write(ibuf,ze.unc_size);
+                                delete[] ibuf;
+                                // Now ready to read node //
 
-                                char *ibuf = new char[ze.unc_size];
-                                if (ibuf)
+                                std::string file_ext = osgDB::getFileExtension(StreamName);
+
+                                ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension(file_ext);
+                                if (rw)
                                 {
-                                    UnzipItem(hz,i, ibuf, ze.unc_size);
-                                    buffer.write(ibuf,ze.unc_size);
-                                    delete[] ibuf;
-                                    // Now ready to read node //
+                                    // Setup appropriate options
+                                    osg::ref_ptr<Options> local_opt = options ?
+                                        static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) :
+                                        new Options;
 
-                                    std::string file_ext = osgDB::getFileExtension(StreamName);
+                                    local_opt->setPluginStringData("STREAM_FILENAME",osgDB::getSimpleFileName(StreamName));
 
-                                    ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension(file_ext);
-                                    if (rw)
+                                    ReadResult readResult = rw->readNode(buffer,local_opt.get());
+                                    if (readResult.validNode())
                                     {
-                                        // Setup appropriate options
-                                        osg::ref_ptr<Options> local_opt = options ?
-                                            static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) :
-                                            new Options;
-
-                                        local_opt->setPluginStringData("STREAM_FILENAME",osgDB::getSimpleFileName(StreamName));
-
-                                        result = rw->readNode(buffer,local_opt.get());
-                                        if (result.validNode())
-                                        {
-                                            grp->addChild( result.takeNode() );
-                                        }
+                                        grp->addChild(readResult.takeNode());
                                     }
                                 }
                             }
-                            if( grp->getNumChildren() == 0 )
-                                result = ReadResult(ReadResult::FILE_NOT_HANDLED);
-                            else
-                                result = grp.get();
                         }
-                        else
-                            result = ReadResult(ReadResult::FILE_NOT_HANDLED);
+                        if (grp->getNumChildren() > 0)
+                        {
+                            result = grp.get();
+                        }
                     }
-                    else
-                        result = ReadResult(ReadResult::FILE_NOT_HANDLED);
-                    delete [] pMemBuffer;
+                    CloseZip(hz);
                 }
-                else
-                    result = ReadResult(ReadResult::FILE_NOT_HANDLED);
-
             }
+            delete [] pMemBuffer;
+
             return result;
         }
 

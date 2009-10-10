@@ -44,7 +44,7 @@ FIND_PATH(COLLADA_INCLUDE_DIR dae.h
 )
 
 FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY 
-    NAMES collada_dom collada14dom libcollada14dom21 libcollada14dom22
+    NAMES collada_dom collada14dom Collada14Dom libcollada14dom21 libcollada14dom22
     PATHS
     ${COLLADA_DOM_ROOT}/build/${COLLADA_BUILDNAME}-1.4
     $ENV{COLLADA_DIR}/build/${COLLADA_BUILDNAME}-1.4
@@ -65,7 +65,7 @@ FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY
 )
 
 FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY_DEBUG 
-    NAMES collada_dom-d collada14dom-d libcollada14dom21-d libcollada14dom22-d
+    NAMES collada_dom-d collada14dom-d Collada14Dom-d libcollada14dom21-d libcollada14dom22-d
     PATHS
     ${COLLADA_DOM_ROOT}/build/${COLLADA_BUILDNAME}-1.4-d
     $ENV{COLLADA_DIR}/build/${COLLADA_BUILDNAME}-1.4-d

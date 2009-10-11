@@ -167,6 +167,16 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __C5_osg_Matrix_R1__getModelViewMatrix,
 	          "",
 	          "");
+	I_Method1(void, setUseModelViewAndProjectionUniforms, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setUseModelViewAndProjectionUniforms__bool,
+	          "",
+	          "");
+	I_Method0(bool, getUseModelViewAndProjectionUniforms,
+	          Properties::NON_VIRTUAL,
+	          __bool__getUseModelViewAndProjectionUniforms,
+	          "",
+	          "");
 	I_Method0(void, applyModelViewAndProjectionUniformsIfRequired,
 	          Properties::NON_VIRTUAL,
 	          __void__applyModelViewAndProjectionUniformsIfRequired,
@@ -928,6 +938,9 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(unsigned int, StateSetStackSize, 
 	                 __unsigned_int__getStateSetStackSize, 
 	                 0);
+	I_SimpleProperty(bool, UseModelViewAndProjectionUniforms, 
+	                 __bool__getUseModelViewAndProjectionUniforms, 
+	                 __void__setUseModelViewAndProjectionUniforms__bool);
 	I_SimpleProperty(const osg::Array *, VertexPointer, 
 	                 0, 
 	                 __void__setVertexPointer__C5_Array_P1);

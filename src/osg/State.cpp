@@ -44,6 +44,7 @@ State::State():
     _projection = _identity;
     _modelView = _identity;
 
+    _useModelViewAndProjectionUniforms = false;
     _modelViewMatrixUniform = new Uniform(Uniform::FLOAT_MAT4,"osg_ModelViewMatrix");
     _projectionMatrixUniform = new Uniform(Uniform::FLOAT_MAT4,"osg_ProjectionMatrix");
     _modelViewProjectionMatrixUniform = new Uniform(Uniform::FLOAT_MAT4,"osg_ModelViewProjectionMatrix");

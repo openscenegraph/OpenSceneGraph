@@ -175,8 +175,11 @@ class OSG_EXPORT State : public Referenced, public Observer
                     _projection=_identity;
                 }
 
-                if (_projectionMatrixUniform.valid()) _projectionMatrixUniform->set(*_projection);
-                if (_modelViewProjectionMatrixUniform.valid()) _modelViewProjectionMatrixUniform->set((*_modelView) * (*_projection));
+                if (_useModelViewAndProjectionUniforms)
+                {
+                    if (_projectionMatrixUniform.valid()) _projectionMatrixUniform->set(*_projection);
+                    if (_modelViewProjectionMatrixUniform.valid()) _modelViewProjectionMatrixUniform->set((*_modelView) * (*_projection));
+                }
 
                 glMatrixMode( GL_PROJECTION );
                     glLoadMatrix(_projection->ptr());
@@ -202,8 +205,11 @@ class OSG_EXPORT State : public Referenced, public Observer
                     _modelView=_identity;
                 }
 
-                if (_modelViewMatrixUniform.valid()) _modelViewMatrixUniform->set(*_modelView);
-                if (_modelViewProjectionMatrixUniform.valid()) _modelViewProjectionMatrixUniform->set((*_modelView) * (*_projection));
+                if (_useModelViewAndProjectionUniforms)
+                {
+                    if (_modelViewMatrixUniform.valid()) _modelViewMatrixUniform->set(*_modelView);
+                    if (_modelViewProjectionMatrixUniform.valid()) _modelViewProjectionMatrixUniform->set((*_modelView) * (*_projection));
+                }
 
                 glLoadMatrix(_modelView->ptr());
             }
@@ -213,6 +219,9 @@ class OSG_EXPORT State : public Referenced, public Observer
         {
             return *_modelView;
         }
+
+        void setUseModelViewAndProjectionUniforms(bool flag) { _useModelViewAndProjectionUniforms = flag; }
+        bool getUseModelViewAndProjectionUniforms() const { return _useModelViewAndProjectionUniforms; }
 
         void applyModelViewAndProjectionUniformsIfRequired();
 
@@ -1100,6 +1109,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         ref_ptr<const RefMatrix>    _projection;
         ref_ptr<const RefMatrix>    _modelView;
 
+        bool                        _useModelViewAndProjectionUniforms;
         ref_ptr<Uniform>            _modelViewMatrixUniform;
         ref_ptr<Uniform>            _projectionMatrixUniform;
         ref_ptr<Uniform>            _modelViewProjectionMatrixUniform;

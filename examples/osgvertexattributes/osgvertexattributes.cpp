@@ -20,6 +20,7 @@
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 #include <osgViewer/Viewer>
+#include <osgGA/TrackballManipulator>
 
 class ConvertToVertexAttibArrays : public osg::NodeVisitor
 {
@@ -328,6 +329,20 @@ int main(int argc, char *argv[])
 
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData(loadedModel.get());
+
+    viewer.setCameraManipulator(new osgGA::TrackballManipulator());
+
+    viewer.realize();
+
+    // switch on the uniforms that track the modelview and projection matrices
+    osgViewer::Viewer::Windows windows;
+    viewer.getWindows(windows);
+    for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
+        itr != windows.end();
+        ++itr)
+    {
+        (*itr)->getState()->setUseModelViewAndProjectionUniforms(true);
+    }
 
     return viewer.run();
 }

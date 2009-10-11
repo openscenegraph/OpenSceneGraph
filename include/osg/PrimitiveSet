@@ -24,6 +24,7 @@
 #include <osg/Vec3d>
 #include <osg/Vec4d>
 #include <osg/MixinVector>
+#include <osg/GL2Extensions>
 
 #include <osg/BufferObject>
 

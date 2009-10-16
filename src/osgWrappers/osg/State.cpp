@@ -863,12 +863,7 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __GLBeginEndAdapter_R1__getGLBeginEndAdapter,
 	          "get the GL adapter object used to map OpenGL 1.0 glBegin/glEnd usage to vertex arrays. ",
 	          "");
-	I_ProtectedMethod5(void, setUpVertexAttribAlias, IN, VertexAttribAlias &, alias, IN, GLuint, location, IN, const std::string, glName, IN, const std::string, osgName, IN, const std::string &, declaration,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__setUpVertexAttribAlias__VertexAttribAlias_R1__GLuint__C5_std_string__C5_std_string__C5_std_string_R1,
-	                   "",
-	                   "");
+
 
 
 

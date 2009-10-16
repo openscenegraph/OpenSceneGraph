@@ -1275,6 +1275,7 @@ void Geometry::releaseGLObjects(State* state) const
 void Geometry::drawImplementation(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
+    bool vertexAttribAlias = state.getUseVertexAttributeAliasing();
 
 //    unsigned int contextID = state.getContextID();
     
@@ -1304,11 +1305,13 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
         return;
     }
 
-    DrawNormal         drawNormal(_normalData.array.get(),_normalData.indices.get());
-    DrawColor          drawColor(_colorData.array.get(),_colorData.indices.get());
-    DrawSecondaryColor drawSecondaryColor(_secondaryColorData.array.get(),_secondaryColorData.indices.get(),extensions);
+    AttributeBinding normalBinding = _normalData.binding;
+    AttributeBinding colorBinding = _colorData.binding;
 
-    DrawFogCoord       drawFogCoord(_fogCoordData.array.get(),_fogCoordData.indices.get(),extensions);
+    DrawNormal         drawNormal(vertexAttribAlias?0:_normalData.array.get(),vertexAttribAlias?0:_normalData.indices.get());
+    DrawColor          drawColor(vertexAttribAlias?0:_colorData.array.get(),vertexAttribAlias?0:_colorData.indices.get());
+    DrawSecondaryColor drawSecondaryColor(vertexAttribAlias?0:_secondaryColorData.array.get(),vertexAttribAlias?0:_secondaryColorData.indices.get(),extensions);
+    DrawFogCoord       drawFogCoord(vertexAttribAlias?0:_fogCoordData.array.get(),vertexAttribAlias?0:_fogCoordData.indices.get(),extensions);
 
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1334,6 +1337,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
         fogCoordBinding = BIND_OFF;
     }
 
+
     unsigned int normalIndex = 0;
     unsigned int colorIndex = 0;
     unsigned int secondaryColorIndex = 0;
@@ -1353,13 +1357,40 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     DrawVertexAttribMap drawVertexAttribMap;
     
     bool vertexVertexAttributesSupported = extensions->isVertexProgramSupported();
-    bool handleVertexAttributes = (!_vertexAttribList.empty() && vertexVertexAttributesSupported);
+    bool handleVertexAttributes = (vertexAttribAlias || !_vertexAttribList.empty()) && vertexVertexAttributesSupported;
 
     bool usingVertexBufferObjects = _useVertexBufferObjects && state.isVertexBufferObjectSupported();
-    
+
+
+    if (vertexAttribAlias)
+    {
+        if (normalBinding!=BIND_OFF && normalBinding!=BIND_PER_VERTEX)
+        { 
+            osg::notify(osg::NOTICE)<<"normal assign"<<std::endl;
+            drawVertexAttribMap[normalBinding].push_back( new DrawVertexAttrib(extensions,2,false,_normalData.array.get(),_normalData.indices.get()) );
+            normalBinding = BIND_OFF;
+        }
+
+        if (colorBinding!=BIND_OFF && colorBinding!=BIND_PER_VERTEX)
+        {
+            osg::notify(osg::NOTICE)<<"color assign"<<std::endl;
+            drawVertexAttribMap[colorBinding].push_back( new DrawVertexAttrib(extensions,3,false,_colorData.array.get(),_colorData.indices.get()) );
+            colorBinding = BIND_OFF;
+        }
+
+        secondaryColorBinding = BIND_OFF;
+        fogCoordBinding = BIND_OFF;
+    }
+
+
     if (areFastPathsUsed())
     {
-    
+
+#define USE_LAZY_DISABLING
+
+#ifdef USE_LAZY_DISABLING
+        state.lazyDisablingOfVertexAttributes();
+#endif
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //
         // fast path.        
@@ -1368,99 +1399,55 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
         {
             // osg::notify(osg::NOTICE)<<"Geometry::drawImplementation() Using VertexBufferObjects"<<std::endl;
 
-            //
-            // Vertex Buffer Object path for defining vertex arrays.
-            // 
-            state.setNormalPointer(_normalData.binding==BIND_PER_VERTEX ? _normalData.array.get() : 0);
-            state.setColorPointer(_colorData.binding==BIND_PER_VERTEX ? _colorData.array.get() : 0);
-            state.setSecondaryColorPointer(_secondaryColorData.binding==BIND_PER_VERTEX ? _secondaryColorData.array.get() : 0);
-            state.setFogCoordPointer(_fogCoordData.binding==BIND_PER_VERTEX ? _fogCoordData.array.get() : 0);
-
-            unsigned int unit;
-            for(unit=0;unit<_texCoordList.size();++unit)
-            {
-                state.setTexCoordPointer(unit, _texCoordList[unit].array.get());
-            }
-            state.disableTexCoordPointersAboveAndIncluding(unit);
-
-            if( handleVertexAttributes )
-            {
-                unsigned int index;
-                for( index = 0; index < _vertexAttribList.size(); ++index )
-                {
-                    const Array* array = _vertexAttribList[index].array.get();
-                    const AttributeBinding ab = _vertexAttribList[index].binding;
-                    state.setVertexAttribPointer(index, (ab==BIND_PER_VERTEX ? array : 0), _vertexAttribList[index].normalize);
-
-                    if(array && ab!=BIND_PER_VERTEX)
-                    {
-                        const IndexArray* indexArray = _vertexAttribList[index].indices.get();
-
-                        if( indexArray && indexArray->getNumElements() > 0 )
-                        {
-                            drawVertexAttribMap[ab].push_back( 
-                                new DrawVertexAttrib(extensions,index,_vertexAttribList[index].normalize,array,indexArray) );
-                        }
-                        else
-                        {
-                            drawVertexAttribMap[ab].push_back( 
-                                new DrawVertexAttrib(extensions,index,_vertexAttribList[index].normalize,array,0) );
-                        }
-                    }
-                }
-                state.disableVertexAttribPointersAboveAndIncluding( index );
-            }
-            else if (vertexVertexAttributesSupported)
-            {
-                state.disableVertexAttribPointersAboveAndIncluding( 0 );
-            }
-
-            state.setVertexPointer(_vertexData.array.get());
-
-
-        }
-        else
-        {
-            // osg::notify(osg::NOTICE)<<"none VertexBuffer path"<<std::endl;
-
-            //
-            // Non Vertex Buffer Object path for defining vertex arrays.
-            //            
             if( _vertexData.array.valid() )
-                state.setVertexPointer(_vertexData.array->getDataSize(),_vertexData.array->getDataType(),0,_vertexData.array->getDataPointer());
+                state.setVertexPointer(_vertexData.array.get());
+#ifndef USE_LAZY_DISABLING
             else
                 state.disableVertexPointer();
+#endif
 
             if (_normalData.binding==BIND_PER_VERTEX && _normalData.array.valid())
-                state.setNormalPointer(_normalData.array->getDataType(),0,_normalData.array->getDataPointer());
+                state.setNormalPointer(_normalData.array.get());
+#ifndef USE_LAZY_DISABLING
             else
                 state.disableNormalPointer();
+#endif
 
             if (_colorData.binding==BIND_PER_VERTEX && _colorData.array.valid())
-                state.setColorPointer(_colorData.array->getDataSize(),_colorData.array->getDataType(),0,_colorData.array->getDataPointer());
+                state.setColorPointer(_colorData.array.get());
+#ifndef USE_LAZY_DISABLING
             else
                 state.disableColorPointer();
+#endif
 
             if (secondaryColorBinding==BIND_PER_VERTEX && _secondaryColorData.array.valid())
-                state.setSecondaryColorPointer(_secondaryColorData.array->getDataSize(),_secondaryColorData.array->getDataType(),0,_secondaryColorData.array->getDataPointer());
+                state.setSecondaryColorPointer(_secondaryColorData.array.get());
+#ifndef USE_LAZY_DISABLING
             else
                 state.disableSecondaryColorPointer();
+#endif
 
             if (fogCoordBinding==BIND_PER_VERTEX && _fogCoordData.array.valid())
-                state.setFogCoordPointer(GL_FLOAT,0,_fogCoordData.array->getDataPointer());
+                state.setFogCoordPointer(_fogCoordData.array.get());
+#ifndef USE_LAZY_DISABLING
             else
                 state.disableFogCoordPointer();
+#endif
 
             unsigned int unit;
             for(unit=0;unit<_texCoordList.size();++unit)
             {
                 const Array* array = _texCoordList[unit].array.get();
                 if (array)
-                    state.setTexCoordPointer(unit,array->getDataSize(),array->getDataType(),0,array->getDataPointer());
+                    state.setTexCoordPointer(unit,array);
+#ifndef USE_LAZY_DISABLING
                 else
                     state.disableTexCoordPointer(unit);
+#endif
             }
+#ifndef USE_LAZY_DISABLING
             state.disableTexCoordPointersAboveAndIncluding(unit);
+#endif
 
             if( handleVertexAttributes )
             {
@@ -1472,7 +1459,110 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
                     if( ab == BIND_PER_VERTEX && array )
                     {
-                        state.setVertexAttribPointer( index, array->getDataSize(), array->getDataType(), 
+                        state.setVertexAttribPointer( index, array, _vertexAttribList[index].normalize );
+                    }
+                    else
+                    {
+                        if( array )
+                        {
+                            const IndexArray* indexArray = _vertexAttribList[index].indices.get();
+
+                            if( indexArray && indexArray->getNumElements() > 0 )
+                            {
+                                drawVertexAttribMap[ab].push_back(
+                                    new DrawVertexAttrib(extensions,index,_vertexAttribList[index].normalize,array,indexArray) );
+                            }
+                            else
+                            {
+                                drawVertexAttribMap[ab].push_back(
+                                    new DrawVertexAttrib(extensions,index,_vertexAttribList[index].normalize,array,0) );
+                            }
+                        }
+
+#ifndef USE_LAZY_DISABLING
+                        state.disableVertexAttribPointer( index );
+#endif
+                    }
+                }
+#ifndef USE_LAZY_DISABLING
+                state.disableVertexAttribPointersAboveAndIncluding( index );
+#endif
+            }
+#ifndef USE_LAZY_DISABLING
+            else if (vertexVertexAttributesSupported)
+            {
+                state.disableVertexAttribPointersAboveAndIncluding( 0 );
+            }
+#endif
+        }
+        else
+        {
+            // osg::notify(osg::NOTICE)<<"none VertexBuffer path"<<std::endl;
+
+            //
+            // Non Vertex Buffer Object path for defining vertex arrays.
+            //            
+            if( _vertexData.array.valid() )
+                state.setVertexPointer(_vertexData.array->getDataSize(),_vertexData.array->getDataType(),0,_vertexData.array->getDataPointer());
+#ifndef USE_LAZY_DISABLING
+            else
+                state.disableVertexPointer();
+#endif
+
+            if (_normalData.binding==BIND_PER_VERTEX && _normalData.array.valid())
+                state.setNormalPointer(_normalData.array->getDataType(),0,_normalData.array->getDataPointer());
+#ifndef USE_LAZY_DISABLING
+            else
+                state.disableNormalPointer();
+#endif
+
+            if (_colorData.binding==BIND_PER_VERTEX && _colorData.array.valid())
+                state.setColorPointer(_colorData.array->getDataSize(),_colorData.array->getDataType(),0,_colorData.array->getDataPointer());
+#ifndef USE_LAZY_DISABLING
+            else
+                state.disableColorPointer();
+#endif
+
+            if (secondaryColorBinding==BIND_PER_VERTEX && _secondaryColorData.array.valid())
+                state.setSecondaryColorPointer(_secondaryColorData.array->getDataSize(),_secondaryColorData.array->getDataType(),0,_secondaryColorData.array->getDataPointer());
+#ifndef USE_LAZY_DISABLING
+            else
+                state.disableSecondaryColorPointer();
+#endif
+
+            if (fogCoordBinding==BIND_PER_VERTEX && _fogCoordData.array.valid())
+                state.setFogCoordPointer(GL_FLOAT,0,_fogCoordData.array->getDataPointer());
+#ifndef USE_LAZY_DISABLING
+            else
+                state.disableFogCoordPointer();
+#endif
+
+            unsigned int unit;
+            for(unit=0;unit<_texCoordList.size();++unit)
+            {
+                const Array* array = _texCoordList[unit].array.get();
+                if (array)
+                    state.setTexCoordPointer(unit,array->getDataSize(),array->getDataType(),0,array->getDataPointer());
+#ifndef USE_LAZY_DISABLING
+                else
+                    state.disableTexCoordPointer(unit);
+#endif
+            }
+#ifndef USE_LAZY_DISABLING
+            state.disableTexCoordPointersAboveAndIncluding(unit);
+#endif
+
+            if( handleVertexAttributes )
+            {
+                unsigned int index;
+                for( index = 0; index < _vertexAttribList.size(); ++index )
+                {
+                    const Array* array = _vertexAttribList[index].array.get();
+                    const AttributeBinding ab = _vertexAttribList[index].binding;
+
+                    if( ab == BIND_PER_VERTEX && array )
+                    {
+                        state.setVertexAttribPointer( index, array->getDataSize(), array->getDataType(),
                             _vertexAttribList[index].normalize, 0, array->getDataPointer() );
                     }
                     else
@@ -1483,34 +1573,44 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
                             if( indexArray && indexArray->getNumElements() > 0 )
                             {
-                                drawVertexAttribMap[ab].push_back( 
+                                drawVertexAttribMap[ab].push_back(
                                     new DrawVertexAttrib(extensions,index,_vertexAttribList[index].normalize,array,indexArray) );
                             }
                             else
                             {
-                                drawVertexAttribMap[ab].push_back( 
+                                drawVertexAttribMap[ab].push_back(
                                     new DrawVertexAttrib(extensions,index,_vertexAttribList[index].normalize,array,0) );
                             }
                         }
 
+#ifndef USE_LAZY_DISABLING
                         state.disableVertexAttribPointer( index );
+#endif
                     }
                 }
+#ifndef USE_LAZY_DISABLING
                 state.disableVertexAttribPointersAboveAndIncluding( index );
-                
+#endif
             }
+#ifndef USE_LAZY_DISABLING
             else if (vertexVertexAttributesSupported)
             {
                 state.disableVertexAttribPointersAboveAndIncluding( 0 );
             }
+#endif
         }
-        
+
+#ifdef USE_LAZY_DISABLING
+        state.applyDisablingOfVertexAttributes();
+#endif
+
+
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //
         // pass the overall binding values onto OpenGL.
         //
-        if (_normalData.binding==BIND_OVERALL)      drawNormal(normalIndex++);
-        if (_colorData.binding==BIND_OVERALL)       drawColor(colorIndex++);
+        if (normalBinding==BIND_OVERALL)        drawNormal(normalIndex++);
+        if (colorBinding==BIND_OVERALL)         drawColor(colorIndex++);
         if (secondaryColorBinding==BIND_OVERALL)    drawSecondaryColor(secondaryColorIndex++);
         if (fogCoordBinding==BIND_OVERALL)          drawFogCoord(fogCoordIndex++);
         if (handleVertexAttributes)
@@ -1532,8 +1632,8 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
             ++itr)
         {
 
-            if (_normalData.binding==BIND_PER_PRIMITIVE_SET)      drawNormal(normalIndex++);
-            if (_colorData.binding==BIND_PER_PRIMITIVE_SET)       drawColor(colorIndex++);
+            if (normalBinding==BIND_PER_PRIMITIVE_SET)      drawNormal(normalIndex++);
+            if (colorBinding==BIND_PER_PRIMITIVE_SET)       drawColor(colorIndex++);
             if (secondaryColorBinding==BIND_PER_PRIMITIVE_SET)    drawSecondaryColor(secondaryColorIndex++);
             if (fogCoordBinding==BIND_PER_PRIMITIVE_SET)          drawFogCoord(fogCoordIndex++);
             if (handleVertexAttributes)

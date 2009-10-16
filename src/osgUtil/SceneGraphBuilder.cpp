@@ -35,8 +35,11 @@ using namespace osgUtil;
 
 SceneGraphBuilder::SceneGraphBuilder():
     _statesetAssigned(false),
+    _normalSet(false),
     _normal(0.0f,0.0f,1.0f),
+    _colorSet(false),
     _color(1.0f,1.0f,1.0f,1.0f),
+    _maxNumTexCoordComponents(0),
     _texCoord(0.f,0.0f,0.0f,1.0f)
 {
 }

@@ -102,7 +102,7 @@ class OSG_EXPORT Shader : public osg::Object
         void dirtyShader();        
 
         /** If needed, compile the PCS's glShader */
-        void compileShader(unsigned int contextID) const;
+        void compileShader(osg::State& state) const;
 
         /** For a given GL context, attach a glShader to a glProgram */
         void attachShader(unsigned int contextID, GLuint program) const;
@@ -139,7 +139,7 @@ class OSG_EXPORT Shader : public osg::Object
                 GLuint getHandle() const {return _glShaderHandle;}
 
                 void requestCompile();
-                void compileShader();
+                void compileShader(osg::State& state);
                 bool needsCompile() const {return _needsCompile;}
                 bool isCompiled() const {return _isCompiled;}
                 bool getInfoLog( std::string& infoLog ) const;

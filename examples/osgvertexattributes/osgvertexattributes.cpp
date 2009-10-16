@@ -31,6 +31,8 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
         ConvertToVertexAttibArrays():
             osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
         {
+            _manualVertexAliasing = false;
+
             // mappings taken from http://www.opengl.org/registry/specs/NV/vertex_program.txt
             _vertexAlias = AttributeAlias(0, "osg_Vertex");
             _normalAlias = AttributeAlias(2, "osg_Normal");
@@ -57,7 +59,7 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
             if (replace(source, originalStr, alias.second))
             {
                 source.insert(0, declarationPrefix + alias.second + std::string(";\n"));
-                bindAttribute(program, alias);
+                if (_manualVertexAliasing) bindAttribute(program, alias);
             }
         }
 
@@ -76,6 +78,7 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
             // replace ftransform as it only works with built-ins
             replace(source, "ftransform()", "gl_ModelViewProjectionMatrix * gl_Vertex");
 
+#if 1
             replaceAndBindAttrib(program, source, "gl_Normal", _normalAlias, "attribute vec3 ");
             replaceAndBindAttrib(program, source, "gl_Vertex", _vertexAlias, "attribute vec4 ");
             replaceAndBindAttrib(program, source, "gl_Color", _colorAlias, "attribute vec4 ");
@@ -90,14 +93,9 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
             replaceAndBindAttrib(program, source, "gl_MultiTexCoord5", _texCoordAlias[5], "attribute vec4 ");
             replaceAndBindAttrib(program, source, "gl_MultiTexCoord6", _texCoordAlias[6], "attribute vec4 ");
             replaceAndBindAttrib(program, source, "gl_MultiTexCoord7", _texCoordAlias[7], "attribute vec4 ");
+#endif
 
-
-#if 0
-            // replace the modelview and project matrices
-            replace(source, "gl_ModelViewMatrix", "osg_ModeViewMatrix");
-            replace(source, "gl_ModelViewProjectionMatrix", "osg_ModelViewProjectionMatrix");
-            replace(source, "gl_ProjectionMatrix", "osg_ProjectionMatrix");
-#else
+#if 1
             // replace built in uniform
             replaceBuiltInUniform(source, "gl_ModelViewMatrix", "osg_ModeViewMatrix", "uniform mat4 ");
             replaceBuiltInUniform(source, "gl_ModelViewProjectionMatrix", "osg_ModelViewProjectionMatrix", "uniform mat4 ");
@@ -186,6 +184,8 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
              if (_visited.count(&stateset)!=0) return;
             _visited.insert(&stateset);
 
+            return;
+
             osg::notify(osg::NOTICE)<<"Found stateset "<<&stateset<<std::endl;
             osg::Program* program = dynamic_cast<osg::Program*>(stateset.getAttribute(osg::StateAttribute::PROGRAM));
             if (program)
@@ -203,6 +203,8 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
         {
             geom.setUseDisplayList(false);
 
+            if (!_manualVertexAliasing) return;
+
             osg::notify(osg::NOTICE)<<"Found geometry "<<&geom<<std::endl;
             if (geom.getVertexArray())
             {
@@ -212,7 +214,7 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
 
             if (geom.getNormalArray())
             {
-                setVertexAttrib(geom, _normalAlias, geom.getNormalArray(), false, geom.getNormalBinding());
+                setVertexAttrib(geom, _normalAlias, geom.getNormalArray(), true, geom.getNormalBinding());
                 geom.setNormalArray(0);
             }
 
@@ -231,7 +233,7 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
             if (geom.getFogCoordArray())
             {
                 // should we normalize the FogCoord array? Don't think so...
-                setVertexAttrib(geom, _fogCoordAlias, geom.getFogCoordArray(), false, geom.getSecondaryColorBinding());
+                setVertexAttrib(geom, _fogCoordAlias, geom.getFogCoordArray(), false, geom.getFogCoordBinding());
                 geom.setFogCoordArray(0);
             }
 
@@ -271,6 +273,7 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
         typedef std::set<osg::Object*> Visited;
         Visited         _visited;
 
+        bool           _manualVertexAliasing;
         AttributeAlias _vertexAlias;
         AttributeAlias _normalAlias;
         AttributeAlias _colorAlias;
@@ -334,14 +337,19 @@ int main(int argc, char *argv[])
 
     viewer.realize();
 
-    // switch on the uniforms that track the modelview and projection matrices
-    osgViewer::Viewer::Windows windows;
-    viewer.getWindows(windows);
-    for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
-        itr != windows.end();
-        ++itr)
+
+    if (runConvertToVertexAttributes)
     {
-        (*itr)->getState()->setUseModelViewAndProjectionUniforms(true);
+        // switch on the uniforms that track the modelview and projection matrices
+        osgViewer::Viewer::Windows windows;
+        viewer.getWindows(windows);
+        for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
+            itr != windows.end();
+            ++itr)
+        {
+            (*itr)->getState()->setUseModelViewAndProjectionUniforms(true);
+            (*itr)->getState()->setUseVertexAttributeAliasing(true);
+        }
     }
 
     return viewer.run();

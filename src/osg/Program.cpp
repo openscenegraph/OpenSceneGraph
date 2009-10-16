@@ -181,10 +181,10 @@ void Program::compileGLObjects( osg::State& state ) const
 
     for( unsigned int i=0; i < _shaderList.size(); ++i )
     {
-        _shaderList[i]->compileShader( contextID );
+        _shaderList[i]->compileShader( state );
     }
 
-    getPCP( contextID )->linkProgram();
+    getPCP( contextID )->linkProgram(state);
 }
 
 void Program::setThreadSafeRefUnref(bool threadSafe)
@@ -448,7 +448,7 @@ void Program::PerContextProgram::requestLink()
 }
 
 
-void Program::PerContextProgram::linkProgram()
+void Program::PerContextProgram::linkProgram(osg::State& state)
 {
     if( ! _needsLink ) return;
     _needsLink = false;
@@ -485,11 +485,25 @@ void Program::PerContextProgram::linkProgram()
     _lastAppliedUniformList.clear();
 
     // set any explicit vertex attribute bindings
-    const AttribBindingList& bindlist = _program->getAttribBindingList();
-    for( AttribBindingList::const_iterator itr = bindlist.begin();
-        itr != bindlist.end(); ++itr )
+    const AttribBindingList& programBindlist = _program->getAttribBindingList();
+    for( AttribBindingList::const_iterator itr = programBindlist.begin();
+        itr != programBindlist.end(); ++itr )
     {
+        osg::notify(osg::NOTICE)<<"Program's vertex attrib binding "<<itr->second<<", "<<itr->first<<std::endl;
         _extensions->glBindAttribLocation( _glProgramHandle, itr->second, itr->first.c_str() );
+    }
+
+    // set any explicit vertex attribute bindings that are set up via osg::State, such as the vertex arrays
+    //  that have been aliase to vertex attrib arrays
+    if (state.getUseVertexAttributeAliasing())
+    {
+        const AttribBindingList& stateBindlist = state.getAttributeBindingList();
+        for( AttribBindingList::const_iterator itr = stateBindlist.begin();
+            itr != stateBindlist.end(); ++itr )
+        {
+            osg::notify(osg::NOTICE)<<"State's vertex attrib binding "<<itr->second<<", "<<itr->first<<std::endl;
+            _extensions->glBindAttribLocation( _glProgramHandle, itr->second, itr->first.c_str() );
+        }
     }
 
     // set any explicit frag data bindings

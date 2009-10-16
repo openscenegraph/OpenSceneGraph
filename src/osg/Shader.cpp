@@ -230,10 +230,10 @@ void Shader::releaseGLObjects(osg::State* state) const
     }
 }
 
-void Shader::compileShader( unsigned int contextID ) const
+void Shader::compileShader( osg::State& state ) const
 {
-    PerContextShader* pcs = getPCS( contextID );
-    if( pcs ) pcs->compileShader();
+    PerContextShader* pcs = getPCS( state.getContextID() );
+    if( pcs ) pcs->compileShader( state );
 }
 
 
@@ -374,12 +374,18 @@ namespace
     }
 }
 
-void Shader::PerContextShader::compileShader()
+void Shader::PerContextShader::compileShader(osg::State& state)
 {
     if( ! _needsCompile ) return;
     _needsCompile = false;
 
-    std::string sourceWithLineNumbers = insertLineNumbers(_shader->getShaderSource());
+    std::string source = _shader->getShaderSource();
+    if (_shader->getType()==osg::Shader::VERTEX && (state.getUseVertexAttributeAliasing() || state.getUseModelViewAndProjectionUniforms()))
+    {
+        state.convertVertexShaderSourceToOsgBuiltIns(source);
+    }
+
+    std::string sourceWithLineNumbers = insertLineNumbers(source);
 
     if (osg::getNotifyLevel()>=osg::INFO)
     {
@@ -389,7 +395,7 @@ void Shader::PerContextShader::compileShader()
     }
 
     GLint compiled = GL_FALSE;
-    const char* sourceText = _shader->getShaderSource().c_str();
+    const char* sourceText = source.c_str();
     _extensions->glShaderSource( _glShaderHandle, 1, &sourceText, NULL );
     _extensions->glCompileShader( _glShaderHandle );
     _extensions->glGetShaderiv( _glShaderHandle, GL_COMPILE_STATUS, &compiled );

@@ -162,7 +162,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 GLuint getHandle() const {return _glProgramHandle;}
 
                 void requestLink();
-                void linkProgram();
+                void linkProgram(osg::State& state);
                 bool validateProgram();
                 bool needsLink() const {return _needsLink;}
                 bool isLinked() const {return _isLinked;}

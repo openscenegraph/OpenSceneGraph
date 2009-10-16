@@ -74,6 +74,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/GL
     ${HEADER_PATH}/GL2Extensions
     ${HEADER_PATH}/GLExtensions
+    ${HEADER_PATH}/GLBeginEndAdapter
     ${HEADER_PATH}/GLObjects
     ${HEADER_PATH}/GLU
     ${HEADER_PATH}/GraphicsContext
@@ -236,6 +237,7 @@ ADD_LIBRARY(${LIB_NAME}
     Geometry.cpp
     GL2Extensions.cpp
     GLExtensions.cpp
+    GLBeginEndAdapter.cpp
     GLObjects.cpp
     GraphicsContext.cpp
     GraphicsThread.cpp

@@ -17,6 +17,8 @@
 #include <osg/GLExtensions>
 #include <osg/ApplicationUsage>
 
+#include <sstream>
+
 #ifndef GL_MAX_TEXTURE_COORDS
 #define GL_MAX_TEXTURE_COORDS 0x8871
 #endif
@@ -35,7 +37,8 @@ using namespace osg;
 static ApplicationUsageProxy State_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_GL_ERROR_CHECKING <type>","ONCE_PER_ATTRIBUTE | ON | on enables fine grained checking,  ONCE_PER_FRAME enables coarse grained checking");
 
 State::State():
-    Referenced(true)
+    Referenced(true),
+    _glBeginEndAdapter(this)
 {
     _graphicsContext = 0;
     _contextID = 0;
@@ -48,6 +51,27 @@ State::State():
     _modelViewMatrixUniform = new Uniform(Uniform::FLOAT_MAT4,"osg_ModelViewMatrix");
     _projectionMatrixUniform = new Uniform(Uniform::FLOAT_MAT4,"osg_ProjectionMatrix");
     _modelViewProjectionMatrixUniform = new Uniform(Uniform::FLOAT_MAT4,"osg_ModelViewProjectionMatrix");
+    _normalMatrixUniform = new Uniform(Uniform::FLOAT_MAT3,"osg_NormalMatrix");
+
+    {
+        _useVertexAttributeAliasing = false;
+        setUpVertexAttribAlias(_vertexAlias,0, "gl_Vertex","osg_Vertex","attribute vec4 ");
+        setUpVertexAttribAlias(_normalAlias, 2, "gl_Normal","osg_Normal","attribute vec3 ");
+        setUpVertexAttribAlias(_colorAlias, 3, "gl_Color","osg_Color","attribute vec4 ");
+        setUpVertexAttribAlias(_secondaryColorAlias, 4, "gl_SecondaryColor","osg_SecondaryColor","attribute vec4 ");
+        setUpVertexAttribAlias(_fogCoordAlias, 5, "gl_FogCoord","osg_FogCoord","attribute float ");
+
+        _texCoordAliasList.resize(8);
+        for(unsigned int i=0; i<_texCoordAliasList.size(); i++)
+        {
+            std::stringstream gl_MultiTexCoord;
+            std::stringstream osg_MultiTexCoord;
+            gl_MultiTexCoord<<"gl_MultiTexCoord"<<i;
+            osg_MultiTexCoord<<"osg_MultiTexCoord"<<i;
+
+            setUpVertexAttribAlias(_texCoordAliasList[i], 8+i, gl_MultiTexCoord.str(), osg_MultiTexCoord.str(), "attribute vec4 ");
+        }
+    }
 
     _abortRenderingPtr = false;    
 
@@ -95,12 +119,15 @@ State::State():
 
     _maxTexturePoolSize = 0;
     _maxBufferObjectPoolSize = 0;
-
-
 }
 
 State::~State()
 {
+    //_texCoordArrayList.clear();
+
+    //_vertexAttribArrayList.clear();
+
+    // osg::notify(osg::NOTICE)<<"State::~State()"<<this<<std::endl;
     for(AppliedProgramObjectSet::iterator itr = _appliedProgramObjectSet.begin();
         itr != _appliedProgramObjectSet.end();
         ++itr)
@@ -748,6 +775,9 @@ void State::initializeExtensionProcs()
     setGLExtensionFuncPtr(_glSecondaryColorPointer, "glSecondaryColorPointer","glSecondaryColorPointerEXT");
     setGLExtensionFuncPtr(_glVertexAttribPointer, "glVertexAttribPointer","glVertexAttribPointerARB");
     setGLExtensionFuncPtr(_glEnableVertexAttribArray, "glEnableVertexAttribArray","glEnableVertexAttribArrayARB");
+    setGLExtensionFuncPtr(_glMultiTexCoord4f, "glMultiTexCoord4f","glMultiTexCoord4fARB");
+    setGLExtensionFuncPtr(_glVertexAttrib4f, "glVertexAttrib4f");
+    setGLExtensionFuncPtr(_glVertexAttrib4fv, "glVertexAttrib4fv");
     setGLExtensionFuncPtr(_glDisableVertexAttribArray, "glDisableVertexAttribArray","glDisableVertexAttribArrayARB");
     setGLExtensionFuncPtr(_glBindBuffer, "glBindBuffer","glBindBufferARB");
 
@@ -816,40 +846,55 @@ bool State::setActiveTextureUnit( unsigned int unit )
 
 void State::setFogCoordPointer(GLenum type, GLsizei stride, const GLvoid *ptr)
 {
-    if (_glFogCoordPointer)
+    if (_useVertexAttributeAliasing)
     {
-
-        if (!_fogArray._enabled || _fogArray._dirty)
-        {
-            _fogArray._enabled = true;
-            glEnableClientState(GL_FOG_COORDINATE_ARRAY);
-        }
-        //if (_fogArray._pointer!=ptr || _fogArray._dirty)
-        {
-            _fogArray._pointer=ptr;
-            _glFogCoordPointer( type, stride, ptr );
-        }
-        _fogArray._dirty = false;
+        setVertexAttribPointer(_fogCoordAlias._location, 1, type, GL_FALSE, stride, ptr);
     }
-    
+    else
+    {
+        if (_glFogCoordPointer)
+        {
+
+            if (!_fogArray._enabled || _fogArray._dirty)
+            {
+                _fogArray._enabled = true;
+                glEnableClientState(GL_FOG_COORDINATE_ARRAY);
+            }
+            //if (_fogArray._pointer!=ptr || _fogArray._dirty)
+            {
+                _fogArray._pointer=ptr;
+                _glFogCoordPointer( type, stride, ptr );
+            }
+            _fogArray._lazy_disable = false;
+            _fogArray._dirty = false;
+        }
+    }
 }
 
 void State::setSecondaryColorPointer( GLint size, GLenum type,
                                       GLsizei stride, const GLvoid *ptr )
 {
-    if (_glSecondaryColorPointer)
+    if (_useVertexAttributeAliasing)
     {
-        if (!_secondaryColorArray._enabled || _secondaryColorArray._dirty)
+        setVertexAttribPointer(_secondaryColorAlias._location, size, type, GL_FALSE, stride, ptr);
+    }
+    else
+    {
+        if (_glSecondaryColorPointer)
         {
-            _secondaryColorArray._enabled = true;
-            glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
+            if (!_secondaryColorArray._enabled || _secondaryColorArray._dirty)
+            {
+                _secondaryColorArray._enabled = true;
+                glEnableClientState(GL_SECONDARY_COLOR_ARRAY);
+            }
+            //if (_secondaryColorArray._pointer!=ptr || _secondaryColorArray._dirty)
+            {
+                _secondaryColorArray._pointer=ptr;
+                _glSecondaryColorPointer( size, type, stride, ptr );
+            }
+            _secondaryColorArray._lazy_disable = false;
+            _secondaryColorArray._dirty = false;
         }
-        //if (_secondaryColorArray._pointer!=ptr || _secondaryColorArray._dirty)
-        {
-            _secondaryColorArray._pointer=ptr;
-            _glSecondaryColorPointer( size, type, stride, ptr );
-        }
-        _secondaryColorArray._dirty = false;
     }
 }
 
@@ -861,20 +906,25 @@ void State::setVertexAttribPointer( unsigned int index,
 {
     if (_glVertexAttribPointer)
     {
+        // osg::notify(osg::NOTICE)<<"State::setVertexAttribPointer("<<index<<",...)"<<std::endl;
+
         if ( index >= _vertexAttribArrayList.size()) _vertexAttribArrayList.resize(index+1);
         EnabledArrayPair& eap = _vertexAttribArrayList[index];
 
         if (!eap._enabled || eap._dirty)
         {
             eap._enabled = true;
+            // osg::notify(osg::NOTICE)<<"    _glEnableVertexAttribArray( "<<index<<" )"<<std::endl;
             _glEnableVertexAttribArray( index );
         }
         //if (eap._pointer != ptr || eap._normalized!=normalized || eap._dirty)
         {
+            // osg::notify(osg::NOTICE)<<"    _glVertexAttribPointer( "<<index<<" )"<<std::endl;
             _glVertexAttribPointer( index, size, type, normalized, stride, ptr );
             eap._pointer = ptr;
             eap._normalized = normalized;
         }
+        eap._lazy_disable = false;
         eap._dirty = false;
     }
 }      
@@ -892,6 +942,7 @@ void State::disableVertexAttribPointer( unsigned int index )
         {
             eap._enabled = false;
             eap._dirty = false;
+            // osg::notify(osg::NOTICE)<<"    _glDisableVertexAttribArray( "<<index<<" )"<<std::endl;
             _glDisableVertexAttribArray( index );
         }
     }
@@ -908,12 +959,64 @@ void State::disableVertexAttribPointersAboveAndIncluding( unsigned int index )
             {
                 eap._enabled = false;
                 eap._dirty = false;
+                // osg::notify(osg::NOTICE)<<"    State::disableVertexAttribPointersAboveAndIncluding(): _glDisableVertexAttribArray( "<<index<<" )"<<std::endl;
                 _glDisableVertexAttribArray( index );
             }
             ++index;
         }
     }
 }
+
+void State::lazyDisablingOfVertexAttributes()
+{
+    // osg::notify(osg::NOTICE)<<"lazyDisablingOfVertexAttributes()"<<std::endl;
+    if (!_useVertexAttributeAliasing)
+    {
+        _vertexArray._lazy_disable = true;
+        _normalArray._lazy_disable = true;
+        _colorArray._lazy_disable = true;
+        _secondaryColorArray._lazy_disable = true;
+        _indexArray._lazy_disable = true;
+        _fogArray._lazy_disable = true;
+        for(EnabledTexCoordArrayList::iterator itr = _texCoordArrayList.begin();
+            itr != _texCoordArrayList.end();
+            ++itr)
+        {
+            itr->_lazy_disable = true;
+        }
+    }
+
+    for(EnabledVertexAttribArrayList::iterator itr = _vertexAttribArrayList.begin();
+        itr != _vertexAttribArrayList.end();
+        ++itr)
+    {
+        itr->_lazy_disable = true;
+    }
+}
+
+void State::applyDisablingOfVertexAttributes()
+{
+    //osg::notify(osg::NOTICE)<<"start of applyDisablingOfVertexAttributes()"<<std::endl;
+    if (!_useVertexAttributeAliasing)
+    {
+        if (_vertexArray._lazy_disable) disableVertexPointer();
+        if (_normalArray._lazy_disable) disableNormalPointer();
+        if (_colorArray._lazy_disable) disableColorPointer();
+        if (_secondaryColorArray._lazy_disable) disableSecondaryColorPointer();
+        if (_indexArray._lazy_disable) disableIndexPointer();
+        if (_fogArray._lazy_disable) disableFogCoordPointer();
+        for(unsigned int i=0; i<_texCoordArrayList.size(); ++i)
+        {
+            if (_texCoordArrayList[i]._lazy_disable) disableTexCoordPointer(i);
+        }
+    }
+    for(unsigned int i=0; i<_vertexAttribArrayList.size(); ++i)
+    {
+        if (_vertexAttribArrayList[i]._lazy_disable) disableVertexAttribPointer(i);
+    }
+    // osg::notify(osg::NOTICE)<<"end of applyDisablingOfVertexAttributes()"<<std::endl;
+}
+
 
 bool State::computeSecondaryColorSupported() const
 {
@@ -999,4 +1102,163 @@ void State::applyModelViewAndProjectionUniformsIfRequired()
     if (_modelViewMatrixUniform.valid()) _lastAppliedProgramObject->apply(*_modelViewMatrixUniform);
     if (_projectionMatrixUniform) _lastAppliedProgramObject->apply(*_projectionMatrixUniform);
     if (_modelViewProjectionMatrixUniform) _lastAppliedProgramObject->apply(*_modelViewProjectionMatrixUniform);
+    if (_normalMatrixUniform) _lastAppliedProgramObject->apply(*_normalMatrixUniform);
+}
+
+namespace State_Utils
+{
+    bool replace(std::string& str, const std::string& original_phrase, const std::string& new_phrase)
+    {
+        bool replacedStr = false;
+        std::string::size_type pos = 0;
+        while((pos=str.find(original_phrase, pos))!=std::string::npos)
+        {
+            std::string::size_type endOfPhrasePos = pos+original_phrase.size();
+            if (endOfPhrasePos<str.size())
+            {
+                char c = str[endOfPhrasePos];
+                if ((c>='0' && c<='9') ||
+                    (c>='a' && c<='z') ||
+                    (c>='A' && c<='Z'))
+                {
+                    pos = endOfPhrasePos;
+                    continue;
+                }
+            }
+
+            replacedStr = true;
+            str.replace(pos, original_phrase.size(), new_phrase);
+        }
+        return replacedStr;
+    }
+
+    void replaceAndInsertDeclaration(std::string& source, const std::string& originalStr, const std::string& newStr, const std::string& declarationPrefix)
+    {
+        if (replace(source, originalStr, newStr))
+        {
+            source.insert(0, declarationPrefix + newStr + std::string(";\n"));
+        }
+    }
+}
+
+bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
+{
+    osg::notify(osg::NOTICE)<<"State::convertShaderSourceToOsgBuiltIns()"<<std::endl;
+
+    osg::notify(osg::NOTICE)<<"++Before Converted source "<<std::endl<<source<<std::endl<<"++++++++"<<std::endl;
+
+    // replace ftransform as it only works with built-ins
+    State_Utils::replace(source, "ftransform()", "gl_ModelViewProjectionMatrix * gl_Vertex");
+
+    State_Utils::replaceAndInsertDeclaration(source, "gl_Normal", "osg_Normal", "attribute vec3 ");
+    State_Utils::replaceAndInsertDeclaration(source, "gl_Vertex", "osg_Vertex", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, "gl_Color", "osg_Color", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, "gl_SecondaryColor", "osg_SecondaryColor", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, "gl_FogCoord", "osg_FogCoord", "attribute float ");
+
+    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord0", "osg_MultiTexCoord0", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord1", "osg_MultiTexCoord1", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord2", "osg_MultiTexCoord2", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord3", "osg_MultiTexCoord3", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord4", "osg_MultiTexCoord4", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord5", "osg_MultiTexCoord5", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord6", "osg_MultiTexCoord6", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord7", "osg_MultiTexCoord7", "attribute vec4 ");
+
+    // replace built in uniform
+    State_Utils::replaceAndInsertDeclaration(source, "gl_ModelViewMatrix", "osg_ModeViewMatrix", "uniform mat4 ");
+    State_Utils::replaceAndInsertDeclaration(source, "gl_ModelViewProjectionMatrix", "osg_ModelViewProjectionMatrix", "uniform mat4 ");
+    State_Utils::replaceAndInsertDeclaration(source, "gl_ProjectionMatrix", "osg_ProjectionMatrix", "uniform mat4 ");
+    State_Utils::replaceAndInsertDeclaration(source, "gl_NormalMatrix", "osg_NormalMatrix", "uniform mat3 ");
+
+    osg::notify(osg::NOTICE)<<"-------- Converted source "<<std::endl<<source<<std::endl<<"----------------"<<std::endl;
+
+    return true;
+}
+
+void State::setUpVertexAttribAlias(VertexAttribAlias& alias, GLuint location, const std::string glName, const std::string osgName, const std::string& declaration)
+{
+    alias = VertexAttribAlias(location, glName, osgName, declaration);
+    _attributeBindingList[osgName] = location;
+}
+
+void State::applyProjectionMatrix(const osg::RefMatrix* matrix)
+{
+    if (_projection!=matrix)
+    {
+        if (matrix)
+        {
+            _projection=matrix;
+        }
+        else
+        {
+            _projection=_identity;
+        }
+
+        if (_useModelViewAndProjectionUniforms)
+        {
+            if (_projectionMatrixUniform.valid()) _projectionMatrixUniform->set(*_projection);
+            updateModelViewAndProjectionMatrixUniforms();
+        }
+
+        glMatrixMode( GL_PROJECTION );
+            glLoadMatrix(_projection->ptr());
+        glMatrixMode( GL_MODELVIEW );
+    }
+}
+
+void State::applyModelViewMatrix(const osg::RefMatrix* matrix)
+{
+    if (_modelView!=matrix)
+    {
+        if (matrix)
+        {
+            _modelView=matrix;
+        }
+        else
+        {
+            _modelView=_identity;
+        }
+
+        if (_useModelViewAndProjectionUniforms)
+        {
+            if (_modelViewMatrixUniform.valid()) _modelViewMatrixUniform->set(*_modelView);
+            updateModelViewAndProjectionMatrixUniforms();
+        }
+
+        glLoadMatrix(_modelView->ptr());
+    }
+}
+
+#include <osg/io_utils>
+
+void State::updateModelViewAndProjectionMatrixUniforms()
+{
+    if (_modelViewProjectionMatrixUniform.valid()) _modelViewProjectionMatrixUniform->set((*_modelView) * (*_projection));
+    if (_normalMatrixUniform.valid())
+    {
+#if 0
+        Matrix mv(*_modelView);
+        mv.setTrans(0.0, 0.0, 0.0);
+
+        Matrix matrix;
+        matrix.invert(mv);
+#else
+        Matrix matrix = *_modelView;
+#endif
+
+#if 0
+        Matrix3 normalMatrix(matrix(0,0), matrix(1,0), matrix(2,0),
+                             matrix(0,1), matrix(1,1), matrix(2,1),
+                             matrix(0,2), matrix(1,2), matrix(2,2));
+#else
+        Matrix3 normalMatrix(matrix(0,0), matrix(0,0), matrix(0,0),
+                             matrix(1,0), matrix(1,1), matrix(1,0),
+                             matrix(2,0), matrix(2,0), matrix(2,2));
+#endif
+
+        osg::notify(osg::NOTICE)<<"modelview "<<*_modelView<<std::endl;
+
+        _normalMatrixUniform->set(normalMatrix);
+    }
 }

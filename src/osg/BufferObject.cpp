@@ -123,7 +123,7 @@ void GLBufferObject::compileBuffer()
                 entry.dataSource != bd ||
                 entry.dataSize != bd->getTotalDataSize())
             {
-                GLsizeiptrARB previousEndOfBufferDataMarker = GLsizeiptrARB(entry.offset) + entry.dataSize;
+                unsigned int previousEndOfBufferDataMarker = entry.offset + entry.dataSize;
 
                 // osg::notify(osg::NOTICE)<<"GLBufferObject::compileBuffer(..) updating BufferEntry"<<std::endl;
 

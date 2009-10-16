@@ -92,7 +92,9 @@ void DrawShapeVisitor::drawCylinderBody(unsigned int numSegments, float radius, 
     //  The code is mostly duplicated in order to hoist the back/front face 
     //  test out of the loop for efficiency
 
-    glBegin(GL_QUAD_STRIP);
+    GLBeginEndAdapter& gl = _state.getGLBeginEndAdapter();
+
+    gl.Begin(GL_QUAD_STRIP);
 
     if (drawFrontFace) {
 
@@ -103,23 +105,23 @@ void DrawShapeVisitor::drawCylinderBody(unsigned int numSegments, float radius, 
           float c = cosf(angle);
           float s = sinf(angle);
   
-          glNormal3f(c,s,0.0f);
+          gl.Normal3f(c,s,0.0f);
   
-          glTexCoord2f(texCoord,1.0f);
-          glVertex3f(c*r,s*r,topz);
+          gl.TexCoord2f(texCoord,1.0f);
+          gl.Vertex3f(c*r,s*r,topz);
   
-          glTexCoord2f(texCoord,0.0f);
-          glVertex3f(c*r,s*r,basez);
+          gl.TexCoord2f(texCoord,0.0f);
+          gl.Vertex3f(c*r,s*r,basez);
       }
   
       // do last point by hand to ensure no round off errors.
-      glNormal3f(1.0f,0.0f,0.0f);
+      gl.Normal3f(1.0f,0.0f,0.0f);
   
-      glTexCoord2f(1.0f,1.0f);
-      glVertex3f(r,0.0f,topz);
+      gl.TexCoord2f(1.0f,1.0f);
+      gl.Vertex3f(r,0.0f,topz);
   
-      glTexCoord2f(1.0f,0.0f);
-      glVertex3f(r,0.0f,basez);
+      gl.TexCoord2f(1.0f,0.0f);
+      gl.Vertex3f(r,0.0f,basez);
     }
     
     if (drawBackFace) {
@@ -130,26 +132,26 @@ void DrawShapeVisitor::drawCylinderBody(unsigned int numSegments, float radius, 
           float c = cosf(angle);
           float s = sinf(angle);
   
-          glNormal3f(-c,-s,0.0f);
+          gl.Normal3f(-c,-s,0.0f);
   
-          glTexCoord2f(texCoord,0.0f);
-          glVertex3f(c*r,s*r,basez);
+          gl.TexCoord2f(texCoord,0.0f);
+          gl.Vertex3f(c*r,s*r,basez);
 
-          glTexCoord2f(texCoord,1.0f);
-          glVertex3f(c*r,s*r,topz);
+          gl.TexCoord2f(texCoord,1.0f);
+          gl.Vertex3f(c*r,s*r,topz);
       }
   
       // do last point by hand to ensure no round off errors.
-      glNormal3f(-1.0f,0.0f,0.0f);
+      gl.Normal3f(-1.0f,0.0f,0.0f);
   
-      glTexCoord2f(1.0f,0.0f);
-      glVertex3f(r,0.0f,basez);
+      gl.TexCoord2f(1.0f,0.0f);
+      gl.Vertex3f(r,0.0f,basez);
   
-      glTexCoord2f(1.0f,1.0f);
-      glVertex3f(r,0.0f,topz);
+      gl.TexCoord2f(1.0f,1.0f);
+      gl.Vertex3f(r,0.0f,topz);
     }
 
-    glEnd();
+    gl.End();
 }
 
 
@@ -176,6 +178,8 @@ void DrawShapeVisitor::drawHalfSphere(unsigned int numSegments, unsigned int num
     unsigned int rowbegin = top?numRows/2:0;
     unsigned int rowend   = top?numRows:numRows/2;
 
+    GLBeginEndAdapter& gl = _state.getGLBeginEndAdapter();
+
     for(unsigned int rowi=rowbegin; rowi<rowend; ++rowi)
     {
 
@@ -186,7 +190,7 @@ void DrawShapeVisitor::drawHalfSphere(unsigned int numSegments, unsigned int num
         float nzTop= sinf(lTop);
         float nRatioTop= cosf(lTop);
 
-        glBegin(GL_QUAD_STRIP);
+        gl.Begin(GL_QUAD_STRIP);
 
             float angle = 0.0f;
             float texCoord = 0.0f;
@@ -204,28 +208,28 @@ void DrawShapeVisitor::drawHalfSphere(unsigned int numSegments, unsigned int num
                   float c = cosf(angle);
                   float s = sinf(angle);
   
-                  glNormal3f(c*nRatioTop,s*nRatioTop,nzTop);
+                  gl.Normal3f(c*nRatioTop,s*nRatioTop,nzTop);
   
-                  glTexCoord2f(texCoord,vTop);
-                  glVertex3f(c*rTop,s*rTop,zTop+zOffset);
+                  gl.TexCoord2f(texCoord,vTop);
+                  gl.Vertex3f(c*rTop,s*rTop,zTop+zOffset);
   
-                  glNormal3f(c*nRatioBase,s*nRatioBase,nzBase);
+                  gl.Normal3f(c*nRatioBase,s*nRatioBase,nzBase);
   
-                  glTexCoord2f(texCoord,vBase);
-                  glVertex3f(c*rBase,s*rBase,zBase+zOffset);
+                  gl.TexCoord2f(texCoord,vBase);
+                  gl.Vertex3f(c*rBase,s*rBase,zBase+zOffset);
   
               }
   
               // do last point by hand to ensure no round off errors.
-              glNormal3f(nRatioTop,0.0f,nzTop);
+              gl.Normal3f(nRatioTop,0.0f,nzTop);
   
-              glTexCoord2f(1.0f,vTop);
-              glVertex3f(rTop,0.0f,zTop+zOffset);
+              gl.TexCoord2f(1.0f,vTop);
+              gl.Vertex3f(rTop,0.0f,zTop+zOffset);
   
-              glNormal3f(nRatioBase,0.0f,nzBase);
+              gl.Normal3f(nRatioBase,0.0f,nzBase);
   
-              glTexCoord2f(1.0f,vBase);
-              glVertex3f(rBase,0.0f,zBase+zOffset);
+              gl.TexCoord2f(1.0f,vBase);
+              gl.Vertex3f(rBase,0.0f,zBase+zOffset);
             }
             
           if (drawBackFace) {
@@ -236,33 +240,32 @@ void DrawShapeVisitor::drawHalfSphere(unsigned int numSegments, unsigned int num
                   float c = cosf(angle);
                   float s = sinf(angle);
   
-                  glNormal3f(-c*nRatioBase,-s*nRatioBase,-nzBase);
+                  gl.Normal3f(-c*nRatioBase,-s*nRatioBase,-nzBase);
   
-                  glTexCoord2f(texCoord,vBase);
-                  glVertex3f(c*rBase,s*rBase,zBase+zOffset);
+                  gl.TexCoord2f(texCoord,vBase);
+                  gl.Vertex3f(c*rBase,s*rBase,zBase+zOffset);
   
-                  glNormal3f(-c*nRatioTop,-s*nRatioTop,-nzTop);
+                  gl.Normal3f(-c*nRatioTop,-s*nRatioTop,-nzTop);
   
-                  glTexCoord2f(texCoord,vTop);
-                  glVertex3f(c*rTop,s*rTop,zTop+zOffset);
+                  gl.TexCoord2f(texCoord,vTop);
+                  gl.Vertex3f(c*rTop,s*rTop,zTop+zOffset);
               }
   
               // do last point by hand to ensure no round off errors.
-              glNormal3f(-nRatioBase,0.0f,-nzBase);
+              gl.Normal3f(-nRatioBase,0.0f,-nzBase);
   
-              glTexCoord2f(1.0f,vBase);
-              glVertex3f(rBase,0.0f,zBase+zOffset);
+              gl.TexCoord2f(1.0f,vBase);
+              gl.Vertex3f(rBase,0.0f,zBase+zOffset);
 
-              glNormal3f(-nRatioTop,0.0f,-nzTop);
+              gl.Normal3f(-nRatioTop,0.0f,-nzTop);
   
-              glTexCoord2f(1.0f,vTop);
-              glVertex3f(rTop,0.0f,zTop+zOffset);
+              gl.TexCoord2f(1.0f,vTop);
+              gl.Vertex3f(rTop,0.0f,zTop+zOffset);
   
           }
 
-        glEnd();
-        
-        
+        gl.End();
+
         lBase=lTop;
         rBase=rTop;
         zBase=zTop;
@@ -271,15 +274,16 @@ void DrawShapeVisitor::drawHalfSphere(unsigned int numSegments, unsigned int num
         nRatioBase=nRatioTop;
 
     }
-        
 }
 
 
 void DrawShapeVisitor::apply(const Sphere& sphere)
 {
-    glPushMatrix();
+    GLBeginEndAdapter& gl = _state.getGLBeginEndAdapter();
 
-    glTranslatef(sphere.getCenter().x(),sphere.getCenter().y(),sphere.getCenter().z());
+    gl.PushMatrix();
+
+    gl.Translated(sphere.getCenter().x(),sphere.getCenter().y(),sphere.getCenter().z());
 
     bool drawFrontFace = _hints ? _hints->getCreateFrontFace() : true;
     bool drawBackFace = _hints ? _hints->getCreateBackFace() : false;
@@ -302,6 +306,8 @@ void DrawShapeVisitor::apply(const Sphere& sphere)
     float angleDelta = osg::PI*2.0f/(float)numSegments;
     float texCoordHorzDelta = 1.0f/(float)numSegments;
 
+    gl.Begin(GL_QUAD_STRIP);
+
     if (drawBackFace)
     {
         float lBase=-osg::PI*0.5f;
@@ -321,7 +327,7 @@ void DrawShapeVisitor::apply(const Sphere& sphere)
             float nzTop= sinf(lTop);
             float nRatioTop= cosf(lTop);
 
-            glBegin(GL_QUAD_STRIP);
+            gl.Begin(GL_QUAD_STRIP);
 
                 float angle = 0.0f;
                 float texCoord = 0.0f;
@@ -333,32 +339,32 @@ void DrawShapeVisitor::apply(const Sphere& sphere)
                     float c = cosf(angle);
                     float s = sinf(angle);
 
-                    glNormal3f(-c*nRatioBase,-s*nRatioBase,-nzBase);
+                    gl.Normal3f(-c*nRatioBase,-s*nRatioBase,-nzBase);
 
-                    glTexCoord2f(texCoord,vBase);
-                    glVertex3f(c*rBase,s*rBase,zBase);
+                    gl.TexCoord2f(texCoord,vBase);
+                    gl.Vertex3f(c*rBase,s*rBase,zBase);
 
-                    glNormal3f(-c*nRatioTop,-s*nRatioTop,-nzTop);
+                    gl.Normal3f(-c*nRatioTop,-s*nRatioTop,-nzTop);
 
-                    glTexCoord2f(texCoord,vTop);
-                    glVertex3f(c*rTop,s*rTop,zTop);
+                    gl.TexCoord2f(texCoord,vTop);
+                    gl.Vertex3f(c*rTop,s*rTop,zTop);
 
 
                 }
 
 
                 // do last point by hand to ensure no round off errors.
-                glNormal3f(-nRatioBase,0.0f,-nzBase);
+                gl.Normal3f(-nRatioBase,0.0f,-nzBase);
 
-                glTexCoord2f(1.0f,vBase);
-                glVertex3f(rBase,0.0f,zBase);
+                gl.TexCoord2f(1.0f,vBase);
+                gl.Vertex3f(rBase,0.0f,zBase);
 
-                glNormal3f(-nRatioTop,0.0f,-nzTop);
+                gl.Normal3f(-nRatioTop,0.0f,-nzTop);
 
-                glTexCoord2f(1.0f,vTop);
-                glVertex3f(rTop,0.0f,zTop);
+                gl.TexCoord2f(1.0f,vTop);
+                gl.Vertex3f(rTop,0.0f,zTop);
 
-            glEnd();
+            gl.End();
 
 
             lBase=lTop;
@@ -391,7 +397,7 @@ void DrawShapeVisitor::apply(const Sphere& sphere)
             float nzTop= sinf(lTop);
             float nRatioTop= cosf(lTop);
 
-            glBegin(GL_QUAD_STRIP);
+            gl.Begin(GL_QUAD_STRIP);
 
                 float angle = 0.0f;
                 float texCoord = 0.0f;
@@ -403,30 +409,30 @@ void DrawShapeVisitor::apply(const Sphere& sphere)
                     float c = cosf(angle);
                     float s = sinf(angle);
 
-                    glNormal3f(c*nRatioTop,s*nRatioTop,nzTop);
+                    gl.Normal3f(c*nRatioTop,s*nRatioTop,nzTop);
 
-                    glTexCoord2f(texCoord,vTop);
-                    glVertex3f(c*rTop,s*rTop,zTop);
+                    gl.TexCoord2f(texCoord,vTop);
+                    gl.Vertex3f(c*rTop,s*rTop,zTop);
 
-                    glNormal3f(c*nRatioBase,s*nRatioBase,nzBase);
+                    gl.Normal3f(c*nRatioBase,s*nRatioBase,nzBase);
 
-                    glTexCoord2f(texCoord,vBase);
-                    glVertex3f(c*rBase,s*rBase,zBase);
+                    gl.TexCoord2f(texCoord,vBase);
+                    gl.Vertex3f(c*rBase,s*rBase,zBase);
 
                 }
 
                 // do last point by hand to ensure no round off errors.
-                glNormal3f(nRatioTop,0.0f,nzTop);
+                gl.Normal3f(nRatioTop,0.0f,nzTop);
 
-                glTexCoord2f(1.0f,vTop);
-                glVertex3f(rTop,0.0f,zTop);
+                gl.TexCoord2f(1.0f,vTop);
+                gl.Vertex3f(rTop,0.0f,zTop);
 
-                glNormal3f(nRatioBase,0.0f,nzBase);
+                gl.Normal3f(nRatioBase,0.0f,nzBase);
 
-                glTexCoord2f(1.0f,vBase);
-                glVertex3f(rBase,0.0f,zBase);
+                gl.TexCoord2f(1.0f,vBase);
+                gl.Vertex3f(rBase,0.0f,zBase);
 
-            glEnd();
+            gl.End();
 
 
             lBase=lTop;
@@ -439,12 +445,13 @@ void DrawShapeVisitor::apply(const Sphere& sphere)
         }
     }
 
-
-    glPopMatrix();        
+    gl.PopMatrix();
 }
 
 void DrawShapeVisitor::apply(const Box& box)
 {
+    GLBeginEndAdapter& gl = _state.getGLBeginEndAdapter();
+
     // evaluate hints
     bool createBody = (_hints ? _hints->getCreateBody() : true);
     bool createTop = (_hints ? _hints->getCreateTop() : true);
@@ -454,130 +461,132 @@ void DrawShapeVisitor::apply(const Box& box)
     float dy = box.getHalfLengths().y();
     float dz = box.getHalfLengths().z();
 
-    glPushMatrix();
+    gl.PushMatrix();
 
-    glTranslatef(box.getCenter().x(),box.getCenter().y(),box.getCenter().z());
+    gl.Translated(box.getCenter().x(),box.getCenter().y(),box.getCenter().z());
 
     if (!box.zeroRotation())
     {
-        Matrix rotation(box.computeRotationMatrix());
-        glMultMatrix(rotation.ptr());
+        Matrixd rotation(box.computeRotationMatrix());
+        gl.MultMatrixd(rotation.ptr());
     }
 
-    glBegin(GL_QUADS);
+    gl.Begin(GL_QUADS);
 
     if (createBody) {
         // -ve y plane
-        glNormal3f(0.0f,-1.0f,0.0f);
+        gl.Normal3f(0.0f,-1.0f,0.0f);
 
-        glTexCoord2f(0.0f,1.0f);
-        glVertex3f(-dx,-dy,dz);
+        gl.TexCoord2f(0.0f,1.0f);
+        gl.Vertex3f(-dx,-dy,dz);
 
-        glTexCoord2f(0.0f,0.0f);
-        glVertex3f(-dx,-dy,-dz);
+        gl.TexCoord2f(0.0f,0.0f);
+        gl.Vertex3f(-dx,-dy,-dz);
 
-        glTexCoord2f(1.0f,0.0f);
-        glVertex3f(dx,-dy,-dz);
+        gl.TexCoord2f(1.0f,0.0f);
+        gl.Vertex3f(dx,-dy,-dz);
 
-        glTexCoord2f(1.0f,1.0f);
-        glVertex3f(dx,-dy,dz);
+        gl.TexCoord2f(1.0f,1.0f);
+        gl.Vertex3f(dx,-dy,dz);
 
         // +ve y plane
-        glNormal3f(0.0f,1.0f,0.0f);
+        gl.Normal3f(0.0f,1.0f,0.0f);
 
-        glTexCoord2f(0.0f,1.0f);
-        glVertex3f(dx,dy,dz);
+        gl.TexCoord2f(0.0f,1.0f);
+        gl.Vertex3f(dx,dy,dz);
 
-        glTexCoord2f(0.0f,0.0f);
-        glVertex3f(dx,dy,-dz);
+        gl.TexCoord2f(0.0f,0.0f);
+        gl.Vertex3f(dx,dy,-dz);
 
-        glTexCoord2f(1.0f,0.0f);
-        glVertex3f(-dx,dy,-dz);
+        gl.TexCoord2f(1.0f,0.0f);
+        gl.Vertex3f(-dx,dy,-dz);
 
-        glTexCoord2f(1.0f,1.0f);
-        glVertex3f(-dx,dy,dz);
+        gl.TexCoord2f(1.0f,1.0f);
+        gl.Vertex3f(-dx,dy,dz);
 
         // +ve x plane
-        glNormal3f(1.0f,0.0f,0.0f);
+        gl.Normal3f(1.0f,0.0f,0.0f);
 
-        glTexCoord2f(0.0f,1.0f);
-        glVertex3f(dx,-dy,dz);
+        gl.TexCoord2f(0.0f,1.0f);
+        gl.Vertex3f(dx,-dy,dz);
 
-        glTexCoord2f(0.0f,0.0f);
-        glVertex3f(dx,-dy,-dz);
+        gl.TexCoord2f(0.0f,0.0f);
+        gl.Vertex3f(dx,-dy,-dz);
 
-        glTexCoord2f(1.0f,0.0f);
-        glVertex3f(dx,dy,-dz);
+        gl.TexCoord2f(1.0f,0.0f);
+        gl.Vertex3f(dx,dy,-dz);
 
-        glTexCoord2f(1.0f,1.0f);
-        glVertex3f(dx,dy,dz);
+        gl.TexCoord2f(1.0f,1.0f);
+        gl.Vertex3f(dx,dy,dz);
 
         // -ve x plane
-        glNormal3f(-1.0f,0.0f,0.0f);
+        gl.Normal3f(-1.0f,0.0f,0.0f);
 
-        glTexCoord2f(0.0f,1.0f);
-        glVertex3f(-dx,dy,dz);
+        gl.TexCoord2f(0.0f,1.0f);
+        gl.Vertex3f(-dx,dy,dz);
 
-        glTexCoord2f(0.0f,0.0f);
-        glVertex3f(-dx,dy,-dz);
+        gl.TexCoord2f(0.0f,0.0f);
+        gl.Vertex3f(-dx,dy,-dz);
 
-        glTexCoord2f(1.0f,0.0f);
-        glVertex3f(-dx,-dy,-dz);
+        gl.TexCoord2f(1.0f,0.0f);
+        gl.Vertex3f(-dx,-dy,-dz);
 
-        glTexCoord2f(1.0f,1.0f);
-        glVertex3f(-dx,-dy,dz);
+        gl.TexCoord2f(1.0f,1.0f);
+        gl.Vertex3f(-dx,-dy,dz);
     }
 
     if (createTop) {
         // +ve z plane
-        glNormal3f(0.0f,0.0f,1.0f);
+        gl.Normal3f(0.0f,0.0f,1.0f);
 
-        glTexCoord2f(0.0f,1.0f);
-        glVertex3f(-dx,dy,dz);
+        gl.TexCoord2f(0.0f,1.0f);
+        gl.Vertex3f(-dx,dy,dz);
 
-        glTexCoord2f(0.0f,0.0f);
-        glVertex3f(-dx,-dy,dz);
+        gl.TexCoord2f(0.0f,0.0f);
+        gl.Vertex3f(-dx,-dy,dz);
 
-        glTexCoord2f(1.0f,0.0f);
-        glVertex3f(dx,-dy,dz);
+        gl.TexCoord2f(1.0f,0.0f);
+        gl.Vertex3f(dx,-dy,dz);
 
-        glTexCoord2f(1.0f,1.0f);
-        glVertex3f(dx,dy,dz);
+        gl.TexCoord2f(1.0f,1.0f);
+        gl.Vertex3f(dx,dy,dz);
     }
 
     if (createBottom) {
         // -ve z plane
-        glNormal3f(0.0f,0.0f,-1.0f);
+        gl.Normal3f(0.0f,0.0f,-1.0f);
 
-        glTexCoord2f(0.0f,1.0f);
-        glVertex3f(dx,dy,-dz);
+        gl.TexCoord2f(0.0f,1.0f);
+        gl.Vertex3f(dx,dy,-dz);
 
-        glTexCoord2f(0.0f,0.0f);
-        glVertex3f(dx,-dy,-dz);
+        gl.TexCoord2f(0.0f,0.0f);
+        gl.Vertex3f(dx,-dy,-dz);
 
-        glTexCoord2f(1.0f,0.0f);
-        glVertex3f(-dx,-dy,-dz);
+        gl.TexCoord2f(1.0f,0.0f);
+        gl.Vertex3f(-dx,-dy,-dz);
 
-        glTexCoord2f(1.0f,1.0f);
-        glVertex3f(-dx,dy,-dz);
+        gl.TexCoord2f(1.0f,1.0f);
+        gl.Vertex3f(-dx,dy,-dz);
     }
 
-    glEnd();
+    gl.End();
 
-    glPopMatrix();
+    gl.PopMatrix();
 
 }
 
 void DrawShapeVisitor::apply(const Cone& cone)
 {
-    glPushMatrix();
+    GLBeginEndAdapter& gl = _state.getGLBeginEndAdapter();
 
-    glTranslatef(cone.getCenter().x(),cone.getCenter().y(),cone.getCenter().z());
+    gl.PushMatrix();
+
+    gl.Translated(cone.getCenter().x(),cone.getCenter().y(),cone.getCenter().z());
 
     if (!cone.zeroRotation())
     {
-        Matrix rotation(cone.computeRotationMatrix());
-        glMultMatrix(rotation.ptr());
+        Matrixd rotation(cone.computeRotationMatrix());
+        gl.MultMatrixd(rotation.ptr());
     }
 
     // evaluate hints
@@ -624,7 +633,7 @@ void DrawShapeVisitor::apply(const Cone& cone)
                 // we can't use a fan for the cone top
                 // since we need different normals at the top
                 // for each face..
-                glBegin(GL_QUAD_STRIP);
+                gl.Begin(GL_QUAD_STRIP);
 
                 angle = 0.0f;
                 texCoord = 0.0f;
@@ -634,38 +643,38 @@ void DrawShapeVisitor::apply(const Cone& cone)
                     float c = cosf(angle);
                     float s = sinf(angle);
 
-                    glNormal3f(c*normalRatio,s*normalRatio,normalz);
+                    gl.Normal3f(c*normalRatio,s*normalRatio,normalz);
 
-                    glTexCoord2f(texCoord,topv);
-                    glVertex3f(c*topr,s*topr,topz);
+                    gl.TexCoord2f(texCoord,topv);
+                    gl.Vertex3f(c*topr,s*topr,topz);
 
-                    glTexCoord2f(texCoord,basev);
-                    glVertex3f(c*baser,s*baser,basez);
+                    gl.TexCoord2f(texCoord,basev);
+                    gl.Vertex3f(c*baser,s*baser,basez);
                 }
 
                 // do last point by hand to ensure no round off errors.
-                glNormal3f(normalRatio,0.0f,normalz);
+                gl.Normal3f(normalRatio,0.0f,normalz);
 
-                glTexCoord2f(1.0f,topv);
-                glVertex3f(topr,0.0f,topz);
+                gl.TexCoord2f(1.0f,topv);
+                gl.Vertex3f(topr,0.0f,topz);
 
-                glTexCoord2f(1.0f,basev);
-                glVertex3f(baser,0.0f,basez);
+                gl.TexCoord2f(1.0f,basev);
+                gl.Vertex3f(baser,0.0f,basez);
 
-                glEnd();
+                gl.End();
         }
     }
 
     if (createBottom) {
-        glBegin(GL_TRIANGLE_FAN);
+        gl.Begin(GL_TRIANGLE_FAN);
 
         angle = osg::PI*2.0f;
         texCoord = 1.0f;
         basez = cone.getBaseOffset();
 
-        glNormal3f(0.0f,0.0f,-1.0f);
-        glTexCoord2f(0.5f,0.5f);
-        glVertex3f(0.0f,0.0f,basez);
+        gl.Normal3f(0.0f,0.0f,-1.0f);
+        gl.TexCoord2f(0.5f,0.5f);
+        gl.Vertex3f(0.0f,0.0f,basez);
 
         for(unsigned int bottomi=0;bottomi<numSegments;
             ++bottomi,angle-=angleDelta,texCoord-=texCoordHorzDelta) {
@@ -673,29 +682,31 @@ void DrawShapeVisitor::apply(const Cone& cone)
             float c = cosf(angle);
             float s = sinf(angle);
 
-            glTexCoord2f(c*0.5f+0.5f,s*0.5f+0.5f);
-            glVertex3f(c*r,s*r,basez);
+            gl.TexCoord2f(c*0.5f+0.5f,s*0.5f+0.5f);
+            gl.Vertex3f(c*r,s*r,basez);
         }
 
-        glTexCoord2f(1.0f,0.0f);
-        glVertex3f(r,0.0f,basez);
+        gl.TexCoord2f(1.0f,0.0f);
+        gl.Vertex3f(r,0.0f,basez);
 
-        glEnd();
+        gl.End();
     }
 
-    glPopMatrix();
+    gl.PopMatrix();
 }
 
 void DrawShapeVisitor::apply(const Cylinder& cylinder)
 {
-    glPushMatrix();
+    GLBeginEndAdapter& gl = _state.getGLBeginEndAdapter();
 
-    glTranslatef(cylinder.getCenter().x(),cylinder.getCenter().y(),cylinder.getCenter().z());
+    gl.PushMatrix();
+
+    gl.Translated(cylinder.getCenter().x(),cylinder.getCenter().y(),cylinder.getCenter().z());
 
     if (!cylinder.zeroRotation())
     {
-        Matrix rotation(cylinder.computeRotationMatrix());
-        glMultMatrix(rotation.ptr());
+        Matrixd rotation(cylinder.computeRotationMatrix());
+        gl.MultMatrixd(rotation.ptr());
     }
 
     // evaluate hints
@@ -730,11 +741,11 @@ void DrawShapeVisitor::apply(const Cylinder& cylinder)
 
     // cylinder top
     if (createTop) {
-        glBegin(GL_TRIANGLE_FAN);
+        gl.Begin(GL_TRIANGLE_FAN);
 
-        glNormal3f(0.0f,0.0f,1.0f);
-        glTexCoord2f(0.5f,0.5f);
-        glVertex3f(0.0f,0.0f,topz);
+        gl.Normal3f(0.0f,0.0f,1.0f);
+        gl.TexCoord2f(0.5f,0.5f);
+        gl.Vertex3f(0.0f,0.0f,topz);
 
         angle = 0.0f;
         texCoord = 0.0f;
@@ -745,24 +756,24 @@ void DrawShapeVisitor::apply(const Cylinder& cylinder)
             float c = cosf(angle);
             float s = sinf(angle);
 
-            glTexCoord2f(c*0.5f+0.5f,s*0.5f+0.5f);
-            glVertex3f(c*r,s*r,topz);
+            gl.TexCoord2f(c*0.5f+0.5f,s*0.5f+0.5f);
+            gl.Vertex3f(c*r,s*r,topz);
         }
 
-        glTexCoord2f(1.0f,0.5f);
-        glVertex3f(r,0.0f,topz);
+        gl.TexCoord2f(1.0f,0.5f);
+        gl.Vertex3f(r,0.0f,topz);
 
-        glEnd();
+        gl.End();
     }
 
     // cylinder bottom
     if (createBottom)
     {
-        glBegin(GL_TRIANGLE_FAN);
+        gl.Begin(GL_TRIANGLE_FAN);
 
-        glNormal3f(0.0f,0.0f,-1.0f);
-        glTexCoord2f(0.5f,0.5f);
-        glVertex3f(0.0f,0.0f,basez);
+        gl.Normal3f(0.0f,0.0f,-1.0f);
+        gl.TexCoord2f(0.5f,0.5f);
+        gl.Vertex3f(0.0f,0.0f,basez);
 
         angle = osg::PI*2.0f;
         texCoord = 1.0f;
@@ -773,29 +784,31 @@ void DrawShapeVisitor::apply(const Cylinder& cylinder)
             float c = cosf(angle);
             float s = sinf(angle);
 
-            glTexCoord2f(c*0.5f+0.5f,s*0.5f+0.5f);
-            glVertex3f(c*r,s*r,basez);
+            gl.TexCoord2f(c*0.5f+0.5f,s*0.5f+0.5f);
+            gl.Vertex3f(c*r,s*r,basez);
         }
 
-        glTexCoord2f(1.0f,0.5f);
-        glVertex3f(r,0.0f,basez);
+        gl.TexCoord2f(1.0f,0.5f);
+        gl.Vertex3f(r,0.0f,basez);
 
-        glEnd();
+        gl.End();
     }
 
-    glPopMatrix();
+    gl.PopMatrix();
 }
 
 void DrawShapeVisitor::apply(const Capsule& capsule)
 {
-    glPushMatrix();
+    GLBeginEndAdapter& gl = _state.getGLBeginEndAdapter();
 
-    glTranslatef(capsule.getCenter().x(),capsule.getCenter().y(),capsule.getCenter().z());
+    gl.PushMatrix();
+
+    gl.Translated(capsule.getCenter().x(),capsule.getCenter().y(),capsule.getCenter().z());
 
     if (!capsule.zeroRotation())
     {
-        Matrix rotation(capsule.computeRotationMatrix());
-        glMultMatrix(rotation.ptr());
+        Matrixd rotation(capsule.computeRotationMatrix());
+        gl.MultMatrixd(rotation.ptr());
     }
 
     // evaluate hints
@@ -828,7 +841,7 @@ void DrawShapeVisitor::apply(const Capsule& capsule)
     if (createBottom) 
         drawHalfSphere(numSegments, numRows, capsule.getRadius(), SphereBottomHalf, -capsule.getHeight()/2.0f);
 
-    glPopMatrix();
+    gl.PopMatrix();
 }
 
 void DrawShapeVisitor::apply(const InfinitePlane&)
@@ -838,12 +851,14 @@ void DrawShapeVisitor::apply(const InfinitePlane&)
 
 void DrawShapeVisitor::apply(const TriangleMesh& mesh)
 {
+    GLBeginEndAdapter& gl = _state.getGLBeginEndAdapter();
+
     const Vec3Array* vertices = mesh.getVertices();
     const IndexArray* indices = mesh.getIndices();
     
      if (vertices && indices)
      {
-        glBegin(GL_TRIANGLES);
+        gl.Begin(GL_TRIANGLES);
 
         for(unsigned int i=0;i+2<indices->getNumElements();i+=3)
         {
@@ -853,15 +868,15 @@ void DrawShapeVisitor::apply(const TriangleMesh& mesh)
             Vec3 normal = (v2-v1)^(v3-v2);
             normal.normalize();
 
-            glNormal3fv(normal.ptr());
-            glVertex3fv(v1.ptr());
-            glVertex3fv(v2.ptr());
-            glVertex3fv(v3.ptr());
+            gl.Normal3fv(normal.ptr());
+            gl.Vertex3fv(v1.ptr());
+            gl.Vertex3fv(v2.ptr());
+            gl.Vertex3fv(v3.ptr());
 
         }
 
-        glEnd();
-        }
+        gl.End();
+    }
 }
 
 void DrawShapeVisitor::apply(const ConvexHull& hull)
@@ -872,16 +887,18 @@ void DrawShapeVisitor::apply(const ConvexHull& hull)
 void DrawShapeVisitor::apply(const HeightField& field)
 {
     if (field.getNumColumns()==0 || field.getNumRows()==0) return;
-    
-    glPushMatrix();
 
-    glTranslatef(field.getOrigin().x(),field.getOrigin().y(),field.getOrigin().z());
+    GLBeginEndAdapter& gl = _state.getGLBeginEndAdapter();
+
+    gl.PushMatrix();
+
+    gl.Translated(field.getOrigin().x(),field.getOrigin().y(),field.getOrigin().z());
 
 
     if (!field.zeroRotation())
     {
-        Matrix rotation(field.computeRotationMatrix());
-        glMultMatrix(rotation.ptr());
+        Matrixd rotation(field.computeRotationMatrix());
+        gl.MultMatrixd(rotation.ptr());
     }
 
     float dx = field.getXInterval();
@@ -900,7 +917,7 @@ void DrawShapeVisitor::apply(const HeightField& field)
 
     if (field.getSkirtHeight()!=0.0f)
     {
-        glBegin(GL_QUAD_STRIP);
+        gl.Begin(GL_QUAD_STRIP);
 
         float u = 0.0f;
 
@@ -913,20 +930,20 @@ void DrawShapeVisitor::apply(const HeightField& field)
             vertTop.z() = field.getHeight(col,0);
             normTop.set(field.getNormal(col,0));
 
-            glTexCoord2f(u,0.0f);
-            glNormal3fv(normTop.ptr());
+            gl.TexCoord2f(u,0.0f);
+            gl.Normal3fv(normTop.ptr());
 
-            glVertex3fv(vertTop.ptr());
+            gl.Vertex3fv(vertTop.ptr());
 
             vertTop.z()-=field.getSkirtHeight();
 
-            glVertex3fv(vertTop.ptr());
+            gl.Vertex3fv(vertTop.ptr());
         }
 
-        glEnd();
+        gl.End();
 
         // draw top skirt
-        glBegin(GL_QUAD_STRIP);
+        gl.Begin(GL_QUAD_STRIP);
 
         unsigned int row = field.getNumRows()-1;
 
@@ -938,17 +955,17 @@ void DrawShapeVisitor::apply(const HeightField& field)
             vertTop.z() = field.getHeight(col,row);
             normTop.set(field.getNormal(col,row));
 
-            glTexCoord2f(u,1.0f);
-            glNormal3fv(normTop.ptr());
+            gl.TexCoord2f(u,1.0f);
+            gl.Normal3fv(normTop.ptr());
 
-            glVertex3f(vertTop.x(),vertTop.y(),vertTop.z()-field.getSkirtHeight());
+            gl.Vertex3f(vertTop.x(),vertTop.y(),vertTop.z()-field.getSkirtHeight());
 
             //vertTop.z()-=field.getSkirtHeight();
 
-            glVertex3fv(vertTop.ptr());
+            gl.Vertex3fv(vertTop.ptr());
         }
 
-        glEnd();
+        gl.End();
     }
 
 
@@ -961,7 +978,7 @@ void DrawShapeVisitor::apply(const HeightField& field)
         float u = 0.0f;
 
 
-        glBegin(GL_QUAD_STRIP);
+        gl.Begin(GL_QUAD_STRIP);
 
         // draw skirt at beginning of this row if required.
         if (field.getSkirtHeight()!=0.0f)
@@ -972,13 +989,13 @@ void DrawShapeVisitor::apply(const HeightField& field)
             vertBase.set(0.0f,dy*(float)row,field.getHeight(0,row)-field.getSkirtHeight());
             normBase.set(field.getNormal(0,row));
 
-            glTexCoord2f(u,vTop);
-            glNormal3fv(normTop.ptr());
-            glVertex3fv(vertTop.ptr());
+            gl.TexCoord2f(u,vTop);
+            gl.Normal3fv(normTop.ptr());
+            gl.Vertex3fv(vertTop.ptr());
 
-            glTexCoord2f(u,vBase);
-            glNormal3fv(normBase.ptr());
-            glVertex3fv(vertBase.ptr());
+            gl.TexCoord2f(u,vBase);
+            gl.Normal3fv(normBase.ptr());
+            gl.Vertex3fv(vertBase.ptr());
         }
 
         // draw the actual row
@@ -990,13 +1007,13 @@ void DrawShapeVisitor::apply(const HeightField& field)
             vertBase.set(dx*(float)col,dy*(float)row,field.getHeight(col,row));
             normBase.set(field.getNormal(col,row));
 
-            glTexCoord2f(u,vTop);
-            glNormal3fv(normTop.ptr());
-            glVertex3fv(vertTop.ptr());
+            gl.TexCoord2f(u,vTop);
+            gl.Normal3fv(normTop.ptr());
+            gl.Vertex3fv(vertTop.ptr());
 
-            glTexCoord2f(u,vBase);
-            glNormal3fv(normBase.ptr());
-            glVertex3fv(vertBase.ptr());
+            gl.TexCoord2f(u,vBase);
+            gl.Normal3fv(normBase.ptr());
+            gl.Vertex3fv(vertBase.ptr());
 
         }
 
@@ -1007,20 +1024,20 @@ void DrawShapeVisitor::apply(const HeightField& field)
             vertBase.z()-=field.getSkirtHeight();
             vertTop.z()-=field.getSkirtHeight();
 
-            glTexCoord2f(u,vTop);
-            glNormal3fv(normTop.ptr());
-            glVertex3fv(vertTop.ptr());
+            gl.TexCoord2f(u,vTop);
+            gl.Normal3fv(normTop.ptr());
+            gl.Vertex3fv(vertTop.ptr());
 
-            glTexCoord2f(u,vBase);
-            glNormal3fv(normBase.ptr());
-            glVertex3fv(vertBase.ptr());
+            gl.TexCoord2f(u,vBase);
+            gl.Normal3fv(normBase.ptr());
+            gl.Vertex3fv(vertBase.ptr());
         }
 
-        glEnd();
+        gl.End();
     }
 
 
-    glPopMatrix();
+    gl.PopMatrix();
 
 }
 
@@ -1904,6 +1921,7 @@ void PrimitiveShapeVisitor::apply(const CompositeShape& group)
 ShapeDrawable::ShapeDrawable():
     _color(1.0f,1.0f,1.0f,1.0f)
 {
+    //setUseDisplayList(false);
 }
 
 ShapeDrawable::ShapeDrawable(Shape* shape,TessellationHints* hints):
@@ -1911,6 +1929,7 @@ ShapeDrawable::ShapeDrawable(Shape* shape,TessellationHints* hints):
   _tessellationHints(hints)
 {
     setShape(shape);
+    //setUseDisplayList(false);
 }
 
 ShapeDrawable::ShapeDrawable(const ShapeDrawable& pg,const CopyOp& copyop):
@@ -1918,6 +1937,7 @@ ShapeDrawable::ShapeDrawable(const ShapeDrawable& pg,const CopyOp& copyop):
     _color(pg._color),
     _tessellationHints(pg._tessellationHints)
 {
+    //setUseDisplayList(false);
 }
 
 ShapeDrawable::~ShapeDrawable()
@@ -1944,10 +1964,11 @@ void ShapeDrawable::setTessellationHints(TessellationHints* hints)
 void ShapeDrawable::drawImplementation(RenderInfo& renderInfo) const
 {
     osg::State& state = *renderInfo.getState();
+    GLBeginEndAdapter& gl = state.getGLBeginEndAdapter();
 
     if (_shape.valid())
     {
-        glColor4fv(_color.ptr());
+        gl.Color4fv(_color.ptr());
     
         DrawShapeVisitor dsv(state,_tessellationHints.get());
         

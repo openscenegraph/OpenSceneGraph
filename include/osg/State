@@ -25,6 +25,7 @@
 #include <osg/DisplaySettings>
 #include <osg/Polytope>
 #include <osg/Viewport>
+#include <osg/GLBeginEndAdapter>
 
 #include <vector>
 #include <map>
@@ -151,6 +152,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         /** reset the state object to an empty stack.*/
         void reset();
 
+
         inline const Viewport* getCurrentViewport() const
         {
             return static_cast<const Viewport*>(getLastAppliedAttribute(osg::StateAttribute::VIEWPORT));
@@ -162,75 +164,35 @@ class OSG_EXPORT State : public Referenced, public Observer
         inline const osg::Matrix& getInitialViewMatrix() const { return *_initialViewMatrix; }
         inline const osg::Matrix& getInitialInverseViewMatrix() const { return _initialInverseViewMatrix; }
 
-        inline void applyProjectionMatrix(const osg::RefMatrix* matrix)
-        {
-            if (_projection!=matrix)
-            {
-                if (matrix)
-                {
-                    _projection=matrix;
-                }
-                else
-                {
-                    _projection=_identity;
-                }
+        void applyProjectionMatrix(const osg::RefMatrix* matrix);
 
-                if (_useModelViewAndProjectionUniforms)
-                {
-                    if (_projectionMatrixUniform.valid()) _projectionMatrixUniform->set(*_projection);
-                    if (_modelViewProjectionMatrixUniform.valid()) _modelViewProjectionMatrixUniform->set((*_modelView) * (*_projection));
-                }
+        inline const osg::Matrix& getProjectionMatrix() const { return *_projection; }
 
-                glMatrixMode( GL_PROJECTION );
-                    glLoadMatrix(_projection->ptr());
-                glMatrixMode( GL_MODELVIEW );
-            }
-        }
+        void applyModelViewMatrix(const osg::RefMatrix* matrix);
 
-        inline const osg::Matrix& getProjectionMatrix() const
-        {
-            return *_projection;
-        }
-
-        inline void applyModelViewMatrix(const osg::RefMatrix* matrix)
-        {
-            if (_modelView!=matrix)
-            {
-                if (matrix)
-                {
-                    _modelView=matrix;
-                }
-                else
-                {
-                    _modelView=_identity;
-                }
-
-                if (_useModelViewAndProjectionUniforms)
-                {
-                    if (_modelViewMatrixUniform.valid()) _modelViewMatrixUniform->set(*_modelView);
-                    if (_modelViewProjectionMatrixUniform.valid()) _modelViewProjectionMatrixUniform->set((*_modelView) * (*_projection));
-                }
-
-                glLoadMatrix(_modelView->ptr());
-            }
-        }
-
-        const osg::Matrix& getModelViewMatrix() const
-        {
-            return *_modelView;
-        }
+        const osg::Matrix& getModelViewMatrix() const { return *_modelView; }
 
         void setUseModelViewAndProjectionUniforms(bool flag) { _useModelViewAndProjectionUniforms = flag; }
         bool getUseModelViewAndProjectionUniforms() const { return _useModelViewAndProjectionUniforms; }
+
+        void updateModelViewAndProjectionMatrixUniforms();
 
         void applyModelViewAndProjectionUniformsIfRequired();
 
         osg::Uniform* getModelViewMatrixUniform() { return _modelViewMatrixUniform.get(); }
         osg::Uniform* getProjectionMatrixUniform() { return _projectionMatrixUniform.get(); }
         osg::Uniform* getModelViewProjectionMatrixUniform() { return _modelViewProjectionMatrixUniform.get(); }
+        osg::Uniform* getNormalMatrixUniform() { return _normalMatrixUniform.get(); }
 
 
         Polytope getViewFrustum() const;
+
+        void setUseVertexAttributeAliasing(bool flag) { _useVertexAttributeAliasing = flag; }
+        bool getUseVertexAttributeAliasing() const { return _useVertexAttributeAliasing ; }
+
+        const Program::AttribBindingList&  getAttributeBindingList() { return _attributeBindingList; }
+
+        bool convertVertexShaderSourceToOsgBuiltIns(std::string& source) const;
 
 
         /** Apply stateset.*/
@@ -496,10 +458,55 @@ class OSG_EXPORT State : public Referenced, public Observer
         }
 
 
+        inline void Vertex(float x, float y, float z, float w=1.0f)
+        {
+            if (_useVertexAttributeAliasing) _glVertexAttrib4f( _vertexAlias._location, x,y,z,w);
+            else glVertex4f(x,y,z,w);
+        }
+
+        inline void Color(float r, float g, float b, float a=1.0f)
+        {
+            if (_useVertexAttributeAliasing) _glVertexAttrib4f( _colorAlias._location, r,g,b,a);
+            else glColor4f(r,g,b,a);
+        }
+
+        void Normal(float x, float y, float z)
+        {
+            if (_useVertexAttributeAliasing) _glVertexAttrib4f( _normalAlias._location, x,y,z,0.0);
+            else glNormal3f(x,y,z);
+        }
+
+        void TexCoord(float x, float y=0.0f, float z=0.0f, float w=0.0f)
+        {
+            if (_useVertexAttributeAliasing) _glVertexAttrib4f( _texCoordAliasList[0]._location, x,y,z,w);
+            else glTexCoord4f(x,y,z,w);
+        }
+
+        void MultiTexCoord(unsigned int unit, float x, float y=0.0f, float z=0.0f, float w=0.0f)
+        {
+            if (_useVertexAttributeAliasing) _glVertexAttrib4f( _texCoordAliasList[unit]._location, x,y,z,w);
+            else _glMultiTexCoord4f(GL_TEXTURE0+unit,x,y,z,w);
+        }
+
+        void VerteAttrib(unsigned int location, float x, float y=0.0f, float z=0.0f, float w=0.0f)
+        {
+            _glVertexAttrib4f( location, x,y,z,w);
+        }
+
+
+
         /** Wrapper around glInterleavedArrays(..).
         * also resets the internal array points and modes within osg::State to keep the other
         * vertex array operations consistent. */
         void setInterleavedArrays( GLenum format, GLsizei stride, const GLvoid* pointer);
+
+
+        /** Mark all the vertex attributes as being disabled but leave the disabling till a later call to applyDisablingOfVertexAttributes.*/
+        void lazyDisablingOfVertexAttributes();
+
+        /** Disable all the vertex attributes that have been marked as to be disabled.*/
+        void applyDisablingOfVertexAttributes();
+
 
         /** Set the vertex pointer using an osg::Array, and manage any VBO that are required.*/
         inline void setVertexPointer(const Array* array)
@@ -518,7 +525,6 @@ class OSG_EXPORT State : public Referenced, public Observer
                     setVertexPointer(array->getDataSize(),array->getDataType(),0,array->getDataPointer());
                 }
             }
-            else disableVertexPointer();
         }
 
         /** wrapper around glEnableClientState(GL_VERTEX_ARRAY);glVertexPointer(..);
@@ -526,35 +532,58 @@ class OSG_EXPORT State : public Referenced, public Observer
         inline void setVertexPointer( GLint size, GLenum type,
                                     GLsizei stride, const GLvoid *ptr )
         {
-            if (!_vertexArray._enabled || _vertexArray._dirty)
+            if (_useVertexAttributeAliasing)
             {
-                _vertexArray._enabled = true;
-                glEnableClientState(GL_VERTEX_ARRAY);
+                setVertexAttribPointer(_vertexAlias._location, size, type, GL_FALSE, stride, ptr);
             }
-            //if (_vertexArray._pointer!=ptr || _vertexArray._dirty)
+            else
             {
-                _vertexArray._pointer=ptr;
-                glVertexPointer( size, type, stride, ptr );
+                if (!_vertexArray._enabled || _vertexArray._dirty)
+                {
+                    _vertexArray._enabled = true;
+                    glEnableClientState(GL_VERTEX_ARRAY);
+                }
+                //if (_vertexArray._pointer!=ptr || _vertexArray._dirty)
+                {
+                    _vertexArray._pointer=ptr;
+                    glVertexPointer( size, type, stride, ptr );
+                }
+                _vertexArray._lazy_disable = false;
+                _vertexArray._dirty = false;
             }
-            _vertexArray._dirty = false;
         }
 
         /** wrapper around glDisableClientState(GL_VERTEX_ARRAY).
         * note, only updates values that change.*/
         inline void disableVertexPointer()
         {
-            if (_vertexArray._enabled || _vertexArray._dirty)
+            if (_useVertexAttributeAliasing)
             {
-                _vertexArray._enabled = false;
-                _vertexArray._dirty = false;
-                glDisableClientState(GL_VERTEX_ARRAY);
+                disableVertexAttribPointer(_vertexAlias._location);
+            }
+            else
+            {
+                if (_vertexArray._enabled || _vertexArray._dirty)
+                {
+                    _vertexArray._lazy_disable = false;
+                    _vertexArray._enabled = false;
+                    _vertexArray._dirty = false;
+                    glDisableClientState(GL_VERTEX_ARRAY);
+                }
             }
         }
 
         inline void dirtyVertexPointer()
         {
-            _vertexArray._pointer = 0;
-            _vertexArray._dirty = true;
+            if (_useVertexAttributeAliasing)
+            {
+                dirtyVertexAttribPointer(_vertexAlias._location);
+            }
+            else
+            {
+                _vertexArray._pointer = 0;
+                _vertexArray._dirty = true;
+            }
         }
 
 
@@ -575,7 +604,6 @@ class OSG_EXPORT State : public Referenced, public Observer
                     setNormalPointer(array->getDataType(),0,array->getDataPointer());
                 }
             }
-            else disableNormalPointer();
         }
 
         /** wrapper around glEnableClientState(GL_NORMAL_ARRAY);glNormalPointer(..);
@@ -583,35 +611,58 @@ class OSG_EXPORT State : public Referenced, public Observer
         inline void setNormalPointer( GLenum type, GLsizei stride,
                                     const GLvoid *ptr )
         {
-            if (!_normalArray._enabled || _normalArray._dirty)
+            if (_useVertexAttributeAliasing)
             {
-                _normalArray._enabled = true;
-                glEnableClientState(GL_NORMAL_ARRAY);
+                setVertexAttribPointer(_normalAlias._location, 3, type, GL_FALSE, stride, ptr);
             }
-            //if (_normalArray._pointer!=ptr || _normalArray._dirty)
+            else
             {
-                _normalArray._pointer=ptr;
-                glNormalPointer( type, stride, ptr );
+                if (!_normalArray._enabled || _normalArray._dirty)
+                {
+                    _normalArray._enabled = true;
+                    glEnableClientState(GL_NORMAL_ARRAY);
+                }
+                //if (_normalArray._pointer!=ptr || _normalArray._dirty)
+                {
+                    _normalArray._pointer=ptr;
+                    glNormalPointer( type, stride, ptr );
+                }
+                _normalArray._lazy_disable = false;
+                _normalArray._dirty = false;
             }
-            _normalArray._dirty = false;
         }
 
         /** wrapper around glDisableClientState(GL_NORMAL_ARRAY);
         * note, only updates values that change.*/
         inline void disableNormalPointer()
         {
-            if (_normalArray._enabled || _normalArray._dirty)
+            if (_useVertexAttributeAliasing)
             {
-                _normalArray._enabled = false;
-                _normalArray._dirty = false;
-                glDisableClientState(GL_NORMAL_ARRAY);
+                disableVertexAttribPointer(_normalAlias._location);
+            }
+            else
+            {
+                if (_normalArray._enabled || _normalArray._dirty)
+                {
+                    _normalArray._lazy_disable = false;
+                    _normalArray._enabled = false;
+                    _normalArray._dirty = false;
+                    glDisableClientState(GL_NORMAL_ARRAY);
+                }
             }
         }
 
         inline void dirtyNormalPointer()
         {
-            _normalArray._pointer = 0;
-            _normalArray._dirty = true;
+            if (_useVertexAttributeAliasing)
+            {
+                dirtyVertexAttribPointer(_normalAlias._location);
+            }
+            else
+            {
+                _normalArray._pointer = 0;
+                _normalArray._dirty = true;
+            }
         }
 
         /** Set the color pointer using an osg::Array, and manage any VBO that are required.*/
@@ -631,7 +682,6 @@ class OSG_EXPORT State : public Referenced, public Observer
                     setColorPointer(array->getDataSize(),array->getDataType(),0,array->getDataPointer());
                 }
             }
-            else disableColorPointer();
         }
 
 
@@ -640,35 +690,58 @@ class OSG_EXPORT State : public Referenced, public Observer
         inline void setColorPointer( GLint size, GLenum type,
                                     GLsizei stride, const GLvoid *ptr )
         {
-            if (!_colorArray._enabled || _colorArray._dirty)
+            if (_useVertexAttributeAliasing)
             {
-                _colorArray._enabled = true;
-                glEnableClientState(GL_COLOR_ARRAY);
+                setVertexAttribPointer(_colorAlias._location, size, type, GL_FALSE, stride, ptr);
             }
-            //if (_colorArray._pointer!=ptr || _colorArray._dirty)
+            else
             {
-                _colorArray._pointer=ptr;
-                glColorPointer( size, type, stride, ptr );
+                if (!_colorArray._enabled || _colorArray._dirty)
+                {
+                    _colorArray._enabled = true;
+                    glEnableClientState(GL_COLOR_ARRAY);
+                }
+                //if (_colorArray._pointer!=ptr || _colorArray._dirty)
+                {
+                    _colorArray._pointer=ptr;
+                    glColorPointer( size, type, stride, ptr );
+                }
+                _colorArray._lazy_disable = false;
+                _colorArray._dirty = false;
             }
-            _colorArray._dirty = false;
         }
 
         /** wrapper around glDisableClientState(GL_COLOR_ARRAY);
         * note, only updates values that change.*/
         inline void disableColorPointer()
         {
-            if (_colorArray._enabled || _colorArray._dirty)
+            if (_useVertexAttributeAliasing)
             {
-                _colorArray._enabled = false;
-                _colorArray._dirty = false;
-                glDisableClientState(GL_COLOR_ARRAY);
+                disableVertexAttribPointer(_colorAlias._location);
+            }
+            else
+            {
+                if (_colorArray._enabled || _colorArray._dirty)
+                {
+                    _colorArray._lazy_disable = false;
+                    _colorArray._enabled = false;
+                    _colorArray._dirty = false;
+                    glDisableClientState(GL_COLOR_ARRAY);
+                }
             }
         }
 
         inline void dirtyColorPointer()
         {
-            _colorArray._pointer = 0;
-            _colorArray._dirty = true;
+            if (_useVertexAttributeAliasing)
+            {
+                dirtyVertexAttribPointer(_colorAlias._location);
+            }
+            else
+            {
+                _colorArray._pointer = 0;
+                _colorArray._dirty = true;
+            }
         }
 
 
@@ -692,7 +765,6 @@ class OSG_EXPORT State : public Referenced, public Observer
                     setSecondaryColorPointer(array->getDataSize(),array->getDataType(),0,array->getDataPointer());
                 }
             }
-            else disableSecondaryColorPointer();
         }
 
         /** wrapper around glEnableClientState(GL_SECONDARY_COLOR_ARRAY);glSecondayColorPointer(..);
@@ -703,18 +775,33 @@ class OSG_EXPORT State : public Referenced, public Observer
         * note, only updates values that change.*/
         inline void disableSecondaryColorPointer()
         {
-            if (_secondaryColorArray._enabled || _secondaryColorArray._dirty)
+            if (_useVertexAttributeAliasing)
             {
-                _secondaryColorArray._enabled = false;
-                _secondaryColorArray._dirty = false;
-                if (isSecondaryColorSupported()) glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
+                disableVertexAttribPointer(_secondaryColorAlias._location);
+            }
+            else
+            {
+                if (_secondaryColorArray._enabled || _secondaryColorArray._dirty)
+                {
+                    _secondaryColorArray._lazy_disable = false;
+                    _secondaryColorArray._enabled = false;
+                    _secondaryColorArray._dirty = false;
+                    if (isSecondaryColorSupported()) glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
+                }
             }
         }
 
         inline void dirtySecondaryColorPointer()
         {
-            _secondaryColorArray._pointer = 0;
-            _secondaryColorArray._dirty = true;
+            if (_useVertexAttributeAliasing)
+            {
+                dirtyVertexAttribPointer(_secondaryColorAlias._location);
+            }
+            else
+            {
+                _secondaryColorArray._pointer = 0;
+                _secondaryColorArray._dirty = true;
+            }
         }
 
         /** wrapper around glEnableClientState(GL_INDEX_ARRAY);glIndexPointer(..);
@@ -774,7 +861,6 @@ class OSG_EXPORT State : public Referenced, public Observer
                     setFogCoordPointer(array->getDataType(),0,array->getDataPointer());
                 }
             }
-            else disableFogCoordPointer();
         }
 
 
@@ -786,18 +872,33 @@ class OSG_EXPORT State : public Referenced, public Observer
         * note, only updates values that change.*/
         inline void disableFogCoordPointer()
         {
-            if (_fogArray._enabled || _fogArray._dirty)
+            if (_useVertexAttributeAliasing)
             {
-                _fogArray._enabled = false;
-                _fogArray._dirty = false;
-                if (isFogCoordSupported()) glDisableClientState(GL_FOG_COORDINATE_ARRAY);
+                disableVertexAttribPointer(_fogCoordAlias._location);
+            }
+            else
+            {
+                if (_fogArray._enabled || _fogArray._dirty)
+                {
+                    _fogArray._lazy_disable = false;
+                    _fogArray._enabled = false;
+                    _fogArray._dirty = false;
+                    if (isFogCoordSupported()) glDisableClientState(GL_FOG_COORDINATE_ARRAY);
+                }
             }
         }
 
         inline void dirtyFogCoordPointer()
         {
-            _fogArray._pointer = 0;
-            _fogArray._dirty = true;
+            if (_useVertexAttributeAliasing)
+            {
+                dirtyVertexAttribPointer(_fogCoordAlias._location);
+            }
+            else
+            {
+                _fogArray._pointer = 0;
+                _fogArray._dirty = true;
+            }
         }
 
 
@@ -819,7 +920,6 @@ class OSG_EXPORT State : public Referenced, public Observer
                     setTexCoordPointer(unit, array->getDataSize(),array->getDataType(),0,array->getDataPointer());
                 }
             }
-            else disableTexCoordPointer(unit);
         }
 
         /** wrapper around glEnableClientState(GL_TEXTURE_COORD_ARRAY);glTexCoordPointer(..);
@@ -828,22 +928,30 @@ class OSG_EXPORT State : public Referenced, public Observer
                                         GLint size, GLenum type,
                                         GLsizei stride, const GLvoid *ptr )
         {
-            if (setClientActiveTextureUnit(unit))
+            if (_useVertexAttributeAliasing)
             {
-                if ( unit >= _texCoordArrayList.size()) _texCoordArrayList.resize(unit+1);
-                EnabledArrayPair& eap = _texCoordArrayList[unit];
+                setVertexAttribPointer(_texCoordAliasList[unit]._location, size, type, GL_FALSE, stride, ptr);
+            }
+            else
+            {
+                if (setClientActiveTextureUnit(unit))
+                {
+                    if ( unit >= _texCoordArrayList.size()) _texCoordArrayList.resize(unit+1);
+                    EnabledArrayPair& eap = _texCoordArrayList[unit];
 
-                if (!eap._enabled || eap._dirty)
-                {
-                    eap._enabled = true;
-                    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+                    if (!eap._enabled || eap._dirty)
+                    {
+                        eap._enabled = true;
+                        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+                    }
+                    //if (eap._pointer!=ptr || eap._dirty)
+                    {
+                        glTexCoordPointer( size, type, stride, ptr );
+                        eap._pointer = ptr;
+                    }
+                    eap._lazy_disable = false;
+                    eap._dirty = false;
                 }
-                //if (eap._pointer!=ptr || eap._dirty)
-                {
-                    glTexCoordPointer( size, type, stride, ptr );
-                    eap._pointer = ptr;
-                }
-                eap._dirty = false;
             }
         }
 
@@ -851,55 +959,85 @@ class OSG_EXPORT State : public Referenced, public Observer
         * note, only updates values that change.*/
         inline void disableTexCoordPointer( unsigned int unit )
         {
-            if (setClientActiveTextureUnit(unit))
+            if (_useVertexAttributeAliasing)
             {
-                if ( unit >= _texCoordArrayList.size()) _texCoordArrayList.resize(unit+1);
-                EnabledArrayPair& eap = _texCoordArrayList[unit];
-
-                if (eap._enabled || eap._dirty)
+                disableVertexAttribPointer(_texCoordAliasList[unit]._location);
+            }
+            else
+            {
+                if (setClientActiveTextureUnit(unit))
                 {
-                    eap._enabled = false;
-                    eap._dirty = false;
-                    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+                    if ( unit >= _texCoordArrayList.size()) _texCoordArrayList.resize(unit+1);
+                    EnabledArrayPair& eap = _texCoordArrayList[unit];
+
+                    if (eap._enabled || eap._dirty)
+                    {
+                        eap._lazy_disable = false;
+                        eap._enabled = false;
+                        eap._dirty = false;
+                        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+                    }
                 }
             }
         }
 
         inline void dirtyTexCoordPointer( unsigned int unit )
         {
-            if ( unit >= _texCoordArrayList.size()) return; // _texCoordArrayList.resize(unit+1);
-            EnabledArrayPair& eap = _texCoordArrayList[unit];
-            eap._pointer = 0;
-            eap._dirty = true;
+            if (_useVertexAttributeAliasing)
+            {
+                dirtyVertexAttribPointer(_texCoordAliasList[unit]._location);
+            }
+            else
+            {
+                if ( unit >= _texCoordArrayList.size()) return; // _texCoordArrayList.resize(unit+1);
+                EnabledArrayPair& eap = _texCoordArrayList[unit];
+                eap._pointer = 0;
+                eap._dirty = true;
+            }
         }
 
 
         inline void disableTexCoordPointersAboveAndIncluding( unsigned int unit )
         {
-            while (unit<_texCoordArrayList.size())
+            if (_useVertexAttributeAliasing)
             {
-                EnabledArrayPair& eap = _texCoordArrayList[unit];
-                if (eap._enabled || eap._dirty)
+                disableVertexAttribPointersAboveAndIncluding(_texCoordAliasList[unit]._location);
+            }
+            else
+            {
+                while (unit<_texCoordArrayList.size())
                 {
-                    if (setClientActiveTextureUnit(unit))
+                    EnabledArrayPair& eap = _texCoordArrayList[unit];
+                    if (eap._enabled || eap._dirty)
                     {
-                        eap._enabled = false;
-                        eap._dirty = false;
-                        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+                        if (setClientActiveTextureUnit(unit))
+                        {
+                            eap._lazy_disable = false;
+                            eap._enabled = false;
+                            eap._dirty = false;
+                            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+                        }
                     }
+                    ++unit;
                 }
-                ++unit;
             }
         }
 
         inline void dirtyTexCoordPointersAboveAndIncluding( unsigned int unit )
         {
-            while (unit<_texCoordArrayList.size())
+            if (_useVertexAttributeAliasing)
             {
-                EnabledArrayPair& eap = _texCoordArrayList[unit];
-                eap._pointer = 0;
-                eap._dirty = true;
-                ++unit;
+                dirtyVertexAttribPointersAboveAndIncluding(_texCoordAliasList[unit]._location);
+            }
+            else
+            {
+                while (unit<_texCoordArrayList.size())
+                {
+                    EnabledArrayPair& eap = _texCoordArrayList[unit];
+                    eap._pointer = 0;
+                    eap._dirty = true;
+                    ++unit;
+                }
             }
         }
 
@@ -937,7 +1075,6 @@ class OSG_EXPORT State : public Referenced, public Observer
                     setVertexAttribPointer(unit, array->getDataSize(),array->getDataType(),normalized,0,array->getDataPointer());
                 }
             }
-            else disableVertexAttribPointer(unit);
         }
 
         /** wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribPointerARB(..);
@@ -951,6 +1088,16 @@ class OSG_EXPORT State : public Referenced, public Observer
         void disableVertexAttribPointer( unsigned int index );
 
         void disableVertexAttribPointersAboveAndIncluding( unsigned int index );
+
+        inline void dirtyVertexAttribPointer( unsigned int index )
+        {
+            if (index<_vertexAttribArrayList.size())
+            {
+                EnabledArrayPair& eap = _vertexAttribArrayList[index];
+                eap._pointer = 0;
+                eap._dirty = true;
+            }
+        }
 
         inline void dirtyVertexAttribPointersAboveAndIncluding( unsigned int index )
         {
@@ -1096,6 +1243,10 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         virtual void objectDeleted(void* object);
 
+        /** get the GL adapter object used to map OpenGL 1.0 glBegin/glEnd usage to vertex arrays.*/
+        inline GLBeginEndAdapter& getGLBeginEndAdapter() { return _glBeginEndAdapter; }
+
+
     protected:
 
         virtual ~State();
@@ -1113,6 +1264,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         ref_ptr<Uniform>            _modelViewMatrixUniform;
         ref_ptr<Uniform>            _projectionMatrixUniform;
         ref_ptr<Uniform>            _modelViewProjectionMatrixUniform;
+        ref_ptr<Uniform>            _normalMatrixUniform;
 
         Matrix                      _initialInverseViewMatrix;
 
@@ -1120,6 +1272,38 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         bool*                       _abortRenderingPtr;
         CheckForGLErrors            _checkGLErrors;
+
+        struct VertexAttribAlias
+        {
+            VertexAttribAlias():
+                _location(0) {}
+
+            VertexAttribAlias(GLuint location, const std::string glName, const std::string osgName, const std::string& declaration):
+                _location(location),
+                _glName(glName),
+                _osgName(osgName),
+                _declaration(declaration) {}
+
+            GLuint      _location;
+            std::string _glName;
+            std::string _osgName;
+            std::string _declaration;
+        };
+
+        typedef std::vector<VertexAttribAlias> VertexAttribAliasList;
+
+        bool                        _useVertexAttributeAliasing;
+        VertexAttribAlias           _vertexAlias;
+        VertexAttribAlias           _normalAlias;
+        VertexAttribAlias           _colorAlias;
+        VertexAttribAlias           _secondaryColorAlias;
+        VertexAttribAlias           _fogCoordAlias;
+        VertexAttribAliasList       _texCoordAliasList;
+
+        Program::AttribBindingList  _attributeBindingList;
+
+        void setUpVertexAttribAlias(VertexAttribAlias& alias, GLuint location, const std::string glName, const std::string osgName, const std::string& declaration);
+
 
         struct ModeStack
         {
@@ -1260,10 +1444,11 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         struct EnabledArrayPair
         {
-            EnabledArrayPair():_dirty(true),_enabled(false),_normalized(0),_pointer(0) {}
-            EnabledArrayPair(const EnabledArrayPair& eap):_dirty(eap._dirty), _enabled(eap._enabled),_normalized(eap._normalized),_pointer(eap._pointer) {}
-            EnabledArrayPair& operator = (const EnabledArrayPair& eap) { _dirty=eap._dirty; _enabled=eap._enabled; _normalized=eap._normalized;_pointer=eap._pointer; return *this; }
+            EnabledArrayPair():_lazy_disable(false),_dirty(true),_enabled(false),_normalized(0),_pointer(0) {}
+            EnabledArrayPair(const EnabledArrayPair& eap):_lazy_disable(eap._lazy_disable),_dirty(eap._dirty), _enabled(eap._enabled),_normalized(eap._normalized),_pointer(eap._pointer) {}
+            EnabledArrayPair& operator = (const EnabledArrayPair& eap) { _lazy_disable = eap._lazy_disable;_dirty=eap._dirty; _enabled=eap._enabled; _normalized=eap._normalized;_pointer=eap._pointer; return *this; }
 
+            bool            _lazy_disable;
             bool            _dirty;
             bool            _enabled;
             GLboolean       _normalized;
@@ -1341,6 +1526,9 @@ class OSG_EXPORT State : public Referenced, public Observer
         typedef void (APIENTRY * ActiveTextureProc) (GLenum texture);
         typedef void (APIENTRY * FogCoordPointerProc) (GLenum type, GLsizei stride, const GLvoid *pointer);
         typedef void (APIENTRY * SecondaryColorPointerProc) (GLint size, GLenum type, GLsizei stride, const GLvoid *pointer);
+        typedef void (APIENTRY * MultiTexCoord4fProc) (GLenum target, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+        typedef void (APIENTRY * VertexAttrib4fProc)(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+        typedef void (APIENTRY * VertexAttrib4fvProc)(GLuint index, const GLfloat *v);
         typedef void (APIENTRY * VertexAttribPointerProc) (unsigned int, GLint, GLenum, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
         typedef void (APIENTRY * EnableVertexAttribProc) (unsigned int);
         typedef void (APIENTRY * DisableVertexAttribProc) (unsigned int);
@@ -1354,6 +1542,9 @@ class OSG_EXPORT State : public Referenced, public Observer
         GLint                       _glMaxTextureUnits;
         ActiveTextureProc           _glClientActiveTexture;
         ActiveTextureProc           _glActiveTexture;
+        MultiTexCoord4fProc         _glMultiTexCoord4f;
+        VertexAttrib4fProc          _glVertexAttrib4f;
+        VertexAttrib4fvProc         _glVertexAttrib4fv;
         FogCoordPointerProc         _glFogCoordPointer;
         SecondaryColorPointerProc   _glSecondaryColorPointer;
         VertexAttribPointerProc     _glVertexAttribPointer;
@@ -1365,6 +1556,8 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         unsigned int                                            _dynamicObjectCount;
         osg::ref_ptr<DynamicObjectRenderingCompletedCallback>   _completeDynamicObjectRenderingCallback;
+
+        GLBeginEndAdapter           _glBeginEndAdapter;
 
 };
 

@@ -14,6 +14,7 @@
 #include <osg/BufferObject>
 #include <osg/DisplaySettings>
 #include <osg/FrameStamp>
+#include <osg/GLBeginEndAdapter>
 #include <osg/GraphicsContext>
 #include <osg/Matrix>
 #include <osg/Polytope>
@@ -177,6 +178,11 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __bool__getUseModelViewAndProjectionUniforms,
 	          "",
 	          "");
+	I_Method0(void, updateModelViewAndProjectionMatrixUniforms,
+	          Properties::NON_VIRTUAL,
+	          __void__updateModelViewAndProjectionMatrixUniforms,
+	          "",
+	          "");
 	I_Method0(void, applyModelViewAndProjectionUniformsIfRequired,
 	          Properties::NON_VIRTUAL,
 	          __void__applyModelViewAndProjectionUniformsIfRequired,
@@ -197,9 +203,34 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __osg_Uniform_P1__getModelViewProjectionMatrixUniform,
 	          "",
 	          "");
+	I_Method0(osg::Uniform *, getNormalMatrixUniform,
+	          Properties::NON_VIRTUAL,
+	          __osg_Uniform_P1__getNormalMatrixUniform,
+	          "",
+	          "");
 	I_Method0(osg::Polytope, getViewFrustum,
 	          Properties::NON_VIRTUAL,
 	          __Polytope__getViewFrustum,
+	          "",
+	          "");
+	I_Method1(void, setUseVertexAttributeAliasing, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setUseVertexAttributeAliasing__bool,
+	          "",
+	          "");
+	I_Method0(bool, getUseVertexAttributeAliasing,
+	          Properties::NON_VIRTUAL,
+	          __bool__getUseVertexAttributeAliasing,
+	          "",
+	          "");
+	I_Method0(const osg::Program::AttribBindingList &, getAttributeBindingList,
+	          Properties::NON_VIRTUAL,
+	          __C5_Program_AttribBindingList_R1__getAttributeBindingList,
+	          "",
+	          "");
+	I_Method1(bool, convertVertexShaderSourceToOsgBuiltIns, IN, std::string &, source,
+	          Properties::NON_VIRTUAL,
+	          __bool__convertVertexShaderSourceToOsgBuiltIns__std_string_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, const osg::StateSet *, dstate,
@@ -432,11 +463,51 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __void__glDrawElementsInstanced__GLenum__GLsizei__GLenum__C5_GLvoid_P1__GLsizei,
 	          "",
 	          "");
+	I_MethodWithDefaults4(void, Vertex, IN, float, x, , IN, float, y, , IN, float, z, , IN, float, w, 1.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__Vertex__float__float__float__float,
+	                      "",
+	                      "");
+	I_MethodWithDefaults4(void, Color, IN, float, r, , IN, float, g, , IN, float, b, , IN, float, a, 1.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__Color__float__float__float__float,
+	                      "",
+	                      "");
+	I_Method3(void, Normal, IN, float, x, IN, float, y, IN, float, z,
+	          Properties::NON_VIRTUAL,
+	          __void__Normal__float__float__float,
+	          "",
+	          "");
+	I_MethodWithDefaults4(void, TexCoord, IN, float, x, , IN, float, y, 0.0f, IN, float, z, 0.0f, IN, float, w, 0.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__TexCoord__float__float__float__float,
+	                      "",
+	                      "");
+	I_MethodWithDefaults5(void, MultiTexCoord, IN, unsigned int, unit, , IN, float, x, , IN, float, y, 0.0f, IN, float, z, 0.0f, IN, float, w, 0.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__MultiTexCoord__unsigned_int__float__float__float__float,
+	                      "",
+	                      "");
+	I_MethodWithDefaults5(void, VerteAttrib, IN, unsigned int, location, , IN, float, x, , IN, float, y, 0.0f, IN, float, z, 0.0f, IN, float, w, 0.0f,
+	                      Properties::NON_VIRTUAL,
+	                      __void__VerteAttrib__unsigned_int__float__float__float__float,
+	                      "",
+	                      "");
 	I_Method3(void, setInterleavedArrays, IN, GLenum, format, IN, GLsizei, stride, IN, const GLvoid *, pointer,
 	          Properties::NON_VIRTUAL,
 	          __void__setInterleavedArrays__GLenum__GLsizei__C5_GLvoid_P1,
 	          "Wrapper around glInterleavedArrays(. ",
 	          ".). also resets the internal array points and modes within osg::State to keep the other vertex array operations consistent. ");
+	I_Method0(void, lazyDisablingOfVertexAttributes,
+	          Properties::NON_VIRTUAL,
+	          __void__lazyDisablingOfVertexAttributes,
+	          "Mark all the vertex attributes as being disabled but leave the disabling till a later call to applyDisablingOfVertexAttributes. ",
+	          "");
+	I_Method0(void, applyDisablingOfVertexAttributes,
+	          Properties::NON_VIRTUAL,
+	          __void__applyDisablingOfVertexAttributes,
+	          "Disable all the vertex attributes that have been marked as to be disabled. ",
+	          "");
 	I_Method1(void, setVertexPointer, IN, const osg::Array *, array,
 	          Properties::NON_VIRTUAL,
 	          __void__setVertexPointer__C5_Array_P1,
@@ -632,6 +703,11 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __void__disableVertexAttribPointersAboveAndIncluding__unsigned_int,
 	          "",
 	          "");
+	I_Method1(void, dirtyVertexAttribPointer, IN, unsigned int, index,
+	          Properties::NON_VIRTUAL,
+	          __void__dirtyVertexAttribPointer__unsigned_int,
+	          "",
+	          "");
 	I_Method1(void, dirtyVertexAttribPointersAboveAndIncluding, IN, unsigned int, index,
 	          Properties::NON_VIRTUAL,
 	          __void__dirtyVertexAttribPointersAboveAndIncluding__unsigned_int,
@@ -782,6 +858,17 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __void__objectDeleted__void_P1,
 	          "",
 	          "");
+	I_Method0(osg::GLBeginEndAdapter &, getGLBeginEndAdapter,
+	          Properties::NON_VIRTUAL,
+	          __GLBeginEndAdapter_R1__getGLBeginEndAdapter,
+	          "get the GL adapter object used to map OpenGL 1.0 glBegin/glEnd usage to vertex arrays. ",
+	          "");
+	I_ProtectedMethod5(void, setUpVertexAttribAlias, IN, VertexAttribAlias &, alias, IN, GLuint, location, IN, const std::string, glName, IN, const std::string, osgName, IN, const std::string &, declaration,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setUpVertexAttribAlias__VertexAttribAlias_R1__GLuint__C5_std_string__C5_std_string__C5_std_string_R1,
+	                   "",
+	                   "");
 
 
 
@@ -830,6 +917,7 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 
 
 
+
 	I_SimpleProperty(bool, AbortRendering, 
 	                 __bool__getAbortRendering, 
 	                 0);
@@ -839,6 +927,9 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(unsigned int, ActiveTextureUnit, 
 	                 __unsigned_int__getActiveTextureUnit, 
 	                 __bool__setActiveTextureUnit__unsigned_int);
+	I_SimpleProperty(const osg::Program::AttribBindingList &, AttributeBindingList, 
+	                 __C5_Program_AttribBindingList_R1__getAttributeBindingList, 
+	                 0);
 	I_SimpleProperty(osg::State::CheckForGLErrors, CheckForGLErrors, 
 	                 __CheckForGLErrors__getCheckForGLErrors, 
 	                 __void__setCheckForGLErrors__CheckForGLErrors);
@@ -878,6 +969,9 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(osg::FrameStamp *, FrameStamp, 
 	                 __FrameStamp_P1__getFrameStamp, 
 	                 __void__setFrameStamp__FrameStamp_P1);
+	I_SimpleProperty(osg::GLBeginEndAdapter &, GLBeginEndAdapter, 
+	                 __GLBeginEndAdapter_R1__getGLBeginEndAdapter, 
+	                 0);
 	I_SimpleProperty(const osg::StateAttribute *, GlobalDefaultAttribute, 
 	                 0, 
 	                 __void__setGlobalDefaultAttribute__C5_StateAttribute_P1);
@@ -920,6 +1014,9 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(osg::Uniform *, ModelViewProjectionMatrixUniform, 
 	                 __osg_Uniform_P1__getModelViewProjectionMatrixUniform, 
 	                 0);
+	I_SimpleProperty(osg::Uniform *, NormalMatrixUniform, 
+	                 __osg_Uniform_P1__getNormalMatrixUniform, 
+	                 0);
 	I_SimpleProperty(const osg::Array *, NormalPointer, 
 	                 0, 
 	                 __void__setNormalPointer__C5_Array_P1);
@@ -941,6 +1038,9 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(bool, UseModelViewAndProjectionUniforms, 
 	                 __bool__getUseModelViewAndProjectionUniforms, 
 	                 __void__setUseModelViewAndProjectionUniforms__bool);
+	I_SimpleProperty(bool, UseVertexAttributeAliasing, 
+	                 __bool__getUseVertexAttributeAliasing, 
+	                 __void__setUseVertexAttributeAliasing__bool);
 	I_SimpleProperty(const osg::Array *, VertexPointer, 
 	                 0, 
 	                 __void__setVertexPointer__C5_Array_P1);

@@ -132,9 +132,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	          __void__dirtyShader,
 	          "Mark our PCSs as needing recompilation. ",
 	          "Also mark Programs that depend on us as needing relink ");
-	I_Method1(void, compileShader, IN, unsigned int, contextID,
+	I_Method1(void, compileShader, IN, osg::State &, state,
 	          Properties::NON_VIRTUAL,
-	          __void__compileShader__unsigned_int,
+	          __void__compileShader__osg_State_R1,
 	          "If needed, compile the PCS's glShader. ",
 	          "");
 	I_Method2(void, attachShader, IN, unsigned int, contextID, IN, GLuint, program,

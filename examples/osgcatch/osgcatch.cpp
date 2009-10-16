@@ -1442,6 +1442,10 @@ int main( int argc, char **argv )
 
     //osgDB::writeNodeFile(*rootNode,"test.osg");
 
+    // for some reason osgcatch is hanging on exit inside the new TextureObject clean up code when the it's
+    // run as multi-threaded view, switching to SingleThreaded cures this.
+    viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
+
     // set the scene to render
     viewer.setSceneData(rootNode.get());
 

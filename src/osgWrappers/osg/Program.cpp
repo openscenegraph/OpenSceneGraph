@@ -265,9 +265,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Program::PerContextProgram)
 	          __void__requestLink,
 	          "",
 	          "");
-	I_Method0(void, linkProgram,
+	I_Method1(void, linkProgram, IN, osg::State &, state,
 	          Properties::NON_VIRTUAL,
-	          __void__linkProgram,
+	          __void__linkProgram__osg_State_R1,
 	          "",
 	          "");
 	I_Method0(bool, validateProgram,

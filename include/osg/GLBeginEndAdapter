@@ -63,17 +63,41 @@ class OSG_EXPORT GLBeginEndAdapter
         void Normal3f(GLfloat x, GLfloat y, GLfloat z);
         void Normal3fv(const GLfloat* n) { Normal3f(n[0], n[1], n[2]); }
 
-        void TexCoord1f(GLfloat x);
-        void TexCoord1fv(const GLfloat* tc) { TexCoord1f(tc[0]); }
+        void TexCoord1f(GLfloat x) { MultiTexCoord4f(0, x, 0.0f, 0.0f, 1.0f); }
+        void TexCoord1fv(const GLfloat* tc)  { MultiTexCoord4f(0, tc[0], 0.0f, 0.0f, 1.0f); }
 
-        void TexCoord2f(GLfloat x, GLfloat y);
-        void TexCoord2fv(const GLfloat* tc) { TexCoord2f(tc[0],tc[1]); }
+        void TexCoord2f(GLfloat x, GLfloat y) { MultiTexCoord4f(0, x, y, 0.0f, 1.0f); }
+        void TexCoord2fv(const GLfloat* tc) { MultiTexCoord4f(0, tc[0], tc[1], 0.0f, 1.0f); }
 
-        void TexCoord3f(GLfloat x, GLfloat y, GLfloat z);
-        void TexCoord3fv(const GLfloat* tc) { TexCoord3f(tc[0], tc[1], tc[2]); }
+        void TexCoord3f(GLfloat x, GLfloat y, GLfloat z) { MultiTexCoord4f(0, x, y, z, 1.0f); }
+        void TexCoord3fv(const GLfloat* tc) { MultiTexCoord4f(0, tc[0], tc[1], tc[2], 1.0f); }
 
-        void TexCoord4f(GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-        void TexCoord4fv(const GLfloat* tc) { TexCoord4f(tc[0], tc[1], tc[2], tc[3]); }
+        void TexCoord4f(GLfloat x, GLfloat y, GLfloat z, GLfloat w) { MultiTexCoord4f(0, x, y, z, w); }
+        void TexCoord4fv(const GLfloat* tc) { MultiTexCoord4f(0, tc[0], tc[1], tc[2], tc[3]); }
+
+        void MultiTexCoord1f(unsigned int unit, GLfloat x)  { MultiTexCoord4f(unit, x, 0.0f, 0.0f, 1.0f); }
+        void MultiTexCoord1fv(unsigned int unit, const GLfloat* tc) { MultiTexCoord4f(unit, tc[0], 0.0f, 0.0f, 1.0f); }
+
+        void MultiTexCoord2f(unsigned int unit, GLfloat x, GLfloat y) { MultiTexCoord4f(unit, x, y, 0.0f, 1.0f); }
+        void MultiTexCoord2fv(unsigned int unit, const GLfloat* tc) { MultiTexCoord4f(unit, tc[0],tc[1], 0.0f, 1.0f); }
+
+        void MultiTexCoord3f(unsigned int unit, GLfloat x, GLfloat y, GLfloat z) {MultiTexCoord4f(unit, x, y, z, 1.0f); }
+        void MultiTexCoord3fv(unsigned int unit, const GLfloat* tc) { MultiTexCoord4f(unit, tc[0], tc[1], tc[2], 1.0f); }
+
+        void MultiTexCoord4f(unsigned int unit, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+        void MultiTexCoord4fv(unsigned int unit, const GLfloat* tc) { MultiTexCoord4f(unit, tc[0], tc[1], tc[2], tc[3]); }
+
+        void VertexAttrib1f(unsigned int unit, GLfloat x)  { VertexAttrib4f(unit, x, 0.0f, 0.0f, 0.0f); }
+        void VertexAttrib1fv(unsigned int unit, const GLfloat* tc) { VertexAttrib4f(unit, tc[0], 0.0f, 0.0f, 0.0f); }
+
+        void VertexAttrib2f(unsigned int unit, GLfloat x, GLfloat y) { VertexAttrib4f(unit, x, y, 0.0f, 0.0f); }
+        void VertexAttrib2fv(unsigned int unit, const GLfloat* tc) { VertexAttrib4f(unit, tc[0],tc[1], 0.0f, 0.0f); }
+
+        void VertexAttrib3f(unsigned int unit, GLfloat x, GLfloat y, GLfloat z) {VertexAttrib4f(unit, x, y, z, 0.0f); }
+        void VertexAttrib3fv(unsigned int unit, const GLfloat* tc) { VertexAttrib4f(unit, tc[0], tc[1], tc[2], 0.0f); }
+
+        void VertexAttrib4f(unsigned int unit, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+        void VertexAttrib4fv(unsigned int unit, const GLfloat* tc) { VertexAttrib4f(unit, tc[0], tc[1], tc[2], tc[3]); }
 
         void Begin(GLenum mode);
         void End();
@@ -87,24 +111,33 @@ class OSG_EXPORT GLBeginEndAdapter
         typedef std::list<Matrixd>           MatrixStack;
         MatrixStack                         _matrixStack;
 
-        bool                                _normalSet;
+        bool                                _normalAssigned;
         osg::Vec3f                          _normal;
 
-        bool                                _colorSet;
+        bool                                _colorAssigned;
         osg::Vec4f                          _color;
-
-        unsigned int                        _maxNumTexCoordComponents;
-        osg::Vec4f                          _texCoord;
-
 
         osg::Vec3f                          _overallNormal;
         osg::Vec4f                          _overallColor;
 
-        GLenum                              _primitiveMode;        
+        typedef std::vector<bool>           AssignedList;
+        typedef std::vector<osg::Vec4f>     VertexList;
+
+        AssignedList                        _texCoordAssignedList;
+        VertexList                          _texCoordList;
+
+        AssignedList                        _vertexAttribAssignedList;
+        VertexList                          _vertexAttribList;
+
+
+        typedef std::vector< osg::ref_ptr<Vec4Array> > VertexArrayList;
+
+        GLenum                              _primitiveMode;
         osg::ref_ptr<osg::Vec3Array>        _vertices;
         osg::ref_ptr<osg::Vec3Array>        _normals;
         osg::ref_ptr<osg::Vec4Array>        _colors;
-        osg::ref_ptr<osg::Vec4Array>        _texCoords;
+        VertexArrayList                     _texCoordsList;
+        VertexArrayList                     _vertexAttribsList;
 };
 
 

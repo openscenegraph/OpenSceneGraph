@@ -21,12 +21,10 @@ using namespace osg;
 GLBeginEndAdapter::GLBeginEndAdapter(State* state):
     _state(state),
     _mode(APPLY_LOCAL_MATRICES_TO_VERTICES),
-    _normalSet(false),
+    _normalAssigned(false),
     _normal(0.0f,0.0f,1.0f),
-    _colorSet(false),
-    _color(1.0f,1.0f,1.0f,1.0f),
-    _maxNumTexCoordComponents(0),
-    _texCoord(0.f,0.0f,0.0f,1.0f)
+    _colorAssigned(false),
+    _color(1.0f,1.0f,1.0f,1.0f)
 {
 }
 
@@ -101,48 +99,89 @@ void GLBeginEndAdapter::Rotated(GLdouble angle, GLdouble x, GLdouble y, GLdouble
 
 void GLBeginEndAdapter::Color4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
 {
-    _normalSet = true;
+    _normalAssigned = true;
     _color.set(red,green,blue,alpha);
 }
 
 void GLBeginEndAdapter::Normal3f(GLfloat x, GLfloat y, GLfloat z)
 {
-    _normalSet = true;
+    _normalAssigned = true;
     _normal.set(x,y,z);
 }
 
-void GLBeginEndAdapter::TexCoord1f(GLfloat x)
+void GLBeginEndAdapter::MultiTexCoord4f(unsigned int unit, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
 {
-    _maxNumTexCoordComponents = 1;
-    _texCoord.set(x,0.0f,0.0f,1.0f);
+    if (unit>=_texCoordAssignedList.size()) _texCoordAssignedList.resize(unit+1, false);
+    if (unit>=_texCoordList.size()) _texCoordList.resize(unit+1, osg::Vec4(0.0f,0.0f,0.0f,0.0f));
+
+    _texCoordAssignedList[unit] = true;
+    _texCoordList[unit].set(x,y,z,w);
 }
 
-void GLBeginEndAdapter::TexCoord2f(GLfloat x, GLfloat y)
+void GLBeginEndAdapter::VertexAttrib4f(unsigned int unit, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
 {
-    _maxNumTexCoordComponents = 2;
-    _texCoord.set(x,y,0.0f,1.0f);
-}
+    if (unit>=_vertexAttribAssignedList.size()) _vertexAttribAssignedList.resize(unit+1, false);
+    if (unit>=_vertexAttribList.size()) _vertexAttribList.resize(unit+1, osg::Vec4(0.0f,0.0f,0.0f,0.0f));
 
-void GLBeginEndAdapter::TexCoord3f(GLfloat x, GLfloat y, GLfloat z)
-{
-    _maxNumTexCoordComponents = 3;
-    _texCoord.set(x,y,z,1.0);
-}
-
-void GLBeginEndAdapter::TexCoord4f(GLfloat x, GLfloat y, GLfloat z, GLfloat w)
-{
-    _maxNumTexCoordComponents = 4;
-    _texCoord.set(x,y,z,w);
+    _vertexAttribAssignedList[unit] = true;
+    _vertexAttribList[unit].set(x,y,z,w);
 }
 
 void GLBeginEndAdapter::Vertex3f(GLfloat x, GLfloat y, GLfloat z)
 {
     osg::Vec3 vertex(x,y,z);
 
-    if (_vertices.valid()) _vertices->push_back(vertex);
-    if (_normal.valid()) _normals->push_back(_normal);
-    if (_colors.valid()) _colors->push_back(_color);
-    if (_texCoords.valid()) _texCoords->push_back(_texCoord);
+    if (!_vertices) _vertices = new osg::Vec3Array;
+
+
+    if (_normalAssigned)
+    {
+        if (!_normals) _normals = new osg::Vec3Array;
+        if (_normals->size()<_vertices->size()) _normals->resize(_vertices->size(), _overallNormal);
+
+        _normals->push_back(_normal);
+    }
+
+    if (_colorAssigned)
+    {
+        if (!_colors) _colors = new osg::Vec4Array;
+        if (_colors->size()<_vertices->size()) _colors->resize(_vertices->size(), _overallColor);
+
+        _colors->push_back(_color);
+    }
+
+    if (!_texCoordAssignedList.empty())
+    {
+        for(unsigned int unit=0; unit<_texCoordAssignedList.size(); ++unit)
+        {
+            if (_texCoordAssignedList[unit])
+            {
+                if (unit>=_texCoordsList.size()) _texCoordsList.resize(unit+1);
+                if (!_texCoordsList[unit]) _texCoordsList[unit] = new osg::Vec4Array;
+                if (_texCoordsList[unit]->size()<_vertices->size()) _texCoordsList[unit]->resize(_vertices->size(), osg::Vec4(0.0,0.0f,0.0f,0.0f));
+
+                _texCoordsList[unit]->push_back(_texCoordList[unit]);
+            }
+        }
+    }
+
+
+    if (!_vertexAttribAssignedList.empty())
+    {
+        for(unsigned int unit=0; unit<_vertexAttribAssignedList.size(); ++unit)
+        {
+            if (_vertexAttribAssignedList[unit])
+            {
+                if (unit>=_vertexAttribsList.size()) _vertexAttribsList.resize(unit+1);
+                if (!_vertexAttribsList[unit]) _vertexAttribsList[unit] = new osg::Vec4Array;
+                if (_vertexAttribsList[unit]->size()<_vertices->size()) _vertexAttribsList[unit]->resize(_vertices->size(), osg::Vec4(0.0,0.0f,0.0f,0.0f));
+
+                _vertexAttribsList[unit]->push_back(_vertexAttribList[unit]);
+            }
+        }
+    }
+
+    _vertices->push_back(vertex);
 }
 
 void GLBeginEndAdapter::Begin(GLenum mode)
@@ -152,21 +191,25 @@ void GLBeginEndAdapter::Begin(GLenum mode)
 
     // reset geometry
     _primitiveMode = mode;
-    if (!_vertices) _vertices = new osg::Vec3Array;
-    else _vertices->clear();
+    if (_vertices.valid()) _vertices->clear();
 
-    _normalSet = false;
-    if (!_normals) _normals = new osg::Vec3Array;
-    else _normals->clear();
+    _normalAssigned = false;
+    if (_normals.valid()) _normals->clear();
 
-    _colorSet = false;
-    if (!_colors) _colors = new osg::Vec4Array;
-    else _colors->clear();
+    _colorAssigned = false;
+    if (_colors.valid()) _colors->clear();
 
-    _maxNumTexCoordComponents = 0;
-    if (!_texCoords) _texCoords = new osg::Vec4Array;
-    else _texCoords->clear();
+    _texCoordAssignedList.clear();
+    _texCoordList.clear();
+    for(VertexArrayList::iterator itr = _texCoordsList.begin();
+        itr != _texCoordsList.end();
+        ++itr)
+    {
+        if (itr->valid()) (*itr)->clear();
+    }
 
+    _vertexAttribAssignedList.clear();
+    _vertexAttribList.clear();
 }
 
 void GLBeginEndAdapter::End()
@@ -184,6 +227,22 @@ void GLBeginEndAdapter::End()
             {
                 *itr = *itr * matrix;
             }
+
+            if (_normalAssigned && _normals.valid())
+            {
+                for(Vec3Array::iterator itr = _normals->begin();
+                    itr != _normals->end();
+                    ++itr)
+                {
+                    *itr = osg::Matrixd::transform3x3(matrix, *itr);
+                    (*itr).normalize();
+                }
+            }
+            else
+            {
+                _overallNormal = osg::Matrixd::transform3x3(matrix, _overallNormal);
+                _overallNormal.normalize();
+            }
         }
         else
         {
@@ -193,30 +252,42 @@ void GLBeginEndAdapter::End()
 
     _state->lazyDisablingOfVertexAttributes();
 
-    _state->setVertexPointer(_vertices.get());
-
-    if (_colorSet)
+    if (_colorAssigned)
     {
         _state->setColorPointer(_colors.get());
     }
     else
     {
-        glColor4fv(_overallColor.ptr());
+        _state->Color(_overallColor.r(), _overallColor.g(), _overallColor.b(), _overallColor.a());
     }
-    
-    if (_normalSet)
+
+    if (_normalAssigned)
     {
          _state->setNormalPointer(_normals.get());
     }
     else
     {
-        glNormal3fv(_overallNormal.ptr());
+        _state->Normal(_overallNormal.x(), _overallNormal.y(), _overallNormal.z());
     }
 
-    if (_maxNumTexCoordComponents!=0)
+    for(unsigned int unit=0; unit<_texCoordAssignedList.size(); ++unit)
     {
-        _state->setTexCoordPointer(0, _texCoords.get());
+        if (_texCoordAssignedList[unit] && _texCoordsList[unit].valid())
+        {
+            _state->setTexCoordPointer(unit, _texCoordsList[unit].get());
+        }
     }
+
+
+    for(unsigned int unit=0; unit<_vertexAttribAssignedList.size(); ++unit)
+    {
+        if (_vertexAttribAssignedList[unit] && _vertexAttribsList[unit].valid())
+        {
+            _state->setVertexAttribPointer(unit, _vertexAttribsList[unit].get(), false);
+        }
+    }
+
+    _state->setVertexPointer(_vertices.get());
 
     _state->applyDisablingOfVertexAttributes();
 

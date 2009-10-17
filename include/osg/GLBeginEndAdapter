@@ -30,6 +30,10 @@ class OSG_EXPORT GLBeginEndAdapter
 
         GLBeginEndAdapter(State* state=0);
 
+        void setState(State* state) { _state = state; }
+        State* setState() { return _state; }
+        const State* setState() const { return _state; }
+
         enum MatrixMode
         {
             APPLY_LOCAL_MATRICES_TO_VERTICES,

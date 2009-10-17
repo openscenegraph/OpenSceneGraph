@@ -37,8 +37,7 @@ using namespace osg;
 static ApplicationUsageProxy State_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_GL_ERROR_CHECKING <type>","ONCE_PER_ATTRIBUTE | ON | on enables fine grained checking,  ONCE_PER_FRAME enables coarse grained checking");
 
 State::State():
-    Referenced(true),
-    _glBeginEndAdapter(this)
+    Referenced(true)
 {
     _graphicsContext = 0;
     _contextID = 0;
@@ -119,6 +118,8 @@ State::State():
 
     _maxTexturePoolSize = 0;
     _maxBufferObjectPoolSize = 0;
+
+    _glBeginEndAdapter.setState(this);
 }
 
 State::~State()

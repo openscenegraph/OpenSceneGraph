@@ -2823,6 +2823,8 @@
 		D4E1D5490CAFF2C9007F8430 /* ViewerBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E1D5480CAFF2C8007F8430 /* ViewerBase.cpp */; };
 		D4E1D85F0CB031BA007F8430 /* hdrwriter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E1D85D0CB031B9007F8430 /* hdrwriter.cpp */; };
 		D4E1D8600CB031BA007F8430 /* hdrwriter.h in Headers */ = {isa = PBXBuildFile; fileRef = D4E1D85E0CB031B9007F8430 /* hdrwriter.h */; };
+		D4E1E72F108C57DE000A0EF2 /* GLBeginEndAdapter in Headers */ = {isa = PBXBuildFile; fileRef = D4E1E72E108C57DE000A0EF2 /* GLBeginEndAdapter */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4E1E731108C57F1000A0EF2 /* GLBeginEndAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E1E730108C57F1000A0EF2 /* GLBeginEndAdapter.cpp */; };
 		D4E673A90F8E5B2400F6CCC1 /* MimeTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4E673A80F8E5B2400F6CCC1 /* MimeTypes.cpp */; };
 		D4E759AB0B57D1BB006424DE /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4E759B80B57D22B006424DE /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
@@ -8653,6 +8655,8 @@
 		D4E1D5480CAFF2C8007F8430 /* ViewerBase.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ViewerBase.cpp; sourceTree = "<group>"; };
 		D4E1D85D0CB031B9007F8430 /* hdrwriter.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = hdrwriter.cpp; sourceTree = "<group>"; };
 		D4E1D85E0CB031B9007F8430 /* hdrwriter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = hdrwriter.h; sourceTree = "<group>"; };
+		D4E1E72E108C57DE000A0EF2 /* GLBeginEndAdapter */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GLBeginEndAdapter; sourceTree = "<group>"; };
+		D4E1E730108C57F1000A0EF2 /* GLBeginEndAdapter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLBeginEndAdapter.cpp; sourceTree = "<group>"; };
 		D4E673A80F8E5B2400F6CCC1 /* MimeTypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MimeTypes.cpp; sourceTree = "<group>"; };
 		D4EEBE720FE64F7A00E8F5CD /* DXFWriterNodeVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DXFWriterNodeVisitor.cpp; sourceTree = "<group>"; };
 		D4EEBE730FE64F7A00E8F5CD /* DXFWriterNodeVisitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DXFWriterNodeVisitor.h; sourceTree = "<group>"; };
@@ -13330,6 +13334,7 @@
 		BE117FB705D63B8900EB53E5 /* osg */ = {
 			isa = PBXGroup;
 			children = (
+				D4E1E730108C57F1000A0EF2 /* GLBeginEndAdapter.cpp */,
 				D4F424CD0F5D9E3D0052261D /* AudioStream.cpp */,
 				D4163D1C0F2A6A540062226D /* ImageUtils.cpp */,
 				D41887010EDEE57C00C17A84 /* Math.cpp */,
@@ -13493,6 +13498,7 @@
 		BE1181ED05D63C0900EB53E5 /* osg */ = {
 			isa = PBXGroup;
 			children = (
+				D4E1E72E108C57DE000A0EF2 /* GLBeginEndAdapter */,
 				D4F424CB0F5D9E290052261D /* AudioStream */,
 				D4163D1A0F2A6A290062226D /* ImageUtils */,
 				D4D8CE060E348E8900FA6EB4 /* ImageSequence */,
@@ -15683,6 +15689,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4E1E72F108C57DE000A0EF2 /* GLBeginEndAdapter in Headers */,
 				D4F424CC0F5D9E290052261D /* AudioStream in Headers */,
 				D4163D1B0F2A6A290062226D /* ImageUtils in Headers */,
 				D4D8CE070E348E8900FA6EB4 /* ImageSequence in Headers */,
@@ -22196,6 +22203,7 @@
 				D41887020EDEE57C00C17A84 /* Math.cpp in Sources */,
 				D4163D1D0F2A6A540062226D /* ImageUtils.cpp in Sources */,
 				D4F424CE0F5D9E3D0052261D /* AudioStream.cpp in Sources */,
+				D4E1E731108C57F1000A0EF2 /* GLBeginEndAdapter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

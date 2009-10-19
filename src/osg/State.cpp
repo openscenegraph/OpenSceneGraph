@@ -1238,27 +1238,15 @@ void State::updateModelViewAndProjectionMatrixUniforms()
     if (_modelViewProjectionMatrixUniform.valid()) _modelViewProjectionMatrixUniform->set((*_modelView) * (*_projection));
     if (_normalMatrixUniform.valid())
     {
-#if 0
         Matrix mv(*_modelView);
         mv.setTrans(0.0, 0.0, 0.0);
 
         Matrix matrix;
         matrix.invert(mv);
-#else
-        Matrix matrix = *_modelView;
-#endif
 
-#if 0
         Matrix3 normalMatrix(matrix(0,0), matrix(1,0), matrix(2,0),
                              matrix(0,1), matrix(1,1), matrix(2,1),
                              matrix(0,2), matrix(1,2), matrix(2,2));
-#else
-        Matrix3 normalMatrix(matrix(0,0), matrix(0,0), matrix(0,0),
-                             matrix(1,0), matrix(1,1), matrix(1,0),
-                             matrix(2,0), matrix(2,0), matrix(2,2));
-#endif
-
-        osg::notify(osg::NOTICE)<<"modelview "<<*_modelView<<std::endl;
 
         _normalMatrixUniform->set(normalMatrix);
     }

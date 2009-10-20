@@ -13,6 +13,7 @@
 #include <stdlib.h>
 
 #include <osg/Geometry>
+#include <osg/ArrayDispatchers>
 #include <osg/Notify>
 
 using namespace osg;
@@ -223,7 +224,7 @@ class DrawVertexAttrib : public osg::Referenced, public osg::ConstValueVisitor
 {
 public:
 
-    DrawVertexAttrib(const Drawable::Extensions * extensions,unsigned int vertAttribIndex,GLboolean normalized,const Array* attribcoords,const IndexArray* indices):    
+    DrawVertexAttrib(const Drawable::Extensions * extensions,unsigned int vertAttribIndex,GLboolean normalized,const Array* attribcoords,const IndexArray* indices):
             _vertAttribIndex(vertAttribIndex),
             _normalized(normalized),
             _extensions(extensions),
@@ -336,7 +337,7 @@ class DrawMultiTexCoord : public osg::Referenced, public osg::ConstValueVisitor
         virtual void apply(const Vec3& v)   { _extensions->glMultiTexCoord3fv(_target,v.ptr()); }
         virtual void apply(const Vec4& v)   { _extensions->glMultiTexCoord4fv(_target,v.ptr()); }
         
-        GLenum _target;
+        GLenum              _target;
         const Array*        _texcoords;
         const IndexArray*   _indices;
 
@@ -412,6 +413,9 @@ Geometry::Vec3ArrayData::Vec3ArrayData(const Vec3ArrayData& data,const CopyOp& c
 
 Geometry::Geometry()
 {
+    // temporary test
+    // setSupportsDisplayList(false);
+
     _fastPath = false;
     _fastPathHint = true;
 }
@@ -426,6 +430,9 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
     _fastPath(geometry._fastPath),
     _fastPathHint(geometry._fastPathHint)
 {
+    // temporary test
+    // setSupportsDisplayList(false);
+
     for(PrimitiveSetList::const_iterator pitr=geometry._primitives.begin();
         pitr!=geometry._primitives.end();
         ++pitr)
@@ -1272,10 +1279,264 @@ void Geometry::releaseGLObjects(State* state) const
 
 }
 
+#if 1
 void Geometry::drawImplementation(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
     bool vertexAttribAlias = state.getUseVertexAttributeAliasing();
+    Drawable::Extensions* extensions = Drawable::getExtensions(state.getContextID(),true);
+
+    bool useFastPath = areFastPathsUsed();
+    bool usingVertexBufferObjects = _useVertexBufferObjects && state.isVertexBufferObjectSupported();
+    bool handleVertexAttributes = !_vertexAttribList.empty() && extensions->isVertexProgramSupported();
+
+    osg::ref_ptr<ArrayDispatchers> s_ArrayDispatchers = 0;
+    if (!s_ArrayDispatchers) s_ArrayDispatchers = new ArrayDispatchers(state);
+
+    ArrayDispatchers& arrayDispatchers = *s_ArrayDispatchers;
+
+    arrayDispatchers.reset();
+    arrayDispatchers.setUseGLBeginEndAdapter(!useFastPath);
+
+    arrayDispatchers.activateNormalArray(_normalData.binding, _normalData.array.get(), _normalData.indices.get());
+    arrayDispatchers.activateColorArray(_colorData.binding, _colorData.array.get(), _colorData.indices.get());
+    arrayDispatchers.activateSecondaryColorArray(_secondaryColorData.binding, _secondaryColorData.array.get(), _secondaryColorData.indices.get());
+    arrayDispatchers.activateFogCoordArray(_fogCoordData.binding, _fogCoordData.array.get(), _fogCoordData.indices.get());
+
+    for(unsigned int unit=0;unit<_texCoordList.size();++unit)
+    {
+        arrayDispatchers.activateTexCoordArray(BIND_PER_VERTEX, unit, _texCoordList[unit].array.get(), _texCoordList[unit].indices.get());
+    }
+
+    for(unsigned int unit=0;unit<_vertexAttribList.size();++unit)
+    {
+        arrayDispatchers.activateVertexAttribArray(_vertexAttribList[unit].binding, unit, _vertexAttribList[unit].array.get(), _vertexAttribList[unit].indices.get());
+    }
+
+    arrayDispatchers.activateVertexArray(BIND_PER_VERTEX, _vertexData.array.get(), _vertexData.indices.get());
+
+
+    // dispatch any attributes that are bound overall
+    arrayDispatchers.dispatch(BIND_OVERALL);
+
+    state.lazyDisablingOfVertexAttributes();
+
+    if (useFastPath)
+    {
+        // set up arrays
+        if( _vertexData.array.valid() )
+            state.setVertexPointer(_vertexData.array.get());
+
+        if (_normalData.binding==BIND_PER_VERTEX && _normalData.array.valid())
+            state.setNormalPointer(_normalData.array.get());
+
+        if (_colorData.binding==BIND_PER_VERTEX && _colorData.array.valid())
+            state.setColorPointer(_colorData.array.get());
+
+        if (_secondaryColorData.binding==BIND_PER_VERTEX && _secondaryColorData.array.valid())
+            state.setSecondaryColorPointer(_secondaryColorData.array.get());
+
+        if (_fogCoordData.binding==BIND_PER_VERTEX && _fogCoordData.array.valid())
+            state.setFogCoordPointer(_fogCoordData.array.get());
+
+        for(unsigned int unit=0;unit<_texCoordList.size();++unit)
+        {
+            const Array* array = _texCoordList[unit].array.get();
+            if (array) state.setTexCoordPointer(unit,array);
+        }
+
+        if( handleVertexAttributes )
+        {
+            for(unsigned int index = 0; index < _vertexAttribList.size(); ++index )
+            {
+                const Array* array = _vertexAttribList[index].array.get();
+                const AttributeBinding ab = _vertexAttribList[index].binding;
+                if( ab == BIND_PER_VERTEX && array )
+                {
+                    state.setVertexAttribPointer( index, array, _vertexAttribList[index].normalize );
+                }
+            }
+        }
+    }
+
+    state.applyDisablingOfVertexAttributes();
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //
+    // draw the primitives themselves.
+    //
+    for(PrimitiveSetList::const_iterator itr=_primitives.begin();
+        itr!=_primitives.end();
+        ++itr)
+    {
+        // dispatch any attributes that are bound per primitive
+        arrayDispatchers.dispatch(BIND_PER_PRIMITIVE_SET);
+
+        const PrimitiveSet* primitiveset = itr->get();
+
+        if (useFastPath)
+        {
+            primitiveset->draw(state, usingVertexBufferObjects);
+        }
+        else
+        {
+            GLenum mode=primitiveset->getMode();
+
+            unsigned int primLength;
+            switch(mode)
+            {
+                case(GL_POINTS):    primLength=1; break;
+                case(GL_LINES):     primLength=2; break;
+                case(GL_TRIANGLES): primLength=3; break;
+                case(GL_QUADS):     primLength=4; break;
+                default:            primLength=0; break; // compute later when =0.
+            }
+
+            // draw primitives by the more flexible "slow" path,
+            // sending OpenGL glBegin/glVertex.../glEnd().
+            switch(primitiveset->getType())
+            {
+                case(PrimitiveSet::DrawArraysPrimitiveType):
+                {
+                    if (primLength==0) primLength=primitiveset->getNumIndices();
+
+                    const DrawArrays* drawArray = static_cast<const DrawArrays*>(primitiveset);
+                    arrayDispatchers.Begin(mode);
+
+                    unsigned int primCount=0;
+                    unsigned int indexEnd = drawArray->getFirst()+drawArray->getCount();
+                    for(unsigned int vindex=drawArray->getFirst();
+                        vindex<indexEnd;
+                        ++vindex,++primCount)
+                    {
+                        if ((primCount%primLength)==0)
+                        {
+                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE);
+                        }
+
+                        arrayDispatchers.dispatch(BIND_PER_VERTEX, vindex);
+                    }
+
+                    arrayDispatchers.End();
+                    break;
+                }
+                case(PrimitiveSet::DrawArrayLengthsPrimitiveType):
+                {
+                    const DrawArrayLengths* drawArrayLengths = static_cast<const DrawArrayLengths*>(primitiveset);
+                    unsigned int vindex=drawArrayLengths->getFirst();
+                    for(DrawArrayLengths::const_iterator primItr=drawArrayLengths->begin();
+                        primItr!=drawArrayLengths->end();
+                        ++primItr)
+                    {
+                        unsigned int localPrimLength;
+                        if (primLength==0) localPrimLength=*primItr;
+                        else localPrimLength=primLength;
+
+                        arrayDispatchers.Begin(mode);
+
+                        for(GLsizei primCount=0;
+                            primCount<*primItr;
+                            ++vindex,++primCount)
+                        {
+                            if ((primCount%localPrimLength)==0)
+                            {
+                                arrayDispatchers.dispatch(BIND_PER_PRIMITIVE);
+                            }
+                            arrayDispatchers.dispatch(BIND_PER_VERTEX, vindex);
+                        }
+
+                        arrayDispatchers.End();
+
+                    }
+                    break;
+                }
+                case(PrimitiveSet::DrawElementsUBytePrimitiveType):
+                {
+                    if (primLength==0) primLength=primitiveset->getNumIndices();
+
+                    const DrawElementsUByte* drawElements = static_cast<const DrawElementsUByte*>(primitiveset);
+                    arrayDispatchers.Begin(mode);
+
+                    unsigned int primCount=0;
+                    for(DrawElementsUByte::const_iterator primItr=drawElements->begin();
+                        primItr!=drawElements->end();
+                        ++primCount,++primItr)
+                    {
+
+                        if ((primCount%primLength)==0)
+                        {
+                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE);
+                        }
+
+                        unsigned int vindex=*primItr;
+                        arrayDispatchers.dispatch(BIND_PER_VERTEX, vindex);
+                    }
+
+                    arrayDispatchers.End();
+                    break;
+                }
+                case(PrimitiveSet::DrawElementsUShortPrimitiveType):
+                {
+                    if (primLength==0) primLength=primitiveset->getNumIndices();
+
+                    const DrawElementsUShort* drawElements = static_cast<const DrawElementsUShort*>(primitiveset);
+                    arrayDispatchers.Begin(mode);
+
+                    unsigned int primCount=0;
+                    for(DrawElementsUShort::const_iterator primItr=drawElements->begin();
+                        primItr!=drawElements->end();
+                        ++primCount,++primItr)
+                    {
+                        if ((primCount%primLength)==0)
+                        {
+                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE);
+                        }
+
+                        unsigned int vindex=*primItr;
+                        arrayDispatchers.dispatch(BIND_PER_VERTEX, vindex);
+                    }
+
+                    arrayDispatchers.End();
+                    break;
+                }
+                case(PrimitiveSet::DrawElementsUIntPrimitiveType):
+                {
+                    if (primLength==0) primLength=primitiveset->getNumIndices();
+
+                    const DrawElementsUInt* drawElements = static_cast<const DrawElementsUInt*>(primitiveset);
+                    arrayDispatchers.Begin(mode);
+
+                    unsigned int primCount=0;
+                    for(DrawElementsUInt::const_iterator primItr=drawElements->begin();
+                        primItr!=drawElements->end();
+                        ++primCount,++primItr)
+                    {
+                        if ((primCount%primLength)==0)
+                        {
+                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE);
+                        }
+
+                        unsigned int vindex=*primItr;
+                        arrayDispatchers.dispatch(BIND_PER_VERTEX, vindex);
+                    }
+
+                    arrayDispatchers.End();
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+        }
+    }
+}
+#else
+void Geometry::drawImplementation(RenderInfo& renderInfo) const
+{
+    State& state = *renderInfo.getState();
+    bool vertexAttribAlias = state.getUseVertexAttributeAliasing();
+
 
 //    unsigned int contextID = state.getContextID();
     
@@ -1338,6 +1599,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     }
 
 
+
     unsigned int normalIndex = 0;
     unsigned int colorIndex = 0;
     unsigned int secondaryColorIndex = 0;
@@ -1366,14 +1628,12 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     {
         if (normalBinding!=BIND_OFF && normalBinding!=BIND_PER_VERTEX)
         { 
-            osg::notify(osg::NOTICE)<<"normal assign"<<std::endl;
             drawVertexAttribMap[normalBinding].push_back( new DrawVertexAttrib(extensions,2,false,_normalData.array.get(),_normalData.indices.get()) );
             normalBinding = BIND_OFF;
         }
 
         if (colorBinding!=BIND_OFF && colorBinding!=BIND_PER_VERTEX)
         {
-            osg::notify(osg::NOTICE)<<"color assign"<<std::endl;
             drawVertexAttribMap[colorBinding].push_back( new DrawVertexAttrib(extensions,3,false,_colorData.array.get(),_colorData.indices.get()) );
             colorBinding = BIND_OFF;
         }
@@ -1382,8 +1642,10 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
         fogCoordBinding = BIND_OFF;
     }
 
+    // force the use of the slow path code to test the glBegin/glEnd replacement codes.
+    bool forceSlowPath = false;
 
-    if (areFastPathsUsed())
+    if (areFastPathsUsed() && !forceSlowPath)
     {
 
 #define USE_LAZY_DISABLING
@@ -1814,7 +2076,6 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
                 default:            primLength=0; break; // compute later when =0.
             }
 
-
             // draw primitives by the more flexible "slow" path,
             // sending OpenGL glBegin/glVertex.../glEnd().
             switch(primitiveset->getType())
@@ -2167,6 +2428,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     }
 
 }
+#endif
 
 class AttributeFunctorArrayVisitor : public ArrayVisitor
 {

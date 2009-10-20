@@ -25,7 +25,7 @@ echo osgcallback
 osgcallback
 
 echo osgcatch
-osgcatch
+# osgcatch
 
 echo osgclip
 osgclip

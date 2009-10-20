@@ -54,13 +54,23 @@ class OSG_EXPORT GLBeginEndAdapter
         void Scaled(GLdouble x, GLdouble y, GLdouble z);
         void Rotated(GLdouble angle, GLdouble x, GLdouble y, GLdouble z);
 
-        void Color4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
-        void Color4fv(const GLfloat* c) { Color4f(c[0], c[1], c[2], c[3]); }
-
         void Vertex3f(GLfloat x, GLfloat y, GLfloat z);
         void Vertex3fv(const GLfloat* v) { Vertex3f(v[0], v[1], v[2]); }
 
-        void Normal3f(GLfloat x, GLfloat y, GLfloat z);
+        void Color4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
+        {
+            _normalAssigned = true;
+            _color.set(red,green,blue,alpha);
+        }
+
+        void Color4fv(const GLfloat* c) { Color4f(c[0], c[1], c[2], c[3]); }
+
+        void Normal3f(GLfloat x, GLfloat y, GLfloat z)
+        {
+            _normalAssigned = true;
+            _normal.set(x,y,z);
+        }
+
         void Normal3fv(const GLfloat* n) { Normal3f(n[0], n[1], n[2]); }
 
         void TexCoord1f(GLfloat x) { MultiTexCoord4f(0, x, 0.0f, 0.0f, 1.0f); }
@@ -139,7 +149,6 @@ class OSG_EXPORT GLBeginEndAdapter
         VertexArrayList                     _texCoordsList;
         VertexArrayList                     _vertexAttribsList;
 };
-
 
 }
 

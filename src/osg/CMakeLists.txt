@@ -25,6 +25,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ApplicationUsage
     ${HEADER_PATH}/ArgumentParser
     ${HEADER_PATH}/Array
+    ${HEADER_PATH}/ArrayDispatchers
     ${HEADER_PATH}/AudioStream
     ${HEADER_PATH}/AutoTransform
     ${HEADER_PATH}/Billboard
@@ -195,6 +196,7 @@ ADD_LIBRARY(${LIB_NAME}
     ApplicationUsage.cpp
     ArgumentParser.cpp
     Array.cpp
+    ArrayDispatchers.cpp
     AudioStream.cpp
     AutoTransform.cpp
     Billboard.cpp

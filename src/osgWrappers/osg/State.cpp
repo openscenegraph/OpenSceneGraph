@@ -478,12 +478,12 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __void__Normal__float__float__float,
 	          "",
 	          "");
-	I_MethodWithDefaults4(void, TexCoord, IN, float, x, , IN, float, y, 0.0f, IN, float, z, 0.0f, IN, float, w, 0.0f,
+	I_MethodWithDefaults4(void, TexCoord, IN, float, x, , IN, float, y, 0.0f, IN, float, z, 0.0f, IN, float, w, 1.0f,
 	                      Properties::NON_VIRTUAL,
 	                      __void__TexCoord__float__float__float__float,
 	                      "",
 	                      "");
-	I_MethodWithDefaults5(void, MultiTexCoord, IN, unsigned int, unit, , IN, float, x, , IN, float, y, 0.0f, IN, float, z, 0.0f, IN, float, w, 0.0f,
+	I_MethodWithDefaults5(void, MultiTexCoord, IN, unsigned int, unit, , IN, float, x, , IN, float, y, 0.0f, IN, float, z, 0.0f, IN, float, w, 1.0f,
 	                      Properties::NON_VIRTUAL,
 	                      __void__MultiTexCoord__unsigned_int__float__float__float__float,
 	                      "",

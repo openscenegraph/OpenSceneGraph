@@ -71,14 +71,14 @@ class OSG_EXPORT Array : public BufferData
             DoubleArrayType   = 18,
             Vec2dArrayType    = 19,
             Vec3dArrayType    = 20,
-            Vec4dArrayType    = 21            
+            Vec4dArrayType    = 21
         };
 
         Array(Type arrayType=ArrayType,GLint dataSize=0,GLenum dataType=0):
             _arrayType(arrayType),
             _dataSize(dataSize),
             _dataType(dataType) {}
-    
+
         Array(const Array& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             BufferData(array,copyop),
             _arrayType(array._arrayType),
@@ -88,7 +88,7 @@ class OSG_EXPORT Array : public BufferData
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const Array*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
         virtual const char* className() const;
-        
+
         virtual void accept(ArrayVisitor&) = 0;
         virtual void accept(ConstArrayVisitor&) const = 0;
 
@@ -131,13 +131,13 @@ template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>
 class TemplateArray : public Array, public MixinVector<T>
 {
     public:
-    
+
         TemplateArray() : Array(ARRAYTYPE,DataSize,DataType) {}
 
         TemplateArray(const TemplateArray& ta,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Array(ta,copyop),
             MixinVector<T>(ta) {}
-        
+
         TemplateArray(unsigned int no) : 
             Array(ARRAYTYPE,DataSize,DataType),
             MixinVector<T>(no) {}
@@ -181,7 +181,7 @@ class TemplateArray : public Array, public MixinVector<T>
         {
             MixinVector<T>( *this ).swap( *this );
         }
-        
+
         virtual const GLvoid*   getDataPointer() const { if (!this->empty()) return &this->front(); else return 0; }
         virtual unsigned int    getTotalDataSize() const { return static_cast<unsigned int>(this->size()*sizeof(T)); }
         virtual unsigned int    getNumElements() const { return static_cast<unsigned int>(this->size()); }
@@ -200,16 +200,16 @@ class OSG_EXPORT IndexArray : public Array
 
         IndexArray(Type arrayType=ArrayType,GLint dataSize=0,GLenum dataType=0):
             Array(arrayType,dataSize,dataType) {}
-    
+
         IndexArray(const Array& array,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             Array(array,copyop) {}
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const IndexArray*>(obj)!=NULL; }
-        
+
         virtual unsigned int index(unsigned int pos) const = 0;
 
     protected:
-    
+
         virtual ~IndexArray() {}
 };
 
@@ -217,13 +217,13 @@ template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>
 class TemplateIndexArray : public IndexArray, public MixinVector<T>
 {
     public:
-    
+
         TemplateIndexArray() : IndexArray(ARRAYTYPE,DataSize,DataType) {}
 
         TemplateIndexArray(const TemplateIndexArray& ta,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             IndexArray(ta,copyop),
             MixinVector<T>(ta) {}
-        
+
         TemplateIndexArray(unsigned int no) : 
             IndexArray(ARRAYTYPE,DataSize,DataType),
             MixinVector<T>(no) {}
@@ -267,7 +267,7 @@ class TemplateIndexArray : public IndexArray, public MixinVector<T>
         {
             MixinVector<T>( *this ).swap( *this );
         }
-        
+
         virtual const GLvoid*   getDataPointer() const { if (!this->empty()) return &this->front(); else return 0; }
         virtual unsigned int    getTotalDataSize() const { return static_cast<unsigned int>(this->size()*sizeof(T)); }
         virtual unsigned int    getNumElements() const { return static_cast<unsigned int>(this->size()); }
@@ -277,7 +277,7 @@ class TemplateIndexArray : public IndexArray, public MixinVector<T>
         typedef T ElementDataType; // expose T
 
     protected:
-    
+
         virtual ~TemplateIndexArray() {}
 };
 

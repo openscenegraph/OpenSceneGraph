@@ -666,7 +666,7 @@ class OSG_EXPORT Drawable : public Object
             void glGetQueryObjectuiv(GLuint id, GLenum pname, GLuint *params) const;
             void glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64EXT *params) const;
 
-        protected:
+        public:
 
             typedef void (APIENTRY * FogCoordProc) (const GLfloat* coord);
 
@@ -735,9 +735,11 @@ class OSG_EXPORT Drawable : public Object
             VertexAttrib1sProc _glVertexAttrib1s;
             VertexAttrib1fProc _glVertexAttrib1f;
             VertexAttrib1dProc _glVertexAttrib1d;
+            VertexAttribfvProc _glVertexAttrib1fv;
             VertexAttribfvProc _glVertexAttrib2fv;
             VertexAttribfvProc _glVertexAttrib3fv;
             VertexAttribfvProc _glVertexAttrib4fv;
+            VertexAttribdvProc _glVertexAttrib1dv;
             VertexAttribdvProc _glVertexAttrib2dv;
             VertexAttribdvProc _glVertexAttrib3dv;
             VertexAttribdvProc _glVertexAttrib4dv;
@@ -745,10 +747,12 @@ class OSG_EXPORT Drawable : public Object
             VertexAttribubvProc _glVertexAttrib4Nubv;
 
             MultiTexCoord1fProc _glMultiTexCoord1f;
+            MultiTexCoordfvProc _glMultiTexCoord1fv;
             MultiTexCoordfvProc _glMultiTexCoord2fv;
             MultiTexCoordfvProc _glMultiTexCoord3fv;
             MultiTexCoordfvProc _glMultiTexCoord4fv;
             MultiTexCoord1dProc _glMultiTexCoord1d;
+            MultiTexCoorddvProc _glMultiTexCoord1dv;
             MultiTexCoorddvProc _glMultiTexCoord2dv;
             MultiTexCoorddvProc _glMultiTexCoord3dv;
             MultiTexCoorddvProc _glMultiTexCoord4dv;

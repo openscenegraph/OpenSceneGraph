@@ -97,18 +97,6 @@ void GLBeginEndAdapter::Rotated(GLdouble angle, GLdouble x, GLdouble y, GLdouble
     _matrixStack.back().preMultRotate(Quat(DegreesToRadians(angle), Vec3d(x,y,z)));
 }
 
-void GLBeginEndAdapter::Color4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
-{
-    _normalAssigned = true;
-    _color.set(red,green,blue,alpha);
-}
-
-void GLBeginEndAdapter::Normal3f(GLfloat x, GLfloat y, GLfloat z)
-{
-    _normalAssigned = true;
-    _normal.set(x,y,z);
-}
-
 void GLBeginEndAdapter::MultiTexCoord4f(unsigned int unit, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
 {
     if (unit>=_texCoordAssignedList.size()) _texCoordAssignedList.resize(unit+1, false);
@@ -132,7 +120,6 @@ void GLBeginEndAdapter::Vertex3f(GLfloat x, GLfloat y, GLfloat z)
     osg::Vec3 vertex(x,y,z);
 
     if (!_vertices) _vertices = new osg::Vec3Array;
-
 
     if (_normalAssigned)
     {

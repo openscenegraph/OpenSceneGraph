@@ -476,13 +476,13 @@ class OSG_EXPORT State : public Referenced, public Observer
             else glNormal3f(x,y,z);
         }
 
-        void TexCoord(float x, float y=0.0f, float z=0.0f, float w=0.0f)
+        void TexCoord(float x, float y=0.0f, float z=0.0f, float w=1.0f)
         {
             if (_useVertexAttributeAliasing) _glVertexAttrib4f( _texCoordAliasList[0]._location, x,y,z,w);
             else glTexCoord4f(x,y,z,w);
         }
 
-        void MultiTexCoord(unsigned int unit, float x, float y=0.0f, float z=0.0f, float w=0.0f)
+        void MultiTexCoord(unsigned int unit, float x, float y=0.0f, float z=0.0f, float w=1.0f)
         {
             if (_useVertexAttributeAliasing) _glVertexAttrib4f( _texCoordAliasList[unit]._location, x,y,z,w);
             else _glMultiTexCoord4f(GL_TEXTURE0+unit,x,y,z,w);

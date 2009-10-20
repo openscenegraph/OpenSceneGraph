@@ -1167,7 +1167,7 @@ bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
     State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord7", "osg_MultiTexCoord7", "attribute vec4 ");
 
     // replace built in uniform
-    State_Utils::replaceAndInsertDeclaration(source, "gl_ModelViewMatrix", "osg_ModeViewMatrix", "uniform mat4 ");
+    State_Utils::replaceAndInsertDeclaration(source, "gl_ModelViewMatrix", "osg_ModelViewMatrix", "uniform mat4 ");
     State_Utils::replaceAndInsertDeclaration(source, "gl_ModelViewProjectionMatrix", "osg_ModelViewProjectionMatrix", "uniform mat4 ");
     State_Utils::replaceAndInsertDeclaration(source, "gl_ProjectionMatrix", "osg_ProjectionMatrix", "uniform mat4 ");
     State_Utils::replaceAndInsertDeclaration(source, "gl_NormalMatrix", "osg_NormalMatrix", "uniform mat3 ");

@@ -69,31 +69,6 @@ void osgAnimation::Bone::UpdateBone::operator()(osg::Node* node, osg::NodeVisito
             b->accept(visitor);
         }
 
-        if (!_manager.valid())
-        {
-            FindParentAnimationManagerVisitor finder;
-
-            if (b->getParents().size() > 1)
-            {
-                osg::notify(osg::WARN) << "A Bone should not have multi parent ( " << b->getName() << " ) has parents ";
-                osg::notify(osg::WARN) << "( " << b->getParents()[0]->getName();
-                for (int i = 1; i < (int)b->getParents().size(); i++)
-                    osg::notify(osg::WARN) << ", " << b->getParents()[i]->getName();
-                osg::notify(osg::WARN) << ")" << std::endl;
-                return;
-            }
-            b->getParents()[0]->accept(finder);
-
-            if (!finder.getAnimationManager())
-            {
-                osg::notify(osg::WARN) << "Warning can't update Bone, path to parent AnimationManagerBase not found" << std::endl;
-                return;
-            }
-
-            _manager = finder.getAnimationManager();
-        }
-
-        updateLink();
         update(*b);
 
         Bone* parent = b->getBoneParent();
@@ -117,16 +92,6 @@ osgAnimation::Bone::Bone(const Bone& b, const osg::CopyOp& copyop) :
     _invBindInSkeletonSpace(b._invBindInSkeletonSpace),
     _boneInSkeletonSpace(b._boneInSkeletonSpace)
 {
-#if 0
-    osg::ref_ptr<osg::NodeCallback> updatecallback = getUpdateCallback();
-    setUpdateCallback(0);
-    while (updatecallback.valid()) {
-        osg::NodeCallback* ucb = dynamic_cast<osg::NodeCallback*>(updatecallback->clone(copyop));
-        ucb->setNestedCallback(0);
-        addUpdateCallback(ucb);
-        updatecallback = updatecallback->getNestedCallback();
-    }
-#endif
 }
 
 osgAnimation::Bone::Bone(const std::string& name)

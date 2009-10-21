@@ -44,11 +44,19 @@ namespace osgAnimation
         /** Callback method called by the NodeVisitor when visiting a node.*/
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
 
-        /// Operation that must be done each frame
+        /** Reset the value of targets
+            this Operation must be done each frame */
         void clearTargets();
+        
 
         LinkVisitor* getOrCreateLinkVisitor();
         void setLinkVisitor(LinkVisitor*);
+
+        /// set a flag to define the behaviour
+        void setAutomaticLink(bool);
+        bool isAutomaticLink() const;
+
+        void dirty();
 
     protected:
 
@@ -56,6 +64,7 @@ namespace osgAnimation
         AnimationList _animations;
         TargetSet _targets;
         bool _needToLink;
+        bool _automaticLink;
     };
 }
 #endif

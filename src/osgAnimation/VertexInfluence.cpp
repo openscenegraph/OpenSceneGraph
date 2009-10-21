@@ -13,11 +13,13 @@
 */
 
 #include <osgAnimation/VertexInfluence>
+#include <osg/Notify>
 #include <iostream>
 #include <algorithm>
 
 using namespace osgAnimation;
 
+const osgAnimation::VertexInfluenceSet::VertexIndexToBoneWeightMap& osgAnimation::VertexInfluenceSet::getVertexToBoneList() const { return _vertex2Bones;}
 // this class manage VertexInfluence database by mesh
 // reference bones per vertex ...
 void osgAnimation::VertexInfluenceSet::buildVertex2BoneList()
@@ -33,13 +35,13 @@ void osgAnimation::VertexInfluenceSet::buildVertex2BoneList()
             int index = viw.first;
             float weight = viw.second;
             if (vi.getName().empty())
-                std::cout << "osgAnimation::VertexInfluenceSet::buildVertex2BoneList warning vertex " << index << " is not assigned to a bone" << std::endl;
+                osg::notify(osg::WARN) << "osgAnimation::VertexInfluenceSet::buildVertex2BoneList warning vertex " << index << " is not assigned to a bone" << std::endl;
             _vertex2Bones[index].push_back(BoneWeight(vi.getName(), weight));
         }
     }
 
     // normalize weight per vertex
-    for (VertexIndexToBoneWeightMap::iterator it = _vertex2Bones.begin(); it != _vertex2Bones.end(); it++) 
+    for (VertexIndexToBoneWeightMap::iterator it = _vertex2Bones.begin(); it != _vertex2Bones.end(); it++)
     {
         BoneWeightList& bones = it->second;
         int size = bones.size();
@@ -48,7 +50,7 @@ void osgAnimation::VertexInfluenceSet::buildVertex2BoneList()
             sum += bones[i].getWeight();
         if (sum < 1e-4) 
         {
-            std::cerr << "VertexInfluenceSet::buildVertex2BoneList warning the vertex " << it->first << " seems to have 0 weight, skip normalize for this vertex" << std::endl;
+            osg::notify(osg::WARN) << "VertexInfluenceSet::buildVertex2BoneList warning the vertex " << it->first << " seems to have 0 weight, skip normalize for this vertex" << std::endl;
         }
         else 
         {

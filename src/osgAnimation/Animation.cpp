@@ -133,8 +133,6 @@ bool Animation::update (float time, int priority)
         break;
     }
 
-    //  std::cout << "t " << t << " / " << _duration << std::endl;
-
     ChannelList::const_iterator chan;
     for( chan=_channels.begin(); chan!=_channels.end(); ++chan)
     {

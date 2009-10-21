@@ -201,30 +201,7 @@ void osgAnimation::Timeline::internalRemoveAction(Action* action)
 void osgAnimation::Timeline::internalAddAction(int priority, const FrameAction& ftl)
 {
     _actions[priority].insert(_actions[priority].begin(), ftl);
-//    _actions[priority].push_back(ftl);
 }
-
-#if 0
-void osgAnimation::Timeline::evaluateCallback(unsigned int frame)
-{
-    // update from high priority to low priority
-    for( ActionLayers::reverse_iterator iterAnim = _actions.rbegin(); iterAnim != _actions.rend(); ++iterAnim )
-    {
-        // update all animation
-        ActionList& list = iterAnim->second;
-        for (unsigned int i = 0; i < list.size(); i++)
-        {
-            unsigned int firstFrame = list[i].first;
-            Action* action = list[i].second.get();
-            // check if current frame of timeline hit an action interval
-            if (frame >= firstFrame && 
-                frame < (firstFrame + action->getNumFrames()) )
-                action->evaluateCallback(frame - firstFrame);
-        }
-    }
-    processPendingOperation();
-}
-#endif
 
 bool osgAnimation::Timeline::isActive(Action* activeAction)
 {

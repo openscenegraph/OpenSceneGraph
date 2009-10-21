@@ -46,11 +46,11 @@ namespace osgAnimation
         {
         public:
             BoneWeight(BoneType* bone, float weight) : _bone(bone), _weight(weight) {}
-            const BoneType* getBone() const { return &(*_bone); }
+            const BoneType* getBone() const { return _bone.get(); }
             float getWeight() const { return _weight; }
             void setWeight(float w) { _weight = w; }
         protected:
-            osg::ref_ptr<BoneType> _bone;
+            osg::observer_ptr<BoneType> _bone;
             float _weight;
         };
 
@@ -191,7 +191,7 @@ namespace osgAnimation
 
                 const VertexList& vertexes = uniq.getVertexes();
                 int vertexSize = vertexes.size();
-                for (int j = 0; j < vertexSize; j++) 
+                for (int j = 0; j < vertexSize; j++)
                 {
                     int idx = vertexes[j];
                     dst[idx] = src[idx] * matrix;

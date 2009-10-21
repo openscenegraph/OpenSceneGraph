@@ -50,6 +50,10 @@ class OSG_EXPORT GLBeginEndAdapter
         void LoadMatrixd(const GLdouble* m);
         void MultMatrixd(const GLdouble* m);
 
+        void Translatef(GLfloat x, GLfloat y, GLfloat z) { Translated(x,y,z); }
+        void Scalef(GLfloat x, GLfloat y, GLfloat z) { Scaled(x,y,z); }
+        void Rotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z) { Rotated(angle,x,y,z); }
+
         void Translated(GLdouble x, GLdouble y, GLdouble z);
         void Scaled(GLdouble x, GLdouble y, GLdouble z);
         void Rotated(GLdouble angle, GLdouble x, GLdouble y, GLdouble z);
@@ -59,7 +63,7 @@ class OSG_EXPORT GLBeginEndAdapter
 
         void Color4f(GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha)
         {
-            _normalAssigned = true;
+            _colorAssigned = true;
             _color.set(red,green,blue,alpha);
         }
 

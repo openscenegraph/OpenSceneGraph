@@ -419,7 +419,7 @@ Geometry::Vec3ArrayData::Vec3ArrayData(const Vec3ArrayData& data,const CopyOp& c
 Geometry::Geometry()
 {
     // temporary test
-    setSupportsDisplayList(false);
+    // setSupportsDisplayList(false);
 
     _fastPath = false;
     _fastPathHint = true;
@@ -436,7 +436,7 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
     _fastPathHint(geometry._fastPathHint)
 {
     // temporary test
-    setSupportsDisplayList(false);
+    // setSupportsDisplayList(false);
 
     for(PrimitiveSetList::const_iterator pitr=geometry._primitives.begin();
         pitr!=geometry._primitives.end();

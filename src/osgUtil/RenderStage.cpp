@@ -879,7 +879,14 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
             switch (it->first)
             {
             case Camera::DEPTH_BUFFER:
+#ifndef OSG_MULTISAMPLE_FBO_RESOLVE_IGNORES_DEPTH
+                // This #define is a workaround for an OS X NVIDIA driver bug
+                // confirmed on GeForce 8800 with driver v1.5.49.
+                // If the glBlitFramebuffer mask includes depth, the OS X desktop
+                // will hang. The #define is controlled from CMake and should be
+                // set to ON to enable the workaround and avoid blitting depth.
                 blitMask |= GL_DEPTH_BUFFER_BIT;
+#endif
                 break;
             case Camera::STENCIL_BUFFER:
                 blitMask |= GL_STENCIL_BUFFER_BIT;

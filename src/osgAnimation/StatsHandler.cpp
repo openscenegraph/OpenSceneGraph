@@ -563,7 +563,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                     StatsList statsList;
 
                     for (int i = 0; i < (int)finder._timelines.size(); i++)
-                        statsList.push_back(finder._timelines[0]->getStats());
+                        statsList.push_back(finder._timelines[i]->getStats());
 
                     for(int i = statsList[0]->getEarliestFrameNumber(); i<= statsList[0]->getLatestFrameNumber()-1; ++i)
                     {
@@ -653,6 +653,7 @@ void StatsHandler::setUpScene(osgViewer::Viewer* viewer)
         StatsTimeline* s = new StatsTimeline;
         osg::MatrixTransform* m = s->createStatsForTimeline(finder._timelines[i].get());
         m->setUpdateCallback(s);
+        m->setMatrix(osg::Matrix::translate(0, -i * 100, 0));
         _group->addChild(m);
     }
 }

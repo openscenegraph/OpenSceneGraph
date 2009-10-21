@@ -77,10 +77,13 @@ namespace osgAnimation
         Channel* clone() const { return new TemplateChannel<SamplerType>(*this); }
 
         TemplateChannel (const TemplateChannel& channel) :
-            Channel(channel),
-            _target(new TargetType(*channel.getTargetTyped())),
-            _sampler(channel._sampler.get())
+            Channel(channel)
         {
+            if (channel.getTargetTyped())
+                _target = new TargetType(*channel.getTargetTyped());
+
+            if (channel.getSamplerTyped())
+                _sampler = new SamplerType(*channel.getSamplerTyped());
         }
 
         TemplateChannel (SamplerType* s = 0,TargetType* target = 0)
@@ -102,7 +105,7 @@ namespace osgAnimation
             // create a key from current target value
             typename KeyframeContainerType::KeyType key(0, _target->getValue());
             // recreate the keyframe container
-            _sampler = 0;
+            getOrCreateSampler()->setKeyframeContainer(0);
             getOrCreateSampler()->getOrCreateKeyframeContainer();
             // add the key
             _sampler->getKeyframeContainerTyped()->push_back(key);

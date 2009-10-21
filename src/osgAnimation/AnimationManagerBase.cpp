@@ -23,6 +23,7 @@ AnimationManagerBase::~AnimationManagerBase() {}
 AnimationManagerBase::AnimationManagerBase()
 {
     _needToLink = false;
+    _automaticLink = true;
 }
 
 void AnimationManagerBase::clearTargets()
@@ -30,6 +31,14 @@ void AnimationManagerBase::clearTargets()
     for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
         (*it).get()->reset();
 }
+
+void AnimationManagerBase::dirty()
+{
+    _needToLink = true;
+}
+
+void AnimationManagerBase::setAutomaticLink(bool state) { _automaticLink = state; }
+bool AnimationManagerBase::isAutomaticLink() const { return _automaticLink; }
 
 void AnimationManagerBase::operator()(osg::Node* node, osg::NodeVisitor* nv)
 { 
@@ -64,13 +73,14 @@ AnimationManagerBase::AnimationManagerBase(const AnimationManagerBase& b, const 
         _animations.push_back(animation);
     }
     _needToLink = true;
+    _automaticLink = b._automaticLink;
     buildTargetReference();
 }
 
 void AnimationManagerBase::buildTargetReference()
 {
     _targets.clear();
-    for( AnimationList::iterator iterAnim = _animations.begin(); iterAnim != _animations.end(); ++iterAnim ) 
+    for( AnimationList::iterator iterAnim = _animations.begin(); iterAnim != _animations.end(); ++iterAnim )
     {
         Animation* anim = (*iterAnim).get();
         for (ChannelList::iterator it = anim->getChannels().begin();
@@ -98,7 +108,7 @@ void AnimationManagerBase::unregisterAnimation (Animation* animation)
     buildTargetReference();
 }
 
-bool AnimationManagerBase::needToLink() const { return _needToLink; }
+bool AnimationManagerBase::needToLink() const { return _needToLink && isAutomaticLink(); }
 
 
 void AnimationManagerBase::setLinkVisitor(LinkVisitor* visitor)

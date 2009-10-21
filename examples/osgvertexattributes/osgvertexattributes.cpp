@@ -20,6 +20,7 @@
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
 #include <osgGA/TrackballManipulator>
 
 class ConvertToVertexAttibArrays : public osg::NodeVisitor
@@ -334,6 +335,9 @@ int main(int argc, char *argv[])
     viewer.setSceneData(loadedModel.get());
 
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
+
+    // add the stats handler
+    viewer.addEventHandler(new osgViewer::StatsHandler);
 
     viewer.realize();
 

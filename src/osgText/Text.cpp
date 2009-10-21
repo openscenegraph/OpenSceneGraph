@@ -1345,7 +1345,9 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
         }
     }
 
-    glNormal3fv(_normal.ptr());
+    osg::GLBeginEndAdapter& gl = (state.getGLBeginEndAdapter());
+
+    state.Normal(_normal.x(), _normal.y(), _normal.z());
 
     if (_drawMode & FILLEDBOUNDINGBOX)
     {
@@ -1381,13 +1383,13 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
                     glPolygonOffset(0.1f * osg::PolygonOffset::getFactorMultiplier(), 10.0f * osg::PolygonOffset::getUnitsMultiplier() );
             }
 
-            glColor4f(colorMultiplier.r()*_textBBColor.r(),colorMultiplier.g()*_textBBColor.g(),colorMultiplier.b()*_textBBColor.b(),colorMultiplier.a()*_textBBColor.a());
-            glBegin(GL_QUADS);
-                glVertex3fv(c00.ptr());
-                glVertex3fv(c10.ptr());
-                glVertex3fv(c11.ptr());
-                glVertex3fv(c01.ptr());
-            glEnd();
+            gl.Color4f(colorMultiplier.r()*_textBBColor.r(),colorMultiplier.g()*_textBBColor.g(),colorMultiplier.b()*_textBBColor.b(),colorMultiplier.a()*_textBBColor.a());
+            gl.Begin(GL_QUADS);
+                gl.Vertex3fv(c00.ptr());
+                gl.Vertex3fv(c10.ptr());
+                gl.Vertex3fv(c11.ptr());
+                gl.Vertex3fv(c01.ptr());
+            gl.End();
 
             switch(_backdropImplementation)
             {
@@ -1465,19 +1467,19 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
             osg::Vec3 c01(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin())*matrix);
 
         
-            glColor4f(colorMultiplier.r()*_textBBColor.r(),colorMultiplier.g()*_textBBColor.g(),colorMultiplier.b()*_textBBColor.b(),colorMultiplier.a()*_textBBColor.a());
-            glBegin(GL_LINE_LOOP);
-                glVertex3fv(c00.ptr());
-                glVertex3fv(c10.ptr());
-                glVertex3fv(c11.ptr());
-                glVertex3fv(c01.ptr());
-            glEnd();
+            gl.Color4f(colorMultiplier.r()*_textBBColor.r(),colorMultiplier.g()*_textBBColor.g(),colorMultiplier.b()*_textBBColor.b(),colorMultiplier.a()*_textBBColor.a());
+            gl.Begin(GL_LINE_LOOP);
+                gl.Vertex3fv(c00.ptr());
+                gl.Vertex3fv(c10.ptr());
+                gl.Vertex3fv(c11.ptr());
+                gl.Vertex3fv(c01.ptr());
+            gl.End();
         }
     }
 
     if (_drawMode & ALIGNMENT)
     {
-        glColor4fv(colorMultiplier.ptr());
+        gl.Color4fv(colorMultiplier.ptr());
 
         float cursorsize = _characterHeight*0.5f;
 
@@ -1490,12 +1492,12 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
 
         state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
         
-        glBegin(GL_LINES);
-            glVertex3fv(hl.ptr());
-            glVertex3fv(hr.ptr());
-            glVertex3fv(vt.ptr());
-            glVertex3fv(vb.ptr());
-        glEnd();
+        gl.Begin(GL_LINES);
+            gl.Vertex3fv(hl.ptr());
+            gl.Vertex3fv(hr.ptr());
+            gl.Vertex3fv(vt.ptr());
+            gl.Vertex3fv(vb.ptr());
+        gl.End();
         
     }    
 }
@@ -1879,7 +1881,7 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
 
         state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
         state.disableColorPointer();
-        glColor4fv(_backdropColor.ptr());
+        state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
@@ -1934,7 +1936,7 @@ void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMult
 
         state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
         state.disableColorPointer();
-        glColor4fv(_backdropColor.ptr());
+        state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
@@ -1986,7 +1988,7 @@ void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultipl
 
         state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
         state.disableColorPointer();
-        glColor4fv(_backdropColor.ptr());
+        state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
@@ -2148,7 +2150,7 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
 
         state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
         state.disableColorPointer();
-        glColor4fv(_backdropColor.ptr());
+        state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
 
         for( ; backdrop_index < max_backdrop_index; backdrop_index++)
         {
@@ -2162,9 +2164,6 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
 
         drawForegroundText(state, glyphquad, colorMultiplier);
     }
-    
+
     glPopAttrib();
 }
-
-
-

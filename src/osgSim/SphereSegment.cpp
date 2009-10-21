@@ -389,7 +389,7 @@ void SphereSegment::dirtyAllDrawableBounds()
     }
 }
 
-void SphereSegment::Surface_drawImplementation(osg::State& /* state */) const
+void SphereSegment::Surface_drawImplementation(osg::State& state) const
 {
     const float azIncr = (_azMax - _azMin)/_density;
     const float elevIncr = (_elevMax - _elevMin)/_density;
@@ -398,7 +398,9 @@ void SphereSegment::Surface_drawImplementation(osg::State& /* state */) const
     // ---------------------------------------------
     if(_drawMask & SURFACE)
     {
-        glColor4fv(_surfaceColor.ptr());
+        osg::GLBeginEndAdapter& gl = (state.getGLBeginEndAdapter());
+
+        gl.Color4fv(_surfaceColor.ptr());
 
         bool drawBackSide = true;
         bool drawFrontSide = true;
@@ -414,7 +416,7 @@ void SphereSegment::Surface_drawImplementation(osg::State& /* state */) const
                 float az1 = _azMin + (i*azIncr);
                 float az2 = _azMin + ((i+1)*azIncr);
 
-                glBegin(GL_QUAD_STRIP);
+                gl.Begin(GL_QUAD_STRIP);
                 for (int j=0; j<=_density; j++)
                 {
                     float elev = _elevMin + (j*elevIncr);
@@ -427,8 +429,8 @@ void SphereSegment::Surface_drawImplementation(osg::State& /* state */) const
                     float y = cos(elev)*cos(az1);
                     float z = sin(elev);
 
-                    glNormal3f(-x, -y, -z);
-                    glVertex3f(_centre.x() + _radius*x,
+                    gl.Normal3f(-x, -y, -z);
+                    gl.Vertex3f(_centre.x() + _radius*x,
                             _centre.y() + _radius*y,
                             _centre.z() + _radius*z);
 
@@ -440,12 +442,12 @@ void SphereSegment::Surface_drawImplementation(osg::State& /* state */) const
                     y = cos(elev)*cos(az2);
                     // z = sin(elev);   z doesn't change
 
-                    glNormal3f(-x, -y, -z);
-                    glVertex3f(_centre.x() + _radius*x,
+                    gl.Normal3f(-x, -y, -z);
+                    gl.Vertex3f(_centre.x() + _radius*x,
                             _centre.y() + _radius*y,
                             _centre.z() + _radius*z);
                 }
-                glEnd();
+                gl.End();
             }
         }
 
@@ -460,7 +462,7 @@ void SphereSegment::Surface_drawImplementation(osg::State& /* state */) const
                 float az1 = _azMin + (i*azIncr);
                 float az2 = _azMin + ((i+1)*azIncr);
 
-                glBegin(GL_QUAD_STRIP);
+                gl.Begin(GL_QUAD_STRIP);
                 for (int j=0; j<=_density; j++)
                 {
                     float elev = _elevMin + (j*elevIncr);
@@ -473,8 +475,8 @@ void SphereSegment::Surface_drawImplementation(osg::State& /* state */) const
                     float y = cos(elev)*cos(az2);
                     float z = sin(elev);
 
-                    glNormal3f(x, y, z);
-                    glVertex3f(_centre.x() + _radius*x,
+                    gl.Normal3f(x, y, z);
+                    gl.Vertex3f(_centre.x() + _radius*x,
                             _centre.y() + _radius*y,
                             _centre.z() + _radius*z);
 
@@ -487,12 +489,12 @@ void SphereSegment::Surface_drawImplementation(osg::State& /* state */) const
                     x = cos(elev)*sin(az1);
                     y = cos(elev)*cos(az1);
 
-                    glNormal3f(x, y, z);
-                    glVertex3f(_centre.x() + _radius*x,
+                    gl.Normal3f(x, y, z);
+                    gl.Vertex3f(_centre.x() + _radius*x,
                             _centre.y() + _radius*y,
                             _centre.z() + _radius*z);
                 }
-                glEnd();
+                gl.End();
             }
         }
     }
@@ -523,7 +525,7 @@ bool SphereSegment::Surface_computeBound(osg::BoundingBox& bbox) const
     return true;
 }
 
-void SphereSegment::EdgeLine_drawImplementation(osg::State& /* state */) const
+void SphereSegment::EdgeLine_drawImplementation(osg::State& state) const
 {
     const float azIncr = (_azMax - _azMin)/_density;
     const float elevIncr = (_elevMax - _elevMin)/_density;
@@ -532,84 +534,59 @@ void SphereSegment::EdgeLine_drawImplementation(osg::State& /* state */) const
     // ------------------------------
     if(_drawMask & EDGELINE)
     {
-        glColor4fv(_edgeLineColor.ptr());
+        osg::GLBeginEndAdapter& gl = (state.getGLBeginEndAdapter());
+
+        gl.Color4fv(_edgeLineColor.ptr());
 
         // Top edge
-        glBegin(GL_LINE_STRIP);
+        gl.Begin(GL_LINE_STRIP);
         int i;
         for(i=0; i<=_density; i++)
         {
             float az = _azMin + (i*azIncr);
-            glVertex3f(
+            gl.Vertex3f(
                 _centre.x() + _radius*cos(_elevMax)*sin(az),
                 _centre.y() + _radius*cos(_elevMax)*cos(az),
                 _centre.z() + _radius*sin(_elevMax));
         }
-        glEnd();
+        gl.End();
 
         // Bottom edge
-        glBegin(GL_LINE_STRIP);
+        gl.Begin(GL_LINE_STRIP);
         for(i=0; i<=_density; i++)
         {
             float az = _azMin + (i*azIncr);
-            glVertex3f(
+            gl.Vertex3f(
                 _centre.x() + _radius*cos(_elevMin)*sin(az),
                 _centre.y() + _radius*cos(_elevMin)*cos(az),
                 _centre.z() + _radius*sin(_elevMin));
         }
-        glEnd();
+        gl.End();
 
         // Left edge
-        glBegin(GL_LINE_STRIP);
+        gl.Begin(GL_LINE_STRIP);
         int j;
         for(j=0; j<=_density; j++)
         {
             float elev = _elevMin + (j*elevIncr);
-            glVertex3f(
+            gl.Vertex3f(
                 _centre.x() + _radius*cos(elev)*sin(_azMin),
                 _centre.y() + _radius*cos(elev)*cos(_azMin),
                 _centre.z() + _radius*sin(elev));
         }
-        glEnd();
+        gl.End();
 
         // Right edge
-        glBegin(GL_LINE_STRIP);
+        gl.Begin(GL_LINE_STRIP);
         for(j=0; j<=_density; j++)
         {
             float elev = _elevMin + (j*elevIncr);
-            glVertex3f(
+            gl.Vertex3f(
                 _centre.x() + _radius*cos(elev)*sin(_azMax),
                 _centre.y() + _radius*cos(elev)*cos(_azMax),
                 _centre.z() + _radius*sin(elev));
         }
-        glEnd();
-#if 0
-        // Split right
-        glBegin(GL_LINE_STRIP);
-        glVertex3f(
-                _centre.x() + _radius*cos(_elevMin)*sin(_azMax),
-                _centre.y() + _radius*cos(_elevMin)*cos(_azMax),
-                _centre.z() + _radius*sin(_elevMin));
-        glVertex3f(_centre.x(), _centre.y(), _centre.z());
-        glVertex3f(
-                _centre.x() + _radius*cos(_elevMax)*sin(_azMax),
-                _centre.y() + _radius*cos(_elevMax)*cos(_azMax),
-                _centre.z() + _radius*sin(_elevMax));
-        glEnd();
- 
-        // Split left
-        glBegin(GL_LINE_STRIP);
-        glVertex3f(
-                _centre.x() + _radius*cos(_elevMin)*sin(_azMin),
-                _centre.y() + _radius*cos(_elevMin)*cos(_azMin),
-                _centre.z() + _radius*sin(_elevMin));
-        glVertex3f(_centre.x(), _centre.y(), _centre.z());
-        glVertex3f(
-                _centre.x() + _radius*cos(_elevMax)*sin(_azMin),
-                _centre.y() + _radius*cos(_elevMax)*cos(_azMin),
-                _centre.z() + _radius*sin(_elevMax));
-        glEnd();
-#endif
+        gl.End();
     }
 }
 
@@ -665,7 +642,7 @@ bool SphereSegment::EdgeLine_computeBound(osg::BoundingBox& bbox) const
     return true;
 }
 
-void SphereSegment::Side_drawImplementation(osg::State& /* state */,
+void SphereSegment::Side_drawImplementation(osg::State& state,
                                 SphereSegment::SideOrientation orientation,
                                 SphereSegment::BoundaryAngle boundaryAngle) const
 {
@@ -673,11 +650,13 @@ void SphereSegment::Side_drawImplementation(osg::State& /* state */,
     // ----------------------------
     if(_drawMask & SIDES)
     {
+        osg::GLBeginEndAdapter& gl = (state.getGLBeginEndAdapter());
+
         bool drawBackSide = true;
         bool drawFrontSide = true;
         int start, end, delta;
 
-        glColor4fv(_planeColor.ptr());
+        gl.Color4fv(_planeColor.ptr());
 
         // draw back side.
         if (drawBackSide)
@@ -708,17 +687,17 @@ void SphereSegment::Side_drawImplementation(osg::State& /* state */,
                 if (drawBackSide)
                 {
                     // Tri fan
-                    glNormal3f(-normal.x(),-normal.y(),-normal.z());
-                    glBegin(GL_TRIANGLE_FAN);
-                    glVertex3fv(_centre.ptr());
+                    gl.Normal3f(-normal.x(),-normal.y(),-normal.z());
+                    gl.Begin(GL_TRIANGLE_FAN);
+                    gl.Vertex3fv(_centre.ptr());
                     for (int j=start; j!=end+delta; j+=delta)
                     {
                         float elev = _elevMin + (j*elevIncr);
-                        glVertex3f( _centre.x() + _radius*cos(elev)*sin(az),
+                        gl.Vertex3f( _centre.x() + _radius*cos(elev)*sin(az),
                                     _centre.y() + _radius*cos(elev)*cos(az),
                                     _centre.z() + _radius*sin(elev));
                     }
-                    glEnd();
+                    gl.End();
                 }
 
                 if (boundaryAngle==MIN)
@@ -735,17 +714,17 @@ void SphereSegment::Side_drawImplementation(osg::State& /* state */,
 
                 if (drawFrontSide)
                 {
-                    glNormal3fv(normal.ptr());
-                    glBegin(GL_TRIANGLE_FAN);
-                    glVertex3fv(_centre.ptr());
+                    gl.Normal3fv(normal.ptr());
+                    gl.Begin(GL_TRIANGLE_FAN);
+                    gl.Vertex3fv(_centre.ptr());
                     for (int j=start; j!=end+delta; j+=delta)
                     {
                         float elev = _elevMin + (j*elevIncr);
-                        glVertex3f( _centre.x() + _radius*cos(elev)*sin(az),
+                        gl.Vertex3f( _centre.x() + _radius*cos(elev)*sin(az),
                                     _centre.y() + _radius*cos(elev)*cos(az),
                                     _centre.z() + _radius*sin(elev));
                     }
-                    glEnd();
+                    gl.End();
                 }
 
             }
@@ -774,19 +753,19 @@ void SphereSegment::Side_drawImplementation(osg::State& /* state */,
 
                 if (drawBackSide)
                 {
-                    glNormal3f(-normal.x(),-normal.y(),-normal.z());
+                    gl.Normal3f(-normal.x(),-normal.y(),-normal.z());
 
                     // Tri fan
-                    glBegin(GL_TRIANGLE_FAN);
-                    glVertex3fv(_centre.ptr());
+                    gl.Begin(GL_TRIANGLE_FAN);
+                    gl.Vertex3fv(_centre.ptr());
                     for (int j=start; j!=end+delta; j+=delta)
                     {
                         float az = _azMin + (j*azIncr);
-                        glVertex3f( _centre.x() + _radius*cos(elev)*sin(az),
+                        gl.Vertex3f( _centre.x() + _radius*cos(elev)*sin(az),
                                     _centre.y() + _radius*cos(elev)*cos(az),
                                     _centre.z() + _radius*sin(elev));
                     }
-                    glEnd();
+                    gl.End();
                 }
 
                 if (boundaryAngle==MIN)
@@ -803,19 +782,19 @@ void SphereSegment::Side_drawImplementation(osg::State& /* state */,
 
                 if (drawFrontSide)
                 {
-                    glNormal3fv(normal.ptr());
+                    gl.Normal3fv(normal.ptr());
 
                     // Tri fan
-                    glBegin(GL_TRIANGLE_FAN);
-                    glVertex3fv(_centre.ptr());
+                    gl.Begin(GL_TRIANGLE_FAN);
+                    gl.Vertex3fv(_centre.ptr());
                     for (int j=start; j!=end+delta; j+=delta)
                     {
                         float az = _azMin + (j*azIncr);
-                        glVertex3f( _centre.x() + _radius*cos(elev)*sin(az),
+                        gl.Vertex3f( _centre.x() + _radius*cos(elev)*sin(az),
                                     _centre.y() + _radius*cos(elev)*cos(az),
                                     _centre.z() + _radius*sin(elev));
                     }
-                    glEnd();
+                    gl.End();
                 }
 
             }
@@ -862,21 +841,23 @@ bool SphereSegment::Side_computeBound(osg::BoundingBox& bbox,
     return true;
 }
 
-void SphereSegment::Spoke_drawImplementation(osg::State&, BoundaryAngle azAngle, BoundaryAngle elevAngle) const
+void SphereSegment::Spoke_drawImplementation(osg::State& state, BoundaryAngle azAngle, BoundaryAngle elevAngle) const
 {
-    if(_drawMask & SPOKES){
+    if(_drawMask & SPOKES)
+    {
+        osg::GLBeginEndAdapter& gl = (state.getGLBeginEndAdapter());
 
-        glColor4fv(_spokeColor.ptr());
+        gl.Color4fv(_spokeColor.ptr());
 
         const float az = (azAngle==MIN?_azMin:_azMax);
         const float elev = (elevAngle==MIN?_elevMin:_elevMax);
 
-        glBegin(GL_LINES);
-            glVertex3fv(_centre.ptr());
-            glVertex3f( _centre.x() + _radius*cos(elev)*sin(az),
+        gl.Begin(GL_LINES);
+            gl.Vertex3fv(_centre.ptr());
+            gl.Vertex3f( _centre.x() + _radius*cos(elev)*sin(az),
                         _centre.y() + _radius*cos(elev)*cos(az),
                         _centre.z() + _radius*sin(elev));
-        glEnd();
+        gl.End();
     }
 }
 

@@ -519,6 +519,7 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
     // ** apply this new modelview matrix
     state.applyModelViewMatrix(modelview.get());
 
+    osg::GLBeginEndAdapter& gl = (state.getGLBeginEndAdapter());
 
     if (_drawMode & TEXT)
     {
@@ -551,33 +552,33 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
             osg::Vec3 c111(osg::Vec3(_textBB.xMax(),_textBB.yMax(),_textBB.zMin()));
             osg::Vec3 c011(osg::Vec3(_textBB.xMin(),_textBB.yMax(),_textBB.zMin()));
 
-            glBegin(GL_LINE_LOOP);
-                glVertex3fv(c000.ptr());
-                glVertex3fv(c100.ptr());
-                glVertex3fv(c110.ptr());
-                glVertex3fv(c010.ptr());
-            glEnd();
+            gl.Begin(GL_LINE_LOOP);
+                gl.Vertex3fv(c000.ptr());
+                gl.Vertex3fv(c100.ptr());
+                gl.Vertex3fv(c110.ptr());
+                gl.Vertex3fv(c010.ptr());
+            gl.End();
 
-            glBegin(GL_LINE_LOOP);
-                glVertex3fv(c001.ptr());
-                glVertex3fv(c011.ptr());
-                glVertex3fv(c111.ptr());
-                glVertex3fv(c101.ptr());
-            glEnd();
+            gl.Begin(GL_LINE_LOOP);
+                gl.Vertex3fv(c001.ptr());
+                gl.Vertex3fv(c011.ptr());
+                gl.Vertex3fv(c111.ptr());
+                gl.Vertex3fv(c101.ptr());
+            gl.End();
 
-            glBegin(GL_LINES);
-                glVertex3fv(c000.ptr());
-                glVertex3fv(c001.ptr());
+            gl.Begin(GL_LINES);
+                gl.Vertex3fv(c000.ptr());
+                gl.Vertex3fv(c001.ptr());
 
-                glVertex3fv(c100.ptr());
-                glVertex3fv(c101.ptr());
+                gl.Vertex3fv(c100.ptr());
+                gl.Vertex3fv(c101.ptr());
 
-                glVertex3fv(c110.ptr());
-                glVertex3fv(c111.ptr());
+                gl.Vertex3fv(c110.ptr());
+                gl.Vertex3fv(c111.ptr());
 
-                glVertex3fv(c010.ptr());
-                glVertex3fv(c011.ptr());
-            glEnd();
+                gl.Vertex3fv(c010.ptr());
+                gl.Vertex3fv(c011.ptr());
+            gl.End();
         }
     }
 
@@ -590,12 +591,12 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
         osg::Vec3 vt(osg::Vec3(_offset.x(),_offset.y()-cursorsize,_offset.z()));
         osg::Vec3 vb(osg::Vec3(_offset.x(),_offset.y()+cursorsize,_offset.z()));
 
-        glBegin(GL_LINES);
-            glVertex3fv(hl.ptr());
-            glVertex3fv(hr.ptr());
-            glVertex3fv(vt.ptr());
-            glVertex3fv(vb.ptr());
-        glEnd();
+        gl.Begin(GL_LINES);
+            gl.Vertex3fv(hl.ptr());
+            gl.Vertex3fv(hr.ptr());
+            gl.Vertex3fv(vt.ptr());
+            gl.Vertex3fv(vb.ptr());
+        gl.End();
 
     }
 
@@ -622,7 +623,7 @@ void Text3D::renderPerGlyph(osg::State & state) const
             state.setVertexPointer(it->_glyph->getVertexArray());
 
             // ** render the front face of the glyph
-            glNormal3f(0.0f,0.0f,1.0f);
+            state.Normal(0.0f,0.0f,1.0f);
 
             osg::Geometry::PrimitiveSetList & pslFront = it->_glyph->getFrontPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslFront.begin(), end = pslFront.end(); itr!=end; ++itr)
@@ -640,7 +641,7 @@ void Text3D::renderPerGlyph(osg::State & state) const
             state.disableNormalPointer();
 
             // ** render the back face of the glyph
-            glNormal3f(0.0f,0.0f,-1.0f);
+            state.Normal(0.0f,0.0f,-1.0f);
 
             osg::Geometry::PrimitiveSetList & pslBack = it->_glyph->getBackPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslBack.begin(), end=pslBack.end(); itr!=end; ++itr)
@@ -656,7 +657,7 @@ void Text3D::renderPerGlyph(osg::State & state) const
 void Text3D::renderPerFace(osg::State & state) const
 {
     // ** render all front faces
-    glNormal3f(0.0f,0.0f,1.0f);
+    state.Normal(0.0f,0.0f,1.0f);
 
     TextRenderInfo::const_iterator itLine, endLine = _textRenderInfo.end();
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)

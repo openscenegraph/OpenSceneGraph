@@ -50,14 +50,14 @@ int main(int argc, char** argv)
         arguments.getApplicationUsage()->write(std::cout, helpType);
         return 1;
     }
-    
+
     // report any errors if they have occurred when parsing the program arguments.
     if (arguments.errors())
     {
         arguments.writeErrorMessages(std::cout);
         return 1;
     }
-    
+
     if (arguments.argc()<=1)
     {
         arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
@@ -106,13 +106,13 @@ int main(int argc, char** argv)
 
     // add the state manipulator
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
-    
+
     // add the thread model handler
     viewer.addEventHandler(new osgViewer::ThreadingHandler);
 
     // add the window size toggle handler
     viewer.addEventHandler(new osgViewer::WindowSizeHandler);
-        
+
     // add the stats handler
     viewer.addEventHandler(new osgViewer::StatsHandler);
 

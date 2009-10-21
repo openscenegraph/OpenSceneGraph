@@ -79,29 +79,29 @@ float ImpostorSprite::calcPixelError(const osg::Matrix& MVPW) const
 
     return sqrtf(max_error_sqrd);
 }
-void ImpostorSprite::drawImplementation(osg::RenderInfo&) const
+void ImpostorSprite::drawImplementation(osg::RenderInfo& renderInfo) const
 {
-    // when the tex env is set to REPLACE, and the 
+    osg::GLBeginEndAdapter& gl = (renderInfo.getState()->getGLBeginEndAdapter());
+
+    // when the tex env is set to REPLACE, and the
     // texture is set up correctly the color has no effect.
-    glColor4fv( _color.ptr() );
-    
-    
-    glBegin( GL_QUADS );
-    
-    glTexCoord2fv( (GLfloat *)&_texcoords[0] );
-    glVertex3fv( (GLfloat *)&_coords[0] );
+    gl.Color4fv( _color.ptr() );
 
-    glTexCoord2fv( (GLfloat *)&_texcoords[1] );
-    glVertex3fv( (GLfloat *)&_coords[1] );
+    gl.Begin( GL_QUADS );
 
-    glTexCoord2fv( (GLfloat *)&_texcoords[2] );
-    glVertex3fv( (GLfloat *)&_coords[2] );
+    gl.TexCoord2fv( (GLfloat *)&_texcoords[0] );
+    gl.Vertex3fv( (GLfloat *)&_coords[0] );
 
-    glTexCoord2fv( (GLfloat *)&_texcoords[3] );
-    glVertex3fv( (GLfloat *)&_coords[3] );
+    gl.TexCoord2fv( (GLfloat *)&_texcoords[1] );
+    gl.Vertex3fv( (GLfloat *)&_coords[1] );
 
-    glEnd();
+    gl.TexCoord2fv( (GLfloat *)&_texcoords[2] );
+    gl.Vertex3fv( (GLfloat *)&_coords[2] );
 
+    gl.TexCoord2fv( (GLfloat *)&_texcoords[3] );
+    gl.Vertex3fv( (GLfloat *)&_coords[3] );
+
+    gl.End();
 }
 
 osg::BoundingBox ImpostorSprite::computeBound() const

@@ -1288,7 +1288,6 @@ void Geometry::releaseGLObjects(State* state) const
 void Geometry::drawImplementation(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
-    bool vertexAttribAlias = state.getUseVertexAttributeAliasing();
     Drawable::Extensions* extensions = Drawable::getExtensions(state.getContextID(),true);
 
     bool useFastPath = areFastPathsUsed();
@@ -1297,6 +1296,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
     ArrayDispatchers& arrayDispatchers = state.getArrayDispatchers();
 
+    arrayDispatchers.setUseVertexAttribAlias(state.getUseVertexAttributeAliasing());
     arrayDispatchers.reset();
     // arrayDispatchers.setUseGLBeginEndAdapter(!useFastPath);
 

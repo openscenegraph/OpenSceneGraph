@@ -430,14 +430,45 @@ void ArrayDispatchers::init()
     _activeDispatchList.resize(5);
 }
 
-AttributeDispatch* ArrayDispatchers::vertexDispatcher(Array* array, IndexArray* indices) { return _vertexDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices);  }
-AttributeDispatch* ArrayDispatchers::normalDispatcher(Array* array, IndexArray* indices) { return _normalDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices);  }
-AttributeDispatch* ArrayDispatchers::colorDispatcher(Array* array, IndexArray* indices) { return _colorDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices);  }
-AttributeDispatch* ArrayDispatchers::secondaryColorDispatcher(Array* array, IndexArray* indices) { return _secondaryColorDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices);  }
-AttributeDispatch* ArrayDispatchers::fogCoordDispatcher(Array* array, IndexArray* indices) { return _fogCoordDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices);  }
+AttributeDispatch* ArrayDispatchers::vertexDispatcher(Array* array, IndexArray* indices)
+{
+    return _useVertexAttribAlias ?
+           vertexAttribDispatcher(_state->getVertexAlias()._location, array, indices) :
+           _vertexDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices);
+}
+
+AttributeDispatch* ArrayDispatchers::normalDispatcher(Array* array, IndexArray* indices)
+{
+    return _useVertexAttribAlias ?
+           vertexAttribDispatcher(_state->getNormalAlias()._location, array, indices) :
+           _normalDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices);
+}
+
+AttributeDispatch* ArrayDispatchers::colorDispatcher(Array* array, IndexArray* indices)
+{
+    return _useVertexAttribAlias ?
+           vertexAttribDispatcher(_state->getColorAlias()._location, array, indices) :
+           _colorDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices);
+}
+
+AttributeDispatch* ArrayDispatchers::secondaryColorDispatcher(Array* array, IndexArray* indices)
+{
+    return _useVertexAttribAlias ?
+           vertexAttribDispatcher(_state->getSecondaryColorAlias()._location, array, indices) :
+           _secondaryColorDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices);
+}
+
+AttributeDispatch* ArrayDispatchers::fogCoordDispatcher(Array* array, IndexArray* indices)
+{
+    return _useVertexAttribAlias ?
+           vertexAttribDispatcher(_state->getFogCoordAlias()._location, array, indices) :
+           _fogCoordDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices);
+}
 
 AttributeDispatch* ArrayDispatchers::texCoordDispatcher(unsigned int unit, Array* array, IndexArray* indices)
 {
+    if (_useVertexAttribAlias) return vertexAttribDispatcher(_state->getTexCoordAliasList()[unit]._location, array, indices);
+
     if (unit>=_texCoordDispatchers.size()) assignTexCoordDispatchers(unit);
     return _texCoordDispatchers[unit]->dispatcher(_useGLBeginEndAdapter, array, indices);
 }

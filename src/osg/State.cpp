@@ -120,6 +120,7 @@ State::State():
     _maxBufferObjectPoolSize = 0;
 
     _glBeginEndAdapter.setState(this);
+    _arrayDispatchers.setState(this);
 }
 
 State::~State()

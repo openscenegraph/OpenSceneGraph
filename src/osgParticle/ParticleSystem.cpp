@@ -168,30 +168,32 @@ void osgParticle::ParticleSystem::setDefaultAttributes(const std::string& textur
 }
 
 
-void osgParticle::ParticleSystem::single_pass_render(osg::State&  /*state*/, const osg::Matrix& modelview) const
+void osgParticle::ParticleSystem::single_pass_render(osg::State&  state, const osg::Matrix& modelview) const
 {
     _draw_count = 0;
     if (_particles.size() <= 0) return;
 
+    osg::GLBeginEndAdapter* gl = &state.getGLBeginEndAdapter();
+
     float scale = sqrtf(static_cast<float>(_detail));
-    
+
     const Particle* startParticle = &_particles[0];
-    startParticle->beginRender();
+    startParticle->beginRender(gl);
 
     osg::Vec3 xAxis = _align_X_axis;
     osg::Vec3 yAxis = _align_Y_axis;
-    
+
     osg::Vec3 scaled_aligned_xAxis = _align_X_axis;
     osg::Vec3 scaled_aligned_yAxis = _align_Y_axis;
 
     float xScale = 1.0f;
     float yScale = 1.0f;
-    
+
     if (_alignment==BILLBOARD)
     {
         xAxis = osg::Matrix::transform3x3(modelview,_align_X_axis);
         yAxis = osg::Matrix::transform3x3(modelview,_align_Y_axis);
-        
+
         float lengthX2 = xAxis.length2();
         float lengthY2 = yAxis.length2();
 
@@ -220,8 +222,8 @@ void osgParticle::ParticleSystem::single_pass_render(osg::State&  /*state*/, con
         {
             if (currentParticle->getShape() != startParticle->getShape())
             {
-                startParticle->endRender();
-                currentParticle->beginRender();
+                startParticle->endRender(gl);
+                currentParticle->beginRender(gl);
                 startParticle = currentParticle;
             }
             ++_draw_count;
@@ -244,24 +246,24 @@ void osgParticle::ParticleSystem::single_pass_render(osg::State&  /*state*/, con
                     yAxis = osg::Matrix::transform3x3(R,scaled_aligned_yAxis);
                     yAxis = osg::Matrix::transform3x3(modelview,yAxis);
 
-                    currentParticle->render(currentParticle->getPosition(), xAxis, yAxis, scale);
+                    currentParticle->render(gl,currentParticle->getPosition(), xAxis, yAxis, scale);
                 }
                 else
                 {
                     xAxis = osg::Matrix::transform3x3(R, scaled_aligned_xAxis);
                     yAxis = osg::Matrix::transform3x3(R, scaled_aligned_yAxis);
 
-                    currentParticle->render(currentParticle->getPosition(), xAxis, yAxis, scale);
+                    currentParticle->render(gl,currentParticle->getPosition(), xAxis, yAxis, scale);
                 }
             }
             else
             {
-                currentParticle->render(currentParticle->getPosition(), xAxis, yAxis, scale);
+                currentParticle->render(gl,currentParticle->getPosition(), xAxis, yAxis, scale);
             }
         } 
     }
 
-    startParticle->endRender();
+    startParticle->endRender(gl);
     
 }
 

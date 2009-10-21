@@ -123,11 +123,11 @@ bool osgParticle::Particle::update(double dt)
     return true;
 }
 
-void osgParticle::Particle::render(const osg::Vec3& xpos, const osg::Vec3& px, const osg::Vec3& py, float scale) const
+void osgParticle::Particle::render(osg::GLBeginEndAdapter* gl, const osg::Vec3& xpos, const osg::Vec3& px, const osg::Vec3& py, float scale) const
 {
-    glColor4f(  _current_color.x(), 
-                _current_color.y(), 
-                _current_color.z(), 
+    gl->Color4f( _current_color.x(),
+                _current_color.y(),
+                _current_color.z(),
                 _current_color.w() * _current_alpha);
 
     osg::Vec3 p1(px * _current_size * scale);
@@ -135,73 +135,74 @@ void osgParticle::Particle::render(const osg::Vec3& xpos, const osg::Vec3& px, c
 
     switch (_shape)
     {
-    case POINT:        
-        glVertex3f(xpos.x(), xpos.y(), xpos.z()); 
+    case POINT:
+        gl->Vertex3f(xpos.x(), xpos.y(), xpos.z());
         break;
 
     case QUAD:
-        glTexCoord2f(_s_coord, _t_coord);
-        glVertex3fv((xpos-(p1+p2)).ptr());
-        glTexCoord2f(_s_coord+_s_tile, _t_coord);
-        glVertex3fv((xpos+(p1-p2)).ptr());
-        glTexCoord2f(_s_coord+_s_tile, _t_coord+_t_tile);
-        glVertex3fv((xpos+(p1+p2)).ptr());
-        glTexCoord2f(_s_coord, _t_coord+_t_tile);
-        glVertex3fv((xpos-(p1-p2)).ptr());
+        gl->TexCoord2f(_s_coord, _t_coord);
+        gl->Vertex3fv((xpos-(p1+p2)).ptr());
+        gl->TexCoord2f(_s_coord+_s_tile, _t_coord);
+        gl->Vertex3fv((xpos+(p1-p2)).ptr());
+        gl->TexCoord2f(_s_coord+_s_tile, _t_coord+_t_tile);
+        gl->Vertex3fv((xpos+(p1+p2)).ptr());
+        gl->TexCoord2f(_s_coord, _t_coord+_t_tile);
+        gl->Vertex3fv((xpos-(p1-p2)).ptr());
         break;
 
     case QUAD_TRIANGLESTRIP:
-        glPushMatrix();
-        glTranslatef(xpos.x(), xpos.y(), xpos.z());
-        // we must glBegin() and glEnd() here, because each particle is a single strip
-        glBegin(GL_TRIANGLE_STRIP);
-        glTexCoord2f(_s_coord+_s_tile, _t_coord+_t_tile);
-        glVertex3fv((p1+p2).ptr());      
-        glTexCoord2f(_s_coord, _t_coord+_t_tile);
-        glVertex3fv((-p1+p2).ptr());        
-        glTexCoord2f(_s_coord+_s_tile, _t_coord);
-        glVertex3fv((p1-p2).ptr());
-        glTexCoord2f(_s_coord, _t_coord);
-        glVertex3fv((-p1-p2).ptr());
-        glPopMatrix();
+        gl->PushMatrix();
+        gl->Translatef(xpos.x(), xpos.y(), xpos.z());
+        // we must gl.Begin() and gl.End() here, because each particle is a single strip
+        gl->Begin(GL_TRIANGLE_STRIP);
+        gl->TexCoord2f(_s_coord+_s_tile, _t_coord+_t_tile);
+        gl->Vertex3fv((p1+p2).ptr());
+        gl->TexCoord2f(_s_coord, _t_coord+_t_tile);
+        gl->Vertex3fv((-p1+p2).ptr());
+        gl->TexCoord2f(_s_coord+_s_tile, _t_coord);
+        gl->Vertex3fv((p1-p2).ptr());
+        gl->TexCoord2f(_s_coord, _t_coord);
+        gl->Vertex3fv((-p1-p2).ptr());
+        gl->End();
+        gl->PopMatrix();
         break;
 
     case HEXAGON:
-        glPushMatrix();
-        glTranslatef(xpos.x(), xpos.y(), xpos.z());
-        // we must glBegin() and glEnd() here, because each particle is a single fan
-        glBegin(GL_TRIANGLE_FAN);
-        glTexCoord2f(_s_coord + _s_tile * 0.5f, _t_coord + _t_tile * 0.5f);
-        glVertex3f(0,0,0);
-        glTexCoord2f(_s_coord + _s_tile * hex_texcoord_x1, _t_coord + _t_tile * hex_texcoord_y1);
-        glVertex3fv((p1*cosPI3+p2*sinPI3).ptr());
-        glTexCoord2f(_s_coord + _s_tile * hex_texcoord_x2, _t_coord + _t_tile * hex_texcoord_y1);
-        glVertex3fv((-p1*cosPI3+p2*sinPI3).ptr());
-        glTexCoord2f(_s_coord, _t_coord + _t_tile * 0.5f);
-        glVertex3fv((-p1).ptr());
-        glTexCoord2f(_s_coord + _s_tile * hex_texcoord_x2, _t_coord + _t_tile * hex_texcoord_y2);
-        glVertex3fv((-p1*cosPI3-p2*sinPI3).ptr());
-        glTexCoord2f(_s_coord + _s_tile * hex_texcoord_x1, _t_coord + _t_tile * hex_texcoord_y2);
-        glVertex3fv((p1*cosPI3-p2*sinPI3).ptr());
-        glTexCoord2f(_s_coord + _s_tile, _t_coord + _t_tile * 0.5f);
-        glVertex3fv((p1).ptr());
-        glTexCoord2f(_s_coord + _s_tile * hex_texcoord_x1, _t_coord + _t_tile * hex_texcoord_y1);
-        glVertex3fv((p1*cosPI3+p2*sinPI3).ptr());
-        glEnd();
+        gl->PushMatrix();
+        gl->Translatef(xpos.x(), xpos.y(), xpos.z());
+        // we must gl.Begin() and gl.End() here, because each particle is a single fan
+        gl->Begin(GL_TRIANGLE_FAN);
+        gl->TexCoord2f(_s_coord + _s_tile * 0.5f, _t_coord + _t_tile * 0.5f);
+        gl->Vertex3f(0,0,0);
+        gl->TexCoord2f(_s_coord + _s_tile * hex_texcoord_x1, _t_coord + _t_tile * hex_texcoord_y1);
+        gl->Vertex3fv((p1*cosPI3+p2*sinPI3).ptr());
+        gl->TexCoord2f(_s_coord + _s_tile * hex_texcoord_x2, _t_coord + _t_tile * hex_texcoord_y1);
+        gl->Vertex3fv((-p1*cosPI3+p2*sinPI3).ptr());
+        gl->TexCoord2f(_s_coord, _t_coord + _t_tile * 0.5f);
+        gl->Vertex3fv((-p1).ptr());
+        gl->TexCoord2f(_s_coord + _s_tile * hex_texcoord_x2, _t_coord + _t_tile * hex_texcoord_y2);
+        gl->Vertex3fv((-p1*cosPI3-p2*sinPI3).ptr());
+        gl->TexCoord2f(_s_coord + _s_tile * hex_texcoord_x1, _t_coord + _t_tile * hex_texcoord_y2);
+        gl->Vertex3fv((p1*cosPI3-p2*sinPI3).ptr());
+        gl->TexCoord2f(_s_coord + _s_tile, _t_coord + _t_tile * 0.5f);
+        gl->Vertex3fv((p1).ptr());
+        gl->TexCoord2f(_s_coord + _s_tile * hex_texcoord_x1, _t_coord + _t_tile * hex_texcoord_y1);
+        gl->Vertex3fv((p1*cosPI3+p2*sinPI3).ptr());
+        gl->End();
         break;
 
     case LINE:
         {
-            // Get the normalized direction of the particle, to be used in the 
+            // Get the normalized direction of the particle, to be used in the
             // calculation of one of the linesegment endpoints.
             float vl = _velocity.length();
             if (vl != 0) {
                 osg::Vec3 v = _velocity * _current_size * scale / vl;
 
-                glTexCoord1f(0);
-                glVertex3f(xpos.x(), xpos.y(), xpos.z());
-                glTexCoord1f(1);
-                glVertex3f(xpos.x() + v.x(), xpos.y() + v.y(), xpos.z() + v.z());
+                gl->TexCoord1f(0);
+                gl->Vertex3f(xpos.x(), xpos.y(), xpos.z());
+                gl->TexCoord1f(1);
+                gl->Vertex3f(xpos.x() + v.x(), xpos.y() + v.y(), xpos.z() + v.z());
             }
         }
         break;

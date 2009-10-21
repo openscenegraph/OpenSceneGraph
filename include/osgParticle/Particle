@@ -24,6 +24,7 @@
 #include <osg/Vec4>
 #include <osg/Matrix>
 #include <osg/GL>
+#include <osg/GLBeginEndAdapter>
 
 namespace osgParticle
 {
@@ -234,13 +235,13 @@ namespace osgParticle
         bool update(double dt);
 
         /// Perform some pre-rendering tasks. Called automatically by particle systems.
-        inline void beginRender() const;
+        inline void beginRender(osg::GLBeginEndAdapter* gl) const;
         
         /// Render the particle. Called automatically by particle systems.
-        void render(const osg::Vec3& xpos, const osg::Vec3& px, const osg::Vec3& py, float scale = 1.0f) const;
+        void render(osg::GLBeginEndAdapter* gl, const osg::Vec3& xpos, const osg::Vec3& px, const osg::Vec3& py, float scale = 1.0f) const;
         
         /// Perform some post-rendering tasks. Called automatically by particle systems.
-        inline void endRender() const;
+        inline void endRender(osg::GLBeginEndAdapter* gl) const;
         
         /// Get the current (interpolated) polygon size. Valid only after the first call to update().
         inline float getCurrentSize() const;
@@ -530,41 +531,41 @@ namespace osgParticle
         _massinv = 1 / m;
     }
     
-    inline void Particle::beginRender() const
+    inline void Particle::beginRender(osg::GLBeginEndAdapter* gl) const
     {
         switch (_shape)
         {
         case POINT:
-            glBegin(GL_POINTS);
+            gl->Begin(GL_POINTS);
             break;
         case QUAD:
-            glBegin(GL_QUADS);
+            gl->Begin(GL_QUADS);
             break;
         case LINE:
-            glBegin(GL_LINES);
+            gl->Begin(GL_LINES);
             break;
         default: ;
         }
     }
-    
-    inline void Particle::endRender() const
+
+    inline void Particle::endRender(osg::GLBeginEndAdapter* gl) const
     {
         switch (_shape)
-        {        
+        {
         case POINT:
         case QUAD:
         case LINE:
-            glEnd();
+            gl->End();
             break;
         default: ;
         }
     }
-    
+
     inline float Particle::getCurrentSize() const
     {
         return _current_size;
     }
-    
+
     inline void Particle::setTextureTile(int sTile, int tTile, int numTiles)
     {
         _s_tile = (sTile>0) ? 1.0f / static_cast<float>(sTile) : 1.0f;

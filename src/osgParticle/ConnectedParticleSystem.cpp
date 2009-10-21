@@ -115,6 +115,7 @@ void ConnectedParticleSystem::reuseParticle(int particleIndex)
 void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) const
 {
     osg::State& state = *renderInfo.getState();
+    osg::GLBeginEndAdapter& gl = state.getGLBeginEndAdapter();
 
     ScopedReadLock lock(_readWriteMutex);
 
@@ -127,21 +128,21 @@ void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) co
     float pixelSizeOfFirstParticle = unitPixelSize * particle->getCurrentSize();
     //float desiredGapBetweenDrawnParticles = 50.0f/unitPixelSize;
     //float desiredGapBetweenDrawnParticles2 = desiredGapBetweenDrawnParticles*desiredGapBetweenDrawnParticles;
-    
+
     float maxPixelError2 = osg::square(1.0f/unitPixelSize);
-    
+
     if (pixelSizeOfFirstParticle<1.0)
     {
         // draw the connected particles as a line
-        glBegin(GL_LINE_STRIP);
+        gl.Begin(GL_LINE_STRIP);
         while(particle != 0)
         {
 
             const osg::Vec4& color = particle->getCurrentColor();
             const osg::Vec3& pos = particle->getPosition();
-            glColor4f( color.r(), color.g(), color.b(), color.a() * particle->getCurrentAlpha());
-            glTexCoord2f( particle->getSTexCoord(), 0.5f );
-            glVertex3fv(pos.ptr());
+            gl.Color4f( color.r(), color.g(), color.b(), color.a() * particle->getCurrentAlpha());
+            gl.TexCoord2f( particle->getSTexCoord(), 0.5f );
+            gl.Vertex3fv(pos.ptr());
 
             const Particle* nextParticle = (particle->getNextParticle() != Particle::INVALID_INDEX) ? &_particles[particle->getNextParticle()] : 0;
             if (nextParticle)
@@ -164,7 +165,7 @@ void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) co
             }
             particle = nextParticle;
         }
-        glEnd();
+        gl.End();
     }
     else
     {
@@ -175,15 +176,15 @@ void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) co
         osg::Vec3 eyeLocal = osg::Vec3(0.0f,0.0,0.0f)*eyeToLocalTransform;
 
         osg::Vec3 delta(0.0f,0.0f,1.0f);
-        
-        glBegin(GL_QUAD_STRIP);
+
+        gl.Begin(GL_QUAD_STRIP);
         while(particle != 0)
         {
             const osg::Vec4& color = particle->getCurrentColor();
             const osg::Vec3& pos = particle->getPosition();
 
             const Particle* nextParticle = (particle->getNextParticle() != Particle::INVALID_INDEX) ? &_particles[particle->getNextParticle()] : 0;
-                        
+
             if (nextParticle)
             {
                 const osg::Vec3& nextPos = nextParticle->getPosition();
@@ -204,27 +205,25 @@ void ConnectedParticleSystem::drawImplementation(osg::RenderInfo& renderInfo) co
 
                 delta = nextPos-pos;
             }
-            
+
             osg::Vec3 normal( delta ^ (pos-eyeLocal));
             normal.normalize();
             normal *= particle->getCurrentSize();
 
             osg::Vec3 bottom(pos-normal);
             osg::Vec3 top(pos+normal);
-            
-            glColor4f( color.r(), color.g(), color.b(), color.a() * particle->getCurrentAlpha());
-            
-            glTexCoord2f( particle->getSTexCoord(), 0.0f );
-            glVertex3fv(bottom.ptr());
 
-            glTexCoord2f( particle->getSTexCoord(), 1.0f );
-            glVertex3fv(top.ptr());
+            gl.Color4f( color.r(), color.g(), color.b(), color.a() * particle->getCurrentAlpha());
+
+            gl.TexCoord2f( particle->getSTexCoord(), 0.0f );
+            gl.Vertex3fv(bottom.ptr());
+
+            gl.TexCoord2f( particle->getSTexCoord(), 1.0f );
+            gl.Vertex3fv(top.ptr());
 
             particle = nextParticle;
         }
-        glEnd();
+        gl.End();
     }
 }
-
-    
 

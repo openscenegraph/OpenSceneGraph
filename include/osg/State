@@ -71,6 +71,31 @@ namespace osg {
 // forward declare GraphicsContext, View and State
 class GraphicsContext;
 
+class VertexAttribAlias
+{
+    public:
+        VertexAttribAlias():
+            _location(0) {}
+
+        VertexAttribAlias(const VertexAttribAlias& rhs):
+            _location(rhs._location),
+            _glName(rhs._glName),
+            _osgName(rhs._osgName),
+            _declaration(rhs._declaration) {}
+
+        VertexAttribAlias(GLuint location, const std::string glName, const std::string osgName, const std::string& declaration):
+            _location(location),
+            _glName(glName),
+            _osgName(osgName),
+            _declaration(declaration) {}
+
+        GLuint      _location;
+        std::string _glName;
+        std::string _osgName;
+        std::string _declaration;
+};
+
+
 /** Encapsulates the current applied OpenGL modes, attributes and vertex arrays settings,
 * implements lazy state updating and provides accessors for querying the current state.
 * The venerable Red Book says that "OpenGL is a state machine", and this class
@@ -188,8 +213,19 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         Polytope getViewFrustum() const;
 
+
         void setUseVertexAttributeAliasing(bool flag) { _useVertexAttributeAliasing = flag; }
         bool getUseVertexAttributeAliasing() const { return _useVertexAttributeAliasing ; }
+
+        typedef std::vector<VertexAttribAlias> VertexAttribAliasList;
+
+        const VertexAttribAlias& getVertexAlias() { return _vertexAlias; }
+        const VertexAttribAlias& getNormalAlias() { return _normalAlias; }
+        const VertexAttribAlias& getColorAlias() { return _colorAlias; }
+        const VertexAttribAlias& getSecondaryColorAlias() { return _secondaryColorAlias; }
+        const VertexAttribAlias& getFogCoordAlias() { return _fogCoordAlias; }
+        const VertexAttribAliasList& getTexCoordAliasList() { return _texCoordAliasList; }
+
 
         const Program::AttribBindingList&  getAttributeBindingList() { return _attributeBindingList; }
 
@@ -1276,24 +1312,6 @@ class OSG_EXPORT State : public Referenced, public Observer
         bool*                       _abortRenderingPtr;
         CheckForGLErrors            _checkGLErrors;
 
-        struct VertexAttribAlias
-        {
-            VertexAttribAlias():
-                _location(0) {}
-
-            VertexAttribAlias(GLuint location, const std::string glName, const std::string osgName, const std::string& declaration):
-                _location(location),
-                _glName(glName),
-                _osgName(osgName),
-                _declaration(declaration) {}
-
-            GLuint      _location;
-            std::string _glName;
-            std::string _osgName;
-            std::string _declaration;
-        };
-
-        typedef std::vector<VertexAttribAlias> VertexAttribAliasList;
 
         bool                        _useVertexAttributeAliasing;
         VertexAttribAlias           _vertexAlias;

@@ -54,6 +54,9 @@ class OSG_EXPORT ArrayDispatchers : public osg::Referenced
         void setUseGLBeginEndAdapter(bool flag) { _useGLBeginEndAdapter = flag; }
         bool getUseGLBeginEndAdapter() const { return _useGLBeginEndAdapter; }
 
+        void setUseVertexAttribAlias(bool flag) { _useVertexAttribAlias = flag; }
+        bool getUseVertexAttribAlias() const { return _useVertexAttribAlias; }
+
         void activate(unsigned int binding, AttributeDispatch* at)
         {
             if (at) _activeDispatchList[binding].push_back(at);
@@ -118,7 +121,8 @@ class OSG_EXPORT ArrayDispatchers : public osg::Referenced
         typedef std::vector<AttributeDispatchList> ActiveDispatchList;
         ActiveDispatchList    _activeDispatchList;
 
-        bool                _useGLBeginEndAdapter;
+        bool                    _useVertexAttribAlias;
+        bool                    _useGLBeginEndAdapter;
 };
 
 }

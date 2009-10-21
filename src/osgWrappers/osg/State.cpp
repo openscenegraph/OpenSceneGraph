@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Array>
+#include <osg/ArrayDispatchers>
 #include <osg/BufferObject>
 #include <osg/DisplaySettings>
 #include <osg/FrameStamp>
@@ -41,6 +42,8 @@ BEGIN_ENUM_REFLECTOR(osg::State::CheckForGLErrors)
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< const osg::StateSet * >, osg::State::StateSetStack)
+
+TYPE_NAME_ALIAS(std::vector< osg::VertexAttribAlias >, osg::State::VertexAttribAliasList)
 
 TYPE_NAME_ALIAS(std::pair< const osg::StateAttribute * COMMA  osg::StateAttribute::OverrideValue >, osg::State::AttributePair)
 
@@ -221,6 +224,36 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_Method0(bool, getUseVertexAttributeAliasing,
 	          Properties::NON_VIRTUAL,
 	          __bool__getUseVertexAttributeAliasing,
+	          "",
+	          "");
+	I_Method0(const osg::VertexAttribAlias &, getVertexAlias,
+	          Properties::NON_VIRTUAL,
+	          __C5_VertexAttribAlias_R1__getVertexAlias,
+	          "",
+	          "");
+	I_Method0(const osg::VertexAttribAlias &, getNormalAlias,
+	          Properties::NON_VIRTUAL,
+	          __C5_VertexAttribAlias_R1__getNormalAlias,
+	          "",
+	          "");
+	I_Method0(const osg::VertexAttribAlias &, getColorAlias,
+	          Properties::NON_VIRTUAL,
+	          __C5_VertexAttribAlias_R1__getColorAlias,
+	          "",
+	          "");
+	I_Method0(const osg::VertexAttribAlias &, getSecondaryColorAlias,
+	          Properties::NON_VIRTUAL,
+	          __C5_VertexAttribAlias_R1__getSecondaryColorAlias,
+	          "",
+	          "");
+	I_Method0(const osg::VertexAttribAlias &, getFogCoordAlias,
+	          Properties::NON_VIRTUAL,
+	          __C5_VertexAttribAlias_R1__getFogCoordAlias,
+	          "",
+	          "");
+	I_Method0(const osg::State::VertexAttribAliasList &, getTexCoordAliasList,
+	          Properties::NON_VIRTUAL,
+	          __C5_VertexAttribAliasList_R1__getTexCoordAliasList,
 	          "",
 	          "");
 	I_Method0(const osg::Program::AttribBindingList &, getAttributeBindingList,
@@ -863,7 +896,17 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __GLBeginEndAdapter_R1__getGLBeginEndAdapter,
 	          "get the GL adapter object used to map OpenGL 1.0 glBegin/glEnd usage to vertex arrays. ",
 	          "");
-
+	I_Method0(osg::ArrayDispatchers &, getArrayDispatchers,
+	          Properties::NON_VIRTUAL,
+	          __ArrayDispatchers_R1__getArrayDispatchers,
+	          "get the helper class for dispatching osg::Arrays as OpenGL attribute data. ",
+	          "");
+	I_ProtectedMethod5(void, setUpVertexAttribAlias, IN, osg::VertexAttribAlias &, alias, IN, GLuint, location, IN, const std::string, glName, IN, const std::string, osgName, IN, const std::string &, declaration,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setUpVertexAttribAlias__VertexAttribAlias_R1__GLuint__C5_std_string__C5_std_string__C5_std_string_R1,
+	                   "",
+	                   "");
 
 
 
@@ -922,6 +965,9 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(unsigned int, ActiveTextureUnit, 
 	                 __unsigned_int__getActiveTextureUnit, 
 	                 __bool__setActiveTextureUnit__unsigned_int);
+	I_SimpleProperty(osg::ArrayDispatchers &, ArrayDispatchers, 
+	                 __ArrayDispatchers_R1__getArrayDispatchers, 
+	                 0);
 	I_SimpleProperty(const osg::Program::AttribBindingList &, AttributeBindingList, 
 	                 __C5_Program_AttribBindingList_R1__getAttributeBindingList, 
 	                 0);
@@ -931,6 +977,9 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(unsigned int, ClientActiveTextureUnit, 
 	                 __unsigned_int__getClientActiveTextureUnit, 
 	                 __bool__setClientActiveTextureUnit__unsigned_int);
+	I_SimpleProperty(const osg::VertexAttribAlias &, ColorAlias, 
+	                 __C5_VertexAttribAlias_R1__getColorAlias, 
+	                 0);
 	I_SimpleProperty(const osg::Array *, ColorPointer, 
 	                 0, 
 	                 __void__setColorPointer__C5_Array_P1);
@@ -958,6 +1007,9 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(osg::State::DynamicObjectRenderingCompletedCallback *, DynamicObjectRenderingCompletedCallback, 
 	                 __DynamicObjectRenderingCompletedCallback_P1__getDynamicObjectRenderingCompletedCallback, 
 	                 __void__setDynamicObjectRenderingCompletedCallback__DynamicObjectRenderingCompletedCallback_P1);
+	I_SimpleProperty(const osg::VertexAttribAlias &, FogCoordAlias, 
+	                 __C5_VertexAttribAlias_R1__getFogCoordAlias, 
+	                 0);
 	I_SimpleProperty(const osg::Array *, FogCoordPointer, 
 	                 0, 
 	                 __void__setFogCoordPointer__C5_Array_P1);
@@ -1009,6 +1061,9 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(osg::Uniform *, ModelViewProjectionMatrixUniform, 
 	                 __osg_Uniform_P1__getModelViewProjectionMatrixUniform, 
 	                 0);
+	I_SimpleProperty(const osg::VertexAttribAlias &, NormalAlias, 
+	                 __C5_VertexAttribAlias_R1__getNormalAlias, 
+	                 0);
 	I_SimpleProperty(osg::Uniform *, NormalMatrixUniform, 
 	                 __osg_Uniform_P1__getNormalMatrixUniform, 
 	                 0);
@@ -1021,6 +1076,9 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(osg::Uniform *, ProjectionMatrixUniform, 
 	                 __osg_Uniform_P1__getProjectionMatrixUniform, 
 	                 0);
+	I_SimpleProperty(const osg::VertexAttribAlias &, SecondaryColorAlias, 
+	                 __C5_VertexAttribAlias_R1__getSecondaryColorAlias, 
+	                 0);
 	I_SimpleProperty(const osg::Array *, SecondaryColorPointer, 
 	                 0, 
 	                 __void__setSecondaryColorPointer__C5_Array_P1);
@@ -1030,12 +1088,18 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_SimpleProperty(unsigned int, StateSetStackSize, 
 	                 __unsigned_int__getStateSetStackSize, 
 	                 0);
+	I_SimpleProperty(const osg::State::VertexAttribAliasList &, TexCoordAliasList, 
+	                 __C5_VertexAttribAliasList_R1__getTexCoordAliasList, 
+	                 0);
 	I_SimpleProperty(bool, UseModelViewAndProjectionUniforms, 
 	                 __bool__getUseModelViewAndProjectionUniforms, 
 	                 __void__setUseModelViewAndProjectionUniforms__bool);
 	I_SimpleProperty(bool, UseVertexAttributeAliasing, 
 	                 __bool__getUseVertexAttributeAliasing, 
 	                 __void__setUseVertexAttributeAliasing__bool);
+	I_SimpleProperty(const osg::VertexAttribAlias &, VertexAlias, 
+	                 __C5_VertexAttribAlias_R1__getVertexAlias, 
+	                 0);
 	I_SimpleProperty(const osg::Array *, VertexPointer, 
 	                 0, 
 	                 __void__setVertexPointer__C5_Array_P1);
@@ -1057,9 +1121,31 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::State::DynamicObjectRenderingCompletedCallb
 	          "");
 END_REFLECTOR
 
+BEGIN_VALUE_REFLECTOR(osg::VertexAttribAlias)
+	I_DeclaringFile("osg/State");
+	I_Constructor0(____VertexAttribAlias,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::VertexAttribAlias &, rhs,
+	               Properties::NON_EXPLICIT,
+	               ____VertexAttribAlias__C5_VertexAttribAlias_R1,
+	               "",
+	               "");
+	I_Constructor4(IN, GLuint, location, IN, const std::string, glName, IN, const std::string, osgName, IN, const std::string &, declaration,
+	               ____VertexAttribAlias__GLuint__C5_std_string__C5_std_string__C5_std_string_R1,
+	               "",
+	               "");
+	I_PublicMemberProperty(GLuint, _location);
+	I_PublicMemberProperty(std::string, _glName);
+	I_PublicMemberProperty(std::string, _osgName);
+	I_PublicMemberProperty(std::string, _declaration);
+END_REFLECTOR
+
 STD_PAIR_REFLECTOR(std::pair< const osg::StateAttribute * COMMA  osg::StateAttribute::OverrideValue >)
 
 STD_VECTOR_REFLECTOR(std::vector< const osg::StateSet * >)
 
 STD_VECTOR_REFLECTOR(std::vector< osg::State::AttributePair >)
+
+STD_VECTOR_REFLECTOR(std::vector< osg::VertexAttribAlias >)
 

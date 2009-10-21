@@ -73,6 +73,7 @@ class Vec4f;
 class Vec4ub;
 class Geometry;
 class NodeVisitor;
+class ArrayDispatchers;
 
 // this is defined to alter the way display lists are compiled inside the
 // the draw method, it has been found that the NVidia drivers fail completely
@@ -666,7 +667,9 @@ class OSG_EXPORT Drawable : public Object
             void glGetQueryObjectuiv(GLuint id, GLenum pname, GLuint *params) const;
             void glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64EXT *params) const;
 
-        public:
+        protected:
+
+            friend class ArrayDispatchers;
 
             typedef void (APIENTRY * FogCoordProc) (const GLfloat* coord);
 

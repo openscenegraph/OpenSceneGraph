@@ -345,15 +345,62 @@ public:
     AttributeDispatchList               _glBeginEndAttributeDispatchWithIndicesList;
 };
 
-ArrayDispatchers::ArrayDispatchers(osg::State& state):
-    _state(&state),
-    _vertexDispatchers(new AttributeDispatchMap(&(_state->getGLBeginEndAdapter()))),
-    _normalDispatchers(new AttributeDispatchMap(&(_state->getGLBeginEndAdapter()))),
-    _colorDispatchers(new AttributeDispatchMap(&(_state->getGLBeginEndAdapter()))),
-    _secondaryColorDispatchers(new AttributeDispatchMap(&(_state->getGLBeginEndAdapter()))),
-    _fogCoordDispatchers(new AttributeDispatchMap(&(_state->getGLBeginEndAdapter())))
+ArrayDispatchers::ArrayDispatchers():
+    _initialized(false),
+    _state(0),
+    _glBeginEndAdapter(0),
+    _vertexDispatchers(0),
+    _normalDispatchers(0),
+    _colorDispatchers(0),
+    _secondaryColorDispatchers(0),
+    _fogCoordDispatchers(0),
+    _useGLBeginEndAdapter(false)
 {
-    Drawable::Extensions* extensions = Drawable::getExtensions(state.getContextID(),true);
+
+}
+
+ArrayDispatchers::~ArrayDispatchers()
+{
+    delete _vertexDispatchers;
+    delete _normalDispatchers;
+    delete _colorDispatchers;
+    delete _secondaryColorDispatchers;
+    delete _fogCoordDispatchers;
+
+    for(AttributeDispatchMapList::iterator itr = _texCoordDispatchers.begin();
+        itr != _texCoordDispatchers.end();
+        ++itr)
+    {
+        delete *itr;
+    }
+
+    for(AttributeDispatchMapList::iterator itr = _vertexAttribDispatchers.begin();
+        itr != _vertexAttribDispatchers.end();
+        ++itr)
+    {
+        delete *itr;
+    }
+}
+
+void ArrayDispatchers::setState(osg::State* state)
+{
+    _state = state;
+    _glBeginEndAdapter = &(state->getGLBeginEndAdapter());
+}
+
+void ArrayDispatchers::init()
+{
+    if (_initialized) return;
+
+    _initialized = true;
+
+    _vertexDispatchers = new AttributeDispatchMap(&(_state->getGLBeginEndAdapter()));
+    _normalDispatchers = new AttributeDispatchMap(&(_state->getGLBeginEndAdapter()));
+    _colorDispatchers = new AttributeDispatchMap(&(_state->getGLBeginEndAdapter()));
+    _secondaryColorDispatchers  = new AttributeDispatchMap(&(_state->getGLBeginEndAdapter()));
+    _fogCoordDispatchers = new AttributeDispatchMap(&(_state->getGLBeginEndAdapter()));
+
+    Drawable::Extensions* extensions = Drawable::getExtensions(_state->getContextID(),true);
     _glBeginEndAdapter = &(_state->getGLBeginEndAdapter());
     _useGLBeginEndAdapter = false;
 
@@ -378,10 +425,9 @@ ArrayDispatchers::ArrayDispatchers(osg::State& state):
     _secondaryColorDispatchers->assign<GLfloat>(Array::Vec3ArrayType, extensions->_glSecondaryColor3fv, 3);
 
     _fogCoordDispatchers->assign<GLfloat>(Array::FloatArrayType, extensions->_glFogCoordfv, 1);
-}
 
-ArrayDispatchers::~ArrayDispatchers()
-{
+    // pre allocate.
+    _activeDispatchList.resize(5);
 }
 
 AttributeDispatch* ArrayDispatchers::vertexDispatcher(Array* array, IndexArray* indices) { return _vertexDispatchers->dispatcher(_useGLBeginEndAdapter, array, indices);  }
@@ -452,70 +498,16 @@ void ArrayDispatchers::assignVertexAttribDispatchers(unsigned int unit)
 
 void ArrayDispatchers::reset()
 {
+    if (!_initialized) init();
+
     _useGLBeginEndAdapter = false;
 
-    for(BindingGroupList::iterator itr = _bindingGroupList.begin();
-        itr != _bindingGroupList.end();
+    for(ActiveDispatchList::iterator itr = _activeDispatchList.begin();
+        itr != _activeDispatchList.end();
         ++itr)
     {
-        itr->_index = 0;
-        itr->_attributeDispatchList.clear();
+        (*itr).clear();
     }
 }
 
-void ArrayDispatchers::activate(unsigned int binding, AttributeDispatch* at)
-{
-    if (!at) return;
-
-    if (binding>=_bindingGroupList.size()) _bindingGroupList.resize(binding+1);
-
-    BindingGroup& bindingGroup = _bindingGroupList[binding];
-    bindingGroup._attributeDispatchList.push_back(at);
 }
-
-void ArrayDispatchers::dispatch(unsigned int binding, unsigned int index)
-{
-    if (binding>=_bindingGroupList.size()) return;
-
-    BindingGroup& bg = _bindingGroupList[binding];
-    for(AttributeDispatchList::iterator itr = bg._attributeDispatchList.begin();
-        itr != bg._attributeDispatchList.end();
-        ++itr)
-    {
-        AttributeDispatch* at = *itr;
-        (*at)(index);
-    }
-}
-
-void ArrayDispatchers::dispatch(unsigned int binding)
-{
-    if (binding>=_bindingGroupList.size()) return;
-
-    BindingGroup& bg = _bindingGroupList[binding];
-    unsigned int index = bg._index;
-    for(AttributeDispatchList::iterator itr = bg._attributeDispatchList.begin();
-        itr != bg._attributeDispatchList.end();
-        ++itr)
-    {
-        AttributeDispatch* at = *itr;
-        (*at)(index);
-    }
-
-    // advance the index so that it's ready for the next dispatch
-    ++(bg._index);
-}
-
-void ArrayDispatchers::Begin(GLenum mode)
-{
-    if (_useGLBeginEndAdapter) _glBeginEndAdapter->Begin(mode);
-    else ::glBegin(mode);
-}
-
-void ArrayDispatchers::End()
-{
-    if (_useGLBeginEndAdapter) _glBeginEndAdapter->End();
-    else ::glEnd();
-}
-
-}
-

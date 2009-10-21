@@ -20,6 +20,9 @@ using namespace osg;
 
 const Geometry::ArrayData Geometry::s_InvalidArrayData;
 
+// #define USE_OLD_DRAW_IMPLEMENTATOIN
+
+#ifdef USE_OLD_DRAW_IMPLEMENTATOIN
 class DrawVertex
 {
     public:
@@ -394,6 +397,8 @@ class DrawFogCoord : public osg::ConstValueVisitor
 
         const Drawable::Extensions * _extensions;
 };
+#endif
+
 
 Geometry::ArrayData::ArrayData(const ArrayData& data,const CopyOp& copyop):
     array(copyop(data.array.get())),
@@ -414,7 +419,7 @@ Geometry::Vec3ArrayData::Vec3ArrayData(const Vec3ArrayData& data,const CopyOp& c
 Geometry::Geometry()
 {
     // temporary test
-    // setSupportsDisplayList(false);
+    setSupportsDisplayList(false);
 
     _fastPath = false;
     _fastPathHint = true;
@@ -431,7 +436,7 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
     _fastPathHint(geometry._fastPathHint)
 {
     // temporary test
-    // setSupportsDisplayList(false);
+    setSupportsDisplayList(false);
 
     for(PrimitiveSetList::const_iterator pitr=geometry._primitives.begin();
         pitr!=geometry._primitives.end();
@@ -1279,7 +1284,7 @@ void Geometry::releaseGLObjects(State* state) const
 
 }
 
-#if 1
+#ifndef USE_OLD_DRAW_IMPLEMENTATOIN
 void Geometry::drawImplementation(RenderInfo& renderInfo) const
 {
     State& state = *renderInfo.getState();
@@ -1290,34 +1295,26 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     bool usingVertexBufferObjects = _useVertexBufferObjects && state.isVertexBufferObjectSupported();
     bool handleVertexAttributes = !_vertexAttribList.empty() && extensions->isVertexProgramSupported();
 
-    osg::ref_ptr<ArrayDispatchers> s_ArrayDispatchers = 0;
-    if (!s_ArrayDispatchers) s_ArrayDispatchers = new ArrayDispatchers(state);
-
-    ArrayDispatchers& arrayDispatchers = *s_ArrayDispatchers;
+    ArrayDispatchers& arrayDispatchers = state.getArrayDispatchers();
 
     arrayDispatchers.reset();
-    arrayDispatchers.setUseGLBeginEndAdapter(!useFastPath);
+    // arrayDispatchers.setUseGLBeginEndAdapter(!useFastPath);
 
     arrayDispatchers.activateNormalArray(_normalData.binding, _normalData.array.get(), _normalData.indices.get());
     arrayDispatchers.activateColorArray(_colorData.binding, _colorData.array.get(), _colorData.indices.get());
     arrayDispatchers.activateSecondaryColorArray(_secondaryColorData.binding, _secondaryColorData.array.get(), _secondaryColorData.indices.get());
     arrayDispatchers.activateFogCoordArray(_fogCoordData.binding, _fogCoordData.array.get(), _fogCoordData.indices.get());
 
-    for(unsigned int unit=0;unit<_texCoordList.size();++unit)
+    if (handleVertexAttributes)
     {
-        arrayDispatchers.activateTexCoordArray(BIND_PER_VERTEX, unit, _texCoordList[unit].array.get(), _texCoordList[unit].indices.get());
+        for(unsigned int unit=0;unit<_vertexAttribList.size();++unit)
+        {
+            arrayDispatchers.activateVertexAttribArray(_vertexAttribList[unit].binding, unit, _vertexAttribList[unit].array.get(), _vertexAttribList[unit].indices.get());
+        }
     }
-
-    for(unsigned int unit=0;unit<_vertexAttribList.size();++unit)
-    {
-        arrayDispatchers.activateVertexAttribArray(_vertexAttribList[unit].binding, unit, _vertexAttribList[unit].array.get(), _vertexAttribList[unit].indices.get());
-    }
-
-    arrayDispatchers.activateVertexArray(BIND_PER_VERTEX, _vertexData.array.get(), _vertexData.indices.get());
-
 
     // dispatch any attributes that are bound overall
-    arrayDispatchers.dispatch(BIND_OVERALL);
+    arrayDispatchers.dispatch(BIND_OVERALL,0);
 
     state.lazyDisablingOfVertexAttributes();
 
@@ -1358,21 +1355,34 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
             }
         }
     }
+    else
+    {
+        for(unsigned int unit=0;unit<_texCoordList.size();++unit)
+        {
+            arrayDispatchers.activateTexCoordArray(BIND_PER_VERTEX, unit, _texCoordList[unit].array.get(), _texCoordList[unit].indices.get());
+        }
+
+        arrayDispatchers.activateVertexArray(BIND_PER_VERTEX, _vertexData.array.get(), _vertexData.indices.get());
+    }
 
     state.applyDisablingOfVertexAttributes();
+
+    bool bindPerPrimtiveSetActive = arrayDispatchers.active(BIND_PER_PRIMITIVE_SET);
+    bool bindPerPrimtiveActive = arrayDispatchers.active(BIND_PER_PRIMITIVE);
+
+    unsigned int primitiveNum = 0;
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
     // draw the primitives themselves.
     //
-    for(PrimitiveSetList::const_iterator itr=_primitives.begin();
-        itr!=_primitives.end();
-        ++itr)
+    for(unsigned int primitiveSetNum=0; primitiveSetNum!=_primitives.size(); ++primitiveSetNum)
     {
-        // dispatch any attributes that are bound per primitive
-        arrayDispatchers.dispatch(BIND_PER_PRIMITIVE_SET);
 
-        const PrimitiveSet* primitiveset = itr->get();
+        // dispatch any attributes that are bound per primitive
+        if (bindPerPrimtiveSetActive) arrayDispatchers.dispatch(BIND_PER_PRIMITIVE_SET, primitiveSetNum);
+
+        const PrimitiveSet* primitiveset = _primitives[primitiveSetNum].get();
 
         if (useFastPath)
         {
@@ -1409,9 +1419,9 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
                         vindex<indexEnd;
                         ++vindex,++primCount)
                     {
-                        if ((primCount%primLength)==0)
+                        if (bindPerPrimtiveActive && (primCount%primLength)==0)
                         {
-                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE);
+                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE,++primitiveNum);
                         }
 
                         arrayDispatchers.dispatch(BIND_PER_VERTEX, vindex);
@@ -1438,9 +1448,9 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
                             primCount<*primItr;
                             ++vindex,++primCount)
                         {
-                            if ((primCount%localPrimLength)==0)
+                            if (bindPerPrimtiveActive && (primCount%localPrimLength)==0)
                             {
-                                arrayDispatchers.dispatch(BIND_PER_PRIMITIVE);
+                                arrayDispatchers.dispatch(BIND_PER_PRIMITIVE, ++primitiveNum);
                             }
                             arrayDispatchers.dispatch(BIND_PER_VERTEX, vindex);
                         }
@@ -1463,9 +1473,9 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
                         ++primCount,++primItr)
                     {
 
-                        if ((primCount%primLength)==0)
+                        if (bindPerPrimtiveActive && (primCount%primLength)==0)
                         {
-                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE);
+                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE, ++primitiveNum);
                         }
 
                         unsigned int vindex=*primItr;
@@ -1487,9 +1497,9 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
                         primItr!=drawElements->end();
                         ++primCount,++primItr)
                     {
-                        if ((primCount%primLength)==0)
+                        if (bindPerPrimtiveActive && (primCount%primLength)==0)
                         {
-                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE);
+                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE, ++primitiveNum);
                         }
 
                         unsigned int vindex=*primItr;
@@ -1511,9 +1521,9 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
                         primItr!=drawElements->end();
                         ++primCount,++primItr)
                     {
-                        if ((primCount%primLength)==0)
+                        if (bindPerPrimtiveActive && (primCount%primLength)==0)
                         {
-                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE);
+                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE, ++primitiveNum);
                         }
 
                         unsigned int vindex=*primItr;
@@ -1643,7 +1653,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     }
 
     // force the use of the slow path code to test the glBegin/glEnd replacement codes.
-    bool forceSlowPath = false;
+    bool forceSlowPath = true;
 
     if (areFastPathsUsed() && !forceSlowPath)
     {

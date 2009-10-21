@@ -17,12 +17,12 @@
 #include <osg/ref_ptr>
 #include <osg/Array>
 #include <osg/Matrixd>
+#include <osg/GLBeginEndAdapter>
 
 namespace osg {
 
 // forward declare
 class State;
-class GLBeginEndAdapter;
 class AttributeDispatchMap;
 
 struct AttributeDispatch : public osg::Referenced
@@ -36,11 +36,10 @@ class OSG_EXPORT ArrayDispatchers : public osg::Referenced
 {
     public:
 
-        ArrayDispatchers(osg::State& state);
+        ArrayDispatchers();
         ~ArrayDispatchers();
 
-        void assignTexCoordDispatchers(unsigned int unit);
-        void assignVertexAttribDispatchers(unsigned int unit);
+        void setState(osg::State* state);
 
         AttributeDispatch* vertexDispatcher(Array* array, IndexArray* indices);
         AttributeDispatch* normalDispatcher(Array* array, IndexArray* indices);
@@ -55,24 +54,52 @@ class OSG_EXPORT ArrayDispatchers : public osg::Referenced
         void setUseGLBeginEndAdapter(bool flag) { _useGLBeginEndAdapter = flag; }
         bool getUseGLBeginEndAdapter() const { return _useGLBeginEndAdapter; }
 
-        void activate(unsigned int binding, AttributeDispatch* at);
+        void activate(unsigned int binding, AttributeDispatch* at)
+        {
+            if (at) _activeDispatchList[binding].push_back(at);
+        }
 
-        void activateVertexArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices) { activate(binding, vertexDispatcher(array, indices)); }
-        void activateColorArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices) { activate(binding, colorDispatcher(array, indices)); }
-        void activateNormalArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices) { activate(binding, normalDispatcher(array, indices)); }
-        void activateSecondaryColorArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices) { activate(binding, secondaryColorDispatcher(array, indices)); }
-        void activateFogCoordArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices) { activate(binding, fogCoordDispatcher(array, indices)); }
-        void activateTexCoordArray(unsigned int binding, unsigned int unit, osg::Array* array, osg::IndexArray* indices) { activate(binding, texCoordDispatcher(unit, array, indices)); }
-        void activateVertexAttribArray(unsigned int binding, unsigned int unit, osg::Array* array, osg::IndexArray* indices) { activate(binding, vertexAttribDispatcher(unit, array, indices)); }
+        void activateVertexArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices) { if (binding && array) activate(binding, vertexDispatcher(array, indices)); }
+        void activateColorArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices) { if (binding && array) activate(binding, colorDispatcher(array, indices)); }
+        void activateNormalArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices) { if (binding && array) activate(binding, normalDispatcher(array, indices)); }
+        void activateSecondaryColorArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices) { if (binding && array) activate(binding, secondaryColorDispatcher(array, indices)); }
+        void activateFogCoordArray(unsigned int binding, osg::Array* array, osg::IndexArray* indices) { if (binding && array) activate(binding, fogCoordDispatcher(array, indices)); }
+        void activateTexCoordArray(unsigned int binding, unsigned int unit, osg::Array* array, osg::IndexArray* indices) { if (binding && array) activate(binding, texCoordDispatcher(unit, array, indices)); }
+        void activateVertexAttribArray(unsigned int binding, unsigned int unit, osg::Array* array, osg::IndexArray* indices) { if (binding && array) activate(binding, vertexAttribDispatcher(unit, array, indices)); }
 
-        void dispatch(unsigned int binding);
-        void dispatch(unsigned int binding, unsigned int index);
+        void dispatch(unsigned int binding, unsigned int index)
+        {
+            AttributeDispatchList& ad = _activeDispatchList[binding];
+            for(AttributeDispatchList::iterator itr = ad.begin();
+                itr != ad.end();
+                ++itr)
+            {
+                (*(*itr))(index);
+            }
+        }
 
-        void Begin(GLenum mode);
-        void End();
+        bool active(unsigned int binding) const { return !_activeDispatchList[binding].empty(); }
+
+        void Begin(GLenum mode)
+        {
+            if (_useGLBeginEndAdapter) _glBeginEndAdapter->Begin(mode);
+            else ::glBegin(mode);
+        }
+
+        void End()
+        {
+            if (_useGLBeginEndAdapter) _glBeginEndAdapter->End();
+            else ::glEnd();
+        }
 
     protected:
 
+        void init();
+
+        void assignTexCoordDispatchers(unsigned int unit);
+        void assignVertexAttribDispatchers(unsigned int unit);
+
+        bool                  _initialized;
         State*                _state;
         GLBeginEndAdapter*    _glBeginEndAdapter;
 
@@ -88,18 +115,11 @@ class OSG_EXPORT ArrayDispatchers : public osg::Referenced
 
         typedef std::vector<AttributeDispatch*> AttributeDispatchList;
 
-        struct BindingGroup
-        {
-            unsigned int          _index;
-            AttributeDispatchList _attributeDispatchList;
-        };
-
-        typedef std::vector<BindingGroup> BindingGroupList;
-        BindingGroupList    _bindingGroupList;
+        typedef std::vector<AttributeDispatchList> ActiveDispatchList;
+        ActiveDispatchList    _activeDispatchList;
 
         bool                _useGLBeginEndAdapter;
 };
-
 
 }
 

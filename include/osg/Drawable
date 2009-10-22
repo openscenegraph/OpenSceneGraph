@@ -673,12 +673,12 @@ class OSG_EXPORT Drawable : public Object
 
             typedef void (APIENTRY * FogCoordProc) (const GLfloat* coord);
 
-            typedef void (APIENTRY * VertexAttrib1sProc) (unsigned int index, GLshort s);
-            typedef void (APIENTRY * VertexAttrib1fProc) (unsigned int index, GLfloat f);
-            typedef void (APIENTRY * VertexAttrib1dProc) (unsigned int index, GLdouble f);
-            typedef void (APIENTRY * VertexAttribfvProc) (unsigned int index, const GLfloat * v);
-            typedef void (APIENTRY * VertexAttribdvProc) (unsigned int index, const GLdouble * v);
-            typedef void (APIENTRY * VertexAttribubvProc) (unsigned int index, const GLubyte * v);
+            typedef void (APIENTRY * VertexAttrib1sProc) (GLuint index, GLshort s);
+            typedef void (APIENTRY * VertexAttrib1fProc) (GLuint index, GLfloat f);
+            typedef void (APIENTRY * VertexAttrib1dProc) (GLuint index, GLdouble f);
+            typedef void (APIENTRY * VertexAttribfvProc) (GLuint index, const GLfloat * v);
+            typedef void (APIENTRY * VertexAttribdvProc) (GLuint index, const GLdouble * v);
+            typedef void (APIENTRY * VertexAttribubvProc) (GLuint index, const GLubyte * v);
 
             typedef void (APIENTRY * SecondaryColor3ubvProc) (const GLubyte* coord);
             typedef void (APIENTRY * SecondaryColor3fvProc) (const GLfloat* coord);

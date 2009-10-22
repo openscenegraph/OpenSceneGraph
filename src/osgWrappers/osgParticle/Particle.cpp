@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/GLBeginEndAdapter>
 #include <osg/Matrix>
 #include <osg/Vec3>
 #include <osg/Vec4>
@@ -275,19 +276,19 @@ BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
 	          __bool__update__double,
 	          "Update the particle (don't call this method manually). ",
 	          "This method is called automatically by ParticleSystem::update(); it updates the graphical properties of the particle for the current time, checks whether the particle is still alive, and then updates its position by computing P = P + V * dt (where P is the position and V is the velocity). ");
-	I_Method0(void, beginRender,
+	I_Method1(void, beginRender, IN, osg::GLBeginEndAdapter *, gl,
 	          Properties::NON_VIRTUAL,
-	          __void__beginRender,
+	          __void__beginRender__osg_GLBeginEndAdapter_P1,
 	          "Perform some pre-rendering tasks. Called automatically by particle systems. ",
 	          "");
-	I_MethodWithDefaults4(void, render, IN, const osg::Vec3 &, xpos, , IN, const osg::Vec3 &, px, , IN, const osg::Vec3 &, py, , IN, float, scale, 1.0f,
+	I_MethodWithDefaults5(void, render, IN, osg::GLBeginEndAdapter *, gl, , IN, const osg::Vec3 &, xpos, , IN, const osg::Vec3 &, px, , IN, const osg::Vec3 &, py, , IN, float, scale, 1.0f,
 	                      Properties::NON_VIRTUAL,
-	                      __void__render__C5_osg_Vec3_R1__C5_osg_Vec3_R1__C5_osg_Vec3_R1__float,
+	                      __void__render__osg_GLBeginEndAdapter_P1__C5_osg_Vec3_R1__C5_osg_Vec3_R1__C5_osg_Vec3_R1__float,
 	                      "Render the particle. Called automatically by particle systems. ",
 	                      "");
-	I_Method0(void, endRender,
+	I_Method1(void, endRender, IN, osg::GLBeginEndAdapter *, gl,
 	          Properties::NON_VIRTUAL,
-	          __void__endRender,
+	          __void__endRender__osg_GLBeginEndAdapter_P1,
 	          "Perform some post-rendering tasks. Called automatically by particle systems. ",
 	          "");
 	I_Method0(float, getCurrentSize,

@@ -1673,7 +1673,7 @@ void StateSet::runUpdateCallbacks(osg::NodeVisitor* nv)
             itr!=_attributeList.end();
             ++itr)
         {
-            StateAttribute::Callback* callback = itr->second.first->getUpdateCallback();
+            StateAttributeCallback* callback = itr->second.first->getUpdateCallback();
             if (callback) (*callback)(itr->second.first.get(),nv);
         }
 
@@ -1686,7 +1686,7 @@ void StateSet::runUpdateCallbacks(osg::NodeVisitor* nv)
                 itr!=attributeList.end();
                 ++itr)
             {
-                StateAttribute::Callback* callback = itr->second.first->getUpdateCallback();
+                StateAttributeCallback* callback = itr->second.first->getUpdateCallback();
                 if (callback) (*callback)(itr->second.first.get(),nv);
             }
         }
@@ -1747,7 +1747,7 @@ void StateSet::runEventCallbacks(osg::NodeVisitor* nv)
             itr!=_attributeList.end();
             ++itr)
         {
-            StateAttribute::Callback* callback = itr->second.first->getEventCallback();
+            StateAttributeCallback* callback = itr->second.first->getEventCallback();
             if (callback) (*callback)(itr->second.first.get(),nv);
         }
 
@@ -1760,7 +1760,7 @@ void StateSet::runEventCallbacks(osg::NodeVisitor* nv)
                 itr!=attributeList.end();
                 ++itr)
             {
-                StateAttribute::Callback* callback = itr->second.first->getEventCallback();
+                StateAttributeCallback* callback = itr->second.first->getEventCallback();
                 if (callback) (*callback)(itr->second.first.get(),nv);
             }
         }

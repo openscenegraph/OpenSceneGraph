@@ -105,7 +105,7 @@ class OSG_EXPORT ImageSequence : public ImageStream
 
         virtual void update(NodeVisitor* nv);
 
-        struct OSG_EXPORT UpdateCallback : public osg::StateAttribute::Callback
+        struct OSG_EXPORT UpdateCallback : public osg::StateAttributeCallback
         {
             virtual void operator () (osg::StateAttribute* attr, osg::NodeVisitor* nv);
         };

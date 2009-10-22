@@ -117,8 +117,16 @@ BEGIN_VALUE_REFLECTOR(osgAnimation::VertexInfluenceSet)
 	          __void__clear,
 	          "",
 	          "");
+	I_Method0(const osgAnimation::VertexInfluenceSet::VertexIndexToBoneWeightMap &, getVertexToBoneList,
+	          Properties::NON_VIRTUAL,
+	          __C5_VertexIndexToBoneWeightMap_R1__getVertexToBoneList,
+	          "",
+	          "");
 	I_SimpleProperty(const osgAnimation::VertexInfluenceSet::UniqVertexSetToBoneSetList &, UniqVertexSetToBoneSetList, 
 	                 __C5_UniqVertexSetToBoneSetList_R1__getUniqVertexSetToBoneSetList, 
+	                 0);
+	I_SimpleProperty(const osgAnimation::VertexInfluenceSet::VertexIndexToBoneWeightMap &, VertexToBoneList, 
+	                 __C5_VertexIndexToBoneWeightMap_R1__getVertexToBoneList, 
 	                 0);
 END_REFLECTOR
 

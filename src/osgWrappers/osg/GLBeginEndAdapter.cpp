@@ -39,14 +39,14 @@ BEGIN_VALUE_REFLECTOR(osg::GLBeginEndAdapter)
 	          __void__setState__State_P1,
 	          "",
 	          "");
-	I_Method0(osg::State *, setState,
+	I_Method0(osg::State *, getState,
 	          Properties::NON_VIRTUAL,
-	          __State_P1__setState,
+	          __State_P1__getState,
 	          "",
 	          "");
-	I_Method0(const osg::State *, setState,
+	I_Method0(const osg::State *, getState,
 	          Properties::NON_VIRTUAL,
-	          __C5_State_P1__setState,
+	          __C5_State_P1__getState,
 	          "",
 	          "");
 	I_Method1(void, setMatrixMode, IN, osg::GLBeginEndAdapter::MatrixMode, mode,
@@ -278,7 +278,7 @@ BEGIN_VALUE_REFLECTOR(osg::GLBeginEndAdapter)
 	                 0, 
 	                 __void__setMatrixMode__MatrixMode);
 	I_SimpleProperty(osg::State *, State, 
-	                 0, 
+	                 __State_P1__getState, 
 	                 __void__setState__State_P1);
 END_REFLECTOR
 

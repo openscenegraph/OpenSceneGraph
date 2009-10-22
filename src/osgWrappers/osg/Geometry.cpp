@@ -609,7 +609,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	          Properties::NON_VIRTUAL,
 	          __bool__areFastPathsUsed,
 	          "Return true if OpenGL fast paths will be used with drawing this Geometry. ",
-	          "Fast paths use vertex arrays, and glDrawArrays/glDrawElements. Slow paths use glBegin()/glVertex.../glEnd(). Use of per primitive bindings or per vertex indexed arrays will drop the rendering path off the fast path. ");
+	          "Fast paths directly use vertex arrays, and glDrawArrays/glDrawElements so have low CPU overhead. With Slow paths the osg::Geometry::drawImplementation has to dynamically assemble OpenGL compatible vertex arrays from the osg::Geometry arrays data and then dispatch these to OpenGL, so have higher CPU overhead than the Fast paths. Use of per primitive bindings or per vertex indexed arrays will drop the rendering path off the fast path. ");
 	I_Method0(bool, computeFastPathsUsed,
 	          Properties::NON_VIRTUAL,
 	          __bool__computeFastPathsUsed,

@@ -76,7 +76,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::AnimationManagerBase)
 	I_Method0(void, clearTargets,
 	          Properties::NON_VIRTUAL,
 	          __void__clearTargets,
-	          "Operation that must be done each frame. ",
+	          "Reset the value of targets this Operation must be done each frame. ",
 	          "");
 	I_Method0(osgAnimation::LinkVisitor *, getOrCreateLinkVisitor,
 	          Properties::NON_VIRTUAL,
@@ -88,9 +88,27 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::AnimationManagerBase)
 	          __void__setLinkVisitor__LinkVisitor_P1,
 	          "",
 	          "");
+	I_Method1(void, setAutomaticLink, IN, bool, x,
+	          Properties::NON_VIRTUAL,
+	          __void__setAutomaticLink__bool,
+	          "set a flag to define the behaviour ",
+	          "");
+	I_Method0(bool, isAutomaticLink,
+	          Properties::NON_VIRTUAL,
+	          __bool__isAutomaticLink,
+	          "",
+	          "");
+	I_Method0(void, dirty,
+	          Properties::NON_VIRTUAL,
+	          __void__dirty,
+	          "",
+	          "");
 	I_SimpleProperty(const osgAnimation::AnimationList &, AnimationList, 
 	                 __C5_AnimationList_R1__getAnimationList, 
 	                 0);
+	I_SimpleProperty(bool, AutomaticLink, 
+	                 0, 
+	                 __void__setAutomaticLink__bool);
 	I_SimpleProperty(osgAnimation::LinkVisitor *, LinkVisitor, 
 	                 0, 
 	                 __void__setLinkVisitor__LinkVisitor_P1);

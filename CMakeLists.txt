@@ -281,7 +281,28 @@ MARK_AS_ADVANCED(OSG_DISABLE_MSVC_WARNINGS)
 OPTION(OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION "Set to ON to use the ref_ptr<> T* operator() output conversion. " ON)
 
 OPTION(OSG_GLU_AVAILABLE "Set to OFF to disable use of OpenGL GLU library." ${OPENGL_GLU_FOUND})
-MARK_AS_ADVANCED(OSG_GLU_AVAILABLE)
+# MARK_AS_ADVANCED(OSG_GLU_AVAILABLE)
+
+
+OPTION(OSG_GL1_AVAILABLE "Set to OFF to disable use of OpenGL 1.x functions library." ON)
+# MARK_AS_ADVANCED(OSG_GL1_AVAILABLE)
+
+OPTION(OSG_GL2_AVAILABLE "Set to OFF to disable use of OpenGL 2.x functions library." ON)
+# MARK_AS_ADVANCED(OSG_GL2_AVAILABLE)
+
+OPTION(OSG_GL3_AVAILABLE "Set to OFF to disable use of OpenGL 3.x functions library." OFF)
+# MARK_AS_ADVANCED(OSG_GL3_AVAILABLE)
+
+OPTION(OSG_GLES1_AVAILABLE "Set to OFF to disable use of OpenGL ES 1.x functions library." OFF)
+# MARK_AS_ADVANCED(OSG_GLES1_AVAILABLE)
+
+OPTION(OSG_GLES2_AVAILABLE "Set to OFF to disable use of OpenGL ES 2.x functions library." OFF)
+# MARK_AS_ADVANCED(OSG_GLES2_AVAILABLE)
+
+SET(OSG_GL_DISPLAYLISTS_AVAILABLE ${OSG_GL1_AVAILABLE})
+SET(OSG_GL_MATRICES_AVAILABLE ${OSG_GL1_AVAILABLE})
+SET(OSG_GL_VERTEX_FUNCS_AVAILABLE ${OSG_GL1_AVAILABLE})
+SET(OSG_GL_FIXED_FUNCTION_AVAILABLE ${OSG_GL1_AVAILABLE})
 
 ################################################################################
 # Set Config file

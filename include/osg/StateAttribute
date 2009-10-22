@@ -16,6 +16,7 @@
 
 #include <osg/Export>
 #include <osg/Object>
+#include <osg/StateAttributeCallback>
 #include <osg/GL>
 
 #include <typeinfo>
@@ -190,7 +191,9 @@ class OSG_EXPORT StateAttribute : public Object
         StateAttribute();
         
         StateAttribute(const StateAttribute& sa,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
-            Object(sa,copyop) {}
+            Object(sa,copyop),
+            _updateCallback(copyop(sa._updateCallback.get()))
+            {}
         
 
         /** Clone the type of an attribute, with Object* return type.
@@ -281,37 +284,28 @@ class OSG_EXPORT StateAttribute : public Object
             // default to no black listed GLMode's associated with use of the StateAttribute.
             return true;
         }
-        
-        struct Callback : public virtual osg::Object
-        {
-            Callback() {}
 
-            Callback(const Callback&,const CopyOp&) {}
-
-            META_Object(osg,Callback);
-
-            /** do customized update code.*/
-            virtual void operator () (StateAttribute*, NodeVisitor*) {}
-        };
+        // provide callback for backwards compatibility.
+        typedef osg::StateAttributeCallback Callback;
 
         /** Set the UpdateCallback which allows users to attach customize the updating of an object during the update traversal.*/
-        void setUpdateCallback(Callback* uc);
+        void setUpdateCallback(StateAttributeCallback* uc);
 
         /** Get the non const UpdateCallback.*/
-        Callback* getUpdateCallback() { return _updateCallback.get(); }
+        StateAttributeCallback* getUpdateCallback() { return _updateCallback.get(); }
 
         /** Get the const UpdateCallback.*/
-        const Callback* getUpdateCallback() const { return _updateCallback.get(); }
+        const StateAttributeCallback* getUpdateCallback() const { return _updateCallback.get(); }
 
 
         /** Set the EventCallback which allows users to attach customize the updating of an object during the Event traversal.*/
-        void setEventCallback(Callback* ec);
+        void setEventCallback(StateAttributeCallback* ec);
 
         /** Get the non const EventCallback.*/
-        Callback* getEventCallback() { return _eventCallback.get(); }
+        StateAttributeCallback* getEventCallback() { return _eventCallback.get(); }
 
         /** Get the const EventCallback.*/
-        const Callback* getEventCallback() const { return _eventCallback.get(); }
+        const StateAttributeCallback* getEventCallback() const { return _eventCallback.get(); }
 
     
         /** apply the OpenGL state attributes. 
@@ -343,8 +337,8 @@ class OSG_EXPORT StateAttribute : public Object
         ParentList _parents;
         friend class osg::StateSet;
 
-        ref_ptr<Callback>   _updateCallback;
-        ref_ptr<Callback>   _eventCallback;
+        ref_ptr<StateAttributeCallback>   _updateCallback;
+        ref_ptr<StateAttributeCallback>   _eventCallback;
 };
 
 }

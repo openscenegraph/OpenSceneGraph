@@ -18,6 +18,7 @@
 #include <osg/Array>
 #include <osg/PrimitiveSet>
 #include <osg/Shape>
+#include <osg/StateAttribute>
 
 using namespace osg;
 
@@ -67,7 +68,7 @@ StateAttribute* CopyOp::operator() (const StateAttribute* attr) const
 
 NodeCallback* CopyOp::operator() (const NodeCallback* nc) const
 {
-    if (nc && _flags&DEEP_COPY_NODECALLBACKS)
+    if (nc && _flags&DEEP_COPY_CALLBACKS)
     {
         // deep copy the full chain of callback
         osg::NodeCallback* first = dynamic_cast<osg::NodeCallback*>(nc->clone(*this));
@@ -85,3 +86,17 @@ NodeCallback* CopyOp::operator() (const NodeCallback* nc) const
     else
         return const_cast<NodeCallback*>(nc);
 }
+
+
+StateAttributeCallback* CopyOp::operator() (const StateAttributeCallback* sc) const
+{
+    if (sc && _flags&DEEP_COPY_CALLBACKS)
+    {
+        // deep copy the full chain of callback
+        StateAttributeCallback* cb = dynamic_cast<StateAttributeCallback*>(sc->clone(*this));
+        return cb;
+    }
+    else
+        return const_cast<StateAttributeCallback*>(sc);
+}
+

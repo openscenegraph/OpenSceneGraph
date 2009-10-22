@@ -140,6 +140,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ShapeDrawable
     ${HEADER_PATH}/State
     ${HEADER_PATH}/StateAttribute
+    ${HEADER_PATH}/StateAttributeCallback
     ${HEADER_PATH}/StateSet
     ${HEADER_PATH}/Stats
     ${HEADER_PATH}/Stencil

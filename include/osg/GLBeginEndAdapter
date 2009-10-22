@@ -77,41 +77,41 @@ class OSG_EXPORT GLBeginEndAdapter
 
         void Normal3fv(const GLfloat* n) { Normal3f(n[0], n[1], n[2]); }
 
-        void TexCoord1f(GLfloat x) { MultiTexCoord4f(0, x, 0.0f, 0.0f, 1.0f); }
-        void TexCoord1fv(const GLfloat* tc)  { MultiTexCoord4f(0, tc[0], 0.0f, 0.0f, 1.0f); }
+        void TexCoord1f(GLfloat x) { MultiTexCoord4f(GL_TEXTURE0, x, 0.0f, 0.0f, 1.0f); }
+        void TexCoord1fv(const GLfloat* tc)  { MultiTexCoord4f(GL_TEXTURE0, tc[0], 0.0f, 0.0f, 1.0f); }
 
-        void TexCoord2f(GLfloat x, GLfloat y) { MultiTexCoord4f(0, x, y, 0.0f, 1.0f); }
-        void TexCoord2fv(const GLfloat* tc) { MultiTexCoord4f(0, tc[0], tc[1], 0.0f, 1.0f); }
+        void TexCoord2f(GLfloat x, GLfloat y) { MultiTexCoord4f(GL_TEXTURE0, x, y, 0.0f, 1.0f); }
+        void TexCoord2fv(const GLfloat* tc) { MultiTexCoord4f(GL_TEXTURE0, tc[0], tc[1], 0.0f, 1.0f); }
 
-        void TexCoord3f(GLfloat x, GLfloat y, GLfloat z) { MultiTexCoord4f(0, x, y, z, 1.0f); }
-        void TexCoord3fv(const GLfloat* tc) { MultiTexCoord4f(0, tc[0], tc[1], tc[2], 1.0f); }
+        void TexCoord3f(GLfloat x, GLfloat y, GLfloat z) { MultiTexCoord4f(GL_TEXTURE0, x, y, z, 1.0f); }
+        void TexCoord3fv(const GLfloat* tc) { MultiTexCoord4f(GL_TEXTURE0, tc[0], tc[1], tc[2], 1.0f); }
 
-        void TexCoord4f(GLfloat x, GLfloat y, GLfloat z, GLfloat w) { MultiTexCoord4f(0, x, y, z, w); }
-        void TexCoord4fv(const GLfloat* tc) { MultiTexCoord4f(0, tc[0], tc[1], tc[2], tc[3]); }
+        void TexCoord4f(GLfloat x, GLfloat y, GLfloat z, GLfloat w) { MultiTexCoord4f(GL_TEXTURE0, x, y, z, w); }
+        void TexCoord4fv(const GLfloat* tc) { MultiTexCoord4f(GL_TEXTURE0, tc[0], tc[1], tc[2], tc[3]); }
 
-        void MultiTexCoord1f(unsigned int unit, GLfloat x)  { MultiTexCoord4f(unit, x, 0.0f, 0.0f, 1.0f); }
-        void MultiTexCoord1fv(unsigned int unit, const GLfloat* tc) { MultiTexCoord4f(unit, tc[0], 0.0f, 0.0f, 1.0f); }
+        void MultiTexCoord1f(GLenum target, GLfloat x)  { MultiTexCoord4f(target, x, 0.0f, 0.0f, 1.0f); }
+        void MultiTexCoord1fv(GLenum target, const GLfloat* tc) { MultiTexCoord4f(target, tc[0], 0.0f, 0.0f, 1.0f); }
 
-        void MultiTexCoord2f(unsigned int unit, GLfloat x, GLfloat y) { MultiTexCoord4f(unit, x, y, 0.0f, 1.0f); }
-        void MultiTexCoord2fv(unsigned int unit, const GLfloat* tc) { MultiTexCoord4f(unit, tc[0],tc[1], 0.0f, 1.0f); }
+        void MultiTexCoord2f(GLenum target, GLfloat x, GLfloat y) { MultiTexCoord4f(target, x, y, 0.0f, 1.0f); }
+        void MultiTexCoord2fv(GLenum target, const GLfloat* tc) { MultiTexCoord4f(target, tc[0],tc[1], 0.0f, 1.0f); }
 
-        void MultiTexCoord3f(unsigned int unit, GLfloat x, GLfloat y, GLfloat z) {MultiTexCoord4f(unit, x, y, z, 1.0f); }
-        void MultiTexCoord3fv(unsigned int unit, const GLfloat* tc) { MultiTexCoord4f(unit, tc[0], tc[1], tc[2], 1.0f); }
+        void MultiTexCoord3f(GLenum target, GLfloat x, GLfloat y, GLfloat z) {MultiTexCoord4f(target, x, y, z, 1.0f); }
+        void MultiTexCoord3fv(GLenum target, const GLfloat* tc) { MultiTexCoord4f(target, tc[0], tc[1], tc[2], 1.0f); }
 
-        void MultiTexCoord4f(unsigned int unit, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-        void MultiTexCoord4fv(unsigned int unit, const GLfloat* tc) { MultiTexCoord4f(unit, tc[0], tc[1], tc[2], tc[3]); }
+        void MultiTexCoord4f(GLenum target, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+        void MultiTexCoord4fv(GLenum target, const GLfloat* tc) { MultiTexCoord4f(target, tc[0], tc[1], tc[2], tc[3]); }
 
-        void VertexAttrib1f(unsigned int unit, GLfloat x)  { VertexAttrib4f(unit, x, 0.0f, 0.0f, 0.0f); }
-        void VertexAttrib1fv(unsigned int unit, const GLfloat* tc) { VertexAttrib4f(unit, tc[0], 0.0f, 0.0f, 0.0f); }
+        void VertexAttrib1f(GLuint unit, GLfloat x)  { VertexAttrib4f(unit, x, 0.0f, 0.0f, 0.0f); }
+        void VertexAttrib1fv(GLuint unit, const GLfloat* tc) { VertexAttrib4f(unit, tc[0], 0.0f, 0.0f, 0.0f); }
 
-        void VertexAttrib2f(unsigned int unit, GLfloat x, GLfloat y) { VertexAttrib4f(unit, x, y, 0.0f, 0.0f); }
-        void VertexAttrib2fv(unsigned int unit, const GLfloat* tc) { VertexAttrib4f(unit, tc[0],tc[1], 0.0f, 0.0f); }
+        void VertexAttrib2f(GLuint unit, GLfloat x, GLfloat y) { VertexAttrib4f(unit, x, y, 0.0f, 0.0f); }
+        void VertexAttrib2fv(GLuint unit, const GLfloat* tc) { VertexAttrib4f(unit, tc[0],tc[1], 0.0f, 0.0f); }
 
-        void VertexAttrib3f(unsigned int unit, GLfloat x, GLfloat y, GLfloat z) {VertexAttrib4f(unit, x, y, z, 0.0f); }
-        void VertexAttrib3fv(unsigned int unit, const GLfloat* tc) { VertexAttrib4f(unit, tc[0], tc[1], tc[2], 0.0f); }
+        void VertexAttrib3f(GLuint unit, GLfloat x, GLfloat y, GLfloat z) {VertexAttrib4f(unit, x, y, z, 0.0f); }
+        void VertexAttrib3fv(GLuint unit, const GLfloat* tc) { VertexAttrib4f(unit, tc[0], tc[1], tc[2], 0.0f); }
 
-        void VertexAttrib4f(unsigned int unit, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-        void VertexAttrib4fv(unsigned int unit, const GLfloat* tc) { VertexAttrib4f(unit, tc[0], tc[1], tc[2], tc[3]); }
+        void VertexAttrib4f(GLuint unit, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+        void VertexAttrib4fv(GLuint  unit, const GLfloat* tc) { VertexAttrib4f(unit, tc[0], tc[1], tc[2], tc[3]); }
 
         void Begin(GLenum mode);
         void End();

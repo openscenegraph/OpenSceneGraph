@@ -520,10 +520,10 @@ void ArrayDispatchers::assignVertexAttribDispatchers(unsigned int unit)
     {
         _vertexAttribDispatchers.push_back(new AttributeDispatchMap(_glBeginEndAdapter));
         AttributeDispatchMap& texCoordDispatcher = *_vertexAttribDispatchers[i];
-        texCoordDispatcher.targetAssign<unsigned int, GLfloat>(i, Array::FloatArrayType, extensions->_glVertexAttrib1fv, 1);
-        texCoordDispatcher.targetAssign<unsigned int, GLfloat>(i, Array::Vec2ArrayType, extensions->_glVertexAttrib2fv, 2);
-        texCoordDispatcher.targetAssign<unsigned int, GLfloat>(i, Array::Vec3ArrayType, extensions->_glVertexAttrib3fv, 3);
-        texCoordDispatcher.targetAssign<unsigned int, GLfloat>(i, Array::Vec4ArrayType, extensions->_glVertexAttrib4fv, 4);
+        texCoordDispatcher.targetAssign<GLuint, GLfloat>(i, Array::FloatArrayType, extensions->_glVertexAttrib1fv, 1);
+        texCoordDispatcher.targetAssign<GLuint, GLfloat>(i, Array::Vec2ArrayType, extensions->_glVertexAttrib2fv, 2);
+        texCoordDispatcher.targetAssign<GLuint, GLfloat>(i, Array::Vec3ArrayType, extensions->_glVertexAttrib3fv, 3);
+        texCoordDispatcher.targetAssign<GLuint, GLfloat>(i, Array::Vec4ArrayType, extensions->_glVertexAttrib4fv, 4);
     }
 }
 

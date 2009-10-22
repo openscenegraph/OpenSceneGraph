@@ -31,8 +31,8 @@ class OSG_EXPORT GLBeginEndAdapter
         GLBeginEndAdapter(State* state=0);
 
         void setState(State* state) { _state = state; }
-        State* setState() { return _state; }
-        const State* setState() const { return _state; }
+        State* getState() { return _state; }
+        const State* getState() const { return _state; }
 
         enum MatrixMode
         {

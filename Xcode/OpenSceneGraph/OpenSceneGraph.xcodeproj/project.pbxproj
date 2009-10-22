@@ -2677,6 +2677,8 @@
 		D49029F70F80E9B100AEB8BC /* PolygonStipple.h in Headers */ = {isa = PBXBuildFile; fileRef = D49029F50F80E9B100AEB8BC /* PolygonStipple.h */; };
 		D49029F80F80E9B100AEB8BC /* PolygonStipple.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D49029F60F80E9B100AEB8BC /* PolygonStipple.cpp */; };
 		D49075750E9E2EFD0073A649 /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
+		D4A5541E1090428900EC0CD9 /* ArrayDispatchers in Headers */ = {isa = PBXBuildFile; fileRef = D4A5541D1090428900EC0CD9 /* ArrayDispatchers */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4A554201090429D00EC0CD9 /* ArrayDispatchers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4A5541F1090429D00EC0CD9 /* ArrayDispatchers.cpp */; };
 		D4AC4E240E0D21450032DD35 /* Config in Headers */ = {isa = PBXBuildFile; fileRef = D4AC4E230E0D21450032DD35 /* Config */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4AC4E260E0D21560032DD35 /* Config in Headers */ = {isa = PBXBuildFile; fileRef = D4AC4E250E0D21560032DD35 /* Config */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4AC4E310E0D26320032DD35 /* Fog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4AC4E2D0E0D26310032DD35 /* Fog.cpp */; };
@@ -8553,6 +8555,8 @@
 		D49029B80F80E83900AEB8BC /* IncrementalCompileOperation */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IncrementalCompileOperation; sourceTree = "<group>"; };
 		D49029F50F80E9B100AEB8BC /* PolygonStipple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolygonStipple.h; sourceTree = "<group>"; };
 		D49029F60F80E9B100AEB8BC /* PolygonStipple.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolygonStipple.cpp; sourceTree = "<group>"; };
+		D4A5541D1090428900EC0CD9 /* ArrayDispatchers */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ArrayDispatchers; sourceTree = "<group>"; };
+		D4A5541F1090429D00EC0CD9 /* ArrayDispatchers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ArrayDispatchers.cpp; sourceTree = "<group>"; };
 		D4AC4E230E0D21450032DD35 /* Config */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Config; path = config/OpenThreads/Config; sourceTree = SOURCE_ROOT; };
 		D4AC4E250E0D21560032DD35 /* Config */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Config; path = config/osg/Config; sourceTree = SOURCE_ROOT; };
 		D4AC4E2D0E0D26310032DD35 /* Fog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Fog.cpp; sourceTree = "<group>"; };
@@ -13334,6 +13338,7 @@
 		BE117FB705D63B8900EB53E5 /* osg */ = {
 			isa = PBXGroup;
 			children = (
+				D4A5541F1090429D00EC0CD9 /* ArrayDispatchers.cpp */,
 				D4E1E730108C57F1000A0EF2 /* GLBeginEndAdapter.cpp */,
 				D4F424CD0F5D9E3D0052261D /* AudioStream.cpp */,
 				D4163D1C0F2A6A540062226D /* ImageUtils.cpp */,
@@ -13498,6 +13503,7 @@
 		BE1181ED05D63C0900EB53E5 /* osg */ = {
 			isa = PBXGroup;
 			children = (
+				D4A5541D1090428900EC0CD9 /* ArrayDispatchers */,
 				D4E1E72E108C57DE000A0EF2 /* GLBeginEndAdapter */,
 				D4F424CB0F5D9E290052261D /* AudioStream */,
 				D4163D1A0F2A6A290062226D /* ImageUtils */,
@@ -15689,6 +15695,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4A5541E1090428900EC0CD9 /* ArrayDispatchers in Headers */,
 				D4E1E72F108C57DE000A0EF2 /* GLBeginEndAdapter in Headers */,
 				D4F424CC0F5D9E290052261D /* AudioStream in Headers */,
 				D4163D1B0F2A6A290062226D /* ImageUtils in Headers */,
@@ -22204,6 +22211,7 @@
 				D4163D1D0F2A6A540062226D /* ImageUtils.cpp in Sources */,
 				D4F424CE0F5D9E3D0052261D /* AudioStream.cpp in Sources */,
 				D4E1E731108C57F1000A0EF2 /* GLBeginEndAdapter.cpp in Sources */,
+				D4A554201090429D00EC0CD9 /* ArrayDispatchers.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

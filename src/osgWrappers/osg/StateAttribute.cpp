@@ -11,10 +11,10 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/CopyOp>
-#include <osg/NodeVisitor>
 #include <osg/Object>
 #include <osg/State>
 #include <osg/StateAttribute>
+#include <osg/StateAttributeCallback>
 #include <osg/StateSet>
 #include <osg/Texture>
 
@@ -96,6 +96,8 @@ TYPE_NAME_ALIAS(unsigned int, osg::StateAttribute::OverrideValue)
 TYPE_NAME_ALIAS(std::pair< osg::StateAttribute::Type COMMA  unsigned int >, osg::StateAttribute::TypeMemberPair)
 
 TYPE_NAME_ALIAS(std::vector< osg::StateSet * >, osg::StateAttribute::ParentList)
+
+TYPE_NAME_ALIAS(osg::StateAttributeCallback, osg::StateAttribute::Callback)
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute)
 	I_DeclaringFile("osg/StateAttribute");
@@ -197,34 +199,34 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute)
 	          __bool__checkValidityOfAssociatedModes__osg_State_R1,
 	          "Check the modes associated with this StateAttribute are supported by current OpenGL drivers, and if not set the associated mode in osg::State to be black listed/invalid. ",
 	          "Return true if all associated modes are valid. ");
-	I_Method1(void, setUpdateCallback, IN, osg::StateAttribute::Callback *, uc,
+	I_Method1(void, setUpdateCallback, IN, osg::StateAttributeCallback *, uc,
 	          Properties::NON_VIRTUAL,
-	          __void__setUpdateCallback__Callback_P1,
+	          __void__setUpdateCallback__StateAttributeCallback_P1,
 	          "Set the UpdateCallback which allows users to attach customize the updating of an object during the update traversal. ",
 	          "");
-	I_Method0(osg::StateAttribute::Callback *, getUpdateCallback,
+	I_Method0(osg::StateAttributeCallback *, getUpdateCallback,
 	          Properties::NON_VIRTUAL,
-	          __Callback_P1__getUpdateCallback,
+	          __StateAttributeCallback_P1__getUpdateCallback,
 	          "Get the non const UpdateCallback. ",
 	          "");
-	I_Method0(const osg::StateAttribute::Callback *, getUpdateCallback,
+	I_Method0(const osg::StateAttributeCallback *, getUpdateCallback,
 	          Properties::NON_VIRTUAL,
-	          __C5_Callback_P1__getUpdateCallback,
+	          __C5_StateAttributeCallback_P1__getUpdateCallback,
 	          "Get the const UpdateCallback. ",
 	          "");
-	I_Method1(void, setEventCallback, IN, osg::StateAttribute::Callback *, ec,
+	I_Method1(void, setEventCallback, IN, osg::StateAttributeCallback *, ec,
 	          Properties::NON_VIRTUAL,
-	          __void__setEventCallback__Callback_P1,
+	          __void__setEventCallback__StateAttributeCallback_P1,
 	          "Set the EventCallback which allows users to attach customize the updating of an object during the Event traversal. ",
 	          "");
-	I_Method0(osg::StateAttribute::Callback *, getEventCallback,
+	I_Method0(osg::StateAttributeCallback *, getEventCallback,
 	          Properties::NON_VIRTUAL,
-	          __Callback_P1__getEventCallback,
+	          __StateAttributeCallback_P1__getEventCallback,
 	          "Get the non const EventCallback. ",
 	          "");
-	I_Method0(const osg::StateAttribute::Callback *, getEventCallback,
+	I_Method0(const osg::StateAttributeCallback *, getEventCallback,
 	          Properties::NON_VIRTUAL,
-	          __C5_Callback_P1__getEventCallback,
+	          __C5_StateAttributeCallback_P1__getEventCallback,
 	          "Get the const EventCallback. ",
 	          "");
 	I_Method1(void, apply, IN, osg::State &, x,
@@ -259,9 +261,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute)
 	                   __void__removeParent__osg_StateSet_P1,
 	                   "",
 	                   "");
-	I_SimpleProperty(osg::StateAttribute::Callback *, EventCallback, 
-	                 __Callback_P1__getEventCallback, 
-	                 __void__setEventCallback__Callback_P1);
+	I_SimpleProperty(osg::StateAttributeCallback *, EventCallback, 
+	                 __StateAttributeCallback_P1__getEventCallback, 
+	                 __void__setEventCallback__StateAttributeCallback_P1);
 	I_SimpleProperty(unsigned int, Member, 
 	                 __unsigned_int__getMember, 
 	                 0);
@@ -281,46 +283,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute)
 	I_SimpleProperty(osg::StateAttribute::TypeMemberPair, TypeMemberPair, 
 	                 __TypeMemberPair__getTypeMemberPair, 
 	                 0);
-	I_SimpleProperty(osg::StateAttribute::Callback *, UpdateCallback, 
-	                 __Callback_P1__getUpdateCallback, 
-	                 __void__setUpdateCallback__Callback_P1);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osg::StateAttribute::Callback)
-	I_DeclaringFile("osg/StateAttribute");
-	I_VirtualBaseType(osg::Object);
-	I_Constructor0(____Callback,
-	               "",
-	               "");
-	I_Constructor2(IN, const osg::StateAttribute::Callback &, x, IN, const osg::CopyOp &, x,
-	               ____Callback__C5_Callback_R1__C5_CopyOp_R1,
-	               "",
-	               "");
-	I_Method0(osg::Object *, cloneType,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__cloneType,
-	          "Clone the type of an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "Clone an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
-	          Properties::VIRTUAL,
-	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
-	          "");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "return the name of the object's library. ",
-	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "return the name of the object's class type. ",
-	          "Must be defined by derived classes. ");
+	I_SimpleProperty(osg::StateAttributeCallback *, UpdateCallback, 
+	                 __StateAttributeCallback_P1__getUpdateCallback, 
+	                 __void__setUpdateCallback__StateAttributeCallback_P1);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::StateAttribute::ModeUsage)

@@ -271,7 +271,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osg::ImageSequence::UpdateCallback)
 	I_DeclaringFile("osg/ImageSequence");
-	I_BaseType(osg::StateAttribute::Callback);
+	I_BaseType(osg::StateAttributeCallback);
 	I_Constructor0(____UpdateCallback,
 	               "",
 	               "");

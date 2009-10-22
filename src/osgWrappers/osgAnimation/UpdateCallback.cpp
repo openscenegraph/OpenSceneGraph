@@ -131,6 +131,14 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::UpdateMaterial)
 	          __bool__link__osgAnimation_Channel_P1,
 	          "",
 	          "");
+	I_Method0(osgAnimation::Vec4Target *, getDiffuse,
+	          Properties::NON_VIRTUAL,
+	          __osgAnimation_Vec4Target_P1__getDiffuse,
+	          "",
+	          "");
+	I_SimpleProperty(osgAnimation::Vec4Target *, Diffuse, 
+	                 __osgAnimation_Vec4Target_P1__getDiffuse, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgAnimation::UpdateTransform)

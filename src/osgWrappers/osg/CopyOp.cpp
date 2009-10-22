@@ -21,6 +21,7 @@
 #include <osg/Referenced>
 #include <osg/Shape>
 #include <osg/StateAttribute>
+#include <osg/StateAttributeCallback>
 #include <osg/StateSet>
 #include <osg/Texture>
 #include <osg/Uniform>
@@ -47,7 +48,7 @@ BEGIN_ENUM_REFLECTOR(osg::CopyOp::Options)
 	I_EnumLabel(osg::CopyOp::DEEP_COPY_PRIMITIVES);
 	I_EnumLabel(osg::CopyOp::DEEP_COPY_SHAPES);
 	I_EnumLabel(osg::CopyOp::DEEP_COPY_UNIFORMS);
-	I_EnumLabel(osg::CopyOp::DEEP_COPY_NODECALLBACKS);
+	I_EnumLabel(osg::CopyOp::DEEP_COPY_CALLBACKS);
 	I_EnumLabel(osg::CopyOp::DEEP_COPY_ALL);
 END_REFLECTOR
 

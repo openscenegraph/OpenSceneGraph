@@ -97,8 +97,10 @@ void GLBeginEndAdapter::Rotated(GLdouble angle, GLdouble x, GLdouble y, GLdouble
     _matrixStack.back().preMultRotate(Quat(DegreesToRadians(angle), Vec3d(x,y,z)));
 }
 
-void GLBeginEndAdapter::MultiTexCoord4f(unsigned int unit, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
+void GLBeginEndAdapter::MultiTexCoord4f(GLenum target, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
 {
+    unsigned int unit = static_cast<unsigned int>(target-GL_TEXTURE0);
+
     if (unit>=_texCoordAssignedList.size()) _texCoordAssignedList.resize(unit+1, false);
     if (unit>=_texCoordList.size()) _texCoordList.resize(unit+1, osg::Vec4(0.0f,0.0f,0.0f,0.0f));
 
@@ -106,7 +108,7 @@ void GLBeginEndAdapter::MultiTexCoord4f(unsigned int unit, GLfloat x, GLfloat y,
     _texCoordList[unit].set(x,y,z,w);
 }
 
-void GLBeginEndAdapter::VertexAttrib4f(unsigned int unit, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
+void GLBeginEndAdapter::VertexAttrib4f(GLuint unit, GLfloat x, GLfloat y, GLfloat z, GLfloat w)
 {
     if (unit>=_vertexAttribAssignedList.size()) _vertexAttribAssignedList.resize(unit+1, false);
     if (unit>=_vertexAttribList.size()) _vertexAttribList.resize(unit+1, osg::Vec4(0.0f,0.0f,0.0f,0.0f));

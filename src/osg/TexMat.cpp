@@ -29,7 +29,7 @@ TexMat::~TexMat()
 
 void TexMat::apply(State& state) const
 {
-
+#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
     glMatrixMode( GL_TEXTURE );
     glLoadMatrix(_matrix.ptr());
 
@@ -43,4 +43,7 @@ void TexMat::apply(State& state) const
     }
 
     glMatrixMode( GL_MODELVIEW );
+#else
+    osg::notify(osg::NOTICE)<<"Warning: TexMat::apply(State&) - not supported."<<std::endl;
+#endif
 }

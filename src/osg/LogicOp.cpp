@@ -11,6 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/LogicOp>
+#include <osg/Notify>
 
 using namespace osg;
 
@@ -30,6 +31,10 @@ LogicOp::~LogicOp()
 
 void LogicOp::apply(State&) const
 {
+#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
     glLogicOp(static_cast<GLenum>(_opcode));
+#else
+    osg::notify(osg::NOTICE)<<"Warning: LogicOp::apply(State&) - not supported."<<std::endl;
+#endif
 }
 

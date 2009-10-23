@@ -37,6 +37,7 @@ Fog::~Fog()
 
 void Fog::apply(State& state) const
 {
+#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
     glFogi( GL_FOG_MODE,     _mode );
     glFogf( GL_FOG_DENSITY,  _density );
     glFogf( GL_FOG_START,    _start );
@@ -48,4 +49,7 @@ void Fog::apply(State& state) const
     {
         glFogi(GL_FOG_COORDINATE_SOURCE,_fogCoordinateSource);
     }
+#else
+    osg::notify(osg::NOTICE)<<"Warning: Fog::apply(State&) - not supported."<<std::endl;
+#endif
 }

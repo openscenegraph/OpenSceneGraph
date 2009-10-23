@@ -40,6 +40,10 @@ void LineStipple::setPattern(GLushort pattern)
 
 void LineStipple::apply(State&) const
 {
+#ifdef OSG_GL1_AVAILABLE
     glLineStipple(_factor, _pattern);
+#else
+    osg::notify(osg::NOTICE)<<"Warning: LineStipple::apply(State&) - not supported."<<std::endl;
+#endif
 }
 

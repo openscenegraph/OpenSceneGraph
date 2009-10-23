@@ -45,6 +45,7 @@ TexEnvCombine::~TexEnvCombine()
 
 void TexEnvCombine::apply(State& state) const
 {
+#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
     unsigned int contextID = state.getContextID();
 
     static bool s_isTexEnvCombineSupported =
@@ -103,6 +104,9 @@ void TexEnvCombine::apply(State& state) const
         // we will resort the settung the OpenGL default of GL_MODULATE.
         glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     }
+#else
+    osg::notify(osg::NOTICE)<<"Warning: TexEnvCombine::apply(State&) - not supported."<<std::endl;
+#endif
 }
 void TexEnvCombine::setCombine_RGB(GLint cm) { _combine_RGB = cm; }
 void TexEnvCombine::setCombine_Alpha(GLint cm) { _combine_Alpha = cm; }

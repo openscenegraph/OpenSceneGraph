@@ -51,6 +51,7 @@ bool PointSprite::checkValidityOfAssociatedModes(osg::State& state) const
 
 void PointSprite::apply(osg::State& state) const
 {
+#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
     if(!isPointSpriteSupported(state.getContextID())) return;
 
     glTexEnvi(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, 1);
@@ -59,6 +60,9 @@ void PointSprite::apply(osg::State& state) const
 
     if (extensions->isPointSpriteCoordOriginSupported())
         extensions->glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN,_coordOriginMode);
+#else
+    osg::notify(osg::NOTICE)<<"Warning: PointSprite::apply(State&) - not supported."<<std::endl;
+#endif
 }
 
 struct IntializedSupportedPair

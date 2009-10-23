@@ -125,6 +125,8 @@ void VertexProgram::dirtyVertexProgramObject()
 
 void VertexProgram::apply(State& state) const
 {
+#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
+
     const unsigned int contextID = state.getContextID();
     const Extensions* extensions = getExtensions(contextID,true);
 
@@ -188,6 +190,9 @@ void VertexProgram::apply(State& state) const
         }
         glMatrixMode(GL_MODELVIEW); // restore matrix mode
     }
+#else
+    osg::notify(osg::NOTICE)<<"Warning: VertexProgram::apply(State&) - not supported."<<std::endl;
+#endif
 }
 
 void VertexProgram::resizeGLObjectBuffers(unsigned int maxSize)

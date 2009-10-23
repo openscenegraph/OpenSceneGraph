@@ -89,12 +89,6 @@ void UpdateTransform::update(osg::PositionAttitudeTransform& pat)
     pat.dirtyBound();
 }
 
-bool UpdateTransform::needLink() const
-{
-    // the idea is to return true if nothing is linked
-    return !((_position->getCount() + _euler->getCount() + _scale->getCount()) > 3);
-}
-
 bool UpdateTransform::link(osgAnimation::Channel* channel)
 {
     if (channel->getName().find("euler") != std::string::npos) 
@@ -150,12 +144,6 @@ void UpdateMaterial::update(osg::Material& material)
 {
     osg::Vec4 diffuse = _diffuse->getValue();
     material.setDiffuse(osg::Material::FRONT_AND_BACK, diffuse);
-}
-
-bool UpdateMaterial::needLink() const
-{
-    // the idea is to return true if nothing is linked
-    return (_diffuse->getCount() < 2);
 }
 
 bool UpdateMaterial::link(osgAnimation::Channel* channel)

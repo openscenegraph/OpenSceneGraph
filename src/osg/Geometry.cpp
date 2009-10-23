@@ -906,10 +906,17 @@ void Geometry::releaseGLObjects(State* state) const
 
 void Geometry::drawImplementation(RenderInfo& renderInfo) const
 {
+    if (_internalOptimizedGeometry.valid())
+    {
+        _internalOptimizedGeometry->drawImplementation(renderInfo);
+        return;
+    }
+
     State& state = *renderInfo.getState();
     Drawable::Extensions* extensions = Drawable::getExtensions(state.getContextID(),true);
 
     bool useFastPath = areFastPathsUsed();
+
     bool usingVertexBufferObjects = _useVertexBufferObjects && state.isVertexBufferObjectSupported();
     bool handleVertexAttributes = !_vertexAttribList.empty() && extensions->isVertexProgramSupported();
 
@@ -917,7 +924,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
     arrayDispatchers.setUseVertexAttribAlias(state.getUseVertexAttributeAliasing());
     arrayDispatchers.reset();
-    // arrayDispatchers.setUseGLBeginEndAdapter(!useFastPath);
+    arrayDispatchers.setUseGLBeginEndAdapter(!useFastPath);
 
     arrayDispatchers.activateNormalArray(_normalData.binding, _normalData.array.get(), _normalData.indices.get());
     arrayDispatchers.activateColorArray(_colorData.binding, _colorData.array.get(), _colorData.indices.get());

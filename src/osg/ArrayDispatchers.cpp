@@ -416,10 +416,12 @@ void ArrayDispatchers::init()
     _normalDispatchers->assign<GLdouble>(Array::Vec3dArrayType, glNormal3dv, 3);
     _normalDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec3ArrayType, &GLBeginEndAdapter::Normal3fv, 3);
 
+    _colorDispatchers->assign<GLubyte>(Array::Vec4ubArrayType, glColor4ubv, 4);
     _colorDispatchers->assign<GLfloat>(Array::Vec3ArrayType, glColor3fv, 3);
     _colorDispatchers->assign<GLfloat>(Array::Vec4ArrayType, glColor4fv, 4);
     _colorDispatchers->assign<GLdouble>(Array::Vec3dArrayType, glColor3dv, 3);
     _colorDispatchers->assign<GLdouble>(Array::Vec4dArrayType, glColor4dv, 4);
+    _colorDispatchers->assignGLBeginEnd<GLubyte>(Array::Vec4ubArrayType, &GLBeginEndAdapter::Color4ubv, 4);
     _colorDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec4ArrayType, &GLBeginEndAdapter::Color4fv, 4);
 
     _secondaryColorDispatchers->assign<GLfloat>(Array::Vec3ArrayType, extensions->_glSecondaryColor3fv, 3);

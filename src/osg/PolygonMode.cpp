@@ -68,6 +68,7 @@ PolygonMode::Mode PolygonMode::getMode(Face face) const
 
 void PolygonMode::apply(State&) const
 {
+#ifdef OSG_GL1_AVAILABLE
     if (_modeFront==_modeBack)
     {
         glPolygonMode(GL_FRONT_AND_BACK,(GLenum)_modeFront);
@@ -77,5 +78,8 @@ void PolygonMode::apply(State&) const
         glPolygonMode(GL_FRONT,(GLenum)_modeFront);
         glPolygonMode(GL_BACK,(GLenum)_modeBack);
     }
+#else
+    osg::notify(osg::NOTICE)<<"Warning: PolygonMode::apply(State&) - not supported."<<std::endl;
+#endif
 }
 

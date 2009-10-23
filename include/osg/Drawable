@@ -857,6 +857,7 @@ class OSG_EXPORT Drawable : public Object
 
 inline void Drawable::draw(RenderInfo& renderInfo) const
 {
+#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
     if (_useDisplayList && !(_supportsVertexBufferObjects && _useVertexBufferObjects && renderInfo.getState()->isVertexBufferObjectSupported()))
     {
         // get the contextID (user defined ID of 0 upwards) for the
@@ -897,6 +898,7 @@ inline void Drawable::draw(RenderInfo& renderInfo) const
         return;
 
     }
+#endif
 
     // draw object as nature intended..
     if (_drawCallback.valid())

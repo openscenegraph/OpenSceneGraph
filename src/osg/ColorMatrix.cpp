@@ -28,6 +28,7 @@ ColorMatrix::~ColorMatrix()
 
 void ColorMatrix::apply(State& state) const
 {
+#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
     unsigned int contextID = state.getContextID();
     
     static bool s_ARB_imaging = isGLExtensionSupported(contextID,"GL_ARB_imaging");
@@ -37,4 +38,7 @@ void ColorMatrix::apply(State& state) const
         glLoadMatrix(_matrix.ptr());
         glMatrixMode( GL_MODELVIEW );
     }
+#else
+    osg::notify(osg::NOTICE)<<"Warning: ColorMatrix::apply(State&) - not supported."<<std::endl;
+#endif
 }

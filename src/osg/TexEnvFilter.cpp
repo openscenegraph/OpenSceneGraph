@@ -28,6 +28,7 @@ TexEnvFilter::~TexEnvFilter()
 
 void TexEnvFilter::apply(State& state) const
 {
+#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
     // note from RO, need to adapt to do testing per graphics context.
     static float glVersion = asciiToFloat( (const char *)glGetString( GL_VERSION ) );
     static bool s_isTexLodBias = glVersion>=1.4 || isGLExtensionSupported(state.getContextID(),"GL_EXT_texture_lod_bias");
@@ -36,4 +37,7 @@ void TexEnvFilter::apply(State& state) const
     {
         glTexEnvf(GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, _lodBias);
     }
+#else
+    osg::notify(osg::NOTICE)<<"Warning: TexEnvFilter::apply(State&) - not supported."<<std::endl;
+#endif
 }

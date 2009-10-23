@@ -90,6 +90,7 @@ BoundingBox DrawPixels::computeBound() const
 
 void DrawPixels::drawImplementation(RenderInfo&) const
 {
+#ifdef OSG_GL1_AVAILABLE
     glRasterPos3f(_position.x(),_position.y(),_position.z());
 
     if (_useSubImage)
@@ -109,5 +110,8 @@ void DrawPixels::drawImplementation(RenderInfo&) const
                      (GLenum)_image->getDataType(),
                      _image->data() );
     }
+#else
+    osg::notify(osg::NOTICE)<<"Warning: DrawPixels::drawImplementation(RenderInfo&) - not supported."<<std::endl;
+#endif
 }
 

@@ -23,15 +23,21 @@
 
 void osg::flushDeletedGLObjects(unsigned int contextID, double currentTime, double& availableTime)
 {
-    osg::GLBufferObject::flushDeletedBufferObjects(contextID,currentTime,availableTime);
+#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
     osg::Drawable::flushDeletedDisplayLists(contextID,availableTime);
+#endif
+
+#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
     osg::FragmentProgram::flushDeletedFragmentProgramObjects(contextID,currentTime,availableTime);
+    osg::VertexProgram::flushDeletedVertexProgramObjects(contextID,currentTime,availableTime);
+#endif
+
+    osg::GLBufferObject::flushDeletedBufferObjects(contextID,currentTime,availableTime);
     osg::FrameBufferObject::flushDeletedFrameBufferObjects(contextID,currentTime,availableTime);
     osg::Program::flushDeletedGlPrograms(contextID,currentTime,availableTime);
     osg::RenderBuffer::flushDeletedRenderBuffers(contextID,currentTime,availableTime);
     osg::Shader::flushDeletedGlShaders(contextID,currentTime,availableTime);
     osg::Texture::flushDeletedTextureObjects(contextID,currentTime,availableTime);
-    osg::VertexProgram::flushDeletedVertexProgramObjects(contextID,currentTime,availableTime);
     osg::OcclusionQueryNode::flushDeletedQueryObjects(contextID,currentTime,availableTime);
 }
 
@@ -39,28 +45,41 @@ void osg::flushAllDeletedGLObjects(unsigned int contextID)
 {
     double currentTime = DBL_MAX;
     double availableTime = DBL_MAX;
-    osg::GLBufferObject::flushDeletedBufferObjects(contextID,currentTime,availableTime);
+
+#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
     osg::Drawable::flushAllDeletedDisplayLists(contextID);
+#endif
+
+#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
     osg::FragmentProgram::flushDeletedFragmentProgramObjects(contextID,currentTime,availableTime);
+    osg::VertexProgram::flushDeletedVertexProgramObjects(contextID,currentTime,availableTime);
+#endif
+
+    osg::GLBufferObject::flushDeletedBufferObjects(contextID,currentTime,availableTime);
     osg::FrameBufferObject::flushDeletedFrameBufferObjects(contextID,currentTime,availableTime);
     osg::Program::flushDeletedGlPrograms(contextID,currentTime,availableTime);
     osg::RenderBuffer::flushDeletedRenderBuffers(contextID,currentTime,availableTime);
     osg::Shader::flushDeletedGlShaders(contextID,currentTime,availableTime);
     osg::Texture::flushAllDeletedTextureObjects(contextID);
-    osg::VertexProgram::flushDeletedVertexProgramObjects(contextID,currentTime,availableTime);
     osg::OcclusionQueryNode::flushDeletedQueryObjects(contextID,currentTime,availableTime);
 }
 
 void osg::discardAllDeletedGLObjects(unsigned int contextID)
 {
-    osg::GLBufferObject::discardAllDeletedBufferObjects(contextID);
+#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
     osg::Drawable::discardAllDeletedDisplayLists(contextID);
+#endif
+
+#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
     osg::FragmentProgram::discardDeletedFragmentProgramObjects(contextID);
+    osg::VertexProgram::discardDeletedVertexProgramObjects(contextID);
+#endif
+
+    osg::GLBufferObject::discardAllDeletedBufferObjects(contextID);
     osg::FrameBufferObject::discardDeletedFrameBufferObjects(contextID);
     osg::Program::discardDeletedGlPrograms(contextID);
     osg::RenderBuffer::discardDeletedRenderBuffers(contextID);
     osg::Shader::discardDeletedGlShaders(contextID);
     osg::Texture::discardAllDeletedTextureObjects(contextID);
-    osg::VertexProgram::discardDeletedVertexProgramObjects(contextID);
     osg::OcclusionQueryNode::discardDeletedQueryObjects(contextID);
 }

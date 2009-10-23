@@ -47,6 +47,7 @@ static DeletedDisplayListCache s_deletedDisplayListCache;
 
 GLuint Drawable::generateDisplayList(unsigned int contextID, unsigned int sizeHint)
 {
+#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
 
     DisplayListMap& dll = s_deletedDisplayListCache[contextID];
@@ -76,6 +77,10 @@ GLuint Drawable::generateDisplayList(unsigned int contextID, unsigned int sizeHi
             return  glGenLists( 1 );
         }
     }
+#else
+    osg::notify(osg::NOTICE)<<"Warning: Drawable::generateDisplayList(..) - not supported."<<std::endl;
+    return 0;
+#endif
 }
 
 unsigned int s_minimumNumberOfDisplayListsToRetainInCache = 0;
@@ -91,6 +96,7 @@ unsigned int Drawable::getMinimumNumberOfDisplayListsToRetainInCache()
 
 void Drawable::deleteDisplayList(unsigned int contextID,GLuint globj, unsigned int sizeHint)
 {
+#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
     if (globj!=0)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
@@ -98,10 +104,14 @@ void Drawable::deleteDisplayList(unsigned int contextID,GLuint globj, unsigned i
         // insert the globj into the cache for the appropriate context.
         s_deletedDisplayListCache[contextID].insert(DisplayListMap::value_type(sizeHint,globj));
     }
+#else
+    osg::notify(osg::NOTICE)<<"Warning: Drawable::deleteDisplayList(..) - not supported."<<std::endl;
+#endif
 }
 
 void Drawable::flushAllDeletedDisplayLists(unsigned int contextID)
 {
+#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedDisplayListCache);
 
     DisplayListMap& dll = s_deletedDisplayListCache[contextID];
@@ -114,6 +124,9 @@ void Drawable::flushAllDeletedDisplayLists(unsigned int contextID)
     }
 
     dll.clear();         
+#else
+    osg::notify(osg::NOTICE)<<"Warning: Drawable::deleteDisplayList(..) - not supported."<<std::endl;
+#endif
 }
 
 void Drawable::discardAllDeletedDisplayLists(unsigned int contextID)
@@ -126,6 +139,7 @@ void Drawable::discardAllDeletedDisplayLists(unsigned int contextID)
 
 void Drawable::flushDeletedDisplayLists(unsigned int contextID, double& availableTime)
 {
+#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
     // if no time available don't try to flush objects.
     if (availableTime<=0.0) return;
 
@@ -197,6 +211,9 @@ void Drawable::flushDeletedDisplayLists(unsigned int contextID, double& availabl
     if (noDeleted!=0) notify(INFO)<<"Number display lists deleted = "<<noDeleted<<" elapsed time"<<elapsedTime<<std::endl;
 
     availableTime -= elapsedTime;
+#else
+    osg::notify(osg::NOTICE)<<"Warning: Drawable::flushDeletedDisplayLists(..) - not supported."<<std::endl;
+#endif
 }
 
 Drawable::Drawable()
@@ -209,8 +226,13 @@ Drawable::Drawable()
     // to false in your constructor.  This will prevent any display
     // lists from being automatically created and safeguard the
     // dynamic updating of data.
+#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
     _supportsDisplayList = true;
     _useDisplayList = true;
+#else
+    _supportsDisplayList = false;
+    _useDisplayList = false;
+#endif
 
     _supportsVertexBufferObjects = false;
     _useVertexBufferObjects = false;
@@ -454,8 +476,10 @@ void Drawable::compileGLObjects(RenderInfo& renderInfo) const
         return;
     }
 
+
     if (!_useDisplayList) return;
 
+#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
     unsigned int contextID = renderInfo.getContextID();
@@ -478,7 +502,9 @@ void Drawable::compileGLObjects(RenderInfo& renderInfo) const
         drawImplementation(renderInfo);
 
     glEndList();
-
+#else
+    osg::notify(osg::NOTICE)<<"Warning: Drawable::compileGLObjects(RenderInfo&) - not supported."<<std::endl;
+#endif
 }
 
 void Drawable::setThreadSafeRefUnref(bool threadSafe)
@@ -537,7 +563,8 @@ void Drawable::setSupportsDisplayList(bool flag)
 {
     // if value unchanged simply return.
     if (_supportsDisplayList==flag) return;
-    
+
+#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
     // if previously set to true then need to check about display lists.
     if (_supportsDisplayList)
     {
@@ -552,6 +579,9 @@ void Drawable::setSupportsDisplayList(bool flag)
     
     // set with new value.
     _supportsDisplayList=flag;
+#else
+    _supportsDisplayList=false;
+#endif
 }
 
 void Drawable::setUseDisplayList(bool flag)
@@ -559,6 +589,7 @@ void Drawable::setUseDisplayList(bool flag)
     // if value unchanged simply return.
     if (_useDisplayList==flag) return;
 
+#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
     // if was previously set to true, remove display list.
     if (_useDisplayList)
     {
@@ -584,6 +615,9 @@ void Drawable::setUseDisplayList(bool flag)
             _useDisplayList = false;
         }
     }
+#else
+   _useDisplayList = false;
+#endif
 }
 
 
@@ -601,13 +635,13 @@ void Drawable::setUseVertexBufferObjects(bool flag)
     {
         dirtyDisplayList();
     }
-    
+
     _useVertexBufferObjects = flag;
-    
 }
 
 void Drawable::dirtyDisplayList()
 {
+#ifdef OSG_GL_DISPLAYLISTS_AVAILABLE
     unsigned int i;
     for(i=0;i<_globjList.size();++i)
     {
@@ -617,6 +651,7 @@ void Drawable::dirtyDisplayList()
             _globjList[i] = 0;
         }
     }
+#endif
 }
 
 

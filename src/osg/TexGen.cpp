@@ -77,7 +77,7 @@ void TexGen::setPlanesFromMatrix(const Matrixd& matrix)
 
 void TexGen::apply(State&) const
 {
-
+#if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
     if (_mode == OBJECT_LINEAR || _mode == EYE_LINEAR)
     {
         GLenum glmode = _mode == OBJECT_LINEAR ? GL_OBJECT_PLANE : GL_EYE_PLANE;
@@ -125,5 +125,7 @@ void TexGen::apply(State&) const
         glTexGeni( GL_S, GL_TEXTURE_GEN_MODE, _mode );
         glTexGeni( GL_T, GL_TEXTURE_GEN_MODE, _mode );
     }
-
+#else
+    osg::notify(osg::NOTICE)<<"Warning: TexGen::apply(State&) - not supported."<<std::endl;
+#endif
 }

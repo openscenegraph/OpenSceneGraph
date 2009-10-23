@@ -993,8 +993,8 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
 
     state.applyDisablingOfVertexAttributes();
 
-    bool bindPerPrimtiveSetActive = arrayDispatchers.active(BIND_PER_PRIMITIVE_SET);
-    bool bindPerPrimtiveActive = arrayDispatchers.active(BIND_PER_PRIMITIVE);
+    bool bindPerPrimitiveSetActive = arrayDispatchers.active(BIND_PER_PRIMITIVE_SET);
+    bool bindPerPrimitiveActive = arrayDispatchers.active(BIND_PER_PRIMITIVE);
 
     unsigned int primitiveNum = 0;
 
@@ -1006,7 +1006,7 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     {
 
         // dispatch any attributes that are bound per primitive
-        if (bindPerPrimtiveSetActive) arrayDispatchers.dispatch(BIND_PER_PRIMITIVE_SET, primitiveSetNum);
+        if (bindPerPrimitiveSetActive) arrayDispatchers.dispatch(BIND_PER_PRIMITIVE_SET, primitiveSetNum);
 
         const PrimitiveSet* primitiveset = _primitives[primitiveSetNum].get();
 
@@ -1045,9 +1045,9 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
                         vindex<indexEnd;
                         ++vindex,++primCount)
                     {
-                        if (bindPerPrimtiveActive && (primCount%primLength)==0)
+                        if (bindPerPrimitiveActive && (primCount%primLength)==0)
                         {
-                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE,++primitiveNum);
+                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE,primitiveNum++);
                         }
 
                         arrayDispatchers.dispatch(BIND_PER_VERTEX, vindex);
@@ -1074,9 +1074,9 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
                             primCount<*primItr;
                             ++vindex,++primCount)
                         {
-                            if (bindPerPrimtiveActive && (primCount%localPrimLength)==0)
+                            if (bindPerPrimitiveActive && (primCount%localPrimLength)==0)
                             {
-                                arrayDispatchers.dispatch(BIND_PER_PRIMITIVE, ++primitiveNum);
+                                arrayDispatchers.dispatch(BIND_PER_PRIMITIVE, primitiveNum++);
                             }
                             arrayDispatchers.dispatch(BIND_PER_VERTEX, vindex);
                         }
@@ -1099,9 +1099,9 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
                         ++primCount,++primItr)
                     {
 
-                        if (bindPerPrimtiveActive && (primCount%primLength)==0)
+                        if (bindPerPrimitiveActive && (primCount%primLength)==0)
                         {
-                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE, ++primitiveNum);
+                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE, primitiveNum++);
                         }
 
                         unsigned int vindex=*primItr;
@@ -1123,9 +1123,9 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
                         primItr!=drawElements->end();
                         ++primCount,++primItr)
                     {
-                        if (bindPerPrimtiveActive && (primCount%primLength)==0)
+                        if (bindPerPrimitiveActive && (primCount%primLength)==0)
                         {
-                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE, ++primitiveNum);
+                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE, primitiveNum++);
                         }
 
                         unsigned int vindex=*primItr;
@@ -1147,9 +1147,9 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
                         primItr!=drawElements->end();
                         ++primCount,++primItr)
                     {
-                        if (bindPerPrimtiveActive && (primCount%primLength)==0)
+                        if (bindPerPrimitiveActive && (primCount%primLength)==0)
                         {
-                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE, ++primitiveNum);
+                            arrayDispatchers.dispatch(BIND_PER_PRIMITIVE, primitiveNum++);
                         }
 
                         unsigned int vindex=*primItr;

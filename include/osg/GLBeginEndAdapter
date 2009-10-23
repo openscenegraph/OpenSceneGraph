@@ -72,6 +72,7 @@ class OSG_EXPORT GLBeginEndAdapter
         }
 
         void Color4fv(const GLfloat* c) { Color4f(c[0], c[1], c[2], c[3]); }
+        void Color4ubv(const GLubyte* c) { const float div = 1.0f/255.0f; Color4f(float(c[0])*div, float(c[1])*div, float(c[2])*div, float(c[3])*div); }
 
         void Normal3f(GLfloat x, GLfloat y, GLfloat z)
         {

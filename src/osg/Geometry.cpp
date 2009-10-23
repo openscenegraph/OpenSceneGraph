@@ -1166,6 +1166,10 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
             }
         }
     }
+
+    // unbind the VBO's if any are used.
+    state.unbindVertexBufferObject();
+    state.unbindElementBufferObject();
 }
 
 class AttributeFunctorArrayVisitor : public ArrayVisitor

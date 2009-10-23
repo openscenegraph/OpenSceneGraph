@@ -2494,6 +2494,7 @@
 		D43ED7810FCFDFE60024F778 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
 		D43ED7A40FCFE0CE0024F778 /* DatabaseRevisions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D43ED7A30FCFE0CE0024F778 /* DatabaseRevisions.cpp */; };
 		D43ED7A60FCFE0DB0024F778 /* DatabaseRevisions in Headers */ = {isa = PBXBuildFile; fileRef = D43ED7A50FCFE0DB0024F778 /* DatabaseRevisions */; settings = {ATTRIBUTES = (Public, ); }; };
+		D44487E8109082ED0028ABAD /* StateAttributeCallback in Headers */ = {isa = PBXBuildFile; fileRef = D44487E7109082ED0028ABAD /* StateAttributeCallback */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4456E520D4F674E005E986E /* osgtext3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4456E510D4F674E005E986E /* osgtext3D.cpp */; };
 		D44F2AA80DA11DD2009144E7 /* TerrainTile in Resources */ = {isa = PBXBuildFile; fileRef = D44F2AA70DA11DD2009144E7 /* TerrainTile */; };
 		D44F2AAA0DA11DED009144E7 /* TerrainTile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D44F2AA90DA11DED009144E7 /* TerrainTile.cpp */; };
@@ -8411,6 +8412,7 @@
 		D43ED2140FCE967C0024F778 /* vertexData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vertexData.h; path = ../../src/osgPlugins/ply/vertexData.h; sourceTree = SOURCE_ROOT; };
 		D43ED7A30FCFE0CE0024F778 /* DatabaseRevisions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DatabaseRevisions.cpp; sourceTree = "<group>"; };
 		D43ED7A50FCFE0DB0024F778 /* DatabaseRevisions */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = DatabaseRevisions; sourceTree = "<group>"; };
+		D44487E7109082ED0028ABAD /* StateAttributeCallback */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = StateAttributeCallback; sourceTree = "<group>"; };
 		D4456E510D4F674E005E986E /* osgtext3D.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = osgtext3D.cpp; path = ../../examples/osgtext3D/osgtext3D.cpp; sourceTree = SOURCE_ROOT; };
 		D44F2AA70DA11DD2009144E7 /* TerrainTile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TerrainTile; sourceTree = "<group>"; };
 		D44F2AA90DA11DED009144E7 /* TerrainTile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TerrainTile.cpp; path = ../../src/osgTerrain/TerrainTile.cpp; sourceTree = SOURCE_ROOT; };
@@ -13503,6 +13505,7 @@
 		BE1181ED05D63C0900EB53E5 /* osg */ = {
 			isa = PBXGroup;
 			children = (
+				D44487E7109082ED0028ABAD /* StateAttributeCallback */,
 				D4A5541D1090428900EC0CD9 /* ArrayDispatchers */,
 				D4E1E72E108C57DE000A0EF2 /* GLBeginEndAdapter */,
 				D4F424CB0F5D9E290052261D /* AudioStream */,
@@ -15695,6 +15698,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D44487E8109082ED0028ABAD /* StateAttributeCallback in Headers */,
 				D4A5541E1090428900EC0CD9 /* ArrayDispatchers in Headers */,
 				D4E1E72F108C57DE000A0EF2 /* GLBeginEndAdapter in Headers */,
 				D4F424CC0F5D9E290052261D /* AudioStream in Headers */,

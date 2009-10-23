@@ -134,6 +134,11 @@ BEGIN_VALUE_REFLECTOR(osg::GLBeginEndAdapter)
 	          __void__Color4fv__C5_GLfloat_P1,
 	          "",
 	          "");
+	I_Method1(void, Color4ubv, IN, const GLubyte *, c,
+	          Properties::NON_VIRTUAL,
+	          __void__Color4ubv__C5_GLubyte_P1,
+	          "",
+	          "");
 	I_Method3(void, Normal3f, IN, GLfloat, x, IN, GLfloat, y, IN, GLfloat, z,
 	          Properties::NON_VIRTUAL,
 	          __void__Normal3f__GLfloat__GLfloat__GLfloat,

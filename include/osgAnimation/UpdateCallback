@@ -26,33 +26,21 @@
 namespace osgAnimation 
 {
 
-    class AnimationUpdateCallbackBase
+    class AnimationUpdateCallbackBase : public virtual osg::Object
     {
     public:
-        virtual osg::Object* clone(const osg::CopyOp& copyop) const = 0;
-        virtual AnimationManagerBase* getAnimationManager() = 0;
-        virtual bool needLink() const = 0;
         virtual bool link(osgAnimation::Channel* channel) = 0;
         virtual int link(osgAnimation::Animation* animation) = 0;
-        virtual void updateLink() = 0;
-        virtual const std::string& getName() const = 0;
     };
 
     template <class T>
     class AnimationUpdateCallback : public AnimationUpdateCallbackBase, public T
     {
-    protected:
-
-        osg::observer_ptr<osgAnimation::AnimationManagerBase> _manager;
-
     public:
         AnimationUpdateCallback(const std::string& name) { T::setName(name);}
         AnimationUpdateCallback(const AnimationUpdateCallback& apc,const osg::CopyOp& copyop):
-            T(apc, copyop),
-            _manager(apc._manager) {}
+            T(apc, copyop) {}
 
-        osgAnimation::AnimationManagerBase* getAnimationManager() { return _manager.get(); }
-        
         const std::string& getName() const { return T::getName(); }
         int link(osgAnimation::Animation* animation)
         {
@@ -72,28 +60,6 @@ namespace osgAnimation
                 }
             }
             return nbLinks;
-        }
-
-        void updateLink()
-        {
-            if (_manager.valid())
-            {
-                if (needLink())
-                {
-                    /** this item is not linked yet then we do it for all animation
-                        registered in the manager.
-                        Maybe this function should be on the manager side like
-                        _manager->linkItem(Bone);
-                    */
-                    const AnimationList& animationList = _manager->getAnimationList();
-                    for (AnimationList::const_iterator it = animationList.begin(); it != animationList.end(); it++) 
-                    {
-                        AnimationUpdateCallbackBase* a = this;
-                        a->link(it->get());
-                    }
-                    _manager->buildTargetReference();
-                }
-            }
         }
     };
 
@@ -118,7 +84,6 @@ namespace osgAnimation
         virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
         void update(osg::MatrixTransform& mat);
         void update(osg::PositionAttitudeTransform& pat);
-        bool needLink() const;
         bool link(osgAnimation::Channel* channel);
 
         osgAnimation::Vec3Target* getEuler() {return _euler.get();}
@@ -143,7 +108,6 @@ namespace osgAnimation
         /** Callback method called by the NodeVisitor when visiting a node.*/
         virtual void operator () (osg::StateAttribute*, osg::NodeVisitor*);
         void update(osg::Material& material);
-        bool needLink() const;
         bool link(osgAnimation::Channel* channel);
         osgAnimation::Vec4Target* getDiffuse();
     };

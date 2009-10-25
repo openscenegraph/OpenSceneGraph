@@ -526,11 +526,6 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	                      __void__VerteAttrib__unsigned_int__float__float__float__float,
 	                      "",
 	                      "");
-	I_Method3(void, setInterleavedArrays, IN, GLenum, format, IN, GLsizei, stride, IN, const GLvoid *, pointer,
-	          Properties::NON_VIRTUAL,
-	          __void__setInterleavedArrays__GLenum__GLsizei__C5_GLvoid_P1,
-	          "Wrapper around glInterleavedArrays(. ",
-	          ".). also resets the internal array points and modes within osg::State to keep the other vertex array operations consistent. ");
 	I_Method0(void, lazyDisablingOfVertexAttributes,
 	          Properties::NON_VIRTUAL,
 	          __void__lazyDisablingOfVertexAttributes,
@@ -541,6 +536,11 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __void__applyDisablingOfVertexAttributes,
 	          "Disable all the vertex attributes that have been marked as to be disabled. ",
 	          "");
+	I_Method3(void, setInterleavedArrays, IN, GLenum, format, IN, GLsizei, stride, IN, const GLvoid *, pointer,
+	          Properties::NON_VIRTUAL,
+	          __void__setInterleavedArrays__GLenum__GLsizei__C5_GLvoid_P1,
+	          "Wrapper around glInterleavedArrays(. ",
+	          ".). also resets the internal array points and modes within osg::State to keep the other vertex array operations consistent. ");
 	I_Method1(void, setVertexPointer, IN, const osg::Array *, array,
 	          Properties::NON_VIRTUAL,
 	          __void__setVertexPointer__C5_Array_P1,
@@ -624,21 +624,6 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_Method0(void, dirtySecondaryColorPointer,
 	          Properties::NON_VIRTUAL,
 	          __void__dirtySecondaryColorPointer,
-	          "",
-	          "");
-	I_Method3(void, setIndexPointer, IN, GLenum, type, IN, GLsizei, stride, IN, const GLvoid *, ptr,
-	          Properties::NON_VIRTUAL,
-	          __void__setIndexPointer__GLenum__GLsizei__C5_GLvoid_P1,
-	          "wrapper around glEnableClientState(GL_INDEX_ARRAY);glIndexPointer(. ",
-	          ".); note, only updates values that change. ");
-	I_Method0(void, disableIndexPointer,
-	          Properties::NON_VIRTUAL,
-	          __void__disableIndexPointer,
-	          "wrapper around glDisableClientState(GL_INDEX_ARRAY); note, only updates values that change. ",
-	          "");
-	I_Method0(void, dirtyIndexPointer,
-	          Properties::NON_VIRTUAL,
-	          __void__dirtyIndexPointer,
 	          "",
 	          "");
 	I_Method0(bool, isFogCoordSupported,

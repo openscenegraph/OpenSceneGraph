@@ -85,14 +85,22 @@ class OSG_EXPORT ArrayDispatchers : public osg::Referenced
 
         void Begin(GLenum mode)
         {
+#ifdef OSG_GL1_AVAILABLE
             if (_useGLBeginEndAdapter) _glBeginEndAdapter->Begin(mode);
             else ::glBegin(mode);
+#else
+            _glBeginEndAdapter->Begin(mode);
+#endif
         }
 
         void End()
         {
+#ifdef OSG_GL1_AVAILABLE
             if (_useGLBeginEndAdapter) _glBeginEndAdapter->End();
             else ::glEnd();
+#else
+            _glBeginEndAdapter->End();
+#endif
         }
 
     protected:

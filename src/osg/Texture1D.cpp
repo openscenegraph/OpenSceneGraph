@@ -119,7 +119,7 @@ void Texture1D::setImage(Image* image)
 
 void Texture1D::apply(State& state) const
 {
-
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
@@ -229,6 +229,9 @@ void Texture1D::apply(State& state) const
     {
         generateMipmap(state);
     }
+#else
+    osg::notify(osg::NOTICE)<<"Warning: Texture1D::apply(State& state) not supported."<<std::endl;
+#endif
 }
 
 void Texture1D::computeInternalFormat() const
@@ -239,6 +242,7 @@ void Texture1D::computeInternalFormat() const
 
 void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsizei& inwidth, GLsizei& numMipmapLevels) const
 {
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     // if we don't have a valid image we can't create a texture!
     if (!image || !image->data())
         return;
@@ -348,10 +352,14 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
     }
 
     inwidth = image->s();
+#else
+    osg::notify(osg::NOTICE)<<"Warning: Texture1D::applyTexImage1D(State& state) not supported."<<std::endl;
+#endif
 }
 
 void Texture1D::copyTexImage1D(State& state, int x, int y, int width)
 {
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     const unsigned int contextID = state.getContextID();
 
     // get the texture object for the current contextID.
@@ -401,10 +409,14 @@ void Texture1D::copyTexImage1D(State& state, int x, int y, int width)
 
     // inform state that this texture is the current one bound.
     state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);
+#else
+    osg::notify(osg::NOTICE)<<"Warning: Texture1D::copyTexImage1D(..) not supported."<<std::endl;
+#endif
 }
 
 void Texture1D::copyTexSubImage1D(State& state, int xoffset, int x, int y, int width)
 {
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     const unsigned int contextID = state.getContextID();
 
     // get the texture object for the current contextID.
@@ -429,10 +441,14 @@ void Texture1D::copyTexSubImage1D(State& state, int xoffset, int x, int y, int w
         // create it upfront - simply call copyTexImage1D.
         copyTexImage1D(state,x,y,width);
     }
+#else
+    osg::notify(osg::NOTICE)<<"Warning: Texture1D::copyTexSubImage1D(..) not supported."<<std::endl;
+#endif
 }
 
 void Texture1D::allocateMipmap(State& state) const
 {
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     const unsigned int contextID = state.getContextID();
 
     // get the texture object for the current contextID.
@@ -466,4 +482,7 @@ void Texture1D::allocateMipmap(State& state) const
         // inform state that this texture is the current one bound.
         state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);        
     }
+#else
+    osg::notify(osg::NOTICE)<<"Warning: Texture1D::allocateMipmap(..) not supported."<<std::endl;
+#endif
 }

@@ -16,6 +16,10 @@
 
 #include <osg/StateAttribute>
 
+#ifndef GL_LINE_STIPPLE
+    #define GL_LINE_STIPPLE 0x0B24
+#endif
+
 namespace osg {
 
 class OSG_EXPORT LineStipple : public StateAttribute

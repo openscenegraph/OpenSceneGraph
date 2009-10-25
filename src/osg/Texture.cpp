@@ -20,6 +20,7 @@
 #include <osg/ApplicationUsage>
 #include <osg/FrameBufferObject>
 #include <osg/TextureRectangle>
+#include <osg/Texture1D>
 
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
@@ -1589,6 +1590,12 @@ void Texture::applyTexParameters(GLenum target, State& state) const
 
     if (extensions->isTextureBorderClampSupported())
     {
+
+        #ifndef GL_TEXTURE_BORDER_COLOR
+            #define GL_TEXTURE_BORDER_COLOR     0x1004
+        #endif
+
+
         if (_internalFormatType == SIGNED_INTEGER)
         {
             GLint color[4] = {(GLint)_borderColor.r(), (GLint)_borderColor.g(), (GLint)_borderColor.b(), (GLint)_borderColor.a()};
@@ -1726,22 +1733,25 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
             case GL_COMPRESSED_INTENSITY: _internalFormat = GL_INTENSITY; break;
         }
     }
-    
+
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
-    
+
     bool useClientStorage = extensions->isClientStorageSupported() && getClientStorageHint();
     if (useClientStorage)
     {
         glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE,GL_TRUE);
-        glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_PRIORITY,0.0f);
-        
+
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+            glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_PRIORITY,0.0f);
+        #endif
+
         #ifdef GL_TEXTURE_STORAGE_HINT_APPLE    
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
         #endif
     }
-    
+
     unsigned char* dataPtr = (unsigned char*)image->data();
- 
+
     // osg::notify(osg::NOTICE)<<"inwidth="<<inwidth<<" inheight="<<inheight<<" image->getFileName()"<<image->getFileName()<<std::endl;
 
     bool needImageRescale = inwidth!=image->s() || inheight!=image->t();

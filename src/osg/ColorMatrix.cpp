@@ -28,7 +28,7 @@ ColorMatrix::~ColorMatrix()
 
 void ColorMatrix::apply(State& state) const
 {
-#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
+#if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
     unsigned int contextID = state.getContextID();
     
     static bool s_ARB_imaging = isGLExtensionSupported(contextID,"GL_ARB_imaging");

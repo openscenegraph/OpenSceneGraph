@@ -18,6 +18,10 @@
 
 #include <osg/Texture>
 
+#ifndef GL_TEXTURE_1D
+    #define GL_TEXTURE_1D 0x0DE0
+#endif
+
 namespace osg {
 
 /** Encapsulates OpenGl 1D texture functionality. Doesn't support cube maps,

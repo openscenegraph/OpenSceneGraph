@@ -17,12 +17,22 @@
 #include <osg/Plane>
 #include <osg/StateAttribute>
 
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+    #define GL_OBJECT_LINEAR    0x2401
+    #define GL_EYE_LINEAR       0x2400
+    #define GL_SPHERE_MAP       0x2402
+    #define GL_TEXTURE_GEN_S    0x0C60
+    #define GL_TEXTURE_GEN_T    0x0C61
+    #define GL_TEXTURE_GEN_R    0x0C62
+    #define GL_TEXTURE_GEN_Q    0x0C63
+#endif
+
 #ifndef GL_NORMAL_MAP_ARB
-#define GL_NORMAL_MAP_ARB                   0x8511
+    #define GL_NORMAL_MAP_ARB                   0x8511
 #endif
 
 #ifndef GL_REFLECTION_MAP_ARB
-#define GL_REFLECTION_MAP_ARB               0x8512
+    #define GL_REFLECTION_MAP_ARB               0x8512
 #endif
 
 namespace osg {

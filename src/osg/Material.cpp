@@ -353,9 +353,12 @@ void Material::setAlpha(Face face,float alpha)
 void Material::apply(State&) const
 {
 #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
+
+#ifdef OSG_GL1_AVAILABLE
     if (_colorMode==OFF)
     {
         glDisable(GL_COLOR_MATERIAL);
+
         glColor4fv(_diffuseFront.ptr());
     }
     else
@@ -372,6 +375,7 @@ void Material::apply(State&) const
             case(OFF): break;
         }
     }
+#endif
 
     if (_colorMode!=AMBIENT && _colorMode!=AMBIENT_AND_DIFFUSE)
     {

@@ -16,6 +16,25 @@
 
 #include <osg/StateAttribute>
 
+#ifndef OSG_GL_FIXED_FUNCTION_AVAILABLE
+    #define GL_CLEAR            0x1500
+    #define GL_SET              0x150F
+    #define GL_COPY             0x1503
+    #define GL_COPY_INVERTED    0x150C
+    #define GL_NOOP             0x1505
+    #define GL_AND              0x1501
+    #define GL_NAND             0x150E
+    #define GL_OR               0x1507
+    #define GL_NOR              0x1508
+    #define GL_XOR              0x1506
+    #define GL_EQUIV            0x1509
+    #define GL_AND_REVERSE      0x1502
+    #define GL_AND_INVERTED     0x1504
+    #define GL_OR_REVERSE       0x150B
+    #define GL_OR_INVERTED      0x150D
+    #define GL_COLOR_LOGIC_OP   0x0BF2
+#endif
+
 namespace osg {
 
 /** Encapsulates OpenGL LogicOp state. */

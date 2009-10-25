@@ -144,8 +144,18 @@
     #define GL_CLAMP_TO_EDGE                  0x812F
 #endif
 
+#ifndef GL_CLAMP
+    // OpenGL ES1 and ES2 doesn't provide GL_CLAMP but has GL_CLAMP_TO_EDGE
+    #define GL_CLAMP GL_CLAMP_TO_EDGE
+#endif
+
 #ifndef GL_CLAMP_TO_BORDER_ARB
     #define GL_CLAMP_TO_BORDER_ARB            0x812D
+#endif
+
+#ifndef GL_INTENSITY
+    // OpenGL ES1 and ES2 doesn't provide GL_INTENSITY
+    #define GL_INTENSITY 0x8049
 #endif
 
 #ifndef GL_GENERATE_MIPMAP_SGIS

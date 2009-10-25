@@ -18,6 +18,13 @@
 #include <osg/StateAttribute>
 #include <osg/Vec4>
 
+#ifndef OSG_GL_FIXED_FUNCTION_AVAILABLE
+    #define GL_MODULATE         0x2100
+    #define GL_ADD              0x0104
+    #define GL_MODULATE         0x2100
+    #define GL_DECAL            0x2101
+#endif
+
 namespace osg {
 
 /** TexEnv encapsulates the OpenGL glTexEnv (texture environment) state.

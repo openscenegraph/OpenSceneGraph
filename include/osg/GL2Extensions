@@ -32,9 +32,12 @@
     #define GL_SAMPLER_2D_ARRAY_SHADOW_EXT    0x8DC4
 #endif
 
-#ifndef GL_VERSION_2_0
-#define GL_VERSION_2_0 1
+#if !defined(GL_VERSION_2_0)
 typedef char GLchar;
+#endif
+
+#if !defined(GL_VERSION_2_0) && !defined(GL_ES_VERSION_2_0)
+#define GL_VERSION_2_0 1
 #define GL_BLEND_EQUATION_RGB             GL_BLEND_EQUATION
 #define GL_VERTEX_ATTRIB_ARRAY_ENABLED    0x8622
 #define GL_VERTEX_ATTRIB_ARRAY_SIZE       0x8623

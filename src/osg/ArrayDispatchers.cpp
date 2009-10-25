@@ -400,15 +400,19 @@ void ArrayDispatchers::init()
     _secondaryColorDispatchers  = new AttributeDispatchMap(&(_state->getGLBeginEndAdapter()));
     _fogCoordDispatchers = new AttributeDispatchMap(&(_state->getGLBeginEndAdapter()));
 
-    Drawable::Extensions* extensions = Drawable::getExtensions(_state->getContextID(),true);
     _glBeginEndAdapter = &(_state->getGLBeginEndAdapter());
     _useGLBeginEndAdapter = false;
 
-    _vertexDispatchers->assign<GLfloat>(Array::Vec2ArrayType, glVertex2fv, 2);
-    _vertexDispatchers->assign<GLfloat>(Array::Vec3ArrayType, glVertex3fv, 3);
-    _vertexDispatchers->assign<GLdouble>(Array::Vec2dArrayType, glVertex2dv, 2);
-    _vertexDispatchers->assign<GLdouble>(Array::Vec3dArrayType, glVertex3dv, 3);
-    _vertexDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec3ArrayType, &GLBeginEndAdapter::Vertex3fv, 3);
+#ifdef OSG_GL_VERTEX_FUNCS_AVAILABLE
+    Drawable::Extensions* extensions = Drawable::getExtensions(_state->getContextID(),true);
+
+    #ifndef OSG_GLES1_AVAILABLE
+        _vertexDispatchers->assign<GLfloat>(Array::Vec2ArrayType, glVertex2fv, 2);
+        _vertexDispatchers->assign<GLfloat>(Array::Vec3ArrayType, glVertex3fv, 3);
+        _vertexDispatchers->assign<GLdouble>(Array::Vec2dArrayType, glVertex2dv, 2);
+        _vertexDispatchers->assign<GLdouble>(Array::Vec3dArrayType, glVertex3dv, 3);
+        _vertexDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec3ArrayType, &GLBeginEndAdapter::Vertex3fv, 3);
+    #endif
 
     _normalDispatchers->assign<GLbyte>(Array::Vec3bArrayType, glNormal3bv, 3);
     _normalDispatchers->assign<GLshort>(Array::Vec3sArrayType, glNormal3sv, 3);
@@ -427,6 +431,7 @@ void ArrayDispatchers::init()
     _secondaryColorDispatchers->assign<GLfloat>(Array::Vec3ArrayType, extensions->_glSecondaryColor3fv, 3);
 
     _fogCoordDispatchers->assign<GLfloat>(Array::FloatArrayType, extensions->_glFogCoordfv, 1);
+#endif
 
     // pre allocate.
     _activeDispatchList.resize(5);
@@ -483,8 +488,8 @@ AttributeDispatch* ArrayDispatchers::vertexAttribDispatcher(unsigned int unit, A
 
 void ArrayDispatchers::assignTexCoordDispatchers(unsigned int unit)
 {
+#if defined(OSG_GL_VERTEX_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
     Drawable::Extensions* extensions = Drawable::getExtensions(_state->getContextID(),true);
-
     for(unsigned int i=_texCoordDispatchers.size(); i<=unit; ++i)
     {
         _texCoordDispatchers.push_back(new AttributeDispatchMap(_glBeginEndAdapter));
@@ -512,6 +517,7 @@ void ArrayDispatchers::assignTexCoordDispatchers(unsigned int unit)
             texCoordDispatcher.targetGLBeginEndAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec4ArrayType, &GLBeginEndAdapter::MultiTexCoord4fv, 4);
         }
     }
+#endif
 }
 
 void ArrayDispatchers::assignVertexAttribDispatchers(unsigned int unit)

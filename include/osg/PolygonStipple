@@ -17,6 +17,10 @@
 
 #include <osg/StateAttribute>
 
+#ifndef GL_POLYGON_STIPPLE
+    #define GL_POLYGON_STIPPLE  0x0B42
+#endif
+
 namespace osg
 {
 

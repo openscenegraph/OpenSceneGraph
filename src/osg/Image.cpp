@@ -20,14 +20,41 @@
 #include <osg/Geode>
 #include <osg/Geometry>
 #include <osg/StateSet>
+#include <osg/Texture1D>
 #include <osg/Texture2D>
 #include <osg/Texture3D>
 #include <osg/Texture2DArray>
+#include <osg/Light>
 
 #include <string.h>
 #include <stdlib.h>
 
 #include "dxtctool.h"
+
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+#define GL_BITMAP               0x1A00
+#define GL_RED                  0x1903
+#define GL_GREEN                0x1904
+#define GL_BLUE                 0x1905
+#define GL_COLOR_INDEX          0x1900
+#define GL_DEPTH_COMPONENT      0x1902
+#define GL_INTENSITY12          0x804C
+#define GL_INTENSITY16          0x804D
+#define GL_INTENSITY4           0x804A
+#define GL_INTENSITY8           0x804B
+#define GL_LUMINANCE12          0x8041
+#define GL_LUMINANCE12_ALPHA4   0x8046
+#define GL_LUMINANCE12_ALPHA12  0x8047
+#define GL_LUMINANCE16          0x8042
+#define GL_LUMINANCE16_ALPHA16  0x8048
+#define GL_LUMINANCE4           0x803F
+#define GL_LUMINANCE4_ALPHA4    0x8043
+#define GL_LUMINANCE6_ALPHA2    0x8044
+#define GL_LUMINANCE8           0x8040
+#define GL_LUMINANCE8_ALPHA8    0x8045
+#define GL_STENCIL_INDEX        0x1901
+#define GL_RGBA8                0x8058
+#endif
 
 using namespace osg;
 using namespace std;
@@ -682,6 +709,7 @@ void Image::readPixels(int x,int y,int width,int height,
 
 void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMapsIfAvailable, GLenum type)
 {
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     // osg::notify(osg::NOTICE)<<"Image::readImageFromCurrentTexture()"<<std::endl;
 
     const osg::Texture::Extensions* extensions = osg::Texture::getExtensions(contextID,true);
@@ -689,19 +717,15 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
     const osg::Texture2DArray::Extensions* extensions2DArray = osg::Texture2DArray::getExtensions(contextID,true);
 
     
-    GLboolean binding1D, binding2D, binding3D, binding2DArray;
+    GLboolean binding1D = GL_FALSE, binding2D = GL_FALSE, binding3D = GL_FALSE, binding2DArray = GL_FALSE;
+
     glGetBooleanv(GL_TEXTURE_BINDING_1D, &binding1D);
     glGetBooleanv(GL_TEXTURE_BINDING_2D, &binding2D);
     glGetBooleanv(GL_TEXTURE_BINDING_3D, &binding3D);
-    
-    
+
     if (extensions2DArray->isTexture2DArraySupported())
     {
         glGetBooleanv(GL_TEXTURE_BINDING_2D_ARRAY_EXT, &binding2DArray);
-    }
-    else
-    {
-        binding2DArray = GL_FALSE;
     }
 
     GLenum textureMode = binding1D ? GL_TEXTURE_1D : binding2D ? GL_TEXTURE_2D : binding3D ? GL_TEXTURE_3D : binding2DArray ? GL_TEXTURE_2D_ARRAY_EXT : 0;
@@ -873,137 +897,134 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
 
         dirty();
     }    
+#else
+    osg::notify(osg::NOTICE)<<"Warning: Image::readImageFromCurrentTexture() not supported."<<std::endl;
+#endif
 }
 
+void Image::scaleImage(int s,int t,int r, GLenum newDataType)
+{
 #ifdef OSG_GLU_AVAILABLE
-    void Image::scaleImage(int s,int t,int r, GLenum newDataType)
+    if (_s==s && _t==t && _r==r) return;
+
+    if (_data==NULL)
     {
-        if (_s==s && _t==t && _r==r) return;
+        notify(WARN) << "Error Image::scaleImage() do not succeed : cannot scale NULL image."<<std::endl;
+        return;
+    }
 
-        if (_data==NULL)
-        {
-            notify(WARN) << "Error Image::scaleImage() do not succeed : cannot scale NULL image."<<std::endl;
-            return;
-        }
-
-        if (_r!=1 || r!=1)
-        {
-            notify(WARN) << "Error Image::scaleImage() do not succeed : scaling of volumes not implemented."<<std::endl;
-            return;
-        }
+    if (_r!=1 || r!=1)
+    {
+        notify(WARN) << "Error Image::scaleImage() do not succeed : scaling of volumes not implemented."<<std::endl;
+        return;
+    }
 
 
 
-        unsigned int newTotalSize = computeRowWidthInBytes(s,_pixelFormat,newDataType,_packing)*t;
+    unsigned int newTotalSize = computeRowWidthInBytes(s,_pixelFormat,newDataType,_packing)*t;
 
-        // need to sort out what size to really use...
-        unsigned char* newData = new unsigned char [newTotalSize];
-        if (!newData)
-        {
-            // should we throw an exception???  Just return for time being.
-            notify(FATAL) << "Error Image::scaleImage() do not succeed : out of memory."<<newTotalSize<<std::endl;
-            return;
-        }
+    // need to sort out what size to really use...
+    unsigned char* newData = new unsigned char [newTotalSize];
+    if (!newData)
+    {
+        // should we throw an exception???  Just return for time being.
+        notify(FATAL) << "Error Image::scaleImage() do not succeed : out of memory."<<newTotalSize<<std::endl;
+        return;
+    }
 
-        glPixelStorei(GL_PACK_ALIGNMENT,_packing);
-        glPixelStorei(GL_UNPACK_ALIGNMENT,_packing);
+    glPixelStorei(GL_PACK_ALIGNMENT,_packing);
+    glPixelStorei(GL_UNPACK_ALIGNMENT,_packing);
 
-        GLint status = gluScaleImage(_pixelFormat,
-            _s,
-            _t,
-            _dataType,
-            _data,
-            s,
-            t,
-            newDataType,
-            newData);
+    GLint status = gluScaleImage(_pixelFormat,
+        _s,
+        _t,
+        _dataType,
+        _data,
+        s,
+        t,
+        newDataType,
+        newData);
 
-        if (status==0)
-        {
+    if (status==0)
+    {
 
-            // free old image.
-            _s = s;
-            _t = t;
-            _dataType = newDataType;
-            setData(newData,USE_NEW_DELETE);
-        }
-        else
-        {
-        delete [] newData;
+        // free old image.
+        _s = s;
+        _t = t;
+        _dataType = newDataType;
+        setData(newData,USE_NEW_DELETE);
+    }
+    else
+    {
+    delete [] newData;
 
-            notify(WARN) << "Error Image::scaleImage() did not succeed : errorString = "<<gluErrorString((GLenum)status)<<std::endl;
-        }
+        notify(WARN) << "Error Image::scaleImage() did not succeed : errorString = "<<gluErrorString((GLenum)status)<<std::endl;
+    }
 
-        dirty();
+    dirty();
+#else
+    osg::notify(osg::NOTICE)<<"Warning: Image::scaleImage(int s,int t,int r, GLenum newDataType) not supported."<<std::endl;
+#endif
+}
+
+void Image::copySubImage(int s_offset, int t_offset, int r_offset, const osg::Image* source)
+{
+#ifdef OSG_GLU_AVAILABLE
+    if (!source) return;
+    if (s_offset<0 || t_offset<0 || r_offset<0)
+    {
+        notify(WARN)<<"Warning: negative offsets passed to Image::copySubImage(..) not supported, operation ignored."<<std::endl;
+        return;
+    }
+
+    if (!_data)
+    {
+        notify(INFO)<<"allocating image"<<endl;
+        allocateImage(s_offset+source->s(),t_offset+source->t(),r_offset+source->r(),
+                    source->getPixelFormat(),source->getDataType(),
+                    source->getPacking());
+    }
+
+    if (s_offset>=_s || t_offset>=_t  || r_offset>=_r)
+    {
+        notify(WARN)<<"Warning: offsets passed to Image::copySubImage(..) outside destination image, operation ignored."<<std::endl;
+        return;
+    }
+
+
+    if (_pixelFormat != source->getPixelFormat())
+    {
+        notify(WARN)<<"Warning: image with an incompatible pixel formats passed to Image::copySubImage(..), operation ignored."<<std::endl;
+        return;
+    }
+
+    void* data_destination = data(s_offset,t_offset,r_offset);
+
+    glPixelStorei(GL_PACK_ALIGNMENT,source->getPacking());
+    glPixelStorei(GL_PACK_ROW_LENGTH,_s);
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT,_packing);
+
+    GLint status = gluScaleImage(_pixelFormat,
+        source->s(),
+        source->t(),
+        source->getDataType(),
+        source->data(),
+        source->s(),
+        source->t(),
+        _dataType,
+        data_destination);
+
+    glPixelStorei(GL_PACK_ROW_LENGTH,0);
+
+    if (status!=0)
+    {
+        notify(WARN) << "Error Image::scaleImage() do not succeed : errorString = "<<gluErrorString((GLenum)status)<<std::endl;
     }
 #else
-    void Image::scaleImage(int,int,int, GLenum)
-    {
-        osg::notify(osg::NOTICE)<<"Warning: Image::scaleImage(int s,int t,int r, GLenum newDataType) not supported."<<std::endl;
-    }
+    osg::notify(osg::NOTICE)<<"Warning: Image::copySubImage(int, int, int, const osg::Image*)) not supported."<<std::endl;
 #endif
-
-#ifdef OSG_GLU_AVAILABLE
-    void Image::copySubImage(int s_offset, int t_offset, int r_offset, const osg::Image* source)
-    {
-        if (!source) return;
-        if (s_offset<0 || t_offset<0 || r_offset<0)
-        {
-            notify(WARN)<<"Warning: negative offsets passed to Image::copySubImage(..) not supported, operation ignored."<<std::endl;
-            return;
-        }
-
-        if (!_data)
-        {
-            notify(INFO)<<"allocating image"<<endl;
-            allocateImage(s_offset+source->s(),t_offset+source->t(),r_offset+source->r(),
-                        source->getPixelFormat(),source->getDataType(),
-                        source->getPacking());
-        }
-
-        if (s_offset>=_s || t_offset>=_t  || r_offset>=_r)
-        {
-            notify(WARN)<<"Warning: offsets passed to Image::copySubImage(..) outside destination image, operation ignored."<<std::endl;
-            return;
-        }
-
-
-        if (_pixelFormat != source->getPixelFormat())
-        {
-            notify(WARN)<<"Warning: image with an incompatible pixel formats passed to Image::copySubImage(..), operation ignored."<<std::endl;
-            return;
-        }
-
-        void* data_destination = data(s_offset,t_offset,r_offset);
-
-        glPixelStorei(GL_PACK_ALIGNMENT,source->getPacking());
-        glPixelStorei(GL_PACK_ROW_LENGTH,_s);
-
-        glPixelStorei(GL_UNPACK_ALIGNMENT,_packing);
-
-        GLint status = gluScaleImage(_pixelFormat,
-            source->s(),
-            source->t(),
-            source->getDataType(),
-            source->data(),
-            source->s(),
-            source->t(),
-            _dataType,
-            data_destination);
-
-        glPixelStorei(GL_PACK_ROW_LENGTH,0);
-
-        if (status!=0)
-        {
-            notify(WARN) << "Error Image::scaleImage() do not succeed : errorString = "<<gluErrorString((GLenum)status)<<std::endl;
-        }
-    }
-#else
-    void Image::copySubImage(int, int, int, const osg::Image*)
-    {
-        osg::notify(osg::NOTICE)<<"Warning: Image::copySubImage(int, int, int, const osg::Image*)) not supported."<<std::endl;
-    }
-#endif
+}
 
 void Image::flipHorizontal()
 {

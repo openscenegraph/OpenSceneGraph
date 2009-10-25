@@ -14,8 +14,7 @@
 #ifndef OSG_TEXENVCOMBINE
 #define OSG_TEXENVCOMBINE 1
 
-#include <osg/GL>
-#include <osg/StateAttribute>
+#include <osg/TexEnv>
 #include <osg/Vec3>
 #include <osg/Vec4>
 

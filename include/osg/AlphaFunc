@@ -16,6 +16,10 @@
 
 #include <osg/StateAttribute>
 
+#ifndef GL_ALPHA_TEST
+    #define GL_ALPHA_TEST 0x0BC0
+#endif
+
 namespace osg {
 
 /** Encapsulates OpenGL glAlphaFunc.

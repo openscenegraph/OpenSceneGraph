@@ -52,8 +52,10 @@ class OSG_EXPORT PolygonOffset : public StateAttribute
         virtual bool getModeUsage(StateAttribute::ModeUsage& usage) const
         {
             usage.usesMode(GL_POLYGON_OFFSET_FILL);
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
             usage.usesMode(GL_POLYGON_OFFSET_LINE);
             usage.usesMode(GL_POLYGON_OFFSET_POINT);
+#endif
             return true;
         }
 

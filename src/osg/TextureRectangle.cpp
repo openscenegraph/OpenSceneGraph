@@ -296,9 +296,12 @@ void TextureRectangle::applyTexImage_load(GLenum target, Image* image, State& st
     if (useClientStorage)
     {
         glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE,GL_TRUE);
-        glTexParameterf(target,GL_TEXTURE_PRIORITY,0.0f);
-        
-        #ifdef GL_TEXTURE_STORAGE_HINT_APPLE    
+
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+            glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_PRIORITY,0.0f);
+        #endif
+
+        #ifdef GL_TEXTURE_STORAGE_HINT_APPLE
             glTexParameteri(target, GL_TEXTURE_STORAGE_HINT_APPLE , GL_STORAGE_CACHED_APPLE);
         #endif
     }

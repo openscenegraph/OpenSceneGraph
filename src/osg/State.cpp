@@ -739,7 +739,6 @@ void State::disableAllVertexArrays()
     disableVertexAttribPointersAboveAndIncluding(0);
     disableColorPointer();
     disableFogCoordPointer();
-    disableIndexPointer();
     disableNormalPointer();
     disableSecondaryColorPointer();
 }
@@ -751,7 +750,6 @@ void State::dirtyAllVertexArrays()
     dirtyVertexAttribPointersAboveAndIncluding(0);
     dirtyColorPointer();
     dirtyFogCoordPointer();
-    dirtyIndexPointer();
     dirtyNormalPointer();
     dirtySecondaryColorPointer();
 }
@@ -760,7 +758,11 @@ void State::setInterleavedArrays( GLenum format, GLsizei stride, const GLvoid* p
 {
     disableAllVertexArrays();
 
+#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
+
     glInterleavedArrays( format, stride, pointer);
+
+#endif
 
     // the crude way, assume that all arrays have been effected so dirty them and
     // disable them...
@@ -848,6 +850,7 @@ bool State::setActiveTextureUnit( unsigned int unit )
 
 void State::setFogCoordPointer(GLenum type, GLsizei stride, const GLvoid *ptr)
 {
+#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
     if (_useVertexAttributeAliasing)
     {
         setVertexAttribPointer(_fogCoordAlias._location, 1, type, GL_FALSE, stride, ptr);
@@ -871,11 +874,15 @@ void State::setFogCoordPointer(GLenum type, GLsizei stride, const GLvoid *ptr)
             _fogArray._dirty = false;
         }
     }
+#else
+        setVertexAttribPointer(_fogCoordAlias._location, 1, type, GL_FALSE, stride, ptr);
+#endif
 }
 
 void State::setSecondaryColorPointer( GLint size, GLenum type,
                                       GLsizei stride, const GLvoid *ptr )
 {
+#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
     if (_useVertexAttributeAliasing)
     {
         setVertexAttribPointer(_secondaryColorAlias._location, size, type, GL_FALSE, stride, ptr);
@@ -898,6 +905,9 @@ void State::setSecondaryColorPointer( GLint size, GLenum type,
             _secondaryColorArray._dirty = false;
         }
     }
+#else
+        setVertexAttribPointer(_secondaryColorAlias._location, size, type, GL_FALSE, stride, ptr);
+#endif
 }
 
 /** wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribPointerARB(..);
@@ -978,7 +988,6 @@ void State::lazyDisablingOfVertexAttributes()
         _normalArray._lazy_disable = true;
         _colorArray._lazy_disable = true;
         _secondaryColorArray._lazy_disable = true;
-        _indexArray._lazy_disable = true;
         _fogArray._lazy_disable = true;
         for(EnabledTexCoordArrayList::iterator itr = _texCoordArrayList.begin();
             itr != _texCoordArrayList.end();
@@ -1005,7 +1014,6 @@ void State::applyDisablingOfVertexAttributes()
         if (_normalArray._lazy_disable) disableNormalPointer();
         if (_colorArray._lazy_disable) disableColorPointer();
         if (_secondaryColorArray._lazy_disable) disableSecondaryColorPointer();
-        if (_indexArray._lazy_disable) disableIndexPointer();
         if (_fogArray._lazy_disable) disableFogCoordPointer();
         for(unsigned int i=0; i<_texCoordArrayList.size(); ++i)
         {
@@ -1202,10 +1210,11 @@ void State::applyProjectionMatrix(const osg::RefMatrix* matrix)
             if (_projectionMatrixUniform.valid()) _projectionMatrixUniform->set(*_projection);
             updateModelViewAndProjectionMatrixUniforms();
         }
-
+#ifdef OSG_GL_MATRICES_AVAILABLE
         glMatrixMode( GL_PROJECTION );
             glLoadMatrix(_projection->ptr());
         glMatrixMode( GL_MODELVIEW );
+#endif
     }
 }
 
@@ -1228,7 +1237,9 @@ void State::applyModelViewMatrix(const osg::RefMatrix* matrix)
             updateModelViewAndProjectionMatrixUniforms();
         }
 
+#ifdef OSG_GL_MATRICES_AVAILABLE
         glLoadMatrix(_modelView->ptr());
+#endif
     }
 }
 

@@ -24,6 +24,12 @@
     #define GL_FRAGMENT_DEPTH   0x8452
 #endif
 
+#ifndef GL_FOG
+    #define GL_FOG 0x0B60
+    #define GL_EXP      0x0800
+    #define GL_EXP2     0x0801
+#endif
+
 namespace osg {
 
 

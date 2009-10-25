@@ -18,6 +18,10 @@
 #include <osg/Plane>
 #include <osg/StateAttribute>
 
+#ifndef GL_CLIP_PLANE0
+    #define GL_CLIP_PLANE0 0x3000
+#endif
+
 namespace osg {
 
 /** Encapsulates OpenGL glClipPlane().

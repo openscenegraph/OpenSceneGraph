@@ -17,6 +17,15 @@
 #include <osg/Vec4>
 #include <osg/StateAttribute>
 
+#ifndef OSG_GL_FIXED_FUNCTION_AVAILABLE
+    #define GL_AMBIENT                  0x1200
+    #define GL_DIFFUSE                  0x1201
+    #define GL_SPECULAR                 0x1202
+    #define GL_EMISSION                 0x1600
+    #define GL_AMBIENT_AND_DIFFUSE      0x1602
+    #define GL_COLOR_MATERIAL           0x0B57
+#endif
+
 namespace osg {
 /** Material - encapsulates OpenGL glMaterial state.*/
 class OSG_EXPORT Material : public StateAttribute

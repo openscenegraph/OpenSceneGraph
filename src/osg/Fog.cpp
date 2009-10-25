@@ -38,7 +38,13 @@ Fog::~Fog()
 void Fog::apply(State& state) const
 {
 #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
+
+#ifdef OSG_GLES1_AVAILABLE
+    #define glFogi glFogx
+#endif
+
     glFogi( GL_FOG_MODE,     _mode );
+
     glFogf( GL_FOG_DENSITY,  _density );
     glFogf( GL_FOG_START,    _start );
     glFogf( GL_FOG_END,      _end );

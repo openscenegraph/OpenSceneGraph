@@ -21,11 +21,14 @@
 #include <osg/CullFace>
 #include <osg/FrontFace>
 #include <osg/PolygonMode>
+#include <osg/Material>
 #include <osg/BlendFunc>
 #include <osg/Depth>
 #include <osg/Drawable>
 #include <osg/Node>
 
+#include <osg/TexGen>
+#include <osg/Texture1D>
 #include <osg/TextureCubeMap>
 #include <osg/TextureRectangle>
 #include <osg/Texture2DArray>
@@ -789,7 +792,7 @@ void StateSet::setMode(StateAttribute::GLMode mode, StateAttribute::GLModeValue 
     {
         notify(NOTICE)<<"Error: Setting mode 'GL_COLOR_MATERIAL' via osg::StateSet::setMode(mode,value) ignored.\n";
         notify(NOTICE)<<"       The mode 'GL_COLOR_MATERIAL' is set by the osg::Material StateAttribute.\n";
-        notify(NOTICE)<<"       Setting this as a mode fools osg's State tracking."<<std::endl;
+        notify(NOTICE)<<"       Setting this mode would confuse osg's State tracking."<<std::endl;
     }
     else
     {
@@ -811,7 +814,7 @@ void StateSet::removeMode(StateAttribute::GLMode mode)
     {
         notify(NOTICE)<<"Error: Setting mode 'GL_COLOR_MATERIAL' via osg::StateSet::removeMode(mode) ignored.\n";
         notify(NOTICE)<<"       The mode 'GL_COLOR_MATERIAL' is set by the osg::Material StateAttribute.\n";
-        notify(NOTICE)<<"       Setting this as a mode fools osg's State tracking."<<std::endl;
+        notify(NOTICE)<<"       Setting this mode would confuse osg's State tracking."<<std::endl;
     }
     else
     {

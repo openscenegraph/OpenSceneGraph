@@ -29,6 +29,15 @@
 #include <string>
 #include <vector>
 
+#ifndef GL_SAMPLER_1D
+    #define GL_SAMPLER_1D               0x8B5D
+    #define GL_SAMPLER_2D               0x8B5E
+    #define GL_SAMPLER_3D               0x8B5F
+    #define GL_SAMPLER_1D_SHADOW        0x8B61
+    #define GL_SAMPLER_2D_SHADOW        0x8B62
+#endif
+
+
 namespace osg {
 
 // forward declare

@@ -17,6 +17,10 @@
 #include <osg/Vec3>
 #include <osg/StateAttribute>
 
+#ifndef GL_POINT_SMOOTH
+    #define GL_POINT_SMOOTH     0x0B10
+#endif
+
 namespace osg {
 
 /** Point - encapsulates the OpenGL point smoothing and size state.*/

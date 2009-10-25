@@ -19,6 +19,11 @@
 
 namespace osg {
 
+#ifndef OSG_GL_FIXED_FUNCTION_AVAILABLE
+    #define GL_FLAT     0x1D00
+    #define GL_SMOOTH   0x1D01
+#endif
+
 /** Class which encapsulates glShadeModel(..).
 */     
 class OSG_EXPORT ShadeModel : public StateAttribute

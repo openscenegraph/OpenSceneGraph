@@ -18,6 +18,14 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 
+#ifndef GL_LIGHT0
+    #define GL_LIGHT0 0x4000
+#endif
+
+#ifndef GL_LIGHTING
+    #define GL_LIGHTING 0x0B50
+#endif
+
 namespace osg {
 
 /** Light state class which encapsulates OpenGL glLight() functionality. */

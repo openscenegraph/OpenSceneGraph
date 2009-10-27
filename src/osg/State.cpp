@@ -758,10 +758,10 @@ void State::setInterleavedArrays( GLenum format, GLsizei stride, const GLvoid* p
 {
     disableAllVertexArrays();
 
-#ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
-
+#if defined(OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
     glInterleavedArrays( format, stride, pointer);
-
+#else
+    osg::notify(osg::NOTICE)<<"Warning: State::setInterleavedArrays(..) not implemented."<<std::endl;    
 #endif
 
     // the crude way, assume that all arrays have been effected so dirty them and

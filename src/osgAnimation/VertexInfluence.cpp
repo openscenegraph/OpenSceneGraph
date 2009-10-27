@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -10,7 +10,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
-*/
+ */
 
 #include <osgAnimation/VertexInfluence>
 #include <osg/Notify>
@@ -19,10 +19,11 @@
 
 using namespace osgAnimation;
 
-const osgAnimation::VertexInfluenceSet::VertexIndexToBoneWeightMap& osgAnimation::VertexInfluenceSet::getVertexToBoneList() const { return _vertex2Bones;}
+void VertexInfluenceSet::addVertexInfluence(const VertexInfluence& v) { _bone2Vertexes.push_back(v); }
+const VertexInfluenceSet::VertexIndexToBoneWeightMap& VertexInfluenceSet::getVertexToBoneList() const { return _vertex2Bones;}
 // this class manage VertexInfluence database by mesh
 // reference bones per vertex ...
-void osgAnimation::VertexInfluenceSet::buildVertex2BoneList()
+void VertexInfluenceSet::buildVertex2BoneList()
 {
     _vertex2Bones.clear();
     for (BoneToVertexList::const_iterator it = _bone2Vertexes.begin(); it != _bone2Vertexes.end(); it++) 
@@ -35,7 +36,7 @@ void osgAnimation::VertexInfluenceSet::buildVertex2BoneList()
             int index = viw.first;
             float weight = viw.second;
             if (vi.getName().empty())
-                osg::notify(osg::WARN) << "osgAnimation::VertexInfluenceSet::buildVertex2BoneList warning vertex " << index << " is not assigned to a bone" << std::endl;
+                osg::notify(osg::WARN) << "VertexInfluenceSet::buildVertex2BoneList warning vertex " << index << " is not assigned to a bone" << std::endl;
             _vertex2Bones[index].push_back(BoneWeight(vi.getName(), weight));
         }
     }
@@ -64,10 +65,10 @@ void osgAnimation::VertexInfluenceSet::buildVertex2BoneList()
 
 
 // sort by name and weight
-struct SortByNameAndWeight : public std::less<osgAnimation::VertexInfluenceSet::BoneWeight>
+struct SortByNameAndWeight : public std::less<VertexInfluenceSet::BoneWeight>
 {
-    bool operator()(const osgAnimation::VertexInfluenceSet::BoneWeight& b0, 
-                    const osgAnimation::VertexInfluenceSet::BoneWeight& b1) const 
+    bool operator()(const VertexInfluenceSet::BoneWeight& b0, 
+                    const VertexInfluenceSet::BoneWeight& b1) const 
     {
         if (b0.getBoneName() < b1.getBoneName())
             return true;
@@ -79,10 +80,10 @@ struct SortByNameAndWeight : public std::less<osgAnimation::VertexInfluenceSet::
     }
 };
 
-struct SortByBoneWeightList : public std::less<osgAnimation::VertexInfluenceSet::BoneWeightList>
+struct SortByBoneWeightList : public std::less<VertexInfluenceSet::BoneWeightList>
 {
-    bool operator()(const osgAnimation::VertexInfluenceSet::BoneWeightList& b0, 
-                    const osgAnimation::VertexInfluenceSet::BoneWeightList& b1) const 
+    bool operator()(const VertexInfluenceSet::BoneWeightList& b0, 
+                    const VertexInfluenceSet::BoneWeightList& b1) const 
     {
         if (b0.size() < b1.size())
             return true;
@@ -102,7 +103,13 @@ struct SortByBoneWeightList : public std::less<osgAnimation::VertexInfluenceSet:
     }
 };
 
-void osgAnimation::VertexInfluenceSet::buildUniqVertexSetToBoneSetList()
+void VertexInfluenceSet::clear()
+{
+    _bone2Vertexes.clear(); 
+    _uniqVertexSetToBoneSet.clear();
+}
+
+void VertexInfluenceSet::buildUniqVertexSetToBoneSetList()
 {
     _uniqVertexSetToBoneSet.clear();
 
@@ -130,3 +137,4 @@ void osgAnimation::VertexInfluenceSet::buildUniqVertexSetToBoneSetList()
         _uniqVertexSetToBoneSet.push_back(it->second);
     }
 }
+

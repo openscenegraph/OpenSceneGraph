@@ -13,40 +13,52 @@
 */
 
 #include <osgAnimation/Action>
+#include <osgAnimation/ActionBlendIn>
+#include <osgAnimation/ActionBlendOut>
+#include <osgAnimation/ActionStripAnimation>
+#include <osgAnimation/ActionAnimation>
 #include <osgAnimation/ActionVisitor>
 #include <osgAnimation/Timeline>
 
-osgAnimation::ActionVisitor::ActionVisitor()
+using namespace osgAnimation;
+
+ActionVisitor::ActionVisitor()
 {
     _currentLayer = 0;
 }
-void osgAnimation::ActionVisitor::pushFrameActionOnStack(const FrameAction& fa) { _stackFrameAction.push_back(fa); }
-void osgAnimation::ActionVisitor::popFrameAction() { _stackFrameAction.pop_back(); }
-void osgAnimation::ActionVisitor::pushTimelineOnStack(Timeline* tm) { _stackTimeline.push_back(tm); }
-void osgAnimation::ActionVisitor::popTimeline() { _stackTimeline.pop_back(); }
-void osgAnimation::ActionVisitor::apply(Action& action) { traverse(action); }
-void osgAnimation::ActionVisitor::apply(Timeline& tm) { tm.traverse(*this); }
-void osgAnimation::ActionVisitor::apply(BlendIn& action) { apply(static_cast<Action&>(action));}
-void osgAnimation::ActionVisitor::apply(BlendOut& action) { apply(static_cast<Action&>(action)); }
-void osgAnimation::ActionVisitor::apply(ActionAnimation& action) { apply(static_cast<Action&>(action)); }
-void osgAnimation::ActionVisitor::apply(StripAnimation& action) { apply(static_cast<Action&>(action)); }
-void osgAnimation::ActionVisitor::traverse(Action& action)
+void ActionVisitor::pushFrameActionOnStack(const FrameAction& fa) { _stackFrameAction.push_back(fa); }
+void ActionVisitor::popFrameAction() { _stackFrameAction.pop_back(); }
+void ActionVisitor::pushTimelineOnStack(Timeline* tm) { _stackTimeline.push_back(tm); }
+void ActionVisitor::popTimeline() { _stackTimeline.pop_back(); }
+void ActionVisitor::apply(Action& action) { traverse(action); }
+void ActionVisitor::apply(Timeline& tm) { tm.traverse(*this); }
+void ActionVisitor::apply(ActionBlendIn& action) { apply(static_cast<Action&>(action));}
+void ActionVisitor::apply(ActionBlendOut& action) { apply(static_cast<Action&>(action)); }
+void ActionVisitor::apply(ActionAnimation& action) { apply(static_cast<Action&>(action)); }
+void ActionVisitor::apply(ActionStripAnimation& action) { apply(static_cast<Action&>(action)); }
+void ActionVisitor::traverse(Action& action)
 {
     action.traverse(*this);
 }
 
-osgAnimation::Timeline* osgAnimation::ActionVisitor::getCurrentTimeline()
+Timeline* ActionVisitor::getCurrentTimeline()
 {
     if (_stackTimeline.empty())
         return 0;
     return _stackTimeline.back();
 }
 
-osgAnimation::UpdateActionVisitor::UpdateActionVisitor() { _frame = 0; }
-
-
-void osgAnimation::UpdateActionVisitor::apply(Timeline& tm)
+UpdateActionVisitor::UpdateActionVisitor() 
 {
+    _frame = 0; 
+    _currentAnimationPriority = 0;
+}
+
+
+void UpdateActionVisitor::apply(Timeline& tm)
+{
+    _currentAnimationPriority = 0;
+
     tm.setEvaluating(true);
 
     tm.traverse(*this);
@@ -56,7 +68,7 @@ void osgAnimation::UpdateActionVisitor::apply(Timeline& tm)
     tm.setLastFrameEvaluated(_frame);
 }
 
-bool osgAnimation::UpdateActionVisitor::isActive(Action& action) const
+bool UpdateActionVisitor::isActive(Action& action) const
 {
     FrameAction fa = _stackFrameAction.back();
     if (_frame < fa.first)
@@ -70,12 +82,12 @@ bool osgAnimation::UpdateActionVisitor::isActive(Action& action) const
     return action.evaluateFrame(f, frameInAction, loopDone);
 }
 
-unsigned int osgAnimation::UpdateActionVisitor::getLocalFrame() const
+unsigned int UpdateActionVisitor::getLocalFrame() const
 {
     return _frame - _stackFrameAction.back().first;
 }
 
-void osgAnimation::UpdateActionVisitor::apply(Action& action)
+void UpdateActionVisitor::apply(Action& action)
 {
     if (isActive(action))
     {
@@ -102,7 +114,7 @@ void osgAnimation::UpdateActionVisitor::apply(Action& action)
     }
 }
 
-void osgAnimation::UpdateActionVisitor::apply(BlendIn& action)
+void UpdateActionVisitor::apply(ActionBlendIn& action)
 {
     if (isActive(action)) 
     {
@@ -112,7 +124,7 @@ void osgAnimation::UpdateActionVisitor::apply(BlendIn& action)
     }
 }
 
-void osgAnimation::UpdateActionVisitor::apply(BlendOut& action)
+void UpdateActionVisitor::apply(ActionBlendOut& action)
 {
     if (isActive(action)) 
     {
@@ -122,17 +134,18 @@ void osgAnimation::UpdateActionVisitor::apply(BlendOut& action)
     }
 }
 
-void osgAnimation::UpdateActionVisitor::apply(ActionAnimation& action)
+void UpdateActionVisitor::apply(ActionAnimation& action)
 {
-    if (isActive(action)) 
+    if (isActive(action))
     {
         unsigned int frame = getLocalFrame();
         apply(static_cast<Action&>(action));
-        action.updateAnimation(frame, getCurrentLayer());
+//        action.updateAnimation(frame, getCurrentLayer());
+        action.updateAnimation(frame, -_currentAnimationPriority++);
     }
 }
 
-void osgAnimation::UpdateActionVisitor::apply(StripAnimation& action)
+void UpdateActionVisitor::apply(ActionStripAnimation& action)
 {
     if (isActive(action))
     {
@@ -143,18 +156,18 @@ void osgAnimation::UpdateActionVisitor::apply(StripAnimation& action)
 
 
 
-osgAnimation::ClearActionVisitor::ClearActionVisitor(ClearType type) : _clearType(type)
+ClearActionVisitor::ClearActionVisitor(ClearType type) : _clearType(type)
 {
 }
 
-void osgAnimation::ClearActionVisitor::apply(Timeline& tm)
+void ClearActionVisitor::apply(Timeline& tm)
 {
     _remove.clear();
     tm.traverse(*this);
     for (int i = 0; i < (int)_remove.size(); i++)
         tm.removeAction(_remove[i].get());
 }
-void osgAnimation::ClearActionVisitor::apply(Action& action)
+void ClearActionVisitor::apply(Action& action)
 {
     FrameAction fa = _stackFrameAction.back();
     switch( _clearType) {

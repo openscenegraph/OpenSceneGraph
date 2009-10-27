@@ -1,70 +1,75 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- * Authors:
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
  * 
- * Cedric Pinson <mornifle@plopbyte.net>
- *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
  */
+
 #include <osgAnimation/RigGeometry>
+#include <osgAnimation/RigTransformSoftware>
+#include <sstream>
+#include <osg/GL2Extensions>
 
 using namespace osgAnimation;
 
 RigGeometry::RigGeometry()
 {
-    setUseDisplayList(false);
+    _supportsDisplayList = false;
+    setUseVertexBufferObjects(true);
     setUpdateCallback(new UpdateVertex);
     setDataVariance(osg::Object::DYNAMIC);
     _needToComputeMatrix = true;
     _matrixFromSkeletonToGeometry = _invMatrixFromSkeletonToGeometry = osg::Matrix::identity();
+
+    // disable the computation of boundingbox for the rig mesh
+    setComputeBoundingBoxCallback(new ComputeBoundingBoxCallback);
 }
 
 RigGeometry::RigGeometry(const osg::Geometry& b) : osg::Geometry(b, osg::CopyOp::SHALLOW_COPY)
 {
-    setUseDisplayList(false);
+    _supportsDisplayList = false;
+    setUseVertexBufferObjects(true);
     setUpdateCallback(new UpdateVertex);
     setDataVariance(osg::Object::DYNAMIC);
     _needToComputeMatrix = true;
     _matrixFromSkeletonToGeometry = _invMatrixFromSkeletonToGeometry = osg::Matrix::identity();
+
+    // disable the computation of boundingbox for the rig mesh
+    setComputeBoundingBoxCallback(new ComputeBoundingBoxCallback);
 }
 
-RigGeometry::RigGeometry(const RigGeometry& b, const osg::CopyOp& copyop) : 
+RigGeometry::RigGeometry(const RigGeometry& b, const osg::CopyOp& copyop) :
     osg::Geometry(b,copyop),
-    _positionSource(b._positionSource),
-    _normalSource(b._normalSource),
     _vertexInfluenceSet(b._vertexInfluenceSet),
     _vertexInfluenceMap(b._vertexInfluenceMap),
-    _transformVertexes(b._transformVertexes),
-    _needToComputeMatrix(b._needToComputeMatrix) 
+    _needToComputeMatrix(b._needToComputeMatrix)
 {
+    // we dont copy the RigImplementation yet. because the RigImplementation need to be initialized in a valid graph, with a skeleton ...
+    // dont know yet what to do with a clone of a RigGeometry
 }
 
-void RigGeometry::buildTransformer(Skeleton* root)
+
+const osg::Matrix& RigGeometry::getMatrixFromSkeletonToGeometry() const { return _matrixFromSkeletonToGeometry; }
+const osg::Matrix& RigGeometry::getInvMatrixFromSkeletonToGeometry() const { return _invMatrixFromSkeletonToGeometry;}
+
+
+void RigGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
 {
-    Bone::BoneMap bm = root->getBoneMap();
-    _transformVertexes.init(bm, _vertexInfluenceSet.getUniqVertexSetToBoneSetList());
-    _root = root;
+    osg::Geometry::drawImplementation(renderInfo);
 }
 
-void RigGeometry::buildVertexSet() 
+void RigGeometry::buildVertexInfluenceSet()
 {
-    if (!_vertexInfluenceMap.valid()) 
+    if (!_vertexInfluenceMap.valid())
     {
-        osg::notify(osg::WARN) << "buildVertexSet can't be called without VertexInfluence already set to the RigGeometry ( " << getName() << " ) " << std::endl;
+        osg::notify(osg::WARN) << "buildVertexInfluenceSet can't be called without VertexInfluence already set to the RigGeometry ( " << getName() << " ) " << std::endl;
         return;
     }
     _vertexInfluenceSet.clear();
@@ -75,12 +80,12 @@ void RigGeometry::buildVertexSet()
 
     _vertexInfluenceSet.buildVertex2BoneList();
     _vertexInfluenceSet.buildUniqVertexSetToBoneSetList();
-    std::cout << "uniq groups " << _vertexInfluenceSet.getUniqVertexSetToBoneSetList().size() << " for " << getName() << std::endl;
+    osg::notify(osg::NOTICE) << "uniq groups " << _vertexInfluenceSet.getUniqVertexSetToBoneSetList().size() << " for " << getName() << std::endl;
 }
 
-void RigGeometry::computeMatrixFromRootSkeleton() 
+void RigGeometry::computeMatrixFromRootSkeleton()
 {
-    if (!_root.valid()) 
+    if (!_root.valid())
     {
         osg::notify(osg::WARN) << "Warning " << className() <<"::computeMatrixFromRootSkeleton if you have this message it means you miss to call buildTransformer(Skeleton* root), or your RigGeometry (" << getName() <<") is not attached to a Skeleton subgraph" << std::endl;
         return;
@@ -91,39 +96,23 @@ void RigGeometry::computeMatrixFromRootSkeleton()
     _needToComputeMatrix = false;
 }
 
-void RigGeometry::transformSoftwareMethod()
+void RigGeometry::update()
 {
-    setUseDisplayList(false);
-    setUseVertexBufferObjects(true);
-
-    //    std::cout << getName() << " _matrixFromSkeletonToGeometry" << _matrixFromSkeletonToGeometry << std::endl;
-    osg::Vec3Array* pos = dynamic_cast<osg::Vec3Array*>(getVertexArray());
-    if (pos && _positionSource.size() != pos->size()) 
+    if (!getRigTransformImplementation())
     {
-        _positionSource = std::vector<osg::Vec3>(pos->begin(),pos->end());
-        getVertexArray()->setDataVariance(osg::Object::DYNAMIC);
-    }
-    osg::Vec3Array* normal = dynamic_cast<osg::Vec3Array*>(getNormalArray());
-    if (normal && _normalSource.size() != normal->size()) 
-    {
-        _normalSource = std::vector<osg::Vec3>(normal->begin(),normal->end());
-        getNormalArray()->setDataVariance(osg::Object::DYNAMIC);
+        _rigTransformImplementation = new RigTransformSoftware;
     }
 
-    if (!_positionSource.empty()) 
-    {
-        _transformVertexes.compute<osg::Vec3>(_matrixFromSkeletonToGeometry, _invMatrixFromSkeletonToGeometry,  &_positionSource.front(), &pos->front());
-        pos->dirty();
-    }
-    if (!_normalSource.empty()) 
-    {
-        _transformVertexes.computeNormal<osg::Vec3>(_matrixFromSkeletonToGeometry, _invMatrixFromSkeletonToGeometry, &_normalSource.front(), &normal->front());
-        normal->dirty();
-    }
-    if (getUseDisplayList())
-        dirtyDisplayList();
-    dirtyBound();
+    if (getRigTransformImplementation()->needInit())
+        if (!getRigTransformImplementation()->init(*this))
+            return;
+    getRigTransformImplementation()->update(*this);
 }
 
-const osgAnimation::Skeleton* RigGeometry::getSkeleton() const { return _root.get(); }
-osgAnimation::Skeleton* RigGeometry::getSkeleton() { return _root.get(); }
+const VertexInfluenceSet& RigGeometry::getVertexInfluenceSet() const { return _vertexInfluenceSet;}
+
+const Skeleton* RigGeometry::getSkeleton() const { return _root.get(); }
+Skeleton* RigGeometry::getSkeleton() { return _root.get(); }
+void RigGeometry::setSkeleton(Skeleton* root) { _root = root;}
+RigTransform* RigGeometry::getRigTransformImplementation() { return _rigTransformImplementation.get(); }
+void RigGeometry::setRigTransformImplementation(RigTransform* rig) { _rigTransformImplementation = rig; }

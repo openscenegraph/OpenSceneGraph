@@ -14,15 +14,17 @@
 
 #include <osgAnimation/Action>
 
-osgAnimation::Action::Action()
+using namespace osgAnimation;
+
+Action::Action()
 {
     _numberFrame = 25;
     _fps = 25;
     _speed = 1.0;
     _loop = 1;
 }
-osgAnimation::Action::Action(const Action&,const osg::CopyOp&) {}
-osgAnimation::Action::Callback* osgAnimation::Action::getFrameCallback(unsigned int frame)
+Action::Action(const Action&,const osg::CopyOp&) {}
+Action::Callback* Action::getFrameCallback(unsigned int frame)
 {
     if (_framesCallback.find(frame) != _framesCallback.end())
     {
@@ -31,7 +33,30 @@ osgAnimation::Action::Callback* osgAnimation::Action::getFrameCallback(unsigned 
     return 0;
 }
 
-osgAnimation::Action::Callback* osgAnimation::Action::getFrameCallback(double time)
+void Action::removeCallback(Callback* cb)
+{
+    std::vector<unsigned int> keyToRemove;
+    for (FrameCallback::iterator it = _framesCallback.begin(); it != _framesCallback.end(); it++) 
+    {
+        if (it->second.get())
+        {
+            if (it->second.get() == cb) 
+            {
+                it->second = it->second->getNestedCallback();
+                if (!it->second.valid())
+                    keyToRemove.push_back(it->first);
+            }
+            else 
+            {
+                it->second->removeCallback(cb);
+            }
+        }
+    }
+    for (std::vector<unsigned int>::iterator it = keyToRemove.begin(); it != keyToRemove.end(); it++)
+        _framesCallback.erase(*it);
+}
+
+Action::Callback* Action::getFrameCallback(double time)
 {
     unsigned int frame = static_cast<unsigned int>(floor(time * _fps));
     return getFrameCallback(frame);
@@ -55,118 +80,4 @@ bool osgAnimation::Action::evaluateFrame(unsigned int frame, unsigned int& resul
         }
     }
     return true;
-}
-
-
-osgAnimation::BlendIn::BlendIn(Animation* animation, double duration, double weight)
-{
-    _animation = animation;
-    _weight = weight;
-    float d = duration * _fps;
-    setNumFrames(static_cast<unsigned int>(floor(d)) + 1);
-    setName("BlendIn");
-}
-
-void osgAnimation::BlendIn::computeWeight(unsigned int frame)
-{
-
-    // frame + 1 because the start is 0 and we want to start the blend in at the first
-    // frame.
-    double ratio = ( (frame+1) * 1.0 / (getNumFrames()) );
-    double w = _weight * ratio;
-
-    osg::notify(osg::DEBUG_INFO) << getName() << " BlendIn frame " << frame  << " weight " << w << std::endl;
-    _animation->setWeight(w);
-}
-
-
-osgAnimation::BlendOut::BlendOut(Animation* animation, double duration)
-{
-    _animation = animation;
-    float d = duration * _fps;
-    setNumFrames(static_cast<unsigned int>(floor(d) + 1));
-    _weight = 1.0;
-    setName("BlendOut");
-}
-
-void osgAnimation::BlendOut::computeWeight(unsigned int frame)
-{
-    double ratio = ( (frame+1) * 1.0 / (getNumFrames()) );
-    double w = _weight * (1.0-ratio);
-    osg::notify(osg::DEBUG_INFO) << getName() << " BlendOut frame " << frame  << " weight " << w << std::endl;
-    _animation->setWeight(w);
-}
-
-
-osgAnimation::ActionAnimation::ActionAnimation(Animation* animation) : _animation(animation)
-{
-    Action::setDuration(animation->getDuration());
-    setName(animation->getName());
-}
-void osgAnimation::ActionAnimation::updateAnimation(unsigned int frame, int priority)
-{
-    _animation->update(frame * 1.0/_fps, priority);
-}
-
-
-
-
-
-osgAnimation::StripAnimation::StripAnimation(const StripAnimation& a, const osg::CopyOp& c) : Action(a,c) 
-{
-    _animation = a._animation;
-    _blendIn = a._blendIn;
-    _blendOut = a._blendOut;
-}
-
-osgAnimation::StripAnimation::StripAnimation(Animation* animation, double blendInDuration, double blendOutDuration, double blendInWeightTarget)
-{
-    _blendIn = new BlendIn(animation, blendInDuration, blendInWeightTarget);
-    _animation = new ActionAnimation(animation);
-    unsigned int start = static_cast<unsigned int>(floor((_animation->getDuration() - blendOutDuration) * _fps));
-    _blendOut = FrameBlendOut(start, new BlendOut(animation, blendOutDuration));
-    setName(animation->getName() + "_Strip");
-    _blendIn->setName(_animation->getName() + "_" + _blendIn->getName());
-    _blendOut.second->setName(_animation->getName() + "_" + _blendOut.second->getName());
-    setDuration(animation->getDuration());
-}
-
-
-void osgAnimation::StripAnimation::setLoop(unsigned int loop)
-{
-    _animation->setLoop(loop);
-    if (!loop)
-        setDuration(-1);
-    else
-        setDuration(loop * _animation->getDuration());
-
-    // duration changed re evaluate the blendout duration
-    unsigned int start = static_cast<unsigned int>(floor((getDuration() - _blendOut.second->getDuration()) * _fps));
-    _blendOut = FrameBlendOut(start, _blendOut.second);
-}
-
-void osgAnimation::StripAnimation::traverse(ActionVisitor& visitor)
-{
-    if (_blendIn.valid())
-    {
-        unsigned int f = visitor.getStackedFrameAction().back().first;
-        visitor.pushFrameActionOnStack(FrameAction(f,_blendIn.get()));
-        _blendIn->accept(visitor);
-        visitor.popFrameAction();
-    }
-    if (_blendOut.second.valid())
-    {
-        unsigned int f = visitor.getStackedFrameAction().back().first;
-        visitor.pushFrameActionOnStack(FrameAction(f + _blendOut.first,_blendOut.second.get()));
-        _blendOut.second.get()->accept(visitor);
-        visitor.popFrameAction();
-    }
-
-    if (_animation.valid())
-    {
-        unsigned int f = visitor.getStackedFrameAction().back().first;
-        visitor.pushFrameActionOnStack(FrameAction(f,_animation.get()));
-        _animation->accept(visitor);
-        visitor.popFrameAction();
-    }
 }

@@ -25,10 +25,10 @@ namespace osgAnimation
 
     class Timeline;
     class Action;
-    class BlendIn;
-    class BlendOut;
+    class ActionBlendIn;
+    class ActionBlendOut;
     class ActionAnimation;
-    class StripAnimation;
+    class ActionStripAnimation;
 
 #define META_ActionVisitor(library,name) \
         virtual const char* libraryName() const { return #library; }\
@@ -56,10 +56,10 @@ namespace osgAnimation
 
         virtual void apply(Action& action);
         virtual void apply(Timeline& tm);
-        virtual void apply(BlendIn& action);
-        virtual void apply(BlendOut& action);
+        virtual void apply(ActionBlendIn& action);
+        virtual void apply(ActionBlendOut& action);
         virtual void apply(ActionAnimation& action);
-        virtual void apply(StripAnimation& action);
+        virtual void apply(ActionStripAnimation& action);
 
     protected:
         std::vector<FrameAction> _stackFrameAction;
@@ -72,7 +72,7 @@ namespace osgAnimation
     {
     protected:
         unsigned int _frame;
-
+        unsigned int _currentAnimationPriority;
     public:
         META_ActionVisitor(osgAnimation, UpdateActionVisitor);
         UpdateActionVisitor();
@@ -83,10 +83,10 @@ namespace osgAnimation
 
         void apply(Timeline& action);
         void apply(Action& action);
-        void apply(BlendIn& action);
-        void apply(BlendOut& action);
+        void apply(ActionBlendIn& action);
+        void apply(ActionBlendOut& action);
         void apply(ActionAnimation& action);
-        void apply(StripAnimation& action);
+        void apply(ActionStripAnimation& action);
 
     };
 

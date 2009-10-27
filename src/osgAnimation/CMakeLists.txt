@@ -11,7 +11,11 @@ SET(LIB_NAME osgAnimation)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Action
+    ${HEADER_PATH}/ActionAnimation
+    ${HEADER_PATH}/ActionBlendIn
+    ${HEADER_PATH}/ActionBlendOut
     ${HEADER_PATH}/ActionCallback
+    ${HEADER_PATH}/ActionStripAnimation
     ${HEADER_PATH}/ActionVisitor
     ${HEADER_PATH}/Animation
     ${HEADER_PATH}/AnimationManagerBase
@@ -31,9 +35,11 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/LinkVisitor
     ${HEADER_PATH}/MorphGeometry
     ${HEADER_PATH}/RigGeometry
+    ${HEADER_PATH}/RigTransform
+    ${HEADER_PATH}/RigTransformHardware
+    ${HEADER_PATH}/RigTransformSoftware
     ${HEADER_PATH}/Sampler
     ${HEADER_PATH}/Skeleton
-    ${HEADER_PATH}/Skinning
     ${HEADER_PATH}/StatsVisitor
     ${HEADER_PATH}/StatsHandler
     ${HEADER_PATH}/Target
@@ -49,7 +55,11 @@ ADD_LIBRARY(${LIB_NAME}
     ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
     ${LIB_PUBLIC_HEADERS}
     Action.cpp
+    ActionAnimation.cpp
+    ActionBlendIn.cpp
+    ActionBlendOut.cpp
     ActionCallback.cpp
+    ActionStripAnimation.cpp
     ActionVisitor.cpp
     Animation.cpp
     AnimationManagerBase.cpp
@@ -61,6 +71,8 @@ ADD_LIBRARY(${LIB_NAME}
     LinkVisitor.cpp
     MorphGeometry.cpp
     RigGeometry.cpp
+    RigTransformHardware.cpp
+    RigTransformSoftware.cpp
     Skeleton.cpp
     StatsVisitor.cpp
     StatsHandler.cpp

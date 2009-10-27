@@ -14,23 +14,29 @@
 
 #include <osgAnimation/StatsVisitor>
 #include <osgAnimation/Timeline>
+#include <osgAnimation/ActionBlendIn>
+#include <osgAnimation/ActionBlendOut>
+#include <osgAnimation/ActionStripAnimation>
+#include <osgAnimation/ActionAnimation>
 
-osgAnimation::StatsActionVisitor::StatsActionVisitor() {}
-void osgAnimation::StatsActionVisitor::reset() { _channels.clear(); }
+using namespace osgAnimation;
 
-osgAnimation::StatsActionVisitor::StatsActionVisitor(osg::Stats* stats,unsigned int frame)
+StatsActionVisitor::StatsActionVisitor() {}
+void StatsActionVisitor::reset() { _channels.clear(); }
+
+StatsActionVisitor::StatsActionVisitor(osg::Stats* stats,unsigned int frame)
 {
     _frame = frame;
     _stats = stats;
 }
 
-void osgAnimation::StatsActionVisitor::apply(Timeline& tm)
+void StatsActionVisitor::apply(Timeline& tm)
 {
     _stats->setAttribute(_frame,"Timeline", tm.getCurrentTime());
     tm.traverse(*this);
 }
 
-void osgAnimation::StatsActionVisitor::apply(Action& action)
+void StatsActionVisitor::apply(Action& action)
 {
     if (isActive(action))
     {
@@ -39,7 +45,7 @@ void osgAnimation::StatsActionVisitor::apply(Action& action)
     }
 }
 
-void osgAnimation::StatsActionVisitor::apply(BlendIn& action)
+void StatsActionVisitor::apply(ActionBlendIn& action)
 {
     if (isActive(action)) 
     {
@@ -48,7 +54,7 @@ void osgAnimation::StatsActionVisitor::apply(BlendIn& action)
     }
 }
 
-void osgAnimation::StatsActionVisitor::apply(BlendOut& action)
+void StatsActionVisitor::apply(ActionBlendOut& action)
 {
     if (isActive(action)) 
     {
@@ -57,7 +63,7 @@ void osgAnimation::StatsActionVisitor::apply(BlendOut& action)
     }
 }
 
-void osgAnimation::StatsActionVisitor::apply(ActionAnimation& action)
+void StatsActionVisitor::apply(ActionAnimation& action)
 {
     if (isActive(action)) 
     {
@@ -66,11 +72,11 @@ void osgAnimation::StatsActionVisitor::apply(ActionAnimation& action)
     }
 }
 
-void osgAnimation::StatsActionVisitor::apply(StripAnimation& action)
+void StatsActionVisitor::apply(ActionStripAnimation& action)
 {
     if (isActive(action))
     {
         _channels.push_back(action.getName());
-        _stats->setAttribute(_frame,action.getName(), action.getActionAnimation()->getAnimation()->getWeight());
+        _stats->setAttribute(_frame,action.getName(), action.getAnimation()->getAnimation()->getWeight());
     }
 }

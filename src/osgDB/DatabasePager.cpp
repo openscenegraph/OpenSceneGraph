@@ -2007,7 +2007,9 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
             if (!dtc.first.empty() && (elapsedTime+estimatedTextureDuration)<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame)
             {
 
-                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_PRIORITY, 1.0);
+                #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) 
+                    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_PRIORITY, 1.0);
+                #endif
 
                 // we have StateSet's to compile
                 StateSetList& sslist = dtc.first;
@@ -2029,11 +2031,12 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
 
                     (*itr)->compileGLObjects(state);
 
-                    GLint p;
-                    glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_RESIDENT, &p);
+                    #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) 
+                        GLint p;
+                        glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_RESIDENT, &p);
+                    #endif
 
                     elapsedTime = timer.delta_s(start_tick,timer.tick());
-
 
                     // estimate the duration of the compile based on current compile duration.
                     estimatedTextureDuration = (elapsedTime-startCompileTime);

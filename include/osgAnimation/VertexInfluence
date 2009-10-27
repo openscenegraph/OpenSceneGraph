@@ -12,8 +12,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGANIMATION_VERTEX_INFLUENCES_H
-#define OSGANIMATION_VERTEX_INFLUENCES_H
+#ifndef OSGANIMATION_VERTEX_INFLUENCE_H
+#define OSGANIMATION_VERTEX_INFLUENCE_H 1
 
 #include <osg/Object>
 #include <osgAnimation/Export>
@@ -37,8 +37,6 @@ namespace osgAnimation
         // the name is the bone to link to
         std::string _name;
     };
-
-    //  typedef std::map<std::string, VertexInfluence> VertexInfluenceMap;
 
     class VertexInfluenceMap : public std::map<std::string, VertexInfluence> , public osg::Object
     {
@@ -73,7 +71,7 @@ namespace osgAnimation
         typedef std::vector<BoneWeight> BoneWeightList;
         typedef std::map<int,BoneWeightList> VertexIndexToBoneWeightMap;
     
-        class UniqVertexSetToBoneSet 
+        class UniqVertexSetToBoneSet
         {
         public:
             void setBones(BoneWeightList& bones) { _bones = bones;}
@@ -88,14 +86,10 @@ namespace osgAnimation
         typedef std::vector<UniqVertexSetToBoneSet> UniqVertexSetToBoneSetList;
 
         const UniqVertexSetToBoneSetList& getUniqVertexSetToBoneSetList() const { return _uniqVertexSetToBoneSet;}
-        void addVertexInfluence(const VertexInfluence& v) { _bone2Vertexes.push_back(v); }
+        void addVertexInfluence(const VertexInfluence& v);
         void buildVertex2BoneList();
         void buildUniqVertexSetToBoneSetList();
-        void clear() 
-        {
-            _bone2Vertexes.clear(); 
-            _uniqVertexSetToBoneSet.clear();
-        }
+        void clear();
 
         const VertexIndexToBoneWeightMap& getVertexToBoneList() const;
     protected:

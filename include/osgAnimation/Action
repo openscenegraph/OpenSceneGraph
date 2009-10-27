@@ -57,6 +57,17 @@ namespace osgAnimation
                     _nestedCallback = callback;
             }
 
+            void removeCallback(Callback* cb)
+            { 
+                if (!cb)
+                    return;
+
+                if (_nestedCallback.get() == cb)
+                    _nestedCallback = _nestedCallback->getNestedCallback();
+                else
+                    _nestedCallback->removeCallback(cb);
+            }
+
         protected:
             osg::ref_ptr<Callback> _nestedCallback;
         };
@@ -87,7 +98,9 @@ namespace osgAnimation
                 return 0;
             return _framesCallback[frame].get();
         }
-        
+
+        void removeCallback(Callback*);
+
         Callback* getFrameCallback(unsigned int frame);
         Callback* getFrameCallback(double time);
         unsigned int getFramesPerSecond() const { return _fps; }
@@ -124,82 +137,6 @@ namespace osgAnimation
         Status _state;
     };
 
-
-
-
-    // blend in from 0 to weight in duration
-    class OSGANIMATION_EXPORT BlendIn : public Action
-    {
-        double _weight;
-        osg::ref_ptr<Animation> _animation;
-
-    public:
-        META_Action(osgAnimation, BlendIn);
-        BlendIn() : _weight(0) {}
-        BlendIn(const BlendIn& a, const osg::CopyOp& c) : Action(a,c) { _weight = a._weight; _animation = a._animation;}
-        BlendIn(Animation* animation, double duration, double weight);
-        double getWeight() const { return _weight;}
-        Animation* getAnimation() { return _animation.get(); }
-        void computeWeight(unsigned int frame);
-    };
-
-    // blend in from 0 to weight in duration
-    class OSGANIMATION_EXPORT BlendOut : public Action
-    {
-        double _weight;
-        osg::ref_ptr<Animation> _animation;
-    public:
-        META_Action(osgAnimation, BlendOut);
-        BlendOut() : _weight(0) {}
-        BlendOut(const BlendOut& a, const osg::CopyOp& c) : Action(a,c) { _weight = a._weight; _animation = a._animation;}
-        BlendOut(Animation* animation, double duration);
-        Animation* getAnimation() { return _animation.get(); }
-        double getWeight() const { return _weight;}
-        void computeWeight(unsigned int frame);
-    };
-
-
-    class OSGANIMATION_EXPORT ActionAnimation : public Action
-    {
-    public:
-        META_Action(osgAnimation, ActionAnimation);
-        ActionAnimation() {}
-        ActionAnimation(const ActionAnimation& a, const osg::CopyOp& c) : Action(a,c) { _animation = a._animation;}
-        ActionAnimation(Animation* animation);
-        void updateAnimation(unsigned int frame, int priority);
-        Animation* getAnimation() { return _animation.get(); }
-
-    protected:
-        osg::ref_ptr<Animation> _animation;
-    };
-
-
-    // encapsulate animation with blend in blend out for classic usage
-    class OSGANIMATION_EXPORT StripAnimation : public Action
-    {
-    public:
-        META_Action(osgAnimation, StripAnimation);
-        StripAnimation() {}
-        StripAnimation(const StripAnimation& a, const osg::CopyOp& c);
-        StripAnimation(Animation* animation, double blendInDuration = 0.0, double blendOutDuration = 0.0, double blendInWeightTarget = 1.0  );
-        ActionAnimation* getActionAnimation() { return _animation.get(); }
-        BlendIn* getBlendIn() { return _blendIn.get(); }
-        BlendOut* getBlendOut() { return _blendOut.second.get(); }
-        const ActionAnimation* getActionAnimation() const { return _animation.get(); }
-        const BlendIn* getBlendIn() const { return _blendIn.get(); }
-        const BlendOut* getBlendOut() const { return _blendOut.second.get(); }
-        unsigned int getBlendOutStartFrame() const { return _blendOut.first; }
-        
-        unsigned int getLoop() const { return _animation->getLoop(); }
-        void setLoop(unsigned int loop);
-        void traverse(ActionVisitor& visitor);
-
-    protected:
-        typedef std::pair<unsigned int, osg::ref_ptr<BlendOut> > FrameBlendOut;
-        osg::ref_ptr<BlendIn> _blendIn;
-        FrameBlendOut _blendOut;
-        osg::ref_ptr<ActionAnimation> _animation;
-    };
 
 
 

@@ -62,7 +62,7 @@ namespace osgAnimation
         virtual void addActionAt(unsigned int frame, Action* action, int priority = 0);
         virtual void addActionAt(double t, Action* action, int priority = 0);
         void addActionNow(Action* action, int priority = 0);
-
+        
         void clearActions();
 
         virtual void update(double simulationTime);

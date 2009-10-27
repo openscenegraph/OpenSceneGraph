@@ -12,7 +12,6 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgAnimation/Skinning>
 #include <osgAnimation/Bone>
 #include <osgAnimation/Skeleton>
 #include <osgAnimation/FindParentAnimationManagerVisitor>

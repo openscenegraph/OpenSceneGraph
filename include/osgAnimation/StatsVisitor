@@ -41,10 +41,10 @@ namespace osgAnimation
         void setFrame(unsigned int frame) { _frame = frame; }
         void apply(Timeline& action);
         void apply(Action& action);
-        void apply(BlendIn& action);
-        void apply(BlendOut& action);
+        void apply(ActionBlendIn& action);
+        void apply(ActionBlendOut& action);
         void apply(ActionAnimation& action);
-        void apply(StripAnimation& action);
+        void apply(ActionStripAnimation& action);
 
     };
 

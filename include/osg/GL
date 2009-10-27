@@ -149,21 +149,19 @@
     #define GL_POLYGON                         0x0009
     #define GL_QUADS                           0x0007
     #define GL_QUAD_STRIP                      0x0008
-
-    void glDepthRange(double near_val, double far_val) { glDepthRangef(near_val, far_val); }
 #endif
 
 #ifdef OSG_GLES1_AVAILABLE
-    void glColor4ubv(const GLubyte* c) { glColor4ub(c[0], c[1], c[2], c[3]); }
-    void glColor3fv(const GLfloat* c) { glColor4f(c[0], c[1], c[2], 1.0f); }
-    void glColor4fv(const GLfloat* c) { glColor4f(c[0], c[1], c[2], c[3]); }
-    void glColor3dv(const GLdouble* c) { glColor4f(c[0], c[1], c[2], 1.0f); }
-    void glColor4dv(const GLdouble* c) { glColor4f(c[0], c[1], c[2], c[3]); }
+    inline void glColor4ubv(const GLubyte* c) { glColor4ub(c[0], c[1], c[2], c[3]); }
+    inline void glColor3fv(const GLfloat* c) { glColor4f(c[0], c[1], c[2], 1.0f); }
+    inline void glColor4fv(const GLfloat* c) { glColor4f(c[0], c[1], c[2], c[3]); }
+    inline void glColor3dv(const GLdouble* c) { glColor4f(c[0], c[1], c[2], 1.0f); }
+    inline void glColor4dv(const GLdouble* c) { glColor4f(c[0], c[1], c[2], c[3]); }
 
-    void glNormal3bv(const GLbyte* n) { const float div = 1.0f/128.0f; glNormal3f(float(n[0])*div, float(n[1])*div, float(n[3])*div); }
-    void glNormal3sv(const GLshort* n) { const float div = 1.0f/32768.0f; glNormal3f(float(n[0])*div, float(n[1])*div, float(n[3])*div); }
-    void glNormal3fv(const GLfloat* n) { glNormal3f(n[0], n[1], n[3]); }
-    void glNormal3dv(const GLdouble* n) { glNormal3f(n[0], n[1], n[3]); }
+    inline void glNormal3bv(const GLbyte* n) { const float div = 1.0f/128.0f; glNormal3f(float(n[0])*div, float(n[1])*div, float(n[3])*div); }
+    inline void glNormal3sv(const GLshort* n) { const float div = 1.0f/32768.0f; glNormal3f(float(n[0])*div, float(n[1])*div, float(n[3])*div); }
+    inline void glNormal3fv(const GLfloat* n) { glNormal3f(n[0], n[1], n[3]); }
+    inline void glNormal3dv(const GLdouble* n) { glNormal3f(n[0], n[1], n[3]); }
 #endif
 
 #endif  // __osgGL_h

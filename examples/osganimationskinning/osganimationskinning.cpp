@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -24,7 +24,6 @@
 #include <osgAnimation/Bone>
 #include <osgAnimation/Skeleton>
 #include <osgAnimation/RigGeometry>
-#include <osgAnimation/Skinning>
 #include <osgAnimation/BasicAnimationManager>
 
 osg::Geode* createAxis()

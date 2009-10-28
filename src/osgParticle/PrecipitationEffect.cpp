@@ -729,7 +729,12 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
         osg::PointSprite *sprite = new osg::PointSprite();
         _pointStateSet->setTextureAttributeAndModes(0, sprite, osg::StateAttribute::ON);
 
-        _pointStateSet->setMode(GL_VERTEX_PROGRAM_POINT_SIZE, osg::StateAttribute::ON);
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+            _pointStateSet->setMode(GL_VERTEX_PROGRAM_POINT_SIZE, osg::StateAttribute::ON);
+        #else
+            osg::notify(osg::NOTICE)<<"Warning: ParticleEffect::setUpGeometries(..) not fully implemented."<<std::endl;
+        #endif
+        
         _pointStateSet->setRenderBinDetails(pointRenderBin,"DepthSortedBin");
     }
 
@@ -898,7 +903,10 @@ PrecipitationEffect::PrecipitationDrawable::PrecipitationDrawable(const Precipit
 
 void PrecipitationEffect::PrecipitationDrawable::drawImplementation(osg::RenderInfo& renderInfo) const
 {
-    if (!_geometry) return;
+#if defined(OSG_GL_MATRICES_AVAILABLE)
+
+if (!_geometry) return;
+
 
     const osg::Geometry::Extensions* extensions = osg::Geometry::getExtensions(renderInfo.getContextID(),true);
     
@@ -970,6 +978,7 @@ void PrecipitationEffect::PrecipitationDrawable::drawImplementation(osg::RenderI
     }
     
     glPopMatrix();
-
-    
+#else
+    osg::notify(osg::NOTICE)<<"Warning: ParticleEffect::drawImplementation(..) not fully implemented."<<std::endl;
+#endif
 }

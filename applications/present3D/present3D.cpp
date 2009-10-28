@@ -723,7 +723,8 @@ int main( int argc, char **argv )
     }
 
 
-#if 1
+#if !defined(OSG_GLES2_AVAILABLE)
+
     // add back in enabling of the GL_ALPHA_TEST to get around the core OSG no longer setting it by default for opaque bins.
     // the alpha test is required for the volume rendering alpha clipping to work.
     loadedModel->getOrCreateStateSet()->setMode(GL_ALPHA_TEST, osg::StateAttribute::ON);

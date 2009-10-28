@@ -16,6 +16,11 @@
 
 #include <osg/StateAttribute>
 
+#ifndef GL_POLYGON_OFFSET_LINE 
+    #define GL_POLYGON_OFFSET_LINE 0x2A02
+    #define GL_POLYGON_OFFSET_POINT 0x2A01
+#endif
+
 namespace osg {
 
 /** PolygonOffset - encapsulates the OpenGL glPolygonOffset state.*/

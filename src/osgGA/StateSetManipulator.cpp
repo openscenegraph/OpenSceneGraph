@@ -96,11 +96,15 @@ bool StateSetManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
         _lighting =(_stateset->getMode(GL_LIGHTING)&osg::StateAttribute::ON);
 
         unsigned int mode = osg::StateAttribute::INHERIT|osg::StateAttribute::ON;
-        _texture = (_stateset->getTextureMode(0,GL_TEXTURE_1D)&mode) ||
-                   (_stateset->getTextureMode(0,GL_TEXTURE_2D)&mode) ||
+
+        _texture = (_stateset->getTextureMode(0,GL_TEXTURE_2D)&mode) ||
                    (_stateset->getTextureMode(0,GL_TEXTURE_3D)&mode) ||
                    (_stateset->getTextureMode(0,GL_TEXTURE_RECTANGLE)&mode) ||
                    (_stateset->getTextureMode(0,GL_TEXTURE_CUBE_MAP)&mode);
+                   
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+            _texture |= (_stateset->getTextureMode(0,GL_TEXTURE_1D)&mode);
+        #endif
     }
 
     if (ea.getHandled()) return false;
@@ -183,11 +187,13 @@ void StateSetManipulator::setTextureEnabled(bool newtexture)
     if ( _texture ) mode = osg::StateAttribute::INHERIT|osg::StateAttribute::ON;
     for( unsigned int ii=0; ii<_maxNumOfTextureUnits; ii++ )
     {
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
             _stateset->setTextureMode( ii, GL_TEXTURE_1D, mode );
-            _stateset->setTextureMode( ii, GL_TEXTURE_2D, mode );
-            _stateset->setTextureMode( ii, GL_TEXTURE_3D, mode );
-            _stateset->setTextureMode( ii, GL_TEXTURE_RECTANGLE, mode );
-            _stateset->setTextureMode( ii, GL_TEXTURE_CUBE_MAP, mode);
+        #endif
+        _stateset->setTextureMode( ii, GL_TEXTURE_2D, mode );
+        _stateset->setTextureMode( ii, GL_TEXTURE_3D, mode );
+        _stateset->setTextureMode( ii, GL_TEXTURE_RECTANGLE, mode );
+        _stateset->setTextureMode( ii, GL_TEXTURE_CUBE_MAP, mode);
     }
 }
 

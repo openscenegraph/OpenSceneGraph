@@ -1,7 +1,11 @@
 #include <osg/StateSet>
+#include <osg/Texture1D>
 #include <osg/Texture2D>
 #include <osg/TextureCubeMap>
 #include <osg/TextureRectangle>
+#include <osg/TexGen>
+#include <osg/PolygonOffset>
+#include <osg/LineStipple>
 
 #include <osgDB/Registry>
 #include <osgDB/Input>

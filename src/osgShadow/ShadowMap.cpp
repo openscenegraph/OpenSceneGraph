@@ -313,9 +313,11 @@ void ShadowMap::init()
             fakeTex->setImage(image);
             // add fake texture
             _stateset->setTextureAttribute(_baseTextureUnit,fakeTex,osg::StateAttribute::ON);
-            _stateset->setTextureMode(_baseTextureUnit,GL_TEXTURE_1D,osg::StateAttribute::OFF);
             _stateset->setTextureMode(_baseTextureUnit,GL_TEXTURE_2D,osg::StateAttribute::ON);
             _stateset->setTextureMode(_baseTextureUnit,GL_TEXTURE_3D,osg::StateAttribute::OFF);
+            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+                _stateset->setTextureMode(_baseTextureUnit,GL_TEXTURE_1D,osg::StateAttribute::OFF);
+            #endif
         }
     }
 

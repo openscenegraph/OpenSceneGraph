@@ -12,7 +12,9 @@
 */
 
 #include <osgText/Text3D>
+#include <osg/Vec3d>
 #include <osg/io_utils>
+
 namespace osgText
 {
 
@@ -525,8 +527,10 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
     {
         renderInfo.getState()->disableAllVertexArrays();
 
-        glPushAttrib(GL_TRANSFORM_BIT);
-        glEnable(GL_RESCALE_NORMAL);
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+            glPushAttrib(GL_TRANSFORM_BIT);
+            glEnable(GL_RESCALE_NORMAL);
+        #endif
 
         switch(_renderMode)
         {
@@ -535,7 +539,9 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
             default:        renderPerGlyph(*renderInfo.getState());  break;
         }
 
-        glPopAttrib();
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+            glPopAttrib();
+        #endif
     }
 
     if (_drawMode & BOUNDINGBOX)
@@ -615,10 +621,10 @@ void Text3D::renderPerGlyph(osg::State & state) const
         for (it = itLine->begin(); it!=end; ++it)
         {
 
-            glPushMatrix();
-
-            glTranslatef(it->_position.x(), it->_position.y(), it->_position.z());
-
+            osg::ref_ptr<osg::RefMatrix> matrix = new osg::RefMatrix(state.getModelViewMatrix());
+            matrix->preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
+            state.applyModelViewMatrix(matrix.get());
+            
             // ** apply the vertex array
             state.setVertexPointer(it->_glyph->getVertexArray());
 
@@ -648,8 +654,6 @@ void Text3D::renderPerGlyph(osg::State & state) const
             {
                 (*itr)->draw(state, false);
             }
-
-            glPopMatrix();
         }
     }
 }
@@ -666,8 +670,10 @@ void Text3D::renderPerFace(osg::State & state) const
         LineRenderInfo::const_iterator it, end = itLine->end();
         for (it = itLine->begin(); it!=end; ++it)
         {
-            glPushMatrix();
-            glTranslatef(it->_position.x(), it->_position.y(), it->_position.z());
+            osg::ref_ptr<osg::RefMatrix> matrix = new osg::RefMatrix(state.getModelViewMatrix());
+            matrix->preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
+            state.applyModelViewMatrix(matrix.get());
+
             state.setVertexPointer(it->_glyph->getVertexArray());
 
             // ** render the front face of the glyph
@@ -676,7 +682,6 @@ void Text3D::renderPerFace(osg::State & state) const
             {
                 (*itr)->draw(state, false);
             }
-            glPopMatrix();
         }
     }
 
@@ -688,8 +693,10 @@ void Text3D::renderPerFace(osg::State & state) const
         LineRenderInfo::const_iterator it, end = itLine->end();
         for (it = itLine->begin(); it!=end; ++it)
         {
-            glPushMatrix();
-            glTranslatef(it->_position.x(), it->_position.y(), it->_position.z());
+            osg::ref_ptr<osg::RefMatrix> matrix = new osg::RefMatrix(state.getModelViewMatrix());
+            matrix->preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
+            state.applyModelViewMatrix(matrix.get());
+
             state.setVertexPointer(it->_glyph->getVertexArray());
             state.setNormalPointer(it->_glyph->getNormalArray());
 
@@ -698,13 +705,12 @@ void Text3D::renderPerFace(osg::State & state) const
             {
                 (*itr)->draw(state, false);
             }
-            glPopMatrix();
         }
     }
 
 
     // ** render all back face of the text
-    glNormal3f(0.0f,0.0f,-1.0f);
+    state.Normal(0.0f,0.0f,-1.0f);
 
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
     {
@@ -712,8 +718,10 @@ void Text3D::renderPerFace(osg::State & state) const
         LineRenderInfo::const_iterator it, end = itLine->end();
         for (it = itLine->begin(); it!=end; ++it)
         {
-            glPushMatrix();
-            glTranslatef(it->_position.x(), it->_position.y(), it->_position.z());
+            osg::ref_ptr<osg::RefMatrix> matrix = new osg::RefMatrix(state.getModelViewMatrix());
+            matrix->preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
+            state.applyModelViewMatrix(matrix.get());
+
             state.setVertexPointer(it->_glyph->getVertexArray());
 
             // ** render the back face of the glyph
@@ -722,7 +730,6 @@ void Text3D::renderPerFace(osg::State & state) const
             {
                 (*itr)->draw(state, false);
             }
-            glPopMatrix();
         }
     }
 }

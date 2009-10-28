@@ -50,6 +50,8 @@ namespace
 
         void apply(osg::State& state) const
         {
+        #ifdef OSG_GL_MATRICES_AVAILABLE
+
             glMatrixMode(GL_TEXTURE);
 
             if (_active) {
@@ -74,6 +76,9 @@ namespace
             }
 
             glMatrixMode(GL_MODELVIEW);
+        #else
+            osg::notify(osg::NOTICE)<<"Warning: osgFX::SpecualHighlights unable to set texture matrix."<<std::endl;
+        #endif
         }
 
     private:

@@ -95,6 +95,8 @@ class Logos: public osg::Drawable
 
         virtual void drawImplementation(osg::RenderInfo& renderInfo) const
         {
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+
             if( renderInfo.getContextID() != _contextID ) 
                 return;
 
@@ -164,7 +166,10 @@ class Logos: public osg::Drawable
             glPopMatrix();
             glMatrixMode( GL_PROJECTION );
             glPopMatrix();
-            glMatrixMode( GL_MODELVIEW );
+            glMatrixMode( GL_MODELVIEW );            
+        #else
+            osg::notify(osg::NOTICE)<<"Warning: Logos::drawImplementation(..) not supported."<<std::endl;
+        #endif
         }
 
         void addLogo( RelativePosition pos, std::string name )

@@ -32,28 +32,28 @@
 #include "dxtctool.h"
 
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
-#define GL_BITMAP               0x1A00
-#define GL_RED                  0x1903
-#define GL_GREEN                0x1904
-#define GL_BLUE                 0x1905
-#define GL_COLOR_INDEX          0x1900
-#define GL_DEPTH_COMPONENT      0x1902
-#define GL_INTENSITY12          0x804C
-#define GL_INTENSITY16          0x804D
-#define GL_INTENSITY4           0x804A
-#define GL_INTENSITY8           0x804B
-#define GL_LUMINANCE12          0x8041
-#define GL_LUMINANCE12_ALPHA4   0x8046
-#define GL_LUMINANCE12_ALPHA12  0x8047
-#define GL_LUMINANCE16          0x8042
-#define GL_LUMINANCE16_ALPHA16  0x8048
-#define GL_LUMINANCE4           0x803F
-#define GL_LUMINANCE4_ALPHA4    0x8043
-#define GL_LUMINANCE6_ALPHA2    0x8044
-#define GL_LUMINANCE8           0x8040
-#define GL_LUMINANCE8_ALPHA8    0x8045
-#define GL_STENCIL_INDEX        0x1901
-#define GL_RGBA8                0x8058
+    #define GL_BITMAP               0x1A00
+    #define GL_RED                  0x1903
+    #define GL_GREEN                0x1904
+    #define GL_BLUE                 0x1905
+    #define GL_COLOR_INDEX          0x1900
+    #define GL_DEPTH_COMPONENT      0x1902
+    #define GL_INTENSITY12          0x804C
+    #define GL_INTENSITY16          0x804D
+    #define GL_INTENSITY4           0x804A
+    #define GL_INTENSITY8           0x804B
+    #define GL_LUMINANCE12          0x8041
+    #define GL_LUMINANCE12_ALPHA4   0x8046
+    #define GL_LUMINANCE12_ALPHA12  0x8047
+    #define GL_LUMINANCE16          0x8042
+    #define GL_LUMINANCE16_ALPHA16  0x8048
+    #define GL_LUMINANCE4           0x803F
+    #define GL_LUMINANCE4_ALPHA4    0x8043
+    #define GL_LUMINANCE6_ALPHA2    0x8044
+    #define GL_LUMINANCE8           0x8040
+    #define GL_LUMINANCE8_ALPHA8    0x8045
+    #define GL_STENCIL_INDEX        0x1901
+    #define GL_RGBA8                0x8058
 #endif
 
 using namespace osg;

@@ -478,9 +478,11 @@ void StandardShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv 
         fakeTex->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::NEAREST);
         
         _stateset->setTextureAttribute(st->_baseTextureUnit,fakeTex,osg::StateAttribute::ON);
-        _stateset->setTextureMode(st->_baseTextureUnit,GL_TEXTURE_1D,osg::StateAttribute::OFF);
         _stateset->setTextureMode(st->_baseTextureUnit,GL_TEXTURE_2D,osg::StateAttribute::ON);
         _stateset->setTextureMode(st->_baseTextureUnit,GL_TEXTURE_3D,osg::StateAttribute::OFF);
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+            _stateset->setTextureMode(st->_baseTextureUnit,GL_TEXTURE_1D,osg::StateAttribute::OFF);
+        #endif
     }
 
     { // Add shadow texture 
@@ -582,7 +584,9 @@ void StandardShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv 
 
         for( unsigned stage = 1; stage < 4; stage ++ )
         {
-            stateset->setTextureMode( stage, GL_TEXTURE_1D, osg::StateAttribute::OVERRIDE | osg::StateAttribute::OFF );
+            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+                stateset->setTextureMode( stage, GL_TEXTURE_1D, osg::StateAttribute::OVERRIDE | osg::StateAttribute::OFF );
+            #endif
             stateset->setTextureMode( stage, GL_TEXTURE_2D, osg::StateAttribute::OVERRIDE | osg::StateAttribute::OFF );
             stateset->setTextureMode( stage, GL_TEXTURE_3D, osg::StateAttribute::OVERRIDE | osg::StateAttribute::OFF );
         }

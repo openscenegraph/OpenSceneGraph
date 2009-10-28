@@ -60,8 +60,10 @@ Node* OrientationConverter::convert( Node *node )
     
     if (!S.isIdentity())
     {
-        // Add a normalize state. This will be removed if the FlattenStaticTransformsVisitor works
-        transform->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
+        #if !defined(OSG_GLES2_AVAILABLE)
+            // Add a normalize state. This will be removed if the FlattenStaticTransformsVisitor works
+            transform->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
+        #endif
     }
 
     root->addChild(transform);

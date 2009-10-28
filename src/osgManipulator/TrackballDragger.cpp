@@ -132,8 +132,12 @@ void TrackballDragger::setupDefaultGeometry()
         osg::PolygonMode* polymode = new osg::PolygonMode;
         polymode->setMode(osg::PolygonMode::FRONT_AND_BACK,osg::PolygonMode::LINE);
         geode->getOrCreateStateSet()->setAttributeAndModes(polymode,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
-        geode->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
         geode->getOrCreateStateSet()->setAttributeAndModes(new osg::LineWidth(2.0f),osg::StateAttribute::ON);
+
+        #if !defined(OSG_GLES2_AVAILABLE)
+            geode->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
+        #endif
+    
     }
 
     // Add line to all the individual 1D draggers.

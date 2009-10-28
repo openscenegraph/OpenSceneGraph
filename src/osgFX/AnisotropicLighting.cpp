@@ -216,7 +216,11 @@ namespace
             texenv->setMode(osg::TexEnv::DECAL);
             ss->setTextureAttributeAndModes(0, texenv.get(), osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
 
-            ss->setMode( GL_ALPHA_TEST, osg::StateAttribute::OFF );
+            #if !defined(OSG_GLES2_AVAILABLE)
+                ss->setMode( GL_ALPHA_TEST, osg::StateAttribute::OFF );
+            #else
+                osg::notify(osg::NOTICE)<<"Warning: osgFX::AnisotropicLighting unable to disable GL_ALPHA_TEST."<<std::endl;
+            #endif
 
             addPass(ss.get());
         }

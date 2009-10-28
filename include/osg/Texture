@@ -145,8 +145,7 @@
 #endif
 
 #ifndef GL_CLAMP
-    // OpenGL ES1 and ES2 doesn't provide GL_CLAMP but has GL_CLAMP_TO_EDGE
-    #define GL_CLAMP GL_CLAMP_TO_EDGE
+    #define GL_CLAMP                          0x2900  
 #endif
 
 #ifndef GL_CLAMP_TO_BORDER_ARB

@@ -26,10 +26,14 @@
 #include <osgAnimation/Bone>
 #include <osgAnimation/Skeleton>
 #include <osgAnimation/RigGeometry>
-#include <osgAnimation/Skinning>
 #include <osgAnimation/Timeline>
 #include <osgAnimation/AnimationManagerBase>
 #include <osgAnimation/TimelineAnimationManager>
+
+#include <osgAnimation/ActionStripAnimation>
+#include <osgAnimation/ActionBlendIn>
+#include <osgAnimation/ActionBlendOut>
+#include <osgAnimation/ActionAnimation>
 
 
 struct NoseBegin : public osgAnimation::Action::Callback
@@ -52,9 +56,9 @@ struct NoseEnd : public osgAnimation::Action::Callback
 
 struct ExampleTimelineUsage : public osgGA::GUIEventHandler
 {
-    osg::ref_ptr<osgAnimation::StripAnimation> _mainLoop;
-    osg::ref_ptr<osgAnimation::StripAnimation> _scratchHead;
-    osg::ref_ptr<osgAnimation::StripAnimation> _scratchNose;
+    osg::ref_ptr<osgAnimation::ActionStripAnimation> _mainLoop;
+    osg::ref_ptr<osgAnimation::ActionStripAnimation> _scratchHead;
+    osg::ref_ptr<osgAnimation::ActionStripAnimation> _scratchNose;
     osg::ref_ptr<osgAnimation::TimelineAnimationManager> _manager;
 
     bool _releaseKey;
@@ -69,14 +73,14 @@ struct ExampleTimelineUsage : public osgGA::GUIEventHandler
         for (osgAnimation::AnimationList::const_iterator it = list.begin(); it != list.end(); it++)
             map[(*it)->getName()] = *it;
 
-        _mainLoop = new osgAnimation::StripAnimation(map["Idle_Main"].get(),0.0,0.0);
+        _mainLoop = new osgAnimation::ActionStripAnimation(map["Idle_Main"].get(),0.0,0.0);
         _mainLoop->setLoop(0); // means forever
 
-        _scratchHead = new osgAnimation::StripAnimation(map["Idle_Head_Scratch.02"].get(),0.2,0.3);
+        _scratchHead = new osgAnimation::ActionStripAnimation(map["Idle_Head_Scratch.02"].get(),0.2,0.3);
         _scratchHead->setLoop(1); // one time
 
         map["Idle_Nose_Scratch.01"]->setDuration(10.0); // set this animation duration to 10 seconds
-        _scratchNose = new osgAnimation::StripAnimation(map["Idle_Nose_Scratch.01"].get(),0.2,0.3);
+        _scratchNose = new osgAnimation::ActionStripAnimation(map["Idle_Nose_Scratch.01"].get(),0.2,0.3);
         _scratchNose->setLoop(1); // one time
 
         // add the main loop at priority 0 at time 0.

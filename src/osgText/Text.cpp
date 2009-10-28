@@ -1351,9 +1351,9 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
 
     if (_drawMode & FILLEDBOUNDINGBOX)
     {
-
         if (_textBB.valid())
         {
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
             state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
 
             const osg::Matrix& matrix = _autoTransformCache[contextID]._matrix;
@@ -1406,6 +1406,9 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
                     glDisable(GL_POLYGON_OFFSET_FILL);
                     glPopAttrib();
             }
+        #else
+            osg::notify(osg::NOTICE)<<"Warning: Text::drawImplementation() fillMode FILLEDBOUNDINGBOX not supported"<<std::endl;
+        #endif
         }
     }    
 
@@ -1814,7 +1817,7 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
         if(_colorGradientMode == SOLID)
         {
             state.disableColorPointer();
-            glColor4f(colorMultiplier.r()*_color.r(),colorMultiplier.g()*_color.g(),colorMultiplier.b()*_color.b(),colorMultiplier.a()*_color.a());
+            state.Color(colorMultiplier.r()*_color.r(),colorMultiplier.g()*_color.g(),colorMultiplier.b()*_color.b(),colorMultiplier.a()*_color.a());
         }
         else
         {
@@ -1845,8 +1848,8 @@ void Text::renderOnlyForegroundText(osg::State& state, const osg::Vec4& colorMul
 
 void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     unsigned int contextID = state.getContextID();
-
 
     if (!osg::PolygonOffset::areFactorAndUnitsMultipliersSet())
     {
@@ -1902,11 +1905,15 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
     }
 
     glPopAttrib();
+#else
+    osg::notify(osg::NOTICE)<<"Warning: Text::renderWithPolygonOffset(..) not implemented."<<std::endl;
+#endif
 }
     
 
 void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     unsigned int contextID = state.getContextID();
 
     glPushAttrib(GL_DEPTH_BUFFER_BIT);
@@ -1952,11 +1959,15 @@ void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMult
     }
 
     glPopAttrib();
+#else
+    osg::notify(osg::NOTICE)<<"Warning: Text::renderWithNoDepthBuffer(..) not implemented."<<std::endl;
+#endif
 }
 
 // This idea comes from Paul Martz's OpenGL FAQ: 13.050
 void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     unsigned int contextID = state.getContextID();
 
     // Hmmm, the man page says GL_VIEWPORT_BIT for Depth range (near and far)
@@ -2009,10 +2020,14 @@ void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultipl
     }
 
     glPopAttrib();
+#else
+    osg::notify(osg::NOTICE)<<"Warning: Text::renderWithDepthRange(..) not implemented."<<std::endl;
+#endif
 }
 
 void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     /* Here are the steps:
      * 1) Disable drawing color
      * 2) Enable the stencil buffer
@@ -2166,4 +2181,7 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
     }
 
     glPopAttrib();
+#else
+    osg::notify(osg::NOTICE)<<"Warning: Text::renderWithStencilBuffer(..) not implemented."<<std::endl;
+#endif
 }

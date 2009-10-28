@@ -106,27 +106,41 @@ void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo
     osg::Matrix modelview = state.getModelViewMatrix();
 
     // set up depth mask for first rendering pass
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glPushAttrib(GL_DEPTH_BUFFER_BIT); 
+#endif
+    
     glDepthMask(GL_FALSE);
 
     // render, first pass
     single_pass_render(state, modelview);
 
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     // restore depth mask settings
     glPopAttrib();
+#endif
 
     // render, second pass
     if (_doublepass) {    
         // set up color mask for second rendering pass
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
         glPushAttrib(GL_COLOR_BUFFER_BIT);
+#endif
         glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 
         // render the particles onto the depth buffer
         single_pass_render(state, modelview);
 
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
         // restore color mask settings
         glPopAttrib();
+#endif
     }
+
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+    osg::notify(osg::NOTICE)<<"Warning: ParticleSystem::drawImplementation(..) not fully implemented."<<std::endl;
+#endif
+
 }
 
 void osgParticle::ParticleSystem::setDefaultAttributes(const std::string& texturefile, bool emissive_particles, bool lighting, int texture_unit)

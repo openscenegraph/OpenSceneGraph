@@ -84,6 +84,7 @@ void LightPointDrawable::reset()
 
 void LightPointDrawable::drawImplementation(osg::RenderInfo& renderInfo) const
 {
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     osg::State& state = *renderInfo.getState();
 
     state.applyMode(GL_POINT_SMOOTH,true);
@@ -167,7 +168,9 @@ void LightPointDrawable::drawImplementation(osg::RenderInfo& renderInfo) const
     
     // restore the state afterwards.
     state.apply();
-
+#else
+    osg::notify(osg::NOTICE)<<"Warning: LightPointDrawable not supported."<<std::endl;
+#endif
 }
 
 osg::BoundingBox LightPointDrawable::computeBound() const

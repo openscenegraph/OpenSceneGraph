@@ -947,11 +947,11 @@ void ShadowVolumeGeometry::drawImplementation(osg::RenderInfo& renderInfo) const
         }
         else
         {
-            glNormal3f(0.0f, 0.0f, 0.0f);
+            state->Normal(0.0f, 0.0f, 0.0f);
         }
 
 
-        glColor4f(0.5f, 1.0f, 1.0f, 1.0f);
+        state->Color(0.5f, 1.0f, 1.0f, 1.0f);
 
         glDrawArrays( GL_QUADS, 0, _vertices.size() );
     }

@@ -30,6 +30,12 @@
 using namespace osg;
 using namespace osgUtil;
 
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+    // define under GLES to keep the main SceneView.cpp clean.
+    #define GL_BACK_LEFT        0x0402
+    #define GL_BACK_RIGHT       0x0403
+#endif
+
 static const GLubyte patternVertEven[] = {
     0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
     0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
@@ -1273,6 +1279,7 @@ void SceneView::draw()
             break;
         case(osg::DisplaySettings::VERTICAL_INTERLACE):
             {
+            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)                
                 if( 0 == ( _camera->getInheritanceMask() & DRAW_BUFFER) )
                 {
                     _renderStageLeft->setDrawBuffer(_camera->getDrawBuffer());
@@ -1305,12 +1312,14 @@ void SceneView::draw()
                    _interlacedStereoStencilWidth != getViewport()->width() ||
                   _interlacedStereoStencilHeight != getViewport()->height() )
                 {
-                    getViewport()->apply(*state);
+                    state->applyProjectionMatrix(0);
                     glMatrixMode(GL_PROJECTION);
                     glLoadIdentity();
                     glOrtho(getViewport()->x(), getViewport()->width(), getViewport()->y(), getViewport()->height(), -1.0, 1.0);
                     glMatrixMode(GL_MODELVIEW);
                     glLoadIdentity();    
+                    
+                    getViewport()->apply(*state);
                     getState()->applyMode(GL_LIGHTING,false);
                     getState()->applyMode(GL_DEPTH_TEST,false);
                     glStencilMask(~0u);
@@ -1346,10 +1355,14 @@ void SceneView::draw()
                 glStencilFunc(GL_NOTEQUAL, 0, ~0u);
                 _renderStageRight->draw(_renderInfo,previous);
                 glDisable(GL_STENCIL_TEST);
+            #else
+                osg::notify(osg::NOTICE)<<"Warning: SceneView::draw() - VERTICAL_INTERLACE stereo not supported."<<std::endl;
+            #endif
             }
             break;
         case(osg::DisplaySettings::HORIZONTAL_INTERLACE):
             {
+            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)                
                 if( 0 == ( _camera->getInheritanceMask() & DRAW_BUFFER) )
                 {
                 _renderStageLeft->setDrawBuffer(_camera->getDrawBuffer());
@@ -1382,12 +1395,13 @@ void SceneView::draw()
                    _interlacedStereoStencilWidth != getViewport()->width() ||
                   _interlacedStereoStencilHeight != getViewport()->height() )
                 {
-                    getViewport()->apply(*state);
                     glMatrixMode(GL_PROJECTION);
                     glLoadIdentity();
                     glOrtho(getViewport()->x(), getViewport()->width(), getViewport()->y(), getViewport()->height(), -1.0, 1.0);
                     glMatrixMode(GL_MODELVIEW);
                     glLoadIdentity();
+                    
+                    getViewport()->apply(*state);
                     getState()->applyMode(GL_LIGHTING,false);
                     getState()->applyMode(GL_DEPTH_TEST,false);
                     glStencilMask(~0u);
@@ -1423,10 +1437,14 @@ void SceneView::draw()
                 glStencilFunc(GL_NOTEQUAL, 0, ~0u);
                 _renderStageRight->draw(_renderInfo,previous);
                 glDisable(GL_STENCIL_TEST);
+            #else
+                osg::notify(osg::NOTICE)<<"Warning: SceneView::draw() - HORIZONTAL_INTERLACE stereo not supported."<<std::endl;
+            #endif
             }
             break;
         case(osg::DisplaySettings::CHECKERBOARD):
             {
+            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)                
                 if( 0 == ( _camera->getInheritanceMask() & DRAW_BUFFER) )
                 {
                 _renderStageLeft->setDrawBuffer(_camera->getDrawBuffer());
@@ -1459,12 +1477,15 @@ void SceneView::draw()
                    _interlacedStereoStencilWidth != getViewport()->width() ||
                   _interlacedStereoStencilHeight != getViewport()->height() )
                 {
-                    getViewport()->apply(*state);
+
                     glMatrixMode(GL_PROJECTION);
                     glLoadIdentity();
                     glOrtho(getViewport()->x(), getViewport()->width(), getViewport()->y(), getViewport()->height(), -1.0, 1.0);
                     glMatrixMode(GL_MODELVIEW);
                     glLoadIdentity();
+                    
+                    
+                    getViewport()->apply(*state);
                     glDisable(GL_LIGHTING);
                     glDisable(GL_DEPTH_TEST);
                     glStencilMask(~0u);
@@ -1500,6 +1521,9 @@ void SceneView::draw()
                 glStencilFunc(GL_NOTEQUAL, 0, ~0u);
                 _renderStageRight->draw(_renderInfo,previous);
                 glDisable(GL_STENCIL_TEST);
+            #else
+                osg::notify(osg::NOTICE)<<"Warning: SceneView::draw() - CHECKERBOARD stereo not supported."<<std::endl;
+            #endif
             }
             break;
         default:

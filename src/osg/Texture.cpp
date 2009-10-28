@@ -1559,6 +1559,12 @@ void Texture::applyTexParameters(GLenum target, State& state) const
         if(wr == CLAMP_TO_BORDER)
             wr = CLAMP;
     }
+
+    #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) 
+        if (ws == CLAMP) ws = CLAMP_TO_EDGE;
+        if (wt == CLAMP) wr = CLAMP_TO_EDGE;
+        if (wr == CLAMP) wt = CLAMP_TO_EDGE;
+    #endif
     
     const Image * image = getImage(0);
     if( image &&

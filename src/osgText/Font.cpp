@@ -905,27 +905,3 @@ void Font::Glyph::subload() const
                                  "\t                0x"<<(unsigned long)data()<<");"<<dec<<std::endl;
     }                    
 }
-
-void Font::Glyph::draw(osg::State& state) const
-{
-    GLuint& globj = _globjList[state.getContextID()];
-
-    // call the globj if already set otherwise compile and execute.
-    if( globj != 0 )
-    {
-        glCallList( globj );
-    }
-    else 
-    {
-        globj = glGenLists( 1 );
-        glNewList( globj, GL_COMPILE_AND_EXECUTE );
-
-        glPixelStorei(GL_UNPACK_ALIGNMENT,getPacking());
-        glDrawPixels(s(), t(),
-                     (GLenum)getPixelFormat(),
-                     (GLenum)getDataType(),
-                     data() );
-
-        glEndList();
-    }
-}

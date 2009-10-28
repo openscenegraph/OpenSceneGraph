@@ -466,10 +466,12 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             // and before call to glCheckFramebufferStatus
             if ( !colorAttached )
             {
-               setDrawBuffer( GL_NONE, true );
-               glDrawBuffer( GL_NONE );
-               setReadBuffer( GL_NONE, true );
-               glReadBuffer( GL_NONE );
+                setDrawBuffer( GL_NONE, true );
+                setReadBuffer( GL_NONE, true );
+                #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+                    glDrawBuffer( GL_NONE );
+                    glReadBuffer( GL_NONE );
+                #endif
             }
 
             GLenum status = fbo_ext->glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
@@ -761,7 +763,9 @@ void RenderStage::copyTexture(osg::RenderInfo& renderInfo)
 
     if ( _readBufferApplyMask )
     {
-        glReadBuffer(_readBuffer);
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+            glReadBuffer(_readBuffer);
+        #endif
     }
 
     // need to implement texture cube map etc...
@@ -860,11 +864,15 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
     
     if (!using_multiple_render_targets)
     {
-        if( getDrawBufferApplyMask() ) 
-            glDrawBuffer(_drawBuffer);
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+        
+            if( getDrawBufferApplyMask() ) 
+                glDrawBuffer(_drawBuffer);
 
-        if( getReadBufferApplyMask() ) 
-            glReadBuffer(_readBuffer);
+            if( getReadBufferApplyMask() ) 
+                glReadBuffer(_readBuffer);
+        
+        #endif
     }
 
     if (fbo_supported)
@@ -962,21 +970,25 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
         {
             if (read_fbo) SubFunc::applyReadFBO(apply_read_fbo, read_fbo, state);
 
-            if (using_multiple_render_targets)
-            {
-                int attachment=itr->first;
-                if (attachment==osg::Camera::DEPTH_BUFFER || attachment==osg::Camera::STENCIL_BUFFER) {
-                    // assume first buffer rendered to is the one we want
-                    glReadBuffer(read_fbo->getMultipleRenderingTargets()[0]);
-                } else {
-                    glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + (attachment - osg::Camera::COLOR_BUFFER0));
-                }
-            } else {
-                if (_readBuffer != GL_NONE)
+            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+            
+                if (using_multiple_render_targets)
                 {
-                    glReadBuffer(_readBuffer);
+                    int attachment=itr->first;
+                    if (attachment==osg::Camera::DEPTH_BUFFER || attachment==osg::Camera::STENCIL_BUFFER) {
+                        // assume first buffer rendered to is the one we want
+                        glReadBuffer(read_fbo->getMultipleRenderingTargets()[0]);
+                    } else {
+                        glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + (attachment - osg::Camera::COLOR_BUFFER0));
+                    }
+                } else {
+                    if (_readBuffer != GL_NONE)
+                    {
+                        glReadBuffer(_readBuffer);
+                    }
                 }
-            }
+
+            #endif
 
             GLenum pixelFormat = itr->second._image->getPixelFormat();
             if (pixelFormat==0) pixelFormat = _imageReadPixelFormat;
@@ -1257,7 +1269,12 @@ void RenderStage::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& pr
 
     if (_clearMask & GL_DEPTH_BUFFER_BIT)
     {
-        glClearDepth( _clearDepth);
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+            glClearDepth( _clearDepth);
+        #else
+            glClearDepthf( _clearDepth);
+        #endif
+        
         glDepthMask ( GL_TRUE );
         state.haveAppliedAttribute( osg::StateAttribute::DEPTH );
     }
@@ -1269,20 +1286,24 @@ void RenderStage::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& pr
         state.haveAppliedAttribute( osg::StateAttribute::STENCIL );
     }
 
-    if (_clearMask & GL_ACCUM_BUFFER_BIT)
-    {
-        glClearAccum( _clearAccum[0], _clearAccum[1], _clearAccum[2], _clearAccum[3]);
-    }
-
+    #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+        if (_clearMask & GL_ACCUM_BUFFER_BIT)
+        {
+            glClearAccum( _clearAccum[0], _clearAccum[1], _clearAccum[2], _clearAccum[3]);
+        }
+    #endif
+    
 
     glClear( _clearMask );
     
-#ifdef USE_SCISSOR_TEST
-    glDisable( GL_SCISSOR_TEST );
-#endif
+    #ifdef USE_SCISSOR_TEST
+        glDisable( GL_SCISSOR_TEST );
+    #endif
 
-    glMatrixMode( GL_MODELVIEW );
-    glLoadIdentity();
+    #ifdef OSG_GL_MATRICES_AVAILABLE
+        glMatrixMode( GL_MODELVIEW );
+        glLoadIdentity();
+    #endif    
 
     // apply the positional state.
     if (_inheritedPositionalStateContainer.valid())

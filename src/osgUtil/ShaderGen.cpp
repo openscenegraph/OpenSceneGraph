@@ -19,6 +19,7 @@
 #include <osgUtil/ShaderGen>
 #include <osg/Geode>
 #include <osg/Geometry> // for ShaderGenVisitor::update
+#include <osg/Fog>
 #include <sstream>
 
 using namespace osgUtil;

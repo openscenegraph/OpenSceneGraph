@@ -45,6 +45,15 @@
 #include "hdrloader.h"
 #include "hdrwriter.h"
 
+#ifndef GL_RGBA8
+    #define GL_RGBA8 0x8058
+#endif
+
+#ifndef GL_RGB8
+    #define GL_RGB8 0x8051
+#endif
+
+
 class ReaderWriterHDR : public osgDB::ReaderWriter
 {
 public:

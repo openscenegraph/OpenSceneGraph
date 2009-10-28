@@ -30,6 +30,7 @@ LightPointSpriteDrawable::LightPointSpriteDrawable(const LightPointSpriteDrawabl
 
 void LightPointSpriteDrawable::drawImplementation(osg::RenderInfo& renderInfo) const
 {
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     osg::State& state = *renderInfo.getState();
 
     if (!state.getModeValidity(GL_POINT_SPRITE_ARB))
@@ -124,7 +125,9 @@ void LightPointSpriteDrawable::drawImplementation(osg::RenderInfo& renderInfo) c
     
     // restore the state afterwards.
     state.apply();
-
+#else
+    osg::notify(osg::NOTICE)<<"Warning: LightPointDrawable not supported."<<std::endl;
+#endif
 }
 
 

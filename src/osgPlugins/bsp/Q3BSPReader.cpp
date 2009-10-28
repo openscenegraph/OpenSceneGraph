@@ -1,4 +1,3 @@
-
 #include <osg/TexEnv>
 #include <osg/CullFace>
 
@@ -21,6 +20,9 @@
 #include "Q3BSPReader.h"
 #include "Q3BSPLoad.h"
 
+#ifndef GL_RGBA8
+    #define GL_RGBA8 0x8058
+#endif
 
 using namespace bsp;
 

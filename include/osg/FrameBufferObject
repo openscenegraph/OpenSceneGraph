@@ -108,6 +108,10 @@
 #define GL_MULTISAMPLE_COVERAGE_MODES_NV        0x8E12
 #endif
 
+#ifndef GL_DEPTH_COMPONENT
+#define GL_DEPTH_COMPONENT              0x1902
+#endif
+
 #ifndef GL_VERSION_1_4
 #define GL_DEPTH_COMPONENT16              0x81A5
 #define GL_DEPTH_COMPONENT24              0x81A6

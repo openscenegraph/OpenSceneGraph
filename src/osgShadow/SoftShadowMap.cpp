@@ -312,7 +312,14 @@ void SoftShadowMap::initJittering(osg::StateSet *ss)
 
     // the GPU Gem implementation uses a NV specific internal texture format (GL_SIGNED_RGBA_NV)
     // In order to make it more generic, we use GL_RGBA4 which should be cross platform.
-    image3D->setImage(size, size, R, GL_RGBA4, GL_RGBA, GL_UNSIGNED_BYTE, data3D, osg::Image::USE_NEW_DELETE);
+    #ifdef GL_RGBA4
+    GLenum internalTextureFormat = GL_RGBA4;
+    #else
+    // OpenGLES 1.1 doesn't define GL_RGBA4, so we'll just assume RGBA
+    GLenum internalTextureFormat = GL_RGBA;
+    #endif
+    image3D->setImage(size, size, R, internalTextureFormat, GL_RGBA, GL_UNSIGNED_BYTE, data3D, osg::Image::USE_NEW_DELETE);
+
     texture3D->setImage(image3D);
 
     ss->setTextureAttributeAndModes(_jitterTextureUnit, texture3D, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);

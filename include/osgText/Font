@@ -311,8 +311,6 @@ public:
         
         void subload() const;
         
-        void draw(osg::State& state) const;
-
     protected:
 
         virtual ~Glyph();

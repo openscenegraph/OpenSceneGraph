@@ -2678,6 +2678,19 @@
 		D49029F70F80E9B100AEB8BC /* PolygonStipple.h in Headers */ = {isa = PBXBuildFile; fileRef = D49029F50F80E9B100AEB8BC /* PolygonStipple.h */; };
 		D49029F80F80E9B100AEB8BC /* PolygonStipple.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D49029F60F80E9B100AEB8BC /* PolygonStipple.cpp */; };
 		D49075750E9E2EFD0073A649 /* osgText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11876A05D75C2700EB53E5 /* osgText.framework */; };
+		D4A1A25410988A01001C33DE /* ActionAnimation in Headers */ = {isa = PBXBuildFile; fileRef = D4A1A24D10988A00001C33DE /* ActionAnimation */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4A1A25510988A01001C33DE /* ActionBlendIn in Headers */ = {isa = PBXBuildFile; fileRef = D4A1A24E10988A01001C33DE /* ActionBlendIn */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4A1A25610988A01001C33DE /* ActionBlendOut in Headers */ = {isa = PBXBuildFile; fileRef = D4A1A24F10988A01001C33DE /* ActionBlendOut */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4A1A25710988A01001C33DE /* ActionStripAnimation in Headers */ = {isa = PBXBuildFile; fileRef = D4A1A25010988A01001C33DE /* ActionStripAnimation */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4A1A25810988A01001C33DE /* RigTransform in Headers */ = {isa = PBXBuildFile; fileRef = D4A1A25110988A01001C33DE /* RigTransform */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4A1A25910988A01001C33DE /* RigTransformHardware in Headers */ = {isa = PBXBuildFile; fileRef = D4A1A25210988A01001C33DE /* RigTransformHardware */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4A1A25A10988A01001C33DE /* RigTransformSoftware in Headers */ = {isa = PBXBuildFile; fileRef = D4A1A25310988A01001C33DE /* RigTransformSoftware */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4A1A26110988A70001C33DE /* ActionAnimation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4A1A25B10988A6F001C33DE /* ActionAnimation.cpp */; };
+		D4A1A26210988A70001C33DE /* ActionBlendIn.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4A1A25C10988A6F001C33DE /* ActionBlendIn.cpp */; };
+		D4A1A26310988A70001C33DE /* ActionBlendOut.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4A1A25D10988A6F001C33DE /* ActionBlendOut.cpp */; };
+		D4A1A26410988A70001C33DE /* ActionStripAnimation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4A1A25E10988A6F001C33DE /* ActionStripAnimation.cpp */; };
+		D4A1A26510988A70001C33DE /* RigTransformHardware.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4A1A25F10988A6F001C33DE /* RigTransformHardware.cpp */; };
+		D4A1A26610988A70001C33DE /* RigTransformSoftware.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4A1A26010988A70001C33DE /* RigTransformSoftware.cpp */; };
 		D4A5541E1090428900EC0CD9 /* ArrayDispatchers in Headers */ = {isa = PBXBuildFile; fileRef = D4A5541D1090428900EC0CD9 /* ArrayDispatchers */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4A554201090429D00EC0CD9 /* ArrayDispatchers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4A5541F1090429D00EC0CD9 /* ArrayDispatchers.cpp */; };
 		D4AC4E240E0D21450032DD35 /* Config in Headers */ = {isa = PBXBuildFile; fileRef = D4AC4E230E0D21450032DD35 /* Config */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -8557,6 +8570,19 @@
 		D49029B80F80E83900AEB8BC /* IncrementalCompileOperation */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = IncrementalCompileOperation; sourceTree = "<group>"; };
 		D49029F50F80E9B100AEB8BC /* PolygonStipple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PolygonStipple.h; sourceTree = "<group>"; };
 		D49029F60F80E9B100AEB8BC /* PolygonStipple.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PolygonStipple.cpp; sourceTree = "<group>"; };
+		D4A1A24D10988A00001C33DE /* ActionAnimation */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ActionAnimation; path = ../../include/osgAnimation/ActionAnimation; sourceTree = SOURCE_ROOT; };
+		D4A1A24E10988A01001C33DE /* ActionBlendIn */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ActionBlendIn; path = ../../include/osgAnimation/ActionBlendIn; sourceTree = SOURCE_ROOT; };
+		D4A1A24F10988A01001C33DE /* ActionBlendOut */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ActionBlendOut; path = ../../include/osgAnimation/ActionBlendOut; sourceTree = SOURCE_ROOT; };
+		D4A1A25010988A01001C33DE /* ActionStripAnimation */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ActionStripAnimation; path = ../../include/osgAnimation/ActionStripAnimation; sourceTree = SOURCE_ROOT; };
+		D4A1A25110988A01001C33DE /* RigTransform */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = RigTransform; path = ../../include/osgAnimation/RigTransform; sourceTree = SOURCE_ROOT; };
+		D4A1A25210988A01001C33DE /* RigTransformHardware */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = RigTransformHardware; path = ../../include/osgAnimation/RigTransformHardware; sourceTree = SOURCE_ROOT; };
+		D4A1A25310988A01001C33DE /* RigTransformSoftware */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = RigTransformSoftware; path = ../../include/osgAnimation/RigTransformSoftware; sourceTree = SOURCE_ROOT; };
+		D4A1A25B10988A6F001C33DE /* ActionAnimation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ActionAnimation.cpp; path = ../../src/osgAnimation/ActionAnimation.cpp; sourceTree = SOURCE_ROOT; };
+		D4A1A25C10988A6F001C33DE /* ActionBlendIn.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ActionBlendIn.cpp; path = ../../src/osgAnimation/ActionBlendIn.cpp; sourceTree = SOURCE_ROOT; };
+		D4A1A25D10988A6F001C33DE /* ActionBlendOut.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ActionBlendOut.cpp; path = ../../src/osgAnimation/ActionBlendOut.cpp; sourceTree = SOURCE_ROOT; };
+		D4A1A25E10988A6F001C33DE /* ActionStripAnimation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ActionStripAnimation.cpp; path = ../../src/osgAnimation/ActionStripAnimation.cpp; sourceTree = SOURCE_ROOT; };
+		D4A1A25F10988A6F001C33DE /* RigTransformHardware.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RigTransformHardware.cpp; path = ../../src/osgAnimation/RigTransformHardware.cpp; sourceTree = SOURCE_ROOT; };
+		D4A1A26010988A70001C33DE /* RigTransformSoftware.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RigTransformSoftware.cpp; path = ../../src/osgAnimation/RigTransformSoftware.cpp; sourceTree = SOURCE_ROOT; };
 		D4A5541D1090428900EC0CD9 /* ArrayDispatchers */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ArrayDispatchers; sourceTree = "<group>"; };
 		D4A5541F1090429D00EC0CD9 /* ArrayDispatchers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ArrayDispatchers.cpp; sourceTree = "<group>"; };
 		D4AC4E230E0D21450032DD35 /* Config */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Config; path = config/OpenThreads/Config; sourceTree = SOURCE_ROOT; };
@@ -13938,6 +13964,13 @@
 		D41887A70EDEE75000C17A84 /* osgAnimation */ = {
 			isa = PBXGroup;
 			children = (
+				D4A1A24D10988A00001C33DE /* ActionAnimation */,
+				D4A1A24E10988A01001C33DE /* ActionBlendIn */,
+				D4A1A24F10988A01001C33DE /* ActionBlendOut */,
+				D4A1A25010988A01001C33DE /* ActionStripAnimation */,
+				D4A1A25110988A01001C33DE /* RigTransform */,
+				D4A1A25210988A01001C33DE /* RigTransformHardware */,
+				D4A1A25310988A01001C33DE /* RigTransformSoftware */,
 				D4306A9B10552D13008403DD /* BoneMapVisitor */,
 				D4306A9C10552D13008403DD /* ComputeBindMatrixVisitor */,
 				D4306A9D10552D13008403DD /* FindParentAnimationManagerVisitor */,
@@ -13977,6 +14010,12 @@
 		D41887D20EDEE78100C17A84 /* osgAnimation */ = {
 			isa = PBXGroup;
 			children = (
+				D4A1A25B10988A6F001C33DE /* ActionAnimation.cpp */,
+				D4A1A25C10988A6F001C33DE /* ActionBlendIn.cpp */,
+				D4A1A25D10988A6F001C33DE /* ActionBlendOut.cpp */,
+				D4A1A25E10988A6F001C33DE /* ActionStripAnimation.cpp */,
+				D4A1A25F10988A6F001C33DE /* RigTransformHardware.cpp */,
+				D4A1A26010988A70001C33DE /* RigTransformSoftware.cpp */,
 				D4306AA110552D27008403DD /* BoneMapVisitor.cpp */,
 				D4306AA210552D27008403DD /* FindParentAnimationManagerVisitor.cpp */,
 				D421AE271018A8AB000167CB /* LinkVisitor.cpp */,
@@ -15995,6 +16034,13 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4A1A25710988A01001C33DE /* ActionStripAnimation in Headers */,
+				D4A1A25910988A01001C33DE /* RigTransformHardware in Headers */,
+				D4A1A25410988A01001C33DE /* ActionAnimation in Headers */,
+				D4A1A25510988A01001C33DE /* ActionBlendIn in Headers */,
+				D4A1A25A10988A01001C33DE /* RigTransformSoftware in Headers */,
+				D4A1A25810988A01001C33DE /* RigTransform in Headers */,
+				D4A1A25610988A01001C33DE /* ActionBlendOut in Headers */,
 				D4306A9E10552D13008403DD /* BoneMapVisitor in Headers */,
 				D4306A9F10552D13008403DD /* ComputeBindMatrixVisitor in Headers */,
 				D4306AA010552D13008403DD /* FindParentAnimationManagerVisitor in Headers */,
@@ -22360,6 +22406,12 @@
 				D421AE281018A8AB000167CB /* LinkVisitor.cpp in Sources */,
 				D4306AA310552D27008403DD /* BoneMapVisitor.cpp in Sources */,
 				D4306AA410552D27008403DD /* FindParentAnimationManagerVisitor.cpp in Sources */,
+				D4A1A26110988A70001C33DE /* ActionAnimation.cpp in Sources */,
+				D4A1A26210988A70001C33DE /* ActionBlendIn.cpp in Sources */,
+				D4A1A26310988A70001C33DE /* ActionBlendOut.cpp in Sources */,
+				D4A1A26410988A70001C33DE /* ActionStripAnimation.cpp in Sources */,
+				D4A1A26510988A70001C33DE /* RigTransformHardware.cpp in Sources */,
+				D4A1A26610988A70001C33DE /* RigTransformSoftware.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

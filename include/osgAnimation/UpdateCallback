@@ -37,11 +37,15 @@ namespace osgAnimation
     class AnimationUpdateCallback : public AnimationUpdateCallbackBase, public T
     {
     public:
+        AnimationUpdateCallback() {}
         AnimationUpdateCallback(const std::string& name) { T::setName(name);}
         AnimationUpdateCallback(const AnimationUpdateCallback& apc,const osg::CopyOp& copyop):
             T(apc, copyop) {}
 
+        META_Object(osgAnimation, AnimationUpdateCallback<T>);
+
         const std::string& getName() const { return T::getName(); }
+        bool link(osgAnimation::Channel* channel) { return 0; }
         int link(osgAnimation::Animation* animation)
         {
             if (T::getName().empty())

@@ -140,8 +140,9 @@ void UpdateActionVisitor::apply(ActionAnimation& action)
     {
         unsigned int frame = getLocalFrame();
         apply(static_cast<Action&>(action));
-//        action.updateAnimation(frame, getCurrentLayer());
-        action.updateAnimation(frame, -_currentAnimationPriority++);
+		int pri = static_cast<int>(_currentAnimationPriority);
+		_currentAnimationPriority++;
+        action.updateAnimation(frame, -pri);
     }
 }
 

@@ -51,10 +51,12 @@ namespace osgAnimation
             Callback* getNestedCallback() { return _nestedCallback.get(); } 
             void addNestedCallback(Callback* callback) 
             { 
-                if (_nestedCallback.valid())
-                    _nestedCallback->addNestedCallback(callback);
-                else
-                    _nestedCallback = callback;
+                if (callback) {
+                    if (_nestedCallback.valid())
+                        _nestedCallback->addNestedCallback(callback);
+                    else
+                        _nestedCallback = callback;
+                }
             }
 
             void removeCallback(Callback* cb)
@@ -64,7 +66,7 @@ namespace osgAnimation
 
                 if (_nestedCallback.get() == cb)
                     _nestedCallback = _nestedCallback->getNestedCallback();
-                else
+                else if (_nestedCallback.valid())
                     _nestedCallback->removeCallback(cb);
             }
 

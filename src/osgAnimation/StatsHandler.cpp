@@ -424,8 +424,7 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
             pos.y() -= characterSize *2 + backgroundMargin;
 
              for (std::map<std::string, StatAction >::iterator it = _actions.begin(); it != _actions.end(); it++) {
-                 //if ((*it).second.update())
-                 (*it).second._group->setNodeMask(~1);
+                 (*it).second._group->setNodeMask(~osg::Node::NodeMask(1));
              }
 
             const std::vector<std::string>& channels = visitor->getChannels();
@@ -441,7 +440,7 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
                     _actions[name].setPosition(pos);
                     //_actions[name].touch();
                 }
-                _actions[name]._group->setNodeMask(~0);
+				_actions[name]._group->setNodeMask(~osg::Node::NodeMask(0x0));
                 size[name] = 0;
                 pos.y() -= characterSize + graphSpacing;
             }

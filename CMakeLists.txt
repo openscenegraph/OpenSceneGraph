@@ -287,6 +287,8 @@ OPTION(OSG_GL3_AVAILABLE "Set to OFF to disable use of OpenGL 3.x functions libr
 OPTION(OSG_GLES1_AVAILABLE "Set to OFF to disable use of OpenGL ES 1.x functions library." OFF)
 OPTION(OSG_GLES2_AVAILABLE "Set to OFF to disable use of OpenGL ES 2.x functions library." OFF)
 
+SET(OPENGL_egl_LIBRARY CACHE STRING "Set the OpenGL egl library.")
+
 # SET(OSG_GL_DISPLAYLISTS_AVAILABLE ${OSG_GL1_AVAILABLE})
 # SET(OSG_GL_MATRICES_AVAILABLE ${OSG_GL1_AVAILABLE})
 # SET(OSG_GL_VERTEX_FUNCS_AVAILABLE ${OSG_GL1_AVAILABLE})

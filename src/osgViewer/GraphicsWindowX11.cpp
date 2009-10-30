@@ -276,6 +276,17 @@ bool GraphicsWindowX11::createVisualInfo()
     }
     else
     {
+    #ifdef OSG_USE_EGL
+
+        _visualInfo = new XVisualInfo;
+        int depth = DefaultDepth( _display, _traits->screenNum );
+        if (XMatchVisualInfo( _display, _traits->screenNum, depth, TrueColor, _visualInfo )==0)
+        {
+            osg::notify(osg::NOTICE)<<"GraphicsWindowX11::createVisualInfo() failed."<<std::endl;
+            return false;
+        }
+
+    #else
 
         typedef std::vector<int> Attributes;
         Attributes attributes;
@@ -297,12 +308,12 @@ bool GraphicsWindowX11::createVisualInfo()
         
         if (_traits->stencil) { attributes.push_back(GLX_STENCIL_SIZE); attributes.push_back(_traits->stencil); }
     
-    #if defined(GLX_SAMPLE_BUFFERS) && defined (GLX_SAMPLES)
-    
-        if (_traits->sampleBuffers) { attributes.push_back(GLX_SAMPLE_BUFFERS); attributes.push_back(_traits->sampleBuffers); }
-        if (_traits->sampleBuffers) { attributes.push_back(GLX_SAMPLES); attributes.push_back(_traits->samples); }
-    
-    #endif
+        #if defined(GLX_SAMPLE_BUFFERS) && defined (GLX_SAMPLES)
+        
+            if (_traits->sampleBuffers) { attributes.push_back(GLX_SAMPLE_BUFFERS); attributes.push_back(_traits->sampleBuffers); }
+            if (_traits->sampleBuffers) { attributes.push_back(GLX_SAMPLES); attributes.push_back(_traits->samples); }
+        
+        #endif
         // TODO
         //  GLX_AUX_BUFFERS
         //  GLX_ACCUM_RED_SIZE
@@ -313,6 +324,7 @@ bool GraphicsWindowX11::createVisualInfo()
         attributes.push_back(None);
         
         _visualInfo = glXChooseVisual( _display, _traits->screenNum, &(attributes.front()) );
+    #endif
     }
 
     return _visualInfo != 0;
@@ -602,8 +614,6 @@ void GraphicsWindowX11::init()
 
     _ownsWindow = windowHandle == 0;
 
-
-
     _display = XOpenDisplay(_traits->displayName().c_str());
 
     if (!_display)
@@ -613,18 +623,37 @@ void GraphicsWindowX11::init()
         return;
     }
 
-    // Query for GLX extension
-    int errorBase, eventBase;
-    if( glXQueryExtension( _display, &errorBase, &eventBase)  == False )
-    {
-        osg::notify(osg::NOTICE)<<"Error: " << XDisplayName(_traits->displayName().c_str()) <<" has no GLX extension." << std::endl;
+    #ifdef OSG_USE_EGL
 
-        XCloseDisplay( _display );
-        _display = 0;
-        _valid = false;
-        return;
-    }
+        EGLDisplay eglDisplay = eglGetDisplay((EGLNativeDisplayType)_display);
 
+        EGLint eglMajorVersion, eglMinorVersion;
+        if (!eglInitialize(eglDisplay, &eglMajorVersion, &eglMinorVersion))
+        {
+            osg::notify(osg::NOTICE)<<"GraphicsWindowX11::init() - eglInitialize() failed."<<std::endl;
+
+            XCloseDisplay( _display );
+            _display = 0;
+            _valid = false;
+            return;
+        }
+
+        osg::notify(osg::NOTICE)<<"GraphicsWindowX11::init() - eglInitialize() succeded eglMajorVersion="<<eglMajorVersion<<" iMinorVersion="<<eglMinorVersion<<std::endl;
+
+   #else
+        // Query for GLX extension
+        int errorBase, eventBase;
+        if( glXQueryExtension( _display, &errorBase, &eventBase)  == False )
+        {
+            osg::notify(osg::NOTICE)<<"Error: " << XDisplayName(_traits->displayName().c_str()) <<" has no GLX extension." << std::endl;
+
+            XCloseDisplay( _display );
+            _display = 0;
+            _valid = false;
+            return;
+        }
+    #endif
+    
     // osg::notify(osg::NOTICE)<<"GLX extension, errorBase="<<errorBase<<" eventBase="<<eventBase<<std::endl;
 
     if (!createVisualInfo())
@@ -647,37 +676,111 @@ void GraphicsWindowX11::init()
         }    
     }
 
-    GLXContext sharedContextGLX = NULL;
+    Context sharedContextGLX = NULL;
 
     // get any shared GLX contexts    
     GraphicsWindowX11* graphicsWindowX11 = dynamic_cast<GraphicsWindowX11*>(_traits->sharedContext);
     if (graphicsWindowX11) 
     {
-        sharedContextGLX = graphicsWindowX11->getGLXContext();
+        sharedContextGLX = graphicsWindowX11->getContext();
     }
     else
     {
         PixelBufferX11* pixelBufferX11 = dynamic_cast<PixelBufferX11*>(_traits->sharedContext);
         if (pixelBufferX11 && pixelBufferX11->valid())
         {
-            sharedContextGLX = pixelBufferX11->getGLXContext();
+            sharedContextGLX = pixelBufferX11->getContext();
         }
     }
-    
-    _glxContext = glXCreateContext( _display, _visualInfo, sharedContextGLX, True );
-    
-    if (!_glxContext)
-    {
-        osg::notify(osg::NOTICE)<<"Error: Unable to create OpenGL graphics context."<<std::endl;
-        XCloseDisplay( _display );
-        _display = 0;
-        _valid = false;
-        return;
-    }
 
-    _initialized = _ownsWindow ? createWindow() : setWindow(windowHandle);
-    _valid = _initialized;
+    #ifdef OSG_USE_EGL
 
+        _valid = _ownsWindow ? createWindow() : setWindow(windowHandle);
+
+        if (!_valid) 
+        {
+            XCloseDisplay( _display );
+            _display = 0;
+            return;
+        }
+        
+        osg::notify(osg::NOTICE)<<"GraphicsWindowX11::init() - window created ="<<_valid<<std::endl;
+
+        EGLConfig eglConfig = 0;
+        
+        #if defined(OSG_GLES1_AVAILABLE)
+            EGLint configAttribs[3];
+            configAttribs[0] = EGL_SURFACE_TYPE;
+            configAttribs[1] = EGL_WINDOW_BIT;
+            configAttribs[2] = EGL_NONE;
+        #else
+            EGLint configAttribs[5];
+            configAttribs[0] = EGL_SURFACE_TYPE;
+            configAttribs[1] = EGL_WINDOW_BIT;
+            configAttribs[2] = EGL_RENDERABLE_TYPE;
+            configAttribs[3] = EGL_OPENGL_ES2_BIT;      
+            configAttribs[4] = EGL_NONE;
+        #endif
+
+        int numConfigs;
+        if (!eglChooseConfig(eglDisplay, configAttribs, &eglConfig, 1, &numConfigs) || (numConfigs != 1))
+        {
+            osg::notify(osg::NOTICE)<<"GraphicsWindowX11::init() - eglChooseConfig() failed."<<std::endl;
+            XCloseDisplay( _display );
+            _valid = false;
+            _display = 0;
+            return;
+        }
+
+        _surface = eglCreateWindowSurface(eglDisplay, eglConfig, (EGLNativeWindowType)_window, NULL);
+        if (_surface == EGL_NO_SURFACE)
+        {
+            osg::notify(osg::NOTICE)<<"GraphicsWindowX11::init() - eglCreateWindowSurface(..) failed."<<std::endl;
+            XCloseDisplay( _display );
+            _valid = false;
+            _display = 0;
+            return;
+        }
+
+        #if defined(OSG_GLES1_AVAILABLE)
+            EGLint* contextAttribs = 0;
+        #else
+            EGLint contextAttribs[3];
+            pi32ContextAttribs[0] = EGL_CONTEXT_CLIENT_VERSION;
+            pi32ContextAttribs[1] = 2;
+            pi32ContextAttribs[2] = EGL_NONE;
+        #endif
+
+        _context = eglCreateContext(eglDisplay, eglConfig, NULL, contextAttribs);
+        if (_context == EGL_NO_CONTEXT)
+        {
+            osg::notify(osg::NOTICE)<<"GraphicsWindowX11::init() - eglCreateContext(..) failed."<<std::endl;
+            XCloseDisplay( _display );
+            _valid = false;
+            _display = 0;
+            return;
+        }
+
+        _initialized = true;
+            
+    #else
+        
+        _context = glXCreateContext( _display, _visualInfo, sharedContextGLX, True );
+    
+        if (!_context)
+        {
+            osg::notify(osg::NOTICE)<<"Error: Unable to create OpenGL graphics context."<<std::endl;
+            XCloseDisplay( _display );
+            _display = 0;
+            _valid = false;
+            return;
+        }
+
+        _initialized = _ownsWindow ? createWindow() : setWindow(windowHandle);
+        _valid = _initialized;
+
+    #endif
+    
     if (_valid == false)
     {
         XCloseDisplay( _display );
@@ -723,7 +826,7 @@ bool GraphicsWindowX11::createWindow()
     if (!_window)
     {
         osg::notify(osg::NOTICE)<<"Error: Unable to create Window."<<std::endl;
-        _glxContext = 0;
+        _context = 0;
         return false;
     }
 
@@ -849,10 +952,16 @@ bool GraphicsWindowX11::makeCurrentImplementation()
         return false;
     }
 
-    // osg::notify(osg::NOTICE)<<"GraphicsWindowX11::makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
-    // osg::notify(osg::NOTICE)<<"   glXMakeCurrent ("<<_display<<","<<_window<<","<<_glxContext<<std::endl;
-
-    return glXMakeCurrent( _display, _window, _glxContext )==True;
+    #ifdef OSG_USE_EGL
+        EGLDisplay eglDisplay = eglGetDisplay((EGLNativeDisplayType)_display);
+        bool result = eglMakeCurrent(eglDisplay, _surface, _surface, _context)==EGL_TRUE;
+        
+        osg::notify(osg::NOTICE)<<"GraphicsWindowX11::makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<" _surface="<<_surface<<" _context="<<_context<<" result="<<result<<std::endl;
+        
+        return result;
+    #else
+        return glXMakeCurrent( _display, _window, _context )==True;
+    #endif
 }
 
 bool GraphicsWindowX11::releaseContextImplementation()
@@ -863,10 +972,14 @@ bool GraphicsWindowX11::releaseContextImplementation()
         return false;
     }
 
-    // osg::notify(osg::NOTICE)<<"GraphicsWindowX11::releaseContextImplementation() "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
-    // osg::notify(osg::NOTICE)<<"   glXMakeCurrent ("<<_display<<std::endl;
+    osg::notify(osg::NOTICE)<<"GraphicsWindowX11::releaseContextImplementation() "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
-    return glXMakeCurrent( _display, None, NULL )==True;
+    #ifdef OSG_USE_EGL
+        EGLDisplay eglDisplay = eglGetDisplay((EGLNativeDisplayType)_display);
+        return eglMakeCurrent( eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT )==EGL_TRUE;
+    #else
+        return glXMakeCurrent( _display, None, NULL )==True;
+    #endif
 }
 
 
@@ -882,9 +995,14 @@ void GraphicsWindowX11::closeImplementation()
 
     if (_display)
     {
-        if (_glxContext)
+        if (_context)
         {
-            glXDestroyContext(_display, _glxContext );
+        #ifdef OSG_USE_EGL
+            EGLDisplay eglDisplay = eglGetDisplay((EGLNativeDisplayType)_display);
+            eglDestroyContext( eglDisplay, _context );
+        #else
+            glXDestroyContext( _display, _context );
+        #endif
         }
     
         if (_window && _ownsWindow)
@@ -898,11 +1016,15 @@ void GraphicsWindowX11::closeImplementation()
     
     _window = 0;
     _parent = 0;
-    _glxContext = 0;
+    _context = 0;
 
     if (_visualInfo)
     {
-        XFree(_visualInfo);
+        #ifdef OSG_USE_EGL
+            delete _visualInfo;
+        #else        
+            XFree(_visualInfo);
+        #endif
         _visualInfo = 0;
     }
 
@@ -924,7 +1046,12 @@ void GraphicsWindowX11::swapBuffersImplementation()
 
     // osg::notify(osg::NOTICE)<<"swapBuffersImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
-    glXSwapBuffers(_display, _window);
+    #ifdef OSG_USE_EGL
+        EGLDisplay eglDisplay = eglGetDisplay((EGLNativeDisplayType)_display);
+        eglSwapBuffers( eglDisplay, _surface );
+    #else
+        glXSwapBuffers( _display, _window );
+    #endif
 
     while( XPending(_display) )
     {

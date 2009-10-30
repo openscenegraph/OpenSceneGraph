@@ -79,7 +79,9 @@ public:
     
     virtual void operator () (osg::RenderInfo& renderInfo) const
         {
+            #if !defined(OSG_GLES1_AVAILABLE)
             glReadBuffer(_readBuffer);
+            #endif
 
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
             osg::GraphicsContext* gc = renderInfo.getState()->getGraphicsContext();

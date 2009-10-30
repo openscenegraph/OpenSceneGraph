@@ -6,6 +6,13 @@
 #include <osg/TexGen>
 #include <osg/PolygonOffset>
 #include <osg/LineStipple>
+#include <osg/Light>
+#include <osg/ClipPlane>
+#include <osg/AlphaFunc>
+#include <osg/Point>
+#include <osg/Material>
+#include <osg/Fog>
+#include <osg/GL2Extensions>
 
 #include <osgDB/Registry>
 #include <osgDB/Input>

@@ -19,18 +19,13 @@
 #ifndef OSGVIEWER_PIXELBUFFERX11
 #define OSGVIEWER_PIXELBUFFERX11 1
 
-#include <osg/GraphicsContext>
-#include <osgViewer/Export>
+#include <osgViewer/api/X11/GraphicsWindowX11>
 
-#define GLX_GLXEXT_PROTOTYPES  1
-
-#include <X11/X.h>
-#include <GL/glx.h>
-
-#ifndef GLX_VERSION_1_3
-    typedef XID GLXPbuffer;
+#ifndef OSG_USE_EGL
+    #ifndef GLX_VERSION_1_3
+        typedef XID GLXPbuffer;
+    #endif
 #endif
-
 
 namespace osgViewer
 {
@@ -77,8 +72,16 @@ class OSGVIEWER_EXPORT PixelBufferX11 : public osg::GraphicsContext
 
         Display* getDisplay() const { return _display; }
         
-        GLXPbuffer& getPbuffer() { return _pbuffer; }
-        GLXContext& getGLXContext() { return _glxContext; }
+        #ifdef OSG_USE_EGL
+            typedef EGLContext Context;
+            typedef EGLSurface Pbuffer;
+        #else
+            typedef GLXContext Context;
+            typedef GLXPbuffer Pbuffer;
+        #endif
+
+        Pbuffer& getPbuffer() { return _pbuffer; }
+        Context& getContext() { return _context; }
 
     protected:
     
@@ -90,9 +93,9 @@ class OSGVIEWER_EXPORT PixelBufferX11 : public osg::GraphicsContext
 
         bool            _valid;
         Display*        _display;
-        GLXPbuffer      _pbuffer;
+        Pbuffer         _pbuffer;
         XVisualInfo*    _visualInfo;
-        GLXContext      _glxContext;
+        Context         _context;
 
         bool            _initialized;
         bool            _realized;

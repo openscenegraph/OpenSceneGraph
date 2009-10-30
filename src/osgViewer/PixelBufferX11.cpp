@@ -31,7 +31,7 @@ PixelBufferX11::PixelBufferX11(osg::GraphicsContext::Traits* traits)
     _display(0),
     _pbuffer(0),
     _visualInfo(0),
-    _glxContext(0),
+    _context(0),
     _initialized(false),
     _realized(false),
     _useGLX1_3(false)
@@ -234,9 +234,9 @@ void PixelBufferX11::init()
         }
     }
     
-    _glxContext = glXCreateContext( _display, _visualInfo, sharedContextGLX, True );
+    _context = glXCreateContext( _display, _visualInfo, sharedContextGLX, True );
 
-    if (!_glxContext)
+    if (!_context)
     {
         osg::notify(osg::NOTICE)<<"Error: Unable to create OpenGL graphics context."<<std::endl;
         XCloseDisplay( _display );
@@ -294,7 +294,7 @@ void PixelBufferX11::init()
         osg::notify(osg::NOTICE)<<"Error: Unable to create pbuffer."<<std::endl;
         XCloseDisplay( _display );
         _display = 0;
-        _glxContext = 0;
+        _context = 0;
         _valid = false;
         return;
     }
@@ -312,9 +312,9 @@ void PixelBufferX11::closeImplementation()
     // osg::notify(osg::NOTICE)<<"Closing PixelBufferX11"<<std::endl;
     if (_display)
     {
-        if (_glxContext)
+        if (_context)
         {
-            glXDestroyContext(_display, _glxContext );
+            glXDestroyContext(_display, _context );
         }
     
         if (_pbuffer)
@@ -338,7 +338,7 @@ void PixelBufferX11::closeImplementation()
     }
     
     _pbuffer = 0;
-    _glxContext = 0;
+    _context = 0;
 
     if (_visualInfo)
     {
@@ -374,7 +374,7 @@ void PixelBufferX11::closeImplementation()
 {
     // osg::notify(osg::NOTICE)<<"Closing PixelBufferX11"<<std::endl;
     _pbuffer = 0;
-    _glxContext = 0;
+    _context = 0;
     _initialized = false;
     _realized = false;
     _valid = false;
@@ -408,9 +408,12 @@ bool PixelBufferX11::makeCurrentImplementation()
     }
 
     // osg::notify(osg::NOTICE)<<"PixelBufferX11::makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
-    // osg::notify(osg::NOTICE)<<"   glXMakeCurrent ("<<_display<<","<<_pbuffer<<","<<_glxContext<<std::endl;
 
-    return glXMakeCurrent( _display, _pbuffer, _glxContext )==True;
+    #ifdef OSG_USE_EGL
+        return eglMakeCurrent(_display, _pbuffer, _pbuffer, _context)==EGL_TRUE;
+    #else
+        return glXMakeCurrent( _display, _pbuffer, _context )==True;
+    #endif
 }
 
 bool PixelBufferX11::makeContextCurrentImplementation(osg::GraphicsContext* readContext)
@@ -429,9 +432,12 @@ bool PixelBufferX11::releaseContextImplementation()
     }
 
     // osg::notify(osg::NOTICE)<<"PixelBufferX11::releaseContextImplementation() "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
-    // osg::notify(osg::NOTICE)<<"   glXMakeCurrent ("<<_display<<std::endl;
 
-    return glXMakeCurrent( _display, None, NULL )==True;
+    #ifdef OSG_USE_EGL
+        return eglMakeCurrent( _display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT )==EGL_TRUE;
+    #else
+        return glXMakeCurrent( _display, None, NULL )==True;
+    #endif
 }
 
 
@@ -446,5 +452,9 @@ void PixelBufferX11::swapBuffersImplementation()
 
     // osg::notify(osg::NOTICE)<<"PixelBufferX11::swapBuffersImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
-    glXSwapBuffers(_display, _pbuffer);
+    #ifdef OSG_USE_EGL
+        eglSwapBuffers( _display, _pbuffer );
+    #else
+        glXSwapBuffers( _display, _pbuffer );
+    #endif
 }

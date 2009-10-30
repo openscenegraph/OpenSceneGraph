@@ -24,7 +24,17 @@
 #define GLX_GLXEXT_PROTOTYPES  1
 
 #include <X11/X.h>
-#include <GL/glx.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) 
+    #define OSG_USE_EGL
+    #include <EGL/egl.h>
+#else
+    #include <GL/glx.h>
+#endif
+
+
 #include <string.h>
 
 namespace osgViewer
@@ -41,7 +51,10 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
             _parent(0),
             _window(0),
             _visualInfo(0),
-            _glxContext(0),
+            _context(0),
+            #ifdef OSG_USE_EGL
+            _surface(0),
+            #endif
             _currentCursor(0),
             _initialized(false),
             _realized(false),
@@ -144,7 +157,15 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
         
         Window& getParent() { return _parent; }
         Window& getWindow() { return _window; }
-        GLXContext& getGLXContext() { return _glxContext; }
+
+
+        #ifdef OSG_USE_EGL
+        typedef EGLContext Context;
+        #else
+        typedef GLXContext Context;
+        #endif
+
+        Context& getContext() { return _context; }
 
         Cursor getCurrentCursor() { return _currentCursor; }
 
@@ -180,7 +201,11 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
         Window          _parent;
         Window          _window;
         XVisualInfo*    _visualInfo;
-        GLXContext      _glxContext;
+        Context         _context;
+
+        #ifdef OSG_USE_EGL
+        EGLSurface      _surface;
+        #endif
 
         Cursor          _currentCursor;
 

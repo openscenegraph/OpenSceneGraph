@@ -108,18 +108,15 @@ ELSE()
             SET(OSGVIEWER_USE_XRANDR OFF)
         ENDIF()
 
-        IF(OSG_GLES1_AVAILABLE OR OSG_GLES2_AVAILABLE)
-        ELSE()
-            SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS}
-                ${HEADER_PATH}/api/X11/GraphicsWindowX11
-                ${HEADER_PATH}/api/X11/PixelBufferX11
-            )
+        SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS}
+            ${HEADER_PATH}/api/X11/GraphicsWindowX11
+            ${HEADER_PATH}/api/X11/PixelBufferX11
+        )
 
-            SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} 
-                GraphicsWindowX11.cpp 
-                PixelBufferX11.cpp
-            )
-        ENDIF()
+        SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} 
+            GraphicsWindowX11.cpp 
+            PixelBufferX11.cpp
+        )
 
         IF(OSGVIEWER_USE_XRANDR)
             ADD_DEFINITIONS(-DOSGVIEWER_USE_XRANDR)

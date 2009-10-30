@@ -20,6 +20,13 @@
 
 #ifndef GL_LIGHT0
     #define GL_LIGHT0 0x4000
+    #define GL_LIGHT1 0x4001
+    #define GL_LIGHT2 0x4002
+    #define GL_LIGHT3 0x4003
+    #define GL_LIGHT4 0x4004
+    #define GL_LIGHT5 0x4005
+    #define GL_LIGHT6 0x4006
+    #define GL_LIGHT7 0x4007
 #endif
 
 #ifndef GL_LIGHTING

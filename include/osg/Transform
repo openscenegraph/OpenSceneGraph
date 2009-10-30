@@ -18,7 +18,11 @@
 #include <osg/Matrix>
 
 #ifndef GL_RESCALE_NORMAL
-#define GL_RESCALE_NORMAL                 0x803A
+#define GL_RESCALE_NORMAL       0x803A
+#endif
+
+#ifndef GL_NORMALIZE
+#define GL_NORMALIZE            0x0BA1
 #endif
 
 namespace osg {

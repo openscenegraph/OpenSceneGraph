@@ -36,6 +36,11 @@
 typedef char GLchar;
 #endif
 
+#if !defined(GL_VERSION_2_0)
+    #define GL_VERTEX_PROGRAM_POINT_SIZE      0x8642
+    #define GL_VERTEX_PROGRAM_TWO_SIDE        0x8643
+#endif
+
 #if !defined(GL_VERSION_2_0) && !defined(GL_ES_VERSION_2_0)
 #define GL_VERSION_2_0 1
 #define GL_BLEND_EQUATION_RGB             GL_BLEND_EQUATION
@@ -44,8 +49,6 @@ typedef char GLchar;
 #define GL_VERTEX_ATTRIB_ARRAY_STRIDE     0x8624
 #define GL_VERTEX_ATTRIB_ARRAY_TYPE       0x8625
 #define GL_CURRENT_VERTEX_ATTRIB          0x8626
-#define GL_VERTEX_PROGRAM_POINT_SIZE      0x8642
-#define GL_VERTEX_PROGRAM_TWO_SIDE        0x8643
 #define GL_VERTEX_ATTRIB_ARRAY_POINTER    0x8645
 #define GL_STENCIL_BACK_FUNC              0x8800
 #define GL_STENCIL_BACK_FAIL              0x8801

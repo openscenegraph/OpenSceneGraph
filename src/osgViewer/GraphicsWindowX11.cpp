@@ -746,9 +746,9 @@ void GraphicsWindowX11::init()
             EGLint* contextAttribs = 0;
         #else
             EGLint contextAttribs[3];
-            pi32ContextAttribs[0] = EGL_CONTEXT_CLIENT_VERSION;
-            pi32ContextAttribs[1] = 2;
-            pi32ContextAttribs[2] = EGL_NONE;
+            contextAttribs[0] = EGL_CONTEXT_CLIENT_VERSION;
+            contextAttribs[1] = 2;
+            contextAttribs[2] = EGL_NONE;
         #endif
 
         _context = eglCreateContext(eglDisplay, eglConfig, NULL, contextAttribs);

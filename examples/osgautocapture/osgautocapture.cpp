@@ -79,8 +79,10 @@ public:
     
     virtual void operator () (osg::RenderInfo& renderInfo) const
         {
-            #if !defined(OSG_GLES1_AVAILABLE)
+            #if !defined(OSG_GLES1_AVAILABLE) && !!defined(OSG_GLES1_AVAILABLE)
             glReadBuffer(_readBuffer);
+            #else
+            osg::notify(osg::NOTICE)<<"Error: GLES unable to do glReadBuffer"<<std::endl;
             #endif
 
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);

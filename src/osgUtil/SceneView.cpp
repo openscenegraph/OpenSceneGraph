@@ -216,15 +216,17 @@ void SceneView::setDefaults(unsigned int options)
         _light->setDiffuse(Vec4(0.8f,0.8f,0.8f,1.0f));
         _light->setSpecular(Vec4(1.0f,1.0f,1.0f,1.0f));
 
-        _globalStateSet->setAssociatedModes(_light.get(),osg::StateAttribute::ON);
 
-        osg::LightModel* lightmodel = new osg::LightModel;
-        lightmodel->setAmbientIntensity(osg::Vec4(0.1f,0.1f,0.1f,1.0f));
-        _globalStateSet->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);
+        _globalStateSet->setAssociatedModes(_light.get(),osg::StateAttribute::ON);
 
         // enable lighting by default.
         _globalStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
 
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+            osg::LightModel* lightmodel = new osg::LightModel;
+            lightmodel->setAmbientIntensity(osg::Vec4(0.1f,0.1f,0.1f,1.0f));
+            _globalStateSet->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);
+        #endif
     }
     else
     {

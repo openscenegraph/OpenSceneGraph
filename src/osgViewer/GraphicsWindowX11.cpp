@@ -625,10 +625,10 @@ void GraphicsWindowX11::init()
 
     #ifdef OSG_USE_EGL
 
-        EGLDisplay eglDisplay = eglGetDisplay((EGLNativeDisplayType)_display);
+        _eglDisplay = eglGetDisplay((EGLNativeDisplayType)_display);
 
         EGLint eglMajorVersion, eglMinorVersion;
-        if (!eglInitialize(eglDisplay, &eglMajorVersion, &eglMinorVersion))
+        if (!eglInitialize(_eglDisplay, &eglMajorVersion, &eglMinorVersion))
         {
             osg::notify(osg::NOTICE)<<"GraphicsWindowX11::init() - eglInitialize() failed."<<std::endl;
 
@@ -723,7 +723,7 @@ void GraphicsWindowX11::init()
         #endif
 
         int numConfigs;
-        if (!eglChooseConfig(eglDisplay, configAttribs, &eglConfig, 1, &numConfigs) || (numConfigs != 1))
+        if (!eglChooseConfig(_eglDisplay, configAttribs, &eglConfig, 1, &numConfigs) || (numConfigs != 1))
         {
             osg::notify(osg::NOTICE)<<"GraphicsWindowX11::init() - eglChooseConfig() failed."<<std::endl;
             XCloseDisplay( _display );
@@ -732,8 +732,8 @@ void GraphicsWindowX11::init()
             return;
         }
 
-        _surface = eglCreateWindowSurface(eglDisplay, eglConfig, (EGLNativeWindowType)_window, NULL);
-        if (_surface == EGL_NO_SURFACE)
+        _eglSurface = eglCreateWindowSurface(_eglDisplay, eglConfig, (EGLNativeWindowType)_window, NULL);
+        if (_eglSurface == EGL_NO_SURFACE)
         {
             osg::notify(osg::NOTICE)<<"GraphicsWindowX11::init() - eglCreateWindowSurface(..) failed."<<std::endl;
             XCloseDisplay( _display );
@@ -751,7 +751,7 @@ void GraphicsWindowX11::init()
             contextAttribs[2] = EGL_NONE;
         #endif
 
-        _context = eglCreateContext(eglDisplay, eglConfig, NULL, contextAttribs);
+        _context = eglCreateContext(_eglDisplay, eglConfig, NULL, contextAttribs);
         if (_context == EGL_NO_CONTEXT)
         {
             osg::notify(osg::NOTICE)<<"GraphicsWindowX11::init() - eglCreateContext(..) failed."<<std::endl;
@@ -953,10 +953,9 @@ bool GraphicsWindowX11::makeCurrentImplementation()
     }
 
     #ifdef OSG_USE_EGL
-        EGLDisplay eglDisplay = eglGetDisplay((EGLNativeDisplayType)_display);
-        bool result = eglMakeCurrent(eglDisplay, _surface, _surface, _context)==EGL_TRUE;
+        bool result = eglMakeCurrent(_eglDisplay, _eglSurface, _eglSurface, _context)==EGL_TRUE;
         
-        osg::notify(osg::NOTICE)<<"GraphicsWindowX11::makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<" _surface="<<_surface<<" _context="<<_context<<" result="<<result<<std::endl;
+        osg::notify(osg::NOTICE)<<"GraphicsWindowX11::makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<" _eglSurface="<<_eglSurface<<" _context="<<_context<<" result="<<result<<std::endl;
         
         return result;
     #else
@@ -975,8 +974,7 @@ bool GraphicsWindowX11::releaseContextImplementation()
     osg::notify(osg::NOTICE)<<"GraphicsWindowX11::releaseContextImplementation() "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
     #ifdef OSG_USE_EGL
-        EGLDisplay eglDisplay = eglGetDisplay((EGLNativeDisplayType)_display);
-        return eglMakeCurrent( eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT )==EGL_TRUE;
+        return eglMakeCurrent( _eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT )==EGL_TRUE;
     #else
         return glXMakeCurrent( _display, None, NULL )==True;
     #endif
@@ -998,8 +996,7 @@ void GraphicsWindowX11::closeImplementation()
         if (_context)
         {
         #ifdef OSG_USE_EGL
-            EGLDisplay eglDisplay = eglGetDisplay((EGLNativeDisplayType)_display);
-            eglDestroyContext( eglDisplay, _context );
+            eglDestroyContext( _eglDisplay, _context );
         #else
             glXDestroyContext( _display, _context );
         #endif
@@ -1047,8 +1044,7 @@ void GraphicsWindowX11::swapBuffersImplementation()
     // osg::notify(osg::NOTICE)<<"swapBuffersImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
     #ifdef OSG_USE_EGL
-        EGLDisplay eglDisplay = eglGetDisplay((EGLNativeDisplayType)_display);
-        eglSwapBuffers( eglDisplay, _surface );
+        eglSwapBuffers( _eglDisplay, _eglSurface );
     #else
         glXSwapBuffers( _display, _window );
     #endif

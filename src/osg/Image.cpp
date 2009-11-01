@@ -54,6 +54,7 @@
     #define GL_LUMINANCE8_ALPHA8    0x8045
     #define GL_STENCIL_INDEX        0x1901
     #define GL_RGBA8                0x8058
+    #define GL_PACK_ROW_LENGTH      0x0D02
 #endif
 
 using namespace osg;

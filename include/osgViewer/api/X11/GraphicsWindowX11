@@ -53,7 +53,8 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
             _visualInfo(0),
             _context(0),
             #ifdef OSG_USE_EGL
-            _surface(0),
+            _eglDisplay(0),
+            _eglSurface(0),
             #endif
             _currentCursor(0),
             _initialized(false),
@@ -204,7 +205,8 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
         Context         _context;
 
         #ifdef OSG_USE_EGL
-        EGLSurface      _surface;
+        EGLDisplay      _eglDisplay;
+        EGLSurface      _eglSurface;
         #endif
 
         Cursor          _currentCursor;

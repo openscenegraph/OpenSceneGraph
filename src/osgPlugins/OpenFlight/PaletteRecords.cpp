@@ -41,6 +41,12 @@
     #define GL_INTENSITY16              0x804D
 #endif
 
+#if defined(OSG_GL3_AVAILABLE)
+    #define GL_LUMINANCE12_ALPHA4       0x8046
+    #define GL_LUMINANCE12_ALPHA12      0x8047
+    #define GL_INTENSITY16              0x804D
+#endif
+
 namespace flt {
 
 class VertexPalette : public Record

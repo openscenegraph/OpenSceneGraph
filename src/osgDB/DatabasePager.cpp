@@ -2007,7 +2007,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
             if (!dtc.first.empty() && (elapsedTime+estimatedTextureDuration)<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame)
             {
 
-                #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) 
+                #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)  && !defined(OSG_GL3_AVAILABLE)
                     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_PRIORITY, 1.0);
                 #endif
 
@@ -2031,7 +2031,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
 
                     (*itr)->compileGLObjects(state);
 
-                    #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) 
+                    #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
                         GLint p;
                         glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_RESIDENT, &p);
                     #endif

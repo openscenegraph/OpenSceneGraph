@@ -87,6 +87,11 @@
 
     #include <GLES2/gl2.h>
 
+#elif defined(OSG_GL3_AVAILABLE)
+
+    #define GL3_PROTOTYPES 1
+    #include <GL3/gl3.h>
+
 #else
 
     #ifndef __gl_h_
@@ -145,10 +150,15 @@
     #define GL_NONE 0x0
 #endif
 
-#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GL3_AVAILABLE)
     #define GL_POLYGON                         0x0009
     #define GL_QUADS                           0x0007
     #define GL_QUAD_STRIP                      0x0008
+#endif
+
+#if defined(OSG_GL3_AVAILABLE)
+    #define GL_LUMINANCE                      0x1909
+    #define GL_LUMINANCE_ALPHA                0x190A
 #endif
 
 #ifdef OSG_GLES1_AVAILABLE

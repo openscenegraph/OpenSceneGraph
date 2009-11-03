@@ -30,7 +30,7 @@
 using namespace osg;
 using namespace osgUtil;
 
-#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
     // define under GLES to keep the main SceneView.cpp clean.
     #define GL_BACK_LEFT        0x0402
     #define GL_BACK_RIGHT       0x0403
@@ -1289,7 +1289,7 @@ void SceneView::draw()
             break;
         case(osg::DisplaySettings::VERTICAL_INTERLACE):
             {
-            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)                
+            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
                 if( 0 == ( _camera->getInheritanceMask() & DRAW_BUFFER) )
                 {
                     _renderStageLeft->setDrawBuffer(_camera->getDrawBuffer());
@@ -1372,7 +1372,7 @@ void SceneView::draw()
             break;
         case(osg::DisplaySettings::HORIZONTAL_INTERLACE):
             {
-            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)                
+            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
                 if( 0 == ( _camera->getInheritanceMask() & DRAW_BUFFER) )
                 {
                 _renderStageLeft->setDrawBuffer(_camera->getDrawBuffer());
@@ -1454,7 +1454,7 @@ void SceneView::draw()
             break;
         case(osg::DisplaySettings::CHECKERBOARD):
             {
-            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)                
+            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
                 if( 0 == ( _camera->getInheritanceMask() & DRAW_BUFFER) )
                 {
                 _renderStageLeft->setDrawBuffer(_camera->getDrawBuffer());

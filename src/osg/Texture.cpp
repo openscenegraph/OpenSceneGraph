@@ -1747,7 +1747,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     {
         glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE,GL_TRUE);
 
-        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
             glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_PRIORITY,0.0f);
         #endif
 

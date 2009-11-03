@@ -30,6 +30,11 @@
     #define GL_COLOR_INDEX          0x1900
 #endif
 
+#if defined(OSG_GL3_AVAILABLE)
+    #define GL_BITMAP               0x1A00
+    #define GL_COLOR_INDEX          0x1900
+#endif
+
 using namespace osg;
 
 

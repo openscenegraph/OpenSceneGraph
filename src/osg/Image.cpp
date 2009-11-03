@@ -32,12 +32,16 @@
 #include "dxtctool.h"
 
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
-    #define GL_BITMAP               0x1A00
     #define GL_RED                  0x1903
     #define GL_GREEN                0x1904
     #define GL_BLUE                 0x1905
-    #define GL_COLOR_INDEX          0x1900
     #define GL_DEPTH_COMPONENT      0x1902
+    #define GL_STENCIL_INDEX        0x1901
+#endif
+
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GL3_AVAILABLE)
+    #define GL_BITMAP               0x1A00
+    #define GL_COLOR_INDEX          0x1900
     #define GL_INTENSITY12          0x804C
     #define GL_INTENSITY16          0x804D
     #define GL_INTENSITY4           0x804A
@@ -52,7 +56,6 @@
     #define GL_LUMINANCE6_ALPHA2    0x8044
     #define GL_LUMINANCE8           0x8040
     #define GL_LUMINANCE8_ALPHA8    0x8045
-    #define GL_STENCIL_INDEX        0x1901
     #define GL_RGBA8                0x8058
     #define GL_PACK_ROW_LENGTH      0x0D02
 #endif

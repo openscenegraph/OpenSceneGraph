@@ -527,7 +527,7 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
     {
         renderInfo.getState()->disableAllVertexArrays();
 
-        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
             glPushAttrib(GL_TRANSFORM_BIT);
             glEnable(GL_RESCALE_NORMAL);
         #endif
@@ -539,7 +539,7 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
             default:        renderPerGlyph(*renderInfo.getState());  break;
         }
 
-        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
             glPopAttrib();
         #endif
     }

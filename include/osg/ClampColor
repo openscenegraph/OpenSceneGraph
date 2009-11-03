@@ -31,6 +31,11 @@
 #define GL_CLAMP_FRAGMENT_COLOR                 GL_CLAMP_FRAGMENT_COLOR_ARB
 #endif
 
+#if defined(OSG_GL3_AVAILABLE)
+    #define GL_CLAMP_VERTEX_COLOR             0x891A
+    #define GL_CLAMP_FRAGMENT_COLOR           0x891B
+#endif
+
 namespace osg {
 
 /** Encapsulates OpenGL ClampColor state. */

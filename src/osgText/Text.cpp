@@ -1353,7 +1353,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
     {
         if (_textBB.valid())
         {
-        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
             state.applyTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::OFF);
 
             const osg::Matrix& matrix = _autoTransformCache[contextID]._matrix;
@@ -1848,7 +1848,7 @@ void Text::renderOnlyForegroundText(osg::State& state, const osg::Vec4& colorMul
 
 void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
     unsigned int contextID = state.getContextID();
 
     if (!osg::PolygonOffset::areFactorAndUnitsMultipliersSet())
@@ -1913,7 +1913,7 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
 
 void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
     unsigned int contextID = state.getContextID();
 
     glPushAttrib(GL_DEPTH_BUFFER_BIT);
@@ -1967,7 +1967,7 @@ void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMult
 // This idea comes from Paul Martz's OpenGL FAQ: 13.050
 void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
     unsigned int contextID = state.getContextID();
 
     // Hmmm, the man page says GL_VIEWPORT_BIT for Depth range (near and far)
@@ -2027,7 +2027,7 @@ void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultipl
 
 void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMultiplier) const
 {
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
     /* Here are the steps:
      * 1) Disable drawing color
      * 2) Enable the stencil buffer

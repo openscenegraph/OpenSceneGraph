@@ -106,7 +106,7 @@ void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo
     osg::Matrix modelview = state.getModelViewMatrix();
 
     // set up depth mask for first rendering pass
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
     glPushAttrib(GL_DEPTH_BUFFER_BIT); 
 #endif
     
@@ -115,7 +115,7 @@ void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo
     // render, first pass
     single_pass_render(state, modelview);
 
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
     // restore depth mask settings
     glPopAttrib();
 #endif
@@ -123,7 +123,7 @@ void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo
     // render, second pass
     if (_doublepass) {    
         // set up color mask for second rendering pass
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
         glPushAttrib(GL_COLOR_BUFFER_BIT);
 #endif
         glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
@@ -131,13 +131,13 @@ void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo
         // render the particles onto the depth buffer
         single_pass_render(state, modelview);
 
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
         // restore color mask settings
         glPopAttrib();
 #endif
     }
 
-#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
     osg::notify(osg::NOTICE)<<"Warning: ParticleSystem::drawImplementation(..) not fully implemented."<<std::endl;
 #endif
 

@@ -40,6 +40,10 @@
     #define GL_LUMINANCE4_ALPHA4    0x8043
 #endif
 
+#if defined(OSG_GL3_AVAILABLE)
+    #define GL_LUMINANCE4_ALPHA4    0x8043
+#endif
+
 // NOTICE ON WIN32:
 // typedef DWORD unsigned long;
 // sizeof(DWORD) = 4

@@ -533,12 +533,17 @@ void StateSet::setGlobalDefaults()
 
 
     setMode(GL_DEPTH_TEST,StateAttribute::ON);
-    // setAttributeAndModes(new AlphaFunc,StateAttribute::OFF);
-    setAttributeAndModes(new BlendFunc,StateAttribute::OFF);
 
-    Material *material       = new Material;
-    material->setColorMode(Material::AMBIENT_AND_DIFFUSE);
-    setAttributeAndModes(material,StateAttribute::ON);
+    #if !defined(OSG_GLES2_AVAILABLE)
+
+        // setAttributeAndModes(new AlphaFunc,StateAttribute::OFF);
+        setAttributeAndModes(new BlendFunc,StateAttribute::OFF);
+
+        Material *material       = new Material;
+        material->setColorMode(Material::AMBIENT_AND_DIFFUSE);
+        setAttributeAndModes(material,StateAttribute::ON);
+        
+    #endif
 }
 
 

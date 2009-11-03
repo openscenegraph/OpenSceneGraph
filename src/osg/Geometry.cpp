@@ -913,12 +913,10 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     }
 
     State& state = *renderInfo.getState();
-    Drawable::Extensions* extensions = Drawable::getExtensions(state.getContextID(),true);
-
     bool useFastPath = areFastPathsUsed();
 
     bool usingVertexBufferObjects = _useVertexBufferObjects && state.isVertexBufferObjectSupported();
-    bool handleVertexAttributes = !_vertexAttribList.empty() && extensions->isVertexProgramSupported();
+    bool handleVertexAttributes = !_vertexAttribList.empty();
 
     ArrayDispatchers& arrayDispatchers = state.getArrayDispatchers();
 

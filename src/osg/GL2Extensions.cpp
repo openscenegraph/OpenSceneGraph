@@ -328,7 +328,7 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
     
     _glVersion = asciiToFloat( version );
     _glslLanguageVersion = 0.0f;
-
+    
     _isShaderObjectsSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_shader_objects");
     _isVertexShaderSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_vertex_shader");
     _isFragmentShaderSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_fragment_shader");
@@ -336,6 +336,15 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
     _isGeometryShader4Supported = osg::isGLExtensionSupported(contextID,"GL_EXT_geometry_shader4");
     _isGpuShader4Supported = osg::isGLExtensionSupported(contextID,"GL_EXT_gpu_shader4");
 
+    
+    #if defined(OSG_GLES2_AVAILABLE)    
+        _glVersion = 2.0;
+        _isShaderObjectsSupported = true;
+        _isVertexShaderSupported = true;
+        _isFragmentShaderSupported = true;
+        _isLanguage100Supported = true;
+    #endif
+    
     if( isGlslSupported() )
     {
         // If glGetString raises an error, assume initial release "1.00"

@@ -30,6 +30,7 @@
 #include <windows.h>
 #endif
 
+
 typedef std::set<std::string>  ExtensionSet;
 static osg::buffered_object<ExtensionSet> s_glExtensionSetList;
 static osg::buffered_object<std::string> s_glRendererList;
@@ -315,7 +316,6 @@ std::string& osg::getGLExtensionDisableString()
     #include <dlfcn.h>
 #endif
 
-
 void* osg::getGLExtensionFuncPtr(const char *funcName)
 {
 #if defined(WIN32)
@@ -367,15 +367,16 @@ void* osg::getGLExtensionFuncPtr(const char *funcName)
 
     typedef void (*__GLXextFuncPtr)(void);
     typedef __GLXextFuncPtr (*GetProcAddressARBProc)(const char*);
+    
+    #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     static GetProcAddressARBProc s_glXGetProcAddressARB = convertPointerType<GetProcAddressARBProc, void*>(dlsym(0, "glXGetProcAddressARB"));
     if (s_glXGetProcAddressARB)
     {
         return convertPointerType<void*, __GLXextFuncPtr>((s_glXGetProcAddressARB)(funcName));
     }
-    else
-    {
-        return dlsym(0, funcName);
-    }
+    #endif
+
+    return dlsym(0, funcName);
 
 #else // all other unixes
 

@@ -209,19 +209,21 @@ void SceneView::setDefaults(unsigned int options)
 
     if ((options & HEADLIGHT) || (options & SKY_LIGHT))
     {
-        _lightingMode=(options&HEADLIGHT) ? HEADLIGHT : SKY_LIGHT;
-        _light = new osg::Light;
-        _light->setLightNum(0);
-        _light->setAmbient(Vec4(0.00f,0.0f,0.00f,1.0f));
-        _light->setDiffuse(Vec4(0.8f,0.8f,0.8f,1.0f));
-        _light->setSpecular(Vec4(1.0f,1.0f,1.0f,1.0f));
+        #if !defined(OSG_GLES2_AVAILABLE)
+            _lightingMode=(options&HEADLIGHT) ? HEADLIGHT : SKY_LIGHT;
+            _light = new osg::Light;
+            _light->setLightNum(0);
+            _light->setAmbient(Vec4(0.00f,0.0f,0.00f,1.0f));
+            _light->setDiffuse(Vec4(0.8f,0.8f,0.8f,1.0f));
+            _light->setSpecular(Vec4(1.0f,1.0f,1.0f,1.0f));
 
 
-        _globalStateSet->setAssociatedModes(_light.get(),osg::StateAttribute::ON);
+            _globalStateSet->setAssociatedModes(_light.get(),osg::StateAttribute::ON);
 
-        // enable lighting by default.
-        _globalStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
-
+            // enable lighting by default.
+            _globalStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+        #endif
+        
         #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
             osg::LightModel* lightmodel = new osg::LightModel;
             lightmodel->setAmbientIntensity(osg::Vec4(0.1f,0.1f,0.1f,1.0f));
@@ -268,11 +270,13 @@ void SceneView::setDefaults(unsigned int options)
 
     _globalStateSet->setGlobalDefaults();
 
-    // set up an texture environment by default to speed up blending operations.
-     osg::TexEnv* texenv = new osg::TexEnv;
-     texenv->setMode(osg::TexEnv::MODULATE);
-     _globalStateSet->setTextureAttributeAndModes(0,texenv, osg::StateAttribute::ON);
-
+    #if !defined(OSG_GLES2_AVAILABLE)
+        // set up an texture environment by default to speed up blending operations.
+         osg::TexEnv* texenv = new osg::TexEnv;
+         texenv->setMode(osg::TexEnv::MODULATE);
+         _globalStateSet->setTextureAttributeAndModes(0,texenv, osg::StateAttribute::ON);
+    #endif
+         
     _camera->setClearColor(osg::Vec4(0.2f, 0.2f, 0.4f, 1.0f));
 }
 
@@ -670,12 +674,14 @@ void SceneView::setLightingMode(LightingMode mode)
 
     if (_lightingMode!=NO_SCENEVIEW_LIGHT)
     {
-        // add GL_LIGHTING mode
-        _globalStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
-        if (_light.valid()) 
-        {
-            _globalStateSet->setAssociatedModes(_light.get(), osg::StateAttribute::ON);
-        }
+        #if !defined(OSG_GLES2_AVAILABLE)
+            // add GL_LIGHTING mode
+            _globalStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+            if (_light.valid()) 
+            {
+                _globalStateSet->setAssociatedModes(_light.get(), osg::StateAttribute::ON);
+            }
+        #endif
     }
 }
 
@@ -938,20 +944,22 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     renderStage->setCamera(_camera.get());
 #endif
 
-    switch(_lightingMode)
-    {
-    case(HEADLIGHT):
-        if (_light.valid()) renderStage->addPositionedAttribute(NULL,_light.get());
-        else osg::notify(osg::WARN)<<"Warning: no osg::Light attached to ogUtil::SceneView to provide head light.*/"<<std::endl;
-        break;
-    case(SKY_LIGHT):
-        if (_light.valid()) renderStage->addPositionedAttribute(mv.get(),_light.get());
-        else osg::notify(osg::WARN)<<"Warning: no osg::Light attached to ogUtil::SceneView to provide sky light.*/"<<std::endl;
-        break;
-    default:
-        break;
-    }            
-
+    #if !defined(OSG_GLES2_AVAILABLE)
+        switch(_lightingMode)
+        {
+        case(HEADLIGHT):
+            if (_light.valid()) renderStage->addPositionedAttribute(NULL,_light.get());
+            else osg::notify(osg::WARN)<<"Warning: no osg::Light attached to ogUtil::SceneView to provide head light.*/"<<std::endl;
+            break;
+        case(SKY_LIGHT):
+            if (_light.valid()) renderStage->addPositionedAttribute(mv.get(),_light.get());
+            else osg::notify(osg::WARN)<<"Warning: no osg::Light attached to ogUtil::SceneView to provide sky light.*/"<<std::endl;
+            break;
+        default:
+            break;
+        }            
+    #endif
+    
     if (_globalStateSet.valid()) cullVisitor->pushStateSet(_globalStateSet.get());
     if (_localStateSet.valid()) cullVisitor->pushStateSet(_localStateSet.get());
 

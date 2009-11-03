@@ -802,7 +802,7 @@ class ShaderGeometry : public osg::Drawable
                 itr != _trees.end();
                 ++itr)
             {
-                glColor4fv(itr->ptr());
+                renderInfo.getState()->Color((*itr)[0],(*itr)[1],(*itr)[2],(*itr)[3]);
                 _geometry->draw(renderInfo);
             }
         }

@@ -46,14 +46,20 @@ State::State():
     _projection = _identity;
     _modelView = _identity;
 
-    _useModelViewAndProjectionUniforms = false;
+    #if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GL3_AVAILABLE)    
+        _useModelViewAndProjectionUniforms = true;
+        _useVertexAttributeAliasing = true;
+    #else    
+        _useModelViewAndProjectionUniforms = false;
+        _useVertexAttributeAliasing = false;
+    #endif
+    
     _modelViewMatrixUniform = new Uniform(Uniform::FLOAT_MAT4,"osg_ModelViewMatrix");
     _projectionMatrixUniform = new Uniform(Uniform::FLOAT_MAT4,"osg_ProjectionMatrix");
     _modelViewProjectionMatrixUniform = new Uniform(Uniform::FLOAT_MAT4,"osg_ModelViewProjectionMatrix");
     _normalMatrixUniform = new Uniform(Uniform::FLOAT_MAT3,"osg_NormalMatrix");
 
     {
-        _useVertexAttributeAliasing = false;
         setUpVertexAttribAlias(_vertexAlias,0, "gl_Vertex","osg_Vertex","attribute vec4 ");
         setUpVertexAttribAlias(_normalAlias, 2, "gl_Normal","osg_Normal","attribute vec3 ");
         setUpVertexAttribAlias(_colorAlias, 3, "gl_Color","osg_Color","attribute vec4 ");

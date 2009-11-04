@@ -59,6 +59,29 @@ State::State():
     _modelViewProjectionMatrixUniform = new Uniform(Uniform::FLOAT_MAT4,"osg_ModelViewProjectionMatrix");
     _normalMatrixUniform = new Uniform(Uniform::FLOAT_MAT3,"osg_NormalMatrix");
 
+    bool compactAliasing = true;
+    if (compactAliasing)
+    {
+        setUpVertexAttribAlias(_vertexAlias,0, "gl_Vertex","osg_Vertex","attribute vec4 ");
+        setUpVertexAttribAlias(_normalAlias, 1, "gl_Normal","osg_Normal","attribute vec3 ");
+        setUpVertexAttribAlias(_colorAlias, 2, "gl_Color","osg_Color","attribute vec4 ");
+
+        _texCoordAliasList.resize(5);
+        for(unsigned int i=0; i<_texCoordAliasList.size(); i++)
+        {
+            std::stringstream gl_MultiTexCoord;
+            std::stringstream osg_MultiTexCoord;
+            gl_MultiTexCoord<<"gl_MultiTexCoord"<<i;
+            osg_MultiTexCoord<<"osg_MultiTexCoord"<<i;
+
+            setUpVertexAttribAlias(_texCoordAliasList[i], 3+i, gl_MultiTexCoord.str(), osg_MultiTexCoord.str(), "attribute vec4 ");
+        }
+
+        setUpVertexAttribAlias(_secondaryColorAlias, 6, "gl_SecondaryColor","osg_SecondaryColor","attribute vec4 ");
+        setUpVertexAttribAlias(_fogCoordAlias, 7, "gl_FogCoord","osg_FogCoord","attribute float ");
+
+    }
+    else
     {
         setUpVertexAttribAlias(_vertexAlias,0, "gl_Vertex","osg_Vertex","attribute vec4 ");
         setUpVertexAttribAlias(_normalAlias, 2, "gl_Normal","osg_Normal","attribute vec3 ");

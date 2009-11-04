@@ -283,7 +283,45 @@ class ConvertToVertexAttibArrays : public osg::NodeVisitor
         AttributeAlias _texCoordAlias[8];
 };
 
+osg::Node* createSimpleTestModel()
+{
+    osg::Group* group = new osg::Group;
+    
+    osg::Geode* geode = new osg::Geode;
+    group->addChild(geode);
+    
+    osg::Geometry* geometry = new osg::Geometry;
+    geode->addDrawable(geometry);
 
+    osg::Vec3Array* vertices = new osg::Vec3Array;
+    vertices->push_back(osg::Vec3(0.0,0.0,0.0));
+    vertices->push_back(osg::Vec3(0.0,0.0,1.0));
+    vertices->push_back(osg::Vec3(1.0,0.0,0.0));
+    vertices->push_back(osg::Vec3(1.0,0.0,1.0));
+    geometry->setVertexArray(vertices);
+
+    geometry->addPrimitiveSet(new osg::DrawArrays(GL_TRIANGLE_STRIP, 0, 4));
+    
+    char vertexShaderSource[] = 
+       "void main(void)\n"
+       "{\n"
+       "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+       "}\n";
+
+    char fragmentShaderSource[] = 
+        "void main(void)\n"
+        "{\n"
+        "    gl_FragColor = vec4(1.0,1.0,0.0,1.0); \n"
+        "}\n";
+
+    osg::Program* program = new osg::Program;
+    program->addShader(new osg::Shader(osg::Shader::VERTEX, vertexShaderSource));
+    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource));
+
+    geometry->getOrCreateStateSet()->setAttribute(program);
+    
+    return group;
+}
 
 int main(int argc, char *argv[])
 {
@@ -296,35 +334,46 @@ int main(int argc, char *argv[])
     std::string outputFileName;
     while (arguments.read("-o",outputFileName)) {}
 
-    bool runShaderGen = true;
-    while (arguments.read("--shader-gen")) { runShaderGen = true; }
-    while (arguments.read("--no-shader-gen")) { runShaderGen = false; }
+    osg::ref_ptr<osg::Node> loadedModel;
 
     bool runConvertToVertexAttributes = true;
-    while (arguments.read("--vertex-attrib")) { runConvertToVertexAttributes = true; }
-    while (arguments.read("--no-vertex-attrib")) { runConvertToVertexAttributes = false; }
-
-    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
-    if (!loadedModel.get())
+    if (arguments.read("--simple") || arguments.read("--s"))
     {
-        osg::notify(osg::NOTICE)<<"No model loaded, please specify a model filename."<<std::endl;
-        return 1;
+        loadedModel = createSimpleTestModel();
     }
-
-    if (runShaderGen)
+    else
     {
-        // convert fixed function pipeline to shaders
-        osgUtil::ShaderGenVisitor sgv;
-        loadedModel->accept(sgv);
-    }
+        bool runShaderGen = true;
+        while (arguments.read("--shader-gen")) { runShaderGen = true; }
+        while (arguments.read("--no-shader-gen")) { runShaderGen = false; }
 
-    if (runConvertToVertexAttributes)
-    {
-        // find any conventional vertex, colour, normal and tex coords arrays and convert to vertex attributes
-        ConvertToVertexAttibArrays ctvaa;
-        loadedModel->accept(ctvaa);
-    }
+        while (arguments.read("--vertex-attrib")) { runConvertToVertexAttributes = true; }
+        while (arguments.read("--no-vertex-attrib")) { runConvertToVertexAttributes = false; }
 
+        loadedModel = osgDB::readNodeFiles(arguments);
+        if (!loadedModel.get())
+        {
+            osg::notify(osg::NOTICE)<<"No model loaded, please specify a model filename."<<std::endl;
+            return 1;
+        }
+
+        if (runShaderGen)
+        {
+            // convert fixed function pipeline to shaders
+            osgUtil::ShaderGenVisitor sgv;
+            loadedModel->accept(sgv);
+        }
+
+        if (runConvertToVertexAttributes)
+        {
+            // find any conventional vertex, colour, normal and tex coords arrays and convert to vertex attributes
+            ConvertToVertexAttibArrays ctvaa;
+            loadedModel->accept(ctvaa);
+        }
+    }
+    
+    if (!loadedModel) return 1;
+    
     if (!outputFileName.empty())
     {
         osgDB::writeNodeFile(*loadedModel, outputFileName);

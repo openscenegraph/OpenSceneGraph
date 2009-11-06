@@ -725,49 +725,22 @@ void GraphicsWindowX11::init()
 
         EGLConfig eglConfig = 0;
         
-        #if defined(OSG_GLES1_AVAILABLE)
-
-            #if 0
-            EGLint configAttribs[3];
-            configAttribs[0] = EGL_SURFACE_TYPE;
-            configAttribs[1] = EGL_WINDOW_BIT;
-            configAttribs[2] = EGL_NONE;
-            #else
-            EGLint configAttribs[] = {
-                    EGL_SAMPLE_BUFFERS, 0,
-                    EGL_SAMPLES, 0,
-                    EGL_RED_SIZE, 1,
-                    EGL_GREEN_SIZE, 1,
-                    EGL_BLUE_SIZE, 1,
-                    EGL_DEPTH_SIZE, 1,
-                    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES1_BIT,
-                    EGL_NONE
-            };
-            #endif
-
+        #if defined(OSG_GLES2_AVAILABLE)
+            #define OSG_EGL_OPENGL_TARGET_BIT EGL_OPENGL_ES2_BIT
         #else
-
-            #if 0
-            EGLint configAttribs[5];
-            configAttribs[0] = EGL_SURFACE_TYPE;
-            configAttribs[1] = EGL_WINDOW_BIT;
-            configAttribs[2] = EGL_RENDERABLE_TYPE;
-            configAttribs[3] = EGL_OPENGL_ES2_BIT;      
-            configAttribs[4] = EGL_NONE;
-            #else
-            EGLint configAttribs[] = {
-                    EGL_SAMPLE_BUFFERS, 0,
-                    EGL_SAMPLES, 0,
-                    EGL_RED_SIZE, 1,
-                    EGL_GREEN_SIZE, 1,
-                    EGL_BLUE_SIZE, 1,
-                    EGL_DEPTH_SIZE, 1,
-                    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-                    EGL_NONE
-            };
-            #endif
-
+            #define OSG_EGL_OPENGL_TARGET_BIT EGL_OPENGL_ES_BIT
         #endif
+        
+        EGLint configAttribs[] = {
+                EGL_SAMPLE_BUFFERS, 0,
+                EGL_SAMPLES, 0,
+                EGL_RED_SIZE, 1,
+                EGL_GREEN_SIZE, 1,
+                EGL_BLUE_SIZE, 1,
+                EGL_DEPTH_SIZE, 1,
+                EGL_RENDERABLE_TYPE, OSG_EGL_OPENGL_TARGET_BIT,
+                EGL_NONE
+        };
 
         int numConfigs;
         if (!eglChooseConfig(_eglDisplay, configAttribs, &eglConfig, 1, &numConfigs) || (numConfigs != 1))
@@ -794,10 +767,11 @@ void GraphicsWindowX11::init()
         #if defined(OSG_GLES1_AVAILABLE)
             EGLint* contextAttribs = 0;
         #else
-            EGLint contextAttribs[3];
-            contextAttribs[0] = EGL_CONTEXT_CLIENT_VERSION;
-            contextAttribs[1] = 2;
-            contextAttribs[2] = EGL_NONE;
+            EGLint contextAttribs[] = {
+                 EGL_CONTEXT_CLIENT_VERSION,
+                2,
+                EGL_NONE
+            };
         #endif
 
         _context = eglCreateContext(_eglDisplay, eglConfig, NULL, contextAttribs);

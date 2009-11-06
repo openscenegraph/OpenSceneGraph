@@ -38,6 +38,23 @@
 
 using namespace osgViewer;
 
+#ifdef OSG_USE_EGL
+bool checkEGLError(const char* str)
+{
+    EGLint err = eglGetError();
+    if (err != EGL_SUCCESS)
+    {
+        osg::notify(osg::WARN)<<"Warning: "<<str<<" EGL error "<<std::hex<<err<<std::dec<<std::endl;
+        return true;
+    }
+    else
+    {
+        // osg::notify(osg::WARN)<<"EGL reports no errors: "<<str<<std::endl;
+        return false;
+    }
+}
+#endif
+
 class X11KeyboardMap
 {
     public:
@@ -709,17 +726,47 @@ void GraphicsWindowX11::init()
         EGLConfig eglConfig = 0;
         
         #if defined(OSG_GLES1_AVAILABLE)
+
+            #if 0
             EGLint configAttribs[3];
             configAttribs[0] = EGL_SURFACE_TYPE;
             configAttribs[1] = EGL_WINDOW_BIT;
             configAttribs[2] = EGL_NONE;
+            #else
+            EGLint configAttribs[] = {
+                    EGL_SAMPLE_BUFFERS, 0,
+                    EGL_SAMPLES, 0,
+                    EGL_RED_SIZE, 1,
+                    EGL_GREEN_SIZE, 1,
+                    EGL_BLUE_SIZE, 1,
+                    EGL_DEPTH_SIZE, 1,
+                    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES1_BIT,
+                    EGL_NONE
+            };
+            #endif
+
         #else
+
+            #if 0
             EGLint configAttribs[5];
             configAttribs[0] = EGL_SURFACE_TYPE;
             configAttribs[1] = EGL_WINDOW_BIT;
             configAttribs[2] = EGL_RENDERABLE_TYPE;
             configAttribs[3] = EGL_OPENGL_ES2_BIT;      
             configAttribs[4] = EGL_NONE;
+            #else
+            EGLint configAttribs[] = {
+                    EGL_SAMPLE_BUFFERS, 0,
+                    EGL_SAMPLES, 0,
+                    EGL_RED_SIZE, 1,
+                    EGL_GREEN_SIZE, 1,
+                    EGL_BLUE_SIZE, 1,
+                    EGL_DEPTH_SIZE, 1,
+                    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+                    EGL_NONE
+            };
+            #endif
+
         #endif
 
         int numConfigs;
@@ -731,6 +778,8 @@ void GraphicsWindowX11::init()
             _display = 0;
             return;
         }
+
+        eglBindAPI(EGL_OPENGL_ES_API);
 
         _eglSurface = eglCreateWindowSurface(_eglDisplay, eglConfig, (EGLNativeWindowType)_window, NULL);
         if (_eglSurface == EGL_NO_SURFACE)
@@ -763,6 +812,8 @@ void GraphicsWindowX11::init()
 
         _initialized = true;
             
+        checkEGLError("after eglCreateContext()");
+
     #else
         
         _context = glXCreateContext( _display, _visualInfo, sharedContextGLX, True );
@@ -786,6 +837,9 @@ void GraphicsWindowX11::init()
         XCloseDisplay( _display );
         _display = 0;
     }
+
+
+
 }
 
 bool GraphicsWindowX11::createWindow()
@@ -956,7 +1010,8 @@ bool GraphicsWindowX11::makeCurrentImplementation()
         bool result = eglMakeCurrent(_eglDisplay, _eglSurface, _eglSurface, _context)==EGL_TRUE;
         
         osg::notify(osg::NOTICE)<<"GraphicsWindowX11::makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<" _eglSurface="<<_eglSurface<<" _context="<<_context<<" result="<<result<<std::endl;
-        
+        checkEGLError("after eglMakeCurrent()");
+
         return result;
     #else
         return glXMakeCurrent( _display, _window, _context )==True;
@@ -975,6 +1030,7 @@ bool GraphicsWindowX11::releaseContextImplementation()
 
     #ifdef OSG_USE_EGL
         return eglMakeCurrent( _eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT )==EGL_TRUE;
+        checkEGLError("after eglMakeCurrent() release");
     #else
         return glXMakeCurrent( _display, None, NULL )==True;
     #endif
@@ -1045,9 +1101,11 @@ void GraphicsWindowX11::swapBuffersImplementation()
 
     #ifdef OSG_USE_EGL
         eglSwapBuffers( _eglDisplay, _eglSurface );
+        checkEGLError("after eglSwapBuffers()");
     #else
         glXSwapBuffers( _display, _window );
     #endif
+
 
     while( XPending(_display) )
     {

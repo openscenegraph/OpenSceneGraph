@@ -323,6 +323,67 @@ osg::Node* createSimpleTestModel()
     return group;
 }
 
+osg::Node* createSimpleTextureTestModel()
+{
+    osg::Group* group = new osg::Group;
+    
+    osg::Geode* geode = new osg::Geode;
+    group->addChild(geode);
+    
+    osg::Geometry* geometry = new osg::Geometry;
+    geode->addDrawable(geometry);
+
+    osg::Vec3Array* vertices = new osg::Vec3Array;
+    vertices->push_back(osg::Vec3(0.0,0.0,0.0));
+    vertices->push_back(osg::Vec3(0.0,0.0,1.0));
+    vertices->push_back(osg::Vec3(1.0,0.0,0.0));
+    vertices->push_back(osg::Vec3(1.0,0.0,1.0));
+    geometry->setVertexArray(vertices);
+
+    osg::Vec2Array* texcoords = new osg::Vec2Array;
+    texcoords->push_back(osg::Vec2(0.0,0.0));
+    texcoords->push_back(osg::Vec2(0.0,1.0));
+    texcoords->push_back(osg::Vec2(1.0,0.0));
+    texcoords->push_back(osg::Vec2(1.0,1.0));
+    geometry->setTexCoordArray(0, texcoords);
+
+    geometry->addPrimitiveSet(new osg::DrawArrays(GL_TRIANGLE_STRIP, 0, 4));
+    
+    char vertexShaderSource[] = 
+       "varying vec2 texCoord;\n"
+       "void main(void)\n"
+       "{\n"
+       "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;\n"
+       "    texCoord = gl_MultiTexCoord0.xy;\n"
+       "}\n";
+
+    char fragmentShaderSource[] = 
+        "varying vec2 texCoord;\n"
+        "uniform sampler2D baseTexture;\n"
+        "void main(void)\n"
+        "{\n"
+        "    gl_FragColor = texture2D(baseTexture, texCoord); \n"
+        "}\n";
+
+    osg::Program* program = new osg::Program;
+    program->addShader(new osg::Shader(osg::Shader::VERTEX, vertexShaderSource));
+    program->addShader(new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource));
+
+    osg::StateSet* stateset = geometry->getOrCreateStateSet();
+    stateset->setAttribute(program);
+    
+    osg::Image* image = osgDB::readImageFile("Images/lz.rgb");
+    osg::Texture2D* texture = new osg::Texture2D(image);
+    texture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
+    texture->setFilter(osg::Texture::MAG_FILTER, osg::Texture::LINEAR);
+    stateset->setTextureAttribute(0, texture);
+    
+    osg::Uniform* baseTextureSampler = new osg::Uniform("baseTexture",0);
+    stateset->addUniform(baseTextureSampler);
+
+    return group;
+}
+
 int main(int argc, char *argv[])
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -340,6 +401,10 @@ int main(int argc, char *argv[])
     if (arguments.read("--simple") || arguments.read("--s"))
     {
         loadedModel = createSimpleTestModel();
+    }
+    else if (arguments.read("--texture") || arguments.read("-t"))
+    {
+        loadedModel = createSimpleTextureTestModel();
     }
     else
     {

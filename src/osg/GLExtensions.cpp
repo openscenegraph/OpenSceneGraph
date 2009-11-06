@@ -378,6 +378,10 @@ void* osg::getGLExtensionFuncPtr(const char *funcName)
 
     return dlsym(0, funcName);
 
+#elif defined (__QNX__)
+
+   return dlsym(RTLD_DEFAULT, funcName);
+
 #else // all other unixes
 
     return dlsym(0, funcName);

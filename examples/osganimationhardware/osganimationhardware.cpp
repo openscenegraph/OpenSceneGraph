@@ -124,7 +124,7 @@ struct SetupRigGeometry : public osg::NodeVisitor
     
     void apply(osg::Geode& geode)
     {
-        for (int i = 0; i < geode.getNumDrawables(); i++)
+        for (unsigned int i = 0; i < geode.getNumDrawables(); i++)
             apply(*geode.getDrawable(i));
     }
     void apply(osg::Drawable& geom)
@@ -221,7 +221,7 @@ int main (int argc, char* argv[])
     // add the screen capture handler
     viewer.addEventHandler(new osgViewer::ScreenCaptureHandler);
 
-    viewer.setSceneData(scene);
+    viewer.setSceneData(scene.get());
 
     viewer.realize();
 
@@ -235,7 +235,7 @@ int main (int argc, char* argv[])
             tr->setMatrix(osg::Matrix::translate( 2 * (i - xChar * .5),
                                                   0,
                                                   2 * (j - yChar * .5)));
-            tr->addChild(c);
+            tr->addChild(c.get());
             scene->addChild(tr);
         }
     }

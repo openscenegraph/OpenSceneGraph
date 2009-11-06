@@ -1038,10 +1038,10 @@ void SceneView::draw()
     osg::State* state = _renderInfo.getState();
     state->initializeExtensionProcs();
 
-    osg::Texture::TextureObjectManager* tom = osg::Texture::getTextureObjectManager(state->getContextID());
+    osg::Texture::TextureObjectManager* tom = osg::Texture::getTextureObjectManager(state->getContextID()).get();
     tom->newFrame(state->getFrameStamp());
 
-    osg::GLBufferObjectManager* bom = osg::GLBufferObjectManager::getGLBufferObjectManager(state->getContextID());
+    osg::GLBufferObjectManager* bom = osg::GLBufferObjectManager::getGLBufferObjectManager(state->getContextID()).get();
     bom->newFrame(state->getFrameStamp());
 
     if (!_initCalled) init();

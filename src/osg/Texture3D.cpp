@@ -196,7 +196,7 @@ void Texture3D::apply(State& state) const
     // current OpenGL context.
     const unsigned int contextID = state.getContextID();
 
-    Texture::TextureObjectManager* tom = Texture::getTextureObjectManager(contextID);
+    Texture::TextureObjectManager* tom = Texture::getTextureObjectManager(contextID).get();
     ElapsedTime elapsedTime(&(tom->getApplyTime()));
     tom->getNumberApplied()++;
 

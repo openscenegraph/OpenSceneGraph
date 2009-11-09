@@ -886,16 +886,8 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
 
     if(state.getCheckForGLErrors()!=osg::State::NEVER_CHECK_GL_ERRORS)
     {
-        GLenum errorNo = glGetError();
-        if (errorNo!=GL_NO_ERROR)
+        if (state.checkGLErrors("after RenderBin::draw(..)"))
         {
-#ifdef OSG_GLU_AVAILABLE
-            const char* error = (char*)gluErrorString(errorNo);
-            if (error)  osg::notify(osg::NOTICE)<<"Warning: detected OpenGL error '"<<error<<"' after RenderBin::draw(,)"<<std::endl;
-            else        osg::notify(osg::NOTICE)<<"Warning: detected OpenGL errorNo= 0x"<<std::hex<<errorNo<<" after RenderBin::draw(,)"<<std::dec<<std::endl;
-#else
-            osg::notify(osg::NOTICE)<<"Warning: detected OpenGL errorNo= 0x"<<std::hex<<errorNo<<" after RenderBin::draw(,)"<<std::dec<<std::endl;
-#endif
             if ( fbo_ext )
             {
                 GLenum fbstatus = fbo_ext->glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);

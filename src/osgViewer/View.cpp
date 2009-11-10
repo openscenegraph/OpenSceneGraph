@@ -23,6 +23,7 @@
 #include <osg/TexMat>
 
 #include <osgUtil/Optimizer>
+#include <osgUtil/ShaderGen>
 #include <osgUtil/IntersectionVisitor>
 
 using namespace osgViewer;
@@ -275,7 +276,12 @@ void View::setSceneData(osg::Node* node)
     }
 
     if (getSceneData())
-    {        
+    {
+        #if defined(OSG_GLES2_AVAILABLE)
+            osgUtil::ShaderGenVisitor sgv;
+            getSceneData()->accept(sgv);
+        #endif
+        
         // now make sure the scene graph is set up with the correct DataVariance to protect the dynamic elements of
         // the scene graph from being run in parallel.
         osgUtil::Optimizer::StaticObjectDetectionVisitor sodv;

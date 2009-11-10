@@ -461,7 +461,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             fbo->apply(state);
 
             // If no color attachment make sure to set glDrawBuffer/glReadBuffer to none 
-            // otherwise glCheckFramebufferStatusEXT will fail
+            // otherwise glCheckFramebufferStatus will fail
             // It has to be done after call to glBindFramebuffer (fbo->apply) 
             // and before call to glCheckFramebufferStatus
             if ( !colorAttached )
@@ -474,14 +474,14 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                 #endif
             }
 
-            GLenum status = fbo_ext->glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+            GLenum status = fbo_ext->glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT);
 
             if (status != GL_FRAMEBUFFER_COMPLETE_EXT)
             {
                 osg::notify(osg::NOTICE)<<"RenderStage::runCameraSetUp(), FBO setup failed, FBO status= 0x"<<std::hex<<status<<std::dec<<std::endl;
 
                 fbo_supported = false;
-                fbo_ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+                fbo_ext->glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
                 fbo = 0;
                 
                 // clean up.
@@ -503,7 +503,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                 {
                     fbo_multisample->apply(state);
 
-                    GLenum status = fbo_ext->glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+                    GLenum status = fbo_ext->glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT);
 
                     if (status != GL_FRAMEBUFFER_COMPLETE_EXT)
                     {
@@ -890,7 +890,7 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
         {
             if ( fbo_ext )
             {
-                GLenum fbstatus = fbo_ext->glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT);
+                GLenum fbstatus = fbo_ext->glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT);
                 if ( fbstatus != GL_FRAMEBUFFER_COMPLETE_EXT )
                 {
                     osg::notify(osg::NOTICE)<<"RenderStage::drawInner(,) FBO status = 0x"<<std::hex<<fbstatus<<std::dec<<std::endl;
@@ -902,7 +902,7 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
     const FrameBufferObject* read_fbo = fbo_supported ? _fbo.get() : 0;
     bool apply_read_fbo = false;
 
-    if (fbo_supported && _resolveFbo.valid() && fbo_ext->glBlitFramebufferEXT)
+    if (fbo_supported && _resolveFbo.valid() && fbo_ext->glBlitFramebuffer)
     {
         GLbitfield blitMask = 0;
 
@@ -935,7 +935,7 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
         // Note that (with nvidia 175.16 windows drivers at least) if the read
         // framebuffer is multisampled then the dimension arguments are ignored
         // and the whole framebuffer is always copied.
-        fbo_ext->glBlitFramebufferEXT(
+        fbo_ext->glBlitFramebuffer(
             0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
             0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
             blitMask, GL_NEAREST);
@@ -1003,7 +1003,7 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
         if (getDisableFboAfterRender())
         {
             // switch off the frame buffer object
-            fbo_ext->glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+            fbo_ext->glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
         }
 
         doCopyTexture = true;
@@ -1021,7 +1021,7 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
             {
                 state.setActiveTextureUnit(0);
                 state.applyTextureAttribute(0, itr->second._texture.get());
-                fbo_ext->glGenerateMipmapEXT(itr->second._texture->getTextureTarget());
+                fbo_ext->glGenerateMipmap(itr->second._texture->getTextureTarget());
             }
         }
     }

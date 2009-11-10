@@ -38,76 +38,62 @@ FBOExtensions* FBOExtensions::instance(unsigned contextID, bool createIfNotInita
 /**************************************************************************
  * FBOExtensions
  **************************************************************************/
-#define LOAD_FBO_EXT(name)    setGLExtensionFuncPtr(name, (#name))
+#define LOAD_FBO_EXT(name) setGLExtensionFuncPtr(name, (#name), ( std::string(#name)+std::string("EXT") ).c_str() )
 
 FBOExtensions::FBOExtensions(unsigned int contextID)
-:   glBindRenderbufferEXT(0),
-    glGenRenderbuffersEXT(0),
-    glDeleteRenderbuffersEXT(0),
-    glRenderbufferStorageEXT(0),
-    glRenderbufferStorageMultisampleEXT(0),
+:   glBindRenderbuffer(0),
+    glGenRenderbuffers(0),
+    glDeleteRenderbuffers(0),
+    glRenderbufferStorage(0),
+    glRenderbufferStorageMultisample(0),
     glRenderbufferStorageMultisampleCoverageNV(0),
-    glBindFramebufferEXT(0),
-    glDeleteFramebuffersEXT(0),
-    glGenFramebuffersEXT(0),
-    glCheckFramebufferStatusEXT(0),
-    glFramebufferTexture1DEXT(0),
-    glFramebufferTexture2DEXT(0),
-    glFramebufferTexture3DEXT(0),
-    glFramebufferTextureLayerEXT(0),
-    glFramebufferRenderbufferEXT(0),
-    glGenerateMipmapEXT(0),
-    glBlitFramebufferEXT(0),
+    glBindFramebuffer(0),
+    glDeleteFramebuffers(0),
+    glGenFramebuffers(0),
+    glCheckFramebufferStatus(0),
+    glFramebufferTexture1D(0),
+    glFramebufferTexture2D(0),
+    glFramebufferTexture3D(0),
+    glFramebufferTextureLayer(0),
+    glFramebufferRenderbuffer(0),
+    glGenerateMipmap(0),
+    glBlitFramebuffer(0),
     _supported(false),
     _packed_depth_stencil_supported(false)
 {
-    if (!isGLExtensionSupported(contextID, "GL_EXT_framebuffer_object"))
-        return;
-    
-    LOAD_FBO_EXT(glBindRenderbufferEXT);
-    LOAD_FBO_EXT(glGenRenderbuffersEXT);
-    LOAD_FBO_EXT(glDeleteRenderbuffersEXT);
-    LOAD_FBO_EXT(glRenderbufferStorageEXT);
-    LOAD_FBO_EXT(glBindFramebufferEXT);
-    LOAD_FBO_EXT(glDeleteFramebuffersEXT);
-    LOAD_FBO_EXT(glGenFramebuffersEXT);
-    LOAD_FBO_EXT(glCheckFramebufferStatusEXT);
-    LOAD_FBO_EXT(glFramebufferTexture1DEXT);
-    LOAD_FBO_EXT(glFramebufferTexture2DEXT);
-    LOAD_FBO_EXT(glFramebufferTexture3DEXT);
-    LOAD_FBO_EXT(glFramebufferTextureLayerEXT);
-    LOAD_FBO_EXT(glFramebufferRenderbufferEXT);
-    LOAD_FBO_EXT(glGenerateMipmapEXT);
+    LOAD_FBO_EXT(glBindRenderbuffer);
+    LOAD_FBO_EXT(glGenRenderbuffers);
+    LOAD_FBO_EXT(glDeleteRenderbuffers);
+    LOAD_FBO_EXT(glRenderbufferStorage);
+    LOAD_FBO_EXT(glBindFramebuffer);
+    LOAD_FBO_EXT(glDeleteFramebuffers);
+    LOAD_FBO_EXT(glGenFramebuffers);
+    LOAD_FBO_EXT(glCheckFramebufferStatus);
+    LOAD_FBO_EXT(glFramebufferTexture1D);
+    LOAD_FBO_EXT(glFramebufferTexture2D);
+    LOAD_FBO_EXT(glFramebufferTexture3D);
+    LOAD_FBO_EXT(glFramebufferTextureLayer);
+    LOAD_FBO_EXT(glFramebufferRenderbuffer);
+    LOAD_FBO_EXT(glGenerateMipmap);
 
     _supported = 
-        glBindRenderbufferEXT != 0 &&
-        glDeleteRenderbuffersEXT != 0 &&
-        glGenRenderbuffersEXT != 0 &&
-        glRenderbufferStorageEXT != 0 &&
-        glBindFramebufferEXT != 0 &&
-        glDeleteFramebuffersEXT != 0 &&
-        glGenFramebuffersEXT != 0 &&
-        glCheckFramebufferStatusEXT != 0 &&
-        glFramebufferTexture1DEXT != 0 &&
-        glFramebufferTexture2DEXT != 0 &&
-        glFramebufferTexture3DEXT != 0 &&
-        glFramebufferRenderbufferEXT != 0 &&
-        glGenerateMipmapEXT != 0;
+        glBindRenderbuffer != 0 &&
+        glDeleteRenderbuffers != 0 &&
+        glGenRenderbuffers != 0 &&
+        glRenderbufferStorage != 0 &&
+        glBindFramebuffer != 0 &&
+        glDeleteFramebuffers != 0 &&
+        glGenFramebuffers != 0 &&
+        glCheckFramebufferStatus != 0 &&
+        glFramebufferTexture1D != 0 &&
+        glFramebufferTexture2D != 0 &&
+        glFramebufferTexture3D != 0 &&
+        glFramebufferRenderbuffer != 0 &&
+        glGenerateMipmap != 0;
 
-    if (isGLExtensionSupported(contextID, "GL_EXT_framebuffer_blit"))
-    {
-        LOAD_FBO_EXT(glBlitFramebufferEXT);
-
-        if (isGLExtensionSupported(contextID, "GL_EXT_framebuffer_multisample"))
-        {
-            LOAD_FBO_EXT(glRenderbufferStorageMultisampleEXT);
-        }
-        
-        if (isGLExtensionSupported(contextID, "GL_NV_framebuffer_multisample_coverage"))
-        {
-            LOAD_FBO_EXT(glRenderbufferStorageMultisampleCoverageNV);
-        }
-    }
+    LOAD_FBO_EXT(glBlitFramebuffer);
+    LOAD_FBO_EXT(glRenderbufferStorageMultisample);
+    LOAD_FBO_EXT(glRenderbufferStorageMultisampleCoverageNV);
 
     if (isGLExtensionSupported(contextID, "GL_EXT_packed_depth_stencil"))
     {
@@ -161,7 +147,7 @@ void RenderBuffer::flushDeletedRenderBuffers(unsigned int contextID,double /*cur
             titr!=pList.end() && elapsedTime<availableTime;
             )
         {
-            extensions->glDeleteRenderbuffersEXT(1, &(*titr) );
+            extensions->glDeleteRenderbuffers(1, &(*titr) );
             titr = pList.erase( titr );
             elapsedTime = timer.delta_s(start_tick,timer.tick());
         }
@@ -238,7 +224,7 @@ GLuint RenderBuffer::getObjectID(unsigned int contextID, const FBOExtensions *ex
 
     if (objectID == 0)
     {
-        ext->glGenRenderbuffersEXT(1, &objectID);
+        ext->glGenRenderbuffers(1, &objectID);
         if (objectID == 0) 
             return 0;
         dirty = 1;
@@ -247,7 +233,7 @@ GLuint RenderBuffer::getObjectID(unsigned int contextID, const FBOExtensions *ex
     if (dirty)
     {
         // bind and configure
-        ext->glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, objectID);
+        ext->glBindRenderbuffer(GL_RENDERBUFFER_EXT, objectID);
 
         // framebuffer_multisample_coverage specification requires that coverage
         // samples must be >= color samples.
@@ -270,12 +256,12 @@ GLuint RenderBuffer::getObjectID(unsigned int contextID, const FBOExtensions *ex
         {
             int samples = minimum(_samples, getMaxSamples(contextID, ext));
 
-            ext->glRenderbufferStorageMultisampleEXT(GL_RENDERBUFFER_EXT,
+            ext->glRenderbufferStorageMultisample(GL_RENDERBUFFER_EXT,
                 samples, _internalFormat, _width, _height);
         }
         else
         {
-            ext->glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, _internalFormat, _width, _height);
+            ext->glRenderbufferStorage(GL_RENDERBUFFER_EXT, _internalFormat, _width, _height);
         }
         dirty = 0;
     }
@@ -512,7 +498,7 @@ void FrameBufferAttachment::createRequiredTexturesAndApplyGenerateMipMap(State &
         {
             state.setActiveTextureUnit(0);
             state.applyTextureAttribute(0, _ximpl->textureTarget.get());
-            ext->glGenerateMipmapEXT(_ximpl->textureTarget->getTextureTarget());
+            ext->glGenerateMipmap(_ximpl->textureTarget->getTextureTarget());
         }
 
     }
@@ -540,25 +526,25 @@ void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachmen
     {
     default:
     case Pimpl::RENDERBUFFER:
-        ext->glFramebufferRenderbufferEXT(target, attachment_point, GL_RENDERBUFFER_EXT, _ximpl->renderbufferTarget->getObjectID(contextID, ext));
+        ext->glFramebufferRenderbuffer(target, attachment_point, GL_RENDERBUFFER_EXT, _ximpl->renderbufferTarget->getObjectID(contextID, ext));
         break;
     case Pimpl::TEXTURE1D:
-        ext->glFramebufferTexture1DEXT(target, attachment_point, GL_TEXTURE_1D, tobj->id(), _ximpl->level);
+        ext->glFramebufferTexture1D(target, attachment_point, GL_TEXTURE_1D, tobj->id(), _ximpl->level);
         break;
     case Pimpl::TEXTURE2D:
-        ext->glFramebufferTexture2DEXT(target, attachment_point, GL_TEXTURE_2D, tobj->id(), _ximpl->level);
+        ext->glFramebufferTexture2D(target, attachment_point, GL_TEXTURE_2D, tobj->id(), _ximpl->level);
         break;
     case Pimpl::TEXTURE3D:
-        ext->glFramebufferTexture3DEXT(target, attachment_point, GL_TEXTURE_3D, tobj->id(), _ximpl->level, _ximpl->zoffset);
+        ext->glFramebufferTexture3D(target, attachment_point, GL_TEXTURE_3D, tobj->id(), _ximpl->level, _ximpl->zoffset);
         break;
     case Pimpl::TEXTURE2DARRAY:
-        ext->glFramebufferTextureLayerEXT(target, attachment_point, tobj->id(), _ximpl->level, _ximpl->zoffset);
+        ext->glFramebufferTextureLayer(target, attachment_point, tobj->id(), _ximpl->level, _ximpl->zoffset);
         break;
     case Pimpl::TEXTURERECT:
-        ext->glFramebufferTexture2DEXT(target, attachment_point, GL_TEXTURE_RECTANGLE, tobj->id(), 0);
+        ext->glFramebufferTexture2D(target, attachment_point, GL_TEXTURE_RECTANGLE, tobj->id(), 0);
         break;
     case Pimpl::TEXTURECUBE:
-        ext->glFramebufferTexture2DEXT(target, attachment_point, GL_TEXTURE_CUBE_MAP_POSITIVE_X + _ximpl->cubeMapFace, tobj->id(), _ximpl->level);
+        ext->glFramebufferTexture2D(target, attachment_point, GL_TEXTURE_CUBE_MAP_POSITIVE_X + _ximpl->cubeMapFace, tobj->id(), _ximpl->level);
         break;
     }
 }
@@ -666,7 +652,7 @@ void FrameBufferObject::flushDeletedFrameBufferObjects(unsigned int contextID,do
             titr!=pList.end() && elapsedTime<availableTime;
             )
         {
-            extensions->glDeleteFramebuffersEXT(1, &(*titr) );
+            extensions->glDeleteFramebuffers(1, &(*titr) );
             titr = pList.erase( titr );
             elapsedTime = timer.delta_s(start_tick,timer.tick());
         }
@@ -761,7 +747,7 @@ void FrameBufferObject::apply(State &state, BindTarget target) const
 
     if (_attachments.empty())
     {
-        ext->glBindFramebufferEXT(target, 0);
+        ext->glBindFramebuffer(target, 0);
         return;
     }
 
@@ -770,7 +756,7 @@ void FrameBufferObject::apply(State &state, BindTarget target) const
     GLuint &fboID = _fboID[contextID];
     if (fboID == 0)
     {
-        ext->glGenFramebuffersEXT(1, &fboID);
+        ext->glGenFramebuffers(1, &fboID);
         if (fboID == 0)
         {
             notify(WARN) << "Warning: FrameBufferObject: could not create the FBO" << std::endl;
@@ -800,7 +786,7 @@ void FrameBufferObject::apply(State &state, BindTarget target) const
     }
     
    
-    ext->glBindFramebufferEXT(target, fboID);
+    ext->glBindFramebuffer(target, fboID);
 
     // enable drawing buffers to render the result to fbo
     if (_drawBuffers.size() > 0)

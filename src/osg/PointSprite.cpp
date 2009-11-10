@@ -51,7 +51,10 @@ bool PointSprite::checkValidityOfAssociatedModes(osg::State& state) const
 
 void PointSprite::apply(osg::State& state) const
 {
-#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
+#if defined( OSG_GL3_AVAILABLE )
+    const Point::Extensions* extensions = Point::getExtensions(state.getContextID(),true);
+    extensions->glPointParameteri(GL_POINT_SPRITE_COORD_ORIGIN,_coordOriginMode);
+#elif defined( OSG_GL_FIXED_FUNCTION_AVAILABLE )
     if(!isPointSpriteSupported(state.getContextID())) return;
 
     glTexEnvi(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, 1);
@@ -83,7 +86,7 @@ bool PointSprite::isPointSpriteSupported(unsigned int contextID)
     if (!s_extensions[contextID].initialized)
     {
         s_extensions[contextID].initialized = true;
-        s_extensions[contextID].supported = isGLExtensionSupported(contextID, "GL_ARB_point_sprite") || isGLExtensionSupported(contextID, "GL_NV_point_sprite");
+        s_extensions[contextID].supported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID, "GL_ARB_point_sprite") || isGLExtensionSupported(contextID, "GL_NV_point_sprite");
     }
 
     return s_extensions[contextID].supported;

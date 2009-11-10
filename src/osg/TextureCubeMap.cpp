@@ -484,7 +484,8 @@ void TextureCubeMap::Extensions::lowestCommonDenominator(const Extensions& rhs)
 
 void TextureCubeMap::Extensions::setupGLExtensions(unsigned int contextID)
 {
-    _isCubeMapSupported = isGLExtensionSupported(contextID,"GL_ARB_texture_cube_map") ||
+    _isCubeMapSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
+                          isGLExtensionSupported(contextID,"GL_ARB_texture_cube_map") ||
                           isGLExtensionSupported(contextID,"GL_EXT_texture_cube_map") ||
                           strncmp((const char*)glGetString(GL_VERSION),"1.3",3)>=0;;
 }

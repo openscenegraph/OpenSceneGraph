@@ -397,7 +397,7 @@ int main(int argc, char *argv[])
 
     osg::ref_ptr<osg::Node> loadedModel;
 
-    bool runConvertToVertexAttributes = true;
+    bool runConvertToVertexAttributes = false;
     if (arguments.read("--simple") || arguments.read("--s"))
     {
         loadedModel = createSimpleTestModel();

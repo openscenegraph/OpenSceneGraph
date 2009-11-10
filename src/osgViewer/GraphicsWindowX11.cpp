@@ -982,8 +982,6 @@ bool GraphicsWindowX11::makeCurrentImplementation()
 
     #ifdef OSG_USE_EGL
         bool result = eglMakeCurrent(_eglDisplay, _eglSurface, _eglSurface, _context)==EGL_TRUE;
-        
-        osg::notify(osg::NOTICE)<<"GraphicsWindowX11::makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<" _eglSurface="<<_eglSurface<<" _context="<<_context<<" result="<<result<<std::endl;
         checkEGLError("after eglMakeCurrent()");
 
         return result;
@@ -999,8 +997,6 @@ bool GraphicsWindowX11::releaseContextImplementation()
         osg::notify(osg::NOTICE)<<"Warning: GraphicsWindow not realized, cannot do release context."<<std::endl;
         return false;
     }
-
-    osg::notify(osg::NOTICE)<<"GraphicsWindowX11::releaseContextImplementation() "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
     #ifdef OSG_USE_EGL
         return eglMakeCurrent( _eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT )==EGL_TRUE;

@@ -124,10 +124,13 @@ void BlendEquation::Extensions::lowestCommonDenominator(const Extensions& rhs)
 
 void BlendEquation::Extensions::setupGLExtensions(unsigned int contextID)
 {
-    _isBlendEquationSupported = isGLExtensionSupported(contextID, "GL_EXT_blend_equation") || 
+    bool bultInSupport = OSG_GLES2_FEATURES || OSG_GL3_FEATURES;
+    _isBlendEquationSupported = bultInSupport || 
+        isGLExtensionSupported(contextID, "GL_EXT_blend_equation") || 
         strncmp((const char*)glGetString(GL_VERSION), "1.2", 3) >= 0;
 
-    _isBlendEquationSeparateSupported = isGLExtensionSupported(contextID, "GL_EXT_blend_equation_separate") || 
+    _isBlendEquationSeparateSupported = bultInSupport ||
+        isGLExtensionSupported(contextID, "GL_EXT_blend_equation_separate") || 
         strncmp((const char*)glGetString(GL_VERSION), "2.0", 3) >= 0;
 
     _isSGIXMinMaxSupported = isGLExtensionSupported(contextID, "GL_SGIX_blend_alpha_minmax");

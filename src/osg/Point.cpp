@@ -140,12 +140,13 @@ void Point::Extensions::lowestCommonDenominator(const Extensions& rhs)
 
 void Point::Extensions::setupGLExtensions(unsigned int contextID)
 {
-    _isPointParametersSupported = strncmp((const char*)glGetString(GL_VERSION),"1.4",3)>=0 ||
+    _isPointParametersSupported = OSG_GL3_FEATURES ||
+                                  strncmp((const char*)glGetString(GL_VERSION),"1.4",3)>=0 ||
                                   isGLExtensionSupported(contextID,"GL_ARB_point_parameters") ||
                                   isGLExtensionSupported(contextID,"GL_EXT_point_parameters") ||
                                   isGLExtensionSupported(contextID,"GL_SGIS_point_parameters");
             
-    _isPointSpriteCoordOriginSupported = strncmp((const char*)glGetString(GL_VERSION),"2.0",3)>=0;
+    _isPointSpriteCoordOriginSupported = OSG_GL3_FEATURES || strncmp((const char*)glGetString(GL_VERSION),"2.0",3)>=0;
 
     setGLExtensionFuncPtr(_glPointParameteri, "glPointParameteri", "glPointParameteriARB");
     if (!_glPointParameteri) setGLExtensionFuncPtr(_glPointParameteri, "glPointParameteriEXT", "glPointParameteriSGIS");

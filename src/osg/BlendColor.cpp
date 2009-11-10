@@ -89,7 +89,8 @@ void BlendColor::Extensions::lowestCommonDenominator(const Extensions& rhs)
 
 void BlendColor::Extensions::setupGLExtensions(unsigned int contextID)
 {
-    _isBlendColorSupported = isGLExtensionSupported(contextID,"GL_EXT_blend_color") ||
+    _isBlendColorSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
+                             isGLExtensionSupported(contextID,"GL_EXT_blend_color") ||
                              strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;
 
     setGLExtensionFuncPtr(_glBlendColor, "glBlendColor", "glBlendColorEXT");

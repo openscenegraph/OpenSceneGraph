@@ -88,7 +88,7 @@ void Multisample::Extensions::lowestCommonDenominator(const Extensions& rhs)
 
 void Multisample::Extensions::setupGLExtensions(unsigned int contextID)
 {
-    _isMultisampleSupported = isGLExtensionSupported(contextID,"GL_ARB_multisample");
+    _isMultisampleSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_ARB_multisample");
     _isMultisampleFilterHintSupported = isGLExtensionSupported(contextID,"GL_NV_multisample_filter_hint");
 
     setGLExtensionFuncPtr(_glSampleCoverage, "glSampleCoverageARB");

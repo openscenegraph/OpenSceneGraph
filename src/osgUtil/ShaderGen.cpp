@@ -349,8 +349,10 @@ void ShaderGenVisitor::update(osg::Drawable *drawable)
 {
     // update only geometry due to compatibility issues with user defined drawables
     osg::Geometry *geometry = drawable->asGeometry();
+#if 0
     if (!geometry)
         return;
+#endif
 
     StateEx *state = static_cast<StateEx *>(_state.get());
     // skip nodes without state sets
@@ -370,7 +372,8 @@ void ShaderGenVisitor::update(osg::Drawable *drawable)
         stateMask |= ShaderGenCache::FOG;
     if (state->getTextureAttribute(0, osg::StateAttribute::TEXTURE))
         stateMask |= ShaderGenCache::DIFFUSE_MAP;
-    if (state->getTextureAttribute(1, osg::StateAttribute::TEXTURE) &&
+
+    if (state->getTextureAttribute(1, osg::StateAttribute::TEXTURE) && geometry!=0 &&
         geometry->getVertexAttribArray(6)) //tangent
         stateMask |= ShaderGenCache::NORMAL_MAP;
 
@@ -381,4 +384,16 @@ void ShaderGenVisitor::update(osg::Drawable *drawable)
     ss->setAttribute(progss->getAttribute(osg::StateAttribute::PROGRAM));
     ss->setUniformList(progss->getUniformList());
     
+    // remove any modes that won't be appropriate when using shaders
+    if ((stateMask&ShaderGenCache::LIGHTING)!=0)
+    {
+        ss->removeMode(GL_LIGHTING);
+        ss->removeMode(GL_LIGHT0);
+    }
+    if ((stateMask&ShaderGenCache::FOG)!=0)
+    {
+        ss->removeMode(GL_FOG);
+    }
+    if ((stateMask&ShaderGenCache::DIFFUSE_MAP)!=0) ss->removeTextureMode(0, GL_TEXTURE_2D);
+    if ((stateMask&ShaderGenCache::NORMAL_MAP)!=0) ss->removeTextureMode(1, GL_TEXTURE_2D);
 }

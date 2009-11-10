@@ -106,8 +106,9 @@ void BlendFunc::Extensions::lowestCommonDenominator(const Extensions& rhs)
 
 void BlendFunc::Extensions::setupGLExtensions(unsigned int contextID)
 {
-    _isBlendFuncSeparateSupported = isGLExtensionSupported(contextID, "GL_EXT_blend_func_separate") ||
-        strncmp((const char*)glGetString(GL_VERSION), "1.4", 3) >= 0;
+    _isBlendFuncSeparateSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES ||
+                                    isGLExtensionSupported(contextID, "GL_EXT_blend_func_separate") ||
+                                    strncmp((const char*)glGetString(GL_VERSION), "1.4", 3) >= 0;
 
      setGLExtensionFuncPtr(_glBlendFuncSeparate, "glBlendFuncSeparate", "glBlendFuncSeparateEXT");
 }

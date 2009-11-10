@@ -579,7 +579,7 @@ void Texture3D::Extensions::lowestCommonDenominator(const Extensions& rhs)
 
 void Texture3D::Extensions::setupGLExtensions(unsigned int contextID)
 {
-    _isTexture3DFast = isGLExtensionSupported(contextID,"GL_EXT_texture3D");
+    _isTexture3DFast = OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_EXT_texture3D");
 
     if (_isTexture3DFast) _isTexture3DSupported = true;
     else _isTexture3DSupported = strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;

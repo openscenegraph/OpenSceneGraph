@@ -960,7 +960,7 @@ void Drawable::Extensions::setupGLExtensions(unsigned int contextID)
     _isFogCoordSupported = isGLExtensionSupported(contextID,"GL_EXT_fog_coord");
     _isMultiTexSupported = isGLExtensionSupported(contextID,"GL_ARB_multitexture");
     _isOcclusionQuerySupported = osg::isGLExtensionSupported(contextID, "GL_NV_occlusion_query" );
-    _isARBOcclusionQuerySupported = osg::isGLExtensionSupported(contextID, "GL_ARB_occlusion_query" );
+    _isARBOcclusionQuerySupported = OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID, "GL_ARB_occlusion_query" );
 
     _isTimerQuerySupported = osg::isGLExtensionSupported(contextID, "GL_EXT_timer_query" );;
 

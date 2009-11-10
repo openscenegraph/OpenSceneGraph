@@ -596,8 +596,8 @@ void Texture2DArray::Extensions::lowestCommonDenominator(const Extensions& rhs)
 
 void Texture2DArray::Extensions::setupGLExtensions(unsigned int contextID)
 {
-    _isTexture3DSupported = isGLExtensionSupported(contextID,"GL_EXT_texture3D");
-    _isTexture2DArraySupported = isGLExtensionSupported(contextID,"GL_EXT_texture_array");
+    _isTexture3DSupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_EXT_texture3D");
+    _isTexture2DArraySupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_EXT_texture_array");
 
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &_max2DSize);
     glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS_EXT, &_maxLayerCount);

@@ -20,10 +20,12 @@
 #include <osg/ShapeDrawable>
 #include <osg/Material>
 #include <osg/Texture2D>
+#include <osgUtil/ShaderGen>
 
 #include <osgViewer/Viewer>
 
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 
 #include <osg/Math>
 
@@ -34,21 +36,25 @@ osg::Geode* createShapes()
 {
     osg::Geode* geode = new osg::Geode();
 
+    
     // ---------------------------------------
     // Set up a StateSet to texture the objects
     // ---------------------------------------
     osg::StateSet* stateset = new osg::StateSet();
 
     osg::Image* image = osgDB::readImageFile( "Images/lz.rgb" );
-
     if (image)
     {
         osg::Texture2D* texture = new osg::Texture2D;
         texture->setImage(image);
-        stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+        texture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
+        stateset->setTextureAttributeAndModes(0,texture, osg::StateAttribute::ON);
     }
     
+    stateset->setMode(GL_LIGHTING, osg::StateAttribute::ON);
+    
     geode->setStateSet( stateset );
+
     
     float radius = 0.8f;
     float height = 1.0f;
@@ -98,7 +104,7 @@ osg::Geode* createShapes()
     mesh->setVertices(vertices);
     mesh->setIndices(indices);
     geode->addDrawable(new osg::ShapeDrawable(mesh));
-    
+
     return geode;
 }
 

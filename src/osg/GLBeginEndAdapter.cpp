@@ -280,5 +280,35 @@ void GLBeginEndAdapter::End()
 
     _state->applyDisablingOfVertexAttributes();
 
-    glDrawArrays(_primitiveMode, 0, _vertices->size());
+    if (_primitiveMode==GL_QUADS) 
+    {
+        unsigned int numQuads = _vertices->size()/4;
+        unsigned int numIndices = numQuads * 6;
+        if (numIndices > _indexArray.size())
+        {
+            // we need to expand the _indexArray to be big enough to cope with all the quads required.
+            unsigned int numExistingQuads = _indexArray.size()/6;
+            _indexArray.reserve(numIndices);
+            for(unsigned int i=numExistingQuads; i<numQuads; ++i)
+            {
+                unsigned int base = i*4;
+                _indexArray.push_back(base);
+                _indexArray.push_back(base+2);
+                _indexArray.push_back(base+1);
+                
+                _indexArray.push_back(base);
+                _indexArray.push_back(base+3);
+                _indexArray.push_back(base+2);
+            }
+        }
+
+        glDrawElements(GL_TRIANGLES, numQuads*6, GL_UNSIGNED_SHORT, &(_indexArray.front()));
+    }
+    else if (_primitiveMode==GL_QUAD_STRIP)
+    {
+        // will the winding be wrong? Do we need to swap it?
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, _vertices->size());
+    }
+    else if (_primitiveMode==GL_POLYGON) glDrawArrays(GL_TRIANGLE_FAN, 0, _vertices->size());
+    else glDrawArrays(_primitiveMode, 0, _vertices->size());
 }

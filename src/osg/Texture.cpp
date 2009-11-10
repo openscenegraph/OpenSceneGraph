@@ -2199,7 +2199,7 @@ bool Texture::isHardwareMipmapGenerationEnabled(const State& state) const
 
         const FBOExtensions* fbo_ext = FBOExtensions::instance(contextID,true);
 
-        if (fbo_ext->glGenerateMipmapEXT)
+        if (fbo_ext->glGenerateMipmap)
         {
             return true;
         }
@@ -2212,6 +2212,9 @@ Texture::GenerateMipmapMode Texture::mipmapBeforeTexImage(const State& state, bo
 {
     if (hardwareMipmapOn)
     {
+#if defined( OSG_GLES2_AVAILABLE ) || defined( OSG_GL3_AVAILABLE ) 
+        return GENERATE_MIPMAP;
+#else
         int width = getTextureWidth();
         int height = getTextureHeight();
 
@@ -2223,7 +2226,7 @@ Texture::GenerateMipmapMode Texture::mipmapBeforeTexImage(const State& state, bo
             if (_internalFormatType != SIGNED_INTEGER &&
                 _internalFormatType != UNSIGNED_INTEGER)
             {
-                if (FBOExtensions::instance(state.getContextID(), true)->glGenerateMipmapEXT)
+                if (FBOExtensions::instance(state.getContextID(), true)->glGenerateMipmap)
                 {
                     return GENERATE_MIPMAP;
                 }
@@ -2232,6 +2235,7 @@ Texture::GenerateMipmapMode Texture::mipmapBeforeTexImage(const State& state, bo
 
         glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
         return GENERATE_MIPMAP_TEX_PARAMETER;
+#endif
     }
     return GENERATE_MIPMAP_NONE;
 }
@@ -2240,22 +2244,22 @@ void Texture::mipmapAfterTexImage(State& state, GenerateMipmapMode beforeResult)
 {
     switch (beforeResult)
     {
-    case GENERATE_MIPMAP:
+        case GENERATE_MIPMAP:
         {
             unsigned int contextID = state.getContextID();
             TextureObject* textureObject = getTextureObject(contextID);
             if (textureObject)
             {
                 osg::FBOExtensions* fbo_ext = osg::FBOExtensions::instance(contextID, true);
-                fbo_ext->glGenerateMipmapEXT(textureObject->target());
+                fbo_ext->glGenerateMipmap(textureObject->target());
             }
+            break;
         }
-        break;
-    case GENERATE_MIPMAP_TEX_PARAMETER:
-        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_FALSE);
-        break;
-    case GENERATE_MIPMAP_NONE:
-        break;
+        case GENERATE_MIPMAP_TEX_PARAMETER:
+            glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_FALSE);
+            break;
+        case GENERATE_MIPMAP_NONE:
+            break;
     }
 }
 
@@ -2282,10 +2286,10 @@ void Texture::generateMipmap(State& state) const
     osg::FBOExtensions* fbo_ext = osg::FBOExtensions::instance(state.getContextID(), true);
 
     // check if the function is supported
-    if (fbo_ext->glGenerateMipmapEXT)
+    if (fbo_ext->glGenerateMipmap)
     {
         textureObject->bind();
-        fbo_ext->glGenerateMipmapEXT(textureObject->target());
+        fbo_ext->glGenerateMipmap(textureObject->target());
         
         // inform state that this texture is the current one bound.
         state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);

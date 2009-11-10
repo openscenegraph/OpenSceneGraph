@@ -1074,7 +1074,7 @@ bool State::computeFogCoordSupported() const
 bool State::computeVertexBufferObjectSupported() const
 {
     _isVertexBufferObjectSupportResolved = true;
-    _isVertexBufferObjectSupported = osg::isGLExtensionSupported(_contextID,"GL_ARB_vertex_buffer_object");
+    _isVertexBufferObjectSupported = OSG_GLES2_FEATURES || OSG_GL3_FEATURES || osg::isGLExtensionSupported(_contextID,"GL_ARB_vertex_buffer_object");
     return _isVertexBufferObjectSupported;
 }
 

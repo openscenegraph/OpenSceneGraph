@@ -318,6 +318,8 @@ std::string& osg::getGLExtensionDisableString()
 
 void* osg::getGLExtensionFuncPtr(const char *funcName)
 {
+    // osg::notify(osg::NOTICE)<<"osg::getGLExtensionFuncPtr("<<funcName<<")"<<std::endl;
+    
 #if defined(WIN32)
 
     return convertPointerType<void*, PROC>(wglGetProcAddress(funcName));

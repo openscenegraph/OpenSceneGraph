@@ -147,9 +147,11 @@ void TextureRectangle::setImage(Image* image)
 
 void TextureRectangle::apply(State& state) const
 {
-    static bool s_rectangleSupported = isGLExtensionSupported(state.getContextID(),"GL_ARB_texture_rectangle")
-            || isGLExtensionSupported(state.getContextID(),"GL_EXT_texture_rectangle")
-            || isGLExtensionSupported(state.getContextID(),"GL_NV_texture_rectangle");
+    static bool s_rectangleSupported = 
+            OSG_GL3_FEATURES ||
+            isGLExtensionSupported(state.getContextID(),"GL_ARB_texture_rectangle") ||
+            isGLExtensionSupported(state.getContextID(),"GL_EXT_texture_rectangle") ||
+            isGLExtensionSupported(state.getContextID(),"GL_NV_texture_rectangle");
 
     if (!s_rectangleSupported)
     {

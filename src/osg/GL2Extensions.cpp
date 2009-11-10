@@ -329,21 +329,14 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
     _glVersion = asciiToFloat( version );
     _glslLanguageVersion = 0.0f;
     
-    _isShaderObjectsSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_shader_objects");
-    _isVertexShaderSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_vertex_shader");
-    _isFragmentShaderSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_fragment_shader");
-    _isLanguage100Supported = osg::isGLExtensionSupported(contextID,"GL_ARB_shading_language_100");
+    bool shadersBuiltIn = OSG_GLES2_FEATURES || OSG_GL3_FEATURES;
+    
+    _isShaderObjectsSupported = shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_shader_objects");
+    _isVertexShaderSupported = shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_vertex_shader");
+    _isFragmentShaderSupported = shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_fragment_shader");
+    _isLanguage100Supported = shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_shading_language_100");
     _isGeometryShader4Supported = osg::isGLExtensionSupported(contextID,"GL_EXT_geometry_shader4");
     _isGpuShader4Supported = osg::isGLExtensionSupported(contextID,"GL_EXT_gpu_shader4");
-
-    
-    #if defined(OSG_GLES2_AVAILABLE)    
-        _glVersion = 2.0;
-        _isShaderObjectsSupported = true;
-        _isVertexShaderSupported = true;
-        _isFragmentShaderSupported = true;
-        _isLanguage100Supported = true;
-    #endif
     
     if( isGlslSupported() )
     {

@@ -16,7 +16,6 @@
 #include <osg/ImageSequence>
 #include <osg/State>
 #include <osg/Notify>
-#include <osg/GLU>
 
 using namespace osg;
 

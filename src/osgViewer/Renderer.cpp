@@ -272,10 +272,13 @@ void Renderer::compile()
 {
     DEBUG_MESSAGE<<"Renderer::compile()"<<std::endl;
 
+
     _compileOnNextDraw = false;
 
     osgUtil::SceneView* sceneView = _sceneView[0].get();
     if (!sceneView || _done) return;
+
+    sceneView->getState()->checkGLErrors("Before Renderer::compile");
 
     if (sceneView->getSceneData())
     {
@@ -283,6 +286,8 @@ void Renderer::compile()
         glov.setState(sceneView->getState());
         sceneView->getSceneData()->accept(glov);
     }
+    
+    sceneView->getState()->checkGLErrors("After Renderer::compile");
 }
 
 void Renderer::cull()

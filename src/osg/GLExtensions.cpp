@@ -104,7 +104,7 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
             }
             if (*startOfWord!=0) extensionSet.insert(std::string(startOfWord));
 
-    #if defined(WIN32)
+    #if defined(WIN32) && (defined(OSG_GL1_AVAILABLE) || defined(OSG_GL2_AVAILABLE) || defined(OSG_GL3_AVAILABLE))
 
             // add WGL extensions to the list
 
@@ -322,7 +322,15 @@ void* osg::getGLExtensionFuncPtr(const char *funcName)
     
 #if defined(WIN32)
 
-    return convertPointerType<void*, PROC>(wglGetProcAddress(funcName));
+    #if defined(OSG_GLES2_AVAILABLE)
+        static HMODULE hmodule = GetModuleHandle("libGLESv2.dll");
+        return convertPointerType<void*, PROC>(GetProcAddress(hmodule, funcName));
+    #elif defined(OSG_GLES1_AVAILABLE)
+        static HMODULE hmodule = GetModuleHandle("libgles_cm.dll");
+        return convertPointerType<void*, PROC>(GetProcAddress(hmodule, funcName));
+    #else
+        return convertPointerType<void*, PROC>(wglGetProcAddress(funcName));
+    #endif
 
 #elif defined(__APPLE__)
 
@@ -382,7 +390,7 @@ void* osg::getGLExtensionFuncPtr(const char *funcName)
 
 #elif defined (__QNX__)
 
-   return dlsym(RTLD_DEFAULT, funcName);
+    return dlsym(RTLD_DEFAULT, funcName);
 
 #else // all other unixes
 

@@ -206,6 +206,24 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         void setMaxBufferObjectPoolSize(unsigned int size) { _maxBufferObjectPoolSize = size; }
         unsigned int getMaxBufferObjectPoolSize() const { return _maxBufferObjectPoolSize; }
 
+        /** Set the hint of which OpenGL version to attempt to create a graphics context for.*/
+        void setGLContextVersion(const std::string& version) { _glContextVersion = version; }
+
+        /** Get the hint of which OpenGL version to attempt to create a graphics context for.*/
+        const std::string getGLContextVersion() const { return _glContextVersion; }
+
+        /** Set the hint of the flags to use in when creating graphic contexts.*/
+        void setGLContextFlags(unsigned int flags) { _glContextFlags = flags; }
+
+        /** Get the hint of the flags to use in when creating graphic contexts.*/
+        unsigned int getGLContextFlags() const { return _glContextFlags; }
+        
+        /** Set the hint of the profile mask to use in when creating graphic contexts.*/
+        void setGLContextProfileMask(unsigned int mask) { _glContextProfileMask = mask; }
+
+        /** Get the hint of the profile mask to use in when creating graphic contexts.*/
+        unsigned int getGLContextProfileMask() const { return _glContextProfileMask; }
+
     protected:
     
         virtual ~DisplaySettings();
@@ -249,6 +267,10 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
 
         unsigned int                    _maxTexturePoolSize;
         unsigned int                    _maxBufferObjectPoolSize;
+        
+        std::string                     _glContextVersion;
+        unsigned int                    _glContextFlags;
+        unsigned int                    _glContextProfileMask;
 };
 
 }

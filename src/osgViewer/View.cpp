@@ -449,7 +449,7 @@ void View::setUpViewAcrossAllScreens()
         unsigned int width, height;
         wsi->getScreenResolution(si, width, height);
 
-        osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+        osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(ds);
         traits->hostName = si.hostName;
         traits->displayNum = si.displayNum;
         traits->screenNum = si.screenNum;
@@ -457,24 +457,9 @@ void View::setUpViewAcrossAllScreens()
         traits->y = 0;
         traits->width = width;
         traits->height = height;
-        traits->alpha = ds->getMinimumNumAlphaBits();
-        traits->stencil = ds->getMinimumNumStencilBits();
         traits->windowDecoration = false;
         traits->doubleBuffer = true;
         traits->sharedContext = 0;
-        traits->sampleBuffers = ds->getMultiSamples();
-        traits->samples = ds->getNumMultiSamples();
-        if (ds->getStereo())
-        {
-            switch(ds->getStereoMode())
-            {
-                case(osg::DisplaySettings::QUAD_BUFFER): traits->quadBufferStereo = true; break;
-                case(osg::DisplaySettings::VERTICAL_INTERLACE):
-                case(osg::DisplaySettings::CHECKERBOARD):
-                case(osg::DisplaySettings::HORIZONTAL_INTERLACE): traits->stencil = 8; break;
-                default: break;
-            }
-        }
         
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
 
@@ -531,7 +516,7 @@ void View::setUpViewAcrossAllScreens()
             unsigned int width, height;
             wsi->getScreenResolution(si, width, height);
 
-            osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+            osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(ds);
             traits->hostName = si.hostName;
             traits->displayNum = si.displayNum;
             traits->screenNum = si.screenNum;
@@ -540,24 +525,9 @@ void View::setUpViewAcrossAllScreens()
             traits->y = 0;
             traits->width = width;
             traits->height = height;
-            traits->alpha = ds->getMinimumNumAlphaBits();
-            traits->stencil = ds->getMinimumNumStencilBits();
             traits->windowDecoration = false;
             traits->doubleBuffer = true;
             traits->sharedContext = 0;
-            traits->sampleBuffers = ds->getMultiSamples();
-            traits->samples = ds->getNumMultiSamples();
-            if (ds->getStereo())
-            {
-                switch(ds->getStereoMode())
-                {
-                    case(osg::DisplaySettings::QUAD_BUFFER): traits->quadBufferStereo = true; break;
-                    case(osg::DisplaySettings::VERTICAL_INTERLACE):
-                    case(osg::DisplaySettings::CHECKERBOARD):
-                    case(osg::DisplaySettings::HORIZONTAL_INTERLACE): traits->stencil = 8; break;
-                    default: break;
-                }
-            }
 
             osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
 
@@ -610,7 +580,7 @@ void View::setUpViewInWindow(int x, int y, int width, int height, unsigned int s
 {
     osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance();
 
-    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(ds);
 
     traits->readDISPLAY();
     if (traits->displayNum<0) traits->displayNum = 0;
@@ -620,24 +590,9 @@ void View::setUpViewInWindow(int x, int y, int width, int height, unsigned int s
     traits->y = y;
     traits->width = width;
     traits->height = height;
-    traits->alpha = ds->getMinimumNumAlphaBits();
-    traits->stencil = ds->getMinimumNumStencilBits();
     traits->windowDecoration = true;
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
-    traits->sampleBuffers = ds->getMultiSamples();
-    traits->samples = ds->getNumMultiSamples();
-    if (ds->getStereo())
-    {
-        switch(ds->getStereoMode())
-        {
-            case(osg::DisplaySettings::QUAD_BUFFER): traits->quadBufferStereo = true; break;
-            case(osg::DisplaySettings::VERTICAL_INTERLACE):
-            case(osg::DisplaySettings::CHECKERBOARD):
-            case(osg::DisplaySettings::HORIZONTAL_INTERLACE): traits->stencil = 8; break;
-            default: break;
-        }
-    }
 
     osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
 
@@ -694,7 +649,7 @@ void View::setUpViewOnSingleScreen(unsigned int screenNum)
     unsigned int width, height;
     wsi->getScreenResolution(si, width, height);
 
-    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(ds);
     traits->hostName = si.hostName;
     traits->displayNum = si.displayNum;
     traits->screenNum = si.screenNum;
@@ -702,24 +657,9 @@ void View::setUpViewOnSingleScreen(unsigned int screenNum)
     traits->y = 0;
     traits->width = width;
     traits->height = height;
-    traits->alpha = ds->getMinimumNumAlphaBits();
-    traits->stencil = ds->getMinimumNumStencilBits();
     traits->windowDecoration = false;
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
-    traits->sampleBuffers = ds->getMultiSamples();
-    traits->samples = ds->getNumMultiSamples();
-    if (ds->getStereo())
-    {
-        switch(ds->getStereoMode())
-        {
-            case(osg::DisplaySettings::QUAD_BUFFER): traits->quadBufferStereo = true; break;
-            case(osg::DisplaySettings::VERTICAL_INTERLACE):
-            case(osg::DisplaySettings::CHECKERBOARD):
-            case(osg::DisplaySettings::HORIZONTAL_INTERLACE): traits->stencil = 8; break;
-            default: break;
-        }
-    }
 
     osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
 

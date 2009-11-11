@@ -153,6 +153,63 @@ void GraphicsContext::ScreenIdentifier::setScreenIdentifier(const std::string& d
 #endif
 }
 
+GraphicsContext::Traits::Traits(DisplaySettings* ds):
+            x(0),
+            y(0),
+            width(0),
+            height(0),
+            windowDecoration(false),
+            supportsResize(true),
+            red(8),
+            blue(8),
+            green(8),
+            alpha(0),
+            depth(24),
+            stencil(0),
+            sampleBuffers(0),
+            samples(0),
+            pbuffer(false),
+            quadBufferStereo(false),
+            doubleBuffer(false),
+            target(0),
+            format(0),
+            level(0),
+            face(0),
+            mipMapGeneration(false),
+            vsync(true),
+            useMultiThreadedOpenGLEngine(false),
+            useCursor(true),
+            glContextVersion("1.0"),
+            glContextFlags(0),
+            glContextProfileMask(0),
+            sharedContext(0),
+            setInheritedWindowPixelFormat(false),
+            overrideRedirect(false)
+{
+    if (ds)
+    {
+        alpha = ds->getMinimumNumAlphaBits();
+        stencil = ds->getMinimumNumStencilBits();
+        sampleBuffers = ds->getMultiSamples();
+        samples = ds->getNumMultiSamples();
+        if (ds->getStereo())
+        {
+            switch(ds->getStereoMode())
+            {
+                case(osg::DisplaySettings::QUAD_BUFFER): quadBufferStereo = true; break;
+                case(osg::DisplaySettings::VERTICAL_INTERLACE):
+                case(osg::DisplaySettings::CHECKERBOARD):
+                case(osg::DisplaySettings::HORIZONTAL_INTERLACE): stencil = 8; break;
+                default: break;
+            }
+        }
+        
+        glContextVersion = ds->getGLContextVersion();
+        glContextFlags = ds->getGLContextFlags();
+        glContextProfileMask = ds->getGLContextProfileMask();
+    }
+}
+
 class ContextData
 {
 public:

@@ -68,35 +68,7 @@ class OSG_EXPORT GraphicsContext : public Object
         /** GraphicsContext Traits object provides the specification of what type of graphics context is required.*/
         struct Traits : public osg::Referenced, public ScreenIdentifier
         {
-            Traits():
-                x(0),
-                y(0),
-                width(0),
-                height(0),
-                windowDecoration(false),
-                supportsResize(true),
-                red(8),
-                blue(8),
-                green(8),
-                alpha(0),
-                depth(24),
-                stencil(0),
-                sampleBuffers(0),
-                samples(0),
-                pbuffer(false),
-                quadBufferStereo(false),
-                doubleBuffer(false),
-                target(0),
-                format(0),
-                level(0),
-                face(0),
-                mipMapGeneration(false),
-                vsync(true),
-                useMultiThreadedOpenGLEngine(false),
-                useCursor(true),
-                sharedContext(0),
-                setInheritedWindowPixelFormat(false),
-                overrideRedirect(false) {}
+            Traits(DisplaySettings* ds=0);
                             
             // graphics context original and size
             int x;
@@ -141,6 +113,12 @@ class OSG_EXPORT GraphicsContext : public Object
             
             // enable cursor
             bool            useCursor;
+
+            // settings used in set up of graphics context, only presently used by GL3 build of OSG.
+            std::string     glContextVersion;
+            unsigned int    glContextFlags;
+            unsigned int    glContextProfileMask;
+            
             
             // shared context
             GraphicsContext* sharedContext;

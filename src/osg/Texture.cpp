@@ -2421,7 +2421,7 @@ void Texture::Extensions::setupGLExtensions(unsigned int contextID)
 
     bool builtInSupport = OSG_GLES2_FEATURES || OSG_GL3_FEATURES;
     
-    _isMultiTexturingSupported = builtInSupport ||
+    _isMultiTexturingSupported = builtInSupport || OSG_GLES1_FEATURES || 
                                  isGLExtensionOrVersionSupported( contextID,"GL_ARB_multitexture", 1.3f) ||
                                  isGLExtensionOrVersionSupported(contextID,"GL_EXT_multitexture", 1.3f);
                                  
@@ -2485,7 +2485,18 @@ void Texture::Extensions::setupGLExtensions(unsigned int contextID)
 
     if( _isMultiTexturingSupported )
     {
-       glGetIntegerv(GL_MAX_TEXTURE_UNITS,&_numTextureUnits);
+       #if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GL3_AVAILABLE)
+           glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS,&_numTextureUnits);
+       #else
+           if (osg::asciiToFloat(version)>=2.0)
+           {
+               glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS,&_numTextureUnits);
+           }
+           else
+           {
+               glGetIntegerv(GL_MAX_TEXTURE_UNITS,&_numTextureUnits);
+           }
+       #endif
     }
     else
     {

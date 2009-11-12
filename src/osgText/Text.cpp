@@ -1824,7 +1824,7 @@ void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, co
             state.setColorPointer( 4, GL_FLOAT, 0, &(glyphquad._colorCoords.front()));
         }
 
-        glDrawArrays(GL_QUADS,0,transformedCoords.size());
+        state.drawQuads(0,transformedCoords.size());
 
     }
 }
@@ -1894,7 +1894,7 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
                 state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
                 glPolygonOffset(0.1f * osg::PolygonOffset::getFactorMultiplier(),
                                 osg::PolygonOffset::getUnitsMultiplier() * (max_backdrop_index-backdrop_index) );
-                glDrawArrays(GL_QUADS,0,transformedBackdropCoords.size());
+                state.drawQuads(0,transformedBackdropCoords.size());
             }
         }
 
@@ -1951,7 +1951,7 @@ void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMult
             if (!transformedBackdropCoords.empty()) 
             {
                 state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
-                glDrawArrays(GL_QUADS,0,transformedBackdropCoords.size());
+                state.drawQuads(0,transformedBackdropCoords.size());
             }
         }
 
@@ -2010,7 +2010,7 @@ void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultipl
                 double offset = double(max_backdrop_index-backdrop_index)*0.0001;
                 glDepthRange( offset, 1.0+offset);
 
-                glDrawArrays(GL_QUADS,0,transformedBackdropCoords.size());
+                state.drawQuads(0,transformedBackdropCoords.size());
             }
         }
 
@@ -2105,7 +2105,7 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
             if (!transformedBackdropCoords.empty()) 
             {
                 state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
-                glDrawArrays(GL_QUADS,0,transformedBackdropCoords.size());
+                state.drawQuads(0,transformedBackdropCoords.size());
             }
         }
 
@@ -2115,7 +2115,7 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
         {
             state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedCoords.front()));
             state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
-            glDrawArrays(GL_QUADS,0,transformedCoords.size());
+            state.drawQuads(0,transformedCoords.size());
         }
     }
 
@@ -2173,7 +2173,7 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
             if (!transformedBackdropCoords.empty()) 
             {
                 state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
-                glDrawArrays(GL_QUADS,0,transformedBackdropCoords.size());
+                state.drawQuads(0,transformedBackdropCoords.size());
             }
         }
 

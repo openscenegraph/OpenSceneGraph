@@ -513,8 +513,11 @@ osg::Node* createScene()
         // polygon stipple
         osg::StateSet* stateSet = new osg::StateSet();
         polyGeom->setStateSet(stateSet);
+        
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE) 
         osg::PolygonStipple* polygonStipple = new osg::PolygonStipple;
         stateSet->setAttributeAndModes(polygonStipple,osg::StateAttribute::OVERRIDE|osg::StateAttribute::ON);
+        #endif
         
         printTriangles("Triangles/Strip/Fan",*polyGeom);
 
@@ -614,8 +617,8 @@ osg::Node* createBackground()
     {
         0,
         1,
-        2,
-        3
+        3,
+        2
     };
 
     int numIndices = sizeof(myIndices)/sizeof(unsigned short);
@@ -624,7 +627,7 @@ osg::Node* createBackground()
     // contains unsigned char indices, UShortDrawElements which contains unsigned short indices,
     // and UIntDrawElements which contains ... unsigned int indices.  
     // The first parameter to DrawElements is 
-    polyGeom->addPrimitiveSet(new osg::DrawElementsUShort(osg::PrimitiveSet::QUADS,numIndices,myIndices));
+    polyGeom->addPrimitiveSet(new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLE_STRIP,numIndices,myIndices));
 
     // new we need to add the texture to the Drawable, we do so by creating a 
     // StateSet to contain the Texture2D StateAttribute.

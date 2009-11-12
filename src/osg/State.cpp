@@ -1343,3 +1343,47 @@ void State::updateModelViewAndProjectionMatrixUniforms()
         _normalMatrixUniform->set(normalMatrix);
     }
 }
+
+void State::drawQuads(GLint first, GLsizei count, GLsizei primCount)
+{
+    // osg::notify(osg::NOTICE)<<"State::drawQuads("<<first<<", "<<count<<")"<<std::endl;
+    
+    unsigned int array = first % 4;
+    unsigned int offsetFirst = ((first-array) / 4) * 6;
+    unsigned int numQuads = (count/4);
+    unsigned int numIndices = numQuads * 6;
+    unsigned int endOfIndices = offsetFirst+numIndices;
+    Indices& indices = _quadIndices[array];
+    if (endOfIndices>65536)
+    {
+        osg::notify(osg::NOTICE)<<"Warning: State::drawQuads("<<first<<", "<<count<<") too large handle in remapping to ushort glDrawElements."<<std::endl;
+        endOfIndices = 65536;
+    }
+    
+    if (endOfIndices >= indices.size())
+    {
+        // we need to expand the _indexArray to be big enough to cope with all the quads required.
+        unsigned int numExistingQuads = indices.size()/6;
+        unsigned int numRequiredQuads = endOfIndices/6;
+        indices.reserve(endOfIndices);
+        for(unsigned int i=numExistingQuads; i<numRequiredQuads; ++i)
+        {
+            unsigned int base = i*4 + array;
+            indices.push_back(base);
+            indices.push_back(base+1);
+            indices.push_back(base+3);
+            
+            indices.push_back(base+1);
+            indices.push_back(base+2);
+            indices.push_back(base+3);
+            
+            // osg::notify(osg::NOTICE)<<"   adding quad indices ("<<base<<")"<<std::endl;
+        }
+    }
+
+    // if (array!=0) return;
+
+    // osg::notify(osg::NOTICE)<<"  glDrawElements(GL_TRIANGLES, "<<numIndices<<", GL_UNSIGNED_SHORT, "<<&(indices[base])<<")"<<std::endl;
+    glDrawElementsInstanced(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, &(indices[offsetFirst]), primCount);
+}
+

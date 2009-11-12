@@ -1135,7 +1135,7 @@ Texture::Texture():
             _useHardwareMipMapGeneration(true),
             _unrefImageDataAfterApply(false),
             _clientStorageHint(false),
-            _resizeNonPowerOfTwoHint(true),
+            _resizeNonPowerOfTwoHint(!OSG_GLES2_FEATURES && !OSG_GL3_FEATURES),
             _borderColor(0.0, 0.0, 0.0, 0.0),
             _borderWidth(0),
             _internalFormatMode(USE_IMAGE_DATA_FORMAT),
@@ -1569,8 +1569,8 @@ void Texture::applyTexParameters(GLenum target, State& state) const
 
     #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) 
         if (ws == CLAMP) ws = CLAMP_TO_EDGE;
-        if (wt == CLAMP) wr = CLAMP_TO_EDGE;
-        if (wr == CLAMP) wt = CLAMP_TO_EDGE;
+        if (wt == CLAMP) wt = CLAMP_TO_EDGE;
+        if (wr == CLAMP) wr = CLAMP_TO_EDGE;
     #endif
     
     const Image * image = getImage(0);
@@ -2455,12 +2455,14 @@ void Texture::Extensions::setupGLExtensions(unsigned int contextID)
     
     _isTextureIntegerEXTSupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID, "GL_EXT_texture_integer");
 
+    #if 0
     if (rendererString.find("Radeon")!=std::string::npos || rendererString.find("RADEON")!=std::string::npos)
     {
         _isNonPowerOfTwoTextureMipMappedSupported = false;
         osg::notify(osg::INFO)<<"Disabling _isNonPowerOfTwoTextureMipMappedSupported for ATI hardware."<<std::endl;
     }
-
+    #endif
+    
     if (rendererString.find("GeForce FX")!=std::string::npos)
     {
         _isNonPowerOfTwoTextureMipMappedSupported = false;

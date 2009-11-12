@@ -37,8 +37,28 @@ unsigned int PrimitiveSet::getNumPrimitives() const
 
 void DrawArrays::draw(State& state, bool) const 
 {
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) 
+    GLenum mode = _mode;
+    if (_mode==GL_QUADS) 
+    {
+        state.drawQuads(_first, _count, _numInstances);
+        return;
+    }
+    else if (mode==GL_POLYGON)
+    {
+        mode = GL_TRIANGLE_FAN;
+    }
+    else if (mode==GL_QUAD_STRIP)
+    {
+        mode = GL_TRIANGLE_STRIP;
+    }
+
+    if (_numInstances>=1) state.glDrawArraysInstanced(mode,_first,_count, _numInstances);
+    else glDrawArrays(mode,_first,_count);
+#else
     if (_numInstances>=1) state.glDrawArraysInstanced(_mode,_first,_count, _numInstances);
     else glDrawArrays(_mode,_first,_count);
+#endif
 }
 
 void DrawArrays::accept(PrimitiveFunctor& functor) const
@@ -69,16 +89,36 @@ unsigned int DrawArrayLengths::getNumPrimitives() const
     return 0;
 }
 
-void DrawArrayLengths::draw(State&, bool) const
+void DrawArrayLengths::draw(State& state, bool) const
 {
+    GLenum mode = _mode;
+    #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) 
+        if (_mode==GL_QUADS) 
+        {
+            GLint first = _first;
+            for(vector_type::const_iterator itr=begin();
+                itr!=end();
+                ++itr)
+            {
+                state.drawQuads(first, *itr, _numInstances);
+                first += *itr;
+            }
+            
+            return;
+        }
+        if (mode==GL_POLYGON) mode = GL_TRIANGLE_FAN;
+        if (mode==GL_QUAD_STRIP) mode = GL_TRIANGLE_STRIP;
+    #endif
+
     GLint first = _first;
     for(vector_type::const_iterator itr=begin();
         itr!=end();
         ++itr)
     {
-        glDrawArrays(_mode,first,*itr);
+        glDrawArrays(mode,first,*itr);
         first += *itr;
     }
+
 }
 
 void DrawArrayLengths::accept(PrimitiveFunctor& functor) const
@@ -124,25 +164,31 @@ DrawElementsUByte::~DrawElementsUByte()
 
 void DrawElementsUByte::draw(State& state, bool useVertexBufferObjects) const 
 {
+    GLenum mode = _mode;
+    #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) 
+        if (mode==GL_POLYGON) mode = GL_TRIANGLE_FAN;
+        if (mode==GL_QUAD_STRIP) mode = GL_TRIANGLE_STRIP;
+    #endif
+
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
         state.bindElementBufferObject(ebo);
         if (ebo)
         {
-            if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_BYTE, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
-            else glDrawElements(_mode, size(), GL_UNSIGNED_BYTE, (const GLvoid *)(ebo->getOffset(getBufferIndex())));
+            if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_BYTE, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
+            else glDrawElements(mode, size(), GL_UNSIGNED_BYTE, (const GLvoid *)(ebo->getOffset(getBufferIndex())));
         }
         else
         {
-            if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_BYTE, &front(), _numInstances);
-            else glDrawElements(_mode, size(), GL_UNSIGNED_BYTE, &front());
+            if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_BYTE, &front(), _numInstances);
+            else glDrawElements(mode, size(), GL_UNSIGNED_BYTE, &front());
         }
     }
     else 
     {
-        if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_BYTE, &front(), _numInstances);
-        else glDrawElements(_mode, size(), GL_UNSIGNED_BYTE, &front());
+        if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_BYTE, &front(), _numInstances);
+        else glDrawElements(mode, size(), GL_UNSIGNED_BYTE, &front());
     }
 }
 
@@ -174,25 +220,31 @@ DrawElementsUShort::~DrawElementsUShort()
 
 void DrawElementsUShort::draw(State& state, bool useVertexBufferObjects) const 
 {
+    GLenum mode = _mode;
+    #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) 
+        if (mode==GL_POLYGON) mode = GL_TRIANGLE_FAN;
+        if (mode==GL_QUAD_STRIP) mode = GL_TRIANGLE_STRIP;
+    #endif
+
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
         state.bindElementBufferObject(ebo);
         if (ebo)
         {
-            if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_SHORT, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
-            else glDrawElements(_mode, size(), GL_UNSIGNED_SHORT, (const GLvoid *)(ebo->getOffset(getBufferIndex())));
+            if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_SHORT, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
+            else glDrawElements(mode, size(), GL_UNSIGNED_SHORT, (const GLvoid *)(ebo->getOffset(getBufferIndex())));
         }
         else
         {
-            if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_SHORT, &front(), _numInstances);
-            else glDrawElements(_mode, size(), GL_UNSIGNED_SHORT, &front());
+            if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_SHORT, &front(), _numInstances);
+            else glDrawElements(mode, size(), GL_UNSIGNED_SHORT, &front());
         }
     }
     else 
     {
-        if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_SHORT, &front(), _numInstances);
-        else glDrawElements(_mode, size(), GL_UNSIGNED_SHORT, &front());
+        if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_SHORT, &front(), _numInstances);
+        else glDrawElements(mode, size(), GL_UNSIGNED_SHORT, &front());
     }
 }
 
@@ -224,25 +276,31 @@ DrawElementsUInt::~DrawElementsUInt()
 
 void DrawElementsUInt::draw(State& state, bool useVertexBufferObjects) const 
 {
+    GLenum mode = _mode;
+    #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) 
+        if (mode==GL_POLYGON) mode = GL_TRIANGLE_FAN;
+        if (mode==GL_QUAD_STRIP) mode = GL_TRIANGLE_STRIP;
+    #endif
+
     if (useVertexBufferObjects)
     {
         GLBufferObject* ebo = getOrCreateGLBufferObject(state.getContextID());
         state.bindElementBufferObject(ebo);
         if (ebo)
         {
-            if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_INT, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
-            else glDrawElements(_mode, size(), GL_UNSIGNED_INT, (const GLvoid *)(ebo->getOffset(getBufferIndex())));
+            if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_INT, (const GLvoid *)(ebo->getOffset(getBufferIndex())), _numInstances);
+            else glDrawElements(mode, size(), GL_UNSIGNED_INT, (const GLvoid *)(ebo->getOffset(getBufferIndex())));
         }
         else
         {
-            if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_INT, &front(), _numInstances);
-            else glDrawElements(_mode, size(), GL_UNSIGNED_INT, &front());
+            if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_INT, &front(), _numInstances);
+            else glDrawElements(mode, size(), GL_UNSIGNED_INT, &front());
         }
     }
     else 
     {
-        if (_numInstances>=1) state.glDrawElementsInstanced(_mode, size(), GL_UNSIGNED_INT, &front(), _numInstances);
-        else glDrawElements(_mode, size(), GL_UNSIGNED_INT, &front());
+        if (_numInstances>=1) state.glDrawElementsInstanced(mode, size(), GL_UNSIGNED_INT, &front(), _numInstances);
+        else glDrawElements(mode, size(), GL_UNSIGNED_INT, &front());
     }
 }
 

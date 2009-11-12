@@ -157,9 +157,6 @@ class OSG_EXPORT GLBeginEndAdapter
         osg::ref_ptr<osg::Vec4Array>        _colors;
         VertexArrayList                     _texCoordsList;
         VertexArrayList                     _vertexAttribsList;
-
-        typedef std::vector<unsigned short> UShortArray;
-        UShortArray                         _indexArray;
 };
 
 }

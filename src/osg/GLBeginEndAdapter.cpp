@@ -293,12 +293,12 @@ void GLBeginEndAdapter::End()
             {
                 unsigned int base = i*4;
                 _indexArray.push_back(base);
-                _indexArray.push_back(base+2);
                 _indexArray.push_back(base+1);
-                
-                _indexArray.push_back(base);
                 _indexArray.push_back(base+3);
+                
+                _indexArray.push_back(base+1);
                 _indexArray.push_back(base+2);
+                _indexArray.push_back(base+3);
             }
         }
 

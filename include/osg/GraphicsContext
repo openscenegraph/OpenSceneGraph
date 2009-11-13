@@ -66,7 +66,7 @@ class OSG_EXPORT GraphicsContext : public Object
         };
     
         /** GraphicsContext Traits object provides the specification of what type of graphics context is required.*/
-        struct Traits : public osg::Referenced, public ScreenIdentifier
+        struct OSG_EXPORT Traits : public osg::Referenced, public ScreenIdentifier
         {
             Traits(DisplaySettings* ds=0);
                             

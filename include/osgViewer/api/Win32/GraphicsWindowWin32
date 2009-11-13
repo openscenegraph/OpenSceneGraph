@@ -139,7 +139,8 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow
                                               unsigned int& extendedStyle );
         
         bool setPixelFormat();
-        
+        HGLRC createContextImplementation();
+
         void adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol, unsigned int& modifierMask );
                 
         void transformMouseXY(float& x, float& y);

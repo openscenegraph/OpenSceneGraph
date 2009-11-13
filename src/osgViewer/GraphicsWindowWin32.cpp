@@ -20,6 +20,7 @@
 #include <osgViewer/api/Win32/PixelBufferWin32>
 #include <osgViewer/View>
 
+#include <osg/GL>
 #include <osg/DeleteHandler>
 #include <osg/ApplicationUsage>
 
@@ -99,6 +100,7 @@ static osg::ApplicationUsageProxy GraphicsWindowWin32_e0(osg::ApplicationUsage::
 #define WGL_CONTEXT_MINOR_VERSION_ARB  0x2092
 #define WGL_CONTEXT_LAYER_PLANE_ARB    0x2093
 #define WGL_CONTEXT_FLAGS_ARB          0x2094
+#define WGL_CONTEXT_PROFILE_MASK_ARB   0x9126
 #define ERROR_INVALID_VERSION_ARB      0x2095
 #endif
 
@@ -1196,7 +1198,7 @@ bool GraphicsWindowWin32::createWindow()
     // Create the OpenGL rendering context associated with this window
     //
 
-    _hglrc = ::wglCreateContext(_hdc);
+    _hglrc = createContextImplementation();
     if (_hglrc==0)
     {
         reportErrorForScreen("GraphicsWindowWin32::createWindow() - Unable to create OpenGL rendering context", _traits->screenNum, ::GetLastError());
@@ -1609,6 +1611,91 @@ bool GraphicsWindowWin32::setPixelFormat()
     return true;
 }
 
+HGLRC GraphicsWindowWin32::createContextImplementation()
+{
+    HGLRC context( NULL );
+
+    if( OSG_GL3_FEATURES )
+    {
+        osg::notify( osg::INFO ) << "GL3: Attempting to create OpenGL3 context." << std::endl;
+        osg::notify( osg::INFO ) << "GL3: version: " << _traits->glContextVersion << std::endl;
+        osg::notify( osg::INFO ) << "GL3: context flags: " << _traits->glContextFlags << std::endl;
+        osg::notify( osg::INFO ) << "GL3: profile: " << _traits->glContextProfileMask << std::endl;
+
+        Win32WindowingSystem::OpenGLContext openGLContext;
+        if( !Win32WindowingSystem::getInterface()->getSampleOpenGLContext( openGLContext, _hdc, _screenOriginX, _screenOriginY ) )
+        {
+            reportErrorForScreen( "GL3: Can't create sample context.",
+                _traits->screenNum, ::GetLastError() );
+        }
+        else
+        {
+            PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB =
+                ( PFNWGLCREATECONTEXTATTRIBSARBPROC ) wglGetProcAddress( "wglCreateContextAttribsARB" );
+            if( wglCreateContextAttribsARB==0 )
+            {
+                reportErrorForScreen( "GL3: wglCreateContextAttribsARB not available.",
+                    _traits->screenNum, ::GetLastError() );
+            }
+            else
+            {
+                unsigned int idx( 0 );
+                int attribs[ 16 ];
+
+                std::istringstream istr( _traits->glContextVersion );
+                unsigned int major, minor;
+                unsigned char dot;
+                istr >> major >> dot >> minor;
+                if( major < 3 )
+                    osg::notify( osg::WARN ) << "GL3: Non-GL3 version number: " << _traits->glContextVersion << std::endl;
+
+                attribs[ idx++ ] = WGL_CONTEXT_MAJOR_VERSION_ARB;
+                attribs[ idx++ ] = major;
+                attribs[ idx++ ] = WGL_CONTEXT_MINOR_VERSION_ARB;
+                attribs[ idx++ ] = minor;
+                if( _traits->glContextFlags != 0 )
+                {
+                    attribs[ idx++ ] = WGL_CONTEXT_FLAGS_ARB;
+                    attribs[ idx++ ] = _traits->glContextFlags;
+                }
+                if( _traits->glContextProfileMask != 0 )
+                {
+                    attribs[ idx++ ] = WGL_CONTEXT_PROFILE_MASK_ARB;
+                    attribs[ idx++ ] = _traits->glContextProfileMask;
+                }
+                attribs[ idx++ ] = 0;
+
+                context = wglCreateContextAttribsARB( _hdc, 0, attribs );
+                if( context == NULL )
+                {
+                    reportErrorForScreen( "GL3: wglCreateContextAttribsARB returned NULL.",
+                        _traits->screenNum, ::GetLastError() );
+                }
+                else
+                {
+                    osg::notify( osg::INFO ) << "GL3: context created successfully." << std::endl;
+                }
+            }
+        }
+    }
+
+    // TBD insert GL ES 2 suppurt, if required for Win32.
+
+    // If platform context creation fails for any reason,
+    // we'll create a standard context. This means you could
+    // build OSG for GL3, have the context creation fail
+    // (because you have the wrong driver), and end up with
+    // a GL3 context. Something else will likely fail down
+    // the line, as the GL3-built OSG will assume GL3 features
+    // are present.
+    //
+    // This is also the typical path for GL 1/2 context creation.
+    if( context == NULL )
+        context = ::wglCreateContext(_hdc);
+
+    return( context );
+}
+
 bool GraphicsWindowWin32::setWindowDecorationImplementation( bool decorated )
 {
     unsigned int windowStyle;
@@ -1717,7 +1804,7 @@ bool GraphicsWindowWin32::realizeImplementation()
                     HDC        _hdc;
                     HGLRC    _hglrc;
                 } restoreContext;
-                
+
                 _realized = true;
                 bool result = makeCurrent();
                 _realized = false;

@@ -913,15 +913,20 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     }
 
     State& state = *renderInfo.getState();
+
+    bool checkForGLErrors = state.getCheckForGLErrors()==osg::State::ONCE_PER_ATTRIBUTE;
+    if (checkForGLErrors) state.checkGLErrors("start of Geometry::drawImplementation()");
+    
     bool useFastPath = areFastPathsUsed();
+    // useFastPath = false;
 
     bool usingVertexBufferObjects = _useVertexBufferObjects && state.isVertexBufferObjectSupported();
     bool handleVertexAttributes = !_vertexAttribList.empty();
 
     ArrayDispatchers& arrayDispatchers = state.getArrayDispatchers();
 
-    arrayDispatchers.setUseVertexAttribAlias(state.getUseVertexAttributeAliasing());
     arrayDispatchers.reset();
+    arrayDispatchers.setUseVertexAttribAlias(useFastPath && state.getUseVertexAttributeAliasing());
     arrayDispatchers.setUseGLBeginEndAdapter(!useFastPath);
 
     arrayDispatchers.activateNormalArray(_normalData.binding, _normalData.array.get(), _normalData.indices.get());
@@ -995,6 +1000,9 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     bool bindPerPrimitiveActive = arrayDispatchers.active(BIND_PER_PRIMITIVE);
 
     unsigned int primitiveNum = 0;
+
+    if (checkForGLErrors) state.checkGLErrors("Geometry::drawImplementation() after vertex arrays setup.");
+
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //
@@ -1168,6 +1176,8 @@ void Geometry::drawImplementation(RenderInfo& renderInfo) const
     // unbind the VBO's if any are used.
     state.unbindVertexBufferObject();
     state.unbindElementBufferObject();
+
+    if (checkForGLErrors) state.checkGLErrors("end of Geometry::drawImplementation().");
 }
 
 class AttributeFunctorArrayVisitor : public ArrayVisitor

@@ -17,6 +17,20 @@
 
 using namespace osgAnimation;
 
+Skeleton::Skeleton() {}
+Skeleton::Skeleton(const Skeleton& b, const osg::CopyOp& copyop) : Bone(b,copyop) {}
+
+Skeleton::UpdateSkeleton::UpdateSkeleton() : _needValidate(true) {}
+Skeleton::UpdateSkeleton::UpdateSkeleton(const UpdateSkeleton& us, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY) : osg::Object(us, copyop), osg::NodeCallback(us, copyop) 
+{
+    _needValidate = true;
+}
+bool Skeleton::UpdateSkeleton::needToValidate() const
+{
+    return _needValidate;
+}
+
+
 class ValidateSkeletonVisitor : public osg::NodeVisitor
 {
 public:
@@ -56,25 +70,28 @@ public:
 
 void Skeleton::UpdateSkeleton::operator()(osg::Node* node, osg::NodeVisitor* nv)
 { 
-    if (_needValidate && nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR) 
+    if (nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR)
     {
-        Skeleton* b = dynamic_cast<Skeleton*>(node);
-        if (b) 
+        Skeleton* skeleton = dynamic_cast<Skeleton*>(node);
+        if (_needValidate && skeleton)
         {
             ValidateSkeletonVisitor visitor;
             node->accept(visitor);
+            _needValidate = false;
         }
-
-        _needValidate = false;
+        if (skeleton->needToComputeBindMatrix())
+            skeleton->computeBindMatrix();
     }
     traverse(node,nv);
-}
-
-Skeleton::Skeleton()
-{
 }
 
 void Skeleton::setDefaultUpdateCallback()
 {
     setUpdateCallback(new Skeleton::UpdateSkeleton );
+}
+
+void Skeleton::computeBindMatrix() 
+{
+    _invBindInSkeletonSpace = osg::Matrix::inverse(_bindInBoneSpace); 
+    _needToRecomputeBindMatrix = false; 
 }

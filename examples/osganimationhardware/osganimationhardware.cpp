@@ -23,6 +23,7 @@
 #include <osgGA/AnimationPathManipulator>
 #include <osgGA/TerrainManipulator>
 #include <osg/Drawable>
+#include <osg/MatrixTransform>
 
 #include <osgAnimation/BasicAnimationManager>
 #include <osgAnimation/RigGeometry>

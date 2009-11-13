@@ -307,10 +307,19 @@ public:
 
     AttributeDispatch* dispatcher(bool useGLBeginEndAdapter, const Array* array, const IndexArray* indices)
     {
+        // osg::notify(osg::NOTICE)<<"dispatcher("<<useGLBeginEndAdapter<<", "<<array<<", "<<indices<<")"<<std::endl;
+
         if (!array) return 0;
 
         Array::Type type = array->getType();
         AttributeDispatch* dispatcher = 0;
+
+        // osg::notify(osg::NOTICE)<<"    array->getType()="<<type<<std::endl;
+        // osg::notify(osg::NOTICE)<<"    _glBeginEndAttributeDispatchList.size()="<<_glBeginEndAttributeDispatchList.size()<<std::endl;
+        // osg::notify(osg::NOTICE)<<"    _glBeginEndAttributeDispatchWithIndicesList.size()="<<_glBeginEndAttributeDispatchWithIndicesList.size()<<std::endl;
+        // osg::notify(osg::NOTICE)<<"    _attributeDispatchIndicesList.size()="<<_attributeDispatchList.size()<<std::endl;
+        // osg::notify(osg::NOTICE)<<"    _attributeDispatchWithIndicesList.size()="<<_attributeDispatchWithIndicesList.size()<<std::endl;
+
         if (useGLBeginEndAdapter)
         {
             if (indices)
@@ -342,11 +351,13 @@ public:
 
         if (dispatcher)
         {
+            // osg::notify(osg::NOTICE)<<"   returning dispatcher="<<dispatcher<<std::endl;
             dispatcher->assign(array->getDataPointer(), indices);
             return dispatcher;
         }
         else
         {
+            // osg::notify(osg::NOTICE)<<"   no dispatcher found"<<std::endl;
             return 0;
         }
     }
@@ -417,6 +428,11 @@ void ArrayDispatchers::init()
     _glBeginEndAdapter = &(_state->getGLBeginEndAdapter());
     _useGLBeginEndAdapter = false;
 
+    _vertexDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec3ArrayType, &GLBeginEndAdapter::Vertex3fv, 3);
+    _normalDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec3ArrayType, &GLBeginEndAdapter::Normal3fv, 3);
+    _colorDispatchers->assignGLBeginEnd<GLubyte>(Array::Vec4ubArrayType, &GLBeginEndAdapter::Color4ubv, 4);
+    _colorDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec4ArrayType, &GLBeginEndAdapter::Color4fv, 4);
+
 #ifdef OSG_GL_VERTEX_FUNCS_AVAILABLE
     Drawable::Extensions* extensions = Drawable::getExtensions(_state->getContextID(),true);
 
@@ -425,22 +441,18 @@ void ArrayDispatchers::init()
         _vertexDispatchers->assign<GLfloat>(Array::Vec3ArrayType, glVertex3fv, 3);
         _vertexDispatchers->assign<GLdouble>(Array::Vec2dArrayType, glVertex2dv, 2);
         _vertexDispatchers->assign<GLdouble>(Array::Vec3dArrayType, glVertex3dv, 3);
-        _vertexDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec3ArrayType, &GLBeginEndAdapter::Vertex3fv, 3);
     #endif
 
     _normalDispatchers->assign<GLbyte>(Array::Vec3bArrayType, glNormal3bv, 3);
     _normalDispatchers->assign<GLshort>(Array::Vec3sArrayType, glNormal3sv, 3);
     _normalDispatchers->assign<GLfloat>(Array::Vec3ArrayType, glNormal3fv, 3);
     _normalDispatchers->assign<GLdouble>(Array::Vec3dArrayType, glNormal3dv, 3);
-    _normalDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec3ArrayType, &GLBeginEndAdapter::Normal3fv, 3);
 
     _colorDispatchers->assign<GLubyte>(Array::Vec4ubArrayType, glColor4ubv, 4);
     _colorDispatchers->assign<GLfloat>(Array::Vec3ArrayType, glColor3fv, 3);
     _colorDispatchers->assign<GLfloat>(Array::Vec4ArrayType, glColor4fv, 4);
     _colorDispatchers->assign<GLdouble>(Array::Vec3dArrayType, glColor3dv, 3);
     _colorDispatchers->assign<GLdouble>(Array::Vec4dArrayType, glColor4dv, 4);
-    _colorDispatchers->assignGLBeginEnd<GLubyte>(Array::Vec4ubArrayType, &GLBeginEndAdapter::Color4ubv, 4);
-    _colorDispatchers->assignGLBeginEnd<GLfloat>(Array::Vec4ArrayType, &GLBeginEndAdapter::Color4fv, 4);
 
     _secondaryColorDispatchers->assign<GLfloat>(Array::Vec3ArrayType, extensions->_glSecondaryColor3fv, 3);
 
@@ -502,36 +514,42 @@ AttributeDispatch* ArrayDispatchers::vertexAttribDispatcher(unsigned int unit, A
 
 void ArrayDispatchers::assignTexCoordDispatchers(unsigned int unit)
 {
-#if defined(OSG_GL_VERTEX_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
+    #if defined(OSG_GL_VERTEX_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
     Drawable::Extensions* extensions = Drawable::getExtensions(_state->getContextID(),true);
+    #endif
+    
     for(unsigned int i=_texCoordDispatchers.size(); i<=unit; ++i)
     {
         _texCoordDispatchers.push_back(new AttributeDispatchMap(_glBeginEndAdapter));
         AttributeDispatchMap& texCoordDispatcher = *_texCoordDispatchers[i];
         if (i==0)
         {
+            #if defined(OSG_GL_VERTEX_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
             texCoordDispatcher.assign<GLfloat>(Array::FloatArrayType, glTexCoord1fv, 1);
             texCoordDispatcher.assign<GLfloat>(Array::Vec2ArrayType, glTexCoord2fv, 2);
             texCoordDispatcher.assign<GLfloat>(Array::Vec3ArrayType, glTexCoord3fv, 3);
             texCoordDispatcher.assign<GLfloat>(Array::Vec4ArrayType, glTexCoord4fv, 4);
-            texCoordDispatcher.assignGLBeginEnd<GLfloat>(Array::FloatArrayType, &GLBeginEndAdapter::TexCoord1fv, 3);
-            texCoordDispatcher.assignGLBeginEnd<GLfloat>(Array::Vec2ArrayType, &GLBeginEndAdapter::TexCoord2fv, 3);
+            #endif
+            texCoordDispatcher.assignGLBeginEnd<GLfloat>(Array::FloatArrayType, &GLBeginEndAdapter::TexCoord1fv, 1);
+            texCoordDispatcher.assignGLBeginEnd<GLfloat>(Array::Vec2ArrayType, &GLBeginEndAdapter::TexCoord2fv, 2);
             texCoordDispatcher.assignGLBeginEnd<GLfloat>(Array::Vec3ArrayType, &GLBeginEndAdapter::TexCoord3fv, 3);
             texCoordDispatcher.assignGLBeginEnd<GLfloat>(Array::Vec4ArrayType, &GLBeginEndAdapter::TexCoord4fv, 4);
         }
         else
         {
+            #if defined(OSG_GL_VERTEX_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
             texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::FloatArrayType, extensions->_glMultiTexCoord1fv, 1);
             texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec2ArrayType, extensions->_glMultiTexCoord2fv, 2);
             texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec3ArrayType, extensions->_glMultiTexCoord3fv, 3);
             texCoordDispatcher.targetAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec4ArrayType, extensions->_glMultiTexCoord4fv, 4);
+            #endif
             texCoordDispatcher.targetGLBeginEndAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::FloatArrayType, &GLBeginEndAdapter::MultiTexCoord1fv, 1);
             texCoordDispatcher.targetGLBeginEndAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec2ArrayType, &GLBeginEndAdapter::MultiTexCoord2fv, 2);
             texCoordDispatcher.targetGLBeginEndAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec3ArrayType, &GLBeginEndAdapter::MultiTexCoord3fv, 3);
             texCoordDispatcher.targetGLBeginEndAssign<GLenum, GLfloat>((GLenum)(GL_TEXTURE0+i), Array::Vec4ArrayType, &GLBeginEndAdapter::MultiTexCoord4fv, 4);
         }
     }
-#endif
+
 }
 
 void ArrayDispatchers::assignVertexAttribDispatchers(unsigned int unit)
@@ -541,11 +559,15 @@ void ArrayDispatchers::assignVertexAttribDispatchers(unsigned int unit)
     for(unsigned int i=_vertexAttribDispatchers.size(); i<=unit; ++i)
     {
         _vertexAttribDispatchers.push_back(new AttributeDispatchMap(_glBeginEndAdapter));
-        AttributeDispatchMap& texCoordDispatcher = *_vertexAttribDispatchers[i];
-        texCoordDispatcher.targetAssign<GLuint, GLfloat>(i, Array::FloatArrayType, extensions->_glVertexAttrib1fv, 1);
-        texCoordDispatcher.targetAssign<GLuint, GLfloat>(i, Array::Vec2ArrayType, extensions->_glVertexAttrib2fv, 2);
-        texCoordDispatcher.targetAssign<GLuint, GLfloat>(i, Array::Vec3ArrayType, extensions->_glVertexAttrib3fv, 3);
-        texCoordDispatcher.targetAssign<GLuint, GLfloat>(i, Array::Vec4ArrayType, extensions->_glVertexAttrib4fv, 4);
+        AttributeDispatchMap& vertexAttribDispatcher = *_vertexAttribDispatchers[i];
+        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>(i, Array::FloatArrayType, extensions->_glVertexAttrib1fv, 1);
+        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>(i, Array::Vec2ArrayType, extensions->_glVertexAttrib2fv, 2);
+        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>(i, Array::Vec3ArrayType, extensions->_glVertexAttrib3fv, 3);
+        vertexAttribDispatcher.targetAssign<GLuint, GLfloat>(i, Array::Vec4ArrayType, extensions->_glVertexAttrib4fv, 4);
+        vertexAttribDispatcher.targetGLBeginEndAssign<GLenum, GLfloat>(i, Array::FloatArrayType, &GLBeginEndAdapter::VertexAttrib1fv, 1);
+        vertexAttribDispatcher.targetGLBeginEndAssign<GLenum, GLfloat>(i, Array::Vec2ArrayType, &GLBeginEndAdapter::VertexAttrib2fv, 2);
+        vertexAttribDispatcher.targetGLBeginEndAssign<GLenum, GLfloat>(i, Array::Vec3ArrayType, &GLBeginEndAdapter::VertexAttrib3fv, 3);
+        vertexAttribDispatcher.targetGLBeginEndAssign<GLenum, GLfloat>(i, Array::Vec4ArrayType, &GLBeginEndAdapter::VertexAttrib4fv, 4);
     }
 }
 

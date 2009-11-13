@@ -279,6 +279,7 @@ void View::setSceneData(osg::Node* node)
     {
         #if defined(OSG_GLES2_AVAILABLE)
             osgUtil::ShaderGenVisitor sgv;
+            getSceneData()->getOrCreateStateSet();
             getSceneData()->accept(sgv);
         #endif
         

@@ -12,14 +12,14 @@
 */
 // tri_stripper.cpp: implementation of the Tri Stripper class.
 //
-// Copyright (C) 2002 Tanguy Fautré.
+// Copyright (C) 2002 Tanguy Fautrï¿½.
 // For conditions of distribution and use,
 // see copyright notice in tri_stripper.h
 //
 //////////////////////////////////////////////////////////////////////
 
 #include "TriStrip_tri_stripper.h"
-
+#include <osg/Notify>
 
 
 // namespace triangle_stripper
@@ -38,11 +38,14 @@ namespace triangle_stripper {
 // Members Functions
 //////////////////////////////////////////////////////////////////////
 
-void tri_stripper::Strip(primitives_vector * out_pPrimitivesVector)
+bool tri_stripper::Strip(primitives_vector * out_pPrimitivesVector)
 {
     // verify that the number of indices is correct
     if (m_TriIndices.size() % 3 != 0)
-        throw triangles_indices_error();
+    {
+        osg::notify(osg::NOTICE)<<"Warning: tri_stripper::Strip(..) invalid number of triangle indices."<<std::endl;
+        return false;
+    }
 
     // clear possible garbage
     m_PrimitivesVector.clear();
@@ -58,7 +61,10 @@ void tri_stripper::Strip(primitives_vector * out_pPrimitivesVector)
     InitCache();
 
     // Launch the triangle strip generator
-    Stripify();
+    if (!Stripify())
+    {
+        return false;
+    }
 
     // Add the triangles that couldn't be stripped
     AddLeftTriangles();
@@ -69,6 +75,8 @@ void tri_stripper::Strip(primitives_vector * out_pPrimitivesVector)
     // Put the results into the user's vector
     std::swap(m_PrimitivesVector, (* out_pPrimitivesVector));
 //    m_PrimitivesVector.swap(* out_pPrimitivesVector);
+
+    return true;
 }
 
 
@@ -157,7 +165,7 @@ void tri_stripper::InitCache()
 
 
 
-void tri_stripper::Stripify()
+bool tri_stripper::Stripify()
 {
     // Reset the triangle strip id selector
     m_StripID = 0;
@@ -182,7 +190,9 @@ void tri_stripper::Stripify()
             // Build it if it's long enough, otherwise discard it
             // Note: BuildStrip refills m_NextCandidates
             if (TriStrip.Size() >= m_MinStripSize)
-                BuildStrip(TriStrip);
+            {
+                if (!BuildStrip(TriStrip)) return false;
+            }
         }
 
         // We must discard the triangle we inserted in the candidate list from the heap
@@ -195,6 +205,8 @@ void tri_stripper::Stripify()
         while ((! m_TriHeap.empty()) && (m_TriHeap.top().Degree() == 0))
             m_TriHeap.pop();
     }
+
+    return true;
 }
 
 
@@ -376,7 +388,7 @@ triangle_edge tri_stripper::GetLatestEdge(const triangle & Triangle, const trian
 
 
 
-void tri_stripper::BuildStrip(const triangle_strip TriStrip)
+bool tri_stripper::BuildStrip(const triangle_strip TriStrip)
 {
     typedef triangles_graph::const_out_arc_iterator const_tri_link_iter;
     typedef triangles_graph::node_iterator tri_node_iter;
@@ -439,7 +451,11 @@ void tri_stripper::BuildStrip(const triangle_strip TriStrip)
 
         // Debug check: we must have found the next triangle
         //assert(LinkIt != TriNodeIt->out_end());        
-        if (LinkIt == TriNodeIt->out_end()) throw "tri_stripper::BuildStrip(,) error, next triangle not found";
+        if (LinkIt == TriNodeIt->out_end()) 
+        {
+            osg::notify(osg::NOTICE)<<"Warning: tri_stripper::BuildStrip(,) error, next triangle not found."<<std::endl;
+            return false;
+        }
 
 
         // Go to the next triangle
@@ -449,6 +465,7 @@ void tri_stripper::BuildStrip(const triangle_strip TriStrip)
         // Setup for the next triangle
         ClockWise = ! ClockWise;
     }
+    return true;
 }
 
 

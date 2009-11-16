@@ -26,6 +26,8 @@
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
 
+// #define CHECK_CONSISTENCY
+
 using namespace osg;
 
 // static cache of deleted buffer object lists which can only
@@ -456,8 +458,9 @@ GLBufferObjectSet::~GLBufferObjectSet()
 
 bool GLBufferObjectSet::checkConsistency() const
 {
+#ifndef CHECK_CONSISTENCY
     return true;
-
+#else
     // osg::notify(osg::NOTICE)<<"GLBufferObjectSet::checkConsistency()"<<std::endl;
     // check consistency of linked list.
     unsigned int numInList = 0;
@@ -470,16 +473,16 @@ bool GLBufferObjectSet::checkConsistency() const
         {
             if ((to->_next)->_previous != to)
             {
-                osg::notify(osg::NOTICE)<<"Error (to->_next)->_previous != to "<<std::endl;
-                throw "Error (to->_next)->_previous != to ";
+                osg::notify(osg::NOTICE)<<"GLBufferObjectSet::checkConsistency() : Error (to->_next)->_previous != to "<<std::endl;
+                return false;
             }
         }
         else
         {
             if (_tail != to)
             {
-                osg::notify(osg::NOTICE)<<"Error _trail != to"<<std::endl;
-                throw "Error _trail != to";
+                osg::notify(osg::NOTICE)<<"GLBufferObjectSet::checkConsistency() : Error _trail != to"<<std::endl;
+                return false;
             }
         }
 
@@ -498,6 +501,7 @@ bool GLBufferObjectSet::checkConsistency() const
     }
 
     return true;
+#endif
 }
 
 void GLBufferObjectSet::handlePendingOrphandedGLBufferObjects()

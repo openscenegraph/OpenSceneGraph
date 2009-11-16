@@ -2,7 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 //
-//  Copyright (C) 2002 Tanguy Fautré.
+//  Copyright (C) 2002 Tanguy Fautrï¿½.
 //
 //  This software is provided 'as-is', without any express or implied
 //  warranty.  In no event will the authors be held liable for any damages
@@ -21,7 +21,7 @@
 //     misrepresented as being the original software.
 //  3. This notice may not be removed or altered from any source distribution.
 //
-//  Tanguy Fautré
+//  Tanguy Fautrï¿½
 //  softdev@pandora.be
 //
 //////////////////////////////////////////////////////////////////////
@@ -203,9 +203,6 @@ public:
 
     typedef std::vector<primitives> primitives_vector;
 
-    struct triangles_indices_error { };
-
-
     // constructor/initializer
     inline tri_stripper(const indices & TriIndices);
     
@@ -214,7 +211,7 @@ public:
     inline void SetMinStripSize(const size_t MinStripSize = 2);
 
     // Stripper
-    void Strip(primitives_vector * out_pPrimitivesVector);    // throw triangles_indices_error();
+    bool Strip(primitives_vector * out_pPrimitivesVector); 
 
 private:
 
@@ -232,7 +229,7 @@ private:
     void InitCache();
     void InitTriGraph();
     void InitTriHeap();
-    void Stripify();
+    bool Stripify();
     void AddLeftTriangles();
 
     void LinkNeighboursTri(const triangle_edges & TriInterface, const triangle_edge Edge);
@@ -242,7 +239,7 @@ private:
 
     triangle_strip FindBestStrip();
     triangle_strip ExtendTriToStrip(const size_t StartTriPos, const triangle_strip::start_order StartOrder);
-    void BuildStrip(const triangle_strip TriStrip);
+    bool BuildStrip(const triangle_strip TriStrip);
     void AddIndice(const indice i);
     void AddIndiceToCache(const indice i, bool CacheHitCount = false);
     void AddTriToCache(const triangle & Tri, const triangle_strip::start_order Order);

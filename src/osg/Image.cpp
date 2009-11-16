@@ -659,7 +659,7 @@ void Image::allocateImage(int s,int t,int r,
     else
     {
     
-        // throw exception?? not for now, will simply set values to 0.
+        // failed to allocate memory, for now, will simply set values to 0.
         _s = 0;
         _t = 0;
         _r = 0;

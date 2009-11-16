@@ -30,6 +30,41 @@ namespace osg {
 
 class Program;
 
+/** Simple class for wrapping up the data used in OpenGL ES 2's glShaderBinary calls.  
+  * ShaderBinary is set up with the binary data then assigned to one or more osg::Shader. */
+class OSG_EXPORT ShaderBinary : public osg::Object
+{
+    public:
+        
+        ShaderBinary();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        ShaderBinary(const ShaderBinary& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_Object(osg, ShaderBinary);
+
+        /** Allocated a data buffer of specified size/*/
+        void allocate(unsigned int size);
+        
+        /** Assign shader binary data, copying the specified data into locally stored data buffer, the original data can then be deleted.*/
+        void assign(unsigned int size, const unsigned char* data);
+        
+        /** Get the size of the shader binary data.*/
+        unsigned int getSize() const { return _data.size(); }
+
+        /** Get a ptr to the shader binary data.*/
+        unsigned char* getData() { return _data.empty() ? 0 : &(_data.front()); }
+
+        /** Get a const ptr to the shader binary data.*/
+        const unsigned char* getData() const { return _data.empty() ? 0 : &(_data.front()); }
+        
+    protected:
+        
+        typedef std::vector<unsigned char> Data;
+        Data _data;
+};
+
+
 ///////////////////////////////////////////////////////////////////////////
 /** osg::Shader is an application-level abstraction of an OpenGL glShader.
   * It is a container to load the shader source code text and manage its
@@ -51,8 +86,9 @@ class OSG_EXPORT Shader : public osg::Object
             UNDEFINED = -1
         };
 
-        Shader( Type type = UNDEFINED);
-        Shader( Type type, const std::string& source );
+        Shader(Type type = UNDEFINED);
+        Shader(Type type, const std::string& source );
+        Shader(Type type, ShaderBinary* shaderBinary );
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         Shader(const Shader& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
@@ -61,11 +97,39 @@ class OSG_EXPORT Shader : public osg::Object
 
         int compare(const Shader& rhs) const;
 
-        bool setType( Type t );
+        /** Set the Shader type as an enum. */
+        bool setType(Type t);
+
+        /** Get the Shader type as an enum. */
+        inline Type getType() const { return _type; }
+
+        /** Get the Shader type as a descriptive string. */
+        const char* getTypename() const;
         
 
-        /** Load the Shader's source code text from a string. */
-        void setShaderSource( const std::string& sourceText );
+        /** Set file name for the shader source code. */
+        inline void setFileName(const std::string& fileName) { _shaderFileName = fileName; }
+
+        /** Get filename to which the shader source code belongs. */
+        inline const std::string& getFileName() const { return _shaderFileName; }
+
+
+        /** Set the Shader's source code text from a string. */
+        void setShaderSource(const std::string& sourceText);
+
+        /** Query the shader's source code text */
+        inline const std::string& getShaderSource() const { return _shaderSource; }
+
+
+        /** Set the Shader using a ShaderBinary. */
+        void setShaderBinary(ShaderBinary* shaderBinary) { _shaderBinary = shaderBinary; } 
+        
+        /** Get the Shader's ShaderBinary, return NULL if none is assigned. */
+        ShaderBinary* getShaderBinary() { return _shaderBinary.get(); } 
+
+        /** Get the const Shader's ShaderBinary, return NULL if none is assigned. */
+        const ShaderBinary* getShaderBinary() const { return _shaderBinary.get(); } 
+
 
         /** Read shader source from file and then constructor shader of specified type.
           * Return the resulting Shader or 0 if no valid shader source code be read.*/
@@ -74,20 +138,7 @@ class OSG_EXPORT Shader : public osg::Object
         /** Load the Shader's source code text from a file. */
         bool loadShaderSourceFromFile( const std::string& fileName );
 
-        /** Query the shader's source code text */
-        inline const std::string& getShaderSource() const { return _shaderSource; }
 
-        /** Get the Shader type as an enum. */
-        inline Type getType() const { return _type; }
-
-        /** Get the Shader type as a descriptive string. */
-        const char* getTypename() const;
-
-        /** Set file name for the shader source code. */
-        inline void setFileName(const std::string& fileName) { _shaderFileName = fileName; }
-
-        /** Get filename to which the shader source code belongs. */
-        inline const std::string& getFileName() const { return _shaderFileName; }
 
         /** Resize any per context GLObject buffers to specified size. */
         virtual void resizeGLObjectBuffers(unsigned int maxSize);
@@ -182,12 +233,14 @@ class OSG_EXPORT Shader : public osg::Object
         bool removeProgramRef( osg::Program* program );
 
     protected:        /*data*/
-        Type _type;
-        std::string _shaderSource;
-        std::string _shaderFileName;
+        Type                            _type;
+        std::string                     _shaderFileName;
+        std::string                     _shaderSource;
+        osg::ref_ptr<ShaderBinary>      _shaderBinary;
+        
         /** osg::Programs that this osg::Shader is attached to */
         typedef std::set< osg::Program* > ProgramSet;
-        ProgramSet _programSet;
+        ProgramSet                      _programSet;
         mutable osg::buffered_value< osg::ref_ptr<PerContextShader> > _pcsList;
 
     private:

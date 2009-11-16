@@ -36,7 +36,34 @@
 
 using namespace osg;
 
-///////////////////////////////////////////////////////////////////////////
+ShaderBinary::ShaderBinary()
+{
+}
+
+ShaderBinary::ShaderBinary(const ShaderBinary& rhs, const osg::CopyOp&):
+    _data(rhs._data)
+{
+}
+
+void ShaderBinary::allocate(unsigned int size)
+{
+    _data.clear();
+    _data.resize(size);
+}
+
+void ShaderBinary::assign(unsigned int size, const unsigned char* data)
+{
+    allocate(size);
+    if (data)
+    {
+        for(unsigned int i=0; i<size; ++i)
+        {
+            _data[i] = data[i];
+        }
+    }
+}
+
+        ///////////////////////////////////////////////////////////////////////////
 // static cache of glShaders flagged for deletion, which will actually
 // be deleted in the correct GL context.
 
@@ -109,11 +136,18 @@ Shader::Shader(Type type, const std::string& source) :
     setShaderSource( source);
 }
 
+Shader::Shader(Type type, ShaderBinary* shaderBinary) :
+    _type(type)
+{
+}
+
+
 Shader::Shader(const Shader& rhs, const osg::CopyOp& copyop):
     osg::Object( rhs, copyop ),
     _type(rhs._type),
+    _shaderFileName(rhs._shaderFileName),
     _shaderSource(rhs._shaderSource),
-    _shaderFileName(rhs._shaderFileName)
+    _shaderBinary(rhs._shaderBinary)
 {
 }
 
@@ -121,7 +155,7 @@ Shader::~Shader()
 {
 }
 
-bool Shader::setType( Type t )
+bool Shader::setType(Type t)
 {
     if (_type==t) return true;
 
@@ -378,6 +412,57 @@ void Shader::PerContextShader::compileShader(osg::State& state)
 {
     if( ! _needsCompile ) return;
     _needsCompile = false;
+
+#if defined(OSG_GLES2_AVAILABLE)
+    if (_shader->getShaderBinary())
+    {
+        GLint numFormats;
+        glGetIntegerv(GL_NUM_SHADER_BINARY_FORMATS, &numFormats);
+
+        if (numFormats>0)
+        {
+            GLint* formats = new GLint[numFormats];
+            glGetIntegerv(GL_SHADER_BINARY_FORMATS, formats);
+
+            for(GLint i=0; i<numFormats; ++i)
+            {
+                osg::notify(osg::NOTICE)<<"  format="<<formats[i]<<std::endl;
+                GLenum shaderBinaryFormat = formats[i];
+                glShaderBinary(1, &_glShaderHandle, shaderBinaryFormat, _shader->getShaderBinary()->getData(), _shader->getShaderBinary()->getSize());
+                if (glGetError() == GL_NO_ERROR)
+                {
+                    _isCompiled = true;
+                    return;
+                }
+            }
+            delete [] formats;
+            
+            if (_shader->getShaderSource().empty())
+            {
+                osg::notify(osg::WARN)<<"Warning: No suitable shader of supported format by GLES driver found in shader binary, unable to compile shader."<<std::endl;
+                _isCompiled = false;
+                return;
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"osg::Shader::compileShader(): No suitable shader of supported format by GLES driver found in shader binary, falling back to shader source."<<std::endl;
+            }
+        }
+        else
+        {
+            if (_shader->getShaderSource().empty())
+            {
+                osg::notify(osg::WARN)<<"Warning: No shader binary formats supported by GLES driver, unable to compile shader."<<std::endl;
+                _isCompiled = false;
+                return;
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"osg::Shader::compileShader(): No shader binary formats supported by GLES driver, falling back to shader source."<<std::endl;
+            }
+        }
+    }
+#endif
 
     std::string source = _shader->getShaderSource();
     if (_shader->getType()==osg::Shader::VERTEX && (state.getUseVertexAttributeAliasing() || state.getUseModelViewAndProjectionUniforms()))

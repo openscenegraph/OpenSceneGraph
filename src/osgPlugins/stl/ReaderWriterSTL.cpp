@@ -137,11 +137,15 @@ private:
         delete m_f;
       }
     }
+    
+    const std::string& getErrorString() const { return m_ErrorString; }
+    
   private:
     int counter;
     std::ofstream* m_f;
     std::string m_fout;
     osgDB::ReaderWriter::Options const * m_options;
+    std::string m_ErrorString;
     
     
     struct PushPoints {
@@ -463,22 +467,26 @@ bool ReaderWriterSTL::ReaderObject::readStlBinary(FILE* fp)
 
 osgDB::ReaderWriter::WriteResult ReaderWriterSTL::writeNode(const osg::Node& node,const std::string& fileName, const Options* opts) const
 {
-  if (fileName.empty()) return WriteResult::FILE_NOT_HANDLED;
+    if (fileName.empty()) return WriteResult::FILE_NOT_HANDLED;
 
-  std::string ext = osgDB::getLowerCaseFileExtension(fileName);
-  if (ext != "stl" )
-  {
-    // sta - extension implies STL-Binary...
-    osg::notify(osg::INFO) << "ReaderWriterSTL::writeNode: Only STL-ASCII-files supported'" << std::endl;
-    return WriteResult::FILE_NOT_HANDLED;
-  }
+    std::string ext = osgDB::getLowerCaseFileExtension(fileName);
+    if (ext != "stl" )
+    {
+        // sta - extension implies STL-Binary...
+        osg::notify(osg::INFO) << "ReaderWriterSTL::writeNode: Only STL-ASCII-files supported'" << std::endl;
+        return WriteResult::FILE_NOT_HANDLED;
+    }
   
-  try {
     CreateStlVisitor createStlVisitor( fileName, opts );
     const_cast<osg::Node&>(node).accept( createStlVisitor );
-  } catch(...) {
-    return WriteResult::ERROR_IN_WRITING_FILE;
-  }
-  
-  return WriteResult::FILE_SAVED;
+
+    if (createStlVisitor.getErrorString().empty())
+    {
+        return WriteResult::FILE_SAVED;
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"Error: "<<createStlVisitor.getErrorString()<<std::endl;
+        return WriteResult::ERROR_IN_WRITING_FILE;
+    }
 }

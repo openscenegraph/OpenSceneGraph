@@ -49,6 +49,8 @@
 
 // #define DO_TIMING
 
+#define CHECK_CONSISTENCY
+
 namespace osg {
 
 ApplicationUsageProxy Texture_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAX_TEXTURE_SIZE","Set the maximum size of textures.");
@@ -169,8 +171,9 @@ Texture::TextureObjectSet::~TextureObjectSet()
 
 bool Texture::TextureObjectSet::checkConsistency() const
 {
-//    return true;
-
+#ifndef CHECK_CONSISTENCY
+    return true;
+#else
     // osg::notify(osg::NOTICE)<<"TextureObjectSet::checkConsistency()"<<std::endl;
     // check consistency of linked list.
     unsigned int numInList = 0;
@@ -183,16 +186,16 @@ bool Texture::TextureObjectSet::checkConsistency() const
         {
             if ((to->_next)->_previous != to)
             {
-                osg::notify(osg::NOTICE)<<"Error (to->_next)->_previous != to "<<std::endl;
-                throw "Error (to->_next)->_previous != to ";
+                osg::notify(osg::NOTICE)<<"Texture::TextureObjectSet::checkConsistency() : Error (to->_next)->_previous != to "<<std::endl;
+                return false;
             }
         }
         else
         {
             if (_tail != to)
             {
-                osg::notify(osg::NOTICE)<<"Error _trail != to"<<std::endl;
-                throw "Error _trail != to";
+                osg::notify(osg::NOTICE)<<"Texture::TextureObjectSet::checkConsistency() : Error _trail != to"<<std::endl;
+                return false;
             }
         }
 
@@ -211,6 +214,7 @@ bool Texture::TextureObjectSet::checkConsistency() const
     }
 
     return true;
+#endif
 }
 
 void Texture::TextureObjectSet::handlePendingOrphandedTextureObjects()

@@ -137,7 +137,8 @@ Shader::Shader(Type type, const std::string& source) :
 }
 
 Shader::Shader(Type type, ShaderBinary* shaderBinary) :
-    _type(type)
+    _type(type),
+    _shaderBinary(shaderBinary)
 {
 }
 

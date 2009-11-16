@@ -48,8 +48,7 @@
 #endif
 
 // #define DO_TIMING
-
-#define CHECK_CONSISTENCY
+// #define CHECK_CONSISTENCY
 
 namespace osg {
 
@@ -210,7 +209,7 @@ bool Texture::TextureObjectSet::checkConsistency() const
         osg::notify(osg::NOTICE)<<"    _orphanedTextureObjects.size() = "<<_orphanedTextureObjects.size()<<std::endl;
         osg::notify(osg::NOTICE)<<"    _pendingOrphanedTextureObjects.size() = "<<_pendingOrphanedTextureObjects.size()<<std::endl;
         osg::notify(osg::NOTICE)<<"    _numOfTextureObjects = "<<_numOfTextureObjects<<std::endl;
-        throw "Error numInList + _orphanedTextureObjects.size() != _numOfTextureObjects";
+        return false;
     }
 
     return true;

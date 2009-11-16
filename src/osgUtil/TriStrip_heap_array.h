@@ -2,7 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 //
-//  Copyright (C) 2002 Tanguy Fautré.
+//  Copyright (C) 2002 Tanguy Fautrï¿½.
 //
 //  This software is provided 'as-is', without any express or implied
 //  warranty.  In no event will the authors be held liable for any damages
@@ -20,7 +20,7 @@
 //     misrepresented as being the original software.
 //  3. This notice may not be removed or altered from any source distribution.
 //
-//  Tanguy Fautré
+//  Tanguy Fautrï¿½
 //  softdev@pandora.be
 //
 //////////////////////////////////////////////////////////////////////
@@ -43,7 +43,6 @@
 
 #ifndef TRISTRIP_HEAP_ARRAY_H
 #define TRISTRIP_HEAP_ARRAY_H
-
 
 // namespace common_structures
 namespace common_structures {
@@ -148,8 +147,10 @@ inline size_t heap_array<T, CmpT>::size() const {
 template <class T, class CmpT> 
 inline const T & heap_array<T, CmpT>::top() const {
     // Debug check to ensure heap is not empty
-    //assert(! empty());
-    if (empty()) throw "heap_array<T, CmpT>::top() error, heap empty";
+    if (empty())
+    {
+        osg::notify(osg::NOTICE)<<"TriStripVisitor:: heap_array<T, CmpT>::top() error, heap empty."<<std::endl;
+    }
 
     return m_Heap.front().m_Elem;
 }
@@ -159,7 +160,10 @@ template <class T, class CmpT>
 inline const T & heap_array<T, CmpT>::peek(size_t i) const {
     // Debug check to ensure element is still present
     //assert(! removed(i));
-    if (removed(i)) throw "heap_array<T, CmpT>::peek(size_t i) error";
+    if (removed(i))
+    {
+        osg::notify(osg::NOTICE)<<"TriStripVisitor:: heap_array<T, CmpT>::peek(size_t i) error."<<std::endl;
+    }
 
     return (m_Heap[m_Finder[i]].m_Elem);
 }
@@ -176,8 +180,11 @@ inline void heap_array<T, CmpT>::pop() {
     m_Locked = true;
 
     // Debug check to ensure heap is not empty
-    //assert(! empty());
-    if (empty()) throw "heap_array<T, CmpT>::pop() error, heap empty";
+    if (empty()) 
+    {
+        osg::notify(osg::NOTICE)<<"TriStripVisitor:: heap_array<T, CmpT>::pop() error, heap empty."<<std::endl;;
+        return;
+    }
     
     Swap(0, size() - 1);
     m_Heap.pop_back();
@@ -188,7 +195,10 @@ inline void heap_array<T, CmpT>::pop() {
 template <class T, class CmpT> 
 inline size_t heap_array<T, CmpT>::push(const T & Elem) {
     if (m_Locked)
-        throw "heap_is_locked";
+    {
+        osg::notify(osg::NOTICE)<<"TriStripVisitor:: heap_array<T, CmpT>::push() heap_is_locked."<<std::endl;;
+        return 0;
+    }
 
     size_t Id = size();
     m_Finder.push_back(Id);
@@ -204,8 +214,12 @@ inline void heap_array<T, CmpT>::erase(size_t i) {
     m_Locked = true;
 
     // Debug check to ensure element is still present
-    if (removed(i)) throw "heap_array<T, CmpT>::erase(size_t i) error";
-
+    if (removed(i))
+    {
+        osg::notify(osg::NOTICE)<<"TriStripVisitor:: heap_array<T, CmpT>::erase(size_t i) error."<<std::endl;;
+        return;
+    }
+    
     size_t j = m_Finder[i];
 
     if (j==m_Heap.size()-1)
@@ -239,7 +253,11 @@ template <class T, class CmpT>
 inline void heap_array<T, CmpT>::update(size_t i, const T & Elem) {
     // Debug check to ensure element is still present
     // assert(! removed(i));
-    if (removed(i)) throw "heap_array<T, CmpT>::update(size_t i, const T & Elem) error";
+    if (removed(i))
+    {
+        osg::notify(osg::NOTICE)<<"TriStripVisitor:: heap_array<T, CmpT>::update(size_t i, const T & Elem) error."<<std::endl;;
+        return;
+    }
 
     size_t j = m_Finder[i];
     m_Heap[j].m_Elem = Elem;

@@ -165,27 +165,21 @@ class ReaderWriterAC : public osgDB::ReaderWriter
         
         virtual WriteResult writeNode(const osg::Node& node,std::ostream& fout, const Options* opts) const
         {
-            try
+            // write ac file.
+            if(dynamic_cast<const osg::Group*>(&node))
             {
-                // write ac file.
-                if(dynamic_cast<const osg::Group*>(&node)) {
-                    const osg::Group *gp=dynamic_cast<const osg::Group*>(&node);
-                    const unsigned int nch=gp->getNumChildren();
-                    for (unsigned int i=0; i<nch; i++) {
-                        writeNode(*(gp->getChild(i)), fout, opts);
-                    }
+                const osg::Group *gp=dynamic_cast<const osg::Group*>(&node);
+                const unsigned int nch=gp->getNumChildren();
+                for (unsigned int i=0; i<nch; i++)
+                {
+                    writeNode(*(gp->getChild(i)), fout, opts);
                 }
-                else
-                    osg::notify(osg::WARN)<<"File must start with a geode "<<std::endl;
-                fout.flush();
-                return WriteResult::FILE_SAVED;
             }
-            catch(ac3d::Exception e)
-            {
-                osg::notify(osg::WARN)<<"Error parsing OSG tree: "<< e.getError() << std::endl;            
-            }
-            return WriteResult::FILE_NOT_HANDLED;
-
+            else
+                osg::notify(osg::WARN)<<"File must start with a geode "<<std::endl;
+            
+            fout.flush();
+            return WriteResult::FILE_SAVED;
         }
 private:
 };

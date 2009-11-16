@@ -497,7 +497,7 @@ bool GLBufferObjectSet::checkConsistency() const
         osg::notify(osg::NOTICE)<<"    _orphanedGLBufferObjects.size() = "<<_orphanedGLBufferObjects.size()<<std::endl;
         osg::notify(osg::NOTICE)<<"    _pendingOrphanedGLBufferObjects.size() = "<<_pendingOrphanedGLBufferObjects.size()<<std::endl;
         osg::notify(osg::NOTICE)<<"    _numOfGLBufferObjects = "<<_numOfGLBufferObjects<<std::endl;
-        throw "Error numInList + _orphanedGLBufferObjects.size() != _numOfGLBufferObjects";
+        return false;
     }
 
     return true;

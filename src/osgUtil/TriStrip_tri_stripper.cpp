@@ -18,8 +18,8 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#include "TriStrip_tri_stripper.h"
 #include <osg/Notify>
+#include "TriStrip_tri_stripper.h"
 
 
 // namespace triangle_stripper

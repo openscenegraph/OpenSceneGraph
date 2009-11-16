@@ -2,7 +2,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 //
-//  Copyright (C) 2002 Tanguy Fautré.
+//  Copyright (C) 2002 Tanguy Fautrï¿½.
 //
 //  This software is provided 'as-is', without any express or implied
 //  warranty.  In no event will the authors be held liable for any damages
@@ -20,7 +20,7 @@
 //     misrepresented as being the original software.
 //  3. This notice may not be removed or altered from any source distribution.
 //
-//  Tanguy Fautré
+//  Tanguy Fautrï¿½
 //  softdev@pandora.be
 //
 //////////////////////////////////////////////////////////////////////
@@ -258,20 +258,12 @@ inline void graph_array<nodetype, arctype>::setsize(const size_t NbNodes) {
 
 template <class nodetype, class arctype>
 inline typename graph_array<nodetype, arctype>::node & graph_array<nodetype, arctype>::operator [] (const nodeid & i) {
-    // Debug check
-    // assert(i < size());
-    if (i >= size()) throw "graph_array<nodetype, arctype>::operator [] out of range";
-
     return m_Nodes[i];
 }
 
 
 template <class nodetype, class arctype>
 inline const typename graph_array<nodetype, arctype>::node & graph_array<nodetype, arctype>::operator [] (const nodeid & i) const {
-    // Debug check
-    // assert(i < size());
-    if (i >= size()) throw "graph_array<nodetype, arctype>::operator [] out of range";
-
     return m_Nodes[i];
 }
 

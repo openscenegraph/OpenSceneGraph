@@ -17,6 +17,8 @@
 #include <osg/Notify>
 #include <osgDB/FileUtils>
 
+#include <stdlib.h>
+
 using namespace osgPresentation;
 
 PickEventHandler::PickEventHandler(osgPresentation::Operation operation,bool relativeJump, int slideNum, int layerNum):

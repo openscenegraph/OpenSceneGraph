@@ -14,6 +14,8 @@
 #ifndef OSG_NODETRACKERCALLBACK
 #define OSG_NODETRACKERCALLBACK 1
 
+#include <iterator>
+
 #include <osg/Node>
 #include <osg/NodeCallback>
 #include <osg/observer_ptr>

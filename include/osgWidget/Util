@@ -16,6 +16,7 @@
 #ifndef OSGWIDGET_UTIL
 #define OSGWIDGET_UTIL
 
+#include <ctype.h>
 #include <cctype>
 #include <algorithm>
 #include <sstream>

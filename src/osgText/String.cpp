@@ -3,6 +3,8 @@
 #include <osg/Notify>
 #include <osg/Math>
 
+#include <iterator>
+
 using namespace osgText;
 
 ////////////////////////////////////////////////////////////////////////

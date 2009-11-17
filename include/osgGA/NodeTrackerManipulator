@@ -19,6 +19,8 @@
 #include <osg/Quat>
 #include <osg/observer_ptr>
 
+#include <iterator>
+
 namespace osgGA{
 
 class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator

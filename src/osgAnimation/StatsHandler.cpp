@@ -15,6 +15,7 @@
 #include <iomanip>
 #include <stdio.h>
 #include <math.h>
+#include <stdlib.h>
 
 #include <osg/io_utils>
 #include <osg/NodeVisitor>
@@ -440,7 +441,7 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
                     _actions[name].setPosition(pos);
                     //_actions[name].touch();
                 }
-				_actions[name]._group->setNodeMask(~osg::Node::NodeMask(0x0));
+                _actions[name]._group->setNodeMask(~osg::Node::NodeMask(0x0));
                 size[name] = 0;
                 pos.y() -= characterSize + graphSpacing;
             }

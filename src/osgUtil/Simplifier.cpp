@@ -22,6 +22,8 @@
 #include <list>
 #include <algorithm>
 
+#include <iterator>
+
 using namespace osgUtil;
 
 struct dereference_less

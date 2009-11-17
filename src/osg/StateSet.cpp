@@ -534,7 +534,7 @@ void StateSet::setGlobalDefaults()
 
     setMode(GL_DEPTH_TEST,StateAttribute::ON);
 
-    #if !defined(OSG_GLES2_AVAILABLE)
+    #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
 
         // setAttributeAndModes(new AlphaFunc,StateAttribute::OFF);
         setAttributeAndModes(new BlendFunc,StateAttribute::OFF);

@@ -46,7 +46,7 @@ State::State():
     _projection = _identity;
     _modelView = _identity;
 
-    #if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GL3_AVAILABLE)    
+    #if !defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
         _useModelViewAndProjectionUniforms = true;
         _useVertexAttributeAliasing = true;
     #else    

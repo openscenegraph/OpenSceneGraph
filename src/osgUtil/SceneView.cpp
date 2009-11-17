@@ -211,7 +211,7 @@ void SceneView::setDefaults(unsigned int options)
 
     if ((options & HEADLIGHT) || (options & SKY_LIGHT))
     {
-        #if !defined(OSG_GLES2_AVAILABLE)
+        #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
             _lightingMode=(options&HEADLIGHT) ? HEADLIGHT : SKY_LIGHT;
             _light = new osg::Light;
             _light->setLightNum(0);
@@ -226,7 +226,7 @@ void SceneView::setDefaults(unsigned int options)
             _globalStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
         #endif
         
-        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
             osg::LightModel* lightmodel = new osg::LightModel;
             lightmodel->setAmbientIntensity(osg::Vec4(0.1f,0.1f,0.1f,1.0f));
             _globalStateSet->setAttributeAndModes(lightmodel, osg::StateAttribute::ON);
@@ -272,7 +272,7 @@ void SceneView::setDefaults(unsigned int options)
 
     _globalStateSet->setGlobalDefaults();
 
-    #if !defined(OSG_GLES2_AVAILABLE)
+    #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
         // set up an texture environment by default to speed up blending operations.
          osg::TexEnv* texenv = new osg::TexEnv;
          texenv->setMode(osg::TexEnv::MODULATE);
@@ -676,7 +676,7 @@ void SceneView::setLightingMode(LightingMode mode)
 
     if (_lightingMode!=NO_SCENEVIEW_LIGHT)
     {
-        #if !defined(OSG_GLES2_AVAILABLE)
+        #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
             // add GL_LIGHTING mode
             _globalStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
             if (_light.valid()) 
@@ -946,7 +946,7 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     renderStage->setCamera(_camera.get());
 #endif
 
-    #if !defined(OSG_GLES2_AVAILABLE)
+    #if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
         switch(_lightingMode)
         {
         case(HEADLIGHT):

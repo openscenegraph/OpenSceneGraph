@@ -26,7 +26,7 @@ void Fog::write(DataOutputStream* out){
   if(obj)
     ((ive::Object*)(obj))->write(out);
   else
-    throw Exception("Fog::write(): Could not cast this osg::Fog to an osg::Object.");
+    out_THROW_EXCEPTION("Fog::write(): Could not cast this osg::Fog to an osg::Object.");
 
   // write Fog's properties
   out->writeInt(getMode());
@@ -51,7 +51,7 @@ void Fog::read(DataInputStream* in){
       if(obj)
         ((ive::Object*)(obj))->read(in);
       else
-        throw Exception("Fog::read(): Could not cast this osg::Fog to an osg::Object.");
+        in_THROW_EXCEPTION("Fog::read(): Could not cast this osg::Fog to an osg::Object.");
 
       // Read Fog's properties
       setMode(osg::Fog::Mode(in->readInt()));
@@ -62,6 +62,6 @@ void Fog::read(DataInputStream* in){
       setFogCoordinateSource(in->readInt());
     }
   else{
-    throw Exception("Fog::read(): Expected Fog identification.");
+    in_THROW_EXCEPTION("Fog::read(): Expected Fog identification.");
   }
 }

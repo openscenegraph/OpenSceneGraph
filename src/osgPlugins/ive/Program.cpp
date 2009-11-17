@@ -28,7 +28,7 @@ void Program::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("Program::write(): Could not cast this osg::Program to an osg::Object.");
+        out_THROW_EXCEPTION("Program::write(): Could not cast this osg::Program to an osg::Object.");
         
     if ( out->getVersion() >= VERSION_0030 )
     {
@@ -70,12 +70,12 @@ void Program::read(DataInputStream* in)
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("Program::read(): Could not cast this osg::Program to an osg::Object.");
+            in_THROW_EXCEPTION("Program::read(): Could not cast this osg::Program to an osg::Object.");
 
     }
     else
     {
-        throw Exception("Program::read(): Expected Program identification.");
+        in_THROW_EXCEPTION("Program::read(): Expected Program identification.");
     }
 
     if ( in->getVersion() >= VERSION_0030 )

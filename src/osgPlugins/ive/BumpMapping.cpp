@@ -26,7 +26,7 @@ void BumpMapping::write(DataOutputStream* out){
         ((ive::Effect*)(effect))->write(out);
     }
     else
-        throw Exception("BumpMapping::write(): Could not cast this osgFX::BumpMapping to an osgFX::Effect.");
+        out_THROW_EXCEPTION("BumpMapping::write(): Could not cast this osgFX::BumpMapping to an osgFX::Effect.");
 
     // Write BumpMapping's properties.
     out->writeInt(getLightNumber());
@@ -53,7 +53,7 @@ void BumpMapping::read(DataInputStream* in){
             ((ive::Effect*)(effect))->read(in);
         }
         else
-            throw Exception("BumpMapping::read(): Could not cast this osgFX::BumpMapping to an osgFX::Effect.");
+            in_THROW_EXCEPTION("BumpMapping::read(): Could not cast this osgFX::BumpMapping to an osgFX::Effect.");
 
         // Read BumpMapping's properties
         setLightNumber(in->readInt());
@@ -69,6 +69,6 @@ void BumpMapping::read(DataInputStream* in){
         setOverrideNormalMapTexture(tex);
     }
     else{
-        throw Exception("BumpMapping::read(): Expected BumpMapping identification.");
+        in_THROW_EXCEPTION("BumpMapping::read(): Expected BumpMapping identification.");
     }
 }

@@ -42,6 +42,6 @@ void DirectionalSector::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("DirectionalSector::read(): Expected DirectionalSector identification.");
+        in_THROW_EXCEPTION("DirectionalSector::read(): Expected DirectionalSector identification.");
     }
 }

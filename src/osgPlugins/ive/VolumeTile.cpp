@@ -30,7 +30,7 @@ void VolumeTile::write(DataOutputStream* out)
     if(group)
         ((ive::Group*)(group))->write(out);
     else
-        throw Exception("VolumeTile::write(): Could not cast this osgVolume::VolumeTile to an osg::Group.");
+        out_THROW_EXCEPTION("VolumeTile::write(): Could not cast this osgVolume::VolumeTile to an osg::Group.");
 
 
     out->writeVolumeLocator(getLocator());
@@ -44,7 +44,7 @@ void VolumeTile::read(DataInputStream* in)
 {
     // Peek on VolumeTile's identification.
     int id = in->peekInt();
-    if (id != IVEVOLUMETILE) throw Exception("VolumeTile::read(): Expected Volume identification.");
+    if (id != IVEVOLUMETILE) in_THROW_EXCEPTION("VolumeTile::read(): Expected Volume identification.");
 
     // Read VolumeTile's identification.
     id = in->readInt();
@@ -53,7 +53,7 @@ void VolumeTile::read(DataInputStream* in)
     if(group)
         ((ive::Group*)(group))->read(in);
     else
-        throw Exception("VolumeTile::read(): Could not cast this osgVolume::VolumeTile to an osg::Group.");
+        in_THROW_EXCEPTION("VolumeTile::read(): Could not cast this osgVolume::VolumeTile to an osg::Group.");
 
     setLocator(in->readVolumeLocator());
     setLayer(in->readVolumeLayer());

@@ -26,7 +26,7 @@ void DOFTransform::write(DataOutputStream* out){
         ((ive::Transform*)(trans))->write(out);
     }
     else
-        throw Exception("DOFTransform::write(): Could not cast this osg::DOFTransform to an osg::Transform.");
+        out_THROW_EXCEPTION("DOFTransform::write(): Could not cast this osg::DOFTransform to an osg::Transform.");
 
     // Write DOFTransform's properties.
     out->writeMatrixd(getPutMatrix());
@@ -67,7 +67,7 @@ void DOFTransform::read(DataInputStream* in){
             ((ive::Transform*)(trans))->read(in);
         }
         else
-            throw Exception("DOFTransform::read(): Could not cast this osg::DOFTransform to an osg::Transform.");
+            in_THROW_EXCEPTION("DOFTransform::read(): Could not cast this osg::DOFTransform to an osg::Transform.");
 
         // Read DOFTransform's properties
         setPutMatrix(in->readMatrixd());
@@ -97,6 +97,6 @@ void DOFTransform::read(DataInputStream* in){
         setAnimationOn(in->readBool());
     }
     else{
-        throw Exception("DOFTransform::read(): Expected DOFTransform identification.");
+        in_THROW_EXCEPTION("DOFTransform::read(): Expected DOFTransform identification.");
     }
 }

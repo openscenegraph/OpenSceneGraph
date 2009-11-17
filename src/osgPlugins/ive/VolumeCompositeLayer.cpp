@@ -28,7 +28,7 @@ void VolumeCompositeLayer::write(DataOutputStream* out)
     if  (layer)
         ((ive::VolumeLayer*)(layer))->write(out);
     else
-        throw Exception("VolumeCompositeLayer::write(): Could not cast this osgVolume::CompositeLayer to an osgVolume::Layer.");
+        out_THROW_EXCEPTION("VolumeCompositeLayer::write(): Could not cast this osgVolume::CompositeLayer to an osgVolume::Layer.");
 
     out->writeUInt(getNumLayers());
     for(unsigned int i=0; i<getNumLayers(); ++i)
@@ -51,7 +51,7 @@ void VolumeCompositeLayer::read(DataInputStream* in)
     // Peek on Layer's identification.
     int id = in->peekInt();
     if (id != IVEVOLUMECOMPOSITELAYER)
-        throw Exception("VolumeCompositeLayer::read(): Expected CompositeLayer identification.");
+        in_THROW_EXCEPTION("VolumeCompositeLayer::read(): Expected CompositeLayer identification.");
     
     // Read Layer's identification.
     id = in->readInt();
@@ -61,7 +61,7 @@ void VolumeCompositeLayer::read(DataInputStream* in)
     if (layer)
         ((ive::VolumeLayer*)(layer))->read(in);
     else
-        throw Exception("VolumeCompositeLayer::read(): Could not cast this osgVolume::Layer to an osg::Group.");
+        in_THROW_EXCEPTION("VolumeCompositeLayer::read(): Could not cast this osgVolume::Layer to an osg::Group.");
 
     unsigned int numLayers = in->readUInt();
     for(unsigned int i=0; i<numLayers; ++i)

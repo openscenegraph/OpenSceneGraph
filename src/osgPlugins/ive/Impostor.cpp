@@ -27,7 +27,7 @@ void Impostor::write(DataOutputStream* out){
         ((ive::LOD*)(lod))->write(out);
     }
     else
-        throw Exception("Impostor::write(): Could not cast this osg::Impostor to an osg::LOD.");
+        out_THROW_EXCEPTION("Impostor::write(): Could not cast this osg::Impostor to an osg::LOD.");
     // Write Impostor's properties.
     out->writeFloat(getImpostorThreshold());
 }
@@ -44,11 +44,11 @@ void Impostor::read(DataInputStream* in){
             ((ive::LOD*)(lod))->read(in);
         }
         else
-            throw Exception("Impostor::read(): Could not cast this osg::Impostor to an osg::LOD.");
+            in_THROW_EXCEPTION("Impostor::read(): Could not cast this osg::Impostor to an osg::LOD.");
         // Read Impostor's properties
         setImpostorThreshold(in->readFloat());
     }
     else{
-        throw Exception("Impostor::read(): Expected Impostor identification.");
+        in_THROW_EXCEPTION("Impostor::read(): Expected Impostor identification.");
     }
 }

@@ -26,7 +26,7 @@ void Multisample::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("Multisample::write(): Could not cast this osg::Multisample to an osg::Object.");
+        out_THROW_EXCEPTION("Multisample::write(): Could not cast this osg::Multisample to an osg::Object.");
     // Write Multisample's properties.
     out->writeFloat(getCoverage());
     out->writeBool(getInvert());
@@ -45,13 +45,13 @@ void Multisample::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("Multisample::read(): Could not cast this osg::Multisample to an osg::Object.");
+            in_THROW_EXCEPTION("Multisample::read(): Could not cast this osg::Multisample to an osg::Object.");
         // Read Multisample's properties
         setCoverage(in->readFloat());
         setInvert(in->readBool());
         setHint((Mode) in->readInt());
     }
     else{
-        throw Exception("Multisample::read(): Expected Multisample identification.");
+        in_THROW_EXCEPTION("Multisample::read(): Expected Multisample identification.");
     }
 }

@@ -27,7 +27,7 @@ void ClipPlane::write(DataOutputStream* out){
   if(obj)
     ((ive::Object*)(obj))->write(out);
   else
-    throw Exception("ClipPlane::write(): Could not cast this osg::ClipPlane to an osg::Object.");
+    out_THROW_EXCEPTION("ClipPlane::write(): Could not cast this osg::ClipPlane to an osg::Object.");
 
   // write ClipPlane's properties
   
@@ -51,13 +51,13 @@ void ClipPlane::read(DataInputStream* in){
       if(obj)
         ((ive::Object*)(obj))->read(in);
       else
-        throw Exception("ClipPlane::read(): Could not cast this osg::ClipPlane to an osg::Object.");
+        in_THROW_EXCEPTION("ClipPlane::read(): Could not cast this osg::ClipPlane to an osg::Object.");
 
       setClipPlane(in->readVec4d());
 
       setClipPlaneNum(in->readUInt());
     }
   else{
-    throw Exception("ClipPlane::read(): Expected ClipPlane identification.");
+    in_THROW_EXCEPTION("ClipPlane::read(): Expected ClipPlane identification.");
   }
 }

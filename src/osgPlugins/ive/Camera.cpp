@@ -29,7 +29,7 @@ void Camera::write(DataOutputStream* out){
         ((ive::Transform*)(transform))->write(out);
     }
     else
-        throw Exception("Camera::write(): Could not cast this osg::Camera to an osg::Group.");
+        out_THROW_EXCEPTION("Camera::write(): Could not cast this osg::Camera to an osg::Group.");
 
 
     out->writeVec4(getClearColor());
@@ -103,7 +103,7 @@ void Camera::read(DataInputStream* in)
             ((ive::Transform*)(transform))->read(in);
         }
         else
-            throw Exception("Camera::read(): Could not cast this osg::Camera to an osg::Group.");
+            in_THROW_EXCEPTION("Camera::read(): Could not cast this osg::Camera to an osg::Group.");
 
         setClearColor(in->readVec4());
         setClearMask(in->readUInt());
@@ -177,6 +177,6 @@ void Camera::read(DataInputStream* in)
         }
     }
     else{
-        throw Exception("Camera::read(): Expected Camera identification");
+        in_THROW_EXCEPTION("Camera::read(): Expected Camera identification");
     }
 }

@@ -27,7 +27,7 @@ void Billboard::write(DataOutputStream* out){
         ((ive::Geode*)(geode))->write(out);
     }
     else
-        throw Exception("Billboard::write(): Could not cast this osg::Billboard to an osg::Geode.");
+        out_THROW_EXCEPTION("Billboard::write(): Could not cast this osg::Billboard to an osg::Geode.");
     // Write Billboard's properties.
 
     // Write mode
@@ -56,7 +56,7 @@ void Billboard::read(DataInputStream* in){
             ((ive::Geode*)(geode))->read(in);
         }
         else
-            throw Exception("Billboard::read(): Could not cast this osg::Billboard to an osg::Geode.");
+            in_THROW_EXCEPTION("Billboard::read(): Could not cast this osg::Billboard to an osg::Geode.");
         // Read Billboard's properties
 
         // Read mode
@@ -73,6 +73,6 @@ void Billboard::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("Billboard::read(): Expected Billboard identification.");
+        in_THROW_EXCEPTION("Billboard::read(): Expected Billboard identification.");
     }
 }

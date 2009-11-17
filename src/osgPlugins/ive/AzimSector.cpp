@@ -40,6 +40,6 @@ void AzimSector::read(DataInputStream* in){
         setAzimuthRange(minAzimuth, maxAzimuth, fadeAngle);
     }
     else{
-        throw Exception("AzimSector::read(): Expected AzimSector identification.");
+        in_THROW_EXCEPTION("AzimSector::read(): Expected AzimSector identification.");
     }
 }

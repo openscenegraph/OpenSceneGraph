@@ -28,7 +28,7 @@ void TextureRectangle::write(DataOutputStream* out){
         ((ive::Texture*)(tex))->write(out);
     }
     else
-        throw Exception("TextureRectangle::write(): Could not cast this osg::TextureRectangle to an osg::Texture.");
+        out_THROW_EXCEPTION("TextureRectangle::write(): Could not cast this osg::TextureRectangle to an osg::Texture.");
     // Write TextureRectangle's properties.
     // Write image.
 
@@ -48,7 +48,7 @@ void TextureRectangle::read(DataInputStream* in){
             ((ive::Texture*)(tex))->read(in);
         }
         else
-            throw Exception("TextureRectangle::read(): Could not cast this osg::TextureRectangle to an osg::Texture.");
+            in_THROW_EXCEPTION("TextureRectangle::read(): Could not cast this osg::TextureRectangle to an osg::Texture.");
         // Read image.
         
         // Should we read image data from stream
@@ -58,6 +58,6 @@ void TextureRectangle::read(DataInputStream* in){
         }
     }
     else{
-        throw Exception("TextureRectangle::read(): Expected TextureRectangle identification.");
+        in_THROW_EXCEPTION("TextureRectangle::read(): Expected TextureRectangle identification.");
     }
 }

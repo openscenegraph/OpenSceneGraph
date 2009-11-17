@@ -27,7 +27,7 @@ void PositionAttitudeTransform::write(DataOutputStream* out){
         ((ive::Transform*)(trans))->write(out);
     }
     else
-        throw Exception("PositionAttitudeTransform::write(): Could not cast this osg::PositionAttitudeTransform to an osg::Transform.");
+        out_THROW_EXCEPTION("PositionAttitudeTransform::write(): Could not cast this osg::PositionAttitudeTransform to an osg::Transform.");
     // Write PositionAttitudeTransform's properties.
       
     out->writeVec3(getPosition());
@@ -48,7 +48,7 @@ void PositionAttitudeTransform::read(DataInputStream* in){
             ((ive::Transform*)(trans))->read(in);
         }
         else
-            throw Exception("PositionAttitudeTransform::read(): Could not cast this osg::PositionAttitudeTransform to an osg::Transform.");
+            in_THROW_EXCEPTION("PositionAttitudeTransform::read(): Could not cast this osg::PositionAttitudeTransform to an osg::Transform.");
         // Read PositionAttitudeTransform's properties
         setPosition(in->readVec3());
         setAttitude(in->readQuat());
@@ -57,6 +57,6 @@ void PositionAttitudeTransform::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("PositionAttitudeTransform::read(): Expected PositionAttitudeTransform identification.");
+        in_THROW_EXCEPTION("PositionAttitudeTransform::read(): Expected PositionAttitudeTransform identification.");
     }
 }

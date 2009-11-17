@@ -27,7 +27,7 @@ void Scissor::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("Scissor::write(): Could not cast this osg::Scissor to an osg::Object.");
+        out_THROW_EXCEPTION("Scissor::write(): Could not cast this osg::Scissor to an osg::Object.");
     // Write Scissor's properties.
 
     out->writeInt(x());
@@ -48,7 +48,7 @@ void Scissor::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("Scissor::read(): Could not cast this osg::Scissor to an osg::Object.");
+            in_THROW_EXCEPTION("Scissor::read(): Could not cast this osg::Scissor to an osg::Object.");
 
         // Read Scissor's properties
         x() = (GLenum)in->readInt();
@@ -58,6 +58,6 @@ void Scissor::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("Scissor::read(): Expected Scissor identification.");
+        in_THROW_EXCEPTION("Scissor::read(): Expected Scissor identification.");
     }
 }

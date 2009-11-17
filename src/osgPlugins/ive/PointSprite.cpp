@@ -27,7 +27,7 @@ void PointSprite::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("PointSprite::write(): Could not cast this osg::PointSprite to an osg::Object.");
+        out_THROW_EXCEPTION("PointSprite::write(): Could not cast this osg::PointSprite to an osg::Object.");
     // Write PointSprite's properties.
 
     // Write mode
@@ -46,7 +46,7 @@ void PointSprite::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("PointSprite::read(): Could not cast this osg::PointSprite to an osg::Object.");
+            in_THROW_EXCEPTION("PointSprite::read(): Could not cast this osg::PointSprite to an osg::Object.");
         // Read PointSprite's properties
 
         // Read mode
@@ -54,7 +54,7 @@ void PointSprite::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("PointSprite::read(): Expected PointSprite identification.");
+        in_THROW_EXCEPTION("PointSprite::read(): Expected PointSprite identification.");
     }
 }
 

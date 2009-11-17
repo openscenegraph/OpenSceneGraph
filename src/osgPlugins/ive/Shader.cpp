@@ -28,7 +28,7 @@ void Shader::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("Shader::write(): Could not cast this osg::Shader to an osg::Object.");
+        out_THROW_EXCEPTION("Shader::write(): Could not cast this osg::Shader to an osg::Object.");
 
      if ( out->getVersion() < VERSION_0012 )
      {
@@ -54,12 +54,12 @@ void Shader::read(DataInputStream* in)
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("Shader::read(): Could not cast this osg::Shader to an osg::Object.");
+            in_THROW_EXCEPTION("Shader::read(): Could not cast this osg::Shader to an osg::Object.");
 
     }
     else
     {
-        throw Exception("Shader::read(): Expected Shader identification.");
+        in_THROW_EXCEPTION("Shader::read(): Expected Shader identification.");
     }
 
     if ( in->getVersion() < VERSION_0012 )

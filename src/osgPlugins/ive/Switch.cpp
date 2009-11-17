@@ -27,7 +27,7 @@ void Switch::write(DataOutputStream* out){
         ((ive::Group*)(group))->write(out);
     }
     else
-        throw Exception("Switch::write(): Could not cast this osg::Switch to an osg::Group.");
+        out_THROW_EXCEPTION("Switch::write(): Could not cast this osg::Switch to an osg::Group.");
     // Write Switch's properties.
 
     // Write childrens value.
@@ -48,7 +48,7 @@ void Switch::read(DataInputStream* in){
             ((ive::Group*)(group))->read(in);
         }
         else
-            throw Exception("Switch::read(): Could not cast this osg::Switch to an osg::Group.");
+            in_THROW_EXCEPTION("Switch::read(): Could not cast this osg::Switch to an osg::Group.");
         // Read Switch's properties
 
         // Read childrens value.
@@ -57,6 +57,6 @@ void Switch::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("Switch::read(): Expected Switch identification.");
+        in_THROW_EXCEPTION("Switch::read(): Expected Switch identification.");
     }
 }

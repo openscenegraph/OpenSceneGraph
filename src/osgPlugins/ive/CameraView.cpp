@@ -29,7 +29,7 @@ void CameraView::write(DataOutputStream* out)
         ((ive::Transform*)(trans))->write(out);
     }
     else
-        throw Exception("CameraView::write(): Could not cast this osg::CameraView to an osg::Transform.");
+        out_THROW_EXCEPTION("CameraView::write(): Could not cast this osg::CameraView to an osg::Transform.");
 
     // Write CameraView's properties.      
     out->writeVec3(getPosition());
@@ -53,7 +53,7 @@ void CameraView::read(DataInputStream* in){
             ((ive::Transform*)(trans))->read(in);
         }
         else
-            throw Exception("CameraView::read(): Could not cast this osg::CameraView to an osg::Transform.");
+            in_THROW_EXCEPTION("CameraView::read(): Could not cast this osg::CameraView to an osg::Transform.");
         
         // Read CameraView's properties
         setPosition(in->readVec3());
@@ -64,6 +64,6 @@ void CameraView::read(DataInputStream* in){
     }
     else
     {
-        throw Exception("CameraView::read(): Expected CameraView identification.");
+        in_THROW_EXCEPTION("CameraView::read(): Expected CameraView identification.");
     }
 }

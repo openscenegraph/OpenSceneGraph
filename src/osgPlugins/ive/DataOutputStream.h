@@ -142,7 +142,11 @@ public:
     void setExternalFileWritten(const std::string& filename, bool hasBeenWritten=true);
     bool getExternalFileWritten(const std::string& filename) const;
 
-private:
+    void throwException(const std::string& message) { _exception = new Exception(message); }
+    void throwException(Exception* exception) { _exception = exception; }
+    const Exception* getException() const { return _exception.get(); }
+
+    private:
 
     std::ostream* _ostream;
     std::ostream* _output_ostream;
@@ -189,6 +193,8 @@ private:
 
     typedef std::map<std::string, bool> ExternalFileWrittenMap;
     ExternalFileWrittenMap _externalFileWritten;
+
+    osg::ref_ptr<Exception> _exception;
 };
 
 }

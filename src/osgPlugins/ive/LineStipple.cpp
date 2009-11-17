@@ -27,7 +27,7 @@ void LineStipple::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("LineStipple::write(): Could not cast this osg::LineStipple to an osg::Object.");
+        out_THROW_EXCEPTION("LineStipple::write(): Could not cast this osg::LineStipple to an osg::Object.");
     // Write LineStipple's properties.
     out->writeUShort(getPattern());
     out->writeInt(getFactor());
@@ -45,12 +45,12 @@ void LineStipple::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("LineStipple::read(): Could not cast this osg::LineStipple to an osg::Object.");
+            in_THROW_EXCEPTION("LineStipple::read(): Could not cast this osg::LineStipple to an osg::Object.");
         // Read LineStipple's properties
         setPattern(in->readUShort());
         setFactor(in->readInt());
     }
     else{
-        throw Exception("LineStipple::read(): Expected LineStipple identification.");
+        in_THROW_EXCEPTION("LineStipple::read(): Expected LineStipple identification.");
     }
 }

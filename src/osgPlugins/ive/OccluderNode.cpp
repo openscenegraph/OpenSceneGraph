@@ -28,7 +28,7 @@ void OccluderNode::write(DataOutputStream* out){
         ((ive::Group*)(group))->write(out);
     }
     else
-        throw Exception("OccluderNode::write(): Could not cast this osg::OccluderNode to an osg::Group.");
+        out_THROW_EXCEPTION("OccluderNode::write(): Could not cast this osg::OccluderNode to an osg::Group.");
     // Write OccluderNode's properties.
     out->writeBool(getOccluder()!=0);
     if(getOccluder())
@@ -49,7 +49,7 @@ void OccluderNode::read(DataInputStream* in)
             ((ive::Group*)(group))->read(in);
         }
         else
-            throw Exception("OccluderNode::read(): Could not cast this osg::OccluderNode to an osg::Group.");
+            in_THROW_EXCEPTION("OccluderNode::read(): Could not cast this osg::OccluderNode to an osg::Group.");
         // Read OccluderNode's properties
         if(in->readBool()){
             osg::ConvexPlanarOccluder* cpo = new osg::ConvexPlanarOccluder();
@@ -58,6 +58,6 @@ void OccluderNode::read(DataInputStream* in)
         }
     }
     else{
-        throw Exception("OccluderNode::read(): Expected OccluderNode identification.");
+        in_THROW_EXCEPTION("OccluderNode::read(): Expected OccluderNode identification.");
     }
 }

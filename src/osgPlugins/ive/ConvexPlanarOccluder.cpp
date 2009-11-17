@@ -28,7 +28,7 @@ void ConvexPlanarOccluder::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("ConvexPlanarOccluder::write(): Could not cast this osg::ConvexPlanarOccluder to an osg::Object.");
+        out_THROW_EXCEPTION("ConvexPlanarOccluder::write(): Could not cast this osg::ConvexPlanarOccluder to an osg::Object.");
     // Write ConvexPlanarOccluder's properties.
 
     // Write planar polygon occluder.
@@ -55,7 +55,7 @@ void ConvexPlanarOccluder::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("ConvexPlanarOccluder::read(): Could not cast this osg::ConvexPlanarOccluder to an osg::Object.");
+            in_THROW_EXCEPTION("ConvexPlanarOccluder::read(): Could not cast this osg::ConvexPlanarOccluder to an osg::Object.");
         // Read ConvexPlanarOccluder's properties
 
         // Read planar polygon occluder.
@@ -72,6 +72,6 @@ void ConvexPlanarOccluder::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("ConvexPlanarOccluder::read(): Expected ConvexPlanarOccluder identification.");
+        in_THROW_EXCEPTION("ConvexPlanarOccluder::read(): Expected ConvexPlanarOccluder identification.");
     }
 }

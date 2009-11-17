@@ -26,14 +26,14 @@ void Volume::write(DataOutputStream* out)
     if(group)
         ((ive::Group*)(group))->write(out);
     else
-        throw Exception("Volume::write(): Could not cast this osgVolume::Volume to an osg::Group.");
+        out_THROW_EXCEPTION("Volume::write(): Could not cast this osgVolume::Volume to an osg::Group.");
 }
 
 void Volume::read(DataInputStream* in)
 {
     // Peek on Volume's identification.
     int id = in->peekInt();
-    if (id != IVEVOLUME) throw Exception("Volume::read(): Expected Volume identification.");
+    if (id != IVEVOLUME) in_THROW_EXCEPTION("Volume::read(): Expected Volume identification.");
 
     // Read Volume's identification.
     id = in->readInt();
@@ -42,6 +42,6 @@ void Volume::read(DataInputStream* in)
     if(group)
         ((ive::Group*)(group))->read(in);
     else
-        throw Exception("Volume::read(): Could not cast this osgVolume::Volume to an osg::Group.");
+        in_THROW_EXCEPTION("Volume::read(): Could not cast this osgVolume::Volume to an osg::Group.");
 
 }

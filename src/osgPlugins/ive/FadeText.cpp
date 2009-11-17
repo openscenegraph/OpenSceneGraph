@@ -33,7 +33,7 @@ void FadeText::write(DataOutputStream* out){
         ((ive::Text*)(text))->write(out);
     }
     else
-        throw Exception("FadeText::write(): Could not cast this osgText::FadeText to an osgText::Tex.");
+        out_THROW_EXCEPTION("FadeText::write(): Could not cast this osgText::FadeText to an osgText::Tex.");
 
     // Write FadeText's properties.
     out->writeFloat(getFadeSpeed());
@@ -51,11 +51,11 @@ void FadeText::read(DataInputStream* in){
             ((ive::Text*)(text))->read(in);
         }
         else
-            throw Exception("FadeText::read(): Could not cast this osgText::FadeText to an osgText::Text.");
+            in_THROW_EXCEPTION("FadeText::read(): Could not cast this osgText::FadeText to an osgText::Text.");
         
         setFadeSpeed(in->readFloat());
     }
     else{
-        throw Exception("FadeText::read(): Expected FadeText identification.");
+        in_THROW_EXCEPTION("FadeText::read(): Expected FadeText identification.");
     }
 }

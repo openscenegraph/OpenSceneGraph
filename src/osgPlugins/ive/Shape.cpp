@@ -36,7 +36,7 @@ void Sphere::write(DataOutputStream* out)
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("Sphere::write(): Could not cast this osg::Sphere to an osg::Object.");
+        out_THROW_EXCEPTION("Sphere::write(): Could not cast this osg::Sphere to an osg::Object.");
 
     // Write Sphere's properties.
     out->writeVec3(getCenter());
@@ -58,7 +58,7 @@ void Sphere::read(DataInputStream* in)
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("Sphere::read(): Could not cast this osg::Sphere to an osg::Object.");
+            in_THROW_EXCEPTION("Sphere::read(): Could not cast this osg::Sphere to an osg::Object.");
 
         // Read Sphere's properties
         setCenter(in->readVec3());
@@ -67,7 +67,7 @@ void Sphere::read(DataInputStream* in)
     }
     else
     {
-        throw Exception("Sphere::read(): Expected Sphere identification.");
+        in_THROW_EXCEPTION("Sphere::read(): Expected Sphere identification.");
     }
 }
 
@@ -87,7 +87,7 @@ void Box::write(DataOutputStream* out)
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("Box::write(): Could not cast this osg::Box to an osg::Object.");
+        out_THROW_EXCEPTION("Box::write(): Could not cast this osg::Box to an osg::Object.");
 
     // Write Box's properties.
     out->writeVec3(getCenter());
@@ -110,7 +110,7 @@ void Box::read(DataInputStream* in)
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("Box::read(): Could not cast this osg::Box to an osg::Object.");
+           in_THROW_EXCEPTION("Box::read(): Could not cast this osg::Box to an osg::Object.");
 
         // Read Box's properties
         setCenter(in->readVec3());
@@ -120,7 +120,7 @@ void Box::read(DataInputStream* in)
     }
     else
     {
-        throw Exception("Box::read(): Expected Box identification.");
+        in_THROW_EXCEPTION("Box::read(): Expected Box identification.");
     }
 }
 
@@ -140,7 +140,7 @@ void Cone::write(DataOutputStream* out)
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("Cone::write(): Could not cast this osg::Cone to an osg::Object.");
+        out_THROW_EXCEPTION("Cone::write(): Could not cast this osg::Cone to an osg::Object.");
 
     // Write Cone's properties.
     out->writeVec3(getCenter());
@@ -164,7 +164,7 @@ void Cone::read(DataInputStream* in)
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("Cone::read(): Could not cast this osg::Cone to an osg::Object.");
+            in_THROW_EXCEPTION("Cone::read(): Could not cast this osg::Cone to an osg::Object.");
 
         // Read Cone's properties
         setCenter(in->readVec3());
@@ -175,7 +175,7 @@ void Cone::read(DataInputStream* in)
     }
     else
     {
-        throw Exception("Cone::read(): Expected Cone identification.");
+        in_THROW_EXCEPTION("Cone::read(): Expected Cone identification.");
     }
 }
 
@@ -195,7 +195,7 @@ void Cylinder::write(DataOutputStream* out)
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("Cylinder::write(): Could not cast this osg::Cylinder to an osg::Object.");
+        out_THROW_EXCEPTION("Cylinder::write(): Could not cast this osg::Cylinder to an osg::Object.");
 
     // Write Cylinder's properties.
     out->writeVec3(getCenter());
@@ -219,7 +219,7 @@ void Cylinder::read(DataInputStream* in)
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("Cylinder::read(): Could not cast this osg::Cylinder to an osg::Object.");
+            in_THROW_EXCEPTION("Cylinder::read(): Could not cast this osg::Cylinder to an osg::Object.");
 
         // Read Cylinder's properties
         setCenter(in->readVec3());
@@ -230,7 +230,7 @@ void Cylinder::read(DataInputStream* in)
     }
     else
     {
-        throw Exception("Cylinder::read(): Expected Cylinder identification.");
+        in_THROW_EXCEPTION("Cylinder::read(): Expected Cylinder identification.");
     }
 }
 
@@ -250,7 +250,7 @@ void Capsule::write(DataOutputStream* out)
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("Capsule::write(): Could not cast this osg::Capsule to an osg::Object.");
+        out_THROW_EXCEPTION("Capsule::write(): Could not cast this osg::Capsule to an osg::Object.");
 
     // Write Capsule's properties.
     out->writeVec3(getCenter());
@@ -274,7 +274,7 @@ void Capsule::read(DataInputStream* in)
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("Capsule::read(): Could not cast this osg::Capsule to an osg::Object.");
+            in_THROW_EXCEPTION("Capsule::read(): Could not cast this osg::Capsule to an osg::Object.");
 
         // Read Capsule's properties
         setCenter(in->readVec3());
@@ -285,7 +285,7 @@ void Capsule::read(DataInputStream* in)
     }
     else
     {
-        throw Exception("Capsule::read(): Expected Capsule identification.");
+        in_THROW_EXCEPTION("Capsule::read(): Expected Capsule identification.");
     }
 }
 
@@ -305,7 +305,7 @@ void HeightField::write(DataOutputStream* out)
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("HeightField::write(): Could not cast this osg::HeightField to an osg::Object.");
+        out_THROW_EXCEPTION("HeightField::write(): Could not cast this osg::HeightField to an osg::Object.");
 
     // Write HeightField's properties.
     out->writeUInt(getNumColumns());
@@ -344,7 +344,7 @@ void HeightField::read(DataInputStream* in)
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("HeightField::read(): Could not cast this osg::HeightField to an osg::Object.");
+            in_THROW_EXCEPTION("HeightField::read(): Could not cast this osg::HeightField to an osg::Object.");
 
         // Read HeightField's properties
         //setColor(in->readVec4());
@@ -363,7 +363,7 @@ void HeightField::read(DataInputStream* in)
         unsigned int size = in->readUInt();
         in->_istream->read((char*)&(getHeightList()[0]), FLOATSIZE*size);
         if (in->_istream->rdstate() & in->_istream->failbit)
-            throw Exception("HeightField::read(): Failed to read height array.");
+            in_THROW_EXCEPTION("HeightField::read(): Failed to read height array.");
         if (in->_byteswap) {
            float *ptr = (float*)&(getHeightList()[0]) ;
            for (unsigned int i = 0 ; i < size ; i++ ) {
@@ -374,7 +374,7 @@ void HeightField::read(DataInputStream* in)
     }
     else
     {
-        throw Exception("HeightField::read(): Expected HeightField identification.");
+        in_THROW_EXCEPTION("HeightField::read(): Expected HeightField identification.");
     }
 }
 

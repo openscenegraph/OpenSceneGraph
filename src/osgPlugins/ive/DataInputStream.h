@@ -137,6 +137,10 @@ public:
 
     bool uncompress(std::istream& fin, std::string& destination) const;
 
+    void throwException(const std::string& message) { _exception = new Exception(message); }
+    void throwException(Exception* exception) { _exception = exception; }
+    const Exception* getException() const { return _exception.get(); }
+    
 private:
 
 
@@ -161,7 +165,7 @@ private:
         
     osg::ref_ptr<const osgDB::ReaderWriter::Options> _options;
     
-   
+    osg::ref_ptr<Exception> _exception;
 };
 
 }

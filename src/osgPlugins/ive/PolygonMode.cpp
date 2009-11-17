@@ -27,7 +27,7 @@ void PolygonMode::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("PolygonMode::write(): Could not cast this osg::PolygonMode to an osg::Object.");
+        out_THROW_EXCEPTION("PolygonMode::write(): Could not cast this osg::PolygonMode to an osg::Object.");
     // Write PolygonMode's properties.
     out->writeInt(getMode(osg::PolygonMode::FRONT));
     out->writeInt(getMode(osg::PolygonMode::BACK));
@@ -45,13 +45,13 @@ void PolygonMode::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("PolygonMode::read(): Could not cast this osg::PolygonMode to an osg::Object.");
+            in_THROW_EXCEPTION("PolygonMode::read(): Could not cast this osg::PolygonMode to an osg::Object.");
         // Read PolygonMode's properties
         setMode(osg::PolygonMode::FRONT,(Mode)in->readInt());
         setMode(osg::PolygonMode::BACK,(Mode)in->readInt());
     }
     else{
-        throw Exception("PolygonMode::read(): Expected PolygonMode identification.");
+        in_THROW_EXCEPTION("PolygonMode::read(): Expected PolygonMode identification.");
     }
 }
 

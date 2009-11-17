@@ -27,7 +27,7 @@ void PolygonOffset::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("PolygonOffset::write(): Could not cast this osg::PolygonOffset to an osg::Object.");
+        out_THROW_EXCEPTION("PolygonOffset::write(): Could not cast this osg::PolygonOffset to an osg::Object.");
     // Write PolygonOffset's properties.
     out->writeFloat(getFactor());
     out->writeFloat(getUnits());
@@ -45,12 +45,12 @@ void PolygonOffset::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("PolygonOffset::read(): Could not cast this osg::PolygonOffset to an osg::Object.");
+            in_THROW_EXCEPTION("PolygonOffset::read(): Could not cast this osg::PolygonOffset to an osg::Object.");
         // Read PolygonOffset's properties
         setFactor(in->readFloat());
         setUnits(in->readFloat());
     }
     else{
-        throw Exception("PolygonOffset::read(): Expected PolygonOffset identification.");
+        in_THROW_EXCEPTION("PolygonOffset::read(): Expected PolygonOffset identification.");
     }
 }

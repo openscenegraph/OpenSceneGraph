@@ -27,7 +27,7 @@ void Stencil::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("Stencil::write(): Could not cast this osg::Stencil to an osg::Object.");
+        out_THROW_EXCEPTION("Stencil::write(): Could not cast this osg::Stencil to an osg::Object.");
     // Write Stencil's properties.
     
     out->writeInt(getFunction());
@@ -56,7 +56,7 @@ void Stencil::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("Stencil::read(): Could not cast this osg::Stencil to an osg::Object.");
+            in_THROW_EXCEPTION("Stencil::read(): Could not cast this osg::Stencil to an osg::Object.");
 
         setFunction((Function)in->readInt());
         setFunctionRef(in->readInt());
@@ -70,6 +70,6 @@ void Stencil::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("Stencil::read(): Expected Stencil identification.");
+        in_THROW_EXCEPTION("Stencil::read(): Expected Stencil identification.");
     }
 }

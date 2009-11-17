@@ -25,7 +25,7 @@ void SpecularHighlights::write(DataOutputStream* out){
         ((ive::Effect*)(effect))->write(out);
     }
     else
-        throw Exception("SpecularHighlights::write(): Could not cast this osgFX::SpecularHighlights to an osgFX::Effect.");
+        out_THROW_EXCEPTION("SpecularHighlights::write(): Could not cast this osgFX::SpecularHighlights to an osgFX::Effect.");
 
     // Write SpecularHighlights's properties.
     out->writeInt(getLightNumber());
@@ -47,7 +47,7 @@ void SpecularHighlights::read(DataInputStream* in){
             ((ive::Effect*)(effect))->read(in);
         }
         else
-            throw Exception("SpecularHighlights::read(): Could not cast this osgFX::SpecularHighlights to an osgFX::Effect.");
+            in_THROW_EXCEPTION("SpecularHighlights::read(): Could not cast this osgFX::SpecularHighlights to an osgFX::Effect.");
 
         // Read SpecularHighlights's properties
         setLightNumber(in->readInt());
@@ -56,6 +56,6 @@ void SpecularHighlights::read(DataInputStream* in){
         setSpecularExponent(in->readFloat());
     }
     else{
-        throw Exception("SpecularHighlights::read(): Expected SpecularHighlights identification.");
+        in_THROW_EXCEPTION("SpecularHighlights::read(): Expected SpecularHighlights identification.");
     }
 }

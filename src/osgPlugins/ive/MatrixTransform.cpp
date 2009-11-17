@@ -28,7 +28,7 @@ void MatrixTransform::write(DataOutputStream* out){
         ((ive::Group*)(group))->write(out);
     }
     else
-        throw Exception("MatrixTransform::write(): Could not cast this osg::MatrixTransform to an osg::Group.");
+        out_THROW_EXCEPTION("MatrixTransform::write(): Could not cast this osg::MatrixTransform to an osg::Group.");
 
 
     // Write MatrixTransform's properties.
@@ -47,12 +47,12 @@ void MatrixTransform::read(DataInputStream* in){
             ((ive::Group*)(group))->read(in);
         }
         else
-            throw Exception("MatrixTransform::read(): Could not cast this osg::MatrixTransform to an osg::Group.");
+            in_THROW_EXCEPTION("MatrixTransform::read(): Could not cast this osg::MatrixTransform to an osg::Group.");
 
         // Read matrix
         setMatrix(in->readMatrixd());
     }
     else{
-        throw Exception("MatrixTransform::read(): Expected MatrixTransform identification");
+        in_THROW_EXCEPTION("MatrixTransform::read(): Expected MatrixTransform identification");
     }
 }

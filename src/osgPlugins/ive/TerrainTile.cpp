@@ -29,7 +29,7 @@ void TerrainTile::write(DataOutputStream* out)
     if(group)
         ((ive::Group*)(group))->write(out);
     else
-        throw Exception("Terrain::write(): Could not cast this osgTerrain::Terrain to an osg::Group.");
+        out_THROW_EXCEPTION("Terrain::write(): Could not cast this osgTerrain::Terrain to an osg::Group.");
 
     if (out->getVersion() >= VERSION_0026)
     {
@@ -73,7 +73,7 @@ void TerrainTile::read(DataInputStream* in)
 {
     // Peek on Terrain's identification.
     int id = in->peekInt();
-    if (id != IVETERRAINTILE) throw Exception("TerrainTile::read(): Expected Terrain identification.");
+    if (id != IVETERRAINTILE) in_THROW_EXCEPTION("TerrainTile::read(): Expected Terrain identification.");
 
     // Read Terrain's identification.
     id = in->readInt();
@@ -82,7 +82,7 @@ void TerrainTile::read(DataInputStream* in)
     if(group)
         ((ive::Group*)(group))->read(in);
     else
-        throw Exception("Terrain::read(): Could not cast this osgTerrain::Terrain to an osg::Group.");
+        in_THROW_EXCEPTION("Terrain::read(): Could not cast this osgTerrain::Terrain to an osg::Group.");
 
     if (in->getVersion() >= VERSION_0026)
     {

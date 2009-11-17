@@ -27,7 +27,7 @@ void LineWidth::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("LineWidth::write(): Could not cast this osg::LineWidth to an osg::Object.");
+        out_THROW_EXCEPTION("LineWidth::write(): Could not cast this osg::LineWidth to an osg::Object.");
     // Write LineWidth's properties.
     out->writeFloat(getWidth());
 }
@@ -44,11 +44,11 @@ void LineWidth::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("LineWidth::read(): Could not cast this osg::LineWidth to an osg::Object.");
+            in_THROW_EXCEPTION("LineWidth::read(): Could not cast this osg::LineWidth to an osg::Object.");
         // Read LineWidth's properties
         setWidth(in->readFloat());
     }
     else{
-        throw Exception("LineWidth::read(): Expected LineWidth identification.");
+        in_THROW_EXCEPTION("LineWidth::read(): Expected LineWidth identification.");
     }
 }

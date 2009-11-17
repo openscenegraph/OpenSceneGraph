@@ -27,7 +27,7 @@ void AlphaFunc::write(DataOutputStream* out){
   if(obj)
     ((ive::Object*)(obj))->write(out);
   else
-    throw Exception("AlphaFunc::write(): Could not cast this osg::AlphaFunc to an osg::Object.");
+    out_THROW_EXCEPTION("AlphaFunc::write(): Could not cast this osg::AlphaFunc to an osg::Object.");
 
   // write AlphaFunc's properties
   out->writeInt(getFunction());
@@ -48,7 +48,7 @@ void AlphaFunc::read(DataInputStream* in){
       if(obj)
         ((ive::Object*)(obj))->read(in);
       else
-        throw Exception("AlphaFunc::read(): Could not cast this osg::AlphaFunc to an osg::Object.");
+        in_THROW_EXCEPTION("AlphaFunc::read(): Could not cast this osg::AlphaFunc to an osg::Object.");
 
       // Read AlphaFunc's properties
       osg::AlphaFunc::ComparisonFunction comparison_funtion = osg::AlphaFunc::ComparisonFunction(in->readInt());
@@ -56,6 +56,6 @@ void AlphaFunc::read(DataInputStream* in){
       setFunction(comparison_funtion, reference_value);
     }
   else{
-    throw Exception("AlphaFunc::read(): Expected AlphaFunc identification.");
+    in_THROW_EXCEPTION("AlphaFunc::read(): Expected AlphaFunc identification.");
   }
 }

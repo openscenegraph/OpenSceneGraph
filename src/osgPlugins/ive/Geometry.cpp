@@ -33,7 +33,7 @@ void Geometry::write(DataOutputStream* out){
         ((ive::Drawable*)(drawable))->write(out);
     }
     else
-        throw Exception("Geometry::write(): Could not cast this osg::Geometry to an osg::Drawable.");
+        out_THROW_EXCEPTION("Geometry::write(): Could not cast this osg::Geometry to an osg::Drawable.");
 
 
     // Write Geometry's properties.
@@ -53,7 +53,7 @@ void Geometry::write(DataOutputStream* out){
         else if(dynamic_cast<osg::DrawElementsUInt*>(getPrimitiveSet(i)))
             ((ive::DrawElementsUInt*)(getPrimitiveSet(i)))->write(out);
         else
-            throw Exception("Unknown PrimitivSet in Geometry::write()");
+            out_THROW_EXCEPTION("Unknown PrimitivSet in Geometry::write()");
     }
 
     // Write vertex array if any
@@ -178,7 +178,7 @@ void Geometry::read(DataInputStream* in){
             ((ive::Drawable*)(drawable))->read(in);
         }
         else
-            throw Exception("Geometry::read(): Could not cast this osg::Geometry to an osg::Drawable.");
+            in_THROW_EXCEPTION("Geometry::read(): Could not cast this osg::Geometry to an osg::Drawable.");
 
 
         // Read geoemtry properties
@@ -215,7 +215,7 @@ void Geometry::read(DataInputStream* in){
                 addPrimitiveSet(prim);
             }
             else{
-                throw Exception("Unknown PrimitiveSet in Geometry::read()");
+                in_THROW_EXCEPTION("Unknown PrimitiveSet in Geometry::read()");
             }
         }
     
@@ -314,6 +314,6 @@ void Geometry::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("Geometry::read(): Expected Geometry identification.");
+        in_THROW_EXCEPTION("Geometry::read(): Expected Geometry identification.");
     }
 }

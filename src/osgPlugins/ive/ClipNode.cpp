@@ -29,7 +29,7 @@ void ClipNode::write(DataOutputStream* out){
         ((ive::Group*)(group))->write(out);
     }
     else
-        throw Exception("ClipNode::write(): Could not cast this osg::ClipNode to an osg::Group.");
+        out_THROW_EXCEPTION("ClipNode::write(): Could not cast this osg::ClipNode to an osg::Group.");
     // Write ClipNode's properties.
 
     if ( out->getVersion() >= VERSION_0037 )
@@ -58,7 +58,7 @@ void ClipNode::read(DataInputStream* in){
             ((ive::Group*)(group))->read(in);
         }
         else
-            throw Exception("ClipNode::read(): Could not cast this osg::ClipNode to an osg::Object.");
+            in_THROW_EXCEPTION("ClipNode::read(): Could not cast this osg::ClipNode to an osg::Object.");
         // Read ClipNode's properties
 
         if ( in->getVersion() >= VERSION_0037 )
@@ -77,6 +77,6 @@ void ClipNode::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("ClipNode::read(): Expected ClipNode identification.");
+        in_THROW_EXCEPTION("ClipNode::read(): Expected ClipNode identification.");
     }
 }

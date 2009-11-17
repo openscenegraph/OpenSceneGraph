@@ -28,7 +28,7 @@ void TextureCubeMap::write(DataOutputStream* out){
         ((ive::Texture*)(tex))->write(out);
     }
     else
-        throw Exception("TextureCubeMap::write(): Could not cast this osg::TextureCubeMap to an osg::Texture.");
+        out_THROW_EXCEPTION("TextureCubeMap::write(): Could not cast this osg::TextureCubeMap to an osg::Texture.");
     // Write TextureCubeMap's properties.
 
     // Write texture size
@@ -75,7 +75,7 @@ void TextureCubeMap::read(DataInputStream* in)
             ((ive::Texture*)(tex))->read(in);
         }
         else
-            throw Exception("TextureCubeMap::read(): Could not cast this osg::TextureCubeMap to an osg::Texture.");
+            in_THROW_EXCEPTION("TextureCubeMap::read(): Could not cast this osg::TextureCubeMap to an osg::Texture.");
         // Read TextureCubeMap's properties
 
         // Read texture size
@@ -110,7 +110,7 @@ void TextureCubeMap::read(DataInputStream* in)
         
     }
     else{
-        throw Exception("TextureCubeMap::read(): Expected TextureCubeMap identification.");
+        in_THROW_EXCEPTION("TextureCubeMap::read(): Expected TextureCubeMap identification.");
     }
 }
 

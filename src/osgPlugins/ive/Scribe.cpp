@@ -25,7 +25,7 @@ void Scribe::write(DataOutputStream* out){
         ((ive::Effect*)(effect))->write(out);
     }
     else
-        throw Exception("Scribe::write(): Could not cast this osgFX::Scribe to an osgFX::Effect.");
+        out_THROW_EXCEPTION("Scribe::write(): Could not cast this osgFX::Scribe to an osgFX::Effect.");
 
     // Write Scribe's properties.
     out->writeVec4(getWireframeColor());
@@ -45,13 +45,13 @@ void Scribe::read(DataInputStream* in){
             ((ive::Effect*)(effect))->read(in);
         }
         else
-            throw Exception("Scribe::read(): Could not cast this osgFX::Scribe to an osgFX::Effect.");
+            in_THROW_EXCEPTION("Scribe::read(): Could not cast this osgFX::Scribe to an osgFX::Effect.");
 
         // Read Scribe's properties
         setWireframeColor(in->readVec4());
         setWireframeLineWidth(in->readFloat());
     }
     else{
-        throw Exception("Scribe::read(): Expected Scribe identification.");
+        in_THROW_EXCEPTION("Scribe::read(): Expected Scribe identification.");
     }
 }

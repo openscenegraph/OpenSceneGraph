@@ -25,7 +25,7 @@ void AnisotropicLighting::write(DataOutputStream* out){
         ((ive::Effect*)(effect))->write(out);
     }
     else
-        throw Exception("AnisotropicLighting::write(): Could not cast this osgFX::AnisotropicLighting to an osgFX::Effect.");
+        out_THROW_EXCEPTION("AnisotropicLighting::write(): Could not cast this osgFX::AnisotropicLighting to an osgFX::Effect.");
 
     // Write AnisotropicLighting's properties.
     out->writeImage(getLightingMap());
@@ -45,13 +45,13 @@ void AnisotropicLighting::read(DataInputStream* in){
             ((ive::Effect*)(effect))->read(in);
         }
         else
-            throw Exception("AnisotropicLighting::read(): Could not cast this osgFX::AnisotropicLighting to an osgFX::Effect.");
+            in_THROW_EXCEPTION("AnisotropicLighting::read(): Could not cast this osgFX::AnisotropicLighting to an osgFX::Effect.");
 
         // Read AnisotropicLighting's properties
         setLightingMap(in->readImage());
         setLightNumber(in->readInt());
     }
     else{
-        throw Exception("AnisotropicLighting::read(): Expected AnisotropicLighting identification.");
+        in_THROW_EXCEPTION("AnisotropicLighting::read(): Expected AnisotropicLighting identification.");
     }
 }

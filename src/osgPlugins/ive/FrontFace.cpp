@@ -27,7 +27,7 @@ void FrontFace::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("FrontFace::write(): Could not cast this osg::FrontFace to an osg::Object.");
+        out_THROW_EXCEPTION("FrontFace::write(): Could not cast this osg::FrontFace to an osg::Object.");
     // Write FrontFace's properties.
 
     // Write mode
@@ -46,7 +46,7 @@ void FrontFace::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("FrontFace::read(): Could not cast this osg::FrontFace to an osg::Object.");
+            in_THROW_EXCEPTION("FrontFace::read(): Could not cast this osg::FrontFace to an osg::Object.");
         // Read FrontFace's properties
 
         // Read mode
@@ -54,7 +54,7 @@ void FrontFace::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("FrontFace::read(): Expected FrontFace identification.");
+        in_THROW_EXCEPTION("FrontFace::read(): Expected FrontFace identification.");
     }
 }
 

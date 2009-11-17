@@ -29,7 +29,7 @@ void VolumeSwitchProperty::write(DataOutputStream* out)
     if (cp)
         ((ive::VolumeCompositeProperty*)(cp))->write(out);
     else
-        throw Exception("VolumeImageLayer::write(): Could not cast this osgVolume::SwitchProperty to an osgVolume::CompositeProperty.");
+        out_THROW_EXCEPTION("VolumeImageLayer::write(): Could not cast this osgVolume::SwitchProperty to an osgVolume::CompositeProperty.");
 
     out->writeUInt(getActiveProperty());
 }
@@ -39,7 +39,7 @@ void VolumeSwitchProperty::read(DataInputStream* in)
     // Peek on Layer's identification.
     int id = in->peekInt();
     if (id != IVEVOLUMESWITCHPROPERTY)
-        throw Exception("VolumeSwitchProperty::read(): Expected CompositeProperty identification.");
+        in_THROW_EXCEPTION("VolumeSwitchProperty::read(): Expected CompositeProperty identification.");
     
     // Read Layer's identification.
     id = in->readInt();
@@ -49,7 +49,7 @@ void VolumeSwitchProperty::read(DataInputStream* in)
     if (cp)
         ((ive::VolumeCompositeProperty*)(cp))->read(in);
     else
-        throw Exception("VolumeImageLayer::read(): Could not cast this osgVolume::SwitchProperty to an osgVolume::CompositeProperty.");
+        in_THROW_EXCEPTION("VolumeImageLayer::read(): Could not cast this osgVolume::SwitchProperty to an osgVolume::CompositeProperty.");
 
     setActiveProperty(in->readUInt());
 }

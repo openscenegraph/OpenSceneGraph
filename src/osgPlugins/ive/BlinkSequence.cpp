@@ -26,7 +26,7 @@ void BlinkSequence::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("BlinkSequence::write(): Could not cast this osgSim::BlinkSequence to an osg::Object.");
+        out_THROW_EXCEPTION("BlinkSequence::write(): Could not cast this osgSim::BlinkSequence to an osg::Object.");
 
     // Write BlinkSequence's properties.
 
@@ -62,7 +62,7 @@ void BlinkSequence::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("BlinkSequence::read(): Could not cast this osgSim::BlinkSequence to an osg::Object.");
+            in_THROW_EXCEPTION("BlinkSequence::read(): Could not cast this osgSim::BlinkSequence to an osg::Object.");
         // Read BlinkSequence's properties
 
         // Read in pulse data.
@@ -81,6 +81,6 @@ void BlinkSequence::read(DataInputStream* in){
         
     }
     else{
-        throw Exception("BlinkSequence::read(): Expected BlinkSequence identification.");
+        in_THROW_EXCEPTION("BlinkSequence::read(): Expected BlinkSequence identification.");
     }
 }

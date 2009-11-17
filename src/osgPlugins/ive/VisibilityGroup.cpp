@@ -26,7 +26,7 @@ void VisibilityGroup::write(DataOutputStream* out){
         ((ive::Group*)(group))->write(out);
     }
     else
-        throw Exception("VisibilityGroup::write(): Could not cast this osgSim::VisibilityGroup to an osg::Group.");
+        out_THROW_EXCEPTION("VisibilityGroup::write(): Could not cast this osgSim::VisibilityGroup to an osg::Group.");
 
     // Write VisibilityGroup's properties.
     out->writeNode(getVisibilityVolume());
@@ -46,13 +46,13 @@ void VisibilityGroup::read(DataInputStream* in){
             ((ive::Group*)(group))->read(in);
         }
         else
-            throw Exception("VisibilityGroup::read(): Could not cast this osgSim::VisibilityGroup to an osg::Group.");
+            in_THROW_EXCEPTION("VisibilityGroup::read(): Could not cast this osgSim::VisibilityGroup to an osg::Group.");
         // Read VisibilityGroup's properties
         setVisibilityVolume(in->readNode());
         setVolumeIntersectionMask(in->readUInt());
         setSegmentLength(in->readFloat());
     }
     else{
-        throw Exception("VisibilityGroup::read(): Expected VisibilityGroup identification.");
+        in_THROW_EXCEPTION("VisibilityGroup::read(): Expected VisibilityGroup identification.");
     }
 }

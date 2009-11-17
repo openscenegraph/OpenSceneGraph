@@ -25,7 +25,7 @@ void Effect::write(DataOutputStream* out){
         ((ive::Group*)(group))->write(out);
     }
     else
-        throw Exception("Effect::write(): Could not cast this osgFX::Effect to an osg::Group.");
+        out_THROW_EXCEPTION("Effect::write(): Could not cast this osgFX::Effect to an osg::Group.");
 
     // Write Effect's properties.
     out->writeBool(getEnabled());
@@ -46,7 +46,7 @@ void Effect::read(DataInputStream* in){
             ((ive::Group*)(group))->read(in);
         }
         else
-            throw Exception("Effect::read(): Could not cast this osgFX::Effect to an osg::Group.");
+            in_THROW_EXCEPTION("Effect::read(): Could not cast this osgFX::Effect to an osg::Group.");
 
         // Read Effect's properties
         setEnabled(in->readBool());
@@ -54,6 +54,6 @@ void Effect::read(DataInputStream* in){
         selectTechnique(in->readInt());
     }
     else{
-        throw Exception("Effect::read(): Expected Effect identification.");
+        in_THROW_EXCEPTION("Effect::read(): Expected Effect identification.");
     }
 }

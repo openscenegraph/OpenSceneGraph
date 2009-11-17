@@ -27,7 +27,7 @@ void Material::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("Material::write(): Could not cast this osg::Material to an osg::Object.");
+        out_THROW_EXCEPTION("Material::write(): Could not cast this osg::Material to an osg::Object.");
     // Write Material's properties.
 
     //    Write color mode
@@ -67,7 +67,7 @@ void Material::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("Material::read(): Could not cast this osg::Material to an osg::Object.");
+            in_THROW_EXCEPTION("Material::read(): Could not cast this osg::Material to an osg::Object.");
 
         // Read color mode.
         _colorMode = (osg::Material::ColorMode)in->readInt();
@@ -93,6 +93,6 @@ void Material::read(DataInputStream* in){
         _shininessBack = in->readFloat();
     }
     else{
-        throw Exception("Material::read(): Expected Material identification.");
+        in_THROW_EXCEPTION("Material::read(): Expected Material identification.");
     }
 }

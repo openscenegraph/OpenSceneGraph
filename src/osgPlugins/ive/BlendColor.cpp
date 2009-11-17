@@ -31,7 +31,7 @@ void BlendColor::write(DataOutputStream* out)
     if (obj) {
         ((ive::Object*)(obj))->write(out);
     } else {
-        throw Exception("BlendColor::write(): Could not cast this osg::BlendColor to an osg::Object.");
+        out_THROW_EXCEPTION("BlendColor::write(): Could not cast this osg::BlendColor to an osg::Object.");
     }
     // Write BlendColor's properties.
 
@@ -51,7 +51,7 @@ void BlendColor::read(DataInputStream* in)
         if (obj) {
             ((ive::Object*)(obj))->read(in);
         } else {
-            throw Exception("BlendColor::read(): Could not cast this osg::BlendColor to an osg::Object.");
+            in_THROW_EXCEPTION("BlendColor::read(): Could not cast this osg::BlendColor to an osg::Object.");
         }
         // Read BlendColor's properties
 
@@ -59,6 +59,6 @@ void BlendColor::read(DataInputStream* in)
         setConstantColor(in->readVec4());
 
     } else {
-        throw Exception("BlendColor::read(): Expected BlendColor identification.");
+        in_THROW_EXCEPTION("BlendColor::read(): Expected BlendColor identification.");
     }
 }

@@ -28,7 +28,7 @@ void Texture3D::write(DataOutputStream* out){
         ((ive::Texture*)(tex))->write(out);
     }
     else
-        throw Exception("Texture3D::write(): Could not cast this osg::Texture3D to an osg::Texture.");
+        out_THROW_EXCEPTION("Texture3D::write(): Could not cast this osg::Texture3D to an osg::Texture.");
     // Write Texture3D's properties.
     // Write image.
 
@@ -48,7 +48,7 @@ void Texture3D::read(DataInputStream* in){
             ((ive::Texture*)(tex))->read(in);
         }
         else
-            throw Exception("Texture3D::read(): Could not cast this osg::Texture3D to an osg::Texture.");
+            in_THROW_EXCEPTION("Texture3D::read(): Could not cast this osg::Texture3D to an osg::Texture.");
         // Read image.
         
         // Should we read image data from stream
@@ -58,6 +58,6 @@ void Texture3D::read(DataInputStream* in){
         }
     }
     else{
-        throw Exception("Texture3D::read(): Expected Texture3D identification.");
+        in_THROW_EXCEPTION("Texture3D::read(): Expected Texture3D identification.");
     }
 }

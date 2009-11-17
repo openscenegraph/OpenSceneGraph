@@ -27,7 +27,7 @@ void CullFace::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("CullFace::write(): Could not cast this osg::CullFace to an osg::Object.");
+        out_THROW_EXCEPTION("CullFace::write(): Could not cast this osg::CullFace to an osg::Object.");
     // Write CullFace's properties.
     out->writeInt(getMode());
 }
@@ -44,11 +44,11 @@ void CullFace::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("CullFace::read(): Could not cast this osg::CullFace to an osg::Object.");
+            in_THROW_EXCEPTION("CullFace::read(): Could not cast this osg::CullFace to an osg::Object.");
         // Read CullFace's properties
         setMode((osg::CullFace::Mode)in->readInt());
     }
     else{
-        throw Exception("CullFace::read(): Expected CullFace identification.");
+        in_THROW_EXCEPTION("CullFace::read(): Expected CullFace identification.");
     }
 }

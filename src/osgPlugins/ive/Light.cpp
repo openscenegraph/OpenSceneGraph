@@ -27,7 +27,7 @@ void Light::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("Light::write(): Could not cast this osg::Light to an osg::Object.");
+        out_THROW_EXCEPTION("Light::write(): Could not cast this osg::Light to an osg::Object.");
     // Write Light's properties.
     out->writeInt(getLightNum());
     out->writeVec4(getAmbient());
@@ -55,7 +55,7 @@ void Light::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("Light::read(): Could not cast this osg::Light to an osg::Object.");
+            in_THROW_EXCEPTION("Light::read(): Could not cast this osg::Light to an osg::Object.");
         // Read Light's properties
         setLightNum(in->readInt());
         setAmbient(in->readVec4());
@@ -70,6 +70,6 @@ void Light::read(DataInputStream* in){
         setSpotCutoff(in->readFloat());
     }
     else{
-        throw Exception("Light::read(): Expected Light identification.");
+        in_THROW_EXCEPTION("Light::read(): Expected Light identification.");
     }
 }

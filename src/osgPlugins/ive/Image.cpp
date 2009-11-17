@@ -30,7 +30,7 @@ void Image::write(DataOutputStream* out)
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("Image::write(): Could not cast this osg::Image to an osg::Object.");
+        out_THROW_EXCEPTION("Image::write(): Could not cast this osg::Image to an osg::Object.");
     // Write Image's properties.
 
     // Write name
@@ -90,7 +90,7 @@ void Image::read(DataInputStream* in)
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("Image::read(): Could not cast this osg::Image to an osg::Object.");
+            in_THROW_EXCEPTION("Image::read(): Could not cast this osg::Image to an osg::Object.");
         // Read Image's properties.
 
         // Read name
@@ -144,7 +144,7 @@ void Image::read(DataInputStream* in)
             //char* data = (char*)malloc (dataSize);
             char* data =  new char[dataSize];
             if(!data)
-                throw Exception("Image::read(): Unable to allocate memory for image data.");
+                in_THROW_EXCEPTION("Image::read(): Unable to allocate memory for image data.");
             in->readCharArray(data,dataSize);
             setImage(is, it, ir, internalTextureFormat, pixelFormat,
                 dataType, (unsigned char* ) data, osg::Image::USE_NEW_DELETE, packing);
@@ -153,6 +153,6 @@ void Image::read(DataInputStream* in)
         _mipmapData.swap(mipmapData);
     }
     else{
-        throw Exception("Image::read(): Expected Image identification.");
+        in_THROW_EXCEPTION("Image::read(): Expected Image identification.");
     }
 }

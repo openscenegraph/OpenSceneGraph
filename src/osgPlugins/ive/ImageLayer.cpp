@@ -31,7 +31,7 @@ void ImageLayer::write(DataOutputStream* out)
     if  (layer)
         ((ive::Layer*)(layer))->write(out);
     else
-        throw Exception("ImageLayer::write(): Could not cast this osgLayer::ImageLayer to an osgTerrain::Layer.");
+        out_THROW_EXCEPTION("ImageLayer::write(): Could not cast this osgLayer::ImageLayer to an osgTerrain::Layer.");
 
 
     IncludeImageMode imMode = out->getIncludeImageMode(getImage());
@@ -48,7 +48,7 @@ void ImageLayer::read(DataInputStream* in)
     // Peek on Layer's identification.
     int id = in->peekInt();
     if (id != IVEIMAGELAYER)
-        throw Exception("ImageLayer::read(): Expected ImageLayer identification.");
+        in_THROW_EXCEPTION("ImageLayer::read(): Expected ImageLayer identification.");
     
     // Read Layer's identification.
     id = in->readInt();
@@ -58,7 +58,7 @@ void ImageLayer::read(DataInputStream* in)
     if (layer)
         ((ive::Layer*)(layer))->read(in);
     else
-        throw Exception("ImageLayer::read(): Could not cast this osgLayer::Layer to an osg::Group.");
+        in_THROW_EXCEPTION("ImageLayer::read(): Could not cast this osgLayer::Layer to an osg::Group.");
 
 
     bool deferExternalLayerLoading = osgTerrain::TerrainTile::getTileLoadedCallback().valid() ? 

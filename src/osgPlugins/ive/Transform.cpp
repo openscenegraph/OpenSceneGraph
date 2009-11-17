@@ -27,7 +27,7 @@ void Transform::write(DataOutputStream* out){
         ((ive::Group*)(group))->write(out);
     }
     else
-        throw Exception("Transform::write(): Could not cast this osg::Transform to an osg::Group.");
+        out_THROW_EXCEPTION("Transform::write(): Could not cast this osg::Transform to an osg::Group.");
     // Write Transform's properties.
     out->writeInt(getReferenceFrame());
 }
@@ -44,11 +44,11 @@ void Transform::read(DataInputStream* in){
             ((ive::Group*)(group))->read(in);
         }
         else
-            throw Exception("Transform::read(): Could not cast this osg::Transform to an osg::Group.");
+            in_THROW_EXCEPTION("Transform::read(): Could not cast this osg::Transform to an osg::Group.");
         // Read Transform's properties
         setReferenceFrame((osg::Transform::ReferenceFrame)in->readInt());
     }
     else{
-        throw Exception("Transform::read(): Expected Transform identification.");
+        in_THROW_EXCEPTION("Transform::read(): Expected Transform identification.");
     }
 }

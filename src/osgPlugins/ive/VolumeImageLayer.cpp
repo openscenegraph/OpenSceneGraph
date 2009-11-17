@@ -29,7 +29,7 @@ void VolumeImageLayer::write(DataOutputStream* out)
     if  (layer)
         ((ive::VolumeLayer*)(layer))->write(out);
     else
-        throw Exception("VolumeImageLayer::write(): Could not cast this osgVolume::ImageLayer to an osgVolume::Layer.");
+        out_THROW_EXCEPTION("VolumeImageLayer::write(): Could not cast this osgVolume::ImageLayer to an osgVolume::Layer.");
 
 
     IncludeImageMode imMode = out->getIncludeImageMode(getImage());
@@ -46,7 +46,7 @@ void VolumeImageLayer::read(DataInputStream* in)
     // Peek on Layer's identification.
     int id = in->peekInt();
     if (id != IVEVOLUMEIMAGELAYER)
-        throw Exception("VolumeImageLayer::read(): Expected ImageLayer identification.");
+        in_THROW_EXCEPTION("VolumeImageLayer::read(): Expected ImageLayer identification.");
     
     // Read Layer's identification.
     id = in->readInt();
@@ -56,7 +56,7 @@ void VolumeImageLayer::read(DataInputStream* in)
     if (layer)
         ((ive::VolumeLayer*)(layer))->read(in);
     else
-        throw Exception("ImageLayer::read(): Could not cast this osgVolume::Layer to an osg::Group.");
+        in_THROW_EXCEPTION("ImageLayer::read(): Could not cast this osgVolume::Layer to an osg::Group.");
 
     // Should we read image data from stream
     IncludeImageMode includeImg = (IncludeImageMode)in->readChar();

@@ -205,7 +205,10 @@ DataOutputStream::DataOutputStream(std::ostream * ostream, const osgDB::ReaderWr
     _output_ostream = _ostream = ostream;
 
     if(!_ostream)
-        throw Exception("DataOutputStream::DataOutputStream(): null pointer exception in argument.");
+    {
+        throwException("DataOutputStream::DataOutputStream(): null pointer exception in argument.");
+        return;
+    }
 
     writeUInt(ENDIAN_TYPE) ;
     writeUInt(getVersion());
@@ -489,7 +492,7 @@ void DataOutputStream::writeBinding(osg::Geometry::AttributeBinding b){
         case osg::Geometry::BIND_PER_PRIMITIVE:        writeChar((char) 2); break;
         case osg::Geometry::BIND_PER_PRIMITIVE_SET:    writeChar((char) 3); break;
         case osg::Geometry::BIND_PER_VERTEX:        writeChar((char) 4); break;
-        default: throw Exception("Unknown binding in DataOutputStream::writeBinding()");
+        default: throwException("Unknown binding in DataOutputStream::writeBinding()");
     }
 
     if (_verboseOutput) std::cout<<"read/writeBinding() ["<<b<<"]"<<std::endl;
@@ -569,7 +572,7 @@ void DataOutputStream::writeArray(const osg::Array* a){
              writeChar((char)17);
              writeVec4dArray(static_cast<const osg::Vec4dArray*>(a));
              break;
-        default: throw Exception("Unknown array type in DataOutputStream::writeArray()");
+        default: throwException("Unknown array type in DataOutputStream::writeArray()");
     }
 }
 
@@ -1107,7 +1110,7 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
 
         else{
             std::string className = attribute->className();
-            throw Exception(std::string("StateSet::write(): Unknown StateAttribute: ").append(className));
+            throwException(std::string("StateSet::write(): Unknown StateAttribute: ").append(className));
         }
         if (_verboseOutput) std::cout<<"read/writeStateAttribute() ["<<id<<"]"<<std::endl;
     }
@@ -1200,7 +1203,7 @@ void DataOutputStream::writeDrawable(const osg::Drawable* drawable)
             ((ive::Text*)(drawable))->write(this);
         else
         {
-            throw Exception("Unknown drawable in DataOutputStream::writeDrawable()");
+            throwException("Unknown drawable in DataOutputStream::writeDrawable()");
         }
         if (_verboseOutput) std::cout<<"read/writeDrawable() ["<<id<<"]"<<std::endl;
     }
@@ -1241,7 +1244,7 @@ void DataOutputStream::writeShape(const osg::Shape* shape)
             ((ive::HeightField*)(shape))->write(this);
         else
         {
-            throw Exception("Unknown shape in DataOutputStream::writeShape()");
+            throwException("Unknown shape in DataOutputStream::writeShape()");
         }
         if (_verboseOutput) std::cout<<"read/writeShape() ["<<id<<"]"<<std::endl;
     }
@@ -1378,7 +1381,7 @@ void DataOutputStream::writeNode(const osg::Node* node)
             ((ive::LightPointNode*)(node))->write(this);
         }
         else
-            throw Exception("Unknown node in Group::write()");
+            throwException("Unknown node in Group::write()");
 
         if (_verboseOutput) std::cout<<"read/writeNode() ["<<id<<"]"<<std::endl;
     }
@@ -1528,7 +1531,7 @@ void DataOutputStream::writeImage(IncludeImageMode mode, osg::Image *image)
             writeInt(0);
             break;
         default:
-            throw Exception("DataOutputStream::writeImage(): Invalid IncludeImageMode value.");
+            throwException("DataOutputStream::writeImage(): Invalid IncludeImageMode value.");
             break;
     }
 }
@@ -1591,7 +1594,7 @@ void DataOutputStream::writeLayer(const osgTerrain::Layer* layer)
         }
         else
         {
-            throw Exception("Unknown layer in DataOutputStream::writeLayer()");
+            throwException("Unknown layer in DataOutputStream::writeLayer()");
         }
         if (_verboseOutput) std::cout<<"read/writeLayer() ["<<id<<"]"<<std::endl;
     }
@@ -1670,7 +1673,7 @@ void DataOutputStream::writeVolumeLayer(const osgVolume::Layer* layer)
         }
         else
         {
-            throw Exception("Unknown layer in DataOutputStream::writeLayer()");
+            throwException("Unknown layer in DataOutputStream::writeLayer()");
         }
         if (_verboseOutput) std::cout<<"read/writeLayer() ["<<id<<"]"<<std::endl;
     }
@@ -1782,7 +1785,7 @@ void DataOutputStream::writeVolumeProperty(const osgVolume::Property* property)
         }
         else
         {
-            throw Exception("Unknown layer in DataOutputStream::writVolumeProperty()");
+            throwException("Unknown layer in DataOutputStream::writVolumeProperty()");
         }
 
         if (_verboseOutput) std::cout<<"read/writeVolumeProperty() ["<<id<<"]"<<std::endl;

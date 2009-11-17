@@ -35,7 +35,7 @@ void Group::write(DataOutputStream* out){
         static_cast<ive::Node*>(node)->write(out);
     }
     else
-        throw Exception("Group::write(): Could not cast this osg::Group to an osg::Node.");
+        out_THROW_EXCEPTION("Group::write(): Could not cast this osg::Group to an osg::Node.");
 
     // Write Group's properties.
 
@@ -61,7 +61,7 @@ void Group::read(DataInputStream* in){
             ((ive::Node*)(node))->read(in);
         }
         else
-            throw Exception("Group::read(): Could not cast this osg::Group to an osg::Node.");
+            in_THROW_EXCEPTION("Group::read(): Could not cast this osg::Group to an osg::Node.");
 
 
         // Read groups properties.
@@ -75,6 +75,6 @@ void Group::read(DataInputStream* in){
         }
     }
     else{
-        throw Exception("Group::read(): Expected Group identification");
+        in_THROW_EXCEPTION("Group::read(): Expected Group identification");
     }
 }

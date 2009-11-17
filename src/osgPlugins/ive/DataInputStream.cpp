@@ -157,7 +157,7 @@ DataInputStream::DataInputStream(std::istream* istream, const osgDB::ReaderWrite
     }
 
     if(!istream){
-        throw Exception("DataInputStream::DataInputStream(): null pointer exception in argument.");
+        throwException("DataInputStream::DataInputStream(): null pointer exception in argument.");
     }
 
     endianType = readUInt() ;
@@ -165,7 +165,7 @@ DataInputStream::DataInputStream(std::istream* istream, const osgDB::ReaderWrite
     if ( endianType != ENDIAN_TYPE) {
       // Make sure the file is simply swapped
       if ( endianType != OPPOSITE_ENDIAN_TYPE ) {
-         throw Exception("DataInputStream::DataInputStream(): This file has an unreadable endian type.") ;
+         throwException("DataInputStream::DataInputStream(): This file has an unreadable endian type.") ;
       }
       osg::notify(osg::INFO)<<"DataInputStream::DataInputStream: Reading a byteswapped file" << std::endl ;
       _byteswap = 1 ;
@@ -175,7 +175,7 @@ DataInputStream::DataInputStream(std::istream* istream, const osgDB::ReaderWrite
 
     // Are we trying to open a binary .ive file which version are newer than this library.
     if(_version>VERSION){
-        throw Exception("DataInputStream::DataInputStream(): The version found in the file is newer than this library can handle.");
+        throwException("DataInputStream::DataInputStream(): The version found in the file is newer than this library can handle.");
     }
     
     if (_version>=VERSION_0033)
@@ -193,7 +193,8 @@ DataInputStream::DataInputStream(std::istream* istream, const osgDB::ReaderWrite
             
             if (!uncompress(*istream, data))
             {
-                throw Exception("Error in uncompressing .ive");
+                throwException("Error in uncompressing .ive");
+                return;
             }
             
             _istream = new std::stringstream(data);
@@ -292,7 +293,7 @@ bool DataInputStream::readBool(){
     _istream->read(&c, CHARSIZE);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readBool(): Failed to read boolean value.");
+        throwException("DataInputStream::readBool(): Failed to read boolean value.");
 
     if (_verboseOutput) std::cout<<"read/writeBool() ["<<(int)c<<"]"<<std::endl;
 
@@ -304,7 +305,7 @@ char DataInputStream::readChar(){
     _istream->read(&c, CHARSIZE);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readChar(): Failed to read char value.");
+        throwException("DataInputStream::readChar(): Failed to read char value.");
 
     if (_verboseOutput) std::cout<<"read/writeChar() ["<<(int)c<<"]"<<std::endl;
 
@@ -316,7 +317,7 @@ unsigned char DataInputStream::readUChar(){
     _istream->read((char*)&c, CHARSIZE);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readUChar(): Failed to read unsigned char value.");
+        throwException("DataInputStream::readUChar(): Failed to read unsigned char value.");
 
     if (_verboseOutput) std::cout<<"read/writeUChar() ["<<(int)c<<"]"<<std::endl;
 
@@ -327,7 +328,7 @@ unsigned short DataInputStream::readUShort(){
     unsigned short s;
     _istream->read((char*)&s, SHORTSIZE);
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readUShort(): Failed to read unsigned short value.");
+        throwException("DataInputStream::readUShort(): Failed to read unsigned short value.");
 
     if (_verboseOutput) std::cout<<"read/writeUShort() ["<<s<<"]"<<std::endl;
 
@@ -341,7 +342,7 @@ unsigned int DataInputStream::readUInt(){
     _istream->read((char*)&s, INTSIZE);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readUInt(): Failed to read unsigned int value.");
+        throwException("DataInputStream::readUInt(): Failed to read unsigned int value.");
 
     if (_byteswap) osg::swapBytes((char *)&s,INTSIZE) ;
 
@@ -362,7 +363,7 @@ int DataInputStream::readInt(){
     // premature exit when reading .ive files under OSX!#?:!
     // Robet Osfield, September 12th 2003.
     // if (_istream->rdstate() & _istream->failbit)
-    //    throw Exception("DataInputStream::readInt(): Failed to read int value.");
+    //    throwException("DataInputStream::readInt(): Failed to read int value.");
 
 
     if (_byteswap) osg::swapBytes((char *)&i,INTSIZE) ;
@@ -390,7 +391,7 @@ float DataInputStream::readFloat(){
     float f;
     _istream->read((char*)&f, FLOATSIZE);
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readFloat(): Failed to read float value.");
+        throwException("DataInputStream::readFloat(): Failed to read float value.");
 
     if (_byteswap) osg::swapBytes((char *)&f,FLOATSIZE) ;
 
@@ -402,7 +403,7 @@ long DataInputStream::readLong(){
     long l;
     _istream->read((char*)&l, LONGSIZE);
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readLong(): Failed to read long value.");
+        throwException("DataInputStream::readLong(): Failed to read long value.");
 
     if (_byteswap) osg::swapBytes((char *)&l,LONGSIZE) ;
 
@@ -414,7 +415,7 @@ unsigned long DataInputStream::readULong(){
     unsigned long l;
     _istream->read((char*)&l, LONGSIZE);
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readULong(): Failed to read unsigned long value.");
+        throwException("DataInputStream::readULong(): Failed to read unsigned long value.");
 
     if (_byteswap) osg::swapBytes((char *)&l,LONGSIZE) ;
 
@@ -428,7 +429,7 @@ double DataInputStream::readDouble()
     double d;
     _istream->read((char*)&d, DOUBLESIZE);
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readDouble(): Failed to read double value.");
+        throwException("DataInputStream::readDouble(): Failed to read double value.");
 
     if (_byteswap) osg::swapBytes((char *)&d,DOUBLESIZE) ;
     if (_verboseOutput) std::cout<<"read/writeDouble() ["<<d<<"]"<<std::endl;
@@ -444,7 +445,7 @@ std::string DataInputStream::readString()
         s.resize(size);
         _istream->read((char*)s.c_str(), size);
         //if (_istream->rdstate() & _istream->failbit)
-        //   throw Exception("DataInputStream::readString(): Failed to read string value.");
+        //   throwException("DataInputStream::readString(): Failed to read string value.");
 
         if (_verboseOutput) std::cout<<"read/writeString() ["<<s<<"]"<<std::endl;
     }
@@ -456,7 +457,7 @@ void DataInputStream::readCharArray(char* data, int size)
 {
     _istream->read(data, size);
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readCharArray(): Failed to read char value.");
+        throwException("DataInputStream::readCharArray(): Failed to read char value.");
 
     if (_verboseOutput) std::cout<<"read/writeCharArray() ["<<data<<"]"<<std::endl;
 }
@@ -591,7 +592,9 @@ osg::Geometry::AttributeBinding DataInputStream::readBinding(){
         case 2: return osg::Geometry::BIND_PER_PRIMITIVE;
         case 3: return osg::Geometry::BIND_PER_PRIMITIVE_SET;
         case 4: return osg::Geometry::BIND_PER_VERTEX;
-        default: throw Exception("Unknown binding type in DataInputStream::readBinding()");
+        default: 
+            throwException("Unknown binding type in DataInputStream::readBinding()");
+            return osg::Geometry::BIND_OFF;
     }
 }
 
@@ -616,7 +619,9 @@ osg::Array* DataInputStream::readArray(){
         case 15:   return readVec2dArray();
         case 16:   return readVec3dArray();
         case 17:   return readVec4dArray();
-        default: throw Exception("Unknown array type in DataInputStream::readArray()");
+        default: 
+            throwException("Unknown array type in DataInputStream::readArray()");
+            return 0;
     }
 }
 
@@ -625,12 +630,16 @@ osg::IntArray* DataInputStream::readIntArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    osg::IntArray* a = new osg::IntArray(size);
+    
+    osg::ref_ptr<osg::IntArray> a = new osg::IntArray(size);
 
     _istream->read((char*)&((*a)[0]), INTSIZE*size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readIntArray(): Failed to read Int array.");
+    {
+        throwException("DataInputStream::readIntArray(): Failed to read Int array.");
+        return 0;
+    }
 
     if (_verboseOutput) std::cout<<"read/writeIntArray() ["<<size<<"]"<<std::endl;
 
@@ -638,7 +647,7 @@ osg::IntArray* DataInputStream::readIntArray()
        for (int  i = 0 ; i < size ; i++ ) osg::swapBytes((char *)&((*a)[i]),INTSIZE) ;
     }
 
-    return a;
+    return a.release();
 }
 
 osg::UByteArray* DataInputStream::readUByteArray()
@@ -646,16 +655,20 @@ osg::UByteArray* DataInputStream::readUByteArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    osg::UByteArray* a = new osg::UByteArray(size);
+
+    osg::ref_ptr<osg::UByteArray> a = new osg::UByteArray(size);
 
     _istream->read((char*)&((*a)[0]), CHARSIZE*size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readUByteArray(): Failed to read UByte array.");
+    {
+        throwException("DataInputStream::readUByteArray(): Failed to read UByte array.");
+        return 0;
+    }
 
     if (_verboseOutput) std::cout<<"read/writeUByteArray() ["<<size<<"]"<<std::endl;
 
-    return a;
+    return a.release();
 }
 
 osg::UShortArray* DataInputStream::readUShortArray()
@@ -663,12 +676,16 @@ osg::UShortArray* DataInputStream::readUShortArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    osg::UShortArray* a = new osg::UShortArray(size);
+    
+    osg::ref_ptr<osg::UShortArray> a = new osg::UShortArray(size);
 
     _istream->read((char*)&((*a)[0]), SHORTSIZE*size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readUShortArray(): Failed to read UShort array.");
+    {
+        throwException("DataInputStream::readUShortArray(): Failed to read UShort array.");
+        return 0;
+    }
 
     if (_verboseOutput) std::cout<<"read/writeUShortArray() ["<<size<<"]"<<std::endl;
 
@@ -677,7 +694,7 @@ osg::UShortArray* DataInputStream::readUShortArray()
         for (int i = 0 ; i < size ; i++ )
             osg::swapBytes((char *)&((*a)[i]),SHORTSIZE) ;
     }
-    return a;
+    return a.release();
 }
 
 osg::UIntArray* DataInputStream::readUIntArray()
@@ -685,12 +702,16 @@ osg::UIntArray* DataInputStream::readUIntArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    osg::UIntArray* a = new osg::UIntArray(size);
+    
+    osg::ref_ptr<osg::UIntArray> a = new osg::UIntArray(size);
 
     _istream->read((char*)&((*a)[0]), INTSIZE*size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readUIntArray(): Failed to read UInt array.");
+    {
+        throwException("DataInputStream::readUIntArray(): Failed to read UInt array.");
+        return 0;
+    }
 
     if (_verboseOutput) std::cout<<"read/writeUIntArray() ["<<size<<"]"<<std::endl;
 
@@ -699,7 +720,7 @@ osg::UIntArray* DataInputStream::readUIntArray()
         for (int i = 0 ; i < size ; i++ )
             osg::swapBytes((char *)&((*a)[i]),INTSIZE) ;
     }
-    return a;
+    return a.release();
 }
 
 osg::Vec4ubArray* DataInputStream::readVec4ubArray()
@@ -707,16 +728,20 @@ osg::Vec4ubArray* DataInputStream::readVec4ubArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    osg::Vec4ubArray* a = new osg::Vec4ubArray(size);
+    
+    osg::ref_ptr<osg::Vec4ubArray> a = new osg::Vec4ubArray(size);
 
     _istream->read((char*)&((*a)[0]), INTSIZE*size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readVec4ubArray(): Failed to read Vec4ub array.");
+    {
+        throwException("DataInputStream::readVec4ubArray(): Failed to read Vec4ub array.");
+        return 0;
+    }
 
     if (_verboseOutput) std::cout<<"read/writeVec4ubArray() ["<<size<<"]"<<std::endl;
 
-    return a;
+    return a.release();
 }
 
 bool DataInputStream::readPackedFloatArray(osg::FloatArray* a)
@@ -781,7 +806,10 @@ bool DataInputStream::readPackedFloatArray(osg::FloatArray* a)
     }
     
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readFloatArray(): Failed to read float array.");
+    {
+        throwException("DataInputStream::readFloatArray(): Failed to read float array.");
+        return false;
+    }
 
     if (_verboseOutput) std::cout<<"read/writeFloatArray() ["<<size<<"]"<<std::endl;
 
@@ -795,12 +823,15 @@ osg::FloatArray* DataInputStream::readFloatArray()
     if (size == 0)
         return NULL;
 
-    osg::FloatArray* a = new osg::FloatArray(size);
+    osg::ref_ptr<osg::FloatArray> a = new osg::FloatArray(size);
 
     _istream->read((char*)&((*a)[0]), FLOATSIZE*size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readFloatArray(): Failed to read float array.");
+    {
+        throwException("DataInputStream::readFloatArray(): Failed to read float array.");
+        return 0;
+    }
 
     if (_verboseOutput) std::cout<<"read/writeFloatArray() ["<<size<<"]"<<std::endl;
 
@@ -809,7 +840,7 @@ osg::FloatArray* DataInputStream::readFloatArray()
         for (int i = 0 ; i < size ; i++ )
             osg::swapBytes((char *)&((*a)[i]),FLOATSIZE) ;
     }
-    return a;
+    return a.release();
 }
 
 osg::Vec2Array* DataInputStream::readVec2Array()
@@ -818,12 +849,15 @@ osg::Vec2Array* DataInputStream::readVec2Array()
     if (size == 0)
         return NULL;
 
-    osg::Vec2Array* a = new osg::Vec2Array(size);
+    osg::ref_ptr<osg::Vec2Array> a = new osg::Vec2Array(size);
 
     _istream->read((char*)&((*a)[0]), FLOATSIZE*2*size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readVec2Array(): Failed to read Vec2 array.");
+    {
+        throwException("DataInputStream::readVec2Array(): Failed to read Vec2 array.");
+        return 0;
+    }
 
     if (_verboseOutput) std::cout<<"read/writeVec2Array() ["<<size<<"]"<<std::endl;
 
@@ -835,7 +869,7 @@ osg::Vec2Array* DataInputStream::readVec2Array()
           osg::swapBytes((char *)&(ptr[i]), FLOATSIZE) ;
        }
     }
-    return a;
+    return a.release();
 }
 
 osg::Vec3Array* DataInputStream::readVec3Array()
@@ -843,12 +877,16 @@ osg::Vec3Array* DataInputStream::readVec3Array()
     int size = readInt();
     if (size == 0)
         return NULL;
-    osg::Vec3Array* a = new osg::Vec3Array(size);
+    
+    osg::ref_ptr<osg::Vec3Array> a = new osg::Vec3Array(size);
 
     _istream->read((char*)&((*a)[0]), FLOATSIZE*3*size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readVec3Array(): Failed to read Vec3 array.");
+    {
+        throwException("DataInputStream::readVec3Array(): Failed to read Vec3 array.");
+        return 0;
+    }
 
     if (_verboseOutput) std::cout<<"read/writeVec3Array() ["<<size<<"]"<<std::endl;
 
@@ -861,19 +899,23 @@ osg::Vec3Array* DataInputStream::readVec3Array()
           osg::swapBytes((char *)&(ptr[i]),FLOATSIZE) ;
        }
     }
-    return a;
+    return a.release();
 }
 
 osg::Vec4Array* DataInputStream::readVec4Array(){
     int size = readInt();
     if (size == 0)
         return NULL;
-    osg::Vec4Array* a = new osg::Vec4Array(size);
+    
+    osg::ref_ptr<osg::Vec4Array> a = new osg::Vec4Array(size);
 
     _istream->read((char*)&((*a)[0]), FLOATSIZE*4*size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readVec4Array(): Failed to read Vec4 array.");
+    {
+        throwException("DataInputStream::readVec4Array(): Failed to read Vec4 array.");
+        return 0;
+    }
 
     if (_verboseOutput) std::cout<<"read/writeVec4Array() ["<<size<<"]"<<std::endl;
 
@@ -883,7 +925,7 @@ osg::Vec4Array* DataInputStream::readVec4Array(){
           osg::swapBytes((char *)&(ptr[i]),FLOATSIZE) ;
        }
     }
-    return a;
+    return a.release();
 }
 
 osg::Vec2bArray* DataInputStream::readVec2bArray()
@@ -891,16 +933,20 @@ osg::Vec2bArray* DataInputStream::readVec2bArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    osg::Vec2bArray* a = new osg::Vec2bArray(size);
+    
+    osg::ref_ptr<osg::Vec2bArray> a = new osg::Vec2bArray(size);
 
     _istream->read((char*)&((*a)[0]), CHARSIZE * 2 * size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readVec2bArray(): Failed to read Vec2b array.");
+    {
+        throwException("DataInputStream::readVec2bArray(): Failed to read Vec2b array.");
+        return 0;
+    }
 
     if (_verboseOutput) std::cout<<"read/writeVec2bArray() ["<<size<<"]"<<std::endl;
 
-    return a;
+    return a.release();
 }
 
 osg::Vec3bArray* DataInputStream::readVec3bArray()
@@ -908,16 +954,20 @@ osg::Vec3bArray* DataInputStream::readVec3bArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    osg::Vec3bArray* a = new osg::Vec3bArray(size);
+    
+    osg::ref_ptr<osg::Vec3bArray> a = new osg::Vec3bArray(size);
 
     _istream->read((char*)&((*a)[0]), CHARSIZE * 3 * size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readVec3bArray(): Failed to read Vec3b array.");
+    {
+        throwException("DataInputStream::readVec3bArray(): Failed to read Vec3b array.");
+        return 0;
+    }
 
     if (_verboseOutput) std::cout<<"read/writeVec3bArray() ["<<size<<"]"<<std::endl;
 
-    return a;
+    return a.release();
 }
 
 osg::Vec4bArray* DataInputStream::readVec4bArray()
@@ -925,16 +975,20 @@ osg::Vec4bArray* DataInputStream::readVec4bArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    osg::Vec4bArray* a = new osg::Vec4bArray(size);
+    
+    osg::ref_ptr<osg::Vec4bArray> a = new osg::Vec4bArray(size);
 
     _istream->read((char*)&((*a)[0]), CHARSIZE * 4 * size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readVec4bArray(): Failed to read Vec4b array.");
+    {
+        throwException("DataInputStream::readVec4bArray(): Failed to read Vec4b array.");
+        return 0;
+    }
 
     if (_verboseOutput) std::cout<<"read/writeVec4bArray() ["<<size<<"]"<<std::endl;
 
-    return a;
+    return a.release();
 }
 
 osg::Vec2sArray* DataInputStream::readVec2sArray()
@@ -942,12 +996,16 @@ osg::Vec2sArray* DataInputStream::readVec2sArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    osg::Vec2sArray* a = new osg::Vec2sArray(size);
+    
+    osg::ref_ptr<osg::Vec2sArray> a = new osg::Vec2sArray(size);
 
     _istream->read((char*)&((*a)[0]), SHORTSIZE * 2 * size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readVec2sArray(): Failed to read Vec2s array.");
+    {
+        throwException("DataInputStream::readVec2sArray(): Failed to read Vec2s array.");
+        return 0;
+    }
 
     if (_verboseOutput) std::cout<<"read/writeVec2sArray() ["<<size<<"]"<<std::endl;
 
@@ -960,7 +1018,7 @@ osg::Vec2sArray* DataInputStream::readVec2sArray()
        }
     }
 
-    return a;
+    return a.release();
 }
 
 osg::Vec3sArray* DataInputStream::readVec3sArray()
@@ -968,12 +1026,16 @@ osg::Vec3sArray* DataInputStream::readVec3sArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    osg::Vec3sArray* a = new osg::Vec3sArray(size);
+    
+    osg::ref_ptr<osg::Vec3sArray> a = new osg::Vec3sArray(size);
 
     _istream->read((char*)&((*a)[0]), SHORTSIZE * 3 * size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readVec3sArray(): Failed to read Vec3s array.");
+    {
+        throwException("DataInputStream::readVec3sArray(): Failed to read Vec3s array.");
+        return 0;
+    }
 
     if (_verboseOutput) std::cout<<"read/writeVec3sArray() ["<<size<<"]"<<std::endl;
 
@@ -987,7 +1049,7 @@ osg::Vec3sArray* DataInputStream::readVec3sArray()
        }
     }
 
-    return a;
+    return a.release();
 }
 
 osg::Vec4sArray* DataInputStream::readVec4sArray()
@@ -995,12 +1057,16 @@ osg::Vec4sArray* DataInputStream::readVec4sArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    osg::Vec4sArray* a = new osg::Vec4sArray(size);
+    
+    osg::ref_ptr<osg::Vec4sArray> a = new osg::Vec4sArray(size);
 
     _istream->read((char*)&((*a)[0]), SHORTSIZE * 4 * size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readVec4sArray(): Failed to read Vec4s array.");
+    {
+        throwException("DataInputStream::readVec4sArray(): Failed to read Vec4s array.");
+        return 0;
+    }
 
     if (_verboseOutput) std::cout<<"read/writeVec4sArray() ["<<size<<"]"<<std::endl;
 
@@ -1013,7 +1079,7 @@ osg::Vec4sArray* DataInputStream::readVec4sArray()
        }
     }
 
-    return a;
+    return a.release();
 }
 
 osg::Vec2dArray* DataInputStream::readVec2dArray()
@@ -1022,12 +1088,15 @@ osg::Vec2dArray* DataInputStream::readVec2dArray()
     if (size == 0)
         return NULL;
 
-    osg::Vec2dArray* a = new osg::Vec2dArray(size);
+    osg::ref_ptr<osg::Vec2dArray> a = new osg::Vec2dArray(size);
 
     _istream->read((char*)&((*a)[0]), DOUBLESIZE*2*size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readVec2dArray(): Failed to read Vec2d array.");
+    {
+        throwException("DataInputStream::readVec2dArray(): Failed to read Vec2d array.");
+        return 0;
+    }
 
     if (_verboseOutput) std::cout<<"read/writeVec2dArray() ["<<size<<"]"<<std::endl;
 
@@ -1039,7 +1108,7 @@ osg::Vec2dArray* DataInputStream::readVec2dArray()
           osg::swapBytes((char *)&(ptr[i]), DOUBLESIZE) ;
        }
     }
-    return a;
+    return a.release();
 }
 
 osg::Vec3dArray* DataInputStream::readVec3dArray()
@@ -1047,12 +1116,16 @@ osg::Vec3dArray* DataInputStream::readVec3dArray()
     int size = readInt();
     if (size == 0)
         return NULL;
-    osg::Vec3dArray* a = new osg::Vec3dArray(size);
+    
+    osg::ref_ptr<osg::Vec3dArray> a = new osg::Vec3dArray(size);
 
     _istream->read((char*)&((*a)[0]), DOUBLESIZE*3*size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readVec3dArray(): Failed to read Vec3d array.");
+    {
+        throwException("DataInputStream::readVec3dArray(): Failed to read Vec3d array.");
+        return 0;
+    }
 
     if (_verboseOutput) std::cout<<"read/writeVec3dArray() ["<<size<<"]"<<std::endl;
 
@@ -1065,19 +1138,23 @@ osg::Vec3dArray* DataInputStream::readVec3dArray()
           osg::swapBytes((char *)&(ptr[i]),DOUBLESIZE) ;
        }
     }
-    return a;
+    return a.release();
 }
 
 osg::Vec4dArray* DataInputStream::readVec4dArray(){
     int size = readInt();
     if (size == 0)
         return NULL;
-    osg::Vec4dArray* a = new osg::Vec4dArray(size);
+    
+    osg::ref_ptr<osg::Vec4dArray> a = new osg::Vec4dArray(size);
 
     _istream->read((char*)&((*a)[0]), DOUBLESIZE*4*size);
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readVec4dArray(): Failed to read Vec4d array.");
+    {
+        throwException("DataInputStream::readVec4dArray(): Failed to read Vec4d array.");
+        return 0;
+    }
 
     if (_verboseOutput) std::cout<<"read/writeVec4dArray() ["<<size<<"]"<<std::endl;
 
@@ -1087,7 +1164,7 @@ osg::Vec4dArray* DataInputStream::readVec4dArray(){
           osg::swapBytes((char *)&(ptr[i]),DOUBLESIZE) ;
        }
     }
-    return a;
+    return a.release();
 }
 
 osg::Matrixf DataInputStream::readMatrixf()
@@ -1102,7 +1179,10 @@ osg::Matrixf DataInputStream::readMatrixf()
     }
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readMatrix(): Failed to read Matrix array.");
+    {
+        throwException("DataInputStream::readMatrix(): Failed to read Matrix array.");
+        return osg::Matrixf();
+    }
 
     if (_verboseOutput) std::cout<<"read/writeMatrix() ["<<mat<<"]"<<std::endl;
 
@@ -1122,7 +1202,10 @@ osg::Matrixd DataInputStream::readMatrixd()
     }
 
     if (_istream->rdstate() & _istream->failbit)
-        throw Exception("DataInputStream::readMatrix(): Failed to read Matrix array.");
+    {
+        throwException("DataInputStream::readMatrix(): Failed to read Matrix array.");
+        return osg::Matrixd();
+    }
 
     if (_verboseOutput) std::cout<<"read/writeMatrix() ["<<mat<<"]"<<std::endl;
 
@@ -1233,7 +1316,7 @@ osg::Image* DataInputStream::readImage(IncludeImageMode mode)
             }
             break;
         default:
-            throw Exception("DataInputStream::readImage(): Invalid IncludeImageMode value.");
+            throwException("DataInputStream::readImage(): Invalid IncludeImageMode value.");
             break;
     }
     return 0;
@@ -1249,10 +1332,13 @@ osg::StateSet* DataInputStream::readStateSet()
 
     // StateSet is not in list.
     // Create a new stateset,
-    osg::StateSet* stateset = new osg::StateSet();
+    osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet();
 
     // read its properties from stream
-    ((ive::StateSet*)(stateset))->read(this);
+    ((ive::StateSet*)(stateset.get()))->read(this);
+    
+    // exit early if an exception has been set.
+    if (getException()) return 0;
 
     // and add it to the stateset map,
     _statesetMap[id] = stateset;
@@ -1260,7 +1346,7 @@ osg::StateSet* DataInputStream::readStateSet()
 
     if (_verboseOutput) std::cout<<"read/writeStateSet() ["<<id<<"]"<<std::endl;
 
-    return stateset;
+    return stateset.get();
 }
 
 osg::StateAttribute* DataInputStream::readStateAttribute()
@@ -1275,160 +1361,164 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     // Create a new stateattribute,
 
 
-    osg::StateAttribute* attribute;
+    osg::ref_ptr<osg::StateAttribute> attribute;
     int attributeID = peekInt();
     if(attributeID == IVEALPHAFUNC){
         attribute = new osg::AlphaFunc();
-        ((ive::AlphaFunc*)(attribute))->read(this);
+        ((ive::AlphaFunc*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVEBLENDCOLOR){
         attribute = new osg::BlendColor();
-        ((ive::BlendColor*)(attribute))->read(this);
+        ((ive::BlendColor*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVEBLENDFUNC ||
             attributeID == IVEBLENDFUNCSEPARATE){
         attribute = new osg::BlendFunc();
-        ((ive::BlendFunc*)(attribute))->read(this);
+        ((ive::BlendFunc*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVEBLENDEQUATION){
         attribute = new osg::BlendEquation();
-        ((ive::BlendEquation*)(attribute))->read(this);
+        ((ive::BlendEquation*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVEDEPTH){
         attribute = new osg::Depth();
-        ((ive::Depth*)(attribute))->read(this);
+        ((ive::Depth*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVEVIEWPORT){
         attribute = new osg::Viewport();
-        ((ive::Viewport*)(attribute))->read(this);
+        ((ive::Viewport*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVESCISSOR){
         attribute = new osg::Scissor();
-        ((ive::Scissor*)(attribute))->read(this);
+        ((ive::Scissor*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVEMATERIAL){
         attribute = new osg::Material();
-        ((ive::Material*)(attribute))->read(this);
+        ((ive::Material*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVECULLFACE){
         attribute = new osg::CullFace();
-        ((ive::CullFace*)(attribute))->read(this);
+        ((ive::CullFace*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVECOLORMASK){
         attribute = new osg::ColorMask();
-        ((ive::ColorMask*)(attribute))->read(this);
+        ((ive::ColorMask*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVECLIPPLANE){
         attribute = new osg::ClipPlane();
-        ((ive::ClipPlane*)(attribute))->read(this);
+        ((ive::ClipPlane*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVEPOLYGONOFFSET){
         attribute = new osg::PolygonOffset();
-        ((ive::PolygonOffset*)(attribute))->read(this);
+        ((ive::PolygonOffset*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVEPOLYGONMODE){
         attribute = new osg::PolygonMode();
-        ((ive::PolygonMode*)(attribute))->read(this);
+        ((ive::PolygonMode*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVESHADEMODEL){
         attribute = new osg::ShadeModel();
-        ((ive::ShadeModel*)(attribute))->read(this);
+        ((ive::ShadeModel*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVEPOINT){
         attribute = new osg::Point();
-        ((ive::Point*)(attribute))->read(this);
+        ((ive::Point*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVELINEWIDTH){
         attribute = new osg::LineWidth();
-        ((ive::LineWidth*)(attribute))->read(this);
+        ((ive::LineWidth*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVETEXTURE1D){
         attribute = new osg::Texture1D();
-        ((ive::Texture1D*)(attribute))->read(this);
+        ((ive::Texture1D*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVETEXTURE2D){
         attribute = new osg::Texture2D();
-        ((ive::Texture2D*)(attribute))->read(this);
+        ((ive::Texture2D*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVETEXTURE3D){
         attribute = new osg::Texture3D();
-        ((ive::Texture3D*)(attribute))->read(this);
+        ((ive::Texture3D*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVETEXTURECUBEMAP){
         attribute = new osg::TextureCubeMap();
-        ((ive::TextureCubeMap*)(attribute))->read(this);
+        ((ive::TextureCubeMap*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVETEXTURERECTANGLE){
         attribute = new osg::TextureRectangle();
-        ((ive::TextureRectangle*)(attribute))->read(this);
+        ((ive::TextureRectangle*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVETEXENV){
         attribute = new osg::TexEnv();
-        ((ive::TexEnv*)(attribute))->read(this);
+        ((ive::TexEnv*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVETEXENVCOMBINE){
         attribute = new osg::TexEnvCombine();
-        ((ive::TexEnvCombine*)(attribute))->read(this);
+        ((ive::TexEnvCombine*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVETEXGEN){
         attribute = new osg::TexGen();
-        ((ive::TexGen*)(attribute))->read(this);
+        ((ive::TexGen*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVETEXMAT){
         attribute = new osg::TexMat();
-        ((ive::TexMat*)(attribute))->read(this);
+        ((ive::TexMat*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVEFRAGMENTPROGRAM){
         attribute = new osg::FragmentProgram();
-        ((ive::FragmentProgram*)(attribute))->read(this);
+        ((ive::FragmentProgram*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVEVERTEXPROGRAM){
         attribute = new osg::VertexProgram();
-        ((ive::VertexProgram*)(attribute))->read(this);
+        ((ive::VertexProgram*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVELIGHTMODEL){
         attribute = new osg::LightModel();
-        ((ive::LightModel*)(attribute))->read(this);
+        ((ive::LightModel*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVEFRONTFACE){
         attribute = new osg::FrontFace();
-        ((ive::FrontFace*)(attribute))->read(this);
+        ((ive::FrontFace*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVEPROGRAM){
         attribute = new osg::Program();
-        ((ive::Program*)(attribute))->read(this);
+        ((ive::Program*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVEPOINTSPRITE){
         attribute = new osg::PointSprite();
-        ((ive::PointSprite*)(attribute))->read(this);
+        ((ive::PointSprite*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVEMULTISAMPLE){
         attribute = new osg::Multisample();
-        ((ive::Multisample*)(attribute))->read(this);
+        ((ive::Multisample*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVELINESTIPPLE){
         attribute = new osg::LineStipple();
-        ((ive::LineStipple*)(attribute))->read(this);
+        ((ive::LineStipple*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVESTENCIL){
         attribute = new osg::Stencil();
-        ((ive::Stencil*)(attribute))->read(this);
+        ((ive::Stencil*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVEFOG){
         attribute = new osg::Fog();
-        ((ive::Fog*)(attribute))->read(this);
+        ((ive::Fog*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVELIGHT){
         attribute = new osg::Light();
-        ((ive::Light*)(attribute))->read(this);
+        ((ive::Light*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVEPOLYGONSTIPPLE){
         attribute = new osg::PolygonStipple();
-        ((ive::PolygonStipple*)(attribute))->read(this);
+        ((ive::PolygonStipple*)(attribute.get()))->read(this);
     }
     else{
-        throw Exception("Unknown StateAttribute in StateSet::read()");
+        throwException("Unknown StateAttribute in StateSet::read()");
+        return 0;
     }
+    
+    // exit early if an exception has been set.
+    if (getException()) return 0;
 
     // and add it to the stateattribute map,
     _stateAttributeMap[id] = attribute;
@@ -1436,7 +1526,7 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
 
     if (_verboseOutput) std::cout<<"read/writeStateAttribute() ["<<id<<"]"<<std::endl;
 
-    return attribute;
+    return attribute.get();
 }
 
 osg::Uniform* DataInputStream::readUniform()
@@ -1449,10 +1539,13 @@ osg::Uniform* DataInputStream::readUniform()
 
     // Uniform is not in list.
     // Create a new uniform,
-    osg::Uniform* uniform = new osg::Uniform();
+    osg::ref_ptr<osg::Uniform> uniform = new osg::Uniform();
 
     // read its properties from stream
-    ((ive::Uniform*)(uniform))->read(this);
+    ((ive::Uniform*)(uniform.get()))->read(this);
+    
+    // exit early if an exception has been set.
+    if (getException()) return 0;
 
     // and add it to the uniform map,
     _uniformMap[id] = uniform;
@@ -1460,7 +1553,7 @@ osg::Uniform* DataInputStream::readUniform()
 
     if (_verboseOutput) std::cout<<"read/writeUniform() ["<<id<<"]"<<std::endl;
 
-    return uniform;
+    return uniform.get();
 }
 
 
@@ -1474,10 +1567,13 @@ osg::Shader* DataInputStream::readShader()
 
     // Shader is not in list.
     // Create a new shader,
-    osg::Shader* shader = new osg::Shader();
+    osg::ref_ptr<osg::Shader> shader = new osg::Shader();
 
     // read its properties from stream
-    ((ive::Shader*)(shader))->read(this);
+    ((ive::Shader*)(shader.get()))->read(this);
+    
+    // exit early if an exception has been set.
+    if (getException()) return 0;
 
     // and add it to the shader map,
     _shaderMap[id] = shader;
@@ -1485,7 +1581,7 @@ osg::Shader* DataInputStream::readShader()
 
     if (_verboseOutput) std::cout<<"read/writeShader() ["<<id<<"]"<<std::endl;
 
-    return shader;
+    return shader.get();
 }
 
 osg::Drawable* DataInputStream::readDrawable()
@@ -1500,31 +1596,34 @@ osg::Drawable* DataInputStream::readDrawable()
     // Create a new stateattribute,
 
     int drawableTypeID = peekInt();
-    osg::Drawable* drawable;
+    osg::ref_ptr<osg::Drawable> drawable;
     if(drawableTypeID == IVEGEOMETRY)
     {
         drawable = new osg::Geometry();
-        ((Geometry*)(drawable))->read(this);
+        ((Geometry*)(drawable.get()))->read(this);
     }
     else if(drawableTypeID == IVESHAPEDRAWABLE)
     {
         drawable = new osg::ShapeDrawable();
-        ((ShapeDrawable*)(drawable))->read(this);
+        ((ShapeDrawable*)(drawable.get()))->read(this);
     }
     else if(drawableTypeID == IVETEXT){
         drawable = new osgText::Text();
-        ((Text*)(drawable))->read(this);
+        ((Text*)(drawable.get()))->read(this);
     }
     else if(drawableTypeID == IVEFADETEXT){
         drawable = new osgText::FadeText();
-        ((FadeText*)(drawable))->read(this);
+        ((FadeText*)(drawable.get()))->read(this);
     }
     else if(drawableTypeID == IVETEXT3D){
         drawable = new osgText::Text3D();
-        ((Text3D*)(drawable))->read(this);
+        ((Text3D*)(drawable.get()))->read(this);
     }
     else
-        throw Exception("Unknown drawable drawableTypeIDentification in Geode::read()");
+        throwException("Unknown drawable drawableTypeIDentification in Geode::read()");
+
+    // exit early if an exception has been set.
+    if (getException()) return 0;
 
 
     // and add it to the stateattribute map,
@@ -1533,7 +1632,7 @@ osg::Drawable* DataInputStream::readDrawable()
 
     if (_verboseOutput) std::cout<<"read/writeDrawable() ["<<id<<"]"<<std::endl;
 
-    return drawable;
+    return drawable.get();
 }
 
 osg::Shape* DataInputStream::readShape()
@@ -1548,40 +1647,42 @@ osg::Shape* DataInputStream::readShape()
     // Create a new stateattribute,
 
     int shapeTypeID = peekInt();
-    osg::Shape* shape;
+    osg::ref_ptr<osg::Shape> shape;
     if(shapeTypeID == IVESPHERE)
     {
         shape = new osg::Sphere();
-        ((Sphere*)(shape))->read(this);
+        ((Sphere*)(shape.get()))->read(this);
     }
     else if(shapeTypeID == IVEBOX)
     {
         shape = new osg::Box();
-        ((Box*)(shape))->read(this);
+        ((Box*)(shape.get()))->read(this);
     }
     else if(shapeTypeID == IVECONE)
     {
         shape = new osg::Cone();
-        ((Cone*)(shape))->read(this);
+        ((Cone*)(shape.get()))->read(this);
     }
     else if(shapeTypeID == IVECYLINDER)
     {
         shape = new osg::Cylinder();
-        ((Cylinder*)(shape))->read(this);
+        ((Cylinder*)(shape.get()))->read(this);
     }
     else if(shapeTypeID == IVECAPSULE)
     {
         shape = new osg::Capsule();
-        ((Capsule*)(shape))->read(this);
+        ((Capsule*)(shape.get()))->read(this);
     }
     else if(shapeTypeID == IVEHEIGHTFIELD)
     {
         shape = new osg::HeightField();
-        ((HeightField*)(shape))->read(this);
+        ((HeightField*)(shape.get()))->read(this);
     }
     else
-        throw Exception("Unknown shape shapeTypeIDentification in Shape::read()");
+        throwException("Unknown shape shapeTypeIDentification in Shape::read()");
 
+    // exit early if an exception has been set.
+    if (getException()) return 0;
 
     // and add it to the stateattribute map,
     _shapeMap[id] = shape;
@@ -1589,7 +1690,7 @@ osg::Shape* DataInputStream::readShape()
 
     if (_verboseOutput) std::cout<<"read/writeShape() ["<<id<<"]"<<std::endl;
 
-    return shape;
+    return shape.get();
 }
 
 osg::Node* DataInputStream::readNode()
@@ -1603,149 +1704,152 @@ osg::Node* DataInputStream::readNode()
     // stateattribute is not in list.
     // Create a new node,
 
-    osg::Node* node;
+    osg::ref_ptr<osg::Node> node;
     int nodeTypeID= peekInt();
 
     if(nodeTypeID== IVEMATRIXTRANSFORM){
         node = new osg::MatrixTransform();
-        ((ive::MatrixTransform*)(node))->read(this);
+        ((ive::MatrixTransform*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVECAMERA){
         node = new osg::Camera();
-        ((ive::Camera*)(node))->read(this);
+        ((ive::Camera*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVECAMERAVIEW){
         node = new osg::CameraView();
-        ((ive::CameraView*)(node))->read(this);
+        ((ive::CameraView*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVEPOSITIONATTITUDETRANSFORM){
         node = new osg::PositionAttitudeTransform();
-        ((ive::PositionAttitudeTransform*)(node))->read(this);
+        ((ive::PositionAttitudeTransform*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVEAUTOTRANSFORM){
         node = new osg::AutoTransform();
-        ((ive::AutoTransform*)(node))->read(this);
+        ((ive::AutoTransform*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVEDOFTRANSFORM){
         node = new osgSim::DOFTransform();
-        ((ive::DOFTransform*)(node))->read(this);
+        ((ive::DOFTransform*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVETRANSFORM){
         node = new osg::Transform();
-        ((ive::Transform*)(node))->read(this);
+        ((ive::Transform*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVELIGHTSOURCE){
         node = new osg::LightSource();
-        ((ive::LightSource*)(node))->read(this);
+        ((ive::LightSource*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVETEXGENNODE){
         node = new osg::TexGenNode();
-        ((ive::TexGenNode*)(node))->read(this);
+        ((ive::TexGenNode*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVECLIPNODE){
         node = new osg::ClipNode();
-        ((ive::ClipNode*)(node))->read(this);
+        ((ive::ClipNode*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVESEQUENCE){
         node = new osg::Sequence();
-        ((ive::Sequence*)(node))->read(this);
+        ((ive::Sequence*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVELOD){
         node = new osg::LOD();
-        ((ive::LOD*)(node))->read(this);
+        ((ive::LOD*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVEPAGEDLOD){
         node = new osg::PagedLOD();
-        ((ive::PagedLOD*)(node))->read(this);
+        ((ive::PagedLOD*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVECOORDINATESYSTEMNODE){
         node = new osg::CoordinateSystemNode();
-        ((ive::CoordinateSystemNode*)(node))->read(this);
+        ((ive::CoordinateSystemNode*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVESWITCH){
         node = new osg::Switch();
-        ((ive::Switch*)(node))->read(this);
+        ((ive::Switch*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVEMULTISWITCH){
         node = new osgSim::MultiSwitch();
-        ((ive::MultiSwitch*)(node))->read(this);
+        ((ive::MultiSwitch*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVEIMPOSTOR){
         node = new osgSim::Impostor();
-        ((ive::Impostor*)(node))->read(this);
+        ((ive::Impostor*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVEOCCLUDERNODE){
         node = new osg::OccluderNode();
-        ((ive::OccluderNode*)(node))->read(this);
+        ((ive::OccluderNode*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVEOCCLUSIONQUERYNODE){
         node = new osg::OcclusionQueryNode();
-        ((ive::OcclusionQueryNode*)(node))->read(this);
+        ((ive::OcclusionQueryNode*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVEVISIBILITYGROUP){
         node = new osgSim::VisibilityGroup();
-        ((ive::VisibilityGroup*)(node))->read(this);
+        ((ive::VisibilityGroup*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVEPROXYNODE){
         node = new osg::ProxyNode();
-        ((ive::ProxyNode*)(node))->read(this);
+        ((ive::ProxyNode*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVEGROUP){
         node = new osg::Group();
-        ((ive::Group*)(node))->read(this);
+        ((ive::Group*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVEBILLBOARD){
         node = new osg::Billboard();
-        ((ive::Billboard*)(node))->read(this);
+        ((ive::Billboard*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVEGEODE){
         node = new osg::Geode();
-        ((ive::Geode*)(node))->read(this);
+        ((ive::Geode*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVELIGHTPOINTNODE){
         node = new osgSim::LightPointNode();
-        ((ive::LightPointNode*)(node))->read(this);
+        ((ive::LightPointNode*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVEMULTITEXTURECONTROL){
         node = new osgFX::MultiTextureControl();
-        ((ive::MultiTextureControl*)(node))->read(this);
+        ((ive::MultiTextureControl*)(node.get()))->read(this);
     }
 
     else if(nodeTypeID== IVEANISOTROPICLIGHTING){
         node = new osgFX::AnisotropicLighting();
-        ((ive::AnisotropicLighting*)(node))->read(this);
+        ((ive::AnisotropicLighting*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVEBUMPMAPPING){
         node = new osgFX::BumpMapping();
-        ((ive::BumpMapping*)(node))->read(this);
+        ((ive::BumpMapping*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVECARTOON){
         node = new osgFX::Cartoon();
-        ((ive::Cartoon*)(node))->read(this);
+        ((ive::Cartoon*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVESCRIBE){
         node = new osgFX::Scribe();
-        ((ive::Scribe*)(node))->read(this);
+        ((ive::Scribe*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVESPECULARHIGHLIGHTS){
         node = new osgFX::SpecularHighlights();
-        ((ive::SpecularHighlights*)(node))->read(this);
+        ((ive::SpecularHighlights*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVETERRAINTILE){
         node = new osgTerrain::TerrainTile();
-        ((ive::TerrainTile*)(node))->read(this);
+        ((ive::TerrainTile*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVEVOLUME){
         node = new osgVolume::Volume();
-        ((ive::Volume*)(node))->read(this);
+        ((ive::Volume*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVEVOLUMETILE){
         node = new osgVolume::VolumeTile();
-        ((ive::VolumeTile*)(node))->read(this);
+        ((ive::VolumeTile*)(node.get()))->read(this);
     }
     else{
-        throw Exception("Unknown node identification in DataInputStream::readNode()");
+        throwException("Unknown node identification in DataInputStream::readNode()");
     }
+
+    // exit early if an exception has been set.
+    if (getException()) return 0;
 
     // and add it to the node map,
     _nodeMap[id] = node;
@@ -1753,7 +1857,7 @@ osg::Node* DataInputStream::readNode()
 
     if (_verboseOutput) std::cout<<"read/writeNode() ["<<id<<"]"<<std::endl;
 
-    return node;
+    return node.get();
 }
 
 osgTerrain::Layer* DataInputStream::readLayer()
@@ -1769,28 +1873,28 @@ osgTerrain::Layer* DataInputStream::readLayer()
     // Layer is not in list.
     // Create a new Layer,
 
-    osgTerrain::Layer* layer = 0;
+    osg::ref_ptr<osgTerrain::Layer> layer = 0;
     int layerid = peekInt();
 
     if (layerid==IVEHEIGHTFIELDLAYER)
     {
         layer = new osgTerrain::HeightFieldLayer;
-        ((ive::HeightFieldLayer*)(layer))->read(this);
+        ((ive::HeightFieldLayer*)(layer.get()))->read(this);
     }
     else if (layerid==IVEIMAGELAYER)
     {
         layer = new osgTerrain::ImageLayer;
-        ((ive::ImageLayer*)(layer))->read(this);
+        ((ive::ImageLayer*)(layer.get()))->read(this);
     }
     else if (layerid==IVESWITCHLAYER)
     {
         layer = new osgTerrain::SwitchLayer;
-        ((ive::SwitchLayer*)(layer))->read(this);
+        ((ive::SwitchLayer*)(layer.get()))->read(this);
     }
     else if (layerid==IVECOMPOSITELAYER)
     {
         layer = new osgTerrain::CompositeLayer;
-        ((ive::CompositeLayer*)(layer))->read(this);
+        ((ive::CompositeLayer*)(layer.get()))->read(this);
     }
     else if (layerid==IVEPROXYLAYER)
     {
@@ -1813,8 +1917,11 @@ osgTerrain::Layer* DataInputStream::readLayer()
         layer = proxyLayer;
     }
     else{
-        throw Exception("Unknown layer identification in DataInputStream::readLayer()");
+        throwException("Unknown layer identification in DataInputStream::readLayer()");
     }
+    
+    // exit early if an exception has been set.
+    if (getException()) return 0;
 
     // and add it to the node map,
     _layerMap[id] = layer;
@@ -1822,7 +1929,7 @@ osgTerrain::Layer* DataInputStream::readLayer()
 
     if (_verboseOutput) std::cout<<"read/writeLayer() ["<<id<<"]"<<std::endl;
 
-    return layer;
+    return layer.get();
 }
 
 osgTerrain::Locator* DataInputStream::readLocator()
@@ -1837,17 +1944,20 @@ osgTerrain::Locator* DataInputStream::readLocator()
 
     // Locator is not in list.
     // Create a new locator,
-    osgTerrain::Locator* locator = new osgTerrain::Locator();
+    osg::ref_ptr<osgTerrain::Locator> locator = new osgTerrain::Locator();
 
     // read its properties from stream
-    ((ive::Locator*)(locator))->read(this);
+    ((ive::Locator*)(locator.get()))->read(this);
+
+    // exit early if an exception has been set.
+    if (getException()) return 0;
 
     // and add it to the locator map,
     _locatorMap[id] = locator;
 
     if (_verboseOutput) std::cout<<"read/writeLocator() ["<<id<<"]"<<std::endl;
 
-    return locator;
+    return locator.get();
 }
 
 
@@ -1864,22 +1974,25 @@ osgVolume::Layer* DataInputStream::readVolumeLayer()
     // Layer is not in list.
     // Create a new Layer,
 
-    osgVolume::Layer* layer = 0;
+    osg::ref_ptr<osgVolume::Layer> layer = 0;
     int layerid = peekInt();
 
     if (layerid==IVEVOLUMEIMAGELAYER)
     {
         layer = new osgVolume::ImageLayer;
-        ((ive::VolumeImageLayer*)(layer))->read(this);
+        ((ive::VolumeImageLayer*)(layer.get()))->read(this);
     }
     else if (layerid==IVEVOLUMECOMPOSITELAYER)
     {
         layer = new osgVolume::CompositeLayer;
-        ((ive::VolumeCompositeLayer*)(layer))->read(this);
+        ((ive::VolumeCompositeLayer*)(layer.get()))->read(this);
     }
     else{
-        throw Exception("Unknown layer identification in DataInputStream::readLayer()");
+        throwException("Unknown layer identification in DataInputStream::readLayer()");
     }
+    
+    // exit early if an exception has been set.
+    if (getException()) return 0;
 
     // and add it to the node map,
     _volumeLayerMap[id] = layer;
@@ -1887,7 +2000,7 @@ osgVolume::Layer* DataInputStream::readVolumeLayer()
 
     if (_verboseOutput) std::cout<<"read/writeVolumeLayer() ["<<id<<"]"<<std::endl;
 
-    return layer;
+    return layer.get();
 }
 
 osgVolume::Locator* DataInputStream::readVolumeLocator()
@@ -1902,17 +2015,20 @@ osgVolume::Locator* DataInputStream::readVolumeLocator()
 
     // Locator is not in list.
     // Create a new locator,
-    osgVolume::Locator* locator = new osgVolume::Locator();
+    osg::ref_ptr<osgVolume::Locator> locator = new osgVolume::Locator();
 
     // read its properties from stream
-    ((ive::VolumeLocator*)(locator))->read(this);
+    ((ive::VolumeLocator*)(locator.get()))->read(this);
+    
+    // exit early if an exception has been set.
+    if (getException()) return 0;
 
     // and add it to the locator map,
     _volumeLocatorMap[id] = locator;
 
     if (_verboseOutput) std::cout<<"read/writeVolumeLocator() ["<<id<<"]"<<std::endl;
 
-    return locator;
+    return locator.get();
 }
 
 osgVolume::Property* DataInputStream::readVolumeProperty()
@@ -1926,22 +2042,22 @@ osgVolume::Property* DataInputStream::readVolumeProperty()
     if (itr!=_volumePropertyMap.end()) return itr->second.get();
 
     int layerid = peekInt();
-    osgVolume::Property* property = 0;
+    osg::ref_ptr<osgVolume::Property> property = 0;
 
     if (layerid==IVEVOLUMECOMPOSITEPROPERTY)
     {
         property = new osgVolume::CompositeProperty;
-        ((ive::VolumeCompositeProperty*)(property))->read(this);
+        ((ive::VolumeCompositeProperty*)(property.get()))->read(this);
     }
     else if (layerid==IVEVOLUMESWITCHPROPERTY)
     {
         property = new osgVolume::SwitchProperty;
-        ((ive::VolumeSwitchProperty*)(property))->read(this);
+        ((ive::VolumeSwitchProperty*)(property.get()))->read(this);
     }
     else if (layerid==IVEVOLUMETRANSFERFUNCTIONPROPERTY)
     {
         property = new osgVolume::TransferFunctionProperty;
-        ((ive::VolumeTransferFunctionProperty*)(property))->read(this);
+        ((ive::VolumeTransferFunctionProperty*)(property.get()))->read(this);
     }
     else if (layerid==IVEVOLUMEMAXIMUMINTENSITYPROPERTY)
     {
@@ -1957,36 +2073,39 @@ osgVolume::Property* DataInputStream::readVolumeProperty()
     {
         property = new osgVolume::IsoSurfaceProperty;
         readInt();
-        ((ive::VolumeScalarProperty*)(property))->read(this);
+        ((ive::VolumeScalarProperty*)(property.get()))->read(this);
     }
     else if (layerid==IVEVOLUMEALPHAFUNCPROPERTY)
     {
         property = new osgVolume::AlphaFuncProperty;
         readInt();
-        ((ive::VolumeScalarProperty*)(property))->read(this);
+        ((ive::VolumeScalarProperty*)(property.get()))->read(this);
     }
     else if (layerid==IVEVOLUMESAMPLEDENSITYPROPERTY)
     {
         property = new osgVolume::SampleDensityProperty;
         readInt();
-        ((ive::VolumeScalarProperty*)(property))->read(this);
+        ((ive::VolumeScalarProperty*)(property.get()))->read(this);
     }
     else if (layerid==IVEVOLUMETRANSPARENCYPROPERTY)
     {
         property = new osgVolume::TransparencyProperty;
         readInt();
-        ((ive::VolumeScalarProperty*)(property))->read(this);
+        ((ive::VolumeScalarProperty*)(property.get()))->read(this);
     }
     else{
-        throw Exception("Unknown layer identification in DataInputStream::readVolumeProperty()");
+        throwException("Unknown layer identification in DataInputStream::readVolumeProperty()");
     }
-
+    
+    // exit early if an exception has been set.
+    if (getException()) return 0;
+    
     // and add it to the locator map,
     _volumePropertyMap[id] = property;
 
     if (_verboseOutput) std::cout<<"read/writeVolumeProperty() ["<<id<<"]"<<std::endl;
 
-    return property;
+    return property.get();
 }
 
 osg::Object* DataInputStream::readObject()
@@ -2012,9 +2131,13 @@ osg::Object* DataInputStream::readObject()
     }
     else if (id==IVESHAPEATTRIBUTELIST)
     {
-        osgSim::ShapeAttributeList* sal = new osgSim::ShapeAttributeList;
-        ((ive::ShapeAttributeList*)sal)->read(this);
-        return sal;
+        osg::ref_ptr<osgSim::ShapeAttributeList> sal = new osgSim::ShapeAttributeList;
+        ((ive::ShapeAttributeList*)sal.get())->read(this);
+
+        // exit early if an exception has been set.
+        if (getException()) return 0;
+
+        return sal.release();
     }
     
     return 0;

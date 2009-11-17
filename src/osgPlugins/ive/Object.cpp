@@ -84,6 +84,6 @@ void Object::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("Object::read(): Expected Object identification");
+        in_THROW_EXCEPTION("Object::read(): Expected Object identification");
     }
 }

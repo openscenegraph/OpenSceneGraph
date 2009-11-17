@@ -33,7 +33,8 @@ void Text3D::write(DataOutputStream* out){
         ((ive::Drawable*)(obj))->write(out);
     }
     else
-        throw Exception("Text::write(): Could not cast this osgText::Text to an osg::Drawable.");
+        out_THROW_EXCEPTION("Text::write(): Could not cast this osgText::Text to an osg::Drawable.");
+    
     // Write Text's properties.
     if( getFont() )
     {
@@ -136,7 +137,7 @@ void Text3D::read(DataInputStream* in){
             ((ive::Drawable*)(obj))->read(in);
         }
         else
-            throw Exception("Text::read(): Could not cast this osgText::Text to an osg::Drawable.");
+            in_THROW_EXCEPTION("Text::read(): Could not cast this osgText::Text to an osg::Drawable.");
         // Read Text's properties
 
     unsigned int width, height;
@@ -212,6 +213,6 @@ void Text3D::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("Text3D::read(): Expected ShadeModel identification.");
+        in_THROW_EXCEPTION("Text3D::read(): Expected ShadeModel identification.");
     }
 }

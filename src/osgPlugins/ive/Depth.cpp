@@ -25,7 +25,7 @@ void Depth::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("Depth::write(): Could not cast this osg::Depth to an osg::Object.");
+        out_THROW_EXCEPTION("Depth::write(): Could not cast this osg::Depth to an osg::Object.");
     // Write Depth's properties.
     out->writeInt(getFunction());
     out->writeBool(getWriteMask());
@@ -45,7 +45,7 @@ void Depth::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("Depth::read(): Could not cast this osg::Depth to an osg::Object.");
+            in_THROW_EXCEPTION("Depth::read(): Could not cast this osg::Depth to an osg::Object.");
         // Read CullFace's properties
         setFunction((osg::Depth::Function)in->readInt());
         setWriteMask(in->readBool());
@@ -53,7 +53,7 @@ void Depth::read(DataInputStream* in){
         setZFar(in->readFloat());
     }
     else{
-        throw Exception("Depth::read(): Expected Depth identification.");
+        in_THROW_EXCEPTION("Depth::read(): Expected Depth identification.");
     }
 }
 

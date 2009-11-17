@@ -27,7 +27,7 @@ void TexMat::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("TexMat::write(): Could not cast this osg::TexMat to an osg::Object.");
+        out_THROW_EXCEPTION("TexMat::write(): Could not cast this osg::TexMat to an osg::Object.");
     // Write TexMat's properties.
 
     // Write mode
@@ -52,7 +52,7 @@ void TexMat::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("TexMat::read(): Could not cast this osg::TexMat to an osg::Object.");
+            in_THROW_EXCEPTION("TexMat::read(): Could not cast this osg::TexMat to an osg::Object.");
         // Read TexMat's properties
 
         // Read matrix
@@ -65,6 +65,6 @@ void TexMat::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("TexMat::read(): Expected TexMat identification.");
+        in_THROW_EXCEPTION("TexMat::read(): Expected TexMat identification.");
     }
 }

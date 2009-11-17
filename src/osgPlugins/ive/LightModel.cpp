@@ -27,7 +27,7 @@ void LightModel::write(DataOutputStream* out){
   if(obj)
     ((ive::Object*)(obj))->write(out);
   else
-    throw Exception("LightModel::write(): Could not cast this osg::LightModel to an osg::Object.");
+    out_THROW_EXCEPTION("LightModel::write(): Could not cast this osg::LightModel to an osg::Object.");
 
   // write LightModel's properties
   out->writeBool(getTwoSided());
@@ -50,7 +50,7 @@ void LightModel::read(DataInputStream* in){
       if(obj)
         ((ive::Object*)(obj))->read(in);
       else
-        throw Exception("LightModel::read(): Could not cast this osg::LightModel to an osg::Object.");
+        in_THROW_EXCEPTION("LightModel::read(): Could not cast this osg::LightModel to an osg::Object.");
 
       // Read LightModel's properties
       setTwoSided(in->readBool());
@@ -59,6 +59,6 @@ void LightModel::read(DataInputStream* in){
       setColorControl((ColorControl)in->readInt());
     }
   else{
-    throw Exception("LightModel::read(): Expected LightModel identification.");
+    in_THROW_EXCEPTION("LightModel::read(): Expected LightModel identification.");
   }
 }

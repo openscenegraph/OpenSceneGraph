@@ -57,7 +57,7 @@ void ProxyNode::write(DataOutputStream* out)
         static_cast<ive::Node*>(node)->write(out);
     }
     else
-        throw Exception("ProxyNode::write(): Could not cast this osg::ProxyNode to an osg::Node.");
+        out_THROW_EXCEPTION("ProxyNode::write(): Could not cast this osg::ProxyNode to an osg::Node.");
 
     out->writeFloat(getRadius());
     out->writeInt(getCenterMode());
@@ -156,7 +156,7 @@ void ProxyNode::read(DataInputStream* in)
             ((ive::Node*)(node))->read(in);
         }
         else
-            throw Exception("ProxyNode::read(): Could not cast this osg::ProxyNode to an osg::Node.");
+            in_THROW_EXCEPTION("ProxyNode::read(): Could not cast this osg::ProxyNode to an osg::Node.");
 
         if (in->getOptions() && !in->getOptions()->getDatabasePathList().empty())
         {
@@ -208,6 +208,6 @@ void ProxyNode::read(DataInputStream* in)
     }
     else
     {
-        throw Exception("ProxyNode::read(): Expected ProxyNode identification.");
+        in_THROW_EXCEPTION("ProxyNode::read(): Expected ProxyNode identification.");
     }
 }

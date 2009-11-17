@@ -27,7 +27,7 @@ void MultiTextureControl::write(DataOutputStream* out){
         ((ive::Group*)(group))->write(out);
     }
     else
-        throw Exception("MultiTextureControl::write(): Could not cast this osg::MultiTextureControl to an osg::Group.");
+        out_THROW_EXCEPTION("MultiTextureControl::write(): Could not cast this osg::MultiTextureControl to an osg::Group.");
     // Write MultiTextureControl's properties.
 
 
@@ -53,7 +53,7 @@ void MultiTextureControl::read(DataInputStream* in){
             ((ive::Group*)(group))->read(in);
         }
         else
-            throw Exception("MultiTextureControl::read(): Could not cast this osg::MultiTextureControl to an osg::Group.");
+            in_THROW_EXCEPTION("MultiTextureControl::read(): Could not cast this osg::MultiTextureControl to an osg::Group.");
         // Read MultiTextureControl's properties
 
 
@@ -66,6 +66,6 @@ void MultiTextureControl::read(DataInputStream* in){
         }
     }
     else{
-        throw Exception("MultiTextureControl::read(): Expected MultiTextureControl identification.");
+        in_THROW_EXCEPTION("MultiTextureControl::read(): Expected MultiTextureControl identification.");
     }
 }

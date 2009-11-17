@@ -27,7 +27,7 @@ void AnimationPath::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("AnimationPath::write(): Could not cast this osg::AnimationPath to an osg::Object.");
+        out_THROW_EXCEPTION("AnimationPath::write(): Could not cast this osg::AnimationPath to an osg::Object.");
     // Write AnimationPath's properties.
 
     // Write loopmode
@@ -55,7 +55,7 @@ void AnimationPath::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("AnimationPath::read(): Could not cast this osg::AnimationPath to an osg::Object.");
+            in_THROW_EXCEPTION("AnimationPath::read(): Could not cast this osg::AnimationPath to an osg::Object.");
         // Read AnimationPath's properties
 
         // Read loopmode
@@ -71,6 +71,6 @@ void AnimationPath::read(DataInputStream* in){
         }
     }
     else{
-        throw Exception("AnimationPath::read(): Expected AnimationPath identification.");
+        in_THROW_EXCEPTION("AnimationPath::read(): Expected AnimationPath identification.");
     }
 }

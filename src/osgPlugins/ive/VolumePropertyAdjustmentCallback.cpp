@@ -29,7 +29,7 @@ void VolumePropertyAdjustmentCallback::write(DataOutputStream* out)
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("VolumePropertyAdjustmentCallback::write(): Could not cast this osg::VolumePropertyAdjustmentCallback to an osg::Object.");
+        out_THROW_EXCEPTION("VolumePropertyAdjustmentCallback::write(): Could not cast this osg::VolumePropertyAdjustmentCallback to an osg::Object.");
     // Write VolumePropertyAdjustmentCallback's properties.
 
     out->writeInt(getKeyEventCyclesForward());
@@ -55,7 +55,7 @@ void VolumePropertyAdjustmentCallback::read(DataInputStream* in)
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("VolumePropertyAdjustmentCallback::read(): Could not cast this osg::VolumePropertyAdjustmentCallback to an osg::Object.");
+            in_THROW_EXCEPTION("VolumePropertyAdjustmentCallback::read(): Could not cast this osg::VolumePropertyAdjustmentCallback to an osg::Object.");
 
         // Read VolumePropertyAdjustmentCallback's properties
 
@@ -68,6 +68,6 @@ void VolumePropertyAdjustmentCallback::read(DataInputStream* in)
     }
     else
     {
-        throw Exception("VolumePropertyAdjustmentCallback::read(): Expected VolumePropertyAdjustmentCallback identification.");
+        in_THROW_EXCEPTION("VolumePropertyAdjustmentCallback::read(): Expected VolumePropertyAdjustmentCallback identification.");
     }
 }

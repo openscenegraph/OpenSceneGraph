@@ -35,7 +35,7 @@ void Node::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("Node::write(): Could not cast this osg::Node to an osg::Object.");
+        out_THROW_EXCEPTION("Node::write(): Could not cast this osg::Node to an osg::Object.");
 
 
     // Write osg::node properties.
@@ -115,7 +115,7 @@ void Node::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("Node::read(): Could not cast this osg::Node to an osg::Object.");
+            in_THROW_EXCEPTION("Node::read(): Could not cast this osg::Node to an osg::Object.");
 
         if ( in->getVersion() < VERSION_0012 )
         {
@@ -167,7 +167,7 @@ void Node::read(DataInputStream* in){
                 }
                 else
                 {
-                    throw Exception("Unknown event callback identification in Node::read()");
+                    in_THROW_EXCEPTION("Unknown event callback identification in Node::read()");
                 }
 
             }
@@ -188,6 +188,6 @@ void Node::read(DataInputStream* in){
         setNodeMask(in->readUInt());
     }
     else{
-        throw Exception("Node::read(): Expected Node identification");
+        in_THROW_EXCEPTION("Node::read(): Expected Node identification");
     }
 }

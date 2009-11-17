@@ -27,7 +27,7 @@ void LightPointNode::write(DataOutputStream* out){
         ((ive::Node*)(node))->write(out);
     }
     else
-        throw Exception("LightPointNode::write(): Could not cast this osgSim::LightPointNode to an osg::Node.");
+        out_THROW_EXCEPTION("LightPointNode::write(): Could not cast this osgSim::LightPointNode to an osg::Node.");
 
     // Write LightPointNode's properties.
     out->writeFloat(getMinPixelSize());
@@ -59,7 +59,7 @@ void LightPointNode::read(DataInputStream* in){
             ((ive::Node*)(node))->read(in);
         }
         else
-            throw Exception("LightPointNode::read(): Could not cast this osgSim::LightPointNode to an osg::Object.");
+            in_THROW_EXCEPTION("LightPointNode::read(): Could not cast this osgSim::LightPointNode to an osg::Object.");
         // Read LightPointNode's properties
         setMinPixelSize(in->readFloat());
         setMaxPixelSize(in->readFloat());
@@ -79,6 +79,6 @@ void LightPointNode::read(DataInputStream* in){
         }
     }
     else{
-        throw Exception("LightPointNode::read(): Expected LightPointNode identification.");
+        in_THROW_EXCEPTION("LightPointNode::read(): Expected LightPointNode identification.");
     }
 }

@@ -28,7 +28,7 @@ void AnimationPathCallback::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("AnimationPathCallback::write(): Could not cast this osg::AnimationPathCallback to an osg::Object.");
+        out_THROW_EXCEPTION("AnimationPathCallback::write(): Could not cast this osg::AnimationPathCallback to an osg::Object.");
     // Write AnimationPathCallback's properties.
 
     out->writeVec3(_pivotPoint);
@@ -38,14 +38,14 @@ void AnimationPathCallback::write(DataOutputStream* out){
     out->writeDouble(_pauseTime);
     // Write animationpath if any
     if(getAnimationPath())
-        {
-            out->writeInt(1); // true we have an animation path.
+    {
+        out->writeInt(1); // true we have an animation path.
         ((ive::AnimationPath*)(getAnimationPath()))->write(out);
     }
-        else
-        {
-            out->writeInt(0); // false we don't have an animation path.
-        }
+    else
+    {
+        out->writeInt(0); // false we don't have an animation path.
+    }
 }
 
 void AnimationPathCallback::read(DataInputStream* in){
@@ -60,7 +60,8 @@ void AnimationPathCallback::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("AnimationPathCallback::read(): Could not cast this osg::AnimationPathCallback to an osg::Object.");
+            in_THROW_EXCEPTION("AnimationPathCallback::read(): Could not cast this osg::AnimationPathCallback to an osg::Object.");
+        
         // Read AnimationPathCallback's properties
         _pivotPoint = in->readVec3();
         _timeOffset = in->readDouble();
@@ -69,13 +70,13 @@ void AnimationPathCallback::read(DataInputStream* in){
         _pauseTime = in->readDouble();
         // Read animationpath if any
         if(in->readInt())
-                {
+        {
             osg::AnimationPath* path = new osg::AnimationPath();
             ((ive::AnimationPath*)(path))->read(in);
             setAnimationPath(path);
         }
     }
     else{
-        throw Exception("AnimationPathCallback::read(): Expected AnimationPathCallback identification.");
+        in_THROW_EXCEPTION("AnimationPathCallback::read(): Expected AnimationPathCallback identification.");
     }
 }

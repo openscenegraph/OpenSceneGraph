@@ -30,7 +30,7 @@ void VertexProgram::write( DataOutputStream* out )
     }
     else
     {
-        throw Exception("Material::write(): Could not cast this osg::VertexProgram to an osg::Object.");
+        out_THROW_EXCEPTION("Material::write(): Could not cast this osg::VertexProgram to an osg::Object.");
     }
 
     // Write VertexProgram properties.
@@ -54,7 +54,7 @@ void VertexProgram::read(DataInputStream* in){
         }
         else
         {
-            throw Exception( "Material::read(): Could not cast this osg::VertexProgram to an osg::Object." );
+            in_THROW_EXCEPTION( "Material::read(): Could not cast this osg::VertexProgram to an osg::Object." );
         }
 
         // Read data
@@ -63,6 +63,6 @@ void VertexProgram::read(DataInputStream* in){
     }
     else
     {
-        throw Exception("VertexProgram::read(): Expected VertexProgram identification.");
+        in_THROW_EXCEPTION("VertexProgram::read(): Expected VertexProgram identification.");
     }
 }

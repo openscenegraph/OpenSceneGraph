@@ -29,7 +29,7 @@ void VolumeScalarProperty::write(DataOutputStream* out)
     if (object)
         ((ive::Object*)(object))->write(out);
     else
-        throw Exception("VolumeScalarProperty::write(): Could not cast this osgVolume::ScalarProperty to an osg::Object.");
+        out_THROW_EXCEPTION("VolumeScalarProperty::write(): Could not cast this osgVolume::ScalarProperty to an osg::Object.");
 
     out->writeFloat(getValue());
 }
@@ -39,7 +39,7 @@ void VolumeScalarProperty::read(DataInputStream* in)
     // Peek on Layer's identification.
     int id = in->peekInt();
     if (id != IVEVOLUMESCALARPROPERTY)
-        throw Exception("VolumeScalarProperty::read(): Expected CompositeProperty identification.");
+        in_THROW_EXCEPTION("VolumeScalarProperty::read(): Expected CompositeProperty identification.");
     
     // Read Layer's identification.
     id = in->readInt();
@@ -49,7 +49,7 @@ void VolumeScalarProperty::read(DataInputStream* in)
     if (object)
         ((ive::Object*)(object))->read(in);
     else
-        throw Exception("VolumeScalarProperty::write(): Could not cast this osgVolume::ScalarProperty to an osg::Object.");
+        in_THROW_EXCEPTION("VolumeScalarProperty::write(): Could not cast this osgVolume::ScalarProperty to an osg::Object.");
 
     setValue(in->readFloat());
 }

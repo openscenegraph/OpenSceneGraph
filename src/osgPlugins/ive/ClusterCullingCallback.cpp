@@ -29,7 +29,7 @@ void ClusterCullingCallback::write(DataOutputStream* out)
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("ClusterCullingCallback::write(): Could not cast this osg::ClusterCullingCallback to an osg::Object.");
+        out_THROW_EXCEPTION("ClusterCullingCallback::write(): Could not cast this osg::ClusterCullingCallback to an osg::Object.");
     // Write ClusterCullingCallback's properties.
 
     out->writeVec3(_controlPoint);
@@ -53,7 +53,7 @@ void ClusterCullingCallback::read(DataInputStream* in)
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("ClusterCullingCallback::read(): Could not cast this osg::ClusterCullingCallback to an osg::Object.");
+            in_THROW_EXCEPTION("ClusterCullingCallback::read(): Could not cast this osg::ClusterCullingCallback to an osg::Object.");
     
         // Read ClusterCullingCallback's properties
         
@@ -65,6 +65,6 @@ void ClusterCullingCallback::read(DataInputStream* in)
     }
     else
     {
-        throw Exception("ClusterCullingCallback::read(): Expected ClusterCullingCallback identification.");
+        in_THROW_EXCEPTION("ClusterCullingCallback::read(): Expected ClusterCullingCallback identification.");
     }
 }

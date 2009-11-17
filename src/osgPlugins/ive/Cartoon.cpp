@@ -25,7 +25,7 @@ void Cartoon::write(DataOutputStream* out){
         ((ive::Effect*)(effect))->write(out);
     }
     else
-        throw Exception("Cartoon::write(): Could not cast this osgFX::Cartoon to an osgFX::Effect.");
+        out_THROW_EXCEPTION("Cartoon::write(): Could not cast this osgFX::Cartoon to an osgFX::Effect.");
 
     // Write Cartoon's properties.
     out->writeVec4(getOutlineColor());
@@ -46,7 +46,7 @@ void Cartoon::read(DataInputStream* in){
             ((ive::Effect*)(effect))->read(in);
         }
         else
-            throw Exception("Cartoon::read(): Could not cast this osgFX::Cartoon to an osgFX::Effect.");
+            in_THROW_EXCEPTION("Cartoon::read(): Could not cast this osgFX::Cartoon to an osgFX::Effect.");
 
         // Read Cartoon's properties
         setOutlineColor(in->readVec4());
@@ -54,6 +54,6 @@ void Cartoon::read(DataInputStream* in){
         setLightNumber(in->readInt());
     }
     else{
-        throw Exception("Cartoon::read(): Expected Cartoon identification.");
+        in_THROW_EXCEPTION("Cartoon::read(): Expected Cartoon identification.");
     }
 }

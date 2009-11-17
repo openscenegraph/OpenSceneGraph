@@ -31,7 +31,7 @@ void Geode::write(DataOutputStream* out){
         ((ive::Node*)(node))->write(out);
     }
     else
-        throw Exception("Geode::write(): Could not cast this osg::Geode to an osg::Node.");
+        out_THROW_EXCEPTION("Geode::write(): Could not cast this osg::Geode to an osg::Node.");
 
 
     // Write Geode's properties.
@@ -45,7 +45,7 @@ void Geode::write(DataOutputStream* out){
         if(dynamic_cast<osg::Geometry*>(drawable))
             ((ive::Geometry*)(drawable))->write(out);
         else{
-            throw Exception("Unknown drawable in Geode::write()");
+            in_THROW_EXCEPTION("Unknown drawable in Geode::write()");
         }
 #else
         out->writeDrawable(drawable);
@@ -65,7 +65,7 @@ void Geode::read(DataInputStream* in){
             ((ive::Node*)(node))->read(in);
         }
         else
-            throw Exception("Geode::read(): Could not cast this osg::Geode to an osg::Node.");
+            in_THROW_EXCEPTION("Geode::read(): Could not cast this osg::Geode to an osg::Node.");
 
 
         // Read number of drawables.
@@ -81,13 +81,13 @@ void Geode::read(DataInputStream* in){
                 addDrawable(drawable);
             }
             else
-                throw Exception("Unknown drawable identification in Geode::read()");
+                in_THROW_EXCEPTION("Unknown drawable identification in Geode::read()");
 #else
             addDrawable(in->readDrawable());
 #endif        
         }
     }
     else{
-        throw Exception("Geode::read(): Expected Geode identification.");
+        in_THROW_EXCEPTION("Geode::read(): Expected Geode identification.");
     }
 }

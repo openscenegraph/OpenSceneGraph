@@ -27,7 +27,7 @@ void ShadeModel::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("ShadeModel::write(): Could not cast this osg::ShadeModel to an osg::Object.");
+        out_THROW_EXCEPTION("ShadeModel::write(): Could not cast this osg::ShadeModel to an osg::Object.");
     // Write ShadeModel's properties.
     out->writeInt(getMode());
 }
@@ -44,11 +44,11 @@ void ShadeModel::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("ShadeModel::read(): Could not cast this osg::ShadeModel to an osg::Object.");
+            in_THROW_EXCEPTION("ShadeModel::read(): Could not cast this osg::ShadeModel to an osg::Object.");
         // Read ShadeModel's properties
         setMode((Mode)in->readInt());
     }
     else{
-        throw Exception("ShadeModel::read(): Expected ShadeModel identification.");
+        in_THROW_EXCEPTION("ShadeModel::read(): Expected ShadeModel identification.");
     }
 }

@@ -35,7 +35,7 @@ void Layer::write(DataOutputStream* out)
     if (object)
         ((ive::Object*)(object))->write(out);
     else
-        throw Exception("Layer::write(): Could not cast this osgLayer::Layer to an osg::Object.");
+        out_THROW_EXCEPTION("Layer::write(): Could not cast this osgLayer::Layer to an osg::Object.");
 
  
     if (out->getVersion() >= VERSION_0023)
@@ -74,7 +74,7 @@ void Layer::read(DataInputStream* in)
     // Peek on Layer's identification.
     int id = in->peekInt();
     if (id != IVELAYER)
-        throw Exception("Layer::read(): Expected Layer identification.");
+        in_THROW_EXCEPTION("Layer::read(): Expected Layer identification.");
     
     // Read Layer's identification.
     id = in->readInt();
@@ -84,7 +84,7 @@ void Layer::read(DataInputStream* in)
     if(object)
         ((ive::Object*)(object))->read(in);
     else
-        throw Exception("Layer::read(): Could not cast this osgLayer::Layer to an osg::Group.");
+        in_THROW_EXCEPTION("Layer::read(): Could not cast this osgLayer::Layer to an osg::Group.");
 
     if (in->getVersion() >= VERSION_0023)
     {

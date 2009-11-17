@@ -28,7 +28,7 @@ void EllipsoidModel::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("EllipsoidModel::write(): Could not cast this osg::EllipsoidModel to an osg::Object.");
+        out_THROW_EXCEPTION("EllipsoidModel::write(): Could not cast this osg::EllipsoidModel to an osg::Object.");
     // Write EllipsoidModel's properties.
 
     out->writeDouble(getRadiusEquator());
@@ -48,7 +48,7 @@ void EllipsoidModel::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("EllipsoidModel::read(): Could not cast this osg::EllipsoidModel to an osg::Object.");
+            in_THROW_EXCEPTION("EllipsoidModel::read(): Could not cast this osg::EllipsoidModel to an osg::Object.");
         // Read EllipsoidModel's properties
 
         setRadiusEquator(in->readDouble());
@@ -57,6 +57,6 @@ void EllipsoidModel::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("EllipsoidModel::read(): Expected EllipsoidModel identification.");
+        in_THROW_EXCEPTION("EllipsoidModel::read(): Expected EllipsoidModel identification.");
     }
 }

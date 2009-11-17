@@ -80,28 +80,25 @@ class ReaderWriterIVE : public ReaderWriter
 
         virtual ReadResult readImage(std::istream& fin, const Options* options) const
         {
-            try{
-                ive::DataInputStream in(&fin, options);
-                return in.readImage(ive::IMAGE_INCLUDE_DATA);
-            }
-            catch(ive::Exception e)
+            ive::DataInputStream in(&fin, options);
+            if (in.getException()) 
             {
-                return e.getError();
+                return in.getException()->getError();
             }
+
+            return in.readImage(ive::IMAGE_INCLUDE_DATA);
         }
 
         virtual ReadResult readNode(std::istream& fin, const Options* options) const
         {
-            try{
-                // Create datainputstream.
-                ive::DataInputStream in(&fin, options);
-
-                return in.readNode();
-            }
-            catch(ive::Exception e)
+            // Create datainputstream.
+            ive::DataInputStream in(&fin, options);
+            if (in.getException()) 
             {
-                return e.getError();
+                return in.getException()->getError();
             }
+
+            return in.readNode();
         }
 
         virtual WriteResult writeObject(const Object& object,const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
@@ -157,38 +154,31 @@ class ReaderWriterIVE : public ReaderWriter
 
         virtual WriteResult writeImage(const Image& image,std::ostream& fout, const osgDB::ReaderWriter::Options* options) const
         {
-            try
+            ive::DataOutputStream out(&fout, options);
+            out.writeImage(ive::IMAGE_INCLUDE_DATA, const_cast<osg::Image*>(&image));
+            if (fout.fail()) return WriteResult::ERROR_IN_WRITING_FILE;
+            if (out.getException()) 
             {
-                ive::DataOutputStream out(&fout, options);
-                out.writeImage(ive::IMAGE_INCLUDE_DATA, const_cast<osg::Image*>(&image));
-                if (fout.fail()) return WriteResult::ERROR_IN_WRITING_FILE;
-                return WriteResult::FILE_SAVED;
+                osg::notify(osg::WARN)<<"Error writing IVE image: "<< out.getException()->getError() << std::endl;
+                return WriteResult::FILE_NOT_HANDLED;
             }
-            catch(ive::Exception e)
-            {
-                osg::notify(osg::WARN)<<"Error writing IVE image: "<< e.getError() << std::endl;
-            }
-            return WriteResult::FILE_NOT_HANDLED;
+            return WriteResult::FILE_SAVED;
         }
 
         virtual WriteResult writeNode(const Node& node,std::ostream& fout, const osgDB::ReaderWriter::Options* options) const
         {
-            try
+            ive::DataOutputStream out(&fout, options);
+
+            out.writeNode(const_cast<osg::Node*>(&node));
+
+            if ( fout.fail() ) return WriteResult::ERROR_IN_WRITING_FILE;
+            if (out.getException()) 
             {
-                ive::DataOutputStream out(&fout, options);
-
-                out.writeNode(const_cast<osg::Node*>(&node));
-
-                if ( fout.fail() ) return WriteResult::ERROR_IN_WRITING_FILE;
-
-                return WriteResult::FILE_SAVED;
+                osg::notify(osg::WARN)<<"Error writing IVE image: "<< out.getException()->getError() << std::endl;
+                return WriteResult::FILE_NOT_HANDLED;
             }
-            catch(ive::Exception e)
-            {
-                osg::notify(osg::WARN)<<"Error writing IVE file: "<< e.getError() << std::endl;
-            }
-            return WriteResult::FILE_NOT_HANDLED;
 
+            return WriteResult::FILE_SAVED;
         }
 
 };

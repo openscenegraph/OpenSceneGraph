@@ -29,7 +29,7 @@ void VolumeCompositeProperty::write(DataOutputStream* out)
     if (object)
         ((ive::Object*)(object))->write(out);
     else
-        throw Exception("VolumeCompositeProperty::write(): Could not cast this osgVolume::CompositeProperty to an osg::Object.");
+        out_THROW_EXCEPTION("VolumeCompositeProperty::write(): Could not cast this osgVolume::CompositeProperty to an osg::Object.");
 
     out->writeUInt(getNumProperties());
     for(unsigned int i=0; i<getNumProperties(); ++i)
@@ -44,7 +44,7 @@ void VolumeCompositeProperty::read(DataInputStream* in)
     // Peek on Layer's identification.
     int id = in->peekInt();
     if (id != IVEVOLUMECOMPOSITEPROPERTY)
-        throw Exception("VolumeCompositeProperty::read(): Expected CompositeProperty identification.");
+        in_THROW_EXCEPTION("VolumeCompositeProperty::read(): Expected CompositeProperty identification.");
     
     // Read Layer's identification.
     id = in->readInt();
@@ -54,7 +54,7 @@ void VolumeCompositeProperty::read(DataInputStream* in)
     if (object)
         ((ive::Object*)(object))->read(in);
     else
-        throw Exception("VolumeCompositeProperty::write(): Could not cast this osgVolume::CompositeProperty to an osg::Object.");
+        in_THROW_EXCEPTION("VolumeCompositeProperty::write(): Could not cast this osgVolume::CompositeProperty to an osg::Object.");
 
     unsigned int numProperties = in->readUInt();
     for(unsigned int i=0; i<numProperties; ++i)

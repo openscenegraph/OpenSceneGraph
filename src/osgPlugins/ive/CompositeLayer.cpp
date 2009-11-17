@@ -27,7 +27,7 @@ void CompositeLayer::write(DataOutputStream* out)
     if  (layer)
         ((ive::Layer*)(layer))->write(out);
     else
-        throw Exception("CompositeLayer::write(): Could not cast this osgLayer::CompositeLayer to an osgTerrain::Layer.");
+        out_THROW_EXCEPTION("CompositeLayer::write(): Could not cast this osgLayer::CompositeLayer to an osgTerrain::Layer.");
 
     LayerHelper helper;
 
@@ -52,7 +52,7 @@ void CompositeLayer::read(DataInputStream* in)
     // Peek on Layer's identification.
     int id = in->peekInt();
     if (id != IVECOMPOSITELAYER)
-        throw Exception("CompositeLayer::read(): Expected CompositeLayer identification.");
+        in_THROW_EXCEPTION("CompositeLayer::read(): Expected CompositeLayer identification.");
     
     // Read Layer's identification.
     id = in->readInt();
@@ -62,7 +62,7 @@ void CompositeLayer::read(DataInputStream* in)
     if (layer)
         ((ive::Layer*)(layer))->read(in);
     else
-        throw Exception("CompositeLayer::read(): Could not cast this osgLayer::Layer to an osg::Group.");
+        in_THROW_EXCEPTION("CompositeLayer::read(): Could not cast this osgLayer::Layer to an osg::Group.");
 
     LayerHelper helper;
 

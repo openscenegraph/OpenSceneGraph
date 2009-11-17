@@ -28,7 +28,7 @@ void LightSource::write(DataOutputStream* out){
         ((ive::Group*)(group))->write(out);
     }
     else
-        throw Exception("LightSource::write(): Could not cast this osg::LightSource to an osg::Group.");
+        out_THROW_EXCEPTION("LightSource::write(): Could not cast this osg::LightSource to an osg::Group.");
     // Write LightSource's properties.
 
     // Write out light
@@ -54,7 +54,7 @@ void LightSource::read(DataInputStream* in){
             ((ive::Group*)(group))->read(in);
         }
         else
-            throw Exception("LightSource::read(): Could not cast this osg::LightSource to an osg::Object.");
+            in_THROW_EXCEPTION("LightSource::read(): Could not cast this osg::LightSource to an osg::Object.");
         // Read LightSource's properties
 
         // Read light
@@ -68,6 +68,6 @@ void LightSource::read(DataInputStream* in){
         setReferenceFrame((osg::LightSource::ReferenceFrame) in->readInt());
     }
     else{
-        throw Exception("LightSource::read(): Expected LightSource identification.");
+        in_THROW_EXCEPTION("LightSource::read(): Expected LightSource identification.");
     }
 }

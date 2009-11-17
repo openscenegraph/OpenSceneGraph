@@ -38,6 +38,6 @@ void ConeSector::read(DataInputStream* in){
         setAngle(angle, fadeangle);
     }
     else{
-        throw Exception("ConeSector::read(): Expected ConeSector identification.");
+        in_THROW_EXCEPTION("ConeSector::read(): Expected ConeSector identification.");
     }
 }

@@ -27,7 +27,7 @@ void SwitchLayer::write(DataOutputStream* out)
     if  (layer)
         ((ive::CompositeLayer*)(layer))->write(out);
     else
-        throw Exception("SwitchLayer::write(): Could not cast this osgLayer::SwitchLayer to an osgTerrain::Layer.");
+        out_THROW_EXCEPTION("SwitchLayer::write(): Could not cast this osgLayer::SwitchLayer to an osgTerrain::Layer.");
 
 
     out->writeInt(getActiveLayer());
@@ -38,7 +38,7 @@ void SwitchLayer::read(DataInputStream* in)
     // Peek on Layer's identification.
     int id = in->peekInt();
     if (id != IVESWITCHLAYER)
-        throw Exception("SwitchLayer::read(): Expected SwitchLayer identification.");
+        in_THROW_EXCEPTION("SwitchLayer::read(): Expected SwitchLayer identification.");
     
     // Read Layer's identification.
     id = in->readInt();
@@ -48,7 +48,7 @@ void SwitchLayer::read(DataInputStream* in)
     if (layer)
         ((ive::CompositeLayer*)(layer))->read(in);
     else
-        throw Exception("SwitchLayer::read(): Could not cast this osgLayer::Layer to an osg::Group.");
+        in_THROW_EXCEPTION("SwitchLayer::read(): Could not cast this osgLayer::Layer to an osg::Group.");
 
     setActiveLayer(in->readInt());
 }

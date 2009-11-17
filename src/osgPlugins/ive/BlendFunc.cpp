@@ -30,7 +30,7 @@ void BlendFunc::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("BlendFunc::write(): Could not cast this osg::BlendFunc to an osg::Object.");
+        out_THROW_EXCEPTION("BlendFunc::write(): Could not cast this osg::BlendFunc to an osg::Object.");
     // Write BlendFunc's properties.
 
     // Write source
@@ -59,7 +59,7 @@ void BlendFunc::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("BlendFunc::read(): Could not cast this osg::BlendFunc to an osg::Object.");
+            in_THROW_EXCEPTION("BlendFunc::read(): Could not cast this osg::BlendFunc to an osg::Object.");
         // Read BlendFunc's properties
 
         // Read source
@@ -78,6 +78,6 @@ void BlendFunc::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("BlendFunc::read(): Expected BlendFunc identification.");
+        in_THROW_EXCEPTION("BlendFunc::read(): Expected BlendFunc identification.");
     }
 }

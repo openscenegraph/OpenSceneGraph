@@ -31,7 +31,7 @@ void Drawable::write(DataOutputStream* out)
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("Drawable::write(): Could not cast this osg::Drawable to an osg::Object.");
+        out_THROW_EXCEPTION("Drawable::write(): Could not cast this osg::Drawable to an osg::Object.");
 
     // Write Drawable's properties.
     
@@ -90,7 +90,7 @@ void Drawable::read(DataInputStream* in)
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("Drawable::read(): Could not cast this osg::Drawable to an osg::Object.");
+            in_THROW_EXCEPTION("Drawable::read(): Could not cast this osg::Drawable to an osg::Object.");
 
         // Read in drawable's properties
 
@@ -134,6 +134,6 @@ void Drawable::read(DataInputStream* in)
 
     }
     else{
-        throw Exception("Drawable::read(): Expected Drawable identification.");
+        in_THROW_EXCEPTION("Drawable::read(): Expected Drawable identification.");
     }
 }

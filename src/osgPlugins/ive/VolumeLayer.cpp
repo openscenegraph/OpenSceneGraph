@@ -33,7 +33,7 @@ void VolumeLayer::write(DataOutputStream* out)
     if (object)
         ((ive::Object*)(object))->write(out);
     else
-        throw Exception("VolumeLayer::write(): Could not cast this osgVolume::Layer to an osg::Object.");
+        out_THROW_EXCEPTION("VolumeLayer::write(): Could not cast this osgVolume::Layer to an osg::Object.");
 
     out->writeVolumeLocator(getLocator());
     out->writeVolumeProperty(getProperty());
@@ -44,7 +44,7 @@ void VolumeLayer::read(DataInputStream* in)
     // Peek on Layer's identification.
     int id = in->peekInt();
     if (id != IVEVOLUMELAYER)
-        throw Exception("VolumeLayer::read(): Expected Layer identification.");
+        in_THROW_EXCEPTION("VolumeLayer::read(): Expected Layer identification.");
     
     // Read Layer's identification.
     id = in->readInt();
@@ -54,7 +54,7 @@ void VolumeLayer::read(DataInputStream* in)
     if(object)
         ((ive::Object*)(object))->read(in);
     else
-        throw Exception("VolumeLayer::read(): Could not cast this osgVolume::Layer to an osg::Object.");
+        in_THROW_EXCEPTION("VolumeLayer::read(): Could not cast this osgVolume::Layer to an osg::Object.");
 
     setLocator(in->readVolumeLocator());
     setProperty(in->readVolumeProperty());

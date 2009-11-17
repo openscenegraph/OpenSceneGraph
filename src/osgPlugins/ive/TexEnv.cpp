@@ -27,7 +27,7 @@ void TexEnv::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("TexEnv::write(): Could not cast this osg::TexEnv to an osg::Object.");
+        out_THROW_EXCEPTION("TexEnv::write(): Could not cast this osg::TexEnv to an osg::Object.");
     // Write TexEnv's properties.
 
     // Write mode
@@ -48,7 +48,7 @@ void TexEnv::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("TexEnv::read(): Could not cast this osg::TexEnv to an osg::Object.");
+            in_THROW_EXCEPTION("TexEnv::read(): Could not cast this osg::TexEnv to an osg::Object.");
         // Read TexEnv's properties
 
         // Read mode
@@ -57,6 +57,6 @@ void TexEnv::read(DataInputStream* in){
         setColor(in->readVec4());
     }
     else{
-        throw Exception("TexEnv::read(): Expected TexEnv identification.");
+        in_THROW_EXCEPTION("TexEnv::read(): Expected TexEnv identification.");
     }
 }

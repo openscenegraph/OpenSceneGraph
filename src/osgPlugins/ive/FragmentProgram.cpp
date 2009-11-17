@@ -30,7 +30,7 @@ void FragmentProgram::write( DataOutputStream* out )
     }
     else
     {
-        throw Exception("Material::write(): Could not cast this osg::FragmentProgram to an osg::Object.");
+        out_THROW_EXCEPTION("Material::write(): Could not cast this osg::FragmentProgram to an osg::Object.");
     }
 
     // Write FragmentProgram properties.
@@ -62,7 +62,7 @@ void FragmentProgram::read(DataInputStream* in){
         }
         else
         {
-            throw Exception( "Material::read(): Could not cast this osg::FragmentProgram to an osg::Object." );
+            in_THROW_EXCEPTION( "Material::read(): Could not cast this osg::FragmentProgram to an osg::Object." );
         }
 
         // Read data
@@ -80,6 +80,6 @@ void FragmentProgram::read(DataInputStream* in){
     }
     else
     {
-        throw Exception("FragmentProgram::read(): Expected FragmentProgram identification.");
+        in_THROW_EXCEPTION("FragmentProgram::read(): Expected FragmentProgram identification.");
     }
 }

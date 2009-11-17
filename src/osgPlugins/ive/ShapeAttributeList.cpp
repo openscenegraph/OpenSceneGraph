@@ -57,7 +57,7 @@ void ShapeAttributeList::read(DataInputStream* in)
         }
     }
     else{
-        throw Exception("ShapeAttributeList::read(): Expected ShapeAttributeList identification.");
+        in_THROW_EXCEPTION("ShapeAttributeList::read(): Expected ShapeAttributeList identification.");
     }
 }
 

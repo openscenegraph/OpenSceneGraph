@@ -26,7 +26,7 @@ void ConvexPlanarPolygon::write(DataOutputStream* out){
     //    ((ive::Object*)(obj))->write(out);
     //}
     //else
-    //    throw Exception("ConvexPlanarPolygon::write(): Could not cast this osg::ConvexPlanarPolygon to an osg::Object.");
+    //    in_THROW_EXCEPTION("ConvexPlanarPolygon::write(): Could not cast this osg::ConvexPlanarPolygon to an osg::Object.");
     // Write ConvexPlanarPolygon's properties.
 
     // Write Vertex list
@@ -51,7 +51,7 @@ void ConvexPlanarPolygon::read(DataInputStream* in){
         //    ((ive::Object*)(obj))->read(in);
         //}
         //else
-        //    throw Exception("ConvexPlanarPolygon::read(): Could not cast this osg::ConvexPlanarPolygon to an osg::Object.");
+        //    in_THROW_EXCEPTION("ConvexPlanarPolygon::read(): Could not cast this osg::ConvexPlanarPolygon to an osg::Object.");
         // Read ConvexPlanarPolygon's properties
 
         // Read Vertex list
@@ -62,6 +62,6 @@ void ConvexPlanarPolygon::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("ConvexPlanarPolygon::read(): Expected ConvexPlanarPolygon identification.");
+        in_THROW_EXCEPTION("ConvexPlanarPolygon::read(): Expected ConvexPlanarPolygon identification.");
     }
 }

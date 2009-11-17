@@ -27,7 +27,7 @@ void DrawArrays::write(DataOutputStream* out){
         ((ive::PrimitiveSet*)(prim))->write(out);
     }
     else
-        throw Exception("DrawArrays::write(): Could not cast this osg::DrawArrays to an osg::PrimitiveSet.");
+        out_THROW_EXCEPTION("DrawArrays::write(): Could not cast this osg::DrawArrays to an osg::PrimitiveSet.");
 
 
     // Write DrawArrays's properties.
@@ -47,7 +47,7 @@ void DrawArrays::read(DataInputStream* in){
             ((ive::PrimitiveSet*)(prim))->read(in);
         }
         else
-            throw Exception("DrawArrays::read(): Could not cast this osg::DrawArrays to an osg::PrimitiveSet.");
+            in_THROW_EXCEPTION("DrawArrays::read(): Could not cast this osg::DrawArrays to an osg::PrimitiveSet.");
 
 
         // Read DrawArrays properties
@@ -55,6 +55,6 @@ void DrawArrays::read(DataInputStream* in){
         setCount(in->readInt());
     }
     else{
-        throw Exception("DrawArrays::read(): Expected DrawArrays identification.");
+        in_THROW_EXCEPTION("DrawArrays::read(): Expected DrawArrays identification.");
     }
 }

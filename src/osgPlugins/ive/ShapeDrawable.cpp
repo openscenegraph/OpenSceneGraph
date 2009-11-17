@@ -32,7 +32,7 @@ void ShapeDrawable::write(DataOutputStream* out)
             ((ive::Drawable*)(drawable))->write(out);
         }
         else
-            throw Exception("ShapeDrawable::write(): Could not cast this osg::ShapeDrawable to an osg::Object.");
+            out_THROW_EXCEPTION("ShapeDrawable::write(): Could not cast this osg::ShapeDrawable to an osg::Object.");
 
     }
     else
@@ -42,7 +42,7 @@ void ShapeDrawable::write(DataOutputStream* out)
             ((ive::Object*)(obj))->write(out);
         }
         else
-            throw Exception("ShapeDrawable::write(): Could not cast this osg::ShapeDrawable to an osg::Object.");
+            out_THROW_EXCEPTION("ShapeDrawable::write(): Could not cast this osg::ShapeDrawable to an osg::Object.");
     }
 
     // Write ShapeDrawable's properties.
@@ -76,7 +76,7 @@ void ShapeDrawable::read(DataInputStream* in)
                 ((ive::Drawable*)(drawable))->read(in);
             }
             else
-                throw Exception("ShapeDrawable::read(): Could not cast this osg::ShapeDrawable to an osg::Object.");
+                in_THROW_EXCEPTION("ShapeDrawable::read(): Could not cast this osg::ShapeDrawable to an osg::Object.");
         }
         else
         {
@@ -86,7 +86,7 @@ void ShapeDrawable::read(DataInputStream* in)
                 ((ive::Object*)(obj))->read(in);
             }
             else
-                throw Exception("ShapeDrawable::read(): Could not cast this osg::ShapeDrawable to an osg::Object.");
+                in_THROW_EXCEPTION("ShapeDrawable::read(): Could not cast this osg::ShapeDrawable to an osg::Object.");
         }
     
         // Read ShapeDrawable's properties
@@ -100,6 +100,6 @@ void ShapeDrawable::read(DataInputStream* in)
     }
     else
     {
-        throw Exception("ShapeDrawable::read(): Expected ShapeDrawable identification.");
+        in_THROW_EXCEPTION("ShapeDrawable::read(): Expected ShapeDrawable identification.");
     }
 }

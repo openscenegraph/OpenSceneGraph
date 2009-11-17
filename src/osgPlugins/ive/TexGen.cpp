@@ -27,7 +27,7 @@ void TexGen::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("TexGen::write(): Could not cast this osg::TexGen to an osg::Object.");
+        out_THROW_EXCEPTION("TexGen::write(): Could not cast this osg::TexGen to an osg::Object.");
     // Write TexGen's properties.
 
     // Write mode
@@ -54,7 +54,7 @@ void TexGen::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("TexGen::read(): Could not cast this osg::TexGen to an osg::Object.");
+            in_THROW_EXCEPTION("TexGen::read(): Could not cast this osg::TexGen to an osg::Object.");
         // Read TexGen's properties
         setMode((osg::TexGen::Mode)in->readInt());
                 
@@ -68,6 +68,6 @@ void TexGen::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("TexGen::read(): Expected TexGen identification.");
+        in_THROW_EXCEPTION("TexGen::read(): Expected TexGen identification.");
     }
 }

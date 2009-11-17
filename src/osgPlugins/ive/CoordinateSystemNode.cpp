@@ -29,17 +29,17 @@ void CoordinateSystemNode::write(DataOutputStream* out)
         ((ive::Group*)(group))->write(out);
     }
     else
-        throw Exception("CoordinateSystemNode::write(): Could not cast this osg::CoordinateSystemNode to an osg::Group.");
+        out_THROW_EXCEPTION("CoordinateSystemNode::write(): Could not cast this osg::CoordinateSystemNode to an osg::Group.");
        // Write CoordinateSystemNode's properties.
 
-        out->writeString(getFormat());
-        out->writeString(getCoordinateSystem());
+    out->writeString(getFormat());
+    out->writeString(getCoordinateSystem());
 
-        out->writeBool(getEllipsoidModel()!=0);
-        if(getEllipsoidModel())
-        {
-            ((ive::EllipsoidModel*)(getEllipsoidModel()))->write(out);
-        }
+    out->writeBool(getEllipsoidModel()!=0);
+    if(getEllipsoidModel())
+    {
+        ((ive::EllipsoidModel*)(getEllipsoidModel()))->write(out);
+    }
 
 }
 
@@ -56,7 +56,7 @@ void CoordinateSystemNode::read(DataInputStream* in){
             ((ive::Group*)(group))->read(in);
         }
         else
-            throw Exception("CoordinateSystemNode::read(): Could not cast this osg::CoordinateSystemNode to an osg::Group.");
+            in_THROW_EXCEPTION("CoordinateSystemNode::read(): Could not cast this osg::CoordinateSystemNode to an osg::Group.");
         // Read CoordinateSystemNode's properties
 
         // Read format string
@@ -75,6 +75,6 @@ void CoordinateSystemNode::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("CoordinateSystemNode::read(): Expected CoordinateSystemNode identification.");
+        in_THROW_EXCEPTION("CoordinateSystemNode::read(): Expected CoordinateSystemNode identification.");
     }
 }

@@ -27,7 +27,7 @@ void PolygonStipple::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("PolygonStipple::write(): Could not cast this osg::PolygonStipple to an osg::Object.");
+        out_THROW_EXCEPTION("PolygonStipple::write(): Could not cast this osg::PolygonStipple to an osg::Object.");
     // Write PolygonStipple's properties.
     out->writeUByteArray(new osg::UByteArray(128,const_cast<GLubyte*>(getMask())));
 }
@@ -44,11 +44,11 @@ void PolygonStipple::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("PolygonStipple::read(): Could not cast this osg::PolygonStipple to an osg::Object.");
+            in_THROW_EXCEPTION("PolygonStipple::read(): Could not cast this osg::PolygonStipple to an osg::Object.");
         // Read PolygonStipple's properties
         setMask((GLubyte *)in->readUByteArray()->getDataPointer());
     }
     else{
-        throw Exception("PolygonStipple::read(): Expected PolygonStipple identification.");
+        in_THROW_EXCEPTION("PolygonStipple::read(): Expected PolygonStipple identification.");
     }
 }

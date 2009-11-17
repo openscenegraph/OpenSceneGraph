@@ -28,7 +28,7 @@ void VolumeLocator::write(DataOutputStream* out)
     if (object)
         ((ive::Object*)(object))->write(out);
     else
-        throw Exception("VolumeLocaotr::write(): Could not cast this osgVolume::Locator to an osg::Object.");
+        out_THROW_EXCEPTION("VolumeLocaotr::write(): Could not cast this osgVolume::Locator to an osg::Object.");
 
     out->writeMatrixd(getTransform());
 }
@@ -39,7 +39,7 @@ void VolumeLocator::read(DataInputStream* in)
     int id = in->peekInt();
     if(id != IVEVOLUMELOCATOR)
     {
-        throw Exception("VolumeLocator::read(): Expected Locator identification.");
+        in_THROW_EXCEPTION("VolumeLocator::read(): Expected Locator identification.");
     }
     
     // Read Locator's identification.
@@ -50,7 +50,7 @@ void VolumeLocator::read(DataInputStream* in)
     if(object)
         ((ive::Object*)(object))->read(in);
     else
-        throw Exception("VolumeLocator::read(): Could not cast this osgVolume::Locator to an osg::Object.");
+        in_THROW_EXCEPTION("VolumeLocator::read(): Could not cast this osgVolume::Locator to an osg::Object.");
 
     setTransform(in->readMatrixd());
 

@@ -29,7 +29,7 @@ void DrawElementsUShort::write(DataOutputStream* out){
         ((ive::PrimitiveSet*)(prim))->write(out);
     }
     else
-        throw Exception("DrawElementsUShort::write(): Could not cast this osg::DrawElementsUShort to an osg::PrimitiveSet.");
+        out_THROW_EXCEPTION("DrawElementsUShort::write(): Could not cast this osg::DrawElementsUShort to an osg::PrimitiveSet.");
     // Write DrawElementsUShort's properties.
 
     // Write array length and its elements.
@@ -49,7 +49,7 @@ void DrawElementsUShort::read(DataInputStream* in){
             ((ive::PrimitiveSet*)(prim))->read(in);
         }
         else
-            throw Exception("DrawElementsUShort::read(): Could not cast this osg::DrawElementsUShort to an osg::PrimitiveSet.");
+            in_THROW_EXCEPTION("DrawElementsUShort::read(): Could not cast this osg::DrawElementsUShort to an osg::PrimitiveSet.");
 
         // Read array length and its elements.
         int size = in->readInt();
@@ -65,6 +65,6 @@ void DrawElementsUShort::read(DataInputStream* in){
         }        
     }
     else{
-        throw Exception("DrawElementsUShort::read(): Expected DrawElementsUShort identification.");
+        in_THROW_EXCEPTION("DrawElementsUShort::read(): Expected DrawElementsUShort identification.");
     }
 }

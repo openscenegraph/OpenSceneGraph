@@ -28,7 +28,7 @@ void TexGenNode::write(DataOutputStream* out){
         ((ive::Group*)(group))->write(out);
     }
     else
-        throw Exception("TexGenNode::write(): Could not cast this osg::TexGenNode to an osg::Group.");
+        out_THROW_EXCEPTION("TexGenNode::write(): Could not cast this osg::TexGenNode to an osg::Group.");
     // Write TexGenNode's properties.
 
 
@@ -54,7 +54,7 @@ void TexGenNode::read(DataInputStream* in){
             ((ive::Group*)(group))->read(in);
         }
         else
-            throw Exception("TexGenNode::read(): Could not cast this osg::TexGenNode to an osg::Object.");
+            in_THROW_EXCEPTION("TexGenNode::read(): Could not cast this osg::TexGenNode to an osg::Object.");
         // Read TexGenNode's properties
 
 
@@ -68,6 +68,6 @@ void TexGenNode::read(DataInputStream* in){
         }
     }
     else{
-        throw Exception("TexGenNode::read(): Expected TexGenNode identification.");
+        in_THROW_EXCEPTION("TexGenNode::read(): Expected TexGenNode identification.");
     }
 }

@@ -29,7 +29,7 @@ void VolumeTransferFunctionProperty::write(DataOutputStream* out)
     if (object)
         ((ive::Object*)(object))->write(out);
     else
-        throw Exception("VolumeTransferFunctionProperty::write(): Could not cast this osgVolume::TransferFunctionProperty to an osg::Object.");
+        out_THROW_EXCEPTION("VolumeTransferFunctionProperty::write(): Could not cast this osgVolume::TransferFunctionProperty to an osg::Object.");
 
 
     osg::TransferFunction1D* tf = dynamic_cast<osg::TransferFunction1D*>(getTransferFunction());
@@ -73,7 +73,7 @@ void VolumeTransferFunctionProperty::read(DataInputStream* in)
     // Peek on Layer's identification.
     int id = in->peekInt();
     if (id != IVEVOLUMETRANSFERFUNCTIONPROPERTY)
-        throw Exception("VolumeTransferFunctionProperty::read(): Expected CompositeProperty identification.");
+        in_THROW_EXCEPTION("VolumeTransferFunctionProperty::read(): Expected CompositeProperty identification.");
 
     // Read Layer's identification.
     id = in->readInt();
@@ -83,7 +83,7 @@ void VolumeTransferFunctionProperty::read(DataInputStream* in)
     if (object)
         ((ive::Object*)(object))->read(in);
     else
-        throw Exception("VolumeTransferFunctionProperty::write(): Could not cast this osgVolume::TransferFunctionProperty to an osg::Object.");
+        in_THROW_EXCEPTION("VolumeTransferFunctionProperty::write(): Could not cast this osgVolume::TransferFunctionProperty to an osg::Object.");
 
     unsigned int numDimensions = in->readUInt();
     if (numDimensions==1)

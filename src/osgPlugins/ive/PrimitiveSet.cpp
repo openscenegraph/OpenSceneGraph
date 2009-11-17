@@ -27,7 +27,7 @@ void PrimitiveSet::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("PrimitiveSet::write(): Could not cast this osg::PrimitiveSet to an osg::Object.");
+        out_THROW_EXCEPTION("PrimitiveSet::write(): Could not cast this osg::PrimitiveSet to an osg::Object.");
 
 
     if ( out->getVersion() >= VERSION_0038 )
@@ -51,7 +51,7 @@ void PrimitiveSet::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("PrimitiveSet::read(): Could not cast this osg::PrimitiveSet to an osg::Object.");
+            in_THROW_EXCEPTION("PrimitiveSet::read(): Could not cast this osg::PrimitiveSet to an osg::Object.");
 
 
         if ( in->getVersion() >= VERSION_0038 )
@@ -63,6 +63,6 @@ void PrimitiveSet::read(DataInputStream* in){
         setMode(in->readInt());
     }
     else{
-        throw Exception("PrimitiveSet::read(): Expected PrimitiveSet identification.");
+        in_THROW_EXCEPTION("PrimitiveSet::read(): Expected PrimitiveSet identification.");
     }
 }

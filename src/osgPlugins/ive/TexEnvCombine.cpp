@@ -27,7 +27,7 @@ void TexEnvCombine::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("TexEnvCombine::write(): Could not cast this osg::TexEnvCombine to an osg::Object.");
+        out_THROW_EXCEPTION("TexEnvCombine::write(): Could not cast this osg::TexEnvCombine to an osg::Object.");
     // Write TexEnvCombine's properties.
     
     // Write combine method
@@ -66,7 +66,7 @@ void TexEnvCombine::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("TexEnvCombine::read(): Could not cast this osg::TexEnvCombine to an osg::Object.");
+            in_THROW_EXCEPTION("TexEnvCombine::read(): Could not cast this osg::TexEnvCombine to an osg::Object.");
         // Read TexEnvCombine's properties
 
         // Read combine method
@@ -93,6 +93,6 @@ void TexEnvCombine::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("TexEnvCombine::read(): Expected TexEnvCombine identification.");
+        in_THROW_EXCEPTION("TexEnvCombine::read(): Expected TexEnvCombine identification.");
     }
 }

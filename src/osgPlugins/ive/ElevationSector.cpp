@@ -38,6 +38,6 @@ void ElevationSector::read(DataInputStream* in){
         setElevationRange(minElevation, maxElevation, fadeAngle);
     }
     else{
-        throw Exception("ElevationSector::read(): Expected ElevationSector identification.");
+        in_THROW_EXCEPTION("ElevationSector::read(): Expected ElevationSector identification.");
     }
 }

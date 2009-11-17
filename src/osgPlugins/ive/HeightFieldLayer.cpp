@@ -30,7 +30,7 @@ void HeightFieldLayer::write(DataOutputStream* out)
     if  (layer)
         ((ive::Layer*)(layer))->write(out);
     else
-        throw Exception("HeightFieldLayer::write(): Could not cast this osgLayer::HeightFieldLayer to an osgTerrain::Layer.");
+        out_THROW_EXCEPTION("HeightFieldLayer::write(): Could not cast this osgLayer::HeightFieldLayer to an osgTerrain::Layer.");
 
 
     if (getFileName().empty() && getHeightField())
@@ -87,7 +87,7 @@ void HeightFieldLayer::read(DataInputStream* in)
     // Peek on Layer's identification.
     int id = in->peekInt();
     if (id != IVEHEIGHTFIELDLAYER)
-        throw Exception("HeightFieldLayer::read(): Expected HeightFieldLayer identification.");
+        in_THROW_EXCEPTION("HeightFieldLayer::read(): Expected HeightFieldLayer identification.");
     
     // Read Layer's identification.
     id = in->readInt();
@@ -97,7 +97,7 @@ void HeightFieldLayer::read(DataInputStream* in)
     if (layer)
         ((ive::Layer*)(layer))->read(in);
     else
-        throw Exception("HeightFieldLayer::read(): Could not cast this osgLayer::Layer to an osg::Group.");
+        in_THROW_EXCEPTION("HeightFieldLayer::read(): Could not cast this osgLayer::Layer to an osg::Group.");
 
 
     bool useInlineHeightField = in->readBool();

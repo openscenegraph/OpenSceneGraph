@@ -27,7 +27,7 @@ void Point::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("Point::write(): Could not cast this osg::Point to an osg::Object.");
+        out_THROW_EXCEPTION("Point::write(): Could not cast this osg::Point to an osg::Object.");
     // Write Point's properties.
     out->writeFloat(getSize());
     out->writeFloat(getFadeThresholdSize());
@@ -48,7 +48,7 @@ void Point::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("Point::read(): Could not cast this osg::Point to an osg::Object.");
+            in_THROW_EXCEPTION("Point::read(): Could not cast this osg::Point to an osg::Object.");
         // Read Point's properties
         setSize(in->readFloat());
         setFadeThresholdSize(in->readFloat());
@@ -57,6 +57,6 @@ void Point::read(DataInputStream* in){
         setMaxSize(in->readFloat());
     }
     else{
-        throw Exception("Point::read(): Expected Point identification.");
+        in_THROW_EXCEPTION("Point::read(): Expected Point identification.");
     }
 }

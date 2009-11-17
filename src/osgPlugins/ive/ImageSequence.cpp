@@ -30,7 +30,7 @@ void ImageSequence::write(DataOutputStream* out)
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("ImageSequence::write(): Could not cast this osg::ImageSequence to an osg::Object.");
+        out_THROW_EXCEPTION("ImageSequence::write(): Could not cast this osg::ImageSequence to an osg::Object.");
     // Write ImageSequence's properties.
     
     
@@ -71,7 +71,7 @@ void ImageSequence::read(DataInputStream* in)
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("ImageSequence::read(): Could not cast this osg::ImageSequence to an osg::Object.");
+            in_THROW_EXCEPTION("ImageSequence::read(): Could not cast this osg::ImageSequence to an osg::Object.");
         // Read ImageSequence's properties.
 
 
@@ -97,6 +97,6 @@ void ImageSequence::read(DataInputStream* in)
         
     }
     else{
-        throw Exception("ImageSequence::read(): Expected ImageSequence identification.");
+        in_THROW_EXCEPTION("ImageSequence::read(): Expected ImageSequence identification.");
     }
 }

@@ -27,7 +27,7 @@ void LOD::write(DataOutputStream* out){
         ((ive::Group*)(group))->write(out);
     }
     else
-        throw Exception("LOD::write(): Could not cast this osg::LOD to an osg::Group.");
+        out_THROW_EXCEPTION("LOD::write(): Could not cast this osg::LOD to an osg::Group.");
     // Write LOD's properties.
 
         out->writeFloat(getRadius());
@@ -60,7 +60,7 @@ void LOD::read(DataInputStream* in){
             ((ive::Group*)(group))->read(in);
         }
         else
-            throw Exception("LOD::read(): Could not cast this osg::LOD to an osg::Group.");
+            in_THROW_EXCEPTION("LOD::read(): Could not cast this osg::LOD to an osg::Group.");
         // Read LOD's properties
 
                 if ( in->getVersion() > VERSION_0002 )
@@ -82,6 +82,6 @@ void LOD::read(DataInputStream* in){
         }
     }
     else{
-        throw Exception("LOD::read(): Expected LOD identification.");
+        in_THROW_EXCEPTION("LOD::read(): Expected LOD identification.");
     }
 }

@@ -29,7 +29,7 @@ void Locator::write(DataOutputStream* out)
     if (object)
         ((ive::Object*)(object))->write(out);
     else
-        throw Exception("Layer::write(): Could not cast this osgLayer::Layer to an osg::Object.");
+        out_THROW_EXCEPTION("Layer::write(): Could not cast this osgLayer::Layer to an osg::Object.");
         
     out->writeInt(getCoordinateSystemType());
     out->writeString(getFormat());
@@ -52,7 +52,7 @@ void Locator::read(DataInputStream* in)
     int id = in->peekInt();
     if(id != IVELOCATOR)
     {
-        throw Exception("Locator::read(): Expected Locator identification.");
+        in_THROW_EXCEPTION("Locator::read(): Expected Locator identification.");
     }
     
     // Read Locator's identification.
@@ -63,7 +63,7 @@ void Locator::read(DataInputStream* in)
     if(object)
         ((ive::Object*)(object))->read(in);
     else
-        throw Exception("Locator::read(): Could not cast this osgLocator::Locator to an osg::Group.");
+        in_THROW_EXCEPTION("Locator::read(): Could not cast this osgLocator::Locator to an osg::Group.");
 
     setCoordinateSystemType(static_cast<osgTerrain::Locator::CoordinateSystemType>(in->readInt()));
     setFormat(in->readString());

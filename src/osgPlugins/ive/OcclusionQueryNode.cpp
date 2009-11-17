@@ -28,7 +28,7 @@ void OcclusionQueryNode::write( DataOutputStream* out )
         ((ive::Group*)(group))->write(out);
     }
     else
-        throw Exception("OcclusionQueryNode::write(): Could not cast this osg::OcclusionQueryNode to an osg::Group.");
+        out_THROW_EXCEPTION("OcclusionQueryNode::write(): Could not cast this osg::OcclusionQueryNode to an osg::Group.");
 
     // Write OcclusionQueryNode's properties.
     out->writeBool( getQueriesEnabled() );
@@ -52,7 +52,7 @@ void OcclusionQueryNode::read( DataInputStream* in )
             ((ive::Group*)(group))->read(in);
         }
         else
-            throw Exception("OcclusionQueryNode::read(): Could not cast this osg::OcclusionQueryNode to an osg::Group.");
+            in_THROW_EXCEPTION("OcclusionQueryNode::read(): Could not cast this osg::OcclusionQueryNode to an osg::Group.");
 
         // Read OcclusionQueryNode's properties
         setQueriesEnabled( in->readBool() );
@@ -61,6 +61,6 @@ void OcclusionQueryNode::read( DataInputStream* in )
         setDebugDisplay( in->readBool() );
     }
     else{
-        throw Exception("OcclusionQueryNode::read(): Expected OcclusionQueryNode identification.");
+        in_THROW_EXCEPTION("OcclusionQueryNode::read(): Expected OcclusionQueryNode identification.");
     }
 }

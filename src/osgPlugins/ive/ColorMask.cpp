@@ -27,7 +27,7 @@ void ColorMask::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("ColorMask::write(): Could not cast this osg::ColorMask to an osg::Object.");
+        out_THROW_EXCEPTION("ColorMask::write(): Could not cast this osg::ColorMask to an osg::Object.");
 
     // Write ColorMask's properties.
     out->writeBool(getRedMask());
@@ -48,7 +48,7 @@ void ColorMask::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("ColorMask::read(): Could not cast this osg::ColorMask to an osg::Object.");
+            in_THROW_EXCEPTION("ColorMask::read(): Could not cast this osg::ColorMask to an osg::Object.");
 
         // Read ColorMask's properties
         setRedMask(in->readBool());
@@ -57,6 +57,6 @@ void ColorMask::read(DataInputStream* in){
         setAlphaMask(in->readBool());
     }
     else{
-        throw Exception("ColorMask::read(): Expected ColorMask identification.");
+        in_THROW_EXCEPTION("ColorMask::read(): Expected ColorMask identification.");
     }
 }

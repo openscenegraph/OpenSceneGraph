@@ -29,14 +29,14 @@ void StateSet::write(DataOutputStream* out){
          ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("StateSet::write(): Could not cast this osg::StateSet to an osg::Object.");
+        out_THROW_EXCEPTION("StateSet::write(): Could not cast this osg::StateSet to an osg::Object.");
 
     // Write render bin bin details.
     switch(getRenderBinMode()){
         case osg::StateSet::INHERIT_RENDERBIN_DETAILS:        out->writeChar((char)0);break;
         case osg::StateSet::USE_RENDERBIN_DETAILS:            out->writeChar((char)1);break;
         case osg::StateSet::OVERRIDE_RENDERBIN_DETAILS:        out->writeChar((char)2);break;
-        default: throw Exception("Unknown RenderBinMode in StateSet::write()");
+        default: out_THROW_EXCEPTION("Unknown RenderBinMode in StateSet::write()");
     }
     out->writeInt(getBinNumber());
     out->writeString(getBinName());
@@ -113,7 +113,7 @@ void StateSet::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);;
         }
         else
-            throw Exception("StateSet::read(): Could not cast this osg::StateSet to an osg::Object.");        
+            in_THROW_EXCEPTION("StateSet::read(): Could not cast this osg::StateSet to an osg::Object.");        
 
         // Read render bin details.
         char c = in->readChar();
@@ -132,7 +132,7 @@ void StateSet::read(DataInputStream* in){
             case 3:        
                 setRenderBinDetails(num, name, osg::StateSet::USE_RENDERBIN_DETAILS); 
                 break;
-            default: throw Exception("Unknown RenderBinMode in StateSet::read()");
+            default: in_THROW_EXCEPTION("Unknown RenderBinMode in StateSet::read()");
         }
 
         // Read stateset modes.
@@ -187,6 +187,6 @@ void StateSet::read(DataInputStream* in){
         }
     }
     else{
-        throw Exception("StateSet::read(): Expected StateSet identification");
+        in_THROW_EXCEPTION("StateSet::read(): Expected StateSet identification");
     }
 }

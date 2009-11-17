@@ -52,7 +52,7 @@ void LightPoint::write(DataOutputStream* out){
             ((ive::DirectionalSector*)(_sector.get()))->write(out);
         }
         else
-            throw Exception("Unknown sector in LightPoint::write()");
+            out_THROW_EXCEPTION("Unknown sector in LightPoint::write()");
     }
 
     // Write out osgSim::BlinkSequence.
@@ -109,7 +109,7 @@ void LightPoint::read(DataInputStream* in){
                 _sector = sector;
             }
             else
-                throw Exception("Unknown sector in LightPoint::read()");
+                in_THROW_EXCEPTION("Unknown sector in LightPoint::read()");
         }
 
         // Read in osgSim::BlinkSequence.
@@ -123,6 +123,6 @@ void LightPoint::read(DataInputStream* in){
         _blendingMode = (osgSim::LightPoint::BlendingMode)in->readInt();
     }
     else{
-        throw Exception("LightPoint::read(): Expected LightPoint identification.");
+        in_THROW_EXCEPTION("LightPoint::read(): Expected LightPoint identification.");
     }
 }

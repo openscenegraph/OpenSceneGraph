@@ -28,7 +28,7 @@ void Texture2D::write(DataOutputStream* out){
         ((ive::Texture*)(tex))->write(out);
     }
     else
-        throw Exception("Texture2D::write(): Could not cast this osg::Texture2D to an osg::Texture.");
+        out_THROW_EXCEPTION("Texture2D::write(): Could not cast this osg::Texture2D to an osg::Texture.");
     // Write Texture2D's properties.
     // Write image.
 
@@ -48,7 +48,7 @@ void Texture2D::read(DataInputStream* in){
             ((ive::Texture*)(tex))->read(in);
         }
         else
-            throw Exception("Texture2D::read(): Could not cast this osg::Texture2D to an osg::Texture.");
+            in_THROW_EXCEPTION("Texture2D::read(): Could not cast this osg::Texture2D to an osg::Texture.");
         // Read image.
         
         osg::Image *image = in->readImage();
@@ -57,6 +57,6 @@ void Texture2D::read(DataInputStream* in){
         }
     }
     else{
-        throw Exception("Texture2D::read(): Expected Texture2D identification.");
+        in_THROW_EXCEPTION("Texture2D::read(): Expected Texture2D identification.");
     }
 }

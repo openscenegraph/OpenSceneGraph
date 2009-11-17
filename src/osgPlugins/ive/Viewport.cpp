@@ -27,7 +27,7 @@ void Viewport::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("Viewport::write(): Could not cast this osg::Viewport to an osg::Object.");
+        out_THROW_EXCEPTION("Viewport::write(): Could not cast this osg::Viewport to an osg::Object.");
     // Write Viewport's properties.
 
     out->writeInt(static_cast<int>(x()));
@@ -48,7 +48,7 @@ void Viewport::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("Viewport::read(): Could not cast this osg::Viewport to an osg::Object.");
+            in_THROW_EXCEPTION("Viewport::read(): Could not cast this osg::Viewport to an osg::Object.");
 
         // Read Viewport's properties
         x() = in->readInt();
@@ -58,6 +58,6 @@ void Viewport::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("Viewport::read(): Expected Viewport identification.");
+        in_THROW_EXCEPTION("Viewport::read(): Expected Viewport identification.");
     }
 }

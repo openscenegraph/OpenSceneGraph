@@ -26,7 +26,7 @@ void AutoTransform::write(DataOutputStream* out){
         ((ive::Transform*)(trans))->write(out);
     }
     else
-        throw Exception("AutoTransform::write(): Could not cast this osg::AutoTransform to an osg::Transform.");
+        out_THROW_EXCEPTION("AutoTransform::write(): Could not cast this osg::AutoTransform to an osg::Transform.");
     // Write AutoTransform's properties.
 
     out->writeVec3(getPosition());
@@ -61,7 +61,7 @@ void AutoTransform::read(DataInputStream* in){
             ((ive::Transform*)(trans))->read(in);
         }
         else
-            throw Exception("AutoTransform::read(): Could not cast this osg::AutoTransform to an osg::Transform.");
+            in_THROW_EXCEPTION("AutoTransform::read(): Could not cast this osg::AutoTransform to an osg::Transform.");
         // Read AutoTransform's properties
 
         setPosition(in->readVec3());
@@ -85,6 +85,6 @@ void AutoTransform::read(DataInputStream* in){
 
     }
     else{
-        throw Exception("AutoTransform::read(): Expected AutoTransform identification.");
+        in_THROW_EXCEPTION("AutoTransform::read(): Expected AutoTransform identification.");
     }
 }

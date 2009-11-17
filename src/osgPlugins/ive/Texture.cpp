@@ -28,7 +28,7 @@ void Texture::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("Texture::write(): Could not cast this osg::Texture to an osg::Object.");
+        out_THROW_EXCEPTION("Texture::write(): Could not cast this osg::Texture to an osg::Object.");
 
     // Write Texture's properties.
     out->writeInt(_wrap_s);
@@ -79,7 +79,7 @@ void Texture::read(DataInputStream* in)
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("Texture::read(): Could not cast this osg::Texture to an osg::Object.");
+            in_THROW_EXCEPTION("Texture::read(): Could not cast this osg::Texture to an osg::Object.");
 
         // Read properties
         _wrap_s = (osg::Texture::WrapMode)in->readInt();
@@ -115,6 +115,6 @@ void Texture::read(DataInputStream* in)
     }
     else
     {
-        throw Exception("Texture::read(): Expected Texture identification.");
+        in_THROW_EXCEPTION("Texture::read(): Expected Texture identification.");
     }
 }

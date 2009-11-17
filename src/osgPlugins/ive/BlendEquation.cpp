@@ -29,7 +29,7 @@ void BlendEquation::write(DataOutputStream* out){
         ((ive::Object*)(obj))->write(out);
     }
     else
-        throw Exception("BlendEquation::write(): Could not cast this osg::BlendEquation to an osg::Object.");
+        out_THROW_EXCEPTION("BlendEquation::write(): Could not cast this osg::BlendEquation to an osg::Object.");
     // Write BlendEquation's properties.
 
     // Write source
@@ -56,7 +56,7 @@ void BlendEquation::read(DataInputStream* in){
             ((ive::Object*)(obj))->read(in);
         }
         else
-            throw Exception("BlendEquation::read(): Could not cast this osg::BlendEquation to an osg::Object.");
+            in_THROW_EXCEPTION("BlendEquation::read(): Could not cast this osg::BlendEquation to an osg::Object.");
         // Read BlendEquation's properties
 
         // Read source
@@ -71,6 +71,6 @@ void BlendEquation::read(DataInputStream* in){
         }
     }
     else{
-        throw Exception("BlendEquation::read(): Expected BlendEquation identification.");
+        in_THROW_EXCEPTION("BlendEquation::read(): Expected BlendEquation identification.");
     }
 }

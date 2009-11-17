@@ -50,6 +50,8 @@
 #ifndef TRISTRIP_GRAPH_ARRAY_H
 #define TRISTRIP_GRAPH_ARRAY_H
 
+#include <stdlib.h>
+
 // namespace common_structures
 namespace common_structures {
 

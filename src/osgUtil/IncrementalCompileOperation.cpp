@@ -20,6 +20,8 @@
 #include <OpenThreads/ScopedLock>
 
 #include <algorithm>
+#include <stdlib.h>
+#include <iterator>
 
 namespace osgUtil 
 {

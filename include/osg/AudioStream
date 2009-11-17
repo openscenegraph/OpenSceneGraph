@@ -15,6 +15,7 @@
 #define OSG_AUDIOSTREAM 1
 
 #include <osg/Image>
+#include <stdlib.h>
 
 namespace osg {
 

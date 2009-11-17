@@ -26,6 +26,8 @@
 #include <osgUtil/ShaderGen>
 #include <osgUtil/IntersectionVisitor>
 
+#include <iterator>
+
 using namespace osgViewer;
 
 class CollectedCoordinateSystemNodesVisitor : public osg::NodeVisitor

@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <algorithm>
 #include <map>
+#include <iterator>
 
 #include "TriStrip_tri_stripper.h"
 

@@ -19,6 +19,8 @@
 #include <sstream>
 #include <iostream>
 
+#include <ctype.h>
+
 namespace osg
 {
 

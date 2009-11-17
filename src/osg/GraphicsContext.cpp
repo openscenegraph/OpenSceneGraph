@@ -31,6 +31,7 @@
 #include <map>
 #include <sstream>
 #include <algorithm>
+#include <iterator>
 
 using namespace osg;
 

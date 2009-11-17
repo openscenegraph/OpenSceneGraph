@@ -24,6 +24,8 @@
 #include <set>
 #include <map> //GWM July 2005 map is used in constraints.
 #include <osgUtil/Tessellator> // tessellator triangulates the constrained triangles
+#include <stdlib.h>
+#include <iterator>
 
 namespace osgUtil
 {

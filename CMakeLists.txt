@@ -301,6 +301,8 @@ OPTION(OSG_GL_VERTEX_FUNCS_AVAILABLE "Set to OFF to disable use of OpenGL vertex
 OPTION(OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE "Set to OFF to disable use of OpenGL vertex functions such as glVertex/glColor etc." ${OSG_GL1_AVAILABLE})
 OPTION(OSG_GL_FIXED_FUNCTION_AVAILABLE "Set to OFF to disable use of OpenGL fixed function pipeline." ${OSG_GL1_AVAILABLE})
 
+OPTION(OSG_CPP_EXCEPTIONS_AVAILABLE "Set to OFF to disable compile of OSG components that use C++ exceptions." ON)
+
 ################################################################################
 # Set Config file
 

@@ -37,7 +37,6 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/BoundsChecking
     ${HEADER_PATH}/buffered_value
     ${HEADER_PATH}/BufferObject
-    ${HEADER_PATH}/Config
     ${HEADER_PATH}/Camera
     ${HEADER_PATH}/CameraNode
     ${HEADER_PATH}/CameraView

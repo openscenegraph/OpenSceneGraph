@@ -27,6 +27,7 @@
 #include <osg/Node>
 #include <osg/MatrixTransform>
 #include <osg/Geode>
+#include <osg/Vec3f>
 
 #include <osg/Geometry>
 #include <osg/StateSet>
@@ -59,6 +60,7 @@ public:
         supportsOption("noRotation","Do not do the default rotate about X axis");
         supportsOption("noTesselateLargePolygons","Do not do the default tesselation of large polygons");
         supportsOption("noTriStripPolygons","Do not do the default tri stripping of polygons");
+        supportsOption("generateFacetNormals","generate facet normals for verticies without normals");
 
         supportsOption("DIFFUSE=<unit>", "Set texture unit for diffuse texture");
         supportsOption("AMBIENT=<unit>", "Set texture unit for ambient texture");
@@ -134,6 +136,7 @@ protected:
         bool rotate;
         bool noTesselateLargePolygons;
         bool noTriStripPolygons;
+        bool generateFacetNormals;
         bool fixBlackMaterials;
         // This is the order in which the materials will be assigned to texture maps, unless
         // otherwise overriden
@@ -145,7 +148,7 @@ protected:
     
     void buildMaterialToStateSetMap(obj::Model& model, MaterialToStateSetMap& materialToSetSetMapObj, ObjOptionsStruct& localOptions) const;
     
-    osg::Geometry* convertElementListToGeometry(obj::Model& model, obj::Model::ElementList& elementList, bool& rotate) const;
+    osg::Geometry* convertElementListToGeometry(obj::Model& model, obj::Model::ElementList& elementList, ObjOptionsStruct& localOptions) const;
     
     osg::Node* convertModelToSceneGraph(obj::Model& model, ObjOptionsStruct& localOptions) const;
 
@@ -402,7 +405,7 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
     }
 }
 
-osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, obj::Model::ElementList& elementList, bool& rotate) const
+osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, obj::Model::ElementList& elementList, ObjOptionsStruct& localOptions) const
 {
     
     unsigned int numVertexIndices = 0;
@@ -414,6 +417,41 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
     unsigned int numPolygonElements = 0;
 
     obj::Model::ElementList::iterator itr;
+        
+    if (localOptions.generateFacetNormals == true) {
+        for(itr=elementList.begin();
+                itr!=elementList.end();
+                    ++itr)
+        {
+            obj::Element& element = *(*itr);
+            if (element.dataType==obj::Element::POINTS || element.dataType==obj::Element::POLYLINE)
+                continue;
+                        
+            if (element.normalIndices.size() == 0) {
+                // fill in the normals
+                int a = element.vertexIndices[0];
+                int b = element.vertexIndices[1];
+                int c = element.vertexIndices[2];
+
+                osg::Vec3f ab(model.vertices[b]);
+                osg::Vec3f ac(model.vertices[c]);
+
+                ab -= model.vertices[a];
+                ac -= model.vertices[a];
+
+                osg::Vec3f Norm( ab ^ ac );
+                Norm.normalize();
+                int normal_idx = model.normals.size();
+                model.normals.push_back(Norm);
+
+                for (unsigned i=0 ; i < element.vertexIndices.size() ; i++)
+                    element.normalIndices.push_back(normal_idx);
+            }
+        }
+    }
+        
+        
+        
     for(itr=elementList.begin();
         itr!=elementList.end();
         ++itr)
@@ -480,7 +518,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
                     index_itr != element.vertexIndices.end();
                     ++index_itr)
                 {
-                    vertices->push_back(transformVertex(model.vertices[*index_itr],rotate));
+                    vertices->push_back(transformVertex(model.vertices[*index_itr],localOptions.rotate));
                     ++numPoints;
                 }
                 if (numNormalIndices)
@@ -489,7 +527,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
                         index_itr != element.normalIndices.end();
                         ++index_itr)
                     {
-                        normals->push_back(transformNormal(model.normals[*index_itr],rotate));
+                        normals->push_back(transformNormal(model.normals[*index_itr],localOptions.rotate));
                     }
                 }
                 if (numTexCoordIndices)
@@ -526,7 +564,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
                     index_itr != element.vertexIndices.end();
                     ++index_itr)
                 {
-                    vertices->push_back(transformVertex(model.vertices[*index_itr],rotate));
+                    vertices->push_back(transformVertex(model.vertices[*index_itr],localOptions.rotate));
                 }
                 if (numNormalIndices)
                 {
@@ -534,7 +572,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
                         index_itr != element.normalIndices.end();
                         ++index_itr)
                     {
-                        normals->push_back(transformNormal(model.normals[*index_itr],rotate));
+                        normals->push_back(transformNormal(model.normals[*index_itr],localOptions.rotate));
                     }
                 }
                 if (numTexCoordIndices)
@@ -572,6 +610,11 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
             if (element.dataType==obj::Element::POLYGON)
             {
 
+                
+
+
+
+
                 #ifdef USE_DRAWARRAYLENGTHS
                     drawArrayLengths->push_back(element.vertexIndices.size());
                 #else
@@ -597,7 +640,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
                         index_itr != element.vertexIndices.rend();
                         ++index_itr)
                     {
-                        vertices->push_back(transformVertex(model.vertices[*index_itr],rotate));
+                        vertices->push_back(transformVertex(model.vertices[*index_itr],localOptions.rotate));
                     }
                     if (numNormalIndices)
                     {
@@ -605,9 +648,11 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
                             index_itr != element.normalIndices.rend();
                             ++index_itr)
                         {
-                            normals->push_back(transformNormal(model.normals[*index_itr],rotate));
+                            normals->push_back(transformNormal(model.normals[*index_itr],localOptions.rotate));
                         }
                     }
+
+
                     if (numTexCoordIndices)
                     {
                         for(obj::Element::IndexList::reverse_iterator index_itr = element.texCoordIndices.rbegin();
@@ -625,7 +670,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
                         index_itr != element.vertexIndices.end();
                         ++index_itr)
                     {
-                        vertices->push_back(transformVertex(model.vertices[*index_itr],rotate));
+                        vertices->push_back(transformVertex(model.vertices[*index_itr],localOptions.rotate));
                     }
                     if (numNormalIndices)
                     {
@@ -633,7 +678,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
                             index_itr != element.normalIndices.end();
                             ++index_itr)
                         {
-                            normals->push_back(transformNormal(model.normals[*index_itr],rotate));
+                            normals->push_back(transformNormal(model.normals[*index_itr],localOptions.rotate));
                         }
                     }
                     if (numTexCoordIndices)
@@ -675,7 +720,7 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, ObjOptio
         const obj::ElementState& es = itr->first;
         obj::Model::ElementList& el = itr->second;
 
-        osg::Geometry* geometry = convertElementListToGeometry(model,el,localOptions.rotate);
+        osg::Geometry* geometry = convertElementListToGeometry(model,el,localOptions);
 
         if (geometry)
         {
@@ -698,7 +743,7 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, ObjOptio
             }
             
             // if no normals present add them.
-            if (!geometry->getNormalArray() || geometry->getNormalArray()->getNumElements()==0)
+            if (localOptions.generateFacetNormals==false && (!geometry->getNormalArray() || geometry->getNormalArray()->getNumElements()==0))
             {
                 osgUtil::SmoothingVisitor sv;
                 sv.smooth(*geometry);
@@ -735,6 +780,7 @@ ReaderWriterOBJ::ObjOptionsStruct ReaderWriterOBJ::parseOptions(const osgDB::Rea
     localOptions.rotate = true;
     localOptions.noTesselateLargePolygons = false;
     localOptions.noTriStripPolygons = false;
+    localOptions.generateFacetNormals = false;
     localOptions.fixBlackMaterials = true;
 
     if (options!=NULL)
@@ -769,6 +815,10 @@ ReaderWriterOBJ::ObjOptionsStruct ReaderWriterOBJ::parseOptions(const osgDB::Rea
             else if (pre_equals == "noTriStripPolygons")
             {
                 localOptions.noTriStripPolygons = true;
+            }
+            else if (pre_equals == "generateFacetNormals")
+            {
+                localOptions.generateFacetNormals = true;
             }
             else if (post_equals.length()>0)
             {    

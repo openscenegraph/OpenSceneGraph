@@ -50,11 +50,8 @@ std::string createLibraryNameForWrapper(const std::string& ext)
     #endif
 #elif macintosh
     return "osgwrapper_"+ext;
-#elif defined(__hpux__)
-    // why don't we use PLUGIN_EXT from the makefiles here?
-    return "osgwrapper_"+ext+".sl";
 #else
-    return "osgwrapper_"+ext+".so";
+    return "osgwrapper_"+ext+ ADDQUOTES(OSG_PLUGIN_EXTENSION);
 #endif
 
 }

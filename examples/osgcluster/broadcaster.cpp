@@ -54,7 +54,7 @@
 #elif defined (WIN32)
     #include <winsock.h>
     #include <stdio.h>
-#elif defined (__hpux__)
+#elif defined (__hpux)
     #include <unistd.h>
 #else
     #error Teach me how to build on this system

@@ -27,7 +27,7 @@
 #include <mach-o/dyld.h>
 #else // all other unix
 #include <unistd.h>
-#ifdef __hpux__
+#ifdef __hpux
 // Although HP-UX has dlopen() it is broken! We therefore need to stick
 // to shl_load()/shl_unload()/shl_findsym()
 #include <dl.h>
@@ -63,7 +63,7 @@ DynamicLibrary::~DynamicLibrary()
         FreeLibrary((HMODULE)_handle);
 #elif defined(__APPLE__) && defined(APPLE_PRE_10_3)
         NSUnLinkModule(static_cast<NSModule>(_handle), FALSE);
-#elif defined(__hpux__)
+#elif defined(__hpux)
         // fortunately, shl_t is a pointer
         shl_unload (static_cast<shl_t>(_handle));
 #else // other unix
@@ -103,7 +103,7 @@ DynamicLibrary::HANDLE DynamicLibrary::getLibraryHandle( const std::string& libr
         handle = NSLinkModule(image, libraryName.c_str(), TRUE);
         NSDestroyObjectFileImage(image);
     }
-#elif defined(__hpux__)
+#elif defined(__hpux)
     // BIND_FIRST is neccessary for some reason
     handle = shl_load ( libraryName.c_str(), BIND_DEFERRED|BIND_FIRST|BIND_VERBOSE, 0);
     return handle;
@@ -146,7 +146,7 @@ DynamicLibrary::PROC_ADDRESS DynamicLibrary::getProcAddress(const std::string& p
     temp += procName;   // Mac OS X prepends an underscore on function names
     symbol = NSLookupSymbolInModule(static_cast<NSModule>(_handle), temp.c_str());
     return NSAddressOfSymbol(symbol);
-#elif defined(__hpux__)
+#elif defined(__hpux)
     void* result = NULL;
     if (shl_findsym (reinterpret_cast<shl_t*>(&_handle), procName.c_str(), TYPE_PROCEDURE, result) == 0)
     {

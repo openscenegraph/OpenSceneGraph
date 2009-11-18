@@ -70,7 +70,9 @@ QGraphicsViewAdapter::QGraphicsViewAdapter(osg::Image* image, QWidget* widget):
     _graphicsView = new QGraphicsView;
     _graphicsScene->addWidget(widget);
     _graphicsView->setScene(_graphicsScene);
+#if (QT_VERSION_CHECK(4, 5, 0) <= QT_VERSION)
     _graphicsScene->setStickyFocus(true);
+#endif
     _graphicsView->viewport()->setParent(0);
 
     int width = _graphicsScene->width();

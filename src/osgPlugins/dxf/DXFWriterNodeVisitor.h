@@ -78,7 +78,7 @@ public:
     int findColor(unsigned int rgb)
     {
         int aci = 255;
-        itr = _indexColors.find(rgb);
+        ColorMap::const_iterator itr = _indexColors.find(rgb);
         if (itr != _indexColors.end() ) {
             aci = itr->second;
         } else {
@@ -156,11 +156,9 @@ protected:
 
 protected:
     
-    std::map<const unsigned int, unsigned char> _indexColors; // maps RGB to autocad index colour
-    std::map<const unsigned int, unsigned char>  _hueColors; // maps hue angle to autocad index colour
-    
-    typedef std::pair <const unsigned int, unsigned char> ColorPair;
-    std::map<const unsigned int, unsigned char>::iterator itr;
+    typedef std::map<unsigned int, unsigned char> ColorMap;
+    ColorMap _indexColors; // maps RGB to autocad index colour
+    ColorMap _hueColors; // maps hue angle to autocad index colour
 };
 
 class DXFWriterNodeVisitor: public osg::NodeVisitor {

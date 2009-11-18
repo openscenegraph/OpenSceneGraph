@@ -18,6 +18,7 @@
 
 #include <osgPresentation/Export>
 
+#include <iosfwd>
 #include <map>
 #include <float.h>
 

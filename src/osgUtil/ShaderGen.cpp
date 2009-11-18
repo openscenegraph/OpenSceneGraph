@@ -104,7 +104,7 @@ osg::StateSet *ShaderGenCache::getOrCreateStateSet(unsigned int stateMask)
     if (it == _stateSetMap.end())
     {
         osg::StateSet *stateSet = createStateSet(stateMask);
-        _stateSetMap.insert(it, std::make_pair(stateMask, stateSet));
+        _stateSetMap.insert(it, StateSetMap::value_type(stateMask, stateSet));
         return stateSet;
     }
     return it->second.get();

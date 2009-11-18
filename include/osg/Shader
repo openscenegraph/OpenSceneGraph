@@ -35,7 +35,7 @@ class Program;
 class OSG_EXPORT ShaderBinary : public osg::Object
 {
     public:
-        
+
         ShaderBinary();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
@@ -45,10 +45,10 @@ class OSG_EXPORT ShaderBinary : public osg::Object
 
         /** Allocated a data buffer of specified size/*/
         void allocate(unsigned int size);
-        
+
         /** Assign shader binary data, copying the specified data into locally stored data buffer, the original data can then be deleted.*/
         void assign(unsigned int size, const unsigned char* data);
-        
+
         /** Get the size of the shader binary data.*/
         unsigned int getSize() const { return _data.size(); }
 
@@ -57,9 +57,13 @@ class OSG_EXPORT ShaderBinary : public osg::Object
 
         /** Get a const ptr to the shader binary data.*/
         const unsigned char* getData() const { return _data.empty() ? 0 : &(_data.front()); }
-        
+
+        /** Read shader binary from file.
+          * Return the resulting Shader or 0 if no valid shader binary could be read.*/
+        static ShaderBinary* readShaderBinaryFile(const std::string& fileName);
+
     protected:
-        
+
         typedef std::vector<unsigned char> Data;
         Data _data;
 };
@@ -132,7 +136,7 @@ class OSG_EXPORT Shader : public osg::Object
 
 
         /** Read shader source from file and then constructor shader of specified type.
-          * Return the resulting Shader or 0 if no valid shader source code be read.*/
+          * Return the resulting Shader or 0 if no valid shader source could be read.*/
         static Shader* readShaderFile( Type type, const std::string& fileName );
 
         /** Load the Shader's source code text from a file. */

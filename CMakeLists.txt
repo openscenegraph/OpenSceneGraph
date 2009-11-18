@@ -31,7 +31,7 @@ PROJECT(OpenSceneGraph)
 SET(OPENSCENEGRAPH_MAJOR_VERSION 2)
 SET(OPENSCENEGRAPH_MINOR_VERSION 9)
 SET(OPENSCENEGRAPH_PATCH_VERSION 6)
-SET(OPENSCENEGRAPH_SOVERSION 61)
+SET(OPENSCENEGRAPH_SOVERSION 62)
 
 # set to 0 when not a release candidate, non zero means that any generated 
 # svn tags will be treated as release candidates of given number
@@ -312,6 +312,11 @@ OPTION(OSG_CPP_EXCEPTIONS_AVAILABLE "Set to OFF to disable compile of OSG compon
 SET(OPENSCENEGRAPH_CONFIG_HEADER "${PROJECT_BINARY_DIR}/include/osg/Config")
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/osg/Config.in"
                "${OPENSCENEGRAPH_CONFIG_HEADER}")
+
+SET(OPENSCENEGRAPH_VERSION_HEADER "${PROJECT_BINARY_DIR}/include/osg/Version")
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/src/osg/Version.in"
+               "${OPENSCENEGRAPH_VERSION_HEADER}")
+
 # INSTALL_FILES(/include/osg/ FILES "${OPENSCENEGRAPH_CONFIG_HEADER}")
 
 

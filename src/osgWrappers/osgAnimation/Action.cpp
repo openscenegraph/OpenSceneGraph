@@ -14,7 +14,6 @@
 #include <osg/Object>
 #include <osgAnimation/Action>
 #include <osgAnimation/ActionVisitor>
-#include <osgAnimation/Animation>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -79,6 +78,11 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Action)
 	I_Method1(osgAnimation::Action::Callback *, getCallback, IN, unsigned int, frame,
 	          Properties::NON_VIRTUAL,
 	          __Callback_P1__getCallback__unsigned_int,
+	          "",
+	          "");
+	I_Method1(void, removeCallback, IN, osgAnimation::Action::Callback *, x,
+	          Properties::NON_VIRTUAL,
+	          __void__removeCallback__Callback_P1,
 	          "",
 	          "");
 	I_Method1(osgAnimation::Action::Callback *, getFrameCallback, IN, unsigned int, frame,
@@ -199,314 +203,14 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Action::Callback)
 	          __void__addNestedCallback__Callback_P1,
 	          "",
 	          "");
+	I_Method1(void, removeCallback, IN, osgAnimation::Action::Callback *, cb,
+	          Properties::NON_VIRTUAL,
+	          __void__removeCallback__Callback_P1,
+	          "",
+	          "");
 	I_SimpleProperty(osgAnimation::Action::Callback *, NestedCallback, 
 	                 __Callback_P1__getNestedCallback, 
 	                 0);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgAnimation::ActionAnimation)
-	I_DeclaringFile("osgAnimation/Action");
-	I_BaseType(osgAnimation::Action);
-	I_Method0(osg::Object *, cloneType,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__cloneType,
-	          "Clone the type of an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "Clone an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
-	          Properties::VIRTUAL,
-	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
-	          "");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "return the name of the object's class type. ",
-	          "Must be defined by derived classes. ");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "return the name of the object's library. ",
-	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
-	I_Method1(void, accept, IN, osgAnimation::ActionVisitor &, nv,
-	          Properties::VIRTUAL,
-	          __void__accept__osgAnimation_ActionVisitor_R1,
-	          "",
-	          "");
-	I_Constructor0(____ActionAnimation,
-	               "",
-	               "");
-	I_Constructor2(IN, const osgAnimation::ActionAnimation &, a, IN, const osg::CopyOp &, c,
-	               ____ActionAnimation__C5_ActionAnimation_R1__C5_osg_CopyOp_R1,
-	               "",
-	               "");
-	I_Constructor1(IN, osgAnimation::Animation *, animation,
-	               Properties::NON_EXPLICIT,
-	               ____ActionAnimation__Animation_P1,
-	               "",
-	               "");
-	I_Method2(void, updateAnimation, IN, unsigned int, frame, IN, int, priority,
-	          Properties::NON_VIRTUAL,
-	          __void__updateAnimation__unsigned_int__int,
-	          "",
-	          "");
-	I_Method0(osgAnimation::Animation *, getAnimation,
-	          Properties::NON_VIRTUAL,
-	          __Animation_P1__getAnimation,
-	          "",
-	          "");
-	I_SimpleProperty(osgAnimation::Animation *, Animation, 
-	                 __Animation_P1__getAnimation, 
-	                 0);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgAnimation::BlendIn)
-	I_DeclaringFile("osgAnimation/Action");
-	I_BaseType(osgAnimation::Action);
-	I_Method0(osg::Object *, cloneType,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__cloneType,
-	          "Clone the type of an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "Clone an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
-	          Properties::VIRTUAL,
-	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
-	          "");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "return the name of the object's class type. ",
-	          "Must be defined by derived classes. ");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "return the name of the object's library. ",
-	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
-	I_Method1(void, accept, IN, osgAnimation::ActionVisitor &, nv,
-	          Properties::VIRTUAL,
-	          __void__accept__osgAnimation_ActionVisitor_R1,
-	          "",
-	          "");
-	I_Constructor0(____BlendIn,
-	               "",
-	               "");
-	I_Constructor2(IN, const osgAnimation::BlendIn &, a, IN, const osg::CopyOp &, c,
-	               ____BlendIn__C5_BlendIn_R1__C5_osg_CopyOp_R1,
-	               "",
-	               "");
-	I_Constructor3(IN, osgAnimation::Animation *, animation, IN, double, duration, IN, double, weight,
-	               ____BlendIn__Animation_P1__double__double,
-	               "",
-	               "");
-	I_Method0(double, getWeight,
-	          Properties::NON_VIRTUAL,
-	          __double__getWeight,
-	          "",
-	          "");
-	I_Method0(osgAnimation::Animation *, getAnimation,
-	          Properties::NON_VIRTUAL,
-	          __Animation_P1__getAnimation,
-	          "",
-	          "");
-	I_Method1(void, computeWeight, IN, unsigned int, frame,
-	          Properties::NON_VIRTUAL,
-	          __void__computeWeight__unsigned_int,
-	          "",
-	          "");
-	I_SimpleProperty(osgAnimation::Animation *, Animation, 
-	                 __Animation_P1__getAnimation, 
-	                 0);
-	I_SimpleProperty(double, Weight, 
-	                 __double__getWeight, 
-	                 0);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgAnimation::BlendOut)
-	I_DeclaringFile("osgAnimation/Action");
-	I_BaseType(osgAnimation::Action);
-	I_Method0(osg::Object *, cloneType,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__cloneType,
-	          "Clone the type of an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "Clone an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
-	          Properties::VIRTUAL,
-	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
-	          "");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "return the name of the object's class type. ",
-	          "Must be defined by derived classes. ");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "return the name of the object's library. ",
-	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
-	I_Method1(void, accept, IN, osgAnimation::ActionVisitor &, nv,
-	          Properties::VIRTUAL,
-	          __void__accept__osgAnimation_ActionVisitor_R1,
-	          "",
-	          "");
-	I_Constructor0(____BlendOut,
-	               "",
-	               "");
-	I_Constructor2(IN, const osgAnimation::BlendOut &, a, IN, const osg::CopyOp &, c,
-	               ____BlendOut__C5_BlendOut_R1__C5_osg_CopyOp_R1,
-	               "",
-	               "");
-	I_Constructor2(IN, osgAnimation::Animation *, animation, IN, double, duration,
-	               ____BlendOut__Animation_P1__double,
-	               "",
-	               "");
-	I_Method0(osgAnimation::Animation *, getAnimation,
-	          Properties::NON_VIRTUAL,
-	          __Animation_P1__getAnimation,
-	          "",
-	          "");
-	I_Method0(double, getWeight,
-	          Properties::NON_VIRTUAL,
-	          __double__getWeight,
-	          "",
-	          "");
-	I_Method1(void, computeWeight, IN, unsigned int, frame,
-	          Properties::NON_VIRTUAL,
-	          __void__computeWeight__unsigned_int,
-	          "",
-	          "");
-	I_SimpleProperty(osgAnimation::Animation *, Animation, 
-	                 __Animation_P1__getAnimation, 
-	                 0);
-	I_SimpleProperty(double, Weight, 
-	                 __double__getWeight, 
-	                 0);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osgAnimation::StripAnimation)
-	I_DeclaringFile("osgAnimation/Action");
-	I_BaseType(osgAnimation::Action);
-	I_Method0(osg::Object *, cloneType,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__cloneType,
-	          "Clone the type of an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
-	          Properties::VIRTUAL,
-	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "Clone an object, with Object* return type. ",
-	          "Must be defined by derived classes. ");
-	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
-	          Properties::VIRTUAL,
-	          __bool__isSameKindAs__C5_osg_Object_P1,
-	          "",
-	          "");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "return the name of the object's class type. ",
-	          "Must be defined by derived classes. ");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "return the name of the object's library. ",
-	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
-	I_Method1(void, accept, IN, osgAnimation::ActionVisitor &, nv,
-	          Properties::VIRTUAL,
-	          __void__accept__osgAnimation_ActionVisitor_R1,
-	          "",
-	          "");
-	I_Constructor0(____StripAnimation,
-	               "",
-	               "");
-	I_Constructor2(IN, const osgAnimation::StripAnimation &, a, IN, const osg::CopyOp &, c,
-	               ____StripAnimation__C5_StripAnimation_R1__C5_osg_CopyOp_R1,
-	               "",
-	               "");
-	I_ConstructorWithDefaults4(IN, osgAnimation::Animation *, animation, , IN, double, blendInDuration, 0.0, IN, double, blendOutDuration, 0.0, IN, double, blendInWeightTarget, 1.0,
-	                           ____StripAnimation__Animation_P1__double__double__double,
-	                           "",
-	                           "");
-	I_Method0(osgAnimation::ActionAnimation *, getActionAnimation,
-	          Properties::NON_VIRTUAL,
-	          __ActionAnimation_P1__getActionAnimation,
-	          "",
-	          "");
-	I_Method0(osgAnimation::BlendIn *, getBlendIn,
-	          Properties::NON_VIRTUAL,
-	          __BlendIn_P1__getBlendIn,
-	          "",
-	          "");
-	I_Method0(osgAnimation::BlendOut *, getBlendOut,
-	          Properties::NON_VIRTUAL,
-	          __BlendOut_P1__getBlendOut,
-	          "",
-	          "");
-	I_Method0(const osgAnimation::ActionAnimation *, getActionAnimation,
-	          Properties::NON_VIRTUAL,
-	          __C5_ActionAnimation_P1__getActionAnimation,
-	          "",
-	          "");
-	I_Method0(const osgAnimation::BlendIn *, getBlendIn,
-	          Properties::NON_VIRTUAL,
-	          __C5_BlendIn_P1__getBlendIn,
-	          "",
-	          "");
-	I_Method0(const osgAnimation::BlendOut *, getBlendOut,
-	          Properties::NON_VIRTUAL,
-	          __C5_BlendOut_P1__getBlendOut,
-	          "",
-	          "");
-	I_Method0(unsigned int, getBlendOutStartFrame,
-	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getBlendOutStartFrame,
-	          "",
-	          "");
-	I_Method0(unsigned int, getLoop,
-	          Properties::VIRTUAL,
-	          __unsigned_int__getLoop,
-	          "",
-	          "");
-	I_Method1(void, setLoop, IN, unsigned int, loop,
-	          Properties::NON_VIRTUAL,
-	          __void__setLoop__unsigned_int,
-	          "",
-	          "");
-	I_Method1(void, traverse, IN, osgAnimation::ActionVisitor &, visitor,
-	          Properties::VIRTUAL,
-	          __void__traverse__ActionVisitor_R1,
-	          "",
-	          "");
-	I_SimpleProperty(osgAnimation::ActionAnimation *, ActionAnimation, 
-	                 __ActionAnimation_P1__getActionAnimation, 
-	                 0);
-	I_SimpleProperty(osgAnimation::BlendIn *, BlendIn, 
-	                 __BlendIn_P1__getBlendIn, 
-	                 0);
-	I_SimpleProperty(osgAnimation::BlendOut *, BlendOut, 
-	                 __BlendOut_P1__getBlendOut, 
-	                 0);
-	I_SimpleProperty(unsigned int, BlendOutStartFrame, 
-	                 __unsigned_int__getBlendOutStartFrame, 
-	                 0);
-	I_SimpleProperty(unsigned int, Loop, 
-	                 __unsigned_int__getLoop, 
-	                 __void__setLoop__unsigned_int);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgAnimation::Action::Callback >)

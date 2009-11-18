@@ -11,6 +11,7 @@
 #include <osgIntrospection/Attributes>
 
 #include <OpenThreads/Mutex>
+#include <osg/DisplaySettings>
 #include <osg/GraphicsContext>
 #include <osg/GraphicsThread>
 #include <osg/Object>
@@ -485,9 +486,11 @@ BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
 	I_DeclaringFile("osg/GraphicsContext");
 	I_BaseType(osg::Referenced);
 	I_BaseType(osg::GraphicsContext::ScreenIdentifier);
-	I_Constructor0(____Traits,
-	               "",
-	               "");
+	I_ConstructorWithDefaults1(IN, osg::DisplaySettings *, ds, 0,
+	                           Properties::NON_EXPLICIT,
+	                           ____Traits__DisplaySettings_P1,
+	                           "",
+	                           "");
 	I_PublicMemberProperty(int, x);
 	I_PublicMemberProperty(int, y);
 	I_PublicMemberProperty(int, width);
@@ -514,6 +517,9 @@ BEGIN_OBJECT_REFLECTOR(osg::GraphicsContext::Traits)
 	I_PublicMemberProperty(bool, vsync);
 	I_PublicMemberProperty(bool, useMultiThreadedOpenGLEngine);
 	I_PublicMemberProperty(bool, useCursor);
+	I_PublicMemberProperty(std::string, glContextVersion);
+	I_PublicMemberProperty(unsigned int, glContextFlags);
+	I_PublicMemberProperty(unsigned int, glContextProfileMask);
 	I_PublicMemberProperty(osg::GraphicsContext *, sharedContext);
 	I_PublicMemberProperty(osg::ref_ptr< osg::Referenced >, inheritedWindowData);
 	I_PublicMemberProperty(bool, setInheritedWindowPixelFormat);

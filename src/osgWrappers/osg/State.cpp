@@ -45,6 +45,8 @@ TYPE_NAME_ALIAS(std::vector< const osg::StateSet * >, osg::State::StateSetStack)
 
 TYPE_NAME_ALIAS(std::vector< osg::VertexAttribAlias >, osg::State::VertexAttribAliasList)
 
+TYPE_NAME_ALIAS(std::vector< GLushort >, osg::State::Indices)
+
 TYPE_NAME_ALIAS(std::pair< const osg::StateAttribute * COMMA  osg::StateAttribute::OverrideValue >, osg::State::AttributePair)
 
 TYPE_NAME_ALIAS(std::vector< osg::State::AttributePair >, osg::State::AttributeVec)
@@ -486,6 +488,11 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __void__unbindPixelBufferObject,
 	          "",
 	          "");
+	I_MethodWithDefaults3(void, drawQuads, IN, GLint, first, , IN, GLsizei, count, , IN, GLsizei, primCount, 1,
+	                      Properties::NON_VIRTUAL,
+	                      __void__drawQuads__GLint__GLsizei__GLsizei,
+	                      "",
+	                      "");
 	I_Method4(void, glDrawArraysInstanced, IN, GLenum, mode, IN, GLint, first, IN, GLsizei, count, IN, GLsizei, primcount,
 	          Properties::NON_VIRTUAL,
 	          __void__glDrawArraysInstanced__GLenum__GLint__GLsizei__GLsizei,
@@ -1127,6 +1134,8 @@ BEGIN_VALUE_REFLECTOR(osg::VertexAttribAlias)
 END_REFLECTOR
 
 STD_PAIR_REFLECTOR(std::pair< const osg::StateAttribute * COMMA  osg::StateAttribute::OverrideValue >)
+
+STD_VECTOR_REFLECTOR(std::vector< GLushort >)
 
 STD_VECTOR_REFLECTOR(std::vector< const osg::StateSet * >)
 

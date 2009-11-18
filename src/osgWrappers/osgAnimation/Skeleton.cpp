@@ -57,11 +57,11 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Skeleton)
 	          __void__accept__osg_NodeVisitor_R1,
 	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
 	          "");
-	I_ConstructorWithDefaults2(IN, const osgAnimation::Skeleton &, b, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____Skeleton__C5_Skeleton_R1__C5_osg_CopyOp_R1,
-	                           "",
-	                           "");
 	I_Constructor0(____Skeleton,
+	               "",
+	               "");
+	I_Constructor2(IN, const osgAnimation::Skeleton &, x, IN, const osg::CopyOp &, x,
+	               ____Skeleton__C5_Skeleton_R1__C5_osg_CopyOp_R1,
 	               "",
 	               "");
 	I_Method0(void, setDefaultUpdateCallback,
@@ -107,9 +107,14 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Skeleton::UpdateSkeleton)
 	I_Constructor0(____UpdateSkeleton,
 	               "",
 	               "");
-	I_ConstructorWithDefaults2(IN, const osgAnimation::Skeleton::UpdateSkeleton &, us, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____UpdateSkeleton__C5_UpdateSkeleton_R1__C5_osg_CopyOp_R1,
-	                           "",
-	                           "");
+	I_Constructor2(IN, const osgAnimation::Skeleton::UpdateSkeleton &, x, IN, const osg::CopyOp &, x,
+	               ____UpdateSkeleton__C5_UpdateSkeleton_R1__C5_osg_CopyOp_R1,
+	               "",
+	               "");
+	I_Method0(bool, needToValidate,
+	          Properties::NON_VIRTUAL,
+	          __bool__needToValidate,
+	          "",
+	          "");
 END_REFLECTOR
 

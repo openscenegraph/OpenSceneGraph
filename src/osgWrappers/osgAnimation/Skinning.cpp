@@ -119,7 +119,5 @@ BEGIN_VALUE_REFLECTOR(osgAnimation::TransformVertexFunctor::UniqBoneSetVertexSet
 	                 0);
 END_REFLECTOR
 
-STD_VECTOR_REFLECTOR(std::vector< int >)
-
 STD_VECTOR_REFLECTOR(std::vector< osgAnimation::TransformVertexFunctor::BoneWeight >)
 

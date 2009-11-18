@@ -71,8 +71,7 @@ Timer* Timer::instance()
     }
 
 #else
-
-    #include <sys/time.h>
+    #include <unistd.h>
 
     Timer::Timer( void )
     {
@@ -81,11 +80,24 @@ Timer* Timer::instance()
         setStartTick();        
     }
 
-    Timer_t Timer::tick() const
-    {
-        struct timeval tv;
-        gettimeofday(&tv, NULL);
-        return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
-    }
+    #if defined(_POSIX_TIMERS) && ( _POSIX_TIMERS > 0 ) && defined(_POSIX_MONOTONIC_CLOCK)
+        #include <time.h>
+
+        Timer_t Timer::tick() const
+        {
+            struct timespec ts;
+            clock_gettime(CLOCK_MONOTONIC, &ts);
+            return ((osg::Timer_t)ts.tv_sec)*1000000+(osg::Timer_t)ts.tv_nsec/1000;
+        }
+    #else
+        #include <sys/time.h>
+
+        Timer_t Timer::tick() const
+        {
+            struct timeval tv;
+            gettimeofday(&tv, NULL);
+            return ((osg::Timer_t)tv.tv_sec)*1000000+(osg::Timer_t)tv.tv_usec;
+        }
+    #endif
 
 #endif

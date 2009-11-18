@@ -480,7 +480,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         typedef std::vector<GLushort> Indices;
         Indices _quadIndices[6];
 
-        void drawQuads(GLint first, GLsizei count, GLsizei primCount=1);
+        void drawQuads(GLint first, GLsizei count, GLsizei primCount=0);
 
         inline void glDrawArraysInstanced(GLenum mode, GLint first, GLsizei count, GLsizei primcount)
         {

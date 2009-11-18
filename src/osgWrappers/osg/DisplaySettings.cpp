@@ -404,6 +404,36 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	          __unsigned_int__getMaxBufferObjectPoolSize,
 	          "",
 	          "");
+	I_Method1(void, setGLContextVersion, IN, const std::string &, version,
+	          Properties::NON_VIRTUAL,
+	          __void__setGLContextVersion__C5_std_string_R1,
+	          "Set the hint of which OpenGL version to attempt to create a graphics context for. ",
+	          "");
+	I_Method0(const std::string, getGLContextVersion,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string__getGLContextVersion,
+	          "Get the hint of which OpenGL version to attempt to create a graphics context for. ",
+	          "");
+	I_Method1(void, setGLContextFlags, IN, unsigned int, flags,
+	          Properties::NON_VIRTUAL,
+	          __void__setGLContextFlags__unsigned_int,
+	          "Set the hint of the flags to use in when creating graphic contexts. ",
+	          "");
+	I_Method0(unsigned int, getGLContextFlags,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getGLContextFlags,
+	          "Get the hint of the flags to use in when creating graphic contexts. ",
+	          "");
+	I_Method1(void, setGLContextProfileMask, IN, unsigned int, mask,
+	          Properties::NON_VIRTUAL,
+	          __void__setGLContextProfileMask__unsigned_int,
+	          "Set the hint of the profile mask to use in when creating graphic contexts. ",
+	          "");
+	I_Method0(unsigned int, getGLContextProfileMask,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getGLContextProfileMask,
+	          "Get the hint of the profile mask to use in when creating graphic contexts. ",
+	          "");
 	I_SimpleProperty(bool, AccumBuffer, 
 	                 __bool__getAccumBuffer, 
 	                 0);
@@ -431,6 +461,15 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	I_SimpleProperty(float, EyeSeparation, 
 	                 __float__getEyeSeparation, 
 	                 __void__setEyeSeparation__float);
+	I_SimpleProperty(unsigned int, GLContextFlags, 
+	                 __unsigned_int__getGLContextFlags, 
+	                 __void__setGLContextFlags__unsigned_int);
+	I_SimpleProperty(unsigned int, GLContextProfileMask, 
+	                 __unsigned_int__getGLContextProfileMask, 
+	                 __void__setGLContextProfileMask__unsigned_int);
+	I_SimpleProperty(const std::string &, GLContextVersion, 
+	                 0, 
+	                 __void__setGLContextVersion__C5_std_string_R1);
 	I_SimpleProperty(unsigned int, MaxBufferObjectPoolSize, 
 	                 __unsigned_int__getMaxBufferObjectPoolSize, 
 	                 __void__setMaxBufferObjectPoolSize__unsigned_int);

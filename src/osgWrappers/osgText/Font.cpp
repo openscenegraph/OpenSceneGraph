@@ -383,11 +383,6 @@ BEGIN_OBJECT_REFLECTOR(osgText::Font::Glyph)
 	          __void__subload,
 	          "",
 	          "");
-	I_Method1(void, draw, IN, osg::State &, state,
-	          Properties::NON_VIRTUAL,
-	          __void__draw__osg_State_R1,
-	          "",
-	          "");
 	I_SimpleProperty(unsigned int, GlyphCode, 
 	                 __unsigned_int__getGlyphCode, 
 	                 0);

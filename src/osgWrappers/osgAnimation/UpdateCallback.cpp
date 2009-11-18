@@ -19,7 +19,6 @@
 #include <osg/PositionAttitudeTransform>
 #include <osg/StateAttribute>
 #include <osgAnimation/Animation>
-#include <osgAnimation/AnimationManagerBase>
 #include <osgAnimation/Channel>
 #include <osgAnimation/Target>
 #include <osgAnimation/UpdateCallback>
@@ -34,24 +33,10 @@
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::AnimationUpdateCallbackBase)
 	I_DeclaringFile("osgAnimation/UpdateCallback");
+	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____AnimationUpdateCallbackBase,
 	               "",
 	               "");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
-	          Properties::PURE_VIRTUAL,
-	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
-	          "",
-	          "");
-	I_Method0(osgAnimation::AnimationManagerBase *, getAnimationManager,
-	          Properties::PURE_VIRTUAL,
-	          __AnimationManagerBase_P1__getAnimationManager,
-	          "",
-	          "");
-	I_Method0(bool, needLink,
-	          Properties::PURE_VIRTUAL,
-	          __bool__needLink,
-	          "",
-	          "");
 	I_Method1(bool, link, IN, osgAnimation::Channel *, channel,
 	          Properties::PURE_VIRTUAL,
 	          __bool__link__osgAnimation_Channel_P1,
@@ -62,22 +47,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::AnimationUpdateCallbackBase)
 	          __int__link__osgAnimation_Animation_P1,
 	          "",
 	          "");
-	I_Method0(void, updateLink,
-	          Properties::PURE_VIRTUAL,
-	          __void__updateLink,
-	          "",
-	          "");
-	I_Method0(const std::string &, getName,
-	          Properties::PURE_VIRTUAL,
-	          __C5_std_string_R1__getName,
-	          "",
-	          "");
-	I_SimpleProperty(osgAnimation::AnimationManagerBase *, AnimationManager, 
-	                 __AnimationManagerBase_P1__getAnimationManager, 
-	                 0);
-	I_SimpleProperty(const std::string &, Name, 
-	                 __C5_std_string_R1__getName, 
-	                 0);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgAnimation::UpdateMaterial)
@@ -119,11 +88,6 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::UpdateMaterial)
 	I_Method1(void, update, IN, osg::Material &, material,
 	          Properties::NON_VIRTUAL,
 	          __void__update__osg_Material_R1,
-	          "",
-	          "");
-	I_Method0(bool, needLink,
-	          Properties::VIRTUAL,
-	          __bool__needLink,
 	          "",
 	          "");
 	I_Method1(bool, link, IN, osgAnimation::Channel *, channel,
@@ -185,11 +149,6 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::UpdateTransform)
 	I_Method1(void, update, IN, osg::PositionAttitudeTransform &, pat,
 	          Properties::NON_VIRTUAL,
 	          __void__update__osg_PositionAttitudeTransform_R1,
-	          "",
-	          "");
-	I_Method0(bool, needLink,
-	          Properties::VIRTUAL,
-	          __bool__needLink,
 	          "",
 	          "");
 	I_Method1(bool, link, IN, osgAnimation::Channel *, channel,

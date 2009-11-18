@@ -11,6 +11,10 @@
 #include <osgIntrospection/Attributes>
 
 #include <osgAnimation/Action>
+#include <osgAnimation/ActionAnimation>
+#include <osgAnimation/ActionBlendIn>
+#include <osgAnimation/ActionBlendOut>
+#include <osgAnimation/ActionStripAnimation>
 #include <osgAnimation/ActionVisitor>
 #include <osgAnimation/FrameAction>
 #include <osgAnimation/Timeline>
@@ -94,14 +98,14 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::ActionVisitor)
 	          __void__apply__Timeline_R1,
 	          "",
 	          "");
-	I_Method1(void, apply, IN, osgAnimation::BlendIn &, action,
+	I_Method1(void, apply, IN, osgAnimation::ActionBlendIn &, action,
 	          Properties::VIRTUAL,
-	          __void__apply__BlendIn_R1,
+	          __void__apply__ActionBlendIn_R1,
 	          "",
 	          "");
-	I_Method1(void, apply, IN, osgAnimation::BlendOut &, action,
+	I_Method1(void, apply, IN, osgAnimation::ActionBlendOut &, action,
 	          Properties::VIRTUAL,
-	          __void__apply__BlendOut_R1,
+	          __void__apply__ActionBlendOut_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osgAnimation::ActionAnimation &, action,
@@ -109,9 +113,9 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::ActionVisitor)
 	          __void__apply__ActionAnimation_R1,
 	          "",
 	          "");
-	I_Method1(void, apply, IN, osgAnimation::StripAnimation &, action,
+	I_Method1(void, apply, IN, osgAnimation::ActionStripAnimation &, action,
 	          Properties::VIRTUAL,
-	          __void__apply__StripAnimation_R1,
+	          __void__apply__ActionStripAnimation_R1,
 	          "",
 	          "");
 	I_SimpleProperty(int, CurrentLayer, 
@@ -210,14 +214,14 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::UpdateActionVisitor)
 	          __void__apply__Action_R1,
 	          "",
 	          "");
-	I_Method1(void, apply, IN, osgAnimation::BlendIn &, action,
+	I_Method1(void, apply, IN, osgAnimation::ActionBlendIn &, action,
 	          Properties::VIRTUAL,
-	          __void__apply__BlendIn_R1,
+	          __void__apply__ActionBlendIn_R1,
 	          "",
 	          "");
-	I_Method1(void, apply, IN, osgAnimation::BlendOut &, action,
+	I_Method1(void, apply, IN, osgAnimation::ActionBlendOut &, action,
 	          Properties::VIRTUAL,
-	          __void__apply__BlendOut_R1,
+	          __void__apply__ActionBlendOut_R1,
 	          "",
 	          "");
 	I_Method1(void, apply, IN, osgAnimation::ActionAnimation &, action,
@@ -225,9 +229,9 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::UpdateActionVisitor)
 	          __void__apply__ActionAnimation_R1,
 	          "",
 	          "");
-	I_Method1(void, apply, IN, osgAnimation::StripAnimation &, action,
+	I_Method1(void, apply, IN, osgAnimation::ActionStripAnimation &, action,
 	          Properties::VIRTUAL,
-	          __void__apply__StripAnimation_R1,
+	          __void__apply__ActionStripAnimation_R1,
 	          "",
 	          "");
 	I_SimpleProperty(unsigned int, Frame, 

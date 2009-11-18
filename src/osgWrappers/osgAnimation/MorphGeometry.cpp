@@ -235,7 +235,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::UpdateMorph)
 	               "",
 	               "");
 	I_Method0(bool, needLink,
-	          Properties::VIRTUAL,
+	          Properties::NON_VIRTUAL,
 	          __bool__needLink,
 	          "",
 	          "");

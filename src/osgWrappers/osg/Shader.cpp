@@ -43,6 +43,10 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	               ____Shader__Type__C5_std_string_R1,
 	               "",
 	               "");
+	I_Constructor2(IN, osg::Shader::Type, type, IN, osg::ShaderBinary *, shaderBinary,
+	               ____Shader__Type__ShaderBinary_P1,
+	               "",
+	               "");
 	I_ConstructorWithDefaults2(IN, const osg::Shader &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
 	                           ____Shader__C5_Shader_R1__C5_osg_CopyOp_R1,
 	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
@@ -80,22 +84,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	I_Method1(bool, setType, IN, osg::Shader::Type, t,
 	          Properties::NON_VIRTUAL,
 	          __bool__setType__Type,
-	          "",
-	          "");
-	I_Method1(void, setShaderSource, IN, const std::string &, sourceText,
-	          Properties::NON_VIRTUAL,
-	          __void__setShaderSource__C5_std_string_R1,
-	          "Load the Shader's source code text from a string. ",
-	          "");
-	I_Method1(bool, loadShaderSourceFromFile, IN, const std::string &, fileName,
-	          Properties::NON_VIRTUAL,
-	          __bool__loadShaderSourceFromFile__C5_std_string_R1,
-	          "Load the Shader's source code text from a file. ",
-	          "");
-	I_Method0(const std::string &, getShaderSource,
-	          Properties::NON_VIRTUAL,
-	          __C5_std_string_R1__getShaderSource,
-	          "Query the shader's source code text. ",
+	          "Set the Shader type as an enum. ",
 	          "");
 	I_Method0(osg::Shader::Type, getType,
 	          Properties::NON_VIRTUAL,
@@ -116,6 +105,36 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	          Properties::NON_VIRTUAL,
 	          __C5_std_string_R1__getFileName,
 	          "Get filename to which the shader source code belongs. ",
+	          "");
+	I_Method1(void, setShaderSource, IN, const std::string &, sourceText,
+	          Properties::NON_VIRTUAL,
+	          __void__setShaderSource__C5_std_string_R1,
+	          "Set the Shader's source code text from a string. ",
+	          "");
+	I_Method0(const std::string &, getShaderSource,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string_R1__getShaderSource,
+	          "Query the shader's source code text. ",
+	          "");
+	I_Method1(void, setShaderBinary, IN, osg::ShaderBinary *, shaderBinary,
+	          Properties::NON_VIRTUAL,
+	          __void__setShaderBinary__ShaderBinary_P1,
+	          "Set the Shader using a ShaderBinary. ",
+	          "");
+	I_Method0(osg::ShaderBinary *, getShaderBinary,
+	          Properties::NON_VIRTUAL,
+	          __ShaderBinary_P1__getShaderBinary,
+	          "Get the Shader's ShaderBinary, return NULL if none is assigned. ",
+	          "");
+	I_Method0(const osg::ShaderBinary *, getShaderBinary,
+	          Properties::NON_VIRTUAL,
+	          __C5_ShaderBinary_P1__getShaderBinary,
+	          "Get the const Shader's ShaderBinary, return NULL if none is assigned. ",
+	          "");
+	I_Method1(bool, loadShaderSourceFromFile, IN, const std::string &, fileName,
+	          Properties::NON_VIRTUAL,
+	          __bool__loadShaderSourceFromFile__C5_std_string_R1,
+	          "Load the Shader's source code text from a file. ",
 	          "");
 	I_Method1(void, resizeGLObjectBuffers, IN, unsigned int, maxSize,
 	          Properties::VIRTUAL,
@@ -155,7 +174,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	I_StaticMethod2(osg::Shader *, readShaderFile, IN, osg::Shader::Type, type, IN, const std::string &, fileName,
 	                __Shader_P1__readShaderFile__Type__C5_std_string_R1_S,
 	                "Read shader source from file and then constructor shader of specified type. ",
-	                "Return the resulting Shader or 0 if no valid shader source code be read. ");
+	                "Return the resulting Shader or 0 if no valid shader source could be read. ");
 	I_StaticMethod2(void, deleteGlShader, IN, unsigned int, contextID, IN, GLuint, shader,
 	                __void__deleteGlShader__unsigned_int__GLuint_S,
 	                "Mark internal glShader for deletion. ",
@@ -188,6 +207,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	I_SimpleProperty(const std::string &, FileName, 
 	                 __C5_std_string_R1__getFileName, 
 	                 __void__setFileName__C5_std_string_R1);
+	I_SimpleProperty(osg::ShaderBinary *, ShaderBinary, 
+	                 __ShaderBinary_P1__getShaderBinary, 
+	                 __void__setShaderBinary__ShaderBinary_P1);
 	I_SimpleProperty(const std::string &, ShaderSource, 
 	                 __C5_std_string_R1__getShaderSource, 
 	                 __void__setShaderSource__C5_std_string_R1);
@@ -196,6 +218,73 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	                 __bool__setType__Type);
 	I_SimpleProperty(const char *, Typename, 
 	                 __C5_char_P1__getTypename, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::ShaderBinary)
+	I_DeclaringFile("osg/Shader");
+	I_BaseType(osg::Object);
+	I_Constructor0(____ShaderBinary,
+	               "",
+	               "");
+	I_ConstructorWithDefaults2(IN, const osg::ShaderBinary &, rhs, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
+	                           ____ShaderBinary__C5_ShaderBinary_R1__C5_osg_CopyOp_R1,
+	                           "Copy constructor using CopyOp to manage deep vs shallow copy. ",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method2(void, assign, IN, unsigned int, size, IN, const unsigned char *, data,
+	          Properties::NON_VIRTUAL,
+	          __void__assign__unsigned_int__C5_unsigned_char_P1,
+	          "Allocated a data buffer of specified size/*/ void allocate(unsigned int size);. ",
+	          "/** Assign shader binary data, copying the specified data into locally stored data buffer, the original data can then be deleted. ");
+	I_Method0(unsigned int, getSize,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getSize,
+	          "Get the size of the shader binary data. ",
+	          "");
+	I_Method0(unsigned char *, getData,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_char_P1__getData,
+	          "Get a ptr to the shader binary data. ",
+	          "");
+	I_Method0(const unsigned char *, getData,
+	          Properties::NON_VIRTUAL,
+	          __C5_unsigned_char_P1__getData,
+	          "Get a const ptr to the shader binary data. ",
+	          "");
+	I_StaticMethod1(osg::ShaderBinary *, readShaderBinaryFile, IN, const std::string &, fileName,
+	                __ShaderBinary_P1__readShaderBinaryFile__C5_std_string_R1_S,
+	                "Read shader binary from file. ",
+	                "Return the resulting Shader or 0 if no valid shader binary could be read. ");
+	I_SimpleProperty(unsigned char *, Data, 
+	                 __unsigned_char_P1__getData, 
+	                 0);
+	I_SimpleProperty(unsigned int, Size, 
+	                 __unsigned_int__getSize, 
 	                 0);
 END_REFLECTOR
 

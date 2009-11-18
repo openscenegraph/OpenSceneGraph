@@ -152,6 +152,9 @@ IF(UNIX)
     FIND_PACKAGE(X11)
     # Some Unicies need explicit linkage to the Math library or the build fails.
     FIND_LIBRARY(MATH_LIBRARY m)
+    IF( CMAKE_SYSTEM MATCHES "Linux" )
+        FIND_LIBRARY( RT_LIBRARY rt )
+    ENDIF( CMAKE_SYSTEM MATCHES "Linux" )
 ENDIF()
 
 # Make the headers visible to everything

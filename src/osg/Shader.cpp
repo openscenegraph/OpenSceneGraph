@@ -63,7 +63,26 @@ void ShaderBinary::assign(unsigned int size, const unsigned char* data)
     }
 }
 
-        ///////////////////////////////////////////////////////////////////////////
+ShaderBinary* ShaderBinary::readShaderBinaryFile(const std::string& fileName)
+{
+    std::ifstream fin;
+    fin.open(fileName.c_str(), std::ios::binary);
+    if (!fin) return 0;
+
+    fin.seekg(0, std::ios::end);
+    int length = fin.tellg();
+    if (length==0) return 0;
+
+    osg::ref_ptr<ShaderBinary> shaderBinary = new osg::ShaderBinary;
+    shaderBinary->allocate(length);
+    fin.seekg(0, std::ios::beg);
+    fin.read(reinterpret_cast<char*>(shaderBinary->getData()), length);
+    fin.close();
+
+    return shaderBinary.release();
+}
+
+///////////////////////////////////////////////////////////////////////////
 // static cache of glShaders flagged for deletion, which will actually
 // be deleted in the correct GL context.
 

@@ -25,9 +25,6 @@
 
 #include <osgUtil/RenderStage>
 
-#define FORCE_COLOR_ATTACHMENT  1
-#define FORCE_DEPTH_ATTACHMENT  1
-
 using namespace osg;
 using namespace osgUtil;
 
@@ -349,6 +346,12 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             unsigned samples = 0;
             unsigned colorSamples = 0;
 
+            // This is not a cut and paste error. Set BOTH local masks
+            // to the value of the Camera's use render buffers mask.
+            // We'll change this if and only if we decide we're doing MSFBO.
+            unsigned int renderBuffersMask = _camera->getImplicitBufferAttachmentRenderMask(true);
+            unsigned int resolveBuffersMask = _camera->getImplicitBufferAttachmentRenderMask(true);
+
             if (fbo_ext->isMultisampleSupported())
             {
                 for(osg::Camera::BufferAttachmentMap::iterator itr = bufferAttachments.begin();
@@ -370,9 +373,13 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                 if (samples)
                 {
                     fbo_multisample = new osg::FrameBufferObject;
+
+                    // Use the value of the Camera's use resolve buffers mask as the
+                    // resolve mask.
+                    resolveBuffersMask = _camera->getImplicitBufferAttachmentResolveMask(true);
                 }
             }
-            
+
             for(osg::Camera::BufferAttachmentMap::iterator itr = bufferAttachments.begin();
                 itr != bufferAttachments.end();
                 ++itr)
@@ -430,33 +437,60 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                 
             }
 
-#if FORCE_DEPTH_ATTACHMENT
             if (!depthAttached)
-            {                
-                fbo->setAttachment(osg::Camera::DEPTH_BUFFER, osg::FrameBufferAttachment(new osg::RenderBuffer(width, height, GL_DEPTH_COMPONENT24)));
-                if (fbo_multisample.valid())
+            {
+                // If doing MSFBO (and therefore need two FBOs, one for multisampled rendering and one for 
+                // final resolve), then configure "fbo" as the resolve FBO, and When done 
+                // configuring, swap it into "_resolveFbo" (see line 554). But, if not 
+                // using MSFBO, then "fbo" is just the render fbo.
+                // If using MSFBO, then resolveBuffersMask 
+                // is the value set by the app for the resolve buffers. But if not using 
+                // MSFBO, then resolveBuffersMask is the value set by the app for render 
+                // buffers. In both cases, resolveBuffersMask is used to configure "fbo".
+                if( resolveBuffersMask & osg::Camera::IMPLICIT_DEPTH_BUFFER_ATTACHMENT )
+                {
+                    fbo->setAttachment(osg::Camera::DEPTH_BUFFER, osg::FrameBufferAttachment(new osg::RenderBuffer(width, height, GL_DEPTH_COMPONENT24)));
+                    depthAttached = true;
+                }
+                if (fbo_multisample.valid() &&
+                    ( renderBuffersMask & osg::Camera::IMPLICIT_DEPTH_BUFFER_ATTACHMENT ) )
                 {
                     fbo_multisample->setAttachment(osg::Camera::DEPTH_BUFFER,
                         osg::FrameBufferAttachment(new osg::RenderBuffer(width,
                         height, GL_DEPTH_COMPONENT24, samples, colorSamples)));
                 }
-                depthAttached = true;
             }
-#endif
+            if (!stencilAttached)
+            {
+                if( resolveBuffersMask & osg::Camera::IMPLICIT_STENCIL_BUFFER_ATTACHMENT )
+                {
+                    fbo->setAttachment(osg::Camera::STENCIL_BUFFER, osg::FrameBufferAttachment(new osg::RenderBuffer(width, height, GL_STENCIL_INDEX8_EXT)));
+                    stencilAttached = true;
+                }
+                if (fbo_multisample.valid() &&
+                    ( renderBuffersMask & osg::Camera::IMPLICIT_STENCIL_BUFFER_ATTACHMENT ) )
+                {
+                    fbo_multisample->setAttachment(osg::Camera::STENCIL_BUFFER,
+                        osg::FrameBufferAttachment(new osg::RenderBuffer(width,
+                        height, GL_STENCIL_INDEX8_EXT, samples, colorSamples)));
+                }
+            }
 
-#if FORCE_COLOR_ATTACHMENT
             if (!colorAttached)
             {
-                fbo->setAttachment(osg::Camera::COLOR_BUFFER, osg::FrameBufferAttachment(new osg::RenderBuffer(width, height, GL_RGB)));
-                if (fbo_multisample.valid())
+                if( resolveBuffersMask & osg::Camera::IMPLICIT_COLOR_BUFFER_ATTACHMENT )
+                {
+                    fbo->setAttachment(osg::Camera::COLOR_BUFFER, osg::FrameBufferAttachment(new osg::RenderBuffer(width, height, GL_RGB)));
+                    colorAttached = true;
+                }
+                if (fbo_multisample.valid() &&
+                    ( renderBuffersMask & osg::Camera::IMPLICIT_COLOR_BUFFER_ATTACHMENT ) )
                 {
                     fbo_multisample->setAttachment(osg::Camera::COLOR_BUFFER,
                         osg::FrameBufferAttachment(new osg::RenderBuffer(width,
                         height, GL_RGB, samples, colorSamples)));
                 }
-                colorAttached = true;
             }
-#endif
 
             fbo->apply(state);
 

@@ -813,7 +813,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
     public:
 
-        struct TextureProfile
+        struct OSG_EXPORT TextureProfile
         {
             inline TextureProfile(GLenum target):
                 _target(target),

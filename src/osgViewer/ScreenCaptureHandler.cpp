@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
 *
-* This library is open source and may be redistributed and/or modified under  
-* the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+* This library is open source and may be redistributed and/or modified under
+* the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
 * (at your option) any later version.  The full license is in LICENSE file
 * included with this distribution, and on the openscenegraph.org website.
-* 
+*
 * This library is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * OpenSceneGraph Public License for more details.
 */
 
@@ -48,19 +48,20 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
             END_FRAME
         };
 
-        WindowCaptureCallback(Mode mode, FramePosition position, GLenum readBuffer);
+        WindowCaptureCallback(int numFrames, Mode mode, FramePosition position, GLenum readBuffer);
 
         FramePosition getFramePosition() const { return _position; }
 
         void setCaptureOperation(ScreenCaptureHandler::CaptureOperation* operation);
         ScreenCaptureHandler::CaptureOperation* getCaptureOperation() { return _contextDataMap.begin()->second->_captureOperation.get(); }
 
+        void setFramesToCapture(int numFrames) { _numFrames = numFrames; }
+        int getFramesToCapture() const { return _numFrames; }
+
         virtual void operator () (osg::RenderInfo& renderInfo) const;
 
         struct OSGVIEWER_EXPORT ContextData : public osg::Referenced
         {
-            static unsigned int COUNTER;
-
             ContextData(osg::GraphicsContext* gc, Mode mode, GLenum readBuffer);
 
             void getSize(osg::GraphicsContext* gc, int& width, int& height);
@@ -71,7 +72,7 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
                                osg::Timer_t tick_afterCaptureOperation,
                                unsigned int dataSize);
 
-            void read();            
+            void read();
             void readPixels();
             void singlePBO(osg::GLBufferObject::Extensions* ext);
             void multiPBO(osg::GLBufferObject::Extensions* ext);
@@ -112,21 +113,20 @@ class WindowCaptureCallback : public osg::Camera::DrawCallback
         ContextData* createContextData(osg::GraphicsContext* gc) const;
         ContextData* getContextData(osg::GraphicsContext* gc) const;
 
-        Mode                        _mode;        
+        Mode                        _mode;
         FramePosition               _position;
         GLenum                      _readBuffer;
         mutable OpenThreads::Mutex  _mutex;
         mutable ContextDataMap      _contextDataMap;
+        mutable int                 _numFrames;
 
         osg::ref_ptr<ScreenCaptureHandler::CaptureOperation> _defaultCaptureOperation;
 };
 
 
-unsigned int WindowCaptureCallback::ContextData::COUNTER = 0;
-
 WindowCaptureCallback::ContextData::ContextData(osg::GraphicsContext* gc, Mode mode, GLenum readBuffer)
     : _gc(gc),
-      _index(COUNTER++),
+      _index(_gc->getState()->getContextID()),
       _mode(mode),
       _readBuffer(readBuffer),
       _pixelFormat(GL_RGBA),
@@ -145,7 +145,7 @@ WindowCaptureCallback::ContextData::ContextData(osg::GraphicsContext* gc, Mode m
       _previousFrameTick(0)
 {
     _previousFrameTick = osg::Timer::instance()->tick();
-    
+
     osg::NotifySeverity level = osg::INFO;
 
     if (gc->getTraits())
@@ -155,10 +155,10 @@ WindowCaptureCallback::ContextData::ContextData(osg::GraphicsContext* gc, Mode m
             osg::notify(level)<<"ScreenCaptureHandler: Selected GL_RGBA read back format"<<std::endl;
             _pixelFormat = GL_RGBA;
         }
-        else 
+        else
         {
             osg::notify(level)<<"ScreenCaptureHandler: Selected GL_RGB read back format"<<std::endl;
-            _pixelFormat = GL_RGB; 
+            _pixelFormat = GL_RGB;
         }
     }
 
@@ -175,23 +175,23 @@ WindowCaptureCallback::ContextData::ContextData(osg::GraphicsContext* gc, Mode m
         case(READ_PIXELS):
             osg::notify(level)<<"ScreenCaptureHandler: Reading window using glReadPixels, without PixelBufferObject."<<std::endl;
             break;
-        case(SINGLE_PBO): 
+        case(SINGLE_PBO):
             osg::notify(level)<<"ScreenCaptureHandler: Reading window using glReadPixels, with a single PixelBufferObject."<<std::endl;
-            _pboBuffer.push_back(0); 
+            _pboBuffer.push_back(0);
             break;
-        case(DOUBLE_PBO): 
+        case(DOUBLE_PBO):
             osg::notify(level)<<"ScreenCaptureHandler: Reading window using glReadPixels, with a double buffer PixelBufferObject."<<std::endl;
-            _pboBuffer.push_back(0); 
-            _pboBuffer.push_back(0); 
+            _pboBuffer.push_back(0);
+            _pboBuffer.push_back(0);
             break;
-        case(TRIPLE_PBO): 
+        case(TRIPLE_PBO):
             osg::notify(level)<<"ScreenCaptureHandler: Reading window using glReadPixels, with a triple buffer PixelBufferObject."<<std::endl;
-            _pboBuffer.push_back(0); 
-            _pboBuffer.push_back(0); 
-            _pboBuffer.push_back(0); 
+            _pboBuffer.push_back(0);
+            _pboBuffer.push_back(0);
+            _pboBuffer.push_back(0);
             break;
         default:
-            break;                                
+            break;
     }
 }
 
@@ -291,14 +291,14 @@ void WindowCaptureCallback::ContextData::singlePBO(osg::GLBufferObject::Extensio
     }
 
     GLuint& pbo = _pboBuffer[0];
-    
+
     osg::Image* image = _imageBuffer[_currentImageIndex].get();
-    if (image->s() != _width || 
+    if (image->s() != _width ||
         image->t() != _height)
     {
         //osg::notify(osg::NOTICE)<<"ScreenCaptureHandler: Allocating image "<<std::endl;
         image->allocateImage(_width, _height, 1, _pixelFormat, _type);
-        
+
         if (pbo!=0)
         {
             //osg::notify(osg::NOTICE)<<"ScreenCaptureHandler: deleting pbo "<<pbo<<std::endl;
@@ -306,8 +306,8 @@ void WindowCaptureCallback::ContextData::singlePBO(osg::GLBufferObject::Extensio
             pbo = 0;
         }
     }
-    
-    
+
+
     if (pbo==0)
     {
         ext->glGenBuffers(1, &pbo);
@@ -368,14 +368,14 @@ void WindowCaptureCallback::ContextData::multiPBO(osg::GLBufferObject::Extension
 
     GLuint& copy_pbo = _pboBuffer[_currentPboIndex];
     GLuint& read_pbo = _pboBuffer[nextPboIndex];
-    
+
     osg::Image* image = _imageBuffer[_currentImageIndex].get();
-    if (image->s() != _width || 
+    if (image->s() != _width ||
         image->t() != _height)
     {
         //osg::notify(osg::NOTICE)<<"ScreenCaptureHandler: Allocating image "<<std::endl;
         image->allocateImage(_width, _height, 1, _pixelFormat, _type);
-        
+
         if (read_pbo!=0)
         {
             //osg::notify(osg::NOTICE)<<"ScreenCaptureHandler: deleting pbo "<<read_pbo<<std::endl;
@@ -390,8 +390,8 @@ void WindowCaptureCallback::ContextData::multiPBO(osg::GLBufferObject::Extension
             copy_pbo = 0;
         }
     }
-    
-    
+
+
     bool doCopy = copy_pbo!=0;
     if (copy_pbo==0)
     {
@@ -441,22 +441,22 @@ void WindowCaptureCallback::ContextData::multiPBO(osg::GLBufferObject::Extension
             (*_captureOperation)(*image, _index);
         }
     }
-    
+
     ext->glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, 0);
 
     osg::Timer_t tick_afterMemCpy = osg::Timer::instance()->tick();
-    
+
     updateTimings(tick_start, tick_afterReadPixels, tick_afterMemCpy, tick_afterMemCpy, image->getTotalSizeInBytes());
 
     _currentImageIndex = nextImageIndex;
     _currentPboIndex = nextPboIndex;
 }
 
-
-WindowCaptureCallback::WindowCaptureCallback(Mode mode, FramePosition position, GLenum readBuffer)
+WindowCaptureCallback::WindowCaptureCallback(int numFrames, Mode mode, FramePosition position, GLenum readBuffer)
     : _mode(mode),
       _position(position),
-      _readBuffer(readBuffer)
+      _readBuffer(readBuffer),
+      _numFrames(numFrames)
 {
 }
 
@@ -472,7 +472,7 @@ WindowCaptureCallback::ContextData* WindowCaptureCallback::getContextData(osg::G
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
     osg::ref_ptr<ContextData>& data = _contextDataMap[gc];
     if (!data) data = createContextData(gc);
-    
+
     return data.get();
 }
 
@@ -490,20 +490,25 @@ void WindowCaptureCallback::setCaptureOperation(ScreenCaptureHandler::CaptureOpe
 
 void WindowCaptureCallback::operator () (osg::RenderInfo& renderInfo) const
 {
-#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glReadBuffer(_readBuffer);
-#endif
 
     osg::GraphicsContext* gc = renderInfo.getState()->getGraphicsContext();
     osg::ref_ptr<ContextData> cd = getContextData(gc);
     cd->read();
 
-    // Since we just want to take one screenshot, the callback must remove 
-    // itself when it's done.
-    if (_position == START_FRAME)
-        renderInfo.getCurrentCamera()->setInitialDrawCallback(0);
-    if (_position == END_FRAME)
-        renderInfo.getCurrentCamera()->setFinalDrawCallback(0);
+    // If _numFrames is > 0 it means capture that number of frames.
+    if (_numFrames > 0)
+    {
+        --_numFrames;
+        if (_numFrames == 0)
+        {
+            // the callback must remove itself when it's done.
+            if (_position == START_FRAME)
+                renderInfo.getCurrentCamera()->setInitialDrawCallback(0);
+            if (_position == END_FRAME)
+                renderInfo.getCurrentCamera()->setFinalDrawCallback(0);
+        }
+    }
 
     int prec = osg::notify(osg::INFO).precision(5);
     osg::notify(osg::INFO) << "ScreenCaptureHandler: "
@@ -521,9 +526,9 @@ void WindowCaptureCallback::operator () (osg::RenderInfo& renderInfo) const
 //
 //  ScreenCaptureHandler::WriteToFile
 //
-ScreenCaptureHandler::WriteToFile::WriteToFile(const std::string& filename, 
-                                                         const std::string& extension,
-                                                         SavePolicy savePolicy)
+ScreenCaptureHandler::WriteToFile::WriteToFile(const std::string& filename,
+                                               const std::string& extension,
+                                               SavePolicy savePolicy)
     : _filename(filename), _extension(extension), _savePolicy(savePolicy)
 {
 }
@@ -534,8 +539,11 @@ void ScreenCaptureHandler::WriteToFile::operator () (const osg::Image& image, co
     {
         if (_contextSaveCounter.size() <= context_id)
         {
+            unsigned int oldSize = _contextSaveCounter.size();
             _contextSaveCounter.resize(context_id + 1);
-            _contextSaveCounter[context_id] = 0;
+            // Initialize all new values to 0 since context ids may not be consecutive.
+            for (unsigned int i = oldSize; i <= context_id; i++)
+                _contextSaveCounter[i] = 0;
         }
     }
 
@@ -562,14 +570,18 @@ void ScreenCaptureHandler::WriteToFile::operator () (const osg::Image& image, co
 //
 //  ScreenCaptureHandler
 //
-ScreenCaptureHandler::ScreenCaptureHandler(CaptureOperation* defaultOperation)
-    : _keyEventTakeScreenShot('c'),
-      _callback(new WindowCaptureCallback(
-                                          WindowCaptureCallback::READ_PIXELS, 
-//                                          WindowCaptureCallback::SINGLE_PBO, 
-//                                          WindowCaptureCallback::DOUBLE_PBO, 
-//                                          WindowCaptureCallback::TRIPLE_PBO, 
-                                          WindowCaptureCallback::END_FRAME, GL_BACK))
+ScreenCaptureHandler::ScreenCaptureHandler(CaptureOperation* defaultOperation,
+                                           int numFrames)
+    : _startCapture(false),
+      _stopCapture(false),
+      _keyEventTakeScreenShot('c'),
+      _keyEventToggleContinuousCapture('C'),
+      _callback(new WindowCaptureCallback( numFrames,
+                                           WindowCaptureCallback::READ_PIXELS,
+//                                          WindowCaptureCallback::SINGLE_PBO,
+//                                          WindowCaptureCallback::DOUBLE_PBO,
+//                                          WindowCaptureCallback::TRIPLE_PBO,
+                                           WindowCaptureCallback::END_FRAME, GL_BACK))
 {
     if (defaultOperation)
         setCaptureOperation(defaultOperation);
@@ -579,35 +591,66 @@ ScreenCaptureHandler::ScreenCaptureHandler(CaptureOperation* defaultOperation)
 
 void ScreenCaptureHandler::setCaptureOperation(CaptureOperation* operation)
 {
-    static_cast<WindowCaptureCallback*>(_callback.get())->setCaptureOperation(operation);
+    WindowCaptureCallback* callback = static_cast<WindowCaptureCallback*>(_callback.get());
+    callback->setCaptureOperation(operation);
 }
 
 ScreenCaptureHandler::CaptureOperation* ScreenCaptureHandler::getCaptureOperation() const
 {
-    return static_cast<WindowCaptureCallback*>(_callback.get())->getCaptureOperation();
+    WindowCaptureCallback* callback = static_cast<WindowCaptureCallback*>(_callback.get());
+    return callback->getCaptureOperation();
 }
-
 
 void ScreenCaptureHandler::addCallbackToViewer(osgViewer::ViewerBase& viewer)
 {
-    // Select either the first or the last active camera, depending on the 
+    osg::Camera* camera = findAppropriateCameraForCallback(viewer);
+
+    WindowCaptureCallback* callback = static_cast<WindowCaptureCallback*>(_callback.get());
+    if (camera && callback->getFramePosition() == WindowCaptureCallback::START_FRAME)
+    {
+        camera->setInitialDrawCallback(_callback.get());
+    }
+    else
+    {
+        camera->setFinalDrawCallback(_callback.get());
+    }
+}
+
+void ScreenCaptureHandler::removeCallbackFromViewer(osgViewer::ViewerBase& viewer)
+{
+    osg::Camera* camera = findAppropriateCameraForCallback(viewer);
+
+    WindowCaptureCallback* callback = static_cast<WindowCaptureCallback*>(_callback.get());
+    if (camera && callback->getFramePosition() == WindowCaptureCallback::START_FRAME)
+    {
+        camera->setInitialDrawCallback(0);
+    }
+    else
+    {
+        camera->setFinalDrawCallback(0);
+    }
+}
+
+osg::Camera* ScreenCaptureHandler::findAppropriateCameraForCallback(osgViewer::ViewerBase& viewer)
+{
+    // Select either the first or the last active camera, depending on the
     // frame position set in the callback.
     // One case where testing the node mask is important is when the stats
-    // handler has been initialized, but stats are not displayed. In that 
+    // handler has been initialized, but stats are not displayed. In that
     // case, there is a post render camera on the viewer, but its node mask
     // is zero, so the callback added to that camera would never be called.
     WindowCaptureCallback* callback = static_cast<WindowCaptureCallback*>(_callback.get());
 
     if (callback->getFramePosition() == WindowCaptureCallback::START_FRAME)
     {
-        osgViewer::ViewerBase::Windows windows;
-        viewer.getWindows(windows);
-        for(osgViewer::ViewerBase::Windows::iterator itr = windows.begin();
-            itr != windows.end();
+        osgViewer::ViewerBase::Contexts contexts;
+        viewer.getContexts(contexts);
+        for(osgViewer::ViewerBase::Contexts::iterator itr = contexts.begin();
+            itr != contexts.end();
             ++itr)
         {
-            osgViewer::GraphicsWindow* window = *itr;
-            osg::GraphicsContext::Cameras& cameras = window->getCameras();
+            osg::GraphicsContext* context = *itr;
+            osg::GraphicsContext::Cameras& cameras = context->getCameras();
             osg::Camera* firstCamera = 0;
             for(osg::GraphicsContext::Cameras::iterator cam_itr = cameras.begin();
                 cam_itr != cameras.end();
@@ -638,7 +681,7 @@ void ScreenCaptureHandler::addCallbackToViewer(osgViewer::ViewerBase& viewer)
             {
                 //osg::notify(osg::NOTICE)<<"ScreenCaptureHandler: First camera "<<firstCamera<<std::endl;
 
-                firstCamera->setInitialDrawCallback(_callback.get());
+                return firstCamera;
             }
             else
             {
@@ -647,15 +690,15 @@ void ScreenCaptureHandler::addCallbackToViewer(osgViewer::ViewerBase& viewer)
         }
     }
     else
-    {    
-        osgViewer::ViewerBase::Windows windows;
-        viewer.getWindows(windows);
-        for(osgViewer::ViewerBase::Windows::iterator itr = windows.begin();
-            itr != windows.end();
+    {
+        osgViewer::ViewerBase::Contexts contexts;
+        viewer.getContexts(contexts);
+        for(osgViewer::ViewerBase::Contexts::iterator itr = contexts.begin();
+            itr != contexts.end();
             ++itr)
         {
-            osgViewer::GraphicsWindow* window = *itr;
-            osg::GraphicsContext::Cameras& cameras = window->getCameras();
+            osg::GraphicsContext* context = *itr;
+            osg::GraphicsContext::Cameras& cameras = context->getCameras();
             osg::Camera* lastCamera = 0;
             for(osg::GraphicsContext::Cameras::iterator cam_itr = cameras.begin();
                 cam_itr != cameras.end();
@@ -686,7 +729,7 @@ void ScreenCaptureHandler::addCallbackToViewer(osgViewer::ViewerBase& viewer)
             {
                 //osg::notify(osg::NOTICE)<<"ScreenCaptureHandler: Last camera "<<lastCamera<<std::endl;
 
-                lastCamera->setFinalDrawCallback(_callback.get());
+                return lastCamera;
             }
             else
             {
@@ -694,6 +737,8 @@ void ScreenCaptureHandler::addCallbackToViewer(osgViewer::ViewerBase& viewer)
             }
         }
     }
+
+    return 0;
 }
 
 // aa will point to an osgViewer::View, so we will take a screenshot
@@ -703,15 +748,57 @@ bool ScreenCaptureHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIAc
     osgViewer::ViewerBase* viewer = dynamic_cast<osgViewer::View*>(&aa)->getViewerBase();
     if (!viewer) return false;
 
-    if (ea.getHandled()) return false;
-
     switch(ea.getEventType())
     {
+        case (osgGA::GUIEventAdapter::FRAME):
+        {
+            // Booleans aren't the best way of doing this, but I want to do
+            // the actual adding here because I don't want to require
+            // startCapture() take a viewer as argument, which could not be
+            // the right one.
+            if (_startCapture)
+            {
+                // Start capturing with the currently set number of frames.
+                // If set to -1 it will capture continuously, if set to >0
+                // it will capture that number of frames.
+                _startCapture = false;
+                addCallbackToViewer(*viewer);
+            }
+            else if (_stopCapture)
+            {
+                _stopCapture = false;
+                removeCallbackFromViewer(*viewer);
+            }
+        }
+
         case(osgGA::GUIEventAdapter::KEYUP):
         {
             if (ea.getKey() == _keyEventTakeScreenShot)
             {
+                // Check that we will capture at least one frame.
+                // Just check for ==0, because >0 is means we're already
+                // capturing and <0 means it will capture all frames.
+                WindowCaptureCallback* callback = static_cast<WindowCaptureCallback*>(_callback.get());
+                if (callback->getFramesToCapture() == 0)
+                {
+                    setFramesToCapture(1);
+                }
                 addCallbackToViewer(*viewer);
+                return true;
+            }
+
+            if (ea.getKey() == _keyEventToggleContinuousCapture)
+            {
+                if (getFramesToCapture() < 0)
+                {
+                    setFramesToCapture(0);
+                    removeCallbackFromViewer(*viewer);
+                }
+                else
+                {
+                    setFramesToCapture(-1);
+                    addCallbackToViewer(*viewer);
+                }
                 return true;
             }
 
@@ -730,6 +817,33 @@ void ScreenCaptureHandler::captureNextFrame(osgViewer::ViewerBase& viewer)
     addCallbackToViewer(viewer);
 }
 
+/** Set the number of frames to capture. */
+void ScreenCaptureHandler::setFramesToCapture(int numFrames)
+{
+    WindowCaptureCallback* callback = static_cast<WindowCaptureCallback*>(_callback.get());
+    callback->setFramesToCapture(numFrames);
+}
+
+/** Get the number of frames to capture. */
+int ScreenCaptureHandler::getFramesToCapture() const
+{
+    WindowCaptureCallback* callback = static_cast<WindowCaptureCallback*>(_callback.get());
+    return callback->getFramesToCapture();
+}
+
+/** Start capturing at the end of the next frame. */
+void ScreenCaptureHandler::startCapture()
+{
+    if (getFramesToCapture() != 0)
+        _startCapture = true;
+}
+
+/** Stop capturing. */
+void ScreenCaptureHandler::stopCapture()
+{
+    _stopCapture = true;
+}
+
 /** Get the keyboard and mouse usage of this manipulator.*/
 void ScreenCaptureHandler::getUsage(osg::ApplicationUsage& usage) const
 {
@@ -738,7 +852,12 @@ void ScreenCaptureHandler::getUsage(osg::ApplicationUsage& usage) const
         ostr<<char(_keyEventTakeScreenShot);
         usage.addKeyboardMouseBinding(ostr.str(),"Take screenshot.");
     }
-}
 
+    {
+        std::ostringstream ostr;
+        ostr<<char(_keyEventToggleContinuousCapture);
+        usage.addKeyboardMouseBinding(ostr.str(),"Toggle continuous screen capture.");
+    }
+}
 
 }

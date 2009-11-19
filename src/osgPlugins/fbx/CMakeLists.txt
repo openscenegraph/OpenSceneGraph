@@ -1,0 +1,31 @@
+INCLUDE_DIRECTORIES(${FBX_ROOT}/include)
+
+SET(TARGET_SRC
+    fbxRAnimation.cpp
+    fbxRCamera.cpp
+    fbxRLight.cpp
+    fbxRMesh.cpp
+    fbxRNode.cpp
+    ReaderWriterFBX.cpp
+)
+
+SET(TARGET_H 
+    fbxRAnimation.h
+    fbxRCamera.h
+    fbxRLight.h
+    fbxRMesh.h
+    fbxRNode.h
+    ReaderWriterFBX.h
+)
+
+ADD_DEFINITIONS(-DKFBX_PLUGIN -DKFBX_FBXSDK -DKFBX_NODLL)
+
+IF(WIN32)
+    SET(TARGET_EXTERNAL_LIBRARIES wininet)
+ENDIF(WIN32)
+
+SET(TARGET_LIBRARIES_VARS FBX_LIBRARY)
+SET(TARGET_ADDED_LIBRARIES osgAnimation) 
+
+#### end var setup  ###
+SETUP_PLUGIN(fbx)

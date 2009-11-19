@@ -10,7 +10,6 @@
 #   pragma warning(disable: 4800)
 #endif
 
-#include <openvrml/vrml97node.h>
 #include <openvrml/node.h>
 
 #include <osg/CullFace>

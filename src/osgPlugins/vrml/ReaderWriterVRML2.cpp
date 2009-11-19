@@ -29,7 +29,6 @@
 #   pragma warning(disable: 4800)
 #endif
 
-#include <openvrml/vrml97node.h>
 #include <openvrml/browser.h>
 #include <openvrml/node.h>
 
@@ -176,21 +175,26 @@ osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string& f
     if (fileName.empty())
         return ReadResult::FILE_NOT_FOUND;
 
-    // code for setting up the database path so that internally referenced file are searched for on relative paths.
-    osg::ref_ptr<osgDB::Options> local_opt = opt ? static_cast<osgDB::Options*>(opt->clone(osg::CopyOp::SHALLOW_COPY)) : new osgDB::Options;
-    local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
+    // convert possible Windows backslashes to Unix slashes
+    // OpenVRML doesn't like backslashes, even on Windows
+    std::string unixFileName = osgDB::convertFileNameToUnixStyle(fileName);
 
-    std::ifstream vrml_stream(fileName.c_str());
+#ifdef WIN32
+    if(unixFileName[1] == ':') // absolute path
+    fileName = "file:///" + unixFileName;
+#else
+    if (unixFileName[0] == '/') // absolute path
+        fileName = "file://" + unixFileName;
+#endif
+    else
+        // relative path
+        fileName = unixFileName;
 
-    return readNode(vrml_stream, local_opt.get());
-}
-
-osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(std::istream& vrml_stream, const osgDB::Options* opt) const
-{
     std::fstream null;
     resource_fetcher fetcher;
+    openvrml::browser *b = new openvrml::browser(fetcher, null, null);
 
-    std::auto_ptr<openvrml::browser> b(new openvrml::browser(fetcher, null, null));
+    std::ifstream vrml_stream(fileName.c_str());
 
     try
     {
@@ -205,24 +209,22 @@ osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(std::istream& vrml_s
                                                                                                 0, -1, 0, 0,
                                                                                                 0, 0, 0, 1));
 
-
+            osgDB::getDataFilePathList().push_front(osgDB::getFilePath(unixFileName));
             for (unsigned i = 0; i < mfn.size(); i++)
             {
                 openvrml::node *vrml_node = mfn[i].get();
-                osg_root->addChild(convertFromVRML(vrml_node, opt));
+                osg_root->addChild(convertFromVRML(vrml_node).get());
             }
-
+            osgDB::getDataFilePathList().pop_front();
             return osg_root.get();
         }
     }
 
     catch (openvrml::invalid_vrml) { return ReadResult::FILE_NOT_HANDLED; }
     catch (std::invalid_argument)  { return ReadResult::FILE_NOT_HANDLED; }
-
-    return ReadResult::FILE_NOT_HANDLED;
 }
 
-osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj, const osgDB::Options* opt) const
+osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
 {
     //static int osgLightNum = 0; //light
 
@@ -247,7 +249,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj, const osgDB::
                 for (it_npv = node_ptr_vector.begin(); it_npv != node_ptr_vector.end(); it_npv++)
                 {
                     openvrml::node *node = (*(it_npv)).get();
-                    osg_group->addChild(convertFromVRML(node, opt));
+                    osg_group->addChild(convertFromVRML(node));
                 }
             }
         }
@@ -256,7 +258,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj, const osgDB::
             // no children
         }
 
-        return osg_group.release();
+        return osg_group.get();
 
     }
 
@@ -282,7 +284,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj, const osgDB::
                 for (it_npv = node_ptr_vector.begin(); it_npv != node_ptr_vector.end(); it_npv++)
                 {
                     openvrml::node *node = (*(it_npv)).get();
-                    osg_m->addChild(convertFromVRML(node, opt));
+                    osg_m->addChild(convertFromVRML(node).get());
                 }
             }
         }
@@ -291,7 +293,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj, const osgDB::
             // no children
         }
 
-        return osg_m.release();
+        return osg_m.get();
 
     }
 
@@ -349,8 +351,8 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj, const osgDB::
                 const openvrml::sfnode *sfn = dynamic_cast<const openvrml::sfnode *>(fv.get());
                 openvrml::appearance_node *vrml_app = dynamic_cast<openvrml::appearance_node *>(sfn->value().get());
 
-                const boost::intrusive_ptr<openvrml::node> vrml_material_node = vrml_app ? vrml_app->material() : 0;
-                const boost::intrusive_ptr<openvrml::node> vrml_texture_node = vrml_app ? vrml_app->texture() : 0;
+                const boost::intrusive_ptr<openvrml::node> vrml_material_node = vrml_app->material();
+                const boost::intrusive_ptr<openvrml::node> vrml_texture_node = vrml_app->texture();
                 const openvrml::material_node *vrml_material = dynamic_cast<const openvrml::material_node *>(vrml_material_node.get());
 
                 if (vrml_material != NULL)
@@ -382,9 +384,8 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj, const osgDB::
                     {
                         osg_mat->setTransparency(osg::Material::FRONT_AND_BACK, vrml_material->transparency());
                         osg_stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
+                        osg_stateset->setAttribute(new osg::Depth(osg::Depth::LESS, 0.0, 1.0, false)); // GvdB: transparent objects do not write depth
                         osg_stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-                        // commenting out osg:::Depth entry as it's not usual for transparent objects to disable depth.
-                        // osg_stateset->setAttribute(new osg::Depth(osg::Depth::LESS, 0.0, 1.0, false)); // GvdB: transparent objects do not write depth
                     }
                     else
                     {
@@ -403,7 +404,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj, const osgDB::
                     const openvrml::mfstring *mfs = dynamic_cast<const openvrml::mfstring *>(texture_url_fv.get());
                     const std::string &url = mfs->value()[0];
 
-                    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(url, opt);
+                    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(url);
 
                     if (image != 0)
                     {
@@ -436,7 +437,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj, const osgDB::
                             const openvrml::sfbool *sfb = dynamic_cast<const openvrml::sfbool *>(wrap_fv.get());
 
                             if (!sfb->value())
-                                texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP);
+                                texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP);
                         }
                         catch (...)
                         {
@@ -445,15 +446,6 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj, const osgDB::
 
                         osg_stateset->setTextureAttributeAndModes(0, texture.get());
                         //osg_stateset->setMode(GL_BLEND,osg::StateAttribute::ON);  //bhbn
-                        if(image->isImageTranslucent())
-                        {
-                            osg_stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
-                            osg_stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
-                            // commenting out osg:::Depth entry as it's not usual for transparent objects to disable depth.
-                            osg_stateset->setAttribute(new osg::Depth(osg::Depth::LESS, 0.0, 1.0, false)); // GvdB: transparent objects do not write depth
-                        }
-
-
 
                     }
                     else
@@ -464,7 +456,7 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj, const osgDB::
             }
         }
 
-        return osg_geode.release();
+        return osg_geode.get();
     }
     else
     {

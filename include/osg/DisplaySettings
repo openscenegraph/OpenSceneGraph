@@ -206,6 +206,47 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         void setMaxBufferObjectPoolSize(unsigned int size) { _maxBufferObjectPoolSize = size; }
         unsigned int getMaxBufferObjectPoolSize() const { return _maxBufferObjectPoolSize; }
 
+        /** 
+         Methods used to set and get defaults for Cameras implicit buffer attachments. 
+         For more info: See description of Camera::setImplicitBufferAttachment method 
+
+         DisplaySettings implicit buffer attachment selection defaults to: DEPTH and COLOR 
+         for both primary (Render) FBO and seconday Multisample (Resolve) FBO
+         ie: IMPLICT_DEPTH_BUFFER_ATTACHMENT | IMPLICIT_COLOR_BUFFER_ATTACHMENT
+        **/
+        enum ImplicitBufferAttachment
+        {
+            IMPLICIT_DEPTH_BUFFER_ATTACHMENT = (1 << 0),
+            IMPLICIT_STENCIL_BUFFER_ATTACHMENT = (1 << 1),
+            IMPLICIT_COLOR_BUFFER_ATTACHMENT = (1 << 2),
+            DEFAULT_IMPLICIT_BUFFER_ATTACHMENT = IMPLICIT_COLOR_BUFFER_ATTACHMENT | IMPLICIT_DEPTH_BUFFER_ATTACHMENT
+        };
+
+        typedef int ImplicitBufferAttachmentMask;
+
+        void setImplicitBufferAttachmentMask(ImplicitBufferAttachmentMask renderMask = DisplaySettings::DEFAULT_IMPLICIT_BUFFER_ATTACHMENT, ImplicitBufferAttachmentMask resolveMask = DisplaySettings::DEFAULT_IMPLICIT_BUFFER_ATTACHMENT )
+        {
+            _implicitBufferAttachmentRenderMask = renderMask;
+            _implicitBufferAttachmentResolveMask = resolveMask;
+        }
+
+        void setImplicitBufferAttachmentRenderMask(ImplicitBufferAttachmentMask implicitBufferAttachmentRenderMask)
+        {
+            _implicitBufferAttachmentRenderMask = implicitBufferAttachmentRenderMask;
+        }
+
+        void setImplicitBufferAttachmentResolveMask(ImplicitBufferAttachmentMask implicitBufferAttachmentResolveMask)
+        {
+            _implicitBufferAttachmentResolveMask = implicitBufferAttachmentResolveMask;
+        }
+
+        /** Get mask selecting default implict buffer attachments for Cameras primary FBOs. */
+        ImplicitBufferAttachmentMask getImplicitBufferAttachmentRenderMask() const {  return _implicitBufferAttachmentRenderMask; }
+
+        /** Get mask selecting default implict buffer attachments for Cameras secondary MULTISAMPLE FBOs. */
+        ImplicitBufferAttachmentMask getImplicitBufferAttachmentResolveMask() const { return _implicitBufferAttachmentResolveMask;}
+
+
         /** Set the hint of which OpenGL version to attempt to create a graphics context for.*/
         void setGLContextVersion(const std::string& version) { _glContextVersion = version; }
 
@@ -267,6 +308,9 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
 
         unsigned int                    _maxTexturePoolSize;
         unsigned int                    _maxBufferObjectPoolSize;
+
+        ImplicitBufferAttachmentMask    _implicitBufferAttachmentRenderMask;
+        ImplicitBufferAttachmentMask    _implicitBufferAttachmentResolveMask;
         
         std::string                     _glContextVersion;
         unsigned int                    _glContextFlags;

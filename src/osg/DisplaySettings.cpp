@@ -84,6 +84,9 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
     _maxTexturePoolSize = vs._maxTexturePoolSize;
     _maxBufferObjectPoolSize = vs._maxBufferObjectPoolSize;
 
+    _implicitBufferAttachmentRenderMask = vs._implicitBufferAttachmentRenderMask;
+    _implicitBufferAttachmentResolveMask = vs._implicitBufferAttachmentResolveMask;
+
     _glContextVersion = vs._glContextVersion;
     _glContextFlags = vs._glContextFlags;
     _glContextProfileMask = vs._glContextProfileMask;
@@ -113,6 +116,10 @@ void DisplaySettings::merge(const DisplaySettings& vs)
 
     if (vs._maxTexturePoolSize>_maxTexturePoolSize) _maxTexturePoolSize = vs._maxTexturePoolSize;
     if (vs._maxBufferObjectPoolSize>_maxBufferObjectPoolSize) _maxBufferObjectPoolSize = vs._maxBufferObjectPoolSize;
+
+    // these are bit masks so merging them is like logical or 
+    _implicitBufferAttachmentRenderMask |= vs._implicitBufferAttachmentRenderMask;
+    _implicitBufferAttachmentResolveMask |= vs._implicitBufferAttachmentResolveMask;
 }
 
 void DisplaySettings::setDefaults()
@@ -161,6 +168,8 @@ void DisplaySettings::setDefaults()
     _maxTexturePoolSize = 0;
     _maxBufferObjectPoolSize = 0;
 
+    _implicitBufferAttachmentRenderMask = DEFAULT_IMPLICIT_BUFFER_ATTACHMENT;
+    _implicitBufferAttachmentResolveMask = DEFAULT_IMPLICIT_BUFFER_ATTACHMENT;
     _glContextVersion = "1.0";
     _glContextFlags = 0;
     _glContextProfileMask = 0;
@@ -206,9 +215,11 @@ static ApplicationUsageProxy DisplaySetting_e17(ApplicationUsage::ENVIRONMENTAL_
 static ApplicationUsageProxy DisplaySetting_e18(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_TEXTURE_POOL_SIZE <int>","Set the hint size of texture pool to manage.");
 static ApplicationUsageProxy DisplaySetting_e19(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_BUFFER_OBJECT_POOL_SIZE <int>","Set the hint size of vertex buffer object pool to manage.");
 static ApplicationUsageProxy DisplaySetting_e20(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FBO_POOL_SIZE <int>","Set the hint size of frame buffer object pool to manage.");
-static ApplicationUsageProxy DisplaySetting_e21(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_GL_CONTEXT_VERSION <major.minor>","Set the hint for the GL version to create contexts for.");
-static ApplicationUsageProxy DisplaySetting_e22(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_GL_CONTEXT_FLAGS <uint>","Set the hint for the GL context flags to use when creating contexts.");
-static ApplicationUsageProxy DisplaySetting_e23(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_GL_CONTEXT_PROFILE_MASK <uint>","Set the hint for the GL context profile mask to use when creating contexts.");
+static ApplicationUsageProxy DisplaySetting_e21(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_IMPLICIT_BUFFER_ATTACHMENT_RENDER_MASK","OFF | DEFAULT | [~]COLOR | [~]DEPTH | [~]STENCIL. Substitute missing buffer attachments for render FBO");
+static ApplicationUsageProxy DisplaySetting_e22(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_IMPLICIT_BUFFER_ATTACHMENT_RESOLVE_MASK","OFF | DEFAULT | [~]COLOR | [~]DEPTH | [~]STENCIL. Substitute missing buffer attachments for resolve FBO");
+static ApplicationUsageProxy DisplaySetting_e23(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_GL_CONTEXT_VERSION <major.minor>","Set the hint for the GL version to create contexts for.");
+static ApplicationUsageProxy DisplaySetting_e24(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_GL_CONTEXT_FLAGS <uint>","Set the hint for the GL context flags to use when creating contexts.");
+static ApplicationUsageProxy DisplaySetting_e25(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_GL_CONTEXT_PROFILE_MASK <uint>","Set the hint for the GL context profile mask to use when creating contexts.");
 
 void DisplaySettings::readEnvironmentalVariables()
 {
@@ -416,6 +427,40 @@ void DisplaySettings::readEnvironmentalVariables()
         _maxBufferObjectPoolSize = atoi(ptr);
     }
 
+
+    {  // Read implicit buffer attachments combinations for both render and resolve mask
+        const char * variable[] = {
+            "OSG_IMPLICIT_BUFFER_ATTACHMENT_RENDER_MASK",
+            "OSG_IMPLICIT_BUFFER_ATTACHMENT_RESOLVE_MASK",
+        };
+
+        int * mask[] = {
+            &_implicitBufferAttachmentRenderMask,
+            &_implicitBufferAttachmentResolveMask,
+        };
+
+        for( unsigned int n = 0; n < sizeof( variable ) / sizeof( variable[0] ); n++ )
+        {
+            const char* env = getenv( variable[n] );
+            if ( !env ) continue;
+            std::string str(env);
+
+            if(str.find("OFF")!=std::string::npos) *mask[n] = 0;
+
+            if(str.find("~DEFAULT")!=std::string::npos) *mask[n] ^= DEFAULT_IMPLICIT_BUFFER_ATTACHMENT;
+            else if(str.find("DEFAULT")!=std::string::npos) *mask[n] |= DEFAULT_IMPLICIT_BUFFER_ATTACHMENT;
+
+            if(str.find("~COLOR")!=std::string::npos) *mask[n] ^= IMPLICIT_COLOR_BUFFER_ATTACHMENT;
+            else if(str.find("COLOR")!=std::string::npos) *mask[n] |= IMPLICIT_COLOR_BUFFER_ATTACHMENT;
+
+            if(str.find("~DEPTH")!=std::string::npos) *mask[n] ^= IMPLICIT_DEPTH_BUFFER_ATTACHMENT;
+            else if(str.find("DEPTH")!=std::string::npos) *mask[n] |= (int)IMPLICIT_DEPTH_BUFFER_ATTACHMENT;
+
+            if(str.find("~STENCIL")!=std::string::npos) *mask[n] ^= (int)IMPLICIT_STENCIL_BUFFER_ATTACHMENT;
+            else if(str.find("STENCIL")!=std::string::npos) *mask[n] |= (int)IMPLICIT_STENCIL_BUFFER_ATTACHMENT;
+        }
+    }
+
     if( (ptr = getenv("OSG_GL_VERSION")) != 0 || (ptr = getenv("OSG_GL_CONTEXT_VERSION")) != 0)
     {
         _glContextVersion = ptr;
@@ -449,6 +494,8 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
         arguments.getApplicationUsage()->addCommandLineOption("--samples <num>","Request a multisample visual");
         arguments.getApplicationUsage()->addCommandLineOption("--cc","Request use of compile contexts and threads");
         arguments.getApplicationUsage()->addCommandLineOption("--serialize-draw <mode>","OFF | ON - set the serialization of draw dispatch");
+        arguments.getApplicationUsage()->addCommandLineOption("--implicit-buffer-attachment-render-mask","OFF | DEFAULT | [~]COLOR | [~]DEPTH | [~]STENCIL. Substitute missing buffer attachments for render FBO");
+        arguments.getApplicationUsage()->addCommandLineOption("--implicit-buffer-attachment-resolve-mask","OFF | DEFAULT | [~]COLOR | [~]DEPTH | [~]STENCIL. Substitute missing buffer attachments for resolve FBO");
         arguments.getApplicationUsage()->addCommandLineOption("--gl-version <major.minor>","Set the hint of which GL version to use when creating graphics contexts.");
         arguments.getApplicationUsage()->addCommandLineOption("--gl-flags <mask>","Set the hint of which GL flags projfile mask to use when creating graphics contexts.");
         arguments.getApplicationUsage()->addCommandLineOption("--gl-profile-mask <mask>","Set the hint of which GL context profile mask to use when creating graphics contexts.");
@@ -522,6 +569,38 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
 
     while(arguments.read("--texture-pool-size",_maxTexturePoolSize)) {}
     while(arguments.read("--buffer-object-pool-size",_maxBufferObjectPoolSize)) {}
+
+    {  // Read implicit buffer attachments combinations for both render and resolve mask
+        const char* option[] = {
+            "--implicit-buffer-attachment-render-mask",
+            "--implicit-buffer-attachment-resolve-mask",
+        };
+
+        int * mask[] = { 
+            &_implicitBufferAttachmentRenderMask,
+            &_implicitBufferAttachmentResolveMask,
+        };
+
+        for( unsigned int n = 0; n < sizeof( option ) / sizeof( option[0]); n++ )
+        {
+            while(arguments.read( option[n],str))
+            {
+                if(str.find("OFF")!=std::string::npos) *mask[n] = 0;
+
+                if(str.find("~DEFAULT")!=std::string::npos) *mask[n] ^= DEFAULT_IMPLICIT_BUFFER_ATTACHMENT;
+                else if(str.find("DEFAULT")!=std::string::npos) *mask[n] |= DEFAULT_IMPLICIT_BUFFER_ATTACHMENT;
+
+                if(str.find("~COLOR")!=std::string::npos) *mask[n] ^= IMPLICIT_COLOR_BUFFER_ATTACHMENT;
+                else if(str.find("COLOR")!=std::string::npos) *mask[n] |= IMPLICIT_COLOR_BUFFER_ATTACHMENT;
+
+                if(str.find("~DEPTH")!=std::string::npos) *mask[n] ^= IMPLICIT_DEPTH_BUFFER_ATTACHMENT;
+                else if(str.find("DEPTH")!=std::string::npos) *mask[n] |= IMPLICIT_DEPTH_BUFFER_ATTACHMENT;
+
+                if(str.find("~STENCIL")!=std::string::npos) *mask[n] ^= IMPLICIT_STENCIL_BUFFER_ATTACHMENT;
+                else if(str.find("STENCIL")!=std::string::npos) *mask[n] |= IMPLICIT_STENCIL_BUFFER_ATTACHMENT;
+            }
+        }
+    }
 
     while (arguments.read("--gl-version", _glContextVersion)) {}
     while (arguments.read("--gl-flags", _glContextFlags)) {}

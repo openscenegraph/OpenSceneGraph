@@ -182,12 +182,15 @@ void Dragger::removeConstraint(Constraint* constraint)
 {
     for(Constraints::iterator itr = _constraints.begin();
         itr != _constraints.end();
-        ++itr)
+        )
     {
         if (*itr = constraint)
         {
-            _constraints.erase(itr);
+            itr = _constraints.erase(itr);
             return;
+        } else
+        {
+            ++itr;
         }
     }
 }
@@ -201,13 +204,17 @@ void Dragger::removeTransformUpdating(osg::MatrixTransform* transform)
 {
     for(Dragger::DraggerCallbacks::iterator itr = _draggerCallbacks.begin();
         itr != _draggerCallbacks.end();
-        ++itr)
+        )
     {
         DraggerCallback* dc = itr->get();
         DraggerTransformCallback* dtc = dynamic_cast<DraggerTransformCallback*>(dc);
         if (dtc && dtc->getTransform()==transform)
         {
-            _draggerCallbacks.erase(itr);
+            itr = _draggerCallbacks.erase(itr);
+        }
+        else
+        {
+            ++itr;
         }
     }
 

@@ -64,47 +64,47 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::NotifyWidget)
 	               "",
 	               "");
 	I_Method1(bool, focus, IN, const osgWidget::WindowManager *, x,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__focus__C5_WindowManager_P1,
 	          "",
 	          "");
 	I_Method1(bool, unfocus, IN, const osgWidget::WindowManager *, x,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__unfocus__C5_WindowManager_P1,
 	          "",
 	          "");
 	I_Method3(bool, mouseEnter, IN, double, x, IN, double, x, IN, const osgWidget::WindowManager *, x,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__mouseEnter__double__double__C5_WindowManager_P1,
 	          "",
 	          "");
 	I_Method3(bool, mouseOver, IN, double, x, IN, double, x, IN, const osgWidget::WindowManager *, x,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__mouseOver__double__double__C5_WindowManager_P1,
 	          "",
 	          "");
 	I_Method3(bool, mouseLeave, IN, double, x, IN, double, x, IN, const osgWidget::WindowManager *, x,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__mouseLeave__double__double__C5_WindowManager_P1,
 	          "",
 	          "");
 	I_Method3(bool, mouseDrag, IN, double, x, IN, double, x, IN, const osgWidget::WindowManager *, x,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__mouseDrag__double__double__C5_WindowManager_P1,
 	          "",
 	          "");
 	I_Method3(bool, mousePush, IN, double, x, IN, double, x, IN, const osgWidget::WindowManager *, x,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__mousePush__double__double__C5_WindowManager_P1,
 	          "",
 	          "");
 	I_Method3(bool, mouseRelease, IN, double, x, IN, double, x, IN, const osgWidget::WindowManager *, x,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__mouseRelease__double__double__C5_WindowManager_P1,
 	          "",
 	          "");
 	I_Method3(bool, mouseScroll, IN, double, x, IN, double, x, IN, const osgWidget::WindowManager *, x,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__mouseScroll__double__double__C5_WindowManager_P1,
 	          "",
 	          "");
@@ -157,47 +157,47 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::NullWidget)
 	               "",
 	               "");
 	I_Method1(bool, focus, IN, const osgWidget::WindowManager *, x,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__focus__C5_WindowManager_P1,
 	          "",
 	          "");
 	I_Method1(bool, unfocus, IN, const osgWidget::WindowManager *, x,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__unfocus__C5_WindowManager_P1,
 	          "",
 	          "");
 	I_Method3(bool, mouseEnter, IN, double, x, IN, double, x, IN, const osgWidget::WindowManager *, x,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__mouseEnter__double__double__C5_WindowManager_P1,
 	          "",
 	          "");
 	I_Method3(bool, mouseOver, IN, double, x, IN, double, x, IN, const osgWidget::WindowManager *, x,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__mouseOver__double__double__C5_WindowManager_P1,
 	          "",
 	          "");
 	I_Method3(bool, mouseLeave, IN, double, x, IN, double, x, IN, const osgWidget::WindowManager *, x,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__mouseLeave__double__double__C5_WindowManager_P1,
 	          "",
 	          "");
 	I_Method3(bool, mouseDrag, IN, double, x, IN, double, x, IN, const osgWidget::WindowManager *, x,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__mouseDrag__double__double__C5_WindowManager_P1,
 	          "",
 	          "");
 	I_Method3(bool, mousePush, IN, double, x, IN, double, x, IN, const osgWidget::WindowManager *, x,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__mousePush__double__double__C5_WindowManager_P1,
 	          "",
 	          "");
 	I_Method3(bool, mouseRelease, IN, double, x, IN, double, x, IN, const osgWidget::WindowManager *, x,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__mouseRelease__double__double__C5_WindowManager_P1,
 	          "",
 	          "");
 	I_Method3(bool, mouseScroll, IN, double, x, IN, double, x, IN, const osgWidget::WindowManager *, x,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __bool__mouseScroll__double__double__C5_WindowManager_P1,
 	          "",
 	          "");

@@ -277,22 +277,22 @@ class OSGWIDGET_EXPORT EventInterface
         // Notify the EventInterface object that is has been focused or unfocused; since
         // this isn't always bound to a mouse event (i.e., if you want to be able to use
         // the TAB key to focus), we need seperate events here.
-        virtual bool focus   (WindowManager*) { return false; }
-        virtual bool unfocus (WindowManager*) { return false; }
+        virtual bool focus   (const WindowManager*) { return false; }
+        virtual bool unfocus (const WindowManager*) { return false; }
 
         // Mouse events, pretty self-explanatory.
-        virtual bool mouseEnter   (double, double, WindowManager*) { return false; }
-        virtual bool mouseOver    (double, double, WindowManager*) { return false; }
-        virtual bool mouseLeave   (double, double, WindowManager*) { return false; }
-        virtual bool mouseDrag    (double, double, WindowManager*) { return false; }
-        virtual bool mousePush    (double, double, WindowManager*) { return false; }
-        virtual bool mouseRelease (double, double, WindowManager*) { return false; }
-        virtual bool mouseScroll  (double, double, WindowManager*) { return false; }
+        virtual bool mouseEnter   (double, double, const WindowManager*) { return false; }
+        virtual bool mouseOver    (double, double, const WindowManager*) { return false; }
+        virtual bool mouseLeave   (double, double, const WindowManager*) { return false; }
+        virtual bool mouseDrag    (double, double, const WindowManager*) { return false; }
+        virtual bool mousePush    (double, double, const WindowManager*) { return false; }
+        virtual bool mouseRelease (double, double, const WindowManager*) { return false; }
+        virtual bool mouseScroll  (double, double, const WindowManager*) { return false; }
 
         // These functions pass the osgGA::GUIEventAdapter::KeySymbol and KeyModMask and,
         // as above, the WindowManager.
-        virtual bool keyDown (int, int, WindowManager*) { return false; }
-        virtual bool keyUp   (int, int, WindowManager*) { return false; }
+        virtual bool keyDown (int, int, const WindowManager*) { return false; }
+        virtual bool keyUp   (int, int, const WindowManager*) { return false; }
 
         void setEventMask(unsigned int mask) {
             _eventMask = mask;

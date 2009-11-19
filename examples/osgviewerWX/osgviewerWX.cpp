@@ -127,6 +127,7 @@ BEGIN_EVENT_TABLE(OSGCanvas, wxGLCanvas)
     EVT_MIDDLE_UP           (OSGCanvas::OnMouseUp)
     EVT_RIGHT_UP            (OSGCanvas::OnMouseUp)
     EVT_MOTION              (OSGCanvas::OnMouseMotion)
+    EVT_MOUSEWHEEL          (OSGCanvas::OnMouseWheel)
 END_EVENT_TABLE()
 
 OSGCanvas::OSGCanvas(wxWindow *parent, wxWindowID id,
@@ -227,6 +228,18 @@ void OSGCanvas::OnMouseMotion(wxMouseEvent &event)
 {
     if (_graphics_window.valid())
         _graphics_window->getEventQueue()->mouseMotion(event.GetX(), event.GetY());
+}
+
+void OSGCanvas::OnMouseWheel(wxMouseEvent &event)
+{
+    int delta = event.GetWheelRotation() / event.GetWheelDelta() * event.GetLinesPerAction();
+
+    if (_graphics_window.valid()) {
+        _graphics_window->getEventQueue()->mouseScroll(
+            delta>0 ? 
+            osgGA::GUIEventAdapter::SCROLL_UP : 
+            osgGA::GUIEventAdapter::SCROLL_DOWN);
+    }
 }
 
 void OSGCanvas::UseCursor(bool value)

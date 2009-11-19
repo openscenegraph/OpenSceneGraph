@@ -488,7 +488,7 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __void__unbindPixelBufferObject,
 	          "",
 	          "");
-	I_MethodWithDefaults3(void, drawQuads, IN, GLint, first, , IN, GLsizei, count, , IN, GLsizei, primCount, 1,
+	I_MethodWithDefaults3(void, drawQuads, IN, GLint, first, , IN, GLsizei, count, , IN, GLsizei, primCount, 0,
 	                      Properties::NON_VIRTUAL,
 	                      __void__drawQuads__GLint__GLsizei__GLsizei,
 	                      "",

@@ -54,6 +54,16 @@ BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::SplitStereoVerticalEyeMapping)
 	I_EnumLabel(osg::DisplaySettings::LEFT_EYE_BOTTOM_VIEWPORT);
 END_REFLECTOR
 
+BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::ImplicitBufferAttachment)
+	I_DeclaringFile("osg/DisplaySettings");
+	I_EnumLabel(osg::DisplaySettings::IMPLICIT_DEPTH_BUFFER_ATTACHMENT);
+	I_EnumLabel(osg::DisplaySettings::IMPLICIT_STENCIL_BUFFER_ATTACHMENT);
+	I_EnumLabel(osg::DisplaySettings::IMPLICIT_COLOR_BUFFER_ATTACHMENT);
+	I_EnumLabel(osg::DisplaySettings::DEFAULT_IMPLICIT_BUFFER_ATTACHMENT);
+END_REFLECTOR
+
+TYPE_NAME_ALIAS(int, osg::DisplaySettings::ImplicitBufferAttachmentMask)
+
 BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	I_DeclaringFile("osg/DisplaySettings");
 	I_BaseType(osg::Referenced);
@@ -404,6 +414,31 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	          __unsigned_int__getMaxBufferObjectPoolSize,
 	          "",
 	          "");
+	I_MethodWithDefaults2(void, setImplicitBufferAttachmentMask, IN, osg::DisplaySettings::ImplicitBufferAttachmentMask, renderMask, osg::DisplaySettings::DEFAULT_IMPLICIT_BUFFER_ATTACHMENT, IN, osg::DisplaySettings::ImplicitBufferAttachmentMask, resolveMask, osg::DisplaySettings::DEFAULT_IMPLICIT_BUFFER_ATTACHMENT,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setImplicitBufferAttachmentMask__ImplicitBufferAttachmentMask__ImplicitBufferAttachmentMask,
+	                      "",
+	                      "");
+	I_Method1(void, setImplicitBufferAttachmentRenderMask, IN, osg::DisplaySettings::ImplicitBufferAttachmentMask, implicitBufferAttachmentRenderMask,
+	          Properties::NON_VIRTUAL,
+	          __void__setImplicitBufferAttachmentRenderMask__ImplicitBufferAttachmentMask,
+	          "",
+	          "");
+	I_Method1(void, setImplicitBufferAttachmentResolveMask, IN, osg::DisplaySettings::ImplicitBufferAttachmentMask, implicitBufferAttachmentResolveMask,
+	          Properties::NON_VIRTUAL,
+	          __void__setImplicitBufferAttachmentResolveMask__ImplicitBufferAttachmentMask,
+	          "",
+	          "");
+	I_Method0(osg::DisplaySettings::ImplicitBufferAttachmentMask, getImplicitBufferAttachmentRenderMask,
+	          Properties::NON_VIRTUAL,
+	          __ImplicitBufferAttachmentMask__getImplicitBufferAttachmentRenderMask,
+	          "Get mask selecting default implict buffer attachments for Cameras primary FBOs. ",
+	          "");
+	I_Method0(osg::DisplaySettings::ImplicitBufferAttachmentMask, getImplicitBufferAttachmentResolveMask,
+	          Properties::NON_VIRTUAL,
+	          __ImplicitBufferAttachmentMask__getImplicitBufferAttachmentResolveMask,
+	          "Get mask selecting default implict buffer attachments for Cameras secondary MULTISAMPLE FBOs. ",
+	          "");
 	I_Method1(void, setGLContextVersion, IN, const std::string &, version,
 	          Properties::NON_VIRTUAL,
 	          __void__setGLContextVersion__C5_std_string_R1,
@@ -470,6 +505,12 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	I_SimpleProperty(const std::string &, GLContextVersion, 
 	                 0, 
 	                 __void__setGLContextVersion__C5_std_string_R1);
+	I_SimpleProperty(osg::DisplaySettings::ImplicitBufferAttachmentMask, ImplicitBufferAttachmentRenderMask, 
+	                 __ImplicitBufferAttachmentMask__getImplicitBufferAttachmentRenderMask, 
+	                 __void__setImplicitBufferAttachmentRenderMask__ImplicitBufferAttachmentMask);
+	I_SimpleProperty(osg::DisplaySettings::ImplicitBufferAttachmentMask, ImplicitBufferAttachmentResolveMask, 
+	                 __ImplicitBufferAttachmentMask__getImplicitBufferAttachmentResolveMask, 
+	                 __void__setImplicitBufferAttachmentResolveMask__ImplicitBufferAttachmentMask);
 	I_SimpleProperty(unsigned int, MaxBufferObjectPoolSize, 
 	                 __unsigned_int__getMaxBufferObjectPoolSize, 
 	                 __void__setMaxBufferObjectPoolSize__unsigned_int);

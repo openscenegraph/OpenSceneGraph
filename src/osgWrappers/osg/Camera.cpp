@@ -96,7 +96,17 @@ BEGIN_ENUM_REFLECTOR(osg::Camera::BufferComponent)
 	I_EnumLabel(osg::Camera::COLOR_BUFFER15);
 END_REFLECTOR
 
+BEGIN_ENUM_REFLECTOR(osg::Camera::ImplicitBufferAttachment)
+	I_DeclaringFile("osg/Camera");
+	I_EnumLabel(osg::Camera::IMPLICIT_DEPTH_BUFFER_ATTACHMENT);
+	I_EnumLabel(osg::Camera::IMPLICIT_STENCIL_BUFFER_ATTACHMENT);
+	I_EnumLabel(osg::Camera::IMPLICIT_COLOR_BUFFER_ATTACHMENT);
+	I_EnumLabel(osg::Camera::USE_DISPLAY_SETTINGS_MASK);
+END_REFLECTOR
+
 TYPE_NAME_ALIAS(std::map< osg::Camera::BufferComponent COMMA  osg::Camera::Attachment >, osg::Camera::BufferAttachmentMap)
+
+TYPE_NAME_ALIAS(int, osg::Camera::ImplicitBufferAttachmentMask)
 
 BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_DeclaringFile("osg/Camera");
@@ -489,6 +499,31 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	          __C5_BufferAttachmentMap_R1__getBufferAttachmentMap,
 	          "Get the const BufferAttachmentMap, used to configure frame buffer objects, pbuffers and texture reads. ",
 	          "");
+	I_MethodWithDefaults2(void, setImplicitBufferAttachmentMask, IN, osg::Camera::ImplicitBufferAttachmentMask, renderMask, osg::DisplaySettings::DEFAULT_IMPLICIT_BUFFER_ATTACHMENT, IN, osg::Camera::ImplicitBufferAttachmentMask, resolveMask, osg::DisplaySettings::DEFAULT_IMPLICIT_BUFFER_ATTACHMENT,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setImplicitBufferAttachmentMask__ImplicitBufferAttachmentMask__ImplicitBufferAttachmentMask,
+	                      "",
+	                      "");
+	I_Method1(void, setImplicitBufferAttachmentRenderMask, IN, osg::Camera::ImplicitBufferAttachmentMask, implicitBufferAttachmentRenderMask,
+	          Properties::NON_VIRTUAL,
+	          __void__setImplicitBufferAttachmentRenderMask__ImplicitBufferAttachmentMask,
+	          "",
+	          "");
+	I_Method1(void, setImplicitBufferAttachmentResolveMask, IN, osg::Camera::ImplicitBufferAttachmentMask, implicitBufferAttachmentResolveMask,
+	          Properties::NON_VIRTUAL,
+	          __void__setImplicitBufferAttachmentResolveMask__ImplicitBufferAttachmentMask,
+	          "",
+	          "");
+	I_MethodWithDefaults1(osg::Camera::ImplicitBufferAttachmentMask, getImplicitBufferAttachmentRenderMask, IN, bool, effectiveMask, false,
+	                      Properties::NON_VIRTUAL,
+	                      __ImplicitBufferAttachmentMask__getImplicitBufferAttachmentRenderMask__bool,
+	                      "Get mask selecting implict buffer attachments for Camera primary FBO if effectiveMask parameter is set, method follows USE_DISPLAY_SETTINGS_MASK dependence and returns effective mask if effectiveMask parameter is reset, method returns nominal mask set by the Camera. ",
+	                      "");
+	I_MethodWithDefaults1(osg::Camera::ImplicitBufferAttachmentMask, getImplicitBufferAttachmentResolveMask, IN, bool, effectiveMask, false,
+	                      Properties::NON_VIRTUAL,
+	                      __ImplicitBufferAttachmentMask__getImplicitBufferAttachmentResolveMask__bool,
+	                      "Get mask selecting implict buffer attachments for Camera secondary MULTISAMPLE FBO if effectiveMask parameter is set, method follows USE_DISPLAY_SETTINGS_MASK dependence and returns effective mask if effectiveMask parameter is reset, method returns nominal mask set by the Camera. ",
+	                      "");
 	I_Method0(void, createCameraThread,
 	          Properties::NON_VIRTUAL,
 	          __void__createCameraThread,
@@ -686,6 +721,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_SimpleProperty(osg::GraphicsContext *, GraphicsContext, 
 	                 __GraphicsContext_P1__getGraphicsContext, 
 	                 __void__setGraphicsContext__GraphicsContext_P1);
+	I_SimpleProperty(osg::Camera::ImplicitBufferAttachmentMask, ImplicitBufferAttachmentRenderMask, 
+	                 0, 
+	                 __void__setImplicitBufferAttachmentRenderMask__ImplicitBufferAttachmentMask);
+	I_SimpleProperty(osg::Camera::ImplicitBufferAttachmentMask, ImplicitBufferAttachmentResolveMask, 
+	                 0, 
+	                 __void__setImplicitBufferAttachmentResolveMask__ImplicitBufferAttachmentMask);
 	I_SimpleProperty(osg::Camera::DrawCallback *, InitialDrawCallback, 
 	                 __DrawCallback_P1__getInitialDrawCallback, 
 	                 __void__setInitialDrawCallback__DrawCallback_P1);

@@ -18,9 +18,10 @@ const unsigned int MASK_3D = 0x0F000000;
 struct ColorWidget: public osgWidget::Widget {
     ColorWidget():
     osgWidget::Widget("", 256.0f, 256.0f) {
+        setEventMask(osgWidget::EVENT_ALL);
     }
 
-    bool mouseEnter(double, double, osgWidget::WindowManager*) {
+    bool mouseEnter(double, double, const osgWidget::WindowManager*) {
         addColor(-osgWidget::Color(0.4f, 0.4f, 0.4f, 0.0f));
         
         // osgWidget::warn() << "enter: " << getColor() << std::endl;
@@ -28,7 +29,7 @@ struct ColorWidget: public osgWidget::Widget {
         return true;
     }
 
-    bool mouseLeave(double, double, osgWidget::WindowManager*) {
+    bool mouseLeave(double, double, const osgWidget::WindowManager*) {
         addColor(osgWidget::Color(0.4f, 0.4f, 0.4f, 0.0f));
         
         // osgWidget::warn() << "leave: " << getColor() << std::endl;
@@ -36,7 +37,7 @@ struct ColorWidget: public osgWidget::Widget {
         return true;
     }
 
-    bool mouseOver(double x, double y, osgWidget::WindowManager*) {
+    bool mouseOver(double x, double y, const osgWidget::WindowManager*) {
         osgWidget::Color c = getImageColorAtPointerXY(x, y);
 
         if(c.a() < 0.001f) {

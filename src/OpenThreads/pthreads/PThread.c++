@@ -39,8 +39,8 @@
 #    include <sched.h>
 #endif
 #if defined (__FreeBSD__) || defined (__APPLE__) || defined (__MACH__)
-	#include <sys/types.h>
-	#include <sys/sysctl.h>
+    #include <sys/types.h>
+    #include <sys/sysctl.h>
 #endif
 
 #include <OpenThreads/Thread>
@@ -111,10 +111,10 @@ private:
     //
     static void *StartThread(void *data) {
 
-	Thread *thread = static_cast<Thread *>(data);
+    Thread *thread = static_cast<Thread *>(data);
 
-	PThreadPrivateData *pd =
-	    static_cast<PThreadPrivateData *>(thread->_prvData);
+    PThreadPrivateData *pd =
+        static_cast<PThreadPrivateData *>(thread->_prvData);
             
 
         if (pd->cpunum>=0)
@@ -137,25 +137,25 @@ private:
         }
         
 
-	ThreadCleanupStruct tcs;
-	tcs.thread = thread;
-	tcs.runflag = &pd->isRunning;
+    ThreadCleanupStruct tcs;
+    tcs.thread = thread;
+    tcs.runflag = &pd->isRunning;
 
-	// Set local storage so that Thread::CurrentThread() can return the right thing
-	int status = pthread_setspecific(PThreadPrivateData::s_tls_key, thread);
-	if (status)
+    // Set local storage so that Thread::CurrentThread() can return the right thing
+    int status = pthread_setspecific(PThreadPrivateData::s_tls_key, thread);
+    if (status)
         {
             printf("Error: pthread_setspecific(,) returned error status, status = %d\n",status);
         }
 
-	pthread_cleanup_push(thread_cleanup_handler, &tcs);
+    pthread_cleanup_push(thread_cleanup_handler, &tcs);
 
 #ifdef ALLOW_PRIORITY_SCHEDULING
 
-	//---------------------------------------------------------------------
-	// Set the proper scheduling priorities
-	//
-	SetThreadSchedulingParams(thread);
+    //---------------------------------------------------------------------
+    // Set the proper scheduling priorities
+    //
+    SetThreadSchedulingParams(thread);
 
 #endif // ] ALLOW_PRIORITY_SCHEDULING
 
@@ -168,7 +168,7 @@ private:
 
         pd->isRunning = false;
 
-	pthread_cleanup_pop(0);
+    pthread_cleanup_pop(0);
 
         return 0;
 
@@ -181,46 +181,46 @@ private:
 
 #ifdef ALLOW_PRIORITY_SCHEDULING // [
 
-	if(sysconf(_POSIX_THREAD_PRIORITY_SCHEDULING)) {
+    if(sysconf(_POSIX_THREAD_PRIORITY_SCHEDULING)) {
 
-	    int status, my_policy, min_priority, max_priority;
-	    struct sched_param my_param;
+        int status, my_policy, min_priority, max_priority;
+        struct sched_param my_param;
 
-	    status = pthread_getschedparam(thread->getProcessId(),
-					   &my_policy,
-					   &my_param);
+        status = pthread_getschedparam(thread->getProcessId(),
+                       &my_policy,
+                       &my_param);
 
-	    if(status != 0) {
-		printf("THREAD INFO (%d) : Get sched: %s\n",
-		       thread->getProcessId(),
-		       strerror(status));
-	    } else {
-		printf(
-		    "THREAD INFO (%d) : Thread running at %s / Priority: %d\n",
-		    thread->getProcessId(),
-		    (my_policy == SCHED_FIFO ? "SCHEDULE_FIFO"
-		     : (my_policy == SCHED_RR ? "SCHEDULE_ROUND_ROBIN"
-			: (my_policy == SCHED_OTHER ? "SCHEDULE_OTHER"
-			   : "UNKNOWN"))),
-		    my_param.sched_priority);
+        if(status != 0) {
+        printf("THREAD INFO (%d) : Get sched: %s\n",
+               thread->getProcessId(),
+               strerror(status));
+        } else {
+        printf(
+            "THREAD INFO (%d) : Thread running at %s / Priority: %d\n",
+            thread->getProcessId(),
+            (my_policy == SCHED_FIFO ? "SCHEDULE_FIFO"
+             : (my_policy == SCHED_RR ? "SCHEDULE_ROUND_ROBIN"
+            : (my_policy == SCHED_OTHER ? "SCHEDULE_OTHER"
+               : "UNKNOWN"))),
+            my_param.sched_priority);
 
-		max_priority = sched_get_priority_max(my_policy);
-		min_priority = sched_get_priority_min(my_policy);
+        max_priority = sched_get_priority_max(my_policy);
+        min_priority = sched_get_priority_min(my_policy);
 
-		printf(
-		    "THREAD INFO (%d) : Max priority: %d, Min priority: %d\n",
-		    thread->getProcessId(),
-		    max_priority, min_priority);
+        printf(
+            "THREAD INFO (%d) : Max priority: %d, Min priority: %d\n",
+            thread->getProcessId(),
+            max_priority, min_priority);
 
-	    }
+        }
 
-	} else {
-	    printf(
-		"THREAD INFO (%d) POSIX Priority scheduling not available\n",
-		thread->getProcessId());
-	}
+    } else {
+        printf(
+        "THREAD INFO (%d) POSIX Priority scheduling not available\n",
+        thread->getProcessId());
+    }
 
-	fflush(stdout);
+    fflush(stdout);
 
 #endif // ] ALLOW_PRIORITY_SCHEDULING
 
@@ -232,102 +232,102 @@ private:
     //
     static int SetThreadSchedulingParams(Thread *thread) {
 
-	int status = 0;
+    int status = 0;
 
 #ifdef ALLOW_PRIORITY_SCHEDULING // [
 
-	if(sysconf(_POSIX_THREAD_PRIORITY_SCHEDULING)) {
+    if(sysconf(_POSIX_THREAD_PRIORITY_SCHEDULING)) {
 
-	    int th_policy;
-	    int max_priority, nominal_priority, min_priority;
-	    sched_param th_param;
-	    pthread_getschedparam(thread->getProcessId(),
-				  &th_policy, &th_param);
+        int th_policy;
+        int max_priority, nominal_priority, min_priority;
+        sched_param th_param;
+        pthread_getschedparam(thread->getProcessId(),
+                  &th_policy, &th_param);
 
 #ifndef __linux__
 
-	    switch(thread->getSchedulePolicy()) {
+        switch(thread->getSchedulePolicy()) {
 
-	    case Thread::THREAD_SCHEDULE_FIFO:
-		th_policy = SCHED_FIFO;
-		break;
+        case Thread::THREAD_SCHEDULE_FIFO:
+        th_policy = SCHED_FIFO;
+        break;
 
-	    case Thread::THREAD_SCHEDULE_ROUND_ROBIN:
-		th_policy = SCHED_RR;
-		break;
+        case Thread::THREAD_SCHEDULE_ROUND_ROBIN:
+        th_policy = SCHED_RR;
+        break;
 
-	    case Thread::THREAD_SCHEDULE_TIME_SHARE:
-		th_policy = SCHED_OTHER;
-		break;
+        case Thread::THREAD_SCHEDULE_TIME_SHARE:
+        th_policy = SCHED_OTHER;
+        break;
 
-	    default:
+        default:
 #ifdef __sgi
-		th_policy = SCHED_RR;
+        th_policy = SCHED_RR;
 #else
-		th_policy = SCHED_FIFO;
+        th_policy = SCHED_FIFO;
 #endif
-		break;
-	    };
+        break;
+        };
 
 #else
-	    th_policy = SCHED_OTHER;  // Must protect linux from realtime.
+        th_policy = SCHED_OTHER;  // Must protect linux from realtime.
 #endif
 
 #ifdef __linux__
 
-	    max_priority = 0;
-	    min_priority = 20;
-	    nominal_priority = (max_priority + min_priority)/2;
+        max_priority = 0;
+        min_priority = 20;
+        nominal_priority = (max_priority + min_priority)/2;
 
 #else
 
-	    max_priority = sched_get_priority_max(th_policy);
-	    min_priority = sched_get_priority_min(th_policy);
-	    nominal_priority = (max_priority + min_priority)/2;
+        max_priority = sched_get_priority_max(th_policy);
+        min_priority = sched_get_priority_min(th_policy);
+        nominal_priority = (max_priority + min_priority)/2;
 
 #endif
 
-	    switch(thread->getSchedulePriority()) {
+        switch(thread->getSchedulePriority()) {
 
-	    case Thread::THREAD_PRIORITY_MAX:
-		th_param.sched_priority = max_priority;
-		break;
+        case Thread::THREAD_PRIORITY_MAX:
+        th_param.sched_priority = max_priority;
+        break;
 
-	    case Thread::THREAD_PRIORITY_HIGH:
-		th_param.sched_priority = (max_priority + nominal_priority)/2;
-		break;
+        case Thread::THREAD_PRIORITY_HIGH:
+        th_param.sched_priority = (max_priority + nominal_priority)/2;
+        break;
 
-	    case Thread::THREAD_PRIORITY_NOMINAL:
-		th_param.sched_priority = nominal_priority;
-		break;
+        case Thread::THREAD_PRIORITY_NOMINAL:
+        th_param.sched_priority = nominal_priority;
+        break;
 
-	    case Thread::THREAD_PRIORITY_LOW:
-		th_param.sched_priority = (min_priority + nominal_priority)/2;
-		break;
+        case Thread::THREAD_PRIORITY_LOW:
+        th_param.sched_priority = (min_priority + nominal_priority)/2;
+        break;
 
-	    case Thread::THREAD_PRIORITY_MIN:
-		th_param.sched_priority = min_priority;
-		break;
+        case Thread::THREAD_PRIORITY_MIN:
+        th_param.sched_priority = min_priority;
+        break;
 
-	    default:
-		th_param.sched_priority = max_priority;
-		break;
+        default:
+        th_param.sched_priority = max_priority;
+        break;
 
-	    }
+        }
 
-	    status = pthread_setschedparam(thread->getProcessId(),
-					   th_policy,
-					   &th_param);
+        status = pthread_setschedparam(thread->getProcessId(),
+                       th_policy,
+                       &th_param);
 
 
-	    if(getenv("OUTPUT_THREADLIB_SCHEDULING_INFO") != 0)
-		PrintThreadSchedulingInfo(thread);
+        if(getenv("OUTPUT_THREADLIB_SCHEDULING_INFO") != 0)
+        PrintThreadSchedulingInfo(thread);
 
-	}
+    }
 
 #endif // ] ALLOW_PRIORITY_SCHEDULING
 
-	return status;
+    return status;
     };
 };
 
@@ -405,10 +405,10 @@ Thread::~Thread()
     {
         std::cout<<"Error: Thread "<<this<<" still running in destructor"<<std::endl;
 
-	//---------------------------------------------------------------------
-	// Kill the thread when it is destructed
-	//
-	cancel();
+    //---------------------------------------------------------------------
+    // Kill the thread when it is destructed
+    //
+    cancel();
     }
 
     delete pd;
@@ -421,7 +421,7 @@ Thread *Thread::CurrentThread()
     if(!s_isInitialized) Thread::Init();
 
     Thread *thread =
-	static_cast<Thread *>(pthread_getspecific(PThreadPrivateData::s_tls_key));
+    static_cast<Thread *>(pthread_getspecific(PThreadPrivateData::s_tls_key));
 
     return thread;
 
@@ -451,28 +451,28 @@ void Thread::Init() {
     //
     if(sysconf(_POSIX_THREAD_PRIORITY_SCHEDULING)) {
 
-	int max_priority, nominal_priority, min_priority;
+    int max_priority, nominal_priority, min_priority;
 
-	int th_policy;
-	sched_param th_param;
-	pthread_getschedparam(pthread_self(),
-			      &th_policy, &th_param);
+    int th_policy;
+    sched_param th_param;
+    pthread_getschedparam(pthread_self(),
+                  &th_policy, &th_param);
 
-	max_priority = sched_get_priority_max(th_policy);
-	min_priority = sched_get_priority_min(th_policy);
-	nominal_priority = (max_priority + min_priority)/2;
+    max_priority = sched_get_priority_max(th_policy);
+    min_priority = sched_get_priority_min(th_policy);
+    nominal_priority = (max_priority + min_priority)/2;
 
-	th_param.sched_priority = nominal_priority;
+    th_param.sched_priority = nominal_priority;
 
-	pthread_setschedparam(pthread_self(),
-			      th_policy,
-			      &th_param);
+    pthread_setschedparam(pthread_self(),
+                  th_policy,
+                  &th_param);
 
-	s_masterThreadPriority = Thread::THREAD_PRIORITY_NOMINAL;
+    s_masterThreadPriority = Thread::THREAD_PRIORITY_NOMINAL;
 
     } else {
 
-	s_masterThreadPriority = Thread::THREAD_PRIORITY_DEFAULT;
+    s_masterThreadPriority = Thread::THREAD_PRIORITY_DEFAULT;
 
     }
 
@@ -583,7 +583,7 @@ int Thread::start() {
 
     status = pthread_attr_init( &thread_attr );
     if(status != 0) {
-	return status;
+    return status;
     }
 
     PThreadPrivateData *pd = static_cast<PThreadPrivateData *> (_prvData);
@@ -591,15 +591,15 @@ int Thread::start() {
     size_t defaultStackSize;
     pthread_attr_getstacksize( &thread_attr, &defaultStackSize);
     if(status != 0) {
-	return status;
+    return status;
     }
 
     if(defaultStackSize < pd->stackSize) {
 
-	pthread_attr_setstacksize( &thread_attr, pd->stackSize);
-	if(status != 0) {
-	    return status;
-	}
+    pthread_attr_setstacksize( &thread_attr, pd->stackSize);
+    if(status != 0) {
+        return status;
+    }
     }
 
     //-------------------------------------------------------------------------
@@ -607,7 +607,7 @@ int Thread::start() {
     //
     pthread_attr_getstacksize( &thread_attr, &defaultStackSize);
     if(status != 0) {
-	return status;
+    return status;
     }
 
     pd->stackSize = defaultStackSize;
@@ -620,14 +620,14 @@ int Thread::start() {
 #ifdef ALLOW_PRIORITY_SCHEDULING
 
     status = pthread_attr_setinheritsched( &thread_attr,
-					   PTHREAD_EXPLICIT_SCHED );
+                       PTHREAD_EXPLICIT_SCHED );
 
     pthread_attr_setscope(&thread_attr, PTHREAD_SCOPE_SYSTEM);
 
 #endif // ] ALLOW_PRIORITY_SCHEDULING
 
     if(status != 0) {
-	return status;
+    return status;
     }
 
     pd->threadStartedBlock.reset();
@@ -640,7 +640,7 @@ int Thread::start() {
     pd->threadStartedBlock.block();
 
     if(status != 0) {
-	return status;
+    return status;
     }
 
     pd->idSet = true;
@@ -699,7 +699,7 @@ int Thread::testCancel() {
     PThreadPrivateData *pd = static_cast<PThreadPrivateData *> (_prvData);
 
     if(pthread_self() != pd->tid)
-	return -1;
+    return -1;
 
     pthread_testcancel();
 
@@ -782,9 +782,9 @@ int Thread::setSchedulePriority(ThreadPriority priority) {
     pd->threadPriority = priority;
 
     if(pd->isRunning)
-	return ThreadPrivateActions::SetThreadSchedulingParams(this);
+    return ThreadPrivateActions::SetThreadSchedulingParams(this);
     else
-	return 0;
+    return 0;
 
 #else
     return -1;
@@ -821,9 +821,9 @@ int Thread::setSchedulePolicy(ThreadPolicy policy) {
     pd->threadPolicy = policy;
 
     if(pd->isRunning)
-	return ThreadPrivateActions::SetThreadSchedulingParams(this);
+    return ThreadPrivateActions::SetThreadSchedulingParams(this);
     else
-	return 0;
+    return 0;
 #else
     return -1;
 #endif
@@ -948,7 +948,7 @@ int OpenThreads::GetNumberOfProcessors()
    uint64_t num_cpus = 0;
    size_t num_cpus_length = sizeof(num_cpus);
 #if defined(__FreeBSD__)
-   sysctlbyname("hw.ncpu", &num_cpus, &num_cpus_length, NULL, 0);			
+   sysctlbyname("hw.ncpu", &num_cpus, &num_cpus_length, NULL, 0);            
 #else
    sysctlbyname("hw.activecpu", &num_cpus, &num_cpus_length, NULL, 0);
 #endif

@@ -118,7 +118,7 @@ public:
 
 
 
-    ReaderWriterQT::ReaderWriterQT()
+    ReaderWriterQT()
     {
 
        registerQtReader();
@@ -155,7 +155,7 @@ public:
         #endif
     }
 
-    ReaderWriterQT::~ReaderWriterQT()
+    ~ReaderWriterQT()
     {
     }
 

@@ -146,11 +146,11 @@ protected:
 
     typedef std::map< std::string, osg::ref_ptr<osg::StateSet> > MaterialToStateSetMap;
     
-    void buildMaterialToStateSetMap(obj::Model& model, MaterialToStateSetMap& materialToSetSetMapObj, ObjOptionsStruct& localOptions) const;
+    void buildMaterialToStateSetMap(obj::Model& model, MaterialToStateSetMap& materialToSetSetMapObj, ObjOptionsStruct& localOptions, const Options* options) const;
     
     osg::Geometry* convertElementListToGeometry(obj::Model& model, obj::Model::ElementList& elementList, ObjOptionsStruct& localOptions) const;
     
-    osg::Node* convertModelToSceneGraph(obj::Model& model, ObjOptionsStruct& localOptions) const;
+    osg::Node* convertModelToSceneGraph(obj::Model& model, ObjOptionsStruct& localOptions, const Options* options) const;
 
     inline osg::Vec3 transformVertex(const osg::Vec3& vec, const bool rotate) const ;
     inline osg::Vec3 transformNormal(const osg::Vec3& vec, const bool rotate) const ;
@@ -191,7 +191,8 @@ REGISTER_OSGPLUGIN(obj, ReaderWriterOBJ)
 static void load_material_texture(    obj::Model &model,
                                     obj::Material::Map &map,
                                     osg::StateSet *stateset,
-                                    const unsigned int texture_unit  )
+                                    const unsigned int texture_unit,
+                                    const osgDB::Options* options)
 {
     std::string filename = map.name;
     if (!filename.empty())
@@ -200,13 +201,13 @@ static void load_material_texture(    obj::Model &model,
         if ( !model.getDatabasePath().empty() ) 
         {
             // first try with database path of parent. 
-            image = osgDB::readRefImageFile(model.getDatabasePath()+'/'+filename);
+            image = osgDB::readRefImageFile(model.getDatabasePath()+'/'+filename, options);
         }
         
         if ( !image.valid() )
         {
             // if not already set then try the filename as is.
-            image = osgDB::readRefImageFile(filename);
+            image = osgDB::readRefImageFile(filename, options);
         }
 
         if ( image.valid() )
@@ -268,7 +269,7 @@ static void load_material_texture(    obj::Model &model,
 }
 
 
-void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToStateSetMap& materialToStateSetMap, ObjOptionsStruct& localOptions) const
+void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToStateSetMap& materialToStateSetMap, ObjOptionsStruct& localOptions, const Options* options) const
 {
     if (localOptions.fixBlackMaterials)
     {
@@ -366,7 +367,7 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
                         break;
                     }
                 }
-                if(index>=0) load_material_texture( model, material.maps[index], stateset.get(), unit );
+                if(index>=0) load_material_texture( model, material.maps[index], stateset.get(), unit, options );
             }
         }
         // If the user has set no options, then we load them up in the order contained in the enum. This
@@ -389,7 +390,7 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
                 }
                 if(index>=0)
                 {
-                    load_material_texture( model, material.maps[index], stateset.get(), unit );
+                    load_material_texture( model, material.maps[index], stateset.get(), unit, options );
                     unit++;
                 }
             }
@@ -700,7 +701,7 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
     return geometry;
 }
 
-osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, ObjOptionsStruct& localOptions) const
+osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, ObjOptionsStruct& localOptions, const Options* options) const
 {
 
     if (model.elementStateMap.empty()) return 0;
@@ -708,8 +709,8 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, ObjOptio
     osg::Group* group = new osg::Group;
 
     // set up the materials
-    MaterialToStateSetMap materialToSetSetMap;
-    buildMaterialToStateSetMap(model, materialToSetSetMap, localOptions);
+    MaterialToStateSetMap materialToStateSetMap;
+    buildMaterialToStateSetMap(model, materialToStateSetMap, localOptions, options);
 
     // go through the groups of related elements and build geometry from them.
     for(obj::Model::ElementStateMap::iterator itr=model.elementStateMap.begin();
@@ -724,8 +725,13 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, ObjOptio
 
         if (geometry)
         {
+            MaterialToStateSetMap::const_iterator it = materialToStateSetMap.find(es.materialName);
+            if (it == materialToStateSetMap.end())
+            {
+                osg::notify(osg::WARN) << "Obj unable to find material '" << es.materialName << "'" << std::endl;
+            }
 
-            osg::StateSet* stateset = materialToSetSetMap[es.materialName].get();
+            osg::StateSet* stateset = materialToStateSetMap[es.materialName].get();
             geometry->setStateSet(stateset);
         
             // tesseleate any large polygons
@@ -867,11 +873,10 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(const std::string& fil
         obj::Model model;
         model.setDatabasePath(osgDB::getFilePath(fileName.c_str()));
         model.readOBJ(fin, local_opt.get());
-        
+
         ObjOptionsStruct localOptions = parseOptions(options);
-        
-        
-        osg::Node* node = convertModelToSceneGraph(model,localOptions);
+
+        osg::Node* node = convertModelToSceneGraph(model, localOptions, options);
         return node;
     }
     
@@ -887,7 +892,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterOBJ::readNode(std::istream& fin, con
         
         ObjOptionsStruct localOptions = parseOptions(options);
         
-        osg::Node* node = convertModelToSceneGraph(model, localOptions);
+        osg::Node* node = convertModelToSceneGraph(model, localOptions, options);
         return node;
     }
     

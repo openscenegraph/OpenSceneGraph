@@ -645,16 +645,22 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
             {
                 std::string materialFileName = trim( line+7 );
                 std::string fullPathFileName = osgDB::findDataFile( materialFileName, options );
-                osg::notify(osg::INFO) << "--" << line+7 << "--" << std::endl;
-                osg::notify(osg::INFO) << "--" << materialFileName << "--" << std::endl;
-                osg::notify(osg::INFO) << "--" << fullPathFileName << "--" << std::endl;
                 if (!fullPathFileName.empty())
                 {
                     osgDB::ifstream mfin( fullPathFileName.c_str() );
                     if (mfin)
                     {
+                        osg::notify(osg::INFO) << "Obj reading mtllib '" << fullPathFileName << "'\n";
                         readMTL(mfin);
                     }
+                    else
+                    {
+                        osg::notify(osg::WARN) << "Obj unable to load mtllib '" << fullPathFileName << "'\n";
+                    }
+                }
+                else
+                {
+                    osg::notify(osg::WARN) << "Obj unable to find mtllib '" << materialFileName << "'\n";
                 }
             }
             else if (strncmp(line,"o ",2)==0)

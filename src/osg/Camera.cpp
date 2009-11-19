@@ -31,7 +31,9 @@ Camera::Camera():
     _drawBuffer(GL_NONE),
     _readBuffer(GL_NONE),
     _renderTargetImplementation(FRAME_BUFFER),
-    _renderTargetFallback(FRAME_BUFFER)
+    _renderTargetFallback(FRAME_BUFFER),
+    _implicitBufferAttachmentRenderMask( USE_DISPLAY_SETTINGS_MASK ),
+    _implicitBufferAttachmentResolveMask( USE_DISPLAY_SETTINGS_MASK )
 {
     setStateSet(new StateSet);
 }
@@ -60,6 +62,8 @@ Camera::Camera(const Camera& camera,const CopyOp& copyop):
     _renderTargetImplementation(camera._renderTargetImplementation),
     _renderTargetFallback(camera._renderTargetFallback),
     _bufferAttachmentMap(camera._bufferAttachmentMap),
+    _implicitBufferAttachmentRenderMask(camera._implicitBufferAttachmentRenderMask),
+    _implicitBufferAttachmentResolveMask(camera._implicitBufferAttachmentResolveMask),
     _initialDrawCallback(camera._initialDrawCallback),
     _preDrawCallback(camera._preDrawCallback),
     _postDrawCallback(camera._postDrawCallback),

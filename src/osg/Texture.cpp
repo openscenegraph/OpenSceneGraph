@@ -1402,7 +1402,7 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
     _internalFormat = internalFormat;
 
     // GLES doesn't cope with internal formats of 1,2,3 and 4 so map them to the appropriate equivilants.
-    if (_internalFormat==1) _internalFormat = GL_ALPHA;
+    if (_internalFormat==1) _internalFormat = GL_LUMINANCE;
     if (_internalFormat==2) _internalFormat = GL_LUMINANCE_ALPHA;
     if (_internalFormat==3) _internalFormat = GL_RGB;
     if (_internalFormat==4) _internalFormat = GL_RGBA;

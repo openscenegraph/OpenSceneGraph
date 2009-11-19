@@ -542,11 +542,11 @@ int Thread::setProcessorAffinity(unsigned int cpunum)
         CPU_ZERO( &cpumask );
         CPU_SET( pd->cpunum, &cpumask );
 #if defined(HAVE_PTHREAD_SETAFFINITY_NP)
-        pthread_setaffinity_np (pthread_self(), sizeof(cpumask), &cpumask);
+        return pthread_setaffinity_np (pthread_self(), sizeof(cpumask), &cpumask);
 #elif defined(HAVE_THREE_PARAM_SCHED_SETAFFINITY)
-        sched_setaffinity( 0, sizeof(cpumask), &cpumask );
+        return sched_setaffinity( 0, sizeof(cpumask), &cpumask );
 #elif defined(HAVE_TWO_PARAM_SCHED_SETAFFINITY)
-        sched_setaffinity( 0, &cpumask );
+        return sched_setaffinity( 0, &cpumask );
 #endif
     }
 

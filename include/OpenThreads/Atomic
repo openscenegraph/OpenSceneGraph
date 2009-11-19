@@ -1,13 +1,13 @@
 /* -*-c++-*- OpenThreads library, Copyright (C) 2008  The Open Thread Group
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -60,7 +60,7 @@ class OPENTHREAD_EXPORT_DIRECTIVE Atomic {
 
     Atomic(const Atomic&);
     Atomic& operator=(const Atomic&);
-    
+
 #if defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
     mutable Mutex _mutex;
 #endif
@@ -167,7 +167,7 @@ Atomic::OR(unsigned value)
     return atomic_or_uint_nv(&_value, value);
 #elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
     ScopedLock<Mutex> lock(_mutex);
-    _value |= value; 
+    _value |= value;
     return _value;
 #else
     _value |= value;

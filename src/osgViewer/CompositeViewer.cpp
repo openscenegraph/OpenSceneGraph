@@ -739,6 +739,7 @@ void CompositeViewer::eventTraversal()
                         break;
                     case(osgGA::GUIEventAdapter::PUSH):
                     case(osgGA::GUIEventAdapter::RELEASE):
+                    case(osgGA::GUIEventAdapter::DOUBLECLICK):
                     case(osgGA::GUIEventAdapter::DRAG):
                     case(osgGA::GUIEventAdapter::MOVE):
                     {

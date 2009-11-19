@@ -25,12 +25,12 @@
 #include <osgIntrospection/PropertyInfo>
 
 #include <osgDB/DynamicLibrary>
+#include <osg/Object>
 
 #include <iostream>
 #include <algorithm>
 
 using namespace osgIntrospection;
-
 
 // borrowed from osgDB...
 std::string createLibraryNameForWrapper(const std::string& ext)
@@ -49,9 +49,9 @@ std::string createLibraryNameForWrapper(const std::string& ext)
         #endif
     #endif
 #elif macintosh
-    return "osgwrapper_"+ext;
+    return "osgwrapper_" + ext;
 #else
-    return "osgwrapper_"+ext+ ADDQUOTES(OSG_PLUGIN_EXTENSION);
+    return "osgwrapper_" + ext + ADDQUOTES(OSG_PLUGIN_EXTENSION);
 #endif
 
 }

@@ -613,6 +613,24 @@ Triangle_list fillHole(osg::Vec3Array *points,    std::vector<unsigned int> vind
     return triangles;
 }
 
+template <typename TVector>
+void removeIndices( TVector& elements, unsigned int index )
+{
+    typename TVector::iterator itr = elements.begin();
+    while ( itr != elements.end() )
+    {
+        if ( (*itr)==index )
+        { // remove entirely
+            itr = elements.erase(itr);
+        }
+        else
+        {
+            if ((*itr)>index) --(*itr); // move indices down 1
+            ++itr; // next index
+        }
+    }
+ }
+
 void DelaunayConstraint::removeVerticesInside(const DelaunayConstraint *dco)
 {    /** remove vertices from this which are internal to dco.
      * retains potins that are extremely close to edge of dco
@@ -631,24 +649,20 @@ void DelaunayConstraint::removeVerticesInside(const DelaunayConstraint *dco)
                 for (unsigned int ipr=0; ipr<getNumPrimitiveSets(); ipr++)
                 {
                     osg::PrimitiveSet* prset=getPrimitiveSet(ipr);
-                    osg::DrawElementsUShort *dsup=dynamic_cast<osg::DrawElementsUShort *>(prset);
-                    if (dsup) {
-                        for (osg::DrawElementsUShort::iterator usitr=dsup->begin(); usitr!=dsup->end(); )
-                        {
-                            if ((*usitr)==idx)
-                            { // remove entirely
-                                usitr=dsup->erase(usitr);
-                            }
-                            else
-                            {
-                                if ((*usitr)>idx) (*usitr)--; // move indices down 1
-                                usitr++; // next index
-                            }
-                        }
-                    }
-                    else
+                    switch (prset->getType())
                     {
+                    case osg::PrimitiveSet::DrawElementsUBytePrimitiveType:
+                        removeIndices( *static_cast<osg::DrawElementsUByte *>(prset), idx );
+                        break;
+                    case osg::PrimitiveSet::DrawElementsUShortPrimitiveType:
+                        removeIndices( *static_cast<osg::DrawElementsUShort *>(prset), idx );
+                        break;
+                    case osg::PrimitiveSet::DrawElementsUIntPrimitiveType:
+                        removeIndices( *static_cast<osg::DrawElementsUInt *>(prset), idx );
+                        break;
+                    default:
                         osg::notify(osg::WARN) << "Invalid prset " <<ipr<< " tp " << prset->getType() << " types PrimitiveType,DrawArraysPrimitiveType=1 etc" << std::endl;
+                        break;
                     }
                 }
                 vitr=vertices->erase(vitr);
@@ -1037,7 +1051,11 @@ bool DelaunayTriangulator::triangulate()
                                                 } else {
                                                     if (!tradj->usesVertex(ip2)) osg::notify(osg::WARN) << "tradj error " << tradj->a()<<  " , " << tradj->b()<<  " , " << tradj->c()<< std::endl;
                                                 }
+                                                const Triangle *previousTradj = tradj;
                                                 tradj=getTriangleWithEdge(e2,e1, &triangles);
+                                                if (tradj == previousTradj) {
+                                                    tradj = 0;
+                                                }
                                             }
                                             if (trisToDelete.size()>=900) {
                                                 osg::notify(osg::WARN) << " found " << trisToDelete.size() << " adjacent tris " <<std::endl;

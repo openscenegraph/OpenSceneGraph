@@ -34,6 +34,7 @@ public:
     void OnMouseDown(wxMouseEvent &event);
     void OnMouseUp(wxMouseEvent &event);
     void OnMouseMotion(wxMouseEvent &event);
+    void OnMouseWheel(wxMouseEvent &event);
 
     void UseCursor(bool value);
 

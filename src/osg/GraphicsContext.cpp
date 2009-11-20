@@ -843,12 +843,15 @@ void GraphicsContext::removeCamera(osg::Camera* camera)
 
 void GraphicsContext::resizedImplementation(int x, int y, int width, int height)
 {
+    std::set<osg::Viewport*> processedViewports;
+
     if (!_traits) return;
     
     double widthChangeRatio = double(width) / double(_traits->width);
     double heigtChangeRatio = double(height) / double(_traits->height);
     double aspectRatioChange = widthChangeRatio / heigtChangeRatio; 
     
+
     for(Cameras::iterator itr = _cameras.begin();
         itr != _cameras.end();
         ++itr)
@@ -861,17 +864,23 @@ void GraphicsContext::resizedImplementation(int x, int y, int width, int height)
         Viewport* viewport = camera->getViewport();
         if (viewport)
         {
-            if (viewport->x()==0 && viewport->y()==0 &&
-                viewport->width()>=_traits->width && viewport->height()>=_traits->height)
+            // avoid processing a shared viewport twice
+            if (processedViewports.count(viewport)==0)
             {
-                viewport->setViewport(0,0,width,height);
-            }
-            else
-            {
-                viewport->x() = static_cast<osg::Viewport::value_type>(double(viewport->x())*widthChangeRatio);
-                viewport->y() = static_cast<osg::Viewport::value_type>(double(viewport->y())*heigtChangeRatio);
-                viewport->width() = static_cast<osg::Viewport::value_type>(double(viewport->width())*widthChangeRatio);
-                viewport->height() = static_cast<osg::Viewport::value_type>(double(viewport->height())*heigtChangeRatio);
+                processedViewports.insert(viewport);
+
+                if (viewport->x()==0 && viewport->y()==0 &&
+                    viewport->width()>=_traits->width && viewport->height()>=_traits->height)
+                {
+                    viewport->setViewport(0,0,width,height);
+                }
+                else
+                {
+                    viewport->x() = static_cast<osg::Viewport::value_type>(double(viewport->x())*widthChangeRatio);
+                    viewport->y() = static_cast<osg::Viewport::value_type>(double(viewport->y())*heigtChangeRatio);
+                    viewport->width() = static_cast<osg::Viewport::value_type>(double(viewport->width())*widthChangeRatio);
+                    viewport->height() = static_cast<osg::Viewport::value_type>(double(viewport->height())*heigtChangeRatio);
+                }
             }
         }
 

@@ -1,5 +1,6 @@
 #include <osg/Geode>
 #include <osg/Image>
+#include <osg/MatrixTransform>
 
 #include <osgUtil/TriStripVisitor>
 

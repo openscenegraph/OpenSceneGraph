@@ -51,6 +51,11 @@ class OSGTERRAIN_EXPORT TerrainTechnique : public osg::Object
         /** Traverse the terrain subgraph.*/
         virtual void traverse(osg::NodeVisitor& nv);
 
+        /** If State is non-zero, this function releases any associated OpenGL objects for
+        * the specified graphics context. Otherwise, releases OpenGL objects
+        * for all graphics contexts. */
+        virtual void releaseGLObjects(osg::State* = 0) const {}
+
     protected:
     
         void setDirty(bool dirty);

@@ -175,6 +175,12 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
         static void setTileLoadedCallback(TileLoadedCallback* lc);
         static osg::ref_ptr<TileLoadedCallback>& getTileLoadedCallback();
 
+        /** If State is non-zero, this function releases any associated OpenGL objects for
+        * the specified graphics context. Otherwise, releases OpenGL objects
+        * for all graphics contexts. */
+        virtual void releaseGLObjects(osg::State* = 0) const;
+
+
     protected:
 
         virtual ~TerrainTile();

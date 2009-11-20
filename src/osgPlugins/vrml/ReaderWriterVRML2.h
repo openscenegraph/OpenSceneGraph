@@ -73,7 +73,7 @@ public:
 
 
     virtual ReadResult readNode(const std::string&, const osgDB::Options *options) const;
-    virtual ReadResult readNode(std::istream& fin, const osgDB::Options* options) const;
+    // virtual ReadResult readNode(std::istream& fin, const osgDB::Options* options) const;
 
 private:
     typedef std::map<float, osg::ref_ptr<osg::Geometry> > SphereLibrary;

@@ -76,6 +76,11 @@ class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
         
         void setFilterMatrixAs(FilterType filterType);
 
+        /** If State is non-zero, this function releases any associated OpenGL objects for
+        * the specified graphics context. Otherwise, releases OpenGL objects
+        * for all graphics contexts. */
+        virtual void releaseGLObjects(osg::State* = 0) const;
+
 
     private:
 

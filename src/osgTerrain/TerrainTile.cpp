@@ -463,3 +463,14 @@ void WhiteListTileLoadedCallback::loaded(osgTerrain::TerrainTile* tile, const os
 
     }
 }
+
+void TerrainTile::releaseGLObjects(osg::State* state) const
+{
+    Group::releaseGLObjects(state);
+
+    if (_terrainTechnique.valid())
+    {
+        _terrainTechnique->releaseGLObjects( state );
+    }
+}
+

@@ -91,9 +91,11 @@ class OSGDB_EXPORT Output : public osgDB::ofstream
         virtual std::string getFileNameForOutput(const std::string& filename) const;
         const std::string& getFileName() const { return _filename; }
 
+        // Set and get if export texture files during write
         void setOutputTextureFiles(bool flag) { _outputTextureFiles = flag; }
         bool getOutputTextureFiles() const { return _outputTextureFiles; }
 
+        // support code for OutputTextureFiles
         virtual std::string getTextureFileNameForOutput();
 
         void setOutputShaderFiles(bool flag) { _outputShaderFiles = flag; }

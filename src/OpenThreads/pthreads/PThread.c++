@@ -21,6 +21,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <limits.h>
 
 #if defined __linux || defined __sun || defined __APPLE__
 #include <string.h>
@@ -588,29 +589,28 @@ int Thread::start() {
 
     PThreadPrivateData *pd = static_cast<PThreadPrivateData *> (_prvData);
 
-    size_t defaultStackSize;
-    pthread_attr_getstacksize( &thread_attr, &defaultStackSize);
-    if(status != 0) {
-    return status;
-    }
-
-    if(defaultStackSize < pd->stackSize) {
-
-    pthread_attr_setstacksize( &thread_attr, pd->stackSize);
-    if(status != 0) {
-        return status;
-    }
+    //-------------------------------------------------------------------------
+    // Set the stack size if requested, but not less than a platform reasonable
+    // value.
+    //
+    if(pd->stackSize) {
+        if(pd->stackSize < PTHREAD_STACK_MIN)
+            pd->stackSize = PTHREAD_STACK_MIN;
+        pthread_attr_setstacksize( &thread_attr, pd->stackSize);
+        if(status != 0) {
+            return status;
+        }
     }
 
     //-------------------------------------------------------------------------
     // Now get what we actually have...
     //
-    pthread_attr_getstacksize( &thread_attr, &defaultStackSize);
+    size_t size;
+    pthread_attr_getstacksize( &thread_attr, &size);
     if(status != 0) {
     return status;
     }
-
-    pd->stackSize = defaultStackSize;
+    pd->stackSize = size;
 
     //-------------------------------------------------------------------------
     // Prohibit the stack size from being changed.
@@ -635,18 +635,15 @@ int Thread::start() {
     status = pthread_create(&(pd->tid), &thread_attr,
                            ThreadPrivateActions::StartThread,
                            static_cast<void *>(this));
-                           
-    // wait till the thread has actually started.
-    pd->threadStartedBlock.block();
 
-    if(status != 0) {
-    return status;
+    if(status == 0) {
+        // wait till the thread has actually started.
+        pd->threadStartedBlock.block();
+
+        pd->idSet = true;
     }
 
-    pd->idSet = true;
-
-    return 0;
-
+    return status;
 }
 
 //-----------------------------------------------------------------------------

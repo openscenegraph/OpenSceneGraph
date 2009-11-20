@@ -13,6 +13,7 @@
 #include <osg/CopyOp>
 #include <osg/NodeVisitor>
 #include <osg/Object>
+#include <osg/State>
 #include <osg/Uniform>
 #include <osg/Vec3d>
 #include <osgTerrain/GeometryTechnique>
@@ -165,6 +166,11 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::GeometryTechnique)
 	          __void__setFilterMatrixAs__FilterType,
 	          "",
 	          "");
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0,
+	                      Properties::VIRTUAL,
+	                      __void__releaseGLObjects__osg_State_P1,
+	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",
+	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
 	I_SimpleProperty(float, FilterBias, 
 	                 __float__getFilterBias, 
 	                 __void__setFilterBias__float);

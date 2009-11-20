@@ -271,11 +271,10 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgViewer::ScreenCaptureHandler)
 	I_DeclaringFile("osgViewer/ViewerEventHandlers");
 	I_BaseType(osgGA::GUIEventHandler);
-	I_ConstructorWithDefaults1(IN, osgViewer::ScreenCaptureHandler::CaptureOperation *, defaultOperation, 0,
-	                           Properties::NON_EXPLICIT,
-	                           ____ScreenCaptureHandler__CaptureOperation_P1,
+	I_ConstructorWithDefaults2(IN, osgViewer::ScreenCaptureHandler::CaptureOperation *, defaultOperation, 0, IN, int, numFrames, 1,
+	                           ____ScreenCaptureHandler__CaptureOperation_P1__int,
 	                           "",
-	                           "");
+	                           " param numFrames >0: capture that number of frames. <0: capture all frames, call stopCapture() to stop it.  ");
 	I_Method1(void, setKeyEventTakeScreenShot, IN, int, key,
 	          Properties::NON_VIRTUAL,
 	          __void__setKeyEventTakeScreenShot__int,
@@ -284,6 +283,16 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::ScreenCaptureHandler)
 	I_Method0(int, getKeyEventTakeScreenShot,
 	          Properties::NON_VIRTUAL,
 	          __int__getKeyEventTakeScreenShot,
+	          "",
+	          "");
+	I_Method1(void, setKeyEventToggleContinuousCapture, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventToggleContinuousCapture__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventToggleContinuousCapture,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventToggleContinuousCapture,
 	          "",
 	          "");
 	I_Method1(void, setCaptureOperation, IN, osgViewer::ScreenCaptureHandler::CaptureOperation *, operation,
@@ -306,6 +315,26 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::ScreenCaptureHandler)
 	          __void__captureNextFrame__osgViewer_ViewerBase_R1,
 	          "Capture the given viewer's views on the next frame. ",
 	          "");
+	I_Method1(void, setFramesToCapture, IN, int, numFrames,
+	          Properties::NON_VIRTUAL,
+	          __void__setFramesToCapture__int,
+	          "Set the number of frames to capture. ",
+	          " param numFrames >0: capture that number of frames. <0: capture all frames, call stopCapture() to stop it.  ");
+	I_Method0(int, getFramesToCapture,
+	          Properties::NON_VIRTUAL,
+	          __int__getFramesToCapture,
+	          "Get the number of frames to capture. ",
+	          "");
+	I_Method0(void, startCapture,
+	          Properties::NON_VIRTUAL,
+	          __void__startCapture,
+	          "Start capturing any viewer(s) the handler is attached to at the end of the next frame. ",
+	          "");
+	I_Method0(void, stopCapture,
+	          Properties::NON_VIRTUAL,
+	          __void__stopCapture,
+	          "Stop capturing. ",
+	          "");
 	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
 	          Properties::VIRTUAL,
 	          __void__getUsage__osg_ApplicationUsage_R1,
@@ -317,12 +346,30 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::ScreenCaptureHandler)
 	                   __void__addCallbackToViewer__osgViewer_ViewerBase_R1,
 	                   "",
 	                   "");
+	I_ProtectedMethod1(void, removeCallbackFromViewer, IN, osgViewer::ViewerBase &, viewer,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__removeCallbackFromViewer__osgViewer_ViewerBase_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(osg::Camera *, findAppropriateCameraForCallback, IN, osgViewer::ViewerBase &, viewer,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __osg_Camera_P1__findAppropriateCameraForCallback__osgViewer_ViewerBase_R1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osgViewer::ScreenCaptureHandler::CaptureOperation *, CaptureOperation, 
 	                 __CaptureOperation_P1__getCaptureOperation, 
 	                 __void__setCaptureOperation__CaptureOperation_P1);
+	I_SimpleProperty(int, FramesToCapture, 
+	                 __int__getFramesToCapture, 
+	                 __void__setFramesToCapture__int);
 	I_SimpleProperty(int, KeyEventTakeScreenShot, 
 	                 __int__getKeyEventTakeScreenShot, 
 	                 __void__setKeyEventTakeScreenShot__int);
+	I_SimpleProperty(int, KeyEventToggleContinuousCapture, 
+	                 __int__getKeyEventToggleContinuousCapture, 
+	                 __void__setKeyEventToggleContinuousCapture__int);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgViewer::ScreenCaptureHandler::CaptureOperation)
@@ -342,7 +389,7 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgViewer::ScreenCaptureHandler::WriteToFile)
 	I_DeclaringFile("osgViewer/ViewerEventHandlers");
 	I_BaseType(osgViewer::ScreenCaptureHandler::CaptureOperation);
-	I_ConstructorWithDefaults3(IN, const std::string &, filename, , IN, const std::string &, extension, , IN, osgViewer::ScreenCaptureHandler::WriteToFile::SavePolicy, savePolicy, osgViewer::ScreenCaptureHandler::WriteToFile::OVERWRITE,
+	I_ConstructorWithDefaults3(IN, const std::string &, filename, , IN, const std::string &, extension, , IN, osgViewer::ScreenCaptureHandler::WriteToFile::SavePolicy, savePolicy, osgViewer::ScreenCaptureHandler::WriteToFile::SEQUENTIAL_NUMBER,
 	                           ____WriteToFile__C5_std_string_R1__C5_std_string_R1__SavePolicy,
 	                           "",
 	                           "");

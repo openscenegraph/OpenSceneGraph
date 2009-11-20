@@ -100,6 +100,8 @@ clear(void* dest, uint32_t size)
 		: "=&D" (dest)
 		: "r" (size >> 2), "r" (size & 3), "0" (dest)
 		: "eax", "ecx");
+#else
+	memset(dest, 0, size);
 #endif
 }
 

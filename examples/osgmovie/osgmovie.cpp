@@ -43,7 +43,7 @@ class MovieEventHandler : public osgGA::GUIEventHandler
 {
 public:
 
-    MovieEventHandler():_playToggle(true),_trackMouse(false) {}
+    MovieEventHandler():_trackMouse(false) {}
 
     void setMouseTracking(bool track) { _trackMouse = track; }
     bool getMouseTracking() const { return _trackMouse; }
@@ -116,7 +116,6 @@ protected:
     };
 
 
-    bool            _playToggle;
     bool            _trackMouse;
     ImageStreamList _imageStreamList;
 
@@ -211,17 +210,16 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                     itr!=_imageStreamList.end();
                     ++itr)
                 {
-                    _playToggle = !_playToggle;
-                    if ( _playToggle )
+                    osg::ImageStream::StreamStatus playToggle = (*itr)->getStatus();
+                    if (playToggle != osg::ImageStream::PLAYING)
                     {
-                        // playing, so pause
-                        std::cout<<"Play"<<std::endl;
+                        std::cout<< (*itr).get() << " Play"<<std::endl;
                         (*itr)->play();
                     }
                     else
                     {
                         // playing, so pause
-                        std::cout<<"Pause"<<std::endl;
+                        std::cout<< (*itr).get() << " Pause"<<std::endl;
                         (*itr)->pause();
                     }
                 }
@@ -233,7 +231,7 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                     itr!=_imageStreamList.end();
                     ++itr)
                 {
-                    std::cout<<"Restart"<<std::endl;
+                    std::cout<< (*itr).get() << " Restart"<<std::endl;
                     (*itr)->rewind();
                     (*itr)->play();
                 }
@@ -247,14 +245,50 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 {
                     if ( (*itr)->getLoopingMode() == osg::ImageStream::LOOPING)
                     {
-                        std::cout<<"Toggle Looping Off"<<std::endl;
+                        std::cout<< (*itr).get() << " Toggle Looping Off"<<std::endl;
                         (*itr)->setLoopingMode( osg::ImageStream::NO_LOOPING );
                     }
                     else
                     {
-                        std::cout<<"Toggle Looping On"<<std::endl;
+                        std::cout<< (*itr).get() << " Toggle Looping On"<<std::endl;
                         (*itr)->setLoopingMode( osg::ImageStream::LOOPING );
                     }
+                }
+                return true;
+            }
+            else if (ea.getKey()=='+')
+            {
+                for(ImageStreamList::iterator itr=_imageStreamList.begin();
+                    itr!=_imageStreamList.end();
+                    ++itr)
+                {
+                    double tm = (*itr)->getTimeMultiplier();
+                    tm += 0.1;
+                    (*itr)->setTimeMultiplier(tm);
+                    std::cout << (*itr).get() << " Increase speed rate "<< (*itr)->getTimeMultiplier() << std::endl;
+                }
+                return true;
+            }
+            else if (ea.getKey()=='-')
+            {
+                for(ImageStreamList::iterator itr=_imageStreamList.begin();
+                    itr!=_imageStreamList.end();
+                    ++itr)
+                {
+                    double tm = (*itr)->getTimeMultiplier();
+                    tm -= 0.1;
+                    (*itr)->setTimeMultiplier(tm);
+                    std::cout << (*itr).get() << " Decrease speed rate "<< (*itr)->getTimeMultiplier() << std::endl;
+                }
+                return true;
+            }
+            else if (ea.getKey()=='o')
+            {
+                for(ImageStreamList::iterator itr=_imageStreamList.begin();
+                    itr!=_imageStreamList.end();
+                    ++itr)
+                {
+                    std::cout<< (*itr).get() << " Frame rate  "<< (*itr)->getFrameRate() <<std::endl;
                 }
                 return true;
             }
@@ -272,6 +306,9 @@ void MovieEventHandler::getUsage(osg::ApplicationUsage& usage) const
     usage.addKeyboardMouseBinding("p","Play/Pause movie");
     usage.addKeyboardMouseBinding("r","Restart movie");
     usage.addKeyboardMouseBinding("l","Toggle looping of movie");
+    usage.addKeyboardMouseBinding("+","Increase speed of movie");
+    usage.addKeyboardMouseBinding("-","Decrease speed of movie");
+    usage.addKeyboardMouseBinding("o","Display frame rate of movie");
 }
 
 

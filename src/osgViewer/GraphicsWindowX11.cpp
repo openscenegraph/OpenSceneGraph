@@ -859,6 +859,12 @@ bool GraphicsWindowX11::createWindow()
     }
 
 
+    // Give window a class so that user preferences can be saved in the resource database.
+    XClassHint clH;
+    clH.res_name = (char *)"OSG";
+    clH.res_class = (char *)"osgViewer";
+    XSetClassHint( _display, _window, &clH);
+
     // This positions the window at _windowX, _windowY
     XSizeHints sh;
     sh.flags = 0;

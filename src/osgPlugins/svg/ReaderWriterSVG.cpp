@@ -65,7 +65,7 @@ class ReaderWriterSVG : public osgDB::ReaderWriter
                         std::stringstream ss1(op.substr(0, i));
                         std::stringstream ss2(op.substr(i+1, op.size()));
                         ss1 >> w;
-                        ss1 >> h;
+                        ss2 >> h;
                         if (w==0 || h==0){
                                 image = createImage(handle, dimensionData.width, dimensionData.height);
                         }

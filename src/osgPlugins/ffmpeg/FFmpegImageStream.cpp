@@ -130,6 +130,11 @@ void FFmpegImageStream::rewind()
     m_commands->push(CMD_REWIND);
 }
 
+void FFmpegImageStream::seek(double time) {
+    m_seek_time = time;
+    m_commands->push(CMD_SEEK);
+}
+
 
 
 void FFmpegImageStream::quit(bool waitForThreadToExit)
@@ -234,6 +239,10 @@ bool FFmpegImageStream::handleCommand(const Command cmd)
         cmdRewind();
         return true;
 
+    case CMD_SEEK:
+        cmdSeek(m_seek_time);
+        return true;
+
     case CMD_STOP:
         return false;
 
@@ -254,6 +263,8 @@ void FFmpegImageStream::cmdPlay()
 
         if (! m_decoder->video_decoder().isRunning())
             m_decoder->video_decoder().start();
+
+        m_decoder->resume();
     }
 
     _status = PLAYING;
@@ -265,7 +276,7 @@ void FFmpegImageStream::cmdPause()
 {
     if (_status == PLAYING)
     {
-
+        m_decoder->pause();
     }
 
     _status = PAUSED;
@@ -278,6 +289,10 @@ void FFmpegImageStream::cmdRewind()
     m_decoder->rewind();
 }
 
+void FFmpegImageStream::cmdSeek(double time) 
+{
+    m_decoder->seek(time);
+}
 
 
 void FFmpegImageStream::publishNewFrame(const FFmpegDecoderVideo &, void * user_data)

@@ -68,6 +68,9 @@ public:
 
     bool readNextPacket();
     void rewind();
+    void seek(double time);
+    void pause();
+    void resume();
 
     void loop(bool loop);
     bool loop() const;
@@ -84,8 +87,10 @@ protected:
     enum State
     {
         NORMAL,
+        PAUSE,
         END_OF_STREAM,
-        REWINDING
+        REWINDING,
+        SEEKING
     };
 
     typedef BoundedMessageQueue<FFmpegPacket> PacketQueue;
@@ -97,7 +102,10 @@ protected:
     bool readNextPacketNormal();
     bool readNextPacketEndOfStream();
     bool readNextPacketRewinding();
+    bool readNextPacketSeeking();
+    bool readNextPacketPause();
     void rewindButDontFlushQueues();
+    void seekButDontFlushQueues(double time);
 
     FormatContextPtr    m_format_context;
     AVStream *            m_audio_stream;

@@ -166,11 +166,17 @@ bool FFmpegDecoder::readNextPacket()
     case NORMAL:
         return readNextPacketNormal();
 
+    case PAUSE:
+        return false;
+
     case END_OF_STREAM:
         return readNextPacketEndOfStream();
 
     case REWINDING:
         return readNextPacketRewinding();
+
+    case SEEKING:
+        return readNextPacketSeeking();
 
     default:
         assert(false);
@@ -189,8 +195,32 @@ void FFmpegDecoder::rewind()
     rewindButDontFlushQueues();
 }
 
+void FFmpegDecoder::seek(double time) 
+{
+    m_pending_packet.clear();
 
+    flushAudioQueue();
+    flushVideoQueue();
+    seekButDontFlushQueues(time);
+}
 
+void FFmpegDecoder::pause() 
+{
+    m_pending_packet.clear();
+
+    flushAudioQueue();
+    flushVideoQueue();
+    m_state = PAUSE;
+}
+
+void FFmpegDecoder::resume() 
+{
+    m_pending_packet.clear();
+
+    flushAudioQueue();
+    flushVideoQueue();
+    m_state = NORMAL;
+}
 
 void FFmpegDecoder::findAudioStream()
 {
@@ -344,6 +374,29 @@ void FFmpegDecoder::rewindButDontFlushQueues()
         throw std::runtime_error("av_seek_frame failed()");
 
     m_state = REWINDING;
+}
+
+bool FFmpegDecoder::readNextPacketSeeking() 
+{
+    const FFmpegPacket packet(FFmpegPacket::PACKET_FLUSH);
+
+    if (m_audio_queue.timedPush(packet, 10) && m_video_queue.timedPush(packet, 10))
+        m_state = NORMAL;
+
+    return false;    
+}
+
+void FFmpegDecoder::seekButDontFlushQueues(double time)
+{
+    const AVRational AvTimeBaseQ = { 1, AV_TIME_BASE }; // = AV_TIME_BASE_Q
+
+    const int64_t pos = int64_t(m_clocks.getStartTime()+time * double(AV_TIME_BASE));
+    const int64_t seek_target = av_rescale_q(pos, AvTimeBaseQ, m_video_stream->time_base);
+
+    if (av_seek_frame(m_format_context.get(), m_video_index, seek_target, 0/*AVSEEK_FLAG_BYTE |*/ /*AVSEEK_FLAG_BACKWARD*/) < 0)
+        throw std::runtime_error("av_seek_frame failed()");
+
+    m_state = SEEKING;    
 }
 
 

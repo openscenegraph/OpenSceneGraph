@@ -363,6 +363,7 @@ FIND_PACKAGE(OurDCMTK)
 FIND_PACKAGE(OpenAL)
 FIND_PACKAGE(XUL)
 FIND_PACKAGE(FFmpeg)
+FIND_PACKAGE(DirectShow)
 FIND_PACKAGE(SDL)
 
 #use pkg-config to find various modues

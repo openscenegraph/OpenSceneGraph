@@ -14,6 +14,7 @@
 #include <osg/CopyOp>
 #include <osg/NodeVisitor>
 #include <osg/Object>
+#include <osg/State>
 #include <osgDB/ReaderWriter>
 #include <osgTerrain/Layer>
 #include <osgTerrain/Locator>
@@ -204,6 +205,11 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTile)
 	          __osg_BoundingSphere__computeBound,
 	          "Compute the bounding volume of the terrain by computing the union of the bounding volumes of all layers. ",
 	          "");
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0,
+	                      Properties::VIRTUAL,
+	                      __void__releaseGLObjects__osg_State_P1,
+	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",
+	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
 	I_StaticMethod1(void, setTileLoadedCallback, IN, osgTerrain::TerrainTile::TileLoadedCallback *, lc,
 	                __void__setTileLoadedCallback__TileLoadedCallback_P1_S,
 	                "",

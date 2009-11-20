@@ -499,7 +499,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::constructFrom3dsFile(Lib3dsFile
 
     ReaderObject reader;
 
-    reader._directory = options->getDatabasePathList().empty() ? osgDB::getFilePath(fileName) : options->getDatabasePathList().front();
+    reader._directory = ( options && !options->getDatabasePathList().empty() ) ? options->getDatabasePathList().front() : osgDB::getFilePath(fileName);
 
     osg::Group* group = new osg::Group;
     group->setName(fileName);

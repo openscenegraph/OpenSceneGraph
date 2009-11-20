@@ -72,29 +72,23 @@ Node* osgDB::readNodeFile(const std::string& filename,const Options* options)
     return NULL;
 }
 
-Node* osgDB::readNodeFiles(std::vector<std::string>& commandLine,const Options* options)
+Node* osgDB::readNodeFiles(std::vector<std::string>& fileList,const Options* options)
 {
     typedef std::vector<osg::Node*> NodeList;
     NodeList nodeList;
 
-    // note currently doesn't delete the loaded file entries from the command line yet...
-
-    for(std::vector<std::string>::iterator itr=commandLine.begin();
-        itr!=commandLine.end();
+    for(std::vector<std::string>::iterator itr=fileList.begin();
+        itr!=fileList.end();
         ++itr)
     {
-        if ((*itr)[0]!='-')
+        osg::Node *node = osgDB::readNodeFile( *itr , Registry::instance()->getOptions() );
+
+        if( node != (osg::Node *)0L )
         {
-            // not an option so assume string is a filename.
-            osg::Node *node = osgDB::readNodeFile( *itr , options );
-
-            if( node != (osg::Node *)0L )
-            {
-                if (node->getName().empty()) node->setName( *itr );
-                nodeList.push_back(node);
-            }
-
+            if (node->getName().empty()) node->setName( *itr );
+            nodeList.push_back(node);
         }
+
     }
     
     if (nodeList.empty())

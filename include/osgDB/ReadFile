@@ -109,14 +109,15 @@ inline osg::Node*  readNodeFile(const std::string& filename)
 
 /** Read an osg::Node subgraph from files, creating a osg::Group to contain the nodes if more
   * than one subgraph has been loaded.
-  * Use the Options object to control cache operations and file search paths in osgDB::Registry.*/
-extern OSGDB_EXPORT osg::Node* readNodeFiles(std::vector<std::string>& commandLine,const Options* options);
+  * Use the Options object to control cache operations and file search paths in osgDB::Registry.
+  * Does NOT ignore strings beginning with a dash '-' character. */
+extern OSGDB_EXPORT osg::Node* readNodeFiles(std::vector<std::string>& fileList,const Options* options);
 
 /** Read an osg::Node subgraph from files, creating a osg::Group to contain the nodes if more
   * than one subgraph has been loaded.*/
-inline osg::Node* readNodeFiles(std::vector<std::string>& commandLine)
+inline osg::Node* readNodeFiles(std::vector<std::string>& fileList)
 {
-    return readNodeFiles(commandLine,Registry::instance()->getOptions());
+    return readNodeFiles(fileList,Registry::instance()->getOptions());
 }
 
 

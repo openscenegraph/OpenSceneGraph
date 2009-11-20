@@ -27,13 +27,19 @@ MACRO(FIND_OSG_LIBRARY MYLIBRARY MYLIBRARYNAME)
         NAMES "${MYLIBRARYNAME}${CMAKE_DEBUG_POSTFIX}"
         PATHS
         ${OSG_DIR}/lib/Debug
+        ${OSG_DIR}/lib64/Debug
         ${OSG_DIR}/lib
+        ${OSG_DIR}/lib64
         $ENV{OSG_DIR}/lib/debug
+        $ENV{OSG_DIR}/lib64/debug
         $ENV{OSG_DIR}/lib
+        $ENV{OSG_DIR}/lib64
         $ENV{OSG_DIR}
         $ENV{OSGDIR}/lib
+        $ENV{OSGDIR}/lib64
         $ENV{OSGDIR}
         $ENV{OSG_ROOT}/lib
+        $ENV{OSG_ROOT}/lib64
         NO_DEFAULT_PATH
     )
 
@@ -58,13 +64,19 @@ MACRO(FIND_OSG_LIBRARY MYLIBRARY MYLIBRARYNAME)
         NAMES ${MYLIBRARYNAME}
         PATHS
         ${OSG_DIR}/lib/Release
+        ${OSG_DIR}/lib64/Release
         ${OSG_DIR}/lib
+        ${OSG_DIR}/lib64
         $ENV{OSG_DIR}/lib/Release
+        $ENV{OSG_DIR}/lib64/Release
         $ENV{OSG_DIR}/lib
+        $ENV{OSG_DIR}/lib64
         $ENV{OSG_DIR}
         $ENV{OSGDIR}/lib
+        $ENV{OSGDIR}/lib64
         $ENV{OSGDIR}
         $ENV{OSG_ROOT}/lib
+        $ENV{OSG_ROOT}/lib64
         NO_DEFAULT_PATH
     )
 

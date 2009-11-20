@@ -1,0 +1,125 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 2009 Tharsis Software 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+ *
+ * Authors:
+ *         Cedric Pinson <cedric.pinson@plopbyte.net>
+*/
+
+#ifndef DirectShowTexture
+#define DirectShowTexture 1
+
+#include <streams.h>
+#include <map>
+#include <osg/ImageStream>
+#include <osg/observer_ptr>
+#include <OpenThreads/Thread>
+#include <OpenThreads/Mutex>
+#include <OpenThreads/ScopedLock>
+
+//-----------------------------------------------------------------------------
+// Define GUID for Texture Renderer
+// {71771540-2017-11cf-AE26-0020AFD79767}
+//-----------------------------------------------------------------------------
+struct __declspec(uuid("{71771540-2017-11cf-ae26-0020afd79767}")) CLSID_TextureRenderer;
+
+class CTextureRenderer;
+
+class DirectShowImageStream : public osg::ImageStream
+{
+public:
+    typedef std::map<std::string,std::string> Options;
+
+protected:
+    osg::observer_ptr<CTextureRenderer> _renderer;
+    mutable OpenThreads::Mutex _mutex;
+    Options _options;
+    
+public:
+    DirectShowImageStream();
+    ~DirectShowImageStream();
+    DirectShowImageStream(const DirectShowImageStream & image, const osg::CopyOp & copyop = osg::CopyOp::SHALLOW_COPY);
+
+    META_Object(osgDirectShow, DirectShowImageStream);
+    void run();
+    bool openFile(const std::string& file);
+    bool openCaptureDevices();
+    void setOptions(const Options& map);
+    void play();
+    void pause();    
+    void rewind();
+    osg::ImageStream::StreamStatus getStatus();
+    void seek(double time);
+    double getLength() const;
+    double getFrameRate() const;
+    void setTimeMultiplier(double rate);
+    double getTimeMultiplier() const;
+    void quit(bool /*waitForThreadToExit*/ = true);
+    void stop();
+};
+
+
+//-----------------------------------------------------------------------------
+// CTextureRenderer Class Declarations
+//-----------------------------------------------------------------------------
+class CTextureRenderer : public CBaseVideoRenderer, public osg::Referenced
+{
+public:
+    IGraphBuilder*  _graphBuilder;          // GraphBuilder
+    IMediaControl*  _mediaControl;          // Media Control
+    IMediaSeeking*    _mediaSeeking;          // Media seeking
+    IMediaEvent*    _mediaEvent;          // Media Event
+    IBaseFilter*    _videoCaptureDevice;
+    IBaseFilter*    _fileSource;
+    IBaseFilter*    _soundOutputDevice;
+    IBaseFilter*    _soundCaptureDevice;
+    HRESULT _dropFrame;
+
+    CTextureRenderer(DirectShowImageStream* imageStream, HRESULT* valid);
+    ~CTextureRenderer();
+
+    void setFilename(const std::string& filename);
+    bool initBuildGraph();
+    bool initCaptureDevice();
+    bool openCaptureDevices(const DirectShowImageStream::Options& options);
+    bool openVideoCaptureDevice(const std::string& capture, int wantWidth, int wantHeight, double wantFps);
+    bool openSoundCaptureDevice(const std::string& capture, int nbChannels = 2);
+    
+    
+    bool openFile(const std::string& file);
+    bool startGraph();
+    void syncStreams(bool state);
+    bool setupOutputSoundDevice(ICreateDevEnum* devs);
+    void releaseRessources();
+    IGraphBuilder* getGraphBuilder() { return _graphBuilder; }
+    
+    HRESULT ShouldDrawSampleNow(IMediaSample *sample, REFERENCE_TIME *start, REFERENCE_TIME *stop);
+    bool StopFilters();
+
+    HRESULT CheckMediaType(const CMediaType *pmt );     // Format acceptable?
+    HRESULT SetMediaType(const CMediaType *pmt );       // Video format notification
+    HRESULT DoRenderSample(IMediaSample *pMediaSample); // New video sample
+   
+    int _width;
+    int _height;
+    int _pitch;   
+    std::string _videoCaptureDeviceName;
+    std::string _soundCaptureDeviceName;
+    std::string _soundOutputDeviceName;
+    std::string _filename;
+    const std::string& getVideoCaptureDeviceName() const { return _videoCaptureDeviceName; }
+    const std::string& getSoundOutputDeviceName() const { return _soundOutputDeviceName; }
+    const std::string& getSoundCaptureDeviceName() const { return _soundCaptureDeviceName; }
+    const std::string& getFilename() const { return _filename; }
+    osg::observer_ptr<DirectShowImageStream> _imageStream;
+};
+
+#endif

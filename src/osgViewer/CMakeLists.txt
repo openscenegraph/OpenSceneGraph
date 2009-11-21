@@ -53,6 +53,7 @@ IF(WIN32)
     ENDIF()
 
     SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS}
+        ${HEADER_PATH}/api/Win32/GraphicsHandleWin32
         ${HEADER_PATH}/api/Win32/GraphicsWindowWin32
         ${HEADER_PATH}/api/Win32/PixelBufferWin32
     )
@@ -84,6 +85,7 @@ ELSE()
     ELSEIF(${OSG_WINDOWING_SYSTEM} STREQUAL "Carbon")
         ADD_DEFINITIONS(-DUSE_DARWIN_CARBON_IMPLEMENTATION)
         SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} 
+            ${HEADER_PATH}/api/Carbon/GraphicsHandleCarbon
             ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon
             ${HEADER_PATH}/api/Carbon/PixelBufferCarbon
         )
@@ -109,6 +111,7 @@ ELSE()
         ENDIF()
 
         SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS}
+            ${HEADER_PATH}/api/X11/GraphicsHandleX11
             ${HEADER_PATH}/api/X11/GraphicsWindowX11
             ${HEADER_PATH}/api/X11/PixelBufferX11
         )
@@ -117,7 +120,7 @@ ELSE()
             GraphicsWindowX11.cpp 
             PixelBufferX11.cpp
         )
-
+        
         IF(OSGVIEWER_USE_XRANDR)
             ADD_DEFINITIONS(-DOSGVIEWER_USE_XRANDR)
             SET(LIB_PRIVATE_HEADERS ${LIB_PRIVATE_HEADERS} ${XRANDR_INCLUDE_DIRS} )

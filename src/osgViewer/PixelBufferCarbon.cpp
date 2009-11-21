@@ -80,19 +80,11 @@ bool PixelBufferCarbon::realizeImplementation()
     
     AGLContext sharedContext = NULL;
 
-    // get any shared GLX contexts    
-    GraphicsWindowCarbon* graphicsWindowCarbon = dynamic_cast<GraphicsWindowCarbon*>(_traits->sharedContext);
-    if (graphicsWindowCarbon) 
+    // get any shared AGL contexts    
+    GraphicsHandleCarbon* graphicsHandleCarbon = dynamic_cast<GraphicsHandleCarbon*>(_traits->sharedContext);
+    if (graphicsHandleCarbon) 
     {
-        sharedContext = graphicsWindowCarbon->getAGLContext();
-    }
-    else
-    {
-        PixelBufferCarbon* pixelBufferCarbon = dynamic_cast<PixelBufferCarbon*>(_traits->sharedContext);
-        if (pixelBufferCarbon)
-        {
-            sharedContext = pixelBufferCarbon->getAGLContext();
-        }
+        sharedContext = graphicsHandleCarbon->getAGLContext();
     }
     
     _context = aglCreateContext (_pixelformat, sharedContext);

@@ -693,22 +693,9 @@ void GraphicsWindowX11::init()
         }    
     }
 
-    Context sharedContextGLX = NULL;
-
-    // get any shared GLX contexts    
-    GraphicsWindowX11* graphicsWindowX11 = dynamic_cast<GraphicsWindowX11*>(_traits->sharedContext);
-    if (graphicsWindowX11) 
-    {
-        sharedContextGLX = graphicsWindowX11->getContext();
-    }
-    else
-    {
-        PixelBufferX11* pixelBufferX11 = dynamic_cast<PixelBufferX11*>(_traits->sharedContext);
-        if (pixelBufferX11 && pixelBufferX11->valid())
-        {
-            sharedContextGLX = pixelBufferX11->getContext();
-        }
-    }
+    // get any shared GLX contexts
+    GraphicsHandleX11* graphicsHandleX11 = dynamic_cast<GraphicsHandleX11*>(_traits->sharedContext);
+    Context sharedContext = graphicsHandleX11 ? graphicsHandleX11->getContext() : 0;
 
     #ifdef OSG_USE_EGL
 
@@ -774,7 +761,7 @@ void GraphicsWindowX11::init()
             };
         #endif
 
-        _context = eglCreateContext(_eglDisplay, eglConfig, NULL, contextAttribs);
+        _context = eglCreateContext(_eglDisplay, eglConfig, sharedContext, contextAttribs);
         if (_context == EGL_NO_CONTEXT)
         {
             osg::notify(osg::NOTICE)<<"GraphicsWindowX11::init() - eglCreateContext(..) failed."<<std::endl;
@@ -790,7 +777,7 @@ void GraphicsWindowX11::init()
 
     #else
         
-        _context = glXCreateContext( _display, _visualInfo, sharedContextGLX, True );
+        _context = glXCreateContext( _display, _visualInfo, sharedContext, True );
     
         if (!_context)
         {
@@ -989,7 +976,6 @@ bool GraphicsWindowX11::makeCurrentImplementation()
     #ifdef OSG_USE_EGL
         bool result = eglMakeCurrent(_eglDisplay, _eglSurface, _eglSurface, _context)==EGL_TRUE;
         checkEGLError("after eglMakeCurrent()");
-
         return result;
     #else
         return glXMakeCurrent( _display, _window, _context )==True;
@@ -1005,8 +991,9 @@ bool GraphicsWindowX11::releaseContextImplementation()
     }
 
     #ifdef OSG_USE_EGL
-        return eglMakeCurrent( _eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT )==EGL_TRUE;
+        bool result = eglMakeCurrent( _eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT )==EGL_TRUE;
         checkEGLError("after eglMakeCurrent() release");
+        return result;
     #else
         return glXMakeCurrent( _display, None, NULL )==True;
     #endif

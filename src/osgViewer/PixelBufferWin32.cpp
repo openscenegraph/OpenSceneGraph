@@ -445,9 +445,6 @@ using namespace osgViewer;
 
 
 PixelBufferWin32::PixelBufferWin32( osg::GraphicsContext::Traits* traits ):
-  _hwnd(0),
-  _hdc(0),
-  _hglrc(0),
   _initialized(false),
   _valid(false),
   _realized(false),
@@ -657,27 +654,15 @@ bool PixelBufferWin32::realizeImplementation()
 
     makeCurrentImplementation();
 
-    if (_traits->sharedContext)
+    if ( _traits->sharedContext )
     {
-        HGLRC hglrc = 0;
-
-        GraphicsWindowWin32* graphicsWindowWin32 = dynamic_cast<GraphicsWindowWin32*>(_traits->sharedContext);
-        if (graphicsWindowWin32) 
+        GraphicsHandleWin32* graphicsHandleWin32 = dynamic_cast<GraphicsHandleWin32*>(_traits->sharedContext);
+        if (graphicsHandleWin32) 
         {
-            hglrc = graphicsWindowWin32->getWGLContext();
-        }
-        else
-        {
-            PixelBufferWin32* pixelBufferWin32 = dynamic_cast<PixelBufferWin32*>(_traits->sharedContext);
-            if (pixelBufferWin32)
+            if ( !wglShareLists(graphicsHandleWin32->getWGLContext(), _hglrc) )
             {
-                hglrc = pixelBufferWin32->getWGLContext();
-            }
-        }
-
-        if ( !wglShareLists(hglrc, _hglrc) )
-        {
             osg::notify(osg::NOTICE) << "PixelBufferWin32::realizeImplementation, wglShareLists error: " << sysError() << std::endl;
+            }
         }
     }
 
@@ -757,15 +742,10 @@ bool PixelBufferWin32::makeContextCurrentImplementation( GraphicsContext* readCo
         return false;
     }
 
-    GraphicsWindowWin32* graphicsWindowWin32 = dynamic_cast<GraphicsWindowWin32*>(readContext);
-    if (graphicsWindowWin32) 
+    GraphicsHandleWin32* graphicsHandleWin32 = dynamic_cast<GraphicsHandleWin32*>(readContext);
+    if (graphicsHandleWin32) 
     {
-        return wgle->wglMakeContextCurrentARB(_hdc, graphicsWindowWin32->getHDC(), _hglrc);
-    }
-    PixelBufferWin32* pixelBufferWin32 = dynamic_cast<PixelBufferWin32*>(_traits->sharedContext);
-    if (pixelBufferWin32)
-    {
-        return wgle->wglMakeContextCurrentARB(_hdc, pixelBufferWin32->getHDC(), _hglrc);
+        return wgle->wglMakeContextCurrentARB(_hdc, graphicsHandleWin32->getHDC(), _hglrc);
     }
     return false;
 }

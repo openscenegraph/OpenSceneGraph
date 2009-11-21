@@ -19,18 +19,13 @@
 #ifndef OSGVIEWER_PIXELBUFFERWIN32
 #define OSGVIEWER_PIXELBUFFERWIN32 1
 
-#include <osgViewer/GraphicsWindow>
-
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT    0x0500
-#endif
-
-#include <windows.h>
+#include <osg/GraphicsContext>
+#include <osgViewer/api/Win32/GraphicsHandleWin32>
 
 namespace osgViewer
 {
 
-class OSGVIEWER_EXPORT PixelBufferWin32 : public osg::GraphicsContext
+class OSGVIEWER_EXPORT PixelBufferWin32 : public osg::GraphicsContext, public osgViewer::GraphicsHandleWin32
 {
     public:
 
@@ -62,24 +57,12 @@ class OSGVIEWER_EXPORT PixelBufferWin32 : public osg::GraphicsContext
 
         /** Swap the front and back buffers.*/
         virtual void swapBuffersImplementation();
-
-        /** Get native window.*/        
-        HWND getHWND() const { return _hwnd; }
-
-        HDC getHDC() const { return _hdc; }
-
-        /** Get native OpenGL graphics context.*/        
-        HGLRC getWGLContext() const { return _hglrc; }
-        
+       
         virtual void bindPBufferToTextureImplementation( GLenum /*buffer*/ );
         
     protected:
     
         void init();
-        
-        HWND            _hwnd;
-        HDC             _hdc;
-        HGLRC           _hglrc;
 
         bool            _initialized;
         bool            _valid;

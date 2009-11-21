@@ -1029,10 +1029,7 @@ osgViewer::GraphicsWindowWin32* Win32WindowingSystem::getGraphicsWindowFor( HWND
 //////////////////////////////////////////////////////////////////////////////
 
 GraphicsWindowWin32::GraphicsWindowWin32( osg::GraphicsContext::Traits* traits )
-: _hwnd(0),
-  _hdc(0),
-  _hglrc(0),
-  _currentCursor(0),
+: _currentCursor(0),
   _windowProcedure(0),
   _timeOfLastCheckEvents(-1.0),
   _screenOriginX(0),
@@ -1783,8 +1780,8 @@ bool GraphicsWindowWin32::realizeImplementation()
         
         if (_traits.valid() && _traits->sharedContext)
         {
-            GraphicsWindowWin32* sharedContextWin32 = dynamic_cast<GraphicsWindowWin32*>(_traits->sharedContext);
-            if (sharedContextWin32)
+            GraphicsHandleWin32* graphicsHandleWin32 = dynamic_cast<GraphicsHandleWin32*>(_traits->sharedContext);
+            if (graphicsHandleWin32)
             {
                 struct RestoreContext
                 {
@@ -1804,7 +1801,7 @@ bool GraphicsWindowWin32::realizeImplementation()
                     HDC        _hdc;
                     HGLRC    _hglrc;
                 } restoreContext;
-
+                
                 _realized = true;
                 bool result = makeCurrent();
                 _realized = false;
@@ -1813,7 +1810,7 @@ bool GraphicsWindowWin32::realizeImplementation()
                 {
                     return false;        
                 }
-                if (!wglShareLists(sharedContextWin32->getWGLContext(), getWGLContext()))
+                if (!wglShareLists(graphicsHandleWin32->getWGLContext(), getWGLContext()))
                 {
                     reportErrorForScreen("GraphicsWindowWin32::realizeImplementation() - Unable to share OpenGL context", _traits->screenNum, ::GetLastError());
                     return false;

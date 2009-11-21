@@ -22,12 +22,12 @@
 #if defined (__APPLE__) && (!__LP64__)
 
 #include <osgViewer/GraphicsWindow>
-#include <Carbon/Carbon.h>
-#include <AGL/agl.h>
+#include <osgViewer/api/Carbon/GraphicsHandleCarbon>
+
 namespace osgViewer
 {
 
-class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
+class GraphicsWindowCarbon : public osgViewer::GraphicsWindow, public osgViewer::GraphicsHandleCarbon
 {
     public:
 
@@ -137,9 +137,6 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
         /// install the standard os-eventhandler
         void installEventHandler();
         
-        /// get the AGL context
-        AGLContext getAGLContext() { return _context; }
-        
         // get the pixelformat
         AGLPixelFormat getAGLPixelFormat() { return _pixelFormat; }
         
@@ -159,7 +156,6 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow
 
         bool            _ownsWindow;
         WindowRef       _window;
-        AGLContext      _context;
         AGLPixelFormat  _pixelFormat;
         
         int             _windowTitleHeight;    

@@ -28,10 +28,8 @@ using namespace osgViewer;
 
 PixelBufferX11::PixelBufferX11(osg::GraphicsContext::Traits* traits)
   : _valid(false),
-    _display(0),
     _pbuffer(0),
     _visualInfo(0),
-    _context(0),
     _initialized(false),
     _realized(false),
     _useGLX1_3(false)
@@ -217,24 +215,11 @@ void PixelBufferX11::init()
         }    
     }
     
-    GLXContext sharedContextGLX = NULL;
+    // get any shared GLX contexts
+    GraphicsHandleX11* graphicsHandleX11 = dynamic_cast<GraphicsHandleX11*>(_traits->sharedContext);
+    Context sharedContext = graphicsHandleX11 ? graphicsHandleX11->getContext() : 0;
 
-    // get any shared GLX contexts    
-    GraphicsWindowX11* graphicsWindowX11 = dynamic_cast<GraphicsWindowX11*>(_traits->sharedContext);
-    if (graphicsWindowX11) 
-    {
-        sharedContextGLX = graphicsWindowX11->getContext();
-    }
-    else
-    {
-        PixelBufferX11* pixelBufferX11 = dynamic_cast<PixelBufferX11*>(_traits->sharedContext);
-        if (pixelBufferX11)
-        {
-            sharedContextGLX = pixelBufferX11->getContext();
-        }
-    }
-    
-    _context = glXCreateContext( _display, _visualInfo, sharedContextGLX, True );
+    _context = glXCreateContext( _display, _visualInfo, sharedContext, True );
 
     if (!_context)
     {

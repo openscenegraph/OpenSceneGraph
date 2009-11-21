@@ -398,18 +398,12 @@ bool GraphicsWindowCarbon::realizeImplementation()
     // create the context
     AGLContext sharedContextCarbon = NULL;
     
-    GraphicsWindowCarbon* graphicsWindowCarbon = dynamic_cast<GraphicsWindowCarbon*>(_traits->sharedContext);
-    if (graphicsWindowCarbon) 
+    GraphicsHandleCarbon* graphicsHandleCarbon = dynamic_cast<GraphicsHandleCarbon*>(_traits->sharedContext);
+    if (graphicsHandleCarbon) 
     {
-        sharedContextCarbon = graphicsWindowCarbon->getAGLContext();
+        sharedContextCarbon = graphicsHandleCarbon->getAGLContext();
     }
-    else
-    {
-        PixelBufferCarbon* pixelbuffer = dynamic_cast<PixelBufferCarbon*>(_traits->sharedContext);
-        if (pixelbuffer) {
-            sharedContextCarbon = pixelbuffer->getAGLContext();
-        }
-    }
+
     _context = aglCreateContext (_pixelFormat, sharedContextCarbon);
 
 

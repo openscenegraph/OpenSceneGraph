@@ -20,38 +20,23 @@
 #define OSGVIEWER_GRAPHICSWINDOWX11 1
 
 #include <osgViewer/GraphicsWindow>
-
-#define GLX_GLXEXT_PROTOTYPES  1
-
-#include <X11/X.h>
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-
-#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) 
-    #define OSG_USE_EGL
-    #include <EGL/egl.h>
-#else
-    #include <GL/glx.h>
-#endif
-
+#include <osgViewer/api/X11/GraphicsHandleX11>
 
 #include <string.h>
 
 namespace osgViewer
 {
 
-class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
+class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow, public osgViewer::GraphicsHandleX11
 {
     public:
 
         GraphicsWindowX11(osg::GraphicsContext::Traits* traits):
             _valid(false),
-            _display(0),
             _eventDisplay(0),
             _parent(0),
             _window(0),
             _visualInfo(0),
-            _context(0),
             #ifdef OSG_USE_EGL
             _eglDisplay(0),
             _eglSurface(0),
@@ -151,22 +136,12 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
     
         // X11 specific aces functions
 
-        Display* getDisplay() const { return _display; }
         Display* getEventDisplay() const { return _eventDisplay; }
         Display* getDisplayToUse() const ;
 
         
         Window& getParent() { return _parent; }
         Window& getWindow() { return _window; }
-
-
-        #ifdef OSG_USE_EGL
-        typedef EGLContext Context;
-        #else
-        typedef GLXContext Context;
-        #endif
-
-        Context& getContext() { return _context; }
 
         Cursor getCurrentCursor() { return _currentCursor; }
 
@@ -197,12 +172,10 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow
         void flushKeyEvents();
         
         bool            _valid;
-        Display*        _display;
         Display*        _eventDisplay;
         Window          _parent;
         Window          _window;
         XVisualInfo*    _visualInfo;
-        Context         _context;
 
         #ifdef OSG_USE_EGL
         EGLDisplay      _eglDisplay;

@@ -20,16 +20,12 @@
 #define OSGVIEWER_GRAPHICSWINDOWWIN32 1
 
 #include <osgViewer/GraphicsWindow>
-
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT    0x0500
-#endif
-#include <windows.h>
+#include <osgViewer/api/Win32/GraphicsHandleWin32>
 
 namespace osgViewer
 {
 
-class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow
+class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow, public osgViewer::GraphicsHandleWin32
 {
     public:
 
@@ -103,14 +99,6 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow
             HWND    _hwnd;
             bool   _installEventHandler;
         };
-
-        /** Get native window.*/        
-        HWND getHWND() const { return _hwnd; }
-
-        HDC getHDC() const { return _hdc; }
-
-        /** Get native OpenGL graphics context.*/        
-        HGLRC getWGLContext() const { return _hglrc; }
         
     protected:
     
@@ -139,8 +127,7 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow
                                               unsigned int& extendedStyle );
         
         bool setPixelFormat();
-        HGLRC createContextImplementation();
-
+        
         void adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol, unsigned int& modifierMask );
                 
         void transformMouseXY(float& x, float& y);
@@ -149,9 +136,6 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow
 
         HCURSOR getOrCreateCursor(MouseCursor mouseShape);
         
-        HWND            _hwnd;
-        HDC             _hdc;
-        HGLRC           _hglrc;
         HCURSOR         _currentCursor;
         
         WNDPROC         _windowProcedure;

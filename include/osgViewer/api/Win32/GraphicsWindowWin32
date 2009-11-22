@@ -107,6 +107,7 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow, p
         bool registerWindowProcedure();
         bool unregisterWindowProcedure();
         
+        HGLRC createContextImplementation();
         bool createWindow();
         bool setWindow( HWND handle );
         

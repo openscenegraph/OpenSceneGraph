@@ -28,6 +28,7 @@ class ReaderWriterIVE : public ReaderWriter
             supportsOption("useOriginalExternalReferences","Export option");
             supportsOption("TerrainMaximumErrorToSizeRatio=value","Export option that controls error matric used to determine terrain HieghtField storage precision.");
             supportsOption("noLoadExternalReferenceFiles","Import option");
+            supportsOption("OutputTextureFiles","Write out the texture images to file");
         }
     
         virtual const char* className() const { return "IVE Reader/Writer"; }
@@ -68,7 +69,7 @@ class ReaderWriterIVE : public ReaderWriter
             // code for setting up the database path so that internally referenced file are searched for on relative paths. 
             osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
-            
+
             osgDB::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
             return readNode(istream,local_opt.get());
         }
@@ -118,6 +119,9 @@ class ReaderWriterIVE : public ReaderWriter
             osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             if(local_opt->getDatabasePathList().empty())
                 local_opt->setDatabasePath(osgDB::getFilePath(fileName));
+
+            local_opt->setPluginStringData("filename",fileName);
+
             osgDB::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
             if (!fout) return WriteResult::ERROR_IN_WRITING_FILE;
             WriteResult result = writeImage(image, fout, local_opt.get());
@@ -134,6 +138,8 @@ class ReaderWriterIVE : public ReaderWriter
             osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
             if(local_opt->getDatabasePathList().empty())
                 local_opt->setDatabasePath(osgDB::getFilePath(fileName));
+
+            local_opt->setPluginStringData("filename",fileName);
 
             osgDB::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
             if (!fout) return WriteResult::ERROR_IN_WRITING_FILE;

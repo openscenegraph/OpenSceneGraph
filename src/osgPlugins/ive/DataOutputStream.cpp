@@ -123,7 +123,9 @@
 #include <osg/Notify>
 #include <osg/io_utils>
 #include <osgDB/FileUtils>
+#include <osgDB/FileNameUtils>
 #include <osgDB/fstream>
+#include <osgDB/WriteFile>
 
 #include <stdlib.h>
 #include <sstream>
@@ -142,9 +144,22 @@ DataOutputStream::DataOutputStream(std::ostream * ostream, const osgDB::ReaderWr
     _useOriginalExternalReferences = true;
     _maximumErrorToSizeRatio       = 0.001;
 
+    _outputTextureFiles = false;
+    _textureFileNameNumber = 0;
+
     _options = options;
 
     _compressionLevel = 0;
+
+    if (options) _filename = options->getPluginStringData("filename");
+
+    if (_filename.empty())
+    {
+        // initialize _filename to a unique identifier in case a real filename is not supplied
+        std::ostringstream filenameBuilder;
+        filenameBuilder << "file" << ostream; // use address of ostream to formulate unique filename
+        _filename = filenameBuilder.str();
+    }
 
     if (_options.get())
     {
@@ -157,19 +172,22 @@ DataOutputStream::DataOutputStream(std::ostream * ostream, const osgDB::ReaderWr
         } else if(optionsString.find("compressImageData")!=std::string::npos) {
             setIncludeImageMode(IMAGE_COMPRESS_DATA);
         }
-        osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setIncludeImageMode()=" << getIncludeImageMode() << std::endl;
+        osg::notify(osg::DEBUG_INFO) << "ive::DataOutputStream.setIncludeImageMode()=" << getIncludeImageMode() << std::endl;
 
         setIncludeExternalReferences(optionsString.find("inlineExternalReferencesInIVEFile")!=std::string::npos);
-        osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setIncludeExternalReferences()=" << getIncludeExternalReferences() << std::endl;
+        osg::notify(osg::DEBUG_INFO) << "ive::DataOutputStream.setIncludeExternalReferences()=" << getIncludeExternalReferences() << std::endl;
 
         setWriteExternalReferenceFiles(optionsString.find("noWriteExternalReferenceFiles")==std::string::npos);
-        osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setWriteExternalReferenceFiles()=" << getWriteExternalReferenceFiles() << std::endl;
+        osg::notify(osg::DEBUG_INFO) << "ive::DataOutputStream.setWriteExternalReferenceFiles()=" << getWriteExternalReferenceFiles() << std::endl;
 
         setUseOriginalExternalReferences(optionsString.find("useOriginalExternalReferences")!=std::string::npos);
-        osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream.setUseOriginalExternalReferences()=" << getUseOriginalExternalReferences() << std::endl;
+        osg::notify(osg::DEBUG_INFO) << "ive::DataOutputStream.setUseOriginalExternalReferences()=" << getUseOriginalExternalReferences() << std::endl;
+
+        setOutputTextureFiles(optionsString.find("OutputTextureFiles")!=std::string::npos);
+        osg::notify(osg::DEBUG_INFO) << "ive::DataOutputStream.setOutputTextureFiles()=" << getOutputTextureFiles() << std::endl;
 
         _compressionLevel =  (optionsString.find("compressed")!=std::string::npos) ? 1 : 0;
-        osg::notify(osg::DEBUG_INFO) << "ive::DataOutpouStream._compressionLevel=" << _compressionLevel << std::endl;
+        osg::notify(osg::DEBUG_INFO) << "ive::DataOutputStream._compressionLevel=" << _compressionLevel << std::endl;
 
         std::string::size_type terrainErrorPos = optionsString.find("TerrainMaximumErrorToSizeRatio=");
         if (terrainErrorPos!=std::string::npos)
@@ -1439,14 +1457,28 @@ void DataOutputStream::writeImage(IncludeImageMode mode, osg::Image *image)
                 ((ive::Image*)image)->write(this);
             break;
         case IMAGE_REFERENCE_FILE:
-            // Only include image name in stream
-            if (image && !(image->getFileName().empty())){
-                writeString(image->getFileName());
+        {
+            if (image)
+            {
+                // Only include image name in stream
+                std::string fileName = image->getFileName();
+                // Export an image, if requested
+                if (getOutputTextureFiles())
+                {
+                    if (fileName.empty())
+                    { // synthesize a new faux filename
+                        fileName = getTextureFileNameForOutput();
+                    }
+                    osgDB::writeImageFile(*image, fileName);
+                }
+                writeString(fileName);
             }
-            else{
+            else
+            {
                 writeString("");
             }
             break;
+        }
         case IMAGE_INCLUDE_FILE:
             // Include image file in stream
             if(image && !(image->getFileName().empty())) {
@@ -1838,6 +1870,24 @@ void DataOutputStream::writeObject(const osg::Object* object)
     // fallback, osg::Object type not supported, so can't write out
     writeInt(-1);
 }
+
+std::string DataOutputStream::getTextureFileNameForOutput()
+{
+    std::string fileName = osgDB::getNameLessExtension(_filename);
+    if (_textureFileNameNumber>0)
+    {
+        std::ostringstream o;
+        o << '_' << _textureFileNameNumber;
+        fileName += o.str();
+    }
+    
+    fileName += ".dds";
+    ++_textureFileNameNumber;
+    
+    return fileName;
+}
+
+
 
 void DataOutputStream::setExternalFileWritten(const std::string& filename, bool hasBeenWritten)
 {

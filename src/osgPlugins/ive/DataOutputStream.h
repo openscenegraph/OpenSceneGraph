@@ -130,6 +130,15 @@ public:
     void setUseOriginalExternalReferences(bool b) {_useOriginalExternalReferences=b;};
     bool getUseOriginalExternalReferences() const {return _useOriginalExternalReferences;};
 
+    // Set and get if export texture files during write
+    void setOutputTextureFiles(bool flag) { _outputTextureFiles = flag; }
+    bool getOutputTextureFiles() const { return _outputTextureFiles; }
+
+    // support code for OutputTextureFiles
+    virtual std::string getTextureFileNameForOutput();
+    void setFileName(std::string newFileName) {_filename = newFileName;}
+    std::string getFileName(void) const {return(_filename);}
+
     void setTerrainMaximumErrorToSizeRatio(double ratio) { _maximumErrorToSizeRatio = ratio; }
     double getTerrainMaximumErrorToSizeRatio() const { return _maximumErrorToSizeRatio; }
 
@@ -150,6 +159,7 @@ public:
 
     std::ostream* _ostream;
     std::ostream* _output_ostream;
+    std::string _filename; // not necessary, but optional for use in texture export
     
     std::stringstream _compressionStream;
     int _compressionLevel;
@@ -188,7 +198,10 @@ public:
     double              _maximumErrorToSizeRatio;
 
     IncludeImageMode    _includeImageMode;
-    
+
+    bool _outputTextureFiles;
+    unsigned int _textureFileNameNumber;
+
     osg::ref_ptr<const osgDB::ReaderWriter::Options> _options;
 
     typedef std::map<std::string, bool> ExternalFileWrittenMap;

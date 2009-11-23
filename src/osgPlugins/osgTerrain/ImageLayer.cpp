@@ -11,6 +11,7 @@
 #include <osgDB/Registry>
 #include <osgDB/Input>
 #include <osgDB/Output>
+#include <osgDB/WriteFile>
 #include <osgDB/ParameterOutput>
 
 #include <osgTerrain/TerrainTile>
@@ -64,10 +65,20 @@ bool ImageLayer_readLocalData(osg::Object& obj, osgDB::Input &fr)
 bool ImageLayer_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
 {
     const osgTerrain::ImageLayer& layer = static_cast<const osgTerrain::ImageLayer&>(obj);
+
+    std::string fileName = layer.getFileName();
     
-    if (!layer.getFileName().empty())
+    if (fw.getOutputTextureFiles())
     {
-        fw.indent()<<"file "<< layer.getFileName() << std::endl;
+        if (fileName.empty())
+        {
+            fileName = fw.getTextureFileNameForOutput();
+        }
+        osgDB::writeImageFile(*layer.getImage(), fileName);
+    }
+    if (!fileName.empty())
+    {
+        fw.indent()<<"file "<< fw.wrapString(fileName) << std::endl;
     }
 
     return true;

@@ -151,6 +151,16 @@ class Vec4d
             return *this;
         }
 
+        /** Unary multiply by vector. */
+        inline Vec4d& operator *= (const Vec4d& rhs)
+        {
+            _v[0]*=rhs[0];
+            _v[1]*=rhs[1];
+            _v[2]*=rhs[2];
+            _v[3]*=rhs[3];
+            return *this;
+        }
+
         /** Divide by scalar. */
         inline Vec4d operator / (value_type rhs) const
         {
@@ -164,6 +174,16 @@ class Vec4d
             _v[1]/=rhs;
             _v[2]/=rhs;
             _v[3]/=rhs;
+            return *this;
+        }
+
+        /** Unary divide by vector. */
+        inline Vec4d& operator /= (const Vec4d& rhs)
+        {
+            _v[0]/=rhs[0];
+            _v[1]/=rhs[1];
+            _v[2]/=rhs[2];
+            _v[3]/=rhs[3];
             return *this;
         }
 

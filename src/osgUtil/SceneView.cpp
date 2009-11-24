@@ -1329,7 +1329,7 @@ void SceneView::draw()
                     state->applyProjectionMatrix(0);
                     glMatrixMode(GL_PROJECTION);
                     glLoadIdentity();
-                    glOrtho(getViewport()->x(), getViewport()->width(), getViewport()->y(), getViewport()->height(), -1.0, 1.0);
+                    glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
                     glMatrixMode(GL_MODELVIEW);
                     glLoadIdentity();    
                     
@@ -1337,7 +1337,10 @@ void SceneView::draw()
                     getState()->applyMode(GL_LIGHTING,false);
                     getState()->applyMode(GL_DEPTH_TEST,false);
                     glStencilMask(~0u);
+                    glScissor( getViewport()->x(),  getViewport()->y(),  getViewport()->width(),  getViewport()->height() );
+                    glEnable( GL_SCISSOR_TEST );
                     glClear(GL_STENCIL_BUFFER_BIT);
+                    glDisable( GL_SCISSOR_TEST );
                     glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
                     glStencilFunc(GL_ALWAYS, 1, ~0u);
                     if(_displaySettings->getStereoMode() == osg::DisplaySettings::VERTICAL_INTERLACE)
@@ -1354,12 +1357,7 @@ void SceneView::draw()
                     }
                     getState()->applyMode(GL_POLYGON_STIPPLE,true);
                     glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-                    
-                    glRecti(static_cast<GLint>(getViewport()->x()),
-                            static_cast<GLint>(getViewport()->y()),
-                            static_cast<GLint>(getViewport()->width()),
-                            static_cast<GLint>(getViewport()->height()) );
-                            
+                    glRecti(0, 0, 1, 1);   
                     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
                     getState()->applyMode(GL_POLYGON_STIPPLE,false);
                     getState()->applyMode(GL_LIGHTING,true);

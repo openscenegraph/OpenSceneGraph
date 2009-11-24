@@ -296,10 +296,15 @@ BEGIN_VALUE_REFLECTOR(osgParticle::Particle)
 	          __float__getCurrentSize,
 	          "Get the current (interpolated) polygon size. Valid only after the first call to update(). ",
 	          "");
-	I_MethodWithDefaults3(void, setTextureTile, IN, int, sTile, , IN, int, tTile, , IN, int, numTiles, 0,
+	I_Method4(void, setTextureTileRange, IN, int, sTile, IN, int, tTile, IN, int, startTile, IN, int, endTile,
+	          Properties::NON_VIRTUAL,
+	          __void__setTextureTileRange__int__int__int__int,
+	          "Specify how the particle texture is tiled. ",
+	          "All tiles in the given range are sequentially displayed during the lifetime of the particle. When no range is given, all tiles are displayed during the lifetime. ");
+	I_MethodWithDefaults3(void, setTextureTile, IN, int, sTile, , IN, int, tTile, , IN, int, end, -1,
 	                      Properties::NON_VIRTUAL,
 	                      __void__setTextureTile__int__int__int,
-	                      "Specify how the particle texture is tiled. ",
+	                      "Same as above, range starts at 0 and ends at end. ",
 	                      "");
 	I_Method1(void, setPreviousParticle, IN, int, previous,
 	          Properties::NON_VIRTUAL,

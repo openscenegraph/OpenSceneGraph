@@ -116,15 +116,6 @@ class Vec3f
             return *this;
         }
 
-        /** Unary multiply by vector. */
-        inline Vec3f& operator *= (const Vec3f& rhs)
-        {
-            _v[0]*=rhs[0];
-            _v[1]*=rhs[1];
-            _v[2]*=rhs[2];
-            return *this;
-        }
-
         /** Divide by scalar. */
         inline const Vec3f operator / (value_type rhs) const
         {
@@ -137,15 +128,6 @@ class Vec3f
             _v[0]/=rhs;
             _v[1]/=rhs;
             _v[2]/=rhs;
-            return *this;
-        }
-
-        /** Unary divide by vector. */
-        inline Vec3f& operator /= (const Vec3f& rhs)
-        {
-            _v[0]/=rhs[0];
-            _v[1]/=rhs[1];
-            _v[2]/=rhs[2];
             return *this;
         }
 
@@ -217,6 +199,17 @@ class Vec3f
 
 };    // end of class Vec3f
 
+/** multiply by vector components. */
+inline Vec3f componentMultiply(const Vec3f& lhs, const Vec3f& rhs)
+{
+    return Vec3f(lhs[0]*rhs[0], lhs[1]*rhs[1], lhs[2]*rhs[2]);
+}
+
+/** divide rhs components by rhs vector components. */
+inline Vec3f componentDivide(const Vec3f& lhs, const Vec3f& rhs)
+{
+    return Vec3f(lhs[0]/rhs[0], lhs[1]/rhs[1], lhs[2]/rhs[2]);
+}
 
 const Vec3f X_AXIS(1.0,0.0,0.0);
 const Vec3f Y_AXIS(0.0,1.0,0.0);

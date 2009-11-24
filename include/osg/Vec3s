@@ -111,17 +111,6 @@ class Vec3s
             return Vec3s(_v[0]*rhs._v[0], _v[1]*rhs._v[1], _v[2]*rhs._v[2]);
         }
 
-        /** Unary vector multiply. Slightly more efficient because no temporary
-          * intermediate object.
-        */
-        inline Vec3s& operator *= (const Vec3s& rhs)
-        {
-            _v[0] *= rhs._v[0];
-            _v[1] *= rhs._v[1];
-            _v[2] *= rhs._v[2];
-            return *this;
-        }
-
         /** Binary vector add. */
         inline Vec3s operator + (const Vec3s& rhs) const
         {
@@ -161,6 +150,19 @@ class Vec3s
         }
 
 };    // end of class Vec3s
+
+
+/** multiply by vector components. */
+inline Vec3s componentMultiply(const Vec3s& lhs, const Vec3s& rhs)
+{
+    return Vec3s(lhs[0]*rhs[0], lhs[1]*rhs[1], lhs[2]*rhs[2]);
+}
+
+/** divide rhs components by rhs vector components. */
+inline Vec3s componentDivide(const Vec3s& lhs, const Vec3s& rhs)
+{
+    return Vec3s(lhs[0]/rhs[0], lhs[1]/rhs[1], lhs[2]/rhs[2]);
+}
 
 }    // end of namespace osg
 

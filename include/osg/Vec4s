@@ -129,18 +129,6 @@ class Vec4s
                          _v[2]*rhs._v[2], _v[3]*rhs._v[3]);
         }
 
-        /** Unary vector multiply. Slightly more efficient because no temporary
-          * intermediate object.
-        */
-        inline Vec4s& operator *= (const Vec4s& rhs)
-        {
-            _v[0] *= rhs._v[0];
-            _v[1] *= rhs._v[1];
-            _v[2] *= rhs._v[2];
-            _v[3] *= rhs._v[3];
-            return *this;
-        }
-
         /** Binary vector add. */
         inline Vec4s operator + (const Vec4s& rhs) const
         {
@@ -184,6 +172,19 @@ class Vec4s
         }
 
 };    // end of class Vec4s
+
+
+/** multiply by vector components. */
+inline Vec4s componentMultiply(const Vec4s& lhs, const Vec4s& rhs)
+{
+    return Vec4s(lhs[0]*rhs[0], lhs[1]*rhs[1], lhs[2]*rhs[2], lhs[3]*rhs[3]);
+}
+
+/** divide rhs components by rhs vector components. */
+inline Vec4s componentDivide(const Vec4s& lhs, const Vec4s& rhs)
+{
+    return Vec4s(lhs[0]/rhs[0], lhs[1]/rhs[1], lhs[2]/rhs[2], lhs[3]/rhs[3]);
+}
 
 }    // end of namespace osg
 

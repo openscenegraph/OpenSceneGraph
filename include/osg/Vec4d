@@ -151,16 +151,6 @@ class Vec4d
             return *this;
         }
 
-        /** Unary multiply by vector. */
-        inline Vec4d& operator *= (const Vec4d& rhs)
-        {
-            _v[0]*=rhs[0];
-            _v[1]*=rhs[1];
-            _v[2]*=rhs[2];
-            _v[3]*=rhs[3];
-            return *this;
-        }
-
         /** Divide by scalar. */
         inline Vec4d operator / (value_type rhs) const
         {
@@ -174,16 +164,6 @@ class Vec4d
             _v[1]/=rhs;
             _v[2]/=rhs;
             _v[3]/=rhs;
-            return *this;
-        }
-
-        /** Unary divide by vector. */
-        inline Vec4d& operator /= (const Vec4d& rhs)
-        {
-            _v[0]/=rhs[0];
-            _v[1]/=rhs[1];
-            _v[2]/=rhs[2];
-            _v[3]/=rhs[3];
             return *this;
         }
 
@@ -297,6 +277,18 @@ inline Vec4d::value_type operator * (const Vec4d& lhs,const Vec3f& rhs)
 inline Vec4d::value_type operator * (const Vec4f& lhs,const Vec3d& rhs)
 {
     return lhs[0]*rhs[0]+lhs[1]*rhs[1]+lhs[2]*rhs[2]+lhs[3];
+}
+
+/** multiply by vector components. */
+inline Vec4d componentMultiply(const Vec4d& lhs, const Vec4d& rhs)
+{
+    return Vec4d(lhs[0]*rhs[0], lhs[1]*rhs[1], lhs[2]*rhs[2], lhs[3]*rhs[3]);
+}
+
+/** divide rhs components by rhs vector components. */
+inline Vec4d componentDivide(const Vec4d& lhs, const Vec4d& rhs)
+{
+    return Vec4d(lhs[0]/rhs[0], lhs[1]/rhs[1], lhs[2]/rhs[2], lhs[3]/rhs[3]);
 }
 
 }    // end of namespace osg

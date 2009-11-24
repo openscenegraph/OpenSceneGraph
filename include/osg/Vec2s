@@ -98,13 +98,6 @@ class Vec2s
             return Vec2s(_v[0]*rhs._v[0], _v[1]*rhs._v[1]);
         }
         
-        inline Vec2s& operator *= (const Vec2s& rhs)
-        {
-            _v[0] *= rhs._v[0];
-            _v[1] *= rhs._v[1];
-            return *this;
-        }
-        
         inline Vec2s operator + (const Vec2s& rhs) const
         {
             return Vec2s(_v[0]+rhs._v[0], _v[1]+rhs._v[1]);
@@ -137,6 +130,19 @@ class Vec2s
         
 
 };    // end of class Vec2s
+
+
+/** multiply by vector components. */
+inline Vec2s componentMultiply(const Vec2s& lhs, const Vec2s& rhs)
+{
+    return Vec2s(lhs[0]*rhs[0], lhs[1]*rhs[1]);
+}
+
+/** divide rhs components by rhs vector components. */
+inline Vec2s componentDivide(const Vec2s& lhs, const Vec2s& rhs)
+{
+    return Vec2s(lhs[0]/rhs[0], lhs[1]/rhs[1]);
+}
 
 }    // end of namespace osg
 #endif

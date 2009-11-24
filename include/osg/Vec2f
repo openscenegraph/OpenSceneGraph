@@ -91,14 +91,6 @@ class Vec2f
             return *this;
         }
 
-        /** Unary multiply by vector. */
-        inline Vec2f& operator *= (const Vec2f& rhs)
-        {
-            _v[0]*=rhs[0];
-            _v[1]*=rhs[1];
-            return *this;
-        }
-
         /** Divide by scalar. */
         inline const Vec2f operator / (value_type rhs) const
         {
@@ -110,14 +102,6 @@ class Vec2f
         {
             _v[0]/=rhs;
             _v[1]/=rhs;
-            return *this;
-        }
-
-        /** Unary divide by vector. */
-        inline Vec2f& operator /= (const Vec2f& rhs)
-        {
-            _v[0]/=rhs[0];
-            _v[1]/=rhs[1];
             return *this;
         }
 
@@ -185,6 +169,18 @@ class Vec2f
         }
         
 };    // end of class Vec2f
+
+/** multiply by vector components. */
+inline Vec2f componentMultiply(const Vec2f& lhs, const Vec2f& rhs)
+{
+    return Vec2f(lhs[0]*rhs[0], lhs[1]*rhs[1]);
+}
+
+/** divide rhs components by rhs vector components. */
+inline Vec2f componentDivide(const Vec2f& lhs, const Vec2f& rhs)
+{
+    return Vec2f(lhs[0]/rhs[0], lhs[1]/rhs[1]);
+}
 
 }    // end of namespace osg
 #endif

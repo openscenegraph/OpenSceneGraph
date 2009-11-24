@@ -323,6 +323,121 @@ osgParticle::ParticleSystem *create_complex_particle_system(osg::Group *root)
 }
 
 
+
+//////////////////////////////////////////////////////////////////////////////
+// ANIMATED PARTICLE SYSTEM CREATION
+//////////////////////////////////////////////////////////////////////////////
+
+
+osgParticle::ParticleSystem *create_animated_particle_system(osg::Group *root)
+{
+
+    // Now we will create a particle system that uses two emitters to 
+    // display two animated particles, one showing an explosion, the other
+    // a smoke cloud. A particle system can only use one texture, so
+    // the animations for both particles are stored in a single bitmap.
+    // The frames of the animation are stored in tiles. For each particle
+    // template, the start and end tile of their animation have to be given.
+    // The example file used here has 64 tiles, stored in eight rows with
+    // eight images each.
+
+    // First create a prototype for the explosion particle.
+    osgParticle::Particle pexplosion;
+
+    // The frames of the explosion particle are played from birth to
+    // death of the particle. So if lifetime is one second, all 16 images 
+    // of the particle are shown in this second.
+    pexplosion.setLifeTime(1);
+
+    // some other particle properties just as in the last example.
+    pexplosion.setSizeRange(osgParticle::rangef(0.75f, 3.0f));
+    pexplosion.setAlphaRange(osgParticle::rangef(0.5f, 1.0f));
+    pexplosion.setColorRange(osgParticle::rangev4(
+        osg::Vec4(1, 1, 1, 1), 
+        osg::Vec4(1, 1, 1, 1)));
+    pexplosion.setRadius(0.05f);
+    pexplosion.setMass(0.05f);
+
+    // This command sets the animation tiles to be shown for the particle.
+    // The first two parameters define the tile layout of the texture image.
+    // 8, 8 means the texture has eight rows of tiles with eight columns each.
+    // 0, 15 defines the start and end tile 
+    pexplosion.setTextureTileRange(8, 8, 0, 15);
+
+    // The smoke particle is just the same, only plays another tile range.
+    osgParticle::Particle psmoke = pexplosion;
+    psmoke.setTextureTileRange(8, 8, 32, 45);
+
+    // Create a single particle system for both particle types
+    osgParticle::ParticleSystem *ps = new osgParticle::ParticleSystem;
+
+    // Assign the tiled texture
+    ps->setDefaultAttributes("Images/fireparticle8x8.png", false, false);
+
+    // Create two emitters, one for the explosions, one for the smoke balls.
+    osgParticle::ModularEmitter *emitter1 = new osgParticle::ModularEmitter;
+    emitter1->setParticleSystem(ps);
+    emitter1->setParticleTemplate(pexplosion);
+
+    osgParticle::ModularEmitter *emitter2 = new osgParticle::ModularEmitter;
+    emitter2->setParticleSystem(ps);
+    emitter2->setParticleTemplate(psmoke);
+
+    // create a counter each. We could reuse the counter for both emitters, but
+    // then we could not control the ratio of smoke balls to explosions
+    osgParticle::RandomRateCounter *counter1 = new osgParticle::RandomRateCounter;
+    counter1->setRateRange(10, 10);
+    emitter1->setCounter(counter1);
+
+    osgParticle::RandomRateCounter *counter2 = new osgParticle::RandomRateCounter;
+    counter2->setRateRange(3, 4);
+    emitter2->setCounter(counter2);
+
+    // setup a single placer for both emitters.
+    osgParticle::SectorPlacer *placer = new osgParticle::SectorPlacer;
+    placer->setCenter(-8, 0, 0);
+    placer->setRadiusRange(2.5, 5);
+    placer->setPhiRange(0, 2 * osg::PI);    // 360° angle to make a circle
+    emitter1->setPlacer(placer);
+    emitter2->setPlacer(placer);
+
+    // the shooter is reused for both emitters
+    osgParticle::RadialShooter *shooter = new osgParticle::RadialShooter;
+    shooter->setInitialSpeedRange(0, 0);
+
+    // give particles a little spin
+    shooter->setInitialRotationalSpeedRange(osgParticle::rangev3(
+       osg::Vec3(0, 0, -1),
+       osg::Vec3(0, 0, 1)));
+    emitter1->setShooter(shooter);
+    emitter2->setShooter(shooter);
+
+    // add both emitters to the scene graph
+    root->addChild(emitter1);
+    root->addChild(emitter2);
+   
+    // create a program, just as before
+    osgParticle::ModularProgram *program = new osgParticle::ModularProgram;
+    program->setParticleSystem(ps);
+
+    // create an operator that moves the particles upwards
+    osgParticle::AccelOperator *op1 = new osgParticle::AccelOperator;
+    op1->setAcceleration(osg::Vec3(0, 0, 2.0f));
+    program->addOperator(op1);  
+
+    // add the program to the scene graph
+    root->addChild(program);
+
+    // create a Geode to contain our particle system.
+    osg::Geode *geode = new osg::Geode;
+    geode->addDrawable(ps);
+
+    // add the geode to the scene graph.
+    root->addChild(geode);
+
+    return ps;
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // MAIN SCENE GRAPH BUILDING FUNCTION
 //////////////////////////////////////////////////////////////////////////////
@@ -341,6 +456,7 @@ void build_world(osg::Group *root)
 
     osgParticle::ParticleSystem *ps1 = create_simple_particle_system(root);
     osgParticle::ParticleSystem *ps2 = create_complex_particle_system(root);
+    osgParticle::ParticleSystem *ps3 = create_animated_particle_system(root);
 
     // Now that the particle systems and all other related objects have been
     // created, we have to add an "updater" node to the scene graph. This node
@@ -349,6 +465,7 @@ void build_world(osg::Group *root)
     osgParticle::ParticleSystemUpdater *psu = new osgParticle::ParticleSystemUpdater;
     psu->addParticleSystem(ps1);
     psu->addParticleSystem(ps2);
+    psu->addParticleSystem(ps3);
 
     // add the updater node to the scene graph
     root->addChild(psu);

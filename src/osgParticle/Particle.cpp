@@ -45,7 +45,8 @@ osgParticle::Particle::Particle()
     _current_alpha(0),
     _s_tile(1.0f),
     _t_tile(1.0f),
-    _num_tile(1),
+    _start_tile(0),
+    _end_tile(0),
     _cur_tile(-1),
     _s_coord(0.0f),
     _t_coord(0.0f),
@@ -79,7 +80,7 @@ bool osgParticle::Particle::update(double dt)
     }
 
     //Compute the current texture tile based on our normalized age
-    int currentTile = static_cast<int>(x * _num_tile);
+    int currentTile = _start_tile + static_cast<int>(x * getNumTiles());
     
     //If the current texture tile is different from previous, then compute new texture coords
     if(currentTile != _cur_tile)

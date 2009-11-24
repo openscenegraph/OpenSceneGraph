@@ -384,18 +384,6 @@ BEGIN_OBJECT_REFLECTOR(osgText::Text)
 	                    __float__bilinearInterpolate__float__float__float__float__float__float__float__float__float__float,
 	                    "",
 	                    "");
-	I_ProtectedMethod2(void, convertHsvToRgb, IN, float, hsv, IN, float, rgb,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::CONST,
-	                   __void__convertHsvToRgb__float__float,
-	                   "",
-	                   "");
-	I_ProtectedMethod2(void, convertRgbToHsv, IN, float, rgb, IN, float, hsv,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::CONST,
-	                   __void__convertRgbToHsv__float__float,
-	                   "",
-	                   "");
 	I_SimpleProperty(const osg::Vec4 &, BackdropColor, 
 	                 __C5_osg_Vec4_R1__getBackdropColor, 
 	                 __void__setBackdropColor__C5_osg_Vec4_R1);

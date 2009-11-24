@@ -427,7 +427,7 @@ WGLExtensions *WGLExtensions::instance()
         {
             osg::ref_ptr<TemporaryWindow> tempWin= new TemporaryWindow;
             tempWin->makeCurrent();
-            _instances[0] = new WGLExtensions;
+            _instances[HGLRC(0)] = new WGLExtensions;
         }
         else
         {

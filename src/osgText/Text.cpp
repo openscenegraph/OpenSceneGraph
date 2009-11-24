@@ -1064,17 +1064,6 @@ void Text::computeColorGradientsOverall() const
     float max_x = FLT_MIN;
     float max_y = FLT_MIN;
 
-    float rgb_q11[3];
-    float hsv_q11[3];
-    float rgb_q12[3];
-    float hsv_q12[3];
-    float rgb_q21[3];
-    float hsv_q21[3];
-    float rgb_q22[3];
-    float hsv_q22[3];
-
-    float rgb[3];
-    float hsv[3];
     unsigned int i;
 
     for(TextureGlyphQuadMap::const_iterator const_titr=_textureGlyphQuadMap.begin();
@@ -1107,36 +1096,6 @@ void Text::computeColorGradientsOverall() const
         }
     }
 
-    rgb_q11[0] = _colorGradientBottomLeft[0];
-    rgb_q11[1] = _colorGradientBottomLeft[1];
-    rgb_q11[2] = _colorGradientBottomLeft[2];
-
-    rgb_q12[0] = _colorGradientTopLeft[0];
-    rgb_q12[1] = _colorGradientTopLeft[1];
-    rgb_q12[2] = _colorGradientTopLeft[2];
-
-    rgb_q21[0] = _colorGradientBottomRight[0];
-    rgb_q21[1] = _colorGradientBottomRight[1];
-    rgb_q21[2] = _colorGradientBottomRight[2];
-
-    rgb_q22[0] = _colorGradientTopRight[0];
-    rgb_q22[1] = _colorGradientTopRight[1];
-    rgb_q22[2] = _colorGradientTopRight[2];
-
-    // for linear interpolation to look correct 
-    // for colors and imitate what OpenGL does,
-    // we need to convert over to Hue-Saturation-Value
-    // and linear interpolate in that space.
-    // HSV will interpolate through the color spectrum.
-    // Now that I think about this, perhaps we could
-    // extend this to use function pointers or something
-    // so users may specify their own color interpolation
-    // scales such as Intensity, or Heated Metal, etc.
-    convertRgbToHsv(rgb_q11, hsv_q11);
-    convertRgbToHsv(rgb_q12, hsv_q12);
-    convertRgbToHsv(rgb_q21, hsv_q21);
-    convertRgbToHsv(rgb_q22, hsv_q22);
-
     for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
         titr!=_textureGlyphQuadMap.end();
         ++titr)
@@ -1153,43 +1112,43 @@ void Text::computeColorGradientsOverall() const
 
         for(i=0;i<numCoords;++i)
         {
-            float hue = bilinearInterpolate(
+            float red = bilinearInterpolate(
                 min_x,
                 max_x,
                 min_y,
                 max_y,
                 coords2[i].x(),
                 coords2[i].y(),
-                hsv_q11[0],
-                hsv_q12[0],
-                hsv_q21[0],
-                hsv_q22[0]
+                _colorGradientBottomLeft[0],
+                _colorGradientTopLeft[0],
+                _colorGradientBottomRight[0],
+                _colorGradientTopRight[0]
             );
 
-            float saturation = bilinearInterpolate(
+            float green = bilinearInterpolate(
                 min_x,
                 max_x,
                 min_y,
                 max_y,
                 coords2[i].x(),
                 coords2[i].y(),
-                hsv_q11[1],
-                hsv_q12[1],
-                hsv_q21[1],
-                hsv_q22[1]
+                _colorGradientBottomLeft[1],
+                _colorGradientTopLeft[1],
+                _colorGradientBottomRight[1],
+                _colorGradientTopRight[1]
             );
 
-            float value = bilinearInterpolate(
+            float blue = bilinearInterpolate(
                 min_x,
                 max_x,
                 min_y,
                 max_y,
                 coords2[i].x(),
                 coords2[i].y(),
-                hsv_q11[2],
-                hsv_q12[2],
-                hsv_q21[2],
-                hsv_q22[2]
+                _colorGradientBottomLeft[2],
+                _colorGradientTopLeft[2],
+                _colorGradientBottomRight[2],
+                _colorGradientTopRight[2]
             );
             // Alpha does not convert to HSV            
             float alpha = bilinearInterpolate(
@@ -1205,12 +1164,7 @@ void Text::computeColorGradientsOverall() const
                 _colorGradientTopRight[3]
             );                                    
 
-            hsv[0] = hue;
-            hsv[1] = saturation;
-            hsv[2] = value;
-            // Convert back to RGB
-            convertHsvToRgb(hsv, rgb);
-            colorCoords[i] = osg::Vec4(rgb[0],rgb[1],rgb[2],alpha);
+            colorCoords[i] = osg::Vec4(red,green,blue,alpha);
         }
     }
 }
@@ -1617,191 +1571,6 @@ float Text::bilinearInterpolate(float x1, float x2, float y1, float y2, float x,
         + ((q12 / ((x2-x1)*(y2-y1))) * (x2-x)*(y-y1))
         + ((q22 / ((x2-x1)*(y2-y1))) * (x-x1)*(y-y1))
     );
-}
-
-
-/**
- ** routines to convert between RGB and HSV
- **
- ** Reference:  Foley, van Dam, Feiner, Hughes,
- **        "Computer Graphics Principles and Practices,"
- **        Additon-Wesley, 1990, pp592-593.
- **/       
-/*
- *  FUNCTION
- *    HsvRgb( hsv, rgb )
- *
- *  DESCRIPTION
- *    convert a hue-saturation-value into a red-green-blue value
- *
- *    NOTE
- *    Array sizes are 3
- *    Values are between 0.0 and 1.0
- */
-
-void Text::convertHsvToRgb( float hsv[], float rgb[] ) const
-{
-    float h, s, v;            /* hue, sat, value        */
-    /*    double delta;    */        /* change in color value    */
-    float r, g, b;            /* red, green, blue        */
-    float i, f, p, q, t;        /* interim values        */
-
-
-    /* guarantee valid input:                    */
-
-    h = hsv[0] / 60.f;
-    while( h >= 6.f )    h -= 6.f;
-    while( h <  0.f )     h += 6.f;
-
-    s = hsv[1];
-    if( s < 0.f )
-        s = 0.f;
-    if( s > 1.f )
-        s = 1.f;
-
-    v = hsv[2];
-    if( v < 0.f )
-        v = 0.f;
-    if( v > 1.f )
-        v = 1.f;
-
-
-    /* if sat==0, then is a gray:                    */
-
-    if( s == 0.0f )
-    {
-        rgb[0] = rgb[1] = rgb[2] = v;
-        return;
-    }
-
-
-    /* get an rgb from the hue itself:                */
-
-    i = floor( h );
-    f = h - i;
-    p = v * ( 1.f - s );
-    q = v * ( 1.f - s*f );
-    t = v * ( 1.f - ( s * (1.f-f) ) );
-
-    switch( (int) i )
-    {
-        case 0:
-            r = v;    g = t;    b = p;
-            break;
-
-        case 1:
-            r = q;    g = v;    b = p;
-            break;
-
-        case 2:
-            r = p;    g = v;    b = t;
-            break;
-
-        case 3:
-            r = p;    g = q;    b = v;
-            break;
-
-        case 4:
-            r = t;    g = p;    b = v;
-            break;
-
-        case 5:
-            r = v;    g = p;    b = q;
-            break;
-
-        default:
-            /* never happens? */
-            r = 0;  g = 0;  b = 0;
-            break;
-    }
-
-
-    rgb[0] = r;
-    rgb[1] = g;
-    rgb[2] = b;
-
-}
-
-/*
- *  FUNCTION
- *    RgbHsv
- *
- *  DESCRIPTION
- *    convert a red-green-blue value into hue-saturation-value
- *
- *    NOTE
- *    Array sizes are 3
- *    Values are between 0.0 and 1.0
- */
-
-void Text::convertRgbToHsv( float rgb[], float hsv[] ) const
-{
-    float r, g, b;            /* red, green, blue        */
-    float min, max;            /* min and max rgb values    */
-    float fmin, fmax, diff;        /* min, max, and range of rgb vals */
-    float hue, sat, value;        /* h s v            */
-    float cr, cg, cb;        /* coefficients for computing hue */
-
-
-    /* determine min and max color primary values:            */
-
-    r = rgb[0];    g = rgb[1];    b = rgb[2];
-    min = r;    max = r;
-    if( g < min ) min = g;
-    if( g > max ) max = g;
-    if( b < min ) min = b;
-    if( b > max ) max = b;
-
-    fmin = min;
-    fmax = max;
-    diff = fmax - fmin;
-
-
-    /* get value and saturation:                    */
-
-    value = fmax;
-    if( max == 0.f )
-        sat = 0.0f;
-    else
-        sat = diff/fmax;
-
-
-
-    /* compute hue:                            */
-
-    if( sat == 0.0f )
-        hue = 0.0f;
-    else
-    {
-        float inv_diff = 1.0f / diff;
-        cr = ( fmax-r ) * inv_diff;
-        cg = ( fmax-g ) * inv_diff;
-        cb = ( fmax-b ) * inv_diff;
-
-        if( max == r ) 
-            hue =      (g-b) * inv_diff;
-        else if( max == g ) 
-            hue = 2.f + (b-r) * inv_diff;
-        else if( max == b ) 
-            hue = 4.f + (r-g) * inv_diff;
-        else
-            hue = 0.0f;
-    }
-
-
-    hue *= 60.0f;
-    if( hue < 0.0f )
-        hue += 360.0f;
-    if( hue > 360.0f )
-        hue -= 360.0f;
-
-
-    /* store output values:                        */
-
-    hsv[0] = hue;
-    hsv[1] = sat;
-    hsv[2] = value;
-
 }
 
 void Text::drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, const osg::Vec4& colorMultiplier) const

@@ -1626,8 +1626,10 @@ void Texture::applyTexParameters(GLenum target, State& state) const
         }
     }
 
-    // integer texture are not supported by the shadow
-    if (extensions->isShadowSupported() && (target == GL_TEXTURE_2D || target == GL_TEXTURE_RECTANGLE) &&
+    // integer textures are not supported by the shadow
+    // GL_TEXTURE_1D_ARRAY_EXT could be included in the check below but its not yet implemented in OSG
+    if (extensions->isShadowSupported() && 
+        (target == GL_TEXTURE_2D || target == GL_TEXTURE_1D || target == GL_TEXTURE_RECTANGLE || target == GL_TEXTURE_CUBE_MAP || target == GL_TEXTURE_2D_ARRAY_EXT ) &&
         _internalFormatType != SIGNED_INTEGER && _internalFormatType != UNSIGNED_INTEGER)
     {
         if (_use_shadow_comparison)

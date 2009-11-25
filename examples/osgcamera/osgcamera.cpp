@@ -16,8 +16,6 @@
 *  THE SOFTWARE.
 */
 
-#if 1
-
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 #include <osgViewer/Viewer>
@@ -186,6 +184,37 @@ int main( int argc, char **argv )
         return 1;
     }
 
+    unsigned int numRepeats = 2;
+    if (arguments.read("--repeat",numRepeats) || arguments.read("-r",numRepeats) || arguments.read("--repeat") || arguments.read("-r"))
+    {
+        bool sharedModel = arguments.read("--shared");
+        osg::ref_ptr<osg::Node> model;
+        if (sharedModel) model = osgDB::readNodeFiles(arguments);
+
+        osgViewer::Viewer::ThreadingModel threadingModel = osgViewer::Viewer::AutomaticSelection;
+        while (arguments.read("-s")) { threadingModel = osgViewer::Viewer::SingleThreaded; }
+        while (arguments.read("-g")) { threadingModel = osgViewer::Viewer::CullDrawThreadPerContext; }
+        while (arguments.read("-d")) { threadingModel = osgViewer::Viewer::DrawThreadPerContext; }
+        while (arguments.read("-c")) { threadingModel = osgViewer::Viewer::CullThreadPerCameraDrawThreadPerContext; }
+
+        for(unsigned int i=0; i<numRepeats; ++i)
+        {
+            osg::notify(osg::NOTICE)<<"+++++++++++++ New viewer ++++++++++++"<<std::endl;
+
+            osgViewer::Viewer viewer;
+
+            viewer.setThreadingModel(threadingModel);
+
+            if (sharedModel) viewer.setSceneData(model.get());
+            else viewer.setSceneData(osgDB::readNodeFiles(arguments));
+
+            viewer.run();
+
+            osg::notify(osg::NOTICE)<<"------------ Viewer ended ----------"<<std::endl<<std::endl;
+        }
+        return 0;
+    }
+
 
     std::string pathfile;
     osg::ref_ptr<osgGA::AnimationPathManipulator> apm = 0;
@@ -277,26 +306,3 @@ int main( int argc, char **argv )
 
     return 0;
 }
-#else
-
-#include <osgViewer/Viewer>
-#include <osgDB/ReadFile>
-#include <osgDB/WriteFile>
-
-int main( int, char **)
-{
-    osg::ref_ptr<osg::Node> model = osgDB::readNodeFile("cow.osg");
-
-    for(unsigned int i=0; i<5; ++i)
-    {
-        osg::notify(osg::NOTICE)<<"New frame *******************************"<<std::endl;
-
-        osgViewer::Viewer viewer;
-        viewer.setSceneData(model.get());
-        viewer.run();
-        osg::notify(osg::NOTICE)<<std::endl<<std::endl;
-    }
-    return 0;
-}
-
-#endif

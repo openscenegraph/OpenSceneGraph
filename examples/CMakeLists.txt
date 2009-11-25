@@ -14,6 +14,7 @@ SET(TARGET_COMMON_LIBRARIES
     osgText 
 )
 
+
 IF(DYNAMIC_OPENSCENEGRAPH)
 
     ADD_SUBDIRECTORY(osg2cpp)
@@ -62,6 +63,7 @@ IF(DYNAMIC_OPENSCENEGRAPH)
     ADD_SUBDIRECTORY(osgmultiplerendertargets)
     ADD_SUBDIRECTORY(osgmultitexture)
     ADD_SUBDIRECTORY(osgmultitexturecontrol)
+    ADD_SUBDIRECTORY(osgmultiviewpaging)
     ADD_SUBDIRECTORY(osgoccluder)
     ADD_SUBDIRECTORY(osgocclusionquery)
     ADD_SUBDIRECTORY(osgpackeddepthstencil)

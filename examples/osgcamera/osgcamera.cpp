@@ -173,6 +173,23 @@ void multipleWindowMultipleCameras(osgViewer::Viewer& viewer, bool multipleScree
     }
 }
 
+class EnableVBOVisitor : public osg::NodeVisitor
+{
+public:
+    EnableVBOVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+    void apply(osg::Geode& geode)
+    {
+        for(unsigned int i=0; i<geode.getNumDrawables();++i)
+        {
+            osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
+            osg::notify(osg::NOTICE)<<"Enabling VBO"<<std::endl;
+            geom->setUseVertexBufferObjects(true);
+        }
+    }
+};
+
 int main( int argc, char **argv )
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -187,9 +204,22 @@ int main( int argc, char **argv )
     unsigned int numRepeats = 2;
     if (arguments.read("--repeat",numRepeats) || arguments.read("-r",numRepeats) || arguments.read("--repeat") || arguments.read("-r"))
     {
+
         bool sharedModel = arguments.read("--shared");
+        bool enableVBO = arguments.read("--vbo");
+
         osg::ref_ptr<osg::Node> model;
-        if (sharedModel) model = osgDB::readNodeFiles(arguments);
+        if (sharedModel)
+        {
+            model = osgDB::readNodeFiles(arguments);
+            if (!model) return 0;
+
+            if (enableVBO)
+            {
+                EnableVBOVisitor enableVBOs;
+                model->accept(enableVBOs);
+            }
+        }
 
         osgViewer::Viewer::ThreadingModel threadingModel = osgViewer::Viewer::AutomaticSelection;
         while (arguments.read("-s")) { threadingModel = osgViewer::Viewer::SingleThreaded; }
@@ -206,7 +236,19 @@ int main( int argc, char **argv )
             viewer.setThreadingModel(threadingModel);
 
             if (sharedModel) viewer.setSceneData(model.get());
-            else viewer.setSceneData(osgDB::readNodeFiles(arguments));
+            else
+            {
+                osg::ref_ptr<osg::Node> node = osgDB::readNodeFiles(arguments);
+                if (!node) return 0;
+
+                if (enableVBO)
+                {
+                    EnableVBOVisitor enableVBOs;
+                    node->accept(enableVBOs);
+                }
+
+                viewer.setSceneData(node.get());
+            }
 
             viewer.run();
 

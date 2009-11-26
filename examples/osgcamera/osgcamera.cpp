@@ -184,8 +184,11 @@ public:
         for(unsigned int i=0; i<geode.getNumDrawables();++i)
         {
             osg::Geometry* geom = geode.getDrawable(i)->asGeometry();
-            osg::notify(osg::NOTICE)<<"Enabling VBO"<<std::endl;
-            geom->setUseVertexBufferObjects(true);
+            if (geom)
+            {
+                osg::notify(osg::NOTICE)<<"Enabling VBO"<<std::endl;
+                geom->setUseVertexBufferObjects(true);
+            }
         }
     }
 };
@@ -231,26 +234,28 @@ int main( int argc, char **argv )
         {
             osg::notify(osg::NOTICE)<<"+++++++++++++ New viewer ++++++++++++"<<std::endl;
 
-            osgViewer::Viewer viewer;
-
-            viewer.setThreadingModel(threadingModel);
-
-            if (sharedModel) viewer.setSceneData(model.get());
-            else
             {
-                osg::ref_ptr<osg::Node> node = osgDB::readNodeFiles(arguments);
-                if (!node) return 0;
+                osgViewer::Viewer viewer;
 
-                if (enableVBO)
+                viewer.setThreadingModel(threadingModel);
+
+                if (sharedModel) viewer.setSceneData(model.get());
+                else
                 {
-                    EnableVBOVisitor enableVBOs;
-                    node->accept(enableVBOs);
+                    osg::ref_ptr<osg::Node> node = osgDB::readNodeFiles(arguments);
+                    if (!node) return 0;
+
+                    if (enableVBO)
+                    {
+                        EnableVBOVisitor enableVBOs;
+                        node->accept(enableVBOs);
+                    }
+
+                    viewer.setSceneData(node.get());
                 }
 
-                viewer.setSceneData(node.get());
+                viewer.run();
             }
-
-            viewer.run();
 
             osg::notify(osg::NOTICE)<<"------------ Viewer ended ----------"<<std::endl<<std::endl;
         }

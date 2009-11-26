@@ -531,11 +531,11 @@ void GraphicsContext::close(bool callCloseImplementation)
         if (makeCurrent())
         {
         
-            osg::notify(osg::INFO)<<"Doing Flush"<<std::endl;
+            osg::notify(osg::INFO)<<"Doing delete of GL objects"<<std::endl;
 
-            osg::flushAllDeletedGLObjects(_state->getContextID());
+            osg::deleteAllGLObjects(_state->getContextID());
 
-            osg::notify(osg::INFO)<<"Done Flush "<<std::endl;
+            osg::notify(osg::INFO)<<"Done delete of GL objects"<<std::endl;
 
             _state->reset();
 
@@ -557,7 +557,7 @@ void GraphicsContext::close(bool callCloseImplementation)
     {
         osg::notify(osg::INFO)<<"Doing discard of deleted OpenGL objects."<<std::endl;
 
-        osg::discardAllDeletedGLObjects(_state->getContextID());
+        osg::discardAllGLObjects(_state->getContextID());
     }
 
     if (_state.valid())

@@ -60,10 +60,13 @@ GLBufferObject::GLBufferObject(unsigned int contextID, BufferObject* bufferObjec
     assign(bufferObject);
     _extensions = GLBufferObject::getExtensions(contextID, true);
     _extensions->glGenBuffers(1, &_glObjectID);
+
+    osg::notify(osg::NOTICE)<<"Constucting BufferObject "<<this<<std::endl;
 }
 
 GLBufferObject::~GLBufferObject()
 {
+    osg::notify(osg::NOTICE)<<"Destucting BufferObject "<<this<<std::endl;
 }
 
 void GLBufferObject::bindBuffer()
@@ -541,6 +544,37 @@ void GLBufferObjectSet::handlePendingOrphandedGLBufferObjects()
     checkConsistency();
 }
 
+void GLBufferObjectSet::deleteAllGLBufferObjects()
+{
+    osg::notify(osg::NOTICE)<<"GLBufferObjectSet::deleteAllGLBufferObjects() not implemented yet."<<std::endl;
+}
+
+void GLBufferObjectSet::discardAllGLBufferObjects()
+{
+    osg::notify(osg::NOTICE)<<"GLBufferObjectSet::discardAllGLBufferObjects()"<<std::endl;
+
+    GLBufferObject* to = _head;
+    while(to!=0)
+    {
+        ref_ptr<GLBufferObject> glbo = to;
+
+        to = to->_next;
+
+        ref_ptr<BufferObject> original_BufferObject = glbo->getBufferObject();
+        if (original_BufferObject.valid())
+        {
+            // detect the GLBufferObject from the BufferObject
+            original_BufferObject->setGLBufferObject(_contextID,0);
+        }
+    }
+
+    // the linked list should now be empty
+    _head = 0;
+
+    _pendingOrphanedGLBufferObjects.clear();
+    _orphanedGLBufferObjects.clear();
+}
+
 void GLBufferObjectSet::flushAllDeletedGLBufferObjects()
 {
     for(GLBufferObjectList::iterator itr = _orphanedGLBufferObjects.begin();
@@ -566,6 +600,15 @@ void GLBufferObjectSet::flushAllDeletedGLBufferObjects()
 
 void GLBufferObjectSet::discardAllDeletedGLBufferObjects()
 {
+    osg::notify(osg::NOTICE)<<"GLBufferObjectSet::discardAllDeletedGLBufferObjects()"<<std::endl;
+
+    // clean up the pending orphans.
+    handlePendingOrphandedGLBufferObjects();
+
+    osg::notify(osg::NOTICE)<<"    _orphanedGLBufferObjects.size() = "<<_orphanedGLBufferObjects.size()<<std::endl;
+    osg::notify(osg::NOTICE)<<"    _pendingOrphanedGLBufferObjects.size() = "<<_pendingOrphanedGLBufferObjects.size()<<std::endl;
+
+
     unsigned int numDiscarded = _orphanedGLBufferObjects.size();
 
     _numOfGLBufferObjects -= numDiscarded;
@@ -832,7 +875,7 @@ void GLBufferObjectSet::addToBack(GLBufferObject* to)
 
 void GLBufferObjectSet::orphan(GLBufferObject* to)
 {
-    // osg::notify(osg::NOTICE)<<"GLBufferObjectSet::orphan("<<to<<")"<<std::endl;
+    osg::notify(osg::NOTICE)<<"GLBufferObjectSet::orphan("<<to<<")"<<std::endl;
 
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
@@ -846,7 +889,7 @@ void GLBufferObjectSet::orphan(GLBufferObject* to)
     // to avoid having to mutex the process of appling active TO's.
     _pendingOrphanedGLBufferObjects.push_back(to);
 
-#if 0
+#if 1
     osg::notify(osg::NOTICE)<<"GLBufferObjectSet::orphan("<<to<<")  _pendingOrphanedGLBufferObjects.size()="<<_pendingOrphanedGLBufferObjects.size()<<std::endl;
     osg::notify(osg::NOTICE)<<"                                    _orphanedGLBufferObjects.size()="<<_orphanedGLBufferObjects.size()<<std::endl;
 #endif
@@ -969,6 +1012,28 @@ void GLBufferObjectManager::handlePendingOrphandedGLBufferObjects()
     }
 }
 
+void GLBufferObjectManager::deleteAllGLBufferObjects()
+{
+    ElapsedTime elapsedTime(&(getDeleteTime()));
+
+    for(GLBufferObjectSetMap::iterator itr = _glBufferObjectSetMap.begin();
+        itr != _glBufferObjectSetMap.end();
+        ++itr)
+    {
+        (*itr).second->deleteAllGLBufferObjects();
+    }
+}
+
+void GLBufferObjectManager::discardAllGLBufferObjects()
+{
+    for(GLBufferObjectSetMap::iterator itr = _glBufferObjectSetMap.begin();
+        itr != _glBufferObjectSetMap.end();
+        ++itr)
+    {
+        (*itr).second->discardAllGLBufferObjects();
+    }
+}
+
 void GLBufferObjectManager::flushAllDeletedGLBufferObjects()
 {
     ElapsedTime elapsedTime(&(getDeleteTime()));
@@ -1056,6 +1121,16 @@ GLBufferObject* GLBufferObject::createGLBufferObject(unsigned int contextID, con
     return GLBufferObjectManager::getGLBufferObjectManager(contextID)->generateGLBufferObject(bufferObject);
 }
 
+void GLBufferObject::deleteAllBufferObjects(unsigned int contextID)
+{
+    GLBufferObjectManager::getGLBufferObjectManager(contextID)->deleteAllGLBufferObjects();
+}
+
+void GLBufferObject::discardAllBufferObjects(unsigned int contextID)
+{
+    GLBufferObjectManager::getGLBufferObjectManager(contextID)->discardAllGLBufferObjects();
+}
+
 void GLBufferObject::flushAllDeletedBufferObjects(unsigned int contextID)
 {
     GLBufferObjectManager::getGLBufferObjectManager(contextID)->flushAllDeletedGLBufferObjects();
@@ -1118,6 +1193,7 @@ void BufferObject::resizeGLObjectBuffers(unsigned int maxSize)
 
 void BufferObject::releaseGLObjects(State* state) const
 {
+    osg::notify(osg::NOTICE)<<"BufferObject::releaseGLObjects("<<state<<")"<<std::endl;
     if (state)
     {
         unsigned int contextID = state->getContextID();
@@ -1133,6 +1209,7 @@ void BufferObject::releaseGLObjects(State* state) const
         {
             if (_glBufferObjects[i].valid())
             {
+                osg::notify(osg::NOTICE)<<"  GLBufferObject::releaseGLBufferObject("<<i<<", _glBufferObjects["<<i<<"]="<<_glBufferObjects[i].get()<<")"<<std::endl;
                 GLBufferObject::releaseGLBufferObject(i, _glBufferObjects[i].get());
                 _glBufferObjects[i] = 0;
             }

@@ -238,6 +238,8 @@ class OSG_EXPORT GLBufferObject : public Referenced
           * by contextID.*/
         static void deleteBufferObject(unsigned int contextID,GLuint globj);
 
+        static void deleteAllBufferObjects(unsigned int contextID);
+        static void discardAllBufferObjects(unsigned int contextID);
         static void flushAllDeletedBufferObjects(unsigned int contextID);
         static void discardAllDeletedBufferObjects(unsigned int contextID);
         static void flushDeletedBufferObjects(unsigned int contextID,double currentTime, double& availbleTime);
@@ -315,7 +317,7 @@ class OSG_EXPORT GLBufferObject : public Referenced
         static void setExtensions(unsigned int contextID,Extensions* extensions);
 
     protected:
-    
+
         virtual ~GLBufferObject();
 
         unsigned int            _contextID;
@@ -351,6 +353,9 @@ class OSG_EXPORT GLBufferObjectSet : public Referenced
         GLBufferObjectSet(GLBufferObjectManager* parent, const BufferObjectProfile& profile);
 
         void handlePendingOrphandedGLBufferObjects();
+
+        void deleteAllGLBufferObjects();
+        void discardAllGLBufferObjects();
         void flushAllDeletedGLBufferObjects();
         void discardAllDeletedGLBufferObjects();
         void flushDeletedGLBufferObjects(double currentTime, double& availableTime);
@@ -419,6 +424,9 @@ class OSG_EXPORT GLBufferObjectManager : public osg::Referenced
         GLBufferObject* generateGLBufferObject(const osg::BufferObject* bufferObject);
 
         void handlePendingOrphandedGLBufferObjects();
+
+        void deleteAllGLBufferObjects();
+        void discardAllGLBufferObjects();
         void flushAllDeletedGLBufferObjects();
         void discardAllDeletedGLBufferObjects();
         void flushDeletedGLBufferObjects(double currentTime, double& availableTime);

@@ -72,6 +72,11 @@ unsigned int Texture::getMinimumNumberOfTextureObjectsToRetainInCache()
 
 #define USE_NEW_TEXTURE_POOL 1
 
+Texture::TextureObject::~TextureObject()
+{
+    osg::notify(osg::NOTICE)<<"Texture::TextureObject::~TextureObject() "<<this<<std::endl;
+}
+
 void Texture::TextureObject::bind()
 {
     glBindTexture( _profile._target, _id);
@@ -218,7 +223,7 @@ bool Texture::TextureObjectSet::checkConsistency() const
 
 void Texture::TextureObjectSet::handlePendingOrphandedTextureObjects()
 {
-    // osg::notify(osg::NOTICE)<<"handlePendingOrphandedTextureObjects()"<<_pendingOrphanedTextureObjects.size()<<std::endl;
+    osg::notify(osg::NOTICE)<<"handlePendingOrphandedTextureObjects()"<<_pendingOrphanedTextureObjects.size()<<std::endl;
 
     if (_pendingOrphanedTextureObjects.empty()) return;
 
@@ -253,8 +258,42 @@ void Texture::TextureObjectSet::handlePendingOrphandedTextureObjects()
     checkConsistency();
 }
 
+
+void Texture::TextureObjectSet::deleteAllTextureObjects()
+{
+    osg::notify(osg::NOTICE)<<"Texture::TextureObjectSet::deleteAllTextureObjects() not implemented yet."<<std::endl;
+}
+
+void Texture::TextureObjectSet::discardAllTextureObjects()
+{
+    osg::notify(osg::NOTICE)<<"Texture::TextureObjectSet::discardAllTextureObjects()."<<std::endl;
+
+    TextureObject* to = _head;
+    while(to!=0)
+    {
+        ref_ptr<TextureObject> glto = to;
+
+        to = to->_next;
+
+        ref_ptr<Texture> original_texture = glto->getTexture();
+
+        if (original_texture.valid())
+        {
+            original_texture->setTextureObject(_contextID,0);
+        }
+    }
+
+    // the linked list should now be empty
+    _head = 0;
+
+    _pendingOrphanedTextureObjects.clear();
+    _orphanedTextureObjects.clear();
+}
+
 void Texture::TextureObjectSet::flushAllDeletedTextureObjects()
 {
+    // osg::notify(osg::NOTICE)<<"Texture::TextureObjectSet::flushAllDeletedTextureObjects()"<<std::endl;
+
     for(TextureObjectList::iterator itr = _orphanedTextureObjects.begin();
         itr != _orphanedTextureObjects.end();
         ++itr)
@@ -280,6 +319,15 @@ void Texture::TextureObjectSet::flushAllDeletedTextureObjects()
 
 void Texture::TextureObjectSet::discardAllDeletedTextureObjects()
 {
+    osg::notify(osg::NOTICE)<<"Texture::TextureObjectSet::discardAllDeletedTextureObjects()"<<std::endl;
+
+    // clean up the pending orphans.
+    handlePendingOrphandedTextureObjects();
+
+    osg::notify(osg::NOTICE)<<"    _orphanedTextureObjects.size() = "<<_orphanedTextureObjects.size()<<std::endl;
+    osg::notify(osg::NOTICE)<<"    _pendingOrphanedTextureObjects.size() = "<<_pendingOrphanedTextureObjects.size()<<std::endl;
+
+
     unsigned int numDiscarded = _orphanedTextureObjects.size();
 
     _numOfTextureObjects -= numDiscarded;
@@ -299,7 +347,7 @@ void Texture::TextureObjectSet::discardAllDeletedTextureObjects()
 
 void Texture::TextureObjectSet::flushDeletedTextureObjects(double currentTime, double& availableTime)
 {
-    // osg::notify(osg::NOTICE)<<"Texture::TextureObjectSet::flushDeletedTextureObjects(..) Not properly implemented yet"<<std::endl;
+    // osg::notify(osg::NOTICE)<<"Texture::TextureObjectSet::flushDeletedTextureObjects(..)"<<std::endl;
 
     // if nothing to delete return
     if (_orphanedTextureObjects.empty()) return;
@@ -696,8 +744,36 @@ void Texture::TextureObjectManager::handlePendingOrphandedTextureObjects()
     }
 }
 
+void Texture::TextureObjectManager::deleteAllTextureObjects()
+{
+    osg::notify(osg::NOTICE)<<"Texture::TextureObjectManager::deleteAllTextureObjects() _contextID="<<_contextID<<std::endl;
+
+    ElapsedTime elapsedTime(&(getDeleteTime()));
+
+    for(TextureSetMap::iterator itr = _textureSetMap.begin();
+        itr != _textureSetMap.end();
+        ++itr)
+    {
+        (*itr).second->deleteAllTextureObjects();
+    }
+}
+
+void Texture::TextureObjectManager::discardAllTextureObjects()
+{
+    osg::notify(osg::NOTICE)<<"Texture::TextureObjectManager::discardAllTextureObjects() _contextID="<<_contextID<<" _numActiveTextureObjects="<<_numActiveTextureObjects<<std::endl;
+
+    for(TextureSetMap::iterator itr = _textureSetMap.begin();
+        itr != _textureSetMap.end();
+        ++itr)
+    {
+        (*itr).second->discardAllTextureObjects();
+    }
+}
+
 void Texture::TextureObjectManager::flushAllDeletedTextureObjects()
 {
+    osg::notify(osg::NOTICE)<<"Texture::TextureObjectManager::flushAllDeletedTextureObjects() _contextID="<<_contextID<<std::endl;
+
     ElapsedTime elapsedTime(&(getDeleteTime()));
 
     for(TextureSetMap::iterator itr = _textureSetMap.begin();
@@ -710,6 +786,8 @@ void Texture::TextureObjectManager::flushAllDeletedTextureObjects()
 
 void Texture::TextureObjectManager::discardAllDeletedTextureObjects()
 {
+    osg::notify(osg::NOTICE)<<"Texture::TextureObjectManager::discardAllDeletedTextureObjects() _contextID="<<_contextID<<" _numActiveTextureObjects="<<_numActiveTextureObjects<<std::endl;
+
     for(TextureSetMap::iterator itr = _textureSetMap.begin();
         itr != _textureSetMap.end();
         ++itr)
@@ -796,6 +874,16 @@ Texture::TextureObject* Texture::generateTextureObject(const Texture* texture, u
                                              GLint     border)
 {
     return getTextureObjectManager(contextID)->generateTextureObject(texture,target,numMipmapLevels,internalFormat,width,height,depth,border);
+}
+
+void Texture::deleteAllTextureObjects(unsigned int contextID)
+{
+    getTextureObjectManager(contextID)->deleteAllTextureObjects();
+}
+
+void Texture::discardAllTextureObjects(unsigned int contextID)
+{
+    getTextureObjectManager(contextID)->discardAllTextureObjects();
 }
 
 void Texture::flushAllDeletedTextureObjects(unsigned int contextID)

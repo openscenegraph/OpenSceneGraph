@@ -983,6 +983,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                        _profile.match(target,numMipmapLevels,internalFormat,width,height,depth,border);
             }
 
+
             void bind();
 
             inline GLenum id() const { return _id; }
@@ -1019,6 +1020,10 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             bool                _allocated;
             unsigned int        _frameLastUsed;
             double              _timeStamp;
+
+        protected:
+            virtual ~TextureObject();
+
         };
 
         typedef std::list< ref_ptr<TextureObject> > TextureObjectList;
@@ -1029,6 +1034,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             TextureObjectSet(TextureObjectManager* parent, const TextureProfile& profile);
 
             void handlePendingOrphandedTextureObjects();
+
+            void deleteAllTextureObjects();
+            void discardAllTextureObjects();
             void flushAllDeletedTextureObjects();
             void discardAllDeletedTextureObjects();
             void flushDeletedTextureObjects(double currentTime, double& availableTime);
@@ -1104,6 +1112,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                                                         GLsizei   depth,
                                                         GLint     border);
             void handlePendingOrphandedTextureObjects();
+            void deleteAllTextureObjects();
+            void discardAllTextureObjects();
             void flushAllDeletedTextureObjects();
             void discardAllDeletedTextureObjects();
             void flushDeletedTextureObjects(double currentTime, double& availableTime);
@@ -1173,12 +1183,11 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         /** Get the minimum number of display lists to retain in the deleted display list cache. */
         static unsigned int getMinimumNumberOfTextureObjectsToRetainInCache();
 
+        static void deleteAllTextureObjects(unsigned int contextID);
+        static void discardAllTextureObjects(unsigned int contextID);
         static void flushAllDeletedTextureObjects(unsigned int contextID);
-
         static void discardAllDeletedTextureObjects(unsigned int contextID);
-
         static void flushDeletedTextureObjects(unsigned int contextID,double currentTime, double& availableTime);
-
         static void releaseTextureObject(unsigned int contextID, TextureObject* to);
 
     protected:

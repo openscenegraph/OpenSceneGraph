@@ -130,7 +130,11 @@ class PopplerPdfImage : public osgWidget::PdfImage
 		gTypeInit = true;
 	    }
             
+#if defined(WIN32) && !defined(__CYGWIN__)
+            std::string uri = std::string("file:///") + foundFile;
+#else
             std::string uri = std::string("file:") + foundFile;
+#endif
 
             PopplerDocument* doc = poppler_document_new_from_file(uri.c_str(), NULL, NULL);
             if (!doc) 

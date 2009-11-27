@@ -21,6 +21,11 @@ class ReaderWriterDOT : public osgDB::ReaderWriter {
     virtual bool acceptsExtension(const std::string& extension) const { return osgDB::equalCaseInsensitive(extension,"dot"); }
 
     virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options = NULL) const { 
+      std::string ext = osgDB::getFileExtension(fileName);
+      if (!acceptsExtension(ext)) {
+        return WriteResult::FILE_NOT_HANDLED;
+      }
+
       std::ofstream o( fileName.c_str(), std::ios_base::out );
       if ( o ) {
         return writeNode( node, o, options );

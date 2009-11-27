@@ -660,16 +660,38 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     {
         const DXT1TexelsBlock *texelsBlock = reinterpret_cast<const DXT1TexelsBlock*>(imageData);
 
-        // Only do the check on the first mipmap level
-        for ( int i = size / sizeof( DXT1TexelsBlock ); i>0; --i, ++texelsBlock )
+        // Only do the check on the first mipmap level, and stop when we
+        // see the first alpha texel
+        int i = size / sizeof(DXT1TexelsBlock);
+        bool foundAlpha = false;
+        while ((!foundAlpha) && (i>0))
         {
+            // See if this block might contain transparent texels
             if (texelsBlock->color_0<=texelsBlock->color_1)
             {
-                // Texture is using the 1-bit alpha encoding, so we need to update the assumed pixel format
-                internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-                pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-                break;
+                // Scan the texels block for the '11' bit pattern that
+                // indicates a transparent texel
+                int j = 0;
+                while ((!foundAlpha) && (j < 32))
+                {
+                    // Check for the '11' bit pattern on this texel
+                    if ( ((texelsBlock->texels4x4 >> j) & 0x03) == 0x03)
+                    {
+                        // Texture is using the 1-bit alpha encoding, so we
+                        // need to update the assumed pixel format
+                        internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+                        pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
+                        foundAlpha = true;
+                    }
+
+                    // Next texel
+                    j += 2;
+                }
             }
+
+            // Next block
+            --i;
+            ++texelsBlock;
         }
     }
 

@@ -462,9 +462,13 @@ BEGIN_OBJECT_REFLECTOR(osg::GLBufferObject)
 	                __GLBufferObject_P1__createGLBufferObject__unsigned_int__C5_BufferObject_P1_S,
 	                "",
 	                "");
-	I_StaticMethod2(void, deleteBufferObject, IN, unsigned int, contextID, IN, GLuint, globj,
-	                __void__deleteBufferObject__unsigned_int__GLuint_S,
-	                "Use deleteVertexBufferObject instead of glDeleteBuffers to allow OpenGL buffer objects to be cached until they can be deleted by the OpenGL context in which they were created, specified by contextID. ",
+	I_StaticMethod1(void, deleteAllBufferObjects, IN, unsigned int, contextID,
+	                __void__deleteAllBufferObjects__unsigned_int_S,
+	                "",
+	                "");
+	I_StaticMethod1(void, discardAllBufferObjects, IN, unsigned int, contextID,
+	                __void__discardAllBufferObjects__unsigned_int_S,
+	                "",
 	                "");
 	I_StaticMethod1(void, flushAllDeletedBufferObjects, IN, unsigned int, contextID,
 	                __void__flushAllDeletedBufferObjects__unsigned_int_S,
@@ -613,6 +617,16 @@ BEGIN_OBJECT_REFLECTOR(osg::GLBufferObjectManager)
 	          __void__handlePendingOrphandedGLBufferObjects,
 	          "",
 	          "");
+	I_Method0(void, deleteAllGLBufferObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__deleteAllGLBufferObjects,
+	          "",
+	          "");
+	I_Method0(void, discardAllGLBufferObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__discardAllGLBufferObjects,
+	          "",
+	          "");
 	I_Method0(void, flushAllDeletedGLBufferObjects,
 	          Properties::NON_VIRTUAL,
 	          __void__flushAllDeletedGLBufferObjects,
@@ -748,6 +762,16 @@ BEGIN_OBJECT_REFLECTOR(osg::GLBufferObjectSet)
 	I_Method0(void, handlePendingOrphandedGLBufferObjects,
 	          Properties::NON_VIRTUAL,
 	          __void__handlePendingOrphandedGLBufferObjects,
+	          "",
+	          "");
+	I_Method0(void, deleteAllGLBufferObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__deleteAllGLBufferObjects,
+	          "",
+	          "");
+	I_Method0(void, discardAllGLBufferObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__discardAllGLBufferObjects,
 	          "",
 	          "");
 	I_Method0(void, flushAllDeletedGLBufferObjects,

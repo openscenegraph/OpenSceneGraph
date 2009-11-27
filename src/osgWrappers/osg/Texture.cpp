@@ -497,6 +497,14 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	                __unsigned_int__getMinimumNumberOfTextureObjectsToRetainInCache_S,
 	                "Get the minimum number of display lists to retain in the deleted display list cache. ",
 	                "");
+	I_StaticMethod1(void, deleteAllTextureObjects, IN, unsigned int, contextID,
+	                __void__deleteAllTextureObjects__unsigned_int_S,
+	                "",
+	                "");
+	I_StaticMethod1(void, discardAllTextureObjects, IN, unsigned int, contextID,
+	                __void__discardAllTextureObjects__unsigned_int_S,
+	                "",
+	                "");
 	I_StaticMethod1(void, flushAllDeletedTextureObjects, IN, unsigned int, contextID,
 	                __void__flushAllDeletedTextureObjects__unsigned_int_S,
 	                "",
@@ -865,6 +873,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObjectManager)
 	          __void__handlePendingOrphandedTextureObjects,
 	          "",
 	          "");
+	I_Method0(void, deleteAllTextureObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__deleteAllTextureObjects,
+	          "",
+	          "");
+	I_Method0(void, discardAllTextureObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__discardAllTextureObjects,
+	          "",
+	          "");
 	I_Method0(void, flushAllDeletedTextureObjects,
 	          Properties::NON_VIRTUAL,
 	          __void__flushAllDeletedTextureObjects,
@@ -996,6 +1014,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Texture::TextureObjectSet)
 	I_Method0(void, handlePendingOrphandedTextureObjects,
 	          Properties::NON_VIRTUAL,
 	          __void__handlePendingOrphandedTextureObjects,
+	          "",
+	          "");
+	I_Method0(void, deleteAllTextureObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__deleteAllTextureObjects,
+	          "",
+	          "");
+	I_Method0(void, discardAllTextureObjects,
+	          Properties::NON_VIRTUAL,
+	          __void__discardAllTextureObjects,
 	          "",
 	          "");
 	I_Method0(void, flushAllDeletedTextureObjects,

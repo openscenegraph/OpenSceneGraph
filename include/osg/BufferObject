@@ -208,7 +208,7 @@ class OSG_EXPORT GLBufferObject : public Referenced
         inline GLuint getGLObjectID() const { return _glObjectID; }
         inline GLsizeiptrARB getOffset(unsigned int i) const { return _bufferEntries[i].offset; }
 
-        void bindBuffer();
+        inline void bindBuffer();
 
         inline void unbindBuffer()
         { 
@@ -230,13 +230,6 @@ class OSG_EXPORT GLBufferObject : public Referenced
         bool isPBOSupported() const { return _extensions->isPBOSupported(); }
 
         static GLBufferObject* createGLBufferObject(unsigned int contextID, const BufferObject* bufferObject);
-
-
-        /** Use deleteVertexBufferObject instead of glDeleteBuffers to allow
-          * OpenGL buffer objects to be cached until they can be deleted
-          * by the OpenGL context in which they were created, specified
-          * by contextID.*/
-        static void deleteBufferObject(unsigned int contextID,GLuint globj);
 
         static void deleteAllBufferObjects(unsigned int contextID);
         static void discardAllBufferObjects(unsigned int contextID);
@@ -734,6 +727,11 @@ class OSG_EXPORT PixelDataBufferObject : public BufferObject
         
 };
 
+inline void GLBufferObject::bindBuffer()
+{
+    _extensions->glBindBuffer(_profile._target,_glObjectID);
+    if (_set) _set->moveToBack(this);
+}
 
 }
 

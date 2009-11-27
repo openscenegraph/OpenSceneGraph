@@ -7,6 +7,16 @@
 
 #include <iostream>
 
+// Search in str for all occurences of spat and replace them with rpat.
+void searchAndReplace(std::string& str, const std::string& spat, const std::string& rpat)
+{
+    std::string::size_type pos = 0;
+    while ((pos = str.find(spat, pos)) != std::string::npos)
+    {
+        str.replace(pos, spat.length(), rpat);
+    }
+}
+
 void writeShader(osg::Shader* shader, const std::string& cppFileName, const std::string& variableName)
 {
     osgDB::ofstream fout(cppFileName.c_str());
@@ -16,6 +26,8 @@ void writeShader(osg::Shader* shader, const std::string& cppFileName, const std:
     }
 
     std::string shaderSource = shader->getShaderSource();
+    searchAndReplace(shaderSource, "\r\n", "\n");
+    searchAndReplace(shaderSource, "\r", "\n");
 
     std::string variableString = std::string("char ")+variableName+std::string("[] = ");
     
@@ -71,6 +83,7 @@ int main( int argc, char **argv )
         if (shader.valid())
         {
             std::string name = osgDB::getStrippedName(filename);
+            std::string path = osgDB::getFilePath(filename);
             std::string invalidCharacters = "-+/\\*=(){}[]:;<>,.?@'~#`!\"";
             std::string numbericCharacters = "0123456789";
             std::string::size_type pos = name.find_first_of(invalidCharacters);
@@ -81,7 +94,7 @@ int main( int argc, char **argv )
             }
             
             std::string ext = osgDB::getFileExtension(filename);
-            std::string cppFileName = name + "_" + ext + ".cpp";
+            std::string cppFileName = osgDB::concatPaths(path, name + "_" + ext + ".cpp");
             std::string variableName = name + "_" + ext;
             writeShader(shader.get(), cppFileName, variableName);
 

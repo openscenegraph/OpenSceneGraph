@@ -651,6 +651,7 @@ static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)
                         osg::notify(osg::WARN) << "Could not get dll directory "
                             "using Win32 API. It will not be searched." << std::endl;
                     }
+                    FreeLibrary(thisModule);
                 }
                 else
                 {

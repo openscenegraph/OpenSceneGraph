@@ -313,7 +313,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 ++itr)
             {
                 osg::Image* image = itr->get();
-                osgVolume::ImageDetails* details = dynamic_cast<osgVolume::ImageDetails*>(result.getImage()->getUserData());
+                osgVolume::ImageDetails* details = dynamic_cast<osgVolume::ImageDetails*>(image->getUserData());
                 osg::RefMatrix* matrix = details ? details->getMatrix() : 0;
                 if (matrix)
                 {
@@ -362,7 +362,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             }
 
             osg::Image* firstImage = dim.begin()->second.get();
-            osgVolume::ImageDetails* details = dynamic_cast<osgVolume::ImageDetails*>(result.getImage()->getUserData());
+            osgVolume::ImageDetails* details = dynamic_cast<osgVolume::ImageDetails*>(firstImage->getUserData());
             osg::RefMatrix* matrix = details ? details->getMatrix() : 0;
             if (matrix)
             {

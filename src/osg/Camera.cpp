@@ -397,6 +397,9 @@ void Camera::inheritCullSettings(const CullSettings& settings, unsigned int inhe
         if (inheritanceMask & CLEAR_COLOR)
             _clearColor = camera->_clearColor;
 
+        if (inheritanceMask & CLEAR_MASK)
+            _clearMask = camera->_clearMask;
+
         if (inheritanceMask & DRAW_BUFFER)
             _drawBuffer = camera->_drawBuffer;
 

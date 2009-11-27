@@ -84,7 +84,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
 
         /** Set the clear mask used in glClear(..).
           * Defaults to GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT. */
-        inline void setClearMask(GLbitfield mask) { _clearMask = mask; }
+        inline void setClearMask(GLbitfield mask) { _clearMask = mask; applyMaskAction(CLEAR_MASK); }
 
         /** Get the clear mask.*/
         inline GLbitfield getClearMask() const { return _clearMask; }

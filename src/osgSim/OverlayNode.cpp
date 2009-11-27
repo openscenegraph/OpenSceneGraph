@@ -66,6 +66,7 @@ public:
             Face& face = createFace();
             face.name = "left";
             face.plane.set(1.0,0.0,0.0,1.0);
+            face.vertices.reserve(4);                                                                                      
             face.vertices.push_back(v000);
             face.vertices.push_back(v001);
             face.vertices.push_back(v011);
@@ -76,6 +77,7 @@ public:
             Face& face = createFace();
             face.name = "right";
             face.plane.set(-1.0,0.0,0.0,1.0);
+            face.vertices.reserve(4);
             face.vertices.push_back(v100);
             face.vertices.push_back(v110);
             face.vertices.push_back(v111);
@@ -86,6 +88,7 @@ public:
             Face& face = createFace();
             face.name = "bottom";
             face.plane.set(0.0,1.0,0.0,1.0);
+            face.vertices.reserve(4);
             face.vertices.push_back(v000);
             face.vertices.push_back(v100);
             face.vertices.push_back(v101);
@@ -96,6 +99,7 @@ public:
             Face& face = createFace();
             face.name = "top";
             face.plane.set(0.0,-1.0,0.0,1.0);
+            face.vertices.reserve(4);
             face.vertices.push_back(v111);
             face.vertices.push_back(v011);
             face.vertices.push_back(v010);
@@ -107,6 +111,7 @@ public:
             Face& face = createFace();
             face.name = "near";
             face.plane.set(0.0,0.0,1.0,1.0);
+            face.vertices.reserve(4);
             face.vertices.push_back(v000);
             face.vertices.push_back(v010);
             face.vertices.push_back(v110);
@@ -118,6 +123,7 @@ public:
             Face& face = createFace();
             face.name = "far";
             face.plane.set(0.0,0.0,-1.0,1.0);
+            face.vertices.reserve(4);
             face.vertices.push_back(v001);
             face.vertices.push_back(v101);
             face.vertices.push_back(v111);
@@ -148,6 +154,7 @@ public:
             Face& face = createFace();
             face.name = "xMin";
             face.plane.set(1.0,0.0,0.0,-bb.xMin());
+            face.vertices.reserve(4);
             face.vertices.push_back(v000);
             face.vertices.push_back(v001);
             face.vertices.push_back(v011);
@@ -158,6 +165,7 @@ public:
             Face& face = createFace();
             face.name = "xMax";
             face.plane.set(-1.0,0.0,0.0,bb.xMax());
+            face.vertices.reserve(4);
             face.vertices.push_back(v100);
             face.vertices.push_back(v110);
             face.vertices.push_back(v111);
@@ -168,6 +176,7 @@ public:
             Face& face = createFace();
             face.name = "yMin";
             face.plane.set(0.0,1.0,0.0,-bb.yMin());
+            face.vertices.reserve(4);
             face.vertices.push_back(v000);
             face.vertices.push_back(v100);
             face.vertices.push_back(v101);
@@ -178,6 +187,7 @@ public:
             Face& face = createFace();
             face.name = "yMax";
             face.plane.set(0.0,-1.0,0.0,bb.yMax());
+            face.vertices.reserve(4);
             face.vertices.push_back(v111);
             face.vertices.push_back(v011);
             face.vertices.push_back(v010);
@@ -187,6 +197,7 @@ public:
             Face& face = createFace();
             face.name = "zMin";
             face.plane.set(0.0,0.0,1.0,-bb.zMin());
+            face.vertices.reserve(4);
             face.vertices.push_back(v000);
             face.vertices.push_back(v010);
             face.vertices.push_back(v110);
@@ -197,6 +208,7 @@ public:
             Face& face = createFace();
             face.name = "zMax";
             face.plane.set(0.0,0.0,-1.0,bb.zMax());
+            face.vertices.reserve(4);
             face.vertices.push_back(v001);
             face.vertices.push_back(v101);
             face.vertices.push_back(v111);
@@ -602,6 +614,9 @@ public:
     {
         // osg::notify(osg::NOTICE)<<"  Cutting plane "<<plane<<std::endl;
         Face newFace;
+        typedef std::vector<double> Distances;
+        Distances distances;
+        Vertices newVertices;
         
         for(Faces::iterator itr = _faces.begin();
             itr != _faces.end();
@@ -619,10 +634,9 @@ public:
                 // osg::notify(osg::NOTICE)<<"    Face intersecting - before "<<face.vertices.size()<<std::endl;
                 
                 Vertices& vertices = face.vertices;
-                Vertices newVertices;
+                newVertices.clear();
 
-                typedef std::vector<double> Distances;
-                Distances distances;
+                distances.clear();
                 distances.reserve(face.vertices.size());
                 for(Vertices::iterator vitr = vertices.begin();
                     vitr != vertices.end();
@@ -710,7 +724,8 @@ public:
             }
 
             
-            Vertices newVertices;
+            newVertices.clear();
+            newVertices.reserve(anglePositions.size());
             for(AnglePositions::iterator aitr = anglePositions.begin();
                 aitr != anglePositions.end();
                 ++aitr)

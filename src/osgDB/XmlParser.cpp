@@ -290,7 +290,7 @@ bool XmlNode::read(Input& input)
 
                 if (!option.empty())
                 {
-                    osg::notify(osg::NOTICE)<<"Assigning option "<<option<<" with value "<<value<<std::endl;
+                    osg::notify(osg::INFO)<<"Assigning option "<<option<<" with value "<<value<<std::endl;
                     childNode->properties[option] = value;
                 }
             }

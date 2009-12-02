@@ -115,11 +115,18 @@ bool SphericalManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& us
     switch(ea.getEventType())
     {
     case(GUIEventAdapter::FRAME):
-        if (_thrown)
         {
-            if (calcMovement()) us.requestRedraw();
+            double current_frame_time = ea.getTime();
+
+            _delta_frame_time = current_frame_time - _last_frame_time;
+            _last_frame_time = current_frame_time;
+
+            if (_thrown)
+            {
+                if (calcMovement()) us.requestRedraw();
+            }
+            return false;
         }
-        return false;
     default:
         break;
     }
@@ -304,6 +311,9 @@ bool SphericalManipulator::calcMovement()
         buttonMask = _ga_t1->getButtonMask();
     }
     
+    double throwScale =  (_thrown && _ga_t0.valid() && _ga_t1.valid()) ?
+        _delta_frame_time / (_ga_t0->getTime() - _ga_t1->getTime()) : 1.0;
+
     if (buttonMask==GUIEventAdapter::LEFT_MOUSE_BUTTON)
     {
         // rotate camera.
@@ -321,7 +331,7 @@ bool SphericalManipulator::calcMovement()
 
             float angle=atan2(py1-pyc,px1-pxc)-atan2(py0-pyc,px0-pxc);
 
-            _heading+=angle;
+            _heading+=throwScale*angle;
             if(_heading < -PI)
                 _heading+=2*PI;
             else if(_heading > PI)
@@ -331,7 +341,7 @@ bool SphericalManipulator::calcMovement()
         {
             if((_rotationMode != ELEVATION) && ((_ga_t1->getModKeyMask() & GUIEventAdapter::MODKEY_SHIFT) == 0))
             {
-                _heading-=dx*PI_2;
+                _heading-=throwScale*dx*PI_2;
 
                 if(_heading < 0)
                     _heading+=2*PI;
@@ -341,7 +351,7 @@ bool SphericalManipulator::calcMovement()
 
             if((_rotationMode != HEADING) && ((_ga_t1->getModKeyMask() & GUIEventAdapter::MODKEY_ALT) == 0))
             {
-                _elevation-=dy*osg::PI_4;
+                _elevation-=throwScale*dy*osg::PI_4;
 
                 // Only allows vertical rotation of 180deg 
                 if(_elevation < -osg::PI_2)
@@ -363,7 +373,7 @@ bool SphericalManipulator::calcMovement()
         osg::Matrix rotation_matrix;
         rotation_matrix=osg::Matrixd::rotate(_elevation,-1,0,0)*osg::Matrixd::rotate(PI_2+_heading,0,0,1);
 
-        osg::Vec3 dv(dx*scale,0,dy*scale);
+        osg::Vec3 dv(throwScale*dx*scale,0,throwScale*dy*scale);
         _center += dv*rotation_matrix;
 
         return true;
@@ -375,7 +385,7 @@ bool SphericalManipulator::calcMovement()
         // zoom model.
 
         double fd = _distance;
-        double scale = 1.0+dy;
+        double scale = 1.0+throwScale*dy;
         if(fd*scale > _modelScale*_minimumZoomScale)
         {
             _distance *= scale;

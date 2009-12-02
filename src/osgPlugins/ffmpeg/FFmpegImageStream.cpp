@@ -159,6 +159,12 @@ double FFmpegImageStream::getLength() const
 }
 
 
+double FFmpegImageStream::getReferenceTime () const
+{
+    return m_decoder->reference();
+}
+
+
 
 double FFmpegImageStream::getFrameRate() const
 { 
@@ -264,7 +270,8 @@ void FFmpegImageStream::cmdPlay()
         if (! m_decoder->video_decoder().isRunning())
             m_decoder->video_decoder().start();
 
-        m_decoder->resume();
+        m_decoder->video_decoder().pause(false);
+        m_decoder->audio_decoder().pause(false);
     }
 
     _status = PLAYING;
@@ -276,7 +283,8 @@ void FFmpegImageStream::cmdPause()
 {
     if (_status == PLAYING)
     {
-        m_decoder->pause();
+        m_decoder->video_decoder().pause(true);
+        m_decoder->audio_decoder().pause(true);
     }
 
     _status = PAUSED;

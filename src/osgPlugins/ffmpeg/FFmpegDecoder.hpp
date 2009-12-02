@@ -70,12 +70,12 @@ public:
     void rewind();
     void seek(double time);
     void pause();
-    void resume();
 
     void loop(bool loop);
     bool loop() const;
 
     double duration() const;
+    double reference();
 
     FFmpegDecoderAudio & audio_decoder();
     FFmpegDecoderVideo & video_decoder();
@@ -108,24 +108,24 @@ protected:
     void seekButDontFlushQueues(double time);
 
     FormatContextPtr    m_format_context;
-    AVStream *            m_audio_stream;
-    AVStream *            m_video_stream;
+    AVStream *          m_audio_stream;
+    AVStream *          m_video_stream;
 
     int                 m_audio_index;
     int                 m_video_index;
 
     FFmpegClocks        m_clocks;
     FFmpegPacket        m_pending_packet;
-    PacketQueue            m_audio_queue;
-    PacketQueue            m_video_queue;
+    PacketQueue         m_audio_queue;
+    PacketQueue         m_video_queue;
     
-    FFmpegDecoderAudio    m_audio_decoder;
-    FFmpegDecoderVideo    m_video_decoder;
+    FFmpegDecoderAudio  m_audio_decoder;
+    FFmpegDecoderVideo  m_video_decoder;
 
-    double                m_duration;
-    double                m_start;
+    double              m_duration;
+    double              m_start;
 
-    State                m_state;
+    State               m_state;
     bool                m_loop;
 };
 
@@ -148,6 +148,11 @@ inline bool FFmpegDecoder::loop() const
 inline double FFmpegDecoder::duration() const
 {
     return double(m_format_context->duration) / AV_TIME_BASE;    
+}
+
+inline double FFmpegDecoder::reference()
+{
+    return m_clocks.getCurrentTime();    
 }
 
 

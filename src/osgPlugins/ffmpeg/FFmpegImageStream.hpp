@@ -34,6 +34,7 @@ namespace osgFFmpeg
         virtual void quit(bool waitForThreadToExit = true);
 
         virtual double getLength() const;
+        virtual double getReferenceTime () const; 
         virtual double getFrameRate() const;
 
         virtual bool isImageTranslucent() const;
@@ -71,7 +72,7 @@ namespace osgFFmpeg
 
         Mutex            m_mutex;
         Condition        m_frame_published_cond;
-        bool            m_frame_published_flag;
+        bool             m_frame_published_flag;
         double           m_seek_time;
     };
 

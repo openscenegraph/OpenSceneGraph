@@ -20,6 +20,7 @@ FFmpegDecoderVideo::FFmpegDecoderVideo(PacketQueue & packets, FFmpegClocks & clo
     m_writeBuffer(0),
     m_user_data(0),
     m_publish_func(0),
+    m_paused(true),
     m_exit(false)
 #ifdef USE_SWSCALE
     ,m_swscale_ctx(0)
@@ -117,6 +118,13 @@ void FFmpegDecoderVideo::close(bool waitForThreadToExit)
     }
 }
 
+void FFmpegDecoderVideo::pause(bool pause)
+{
+    if(pause)
+        m_paused = true;
+    else
+        m_paused = false;
+}
 
 void FFmpegDecoderVideo::run()
 {
@@ -192,6 +200,11 @@ void FFmpegDecoderVideo::decodeLoop()
 
                 publishFrame(frame_delay, m_clocks.audioDisabled());
             }
+        }
+
+        while(m_paused && !m_exit)
+        {
+            microSleep(10000);
         }
 
         // Get the next packet

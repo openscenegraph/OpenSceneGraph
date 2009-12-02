@@ -25,6 +25,7 @@ FFmpegDecoderAudio::FFmpegDecoderAudio(PacketQueue & packets, FFmpegClocks & clo
     m_audio_buf_size(0),
     m_audio_buf_index(0),
     m_end_of_stream(false),
+    m_paused(true),
     m_exit(false)
 {
 
@@ -88,6 +89,13 @@ void FFmpegDecoderAudio::open(AVStream * const stream)
     }
 }
 
+void FFmpegDecoderAudio::pause(bool pause)
+{
+    if(pause)
+        m_paused = true;
+    else
+        m_paused = false;
+}
 
 void FFmpegDecoderAudio::close(bool waitForThreadToExit)
 {
@@ -184,6 +192,21 @@ void FFmpegDecoderAudio::decodeLoop()
 
     while (! m_exit)
     {
+
+        if(m_paused)
+        {
+            m_clocks.pause(true);
+            m_pause_timer.setStartTick();
+
+            while(m_paused)
+            {
+                microSleep(10000);
+            }
+
+            m_clocks.setPauseTime(m_pause_timer.time_s());
+            m_clocks.pause(false);
+        }
+
         // If skipping audio, make sure the audio stream is still consumed.
         if (skip_audio)
         {
@@ -193,7 +216,6 @@ void FFmpegDecoderAudio::decodeLoop()
             if (packet.valid())
                 packet.clear();
         }
-
         // Else, just idle in this thread.
         // Note: If m_audio_sink has an audio callback, this thread will still be awaken
         // from time to time to refill the audio buffer.

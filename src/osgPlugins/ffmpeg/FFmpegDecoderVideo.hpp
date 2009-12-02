@@ -65,6 +65,7 @@ public:
     ~FFmpegDecoderVideo();
 
     void open(AVStream * stream);
+    void pause(bool pause);
     void close(bool waitForThreadToExit);
 
     virtual void run();
@@ -120,6 +121,7 @@ private:
     size_t                  m_next_frame_index;
     bool                    m_alpha_channel;
 
+    bool                    m_paused;
     volatile bool           m_exit;
     
 #ifdef USE_SWSCALE    

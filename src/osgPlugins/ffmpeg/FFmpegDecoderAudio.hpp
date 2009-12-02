@@ -4,6 +4,8 @@
 
 #include <OpenThreads/Thread>
 
+#include <osg/Timer>
+
 #include "FFmpegClocks.hpp"
 #include "FFmpegPacket.hpp"
 
@@ -29,6 +31,7 @@ public:
     ~FFmpegDecoderAudio();
 
     void open(AVStream * stream);
+    void pause(bool pause);
     void close(bool waitForThreadToExit);
     
     virtual void run();
@@ -51,26 +54,29 @@ private:
     size_t decodeFrame(void * buffer, size_t size);
 
 
-    PacketQueue &        m_packets;
-    FFmpegClocks &        m_clocks;
-    AVStream *            m_stream;
-    AVCodecContext *    m_context;
-    FFmpegPacket        m_packet;
-    const uint8_t *        m_packet_data;
-    int                    m_bytes_remaining;
+    PacketQueue &                       m_packets;
+    FFmpegClocks &                      m_clocks;
+    AVStream *                          m_stream;
+    AVCodecContext *                    m_context;
+    FFmpegPacket                        m_packet;
+    const uint8_t *                     m_packet_data;
+    int                                 m_bytes_remaining;
 
-    Buffer                m_audio_buffer;
-    size_t                m_audio_buf_size;
-    size_t                m_audio_buf_index;
+    Buffer                              m_audio_buffer;
+    size_t                              m_audio_buf_size;
+    size_t                              m_audio_buf_index;
 
-    int                    m_frequency;
-    int                    m_nb_channels;
-    osg::AudioStream::SampleFormat    m_sample_format;
+    int                                 m_frequency;
+    int                                 m_nb_channels;
+    osg::AudioStream::SampleFormat      m_sample_format;
 
-    SinkPtr                m_audio_sink;
+    SinkPtr                             m_audio_sink;
 
-    bool                m_end_of_stream;
-    volatile bool        m_exit;
+    osg::Timer                          m_pause_timer;
+
+    bool                                m_end_of_stream;
+    bool                                m_paused;
+    volatile bool                       m_exit;
 };
 
 

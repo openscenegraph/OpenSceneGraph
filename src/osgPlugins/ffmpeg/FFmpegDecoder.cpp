@@ -213,15 +213,6 @@ void FFmpegDecoder::pause()
     m_state = PAUSE;
 }
 
-void FFmpegDecoder::resume() 
-{
-    m_pending_packet.clear();
-
-    flushAudioQueue();
-    flushVideoQueue();
-    m_state = NORMAL;
-}
-
 void FFmpegDecoder::findAudioStream()
 {
     for (unsigned int i = 0; i < m_format_context->nb_streams; ++i)
@@ -294,7 +285,10 @@ bool FFmpegDecoder::readNextPacketNormal()
         {
             // If we reach the end of the stream, change the decoder state
             if (loop())
+            {
+                m_clocks.reset(m_start);
                 rewindButDontFlushQueues();
+            }
             else
                 m_state = END_OF_STREAM;
 
@@ -392,6 +386,8 @@ void FFmpegDecoder::seekButDontFlushQueues(double time)
 
     const int64_t pos = int64_t(m_clocks.getStartTime()+time * double(AV_TIME_BASE));
     const int64_t seek_target = av_rescale_q(pos, AvTimeBaseQ, m_video_stream->time_base);
+
+    m_clocks.setSeekTime(time);
 
     if (av_seek_frame(m_format_context.get(), m_video_index, seek_target, 0/*AVSEEK_FLAG_BYTE |*/ /*AVSEEK_FLAG_BACKWARD*/) < 0)
         throw std::runtime_error("av_seek_frame failed()");

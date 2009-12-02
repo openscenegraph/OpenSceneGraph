@@ -30,6 +30,8 @@ namespace
 FFmpegClocks::FFmpegClocks() :
     m_video_clock(0),
     m_start_time(0),
+    m_pause_time(0),
+    m_seek_time(0),
     m_last_frame_delay(0.040),
     m_last_frame_pts(0),
     m_last_actual_delay(0),
@@ -37,7 +39,9 @@ FFmpegClocks::FFmpegClocks() :
     m_audio_buffer_end_pts(0),
     m_audio_delay(0.0),
     m_audio_disabled(false),
-    m_rewind(false)
+    m_rewind(false),
+    m_paused(false),
+    m_last_current_time(0.0)
 {
 
 }
@@ -57,6 +61,14 @@ void FFmpegClocks::reset(const double start_time)
 
     m_audio_buffer_end_pts = start_time;
     m_audio_timer.setStartTick();
+}
+
+void FFmpegClocks::pause(bool pause)
+{
+    if(pause)
+        m_paused = true;
+    else
+        m_paused = false;
 }
 
 
@@ -205,13 +217,30 @@ double FFmpegClocks::getStartTime() const
     return m_start_time;
 }
 
+void FFmpegClocks::setPauseTime(double pause_time)
+{
+    m_pause_time += pause_time;
+}
+
+void FFmpegClocks::setSeekTime(double seek_time)
+{
+    m_seek_time = getAudioTime() - seek_time;
+}
+
 
 
 double FFmpegClocks::getAudioTime() const
 {
-    return m_audio_buffer_end_pts + m_audio_timer.time_s() - m_audio_delay;
+    return m_audio_buffer_end_pts + m_audio_timer.time_s() - m_pause_time - m_audio_delay;
 }
 
 
+double FFmpegClocks::getCurrentTime()
+{
+    if(!m_paused)
+        m_last_current_time = getAudioTime() - m_seek_time; // synced with audio
+    
+    return m_last_current_time;  
+}
 
 } // namespace osgFFmpeg

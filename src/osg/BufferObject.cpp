@@ -170,7 +170,7 @@ void GLBufferObject::compileBuffer()
 
     if (newTotalSize > _profile._size)
     {
-        osg::notify(osg::NOTICE)<<"newTotalSize="<<newTotalSize<<", _profile._size="<<_profile._size<<std::endl;
+        osg::notify(osg::INFO)<<"newTotalSize="<<newTotalSize<<", _profile._size="<<_profile._size<<std::endl;
 
         _profile._size = newTotalSize;
 
@@ -392,7 +392,7 @@ GLBufferObjectSet::GLBufferObjectSet(GLBufferObjectManager* parent, const Buffer
     _head(0),
     _tail(0)
 {
-    osg::notify(osg::NOTICE)<<"GLBufferObjectSet::GLBufferObjectSet _profile._size="<<_profile._size<<std::endl;
+    osg::notify(osg::INFO)<<"GLBufferObjectSet::GLBufferObjectSet _profile._size="<<_profile._size<<std::endl;
 }
 
 GLBufferObjectSet::~GLBufferObjectSet()
@@ -853,8 +853,6 @@ void GLBufferObjectSet::addToBack(GLBufferObject* to)
 
 void GLBufferObjectSet::orphan(GLBufferObject* to)
 {
-    osg::notify(osg::NOTICE)<<"GLBufferObjectSet::orphan("<<to<<")"<<std::endl;
-
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
     // disconnect from original texture
@@ -866,11 +864,6 @@ void GLBufferObjectSet::orphan(GLBufferObject* to)
     // list.  This double buffered approach to handling orphaned TO's is used
     // to avoid having to mutex the process of appling active TO's.
     _pendingOrphanedGLBufferObjects.push_back(to);
-
-#if 1
-    osg::notify(osg::NOTICE)<<"GLBufferObjectSet::orphan("<<to<<")  _pendingOrphanedGLBufferObjects.size()="<<_pendingOrphanedGLBufferObjects.size()<<std::endl;
-    osg::notify(osg::NOTICE)<<"                                    _orphanedGLBufferObjects.size()="<<_orphanedGLBufferObjects.size()<<std::endl;
-#endif
 }
 
 void GLBufferObjectSet::remove(GLBufferObject* to)

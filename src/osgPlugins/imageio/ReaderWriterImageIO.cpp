@@ -311,16 +311,6 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
 
             break;
         }
-        case 16:
-        {
-            // FIXME: Is this really a reasonable assumption: GL_LUMINANCE_ALPHA?
-            internal_format = GL_LUMINANCE_ALPHA;
-            pixel_format = GL_LUMINANCE_ALPHA;
-            data_type = GL_UNSIGNED_BYTE;
-//            color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericGray);
-            color_space = CGColorSpaceCreateDeviceGray();
-            break;
-        }
         case 24:
         {
             internal_format = GL_RGBA8;
@@ -337,9 +327,17 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
 #endif       
             break;
         }
+        //
+        // Tatsuhiro Nishioka
+        // 16 bpp grayscale (8 bit white and 8 bit alpha) causes invalid argument combination
+        // in CGBitmapContextCreate. 
+        // I guess it is safer to handle 16 bit grayscale image as 32-bit RGBA image.
+        // It works at least on FlightGear
+        //
+        case 16:
         case 32:
         {
-            
+
             internal_format = GL_RGBA8;
             pixel_format = GL_BGRA_EXT;
             data_type = GL_UNSIGNED_INT_8_8_8_8_REV;
@@ -348,6 +346,7 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
 //            color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
             color_space = CGColorSpaceCreateDeviceRGB();
 //            bitmap_info = kCGImageAlphaPremultipliedFirst;
+
 #if __BIG_ENDIAN__
             bitmap_info = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Big; /* XRGB Big Endian */
 #else
@@ -380,6 +379,43 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
 
     CGContextRelease(bitmap_context);
 
+    // 
+    // Reverse the premultiplied alpha for avoiding unexpected darker edges
+    // by Tatsuhiro Nishioka (based on SDL's workaround on the similar issue)
+    // http://bugzilla.libsdl.org/show_bug.cgi?id=868
+    // 
+    if (bits_per_pixel > 8 && (bitmap_info & kCGBitmapAlphaInfoMask) == kCGImageAlphaPremultipliedFirst) {
+        int i, j;
+        GLubyte *pixels = (GLubyte *)image_data;
+        for (i = the_height * the_width; i--; ) {
+            GLuint *value = (GLuint *)pixels;
+#if __BIG_ENDIAN__
+            // 
+            // swap endian of each pixel for avoiding weird colors on ppc macs
+            // by Tatsuhiro Nishioka
+            // FIXME: I've tried many combinations of pixel_format, internal_format, and data_type 
+            // but none worked well. Therefore I tried endian swapping, which seems working with gif,png,tiff,tga,and psd.
+            // (for grayscaled tga and non-power-of-two tga, I can't guarantee since test images (made with Gimp) 
+            // get corrupted on Preview.app ...
+            *value = ((*value) >> 24) | (((*value) << 8) & 0x00FF0000) | (((*value) >> 8) & 0x0000FF00) | ((*value) << 24);
+#endif
+            GLubyte alpha = pixels[3];
+            if (alpha) {
+                for (j = 0; j < 3; ++j) {
+                    pixels[j] = (pixels[j] * 255) / alpha;
+                }
+            }
+            pixels += 4;
+        }
+    }
+
+    //
+    // Workaround for ignored alpha channel
+    // by Tatsuhiro Nishioka
+    // FIXME: specifying GL_UNSIGNED_INT_8_8_8_8_REV or GL_UNSIGNED_INT_8_8_8_8 ignores the alpha channel.
+    // changing it to GL_UNSIGNED_BYTE seems working, but I'm not sure if this is a right way.
+    //
+    data_type = GL_UNSIGNED_BYTE;
     osg::Image* osg_image = new osg::Image;
     
     osg_image->setImage(

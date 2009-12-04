@@ -62,7 +62,7 @@ static const char fragmentSoftShaderSource_noBaseTexture[] =
     "  float softFactor = osgShadow_softnessWidth * sceneShadowProj.w; \n"
     "  vec4 smCoord  = sceneShadowProj; \n"
     "  vec3 jitterCoord = vec3( gl_FragCoord.xy / osgShadow_jitteringScale, 0.0 ); \n"
-    "  vec4 shadow = vec4(0.0, 0.0, 0.0, 0.0); \n"
+    "  float shadow = 0.0; \n"
 // First "cheap" sample test
     "  const float pass_div = 1.0 / (2.0 * 4.0); \n"
     "  for ( int i = 0; i < 4; ++i ) \n"
@@ -72,10 +72,10 @@ static const char fragmentSoftShaderSource_noBaseTexture[] =
     "    jitterCoord.z += 1.0 / SAMPLECOUNT_D2_FLOAT; \n"
 
     "    smCoord.xy = sceneShadowProj.xy  + (offset.xy) * softFactor; \n"
-    "    shadow +=  shadow2DProj( osgShadow_shadowTexture, smCoord ) * pass_div; \n"
+    "    shadow +=  shadow2DProj( osgShadow_shadowTexture, smCoord ).x * pass_div; \n"
 
     "    smCoord.xy = sceneShadowProj.xy  + (offset.zw) * softFactor; \n"
-    "    shadow +=  shadow2DProj( osgShadow_shadowTexture, smCoord ) *pass_div; \n"
+    "    shadow +=  shadow2DProj( osgShadow_shadowTexture, smCoord ).x *pass_div; \n"
     "  } \n"
 // skip all the expensive shadow sampling if not needed
     "  if ( shadow * (shadow -1.0) != 0.0 ) \n"
@@ -86,10 +86,10 @@ static const char fragmentSoftShaderSource_noBaseTexture[] =
     "      jitterCoord.z += 1.0 / SAMPLECOUNT_D2_FLOAT; \n"
 
     "      smCoord.xy = sceneShadowProj.xy  + offset.xy * softFactor; \n"
-    "      shadow +=  shadow2DProj( osgShadow_shadowTexture, smCoord ) * INV_SAMPLECOUNT; \n"
+    "      shadow +=  shadow2DProj( osgShadow_shadowTexture, smCoord ).x * INV_SAMPLECOUNT; \n"
 
     "      smCoord.xy = sceneShadowProj.xy  + offset.zw * softFactor; \n"
-    "      shadow +=  shadow2DProj( osgShadow_shadowTexture, smCoord ) * INV_SAMPLECOUNT; \n"
+    "      shadow +=  shadow2DProj( osgShadow_shadowTexture, smCoord ).x * INV_SAMPLECOUNT; \n"
     "    } \n"
     "  } \n"
 // apply shadow, modulo the ambient bias
@@ -122,7 +122,7 @@ static const char fragmentSoftShaderSource_withBaseTexture[] =
     "  float softFactor = osgShadow_softnessWidth * sceneShadowProj.w; \n"
     "  vec4 smCoord  = sceneShadowProj; \n"
     "  vec3 jitterCoord = vec3( gl_FragCoord.xy / osgShadow_jitteringScale, 0.0 ); \n"
-    "  vec4 shadow = vec4(0.0, 0.0, 0.0, 0.0); \n"
+    "  float shadow = 0.0; \n"
 // First "cheap" sample test
     "  const float pass_div = 1.0 / (2.0 * 4.0); \n"
     "  for ( int i = 0; i < 4; ++i ) \n"
@@ -132,10 +132,10 @@ static const char fragmentSoftShaderSource_withBaseTexture[] =
     "    jitterCoord.z += 1.0 / SAMPLECOUNT_D2_FLOAT; \n"
 
     "    smCoord.xy = sceneShadowProj.xy  + (offset.xy) * softFactor; \n"
-    "    shadow +=  shadow2DProj( osgShadow_shadowTexture, smCoord ) * pass_div; \n"
+    "    shadow +=  shadow2DProj( osgShadow_shadowTexture, smCoord ).x * pass_div; \n"
 
     "    smCoord.xy = sceneShadowProj.xy  + (offset.zw) * softFactor; \n"
-    "    shadow +=  shadow2DProj( osgShadow_shadowTexture, smCoord ) *pass_div; \n"
+    "    shadow +=  shadow2DProj( osgShadow_shadowTexture, smCoord ).x *pass_div; \n"
     "  } \n"
 // skip all the expensive shadow sampling if not needed
     "  if ( shadow * (shadow -1.0) != 0.0 ) \n"
@@ -146,10 +146,10 @@ static const char fragmentSoftShaderSource_withBaseTexture[] =
     "      jitterCoord.z += 1.0 / SAMPLECOUNT_D2_FLOAT; \n"
 
     "      smCoord.xy = sceneShadowProj.xy  + offset.xy * softFactor; \n"
-    "      shadow +=  shadow2DProj( osgShadow_shadowTexture, smCoord ) * INV_SAMPLECOUNT; \n"
+    "      shadow +=  shadow2DProj( osgShadow_shadowTexture, smCoord ).x * INV_SAMPLECOUNT; \n"
 
     "      smCoord.xy = sceneShadowProj.xy  + offset.zw * softFactor; \n"
-    "      shadow +=  shadow2DProj( osgShadow_shadowTexture, smCoord ) * INV_SAMPLECOUNT; \n"
+    "      shadow +=  shadow2DProj( osgShadow_shadowTexture, smCoord ).x * INV_SAMPLECOUNT; \n"
     "    } \n"
     "  } \n"
 // apply color and object base texture

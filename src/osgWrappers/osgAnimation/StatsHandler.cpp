@@ -13,7 +13,6 @@
 #include <osg/ApplicationUsage>
 #include <osg/Camera>
 #include <osgAnimation/StatsHandler>
-#include <osgAnimation/StatsVisitor>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 
@@ -87,11 +86,6 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::StatsHandler)
 	          Properties::VIRTUAL,
 	          __void__getUsage__osg_ApplicationUsage_R1,
 	          "Get the keyboard and mouse usage of this manipulator. ",
-	          "");
-	I_Method1(void, updateGraph, IN, osgAnimation::StatsActionVisitor *, visitor,
-	          Properties::NON_VIRTUAL,
-	          __void__updateGraph__osgAnimation_StatsActionVisitor_P1,
-	          "",
 	          "");
 	I_ProtectedMethod1(void, setUpHUDCamera, IN, osgViewer::ViewerBase *, viewer,
 	                   Properties::NON_VIRTUAL,

@@ -79,16 +79,6 @@ void GLObjectsVisitor::apply(osg::Drawable& drawable)
         drawable.setUseDisplayList(true);
     }
 
-    if (_mode&COMPILE_DISPLAY_LISTS && _renderInfo.getState())
-    {
-        drawable.compileGLObjects(_renderInfo);
-    }
-
-    if (_mode&RELEASE_DISPLAY_LISTS)
-    {
-        drawable.releaseGLObjects(_renderInfo.getState());
-    }
-
     if (_mode&SWITCH_ON_VERTEX_BUFFER_OBJECTS)
     {
         drawable.setUseVertexBufferObjects(true);
@@ -97,6 +87,16 @@ void GLObjectsVisitor::apply(osg::Drawable& drawable)
     if (_mode&SWITCH_OFF_VERTEX_BUFFER_OBJECTS)
     {
         drawable.setUseVertexBufferObjects(false);
+    }
+
+    if (_mode&COMPILE_DISPLAY_LISTS && _renderInfo.getState())
+    {
+        drawable.compileGLObjects(_renderInfo);
+    }
+
+    if (_mode&RELEASE_DISPLAY_LISTS)
+    {
+        drawable.releaseGLObjects(_renderInfo.getState());
     }
 }
 

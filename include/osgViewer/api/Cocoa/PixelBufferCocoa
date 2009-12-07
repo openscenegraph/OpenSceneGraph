@@ -34,14 +34,14 @@ namespace osgViewer
 class OSGVIEWER_EXPORT PixelBufferCocoa : public osg::GraphicsContext
 {
     public:
-		struct Implementation;
+        struct Implementation;
 
         PixelBufferCocoa(osg::GraphicsContext::Traits* traits):
-			_valid(false),
-			_initialized(false),
+            _valid(false),
+            _initialized(false),
             _realized(false),
             _context(NULL)
-		{
+        {
             _traits = traits;
 
             init();
@@ -99,7 +99,7 @@ class OSGVIEWER_EXPORT PixelBufferCocoa : public osg::GraphicsContext
     
 
     protected:
-		
+        
 
     
         ~PixelBufferCocoa();
@@ -109,7 +109,7 @@ class OSGVIEWER_EXPORT PixelBufferCocoa : public osg::GraphicsContext
         bool            _valid;
         bool            _initialized;
         bool            _realized;  
-		NSOpenGLContext* _context;
+        NSOpenGLContext* _context;
 };
 
 }

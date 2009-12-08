@@ -143,10 +143,32 @@ void Texture2D::apply(State& state) const
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
 
-    if (textureObject != 0)
+    if (textureObject)
+    {
+        if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
+        {
+            // compute the internal texture format, this set the _internalFormat to an appropriate value.
+            computeInternalFormat();
+
+            GLsizei new_width, new_height, new_numMipmapLevels;
+
+            // compute the dimensions of the texture.
+            computeRequiredTextureDimensions(state, *_image, new_width, new_height, new_numMipmapLevels);
+
+            if (!textureObject->match(GL_TEXTURE_2D, new_numMipmapLevels, _internalFormat, new_width, new_height, 1, _borderWidth))
+            {
+                Texture::releaseTextureObject(contextID, _textureObjectBuffer[contextID].get());
+                _textureObjectBuffer[contextID] = 0;
+                textureObject = 0;
+            }
+        }
+    }
+
+
+    if (textureObject)
     {
         textureObject->bind();
-        
+
         if (getTextureParameterDirty(state.getContextID()))
             applyTexParameters(GL_TEXTURE_2D,state);
 
@@ -180,7 +202,7 @@ void Texture2D::apply(State& state) const
 
         _subloadCallback->load(*this,state);
         
-        textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
+        textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,_borderWidth);
 
         // in theory the following line is redundent, but in practice
         // have found that the first frame drawn doesn't apply the textures
@@ -202,7 +224,7 @@ void Texture2D::apply(State& state) const
         computeRequiredTextureDimensions(state,*image,_textureWidth, _textureHeight, _numMipmapLevels);
 
         _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
-                this, contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
+                this, contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,_borderWidth);
 
         textureObject->bind();
 
@@ -245,7 +267,7 @@ void Texture2D::apply(State& state) const
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_internalFormat!=0) )
     {
         _textureObjectBuffer[contextID] = textureObject = generateTextureObject(
-                this, contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
+                this, contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,_borderWidth);
         
         textureObject->bind();
 

@@ -320,6 +320,12 @@ int main(int argc, char *argv[])
 
     viewer.setThreadingModel(threading);
 
+    // setup stencil buffer for Outline f/x.
+    osg::DisplaySettings::instance()->setMinimumNumStencilBits(1);
+    unsigned int clearMask = viewer.getCamera()->getClearMask();
+    viewer.getCamera()->setClearMask(clearMask | GL_STENCIL_BUFFER_BIT);
+    viewer.getCamera()->setClearStencil(0);
+ 
     // any option left unread are converted into errors to write out later.
     arguments.reportRemainingOptionsAsUnrecognized();
 

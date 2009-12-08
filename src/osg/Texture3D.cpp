@@ -210,7 +210,28 @@ void Texture3D::apply(State& state) const
 
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
-    
+
+    if (textureObject)
+    {
+        if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
+        {
+            // compute the internal texture format, this set the _internalFormat to an appropriate value.
+            computeInternalFormat();
+
+            GLsizei new_width, new_height, new_depth, new_numMipmapLevels;
+
+            // compute the dimensions of the texture.
+            computeRequiredTextureDimensions(state, *_image, new_width, new_height, new_depth, new_numMipmapLevels);
+
+            if (!textureObject->match(GL_TEXTURE_3D, new_numMipmapLevels, _internalFormat, new_width, new_height, new_depth, _borderWidth))
+            {
+                Texture::releaseTextureObject(contextID, _textureObjectBuffer[contextID].get());
+                _textureObjectBuffer[contextID] = 0;
+                textureObject = 0;
+            }
+        }
+    }
+
     if (textureObject)
     {
         // we have a valid image

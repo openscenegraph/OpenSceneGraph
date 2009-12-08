@@ -960,9 +960,9 @@ void Image::scaleImage(int s,int t,int r, GLenum newDataType)
     }
     else
     {
-    delete [] newData;
+        delete [] newData;
 
-        notify(WARN) << "Error Image::scaleImage() did not succeed : errorString = "<<gluErrorString((GLenum)status)<<std::endl;
+        notify(WARN) << "Error Image::scaleImage() did not succeed : errorString = "<< gluErrorString((GLenum)status) << ". The rendering context may be invalid." << std::endl;
     }
 
     dirty();
@@ -1023,7 +1023,7 @@ void Image::copySubImage(int s_offset, int t_offset, int r_offset, const osg::Im
 
     if (status!=0)
     {
-        notify(WARN) << "Error Image::scaleImage() do not succeed : errorString = "<<gluErrorString((GLenum)status)<<std::endl;
+        notify(WARN) << "Error Image::scaleImage() did not succeed : errorString = "<< gluErrorString((GLenum)status) << ". The rendering context may be invalid." << std::endl;
     }
 #else
     osg::notify(osg::NOTICE)<<"Warning: Image::copySubImage(int, int, int, const osg::Image*)) not supported."<<std::endl;

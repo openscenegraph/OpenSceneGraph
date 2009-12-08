@@ -209,7 +209,29 @@ void TextureCubeMap::apply(State& state) const
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
 
-    if (textureObject != 0)
+    if (textureObject)
+    {
+        const osg::Image* image = _images[0].get();
+        if (image && getModifiedCount(0, contextID) != image->getModifiedCount())
+        {
+            // compute the internal texture format, this set the _internalFormat to an appropriate value.
+            computeInternalFormat();
+
+            GLsizei new_width, new_height, new_numMipmapLevels;
+
+            // compute the dimensions of the texture.
+            computeRequiredTextureDimensions(state, *image, new_width, new_height, new_numMipmapLevels);
+
+            if (!textureObject->match(GL_TEXTURE_CUBE_MAP, new_numMipmapLevels, _internalFormat, new_width, new_height, 1, _borderWidth))
+            {
+                Texture::releaseTextureObject(contextID, _textureObjectBuffer[contextID].get());
+                _textureObjectBuffer[contextID] = 0;
+                textureObject = 0;
+            }
+        }
+    }
+
+    if (textureObject)
     {
         textureObject->bind();
 

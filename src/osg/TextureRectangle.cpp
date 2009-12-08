@@ -170,12 +170,32 @@ void TextureRectangle::apply(State& state) const
 
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
-    
-    
-    if (textureObject != 0)
-    {
 
+    if (textureObject)
+    {
+        if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
+        {
+            // compute the internal texture format, this set the _internalFormat to an appropriate value.
+            computeInternalFormat();
+
+            GLsizei new_width, new_height, new_numMipmapLevels;
+
+            // compute the dimensions of the texture.
+            computeRequiredTextureDimensions(state, *_image, new_width, new_height, new_numMipmapLevels);
+
+            if (!textureObject->match(GL_TEXTURE_RECTANGLE, new_numMipmapLevels, _internalFormat, new_width, new_height, 1, _borderWidth))
+            {
+                Texture::releaseTextureObject(contextID, _textureObjectBuffer[contextID].get());
+                _textureObjectBuffer[contextID] = 0;
+                textureObject = 0;
+            }
+        }
+    }
+
+    if (textureObject)
+    {
         textureObject->bind();
+
         if (getTextureParameterDirty(state.getContextID()))
             applyTexParameters(GL_TEXTURE_RECTANGLE, state);
 

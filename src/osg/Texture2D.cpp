@@ -164,7 +164,6 @@ void Texture2D::apply(State& state) const
         }
     }
 
-
     if (textureObject)
     {
         textureObject->bind();
@@ -211,7 +210,7 @@ void Texture2D::apply(State& state) const
         //glBindTexture( GL_TEXTURE_2D, handle );
 
         // update the modified tag to show that it is upto date.
-        if (_image.vaid()) getModifiedCount(contextID) = _image->getModifiedCount();
+        if (_image.valid()) getModifiedCount(contextID) = _image->getModifiedCount();
     }
     else if (_image.valid() && _image->data())
     {

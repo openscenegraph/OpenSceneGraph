@@ -477,48 +477,7 @@
 		001852A0078C583400D3FC44 /* Terrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0018529C078C583000D3FC44 /* Terrain.cpp */; };
 		001852A1078C583400D3FC44 /* TerrainTechnique.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0018529D078C583200D3FC44 /* TerrainTechnique.cpp */; };
 		001852A2078C583400D3FC44 /* Version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0018529E078C583300D3FC44 /* Version.cpp */; };
-		001D0006065AA4BD003310BF /* atmosphere.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFD9065AA4BD003310BF /* atmosphere.cpp */; };
-		001D0007065AA4BD003310BF /* atmosphere.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFFDA065AA4BD003310BF /* atmosphere.h */; };
-		001D0008065AA4BD003310BF /* background.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFDC065AA4BD003310BF /* background.cpp */; };
-		001D0009065AA4BD003310BF /* background.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFFDD065AA4BD003310BF /* background.h */; };
-		001D000A065AA4BD003310BF /* camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFDE065AA4BD003310BF /* camera.cpp */; };
-		001D000B065AA4BD003310BF /* camera.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFFDF065AA4BD003310BF /* camera.h */; };
-		001D000C065AA4BD003310BF /* chunk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFE0065AA4BD003310BF /* chunk.cpp */; };
-		001D000D065AA4BD003310BF /* chunk.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFFE1065AA4BD003310BF /* chunk.h */; };
-		001D000E065AA4BD003310BF /* chunktable.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFFE2065AA4BD003310BF /* chunktable.h */; };
-		001D000F065AA4BD003310BF /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFFE3065AA4BD003310BF /* config.h */; };
-		001D0010065AA4BD003310BF /* ease.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFE4065AA4BD003310BF /* ease.cpp */; };
-		001D0011065AA4BD003310BF /* ease.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFFE5065AA4BD003310BF /* ease.h */; };
-		001D0012065AA4BD003310BF /* file.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFE6065AA4BD003310BF /* file.cpp */; };
-		001D0013065AA4BD003310BF /* file.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFFE7065AA4BD003310BF /* file.h */; };
-		001D0014065AA4BD003310BF /* lib3ds_float.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFE9065AA4BD003310BF /* lib3ds_float.cpp */; };
-		001D0015065AA4BD003310BF /* lib3ds_float.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFFEA065AA4BD003310BF /* lib3ds_float.h */; };
-		001D0016065AA4BD003310BF /* light.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFEB065AA4BD003310BF /* light.cpp */; };
-		001D0017065AA4BD003310BF /* light.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFFEC065AA4BD003310BF /* light.h */; };
-		001D0018065AA4BD003310BF /* material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFED065AA4BD003310BF /* material.cpp */; };
-		001D0019065AA4BD003310BF /* material.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFFEE065AA4BD003310BF /* material.h */; };
-		001D001A065AA4BD003310BF /* matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFEF065AA4BD003310BF /* matrix.cpp */; };
-		001D001B065AA4BD003310BF /* matrix.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFFF0065AA4BD003310BF /* matrix.h */; };
-		001D001C065AA4BD003310BF /* mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFF1065AA4BD003310BF /* mesh.cpp */; };
-		001D001D065AA4BD003310BF /* mesh.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFFF2065AA4BD003310BF /* mesh.h */; };
-		001D001E065AA4BD003310BF /* node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFF3065AA4BD003310BF /* node.cpp */; };
-		001D001F065AA4BD003310BF /* node.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFFF4065AA4BD003310BF /* node.h */; };
-		001D0020065AA4BD003310BF /* quat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFF5065AA4BD003310BF /* quat.cpp */; };
-		001D0021065AA4BD003310BF /* quat.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFFF6065AA4BD003310BF /* quat.h */; };
 		001D0022065AA4BD003310BF /* ReaderWriter3DS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFF7065AA4BD003310BF /* ReaderWriter3DS.cpp */; };
-		001D0023065AA4BD003310BF /* readwrite.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFF9065AA4BD003310BF /* readwrite.cpp */; };
-		001D0024065AA4BD003310BF /* readwrite.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFFFA065AA4BD003310BF /* readwrite.h */; };
-		001D0025065AA4BD003310BF /* shadow.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFFB065AA4BD003310BF /* shadow.cpp */; };
-		001D0026065AA4BD003310BF /* shadow.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFFFC065AA4BD003310BF /* shadow.h */; };
-		001D0027065AA4BD003310BF /* tcb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFFD065AA4BD003310BF /* tcb.cpp */; };
-		001D0028065AA4BD003310BF /* tcb.h in Headers */ = {isa = PBXBuildFile; fileRef = 001DFFFE065AA4BD003310BF /* tcb.h */; };
-		001D0029065AA4BD003310BF /* tracks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001DFFFF065AA4BD003310BF /* tracks.cpp */; };
-		001D002A065AA4BD003310BF /* tracks.h in Headers */ = {isa = PBXBuildFile; fileRef = 001D0000065AA4BD003310BF /* tracks.h */; };
-		001D002B065AA4BD003310BF /* types.h in Headers */ = {isa = PBXBuildFile; fileRef = 001D0001065AA4BD003310BF /* types.h */; };
-		001D002C065AA4BD003310BF /* vector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001D0002065AA4BD003310BF /* vector.cpp */; };
-		001D002D065AA4BD003310BF /* vector.h in Headers */ = {isa = PBXBuildFile; fileRef = 001D0003065AA4BD003310BF /* vector.h */; };
-		001D002E065AA4BD003310BF /* viewport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001D0004065AA4BD003310BF /* viewport.cpp */; };
-		001D002F065AA4BD003310BF /* viewport.h in Headers */ = {isa = PBXBuildFile; fileRef = 001D0005065AA4BD003310BF /* viewport.h */; };
 		001D0055065AA51C003310BF /* osgUtil.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE11849A05D7126100EB53E5 /* osgUtil.framework */; };
 		001D005E065AA52E003310BF /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		001D005F065AA52E003310BF /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
@@ -2874,6 +2833,31 @@
 		D4F0928D0D4BB46100BB1AC7 /* Locator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F092810D4BB46000BB1AC7 /* Locator.cpp */; };
 		D4F0928E0D4BB46100BB1AC7 /* Locator.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F092820D4BB46000BB1AC7 /* Locator.h */; };
 		D4F092AD0D4BB47A00BB1AC7 /* osgTerrain.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6320CD4307845BC300FE3D2C /* osgTerrain.framework */; };
+		D4F4121710CE64D900856466 /* WriterCompareTriangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F4121310CE64D800856466 /* WriterCompareTriangle.cpp */; };
+		D4F4121810CE64D900856466 /* WriterCompareTriangle.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F4121410CE64D800856466 /* WriterCompareTriangle.h */; };
+		D4F4121910CE64D900856466 /* WriterNodeVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F4121510CE64D900856466 /* WriterNodeVisitor.cpp */; };
+		D4F4121A10CE64D900856466 /* WriterNodeVisitor.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F4121610CE64D900856466 /* WriterNodeVisitor.h */; };
+		D4F4123010CE64EB00856466 /* lib3ds.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F4121B10CE64E900856466 /* lib3ds.h */; };
+		D4F4123110CE64EB00856466 /* lib3ds_atmosphere.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4121C10CE64E900856466 /* lib3ds_atmosphere.c */; };
+		D4F4123210CE64EB00856466 /* lib3ds_background.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4121D10CE64E900856466 /* lib3ds_background.c */; };
+		D4F4123310CE64EB00856466 /* lib3ds_camera.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4121E10CE64E900856466 /* lib3ds_camera.c */; };
+		D4F4123410CE64EB00856466 /* lib3ds_chunk.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4121F10CE64E900856466 /* lib3ds_chunk.c */; };
+		D4F4123510CE64EB00856466 /* lib3ds_chunktable.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4122010CE64E900856466 /* lib3ds_chunktable.c */; };
+		D4F4123610CE64EB00856466 /* lib3ds_file.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4122110CE64EA00856466 /* lib3ds_file.c */; };
+		D4F4123710CE64EB00856466 /* lib3ds_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = D4F4122210CE64EA00856466 /* lib3ds_impl.h */; };
+		D4F4123810CE64EB00856466 /* lib3ds_io.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4122310CE64EA00856466 /* lib3ds_io.c */; };
+		D4F4123910CE64EB00856466 /* lib3ds_light.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4122410CE64EA00856466 /* lib3ds_light.c */; };
+		D4F4123A10CE64EB00856466 /* lib3ds_material.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4122510CE64EA00856466 /* lib3ds_material.c */; };
+		D4F4123B10CE64EB00856466 /* lib3ds_math.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4122610CE64EA00856466 /* lib3ds_math.c */; };
+		D4F4123C10CE64EB00856466 /* lib3ds_matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4122710CE64EA00856466 /* lib3ds_matrix.c */; };
+		D4F4123D10CE64EB00856466 /* lib3ds_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4122810CE64EA00856466 /* lib3ds_mesh.c */; };
+		D4F4123E10CE64EB00856466 /* lib3ds_node.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4122910CE64EA00856466 /* lib3ds_node.c */; };
+		D4F4123F10CE64EB00856466 /* lib3ds_quat.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4122A10CE64EA00856466 /* lib3ds_quat.c */; };
+		D4F4124010CE64EB00856466 /* lib3ds_shadow.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4122B10CE64EB00856466 /* lib3ds_shadow.c */; };
+		D4F4124110CE64EB00856466 /* lib3ds_track.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4122C10CE64EB00856466 /* lib3ds_track.c */; };
+		D4F4124210CE64EB00856466 /* lib3ds_util.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4122D10CE64EB00856466 /* lib3ds_util.c */; };
+		D4F4124310CE64EB00856466 /* lib3ds_vector.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4122E10CE64EB00856466 /* lib3ds_vector.c */; };
+		D4F4124410CE64EB00856466 /* lib3ds_viewport.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4122F10CE64EB00856466 /* lib3ds_viewport.c */; };
 		D4F424CC0F5D9E290052261D /* AudioStream in Headers */ = {isa = PBXBuildFile; fileRef = D4F424CB0F5D9E290052261D /* AudioStream */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4F424CE0F5D9E3D0052261D /* AudioStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F424CD0F5D9E3D0052261D /* AudioStream.cpp */; };
 		D4F80A9F0F935ABF0043A5DE /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
@@ -6802,12 +6786,6 @@
 		0018529C078C583000D3FC44 /* Terrain.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Terrain.cpp; path = ../../src/osgTerrain/Terrain.cpp; sourceTree = SOURCE_ROOT; };
 		0018529D078C583200D3FC44 /* TerrainTechnique.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TerrainTechnique.cpp; path = ../../src/osgTerrain/TerrainTechnique.cpp; sourceTree = SOURCE_ROOT; };
 		0018529E078C583300D3FC44 /* Version.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Version.cpp; path = ../../src/osgTerrain/Version.cpp; sourceTree = SOURCE_ROOT; };
-		001D0000065AA4BD003310BF /* tracks.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = tracks.h; sourceTree = "<group>"; };
-		001D0001065AA4BD003310BF /* types.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = types.h; sourceTree = "<group>"; };
-		001D0002065AA4BD003310BF /* vector.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = vector.cpp; sourceTree = "<group>"; };
-		001D0003065AA4BD003310BF /* vector.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = vector.h; sourceTree = "<group>"; };
-		001D0004065AA4BD003310BF /* viewport.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = viewport.cpp; sourceTree = "<group>"; };
-		001D0005065AA4BD003310BF /* viewport.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = viewport.h; sourceTree = "<group>"; };
 		001D0060065AA52E003310BF /* osgdb_logo.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_logo.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		001D0069065AA58D003310BF /* ReaderWriterLOGO.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ReaderWriterLOGO.cpp; path = ../../src/osgPlugins/logo/ReaderWriterLOGO.cpp; sourceTree = SOURCE_ROOT; };
 		001D0092065AA5E1003310BF /* osgdb_lwo.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_lwo.so; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -7052,42 +7030,7 @@
 		001DFDE4065A9DB2003310BF /* osgdb_dw.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_dw.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		001DFDF1065A9E04003310BF /* ReaderWriterDW.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ReaderWriterDW.cpp; path = ../../src/osgPlugins/dw/ReaderWriterDW.cpp; sourceTree = SOURCE_ROOT; };
 		001DFFD1065AA472003310BF /* osgdb_3ds.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_3ds.so; sourceTree = BUILT_PRODUCTS_DIR; };
-		001DFFD9065AA4BD003310BF /* atmosphere.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = atmosphere.cpp; sourceTree = "<group>"; };
-		001DFFDA065AA4BD003310BF /* atmosphere.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = atmosphere.h; sourceTree = "<group>"; };
-		001DFFDC065AA4BD003310BF /* background.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = background.cpp; sourceTree = "<group>"; };
-		001DFFDD065AA4BD003310BF /* background.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = background.h; sourceTree = "<group>"; };
-		001DFFDE065AA4BD003310BF /* camera.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = camera.cpp; sourceTree = "<group>"; };
-		001DFFDF065AA4BD003310BF /* camera.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = camera.h; sourceTree = "<group>"; };
-		001DFFE0065AA4BD003310BF /* chunk.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = chunk.cpp; sourceTree = "<group>"; };
-		001DFFE1065AA4BD003310BF /* chunk.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = chunk.h; sourceTree = "<group>"; };
-		001DFFE2065AA4BD003310BF /* chunktable.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = chunktable.h; sourceTree = "<group>"; };
-		001DFFE3065AA4BD003310BF /* config.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = config.h; sourceTree = "<group>"; };
-		001DFFE4065AA4BD003310BF /* ease.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = ease.cpp; sourceTree = "<group>"; };
-		001DFFE5065AA4BD003310BF /* ease.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = ease.h; sourceTree = "<group>"; };
-		001DFFE6065AA4BD003310BF /* file.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = file.cpp; sourceTree = "<group>"; };
-		001DFFE7065AA4BD003310BF /* file.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = file.h; sourceTree = "<group>"; };
-		001DFFE9065AA4BD003310BF /* lib3ds_float.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = lib3ds_float.cpp; sourceTree = "<group>"; };
-		001DFFEA065AA4BD003310BF /* lib3ds_float.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = lib3ds_float.h; sourceTree = "<group>"; };
-		001DFFEB065AA4BD003310BF /* light.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = light.cpp; sourceTree = "<group>"; };
-		001DFFEC065AA4BD003310BF /* light.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = light.h; sourceTree = "<group>"; };
-		001DFFED065AA4BD003310BF /* material.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = material.cpp; sourceTree = "<group>"; };
-		001DFFEE065AA4BD003310BF /* material.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = material.h; sourceTree = "<group>"; };
-		001DFFEF065AA4BD003310BF /* matrix.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = matrix.cpp; sourceTree = "<group>"; };
-		001DFFF0065AA4BD003310BF /* matrix.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = matrix.h; sourceTree = "<group>"; };
-		001DFFF1065AA4BD003310BF /* mesh.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = mesh.cpp; sourceTree = "<group>"; };
-		001DFFF2065AA4BD003310BF /* mesh.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = mesh.h; sourceTree = "<group>"; };
-		001DFFF3065AA4BD003310BF /* node.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = node.cpp; sourceTree = "<group>"; };
-		001DFFF4065AA4BD003310BF /* node.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = node.h; sourceTree = "<group>"; };
-		001DFFF5065AA4BD003310BF /* quat.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = quat.cpp; sourceTree = "<group>"; };
-		001DFFF6065AA4BD003310BF /* quat.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = quat.h; sourceTree = "<group>"; };
 		001DFFF7065AA4BD003310BF /* ReaderWriter3DS.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = ReaderWriter3DS.cpp; sourceTree = "<group>"; };
-		001DFFF9065AA4BD003310BF /* readwrite.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = readwrite.cpp; sourceTree = "<group>"; };
-		001DFFFA065AA4BD003310BF /* readwrite.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = readwrite.h; sourceTree = "<group>"; };
-		001DFFFB065AA4BD003310BF /* shadow.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = shadow.cpp; sourceTree = "<group>"; };
-		001DFFFC065AA4BD003310BF /* shadow.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = shadow.h; sourceTree = "<group>"; };
-		001DFFFD065AA4BD003310BF /* tcb.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = tcb.cpp; sourceTree = "<group>"; };
-		001DFFFE065AA4BD003310BF /* tcb.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = tcb.h; sourceTree = "<group>"; };
-		001DFFFF065AA4BD003310BF /* tracks.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; path = tracks.cpp; sourceTree = "<group>"; };
 		00294B6A0CE5577A00A90A9E /* QTLiveUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QTLiveUtils.cpp; sourceTree = "<group>"; };
 		00294B6B0CE5577A00A90A9E /* QTLiveUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTLiveUtils.h; sourceTree = "<group>"; };
 		00294B6C0CE5577A00A90A9E /* QuicktimeLiveImageStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = QuicktimeLiveImageStream.cpp; sourceTree = "<group>"; };
@@ -8703,6 +8646,31 @@
 		D4F092800D4BB46000BB1AC7 /* Layer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Layer.h; sourceTree = "<group>"; };
 		D4F092810D4BB46000BB1AC7 /* Locator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Locator.cpp; sourceTree = "<group>"; };
 		D4F092820D4BB46000BB1AC7 /* Locator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Locator.h; sourceTree = "<group>"; };
+		D4F4121310CE64D800856466 /* WriterCompareTriangle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WriterCompareTriangle.cpp; sourceTree = "<group>"; };
+		D4F4121410CE64D800856466 /* WriterCompareTriangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WriterCompareTriangle.h; sourceTree = "<group>"; };
+		D4F4121510CE64D900856466 /* WriterNodeVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WriterNodeVisitor.cpp; sourceTree = "<group>"; };
+		D4F4121610CE64D900856466 /* WriterNodeVisitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WriterNodeVisitor.h; sourceTree = "<group>"; };
+		D4F4121B10CE64E900856466 /* lib3ds.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds.h; path = lib3ds/lib3ds.h; sourceTree = "<group>"; };
+		D4F4121C10CE64E900856466 /* lib3ds_atmosphere.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_atmosphere.c; path = lib3ds/lib3ds_atmosphere.c; sourceTree = "<group>"; };
+		D4F4121D10CE64E900856466 /* lib3ds_background.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_background.c; path = lib3ds/lib3ds_background.c; sourceTree = "<group>"; };
+		D4F4121E10CE64E900856466 /* lib3ds_camera.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_camera.c; path = lib3ds/lib3ds_camera.c; sourceTree = "<group>"; };
+		D4F4121F10CE64E900856466 /* lib3ds_chunk.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_chunk.c; path = lib3ds/lib3ds_chunk.c; sourceTree = "<group>"; };
+		D4F4122010CE64E900856466 /* lib3ds_chunktable.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_chunktable.c; path = lib3ds/lib3ds_chunktable.c; sourceTree = "<group>"; };
+		D4F4122110CE64EA00856466 /* lib3ds_file.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_file.c; path = lib3ds/lib3ds_file.c; sourceTree = "<group>"; };
+		D4F4122210CE64EA00856466 /* lib3ds_impl.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_impl.h; path = lib3ds/lib3ds_impl.h; sourceTree = "<group>"; };
+		D4F4122310CE64EA00856466 /* lib3ds_io.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_io.c; path = lib3ds/lib3ds_io.c; sourceTree = "<group>"; };
+		D4F4122410CE64EA00856466 /* lib3ds_light.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_light.c; path = lib3ds/lib3ds_light.c; sourceTree = "<group>"; };
+		D4F4122510CE64EA00856466 /* lib3ds_material.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_material.c; path = lib3ds/lib3ds_material.c; sourceTree = "<group>"; };
+		D4F4122610CE64EA00856466 /* lib3ds_math.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_math.c; path = lib3ds/lib3ds_math.c; sourceTree = "<group>"; };
+		D4F4122710CE64EA00856466 /* lib3ds_matrix.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_matrix.c; path = lib3ds/lib3ds_matrix.c; sourceTree = "<group>"; };
+		D4F4122810CE64EA00856466 /* lib3ds_mesh.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_mesh.c; path = lib3ds/lib3ds_mesh.c; sourceTree = "<group>"; };
+		D4F4122910CE64EA00856466 /* lib3ds_node.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_node.c; path = lib3ds/lib3ds_node.c; sourceTree = "<group>"; };
+		D4F4122A10CE64EA00856466 /* lib3ds_quat.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_quat.c; path = lib3ds/lib3ds_quat.c; sourceTree = "<group>"; };
+		D4F4122B10CE64EB00856466 /* lib3ds_shadow.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_shadow.c; path = lib3ds/lib3ds_shadow.c; sourceTree = "<group>"; };
+		D4F4122C10CE64EB00856466 /* lib3ds_track.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_track.c; path = lib3ds/lib3ds_track.c; sourceTree = "<group>"; };
+		D4F4122D10CE64EB00856466 /* lib3ds_util.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_util.c; path = lib3ds/lib3ds_util.c; sourceTree = "<group>"; };
+		D4F4122E10CE64EB00856466 /* lib3ds_vector.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_vector.c; path = lib3ds/lib3ds_vector.c; sourceTree = "<group>"; };
+		D4F4122F10CE64EB00856466 /* lib3ds_viewport.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_viewport.c; path = lib3ds/lib3ds_viewport.c; sourceTree = "<group>"; };
 		D4F424CB0F5D9E290052261D /* AudioStream */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AudioStream; sourceTree = "<group>"; };
 		D4F424CD0F5D9E3D0052261D /* AudioStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioStream.cpp; sourceTree = "<group>"; };
 		D4F80AAA0F935ABF0043A5DE /* osgdb_curl.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_curl.so; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -11584,48 +11552,32 @@
 		001DFFD8065AA4BD003310BF /* 3ds */ = {
 			isa = PBXGroup;
 			children = (
-				001DFFD9065AA4BD003310BF /* atmosphere.cpp */,
-				001DFFDA065AA4BD003310BF /* atmosphere.h */,
-				001DFFDC065AA4BD003310BF /* background.cpp */,
-				001DFFDD065AA4BD003310BF /* background.h */,
-				001DFFDE065AA4BD003310BF /* camera.cpp */,
-				001DFFDF065AA4BD003310BF /* camera.h */,
-				001DFFE0065AA4BD003310BF /* chunk.cpp */,
-				001DFFE1065AA4BD003310BF /* chunk.h */,
-				001DFFE2065AA4BD003310BF /* chunktable.h */,
-				001DFFE3065AA4BD003310BF /* config.h */,
-				001DFFE4065AA4BD003310BF /* ease.cpp */,
-				001DFFE5065AA4BD003310BF /* ease.h */,
-				001DFFE6065AA4BD003310BF /* file.cpp */,
-				001DFFE7065AA4BD003310BF /* file.h */,
-				001DFFE9065AA4BD003310BF /* lib3ds_float.cpp */,
-				001DFFEA065AA4BD003310BF /* lib3ds_float.h */,
-				001DFFEB065AA4BD003310BF /* light.cpp */,
-				001DFFEC065AA4BD003310BF /* light.h */,
-				001DFFED065AA4BD003310BF /* material.cpp */,
-				001DFFEE065AA4BD003310BF /* material.h */,
-				001DFFEF065AA4BD003310BF /* matrix.cpp */,
-				001DFFF0065AA4BD003310BF /* matrix.h */,
-				001DFFF1065AA4BD003310BF /* mesh.cpp */,
-				001DFFF2065AA4BD003310BF /* mesh.h */,
-				001DFFF3065AA4BD003310BF /* node.cpp */,
-				001DFFF4065AA4BD003310BF /* node.h */,
-				001DFFF5065AA4BD003310BF /* quat.cpp */,
-				001DFFF6065AA4BD003310BF /* quat.h */,
+				D4F4121B10CE64E900856466 /* lib3ds.h */,
+				D4F4121C10CE64E900856466 /* lib3ds_atmosphere.c */,
+				D4F4121D10CE64E900856466 /* lib3ds_background.c */,
+				D4F4121E10CE64E900856466 /* lib3ds_camera.c */,
+				D4F4121F10CE64E900856466 /* lib3ds_chunk.c */,
+				D4F4122010CE64E900856466 /* lib3ds_chunktable.c */,
+				D4F4122110CE64EA00856466 /* lib3ds_file.c */,
+				D4F4122210CE64EA00856466 /* lib3ds_impl.h */,
+				D4F4122310CE64EA00856466 /* lib3ds_io.c */,
+				D4F4122410CE64EA00856466 /* lib3ds_light.c */,
+				D4F4122510CE64EA00856466 /* lib3ds_material.c */,
+				D4F4122610CE64EA00856466 /* lib3ds_math.c */,
+				D4F4122710CE64EA00856466 /* lib3ds_matrix.c */,
+				D4F4122810CE64EA00856466 /* lib3ds_mesh.c */,
+				D4F4122910CE64EA00856466 /* lib3ds_node.c */,
+				D4F4122A10CE64EA00856466 /* lib3ds_quat.c */,
+				D4F4122B10CE64EB00856466 /* lib3ds_shadow.c */,
+				D4F4122C10CE64EB00856466 /* lib3ds_track.c */,
+				D4F4122D10CE64EB00856466 /* lib3ds_util.c */,
+				D4F4122E10CE64EB00856466 /* lib3ds_vector.c */,
+				D4F4122F10CE64EB00856466 /* lib3ds_viewport.c */,
+				D4F4121310CE64D800856466 /* WriterCompareTriangle.cpp */,
+				D4F4121410CE64D800856466 /* WriterCompareTriangle.h */,
+				D4F4121510CE64D900856466 /* WriterNodeVisitor.cpp */,
+				D4F4121610CE64D900856466 /* WriterNodeVisitor.h */,
 				001DFFF7065AA4BD003310BF /* ReaderWriter3DS.cpp */,
-				001DFFF9065AA4BD003310BF /* readwrite.cpp */,
-				001DFFFA065AA4BD003310BF /* readwrite.h */,
-				001DFFFB065AA4BD003310BF /* shadow.cpp */,
-				001DFFFC065AA4BD003310BF /* shadow.h */,
-				001DFFFD065AA4BD003310BF /* tcb.cpp */,
-				001DFFFE065AA4BD003310BF /* tcb.h */,
-				001DFFFF065AA4BD003310BF /* tracks.cpp */,
-				001D0000065AA4BD003310BF /* tracks.h */,
-				001D0001065AA4BD003310BF /* types.h */,
-				001D0002065AA4BD003310BF /* vector.cpp */,
-				001D0003065AA4BD003310BF /* vector.h */,
-				001D0004065AA4BD003310BF /* viewport.cpp */,
-				001D0005065AA4BD003310BF /* viewport.h */,
 			);
 			name = 3ds;
 			path = ../../src/osgPlugins/3ds;
@@ -14968,28 +14920,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				001D0007065AA4BD003310BF /* atmosphere.h in Headers */,
-				001D0009065AA4BD003310BF /* background.h in Headers */,
-				001D000B065AA4BD003310BF /* camera.h in Headers */,
-				001D000D065AA4BD003310BF /* chunk.h in Headers */,
-				001D000E065AA4BD003310BF /* chunktable.h in Headers */,
-				001D000F065AA4BD003310BF /* config.h in Headers */,
-				001D0011065AA4BD003310BF /* ease.h in Headers */,
-				001D0013065AA4BD003310BF /* file.h in Headers */,
-				001D0015065AA4BD003310BF /* lib3ds_float.h in Headers */,
-				001D0017065AA4BD003310BF /* light.h in Headers */,
-				001D0019065AA4BD003310BF /* material.h in Headers */,
-				001D001B065AA4BD003310BF /* matrix.h in Headers */,
-				001D001D065AA4BD003310BF /* mesh.h in Headers */,
-				001D001F065AA4BD003310BF /* node.h in Headers */,
-				001D0021065AA4BD003310BF /* quat.h in Headers */,
-				001D0024065AA4BD003310BF /* readwrite.h in Headers */,
-				001D0026065AA4BD003310BF /* shadow.h in Headers */,
-				001D0028065AA4BD003310BF /* tcb.h in Headers */,
-				001D002A065AA4BD003310BF /* tracks.h in Headers */,
-				001D002B065AA4BD003310BF /* types.h in Headers */,
-				001D002D065AA4BD003310BF /* vector.h in Headers */,
-				001D002F065AA4BD003310BF /* viewport.h in Headers */,
+				D4F4121810CE64D900856466 /* WriterCompareTriangle.h in Headers */,
+				D4F4121A10CE64D900856466 /* WriterNodeVisitor.h in Headers */,
+				D4F4123010CE64EB00856466 /* lib3ds.h in Headers */,
+				D4F4123710CE64EB00856466 /* lib3ds_impl.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21339,26 +21273,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				001D0006065AA4BD003310BF /* atmosphere.cpp in Sources */,
-				001D0008065AA4BD003310BF /* background.cpp in Sources */,
-				001D000A065AA4BD003310BF /* camera.cpp in Sources */,
-				001D000C065AA4BD003310BF /* chunk.cpp in Sources */,
-				001D0010065AA4BD003310BF /* ease.cpp in Sources */,
-				001D0012065AA4BD003310BF /* file.cpp in Sources */,
-				001D0014065AA4BD003310BF /* lib3ds_float.cpp in Sources */,
-				001D0016065AA4BD003310BF /* light.cpp in Sources */,
-				001D0018065AA4BD003310BF /* material.cpp in Sources */,
-				001D001A065AA4BD003310BF /* matrix.cpp in Sources */,
-				001D001C065AA4BD003310BF /* mesh.cpp in Sources */,
-				001D001E065AA4BD003310BF /* node.cpp in Sources */,
-				001D0020065AA4BD003310BF /* quat.cpp in Sources */,
 				001D0022065AA4BD003310BF /* ReaderWriter3DS.cpp in Sources */,
-				001D0023065AA4BD003310BF /* readwrite.cpp in Sources */,
-				001D0025065AA4BD003310BF /* shadow.cpp in Sources */,
-				001D0027065AA4BD003310BF /* tcb.cpp in Sources */,
-				001D0029065AA4BD003310BF /* tracks.cpp in Sources */,
-				001D002C065AA4BD003310BF /* vector.cpp in Sources */,
-				001D002E065AA4BD003310BF /* viewport.cpp in Sources */,
+				D4F4121710CE64D900856466 /* WriterCompareTriangle.cpp in Sources */,
+				D4F4121910CE64D900856466 /* WriterNodeVisitor.cpp in Sources */,
+				D4F4123110CE64EB00856466 /* lib3ds_atmosphere.c in Sources */,
+				D4F4123210CE64EB00856466 /* lib3ds_background.c in Sources */,
+				D4F4123310CE64EB00856466 /* lib3ds_camera.c in Sources */,
+				D4F4123410CE64EB00856466 /* lib3ds_chunk.c in Sources */,
+				D4F4123510CE64EB00856466 /* lib3ds_chunktable.c in Sources */,
+				D4F4123610CE64EB00856466 /* lib3ds_file.c in Sources */,
+				D4F4123810CE64EB00856466 /* lib3ds_io.c in Sources */,
+				D4F4123910CE64EB00856466 /* lib3ds_light.c in Sources */,
+				D4F4123A10CE64EB00856466 /* lib3ds_material.c in Sources */,
+				D4F4123B10CE64EB00856466 /* lib3ds_math.c in Sources */,
+				D4F4123C10CE64EB00856466 /* lib3ds_matrix.c in Sources */,
+				D4F4123D10CE64EB00856466 /* lib3ds_mesh.c in Sources */,
+				D4F4123E10CE64EB00856466 /* lib3ds_node.c in Sources */,
+				D4F4123F10CE64EB00856466 /* lib3ds_quat.c in Sources */,
+				D4F4124010CE64EB00856466 /* lib3ds_shadow.c in Sources */,
+				D4F4124110CE64EB00856466 /* lib3ds_track.c in Sources */,
+				D4F4124210CE64EB00856466 /* lib3ds_util.c in Sources */,
+				D4F4124310CE64EB00856466 /* lib3ds_vector.c in Sources */,
+				D4F4124410CE64EB00856466 /* lib3ds_viewport.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -27498,7 +27434,7 @@
 				INSTALL_PATH = "@executable_path/../PlugIns";
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = "-DLIB3DS_STATIC";
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
@@ -27530,7 +27466,7 @@
 				INSTALL_PATH = "@executable_path/../PlugIns";
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = "-DLIB3DS_STATIC";
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
@@ -27556,7 +27492,7 @@
 				INSTALL_PATH = "@executable_path/../PlugIns";
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = "-DLIB3DS_STATIC";
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
@@ -35831,19 +35767,19 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_VERSION = 4.0;
+				GCC_VERSION = 4.2;
 				HEADER_SEARCH_PATHS = (
 					../../include,
 					"$(inherited)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_CFLAGS = (
 					"-DUSE_DARWIN_COCOA_IMPLEMENTATION",
 					"-DDARWIN_IMAGEIO",
 				);
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = "Development 64bit Cocoa";
 		};
@@ -35862,16 +35798,16 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_VERSION = 4.0;
+				GCC_VERSION = 4.2;
 				HEADER_SEARCH_PATHS = ../../include;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_CFLAGS = (
 					"-DGLU_TESS_CALLBACK_TRIPLEDOT",
 					"-DUSE_DARWIN_CARBON_IMPLEMENTATION",
 				);
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 				STRIP_STYLE = "non-global";
 			};
 			name = "Deployment 32bit Carbon";
@@ -35890,16 +35826,16 @@
 				GCC_AUTO_VECTORIZATION = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_MODEL_TUNING = G5;
-				GCC_VERSION = 4.0;
+				GCC_VERSION = 4.2;
 				HEADER_SEARCH_PATHS = (
 					../../include,
 					../../../OpenThreads/include,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_CFLAGS = "-DGLU_TESS_CALLBACK_TRIPLEDOT";
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = Default;
 		};
@@ -38583,16 +38519,16 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_VERSION = 4.0;
+				GCC_VERSION = 4.2;
 				HEADER_SEARCH_PATHS = (
 					../../include,
 					"$(inherited)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_CFLAGS = "-DUSE_DARWIN_COCOA_IMPLEMENTATION";
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = "Development 32bit Cocoa";
 		};
@@ -39655,7 +39591,7 @@
 				INSTALL_PATH = "@executable_path/../PlugIns";
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = "-DLIB3DS_STATIC";
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
@@ -43619,16 +43555,16 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_VERSION = 4.0;
+				GCC_VERSION = 4.2;
 				HEADER_SEARCH_PATHS = ../../include;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_CFLAGS = (
 					"-DGLU_TESS_CALLBACK_TRIPLEDOT",
 					"-DUSE_DARWIN_COCOA_IMPLEMENTATION",
 				);
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 				STRIP_STYLE = "non-global";
 			};
 			name = "Deployment 32bit Cocoa";
@@ -44656,7 +44592,7 @@
 				INSTALL_PATH = "@executable_path/../PlugIns";
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = "-DLIB3DS_STATIC";
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
@@ -48595,16 +48531,16 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_VERSION = 4.0;
+				GCC_VERSION = 4.2;
 				HEADER_SEARCH_PATHS = (
 					../../include,
 					"$(inherited)",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_CFLAGS = "-DUSE_DARWIN_CARBON_IMPLEMENTATION";
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 			};
 			name = "Development 32bit Carbon";
 		};
@@ -49667,7 +49603,7 @@
 				INSTALL_PATH = "@executable_path/../PlugIns";
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = "-DLIB3DS_STATIC";
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,
@@ -54625,9 +54561,9 @@
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_VERSION = 4.0;
+				GCC_VERSION = 4.2;
 				HEADER_SEARCH_PATHS = ../../include;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_CFLAGS = (
 					"-DGLU_TESS_CALLBACK_TRIPLEDOT",
 					"-DUSE_DARWIN_COCOA_IMPLEMENTATION",
@@ -54635,7 +54571,7 @@
 				);
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
 				STRIP_STYLE = "non-global";
 			};
 			name = "Deployment 64bit Cocoa";
@@ -55665,7 +55601,7 @@
 				INSTALL_PATH = "@executable_path/../PlugIns";
 				LIBRARY_STYLE = BUNDLE;
 				MACH_O_TYPE = mh_bundle;
-				OTHER_CFLAGS = "";
+				OTHER_CFLAGS = "-DLIB3DS_STATIC";
 				OTHER_LDFLAGS = (
 					"-framework",
 					OpenThreads,

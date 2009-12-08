@@ -42,6 +42,9 @@ osgforest
 echo osgfxbrowser
 osgfxbrowser
 
+echo osgoutline cow.osg
+osgoutline cow.osg
+
 echo osggeometry
 osggeometry
 

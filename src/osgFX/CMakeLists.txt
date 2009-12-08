@@ -14,6 +14,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Effect
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/MultiTextureControl
+    ${HEADER_PATH}/Outline
     ${HEADER_PATH}/Registry
     ${HEADER_PATH}/Scribe
     ${HEADER_PATH}/SpecularHighlights
@@ -31,6 +32,7 @@ ADD_LIBRARY(${LIB_NAME}
     Cartoon.cpp
     Effect.cpp
     MultiTextureControl.cpp
+    Outline.cpp
     Registry.cpp
     Scribe.cpp
     SpecularHighlights.cpp

@@ -131,22 +131,22 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	          "Get the method used for deleting data once it goes out of scope. ",
 	          "");
 	I_MethodWithDefaults6(void, allocateImage, IN, int, s, , IN, int, t, , IN, int, r, , IN, GLenum, pixelFormat, , IN, GLenum, type, , IN, int, packing, 1,
-	                      Properties::NON_VIRTUAL,
+	                      Properties::VIRTUAL,
 	                      __void__allocateImage__int__int__int__GLenum__GLenum__int,
 	                      "Allocate a pixel block of specified size and type. ",
 	                      "");
 	I_MethodWithDefaults9(void, setImage, IN, int, s, , IN, int, t, , IN, int, r, , IN, GLint, internalTextureformat, , IN, GLenum, pixelFormat, , IN, GLenum, type, , IN, unsigned char *, data, , IN, osg::Image::AllocationMode, mode, , IN, int, packing, 1,
-	                      Properties::NON_VIRTUAL,
+	                      Properties::VIRTUAL,
 	                      __void__setImage__int__int__int__GLint__GLenum__GLenum__unsigned_char_P1__AllocationMode__int,
 	                      "Set the image dimensions, format and data. ",
 	                      "");
 	I_Method6(void, readPixels, IN, int, x, IN, int, y, IN, int, width, IN, int, height, IN, GLenum, pixelFormat, IN, GLenum, type,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__readPixels__int__int__int__int__GLenum__GLenum,
 	          "Read pixels from current frame buffer at specified position and size, using glReadPixels. ",
 	          "Create memory for storage if required, reuse existing pixel coords if possible. ");
 	I_MethodWithDefaults3(void, readImageFromCurrentTexture, IN, unsigned int, contextID, , IN, bool, copyMipMapsIfAvailable, , IN, GLenum, type, GL_UNSIGNED_BYTE,
-	                      Properties::NON_VIRTUAL,
+	                      Properties::VIRTUAL,
 	                      __void__readImageFromCurrentTexture__unsigned_int__bool__GLenum,
 	                      "Read the contents of the current bound texture, handling compressed pixelFormats if present. ",
 	                      "Create memory for storage if required, reuse existing pixel coords if possible. ");
@@ -156,12 +156,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	          "Scale image to specified size. ",
 	          "");
 	I_Method4(void, scaleImage, IN, int, s, IN, int, t, IN, int, r, IN, GLenum, newDataType,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__scaleImage__int__int__int__GLenum,
 	          "Scale image to specified size and with specified data type. ",
 	          "");
 	I_Method4(void, copySubImage, IN, int, s_offset, IN, int, t_offset, IN, int, r_offset, IN, const osg::Image *, source,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__copySubImage__int__int__int__C5_osg_Image_P1,
 	          "Copy a source Image into a subpart of this Image at specified position. ",
 	          "Typically used to copy to an already allocated image, such as creating a 3D image from a stack 2D images. If this Image is empty then image data is created to accomodate the source image in its offset position. If source is NULL then no operation happens, this Image is left unchanged. ");

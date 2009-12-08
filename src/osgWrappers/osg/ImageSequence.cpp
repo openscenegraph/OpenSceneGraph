@@ -172,7 +172,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	          "",
 	          "");
 	I_MethodWithDefaults9(void, setImage, IN, int, s, , IN, int, t, , IN, int, r, , IN, GLint, internalTextureformat, , IN, GLenum, pixelFormat, , IN, GLenum, type, , IN, unsigned char *, data, , IN, osg::Image::AllocationMode, mode, , IN, int, packing, 1,
-	                      Properties::NON_VIRTUAL,
+	                      Properties::VIRTUAL,
 	                      __void__setImage__int__int__int__GLint__GLenum__GLenum__unsigned_char_P1__AllocationMode__int,
 	                      "Set the image dimensions, format and data. ",
 	                      "");

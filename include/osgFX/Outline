@@ -54,7 +54,7 @@ namespace osgFX
         META_Effect(osgFX, Outline, "Outline",
                     "Stencil buffer based object outline effect.\n"
                     "This effect needs a properly setup stencil buffer.",
-                    "Ulrich Hertlein <u.hertlein@sandbox.de>");
+                    "Ulrich Hertlein");
 
         /// Set outline width.
         void setWidth(float w);

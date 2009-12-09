@@ -261,8 +261,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	I_Method1(void, compileGLObjects, IN, osg::RenderInfo &, renderInfo,
 	          Properties::VIRTUAL,
 	          __void__compileGLObjects__RenderInfo_R1,
-	          "Immediately compile this Drawable into an OpenGL Display List. ",
-	          "Operation is ignored if _useDisplayList is false.  ");
+	          "Immediately compile this Drawable into an OpenGL Display List/VertexBufferObjects. ",
+	          "Operation is ignored if _useDisplayList is false or VertexBufferObjects are not used.  ");
 	I_Method1(void, setThreadSafeRefUnref, IN, bool, threadSafe,
 	          Properties::VIRTUAL,
 	          __void__setThreadSafeRefUnref__bool,

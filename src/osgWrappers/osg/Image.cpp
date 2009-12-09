@@ -154,12 +154,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	          Properties::NON_VIRTUAL,
 	          __void__scaleImage__int__int__int,
 	          "Scale image to specified size. ",
-	          "");
+	          "The method uses gluScaleImage() and thus needs a valid rendering context.  ");
 	I_Method4(void, scaleImage, IN, int, s, IN, int, t, IN, int, r, IN, GLenum, newDataType,
 	          Properties::VIRTUAL,
 	          __void__scaleImage__int__int__int__GLenum,
 	          "Scale image to specified size and with specified data type. ",
-	          "");
+	          "The method uses gluScaleImage() and thus needs a valid rendering context.  ");
 	I_Method4(void, copySubImage, IN, int, s_offset, IN, int, t_offset, IN, int, r_offset, IN, const osg::Image *, source,
 	          Properties::VIRTUAL,
 	          __void__copySubImage__int__int__int__C5_osg_Image_P1,

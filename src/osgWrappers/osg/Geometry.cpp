@@ -675,6 +675,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Geometry)
 	          __unsigned_int__getGLObjectSizeHint,
 	          "Return the estimated size of GLObjects (display lists/vertex buffer objects) that are associated with this drawable. ",
 	          "This size is used a hint for reuse of deleted display lists/vertex buffer objects. ");
+	I_Method1(void, compileGLObjects, IN, osg::RenderInfo &, renderInfo,
+	          Properties::VIRTUAL,
+	          __void__compileGLObjects__RenderInfo_R1,
+	          "Immediately compile this Drawable into an OpenGL Display List/VertexBufferObjects. ",
+	          "Operation is ignored if _useDisplayList is false or VertexBufferObjects are not used.  ");
 	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo,
 	          Properties::VIRTUAL,
 	          __void__drawImplementation__RenderInfo_R1,

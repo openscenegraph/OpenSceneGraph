@@ -19,6 +19,7 @@
 #include <osgAnimation/UpdateCallback>
 #include <osg/MatrixTransform>
 #include <osg/PositionAttitudeTransform>
+#include <osg/Math>
 
 using namespace osgAnimation;
 
@@ -69,10 +70,11 @@ void UpdateTransform::update(osg::MatrixTransform& mat)
         osg::Matrix::rotate(x,1.0,0.0,0.0) * 
         osg::Matrix::rotate(y,0.0,1.0,0.0) *
         osg::Matrix::rotate(z,0.0,0.0,1.0);
-    mat.setMatrix(osg::Matrix::scale(_scale->getValue()) * 
-                  m *
-                  osg::Matrix::translate(_position->getValue()));
-    mat.dirtyBound();
+    m = osg::Matrix::scale(_scale->getValue()) * m * osg::Matrix::translate(_position->getValue());
+    mat.setMatrix(m);
+
+    if (!m.valid())
+        osg::notify(osg::WARN) << this << " UpdateTransform::update detected NaN" << std::endl;
 }
 
 void UpdateTransform::update(osg::PositionAttitudeTransform& pat) 

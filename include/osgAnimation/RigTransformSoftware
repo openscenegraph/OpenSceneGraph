@@ -86,7 +86,7 @@ namespace osgAnimation
             {
                 if (_bones.empty())
                 {
-                    osg::notify(osg::WARN) << "RigTransformSoftware::UniqBoneSetVertexSet no bones found" << std::endl;
+                    osg::notify(osg::WARN) << this << " RigTransformSoftware::UniqBoneSetVertexSet no bones found" << std::endl;
                     _result = osg::Matrix::identity();
                     return;
                 }
@@ -96,6 +96,11 @@ namespace osgAnimation
                 for (int i = 0; i < size; i++)
                 {
                     const Bone* bone = _bones[i].getBone();
+                    if (!bone)
+                    {
+                        osg::notify(osg::WARN) << this << " RigTransformSoftware::computeMatrixForVertexSet Warning a bone is null, skip it" << std::endl;
+                        continue;
+                    }
                     const osg::Matrix& invBindMatrix = bone->getInvBindMatrixInSkeletonSpace();
                     const osg::Matrix& matrix = bone->getMatrixInSkeletonSpace();
                     osg::Matrix::value_type w = _bones[i].getWeight();

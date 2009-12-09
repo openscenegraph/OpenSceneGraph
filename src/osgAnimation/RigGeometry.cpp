@@ -19,6 +19,45 @@
 
 using namespace osgAnimation;
 
+// The idea is to compute a bounding box with a factor x of the first step we compute the bounding box
+class RigComputeBoundingBoxCallback : public osg::Drawable::ComputeBoundingBoxCallback
+{
+public:
+    RigComputeBoundingBoxCallback(double factor = 2.0) : _computed(false), _factor(factor) {}
+    void reset() { _computed = false; }
+    virtual osg::BoundingBox computeBound(const osg::Drawable& drawable) const
+    {
+        const osgAnimation::RigGeometry& rig = dynamic_cast<const osgAnimation::RigGeometry&>(drawable);
+
+        // if a valid inital bounding box is set we use it without asking more
+        if (rig.getInitialBound().valid())
+            return rig.getInitialBound();
+
+        if (_computed)
+            return _boundingBox;
+
+        // if the computing of bb is invalid (like no geometry inside)
+        // then dont tag the bounding box as computed
+        osg::BoundingBox bb = rig.computeBound();
+        if (!bb.valid())
+            return bb;
+
+
+        _boundingBox.expandBy(bb);
+        osg::Vec3 center = _boundingBox.center();
+        osg::Vec3 vec = (_boundingBox._max-center)*_factor;
+        _boundingBox.expandBy(center + vec);
+        _boundingBox.expandBy(center - vec);
+        _computed = true;
+//        osg::notify(osg::NOTICE) << "build the bounding box for RigGeometry " << rig.getName() << " " << _boundingBox._min << " " << _boundingBox._max << std::endl;
+        return _boundingBox;
+    }
+protected:
+    mutable bool _computed;
+    double _factor;
+    mutable osg::BoundingBox _boundingBox;
+};
+
 RigGeometry::RigGeometry()
 {
     _supportsDisplayList = false;
@@ -29,7 +68,7 @@ RigGeometry::RigGeometry()
     _matrixFromSkeletonToGeometry = _invMatrixFromSkeletonToGeometry = osg::Matrix::identity();
 
     // disable the computation of boundingbox for the rig mesh
-    setComputeBoundingBoxCallback(new ComputeBoundingBoxCallback);
+    setComputeBoundingBoxCallback(new RigComputeBoundingBoxCallback);
 }
 
 RigGeometry::RigGeometry(const osg::Geometry& b) : osg::Geometry(b, osg::CopyOp::SHALLOW_COPY)
@@ -42,7 +81,7 @@ RigGeometry::RigGeometry(const osg::Geometry& b) : osg::Geometry(b, osg::CopyOp:
     _matrixFromSkeletonToGeometry = _invMatrixFromSkeletonToGeometry = osg::Matrix::identity();
 
     // disable the computation of boundingbox for the rig mesh
-    setComputeBoundingBoxCallback(new ComputeBoundingBoxCallback);
+    setComputeBoundingBoxCallback(new RigComputeBoundingBoxCallback);
 }
 
 RigGeometry::RigGeometry(const RigGeometry& b, const osg::CopyOp& copyop) :

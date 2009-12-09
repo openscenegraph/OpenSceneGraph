@@ -12,12 +12,13 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGANIMATION_TIMELINE_H
-#define OSGANIMATION_TIMELINE_H
+#ifndef OSGANIMATION_TIMELINE
+#define OSGANIMATION_TIMELINE 1
 
 #include <osgAnimation/Export>
 #include <map>
 #include <vector>
+#include <osg/observer_ptr>
 #include <osg/Notify>
 #include <osg/Stats>
 #include <osgAnimation/Action>
@@ -27,7 +28,7 @@
 
 namespace osgAnimation
 {
-    class OSGANIMATION_EXPORT Timeline : public Action //osg::Object
+    class OSGANIMATION_EXPORT Timeline : public Action
     {
     public:
 
@@ -79,9 +80,9 @@ namespace osgAnimation
         const ActionLayers& getActionLayers() const { return _actions; }
 
         void processPendingOperation();
-
+        void setAnimationManager(AnimationManagerBase*);
     protected:
-
+        osg::observer_ptr<AnimationManagerBase> _animationManager;
         ActionLayers _actions;
         double _lastUpdate;
         double _speed;
@@ -89,7 +90,7 @@ namespace osgAnimation
         unsigned int _previousFrameEvaluated;
         bool _initFirstFrame;
         TimelineStatus _state;
-
+        
         bool _collectStats;
         osg::ref_ptr<osg::Stats> _stats;
         osg::ref_ptr<osgAnimation::StatsActionVisitor> _statsVisitor;

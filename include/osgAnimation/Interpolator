@@ -16,8 +16,8 @@
  *         Michael Platings <mplatings@pixelpower.com>
  */
 
-#ifndef OSGANIMATION_INTERPOLATOR_H
-#define OSGANIMATION_INTERPOLATOR_H
+#ifndef OSGANIMATION_INTERPOLATOR
+#define OSGANIMATION_INTERPOLATOR 1
 
 #include <osg/Notify>
 #include <osgAnimation/Keyframe>

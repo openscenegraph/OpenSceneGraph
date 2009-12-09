@@ -34,6 +34,7 @@ TimelineAnimationManager::TimelineAnimationManager(const TimelineAnimationManage
 
 void TimelineAnimationManager::update(double time)
 {
-    clearTargets();
+    // clearTargets();
+    _timeline->setAnimationManager(this);
     _timeline->update(time);
 }

@@ -904,6 +904,76 @@ void Geometry::releaseGLObjects(State* state) const
 
 }
 
+void Geometry::compileGLObjects(RenderInfo& renderInfo) const
+{
+    bool useVertexArrays = _supportsVertexBufferObjects &&
+                           _useVertexBufferObjects &&
+                           renderInfo.getState()->isVertexBufferObjectSupported() &&
+                           areFastPathsUsed();
+    if (useVertexArrays)
+    {
+        // osg::notify(osg::NOTICE)<<"Geometry::compileGLObjects() use VBO's "<<this<<std::endl;
+        State& state = *renderInfo.getState();
+        unsigned int contextID = state.getContextID();
+        GLBufferObject::Extensions* extensions = GLBufferObject::getExtensions(contextID, true);
+        if (!extensions) return;
+
+        typedef std::set<BufferObject*> BufferObjects;
+        BufferObjects bufferObjects;
+
+        // first collect all the active unique BufferObjects
+        if (_vertexData.array.valid() && _vertexData.array->getBufferObject()) bufferObjects.insert(_vertexData.array->getBufferObject());
+        if (_normalData.array.valid() && _normalData.array->getBufferObject()) bufferObjects.insert(_normalData.array->getBufferObject());
+        if (_colorData.array.valid() && _colorData.array->getBufferObject()) bufferObjects.insert(_colorData.array->getBufferObject());
+        if (_secondaryColorData.array.valid() && _secondaryColorData.array->getBufferObject()) bufferObjects.insert(_secondaryColorData.array->getBufferObject());
+        if (_fogCoordData.array.valid() && _fogCoordData.array->getBufferObject()) bufferObjects.insert(_fogCoordData.array->getBufferObject());
+
+        for(ArrayDataList::const_iterator itr = _texCoordList.begin();
+            itr != _texCoordList.end();
+            ++itr)
+        {
+            if (itr->array.valid() && itr->array->getBufferObject()) bufferObjects.insert(itr->array->getBufferObject());
+        }
+
+        for(ArrayDataList::const_iterator itr = _vertexAttribList.begin();
+            itr != _vertexAttribList.end();
+            ++itr)
+        {
+            if (itr->array.valid() && itr->array->getBufferObject()) bufferObjects.insert(itr->array->getBufferObject());
+        }
+
+        for(PrimitiveSetList::const_iterator itr = _primitives.begin();
+            itr != _primitives.end();
+            ++itr)
+        {
+            if ((*itr)->getBufferObject()) bufferObjects.insert((*itr)->getBufferObject());
+        }
+
+
+        // now compile any buffer objects that require it.
+        for(BufferObjects::iterator itr = bufferObjects.begin();
+            itr != bufferObjects.end();
+            ++itr)
+        {
+            GLBufferObject* glBufferObject = (*itr)->getOrCreateGLBufferObject(contextID);
+            if (glBufferObject && glBufferObject->isDirty())
+            {
+                // osg::notify(osg::NOTICE)<<"Compile buffer "<<glBufferObject<<std::endl;
+                glBufferObject->compileBuffer();
+            }
+        }
+
+        // unbind the BufferObjects
+        extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);
+        extensions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
+
+    }
+    else
+    {
+        Drawable::compileGLObjects(renderInfo);
+    }
+}
+
 void Geometry::drawImplementation(RenderInfo& renderInfo) const
 {
     if (_internalOptimizedGeometry.valid())

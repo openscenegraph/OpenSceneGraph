@@ -121,7 +121,7 @@ class OSG_EXPORT Geometry : public Drawable
 
             inline bool empty() const { return !array.valid(); } 
 
-            ref_ptr<Vec3Array>          array;
+            ref_ptr<Vec3Array>      array;
             ref_ptr<IndexArray>     indices;
             AttributeBinding        binding;
             GLboolean               normalize;
@@ -372,7 +372,12 @@ class OSG_EXPORT Geometry : public Drawable
         /** Return the estimated size of GLObjects (display lists/vertex buffer objects) that are associated with this drawable.
           * This size is used a hint for reuse of deleted display lists/vertex buffer objects. */
         virtual unsigned int getGLObjectSizeHint() const;
-        
+
+        /** Immediately compile this \c Drawable into an OpenGL Display List/VertexBufferObjects.
+          * @note Operation is ignored if \c _useDisplayList is \c false or VertexBufferObjects are not used.
+        */
+        virtual void compileGLObjects(RenderInfo& renderInfo) const;
+
         /** Draw Geometry directly ignoring an OpenGL display list which could be attached.
           * This is the internal draw method which does the drawing itself,
           * and is the method to override when deriving from Geometry for user-drawn objects.

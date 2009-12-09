@@ -302,8 +302,8 @@ class OSG_EXPORT Drawable : public Object
           */
         inline void draw(RenderInfo& renderInfo) const;
 
-        /** Immediately compile this \c Drawable into an OpenGL Display List.
-          * @note Operation is ignored if \c _useDisplayList is \c false.
+        /** Immediately compile this \c Drawable into an OpenGL Display List/VertexBufferObjects.
+          * @note Operation is ignored if \c _useDisplayList is \c false or VertexBufferObjects are not used.
         */
         virtual void compileGLObjects(RenderInfo& renderInfo) const;
 

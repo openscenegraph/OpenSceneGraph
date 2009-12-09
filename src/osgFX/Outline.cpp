@@ -27,6 +27,7 @@
 #include <osg/PolygonMode>
 #include <osg/LineWidth>
 #include <osg/Material>
+#include <osg/Texture1D>
 
 
 namespace {
@@ -193,4 +194,4 @@ namespace osgFX
 
         return true;
     }
-};
+}

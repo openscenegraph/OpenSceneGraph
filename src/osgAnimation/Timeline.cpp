@@ -53,6 +53,11 @@ osgAnimation::Timeline::Timeline(const Timeline& nc,const osg::CopyOp& op)
     setName("Timeline");
 }
 
+void Timeline::setAnimationManager(AnimationManagerBase* manager)
+{
+    _animationManager = manager;
+}
+
 void osgAnimation::Timeline::traverse(ActionVisitor& visitor)
 {
     int layer = visitor.getCurrentLayer();
@@ -95,6 +100,8 @@ void osgAnimation::Timeline::update(double simulationTime)
         _lastUpdate = simulationTime;
         _initFirstFrame = true;
 
+
+        _animationManager->clearTargets();
         updateTimeline.setFrame(_currentFrame);
         accept(updateTimeline);
 
@@ -121,6 +128,7 @@ void osgAnimation::Timeline::update(double simulationTime)
         if (_state == Play)
             _currentFrame++;
 
+        _animationManager->clearTargets();
         updateTimeline.setFrame(_currentFrame);
         accept(updateTimeline);
         if (_collectStats) 
@@ -151,6 +159,22 @@ void osgAnimation::Timeline::removeAction(Action* action)
 
 void osgAnimation::Timeline::addActionAt(unsigned int frame, Action* action, int priority)
 {
+    // skip if this action has already been added this frame
+    for (CommandList::iterator it = _addActionOperations.begin(); it != _addActionOperations.end(); ++it)
+    {
+        Command& command = *it;
+        if (command._action.second.get() == action) {
+            osg::notify(osg::INFO) << "Timeline::addActionAt command " << action->getName() << " already added this frame, declined" << std::endl;
+            return;
+        }
+    }
+
+    if (isActive(action))
+    {
+        osg::notify(osg::INFO) << "Timeline::addActionAt command " << action->getName() << " already active, remove the old" << std::endl;
+        removeAction(action);
+    }
+
     if (getEvaluating())
         _addActionOperations.push_back(Command(priority,FrameAction(frame, action)));
     else

@@ -4,10 +4,12 @@ SET(TARGET_SRC
     IO_Cartoon.cpp
     IO_Effect.cpp
     IO_MultiTextureControl.cpp
+    IO_Outline.cpp
     IO_Scribe.cpp
     IO_SpecularHighlights.cpp
 )
 
 SET(TARGET_ADDED_LIBRARIES osgFX )
+
 #### end var setup  ###
 SETUP_PLUGIN(osgfx)

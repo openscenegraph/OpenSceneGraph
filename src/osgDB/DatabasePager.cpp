@@ -239,9 +239,8 @@ public:
         //
         // XXX This "compiles" VBOs too, but compilation doesn't do
         // anything for VBOs, does it?
-        if (_dataToCompile && drawable->getUseDisplayList() && !_pager->isCompiled(drawable))
+        if (_dataToCompile && (drawable->getUseVertexBufferObjects() || drawable->getUseDisplayList()) && !_pager->isCompiled(drawable))
         {
-            // osg::notify(osg::NOTICE)<<"  Found compilable drawable"<<std::endl;
             _dataToCompile->second.push_back(drawable);
         }
     }

@@ -495,16 +495,26 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         inline static bool isCompiled(const osg::Drawable* drawable,
                                       unsigned int contextID)
         {
-            // Worry about vbos later
-            if (drawable->getUseDisplayList())
+            if (drawable->getUseVertexBufferObjects())
+            {
+                // say it's not compiled leaving it up to the compileGLObjects() to handle.
+                return false;
+            }
+            else if (drawable->getUseDisplayList())
             {
                 return drawable->getDisplayList(contextID) != 0;
             }
+
             return true;
         }
 
         inline bool isCompiled(const osg::Drawable* drawable) const
         {
+            if (drawable->getUseVertexBufferObjects())
+            {
+                // say it's not compiled leaving it up to the compileGLObjects() to handle.
+                return false;
+            }
             if (drawable->getUseDisplayList())
             {
                 for (ActiveGraphicsContexts::const_iterator iter=_activeGraphicsContexts.begin();

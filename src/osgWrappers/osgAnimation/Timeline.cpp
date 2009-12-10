@@ -15,6 +15,7 @@
 #include <osg/Stats>
 #include <osgAnimation/Action>
 #include <osgAnimation/ActionVisitor>
+#include <osgAnimation/AnimationManagerBase>
 #include <osgAnimation/StatsVisitor>
 #include <osgAnimation/Timeline>
 
@@ -196,6 +197,11 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Timeline)
 	          __void__processPendingOperation,
 	          "",
 	          "");
+	I_Method1(void, setAnimationManager, IN, osgAnimation::AnimationManagerBase *, x,
+	          Properties::NON_VIRTUAL,
+	          __void__setAnimationManager__AnimationManagerBase_P1,
+	          "",
+	          "");
 	I_ProtectedMethod1(void, internalRemoveAction, IN, osgAnimation::Action *, action,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -211,6 +217,9 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Timeline)
 	I_SimpleProperty(const osgAnimation::Timeline::ActionLayers &, ActionLayers, 
 	                 __C5_ActionLayers_R1__getActionLayers, 
 	                 0);
+	I_SimpleProperty(osgAnimation::AnimationManagerBase *, AnimationManager, 
+	                 0, 
+	                 __void__setAnimationManager__AnimationManagerBase_P1);
 	I_SimpleProperty(unsigned int, CurrentFrame, 
 	                 __unsigned_int__getCurrentFrame, 
 	                 0);

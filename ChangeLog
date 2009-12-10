@@ -1,3 +1,16 @@
+2009-12-10 12:14  robert
+
+	* AUTHORS.txt: Updated AUTHORS file for 2.9.6 dev release
+
+2009-12-10 12:13  robert
+
+	* applications/osgversion/Contributors.cpp: Updated Contributors
+	  list to workaround typos in ChangeLog
+
+2009-12-10 11:46  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2009-12-10 11:30  robert
 
 	* src/osgWrappers/osgAnimation/Timeline.cpp: Updated wrappers

@@ -20,23 +20,19 @@
 
 #include <osg/GraphicsContext>
 #include <osgViewer/Export>
-
-
-#ifdef __OBJC__
-@class NSOpenGLContext;
-#else
-class NSOpenGLContext;
-#endif
+#include <osgViewer/api/Cocoa/GraphicsHandleCocoa>
 
 namespace osgViewer
 {
 
-class OSGVIEWER_EXPORT PixelBufferCocoa : public osg::GraphicsContext
+class OSGVIEWER_EXPORT PixelBufferCocoa : public osg::GraphicsContext, public osgViewer::GraphicsHandleCocoa
 {
     public:
         struct Implementation;
 
         PixelBufferCocoa(osg::GraphicsContext::Traits* traits):
+            osg::GraphicsContext(),
+            osgViewer::GraphicsHandleCocoa(),
             _valid(false),
             _initialized(false),
             _realized(false),

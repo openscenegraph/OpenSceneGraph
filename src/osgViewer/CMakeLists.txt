@@ -72,6 +72,7 @@ ELSE()
     IF(${OSG_WINDOWING_SYSTEM} STREQUAL "Cocoa")
         ADD_DEFINITIONS(-DUSE_DARWIN_COCOA_IMPLEMENTATION)
         SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} 
+            ${HEADER_PATH}/api/Cocoa/GraphicsHandleCocoa
             ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa
             ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa
         )

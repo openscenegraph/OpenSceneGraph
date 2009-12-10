@@ -36,18 +36,21 @@ class NSView;
 #endif
 
 #include <osgViewer/GraphicsWindow>
+#include <osgViewer/api/Cocoa/GraphicsHandleCocoa>
 
 // we may not include any cocoa-header here, because this will pollute the name-sapce and tend to compile-errors
 
 namespace osgViewer
 {
 
-class GraphicsWindowCocoa : public osgViewer::GraphicsWindow
+class GraphicsWindowCocoa : public osgViewer::GraphicsWindow, public osgViewer::GraphicsHandleCocoa
 {
     public:
     class Implementation;
 
         GraphicsWindowCocoa(osg::GraphicsContext::Traits* traits):
+            osgViewer::GraphicsWindow(),
+            osgViewer::GraphicsHandleCocoa(),
             _valid(false),
             _initialized(false),
             _realized(false),
@@ -55,8 +58,7 @@ class GraphicsWindowCocoa : public osgViewer::GraphicsWindow
             _checkForEvents(true),
             _ownsWindow(true),
             _currentCursor(RightArrowCursor),
-            _window(NULL),
-            _context(NULL)
+            _window(NULL)
         {
             _traits = traits;
 

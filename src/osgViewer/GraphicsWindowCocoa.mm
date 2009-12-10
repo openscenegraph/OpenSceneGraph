@@ -971,17 +971,10 @@ bool GraphicsWindowCocoa::realizeImplementation()
     // create the context
     NSOpenGLContext* sharedContext = NULL;
     
-    GraphicsWindowCocoa* graphicsWindowCocoa = dynamic_cast<GraphicsWindowCocoa*>(_traits->sharedContext);
-    if (graphicsWindowCocoa) 
+    GraphicsHandleCocoa* graphicsHandleCocoa = dynamic_cast<GraphicsHandleCocoa*>(_traits->sharedContext);
+    if (graphicsHandleCocoa) 
     {
-        sharedContext = graphicsWindowCocoa->getContext();
-    }
-    else
-    {
-        PixelBufferCocoa* pixelbuffer = dynamic_cast<PixelBufferCocoa*>(_traits->sharedContext);
-        if (pixelbuffer) {
-            sharedContext = pixelbuffer->getContext();
-        }
+        sharedContext = graphicsHandleCocoa->getNSOpenGLContext();
     }
     
     NSOpenGLPixelFormat* pixelformat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attr ];

@@ -17,20 +17,20 @@ namespace osgViewer {
 
 void PixelBufferCocoa::init()
 {
-	//std::cout << "PixelBufferCocoa :: init not implemented yet " << std::endl;
-	
-	_valid = _initialized = true;    
-	
+    //std::cout << "PixelBufferCocoa :: init not implemented yet " << std::endl;
+    
+    _valid = _initialized = true;    
+    
 
 }
 
 bool PixelBufferCocoa::realizeImplementation() 
 {
-	std::cout << "PixelBufferCocoa :: realizeImplementation not implemented yet " << std::endl;
-	
+    std::cout << "PixelBufferCocoa :: realizeImplementation not implemented yet " << std::endl;
+    
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-    	 
-	NSOpenGLPixelFormatAttribute attr[32];
+         
+    NSOpenGLPixelFormatAttribute attr[32];
     int i = 0;
     
     attr[i++] = NSOpenGLPFADepthSize;
@@ -65,20 +65,14 @@ bool PixelBufferCocoa::realizeImplementation()
     // create the context
     NSOpenGLContext* sharedContext = NULL;
     
-    GraphicsWindowCocoa* graphicsWindowCocoa = dynamic_cast<GraphicsWindowCocoa*>(_traits->sharedContext);
-    if (graphicsWindowCocoa) 
+    GraphicsHandleCocoa* graphicsHandleCocoa = dynamic_cast<GraphicsHandleCocoa*>(_traits->sharedContext);
+    if (graphicsHandleCocoa) 
     {
-        sharedContext = graphicsWindowCocoa->getContext();
+        sharedContext = graphicsHandleCocoa->getNSOpenGLContext();
     }
-    else
-    {
-        PixelBufferCocoa* pixelbuffer = dynamic_cast<PixelBufferCocoa*>(_traits->sharedContext);
-        if (pixelbuffer) {
-            sharedContext = pixelbuffer->getContext();
-        }
-    }
-	
-	NSOpenGLPixelFormat* pixelformat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attr ];
+    
+    
+    NSOpenGLPixelFormat* pixelformat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attr ];
     _context = [[NSOpenGLContext alloc] initWithFormat: pixelformat shareContext: sharedContext];
     NSOpenGLPixelBuffer* pbuffer = [[NSOpenGLPixelBuffer alloc] initWithTextureTarget: _traits->target textureInternalFormat: _traits->format textureMaxMipMapLevel: _traits->level pixelsWide: _traits->width pixelsHigh: _traits->height];
     
@@ -93,7 +87,7 @@ bool PixelBufferCocoa::realizeImplementation()
 
 void PixelBufferCocoa::closeImplementation()
 {
-	_realized = false;
+    _realized = false;
     
     
 }
@@ -103,23 +97,23 @@ void PixelBufferCocoa::closeImplementation()
 /** Make this graphics context current.*/
 bool PixelBufferCocoa::makeCurrentImplementation()
 {
-	// osg::notify(osg::INFO) << "PixelBufferCocoa::makeCurrentImplementation" << std::endl;
+    // osg::notify(osg::INFO) << "PixelBufferCocoa::makeCurrentImplementation" << std::endl;
     
     [_context makeCurrentContext];
-	return true;
+    return true;
 }
 
 
 /** Make this graphics context current with specified read context implementation. */
 bool PixelBufferCocoa::makeContextCurrentImplementation(osg::GraphicsContext* readContext)
 {
-	return makeCurrentImplementation();
+    return makeCurrentImplementation();
 }
 
 /** Release the graphics context.*/
 bool PixelBufferCocoa::releaseContextImplementation()
 {
-	// osg::notify(osg::INFO) << "PixelBufferCocoa::releaseContextImplementation" << std::endl;
+    // osg::notify(osg::INFO) << "PixelBufferCocoa::releaseContextImplementation" << std::endl;
     
     [NSOpenGLContext clearCurrentContext];
     return true;
@@ -128,18 +122,18 @@ bool PixelBufferCocoa::releaseContextImplementation()
 /** Bind the graphics context to associated texture implementation.*/
 void PixelBufferCocoa::bindPBufferToTextureImplementation( GLenum buffer )
 {
-	std::cout << "PixelBufferCocoa :: bindPBufferToTextureImplementation not implemented yet " << std::endl;
+    std::cout << "PixelBufferCocoa :: bindPBufferToTextureImplementation not implemented yet " << std::endl;
 }
 
 /** Swap the front and back buffers.*/
 void PixelBufferCocoa::swapBuffersImplementation()
 {
-	osg::notify(osg::INFO) << "PixelBufferCocoa::swapBuffersImplementation" << std::endl;
+    osg::notify(osg::INFO) << "PixelBufferCocoa::swapBuffersImplementation" << std::endl;
     [_context flushBuffer];
 }
 
  PixelBufferCocoa::~PixelBufferCocoa()
- {	
+ {    
     [_context release];
  }
 

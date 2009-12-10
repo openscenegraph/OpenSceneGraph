@@ -34,7 +34,7 @@ class DataOutputStream{
 
 public:
     DataOutputStream(std::ostream* ostream, const osgDB::ReaderWriter::Options* options);
-    ~DataOutputStream();
+    virtual ~DataOutputStream();
 
     const osgDB::ReaderWriter::Options* getOptions() const { return _options.get(); }
 

@@ -523,27 +523,6 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
 
     osg::GLBeginEndAdapter& gl = (state.getGLBeginEndAdapter());
 
-    if (_drawMode & TEXT)
-    {
-        renderInfo.getState()->disableAllVertexArrays();
-
-        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
-            glPushAttrib(GL_TRANSFORM_BIT);
-            glEnable(GL_RESCALE_NORMAL);
-        #endif
-
-        switch(_renderMode)
-        {
-            case PER_FACE:  renderPerFace(*renderInfo.getState());   break;
-            case PER_GLYPH:
-            default:        renderPerGlyph(*renderInfo.getState());  break;
-        }
-
-        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
-            glPopAttrib();
-        #endif
-    }
-
     if (_drawMode & BOUNDINGBOX)
     {
         if (_textBB.valid())
@@ -606,12 +585,36 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
 
     }
 
+    if (_drawMode & TEXT)
+    {
+        renderInfo.getState()->disableAllVertexArrays();
+
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+            glPushAttrib(GL_TRANSFORM_BIT);
+            glEnable(GL_RESCALE_NORMAL);
+        #endif
+
+        switch(_renderMode)
+        {
+            case PER_FACE:  renderPerFace(*renderInfo.getState());   break;
+            case PER_GLYPH:
+            default:        renderPerGlyph(*renderInfo.getState());  break;
+        }
+
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+            glPopAttrib();
+        #endif
+    }
+
+
     // restore the previous modelview matrix
     state.applyModelViewMatrix(previous.get());
 }
 
 void Text3D::renderPerGlyph(osg::State & state) const
 {
+    osg::Matrix original_modelview = state.getModelViewMatrix();
+
     // ** for each line, do ...
     TextRenderInfo::const_iterator itLine, endLine = _textRenderInfo.end();
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
@@ -621,10 +624,10 @@ void Text3D::renderPerGlyph(osg::State & state) const
         for (it = itLine->begin(); it!=end; ++it)
         {
 
-            osg::ref_ptr<osg::RefMatrix> matrix = new osg::RefMatrix(state.getModelViewMatrix());
+            osg::ref_ptr<osg::RefMatrix> matrix = new osg::RefMatrix(original_modelview);
             matrix->preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
             state.applyModelViewMatrix(matrix.get());
-            
+
             // ** apply the vertex array
             state.setVertexPointer(it->_glyph->getVertexArray());
 
@@ -660,6 +663,8 @@ void Text3D::renderPerGlyph(osg::State & state) const
 
 void Text3D::renderPerFace(osg::State & state) const
 {
+    osg::Matrix original_modelview = state.getModelViewMatrix();
+
     // ** render all front faces
     state.Normal(0.0f,0.0f,1.0f);
 
@@ -670,7 +675,7 @@ void Text3D::renderPerFace(osg::State & state) const
         LineRenderInfo::const_iterator it, end = itLine->end();
         for (it = itLine->begin(); it!=end; ++it)
         {
-            osg::ref_ptr<osg::RefMatrix> matrix = new osg::RefMatrix(state.getModelViewMatrix());
+            osg::ref_ptr<osg::RefMatrix> matrix = new osg::RefMatrix(original_modelview);
             matrix->preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
             state.applyModelViewMatrix(matrix.get());
 
@@ -693,7 +698,7 @@ void Text3D::renderPerFace(osg::State & state) const
         LineRenderInfo::const_iterator it, end = itLine->end();
         for (it = itLine->begin(); it!=end; ++it)
         {
-            osg::ref_ptr<osg::RefMatrix> matrix = new osg::RefMatrix(state.getModelViewMatrix());
+            osg::ref_ptr<osg::RefMatrix> matrix = new osg::RefMatrix(original_modelview);
             matrix->preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
             state.applyModelViewMatrix(matrix.get());
 

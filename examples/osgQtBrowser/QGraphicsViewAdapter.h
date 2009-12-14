@@ -58,7 +58,7 @@ class QGraphicsViewAdapter : public QObject
 
         osg::observer_ptr<osg::Image>   _image;
 
-        unsigned int                    _previousButtonMask;
+        int                             _previousButtonMask;
         int                             _previousMouseX;
         int                             _previousMouseY;
 
@@ -71,7 +71,7 @@ class QGraphicsViewAdapter : public QObject
         QPointer<QGraphicsScene>        _graphicsScene;
 
         OpenThreads::Mutex              _qimagesMutex;
-        unsigned int                    _previousFrameNumber;
+        int                             _previousFrameNumber;
         bool                            _newImageAvailable;
         unsigned int                    _currentRead;
         unsigned int                    _currentWrite;

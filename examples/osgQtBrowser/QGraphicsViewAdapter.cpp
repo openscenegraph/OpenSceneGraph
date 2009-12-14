@@ -57,8 +57,8 @@ struct MyQPointerEvent : public QEvent
 
 QGraphicsViewAdapter::QGraphicsViewAdapter(osg::Image* image, QWidget* widget):
     _image(image),
-    _backgroundColor(255,255,255),
-    _qtKeyModifiers(Qt::NoModifier)
+    _qtKeyModifiers(Qt::NoModifier),
+    _backgroundColor(255,255,255)
 {
     // make sure we have a valid QApplication before we start creating widgets.
     getOrCreateQApplication();

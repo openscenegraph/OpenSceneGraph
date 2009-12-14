@@ -33,7 +33,7 @@ TYPE_NAME_ALIAS(std::vector< osg::GraphicsContext::ScreenSettings >, osg::Graphi
 
 TYPE_NAME_ALIAS(std::vector< osg::GraphicsContext * >, osg::GraphicsContext::GraphicsContexts)
 
-TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Operation > >, osg::GraphicsContext::OperationQueue)
+TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Operation > >, osg::GraphicsContext::GraphicsOperationQueue)
 
 TYPE_NAME_ALIAS(std::list< osg::Camera * >, osg::GraphicsContext::Cameras)
 
@@ -113,9 +113,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	          __void__runOperations,
 	          "Run the operations. ",
 	          "");
-	I_Method0(osg::GraphicsContext::OperationQueue &, getOperationsQueue,
+	I_Method0(osg::GraphicsContext::GraphicsOperationQueue &, getOperationsQueue,
 	          Properties::NON_VIRTUAL,
-	          __OperationQueue_R1__getOperationsQueue,
+	          __GraphicsOperationQueue_R1__getOperationsQueue,
 	          "Get the operations queue, not you must use the OperationsMutex when accessing the queue. ",
 	          "");
 	I_Method0(OpenThreads::Mutex *, getOperationsMutex,
@@ -395,8 +395,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::GraphicsContext)
 	I_SimpleProperty(OpenThreads::Mutex *, OperationsMutex, 
 	                 __OpenThreads_Mutex_P1__getOperationsMutex, 
 	                 0);
-	I_SimpleProperty(osg::GraphicsContext::OperationQueue &, OperationsQueue, 
-	                 __OperationQueue_R1__getOperationsQueue, 
+	I_SimpleProperty(osg::GraphicsContext::GraphicsOperationQueue &, OperationsQueue, 
+	                 __GraphicsOperationQueue_R1__getOperationsQueue, 
 	                 0);
 	I_SimpleProperty(osg::GraphicsContext::ResizedCallback *, ResizedCallback, 
 	                 __ResizedCallback_P1__getResizedCallback, 

@@ -679,7 +679,7 @@ void GraphicsContext::remove(Operation* operation)
     // acquire the lock on the operations queue to prevent anyone else for modifying it at the same time
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
 
-    for(OperationQueue::iterator itr = _operations.begin();
+    for(GraphicsOperationQueue::iterator itr = _operations.begin();
         itr!=_operations.end();)
     {
         if ((*itr)==operation) itr = _operations.erase(itr);
@@ -700,7 +700,7 @@ void GraphicsContext::remove(const std::string& name)
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
 
     // find the remove all operations with specified name
-    for(OperationQueue::iterator itr = _operations.begin();
+    for(GraphicsOperationQueue::iterator itr = _operations.begin();
         itr!=_operations.end();)
     {
         if ((*itr)->getName()==name) itr = _operations.erase(itr);
@@ -750,7 +750,7 @@ void GraphicsContext::runOperations()
         if (camera->getRenderer()) (*(camera->getRenderer()))(this);
     }
 
-    for(OperationQueue::iterator itr = _operations.begin();
+    for(GraphicsOperationQueue::iterator itr = _operations.begin();
         itr != _operations.end();
         )
     {

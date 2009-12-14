@@ -256,10 +256,10 @@ class OSG_EXPORT GraphicsContext : public Object
         /** Run the operations. */
         void runOperations();
 
-        typedef std::list< ref_ptr<Operation> > OperationQueue;
+        typedef std::list< ref_ptr<Operation> > GraphicsOperationQueue;
         
         /** Get the operations queue, not you must use the OperationsMutex when accessing the queue.*/
-        OperationQueue& getOperationsQueue() { return _operations; }
+        GraphicsOperationQueue& getOperationsQueue() { return _operations; }
 
         /** Get the operations queue mutex.*/
         OpenThreads::Mutex* getOperationsMutex() { return &_operationsMutex; }
@@ -471,7 +471,7 @@ class OSG_EXPORT GraphicsContext : public Object
         
         OpenThreads::Mutex                  _operationsMutex;
         osg::ref_ptr<osg::RefBlock>         _operationsBlock;
-        OperationQueue                      _operations;
+        GraphicsOperationQueue              _operations;
         osg::ref_ptr<Operation>             _currentOperation;
 
         ref_ptr<GraphicsThread>             _graphicsThread;

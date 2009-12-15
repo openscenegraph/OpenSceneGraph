@@ -97,13 +97,13 @@ bool StateSetManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
 
         unsigned int mode = osg::StateAttribute::INHERIT|osg::StateAttribute::ON;
 
-        _texture = (_stateset->getTextureMode(0,GL_TEXTURE_2D)&mode) ||
-                   (_stateset->getTextureMode(0,GL_TEXTURE_3D)&mode) ||
-                   (_stateset->getTextureMode(0,GL_TEXTURE_RECTANGLE)&mode) ||
-                   (_stateset->getTextureMode(0,GL_TEXTURE_CUBE_MAP)&mode);
+        _texture = (_stateset->getTextureMode(0,GL_TEXTURE_2D)&mode)!=0 ||
+                   (_stateset->getTextureMode(0,GL_TEXTURE_3D)&mode)!=0 ||
+                   (_stateset->getTextureMode(0,GL_TEXTURE_RECTANGLE)&mode)!=0 ||
+                   (_stateset->getTextureMode(0,GL_TEXTURE_CUBE_MAP)&mode)!=0;
                    
         #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
-            _texture |= ((_stateset->getTextureMode(0,GL_TEXTURE_1D)&mode)!=0);
+            _texture |= (_stateset->getTextureMode(0,GL_TEXTURE_1D)&mode)!=0;
         #endif
     }
 

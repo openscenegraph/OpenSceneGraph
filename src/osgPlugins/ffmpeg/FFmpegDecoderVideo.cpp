@@ -227,7 +227,6 @@ void FFmpegDecoderVideo::decodeLoop()
             else if (packet.type == FFmpegPacket::PACKET_FLUSH)
             {
                 avcodec_flush_buffers(m_context);
-                m_clocks.rewindVideo();
             }
         }
     }

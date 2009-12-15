@@ -367,6 +367,7 @@ void FFmpegDecoder::rewindButDontFlushQueues()
     if (av_seek_frame(m_format_context.get(), m_video_index, seek_target, 0/*AVSEEK_FLAG_BYTE |*/ /*AVSEEK_FLAG_BACKWARD*/) < 0)
         throw std::runtime_error("av_seek_frame failed()");
 
+    m_clocks.rewind();
     m_state = REWINDING;
 }
 
@@ -392,6 +393,7 @@ void FFmpegDecoder::seekButDontFlushQueues(double time)
     if (av_seek_frame(m_format_context.get(), m_video_index, seek_target, 0/*AVSEEK_FLAG_BYTE |*/ /*AVSEEK_FLAG_BACKWARD*/) < 0)
         throw std::runtime_error("av_seek_frame failed()");
 
+    m_clocks.seek(time);
     m_state = SEEKING;    
 }
 

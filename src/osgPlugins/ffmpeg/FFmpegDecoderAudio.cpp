@@ -322,7 +322,6 @@ size_t FFmpegDecoderAudio::decodeFrame(void * const buffer, const size_t size)
         else if (m_packet.type == FFmpegPacket::PACKET_FLUSH)
         {
             avcodec_flush_buffers(m_context);
-            m_clocks.rewindAudio();
         }
 
         // just output silence when we reached the end of stream

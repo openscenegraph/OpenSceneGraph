@@ -39,7 +39,6 @@ FFmpegClocks::FFmpegClocks() :
     m_audio_buffer_end_pts(0),
     m_audio_delay(0.0),
     m_audio_disabled(false),
-    m_rewind(false),
     m_paused(false),
     m_last_current_time(0.0)
 {
@@ -59,6 +58,9 @@ void FFmpegClocks::reset(const double start_time)
     m_last_frame_pts = start_time - m_last_frame_delay;
     m_frame_time = start_time;
 
+    m_pause_time = 0;
+    m_seek_time = 0;
+    
     m_audio_buffer_end_pts = start_time;
     m_audio_timer.setStartTick();
 }
@@ -68,39 +70,41 @@ void FFmpegClocks::pause(bool pause)
     if(pause)
         m_paused = true;
     else
+    {
         m_paused = false;
+        if(!m_audio_disabled) m_audio_timer.setStartTick();
+    }
 }
 
 
 
-void FFmpegClocks::rewindAudio()
+void FFmpegClocks::rewind()
 {
     ScopedLock lock(m_mutex);
 
+    m_pause_time = 0;
+    m_seek_time = 0;
+    
     m_audio_buffer_end_pts = m_start_time;
     m_audio_timer.setStartTick();
 
-    m_rewind = ! m_rewind;
-}
-
-
-
-void FFmpegClocks::rewindVideo()
-{
-    ScopedLock lock(m_mutex);
+    m_last_frame_delay = 0.040;
+    m_frame_time = m_start_time;
 
     if (m_audio_disabled)
         return;
 
-    m_video_clock = m_start_time;
-
-    m_last_frame_delay = 0.040;
-    m_last_frame_pts = m_start_time - m_last_frame_delay;
-    m_frame_time = m_start_time;
-
-    m_rewind = ! m_rewind;
+    m_video_clock = m_start_time;    
 }
 
+void FFmpegClocks::seek(double seek_time)
+{
+    ScopedLock lock(m_mutex);
+    
+    m_video_clock = seek_time;
+    m_last_frame_delay = 0.040;
+    m_frame_time = seek_time;
+}
 
 
 void FFmpegClocks::audioSetBufferEndPts(const double pts)
@@ -179,8 +183,13 @@ double FFmpegClocks::videoRefreshSchedule(const double pts)
 
 
     // If incorrect delay, use previous one
+    
     if (delay <= 0.0 || delay >= 1.0)
+    {
         delay = m_last_frame_delay;
+        if(!m_audio_disabled) m_frame_time = pts - delay;
+    }
+    
 
     // Save for next time
     m_last_frame_delay = delay;
@@ -193,9 +202,7 @@ double FFmpegClocks::videoRefreshSchedule(const double pts)
     m_frame_time += delay;
 
     const double audio_time = getAudioTime();
-    const double actual_delay = (! m_rewind) ?
-        clamp(m_frame_time - audio_time, -0.5*delay, 2.5*delay) :
-        m_last_actual_delay; // when rewinding audio or video (but the other has yet to be), get the last used delay
+    const double actual_delay = clamp(m_frame_time - audio_time, -0.5*delay, 2.5*delay);
 
     //m_frame_time += delay;
 
@@ -224,21 +231,24 @@ void FFmpegClocks::setPauseTime(double pause_time)
 
 void FFmpegClocks::setSeekTime(double seek_time)
 {
-    m_seek_time = getAudioTime() - seek_time;
+    m_seek_time += getAudioTime() - seek_time;
 }
 
 
 
 double FFmpegClocks::getAudioTime() const
 {
-    return m_audio_buffer_end_pts + m_audio_timer.time_s() - m_pause_time - m_audio_delay;
+    if(m_audio_disabled)
+        return m_audio_buffer_end_pts + m_audio_timer.time_s() - m_pause_time - m_audio_delay - m_seek_time;
+    else
+        return m_audio_buffer_end_pts + m_audio_timer.time_s() - m_audio_delay;
 }
 
 
 double FFmpegClocks::getCurrentTime()
 {
     if(!m_paused)
-        m_last_current_time = getAudioTime() - m_seek_time; // synced with audio
+        m_last_current_time = getAudioTime();
     
     return m_last_current_time;  
 }

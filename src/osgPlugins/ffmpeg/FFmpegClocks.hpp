@@ -23,8 +23,8 @@ public:
 
     void reset(double start_time);
     void pause(bool pause);
-    void rewindAudio();
-    void rewindVideo();
+    void seek(double seek_time);
+    void rewind();
 
     void audioSetBufferEndPts(double pts);
     void audioAdjustBufferEndPts(double increment);
@@ -63,7 +63,6 @@ private:
     double    m_audio_delay;
     Timer     m_audio_timer;
     bool      m_audio_disabled;
-    bool      m_rewind;
     bool      m_paused;
     double    m_last_current_time;
 

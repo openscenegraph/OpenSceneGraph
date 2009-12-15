@@ -258,7 +258,7 @@ osg::Node* createModel(const std::string& shader, const std::string& textureFile
         if (ebo) elements->setElementBufferObject(ebo);
     }
     
-    geom->setUseVertexBufferObjects(vbo);
+    geom->setUseVertexBufferObjects(useVBO);
 
     return geode;
 }

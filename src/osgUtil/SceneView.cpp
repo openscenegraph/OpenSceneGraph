@@ -1337,7 +1337,7 @@ void SceneView::draw()
                     getState()->applyMode(GL_LIGHTING,false);
                     getState()->applyMode(GL_DEPTH_TEST,false);
                     glStencilMask(~0u);
-                    glScissor( getViewport()->x(),  getViewport()->y(),  getViewport()->width(),  getViewport()->height() );
+                    glScissor( static_cast<GLint>(getViewport()->x()),  static_cast<GLint>(getViewport()->y()),  static_cast<GLsizei>(getViewport()->width()),  static_cast<GLsizei>(getViewport()->height()) );
                     glEnable( GL_SCISSOR_TEST );
                     glClear(GL_STENCIL_BUFFER_BIT);
                     glDisable( GL_SCISSOR_TEST );

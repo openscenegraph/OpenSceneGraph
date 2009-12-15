@@ -87,15 +87,26 @@ ADD_LIBRARY(${LIB_NAME}
     Tessellator.cpp
     TransformAttributeFunctor.cpp
     TransformCallback.cpp
-    TriStrip_graph_array.h
-    TriStrip_heap_array.h
-    TriStrip_tri_stripper.cpp
-    TriStrip_tri_stripper.h
+
+    tristripper/include/detail/graph_array.h
+    tristripper/include/detail/types.h
+    tristripper/include/detail/cache_simulator.h
+    tristripper/include/detail/policy.h
+    tristripper/include/detail/heap_array.h
+    tristripper/include/detail/connectivity_graph.h
+    tristripper/include/tri_stripper.h
+    tristripper/include/public_types.h
+    tristripper/src/tri_stripper.cpp
+    tristripper/src/policy.cpp
+    tristripper/src/connectivity_graph.cpp
+
     TriStripVisitor.cpp
     UpdateVisitor.cpp
     Version.cpp
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
+
+INCLUDE_DIRECTORIES("tristripper/include")
 
 LINK_INTERNAL(${LIB_NAME}     
     osg

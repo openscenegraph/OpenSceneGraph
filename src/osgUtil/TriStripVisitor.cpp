@@ -22,7 +22,7 @@
 #include <map>
 #include <iterator>
 
-#include "TriStrip_tri_stripper.h"
+#include "tristripper/include/tri_stripper.h"
 
 using namespace osg;
 using namespace osgUtil;
@@ -182,7 +182,7 @@ struct MyTriangleOperator
 {
 
     IndexList                                _remapIndices;
-    triangle_stripper::tri_stripper::indices _in_indices;
+    triangle_stripper::indices _in_indices;
 
     inline void operator()(unsigned int p1, unsigned int p2, unsigned int p3)
     {
@@ -390,7 +390,7 @@ void TriStripVisitor::stripify(Geometry& geom)
         osg::notify(osg::INFO)<<"TriStripVisitor::stripify(Geometry&):     doing tri strip"<< std::endl;
 
         unsigned int in_numVertices = 0;
-        for(triangle_stripper::tri_stripper::indices::iterator itr=taf._in_indices.begin();
+        for(triangle_stripper::indices::iterator itr=taf._in_indices.begin();
             itr!=taf._in_indices.end();
             ++itr)
         {
@@ -408,19 +408,20 @@ void TriStripVisitor::stripify(Geometry& geom)
         stripifier.SetCacheSize(_cacheSize);
         stripifier.SetMinStripSize(_minStripSize);
 
-        triangle_stripper::tri_stripper::primitives_vector outPrimitives;
-        if (!stripifier.Strip(&outPrimitives)) 
+        triangle_stripper::primitive_vector outPrimitives;
+        stripifier.Strip(&outPrimitives);
+        if (outPrimitives.empty())
         {
             osg::notify(osg::WARN)<<"Error: TriStripVisitor::stripify(Geometry& geom) failed."<<std::endl;
             return;
         }
 
-        triangle_stripper::tri_stripper::primitives_vector::iterator pitr;
+        triangle_stripper::primitive_vector::iterator pitr;
         if (_generateFourPointPrimitivesQuads)
         {
             osg::notify(osg::INFO)<<"Collecting all quads"<<std::endl;
 
-            typedef triangle_stripper::tri_stripper::primitives_vector::iterator prim_iterator;
+            typedef triangle_stripper::primitive_vector::iterator prim_iterator;
             typedef std::multimap<unsigned int,prim_iterator> QuadMap;
             QuadMap quadMap;
 
@@ -429,10 +430,10 @@ void TriStripVisitor::stripify(Geometry& geom)
                 pitr!=outPrimitives.end();
                 ++pitr)
             {
-                if (pitr->m_Indices.size()==4)
+                if (pitr->Indices.size()==4)
                 {
-                    std::swap(pitr->m_Indices[2],pitr->m_Indices[3]);
-                    unsigned int minValue = *(std::max_element(pitr->m_Indices.begin(),pitr->m_Indices.end()));
+                    std::swap(pitr->Indices[2],pitr->Indices[3]);
+                    unsigned int minValue = *(std::max_element(pitr->Indices.begin(),pitr->Indices.end()));
                     quadMap.insert(QuadMap::value_type(minValue,pitr));
                 }
             }
@@ -455,13 +456,13 @@ void TriStripVisitor::stripify(Geometry& geom)
                     unsigned int min_pos = 0;
                     for(i=1;i<4;++i)
                     {
-                        if (pitr->m_Indices[min_pos]>pitr->m_Indices[i]) 
+                        if (pitr->Indices[min_pos]>pitr->Indices[i])
                             min_pos = i;
                     }
-                    indices.push_back(pitr->m_Indices[min_pos]);
-                    indices.push_back(pitr->m_Indices[(min_pos+1)%4]);
-                    indices.push_back(pitr->m_Indices[(min_pos+2)%4]);
-                    indices.push_back(pitr->m_Indices[(min_pos+3)%4]);
+                    indices.push_back(pitr->Indices[min_pos]);
+                    indices.push_back(pitr->Indices[(min_pos+1)%4]);
+                    indices.push_back(pitr->Indices[(min_pos+2)%4]);
+                    indices.push_back(pitr->Indices[(min_pos+3)%4]);
                 }            
 
                 bool inOrder = true;
@@ -504,12 +505,12 @@ void TriStripVisitor::stripify(Geometry& geom)
             pitr!=outPrimitives.end();
             ++pitr)
         {
-            if (!_generateFourPointPrimitivesQuads || pitr->m_Indices.size()!=4)
+            if (!_generateFourPointPrimitivesQuads || pitr->Indices.size()!=4)
             {
                 bool inOrder = true;
-                unsigned int previousValue = pitr->m_Indices.front();
-                for(triangle_stripper::tri_stripper::indices::iterator qi_itr=pitr->m_Indices.begin()+1;
-                    qi_itr!=pitr->m_Indices.end() && inOrder;
+                unsigned int previousValue = pitr->Indices.front();
+                for(triangle_stripper::indices::iterator qi_itr=pitr->Indices.begin()+1;
+                    qi_itr!=pitr->Indices.end() && inOrder;
                     ++qi_itr)
                 {
                     inOrder = (previousValue+1)==*qi_itr;
@@ -518,23 +519,23 @@ void TriStripVisitor::stripify(Geometry& geom)
 
                 if (inOrder)
                 {
-                    new_primitives.push_back(new osg::DrawArrays(pitr->m_Type,pitr->m_Indices.front(),pitr->m_Indices.size()));
+                    new_primitives.push_back(new osg::DrawArrays(pitr->Type,pitr->Indices.front(),pitr->Indices.size()));
                 }
                 else
                 {
-                    unsigned int maxValue = *(std::max_element(pitr->m_Indices.begin(),pitr->m_Indices.end()));
+                    unsigned int maxValue = *(std::max_element(pitr->Indices.begin(),pitr->Indices.end()));
                     if (maxValue>=65536)
                     {
-                        osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(pitr->m_Type);
-                        elements->reserve(pitr->m_Indices.size());
-                        std::copy(pitr->m_Indices.begin(),pitr->m_Indices.end(),std::back_inserter(*elements));
+                        osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(pitr->Type);
+                        elements->reserve(pitr->Indices.size());
+                        std::copy(pitr->Indices.begin(),pitr->Indices.end(),std::back_inserter(*elements));
                         new_primitives.push_back(elements);
                     }
                     else
                     {
-                        osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(pitr->m_Type);
-                        elements->reserve(pitr->m_Indices.size());
-                        std::copy(pitr->m_Indices.begin(),pitr->m_Indices.end(),std::back_inserter(*elements));
+                        osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(pitr->Type);
+                        elements->reserve(pitr->Indices.size());
+                        std::copy(pitr->Indices.begin(),pitr->Indices.end(),std::back_inserter(*elements));
                         new_primitives.push_back(elements);
                     }
                 }

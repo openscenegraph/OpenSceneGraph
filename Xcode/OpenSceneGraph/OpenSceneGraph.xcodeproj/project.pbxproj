@@ -2118,7 +2118,6 @@
 		BE11862605D71A7C00EB53E5 /* TangentSpaceGenerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE11860905D71A7B00EB53E5 /* TangentSpaceGenerator.cpp */; };
 		BE11862805D71A7C00EB53E5 /* TransformAttributeFunctor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE11860B05D71A7B00EB53E5 /* TransformAttributeFunctor.cpp */; };
 		BE11862905D71A7C00EB53E5 /* TransformCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE11860C05D71A7B00EB53E5 /* TransformCallback.cpp */; };
-		BE11862C05D71A7C00EB53E5 /* TriStrip_tri_stripper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE11860F05D71A7B00EB53E5 /* TriStrip_tri_stripper.cpp */; };
 		BE11862E05D71A7C00EB53E5 /* TriStripVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE11861105D71A7B00EB53E5 /* TriStripVisitor.cpp */; };
 		BE11862F05D71A7C00EB53E5 /* UpdateVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE11861205D71A7B00EB53E5 /* UpdateVisitor.cpp */; };
 		BE11863005D71A7C00EB53E5 /* Version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE11861305D71A7B00EB53E5 /* Version.cpp */; };
@@ -2497,6 +2496,17 @@
 		D4634F630FC2BE1E007674B3 /* unzip.h in Headers */ = {isa = PBXBuildFile; fileRef = D4634F610FC2BE1E007674B3 /* unzip.h */; };
 		D46351F50FC310D9007674B3 /* SphericalManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D46351F40FC310D9007674B3 /* SphericalManipulator.cpp */; };
 		D46351F70FC310E9007674B3 /* SphericalManipulator in Headers */ = {isa = PBXBuildFile; fileRef = D46351F60FC310E9007674B3 /* SphericalManipulator */; settings = {ATTRIBUTES = (Public, ); }; };
+		D463DE6410D7DFB900B4B1DA /* cache_simulator.h in Headers */ = {isa = PBXBuildFile; fileRef = D463DE5810D7DFB800B4B1DA /* cache_simulator.h */; };
+		D463DE6510D7DFB900B4B1DA /* connectivity_graph.h in Headers */ = {isa = PBXBuildFile; fileRef = D463DE5910D7DFB800B4B1DA /* connectivity_graph.h */; };
+		D463DE6610D7DFB900B4B1DA /* graph_array.h in Headers */ = {isa = PBXBuildFile; fileRef = D463DE5A10D7DFB800B4B1DA /* graph_array.h */; };
+		D463DE6710D7DFB900B4B1DA /* heap_array.h in Headers */ = {isa = PBXBuildFile; fileRef = D463DE5B10D7DFB800B4B1DA /* heap_array.h */; };
+		D463DE6810D7DFB900B4B1DA /* policy.h in Headers */ = {isa = PBXBuildFile; fileRef = D463DE5C10D7DFB800B4B1DA /* policy.h */; };
+		D463DE6910D7DFB900B4B1DA /* types.h in Headers */ = {isa = PBXBuildFile; fileRef = D463DE5D10D7DFB800B4B1DA /* types.h */; };
+		D463DE6A10D7DFB900B4B1DA /* public_types.h in Headers */ = {isa = PBXBuildFile; fileRef = D463DE5E10D7DFB800B4B1DA /* public_types.h */; };
+		D463DE6B10D7DFB900B4B1DA /* tri_stripper.h in Headers */ = {isa = PBXBuildFile; fileRef = D463DE5F10D7DFB800B4B1DA /* tri_stripper.h */; };
+		D463DE6C10D7DFB900B4B1DA /* connectivity_graph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D463DE6110D7DFB900B4B1DA /* connectivity_graph.cpp */; };
+		D463DE6D10D7DFB900B4B1DA /* policy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D463DE6210D7DFB900B4B1DA /* policy.cpp */; };
+		D463DE6E10D7DFB900B4B1DA /* tri_stripper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D463DE6310D7DFB900B4B1DA /* tri_stripper.cpp */; };
 		D4646D2E0E34932C000EF4FB /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4646D2F0E34932C000EF4FB /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		D4646D300E34932C000EF4FB /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
@@ -2858,8 +2868,14 @@
 		D4F4124210CE64EB00856466 /* lib3ds_util.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4122D10CE64EB00856466 /* lib3ds_util.c */; };
 		D4F4124310CE64EB00856466 /* lib3ds_vector.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4122E10CE64EB00856466 /* lib3ds_vector.c */; };
 		D4F4124410CE64EB00856466 /* lib3ds_viewport.c in Sources */ = {isa = PBXBuildFile; fileRef = D4F4122F10CE64EB00856466 /* lib3ds_viewport.c */; };
+		D4F4181910D00F4C00856466 /* Outline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F4181810D00F4B00856466 /* Outline.cpp */; };
+		D4F4181B10D00F5900856466 /* Outline in Headers */ = {isa = PBXBuildFile; fileRef = D4F4181A10D00F5900856466 /* Outline */; settings = {ATTRIBUTES = (Public, ); }; };
+		D4F4184110D00F9800856466 /* TransferFunction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F4184010D00F9800856466 /* TransferFunction.cpp */; };
+		D4F4184310D00FAF00856466 /* IO_Outline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F4184210D00FAF00856466 /* IO_Outline.cpp */; };
 		D4F424CC0F5D9E290052261D /* AudioStream in Headers */ = {isa = PBXBuildFile; fileRef = D4F424CB0F5D9E290052261D /* AudioStream */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4F424CE0F5D9E3D0052261D /* AudioStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F424CD0F5D9E3D0052261D /* AudioStream.cpp */; };
+		D4F4260010D12C5B00856466 /* GraphicsHandleCarbon in Copy Subheaders to api:Carbon */ = {isa = PBXBuildFile; fileRef = D4F425FF10D12C5A00856466 /* GraphicsHandleCarbon */; };
+		D4F426C710D12D8100856466 /* GraphicsHandleCocoa in Copy Subheaders to api:Cocoa */ = {isa = PBXBuildFile; fileRef = D4F426C610D12D8100856466 /* GraphicsHandleCocoa */; };
 		D4F80A9F0F935ABF0043A5DE /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		D4F80AA00F935ABF0043A5DE /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		D4F80AE70F935BE10043A5DE /* ReaderWriterCURL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4F80AE50F935BE10043A5DE /* ReaderWriterCURL.cpp */; };
@@ -6648,6 +6664,7 @@
 			dstPath = Headers/api/Carbon;
 			dstSubfolderSpec = 1;
 			files = (
+				D4F4260010D12C5B00856466 /* GraphicsHandleCarbon in Copy Subheaders to api:Carbon */,
 				5BC2F67D0C44C88400671A68 /* PixelBufferCarbon in Copy Subheaders to api:Carbon */,
 				D40359250B512BF300CB9E15 /* GraphicsWindowCarbon in Copy Subheaders to api:Carbon */,
 			);
@@ -6660,6 +6677,7 @@
 			dstPath = Headers/api/Cocoa;
 			dstSubfolderSpec = 1;
 			files = (
+				D4F426C710D12D8100856466 /* GraphicsHandleCocoa in Copy Subheaders to api:Cocoa */,
 				D45878F90F555D2B0060BAA4 /* GraphicsWindowCocoa in Copy Subheaders to api:Cocoa */,
 				D45878FA0F555D2B0060BAA4 /* PixelBufferCocoa in Copy Subheaders to api:Cocoa */,
 			);
@@ -8100,10 +8118,6 @@
 		BE11860A05D71A7B00EB53E5 /* Tessellator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Tessellator.cpp; path = ../../src/osgUtil/Tessellator.cpp; sourceTree = SOURCE_ROOT; };
 		BE11860B05D71A7B00EB53E5 /* TransformAttributeFunctor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TransformAttributeFunctor.cpp; path = ../../src/osgUtil/TransformAttributeFunctor.cpp; sourceTree = SOURCE_ROOT; };
 		BE11860C05D71A7B00EB53E5 /* TransformCallback.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TransformCallback.cpp; path = ../../src/osgUtil/TransformCallback.cpp; sourceTree = SOURCE_ROOT; };
-		BE11860D05D71A7B00EB53E5 /* TriStrip_graph_array.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TriStrip_graph_array.h; path = ../../src/osgUtil/TriStrip_graph_array.h; sourceTree = SOURCE_ROOT; };
-		BE11860E05D71A7B00EB53E5 /* TriStrip_heap_array.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TriStrip_heap_array.h; path = ../../src/osgUtil/TriStrip_heap_array.h; sourceTree = SOURCE_ROOT; };
-		BE11860F05D71A7B00EB53E5 /* TriStrip_tri_stripper.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TriStrip_tri_stripper.cpp; path = ../../src/osgUtil/TriStrip_tri_stripper.cpp; sourceTree = SOURCE_ROOT; };
-		BE11861005D71A7B00EB53E5 /* TriStrip_tri_stripper.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TriStrip_tri_stripper.h; path = ../../src/osgUtil/TriStrip_tri_stripper.h; sourceTree = SOURCE_ROOT; };
 		BE11861105D71A7B00EB53E5 /* TriStripVisitor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TriStripVisitor.cpp; path = ../../src/osgUtil/TriStripVisitor.cpp; sourceTree = SOURCE_ROOT; };
 		BE11861205D71A7B00EB53E5 /* UpdateVisitor.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = UpdateVisitor.cpp; path = ../../src/osgUtil/UpdateVisitor.cpp; sourceTree = SOURCE_ROOT; };
 		BE11861305D71A7B00EB53E5 /* Version.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Version.cpp; path = ../../src/osgUtil/Version.cpp; sourceTree = SOURCE_ROOT; };
@@ -8401,8 +8415,8 @@
 		D454D47E0DB4F70E0042E209 /* QTImportExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QTImportExport.h; sourceTree = "<group>"; };
 		D4557D950EC4430B0011939C /* FileCache */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FileCache; sourceTree = "<group>"; };
 		D4557DD30EC443210011939C /* FileCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileCache.cpp; sourceTree = "<group>"; };
-		D45878A20F555C510060BAA4 /* GraphicsWindowCocoa */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = GraphicsWindowCocoa; path = api/Cocoa/GraphicsWindowCocoa; sourceTree = "<group>"; };
-		D45878A30F555C520060BAA4 /* PixelBufferCocoa */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = PixelBufferCocoa; path = api/Cocoa/PixelBufferCocoa; sourceTree = "<group>"; };
+		D45878A20F555C510060BAA4 /* GraphicsWindowCocoa */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; name = GraphicsWindowCocoa; path = api/Cocoa/GraphicsWindowCocoa; sourceTree = "<group>"; };
+		D45878A30F555C520060BAA4 /* PixelBufferCocoa */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; name = PixelBufferCocoa; path = api/Cocoa/PixelBufferCocoa; sourceTree = "<group>"; };
 		D45878A60F555C8C0060BAA4 /* DarwinUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinUtils.h; sourceTree = "<group>"; };
 		D45878A70F555C8C0060BAA4 /* DarwinUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinUtils.mm; sourceTree = "<group>"; };
 		D45878A80F555C8C0060BAA4 /* GraphicsWindowCocoa.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GraphicsWindowCocoa.mm; sourceTree = "<group>"; };
@@ -8411,6 +8425,17 @@
 		D4634F610FC2BE1E007674B3 /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unzip.h; sourceTree = "<group>"; };
 		D46351F40FC310D9007674B3 /* SphericalManipulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SphericalManipulator.cpp; sourceTree = "<group>"; };
 		D46351F60FC310E9007674B3 /* SphericalManipulator */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SphericalManipulator; sourceTree = "<group>"; };
+		D463DE5810D7DFB800B4B1DA /* cache_simulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cache_simulator.h; sourceTree = "<group>"; };
+		D463DE5910D7DFB800B4B1DA /* connectivity_graph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = connectivity_graph.h; sourceTree = "<group>"; };
+		D463DE5A10D7DFB800B4B1DA /* graph_array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = graph_array.h; sourceTree = "<group>"; };
+		D463DE5B10D7DFB800B4B1DA /* heap_array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = heap_array.h; sourceTree = "<group>"; };
+		D463DE5C10D7DFB800B4B1DA /* policy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = policy.h; sourceTree = "<group>"; };
+		D463DE5D10D7DFB800B4B1DA /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
+		D463DE5E10D7DFB800B4B1DA /* public_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = public_types.h; sourceTree = "<group>"; };
+		D463DE5F10D7DFB800B4B1DA /* tri_stripper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tri_stripper.h; sourceTree = "<group>"; };
+		D463DE6110D7DFB900B4B1DA /* connectivity_graph.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = connectivity_graph.cpp; sourceTree = "<group>"; };
+		D463DE6210D7DFB900B4B1DA /* policy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = policy.cpp; sourceTree = "<group>"; };
+		D463DE6310D7DFB900B4B1DA /* tri_stripper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tri_stripper.cpp; sourceTree = "<group>"; };
 		D4646D380E34932C000EF4FB /* osgwidgetmenu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osgwidgetmenu.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4646D8A0E3493C5000EF4FB /* osgwidgetmenu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = osgwidgetmenu.cpp; path = ../../examples/osgwidgetmenu/osgwidgetmenu.cpp; sourceTree = SOURCE_ROOT; };
 		D47A06810B833F6E00E19024 /* osgManipulator.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgManipulator.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -8671,8 +8696,14 @@
 		D4F4122D10CE64EB00856466 /* lib3ds_util.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_util.c; path = lib3ds/lib3ds_util.c; sourceTree = "<group>"; };
 		D4F4122E10CE64EB00856466 /* lib3ds_vector.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_vector.c; path = lib3ds/lib3ds_vector.c; sourceTree = "<group>"; };
 		D4F4122F10CE64EB00856466 /* lib3ds_viewport.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 4; name = lib3ds_viewport.c; path = lib3ds/lib3ds_viewport.c; sourceTree = "<group>"; };
+		D4F4181810D00F4B00856466 /* Outline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Outline.cpp; sourceTree = "<group>"; };
+		D4F4181A10D00F5900856466 /* Outline */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Outline; sourceTree = "<group>"; };
+		D4F4184010D00F9800856466 /* TransferFunction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TransferFunction.cpp; sourceTree = "<group>"; };
+		D4F4184210D00FAF00856466 /* IO_Outline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IO_Outline.cpp; sourceTree = "<group>"; };
 		D4F424CB0F5D9E290052261D /* AudioStream */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AudioStream; sourceTree = "<group>"; };
 		D4F424CD0F5D9E3D0052261D /* AudioStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioStream.cpp; sourceTree = "<group>"; };
+		D4F425FF10D12C5A00856466 /* GraphicsHandleCarbon */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = GraphicsHandleCarbon; path = api/Carbon/GraphicsHandleCarbon; sourceTree = "<group>"; };
+		D4F426C610D12D8100856466 /* GraphicsHandleCocoa */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; name = GraphicsHandleCocoa; path = api/Cocoa/GraphicsHandleCocoa; sourceTree = "<group>"; };
 		D4F80AAA0F935ABF0043A5DE /* osgdb_curl.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_curl.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4F80AE50F935BE10043A5DE /* ReaderWriterCURL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ReaderWriterCURL.cpp; path = ../../src/osgPlugins/curl/ReaderWriterCURL.cpp; sourceTree = SOURCE_ROOT; };
 		D4F80AE60F935BE10043A5DE /* ReaderWriterCURL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReaderWriterCURL.h; path = ../../src/osgPlugins/curl/ReaderWriterCURL.h; sourceTree = SOURCE_ROOT; };
@@ -11132,6 +11163,7 @@
 		001D026F065AAC1A003310BF /* osgFX */ = {
 			isa = PBXGroup;
 			children = (
+				D4F4184210D00FAF00856466 /* IO_Outline.cpp */,
 				00A14B62084D626F000150AD /* IO_MultiTextureControl.cpp */,
 				001D0271065AAC1A003310BF /* IO_AnisotropicLighting.cpp */,
 				001D0272065AAC1A003310BF /* IO_BumpMapping.cpp */,
@@ -11147,6 +11179,7 @@
 		001D02A1065AACB6003310BF /* osg */ = {
 			isa = PBXGroup;
 			children = (
+				D4F4184010D00F9800856466 /* TransferFunction.cpp */,
 				D4DE6F520EF2EEAF000E119F /* Box.cpp */,
 				D4DE6F530EF2EEAF000E119F /* Capsule.cpp */,
 				D4DE6F540EF2EEAF000E119F /* CompositeShape.cpp */,
@@ -11897,6 +11930,7 @@
 		005583610624D208000A808A /* osgFX */ = {
 			isa = PBXGroup;
 			children = (
+				D4F4181A10D00F5900856466 /* Outline */,
 				0084FAA80D341F020021E5C9 /* Version */,
 				005583620624D208000A808A /* AnisotropicLighting */,
 				005583630624D208000A808A /* BumpMapping */,
@@ -11917,6 +11951,7 @@
 		005583980624D257000A808A /* osgFX */ = {
 			isa = PBXGroup;
 			children = (
+				D4F4181810D00F4B00856466 /* Outline.cpp */,
 				0084FAAA0D341F0F0021E5C9 /* Version.cpp */,
 				005583990624D257000A808A /* AnisotropicLighting.cpp */,
 				0055839A0624D257000A808A /* BumpMapping.cpp */,
@@ -13017,6 +13052,7 @@
 		5BC2F6790C44C85700671A68 /* Carbon */ = {
 			isa = PBXGroup;
 			children = (
+				D4F425FF10D12C5A00856466 /* GraphicsHandleCarbon */,
 				D40359240B512BF300CB9E15 /* GraphicsWindowCarbon */,
 				5BC2F67C0C44C88400671A68 /* PixelBufferCarbon */,
 			);
@@ -13658,6 +13694,7 @@
 		BE1185F605D71A1300EB53E5 /* osgUtil */ = {
 			isa = PBXGroup;
 			children = (
+				D463DE5510D7DFB700B4B1DA /* tristripper */,
 				D49029B00F80E81800AEB8BC /* ShaderGen.cpp */,
 				D49029B10F80E81800AEB8BC /* PrintVisitor.cpp */,
 				D49029B20F80E81800AEB8BC /* IncrementalCompileOperation.cpp */,
@@ -13691,10 +13728,6 @@
 				BE11860A05D71A7B00EB53E5 /* Tessellator.cpp */,
 				BE11860B05D71A7B00EB53E5 /* TransformAttributeFunctor.cpp */,
 				BE11860C05D71A7B00EB53E5 /* TransformCallback.cpp */,
-				BE11860D05D71A7B00EB53E5 /* TriStrip_graph_array.h */,
-				BE11860E05D71A7B00EB53E5 /* TriStrip_heap_array.h */,
-				BE11860F05D71A7B00EB53E5 /* TriStrip_tri_stripper.cpp */,
-				BE11861005D71A7B00EB53E5 /* TriStrip_tri_stripper.h */,
 				BE11861105D71A7B00EB53E5 /* TriStripVisitor.cpp */,
 				BE11861205D71A7B00EB53E5 /* UpdateVisitor.cpp */,
 				BE11861305D71A7B00EB53E5 /* Version.cpp */,
@@ -14078,10 +14111,53 @@
 		D45878A10F555C3A0060BAA4 /* Cocoa */ = {
 			isa = PBXGroup;
 			children = (
+				D4F426C610D12D8100856466 /* GraphicsHandleCocoa */,
 				D45878A20F555C510060BAA4 /* GraphicsWindowCocoa */,
 				D45878A30F555C520060BAA4 /* PixelBufferCocoa */,
 			);
 			name = Cocoa;
+			sourceTree = "<group>";
+		};
+		D463DE5510D7DFB700B4B1DA /* tristripper */ = {
+			isa = PBXGroup;
+			children = (
+				D463DE5610D7DFB800B4B1DA /* include */,
+				D463DE6010D7DFB900B4B1DA /* src */,
+			);
+			path = tristripper;
+			sourceTree = "<group>";
+		};
+		D463DE5610D7DFB800B4B1DA /* include */ = {
+			isa = PBXGroup;
+			children = (
+				D463DE5710D7DFB800B4B1DA /* detail */,
+				D463DE5E10D7DFB800B4B1DA /* public_types.h */,
+				D463DE5F10D7DFB800B4B1DA /* tri_stripper.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		D463DE5710D7DFB800B4B1DA /* detail */ = {
+			isa = PBXGroup;
+			children = (
+				D463DE5810D7DFB800B4B1DA /* cache_simulator.h */,
+				D463DE5910D7DFB800B4B1DA /* connectivity_graph.h */,
+				D463DE5A10D7DFB800B4B1DA /* graph_array.h */,
+				D463DE5B10D7DFB800B4B1DA /* heap_array.h */,
+				D463DE5C10D7DFB800B4B1DA /* policy.h */,
+				D463DE5D10D7DFB800B4B1DA /* types.h */,
+			);
+			path = detail;
+			sourceTree = "<group>";
+		};
+		D463DE6010D7DFB900B4B1DA /* src */ = {
+			isa = PBXGroup;
+			children = (
+				D463DE6110D7DFB900B4B1DA /* connectivity_graph.cpp */,
+				D463DE6210D7DFB900B4B1DA /* policy.cpp */,
+				D463DE6310D7DFB900B4B1DA /* tri_stripper.cpp */,
+			);
+			path = src;
 			sourceTree = "<group>";
 		};
 		D47A068E0B83404300E19024 /* osgManipulator */ = {
@@ -15112,6 +15188,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4F4181B10D00F5900856466 /* Outline in Headers */,
 				0084FAA90D341F020021E5C9 /* Version in Headers */,
 				005583850624D212000A808A /* AnisotropicLighting in Headers */,
 				005583860624D212000A808A /* BumpMapping in Headers */,
@@ -15886,6 +15963,14 @@
 				BE11866705D71AD300EB53E5 /* TriStripVisitor in Headers */,
 				BE11866805D71AD400EB53E5 /* UpdateVisitor in Headers */,
 				BE11866905D71AD400EB53E5 /* Version in Headers */,
+				D463DE6410D7DFB900B4B1DA /* cache_simulator.h in Headers */,
+				D463DE6510D7DFB900B4B1DA /* connectivity_graph.h in Headers */,
+				D463DE6610D7DFB900B4B1DA /* graph_array.h in Headers */,
+				D463DE6710D7DFB900B4B1DA /* heap_array.h in Headers */,
+				D463DE6810D7DFB900B4B1DA /* policy.h in Headers */,
+				D463DE6910D7DFB900B4B1DA /* types.h in Headers */,
+				D463DE6A10D7DFB900B4B1DA /* public_types.h in Headers */,
+				D463DE6B10D7DFB900B4B1DA /* tri_stripper.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20866,6 +20951,7 @@
 				001D027B065AAC1A003310BF /* IO_Scribe.cpp in Sources */,
 				001D027C065AAC1A003310BF /* IO_SpecularHighlights.cpp in Sources */,
 				00A14B63084D6270000150AD /* IO_MultiTextureControl.cpp in Sources */,
+				D4F4184310D00FAF00856466 /* IO_Outline.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -20959,6 +21045,7 @@
 				D4DE6F5D0EF2EEB0000E119F /* Cylinder.cpp in Sources */,
 				D4DE6F5E0EF2EEB0000E119F /* HeightField.cpp in Sources */,
 				D4DE6F5F0EF2EEB0000E119F /* Sphere.cpp in Sources */,
+				D4F4184110D00F9800856466 /* TransferFunction.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21455,6 +21542,7 @@
 				005583AC0624D257000A808A /* Validator.cpp in Sources */,
 				009DA003081D7900001FA987 /* MultiTextureControl.cpp in Sources */,
 				0084FAAB0D341F100021E5C9 /* Version.cpp in Sources */,
+				D4F4181910D00F4C00856466 /* Outline.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22221,7 +22309,6 @@
 				BE11862605D71A7C00EB53E5 /* TangentSpaceGenerator.cpp in Sources */,
 				BE11862805D71A7C00EB53E5 /* TransformAttributeFunctor.cpp in Sources */,
 				BE11862905D71A7C00EB53E5 /* TransformCallback.cpp in Sources */,
-				BE11862C05D71A7C00EB53E5 /* TriStrip_tri_stripper.cpp in Sources */,
 				BE11862E05D71A7C00EB53E5 /* TriStripVisitor.cpp in Sources */,
 				BE11862F05D71A7C00EB53E5 /* UpdateVisitor.cpp in Sources */,
 				BE11863005D71A7C00EB53E5 /* Version.cpp in Sources */,
@@ -22242,6 +22329,9 @@
 				D49029B30F80E81900AEB8BC /* ShaderGen.cpp in Sources */,
 				D49029B40F80E81900AEB8BC /* PrintVisitor.cpp in Sources */,
 				D49029B50F80E81900AEB8BC /* IncrementalCompileOperation.cpp in Sources */,
+				D463DE6C10D7DFB900B4B1DA /* connectivity_graph.cpp in Sources */,
+				D463DE6D10D7DFB900B4B1DA /* policy.cpp in Sources */,
+				D463DE6E10D7DFB900B4B1DA /* tri_stripper.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -25726,6 +25816,7 @@
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgUtil;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../src/osgUtil/tristripper/include\"";
 				WARNING_CFLAGS = "-Wmost";
 				ZERO_LINK = NO;
 			};
@@ -25752,6 +25843,7 @@
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgUtil;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../src/osgUtil/tristripper/include\"";
 				WARNING_CFLAGS = "-Wmost";
 				ZERO_LINK = NO;
 			};
@@ -25772,6 +25864,7 @@
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgUtil;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../src/osgUtil/tristripper/include\"";
 				WARNING_CFLAGS = "-Wmost";
 			};
 			name = Default;
@@ -38270,6 +38363,7 @@
 				PRODUCT_NAME = osgViewer;
 				REZ_EXECUTABLE = NO;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = "";
 				WARNING_CFLAGS = "-Wmost";
 				ZERO_LINK = NO;
 			};
@@ -38297,6 +38391,7 @@
 				PRODUCT_NAME = osgViewer;
 				REZ_EXECUTABLE = NO;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = "";
 				WARNING_CFLAGS = "-Wmost";
 				ZERO_LINK = NO;
 			};
@@ -38319,6 +38414,7 @@
 				PRODUCT_NAME = osgViewer;
 				REZ_EXECUTABLE = NO;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = "";
 				WARNING_CFLAGS = "-Wmost";
 			};
 			name = Default;
@@ -38663,6 +38759,7 @@
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgUtil;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../src/osgUtil/tristripper/include\"";
 				WARNING_CFLAGS = "-Wmost";
 				ZERO_LINK = NO;
 			};
@@ -38892,6 +38989,7 @@
 				PRODUCT_NAME = osgViewer;
 				REZ_EXECUTABLE = NO;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = "";
 				WARNING_CFLAGS = "-Wmost";
 				ZERO_LINK = NO;
 			};
@@ -43695,6 +43793,7 @@
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgUtil;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../src/osgUtil/tristripper/include\"";
 				WARNING_CFLAGS = "-Wmost";
 				ZERO_LINK = NO;
 			};
@@ -43916,6 +44015,7 @@
 				PRODUCT_NAME = osgViewer;
 				REZ_EXECUTABLE = NO;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = "";
 				WARNING_CFLAGS = "-Wmost";
 				ZERO_LINK = NO;
 			};
@@ -48675,6 +48775,7 @@
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgUtil;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../src/osgUtil/tristripper/include\"";
 				WARNING_CFLAGS = "-Wmost";
 				ZERO_LINK = NO;
 			};
@@ -48904,6 +49005,7 @@
 				PRODUCT_NAME = osgViewer;
 				REZ_EXECUTABLE = NO;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = "";
 				WARNING_CFLAGS = "-Wmost";
 				ZERO_LINK = NO;
 			};
@@ -54702,6 +54804,7 @@
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = osgUtil;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = "\"$(SRCROOT)/../../src/osgUtil/tristripper/include\"";
 				WARNING_CFLAGS = "-Wmost";
 				ZERO_LINK = NO;
 			};
@@ -54923,6 +55026,7 @@
 				PRODUCT_NAME = osgViewer;
 				REZ_EXECUTABLE = NO;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = "";
 				WARNING_CFLAGS = "-Wmost";
 				ZERO_LINK = NO;
 			};

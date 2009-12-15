@@ -8,6 +8,7 @@
  */
 #include <osg/GL>
 #include <osg/Endian>
+#include <osg/Image>
 #include <osgDB/FileNameUtils>
 
 #include "MovieData.h"
@@ -158,7 +159,7 @@ void MovieData::_initImage(osg::Image* image)
 
     image->setImage(_textureWidth,_textureHeight,1,
                    (GLint) GL_RGBA8,
-                   (GLenum)GL_BGRA_EXT,
+                   (GLenum)GL_BGRA,
                    internalFormat,
                    (unsigned char*) buffer,osg::Image::NO_DELETE,4);
 

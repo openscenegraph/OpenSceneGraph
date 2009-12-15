@@ -12,6 +12,7 @@
 #include "QTUtils.h"
 
 #include <osgDB/FileNameUtils>
+#include <osg/Image>
 
 
 /** small exception class bundling a error-message */
@@ -151,7 +152,7 @@ unsigned char* QuicktimeImportExport::prepareBufferForQuicktime(unsigned char* b
                     boffset = 2;
                     break;
                 
-                case GL_BGRA_EXT:
+                case GL_BGRA:
                     aoffset = 0;
                     roffset = 1;
                     goffset = 2;

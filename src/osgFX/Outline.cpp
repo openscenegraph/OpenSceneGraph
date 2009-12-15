@@ -91,7 +91,7 @@ namespace osgFX
 
                 // stencil op
                 osg::Stencil* stencil  = new osg::Stencil;
-                stencil->setFunction(osg::Stencil::ALWAYS, 1, ~0);
+                stencil->setFunction(osg::Stencil::ALWAYS, 1, ~0u);
                 stencil->setOperation(osg::Stencil::KEEP,
                                       osg::Stencil::KEEP,
                                       osg::Stencil::REPLACE);
@@ -112,7 +112,7 @@ namespace osgFX
 
                 // stencil op
                 osg::Stencil* stencil  = new osg::Stencil;
-                stencil->setFunction(osg::Stencil::NOTEQUAL, 1, ~0);
+                stencil->setFunction(osg::Stencil::NOTEQUAL, 1, ~0u);
                 stencil->setOperation(osg::Stencil::KEEP,
                                       osg::Stencil::KEEP,
                                       osg::Stencil::REPLACE);

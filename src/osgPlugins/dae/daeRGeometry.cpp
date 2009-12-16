@@ -240,7 +240,10 @@ template< typename T >
 void daeReader::processSinglePPrimitive(osg::Geode* geode, T *group, SourceMap &sources, GLenum mode )
 {
     osg::Geometry *geometry = new ReaderGeometry();
-    geometry->setName(group->getMaterial());
+    if (group->getMaterial() != NULL )
+    {
+        geometry->setName(group->getMaterial());
+    }
 
     IndexMap index_map;
     resolveArrays( group->getInput_array(), geometry, sources, index_map );
@@ -256,7 +259,10 @@ template< typename T >
 void daeReader::processMultiPPrimitive(osg::Geode* geode, T *group, SourceMap &sources, GLenum mode )
 {
     osg::Geometry *geometry = new ReaderGeometry();
-    geometry->setName(group->getMaterial());
+    if (group->getMaterial() != NULL )
+    {
+        geometry->setName(group->getMaterial());
+    }
 
     IndexMap index_map;
     resolveArrays( group->getInput_array(), geometry, sources, index_map );
@@ -275,7 +281,10 @@ void daeReader::processMultiPPrimitive(osg::Geode* geode, T *group, SourceMap &s
 void daeReader::processPolylist(osg::Geode* geode, domPolylist *group, SourceMap &sources )
 {
     osg::Geometry *geometry = new ReaderGeometry();
-    geometry->setName(group->getMaterial());
+    if (group->getMaterial() != NULL )
+    {
+        geometry->setName(group->getMaterial());
+    }
 
     IndexMap index_map;
     resolveArrays( group->getInput_array(), geometry, sources, index_map );
@@ -518,3 +527,4 @@ void daeReader::resolveArrays( domInputLocalOffset_Array &inputs, osg::Geometry 
         inputNumber++;
     }
 }
+

@@ -1,3 +1,120 @@
+2009-12-16 15:05  robert
+
+	* src/osgPlugins/dae/daeRGeometry.cpp: From Lilith Bryant, "This
+	  patch fixes a regression (introduced in @ rev 9228), where simple
+	  .dae files, that have no material assignments, will cause a crash
+	  on load.
+	  
+	  In particular, the case when the "instance_geometry" element has
+	  no "bind_material" sub-element. This is valid, according to the
+	  official collada 1.4.1 specification."
+
+2009-12-16 12:17  robert
+
+	* src/osg/Texture.cpp: Removed old texture object manage code.
+
+2009-12-15 17:25  robert
+
+	* src/osgGA/StateSetManipulator.cpp: From Sukender, warning fix
+
+2009-12-15 15:55  shuber
+
+	* Xcode/OpenSceneGraph/OpenSceneGraph.xcodeproj/project.pbxproj:
+	  From Stephan Huber: updated XCode-project
+
+2009-12-15 14:45  robert
+
+	* examples/osgparametric/osgparametric.cpp: Fixed compile warnings
+
+2009-12-15 14:44  robert
+
+	* src/osgFX/Outline.cpp, src/osgGA/StateSetManipulator.cpp: Fixed
+	  compile warnings
+
+2009-12-15 14:40  robert
+
+	* src/osgUtil/SceneView.cpp: Fixed warning
+
+2009-12-15 12:37  robert
+
+	* src/osgUtil/CMakeLists.txt, src/osgUtil/TriStripVisitor.cpp,
+	  src/osgUtil/TriStrip_graph_array.h,
+	  src/osgUtil/TriStrip_heap_array.h,
+	  src/osgUtil/TriStrip_tri_stripper.cpp,
+	  src/osgUtil/TriStrip_tri_stripper.h, src/osgUtil/tristripper,
+	  src/osgUtil/tristripper/include,
+	  src/osgUtil/tristripper/include/detail,
+	  src/osgUtil/tristripper/include/detail/cache_simulator.h,
+	  src/osgUtil/tristripper/include/detail/connectivity_graph.h,
+	  src/osgUtil/tristripper/include/detail/graph_array.h,
+	  src/osgUtil/tristripper/include/detail/heap_array.h,
+	  src/osgUtil/tristripper/include/detail/policy.h,
+	  src/osgUtil/tristripper/include/detail/types.h,
+	  src/osgUtil/tristripper/include/public_types.h,
+	  src/osgUtil/tristripper/include/tri_stripper.h,
+	  src/osgUtil/tristripper/src,
+	  src/osgUtil/tristripper/src/connectivity_graph.cpp,
+	  src/osgUtil/tristripper/src/policy.cpp,
+	  src/osgUtil/tristripper/src/tri_stripper.cpp: From Tanguy Fautre
+	  and Robert Osfield, updated tristripper code to use the latest
+	  tristripper_r94 code.
+
+2009-12-15 11:47  robert
+
+	* CMakeLists.txt, include/osg/Version: Updated version to 2.9.7 in
+	  prep for next dev release
+
+2009-12-15 11:27  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegClocks.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegClocks.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoder.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderAudio.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderVideo.cpp: From Julen Garcia,
+	  "So here is the code with a proper audio sync (at least in my
+	  computer)"
+
+2009-12-15 09:16  robert
+
+	* src/osgPlugins/quicktime/MovieData.cpp,
+	  src/osgPlugins/quicktime/QTImportExport.cpp,
+	  src/osgPlugins/quicktime/QuicktimeLiveImageStream.cpp: Changed
+	  GL_BGRA_EXT to GL_BGRA and added include of include/osg/Image to
+	  make sure define is declared
+
+2009-12-14 13:42  robert
+
+	* include/osg/GraphicsContext, src/osg/GraphicsContext.cpp,
+	  src/osgWrappers/osg/GraphicsContext.cpp: Renamed
+	  osg::GraphicsContext::OperationQueue typedef to
+	  GraphicsOperationQueue to avoid naming conflict with
+	  osg::OperationQueue
+
+2009-12-14 12:50  robert
+
+	* examples/CMakeLists.txt: Added checked against QT webkit being
+	  available
+
+2009-12-14 12:49  robert
+
+	* examples/osgQtBrowser/QGraphicsViewAdapter.cpp,
+	  examples/osgQtBrowser/QGraphicsViewAdapter.h: Fixed warnings
+
+2009-12-10 17:52  robert
+
+	* include/osgViewer/api/Cocoa/GraphicsHandleCocoa,
+	  include/osgViewer/api/Cocoa/GraphicsWindowCocoa,
+	  include/osgViewer/api/Cocoa/PixelBufferCocoa,
+	  src/osgViewer/CMakeLists.txt,
+	  src/osgViewer/GraphicsWindowCocoa.mm,
+	  src/osgViewer/PixelBufferCocoa.mm: From Stephan Huber, "attached
+	  you'll find the missing GraphicsHandleCocoa-implementation."
+
+2009-12-10 12:58  robert
+
+	* ChangeLog, README.txt: Updated ChangeLog and README.txt for 2.9.6
+	  dev release
+
 2009-12-10 12:14  robert
 
 	* AUTHORS.txt: Updated AUTHORS file for 2.9.6 dev release

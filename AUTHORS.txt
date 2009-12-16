@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.9.6
+OpenSceneGraph Library 2.9.7
 
-399 Contributors:
+400 Contributors:
 
 Firstname Surname
 -----------------
@@ -68,11 +68,11 @@ David Spilling
 Daniel Sjölie
 Bryan Thrall
 Serge Lages
+Sukender 
 Melchior Franz
 Lionel Lagarde
 Jan Ciger
 Tim Moore
-Sukender 
 Neil Hughes
 Mike Connell
 Joran Jessurun
@@ -113,6 +113,7 @@ Wang Rui
 Vivek Rajan
 Thom DeCarlo
 Tatsuhiro Nishioka
+Tanguy Fautré
 Simon Julier
 Sean Spicer
 Peter Hrenka
@@ -125,7 +126,6 @@ Corbin Holtz
 Brad Christiansen
 Blasius Czink
 Toshiyuki Takahei
-Tanguy Fautré
 Sebastien Grignard
 Romano Magacho
 Richard Schmidt
@@ -211,6 +211,7 @@ Magnus Kessler
 Kevin Moiule
 Keith Steffen
 Katharina Plugge
+Julen Garcia
 Joseph Winston
 John Aughey
 Jim Vaughan
@@ -319,6 +320,7 @@ Marcin Prus
 Maik Keller
 Lukas Diduch
 Louis Hamilton
+Lilith Bryant
 Lewis Harmon
 Lars Nilson
 Kyle Centers
@@ -328,7 +330,6 @@ Karsten Weiss
 Karl Heijdenberg
 Jutta Sauer
 Julian Scheid
-Julen Garcia
 Josh Portway
 John Tan
 John Grant

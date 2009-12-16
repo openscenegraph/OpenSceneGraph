@@ -234,11 +234,25 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
         virtual WriteResult writeNode(const osg::Node& /*node*/,std::ostream& /*fout*/,const Options* =NULL) const { return WriteResult(WriteResult::NOT_IMPLEMENTED); }
         virtual WriteResult writeShader(const osg::Shader& /*shader*/,std::ostream& /*fout*/,const Options* =NULL) const { return WriteResult(WriteResult::NOT_IMPLEMENTED); }
 
-    protected:
-    
+        /** Specify fmt string as a supported protocol.
+          * Please note, this method should usually only be used internally by subclasses of ReaderWriter, Only in special cases
+          * will a ReaderWriter implementation be able to handle a protocol format that is wasn't original designed for.
+          * To know whether it's safe to inject a new protocol format to an existing ReaderWriter you will need to review
+          * the source code and dependencies of that ReaderWriter. */
         void supportsProtocol(const std::string& fmt, const std::string& description);
-        void supportsExtension(const std::string& fmt, const std::string& description);
-        void supportsOption(const std::string& fmt, const std::string& description);
+
+        /** Specify ext string as a supported file extension.
+          * Please note, this method should usually only be used internally by subclasses of ReaderWriter. Only in special cases
+          * will a ReaderWriter implementation be able to handle a file extension that is wasn't original designed for.
+          * To know whether it's safe to inject a new file extension to an existing ReaderWriter you will need to review the
+          * the source code and dependencies of that ReaderWriter. */
+        void supportsExtension(const std::string& ext, const std::string& description);
+
+        /** Specify option string as a supported option string.
+          * Please note, this should usually only be used internally by subclasses of ReaderWriter. */
+        void supportsOption(const std::string& opt, const std::string& description);
+
+    protected:
 
         FormatDescriptionMap _supportedProtocols;
         FormatDescriptionMap _supportedExtensions;

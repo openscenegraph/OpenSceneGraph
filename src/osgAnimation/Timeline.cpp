@@ -19,7 +19,7 @@
 using namespace osgAnimation;
 
 
-osgAnimation::Timeline::Timeline()
+Timeline::Timeline()
 {
     _lastUpdate = 0;
     _currentFrame = 0;
@@ -35,7 +35,7 @@ osgAnimation::Timeline::Timeline()
     setName("Timeline");
 }
 
-osgAnimation::Timeline::Timeline(const Timeline& nc,const osg::CopyOp& op)
+Timeline::Timeline(const Timeline& nc,const osg::CopyOp& op)
     : Action(nc, op),
       _actions(nc._actions)
 {
@@ -58,7 +58,7 @@ void Timeline::setAnimationManager(AnimationManagerBase* manager)
     _animationManager = manager;
 }
 
-void osgAnimation::Timeline::traverse(ActionVisitor& visitor)
+void Timeline::traverse(ActionVisitor& visitor)
 {
     int layer = visitor.getCurrentLayer();
     visitor.pushTimelineOnStack(this);
@@ -79,19 +79,19 @@ void osgAnimation::Timeline::traverse(ActionVisitor& visitor)
 }
 
 
-void osgAnimation::Timeline::setStats(osg::Stats* stats) { _stats = stats;}
-osg::Stats* osgAnimation::Timeline::getStats() { return _stats.get();}
-void osgAnimation::Timeline::collectStats(bool state) { _collectStats = state;}
-osgAnimation::StatsActionVisitor* osgAnimation::Timeline::getStatsVisitor() { return _statsVisitor.get(); }
+void Timeline::setStats(osg::Stats* stats) { _stats = stats;}
+osg::Stats* Timeline::getStats() { return _stats.get();}
+void Timeline::collectStats(bool state) { _collectStats = state;}
+StatsActionVisitor* Timeline::getStatsVisitor() { return _statsVisitor.get(); }
 
-void osgAnimation::Timeline::clearActions()
+void Timeline::clearActions()
 {
     _actions.clear();
     _addActionOperations.clear();
     _removeActionOperations.clear();
 }
 
-void osgAnimation::Timeline::update(double simulationTime)
+void Timeline::update(double simulationTime)
 {
     // first time we call update we generate one frame
     UpdateActionVisitor updateTimeline;
@@ -108,7 +108,7 @@ void osgAnimation::Timeline::update(double simulationTime)
         if (_collectStats)
         {
             if (!_statsVisitor)
-                _statsVisitor = new osgAnimation::StatsActionVisitor();
+                _statsVisitor = new StatsActionVisitor();
             _statsVisitor->setStats(_stats.get());
             _statsVisitor->setFrame(_currentFrame);
             _statsVisitor->reset();
@@ -149,7 +149,7 @@ void osgAnimation::Timeline::update(double simulationTime)
     }
 }
 
-void osgAnimation::Timeline::removeAction(Action* action)
+void Timeline::removeAction(Action* action)
 {
     if (getEvaluating())
         _removeActionOperations.push_back(FrameAction(0, action));
@@ -157,7 +157,7 @@ void osgAnimation::Timeline::removeAction(Action* action)
         internalRemoveAction(action);
 }
 
-void osgAnimation::Timeline::addActionAt(unsigned int frame, Action* action, int priority)
+void Timeline::addActionAt(unsigned int frame, Action* action, int priority)
 {
     // skip if this action has already been added this frame
     for (CommandList::iterator it = _addActionOperations.begin(); it != _addActionOperations.end(); ++it)
@@ -180,18 +180,18 @@ void osgAnimation::Timeline::addActionAt(unsigned int frame, Action* action, int
     else
         internalAddAction(priority, FrameAction(frame, action));
 }
-void osgAnimation::Timeline::addActionAt(double t, Action* action, int priority)
+void Timeline::addActionAt(double t, Action* action, int priority)
 {
     unsigned int frame = static_cast<unsigned int>(floor(t * _fps));
     addActionAt(frame, action, priority);
 }
 
-void osgAnimation::Timeline::addActionNow(Action* action, int priority)
+void Timeline::addActionNow(Action* action, int priority)
 {
     addActionAt(getCurrentFrame()+1, action, priority);
 }
 
-void osgAnimation::Timeline::processPendingOperation()
+void Timeline::processPendingOperation()
 {
     // process all pending add action operation
     while( !_addActionOperations.empty())
@@ -208,7 +208,7 @@ void osgAnimation::Timeline::processPendingOperation()
     }
 }
 
-void osgAnimation::Timeline::internalRemoveAction(Action* action)
+void Timeline::internalRemoveAction(Action* action)
 {
     for (ActionLayers::iterator it = _actions.begin(); it != _actions.end(); it++)
     {
@@ -222,12 +222,12 @@ void osgAnimation::Timeline::internalRemoveAction(Action* action)
     }
 }
 
-void osgAnimation::Timeline::internalAddAction(int priority, const FrameAction& ftl)
+void Timeline::internalAddAction(int priority, const FrameAction& ftl)
 {
     _actions[priority].insert(_actions[priority].begin(), ftl);
 }
 
-bool osgAnimation::Timeline::isActive(Action* activeAction)
+bool Timeline::isActive(Action* activeAction)
 {
     // update from high priority to low priority
     for( ActionLayers::iterator iterAnim = _actions.begin(); iterAnim != _actions.end(); ++iterAnim )

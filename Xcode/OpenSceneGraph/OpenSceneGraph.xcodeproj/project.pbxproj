@@ -2332,7 +2332,6 @@
 		D41887C90EDEE77900C17A84 /* RigGeometry in Headers */ = {isa = PBXBuildFile; fileRef = D41887B40EDEE77800C17A84 /* RigGeometry */; settings = {ATTRIBUTES = (Public, ); }; };
 		D41887CA0EDEE77900C17A84 /* Sampler in Headers */ = {isa = PBXBuildFile; fileRef = D41887B50EDEE77900C17A84 /* Sampler */; settings = {ATTRIBUTES = (Public, ); }; };
 		D41887CB0EDEE77900C17A84 /* Skeleton in Headers */ = {isa = PBXBuildFile; fileRef = D41887B60EDEE77900C17A84 /* Skeleton */; settings = {ATTRIBUTES = (Public, ); }; };
-		D41887CC0EDEE77900C17A84 /* Skinning in Headers */ = {isa = PBXBuildFile; fileRef = D41887B70EDEE77900C17A84 /* Skinning */; settings = {ATTRIBUTES = (Public, ); }; };
 		D41887CD0EDEE77900C17A84 /* Target in Headers */ = {isa = PBXBuildFile; fileRef = D41887B80EDEE77900C17A84 /* Target */; settings = {ATTRIBUTES = (Public, ); }; };
 		D41887CE0EDEE77900C17A84 /* Timeline in Headers */ = {isa = PBXBuildFile; fileRef = D41887B90EDEE77900C17A84 /* Timeline */; settings = {ATTRIBUTES = (Public, ); }; };
 		D41887CF0EDEE77900C17A84 /* UpdateCallback in Headers */ = {isa = PBXBuildFile; fileRef = D41887BA0EDEE77900C17A84 /* UpdateCallback */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -8286,7 +8285,6 @@
 		D41887B40EDEE77800C17A84 /* RigGeometry */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = RigGeometry; path = ../../include/osgAnimation/RigGeometry; sourceTree = SOURCE_ROOT; };
 		D41887B50EDEE77900C17A84 /* Sampler */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Sampler; path = ../../include/osgAnimation/Sampler; sourceTree = SOURCE_ROOT; };
 		D41887B60EDEE77900C17A84 /* Skeleton */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Skeleton; path = ../../include/osgAnimation/Skeleton; sourceTree = SOURCE_ROOT; };
-		D41887B70EDEE77900C17A84 /* Skinning */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Skinning; path = ../../include/osgAnimation/Skinning; sourceTree = SOURCE_ROOT; };
 		D41887B80EDEE77900C17A84 /* Target */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Target; path = ../../include/osgAnimation/Target; sourceTree = SOURCE_ROOT; };
 		D41887B90EDEE77900C17A84 /* Timeline */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Timeline; path = ../../include/osgAnimation/Timeline; sourceTree = SOURCE_ROOT; };
 		D41887BA0EDEE77900C17A84 /* UpdateCallback */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = UpdateCallback; path = ../../include/osgAnimation/UpdateCallback; sourceTree = SOURCE_ROOT; };
@@ -13982,7 +13980,6 @@
 				D41887B40EDEE77800C17A84 /* RigGeometry */,
 				D41887B50EDEE77900C17A84 /* Sampler */,
 				D41887B60EDEE77900C17A84 /* Skeleton */,
-				D41887B70EDEE77900C17A84 /* Skinning */,
 				D41887B80EDEE77900C17A84 /* Target */,
 				D41887B90EDEE77900C17A84 /* Timeline */,
 				D41887BA0EDEE77900C17A84 /* UpdateCallback */,
@@ -16086,7 +16083,6 @@
 				D41887C90EDEE77900C17A84 /* RigGeometry in Headers */,
 				D41887CA0EDEE77900C17A84 /* Sampler in Headers */,
 				D41887CB0EDEE77900C17A84 /* Skeleton in Headers */,
-				D41887CC0EDEE77900C17A84 /* Skinning in Headers */,
 				D41887CD0EDEE77900C17A84 /* Target in Headers */,
 				D41887CE0EDEE77900C17A84 /* Timeline in Headers */,
 				D41887CF0EDEE77900C17A84 /* UpdateCallback in Headers */,

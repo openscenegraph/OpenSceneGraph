@@ -56,6 +56,13 @@ class OSGGA_EXPORT TerrainManipulator : public MatrixManipulator
         /** Get the FusionDistanceValue. Used by SceneView for setting up stereo convergence.*/
         virtual float getFusionDistanceValue() const { return _distance; }
 
+        /** Set the distance of the trackball. */
+        void setDistance(double distance) { _distance = distance; }
+
+        /** Get the distance of the trackball. */
+        double getDistance() const { return _distance; }
+
+
         /** Attach a node to the manipulator. 
             Automatically detaches previously attached node.
             setNode(NULL) detaches previously nodes.

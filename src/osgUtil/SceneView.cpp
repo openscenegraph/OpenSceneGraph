@@ -887,10 +887,7 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
         _collectOccludersVisitor->pushModelViewMatrix(mv.get(),osg::Transform::ABSOLUTE_RF);
 
         // traverse the scene graph to search for occluder in there new positions.
-        for(unsigned int i=0; i< _camera->getNumChildren(); ++i)
-        {
-            _camera->getChild(i)->accept(*_collectOccludersVisitor);
-        }
+        _collectOccludersVisitor->traverse(*_camera);
 
         _collectOccludersVisitor->popModelViewMatrix();
         _collectOccludersVisitor->popProjectionMatrix();
@@ -969,15 +966,16 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     cullVisitor->pushViewport(viewport);
     cullVisitor->pushProjectionMatrix(proj.get());
     cullVisitor->pushModelViewMatrix(mv.get(),osg::Transform::ABSOLUTE_RF);
-    
 
-    // traverse the scene graph to generate the rendergraph.
-    for(unsigned int childNo=0;
-        childNo<_camera->getNumChildren();
-        ++childNo)
+    // traverse the scene graph to generate the rendergraph.    
+    // If the camera has a cullCallback execute the callback which has the  
+    // requirement that it must traverse the camera's children.
     {
-        _camera->getChild(childNo)->accept(*cullVisitor);
+       osg::NodeCallback* callback = _camera->getCullCallback();
+       if (callback) (*callback)(_camera.get(), cullVisitor);
+       else _cullVisitor->traverse(*_camera);
     }
+
 
     cullVisitor->popModelViewMatrix();
     cullVisitor->popProjectionMatrix();

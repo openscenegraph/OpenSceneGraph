@@ -110,6 +110,16 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
 	          __float__getFusionDistanceValue,
 	          "Get the FusionDistanceValue. ",
 	          "Used by SceneView for setting up stereo convergence. ");
+	I_Method1(void, setDistance, IN, double, x,
+	          Properties::NON_VIRTUAL,
+	          __void__setDistance__double,
+	          "Set the distance parameter (used by TrackballManipulator etc. ",
+	          ") ");
+	I_Method0(double, getDistance,
+	          Properties::VIRTUAL,
+	          __double__getDistance,
+	          "Get the distance parameter. ",
+	          "");
 	I_Method1(void, setIntersectTraversalMask, IN, unsigned int, mask,
 	          Properties::NON_VIRTUAL,
 	          __void__setIntersectTraversalMask__unsigned_int,
@@ -195,6 +205,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
 	I_SimpleProperty(osgGA::MatrixManipulator::CoordinateFrameCallback *, CoordinateFrameCallback, 
 	                 __CoordinateFrameCallback_P1__getCoordinateFrameCallback, 
 	                 __void__setCoordinateFrameCallback__CoordinateFrameCallback_P1);
+	I_SimpleProperty(double, Distance, 
+	                 __double__getDistance, 
+	                 __void__setDistance__double);
 	I_SimpleProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode, 
 	                 __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode, 
 	                 0);

@@ -83,6 +83,16 @@ BEGIN_OBJECT_REFLECTOR(osgGA::TerrainManipulator)
 	          __float__getFusionDistanceValue,
 	          "Get the FusionDistanceValue. ",
 	          "Used by SceneView for setting up stereo convergence. ");
+	I_Method1(void, setDistance, IN, double, distance,
+	          Properties::NON_VIRTUAL,
+	          __void__setDistance__double,
+	          "Set the distance of the trackball. ",
+	          "");
+	I_Method0(double, getDistance,
+	          Properties::VIRTUAL,
+	          __double__getDistance,
+	          "Get the distance of the trackball. ",
+	          "");
 	I_Method1(void, setNode, IN, osg::Node *, x,
 	          Properties::VIRTUAL,
 	          __void__setNode__osg_Node_P1,
@@ -178,6 +188,9 @@ BEGIN_OBJECT_REFLECTOR(osgGA::TerrainManipulator)
 	I_SimpleProperty(const osg::Matrixd &, ByMatrix, 
 	                 0, 
 	                 __void__setByMatrix__C5_osg_Matrixd_R1);
+	I_SimpleProperty(double, Distance, 
+	                 __double__getDistance, 
+	                 __void__setDistance__double);
 	I_SimpleProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode, 
 	                 __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode, 
 	                 0);

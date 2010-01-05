@@ -233,28 +233,25 @@ BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriter)
 	                      __WriteResult__writeShader__C5_osg_Shader_R1__std_ostream_R1__C5_Options_P1,
 	                      "",
 	                      "");
+	I_Method2(void, supportsProtocol, IN, const std::string &, fmt, IN, const std::string &, description,
+	          Properties::NON_VIRTUAL,
+	          __void__supportsProtocol__C5_std_string_R1__C5_std_string_R1,
+	          "Specify fmt string as a supported protocol. ",
+	          "Please note, this method should usually only be used internally by subclasses of ReaderWriter, Only in special cases will a ReaderWriter implementation be able to handle a protocol format that is wasn't original designed for. To know whether it's safe to inject a new protocol format to an existing ReaderWriter you will need to review the source code and dependencies of that ReaderWriter. ");
+	I_Method2(void, supportsExtension, IN, const std::string &, ext, IN, const std::string &, description,
+	          Properties::NON_VIRTUAL,
+	          __void__supportsExtension__C5_std_string_R1__C5_std_string_R1,
+	          "Specify ext string as a supported file extension. ",
+	          "Please note, this method should usually only be used internally by subclasses of ReaderWriter. Only in special cases will a ReaderWriter implementation be able to handle a file extension that is wasn't original designed for. To know whether it's safe to inject a new file extension to an existing ReaderWriter you will need to review the the source code and dependencies of that ReaderWriter. ");
+	I_Method2(void, supportsOption, IN, const std::string &, opt, IN, const std::string &, description,
+	          Properties::NON_VIRTUAL,
+	          __void__supportsOption__C5_std_string_R1__C5_std_string_R1,
+	          "Specify option string as a supported option string. ",
+	          "Please note, this should usually only be used internally by subclasses of ReaderWriter. ");
 	I_StaticMethod1(osgDB::ReaderWriter::FeatureList, featureAsString, IN, osgDB::ReaderWriter::Features, feature,
 	                __FeatureList__featureAsString__Features_S,
 	                "return feature as string ",
 	                "");
-	I_ProtectedMethod2(void, supportsProtocol, IN, const std::string &, fmt, IN, const std::string &, description,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__supportsProtocol__C5_std_string_R1__C5_std_string_R1,
-	                   "",
-	                   "");
-	I_ProtectedMethod2(void, supportsExtension, IN, const std::string &, fmt, IN, const std::string &, description,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__supportsExtension__C5_std_string_R1__C5_std_string_R1,
-	                   "",
-	                   "");
-	I_ProtectedMethod2(void, supportsOption, IN, const std::string &, fmt, IN, const std::string &, description,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__supportsOption__C5_std_string_R1__C5_std_string_R1,
-	                   "",
-	                   "");
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::ReadResult::ReadStatus)

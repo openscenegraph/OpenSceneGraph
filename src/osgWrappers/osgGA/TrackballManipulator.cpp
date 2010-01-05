@@ -155,7 +155,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::TrackballManipulator)
 	          "Set the distance of the trackball. ",
 	          "");
 	I_Method0(double, getDistance,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __double__getDistance,
 	          "Get the distance of the trackball. ",
 	          "");

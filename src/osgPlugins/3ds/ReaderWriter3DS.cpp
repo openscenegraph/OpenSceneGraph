@@ -114,9 +114,9 @@ protected:
 };
 
 /// Possible options:
-///		- noMatrixTransforms: set the plugin to apply matrices into the mesh vertices ("old behaviour") instead of restoring them ("new behaviour"). You may use this option to avoid a few rounding errors.
-///		- checkForEspilonIdentityMatrices: if noMatrixTransforms is \b not set, then consider "almost identity" matrices to be identity ones (in case of rounding errors).
-///		- restoreMatrixTransformsNoMeshes: makes an exception to the behaviour when 'noMatrixTransforms' is \b not set for mesh instances. When a mesh instance has a transform on it, the reader creates a MatrixTransform above the Geode. If you don't want the hierarchy to be modified, then you can use this option to merge the transform into vertices.
+///        - noMatrixTransforms: set the plugin to apply matrices into the mesh vertices ("old behaviour") instead of restoring them ("new behaviour"). You may use this option to avoid a few rounding errors.
+///        - checkForEspilonIdentityMatrices: if noMatrixTransforms is \b not set, then consider "almost identity" matrices to be identity ones (in case of rounding errors).
+///        - restoreMatrixTransformsNoMeshes: makes an exception to the behaviour when 'noMatrixTransforms' is \b not set for mesh instances. When a mesh instance has a transform on it, the reader creates a MatrixTransform above the Geode. If you don't want the hierarchy to be modified, then you can use this option to merge the transform into vertices.
 class ReaderWriter3DS : public osgDB::ReaderWriter
 {
 public:
@@ -408,7 +408,7 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap drawStateMap,L
     // Get mesh
     Lib3dsMeshInstanceNode * object = (node->type == LIB3DS_NODE_MESH_INSTANCE) ? reinterpret_cast<Lib3dsMeshInstanceNode *>(node) : NULL;
     Lib3dsMesh * mesh = lib3ds_file_mesh_for_node(f,node);
-    assert(!(mesh && !object));		// Node must be a LIB3DS_NODE_MESH_INSTANCE if a mesh exists
+    assert(!(mesh && !object));        // Node must be a LIB3DS_NODE_MESH_INSTANCE if a mesh exists
 
     // Retreive LOCAL transform
     static const osg::Matrix::value_type MATRIX_EPSILON = 1e-10;
@@ -432,18 +432,18 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap drawStateMap,L
          if (!noMatrixTransforms) {
             // There can be a transform directly on a mesh instance (= as if a osg::MatrixTransform and a osg::Geode were merged together) in object->pos/rot/scl
             if (!pivoted) {
-				meshMat = osg::Matrix::inverse(copyLib3dsMatrixToOsgMatrix(mesh->matrix));
+                meshMat = osg::Matrix::inverse(copyLib3dsMatrixToOsgMatrix(mesh->matrix));
             } else {
                 meshMat = osg::Matrix::inverse(copyLib3dsMatrixToOsgMatrix(mesh->matrix)) * osg::Matrix::translate(-pivot);
             }
         }
         else {
-			if (pivoted) {
-				meshMat = osg::Matrix::inverse(copyLib3dsMatrixToOsgMatrix(mesh->matrix)) * osg::Matrix::translate(-pivot) * copyLib3dsMatrixToOsgMatrix(node->matrix);
-			} else {
-				meshMat = osg::Matrix::inverse(copyLib3dsMatrixToOsgMatrix(mesh->matrix)) * copyLib3dsMatrixToOsgMatrix(node->matrix);
-			}
-			osgNodeMatrix = osg::Matrix::identity();		// Not sure it's useful, but it's harmless ;)
+            if (pivoted) {
+                meshMat = osg::Matrix::inverse(copyLib3dsMatrixToOsgMatrix(mesh->matrix)) * osg::Matrix::translate(-pivot) * copyLib3dsMatrixToOsgMatrix(node->matrix);
+            } else {
+                meshMat = osg::Matrix::inverse(copyLib3dsMatrixToOsgMatrix(mesh->matrix)) * copyLib3dsMatrixToOsgMatrix(node->matrix);
+            }
+            osgNodeMatrix = osg::Matrix::identity();        // Not sure it's useful, but it's harmless ;)
         }
     }
 
@@ -475,7 +475,7 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap drawStateMap,L
             group->addChild(processNode(drawStateMap,f,p));
         }
     } else {
-        assert(node->childs == NULL);		// Else we must have a group to put childs into
+        assert(node->childs == NULL);        // Else we must have a group to put childs into
     }
 
     // Handle mesh
@@ -1126,6 +1126,6 @@ bool ReaderWriter3DS::createFileObject(const osg::Node& node, Lib3dsFile * file3
     if (!w.suceedLastApply())
         return false;
     w.writeMaterials();
-    return true;	//w.good();
+    return true;    //w.good();
 }
 #endif    // ENABLE_3DS_WRITER

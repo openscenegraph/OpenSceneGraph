@@ -106,6 +106,12 @@ public:
         /** Get the FusionDistanceValue. Used by SceneView for setting up stereo convergence.*/
         virtual float getFusionDistanceValue() const { return _current->getFusionDistanceValue(); }
 
+        /** Set the distance property. */
+        void setDistance(double distance);
+
+        /** Get the distance property. */
+        double getDistance() const;
+
 
         virtual void setNode(osg::Node* n);
 

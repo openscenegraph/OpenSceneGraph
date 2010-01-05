@@ -56,6 +56,26 @@ void KeySwitchMatrixManipulator::selectMatrixManipulator(unsigned int num)
     }
 }
 
+/** Set the distance parameter (used by TrackballManipulator etc.) */
+void KeySwitchMatrixManipulator::setDistance(double distance)
+{
+    for(KeyManipMap::iterator itr=_manips.begin();
+        itr!=_manips.end();
+        ++itr)
+    {
+        itr->second.second->setDistance(distance);
+    }
+}
+
+double KeySwitchMatrixManipulator::getDistance() const
+{
+    if(!_current)
+    {
+        return _current->getDistance();
+    }
+    else return 1.0;
+}
+
 void KeySwitchMatrixManipulator::setNode(osg::Node* node)
 {
     for(KeyManipMap::iterator itr=_manips.begin();

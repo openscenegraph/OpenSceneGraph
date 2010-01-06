@@ -128,8 +128,8 @@ BEGIN_VALUE_REFLECTOR(osgAnimation::RigTransformHardware::IndexWeightEntry)
 	I_Constructor0(____IndexWeightEntry,
 	               "",
 	               "");
-	I_Constructor2(IN, float, index, IN, float, weight,
-	               ____IndexWeightEntry__float__float,
+	I_Constructor2(IN, int, index, IN, float, weight,
+	               ____IndexWeightEntry__int__float,
 	               "",
 	               "");
 	I_Method0(int, getIndex,

@@ -42,7 +42,7 @@ namespace osgAnimation
             int _boneIndex;
             float _boneWeight;
             IndexWeightEntry() { _boneIndex = 0; _boneWeight = 0;}
-            IndexWeightEntry(float index, float weight) { _boneIndex = index; _boneWeight = weight;}
+            IndexWeightEntry(int index, float weight) { _boneIndex = index; _boneWeight = weight;}
             int getIndex() const { return _boneIndex; }
             float getWeight() const { return _boneWeight; }
         };

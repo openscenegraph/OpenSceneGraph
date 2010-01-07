@@ -16,6 +16,7 @@
 #include <osg/Image>
 #include <osg/NodeVisitor>
 #include <osg/Object>
+#include <osg/StateAttribute>
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
@@ -375,10 +376,15 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	          __C5_PixelBufferObject_P1__getPixelBufferObject,
 	          "Get the const PixelBufferObject. ",
 	          "");
+	I_Method0(bool, requiresUpdateCall,
+	          Properties::VIRTUAL,
+	          __bool__requiresUpdateCall,
+	          "return whether the update(NodeVisitor* nv) should be required on each frame to enable proper working of osg::Image. ",
+	          "");
 	I_Method1(void, update, IN, osg::NodeVisitor *, x,
 	          Properties::VIRTUAL,
 	          __void__update__NodeVisitor_P1,
-	          "",
+	          "update method for osg::Image subclasses that update themselves during the update traversal. ",
 	          "");
 	I_Method3(bool, sendPointerEvent, IN, int, x, IN, int, x, IN, int, x,
 	          Properties::VIRTUAL,
@@ -496,6 +502,14 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_SimpleProperty(osg::Image::WriteHint, WriteHint, 
 	                 __WriteHint__getWriteHint, 
 	                 __void__setWriteHint__WriteHint);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::Image::UpdateCallback)
+	I_DeclaringFile("osg/Image");
+	I_BaseType(osg::StateAttributeCallback);
+	I_Constructor0(____UpdateCallback,
+	               "",
+	               "");
 END_REFLECTOR
 
 STD_VECTOR_REFLECTOR(std::vector< unsigned int >)

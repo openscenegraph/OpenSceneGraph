@@ -91,10 +91,15 @@ void FFmpegDecoderAudio::open(AVStream * const stream)
 
 void FFmpegDecoderAudio::pause(bool pause)
 {
-    if(pause)
-        m_paused = true;
-    else
-        m_paused = false;
+    if (pause != m_paused)
+    {
+        m_paused = pause;
+        if (m_audio_sink.valid())
+        {
+            if (m_paused) m_audio_sink->pause();
+            else m_audio_sink->play();
+        }
+    }
 }
 
 void FFmpegDecoderAudio::close(bool waitForThreadToExit)
@@ -183,7 +188,7 @@ void FFmpegDecoderAudio::decodeLoop()
     if (! skip_audio && ! m_audio_sink->playing())
     {
         m_clocks.audioSetDelay(m_audio_sink->getDelay());
-        m_audio_sink->startPlaying();
+        m_audio_sink->play();
     }
     else
     {

@@ -383,16 +383,21 @@ class SDLAudioSink : public osg::AudioSink
     public:
 
         SDLAudioSink(osg::AudioStream* audioStream):
-            _playing(false),
+            _started(false),
+            _paused(false),
             _audioStream(audioStream) {}
 
         ~SDLAudioSink();
 
-        virtual void startPlaying();
-        virtual bool playing() const { return _playing; }
+        virtual void play();
+        virtual void pause();
+        virtual void stop();
+
+        virtual bool playing() const { return _started && !_paused; }
 
 
-        bool                                _playing;
+        bool                                _started;
+        bool                                _paused;
         osg::observer_ptr<osg::AudioStream> _audioStream;
 };
 
@@ -670,19 +675,24 @@ static void soundReadCallback(void * user_data, uint8_t * data, int datalen)
 
 SDLAudioSink::~SDLAudioSink()
 {
-    if (_playing)
-    {
-
-        SDL_PauseAudio(1);
-        SDL_CloseAudio();
-
-        osg::notify(osg::NOTICE)<<"~SDLAudioSink() destructor, but still playing"<<std::endl;
-    }
+    stop();
 }
 
-void SDLAudioSink::startPlaying()
+void SDLAudioSink::play()
 {
-    _playing = true;
+    if (_started)
+    {
+        if (_paused)
+        {
+            SDL_PauseAudio(0);
+            _paused = false;
+        }
+        return;
+    }
+
+    _started = true;
+    _paused = false;
+
     osg::notify(osg::NOTICE)<<"SDLAudioSink()::startPlaying()"<<std::endl;
 
     osg::notify(osg::NOTICE)<<"  audioFrequency()="<<_audioStream->audioFrequency()<<std::endl;
@@ -707,6 +717,25 @@ void SDLAudioSink::startPlaying()
 
 }
 
+void SDLAudioSink::pause()
+{
+    if (_started)
+    {
+        SDL_PauseAudio(1);
+        _paused = true;
+    }
+}
+
+void SDLAudioSink::stop()
+{
+    if (_started)
+    {
+        if (!_paused) SDL_PauseAudio(1);
+        SDL_CloseAudio();
+
+        osg::notify(osg::NOTICE)<<"~SDLAudioSink() destructor, but still playing"<<std::endl;
+    }
+}
 
 #endif
 

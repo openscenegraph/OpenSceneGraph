@@ -17,17 +17,17 @@
 #include <OpenThreads/Config>
 #include <OpenThreads/Exports>
 
-#if defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS) && defined(__i386__)
-#define _OPENTHREADS_ATOMIC_USE_LIBRARY_ROUTINES
+#if defined(_OPENTHREADS_ATOMIC_USE_BSD_ATOMIC)
+# include <libkern/OSAtomic.h>
+# define _OPENTHREADS_ATOMIC_USE_LIBRARY_ROUTINES
+#elif defined(_OPENTHREADS_ATOMIC_USE_GCC_BUILTINS) && defined(__i386__)
+# define _OPENTHREADS_ATOMIC_USE_LIBRARY_ROUTINES
 #elif defined(_OPENTHREADS_ATOMIC_USE_WIN32_INTERLOCKED)
-#define _OPENTHREADS_ATOMIC_USE_LIBRARY_ROUTINES
+# define _OPENTHREADS_ATOMIC_USE_LIBRARY_ROUTINES
 #elif defined(_OPENTHREADS_ATOMIC_USE_SUN)
 # include <atomic.h>
 # include "Mutex"
 # include "ScopedLock"
-#elif defined(_OPENTHREADS_ATOMIC_USE_BSD_ATOMIC)
-# include <libkern/OSAtomic.h>
-# define _OPENTHREADS_ATOMIC_USE_LIBRARY_ROUTINES
 #elif defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
 # include "Mutex"
 # include "ScopedLock"

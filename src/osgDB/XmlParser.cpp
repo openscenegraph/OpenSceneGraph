@@ -295,7 +295,7 @@ bool XmlNode::read(Input& input)
                 }
             }
 
-            if ((c=input[0])>=0 && c=='>' || c=='/')
+            if ((c=input[0])>=0 && (c=='>' || c=='/'))
             {
                 ++input;
 
@@ -309,7 +309,7 @@ bool XmlNode::read(Input& input)
                         osg::notify(osg::INFO)<<"tag is closed correctly"<<std::endl;
                     }
                     else 
-                        osg::notify(osg::NOTICE)<<"Error: end tag is not closed correctly"<<std::endl;
+                        osg::notify(osg::NOTICE)<<"Error: tag is not closed correctly"<<std::endl;
                 }
                 else
                 {
@@ -401,7 +401,7 @@ bool XmlNode::write(std::ostream& fout) const
                 fout<<"\"";
             }
 
-            if (children.empty())
+            if (children.empty() && contents.empty())
             {
                 fout<<" />"<<std::endl;
             }

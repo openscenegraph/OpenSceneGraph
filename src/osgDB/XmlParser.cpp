@@ -25,13 +25,14 @@ XmlNode* osgDB::readXmlFile(const std::string& filename,const Options* options)
     {
         XmlNode::Input input;
         input.open(foundFile);
+        input.readAllDataIntoBuffer();
+
         if (!input)
         {
             osg::notify(osg::NOTICE)<<"Could not open XML file: "<<filename<<std::endl;
             return 0;
         }
 
-        input.readAllDataIntoBuffer();
 
         osg::ref_ptr<XmlNode> root = new XmlNode;
         root->read(input);
@@ -63,13 +64,12 @@ XmlNode* osgDB::readXmlStream(std::istream& fin)
 {
     XmlNode::Input input;
     input.attach(fin);
+    input.readAllDataIntoBuffer();
     if (!input)
     {
         osg::notify(osg::NOTICE)<<"Could not attach to XML stream."<<std::endl;
         return 0;
     }
-
-    input.readAllDataIntoBuffer();
 
     osg::ref_ptr<XmlNode> root = new XmlNode;
     root->read(input);

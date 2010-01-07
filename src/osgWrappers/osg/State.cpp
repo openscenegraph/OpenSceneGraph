@@ -922,6 +922,13 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 
 
 
+
+
+
+
+
+
+
 	I_ProtectedMethod0(bool, computeSecondaryColorSupported,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,

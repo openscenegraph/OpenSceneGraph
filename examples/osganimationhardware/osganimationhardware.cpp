@@ -226,16 +226,16 @@ int main (int argc, char* argv[])
 
     viewer.realize();
 
-    int xChar = maxChar;
-    int yChar = xChar * 9.0/16;
-    for (int i = 0; i < xChar; i++) {
-        for (int j = 0; j < yChar; j++) {
+    double xChar = maxChar;
+    double yChar = xChar * 9.0/16;
+    for (double  i = 0.0; i < xChar; i++) {
+        for (double  j = 0.0; j < yChar; j++) {
 
             osg::ref_ptr<osg::Group> c = createCharacterInstance(root.get(), hardware);
             osg::MatrixTransform* tr = new osg::MatrixTransform;
-            tr->setMatrix(osg::Matrix::translate( 2 * (i - xChar * .5),
-                                                  0,
-                                                  2 * (j - yChar * .5)));
+            tr->setMatrix(osg::Matrix::translate( 2.0 * (i - xChar * .5),
+                                                  0.0,
+                                                  2.0 * (j - yChar * .5)));
             tr->addChild(c.get());
             scene->addChild(tr);
         }

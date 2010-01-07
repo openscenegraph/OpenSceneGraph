@@ -28,6 +28,11 @@ public:
 
     ReaderWriterDirectShow()
     {
+        supportsExtension("directshow", "");
+        supportsExtension("avi",    "");
+        supportsExtension("wmv",    "Windows Media Video format");
+        supportsExtension("mpg",    "Mpeg movie format");
+        supportsExtension("mpeg",   "Mpeg movie format");
     }
 
     virtual ~ReaderWriterDirectShow()
@@ -42,13 +47,15 @@ public:
     virtual ReadResult readImage(const std::string & filename, const osgDB::ReaderWriter::Options * options) const
     {
         const std::string ext = osgDB::getLowerCaseFileExtension(filename);
-        if (ext=="directshow") return readImage(osgDB::getNameLessExtension(filename),options);
+        if (ext=="directshow") return readImageStream(osgDB::getNameLessExtension(filename),options);
+        if (! acceptsExtension(ext))
+            return ReadResult::FILE_NOT_HANDLED;
         return readImageStream(filename, options);
     }
     
     ReadResult readImageStream(const std::string& filename, const osgDB::ReaderWriter::Options * options) const
     {
-        osg::notify(osg::INFO) << "ReaderWriterFFmpeg::readImage " << filename << std::endl;
+        osg::notify(osg::INFO) << "ReaderWriterDirectShow::readImage " << filename << std::endl;
         const std::string path = osgDB::containsServerAddress(filename) ?
             filename :
             osgDB::findDataFile(filename, options);

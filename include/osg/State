@@ -298,15 +298,10 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         inline bool applyTextureMode(unsigned int unit, StateAttribute::GLMode mode,bool enabled)
         {
-            if (setActiveTextureUnit(unit))
-            {
-                ModeMap& modeMap = getOrCreateTextureModeMap(unit);
-                ModeStack& ms = modeMap[mode];
-                ms.changed = true;
-                return applyMode(mode,enabled,ms);
-            }
-            else
-                return false;
+            ModeMap& modeMap = getOrCreateTextureModeMap(unit);
+            ModeStack& ms = modeMap[mode];
+            ms.changed = true;
+            return applyModeOnTexUnit(unit,mode,enabled,ms);
         }
 
         inline void setGlobalDefaultAttribute(const StateAttribute* attribute)
@@ -346,15 +341,10 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         inline bool applyTextureAttribute(unsigned int unit, const StateAttribute* attribute)
         {
-            if (setActiveTextureUnit(unit))
-            {
-                AttributeMap& attributeMap = getOrCreateTextureAttributeMap(unit);
-                AttributeStack& as = attributeMap[attribute->getTypeMemberPair()];
-                as.changed = true;
-                return applyAttribute(attribute,as);
-            }
-            else
-                return false;
+            AttributeMap& attributeMap = getOrCreateTextureAttributeMap(unit);
+            AttributeStack& as = attributeMap[attribute->getTypeMemberPair()];
+            as.changed = true;
+            return applyAttributeOnTexUnit(unit,attribute,as);
         }
 
         /** Mode has been set externally, update state to reflect this setting.*/
@@ -1138,7 +1128,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         /** Set the current texture unit, return true if selected,
         * false if selection failed such as when multi texturing is not supported.
         * note, only updates values that change.*/
-        bool setActiveTextureUnit( unsigned int unit );
+        inline bool setActiveTextureUnit( unsigned int unit );
 
         /** Get the current texture unit.*/
         unsigned int getActiveTextureUnit() const { return _currentActiveTextureUnit; }
@@ -1455,6 +1445,27 @@ class OSG_EXPORT State : public Referenced, public Observer
                 return false;
         }
 
+        inline bool applyModeOnTexUnit(unsigned int unit,StateAttribute::GLMode mode,bool enabled,ModeStack& ms)
+        {
+            if (ms.valid && ms.last_applied_value != enabled)
+            {
+                if (setActiveTextureUnit(unit))
+                {
+                    ms.last_applied_value = enabled;
+
+                    if (enabled) glEnable(mode);
+                    else glDisable(mode);
+
+                    if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors(mode);
+
+                    return true;
+                }
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
 
         /** apply an attribute if required, passing in attribute and appropriate attribute stack */
         inline bool applyAttribute(const StateAttribute* attribute,AttributeStack& as)
@@ -1474,6 +1485,29 @@ class OSG_EXPORT State : public Referenced, public Observer
                 return false;
         }
 
+        inline bool applyAttributeOnTexUnit(unsigned int unit,const StateAttribute* attribute,AttributeStack& as)
+        {
+            if (as.last_applied_attribute != attribute)
+            {
+                if (setActiveTextureUnit(unit))
+                {
+                    if (!as.global_default_attribute.valid()) as.global_default_attribute = dynamic_cast<StateAttribute*>(attribute->cloneType());
+
+                    as.last_applied_attribute = attribute;
+                    attribute->apply(*this);
+
+                    if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors(attribute);
+
+                    return true;
+                }
+                else
+                    return false;
+            }
+            else
+                return false;
+        }
+
+
         inline bool applyGlobalDefaultAttribute(AttributeStack& as)
         {
             if (as.last_applied_attribute != as.global_default_attribute.get())
@@ -1485,6 +1519,27 @@ class OSG_EXPORT State : public Referenced, public Observer
                     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors(as.global_default_attribute.get());
                 }
                 return true;
+            }
+            else
+                return false;
+        }
+
+        inline bool applyGlobalDefaultAttributeOnTexUnit(unsigned int unit,AttributeStack& as)
+        {
+            if (as.last_applied_attribute != as.global_default_attribute.get())
+            {
+                if (setActiveTextureUnit(unit))
+                {
+                    as.last_applied_attribute = as.global_default_attribute.get();
+                    if (as.global_default_attribute.valid())
+                    {
+                        as.global_default_attribute->apply(*this);
+                        if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors(as.global_default_attribute.get());
+                    }
+                    return true;
+                }
+                else
+                    return false;
             }
             else
                 return false;
@@ -1578,6 +1633,12 @@ class OSG_EXPORT State : public Referenced, public Observer
         inline void applyModeMap(ModeMap& modeMap);
         inline void applyAttributeMap(AttributeMap& attributeMap);
         inline void applyUniformMap(UniformMap& uniformMap);
+
+        inline void applyModeListOnTexUnit(unsigned int unit,ModeMap& modeMap,const StateSet::ModeList& modeList);
+        inline void applyAttributeListOnTexUnit(unsigned int unit,AttributeMap& attributeMap,const StateSet::AttributeList& attributeList);
+
+        inline void applyModeMapOnTexUnit(unsigned int unit,ModeMap& modeMap);
+        inline void applyAttributeMapOnTexUnit(unsigned int unit,AttributeMap& attributeMap);
 
         void haveAppliedMode(ModeMap& modeMap,StateAttribute::GLMode mode,StateAttribute::GLModeValue value);
         void haveAppliedMode(ModeMap& modeMap,StateAttribute::GLMode mode);
@@ -1892,6 +1953,128 @@ inline void State::applyModeList(ModeMap& modeMap,const StateSet::ModeList& mode
     }
 }
 
+inline void State::applyModeListOnTexUnit(unsigned int unit,ModeMap& modeMap,const StateSet::ModeList& modeList)
+{
+    StateSet::ModeList::const_iterator ds_mitr = modeList.begin();
+    ModeMap::iterator this_mitr=modeMap.begin();
+
+    while (this_mitr!=modeMap.end() && ds_mitr!=modeList.end())
+    {
+        if (this_mitr->first<ds_mitr->first)
+        {
+
+            // note GLMode = this_mitr->first
+            ModeStack& ms = this_mitr->second;
+            if (ms.changed)
+            {
+                ms.changed = false;
+                if (!ms.valueVec.empty())
+                {
+                    bool new_value = ms.valueVec.back() & StateAttribute::ON;
+                    applyModeOnTexUnit(unit,this_mitr->first,new_value,ms);
+                }
+                else
+                {
+                    // assume default of disabled.
+                    applyModeOnTexUnit(unit,this_mitr->first,ms.global_default_value,ms);
+
+                }
+
+            }
+
+            ++this_mitr;
+
+        }
+        else if (ds_mitr->first<this_mitr->first)
+        {
+
+            // ds_mitr->first is a new mode, therefore
+            // need to insert a new mode entry for ds_mistr->first.
+            ModeStack& ms = modeMap[ds_mitr->first];
+
+            bool new_value = ds_mitr->second & StateAttribute::ON;
+            applyModeOnTexUnit(unit,ds_mitr->first,new_value,ms);
+
+            // will need to disable this mode on next apply so set it to changed.
+            ms.changed = true;
+
+            ++ds_mitr;
+
+        }
+        else
+        {
+            // this_mitr & ds_mitr refer to the same mode, check the override
+            // if any otherwise just apply the incoming mode.
+
+            ModeStack& ms = this_mitr->second;
+
+            if (!ms.valueVec.empty() && (ms.valueVec.back() & StateAttribute::OVERRIDE) && !(ds_mitr->second & StateAttribute::PROTECTED))
+            {
+                // override is on, just treat as a normal apply on modes.
+
+                if (ms.changed)
+                {
+                    ms.changed = false;
+                    bool new_value = ms.valueVec.back() & StateAttribute::ON;
+                    applyModeOnTexUnit(unit,this_mitr->first,new_value,ms);
+
+                }
+            }
+            else
+            {
+                // no override on or no previous entry, therefore consider incoming mode.
+                bool new_value = ds_mitr->second & StateAttribute::ON;
+                if (applyModeOnTexUnit(unit,ds_mitr->first,new_value,ms))
+                {
+                    ms.changed = true;
+                }
+            }
+
+            ++this_mitr;
+            ++ds_mitr;
+        }
+    }
+
+    // iterator over the remaining state modes to apply any previous changes.
+    for(;
+        this_mitr!=modeMap.end();
+        ++this_mitr)
+    {
+        // note GLMode = this_mitr->first
+        ModeStack& ms = this_mitr->second;
+        if (ms.changed)
+        {
+            ms.changed = false;
+            if (!ms.valueVec.empty())
+            {
+                bool new_value = ms.valueVec.back() & StateAttribute::ON;
+                applyModeOnTexUnit(unit,this_mitr->first,new_value,ms);
+            }
+            else
+            {
+                // assume default of disabled.
+                applyModeOnTexUnit(unit,this_mitr->first,ms.global_default_value,ms);
+
+            }
+
+        }
+    }
+
+    // iterator over the remaining incoming modes to apply any new mode.
+    for(;
+        ds_mitr!=modeList.end();
+        ++ds_mitr)
+    {
+        ModeStack& ms = modeMap[ds_mitr->first];
+
+        bool new_value = ds_mitr->second & StateAttribute::ON;
+        applyModeOnTexUnit(unit,ds_mitr->first,new_value,ms);
+
+        // will need to disable this mode on next apply so set it to changed.
+        ms.changed = true;
+    }
+}
+
 inline void State::applyAttributeList(AttributeMap& attributeMap,const StateSet::AttributeList& attributeList)
 {
     StateSet::AttributeList::const_iterator ds_aitr=attributeList.begin();
@@ -2010,6 +2193,124 @@ inline void State::applyAttributeList(AttributeMap& attributeMap,const StateSet:
 
 }
 
+inline void State::applyAttributeListOnTexUnit(unsigned int unit,AttributeMap& attributeMap,const StateSet::AttributeList& attributeList)
+{
+    StateSet::AttributeList::const_iterator ds_aitr=attributeList.begin();
+
+    AttributeMap::iterator this_aitr=attributeMap.begin();
+
+    while (this_aitr!=attributeMap.end() && ds_aitr!=attributeList.end())
+    {
+        if (this_aitr->first<ds_aitr->first)
+        {
+
+            // note attribute type = this_aitr->first
+            AttributeStack& as = this_aitr->second;
+            if (as.changed)
+            {
+                as.changed = false;
+                if (!as.attributeVec.empty())
+                {
+                    const StateAttribute* new_attr = as.attributeVec.back().first;
+                    applyAttributeOnTexUnit(unit,new_attr,as);
+                }
+                else
+                {
+                    applyGlobalDefaultAttributeOnTexUnit(unit,as);
+                }
+            }
+
+            ++this_aitr;
+
+        }
+        else if (ds_aitr->first<this_aitr->first)
+        {
+
+            // ds_aitr->first is a new attribute, therefore
+            // need to insert a new attribute entry for ds_aitr->first.
+            AttributeStack& as = attributeMap[ds_aitr->first];
+
+            const StateAttribute* new_attr = ds_aitr->second.first.get();
+            applyAttributeOnTexUnit(unit,new_attr,as);
+
+            as.changed = true;
+
+            ++ds_aitr;
+
+        }
+        else
+        {
+            // this_mitr & ds_mitr refer to the same attribute, check the override
+            // if any otherwise just apply the incoming attribute
+
+            AttributeStack& as = this_aitr->second;
+
+            if (!as.attributeVec.empty() && (as.attributeVec.back().second & StateAttribute::OVERRIDE) && !(ds_aitr->second.second & StateAttribute::PROTECTED))
+            {
+                // override is on, just treat as a normal apply on attribute.
+
+                if (as.changed)
+                {
+                    as.changed = false;
+                    const StateAttribute* new_attr = as.attributeVec.back().first;
+                    applyAttributeOnTexUnit(unit,new_attr,as);
+                }
+            }
+            else
+            {
+                // no override on or no previous entry, therefore consider incoming attribute.
+                const StateAttribute* new_attr = ds_aitr->second.first.get();
+                if (applyAttributeOnTexUnit(unit,new_attr,as))
+                {
+                    as.changed = true;
+                }
+            }
+
+            ++this_aitr;
+            ++ds_aitr;
+        }
+    }
+
+    // iterator over the remaining state attributes to apply any previous changes.
+    for(;
+        this_aitr!=attributeMap.end();
+        ++this_aitr)
+    {
+        // note attribute type = this_aitr->first
+        AttributeStack& as = this_aitr->second;
+        if (as.changed)
+        {
+            as.changed = false;
+            if (!as.attributeVec.empty())
+            {
+                const StateAttribute* new_attr = as.attributeVec.back().first;
+                applyAttributeOnTexUnit(unit,new_attr,as);
+            }
+            else
+            {
+                applyGlobalDefaultAttributeOnTexUnit(unit,as);
+            }
+        }
+    }
+
+    // iterator over the remaining incoming attribute to apply any new attribute.
+    for(;
+        ds_aitr!=attributeList.end();
+        ++ds_aitr)
+    {
+        // ds_aitr->first is a new attribute, therefore
+        // need to insert a new attribute entry for ds_aitr->first.
+        AttributeStack& as = attributeMap[ds_aitr->first];
+
+        const StateAttribute* new_attr = ds_aitr->second.first.get();
+        applyAttributeOnTexUnit(unit,new_attr,as);
+
+        // will need to update this attribute on next apply so set it to changed.
+        as.changed = true;
+    }
+
+}
+
 inline void State::applyUniformList(UniformMap& uniformMap,const StateSet::UniformList& uniformList)
 {
     if (!_lastAppliedProgramObject) return;
@@ -2110,6 +2411,32 @@ inline void State::applyModeMap(ModeMap& modeMap)
     }
 }
 
+inline void State::applyModeMapOnTexUnit(unsigned int unit,ModeMap& modeMap)
+{
+    for(ModeMap::iterator mitr=modeMap.begin();
+        mitr!=modeMap.end();
+        ++mitr)
+    {
+        // note GLMode = mitr->first
+        ModeStack& ms = mitr->second;
+        if (ms.changed)
+        {
+            ms.changed = false;
+            if (!ms.valueVec.empty())
+            {
+                bool new_value = ms.valueVec.back() & StateAttribute::ON;
+                applyModeOnTexUnit(unit,mitr->first,new_value,ms);
+            }
+            else
+            {
+                // assume default of disabled.
+                applyModeOnTexUnit(unit,mitr->first,ms.global_default_value,ms);
+            }
+
+        }
+    }
+}
+
 inline void State::applyAttributeMap(AttributeMap& attributeMap)
 {
     for(AttributeMap::iterator aitr=attributeMap.begin();
@@ -2134,6 +2461,30 @@ inline void State::applyAttributeMap(AttributeMap& attributeMap)
     }
 }
 
+inline void State::applyAttributeMapOnTexUnit(unsigned int unit,AttributeMap& attributeMap)
+{
+    for(AttributeMap::iterator aitr=attributeMap.begin();
+        aitr!=attributeMap.end();
+        ++aitr)
+    {
+        AttributeStack& as = aitr->second;
+        if (as.changed)
+        {
+            as.changed = false;
+            if (!as.attributeVec.empty())
+            {
+                const StateAttribute* new_attr = as.attributeVec.back().first;
+                applyAttributeOnTexUnit(unit,new_attr,as);
+            }
+            else
+            {
+                applyGlobalDefaultAttributeOnTexUnit(unit,as);
+            }
+
+        }
+    }
+}
+
 inline void State::applyUniformMap(UniformMap& uniformMap)
 {
     if (!_lastAppliedProgramObject) return;
@@ -2150,6 +2501,22 @@ inline void State::applyUniformMap(UniformMap& uniformMap)
     }
 }
 
+inline bool State::setActiveTextureUnit( unsigned int unit )
+{
+    if (unit!=_currentActiveTextureUnit)
+    {
+        if (_glActiveTexture && unit < (unsigned int)(maximum(_glMaxTextureCoords,_glMaxTextureUnits)) )
+        {
+            _glActiveTexture(GL_TEXTURE0+unit);
+            _currentActiveTextureUnit = unit;
+        }
+        else
+        {
+            return unit==0;
+        }
+    }
+    return true;
+}
 
 }
 

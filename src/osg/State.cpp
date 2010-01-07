@@ -501,14 +501,11 @@ void State::apply(const StateSet* dstate)
         unitMax = maximum(static_cast<unsigned int>(unitMax),static_cast<unsigned int>(_textureAttributeMapList.size()));
         for(unit=0;unit<unitMax;++unit)
         {
-            if (setActiveTextureUnit(unit))
-            {
-                if (unit<ds_textureModeList.size()) applyModeList(getOrCreateTextureModeMap(unit),ds_textureModeList[unit]);
-                else if (unit<_textureModeMapList.size()) applyModeMap(_textureModeMapList[unit]);
+            if (unit<ds_textureModeList.size()) applyModeListOnTexUnit(unit,getOrCreateTextureModeMap(unit),ds_textureModeList[unit]);
+            else if (unit<_textureModeMapList.size()) applyModeMapOnTexUnit(unit,_textureModeMapList[unit]);
 
-                if (unit<ds_textureAttributeList.size()) applyAttributeList(getOrCreateTextureAttributeMap(unit),ds_textureAttributeList[unit]);
-                else if (unit<_textureAttributeMapList.size()) applyAttributeMap(_textureAttributeMapList[unit]);
-            }
+            if (unit<ds_textureAttributeList.size()) applyAttributeListOnTexUnit(unit,getOrCreateTextureAttributeMap(unit),ds_textureAttributeList[unit]);
+            else if (unit<_textureAttributeMapList.size()) applyAttributeMapOnTexUnit(unit,_textureAttributeMapList[unit]);
         }
 
         applyUniformList(_uniformMap,dstate->getUniformList());
@@ -538,11 +535,8 @@ void State::apply()
     unsigned int unitMax = maximum(_textureModeMapList.size(),_textureAttributeMapList.size());
     for(unit=0;unit<unitMax;++unit)
     {
-        if (setActiveTextureUnit(unit))
-        {
-            if (unit<_textureModeMapList.size()) applyModeMap(_textureModeMapList[unit]);
-            if (unit<_textureAttributeMapList.size()) applyAttributeMap(_textureAttributeMapList[unit]);
-        }
+        if (unit<_textureModeMapList.size()) applyModeMapOnTexUnit(unit,_textureModeMapList[unit]);
+        if (unit<_textureAttributeMapList.size()) applyAttributeMapOnTexUnit(unit,_textureAttributeMapList[unit]);
     }
 
     applyUniformMap(_uniformMap);
@@ -848,26 +842,6 @@ bool State::setClientActiveTextureUnit( unsigned int unit )
         {
             _glClientActiveTexture(GL_TEXTURE0+unit);
             _currentClientActiveTextureUnit = unit;
-        }
-        else
-        {
-            return unit==0;
-        }
-    }
-    return true;
-}
-
-
-/** set the current texture unit, return true if selected, false if selection failed such as when multitexturing is not supported.
-  * note, only updates values that change.*/
-bool State::setActiveTextureUnit( unsigned int unit )
-{
-    if (unit!=_currentActiveTextureUnit)
-    {
-        if (_glActiveTexture && unit < (unsigned int)(maximum(_glMaxTextureCoords,_glMaxTextureUnits)) )
-        {
-            _glActiveTexture(GL_TEXTURE0+unit);
-            _currentActiveTextureUnit = unit;
         }
         else
         {

@@ -378,6 +378,7 @@ bool XmlNode::write(std::ostream& fout) const
                 fout<<"\""<<std::endl;
             }
             return true;
+            fout<<" />"<<std::endl;
         }
         case(ROOT):
         {

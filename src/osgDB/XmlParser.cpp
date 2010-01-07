@@ -226,20 +226,20 @@ bool XmlNode::read(Input& input)
             input.skipWhiteSpace();
 
             int c = 0;
-            while ((c=input[0])>=0 && c!=' ' && c!='>' )
+            while ((c=input[0])>=0 && c!=' ' && c!='>' && c!='/')
             {
                 childNode->name.push_back(c);
                 ++input;
             }
 
-            while ((c=input[0])>=0 && c!='>')
+            while ((c=input[0])>=0 && c!='>' && c!='/')
             {
                 Input::size_type prev_pos = input.currentPosition();
 
                 input.skipWhiteSpace();
                 std::string option;
                 std::string value;
-                while((c=input[0])>=0 && c!='>' && c!='"' && c!='\'' && c!='=' && c!=' ')
+                while((c=input[0])>=0 && c!='>' && c!='/' && c!='"' && c!='\'' && c!='=' && c!=' ')
                 {
                     option.push_back(c);
                     ++input;
@@ -295,14 +295,27 @@ bool XmlNode::read(Input& input)
                 }
             }
 
-            if ((c=input[0])>=0 && c=='>' )
+            if ((c=input[0])>=0 && c=='>' || c=='/')
             {
                 ++input;
 
                 osg::notify(osg::INFO)<<"Valid tag ["<<childNode->name<<"]"<<std::endl;
 
-                bool result = childNode->read(input);
-                if (!result) return false;
+                if (c=='/')
+                {
+                    if ((c=input[0])>=0 && c=='>')
+                    {
+                        ++input;
+                        osg::notify(osg::INFO)<<"tag is closed correctly"<<std::endl;
+                    }
+                    else 
+                        osg::notify(osg::NOTICE)<<"Error: end tag is not closed correctly"<<std::endl;
+                }
+                else
+                {
+                    bool result = childNode->read(input);
+                    if (!result) return false;
+                }
 
                 if (type==NODE && !children.empty()) type = GROUP;
             }
@@ -387,18 +400,25 @@ bool XmlNode::write(std::ostream& fout) const
                 writeString(fout,oitr->second);
                 fout<<"\"";
             }
-            fout<<">";
 
-            for(Children::const_iterator citr = children.begin();
-                citr != children.end();
-                ++citr)
+            if (children.empty())
             {
-                (*citr)->write(fout);
+                fout<<" />"<<std::endl;
             }
+            else
+            {
+                fout<<">";
+                for(Children::const_iterator citr = children.begin();
+                    citr != children.end();
+                    ++citr)
+                {
+                    (*citr)->write(fout);
+                }
 
-            if (!contents.empty()) writeString(fout,contents);
+                if (!contents.empty()) writeString(fout,contents);
 
-            fout<<"</"<<name<<">"<<std::endl;
+                fout<<"</"<<name<<">"<<std::endl;
+            }
             return true;
         }
         case(GROUP):

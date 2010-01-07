@@ -28,9 +28,29 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::AudioSink)
 	I_Constructor0(____AudioSink,
 	               "",
 	               "");
-	I_Method0(void, startPlaying,
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method0(void, play,
 	          Properties::PURE_VIRTUAL,
-	          __void__startPlaying,
+	          __void__play,
+	          "",
+	          "");
+	I_Method0(void, pause,
+	          Properties::PURE_VIRTUAL,
+	          __void__pause,
+	          "",
+	          "");
+	I_Method0(void, stop,
+	          Properties::PURE_VIRTUAL,
+	          __void__stop,
 	          "",
 	          "");
 	I_Method0(bool, playing,
@@ -48,16 +68,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::AudioSink)
 	          __void__setDelay__C5_double,
 	          "",
 	          "");
-	I_Method0(const char *, libraryName,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__libraryName,
-	          "return the name of the object's library. ",
-	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
-	I_Method0(const char *, className,
-	          Properties::VIRTUAL,
-	          __C5_char_P1__className,
-	          "return the name of the object's class type. ",
-	          "Must be defined by derived classes. ");
 	I_SimpleProperty(double, Delay, 
 	                 __double__getDelay, 
 	                 0);

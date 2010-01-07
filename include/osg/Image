@@ -19,6 +19,7 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 #include <osg/FrameStamp>
+#include <osg/StateAttribute>
 
 #include <string>
 #include <vector>
@@ -320,8 +321,21 @@ class OSG_EXPORT Image : public BufferData
 
         /** Get the const PixelBufferObject.*/
         const PixelBufferObject* getPixelBufferObject() const { return dynamic_cast<const PixelBufferObject*>(_bufferObject.get()); }
-       
+
+        /** return whether the update(NodeVisitor* nv) should be required on each frame to enable proper working of osg::Image.*/
+        virtual bool requiresUpdateCall() const { return false; }
+
+        /** update method for osg::Image subclasses that update themselves during the update traversal.*/
         virtual void update(NodeVisitor* /*nv*/) {}
+
+        /** convience update callback class that can be attached to StateAttribute (such as Textures) to ensure
+          * that the Image::update(NodeVisitor*) method is called during the update traversal.  This callback
+          * is automatically attached when Image::requiresUpdateCall() is true (it's false by default.)
+          */
+        struct OSG_EXPORT UpdateCallback : public osg::StateAttributeCallback
+        {
+            virtual void operator () (osg::StateAttribute* attr, osg::NodeVisitor* nv);
+        };
 
         /** method for sending pointer events to images that are acting as front ends to interactive surfaces such as a vnc or browser window.  Return true if handled. */
         virtual bool sendPointerEvent(int /*x*/, int /*y*/, int /*buttonMask*/) { return false; }

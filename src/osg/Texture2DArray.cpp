@@ -13,7 +13,6 @@
 #include <osg/GLExtensions>
 #include <osg/Texture2DArray>
 #include <osg/State>
-#include <osg/ImageSequence>
 #include <osg/Notify>
 
 #include <string.h>
@@ -113,36 +112,34 @@ void Texture2DArray::setImage(unsigned int layer, Image* image)
     
     if (_images[layer] == image) return;
 
-    unsigned numImageSequencesBefore = 0;
+    unsigned numImageRequireUpdateBefore = 0;
     for (unsigned int i=0; i<getNumImages(); ++i)
     {
-        osg::ImageSequence* is = dynamic_cast<osg::ImageSequence*>(_images[i].get());
-        if (is) ++numImageSequencesBefore;
+        if (_images[i].valid() && _images[i]->requiresUpdateCall()) ++numImageRequireUpdateBefore;
     }
 
     // set image
     _images[layer] = image;
    _modifiedCount[layer].setAllElementsTo(0);
 
-    // find out if we need to reset the update callback to handle the animation of ImageSequence
-    unsigned numImageSequencesAfter = 0;
+    // find out if we need to reset the update callback to handle the animation of image
+    unsigned numImageRequireUpdateAfter = 0;
     for (unsigned int i=0; i<getNumImages(); ++i)
     {
-        osg::ImageSequence* is = dynamic_cast<osg::ImageSequence*>(_images[i].get());
-        if (is) ++numImageSequencesAfter;
+        if (_images[i].valid() && _images[i]->requiresUpdateCall()) ++numImageRequireUpdateAfter;
     }
 
-    if (numImageSequencesBefore>0)
+    if (numImageRequireUpdateBefore>0)
     {
-        if (numImageSequencesAfter==0)
+        if (numImageRequireUpdateAfter==0)
         {
             setUpdateCallback(0);
             setDataVariance(osg::Object::STATIC);
         }
     }
-    else if (numImageSequencesAfter>0)
+    else if (numImageRequireUpdateAfter>0)
     {
-        setUpdateCallback(new ImageSequence::UpdateCallback());
+        setUpdateCallback(new Image::UpdateCallback());
         setDataVariance(osg::Object::DYNAMIC);
     }
 }

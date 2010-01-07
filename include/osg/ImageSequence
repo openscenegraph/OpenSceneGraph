@@ -16,7 +16,6 @@
 
 #include <OpenThreads/Mutex>
 #include <osg/ImageStream>
-#include <osg/StateAttribute>
 
 #include <list>
 #include <set>
@@ -101,14 +100,12 @@ class OSG_EXPORT ImageSequence : public ImageStream
 
         Images& getImages() { return _images; }
         const Images& getImages() const { return _images; }
-        
 
+        /** ImageSequence requires a call to update(NodeVisitor*) during the update traversal so return true.*/
+        virtual bool requiresUpdateCall() const { return true; }
+
+        /** update method for osg::Image subclasses that update themselves during the update traversal.*/
         virtual void update(NodeVisitor* nv);
-
-        struct OSG_EXPORT UpdateCallback : public osg::StateAttributeCallback
-        {
-            virtual void operator () (osg::StateAttribute* attr, osg::NodeVisitor* nv);
-        };
 
     protected:
 

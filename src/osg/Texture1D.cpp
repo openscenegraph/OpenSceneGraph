@@ -12,7 +12,6 @@
 */
 #include <osg/GLExtensions>
 #include <osg/Texture1D>
-#include <osg/ImageSequence>
 #include <osg/State>
 #include <osg/GLU>
 
@@ -97,7 +96,7 @@ void Texture1D::setImage(Image* image)
 {
     if (_image == image) return;
 
-    if (dynamic_cast<osg::ImageSequence*>(_image.get()))
+    if (_image.valid() && _image->requiresUpdateCall())
     {
         setUpdateCallback(0);
         setDataVariance(osg::Object::STATIC);
@@ -109,9 +108,9 @@ void Texture1D::setImage(Image* image)
     _image = image;
     _modifiedCount.setAllElementsTo(0);
     
-    if (dynamic_cast<osg::ImageSequence*>(_image.get()))
+    if (_image.valid() && _image->requiresUpdateCall())
     {
-        setUpdateCallback(new ImageSequence::UpdateCallback());
+        setUpdateCallback(new Image::UpdateCallback());
         setDataVariance(osg::Object::DYNAMIC);
     }
 }

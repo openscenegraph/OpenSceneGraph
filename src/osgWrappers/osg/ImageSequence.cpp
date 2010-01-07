@@ -15,7 +15,6 @@
 #include <osg/ImageSequence>
 #include <osg/NodeVisitor>
 #include <osg/Object>
-#include <osg/StateAttribute>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -206,10 +205,15 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	          __C5_Images_R1__getImages,
 	          "",
 	          "");
+	I_Method0(bool, requiresUpdateCall,
+	          Properties::VIRTUAL,
+	          __bool__requiresUpdateCall,
+	          "ImageSequence requires a call to update(NodeVisitor*) during the update traversal so return true. ",
+	          "");
 	I_Method1(void, update, IN, osg::NodeVisitor *, nv,
 	          Properties::VIRTUAL,
 	          __void__update__NodeVisitor_P1,
-	          "",
+	          "update method for osg::Image subclasses that update themselves during the update traversal. ",
 	          "");
 	I_ProtectedMethod0(void, applyLoopingMode,
 	                   Properties::VIRTUAL,
@@ -267,14 +271,6 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageSequence)
 	I_SimpleProperty(double, TimeMultiplier, 
 	                 __double__getTimeMultiplier, 
 	                 __void__setTimeMultiplier__double);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osg::ImageSequence::UpdateCallback)
-	I_DeclaringFile("osg/ImageSequence");
-	I_BaseType(osg::StateAttributeCallback);
-	I_Constructor0(____UpdateCallback,
-	               "",
-	               "");
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Image >)

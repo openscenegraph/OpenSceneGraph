@@ -15,6 +15,8 @@
 
 #include <osg/io_utils>
 #include <osg/CullFace>
+#include <osgDB/WriteFile>
+
 #include "WriterNodeVisitor.h"
 #include <assert.h>
 #include <string.h>
@@ -397,33 +399,12 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor & writerNodeVisitor, osg
 }
 
 
-/// Creates a unique 3DS name for a given texture, and copies the image file to disk at an appropriate location if necessary.
-//std::string WriterNodeVisitor::export3DSTexture(const osg::Image * image, const std::string & texName) {
-//    std::string extension = osgDB::getFileExtension(texName);
-//    if (is83(texName))
-//    {
-//        std::string newName = texName;
-//        if (extension.empty())
-//            newName += ".rgb";
-//        if (osgDB::Registry::instance()->writeImage(*image, osgDB::concatPaths(_directory, newName), options).status() == 
-//            osgDB::ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE)
-//            failedApply();
-//        return texName;
-//    }
-//    if (extension.empty())
-//    {
-//        extension = "rgb";
-//    }
-//    std::string newName = getUniqueName(texName, "tex");
-//    newName += "." + extension;
-//    osgDB::Registry::instance()->writeImage(*image, osgDB::concatPaths(_directory, newName), options);
-//    return newName;
-//}
-
 std::string
 getPathRelative(const std::string & srcBad,
                 const std::string & dstBad)
 {
+    if(srcBad.empty())
+        return osgDB::getSimpleFileName(dstBad);
     const std::string & src = osgDB::convertFileNameToNativeStyle(srcBad);
     const std::string & dst = osgDB::convertFileNameToNativeStyle(dstBad);
     std::string::const_iterator itDst = dst.begin();
@@ -439,7 +420,7 @@ getPathRelative(const std::string & srcBad,
             result += *itDst;
         ++itDst;
     }
-    if (itSrc != src.end() || !is3DSpath(result))
+    if (itSrc != src.end())
         result = osgDB::getSimpleFileName(dst);
     return result;
 }
@@ -476,16 +457,20 @@ void WriterNodeVisitor::writeMaterials()
                     oss << "Image_" << _imageCount++ << ".rgb";
                     path = oss.str();
                 }
-                else
+                else {
                     path = getPathRelative(_srcDirectory, mat.image->getFileName());
-                // if(!is3DSpath(path))
-                    path = osgDB::getSimpleFileName(path);
+                }
+                if(!is3DSpath(path)) {
+                    path = getUniqueName(path, "", true);
+                    //path = osgDB::getSimpleFileName(path);
+                }
 
                 strcpy(tex.name, path.c_str());
                 path = osgDB::concatPaths(_directory, path);
                 osgDB::makeDirectoryForFile(path);
 
-                if (mat.image && mat.image->data()) osgDB::Registry::instance()->writeImage(*(mat.image), path, NULL);
+                //if (mat.image->valid()) osgDB::writeImageFile(*(mat.image), path);
+                osgDB::writeImageFile(*(mat.image), path);
                 if (mat.texture_transparency) tex.flags |= LIB3DS_TEXTURE_ALPHA_SOURCE;
                 if (mat.texture_no_tile) tex.flags |= LIB3DS_TEXTURE_NO_TILE;
             }
@@ -499,16 +484,21 @@ void WriterNodeVisitor::writeMaterials()
 }
 
 
-std::string WriterNodeVisitor::getUniqueName(const std::string& defaultValue, const std::string & _defaultPrefix, bool nameIsPath) {
+std::string WriterNodeVisitor::getUniqueName(const std::string& _defaultValue, const std::string & _defaultPrefix, bool nameIsPath) {
     if (_defaultPrefix.length()>=4) throw "Default prefix is too long";            // Arbitrarily defined to 3 chars. You can modify this, but you may have to change the code so that finding a number is okay, even when changing the default prefix length.
 
     // Tests if default name is valid and unique
-    bool defaultIs83 = is83(defaultValue);
-    bool defaultIsValid = nameIsPath ? is3DSpath(defaultValue) : defaultIs83;
-    if (defaultIsValid && _nameMap.find(defaultValue) == _nameMap.end()) {
-        _nameMap.insert(defaultValue);
-        return defaultValue;
+    bool defaultIs83 = is83(_defaultValue);
+    bool defaultIsValid = nameIsPath ? is3DSpath(_defaultValue) : defaultIs83;
+    if (defaultIsValid && _nameMap.find(_defaultValue) == _nameMap.end()) {
+        _nameMap.insert(_defaultValue);
+        return _defaultValue;
     }
+
+    // Handling of paths is not well done yet. Defaulting to something very simple.
+    // We should actually ensure each component is 8 chars long, and final filename is 8.3, and total is <64 chars.
+    std::string defaultValue(nameIsPath ? osgDB::getSimpleFileName(_defaultValue) : _defaultValue);
+    std::string ext(nameIsPath ? osgDB::getFileExtensionIncludingDot(_defaultValue).substr(0, std::min<unsigned int>(_defaultValue.size(), 4)) : "");        // 4 chars = dot + 3 chars
 
     std::string defaultPrefix(_defaultPrefix.empty() ? "_" : _defaultPrefix);
 
@@ -560,7 +550,7 @@ std::string WriterNodeVisitor::getUniqueName(const std::string& defaultValue, co
                 _mapPrefix.insert(std::make_pair(defaultPrefix, i + 1));
             }
             _nameMap.insert(res);
-            return res;
+            return res + ext;
         }
     }
     if (defaultPrefix == "_") _lastGeneratedNumberedName = max_val;

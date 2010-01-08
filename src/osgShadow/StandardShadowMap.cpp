@@ -677,7 +677,7 @@ void StandardShadowMap::ViewData::aimShadowCastingCamera(
 
     if( light->getSpotCutoff() < 180.0f) // spotlight, no need for bounding box
     {
-        osg::Vec3 position(lightPos.x(), lightPos.y(), lightPos.z());
+        osg::Vec3d position(lightPos.x(), lightPos.y(), lightPos.z());
         float spotAngle = light->getSpotCutoff();
 
         projection.makePerspective( spotAngle, 1.0, 0.1, 1000.0);        
@@ -687,14 +687,15 @@ void StandardShadowMap::ViewData::aimShadowCastingCamera(
     {
         if (lightPos[3]!=0.0)   // point light
         {
-            osg::Vec3 position(lightPos.x(), lightPos.y(), lightPos.z());
+            osg::Vec3d position(lightPos.x(), lightPos.y(), lightPos.z());
 
             float centerDistance = (position-bs.center()).length();
 
             float znear = centerDistance-bs.radius();
             float zfar  = centerDistance+bs.radius();
             float zNearRatio = 0.001f;
-            if (znear<zfar*zNearRatio) znear = zfar*zNearRatio;
+            if (znear<zfar*zNearRatio)
+                znear = zfar*zNearRatio;
 
             float top   = (bs.radius()/centerDistance)*znear;
             float right = top;
@@ -708,7 +709,7 @@ void StandardShadowMap::ViewData::aimShadowCastingCamera(
 
             // set the position far away along the light direction
             float radius = bs.radius();
-            osg::Vec3 position = bs.center() - lightDir * radius * 2;
+            osg::Vec3d position = bs.center() - lightDir * radius * 2;
 
             float centerDistance = (position-bs.center()).length();
 

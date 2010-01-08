@@ -348,9 +348,6 @@ osg::Node* ReaderWriter3DS::ReaderObject::processMesh(StateSetMap& drawStateMap,
     for (unsigned int i=0; i<mesh->nfaces; ++i)
     {
         if (mesh->faces[i].material>=0) {
-            //std::stringstream materialStr;
-            //materialStr << mesh->faces[i].material;
-            //materialFaceMap[materialStr.str()].push_back(i);
             materialFaceMap[mesh->faces[i].material].push_back(i);
         }
         else
@@ -453,7 +450,8 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap drawStateMap,L
     }
 
 
-    if (node->childs != NULL || pivoted || (!isOsgNodeMatrixIdentity && !noMatrixTransforms)) {
+    //if (node->childs != NULL || pivoted || (!isOsgNodeMatrixIdentity && !noMatrixTransforms)) {
+    if (node->childs != NULL || (!isOsgNodeMatrixIdentity && !noMatrixTransforms)) {
         if (isOsgNodeMatrixIdentity || noMatrixTransforms) {
             group = new osg::Group;
         } else {
@@ -888,24 +886,8 @@ osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *
         osg::notify(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_IGNORE_ALPHA "<<((texture->flags)&LIB3DS_TEXTURE_IGNORE_ALPHA)<< std::endl;
         osg::notify(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_RGB_TINT     "<<((texture->flags)&LIB3DS_TEXTURE_RGB_TINT)<< std::endl;
 
-        bool noTexture = false;
-        if (options)
-        {
-            std::istringstream iss(options->getOptionString());
-            std::string opt;
-            while (iss >> opt)
-            {
-                if (opt == "noTexture")
-                    noTexture = true;
-            }
-        }
-
-        osg::ref_ptr<osg::Image> osg_image = NULL;
-        if(noTexture)
-            osg_image = new osg::Image();
-        else
-            osg_image = osgDB::readRefImageFile(fileName.c_str(), options); //Absolute Path
-        if (!osg_image)
+        osg::ref_ptr<osg::Image> osg_image = osgDB::readRefImageFile(fileName.c_str(), options); //Absolute Path
+        if (!osg_image.valid())
         {
             osg::notify(osg::NOTICE) << "Warning: Cannot create texture "<<texture->name<< std::endl;
             return NULL;

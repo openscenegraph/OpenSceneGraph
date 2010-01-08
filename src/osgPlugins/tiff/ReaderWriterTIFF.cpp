@@ -783,6 +783,7 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             }
 
             switch(img.getPixelFormat()) {
+                case GL_DEPTH_COMPONENT:
                 case GL_LUMINANCE:
                 case GL_ALPHA:
                     photometric = PHOTOMETRIC_MINISBLACK;

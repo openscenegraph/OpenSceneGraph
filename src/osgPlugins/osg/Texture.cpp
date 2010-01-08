@@ -26,6 +26,10 @@ bool Texture_matchInternalFormatStr(const char* str,int& value);
 const char* Texture_getInternalFormatStr(int value);
 bool Texture_matchSourceTypeStr(const char* str,int& value);
 const char* Texture_getSourceTypeStr(int value);
+bool Texture_matchShadowCompareFuncStr(const char* str,Texture::ShadowCompareFunc& value);
+const char* Texture_getShadowCompareFuncStr(Texture::ShadowCompareFunc value);
+bool Texture_matchShadowTextureModeStr(const char* str,Texture::ShadowTextureMode& value);
+const char* Texture_getShadowTextureModeStr(Texture::ShadowTextureMode value);
 
 // register the read and write functions with the osgDB::Registry.
 REGISTER_DOTOSGWRAPPER(Texture)
@@ -201,6 +205,44 @@ bool Texture_readLocalData(Object& obj, Input& fr)
         }
     }
 
+    if (fr[0].matchWord("shadowComparison"))
+    {
+        if (fr[1].matchWord("TRUE")) 
+        {
+            texture.setShadowComparison(true);
+            fr +=2 ;
+            iteratorAdvanced = true;
+        }
+        else if (fr[1].matchWord("FALSE")) 
+        {
+            texture.setShadowComparison(false);
+            fr +=2 ;
+            iteratorAdvanced = true;
+        }
+    }
+
+    if (fr[0].matchWord("shadowCompareFunc"))
+    {
+        Texture::ShadowCompareFunc value;
+        if (Texture_matchShadowCompareFuncStr(fr[1].getStr(),value))
+        {
+            texture.setShadowCompareFunc(value);
+            fr+=2;
+            iteratorAdvanced = true;
+        }
+    }
+
+    if (fr[0].matchWord("shadowTextureMode"))
+    {
+        Texture::ShadowTextureMode value;
+        if (Texture_matchShadowTextureModeStr(fr[1].getStr(),value))
+        {
+            texture.setShadowTextureMode(value);
+            fr+=2;
+            iteratorAdvanced = true;
+        }
+    }
+
     return iteratorAdvanced;
 }
 
@@ -253,6 +295,12 @@ bool Texture_writeLocalData(const Object& obj, Output& fw)
     }
 
     fw.indent() << "resizeNonPowerOfTwo "<< (texture.getResizeNonPowerOfTwoHint()?"TRUE":"FALSE") << std::endl;
+
+    fw.indent() << "shadowComparison "<< (texture.getShadowComparison()?"TRUE":"FALSE") << std::endl;
+
+    fw.indent() << "shadowCompareFunc " << Texture_getShadowCompareFuncStr(texture.getShadowCompareFunc()) << std::endl;
+
+    fw.indent() << "shadowTextureMode " << Texture_getShadowTextureModeStr(texture.getShadowTextureMode()) << std::endl;
 
     return true;
 }
@@ -426,7 +474,6 @@ bool Texture_matchSourceTypeStr(const char* str,int& value)
     return true;
 }
 
-
 const char* Texture_getSourceTypeStr(int value)
 {
     switch(value)
@@ -438,6 +485,46 @@ const char* Texture_getSourceTypeStr(int value)
         case(GL_UNSIGNED_BYTE): return "GL_UNSIGNED_BYTE";
         case(GL_UNSIGNED_SHORT): return "GL_UNSIGNED_SHORT";
         case(GL_UNSIGNED_INT): return "GL_UNSIGNED_INT";
+    }
+    return NULL;
+}
+
+bool Texture_matchShadowCompareFuncStr(const char* str, Texture::ShadowCompareFunc& value)
+{
+    if (     strcmp(str,"GL_LEQUAL")==0) value = Texture::LEQUAL;
+    else if (strcmp(str,"GL_GEQUAL")==0) value = Texture::GEQUAL;
+    else return false;
+
+    return true;
+}
+
+const char* Texture_getShadowCompareFuncStr(Texture::ShadowCompareFunc value)
+{
+    switch(value)
+    {
+    case( Texture::LEQUAL ): return "GL_LEQUAL";
+    case( Texture::GEQUAL ): return "GL_GEQUAL";
+    }
+    return NULL;
+}
+
+bool Texture_matchShadowTextureModeStr(const char* str,Texture::ShadowTextureMode& value)
+{
+    if (     strcmp(str,"GL_LUMINANCE")==0) value = Texture::LUMINANCE;
+    else if (strcmp(str,"GL_INTENSITY")==0) value = Texture::INTENSITY;
+    else if (strcmp(str,"GL_ALPHA")==0) value = Texture::ALPHA;
+    else return false;
+
+    return true;
+}
+
+const char* Texture_getShadowTextureModeStr(Texture::ShadowTextureMode value)
+{
+    switch(value)
+    {
+        case( Texture::LUMINANCE ): return "GL_LUMINANCE";
+        case( Texture::INTENSITY ): return "GL_INTENSITY";
+        case( Texture::ALPHA ): return "GL_ALPHA";
     }
     return NULL;
 }

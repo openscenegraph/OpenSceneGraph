@@ -537,7 +537,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         /** Sets GL_TEXTURE_COMPARE_MODE_ARB to GL_COMPARE_R_TO_TEXTURE_ARB
           * See http://oss.sgi.com/projects/ogl-sample/registry/ARB/shadow.txt. */
         void setShadowComparison(bool flag) { _use_shadow_comparison = flag; }
-
+        bool getShadowComparison() const { return _use_shadow_comparison; }
+        
         enum ShadowCompareFunc {
             NEVER = GL_NEVER,
             LESS = GL_LESS,

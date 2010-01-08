@@ -95,7 +95,7 @@ class OSGWIDGET_EXPORT Frame: public Table
             Corner (const Corner&, const osg::CopyOp&);
 
             virtual void parented  (Window*);
-            virtual bool mouseDrag (double, double, WindowManager*);
+            virtual bool mouseDrag (double, double, const WindowManager*);
 
             CornerType getCornerType() const
             {
@@ -128,7 +128,7 @@ class OSGWIDGET_EXPORT Frame: public Table
 
             virtual void parented   (Window*);
             virtual void positioned ();
-            virtual bool mouseDrag  (double, double, WindowManager*);
+            virtual bool mouseDrag  (double, double, const WindowManager*);
 
             BorderType getBorderType() const
             {

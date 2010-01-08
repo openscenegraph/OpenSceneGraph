@@ -250,9 +250,9 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Frame::Border)
 	          __void__positioned,
 	          "",
 	          "");
-	I_Method3(bool, mouseDrag, IN, double, x, IN, double, x, IN, osgWidget::WindowManager *, x,
+	I_Method3(bool, mouseDrag, IN, double, x, IN, double, x, IN, const osgWidget::WindowManager *, x,
 	          Properties::VIRTUAL,
-	          __bool__mouseDrag__double__double__WindowManager_P1,
+	          __bool__mouseDrag__double__double__C5_WindowManager_P1,
 	          "",
 	          "");
 	I_Method0(osgWidget::Frame::BorderType, getBorderType,
@@ -319,9 +319,9 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Frame::Corner)
 	          __void__parented__Window_P1,
 	          "",
 	          "");
-	I_Method3(bool, mouseDrag, IN, double, x, IN, double, x, IN, osgWidget::WindowManager *, x,
+	I_Method3(bool, mouseDrag, IN, double, x, IN, double, x, IN, const osgWidget::WindowManager *, x,
 	          Properties::VIRTUAL,
-	          __bool__mouseDrag__double__double__WindowManager_P1,
+	          __bool__mouseDrag__double__double__C5_WindowManager_P1,
 	          "",
 	          "");
 	I_Method0(osgWidget::Frame::CornerType, getCornerType,

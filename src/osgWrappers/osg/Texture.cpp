@@ -366,6 +366,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	          __void__setShadowComparison__bool,
 	          "Sets GL_TEXTURE_COMPARE_MODE_ARB to GL_COMPARE_R_TO_TEXTURE_ARB See http://oss.sgi.com/projects/ogl-sample/registry/ARB/shadow.txt. ",
 	          "");
+	I_Method0(bool, getShadowComparison,
+	          Properties::NON_VIRTUAL,
+	          __bool__getShadowComparison,
+	          "",
+	          "");
 	I_Method1(void, setShadowCompareFunc, IN, osg::Texture::ShadowCompareFunc, func,
 	          Properties::NON_VIRTUAL,
 	          __void__setShadowCompareFunc__ShadowCompareFunc,
@@ -638,7 +643,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Texture)
 	                 __ShadowCompareFunc__getShadowCompareFunc, 
 	                 __void__setShadowCompareFunc__ShadowCompareFunc);
 	I_SimpleProperty(bool, ShadowComparison, 
-	                 0, 
+	                 __bool__getShadowComparison, 
 	                 __void__setShadowComparison__bool);
 	I_SimpleProperty(osg::Texture::ShadowTextureMode, ShadowTextureMode, 
 	                 __ShadowTextureMode__getShadowTextureMode, 

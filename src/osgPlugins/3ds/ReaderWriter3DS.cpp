@@ -839,7 +839,7 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
     else
     {
         scoped_array<Lib3dsVector> normals ( new Lib3dsVector[m->nfaces] );
-        lib3ds_mesh_calculate_face_normals(m, normals);
+        lib3ds_mesh_calculate_face_normals(m, normals.get());
         osg::ref_ptr<osg::Vec3Array> osg_normals = new osg::Vec3Array(faceList.size());
         osg::Vec3Array::iterator normal_itr = osg_normals->begin();
         for (fitr=faceList.begin();

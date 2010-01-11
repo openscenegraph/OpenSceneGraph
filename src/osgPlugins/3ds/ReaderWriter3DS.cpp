@@ -36,6 +36,50 @@
 using namespace std;
 using namespace osg;
 
+/// Implementation borrowed from boost and slightly modified
+template<class T> class scoped_array // noncopyable
+{
+private:
+    T * px;
+    scoped_array(scoped_array const &);
+    scoped_array & operator=(scoped_array const &);
+    typedef scoped_array<T> this_type;
+
+    void operator==( scoped_array const& ) const;
+    void operator!=( scoped_array const& ) const;
+
+public:
+    typedef T element_type;
+    explicit scoped_array( T * p = 0 ) : px( p ) {}
+
+    ~scoped_array() { delete[] px; }
+
+    void reset(T * p = 0) {
+        assert( p == 0 || p != px ); // catch self-reset errors
+        this_type(p).swap(*this);
+    }
+
+    T & operator[](std::ptrdiff_t i) const // never throws
+    {
+        assert( px != 0 );
+        assert( i >= 0 );
+        return px[i];
+    }
+
+    T * get() const // never throws
+    {
+        return px;
+    }
+
+    void swap(scoped_array & b) // never throws
+    {
+        T * tmp = b.px;
+        b.px = px;
+        px = tmp;
+    }
+};
+
+
 
 void copyLib3dsMatrixToOsgMatrix(osg::Matrix& osg_matrix, const Lib3dsMatrix lib3ds_matrix)
 {
@@ -315,22 +359,22 @@ void ReaderWriter3DS::ReaderObject::addDrawableFromFace(osg::Geode * geode, Face
             // don't get shared.
             FaceList& smoothFaceMap = sitr->second;
             osg::ref_ptr<osg::Drawable> drawable = createDrawable(mesh,smoothFaceMap,matrix);
-            if (drawable)
+            if (drawable.valid())
             {
                 if (stateSet)
                     drawable->setStateSet(stateSet);
-                geode->addDrawable(drawable);
+                geode->addDrawable(drawable.get());
             }
         }
     }
     else // ignore smoothing groups.
     {
         osg::ref_ptr<osg::Drawable> drawable = createDrawable(mesh,faceList,matrix);
-        if (drawable)
+        if (drawable.valid())
         {
             if (stateSet)
                 drawable->setStateSet(stateSet);
-            geode->addDrawable(drawable);
+            geode->addDrawable(drawable.get());
         }
     }
 }
@@ -700,8 +744,7 @@ use matrix to pretransform geometry, or NULL to do nothing
 */
 osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceList& faceList, const osg::Matrix * matrix)
 {
-
-    osg::Geometry* geom = new osg::Geometry;
+    osg::Geometry * geom = new osg::Geometry;
     unsigned int i;
 
     std::vector<int> orig2NewMapping;
@@ -730,8 +773,8 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
 
     // create vertices.
 
-    osg::Vec3Array* osg_coords = new osg::Vec3Array(noVertex);
-    geom->setVertexArray(osg_coords);
+    osg::ref_ptr<osg::Vec3Array> osg_coords = new osg::Vec3Array(noVertex);
+    geom->setVertexArray(osg_coords.get());
 
     for (i=0; i<m->nvertices; ++i)
     {
@@ -752,8 +795,8 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
     // create texture coords if needed.
     if (m->texcos)
     {
-        osg::Vec2Array* osg_tcoords = new osg::Vec2Array(noVertex);
-        geom->setTexCoordArray(0,osg_tcoords);
+        osg::ref_ptr<osg::Vec2Array> osg_tcoords = new osg::Vec2Array(noVertex);
+        geom->setTexCoordArray(0, osg_tcoords.get());
         for (i=0; i<m->nvertices; ++i)
         {
             if (orig2NewMapping[i]>=0) (*osg_tcoords)[orig2NewMapping[i]].set(m->texcos[i][0],m->texcos[i][1]);
@@ -767,9 +810,9 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
     {
         //Lib3dsVector * normals = new Lib3dsVector[m->nfaces*3];
         //lib3ds_mesh_calculate_vertex_normals(m, normals);
-        Lib3dsVector * normals = new Lib3dsVector[m->nfaces];
-        lib3ds_mesh_calculate_face_normals(m, normals);
-        osg::Vec3Array* osg_normals = new osg::Vec3Array(noVertex);
+        scoped_array<Lib3dsVector> normals( new Lib3dsVector[m->nfaces] );        // Temporary array
+        lib3ds_mesh_calculate_face_normals(m, normals.get());
+        osg::ref_ptr<osg::Vec3Array> osg_normals = new osg::Vec3Array(noVertex);
 
         // initialize normal list to zero's.
         for (i=0; i<noVertex; ++i)
@@ -790,15 +833,14 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
             (*osg_normals)[orig2NewMapping[face.index[2]]] = osgNormal;
         }
 
-        geom->setNormalArray(osg_normals);
+        geom->setNormalArray(osg_normals.get());
         geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
-
     }
     else
     {
-        Lib3dsVector * normals = new Lib3dsVector[m->nfaces];
+        scoped_array<Lib3dsVector> normals ( new Lib3dsVector[m->nfaces] );
         lib3ds_mesh_calculate_face_normals(m, normals);
-        osg::Vec3Array* osg_normals = new osg::Vec3Array(faceList.size());
+        osg::ref_ptr<osg::Vec3Array> osg_normals = new osg::Vec3Array(faceList.size());
         osg::Vec3Array::iterator normal_itr = osg_normals->begin();
         for (fitr=faceList.begin();
             fitr!=faceList.end();
@@ -809,19 +851,18 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
             osgNormal.normalize();
             *(normal_itr++) = osgNormal;
         }
-        geom->setNormalArray(osg_normals);
+        geom->setNormalArray(osg_normals.get());
         geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
     }
 
-    osg::Vec4ubArray* osg_colors = new osg::Vec4ubArray(1);
+    osg::ref_ptr<osg::Vec4ubArray> osg_colors = new osg::Vec4ubArray(1);
     (*osg_colors)[0].set(255,255,255,255);
-    geom->setColorArray(osg_colors);
+    geom->setColorArray(osg_colors.get());
     geom->setColorBinding(osg::Geometry::BIND_OVERALL);
-
 
     // create primitives
     int numIndices = faceList.size()*3;
-    DrawElementsUShort* elements = new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLES,numIndices);
+    osg::ref_ptr<DrawElementsUShort> elements = new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLES,numIndices);
     DrawElementsUShort::iterator index_itr = elements->begin();
 
     for (fitr=faceList.begin();
@@ -829,13 +870,12 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
         ++fitr)
     {
         Lib3dsFace& face = m->faces[*fitr];
-
         *(index_itr++) = orig2NewMapping[face.index[0]];
         *(index_itr++) = orig2NewMapping[face.index[1]];
         *(index_itr++) = orig2NewMapping[face.index[2]];
     }
 
-    geom->addPrimitiveSet(elements);
+    geom->addPrimitiveSet(elements.get());
 
 #if 0
     osgUtil::TriStripVisitor tsv;
@@ -1034,7 +1074,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriter3DS::writeNode(const osg::Node& nod
         osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
         local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
-        if (!createFileObject(node, file3ds, fileName, local_opt)) ok = false;
+        if (!createFileObject(node, file3ds, fileName, local_opt.get())) ok = false;
         if (ok && !lib3ds_file_save(file3ds, fileName.c_str())) ok = false;
     } catch (...) {
         lib3ds_file_free(file3ds);
@@ -1069,7 +1109,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriter3DS::writeNode(const osg::Node& nod
         osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
         local_opt->getDatabasePathList().push_front(osgDB::getFilePath(optFileName));
 
-        if (!createFileObject(node, file3ds, optFileName, local_opt)) ok = false;
+        if (!createFileObject(node, file3ds, optFileName, local_opt.get())) ok = false;
         if (ok && !lib3ds_file_write(file3ds, &io)) ok = false;
         
     } catch (...) {

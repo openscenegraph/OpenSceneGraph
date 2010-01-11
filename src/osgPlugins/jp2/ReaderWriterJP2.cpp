@@ -179,9 +179,11 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
         
             // little dance here to get around warnings created by jas_image_strtofmt use of char* rather than const char*
             // as a parameted and modern compilers deprecating "jp2" string being treated as char*.
+            jas_init();//jas_image_strtofmt() bound to return -1 if jas_init has not been called.
             char* jp2 = strdup("jp2");
             _fmt_jp2 = jas_image_strtofmt(jp2);
             free(jp2);
+            jas_image_clearfmts();
         }
 
         virtual const char* className() const { return "RGB Image Reader/Writer"; }

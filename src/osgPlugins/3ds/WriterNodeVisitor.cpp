@@ -425,6 +425,16 @@ getPathRelative(const std::string & srcBad,
     return result;
 }
 
+/// Converts an extension to a 3-letters long one equivalent.
+std::string convertExt(const std::string & path)
+{
+    std::string ext = osgDB::getFileExtensionIncludingDot(path);
+    if (ext == ".tiff") ext = ".tif";
+    else if (ext == ".jpeg") ext = ".jpg";
+    else if (ext == ".jpeg2000" || ext == ".jpg2000") ext = ".jpc";
+    return osgDB::getNameLessExtension(path) + ext;
+}
+
 void WriterNodeVisitor::writeMaterials()
 {
     unsigned int nbMat = _materialMap.size();
@@ -460,6 +470,8 @@ void WriterNodeVisitor::writeMaterials()
                 else {
                     path = getPathRelative(_srcDirectory, mat.image->getFileName());
                 }
+                path = convertExt(path);
+
                 if(!is3DSpath(path)) {
                     path = getUniqueName(path, "", true);
                     //path = osgDB::getSimpleFileName(path);

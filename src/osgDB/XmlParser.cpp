@@ -307,6 +307,7 @@ bool XmlNode::read(Input& input)
                     {
                         ++input;
                         osg::notify(osg::INFO)<<"tag is closed correctly"<<std::endl;
+                        childNode->type = ATOM;
                     }
                     else 
                         osg::notify(osg::NOTICE)<<"Error: tag is not closed correctly"<<std::endl;
@@ -360,7 +361,7 @@ bool XmlNode::read(Input& input)
     return false;
 }
 
-bool XmlNode::write(std::ostream& fout) const
+bool XmlNode::write(std::ostream& fout, const std::string& indent) const
 {
     switch(type)
     {
@@ -368,91 +369,36 @@ bool XmlNode::write(std::ostream& fout) const
             return false;
         case(ATOM):
         {
-            fout<<"<"<<name;
-            for(Properties::const_iterator oitr = properties.begin();
-                oitr != properties.end();
-                ++oitr)
-            {
-                fout<<oitr->first<<"\"";
-                writeString(fout,oitr->second);
-                fout<<"\""<<std::endl;
-            }
-            return true;
+            fout<<indent<<"<"<<name;
+            writeProperties(fout);
             fout<<" />"<<std::endl;
+            return true;
         }
         case(ROOT):
         {
-            for(Children::const_iterator citr = children.begin();
-                citr != children.end();
-                ++citr)
-            {
-                (*citr)->write(fout);
-            }
+            writeChildren(fout, indent);
             return true;
         }
         case(NODE):
-        {
-            fout<<"<"<<name;
-            for(Properties::const_iterator oitr = properties.begin();
-                oitr != properties.end();
-                ++oitr)
-            {
-                fout<<" "<<oitr->first<<"=\"";
-                writeString(fout,oitr->second);
-                fout<<"\"";
-            }
-
-            if (children.empty() && contents.empty())
-            {
-                fout<<" />"<<std::endl;
-            }
-            else
-            {
-                fout<<">";
-                for(Children::const_iterator citr = children.begin();
-                    citr != children.end();
-                    ++citr)
-                {
-                    (*citr)->write(fout);
-                }
-
-                if (!contents.empty()) writeString(fout,contents);
-
-                fout<<"</"<<name<<">"<<std::endl;
-            }
-            return true;
-        }
         case(GROUP):
         {
-            fout<<"<"<<name;
-            for(Properties::const_iterator oitr = properties.begin();
-                oitr != properties.end();
-                ++oitr)
-            {
-                fout<<" "<<oitr->first<<"=\"";
-                writeString(fout,oitr->second);
-                fout<<"\"";
-            }
+            fout<<indent<<"<"<<name;
+            writeProperties(fout);
             fout<<">"<<std::endl;
 
-            for(Children::const_iterator citr = children.begin();
-                citr != children.end();
-                ++citr)
-            {
-                (*citr)->write(fout);
-            }
+            writeChildren(fout, indent + "  ");
 
-            fout<<"</"<<name<<">"<<std::endl;
+            fout<<indent<<"</"<<name<<">"<<std::endl;
             return true;
         }
         case(COMMENT):
         {
-            fout<<"<!--"<<contents<<"-->"<<std::endl;
+            fout<<indent<<"<!--"<<contents<<"-->"<<std::endl;
             return true;
         }
         case(INFORMATION):
         {
-            fout<<"<?"<<contents<<"?>"<<std::endl;
+            fout<<indent<<"<?"<<contents<<"?>"<<std::endl;
             return true;
         }
     }
@@ -462,5 +408,33 @@ bool XmlNode::write(std::ostream& fout) const
 bool XmlNode::writeString(std::ostream& fout, const std::string& str) const
 {
     fout<<str;
+    return true;
+}
+
+bool XmlNode::writeChildren(std::ostream& fout, const std::string& indent) const
+{
+    for(Children::const_iterator citr = children.begin();
+        citr != children.end();
+        ++citr)
+    {
+        if (!(*citr)->write(fout, indent))
+            return false;
+    }
+
+    return true;
+}
+
+bool XmlNode::writeProperties(std::ostream& fout) const
+{
+    for(Properties::const_iterator oitr = properties.begin();
+        oitr != properties.end();
+        ++oitr)
+    {
+        fout<<" "<<oitr->first<<"=\"";
+        if (!writeString(fout,oitr->second))
+            return false;
+        fout<<"\"";
+    }
+
     return true;
 }

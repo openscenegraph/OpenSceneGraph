@@ -132,9 +132,13 @@ class OSGDB_EXPORT XmlNode : public osg::Referenced
 
         bool read(Input& input);
 
-        bool write(std::ostream& fout) const;
+        bool write(std::ostream& fout, const std::string& indent = "") const;
         bool writeString(std::ostream& fout, const std::string& str) const;
 
+    protected:
+
+        bool writeChildren(std::ostream& fout, const std::string& indent) const;
+        bool writeProperties(std::ostream& fout) const;
 };
 
 }

@@ -47,7 +47,8 @@ void copyOsgMatrixToLib3dsMatrix(Lib3dsMatrix lib3ds_matrix, const osg::Matrix& 
 typedef std::map<std::pair<unsigned int, unsigned int>, unsigned int> MapIndices;
 typedef std::vector<std::pair<Triangle, int> > ListTriangle; //the int is the drawable of the triangle
 
-class WriterNodeVisitor: public osg::NodeVisitor {
+class WriterNodeVisitor: public osg::NodeVisitor
+{
 
     public:
         static const unsigned int MAX_VERTICES = 65000;
@@ -138,7 +139,7 @@ class WriterNodeVisitor: public osg::NodeVisitor {
         {
             bool operator()(const osg::ref_ptr<osg::StateSet>& ss1, const osg::ref_ptr<osg::StateSet>& ss2) const
             {
-				return *ss1 < *ss2;
+                return *ss1 < *ss2;
             }
         };
 

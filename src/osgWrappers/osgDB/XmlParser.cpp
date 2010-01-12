@@ -51,16 +51,28 @@ BEGIN_OBJECT_REFLECTOR(osgDB::XmlNode)
 	          __bool__read__Input_R1,
 	          "",
 	          "");
-	I_Method1(bool, write, IN, std::ostream &, fout,
-	          Properties::NON_VIRTUAL,
-	          __bool__write__std_ostream_R1,
-	          "",
-	          "");
+	I_MethodWithDefaults2(bool, write, IN, std::ostream &, fout, , IN, const std::string &, indent, "",
+	                      Properties::NON_VIRTUAL,
+	                      __bool__write__std_ostream_R1__C5_std_string_R1,
+	                      "",
+	                      "");
 	I_Method2(bool, writeString, IN, std::ostream &, fout, IN, const std::string &, str,
 	          Properties::NON_VIRTUAL,
 	          __bool__writeString__std_ostream_R1__C5_std_string_R1,
 	          "",
 	          "");
+	I_ProtectedMethod2(bool, writeChildren, IN, std::ostream &, fout, IN, const std::string &, indent,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__writeChildren__std_ostream_R1__C5_std_string_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(bool, writeProperties, IN, std::ostream &, fout,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __bool__writeProperties__std_ostream_R1,
+	                   "",
+	                   "");
 	I_SimpleProperty(std::string, TrimmedContents, 
 	                 __std_string__getTrimmedContents, 
 	                 0);

@@ -76,14 +76,10 @@ void Sequence::write(DataOutputStream* out)
     if (out->getVersion() >= VERSION_0022)
     {
         // Write sync as an integer
-        bool sync ;
-        getSync(sync) ;
-        out->writeInt((int)sync) ;
+        out->writeInt((int)getSync()) ;
 
         // Write clearOnStop as an integer
-        bool clearOnStop ;
-        getClearOnStop(clearOnStop) ;
-        out->writeInt((int)clearOnStop) ;
+        out->writeInt((int)getClearOnStop()) ;
     }
 
 }

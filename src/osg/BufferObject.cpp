@@ -45,9 +45,9 @@ unsigned int s_minimumNumberOfGLBufferObjectsToRetainInCache = 1000;
 //
 // GLBufferObject
 //
-GLBufferObject::GLBufferObject(unsigned int contextID, BufferObject* bufferObject):
+GLBufferObject::GLBufferObject(unsigned int contextID, BufferObject* bufferObject, unsigned int glObjectID):
     _contextID(contextID),
-    _glObjectID(0),
+    _glObjectID(glObjectID),
     _profile(0,0,0),
     _allocatedSize(0),
     _dirty(true),
@@ -58,8 +58,13 @@ GLBufferObject::GLBufferObject(unsigned int contextID, BufferObject* bufferObjec
     _extensions(0)
 {
     assign(bufferObject);
+
     _extensions = GLBufferObject::getExtensions(contextID, true);
-    _extensions->glGenBuffers(1, &_glObjectID);
+
+    if (glObjectID==0)
+    {
+        _extensions->glGenBuffers(1, &_glObjectID);
+    }
 
     // osg::notify(osg::NOTICE)<<"Constucting BufferObject "<<this<<std::endl;
 }
@@ -219,7 +224,7 @@ void GLBufferObject::compileBuffer()
 
 void GLBufferObject::deleteGLObject()
 {
-    // osg::notify(osg::NOTICE)<<"GLBufferObject::deleteGLObject() "<<_glObjectID<<std::endl;
+    osg::notify(osg::NOTICE)<<"GLBufferObject::deleteGLObject() "<<_glObjectID<<std::endl;
     if (_glObjectID!=0)
     {
         _extensions->glDeleteBuffers(1, &_glObjectID);
@@ -1257,6 +1262,30 @@ unsigned int BufferObject::computeRequiredBufferSize() const
     return newTotalSize;
 }
 
+void BufferObject::deleteBufferObject(unsigned int contextID,GLuint globj)
+{
+    // implement deleteBufferObject for backwards compatibility by adding
+    // a GLBufferObject for the globj id to BufferObjectManager/Set for the specified context.
+
+    osg::ref_ptr<GLBufferObjectManager>& bufferObjectManager = GLBufferObjectManager::getGLBufferObjectManager(contextID);
+    if (!bufferObjectManager)
+    {
+        osg::notify(osg::NOTICE)<<"Warning::BufferObject::deleteBufferObject("<<contextID<<", "<<globj<<") unable to get GLBufferObjectManager for context."<<std::endl;
+        return;
+    }
+    osg::ref_ptr<GLBufferObject> glBufferObject = new GLBufferObject(contextID, 0, globj);
+
+    GLBufferObjectSet* bufferObjectSet = bufferObjectManager->getGLBufferObjectSet(glBufferObject->getProfile());
+    if (!bufferObjectSet)
+    {
+        osg::notify(osg::NOTICE)<<"Warning::BufferObject::deleteBufferObject("<<contextID<<", "<<globj<<") unable to get GLBufferObjectSet for context."<<std::endl;
+        return;
+    }
+
+    // do the adding of the wrapper buffer object.
+    bufferObjectSet->orphan(glBufferObject.get());
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // BufferData
@@ -1504,3 +1533,4 @@ void PixelDataBufferObject::resizeGLObjectBuffers(unsigned int maxSize)
 
     _mode.resize(maxSize);
 }
+

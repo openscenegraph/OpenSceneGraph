@@ -491,8 +491,14 @@ const char* Texture_getSourceTypeStr(int value)
 
 bool Texture_matchShadowCompareFuncStr(const char* str, Texture::ShadowCompareFunc& value)
 {
-    if (     strcmp(str,"GL_LEQUAL")==0) value = Texture::LEQUAL;
+    if (     strcmp(str,"GL_NEVER")==0) value = Texture::NEVER;
+    else if (strcmp(str,"GL_LESS")==0) value = Texture::LESS;
+    else if (strcmp(str,"GL_EQUAL")==0) value = Texture::EQUAL;
+    else if (strcmp(str,"GL_LEQUAL")==0) value = Texture::LEQUAL;
+    else if (strcmp(str,"GL_GREATER")==0) value = Texture::GREATER;
+    else if (strcmp(str,"GL_NOTEQUAL")==0) value = Texture::NOTEQUAL;
     else if (strcmp(str,"GL_GEQUAL")==0) value = Texture::GEQUAL;
+    else if (strcmp(str,"GL_ALWAYS")==0) value = Texture::ALWAYS;
     else return false;
 
     return true;
@@ -502,8 +508,14 @@ const char* Texture_getShadowCompareFuncStr(Texture::ShadowCompareFunc value)
 {
     switch(value)
     {
-    case( Texture::LEQUAL ): return "GL_LEQUAL";
-    case( Texture::GEQUAL ): return "GL_GEQUAL";
+        case(Texture::NEVER): return "GL_NEVER";
+        case(Texture::LESS): return "GL_LESS";
+        case(Texture::EQUAL): return "GL_EQUAL";
+        case(Texture::LEQUAL): return "GL_LEQUAL";
+        case(Texture::GREATER): return "GL_GREATER";
+        case(Texture::NOTEQUAL): return "GL_NOTEQUAL";
+        case(Texture::GEQUAL): return "GL_GEQUAL";
+        case(Texture::ALWAYS): return "GL_ALWAYS";
     }
     return NULL;
 }

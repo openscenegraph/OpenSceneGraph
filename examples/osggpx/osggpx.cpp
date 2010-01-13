@@ -237,7 +237,7 @@ Track* computeSmoothedTrack(Track* track)
         itr != track->getTrackSegments().end();
         ++itr)
     {
-        new_track->addTrackSegment(computeSmoothedTrackSegment(*itr));
+        new_track->addTrackSegment(computeSmoothedTrackSegment(itr->get()));
     }
 
     return new_track.release();
@@ -323,28 +323,28 @@ int main(int argv, char **argc)
                 itr != track->getTrackSegments().end();
                 ++itr)
             {
-                *itr = computeSmoothedTrackSegment(*itr);
+                *itr = computeSmoothedTrackSegment(itr->get());
             }
 
             for(Track::TrackSegments::iterator itr = track->getTrackSegments().begin();
                 itr != track->getTrackSegments().end();
                 ++itr)
             {
-                *itr = computeSmoothedTrackSegment(*itr);
+                *itr = computeSmoothedTrackSegment(itr->get());
             }
 
             for(Track::TrackSegments::iterator itr = track->getTrackSegments().begin();
                 itr != track->getTrackSegments().end();
                 ++itr)
             {
-                *itr = computeSmoothedTrackSegment(*itr);
+                *itr = computeSmoothedTrackSegment(itr->get());
             }
 
             for(Track::TrackSegments::iterator itr = track->getTrackSegments().begin();
                 itr != track->getTrackSegments().end();
                 ++itr)
             {
-                *itr = computeSmoothedTrackSegment(*itr);
+                *itr = computeSmoothedTrackSegment(itr->get());
             }
         }
 

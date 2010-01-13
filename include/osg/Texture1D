@@ -77,7 +77,7 @@ class OSG_EXPORT Texture1D : public Texture
 
         /** Sets the texture width. If width is zero, calculate the value
           * from the source image width. */
-        inline void setTextureWidth(int width) const { _textureWidth = width; }
+        inline void setTextureWidth(int width) { _textureWidth = width; }
 
         /** Gets the texture width. */
         virtual int getTextureWidth() const { return _textureWidth; }

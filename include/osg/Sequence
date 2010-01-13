@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -63,6 +63,12 @@ class OSG_EXPORT Sequence : public Group
 
         /** Get time for child. */
         double getTime(unsigned int frame) const;
+        
+        /** Set the time list for children. */
+        void setTimeList(const std::vector<double>& timeList) { _frameTime = timeList; }
+        
+        /** Get the time list for children. */
+        const std::vector<double>& getTimeList() const { return _frameTime; }
 
         /** Set default time in seconds for new child. 
             if t<0, t=0 */
@@ -87,6 +93,24 @@ class OSG_EXPORT Sequence : public Group
             LOOP,
             SWING
         };
+        
+        /** Set sequence mode. */
+        void setLoopMode(LoopMode mode) { _loopMode = mode; _value = -1; }
+        
+        /** Get sequence mode. */
+        LoopMode getLoopMode() const { return _loopMode; }
+        
+        /** Set interval beginning. */
+        void setBegin(int begin) { _begin = begin; _value = -1; }
+        
+        /** Get interval beginning. */
+        int getBegin() const { return _begin; }
+        
+        /** Set interval ending. */
+        void setEnd(int end) { _end = end; _value = -1; }
+        
+        /** Get interval ending. */
+        int getEnd() const { return _end; }
 
         /** Set sequence mode & interval (range of children to be displayed). */
         void setInterval(LoopMode mode, int begin, int end);
@@ -98,6 +122,18 @@ class OSG_EXPORT Sequence : public Group
             begin = _begin;
             end = _end;
         }
+        
+        /** Set speed. */
+        void setSpeed(float speed) { _speed = speed; }
+        
+        /** Get speed. */
+        float getSpeed() const { return _speed; }
+        
+        /** Set number of repeats. */
+        void setNumRepeats(int nreps) { _nreps = (nreps<0?-1:nreps); _nrepsRemain = _nreps; }
+        
+        /** Get number of repeats. */
+        int getNumRepeats() const { return _nreps; }
 
         /** Set duration: speed-up & number of repeats */
         void setDuration(float speed, int nreps = -1);
@@ -126,16 +162,16 @@ class OSG_EXPORT Sequence : public Group
 
         /** If false (default), frames will not be sync'd to frameTime.  If
             true, frames will be sync'd to frameTime. */
-        void setSync(bool sync) { _sync = sync ; } ;
+        void setSync(bool sync) { _sync = sync; }
 
         /** Get sync value */
-        inline void getSync(bool& sync) const { sync = _sync ; } ;
+        bool getSync() const { return _sync; }
 
         /** If true, show no child nodes after stopping */
-        void setClearOnStop(bool clearOnStop) { _clearOnStop = clearOnStop ; } ;
+        void setClearOnStop(bool clearOnStop) { _clearOnStop = clearOnStop; }
 
-        /** If true, show no child nodes after stopping */
-        inline void getClearOnStop(bool& clearOnStop) const { clearOnStop = _clearOnStop ; } ;
+        /** Get whether to show no child nodes after stopping */
+        bool getClearOnStop() const { return _clearOnStop; }
 
     protected :
 

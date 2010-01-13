@@ -131,13 +131,13 @@ namespace osgFX
                 // outline width
                 _lineWidth = new osg::LineWidth;
                 setWidth(_width);
-                state->setAttributeAndModes(_lineWidth, Override_On);
+                state->setAttributeAndModes(_lineWidth.get(), Override_On);
 
                 // outline color/material
                 _material = new osg::Material;
                 _material->setColorMode(osg::Material::AMBIENT_AND_DIFFUSE);
                 setColor(_color);
-                state->setAttributeAndModes(_material, Override_On);
+                state->setAttributeAndModes(_material.get(), Override_On);
 
                 // disable modes
                 state->setMode(GL_BLEND, Override_Off);

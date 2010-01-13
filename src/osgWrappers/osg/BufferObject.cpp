@@ -254,6 +254,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)
 	          __unsigned_int__computeRequiredBufferSize,
 	          "",
 	          "");
+	I_StaticMethod2(void, deleteBufferObject, IN, unsigned int, contextID, IN, GLuint, globj,
+	                __void__deleteBufferObject__unsigned_int__GLuint_S,
+	                "deprecated, provided for backwards compatibility. ",
+	                "");
 	I_ArrayProperty(osg::BufferData *, BufferData, 
 	                __BufferData_P1__getBufferData__unsigned_int, 
 	                __void__setBufferData__unsigned_int__BufferData_P1, 
@@ -369,8 +373,8 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osg::GLBufferObject)
 	I_DeclaringFile("osg/BufferObject");
 	I_BaseType(osg::Referenced);
-	I_ConstructorWithDefaults2(IN, unsigned int, contextID, , IN, osg::BufferObject *, bufferObject, 0,
-	                           ____GLBufferObject__unsigned_int__BufferObject_P1,
+	I_ConstructorWithDefaults3(IN, unsigned int, contextID, , IN, osg::BufferObject *, bufferObject, , IN, unsigned int, glObjectID, 0,
+	                           ____GLBufferObject__unsigned_int__BufferObject_P1__unsigned_int,
 	                           "",
 	                           "");
 	I_Method1(void, setProfile, IN, const osg::BufferObjectProfile &, profile,

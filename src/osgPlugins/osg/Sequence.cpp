@@ -229,14 +229,10 @@ bool Sequence_writeLocalData(const Object& obj, Output& fw)
     fw.indent() << "mode " << Sequence_getSeqMode(sw.getMode()) << std::endl;
 
     // sync
-    bool sync ;
-    sw.getSync(sync);
-    fw.indent() << "sync " << (int) sync << std::endl;
+    fw.indent() << "sync " << (int) sw.getSync() << std::endl;
 
     // clearOnStop
-    bool clearOnStop ;
-    sw.getClearOnStop(clearOnStop);
-    fw.indent() << "clearOnStop " << (int) clearOnStop << std::endl;
+    fw.indent() << "clearOnStop " << (int) sw.getClearOnStop() << std::endl;
 
     return true;
 }

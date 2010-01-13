@@ -103,7 +103,7 @@ bool StateSetManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapter& aa)
                    (_stateset->getTextureMode(0,GL_TEXTURE_CUBE_MAP)&mode)!=0;
                    
         #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
-            _texture |= (_stateset->getTextureMode(0,GL_TEXTURE_1D)&mode)!=0;
+            _texture |= ((_stateset->getTextureMode(0,GL_TEXTURE_1D)&mode)!=0);
         #endif
     }
 

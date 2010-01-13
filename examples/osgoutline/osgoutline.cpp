@@ -25,17 +25,17 @@ int main(int argc, char** argv)
 
     // create scene
     osg::ref_ptr<osg::Group> root = new osg::Group;
-    root->addChild(outline);
+    root->addChild(outline.get());
 
     osg::ref_ptr<osg::Node> model0 = osgDB::readNodeFile(arguments.argc() > 1 ? arguments[1] : "al.obj");
-    outline->addChild(model0);
+    outline->addChild(model0.get());
 
     // must have stencil buffer...
     osg::DisplaySettings::instance()->setMinimumNumStencilBits(1);
 
     // construct the viewer
     osgViewer::Viewer viewer;
-    viewer.setSceneData(root);
+    viewer.setSceneData(root.get());
 
     // must clear stencil buffer...
     unsigned int clearMask = viewer.getCamera()->getClearMask();

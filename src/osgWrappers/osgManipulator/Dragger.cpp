@@ -305,6 +305,26 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	          __void__setupDefaultGeometry,
 	          "Setup default geometry for dragger. ",
 	          "");
+	I_Method1(bool, receive, IN, const osgManipulator::MotionCommand &, command,
+	          Properties::VIRTUAL,
+	          __bool__receive__C5_MotionCommand_R1,
+	          "",
+	          "");
+	I_Method1(void, dispatch, IN, osgManipulator::MotionCommand &, command,
+	          Properties::NON_VIRTUAL,
+	          __void__dispatch__MotionCommand_R1,
+	          "",
+	          "");
+	I_Method1(void, setDraggerActive, IN, bool, active,
+	          Properties::NON_VIRTUAL,
+	          __void__setDraggerActive__bool,
+	          "",
+	          "");
+	I_Method0(bool, getDraggerActive,
+	          Properties::NON_VIRTUAL,
+	          __bool__getDraggerActive,
+	          "",
+	          "");
 	I_ProtectedConstructor0(____Dragger,
 	                        "",
 	                        "");
@@ -312,30 +332,6 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	                                    ____Dragger__C5_Dragger_R1__C5_osg_CopyOp_R1,
 	                                    "",
 	                                    "");
-	I_ProtectedMethod1(bool, receive, IN, const osgManipulator::MotionCommand &, command,
-	                   Properties::VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __bool__receive__C5_MotionCommand_R1,
-	                   "",
-	                   "");
-	I_ProtectedMethod1(void, dispatch, IN, osgManipulator::MotionCommand &, command,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__dispatch__MotionCommand_R1,
-	                   "",
-	                   "");
-	I_ProtectedMethod1(void, setDraggerActive, IN, bool, active,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__setDraggerActive__bool,
-	                   "",
-	                   "");
-	I_ProtectedMethod0(bool, getDraggerActive,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::CONST,
-	                   __bool__getDraggerActive,
-	                   "",
-	                   "");
 	I_SimpleProperty(int, ActivationKeyEvent, 
 	                 __int__getActivationKeyEvent, 
 	                 __void__setActivationKeyEvent__int);
@@ -348,6 +344,9 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Dragger)
 	I_SimpleProperty(osgManipulator::Dragger::Constraints &, Constraints, 
 	                 __Constraints_R1__getConstraints, 
 	                 0);
+	I_SimpleProperty(bool, DraggerActive, 
+	                 __bool__getDraggerActive, 
+	                 __void__setDraggerActive__bool);
 	I_SimpleProperty(osgManipulator::Dragger::DraggerCallbacks &, DraggerCallbacks, 
 	                 __DraggerCallbacks_R1__getDraggerCallbacks, 
 	                 0);

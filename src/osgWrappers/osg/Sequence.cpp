@@ -133,6 +133,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Sequence)
 	          __double__getTime__unsigned_int,
 	          "Get time for child. ",
 	          "");
+	I_Method1(void, setTimeList, IN, const std::vector< double > &, timeList,
+	          Properties::NON_VIRTUAL,
+	          __void__setTimeList__C5_std_vectorT1_double__R1,
+	          "Set the time list for children. ",
+	          "");
+	I_Method0(const std::vector< double > &, getTimeList,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_vectorT1_double__R1__getTimeList,
+	          "Get the time list for children. ",
+	          "");
 	I_Method1(void, setDefaultTime, IN, double, t,
 	          Properties::NON_VIRTUAL,
 	          __void__setDefaultTime__double,
@@ -158,6 +168,36 @@ BEGIN_OBJECT_REFLECTOR(osg::Sequence)
 	          __unsigned_int__getNumFrames,
 	          "Get number of frames. ",
 	          "");
+	I_Method1(void, setLoopMode, IN, osg::Sequence::LoopMode, mode,
+	          Properties::NON_VIRTUAL,
+	          __void__setLoopMode__LoopMode,
+	          "Set sequence mode. ",
+	          "");
+	I_Method0(osg::Sequence::LoopMode, getLoopMode,
+	          Properties::NON_VIRTUAL,
+	          __LoopMode__getLoopMode,
+	          "Get sequence mode. ",
+	          "");
+	I_Method1(void, setBegin, IN, int, begin,
+	          Properties::NON_VIRTUAL,
+	          __void__setBegin__int,
+	          "Set interval beginning. ",
+	          "");
+	I_Method0(int, getBegin,
+	          Properties::NON_VIRTUAL,
+	          __int__getBegin,
+	          "Get interval beginning. ",
+	          "");
+	I_Method1(void, setEnd, IN, int, end,
+	          Properties::NON_VIRTUAL,
+	          __void__setEnd__int,
+	          "Set interval ending. ",
+	          "");
+	I_Method0(int, getEnd,
+	          Properties::NON_VIRTUAL,
+	          __int__getEnd,
+	          "Get interval ending. ",
+	          "");
 	I_Method3(void, setInterval, IN, osg::Sequence::LoopMode, mode, IN, int, begin, IN, int, end,
 	          Properties::NON_VIRTUAL,
 	          __void__setInterval__LoopMode__int__int,
@@ -167,6 +207,26 @@ BEGIN_OBJECT_REFLECTOR(osg::Sequence)
 	          Properties::NON_VIRTUAL,
 	          __void__getInterval__LoopMode_R1__int_R1__int_R1,
 	          "Get sequence mode & interval. ",
+	          "");
+	I_Method1(void, setSpeed, IN, float, speed,
+	          Properties::NON_VIRTUAL,
+	          __void__setSpeed__float,
+	          "Set speed. ",
+	          "");
+	I_Method0(float, getSpeed,
+	          Properties::NON_VIRTUAL,
+	          __float__getSpeed,
+	          "Get speed. ",
+	          "");
+	I_Method1(void, setNumRepeats, IN, int, nreps,
+	          Properties::NON_VIRTUAL,
+	          __void__setNumRepeats__int,
+	          "Set number of repeats. ",
+	          "");
+	I_Method0(int, getNumRepeats,
+	          Properties::NON_VIRTUAL,
+	          __int__getNumRepeats,
+	          "Get number of repeats. ",
 	          "");
 	I_MethodWithDefaults2(void, setDuration, IN, float, speed, , IN, int, nreps, -1,
 	                      Properties::NON_VIRTUAL,
@@ -193,9 +253,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Sequence)
 	          __void__setSync__bool,
 	          "If false (default), frames will not be sync'd to frameTime. ",
 	          "If true, frames will be sync'd to frameTime. ");
-	I_Method1(void, getSync, IN, bool &, sync,
+	I_Method0(bool, getSync,
 	          Properties::NON_VIRTUAL,
-	          __void__getSync__bool_R1,
+	          __bool__getSync,
 	          "Get sync value. ",
 	          "");
 	I_Method1(void, setClearOnStop, IN, bool, clearOnStop,
@@ -203,10 +263,10 @@ BEGIN_OBJECT_REFLECTOR(osg::Sequence)
 	          __void__setClearOnStop__bool,
 	          "If true, show no child nodes after stopping. ",
 	          "");
-	I_Method1(void, getClearOnStop, IN, bool &, clearOnStop,
+	I_Method0(bool, getClearOnStop,
 	          Properties::NON_VIRTUAL,
-	          __void__getClearOnStop__bool_R1,
-	          "If true, show no child nodes after stopping. ",
+	          __bool__getClearOnStop,
+	          "Get whether to show no child nodes after stopping. ",
 	          "");
 	I_ProtectedMethod0(int, _getNextValue,
 	                   Properties::NON_VIRTUAL,
@@ -220,25 +280,43 @@ BEGIN_OBJECT_REFLECTOR(osg::Sequence)
 	                   __void___update,
 	                   "",
 	                   "");
+	I_SimpleProperty(int, Begin, 
+	                 __int__getBegin, 
+	                 __void__setBegin__int);
 	I_SimpleProperty(bool, ClearOnStop, 
-	                 0, 
+	                 __bool__getClearOnStop, 
 	                 __void__setClearOnStop__bool);
 	I_SimpleProperty(double, DefaultTime, 
 	                 __double__getDefaultTime, 
 	                 __void__setDefaultTime__double);
+	I_SimpleProperty(int, End, 
+	                 __int__getEnd, 
+	                 __void__setEnd__int);
 	I_SimpleProperty(double, LastFrameTime, 
 	                 __double__getLastFrameTime, 
 	                 __void__setLastFrameTime__double);
+	I_SimpleProperty(osg::Sequence::LoopMode, LoopMode, 
+	                 __LoopMode__getLoopMode, 
+	                 __void__setLoopMode__LoopMode);
 	I_SimpleProperty(osg::Sequence::SequenceMode, Mode, 
 	                 __SequenceMode__getMode, 
 	                 __void__setMode__SequenceMode);
-	I_SimpleProperty(bool, Sync, 
+	I_SimpleProperty(int, NumRepeats, 
 	                 0, 
+	                 __void__setNumRepeats__int);
+	I_SimpleProperty(float, Speed, 
+	                 __float__getSpeed, 
+	                 __void__setSpeed__float);
+	I_SimpleProperty(bool, Sync, 
+	                 __bool__getSync, 
 	                 __void__setSync__bool);
 	I_IndexedProperty(double, Time, 
 	                  __double__getTime__unsigned_int, 
 	                  __void__setTime__unsigned_int__double, 
 	                  0);
+	I_SimpleProperty(const std::vector< double > &, TimeList, 
+	                 __C5_std_vectorT1_double__R1__getTimeList, 
+	                 __void__setTimeList__C5_std_vectorT1_double__R1);
 	I_SimpleProperty(int, Value, 
 	                 __int__getValue, 
 	                 __void__setValue__int);

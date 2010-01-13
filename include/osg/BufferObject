@@ -168,7 +168,7 @@ class OSG_EXPORT GLBufferObject : public Referenced
 {
     public:
 
-        GLBufferObject(unsigned int contextID, BufferObject* bufferObject=0);
+        GLBufferObject(unsigned int contextID, BufferObject* bufferObject, unsigned int glObjectID=0);
 
         void setProfile(const BufferObjectProfile& profile) { _profile = profile; }
         const BufferObjectProfile& getProfile() const { return _profile; }
@@ -530,6 +530,9 @@ class OSG_EXPORT BufferObject : public Object
         }
 
         unsigned int computeRequiredBufferSize() const;
+
+        /** deprecated, provided for backwards compatibility.*/
+        static void deleteBufferObject(unsigned int contextID,GLuint globj);
 
     protected:
 

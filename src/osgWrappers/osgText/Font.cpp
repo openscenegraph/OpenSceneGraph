@@ -280,7 +280,9 @@ END_REFLECTOR
 BEGIN_OBJECT_REFLECTOR(osgText::Font::Glyph)
 	I_DeclaringFile("osgText/Font");
 	I_BaseType(osg::Image);
-	I_Constructor0(____Glyph,
+	I_Constructor1(IN, unsigned int, glyphCode,
+	               Properties::NON_EXPLICIT,
+	               ____Glyph__unsigned_int,
 	               "",
 	               "");
 	I_Method0(unsigned int, getGlyphCode,

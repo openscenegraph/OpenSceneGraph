@@ -278,9 +278,9 @@ public:
     {
     public:
 
-        Glyph();
+        Glyph(unsigned int glyphCode);
 
-        unsigned int getGlyphCode() const;
+        unsigned int getGlyphCode() const { return _glyphCode; }
 
         void setHorizontalBearing(const osg::Vec2& bearing);
         const osg::Vec2& getHorizontalBearing() const;

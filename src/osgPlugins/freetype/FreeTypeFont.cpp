@@ -135,7 +135,7 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& font
     unsigned int width = sourceWidth;
     unsigned int height = sourceHeight;
 
-    osg::ref_ptr<osgText::Font::Glyph> glyph = new osgText::Font::Glyph;
+    osg::ref_ptr<osgText::Font::Glyph> glyph = new osgText::Font::Glyph(charcode);
     
     unsigned int dataSize = width*height;
     unsigned char* data = new unsigned char[dataSize];

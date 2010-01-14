@@ -804,9 +804,9 @@ void Font::GlyphTexture::resizeGLObjectBuffers(unsigned int maxSize)
 
 
 // all the methods in Font::Glyph have been made non inline because VisualStudio6.0 is STUPID, STUPID, STUPID PILE OF JUNK.
-Font::Glyph::Glyph():
+Font::Glyph::Glyph(unsigned int glyphCode):
     _font(0),
-    _glyphCode(0),
+    _glyphCode(glyphCode),
     _horizontalBearing(0.0f,0.f),
     _horizontalAdvance(0.f),
     _verticalBearing(0.0f,0.f),
@@ -823,11 +823,6 @@ Font::Glyph::Glyph():
 Font::Glyph::~Glyph()
 {
 }
-
-unsigned int Font::Glyph::getGlyphCode() const { return _glyphCode; }
-
-// void Font::Glyph::setFont(Font* font) { _font = font; }
-// Font* Font::Glyph::getFont() const { return _font; }
 
 void Font::Glyph::setHorizontalBearing(const osg::Vec2& bearing) {  _horizontalBearing=bearing; }
 const osg::Vec2& Font::Glyph::getHorizontalBearing() const { return _horizontalBearing; }

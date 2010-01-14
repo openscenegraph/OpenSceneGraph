@@ -230,7 +230,7 @@ TXFFont::loadFont(std::istream& stream)
             continue;
 
         // add the characters ...
-        osgText::Font::Glyph* glyph = new osgText::Font::Glyph;
+        osgText::Font::Glyph* glyph = new osgText::Font::Glyph(glyphs[i].ch);
 
         unsigned sourceWidth = glyphs[i].width;
         unsigned sourceHeight = glyphs[i].height;
@@ -271,7 +271,7 @@ TXFFont::loadFont(std::istream& stream)
     }
 
     // insert a trivial blank character
-    osgText::Font::Glyph* glyph = new osgText::Font::Glyph;
+    osgText::Font::Glyph* glyph = new osgText::Font::Glyph(' ');
 
     unsigned width = 1;
     unsigned height = 1;

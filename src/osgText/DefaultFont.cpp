@@ -205,7 +205,7 @@ void DefaultFont::constructGlyphs()
     // populate the glyph mp
     for(unsigned int i=32;i<127;i++)
     {
-        osg::ref_ptr<Glyph> glyph = new Glyph;
+        osg::ref_ptr<Glyph> glyph = new Glyph(i);
         
         unsigned int dataSize = sourceWidth*sourceHeight;
         unsigned char* data = new unsigned char[dataSize];

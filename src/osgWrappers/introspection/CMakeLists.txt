@@ -132,6 +132,7 @@ SET(OSGWRAPPER_LIB_LIST
     osgManipulator
     osgAnimation
     osgParticle
+    osgPresentation
     osgShadow
     osgSim
     osgTerrain

@@ -29,8 +29,8 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-#include <freetype/ftoutln.h>
-#include <freetype/ftbbox.h>
+#include <ftoutln.h>
+#include <ftbbox.h>
 
 
 

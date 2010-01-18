@@ -33,6 +33,9 @@ namespace osgFFmpeg
         virtual void seek(double time);
         virtual void quit(bool waitForThreadToExit = true);
 
+        virtual void setVolume(float volume);
+        virtual float getVolume() const;
+
         virtual double getLength() const;
         virtual double getReferenceTime () const; 
         virtual double getFrameRate() const;

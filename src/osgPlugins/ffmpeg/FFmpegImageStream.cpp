@@ -152,6 +152,15 @@ void FFmpegImageStream::quit(bool waitForThreadToExit)
     m_decoder->close(waitForThreadToExit);
 }
 
+void FFmpegImageStream::setVolume(float volume)
+{
+    m_decoder->audio_decoder().setVolume(volume);
+}
+
+float FFmpegImageStream::getVolume() const
+{
+    return m_decoder->audio_decoder().getVolume();
+}
 
 double FFmpegImageStream::getLength() const
 { 

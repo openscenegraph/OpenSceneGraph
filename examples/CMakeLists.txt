@@ -181,15 +181,20 @@ IF(DYNAMIC_OPENSCENEGRAPH)
         ADD_SUBDIRECTORY(osgviewerWX)
     ENDIF(wxWidgets_FOUND)
 
-    IF   (QT_FOUND AND QT_QTOPENGL_LIBRARY)
-        ADD_SUBDIRECTORY(osgviewerQT)
-        IF (QT4_FOUND)
-            ADD_SUBDIRECTORY(osgviewerQtWidget)
-        ENDIF()
-    ENDIF()
+    IF   (QT_FOUND)
+        OPTION(BUILD_QT_EXAMPLES "Enable the build of the examples that depend on Qt" ON)
 
-    IF (QT4_FOUND AND QT_QTWEBKIT_FOUND)
-        ADD_SUBDIRECTORY(osgQtBrowser)
+        IF (BUILD_QT_EXAMPLES AND QT_QTOPENGL_LIBRARY)
+            ADD_SUBDIRECTORY(osgviewerQT)
+        ENDIF()
+
+        IF (BUILD_QT_EXAMPLES AND QT4_FOUND)
+            ADD_SUBDIRECTORY(osgviewerQtWidget)
+
+            IF (QT_QTWEBKIT_FOUND)
+                ADD_SUBDIRECTORY(osgQtBrowser)
+            ENDIF()
+        ENDIF()
     ENDIF()
 
     IF   (FLTK_FOUND)

@@ -68,9 +68,22 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::AudioSink)
 	          __void__setDelay__C5_double,
 	          "",
 	          "");
+	I_Method1(void, setVolume, IN, float, x,
+	          Properties::VIRTUAL,
+	          __void__setVolume__float,
+	          "",
+	          "");
+	I_Method0(float, getVolume,
+	          Properties::VIRTUAL,
+	          __float__getVolume,
+	          "",
+	          "");
 	I_SimpleProperty(double, Delay, 
 	                 __double__getDelay, 
 	                 0);
+	I_SimpleProperty(float, Volume, 
+	                 __float__getVolume, 
+	                 __void__setVolume__float);
 END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osg::AudioStream::SampleFormat)

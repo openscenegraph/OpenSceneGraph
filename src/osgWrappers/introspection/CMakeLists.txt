@@ -126,11 +126,11 @@ ENDMACRO(ADD_WRAPPER_LIB)
 SET(OSGWRAPPER_LIB_LIST 
     OpenThreads
     osg
+    osgAnimation
     osgDB
     osgFX
     osgGA
     osgManipulator
-    osgAnimation
     osgParticle
     osgPresentation
     osgShadow

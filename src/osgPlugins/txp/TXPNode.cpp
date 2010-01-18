@@ -8,6 +8,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <stdio.h>
 
 #include "TileMapper.h"
 #include "TXPNode.h"

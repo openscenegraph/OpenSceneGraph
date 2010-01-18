@@ -38,6 +38,8 @@ public:
     virtual double getDelay() const { return _delay; }
     virtual void setDelay(const double delay) { _delay = delay; }
 
+    virtual void setVolume(float) {}
+    virtual float getVolume() const { return 0.0f; }
 
 private:
 

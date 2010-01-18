@@ -34,6 +34,9 @@ public:
     void pause(bool pause);
     void close(bool waitForThreadToExit);
     
+    void setVolume(float volume);
+    float getVolume() const;
+
     virtual void run();
 
     void setAudioSink(osg::ref_ptr<osg::AudioSink> audio_sink);

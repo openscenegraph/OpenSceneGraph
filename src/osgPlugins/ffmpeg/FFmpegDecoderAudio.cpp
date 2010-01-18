@@ -112,6 +112,22 @@ void FFmpegDecoderAudio::close(bool waitForThreadToExit)
     }
 }
 
+void FFmpegDecoderAudio::setVolume(float volume)
+{
+    if (m_audio_sink.valid())
+    {
+        m_audio_sink->setVolume(volume);
+    }
+}
+
+float FFmpegDecoderAudio::getVolume() const
+{
+    if (m_audio_sink.valid())
+    {
+        return m_audio_sink->getVolume();
+    }
+    return 0.0f;
+}
 
 void FFmpegDecoderAudio::run()
 {

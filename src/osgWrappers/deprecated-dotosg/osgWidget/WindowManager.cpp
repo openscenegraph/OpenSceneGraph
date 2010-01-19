@@ -23,7 +23,8 @@ bool osgWidget_WindowManager_writeData(const osg::Object& /*obj*/, osgDB::Output
 	return true;
 }
 
-osgDB::RegisterDotOsgWrapperProxy g_osgWidget_WindowManagerProxy(
+REGISTER_DOTOSGWRAPPER(g_osgWidget_WindowManagerProxy)
+(
 	new osgWidget::WindowManager(),
 	"osgWidget::WindowManager",
 	"Object Node Group Switch osgWidget::WindowManager",

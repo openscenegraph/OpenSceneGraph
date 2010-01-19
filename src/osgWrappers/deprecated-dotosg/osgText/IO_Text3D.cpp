@@ -16,7 +16,7 @@
 bool Text3D_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool Text3D_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy Text3D_Proxy
+REGISTER_DOTOSGWRAPPER(Text3D_Proxy)
 (
     new osgText::Text3D,
     "Text3D",

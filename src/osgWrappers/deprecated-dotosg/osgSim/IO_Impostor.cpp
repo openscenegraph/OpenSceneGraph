@@ -12,7 +12,7 @@ bool Impostor_readLocalData(osg::Object& obj, Input& fr);
 bool Impostor_writeLocalData(const osg::Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_ImpostorProxy
+REGISTER_DOTOSGWRAPPER(g_ImpostorProxy)
 (
     new osgSim::Impostor,
     "Impostor",

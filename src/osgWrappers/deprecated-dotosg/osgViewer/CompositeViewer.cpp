@@ -11,7 +11,7 @@
 bool CompositeViewer_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool CompositeViewer_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy CompositeViewer_Proxy
+REGISTER_DOTOSGWRAPPER(CompositeViewer_Proxy)
 (
     new osgViewer::CompositeViewer,
     "CompositeViewer",

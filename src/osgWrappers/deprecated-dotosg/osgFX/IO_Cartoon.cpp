@@ -8,7 +8,7 @@
 bool Cartoon_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool Cartoon_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy Cartoon_Proxy
+REGISTER_DOTOSGWRAPPER(Cartoon_Proxy)
 (
     new osgFX::Cartoon,
     "osgFX::Cartoon",

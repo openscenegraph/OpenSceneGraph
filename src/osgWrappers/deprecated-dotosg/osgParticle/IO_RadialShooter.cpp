@@ -9,7 +9,7 @@
 bool  RadialShooter_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  RadialShooter_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  RadialShooter_Proxy
+REGISTER_DOTOSGWRAPPER(RadialShooter_Proxy)
 (
     new osgParticle::RadialShooter,
     "RadialShooter",

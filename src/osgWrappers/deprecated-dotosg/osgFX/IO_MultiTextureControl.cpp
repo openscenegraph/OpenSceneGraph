@@ -7,7 +7,7 @@
 bool MultiTextureControl_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool MultiTextureControl_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy MultiTextureControl_Proxy
+REGISTER_DOTOSGWRAPPER(MultiTextureControl_Proxy)
 (
     new osgFX::MultiTextureControl,
     "osgFX::MultiTextureControl",

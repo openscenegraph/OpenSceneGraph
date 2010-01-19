@@ -7,7 +7,7 @@
 bool AnisotropicLighting_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool AnisotropicLighting_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy AnisotropicLighting_Proxy
+REGISTER_DOTOSGWRAPPER(AnisotropicLighting_Proxy)
 (
     new osgFX::AnisotropicLighting,
     "osgFX::AnisotropicLighting",

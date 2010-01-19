@@ -14,7 +14,7 @@ using namespace osgSim;
 bool BlinkSequence_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool BlinkSequence_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy BlinkSequence_Proxy
+REGISTER_DOTOSGWRAPPER(BlinkSequence_Proxy)
 (
     new BlinkSequence,
     "BlinkSequence",
@@ -87,7 +87,7 @@ bool BlinkSequence_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 bool BlinkSequence_SequenceGroup_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool BlinkSequence_SequenceGroup_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy BlinkSequence_SequenceGroup_Proxy
+REGISTER_DOTOSGWRAPPER(BlinkSequence_SequenceGroup_Proxy)
 (
     new SequenceGroup,
     "SequenceGroup",

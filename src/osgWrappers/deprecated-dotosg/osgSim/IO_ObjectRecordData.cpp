@@ -14,7 +14,7 @@
 bool ObjectRecordData_readLocalData( osg::Object &obj, osgDB::Input &fr );
 bool ObjectRecordData_writeLocalData( const osg::Object &obj, osgDB::Output &fw );
 
-osgDB::RegisterDotOsgWrapperProxy ObjectRecordData_Proxy
+REGISTER_DOTOSGWRAPPER(ObjectRecordData_Proxy)
 (
     new osgSim::ObjectRecordData,
     "ObjectRecordData",

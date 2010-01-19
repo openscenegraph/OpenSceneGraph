@@ -16,7 +16,7 @@
 bool Volume_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool Volume_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy Volume_Proxy
+REGISTER_DOTOSGWRAPPER(Volume_Proxy)
 (
     new osgVolume::Volume,
     "Volume",

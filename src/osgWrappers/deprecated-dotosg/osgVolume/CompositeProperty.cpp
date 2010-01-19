@@ -16,7 +16,7 @@
 bool CompositeProperty_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool CompositeProperty_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy CompositeProperty_Proxy
+REGISTER_DOTOSGWRAPPER(CompositeProperty_Proxy)
 (
     new osgVolume::CompositeProperty,
     "CompositeProperty",

@@ -10,7 +10,7 @@
 bool  ParticleEffect_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  ParticleEffect_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  ParticleEffect_Proxy
+REGISTER_DOTOSGWRAPPER(ParticleEffect_Proxy)
 (
     0,
     "ParticleEffect",

@@ -8,7 +8,7 @@
 bool  PointPlacer_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  PointPlacer_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  PointPlacer_Proxy
+REGISTER_DOTOSGWRAPPER(PointPlacer_Proxy)
 (
     new osgParticle::PointPlacer,
     "PointPlacer",

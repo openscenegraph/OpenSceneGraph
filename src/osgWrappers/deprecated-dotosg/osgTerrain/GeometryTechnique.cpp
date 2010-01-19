@@ -16,7 +16,7 @@
 bool GeometryTechnique_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool GeometryTechnique_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy GeometryTechnique_Proxy
+REGISTER_DOTOSGWRAPPER(GeometryTechnique_Proxy)
 (
     new osgTerrain::GeometryTechnique,
     "GeometryTechnique",

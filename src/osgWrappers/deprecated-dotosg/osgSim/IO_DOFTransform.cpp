@@ -15,7 +15,7 @@ bool DOFTransform_readLocalData(Object& obj, Input& fr);
 bool DOFTransform_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_DOFTransformProxy
+REGISTER_DOTOSGWRAPPER(g_DOFTransformProxy)
 (
     new osgSim::DOFTransform,
     "DOFTransform",

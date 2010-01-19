@@ -16,7 +16,7 @@
 bool VolumeTile_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool VolumeTile_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy VolumeTile_Proxy
+REGISTER_DOTOSGWRAPPER(VolumeTile_Proxy)
 (
     new osgVolume::VolumeTile,
     "VolumeTile",

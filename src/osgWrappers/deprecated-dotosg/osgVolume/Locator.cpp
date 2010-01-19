@@ -16,7 +16,7 @@
 bool Locator_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool Locator_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy Locator_Proxy
+REGISTER_DOTOSGWRAPPER(Locator_Proxy)
 (
     new osgVolume::Locator,
     "Locator",

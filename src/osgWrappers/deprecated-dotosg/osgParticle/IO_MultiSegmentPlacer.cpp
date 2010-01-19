@@ -12,7 +12,7 @@
 bool  MultiSegmentPlacer_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  MultiSegmentPlacer_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  MultiSegmentPlacer_Proxy
+REGISTER_DOTOSGWRAPPER(MultiSegmentPlacer_Proxy)
 (
     new osgParticle::MultiSegmentPlacer,
     "MultiSegmentPlacer",

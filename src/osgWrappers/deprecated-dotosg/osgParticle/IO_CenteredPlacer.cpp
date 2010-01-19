@@ -12,7 +12,7 @@
 bool  CenteredPlacer_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  CenteredPlacer_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  CenteredPlacer_Proxy
+REGISTER_DOTOSGWRAPPER(CenteredPlacer_Proxy)
 (
     0,
     "CenteredPlacer",

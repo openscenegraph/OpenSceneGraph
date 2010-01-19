@@ -8,7 +8,7 @@
 bool  SmokeEffect_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  SmokeEffect_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  SmokeEffect_Proxy
+REGISTER_DOTOSGWRAPPER(SmokeEffect_Proxy)
 (
     new osgParticle::SmokeEffect(false),
     "SmokeEffect",

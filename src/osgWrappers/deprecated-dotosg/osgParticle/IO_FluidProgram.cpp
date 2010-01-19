@@ -14,7 +14,7 @@
 bool  FluidProgram_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  FluidProgram_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  FluidProgram_Proxy
+REGISTER_DOTOSGWRAPPER(FluidProgram_Proxy)
 (
     new osgParticle::FluidProgram,
     "FluidProgram",

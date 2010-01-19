@@ -10,7 +10,7 @@
 bool  VariableRateCounter_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  VariableRateCounter_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  VariableRateCounter_Proxy
+REGISTER_DOTOSGWRAPPER(VariableRateCounter_Proxy)
 (
     0,
     "VariableRateCounter",

@@ -15,7 +15,7 @@
 bool ShadowedScene_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool ShadowedScene_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy ShadowedScene_Proxy
+REGISTER_DOTOSGWRAPPER(ShadowedScene_Proxy)
 (
     new osgShadow::ShadowedScene,
     "ShadowedScene",

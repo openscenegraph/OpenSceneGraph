@@ -13,7 +13,7 @@ extern void  write_particle(const osgParticle::Particle &P, osgDB::Output &fw);
 bool  Emitter_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  Emitter_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  Emitter_Proxy
+REGISTER_DOTOSGWRAPPER(Emitter_Proxy)
 (
     0,
     "Emitter",

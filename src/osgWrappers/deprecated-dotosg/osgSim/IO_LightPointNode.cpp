@@ -17,7 +17,7 @@ using namespace osgSim;
 bool LightPointNode_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool LightPointNode_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy LightPointNode_Proxy
+REGISTER_DOTOSGWRAPPER(LightPointNode_Proxy)
 (
     new LightPointNode,
     "LightPointNode",

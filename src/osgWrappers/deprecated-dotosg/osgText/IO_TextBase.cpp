@@ -16,7 +16,7 @@
 bool TextBase_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool TextBase_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy TextBase_Proxy
+REGISTER_DOTOSGWRAPPER(TextBase_Proxy)
 (
     /*new osgText::Text*/NULL,
     "TextBase",

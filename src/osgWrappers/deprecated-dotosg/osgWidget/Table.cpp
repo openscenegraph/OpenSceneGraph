@@ -22,7 +22,8 @@ bool osgWidget_Table_writeData(const osg::Object& /*obj*/, osgDB::Output& fw)
 	return true;
 }
 
-osgDB::RegisterDotOsgWrapperProxy g_osgWidget_TableProxy(
+REGISTER_DOTOSGWRAPPER(g_osgWidget_TableProxy)
+(
 	new osgWidget::Table("unset"),
 	"osgWidget::Table",
 	"Object Node Group Transform MatrixTransform osgWidget::Table",

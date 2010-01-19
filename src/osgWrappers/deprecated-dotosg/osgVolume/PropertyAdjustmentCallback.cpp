@@ -16,7 +16,7 @@
 bool PropertyAdjustmentCallback_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool PropertyAdjustmentCallback_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy PropertyAdjustmentCallback_Proxy
+REGISTER_DOTOSGWRAPPER(PropertyAdjustmentCallback_Proxy)
 (
     new osgVolume::PropertyAdjustmentCallback,
     "PropertyAdjustmentCallback",

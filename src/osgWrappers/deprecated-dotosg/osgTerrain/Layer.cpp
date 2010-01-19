@@ -20,7 +20,7 @@ bool Layer_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 bool Layer_matchFilterStr(const char* str, osg::Texture::FilterMode& filter);
 const char* Layer_getFilterStr(osg::Texture::FilterMode filter);
 
-osgDB::RegisterDotOsgWrapperProxy Layer_Proxy
+REGISTER_DOTOSGWRAPPER(Layer_Proxy)
 (
     new osgTerrain::Layer,
     "Layer",

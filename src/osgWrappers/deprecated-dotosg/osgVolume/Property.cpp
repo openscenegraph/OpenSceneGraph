@@ -16,7 +16,7 @@
 bool Property_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool Property_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy Property_Proxy
+REGISTER_DOTOSGWRAPPER(Property_Proxy)
 (
     new osgVolume::Property,
     "Property",
@@ -25,7 +25,7 @@ osgDB::RegisterDotOsgWrapperProxy Property_Proxy
     Property_writeLocalData
 );
 
-osgDB::RegisterDotOsgWrapperProxy MaximumImageProjectionProperty_Proxy
+REGISTER_DOTOSGWRAPPER(MaximumImageProjectionProperty_Proxy)
 (
     new osgVolume::MaximumIntensityProjectionProperty,
     "MaximumIntensityProjectionProperty",
@@ -34,7 +34,7 @@ osgDB::RegisterDotOsgWrapperProxy MaximumImageProjectionProperty_Proxy
     Property_writeLocalData
 );
 
-osgDB::RegisterDotOsgWrapperProxy LightingProperty_Proxy
+REGISTER_DOTOSGWRAPPER(LightingProperty_Proxy)
 (
     new osgVolume::LightingProperty,
     "LightingProperty",

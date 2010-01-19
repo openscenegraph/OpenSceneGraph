@@ -11,7 +11,7 @@
 bool Viewer_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool Viewer_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy Viewer_Proxy
+REGISTER_DOTOSGWRAPPER(Viewer_Proxy)
 (
     new osgViewer::Viewer,
     "Viewer",

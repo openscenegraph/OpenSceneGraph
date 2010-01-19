@@ -16,7 +16,7 @@
 bool TerrainTile_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool TerrainTile_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy TerrainTile_Proxy
+REGISTER_DOTOSGWRAPPER(TerrainTile_Proxy)
 (
     new osgTerrain::TerrainTile,
     "TerrainTile",

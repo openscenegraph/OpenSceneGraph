@@ -10,7 +10,7 @@
 bool  RandomRateCounter_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  RandomRateCounter_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  RandomRateCounter_Proxy
+REGISTER_DOTOSGWRAPPER(RandomRateCounter_Proxy)
 (
     new osgParticle::RandomRateCounter,
     "RandomRateCounter",

@@ -8,7 +8,7 @@
 bool  FireEffect_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  FireEffect_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  FireEffect_Proxy
+REGISTER_DOTOSGWRAPPER(FireEffect_Proxy)
 (
     new osgParticle::FireEffect(false),
     "FireEffect",

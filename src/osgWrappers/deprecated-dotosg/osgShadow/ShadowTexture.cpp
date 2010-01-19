@@ -15,7 +15,7 @@
 bool ShadowTexture_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool ShadowTexture_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy ShadowTexture_Proxy
+REGISTER_DOTOSGWRAPPER(ShadowTexture_Proxy)
 (
     new osgShadow::ShadowTexture,
     "ShadowTexture",

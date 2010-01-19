@@ -29,7 +29,7 @@
 bool SwitchLayer_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool SwitchLayer_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy SwitchLayer_Proxy
+REGISTER_DOTOSGWRAPPER(SwitchLayer_Proxy)
 (
     new osgTerrain::SwitchLayer,
     "SwitchLayer",

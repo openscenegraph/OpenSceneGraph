@@ -7,7 +7,7 @@
 bool Effect_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool Effect_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy Effect_Proxy
+REGISTER_DOTOSGWRAPPER(Effect_Proxy)
 (
     0,
     "osgFX::Effect",

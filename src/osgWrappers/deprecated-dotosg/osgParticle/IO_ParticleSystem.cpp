@@ -16,7 +16,7 @@ extern void  write_particle(const osgParticle::Particle &P, osgDB::Output &fw);
 bool  ParticleSystem_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  ParticleSystem_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  ParticleSystem_Proxy
+REGISTER_DOTOSGWRAPPER(ParticleSystem_Proxy)
 (
     new osgParticle::ParticleSystem,
     "ParticleSystem",

@@ -10,7 +10,7 @@
 bool  BoxPlacer_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  BoxPlacer_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  BoxPlacer_Proxy
+REGISTER_DOTOSGWRAPPER(BoxPlacer_Proxy)
 (
     new osgParticle::BoxPlacer,
     "BoxPlacer",

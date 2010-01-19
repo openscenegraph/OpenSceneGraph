@@ -15,7 +15,7 @@
 bool ShadowVolume_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool ShadowVolume_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy ShadowVolume_Proxy
+REGISTER_DOTOSGWRAPPER(ShadowVolume_Proxy)
 (
     new osgShadow::ShadowVolume,
     "ShadowVolume",

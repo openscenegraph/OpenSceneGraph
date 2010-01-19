@@ -16,7 +16,7 @@
 bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy Text_Proxy
+REGISTER_DOTOSGWRAPPER(Text_Proxy)
 (
     new osgText::Text,
     "Text",

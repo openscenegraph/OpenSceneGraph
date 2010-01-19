@@ -16,7 +16,7 @@
 bool TransferFunction1D_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool TransferFunction1D_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy TransferFunction1D_Proxy
+REGISTER_DOTOSGWRAPPER(TransferFunction1D_Proxy)
 (
     new osg::TransferFunction1D,
     "TransferFunction1D",

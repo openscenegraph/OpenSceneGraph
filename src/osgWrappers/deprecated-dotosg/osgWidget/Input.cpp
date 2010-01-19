@@ -23,7 +23,8 @@ bool osgWidget_Input_writeData(const osg::Object& /*obj*/, osgDB::Output& fw)
 	return true;
 }
 
-osgDB::RegisterDotOsgWrapperProxy g_osgWidget_InputProxy(
+REGISTER_DOTOSGWRAPPER(g_osgWidget_InputProxy)
+(
 	new osgWidget::Input("unset"),
 	"osgWidget::Input",
 	"Object Drawable Geometry osgWidget::Widget osgWidget::Input",

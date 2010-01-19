@@ -12,7 +12,7 @@
 bool  AngularAccelOperator_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  AngularAccelOperator_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  AngularAccelOperator_Proxy
+REGISTER_DOTOSGWRAPPER(AngularAccelOperator_Proxy)
 (
     new osgParticle::AngularAccelOperator,
     "AngularAccelOperator",

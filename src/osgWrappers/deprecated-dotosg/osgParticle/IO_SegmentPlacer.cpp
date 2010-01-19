@@ -12,7 +12,7 @@
 bool  SegmentPlacer_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  SegmentPlacer_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  SegmentPlacer_Proxy
+REGISTER_DOTOSGWRAPPER(SegmentPlacer_Proxy)
 (
     new osgParticle::SegmentPlacer,
     "SegmentPlacer",

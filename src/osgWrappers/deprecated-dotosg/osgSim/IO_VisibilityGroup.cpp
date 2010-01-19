@@ -13,7 +13,7 @@ bool VisibilityGroup_readLocalData(Object& obj, Input& fr);
 bool VisibilityGroup_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_VisibilityGroupProxy
+REGISTER_DOTOSGWRAPPER(g_VisibilityGroupProxy)
 (
     new VisibilityGroup,
     "VisibilityGroup",

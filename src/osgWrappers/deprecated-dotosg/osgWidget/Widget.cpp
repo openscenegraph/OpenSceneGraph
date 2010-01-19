@@ -56,7 +56,8 @@ bool osgWidget_NullWidget_writeData(const osg::Object& /*obj*/, osgDB::Output& f
 	return true;
 }
 
-osgDB::RegisterDotOsgWrapperProxy g_osgWidget_WidgetProxy(
+REGISTER_DOTOSGWRAPPER(g_osgWidget_WidgetProxy)
+(
 	new osgWidget::Widget("unset"),
 	"osgWidget::Widget",
 	"Object Drawable Geometry osgWidget::Widget",
@@ -64,7 +65,8 @@ osgDB::RegisterDotOsgWrapperProxy g_osgWidget_WidgetProxy(
 	&osgWidget_Widget_writeData
 );
 
-osgDB::RegisterDotOsgWrapperProxy g_osgWidget_NotifyWidgetProxy(
+REGISTER_DOTOSGWRAPPER(g_osgWidget_NotifyWidgetProxy)
+(
 	new osgWidget::NotifyWidget("unset"),
 	"osgWidget::NotifyWidget",
 	"Object Drawable Geometry osgWidget::Widget osgWidget::NotifyWidget",
@@ -72,7 +74,8 @@ osgDB::RegisterDotOsgWrapperProxy g_osgWidget_NotifyWidgetProxy(
 	&osgWidget_NotifyWidget_writeData
 );
 
-osgDB::RegisterDotOsgWrapperProxy g_osgWidget_NullWidgetProxy(
+REGISTER_DOTOSGWRAPPER(g_osgWidget_NullWidgetProxy)
+(
 	new osgWidget::Widget("unset"),
 	"osgWidget::NullWidget",
 	"Object Drawable Geometry osgWidget::Widget osgWidget::NullWidget",

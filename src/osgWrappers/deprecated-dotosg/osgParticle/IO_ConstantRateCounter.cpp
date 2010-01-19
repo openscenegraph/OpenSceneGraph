@@ -9,7 +9,7 @@
 bool  ConstantRateCounter_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  ConstantRateCounter_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  ConstantRateCounter_Proxy
+REGISTER_DOTOSGWRAPPER(ConstantRateCounter_Proxy)
 (
     new osgParticle::ConstantRateCounter,
     "ConstantRateCounter",

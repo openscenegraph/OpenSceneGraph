@@ -13,7 +13,7 @@ using namespace osgSim;
 bool ShapeAttributeList_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool ShapeAttributeList_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy ShapeAttributeList_Proxy
+REGISTER_DOTOSGWRAPPER(ShapeAttributeList_Proxy)
 (
     new ShapeAttributeList,
     "ShapeAttributeList",

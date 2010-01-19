@@ -154,7 +154,7 @@ bool  AnimationPathCallback_writeLocalData(const osg::Object &obj, osgDB::Output
 
 
 // register the read and write functions with the osgDB::Registry.
-osgDB::RegisterDotOsgWrapperProxy  AnimationPathCallback_Proxy
+REGISTER_DOTOSGWRAPPER(AnimationPathCallback_Proxy)
 (
     new osg::AnimationPathCallback,
     "AnimationPathCallback",

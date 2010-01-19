@@ -16,7 +16,7 @@
 bool HeightFieldLayer_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool HeightFieldLayer_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy HeightFieldLayer_Proxy
+REGISTER_DOTOSGWRAPPER(HeightFieldLayer_Proxy)
 (
     new osgTerrain::HeightFieldLayer,
     "HeightFieldLayer",

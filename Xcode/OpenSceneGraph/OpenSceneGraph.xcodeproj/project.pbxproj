@@ -1692,7 +1692,6 @@
 		5BC191110C15F4D5002CF5BC /* Hint in Headers */ = {isa = PBXBuildFile; fileRef = 5BC191100C15F4D4002CF5BC /* Hint */; settings = {ATTRIBUTES = (Public, ); }; };
 		5BC191130C15F4FC002CF5BC /* ViewerEventHandlers in Headers */ = {isa = PBXBuildFile; fileRef = 5BC191120C15F4FC002CF5BC /* ViewerEventHandlers */; settings = {ATTRIBUTES = (Public, ); }; };
 		5BC191180C15F59D002CF5BC /* osgcompositeviewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC191150C15F59C002CF5BC /* osgcompositeviewer.cpp */; };
-		5BC191310C15F6B4002CF5BC /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5BC1912C0C15F6B3002CF5BC /* Info.plist */; };
 		5BC191360C15F735002CF5BC /* osgviewerGLUT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC191350C15F734002CF5BC /* osgviewerGLUT.cpp */; };
 		5BC1913A0C15F7AE002CF5BC /* osgviewerSDL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5BC191370C15F7AD002CF5BC /* osgviewerSDL.cpp */; };
 		5BC1913B0C15F7AE002CF5BC /* SDLMainForMacOSX.h in Headers */ = {isa = PBXBuildFile; fileRef = 5BC191380C15F7AE002CF5BC /* SDLMainForMacOSX.h */; };
@@ -2636,7 +2635,6 @@
 		D48F25AB0E8A29120026A5AA /* ProjectionShadowMap in Headers */ = {isa = PBXBuildFile; fileRef = D48F25A20E8A29110026A5AA /* ProjectionShadowMap */; settings = {ATTRIBUTES = (Public, ); }; };
 		D48F25AC0E8A29120026A5AA /* StandardShadowMap in Headers */ = {isa = PBXBuildFile; fileRef = D48F25A30E8A29110026A5AA /* StandardShadowMap */; settings = {ATTRIBUTES = (Public, ); }; };
 		D48F25AD0E8A29120026A5AA /* ViewDependentShadowTechnique in Headers */ = {isa = PBXBuildFile; fileRef = D48F25A40E8A29120026A5AA /* ViewDependentShadowTechnique */; settings = {ATTRIBUTES = (Public, ); }; };
-		D48F25BB0E8A29850026A5AA /* Serializer in Headers */ = {isa = PBXBuildFile; fileRef = D48F25BA0E8A29850026A5AA /* Serializer */; settings = {ATTRIBUTES = (Public, ); }; };
 		D49029B30F80E81900AEB8BC /* ShaderGen.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D49029B00F80E81800AEB8BC /* ShaderGen.cpp */; };
 		D49029B40F80E81900AEB8BC /* PrintVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D49029B10F80E81800AEB8BC /* PrintVisitor.cpp */; };
 		D49029B50F80E81900AEB8BC /* IncrementalCompileOperation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D49029B20F80E81800AEB8BC /* IncrementalCompileOperation.cpp */; };
@@ -8527,7 +8525,6 @@
 		D48F25A20E8A29110026A5AA /* ProjectionShadowMap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ProjectionShadowMap; sourceTree = "<group>"; };
 		D48F25A30E8A29110026A5AA /* StandardShadowMap */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = StandardShadowMap; sourceTree = "<group>"; };
 		D48F25A40E8A29120026A5AA /* ViewDependentShadowTechnique */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ViewDependentShadowTechnique; sourceTree = "<group>"; };
-		D48F25BA0E8A29850026A5AA /* Serializer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Serializer; sourceTree = "<group>"; };
 		D49029B00F80E81800AEB8BC /* ShaderGen.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShaderGen.cpp; sourceTree = "<group>"; };
 		D49029B10F80E81800AEB8BC /* PrintVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PrintVisitor.cpp; sourceTree = "<group>"; };
 		D49029B20F80E81800AEB8BC /* IncrementalCompileOperation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IncrementalCompileOperation.cpp; sourceTree = "<group>"; };
@@ -13864,7 +13861,6 @@
 				D4FBAB260ECB384900008F6D /* ConvertUTF */,
 				D4FBAB270ECB384900008F6D /* fstream */,
 				D4557D950EC4430B0011939C /* FileCache */,
-				D48F25BA0E8A29850026A5AA /* Serializer */,
 				D48F0FED0E3A198500DAAB64 /* PluginQuery */,
 				D4D8CF070E3491C800FA6EB4 /* ImagePager */,
 				D4018F4C0E2F6F710086ACFA /* AuthenticationMap */,
@@ -15999,7 +15995,6 @@
 				D4FBAB280ECB384900008F6D /* ConvertUTF in Headers */,
 				D4FBAB290ECB384900008F6D /* fstream in Headers */,
 				D4557D960EC4430B0011939C /* FileCache in Headers */,
-				D48F25BB0E8A29850026A5AA /* Serializer in Headers */,
 				D48F0FEE0E3A198500DAAB64 /* PluginQuery in Headers */,
 				D4D8CF080E3491C800FA6EB4 /* ImagePager in Headers */,
 				D4018F4D0E2F6F710086ACFA /* AuthenticationMap in Headers */,
@@ -20128,7 +20123,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5BC191310C15F6B4002CF5BC /* Info.plist in Resources */,
 				0037A1C30C19086E0089AA1C /* MainMenu.nib in Resources */,
 				0037A1C80C1908A70089AA1C /* InfoPlist.strings in Resources */,
 				0037A1C90C1908A70089AA1C /* Localizable.strings in Resources */,
@@ -26583,6 +26577,7 @@
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				HEADER_SEARCH_PATHS = (
 					/usr/X11R6/include/freetype2,
+					/usr/X11R6/include/freetype2/freetype,
 					/usr/X11R6/include,
 					"$(inherited)",
 				);
@@ -26624,6 +26619,7 @@
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				HEADER_SEARCH_PATHS = (
 					/usr/X11R6/include/freetype2,
+					/usr/X11R6/include/freetype2/freetype,
 					/usr/X11R6/include,
 					"$(inherited)",
 				);
@@ -26660,6 +26656,7 @@
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				HEADER_SEARCH_PATHS = (
 					/usr/X11R6/include/freetype2,
+					/usr/X11R6/include/freetype2/freetype,
 					/usr/X11R6/include,
 					"$(inherited)",
 				);
@@ -39512,6 +39509,7 @@
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				HEADER_SEARCH_PATHS = (
 					/usr/X11R6/include/freetype2,
+					/usr/X11R6/include/freetype2/freetype,
 					/usr/X11R6/include,
 					"$(inherited)",
 				);
@@ -44519,6 +44517,7 @@
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				HEADER_SEARCH_PATHS = (
 					/usr/X11R6/include/freetype2,
+					/usr/X11R6/include/freetype2/freetype,
 					/usr/X11R6/include,
 					"$(inherited)",
 				);
@@ -49528,6 +49527,7 @@
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				HEADER_SEARCH_PATHS = (
 					/usr/X11R6/include/freetype2,
+					/usr/X11R6/include/freetype2/freetype,
 					/usr/X11R6/include,
 					"$(inherited)",
 				);
@@ -55532,6 +55532,7 @@
 				GENERATE_MASTER_OBJECT_FILE = YES;
 				HEADER_SEARCH_PATHS = (
 					/usr/X11R6/include/freetype2,
+					/usr/X11R6/include/freetype2/freetype,
 					/usr/X11R6/include,
 					"$(inherited)",
 				);

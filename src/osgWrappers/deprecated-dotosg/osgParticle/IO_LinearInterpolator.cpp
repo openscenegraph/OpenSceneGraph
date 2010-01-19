@@ -8,7 +8,7 @@
 bool  LinearInterpolator_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  LinearInterpolator_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  LinearInterpolator_Proxy
+REGISTER_DOTOSGWRAPPER(LinearInterpolator_Proxy)
 (
     new osgParticle::LinearInterpolator,
     "LinearInterpolator",

@@ -20,7 +20,7 @@
 bool ImageLayer_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool ImageLayer_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy ImageLayer_Proxy
+REGISTER_DOTOSGWRAPPER(ImageLayer_Proxy)
 (
     new osgVolume::ImageLayer,
     "ImageLayer",

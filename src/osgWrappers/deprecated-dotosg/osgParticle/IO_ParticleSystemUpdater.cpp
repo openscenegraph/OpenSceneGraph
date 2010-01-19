@@ -9,7 +9,7 @@
 bool  PSU_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  PSU_writeLocalData(const osg::Object &obj, osgDB::Output &fr);
 
-osgDB::RegisterDotOsgWrapperProxy PSU_Proxy
+REGISTER_DOTOSGWRAPPER(PSU_Proxy)
 (
     new osgParticle::ParticleSystemUpdater,
     "ParticleSystemUpdater",

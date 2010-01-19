@@ -8,7 +8,7 @@
 bool SpecularHighlights_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool SpecularHighlights_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy SpecularHighlights_Proxy
+REGISTER_DOTOSGWRAPPER(SpecularHighlights_Proxy)
 (
     new osgFX::SpecularHighlights,
     "osgFX::SpecularHighlights",

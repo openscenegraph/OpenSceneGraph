@@ -31,7 +31,7 @@ bool Outline_readLocalData(osg::Object& obj, osgDB::Input& fr);
 bool Outline_writeLocalData(const osg::Object& obj, osgDB::Output& fw);
 
 
-osgDB::RegisterDotOsgWrapperProxy Outline_Proxy
+REGISTER_DOTOSGWRAPPER(Outline_Proxy)
 (
     new osgFX::Outline,
     "osgFX::Outline",

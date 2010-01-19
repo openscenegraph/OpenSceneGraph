@@ -8,7 +8,7 @@
 bool  ExplosionEffect_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  ExplosionEffect_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  ExplosionEffect_Proxy
+REGISTER_DOTOSGWRAPPER(ExplosionEffect_Proxy)
 (
     new osgParticle::ExplosionEffect(false),
     "ExplosionEffect",

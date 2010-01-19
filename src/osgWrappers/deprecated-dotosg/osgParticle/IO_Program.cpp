@@ -8,7 +8,7 @@
 bool  IOProgram_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  IOProgram_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  g_IOProgramProxy
+REGISTER_DOTOSGWRAPPER(g_IOProgramProxy)
 (
     0,
     "osgParticle::Program",

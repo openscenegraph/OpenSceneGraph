@@ -15,7 +15,7 @@
 bool ShadowTechnique_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool ShadowTechnique_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy ShadowTechnique_Proxy
+REGISTER_DOTOSGWRAPPER(ShadowTechnique_Proxy)
 (
     new osgShadow::ShadowTechnique,
     "ShadowTechnique",

@@ -8,7 +8,7 @@
 bool Scribe_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool Scribe_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy Scribe_Proxy
+REGISTER_DOTOSGWRAPPER(Scribe_Proxy)
 (
     new osgFX::Scribe,
     "osgFX::Scribe",

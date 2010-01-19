@@ -16,7 +16,7 @@
 bool ScalarProperty_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool ScalarProperty_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy ScalarProperty_Proxy
+REGISTER_DOTOSGWRAPPER(ScalarProperty_Proxy)
 (
     0,
     "ScalarProperty",
@@ -25,7 +25,7 @@ osgDB::RegisterDotOsgWrapperProxy ScalarProperty_Proxy
     ScalarProperty_writeLocalData
 );
 
-osgDB::RegisterDotOsgWrapperProxy IsoSurfaceProperty_Proxy
+REGISTER_DOTOSGWRAPPER(IsoSurfaceProperty_Proxy)
 (
     new osgVolume::IsoSurfaceProperty,
     "IsoSurfaceProperty",
@@ -34,7 +34,7 @@ osgDB::RegisterDotOsgWrapperProxy IsoSurfaceProperty_Proxy
     ScalarProperty_writeLocalData
 );
 
-osgDB::RegisterDotOsgWrapperProxy AlphaFuncProperty_Proxy
+REGISTER_DOTOSGWRAPPER(AlphaFuncProperty_Proxy)
 (
     new osgVolume::AlphaFuncProperty,
     "AlphaFuncProperty",
@@ -43,7 +43,7 @@ osgDB::RegisterDotOsgWrapperProxy AlphaFuncProperty_Proxy
     ScalarProperty_writeLocalData
 );
 
-osgDB::RegisterDotOsgWrapperProxy SampleDensityProperty_Proxy
+REGISTER_DOTOSGWRAPPER(SampleDensityProperty_Proxy)
 (
     new osgVolume::SampleDensityProperty,
     "SampleDensityProperty",
@@ -52,7 +52,7 @@ osgDB::RegisterDotOsgWrapperProxy SampleDensityProperty_Proxy
     ScalarProperty_writeLocalData
 );
 
-osgDB::RegisterDotOsgWrapperProxy TransparencyProperty_Proxy
+REGISTER_DOTOSGWRAPPER(TransparencyProperty_Proxy)
 (
     new osgVolume::TransparencyProperty,
     "TransparencyProperty",

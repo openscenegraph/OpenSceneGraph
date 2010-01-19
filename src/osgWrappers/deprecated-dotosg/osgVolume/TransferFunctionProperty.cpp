@@ -16,7 +16,7 @@
 bool TransferFunctionProperty_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool TransferFunctionProperty_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy TransferFunctionProperty_Proxy
+REGISTER_DOTOSGWRAPPER(TransferFunctionProperty_Proxy)
 (
     new osgVolume::TransferFunctionProperty,
     "TransferFunctionProperty",

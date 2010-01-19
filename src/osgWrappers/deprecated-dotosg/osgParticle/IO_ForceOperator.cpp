@@ -12,7 +12,7 @@
 bool  ForceOperator_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  ForceOperator_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  ForceOperator_Proxy
+REGISTER_DOTOSGWRAPPER(ForceOperator_Proxy)
 (
     new osgParticle::ForceOperator,
     "ForceOperator",

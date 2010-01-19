@@ -23,7 +23,8 @@ bool osgWidget_Label_writeData(const osg::Object& /*obj*/, osgDB::Output& fw)
 	return true;
 }
 
-osgDB::RegisterDotOsgWrapperProxy g_osgWidget_LabelProxy(
+REGISTER_DOTOSGWRAPPER(g_osgWidget_LabelProxy)
+(
 	new osgWidget::Label("unset"),
 	"osgWidget::Label",
 	"Object Drawable Geometry osgWidget::Widget osgWidget::Label",

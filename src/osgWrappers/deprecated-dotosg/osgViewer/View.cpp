@@ -12,7 +12,7 @@
 bool View_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool View_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy View_Proxy
+REGISTER_DOTOSGWRAPPER(View_Proxy)
 (
     new osgViewer::View,
     "View",

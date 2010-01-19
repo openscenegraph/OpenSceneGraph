@@ -12,7 +12,7 @@
 bool AzimSector_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool AzimSector_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy AzimSector_Proxy
+REGISTER_DOTOSGWRAPPER(AzimSector_Proxy)
 (
     new osgSim::AzimSector,
     "AzimSector",
@@ -57,7 +57,7 @@ bool AzimSector_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 bool ElevationSector_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool ElevationSector_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy ElevationSector_Proxy
+REGISTER_DOTOSGWRAPPER(ElevationSector_Proxy)
 (
     new osgSim::ElevationSector,
     "ElevationSector",
@@ -106,7 +106,7 @@ bool ElevationSector_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 bool AzimElevationSector_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool AzimElevationSector_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy AzimElevationSector_Proxy
+REGISTER_DOTOSGWRAPPER(AzimElevationSector_Proxy)
 (
     new osgSim::AzimElevationSector,
     "AzimElevationSector",
@@ -170,7 +170,7 @@ bool AzimElevationSector_writeLocalData(const osg::Object &obj, osgDB::Output &f
 bool ConeSector_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool ConeSector_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy ConeSector_Proxy
+REGISTER_DOTOSGWRAPPER(ConeSector_Proxy)
 (
     new osgSim::ConeSector,
     "ConeSector",
@@ -227,7 +227,7 @@ bool ConeSector_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 bool DirectionalSector_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool DirectionalSector_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy DirectionalSector_Proxy
+REGISTER_DOTOSGWRAPPER(DirectionalSector_Proxy)
 (
     new osgSim::DirectionalSector,
     "DirectionalSector",

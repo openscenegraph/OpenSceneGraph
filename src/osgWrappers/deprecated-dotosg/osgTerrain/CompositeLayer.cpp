@@ -29,7 +29,7 @@
 bool CompositeLayer_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool CompositeLayer_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy CompositeLayer_Proxy
+REGISTER_DOTOSGWRAPPER(CompositeLayer_Proxy)
 (
     new osgTerrain::CompositeLayer,
     "CompositeLayer",

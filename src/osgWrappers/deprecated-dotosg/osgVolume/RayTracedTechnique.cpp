@@ -16,7 +16,7 @@
 bool RayTracedTechnique_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool RayTracedTechnique_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy RayTracedTechnique_Proxy
+REGISTER_DOTOSGWRAPPER(RayTracedTechnique_Proxy)
 (
     new osgVolume::RayTracedTechnique,
     "RayTracedTechnique",

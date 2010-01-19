@@ -12,7 +12,7 @@
 bool  AccelOperator_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  AccelOperator_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  AccelOperator_Proxy
+REGISTER_DOTOSGWRAPPER(AccelOperator_Proxy)
 (
     new osgParticle::AccelOperator,
     "AccelOperator",

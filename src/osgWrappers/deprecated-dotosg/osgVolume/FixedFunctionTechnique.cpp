@@ -16,7 +16,7 @@
 bool FixedFunctionTechnique_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool FixedFunctionTechnique_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy FixedFunctionTechnique_Proxy
+REGISTER_DOTOSGWRAPPER(FixedFunctionTechnique_Proxy)
 (
     new osgVolume::FixedFunctionTechnique,
     "FixedFunctionTechnique",

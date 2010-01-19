@@ -97,7 +97,8 @@ bool Model_writeData(const osg::Object& obj, osgDB::Output& fw) {
 	return true;
 }
 
-osgDB::RegisterDotOsgWrapperProxy g_ModelProxy(
+REGISTER_DOTOSGWRAPPER(g_ModelProxy)
+(
 	new osgCal::Model,
 	"Model",
 	"Object Node Model",
@@ -106,7 +107,8 @@ osgDB::RegisterDotOsgWrapperProxy g_ModelProxy(
 );
 */
 
-osgDB::RegisterDotOsgWrapperProxy g_osgWidget_BoxProxy(
+REGISTER_DOTOSGWRAPPER(g_osgWidget_BoxProxy)
+(
 	new osgWidget::Box("unset"),
 	"osgWidget::Box",
 	"Object Node Group Transform MatrixTransform osgWidget::Box",

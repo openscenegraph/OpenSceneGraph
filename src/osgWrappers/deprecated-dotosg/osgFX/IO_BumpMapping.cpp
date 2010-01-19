@@ -7,7 +7,7 @@
 bool BumpMapping_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool BumpMapping_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy BumpMapping_Proxy
+REGISTER_DOTOSGWRAPPER(BumpMapping_Proxy)
 (
     new osgFX::BumpMapping,
     "osgFX::BumpMapping",

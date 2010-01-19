@@ -14,7 +14,7 @@ bool OverlayNode_readLocalData(Object& obj, Input& fr);
 bool OverlayNode_writeLocalData(const Object& obj, Output& fw);
 
 // register the read and write functions with the osgDB::Registry.
-RegisterDotOsgWrapperProxy g_OverlayNodeProxy
+REGISTER_DOTOSGWRAPPER(g_OverlayNodeProxy)
 (
     new OverlayNode,
     "OverlayNode",

@@ -23,7 +23,8 @@ bool osgWidget_EmbeddedWindow_writeData(const osg::Object& /*obj*/, osgDB::Outpu
 	return true;
 }
 
-osgDB::RegisterDotOsgWrapperProxy g_osgWidget_EmbeddedWindowProxy(
+REGISTER_DOTOSGWRAPPER(g_osgWidget_EmbeddedWindowProxy)
+(
 	new osgWidget::Window::EmbeddedWindow("unset"),
 	"osgWidget::Window::EmbeddedWindow",
 	"Object Drawable Geometry osgWidget::Widget osgWidget::Window::EmbeddedWindow",

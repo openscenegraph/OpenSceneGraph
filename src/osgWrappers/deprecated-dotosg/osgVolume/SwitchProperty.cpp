@@ -16,7 +16,7 @@
 bool SwitchProperty_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool SwitchProperty_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy SwitchProperty_Proxy
+REGISTER_DOTOSGWRAPPER(SwitchProperty_Proxy)
 (
     new osgVolume::SwitchProperty,
     "SwitchProperty",

@@ -11,7 +11,7 @@
 bool  ModularProgram_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool  ModularProgram_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy  ModularProgram_Proxy
+REGISTER_DOTOSGWRAPPER(ModularProgram_Proxy)
 (
     new osgParticle::ModularProgram,
     "ModularProgram",

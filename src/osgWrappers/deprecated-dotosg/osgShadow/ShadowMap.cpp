@@ -15,7 +15,7 @@
 bool ShadowMap_readLocalData(osg::Object &obj, osgDB::Input &fr);
 bool ShadowMap_writeLocalData(const osg::Object &obj, osgDB::Output &fw);
 
-osgDB::RegisterDotOsgWrapperProxy ShadowMap_Proxy
+REGISTER_DOTOSGWRAPPER(ShadowMap_Proxy)
 (
     new osgShadow::ShadowMap,
     "ShadowMap",

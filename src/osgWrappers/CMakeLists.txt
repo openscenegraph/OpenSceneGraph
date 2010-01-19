@@ -1,1 +1,5 @@
-ADD_SUBDIRECTORY(introspection)
+ADD_SUBDIRECTORY(deprecated-dotosg)
+
+IF(BUILD_OSG_WRAPPERS)
+    ADD_SUBDIRECTORY(introspection)
+ENDIF()

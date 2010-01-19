@@ -17,10 +17,11 @@ FOREACH( mylibfolder
         osgTerrain
         osgWidget
         osgVolume
+        osgWrappers/deprecated-dotosg
         osgPlugins
     )
 
-        ADD_SUBDIRECTORY(${mylibfolder})
+    ADD_SUBDIRECTORY(${mylibfolder})
 
 ENDFOREACH()
 
@@ -28,7 +29,7 @@ ENDFOREACH()
 OPTION(BUILD_OSG_WRAPPERS "Enable to build Introspection and Wrappers" OFF)
 IF(BUILD_OSG_WRAPPERS)
     ADD_SUBDIRECTORY(osgIntrospection)
-    ADD_SUBDIRECTORY(osgWrappers)
+    ADD_SUBDIRECTORY(osgWrappers/introspection)
 ENDIF()
 
 IF(MSVC80 OR MSVC90)

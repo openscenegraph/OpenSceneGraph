@@ -719,8 +719,8 @@ ENDIF(APPLE)
 SET(GENWRAPPER genwrapper)
 
 ADD_CUSTOM_TARGET(wrappers
-    COMMAND ${GENWRAPPER} -c ${OpenSceneGraph_SOURCE_DIR}/src/osgWrappers/genwrapper.conf -t ${OpenSceneGraph_SOURCE_DIR}/src/osgWrappers/Doxyfile.template -d ${OpenSceneGraph_SOURCE_DIR} | doxygen -
-    COMMAND ${GENWRAPPER} -c ${OpenSceneGraph_SOURCE_DIR}/src/osgWrappers/genwrapper.conf -l ${OpenSceneGraph_SOURCE_DIR}
+    COMMAND ${GENWRAPPER} -c ${OpenSceneGraph_SOURCE_DIR}/src/osgWrappers/introspection/genwrapper.conf -t ${OpenSceneGraph_SOURCE_DIR}/src/osgWrappers/introspection/Doxyfile.template -d ${OpenSceneGraph_SOURCE_DIR} | doxygen -
+    COMMAND ${GENWRAPPER} -c ${OpenSceneGraph_SOURCE_DIR}/src/osgWrappers/introspection/genwrapper.conf -l ${OpenSceneGraph_SOURCE_DIR}
 )
 
 # For Doxygen

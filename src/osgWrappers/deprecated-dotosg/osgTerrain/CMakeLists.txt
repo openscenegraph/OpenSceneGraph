@@ -1,0 +1,17 @@
+SET(TARGET_SRC 
+    Locator.cpp
+    ImageLayer.cpp
+    HeightFieldLayer.cpp
+    CompositeLayer.cpp
+    SwitchLayer.cpp
+    Layer.cpp
+    Terrain.cpp
+    TerrainTile.cpp
+    GeometryTechnique.cpp
+)
+
+SET(TARGET_ADDED_LIBRARIES osgTerrain )
+#### end var setup  ###
+SETUP_PLUGIN(osgterrain)
+
+

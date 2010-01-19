@@ -3,6 +3,7 @@
 #include <osg/Image>
 #include <osg/Group>
 #include <osg/Notify>
+#include <osg/Version>
 
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
@@ -14,6 +15,8 @@
 using namespace osg;
 using namespace osgDB;
 
+
+#if 0
 // pull in symbols from individual .o's to enable the static build to work
 USE_DOTOSGWRAPPER(AlphaFunc)
 USE_DOTOSGWRAPPER(AnimationPath)
@@ -99,6 +102,7 @@ USE_DOTOSGWRAPPER(Transform)
 USE_DOTOSGWRAPPER(Uniform)
 USE_DOTOSGWRAPPER(VertexProgram)
 USE_DOTOSGWRAPPER(Viewport)
+#endif
 
 class OSGReaderWriter : public ReaderWriter
 {
@@ -106,12 +110,24 @@ class OSGReaderWriter : public ReaderWriter
     
         OSGReaderWriter()
         {
+
             supportsExtension("osg","OpenSceneGraph Ascii file format");
             supportsExtension("osgs","Psuedo OpenSceneGraph file loaded, with file encoded in filename string");
             supportsOption("precision","Set the floating point precision when writing out files");
             supportsOption("OutputTextureFiles","Write out the texture images to file");
             supportsOption("includeExternalReferences","Export option");
             supportsOption("writeExternalReferenceFiles","Export option");
+
+            std::string filename = osgDB::Registry::instance()->createLibraryNameForExtension("deprecated_osg");
+            if (osgDB::Registry::instance()->loadLibrary(filename)==osgDB::Registry::LOADED)
+            {
+                osg::notify(osg::NOTICE)<<"Constructor OSGReaderWriter - loaded OK"<<std::endl;
+            }
+            else
+            {
+                osg::notify(osg::NOTICE)<<"Constructor OSGReaderWriter - failed to load"<<std::endl;
+            }
+
         }
     
         virtual const char* className() const { return "OSG Reader/Writer"; }

@@ -36,22 +36,15 @@ SET(TARGET_COMMON_LIBRARIES
 #
 #  NodeKit/Psudo loader plugins
 #
-ADD_SUBDIRECTORY(osgAnimation)
-ADD_SUBDIRECTORY(osgFX)
-ADD_SUBDIRECTORY(osgParticle)
-ADD_SUBDIRECTORY(osgSim)
-ADD_SUBDIRECTORY(osgText)
-ADD_SUBDIRECTORY(osgViewer)
-ADD_SUBDIRECTORY(osgShadow)
-ADD_SUBDIRECTORY(osgTerrain)
-ADD_SUBDIRECTORY(osgVolume)
-ADD_SUBDIRECTORY(osgWidget)
 ADD_SUBDIRECTORY(osga)
 ADD_SUBDIRECTORY(rot)
 ADD_SUBDIRECTORY(scale)
 ADD_SUBDIRECTORY(trans)
 ADD_SUBDIRECTORY(normals)
 ADD_SUBDIRECTORY(revisions)
+ADD_SUBDIRECTORY(view)
+ADD_SUBDIRECTORY(shadow)
+ADD_SUBDIRECTORY(terrain)
 
 ############################################################
 #

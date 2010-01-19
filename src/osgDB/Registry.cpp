@@ -912,7 +912,11 @@ osg::Object* Registry::readObjectOfType(const basic_type_wrapper &btw,Input& fr)
             if (loadLibrary(nodeKitLibraryName)==LOADED) return readObjectOfType(btw,fr);
             
             // otherwise try the osgdb_ plugin library.
-            std::string pluginLibraryName = createLibraryNameForExtension(libraryName);
+            std::string pluginLibraryName = createLibraryNameForExtension(std::string("deprecated_")+libraryName);
+            if (loadLibrary(pluginLibraryName)==LOADED) return readObjectOfType(btw,fr);
+
+            // otherwise try the osgdb_ plugin library.
+            pluginLibraryName = createLibraryNameForExtension(libraryName);
             if (loadLibrary(pluginLibraryName)==LOADED) return readObjectOfType(btw,fr);
         }
     }

@@ -1,9 +1,0 @@
-Notes
-=====
-
-The support in Image.cpp is also not full functional and should be rewritten 
-in the future to support inline images.  Currently osg::Images are supported
-via the osgDB::Registry::read/writeImage methods and plugins.
-
-Robert Osfield,
-March 2001.

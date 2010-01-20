@@ -621,52 +621,6 @@ inline void readCommandLine(osg::ArgumentParser& parser)
     Registry::instance()->readCommandLine(parser);
 }
 
-/**  Proxy class for automatic registration of DotOsgWrappers with the Registry.*/
-class RegisterDotOsgWrapperProxy
-{
-    public:
-    
-        RegisterDotOsgWrapperProxy(osg::Object* proto,
-                                   const std::string& name,
-                                   const std::string& associates,
-                                   DotOsgWrapper::ReadFunc readFunc,
-                                   DotOsgWrapper::WriteFunc writeFunc,
-                                   DotOsgWrapper::ReadWriteMode readWriteMode=DotOsgWrapper::READ_AND_WRITE)
-        {
-            if (Registry::instance())
-            {
-                _wrapper = new DotOsgWrapper(proto,name,associates,readFunc,writeFunc,readWriteMode);
-                Registry::instance()->addDotOsgWrapper(_wrapper.get());
-            }
-        }
-        
-        ~RegisterDotOsgWrapperProxy()
-        {
-            if (Registry::instance())
-            {
-                Registry::instance()->removeDotOsgWrapper(_wrapper.get());
-            }
-        }
-        
-    protected:
-        osg::ref_ptr<DotOsgWrapper> _wrapper;
-};
-
-template<class T>
-class TemplateRegisterDotOsgWrapperProxy : public RegisterDotOsgWrapperProxy, public T
-{
-    public:
-    
-        TemplateRegisterDotOsgWrapperProxy(osg::Object* proto,
-                                   const std::string& name,
-                                   const std::string& associates,
-                                   DotOsgWrapper::ReadFunc readFunc,
-                                   DotOsgWrapper::WriteFunc writeFunc,
-                                   DotOsgWrapper::ReadWriteMode readWriteMode=DotOsgWrapper::READ_AND_WRITE):
-            RegisterDotOsgWrapperProxy(proto, name, associates, readFunc, writeFunc, readWriteMode) {}
-        
-};
-
 /** Proxy class for automatic registration of reader/writers with the Registry.*/
 template<class T>
 class RegisterReaderWriterProxy
@@ -705,18 +659,14 @@ struct PluginFunctionProxy
     extern "C" void osgdb_##ext(void); \
     static osgDB::PluginFunctionProxy proxy_##ext(osgdb_##ext);
 
-#define REGISTER_OSGPLUGIN(ext, classname) \
-    extern "C" void osgdb_##ext(void) {} \
-    static osgDB::RegisterReaderWriterProxy<classname> g_proxy_##classname;
-
-
 #define USE_DOTOSGWRAPPER(classname) \
     extern "C" void dotosgwrapper_##classname(void); \
     static osgDB::PluginFunctionProxy proxy_dotosgwrapper_##classname(dotosgwrapper_##classname);
 
-#define REGISTER_DOTOSGWRAPPER(classname) \
-    extern "C" void dotosgwrapper_##classname(void) {} \
-    static osgDB::RegisterDotOsgWrapperProxy dotosgwrapper_proxy_##classname
+#define REGISTER_OSGPLUGIN(ext, classname) \
+    extern "C" void osgdb_##ext(void) {} \
+    static osgDB::RegisterReaderWriterProxy<classname> g_proxy_##classname;
+
 
 }
 

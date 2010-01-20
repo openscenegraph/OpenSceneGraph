@@ -229,9 +229,13 @@ Registry::Registry()
     }
 
     addFileExtensionAlias("osgs", "osg");
-    addFileExtensionAlias("shadow",  "osgShadow");
-    addFileExtensionAlias("terrain", "osgTerrain");
-    addFileExtensionAlias("view",  "osgViewer");
+    addFileExtensionAlias("osgt", "osg");
+    addFileExtensionAlias("osgb", "osg");
+    addFileExtensionAlias("osgx", "osg");
+
+    addFileExtensionAlias("osgShadow", "shadow");
+    addFileExtensionAlias("osgTerrain", "terrain");
+    addFileExtensionAlias("osgViewer", "view");
 
     addFileExtensionAlias("sgi",  "rgb");
     addFileExtensionAlias("rgba", "rgb");

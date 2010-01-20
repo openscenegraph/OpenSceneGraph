@@ -17,6 +17,7 @@ FOREACH( mylibfolder
         osgTerrain
         osgWidget
         osgVolume
+        osgWrappers/serializers
         osgWrappers/deprecated-dotosg
         osgPlugins
     )

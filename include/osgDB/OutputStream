@@ -1,0 +1,381 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+// Written by Wang Rui, (C) 2010
+
+#ifndef H_OUTPUTSTREAM
+#define H_OUTPUTSTREAM
+
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
+#include <osg/Quat>
+#include <osg/Matrix>
+#include <osg/Array>
+#include <osg/PrimitiveSet>
+#include <osgDB/ReaderWriter>
+#include <osgDB/DataTypes>
+#include <iostream>
+#include <sstream>
+
+namespace osgDB
+{
+
+class OutputException
+{
+public:
+    OutputException( const std::string& field, const std::string& err )
+    : _field(field), _error(err) {}
+    
+    const std::string& getField() const { return _field; }
+    const std::string& getError() const { return _error; }
+	
+protected:
+    std::string _field;
+    std::string _error;
+};
+
+class OutputStream
+{
+public:
+    typedef std::map<const osg::Array*, unsigned int> ArrayMap;
+    typedef std::map<const osg::Object*, unsigned int> ObjectMap;
+    
+    enum WriteMode
+    {
+        WRITE_BINARY = 0,
+        WRITE_ASCII
+    };
+    
+    enum WriteType
+    {
+        WRITE_UNKNOWN = 0,
+        WRITE_SCENE,
+        WRITE_IMAGE
+    };
+    
+    enum WriteImageHint
+    {
+        WRITE_USE_IMAGE_HINT = 0,  /*!< Use image hint, write inline data or use external */
+        WRITE_USE_EXTERNAL,        /*!< Use external file on disk and write only the filename */
+        WRITE_INLINE_DATA,         /*!< Write Image::data() to stream */
+        WRITE_INLINE_FILE,         /*!< Write the image file itself to stream */
+        WRITE_EXTERNAL_FILE        /*!< Write Image::data() to disk and use it as external file */
+    };
+    
+    OutputStream( std::ostream* ostream, const osgDB::Options* options );
+    virtual ~OutputStream();
+    
+    bool isBinary() const { return _writeMode==WRITE_BINARY; }
+    
+    void setWriteImageHint( WriteImageHint hint ) { _writeImageHint = hint; }
+    WriteImageHint getWriteImageHint() const { return _writeImageHint; }
+    
+    // Serialization related functions
+    inline OutputStream& operator<<( bool b );
+    inline OutputStream& operator<<( char c );
+    inline OutputStream& operator<<( unsigned char c );
+    inline OutputStream& operator<<( short s );
+    inline OutputStream& operator<<( unsigned short s );
+    inline OutputStream& operator<<( int i );
+    inline OutputStream& operator<<( unsigned int i );
+    inline OutputStream& operator<<( long l );
+    inline OutputStream& operator<<( unsigned long l );
+    inline OutputStream& operator<<( float f );
+    inline OutputStream& operator<<( double d );
+    inline OutputStream& operator<<( const std::string& s );
+    inline OutputStream& operator<<( std::ostream& (*fn)(std::ostream&) );
+    inline OutputStream& operator<<( std::ios_base& (*fn)(std::ios_base&) );
+    
+    OutputStream& operator<<( const osg::Vec2b& v );
+    OutputStream& operator<<( const osg::Vec3b& v );
+    OutputStream& operator<<( const osg::Vec4b& v );
+    OutputStream& operator<<( const osg::Vec4ub& v );
+    OutputStream& operator<<( const osg::Vec2s& v );
+    OutputStream& operator<<( const osg::Vec3s& v );
+    OutputStream& operator<<( const osg::Vec4s& v );
+    OutputStream& operator<<( const osg::Vec2f& v );
+    OutputStream& operator<<( const osg::Vec3f& v );
+    OutputStream& operator<<( const osg::Vec4f& v );
+    OutputStream& operator<<( const osg::Vec2d& v );
+    OutputStream& operator<<( const osg::Vec3d& v );
+    OutputStream& operator<<( const osg::Vec4d& v );
+    OutputStream& operator<<( const osg::Quat& q );
+    OutputStream& operator<<( const osg::Plane& p );
+    OutputStream& operator<<( const osg::Matrixf& mat );
+    OutputStream& operator<<( const osg::Matrixd& mat );
+    
+    OutputStream& operator<<( const osg::Array* a ) { writeArray(a); return *this; }
+    OutputStream& operator<<( const osg::Image* img ) { writeImage(img); return *this; }
+    OutputStream& operator<<( const osg::PrimitiveSet* p ) { writePrimitiveSet(p); return *this; }
+    OutputStream& operator<<( const osg::Object* obj ) { writeObject(obj); return *this; }
+    
+    OutputStream& operator<<( const osg::ref_ptr<osg::Array>& ptr ) { writeArray(ptr.get()); return *this; }
+    OutputStream& operator<<( const osg::ref_ptr<osg::Image>& ptr ) { writeImage(ptr.get()); return *this; }
+    OutputStream& operator<<( const osg::ref_ptr<osg::PrimitiveSet>& ptr ) { writePrimitiveSet(ptr.get()); return *this; }
+    
+    template<typename T> OutputStream& operator<<( const osg::ref_ptr<T>& ptr )
+    { writeObject(ptr.get()); return *this; }
+    
+    OutputStream& operator<<( const ObjectGLenum& value );
+    OutputStream& operator<<( const ObjectProperty& prop );
+    OutputStream& operator<<( const ObjectMark& mark );
+    
+    // Convenient methods for writing
+    inline void writeWrappedString( const std::string& str );
+    inline void writeCharArray( const char* s, unsigned int size );
+    
+    // Global writing functions
+    void writeArray( const osg::Array* a );
+    void writePrimitiveSet( const osg::PrimitiveSet* p );
+    void writeImage( const osg::Image* img );
+    void writeObject( const osg::Object* obj );
+    
+    void start( WriteType type );
+    void compress( std::ostream* ostream );
+    
+    // Schema handlers
+    void writeSchema( std::ostream& fout );
+    
+protected:
+    template<typename T>
+    void writeArrayImplementation( const T*, int writeSize, unsigned int numInRow=1 );
+    
+    unsigned int findOrCreateArrayID( const osg::Array* array );
+    unsigned int findOrCreateObjectID( const osg::Object* obj );
+    
+    ArrayMap _arrayMap;
+    ObjectMap _objectMap;
+    
+    WriteMode _writeMode;
+    WriteImageHint _writeImageHint;
+    
+    bool _readyForEndBracket;
+    int _indent;
+    std::string _currentField;
+    std::string _compressorName;
+    std::stringstream _compressSource;
+    std::ostream* _out;
+};
+
+// INLINE METHODS
+
+OutputStream& OutputStream::operator<<( bool b )
+{
+    if ( isBinary() )
+    {
+        char c = b?1:0;
+        _out->write( &c, CHAR_SIZE );
+    }
+    else
+    {
+        if ( b ) *_out << "TRUE ";
+        else *_out << "FALSE ";
+    }
+    return *this;
+}
+
+OutputStream& OutputStream::operator<<( char c )
+{
+    if ( isBinary() )
+    {
+        _out->write( &c, CHAR_SIZE );
+    }
+    else
+    {
+        *_out << (short)c << ' ';
+    }
+    return *this;
+}
+
+OutputStream& OutputStream::operator<<( unsigned char c )
+{
+    if ( isBinary() )
+    {
+        _out->write( (char*)&c, CHAR_SIZE );
+    }
+    else
+    {
+        *_out << (unsigned short)c << ' ';
+    }
+    return *this;
+}
+
+OutputStream& OutputStream::operator<<( short s )
+{
+    if ( isBinary() )
+    {
+        _out->write( (char*)&s, SHORT_SIZE );
+    }
+    else
+    {
+        *_out << s << ' ';
+    }
+    return *this;
+}
+
+OutputStream& OutputStream::operator<<( unsigned short s )
+{
+    if ( isBinary() )
+    {
+        _out->write( (char*)&s, SHORT_SIZE );
+    }
+    else
+    {
+        *_out << s << ' ';
+    }
+    return *this;
+}
+
+OutputStream& OutputStream::operator<<( int i )
+{
+    if ( isBinary() )
+    {
+        _out->write( (char*)&i, INT_SIZE );
+    }
+    else
+    {
+        *_out << i << ' ';
+    }
+    return *this;
+}
+
+OutputStream& OutputStream::operator<<( unsigned int i )
+{
+    if ( isBinary() )
+    {
+        _out->write( (char*)&i, INT_SIZE );
+    }
+    else
+    {
+        *_out << i << ' ';
+    }
+    return *this;
+}
+
+OutputStream& OutputStream::operator<<( long l )
+{
+    if ( isBinary() )
+    {
+        _out->write( (char*)&l, LONG_SIZE );
+    }
+    else
+    {
+        *_out << l << ' ';
+    }
+    return *this;
+}
+
+OutputStream& OutputStream::operator<<( unsigned long l )
+{
+    if ( isBinary() )
+    {
+        _out->write( (char*)&l, LONG_SIZE );
+    }
+    else
+    {
+        *_out << l << ' ';
+    }
+    return *this;
+}
+
+OutputStream& OutputStream::operator<<( float f )
+{
+    if ( isBinary() )
+    {
+        _out->write( (char*)&f, FLOAT_SIZE );
+    }
+    else
+    {
+        *_out << f << ' ';
+    }
+    return *this;
+}
+
+OutputStream& OutputStream::operator<<( double d )
+{
+    if ( isBinary() )
+    {
+        _out->write((char*)&d, DOUBLE_SIZE);
+    }
+    else
+    {
+        *_out << d << ' ';
+    }
+    return *this;
+}
+
+OutputStream& OutputStream::operator<<( const std::string& s )
+{
+    if ( isBinary() )
+    {
+        int size = s.size();
+        _out->write( (char*)&size, INT_SIZE );
+        _out->write( s.c_str(), s.size() );
+    }
+    else
+    {
+        *_out << s << ' ';
+    }
+    return *this;
+}
+
+OutputStream& OutputStream::operator<<( std::ostream& (*fn)(std::ostream&) )
+{
+    if ( !isBinary() )
+    {
+        *_out << fn;
+        if ( fn==static_cast<std::ostream& (*)(std::ostream&)>(std::endl) )
+        {
+            _readyForEndBracket = true;
+            for (int i=0; i<_indent; ++i)
+                *_out << ' ';
+        }
+    }
+    return *this;
+}
+
+OutputStream& OutputStream::operator<<( std::ios_base& (*fn)(std::ios_base&) )
+{
+    if ( !isBinary() ) *_out << fn;
+    return *this;
+}
+
+void OutputStream::writeWrappedString( const std::string& str )
+{
+    if ( !isBinary() )
+    {
+        std::string wrappedStr = std::string("\"") + str + std::string("\"");
+        *this << wrappedStr;
+    }
+    else
+        *this << str;
+}
+
+void OutputStream::writeCharArray( const char* s, unsigned int size )
+{
+    if ( size>0 )
+    {
+        if ( isBinary() )
+        {
+            _out->write( s, size );
+        }
+        else
+        {
+            *_out << s << ' ';
+        }
+    }
+}
+
+}
+
+#endif

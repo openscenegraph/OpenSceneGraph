@@ -1,0 +1,853 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+// Written by Wang Rui, (C) 2010
+
+#ifndef H_SERIALIZER
+#define H_SERIALIZER
+
+#include <osg/ref_ptr>
+#include <osg/Notify>
+#include <osg/Object>
+#include <osgDB/InputStream>
+#include <osgDB/OutputStream>
+#include <string>
+#include <sstream>
+
+
+namespace osgDB
+{
+
+#ifndef OBJECT_CAST
+    #define OBJECT_CAST static_cast
+#endif
+
+class IntLookup
+{
+public:
+    typedef int Value;
+    typedef std::map<std::string, Value> StringToValue;
+    typedef std::map<Value, std::string> ValueToString;
+    
+    IntLookup() {}
+    unsigned int size() const { return _stringToValue.size(); }
+    
+    void add( const char* str, Value value )
+    {
+        if ( _valueToString.find(value)!=_valueToString.end() )
+        {
+            osg::notify(osg::WARN) << "Duplicate enum value " << value
+                                   << " with old string: " << _valueToString[value]
+                                   << " and new string: " << str << std::endl;
+        }
+        _valueToString[value] = str;
+        _stringToValue[str] = value;
+    }
+    
+    Value getValue( const char* str )
+    {
+        StringToValue::iterator itr = _stringToValue.find(str);
+        if ( itr==_stringToValue.end() )
+        {
+            Value value;
+            std::stringstream stream;
+            stream << str; stream >> value;
+            _stringToValue[str] = value;
+            return value;
+        }
+        return itr->second;
+    }
+    
+    const std::string& getString( Value value )
+    {
+        ValueToString::iterator itr = _valueToString.find(value);
+        if ( itr==_valueToString.end() )
+        {
+            std::string str;
+            std::stringstream stream;
+            stream << value; stream >> str;
+            _valueToString[value] = str;
+            return _valueToString[value];
+        }
+        return itr->second;
+    }
+    
+protected:
+    StringToValue _stringToValue;
+    ValueToString _valueToString;
+};
+
+class UserLookupTableProxy
+{
+public:
+    typedef void (*AddValueFunc)( IntLookup* lookup );
+    UserLookupTableProxy( AddValueFunc func ) { if ( func ) (*func)(&_lookup); }
+    
+    IntLookup _lookup;
+};
+
+#define BEGIN_USER_TABLE(NAME, CLASS) \
+    static void add_user_value_func_##NAME(osgDB::IntLookup*); \
+    static osgDB::UserLookupTableProxy s_user_lookup_table_##NAME(&add_user_value_func_##NAME); \
+    static void add_user_value_func_##NAME(osgDB::IntLookup* lookup) { typedef CLASS MyClass
+#define ADD_USER_VALUE(VALUE) lookup->add(#VALUE, MyClass::VALUE)
+#define END_USER_TABLE() }
+
+#define USER_READ_FUNC(NAME, FUNCNAME) \
+    static int FUNCNAME(osgDB::InputStream& is) { \
+        int value; if (is.isBinary()) is >> value; \
+        else { std::string str; is >> str; \
+        value = (s_user_lookup_table_##NAME)._lookup.getValue(str.c_str()); } \
+        return value; }
+
+#define USER_WRITE_FUNC(NAME, FUNCNAME) \
+    static void FUNCNAME(osgDB::OutputStream& os, int value) { \
+        if (os.isBinary()) os << value; \
+        else os << (s_user_lookup_table_##NAME)._lookup.getString(value); } \
+
+class BaseSerializer : public osg::Referenced
+{
+public:
+    BaseSerializer() {}
+    virtual bool read( InputStream&, osg::Object& ) = 0;
+    virtual bool write( OutputStream&, const osg::Object& ) = 0;
+    virtual const std::string& getName() const = 0;
+};
+
+template<typename C>
+class UserSerializer : public BaseSerializer
+{
+public:
+    typedef bool (*Checker)( const C& );
+    typedef bool (*Reader)( InputStream&, C& );
+    typedef bool (*Writer)( OutputStream&, const C& );
+    
+    UserSerializer( const char* name, Checker cf, Reader rf, Writer wf )
+    : _name(name), _checker(cf), _reader(rf), _writer(wf) {}
+    
+    virtual bool read( InputStream& is, osg::Object& obj )
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        if ( !is.isBinary() && !is.matchString(_name) )
+            return true;
+        return (*_reader)(is, object);
+    }
+    
+    virtual bool write( OutputStream& os, const osg::Object& obj )
+    {
+        const C& object = OBJECT_CAST<const C&>(obj);
+        if ( !os.isBinary() )
+        {
+            if ( !(*_checker)(object) ) return true;
+            os << _name;
+        }
+        return (*_writer)(os, object);
+    }
+    
+    virtual const std::string& getName() const { return _name; }
+    
+protected:
+    std::string _name;
+    Checker _checker;
+    Reader _reader;
+    Writer _writer;
+};
+
+template<typename P>
+class TemplateSerializer : public BaseSerializer
+{
+public:
+    TemplateSerializer( const char* name )
+    : _name(name) {}
+    
+    virtual bool read( InputStream& is, osg::Object& obj ) = 0;
+    virtual bool write( OutputStream& os, const osg::Object& obj ) = 0;
+    virtual const std::string& getName() const { return _name; }
+    
+protected:
+    std::string _name;
+    P _defaultValue;
+};
+
+template<typename C, typename P>
+class PropByValSerializer : public TemplateSerializer<P>
+{
+public:
+    typedef TemplateSerializer<P> ParentType;
+    typedef P (C::*Getter)() const;
+    typedef void (C::*Setter)( P );
+    
+    PropByValSerializer( const char* name, P def, Getter gf, Setter sf, bool useHex=false )
+    : ParentType(name), _getter(gf), _setter(sf), _useHex(useHex)
+     { ParentType::_defaultValue = def; }
+    
+    virtual bool read( InputStream& is, osg::Object& obj )
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        P value;
+        if ( is.isBinary() )
+        {
+            is >> value;
+            if ( ParentType::_defaultValue!=value )
+                (object.*_setter)( value );
+        }
+        else if ( is.matchString(ParentType::_name) )
+        {
+            if ( _useHex ) is >> std::hex;
+            is >> value;
+            if ( _useHex ) is >> std::dec;
+            (object.*_setter)( value );
+        }
+        return true;
+    }
+    
+    virtual bool write( OutputStream& os, const osg::Object& obj )
+    {
+        const C& object = OBJECT_CAST<const C&>(obj);
+        if ( os.isBinary() )
+        {
+            os << (object.*_getter)();
+        }
+        else if ( ParentType::_defaultValue!=(object.*_getter)() )
+        {
+            os << ParentType::_name;
+            if ( _useHex ) os << std::hex;
+            os << (object.*_getter)();
+            if ( _useHex ) os << std::dec;
+            os << std::endl;
+        }
+        return true;
+    }
+    
+protected:
+    Getter _getter;
+    Setter _setter;
+    bool _useHex;
+};
+
+template<typename C, typename P>
+class PropByRefSerializer : public TemplateSerializer<P>
+{
+public:
+    typedef TemplateSerializer<P> ParentType;
+    typedef const P& CP;
+    typedef CP (C::*Getter)() const;
+    typedef void (C::*Setter)( CP );
+    
+    PropByRefSerializer( const char* name, CP def, Getter gf, Setter sf )
+    : ParentType(name), _getter(gf), _setter(sf)
+     { ParentType::_defaultValue = def; }
+    
+    virtual bool read( InputStream& is, osg::Object& obj )
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        P value;
+        if ( is.isBinary() )
+        {
+            is >> value;
+            if ( ParentType::_defaultValue!=value )
+                (object.*_setter)( value );
+        }
+        else if ( is.matchString(ParentType::_name) )
+        {
+            is >> value;
+            (object.*_setter)( value );
+        }
+        return true;
+    }
+    
+    virtual bool write( OutputStream& os, const osg::Object& obj )
+    {
+        const C& object = OBJECT_CAST<const C&>(obj);
+        if ( os.isBinary() )
+        {
+            os << (object.*_getter)();
+        }
+        else if ( ParentType::_defaultValue!=(object.*_getter)() )
+        {
+            os << ParentType::_name << (object.*_getter)() << std::endl;
+        }
+        return true;
+    }
+    
+protected:
+    Getter _getter;
+    Setter _setter;
+};
+
+template<typename C>
+class MatrixSerializer : public TemplateSerializer<osg::Matrix>
+{
+public:
+    typedef TemplateSerializer<osg::Matrix> ParentType;
+    typedef const osg::Matrix& (C::*Getter)() const;
+    typedef void (C::*Setter)( const osg::Matrix& );
+    
+    MatrixSerializer( const char* name, const osg::Matrix& def, Getter gf, Setter sf )
+    : ParentType(name), _getter(gf), _setter(sf)
+     { ParentType::_defaultValue = def; }
+    
+    virtual bool read( InputStream& is, osg::Object& obj )
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        osg::Matrix value;
+        if ( is.isBinary() )
+        {
+            readMatrixImplementation( is, value );
+            if ( ParentType::_defaultValue!=value )
+                (object.*_setter)( value );
+        }
+        else if ( is.matchString(ParentType::_name) )
+        {
+            readMatrixImplementation( is, value );
+            (object.*_setter)( value );
+        }
+        return true;
+    }
+    
+    virtual bool write( OutputStream& os, const osg::Object& obj )
+    {
+        const C& object = OBJECT_CAST<const C&>(obj);
+        if ( os.isBinary() )
+        {
+            os << (object.*_getter)();
+        }
+        else if ( ParentType::_defaultValue!=(object.*_getter)() )
+        {
+            os << ParentType::_name << (object.*_getter)() << std::endl;
+        }
+        return true;
+    }
+    
+protected:
+    void readMatrixImplementation( InputStream& is, osg::Matrix& matrix )
+    {
+        if ( is.getUseFloatMatrix() )
+        {
+            osg::Matrixf realValue; is >> realValue;
+            matrix = realValue;
+        }
+        else
+        {
+            osg::Matrixd realValue; is >> realValue;
+            matrix = realValue;
+        }
+    }
+    
+    Getter _getter;
+    Setter _setter;
+};
+
+template<typename C, typename P>
+class GLenumSerializer : public TemplateSerializer<P>
+{
+public:
+    typedef TemplateSerializer<P> ParentType;
+    typedef P (C::*Getter)() const;
+    typedef void (C::*Setter)( P );
+    
+    GLenumSerializer( const char* name, P def, Getter gf, Setter sf )
+    : ParentType(name), _getter(gf), _setter(sf)
+     { ParentType::_defaultValue = def; }
+    
+    virtual bool read( InputStream& is, osg::Object& obj )
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        if ( is.isBinary() )
+        {
+            GLenum value; is >> value;
+            if ( ParentType::_defaultValue!=static_cast<P>(value) )
+                (object.*_setter)( static_cast<P>(value) );
+        }
+        else if ( is.matchString(ParentType::_name) )
+        {
+            DEF_GLENUM(value); is >> value;
+            (object.*_setter)( static_cast<P>(value.get()) );
+        }
+        return true;
+    }
+    
+    virtual bool write( OutputStream& os, const osg::Object& obj )
+    {
+        const C& object = OBJECT_CAST<const C&>(obj);
+        if ( os.isBinary() )
+        {
+            os << static_cast<GLenum>((object.*_getter)());
+        }
+        else if ( ParentType::_defaultValue!=(object.*_getter)() )
+        {
+            os << ParentType::_name << GLENUM((object.*_getter)()) << std::endl;
+        }
+        return true;
+    }
+    
+protected:
+    Getter _getter;
+    Setter _setter;
+};
+
+template<typename C>
+class StringSerializer : public TemplateSerializer<std::string>
+{
+public:
+    typedef TemplateSerializer<std::string> ParentType;
+    typedef const std::string& (C::*Getter)() const;
+    typedef void (C::*Setter)( const std::string& );
+    
+    StringSerializer( const char* name, const std::string& def, Getter gf, Setter sf )
+    : ParentType(name), _getter(gf), _setter(sf)
+     { ParentType::_defaultValue = def; }
+    
+    virtual bool read( InputStream& is, osg::Object& obj )
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        std::string value;
+        if ( is.isBinary() )
+        {
+            is >> value;
+            if ( ParentType::_defaultValue!=value )
+                (object.*_setter)( value );
+        }
+        else if ( is.matchString(ParentType::_name) )
+        {
+            is.readWrappedString( value );
+            if ( !value.empty() )
+                (object.*_setter)( value );
+        }
+        return true;
+    }
+    
+    virtual bool write( OutputStream& os, const osg::Object& obj )
+    {
+        const C& object = OBJECT_CAST<const C&>(obj);
+        if ( os.isBinary() )
+        {
+            os << (object.*_getter)();
+        }
+        else if ( ParentType::_defaultValue!=(object.*_getter)() )
+        {
+            os << ParentType::_name;
+            os.writeWrappedString( (object.*_getter)() );
+            os << std::endl;
+        }
+        return true;
+    }
+    
+protected:
+    Getter _getter;
+    Setter _setter;
+};
+
+template<typename C, typename P>
+class ObjectSerializer : public TemplateSerializer<P*>
+{
+public:
+    typedef TemplateSerializer<P*> ParentType;
+    typedef const P* (C::*Getter)() const;
+    typedef void (C::*Setter)( P* );
+    
+    ObjectSerializer( const char* name, P* def, Getter gf, Setter sf )
+    : ParentType(name), _getter(gf), _setter(sf)
+     { ParentType::_defaultValue = def; }
+    
+    virtual bool read( InputStream& is, osg::Object& obj )
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        bool hasObject = false;
+        if ( is.isBinary() )
+        {
+            is >> hasObject;
+            if ( hasObject )
+            {
+                P* value = dynamic_cast<P*>( is.readObject() );
+                if ( ParentType::_defaultValue!=value )
+                    (object.*_setter)( value );
+            }
+        }
+        else if ( is.matchString(ParentType::_name) )
+        {
+            is >> hasObject;
+            if ( hasObject )
+            {
+                is >> BEGIN_BRACKET;
+                P* value = dynamic_cast<P*>( is.readObject() );
+                (object.*_setter)( value );
+                is >> END_BRACKET;
+            }
+        }
+        return true;
+    }
+    
+    virtual bool write( OutputStream& os, const osg::Object& obj )
+    {
+        const C& object = OBJECT_CAST<const C&>(obj);
+        bool hasObject = ((object.*_getter)()!=NULL);
+        if ( os.isBinary() )
+        {
+            os << hasObject;
+            os.writeObject( (object.*_getter)() );
+        }
+        else if ( ParentType::_defaultValue!=(object.*_getter)() )
+        {
+            os << ParentType::_name << hasObject;
+            if ( hasObject )
+            {
+                os << BEGIN_BRACKET << std::endl;
+                os.writeObject( (object.*_getter)() );
+                os << END_BRACKET;
+            }
+            os << std::endl;
+        }
+        return true;
+    }
+    
+protected:
+    Getter _getter;
+    Setter _setter;
+};
+
+template<typename C, typename P>
+class ImageSerializer : public TemplateSerializer<P*>
+{
+public:
+    typedef TemplateSerializer<P*> ParentType;
+    typedef const P* (C::*Getter)() const;
+    typedef void (C::*Setter)( P* );
+    
+    ImageSerializer( const char* name, P* def, Getter gf, Setter sf )
+    : ParentType(name), _getter(gf), _setter(sf)
+     { ParentType::_defaultValue = def; }
+    
+    virtual bool read( InputStream& is, osg::Object& obj )
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        bool hasObject = false;
+        if ( is.isBinary() )
+        {
+            is >> hasObject;
+            if ( hasObject )
+            {
+                P* value = dynamic_cast<P*>( is.readImage() );
+                if ( ParentType::_defaultValue!=value )
+                    (object.*_setter)( value );
+            }
+        }
+        else if ( is.matchString(ParentType::_name) )
+        {
+            is >> hasObject;
+            if ( hasObject )
+            {
+                is >> BEGIN_BRACKET;
+                P* value = dynamic_cast<P*>( is.readImage() );
+                (object.*_setter)( value );
+                is >> END_BRACKET;
+            }
+        }
+        return true;
+    }
+    
+    virtual bool write( OutputStream& os, const osg::Object& obj )
+    {
+        const C& object = OBJECT_CAST<const C&>(obj);
+        bool hasObject = ((object.*_getter)()!=NULL);
+        if ( os.isBinary() )
+        {
+            os << hasObject;
+            os.writeImage( (object.*_getter)() );
+        }
+        else if ( ParentType::_defaultValue!=(object.*_getter)() )
+        {
+            os << ParentType::_name << hasObject;
+            if ( hasObject )
+            {
+                os << BEGIN_BRACKET << std::endl;
+                os.writeImage( (object.*_getter)() );
+                os << END_BRACKET;
+            }
+            os << std::endl;
+        }
+        return true;
+    }
+    
+protected:
+    Getter _getter;
+    Setter _setter;
+};
+
+template<typename C, typename P, typename B>
+class EnumSerializer : public TemplateSerializer<P>
+{
+public:
+    typedef TemplateSerializer<P> ParentType;
+    typedef P (C::*Getter)() const;
+    typedef B (C::*Setter)( P );
+    
+    EnumSerializer( const char* name, P def, Getter gf, Setter sf )
+    : ParentType(name), _getter(gf), _setter(sf)
+     { ParentType::_defaultValue = def; }
+    
+    void add( const char* str, P value )
+    { _lookup.add(str, static_cast<osgDB::IntLookup::Value>(value)); }
+    
+    P getValue( const char* str )
+    { return static_cast<P>(_lookup.getValue(str)); }
+    
+    const std::string& getString( P value )
+    { return _lookup.getString(static_cast<osgDB::IntLookup::Value>(value)); }
+    
+    virtual bool read( InputStream& is, osg::Object& obj )
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        IntLookup::Value value;
+        if ( is.isBinary() )
+        {
+            is >> value;
+            if ( ParentType::_defaultValue!=static_cast<P>(value) )
+                (object.*_setter)( static_cast<P>(value) );
+        }
+        else if ( is.matchString(ParentType::_name) )
+        {
+            std::string str; is >> str;
+            (object.*_setter)( getValue(str.c_str()) );
+        }
+        return true;
+    }
+    
+    virtual bool write( osgDB::OutputStream& os, const osg::Object& obj )
+    {
+        const C& object = OBJECT_CAST<const C&>(obj);
+        if ( os.isBinary() )
+        {
+            os << (osgDB::IntLookup::Value)(object.*_getter)();
+        }
+        else if ( ParentType::_defaultValue!=(object.*_getter)() )
+        {
+            os << ParentType::_name << getString((object.*_getter)()) << std::endl;
+        }
+        return true;
+    }
+    
+protected:
+    Getter _getter;
+    Setter _setter;
+    IntLookup _lookup;
+};
+
+template<typename C, typename P>
+class ListSerializer : public TemplateSerializer<P>
+{
+public:
+    typedef TemplateSerializer<P> ParentType;
+    typedef typename P::value_type ValueType;
+    typedef typename P::const_iterator ConstIterator;
+     typedef const P& (C::*Getter)() const;
+    typedef void (C::*Setter)( const P& );
+    
+    ListSerializer( const char* name, Getter gf, Setter sf )
+    : ParentType(name), _getter(gf), _setter(sf) {}
+    
+    virtual bool read( InputStream& is, osg::Object& obj )
+    {
+        C& object = OBJECT_CAST<C&>(obj);
+        unsigned int size = 0;
+        P list;
+        if ( is.isBinary() )
+        {
+            is >> size;
+            for ( unsigned int i=0; i<size; ++i )
+            {
+                ValueType value;
+                is >> value;
+                list.push_back( value );
+            }
+            if ( size>0 ) (object.*_setter)( list );
+        }
+        else if ( is.matchString(ParentType::_name) )
+        {
+            is >> size;
+            if ( size>0 ) is >> BEGIN_BRACKET;
+            for ( unsigned int i=0; i<size; ++i )
+            {
+                ValueType value;
+                is >> value;
+                list.push_back( value );
+            }
+            if ( size>0 )
+            {
+                is >> END_BRACKET;
+                (object.*_setter)( list );
+            }
+        }
+        return true;
+    }
+    
+    virtual bool write( OutputStream& os, const osg::Object& obj )
+    {
+        const C& object = OBJECT_CAST<const C&>(obj);
+        const P& list = (object.*_getter)();
+        unsigned int size = (unsigned int)list.size();
+        if ( os.isBinary() )
+        {
+            os << size;
+            for ( ConstIterator itr=list.begin();
+                  itr!=list.end(); ++itr )
+            {
+                os << (*itr);
+            }
+        }
+        else if ( size>0 )
+        {
+            os << ParentType::_name << size << BEGIN_BRACKET << std::endl;
+            for ( ConstIterator itr=list.begin();
+                  itr!=list.end(); ++itr )
+            {
+                os << (*itr);
+            }
+            os << END_BRACKET << std::endl;
+        }
+        return true;
+    }
+    
+protected:
+    Getter _getter;
+    Setter _setter;
+};
+
+// ADDING MANIPULATORS
+#define ADD_SERIALIZER(S) \
+    wrapper->addSerializer(S)
+
+#define ADD_USER_SERIALIZER(PROP) \
+    wrapper->addSerializer( new osgDB::UserSerializer<MyClass>( \
+        #PROP, &check##PROP, &read##PROP, &write##PROP) )
+
+#define ADD_BOOL_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByValSerializer<MyClass, bool>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_SHORT_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByValSerializer<MyClass, short>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_USHORT_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByValSerializer<MyClass, unsigned short>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_HEXSHORT_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByValSerializer<MyClass, unsigned short>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP, true) )
+
+#define ADD_INT_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByValSerializer<MyClass, int>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_UINT_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByValSerializer<MyClass, unsigned int>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_HEXINT_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByValSerializer<MyClass, unsigned int>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP, true) )
+
+#define ADD_FLOAT_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByValSerializer<MyClass, float>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_DOUBLE_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByValSerializer<MyClass, double>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_VEC3F_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer<MyClass, osg::Vec3f>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_VEC3D_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer<MyClass, osg::Vec3d>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_VEC3_SERIALIZER(PROP, DEF) ADD_VEC3F_SERIALIZER(PROP, DEF)
+
+#define ADD_VEC4F_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer<MyClass, osg::Vec4f>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_VEC4D_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer<MyClass, osg::Vec4d>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_VEC4_SERIALIZER(PROP, DEF) ADD_VEC4F_SERIALIZER(PROP, DEF)
+
+#define ADD_QUAT_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer<MyClass, osg::Quat>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_PLANE_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer<MyClass, osg::Plane>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_MATRIXF_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer<MyClass, osg::Matrixf>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_MATRIXD_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer<MyClass, osg::Matrixd>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_MATRIX_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::MatrixSerializer<MyClass>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_GLENUM_SERIALIZER(PROP, TYPE, DEF) \
+    wrapper->addSerializer( new osgDB::GLenumSerializer<MyClass, TYPE>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_STRING_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::StringSerializer<MyClass>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_OBJECT_SERIALIZER(PROP, TYPE, DEF) \
+    wrapper->addSerializer( new osgDB::ObjectSerializer<MyClass, TYPE>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_IMAGE_SERIALIZER(PROP, TYPE, DEF) \
+    wrapper->addSerializer( new osgDB::ImageSerializer<MyClass, TYPE>( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_LIST_SERIALIZER(PROP, TYPE) \
+    wrapper->addSerializer( new osgDB::ListSerializer<MyClass, TYPE>( \
+        #PROP, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define BEGIN_ENUM_SERIALIZER(PROP, DEF) \
+    { typedef osgDB::EnumSerializer<MyClass, MyClass::PROP, void> MySerializer; \
+    osg::ref_ptr<MySerializer> serializer = new MySerializer( \
+        #PROP, MyClass::DEF, &MyClass::get##PROP, &MyClass::set##PROP)
+
+#define BEGIN_ENUM_SERIALIZER2(PROP, TYPE, DEF) \
+    { typedef osgDB::EnumSerializer<MyClass, TYPE, void> MySerializer; \
+    osg::ref_ptr<MySerializer> serializer = new MySerializer( \
+        #PROP, MyClass::DEF, &MyClass::get##PROP, &MyClass::set##PROP)
+
+#define BEGIN_ENUM_SERIALIZER3(PROP, DEF) \
+    { typedef osgDB::EnumSerializer<MyClass, MyClass::PROP, bool> MySerializer; \
+    osg::ref_ptr<MySerializer> serializer = new MySerializer( \
+        #PROP, MyClass::DEF, &MyClass::get##PROP, &MyClass::set##PROP)
+
+#define ADD_ENUM_VALUE(VALUE) \
+    serializer->add(#VALUE, MyClass::VALUE)
+
+#define END_ENUM_SERIALIZER() \
+    wrapper->addSerializer(serializer); }
+
+
+}
+
+#endif

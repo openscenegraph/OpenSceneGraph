@@ -11,6 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osgDB/DotOsgWrapper>
+#include <osgDB/Registry>
 
 using namespace osgDB;
 
@@ -49,4 +50,27 @@ DotOsgWrapper::DotOsgWrapper(osg::Object* proto,
     _writeFunc = writeFunc;
     
     _readWriteMode = readWriteMode;
+}
+
+
+RegisterDotOsgWrapperProxy::RegisterDotOsgWrapperProxy(osg::Object* proto,
+                            const std::string& name,
+                            const std::string& associates,
+                            DotOsgWrapper::ReadFunc readFunc,
+                            DotOsgWrapper::WriteFunc writeFunc,
+                            DotOsgWrapper::ReadWriteMode readWriteMode)
+{
+    if (Registry::instance())
+    {
+        _wrapper = new DotOsgWrapper(proto,name,associates,readFunc,writeFunc,readWriteMode);
+        Registry::instance()->addDotOsgWrapper(_wrapper.get());
+    }
+}
+
+RegisterDotOsgWrapperProxy::~RegisterDotOsgWrapperProxy()
+{
+    if (Registry::instance())
+    {
+        Registry::instance()->removeDotOsgWrapper(_wrapper.get());
+    }
 }

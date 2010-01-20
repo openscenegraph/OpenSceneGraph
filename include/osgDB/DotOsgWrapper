@@ -79,6 +79,44 @@ class OSGDB_EXPORT DotOsgWrapper : public osg::Referenced
         ReadWriteMode               _readWriteMode;
 };
 
+/**  Proxy class for automatic registration of DotOsgWrappers with the Registry.*/
+class RegisterDotOsgWrapperProxy
+{
+    public:
+
+        RegisterDotOsgWrapperProxy(osg::Object* proto,
+                                   const std::string& name,
+                                   const std::string& associates,
+                                   DotOsgWrapper::ReadFunc readFunc,
+                                   DotOsgWrapper::WriteFunc writeFunc,
+                                   DotOsgWrapper::ReadWriteMode readWriteMode=DotOsgWrapper::READ_AND_WRITE);
+
+        ~RegisterDotOsgWrapperProxy();
+
+    protected:
+        osg::ref_ptr<DotOsgWrapper> _wrapper;
+};
+
+template<class T>
+class TemplateRegisterDotOsgWrapperProxy : public RegisterDotOsgWrapperProxy, public T
+{
+    public:
+
+        TemplateRegisterDotOsgWrapperProxy(osg::Object* proto,
+                                   const std::string& name,
+                                   const std::string& associates,
+                                   DotOsgWrapper::ReadFunc readFunc,
+                                   DotOsgWrapper::WriteFunc writeFunc,
+                                   DotOsgWrapper::ReadWriteMode readWriteMode=DotOsgWrapper::READ_AND_WRITE):
+            RegisterDotOsgWrapperProxy(proto, name, associates, readFunc, writeFunc, readWriteMode) {}
+
+};
+
+
+#define REGISTER_DOTOSGWRAPPER(classname) \
+    extern "C" void dotosgwrapper_##classname(void) {} \
+    static osgDB::RegisterDotOsgWrapperProxy dotosgwrapper_proxy_##classname
+
 }
 
 #endif 

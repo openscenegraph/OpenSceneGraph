@@ -1,9 +1,6 @@
+FILE(GLOB TARGET_SRC *.cpp)
+FILE(GLOB TARGET_H *.h)
 
-SET(TARGET_SRC 
-    View.cpp 
-    Viewer.cpp 
-    CompositeViewer.cpp 
-)
 SET(TARGET_ADDED_LIBRARIES osgViewer )
 
 #### end var setup  ###

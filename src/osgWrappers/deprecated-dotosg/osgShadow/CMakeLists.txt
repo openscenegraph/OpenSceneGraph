@@ -1,11 +1,6 @@
+FILE(GLOB TARGET_SRC *.cpp)
+FILE(GLOB TARGET_H *.h)
 
-SET(TARGET_SRC 
-    ShadowedScene.cpp
-    ShadowMap.cpp
-    ShadowTechnique.cpp
-    ShadowTexture.cpp
-    ShadowVolume.cpp
-)
 SET(TARGET_ADDED_LIBRARIES osgShadow )
 
 #### end var setup  ###

@@ -40,6 +40,7 @@
 #include <osg/Point>
 #include <osg/TexGen>
 #include <osg/ClipPlane>
+#include <osg/Fog>
 
 #include <sstream>
 

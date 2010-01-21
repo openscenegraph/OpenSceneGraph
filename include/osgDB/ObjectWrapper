@@ -69,7 +69,7 @@ protected:
     SerializerList _backupSerializers;
 };
 
-class ObjectRegistry : public osg::Referenced
+class OSGDB_EXPORT ObjectRegistry : public osg::Referenced
 {
 public:
     static ObjectRegistry* instance();
@@ -101,7 +101,7 @@ protected:
 };
 
 
-class RegisterWrapperProxy
+class OSGDB_EXPORT RegisterWrapperProxy
 {
 public:
     typedef void (*AddPropFunc)( ObjectWrapper* );
@@ -145,7 +145,7 @@ protected:
 #define REGISTER_COMPRESSOR(NAME, CLASS) \
     static osgDB::RegisterCompressorProxy<CLASS> compressor_proxy_##CLASS(NAME);
 
-class GlobalLookupTable : public osg::Referenced
+class OSGDB_EXPORT GlobalLookupTable : public osg::Referenced
 {
 public:
     typedef std::map<std::string, IntLookup> IntLookupMap;

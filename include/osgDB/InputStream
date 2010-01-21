@@ -39,13 +39,13 @@ public:
     
     const std::string& getField() const { return _field; }
     const std::string& getError() const { return _error; }
-	
+    
 protected:
     std::string _field;
     std::string _error;
 };
 
-class InputStream
+class OSGDB_EXPORT InputStream
 {
 public:
     typedef std::map< unsigned int, osg::ref_ptr<osg::Array> > ArrayMap;

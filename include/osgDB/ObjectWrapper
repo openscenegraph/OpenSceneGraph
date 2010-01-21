@@ -21,9 +21,9 @@ namespace osgDB
 {
 
 typedef std::vector<std::string> StringList;
-extern void split( const std::string& src, StringList& list, char separator=' ' );
+extern OSGDB_EXPORT void split( const std::string& src, StringList& list, char separator=' ' );
 
-class BaseCompressor : public osg::Referenced
+class OSGDB_EXPORT BaseCompressor : public osg::Referenced
 {
 public:
     BaseCompressor() {}
@@ -37,7 +37,7 @@ protected:
     std::string _name;
 };
 
-class ObjectWrapper : public osg::Referenced
+class OSGDB_EXPORT ObjectWrapper : public osg::Referenced
 {
 public:
     typedef std::vector< osg::ref_ptr<BaseSerializer> > SerializerList;

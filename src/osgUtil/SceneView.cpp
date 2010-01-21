@@ -960,6 +960,7 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     #endif
     
     if (_globalStateSet.valid()) cullVisitor->pushStateSet(_globalStateSet.get());
+    if (_secondaryStateSet.valid()) cullVisitor->pushStateSet(_secondaryStateSet.get());
     if (_localStateSet.valid()) cullVisitor->pushStateSet(_localStateSet.get());
 
 
@@ -982,6 +983,7 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     cullVisitor->popViewport();
 
     if (_localStateSet.valid()) cullVisitor->popStateSet();
+    if (_secondaryStateSet.valid()) cullVisitor->popStateSet();
     if (_globalStateSet.valid()) cullVisitor->popStateSet();
     
 

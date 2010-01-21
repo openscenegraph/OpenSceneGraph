@@ -178,9 +178,20 @@ Renderer::Renderer(osg::Camera* camera):
     _sceneView[0] = new osgUtil::SceneView;
     _sceneView[1] = new osgUtil::SceneView;
 
-
     osg::Camera* masterCamera = _camera->getView() ? _camera->getView()->getCamera() : camera;
-    osg::StateSet* stateset = masterCamera->getOrCreateStateSet();
+
+    osg::StateSet* global_stateset = 0;
+    osg::StateSet* secondary_stateset = 0;
+    if (_camera != masterCamera)
+    {
+        global_stateset = masterCamera->getOrCreateStateSet();
+        secondary_stateset = _camera->getStateSet();
+    }
+    else
+    {
+        global_stateset = _camera->getOrCreateStateSet();
+    }
+
     osgViewer::View* view = dynamic_cast<osgViewer::View*>(_camera->getView());
 
     osg::DisplaySettings* ds = _camera->getDisplaySettings() ?  _camera->getDisplaySettings() :
@@ -197,8 +208,11 @@ Renderer::Renderer(osg::Camera* camera):
         }
     }
 
-    _sceneView[0]->setGlobalStateSet(stateset);
-    _sceneView[1]->setGlobalStateSet(stateset);
+    _sceneView[0]->setGlobalStateSet(global_stateset);
+    _sceneView[0]->setSecondaryStateSet(secondary_stateset);
+
+    _sceneView[1]->setGlobalStateSet(global_stateset);
+    _sceneView[1]->setSecondaryStateSet(secondary_stateset);
 
     _sceneView[0]->setDefaults(sceneViewOptions);
     _sceneView[1]->setDefaults(sceneViewOptions);
@@ -234,11 +248,27 @@ void Renderer::setGraphicsThreadDoesCull(bool flag)
 void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
 {
     osg::Camera* masterCamera = _camera->getView() ? _camera->getView()->getCamera() : _camera.get();
-    osg::StateSet* stateset = masterCamera->getOrCreateStateSet();
 
-    if (sceneView->getGlobalStateSet()!=stateset)
+    osg::StateSet* global_stateset = 0;
+    osg::StateSet* secondary_stateset = 0;
+    if (_camera != masterCamera)
     {
-        sceneView->setGlobalStateSet(stateset);
+        global_stateset = masterCamera->getOrCreateStateSet();
+        secondary_stateset = _camera->getStateSet();
+    }
+    else
+    {
+        global_stateset = _camera->getOrCreateStateSet();
+    }
+
+    if (sceneView->getGlobalStateSet()!=global_stateset)
+    {
+        sceneView->setGlobalStateSet(global_stateset);
+    }
+
+    if (sceneView->getSecondaryStateSet()!=secondary_stateset)
+    {
+        sceneView->setSecondaryStateSet(secondary_stateset);
     }
 
     osg::GraphicsContext* context = _camera->getGraphicsContext();

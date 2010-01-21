@@ -131,6 +131,10 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         osg::StateSet* getGlobalStateSet() { return _globalStateSet.get(); }
         const osg::StateSet* getGlobalStateSet() const { return _globalStateSet.get(); }
 
+        void setSecondaryStateSet(osg::StateSet* state) { _secondaryStateSet = state; }
+        osg::StateSet* getSecondaryStateSet() { return _secondaryStateSet.get(); }
+        const osg::StateSet* getSecondaryStateSet() const { return _secondaryStateSet.get(); }
+
         void setLocalStateSet(osg::StateSet* state) { _localStateSet = state; }
         osg::StateSet* getLocalStateSet() { return _localStateSet.get(); }
         const osg::StateSet* getLocalStateSet() const { return _localStateSet.get(); }
@@ -523,6 +527,8 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         osg::ref_ptr<osg::Light>                    _light;
         osg::ref_ptr<osg::DisplaySettings>          _displaySettings;
         
+        osg::ref_ptr<osg::StateSet>                 _secondaryStateSet;
+
         FusionDistanceMode                          _fusionDistanceMode;
         float                                       _fusionDistanceValue;
 

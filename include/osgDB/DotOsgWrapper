@@ -80,7 +80,7 @@ class OSGDB_EXPORT DotOsgWrapper : public osg::Referenced
 };
 
 /**  Proxy class for automatic registration of DotOsgWrappers with the Registry.*/
-class RegisterDotOsgWrapperProxy
+class OSGDB_EXPORT RegisterDotOsgWrapperProxy
 {
     public:
 
@@ -98,7 +98,7 @@ class RegisterDotOsgWrapperProxy
 };
 
 template<class T>
-class TemplateRegisterDotOsgWrapperProxy : public RegisterDotOsgWrapperProxy, public T
+class OSGDB_EXPORT TemplateRegisterDotOsgWrapperProxy : public RegisterDotOsgWrapperProxy, public T
 {
     public:
 

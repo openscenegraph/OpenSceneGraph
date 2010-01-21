@@ -26,10 +26,21 @@
 #include <osg/TextureCubeMap>
 #include <osg/TextureRectangle>
 #include <osg/VertexProgram>
+
 #include <osgDB/Options>
 #include <osgDB/DataTypes>
 #include <osgDB/ObjectWrapper>
 #include <osgDB/Registry>
+
+// pull in OSG headers to just introduce their GL defines for GL3/GLES compatibility
+#include <osg/AlphaFunc>
+#include <osg/Material>
+#include <osg/LineStipple>
+#include <osg/PolygonStipple>
+#include <osg/Point>
+#include <osg/TexGen>
+#include <osg/ClipPlane>
+
 #include <sstream>
 
 using namespace osgDB;

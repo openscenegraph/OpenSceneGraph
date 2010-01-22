@@ -146,8 +146,7 @@ OutputStream& OutputStream::operator<<( const ObjectGLenum& value )
     }
     else
     {
-        const std::string& enumString =
-            GlobalLookupTable::instance()->getString("GL", e);
+        const std::string& enumString = osgDB::Registry::instance()->getObjectWrapperManager()->getString("GL", e);
         *_out << enumString << ' ';
     }
     return *this;
@@ -165,8 +164,7 @@ OutputStream& OutputStream::operator<<( const ObjectProperty& prop )
         std::string enumString = prop._name;
         if ( prop._mapProperty )
         {
-            enumString =
-                GlobalLookupTable::instance()->getString(prop._name, prop._value);
+            enumString = osgDB::Registry::instance()->getObjectWrapperManager()->getString(prop._name, prop._value);
         }
         *_out << enumString << ' ';
     }
@@ -460,7 +458,7 @@ void OutputStream::writeObject( const osg::Object* obj )
     // Check whether this is a shared object or not
     if ( id>=_objectMap.size() )
     {
-        ObjectWrapper* wrapper = ObjectRegistry::instance()->findWrapper( name );
+        ObjectWrapper* wrapper = Registry::instance()->getObjectWrapperManager()->findWrapper( name );
         if ( !wrapper )
         {
             osg::notify(osg::WARN) << "OutputStream::writeObject(): Unsupported wrapper class "
@@ -472,7 +470,7 @@ void OutputStream::writeObject( const osg::Object* obj )
         const StringList& associates = wrapper->getAssociates();
         for ( StringList::const_iterator itr=associates.begin(); itr!=associates.end(); ++itr )
         {
-            ObjectWrapper* assocWrapper = ObjectRegistry::instance()->findWrapper(*itr);
+            ObjectWrapper* assocWrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(*itr);
             if ( !assocWrapper )
             {
                 osg::notify(osg::WARN) << "OutputStream::writeObject(): Unsupported associated class "
@@ -501,8 +499,7 @@ void OutputStream::start( OutputStream::WriteType type )
         
         if ( !_compressorName.empty() )
         {
-            BaseCompressor* compressor =
-                ObjectRegistry::instance()->findCompressor(_compressorName);
+            BaseCompressor* compressor = Registry::instance()->getObjectWrapperManager()->findCompressor(_compressorName);
             if ( !compressor )
             {
                 osg::notify(osg::WARN) << "OutputStream::start(): No such compressor "
@@ -541,8 +538,7 @@ void OutputStream::compress( std::ostream* ostream )
     _currentField = "Compression";
     if ( _compressorName.empty() || !isBinary() ) return;
     
-    BaseCompressor* compressor =
-        ObjectRegistry::instance()->findCompressor(_compressorName);
+    BaseCompressor* compressor = Registry::instance()->getObjectWrapperManager()->findCompressor(_compressorName);
     if ( !compressor || !ostream ) return;
     
     if ( !compressor->compress(*ostream, _compressSource.str()) )
@@ -554,8 +550,8 @@ void OutputStream::compress( std::ostream* ostream )
 void OutputStream::writeSchema( std::ostream& fout )
 {
     // Write to external ascii stream
-    const ObjectRegistry::WrapperMap& wrappers = ObjectRegistry::instance()->getWrapperMap();
-    for ( ObjectRegistry::WrapperMap::const_iterator itr=wrappers.begin();
+    const ObjectWrapperManager::WrapperMap& wrappers = Registry::instance()->getObjectWrapperManager()->getWrapperMap();
+    for ( ObjectWrapperManager::WrapperMap::const_iterator itr=wrappers.begin();
           itr!=wrappers.end(); ++itr )
     {
         ObjectWrapper* wrapper = itr->second.get();

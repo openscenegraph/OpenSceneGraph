@@ -169,7 +169,7 @@ InputStream& InputStream::operator>>( ObjectGLenum& value )
     {
         std::string enumString;
         *this >> enumString;
-        e = GlobalLookupTable::instance()->getValue("GL", enumString);
+        e = osgDB::Registry::instance()->getObjectWrapperManager()->getValue("GL", enumString);
     }
     value.set( e );
     return *this;
@@ -192,8 +192,7 @@ InputStream& InputStream::operator>>( ObjectProperty& prop )
         *this >> enumString;
         if ( prop._mapProperty )
         {
-            value =
-                GlobalLookupTable::instance()->getValue(prop._name, enumString);
+            value = osgDB::Registry::instance()->getObjectWrapperManager()->getValue(prop._name, enumString);
         }
         else
         {
@@ -505,7 +504,7 @@ osg::Image* InputStream::readImage()
                 image->setImage( s, t, r, internalFormat, pixelFormat, dataType,
                     (unsigned char*)data, (osg::Image::AllocationMode)mode, packing );
             }
-            
+
             // _mipmapData
             unsigned int levelSize = 0; *this >> levelSize;
             osg::Image::MipmapDataType levels(levelSize);
@@ -587,7 +586,7 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
         return itr->second.get();
     }
     
-    ObjectWrapper* wrapper = ObjectRegistry::instance()->findWrapper( className );
+    ObjectWrapper* wrapper = Registry::instance()->getObjectWrapperManager()->findWrapper( className );
     if ( !wrapper )
     {
         osg::notify(osg::WARN) << "InputStream::readObject(): Unsupported wrapper class "
@@ -603,7 +602,7 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
         const StringList& associates = wrapper->getAssociates();
         for ( StringList::const_iterator itr=associates.begin(); itr!=associates.end(); ++itr )
         {
-            ObjectWrapper* assocWrapper = ObjectRegistry::instance()->findWrapper(*itr);
+            ObjectWrapper* assocWrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(*itr);
             if ( !assocWrapper )
             {
                 osg::notify(osg::WARN) << "InputStream::readObject(): Unsupported associated class "
@@ -695,8 +694,7 @@ void InputStream::decompress()
     std::string compressorName; *this >> compressorName;
     if ( compressorName=="0" ) return;
     
-    BaseCompressor* compressor =
-        ObjectRegistry::instance()->findCompressor(compressorName);
+    BaseCompressor* compressor = Registry::instance()->getObjectWrapperManager()->findCompressor(compressorName);
     if ( !compressor )
     {
         osg::notify(osg::WARN) << "InputStream::decompress(): No such compressor "
@@ -713,7 +711,7 @@ void InputStream::decompress()
 
 void InputStream::setWrapperSchema( const std::string& name, const std::string& properties )
 {
-    ObjectWrapper* wrapper = ObjectRegistry::instance()->findWrapper(name);
+    ObjectWrapper* wrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(name);
     if ( !wrapper )
     {
         osg::notify(osg::WARN) << "InputStream::setSchema(): Unsupported wrapper class "
@@ -728,8 +726,8 @@ void InputStream::setWrapperSchema( const std::string& name, const std::string& 
 
 void InputStream::resetSchema()
 {
-    const ObjectRegistry::WrapperMap& wrappers = ObjectRegistry::instance()->getWrapperMap();
-    for ( ObjectRegistry::WrapperMap::const_iterator itr=wrappers.begin();
+    const ObjectWrapperManager::WrapperMap& wrappers = Registry::instance()->getObjectWrapperManager()->getWrapperMap();
+    for ( ObjectWrapperManager::WrapperMap::const_iterator itr=wrappers.begin();
           itr!=wrappers.end(); ++itr )
     {
         ObjectWrapper* wrapper = itr->second.get();

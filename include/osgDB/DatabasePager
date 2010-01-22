@@ -350,6 +350,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         {
             DatabaseRequest():
                 osg::Referenced(true),
+                _valid(false),
                 _frameNumberFirstRequest(0),
                 _timestampFirstRequest(0.0),
                 _priorityFirstRequest(0.f),
@@ -359,7 +360,12 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
                 _numOfRequests(0),
                 _requestQueue(0)
             {}
-            
+
+            void invalidate();
+
+            bool valid() const { return _valid; }
+
+            bool                                _valid;
             std::string                         _fileName;
             int                                 _frameNumberFirstRequest;
             double                              _timestampFirstRequest;
@@ -371,7 +377,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             osg::observer_ptr<osg::Group>       _groupForAddingLoadedSubgraph;
             osg::ref_ptr<osg::Node>             _loadedModel;
             DataToCompileMap                    _dataToCompileMap;
-            osg::ref_ptr<Options> _loadOptions;
+            osg::ref_ptr<Options>               _loadOptions;
             RequestQueue*                       _requestQueue;
 
             bool isRequestCurrent (int frameNumber) const
@@ -382,12 +388,16 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         
         struct RequestQueue : public osg::Referenced
         {
+        public:
             typedef std::vector< osg::ref_ptr<DatabaseRequest> > RequestList;
 
             void sort();
-                                    
+
             RequestList         _requestList;
             OpenThreads::Mutex  _requestMutex;
+
+        protected:
+            virtual ~RequestQueue();
         };
 
         

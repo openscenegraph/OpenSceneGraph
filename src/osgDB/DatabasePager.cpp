@@ -279,8 +279,30 @@ struct DatabasePager::SortFileRequestFunctor
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//  ReadQueue
+//  RequestQueue
 //
+void DatabasePager::DatabaseRequest::invalidate()
+{
+    osg::notify(osg::INFO)<<"   DatabasePager::DatabaseRequest::invalidate()."<<std::endl;
+    _valid = false;
+    _groupForAddingLoadedSubgraph = 0;
+    _loadedModel = 0;
+    _dataToCompileMap.clear();
+    _requestQueue = 0;
+    _requestQueue = 0;
+}
+
+DatabasePager::RequestQueue::~RequestQueue()
+{
+    osg::notify(osg::INFO)<<"DatabasePager::RequestQueue::~RequestQueue() Destructing queue."<<std::endl;
+    for(RequestList::iterator itr = _requestList.begin();
+        itr != _requestList.end();
+        ++itr)
+    {
+        (*itr)->invalidate();
+    }
+}
+
 void DatabasePager::RequestQueue::sort()
 {
     std::sort(_requestList.begin(),_requestList.end(),SortFileRequestFunctor());
@@ -1295,6 +1317,12 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
     if (databaseRequestRef.valid())
     {
         DatabaseRequest* databaseRequest = dynamic_cast<DatabaseRequest*>(databaseRequestRef.get());
+        if (databaseRequest && databaseRequest->valid())
+        {
+            osg::notify(osg::NOTICE)<<"DatabaseRequest has been previously invalidated whilst still attached to scene graph."<<std::endl;
+            databaseRequest = 0;
+        }
+
         if (databaseRequest)
         {
             osg::notify(osg::INFO)<<"DatabasePager::requestNodeFile("<<fileName<<") updating already assigned."<<std::endl;

@@ -367,7 +367,9 @@ Registry::Registry()
     }
     
     // register http-protocol, so the curl can handle it, if necessary
-    registerProtocol("http"); 
+    registerProtocol("http");
+
+    _objectWrapperManager = new ObjectWrapperManager;
 }
 
 

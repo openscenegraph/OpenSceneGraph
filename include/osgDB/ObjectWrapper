@@ -69,10 +69,11 @@ protected:
     SerializerList _backupSerializers;
 };
 
-class OSGDB_EXPORT ObjectRegistry : public osg::Referenced
+class Registry;
+
+class OSGDB_EXPORT ObjectWrapperManager : public osg::Referenced
 {
 public:
-    static ObjectRegistry* instance();
 
     // Wrapper handlers
     void addWrapper( ObjectWrapper* wrapper );
@@ -92,12 +93,28 @@ public:
     CompressorMap& getCompressorMap() { return _compressors; }
     const CompressorMap& getCompressorMap() const { return _compressors; }
 
+    typedef std::map<std::string, IntLookup> IntLookupMap;
+    IntLookup::Value getValue( const std::string& group, const std::string& str ) { return findLookup(group).getValue(str.c_str()); }
+    const std::string& getString( const std::string& group, IntLookup::Value value ) { return findLookup(group).getString(value); }
+
 protected:
-    ObjectRegistry() {}
-    virtual ~ObjectRegistry() {}
+
+    friend class osgDB::Registry;
+
+    ObjectWrapperManager();
+    virtual ~ObjectWrapperManager();
 
     WrapperMap _wrappers;
     CompressorMap _compressors;
+
+    IntLookup& findLookup( const std::string& group )
+    {
+        IntLookupMap::iterator itr = _globalMap.find(group);
+        if ( itr!=_globalMap.end() ) return itr->second;
+        else return _globalMap["GL"];
+    }
+
+    IntLookupMap _globalMap;
 };
 
 
@@ -122,55 +139,18 @@ protected:
     typedef CLASS MyClass; \
     void wrapper_propfunc_##NAME(osgDB::ObjectWrapper* wrapper)
 
-template<typename T>
 class RegisterCompressorProxy
 {
 public:
-    RegisterCompressorProxy( const std::string& name )
-    {
-        _compressor = new T;
-        _compressor->setName( name );
-        ObjectRegistry::instance()->addCompressor( _compressor.get() );
-    }
-
-    virtual ~RegisterCompressorProxy()
-    {
-        ObjectRegistry::instance()->removeCompressor( _compressor.get() );
-    }
+    RegisterCompressorProxy( const std::string& name, BaseCompressor* compressor );
+    ~RegisterCompressorProxy();
 
 protected:
     osg::ref_ptr<BaseCompressor> _compressor;
 };
 
 #define REGISTER_COMPRESSOR(NAME, CLASS) \
-    static osgDB::RegisterCompressorProxy<CLASS> compressor_proxy_##CLASS(NAME);
-
-class OSGDB_EXPORT GlobalLookupTable : public osg::Referenced
-{
-public:
-    typedef std::map<std::string, IntLookup> IntLookupMap;
-    
-    static GlobalLookupTable* instance();
-    
-    IntLookup::Value getValue( const std::string& group, const std::string& str )
-    { return findLookup(group).getValue(str.c_str()); }
-    
-    const std::string& getString( const std::string& group, IntLookup::Value value )
-    { return findLookup(group).getString(value); }
-    
-protected:
-    GlobalLookupTable();
-    virtual ~GlobalLookupTable() {}
-    
-    IntLookup& findLookup( const std::string& group )
-    {
-        IntLookupMap::iterator itr = _globalMap.find(group);
-        if ( itr!=_globalMap.end() ) return itr->second;
-        else return _globalMap["GL"];
-    }
-    
-    IntLookupMap _globalMap;
-};
+    static osgDB::RegisterCompressorProxy compressor_proxy_##CLASS(NAME, new CLASS);
 
 }
 

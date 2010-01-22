@@ -65,6 +65,10 @@ void osgDB::split( const std::string& src, StringList& list, char separator )
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// ObjectWrapper
+//
 ObjectWrapper::ObjectWrapper( osg::Object* proto, const std::string& name,
                               const std::string& associates )
 :   osg::Referenced(),
@@ -152,16 +156,35 @@ void ObjectWrapper::writeSchema( StringList& properties )
     }
 }
 
-GlobalLookupTable* GlobalLookupTable::instance()
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// RegisterWrapperProxy
+//
+RegisterWrapperProxy::RegisterWrapperProxy( osg::Object* proto, const std::string& name,
+                        const std::string& associates, AddPropFunc func )
 {
-    static osg::ref_ptr<GlobalLookupTable> s_lookup = new GlobalLookupTable;
-    return s_lookup.get();
+    _wrapper = new ObjectWrapper( proto, name, associates );
+    if ( func ) (*func)( _wrapper.get() );
+    Registry::instance()->getObjectWrapperManager()->addWrapper( _wrapper.get() );
 }
 
-GlobalLookupTable::GlobalLookupTable()
+RegisterWrapperProxy::~RegisterWrapperProxy()
+{
+    Registry::instance()->getObjectWrapperManager()->removeWrapper( _wrapper.get() );
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// ObjectWrapperManager
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// GlobalLookupTable
+//
+ObjectWrapperManager::ObjectWrapperManager()
 {
     IntLookup& glTable = _globalMap["GL"];
-    
+
     // Modes
     glTable.add( "GL_ALPHA_TEST", GL_ALPHA_TEST );
     glTable.add( "GL_BLEND", GL_BLEND );
@@ -182,12 +205,12 @@ GlobalLookupTable::GlobalLookupTable()
     glTable.add( "GL_STENCIL_TEST", GL_STENCIL_TEST );
     glTable.add( "GL_STENCIL_TEST_TWO_SIDE", GL_STENCIL_TEST_TWO_SIDE );
     glTable.add( "GL_VERTEX_PROGRAM_ARB", GL_VERTEX_PROGRAM_ARB );
-    
+
     glTable.add( "GL_COLOR_SUM", GL_COLOR_SUM );
     glTable.add( "GL_LIGHTING", GL_LIGHTING );
     glTable.add( "GL_NORMALIZE", GL_NORMALIZE );
     glTable.add( "GL_RESCALE_NORMAL", GL_RESCALE_NORMAL );
-    
+
     glTable.add( "GL_TEXTURE_1D", GL_TEXTURE_1D );
     glTable.add( "GL_TEXTURE_2D", GL_TEXTURE_2D );
     glTable.add( "GL_TEXTURE_3D", GL_TEXTURE_3D );
@@ -197,14 +220,14 @@ GlobalLookupTable::GlobalLookupTable()
     glTable.add( "GL_TEXTURE_GEN_R", GL_TEXTURE_GEN_R );
     glTable.add( "GL_TEXTURE_GEN_S", GL_TEXTURE_GEN_S );
     glTable.add( "GL_TEXTURE_GEN_T", GL_TEXTURE_GEN_T );
-    
+
     glTable.add( "GL_CLIP_PLANE0", GL_CLIP_PLANE0 );
     glTable.add( "GL_CLIP_PLANE1", GL_CLIP_PLANE1 );
     glTable.add( "GL_CLIP_PLANE2", GL_CLIP_PLANE2 );
     glTable.add( "GL_CLIP_PLANE3", GL_CLIP_PLANE3 );
     glTable.add( "GL_CLIP_PLANE4", GL_CLIP_PLANE4 );
     glTable.add( "GL_CLIP_PLANE5", GL_CLIP_PLANE5 );
-    
+
     glTable.add( "GL_LIGHT0", GL_LIGHT0 );
     glTable.add( "GL_LIGHT1", GL_LIGHT1 );
     glTable.add( "GL_LIGHT2", GL_LIGHT2 );
@@ -213,7 +236,7 @@ GlobalLookupTable::GlobalLookupTable()
     glTable.add( "GL_LIGHT5", GL_LIGHT5 );
     glTable.add( "GL_LIGHT6", GL_LIGHT6 );
     glTable.add( "GL_LIGHT7", GL_LIGHT7 );
-    
+
     // Functions
     glTable.add( "NEVER", GL_NEVER );
     glTable.add( "LESS", GL_LESS );
@@ -223,7 +246,7 @@ GlobalLookupTable::GlobalLookupTable()
     glTable.add( "NOTEQUAL", GL_NOTEQUAL );
     glTable.add( "GEQUAL", GL_GEQUAL );
     glTable.add( "ALWAYS", GL_ALWAYS );
-    
+
     // Texture environment states
     glTable.add( "REPLACE", GL_REPLACE );
     glTable.add( "MODULATE", GL_MODULATE );
@@ -233,7 +256,7 @@ GlobalLookupTable::GlobalLookupTable()
     glTable.add( "SUBTRACT", GL_SUBTRACT_ARB );
     glTable.add( "DOT3_RGB", GL_DOT3_RGB_ARB );
     glTable.add( "DOT3_RGBA", GL_DOT3_RGBA_ARB );
-    
+
     glTable.add( "CONSTANT", GL_CONSTANT_ARB );
     glTable.add( "PRIMARY_COLOR", GL_PRIMARY_COLOR_ARB );
     glTable.add( "PREVIOUS", GL_PREVIOUS_ARB );
@@ -246,14 +269,14 @@ GlobalLookupTable::GlobalLookupTable()
     glTable.add( "TEXTURE5", GL_TEXTURE0+5 );
     glTable.add( "TEXTURE6", GL_TEXTURE0+6 );
     glTable.add( "TEXTURE7", GL_TEXTURE0+7 );
-    
+
     // Texture clamp modes
     glTable.add( "CLAMP", GL_CLAMP );
     glTable.add( "CLAMP_TO_EDGE", GL_CLAMP_TO_EDGE );
     glTable.add( "CLAMP_TO_BORDER", GL_CLAMP_TO_BORDER_ARB );
     glTable.add( "REPEAT", GL_REPEAT );
     glTable.add( "MIRROR", GL_MIRRORED_REPEAT_IBM );
-    
+
     // Texture filter modes
     glTable.add( "LINEAR", GL_LINEAR );
     glTable.add( "LINEAR_MIPMAP_LINEAR", GL_LINEAR_MIPMAP_LINEAR );
@@ -261,7 +284,7 @@ GlobalLookupTable::GlobalLookupTable()
     glTable.add( "NEAREST", GL_NEAREST );
     glTable.add( "NEAREST_MIPMAP_LINEAR", GL_NEAREST_MIPMAP_LINEAR );
     glTable.add( "NEAREST_MIPMAP_NEAREST", GL_NEAREST_MIPMAP_NEAREST );
-    
+
     // Texture formats
     glTable.add( "GL_INTENSITY", GL_INTENSITY );
     glTable.add( "GL_LUMINANCE", GL_LUMINANCE );
@@ -279,7 +302,7 @@ GlobalLookupTable::GlobalLookupTable()
     glTable.add( "GL_COMPRESSED_RGBA_S3TC_DXT1_EXT", GL_COMPRESSED_RGBA_S3TC_DXT1_EXT );
     glTable.add( "GL_COMPRESSED_RGBA_S3TC_DXT3_EXT", GL_COMPRESSED_RGBA_S3TC_DXT3_EXT );
     glTable.add( "GL_COMPRESSED_RGBA_S3TC_DXT5_EXT", GL_COMPRESSED_RGBA_S3TC_DXT5_EXT );
-    
+
     // Texture source types
     glTable.add( "GL_BYTE", GL_BYTE );
     glTable.add( "GL_SHORT", GL_SHORT );
@@ -289,7 +312,7 @@ GlobalLookupTable::GlobalLookupTable()
     glTable.add( "GL_UNSIGNED_BYTE", GL_UNSIGNED_BYTE );
     glTable.add( "GL_UNSIGNED_SHORT", GL_UNSIGNED_SHORT );
     glTable.add( "GL_UNSIGNED_INT", GL_UNSIGNED_INT );
-    
+
     // Blend values
     glTable.add( "DST_ALPHA", GL_DST_ALPHA );
     glTable.add( "DST_COLOR", GL_DST_COLOR );
@@ -306,11 +329,11 @@ GlobalLookupTable::GlobalLookupTable()
     glTable.add( "CONSTANT_ALPHA", GL_CONSTANT_ALPHA );
     glTable.add( "ONE_MINUS_CONSTANT_ALPHA", GL_ONE_MINUS_CONSTANT_ALPHA );
     glTable.add( "ZERO", GL_ZERO );
-    
+
     // Fog coordinate sources
     glTable.add( "COORDINATE", GL_FOG_COORDINATE );
     glTable.add( "DEPTH", GL_FRAGMENT_DEPTH );
-    
+
     // Hint targets
     glTable.add( "FOG_HINT", GL_FOG_HINT );
     glTable.add( "GENERATE_MIPMAP_HINT", GL_GENERATE_MIPMAP_HINT_SGIS );
@@ -320,12 +343,12 @@ GlobalLookupTable::GlobalLookupTable()
     glTable.add( "POLYGON_SMOOTH_HINT", GL_POLYGON_SMOOTH_HINT );
     glTable.add( "TEXTURE_COMPRESSION_HINT", GL_TEXTURE_COMPRESSION_HINT_ARB );
     glTable.add( "FRAGMENT_SHADER_DERIVATIVE_HINT", GL_FRAGMENT_SHADER_DERIVATIVE_HINT );
-    
+
     // Polygon modes
     glTable.add( "POINT", GL_POINT );
     glTable.add( "LINE", GL_LINE );
     glTable.add( "FILL", GL_FILL );
-    
+
     // Misc
     glTable.add( "BACK", GL_BACK );
     glTable.add( "FRONT", GL_FRONT );
@@ -334,9 +357,9 @@ GlobalLookupTable::GlobalLookupTable()
     glTable.add( "FASTEST", GL_FASTEST );
     glTable.add( "NICEST", GL_NICEST );
     glTable.add( "DONT_CARE", GL_DONT_CARE );
-    
+
     IntLookup& arrayTable = _globalMap["ArrayType"];
-    
+
     arrayTable.add( "ByteArray", ID_BYTE_ARRAY );
     arrayTable.add( "UByteArray", ID_UBYTE_ARRAY );
     arrayTable.add( "ShortArray", ID_SHORT_ARRAY );
@@ -345,7 +368,7 @@ GlobalLookupTable::GlobalLookupTable()
     arrayTable.add( "UIntArray", ID_UINT_ARRAY );
     arrayTable.add( "FloatArray", ID_FLOAT_ARRAY );
     arrayTable.add( "DoubleArray", ID_DOUBLE_ARRAY );
-    
+
     arrayTable.add( "Vec2bArray", ID_VEC2B_ARRAY );
     arrayTable.add( "Vec3bArray", ID_VEC3B_ARRAY );
     arrayTable.add( "Vec4bArray", ID_VEC4B_ARRAY );
@@ -359,15 +382,15 @@ GlobalLookupTable::GlobalLookupTable()
     arrayTable.add( "Vec2dArray", ID_VEC2D_ARRAY );
     arrayTable.add( "Vec3dArray", ID_VEC3D_ARRAY );
     arrayTable.add( "Vec4dArray", ID_VEC4D_ARRAY );
-    
+
     IntLookup& primitiveTable = _globalMap["PrimitiveType"];
-    
+
     primitiveTable.add( "DrawArrays", ID_DRAWARRAYS );
     primitiveTable.add( "DrawArraysLength", ID_DRAWARRAY_LENGTH );
     primitiveTable.add( "DrawElementsUByte", ID_DRAWELEMENTS_UBYTE );
     primitiveTable.add( "DrawElementsUShort", ID_DRAWELEMENTS_USHORT );
     primitiveTable.add( "DrawElementsUInt", ID_DRAWELEMENTS_UINT );
-    
+
     primitiveTable.add( "GL_POINTS", GL_POINTS );
     primitiveTable.add( "GL_LINES", GL_LINES );
     primitiveTable.add( "GL_LINE_STRIP", GL_LINE_STRIP );
@@ -384,39 +407,25 @@ GlobalLookupTable::GlobalLookupTable()
     primitiveTable.add( "GL_TRIANGLE_STRIP_ADJACENCY_EXT", GL_TRIANGLE_STRIP_ADJACENCY_EXT );
 }
 
-RegisterWrapperProxy::RegisterWrapperProxy( osg::Object* proto, const std::string& name,
-                        const std::string& associates, AddPropFunc func )
+ObjectWrapperManager::~ObjectWrapperManager()
 {
-    _wrapper = new ObjectWrapper( proto, name, associates );
-    if ( func ) (*func)( _wrapper.get() );
-    ObjectRegistry::instance()->addWrapper( _wrapper.get() );
 }
 
-RegisterWrapperProxy::~RegisterWrapperProxy()
-{
-    ObjectRegistry::instance()->removeWrapper( _wrapper.get() );
-}
 
-ObjectRegistry* ObjectRegistry::instance()
-{
-    static osg::ref_ptr<ObjectRegistry> s_registry = new ObjectRegistry;
-    return s_registry.get();
-}
-
-void ObjectRegistry::addWrapper( ObjectWrapper* wrapper )
+void ObjectWrapperManager::addWrapper( ObjectWrapper* wrapper )
 {
     if ( !wrapper ) return;
 
     WrapperMap::iterator itr = _wrappers.find( wrapper->getName() );
     if ( itr!=_wrappers.end() )
     {
-        osg::notify(osg::WARN) << "ObjectRegistry::addWrapper(): '" << wrapper->getName()
+        osg::notify(osg::WARN) << "ObjectWrapperManager::addWrapper(): '" << wrapper->getName()
                                << "' already exists." << std::endl;
     }
     _wrappers[wrapper->getName()] = wrapper;
 }
 
-void ObjectRegistry::removeWrapper( ObjectWrapper* wrapper )
+void ObjectWrapperManager::removeWrapper( ObjectWrapper* wrapper )
 {
     if ( !wrapper ) return;
 
@@ -424,7 +433,7 @@ void ObjectRegistry::removeWrapper( ObjectWrapper* wrapper )
     if ( itr!=_wrappers.end() ) _wrappers.erase( itr );
 }
 
-ObjectWrapper* ObjectRegistry::findWrapper( const std::string& name )
+ObjectWrapper* ObjectWrapperManager::findWrapper( const std::string& name )
 {
     WrapperMap::iterator itr = _wrappers.find( name );
     if ( itr!=_wrappers.end() ) return itr->second.get();
@@ -446,20 +455,20 @@ ObjectWrapper* ObjectRegistry::findWrapper( const std::string& name )
     return NULL;
 }
 
-void ObjectRegistry::addCompressor( BaseCompressor* compressor )
+void ObjectWrapperManager::addCompressor( BaseCompressor* compressor )
 {
     if ( !compressor ) return;
 
     CompressorMap::iterator itr = _compressors.find( compressor->getName() );
     if ( itr!=_compressors.end() )
     {
-        osg::notify(osg::WARN) << "ObjectRegistry::addCompressor(): '" << compressor->getName()
+        osg::notify(osg::WARN) << "ObjectWrapperManager::addCompressor(): '" << compressor->getName()
                                << "' already exists." << std::endl;
     }
     _compressors[compressor->getName()] = compressor;
 }
 
-void ObjectRegistry::removeCompressor( BaseCompressor* compressor )
+void ObjectWrapperManager::removeCompressor( BaseCompressor* compressor )
 {
     if ( !compressor ) return;
 
@@ -467,7 +476,7 @@ void ObjectRegistry::removeCompressor( BaseCompressor* compressor )
     if ( itr!=_compressors.end() ) _compressors.erase( itr );
 }
 
-BaseCompressor* ObjectRegistry::findCompressor( const std::string& name )
+BaseCompressor* ObjectWrapperManager::findCompressor( const std::string& name )
 {
     CompressorMap::iterator itr = _compressors.find( name );
     if ( itr!=_compressors.end() ) return itr->second.get();
@@ -487,4 +496,20 @@ BaseCompressor* ObjectRegistry::findCompressor( const std::string& name )
             return findCompressor(name);
     }
     return NULL;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// RegisytrCompressorProxy
+//
+RegisterCompressorProxy::RegisterCompressorProxy( const std::string& name, BaseCompressor* compressor ):
+    _compressor(compressor)
+{
+    _compressor->setName( name );
+    Registry::instance()->getObjectWrapperManager()->addCompressor( _compressor.get() );
+}
+
+RegisterCompressorProxy::~RegisterCompressorProxy()
+{
+    Registry::instance()->getObjectWrapperManager()->removeCompressor( _compressor.get() );
 }

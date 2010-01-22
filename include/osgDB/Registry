@@ -24,6 +24,7 @@
 #include <osgDB/ReaderWriter>
 #include <osgDB/Options>
 #include <osgDB/DotOsgWrapper>
+#include <osgDB/ObjectWrapper>
 #include <osgDB/DatabasePager>
 #include <osgDB/FileCache>
 
@@ -479,7 +480,10 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         
         /** returns true, if named protocol is registered */
         bool isProtocolRegistered(const std::string& protocol);
-        
+
+        /** Get the ObjectWrapperManager that is used to store all the ObjectWrappers. */
+        ObjectWrapperManager* getObjectWrapperManager() { return _objectWrapperManager.get(); }
+
     protected:
 
         virtual ~Registry();
@@ -610,8 +614,10 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         OpenThreads::Mutex                      _archiveCacheMutex;
 
         ArchiveExtensionList                    _archiveExtList;
-        
+
         osg::ref_ptr<SharedStateManager>        _sharedStateManager;
+
+        osg::ref_ptr<ObjectWrapperManager>      _objectWrapperManager;
 
 };
 

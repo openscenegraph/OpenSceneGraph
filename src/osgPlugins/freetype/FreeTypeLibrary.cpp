@@ -17,7 +17,7 @@
 
 //#define PRINT_OUT_FONT_DETAILS
 #ifdef PRINT_OUT_FONT_DETAILS
-    #include <ftsnames.h>
+    #include <freetype/ftsnames.h>
 #endif
 
 #include FT_TRUETYPE_IDS_H

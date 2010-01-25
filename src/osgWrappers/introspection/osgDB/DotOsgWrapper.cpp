@@ -98,3 +98,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DotOsgWrapper)
 	                 0);
 END_REFLECTOR
 
+BEGIN_VALUE_REFLECTOR(osgDB::RegisterDotOsgWrapperProxy)
+	I_DeclaringFile("osgDB/DotOsgWrapper");
+	I_ConstructorWithDefaults6(IN, osg::Object *, proto, , IN, const std::string &, name, , IN, const std::string &, associates, , IN, osgDB::DotOsgWrapper::ReadFunc, readFunc, , IN, osgDB::DotOsgWrapper::WriteFunc, writeFunc, , IN, osgDB::DotOsgWrapper::ReadWriteMode, readWriteMode, osgDB::DotOsgWrapper::READ_AND_WRITE,
+	                           ____RegisterDotOsgWrapperProxy__osg_Object_P1__C5_std_string_R1__C5_std_string_R1__DotOsgWrapper_ReadFunc__DotOsgWrapper_WriteFunc__DotOsgWrapper_ReadWriteMode,
+	                           "",
+	                           "");
+END_REFLECTOR
+

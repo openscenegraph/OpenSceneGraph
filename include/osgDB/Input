@@ -21,7 +21,6 @@
 #include <osg/StateAttribute>
 #include <osg/ArgumentParser>
 
-#include <osgDB/FieldReaderIterator>
 #include <osgDB/ReaderWriter>
 #include <osgDB/Options>
 
@@ -32,7 +31,217 @@ namespace osgDB {
 
 struct basic_type_wrapper;
 
-/** Class for managing the reading of ASCII .osg files.*/
+/** deprecated. */
+class OSGDB_EXPORT Field
+{
+    public:
+
+        enum {
+            MIN_CACHE_SIZE = 256
+        };
+
+        Field();
+        Field(const Field& field);
+        virtual ~Field();
+
+        virtual Field& operator = (const Field& ic);
+
+        void reset();
+        void addChar(char c);
+        int getNoCharacters() const { return _fieldCacheSize; }
+
+        void setWithinQuotes(bool withinQuotes=true);
+        bool getWithinQuotes();
+
+        void setNoNestedBrackets(int no);
+        int getNoNestedBrackets();
+
+        enum FieldType
+        {
+            OPEN_BRACKET,
+            CLOSE_BRACKET,
+            STRING,
+            WORD,
+            REAL,
+            INTEGER,
+            BLANK,
+            UNINITIALISED
+        };
+
+        FieldType getFieldType() const;
+
+        bool isValid() const;
+
+        bool isOpenBracket() const;
+        bool isCloseBracket() const;
+
+        bool isWord() const;
+        bool matchWord(const char* str) const;
+        bool matchWord(const char* str,int noCharacters) const;
+
+        bool isString() const;
+        bool matchString(const char* str) const;
+        bool matchString(const char* str,int noCharacters) const;
+        bool isQuotedString() const;
+
+        const char* getStr() const;
+        char* takeStr();
+
+        bool isInt() const;
+        bool matchInt(int i) const;
+        bool getInt(int& i) const;
+
+        bool isUInt() const;
+        bool matchUInt(unsigned int i) const;
+        bool getUInt(unsigned int& i) const;
+
+        bool isFloat() const;
+        bool matchFloat(float f) const;
+        bool getFloat(float& f) const;
+        bool getFloat(double& f) const;
+
+        static FieldType calculateFieldType(const char* str,bool withinQuotes=false);
+
+    protected:
+
+        void _init();
+        void _free();
+        void _copy(const Field& ic);
+
+        int _fieldCacheCapacity;
+        int _fieldCacheSize;
+        char* _fieldCache;
+
+        mutable FieldType _fieldType;
+
+        bool _withinQuotes;
+
+        int _noNestedBrackets;
+
+};
+
+/** deprecated. */
+class OSGDB_EXPORT FieldReader
+{
+    public:
+
+        FieldReader();
+        FieldReader(const FieldReader& ic);
+        virtual ~FieldReader();
+
+        virtual FieldReader& operator = (const FieldReader& ic);
+
+        void attach(std::istream* input);
+        void detach();
+
+        virtual bool eof() const;
+
+        bool readField(Field& fieldPtr);
+        void ignoreField();
+
+        /** no of unmatched `{' encountered so far in file*/
+        int getNoNestedBrackets() const;
+
+    private:
+
+        bool _readField(Field* fieldPtr);
+
+        void _init();
+        void _free();
+        void _copy(const FieldReader& ic);
+
+        std::istream* _fin;
+        bool _eof;
+
+        bool findStartOfNextField();
+
+        int _noNestedBrackets;
+
+        bool _delimiterEatLookUp[256];
+        bool _delimiterKeepLookUp[256];
+
+};
+
+/** deprecated. */
+class OSGDB_EXPORT FieldReaderIterator
+{
+    public:
+
+        enum {
+            MINIMUM_FIELD_READER_QUEUE_SIZE = 10
+        };
+
+        FieldReaderIterator();
+        FieldReaderIterator(const FieldReaderIterator& ic);
+        virtual ~FieldReaderIterator();
+
+        FieldReaderIterator& operator = (const FieldReaderIterator& ic);
+
+        void attach(std::istream* input);
+        void detach();
+
+        virtual bool eof() const;
+
+        FieldReader& getFieldReader() { return _reader; }
+
+        void insert(int pos,Field* field);
+        void insert(int pos,const char* str);
+
+        Field& operator [] (int pos);
+        Field& field (int pos);
+
+        FieldReaderIterator& operator ++ ();
+        FieldReaderIterator& operator += (int no);
+
+        /** increments the iterator of the next simple field or
+          * whole block if the current field[0] is an open bracket */
+        void advanceOverCurrentFieldOrBlock();
+        void advanceToEndOfCurrentBlock();
+        void advanceToEndOfBlock(int noNestBrackets);
+
+        bool matchSequence(const char* str);
+
+        bool readSequence(const char* keyword,std::string& value);
+        bool readSequence(const char* keyword,unsigned int& value);
+        bool readSequence(const char* keyword,int& value);
+        bool readSequence(const char* keyword,float& value);
+        bool readSequence(const char* keyword,osg::Vec2f& value);
+        bool readSequence(const char* keyword,osg::Vec3f& value);
+        bool readSequence(const char* keyword,osg::Vec4f& value);
+        bool readSequence(const char* keyword,osg::Vec2d& value);
+        bool readSequence(const char* keyword,osg::Vec3d& value);
+        bool readSequence(const char* keyword,osg::Vec4d& value);
+
+        bool readSequence(std::string& value);
+        bool readSequence(unsigned int& value);
+        bool readSequence(int& value);
+        bool readSequence(float& value);
+        bool readSequence(osg::Vec2f& value);
+        bool readSequence(osg::Vec3f& value);
+        bool readSequence(osg::Vec4f& value);
+        bool readSequence(osg::Vec2d& value);
+        bool readSequence(osg::Vec3d& value);
+        bool readSequence(osg::Vec4d& value);
+
+    private:
+
+        void _init();
+        void _free();
+        void _copy(const FieldReaderIterator& ic);
+
+        FieldReader _reader;
+
+        Field _blank;
+
+        Field* _previousField;
+
+        Field** _fieldQueue;
+        int _fieldQueueSize;
+        int _fieldQueueCapacity;
+
+};
+
+/** deprecated. */
 class OSGDB_EXPORT Input : public FieldReaderIterator
 {
     public:

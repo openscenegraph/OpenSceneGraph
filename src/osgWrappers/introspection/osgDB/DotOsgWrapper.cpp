@@ -10,8 +10,17 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Drawable>
+#include <osg/Image>
+#include <osg/Node>
 #include <osg/Object>
+#include <osg/Shader>
+#include <osg/StateAttribute>
+#include <osg/Uniform>
 #include <osgDB/DotOsgWrapper>
+#include <osgDB/Input>
+#include <osgDB/Output>
+#include <osgDB/Registry>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -20,6 +29,74 @@
 #ifdef OUT
 #undef OUT
 #endif
+
+BEGIN_OBJECT_REFLECTOR(osgDB::DeprecatedDotOsgWrapperManager)
+	I_DeclaringFile("osgDB/DotOsgWrapper");
+	I_BaseType(osg::Referenced);
+	I_Constructor0(____DeprecatedDotOsgWrapperManager,
+	               "",
+	               "");
+	I_Method1(void, addDotOsgWrapper, IN, osgDB::DotOsgWrapper *, wrapper,
+	          Properties::NON_VIRTUAL,
+	          __void__addDotOsgWrapper__DotOsgWrapper_P1,
+	          "",
+	          "");
+	I_Method1(void, removeDotOsgWrapper, IN, osgDB::DotOsgWrapper *, wrapper,
+	          Properties::NON_VIRTUAL,
+	          __void__removeDotOsgWrapper__DotOsgWrapper_P1,
+	          "",
+	          "");
+	I_Method2(osg::Object *, readObjectOfType, IN, const osg::Object &, compObj, IN, osgDB::Input &, fr,
+	          Properties::NON_VIRTUAL,
+	          __osg_Object_P1__readObjectOfType__C5_osg_Object_R1__Input_R1,
+	          "",
+	          "");
+	I_Method2(osg::Object *, readObjectOfType, IN, const osgDB::basic_type_wrapper &, btw, IN, osgDB::Input &, fr,
+	          Properties::NON_VIRTUAL,
+	          __osg_Object_P1__readObjectOfType__C5_basic_type_wrapper_R1__Input_R1,
+	          "",
+	          "");
+	I_Method1(osg::Object *, readObject, IN, osgDB::Input &, fr,
+	          Properties::NON_VIRTUAL,
+	          __osg_Object_P1__readObject__Input_R1,
+	          "",
+	          "");
+	I_Method1(osg::Image *, readImage, IN, osgDB::Input &, fr,
+	          Properties::NON_VIRTUAL,
+	          __osg_Image_P1__readImage__Input_R1,
+	          "",
+	          "");
+	I_Method1(osg::Drawable *, readDrawable, IN, osgDB::Input &, fr,
+	          Properties::NON_VIRTUAL,
+	          __osg_Drawable_P1__readDrawable__Input_R1,
+	          "",
+	          "");
+	I_Method1(osg::Uniform *, readUniform, IN, osgDB::Input &, fr,
+	          Properties::NON_VIRTUAL,
+	          __osg_Uniform_P1__readUniform__Input_R1,
+	          "",
+	          "");
+	I_Method1(osg::StateAttribute *, readStateAttribute, IN, osgDB::Input &, fr,
+	          Properties::NON_VIRTUAL,
+	          __osg_StateAttribute_P1__readStateAttribute__Input_R1,
+	          "",
+	          "");
+	I_Method1(osg::Node *, readNode, IN, osgDB::Input &, fr,
+	          Properties::NON_VIRTUAL,
+	          __osg_Node_P1__readNode__Input_R1,
+	          "",
+	          "");
+	I_Method1(osg::Shader *, readShader, IN, osgDB::Input &, fr,
+	          Properties::NON_VIRTUAL,
+	          __osg_Shader_P1__readShader__Input_R1,
+	          "",
+	          "");
+	I_Method2(bool, writeObject, IN, const osg::Object &, obj, IN, osgDB::Output &, fw,
+	          Properties::NON_VIRTUAL,
+	          __bool__writeObject__C5_osg_Object_R1__Output_R1,
+	          "",
+	          "");
+END_REFLECTOR
 
 BEGIN_ENUM_REFLECTOR(osgDB::DotOsgWrapper::ReadWriteMode)
 	I_DeclaringFile("osgDB/DotOsgWrapper");

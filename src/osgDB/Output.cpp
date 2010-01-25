@@ -136,7 +136,7 @@ std::string Output::wrapString(const std::string& str)
 
 bool Output::writeObject(const osg::Object& obj)
 {
-    return Registry::instance()->writeObject(obj,*this);
+    return Registry::instance()->getDeprecatedDotOsgObjectWrapperManager()->writeObject(obj,*this);
 }
 
 

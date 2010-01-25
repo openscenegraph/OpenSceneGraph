@@ -65,10 +65,6 @@ struct type_wrapper: basic_type_wrapper {
     the reader/writers which are linked in
     at runtime for reading non-native file formats.
 
-    The RegisterDotOsgWrapperProxy can be used to automatically register
-    DotOsgWrappers, at runtime with the Registry. A DotOsgWrapper encapsulates
-    the functions that can read and write to the .osg for each osg::Object.
-
     The RegisterReaderWriterProxy can be used to automatically
     register at runtime a reader/writer with the Registry.
 */
@@ -148,19 +144,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** get const list of all registered ReaderWriters.*/
         const ReaderWriterList& getReaderWriterList() const { return _rwList; }
  
-        osg::Object*         readObjectOfType(const osg::Object& compObj,Input& fr);       
-        osg::Object*         readObjectOfType(const basic_type_wrapper &btw, Input& fr);
-
-        osg::Object*         readObject(Input& fr);
-        osg::Image*          readImage(Input& fr);
-        osg::Drawable*       readDrawable(Input& fr);
-        osg::Uniform*        readUniform(Input& fr);
-        osg::StateAttribute* readStateAttribute(Input& fr);
-        osg::Node*           readNode(Input& fr);
-        osg::Shader*         readShader(Input& fr);
-        
-        bool                 writeObject(const osg::Object& obj,Output& fw);
-
 
         typedef class osgDB::FindFileCallback FindFileCallback;
         typedef class osgDB::ReadFileCallback ReadFileCallback;
@@ -484,11 +467,13 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** Get the ObjectWrapperManager that is used to store all the ObjectWrappers. */
         ObjectWrapperManager* getObjectWrapperManager() { return _objectWrapperManager.get(); }
 
+        /** Get the ObjectWrapperManager that is used to store all the ObjectWrappers. */
+        DeprecatedDotOsgWrapperManager* getDeprecatedDotOsgObjectWrapperManager() { return _deprecatedDotOsgWrapperManager.get(); }
+
     protected:
 
         virtual ~Registry();
 
-        typedef std::map< std::string, osg::ref_ptr<DotOsgWrapper> >    DotOsgWrapperMap;
         typedef std::vector< osg::ref_ptr<DynamicLibrary> >             DynamicLibraryList;
         typedef std::map< std::string, std::string>                     ExtensionAliasMap;
         typedef std::map< std::string, std::string>                     MimeTypeExtensionMap;
@@ -518,10 +503,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         bool                                        _createNodeFromImage;
         
         RegisteredProtocolsSet                      _registeredProtocols;
-
-        osg::Object*       readObject(DotOsgWrapperMap& dowMap,Input& fr);
-
-        void eraseWrapper(DotOsgWrapperMap& wrappermap,DotOsgWrapper* wrapper);
 
     public:
         /** Functor used in internal implementations.*/
@@ -575,16 +556,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         osg::ref_ptr<WriteFileCallback>     _writeFileCallback;
         osg::ref_ptr<FileLocationCallback>  _fileLocationCallback;
 
-        DotOsgWrapperMap   _objectWrapperMap;
-        DotOsgWrapperMap   _imageWrapperMap;
-        DotOsgWrapperMap   _drawableWrapperMap;
-        DotOsgWrapperMap   _stateAttrWrapperMap;
-        DotOsgWrapperMap   _uniformWrapperMap;
-        DotOsgWrapperMap   _nodeWrapperMap;
-        DotOsgWrapperMap   _shaderWrapperMap;
-        
-        DotOsgWrapperMap   _classNameWrapperMap;
-
         OpenThreads::ReentrantMutex _pluginMutex;
         ReaderWriterList            _rwList;
         DynamicLibraryList          _dlList;
@@ -618,7 +589,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         osg::ref_ptr<SharedStateManager>        _sharedStateManager;
 
         osg::ref_ptr<ObjectWrapperManager>      _objectWrapperManager;
-
+        osg::ref_ptr<DeprecatedDotOsgWrapperManager> _deprecatedDotOsgWrapperManager;
 };
 
 /** read the command line arguments.*/

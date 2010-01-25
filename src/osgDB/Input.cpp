@@ -44,42 +44,42 @@ void Input::registerUniqueIDForObject(const std::string& uniqueID,osg::Object* o
 
 osg::Object* Input::readObjectOfType(const osg::Object& compObj)
 {
-    return Registry::instance()->readObjectOfType(compObj,*this);
+    return Registry::instance()->getDeprecatedDotOsgObjectWrapperManager()->readObjectOfType(compObj,*this);
 }
 
 osg::Object* Input::readObjectOfType(const basic_type_wrapper &btw)
 {
-    return Registry::instance()->readObjectOfType(btw,*this);
+    return Registry::instance()->getDeprecatedDotOsgObjectWrapperManager()->readObjectOfType(btw,*this);
 }
 
 osg::Object* Input::readObject()
 {
-    return Registry::instance()->readObject(*this);
+    return Registry::instance()->getDeprecatedDotOsgObjectWrapperManager()->readObject(*this);
 }
 
 
 osg::Image*  Input::readImage()
 {
-    return Registry::instance()->readImage(*this);
+    return Registry::instance()->getDeprecatedDotOsgObjectWrapperManager()->readImage(*this);
 }
 
 osg::Drawable* Input::readDrawable()
 {
-    return Registry::instance()->readDrawable(*this);
+    return Registry::instance()->getDeprecatedDotOsgObjectWrapperManager()->readDrawable(*this);
 }
 
 osg::StateAttribute* Input::readStateAttribute()
 {
-    return Registry::instance()->readStateAttribute(*this);
+    return Registry::instance()->getDeprecatedDotOsgObjectWrapperManager()->readStateAttribute(*this);
 }
 osg::Uniform* Input::readUniform()
 {
-    return Registry::instance()->readUniform(*this);
+    return Registry::instance()->getDeprecatedDotOsgObjectWrapperManager()->readUniform(*this);
 }
 
 osg::Node* Input::readNode()
 {
-    return Registry::instance()->readNode(*this);
+    return Registry::instance()->getDeprecatedDotOsgObjectWrapperManager()->readNode(*this);
 }
 
 osg::Object* Input::readObject(const std::string& fileName)
@@ -89,7 +89,7 @@ osg::Object* Input::readObject(const std::string& fileName)
 
 osg::Shader*  Input::readShader()
 {
-    return Registry::instance()->readShader(*this);
+    return Registry::instance()->getDeprecatedDotOsgObjectWrapperManager()->readShader(*this);
 }
 
 osg::Image*  Input::readImage(const std::string& fileName)

@@ -79,7 +79,56 @@ class OSGDB_EXPORT DotOsgWrapper : public osg::Referenced
         ReadWriteMode               _readWriteMode;
 };
 
-/**  Proxy class for automatic registration of DotOsgWrappers with the Registry.*/
+
+class OSGDB_EXPORT DeprecatedDotOsgWrapperManager : public osg::Referenced
+{
+    public:
+
+        DeprecatedDotOsgWrapperManager() {}
+
+        void addDotOsgWrapper(DotOsgWrapper* wrapper);
+        void removeDotOsgWrapper(DotOsgWrapper* wrapper);
+
+        osg::Object*         readObjectOfType(const osg::Object& compObj,Input& fr);
+        osg::Object*         readObjectOfType(const basic_type_wrapper &btw, Input& fr);
+
+        osg::Object*         readObject(Input& fr);
+        osg::Image*          readImage(Input& fr);
+        osg::Drawable*       readDrawable(Input& fr);
+        osg::Uniform*        readUniform(Input& fr);
+        osg::StateAttribute* readStateAttribute(Input& fr);
+        osg::Node*           readNode(Input& fr);
+        osg::Shader*         readShader(Input& fr);
+
+        bool                 writeObject(const osg::Object& obj,Output& fw);
+
+    private:
+
+        virtual ~DeprecatedDotOsgWrapperManager() {}
+
+        typedef std::map< std::string, osg::ref_ptr<DotOsgWrapper> >    DotOsgWrapperMap;
+
+        osg::Object*       readObject(DotOsgWrapperMap& dowMap,Input& fr);
+        void eraseWrapper(DotOsgWrapperMap& wrappermap,DotOsgWrapper* wrapper);
+
+        DotOsgWrapperMap   _objectWrapperMap;
+        DotOsgWrapperMap   _imageWrapperMap;
+        DotOsgWrapperMap   _drawableWrapperMap;
+        DotOsgWrapperMap   _stateAttrWrapperMap;
+        DotOsgWrapperMap   _uniformWrapperMap;
+        DotOsgWrapperMap   _nodeWrapperMap;
+        DotOsgWrapperMap   _shaderWrapperMap;
+
+        DotOsgWrapperMap   _classNameWrapperMap;
+
+};
+
+
+/**  Proxy class for automatic registration of DotOsgWrappers with the Registry.
+    The RegisterDotOsgWrapperProxy can be used to automatically register
+    DotOsgWrappers, at runtime with the Registry. A DotOsgWrapper encapsulates
+    the functions that can read and write to the .osg for each osg::Object.
+*/
 class OSGDB_EXPORT RegisterDotOsgWrapperProxy
 {
     public:

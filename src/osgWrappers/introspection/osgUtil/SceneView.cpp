@@ -226,6 +226,21 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	          __C5_osg_StateSet_P1__getGlobalStateSet,
 	          "",
 	          "");
+	I_Method1(void, setSecondaryStateSet, IN, osg::StateSet *, state,
+	          Properties::NON_VIRTUAL,
+	          __void__setSecondaryStateSet__osg_StateSet_P1,
+	          "",
+	          "");
+	I_Method0(osg::StateSet *, getSecondaryStateSet,
+	          Properties::NON_VIRTUAL,
+	          __osg_StateSet_P1__getSecondaryStateSet,
+	          "",
+	          "");
+	I_Method0(const osg::StateSet *, getSecondaryStateSet,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_StateSet_P1__getSecondaryStateSet,
+	          "",
+	          "");
 	I_Method1(void, setLocalStateSet, IN, osg::StateSet *, state,
 	          Properties::NON_VIRTUAL,
 	          __void__setLocalStateSet__osg_StateSet_P1,
@@ -889,6 +904,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::SceneView)
 	                0, 
 	                0, 
 	                0);
+	I_SimpleProperty(osg::StateSet *, SecondaryStateSet, 
+	                 __osg_StateSet_P1__getSecondaryStateSet, 
+	                 __void__setSecondaryStateSet__osg_StateSet_P1);
 	I_SimpleProperty(osg::State *, State, 
 	                 __osg_State_P1__getState, 
 	                 __void__setState__osg_State_P1);

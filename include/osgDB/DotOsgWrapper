@@ -147,7 +147,7 @@ class OSGDB_EXPORT RegisterDotOsgWrapperProxy
 };
 
 template<class T>
-class OSGDB_EXPORT TemplateRegisterDotOsgWrapperProxy : public RegisterDotOsgWrapperProxy, public T
+class TemplateRegisterDotOsgWrapperProxy : public RegisterDotOsgWrapperProxy, public T
 {
     public:
 

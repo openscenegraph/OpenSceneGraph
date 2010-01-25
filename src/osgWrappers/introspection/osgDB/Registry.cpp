@@ -11,7 +11,6 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/ArgumentParser>
-#include <osg/Drawable>
 #include <osg/FrameStamp>
 #include <osg/Image>
 #include <osg/KdTree>
@@ -20,17 +19,13 @@
 #include <osg/Shader>
 #include <osg/Shape>
 #include <osg/State>
-#include <osg/StateAttribute>
-#include <osg/Uniform>
 #include <osgDB/Archive>
 #include <osgDB/AuthenticationMap>
 #include <osgDB/Callbacks>
 #include <osgDB/DotOsgWrapper>
 #include <osgDB/DynamicLibrary>
 #include <osgDB/FileCache>
-#include <osgDB/Input>
 #include <osgDB/Options>
-#include <osgDB/Output>
 #include <osgDB/ReaderWriter>
 #include <osgDB/Registry>
 #include <osgDB/SharedStateManager>
@@ -177,56 +172,6 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          Properties::NON_VIRTUAL,
 	          __C5_ReaderWriterList_R1__getReaderWriterList,
 	          "get const list of all registered ReaderWriters. ",
-	          "");
-	I_Method2(osg::Object *, readObjectOfType, IN, const osg::Object &, compObj, IN, osgDB::Input &, fr,
-	          Properties::NON_VIRTUAL,
-	          __osg_Object_P1__readObjectOfType__C5_osg_Object_R1__Input_R1,
-	          "",
-	          "");
-	I_Method2(osg::Object *, readObjectOfType, IN, const osgDB::basic_type_wrapper &, btw, IN, osgDB::Input &, fr,
-	          Properties::NON_VIRTUAL,
-	          __osg_Object_P1__readObjectOfType__C5_basic_type_wrapper_R1__Input_R1,
-	          "",
-	          "");
-	I_Method1(osg::Object *, readObject, IN, osgDB::Input &, fr,
-	          Properties::NON_VIRTUAL,
-	          __osg_Object_P1__readObject__Input_R1,
-	          "",
-	          "");
-	I_Method1(osg::Image *, readImage, IN, osgDB::Input &, fr,
-	          Properties::NON_VIRTUAL,
-	          __osg_Image_P1__readImage__Input_R1,
-	          "",
-	          "");
-	I_Method1(osg::Drawable *, readDrawable, IN, osgDB::Input &, fr,
-	          Properties::NON_VIRTUAL,
-	          __osg_Drawable_P1__readDrawable__Input_R1,
-	          "",
-	          "");
-	I_Method1(osg::Uniform *, readUniform, IN, osgDB::Input &, fr,
-	          Properties::NON_VIRTUAL,
-	          __osg_Uniform_P1__readUniform__Input_R1,
-	          "",
-	          "");
-	I_Method1(osg::StateAttribute *, readStateAttribute, IN, osgDB::Input &, fr,
-	          Properties::NON_VIRTUAL,
-	          __osg_StateAttribute_P1__readStateAttribute__Input_R1,
-	          "",
-	          "");
-	I_Method1(osg::Node *, readNode, IN, osgDB::Input &, fr,
-	          Properties::NON_VIRTUAL,
-	          __osg_Node_P1__readNode__Input_R1,
-	          "",
-	          "");
-	I_Method1(osg::Shader *, readShader, IN, osgDB::Input &, fr,
-	          Properties::NON_VIRTUAL,
-	          __osg_Shader_P1__readShader__Input_R1,
-	          "",
-	          "");
-	I_Method2(bool, writeObject, IN, const osg::Object &, obj, IN, osgDB::Output &, fw,
-	          Properties::NON_VIRTUAL,
-	          __bool__writeObject__C5_osg_Object_R1__Output_R1,
-	          "",
 	          "");
 	I_Method1(void, setFindFileCallback, IN, osgDB::Registry::FindFileCallback *, cb,
 	          Properties::NON_VIRTUAL,
@@ -643,11 +588,14 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __bool__isProtocolRegistered__C5_std_string_R1,
 	          "returns true, if named protocol is registered ",
 	          "");
+	I_Method0(osgDB::DeprecatedDotOsgWrapperManager *, getDeprecatedDotOsgObjectWrapperManager,
+	          Properties::NON_VIRTUAL,
+	          __DeprecatedDotOsgWrapperManager_P1__getDeprecatedDotOsgObjectWrapperManager,
+	          "Get the ObjectWrapperManager that is used to store all the ObjectWrappers. ",
+	          "");
 	I_ProtectedConstructor0(____Registry,
 	                        "constructor is private, as its a singleton, preventing construction other than via the instance() method and therefore ensuring only one copy is ever constructed ",
 	                        "");
-
-
 
 	I_ProtectedMethod0(void, destruct,
 	                   Properties::NON_VIRTUAL,
@@ -679,6 +627,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_SimpleProperty(const osgDB::FilePathList &, DataFilePathList, 
 	                 __C5_FilePathList_R1__getDataFilePathList, 
 	                 __void__setDataFilePathList__C5_FilePathList_R1);
+	I_SimpleProperty(osgDB::DeprecatedDotOsgWrapperManager *, DeprecatedDotOsgObjectWrapperManager, 
+	                 __DeprecatedDotOsgWrapperManager_P1__getDeprecatedDotOsgObjectWrapperManager, 
+	                 0);
 	I_SimpleProperty(double, ExpiryDelay, 
 	                 __double__getExpiryDelay, 
 	                 __void__setExpiryDelay__double);

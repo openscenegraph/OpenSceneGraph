@@ -16,8 +16,23 @@
 #include <osgDB/FileUtils>
 #include <osgDB/Registry>
 #include <osgDB/ObjectWrapper>
+#include "AsciiStreamOperator.h"
+#include "BinaryStreamOperator.h"
 
 using namespace osgDB;
+
+bool checkBinary( std::istream* fin )
+{
+    unsigned int headerLow = 0, headerHigh = 0;
+    fin->read( (char*)&headerLow, INT_SIZE );
+    fin->read( (char*)&headerHigh, INT_SIZE );
+    if ( headerLow!=OSG_HEADER_LOW || headerHigh!=OSG_HEADER_HIGH )
+    {
+        fin->seekg( 0, std::ios::beg );
+        return false;
+    }
+    return true;
+}
 
 class ReaderWriterOSG2 : public osgDB::ReaderWriter
 {
@@ -76,8 +91,15 @@ public:
     {
         try
         {
-            InputStream is( &fin, options );
-            if ( is.start()!=InputStream::READ_IMAGE )
+            InputStream is( options );
+            
+            InputIterator* ii = NULL;
+            if ( !checkBinary(&fin) )
+                ii = new AsciiInputIterator(&fin);
+            else
+                ii = new BinaryInputIterator(&fin);
+            
+            if ( is.start(ii)!=InputStream::READ_IMAGE )
                 return ReadResult::FILE_NOT_HANDLED;
             is.decompress();
             return is.readImage();
@@ -107,8 +129,15 @@ public:
     {
         try
         {
-            InputStream is( &fin, options );
-            if ( is.start()!=InputStream::READ_SCENE )
+            InputStream is( options );
+            
+            InputIterator* ii = NULL;
+            if ( !checkBinary(&fin) )
+                ii = new AsciiInputIterator(&fin);
+            else
+                ii = new BinaryInputIterator(&fin);
+            
+            if ( is.start(ii)!=InputStream::READ_SCENE )
                 return ReadResult::FILE_NOT_HANDLED;
             is.decompress();
             return dynamic_cast<osg::Node*>( is.readObject() );
@@ -162,8 +191,15 @@ public:
     {
         try
         {
-            OutputStream os( &fout, options );
-            os.start( OutputStream::WRITE_IMAGE );
+            OutputStream os( options );
+            
+            osgDB::OutputIterator* oi = NULL;
+            if ( options && options->getOptionString().find("Ascii")!=std::string::npos )
+                oi = new AsciiOutputIterator(&fout);
+            else
+                oi = new BinaryOutputIterator(&fout);
+            
+            os.start( oi, OutputStream::WRITE_IMAGE );
             os.writeImage( &image );
             os.compress( &fout );
             
@@ -201,8 +237,15 @@ public:
     {
         try
         {
-            OutputStream os( &fout, options );
-            os.start( OutputStream::WRITE_SCENE );
+            OutputStream os( options );
+            
+            osgDB::OutputIterator* oi = NULL;
+            if ( options && options->getOptionString().find("Ascii")!=std::string::npos )
+                oi = new AsciiOutputIterator(&fout);
+            else
+                oi = new BinaryOutputIterator(&fout);
+            
+            os.start( oi, OutputStream::WRITE_SCENE );
             os.writeObject( &node );
             os.compress( &fout );
             

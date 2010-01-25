@@ -12,8 +12,8 @@
 */
 // Written by Wang Rui, (C) 2010
 
-#ifndef H_INPUTSTREAM
-#define H_INPUTSTREAM
+#ifndef OSGDB_INPUTSTREAM
+#define OSGDB_INPUTSTREAM
 
 #include <osg/Endian>
 #include <osg/Vec2>
@@ -24,7 +24,7 @@
 #include <osg/Array>
 #include <osg/PrimitiveSet>
 #include <osgDB/ReaderWriter>
-#include <osgDB/DataTypes>
+#include <osgDB/StreamOperator>
 #include <iostream>
 #include <sstream>
 
@@ -51,12 +51,6 @@ public:
     typedef std::map< unsigned int, osg::ref_ptr<osg::Array> > ArrayMap;
     typedef std::map< unsigned int, osg::ref_ptr<osg::Object> > IdentifierMap;
     
-    enum ReadMode
-    {
-        READ_BINARY = 0,
-        READ_ASCII
-    };
-    
     enum ReadType
     {
         READ_UNKNOWN = 0,
@@ -64,28 +58,32 @@ public:
         READ_IMAGE
     };
     
-    InputStream( std::istream* istream, const osgDB::Options* options );
+    InputStream( const osgDB::Options* options );
     virtual ~InputStream();
     
-    bool isBinary() const { return _readMode==READ_BINARY; }
+    bool isBinary() const { return _in->isBinary(); }
     bool getUseFloatMatrix() const { return _useFloatMatrix; }
     
     // Serialization related functions
-    inline InputStream& operator>>( bool& b );
-    inline InputStream& operator>>( char& c );
-    inline InputStream& operator>>( signed char& c );
-    inline InputStream& operator>>( unsigned char& c );
-    inline InputStream& operator>>( short& s );
-    inline InputStream& operator>>( unsigned short& s );
-    inline InputStream& operator>>( int& i );
-    inline InputStream& operator>>( unsigned int& i );
-    inline InputStream& operator>>( long& l );
-    inline InputStream& operator>>( unsigned long& l );
-    inline InputStream& operator>>( float& f );
-    inline InputStream& operator>>( double& d );
-    inline InputStream& operator>>( std::string& s );
-    inline InputStream& operator>>( std::istream& (*fn)(std::istream&) );
-    inline InputStream& operator>>( std::ios_base& (*fn)(std::ios_base&) );
+    InputStream& operator>>( bool& b ) { _in->readBool(b); return *this; }
+    InputStream& operator>>( char& c ) { _in->readChar(c); return *this; }
+    InputStream& operator>>( signed char& c ) { _in->readSChar(c); return *this; }
+    InputStream& operator>>( unsigned char& c ) { _in->readUChar(c); return *this; }
+    InputStream& operator>>( short& s ) { _in->readShort(s); return *this; }
+    InputStream& operator>>( unsigned short& s ) { _in->readUShort(s); return *this; }
+    InputStream& operator>>( int& i ) { _in->readInt(i); return *this; }
+    InputStream& operator>>( unsigned int& i ) { _in->readUInt(i); return *this; }
+    InputStream& operator>>( long& l ) { _in->readLong(l); return *this; }
+    InputStream& operator>>( unsigned long& l ) { _in->readULong(l); return *this; }
+    InputStream& operator>>( float& f ) { _in->readFloat(f); return *this; }
+    InputStream& operator>>( double& d ) { _in->readDouble(d); return *this; }
+    InputStream& operator>>( std::string& s ) { _in->readString(s); return *this; }
+    InputStream& operator>>( std::istream& (*fn)(std::istream&) ) { _in->readStream(fn); return *this; }
+    InputStream& operator>>( std::ios_base& (*fn)(std::ios_base&) ) { _in->readBase(fn); return *this; }
+    
+    InputStream& operator>>( ObjectGLenum& value ) { _in->readGLenum(value); return *this; }
+    InputStream& operator>>( ObjectProperty& prop ) { _in->readProperty(prop); return *this; }
+    InputStream& operator>>( ObjectMark& mark ) { _in->readMark(mark); return *this; }
     
     InputStream& operator>>( osg::Vec2b& v );
     InputStream& operator>>( osg::Vec3b& v );
@@ -117,15 +115,11 @@ public:
     template<typename T> InputStream& operator>>( osg::ref_ptr<T>& ptr )
     { ptr = static_cast<T*>(readObject()); return *this; }
     
-    InputStream& operator>>( ObjectGLenum& value );
-    InputStream& operator>>( ObjectProperty& prop );
-    InputStream& operator>>( ObjectMark& mark );
-    
     // Convenient methods for reading
     inline bool matchString( const std::string& str );
     inline void advanceToCurrentEndBracket();
     inline void readWrappedString( std::string& str );
-    inline void readCharArray( char* s, unsigned int size );
+    void readCharArray( char* s, unsigned int size ) { _in->readCharArray(s, size); }
     
     // Global reading functions
     osg::Array* readArray();
@@ -133,7 +127,7 @@ public:
     osg::Image* readImage();
     osg::Object* readObject( osg::Object* existingObj=0 );
     
-    ReadType start();
+    ReadType start( InputIterator* );
     void decompress();
     
     // Schema handlers
@@ -150,228 +144,19 @@ protected:
     ArrayMap _arrayMap;
     IdentifierMap _identifierMap;
     
-    ReadMode _readMode;
     int _byteSwap;
     bool _useFloatMatrix;
     std::string _currentField;
-    std::istream* _in;
+    InputIterator* _in;
 };
-
-// INLINE METHODS
-
-InputStream& InputStream::operator>>( bool& b )
-{
-    if ( isBinary() )
-    {
-        char c = 0;
-        _in->read( &c, CHAR_SIZE ); checkStream();
-        b = (c!=0);
-    }
-    else
-    {
-        std::string boolString;
-        *_in >> boolString; checkStream();
-        if ( boolString=="TRUE" ) b = true;
-        else b = false;
-    }
-    return *this;
-}
-
-InputStream& InputStream::operator>>( char& c )
-{
-    if ( isBinary() )
-    {
-        _in->read( &c, CHAR_SIZE ); checkStream();
-    }
-    else
-    {
-        short s = 0;
-        *_in >> s; checkStream();
-        c = (char)s;
-    }
-    return *this;
-}
-
-InputStream& InputStream::operator>>( signed char& c )
-{
-    if ( isBinary() )
-    {
-        _in->read( (char*)&c, CHAR_SIZE ); checkStream();
-    }
-    else
-    {
-        short s = 0;
-        *_in >> s; checkStream();
-        c = (signed char)s;
-    }
-    return *this;
-}
-
-InputStream& InputStream::operator>>( unsigned char& c )
-{
-    if ( isBinary() )
-    {
-        _in->read( (char*)&c, CHAR_SIZE ); checkStream();
-    }
-    else
-    {
-        unsigned short s = 0;
-        *_in >> s; checkStream();
-        c = (unsigned char)s;
-    }
-    return *this;
-}
-
-InputStream& InputStream::operator>>( short& s )
-{
-    if ( isBinary() )
-    {
-        _in->read( (char*)&s, SHORT_SIZE ); checkStream();
-        if ( _byteSwap ) osg::swapBytes( (char*)&s, SHORT_SIZE );
-    }
-    else
-    {
-        *_in >> s; checkStream();
-    }
-    return *this;
-}
-
-InputStream& InputStream::operator>>( unsigned short& s )
-{
-    if ( isBinary() )
-    {
-        _in->read( (char*)&s, SHORT_SIZE ); checkStream();
-        if ( _byteSwap ) osg::swapBytes( (char*)&s, SHORT_SIZE );
-    }
-    else
-    {
-        *_in >> s; checkStream();
-    }
-    return *this;
-}
-
-InputStream& InputStream::operator>>( int& i )
-{
-    if ( isBinary() )
-    {
-        _in->read( (char*)&i, INT_SIZE ); checkStream();
-        if ( _byteSwap ) osg::swapBytes( (char*)&i, INT_SIZE );
-    }
-    else
-    {
-        *_in >> i; checkStream();
-    }
-    return *this;
-}
-
-InputStream& InputStream::operator>>( unsigned int& i )
-{
-    if ( isBinary() )
-    {
-        _in->read( (char*)&i, INT_SIZE ); checkStream();
-        if ( _byteSwap ) osg::swapBytes( (char*)&i, INT_SIZE );
-    }
-    else
-    {
-        *_in >> i; checkStream();
-    }
-    return *this;
-}
-
-InputStream& InputStream::operator>>( long& l )
-{
-    if ( isBinary() )
-    {
-        _in->read( (char*)&l, LONG_SIZE ); checkStream();
-        if ( _byteSwap ) osg::swapBytes( (char*)&l, LONG_SIZE );
-    }
-    else
-    {
-        *_in >> l; checkStream();
-    }
-    return *this;
-}
-
-InputStream& InputStream::operator>>( unsigned long& l )
-{
-    if ( isBinary() )
-    {
-        _in->read( (char*)&l, LONG_SIZE ); checkStream();
-        if ( _byteSwap ) osg::swapBytes( (char*)&l, LONG_SIZE );
-    }
-    else
-    {
-        *_in >> l; checkStream();
-    }
-    return *this;
-}
-
-InputStream& InputStream::operator>>( float& f )
-{
-    if ( isBinary() )
-    {
-        _in->read( (char*)&f, FLOAT_SIZE ); checkStream();
-        if ( _byteSwap ) osg::swapBytes( (char*)&f, FLOAT_SIZE );
-    }
-    else
-    {
-        *_in >> f; checkStream();
-    }
-    return *this;
-}
-
-InputStream& InputStream::operator>>( double& d )
-{
-    if ( isBinary() )
-    {
-        _in->read( (char*)&d, DOUBLE_SIZE ); checkStream();
-        if ( _byteSwap ) osg::swapBytes( (char*)&d, DOUBLE_SIZE );
-    }
-    else
-    {
-        *_in >> d; checkStream();
-    }
-    return *this;
-}
-
-InputStream& InputStream::operator>>( std::string& s )
-{
-    if ( isBinary() )
-    {
-        int size = 0; *this >> size;
-        if ( size )
-        {
-            s.resize( size );
-            _in->read( (char*)s.c_str(), size ); checkStream();
-        }
-    }
-    else
-    {
-        *_in >> s; checkStream();
-    }
-    return *this;
-}
-
-InputStream& InputStream::operator>>( std::istream& (*fn)(std::istream&) )
-{
-    if ( !isBinary() ) *_in >> fn;
-    return *this;
-}
-
-InputStream& InputStream::operator>>( std::ios_base& (*fn)(std::ios_base&) )
-{
-    if ( !isBinary() ) *_in >> fn;
-    return *this;
-}
 
 bool InputStream::matchString( const std::string& str )
 {
     if ( !isBinary() )
     {
-        std::string s;
-        *_in >> s; checkStream();
+        std::string s; *this >> s;
         if ( s==str ) return true;
-        else _in->seekg( -(int)(s.length()), std::ios::cur );
+        else _in->getStream()->seekg( -(int)(s.length()), std::ios::cur );
     }
     return false;
 }
@@ -383,10 +168,10 @@ void InputStream::advanceToCurrentEndBracket()
     
     std::string passString;
     unsigned int blocks = 0;
-    while ( !_in->eof() )
+    while ( !_in->getStream()->eof() )
     {
         passString.clear();
-        *_in >> passString;
+        *this >> passString;
         
         if ( passString=="}" )
         {
@@ -410,7 +195,7 @@ void InputStream::readWrappedString( std::string& str )
                 char ch;
                 do
                 {
-                    _in->get( ch ); checkStream();
+                    _in->getStream()->get( ch ); checkStream();
                     str.append( 1, ch );
                 } while ( ch!='\"' );
             }
@@ -419,17 +204,9 @@ void InputStream::readWrappedString( std::string& str )
     }
 }
 
-void InputStream::readCharArray( char* s, unsigned int size )
-{
-    if ( size>0 )
-    {
-        _in->read( s, size ); checkStream();
-    }
-}
-
 void InputStream::checkStream() const
 {
-    if ( _in->rdstate()&_in->failbit )
+    if ( _in->isFailed() )
         throw InputException(_currentField, "InputStream: Failed to read from stream.");
 }
 

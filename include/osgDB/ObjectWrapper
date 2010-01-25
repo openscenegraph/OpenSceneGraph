@@ -12,8 +12,8 @@
 */
 // Written by Wang Rui, (C) 2010
 
-#ifndef H_OBJECTWRAPPER
-#define H_OBJECTWRAPPER
+#ifndef OSGDB_OBJECTWRAPPER
+#define OSGDB_OBJECTWRAPPER
 
 #include <osgDB/Serializer>
 

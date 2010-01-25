@@ -12,8 +12,8 @@
 */
 // Written by Wang Rui, (C) 2010
 
-#ifndef H_OUTPUTSTREAM
-#define H_OUTPUTSTREAM
+#ifndef OSGDB_OUTPUTSTREAM
+#define OSGDB_OUTPUTSTREAM
 
 #include <osg/Vec2>
 #include <osg/Vec3>
@@ -23,7 +23,7 @@
 #include <osg/Array>
 #include <osg/PrimitiveSet>
 #include <osgDB/ReaderWriter>
-#include <osgDB/DataTypes>
+#include <osgDB/StreamOperator>
 #include <iostream>
 #include <sstream>
 
@@ -50,12 +50,6 @@ public:
     typedef std::map<const osg::Array*, unsigned int> ArrayMap;
     typedef std::map<const osg::Object*, unsigned int> ObjectMap;
     
-    enum WriteMode
-    {
-        WRITE_BINARY = 0,
-        WRITE_ASCII
-    };
-    
     enum WriteType
     {
         WRITE_UNKNOWN = 0,
@@ -72,29 +66,33 @@ public:
         WRITE_EXTERNAL_FILE        /*!< Write Image::data() to disk and use it as external file */
     };
     
-    OutputStream( std::ostream* ostream, const osgDB::Options* options );
+    OutputStream( const osgDB::Options* options );
     virtual ~OutputStream();
     
-    bool isBinary() const { return _writeMode==WRITE_BINARY; }
+    bool isBinary() const { return _out->isBinary(); }
     
     void setWriteImageHint( WriteImageHint hint ) { _writeImageHint = hint; }
     WriteImageHint getWriteImageHint() const { return _writeImageHint; }
     
     // Serialization related functions
-    inline OutputStream& operator<<( bool b );
-    inline OutputStream& operator<<( char c );
-    inline OutputStream& operator<<( unsigned char c );
-    inline OutputStream& operator<<( short s );
-    inline OutputStream& operator<<( unsigned short s );
-    inline OutputStream& operator<<( int i );
-    inline OutputStream& operator<<( unsigned int i );
-    inline OutputStream& operator<<( long l );
-    inline OutputStream& operator<<( unsigned long l );
-    inline OutputStream& operator<<( float f );
-    inline OutputStream& operator<<( double d );
-    inline OutputStream& operator<<( const std::string& s );
-    inline OutputStream& operator<<( std::ostream& (*fn)(std::ostream&) );
-    inline OutputStream& operator<<( std::ios_base& (*fn)(std::ios_base&) );
+    OutputStream& operator<<( bool b ) { _out->writeBool(b); return *this; }
+    OutputStream& operator<<( char c ) { _out->writeChar(c); return *this; }
+    OutputStream& operator<<( unsigned char c ) { _out->writeUChar(c); return *this; }
+    OutputStream& operator<<( short s ) { _out->writeShort(s); return *this; }
+    OutputStream& operator<<( unsigned short s ) { _out->writeUShort(s); return *this; }
+    OutputStream& operator<<( int i ) { _out->writeInt(i); return *this; }
+    OutputStream& operator<<( unsigned int i ) { _out->writeUInt(i); return *this; }
+    OutputStream& operator<<( long l ) { _out->writeLong(l); return *this; }
+    OutputStream& operator<<( unsigned long l ) { _out->writeULong(l); return *this; }
+    OutputStream& operator<<( float f ) { _out->writeFloat(f); return *this; }
+    OutputStream& operator<<( double d ) { _out->writeDouble(d); return *this; }
+    OutputStream& operator<<( const std::string& s ) { _out->writeString(s); return *this; }
+    OutputStream& operator<<( std::ostream& (*fn)(std::ostream&) ) { _out->writeStream(fn); return *this; }
+    OutputStream& operator<<( std::ios_base& (*fn)(std::ios_base&) ) { _out->writeBase(fn); return *this; }
+    
+    OutputStream& operator<<( const ObjectGLenum& value ) { _out->writeGLenum(value); return *this; }
+    OutputStream& operator<<( const ObjectProperty& prop ) { _out->writeProperty(prop); return *this; }
+    OutputStream& operator<<( const ObjectMark& mark ) { _out->writeMark(mark); return *this; }
     
     OutputStream& operator<<( const osg::Vec2b& v );
     OutputStream& operator<<( const osg::Vec3b& v );
@@ -126,13 +124,9 @@ public:
     template<typename T> OutputStream& operator<<( const osg::ref_ptr<T>& ptr )
     { writeObject(ptr.get()); return *this; }
     
-    OutputStream& operator<<( const ObjectGLenum& value );
-    OutputStream& operator<<( const ObjectProperty& prop );
-    OutputStream& operator<<( const ObjectMark& mark );
-    
     // Convenient methods for writing
     inline void writeWrappedString( const std::string& str );
-    inline void writeCharArray( const char* s, unsigned int size );
+    void writeCharArray( const char* s, unsigned int size ) { _out->writeCharArray(s, size); }
     
     // Global writing functions
     void writeArray( const osg::Array* a );
@@ -140,7 +134,7 @@ public:
     void writeImage( const osg::Image* img );
     void writeObject( const osg::Object* obj );
     
-    void start( WriteType type );
+    void start( OutputIterator* outIterator, WriteType type );
     void compress( std::ostream* ostream );
     
     // Schema handlers
@@ -156,199 +150,12 @@ protected:
     ArrayMap _arrayMap;
     ObjectMap _objectMap;
     
-    WriteMode _writeMode;
     WriteImageHint _writeImageHint;
-    
-    bool _readyForEndBracket;
-    int _indent;
     std::string _currentField;
     std::string _compressorName;
     std::stringstream _compressSource;
-    std::ostream* _out;
+    OutputIterator* _out;
 };
-
-// INLINE METHODS
-
-OutputStream& OutputStream::operator<<( bool b )
-{
-    if ( isBinary() )
-    {
-        char c = b?1:0;
-        _out->write( &c, CHAR_SIZE );
-    }
-    else
-    {
-        if ( b ) *_out << "TRUE ";
-        else *_out << "FALSE ";
-    }
-    return *this;
-}
-
-OutputStream& OutputStream::operator<<( char c )
-{
-    if ( isBinary() )
-    {
-        _out->write( &c, CHAR_SIZE );
-    }
-    else
-    {
-        *_out << (short)c << ' ';
-    }
-    return *this;
-}
-
-OutputStream& OutputStream::operator<<( unsigned char c )
-{
-    if ( isBinary() )
-    {
-        _out->write( (char*)&c, CHAR_SIZE );
-    }
-    else
-    {
-        *_out << (unsigned short)c << ' ';
-    }
-    return *this;
-}
-
-OutputStream& OutputStream::operator<<( short s )
-{
-    if ( isBinary() )
-    {
-        _out->write( (char*)&s, SHORT_SIZE );
-    }
-    else
-    {
-        *_out << s << ' ';
-    }
-    return *this;
-}
-
-OutputStream& OutputStream::operator<<( unsigned short s )
-{
-    if ( isBinary() )
-    {
-        _out->write( (char*)&s, SHORT_SIZE );
-    }
-    else
-    {
-        *_out << s << ' ';
-    }
-    return *this;
-}
-
-OutputStream& OutputStream::operator<<( int i )
-{
-    if ( isBinary() )
-    {
-        _out->write( (char*)&i, INT_SIZE );
-    }
-    else
-    {
-        *_out << i << ' ';
-    }
-    return *this;
-}
-
-OutputStream& OutputStream::operator<<( unsigned int i )
-{
-    if ( isBinary() )
-    {
-        _out->write( (char*)&i, INT_SIZE );
-    }
-    else
-    {
-        *_out << i << ' ';
-    }
-    return *this;
-}
-
-OutputStream& OutputStream::operator<<( long l )
-{
-    if ( isBinary() )
-    {
-        _out->write( (char*)&l, LONG_SIZE );
-    }
-    else
-    {
-        *_out << l << ' ';
-    }
-    return *this;
-}
-
-OutputStream& OutputStream::operator<<( unsigned long l )
-{
-    if ( isBinary() )
-    {
-        _out->write( (char*)&l, LONG_SIZE );
-    }
-    else
-    {
-        *_out << l << ' ';
-    }
-    return *this;
-}
-
-OutputStream& OutputStream::operator<<( float f )
-{
-    if ( isBinary() )
-    {
-        _out->write( (char*)&f, FLOAT_SIZE );
-    }
-    else
-    {
-        *_out << f << ' ';
-    }
-    return *this;
-}
-
-OutputStream& OutputStream::operator<<( double d )
-{
-    if ( isBinary() )
-    {
-        _out->write((char*)&d, DOUBLE_SIZE);
-    }
-    else
-    {
-        *_out << d << ' ';
-    }
-    return *this;
-}
-
-OutputStream& OutputStream::operator<<( const std::string& s )
-{
-    if ( isBinary() )
-    {
-        int size = s.size();
-        _out->write( (char*)&size, INT_SIZE );
-        _out->write( s.c_str(), s.size() );
-    }
-    else
-    {
-        *_out << s << ' ';
-    }
-    return *this;
-}
-
-OutputStream& OutputStream::operator<<( std::ostream& (*fn)(std::ostream&) )
-{
-    if ( !isBinary() )
-    {
-        *_out << fn;
-        if ( fn==static_cast<std::ostream& (*)(std::ostream&)>(std::endl) )
-        {
-            _readyForEndBracket = true;
-            for (int i=0; i<_indent; ++i)
-                *_out << ' ';
-        }
-    }
-    return *this;
-}
-
-OutputStream& OutputStream::operator<<( std::ios_base& (*fn)(std::ios_base&) )
-{
-    if ( !isBinary() ) *_out << fn;
-    return *this;
-}
 
 void OutputStream::writeWrappedString( const std::string& str )
 {
@@ -359,21 +166,6 @@ void OutputStream::writeWrappedString( const std::string& str )
     }
     else
         *this << str;
-}
-
-void OutputStream::writeCharArray( const char* s, unsigned int size )
-{
-    if ( size>0 )
-    {
-        if ( isBinary() )
-        {
-            _out->write( s, size );
-        }
-        else
-        {
-            *_out << s << ' ';
-        }
-    }
 }
 
 }

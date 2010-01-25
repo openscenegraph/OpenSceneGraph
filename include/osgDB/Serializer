@@ -12,8 +12,8 @@
 */
 // Written by Wang Rui, (C) 2010
 
-#ifndef H_SERIALIZER
-#define H_SERIALIZER
+#ifndef OSGDB__SERIALIZER
+#define OSGDB__SERIALIZER
 
 #include <osg/ref_ptr>
 #include <osg/Notify>

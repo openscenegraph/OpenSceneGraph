@@ -12,8 +12,8 @@
 */
 // Written by Wang Rui, (C) 2010
 
-#ifndef H_DATATYPES
-#define H_DATATYPES
+#ifndef OSGDB_DATATYPES
+#define OSGDB_DATATYPES
 
 #include <string>
 
@@ -92,12 +92,12 @@ struct ObjectProperty
     ObjectProperty( const ObjectProperty& copy )
     : _name(copy._name), _value(copy._value), _mapProperty(copy._mapProperty) {}
     
-	ObjectProperty& proto( const char* name )
-	{ _name = name; return *this; }
-	
-	void set( int v ) { _value = v; }
-	int get() const { return _value; }
-	
+    ObjectProperty& proto( const char* name )
+    { _name = name; return *this; }
+    
+    void set( int v ) { _value = v; }
+    int get() const { return _value; }
+    
     std::string _name;
     int _value;
     bool _mapProperty;

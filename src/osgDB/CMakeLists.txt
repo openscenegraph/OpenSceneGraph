@@ -20,6 +20,7 @@ SET(LIB_NAME osgDB)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/DataTypes
+    ${HEADER_PATH}/StreamOperator
     ${HEADER_PATH}/Serializer
     ${HEADER_PATH}/ObjectWrapper
     ${HEADER_PATH}/InputStream

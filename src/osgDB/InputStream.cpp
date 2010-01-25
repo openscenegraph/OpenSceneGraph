@@ -23,12 +23,10 @@ using namespace osgDB;
 
 static std::string s_lastSchema;
 
-InputStream::InputStream( std::istream* istream, const osgDB::Options* options )
-:   _readMode(READ_BINARY), _byteSwap(0), _useFloatMatrix(false),
-    _in(istream)
+InputStream::InputStream( const osgDB::Options* options )
+:   _byteSwap(0), _useFloatMatrix(false),
+    _in(0)
 {
-    if ( !_in )
-        throw InputException(_currentField, "InputStream: Null stream specified.");
     if ( !options ) return;
     
     std::string schema;
@@ -38,7 +36,9 @@ InputStream::InputStream( std::istream* istream, const osgDB::Options* options )
     {
         const std::string& option = *itr;
         if ( option=="Ascii" )
-            _readMode = READ_ASCII;
+        {
+            // Omit this
+        }
         else
         {
             StringList keyAndValues;
@@ -154,68 +154,6 @@ InputStream& InputStream::operator>>( osg::Matrixd& mat )
         *this >> mat(r, 0) >> mat(r, 1) >> mat(r, 2) >> mat(r, 3);
     }
     *this >> END_BRACKET;
-    return *this;
-}
-
-InputStream& InputStream::operator>>( ObjectGLenum& value )
-{
-    GLenum e = 0;
-    if ( isBinary() )
-    {
-        _in->read( (char*)&e, GLENUM_SIZE ); checkStream();
-        if ( _byteSwap ) osg::swapBytes( (char*)&e, GLENUM_SIZE );
-    }
-    else
-    {
-        std::string enumString;
-        *this >> enumString;
-        e = osgDB::Registry::instance()->getObjectWrapperManager()->getValue("GL", enumString);
-    }
-    value.set( e );
-    return *this;
-}
-
-InputStream& InputStream::operator>>( ObjectProperty& prop )
-{
-    int value = 0;
-    if ( isBinary() )
-    {
-        if ( prop._mapProperty )
-        {
-            _in->read( (char*)&value, INT_SIZE ); checkStream();
-            if ( _byteSwap ) osg::swapBytes( (char*)&value, INT_SIZE );
-        }
-    }
-    else
-    {
-        std::string enumString;
-        *this >> enumString;
-        if ( prop._mapProperty )
-        {
-            value = osgDB::Registry::instance()->getObjectWrapperManager()->getValue(prop._name, enumString);
-        }
-        else
-        {
-            if ( prop._name!=enumString )
-            {
-                osg::notify(osg::WARN) << "InputStream::operator>>(ObjectProperty&): Unmatched property "
-                                       << enumString << ", expecting " << prop._name
-                                       << ". At " << _currentField << std::endl;
-            }
-            prop._name = enumString;
-        }
-    }
-    prop.set( value );
-    return *this;
-}
-
-InputStream& InputStream::operator>>( ObjectMark& mark )
-{
-    if ( !isBinary() )
-    {
-        std::string markString;
-        *this >> markString;
-    }
     return *this;
 }
 
@@ -635,32 +573,25 @@ void InputStream::readSchema( std::istream& fin )
     }
 }
 
-InputStream::ReadType InputStream::start()
+InputStream::ReadType InputStream::start( InputIterator* inIterator )
 {
     ReadType type = READ_UNKNOWN;
     _currentField = "Header";
+    _in = inIterator;
+    if ( !_in )
+        throw InputException(_currentField, "InputStream: Null stream specified.");
     
     // Check OSG header information
     unsigned int version = 0;
     if ( isBinary() )
     {
-        unsigned int headerLow = 0, headerHigh = 0;
-        *this >> headerLow >> headerHigh;
-        if ( headerLow!=OSG_HEADER_LOW || headerHigh!=OSG_HEADER_HIGH )
-        {
-            _in->seekg( 0, std::ios::beg );
-            _readMode = READ_ASCII;
-        }
-        else
-        {
-            unsigned int typeValue;
-            *this >> typeValue >> version;
-            type = static_cast<ReadType>(typeValue);
-            
-            unsigned int matrixValueType; *this >> matrixValueType;
-            if ( matrixValueType==0 ) _useFloatMatrix = true;
-            else _useFloatMatrix = false;
-        }
+        unsigned int typeValue;
+        *this >> typeValue >> version;
+        type = static_cast<ReadType>(typeValue);
+        
+        unsigned int matrixValueType; *this >> matrixValueType;
+        if ( matrixValueType==0 ) _useFloatMatrix = true;
+        else _useFloatMatrix = false;
     }
     if ( !isBinary() )
     {
@@ -702,9 +633,9 @@ void InputStream::decompress()
     }
     
     std::string data;
-    if ( !compressor->decompress(*_in, data) )
+    if ( !compressor->decompress(*(_in->getStream()), data) )
         throw InputException(_currentField, "InputStream: Failed to decompress stream.");
-    _in = new std::stringstream(data);
+    _in->setStream( new std::stringstream(data) );
 }
 
 // PROTECTED METHODS
@@ -745,7 +676,7 @@ void InputStream::readArrayImplementation( T* a, int readSize, bool useByteSwap 
         a->resize( size );
         if ( isBinary() )
         {
-            _in->read( (char*)&((*a)[0]), readSize*size ); checkStream();
+            _in->getStream()->read( (char*)&((*a)[0]), readSize*size ); checkStream();
             if ( useByteSwap && _byteSwap )
             {
                 for ( int i=0; i<size; ++i )

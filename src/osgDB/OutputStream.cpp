@@ -21,13 +21,10 @@
 
 using namespace osgDB;
 
-OutputStream::OutputStream( std::ostream* ostream, const osgDB::Options* options )
-:   _writeMode(WRITE_BINARY), _writeImageHint(WRITE_USE_IMAGE_HINT),
-    _readyForEndBracket(false), _indent(0),
-    _out(ostream)
+OutputStream::OutputStream( const osgDB::Options* options )
+:   _writeImageHint(WRITE_USE_IMAGE_HINT),
+    _out(0)
 {
-    if ( !_out )
-        throw OutputException(_currentField, "OutputStream: Null stream specified.");
     if ( !options ) return;
     
     StringList optionList;
@@ -36,7 +33,9 @@ OutputStream::OutputStream( std::ostream* ostream, const osgDB::Options* options
     {
         const std::string& option = *itr;
         if ( option=="Ascii" )
-            _writeMode = WRITE_ASCII;
+        {
+            // Omit this
+        }
         else
         {
             StringList keyAndValues;
@@ -134,57 +133,6 @@ OutputStream& OutputStream::operator<<( const osg::Matrixd& mat )
               << mat(r, 2) << mat(r, 3) << std::endl;
     }
     *this << END_BRACKET << std::endl;
-    return *this;
-}
-
-OutputStream& OutputStream::operator<<( const ObjectGLenum& value )
-{
-    GLenum e = value.get();
-    if ( isBinary() )
-    {
-        _out->write((char*)&e, GLENUM_SIZE);
-    }
-    else
-    {
-        const std::string& enumString = osgDB::Registry::instance()->getObjectWrapperManager()->getString("GL", e);
-        *_out << enumString << ' ';
-    }
-    return *this;
-}
-
-OutputStream& OutputStream::operator<<( const ObjectProperty& prop )
-{
-    if ( isBinary() )
-    {
-        if ( prop._mapProperty )
-            _out->write( (char*)&(prop._value), INT_SIZE );
-    }
-    else
-    {
-        std::string enumString = prop._name;
-        if ( prop._mapProperty )
-        {
-            enumString = osgDB::Registry::instance()->getObjectWrapperManager()->getString(prop._name, prop._value);
-        }
-        *_out << enumString << ' ';
-    }
-    return *this;
-}
-
-OutputStream& OutputStream::operator<<( const ObjectMark& mark )
-{
-    if ( !isBinary() )
-    {
-        int delta = mark._indentDelta;
-        if ( delta<0 && _readyForEndBracket )
-        {
-            if ( _indent<-delta ) delta = -_indent;
-            _readyForEndBracket = false;
-            _out->seekp( delta, std::ios::cur );
-        }
-        _indent += delta;
-        *this << mark._name;
-    }
     return *this;
 }
 
@@ -485,9 +433,12 @@ void OutputStream::writeObject( const osg::Object* obj )
     *this << END_BRACKET << std::endl;
 }
 
-void OutputStream::start( OutputStream::WriteType type )
+void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType type )
 {
     _currentField = "Header";
+    _out = outIterator;
+    if ( !_out )
+        throw OutputException(_currentField, "OutputStream: Null stream specified.");
     
     if ( isBinary() )
     {
@@ -508,8 +459,8 @@ void OutputStream::start( OutputStream::WriteType type )
             else
             {
                 *this << _compressorName;
-                _out->flush();
-                _out = &_compressSource;
+                _out->getStream()->flush();
+                _out->setStream( &_compressSource );
                 return;
             }
         }

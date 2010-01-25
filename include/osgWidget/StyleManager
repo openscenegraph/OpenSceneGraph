@@ -17,7 +17,7 @@
 #define OSGWIDGET_STYLE_MANAGER
 
 #include <map>
-#include <osgDB/FieldReaderIterator>
+#include <osgDB/Input>
 #include <osgWidget/Box>
 #include <osgWidget/Frame>
 #include <osgWidget/Input>

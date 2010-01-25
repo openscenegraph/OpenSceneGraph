@@ -24,8 +24,7 @@
 
 namespace osgDB {
 
-/** ofstream wrapper class for adding support for indenting.
-    Used in output of .osg ASCII files to improve their readability.*/
+/** deprecated. */
 class OSGDB_EXPORT Output : public osgDB::ofstream
 {
     public:

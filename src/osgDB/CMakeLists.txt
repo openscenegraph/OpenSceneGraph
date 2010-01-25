@@ -34,9 +34,6 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/DotOsgWrapper
     ${HEADER_PATH}/DynamicLibrary
     ${HEADER_PATH}/Export
-    ${HEADER_PATH}/Field
-    ${HEADER_PATH}/FieldReader
-    ${HEADER_PATH}/FieldReaderIterator
     ${HEADER_PATH}/FileCache
     ${HEADER_PATH}/FileNameUtils
     ${HEADER_PATH}/FileUtils

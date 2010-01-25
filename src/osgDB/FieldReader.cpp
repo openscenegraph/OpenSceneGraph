@@ -10,8 +10,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
 */
-#include <osgDB/Field>
-#include <osgDB/FieldReader>
+#include <osgDB/Input>
+#include <istream>
+
 #include <stdio.h>
 
 using namespace osgDB;

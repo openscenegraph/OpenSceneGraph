@@ -14,7 +14,7 @@
 #include <osg/Notify>
 #include <osg/Math>
 
-#include <osgDB/Field>
+#include <osgDB/Input>
 
 #include <string.h>
 #include <stdlib.h>

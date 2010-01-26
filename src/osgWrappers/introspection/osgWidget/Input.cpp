@@ -42,24 +42,24 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Input)
 	          __void__positioned,
 	          "",
 	          "");
-	I_Method1(bool, focus, IN, osgWidget::WindowManager *, x,
+	I_Method1(bool, focus, IN, const osgWidget::WindowManager *, x,
 	          Properties::VIRTUAL,
-	          __bool__focus__WindowManager_P1,
+	          __bool__focus__C5_WindowManager_P1,
 	          "",
 	          "");
-	I_Method1(bool, unfocus, IN, osgWidget::WindowManager *, x,
+	I_Method1(bool, unfocus, IN, const osgWidget::WindowManager *, x,
 	          Properties::VIRTUAL,
-	          __bool__unfocus__WindowManager_P1,
+	          __bool__unfocus__C5_WindowManager_P1,
 	          "",
 	          "");
-	I_Method3(bool, keyUp, IN, int, x, IN, int, x, IN, osgWidget::WindowManager *, x,
+	I_Method3(bool, keyUp, IN, int, x, IN, int, x, IN, const osgWidget::WindowManager *, x,
 	          Properties::VIRTUAL,
-	          __bool__keyUp__int__int__WindowManager_P1,
+	          __bool__keyUp__int__int__C5_WindowManager_P1,
 	          "",
 	          "");
-	I_Method3(bool, keyDown, IN, int, x, IN, int, x, IN, osgWidget::WindowManager *, x,
+	I_Method3(bool, keyDown, IN, int, x, IN, int, x, IN, const osgWidget::WindowManager *, x,
 	          Properties::VIRTUAL,
-	          __bool__keyDown__int__int__WindowManager_P1,
+	          __bool__keyDown__int__int__C5_WindowManager_P1,
 	          "",
 	          "");
 	I_Method1(void, setCursor, IN, osgWidget::Widget *, x,

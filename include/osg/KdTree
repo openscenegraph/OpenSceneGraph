@@ -83,7 +83,7 @@ class OSG_EXPORT KdTree : public osg::Shape
         typedef std::vector<LineSegmentIntersection> LineSegmentIntersections;
         
         /** compute the intersection of a line segment and the kdtree, return true if an intersection has been found.*/
-        virtual bool intersect(const osg::Vec3& start, const osg::Vec3& end, LineSegmentIntersections& intersections) const;
+        virtual bool intersect(const osg::Vec3d& start, const osg::Vec3d& end, LineSegmentIntersections& intersections) const;
 
 
         typedef int value_type;

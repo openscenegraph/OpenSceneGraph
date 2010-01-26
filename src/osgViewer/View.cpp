@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -36,7 +36,7 @@ public:
 
     CollectedCoordinateSystemNodesVisitor():
         NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN) {}
-        
+
     META_NodeVisitor("osgViewer","CollectedCoordinateSystemNodesVisitor")
 
     virtual void apply(osg::Node& node)
@@ -59,7 +59,7 @@ public:
         }
         traverse(node);
     }
-    
+
     osg::NodePath _pathToCoordinateSystemNode;
 };
 
@@ -71,22 +71,22 @@ public:
 
     ViewerCoordinateFrameCallback(osgViewer::View* view):
         _view(view) {}
-    
+
     virtual osg::CoordinateFrame getCoordinateFrame(const osg::Vec3d& position) const
     {
         osg::notify(osg::INFO)<<"getCoordinateFrame("<<position<<")"<<std::endl;
 
         osg::NodePath tmpPath = _view->getCoordinateSystemNodePath();
-        
+
         if (!tmpPath.empty())
-        {        
+        {
             osg::Matrixd coordinateFrame;
 
             osg::CoordinateSystemNode* csn = dynamic_cast<osg::CoordinateSystemNode*>(tmpPath.back());
             if (csn)
             {
                 osg::Vec3 local_position = position*osg::computeWorldToLocal(tmpPath);
-                
+
                 // get the coordinate frame in world coords.
                 coordinateFrame = csn->computeLocalCoordinateFrame(local_position)* osg::computeLocalToWorld(tmpPath);
 
@@ -121,10 +121,10 @@ public:
             return osg::Matrixd::translate(position);
         }
     }
-    
+
 protected:
     virtual ~ViewerCoordinateFrameCallback() {}
-    
+
     osg::observer_ptr<osgViewer::View> _view;
 };
 
@@ -146,12 +146,12 @@ View::View():
 
     // make sure View is safe to reference multi-threaded.
     setThreadSafeRefUnref(true);
-    
+
     // need to attach a Renderer to the master camera which has been default constructed
     getCamera()->setRenderer(createRenderer(getCamera()));
 
     setEventQueue(new osgGA::EventQueue);
-    
+
     setStats(new osg::Stats("View"));
 }
 
@@ -182,10 +182,10 @@ void View::take(osg::View& rhs)
     osg::View::take(rhs);
 
 #if 1
-    osgViewer::View* rhs_osgViewer = dynamic_cast<osgViewer::View*>(&rhs);    
+    osgViewer::View* rhs_osgViewer = dynamic_cast<osgViewer::View*>(&rhs);
     if (rhs_osgViewer)
     {
-    
+
         // copy across rhs
         _startTick = rhs_osgViewer->_startTick;
         _frameStamp = rhs_osgViewer->_frameStamp;
@@ -194,12 +194,12 @@ void View::take(osg::View& rhs)
         {
             _scene = rhs_osgViewer->_scene;
         }
-        
+
         if (rhs_osgViewer->_cameraManipulator.valid())
         {
             _cameraManipulator = rhs_osgViewer->_cameraManipulator;
         }
-        
+
         _eventHandlers.insert(_eventHandlers.end(), rhs_osgViewer->_eventHandlers.begin(), rhs_osgViewer->_eventHandlers.end());
 
         _coordinateSystemNodePath = rhs_osgViewer->_coordinateSystemNodePath;
@@ -207,16 +207,16 @@ void View::take(osg::View& rhs)
         _displaySettings = rhs_osgViewer->_displaySettings;
         _fusionDistanceMode = rhs_osgViewer->_fusionDistanceMode;
         _fusionDistanceValue = rhs_osgViewer->_fusionDistanceValue;
-        
-        
+
+
         // clear rhs
         rhs_osgViewer->_frameStamp = 0;
         rhs_osgViewer->_scene = 0;
         rhs_osgViewer->_cameraManipulator = 0;
         rhs_osgViewer->_eventHandlers.clear();
-        
+
         rhs_osgViewer->_coordinateSystemNodePath.clear();
-        
+
         rhs_osgViewer->_displaySettings = 0;
     }
 #endif
@@ -235,10 +235,10 @@ osg::GraphicsOperation* View::createRenderer(osg::Camera* camera)
 void View::init()
 {
     osg::notify(osg::INFO)<<"View::init()"<<std::endl;
-    
+
     osg::ref_ptr<osgGA::GUIEventAdapter> initEvent = _eventQueue->createEvent();
     initEvent->setEventType(osgGA::GUIEventAdapter::FRAME);
-    
+
     if (_cameraManipulator.valid())
     {
         _cameraManipulator->init(*initEvent, *this);
@@ -289,18 +289,18 @@ void View::setSceneData(osg::Node* node)
         // the scene graph from being run in parallel.
         osgUtil::Optimizer::StaticObjectDetectionVisitor sodv;
         getSceneData()->accept(sodv);
-        
+
         // make sure that existing scene graph objects are allocated with thread safe ref/unref
-        if (getViewerBase() && 
-            getViewerBase()->getThreadingModel()!=ViewerBase::SingleThreaded) 
+        if (getViewerBase() &&
+            getViewerBase()->getThreadingModel()!=ViewerBase::SingleThreaded)
         {
             getSceneData()->setThreadSafeRefUnref(true);
         }
-        
+
         // update the scene graph so that it has enough GL object buffer memory for the graphics contexts that will be using it.
         getSceneData()->resizeGLObjectBuffers(osg::DisplaySettings::instance()->getMaxNumberOfGraphicsContexts());
     }
-    
+
     computeActiveCoordinateSystemNodePath();
 
     assignSceneDataToCameras();
@@ -341,13 +341,13 @@ const osgDB::ImagePager* View::getImagePager() const
 void View::setCameraManipulator(osgGA::MatrixManipulator* manipulator)
 {
     _cameraManipulator = manipulator;
-    
+
     if (_cameraManipulator.valid())
     {
         _cameraManipulator->setCoordinateFrameCallback(new ViewerCoordinateFrameCallback(this));
 
         if (getSceneData()) _cameraManipulator->setNode(getSceneData());
-        
+
         osg::ref_ptr<osgGA::GUIEventAdapter> dummyEvent = _eventQueue->createEvent();
 
         _cameraManipulator->home(*dummyEvent, *this);
@@ -406,10 +406,10 @@ void View::computeActiveCoordinateSystemNodePath()
 {
     // now search for CoordinateSystemNode's for which we want to track.
     osg::Node* subgraph = getSceneData();
-    
+
     if (subgraph)
     {
-    
+
         CollectedCoordinateSystemNodesVisitor ccsnv;
         subgraph->accept(ccsnv);
 
@@ -418,7 +418,7 @@ void View::computeActiveCoordinateSystemNodePath()
            setCoordinateSystemNodePath(ccsnv._pathToCoordinateSystemNode);
            return;
         }
-    }  
+    }
 
     // otherwise no node path found so reset to empty.
     setCoordinateSystemNodePath(osg::NodePath());
@@ -427,28 +427,28 @@ void View::computeActiveCoordinateSystemNodePath()
 void View::setUpViewAcrossAllScreens()
 {
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-    if (!wsi) 
+    if (!wsi)
     {
         osg::notify(osg::NOTICE)<<"View::setUpViewAcrossAllScreens() : Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
         return;
     }
-    
+
     osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance();
-    
-    double fovy, aspectRatio, zNear, zFar;        
+
+    double fovy, aspectRatio, zNear, zFar;
     _camera->getProjectionMatrixAsPerspective(fovy, aspectRatio, zNear, zFar);
 
     osg::GraphicsContext::ScreenIdentifier si;
     si.readDISPLAY();
-    
+
     // displayNum has not been set so reset it to 0.
     if (si.displayNum<0) si.displayNum = 0;
-    
+
     unsigned int numScreens = wsi->getNumScreens(si);
     if (numScreens==1)
     {
         if (si.screenNum<0) si.screenNum = 0;
-    
+
         unsigned int width, height;
         wsi->getScreenResolution(si, width, height);
 
@@ -467,7 +467,7 @@ void View::setUpViewAcrossAllScreens()
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
 
         _camera->setGraphicsContext(gc.get());
-        
+
         osgViewer::GraphicsWindow* gw = dynamic_cast<osgViewer::GraphicsWindow*>(gc.get());
         if (gw)
         {
@@ -507,15 +507,15 @@ void View::setUpViewAcrossAllScreens()
             wsi->getScreenResolution(si, width, height);
             translate_x += double(width) / (double(height) * aspectRatio);
         }
-        
+
         bool stereoSlitScreens = numScreens==2 &&
                                  ds->getStereoMode()==osg::DisplaySettings::HORIZONTAL_SPLIT &&
                                  ds->getStereo();
-    
+
         for(unsigned int i=0; i<numScreens; ++i)
         {
             si.screenNum = i;
-        
+
             unsigned int width, height;
             wsi->getScreenResolution(si, width, height);
 
@@ -558,11 +558,11 @@ void View::setUpViewAcrossAllScreens()
             if (stereoSlitScreens)
             {
                 unsigned int leftCameraNum = (ds->getSplitStereoHorizontalEyeMapping()==osg::DisplaySettings::LEFT_EYE_LEFT_VIEWPORT) ? 0 : 1;
-                
+
                 osg::ref_ptr<osg::DisplaySettings> ds_local = new osg::DisplaySettings(*ds);
                 ds_local->setStereoMode(leftCameraNum==i ? osg::DisplaySettings::LEFT_EYE : osg::DisplaySettings::RIGHT_EYE);
                 camera->setDisplaySettings(ds_local.get());
-                
+
                 addSlave(camera.get(), osg::Matrixd(), osg::Matrixd() );
             }
             else
@@ -587,7 +587,7 @@ void View::setUpViewInWindow(int x, int y, int width, int height, unsigned int s
 
     traits->readDISPLAY();
     if (traits->displayNum<0) traits->displayNum = 0;
-    
+
     traits->screenNum = screenNum;
     traits->x = x;
     traits->y = y;
@@ -612,7 +612,7 @@ void View::setUpViewInWindow(int x, int y, int width, int height, unsigned int s
         osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
     }
 
-    double fovy, aspectRatio, zNear, zFar;        
+    double fovy, aspectRatio, zNear, zFar;
     _camera->getProjectionMatrixAsPerspective(fovy, aspectRatio, zNear, zFar);
 
     double newAspectRatio = double(traits->width) / double(traits->height);
@@ -633,7 +633,7 @@ void View::setUpViewInWindow(int x, int y, int width, int height, unsigned int s
 void View::setUpViewOnSingleScreen(unsigned int screenNum)
 {
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-    if (!wsi) 
+    if (!wsi)
     {
         osg::notify(osg::NOTICE)<<"View::setUpViewOnSingleScreen() : Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
         return;
@@ -643,7 +643,7 @@ void View::setUpViewOnSingleScreen(unsigned int screenNum)
 
     osg::GraphicsContext::ScreenIdentifier si;
     si.readDISPLAY();
-    
+
     // displayNum has not been set so reset it to 0.
     if (si.displayNum<0) si.displayNum = 0;
 
@@ -679,7 +679,7 @@ void View::setUpViewOnSingleScreen(unsigned int screenNum)
         osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
     }
 
-    double fovy, aspectRatio, zNear, zFar;        
+    double fovy, aspectRatio, zNear, zFar;
     _camera->getProjectionMatrixAsPerspective(fovy, aspectRatio, zNear, zFar);
 
     double newAspectRatio = double(traits->width) / double(traits->height);
@@ -701,13 +701,13 @@ static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& or
 {
     osg::Vec3d center(0.0,0.0,0.0);
     osg::Vec3d eye(0.0,0.0,0.0);
-    
+
     double distance = sqrt(sphere_radius*sphere_radius - collar_radius*collar_radius);
-    
+
     bool centerProjection = false;
 
     osg::Vec3d projector = eye - osg::Vec3d(0.0,0.0, distance);
-    
+
     osg::notify(osg::INFO)<<"create3DSphericalDisplayDistortionMesh : Projector position = "<<projector<<std::endl;
     osg::notify(osg::INFO)<<"create3DSphericalDisplayDistortionMesh : distance = "<<distance<<std::endl;
 
@@ -724,7 +724,7 @@ static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& or
     osg::Vec3 yAxis(heightVector);
     float height = heightVector.length();
     yAxis /= height;
-    
+
     int noSteps = 50;
 
     osg::Vec3Array* vertices = new osg::Vec3Array;
@@ -735,7 +735,7 @@ static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& or
     osg::Vec3 bottom = origin;
     osg::Vec3 dx = xAxis*(width/((float)(noSteps-1)));
     osg::Vec3 dy = yAxis*(height/((float)(noSteps-1)));
-    
+
     osg::Vec3d screenCenter = origin + widthVector*0.5f + heightVector*0.5f;
     float screenRadius = heightVector.length() * 0.5f;
 
@@ -755,7 +755,7 @@ static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& or
                 if (phi > osg::PI_2) phi = osg::PI_2;
 
                 phi *= 2.0;
-                
+
                 if (theta<0.0) theta += 2.0*osg::PI;
 
                 // osg::notify(osg::NOTICE)<<"theta = "<<theta<< "phi="<<phi<<std::endl;
@@ -769,7 +769,7 @@ static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& or
 
                 osg::Vec2 texcoord1(theta/(2.0*osg::PI), 1.0f - phi/osg::PI_2);
                 if (intensityMap)
-                {            
+                {
                     colors->push_back(intensityMap->getColor(texcoord1));
                 }
                 else
@@ -797,13 +797,13 @@ static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& or
                 if (theta<0.0) theta += 2.0*osg::PI;
 
                 // osg::notify(osg::NOTICE)<<"theta = "<<theta<< "phi="<<phi<<std::endl;
-                
+
                 double f = distance * sin(phi);
                 double e = distance * cos(phi) + sqrt( sphere_radius*sphere_radius - f*f);
                 double l = e * cos(phi);
                 double h = e * sin(phi);
                 double z = l - distance;
-                
+
                 osg::Vec3 texcoord(h * cos(theta) / sphere_radius,
                                    h * sin(theta) / sphere_radius,
                                    z / sphere_radius);
@@ -813,7 +813,7 @@ static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& or
 
                 osg::Vec2 texcoord1(theta/(2.0*osg::PI), 1.0f - phi/osg::PI_2);
                 if (intensityMap)
-                {            
+                {
                     colors->push_back(intensityMap->getColor(texcoord1));
                 }
                 else
@@ -827,7 +827,7 @@ static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& or
             // osg::notify(osg::NOTICE)<<std::endl;
         }
     }
-    
+
     // pass the created vertex array to the points geometry object.
     geometry->setVertexArray(vertices);
 
@@ -847,7 +847,7 @@ static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& or
         }
         geometry->addPrimitiveSet(elements);
     }
-    
+
     return geometry;
 }
 
@@ -855,7 +855,7 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
 {
     osg::notify(osg::INFO)<<"View::setUpViewFor3DSphericalDisplay(rad="<<radius<<", cllr="<<collar<<", sn="<<screenNum<<", im="<<intensityMap<<")"<<std::endl;
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-    if (!wsi) 
+    if (!wsi)
     {
         osg::notify(osg::NOTICE)<<"Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
         return;
@@ -863,7 +863,7 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
 
     osg::GraphicsContext::ScreenIdentifier si;
     si.readDISPLAY();
-    
+
     // displayNum has not been set so reset it to 0.
     if (si.displayNum<0) si.displayNum = 0;
 
@@ -884,7 +884,7 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
     traits->windowDecoration = false;
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
-    
+
 
     osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
     if (!gc)
@@ -892,7 +892,7 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
         osg::notify(osg::NOTICE)<<"GraphicsWindow has not been created successfully."<<std::endl;
         return;
     }
-    
+
     bool applyIntensityMapAsColours = true;
 
     int tex_width = 512;
@@ -910,8 +910,8 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
     texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
     texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
     texture->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_EDGE);
-    
-#if 0    
+
+#if 0
     osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::SEPERATE_WINDOW;
     GLenum buffer = GL_FRONT;
 #else
@@ -937,7 +937,7 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
         addSlave(camera.get(), osg::Matrixd(), osg::Matrixd());
     }
 
-    
+
     // top face
     {
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
@@ -1033,7 +1033,7 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
 
         addSlave(camera.get(), osg::Matrixd(), osg::Matrixd::rotate(osg::inDegrees(180.0f), 1.0,0.0,0.0));
     }
-    
+
     getCamera()->setProjectionMatrixAsPerspective(90.0f, 1.0, 1, 1000.0);
 
     // distortion correction set up.
@@ -1041,7 +1041,7 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
         osg::Geode* geode = new osg::Geode();
         geode->addDrawable(create3DSphericalDisplayDistortionMesh(osg::Vec3(0.0f,0.0f,0.0f), osg::Vec3(width,0.0f,0.0f), osg::Vec3(0.0f,height,0.0f), radius, collar, applyIntensityMapAsColours ? intensityMap : 0, projectorMatrix));
 
-        // new we need to add the texture to the mesh, we do so by creating a 
+        // new we need to add the texture to the mesh, we do so by creating a
         // StateSet to contain the Texture StateAttribute.
         osg::StateSet* stateset = geode->getOrCreateStateSet();
         stateset->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON);
@@ -1064,20 +1064,20 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
         camera->setAllowEventFocus(false);
         camera->setInheritanceMask(camera->getInheritanceMask() & ~osg::CullSettings::CLEAR_COLOR & ~osg::CullSettings::COMPUTE_NEAR_FAR_MODE);
         //camera->setComputeNearFarMode(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
-        
+
         camera->setProjectionMatrixAsOrtho2D(0,width,0,height);
         camera->setViewMatrix(osg::Matrix::identity());
 
         // add subgraph to render
         camera->addChild(geode);
-        
+
         camera->setName("DistortionCorrectionCamera");
 
         addSlave(camera.get(), osg::Matrixd(), osg::Matrixd(), false);
     }
-    
+
     getCamera()->setNearFarRatio(0.0001f);
-    
+
     if (getLightingMode()==osg::View::HEADLIGHT)
     {
         // set a local light source for headlight to ensure that lighting is consistent across sides of cube.
@@ -1089,14 +1089,14 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
 {
     osg::Vec3d center(0.0,0.0,0.0);
     osg::Vec3d eye(0.0,0.0,0.0);
-    
+
     double distance = sqrt(sphere_radius*sphere_radius - collar_radius*collar_radius);
     bool flip = false;
     bool texcoord_flip = false;
 
     osg::Vec3d projector = eye - osg::Vec3d(0.0,0.0, distance);
-    
-    
+
+
     osg::notify(osg::INFO)<<"createParoramicSphericalDisplayDistortionMesh : Projector position = "<<projector<<std::endl;
     osg::notify(osg::INFO)<<"createParoramicSphericalDisplayDistortionMesh : distance = "<<distance<<std::endl;
 
@@ -1112,7 +1112,7 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
     osg::Vec3 yAxis(heightVector);
     float height = heightVector.length();
     yAxis /= height;
-    
+
     int noSteps = 160;
 
     osg::Vec3Array* vertices = new osg::Vec3Array;
@@ -1123,12 +1123,12 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
     osg::Vec3 bottom = origin;
     osg::Vec3 dx = xAxis*(width/((float)(noSteps-2)));
     osg::Vec3 dy = yAxis*(height/((float)(noSteps-1)));
-    
+
     osg::Vec3 top = origin + yAxis*height;
 
     osg::Vec3 screenCenter = origin + widthVector*0.5f + heightVector*0.5f;
     float screenRadius = heightVector.length() * 0.5f;
-    
+
     geometry->getOrCreateStateSet()->setMode(GL_CULL_FACE, osg::StateAttribute::OFF | osg::StateAttribute::PROTECTED);
 
     for(int i=0;i<noSteps;++i)
@@ -1139,31 +1139,31 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
             osg::Vec2 texcoord(double(i)/double(noSteps-1), double(j)/double(noSteps-1));
             double theta = texcoord.x() * 2.0 * osg::PI;
             double phi = (1.0-texcoord.y()) * osg::PI;
-            
+
             if (texcoord_flip) texcoord.y() = 1.0f - texcoord.y();
 
             osg::Vec3 pos(sin(phi)*sin(theta), sin(phi)*cos(theta), cos(phi));
             pos = pos*projectorMatrix;
-            
+
             double alpha = atan2(pos.x(), pos.y());
             if (alpha<0.0) alpha += 2.0*osg::PI;
-            
+
             double beta = atan2(sqrt(pos.x()*pos.x() + pos.y()*pos.y()), pos.z());
             if (beta<0.0) beta += 2.0*osg::PI;
 
             double gamma = atan2(sqrt(double(pos.x()*pos.x() + pos.y()*pos.y())), double(pos.z()+distance));
             if (gamma<0.0) gamma += 2.0*osg::PI;
-            
-            
+
+
             osg::Vec3 v = screenCenter + osg::Vec3(sin(alpha)*gamma*2.0/osg::PI, -cos(alpha)*gamma*2.0/osg::PI, 0.0f)*screenRadius;
-             
+
             if (flip)
                 vertices->push_back(osg::Vec3(v.x(), top.y()-(v.y()-origin.y()),v.z()));
             else
                 vertices->push_back(v);
 
             texcoords0->push_back( texcoord );
-        
+
             osg::Vec2 texcoord1(alpha/(2.0*osg::PI), 1.0f - beta/osg::PI);
             if (intensityMap)
             {
@@ -1200,7 +1200,7 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
             int i2 = j+(i)*noSteps;
             int i3 = j+1+(i)*noSteps;
             int i4 = j+1+(i+1)*noSteps;
-            
+
             osg::Vec3& v1 = (*vertices)[i1];
             osg::Vec3& v2 = (*vertices)[i2];
             osg::Vec3& v3 = (*vertices)[i3];
@@ -1210,17 +1210,17 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
             if ((v2-screenCenter).length()>screenRadius) continue;
             if ((v3-screenCenter).length()>screenRadius) continue;
             if ((v4-screenCenter).length()>screenRadius) continue;
-            
+
             elements->push_back(i1);
             elements->push_back(i2);
             elements->push_back(i3);
-            
+
             elements->push_back(i1);
             elements->push_back(i3);
             elements->push_back(i4);
         }
     }
-   
+
     return geometry;
 }
 
@@ -1229,7 +1229,7 @@ void View::setUpViewForPanoramicSphericalDisplay(double radius, double collar, u
     osg::notify(osg::INFO)<<"View::setUpViewForPanoramicSphericalDisplay(rad="<<radius<<", cllr="<<collar<<", sn="<<screenNum<<", im="<<intensityMap<<")"<<std::endl;
 
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-    if (!wsi) 
+    if (!wsi)
     {
         osg::notify(osg::NOTICE)<<"Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
         return;
@@ -1237,7 +1237,7 @@ void View::setUpViewForPanoramicSphericalDisplay(double radius, double collar, u
 
     osg::GraphicsContext::ScreenIdentifier si;
     si.readDISPLAY();
-    
+
     // displayNum has not been set so reset it to 0.
     if (si.displayNum<0) si.displayNum = 0;
 
@@ -1257,7 +1257,7 @@ void View::setUpViewForPanoramicSphericalDisplay(double radius, double collar, u
     traits->windowDecoration = false;
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
-    
+
 
     bool applyIntensityMapAsColours = true;
 
@@ -1282,8 +1282,8 @@ void View::setUpViewForPanoramicSphericalDisplay(double radius, double collar, u
     texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
     texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_EDGE);
     texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_EDGE);
-    
-#if 0    
+
+#if 0
     osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::SEPERATE_WINDOW;
     GLenum buffer = GL_FRONT;
 #else
@@ -1314,7 +1314,7 @@ void View::setUpViewForPanoramicSphericalDisplay(double radius, double collar, u
         osg::Geode* geode = new osg::Geode();
         geode->addDrawable(createParoramicSphericalDisplayDistortionMesh(osg::Vec3(0.0f,0.0f,0.0f), osg::Vec3(width,0.0f,0.0f), osg::Vec3(0.0f,height,0.0f), radius, collar, applyIntensityMapAsColours ? intensityMap : 0, projectorMatrix));
 
-        // new we need to add the texture to the mesh, we do so by creating a 
+        // new we need to add the texture to the mesh, we do so by creating a
         // StateSet to contain the Texture StateAttribute.
         osg::StateSet* stateset = geode->getOrCreateStateSet();
         stateset->setTextureAttributeAndModes(0, texture,osg::StateAttribute::ON);
@@ -1341,13 +1341,13 @@ void View::setUpViewForPanoramicSphericalDisplay(double radius, double collar, u
         camera->setAllowEventFocus(false);
         camera->setInheritanceMask(camera->getInheritanceMask() & ~osg::CullSettings::CLEAR_COLOR & ~osg::CullSettings::COMPUTE_NEAR_FAR_MODE);
         //camera->setComputeNearFarMode(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
-        
+
         camera->setProjectionMatrixAsOrtho2D(0,width,0,height);
         camera->setViewMatrix(osg::Matrix::identity());
 
         // add subgraph to render
         camera->addChild(geode);
-        
+
         camera->setName("DistortionCorrectionCamera");
 
         addSlave(camera.get(), osg::Matrixd(), osg::Matrixd(), false);
@@ -1359,7 +1359,7 @@ void View::setUpViewForWoWVxDisplay(unsigned int screenNum, unsigned char wow_co
     osg::notify(osg::INFO)<<"View::setUpViewForWoWVxDisplay(...)"<<std::endl;
 
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-    if (!wsi) 
+    if (!wsi)
     {
         osg::notify(osg::NOTICE)<<"Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
         return;
@@ -1367,10 +1367,10 @@ void View::setUpViewForWoWVxDisplay(unsigned int screenNum, unsigned char wow_co
 
     osg::GraphicsContext::ScreenIdentifier si;
     si.readDISPLAY();
-    
+
     // displayNum has not been set so reset it to 0.
     if (si.displayNum<0) si.displayNum = 0;
-    
+
     si.screenNum = screenNum;
 
     unsigned int width, height;
@@ -1387,7 +1387,7 @@ void View::setUpViewForWoWVxDisplay(unsigned int screenNum, unsigned char wow_co
     traits->windowDecoration = false;
     traits->doubleBuffer = true;
     traits->sharedContext = 0;
-    
+
 
     osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
     if (!gc)
@@ -1414,7 +1414,7 @@ void View::setUpViewForWoWVxDisplay(unsigned int screenNum, unsigned char wow_co
     textureD->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
     textureD->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
 
-#if 0    
+#if 0
     osg::Camera::RenderTargetImplementation renderTargetImplementation = osg::Camera::SEPERATE_WINDOW;
     GLenum buffer = GL_FRONT;
 #else
@@ -1481,11 +1481,11 @@ void View::setUpViewForWoWVxDisplay(unsigned int screenNum, unsigned char wow_co
                 }
                 for (int x=0; x<=9; ++x){
                     for (int y=7; y>=0; --y){
-                        int i = 2*(7-y)+16*x;            
+                        int i = 2*(7-y)+16*x;
                         cheader[i] = (((1<<(y))&(header[x])) << (7-(y)));
                     }
                 }
-            }            
+            }
             textureHeader->setImage(imageheader.get());
         }
 
@@ -1530,7 +1530,7 @@ void View::setUpViewForWoWVxDisplay(unsigned int screenNum, unsigned char wow_co
             stateset->addUniform(new osg::Uniform("wow_header", 0));
             stateset->addUniform(new osg::Uniform("wow_tcolor", 1));
             stateset->addUniform(new osg::Uniform("wow_tdepth", 2));
-            
+
             osg::Shader *frag = new osg::Shader(osg::Shader::FRAGMENT);
             frag->setShaderSource(" "\
                     " uniform sampler1D wow_header;                                                                                   " \
@@ -1588,13 +1588,13 @@ void View::setUpViewForWoWVxDisplay(unsigned int screenNum, unsigned char wow_co
             camera->setAllowEventFocus(false);
             camera->setInheritanceMask(camera->getInheritanceMask() & ~osg::CullSettings::CLEAR_COLOR & ~osg::CullSettings::COMPUTE_NEAR_FAR_MODE);
             //camera->setComputeNearFarMode(osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR);
-            
+
             camera->setProjectionMatrixAsOrtho2D(0,width,0,height);
             camera->setViewMatrix(osg::Matrix::identity());
 
             // add subgraph to render
             camera->addChild(geode);
-            
+
             camera->setName("WoWCamera");
 
             addSlave(camera.get(), osg::Matrixd(), osg::Matrixd(), false);
@@ -1609,11 +1609,11 @@ void View::assignSceneDataToCameras()
     // osg::notify(osg::NOTICE)<<"View::assignSceneDataToCameras()"<<std::endl;
 
     osg::Node* sceneData = _scene.valid() ? _scene->getSceneData() : 0;
-    
+
     if (_cameraManipulator.valid())
     {
         _cameraManipulator->setNode(sceneData);
-        
+
         osg::ref_ptr<osgGA::GUIEventAdapter> dummyEvent = _eventQueue->createEvent();
 
         _cameraManipulator->home(*dummyEvent, *this);
@@ -1623,7 +1623,7 @@ void View::assignSceneDataToCameras()
     {
         _camera->removeChildren(0,_camera->getNumChildren());
         if (sceneData) _camera->addChild(sceneData);
-        
+
         Renderer* renderer = dynamic_cast<Renderer*>(_camera->getRenderer());
         if (renderer) renderer->setCompileOnNextDraw(true);
 
@@ -1636,11 +1636,11 @@ void View::assignSceneDataToCameras()
         {
             slave._camera->removeChildren(0,slave._camera->getNumChildren());
             if (sceneData) slave._camera->addChild(sceneData);
-        
+
             Renderer* renderer = dynamic_cast<Renderer*>(slave._camera->getRenderer());
             if (renderer) renderer->setCompileOnNextDraw(true);
         }
-    }    
+    }
 }
 
 void View::requestRedraw()
@@ -1670,7 +1670,7 @@ void View::requestContinuousUpdate(bool flag)
 void View::requestWarpPointer(float x,float y)
 {
     osg::notify(osg::INFO)<<"View::requestWarpPointer("<<x<<","<<y<<")"<<std::endl;
-    
+
     float local_x, local_y;
     const osg::Camera* camera = getCameraContainingPosition(x, y, local_x, local_y);
     if (camera)
@@ -1696,7 +1696,7 @@ void View::requestWarpPointer(float x,float y)
 bool View::containsCamera(const osg::Camera* camera) const
 {
     if (_camera == camera) return true;
-    
+
     for(unsigned i=0; i<getNumSlaves(); ++i)
     {
         const Slave& slave = getSlave(i);
@@ -1707,7 +1707,7 @@ bool View::containsCamera(const osg::Camera* camera) const
 
 const osg::Camera* View::getCameraContainingPosition(float x, float y, float& local_x, float& local_y) const
 {
-    const osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState(); 
+    const osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState();
     const osgViewer::GraphicsWindow* gw = dynamic_cast<const osgViewer::GraphicsWindow*>(eventState->getGraphicsContext());
 
     bool view_invert_y = eventState->getMouseYOrientation()==osgGA::GUIEventAdapter::Y_INCREASING_DOWNWARDS;
@@ -1719,7 +1719,7 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
         _camera->getViewport())
     {
         const osg::Viewport* viewport = _camera->getViewport();
-        
+
         double new_x = x;
         double new_y = y;
 
@@ -1730,8 +1730,8 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
                        static_cast<double>(_camera->getGraphicsContext()->getTraits()->height) * (1.0 - (y- eventState->getYmin())/(eventState->getYmax()-eventState->getYmin())) :
                        static_cast<double>(_camera->getGraphicsContext()->getTraits()->height) * (y - eventState->getYmin())/(eventState->getYmax()-eventState->getXmin());
         }
-        
-        if (viewport && 
+
+        if (viewport &&
             new_x >= (viewport->x()-epsilon) && new_y >= (viewport->y()-epsilon) &&
             new_x < (viewport->x()+viewport->width()-1.0+epsilon) && new_y <= (viewport->y()+viewport->height()-1.0+epsilon) )
         {
@@ -1745,17 +1745,17 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
     }
 
     osg::Matrix masterCameraVPW = getCamera()->getViewMatrix() * getCamera()->getProjectionMatrix();
-    
+
     // convert to non dimensional
     x = (x - eventState->getXmin()) * 2.0 / (eventState->getXmax()-eventState->getXmin()) - 1.0;
     y = (y - eventState->getYmin())* 2.0 / (eventState->getYmax()-eventState->getYmin()) - 1.0;
 
     if (view_invert_y) y = - y;
-    
+
     for(int i=getNumSlaves()-1; i>=0; --i)
     {
         const Slave& slave = getSlave(i);
-        if (slave._camera.valid() && 
+        if (slave._camera.valid() &&
             slave._camera->getAllowEventFocus() &&
             slave._camera->getRenderTargetImplementation()==osg::Camera::FRAME_BUFFER)
         {
@@ -1775,12 +1775,12 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
             //osg::notify(osg::NOTICE)<<"  eventState->getXmin()="<<eventState->getXmin()<<" eventState->getXmax()="<<eventState->getXmax()<<std::endl;;
             //osg::notify(osg::NOTICE)<<"  new_coord "<<new_coord<<std::endl;;
 
-            if (viewport && 
+            if (viewport &&
                 new_coord.x() >= (viewport->x()-epsilon) && new_coord.y() >= (viewport->y()-epsilon) &&
                 new_coord.x() < (viewport->x()+viewport->width()-1.0+epsilon) && new_coord.y() <= (viewport->y()+viewport->height()-1.0+epsilon) )
             {
                 // osg::notify(osg::NOTICE)<<"  in viewport "<<std::endl;;
-                
+
                 local_x = new_coord.x();
                 local_y = new_coord.y();
 
@@ -1793,10 +1793,10 @@ const osg::Camera* View::getCameraContainingPosition(float x, float y, float& lo
 
         }
     }
-    
+
     local_x = x;
     local_y = y;
-    
+
     return 0;
 }
 
@@ -1804,10 +1804,10 @@ bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector
 {
     if (!_camera.valid()) return false;
 
-    float local_x, local_y = 0.0;    
+    float local_x, local_y = 0.0;
     const osg::Camera* camera = getCameraContainingPosition(x, y, local_x, local_y);
     if (!camera) camera = _camera.get();
-    
+
 
     osgUtil::LineSegmentIntersector::CoordinateFrame cf = camera->getViewport() ? osgUtil::Intersector::WINDOW : osgUtil::Intersector::PROJECTION;
     osg::ref_ptr< osgUtil::LineSegmentIntersector > picker = new osgUtil::LineSegmentIntersector(cf, local_x, local_y);
@@ -1825,11 +1825,11 @@ bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector
 
     osgUtil::IntersectionVisitor iv(picker.get());
     iv.setTraversalMask(traversalMask);
-    
-    
+
+
 #if 1
     const_cast<osg::Camera*>(camera)->accept(iv);
-#else    
+#else
 
     // timing test code paths for comparing KdTree based intersections vs conventional intersections
 
@@ -1837,7 +1837,7 @@ bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector
     iv.setDoDummyTraversal(true);
 
     const_cast<osg::Camera*>(camera)->accept(iv);
-    
+
 
     osg::Timer_t before = osg::Timer::instance()->tick();
     const_cast<osg::Camera*>(camera)->accept(iv);
@@ -1855,13 +1855,13 @@ bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector
     iv.setUseKdTreeWhenAvailable(false);
     const_cast<osg::Camera*>(camera)->accept(iv);
     osg::Timer_t after = osg::Timer::instance()->tick();
-    
+
     int intersectsAfterConventional = picker->getIntersections().size();
 
     double timeDummy = osg::Timer::instance()->delta_m(before, after_dummy);
     double timeKdTree = osg::Timer::instance()->delta_m(after_dummy, after_kdTree_2);
     double timeConventional = osg::Timer::instance()->delta_m(after_kdTree_2, after);
-    
+
     osg::notify(osg::NOTICE)<<"Using Dummy                    "<<timeDummy<<std::endl;
     osg::notify(osg::NOTICE)<<"      KdTrees                  "<<timeKdTree
                             <<"\tNum intersects = "<<intersectsBeforeConventional-intersectsBeforeKdTree<<std::endl;
@@ -1872,7 +1872,7 @@ bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector
     osg::notify(osg::NOTICE)<<"      Delta                    "<<timeConventional/timeKdTree<<std::endl;
     osg::notify(osg::NOTICE)<<"      Delta sans Traversal     "<<(timeConventional-timeDummy)/(timeKdTree-timeDummy)<<std::endl;
     osg::notify(osg::NOTICE)<<std::endl;
-#endif    
+#endif
 
     if (picker->containsIntersections())
     {
@@ -1889,18 +1889,18 @@ bool View::computeIntersections(float x,float y, osgUtil::LineSegmentIntersector
 bool View::computeIntersections(float x,float y, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask)
 {
     if (!_camera.valid() || nodePath.empty()) return false;
-    
-    float local_x, local_y = 0.0;    
+
+    float local_x, local_y = 0.0;
     const osg::Camera* camera = getCameraContainingPosition(x, y, local_x, local_y);
     if (!camera) camera = _camera.get();
-    
+
     osg::Matrixd matrix;
     if (nodePath.size()>1)
     {
         osg::NodePath prunedNodePath(nodePath.begin(),nodePath.end()-1);
         matrix = osg::computeLocalToWorld(prunedNodePath);
     }
-    
+
     matrix.postMult(camera->getViewMatrix());
     matrix.postMult(camera->getProjectionMatrix());
 
@@ -1918,9 +1918,9 @@ bool View::computeIntersections(float x,float y, const osg::NodePath& nodePath, 
 
     osg::Vec3d startVertex = osg::Vec3d(local_x,local_y,zNear) * inverse;
     osg::Vec3d endVertex = osg::Vec3d(local_x,local_y,zFar) * inverse;
-    
+
     osg::ref_ptr< osgUtil::LineSegmentIntersector > picker = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::MODEL, startVertex, endVertex);
-    
+
     osgUtil::IntersectionVisitor iv(picker.get());
     iv.setTraversalMask(traversalMask);
     nodePath.back()->accept(iv);
@@ -1936,4 +1936,5 @@ bool View::computeIntersections(float x,float y, const osg::NodePath& nodePath, 
         return false;
     }
 }
+
 

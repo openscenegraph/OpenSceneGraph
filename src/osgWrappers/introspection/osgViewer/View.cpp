@@ -171,11 +171,11 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	          __C5_osgGA_EventQueue_P1__getEventQueue,
 	          "",
 	          "");
-	I_Method1(void, setCameraManipulator, IN, osgGA::MatrixManipulator *, manipulator,
-	          Properties::NON_VIRTUAL,
-	          __void__setCameraManipulator__osgGA_MatrixManipulator_P1,
-	          "Set the CameraManipulator that moves the View's master Camera position in response to events. ",
-	          "");
+	I_MethodWithDefaults2(void, setCameraManipulator, IN, osgGA::MatrixManipulator *, manipulator, , IN, bool, resetPosition, true,
+	                      Properties::NON_VIRTUAL,
+	                      __void__setCameraManipulator__osgGA_MatrixManipulator_P1__bool,
+	                      "Set the CameraManipulator that moves the View's master Camera position in response to events. ",
+	                      "The parameter resetPosition determines whether manipulator is set to its home position. ");
 	I_Method0(osgGA::MatrixManipulator *, getCameraManipulator,
 	          Properties::NON_VIRTUAL,
 	          __osgGA_MatrixManipulator_P1__getCameraManipulator,
@@ -339,7 +339,7 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	                   "");
 	I_SimpleProperty(osgGA::MatrixManipulator *, CameraManipulator, 
 	                 __osgGA_MatrixManipulator_P1__getCameraManipulator, 
-	                 __void__setCameraManipulator__osgGA_MatrixManipulator_P1);
+	                 0);
 	I_SimpleProperty(osg::NodePath, CoordinateSystemNodePath, 
 	                 __osg_NodePath__getCoordinateSystemNodePath, 
 	                 __void__setCoordinateSystemNodePath__C5_osg_NodePath_R1);

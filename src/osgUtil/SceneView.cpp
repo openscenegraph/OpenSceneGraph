@@ -974,7 +974,7 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     {
        osg::NodeCallback* callback = _camera->getCullCallback();
        if (callback) (*callback)(_camera.get(), cullVisitor);
-       else _cullVisitor->traverse(*_camera);
+       else cullVisitor->traverse(*_camera);
     }
 
 

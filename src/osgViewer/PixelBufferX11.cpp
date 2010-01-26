@@ -250,6 +250,8 @@ void PixelBufferX11::init()
                     attributes.push_back( _traits->width );
                     attributes.push_back( GLX_PBUFFER_HEIGHT );
                     attributes.push_back( _traits->height );
+                    attributes.push_back( GLX_LARGEST_PBUFFER );
+                    attributes.push_back( GL_TRUE );
                     attributes.push_back( 0L );
                     
                     _pbuffer = glXCreatePbuffer(_display, fbconfigs[i], &attributes.front() );
@@ -257,7 +259,22 @@ void PixelBufferX11::init()
                 }
             }
         }
+        if (_pbuffer)
+        {
+            int iWidth = 0;
+            int iHeight = 0;
+            glXQueryDrawable(_display, _pbuffer, GLX_WIDTH  , (unsigned int *)&iWidth);
+            glXQueryDrawable(_display, _pbuffer, GLX_HEIGHT , (unsigned int *)&iHeight);
 
+            if (_traits->width != iWidth || _traits->height != iHeight)
+            {
+                osg::notify(osg::NOTICE) << "PixelBufferX11::init(), pbuffer created with different size then requsted" << std::endl;
+                osg::notify(osg::NOTICE) << "\tRequested size (" << _traits->width << "," << _traits->height << ")" << std::endl;
+                osg::notify(osg::NOTICE) << "\tPbuffer size (" << iWidth << "," << iHeight << ")" << std::endl;
+                _traits->width  = iWidth;
+                _traits->height = iHeight;
+            }
+        }
         XFree( fbconfigs );
     }
 #endif
@@ -267,9 +284,30 @@ void PixelBufferX11::init()
     if (!_pbuffer && haveSGIX_pbuffer)
     {
         GLXFBConfigSGIX fbconfig = glXGetFBConfigFromVisualSGIX( _display, _visualInfo );
-
-        _pbuffer = glXCreateGLXPbufferSGIX(_display, fbconfig, _traits->width, _traits->height, 0 );
-
+        typedef std::vector <int> AttributeList;
+       
+        AttributeList attributes;
+        attributes.push_back( GLX_LARGEST_PBUFFER_SGIX );
+        attributes.push_back( GL_TRUE );
+        attributes.push_back( 0L );
+        
+        _pbuffer = glXCreateGLXPbufferSGIX(_display, fbconfig, _traits->width, _traits->height,  &attributes.front() );
+        if (_pbuffer)
+        {
+            int iWidth = 0;
+            int iHeight = 0;
+            glXQueryGLXPbufferSGIX(_display, _pbuffer, GLX_WIDTH_SGIX , (unsigned int *)&iWidth);
+            glXQueryGLXPbufferSGIX(_display, _pbuffer, GLX_HEIGHT_SGIX, (unsigned int *)&iHeight);
+                                                                                        
+            if (_traits->width != iWidth || _traits->height != iHeight)
+            {
+                osg::notify(osg::NOTICE) << "PixelBufferX11::init(), SGIX_pbuffer created with different size then requsted" << std::endl;
+                osg::notify(osg::NOTICE) << "\tRequested size (" << _traits->width << "," << _traits->height << ")" << std::endl;
+                osg::notify(osg::NOTICE) << "\tPbuffer size (" << iWidth << "," << iHeight << ")" << std::endl;
+                _traits->width =  iWidth;
+                _traits->height = iHeight;
+            }
+        }
         XFree( fbconfig );
     }
 #endif

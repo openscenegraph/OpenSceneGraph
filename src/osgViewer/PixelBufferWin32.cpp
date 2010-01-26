@@ -632,6 +632,8 @@ void PixelBufferWin32::init()
         osg::notify(osg::NOTICE) << "PixelBufferWin32::init(), pbuffer created with different size then requsted" << std::endl;
         osg::notify(osg::NOTICE) << "\tRequested size (" << _traits->width << "," << _traits->height << ")" << std::endl;
         osg::notify(osg::NOTICE) << "\tPbuffer size (" << iWidth << "," << iHeight << ")" << std::endl;
+        _traits->width  = iWidth;
+        _traits->height = iHeight;
     }
 
     _initialized = true;    

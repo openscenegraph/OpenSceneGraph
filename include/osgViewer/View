@@ -98,8 +98,9 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /* Get the const View's EventQueue.*/
         const osgGA::EventQueue* getEventQueue() const { return _eventQueue.get(); }
 
-        /** Set the CameraManipulator that moves the View's master Camera position in response to events.*/
-        void setCameraManipulator(osgGA::MatrixManipulator* manipulator);
+        /** Set the CameraManipulator that moves the View's master Camera position in response to events.
+          * The parameter resetPosition determines whether manipulator is set to its home position.*/
+        void setCameraManipulator(osgGA::MatrixManipulator* manipulator, bool resetPosition = true);
 
         /** Get the View's CameraManipulator.*/
         osgGA::MatrixManipulator* getCameraManipulator() { return _cameraManipulator.get(); }

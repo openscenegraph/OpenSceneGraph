@@ -338,7 +338,7 @@ const osgDB::ImagePager* View::getImagePager() const
 }
 
 
-void View::setCameraManipulator(osgGA::MatrixManipulator* manipulator)
+void View::setCameraManipulator(osgGA::MatrixManipulator* manipulator, bool resetPosition)
 {
     _cameraManipulator = manipulator;
 
@@ -348,9 +348,11 @@ void View::setCameraManipulator(osgGA::MatrixManipulator* manipulator)
 
         if (getSceneData()) _cameraManipulator->setNode(getSceneData());
 
-        osg::ref_ptr<osgGA::GUIEventAdapter> dummyEvent = _eventQueue->createEvent();
-
-        _cameraManipulator->home(*dummyEvent, *this);
+        if (resetPosition)
+        {
+            osg::ref_ptr<osgGA::GUIEventAdapter> dummyEvent = _eventQueue->createEvent();
+            _cameraManipulator->home(*dummyEvent, *this);
+        }
     }
 }
 

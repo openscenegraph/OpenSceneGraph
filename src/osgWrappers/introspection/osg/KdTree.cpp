@@ -17,7 +17,7 @@
 #include <osg/KdTree>
 #include <osg/Object>
 #include <osg/Shape>
-#include <osg/Vec3>
+#include <osg/Vec3d>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -85,9 +85,9 @@ BEGIN_OBJECT_REFLECTOR(osg::KdTree)
 	          __bool__build__BuildOptions_R1__osg_Geometry_P1,
 	          "Build the kdtree from the specified source geometry object. ",
 	          "retun true on success. ");
-	I_Method3(bool, intersect, IN, const osg::Vec3 &, start, IN, const osg::Vec3 &, end, IN, osg::KdTree::LineSegmentIntersections &, intersections,
+	I_Method3(bool, intersect, IN, const osg::Vec3d &, start, IN, const osg::Vec3d &, end, IN, osg::KdTree::LineSegmentIntersections &, intersections,
 	          Properties::VIRTUAL,
-	          __bool__intersect__C5_osg_Vec3_R1__C5_osg_Vec3_R1__LineSegmentIntersections_R1,
+	          __bool__intersect__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1__LineSegmentIntersections_R1,
 	          "compute the intersection of a line segment and the kdtree, return true if an intersection has been found. ",
 	          "");
 	I_Method1(int, addNode, IN, const osg::KdTree::KdNode &, node,

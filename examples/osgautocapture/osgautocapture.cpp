@@ -252,7 +252,7 @@ int main( int argc, char **argv )
             GLenum buffer = pbuffer->getTraits()->doubleBuffer ? GL_BACK : GL_FRONT;
             camera->setDrawBuffer(buffer);
             camera->setReadBuffer(buffer);
-            viewer.setCamera(camera);
+            viewer.setCamera(camera.get());
         }
         else
         {

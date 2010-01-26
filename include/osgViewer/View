@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -40,11 +40,11 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         View(const osgViewer::View& view, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         META_Object(osgViewer,View);
-        
+
         /** Provide a mechanism for getting the osg::View associated from the GUIActionAdapter.
           * One would use this to case view to osgViewer::View(er) if supported by the subclass.*/
         virtual osg::View* asView() { return this; }
-        
+
         /** Provide a mechanism for getting the viewer object from this osgViewer::View.
           * In the case of a osgViewer::Viewer the ViewerBase will effectively point to this object as Viewer subclasses from View.
           * In the case of a osgViewer::CompsoiteViewer the ViewerBase will point to the CompositeViewer that owns this View. */
@@ -110,10 +110,10 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Set the view to the CameraManipulator's home position, if non is attached home() is does nothing.
           * Note, to set the home position use getCamaraManipulator()->setHomePosition(...). */
         void home();
-        
+
 
         typedef std::list< osg::ref_ptr<osgGA::GUIEventHandler> > EventHandlers;
-     
+
         /** Add an EventHandler that adds handling of events to the View.*/
         void addEventHandler(osgGA::GUIEventHandler* eventHandler);
 
@@ -125,7 +125,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
         /** Get the const View's list of EventHandlers.*/
         const EventHandlers& getEventHandlers() const { return _eventHandlers; }
-        
+
 
         /** Set the NodePath to any active CoordinateSystemNode present in the Scene.
           * The CoordinateSystemNode path is used to help applications and CamaraManipualtors handle geocentric coordinates systems,
@@ -138,13 +138,13 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Compute the NodePath to any active CoordinateSystemNode present in the Scene.*/
         void computeActiveCoordinateSystemNodePath();
 
-        
+
         /** Set the DisplaySettings object associated with this view.*/
         void setDisplaySettings(osg::DisplaySettings* ds) { _displaySettings = ds; }
-        
+
         /** Set the DisplaySettings object associated with this view.*/
         osg::DisplaySettings* getDisplaySettings() { return _displaySettings.get(); }
-        
+
         /** Set the DisplaySettings object associated with this view.*/
         const osg::DisplaySettings* getDisplaySettings() const { return _displaySettings.get(); }
 
@@ -161,7 +161,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Get the FusionDistanceValue. Note, only used for USE_FUSION_DISTANCE_VALUE & PROPORTIONAL_TO_SCREEN_DISTANCE modes.*/
         float getFusionDistanceValue() const { return _fusionDistanceValue; }
 
-        
+
         /** Convenience method for creating slave Cameras and associated GraphicsWindows across all screens.*/
         void setUpViewAcrossAllScreens();
 
@@ -170,7 +170,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
         /** Convenience method for a single camera associated with a single full screen GraphicsWindow.*/
         void setUpViewOnSingleScreen(unsigned int screenNum=0);
-        
+
 
         /** Convenience method for spherical display using 6 slave cameras rendering the 6 sides of a cube map, and 7th camera doing distortion correction to present on a spherical display.*/
         void setUpViewFor3DSphericalDisplay(double radius=1.0, double collar=0.45, unsigned int screenNum=0, osg::Image* intensityMap=0, const osg::Matrixd& projectorMatrix = osg::Matrixd());
@@ -181,38 +181,38 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         /** Convenience method for autostereoscopic Philips WoWvx display.*/
         void setUpViewForWoWVxDisplay(unsigned int screenNum, unsigned char wow_content, unsigned char wow_factor, unsigned char wow_offset, float wow_disparity_Zd, float wow_disparity_vz, float wow_disparity_M, float wow_disparity_C);
 
-        
+
         /** Return true if this view contains a specified camera.*/
         bool containsCamera(const osg::Camera* camera) const;
-        
+
         /** Get the camera which contains the pointer position x,y specified master cameras window/eye coords.
           * Also passes back the local window coords for the graphics context associated with the camera passed back. */
         const osg::Camera* getCameraContainingPosition(float x, float y, float& local_x, float& local_y) const;
 
         /** Compute intersections between a ray through the specified master cameras window/eye coords and a specified node.
           * Note, when a master cameras has slaves and no viewport itself its coordinate frame will be in clip space i.e. -1,-1 to 1,1,
-          * while if its has a viewport the coordintates will be relative to its viewport dimensions. 
+          * while if its has a viewport the coordintates will be relative to its viewport dimensions.
           * Mouse events handled by the view will automatically be attached into the master camera window/clip coords so can be passed
           * directly on to the computeIntersections method. */
         bool computeIntersections(float x,float y, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff);
-        
+
         /** Compute intersections between a ray through the specified master cameras window/eye coords and a specified nodePath's subgraph. */
         bool computeIntersections(float x,float y, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff);
 
-        
+
         virtual void requestRedraw();
         virtual void requestContinuousUpdate(bool needed=true);
         virtual void requestWarpPointer(float x,float y);
-        
+
     public:
-        
+
         void assignSceneDataToCameras();
         void init();
 
     protected:
-    
+
         friend class CompositeViewer;
-    
+
         virtual ~View();
 
         virtual osg::GraphicsOperation* createRenderer(osg::Camera* camera);
@@ -226,14 +226,13 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         osg::ref_ptr<osgGA::EventQueue>         _eventQueue;
         osg::ref_ptr<osgGA::MatrixManipulator>  _cameraManipulator;
         EventHandlers                           _eventHandlers;
-    
+
         typedef std::vector< osg::observer_ptr<osg::Node> >   ObserverNodePath;
         ObserverNodePath                        _coordinateSystemNodePath;
 
         osg::ref_ptr<osg::DisplaySettings>      _displaySettings;
         osgUtil::SceneView::FusionDistanceMode  _fusionDistanceMode;
         float                                   _fusionDistanceValue;
-
 };
 
 }

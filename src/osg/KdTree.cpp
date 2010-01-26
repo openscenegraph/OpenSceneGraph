@@ -431,7 +431,7 @@ struct IntersectKdTree
                     const KdTree::KdNodeList& nodes,
                     const KdTree::TriangleList& triangles,
                     KdTree::LineSegmentIntersections& intersections,
-                    const osg::Vec3& s, const osg::Vec3& e):
+                    const osg::Vec3d& s, const osg::Vec3d& e):
                         _vertices(vertices),
                         _kdNodes(nodes),
                         _triangles(triangles),
@@ -764,7 +764,7 @@ bool KdTree::build(BuildOptions& options, osg::Geometry* geometry)
     return build.build(options, geometry);
 }
 
-bool KdTree::intersect(const osg::Vec3& start, const osg::Vec3& end, LineSegmentIntersections& intersections) const
+bool KdTree::intersect(const osg::Vec3d& start, const osg::Vec3d& end, LineSegmentIntersections& intersections) const
 {
     if (_kdNodes.empty()) 
     {

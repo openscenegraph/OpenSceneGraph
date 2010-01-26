@@ -79,7 +79,7 @@ public:
     
     virtual void operator () (osg::RenderInfo& renderInfo) const
         {
-            #if !defined(OSG_GLES1_AVAILABLE) && !!defined(OSG_GLES1_AVAILABLE)
+            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
             glReadBuffer(_readBuffer);
             #else
             osg::notify(osg::NOTICE)<<"Error: GLES unable to do glReadBuffer"<<std::endl;
@@ -95,7 +95,12 @@ public:
                     pixelFormat = GL_RGBA;
                 else 
                     pixelFormat = GL_RGB;
-
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+                 if (pixelFormat = GL_RGB))
+                    if ( glGetIntegerv(IMPLEMENTATION_COLOR_READ_FORMAT_OES) != GL_RGB ||
+                         glGetIntegerv(IMPLEMENTATION_COLOR_READ_FORMAT_OES) != GL_UNSIGNED_BYTE )
+                        pixelFormat = GL_RGBA;//always supported
+#endif
                 int width = gc->getTraits()->width;
                 int height = gc->getTraits()->height;
 
@@ -178,6 +183,7 @@ int main( int argc, char **argv )
     usage->addCommandLineOption("--filename", "Filename for the captured image", "autocapture.jpg");
     usage->addCommandLineOption("--db-threads", "Number of DatabasePager threads to use", "2");
     usage->addCommandLineOption("--active", "Use active rendering instead of passive / lazy rendering");
+    usage->addCommandLineOption("--pbuffer", "Render into a pbuffer, not into a window");
 
     // Construct the viewer and register options arguments.
     osgViewer::Viewer viewer(arguments);
@@ -188,7 +194,7 @@ int main( int argc, char **argv )
         return 1;
     }
 
-    // Get user specified number of DatabaseThreads
+   // Get user specified number of DatabaseThreads
     int dbThreads = 2;
     arguments.read("--db-threads", dbThreads);
     if (dbThreads < 1) dbThreads = 1;
@@ -203,6 +209,56 @@ int main( int argc, char **argv )
     bool activeMode = false;
     if (arguments.read("--active"))
         activeMode = true;
+
+    bool use_pbuffer = false;
+    if (arguments.read("--pbuffer")) {
+        if (!activeMode) {
+            use_pbuffer = true;
+        } else {
+            osg::notify(osg::NOTICE)<<"ignoring --pbuffer because --active specified on commandline"<<std::endl;
+        }
+    }
+    if (use_pbuffer) {
+        osg::DisplaySettings* ds = osg::DisplaySettings::instance();
+        osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(ds);
+
+        if (viewer.getCamera()->getGraphicsContext() && viewer.getCamera()->getGraphicsContext()->getTraits()) {
+            //use viewer settings for window size
+            osg::ref_ptr<const osg::GraphicsContext::Traits> src_traits = viewer.getCamera()->getGraphicsContext()->getTraits();
+            traits->screenNum = src_traits->screenNum;
+            traits->displayNum = src_traits->displayNum;
+            traits->hostName = src_traits->hostName;
+            traits->width = src_traits->width;
+            traits->height = src_traits->height;
+            traits->red = src_traits->red;
+            traits->green = src_traits->green;
+            traits->blue = src_traits->blue;
+            traits->alpha = src_traits->alpha;
+            traits->depth = src_traits->depth;
+            traits->pbuffer = true;
+        } else {
+            //viewer would use fullscreen size (unknown here) pbuffer will use 4096 x4096 (or best avaiable)
+            traits->width = 1 << 12;
+            traits->height = 1 << 12;
+            traits->pbuffer = true;
+        }
+        osg::ref_ptr<osg::GraphicsContext> pbuffer = osg::GraphicsContext::createGraphicsContext(traits.get());
+        if (pbuffer.valid())
+        {
+            osg::notify(osg::NOTICE)<<"Pixel buffer has been created successfully."<<std::endl;
+            osg::ref_ptr<osg::Camera> camera = new osg::Camera(*viewer.getCamera());
+            camera->setGraphicsContext(pbuffer.get());
+            camera->setViewport(new osg::Viewport(0,0,traits->width,traits->height));
+            GLenum buffer = pbuffer->getTraits()->doubleBuffer ? GL_BACK : GL_FRONT;
+            camera->setDrawBuffer(buffer);
+            camera->setReadBuffer(buffer);
+            viewer.setCamera(camera);
+        }
+        else
+        {
+            osg::notify(osg::NOTICE)<<"Pixel buffer has not been created successfully."<<std::endl;
+        }
+    }
 
     // Read camera settings for screenshot
     double lat=50;
@@ -323,15 +379,16 @@ int main( int argc, char **argv )
     osg::Timer_t afterLoadTick = osg::Timer::instance()->tick();
     std::cout<<"Load and Compile time = "<<osg::Timer::instance()->delta_s(beforeLoadTick, afterLoadTick)<<" seconds"<<std::endl;
 
+    // Do cull and draw to render the scene correctly
+    customRenderer->setCullOnly(false);
+    
   
     //--- Capture the image!!! ---
     if (!activeMode)
     {
-        // Do cull and draw to render the scene correctly
-        customRenderer->setCullOnly(false);
-        
         // Add the WindowCaptureCallback now that we have full resolution
-        viewer.getCamera()->setFinalDrawCallback(new WindowCaptureCallback(GL_BACK, fileName));
+        GLenum buffer = viewer.getCamera()->getGraphicsContext()->getTraits()->doubleBuffer ? GL_BACK : GL_FRONT;
+        viewer.getCamera()->setFinalDrawCallback(new WindowCaptureCallback(buffer, fileName));
 
         osg::Timer_t beforeRenderTick = osg::Timer::instance()->tick();
 

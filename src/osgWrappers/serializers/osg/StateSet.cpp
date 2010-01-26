@@ -154,7 +154,7 @@ static bool readAttributeList( osgDB::InputStream& is, osg::StateSet& ss )
     for ( osg::StateSet::AttributeList::iterator itr=attrs.begin();
           itr!=attrs.end(); ++itr )
     {
-        ss.setAttribute( itr->second.first, itr->second.second );
+        ss.setAttribute( itr->second.first.get(), itr->second.second );
     }
     return true;
 }
@@ -221,7 +221,7 @@ static bool readTextureAttributeList( osgDB::InputStream& is, osg::StateSet& ss 
         for ( osg::StateSet::AttributeList::iterator itr=attrs.begin();
               itr!=attrs.end(); ++itr )
         {
-            ss.setTextureAttribute( i, itr->second.first, itr->second.second );
+            ss.setTextureAttribute( i, itr->second.first.get(), itr->second.second );
         }
         attrs.clear();
     }

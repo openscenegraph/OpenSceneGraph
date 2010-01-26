@@ -26,8 +26,7 @@
 namespace osgDB {
 
 
-/** Wrapper class for specifying read and write functions for extending
-  * the .osg file format. */ 
+/** deprecated. */
 class OSGDB_EXPORT DotOsgWrapper : public osg::Referenced
 {
     public:
@@ -80,6 +79,7 @@ class OSGDB_EXPORT DotOsgWrapper : public osg::Referenced
 };
 
 
+/** deprecated. */
 class OSGDB_EXPORT DeprecatedDotOsgWrapperManager : public osg::Referenced
 {
     public:
@@ -124,11 +124,7 @@ class OSGDB_EXPORT DeprecatedDotOsgWrapperManager : public osg::Referenced
 };
 
 
-/**  Proxy class for automatic registration of DotOsgWrappers with the Registry.
-    The RegisterDotOsgWrapperProxy can be used to automatically register
-    DotOsgWrappers, at runtime with the Registry. A DotOsgWrapper encapsulates
-    the functions that can read and write to the .osg for each osg::Object.
-*/
+/** deprecated. */
 class OSGDB_EXPORT RegisterDotOsgWrapperProxy
 {
     public:
@@ -146,6 +142,7 @@ class OSGDB_EXPORT RegisterDotOsgWrapperProxy
         osg::ref_ptr<DotOsgWrapper> _wrapper;
 };
 
+/** deprecated. */
 template<class T>
 class TemplateRegisterDotOsgWrapperProxy : public RegisterDotOsgWrapperProxy, public T
 {

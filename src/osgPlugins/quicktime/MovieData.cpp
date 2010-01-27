@@ -93,11 +93,10 @@ void MovieData::load(osg::Image* image, std::string afilename, float startTime)
     }
     
     
-    Rect bounds;
+    Rect bounds = (*GetMovieBoundsRgn(_movie))->rgnBBox;
  
-    GetMovieBox(_movie, &bounds);
-    _checkMovieError("Can't get movie box\n");
-    
+    _checkMovieError("Can't get movie bounds\n");
+
     OffsetRect(&bounds, -bounds.left, -bounds.top);
     SetMovieBox(_movie, &bounds);
     _checkMovieError("Can't set movie box\n");

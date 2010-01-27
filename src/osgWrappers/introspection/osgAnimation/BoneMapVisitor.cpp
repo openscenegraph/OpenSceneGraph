@@ -49,13 +49,13 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::BoneMapVisitor)
 	          __void__apply__osg_Transform_R1,
 	          "",
 	          "");
-	I_Method0(const osgAnimation::Bone::BoneMap &, getBoneMap,
+	I_Method0(const osgAnimation::BoneMap &, getBoneMap,
 	          Properties::NON_VIRTUAL,
-	          __C5_Bone_BoneMap_R1__getBoneMap,
+	          __C5_BoneMap_R1__getBoneMap,
 	          "",
 	          "");
-	I_SimpleProperty(const osgAnimation::Bone::BoneMap &, BoneMap, 
-	                 __C5_Bone_BoneMap_R1__getBoneMap, 
+	I_SimpleProperty(const osgAnimation::BoneMap &, BoneMap, 
+	                 __C5_BoneMap_R1__getBoneMap, 
 	                 0);
 END_REFLECTOR
 

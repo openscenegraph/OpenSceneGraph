@@ -77,6 +77,10 @@ TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframe< osg::Quat >, osgAnimation::QuatK
 
 TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframeContainer< osg::Quat >, osgAnimation::QuatKeyframeContainer)
 
+TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframe< osg::Matrixf >, osgAnimation::MatrixKeyframe)
+
+TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframeContainer< osg::Matrixf >, osgAnimation::MatrixKeyframeContainer)
+
 TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframe< osgAnimation::Vec3Packed >, osgAnimation::Vec3PackedKeyframe)
 
 TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframeContainer< osgAnimation::Vec3Packed >, osgAnimation::Vec3PackedKeyframeContainer)
@@ -100,4 +104,42 @@ TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframeContainer< osgAnimation::Vec3Cubic
 TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframe< osgAnimation::Vec4CubicBezier >, osgAnimation::Vec4CubicBezierKeyframe)
 
 TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframeContainer< osgAnimation::Vec4CubicBezier >, osgAnimation::Vec4CubicBezierKeyframeContainer)
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateKeyframe< osg::Matrixf >)
+	I_DeclaringFile("osgAnimation/Keyframe");
+	I_BaseType(osgAnimation::Keyframe);
+	I_Constructor0(____TemplateKeyframe,
+	               "",
+	               "");
+	I_Constructor2(IN, float, time, IN, const T &, value,
+	               ____TemplateKeyframe__float__C5_T_R1,
+	               "",
+	               "");
+	I_Method1(void, setValue, IN, const T &, value,
+	          Properties::NON_VIRTUAL,
+	          __void__setValue__C5_T_R1,
+	          "",
+	          "");
+	I_Method0(const T &, getValue,
+	          Properties::NON_VIRTUAL,
+	          __C5_T_R1__getValue,
+	          "",
+	          "");
+	I_SimpleProperty(const T &, Value, 
+	                 __C5_T_R1__getValue, 
+	                 __void__setValue__C5_T_R1);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateKeyframeContainer< osg::Matrixf >)
+	I_DeclaringFile("osgAnimation/Keyframe");
+	I_BaseType(osgAnimation::KeyframeContainer);
+	I_Constructor0(____TemplateKeyframeContainer,
+	               "",
+	               "");
+	I_Method0(unsigned int, size,
+	          Properties::VIRTUAL,
+	          __unsigned_int__size,
+	          "",
+	          "");
+END_REFLECTOR
 

@@ -67,6 +67,8 @@ TYPE_NAME_ALIAS(osgAnimation::TemplateSampler< osgAnimation::Vec4LinearInterpola
 
 TYPE_NAME_ALIAS(osgAnimation::TemplateSampler< osgAnimation::QuatSphericalLinearInterpolator >, osgAnimation::QuatSphericalLinearSampler)
 
+TYPE_NAME_ALIAS(osgAnimation::TemplateSampler< osgAnimation::MatrixLinearInterpolator >, osgAnimation::MatrixLinearSampler)
+
 TYPE_NAME_ALIAS(osgAnimation::TemplateSampler< osgAnimation::FloatCubicBezierInterpolator >, osgAnimation::FloatCubicBezierSampler)
 
 TYPE_NAME_ALIAS(osgAnimation::TemplateSampler< osgAnimation::DoubleCubicBezierInterpolator >, osgAnimation::DoubleCubicBezierSampler)
@@ -460,6 +462,71 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateSampler< osgAnimation::FloatStepInt
 	                 __KeyframeContainer_P1__getKeyframeContainer, 
 	                 0);
 	I_SimpleProperty(osgAnimation::TemplateSampler< osgAnimation::FloatStepInterpolator >::KeyframeContainerType *, KeyframeContainerTyped, 
+	                 __KeyframeContainerType_P1__getKeyframeContainerTyped, 
+	                 0);
+	I_SimpleProperty(float, StartTime, 
+	                 __float__getStartTime, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateSampler< osgAnimation::MatrixLinearInterpolator >)
+	I_DeclaringFile("osgAnimation/Sampler");
+	I_BaseType(osgAnimation::Sampler);
+	I_Constructor0(____TemplateSampler,
+	               "",
+	               "");
+	I_Method2(void, getValueAt, IN, float, time, IN, osgAnimation::TemplateSampler< osgAnimation::MatrixLinearInterpolator >::UsingType &, result,
+	          Properties::NON_VIRTUAL,
+	          __void__getValueAt__float__UsingType_R1,
+	          "",
+	          "");
+	I_Method1(void, setKeyframeContainer, IN, osgAnimation::TemplateSampler< osgAnimation::MatrixLinearInterpolator >::KeyframeContainerType *, kf,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyframeContainer__KeyframeContainerType_P1,
+	          "",
+	          "");
+	I_Method0(osgAnimation::KeyframeContainer *, getKeyframeContainer,
+	          Properties::VIRTUAL,
+	          __KeyframeContainer_P1__getKeyframeContainer,
+	          "",
+	          "");
+	I_Method0(const osgAnimation::KeyframeContainer *, getKeyframeContainer,
+	          Properties::VIRTUAL,
+	          __C5_KeyframeContainer_P1__getKeyframeContainer,
+	          "",
+	          "");
+	I_Method0(osgAnimation::TemplateSampler< osgAnimation::MatrixLinearInterpolator >::KeyframeContainerType *, getKeyframeContainerTyped,
+	          Properties::NON_VIRTUAL,
+	          __KeyframeContainerType_P1__getKeyframeContainerTyped,
+	          "",
+	          "");
+	I_Method0(const osgAnimation::TemplateSampler< osgAnimation::MatrixLinearInterpolator >::KeyframeContainerType *, getKeyframeContainerTyped,
+	          Properties::NON_VIRTUAL,
+	          __C5_KeyframeContainerType_P1__getKeyframeContainerTyped,
+	          "",
+	          "");
+	I_Method0(osgAnimation::TemplateSampler< osgAnimation::MatrixLinearInterpolator >::KeyframeContainerType *, getOrCreateKeyframeContainer,
+	          Properties::NON_VIRTUAL,
+	          __KeyframeContainerType_P1__getOrCreateKeyframeContainer,
+	          "",
+	          "");
+	I_Method0(float, getStartTime,
+	          Properties::NON_VIRTUAL,
+	          __float__getStartTime,
+	          "",
+	          "");
+	I_Method0(float, getEndTime,
+	          Properties::NON_VIRTUAL,
+	          __float__getEndTime,
+	          "",
+	          "");
+	I_SimpleProperty(float, EndTime, 
+	                 __float__getEndTime, 
+	                 0);
+	I_SimpleProperty(osgAnimation::KeyframeContainer *, KeyframeContainer, 
+	                 __KeyframeContainer_P1__getKeyframeContainer, 
+	                 0);
+	I_SimpleProperty(osgAnimation::TemplateSampler< osgAnimation::MatrixLinearInterpolator >::KeyframeContainerType *, KeyframeContainerTyped, 
 	                 __KeyframeContainerType_P1__getKeyframeContainerTyped, 
 	                 0);
 	I_SimpleProperty(float, StartTime, 

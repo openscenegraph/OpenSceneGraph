@@ -48,6 +48,8 @@ TYPE_NAME_ALIAS(osgAnimation::TemplateLinearInterpolator< osg::Vec4 COMMA  osg::
 
 TYPE_NAME_ALIAS(osgAnimation::TemplateSphericalLinearInterpolator< osg::Quat COMMA  osg::Quat >, osgAnimation::QuatSphericalLinearInterpolator)
 
+TYPE_NAME_ALIAS(osgAnimation::TemplateLinearInterpolator< osg::Matrixf COMMA  osg::Matrixf >, osgAnimation::MatrixLinearInterpolator)
+
 TYPE_NAME_ALIAS(osgAnimation::TemplateCubicBezierInterpolator< float COMMA  osgAnimation::FloatCubicBezier >, osgAnimation::FloatCubicBezierInterpolator)
 
 TYPE_NAME_ALIAS(osgAnimation::TemplateCubicBezierInterpolator< double COMMA  osgAnimation::DoubleCubicBezier >, osgAnimation::DoubleCubicBezierInterpolator)
@@ -57,4 +59,17 @@ TYPE_NAME_ALIAS(osgAnimation::TemplateCubicBezierInterpolator< osg::Vec2 COMMA  
 TYPE_NAME_ALIAS(osgAnimation::TemplateCubicBezierInterpolator< osg::Vec3 COMMA  osgAnimation::Vec3CubicBezier >, osgAnimation::Vec3CubicBezierInterpolator)
 
 TYPE_NAME_ALIAS(osgAnimation::TemplateCubicBezierInterpolator< osg::Vec4 COMMA  osgAnimation::Vec4CubicBezier >, osgAnimation::Vec4CubicBezierInterpolator)
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateLinearInterpolator< osg::Matrixf COMMA  osg::Matrixf >)
+	I_DeclaringFile("osgAnimation/Interpolator");
+	I_BaseType(osgAnimation::TemplateInterpolatorBase);
+	I_Constructor0(____TemplateLinearInterpolator,
+	               "",
+	               "");
+	I_Method3(void, getValue, IN, const osgAnimation::TemplateKeyframeContainer< KEY > &, keyframes, IN, float, time, IN, TYPE &, result,
+	          Properties::NON_VIRTUAL,
+	          __void__getValue__C5_TemplateKeyframeContainerT1_KEY__R1__float__TYPE_R1,
+	          "",
+	          "");
+END_REFLECTOR
 

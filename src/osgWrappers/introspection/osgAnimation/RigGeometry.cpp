@@ -34,11 +34,6 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::RigGeometry)
 	I_Constructor0(____RigGeometry,
 	               "",
 	               "");
-	I_Constructor1(IN, const osg::Geometry &, b,
-	               Properties::NON_EXPLICIT,
-	               ____RigGeometry__C5_osg_Geometry_R1,
-	               "",
-	               "");
 	I_ConstructorWithDefaults2(IN, const osgAnimation::RigGeometry &, b, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
 	                           ____RigGeometry__C5_RigGeometry_R1__C5_osg_CopyOp_R1,
 	                           "",
@@ -153,6 +148,26 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::RigGeometry)
 	          __C5_osg_Matrix_R1__getInvMatrixFromSkeletonToGeometry,
 	          "",
 	          "");
+	I_Method0(osg::Geometry *, getSourceGeometry,
+	          Properties::NON_VIRTUAL,
+	          __osg_Geometry_P1__getSourceGeometry,
+	          "",
+	          "");
+	I_Method0(const osg::Geometry *, getSourceGeometry,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Geometry_P1__getSourceGeometry,
+	          "",
+	          "");
+	I_Method1(void, setSourceGeometry, IN, osg::Geometry *, geometry,
+	          Properties::NON_VIRTUAL,
+	          __void__setSourceGeometry__osg_Geometry_P1,
+	          "",
+	          "");
+	I_Method1(void, copyFrom, IN, osg::Geometry &, from,
+	          Properties::NON_VIRTUAL,
+	          __void__copyFrom__osg_Geometry_R1,
+	          "",
+	          "");
 	I_SimpleProperty(osgAnimation::VertexInfluenceMap *, InfluenceMap, 
 	                 __VertexInfluenceMap_P1__getInfluenceMap, 
 	                 __void__setInfluenceMap__VertexInfluenceMap_P1);
@@ -171,6 +186,9 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::RigGeometry)
 	I_SimpleProperty(osgAnimation::Skeleton *, Skeleton, 
 	                 __Skeleton_P1__getSkeleton, 
 	                 __void__setSkeleton__Skeleton_P1);
+	I_SimpleProperty(osg::Geometry *, SourceGeometry, 
+	                 __osg_Geometry_P1__getSourceGeometry, 
+	                 __void__setSourceGeometry__osg_Geometry_P1);
 	I_SimpleProperty(const osgAnimation::VertexInfluenceSet &, VertexInfluenceSet, 
 	                 __C5_VertexInfluenceSet_R1__getVertexInfluenceSet, 
 	                 0);

@@ -11,7 +11,6 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/Matrix>
-#include <osg/Vec3>
 #include <osgAnimation/Bone>
 #include <osgAnimation/RigGeometry>
 #include <osgAnimation/RigTransformSoftware>
@@ -34,38 +33,18 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::RigTransformSoftware)
 	I_Constructor0(____RigTransformSoftware,
 	               "",
 	               "");
-	I_Method1(bool, init, IN, osgAnimation::RigGeometry &, x,
-	          Properties::VIRTUAL,
-	          __bool__init__RigGeometry_R1,
-	          "",
-	          "");
-	I_Method1(void, update, IN, osgAnimation::RigGeometry &, x,
-	          Properties::VIRTUAL,
-	          __void__update__RigGeometry_R1,
-	          "",
-	          "");
-	I_Method0(const std::vector< osg::Vec3 > &, getPositionSource,
-	          Properties::NON_VIRTUAL,
-	          __C5_std_vectorT1_osg_Vec3__R1__getPositionSource,
-	          "",
-	          "");
-	I_Method0(const std::vector< osg::Vec3 > &, getNormalSource,
-	          Properties::NON_VIRTUAL,
-	          __C5_std_vectorT1_osg_Vec3__R1__getNormalSource,
-	          "",
-	          "");
-	I_ProtectedMethod2(void, initVertexSetFromBones, IN, const osgAnimation::Bone::BoneMap &, map, IN, const osgAnimation::VertexInfluenceSet::UniqVertexSetToBoneSetList &, influence,
+	I_ProtectedMethod1(bool, init, IN, osgAnimation::RigGeometry &, x,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __void__initVertexSetFromBones__C5_Bone_BoneMap_R1__C5_VertexInfluenceSet_UniqVertexSetToBoneSetList_R1,
+	                   __bool__init__RigGeometry_R1,
 	                   "",
 	                   "");
-	I_SimpleProperty(const std::vector< osg::Vec3 > &, NormalSource, 
-	                 __C5_std_vectorT1_osg_Vec3__R1__getNormalSource, 
-	                 0);
-	I_SimpleProperty(const std::vector< osg::Vec3 > &, PositionSource, 
-	                 __C5_std_vectorT1_osg_Vec3__R1__getPositionSource, 
-	                 0);
+	I_ProtectedMethod2(void, initVertexSetFromBones, IN, const osgAnimation::BoneMap &, map, IN, const osgAnimation::VertexInfluenceSet::UniqVertexSetToBoneSetList &, influence,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__initVertexSetFromBones__C5_BoneMap_R1__C5_VertexInfluenceSet_UniqVertexSetToBoneSetList_R1,
+	                   "",
+	                   "");
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgAnimation::RigTransformSoftware::BoneWeight)

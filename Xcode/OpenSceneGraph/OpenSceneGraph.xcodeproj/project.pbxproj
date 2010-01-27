@@ -1911,6 +1911,36 @@
 		6320CD4207845BC300FE3D2C /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		6320CD6E07845D6D00FE3D2C /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		6320CD7307845D6D00FE3D2C /* osgFX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0055835B0624D1E5000A808A /* osgFX.framework */; };
+		7AA2E7CD11107FD8008EE370 /* StackedMatrixElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA2E7C411107FD7008EE370 /* StackedMatrixElement.cpp */; };
+		7AA2E7CE11107FD8008EE370 /* StackedQuaternionElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA2E7C511107FD7008EE370 /* StackedQuaternionElement.cpp */; };
+		7AA2E7CF11107FD8008EE370 /* StackedRotateAxisElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA2E7C611107FD7008EE370 /* StackedRotateAxisElement.cpp */; };
+		7AA2E7D011107FD8008EE370 /* StackedScaleElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA2E7C711107FD7008EE370 /* StackedScaleElement.cpp */; };
+		7AA2E7D111107FD8008EE370 /* StackedTransform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA2E7C811107FD7008EE370 /* StackedTransform.cpp */; };
+		7AA2E7D211107FD8008EE370 /* StackedTranslateElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA2E7C911107FD8008EE370 /* StackedTranslateElement.cpp */; };
+		7AA2E7D311107FD8008EE370 /* UpdateBone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA2E7CA11107FD8008EE370 /* UpdateBone.cpp */; };
+		7AA2E7D411107FD8008EE370 /* UpdateMaterial.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA2E7CB11107FD8008EE370 /* UpdateMaterial.cpp */; };
+		7AA2E7D511107FD8008EE370 /* UpdateMatrixTransform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA2E7CC11107FD8008EE370 /* UpdateMatrixTransform.cpp */; };
+		7AA2E7E111108007008EE370 /* AnimationUpdateCallback in Headers */ = {isa = PBXBuildFile; fileRef = 7AA2E7D611108004008EE370 /* AnimationUpdateCallback */; settings = {ATTRIBUTES = (Public, ); }; };
+		7AA2E7E211108007008EE370 /* StackedMatrixElement in Headers */ = {isa = PBXBuildFile; fileRef = 7AA2E7D711108004008EE370 /* StackedMatrixElement */; settings = {ATTRIBUTES = (Public, ); }; };
+		7AA2E7E311108007008EE370 /* StackedQuaternionElement in Headers */ = {isa = PBXBuildFile; fileRef = 7AA2E7D811108005008EE370 /* StackedQuaternionElement */; settings = {ATTRIBUTES = (Public, ); }; };
+		7AA2E7E411108007008EE370 /* StackedRotateAxisElement in Headers */ = {isa = PBXBuildFile; fileRef = 7AA2E7D911108005008EE370 /* StackedRotateAxisElement */; settings = {ATTRIBUTES = (Public, ); }; };
+		7AA2E7E511108007008EE370 /* StackedScaleElement in Headers */ = {isa = PBXBuildFile; fileRef = 7AA2E7DA11108006008EE370 /* StackedScaleElement */; settings = {ATTRIBUTES = (Public, ); }; };
+		7AA2E7E611108007008EE370 /* StackedTransform in Headers */ = {isa = PBXBuildFile; fileRef = 7AA2E7DB11108006008EE370 /* StackedTransform */; settings = {ATTRIBUTES = (Public, ); }; };
+		7AA2E7E711108007008EE370 /* StackedTransformElement in Headers */ = {isa = PBXBuildFile; fileRef = 7AA2E7DC11108006008EE370 /* StackedTransformElement */; settings = {ATTRIBUTES = (Public, ); }; };
+		7AA2E7E811108007008EE370 /* StackedTranslateElement in Headers */ = {isa = PBXBuildFile; fileRef = 7AA2E7DD11108007008EE370 /* StackedTranslateElement */; settings = {ATTRIBUTES = (Public, ); }; };
+		7AA2E7E911108007008EE370 /* UpdateBone in Headers */ = {isa = PBXBuildFile; fileRef = 7AA2E7DE11108007008EE370 /* UpdateBone */; settings = {ATTRIBUTES = (Public, ); }; };
+		7AA2E7EA11108007008EE370 /* UpdateMaterial in Headers */ = {isa = PBXBuildFile; fileRef = 7AA2E7DF11108007008EE370 /* UpdateMaterial */; settings = {ATTRIBUTES = (Public, ); }; };
+		7AA2E7EB11108007008EE370 /* UpdateMatrixTransform in Headers */ = {isa = PBXBuildFile; fileRef = 7AA2E7E011108007008EE370 /* UpdateMatrixTransform */; settings = {ATTRIBUTES = (Public, ); }; };
+		7AA2E942111095F1008EE370 /* DataTypes in Headers */ = {isa = PBXBuildFile; fileRef = 7AA2E93C111095EE008EE370 /* DataTypes */; settings = {ATTRIBUTES = (Public, ); }; };
+		7AA2E943111095F1008EE370 /* InputStream in Headers */ = {isa = PBXBuildFile; fileRef = 7AA2E93D111095EE008EE370 /* InputStream */; settings = {ATTRIBUTES = (Public, ); }; };
+		7AA2E944111095F1008EE370 /* ObjectWrapper in Headers */ = {isa = PBXBuildFile; fileRef = 7AA2E93E111095EF008EE370 /* ObjectWrapper */; settings = {ATTRIBUTES = (Public, ); }; };
+		7AA2E945111095F1008EE370 /* OutputStream in Headers */ = {isa = PBXBuildFile; fileRef = 7AA2E93F111095EF008EE370 /* OutputStream */; settings = {ATTRIBUTES = (Public, ); }; };
+		7AA2E946111095F1008EE370 /* Serializer in Headers */ = {isa = PBXBuildFile; fileRef = 7AA2E940111095F0008EE370 /* Serializer */; settings = {ATTRIBUTES = (Public, ); }; };
+		7AA2E947111095F1008EE370 /* StreamOperator in Headers */ = {isa = PBXBuildFile; fileRef = 7AA2E941111095F0008EE370 /* StreamOperator */; settings = {ATTRIBUTES = (Public, ); }; };
+		7AA2E94C11109611008EE370 /* Compressors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA2E94811109610008EE370 /* Compressors.cpp */; };
+		7AA2E94D11109611008EE370 /* InputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA2E94911109610008EE370 /* InputStream.cpp */; };
+		7AA2E94E11109611008EE370 /* ObjectWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA2E94A11109611008EE370 /* ObjectWrapper.cpp */; };
+		7AA2E94F11109611008EE370 /* OutputStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA2E94B11109611008EE370 /* OutputStream.cpp */; };
 		AC0CCB920C9F201E00BD0077 /* Texture2DArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AC0CCB910C9F201E00BD0077 /* Texture2DArray.cpp */; };
 		AC0CCB980C9F208A00BD0077 /* Texture2DArray in Headers */ = {isa = PBXBuildFile; fileRef = AC0CCB8E0C9F1FEC00BD0077 /* Texture2DArray */; settings = {ATTRIBUTES = (Public, ); }; };
 		AC0CCBC70C9F29CE00BD0077 /* Version in Headers */ = {isa = PBXBuildFile; fileRef = AC0CCBC50C9F29A700BD0077 /* Version */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -2176,9 +2206,6 @@
 		BE11891F05D7665600EB53E5 /* DotOsgWrapper in Headers */ = {isa = PBXBuildFile; fileRef = BE11890C05D7665600EB53E5 /* DotOsgWrapper */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE11892005D7665600EB53E5 /* DynamicLibrary in Headers */ = {isa = PBXBuildFile; fileRef = BE11890D05D7665600EB53E5 /* DynamicLibrary */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE11892105D7665600EB53E5 /* Export in Headers */ = {isa = PBXBuildFile; fileRef = BE11890E05D7665600EB53E5 /* Export */; settings = {ATTRIBUTES = (Public, ); }; };
-		BE11892205D7665600EB53E5 /* Field in Headers */ = {isa = PBXBuildFile; fileRef = BE11890F05D7665600EB53E5 /* Field */; settings = {ATTRIBUTES = (Public, ); }; };
-		BE11892305D7665600EB53E5 /* FieldReader in Headers */ = {isa = PBXBuildFile; fileRef = BE11891005D7665600EB53E5 /* FieldReader */; settings = {ATTRIBUTES = (Public, ); }; };
-		BE11892405D7665600EB53E5 /* FieldReaderIterator in Headers */ = {isa = PBXBuildFile; fileRef = BE11891105D7665600EB53E5 /* FieldReaderIterator */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE11892505D7665600EB53E5 /* FileNameUtils in Headers */ = {isa = PBXBuildFile; fileRef = BE11891205D7665600EB53E5 /* FileNameUtils */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE11892605D7665600EB53E5 /* FileUtils in Headers */ = {isa = PBXBuildFile; fileRef = BE11891305D7665600EB53E5 /* FileUtils */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE11892705D7665600EB53E5 /* ImageOptions in Headers */ = {isa = PBXBuildFile; fileRef = BE11891405D7665600EB53E5 /* ImageOptions */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -2333,7 +2360,6 @@
 		D41887CB0EDEE77900C17A84 /* Skeleton in Headers */ = {isa = PBXBuildFile; fileRef = D41887B60EDEE77900C17A84 /* Skeleton */; settings = {ATTRIBUTES = (Public, ); }; };
 		D41887CD0EDEE77900C17A84 /* Target in Headers */ = {isa = PBXBuildFile; fileRef = D41887B80EDEE77900C17A84 /* Target */; settings = {ATTRIBUTES = (Public, ); }; };
 		D41887CE0EDEE77900C17A84 /* Timeline in Headers */ = {isa = PBXBuildFile; fileRef = D41887B90EDEE77900C17A84 /* Timeline */; settings = {ATTRIBUTES = (Public, ); }; };
-		D41887CF0EDEE77900C17A84 /* UpdateCallback in Headers */ = {isa = PBXBuildFile; fileRef = D41887BA0EDEE77900C17A84 /* UpdateCallback */; settings = {ATTRIBUTES = (Public, ); }; };
 		D41887D00EDEE77900C17A84 /* Vec3Packed in Headers */ = {isa = PBXBuildFile; fileRef = D41887BB0EDEE77900C17A84 /* Vec3Packed */; settings = {ATTRIBUTES = (Public, ); }; };
 		D41887D10EDEE77900C17A84 /* VertexInfluence in Headers */ = {isa = PBXBuildFile; fileRef = D41887BC0EDEE77900C17A84 /* VertexInfluence */; settings = {ATTRIBUTES = (Public, ); }; };
 		D41887DE0EDEE7A000C17A84 /* Animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41887D30EDEE79F00C17A84 /* Animation.cpp */; };
@@ -2344,7 +2370,6 @@
 		D41887E40EDEE7A000C17A84 /* Skeleton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41887D90EDEE7A000C17A84 /* Skeleton.cpp */; };
 		D41887E50EDEE7A000C17A84 /* Target.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41887DA0EDEE7A000C17A84 /* Target.cpp */; };
 		D41887E60EDEE7A000C17A84 /* Timeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41887DB0EDEE7A000C17A84 /* Timeline.cpp */; };
-		D41887E70EDEE7A000C17A84 /* UpdateCallback.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41887DC0EDEE7A000C17A84 /* UpdateCallback.cpp */; };
 		D41887E80EDEE7A000C17A84 /* VertexInfluence.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D41887DD0EDEE7A000C17A84 /* VertexInfluence.cpp */; };
 		D41888760EDEE8E200C17A84 /* osgWidget.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D43AB5640E2E1D1900623C77 /* osgWidget.framework */; };
 		D41888770EDEE8E200C17A84 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
@@ -2380,7 +2405,6 @@
 		D42FE58B0B542DD10058A380 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
 		D42FE7CF0B56521B0058A380 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4306A9E10552D13008403DD /* BoneMapVisitor in Headers */ = {isa = PBXBuildFile; fileRef = D4306A9B10552D13008403DD /* BoneMapVisitor */; settings = {ATTRIBUTES = (Public, ); }; };
-		D4306A9F10552D13008403DD /* ComputeBindMatrixVisitor in Headers */ = {isa = PBXBuildFile; fileRef = D4306A9C10552D13008403DD /* ComputeBindMatrixVisitor */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4306AA010552D13008403DD /* FindParentAnimationManagerVisitor in Headers */ = {isa = PBXBuildFile; fileRef = D4306A9D10552D13008403DD /* FindParentAnimationManagerVisitor */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4306AA310552D27008403DD /* BoneMapVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4306AA110552D27008403DD /* BoneMapVisitor.cpp */; };
 		D4306AA410552D27008403DD /* FindParentAnimationManagerVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4306AA210552D27008403DD /* FindParentAnimationManagerVisitor.cpp */; };
@@ -7895,6 +7919,36 @@
 		5BDF59050C1FF9BE008DDEC0 /* ShadowTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowTexture.cpp; sourceTree = "<group>"; };
 		5BDF59060C1FF9BE008DDEC0 /* ShadowVolume.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowVolume.cpp; sourceTree = "<group>"; };
 		6320CD4307845BC300FE3D2C /* osgTerrain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgTerrain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7AA2E7C411107FD7008EE370 /* StackedMatrixElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StackedMatrixElement.cpp; path = ../../src/osgAnimation/StackedMatrixElement.cpp; sourceTree = SOURCE_ROOT; };
+		7AA2E7C511107FD7008EE370 /* StackedQuaternionElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StackedQuaternionElement.cpp; path = ../../src/osgAnimation/StackedQuaternionElement.cpp; sourceTree = SOURCE_ROOT; };
+		7AA2E7C611107FD7008EE370 /* StackedRotateAxisElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StackedRotateAxisElement.cpp; path = ../../src/osgAnimation/StackedRotateAxisElement.cpp; sourceTree = SOURCE_ROOT; };
+		7AA2E7C711107FD7008EE370 /* StackedScaleElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StackedScaleElement.cpp; path = ../../src/osgAnimation/StackedScaleElement.cpp; sourceTree = SOURCE_ROOT; };
+		7AA2E7C811107FD7008EE370 /* StackedTransform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StackedTransform.cpp; path = ../../src/osgAnimation/StackedTransform.cpp; sourceTree = SOURCE_ROOT; };
+		7AA2E7C911107FD8008EE370 /* StackedTranslateElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StackedTranslateElement.cpp; path = ../../src/osgAnimation/StackedTranslateElement.cpp; sourceTree = SOURCE_ROOT; };
+		7AA2E7CA11107FD8008EE370 /* UpdateBone.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UpdateBone.cpp; path = ../../src/osgAnimation/UpdateBone.cpp; sourceTree = SOURCE_ROOT; };
+		7AA2E7CB11107FD8008EE370 /* UpdateMaterial.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UpdateMaterial.cpp; path = ../../src/osgAnimation/UpdateMaterial.cpp; sourceTree = SOURCE_ROOT; };
+		7AA2E7CC11107FD8008EE370 /* UpdateMatrixTransform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UpdateMatrixTransform.cpp; path = ../../src/osgAnimation/UpdateMatrixTransform.cpp; sourceTree = SOURCE_ROOT; };
+		7AA2E7D611108004008EE370 /* AnimationUpdateCallback */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = AnimationUpdateCallback; path = ../../include/osgAnimation/AnimationUpdateCallback; sourceTree = SOURCE_ROOT; };
+		7AA2E7D711108004008EE370 /* StackedMatrixElement */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = StackedMatrixElement; path = ../../include/osgAnimation/StackedMatrixElement; sourceTree = SOURCE_ROOT; };
+		7AA2E7D811108005008EE370 /* StackedQuaternionElement */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = StackedQuaternionElement; path = ../../include/osgAnimation/StackedQuaternionElement; sourceTree = SOURCE_ROOT; };
+		7AA2E7D911108005008EE370 /* StackedRotateAxisElement */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = StackedRotateAxisElement; path = ../../include/osgAnimation/StackedRotateAxisElement; sourceTree = SOURCE_ROOT; };
+		7AA2E7DA11108006008EE370 /* StackedScaleElement */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = StackedScaleElement; path = ../../include/osgAnimation/StackedScaleElement; sourceTree = SOURCE_ROOT; };
+		7AA2E7DB11108006008EE370 /* StackedTransform */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = StackedTransform; path = ../../include/osgAnimation/StackedTransform; sourceTree = SOURCE_ROOT; };
+		7AA2E7DC11108006008EE370 /* StackedTransformElement */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = StackedTransformElement; path = ../../include/osgAnimation/StackedTransformElement; sourceTree = SOURCE_ROOT; };
+		7AA2E7DD11108007008EE370 /* StackedTranslateElement */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = StackedTranslateElement; path = ../../include/osgAnimation/StackedTranslateElement; sourceTree = SOURCE_ROOT; };
+		7AA2E7DE11108007008EE370 /* UpdateBone */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = UpdateBone; path = ../../include/osgAnimation/UpdateBone; sourceTree = SOURCE_ROOT; };
+		7AA2E7DF11108007008EE370 /* UpdateMaterial */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = UpdateMaterial; path = ../../include/osgAnimation/UpdateMaterial; sourceTree = SOURCE_ROOT; };
+		7AA2E7E011108007008EE370 /* UpdateMatrixTransform */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = UpdateMatrixTransform; path = ../../include/osgAnimation/UpdateMatrixTransform; sourceTree = SOURCE_ROOT; };
+		7AA2E93C111095EE008EE370 /* DataTypes */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = DataTypes; sourceTree = "<group>"; };
+		7AA2E93D111095EE008EE370 /* InputStream */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = InputStream; sourceTree = "<group>"; };
+		7AA2E93E111095EF008EE370 /* ObjectWrapper */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ObjectWrapper; sourceTree = "<group>"; };
+		7AA2E93F111095EF008EE370 /* OutputStream */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OutputStream; sourceTree = "<group>"; };
+		7AA2E940111095F0008EE370 /* Serializer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Serializer; sourceTree = "<group>"; };
+		7AA2E941111095F0008EE370 /* StreamOperator */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = StreamOperator; sourceTree = "<group>"; };
+		7AA2E94811109610008EE370 /* Compressors.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Compressors.cpp; sourceTree = "<group>"; };
+		7AA2E94911109610008EE370 /* InputStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputStream.cpp; sourceTree = "<group>"; };
+		7AA2E94A11109611008EE370 /* ObjectWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ObjectWrapper.cpp; sourceTree = "<group>"; };
+		7AA2E94B11109611008EE370 /* OutputStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OutputStream.cpp; sourceTree = "<group>"; };
 		8D07F2C70486CC7A007CD1D0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AC0CCB8E0C9F1FEC00BD0077 /* Texture2DArray */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Texture2DArray; sourceTree = "<group>"; };
 		AC0CCB910C9F201E00BD0077 /* Texture2DArray.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = Texture2DArray.cpp; sourceTree = "<group>"; };
@@ -8175,9 +8229,6 @@
 		BE11890C05D7665600EB53E5 /* DotOsgWrapper */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = DotOsgWrapper; path = ../../include/osgDB/DotOsgWrapper; sourceTree = SOURCE_ROOT; };
 		BE11890D05D7665600EB53E5 /* DynamicLibrary */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = DynamicLibrary; path = ../../include/osgDB/DynamicLibrary; sourceTree = SOURCE_ROOT; };
 		BE11890E05D7665600EB53E5 /* Export */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Export; path = ../../include/osgDB/Export; sourceTree = SOURCE_ROOT; };
-		BE11890F05D7665600EB53E5 /* Field */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = Field; path = ../../include/osgDB/Field; sourceTree = SOURCE_ROOT; };
-		BE11891005D7665600EB53E5 /* FieldReader */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = FieldReader; path = ../../include/osgDB/FieldReader; sourceTree = SOURCE_ROOT; };
-		BE11891105D7665600EB53E5 /* FieldReaderIterator */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = FieldReaderIterator; path = ../../include/osgDB/FieldReaderIterator; sourceTree = SOURCE_ROOT; };
 		BE11891205D7665600EB53E5 /* FileNameUtils */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = FileNameUtils; path = ../../include/osgDB/FileNameUtils; sourceTree = SOURCE_ROOT; };
 		BE11891305D7665600EB53E5 /* FileUtils */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = FileUtils; path = ../../include/osgDB/FileUtils; sourceTree = SOURCE_ROOT; };
 		BE11891405D7665600EB53E5 /* ImageOptions */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; name = ImageOptions; path = ../../include/osgDB/ImageOptions; sourceTree = SOURCE_ROOT; };
@@ -8284,7 +8335,6 @@
 		D41887B60EDEE77900C17A84 /* Skeleton */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Skeleton; path = ../../include/osgAnimation/Skeleton; sourceTree = SOURCE_ROOT; };
 		D41887B80EDEE77900C17A84 /* Target */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Target; path = ../../include/osgAnimation/Target; sourceTree = SOURCE_ROOT; };
 		D41887B90EDEE77900C17A84 /* Timeline */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Timeline; path = ../../include/osgAnimation/Timeline; sourceTree = SOURCE_ROOT; };
-		D41887BA0EDEE77900C17A84 /* UpdateCallback */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = UpdateCallback; path = ../../include/osgAnimation/UpdateCallback; sourceTree = SOURCE_ROOT; };
 		D41887BB0EDEE77900C17A84 /* Vec3Packed */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Vec3Packed; path = ../../include/osgAnimation/Vec3Packed; sourceTree = SOURCE_ROOT; };
 		D41887BC0EDEE77900C17A84 /* VertexInfluence */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = VertexInfluence; path = ../../include/osgAnimation/VertexInfluence; sourceTree = SOURCE_ROOT; };
 		D41887D30EDEE79F00C17A84 /* Animation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Animation.cpp; path = ../../src/osgAnimation/Animation.cpp; sourceTree = SOURCE_ROOT; };
@@ -8295,7 +8345,6 @@
 		D41887D90EDEE7A000C17A84 /* Skeleton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Skeleton.cpp; path = ../../src/osgAnimation/Skeleton.cpp; sourceTree = SOURCE_ROOT; };
 		D41887DA0EDEE7A000C17A84 /* Target.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Target.cpp; path = ../../src/osgAnimation/Target.cpp; sourceTree = SOURCE_ROOT; };
 		D41887DB0EDEE7A000C17A84 /* Timeline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Timeline.cpp; path = ../../src/osgAnimation/Timeline.cpp; sourceTree = SOURCE_ROOT; };
-		D41887DC0EDEE7A000C17A84 /* UpdateCallback.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = UpdateCallback.cpp; path = ../../src/osgAnimation/UpdateCallback.cpp; sourceTree = SOURCE_ROOT; };
 		D41887DD0EDEE7A000C17A84 /* VertexInfluence.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VertexInfluence.cpp; path = ../../src/osgAnimation/VertexInfluence.cpp; sourceTree = SOURCE_ROOT; };
 		D41888810EDEE8E200C17A84 /* osganimationviewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = osganimationviewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D41888B80EDEE96B00C17A84 /* AnimtkViewer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = AnimtkViewer; path = ../../examples/osganimationviewer/AnimtkViewer; sourceTree = SOURCE_ROOT; };
@@ -8316,7 +8365,6 @@
 		D421AE271018A8AB000167CB /* LinkVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LinkVisitor.cpp; path = ../../src/osgAnimation/LinkVisitor.cpp; sourceTree = SOURCE_ROOT; };
 		D425C8290E14F49F004E88FE /* Atomic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Atomic.cpp; path = common/Atomic.cpp; sourceTree = "<group>"; };
 		D4306A9B10552D13008403DD /* BoneMapVisitor */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = BoneMapVisitor; path = ../../include/osgAnimation/BoneMapVisitor; sourceTree = SOURCE_ROOT; };
-		D4306A9C10552D13008403DD /* ComputeBindMatrixVisitor */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ComputeBindMatrixVisitor; path = ../../include/osgAnimation/ComputeBindMatrixVisitor; sourceTree = SOURCE_ROOT; };
 		D4306A9D10552D13008403DD /* FindParentAnimationManagerVisitor */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FindParentAnimationManagerVisitor; path = ../../include/osgAnimation/FindParentAnimationManagerVisitor; sourceTree = SOURCE_ROOT; };
 		D4306AA110552D27008403DD /* BoneMapVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BoneMapVisitor.cpp; path = ../../src/osgAnimation/BoneMapVisitor.cpp; sourceTree = SOURCE_ROOT; };
 		D4306AA210552D27008403DD /* FindParentAnimationManagerVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FindParentAnimationManagerVisitor.cpp; path = ../../src/osgAnimation/FindParentAnimationManagerVisitor.cpp; sourceTree = SOURCE_ROOT; };
@@ -13816,6 +13864,10 @@
 		BE1188DF05D7641E00EB53E5 /* osgDB */ = {
 			isa = PBXGroup;
 			children = (
+				7AA2E94811109610008EE370 /* Compressors.cpp */,
+				7AA2E94911109610008EE370 /* InputStream.cpp */,
+				7AA2E94A11109611008EE370 /* ObjectWrapper.cpp */,
+				7AA2E94B11109611008EE370 /* OutputStream.cpp */,
 				D43ED7A30FCFE0CE0024F778 /* DatabaseRevisions.cpp */,
 				D4D8E2120FB96263000B8789 /* Callbacks.cpp */,
 				D4FB11030FB850EA00F67E0E /* Options.cpp */,
@@ -13853,6 +13905,12 @@
 		BE1188E005D7646500EB53E5 /* osgDB */ = {
 			isa = PBXGroup;
 			children = (
+				7AA2E93C111095EE008EE370 /* DataTypes */,
+				7AA2E93D111095EE008EE370 /* InputStream */,
+				7AA2E93E111095EF008EE370 /* ObjectWrapper */,
+				7AA2E93F111095EF008EE370 /* OutputStream */,
+				7AA2E940111095F0008EE370 /* Serializer */,
+				7AA2E941111095F0008EE370 /* StreamOperator */,
 				D43ED7A50FCFE0DB0024F778 /* DatabaseRevisions */,
 				D4D8E20F0FB96238000B8789 /* Callbacks */,
 				D4FB11010FB850D900F67E0E /* Options */,
@@ -13868,9 +13926,6 @@
 				BE11890C05D7665600EB53E5 /* DotOsgWrapper */,
 				BE11890D05D7665600EB53E5 /* DynamicLibrary */,
 				BE11890E05D7665600EB53E5 /* Export */,
-				BE11890F05D7665600EB53E5 /* Field */,
-				BE11891005D7665600EB53E5 /* FieldReader */,
-				BE11891105D7665600EB53E5 /* FieldReaderIterator */,
 				BE11891205D7665600EB53E5 /* FileNameUtils */,
 				BE11891305D7665600EB53E5 /* FileUtils */,
 				BE11891405D7665600EB53E5 /* ImageOptions */,
@@ -13942,6 +13997,17 @@
 		D41887A70EDEE75000C17A84 /* osgAnimation */ = {
 			isa = PBXGroup;
 			children = (
+				7AA2E7D611108004008EE370 /* AnimationUpdateCallback */,
+				7AA2E7D711108004008EE370 /* StackedMatrixElement */,
+				7AA2E7D811108005008EE370 /* StackedQuaternionElement */,
+				7AA2E7D911108005008EE370 /* StackedRotateAxisElement */,
+				7AA2E7DA11108006008EE370 /* StackedScaleElement */,
+				7AA2E7DB11108006008EE370 /* StackedTransform */,
+				7AA2E7DC11108006008EE370 /* StackedTransformElement */,
+				7AA2E7DD11108007008EE370 /* StackedTranslateElement */,
+				7AA2E7DE11108007008EE370 /* UpdateBone */,
+				7AA2E7DF11108007008EE370 /* UpdateMaterial */,
+				7AA2E7E011108007008EE370 /* UpdateMatrixTransform */,
 				D4A1A24D10988A00001C33DE /* ActionAnimation */,
 				D4A1A24E10988A01001C33DE /* ActionBlendIn */,
 				D4A1A24F10988A01001C33DE /* ActionBlendOut */,
@@ -13950,7 +14016,6 @@
 				D4A1A25210988A01001C33DE /* RigTransformHardware */,
 				D4A1A25310988A01001C33DE /* RigTransformSoftware */,
 				D4306A9B10552D13008403DD /* BoneMapVisitor */,
-				D4306A9C10552D13008403DD /* ComputeBindMatrixVisitor */,
 				D4306A9D10552D13008403DD /* FindParentAnimationManagerVisitor */,
 				D40277520FE7A70400CDE760 /* Action */,
 				D40277530FE7A70400CDE760 /* ActionCallback */,
@@ -13977,7 +14042,6 @@
 				D41887B60EDEE77900C17A84 /* Skeleton */,
 				D41887B80EDEE77900C17A84 /* Target */,
 				D41887B90EDEE77900C17A84 /* Timeline */,
-				D41887BA0EDEE77900C17A84 /* UpdateCallback */,
 				D41887BB0EDEE77900C17A84 /* Vec3Packed */,
 				D41887BC0EDEE77900C17A84 /* VertexInfluence */,
 			);
@@ -13987,6 +14051,15 @@
 		D41887D20EDEE78100C17A84 /* osgAnimation */ = {
 			isa = PBXGroup;
 			children = (
+				7AA2E7C411107FD7008EE370 /* StackedMatrixElement.cpp */,
+				7AA2E7C511107FD7008EE370 /* StackedQuaternionElement.cpp */,
+				7AA2E7C611107FD7008EE370 /* StackedRotateAxisElement.cpp */,
+				7AA2E7C711107FD7008EE370 /* StackedScaleElement.cpp */,
+				7AA2E7C811107FD7008EE370 /* StackedTransform.cpp */,
+				7AA2E7C911107FD8008EE370 /* StackedTranslateElement.cpp */,
+				7AA2E7CA11107FD8008EE370 /* UpdateBone.cpp */,
+				7AA2E7CB11107FD8008EE370 /* UpdateMaterial.cpp */,
+				7AA2E7CC11107FD8008EE370 /* UpdateMatrixTransform.cpp */,
 				D4A1A25B10988A6F001C33DE /* ActionAnimation.cpp */,
 				D4A1A25C10988A6F001C33DE /* ActionBlendIn.cpp */,
 				D4A1A25D10988A6F001C33DE /* ActionBlendOut.cpp */,
@@ -14012,7 +14085,6 @@
 				D41887D90EDEE7A000C17A84 /* Skeleton.cpp */,
 				D41887DA0EDEE7A000C17A84 /* Target.cpp */,
 				D41887DB0EDEE7A000C17A84 /* Timeline.cpp */,
-				D41887DC0EDEE7A000C17A84 /* UpdateCallback.cpp */,
 				D41887DD0EDEE7A000C17A84 /* VertexInfluence.cpp */,
 			);
 			name = osgAnimation;
@@ -15987,6 +16059,12 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7AA2E942111095F1008EE370 /* DataTypes in Headers */,
+				7AA2E943111095F1008EE370 /* InputStream in Headers */,
+				7AA2E944111095F1008EE370 /* ObjectWrapper in Headers */,
+				7AA2E945111095F1008EE370 /* OutputStream in Headers */,
+				7AA2E946111095F1008EE370 /* Serializer in Headers */,
+				7AA2E947111095F1008EE370 /* StreamOperator in Headers */,
 				D43ED7A60FCFE0DB0024F778 /* DatabaseRevisions in Headers */,
 				D4D8E2100FB96238000B8789 /* Callbacks in Headers */,
 				D4FB11020FB850D900F67E0E /* Options in Headers */,
@@ -16002,9 +16080,6 @@
 				BE11891F05D7665600EB53E5 /* DotOsgWrapper in Headers */,
 				BE11892005D7665600EB53E5 /* DynamicLibrary in Headers */,
 				BE11892105D7665600EB53E5 /* Export in Headers */,
-				BE11892205D7665600EB53E5 /* Field in Headers */,
-				BE11892305D7665600EB53E5 /* FieldReader in Headers */,
-				BE11892405D7665600EB53E5 /* FieldReaderIterator in Headers */,
 				BE11892505D7665600EB53E5 /* FileNameUtils in Headers */,
 				BE11892605D7665600EB53E5 /* FileUtils in Headers */,
 				BE11892705D7665600EB53E5 /* ImageOptions in Headers */,
@@ -16044,6 +16119,17 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7AA2E7E111108007008EE370 /* AnimationUpdateCallback in Headers */,
+				7AA2E7E211108007008EE370 /* StackedMatrixElement in Headers */,
+				7AA2E7E311108007008EE370 /* StackedQuaternionElement in Headers */,
+				7AA2E7E411108007008EE370 /* StackedRotateAxisElement in Headers */,
+				7AA2E7E511108007008EE370 /* StackedScaleElement in Headers */,
+				7AA2E7E611108007008EE370 /* StackedTransform in Headers */,
+				7AA2E7E711108007008EE370 /* StackedTransformElement in Headers */,
+				7AA2E7E811108007008EE370 /* StackedTranslateElement in Headers */,
+				7AA2E7E911108007008EE370 /* UpdateBone in Headers */,
+				7AA2E7EA11108007008EE370 /* UpdateMaterial in Headers */,
+				7AA2E7EB11108007008EE370 /* UpdateMatrixTransform in Headers */,
 				D4A1A25710988A01001C33DE /* ActionStripAnimation in Headers */,
 				D4A1A25910988A01001C33DE /* RigTransformHardware in Headers */,
 				D4A1A25410988A01001C33DE /* ActionAnimation in Headers */,
@@ -16052,7 +16138,6 @@
 				D4A1A25810988A01001C33DE /* RigTransform in Headers */,
 				D4A1A25610988A01001C33DE /* ActionBlendOut in Headers */,
 				D4306A9E10552D13008403DD /* BoneMapVisitor in Headers */,
-				D4306A9F10552D13008403DD /* ComputeBindMatrixVisitor in Headers */,
 				D4306AA010552D13008403DD /* FindParentAnimationManagerVisitor in Headers */,
 				D40277580FE7A70500CDE760 /* Action in Headers */,
 				D40277590FE7A70500CDE760 /* ActionCallback in Headers */,
@@ -16079,7 +16164,6 @@
 				D41887CB0EDEE77900C17A84 /* Skeleton in Headers */,
 				D41887CD0EDEE77900C17A84 /* Target in Headers */,
 				D41887CE0EDEE77900C17A84 /* Timeline in Headers */,
-				D41887CF0EDEE77900C17A84 /* UpdateCallback in Headers */,
 				D41887D00EDEE77900C17A84 /* Vec3Packed in Headers */,
 				D41887D10EDEE77900C17A84 /* VertexInfluence in Headers */,
 			);
@@ -22373,6 +22457,10 @@
 				D4FB11040FB850EA00F67E0E /* Options.cpp in Sources */,
 				D4D8E2130FB96263000B8789 /* Callbacks.cpp in Sources */,
 				D43ED7A40FCFE0CE0024F778 /* DatabaseRevisions.cpp in Sources */,
+				7AA2E94C11109611008EE370 /* Compressors.cpp in Sources */,
+				7AA2E94D11109611008EE370 /* InputStream.cpp in Sources */,
+				7AA2E94E11109611008EE370 /* ObjectWrapper.cpp in Sources */,
+				7AA2E94F11109611008EE370 /* OutputStream.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22408,7 +22496,6 @@
 				D41887E40EDEE7A000C17A84 /* Skeleton.cpp in Sources */,
 				D41887E50EDEE7A000C17A84 /* Target.cpp in Sources */,
 				D41887E60EDEE7A000C17A84 /* Timeline.cpp in Sources */,
-				D41887E70EDEE7A000C17A84 /* UpdateCallback.cpp in Sources */,
 				D41887E80EDEE7A000C17A84 /* VertexInfluence.cpp in Sources */,
 				D4163D540F2A74EC0062226D /* BasicAnimationManager.cpp in Sources */,
 				D4163D550F2A74EC0062226D /* TimelineAnimationManager.cpp in Sources */,
@@ -22427,6 +22514,15 @@
 				D4A1A26410988A70001C33DE /* ActionStripAnimation.cpp in Sources */,
 				D4A1A26510988A70001C33DE /* RigTransformHardware.cpp in Sources */,
 				D4A1A26610988A70001C33DE /* RigTransformSoftware.cpp in Sources */,
+				7AA2E7CD11107FD8008EE370 /* StackedMatrixElement.cpp in Sources */,
+				7AA2E7CE11107FD8008EE370 /* StackedQuaternionElement.cpp in Sources */,
+				7AA2E7CF11107FD8008EE370 /* StackedRotateAxisElement.cpp in Sources */,
+				7AA2E7D011107FD8008EE370 /* StackedScaleElement.cpp in Sources */,
+				7AA2E7D111107FD8008EE370 /* StackedTransform.cpp in Sources */,
+				7AA2E7D211107FD8008EE370 /* StackedTranslateElement.cpp in Sources */,
+				7AA2E7D311107FD8008EE370 /* UpdateBone.cpp in Sources */,
+				7AA2E7D411107FD8008EE370 /* UpdateMaterial.cpp in Sources */,
+				7AA2E7D511107FD8008EE370 /* UpdateMatrixTransform.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

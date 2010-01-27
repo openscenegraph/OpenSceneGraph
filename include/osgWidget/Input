@@ -38,6 +38,8 @@ class OSGWIDGET_EXPORT Input: public Label
        virtual bool unfocus (const WindowManager*);
        virtual bool keyUp   (int, int, const WindowManager*);
        virtual bool keyDown (int, int, const WindowManager*);
+       virtual bool mouseDrag (double, double, const WindowManager*);
+       virtual bool mousePush (double x, double y, const WindowManager*);
 
        void         setCursor            (Widget*);
        unsigned int calculateBestYOffset (const std::string& = "qgl");
@@ -80,21 +82,28 @@ class OSGWIDGET_EXPORT Input: public Label
 
        void _calculateCursorOffsets();
 
-       point_type _xoff;
-       point_type _yoff;
+       point_type               _xoff;
+       point_type               _yoff;
 
-       unsigned int _index;
-       unsigned int _size;
-       unsigned int _cursorIndex;
-       unsigned int _maxSize;
-       unsigned int _textLength;
+       unsigned int             _index;
+       unsigned int             _size;
+       unsigned int             _cursorIndex;
+       unsigned int             _maxSize;
+       unsigned int             _textLength;
 
-       std::vector<point_type> _offsets;
-       std::vector<point_type> _wordsOffsets;
-       std::vector<point_type> _widths;
-       osg::ref_ptr<Widget>    _cursor;
-       
-       bool _insertMode;
+       std::vector<point_type>  _offsets;
+       std::vector<point_type>  _wordsOffsets;
+       std::vector<point_type>  _widths;
+       osg::ref_ptr<Widget>     _cursor;
+
+       bool                     _insertMode;
+
+       osg::ref_ptr<Widget>     _selection;
+       unsigned int             _selectionStartIndex;
+       unsigned int             _selectionEndIndex;
+       unsigned int             _selectionIndex;
+
+       point_type               _mouseClickX;
 };
 
 }

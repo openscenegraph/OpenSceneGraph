@@ -13,7 +13,7 @@
 */
 
 #include <osgAnimation/LinkVisitor>
-#include <osgAnimation/UpdateCallback>
+#include <osgAnimation/AnimationUpdateCallback>
 #include <osg/Notify>
 #include <osg/Geode>
 
@@ -33,7 +33,7 @@ AnimationList& LinkVisitor::getAnimationList()
 {
     return _animations;
 }
-void LinkVisitor::link(osgAnimation::AnimationUpdateCallbackBase* cb)
+void LinkVisitor::link(AnimationUpdateCallbackBase* cb)
 {
     int result = 0;
     for (int i = 0; i < (int)_animations.size(); i++)
@@ -49,7 +49,7 @@ void LinkVisitor::handle_stateset(osg::StateSet* stateset)
     if (!stateset)
         return;
     osg::StateSet::AttributeList& attr = stateset->getAttributeList();
-    for (osg::StateSet::AttributeList::iterator it = attr.begin(); it != attr.end(); it++)
+    for (osg::StateSet::AttributeList::iterator it = attr.begin(); it != attr.end(); ++it)
     {
         osg::StateAttribute* sattr = it->second.first.get();
         osgAnimation::AnimationUpdateCallbackBase* cb = dynamic_cast<osgAnimation::AnimationUpdateCallbackBase*>(sattr->getUpdateCallback());

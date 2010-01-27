@@ -28,7 +28,7 @@ AnimationManagerBase::AnimationManagerBase()
 
 void AnimationManagerBase::clearTargets()
 {
-    for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
+    for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); ++it)
         (*it).get()->reset();
 }
 
@@ -67,7 +67,7 @@ AnimationManagerBase::AnimationManagerBase(const AnimationManagerBase& b, const 
     const AnimationList& animationList = b.getAnimationList();
     for (AnimationList::const_iterator it = animationList.begin();
          it != animationList.end();
-         it++)
+         ++it)
     {
         Animation* animation = dynamic_cast<osgAnimation::Animation*>(it->get()->clone(copyop));
         _animations.push_back(animation);
@@ -85,7 +85,7 @@ void AnimationManagerBase::buildTargetReference()
         Animation* anim = (*iterAnim).get();
         for (ChannelList::iterator it = anim->getChannels().begin();
              it != anim->getChannels().end();
-             it++)
+             ++it)
             _targets.insert((*it)->getTarget());
     }
 }

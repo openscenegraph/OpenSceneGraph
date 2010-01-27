@@ -172,6 +172,7 @@ namespace osgAnimation
     typedef TemplateChannel<Vec3LinearSampler> Vec3LinearChannel;
     typedef TemplateChannel<Vec4LinearSampler> Vec4LinearChannel;
     typedef TemplateChannel<QuatSphericalLinearSampler> QuatSphericalLinearChannel;
+    typedef TemplateChannel<MatrixLinearSampler> MatrixLinearChannel;
 
     typedef TemplateChannel<FloatCubicBezierSampler> FloatCubicBezierChannel;
     typedef TemplateChannel<DoubleCubicBezierSampler> DoubleCubicBezierChannel;

@@ -12,60 +12,61 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGANIMATION_CUBIC_BEZIER_H
-#define OSGANIMATION_CUBIC_BEZIER_H
+#ifndef OSGANIMATION_CUBIC_BEZIER
+#define OSGANIMATION_CUBIC_BEZIER 1
 
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Vec4>
-#include <osg/Quat>
 
 namespace osgAnimation
 {
 
     template <class T>
-    struct TemplateCubicBezier
+    class TemplateCubicBezier
     {
-        T mPoint[3];
-        const T& getP0() const { return mPoint[0];}
-        const T& getP1() const { return mPoint[1];}
-        const T& getP2() const { return mPoint[2];}
-        TemplateCubicBezier(const T& v0, const T& v1, const T& v2) 
-        {
-            mPoint[0] = v0;
-            mPoint[1] = v1;
-            mPoint[2] = v2;
-        }
-        // Constructor with value only
-        TemplateCubicBezier(const T& v0) 
-        {
-            mPoint[0] = v0;
-            mPoint[1] = v0;
-            mPoint[2] = v0;
-        }
-
+    public:
         TemplateCubicBezier() {}
 
-        const T& getPosition() const { return mPoint[0];}
-        const T& getTangentPoint1() const { return mPoint[1];}
-        const T& getTangentPoint2() const { return mPoint[2];}
-        
-        // steaming operators.
-        friend std::ostream& operator << (std::ostream& output, const TemplateCubicBezier<T>& vec)
+        TemplateCubicBezier(const T& p, const T& i, const T& o) : _position(p), _controlPointIn(i), _controlPointOut(o)
         {
-            output << vec.mPoint[0] << " "
-                   << vec.mPoint[1] << " "
-                   << vec.mPoint[2];
+        }
+
+        // Constructor with value only
+        TemplateCubicBezier(const T& p) : _position(p), _controlPointIn(p), _controlPointOut(p)
+        {
+        }
+
+        const T& getPosition() const { return _position;}
+        const T& getControlPointIn() const { return _controlPointIn;}
+        const T& getControlPointOut() const { return _controlPointOut;}
+
+        T& getPosition() { return _position;}
+        T& getControlPointIn() { return _controlPointIn;}
+        T& getControlPointOut() { return _controlPointOut;}
+
+        void setPosition(const T& v) {_position = v;}
+        void setControlPointIn(const T& v) {_controlPointIn = v;}
+        void setControlPointOut(const T& v) {_controlPointOut = v;}
+
+        // steaming operators.
+        friend std::ostream& operator << (std::ostream& output, const TemplateCubicBezier<T>& tcb)
+        {
+            output << tcb._position << " "
+                   << tcb._controlPointIn << " "
+                   << tcb._controlPointOut;
             return output; // to enable cascading
         }
 
-        friend std::istream& operator >> (std::istream& input, TemplateCubicBezier<T>& vec)
+        friend std::istream& operator >> (std::istream& input, TemplateCubicBezier<T>& tcb)
         {
-            input >> vec.mPoint[0] >> vec.mPoint[1] >> vec.mPoint[2];
+            input >> tcb._position >> tcb._controlPointIn >> tcb._controlPointOut;
             return input;
         }
-    };
 
+    protected:
+        T _position, _controlPointIn, _controlPointOut;
+    };
 
     typedef TemplateCubicBezier<float> FloatCubicBezier;
     typedef TemplateCubicBezier<double> DoubleCubicBezier;

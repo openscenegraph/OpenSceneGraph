@@ -10,25 +10,25 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
-*/
+ */
 
-#ifndef OSGANIMATION_RIGTRANSFORM
-#define OSGANIMATION_RIGTRANSFORM 1
+#ifndef OSGANIMATION_UPDATE_BONE
+#define OSGANIMATION_UPDATE_BONE 1
 
-#include <osg/Referenced>
+#include <osgAnimation/Export>
+#include <osgAnimation/UpdateMatrixTransform>
 
 namespace osgAnimation
 {
 
-    class RigGeometry;
-
-    class RigTransform : public osg::Referenced
+    class OSGANIMATION_EXPORT UpdateBone : public UpdateMatrixTransform
     {
     public:
-        RigTransform() {}
-        virtual ~RigTransform() {}
-        virtual void operator()(RigGeometry& geometry) {}
+        META_Object(osgAnimation, UpdateBone);
 
+        UpdateBone(const std::string& name = "");
+        UpdateBone(const UpdateBone&,const osg::CopyOp&);
+        void operator()(osg::Node* node, osg::NodeVisitor* nv);
     };
 
 }

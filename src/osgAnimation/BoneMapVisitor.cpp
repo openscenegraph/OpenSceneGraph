@@ -16,20 +16,27 @@
  */
 
 #include <osgAnimation/BoneMapVisitor>
+#include <osgAnimation/Skeleton>
 
-osgAnimation::BoneMapVisitor::BoneMapVisitor() : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+using namespace osgAnimation;
 
-void osgAnimation::BoneMapVisitor::apply(osg::Node&) { return; }
-void osgAnimation::BoneMapVisitor::apply(osg::Transform& node)
+BoneMapVisitor::BoneMapVisitor() : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+void BoneMapVisitor::apply(osg::Node&) { return; }
+void BoneMapVisitor::apply(osg::Transform& node)
 {
     Bone* bone = dynamic_cast<Bone*>(&node);
-    if (bone) 
+    if (bone)
     {
         _map[bone->getName()] = bone;
         traverse(node);
     }
+    Skeleton* skeleton = dynamic_cast<Skeleton*>(&node);
+    if (skeleton)
+        traverse(node);
 }
-const osgAnimation::Bone::BoneMap& osgAnimation::BoneMapVisitor::getBoneMap() const
+
+const BoneMap& BoneMapVisitor::getBoneMap() const
 {
     return _map;
 }

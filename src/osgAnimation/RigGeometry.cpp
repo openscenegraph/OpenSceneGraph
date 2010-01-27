@@ -12,6 +12,7 @@
  * OpenSceneGraph Public License for more details.
  */
 
+#include <osgAnimation/VertexInfluence>
 #include <osgAnimation/RigGeometry>
 #include <osgAnimation/RigTransformSoftware>
 #include <sstream>
@@ -71,21 +72,10 @@ RigGeometry::RigGeometry()
     setComputeBoundingBoxCallback(new RigComputeBoundingBoxCallback);
 }
 
-RigGeometry::RigGeometry(const osg::Geometry& b) : osg::Geometry(b, osg::CopyOp::SHALLOW_COPY)
-{
-    _supportsDisplayList = false;
-    setUseVertexBufferObjects(true);
-    setUpdateCallback(new UpdateVertex);
-    setDataVariance(osg::Object::DYNAMIC);
-    _needToComputeMatrix = true;
-    _matrixFromSkeletonToGeometry = _invMatrixFromSkeletonToGeometry = osg::Matrix::identity();
-
-    // disable the computation of boundingbox for the rig mesh
-    setComputeBoundingBoxCallback(new RigComputeBoundingBoxCallback);
-}
 
 RigGeometry::RigGeometry(const RigGeometry& b, const osg::CopyOp& copyop) :
     osg::Geometry(b,copyop),
+    _geometry(b._geometry),
     _vertexInfluenceSet(b._vertexInfluenceSet),
     _vertexInfluenceMap(b._vertexInfluenceMap),
     _needToComputeMatrix(b._needToComputeMatrix)
@@ -114,7 +104,7 @@ void RigGeometry::buildVertexInfluenceSet()
     _vertexInfluenceSet.clear();
     for (osgAnimation::VertexInfluenceMap::iterator it = _vertexInfluenceMap->begin(); 
          it != _vertexInfluenceMap->end(); 
-         it++)
+         ++it)
         _vertexInfluenceSet.addVertexInfluence(it->second);
 
     _vertexInfluenceSet.buildVertex2BoneList();
@@ -130,7 +120,8 @@ void RigGeometry::computeMatrixFromRootSkeleton()
         return;
     }
     osg::MatrixList mtxList = getParent(0)->getWorldMatrices(_root.get());
-    _matrixFromSkeletonToGeometry = mtxList[0];
+    osg::Matrix notRoot = _root->getMatrix();
+    _matrixFromSkeletonToGeometry = mtxList[0] * osg::Matrix::inverse(notRoot);
     _invMatrixFromSkeletonToGeometry = osg::Matrix::inverse(_matrixFromSkeletonToGeometry);
     _needToComputeMatrix = false;
 }
@@ -142,10 +133,67 @@ void RigGeometry::update()
         _rigTransformImplementation = new RigTransformSoftware;
     }
 
-    if (getRigTransformImplementation()->needInit())
-        if (!getRigTransformImplementation()->init(*this))
-            return;
-    getRigTransformImplementation()->update(*this);
+    RigTransform& implementation = *getRigTransformImplementation();
+    (implementation)(*this);
+}
+
+void RigGeometry::copyFrom(osg::Geometry& from)
+{
+    bool copyToSelf = (this==&from);
+
+    osg::Geometry& target = *this;
+
+    if (!copyToSelf) target.setStateSet(from.getStateSet());
+
+    // copy over primitive sets.
+    if (!copyToSelf) target.getPrimitiveSetList() = from.getPrimitiveSetList();
+
+    if (from.getVertexArray())
+    {
+        if (!copyToSelf) target.setVertexArray(from.getVertexArray());
+    }
+
+    target.setNormalBinding(from.getNormalBinding());
+    if (from.getNormalArray())
+    {
+        if (!copyToSelf) target.setNormalArray(from.getNormalArray());
+    }
+
+    target.setColorBinding(from.getColorBinding());
+    if (from.getColorArray())
+    {
+        if (!copyToSelf) target.setColorArray(from.getColorArray());
+    }
+
+    target.setSecondaryColorBinding(from.getSecondaryColorBinding());
+    if (from.getSecondaryColorArray())
+    {
+        if (!copyToSelf) target.setSecondaryColorArray(from.getSecondaryColorArray());
+    }
+
+    target.setFogCoordBinding(from.getFogCoordBinding());
+    if (from.getFogCoordArray())
+    {
+        if (!copyToSelf) target.setFogCoordArray(from.getFogCoordArray());
+    }
+
+    for(unsigned int ti=0;ti<from.getNumTexCoordArrays();++ti)
+    {
+        if (from.getTexCoordArray(ti)) 
+        {
+            if (!copyToSelf) target.setTexCoordArray(ti,from.getTexCoordArray(ti));
+        }
+    }
+    
+    ArrayDataList& arrayList = from.getVertexAttribArrayList();
+    for(unsigned int vi=0;vi< arrayList.size();++vi)
+    {
+        ArrayData& arrayData = arrayList[vi];
+        if (arrayData.array.valid())
+        {
+            if (!copyToSelf) target.setVertexAttribData(vi,arrayData);
+        }
+    }
 }
 
 const VertexInfluenceSet& RigGeometry::getVertexInfluenceSet() const { return _vertexInfluenceSet;}
@@ -155,3 +203,7 @@ Skeleton* RigGeometry::getSkeleton() { return _root.get(); }
 void RigGeometry::setSkeleton(Skeleton* root) { _root = root;}
 RigTransform* RigGeometry::getRigTransformImplementation() { return _rigTransformImplementation.get(); }
 void RigGeometry::setRigTransformImplementation(RigTransform* rig) { _rigTransformImplementation = rig; }
+
+osg::Geometry* RigGeometry::getSourceGeometry() { return _geometry.get(); }
+const osg::Geometry* RigGeometry::getSourceGeometry() const { return _geometry.get(); }
+void RigGeometry::setSourceGeometry(osg::Geometry* geometry) { _geometry = geometry; }

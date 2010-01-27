@@ -210,7 +210,7 @@ void Timeline::processPendingOperation()
 
 void Timeline::internalRemoveAction(Action* action)
 {
-    for (ActionLayers::iterator it = _actions.begin(); it != _actions.end(); it++)
+    for (ActionLayers::iterator it = _actions.begin(); it != _actions.end(); ++it)
     {
         ActionList& fa = it->second;
         for (unsigned int i = 0; i < fa.size(); i++)

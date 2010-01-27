@@ -19,13 +19,13 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/ActionVisitor
     ${HEADER_PATH}/Animation
     ${HEADER_PATH}/AnimationManagerBase
+    ${HEADER_PATH}/AnimationUpdateCallback
     ${HEADER_PATH}/Assert
     ${HEADER_PATH}/BasicAnimationManager
     ${HEADER_PATH}/Bone
     ${HEADER_PATH}/BoneMapVisitor
     ${HEADER_PATH}/Channel
     ${HEADER_PATH}/CubicBezier
-    ${HEADER_PATH}/ComputeBindMatrixVisitor
     ${HEADER_PATH}/EaseMotion
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/FindParentAnimationManagerVisitor
@@ -40,12 +40,21 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/RigTransformSoftware
     ${HEADER_PATH}/Sampler
     ${HEADER_PATH}/Skeleton
+    ${HEADER_PATH}/StackedMatrixElement
+    ${HEADER_PATH}/StackedQuaternionElement
+    ${HEADER_PATH}/StackedRotateAxisElement
+    ${HEADER_PATH}/StackedScaleElement
+    ${HEADER_PATH}/StackedTransformElement
+    ${HEADER_PATH}/StackedTranslateElement
+    ${HEADER_PATH}/StackedTransform
     ${HEADER_PATH}/StatsVisitor
     ${HEADER_PATH}/StatsHandler
     ${HEADER_PATH}/Target
     ${HEADER_PATH}/Timeline
     ${HEADER_PATH}/TimelineAnimationManager
-    ${HEADER_PATH}/UpdateCallback
+    ${HEADER_PATH}/UpdateBone
+    ${HEADER_PATH}/UpdateMaterial
+    ${HEADER_PATH}/UpdateMatrixTransform
     ${HEADER_PATH}/Vec3Packed
     ${HEADER_PATH}/VertexInfluence
 )
@@ -74,12 +83,20 @@ ADD_LIBRARY(${LIB_NAME}
     RigTransformHardware.cpp
     RigTransformSoftware.cpp
     Skeleton.cpp
+    StackedMatrixElement.cpp
+    StackedQuaternionElement.cpp
+    StackedRotateAxisElement.cpp
+    StackedScaleElement.cpp
+    StackedTransform.cpp
+    StackedTranslateElement.cpp
     StatsVisitor.cpp
     StatsHandler.cpp
     Target.cpp
     TimelineAnimationManager.cpp
     Timeline.cpp
-    UpdateCallback.cpp
+    UpdateBone.cpp
+    UpdateMaterial.cpp
+    UpdateMatrixTransform.cpp
     VertexInfluence.cpp
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )

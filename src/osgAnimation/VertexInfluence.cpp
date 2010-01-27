@@ -26,7 +26,7 @@ const VertexInfluenceSet::VertexIndexToBoneWeightMap& VertexInfluenceSet::getVer
 void VertexInfluenceSet::buildVertex2BoneList()
 {
     _vertex2Bones.clear();
-    for (BoneToVertexList::const_iterator it = _bone2Vertexes.begin(); it != _bone2Vertexes.end(); it++) 
+    for (BoneToVertexList::const_iterator it = _bone2Vertexes.begin(); it != _bone2Vertexes.end(); ++it) 
     {
         const VertexInfluence& vi = (*it);
         int size = vi.size();
@@ -42,7 +42,7 @@ void VertexInfluenceSet::buildVertex2BoneList()
     }
 
     // normalize weight per vertex
-    for (VertexIndexToBoneWeightMap::iterator it = _vertex2Bones.begin(); it != _vertex2Bones.end(); it++)
+    for (VertexIndexToBoneWeightMap::iterator it = _vertex2Bones.begin(); it != _vertex2Bones.end(); ++it)
     {
         BoneWeightList& bones = it->second;
         int size = bones.size();
@@ -116,7 +116,7 @@ void VertexInfluenceSet::buildUniqVertexSetToBoneSetList()
     typedef std::map<BoneWeightList,UniqVertexSetToBoneSet, SortByBoneWeightList> UnifyBoneGroup;
     UnifyBoneGroup unifyBuffer;
 
-    for (VertexIndexToBoneWeightMap::iterator it = _vertex2Bones.begin(); it != _vertex2Bones.end(); it++) 
+    for (VertexIndexToBoneWeightMap::iterator it = _vertex2Bones.begin(); it != _vertex2Bones.end(); ++it) 
     {
         BoneWeightList bones = it->second;
         int vertexIndex = it->first;
@@ -132,7 +132,7 @@ void VertexInfluenceSet::buildUniqVertexSetToBoneSetList()
     }
 
     _uniqVertexSetToBoneSet.reserve(unifyBuffer.size());
-    for (UnifyBoneGroup::iterator it = unifyBuffer.begin(); it != unifyBuffer.end(); it++) 
+    for (UnifyBoneGroup::iterator it = unifyBuffer.begin(); it != unifyBuffer.end(); ++it) 
     {
         _uniqVertexSetToBoneSet.push_back(it->second);
     }

@@ -424,7 +424,7 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
             osg::Vec3 pos(leftPos, _statsHeight-24.0f,0.0f);
             pos.y() -= characterSize *2 + backgroundMargin;
 
-             for (std::map<std::string, StatAction >::iterator it = _actions.begin(); it != _actions.end(); it++) {
+             for (std::map<std::string, StatAction >::iterator it = _actions.begin(); it != _actions.end(); ++it) {
                  (*it).second._group->setNodeMask(~osg::Node::NodeMask(1));
              }
 

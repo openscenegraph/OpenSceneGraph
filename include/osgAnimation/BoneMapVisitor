@@ -15,8 +15,8 @@
  *         Cedric Pinson <cedric.pinson@plopbyte.net>
  */
 
-#ifndef OSGANIMATION_BONEMAP_VISITOR_H
-#define OSGANIMATION_BONEMAP_VISITOR_H 1
+#ifndef OSGANIMATION_BONEMAP_VISITOR
+#define OSGANIMATION_BONEMAP_VISITOR 1
 
 #include <osgAnimation/Export>
 #include <osgAnimation/Bone>
@@ -32,10 +32,10 @@ namespace osgAnimation
 
         void apply(osg::Node&);
         void apply(osg::Transform& node);
-        const Bone::BoneMap& getBoneMap() const;
+        const BoneMap& getBoneMap() const;
 
     protected:
-        Bone::BoneMap _map;
+        BoneMap _map;
     };
 }
 

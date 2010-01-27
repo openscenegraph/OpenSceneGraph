@@ -16,38 +16,20 @@
  *         Michael Platings <mplatings@pixelpower.com>
  */
 
-#ifndef OSGANIMATION_BONE_H
-#define OSGANIMATION_BONE_H
+#ifndef OSGANIMATION_BONE
+#define OSGANIMATION_BONE 1
 
-#include <osg/Transform>
-#include <osg/Quat>
-#include <osg/Vec3>
-#include <osg/Node>
-#include <osg/Geode>
-#include <osg/Geometry>
-#include <osg/Notify>
-#include <osg/io_utils>
-#include <osg/NodeVisitor>
+#include <osg/MatrixTransform>
 #include <osgAnimation/Export>
-#include <osgAnimation/Target>
-#include <osgAnimation/Sampler>
-#include <osgAnimation/Channel>
-#include <osgAnimation/Keyframe>
-#include <osgAnimation/UpdateCallback>
-#include <osgAnimation/Animation>
-#include <osgAnimation/AnimationManagerBase>
-#include <osgAnimation/VertexInfluence>
 
 namespace osgAnimation 
 {
 
     // A bone can't have more than one parent Bone, so sharing a part of Bone's hierarchy
     // makes no sense. You can share the entire hierarchy but not only a part of it.
-    class OSGANIMATION_EXPORT Bone : public osg::Transform
+    class OSGANIMATION_EXPORT Bone : public osg::MatrixTransform
     {
     public:
-        typedef osg::ref_ptr<Bone> PointerType;
-        typedef std::map<std::string, PointerType > BoneMap;
         typedef osg::Matrix MatrixType;
 
         META_Node(osgAnimation, Bone);
@@ -56,128 +38,24 @@ namespace osgAnimation
 
         void setDefaultUpdateCallback(const std::string& name = "");
 
-        class OSGANIMATION_EXPORT UpdateBone : public AnimationUpdateCallback <osg::NodeCallback>
-        {
-        protected:
-            osg::ref_ptr<osgAnimation::Vec3Target> _position;
-            osg::ref_ptr<osgAnimation::QuatTarget> _quaternion;
-            osg::ref_ptr<osgAnimation::Vec3Target> _scale;
-    
-        public:
-            META_Object(osgAnimation, UpdateBone);
-            UpdateBone(const UpdateBone& apc,const osg::CopyOp& copyop);
-
-            UpdateBone(const std::string& name = "") : AnimationUpdateCallback <osg::NodeCallback>(name)
-            {
-                setName(name);
-                _quaternion = new osgAnimation::QuatTarget;
-                _position = new osgAnimation::Vec3Target;
-                _scale = new osgAnimation::Vec3Target;
-            }
-
-            void update(osgAnimation::Bone& bone)
-            {
-                bone.setTranslation(_position->getValue());
-                bone.setRotation(_quaternion->getValue());
-                bone.setScale(_scale->getValue());
-                bone.dirtyBound();
-            }
-
-            osgAnimation::QuatTarget* getQuaternion() {return _quaternion.get();}
-            osgAnimation::Vec3Target* getPosition() {return _position.get();}
-            osgAnimation::Vec3Target* getScale() {return _scale.get();}
-
-            bool needLink() const
-            {
-                // the idea is to return true if nothing is linked
-                return !((_position->getCount() + _quaternion->getCount() + _scale->getCount()) > 3);
-            }
-
-            /** Link channel*/
-            bool link(osgAnimation::Channel* channel);
-
-            /** Callback method called by the NodeVisitor when visiting a node.*/
-            virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
-        };
-
-        virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const;
-        virtual bool computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const;
-
         Bone* getBoneParent();
         const Bone* getBoneParent() const;
 
-        void setTranslation(const osg::Vec3& trans) { _position = trans;}
-        void setRotation(const osg::Quat& quat) { _rotation = quat;}
-        void setScale(const osg::Vec3& scale) { _scale = scale;}
-
-        const osg::Vec3& getTranslation() const { return _position;}
-        const osg::Quat& getRotation() const { return _rotation;}
-        const osg::Vec3& getScale() const { return _scale;}
-
-        osg::Matrix getMatrixInBoneSpace() const { return (osg::Matrix(getRotation())) * osg::Matrix::translate(getTranslation()) * _bindInBoneSpace;}
-        const osg::Matrix& getBindMatrixInBoneSpace() const { return _bindInBoneSpace; }
+        const osg::Matrix& getMatrixInBoneSpace() const { return getMatrix();}
         const osg::Matrix& getMatrixInSkeletonSpace() const { return _boneInSkeletonSpace; }
         const osg::Matrix& getInvBindMatrixInSkeletonSpace() const { return _invBindInSkeletonSpace;}
         void setMatrixInSkeletonSpace(const osg::Matrix& matrix) { _boneInSkeletonSpace = matrix; }
-        void setBindMatrixInBoneSpace(const osg::Matrix& matrix) 
-        {
-            _bindInBoneSpace = matrix;
-            _needToRecomputeBindMatrix = true;
-        }
-
-        inline bool needToComputeBindMatrix() { return _needToRecomputeBindMatrix;}
-        virtual void computeBindMatrix();
-
-        void setNeedToComputeBindMatrix(bool state) { _needToRecomputeBindMatrix = state; }
-
-        /** Add Node to Group.
-         * If node is not NULL and is not contained in Group then increment its
-         * reference count, add it to the child list and dirty the bounding
-         * sphere to force it to recompute on next getBound() and return true for success.
-         * Otherwise return false. Scene nodes can't be added as child nodes.
-         */
-        virtual bool addChild( Node *child );
-        BoneMap getBoneMap();
-
+        void setInvBindMatrixInSkeletonSpace(const osg::Matrix& matrix) { _invBindInSkeletonSpace = matrix; }
 
     protected:
 
-        osg::Vec3 _position;
-        osg::Quat _rotation;
-        osg::Vec3 _scale;
-
-
-        // flag to recompute bind pose
-        bool _needToRecomputeBindMatrix;
-
         // bind data
-        osg::Matrix _bindInBoneSpace;
         osg::Matrix _invBindInSkeletonSpace;
 
         // bone updated
         osg::Matrix _boneInSkeletonSpace;
-    
     };
 
-
-    inline bool Bone::computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor*) const
-    {
-        if (_referenceFrame==RELATIVE_RF) 
-            matrix.preMult(getMatrixInBoneSpace());
-        else 
-            matrix = getMatrixInBoneSpace();
-        return true;
-    }
-
-
-    inline bool Bone::computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisitor*) const
-    {
-        if (_referenceFrame==RELATIVE_RF) 
-            matrix.postMult(osg::Matrix::inverse(getMatrixInBoneSpace()));
-        else
-            matrix = osg::Matrix::inverse(getMatrixInBoneSpace());
-        return true;
-    }
-
+    typedef std::map<std::string, osg::ref_ptr<Bone> > BoneMap;
 }
 #endif

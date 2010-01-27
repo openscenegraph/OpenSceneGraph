@@ -16,8 +16,8 @@
 #define OSGANIMATION_MORPHGEOMETRY_H
 
 #include <osgAnimation/Export>
+#include <osgAnimation/AnimationUpdateCallback>
 #include <osg/Geometry>
-#include <osgAnimation/UpdateCallback>
 
 namespace osgAnimation 
 {

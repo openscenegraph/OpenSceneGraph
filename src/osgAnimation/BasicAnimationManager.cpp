@@ -38,7 +38,7 @@ void BasicAnimationManager::stopAll()
     for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim ) 
     {
         AnimationList& list = iterAnim->second;
-        for (AnimationList::iterator it = list.begin(); it != list.end(); it++)
+        for (AnimationList::iterator it = list.begin(); it != list.end(); ++it)
             (*it)->resetTargets();
     }
     _animationsPlaying.clear();
@@ -65,7 +65,7 @@ bool BasicAnimationManager::stopAnimation(Animation* pAnimation)
     for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim )
     {
         AnimationList& list = iterAnim->second;
-        for (AnimationList::iterator it = list.begin(); it != list.end(); it++)
+        for (AnimationList::iterator it = list.begin(); it != list.end(); ++it)
             if( (*it) == pAnimation )
             {
                 (*it)->resetTargets();
@@ -82,7 +82,7 @@ void BasicAnimationManager::update (double time)
     _lastUpdate = time; // keep time of last update
 
     // could filtered with an active flag
-    for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
+    for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); ++it)
         (*it).get()->reset();
 
     // update from high priority to low priority
@@ -132,7 +132,7 @@ bool BasicAnimationManager::isPlaying(Animation* pAnimation)
     for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim )
     {
         AnimationList& list = iterAnim->second;
-        for (AnimationList::iterator it = list.begin(); it != list.end(); it++)
+        for (AnimationList::iterator it = list.begin(); it != list.end(); ++it)
             if ( (*it) == pAnimation )
                 return true;
     }
@@ -145,7 +145,7 @@ bool BasicAnimationManager::isPlaying(const std::string& name)
     for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim )
     {
         AnimationList& list = iterAnim->second;
-        for (AnimationList::iterator it = list.begin(); it != list.end(); it++)
+        for (AnimationList::iterator it = list.begin(); it != list.end(); ++it)
             if ( (*it)->getName() == name )
                 return true;
     }

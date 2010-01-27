@@ -21,26 +21,11 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::RigTransform)
+BEGIN_OBJECT_REFLECTOR(osgAnimation::RigTransform)
 	I_DeclaringFile("osgAnimation/RigTransform");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____RigTransform,
 	               "",
 	               "");
-	I_Method0(bool, needInit,
-	          Properties::NON_VIRTUAL,
-	          __bool__needInit,
-	          "",
-	          "");
-	I_Method1(bool, init, IN, osgAnimation::RigGeometry &, x,
-	          Properties::PURE_VIRTUAL,
-	          __bool__init__RigGeometry_R1,
-	          "",
-	          "");
-	I_Method1(void, update, IN, osgAnimation::RigGeometry &, x,
-	          Properties::PURE_VIRTUAL,
-	          __void__update__RigGeometry_R1,
-	          "",
-	          "");
 END_REFLECTOR
 

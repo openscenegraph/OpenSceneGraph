@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Matrixf>
 #include <osg/Quat>
 #include <osg/Vec2>
 #include <osg/Vec3>
@@ -53,6 +54,8 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Target)
 	                 0);
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(osgAnimation::TemplateTarget< osg::Matrixf >, osgAnimation::MatrixTarget)
+
 TYPE_NAME_ALIAS(osgAnimation::TemplateTarget< osg::Quat >, osgAnimation::QuatTarget)
 
 TYPE_NAME_ALIAS(osgAnimation::TemplateTarget< osg::Vec3 >, osgAnimation::Vec3Target)
@@ -64,4 +67,45 @@ TYPE_NAME_ALIAS(osgAnimation::TemplateTarget< osg::Vec2 >, osgAnimation::Vec2Tar
 TYPE_NAME_ALIAS(osgAnimation::TemplateTarget< float >, osgAnimation::FloatTarget)
 
 TYPE_NAME_ALIAS(osgAnimation::TemplateTarget< double >, osgAnimation::DoubleTarget)
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateTarget< osg::Matrixf >)
+	I_DeclaringFile("osgAnimation/Target");
+	I_BaseType(osgAnimation::Target);
+	I_Constructor0(____TemplateTarget,
+	               "",
+	               "");
+	I_Constructor1(IN, const T &, v,
+	               Properties::NON_EXPLICIT,
+	               ____TemplateTarget__C5_T_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osgAnimation::TemplateTarget< osg::Matrixf > &, v,
+	               Properties::NON_EXPLICIT,
+	               ____TemplateTarget__C5_TemplateTarget_R1,
+	               "",
+	               "");
+	I_Method3(void, lerp, IN, float, t, IN, const T &, a, IN, const T &, b,
+	          Properties::NON_VIRTUAL,
+	          __void__lerp__float__C5_T_R1__C5_T_R1,
+	          "",
+	          "");
+	I_Method3(void, update, IN, float, weight, IN, const T &, val, IN, int, priority,
+	          Properties::NON_VIRTUAL,
+	          __void__update__float__C5_T_R1__int,
+	          "The priority is used to detect a change of priority It's important to update animation target in priority order. ",
+	          "eg: all animation with priority 1 all animation with priority 0 all animation with priority -1 ... ");
+	I_Method0(const T &, getValue,
+	          Properties::NON_VIRTUAL,
+	          __C5_T_R1__getValue,
+	          "",
+	          "");
+	I_Method1(void, setValue, IN, const T &, value,
+	          Properties::NON_VIRTUAL,
+	          __void__setValue__C5_T_R1,
+	          "",
+	          "");
+	I_SimpleProperty(const T &, Value, 
+	                 __C5_T_R1__getValue, 
+	                 __void__setValue__C5_T_R1);
+END_REFLECTOR
 

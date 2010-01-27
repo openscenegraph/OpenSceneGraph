@@ -26,7 +26,7 @@
 
 BEGIN_OBJECT_REFLECTOR(osgAnimation::Skeleton)
 	I_DeclaringFile("osgAnimation/Skeleton");
-	I_BaseType(osgAnimation::Bone);
+	I_BaseType(osg::MatrixTransform);
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
@@ -67,11 +67,6 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Skeleton)
 	I_Method0(void, setDefaultUpdateCallback,
 	          Properties::NON_VIRTUAL,
 	          __void__setDefaultUpdateCallback,
-	          "",
-	          "");
-	I_Method0(void, computeBindMatrix,
-	          Properties::VIRTUAL,
-	          __void__computeBindMatrix,
 	          "",
 	          "");
 END_REFLECTOR

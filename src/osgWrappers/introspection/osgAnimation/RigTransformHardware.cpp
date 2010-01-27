@@ -14,6 +14,7 @@
 #include <osg/Matrix>
 #include <osg/Shader>
 #include <osg/Uniform>
+#include <osgAnimation/Bone>
 #include <osgAnimation/RigGeometry>
 #include <osgAnimation/RigTransformHardware>
 #include <osgAnimation/VertexInfluence>
@@ -29,8 +30,6 @@
 TYPE_NAME_ALIAS(osg::Matrix, osgAnimation::RigTransformHardware::MatrixType)
 
 TYPE_NAME_ALIAS(osgAnimation::Bone, osgAnimation::RigTransformHardware::BoneType)
-
-TYPE_NAME_ALIAS(osgAnimation::Bone::BoneMap, osgAnimation::RigTransformHardware::BoneMap)
 
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Vec4Array > >, osgAnimation::RigTransformHardware::BoneWeightAttribList)
 
@@ -76,19 +75,9 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::RigTransformHardware)
 	          __int__getNumVertexes,
 	          "",
 	          "");
-	I_Method3(bool, createPalette, IN, int, nbVertexes, IN, osgAnimation::RigTransformHardware::BoneMap, boneMap, IN, const osgAnimation::VertexInfluenceSet::VertexIndexToBoneWeightMap &, vertexIndexToBoneWeightMap,
+	I_Method3(bool, createPalette, IN, int, nbVertexes, IN, osgAnimation::BoneMap, boneMap, IN, const osgAnimation::VertexInfluenceSet::VertexIndexToBoneWeightMap &, vertexIndexToBoneWeightMap,
 	          Properties::NON_VIRTUAL,
 	          __bool__createPalette__int__BoneMap__C5_VertexInfluenceSet_VertexIndexToBoneWeightMap_R1,
-	          "",
-	          "");
-	I_Method1(bool, init, IN, osgAnimation::RigGeometry &, x,
-	          Properties::VIRTUAL,
-	          __bool__init__RigGeometry_R1,
-	          "",
-	          "");
-	I_Method1(void, update, IN, osgAnimation::RigGeometry &, x,
-	          Properties::VIRTUAL,
-	          __void__update__RigGeometry_R1,
 	          "",
 	          "");
 	I_Method1(void, setShader, IN, osg::Shader *, x,
@@ -96,6 +85,12 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::RigTransformHardware)
 	          __void__setShader__osg_Shader_P1,
 	          "",
 	          "");
+	I_ProtectedMethod1(bool, init, IN, osgAnimation::RigGeometry &, x,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__init__RigGeometry_R1,
+	                   "",
+	                   "");
 	I_ProtectedMethod0(osgAnimation::RigTransformHardware::BoneWeightAttribList, createVertexAttribList,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,

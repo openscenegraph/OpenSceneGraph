@@ -4,6 +4,10 @@
 #include <osgWidget/WindowManager>
 #include <osgWidget/Input>
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 namespace osgWidget {
 
 class BlinkCursorCallback: public osg::Drawable::DrawCallback
@@ -33,16 +37,22 @@ protected:
 };
 
 Input::Input(const std::string& name, const std::string& label, unsigned int size):
-Label        (name, label),
-_xoff        (0.0f),
-_yoff        (0.0f),
-_index       (0),
-_size        (0),
-_cursorIndex (0),
-_textLength     (0),
-_maxSize     (size),
-_insertMode     (false),    
-_cursor      (new Widget("cursor")) {
+    Label(name, label),
+    _xoff(0.0f),
+    _yoff(0.0f),
+    _index(0),
+    _size(0),
+    _cursorIndex(0),
+    _maxSize(size),
+    _textLength(0),
+    _cursor(new Widget("cursor")),
+    _insertMode(false),
+    _selection(new Widget("selection")),
+    _selectionStartIndex(0),
+    _selectionEndIndex(0),
+    _selectionIndex(0),
+    _mouseClickX(0)
+{
    _text->setAlignment(osgText::Text::LEFT_BOTTOM_BASE_LINE);
    _text->setKerningType(osgText::KERNING_NONE);
 
@@ -51,13 +61,17 @@ _cursor      (new Widget("cursor")) {
    _cursor->setDataVariance(osg::Object::DYNAMIC);
    _cursor->setColor(0.0f, 0.0f, 0.0f, 1.0f);
 
+   _selection->setCanClone(false);
+   _selection->setDataVariance(osg::Object::DYNAMIC);
+
    setEventMask(
        // For showing/hiding the "cursor."
        EVENT_MASK_FOCUS |
        // For keypresses, obviously.
        EVENT_MASK_KEY |
        // For "click" focusing.
-       EVENT_MOUSE_PUSH
+       EVENT_MOUSE_PUSH |
+       EVENT_MASK_MOUSE_DRAG
    );
 
    _offsets.resize(size+1, 0.0f);
@@ -168,12 +182,14 @@ void Input::_calculateCursorOffsets() {
 
 bool Input::focus(const WindowManager*) {
    _cursor->setColor(0.5f, 0.5f, 0.6f, 1.0f);
+   _selection->setColor(0.8f, 0.8f, 0.9f, 1.0f);
 
    return true;
 }
 
 bool Input::unfocus(const WindowManager*) {
    _cursor->setColor(0.0f, 0.0f, 0.0f, 0.0f);
+   _selection->setColor(0.0f, 0.0f, 0.0f, 0.0f);
 
    return true;
 }
@@ -184,8 +200,10 @@ void Input::parented(Window* parent) {
    _cursor->setSize(_widths[_index], getHeight());
 
    if(_cursorIndex) parent->getGeode()->setDrawable(_cursorIndex, _cursor.get());
-
    else _cursorIndex = parent->addDrawableAndGetIndex(_cursor.get());
+
+   if(_selectionIndex) parent->getGeode()->setDrawable(_selectionIndex, _selection.get());
+   else _selectionIndex = parent->addDrawableAndGetIndex(_selection.get());
 }
 
 void Input::positioned() {
@@ -207,10 +225,75 @@ void Input::positioned() {
    _cursor->setSize(_widths[_index], getHeight());
    _cursor->setOrigin(getX() + xoffset, getY() );
    _cursor->setZ(_calculateZ(LAYER_MIDDLE-1));
+
+
+    unsigned int _selectionMin = osg::minimum(_selectionStartIndex,_selectionEndIndex);
+    unsigned int _selectionMax = osg::maximum(_selectionStartIndex,_selectionEndIndex);
+
+   if (_selectionMax-_selectionMin>0)
+   {
+       unsigned int size = 0;
+       
+       for (unsigned int i=_selectionMin; i<_selectionMax; ++i)
+       {
+           size += _widths[i];
+       }
+       point_type xoffset = _selectionMin > 0 ? _offsets[_selectionMin - 1] : 0.0f;
+
+       _selection->setSize(size, getHeight());
+       _selection->setOrigin(getX() + xoffset, getY());
+       _selection->setZ(_calculateZ(LAYER_MIDDLE-2));
+   }
+   else
+   {
+       _selection->setSize(0, getHeight());
+   }
 }
 
 bool Input::keyUp(int key, int mask, const WindowManager*) {
    return false;
+}
+
+bool Input::mouseDrag (double x, double y, const WindowManager*)
+{
+    _mouseClickX += x;
+    x = _mouseClickX;
+
+    unsigned int size = 0;
+    for ( unsigned int i=0; i< _widths.size(); ++i )
+    {
+        if (x > size && x < size+_widths.at(i))
+        {
+            _selectionEndIndex = _index = i;
+            positioned();
+            break;
+        }
+        size += _widths.at(i);
+    }
+    return false;
+}
+
+bool Input::mousePush (double x, double y, const WindowManager*)
+{
+    double offset = getOrigin().x();
+    Window* window = getParent();
+    while (window) { offset += window->getOrigin().x(); window = window->getParent(); }
+
+    x -= offset;
+    _mouseClickX = x;
+    
+    unsigned int size = 0;
+    for ( unsigned int i=0; i< _widths.size(); ++i )
+    {
+        if (x > size && x < size+_widths.at(i))
+        {
+            _selectionStartIndex = _selectionEndIndex = _index = i;
+            positioned();
+            break;
+        }
+        size += _widths.at(i);
+    }
+    return false;
 }
 
 bool Input::keyDown(int key, int mask, const WindowManager*) {
@@ -241,6 +324,14 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
         {
             --_index;
         }
+        if (mask & osgGA::GUIEventAdapter::MODKEY_SHIFT)
+        {
+            _selectionEndIndex = _index;
+        }
+        else
+        {
+            _selectionStartIndex = _selectionEndIndex = _index;
+        }
         break;
     case osgGA::GUIEventAdapter::KEY_Right:
         if (mask & osgGA::GUIEventAdapter::MODKEY_CTRL)
@@ -265,81 +356,243 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
         {
             ++_index;
         }
+
+        if (mask & osgGA::GUIEventAdapter::MODKEY_SHIFT)
+        {
+            _selectionEndIndex = _index;
+        }
+        else
+        {
+            _selectionStartIndex = _selectionEndIndex = _index;
+        }
         break;
     case osgGA::GUIEventAdapter::KEY_Home:
         _index = 0;
+        if (mask & osgGA::GUIEventAdapter::MODKEY_SHIFT)
+        {
+            _selectionEndIndex = _index;
+        }
+        else
+        {
+            _selectionStartIndex = _selectionEndIndex = _index;
+        }
         break;
     case osgGA::GUIEventAdapter::KEY_End:
         _index = _textLength;
+        if (mask & osgGA::GUIEventAdapter::MODKEY_SHIFT)
+        {
+            _selectionEndIndex = _index;
+        }
+        else
+        {
+            _selectionStartIndex = _selectionEndIndex = _index;
+        }
         break;
     case osgGA::GUIEventAdapter::KEY_Insert:
         _insertMode = !_insertMode;
         break;
     case osgGA::GUIEventAdapter::KEY_Delete:
-        if (mask & osgGA::GUIEventAdapter::MODKEY_CTRL)
         {
-            point_type    deleteToIdx = _textLength;
-            for (unsigned int i=0; i<_wordsOffsets.size()-1; ++i)
+            unsigned int _selectionMin = osg::minimum(_selectionStartIndex,_selectionEndIndex);
+            unsigned int _selectionMax = osg::maximum(_selectionStartIndex,_selectionEndIndex);
+
+            if (_selectionMax-_selectionMin>0)
             {
-                if (_wordsOffsets.at(i) <= _index && _index < _wordsOffsets.at(i+1))
+                point_type    deleteToIdx = _selectionMax;
+                for (unsigned int i=0; i < s.size()-_selectionMin; ++i)
                 {
-                    deleteToIdx = _wordsOffsets.at(i+1);
-                    break;
+                    s[_selectionMin+i] = deleteToIdx+i < s.size() ? s[deleteToIdx+i] : ' ';
                 }
+
+                _text->update();
+
+                _calculateCursorOffsets();
+
+                _textLength -= deleteToIdx-_selectionMin;
+                _index = _selectionMin;
+                _selectionStartIndex = _selectionEndIndex = _index;
             }
-            for (unsigned int i=0; i < s.size()-_index; ++i)
+            else
+            if (mask & osgGA::GUIEventAdapter::MODKEY_CTRL)
             {
-                s[_index+i] = deleteToIdx+i < s.size() ? s[deleteToIdx+i] : ' ';
+                point_type    deleteToIdx = _textLength;
+                for (unsigned int i=0; i<_wordsOffsets.size()-1; ++i)
+                {
+                    if (_wordsOffsets.at(i) <= _index && _index < _wordsOffsets.at(i+1))
+                    {
+                        deleteToIdx = _wordsOffsets.at(i+1);
+                        break;
+                    }
+                }
+                for (unsigned int i=0; i < s.size()-_index; ++i)
+                {
+                    s[_index+i] = deleteToIdx+i < s.size() ? s[deleteToIdx+i] : ' ';
+                }
+
+                _text->update();
+
+                _calculateCursorOffsets();
+
+                _textLength -= deleteToIdx-_index;
             }
-
-            _text->update();
-
-            _calculateCursorOffsets();
-
-            _textLength -= deleteToIdx-_index;
-        }
-        else
-        if (_index < s.size()-1)
-        {
-            for (unsigned int i=_index; i < s.size()-1; ++i)
-            {
-                s[i] = s[i+1];
-            }
-
-            _text->update();
-
-            _calculateCursorOffsets();
-
-            --_textLength;
-        }
-        break;
-    case osgGA::GUIEventAdapter::KEY_BackSpace:
-       if(_index >= 1) {
-
-           _index--;
-            if (_index< s.size()-1)
+            else
+            if (_index < s.size()-1)
             {
                 for (unsigned int i=_index; i < s.size()-1; ++i)
                 {
                     s[i] = s[i+1];
-                    s[i+1] = ' ';
                 }
+
+                _text->update();
+
+                _calculateCursorOffsets();
+
+                --_textLength;
+            }
+        }
+        break;
+    case osgGA::GUIEventAdapter::KEY_BackSpace:
+        {
+            unsigned int _selectionMin = osg::minimum(_selectionStartIndex,_selectionEndIndex);
+            unsigned int _selectionMax = osg::maximum(_selectionStartIndex,_selectionEndIndex);
+
+            if (_selectionMax-_selectionMin>0)
+            {
+                point_type    deleteToIdx = _selectionMax;
+                for (unsigned int i=0; i < s.size()-_selectionMin; ++i)
+                {
+                    s[_selectionMin+i] = deleteToIdx+i < s.size() ? s[deleteToIdx+i] : ' ';
+                }
+
+                _text->update();
+
+                _calculateCursorOffsets();
+
+                _textLength -= deleteToIdx-_selectionMin;
+                _index = _selectionMin;
+                _selectionStartIndex = _selectionEndIndex = _index;
             }
             else
-            {
-                s[s.size()-1] = ' ';
-            }
+           if(_index >= 1) {
 
-           _text->update();
+               _index--;
+                if (_index< s.size()-1)
+                {
+                    for (unsigned int i=_index; i < s.size()-1; ++i)
+                    {
+                        s[i] = s[i+1];
+                        s[i+1] = ' ';
+                    }
+                }
+                else
+                {
+                    s[s.size()-1] = ' ';
+                }
 
-           _calculateCursorOffsets();
+               _text->update();
 
-           --_textLength;
-       }
+               _calculateCursorOffsets();
+
+               --_textLength;
+           }
+        }
        break;
    default:
         if(key > 255 || _index >= _maxSize) return false;
 
+        if (((key=='v' || key=='V') && (mask & osgGA::GUIEventAdapter::MODKEY_CTRL)) || (key==22))
+        {
+            _selectionStartIndex = _selectionEndIndex = _index;
+            std::string data;
+// Data from clipboard
+#ifdef WIN32
+            if (::OpenClipboard(NULL))
+            {
+                HANDLE hData = ::GetClipboardData( CF_TEXT );
+                char* buff = (char*)::GlobalLock( hData );
+                if (buff) data = buff;
+                ::GlobalUnlock( hData );
+                ::CloseClipboard();
+            }
+#endif
+            if (!data.empty())
+            {
+                data = data.substr(0,_maxSize-_index);
+                _textLength += data.size();
+                _selectionEndIndex = _textLength;
+
+                std::string::iterator itr = data.begin();
+                for ( ; itr != data.end(); ++itr )
+                {
+                    s[_index++] = *itr;
+                }
+
+                _text->update();
+
+                _calculateCursorOffsets();
+
+                _calculateSize(getTextSize());
+
+                getParent()->resize();
+
+                return false;
+
+            }
+
+        }
+        else
+        if (((key=='c' || key=='C') && (mask & osgGA::GUIEventAdapter::MODKEY_CTRL)) || (key==3))
+        {
+            unsigned int _selectionMin = osg::minimum(_selectionStartIndex,_selectionEndIndex);
+            unsigned int _selectionMax = osg::maximum(_selectionStartIndex,_selectionEndIndex);
+
+            if (_selectionMax-_selectionMin>0)
+            {
+                std::string data;
+                for (unsigned int i=_selectionMin; i<_selectionMax; ++i)
+                {
+                    data.push_back(s[i]);
+                }
+// Data to clipboard
+#ifdef WIN32
+                if(::OpenClipboard(NULL))
+                {
+                    ::EmptyClipboard();
+                    HGLOBAL clipbuffer = ::GlobalAlloc(GMEM_DDESHARE, data.length()+1);
+                    char* buffer = (char*)::GlobalLock(clipbuffer);
+                    strcpy(buffer, data.c_str());
+                    ::GlobalUnlock(clipbuffer);
+                    ::SetClipboardData(CF_TEXT,clipbuffer);
+                    ::CloseClipboard();
+                }
+#endif
+                
+            }
+            return false;
+        }
+        {
+            unsigned int _selectionMin = osg::minimum(_selectionStartIndex,_selectionEndIndex);
+            unsigned int _selectionMax = osg::maximum(_selectionStartIndex,_selectionEndIndex);
+
+            if (_selectionMax-_selectionMin>0)
+            {
+                point_type    deleteToIdx = _selectionMax;
+                for (unsigned int i=0; i < s.size()-_selectionMin; ++i)
+                {
+                    s[_selectionMin+i] = deleteToIdx+i < s.size() ? s[deleteToIdx+i] : ' ';
+                }
+
+                _text->update();
+
+                _calculateCursorOffsets();
+
+                _textLength -= deleteToIdx-_selectionMin;
+                _index = _selectionMin;
+                _selectionStartIndex = _selectionEndIndex = _index;
+            }
+        }
+        
+        
         if (!_insertMode)
         {
             for (unsigned int i=s.size()-1; i>_index; --i)
@@ -357,6 +610,8 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
        _index++;
 
        if (!_insertMode) ++_textLength;
+
+       _selectionStartIndex = _selectionEndIndex = _index;
    }
 
    // _text->update();
@@ -373,7 +628,6 @@ void Input::setCursor(Widget*) {
 
 unsigned int Input::calculateBestYOffset(const std::string& s)
 {
-
    const osgText::FontResolution fr(static_cast<unsigned int>(_text->getCharacterHeight()),
                                     static_cast<unsigned int>(_text->getCharacterHeight()));
 

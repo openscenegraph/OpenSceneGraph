@@ -35,7 +35,8 @@ bool RigTransformSoftware::init(RigGeometry& geom)
     BoneMap bm = mapVisitor.getBoneMap();
     initVertexSetFromBones(bm, geom.getVertexInfluenceSet().getUniqVertexSetToBoneSetList());
 
-    geom.copyFrom(*geom.getSourceGeometry());
+    if (geom.getSourceGeometry())
+        geom.copyFrom(*geom.getSourceGeometry());
     geom.setVertexArray(0);
     geom.setNormalArray(0);
 
@@ -49,6 +50,10 @@ void RigTransformSoftware::operator()(RigGeometry& geom)
         if (!init(geom))
             return;
 
+    if (!geom.getSourceGeometry()) {
+        osg::notify(osg::WARN) << this << " RigTransformSoftware no source geometry found on RigGeometry" << std::endl;
+        return;
+    }
     osg::Geometry& source = *geom.getSourceGeometry();
     osg::Geometry& destination = geom;
 

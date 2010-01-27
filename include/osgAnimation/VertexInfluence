@@ -12,8 +12,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGANIMATION_VERTEX_INFLUENCE_H
-#define OSGANIMATION_VERTEX_INFLUENCE_H 1
+#ifndef OSGANIMATION_VERTEX_INFLUENCE
+#define OSGANIMATION_VERTEX_INFLUENCE 1
 
 #include <osg/Object>
 #include <osgAnimation/Export>

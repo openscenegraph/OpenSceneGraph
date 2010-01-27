@@ -20,7 +20,6 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Animation
     ${HEADER_PATH}/AnimationManagerBase
     ${HEADER_PATH}/AnimationUpdateCallback
-    ${HEADER_PATH}/Assert
     ${HEADER_PATH}/BasicAnimationManager
     ${HEADER_PATH}/Bone
     ${HEADER_PATH}/BoneMapVisitor
@@ -28,7 +27,6 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/CubicBezier
     ${HEADER_PATH}/EaseMotion
     ${HEADER_PATH}/Export
-    ${HEADER_PATH}/FindParentAnimationManagerVisitor
     ${HEADER_PATH}/FrameAction
     ${HEADER_PATH}/Interpolator
     ${HEADER_PATH}/Keyframe
@@ -76,7 +74,6 @@ ADD_LIBRARY(${LIB_NAME}
     Bone.cpp
     BoneMapVisitor.cpp
     Channel.cpp
-    FindParentAnimationManagerVisitor.cpp
     LinkVisitor.cpp
     MorphGeometry.cpp
     RigGeometry.cpp

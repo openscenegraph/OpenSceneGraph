@@ -24,8 +24,7 @@ using namespace osgDB;
 static std::string s_lastSchema;
 
 InputStream::InputStream( const osgDB::Options* options )
-:   _byteSwap(0), _useFloatMatrix(false),
-    _in(0)
+:   _byteSwap(0), _useFloatMatrix(false), _forceReadingImage(false)
 {
     if ( !options ) return;
     
@@ -38,6 +37,10 @@ InputStream::InputStream( const osgDB::Options* options )
         if ( option=="Ascii" )
         {
             // Omit this
+        }
+        else if ( option=="ForceReadingImage" )
+        {
+            _forceReadingImage = true;
         }
         else
         {
@@ -155,6 +158,77 @@ InputStream& InputStream::operator>>( osg::Matrixd& mat )
     }
     *this >> END_BRACKET;
     return *this;
+}
+
+bool InputStream::matchString( const std::string& str )
+{
+    if ( !isBinary() )
+    {
+        std::string s; *this >> s;
+        if ( s==str ) return true;
+        else _in->getStream()->seekg( -(int)(s.length()), std::ios::cur );
+    }
+    return false;
+}
+
+void InputStream::advanceToCurrentEndBracket()
+{
+    if ( isBinary() )
+        return;
+    
+    std::string passString;
+    unsigned int blocks = 0;
+    while ( !_in->getStream()->eof() )
+    {
+        passString.clear();
+        *this >> passString;
+        
+        if ( passString=="}" )
+        {
+            if ( blocks<=0 ) return;
+            else blocks--;
+        }
+        else if ( passString=="{" )
+            blocks++;
+    }
+}
+
+void InputStream::readWrappedString( std::string& str )
+{
+    *this >> str;
+    if ( !isBinary() )
+    {
+        if ( str[0]=='\"' )
+        {
+            if ( str.size()==1 || (*str.rbegin())!='\"' )
+            {
+                char ch;
+                do
+                {
+                    _in->getStream()->get( ch ); checkStream();
+                    if ( ch=='\\' )
+                    {
+                        _in->getStream()->get( ch ); checkStream();
+                        if ( ch=='\"' )
+                        {
+                            str += ch; ch = 0;
+                        }
+                        else if ( ch=='\\' )
+                        {
+                            str += ch;
+                        }
+                        else
+                        {
+                            str += '\\'; str += ch;
+                        }
+                    }
+                    else
+                        str += ch;
+                } while ( ch!='\"' );
+            }
+            str = str.substr(1, str.size()-2);
+        }
+    }
 }
 
 osg::Array* InputStream::readArray()
@@ -319,9 +393,10 @@ osg::Array* InputStream::readArray()
         }
         break;
     default:
-        throw InputException(_currentField, "InputStream::readArray(): Unsupported array type.");
+        throwException( "InputStream::readArray(): Unsupported array type." );
     }
     
+    if ( getException() ) return NULL;
     _arrayMap[id] = array;
     return array.release();
 }
@@ -401,8 +476,10 @@ osg::PrimitiveSet* InputStream::readPrimitiveSet()
         }
         break;
     default:
-        throw InputException(_currentField, "InputStream::readPrimitiveSet(): Unsupported array type.");
+        throwException( "InputStream::readPrimitiveSet(): Unsupported array type." );
     }
+    
+    if ( getException() ) return NULL;
     return primitive.release();
 }
 
@@ -412,6 +489,7 @@ osg::Image* InputStream::readImage()
     int writeHint, decision = IMAGE_EXTERNAL;
     *this >> PROPERTY("FileName"); readWrappedString(name);
     *this >> PROPERTY("WriteHint") >> writeHint >> decision;
+    if ( getException() ) return NULL;
     
     osg::ref_ptr<osg::Image> image = NULL;
     bool readFromExternal = true;
@@ -436,7 +514,9 @@ osg::Image* InputStream::readImage()
             {
                 char* data = new char[size];
                 if ( !data )
-                    throw InputException(_currentField, "InputStream::readImage() Out of memory.");
+                    throwException( "InputStream::readImage() Out of memory." );
+                if ( getException() ) return NULL;
+                
                 readCharArray( data, size );
                 image->setOrigin( (osg::Image::Origin)origin );
                 image->setImage( s, t, r, internalFormat, pixelFormat, dataType,
@@ -463,7 +543,8 @@ osg::Image* InputStream::readImage()
             {
                 char* data = new char[size];
                 if ( !data )
-                    throw InputException(_currentField, "InputStream::readImage(): Out of memory.");
+                    throwException( "InputStream::readImage(): Out of memory." );
+                if ( getException() ) return NULL;
                 readCharArray( data, size );
                 
                 std::string ext = osgDB::getFileExtension( name );
@@ -500,7 +581,10 @@ osg::Image* InputStream::readImage()
     }
     
     if ( readFromExternal )
+    {
         image = osgDB::readImageFile( name );
+        if ( !image && _forceReadingImage ) image = new osg::Image;
+    }
     if ( image.valid() )
     {
         image->setFileName( name );
@@ -516,6 +600,7 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
     std::string className;
     unsigned int id = 0;
     *this >> className >> BEGIN_BRACKET >> PROPERTY("UniqueID") >> id;
+    if ( getException() ) return NULL;
     
     IdentifierMap::iterator itr = _identifierMap.find( id );
     if ( itr!=_identifierMap.end() )
@@ -532,6 +617,8 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
         advanceToCurrentEndBracket();
         return NULL;
     }
+    _fields.push_back( className );
+    
     osg::ref_ptr<osg::Object> obj = existingObj ? existingObj : wrapper->getProto()->cloneType();
     if ( obj.valid() )
     {
@@ -547,12 +634,16 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
                                        << *itr << std::endl;
                 continue;
             }
+            _fields.push_back( assocWrapper->getName() );
             
-            _currentField = assocWrapper->getName();
             assocWrapper->read( *this, *obj );
+            if ( getException() ) return NULL;
+            
+            _fields.pop_back();
         }
     }
     advanceToCurrentEndBracket();
+    _fields.pop_back();
     return obj.release();
 }
 
@@ -575,11 +666,14 @@ void InputStream::readSchema( std::istream& fin )
 
 InputStream::ReadType InputStream::start( InputIterator* inIterator )
 {
+    _fields.clear();
+    _fields.push_back( "Start" );
+    
     ReadType type = READ_UNKNOWN;
-    _currentField = "Header";
     _in = inIterator;
     if ( !_in )
-        throw InputException(_currentField, "InputStream: Null stream specified.");
+        throwException( "InputStream: Null stream specified." );
+    if ( getException() ) return type;
     
     // Check OSG header information
     unsigned int version = 0;
@@ -595,9 +689,6 @@ InputStream::ReadType InputStream::start( InputIterator* inIterator )
     }
     if ( !isBinary() )
     {
-        DEF_PROPERTY("#Ascii", header); *this >> header;
-        if ( header._name!="#Ascii" ) return READ_UNKNOWN;
-        
         std::string typeString; *this >> typeString;
         if ( typeString=="Scene" ) type = READ_SCENE;
         else if ( typeString=="Image" ) type = READ_IMAGE;
@@ -614,12 +705,14 @@ InputStream::ReadType InputStream::start( InputIterator* inIterator )
                                << " may be incompatible with current reader version "
                                << PLUGIN_VERSION << std::endl;
     }
+    _fields.pop_back();
     return type;
 }
 
 void InputStream::decompress()
 {
-    _currentField = "Decompression";
+    _fields.clear();
+    _fields.push_back( "Decompression" );
     if ( !isBinary() ) return;
     
     std::string compressorName; *this >> compressorName;
@@ -634,8 +727,11 @@ void InputStream::decompress()
     
     std::string data;
     if ( !compressor->decompress(*(_in->getStream()), data) )
-        throw InputException(_currentField, "InputStream: Failed to decompress stream.");
+        throwException( "InputStream: Failed to decompress stream." );
+    if ( getException() ) return;
+    
     _in->setStream( new std::stringstream(data) );
+    _fields.pop_back();
 }
 
 // PROTECTED METHODS

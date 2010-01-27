@@ -137,18 +137,32 @@ public:
     virtual bool read( InputStream& is, osg::Object& obj )
     {
         C& object = OBJECT_CAST<C&>(obj);
-        if ( !is.isBinary() && !is.matchString(_name) )
-            return true;
+        if ( is.isBinary() )
+        {
+            bool ok = false; is >> ok;
+            if ( !ok ) return true;
+        }
+        else
+        {
+            if ( !is.matchString(_name) )
+                return true;
+        }
         return (*_reader)(is, object);
     }
     
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
-        if ( !os.isBinary() )
+        bool ok = (*_checker)(object);
+        if ( os.isBinary() )
         {
-            if ( !(*_checker)(object) ) return true;
-            os << _name;
+            os << ok;
+            if ( !ok ) return true;
+        }
+        else
+        {
+            if ( !ok ) return true;
+            os << PROPERTY(_name.c_str());
         }
         return (*_writer)(os, object);
     }
@@ -158,6 +172,8 @@ public:
 protected:
     std::string _name;
     Checker _checker;
+    
+public:
     Reader _reader;
     Writer _writer;
 };
@@ -219,7 +235,7 @@ public:
         }
         else if ( ParentType::_defaultValue!=(object.*_getter)() )
         {
-            os << ParentType::_name;
+            os << PROPERTY((ParentType::_name).c_str());
             if ( _useHex ) os << std::hex;
             os << (object.*_getter)();
             if ( _useHex ) os << std::dec;
@@ -228,9 +244,11 @@ public:
         return true;
     }
     
-protected:
+public:
     Getter _getter;
     Setter _setter;
+    
+protected:
     bool _useHex;
 };
 
@@ -274,12 +292,12 @@ public:
         }
         else if ( ParentType::_defaultValue!=(object.*_getter)() )
         {
-            os << ParentType::_name << (object.*_getter)() << std::endl;
+            os << PROPERTY((ParentType::_name).c_str()) << (object.*_getter)() << std::endl;
         }
         return true;
     }
     
-protected:
+public:
     Getter _getter;
     Setter _setter;
 };
@@ -323,7 +341,7 @@ public:
         }
         else if ( ParentType::_defaultValue!=(object.*_getter)() )
         {
-            os << ParentType::_name << (object.*_getter)() << std::endl;
+            os << PROPERTY((ParentType::_name).c_str()) << (object.*_getter)() << std::endl;
         }
         return true;
     }
@@ -343,6 +361,7 @@ protected:
         }
     }
     
+public:
     Getter _getter;
     Setter _setter;
 };
@@ -385,12 +404,12 @@ public:
         }
         else if ( ParentType::_defaultValue!=(object.*_getter)() )
         {
-            os << ParentType::_name << GLENUM((object.*_getter)()) << std::endl;
+            os << PROPERTY((ParentType::_name).c_str()) << GLENUM((object.*_getter)()) << std::endl;
         }
         return true;
     }
     
-protected:
+public:
     Getter _getter;
     Setter _setter;
 };
@@ -435,14 +454,14 @@ public:
         }
         else if ( ParentType::_defaultValue!=(object.*_getter)() )
         {
-            os << ParentType::_name;
+            os << PROPERTY((ParentType::_name).c_str());
             os.writeWrappedString( (object.*_getter)() );
             os << std::endl;
         }
         return true;
     }
     
-protected:
+public:
     Getter _getter;
     Setter _setter;
 };
@@ -498,7 +517,7 @@ public:
         }
         else if ( ParentType::_defaultValue!=(object.*_getter)() )
         {
-            os << ParentType::_name << hasObject;
+            os << PROPERTY((ParentType::_name).c_str()) << hasObject;
             if ( hasObject )
             {
                 os << BEGIN_BRACKET << std::endl;
@@ -510,7 +529,7 @@ public:
         return true;
     }
     
-protected:
+public:
     Getter _getter;
     Setter _setter;
 };
@@ -566,7 +585,7 @@ public:
         }
         else if ( ParentType::_defaultValue!=(object.*_getter)() )
         {
-            os << ParentType::_name << hasObject;
+            os << PROPERTY((ParentType::_name).c_str()) << hasObject;
             if ( hasObject )
             {
                 os << BEGIN_BRACKET << std::endl;
@@ -578,7 +597,7 @@ public:
         return true;
     }
     
-protected:
+public:
     Getter _getter;
     Setter _setter;
 };
@@ -631,14 +650,16 @@ public:
         }
         else if ( ParentType::_defaultValue!=(object.*_getter)() )
         {
-            os << ParentType::_name << getString((object.*_getter)()) << std::endl;
+            os << PROPERTY((ParentType::_name).c_str()) << getString((object.*_getter)()) << std::endl;
         }
         return true;
     }
     
-protected:
+public:
     Getter _getter;
     Setter _setter;
+    
+protected:
     IntLookup _lookup;
 };
 
@@ -706,7 +727,7 @@ public:
         }
         else if ( size>0 )
         {
-            os << ParentType::_name << size << BEGIN_BRACKET << std::endl;
+            os << PROPERTY((ParentType::_name).c_str()) << size << BEGIN_BRACKET << std::endl;
             for ( ConstIterator itr=list.begin();
                   itr!=list.end(); ++itr )
             {
@@ -717,7 +738,7 @@ public:
         return true;
     }
     
-protected:
+public:
     Getter _getter;
     Setter _setter;
 };
@@ -845,7 +866,7 @@ protected:
     serializer->add(#VALUE, MyClass::VALUE)
 
 #define END_ENUM_SERIALIZER() \
-    wrapper->addSerializer(serializer.get()); }
+    wrapper->addSerializer(serializer); }
 
 
 }

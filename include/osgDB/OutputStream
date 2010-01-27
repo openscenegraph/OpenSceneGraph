@@ -30,11 +30,17 @@
 namespace osgDB
 {
 
-class OutputException
+class OutputException : public osg::Referenced
 {
 public:
-    OutputException( const std::string& field, const std::string& err )
-    : _field(field), _error(err) {}
+    OutputException( const std::vector<std::string>& fields, const std::string& err ) : _error(err)
+    {
+        for ( unsigned int i=0; i<fields.size(); ++i )
+        {
+            _field += fields[i];
+            _field += " ";
+        }
+    }
     
     const std::string& getField() const { return _field; }
     const std::string& getError() const { return _error; }
@@ -70,6 +76,7 @@ public:
     virtual ~OutputStream();
     
     bool isBinary() const { return _out->isBinary(); }
+    const std::string& getSchemaName() const { return _schemaName; }
     
     void setWriteImageHint( WriteImageHint hint ) { _writeImageHint = hint; }
     WriteImageHint getWriteImageHint() const { return _writeImageHint; }
@@ -125,7 +132,7 @@ public:
     { writeObject(ptr.get()); return *this; }
     
     // Convenient methods for writing
-    inline void writeWrappedString( const std::string& str );
+    void writeWrappedString( const std::string& str );
     void writeCharArray( const char* s, unsigned int size ) { _out->writeCharArray(s, size); }
     
     // Global writing functions
@@ -140,6 +147,10 @@ public:
     // Schema handlers
     void writeSchema( std::ostream& fout );
     
+    // Exception handlers
+    inline void throwException( const std::string& msg );
+    const OutputException* getException() const { return _exception.get(); }
+    
 protected:
     template<typename T>
     void writeArrayImplementation( const T*, int writeSize, unsigned int numInRow=1 );
@@ -151,21 +162,17 @@ protected:
     ObjectMap _objectMap;
     
     WriteImageHint _writeImageHint;
-    std::string _currentField;
+    std::vector<std::string> _fields;
+    std::string _schemaName;
     std::string _compressorName;
     std::stringstream _compressSource;
-    OutputIterator* _out;
+    osg::ref_ptr<OutputIterator> _out;
+    osg::ref_ptr<OutputException> _exception;
 };
 
-void OutputStream::writeWrappedString( const std::string& str )
+void OutputStream::throwException( const std::string& msg )
 {
-    if ( !isBinary() )
-    {
-        std::string wrappedStr = std::string("\"") + str + std::string("\"");
-        *this << wrappedStr;
-    }
-    else
-        *this << str;
+    _exception = new OutputException(_fields, msg);
 }
 
 }

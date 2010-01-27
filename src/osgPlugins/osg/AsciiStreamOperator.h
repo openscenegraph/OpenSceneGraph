@@ -116,7 +116,7 @@ public:
     virtual void readBool( bool& b )
     {
         std::string boolString;
-        *_in >> boolString; checkStream();
+        *_in >> boolString;
         if ( boolString=="TRUE" ) b = true;
         else b = false;
     }
@@ -124,50 +124,50 @@ public:
     virtual void readChar( char& c )
     {
         short s = 0;
-        *_in >> s; checkStream();
+        *_in >> s;
         c = (char)s;
     }
     
     virtual void readSChar( signed char& c )
     {
         short s = 0;
-        *_in >> s; checkStream();
+        *_in >> s;
         c = (signed char)s;
     }
     
     virtual void readUChar( unsigned char& c )
     {
         short s = 0;
-        *_in >> s; checkStream();
+        *_in >> s;
         c = (unsigned char)s;
     }
     
     virtual void readShort( short& s )
-    { *_in >> s; checkStream(); }
+    { *_in >> s; }
     
     virtual void readUShort( unsigned short& s )
-    { *_in >> s; checkStream(); }
+    { *_in >> s; }
     
     virtual void readInt( int& i )
-    { *_in >> i; checkStream(); }
+    { *_in >> i; }
     
     virtual void readUInt( unsigned int& i )
-    { *_in >> i; checkStream(); }
+    { *_in >> i; }
     
     virtual void readLong( long& l )
-    { *_in >> l; checkStream(); }
+    { *_in >> l; }
     
     virtual void readULong( unsigned long& l )
-    { *_in >> l; checkStream(); }
+    { *_in >> l; }
     
     virtual void readFloat( float& f )
-    { *_in >> f; checkStream(); }
+    { *_in >> f; }
     
     virtual void readDouble( double& d )
-    { *_in >> d; checkStream(); }
+    { *_in >> d; }
     
     virtual void readString( std::string& s )
-    { *_in >> s; checkStream(); }
+    { *_in >> s; }
     
     virtual void readStream( std::istream& (*fn)(std::istream&) )
     { *_in >> fn; }
@@ -179,7 +179,7 @@ public:
     {
         GLenum e = 0;
         std::string enumString;
-        *_in >> enumString; checkStream();
+        *_in >> enumString;
         e = osgDB::Registry::instance()->getObjectWrapperManager()->getValue("GL", enumString);
         value.set( e );
     }
@@ -188,7 +188,7 @@ public:
     {
         int value = 0;
         std::string enumString;
-        *_in >> enumString; checkStream();
+        *_in >> enumString;
         if ( prop._mapProperty )
         {
             value = osgDB::Registry::instance()->getObjectWrapperManager()->getValue(prop._name, enumString);
@@ -208,7 +208,7 @@ public:
     virtual void readMark( osgDB::ObjectMark& mark )
     {
         std::string markString;
-        *_in >> markString; checkStream();
+        *_in >> markString;
     }
     
     virtual void readCharArray( char* s, unsigned int size ) {}

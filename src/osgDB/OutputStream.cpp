@@ -22,8 +22,7 @@
 using namespace osgDB;
 
 OutputStream::OutputStream( const osgDB::Options* options )
-:   _writeImageHint(WRITE_USE_IMAGE_HINT),
-    _out(0)
+:   _writeImageHint(WRITE_USE_IMAGE_HINT)
 {
     if ( !options ) return;
     
@@ -43,11 +42,7 @@ OutputStream::OutputStream( const osgDB::Options* options )
             if ( keyAndValues.size()<2 ) continue;
             
             if ( keyAndValues[0]=="SchemaFile" )
-            {
-                osgDB::ofstream schemaStream( keyAndValues[1].c_str(), std::ios::out );
-                if ( !schemaStream.fail() ) writeSchema( schemaStream );
-                schemaStream.close();
-            }
+                _schemaName = keyAndValues[1];
             else if ( keyAndValues[0]=="Compressor" )
                 _compressorName = keyAndValues[1];
             else if ( keyAndValues[0]=="WriteImageHint" )
@@ -134,6 +129,28 @@ OutputStream& OutputStream::operator<<( const osg::Matrixd& mat )
     }
     *this << END_BRACKET << std::endl;
     return *this;
+}
+
+void OutputStream::writeWrappedString( const std::string& str )
+{
+    if ( !isBinary() )
+    {
+        std::string wrappedStr;
+        unsigned int size = str.size();
+        for ( unsigned int i=0; i<size; ++i )
+        {
+            char ch = str[i];
+            if ( ch=='\"' ) wrappedStr += '\\';
+            else if ( ch=='\\' ) wrappedStr += '\\';
+            wrappedStr += ch;
+        }
+        
+        wrappedStr.insert( 0, 1, '\"' );
+        wrappedStr += '\"';
+        *this << wrappedStr;
+    }
+    else
+        *this << str;
 }
 
 void OutputStream::writeArray( const osg::Array* a )
@@ -235,7 +252,7 @@ void OutputStream::writeArray( const osg::Array* a )
         writeArrayImplementation( static_cast<const osg::Vec4dArray*>(a), a->getNumElements() );
         break;
     default:
-        throw OutputException(_currentField, "OutputStream::writeArray(): Unsupported array type.");
+        throwException( "OutputStream::writeArray(): Unsupported array type." );
     }
 }
 
@@ -286,7 +303,7 @@ void OutputStream::writePrimitiveSet( const osg::PrimitiveSet* p )
         }
         break;
     default:
-        throw OutputException(_currentField, "OutputStream::writePrimitiveSet(): Unsupported primitive type.");
+        throwException( "OutputStream::writePrimitiveSet(): Unsupported primitive type." );
     }
 }
 
@@ -296,6 +313,7 @@ void OutputStream::writeImage( const osg::Image* img )
     
     *this << PROPERTY("FileName"); writeWrappedString(img->getFileName()); *this << std::endl;
     *this << PROPERTY("WriteHint") << (int)img->getWriteHint();
+    if ( getException() ) return;
     
     int decision = IMAGE_EXTERNAL;
     switch ( _writeImageHint )
@@ -367,7 +385,9 @@ void OutputStream::writeImage( const osg::Image* img )
                 {
                     char* data = new char[size];
                     if ( !data )
-                        throw OutputException(_currentField, "OutputStream::writeImage(): Out of memory.");
+                        throwException( "OutputStream::writeImage(): Out of memory." );
+                    if ( getException() ) return;
+                    
                     infile.seekg( 0, std::ios::beg );
                     infile.read( data, size );
                     writeCharArray( data, size );
@@ -388,7 +408,6 @@ void OutputStream::writeImage( const osg::Image* img )
     default:
         break;
     }
-    
     writeObject( img );
 }
 
@@ -402,6 +421,7 @@ void OutputStream::writeObject( const osg::Object* obj )
     
     *this << name << BEGIN_BRACKET << std::endl;       // Write object name
     *this << PROPERTY("UniqueID") << id << std::endl;  // Write object ID
+    if ( getException() ) return;
     
     // Check whether this is a shared object or not
     if ( id>=_objectMap.size() )
@@ -414,6 +434,7 @@ void OutputStream::writeObject( const osg::Object* obj )
             *this << END_BRACKET << std::endl;
             return;
         }
+        _fields.push_back( name );
         
         const StringList& associates = wrapper->getAssociates();
         for ( StringList::const_iterator itr=associates.begin(); itr!=associates.end(); ++itr )
@@ -425,25 +446,31 @@ void OutputStream::writeObject( const osg::Object* obj )
                                        << *itr << std::endl;
                 continue;
             }
+            _fields.push_back( assocWrapper->getName() );
             
-            _currentField = assocWrapper->getName();
             assocWrapper->write( *this, *obj );
+            if ( getException() ) return;
+            
+            _fields.pop_back();
         }
+        _fields.pop_back();
     }
     *this << END_BRACKET << std::endl;
 }
 
 void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType type )
 {
-    _currentField = "Header";
+    _fields.clear();
+    _fields.push_back( "Start" );
+    
     _out = outIterator;
     if ( !_out )
-        throw OutputException(_currentField, "OutputStream: Null stream specified.");
+        throwException( "OutputStream: Null stream specified." );
+    if ( getException() ) return;
     
     if ( isBinary() )
     {
-        *this << (unsigned int)OSG_HEADER_LOW << (unsigned int)OSG_HEADER_HIGH
-              << (unsigned int)type << (unsigned int)PLUGIN_VERSION;
+        *this << (unsigned int)type << (unsigned int)PLUGIN_VERSION;
         
         if ( sizeof(osg::Matrix::value_type)==FLOAT_SIZE ) *this << (unsigned int)0;
         else *this << (unsigned int)1;  // Record matrix value type of current built OSG
@@ -476,27 +503,28 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
         default: break;
         }
         
-        *this << PROPERTY("#Ascii") << typeString << std::endl;
+        *this << typeString << std::endl;
         *this << PROPERTY("#Version") << (unsigned int)PLUGIN_VERSION << std::endl;
         *this << PROPERTY("#Generator") << std::string("OpenSceneGraph")
               << std::string(osgGetVersion()) << std::endl;
         *this << std::endl;
     }
+    _fields.pop_back();
 }
 
 void OutputStream::compress( std::ostream* ostream )
 {
-    _currentField = "Compression";
+    _fields.clear();
+    _fields.push_back( "Compression" );
     if ( _compressorName.empty() || !isBinary() ) return;
     
     BaseCompressor* compressor = Registry::instance()->getObjectWrapperManager()->findCompressor(_compressorName);
     if ( !compressor || !ostream ) return;
     
     if ( !compressor->compress(*ostream, _compressSource.str()) )
-        throw OutputException(_currentField, "OutputStream: Failed to compress stream.");
+        throwException( "OutputStream: Failed to compress stream." );
+    _fields.pop_back();
 }
-
-// PROTECTED METHODS
 
 void OutputStream::writeSchema( std::ostream& fout )
 {
@@ -520,6 +548,8 @@ void OutputStream::writeSchema( std::ostream& fout )
         fout << std::endl;
     }
 }
+
+// PROTECTED METHODS
 
 template<typename T>
 void OutputStream::writeArrayImplementation( const T* a, int writeSize, unsigned int numInRow )

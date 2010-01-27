@@ -10,24 +10,30 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
-*/
+ */
 
 
-#include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 #include <osgDB/ReaderWriter>
-
+#include <osg/io_utils>
 #include <osgAnimation/AnimationManagerBase>
 #include <osgAnimation/BasicAnimationManager>
 #include <osgAnimation/TimelineAnimationManager>
 #include <osgAnimation/VertexInfluence>
 #include <osgAnimation/Animation>
 #include <osgAnimation/Bone>
+#include <osgAnimation/UpdateBone>
+#include <osgAnimation/UpdateMatrixTransform>
 #include <osgAnimation/Skeleton>
 #include <osgAnimation/RigGeometry>
 #include <osgAnimation/MorphGeometry>
-#include <osgAnimation/UpdateCallback>
+#include <osgAnimation/StackedTransform>
+#include <osgAnimation/StackedTranslateElement>
+#include <osgAnimation/StackedRotateAxisElement>
+#include <osgAnimation/StackedMatrixElement>
+#include <osgAnimation/StackedScaleElement>
+#include "Matrix.h"
 
 #include <osgDB/Registry>
 #include <osgDB/Input>
@@ -42,7 +48,7 @@ bool Bone_readLocalData(Object& obj, Input& fr)
 
     osg::Quat att;
     bool iteratorAdvanced = false;
-    if (fr.matchSequence("bindQuaternion %f %f %f %f")) 
+    if (fr.matchSequence("bindQuaternion %f %f %f %f"))
     {
         fr[1].getFloat(att[0]);
         fr[2].getFloat(att[1]);
@@ -51,10 +57,11 @@ bool Bone_readLocalData(Object& obj, Input& fr)
         
         fr += 5;
         iteratorAdvanced = true;
+        osg::notify(osg::WARN) << "Old osgAnimation file format update your data file" << std::endl;
     }
 
     osg::Vec3d pos(0,0,0);
-    if (fr.matchSequence("bindPosition %f %f %f")) 
+    if (fr.matchSequence("bindPosition %f %f %f"))
     {
         fr[1].getFloat(pos[0]);
         fr[2].getFloat(pos[1]);
@@ -62,10 +69,11 @@ bool Bone_readLocalData(Object& obj, Input& fr)
         
         fr += 4;
         iteratorAdvanced = true;
+        osg::notify(osg::WARN) << "Old osgAnimation file format update your data file" << std::endl;
     }
 
     osg::Vec3d scale(1,1,1);
-    if (fr.matchSequence("bindScale %f %f %f")) 
+    if (fr.matchSequence("bindScale %f %f %f"))
     {
         fr[1].getFloat(scale[0]);
         fr[2].getFloat(scale[1]);
@@ -73,31 +81,45 @@ bool Bone_readLocalData(Object& obj, Input& fr)
         
         fr += 4;
         iteratorAdvanced = true;
+        osg::notify(osg::WARN) << "Old osgAnimation file format update your data file" << std::endl;
     }
 
-    bone.setBindMatrixInBoneSpace( osg::Matrix(att) * osg::Matrix::translate(pos));
+    if (fr.matchSequence("InvBindMatrixInSkeletonSpace {"))
+    {
+        Matrix matrix; 
+        if (readMatrix(matrix,fr, "InvBindMatrixInSkeletonSpace"))
+        {
+            bone.setInvBindMatrixInSkeletonSpace(matrix);
+            iteratorAdvanced = true;
+        }
+    }
+    if (fr.matchSequence("MatrixInSkeletonSpace {"))
+    {
+        Matrix matrix; 
+        if (readMatrix(matrix,fr, "MatrixInSkeletonSpace"))
+        {
+            bone.setMatrixInSkeletonSpace(matrix);
+            iteratorAdvanced = true;
+        }
+    }
     return iteratorAdvanced;
 }
 
-bool Bone_writeLocalData(const Object& obj, Output& fw) 
+bool Bone_writeLocalData(const Object& obj, Output& fw)
 {
     const osgAnimation::Bone& bone = dynamic_cast<const osgAnimation::Bone&>(obj);
-    osg::Vec3 t;
-    osg::Quat r;
-    osg::Vec3 s;
-    osg::Quat rs;
-    bone.getBindMatrixInBoneSpace().decompose(t,r,s,rs);
-    fw.indent() << "bindQuaternion "  << r << std::endl;
-    fw.indent() << "bindPosition "  << t << std::endl;
-    fw.indent() << "bindScale "  << s << std::endl;
-    return true;
+    bool res1 = writeMatrix(bone.getInvBindMatrixInSkeletonSpace(), fw, "InvBindMatrixInSkeletonSpace");
+    // write this field for debug only
+    // because it's recompute at each update
+    bool res2 = writeMatrix(bone.getMatrixInSkeletonSpace(), fw, "MatrixInSkeletonSpace");
+    return (res1 || res2);
 }
 
-RegisterDotOsgWrapperProxy g_atkBoneProxy
+RegisterDotOsgWrapperProxy g_BoneProxy
 (
     new osgAnimation::Bone,
     "osgAnimation::Bone",
-    "Object Node Transform osgAnimation::Bone Group",
+    "Object Node MatrixTransform osgAnimation::Bone Group",
     &Bone_readLocalData,
     &Bone_writeLocalData
     );
@@ -112,11 +134,11 @@ bool Skeleton_writeLocalData(const Object& obj, Output& fr)
 {
     return true; 
 }
-RegisterDotOsgWrapperProxy g_atkRootSkeletonProxy
+RegisterDotOsgWrapperProxy g_SkeletonProxy
 (
     new osgAnimation::Skeleton,
     "osgAnimation::Skeleton",
-    "Object Node  Transform osgAnimation::Bone osgAnimation::Skeleton Group",
+    "Object Node MatrixTransform osgAnimation::Skeleton Group",
     &Skeleton_readLocalData,
     &Skeleton_writeLocalData,
     DotOsgWrapper::READ_AND_WRITE
@@ -723,7 +745,7 @@ bool AnimationManagerBase_writeLocalData(const osgAnimation::AnimationManagerBas
     const osgAnimation::AnimationList& animList = manager.getAnimationList();
 
     fw.indent() << "num_animations " << animList.size()  << std::endl;
-    for (osgAnimation::AnimationList::const_iterator it = animList.begin(); it != animList.end(); it++)
+    for (osgAnimation::AnimationList::const_iterator it = animList.begin(); it != animList.end(); ++it)
     {
         if (!fw.writeObject(**it))
             osg::notify(osg::WARN)<<"Warning: can't write an animation object"<< std::endl;        
@@ -816,6 +838,13 @@ bool RigGeometry_readLocalData(Object& obj, Input& fr)
     if (!vmap->empty())
         geom.setInfluenceMap(vmap.get());
 
+    if (fr.matchSequence("Geometry {"))
+    {
+        osg::Geometry* source = dynamic_cast<osg::Geometry*>(fr.readObject());
+        geom.setSourceGeometry(source);
+        iteratorAdvanced = true;
+    }
+
     return iteratorAdvanced;
 }
 
@@ -827,7 +856,7 @@ bool RigGeometry_writeLocalData(const Object& obj, Output& fw)
         return true;
     fw.indent() << "num_influences "  << vm->size() << std::endl;
     fw.moveIn();
-    for (osgAnimation::VertexInfluenceMap::const_iterator it = vm->begin(); it != vm->end(); it++) 
+    for (osgAnimation::VertexInfluenceMap::const_iterator it = vm->begin(); it != vm->end(); ++it) 
     {
         std::string name = it->first;
         if (name.empty())
@@ -843,6 +872,8 @@ bool RigGeometry_writeLocalData(const Object& obj, Output& fw)
         fw.indent() << "}" << std::endl;
     }
     fw.moveOut();
+
+    fw.writeObject(*geom.getSourceGeometry());
     return true;
 }
 
@@ -850,7 +881,7 @@ RegisterDotOsgWrapperProxy g_atkRigGeometryProxy
 (
     new osgAnimation::RigGeometry,
     "osgAnimation::RigGeometry",
-    "Object Drawable osgAnimation::RigGeometry Geometry",
+    "Object osgAnimation::RigGeometry Drawable Geometry",
     &RigGeometry_readLocalData,
     &RigGeometry_writeLocalData,
     DotOsgWrapper::READ_AND_WRITE
@@ -975,7 +1006,10 @@ RegisterDotOsgWrapperProxy g_osgAnimationMorphGeometryProxy
     );
 
 
-bool UpdateBone_readLocalData(Object& obj, Input& fr) 
+
+
+
+bool UpdateBone_readLocalData(Object& obj, Input& fr)
 {
     bool iteratorAdvanced = false;
     return iteratorAdvanced;
@@ -986,11 +1020,11 @@ bool UpdateBone_writeLocalData(const Object& obj, Output& fw)
     return true;
 }
 
-RegisterDotOsgWrapperProxy g_atkUpdateBoneProxy
+RegisterDotOsgWrapperProxy g_UpdateBoneProxy
 (
-    new osgAnimation::Bone::UpdateBone,
+    new osgAnimation::UpdateBone,
     "osgAnimation::UpdateBone",
-    "Object NodeCallback osgAnimation::UpdateBone",
+    "Object NodeCallback osgAnimation::UpdateMatrixTransform osgAnimation::UpdateBone",
     &UpdateBone_readLocalData,
     &UpdateBone_writeLocalData,
     DotOsgWrapper::READ_AND_WRITE
@@ -1009,7 +1043,7 @@ bool UpdateSkeleton_writeLocalData(const Object& obj, Output& fw)
     return true;
 }
 
-RegisterDotOsgWrapperProxy g_atkUpdateSkeletonProxy
+RegisterDotOsgWrapperProxy g_UpdateSkeletonProxy
 (
     new osgAnimation::Skeleton::UpdateSkeleton,
     "osgAnimation::UpdateSkeleton",
@@ -1019,51 +1053,6 @@ RegisterDotOsgWrapperProxy g_atkUpdateSkeletonProxy
     DotOsgWrapper::READ_AND_WRITE
     );
 
-
-
-bool UpdateTransform_readLocalData(Object& obj, Input& fr) 
-{
-    bool iteratorAdvanced = false;
-    return iteratorAdvanced;
-}
-
-bool UpdateTransform_writeLocalData(const Object& obj, Output& fw)
-{
-    return true;
-}
-
-RegisterDotOsgWrapperProxy g_atkUpdateTransformProxy
-(
-    new osgAnimation::UpdateTransform,
-    "osgAnimation::UpdateTransform",
-    "Object NodeCallback osgAnimation::UpdateTransform",
-    &UpdateTransform_readLocalData,
-    &UpdateTransform_writeLocalData,
-    DotOsgWrapper::READ_AND_WRITE
-);
-
-
-
-bool UpdateMaterial_readLocalData(Object& obj, Input& fr) 
-{
-    bool iteratorAdvanced = false;
-    return iteratorAdvanced;
-}
-
-bool UpdateMaterial_writeLocalData(const Object& obj, Output& fw)
-{
-    return true;
-}
-
-RegisterDotOsgWrapperProxy g_UpdateMaterialProxy
-(
-    new osgAnimation::UpdateMaterial,
-    "osgAnimation::UpdateMaterial",
-    "Object StateAttribute::Callback osgAnimation::UpdateMaterial",
-    &UpdateMaterial_readLocalData,
-    &UpdateMaterial_writeLocalData,
-    DotOsgWrapper::READ_AND_WRITE
-);
 
 bool UpdateMorph_readLocalData(Object& obj, Input& fr) 
 {
@@ -1076,7 +1065,7 @@ bool UpdateMorph_writeLocalData(const Object& obj, Output& fw)
     return true;
 }
 
-RegisterDotOsgWrapperProxy g_atkUpdateMorphProxy
+RegisterDotOsgWrapperProxy g_UpdateMorphProxy
 (
  new osgAnimation::UpdateMorph,
     "osgAnimation::UpdateMorph",

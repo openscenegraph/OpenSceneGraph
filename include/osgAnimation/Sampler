@@ -125,6 +125,7 @@ namespace osgAnimation
     typedef TemplateSampler<Vec3LinearInterpolator> Vec3LinearSampler;
     typedef TemplateSampler<Vec4LinearInterpolator> Vec4LinearSampler;
     typedef TemplateSampler<QuatSphericalLinearInterpolator> QuatSphericalLinearSampler;
+    typedef TemplateSampler<MatrixLinearInterpolator> MatrixLinearSampler;
 
     typedef TemplateSampler<FloatCubicBezierInterpolator> FloatCubicBezierSampler;
     typedef TemplateSampler<DoubleCubicBezierInterpolator> DoubleCubicBezierSampler;

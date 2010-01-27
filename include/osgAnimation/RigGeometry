@@ -18,6 +18,7 @@
 #include <osgAnimation/Export>
 #include <osgAnimation/Skeleton>
 #include <osgAnimation/RigTransform>
+#include <osgAnimation/VertexInfluence>
 #include <osg/Geometry>
 
 namespace osgAnimation 
@@ -28,7 +29,7 @@ namespace osgAnimation
     public:
 
         RigGeometry();
-        RigGeometry(const osg::Geometry& b);
+//        RigGeometry(const osg::Geometry& b);
         RigGeometry(const RigGeometry& b, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
 
         META_Object(osgAnimation, RigGeometry);
@@ -63,8 +64,15 @@ namespace osgAnimation
         const osg::Matrix& getMatrixFromSkeletonToGeometry() const;
         const osg::Matrix& getInvMatrixFromSkeletonToGeometry() const;
 
-    protected:
+        osg::Geometry* getSourceGeometry();
+        const osg::Geometry* getSourceGeometry() const;
+        void setSourceGeometry(osg::Geometry* geometry);
 
+        void copyFrom(osg::Geometry& from);
+
+    protected:
+        
+        osg::ref_ptr<osg::Geometry> _geometry;
         osg::ref_ptr<RigTransform> _rigTransformImplementation;
 
         VertexInfluenceSet _vertexInfluenceSet;
@@ -104,7 +112,10 @@ namespace osgAnimation
                     geom->getParents()[0]->accept(finder);
 
                     if (!finder._root.valid())
+                    {
+                        osg::notify(osg::WARN) << "A RigGeometry did not find a parent skeleton for RigGeomtry ( " << geom->getName() << " )" << std::endl;
                         return;
+                    }
                     geom->buildVertexInfluenceSet();
                     geom->setSkeleton(finder._root.get());
                 }

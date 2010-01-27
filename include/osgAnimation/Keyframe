@@ -23,6 +23,7 @@
 #include <osg/Vec4>
 #include <osg/Vec3>
 #include <osg/Vec2>
+#include <osg/Matrixf>
 
 namespace osgAnimation 
 {
@@ -113,6 +114,9 @@ namespace osgAnimation
 
     typedef TemplateKeyframe<osg::Quat> QuatKeyframe;
     typedef TemplateKeyframeContainer<osg::Quat> QuatKeyframeContainer;
+
+    typedef TemplateKeyframe<osg::Matrixf> MatrixKeyframe;
+    typedef TemplateKeyframeContainer<osg::Matrixf> MatrixKeyframeContainer;
 
     typedef TemplateKeyframe<Vec3Packed> Vec3PackedKeyframe;
     typedef TemplateKeyframeContainer<Vec3Packed> Vec3PackedKeyframeContainer;

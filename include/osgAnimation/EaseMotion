@@ -313,7 +313,7 @@ namespace osgAnimation {
                 osg::notify(osg::WARN) << "CompositeMotion::getValueInNormalizedRange no Motion in the CompositeMotion, add motion to have result" << std::endl;
                 return;
             }
-            for (MotionList::const_iterator it = _motions.begin(); it != _motions.end(); it++)
+            for (MotionList::const_iterator it = _motions.begin(); it != _motions.end(); ++it)
             {
                 const Motion* motion = static_cast<const Motion*>(it->get());
                 float durationInRange = motion->getDuration() / getDuration();

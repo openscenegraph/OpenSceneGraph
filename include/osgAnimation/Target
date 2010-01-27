@@ -121,6 +121,7 @@ namespace osgAnimation
             _target *= 1.0/sqrt(len2);
     }
 
+    typedef TemplateTarget<osg::Matrixf> MatrixTarget;
     typedef TemplateTarget<osg::Quat> QuatTarget;
     typedef TemplateTarget<osg::Vec3> Vec3Target;
     typedef TemplateTarget<osg::Vec4> Vec4Target;

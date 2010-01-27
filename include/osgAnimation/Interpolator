@@ -205,8 +205,8 @@ namespace osgAnimation
             float t2 = t * t;
 
             TYPE v0 = keyframes[i].getValue().getPosition() * one_minus_t3;
-            TYPE v1 = keyframes[i].getValue().getTangentPoint1() * (3.0 * t * one_minus_t2);
-            TYPE v2 = keyframes[i].getValue().getTangentPoint2() * (3.0 * t2 * one_minus_t);
+            TYPE v1 = keyframes[i].getValue().getControlPointIn() * (3.0 * t * one_minus_t2);
+            TYPE v2 = keyframes[i].getValue().getControlPointOut() * (3.0 * t2 * one_minus_t);
             TYPE v3 = keyframes[i+1].getValue().getPosition() * (t2 * t);
 
             result = v0 + v1 + v2 + v3;
@@ -228,6 +228,7 @@ namespace osgAnimation
     typedef TemplateLinearInterpolator<osg::Vec3, Vec3Packed> Vec3PackedLinearInterpolator;
     typedef TemplateLinearInterpolator<osg::Vec4, osg::Vec4> Vec4LinearInterpolator;
     typedef TemplateSphericalLinearInterpolator<osg::Quat, osg::Quat> QuatSphericalLinearInterpolator;
+    typedef TemplateLinearInterpolator<osg::Matrixf, osg::Matrixf> MatrixLinearInterpolator;
 
     typedef TemplateCubicBezierInterpolator<float, FloatCubicBezier > FloatCubicBezierInterpolator;
     typedef TemplateCubicBezierInterpolator<double, DoubleCubicBezier> DoubleCubicBezierInterpolator;

@@ -261,18 +261,13 @@ bool UpdateMorph::link(osgAnimation::Channel* channel)
 
     if (weightIndex >= 0)
     {
-        osgAnimation::FloatLinearChannel* fc = dynamic_cast<osgAnimation::FloatLinearChannel*>(channel);
-        if (fc)
+        osgAnimation::FloatTarget* ft = _weightTargets[weightIndex].get();
+        if (!ft)
         {
-            osgAnimation::FloatTarget* ft = _weightTargets[weightIndex].get();
-            if (ft == 0)
-            {
-                ft = new osgAnimation::FloatTarget;
-                _weightTargets[weightIndex] = ft;
-            }
-            fc->setTarget(ft);
-            return true;
+            ft = new osgAnimation::FloatTarget;
+            _weightTargets[weightIndex] = ft;
         }
+        return channel->setTarget(ft);
     }
     else
     {

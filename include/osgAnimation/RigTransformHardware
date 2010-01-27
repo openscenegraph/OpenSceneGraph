@@ -12,8 +12,8 @@
  * OpenSceneGraph Public License for more details.
  */
 
-#ifndef OSGANIMATION_RIG_TRANSFORM_HARDWARE_H
-#define OSGANIMATION_RIG_TRANSFORM_HARDWARE_H 1
+#ifndef OSGANIMATION_RIG_TRANSFORM_HARDWARE
+#define OSGANIMATION_RIG_TRANSFORM_HARDWARE 1
 
 #include <osgAnimation/Export>
 #include <osgAnimation/RigTransform>
@@ -32,7 +32,6 @@ namespace osgAnimation
     public:
         typedef osg::Matrix MatrixType;
         typedef osgAnimation::Bone BoneType;
-        typedef Bone::BoneMap BoneMap;
         typedef std::vector<osg::ref_ptr<osg::Vec4Array> > BoneWeightAttribList;
         typedef std::vector<osg::ref_ptr<BoneType> > BonePalette;
 
@@ -48,6 +47,8 @@ namespace osgAnimation
         };
         typedef std::vector<std::vector<IndexWeightEntry> > VertexIndexWeightList;
 
+        RigTransformHardware();
+
         osg::Vec4Array* getVertexAttrib(int index);
         int getNumVertexAttrib();
 
@@ -59,12 +60,12 @@ namespace osgAnimation
 
         bool createPalette(int nbVertexes, BoneMap boneMap, const VertexInfluenceSet::VertexIndexToBoneWeightMap& vertexIndexToBoneWeightMap);
 
-
-        virtual bool init(RigGeometry&);
-        virtual void update(RigGeometry&);
-
+        virtual void operator()(RigGeometry&);
         void setShader(osg::Shader*);
+
     protected:
+
+        bool init(RigGeometry&);
 
         BoneWeightAttribList createVertexAttribList();
         osg::Uniform* createVertexUniform();
@@ -76,6 +77,8 @@ namespace osgAnimation
         BoneWeightAttribList _boneWeightAttribArrays;
         osg::ref_ptr<osg::Uniform> _uniformMatrixPalette;
         osg::ref_ptr<osg::Shader> _shader;
+
+        bool _needInit;
     };
 }
 

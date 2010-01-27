@@ -14,94 +14,23 @@
 
 #include <osgAnimation/Bone>
 #include <osgAnimation/Skeleton>
-#include <osgAnimation/FindParentAnimationManagerVisitor>
+#include <osgAnimation/UpdateBone>
 #include <osgAnimation/BoneMapVisitor>
-#include <osgAnimation/ComputeBindMatrixVisitor>
 
+using namespace osgAnimation;
 
-osgAnimation::Bone::UpdateBone::UpdateBone(const osgAnimation::Bone::UpdateBone& apc,const osg::CopyOp& copyop) :
-    osg::Object(apc, copyop),
-    osgAnimation::AnimationUpdateCallback<osg::NodeCallback>(apc, copyop)
-{
-    _quaternion = new osgAnimation::QuatTarget(apc._quaternion->getValue());
-    _position = new osgAnimation::Vec3Target(apc._position->getValue());
-    _scale = new osgAnimation::Vec3Target(apc._scale->getValue());
-}
-
-bool osgAnimation::Bone::UpdateBone::link(osgAnimation::Channel* channel)
-{
-    if (channel->getName().find("quaternion") != std::string::npos)
-    {
-        return channel->setTarget(_quaternion.get());
-    }
-    else if (channel->getName().find("position") != std::string::npos)
-    {
-        return channel->setTarget(_position.get());
-    }
-    else if (channel->getName().find("scale") != std::string::npos)
-    {
-        return channel->setTarget(_scale.get());
-    }
-    else 
-    {
-        osg::notify(osg::WARN) << "Channel " << channel->getName() << " does not contain a valid symbolic name for this class" << className() << std::endl;
-    }
-    return false;
-}
-
-
-/** Callback method called by the NodeVisitor when visiting a node.*/
-void osgAnimation::Bone::UpdateBone::operator()(osg::Node* node, osg::NodeVisitor* nv)
-{
-    if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR)
-    {
-        Bone* b = dynamic_cast<Bone*>(node);
-        if (!b)
-        {
-            osg::notify(osg::WARN) << "Warning: UpdateBone set on non-Bone object." << std::endl;
-            return;
-        }
-
-        if (b->needToComputeBindMatrix())
-        {
-            ComputeBindMatrixVisitor visitor;
-            b->accept(visitor);
-        }
-
-        update(*b);
-
-        Bone* parent = b->getBoneParent();
-        if (parent)
-            b->setMatrixInSkeletonSpace(b->getMatrixInBoneSpace() * parent->getMatrixInSkeletonSpace());
-        else
-            b->setMatrixInSkeletonSpace(b->getMatrixInBoneSpace());
-
-    }
-    traverse(node,nv);
-}
-
-
-osgAnimation::Bone::Bone(const Bone& b, const osg::CopyOp& copyop) :
-    osg::Transform(b,copyop),
-    _position(b._position),
-    _rotation(b._rotation),
-    _scale(b._scale),
-    _needToRecomputeBindMatrix(true),
-    _bindInBoneSpace(b._bindInBoneSpace),
-    _invBindInSkeletonSpace(b._invBindInSkeletonSpace),
-    _boneInSkeletonSpace(b._boneInSkeletonSpace)
+Bone::Bone(const Bone& b, const osg::CopyOp& copyop) : osg::MatrixTransform(b,copyop), _invBindInSkeletonSpace(b._invBindInSkeletonSpace), _boneInSkeletonSpace(b._boneInSkeletonSpace)
 {
 }
 
-osgAnimation::Bone::Bone(const std::string& name)
+Bone::Bone(const std::string& name)
 {
     if (!name.empty())
         setName(name);
-    _needToRecomputeBindMatrix = false;
 }
 
 
-void osgAnimation::Bone::setDefaultUpdateCallback(const std::string& name)
+void Bone::setDefaultUpdateCallback(const std::string& name)
 {
     std::string cbName = name;
     if (cbName.empty())
@@ -109,25 +38,12 @@ void osgAnimation::Bone::setDefaultUpdateCallback(const std::string& name)
     setUpdateCallback(new UpdateBone(cbName));
 }
 
-void osgAnimation::Bone::computeBindMatrix()
-{
-    _invBindInSkeletonSpace = osg::Matrix::inverse(_bindInBoneSpace);
-    const Bone* parent = getBoneParent();
-    _needToRecomputeBindMatrix = false;
-    if (!parent)
-    {
-        osg::notify(osg::WARN) << "Warning " << className() <<"::computeBindMatrix you should not have this message, it means you miss to attach this bone(" << getName() <<") to a Skeleton node" << std::endl;
-        return;
-    }
-    _invBindInSkeletonSpace = parent->getInvBindMatrixInSkeletonSpace() * _invBindInSkeletonSpace;
-}
-
-osgAnimation::Bone* osgAnimation::Bone::getBoneParent()
+Bone* Bone::getBoneParent()
 {
     if (getParents().empty())
         return 0;
     osg::Node::ParentList parents = getParents();
-    for (osg::Node::ParentList::iterator it = parents.begin(); it != parents.end(); it++) 
+    for (osg::Node::ParentList::iterator it = parents.begin(); it != parents.end(); ++it)
     {
         Bone* pb = dynamic_cast<Bone*>(*it);
         if (pb)
@@ -135,38 +51,16 @@ osgAnimation::Bone* osgAnimation::Bone::getBoneParent()
     }
     return 0;
 }
-const osgAnimation::Bone* osgAnimation::Bone::getBoneParent() const
+const Bone* Bone::getBoneParent() const
 {
     if (getParents().empty())
         return 0;
     const osg::Node::ParentList& parents = getParents();
-    for (osg::Node::ParentList::const_iterator it = parents.begin(); it != parents.end(); it++) 
+    for (osg::Node::ParentList::const_iterator it = parents.begin(); it != parents.end(); ++it) 
     {
         const Bone* pb = dynamic_cast<const Bone*>(*it);
         if (pb)
             return pb;
     }
     return 0;
-}
-
-
-/** Add Node to Group.
- * If node is not NULL and is not contained in Group then increment its
- * reference count, add it to the child list and dirty the bounding
- * sphere to force it to recompute on next getBound() and return true for success.
- * Otherwise return false. Scene nodes can't be added as child nodes.
- */
-bool osgAnimation::Bone::addChild( Node *child ) 
-{
-    Bone* bone = dynamic_cast<Bone*>(child);
-    if (bone)
-        bone->setNeedToComputeBindMatrix(true);
-    return osg::Group::addChild(child);
-}
-
-osgAnimation::Bone::BoneMap osgAnimation::Bone::getBoneMap()
-{
-    BoneMapVisitor mapVisitor;
-    this->accept(mapVisitor);
-    return mapVisitor.getBoneMap();
 }

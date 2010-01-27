@@ -24,7 +24,7 @@ Animation::Animation(const osgAnimation::Animation& anim, const osg::CopyOp& cop
     _playmode(anim._playmode)
 {
     const ChannelList& cl = anim.getChannels();
-    for (ChannelList::const_iterator it = cl.begin(); it != cl.end(); it++)
+    for (ChannelList::const_iterator it = cl.begin(); it != cl.end(); ++it)
     {
         addChannel(it->get()->clone());
     }

@@ -14,14 +14,15 @@
 
 #include <osgAnimation/Skeleton>
 #include <osgAnimation/Bone>
+#include <osg/Notify>
 
 using namespace osgAnimation;
 
 Skeleton::Skeleton() {}
-Skeleton::Skeleton(const Skeleton& b, const osg::CopyOp& copyop) : Bone(b,copyop) {}
+Skeleton::Skeleton(const Skeleton& b, const osg::CopyOp& copyop) : osg::MatrixTransform(b,copyop) {}
 
 Skeleton::UpdateSkeleton::UpdateSkeleton() : _needValidate(true) {}
-Skeleton::UpdateSkeleton::UpdateSkeleton(const UpdateSkeleton& us, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY) : osg::Object(us, copyop), osg::NodeCallback(us, copyop) 
+Skeleton::UpdateSkeleton::UpdateSkeleton(const UpdateSkeleton& us, const osg::CopyOp& copyop= osg::CopyOp::SHALLOW_COPY) : osg::Object(us, copyop), osg::NodeCallback(us, copyop)
 {
     _needValidate = true;
 }
@@ -45,7 +46,7 @@ public:
 
         bool foundNonBone = false;
 
-        for (unsigned i = 0; i < bone->getNumChildren(); ++i)
+        for (unsigned int i = 0; i < bone->getNumChildren(); ++i)
         {
             if (dynamic_cast<Bone*>(bone->getChild(i)))
             {
@@ -76,11 +77,13 @@ void Skeleton::UpdateSkeleton::operator()(osg::Node* node, osg::NodeVisitor* nv)
         if (_needValidate && skeleton)
         {
             ValidateSkeletonVisitor visitor;
-            node->accept(visitor);
+            for (unsigned int i = 0; i < skeleton->getNumChildren(); ++i)
+            {
+                osg::Node* child = skeleton->getChild(i);
+                child->accept(visitor);
+            }
             _needValidate = false;
         }
-        if (skeleton->needToComputeBindMatrix())
-            skeleton->computeBindMatrix();
     }
     traverse(node,nv);
 }
@@ -88,10 +91,4 @@ void Skeleton::UpdateSkeleton::operator()(osg::Node* node, osg::NodeVisitor* nv)
 void Skeleton::setDefaultUpdateCallback()
 {
     setUpdateCallback(new Skeleton::UpdateSkeleton );
-}
-
-void Skeleton::computeBindMatrix() 
-{
-    _invBindInSkeletonSpace = osg::Matrix::inverse(_bindInBoneSpace); 
-    _needToRecomputeBindMatrix = false; 
 }

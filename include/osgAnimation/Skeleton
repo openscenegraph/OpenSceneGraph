@@ -16,12 +16,12 @@
 #define OSGANIMATION_SKELETON 1
 
 #include <osgAnimation/Export>
-#include <osgAnimation/Bone>
+#include <osg/MatrixTransform>
 
 namespace osgAnimation 
 {
 
-    class OSGANIMATION_EXPORT Skeleton : public Bone
+    class OSGANIMATION_EXPORT Skeleton : public osg::MatrixTransform
     {
     public:
         META_Node(osgAnimation, Skeleton);
@@ -40,9 +40,8 @@ namespace osgAnimation
 
         Skeleton();
         Skeleton(const Skeleton&, const osg::CopyOp&);
-
         void setDefaultUpdateCallback();
-        void computeBindMatrix();
+
     };
 
 }

@@ -14,9 +14,18 @@
 
 #include <osgAnimation/RigTransformHardware>
 #include <osgAnimation/RigGeometry>
+#include <osgAnimation/BoneMapVisitor>
 #include <sstream>
 
 using namespace osgAnimation;
+
+
+RigTransformHardware::RigTransformHardware()
+{
+    _needInit = true;
+    _bonesPerVertex = 0;
+    _nbVertexes = 0;
+}
 
 osg::Vec4Array* RigTransformHardware::getVertexAttrib(int index)
 {
@@ -67,12 +76,12 @@ bool RigTransformHardware::createPalette(int nbVertexes, BoneMap boneMap, const 
     vertexIndexWeight.resize(nbVertexes);
 
     int maxBonePerVertex = 0;
-    for (VertexInfluenceSet::VertexIndexToBoneWeightMap::const_iterator it = vertexIndexToBoneWeightMap.begin(); it != vertexIndexToBoneWeightMap.end(); it++)
+    for (VertexInfluenceSet::VertexIndexToBoneWeightMap::const_iterator it = vertexIndexToBoneWeightMap.begin(); it != vertexIndexToBoneWeightMap.end(); ++it)
     {
         int vertexIndex = it->first;
         const VertexInfluenceSet::BoneWeightList& boneWeightList = it->second;
         int bonesForThisVertex = 0;
-        for (VertexInfluenceSet::BoneWeightList::const_iterator it = boneWeightList.begin(); it != boneWeightList.end(); it++)
+        for (VertexInfluenceSet::BoneWeightList::const_iterator it = boneWeightList.begin(); it != boneWeightList.end(); ++it)
         {
             const VertexInfluenceSet::BoneWeight& bw = *it;
             if (boneNameCountMap.find(bw.getBoneName()) != boneNameCountMap.end())
@@ -85,7 +94,7 @@ bool RigTransformHardware::createPalette(int nbVertexes, BoneMap boneMap, const 
             {
                 if (boneMap.find(bw.getBoneName()) == boneMap.end())
                 {
-                    osg::notify(osg::WARN) << "RigTransformHardware::createPalette can't find bone " << bw.getBoneName() << " skip this influence" << std::endl;
+                    osg::notify(osg::INFO) << "RigTransformHardware::createPalette can't find bone " << bw.getBoneName() << " skip this influence" << std::endl;
                     continue;
                 }
                 boneNameCountMap[bw.getBoneName()] = 1; // for stats
@@ -104,7 +113,7 @@ bool RigTransformHardware::createPalette(int nbVertexes, BoneMap boneMap, const 
     osg::notify(osg::INFO) << "RigTransformHardware::createPalette maximum number of bone per vertex is " << maxBonePerVertex << std::endl;
     osg::notify(osg::INFO) << "RigTransformHardware::createPalette matrix palette has " << boneNameCountMap.size() << " entries" << std::endl;
 
-    for (BoneNameCountMap::iterator it = boneNameCountMap.begin(); it != boneNameCountMap.end(); it++)
+    for (BoneNameCountMap::iterator it = boneNameCountMap.begin(); it != boneNameCountMap.end(); ++it)
     {
         osg::notify(osg::INFO) << "RigTransformHardware::createPalette Bone " << it->first << " is used " << it->second << " times" << std::endl;
     }
@@ -186,20 +195,30 @@ void RigTransformHardware::setShader(osg::Shader* shader)
 
 bool RigTransformHardware::init(RigGeometry& geom)
 {
-    osg::Vec3Array* pos = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
-    if (!pos) {
+    osg::Geometry& source = *geom.getSourceGeometry();
+    osg::Vec3Array* positionSrc = dynamic_cast<osg::Vec3Array*>(source.getVertexArray());
+    if (!positionSrc) 
+    {
         osg::notify(osg::WARN) << "RigTransformHardware no vertex array in the geometry " << geom.getName() << std::endl;
         return false;
     }
 
-    if (!geom.getSkeleton()) {
-        osg::notify(osg::WARN) << "RigTransformHardware no skeleting set in geometry " << geom.getName() << std::endl;
+    if (!geom.getSkeleton()) 
+    {
+        osg::notify(osg::WARN) << "RigTransformHardware no skeleton set in geometry " << geom.getName() << std::endl;
         return false;
     }
 
-    Bone::BoneMap bm = geom.getSkeleton()->getBoneMap();
 
-    if (!createPalette(pos->size(),bm, geom.getVertexInfluenceSet().getVertexToBoneList()))
+    // copy shallow from source geometry to rig
+    geom.copyFrom(source);
+
+
+    BoneMapVisitor mapVisitor;
+    geom.getSkeleton()->accept(mapVisitor);
+    BoneMap bm = mapVisitor.getBoneMap();
+
+    if (!createPalette(positionSrc->size(),bm, geom.getVertexInfluenceSet().getVertexToBoneList()))
         return false;
 
     osg::ref_ptr<osg::Program> program = new osg::Program;
@@ -244,7 +263,10 @@ bool RigTransformHardware::init(RigGeometry& geom)
     _needInit = false;
     return true;
 }
-void RigTransformHardware::update(RigGeometry& geom)
+void RigTransformHardware::operator()(RigGeometry& geom)
 {
+    if (_needInit)
+        if (!init(geom))
+            return;
     computeMatrixPaletteUniform(geom.getMatrixFromSkeletonToGeometry(), geom.getInvMatrixFromSkeletonToGeometry());
 }

@@ -36,7 +36,7 @@ Action::Callback* Action::getFrameCallback(unsigned int frame)
 void Action::removeCallback(Callback* cb)
 {
     std::vector<unsigned int> keyToRemove;
-    for (FrameCallback::iterator it = _framesCallback.begin(); it != _framesCallback.end(); it++) 
+    for (FrameCallback::iterator it = _framesCallback.begin(); it != _framesCallback.end(); ++it) 
     {
         if (it->second.get())
         {
@@ -52,7 +52,7 @@ void Action::removeCallback(Callback* cb)
             }
         }
     }
-    for (std::vector<unsigned int>::iterator it = keyToRemove.begin(); it != keyToRemove.end(); it++)
+    for (std::vector<unsigned int>::iterator it = keyToRemove.begin(); it != keyToRemove.end(); ++it)
         _framesCallback.erase(*it);
 }
 

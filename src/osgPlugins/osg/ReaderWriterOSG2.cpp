@@ -21,17 +21,49 @@
 
 using namespace osgDB;
 
-bool checkBinary( std::istream* fin )
+#define CATCH_EXCEPTION(s) \
+    if (s.getException()) return (s.getException()->getError() + " At " + s.getException()->getField());
+
+InputIterator* readInputIterator( std::istream& fin, const Options* options )
 {
-    unsigned int headerLow = 0, headerHigh = 0;
-    fin->read( (char*)&headerLow, INT_SIZE );
-    fin->read( (char*)&headerHigh, INT_SIZE );
-    if ( headerLow!=OSG_HEADER_LOW || headerHigh!=OSG_HEADER_HIGH )
+    bool extensionIsAscii = false;
+    if ( options && options->getOptionString().find("Ascii")!=std::string::npos )
+        extensionIsAscii = true;
+    
+    if ( !extensionIsAscii )
     {
-        fin->seekg( 0, std::ios::beg );
-        return false;
+        unsigned int headerLow = 0, headerHigh = 0;
+        fin.read( (char*)&headerLow, INT_SIZE );
+        fin.read( (char*)&headerHigh, INT_SIZE );
+        if ( headerLow==OSG_HEADER_LOW && headerHigh==OSG_HEADER_HIGH )
+        {
+            return new BinaryInputIterator(&fin);
+        }
+        fin.seekg( 0, std::ios::beg );
     }
-    return true;
+    
+    std::string header; fin >> header;
+    if ( header=="#Ascii" )
+    {
+        return new AsciiInputIterator(&fin);
+    }
+    return NULL;
+}
+
+OutputIterator* writeInputIterator( std::ostream& fout, const Options* options )
+{
+    if ( options && options->getOptionString().find("Ascii")!=std::string::npos )
+    {
+        fout << std::string("#Ascii") << ' ';
+        return new AsciiOutputIterator(&fout);
+    }
+    else
+    {
+        unsigned int low = OSG_HEADER_LOW, high = OSG_HEADER_HIGH;
+        fout.write( (char*)&low, INT_SIZE );
+        fout.write( (char*)&high, INT_SIZE );
+        return new BinaryOutputIterator(&fout);
+    }
 }
 
 class ReaderWriterOSG2 : public osgDB::ReaderWriter
@@ -43,7 +75,8 @@ public:
         supportsExtension( "osgt", "OpenSceneGraph extendable ascii format" );
         supportsExtension( "osgb", "OpenSceneGraph extendable binary format" );
         
-        supportsOption( "Ascii", "Import/Export option: Force the writer export ascii file" );
+        supportsOption( "Ascii", "Import/Export option: Force reading/writing ascii file" );
+        supportsOption( "ForceReadingImage", "Import option: Load an empty image instead if required file missed" );
         supportsOption( "SchemaFile=<file>", "Import/Export option: Use/Record a ascii schema file" );
         supportsOption( "Compressor=<name>", "Export option: Use an inbuilt or user-defined compressor" );
         supportsOption( "WriteImageHint=<hint>", "Export option: Hint of writing image to stream: "
@@ -82,6 +115,7 @@ public:
         osg::ref_ptr<Options> local_opt = options ?
             static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
         local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
+        if ( ext=="osgt" ) local_opt->setOptionString( local_opt->getOptionString() + " Ascii" );
         
         osgDB::ifstream istream( fileName.c_str(), std::ios::out|std::ios::binary );
         return readImage( istream, local_opt.get() );
@@ -89,25 +123,18 @@ public:
     
     virtual ReadResult readImage( std::istream& fin, const Options* options ) const
     {
-        try
+        osg::ref_ptr<InputIterator> ii = readInputIterator(fin, options);
+        if ( !ii ) return ReadResult::FILE_NOT_HANDLED;
+        
+        InputStream is( options );
+        if ( is.start(ii.get())!=InputStream::READ_IMAGE )
         {
-            InputStream is( options );
-            
-            InputIterator* ii = NULL;
-            if ( !checkBinary(&fin) )
-                ii = new AsciiInputIterator(&fin);
-            else
-                ii = new BinaryInputIterator(&fin);
-            
-            if ( is.start(ii)!=InputStream::READ_IMAGE )
-                return ReadResult::FILE_NOT_HANDLED;
-            is.decompress();
-            return is.readImage();
+            CATCH_EXCEPTION(is);
+            return ReadResult::FILE_NOT_HANDLED;
         }
-        catch ( InputException e )
-        {
-            return e.getError() + " At " + e.getField();
-        }
+        is.decompress(); CATCH_EXCEPTION(is);
+        osg::Image* image = is.readImage(); CATCH_EXCEPTION(is);
+        return image;
     }
     
     virtual ReadResult readNode( const std::string& file, const Options* options ) const
@@ -120,6 +147,7 @@ public:
         osg::ref_ptr<Options> local_opt = options ?
             static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
         local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
+        if ( ext=="osgt" ) local_opt->setOptionString( local_opt->getOptionString() + " Ascii" );
         
         osgDB::ifstream istream( fileName.c_str(), std::ios::out|std::ios::binary );
         return readNode( istream, local_opt.get() );
@@ -127,25 +155,19 @@ public:
     
     virtual ReadResult readNode( std::istream& fin, const Options* options ) const
     {
-        try
+        osg::ref_ptr<InputIterator> ii = readInputIterator(fin, options);
+        if ( !ii ) return ReadResult::FILE_NOT_HANDLED;
+        
+        InputStream is( options );
+        if ( is.start(ii.get())!=InputStream::READ_SCENE )
         {
-            InputStream is( options );
-            
-            InputIterator* ii = NULL;
-            if ( !checkBinary(&fin) )
-                ii = new AsciiInputIterator(&fin);
-            else
-                ii = new BinaryInputIterator(&fin);
-            
-            if ( is.start(ii)!=InputStream::READ_SCENE )
-                return ReadResult::FILE_NOT_HANDLED;
-            is.decompress();
-            return dynamic_cast<osg::Node*>( is.readObject() );
+            CATCH_EXCEPTION(is);
+            return ReadResult::FILE_NOT_HANDLED;
         }
-        catch ( InputException e )
-        {
-            return e.getError() + " At " + e.getField();
-        }
+        
+        is.decompress(); CATCH_EXCEPTION(is);
+        osg::Node* node = dynamic_cast<osg::Node*>(is.readObject()); CATCH_EXCEPTION(is);
+        return node;
     }
     
     virtual WriteResult writeObject( const osg::Object& object, const std::string& fileName, const Options* options ) const
@@ -189,29 +211,22 @@ public:
     
     virtual WriteResult writeImage( const osg::Image& image, std::ostream& fout, const Options* options ) const
     {
-        try
+        osg::ref_ptr<OutputIterator> oi = writeInputIterator(fout, options);
+        
+        OutputStream os( options );
+        os.start( oi.get(), OutputStream::WRITE_IMAGE ); CATCH_EXCEPTION(os);
+        os.writeImage( &image ); CATCH_EXCEPTION(os);
+        os.compress( &fout ); CATCH_EXCEPTION(os);
+        
+        if ( !os.getSchemaName().empty() )
         {
-            OutputStream os( options );
-            
-            osgDB::OutputIterator* oi = NULL;
-            if ( options && options->getOptionString().find("Ascii")!=std::string::npos )
-                oi = new AsciiOutputIterator(&fout);
-            else
-                oi = new BinaryOutputIterator(&fout);
-            
-            os.start( oi, OutputStream::WRITE_IMAGE );
-            os.writeImage( &image );
-            os.compress( &fout );
-            
-            if ( fout.fail() ) return WriteResult::ERROR_IN_WRITING_FILE;
-            return WriteResult::FILE_SAVED;
+            osgDB::ofstream schemaStream( os.getSchemaName().c_str(), std::ios::out );
+            if ( !schemaStream.fail() ) os.writeSchema( schemaStream );
+            schemaStream.close();
         }
-        catch ( OutputException e )
-        {
-            osg::notify(osg::WARN) << "ReaderWriterOSG2::writeImage(): " << e.getError()
-                                   << " At " << e.getField() << std::endl;
-        }
-        return WriteResult::FILE_NOT_HANDLED;
+        
+        if ( fout.fail() ) return WriteResult::ERROR_IN_WRITING_FILE;
+        return WriteResult::FILE_SAVED;
     }
     
     virtual WriteResult writeNode( const osg::Node& node, const std::string& fileName, const Options* options ) const
@@ -235,29 +250,22 @@ public:
     
     virtual WriteResult writeNode( const osg::Node& node, std::ostream& fout, const Options* options ) const
     {
-        try
+        osg::ref_ptr<OutputIterator> oi = writeInputIterator(fout, options);
+        
+        OutputStream os( options );
+        os.start( oi.get(), OutputStream::WRITE_SCENE ); CATCH_EXCEPTION(os);
+        os.writeObject( &node ); CATCH_EXCEPTION(os);
+        os.compress( &fout ); CATCH_EXCEPTION(os);
+        
+        if ( !os.getSchemaName().empty() )
         {
-            OutputStream os( options );
-            
-            osgDB::OutputIterator* oi = NULL;
-            if ( options && options->getOptionString().find("Ascii")!=std::string::npos )
-                oi = new AsciiOutputIterator(&fout);
-            else
-                oi = new BinaryOutputIterator(&fout);
-            
-            os.start( oi, OutputStream::WRITE_SCENE );
-            os.writeObject( &node );
-            os.compress( &fout );
-            
-            if ( fout.fail() ) return WriteResult::ERROR_IN_WRITING_FILE;
-            return WriteResult::FILE_SAVED;
+            osgDB::ofstream schemaStream( os.getSchemaName().c_str(), std::ios::out );
+            if ( !schemaStream.fail() ) os.writeSchema( schemaStream );
+            schemaStream.close();
         }
-        catch ( OutputException e )
-        {
-            osg::notify(osg::WARN) << "ReaderWriterOSG2::writeNode(): " << e.getError()
-                                   << " At " << e.getField() << std::endl;
-        }
-        return WriteResult::FILE_NOT_HANDLED;
+        
+        if ( fout.fail() ) return WriteResult::ERROR_IN_WRITING_FILE;
+        return WriteResult::FILE_SAVED;
     }
 };
 

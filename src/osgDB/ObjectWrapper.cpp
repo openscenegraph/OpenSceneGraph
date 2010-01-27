@@ -448,7 +448,11 @@ ObjectWrapper* ObjectWrapperManager::findWrapper( const std::string& name )
         if ( osgDB::Registry::instance()->loadLibrary(nodeKitLib)==osgDB::Registry::LOADED )
             return findWrapper(name);
 
-        std::string pluginLib = osgDB::Registry::instance()->createLibraryNameForExtension(libName);
+        std::string pluginLib = osgDB::Registry::instance()->createLibraryNameForExtension(std::string("serializers_")+libName);
+        if ( osgDB::Registry::instance()->loadLibrary(pluginLib)==osgDB::Registry::LOADED )
+            return findWrapper(name);
+
+        pluginLib = osgDB::Registry::instance()->createLibraryNameForExtension(libName);
         if ( osgDB::Registry::instance()->loadLibrary(pluginLib)==osgDB::Registry::LOADED )
             return findWrapper(name);
     }
@@ -491,7 +495,11 @@ BaseCompressor* ObjectWrapperManager::findCompressor( const std::string& name )
         if ( osgDB::Registry::instance()->loadLibrary(nodeKitLib)==osgDB::Registry::LOADED )
             return findCompressor(name);
 
-        std::string pluginLib = osgDB::Registry::instance()->createLibraryNameForExtension(libName);
+        std::string pluginLib = osgDB::Registry::instance()->createLibraryNameForExtension(std::string("compressor_")+libName);
+        if ( osgDB::Registry::instance()->loadLibrary(pluginLib)==osgDB::Registry::LOADED )
+            return findCompressor(name);
+
+        pluginLib = osgDB::Registry::instance()->createLibraryNameForExtension(libName);
         if ( osgDB::Registry::instance()->loadLibrary(pluginLib)==osgDB::Registry::LOADED )
             return findCompressor(name);
     }

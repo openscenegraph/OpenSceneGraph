@@ -10,28 +10,22 @@ static bool checkInitialBound( const osg::Drawable& drawable )
 
 static bool readInitialBound( osgDB::InputStream& is, osg::Drawable& drawable )
 {
-    bool valid = false; is >> valid;
-    if ( valid )
-    {
-        osg::Vec3d min, max;
-        is >> osgDB::BEGIN_BRACKET >> osgDB::PROPERTY("Minimum") >> min;
-        is >> osgDB::PROPERTY("Maximum") >> max >> osgDB::END_BRACKET;
-        drawable.setInitialBound( osg::BoundingBox(min, max) );
-    }
+    osg::Vec3d min, max;
+    is >> osgDB::BEGIN_BRACKET;
+    is >> osgDB::PROPERTY("Minimum") >> min;
+    is >> osgDB::PROPERTY("Maximum") >> max;
+    is >> osgDB::END_BRACKET;
+    drawable.setInitialBound( osg::BoundingBox(min, max) );
     return true;
 }
 
 static bool writeInitialBound( osgDB::OutputStream& os, const osg::Drawable& drawable )
 {
     const osg::BoundingBox& bb = drawable.getInitialBound();
-    os << bb.valid();
-    if ( bb.valid() )
-    {
-        os << osgDB::BEGIN_BRACKET << std::endl;
-        os << osgDB::PROPERTY("Minimum") << osg::Vec3d(bb._min) << std::endl;
-        os << osgDB::PROPERTY("Maximum") << osg::Vec3d(bb._max) << std::endl;
-        os << osgDB::END_BRACKET;
-    }
+    os << osgDB::BEGIN_BRACKET << std::endl;
+    os << osgDB::PROPERTY("Minimum") << osg::Vec3d(bb._min) << std::endl;
+    os << osgDB::PROPERTY("Maximum") << osg::Vec3d(bb._max) << std::endl;
+    os << osgDB::END_BRACKET;
     os << std::endl;
     return true;
 }

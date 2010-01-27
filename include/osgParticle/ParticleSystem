@@ -123,6 +123,7 @@ namespace osgParticle
         inline void setDoublePassRendering(bool v);
         
         /// Return true if the particle system is frozen.
+        bool getFrozen() const { return _frozen; }
         inline bool isFrozen() const;
         
         /**    Set or reset the <I>frozen</I> state.

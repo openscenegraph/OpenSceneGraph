@@ -78,64 +78,64 @@ public:
     virtual void readBool( bool& b )
     {
         char c = 0;
-        _in->read( &c, CHAR_SIZE ); checkStream();
+        _in->read( &c, CHAR_SIZE );
         b = (c!=0);
     }
     
     virtual void readChar( char& c )
-    { _in->read( &c, CHAR_SIZE ); checkStream(); }
+    { _in->read( &c, CHAR_SIZE ); }
     
     virtual void readSChar( signed char& c )
-    { _in->read( (char*)&c, CHAR_SIZE ); checkStream(); }
+    { _in->read( (char*)&c, CHAR_SIZE ); }
     
     virtual void readUChar( unsigned char& c )
-    { _in->read( (char*)&c, CHAR_SIZE ); checkStream(); }
+    { _in->read( (char*)&c, CHAR_SIZE ); }
     
     virtual void readShort( short& s )
     {
-        _in->read( (char*)&s, SHORT_SIZE ); checkStream();
+        _in->read( (char*)&s, SHORT_SIZE );
         if ( _byteSwap ) osg::swapBytes( (char*)&s, SHORT_SIZE );
     }
     
     virtual void readUShort( unsigned short& s )
     {
-        _in->read( (char*)&s, SHORT_SIZE ); checkStream();
+        _in->read( (char*)&s, SHORT_SIZE );
         if ( _byteSwap ) osg::swapBytes( (char*)&s, SHORT_SIZE );
     }
     
     virtual void readInt( int& i )
     {
-        _in->read( (char*)&i, INT_SIZE ); checkStream();
+        _in->read( (char*)&i, INT_SIZE );
         if ( _byteSwap ) osg::swapBytes( (char*)&i, INT_SIZE );
     }
     
     virtual void readUInt( unsigned int& i )
     {
-        _in->read( (char*)&i, INT_SIZE ); checkStream();
+        _in->read( (char*)&i, INT_SIZE );
         if ( _byteSwap ) osg::swapBytes( (char*)&i, INT_SIZE );
     }
     
     virtual void readLong( long& l )
     {
-        _in->read( (char*)&l, LONG_SIZE ); checkStream();
+        _in->read( (char*)&l, LONG_SIZE );
         if ( _byteSwap ) osg::swapBytes( (char*)&l, LONG_SIZE );
     }
     
     virtual void readULong( unsigned long& l )
     {
-        _in->read( (char*)&l, LONG_SIZE ); checkStream();
+        _in->read( (char*)&l, LONG_SIZE );
         if ( _byteSwap ) osg::swapBytes( (char*)&l, LONG_SIZE );
     }
     
     virtual void readFloat( float& f )
     {
-        _in->read( (char*)&f, FLOAT_SIZE ); checkStream();
+        _in->read( (char*)&f, FLOAT_SIZE );
         if ( _byteSwap ) osg::swapBytes( (char*)&f, FLOAT_SIZE );
     }
     
     virtual void readDouble( double& d )
     {
-        _in->read( (char*)&d, DOUBLE_SIZE ); checkStream();
+        _in->read( (char*)&d, DOUBLE_SIZE );
         if ( _byteSwap ) osg::swapBytes( (char*)&d, DOUBLE_SIZE );
     }
     
@@ -145,7 +145,7 @@ public:
         if ( size )
         {
             s.resize( size );
-            _in->read( (char*)s.c_str(), size ); checkStream();
+            _in->read( (char*)s.c_str(), size );
         }
     }
     
@@ -156,7 +156,7 @@ public:
     virtual void readGLenum( osgDB::ObjectGLenum& value )
     {
         GLenum e = 0;
-        _in->read( (char*)&e, GLENUM_SIZE ); checkStream();
+        _in->read( (char*)&e, GLENUM_SIZE );
         if ( _byteSwap ) osg::swapBytes( (char*)&e, GLENUM_SIZE );
         value.set( e );
     }
@@ -166,7 +166,7 @@ public:
         int value = 0;
         if ( prop._mapProperty )
         {
-            _in->read( (char*)&value, INT_SIZE ); checkStream();
+            _in->read( (char*)&value, INT_SIZE );
             if ( _byteSwap ) osg::swapBytes( (char*)&value, INT_SIZE );
         }
         prop.set( value );
@@ -175,7 +175,7 @@ public:
     virtual void readMark( osgDB::ObjectMark& mark ) {}
     
     virtual void readCharArray( char* s, unsigned int size )
-    { if ( size>0 ) _in->read( s, size ); checkStream(); }
+    { if ( size>0 ) _in->read( s, size ); }
     
 protected:
     int _byteSwap;

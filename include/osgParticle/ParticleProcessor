@@ -58,6 +58,7 @@ namespace osgParticle
         inline void setReferenceFrame(ReferenceFrame rf);
         
         /// Get whether this processor is enabled or not.
+        bool getEnabled() const { return _enabled; }
         inline bool isEnabled() const;
         
         /// Set whether this processor is enabled or not.
@@ -76,6 +77,7 @@ namespace osgParticle
         inline void setEndless(bool type);
         
         /// Check whether this processor is endless.
+        bool getEndless() const { return _endless; }
         inline bool isEndless() const;
         
         /// Set the lifetime of this processor.

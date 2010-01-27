@@ -8,7 +8,7 @@
 namespace osgDB
 {
 
-class OSGDB_EXPORT OutputIterator
+class OSGDB_EXPORT OutputIterator : public osg::Referenced
 {
 public:
     OutputIterator() : _out(0) {}
@@ -44,7 +44,7 @@ protected:
     std::ostream* _out;
 };
 
-class OSGDB_EXPORT InputIterator
+class OSGDB_EXPORT InputIterator : public osg::Referenced
 {
 public:
     InputIterator() : _in(0), _failed(false) {}
@@ -54,7 +54,9 @@ public:
     std::istream* getStream() { return _in; }
     const std::istream* getStream() const { return _in; }
     
+    void checkStream() const { if (_in->rdstate()&_in->failbit) _failed = true; }
     bool isFailed() const { return _failed; }
+    
     virtual bool isBinary() const = 0;
     
     virtual void readBool( bool& b ) = 0;
@@ -79,9 +81,6 @@ public:
     virtual void readCharArray( char* s, unsigned int size ) = 0;
     
 protected:
-    void checkStream() const
-    { if (_in->rdstate()&_in->failbit) _failed = true; }
-    
     std::istream* _in;
     mutable bool _failed;
 };

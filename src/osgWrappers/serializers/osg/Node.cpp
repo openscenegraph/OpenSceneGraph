@@ -13,10 +13,10 @@ static bool readInitialBound( osgDB::InputStream& is, osg::Node& node )
 {
     osg::Vec3d center;
     double radius;
-    bool valid;
-    is >> valid >> osgDB::BEGIN_BRACKET;
+    is >> osgDB::BEGIN_BRACKET;
     is >> osgDB::PROPERTY("Center") >> center;
-    is >> osgDB::PROPERTY("Radius") >> radius >> osgDB::END_BRACKET;
+    is >> osgDB::PROPERTY("Radius") >> radius;
+    is >> osgDB::END_BRACKET;
     node.setInitialBound( osg::BoundingSphere(center, radius) );
     return true;
 }
@@ -24,7 +24,7 @@ static bool readInitialBound( osgDB::InputStream& is, osg::Node& node )
 static bool writeInitialBound( osgDB::OutputStream& os, const osg::Node& node )
 {
     const osg::BoundingSphere& bs = node.getInitialBound();
-    os << bs.valid() << osgDB::BEGIN_BRACKET << std::endl;
+    os << osgDB::BEGIN_BRACKET << std::endl;
     os << osgDB::PROPERTY("Center") << osg::Vec3d(bs.center()) << std::endl;
     os << osgDB::PROPERTY("Radius") << double(bs.radius()) << std::endl;
     os << osgDB::END_BRACKET << std::endl;

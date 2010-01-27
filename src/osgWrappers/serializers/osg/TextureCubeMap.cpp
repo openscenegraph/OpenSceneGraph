@@ -18,8 +18,9 @@
         os << (image!=NULL); \
         if ( image!=NULL ) { \
             os << osgDB::BEGIN_BRACKET << std::endl << image; \
-            os << osgDB::END_BRACKET << std::endl; \
+            os << osgDB::END_BRACKET; \
         } \
+        os << std::endl; \
         return true; \
     }
 

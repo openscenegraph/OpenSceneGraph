@@ -144,10 +144,15 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	          __void__setDoublePassRendering__bool,
 	          "Set the double pass rendering flag. ",
 	          "Double pass rendering avoids overdraw problems between particle systems and other opaque objects. If you can render all the particle systems after the opaque objects, then double pass is not necessary and can be turned off (best choice). If you set the default attributes with setDefaultAttributes, then the particle system will fall into a transparent bin. ");
+	I_Method0(bool, getFrozen,
+	          Properties::NON_VIRTUAL,
+	          __bool__getFrozen,
+	          "Return true if the particle system is frozen. ",
+	          "");
 	I_Method0(bool, isFrozen,
 	          Properties::NON_VIRTUAL,
 	          __bool__isFrozen,
-	          "Return true if the particle system is frozen. ",
+	          "",
 	          "");
 	I_Method1(void, setFrozen, IN, bool, v,
 	          Properties::NON_VIRTUAL,
@@ -290,7 +295,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	                 __bool__getFreezeOnCull, 
 	                 __void__setFreezeOnCull__bool);
 	I_SimpleProperty(bool, Frozen, 
-	                 0, 
+	                 __bool__getFrozen, 
 	                 __void__setFrozen__bool);
 	I_SimpleProperty(int, LastFrameNumber, 
 	                 __int__getLastFrameNumber, 

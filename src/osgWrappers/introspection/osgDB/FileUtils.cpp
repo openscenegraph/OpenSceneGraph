@@ -29,3 +29,15 @@ END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::vector< std::string >, osgDB::DirectoryContents)
 
+BEGIN_ENUM_REFLECTOR(osgDB::FileOpResult::Value)
+	I_DeclaringFile("osgDB/FileUtils");
+	I_EnumLabel(osgDB::FileOpResult::OK);
+	I_EnumLabel(osgDB::FileOpResult::SOURCE_EQUALS_DESTINATION);
+	I_EnumLabel(osgDB::FileOpResult::BAD_ARGUMENT);
+	I_EnumLabel(osgDB::FileOpResult::SOURCE_MISSING);
+	I_EnumLabel(osgDB::FileOpResult::SOURCE_NOT_OPENED);
+	I_EnumLabel(osgDB::FileOpResult::DESTINATION_NOT_OPENED);
+	I_EnumLabel(osgDB::FileOpResult::READ_ERROR);
+	I_EnumLabel(osgDB::FileOpResult::WRITE_ERROR);
+END_REFLECTOR
+

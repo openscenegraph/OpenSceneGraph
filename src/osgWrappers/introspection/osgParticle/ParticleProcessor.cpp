@@ -73,10 +73,15 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleProcessor)
 	          __void__setReferenceFrame__ReferenceFrame,
 	          "Set the reference frame. ",
 	          "");
+	I_Method0(bool, getEnabled,
+	          Properties::NON_VIRTUAL,
+	          __bool__getEnabled,
+	          "Get whether this processor is enabled or not. ",
+	          "");
 	I_Method0(bool, isEnabled,
 	          Properties::NON_VIRTUAL,
 	          __bool__isEnabled,
-	          "Get whether this processor is enabled or not. ",
+	          "",
 	          "");
 	I_Method1(void, setEnabled, IN, bool, v,
 	          Properties::NON_VIRTUAL,
@@ -103,10 +108,15 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleProcessor)
 	          __void__setEndless__bool,
 	          "Set the endless flag of this processor. ",
 	          "");
+	I_Method0(bool, getEndless,
+	          Properties::NON_VIRTUAL,
+	          __bool__getEndless,
+	          "Check whether this processor is endless. ",
+	          "");
 	I_Method0(bool, isEndless,
 	          Properties::NON_VIRTUAL,
 	          __bool__isEndless,
-	          "Check whether this processor is endless. ",
+	          "",
 	          "");
 	I_Method1(void, setLifeTime, IN, double, t,
 	          Properties::NON_VIRTUAL,
@@ -213,10 +223,10 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleProcessor)
 	                 __double__getCurrentTime, 
 	                 __void__setCurrentTime__double);
 	I_SimpleProperty(bool, Enabled, 
-	                 0, 
+	                 __bool__getEnabled, 
 	                 __void__setEnabled__bool);
 	I_SimpleProperty(bool, Endless, 
-	                 0, 
+	                 __bool__getEndless, 
 	                 __void__setEndless__bool);
 	I_SimpleProperty(double, LifeTime, 
 	                 __double__getLifeTime, 

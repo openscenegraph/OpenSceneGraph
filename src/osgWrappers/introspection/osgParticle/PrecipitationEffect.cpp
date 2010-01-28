@@ -80,9 +80,9 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect)
 	          __void__setMaximumParticleDensity__float,
 	          "",
 	          "");
-	I_Method0(float, setMaximumParticleDensity,
+	I_Method0(float, getMaximumParticleDensity,
 	          Properties::NON_VIRTUAL,
-	          __float__setMaximumParticleDensity,
+	          __float__getMaximumParticleDensity,
 	          "",
 	          "");
 	I_Method1(void, setWind, IN, const osg::Vec3 &, wind,
@@ -262,7 +262,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect)
 	                 __osg_StateSet_P1__getLineStateSet, 
 	                 0);
 	I_SimpleProperty(float, MaximumParticleDensity, 
-	                 0, 
+	                 __float__getMaximumParticleDensity, 
 	                 __void__setMaximumParticleDensity__float);
 	I_SimpleProperty(float, NearTransition, 
 	                 __float__getNearTransition, 

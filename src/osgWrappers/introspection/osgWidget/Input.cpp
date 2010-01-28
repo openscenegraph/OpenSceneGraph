@@ -62,6 +62,16 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Input)
 	          __bool__keyDown__int__int__C5_WindowManager_P1,
 	          "",
 	          "");
+	I_Method3(bool, mouseDrag, IN, double, x, IN, double, x, IN, const osgWidget::WindowManager *, x,
+	          Properties::VIRTUAL,
+	          __bool__mouseDrag__double__double__C5_WindowManager_P1,
+	          "",
+	          "");
+	I_Method3(bool, mousePush, IN, double, x, IN, double, y, IN, const osgWidget::WindowManager *, x,
+	          Properties::VIRTUAL,
+	          __bool__mousePush__double__double__C5_WindowManager_P1,
+	          "",
+	          "");
 	I_Method1(void, setCursor, IN, osgWidget::Widget *, x,
 	          Properties::NON_VIRTUAL,
 	          __void__setCursor__Widget_P1,

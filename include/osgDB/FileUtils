@@ -23,32 +23,32 @@
 
 namespace osgDB {
 
+/** Overload of the standard fopen function. If OSG_USE_UTF8_FILENAME is defined,
+  * filename will be expanded from UTF8 to UTF16 and _wfopen will be called. */
+extern OSGDB_EXPORT FILE* fopen(const char* filename, const char* mode);
+
+/** Make a new directory.  Returns true if directory exists or was created. */
+extern OSGDB_EXPORT bool makeDirectory( const std::string &directoryPath );
+
+/** Make a new directory for a given file. */
+extern OSGDB_EXPORT bool makeDirectoryForFile( const std::string &filePath );
+    
+/** Get current working directory. */
+extern OSGDB_EXPORT std::string getCurrentWorkingDirectory( void );
+
+/** Set current working directory. */
+extern OSGDB_EXPORT bool setCurrentWorkingDirectory( const std::string &newCurrentWorkingDirectory );
+
+
+/** return true if a file exists. */
+extern OSGDB_EXPORT bool fileExists(const std::string& filename);
+
 enum FileType
 {
     FILE_NOT_FOUND,
     REGULAR_FILE,
     DIRECTORY
 };
-
-// Overload of the standard fopen function. If OSG_USE_UTF8_FILENAME is defined,
-// filename will be expanded from UTF8 to UTF16 and _wfopen will be called.
-extern OSGDB_EXPORT FILE* fopen(const char* filename, const char* mode);
-
-// Make a new directory.  Returns true if directory exists or was created.
-extern OSGDB_EXPORT bool makeDirectory( const std::string &directoryPath );
-
-// Make a new directory for a given file.
-extern OSGDB_EXPORT bool makeDirectoryForFile( const std::string &filePath );
-    
-// Get current working directory.
-extern OSGDB_EXPORT std::string getCurrentWorkingDirectory( void );
-
-// Set current working directory.
-extern OSGDB_EXPORT bool setCurrentWorkingDirectory( const std::string &newCurrentWorkingDirectory );
-
-
-/** return true if a file exists. */
-extern OSGDB_EXPORT bool fileExists(const std::string& filename);
 
 /** return type of file. */
 extern OSGDB_EXPORT FileType fileType(const std::string& filename);
@@ -69,6 +69,29 @@ typedef std::vector<std::string> DirectoryContents;
 /** return the contents of a directory.
   * returns an empty array on any error.*/
 extern OSGDB_EXPORT DirectoryContents getDirectoryContents(const std::string& dirName);
+
+
+
+namespace FileOpResult {
+    enum Value
+    {
+        OK,                          /**< Operation done. */
+        SOURCE_EQUALS_DESTINATION,   /**< Operation is useless (source == destination). */
+        BAD_ARGUMENT,
+        SOURCE_MISSING,              /**< Source file doesn't exist. */
+        SOURCE_NOT_OPENED,           /**< Error opening source file. */
+        DESTINATION_NOT_OPENED,      /**< Error opening destination file. */
+        READ_ERROR,
+        WRITE_ERROR
+    };
+}
+
+/** Copy a file to another location, overwriting if necessary.
+  * You must provide full path for both source and destination.
+  * \return true on success, or if source and destination are the same.
+  * \todo Replace the implementation with filesystem functions from TR2 when available.
+*/
+extern OSGDB_EXPORT FileOpResult::Value copyFile(const std::string & source, const std::string & destination);
 
 
 
@@ -102,6 +125,6 @@ extern OSGDB_EXPORT void convertStringPathIntoFilePathList(const std::string& pa
 extern OSGDB_EXPORT void appendPlatformSpecificLibraryFilePaths(FilePathList& filepath);
 extern OSGDB_EXPORT void appendPlatformSpecificResourceFilePaths(FilePathList& filepath);
 
-}
+}        // namespace osgDB
 
 #endif

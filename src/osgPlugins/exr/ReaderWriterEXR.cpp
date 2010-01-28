@@ -4,7 +4,7 @@
 #include <osg/Image>
 #include <osg/GL>
 
-#ifdef _WIN32
+#if defined _WIN32 && !defined OSG_LIBRARY_STATIC
 //Make the half format work against openEXR libs 
 #define OPENEXR_DLL
 #endif

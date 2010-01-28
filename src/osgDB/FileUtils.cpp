@@ -530,6 +530,75 @@ static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)
 #endif // unix getDirectoryContexts
 
 
+osgDB::FileOpResult::Value osgDB::copyFile(const std::string & source, const std::string & destination)
+{
+    if (source.empty() || destination.empty())
+    {
+        osg::notify(osg::INFO) << "copyFile(): Empty file name." << std::endl;
+        return FileOpResult::BAD_ARGUMENT;
+    }
+
+    // Check if source and destination are the same
+    if (source == destination || osgDB::getRealPath(source) == osgDB::getRealPath(destination))
+    {
+        osg::notify(osg::INFO) << "copyFile(): Source and destination point to the same file: source=" << source << ", destination=" << destination << std::endl;
+        return FileOpResult::SOURCE_EQUALS_DESTINATION;
+    }
+
+    // Check if source file exists
+    if (!osgDB::fileExists(source))
+    {
+        osg::notify(osg::INFO) << "copyFile(): Source file does not exist: " << source << std::endl;
+        return FileOpResult::SOURCE_MISSING;
+    }
+
+    // Open source file
+    osgDB::ifstream fin(source.c_str(), std::ios::in | std::ios::binary);
+    if (!fin)
+    {
+        osg::notify(osg::NOTICE) << "copyFile(): Can't read source file: " << source << std::endl;
+        return FileOpResult::SOURCE_NOT_OPENED;        // Return success since it's not an output error.
+    }
+
+    // Ensure the directory exists or else the FBX SDK will fail
+    if (!osgDB::makeDirectoryForFile(destination))
+    {
+        osg::notify(osg::INFO) << "Can't create directory for file '" << destination << "'. Copy may fail creating the file." << std::endl;
+    }
+
+    // Open destination file
+    osgDB::ofstream fout(destination.c_str(), std::ios::out | std::ios::binary | std::ios::trunc);
+    if (!fout)
+    {
+        osg::notify(osg::NOTICE) << "copyFile(): Can't write destination file: " << destination << std::endl;
+        return FileOpResult::DESTINATION_NOT_OPENED;
+    }
+
+    // Copy file
+    const unsigned int BUFFER_SIZE = 10240;
+    osgDB::ifstream::char_type buffer[BUFFER_SIZE];
+    for(; fin.good() && fout.good() && !fin.eof(); )
+    {
+        fin.read(buffer, BUFFER_SIZE);
+        fout.write(buffer, fin.gcount());
+    }
+
+    if (!fout.good())
+    {
+        osg::notify(osg::NOTICE) << "copyFile(): Error writing destination file: " << destination << std::endl;
+        return FileOpResult::WRITE_ERROR;
+    }
+
+    if (!fin.eof())
+    {
+        osg::notify(osg::NOTICE) << "copyFile(): Error reading source file: " << source << std::endl;
+        return FileOpResult::READ_ERROR;
+    }
+
+    return FileOpResult::OK;
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Implementation of appendPlatformSpecificLibraryFilePaths(..)

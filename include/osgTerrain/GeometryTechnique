@@ -82,7 +82,7 @@ class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
         virtual void releaseGLObjects(osg::State* = 0) const;
 
 
-    private:
+    protected:
 
         virtual ~GeometryTechnique();
 

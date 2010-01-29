@@ -60,7 +60,7 @@ static bool readText( osgDB::InputStream& is, osgText::TextBase& text )
         osg::UIntArray* array = dynamic_cast<osg::UIntArray*>( is.readArray() );
         if ( array )
         {
-            osgText::String string; string;
+            osgText::String string;
             for ( osg::UIntArray::iterator itr=array->begin(); itr!=array->end(); ++itr )
             {
                 string.push_back( *itr );

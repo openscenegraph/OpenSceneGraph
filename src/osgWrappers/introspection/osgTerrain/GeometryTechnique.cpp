@@ -171,6 +171,24 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::GeometryTechnique)
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",
 	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
+	I_ProtectedMethod0(void, swapBuffers,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__swapBuffers,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(osg::BufferData &, getReadOnlyBuffer,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __BufferData_R1__getReadOnlyBuffer,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(osg::BufferData &, getWriteBuffer,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __BufferData_R1__getWriteBuffer,
+	                   "",
+	                   "");
 	I_SimpleProperty(float, FilterBias, 
 	                 __float__getFilterBias, 
 	                 __void__setFilterBias__float);

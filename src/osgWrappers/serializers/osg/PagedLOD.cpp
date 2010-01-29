@@ -3,6 +3,7 @@
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
 
+// _perRangeDataList
 static bool checkRangeDataList( const osg::PagedLOD& node )
 {
     return node.getNumFileNames()>0;
@@ -43,6 +44,49 @@ static bool writeRangeDataList( osgDB::OutputStream& os, const osg::PagedLOD& no
     return true;
 }
 
+// _children
+static bool checkChildren( const osg::PagedLOD& node )
+{
+    return node.getNumChildren()>0;
+}
+
+static bool readChildren( osgDB::InputStream& is, osg::PagedLOD& node )
+{
+    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    for ( unsigned int i=0; i<size; ++i )
+    {
+        osg::Node* child = dynamic_cast<osg::Node*>( is.readObject() );
+        if ( child ) node.addChild( child );
+    }
+    is >> osgDB::END_BRACKET;
+    return true;
+}
+
+static bool writeChildren( osgDB::OutputStream& os, const osg::PagedLOD& node )
+{
+    unsigned int size=node.getNumFileNames(), dynamicLoadedSize=0;
+    for ( unsigned int i=0; i<size; ++i )
+    {
+        if ( !node.getFileName(i).empty() )
+            dynamicLoadedSize++;
+    }
+    
+    unsigned int realSize = size-dynamicLoadedSize; os << realSize;
+    if ( realSize>0 )
+    {
+        os << osgDB::BEGIN_BRACKET << std::endl;
+        for ( unsigned int i=0; i<size; ++i )
+        {
+            if ( !node.getFileName(i).empty() ) continue;
+            if ( i<node.getNumChildren() )
+                os << node.getChild(i);
+        }
+        os << osgDB::END_BRACKET;
+    }
+    os << std::endl;
+    return true;
+}
+
 REGISTER_OBJECT_WRAPPER( PagedLOD,
                          new osg::PagedLOD,
                          osg::PagedLOD,
@@ -55,4 +99,5 @@ REGISTER_OBJECT_WRAPPER( PagedLOD,
     ADD_UINT_SERIALIZER( NumChildrenThatCannotBeExpired, 0 );  // _numChildrenThatCannotBeExpired
     ADD_BOOL_SERIALIZER( DisableExternalChildrenPaging, false );  // _disableExternalChildrenPaging
     ADD_USER_SERIALIZER( RangeDataList );  // _perRangeDataList
+    ADD_USER_SERIALIZER( Children );  // _children (which are not loaded from external)
 }

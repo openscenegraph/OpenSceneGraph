@@ -140,6 +140,8 @@ void Input::_calculateCursorOffsets() {
         unsigned int key = keys.front();
         for (unsigned int i=0; i<glyphs.size(); ++i)
         {
+            static osgText::Font::Glyph* previous_g = 0;
+
             osgText::Font::Glyph* g = glyphs.at(i);
             if (g->getGlyphCode()==key)
             {
@@ -154,6 +156,19 @@ void Input::_calculateCursorOffsets() {
                 if (width == 0)
                     _offsets[idx] += g->getHorizontalAdvance();
                 ++idx;
+
+                if (previous_g)
+                {
+                    {
+                        point_type& ref = _offsets[idx];
+                        ref += previous_g->getHorizontalAdvance();
+                    }
+                    {
+                        point_type& ref = _widths[idx];
+                        ref += previous_g->getHorizontalAdvance();
+                    }
+                }
+                previous_g = g;
 
                 glyphs.erase(glyphs.begin()+i);
                 coords.erase(coords.begin()+i*4);
@@ -232,16 +247,11 @@ void Input::positioned() {
 
    if (_selectionMax-_selectionMin>0)
    {
-       unsigned int size = 0;
-       
-       for (unsigned int i=_selectionMin; i<_selectionMax; ++i)
-       {
-           size += _widths[i];
-       }
-       point_type xoffset = _selectionMin > 0 ? _offsets[_selectionMin - 1] : 0.0f;
+       point_type xstart = _selectionMin > 0 ? _offsets[_selectionMin - 1] : 0.0f;
+       point_type xend = (_selectionMax > 0 ? _offsets[_selectionMax - 1] : 0.0f) + _widths[_selectionMax];
 
-       _selection->setSize(size, getHeight());
-       _selection->setOrigin(getX() + xoffset, getY());
+       _selection->setSize(xend-xstart, getHeight());
+       _selection->setOrigin(getX() + xstart, getY());
        _selection->setZ(_calculateZ(LAYER_MIDDLE-2));
    }
    else
@@ -259,39 +269,43 @@ bool Input::mouseDrag (double x, double y, const WindowManager*)
     _mouseClickX += x;
     x = _mouseClickX;
 
-    unsigned int size = 0;
-    for ( unsigned int i=0; i< _widths.size(); ++i )
+    for ( unsigned int i=0; i< _offsets.size()-1; ++i )
     {
-        if (x > size && x < size+_widths.at(i))
+        point_type offset1 = i > 0 ? _offsets.at(i-1) : 0;
+        point_type offset2 = _offsets.at(i);
+        if (x >= offset1 && x <= offset2)
         {
-            _selectionEndIndex = _index = i;
+            _selectionEndIndex = _index = i; 
             positioned();
             break;
         }
-        size += _widths.at(i);
     }
+
     return false;
 }
 
-bool Input::mousePush (double x, double y, const WindowManager*)
+bool Input::mousePush (double x, double y, const WindowManager* wm)
 {
     double offset = getOrigin().x();
     Window* window = getParent();
-    while (window) { offset += window->getOrigin().x(); window = window->getParent(); }
+    if (window) 
+    { 
+        offset += window->getOrigin().x(); 
+    }
 
     x -= offset;
     _mouseClickX = x;
-    
-    unsigned int size = 0;
-    for ( unsigned int i=0; i< _widths.size(); ++i )
+
+    for ( unsigned int i=0; i< _offsets.size()-1; ++i )
     {
-        if (x > size && x < size+_widths.at(i))
+        point_type offset1 = i > 0 ? _offsets.at(i-1) : 0;
+        point_type offset2 = i == 0 ? _offsets.at(1) : _offsets.at(i);
+        if (x >= offset1 && x <= offset2)
         {
-            _selectionStartIndex = _selectionEndIndex = _index = i;
+            _selectionStartIndex = _selectionEndIndex = _index = i; 
             positioned();
             break;
         }
-        size += _widths.at(i);
     }
     return false;
 }
@@ -401,7 +415,7 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
                 point_type    deleteToIdx = _selectionMax;
                 for (unsigned int i=0; i < s.size()-_selectionMin; ++i)
                 {
-                    s[_selectionMin+i] = deleteToIdx+i < s.size() ? s[deleteToIdx+i] : ' ';
+                    s[_selectionMin+i] = deleteToIdx+i+1 < s.size() ? s[deleteToIdx+i+1] : ' ';
                 }
 
                 _text->update();
@@ -461,7 +475,7 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
                 point_type    deleteToIdx = _selectionMax;
                 for (unsigned int i=0; i < s.size()-_selectionMin; ++i)
                 {
-                    s[_selectionMin+i] = deleteToIdx+i < s.size() ? s[deleteToIdx+i] : ' ';
+                    s[_selectionMin+i] = deleteToIdx+i+1 < s.size() ? s[deleteToIdx+i+1] : ' ';
                 }
 
                 _text->update();
@@ -549,7 +563,7 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
             if (_selectionMax-_selectionMin>0)
             {
                 std::string data;
-                for (unsigned int i=_selectionMin; i<_selectionMax; ++i)
+                for (unsigned int i=_selectionMin; i<=_selectionMax; ++i)
                 {
                     data.push_back(s[i]);
                 }
@@ -579,7 +593,7 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
                 point_type    deleteToIdx = _selectionMax;
                 for (unsigned int i=0; i < s.size()-_selectionMin; ++i)
                 {
-                    s[_selectionMin+i] = deleteToIdx+i < s.size() ? s[deleteToIdx+i] : ' ';
+                    s[_selectionMin+i] = deleteToIdx+i+1 < s.size() ? s[deleteToIdx+i+1] : ' ';
                 }
 
                 _text->update();
@@ -628,6 +642,8 @@ void Input::setCursor(Widget*) {
 
 unsigned int Input::calculateBestYOffset(const std::string& s)
 {
+    if (!_text->getFont()) return 0;
+
    const osgText::FontResolution fr(static_cast<unsigned int>(_text->getCharacterHeight()),
                                     static_cast<unsigned int>(_text->getCharacterHeight()));
 

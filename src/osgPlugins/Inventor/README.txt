@@ -17,7 +17,7 @@
 The plugin requires one of Inventor libraries:
 
 - Coin - GPL, support of VRML 2.0
-  (http://www.coin3d.org) 
+  (http://www.coin3d.org)
 - SGI Inventor - LGPL
   (http://oss.sgi.com/projects/inventor/)
 - TGS Inventor - commercial
@@ -26,9 +26,10 @@ The plugin requires one of Inventor libraries:
 
 Contributors:
 
-Sean Spicer - Vivek (c) Magic-Earth - Original author of the plugin
+Sean Spicer - Vivek (c) Magic-Earth - Original author of the Inventor reader
 Gerrick Bivins
-PCJohn - Jan Peciva, Cadwork (c)
+PCJohn - Jan Peciva, Cadwork (c) - author of Inventor writer, number of
+                                   contributions and improvements to the reader
 
 Minor fixes:
 Ruben

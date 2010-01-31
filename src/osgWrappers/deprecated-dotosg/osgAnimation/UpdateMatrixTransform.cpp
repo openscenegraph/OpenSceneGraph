@@ -50,7 +50,7 @@ bool UpdateMatrixTransform_writeLocalData(const Object& obj, Output& fw)
     const osgAnimation::StackedTransform& transforms = uc->getStackedTransforms();
     for (osgAnimation::StackedTransform::const_iterator it = transforms.begin(); it != transforms.end(); ++it)
     {
-        osgAnimation::StackedTransformElement* element = *it;
+        osgAnimation::StackedTransformElement* element = it->get();
         if (element)
             fw.writeObject(*element);
     }

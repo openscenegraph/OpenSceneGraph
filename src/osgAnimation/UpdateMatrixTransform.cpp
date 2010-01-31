@@ -52,7 +52,7 @@ bool UpdateMatrixTransform::link(osgAnimation::Channel* channel)
     // check if we can link a StackedTransformElement to the current Channel
     for (StackedTransform::iterator it = _transforms.begin(); it != _transforms.end(); ++it)
     {
-        StackedTransformElement* element = *it;
+        StackedTransformElement* element = it->get();
         if (element && !element->getName().empty() && channelName == element->getName())
         {
             Target* target = element->getOrCreateTarget();

@@ -280,7 +280,7 @@ ConvertFromInventor::convert(SoNode* ivRootNode)
     // Initialize Inventor state stack
     // (ivStateStack is used to track the state that is not accessible by
     // SoCallbackAction functions)
-    ivStateStack.push(IvStateItem(ivRootNode, osgRootNode));
+    ivStateStack.push(IvStateItem(ivRootNode, osgRootNode.get()));
 
     // Create callback actions for the inventor nodes
     // These callback functions perform the conversion
@@ -511,18 +511,7 @@ ConvertFromInventor::ivPopState(const SoCallbackAction *action,
                "ivStateStack push was initiated by different node.");
 
         // Get osgStateRoot (note: we HAVE TO reference it)
-        osg::Group *stateRoot = ivState.osgStateRoot;
-        osg::ref_ptr<osg::Group> r = stateRoot;
-/*    assert(strcmp(stateRoot->className(), "Group") == 0 &&
-           "IvStateStack osg graph is expected to be "
-           "headed by osg::Group");
-        if (stateRoot->getNumChildren() == 1) {
-            r = stateRoot->getChild(0)->asGroup();
-            osg::notify(osg::FATAL) << stateRoot->className() << std::endl;
-            osg::notify(osg::FATAL) << stateRoot->getChild(0)->className() << std::endl;
-            exit(0);
-            assert(r != NULL && "Node must be group.");
-        }*/
+        osg::ref_ptr<osg::Group> r = ivState.osgStateRoot;
 
         // Pop state
         ivStateStack.pop();
@@ -538,7 +527,7 @@ ConvertFromInventor::ivPopState(const SoCallbackAction *action,
 
         // APPEND_AT_PUSH
         if (!(ivState.flags & IvStateItem::APPEND_AT_PUSH))
-            appendNode(r, action);
+            appendNode(r.get(), action);
 
     } while (multipop);
 
@@ -1228,7 +1217,7 @@ convertShader(osg::Shader::Type osgShaderType,
         return false;
     }
 
-    return osgProgram->addShader(osgShader);
+    return osgProgram->addShader(osgShader.get());
 }
 #endif // INVENTOR_SHADERS_AVAILABLE
 ///////////////////////////////////////////////////////////////////

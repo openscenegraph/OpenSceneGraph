@@ -23,7 +23,7 @@ StackedTransform::StackedTransform(const StackedTransform& rhs, const osg::CopyO
     reserve(rhs.size());
     for (StackedTransform::const_iterator it = rhs.begin(); it != rhs.end(); ++it)
     {
-        const StackedTransformElement* element = *it;
+        const StackedTransformElement* element = it->get();
         if (element)
             push_back(osg::clone(element,co));
     }
@@ -36,7 +36,7 @@ void StackedTransform::update()
     for (StackedTransform::iterator it = begin(); it != end(); ++it)
     {
         
-        StackedTransformElement* element = *it;
+        StackedTransformElement* element = it->get();
         if (!element)
             continue;
         // update and check if there are changes
@@ -53,7 +53,7 @@ void StackedTransform::update()
     _matrix.makeIdentity();
     for (StackedTransform::iterator it = begin(); it != end(); ++it)
     {
-        StackedTransformElement* element = *it;
+        StackedTransformElement* element = it->get();
         if (!element || element->isIdentity())
             continue;
         element->applyToMatrix(_matrix);

@@ -866,7 +866,7 @@ public:
     serializer->add(#VALUE, MyClass::VALUE)
 
 #define END_ENUM_SERIALIZER() \
-    wrapper->addSerializer(serializer); }
+    wrapper->addSerializer(serializer.get()); }
 
 
 }

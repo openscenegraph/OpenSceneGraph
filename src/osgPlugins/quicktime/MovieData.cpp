@@ -93,8 +93,14 @@ void MovieData::load(osg::Image* image, std::string afilename, float startTime)
     }
     
     
-    Rect bounds = (*GetMovieBoundsRgn(_movie))->rgnBBox;
+    Rect bounds;
  
+#ifdef __APPLE__
+    GetRegionBounds(GetMovieBoundsRgn(_movie), &bounds);
+#else
+    bounds = (*GetMovieBoundsRgn(_movie))->rgnBBox;
+#endif
+
     _checkMovieError("Can't get movie bounds\n");
 
     OffsetRect(&bounds, -bounds.left, -bounds.top);

@@ -4,6 +4,8 @@
 #include <osg/Timer>
 #include <osg/MatrixTransform>
 #include <osgUtil/CullVisitor>
+#include <osgDB/Registry>
+#include <osgDB/ReaderWriter>
 
 #include <iostream>
 #include <vector>
@@ -13,7 +15,7 @@
 #include "TileMapper.h"
 #include "TXPNode.h"
 #include "TXPPagedLOD.h"
-
+#include "ReaderWriterTXP.h"
 
 
 using namespace txp;
@@ -78,6 +80,22 @@ _originY(txpNode._originY)
 
 TXPNode::~TXPNode()
 {
+   if (_archive.get())
+   {
+      if (osgDB::ReaderWriter * rw =
+          osgDB::Registry::instance()->getReaderWriterForExtension("txp"))
+      {
+         if (ReaderWriterTXP * rwTXP =
+             dynamic_cast< ReaderWriterTXP * >(rw))
+         {
+            const int id = _archive->getId();
+            if (!rwTXP->removeArchive(id))
+            {
+               TXPNodeERROR("Failed to remove archive ") << id << std::endl;
+            }
+         }
+      }
+   }
 }
 
 TXPArchive* TXPNode::getArchive()

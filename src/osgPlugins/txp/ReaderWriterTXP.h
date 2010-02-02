@@ -73,6 +73,8 @@ public:
 
         return const_cast<ReaderWriterTXP*>(this)->local_readNode(file, options);
     }
+
+    bool removeArchive( int id );
     
 protected:
 

@@ -624,6 +624,12 @@ TXPArchive *ReaderWriterTXP::getArchive(int id, const std::string& dir)
     return archive;
 }
 
+bool ReaderWriterTXP::removeArchive( int id )
+{
+    osg::notify(osg::INFO)<<"ReaderWriterTXP::removeArchive(id="<<id<<")"<<std::endl;
+    return (_archives.erase(id) >= 1);
+}
+
 class SeamFinder: public osg::NodeVisitor
 {
 public:

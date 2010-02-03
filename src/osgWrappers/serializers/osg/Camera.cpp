@@ -3,6 +3,10 @@
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
 
+#ifndef GL_ACCUM_BUFFER_BIT
+    #define GL_ACCUM_BUFFER_BIT 0x00000200
+#endif
+
 BEGIN_USER_TABLE( RenderOrder, osg::Camera );
     ADD_USER_VALUE( PRE_RENDER );
     ADD_USER_VALUE( NESTED_RENDER );

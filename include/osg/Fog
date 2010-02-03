@@ -30,6 +30,10 @@
     #define GL_EXP2     0x0801
 #endif
 
+#ifndef GL_FOG_HINT
+    #define GL_FOG_HINT 0x0C54
+#endif
+
 namespace osg {
 
 

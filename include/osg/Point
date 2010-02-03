@@ -21,6 +21,10 @@
     #define GL_POINT_SMOOTH     0x0B10
 #endif
 
+#ifndef GL_POINT_SMOOTH_HINT
+    #define GL_POINT_SMOOTH_HINT 0x0C51
+#endif
+
 namespace osg {
 
 /** Point - encapsulates the OpenGL point smoothing and size state.*/

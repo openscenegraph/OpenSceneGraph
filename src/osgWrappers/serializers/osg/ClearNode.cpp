@@ -3,6 +3,10 @@
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
 
+#ifndef GL_ACCUM_BUFFER_BIT
+    #define GL_ACCUM_BUFFER_BIT 0x00000200
+#endif
+
 // _clearMask
 static bool checkClearMask( const osg::ClearNode& node )
 {

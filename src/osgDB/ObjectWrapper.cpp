@@ -44,6 +44,10 @@
 
 #include <sstream>
 
+#ifndef GL_PERSPECTIVE_CORRECTION_HINT
+    #define GL_PERSPECTIVE_CORRECTION_HINT 0x0C50
+#endif
+
 using namespace osgDB;
 
 void osgDB::split( const std::string& src, StringList& list, char separator )

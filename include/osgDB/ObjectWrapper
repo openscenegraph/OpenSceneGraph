@@ -139,7 +139,7 @@ protected:
     typedef CLASS MyClass; \
     void wrapper_propfunc_##NAME(osgDB::ObjectWrapper* wrapper)
 
-class RegisterCompressorProxy
+class OSGDB_EXPORT RegisterCompressorProxy
 {
 public:
     RegisterCompressorProxy( const std::string& name, BaseCompressor* compressor );

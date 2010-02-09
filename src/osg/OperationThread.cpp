@@ -76,22 +76,22 @@ ref_ptr<Operation> OperationQueue::getNextOperation(bool blockIfEmpty)
 
     if (!currentOperation->getKeep())
     {
-        // osg::notify(osg::INFO)<<"removing "<<currentOperation->getName()<<std::endl;
+        // NOTIFY(osg::INFO)<<"removing "<<currentOperation->getName()<<std::endl;
 
         // remove it from the operations queue
         _currentOperationIterator = _operations.erase(_currentOperationIterator);
 
-        // osg::notify(osg::INFO)<<"size "<<_operations.size()<<std::endl;
+        // NOTIFY(osg::INFO)<<"size "<<_operations.size()<<std::endl;
 
         if (_operations.empty())
         {
-           // osg::notify(osg::INFO)<<"setting block "<<_operations.size()<<std::endl;
+           // NOTIFY(osg::INFO)<<"setting block "<<_operations.size()<<std::endl;
            _operationsBlock->set(false);
         }
     }
     else
     {
-        // osg::notify(osg::INFO)<<"increment "<<_currentOperation->getName()<<std::endl;
+        // NOTIFY(osg::INFO)<<"increment "<<_currentOperation->getName()<<std::endl;
 
         // move on to the next operation in the list.
         ++_currentOperationIterator;
@@ -102,7 +102,7 @@ ref_ptr<Operation> OperationQueue::getNextOperation(bool blockIfEmpty)
 
 void OperationQueue::add(Operation* operation)
 {
-    osg::notify(osg::INFO)<<"Doing add"<<std::endl;
+    NOTIFY(osg::INFO)<<"Doing add"<<std::endl;
 
     // acquire the lock on the operations queue to prevent anyone else for modifying it at the same time
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
@@ -115,7 +115,7 @@ void OperationQueue::add(Operation* operation)
 
 void OperationQueue::remove(Operation* operation)
 {
-    osg::notify(osg::INFO)<<"Doing remove operation"<<std::endl;
+    NOTIFY(osg::INFO)<<"Doing remove operation"<<std::endl;
 
     // acquire the lock on the operations queue to prevent anyone else for modifying it at the same time
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
@@ -138,7 +138,7 @@ void OperationQueue::remove(Operation* operation)
 
 void OperationQueue::remove(const std::string& name)
 {
-    osg::notify(osg::INFO)<<"Doing remove named operation"<<std::endl;
+    NOTIFY(osg::INFO)<<"Doing remove named operation"<<std::endl;
     
     // acquire the lock on the operations queue to prevent anyone else for modifying it at the same time
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
@@ -166,7 +166,7 @@ void OperationQueue::remove(const std::string& name)
 
 void OperationQueue::removeAllOperations()
 {
-    osg::notify(osg::INFO)<<"Doing remove all operations"<<std::endl;
+    NOTIFY(osg::INFO)<<"Doing remove all operations"<<std::endl;
 
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_operationsMutex);
     
@@ -203,7 +203,7 @@ void OperationQueue::runOperations(Object* callingObject)
             ++_currentOperationIterator;
         }
                 
-        // osg::notify(osg::INFO)<<"Doing op "<<_currentOperation->getName()<<" "<<this<<std::endl;
+        // NOTIFY(osg::INFO)<<"Doing op "<<_currentOperation->getName()<<" "<<this<<std::endl;
 
         // call the graphics operation.
         (*operation)(callingObject);
@@ -258,11 +258,11 @@ OperationThread::OperationThread():
 
 OperationThread::~OperationThread()
 {
-    //osg::notify(osg::NOTICE)<<"Destructing graphics thread "<<this<<std::endl;
+    //NOTIFY(osg::NOTICE)<<"Destructing graphics thread "<<this<<std::endl;
 
     cancel();
 
-    //osg::notify(osg::NOTICE)<<"Done Destructing graphics thread "<<this<<std::endl;
+    //NOTIFY(osg::NOTICE)<<"Done Destructing graphics thread "<<this<<std::endl;
 }
 
 void OperationThread::setOperationQueue(OperationQueue* opq)
@@ -286,13 +286,13 @@ void OperationThread::setDone(bool done)
 
     if (done)
     {
-        osg::notify(osg::INFO)<<"set done "<<this<<std::endl;
+        NOTIFY(osg::INFO)<<"set done "<<this<<std::endl;
         
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_threadMutex);
             if (_currentOperation.valid())
             {
-                osg::notify(osg::INFO)<<"releasing "<<_currentOperation.get()<<std::endl;
+                NOTIFY(osg::INFO)<<"releasing "<<_currentOperation.get()<<std::endl;
                 _currentOperation->release();
             }
         }
@@ -303,7 +303,7 @@ void OperationThread::setDone(bool done)
 
 int OperationThread::cancel()
 {
-    osg::notify(osg::INFO)<<"Cancelling OperationThread "<<this<<" isRunning()="<<isRunning()<<std::endl;
+    NOTIFY(osg::INFO)<<"Cancelling OperationThread "<<this<<" isRunning()="<<isRunning()<<std::endl;
 
     int result = 0;
     if( isRunning() )
@@ -311,7 +311,7 @@ int OperationThread::cancel()
     
         _done = true;
 
-        osg::notify(osg::INFO)<<"   Doing cancel "<<this<<std::endl;
+        NOTIFY(osg::INFO)<<"   Doing cancel "<<this<<std::endl;
 
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_threadMutex);
@@ -343,13 +343,13 @@ int OperationThread::cancel()
             }
 #endif
             // commenting out debug info as it was cashing crash on exit, presumable
-            // due to osg::notify or std::cout destructing earlier than this destructor.
-            osg::notify(osg::DEBUG_INFO)<<"   Waiting for OperationThread to cancel "<<this<<std::endl;
+            // due to NOTIFY or std::cout destructing earlier than this destructor.
+            NOTIFY(osg::DEBUG_INFO)<<"   Waiting for OperationThread to cancel "<<this<<std::endl;
             OpenThreads::Thread::YieldCurrentThread();
         }
     }
 
-    osg::notify(osg::INFO)<<"  OperationThread::cancel() thread cancelled "<<this<<" isRunning()="<<isRunning()<<std::endl;
+    NOTIFY(osg::INFO)<<"  OperationThread::cancel() thread cancelled "<<this<<" isRunning()="<<isRunning()<<std::endl;
 
     return result;
 }
@@ -381,13 +381,13 @@ void OperationThread::removeAllOperations()
 
 void OperationThread::run()
 {
-    osg::notify(osg::INFO)<<"Doing run "<<this<<" isRunning()="<<isRunning()<<std::endl;
+    NOTIFY(osg::INFO)<<"Doing run "<<this<<" isRunning()="<<isRunning()<<std::endl;
 
     bool firstTime = true;
 
     do
     {
-        // osg::notify(osg::NOTICE)<<"In thread loop "<<this<<std::endl;
+        // NOTIFY(osg::NOTICE)<<"In thread loop "<<this<<std::endl;
         ref_ptr<Operation> operation;
         ref_ptr<OperationQueue> operationQueue;
         
@@ -407,7 +407,7 @@ void OperationThread::run()
                 _currentOperation = operation;
             }
 
-            // osg::notify(osg::INFO)<<"Doing op "<<_currentOperation->getName()<<" "<<this<<std::endl;
+            // NOTIFY(osg::INFO)<<"Doing op "<<_currentOperation->getName()<<" "<<this<<std::endl;
 
             // call the graphics operation.
             (*operation)(_parent.get());
@@ -426,10 +426,10 @@ void OperationThread::run()
             firstTime = false;
         }
         
-        // osg::notify(osg::NOTICE)<<"operations.size()="<<_operations.size()<<" done="<<_done<<" testCancel()"<<testCancel()<<std::endl;
+        // NOTIFY(osg::NOTICE)<<"operations.size()="<<_operations.size()<<" done="<<_done<<" testCancel()"<<testCancel()<<std::endl;
 
     } while (!testCancel() && !_done);
 
-    osg::notify(osg::INFO)<<"exit loop "<<this<<" isRunning()="<<isRunning()<<std::endl;
+    NOTIFY(osg::INFO)<<"exit loop "<<this<<" isRunning()="<<isRunning()<<std::endl;
 
 }

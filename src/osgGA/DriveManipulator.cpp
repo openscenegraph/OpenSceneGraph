@@ -38,7 +38,7 @@ static double getHeightOfDriver()
     {
         height = osg::asciiToDouble(getenv("OSG_DRIVE_MANIPULATOR_HEIGHT"));
     }
-    osg::notify(osg::INFO)<<"DriveManipulator::_height set to =="<<height<<std::endl;
+    NOTIFY(osg::INFO)<<"DriveManipulator::_height set to =="<<height<<std::endl;
     return height;
 }
 

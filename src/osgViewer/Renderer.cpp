@@ -31,8 +31,8 @@
 
 using namespace osgViewer;
 
-//#define DEBUG_MESSAGE osg::notify(osg::NOTICE)
-#define DEBUG_MESSAGE osg::notify(osg::DEBUG_FP)
+//#define DEBUG_MESSAGE if (isNotifyEnabled(NOTICE)) osg::notify(osg::NOTICE)
+#define DEBUG_MESSAGE if (isNotifyEnabled(osg::DEBUG_FP)) osg::notify(osg::DEBUG_FP)
 
 
 OpenGLQuerySupport::OpenGLQuerySupport():
@@ -432,21 +432,21 @@ void Renderer::draw()
         osgViewer::View* view = dynamic_cast<osgViewer::View*>(_camera->getView());
         osgDB::DatabasePager* databasePager = view ? view->getDatabasePager() : 0;
 
-        // osg::notify(osg::NOTICE)<<"Drawing buffer "<<_currentDraw<<std::endl;
+        // NOTIFY(osg::NOTICE)<<"Drawing buffer "<<_currentDraw<<std::endl;
 
         if (_done)
         {
-            osg::notify(osg::INFO)<<"Renderer::release() causing draw to exit"<<std::endl;
+            NOTIFY(osg::INFO)<<"Renderer::release() causing draw to exit"<<std::endl;
             return;
         }
 
         if (_graphicsThreadDoesCull)
         {
-            osg::notify(osg::INFO)<<"Renderer::draw() completing early due to change in _graphicsThreadDoesCull flag."<<std::endl;
+            NOTIFY(osg::INFO)<<"Renderer::draw() completing early due to change in _graphicsThreadDoesCull flag."<<std::endl;
             return;
         }
 
-        // osg::notify(osg::NOTICE)<<"RenderingOperation"<<std::endl;
+        // NOTIFY(osg::NOTICE)<<"RenderingOperation"<<std::endl;
 
         osg::Stats* stats = sceneView->getCamera()->getStats();
         osg::State* state = sceneView->getState();
@@ -461,7 +461,7 @@ void Renderer::draw()
 
         if (sceneView->getDynamicObjectCount()==0 && state->getDynamicObjectRenderingCompletedCallback())
         {
-            // osg::notify(osg::NOTICE)<<"Completed in cull"<<std::endl;
+            // NOTIFY(osg::NOTICE)<<"Completed in cull"<<std::endl;
             state->getDynamicObjectRenderingCompletedCallback()->completed(state);
         }
 
@@ -515,8 +515,8 @@ void Renderer::draw()
 
         osg::Timer_t afterDrawTick = osg::Timer::instance()->tick();
 
-//        osg::notify(osg::NOTICE)<<"Time wait for draw = "<<osg::Timer::instance()->delta_m(startDrawTick, beforeDrawTick)<<std::endl;
-//        osg::notify(osg::NOTICE)<<"     time for draw = "<<osg::Timer::instance()->delta_m(beforeDrawTick, afterDrawTick)<<std::endl;
+//        NOTIFY(osg::NOTICE)<<"Time wait for draw = "<<osg::Timer::instance()->delta_m(startDrawTick, beforeDrawTick)<<std::endl;
+//        NOTIFY(osg::NOTICE)<<"     time for draw = "<<osg::Timer::instance()->delta_m(beforeDrawTick, afterDrawTick)<<std::endl;
 
         if (stats && stats->collectStats("rendering"))
         {
@@ -687,9 +687,9 @@ void Renderer::flushAndCompile(double currentElapsedFrameTime, osgUtil::SceneVie
     double compileTime = availableTime - flushTime;
 
 #if 0
-    osg::notify(osg::NOTICE)<<"total availableTime = "<<availableTime*1000.0<<std::endl;
-    osg::notify(osg::NOTICE)<<"      flushTime     = "<<flushTime*1000.0<<std::endl;
-    osg::notify(osg::NOTICE)<<"      compileTime   = "<<compileTime*1000.0<<std::endl;
+    NOTIFY(osg::NOTICE)<<"total availableTime = "<<availableTime*1000.0<<std::endl;
+    NOTIFY(osg::NOTICE)<<"      flushTime     = "<<flushTime*1000.0<<std::endl;
+    NOTIFY(osg::NOTICE)<<"      compileTime   = "<<compileTime*1000.0<<std::endl;
 #endif
 
     if (compileThread)
@@ -705,7 +705,7 @@ void Renderer::flushAndCompile(double currentElapsedFrameTime, osgUtil::SceneVie
     if (flushTime>0.0) compileTime += flushTime;
 
 #if 0
-    osg::notify(osg::NOTICE)<<"      revised compileTime   = "<<compileTime*1000.0<<std::endl;
+    NOTIFY(osg::NOTICE)<<"      revised compileTime   = "<<compileTime*1000.0<<std::endl;
 #endif
 
     if (databasePager && databasePager->requiresExternalCompileGLObjects(sceneView->getState()->getContextID()))
@@ -737,7 +737,7 @@ void Renderer::operator () (osg::GraphicsContext* context)
 
 void Renderer::release()
 {
-    osg::notify(osg::INFO)<<"Renderer::release()"<<std::endl;
+    NOTIFY(osg::INFO)<<"Renderer::release()"<<std::endl;
     _done = true;
 
     _availableQueue.release();

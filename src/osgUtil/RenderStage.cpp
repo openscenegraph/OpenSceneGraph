@@ -248,8 +248,8 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
         depth = osg::maximum(depth,itr->second.depth());
     }
     
-    // osg::notify(osg::NOTICE)<<"RenderStage::runCameraSetUp viewport "<<_viewport->x()<<" "<<_viewport->y()<<" "<<_viewport->width()<<" "<<_viewport->height()<<std::endl;
-    // osg::notify(osg::NOTICE)<<"RenderStage::runCameraSetUp computed "<<width<<" "<<height<<" "<<depth<<std::endl;
+    // NOTIFY(osg::NOTICE)<<"RenderStage::runCameraSetUp viewport "<<_viewport->x()<<" "<<_viewport->y()<<" "<<_viewport->width()<<" "<<_viewport->height()<<std::endl;
+    // NOTIFY(osg::NOTICE)<<"RenderStage::runCameraSetUp computed "<<width<<" "<<height<<" "<<depth<<std::endl;
 
     // attach images that need to be copied after the stage is drawn.
     for(itr = bufferAttachments.begin();
@@ -333,7 +333,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
         
         if (fbo_supported && !_fbo)
         {
-            osg::notify(osg::INFO)<<"Setting up osg::Camera::FRAME_BUFFER_OBJECT"<<std::endl;
+            NOTIFY(osg::INFO)<<"Setting up osg::Camera::FRAME_BUFFER_OBJECT"<<std::endl;
 
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*(_camera->getDataChangeMutex()));
 
@@ -365,7 +365,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
 
                 if (colorSamples > samples)
                 {
-                    osg::notify(WARN) << "Multisample color samples must be less than or "
+                    NOTIFY(WARN) << "Multisample color samples must be less than or "
                         "equal to samples. Setting color samples equal to samples." << std::endl;
                     colorSamples = samples;
                 }
@@ -512,7 +512,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
 
             if (status != GL_FRAMEBUFFER_COMPLETE_EXT)
             {
-                osg::notify(osg::NOTICE)<<"RenderStage::runCameraSetUp(), FBO setup failed, FBO status= 0x"<<std::hex<<status<<std::dec<<std::endl;
+                NOTIFY(osg::NOTICE)<<"RenderStage::runCameraSetUp(), FBO setup failed, FBO status= 0x"<<std::hex<<status<<std::dec<<std::endl;
 
                 fbo_supported = false;
                 fbo_ext->glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
@@ -604,7 +604,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             traits->width = width;
             traits->height = height;
 
-            // osg::notify(osg::NOTICE)<<"traits = "<<traits->width<<" "<<traits->height<<std::endl;
+            // NOTIFY(osg::NOTICE)<<"traits = "<<traits->width<<" "<<traits->height<<std::endl;
 
             traits->pbuffer = (renderTargetImplementation==osg::Camera::PIXEL_BUFFER || renderTargetImplementation==osg::Camera::PIXEL_BUFFER_RTT);
             traits->windowDecoration = (renderTargetImplementation==osg::Camera::SEPERATE_WINDOW);
@@ -685,11 +685,15 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                     default:
                     {
                         if (renderTargetImplementation==osg::Camera::SEPERATE_WINDOW)
-                            osg::notify(osg::NOTICE)<<"Warning: RenderStage::runCameraSetUp(State&) Window ";
+                        {
+                            NOTIFY(osg::NOTICE)<<"Warning: RenderStage::runCameraSetUp(State&) Window ";
+                        }
                         else
-                            osg::notify(osg::NOTICE)<<"Warning: RenderStage::runCameraSetUp(State&) Pbuffer ";
+                        {
+                            NOTIFY(osg::NOTICE)<<"Warning: RenderStage::runCameraSetUp(State&) Pbuffer ";
+                        }
 
-                        osg::notify(osg::NOTICE)<<"does not support multiple color outputs."<<std::endl;
+                        NOTIFY(osg::NOTICE)<<"does not support multiple color outputs."<<std::endl;
                         break;
                     }
 
@@ -730,7 +734,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
 
             if (context.valid() && context->realize())
             {
-                osg::notify(osg::INFO)<<"RenderStage::runCameraSetUp(State&) Context has been realized "<<std::endl;
+                NOTIFY(osg::INFO)<<"RenderStage::runCameraSetUp(State&) Context has been realized "<<std::endl;
 
                 // successfully set up graphics context as requested,
                 // will assign this graphics context to the RenderStage and 
@@ -745,18 +749,18 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
 
                 if (pBufferTexture && renderTargetImplementation==osg::Camera::PIXEL_BUFFER_RTT)
                 {
-                   osg::notify(osg::INFO)<<"RenderStage::runCameraSetUp(State&) Assign graphis context to Texture"<<std::endl;
+                   NOTIFY(osg::INFO)<<"RenderStage::runCameraSetUp(State&) Assign graphis context to Texture"<<std::endl;
                    pBufferTexture->setReadPBuffer(context.get());
                 }
                 else
                 {
-                    osg::notify(osg::INFO)<<"RenderStage::runCameraSetUp(State&) Assigning texture to RenderStage so that it does the copy"<<std::endl;
+                    NOTIFY(osg::INFO)<<"RenderStage::runCameraSetUp(State&) Assigning texture to RenderStage so that it does the copy"<<std::endl;
                     setTexture(pBufferTexture, level, face);
                 }
             }
             else
             {
-                osg::notify(osg::INFO)<<"Failed to acquire Graphics Context"<<std::endl;
+                NOTIFY(osg::INFO)<<"Failed to acquire Graphics Context"<<std::endl;
                 
                 if (renderTargetImplementation==osg::Camera::PIXEL_BUFFER_RTT)
                 {
@@ -778,7 +782,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
     // finally if all else has failed, then the frame buffer fallback will come in to play.
     if (renderTargetImplementation==osg::Camera::FRAME_BUFFER)
     {
-        osg::notify(osg::INFO)<<"Setting up osg::Camera::FRAME_BUFFER"<<std::endl;
+        NOTIFY(osg::INFO)<<"Setting up osg::Camera::FRAME_BUFFER"<<std::endl;
 
         for(osg::Camera::BufferAttachmentMap::iterator itr = bufferAttachments.begin();
             itr != bufferAttachments.end();
@@ -875,7 +879,7 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
         {
             if (read_fbo->isMultisample())
             {
-                osg::notify(osg::WARN) << "Attempting to read from a"
+                NOTIFY(osg::WARN) << "Attempting to read from a"
                     " multisampled framebuffer object. Set a resolve"
                     " framebuffer on the RenderStage to fix this." << std::endl;
             }
@@ -927,7 +931,7 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
                 GLenum fbstatus = fbo_ext->glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT);
                 if ( fbstatus != GL_FRAMEBUFFER_COMPLETE_EXT )
                 {
-                    osg::notify(osg::NOTICE)<<"RenderStage::drawInner(,) FBO status = 0x"<<std::hex<<fbstatus<<std::dec<<std::endl;
+                    NOTIFY(osg::NOTICE)<<"RenderStage::drawInner(,) FBO status = 0x"<<std::hex<<fbstatus<<std::dec<<std::endl;
                 }
             }
         }
@@ -1073,7 +1077,7 @@ struct DrawInnerOperation : public osg::Operation
         osg::GraphicsContext* context = dynamic_cast<osg::GraphicsContext*>(object);
         if (!context) return;
 
-        // osg::notify(osg::NOTICE)<<"DrawInnerOperation operator"<<std::endl;
+        // NOTIFY(osg::NOTICE)<<"DrawInnerOperation operator"<<std::endl;
         if (_stage && context)
         {
             RenderLeaf* previous = 0;
@@ -1128,7 +1132,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
         // now as an experiment.
         callingContext->releaseContext();
     
-        // osg::notify(osg::NOTICE)<<"  enclosing state before - "<<state.getStateSetStackSize()<<std::endl;
+        // NOTIFY(osg::NOTICE)<<"  enclosing state before - "<<state.getStateSetStackSize()<<std::endl;
 
         useState = _graphicsContext->getState();
         useContext = _graphicsContext.get();
@@ -1147,7 +1151,7 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
             previous = 0;
             useContext->makeCurrent();
             
-            // osg::notify(osg::NOTICE)<<"  nested state before - "<<useState->getStateSetStackSize()<<std::endl;
+            // NOTIFY(osg::NOTICE)<<"  nested state before - "<<useState->getStateSetStackSize()<<std::endl;
         }
     }
 
@@ -1243,8 +1247,8 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
         
         previous = saved_previous;
         
-        // osg::notify(osg::NOTICE)<<"  nested state after - "<<useState->getStateSetStackSize()<<std::endl;
-        // osg::notify(osg::NOTICE)<<"  enclosing state after - "<<state.getStateSetStackSize()<<std::endl;
+        // NOTIFY(osg::NOTICE)<<"  nested state after - "<<useState->getStateSetStackSize()<<std::endl;
+        // NOTIFY(osg::NOTICE)<<"  enclosing state after - "<<state.getStateSetStackSize()<<std::endl;
 
         callingContext->makeCurrent();
     }
@@ -1429,7 +1433,7 @@ void RenderStage::setMultisampleResolveFramebufferObject(osg::FrameBufferObject*
 {
     if (fbo && fbo->isMultisample())
     {
-        osg::notify(osg::WARN) << "Resolve framebuffer must not be"
+        NOTIFY(osg::WARN) << "Resolve framebuffer must not be"
             " multisampled." << std::endl;
     }
     _resolveFbo = fbo;

@@ -88,11 +88,11 @@ public:
         std::string filename = osgDB::Registry::instance()->createLibraryNameForExtension("serializers_osg");
         if (osgDB::Registry::instance()->loadLibrary(filename)==osgDB::Registry::LOADED)
         {
-            osg::notify(osg::NOTICE)<<"Constructor ReaderWriterOSG2 - loaded OK"<<std::endl;
+            NOTIFY(osg::NOTICE)<<"Constructor ReaderWriterOSG2 - loaded OK"<<std::endl;
         }
         else
         {
-            osg::notify(osg::NOTICE)<<"Constructor ReaderWriterOSG2 - failed to load"<<std::endl;
+            NOTIFY(osg::NOTICE)<<"Constructor ReaderWriterOSG2 - failed to load"<<std::endl;
         }
     }
     

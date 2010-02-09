@@ -24,6 +24,7 @@ using namespace osgDB;
 // FileCache
 //
 FileCache::FileCache(const std::string& path):
+    osg::Referenced(true),
     _fileCachePath(path)
 {
     NOTIFY(osg::INFO)<<"Constructed FileCache : "<<path<<std::endl;

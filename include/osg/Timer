@@ -102,9 +102,28 @@ class ElapsedTime
             _startTick = _timer->tick();
         }
 
+        /** elapsed time in seconds. */
         inline double elapsedTime() const
         {
             return _timer->delta_s(_startTick, _timer->tick());
+        }
+
+        /** elapsed time in milliseconds. */
+        inline double elapsedTime_m() const
+        {
+            return _timer->delta_m(_startTick, _timer->tick());
+        }
+
+        /** elapsed time in microseconds. */
+        inline double elapsedTime_u() const
+        {
+            return _timer->delta_u(_startTick, _timer->tick());
+        }
+
+        /** elapsed time in nanoseconds. */
+        inline double elapsedTime_n() const
+        {
+            return _timer->delta_n(_startTick, _timer->tick());
         }
 
         inline void finish()

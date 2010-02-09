@@ -197,7 +197,7 @@ public:
         {
             if ( prop._name!=enumString )
             {
-                osg::notify(osg::WARN) << "AsciiInputIterator::readProperty(): Unmatched property "
+                NOTIFY(osg::WARN) << "AsciiInputIterator::readProperty(): Unmatched property "
                                        << enumString << ", expecting " << prop._name << std::endl;
             }
             prop._name = enumString;

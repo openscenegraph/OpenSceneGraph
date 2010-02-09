@@ -96,7 +96,7 @@ void CompositeViewer::constructorInit()
 
 CompositeViewer::~CompositeViewer()
 {
-    osg::notify(osg::INFO)<<"CompositeViewer::~CompositeViewer()"<<std::endl;
+    NOTIFY(osg::INFO)<<"CompositeViewer::~CompositeViewer()"<<std::endl;
 
     stopThreading();
 
@@ -126,12 +126,12 @@ CompositeViewer::~CompositeViewer()
         (*citr)->close();
     }
 
-    osg::notify(osg::INFO)<<"finished CompositeViewer::~CompositeViewer()"<<std::endl;
+    NOTIFY(osg::INFO)<<"finished CompositeViewer::~CompositeViewer()"<<std::endl;
 }
 
 bool CompositeViewer::readConfiguration(const std::string& filename)
 {
-    osg::notify(osg::NOTICE)<<"CompositeViewer::readConfiguration("<<filename<<")"<<std::endl;
+    NOTIFY(osg::NOTICE)<<"CompositeViewer::readConfiguration("<<filename<<")"<<std::endl;
     osg::ref_ptr<osg::Object> obj = osgDB::readObjectFile(filename);
     osgViewer::View * view = dynamic_cast<osgViewer::View *>(obj.get());
     if (view)
@@ -329,7 +329,7 @@ void CompositeViewer::setReferenceTime(double time)
 
 void CompositeViewer::viewerInit()
 {
-    osg::notify(osg::INFO)<<"CompositeViewer::init()"<<std::endl;
+    NOTIFY(osg::INFO)<<"CompositeViewer::init()"<<std::endl;
 
     for(RefViews::iterator itr = _views.begin();
         itr != _views.end();
@@ -509,13 +509,13 @@ void CompositeViewer::getOperationThreads(OperationThreads& threads, bool onlyAc
 
 void CompositeViewer::realize()
 {
-    //osg::notify(osg::INFO)<<"CompositeViewer::realize()"<<std::endl;
+    //NOTIFY(osg::INFO)<<"CompositeViewer::realize()"<<std::endl;
 
     setCameraWithFocus(0);
 
     if (_views.empty())
     {
-        osg::notify(osg::NOTICE)<<"CompositeViewer::realize() - not views to realize."<<std::endl;
+        NOTIFY(osg::NOTICE)<<"CompositeViewer::realize() - not views to realize."<<std::endl;
         _done = true;
         return;
     }
@@ -525,7 +525,7 @@ void CompositeViewer::realize()
 
     if (contexts.empty())
     {
-        osg::notify(osg::INFO)<<"CompositeViewer::realize() - No valid contexts found, setting up view across all screens."<<std::endl;
+        NOTIFY(osg::INFO)<<"CompositeViewer::realize() - No valid contexts found, setting up view across all screens."<<std::endl;
 
         // no windows are already set up so set up a default view
         _views[0]->setUpViewAcrossAllScreens();
@@ -535,7 +535,7 @@ void CompositeViewer::realize()
 
     if (contexts.empty())
     {
-        osg::notify(osg::NOTICE)<<"CompositeViewer::realize() - failed to set up any windows"<<std::endl;
+        NOTIFY(osg::NOTICE)<<"CompositeViewer::realize() - failed to set up any windows"<<std::endl;
         _done = true;
         return;
     }
@@ -679,7 +679,7 @@ void CompositeViewer::eventTraversal()
 
     double beginEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
-    // osg::notify(osg::NOTICE)<<"CompositeViewer::frameEventTraversal()."<<std::endl;
+    // NOTIFY(osg::NOTICE)<<"CompositeViewer::frameEventTraversal()."<<std::endl;
 
     // need to copy events from the GraphicsWindow's into local EventQueue;
 
@@ -722,7 +722,7 @@ void CompositeViewer::eventTraversal()
             {
                 osgGA::GUIEventAdapter* event = itr->get();
 
-                //osg::notify(osg::NOTICE)<<"event->getGraphicsContext()="<<event->getGraphicsContext()<<std::endl;
+                //NOTIFY(osg::NOTICE)<<"event->getGraphicsContext()="<<event->getGraphicsContext()<<std::endl;
 
                 bool pointerEvent = false;
 
@@ -884,7 +884,7 @@ void CompositeViewer::eventTraversal()
     }
 
 
-    // osg::notify(osg::NOTICE)<<"mouseEventState Xmin = "<<eventState->getXmin()<<" Ymin="<<eventState->getYmin()<<" xMax="<<eventState->getXmax()<<" Ymax="<<eventState->getYmax()<<std::endl;
+    // NOTIFY(osg::NOTICE)<<"mouseEventState Xmin = "<<eventState->getXmin()<<" Ymin="<<eventState->getYmin()<<" xMax="<<eventState->getXmax()<<" Ymax="<<eventState->getYmax()<<std::endl;
 
 
     for(RefViews::iterator vitr = _views.begin();
@@ -897,7 +897,7 @@ void CompositeViewer::eventTraversal()
     }
 
 
-    // osg::notify(osg::NOTICE)<<"Events "<<events.size()<<std::endl;
+    // NOTIFY(osg::NOTICE)<<"Events "<<events.size()<<std::endl;
 
     if ((_keyEventSetsDone!=0) || _quitEventSetsDone)
     {

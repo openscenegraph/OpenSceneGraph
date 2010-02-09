@@ -502,7 +502,7 @@ struct ViewSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCallba
             }
             else
             {
-                osg::notify(osg::WARN)<<std::endl<<"No valid view to collect scene stats from"<<std::endl;
+                NOTIFY(osg::WARN)<<std::endl<<"No valid view to collect scene stats from"<<std::endl;
 
                 text->setText("");
             }

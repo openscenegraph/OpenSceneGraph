@@ -20,7 +20,7 @@ using namespace osg;
 View::View():
     Object(true)
 {
-    // osg::notify(osg::NOTICE)<<"Constructing osg::View"<<std::endl;
+    // NOTIFY(osg::NOTICE)<<"Constructing osg::View"<<std::endl;
 
     setLightingMode(HEADLIGHT);
 
@@ -52,7 +52,7 @@ View::View(const osg::View& view, const osg::CopyOp& copyop):
 
 View::~View()
 {
-    osg::notify(osg::INFO)<<"Destructing osg::View"<<std::endl;
+    NOTIFY(osg::INFO)<<"Destructing osg::View"<<std::endl;
 
     if (_camera.valid())
     {
@@ -82,7 +82,7 @@ View::~View()
     }
 #endif
     
-    osg::notify(osg::INFO)<<"Done destructing osg::View"<<std::endl;
+    NOTIFY(osg::INFO)<<"Done destructing osg::View"<<std::endl;
 }
 
 void View::take(osg::View& rhs)

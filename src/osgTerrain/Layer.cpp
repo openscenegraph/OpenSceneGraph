@@ -212,7 +212,7 @@ bool ImageLayer::transform(float offset, float scale)
 {
     if (!_image.valid()) return false;
 
-    osg::notify(osg::NOTICE)<<"ImageLayer::transform("<<offset<<","<<scale<<")"<<std::endl;;
+    NOTIFY(osg::INFO)<<"ImageLayer::transform("<<offset<<","<<scale<<")"<<std::endl;;
 
     processImage(_image.get(), TransformOperator(offset,scale));
     
@@ -228,30 +228,30 @@ bool ImageLayer::getValue(unsigned int i, unsigned int j, float& value) const
     {
         case(GL_BYTE): 
             value = *((const char*)data); 
-            // osg::notify(osg::NOTICE)<<"byte "<<value<<std::endl;
+            // NOTIFY(osg::NOTICE)<<"byte "<<value<<std::endl;
             break;
         case(GL_UNSIGNED_BYTE): 
             value = *data;
-            // osg::notify(osg::NOTICE)<<"Unsigned byte "<<value<<std::endl;
+            // NOTIFY(osg::NOTICE)<<"Unsigned byte "<<value<<std::endl;
             break;
         case(GL_SHORT):
             value = *((const short*)data);
-            // osg::notify(osg::NOTICE)<<"Short "<<value<<std::endl;
+            // NOTIFY(osg::NOTICE)<<"Short "<<value<<std::endl;
             break;
         case(GL_UNSIGNED_SHORT):
             value = *((const unsigned short*)data);
-            // osg::notify(osg::NOTICE)<<"Unsigned Short "<<value<<std::endl;
+            // NOTIFY(osg::NOTICE)<<"Unsigned Short "<<value<<std::endl;
             break;
         case(GL_INT):
             value = *((const int*)data);
-            // osg::notify(osg::NOTICE)<<"Int "<<value<<std::endl;
+            // NOTIFY(osg::NOTICE)<<"Int "<<value<<std::endl;
             break;
         case(GL_UNSIGNED_INT):
-            // osg::notify(osg::NOTICE)<<"Unsigned Int "<<value<<std::endl;
+            // NOTIFY(osg::NOTICE)<<"Unsigned Int "<<value<<std::endl;
             value = *((const unsigned int*)data);
             break;
         case(GL_FLOAT):
-            // osg::notify(osg::NOTICE)<<"Float "<<value<<std::endl;
+            // NOTIFY(osg::NOTICE)<<"Float "<<value<<std::endl;
             value = *((const float*)data);
             break;
         default: 
@@ -264,19 +264,19 @@ bool ImageLayer::getValue(unsigned int i, unsigned int j, float& value) const
 
 bool ImageLayer::getValue(unsigned int i, unsigned int j, osg::Vec2& value) const
 {
-    osg::notify(osg::NOTICE)<<"Not implemented yet"<<std::endl;
+    NOTIFY(osg::NOTICE)<<"Not implemented yet"<<std::endl;
     return false;
 }
 
 bool ImageLayer::getValue(unsigned int i, unsigned int j, osg::Vec3& value) const
 {
-    osg::notify(osg::NOTICE)<<"Not implemented yet"<<std::endl;
+    NOTIFY(osg::NOTICE)<<"Not implemented yet"<<std::endl;
     return false;
 }
 
 bool ImageLayer::getValue(unsigned int i, unsigned int j, osg::Vec4& value) const
 {
-    osg::notify(osg::NOTICE)<<"Not implemented yet"<<std::endl;
+    NOTIFY(osg::NOTICE)<<"Not implemented yet"<<std::endl;
     return false;
 }
 
@@ -324,7 +324,7 @@ bool ContourLayer::transform(float offset, float scale)
 {
     if (!_tf) return false;
 
-    osg::notify(osg::NOTICE)<<"ContourLayer::transform("<<offset<<","<<scale<<")"<<std::endl;;
+    NOTIFY(osg::INFO)<<"ContourLayer::transform("<<offset<<","<<scale<<")"<<std::endl;;
 
     osg::TransferFunction1D::ColorMap newColorMap = _tf->getColorMap();
     for(osg::TransferFunction1D::ColorMap::iterator itr = newColorMap.begin();
@@ -438,7 +438,7 @@ bool HeightFieldLayer::transform(float offset, float scale)
     osg::FloatArray* heights = _heightField->getFloatArray();
     if (!heights) return false;
     
-    osg::notify(osg::NOTICE)<<"HeightFieldLayer::transform("<<offset<<","<<scale<<")"<<std::endl;;
+    NOTIFY(osg::INFO)<<"HeightFieldLayer::transform("<<offset<<","<<scale<<")"<<std::endl;;
 
     for(osg::FloatArray::iterator itr = heights->begin();
         itr != heights->end();

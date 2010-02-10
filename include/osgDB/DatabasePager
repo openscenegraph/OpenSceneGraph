@@ -407,28 +407,29 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         struct ReadQueue : public RequestQueue
         {
             ReadQueue(DatabasePager* pager, const std::string& name);
-            
+
             void block() { _block->block(); }
-            
+
             void release() { _block->release(); }
-            
+
             void updateBlock()
             {
-                _block->set((!_requestList.empty() || !_childrenToDeleteList.empty()) && 
-                             !_pager->_databasePagerThreadPaused);
+                _block->set((!_requestList.empty() || !_childrenToDeleteList.empty()) &&
+                            !_pager->_databasePagerThreadPaused);
             }
-            
+
             void clear();
-            
+
             void add(DatabaseRequest* databaseRequest);
-            
+
             void takeFirst(osg::ref_ptr<DatabaseRequest>& databaseRequest);
-            
+
             osg::ref_ptr<osg::RefBlock> _block;
-            
+
             DatabasePager*              _pager;
             std::string                 _name;
-            
+            int                         _frameNumberLastPruned;
+
             OpenThreads::Mutex          _childrenToDeleteListMutex;
             ObjectList                  _childrenToDeleteList;
         };

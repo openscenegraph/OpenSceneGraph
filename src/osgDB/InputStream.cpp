@@ -763,7 +763,7 @@ void InputStream::resetSchema()
 }
 
 template<typename T>
-void InputStream::readArrayImplementation( T* a, int readSize, bool useByteSwap )
+void InputStream::readArrayImplementation( T* a, int read_size, bool useByteSwap )
 {
     int size = 0;
     *this >> size >> BEGIN_BRACKET;
@@ -772,11 +772,11 @@ void InputStream::readArrayImplementation( T* a, int readSize, bool useByteSwap 
         a->resize( size );
         if ( isBinary() )
         {
-            _in->getStream()->read( (char*)&((*a)[0]), readSize*size ); checkStream();
+            _in->getStream()->read( (char*)&((*a)[0]), read_size*size ); checkStream();
             if ( useByteSwap && _byteSwap )
             {
                 for ( int i=0; i<size; ++i )
-                    osg::swapBytes( (char*)&((*a)[i]), readSize );
+                    osg::swapBytes( (char*)&((*a)[i]), read_size );
             }
         }
         else

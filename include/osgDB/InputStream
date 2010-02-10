@@ -126,7 +126,10 @@ public:
     void advanceToCurrentEndBracket();
     void readWrappedString( std::string& str );
     void readCharArray( char* s, unsigned int size ) { _in->readCharArray(s, size); }
-    
+
+    // readSize() use unsigned int for all sizes.
+    unsigned int readSize() { unsigned int size; *this>>size; return size; }
+
     // Global reading functions
     osg::Array* readArray();
     osg::PrimitiveSet* readPrimitiveSet();
@@ -149,7 +152,7 @@ protected:
     void setWrapperSchema( const std::string& name, const std::string& properties );
     
     template<typename T>
-    void readArrayImplementation( T* a, int readSize, bool useByteSwap=false );
+    void readArrayImplementation( T* a, int read_size, bool useByteSwap=false );
     
     ArrayMap _arrayMap;
     IdentifierMap _identifierMap;

@@ -362,7 +362,7 @@ void OutputStream::writeImage( const osg::Image* img )
             
             // _mipmapData
             const osg::Image::MipmapDataType& levels = img->getMipmapLevels();
-            *this << levels.size();
+            writeSize(levels.size());
             for ( osg::Image::MipmapDataType::const_iterator itr=levels.begin();
                   itr!=levels.end(); ++itr )
             {
@@ -552,12 +552,12 @@ void OutputStream::writeSchema( std::ostream& fout )
 // PROTECTED METHODS
 
 template<typename T>
-void OutputStream::writeArrayImplementation( const T* a, int writeSize, unsigned int numInRow )
+void OutputStream::writeArrayImplementation( const T* a, int write_size, unsigned int numInRow )
 {
-    *this << writeSize << BEGIN_BRACKET;
+    *this << write_size << BEGIN_BRACKET;
     if ( numInRow>1 )
     {
-        for ( int i=0; i<writeSize; ++i )
+        for ( int i=0; i<write_size; ++i )
         {
             if ( !(i%numInRow) )
             {
@@ -571,7 +571,7 @@ void OutputStream::writeArrayImplementation( const T* a, int writeSize, unsigned
     else
     {
         *this << std::endl;
-        for ( int i=0; i<writeSize; ++i )
+        for ( int i=0; i<write_size; ++i )
             *this << (*a)[i] << std::endl;
     }
     *this << END_BRACKET << std::endl;

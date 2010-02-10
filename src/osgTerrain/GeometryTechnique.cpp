@@ -107,7 +107,7 @@ void GeometryTechnique::setFilterMatrixAs(FilterType filterType)
 
 void GeometryTechnique::init()
 {
-    NOTIFY(osg::INFO)<<"Doing GeometryTechnique::init()"<<std::endl;
+    OSG_NOTIFY(osg::INFO)<<"Doing GeometryTechnique::init()"<<std::endl;
     
     if (!_terrainTile) return;
 
@@ -140,7 +140,7 @@ Locator* GeometryTechnique::computeMasterLocator()
     Locator* masterLocator = elevationLocator ? elevationLocator : colorLocator;
     if (!masterLocator)
     {
-        NOTIFY(osg::NOTICE)<<"Problem, no locator found in any of the terrain layers"<<std::endl;
+        OSG_NOTIFY(osg::NOTICE)<<"Problem, no locator found in any of the terrain layers"<<std::endl;
         return 0;
     }
     
@@ -195,8 +195,8 @@ osg::Vec3d GeometryTechnique::computeCenterModel(Locator* masterLocator)
         }
     }
 
-    NOTIFY(osg::INFO)<<"bottomLeftNDC = "<<bottomLeftNDC<<std::endl;
-    NOTIFY(osg::INFO)<<"topRightNDC = "<<topRightNDC<<std::endl;
+    OSG_NOTIFY(osg::INFO)<<"bottomLeftNDC = "<<bottomLeftNDC<<std::endl;
+    OSG_NOTIFY(osg::INFO)<<"topRightNDC = "<<topRightNDC<<std::endl;
 
     buffer._transform = new osg::MatrixTransform;
 
@@ -238,7 +238,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     double i_sampleFactor = 1.0;
     double j_sampleFactor = 1.0;
 
-    // NOTIFY(osg::NOTICE)<<"Sample ratio="<<sampleRatio<<std::endl;
+    // OSG_NOTIFY(osg::NOTICE)<<"Sample ratio="<<sampleRatio<<std::endl;
 
     if (sampleRatio!=1.0f)
     {
@@ -256,7 +256,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     
 
     bool treatBoundariesToValidDataAsDefaultValue = _terrainTile->getTreatBoundariesToValidDataAsDefaultValue();
-    NOTIFY(osg::INFO)<<"TreatBoundariesToValidDataAsDefaultValue="<<treatBoundariesToValidDataAsDefaultValue<<std::endl;
+    OSG_NOTIFY(osg::INFO)<<"TreatBoundariesToValidDataAsDefaultValue="<<treatBoundariesToValidDataAsDefaultValue<<std::endl;
     
     float skirtHeight = 0.0f;
     HeightFieldLayer* hfl = dynamic_cast<HeightFieldLayer*>(elevationLayer);
@@ -362,7 +362,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
             {
                 float value = 0.0f;
                 validValue = elevationLayer->getValidValue(i_equiv,j_equiv, value);
-                // NOTIFY(osg::INFO)<<"i="<<i<<" j="<<j<<" z="<<value<<std::endl;
+                // OSG_NOTIFY(osg::INFO)<<"i="<<i<<" j="<<j<<" z="<<value<<std::endl;
                 ndc.z() = value*scaleHeight;
             }
             
@@ -419,7 +419,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
     bool smallTile = numVertices <= 16384;
 
-    // NOTIFY(osg::NOTICE)<<"smallTile = "<<smallTile<<std::endl;
+    // OSG_NOTIFY(osg::NOTICE)<<"smallTile = "<<smallTile<<std::endl;
     
     osg::ref_ptr<osg::DrawElements> elements = smallTile ? 
         static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_TRIANGLES)) :
@@ -697,11 +697,11 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     
         
         //osg::Timer_t before = osg::Timer::instance()->tick();
-        //NOTIFY(osg::NOTICE)<<"osgTerrain::GeometryTechnique::build kd tree"<<std::endl;
+        //OSG_NOTIFY(osg::NOTICE)<<"osgTerrain::GeometryTechnique::build kd tree"<<std::endl;
         osg::ref_ptr<osg::KdTreeBuilder> builder = osgDB::Registry::instance()->getKdTreeBuilder()->clone();
         buffer._geode->accept(*builder);
         //osg::Timer_t after = osg::Timer::instance()->tick();
-        //NOTIFY(osg::NOTICE)<<"KdTree build time "<<osg::Timer::instance()->delta_m(before, after)<<std::endl;
+        //OSG_NOTIFY(osg::NOTICE)<<"KdTree build time "<<osg::Timer::instance()->delta_m(before, after)<<std::endl;
     }
 }
 
@@ -759,19 +759,19 @@ void GeometryTechnique::applyColorLayers()
 
                 if (mipMapping && (s_NotPowerOfTwo || t_NotPowerOfTwo))
                 {
-                    NOTIFY(osg::INFO)<<"Disabling mipmapping for non power of two tile size("<<image->s()<<", "<<image->t()<<")"<<std::endl;
+                    OSG_NOTIFY(osg::INFO)<<"Disabling mipmapping for non power of two tile size("<<image->s()<<", "<<image->t()<<")"<<std::endl;
                     texture2D->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
                 }
 
 
                 layerToTextureMap[colorLayer] = texture2D;
 
-                // NOTIFY(osg::NOTICE)<<"Creating new ImageLayer texture "<<layerNum<<" image->s()="<<image->s()<<"  image->t()="<<image->t()<<std::endl;
+                // OSG_NOTIFY(osg::NOTICE)<<"Creating new ImageLayer texture "<<layerNum<<" image->s()="<<image->s()<<"  image->t()="<<image->t()<<std::endl;
 
             }
             else
             {
-                // NOTIFY(osg::NOTICE)<<"Reusing ImageLayer texture "<<layerNum<<std::endl;
+                // OSG_NOTIFY(osg::NOTICE)<<"Reusing ImageLayer texture "<<layerNum<<std::endl;
             }
 
             stateset->setTextureAttributeAndModes(layerNum, texture2D, osg::StateAttribute::ON);
@@ -885,7 +885,7 @@ void GeometryTechnique::traverse(osg::NodeVisitor& nv)
 
     if (_terrainTile->getDirty()) 
     {
-        NOTIFY(osg::INFO)<<"******* Doing init ***********"<<std::endl;
+        OSG_NOTIFY(osg::INFO)<<"******* Doing init ***********"<<std::endl;
         _terrainTile->init();
     }
 

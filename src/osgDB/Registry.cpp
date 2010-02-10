@@ -193,7 +193,7 @@ Registry::Registry()
     if( (ptr = getenv("OSG_EXPIRY_DELAY")) != 0)
     {
         _expiryDelay = osg::asciiToDouble(ptr);
-        NOTIFY(osg::INFO)<<"Registry : Expiry delay = "<<_expiryDelay<<std::endl;
+        OSG_NOTIFY(osg::INFO)<<"Registry : Expiry delay = "<<_expiryDelay<<std::endl;
     }
 
     const char* fileCachePath = getenv("OSG_FILE_CACHE");
@@ -381,7 +381,7 @@ Registry::~Registry()
 
 void Registry::destruct()
 {
-    // NOTIFY(osg::NOTICE)<<"Registry::destruct()"<<std::endl;
+    // OSG_NOTIFY(osg::NOTICE)<<"Registry::destruct()"<<std::endl;
 
     // clean up the SharedStateManager 
     _sharedStateManager = 0;
@@ -417,12 +417,12 @@ void Registry::initDataFilePathList()
   
     if( (ptr = getenv( "OSG_FILE_PATH" )) )
     {
-        //NOTIFY(DEBUG_INFO) << "OSG_FILE_PATH("<<ptr<<")"<<std::endl;
+        //OSG_NOTIFY(DEBUG_INFO) << "OSG_FILE_PATH("<<ptr<<")"<<std::endl;
         convertStringPathIntoFilePathList(ptr, filepath);
     }
     else if( (ptr = getenv( "OSGFILEPATH" )) )
     {
-        //NOTIFY(DEBUG_INFO) << "OSGFILEPATH("<<ptr<<")"<<std::endl;
+        //OSG_NOTIFY(DEBUG_INFO) << "OSGFILEPATH("<<ptr<<")"<<std::endl;
         convertStringPathIntoFilePathList(ptr, filepath);
     }
 
@@ -449,12 +449,12 @@ void Registry::initLibraryFilePathList()
     char* ptr;
     if( (ptr = getenv( "OSG_LIBRARY_PATH")) )
     {
-        //NOTIFY(DEBUG_INFO) << "OSG_LIBRARY_PATH("<<ptr<<")"<<std::endl;
+        //OSG_NOTIFY(DEBUG_INFO) << "OSG_LIBRARY_PATH("<<ptr<<")"<<std::endl;
         setLibraryFilePathList(ptr);
     }
     else if( (ptr = getenv( "OSG_LD_LIBRARY_PATH")) )
     {
-        //NOTIFY(DEBUG_INFO) << "OSG_LD_LIBRARY_PATH("<<ptr<<")"<<std::endl;
+        //OSG_NOTIFY(DEBUG_INFO) << "OSG_LD_LIBRARY_PATH("<<ptr<<")"<<std::endl;
         setLibraryFilePathList(ptr);
     }
     
@@ -495,7 +495,7 @@ void Registry::addReaderWriter(ReaderWriter* rw)
 {
     if (rw==0L) return;
 
-    // NOTIFY(INFO) << "osg::Registry::addReaderWriter("<<rw->className()<<")"<< std::endl;
+    // OSG_NOTIFY(INFO) << "osg::Registry::addReaderWriter("<<rw->className()<<")"<< std::endl;
 
     OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
 
@@ -508,7 +508,7 @@ void Registry::removeReaderWriter(ReaderWriter* rw)
 {
     if (rw==0L) return;
 
-//    NOTIFY(INFO) << "osg::Registry::removeReaderWriter();"<< std::endl;
+//    OSG_NOTIFY(INFO) << "osg::Registry::removeReaderWriter();"<< std::endl;
 
     OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
 
@@ -536,7 +536,7 @@ bool Registry::readPluginAliasConfigurationFile( const std::string& file )
     std::string fileName = osgDB::findDataFile( file );
     if (fileName.empty())
     {
-        NOTIFY( osg::WARN) << "Can't find plugin alias config file \"" << file << "\"." << std::endl;
+        OSG_NOTIFY( osg::WARN) << "Can't find plugin alias config file \"" << file << "\"." << std::endl;
         return false;
     }
 
@@ -544,7 +544,7 @@ bool Registry::readPluginAliasConfigurationFile( const std::string& file )
     ifs.open( fileName.c_str() );
     if (!ifs.good())
     {
-        NOTIFY( osg::WARN) << "Can't open plugin alias config file \"" << fileName << "\"." << std::endl;
+        OSG_NOTIFY( osg::WARN) << "Can't open plugin alias config file \"" << fileName << "\"." << std::endl;
         return false;
     }
 
@@ -562,7 +562,7 @@ bool Registry::readPluginAliasConfigurationFile( const std::string& file )
         if (spIdx == ln.npos)
         {
             // mapExt and toExt must be on the same line, separated by a space.
-            NOTIFY( osg::WARN) << file << ", line " << lineNum << ": Syntax error: missing space in \"" << raw << "\"." << std::endl;
+            OSG_NOTIFY( osg::WARN) << file << ", line " << lineNum << ": Syntax error: missing space in \"" << raw << "\"." << std::endl;
             continue;
         }
 
@@ -699,7 +699,7 @@ bool Registry::closeLibrary(const std::string& fileName)
 
 void Registry::closeAllLibraries()
 {
-    // NOTIFY(osg::NOTICE)<<"Registry::closeAllLibraries()"<<std::endl;
+    // OSG_NOTIFY(osg::NOTICE)<<"Registry::closeAllLibraries()"<<std::endl;
     OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
     _dlList.clear();
 }
@@ -740,7 +740,7 @@ ReaderWriter* Registry::getReaderWriterForExtension(const std::string& ext)
     
     // now look for a plug-in to load the file.
     std::string libraryName = createLibraryNameForExtension(ext);
-    NOTIFY(INFO) << "Now checking for plug-in "<<libraryName<< std::endl;
+    OSG_NOTIFY(INFO) << "Now checking for plug-in "<<libraryName<< std::endl;
     if (loadLibrary(libraryName)==LOADED)
     {
         for(ReaderWriterList::iterator itr=_rwList.begin();
@@ -864,7 +864,7 @@ std::string Registry::findDataFileImplementation(const std::string& filename, co
 
     if(fileExists(filename))
     {
-        NOTIFY(osg::DEBUG_INFO) << "FindFileInPath(" << filename << "): returning " << filename << std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO) << "FindFileInPath(" << filename << "): returning " << filename << std::endl;
         return filename;
     }
 
@@ -891,7 +891,7 @@ std::string Registry::findDataFileImplementation(const std::string& filename, co
 
         if(fileExists(simpleFileName))
         {
-            NOTIFY(osg::DEBUG_INFO) << "FindFileInPath(" << filename << "): returning " << filename << std::endl;
+            OSG_NOTIFY(osg::DEBUG_INFO) << "FindFileInPath(" << filename << "): returning " << filename << std::endl;
             return simpleFileName;
         }
 
@@ -926,7 +926,7 @@ std::string Registry::findLibraryFileImplementation(const std::string& filename,
 
     if(fileExists(filename))
     {
-        NOTIFY(osg::DEBUG_INFO) << "FindFileInPath(" << filename << "): returning " << filename << std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO) << "FindFileInPath(" << filename << "): returning " << filename << std::endl;
         return filename;
     }
 
@@ -959,9 +959,9 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
             std::string::size_type endArchive = positionArchive + archiveExtension.length();
             std::string archiveName( readFunctor._filename.substr(0,endArchive));
             std::string fileName(readFunctor._filename.substr(endArchive+1,std::string::npos));
-            NOTIFY(osg::INFO)<<"Contains archive : "<<readFunctor._filename<<std::endl;
-            NOTIFY(osg::INFO)<<"         archive : "<<archiveName<<std::endl;
-            NOTIFY(osg::INFO)<<"         filename : "<<fileName<<std::endl;
+            OSG_NOTIFY(osg::INFO)<<"Contains archive : "<<readFunctor._filename<<std::endl;
+            OSG_NOTIFY(osg::INFO)<<"         archive : "<<archiveName<<std::endl;
+            OSG_NOTIFY(osg::INFO)<<"         filename : "<<fileName<<std::endl;
         
             ReaderWriter::ReadResult result = openArchiveImplementation(archiveName,ReaderWriter::READ, 4096, readFunctor._options);
         
@@ -1011,7 +1011,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
             {
                 if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE)
                 {
-                    // NOTIFY(osg::NOTICE)<<"Warning: error reading file \""<<readFunctor._filename<<"\""<<std::endl;
+                    // OSG_NOTIFY(osg::NOTICE)<<"Warning: error reading file \""<<readFunctor._filename<<"\""<<std::endl;
                     return *ritr;
                 }
             }
@@ -1023,7 +1023,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
                 {
                     if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND)
                     {
-                        //NOTIFY(osg::NOTICE)<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
+                        //OSG_NOTIFY(osg::NOTICE)<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
                         return *ritr;
                     }
                 }
@@ -1082,7 +1082,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
             {
                 if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE)
                 {
-                    // NOTIFY(osg::NOTICE)<<"Warning: error reading file \""<<readFunctor._filename<<"\""<<std::endl;
+                    // OSG_NOTIFY(osg::NOTICE)<<"Warning: error reading file \""<<readFunctor._filename<<"\""<<std::endl;
                     return *ritr;
                 }
             }
@@ -1091,7 +1091,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
             {
                 if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND)
                 {
-                    // NOTIFY(osg::NOTICE)<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
+                    // OSG_NOTIFY(osg::NOTICE)<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
                     return *ritr;
                 }
             }
@@ -1124,7 +1124,7 @@ ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFun
             ObjectCache::iterator oitr=_objectCache.find(file);
             if (oitr!=_objectCache.end())
             {
-                NOTIFY(INFO)<<"returning cached instanced of "<<file<<std::endl;
+                OSG_NOTIFY(INFO)<<"returning cached instanced of "<<file<<std::endl;
                 if (readFunctor.isValid(oitr->second.first.get())) return ReaderWriter::ReadResult(oitr->second.first.get(), ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
                 else return ReaderWriter::ReadResult("Error file does not contain an osg::Object");
             }
@@ -1134,12 +1134,12 @@ ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFun
         if (rr.validObject()) 
         {
             // update cache with new entry.
-            NOTIFY(INFO)<<"Adding to object cache "<<file<<std::endl;
+            OSG_NOTIFY(INFO)<<"Adding to object cache "<<file<<std::endl;
             addEntryToObjectCache(file,rr.getObject());
         }
         else
         {
-            NOTIFY(INFO)<<"No valid object found for "<<file<<std::endl;
+            OSG_NOTIFY(INFO)<<"No valid object found for "<<file<<std::endl;
         }
 
         return rr;
@@ -1336,7 +1336,7 @@ ReaderWriter::ReadResult Registry::readNodeImplementation(const std::string& fil
     osg::Timer_t startTick = osg::Timer::instance()->tick();
     ReaderWriter::ReadResult result = readImplementation(ReadNodeFunctor(fileName, options),Options::CACHE_NODES);
     osg::Timer_t endTick = osg::Timer::instance()->tick();
-    NOTIFY(osg::NOTICE)<<"time to load "<<fileName<<" "<<osg::Timer::instance()->delta_m(startTick, endTick)<<"ms"<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"time to load "<<fileName<<" "<<osg::Timer::instance()->delta_m(startTick, endTick)<<"ms"<<std::endl;
     return result;
 
 #else

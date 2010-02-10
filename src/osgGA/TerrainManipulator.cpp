@@ -54,7 +54,7 @@ void TerrainManipulator::setNode(osg::Node* node)
             float(boundingSphere._radius) * minimumDistanceScale,
             0.00001f,1.0f);
 
-        NOTIFY(osg::INFO)<<"Setting terrain manipulator _minimumDistance to "<<_minimumDistance<<std::endl;
+        OSG_NOTIFY(osg::INFO)<<"Setting terrain manipulator _minimumDistance to "<<_minimumDistance<<std::endl;
     }
     if (getAutoComputeHomePosition()) computeHomePosition();
 }
@@ -243,8 +243,8 @@ void TerrainManipulator::setByMatrix(const osg::Matrixd& matrix)
     osg::Vec3d lookVector(- matrix(2,0),-matrix(2,1),-matrix(2,2));
     osg::Vec3d eye(matrix(3,0),matrix(3,1),matrix(3,2));
 
-    NOTIFY(INFO)<<"eye point "<<eye<<std::endl;
-    NOTIFY(INFO)<<"lookVector "<<lookVector<<std::endl;
+    OSG_NOTIFY(INFO)<<"eye point "<<eye<<std::endl;
+    OSG_NOTIFY(INFO)<<"lookVector "<<lookVector<<std::endl;
 
     if (!_node)
     {
@@ -323,7 +323,7 @@ void TerrainManipulator::computePosition(const osg::Vec3d& eye,const osg::Vec3d&
     _distance = lv.length();
     _center = center;
 
-    NOTIFY(osg::INFO) << "In compute"<< std::endl;
+    OSG_NOTIFY(osg::INFO) << "In compute"<< std::endl;
 
     if (_node.valid())
     {
@@ -505,7 +505,7 @@ bool TerrainManipulator::calcMovement()
             if (!hitFound)
             {
                 // ??
-                NOTIFY(INFO)<<"TerrainManipulator unable to intersect with terrain."<<std::endl;
+                OSG_NOTIFY(INFO)<<"TerrainManipulator unable to intersect with terrain."<<std::endl;
             }
 
             coordinateFrame = getCoordinateFrame(_center);
@@ -519,13 +519,13 @@ bool TerrainManipulator::calcMovement()
             {
                 _rotation = _rotation * pan_rotation;
                 _previousUp = new_localUp;
-                //NOTIFY(osg::NOTICE)<<"Rotating from "<<localUp<<" to "<<new_localUp<<"  angle = "<<acos(localUp*new_localUp/(localUp.length()*new_localUp.length()))<<std::endl;
+                //OSG_NOTIFY(osg::NOTICE)<<"Rotating from "<<localUp<<" to "<<new_localUp<<"  angle = "<<acos(localUp*new_localUp/(localUp.length()*new_localUp.length()))<<std::endl;
 
                 //clampOrientation();
             }
             else
             {
-                NOTIFY(osg::INFO)<<"New up orientation nearly inline - no need to rotate"<<std::endl;
+                OSG_NOTIFY(osg::INFO)<<"New up orientation nearly inline - no need to rotate"<<std::endl;
             }
         }
 
@@ -573,7 +573,7 @@ void TerrainManipulator::clampOrientation()
 
         if (sideVector.length()<0.1)
         {
-            NOTIFY(osg::INFO)<<"Side vector short "<<sideVector.length()<<std::endl;
+            OSG_NOTIFY(osg::INFO)<<"Side vector short "<<sideVector.length()<<std::endl;
 
             sideVector = upVector^localUp;
             sideVector.normalize();

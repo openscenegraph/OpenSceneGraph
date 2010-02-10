@@ -322,7 +322,7 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
     const char* version = (const char*) glGetString( GL_VERSION );
     if (!version)
     {
-        NOTIFY(osg::FATAL)<<"Error: OpenGL version test failed, requires valid graphics context."<<std::endl;
+        OSG_NOTIFY(osg::FATAL)<<"Error: OpenGL version test failed, requires valid graphics context."<<std::endl;
         return;
     }
     
@@ -349,7 +349,7 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
             _glslLanguageVersion = 1.0f;
     }
 
-    NOTIFY(osg::INFO)
+    OSG_NOTIFY(osg::INFO)
             << "glVersion=" << getGlVersion() << ", "
             << "isGlslSupported=" << (isGlslSupported() ? "YES" : "NO") << ", "
             << "glslLanguageVersion=" << getLanguageVersion()
@@ -519,7 +519,7 @@ void GL2Extensions::Set(unsigned int contextID, GL2Extensions* extensions)
 
 static void NotSupported( const char* funcName )
 {
-    NOTIFY(osg::WARN)
+    OSG_NOTIFY(osg::WARN)
         <<"Error: "<<funcName<<" not supported by OpenGL driver"<<std::endl;
 }
 

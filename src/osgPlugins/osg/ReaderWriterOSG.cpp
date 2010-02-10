@@ -121,11 +121,11 @@ class OSGReaderWriter : public ReaderWriter
             std::string filename = osgDB::Registry::instance()->createLibraryNameForExtension("deprecated_osg");
             if (osgDB::Registry::instance()->loadLibrary(filename)==osgDB::Registry::LOADED)
             {
-                NOTIFY(osg::NOTICE)<<"Constructor OSGReaderWriter - loaded OK"<<std::endl;
+                OSG_NOTIFY(osg::NOTICE)<<"Constructor OSGReaderWriter - loaded OK"<<std::endl;
             }
             else
             {
-                NOTIFY(osg::NOTICE)<<"Constructor OSGReaderWriter - failed to load"<<std::endl;
+                OSG_NOTIFY(osg::NOTICE)<<"Constructor OSGReaderWriter - failed to load"<<std::endl;
             }
 
         }

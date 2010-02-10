@@ -34,24 +34,24 @@ TerrainTechnique::~TerrainTechnique()
 
 void TerrainTechnique::init()
 {
-    NOTIFY(osg::NOTICE)<<className()<<"::initialize(..) not implementated yet"<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<className()<<"::initialize(..) not implementated yet"<<std::endl;
 }
 
 void TerrainTechnique::update(osgUtil::UpdateVisitor* uv)
 {
-    NOTIFY(osg::NOTICE)<<className()<<"::update(..) not implementated yet"<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<className()<<"::update(..) not implementated yet"<<std::endl;
     if (_terrainTile) _terrainTile->osg::Group::traverse(*uv);
 }
 
 void TerrainTechnique::cull(osgUtil::CullVisitor* cv)
 {
-    NOTIFY(osg::NOTICE)<<className()<<"::cull(..) not implementated yet"<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<className()<<"::cull(..) not implementated yet"<<std::endl;
     if (_terrainTile) _terrainTile->osg::Group::traverse(*cv);
 }
 
 void TerrainTechnique::cleanSceneGraph()
 {
-    NOTIFY(osg::NOTICE)<<className()<<"::cleanSceneGraph(..) not implementated yet"<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<className()<<"::cleanSceneGraph(..) not implementated yet"<<std::endl;
 }
 
 void TerrainTechnique::traverse(osg::NodeVisitor& nv)

@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_NOTIFY
-#define OSG_NOTIFY 1
+#ifndef OSG_NOTIFY_H
+#define OSG_NOTIFY_H 1
 
 #include <osg/Export>
 #include <osg/Referenced> // for NotifyHandler
@@ -75,13 +75,13 @@ extern OSG_EXPORT std::ostream& notify(const NotifySeverity severity);
 
 inline std::ostream& notify(void) { return notify(osg::INFO); }
 
-#define NOTIFY(level) if (level>isNotifyEnabled(level)) osg::notify(level)
+#define OSG_NOTIFY(level) if (level>isNotifyEnabled(level)) osg::notify(level)
 
 #if _DEBUG
-    #define DEBUG_NOTIFY(level) if (level>isNotifyEnabled(level)) osg::notify(level)
+    #define OSG_DEBUG_NOTIFY(level) if (level>isNotifyEnabled(level)) osg::notify(level)
 #else
     // when using an optimized build use if (false) to tell the compiler to ignore the rest of the notify.
-    #define DEBUG_NOTIFY(level) if (false) osg::notify(level)
+    #define OSG_DEBUG_NOTIFY(level) if (false) osg::notify(level)
 #endif
 
 /** Handler processing output of notification stream. It acts as a sink to 

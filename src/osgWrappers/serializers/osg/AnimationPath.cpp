@@ -13,7 +13,7 @@ static bool checkTimeControlPointMap( const osg::AnimationPath& path )
 
 static bool readTimeControlPointMap( osgDB::InputStream& is, osg::AnimationPath& path )
 {
-    unsigned int size = 0; is >> size;
+    unsigned int size = is.readSize();
     if ( size>0 )
     {
         is >> osgDB::BEGIN_BRACKET;
@@ -37,7 +37,7 @@ static bool readTimeControlPointMap( osgDB::InputStream& is, osg::AnimationPath&
 static bool writeTimeControlPointMap( osgDB::OutputStream& os, const osg::AnimationPath& path )
 {
     const osg::AnimationPath::TimeControlPointMap& map = path.getTimeControlPointMap();
-    os << map.size();
+    os.writeSize(map.size());
     if ( map.size()>0 )
     {
         os << osgDB::BEGIN_BRACKET << std::endl;

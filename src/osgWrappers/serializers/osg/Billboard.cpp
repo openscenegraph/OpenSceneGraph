@@ -10,7 +10,8 @@ static bool checkPositionList( const osg::Billboard& node )
 
 static bool readPositionList( osgDB::InputStream& is, osg::Billboard& node )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize();
+    is >> osgDB::BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         osg::Vec3d pos; is >> pos;
@@ -23,7 +24,8 @@ static bool readPositionList( osgDB::InputStream& is, osg::Billboard& node )
 static bool writePositionList( osgDB::OutputStream& os, const osg::Billboard& node )
 {
     const osg::Billboard::PositionList& posList = node.getPositionList();
-    os << posList.size() << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(posList.size());
+    os<< osgDB::BEGIN_BRACKET << std::endl;
     for ( osg::Billboard::PositionList::const_iterator itr=posList.begin();
           itr!=posList.end(); ++itr )
     {

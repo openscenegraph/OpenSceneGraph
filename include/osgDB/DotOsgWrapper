@@ -102,6 +102,9 @@ class OSGDB_EXPORT DeprecatedDotOsgWrapperManager : public osg::Referenced
 
         bool                 writeObject(const osg::Object& obj,Output& fw);
 
+        typedef std::list<std::string> FileNames;
+        bool getLibraryFileNamesToTry(const std::string& name, FileNames& fileNames);
+
     private:
 
         virtual ~DeprecatedDotOsgWrapperManager() {}

@@ -192,6 +192,22 @@ osg::Object* DeprecatedDotOsgWrapperManager::readObjectOfType(const osg::Object&
     return readObjectOfType(concrete_wrapper(&compObj), fr);
 }
 
+bool DeprecatedDotOsgWrapperManager::getLibraryFileNamesToTry(const std::string& name, FileNames& fileNames)
+{
+    FileNames::size_type sizeBefore = fileNames.size();
+
+    std::string libraryName = osgDB::Registry::instance()->createLibraryNameForNodeKit(name);
+    if (!libraryName.empty()) fileNames.push_back(libraryName);
+
+    libraryName = osgDB::Registry::instance()->createLibraryNameForExtension(std::string("deprecated_")+name);
+    if (!libraryName.empty()) fileNames.push_back(libraryName);
+
+    libraryName = osgDB::Registry::instance()->createLibraryNameForExtension(name);
+    if (!libraryName.empty()) fileNames.push_back(libraryName);
+
+    return fileNames.size() != sizeBefore;
+}
+
 osg::Object* DeprecatedDotOsgWrapperManager::readObjectOfType(const basic_type_wrapper &btw,Input& fr)
 {
     const char *str = fr[0].getStr();
@@ -226,17 +242,16 @@ osg::Object* DeprecatedDotOsgWrapperManager::readObjectOfType(const basic_type_w
             // if we can recognize the objects.
             std::string libraryName = std::string(token,0,posDoubleColon);
 
-            // first try the standard nodekit library.
-            std::string nodeKitLibraryName = osgDB::Registry::instance()->createLibraryNameForNodeKit(libraryName);
-            if (osgDB::Registry::instance()->loadLibrary(nodeKitLibraryName)==osgDB::Registry::LOADED) return readObjectOfType(btw,fr);
-
-            // otherwise try the osgdb_ plugin library.
-            std::string pluginLibraryName = osgDB::Registry::instance()->createLibraryNameForExtension(std::string("deprecated_")+libraryName);
-            if (osgDB::Registry::instance()->loadLibrary(pluginLibraryName)==osgDB::Registry::LOADED) return readObjectOfType(btw,fr);
-
-            // otherwise try the osgdb_ plugin library.
-            pluginLibraryName = osgDB::Registry::instance()->createLibraryNameForExtension(libraryName);
-            if (osgDB::Registry::instance()->loadLibrary(pluginLibraryName)==osgDB::Registry::LOADED) return readObjectOfType(btw,fr);
+            FileNames fileNames;
+            if (getLibraryFileNamesToTry(libraryName, fileNames))
+            {
+                for(FileNames::iterator itr = fileNames.begin();
+                    itr != fileNames.end();
+                    ++itr)
+                {
+                    if (osgDB::Registry::instance()->loadLibrary(*itr)==osgDB::Registry::LOADED) return readObjectOfType(btw,fr);
+                }
+            }
         }
     }
     else if (fr[1].isOpenBracket())
@@ -292,16 +307,14 @@ osg::Object* DeprecatedDotOsgWrapperManager::readObjectOfType(const basic_type_w
                         // if we can recognize the objects.
                         std::string libraryName = std::string(token,0,posDoubleColon);
 
-                        // first try the standard nodekit library.
-                        std::string nodeKitLibraryName = osgDB::Registry::instance()->createLibraryNameForNodeKit(libraryName);
-                        if (osgDB::Registry::instance()->loadLibrary(nodeKitLibraryName)==osgDB::Registry::LOADED)
+                        FileNames fileNames;
+                        if (getLibraryFileNamesToTry(libraryName, fileNames))
                         {
-                            mitr = _objectWrapperMap.find(*aitr);
-                            if (mitr==_objectWrapperMap.end())
+                            for(FileNames::iterator itr = fileNames.begin();
+                                itr != fileNames.end() && mitr==_objectWrapperMap.end();
+                                ++itr)
                             {
-                                // otherwise try the osgdb_ plugin library.
-                                std::string pluginLibraryName = osgDB::Registry::instance()->createLibraryNameForExtension(libraryName);
-                                if (osgDB::Registry::instance()->loadLibrary(pluginLibraryName)==osgDB::Registry::LOADED)
+                                if (osgDB::Registry::instance()->loadLibrary(*itr)==osgDB::Registry::LOADED)
                                 {
                                     mitr = _objectWrapperMap.find(*aitr);
                                 }
@@ -352,13 +365,16 @@ osg::Object* DeprecatedDotOsgWrapperManager::readObject(DotOsgWrapperMap& dowMap
 
             std::string libraryName = std::string(token,0,posDoubleColon);
 
-            // first try the standard nodekit library.
-            std::string nodeKitLibraryName = osgDB::Registry::instance()->createLibraryNameForNodeKit(libraryName);
-            if (osgDB::Registry::instance()->loadLibrary(nodeKitLibraryName)==osgDB::Registry::LOADED) return readObject(dowMap,fr);
-
-            // otherwise try the osgdb_ plugin library.
-            std::string pluginLibraryName = osgDB::Registry::instance()->createLibraryNameForExtension(libraryName);
-            if (osgDB::Registry::instance()->loadLibrary(pluginLibraryName)==osgDB::Registry::LOADED) return readObject(dowMap,fr);
+            FileNames fileNames;
+            if (getLibraryFileNamesToTry(libraryName, fileNames))
+            {
+                for(FileNames::iterator itr = fileNames.begin();
+                    itr != fileNames.end();
+                    ++itr)
+                {
+                    if (osgDB::Registry::instance()->loadLibrary(*itr)==osgDB::Registry::LOADED) return readObject(dowMap,fr);
+                }
+            }
         }
     }
     else if (fr[1].isOpenBracket())
@@ -412,23 +428,19 @@ osg::Object* DeprecatedDotOsgWrapperManager::readObject(DotOsgWrapperMap& dowMap
 
                         std::string libraryName = std::string(token,0,posDoubleColon);
 
-                        // first try the standard nodekit library.
-                        std::string nodeKitLibraryName = osgDB::Registry::instance()->createLibraryNameForNodeKit(libraryName);
-                        if (osgDB::Registry::instance()->loadLibrary(nodeKitLibraryName)==osgDB::Registry::LOADED)
+                        FileNames fileNames;
+                        if (getLibraryFileNamesToTry(libraryName, fileNames))
                         {
-                            mitr = _objectWrapperMap.find(*aitr);
-                        }
-
-                        if (mitr==_objectWrapperMap.end())
-                        {
-                            // otherwise try the osgdb_ plugin library.
-                            std::string pluginLibraryName = osgDB::Registry::instance()->createLibraryNameForExtension(libraryName);
-                            if (osgDB::Registry::instance()->loadLibrary(pluginLibraryName)==osgDB::Registry::LOADED)
+                            for(FileNames::iterator itr = fileNames.begin();
+                                itr != fileNames.end() && mitr==_objectWrapperMap.end();
+                                ++itr)
                             {
-                                mitr = _objectWrapperMap.find(*aitr);
+                                if (osgDB::Registry::instance()->loadLibrary(*itr)==osgDB::Registry::LOADED)
+                                {
+                                    mitr = _objectWrapperMap.find(*aitr);
+                                }
                             }
                         }
-
                     }
                 }
 
@@ -641,13 +653,16 @@ bool DeprecatedDotOsgWrapperManager::writeObject(const osg::Object& obj,Output& 
 
     if (itr==_classNameWrapperMap.end())
     {
-        // first try the standard nodekit library.
-        std::string nodeKitLibraryName = osgDB::Registry::instance()->createLibraryNameForNodeKit(libraryName);
-        if (osgDB::Registry::instance()->loadLibrary(nodeKitLibraryName)==osgDB::Registry::LOADED) return writeObject(obj,fw);
-
-        // otherwise try the osgdb_ plugin library.
-        std::string pluginLibraryName = osgDB::Registry::instance()->createLibraryNameForExtension(libraryName);
-        if (osgDB::Registry::instance()->loadLibrary(pluginLibraryName)==osgDB::Registry::LOADED) return writeObject(obj,fw);
+        FileNames fileNames;
+        if (getLibraryFileNamesToTry(libraryName, fileNames))
+        {
+            for(FileNames::iterator itr = fileNames.begin();
+                itr != fileNames.end();
+                ++itr)
+            {
+                if (osgDB::Registry::instance()->loadLibrary(*itr)==osgDB::Registry::LOADED) return writeObject(obj,fw);
+            }
+        }
 
         // otherwise try simple class name
         if (itr == _classNameWrapperMap.end())
@@ -711,23 +726,19 @@ bool DeprecatedDotOsgWrapperManager::writeObject(const osg::Object& obj,Output& 
 
                     std::string libraryName = std::string(token,0,posDoubleColon);
 
-                    // first try the standard nodekit library.
-                    std::string nodeKitLibraryName = osgDB::Registry::instance()->createLibraryNameForNodeKit(libraryName);
-                    if (osgDB::Registry::instance()->loadLibrary(nodeKitLibraryName)==osgDB::Registry::LOADED)
+                    FileNames fileNames;
+                    if (getLibraryFileNamesToTry(libraryName, fileNames))
                     {
-                        mitr = _objectWrapperMap.find(*aitr);
-                    }
-
-                    if (mitr==_objectWrapperMap.end())
-                    {
-                        // otherwise try the osgdb_ plugin library.
-                        std::string pluginLibraryName = osgDB::Registry::instance()->createLibraryNameForExtension(libraryName);
-                        if (osgDB::Registry::instance()->loadLibrary(pluginLibraryName)==osgDB::Registry::LOADED)
+                        for(FileNames::iterator itr = fileNames.begin();
+                            itr != fileNames.end() && mitr==_objectWrapperMap.end();
+                            ++itr)
                         {
-                            mitr = _objectWrapperMap.find(*aitr);
+                            if (osgDB::Registry::instance()->loadLibrary(*itr)==osgDB::Registry::LOADED)
+                            {
+                                mitr = _objectWrapperMap.find(*aitr);
+                            }
                         }
                     }
-
                 }
             }
             if (mitr!=_objectWrapperMap.end())

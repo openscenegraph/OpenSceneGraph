@@ -134,7 +134,11 @@ public:
     // Convenient methods for writing
     void writeWrappedString( const std::string& str );
     void writeCharArray( const char* s, unsigned int size ) { _out->writeCharArray(s, size); }
-    
+
+    // method for converting all data structure sizes to unsigned int to ensure architecture portability.
+    template<typename T>
+    void writeSize(T size) { *this<<static_cast<unsigned int>(size); }
+
     // Global writing functions
     void writeArray( const osg::Array* a );
     void writePrimitiveSet( const osg::PrimitiveSet* p );
@@ -153,7 +157,7 @@ public:
     
 protected:
     template<typename T>
-    void writeArrayImplementation( const T*, int writeSize, unsigned int numInRow=1 );
+    void writeArrayImplementation( const T*, int write_size, unsigned int numInRow=1 );
     
     unsigned int findOrCreateArrayID( const osg::Array* array );
     unsigned int findOrCreateObjectID( const osg::Object* obj );

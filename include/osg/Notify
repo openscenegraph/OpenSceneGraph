@@ -75,10 +75,10 @@ extern OSG_EXPORT std::ostream& notify(const NotifySeverity severity);
 
 inline std::ostream& notify(void) { return notify(osg::INFO); }
 
-#define OSG_NOTIFY(level) if (level>isNotifyEnabled(level)) osg::notify(level)
+#define OSG_NOTIFY(level) if (isNotifyEnabled(level)) osg::notify(level)
 
 #if _DEBUG
-    #define OSG_DEBUG_NOTIFY(level) if (level>isNotifyEnabled(level)) osg::notify(level)
+    #define OSG_DEBUG_NOTIFY(level) if (isNotifyEnabled(level)) osg::notify(level)
 #else
     // when using an optimized build use if (false) to tell the compiler to ignore the rest of the notify.
     #define OSG_DEBUG_NOTIFY(level) if (false) osg::notify(level)

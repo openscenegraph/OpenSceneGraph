@@ -134,7 +134,7 @@ void Uniform::write(DataOutputStream* out){
             }
             default:
             {
-                NOTIFY(osg::WARN)<<"Warning : uniform "<<getType()<<"type not supported for writing."<<std::endl;
+                OSG_NOTIFY(osg::WARN)<<"Warning : uniform "<<getType()<<"type not supported for writing."<<std::endl;
                 break;
             }
         }
@@ -253,7 +253,7 @@ void Uniform::read(DataInputStream* in)
             }
             default:
             {
-                NOTIFY(osg::WARN)<<"Warning : uniform "<<getType()<<"type not supported for reading."<<std::endl;
+                OSG_NOTIFY(osg::WARN)<<"Warning : uniform "<<getType()<<"type not supported for reading."<<std::endl;
                 break;
             }
         }

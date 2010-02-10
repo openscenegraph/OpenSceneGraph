@@ -158,7 +158,7 @@ State::~State()
 
     //_vertexAttribArrayList.clear();
 
-    // NOTIFY(osg::NOTICE)<<"State::~State()"<<this<<std::endl;
+    // OSG_NOTIFY(osg::NOTICE)<<"State::~State()"<<this<<std::endl;
     for(AppliedProgramObjectSet::iterator itr = _appliedProgramObjectSet.begin();
         itr != _appliedProgramObjectSet.end();
         ++itr)
@@ -173,7 +173,7 @@ void State::objectDeleted(void* object)
     AppliedProgramObjectSet::iterator itr = _appliedProgramObjectSet.find(ppcp);
     if (itr != _appliedProgramObjectSet.end()) 
     {
-        // NOTIFY(osg::NOTICE)<<"Removing _appliedProgramObjectSet entry "<<ppcp<<std::endl;
+        // OSG_NOTIFY(osg::NOTICE)<<"Removing _appliedProgramObjectSet entry "<<ppcp<<std::endl;
         _appliedProgramObjectSet.erase(itr);
     }
 }
@@ -293,14 +293,14 @@ void State::setMaxTexturePoolSize(unsigned int size)
 {
     _maxTexturePoolSize = size;
     osg::Texture::getTextureObjectManager(getContextID())->setMaxTexturePoolSize(size);
-    NOTIFY(osg::INFO)<<"osg::State::_maxTexturePoolSize="<<_maxTexturePoolSize<<std::endl;
+    OSG_NOTIFY(osg::INFO)<<"osg::State::_maxTexturePoolSize="<<_maxTexturePoolSize<<std::endl;
 }
 
 void State::setMaxBufferObjectPoolSize(unsigned int size)
 {
     _maxBufferObjectPoolSize = size;
     osg::GLBufferObjectManager::getGLBufferObjectManager(getContextID())->setMaxGLBufferObjectPoolSize(_maxBufferObjectPoolSize);
-    NOTIFY(osg::INFO)<<"osg::State::_maxBufferObjectPoolSize="<<_maxBufferObjectPoolSize<<std::endl;
+    OSG_NOTIFY(osg::INFO)<<"osg::State::_maxBufferObjectPoolSize="<<_maxBufferObjectPoolSize<<std::endl;
 }
 
 void State::pushStateSet(const StateSet* dstate)
@@ -332,12 +332,12 @@ void State::pushStateSet(const StateSet* dstate)
         pushUniformList(_uniformMap,dstate->getUniformList());
     }
 
-    // NOTIFY(osg::NOTICE)<<"State::pushStateSet()"<<_stateStateStack.size()<<std::endl;
+    // OSG_NOTIFY(osg::NOTICE)<<"State::pushStateSet()"<<_stateStateStack.size()<<std::endl;
 }
 
 void State::popAllStateSets()
 {
-    // NOTIFY(osg::NOTICE)<<"State::popAllStateSets()"<<_stateStateStack.size()<<std::endl;
+    // OSG_NOTIFY(osg::NOTICE)<<"State::popAllStateSets()"<<_stateStateStack.size()<<std::endl;
 
     while (!_stateStateStack.empty()) popStateSet();
     
@@ -349,7 +349,7 @@ void State::popAllStateSets()
 
 void State::popStateSet()
 {
-    // NOTIFY(osg::NOTICE)<<"State::popStateSet()"<<_stateStateStack.size()<<std::endl;
+    // OSG_NOTIFY(osg::NOTICE)<<"State::popStateSet()"<<_stateStateStack.size()<<std::endl;
 
     if (_stateStateStack.empty()) return;
     
@@ -414,7 +414,7 @@ void State::removeStateSet(unsigned int pos)
 {
     if (pos >= _stateStateStack.size())
     {
-        NOTIFY(osg::NOTICE)<<"Warning: State::removeStateSet("<<pos<<") out of range"<<std::endl;
+        OSG_NOTIFY(osg::NOTICE)<<"Warning: State::removeStateSet("<<pos<<") out of range"<<std::endl;
         return;
     }
     
@@ -784,7 +784,7 @@ void State::setInterleavedArrays( GLenum format, GLsizei stride, const GLvoid* p
 #if defined(OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
     glInterleavedArrays( format, stride, pointer);
 #else
-    NOTIFY(osg::NOTICE)<<"Warning: State::setInterleavedArrays(..) not implemented."<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"Warning: State::setInterleavedArrays(..) not implemented."<<std::endl;
 #endif
 
     // the crude way, assume that all arrays have been effected so dirty them and
@@ -921,7 +921,7 @@ void State::setVertexAttribPointer( unsigned int index,
 {
     if (_glVertexAttribPointer)
     {
-        // NOTIFY(osg::NOTICE)<<"State::setVertexAttribPointer("<<index<<",...)"<<std::endl;
+        // OSG_NOTIFY(osg::NOTICE)<<"State::setVertexAttribPointer("<<index<<",...)"<<std::endl;
 
         if ( index >= _vertexAttribArrayList.size()) _vertexAttribArrayList.resize(index+1);
         EnabledArrayPair& eap = _vertexAttribArrayList[index];
@@ -929,12 +929,12 @@ void State::setVertexAttribPointer( unsigned int index,
         if (!eap._enabled || eap._dirty)
         {
             eap._enabled = true;
-            // NOTIFY(osg::NOTICE)<<"    _glEnableVertexAttribArray( "<<index<<" )"<<std::endl;
+            // OSG_NOTIFY(osg::NOTICE)<<"    _glEnableVertexAttribArray( "<<index<<" )"<<std::endl;
             _glEnableVertexAttribArray( index );
         }
         //if (eap._pointer != ptr || eap._normalized!=normalized || eap._dirty)
         {
-            // NOTIFY(osg::NOTICE)<<"    _glVertexAttribPointer( "<<index<<" )"<<std::endl;
+            // OSG_NOTIFY(osg::NOTICE)<<"    _glVertexAttribPointer( "<<index<<" )"<<std::endl;
             _glVertexAttribPointer( index, size, type, normalized, stride, ptr );
             eap._pointer = ptr;
             eap._normalized = normalized;
@@ -957,7 +957,7 @@ void State::disableVertexAttribPointer( unsigned int index )
         {
             eap._enabled = false;
             eap._dirty = false;
-            // NOTIFY(osg::NOTICE)<<"    _glDisableVertexAttribArray( "<<index<<" )"<<std::endl;
+            // OSG_NOTIFY(osg::NOTICE)<<"    _glDisableVertexAttribArray( "<<index<<" )"<<std::endl;
             _glDisableVertexAttribArray( index );
         }
     }
@@ -974,7 +974,7 @@ void State::disableVertexAttribPointersAboveAndIncluding( unsigned int index )
             {
                 eap._enabled = false;
                 eap._dirty = false;
-                // NOTIFY(osg::NOTICE)<<"    State::disableVertexAttribPointersAboveAndIncluding(): _glDisableVertexAttribArray( "<<index<<" )"<<std::endl;
+                // OSG_NOTIFY(osg::NOTICE)<<"    State::disableVertexAttribPointersAboveAndIncluding(): _glDisableVertexAttribArray( "<<index<<" )"<<std::endl;
                 _glDisableVertexAttribArray( index );
             }
             ++index;
@@ -984,7 +984,7 @@ void State::disableVertexAttribPointersAboveAndIncluding( unsigned int index )
 
 void State::lazyDisablingOfVertexAttributes()
 {
-    // NOTIFY(osg::NOTICE)<<"lazyDisablingOfVertexAttributes()"<<std::endl;
+    // OSG_NOTIFY(osg::NOTICE)<<"lazyDisablingOfVertexAttributes()"<<std::endl;
     if (!_useVertexAttributeAliasing)
     {
         _vertexArray._lazy_disable = true;
@@ -1010,7 +1010,7 @@ void State::lazyDisablingOfVertexAttributes()
 
 void State::applyDisablingOfVertexAttributes()
 {
-    //NOTIFY(osg::NOTICE)<<"start of applyDisablingOfVertexAttributes()"<<std::endl;
+    //OSG_NOTIFY(osg::NOTICE)<<"start of applyDisablingOfVertexAttributes()"<<std::endl;
     if (!_useVertexAttributeAliasing)
     {
         if (_vertexArray._lazy_disable) disableVertexPointer();
@@ -1027,7 +1027,7 @@ void State::applyDisablingOfVertexAttributes()
     {
         if (_vertexAttribArrayList[i]._lazy_disable) disableVertexAttribPointer(i);
     }
-    // NOTIFY(osg::NOTICE)<<"end of applyDisablingOfVertexAttributes()"<<std::endl;
+    // OSG_NOTIFY(osg::NOTICE)<<"end of applyDisablingOfVertexAttributes()"<<std::endl;
 }
 
 
@@ -1061,39 +1061,39 @@ bool State::checkGLErrors(const char* str) const
         const char* error = (char*)gluErrorString(errorNo);
         if (error)
         {
-            NOTIFY(WARN)<<"Warning: detected OpenGL error '" << error<<"'";
+            OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error '" << error<<"'";
         }
         else
         {
-            NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x" << std::hex << errorNo << std::dec;
+            OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x" << std::hex << errorNo << std::dec;
         }
 #else
             switch(errorNo)
             {
                 case(GL_INVALID_ENUM):
-                    NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_ENUM";
+                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_ENUM";
                     break;
                 case(GL_INVALID_VALUE):
-                    NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_VALUE";
+                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_VALUE";
                     break;
                 case(GL_INVALID_OPERATION):
-                    NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_OPERATION";
+                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_OPERATION";
                     break;
                 case(GL_OUT_OF_MEMORY):
-                    NOTIFY(WARN)<<"Warning: detected OpenGL error GL_OUT_OF_MEMORY";
+                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_OUT_OF_MEMORY";
                     break;
                 default:
-                    NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x" << std::hex << errorNo << std::dec;
+                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x" << std::hex << errorNo << std::dec;
                     break;
             }
 #endif
         if (str)
         {
-            NOTIFY(WARN)<<" at "<<str<< std::endl;
+            OSG_NOTIFY(WARN)<<" at "<<str<< std::endl;
         }
         else
         {
-            NOTIFY(WARN)<<" in osg::State."<< std::endl;
+            OSG_NOTIFY(WARN)<<" in osg::State."<< std::endl;
         }
 
         return true;
@@ -1110,29 +1110,29 @@ bool State::checkGLErrors(StateAttribute::GLMode mode) const
             const char* error = (char*)gluErrorString(errorNo);
             if (error)
             {
-                NOTIFY(WARN)<<"Warning: detected OpenGL error '"<< error <<"' after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
+                OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error '"<< error <<"' after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
             }
             else
             {
-                NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x"<< std::hex << errorNo <<" after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
+                OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x"<< std::hex << errorNo <<" after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
             }
         #else
             switch(errorNo)
             {
                 case(GL_INVALID_ENUM):
-                    NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_ENUM after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
+                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_ENUM after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
                     break;
                 case(GL_INVALID_VALUE):
-                    NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_VALUE after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
+                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_VALUE after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
                     break;
                 case(GL_INVALID_OPERATION):
-                    NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_OPERATION after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
+                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_OPERATION after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
                     break;
                 case(GL_OUT_OF_MEMORY):
-                    NOTIFY(WARN)<<"Warning: detected OpenGL error GL_OUT_OF_MEMORY after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
+                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_OUT_OF_MEMORY after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
                     break;
                 default:
-                    NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x"<< std::hex << errorNo <<" after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
+                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x"<< std::hex << errorNo <<" after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
                     break;
             }
         #endif
@@ -1150,29 +1150,29 @@ bool State::checkGLErrors(const StateAttribute* attribute) const
             const char* error = (char*)gluErrorString(errorNo);
             if (error)
             {
-                NOTIFY(WARN)<<"Warning: detected OpenGL error '"<< error <<"' after applying attribute "<<attribute->className()<<" "<<attribute<< std::endl;
+                OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error '"<< error <<"' after applying attribute "<<attribute->className()<<" "<<attribute<< std::endl;
             }
             else
             {
-                NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x"<< std::hex << errorNo <<" after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
+                OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x"<< std::hex << errorNo <<" after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
             }
         #else
             switch(errorNo)
             {
                 case(GL_INVALID_ENUM):
-                    NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_ENUM after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
+                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_ENUM after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
                     break;
                 case(GL_INVALID_VALUE):
-                    NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_VALUE after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
+                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_VALUE after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
                     break;
                 case(GL_INVALID_OPERATION):
-                    NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_OPERATION after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
+                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_OPERATION after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
                     break;
                 case(GL_OUT_OF_MEMORY):
-                    NOTIFY(WARN)<<"Warning: detected OpenGL error GL_OUT_OF_MEMORY after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
+                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_OUT_OF_MEMORY after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
                     break;
                 default:
-                    NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x"<< std::hex << errorNo <<" after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
+                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x"<< std::hex << errorNo <<" after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
                     break;
             }
         #endif
@@ -1231,9 +1231,9 @@ namespace State_Utils
 
 bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
 {
-    NOTIFY(osg::NOTICE)<<"State::convertShaderSourceToOsgBuiltIns()"<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"State::convertShaderSourceToOsgBuiltIns()"<<std::endl;
 
-    NOTIFY(osg::NOTICE)<<"++Before Converted source "<<std::endl<<source<<std::endl<<"++++++++"<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"++Before Converted source "<<std::endl<<source<<std::endl<<"++++++++"<<std::endl;
 
     // replace ftransform as it only works with built-ins
     State_Utils::replace(source, "ftransform()", "gl_ModelViewProjectionMatrix * gl_Vertex");
@@ -1259,7 +1259,7 @@ bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
     State_Utils::replaceAndInsertDeclaration(source, "gl_ProjectionMatrix", "osg_ProjectionMatrix", "uniform mat4 ");
     State_Utils::replaceAndInsertDeclaration(source, "gl_NormalMatrix", "osg_NormalMatrix", "uniform mat3 ");
 
-    NOTIFY(osg::NOTICE)<<"-------- Converted source "<<std::endl<<source<<std::endl<<"----------------"<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"-------- Converted source "<<std::endl<<source<<std::endl<<"----------------"<<std::endl;
 
     return true;
 }
@@ -1344,7 +1344,7 @@ void State::updateModelViewAndProjectionMatrixUniforms()
 
 void State::drawQuads(GLint first, GLsizei count, GLsizei primCount)
 {
-    // NOTIFY(osg::NOTICE)<<"State::drawQuads("<<first<<", "<<count<<")"<<std::endl;
+    // OSG_NOTIFY(osg::NOTICE)<<"State::drawQuads("<<first<<", "<<count<<")"<<std::endl;
     
     unsigned int array = first % 4;
     unsigned int offsetFirst = ((first-array) / 4) * 6;
@@ -1354,7 +1354,7 @@ void State::drawQuads(GLint first, GLsizei count, GLsizei primCount)
     Indices& indices = _quadIndices[array];
     if (endOfIndices>65536)
     {
-        NOTIFY(osg::NOTICE)<<"Warning: State::drawQuads("<<first<<", "<<count<<") too large handle in remapping to ushort glDrawElements."<<std::endl;
+        OSG_NOTIFY(osg::NOTICE)<<"Warning: State::drawQuads("<<first<<", "<<count<<") too large handle in remapping to ushort glDrawElements."<<std::endl;
         endOfIndices = 65536;
     }
     
@@ -1375,13 +1375,13 @@ void State::drawQuads(GLint first, GLsizei count, GLsizei primCount)
             indices.push_back(base+2);
             indices.push_back(base+3);
             
-            // NOTIFY(osg::NOTICE)<<"   adding quad indices ("<<base<<")"<<std::endl;
+            // OSG_NOTIFY(osg::NOTICE)<<"   adding quad indices ("<<base<<")"<<std::endl;
         }
     }
 
     // if (array!=0) return;
 
-    // NOTIFY(osg::NOTICE)<<"  glDrawElements(GL_TRIANGLES, "<<numIndices<<", GL_UNSIGNED_SHORT, "<<&(indices[base])<<")"<<std::endl;
+    // OSG_NOTIFY(osg::NOTICE)<<"  glDrawElements(GL_TRIANGLES, "<<numIndices<<", GL_UNSIGNED_SHORT, "<<&(indices[base])<<")"<<std::endl;
     glDrawElementsInstanced(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, &(indices[offsetFirst]), primCount);
 }
 

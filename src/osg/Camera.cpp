@@ -88,7 +88,7 @@ void Camera::DrawCallback::operator () (osg::RenderInfo& renderInfo) const
     }
     else
     {
-        NOTIFY(osg::WARN)<<"Error: Camera::DrawCallback called without valid camera."<<std::endl;
+        OSG_NOTIFY(osg::WARN)<<"Error: Camera::DrawCallback called without valid camera."<<std::endl;
     }
 }
 
@@ -126,7 +126,7 @@ void Camera::setRenderTargetImplementation(RenderTargetImplementation impl, Rend
     }
     else
     {
-        NOTIFY(osg::NOTICE)<<"Warning: Camera::setRenderTargetImplementation(impl,fallback) must have a lower rated fallback than the main target implementation."<<std::endl;
+        OSG_NOTIFY(osg::NOTICE)<<"Warning: Camera::setRenderTargetImplementation(impl,fallback) must have a lower rated fallback than the main target implementation."<<std::endl;
         setRenderTargetImplementation(impl);
     }
 }
@@ -393,7 +393,7 @@ void Camera::inheritCullSettings(const CullSettings& settings, unsigned int inhe
     const Camera* camera = dynamic_cast<const Camera*>(&settings);
     if (camera)
     {
-        //NOTIFY(osg::NOTICE)<<"Inheriting slave Camera"<<std::endl;
+        //OSG_NOTIFY(osg::NOTICE)<<"Inheriting slave Camera"<<std::endl;
         if (inheritanceMask & CLEAR_COLOR)
             _clearColor = camera->_clearColor;
 

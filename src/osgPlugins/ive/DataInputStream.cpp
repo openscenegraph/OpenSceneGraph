@@ -153,7 +153,7 @@ DataInputStream::DataInputStream(std::istream* istream, const osgDB::ReaderWrite
     if (_options.get())
     {
         setLoadExternalReferenceFiles(_options->getOptionString().find("noLoadExternalReferenceFiles")==std::string::npos);
-        NOTIFY(osg::DEBUG_INFO) << "ive::DataInputStream.setLoadExternalReferenceFiles()=" << getLoadExternalReferenceFiles() << std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO) << "ive::DataInputStream.setLoadExternalReferenceFiles()=" << getLoadExternalReferenceFiles() << std::endl;
     }
 
     if(!istream){
@@ -167,7 +167,7 @@ DataInputStream::DataInputStream(std::istream* istream, const osgDB::ReaderWrite
       if ( endianType != OPPOSITE_ENDIAN_TYPE ) {
          throwException("DataInputStream::DataInputStream(): This file has an unreadable endian type.") ;
       }
-      NOTIFY(osg::INFO)<<"DataInputStream::DataInputStream: Reading a byteswapped file" << std::endl ;
+      OSG_NOTIFY(osg::INFO)<<"DataInputStream::DataInputStream: Reading a byteswapped file" << std::endl ;
       _byteswap = 1 ;
    }
 
@@ -184,7 +184,7 @@ DataInputStream::DataInputStream(std::istream* istream, const osgDB::ReaderWrite
         
         if (compressionLevel>0)
         {
-            NOTIFY(osg::INFO)<<"compressed ive stream"<<std::endl;
+            OSG_NOTIFY(osg::INFO)<<"compressed ive stream"<<std::endl;
             
             unsigned int maxSize = readUInt();
             
@@ -202,7 +202,7 @@ DataInputStream::DataInputStream(std::istream* istream, const osgDB::ReaderWrite
         }
         else
         {
-            NOTIFY(osg::INFO)<<"uncompressed ive stream"<<std::endl;
+            OSG_NOTIFY(osg::INFO)<<"uncompressed ive stream"<<std::endl;
         }
     }
 }
@@ -238,7 +238,7 @@ bool DataInputStream::uncompress(std::istream& fin, std::string& destination) co
                        );
     if (ret != Z_OK)
     {
-        NOTIFY(osg::INFO)<<"failed to init"<<std::endl;
+        OSG_NOTIFY(osg::INFO)<<"failed to init"<<std::endl;
         return ret != 0;
     }
     

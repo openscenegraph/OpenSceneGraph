@@ -100,7 +100,7 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
         }
         else
         {
-            NOTIFY(osg::WARN)<<"Invalid clear color \""<<colorStr<<"\""<<std::endl;
+            OSG_NOTIFY(osg::WARN)<<"Invalid clear color \""<<colorStr<<"\""<<std::endl;
         }
     }
 
@@ -209,13 +209,13 @@ void Viewer::constructorInit()
 
 Viewer::~Viewer()
 {
-    //NOTIFY(osg::NOTICE)<<"Viewer::~Viewer()"<<std::endl;
+    //OSG_NOTIFY(osg::NOTICE)<<"Viewer::~Viewer()"<<std::endl;
 
 
     Threads threads;
     getAllThreads(threads);
 
-    NOTIFY(osg::INFO)<<"Viewer::~Viewer():: start destructor getThreads = "<<threads.size()<<std::endl;
+    OSG_NOTIFY(osg::INFO)<<"Viewer::~Viewer():: start destructor getThreads = "<<threads.size()<<std::endl;
 
 
     stopThreading();
@@ -237,11 +237,11 @@ Viewer::~Viewer()
         (*citr)->close();
     }
 
-    //NOTIFY(osg::NOTICE)<<"finish Viewer::~Viewer()"<<std::endl;
+    //OSG_NOTIFY(osg::NOTICE)<<"finish Viewer::~Viewer()"<<std::endl;
 
     getAllThreads(threads);
 
-    NOTIFY(osg::INFO)<<"Viewer::~Viewer() end destrcutor getThreads = "<<threads.size()<<std::endl;
+    OSG_NOTIFY(osg::INFO)<<"Viewer::~Viewer() end destrcutor getThreads = "<<threads.size()<<std::endl;
 
 }
 
@@ -288,19 +288,19 @@ void Viewer::take(View& rhs)
 
 bool Viewer::readConfiguration(const std::string& filename)
 {
-    NOTIFY(osg::INFO)<<"Viewer::readConfiguration("<<filename<<")"<<std::endl;
+    OSG_NOTIFY(osg::INFO)<<"Viewer::readConfiguration("<<filename<<")"<<std::endl;
 
     osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(filename);
     if (!object)
     {
-        //NOTIFY(osg::NOTICE)<<"Error: Unable to load configuration file \""<<filename<<"\""<<std::endl;
+        //OSG_NOTIFY(osg::NOTICE)<<"Error: Unable to load configuration file \""<<filename<<"\""<<std::endl;
         return false;
     }
 
     CompositeViewer* compositeViewer = dynamic_cast<CompositeViewer*>(object.get());
     if (compositeViewer)
     {
-        NOTIFY(osg::NOTICE)<<"Error: Config file \""<<filename<<"\" containing CompositeViewer cannot be loaded by Viewer."<<std::endl;
+        OSG_NOTIFY(osg::NOTICE)<<"Error: Config file \""<<filename<<"\" containing CompositeViewer cannot be loaded by Viewer."<<std::endl;
         return false;
     }
 
@@ -313,7 +313,7 @@ bool Viewer::readConfiguration(const std::string& filename)
     }
     else
     {
-        NOTIFY(osg::NOTICE)<<"Error: Config file \""<<filename<<"\" does not contain a valid Viewer configuration."<<std::endl;
+        OSG_NOTIFY(osg::NOTICE)<<"Error: Config file \""<<filename<<"\" does not contain a valid Viewer configuration."<<std::endl;
         return false;
     }
 }
@@ -424,7 +424,7 @@ GraphicsWindowEmbedded* Viewer::setUpViewerAsEmbeddedInWindow(int x, int y, int 
 
 void Viewer::realize()
 {
-    //NOTIFY(osg::INFO)<<"Viewer::realize()"<<std::endl;
+    //OSG_NOTIFY(osg::INFO)<<"Viewer::realize()"<<std::endl;
 
     setCameraWithFocus(0);
 
@@ -433,7 +433,7 @@ void Viewer::realize()
 
     if (contexts.empty())
     {
-        NOTIFY(osg::INFO)<<"Viewer::realize() - No valid contexts found, setting up view across all screens."<<std::endl;
+        OSG_NOTIFY(osg::INFO)<<"Viewer::realize() - No valid contexts found, setting up view across all screens."<<std::endl;
 
         // no windows are already set up so set up a default view
 
@@ -478,7 +478,7 @@ void Viewer::realize()
 
     if (contexts.empty())
     {
-        NOTIFY(osg::NOTICE)<<"Viewer::realize() - failed to set up any windows"<<std::endl;
+        OSG_NOTIFY(osg::NOTICE)<<"Viewer::realize() - failed to set up any windows"<<std::endl;
         _done = true;
         return;
     }
@@ -608,7 +608,7 @@ void Viewer::eventTraversal()
 
     double beginEventTraversal = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
 
-    // NOTIFY(osg::NOTICE)<<"Viewer::frameEventTraversal()."<<std::endl;
+    // OSG_NOTIFY(osg::NOTICE)<<"Viewer::frameEventTraversal()."<<std::endl;
 
     // need to copy events from the GraphicsWindow's into local EventQueue;
     osgGA::EventQueue::Events events;
@@ -684,7 +684,7 @@ void Viewer::eventTraversal()
                                         x >= viewport->x() && y >= viewport->y() &&
                                         x <= (viewport->x()+viewport->width()) && y <= (viewport->y()+viewport->height()) )
                                     {
-                                        // NOTIFY(osg::NOTICE)<<"setCamera with focus "<<camera->getName()<<" x="<<x<<" y="<<y<<std::endl;
+                                        // OSG_NOTIFY(osg::NOTICE)<<"setCamera with focus "<<camera->getName()<<" x="<<x<<" y="<<y<<std::endl;
                                         setCameraWithFocus(camera);
                                     }
                                 }
@@ -712,7 +712,7 @@ void Viewer::eventTraversal()
                         x = new_coord.x();
                         y = new_coord.y();
 
-                        // NOTIFY(osg::NOTICE)<<"pointer event new_coord.x()="<<new_coord.x()<<" new_coord.y()="<<new_coord.y()<<std::endl;
+                        // OSG_NOTIFY(osg::NOTICE)<<"pointer event new_coord.x()="<<new_coord.x()<<" new_coord.y()="<<new_coord.y()<<std::endl;
 
                         event->setInputRange(eventState->getXmin(), eventState->getYmin(), eventState->getXmax(), eventState->getYmax());
                         event->setX(x);
@@ -724,7 +724,7 @@ void Viewer::eventTraversal()
                     {
                         x = eventState->getXmin() + (x/double(gw->getTraits()->width))*(eventState->getXmax() - eventState->getXmin());
                         y = eventState->getYmin() + (y/double(gw->getTraits()->height))*(eventState->getYmax() - eventState->getYmin());
-                        // NOTIFY(osg::NOTICE)<<"new x = "<<x<<" new y = "<<y<<std::endl;
+                        // OSG_NOTIFY(osg::NOTICE)<<"new x = "<<x<<" new y = "<<y<<std::endl;
 
                         event->setInputRange(eventState->getXmin(), eventState->getYmin(), eventState->getXmax(), eventState->getYmax());
                         event->setX(x);
@@ -747,8 +747,8 @@ void Viewer::eventTraversal()
                     event->setButtonMask(eventState->getButtonMask());
                     event->setMouseYOrientation(eventState->getMouseYOrientation());
                 }
-                //NOTIFY(osg::NOTICE)<<"   mouse x = "<<event->getX()<<" y="<<event->getY()<<std::endl;
-                // NOTIFY(osg::NOTICE)<<"   mouse Xmin = "<<event->getXmin()<<" Ymin="<<event->getYmin()<<" xMax="<<event->getXmax()<<" Ymax="<<event->getYmax()<<std::endl;
+                //OSG_NOTIFY(osg::NOTICE)<<"   mouse x = "<<event->getX()<<" y="<<event->getY()<<std::endl;
+                // OSG_NOTIFY(osg::NOTICE)<<"   mouse Xmin = "<<event->getXmin()<<" Ymin="<<event->getYmin()<<" xMax="<<event->getXmax()<<" Ymax="<<event->getYmax()<<std::endl;
             }
 
             for(itr = gw_events.begin();
@@ -781,7 +781,7 @@ void Viewer::eventTraversal()
     }
 
 
-    // NOTIFY(osg::NOTICE)<<"mouseEventState Xmin = "<<eventState->getXmin()<<" Ymin="<<eventState->getYmin()<<" xMax="<<eventState->getXmax()<<" Ymax="<<eventState->getYmax()<<std::endl;
+    // OSG_NOTIFY(osg::NOTICE)<<"mouseEventState Xmin = "<<eventState->getXmin()<<" Ymin="<<eventState->getYmin()<<" xMax="<<eventState->getXmax()<<" Ymax="<<eventState->getYmax()<<std::endl;
 
 
     _eventQueue->frame( getFrameStamp()->getReferenceTime() );
@@ -789,7 +789,7 @@ void Viewer::eventTraversal()
 
 
 #if 0
-    // NOTIFY(osg::NOTICE)<<"Events "<<events.size()<<std::endl;
+    // OSG_NOTIFY(osg::NOTICE)<<"Events "<<events.size()<<std::endl;
     for(osgGA::EventQueue::Events::iterator itr = events.begin();
         itr != events.end();
         ++itr)
@@ -798,43 +798,43 @@ void Viewer::eventTraversal()
         switch(event->getEventType())
         {
             case(osgGA::GUIEventAdapter::PUSH):
-                NOTIFY(osg::NOTICE)<<"  PUSH "<<event->getButton()<<" x="<<event->getX()<<" y="<<event->getY()<<std::endl;
+                OSG_NOTIFY(osg::NOTICE)<<"  PUSH "<<event->getButton()<<" x="<<event->getX()<<" y="<<event->getY()<<std::endl;
                 break;
             case(osgGA::GUIEventAdapter::RELEASE):
-                NOTIFY(osg::NOTICE)<<"  RELEASE "<<event->getButton()<<" x="<<event->getX()<<" y="<<event->getY()<<std::endl;
+                OSG_NOTIFY(osg::NOTICE)<<"  RELEASE "<<event->getButton()<<" x="<<event->getX()<<" y="<<event->getY()<<std::endl;
                 break;
             case(osgGA::GUIEventAdapter::DRAG):
-                NOTIFY(osg::NOTICE)<<"  DRAG "<<event->getButtonMask()<<" x="<<event->getX()<<" y="<<event->getY()<<std::endl;
+                OSG_NOTIFY(osg::NOTICE)<<"  DRAG "<<event->getButtonMask()<<" x="<<event->getX()<<" y="<<event->getY()<<std::endl;
                 break;
             case(osgGA::GUIEventAdapter::MOVE):
-                NOTIFY(osg::NOTICE)<<"  MOVE "<<event->getButtonMask()<<" x="<<event->getX()<<" y="<<event->getY()<<std::endl;
+                OSG_NOTIFY(osg::NOTICE)<<"  MOVE "<<event->getButtonMask()<<" x="<<event->getX()<<" y="<<event->getY()<<std::endl;
                 break;
             case(osgGA::GUIEventAdapter::SCROLL):
-                NOTIFY(osg::NOTICE)<<"  SCROLL "<<event->getScrollingMotion()<<std::endl;
+                OSG_NOTIFY(osg::NOTICE)<<"  SCROLL "<<event->getScrollingMotion()<<std::endl;
                 break;
             case(osgGA::GUIEventAdapter::KEYDOWN):
-                NOTIFY(osg::NOTICE)<<"  KEYDOWN '"<<(char)event->getKey()<<"'"<<std::endl;
+                OSG_NOTIFY(osg::NOTICE)<<"  KEYDOWN '"<<(char)event->getKey()<<"'"<<std::endl;
                 break;
             case(osgGA::GUIEventAdapter::KEYUP):
-                NOTIFY(osg::NOTICE)<<"  KEYUP '"<<(char)event->getKey()<<"'"<<std::endl;
+                OSG_NOTIFY(osg::NOTICE)<<"  KEYUP '"<<(char)event->getKey()<<"'"<<std::endl;
                 break;
             case(osgGA::GUIEventAdapter::RESIZE):
-                NOTIFY(osg::NOTICE)<<"  RESIZE "<<event->getWindowX()<<"/"<<event->getWindowY()<<" x "<<event->getWindowWidth()<<"/"<<event->getWindowHeight() << std::endl;
+                OSG_NOTIFY(osg::NOTICE)<<"  RESIZE "<<event->getWindowX()<<"/"<<event->getWindowY()<<" x "<<event->getWindowWidth()<<"/"<<event->getWindowHeight() << std::endl;
                 break;
             case(osgGA::GUIEventAdapter::QUIT_APPLICATION):
-                NOTIFY(osg::NOTICE)<<"  QUIT_APPLICATION " << std::endl;
+                OSG_NOTIFY(osg::NOTICE)<<"  QUIT_APPLICATION " << std::endl;
                 break;
             case(osgGA::GUIEventAdapter::FRAME):
-                // NOTIFY(osg::NOTICE)<<"  FRAME "<<std::endl;
+                // OSG_NOTIFY(osg::NOTICE)<<"  FRAME "<<std::endl;
                 break;
             default:
-                // NOTIFY(osg::NOTICE)<<"  Event not handled"<<std::endl;
+                // OSG_NOTIFY(osg::NOTICE)<<"  Event not handled"<<std::endl;
                 break;
         }
     }
 #endif
 
-    // NOTIFY(osg::NOTICE)<<"Events "<<events.size()<<std::endl;
+    // OSG_NOTIFY(osg::NOTICE)<<"Events "<<events.size()<<std::endl;
 
     if ((_keyEventSetsDone!=0) || _quitEventSetsDone)
     {

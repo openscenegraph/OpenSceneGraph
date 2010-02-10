@@ -333,7 +333,7 @@ class Win32WindowingSystem : public osg::GraphicsContext::WindowingSystemInterfa
 
 static void reportError( const std::string& msg )
 {
-    NOTIFY(osg::WARN) << "Error: " << msg.c_str() << std::endl;
+    OSG_NOTIFY(osg::WARN) << "Error: " << msg.c_str() << std::endl;
 }
 
 static void reportError( const std::string& msg, unsigned int errorCode )
@@ -349,7 +349,7 @@ static void reportError( const std::string& msg, unsigned int errorCode )
         return;
     }
 
-    NOTIFY(osg::WARN) << "Windows Error #"   << errorCode << ": " << msg.c_str();
+    OSG_NOTIFY(osg::WARN) << "Windows Error #"   << errorCode << ": " << msg.c_str();
 
     LPVOID lpMsgBuf;
 
@@ -361,12 +361,12 @@ static void reportError( const std::string& msg, unsigned int errorCode )
                       0,
                       NULL)!=0)
     {
-        NOTIFY(osg::WARN) << ". Reason: " << LPTSTR(lpMsgBuf) << std::endl;
+        OSG_NOTIFY(osg::WARN) << ". Reason: " << LPTSTR(lpMsgBuf) << std::endl;
         ::LocalFree(lpMsgBuf);
     }
     else
     {
-        NOTIFY(osg::WARN) << std::endl;
+        OSG_NOTIFY(osg::WARN) << std::endl;
     }
 }
 
@@ -792,7 +792,7 @@ bool Win32WindowingSystem::getScreenInformation( const osg::GraphicsContext::Scr
 {
     if (si.displayNum>0)
     {
-        NOTIFY(osg::WARN) << "Win32WindowingSystem::getScreenInformation() - The screen identifier on the Win32 platform must always use display number 0. Value received was " << si.displayNum << std::endl;
+        OSG_NOTIFY(osg::WARN) << "Win32WindowingSystem::getScreenInformation() - The screen identifier on the Win32 platform must always use display number 0. Value received was " << si.displayNum << std::endl;
         return false;
     }
 
@@ -801,7 +801,7 @@ bool Win32WindowingSystem::getScreenInformation( const osg::GraphicsContext::Scr
 
     if (si.screenNum>=static_cast<int>(displayDevices.size()))
     {
-        NOTIFY(osg::WARN) << "Win32WindowingSystem::getScreenInformation() - Cannot get information for screen " << si.screenNum << " because it does not exist." << std::endl;
+        OSG_NOTIFY(osg::WARN) << "Win32WindowingSystem::getScreenInformation() - Cannot get information for screen " << si.screenNum << " because it does not exist." << std::endl;
         return false;
     }
 
@@ -844,7 +844,7 @@ void Win32WindowingSystem::getScreenSettings( const osg::GraphicsContext::Screen
         if (resolution.refreshRate == 0 || resolution.refreshRate == 1) {
             // Windows specific: 0 and 1 represent the hhardware's default refresh rate.
             // If someone knows how to get this refresh rate (in Hz)...
-            NOTIFY(osg::NOTICE) << "Win32WindowingSystem::getScreenSettings() is not fully implemented (cannot retreive the hardware's default refresh rate)."<<std::endl;
+            OSG_NOTIFY(osg::NOTICE) << "Win32WindowingSystem::getScreenSettings() is not fully implemented (cannot retreive the hardware's default refresh rate)."<<std::endl;
             resolution.refreshRate = 0;
         }
     } else
@@ -932,7 +932,7 @@ void Win32WindowingSystem::enumerateScreenSettings(const osg::GraphicsContext::S
 
     if (si.displayNum>0)
     {
-        NOTIFY(osg::WARN) << "Win32WindowingSystem::enumerateScreenSettings() - The screen identifier on the Win32 platform must always use display number 0. Value received was " << si.displayNum << std::endl;
+        OSG_NOTIFY(osg::WARN) << "Win32WindowingSystem::enumerateScreenSettings() - The screen identifier on the Win32 platform must always use display number 0. Value received was " << si.displayNum << std::endl;
         return;
     }
 
@@ -941,7 +941,7 @@ void Win32WindowingSystem::enumerateScreenSettings(const osg::GraphicsContext::S
 
     if (si.screenNum>=static_cast<int>(displayDevices.size()))
     {
-        NOTIFY(osg::WARN) << "Win32WindowingSystem::enumerateScreenSettings() - Cannot get information for screen " << si.screenNum << " because it does not exist." << std::endl;
+        OSG_NOTIFY(osg::WARN) << "Win32WindowingSystem::enumerateScreenSettings() - Cannot get information for screen " << si.screenNum << " because it does not exist." << std::endl;
         return;
     }
 
@@ -1517,7 +1517,7 @@ static int ChooseMatchingPixelFormat( HDC hdc, int screenNum, const WGLIntegerAt
         ::DescribePixelFormat(hdc, pixelFormatIndex ,sizeof(PIXELFORMATDESCRIPTOR),&pixelFormat);
         if (((pixelFormat.dwFlags & PFD_GENERIC_FORMAT) != 0)  && ((pixelFormat.dwFlags & PFD_GENERIC_ACCELERATED) == 0))
         {
-            NOTIFY(osg::WARN) << "Rendering in software: pixelFormatIndex " << pixelFormatIndex << std::endl;
+            OSG_NOTIFY(osg::WARN) << "Rendering in software: pixelFormatIndex " << pixelFormatIndex << std::endl;
         }
         return pixelFormatIndex;
     }
@@ -1562,7 +1562,7 @@ bool GraphicsWindowWin32::setPixelFormat()
             unsigned int bpp;
             Win32WindowingSystem::getInterface()->getScreenColorDepth(*_traits.get(), bpp);
             if (bpp < 32) {
-                NOTIFY(osg::INFO)    << "GraphicsWindowWin32::setPixelFormat() - Display setting is not 32 bit colors, "
+                OSG_NOTIFY(osg::INFO)    << "GraphicsWindowWin32::setPixelFormat() - Display setting is not 32 bit colors, "
                                         << bpp
                                         << " bits per pixel on screen #"
                                         << _traits->screenNum
@@ -1585,7 +1585,7 @@ bool GraphicsWindowWin32::setPixelFormat()
             return false;
         }
 
-        NOTIFY(osg::INFO) << "GraphicsWindowWin32::setPixelFormat() - Found a matching pixel format but without the WGL_SWAP_METHOD_ARB specification for screen #"
+        OSG_NOTIFY(osg::INFO) << "GraphicsWindowWin32::setPixelFormat() - Found a matching pixel format but without the WGL_SWAP_METHOD_ARB specification for screen #"
                                << _traits->screenNum
                                << std::endl;
     }
@@ -1614,10 +1614,10 @@ HGLRC GraphicsWindowWin32::createContextImplementation()
 
     if( OSG_GL3_FEATURES )
     {
-        NOTIFY( osg::INFO ) << "GL3: Attempting to create OpenGL3 context." << std::endl;
-        NOTIFY( osg::INFO ) << "GL3: version: " << _traits->glContextVersion << std::endl;
-        NOTIFY( osg::INFO ) << "GL3: context flags: " << _traits->glContextFlags << std::endl;
-        NOTIFY( osg::INFO ) << "GL3: profile: " << _traits->glContextProfileMask << std::endl;
+        OSG_NOTIFY( osg::INFO ) << "GL3: Attempting to create OpenGL3 context." << std::endl;
+        OSG_NOTIFY( osg::INFO ) << "GL3: version: " << _traits->glContextVersion << std::endl;
+        OSG_NOTIFY( osg::INFO ) << "GL3: context flags: " << _traits->glContextFlags << std::endl;
+        OSG_NOTIFY( osg::INFO ) << "GL3: profile: " << _traits->glContextProfileMask << std::endl;
 
         Win32WindowingSystem::OpenGLContext openGLContext;
         if( !Win32WindowingSystem::getInterface()->getSampleOpenGLContext( openGLContext, _hdc, _screenOriginX, _screenOriginY ) )
@@ -1645,7 +1645,7 @@ HGLRC GraphicsWindowWin32::createContextImplementation()
                 istr >> major >> dot >> minor;
                 if( major < 3 )
                 {
-                    NOTIFY( osg::WARN ) << "GL3: Non-GL3 version number: " << _traits->glContextVersion << std::endl;
+                    OSG_NOTIFY( osg::WARN ) << "GL3: Non-GL3 version number: " << _traits->glContextVersion << std::endl;
                 }
 
                 attribs[ idx++ ] = WGL_CONTEXT_MAJOR_VERSION_ARB;
@@ -1672,7 +1672,7 @@ HGLRC GraphicsWindowWin32::createContextImplementation()
                 }
                 else
                 {
-                    NOTIFY( osg::INFO ) << "GL3: context created successfully." << std::endl;
+                    OSG_NOTIFY( osg::INFO ) << "GL3: context created successfully." << std::endl;
                 }
             }
         }
@@ -1942,7 +1942,7 @@ void GraphicsWindowWin32::grabFocus()
 {
     if (!::SetForegroundWindow(_hwnd))
     {
-        NOTIFY(osg::WARN) << "Warning: GraphicsWindowWin32::grabFocus() - Failed grabbing the focus" << std::endl;
+        OSG_NOTIFY(osg::WARN) << "Warning: GraphicsWindowWin32::grabFocus() - Failed grabbing the focus" << std::endl;
     }
 }
 

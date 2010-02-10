@@ -172,22 +172,22 @@ DataOutputStream::DataOutputStream(std::ostream * ostream, const osgDB::ReaderWr
         } else if(optionsString.find("compressImageData")!=std::string::npos) {
             setIncludeImageMode(IMAGE_COMPRESS_DATA);
         }
-        NOTIFY(osg::DEBUG_INFO) << "ive::DataOutputStream.setIncludeImageMode()=" << getIncludeImageMode() << std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO) << "ive::DataOutputStream.setIncludeImageMode()=" << getIncludeImageMode() << std::endl;
 
         setIncludeExternalReferences(optionsString.find("inlineExternalReferencesInIVEFile")!=std::string::npos);
-        NOTIFY(osg::DEBUG_INFO) << "ive::DataOutputStream.setIncludeExternalReferences()=" << getIncludeExternalReferences() << std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO) << "ive::DataOutputStream.setIncludeExternalReferences()=" << getIncludeExternalReferences() << std::endl;
 
         setWriteExternalReferenceFiles(optionsString.find("noWriteExternalReferenceFiles")==std::string::npos);
-        NOTIFY(osg::DEBUG_INFO) << "ive::DataOutputStream.setWriteExternalReferenceFiles()=" << getWriteExternalReferenceFiles() << std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO) << "ive::DataOutputStream.setWriteExternalReferenceFiles()=" << getWriteExternalReferenceFiles() << std::endl;
 
         setUseOriginalExternalReferences(optionsString.find("useOriginalExternalReferences")!=std::string::npos);
-        NOTIFY(osg::DEBUG_INFO) << "ive::DataOutputStream.setUseOriginalExternalReferences()=" << getUseOriginalExternalReferences() << std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO) << "ive::DataOutputStream.setUseOriginalExternalReferences()=" << getUseOriginalExternalReferences() << std::endl;
 
         setOutputTextureFiles(optionsString.find("OutputTextureFiles")!=std::string::npos);
-        NOTIFY(osg::DEBUG_INFO) << "ive::DataOutputStream.setOutputTextureFiles()=" << getOutputTextureFiles() << std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO) << "ive::DataOutputStream.setOutputTextureFiles()=" << getOutputTextureFiles() << std::endl;
 
         _compressionLevel =  (optionsString.find("compressed")!=std::string::npos) ? 1 : 0;
-        NOTIFY(osg::DEBUG_INFO) << "ive::DataOutputStream._compressionLevel=" << _compressionLevel << std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO) << "ive::DataOutputStream._compressionLevel=" << _compressionLevel << std::endl;
 
         std::string::size_type terrainErrorPos = optionsString.find("TerrainMaximumErrorToSizeRatio=");
         if (terrainErrorPos!=std::string::npos)
@@ -203,11 +203,11 @@ DataOutputStream::DataOutputStream(std::ostream * ostream, const osgDB::ReaderWr
                 std::string numberString = optionsString.substr(endOfToken+1, numOfCharInNumber);
                 _maximumErrorToSizeRatio = osg::asciiToDouble(numberString.c_str());
                 
-                NOTIFY(osg::DEBUG_INFO)<<"TerrainMaximumErrorToSizeRatio = "<<_maximumErrorToSizeRatio<<std::endl;
+                OSG_NOTIFY(osg::DEBUG_INFO)<<"TerrainMaximumErrorToSizeRatio = "<<_maximumErrorToSizeRatio<<std::endl;
             }
             else
             {
-                NOTIFY(osg::DEBUG_INFO)<<"Error no value to TerrainMaximumErrorToSizeRatio assigned"<<std::endl;
+                OSG_NOTIFY(osg::DEBUG_INFO)<<"Error no value to TerrainMaximumErrorToSizeRatio assigned"<<std::endl;
             }
         }
     }
@@ -215,7 +215,7 @@ DataOutputStream::DataOutputStream(std::ostream * ostream, const osgDB::ReaderWr
     #ifndef USE_ZLIB
     if (_compressionLevel>0)
     {
-        NOTIFY(osg::NOTICE) << "Compression not supported in this .ive version." << std::endl;
+        OSG_NOTIFY(osg::NOTICE) << "Compression not supported in this .ive version." << std::endl;
         _compressionLevel = 0;
     }
     #endif
@@ -296,7 +296,7 @@ bool DataOutputStream::compress(std::ostream& fout, const std::string& source) c
 
         if (ret == Z_STREAM_ERROR)
         {
-            NOTIFY(osg::NOTICE)<<"Z_STREAM_ERROR"<<std::endl;
+            OSG_NOTIFY(osg::NOTICE)<<"Z_STREAM_ERROR"<<std::endl;
             return false;
         }
 
@@ -666,7 +666,7 @@ void DataOutputStream::writePackedFloatArray(const osg::FloatArray* a, float max
     
     if (minValue==maxValue)
     {
-        NOTIFY(osg::DEBUG_INFO)<<"Writing out "<<size<<" same values "<<minValue<<std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO)<<"Writing out "<<size<<" same values "<<minValue<<std::endl;
 
         writeBool(true);
         writeFloat(minValue);
@@ -705,14 +705,14 @@ void DataOutputStream::writePackedFloatArray(const osg::FloatArray* a, float max
             if (error_short>max_error_short) max_error_short = error_short;
         }
 
-        NOTIFY(osg::DEBUG_INFO)<<"maxError "<<maxError<<std::endl;
-        NOTIFY(osg::DEBUG_INFO)<<"Values to write "<<size<<" max_error_byte = "<<max_error_byte<<" max_error_short="<<max_error_short<<std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO)<<"maxError "<<maxError<<std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO)<<"Values to write "<<size<<" max_error_byte = "<<max_error_byte<<" max_error_short="<<max_error_short<<std::endl;
 
 
         if (max_error_byte < maxError) packingSize = 1;
         else if (max_error_short < maxError) packingSize = 2;
 
-        NOTIFY(osg::DEBUG_INFO)<<"packingSize "<<packingSize<<std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO)<<"packingSize "<<packingSize<<std::endl;
 
     }
 

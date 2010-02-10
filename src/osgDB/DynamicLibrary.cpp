@@ -50,14 +50,14 @@ DynamicLibrary::DynamicLibrary(const std::string& name, HANDLE handle)
 {
     _name = name;
     _handle = handle;
-    NOTIFY(osg::INFO)<<"Opened DynamicLibrary "<<_name<<std::endl;
+    OSG_NOTIFY(osg::INFO)<<"Opened DynamicLibrary "<<_name<<std::endl;
 }
 
 DynamicLibrary::~DynamicLibrary()
 {
     if (_handle)
     {
-        NOTIFY(osg::INFO)<<"Closing DynamicLibrary "<<_name<<std::endl;
+        OSG_NOTIFY(osg::INFO)<<"Closing DynamicLibrary "<<_name<<std::endl;
 #if defined(WIN32) && !defined(__CYGWIN__)
         FreeLibrary((HMODULE)_handle);
 #elif defined(__APPLE__) && defined(APPLE_PRE_10_3)
@@ -83,7 +83,7 @@ DynamicLibrary* DynamicLibrary::loadLibrary(const std::string& libraryName)
     if (handle) return new DynamicLibrary(libraryName,handle);
 
     // else no lib found so report errors.
-    NOTIFY(osg::INFO) << "DynamicLibrary::failed loading \""<<libraryName<<"\""<<std::endl;
+    OSG_NOTIFY(osg::INFO) << "DynamicLibrary::failed loading \""<<libraryName<<"\""<<std::endl;
 
     return NULL;
 }
@@ -121,13 +121,13 @@ DynamicLibrary::HANDLE DynamicLibrary::getLibraryHandle( const std::string& libr
     {
         if (fileExists(localLibraryName))
         {
-            NOTIFY(osg::WARN) << "Warning: dynamic library '" << libraryName << "' exists, but an error occurred while trying to open it:" << std::endl;
-            NOTIFY(osg::WARN) << dlerror() << std::endl;
+            OSG_NOTIFY(osg::WARN) << "Warning: dynamic library '" << libraryName << "' exists, but an error occurred while trying to open it:" << std::endl;
+            OSG_NOTIFY(osg::WARN) << dlerror() << std::endl;
         }
         else
         {
-            NOTIFY(osg::INFO) << "Warning: dynamic library '" << libraryName << "' does not exist (or isn't readable):" << std::endl;
-            NOTIFY(osg::INFO) << dlerror() << std::endl;
+            OSG_NOTIFY(osg::INFO) << "Warning: dynamic library '" << libraryName << "' does not exist (or isn't readable):" << std::endl;
+            OSG_NOTIFY(osg::INFO) << dlerror() << std::endl;
         }
     }
 #endif
@@ -153,15 +153,15 @@ DynamicLibrary::PROC_ADDRESS DynamicLibrary::getProcAddress(const std::string& p
     }
     else
     {
-        NOTIFY(osg::WARN) << "DynamicLibrary::failed looking up " << procName << std::endl;
-        NOTIFY(osg::WARN) << "DynamicLibrary::error " << strerror(errno) << std::endl;
+        OSG_NOTIFY(osg::WARN) << "DynamicLibrary::failed looking up " << procName << std::endl;
+        OSG_NOTIFY(osg::WARN) << "DynamicLibrary::error " << strerror(errno) << std::endl;
         return NULL;
     }
 #else // other unix
     void* sym = dlsym( _handle,  procName.c_str() );
     if (!sym) {
-        NOTIFY(osg::WARN) << "DynamicLibrary::failed looking up " << procName << std::endl;
-        NOTIFY(osg::WARN) << "DynamicLibrary::error " << dlerror() << std::endl;
+        OSG_NOTIFY(osg::WARN) << "DynamicLibrary::failed looking up " << procName << std::endl;
+        OSG_NOTIFY(osg::WARN) << "DynamicLibrary::error " << dlerror() << std::endl;
     }
     return sym;
 #endif

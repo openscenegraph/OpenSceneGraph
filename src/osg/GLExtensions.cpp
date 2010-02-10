@@ -142,12 +142,12 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
 
     #endif
 
-            NOTIFY(INFO)<<"OpenGL extensions supported by installed OpenGL drivers are:"<<std::endl;
+            OSG_NOTIFY(INFO)<<"OpenGL extensions supported by installed OpenGL drivers are:"<<std::endl;
             for(ExtensionSet::iterator itr=extensionSet.begin();
                 itr!=extensionSet.end();
                 ++itr)
             {
-                NOTIFY(INFO)<<"    "<<*itr<<std::endl;
+                OSG_NOTIFY(INFO)<<"    "<<*itr<<std::endl;
             }
 
         }
@@ -216,16 +216,16 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
     {
         if (!extensionDisabled)
         {
-            NOTIFY(INFO)<<"OpenGL extension '"<<extension<<"' is supported."<<std::endl;
+            OSG_NOTIFY(INFO)<<"OpenGL extension '"<<extension<<"' is supported."<<std::endl;
         }
         else
         {
-            NOTIFY(INFO)<<"OpenGL extension '"<<extension<<"' is supported by OpenGL\ndriver but has been disabled by osg::getGLExtensionDisableString()."<<std::endl;
+            OSG_NOTIFY(INFO)<<"OpenGL extension '"<<extension<<"' is supported by OpenGL\ndriver but has been disabled by osg::getGLExtensionDisableString()."<<std::endl;
         }
     }
     else
     {
-        NOTIFY(INFO)<<"OpenGL extension '"<<extension<<"' is not supported."<<std::endl;
+        OSG_NOTIFY(INFO)<<"OpenGL extension '"<<extension<<"' is not supported."<<std::endl;
     }
 
 
@@ -274,12 +274,12 @@ std::string& osg::getGLExtensionDisableString()
             }
             if (*startOfWord!=0) extensionSet.insert(std::string(startOfWord));
 
-            NOTIFY(INFO)<<"OpenGL extensions supported by installed OpenGL drivers are:"<<std::endl;
+            OSG_NOTIFY(INFO)<<"OpenGL extensions supported by installed OpenGL drivers are:"<<std::endl;
             for(ExtensionSet::iterator itr=extensionSet.begin();
                 itr!=extensionSet.end();
                 ++itr)
             {
-                NOTIFY(INFO)<<"    "<<*itr<<std::endl;
+                OSG_NOTIFY(INFO)<<"    "<<*itr<<std::endl;
             }
 
         }
@@ -289,11 +289,11 @@ std::string& osg::getGLExtensionDisableString()
 
         if (result)
         {
-            NOTIFY(INFO)<<"OpenGL utility library extension '"<<extension<<"' is supported."<<std::endl;
+            OSG_NOTIFY(INFO)<<"OpenGL utility library extension '"<<extension<<"' is supported."<<std::endl;
         }
         else
         {
-            NOTIFY(INFO)<<"OpenGL utility library extension '"<<extension<<"' is not supported."<<std::endl;
+            OSG_NOTIFY(INFO)<<"OpenGL utility library extension '"<<extension<<"' is not supported."<<std::endl;
         }
 
         return result;
@@ -333,7 +333,7 @@ std::string& osg::getGLExtensionDisableString()
 
 void* osg::getGLExtensionFuncPtr(const char *funcName)
 {
-    // NOTIFY(osg::NOTICE)<<"osg::getGLExtensionFuncPtr("<<funcName<<")"<<std::endl;
+    // OSG_NOTIFY(osg::NOTICE)<<"osg::getGLExtensionFuncPtr("<<funcName<<")"<<std::endl;
     
 #if defined(WIN32)
 

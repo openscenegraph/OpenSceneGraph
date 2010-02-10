@@ -126,7 +126,7 @@ void TerrainTile::traverse(osg::NodeVisitor& nv)
                     osgTerrain::Terrain* ts = dynamic_cast<Terrain*>(*itr);
                     if (ts) 
                     {
-                        NOTIFY(osg::INFO)<<"Assigning terrain system "<<ts<<std::endl;
+                        OSG_NOTIFY(osg::INFO)<<"Assigning terrain system "<<ts<<std::endl;
                         setTerrain(ts);
                     }
                 }

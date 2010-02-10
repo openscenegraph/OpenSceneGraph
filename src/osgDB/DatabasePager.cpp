@@ -289,7 +289,6 @@ void DatabasePager::DatabaseRequest::invalidate()
     _loadedModel = 0;
     _dataToCompileMap.clear();
     _requestQueue = 0;
-    _requestQueue = 0;
 }
 
 DatabasePager::RequestQueue::~RequestQueue()
@@ -315,7 +314,8 @@ void DatabasePager::RequestQueue::sort()
 //
 DatabasePager::ReadQueue::ReadQueue(DatabasePager* pager, const std::string& name):
     _pager(pager),
-    _name(name)
+    _name(name),
+    _frameNumberLastPruned(-1)
 {
     _block = new osg::RefBlock;
 }
@@ -328,8 +328,7 @@ void DatabasePager::ReadQueue::clear()
         citr != _requestList.end();
         ++citr)
     {
-        (*citr)->_loadedModel = 0;
-        (*citr)->_requestQueue = 0;
+        (*citr)->invalidate();
     }
 
     _requestList.clear();
@@ -353,10 +352,35 @@ void DatabasePager::ReadQueue::takeFirst(osg::ref_ptr<DatabaseRequest>& database
     if (!_requestList.empty())
     {
         sort();
-    
-        databaseRequest = _requestList.front();
-        databaseRequest->_requestQueue = 0;
-        _requestList.erase(_requestList.begin());
+
+        if (_frameNumberLastPruned != _pager->_frameNumber)
+        {
+            // Prune all the old entries.
+            RequestQueue::RequestList::iterator tooOld
+                = std::find_if(_requestList.begin(),
+                                _requestList.end(),
+                                refPtrAdapt(std::not1(std::bind2nd(std::mem_fun(&DatabaseRequest::isRequestCurrent),
+                                _pager->_frameNumber))));
+
+            // delete the entries
+            for(RequestQueue::RequestList::iterator citr = tooOld;
+                citr != _requestList.end();
+                ++citr)
+            {
+                (*citr)->invalidate();
+            }
+
+            _requestList.erase(tooOld, _requestList.end());
+
+            _frameNumberLastPruned = _pager->_frameNumber;
+        }
+
+        if (!_requestList.empty())
+        {
+            databaseRequest = _requestList.front();
+            databaseRequest->_requestQueue = 0;
+            _requestList.erase(_requestList.begin());
+        }
 
         updateBlock();
     }

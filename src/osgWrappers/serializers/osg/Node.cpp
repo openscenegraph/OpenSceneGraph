@@ -39,7 +39,7 @@ static bool checkDescriptions( const osg::Node& node )
 
 static bool readDescriptions( osgDB::InputStream& is, osg::Node& node )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         std::string value;
@@ -53,7 +53,7 @@ static bool readDescriptions( osgDB::InputStream& is, osg::Node& node )
 static bool writeDescriptions( osgDB::OutputStream& os, const osg::Node& node )
 {
     const osg::Node::DescriptionList& slist = node.getDescriptions();
-    os << slist.size() << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(slist.size()); os << osgDB::BEGIN_BRACKET << std::endl;
     for ( osg::Node::DescriptionList::const_iterator itr=slist.begin();
           itr!=slist.end(); ++itr )
     {

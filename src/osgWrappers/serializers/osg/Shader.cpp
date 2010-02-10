@@ -11,7 +11,7 @@ static bool checkShaderSource( const osg::Shader& shader )
 static bool readShaderSource( osgDB::InputStream& is, osg::Shader& shader )
 {
     std::string code;
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         std::string line;
@@ -33,7 +33,7 @@ static bool writeShaderSource( osgDB::OutputStream& os, const osg::Shader& shade
         lines.push_back( line );
     }
     
-    os << lines.size() << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(lines.size()); os << osgDB::BEGIN_BRACKET << std::endl;
     for ( std::vector<std::string>::const_iterator itr=lines.begin();
           itr!=lines.end(); ++itr )
     {

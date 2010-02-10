@@ -29,7 +29,7 @@ static int readValue( osgDB::InputStream& is )
 
 static void readModes( osgDB::InputStream& is, osg::StateSet::ModeList& modes )
 {
-    unsigned int size = 0; is >> size;
+    unsigned int size = is.readSize();
     if ( size>0 )
     {
         is >> osgDB::BEGIN_BRACKET;
@@ -45,7 +45,7 @@ static void readModes( osgDB::InputStream& is, osg::StateSet::ModeList& modes )
 
 static void readAttributes( osgDB::InputStream& is, osg::StateSet::AttributeList& attrs )
 {
-    unsigned int size = 0; is >> size;
+    unsigned int size = is.readSize();
     if ( size>0 )
     {
         is >> osgDB::BEGIN_BRACKET;
@@ -84,7 +84,7 @@ static void writeValue( osgDB::OutputStream& os, int value )
 
 static void writeModes( osgDB::OutputStream& os, const osg::StateSet::ModeList& modes )
 {
-    os << modes.size();
+    os.writeSize(modes.size());
     if ( modes.size()>0 )
     {
         os << osgDB::BEGIN_BRACKET << std::endl;
@@ -102,7 +102,7 @@ static void writeModes( osgDB::OutputStream& os, const osg::StateSet::ModeList& 
 
 static void writeAttributes( osgDB::OutputStream& os, const osg::StateSet::AttributeList& attrs )
 {
-    os << attrs.size();
+    os.writeSize(attrs.size());
     if ( attrs.size()>0 )
     {
         os << osgDB::BEGIN_BRACKET << std::endl;
@@ -173,7 +173,7 @@ static bool checkTextureModeList( const osg::StateSet& ss )
 
 static bool readTextureModeList( osgDB::InputStream& is, osg::StateSet& ss )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
     osg::StateSet::ModeList modes;
     for ( unsigned int i=0; i<size; ++i )
     {
@@ -193,7 +193,7 @@ static bool readTextureModeList( osgDB::InputStream& is, osg::StateSet& ss )
 static bool writeTextureModeList( osgDB::OutputStream& os, const osg::StateSet& ss )
 {
     const osg::StateSet::TextureModeList& tml = ss.getTextureModeList();
-    os << tml.size() << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(tml.size()); os << osgDB::BEGIN_BRACKET << std::endl;
     for ( osg::StateSet::TextureModeList::const_iterator itr=tml.begin();
           itr!=tml.end(); ++itr )
     {
@@ -212,7 +212,7 @@ static bool checkTextureAttributeList( const osg::StateSet& ss )
 
 static bool readTextureAttributeList( osgDB::InputStream& is, osg::StateSet& ss )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
     osg::StateSet::AttributeList attrs;
     for ( unsigned int i=0; i<size; ++i )
     {
@@ -232,7 +232,7 @@ static bool readTextureAttributeList( osgDB::InputStream& is, osg::StateSet& ss 
 static bool writeTextureAttributeList( osgDB::OutputStream& os, const osg::StateSet& ss )
 {
     const osg::StateSet::TextureAttributeList& tal = ss.getTextureAttributeList();
-    os << tal.size() << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(tal.size()); os << osgDB::BEGIN_BRACKET << std::endl;
     for ( osg::StateSet::TextureAttributeList::const_iterator itr=tal.begin();
           itr!=tal.end(); ++itr )
     {
@@ -251,7 +251,7 @@ static bool checkUniformList( const osg::StateSet& ss )
 
 static bool readUniformList( osgDB::InputStream& is, osg::StateSet& ss )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         osg::Uniform* uniform = dynamic_cast<osg::Uniform*>( is.readObject() );
@@ -267,7 +267,7 @@ static bool readUniformList( osgDB::InputStream& is, osg::StateSet& ss )
 static bool writeUniformList( osgDB::OutputStream& os, const osg::StateSet& ss )
 {
     const osg::StateSet::UniformList& ul = ss.getUniformList();
-    os << ul.size() << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(ul.size()); os << osgDB::BEGIN_BRACKET << std::endl;
     for ( osg::StateSet::UniformList::const_iterator itr=ul.begin();
           itr!=ul.end(); ++itr )
     {

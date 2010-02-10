@@ -5,7 +5,7 @@
 
 static void readConvexPlanarPolygon( osgDB::InputStream& is, osg::ConvexPlanarPolygon& polygon )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         osg::Vec3d vertex; is >> vertex;
@@ -17,7 +17,7 @@ static void readConvexPlanarPolygon( osgDB::InputStream& is, osg::ConvexPlanarPo
 static void writeConvexPlanarPolygon( osgDB::OutputStream& os, const osg::ConvexPlanarPolygon& polygon )
 {
     const osg::ConvexPlanarPolygon::VertexList& vertices = polygon.getVertexList();
-    os << vertices.size() << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(vertices.size()); os<< osgDB::BEGIN_BRACKET << std::endl;
     for ( osg::ConvexPlanarPolygon::VertexList::const_iterator itr=vertices.begin();
           itr!=vertices.end(); ++itr )
     {
@@ -54,7 +54,7 @@ static bool checkHoles( const osg::ConvexPlanarOccluder& obj )
 
 static bool readHoles( osgDB::InputStream& is, osg::ConvexPlanarOccluder& obj )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         osg::ConvexPlanarPolygon polygon;
@@ -69,7 +69,7 @@ static bool readHoles( osgDB::InputStream& is, osg::ConvexPlanarOccluder& obj )
 static bool writeHoles( osgDB::OutputStream& os, const osg::ConvexPlanarOccluder& obj )
 {
     const osg::ConvexPlanarOccluder::HoleList& holes = obj.getHoleList();
-    os << holes.size() << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(holes.size()); os<< osgDB::BEGIN_BRACKET << std::endl;
     for ( osg::ConvexPlanarOccluder::HoleList::const_iterator itr=holes.begin();
           itr!=holes.end(); ++itr )
     {

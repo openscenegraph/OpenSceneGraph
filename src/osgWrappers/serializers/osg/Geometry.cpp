@@ -73,7 +73,7 @@ ADD_ARRAYDATA_FUNCTIONS( FogCoordData )
     static bool check##PROP( const osg::Geometry& geom ) \
     { return geom.get##LISTNAME().size()>0; } \
     static bool read##PROP( osgDB::InputStream& is, osg::Geometry& geom ) { \
-        unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET; \
+        unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET; \
         for ( unsigned int i=0; i<size; ++i ) { \
             osg::Geometry::ArrayData data; \
             is >> osgDB::PROPERTY("Data") >> osgDB::BEGIN_BRACKET; \
@@ -84,7 +84,7 @@ ADD_ARRAYDATA_FUNCTIONS( FogCoordData )
     } \
     static bool write##PROP( osgDB::OutputStream& os, const osg::Geometry& geom ) { \
         const osg::Geometry::ArrayDataList& LISTNAME = geom.get##LISTNAME(); \
-        os << LISTNAME.size() << osgDB::BEGIN_BRACKET << std::endl; \
+        os.writeSize(LISTNAME.size()); os << osgDB::BEGIN_BRACKET << std::endl; \
         for ( osg::Geometry::ArrayDataList::const_iterator itr=LISTNAME.begin(); \
               itr!=LISTNAME.end(); ++itr ) { \
             os << osgDB::PROPERTY("Data") << osgDB::BEGIN_BRACKET << std::endl; \

@@ -24,7 +24,7 @@ static bool readFileNames( osgDB::InputStream& is, osg::ImageSequence& image )
 static bool writeFileNames( osgDB::OutputStream& os, const osg::ImageSequence& image )
 {
     const osg::ImageSequence::FileNames& files = image.getFileNames();
-    os << files.size() << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(files.size()); os << osgDB::BEGIN_BRACKET << std::endl;
     for ( osg::ImageSequence::FileNames::const_iterator itr=files.begin();
           itr!=files.end(); ++itr )
     {
@@ -43,7 +43,7 @@ static bool checkImages( const osg::ImageSequence& image )
 
 static bool readImages( osgDB::InputStream& is, osg::ImageSequence& image )
 {
-    unsigned int images = 0; is >> images >> osgDB::BEGIN_BRACKET;
+    unsigned int images = is.readSize(); is >> osgDB::BEGIN_BRACKET;
     for ( unsigned int i=0; i<images; ++i )
     {
         osg::Image* img = dynamic_cast<osg::Image*>( is.readObject() );
@@ -56,7 +56,7 @@ static bool readImages( osgDB::InputStream& is, osg::ImageSequence& image )
 static bool writeImages( osgDB::OutputStream& os, const osg::ImageSequence& image )
 {
     const osg::ImageSequence::Images& images = image.getImages();
-    os << images.size() << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(images.size()); os << osgDB::BEGIN_BRACKET << std::endl;
     for ( osg::ImageSequence::Images::const_iterator itr=images.begin();
           itr!=images.end(); ++itr )
     {

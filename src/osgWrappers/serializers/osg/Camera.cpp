@@ -182,7 +182,7 @@ static bool checkBufferAttachmentMap( const osg::Camera& node )
 
 static bool readBufferAttachmentMap( osgDB::InputStream& is, osg::Camera& node )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         is >> osgDB::PROPERTY("Attachment");
@@ -215,7 +215,7 @@ static bool readBufferAttachmentMap( osgDB::InputStream& is, osg::Camera& node )
 static bool writeBufferAttachmentMap( osgDB::OutputStream& os, const osg::Camera& node )
 {
     const osg::Camera::BufferAttachmentMap& map = node.getBufferAttachmentMap();
-    os << map.size() << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(map.size()); os<< osgDB::BEGIN_BRACKET << std::endl;
     for ( osg::Camera::BufferAttachmentMap::const_iterator itr=map.begin();
           itr!=map.end(); ++itr )
     {

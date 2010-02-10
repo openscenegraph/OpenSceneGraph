@@ -7,7 +7,7 @@
     static bool check##PROP(const osg::Program& attr) \
     { return attr.get##TYPE().size()>0; } \
     static bool read##PROP(osgDB::InputStream& is, osg::Program& attr) { \
-        unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET; \
+        unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET; \
         for ( unsigned int i=0; i<size; ++i ) { \
             std::string key; unsigned int value; \
             is >> key >> value; attr.add##DATA(key, value); \
@@ -18,7 +18,7 @@
     static bool write##PROP( osgDB::OutputStream& os, const osg::Program& attr ) \
     { \
         const osg::Program::TYPE& plist = attr.get##TYPE(); \
-        os << plist.size() << osgDB::BEGIN_BRACKET << std::endl; \
+        os.writeSize(plist.size()); os << osgDB::BEGIN_BRACKET << std::endl; \
         for ( osg::Program::TYPE::const_iterator itr=plist.begin(); \
               itr!=plist.end(); ++itr ) { \
             os << itr->first << itr->second << std::endl; \
@@ -55,7 +55,7 @@ static bool checkShaders( const osg::Program& attr )
 
 static bool readShaders( osgDB::InputStream& is, osg::Program& attr )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         osg::Shader* shader = dynamic_cast<osg::Shader*>( is.readObject() );
@@ -68,7 +68,7 @@ static bool readShaders( osgDB::InputStream& is, osg::Program& attr )
 static bool writeShaders( osgDB::OutputStream& os, const osg::Program& attr )
 {
     unsigned int size = attr.getNumShaders();
-    os << size << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(size); os << osgDB::BEGIN_BRACKET << std::endl;
     for ( unsigned int i=0; i<size; ++i )
     {
         os << attr.getShader(i);

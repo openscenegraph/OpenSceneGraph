@@ -355,11 +355,11 @@ void OutputStream::writeImage( const osg::Image* img )
             *this << img->getDataType();  // _dataType
             *this << img->getPacking();  // _packing
             *this << img->getAllocationMode();  // _allocationMode
-            
+
             // _data
             unsigned int size = img->getTotalSizeInBytesIncludingMipmaps();
-            *this << size; writeCharArray( (char*)img->data(), size );
-            
+            writeSize(size); writeCharArray( (char*)img->data(), size );
+
             // _mipmapData
             const osg::Image::MipmapDataType& levels = img->getMipmapLevels();
             writeSize(levels.size());
@@ -379,7 +379,7 @@ void OutputStream::writeImage( const osg::Image* img )
             {
                 infile.seekg( 0, std::ios::end );
                 unsigned int size = infile.tellg();
-                *this << size;
+                writeSize(size);
                 
                 if ( size>0 )
                 {

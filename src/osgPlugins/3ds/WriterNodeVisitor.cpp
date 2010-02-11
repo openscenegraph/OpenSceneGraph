@@ -91,9 +91,10 @@ bool is83(const std::string & s) {
 }
 
 /// Tests if the given string is a path supported by 3DS format (8.3, 63 chars max).
-bool is3DSpath(const std::string & s) {
+bool is3DSpath(const std::string & s, bool extendedFilePaths) {
     unsigned int len = s.length();
     if (len >= 64 || len == 0) return false;
+    if (extendedFilePaths) return true;        // Extended paths are simply those that fits the 64 bytes buffer!
 
     unsigned int tokenBegin = 0;
     for (unsigned int tokenEnd=0; tokenEnd != std::string::npos; tokenBegin = tokenEnd+1) {
@@ -145,7 +146,7 @@ public:
           triangle.t2 = i2;
           triangle.t3 = i3;
           triangle.material = _material;
-          _listTriangles.push_back(std::make_pair(triangle, _drawable_n));
+          _listTriangles.push_back(std::pair<Triangle, unsigned int>(triangle, _drawable_n));
       }
       virtual void begin(GLenum mode)
       {
@@ -334,7 +335,7 @@ void PrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
     case(GL_LINE_LOOP):
         //break;
     default:
-        osg::notify(osg::WARN) << "WriterNodeVisitor :: can't handle mode " << mode << std::endl;
+        osg::notify(osg::WARN) << "3DS WriterNodeVisitor: can't handle mode " << mode << std::endl;
         break;
     }
 }
@@ -399,41 +400,91 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor & writerNodeVisitor, osg
 }
 
 
-std::string
-getPathRelative(const std::string & srcBad,
-                const std::string & dstBad)
+// If 'to' is in a subdirectory of 'from' then this function returns the
+// subpath. Otherwise it just returns the file name.
+// (Same as in FBX plugin)
+std::string getPathRelative(const std::string& from/*directory*/,
+                            const std::string& to/*file path*/)
 {
-    if(srcBad.empty())
-        return osgDB::getSimpleFileName(dstBad);
-    const std::string & src = osgDB::convertFileNameToNativeStyle(srcBad);
-    const std::string & dst = osgDB::convertFileNameToNativeStyle(dstBad);
-    std::string::const_iterator itDst = dst.begin();
-    std::string::const_iterator itSrc = src.begin();
 
-    std::string result = "";
-
-    while(itDst != dst.end())
+    std::string::size_type slash = to.find_last_of('/');
+    std::string::size_type backslash = to.find_last_of('\\');
+    if (slash == std::string::npos) 
     {
-        if (itSrc != src.end() && *itDst == *itSrc)
-            ++itSrc;
-        else if (!result.empty() || *itDst != '\\')  
-            result += *itDst;
-        ++itDst;
+        if (backslash == std::string::npos) return to;
+        slash = backslash;
     }
-    if (itSrc != src.end())
-        result = osgDB::getSimpleFileName(dst);
-    return result;
+    else if (backslash != std::string::npos && backslash > slash)
+    {
+        slash = backslash;
+    }
+
+    if (from.empty() || from.length() > to.length())
+        return osgDB::getSimpleFileName(to);
+
+    std::string::const_iterator itTo = to.begin();
+    for (std::string::const_iterator itFrom = from.begin();
+        itFrom != from.end(); ++itFrom, ++itTo)
+    {
+        char a = tolower(*itFrom), b = tolower(*itTo);
+        if (a == '\\') a = '/';
+        if (b == '\\') b = '/';
+        if (a != b || itTo == to.begin() + slash + 1)
+        {
+            return osgDB::getSimpleFileName(to);
+        }
+    }
+
+    while (itTo != to.end() && (*itTo == '\\' || *itTo == '/'))
+    {
+        ++itTo;
+    }
+
+    return std::string(itTo, to.end());
 }
 
 /// Converts an extension to a 3-letters long one equivalent.
-std::string convertExt(const std::string & path)
+std::string convertExt(const std::string & path, bool extendedFilePaths)
 {
+    if (extendedFilePaths) return path;        // Extensions are not truncated for extended filenames
+
     std::string ext = osgDB::getFileExtensionIncludingDot(path);
     if (ext == ".tiff") ext = ".tif";
     else if (ext == ".jpeg") ext = ".jpg";
     else if (ext == ".jpeg2000" || ext == ".jpg2000") ext = ".jpc";
     return osgDB::getNameLessExtension(path) + ext;
 }
+
+
+WriterNodeVisitor::WriterNodeVisitor(Lib3dsFile * file3ds, const std::string & fileName, 
+                const osgDB::ReaderWriter::Options* options, 
+                const std::string & srcDirectory) :
+    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+    _suceedLastApply(true),
+    _srcDirectory(srcDirectory),
+    file3ds(file3ds),
+    _currentStateSet(new osg::StateSet()),
+    _lastMaterialIndex(0),
+    _lastMeshIndex(0),
+    _cur3dsNode(NULL),
+    options(options),
+    _imageCount(0),
+    _extendedFilePaths(false)
+{
+    if (!fileName.empty())
+        _directory = options->getDatabasePathList().empty() ? osgDB::getFilePath(fileName) : options->getDatabasePathList().front();
+
+    if (options) {
+        std::istringstream iss(options->getOptionString());
+        std::string opt;
+        while (iss >> opt)
+        {
+            if (opt == "extended3dsFilePaths" || opt == "extended3DSFilePaths")
+                _extendedFilePaths = true;
+        }
+    }
+}
+
 
 void WriterNodeVisitor::writeMaterials()
 {
@@ -470,9 +521,9 @@ void WriterNodeVisitor::writeMaterials()
                 else {
                     path = getPathRelative(_srcDirectory, mat.image->getFileName());
                 }
-                path = convertExt(path);
+                path = convertExt(path, _extendedFilePaths);
 
-                if(!is3DSpath(path)) {
+                if(!is3DSpath(path, _extendedFilePaths)) {
                     path = getUniqueName(path, "", true);
                     //path = osgDB::getSimpleFileName(path);
                 }
@@ -482,7 +533,11 @@ void WriterNodeVisitor::writeMaterials()
                 osgDB::makeDirectoryForFile(path);
 
                 //if (mat.image->valid()) osgDB::writeImageFile(*(mat.image), path);
-                osgDB::writeImageFile(*(mat.image), path);
+                if(_imageSet.find(mat.image.get()) == _imageSet.end())
+                {
+                    _imageSet.insert(mat.image.get());
+                    osgDB::writeImageFile(*(mat.image), path);
+                }
                 if (mat.texture_transparency) tex.flags |= LIB3DS_TEXTURE_ALPHA_SOURCE;
                 if (mat.texture_no_tile) tex.flags |= LIB3DS_TEXTURE_NO_TILE;
             }
@@ -497,26 +552,28 @@ void WriterNodeVisitor::writeMaterials()
 
 
 std::string WriterNodeVisitor::getUniqueName(const std::string& _defaultValue, const std::string & _defaultPrefix, bool nameIsPath) {
-    if (_defaultPrefix.length()>=4) throw "Default prefix is too long";            // Arbitrarily defined to 3 chars. You can modify this, but you may have to change the code so that finding a number is okay, even when changing the default prefix length.
+    static const unsigned int MAX_PREFIX_LEGNTH = 4;
+    if (_defaultPrefix.length()>MAX_PREFIX_LEGNTH) throw "Default prefix is too long";            // Arbitrarily defined to 4 chars.
 
     // Tests if default name is valid and unique
     bool defaultIs83 = is83(_defaultValue);
-    bool defaultIsValid = nameIsPath ? is3DSpath(_defaultValue) : defaultIs83;
+    bool defaultIsValid = nameIsPath ? is3DSpath(_defaultValue, _extendedFilePaths) : defaultIs83;
     if (defaultIsValid && _nameMap.find(_defaultValue) == _nameMap.end()) {
         _nameMap.insert(_defaultValue);
         return _defaultValue;
     }
 
     // Handling of paths is not well done yet. Defaulting to something very simple.
-    // We should actually ensure each component is 8 chars long, and final filename is 8.3, and total is <64 chars.
+    // We should actually ensure each component is 8 chars long, and final filename is 8.3, and total is <64 chars, or simply ensure total length for extended 3DS paths.
     std::string defaultValue(nameIsPath ? osgDB::getSimpleFileName(_defaultValue) : _defaultValue);
     std::string ext(nameIsPath ? osgDB::getFileExtensionIncludingDot(_defaultValue).substr(0, std::min<unsigned int>(_defaultValue.size(), 4)) : "");        // 4 chars = dot + 3 chars
+    if (ext == ".") ext = "";
 
     std::string defaultPrefix(_defaultPrefix.empty() ? "_" : _defaultPrefix);
 
     unsigned int max_val = 0;
     std::string truncDefaultValue = "";
-    for (unsigned int i = 0; i < std::min<unsigned int>(defaultValue.size(), 4); ++i)
+    for (unsigned int i = 0; i < std::min<unsigned int>(defaultValue.size(), MAX_PREFIX_LEGNTH); ++i)
     {
         if (defaultValue[i] == '.')
         {
@@ -525,47 +582,53 @@ std::string WriterNodeVisitor::getUniqueName(const std::string& _defaultValue, c
         }
     }
     if (truncDefaultValue.empty())
-        truncDefaultValue = defaultValue.substr(0, std::min<unsigned int>(defaultValue.size(), 4));
+        truncDefaultValue = defaultValue.substr(0, std::min<unsigned int>(defaultValue.size(), MAX_PREFIX_LEGNTH));
+    assert(truncDefaultValue.size() <= MAX_PREFIX_LEGNTH);
     std::map<std::string, unsigned int>::iterator pairPrefix;
+
+    // TODO - Handle the case of extended 3DS paths and allow more than 8 chars
     defaultIs83 = is83(truncDefaultValue);
     if (defaultIs83)
     {
-        max_val = static_cast<unsigned int>(pow(10., 8. - truncDefaultValue.length() - 1)) -1;        // defaultPrefix.length()-1 because we add an underscore ("_")
+        max_val = static_cast<unsigned int>(pow(10., 8. - truncDefaultValue.length())) -1;
         pairPrefix = _mapPrefix.find(truncDefaultValue);
     }  
 
-    if (defaultIs83 && (_mapPrefix.end() == pairPrefix || pairPrefix->second <= max_val))
+    if (defaultIs83 && (pairPrefix == _mapPrefix.end() || pairPrefix->second <= max_val))
     {
         defaultPrefix = truncDefaultValue;
     }
     else
     {
-        max_val = static_cast<unsigned int>(pow(10., 8. - defaultPrefix.length() - 1)) -  1;        // defaultPrefix.length()-1 because we add an underscore ("_")
+        max_val = static_cast<unsigned int>(pow(10., 8. - defaultPrefix.length())) -1;
         pairPrefix = _mapPrefix.find(defaultPrefix);
     }
 
     unsigned int searchStart = 0;
-    if (pairPrefix != _mapPrefix.end())
+    if (pairPrefix != _mapPrefix.end()) {
         searchStart = pairPrefix->second;
+    }
 
     for(unsigned int i = searchStart; i <= max_val; ++i) {
         std::stringstream ss;
-        ss << defaultPrefix << "_" << i;
+        ss << defaultPrefix << i;
         const std::string & res = ss.str();
         if (_nameMap.find(res) == _nameMap.end()) {
-            if (pairPrefix != _mapPrefix.end())
-            {
+            if (pairPrefix != _mapPrefix.end()) {
                 pairPrefix->second = i + 1;
-            }
-            else
-            {
-                _mapPrefix.insert(std::make_pair(defaultPrefix, i + 1));
+            } else {
+                _mapPrefix.insert(std::pair<std::string, unsigned int>(defaultPrefix, i + 1));
             }
             _nameMap.insert(res);
             return res + ext;
         }
     }
-    if (defaultPrefix == "_") _lastGeneratedNumberedName = max_val;
+
+    // Failed finding a name
+    // Try with a shorter prefix if possible
+    if (defaultPrefix.length()>1) return getUniqueName(_defaultValue, defaultPrefix.substr(0, defaultPrefix.length()-1), nameIsPath);
+    // Try with default prefix if not arleady done
+    if (defaultPrefix != std::string("_")) return getUniqueName(_defaultValue, "_", nameIsPath);
     throw "No more names available! Is default prefix too long?";
 }
 
@@ -602,10 +665,10 @@ WriterNodeVisitor::getMeshIndexForGeometryIndex(MapIndices & index_vert,
                                                 unsigned int index,
                                                 unsigned int drawable_n)
 {
-    MapIndices::iterator itIndex = index_vert.find(std::make_pair(index, drawable_n));
+    MapIndices::iterator itIndex = index_vert.find(std::pair<unsigned int, unsigned int>(index, drawable_n));
     if (itIndex == index_vert.end()) {
         unsigned int indexMesh = index_vert.size();
-        index_vert.insert(std::make_pair(std::make_pair(index, drawable_n), indexMesh));
+        index_vert.insert(std::make_pair(std::pair<unsigned int, unsigned int>(index, drawable_n), indexMesh));
         return indexMesh;
     }
     return itIndex->second;
@@ -692,7 +755,7 @@ WriterNodeVisitor::buildFaces(osg::Geode     &    geo,
     if (listTriangles.size() >= MAX_FACES-2 ||
        ((nbVertices) >= MAX_VERTICES-2))
     {
-        osg::notify(osg::ALWAYS) << "Sorting elements..." << std::endl;
+        osg::notify(osg::INFO) << "Sorting elements..." << std::endl;
         WriterCompareTriangle cmp(geo, nbVertices);
         std::sort(listTriangles.begin(), listTriangles.end(), cmp);
     }

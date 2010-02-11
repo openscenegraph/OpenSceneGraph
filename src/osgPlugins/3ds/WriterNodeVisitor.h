@@ -41,6 +41,7 @@
 
 #include "lib3ds/lib3ds.h"
 #include "WriterCompareTriangle.h"
+#include <set>
 
 void copyOsgMatrixToLib3dsMatrix(Lib3dsMatrix lib3ds_matrix, const osg::Matrix& osg_matrix);
 
@@ -49,30 +50,13 @@ typedef std::vector<std::pair<Triangle, int> > ListTriangle; //the int is the dr
 
 class WriterNodeVisitor: public osg::NodeVisitor
 {
-
     public:
         static const unsigned int MAX_VERTICES = 65000;
         static const unsigned int MAX_FACES    = MAX_VERTICES;
 
         WriterNodeVisitor(Lib3dsFile * file3ds, const std::string & fileName, 
                         const osgDB::ReaderWriter::Options* options, 
-                        const std::string & srcDirectory) :
-            osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-            _suceedLastApply(true),
-            _srcDirectory(srcDirectory),
-            file3ds(file3ds),
-            _currentStateSet(new osg::StateSet()),
-            _lastGeneratedNumberedName(0),
-            _lastMaterialIndex(0),
-            _lastMeshIndex(0),
-            _cur3dsNode(NULL),
-            options(options),
-            _imageCount(0)
-        {
-            //supportsOption("flipTexture", "flip texture upside-down");
-            if (!fileName.empty())
-                _directory = options->getDatabasePathList().empty() ? osgDB::getFilePath(fileName) : options->getDatabasePathList().front();
-        }
+                        const std::string & srcDirectory);
 
         bool        suceedLastApply() const;
         void        failedApply();
@@ -215,15 +199,16 @@ class WriterNodeVisitor: public osg::NodeVisitor
         Lib3dsFile *                        file3ds;
         StateSetStack                       _stateSetStack;
         osg::ref_ptr<osg::StateSet>         _currentStateSet;
-        std::map<std::string, unsigned int> _mapPrefix;
+        std::map<std::string, unsigned int> _mapPrefix;            ///< List of next number to use in unique name generation, for each prefix
         std::set<std::string>                _nameMap;
         MaterialMap                         _materialMap;
-        unsigned int                        _lastGeneratedNumberedName;
         unsigned int                        _lastMaterialIndex;
         unsigned int                        _lastMeshIndex;
         Lib3dsMeshInstanceNode *            _cur3dsNode;
         const osgDB::ReaderWriter::Options* options;
         unsigned int                        _imageCount;
+        bool                                _extendedFilePaths;
+        std::set<osg::Image *>              _imageSet;
 };
 
 #endif

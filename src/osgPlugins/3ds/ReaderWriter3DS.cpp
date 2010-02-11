@@ -1,4 +1,3 @@
-#define ENABLE_3DS_WRITER      1            // Enables the 3DS writer (the define should be removed when the writer will be stable and tested enough)
 
 #include <osg/Notify>
 #include <osg/Group>
@@ -20,9 +19,7 @@
 //MIKEC debug only for PrintVisitor
 #include <osg/NodeVisitor>
 
-#ifdef ENABLE_3DS_WRITER
-    #include "WriterNodeVisitor.h"
-#endif
+#include "WriterNodeVisitor.h"
 #include "lib3ds/lib3ds.h"
 #include <stdlib.h>
 #include <string.h>
@@ -171,17 +168,16 @@ public:
 
     virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const;
     virtual ReadResult readNode(std::istream& fin, const Options* options) const;
-#if ENABLE_3DS_WRITER
+    virtual ReadResult doReadNode(std::istream& fin, const Options* options, const std::string & fileNamelib3ds) const;        ///< Subfunction of readNode()s functions.
+
     virtual WriteResult writeNode(const osg::Node& /*node*/,const std::string& /*fileName*/,const Options* =NULL) const;
     virtual WriteResult writeNode(const osg::Node& /*node*/,std::ostream& /*fout*/,const Options* =NULL) const;
-#endif
+    virtual WriteResult doWriteNode(const osg::Node& /*node*/,std::ostream& /*fout*/,const Options*, const std::string & fileNamelib3ds) const;
 
 protected:
     ReadResult constructFrom3dsFile(Lib3dsFile *f,const std::string& filename, const Options* options) const;
 
-#if ENABLE_3DS_WRITER
     bool createFileObject(const osg::Node& node, Lib3dsFile * file3ds,const std::string& fileName, const osgDB::ReaderWriter::Options* options) const;
-#endif
 
     class ReaderObject
     {
@@ -220,7 +216,12 @@ REGISTER_OSGPLUGIN(3ds, ReaderWriter3DS)
 ReaderWriter3DS::ReaderWriter3DS()
 {
     supportsExtension("3ds","3D Studio model format");
-    supportsOption("OutputTextureFiles","Write out the texture images to file");
+    //supportsOption("OutputTextureFiles","Write out the texture images to file");
+    //supportsOption("flipTexture", "flip texture upside-down");
+    supportsOption("extended3dsFilePaths", "Keeps long texture filenames (not 8.3) when exporting 3DS, but can lead to compatibility problems.");
+    supportsOption("noMatrixTransforms", "Set the plugin to apply matrices into the mesh vertices (\"old behaviour\") instead of restoring them (\"new behaviour\"). You may use this option to avoid a few rounding errors.");
+    supportsOption("checkForEspilonIdentityMatrices", "If not set, then consider \"almost identity\" matrices to be identity ones (in case of rounding errors).");
+    supportsOption("restoreMatrixTransformsNoMeshes", "Makes an exception to the behaviour when 'noMatrixTransforms' is not set for mesh instances. When a mesh instance has a transform on it, the reader creates a MatrixTransform above the Geode. If you don't want the hierarchy to be modified, then you can use this option to merge the transform into vertices.");
     setByteOrder();
 
 #if 0
@@ -252,16 +253,18 @@ ReaderWriter3DS::ReaderObject::ReaderObject(const osgDB::ReaderWriter::Options* 
     checkForEspilonIdentityMatrices(false),
     restoreMatrixTransformsNoMeshes(false)
 {
-    std::istringstream iss(options->getOptionString());
-    std::string opt; 
-    while (iss >> opt) 
-    {
-        if (opt == "noMatrixTransforms")
-            noMatrixTransforms = true;
-        if (opt == "checkForEspilonIdentityMatrices")
-            checkForEspilonIdentityMatrices = true;
-        if (opt == "restoreMatrixTransformsNoMeshes")
-            restoreMatrixTransformsNoMeshes = true;
+    if (options) {
+        std::istringstream iss(options->getOptionString());
+        std::string opt; 
+        while (iss >> opt) 
+        {
+            if (opt == "noMatrixTransforms")
+                noMatrixTransforms = true;
+            if (opt == "checkForEspilonIdentityMatrices")
+                checkForEspilonIdentityMatrices = true;
+            if (opt == "restoreMatrixTransformsNoMeshes")
+                restoreMatrixTransformsNoMeshes = true;
+        }
     }
 }
 
@@ -556,7 +559,6 @@ static long filei_seek_func(void *self, long offset, Lib3dsIoSeek origin) {
     return f->fail() ? -1 : 0;
 }
 
-#if ENABLE_3DS_WRITER
 static long fileo_seek_func(void *self, long offset, Lib3dsIoSeek origin) {
     std::ostream *f = reinterpret_cast<std::ostream*>(self);
     ios_base::seekdir o = ios_base::beg;
@@ -566,19 +568,16 @@ static long fileo_seek_func(void *self, long offset, Lib3dsIoSeek origin) {
     f->seekp(offset, o);
     return f->fail() ? -1 : 0;
 }
-#endif
 
 static long filei_tell_func(void *self) {
     std::istream *f = reinterpret_cast<std::istream*>(self);
     return f->tellg();
 }
 
-#if ENABLE_3DS_WRITER
 static long fileo_tell_func(void *self) {
     std::ostream *f = reinterpret_cast<std::ostream*>(self);
     return f->tellp();
 }
-#endif
 
 
 static size_t filei_read_func(void *self, void *buffer, size_t size) {
@@ -587,19 +586,18 @@ static size_t filei_read_func(void *self, void *buffer, size_t size) {
     return f->gcount();
 }
 
-#if ENABLE_3DS_WRITER
 static size_t fileo_write_func(void *self, const void *buffer, size_t size) {
     std::ostream *f = reinterpret_cast<std::ostream*>(self);
     f->write(static_cast<const char*>(buffer), size);
     return f->fail() ? 0 : size;
 }
-#endif
 
 static void fileio_log_func(void *self, Lib3dsLogLevel level, int indent, const char *msg)
 {
     osg::NotifySeverity l = osg::INFO;
-    if (level == LIB3DS_LOG_ERROR) l = osg::FATAL;
-    else if (level == LIB3DS_LOG_WARN) l = osg::WARN;
+    // Intentionally NOT mapping 3DS levels with OSG levels
+    if (level == LIB3DS_LOG_ERROR) l = osg::WARN;
+    else if (level == LIB3DS_LOG_WARN) l = osg::NOTICE;
     else if (level == LIB3DS_LOG_INFO) l = osg::INFO;
     else if (level == LIB3DS_LOG_DEBUG) l = osg::DEBUG_INFO;
     osg::notify(l) << msg << std::endl;
@@ -608,14 +606,21 @@ static void fileio_log_func(void *self, Lib3dsLogLevel level, int indent, const 
 
 osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(std::istream& fin,  const osgDB::ReaderWriter::Options* options) const
 {
-    osgDB::ReaderWriter::ReadResult result = ReadResult::FILE_NOT_HANDLED;
-
-    std::string optFileName = "";
+    std::string optFileName;
     if (options)
     {
         optFileName = options->getPluginStringData("STREAM_FILENAME");
         if (optFileName.empty()) optFileName = options->getPluginStringData("filename");
     }
+    return doReadNode(fin, options, optFileName);
+}
+
+osgDB::ReaderWriter::ReadResult ReaderWriter3DS::doReadNode(std::istream& fin,  const osgDB::ReaderWriter::Options* options, const std::string & fileNamelib3ds) const
+{
+    osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+    local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileNamelib3ds));
+
+    osgDB::ReaderWriter::ReadResult result = ReadResult::FILE_NOT_HANDLED;
 
     // Prepare io structure to tell how to read the stream
     Lib3dsIo io;
@@ -629,7 +634,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(std::istream& fin,  co
     Lib3dsFile * file3ds = lib3ds_file_new();
     if (lib3ds_file_read(file3ds, &io) != 0)
     {
-        result = constructFrom3dsFile(file3ds,optFileName,options);
+        result = constructFrom3dsFile(file3ds,fileNamelib3ds,options);
         lib3ds_file_free(file3ds);
     }
 
@@ -638,15 +643,21 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(std::istream& fin,  co
 
 osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
 {
-    osgDB::ReaderWriter::ReadResult result = ReadResult::FILE_NOT_HANDLED;
-
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
     std::string fileName = osgDB::findDataFile( file, options );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-    Lib3dsFile *f = lib3ds_file_open(fileName.c_str() /*,options*/);
+    // Do not use the lib3ds_file_open() as:
+    //   1. It relies on FILE* instead of iostreams (less safe)
+    //   2. It doesn't allow us to set a custom log output
+    std::ifstream fin(file.c_str(), std::ios_base::in | std::ios_base::binary);
+    if (!fin.good()) return ReadResult::ERROR_IN_READING_FILE;
+    return doReadNode(fin, options, fileName);
+/*
+    osgDB::ReaderWriter::ReadResult result = ReadResult::FILE_NOT_HANDLED;
+    Lib3dsFile *f = lib3ds_file_open(fileName.c_str());        // ,options
 
     if (f)
     {
@@ -658,6 +669,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fil
     }
 
     return result;
+*/
 }
 
 osgDB::ReaderWriter::ReadResult ReaderWriter3DS::constructFrom3dsFile(Lib3dsFile *f,const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
@@ -1058,14 +1070,15 @@ osg::StateSet* ReaderWriter3DS::ReaderObject::createStateSet(Lib3dsMaterial *mat
 }
 
 
-
-#if ENABLE_3DS_WRITER
 osgDB::ReaderWriter::WriteResult ReaderWriter3DS::writeNode(const osg::Node& node,const std::string& fileName,const Options* options) const {
     std::string ext = osgDB::getLowerCaseFileExtension(fileName);
     if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
-    //osg::notify(osg::WARN) << "!!WARNING!! 3DS write support is incomplete" << std::endl;
-
+    osgDB::makeDirectoryForFile(fileName.c_str());
+    std::ofstream fout(fileName.c_str(), std::ios_base::out | std::ios_base::binary);
+    if (!fout.good()) return WriteResult::ERROR_IN_WRITING_FILE;
+    return doWriteNode(node, fout, options, fileName);
+/*
     bool ok = true;
     Lib3dsFile * file3ds = lib3ds_file_new();
     if (!file3ds) return WriteResult(WriteResult::ERROR_IN_WRITING_FILE);
@@ -1074,7 +1087,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriter3DS::writeNode(const osg::Node& nod
         osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
         local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
-        if (!createFileObject(node, file3ds, fileName, local_opt.get())) ok = false;
+        if (!createFileObject(node, file3ds, fileName, local_opt)) ok = false;
         if (ok && !lib3ds_file_save(file3ds, fileName.c_str())) ok = false;
     } catch (...) {
         lib3ds_file_free(file3ds);
@@ -1083,17 +1096,23 @@ osgDB::ReaderWriter::WriteResult ReaderWriter3DS::writeNode(const osg::Node& nod
     lib3ds_file_free(file3ds);
 
     return ok ? WriteResult(WriteResult::FILE_SAVED) : WriteResult(WriteResult::ERROR_IN_WRITING_FILE);
-    //return ok ? WriteResult(WriteResult::FILE_SAVED) : WriteResult(WriteResult::FILE_NOT_HANDLED);
+*/
 }
 
 
 osgDB::ReaderWriter::WriteResult ReaderWriter3DS::writeNode(const osg::Node& node,std::ostream& fout,const Options* options) const {
     //osg::notify(osg::WARN) << "!!WARNING!! 3DS write support is incomplete" << std::endl;
-    std::string optFileName = "";
-    if (options)
-    {
+    std::string optFileName;
+    if (options) {
         optFileName = options->getPluginStringData("STREAM_FILENAME");
     }
+
+    return doWriteNode(node, fout, options, optFileName);
+}
+
+osgDB::ReaderWriter::WriteResult ReaderWriter3DS::doWriteNode(const osg::Node& node,std::ostream& fout, const Options* options, const std::string & fileNamelib3ds) const {
+    osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+    local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileNamelib3ds));
 
     Lib3dsIo io;
     io.self = &fout;
@@ -1104,12 +1123,11 @@ osgDB::ReaderWriter::WriteResult ReaderWriter3DS::writeNode(const osg::Node& nod
     io.log_func = fileio_log_func;
     
     Lib3dsFile * file3ds = lib3ds_file_new();
+    if (!file3ds) return WriteResult(WriteResult::ERROR_IN_WRITING_FILE);
+
     bool ok = true;
     try {
-        osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
-        local_opt->getDatabasePathList().push_front(osgDB::getFilePath(optFileName));
-
-        if (!createFileObject(node, file3ds, optFileName, local_opt.get())) ok = false;
+        if (!createFileObject(node, file3ds, fileNamelib3ds, local_opt.get())) ok = false;
         if (ok && !lib3ds_file_write(file3ds, &io)) ok = false;
         
     } catch (...) {
@@ -1122,32 +1140,12 @@ osgDB::ReaderWriter::WriteResult ReaderWriter3DS::writeNode(const osg::Node& nod
     //return ok ? WriteResult(WriteResult::FILE_SAVED) : WriteResult(WriteResult::FILE_NOT_HANDLED);
 }
 
-const std::string getParent(const std::string & pathBad)
-{
-    const std::string & path = osgDB::convertFileNameToNativeStyle(pathBad);
-
-    std::string parent = "";
-    std::string tmp = "";
-    for(std::string::const_iterator itPath = path.begin();; ++itPath)
-    {
-        if (!parent.empty())
-            parent += '\\';
-        parent += tmp;
-        tmp.clear();
-        for(;itPath != path.end() && *itPath != '\\'; ++itPath)
-            tmp += *itPath;
-        if (itPath == path.end())
-            break;
-    }
-    return parent;
-}
-
 bool ReaderWriter3DS::createFileObject(const osg::Node& node, Lib3dsFile * file3ds,const std::string& fileName, const osgDB::ReaderWriter::Options* options) const {
-    WriterNodeVisitor w(file3ds, fileName, options, getParent(node.getName()));
-    const_cast<osg::Node &>(node).accept(w);                // TODO Remove that ugly const_cast<>. Any idea?
+    WriterNodeVisitor w(file3ds, fileName, options, osgDB::getFilePath(node.getName()));
+    const_cast<osg::Node &>(node).accept(w);                // Ugly const_cast<> for visitor...
     if (!w.suceedLastApply())
         return false;
     w.writeMaterials();
     return true;    //w.good();
 }
-#endif    // ENABLE_3DS_WRITER
+

@@ -210,6 +210,9 @@ void GLBeginEndAdapter::End()
         const osg::Matrixd& matrix = _matrixStack.back();
         if (_mode==APPLY_LOCAL_MATRICES_TO_VERTICES)
         {
+            osg::Matrix inverse;
+            inverse.invert(matrix);
+
             for(Vec3Array::iterator itr = _vertices->begin();
                 itr != _vertices->end();
                 ++itr)
@@ -223,13 +226,13 @@ void GLBeginEndAdapter::End()
                     itr != _normals->end();
                     ++itr)
                 {
-                    *itr = osg::Matrixd::transform3x3(matrix, *itr);
+                    *itr = osg::Matrixd::transform3x3(inverse, *itr);
                     (*itr).normalize();
                 }
             }
             else
             {
-                _overallNormal = osg::Matrixd::transform3x3(matrix, _overallNormal);
+                _overallNormal = osg::Matrixd::transform3x3(inverse, _overallNormal);
                 _overallNormal.normalize();
             }
         }

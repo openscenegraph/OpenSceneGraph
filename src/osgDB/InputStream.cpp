@@ -524,7 +524,7 @@ osg::Image* InputStream::readImage()
             }
 
             // _mipmapData
-            unsigned int levelSize = 0; *this >> levelSize;
+            unsigned int levelSize = readSize();
             osg::Image::MipmapDataType levels(levelSize);
             for ( unsigned int i=0; i<levelSize; ++i )
             {
@@ -538,7 +538,7 @@ osg::Image* InputStream::readImage()
     case IMAGE_INLINE_FILE:
         if ( isBinary() )
         {
-            unsigned int size = 0; *this >> size;
+            unsigned int size = readSize();
             if ( size>0 )
             {
                 char* data = new char[size];

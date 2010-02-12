@@ -45,11 +45,15 @@ extern OSG_EXPORT void setNotifyLevel(NotifySeverity severity);
 /** get the notify level. */
 extern OSG_EXPORT NotifySeverity getNotifyLevel();
 
-/** is notification enabled, given the current setNotifyLevel() setting? */
-extern OSG_EXPORT bool isNotifyEnabled(NotifySeverity severity);
-
 /** initialize notify level. */
 extern OSG_EXPORT bool initNotifyLevel();
+
+#ifdef OSG_NOTIFY_DISABLED
+    inline bool isNotifyEnabled(NotifySeverity) { return false; }
+#else
+    /** is notification enabled, given the current setNotifyLevel() setting? */
+    extern OSG_EXPORT bool isNotifyEnabled(NotifySeverity severity);
+#endif
 
 /** notify messaging function for providing fatal through to verbose
   * debugging messages.  Level of messages sent to the console can
@@ -76,13 +80,11 @@ extern OSG_EXPORT std::ostream& notify(const NotifySeverity severity);
 inline std::ostream& notify(void) { return notify(osg::INFO); }
 
 #define OSG_NOTIFY(level) if (isNotifyEnabled(level)) osg::notify(level)
-
-#if _DEBUG
-    #define OSG_DEBUG_NOTIFY(level) if (isNotifyEnabled(level)) osg::notify(level)
-#else
-    // when using an optimized build use if (false) to tell the compiler to ignore the rest of the notify.
-    #define OSG_DEBUG_NOTIFY(level) if (false) osg::notify(level)
-#endif
+#define OSG_FATAL OSG_NOTIFY(osg::FALTAL)
+#define OSG_WARN OSG_NOTIFY(osg::WARN)
+#define OSG_NOTICE OSG_NOTIFY(osg::NOTICE)
+#define OSG_INFO OSG_NOTIFY(osg::INFO)
+#define OSG_DEBUG OSG_NOTIFY(osg::DEBUG_INFO)
 
 /** Handler processing output of notification stream. It acts as a sink to 
   * notification messages. It is called when notification stream needs to be 

@@ -114,20 +114,21 @@ using namespace osg;
 
 static osg::ApplicationUsageProxy Notify_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE, "OSG_NOTIFY_LEVEL <mode>", "FATAL | WARN | NOTICE | DEBUG_INFO | DEBUG_FP | DEBUG | INFO | ALWAYS");
 
+static bool s_NeedNotifyInit = true;
 static osg::NotifySeverity g_NotifyLevel = osg::NOTICE;
 static osg::NullStream *g_NullStream;
 static osg::NotifyStream *g_NotifyStream;
 
 void osg::setNotifyLevel(osg::NotifySeverity severity)
 {
-    osg::initNotifyLevel();
+    if (s_NeedNotifyInit) osg::initNotifyLevel();
     g_NotifyLevel = severity;
 }
 
 
 osg::NotifySeverity osg::getNotifyLevel()
 {
-    osg::initNotifyLevel();
+    if (s_NeedNotifyInit) osg::initNotifyLevel();
     return g_NotifyLevel;
 }
 
@@ -140,18 +141,15 @@ void osg::setNotifyHandler(osg::NotifyHandler *handler)
 
 osg::NotifyHandler* osg::getNotifyHandler()
 {
-    osg::initNotifyLevel();
+    if (s_NeedNotifyInit) osg::initNotifyLevel();
     osg::NotifyStreamBuffer *buffer = static_cast<osg::NotifyStreamBuffer *>(g_NotifyStream->rdbuf());
     return buffer ? buffer->getNotifyHandler() : 0;
 }
 
 bool osg::initNotifyLevel()
 {
-    static bool s_NotifyInit = false;
     static osg::NullStream s_NullStream;
     static osg::NotifyStream s_NotifyStream;
-
-    if (s_NotifyInit) return true;
 
     g_NullStream = &s_NullStream;
     g_NotifyStream = &s_NotifyStream;
@@ -193,26 +191,25 @@ bool osg::initNotifyLevel()
     if (buffer && !buffer->getNotifyHandler())
         buffer->setNotifyHandler(new StandardNotifyHandler);
 
-    s_NotifyInit = true;
+    s_NeedNotifyInit = false;
 
     return true;
 
 }
 
+#ifndef OSG_NOTIFY_DISABLED
 bool osg::isNotifyEnabled( osg::NotifySeverity severity )
 {
+    if (s_NeedNotifyInit) osg::initNotifyLevel();
     return severity<=g_NotifyLevel;
 }
+#endif
 
 std::ostream& osg::notify(const osg::NotifySeverity severity)
 {
-    static bool initialized = false;
-    if (!initialized) 
-    {
-        initialized = osg::initNotifyLevel();
-    }
+    if (s_NeedNotifyInit) osg::initNotifyLevel();
 
-    if (severity<=g_NotifyLevel)
+    if (osg::isNotifyEnabled(severity))
     {
         g_NotifyStream->setCurrentSeverity(severity);
         return *g_NotifyStream;

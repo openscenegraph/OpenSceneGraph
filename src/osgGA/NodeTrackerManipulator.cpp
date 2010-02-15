@@ -36,32 +36,39 @@ NodeTrackerManipulator::~NodeTrackerManipulator()
 {
 }
 
-osg::NodePath NodeTrackerManipulator::getNodePath() const
+void NodeTrackerManipulator::setTrackNode(osg::Node* node)
 {
-    osg::NodePath nodePath;
-    for(ObserverNodePath::const_iterator itr = _trackNodePath.begin();
-        itr != _trackNodePath.end();
-        ++itr)
+    if (!node)
     {
-        nodePath.push_back(const_cast<osg::Node*>(itr->get()));
+        osg::notify(osg::NOTICE)<<"NodeTrackerManipulator::setTrackNode(Node*):  Unable to set tracked node due to null Node*"<<std::endl;
+        return;
     }
-    return nodePath;
+
+    osg::NodePathList parentNodePaths = node->getParentalNodePaths();
+
+    if (!parentNodePaths.empty())
+    {
+        osg::notify(osg::INFO)<<"NodeTrackerManipulator::setTrackNode(Node*): Path set"<<std::endl;
+        setTrackNodePath(parentNodePaths[0]);
+    }
+    else
+    {
+        osg::notify(osg::NOTICE)<<"NodeTrackerManipulator::setTrackNode(Node*): Unable to set tracked node due to empty parental path."<<std::endl;
+    }
 }
 
-bool NodeTrackerManipulator::validateNodePath() const
+osg::Node* NodeTrackerManipulator::getTrackNode()
 {
-    for(ObserverNodePath::const_iterator itr = _trackNodePath.begin();
-        itr != _trackNodePath.begin();
-        ++itr)
-    {
-        if (*itr==0) 
-        {
-            osg::notify(osg::NOTICE)<<"Warning: tracked node path has been invalidated by changes in the scene graph."<<std::endl;
-            const_cast<ObserverNodePath&>(_trackNodePath).clear();
-            return false;
-        }
-    }
-    return true;
+    osg::NodePath nodePath;
+    if (_trackNodePath.getNodePath(nodePath)) return nodePath.back();
+    else return 0;
+}
+
+const osg::Node* NodeTrackerManipulator::getTrackNode() const
+{
+    osg::NodePath nodePath;
+    if (_trackNodePath.getNodePath(nodePath)) return nodePath.back();
+    else return 0;
 }
 
 void NodeTrackerManipulator::setTrackerMode(TrackerMode mode)
@@ -92,39 +99,6 @@ void NodeTrackerManipulator::setNode(osg::Node* node)
     if (getAutoComputeHomePosition()) computeHomePosition();    
 }
 
-void NodeTrackerManipulator::setTrackNode(osg::Node* node)
-{
-    if (!node)
-    {
-        osg::notify(osg::NOTICE)<<"NodeTrackerManipulator::setTrackNode(Node*):  Unable to set tracked node due to null Node*"<<std::endl;
-        return;
-    }
-
-    osg::NodePathList nodePaths = node->getParentalNodePaths();
-    if (!nodePaths.empty())
-    {
-        if (nodePaths.size()>1)
-        {
-            osg::notify(osg::NOTICE)<<"osgGA::NodeTrackerManipualtor::setTrackNode(..) taking first parent path, ignoring others."<<std::endl;
-        }
-
-        osg::notify(osg::INFO)<<"NodeTrackerManipulator::setTrackNode(Node*"<<node<<" "<<node->getName()<<"): Path set"<<std::endl;
-        _trackNodePath.clear();
-        setTrackNodePath( nodePaths.front() );
-    }
-    else
-    {
-        osg::notify(osg::NOTICE)<<"NodeTrackerManipulator::setTrackNode(Node*): Unable to set tracked node due to empty parental path."<<std::endl;
-    }
-    
-    osg::notify(osg::INFO)<<"setTrackNode("<<node->getName()<<")"<<std::endl;
-    for(unsigned int i=0; i<_trackNodePath.size(); ++i)
-    {
-        osg::notify(osg::INFO)<<"  "<<_trackNodePath[i]->className()<<" '"<<_trackNodePath[i]->getName()<<"'"<<std::endl;
-    }
-
-}
-
 const osg::Node* NodeTrackerManipulator::getNode() const
 {
     return _node.get();
@@ -147,7 +121,10 @@ void NodeTrackerManipulator::home(const GUIEventAdapter& ,GUIActionAdapter& us)
 
 void NodeTrackerManipulator::computeHomePosition()
 {
-    osg::Node* node = _trackNodePath.empty() ? getNode() : _trackNodePath.back().get();
+    osg::NodePath nodePath;
+    _trackNodePath.getNodePath(nodePath);
+
+    osg::Node* node = nodePath.empty() ? getNode() : nodePath.back();
     
     if(node)
     {
@@ -299,35 +276,22 @@ void NodeTrackerManipulator::setByMatrix(const osg::Matrixd& matrix)
     computePosition(eye,center,up);
 }
 
-void NodeTrackerManipulator::computeNodeWorldToLocal(osg::Matrixd& worldToLocal) const
-{
-    if (validateNodePath())
-    {
-        worldToLocal = osg::computeWorldToLocal(getNodePath());
-    }
-}
-
-void NodeTrackerManipulator::computeNodeLocalToWorld(osg::Matrixd& localToWorld) const
-{
-    if (validateNodePath())
-    {
-        localToWorld = osg::computeLocalToWorld(getNodePath());
-    }
-
-}
-
 void NodeTrackerManipulator::computeNodeCenterAndRotation(osg::Vec3d& nodeCenter, osg::Quat& nodeRotation) const
 {
     osg::Matrixd localToWorld, worldToLocal;
-    computeNodeLocalToWorld(localToWorld);
-    computeNodeWorldToLocal(worldToLocal);
-    
-    if (validateNodePath())
-        nodeCenter = osg::Vec3d(_trackNodePath.back()->getBound().center())*localToWorld;
+    osg::NodePath nodePath;
+    if (_trackNodePath.getNodePath(nodePath))
+    {
+        worldToLocal = osg::computeWorldToLocal(nodePath);
+        localToWorld = osg::computeLocalToWorld(nodePath);
+        nodeCenter = osg::Vec3d(nodePath.back()->getBound().center())*localToWorld;
+    }
     else
+    {
         nodeCenter = osg::Vec3d(0.0f,0.0f,0.0f)*localToWorld;
+    }
 
-    
+
     switch(_trackerMode)
     {
         case(NODE_CENTER_AND_AZIM):

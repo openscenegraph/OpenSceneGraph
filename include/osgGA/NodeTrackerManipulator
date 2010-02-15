@@ -15,11 +15,8 @@
 #define OSGGA_NODETRACKERMANIPULATOR 1
 
 #include <osgGA/MatrixManipulator>
-
+#include <osg/ObserverNodePath>
 #include <osg/Quat>
-#include <osg/observer_ptr>
-
-#include <iterator>
 
 namespace osgGA{
 
@@ -31,21 +28,13 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
 
         virtual const char* className() const { return "NodeTrackerManipulator"; }
 
-        typedef std::vector< osg::observer_ptr<osg::Node> >   ObserverNodePath;
-
-        void setTrackNodePath(const osg::NodePath& nodePath)
-        {
-           _trackNodePath.clear();
-           _trackNodePath.reserve(nodePath.size());
-           std::copy(nodePath.begin(), nodePath.end(), std::back_inserter(_trackNodePath));
-        }
-
-        void setTrackNodePath(const ObserverNodePath& nodePath) { _trackNodePath = nodePath; }
-        ObserverNodePath& getTrackNodePath() { return _trackNodePath; }
+        void setTrackNodePath(const osg::NodePath& nodePath) { _trackNodePath.setNodePath(nodePath); }
+        void setTrackNodePath(const osg::ObserverNodePath& nodePath) { _trackNodePath = nodePath; }
+        osg::ObserverNodePath& getTrackNodePath() { return _trackNodePath; }
 
         void setTrackNode(osg::Node* node);
-        osg::Node* getTrackNode() { return _trackNodePath.empty() ? 0 : _trackNodePath.back().get(); }
-        const osg::Node* getTrackNode() const { return _trackNodePath.empty() ? 0 : _trackNodePath.back().get(); }
+        osg::Node* getTrackNode();
+        const osg::Node* getTrackNode() const;
 
         enum TrackerMode 
         {
@@ -128,18 +117,12 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
     protected:
 
         virtual ~NodeTrackerManipulator();
-        
-        osg::NodePath getNodePath() const;
-
-        bool validateNodePath() const;
 
         /** Reset the internal GUIEvent stack.*/
         void flushMouseEventStack();
+
         /** Add the current mouse GUIEvent to internal stack.*/
         void addMouseEvent(const GUIEventAdapter& ea);
-
-        void computeNodeWorldToLocal(osg::Matrixd& worldToLocal) const;
-        void computeNodeLocalToWorld(osg::Matrixd& localToWorld) const;
 
         void computeNodeCenterAndRotation(osg::Vec3d& center, osg::Quat& rotation) const;
 
@@ -165,15 +148,15 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
         osg::ref_ptr<const GUIEventAdapter> _ga_t1;
         osg::ref_ptr<const GUIEventAdapter> _ga_t0;
 
-        osg::ref_ptr<osg::Node> _node;
-        
-        ObserverNodePath      _trackNodePath;
+        osg::observer_ptr<osg::Node> _node;
+
+        osg::ObserverNodePath   _trackNodePath;
 
         TrackerMode             _trackerMode;
         RotationMode            _rotationMode;
 
         bool                    _thrown;
-        
+
         osg::Quat               _nodeRotation;
         osg::Quat               _rotation;
         float                   _distance;

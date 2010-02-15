@@ -121,7 +121,7 @@ class OSGGA_EXPORT TerrainManipulator : public MatrixManipulator
         osg::ref_ptr<const GUIEventAdapter> _ga_t1;
         osg::ref_ptr<const GUIEventAdapter> _ga_t0;
 
-        osg::ref_ptr<osg::Node> _node;
+        osg::observer_ptr<osg::Node> _node;
 
         RotationMode            _rotationMode;
 

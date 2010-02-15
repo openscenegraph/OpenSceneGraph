@@ -30,6 +30,8 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(std::list< std::string >, osgDB::DeprecatedDotOsgWrapperManager::FileNames)
+
 BEGIN_OBJECT_REFLECTOR(osgDB::DeprecatedDotOsgWrapperManager)
 	I_DeclaringFile("osgDB/DotOsgWrapper");
 	I_BaseType(osg::Referenced);
@@ -94,6 +96,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DeprecatedDotOsgWrapperManager)
 	I_Method2(bool, writeObject, IN, const osg::Object &, obj, IN, osgDB::Output &, fw,
 	          Properties::NON_VIRTUAL,
 	          __bool__writeObject__C5_osg_Object_R1__Output_R1,
+	          "",
+	          "");
+	I_Method2(bool, getLibraryFileNamesToTry, IN, const std::string &, name, IN, osgDB::DeprecatedDotOsgWrapperManager::FileNames &, fileNames,
+	          Properties::NON_VIRTUAL,
+	          __bool__getLibraryFileNamesToTry__C5_std_string_R1__FileNames_R1,
 	          "",
 	          "");
 END_REFLECTOR
@@ -182,4 +189,6 @@ BEGIN_VALUE_REFLECTOR(osgDB::RegisterDotOsgWrapperProxy)
 	                           "",
 	                           "");
 END_REFLECTOR
+
+STD_LIST_REFLECTOR(std::list< std::string >)
 

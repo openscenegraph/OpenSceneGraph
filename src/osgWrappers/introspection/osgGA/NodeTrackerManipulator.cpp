@@ -13,6 +13,7 @@
 #include <osg/ApplicationUsage>
 #include <osg/Matrixd>
 #include <osg/Node>
+#include <osg/ObserverNodePath>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/NodeTrackerManipulator>
@@ -39,8 +40,6 @@ BEGIN_ENUM_REFLECTOR(osgGA::NodeTrackerManipulator::RotationMode)
 	I_EnumLabel(osgGA::NodeTrackerManipulator::ELEVATION_AZIM);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osg::observer_ptr< osg::Node > >, osgGA::NodeTrackerManipulator::ObserverNodePath)
-
 BEGIN_OBJECT_REFLECTOR(osgGA::NodeTrackerManipulator)
 	I_DeclaringFile("osgGA/NodeTrackerManipulator");
 	I_BaseType(osgGA::MatrixManipulator);
@@ -57,14 +56,14 @@ BEGIN_OBJECT_REFLECTOR(osgGA::NodeTrackerManipulator)
 	          __void__setTrackNodePath__C5_osg_NodePath_R1,
 	          "",
 	          "");
-	I_Method1(void, setTrackNodePath, IN, const osgGA::NodeTrackerManipulator::ObserverNodePath &, nodePath,
+	I_Method1(void, setTrackNodePath, IN, const osg::ObserverNodePath &, nodePath,
 	          Properties::NON_VIRTUAL,
-	          __void__setTrackNodePath__C5_ObserverNodePath_R1,
+	          __void__setTrackNodePath__C5_osg_ObserverNodePath_R1,
 	          "",
 	          "");
-	I_Method0(osgGA::NodeTrackerManipulator::ObserverNodePath &, getTrackNodePath,
+	I_Method0(osg::ObserverNodePath &, getTrackNodePath,
 	          Properties::NON_VIRTUAL,
-	          __ObserverNodePath_R1__getTrackNodePath,
+	          __osg_ObserverNodePath_R1__getTrackNodePath,
 	          "",
 	          "");
 	I_Method1(void, setTrackNode, IN, osg::Node *, node,
@@ -172,18 +171,6 @@ BEGIN_OBJECT_REFLECTOR(osgGA::NodeTrackerManipulator)
 	          __void__getUsage__osg_ApplicationUsage_R1,
 	          "Get the keyboard and mouse usage of this manipulator. ",
 	          "");
-	I_ProtectedMethod0(osg::NodePath, getNodePath,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::CONST,
-	                   __osg_NodePath__getNodePath,
-	                   "",
-	                   "");
-	I_ProtectedMethod0(bool, validateNodePath,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::CONST,
-	                   __bool__validateNodePath,
-	                   "",
-	                   "");
 	I_ProtectedMethod0(void, flushMouseEventStack,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -195,18 +182,6 @@ BEGIN_OBJECT_REFLECTOR(osgGA::NodeTrackerManipulator)
 	                   Properties::NON_CONST,
 	                   __void__addMouseEvent__C5_GUIEventAdapter_R1,
 	                   "Add the current mouse GUIEvent to internal stack. ",
-	                   "");
-	I_ProtectedMethod1(void, computeNodeWorldToLocal, IN, osg::Matrixd &, worldToLocal,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::CONST,
-	                   __void__computeNodeWorldToLocal__osg_Matrixd_R1,
-	                   "",
-	                   "");
-	I_ProtectedMethod1(void, computeNodeLocalToWorld, IN, osg::Matrixd &, localToWorld,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::CONST,
-	                   __void__computeNodeLocalToWorld__osg_Matrixd_R1,
-	                   "",
 	                   "");
 	I_ProtectedMethod2(void, computeNodeCenterAndRotation, IN, osg::Vec3d &, center, IN, osg::Quat &, rotation,
 	                   Properties::NON_VIRTUAL,
@@ -277,8 +252,8 @@ BEGIN_OBJECT_REFLECTOR(osgGA::NodeTrackerManipulator)
 	I_SimpleProperty(osg::Node *, TrackNode, 
 	                 __osg_Node_P1__getTrackNode, 
 	                 __void__setTrackNode__osg_Node_P1);
-	I_SimpleProperty(osgGA::NodeTrackerManipulator::ObserverNodePath &, TrackNodePath, 
-	                 __ObserverNodePath_R1__getTrackNodePath, 
+	I_SimpleProperty(osg::ObserverNodePath &, TrackNodePath, 
+	                 __osg_ObserverNodePath_R1__getTrackNodePath, 
 	                 0);
 	I_SimpleProperty(osgGA::NodeTrackerManipulator::TrackerMode, TrackerMode, 
 	                 __TrackerMode__getTrackerMode, 

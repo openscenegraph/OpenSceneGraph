@@ -10,7 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/observer_ptr>
+#include <osg/Observer>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -21,7 +21,7 @@
 #endif
 
 BEGIN_VALUE_REFLECTOR(osg::Observer)
-	I_DeclaringFile("osg/observer_ptr");
+	I_DeclaringFile("osg/Observer");
 	I_Constructor0(____Observer,
 	               "",
 	               "");

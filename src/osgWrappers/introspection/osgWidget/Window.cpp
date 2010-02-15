@@ -967,9 +967,9 @@ BEGIN_OBJECT_REFLECTOR(osg::observer_ptr< osgWidget::Window >)
 	               ____observer_ptr__C5_observer_ptr_R1,
 	               "",
 	               "");
-	I_Method1(void, objectDeleted, IN, void *, x,
-	          Properties::VIRTUAL,
-	          __void__objectDeleted__void_P1,
+	I_Method0(osg::ref_ptr< osgWidget::Window >, lock,
+	          Properties::NON_VIRTUAL,
+	          __ref_ptrT1_T___lock,
 	          "",
 	          "");
 	I_Method0(osgWidget::Window *, get,
@@ -982,6 +982,12 @@ BEGIN_OBJECT_REFLECTOR(osg::observer_ptr< osgWidget::Window >)
 	          __bool__valid,
 	          "",
 	          "");
+	I_ProtectedMethod1(void, objectDeleted, IN, void *, x,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__objectDeleted__void_P1,
+	                   "objectDeleted is called when the observed object is about to be deleted. ",
+	                   "The observer will be automatically removed from the observerd objects observer set so there is no need for the objectDeleted implementation to call removeObserver() on the observed object. ");
 	I_SimpleProperty(osgWidget::Window *, , 
 	                 __T_P1__get, 
 	                 0);

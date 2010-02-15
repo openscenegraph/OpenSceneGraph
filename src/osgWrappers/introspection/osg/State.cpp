@@ -878,11 +878,11 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	          __void__initializeExtensionProcs,
 	          "Initialize extension used by osg:State. ",
 	          "");
-	I_Method1(void, objectDeleted, IN, void *, object,
+	I_Method1(void, objectDeleted, IN, void *, x,
 	          Properties::VIRTUAL,
 	          __void__objectDeleted__void_P1,
-	          "",
-	          "");
+	          "objectDeleted is called when the observed object is about to be deleted. ",
+	          "The observer will be automatically removed from the observerd objects observer set so there is no need for the objectDeleted implementation to call removeObserver() on the observed object. ");
 	I_Method0(osg::GLBeginEndAdapter &, getGLBeginEndAdapter,
 	          Properties::NON_VIRTUAL,
 	          __GLBeginEndAdapter_R1__getGLBeginEndAdapter,

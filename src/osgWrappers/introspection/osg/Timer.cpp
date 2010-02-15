@@ -39,7 +39,22 @@ BEGIN_VALUE_REFLECTOR(osg::ElapsedTime)
 	I_Method0(double, elapsedTime,
 	          Properties::NON_VIRTUAL,
 	          __double__elapsedTime,
-	          "",
+	          "elapsed time in seconds. ",
+	          "");
+	I_Method0(double, elapsedTime_m,
+	          Properties::NON_VIRTUAL,
+	          __double__elapsedTime_m,
+	          "elapsed time in milliseconds. ",
+	          "");
+	I_Method0(double, elapsedTime_u,
+	          Properties::NON_VIRTUAL,
+	          __double__elapsedTime_u,
+	          "elapsed time in microseconds. ",
+	          "");
+	I_Method0(double, elapsedTime_n,
+	          Properties::NON_VIRTUAL,
+	          __double__elapsedTime_n,
+	          "elapsed time in nanoseconds. ",
 	          "");
 	I_Method0(void, finish,
 	          Properties::NON_VIRTUAL,

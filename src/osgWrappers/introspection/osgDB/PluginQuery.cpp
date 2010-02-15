@@ -80,5 +80,3 @@ END_REFLECTOR
 
 STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osgDB::ReaderWriterInfo > >)
 
-STD_LIST_REFLECTOR(std::list< std::string >)
-

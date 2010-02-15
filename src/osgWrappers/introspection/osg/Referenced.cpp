@@ -12,8 +12,8 @@
 
 #include <OpenThreads/Mutex>
 #include <osg/DeleteHandler>
+#include <osg/Observer>
 #include <osg/Referenced>
-#include <osg/observer_ptr>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -103,6 +103,12 @@ BEGIN_OBJECT_REFLECTOR(osg::Referenced)
 	                __DeleteHandler_P1__getDeleteHandler_S,
 	                "Get a DeleteHandler. ",
 	                "");
+	I_ProtectedMethod3(void, signalObserversAndDelete, IN, bool, signalUnreferened, IN, bool, signalDelete, IN, bool, doDelete,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __void__signalObserversAndDelete__bool__bool__bool,
+	                   "",
+	                   "");
 	I_ProtectedMethod0(void, deleteUsingDeleteHandler,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,

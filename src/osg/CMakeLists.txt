@@ -111,6 +111,8 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Notify
     ${HEADER_PATH}/Object
     ${HEADER_PATH}/observer_ptr
+    ${HEADER_PATH}/Observer
+    ${HEADER_PATH}/ObserverNodePath
     ${HEADER_PATH}/OccluderNode
     ${HEADER_PATH}/OcclusionQueryNode
     ${HEADER_PATH}/OperationThread
@@ -274,6 +276,7 @@ ADD_LIBRARY(${LIB_NAME}
     NodeVisitor.cpp
     Notify.cpp
     Object.cpp
+    ObserverNodePath.cpp
     OccluderNode.cpp
     OcclusionQueryNode.cpp
     OperationThread.cpp

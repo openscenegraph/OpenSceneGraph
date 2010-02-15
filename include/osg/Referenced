@@ -122,7 +122,9 @@ class OSG_EXPORT Referenced
     protected:
     
         virtual ~Referenced();
-        
+
+        void signalObserversAndDelete(bool signalUnreferened, bool signalDelete, bool doDelete) const;
+
         void deleteUsingDeleteHandler() const;
 
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
@@ -161,26 +163,23 @@ inline void Referenced::ref() const
 inline void Referenced::unref() const
 {
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
-    bool needDelete = (--_refCount == 0);
+    bool needDelete = (--_refCount <= 0);
 #else
     bool needDelete = false;
     if (_refMutex)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex); 
-        --_refCount;
-        needDelete = _refCount<=0;
+        needDelete = (--_refCount)<=0;
     }
     else
     {
-        --_refCount;
-        needDelete = _refCount<=0;
+        needDelete = (--_refCount)<=0;
     }
 #endif
 
     if (needDelete)
     {
-        if (getDeleteHandler()) deleteUsingDeleteHandler();
-        else delete this;
+        signalObserversAndDelete(true,true,true);
     }
 }
 

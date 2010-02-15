@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -10,10 +10,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
  * OpenSceneGraph Public License for more details.
-*/
+ */
 
-#ifndef OSGANIMATION_EASE_MOTION_H
-#define OSGANIMATION_EASE_MOTION_H
+#ifndef OSGANIMATION_EASE_MOTION
+#define OSGANIMATION_EASE_MOTION 1
 
 #include <osg/Referenced>
 #include <osg/ref_ptr>
@@ -21,9 +21,8 @@
 #include <osg/Math>
 #include <vector>
 
-namespace osgAnimation {
-
-
+namespace osgAnimation
+{
     struct OutBounceFunction 
     {
         inline static void getValueAt(float t, float& result) 
@@ -76,14 +75,12 @@ namespace osgAnimation {
         }
     };
 
-
     /// Linear function
     struct LinearFunction 
     {
         inline static void getValueAt(float t, float& result) { result = t;}
     };
 
-  
     /// Quad function
     struct OutQuadFunction 
     {
@@ -94,46 +91,47 @@ namespace osgAnimation {
     {
         inline static void getValueAt(float t, float& result) { result = t*t;}
     };
+
     struct InOutQuadFunction 
     {
         inline static void getValueAt(float t, float& result) 
-        { 
-            t = t * 2.0;
-            if (t < 1.0)
+        {
+            t *= 2.0;
+            if (t < 1.0) 
                 result = 0.5 * t * t;
             else 
             {
-                t = t - 1.0;
-                result = - 0.5 * t * ( t - 2) - 1;
+                t -= 1.0;
+                result = - 0.5 * (t * ( t - 2) - 1);
             }
         }
     };
-
 
     /// Cubic function
     struct OutCubicFunction 
     {
         inline static void getValueAt(float t, float& result) { t = t-1.0; result = t*t*t + 1;}
     };
+
     struct InCubicFunction 
     {
         inline static void getValueAt(float t, float& result) { result = t*t*t;}
     };
+
     struct InOutCubicFunction 
     {
         inline static void getValueAt(float t, float& result) 
         { 
-            t = t * 2;
-            if (t < 1.0)
-                result = 0.5 * t * t * t;
+            t *= 2.0f;
+            if (t < 1.0f)
+                result = 0.5f * t * t * t;
             else {
-                t = t - 2;
-                result = 0.5 * t * t * t + 2;
+                t -= 2.0f;
+                result = 0.5 * (t * t * t + 2.0f);
             }
         }
     };
  
-
     /// Quart function
     struct InQuartFunction 
     {
@@ -196,6 +194,155 @@ namespace osgAnimation {
         }
     };
 
+    // Sine function
+    struct OutSineFunction
+    {
+        inline static void getValueAt(float t, float& result)
+        {
+            result = sinf(t * (osg::PI / 2.0f));
+        }
+    };
+
+    struct InSineFunction
+    {
+        inline static void getValueAt(float t, float& result)
+        {
+            result = -cosf(t * (osg::PI / 2.0f)) + 1.0f;
+        }
+    };
+
+    struct InOutSineFunction
+    {
+        inline static void getValueAt(float t, float& result)
+        {
+            result = -0.5f * (cosf((osg::PI * t)) - 1.0f);
+        }
+    };
+
+    // Back function
+    struct OutBackFunction
+    {
+        inline static void getValueAt(float t, float& result)
+        {
+            t -= 1.0f;
+            result = t * t * ((1.70158 + 1.0f) * t + 1.70158) + 1.0f;
+        }
+    };
+
+    struct InBackFunction
+    {
+        inline static void getValueAt(float t, float& result)
+        {
+            result = t * t * ((1.70158 + 1.0f) * t - 1.70158);
+        }
+    };
+
+    struct InOutBackFunction
+    {
+        inline static void getValueAt(float t, float& result)
+        {
+            float s = 1.70158 * 1.525f;
+            t *= 2.0f;
+            if (t < 1.0f) 
+            {
+                result = 0.5f * (t * t * ((s + 1.0f) * t - s));
+            }
+            else
+            {
+                float p = t -= 2.0f;
+                result = 0.5f * ((p) * t * ((s + 1.0f) * t + s) + 2.0f);
+            }
+        }
+    };
+
+    // Circ function
+    struct OutCircFunction
+    {
+        inline static void getValueAt(float t, float& result)
+        {
+            t -= 1.0f;
+            result = sqrt(1.0f - t * t);
+        }
+    };
+
+    struct InCircFunction
+    {
+        inline static void getValueAt(float t, float& result)
+        {
+            result = -(sqrt(1.0f - (t * t)) - 1.0f);
+        }
+    };
+
+    struct InOutCircFunction
+    {
+        inline static void getValueAt(float t, float& result)
+        {
+            t *= 2.0f;
+            if (t < 1.0f)
+            {
+                result = -0.5f * (sqrt(1.0f - t * t) - 1.0f);
+            }
+            else
+            {
+                t -= 2.0f;
+                result = 0.5f * (sqrt(1 - t * t) + 1.0f);
+            }
+        }
+    };
+
+    // Expo function
+    struct OutExpoFunction
+    {
+        inline static void getValueAt(float t, float& result)
+        {
+            if(t == 1.0f)
+            {
+                result = 0.0f;
+            }
+            else
+            {
+                result = -powf(2.0f, -10.0f * t) + 1.0f;
+            }
+        }
+    };
+
+    struct InExpoFunction
+    {
+        inline static void getValueAt(float t, float& result)
+        {
+            if(t == 0.0f)
+            {
+                result = 0.0f;
+            }
+            else
+            {
+                result = powf(2.0f, 10.0f * (t - 1.0f));
+            }       
+        }
+    };
+
+    struct InOutExpoFunction
+    {
+        inline static void getValueAt(float t, float& result)
+        {
+            if(t == 0.0f || t == 1.0f)
+            {
+                result = 0.0f;
+            }
+            else
+            {
+                t *= 2.0f;
+                if(t < 1.0f)
+                {
+                    result = 0.5f * powf(2.0f, 10.0f * (t - 1.0f));
+                }
+                else
+                {
+                    result = 0.5f * (-powf(2.0f, -10.0f * (t - 1.0f)) + 2.0f);
+                }
+            }
+        }
+    };
 
     class Motion : public osg::Referenced
     {
@@ -349,7 +496,6 @@ namespace osgAnimation {
     typedef MathMotionTemplate<InQuartFunction> InQuartMotion;
     typedef MathMotionTemplate<InOutQuartFunction> InOutQuartMotion;
 
-
     // bounce
     typedef MathMotionTemplate<OutBounceFunction > OutBounceMotion;
     typedef MathMotionTemplate<InBounceFunction> InBounceMotion;
@@ -360,6 +506,25 @@ namespace osgAnimation {
     typedef MathMotionTemplate<InElasticFunction > InElasticMotion;
     typedef MathMotionTemplate<InOutElasticFunction > InOutElasticMotion;
 
+    // sine
+    typedef MathMotionTemplate<OutSineFunction > OutSineMotion;
+    typedef MathMotionTemplate<InSineFunction > InSineMotion;
+    typedef MathMotionTemplate<InOutSineFunction > InOutSineMotion;
+
+    // back
+    typedef MathMotionTemplate<OutBackFunction > OutBackMotion;
+    typedef MathMotionTemplate<InBackFunction > InBackMotion;
+    typedef MathMotionTemplate<InOutBackFunction > InOutBackMotion;
+
+    // circ
+    typedef MathMotionTemplate<OutCircFunction > OutCircMotion;
+    typedef MathMotionTemplate<InCircFunction > InCircMotion;
+    typedef MathMotionTemplate<InOutCircFunction > InOutCircMotion;
+    
+    // expo
+    typedef MathMotionTemplate<OutExpoFunction > OutExpoMotion;
+    typedef MathMotionTemplate<InExpoFunction > InExpoMotion;
+    typedef MathMotionTemplate<InOutExpoFunction > InOutExpoMotion;
 }
 
 #endif

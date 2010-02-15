@@ -235,41 +235,124 @@ Referenced::~Referenced()
         notify(WARN)<<"         the final reference count was "<<_refCount<<", memory corruption possible."<<std::endl;
     }
 
-#if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
-    if (_observers)
+    // signal observers that we are being deleted.
+    signalObserversAndDelete(false, true, false);
+}
+
+void Referenced::signalObserversAndDelete(bool signalUnreferened, bool signalDelete, bool doDelete) const
+{
+    if (signalUnreferened)
     {
-        ObserverSet* os = static_cast<ObserverSet*>(_observers);
-        for(ObserverSet::iterator itr = os->begin();
-            itr != os->end();
-            ++itr)
-        {
-            (*itr)->objectDeleted(this);
-        }
-        delete os;
-        _observers = 0;
+        // tell all observers that we have been unreferenced so that they
+        // can do cleans up or add their own reference to prevent deletion.
+        #if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
+            ObserverSet* os = static_cast<ObserverSet*>(_observers);
+            if (os)
+            {
+                if (_refMutex)
+                {
+                    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex);
+                    for(ObserverSet::iterator itr = os->begin();
+                        itr != os->end();
+                        )
+                    {
+                        if ((*itr)->objectUnreferenced(const_cast<Referenced*>(this)))
+                        {
+                            ObserverSet::iterator orig_itr = itr;
+                            ++itr;
+                            os.erase(orig_itr);
+                        }
+                        else
+                        {
+                            ++itr;
+                        }
+                    }
+                }
+                else
+                {
+                    for(ObserverSet::iterator itr = os->begin();
+                        itr != os->end();
+                        )
+                    {
+                        if ((*itr)->objectUnreferenced(const_cast<Referenced*>(this)))
+                        {
+                            ObserverSet::iterator orig_itr = itr;
+                            ++itr;
+                            os.erase(orig_itr);
+                        }
+                        else
+                        {
+                            ++itr;
+                        }
+                    }
+                }
+            }
+        #else
+            ObserverSetData* observerSetData = static_cast<ObserverSetData*>(_observerSetDataPtr.get());
+            if (observerSetData)
+            {
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(observerSetData->_mutex);
+                for(ObserverSet::iterator itr = observerSetData->_observers.begin();
+                    itr != observerSetData->_observers.end();
+                    )
+                {
+                    if ((*itr)->objectUnreferenced(const_cast<Referenced*>(this)))
+                    {
+                        ObserverSet::iterator orig_itr = itr;
+                        ++itr;
+                        observerSetData->_observers.erase(orig_itr);
+                    }
+                    else
+                    {
+                        ++itr;
+                    }
+                }
+            }
+        #endif
     }
 
-    if (_refMutex)
+    if (_refCount!=0) return;
+
+    if (signalDelete)
     {
-        OpenThreads::Mutex* tmpMutexPtr = _refMutex;
-        _refMutex = 0;
-        delete tmpMutexPtr;
+        // tell all observers that we being delete so that they
+        // can do cleans up and remove any references they have.
+        #if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
+            ObserverSet* os = static_cast<ObserverSet*>(_observers);
+            if (os)
+            {
+                for(ObserverSet::iterator itr = os->begin();
+                    itr != os->end();
+                    ++itr)
+                {
+                    (*itr)->objectDeleted(const_cast<Referenced*>(this));
+                }
+                delete os;
+                _observers = 0;
+            }
+        #else
+            ObserverSetData* observerSetData = static_cast<ObserverSetData*>(_observerSetDataPtr.get());
+            if (observerSetData)
+            {
+                for(ObserverSet::iterator itr = observerSetData->_observers.begin();
+                    itr != observerSetData->_observers.end();
+                    ++itr)
+                {
+                    (*itr)->objectDeleted(const_cast<Referenced*>(this));
+                }
+                _observerSetDataPtr.assign(0, observerSetData);
+                delete observerSetData;
+            }
+        #endif
     }
-#else
-    ObserverSetData* observerSetData = static_cast<ObserverSetData*>(_observerSetDataPtr.get());
-    if (observerSetData)
+
+    if (doDelete &&_refCount<=0)
     {
-        for(ObserverSet::iterator itr = observerSetData->_observers.begin();
-            itr != observerSetData->_observers.end();
-            ++itr)
-        {
-            (*itr)->objectDeleted(this);
-        }
-        _observerSetDataPtr.assign(0, observerSetData);
-        delete observerSetData;
+        if (getDeleteHandler()) deleteUsingDeleteHandler();
+        else delete this;
     }
-#endif
 }
+
 
 void Referenced::setThreadSafeRefUnref(bool threadSafe)
 {
@@ -299,18 +382,24 @@ void Referenced::setThreadSafeRefUnref(bool threadSafe)
 void Referenced::unref_nodelete() const
 {
 #if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
+    bool needUnreferencedSignal = false;
     if (_refMutex)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex); 
-        --_refCount;
+        needUnreferencedSignal = (--_refCount)<=0;
     }
     else
     {
-        --_refCount;
+        needUnreferencedSignal = (--_refCount)<=0;
     }
 #else
-    --_refCount;
+    bool needUnreferencedSignal = (--_refCount)<=0;
 #endif
+
+    if (needUnreferencedSignal)
+    {
+        signalObserversAndDelete(true,false,false);
+    }
 }
 
 void Referenced::addObserver(Observer* observer) const

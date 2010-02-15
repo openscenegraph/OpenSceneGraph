@@ -15,17 +15,22 @@
 #define OSG_OBSERVER_PTR
 
 #include <osg/Notify>
+#include <osg/ref_ptr>
+#include <osg/Observer>
 
 namespace osg {
 
-class Observer
-{
-public:
-    virtual ~Observer() {}
-    virtual void objectDeleted(void*) {}
-};
-
-/** Smart pointer for observed objects, that automatically set pointers to them to null when they deleted.*/
+/** Smart pointer for observed objects, that automatically set pointers to them to null when they deleted.
+  * To use the observer_ptr<> robustly in mulit-threaded applications it is recommend to access the pointer via
+  * the lock() method that passes back a ref_ptr<> that safely takes a reference to the object to prevent deletion
+  * during usage of the object.  In certain conditions it may be safe to use the pointer directly without using lock(),
+  * which will confer a perfomance advantage, the conditions are:
+  *   1) The data structure is only accessed/deleted in single threaded/serial way.
+  *   2) The data strucutre is guarenteed by high level management of data strucutures and threads which avoid
+  *      possible situations where the observer_ptr<>'s object may be deleted by one thread whilst being accessed
+  *      by another.
+  * If you are in any doubt about whether it is safe to access the object safe then use
+  * ref_ptr<> observer_ptr<>.lock() combination. */
 template<class T>
 class observer_ptr : public Observer
 {
@@ -40,9 +45,10 @@ class observer_ptr : public Observer
 
         inline observer_ptr& operator = (const observer_ptr& rp)
         {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
             if (_ptr==rp._ptr) return *this;
             if (_ptr) _ptr->removeObserver(this);
-            
+
             _ptr = rp._ptr;
             if (_ptr) _ptr->addObserver(this);
             return *this;
@@ -50,19 +56,25 @@ class observer_ptr : public Observer
 
         inline observer_ptr& operator = (T* ptr)
         {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
             if (_ptr==ptr) return *this;
             if (_ptr) _ptr->removeObserver(this);
-            
+
             _ptr = ptr;
             if (_ptr) _ptr->addObserver(this);
 
             return *this;
         }
-        
-        virtual void objectDeleted(void*)
+
+        // robust thread safe access to pointer
+        ref_ptr<T> lock() const
         {
-            _ptr = 0;
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            return ref_ptr<T>(_ptr);
         }
+
+        // get the raw C pointer
+        inline T* get() const { return _ptr; }
 
         // comparison operators for observer_ptr.
         inline bool operator == (const observer_ptr& rp) const { return (_ptr==rp._ptr); }
@@ -76,17 +88,26 @@ class observer_ptr : public Observer
         inline bool operator < (const T* ptr) const { return (_ptr<ptr); }
         inline bool operator > (const T* ptr) const { return (_ptr>ptr); }
 
+        // convinience methods for operating on object, however, access to not automatically threadsafe
+        // to make thread safe one should either ensure a high level that object will not be deleted
+        // which operating on it, or by using the observer_ptr<>::lock() to get a ref_ptr<> that ensures the
+        // objects stay alive throughout all access to it.
         inline T& operator*() const { return *_ptr; }
         inline T* operator->() const   { return _ptr; }
-        inline T* get() const { return _ptr; }
 
         inline bool operator!() const   { return _ptr==0L; }
-
         inline bool valid() const       { return _ptr!=0L; }
-        
 
-    private:
-        T* _ptr;
+    protected:
+
+        virtual void objectDeleted(void*)
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            _ptr = 0;
+        }
+
+        mutable OpenThreads::Mutex      _mutex;
+        T*                              _ptr;
 };
 
 }

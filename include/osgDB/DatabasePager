@@ -50,7 +50,9 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         DatabasePager();
 
         DatabasePager(const DatabasePager& rhs);
-        
+
+        virtual const char* className() const { return "DatabasePager"; }
+
         /** Create a shallow copy on the DatabasePager.*/
         virtual DatabasePager* clone() const { return new DatabasePager(*this); }
 

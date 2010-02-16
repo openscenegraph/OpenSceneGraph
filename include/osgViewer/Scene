@@ -30,6 +30,8 @@ class OSGVIEWER_EXPORT Scene : public osg::Referenced
 {
     public:
 
+        virtual const char* className() const { return "Scene"; }
+
         void setSceneData(osg::Node* node);
         osg::Node* getSceneData();
         const osg::Node* getSceneData() const;

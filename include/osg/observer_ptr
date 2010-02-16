@@ -41,11 +41,21 @@ class observer_ptr : public Observer
         observer_ptr() :_ptr(0L)                            {}
         observer_ptr(T* t):_ptr(t)                          { if (_ptr) _ptr->addObserver(this); }
         observer_ptr(const observer_ptr& rp):Observer(), _ptr(rp._ptr)  { if (_ptr) _ptr->addObserver(this); }
-        ~observer_ptr()                                     { if (_ptr) _ptr->removeObserver(this); _ptr=0; }
+
+        ~observer_ptr()
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            if (_ptr) _ptr->removeObserver(this);
+        }
 
         inline observer_ptr& operator = (const observer_ptr& rp)
         {
+            if (&rp==this) return *this;
+
+            ref_ptr<T> tmp_ptr(rp.lock());
+
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+
             if (_ptr==rp._ptr) return *this;
             if (_ptr) _ptr->removeObserver(this);
 
@@ -100,10 +110,12 @@ class observer_ptr : public Observer
 
     protected:
 
-        virtual void objectDeleted(void*)
+        virtual void objectDeleted(void* obj)
         {
+            T* ref_obj = static_cast<T*>(obj);
+
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-            _ptr = 0;
+            if (ref_obj->referenceCount() == 0) _ptr = 0;
         }
 
         mutable OpenThreads::Mutex      _mutex;

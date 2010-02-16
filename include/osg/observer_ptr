@@ -44,15 +44,12 @@ class observer_ptr : public Observer
 
         ~observer_ptr()
         {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
             if (_ptr) _ptr->removeObserver(this);
         }
 
         inline observer_ptr& operator = (const observer_ptr& rp)
         {
             if (&rp==this) return *this;
-
-            ref_ptr<T> tmp_ptr(rp.lock());
 
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 

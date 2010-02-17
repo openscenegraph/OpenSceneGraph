@@ -12,6 +12,7 @@
 */
 
 #include <osg/ObserverNodePath>
+#include <osg/Notify>
 
 using namespace osg;
 
@@ -53,6 +54,32 @@ ObserverNodePath& ObserverNodePath::operator = (const ObserverNodePath& rhs)
     return *this;
 }
 
+void ObserverNodePath::setNodePathTo(osg::Node* node)
+{
+    if (node)
+    {
+        NodePathList nodePathList = node->getParentalNodePaths();
+        if (nodePathList.empty())
+        {
+            NodePath nodePath;
+            nodePath.push_back(node);
+            setNodePath(nodePath);
+        }
+        else
+        {
+            if (nodePathList[0].empty())
+            {
+                nodePathList[0].push_back(node);
+            }
+            setNodePath(nodePathList[0]);
+        }
+    }
+    else
+    {
+        clearNodePath();
+    }
+}
+
 void ObserverNodePath::setNodePath(const osg::NodePath& nodePath)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
@@ -89,7 +116,7 @@ bool ObserverNodePath::getRefNodePath(RefNodePath& refNodePath) const
         refNodePath.push_back(*itr);
     }
 
-    return !refNodePath.empty();
+    return true;
 }
 
 bool ObserverNodePath::getNodePath(NodePath& nodePath) const
@@ -99,7 +126,7 @@ bool ObserverNodePath::getNodePath(NodePath& nodePath) const
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
     if (!_valid) return false;
     nodePath = _nodePath;
-    return !nodePath.empty();
+    return true;
 }
 
 void ObserverNodePath::_setNodePath(const osg::NodePath& nodePath)
@@ -108,12 +135,15 @@ void ObserverNodePath::_setNodePath(const osg::NodePath& nodePath)
 
     _clearNodePath();
 
+    //OSG_NOTICE<<"ObserverNodePath["<<this<<"]::_setNodePath() nodePath.size()="<<nodePath.size()<<std::endl;
+
     _nodePath = nodePath;
 
     for(osg::NodePath::iterator itr = _nodePath.begin();
         itr != _nodePath.end();
         ++itr)
     {
+        //OSG_NOTICE<<"   addObserver("<<*itr<<")"<<std::endl;
         (*itr)->addObserver(this);
     }
 
@@ -122,10 +152,12 @@ void ObserverNodePath::_setNodePath(const osg::NodePath& nodePath)
 
 void ObserverNodePath::_clearNodePath()
 {
+    //OSG_NOTICE<<"ObserverNodePath["<<this<<"]::_clearNodePath() _nodePath.size()="<<_nodePath.size()<<std::endl;
     for(osg::NodePath::iterator itr = _nodePath.begin();
         itr != _nodePath.end();
         ++itr)
     {
+        //OSG_NOTICE<<"   removeObserver("<<*itr<<")"<<std::endl;
         (*itr)->removeObserver(this);
     }
     _nodePath.clear();
@@ -148,10 +180,15 @@ bool ObserverNodePath::objectUnreferenced(void* ptr)
         {
             _nodePath.erase(itr);
 
-            // return true as we wish calling method to remove self from observert set.
+            //OSG_NOTICE<<"ObserverNodePath["<<this<<"]::objectUnreferenced("<<ptr<<") found pointer in node path."<<std::endl;
+
+            // return true as we wish calling method to remove self from observer set.
             return true;
         }
     }
-    // return true as we wish calling method to remove self from observert set.
+
+    //OSG_NOTICE<<"Error: ObserverNodePath["<<this<<"]::::objectUnreferenced("<<ptr<<") could not find pointer in node path."<<std::endl;
+
+    // return true as we wish calling method to remove self from observer set.
     return true;
 }

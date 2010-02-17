@@ -244,7 +244,7 @@ void Referenced::signalObserversAndDelete(bool signalUnreferened, bool signalDel
     if (signalUnreferened)
     {
         // tell all observers that we have been unreferenced so that they
-        // can do cleans up or add their own reference to prevent deletion.
+        // can do clean up or add their own reference to prevent deletion.
         #if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
             ObserverSet* os = static_cast<ObserverSet*>(_observers);
             if (os)

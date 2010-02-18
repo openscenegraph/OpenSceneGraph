@@ -11,28 +11,63 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSG_OCCLUDER
-#define OSG_OCCLUDER 1
+#ifndef OSG_OBSERVER
+#define OSG_OBSERVER 1
+
+#include <OpenThreads/Mutex>
+#include <osg/Export>
+#include <set>
 
 namespace osg {
 
 /** Observer base class for tracking when objects are unreferenced (there reference count goes to 0) and are being deleted.*/
-class Observer
+class OSG_EXPORT Observer
 {
-public:
-    virtual ~Observer() {}
+    public:
+        virtual ~Observer() {}
 
-    /** objectUnreferenced(void*) is called when the observed object's referenced count goes to zero, indicating that
-      * the object will be deleted unless a new reference is made to it.  If you wish to prevent deletion of the object
-      * then it's reference count should be incremented such as via taking a ref_ptr<> to it, if no refernce is taken
-      * by any of the observers of the object then the object will be deleted, and objectDeleted will in turn be called.
-      * return true if the Observer wishes to removed from the oberseved objects observer set.*/
-    virtual bool objectUnreferenced(void*) { return false; }
+        /** Get the optional global observer mutex, this can be shared between all osg::Observer.*/
+        static OpenThreads::Mutex* getGlobalObserverMutex();
 
-    /** objectDeleted is called when the observed object is about to be deleted.  The observer will be automatically
-      * removed from the observerd objects observer set so there is no need for the objectDeleted implementation
-      * to call removeObserver() on the observed object. */
-    virtual void objectDeleted(void*) {}
+        inline OpenThreads::Mutex* getObserverMutex() const { return osg::Observer::getGlobalObserverMutex(); }
+
+        /** objectUnreferenced(void*) is called when the observed object's referenced count goes to zero, indicating that
+        * the object will be deleted unless a new reference is made to it.  If you wish to prevent deletion of the object
+        * then it's reference count should be incremented such as via taking a ref_ptr<> to it, if no refernce is taken
+        * by any of the observers of the object then the object will be deleted, and objectDeleted will in turn be called.
+        * return true if the Observer wishes to removed from the oberseved objects observer set.*/
+        virtual bool objectUnreferenced(void*) { return false; }
+
+        /** objectDeleted is called when the observed object is about to be deleted.  The observer will be automatically
+        * removed from the observerd objects observer set so there is no need for the objectDeleted implementation
+        * to call removeObserver() on the observed object. */
+        virtual void objectDeleted(void*) {}
+
+};
+
+/** Class used by osg::Referenced to track the observers assoicated with it.*/
+class OSG_EXPORT ObserverSet
+{
+    public:
+
+        ObserverSet();
+        ~ObserverSet();
+
+        inline OpenThreads::Mutex* getObserverSetMutex() const { return osg::Observer::getGlobalObserverMutex(); }
+
+        void addObserver(Observer* observer);
+        void removeObserver(Observer* observer);
+
+        void signalObjectUnreferenced(void* ptr);
+        void signalObjectDeleted(void* ptr);
+
+        typedef std::set<Observer*> Observers;
+        Observers& getObservers() { return _observers; }
+        const Observers& getObservers() const { return _observers; }
+
+    protected:
+
+        Observers _observers;
 };
 
 }

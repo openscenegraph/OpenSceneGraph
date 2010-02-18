@@ -14,8 +14,7 @@
 #ifndef OSG_REFERENCED
 #define OSG_REFERENCED 1
 
-// When building OSG with Java need to derive from Noodle::CBridgable class,
-#include <osg/Export>
+#include <osg/Observer>
 
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
@@ -30,6 +29,7 @@ namespace osg {
 // forward declare, declared after Referenced below.
 class DeleteHandler;
 class Observer;
+class ObserverSet;
 
 /** template class to help enforce static initialization order. */
 template <typename T, T M()>
@@ -95,11 +95,25 @@ class OSG_EXPORT Referenced
         /** Return the number pointers currently referencing this object. */
         inline int referenceCount() const { return _refCount; }
 
-        /** Add a Observer that is observing this object, notify the Observer when this object gets deleted.*/
-        void addObserver(Observer* observer) const;
+
+        /** Get the ObserverSet if one is attached, otherwise return NULL.*/
+        ObserverSet* getObserverSet() const
+        {
+            #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
+                return static_cast<ObserverSet*>(_observerSet.get());
+            #else
+                return static_cast<ObserverSet*>(_observerSet);
+            #endif
+        }
+
+        /** Get the ObserverSet if one is attached, otherwise create an ObserverSet, attach it, then return this newly created ObserverSet.*/
+        ObserverSet* getOrCreateObserverSet() const;
 
         /** Add a Observer that is observing this object, notify the Observer when this object gets deleted.*/
-        void removeObserver(Observer* observer) const;
+        void addObserver(Observer* observer) const { getOrCreateObserverSet()->addObserver(observer); }
+
+        /** remove Observer that is observing this object.*/
+        void removeObserver(Observer* observer) const { getOrCreateObserverSet()->removeObserver(observer); }
 
     public:
 
@@ -128,9 +142,7 @@ class OSG_EXPORT Referenced
         void deleteUsingDeleteHandler() const;
 
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
-        struct ObserverSetData;
-
-        mutable OpenThreads::AtomicPtr  _observerSetDataPtr;
+        mutable OpenThreads::AtomicPtr  _observerSet;
 
         mutable OpenThreads::Atomic     _refCount;
 #else
@@ -139,7 +151,7 @@ class OSG_EXPORT Referenced
 
         mutable int                     _refCount;
         
-        mutable void*                   _observers;
+        mutable void*                   _observerSet;
 #endif
 };
 
@@ -163,17 +175,17 @@ inline void Referenced::ref() const
 inline void Referenced::unref() const
 {
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
-    bool needDelete = (--_refCount <= 0);
+    bool needDelete = ((--_refCount) == 0);
 #else
     bool needDelete = false;
     if (_refMutex)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex); 
-        needDelete = (--_refCount)<=0;
+        needDelete = (--_refCount)==0;
     }
     else
     {
-        needDelete = (--_refCount)<=0;
+        needDelete = (--_refCount)==0;
     }
 #endif
 

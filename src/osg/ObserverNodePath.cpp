@@ -82,7 +82,7 @@ void ObserverNodePath::setNodePathTo(osg::Node* node)
 
 void ObserverNodePath::setNodePath(const osg::NodePath& nodePath)
 {
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*getObserverMutex());
     _setNodePath(nodePath);
 }
 
@@ -98,7 +98,7 @@ void ObserverNodePath::setNodePath(const osg::RefNodePath& refNodePath)
 
 void ObserverNodePath::clearNodePath()
 {
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*getObserverMutex());
     _clearNodePath();
 }
 
@@ -106,7 +106,7 @@ bool ObserverNodePath::getRefNodePath(RefNodePath& refNodePath) const
 {
     refNodePath.clear();
 
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*getObserverMutex());
     if (!_valid) return false;
 
     for(osg::NodePath::const_iterator itr = _nodePath.begin();
@@ -123,7 +123,7 @@ bool ObserverNodePath::getNodePath(NodePath& nodePath) const
 {
     nodePath.clear();
 
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*getObserverMutex());
     if (!_valid) return false;
     nodePath = _nodePath;
     return true;
@@ -168,7 +168,7 @@ bool ObserverNodePath::objectUnreferenced(void* ptr)
 {
     osg::Node* node = reinterpret_cast<osg::Node*>(ptr);
 
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*getObserverMutex());
 
     _valid = false;
 

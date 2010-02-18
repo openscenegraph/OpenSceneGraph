@@ -276,6 +276,7 @@ ADD_LIBRARY(${LIB_NAME}
     NodeVisitor.cpp
     Notify.cpp
     Object.cpp
+    Observer.cpp
     ObserverNodePath.cpp
     OccluderNode.cpp
     OcclusionQueryNode.cpp

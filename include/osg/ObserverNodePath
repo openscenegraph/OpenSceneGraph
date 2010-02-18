@@ -67,7 +67,6 @@ class OSG_EXPORT ObserverNodePath : public osg::Observer
 
         virtual bool objectUnreferenced(void* ptr);
 
-        mutable OpenThreads::Mutex      _mutex;
         osg::NodePath                   _nodePath;
         bool                            _valid;
 };

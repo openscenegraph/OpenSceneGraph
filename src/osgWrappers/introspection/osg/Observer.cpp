@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <OpenThreads/Mutex>
 #include <osg/Observer>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -25,6 +26,11 @@ BEGIN_VALUE_REFLECTOR(osg::Observer)
 	I_Constructor0(____Observer,
 	               "",
 	               "");
+	I_Method0(OpenThreads::Mutex *, getObserverMutex,
+	          Properties::NON_VIRTUAL,
+	          __OpenThreads_Mutex_P1__getObserverMutex,
+	          "",
+	          "");
 	I_Method1(bool, objectUnreferenced, IN, void *, x,
 	          Properties::VIRTUAL,
 	          __bool__objectUnreferenced__void_P1,
@@ -35,5 +41,64 @@ BEGIN_VALUE_REFLECTOR(osg::Observer)
 	          __void__objectDeleted__void_P1,
 	          "objectDeleted is called when the observed object is about to be deleted. ",
 	          "The observer will be automatically removed from the observerd objects observer set so there is no need for the objectDeleted implementation to call removeObserver() on the observed object. ");
+	I_StaticMethod0(OpenThreads::Mutex *, getGlobalObserverMutex,
+	                __OpenThreads_Mutex_P1__getGlobalObserverMutex_S,
+	                "Get the optional global observer mutex, this can be shared between all osg::Observer. ",
+	                "");
+	I_SimpleProperty(OpenThreads::Mutex *, ObserverMutex, 
+	                 __OpenThreads_Mutex_P1__getObserverMutex, 
+	                 0);
 END_REFLECTOR
+
+TYPE_NAME_ALIAS(std::set< osg::Observer * >, osg::ObserverSet::Observers)
+
+BEGIN_VALUE_REFLECTOR(osg::ObserverSet)
+	I_DeclaringFile("osg/Observer");
+	I_Constructor0(____ObserverSet,
+	               "",
+	               "");
+	I_Method0(OpenThreads::Mutex *, getObserverSetMutex,
+	          Properties::NON_VIRTUAL,
+	          __OpenThreads_Mutex_P1__getObserverSetMutex,
+	          "",
+	          "");
+	I_Method1(void, addObserver, IN, osg::Observer *, observer,
+	          Properties::NON_VIRTUAL,
+	          __void__addObserver__Observer_P1,
+	          "",
+	          "");
+	I_Method1(void, removeObserver, IN, osg::Observer *, observer,
+	          Properties::NON_VIRTUAL,
+	          __void__removeObserver__Observer_P1,
+	          "",
+	          "");
+	I_Method1(void, signalObjectUnreferenced, IN, void *, ptr,
+	          Properties::NON_VIRTUAL,
+	          __void__signalObjectUnreferenced__void_P1,
+	          "",
+	          "");
+	I_Method1(void, signalObjectDeleted, IN, void *, ptr,
+	          Properties::NON_VIRTUAL,
+	          __void__signalObjectDeleted__void_P1,
+	          "",
+	          "");
+	I_Method0(osg::ObserverSet::Observers &, getObservers,
+	          Properties::NON_VIRTUAL,
+	          __Observers_R1__getObservers,
+	          "",
+	          "");
+	I_Method0(const osg::ObserverSet::Observers &, getObservers,
+	          Properties::NON_VIRTUAL,
+	          __C5_Observers_R1__getObservers,
+	          "",
+	          "");
+	I_SimpleProperty(OpenThreads::Mutex *, ObserverSetMutex, 
+	                 __OpenThreads_Mutex_P1__getObserverSetMutex, 
+	                 0);
+	I_SimpleProperty(osg::ObserverSet::Observers &, Observers, 
+	                 __Observers_R1__getObservers, 
+	                 0);
+END_REFLECTOR
+
+STD_SET_REFLECTOR(std::set< osg::Observer * >)
 

@@ -73,6 +73,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Referenced)
 	          __int__referenceCount,
 	          "Return the number pointers currently referencing this object. ",
 	          "");
+	I_Method0(osg::ObserverSet *, getObserverSet,
+	          Properties::NON_VIRTUAL,
+	          __ObserverSet_P1__getObserverSet,
+	          "Get the ObserverSet if one is attached, otherwise return NULL. ",
+	          "");
+	I_Method0(osg::ObserverSet *, getOrCreateObserverSet,
+	          Properties::NON_VIRTUAL,
+	          __ObserverSet_P1__getOrCreateObserverSet,
+	          "Get the ObserverSet if one is attached, otherwise create an ObserverSet, attach it, then return this newly created ObserverSet. ",
+	          "");
 	I_Method1(void, addObserver, IN, osg::Observer *, observer,
 	          Properties::NON_VIRTUAL,
 	          __void__addObserver__Observer_P1,
@@ -81,7 +91,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Referenced)
 	I_Method1(void, removeObserver, IN, osg::Observer *, observer,
 	          Properties::NON_VIRTUAL,
 	          __void__removeObserver__Observer_P1,
-	          "Add a Observer that is observing this object, notify the Observer when this object gets deleted. ",
+	          "remove Observer that is observing this object. ",
 	          "");
 	I_StaticMethod0(OpenThreads::Mutex *, getGlobalReferencedMutex,
 	                __OpenThreads_Mutex_P1__getGlobalReferencedMutex_S,
@@ -115,6 +125,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Referenced)
 	                   __void__deleteUsingDeleteHandler,
 	                   "",
 	                   "");
+	I_SimpleProperty(osg::ObserverSet *, ObserverSet, 
+	                 __ObserverSet_P1__getObserverSet, 
+	                 0);
 	I_SimpleProperty(OpenThreads::Mutex *, RefMutex, 
 	                 __OpenThreads_Mutex_P1__getRefMutex, 
 	                 0);

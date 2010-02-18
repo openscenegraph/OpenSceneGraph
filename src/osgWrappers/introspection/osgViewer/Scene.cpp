@@ -27,6 +27,11 @@
 BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	I_DeclaringFile("osgViewer/Scene");
 	I_BaseType(osg::Referenced);
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
 	I_Method1(void, setSceneData, IN, osg::Node *, node,
 	          Properties::NON_VIRTUAL,
 	          __void__setSceneData__osg_Node_P1,

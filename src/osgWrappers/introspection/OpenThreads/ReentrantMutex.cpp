@@ -26,20 +26,5 @@ BEGIN_OBJECT_REFLECTOR(OpenThreads::ReentrantMutex)
 	I_Constructor0(____ReentrantMutex,
 	               "",
 	               "");
-	I_Method0(int, lock,
-	          Properties::VIRTUAL,
-	          __int__lock,
-	          "Lock the mutex. ",
-	          "0 if normal, -1 if errno set, errno code otherwise.  ");
-	I_Method0(int, unlock,
-	          Properties::VIRTUAL,
-	          __int__unlock,
-	          "Unlock the mutex. ",
-	          "0 if normal, -1 if errno set, errno code otherwise.  ");
-	I_Method0(int, trylock,
-	          Properties::VIRTUAL,
-	          __int__trylock,
-	          "Test if mutex can be locked. ",
-	          "0 if normal, -1 if errno set, errno code otherwise.  ");
 END_REFLECTOR
 

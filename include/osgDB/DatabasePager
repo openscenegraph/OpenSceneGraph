@@ -20,6 +20,7 @@
 #include <osg/Drawable>
 #include <osg/GraphicsThread>
 #include <osg/FrameStamp>
+#include <osg/ObserverNodePath>
 
 #include <OpenThreads/Thread>
 #include <OpenThreads/Mutex>
@@ -376,7 +377,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             double                              _timestampLastRequest;
             float                               _priorityLastRequest;
             unsigned int                        _numOfRequests;
-            osg::observer_ptr<osg::Group>       _groupForAddingLoadedSubgraph;
+            osg::ObserverNodePath               _observerNodePath;
+            osg::Group*                         _groupForAddingLoadedSubgraph;
             osg::ref_ptr<osg::Node>             _loadedModel;
             DataToCompileMap                    _dataToCompileMap;
             osg::ref_ptr<Options>               _loadOptions;

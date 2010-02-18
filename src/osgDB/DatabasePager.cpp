@@ -633,29 +633,33 @@ void DatabasePager::DatabaseThread::run()
                 OSG_NOTIFY(osg::INFO)<<_name<<": Warning DatabaseRquest no longer required."<<std::endl;
                 databaseRequest->_loadedModel = 0;
             }
-            
-            osg::ref_ptr<osg::Group> groupForAddingLoadedSubgraph = databaseRequest->_groupForAddingLoadedSubgraph.get();
 
-            if (!groupForAddingLoadedSubgraph)
+            // take a refNodePath to ensure that none of the nodes go out of scope while we are using them.
+            osg::RefNodePath refNodePath;
+            if (!databaseRequest->_observerNodePath.getRefNodePath(refNodePath))
             {
-                OSG_NOTIFY(osg::INFO)<<_name<<": Warning parent of loaded subgraph, deleted."<<std::endl;
+                OSG_NOTICE<<_name<<": Warning node in parental chain has been deleted, discarding load."<<std::endl;
                 databaseRequest->_loadedModel = 0;
             }
+
 
             //OSG_NOTIFY(osg::NOTICE)<<"     node read in "<<osg::Timer::instance()->delta_m(before,osg::Timer::instance()->tick())<<" ms"<<std::endl;
 
             bool loadedObjectsNeedToBeCompiled = false;
 
             if (databaseRequest->_loadedModel.valid())
-            {            
+            {
                 databaseRequest->_loadedModel->getBound();
 
                 osg::NodePath nodePath;
-                osg::NodePathList nodePathList = groupForAddingLoadedSubgraph->getParentalNodePaths();
-                if (!nodePathList.empty()) nodePath = nodePathList.front();
-                nodePath.push_back(groupForAddingLoadedSubgraph.get());
 
-#if 1
+                for(osg::RefNodePath::iterator rnp_itr = refNodePath.begin();
+                    rnp_itr != refNodePath.end();
+                    ++rnp_itr)
+                {
+                    nodePath.push_back(rnp_itr->get());
+                }
+
                 // force a compute of the loaded model's bounding volume, so that when the subgraph
                 // merged with the main scene graph and large computeBound() isn't incurred.
                 ActiveGraphicsContexts::iterator itr = _pager->_activeGraphicsContexts.begin();
@@ -701,71 +705,6 @@ void DatabasePager::DatabaseThread::run()
                         }
                     }
                 }
-#else
-                if (_pager->_doPreCompile &&
-                    !_pager->_activeGraphicsContexts.empty())
-                {
-                    // force a compute of the loaded model's bounding volume, so that when the subgraph
-                    // merged with the main scene graph and large computeBound() isn't incurred.
-                    ActiveGraphicsContexts::iterator itr = _pager->_activeGraphicsContexts.begin();
-
-                    DataToCompile& dtc = databaseRequest->_dataToCompileMap[*itr];
-                    ++itr;                
-
-                    // find all the compileable rendering objects
-                    DatabasePager::FindCompileableGLObjectsVisitor frov(&dtc,
-                                                         _pager->_changeAutoUnRef, _pager->_valueAutoUnRef,
-                                                         _pager->_changeAnisotropy, _pager->_valueAnisotropy,
-                                                         _pager->_drawablePolicy, 
-                                                         _pager);
-
-                    // push the soon to be parent on the nodepath of the NodeVisitor so that 
-                    // during traversal one can test for where it'll be in the overall scene graph                
-                    for(osg::NodePath::iterator nitr = nodePath.begin();
-                        nitr != nodePath.end();
-                        ++nitr)
-                    {
-                        frov.pushOntoNodePath(*nitr);
-                    }
-
-                    databaseRequest->_loadedModel->accept(frov);
-
-                    if (!dtc.first.empty() || !dtc.second.empty())
-                    {
-                        loadedObjectsNeedToBeCompiled = true;                
-
-                        // copy the objects from the compile list to the other graphics context list.
-                        for(;
-                            itr != _pager->_activeGraphicsContexts.end();
-                            ++itr)
-                        {
-                            databaseRequest->_dataToCompileMap[*itr] = dtc;
-                        }
-                    }
-                }
-                else
-                {
-                    // check to see if we need to run the KdTreeBuilder
-                    if (osgDB::Registry::instance()->getBuildKdTreesHint()==osgDB::Options::BUILD_KDTREES &&
-                        osgDB::Registry::instance()->getKdTreeBuilder())
-                    {
-                        //osg::Timer_t before = osg::Timer::instance()->tick();
-                        //OSG_NOTIFY(osg::NOTICE)<<"osgTerrain::GeometryTechnique::build kd tree"<<std::endl;
-                        osg::ref_ptr<osg::KdTreeBuilder> builder = osgDB::Registry::instance()->getKdTreeBuilder()->clone();
-
-                        for(osg::NodePath::iterator nitr = nodePath.begin();
-                            nitr != nodePath.end();
-                            ++nitr)
-                        {
-                            builder->pushOntoNodePath(*nitr);
-                        }
-
-                        databaseRequest->_loadedModel->accept(*builder);
-                        //osg::Timer_t after = osg::Timer::instance()->tick();
-                        //OSG_NOTIFY(osg::NOTICE)<<"KdTree build time "<<osg::Timer::instance()->delta_m(before, after)<<std::endl;
-                    }
-                }
-#endif
 
                 // move the databaseRequest from the front of the fileRequest to the end of
                 // dataToCompile or dataToMerge lists.
@@ -1381,6 +1320,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
                 databaseRequest->_frameNumberLastRequest = frameNumber;
                 databaseRequest->_timestampLastRequest = timestamp;
                 databaseRequest->_priorityLastRequest = priority;
+                databaseRequest->_observerNodePath.setNodePathTo(group);
                 databaseRequest->_groupForAddingLoadedSubgraph = group;
                 databaseRequest->_loadOptions = loadOptions;
                 databaseRequest->_requestQueue = _fileRequestQueue.get();
@@ -1410,6 +1350,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
             databaseRequest->_frameNumberLastRequest = frameNumber;
             databaseRequest->_timestampLastRequest = timestamp;
             databaseRequest->_priorityLastRequest = priority;
+            databaseRequest->_observerNodePath.setNodePathTo(group);
             databaseRequest->_groupForAddingLoadedSubgraph = group;
             databaseRequest->_loadOptions = loadOptions;
             databaseRequest->_requestQueue = _fileRequestQueue.get();
@@ -1513,18 +1454,18 @@ void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
     {
         DatabaseRequest* databaseRequest = itr->get();
 
-        // OSG_NOTIFY(osg::NOTICE)<<"Merging "<<_frameNumber-(*itr)->_frameNumberLastRequest<<std::endl;
-        
-        if (osgDB::Registry::instance()->getSharedStateManager()) 
-            osgDB::Registry::instance()->getSharedStateManager()->share(databaseRequest->_loadedModel.get());
-
-        
-        registerPagedLODs(databaseRequest->_loadedModel.get(), frameStamp.getFrameNumber());
-        
-        osg::ref_ptr<osg::Group> group = databaseRequest->_groupForAddingLoadedSubgraph.get();
-        if (group.valid())
+        osg::RefNodePath refNodePath;
+        if (databaseRequest->_observerNodePath.getRefNodePath(refNodePath))
         {
-            osg::PagedLOD* plod = dynamic_cast<osg::PagedLOD*>(group.get());
+            // OSG_NOTIFY(osg::NOTICE)<<"Merging "<<_frameNumber-(*itr)->_frameNumberLastRequest<<std::endl;
+            osg::Group* group = databaseRequest->_groupForAddingLoadedSubgraph;
+
+            if (osgDB::Registry::instance()->getSharedStateManager())
+                osgDB::Registry::instance()->getSharedStateManager()->share(databaseRequest->_loadedModel.get());
+
+            registerPagedLODs(databaseRequest->_loadedModel.get(), frameStamp.getFrameNumber());
+
+            osg::PagedLOD* plod = dynamic_cast<osg::PagedLOD*>(group);
             if (plod)
             {
                 plod->setTimeStamp(plod->getNumChildren(), timeStamp);
@@ -1533,7 +1474,7 @@ void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
             }
             else
             {
-                osg::ProxyNode* proxyNode = dynamic_cast<osg::ProxyNode*>(group.get());
+                osg::ProxyNode* proxyNode = dynamic_cast<osg::ProxyNode*>(group);
                 if (proxyNode)
                 {
                     proxyNode->getDatabaseRequest(proxyNode->getNumChildren()) = 0;
@@ -1552,7 +1493,11 @@ void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
             _totalTimeToMergeTiles += timeToMerge;
             ++_numTilesMerges;
         }
-                
+        else
+        {
+            OSG_NOTICE<<"DatabasePager::addLoadedDataToSceneGraph() node in parental chain deleted, discarding subgaph."<<std::endl;
+        }
+
         // reset the loadedModel pointer
         databaseRequest->_loadedModel = 0;
 

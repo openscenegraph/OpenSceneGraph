@@ -34,15 +34,25 @@ class OPENTHREAD_EXPORT_DIRECTIVE Mutex {
 
 public:
 
+    enum MutexType
+    {
+        MUTEX_NORMAL,
+        MUTEX_RECURSIVE
+    };
+
     /**
      *  Constructor
      */
-    Mutex();
+    Mutex(MutexType type=MUTEX_NORMAL);
 
     /**
      *  Destructor
      */
     virtual ~Mutex();
+
+
+    MutexType getMutexType() const { return _mutexType; }
+
 
     /**
      *  Lock the mutex
@@ -81,6 +91,7 @@ private:
      *  Implementation-specific private data.
      */
     void *_prvData;
+    MutexType _mutexType;
 
 };
 

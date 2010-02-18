@@ -53,8 +53,8 @@ public:
     const State* getState() const { return _state.get(); }
     
     void setView(View* view) { _view = view; }
-    View* getView() { return _view.get(); }
-    const View* getView() const { return _view.get(); }
+    View* getView() { return _view; }
+    const View* getView() const { return _view; }
     
     void pushCamera(Camera* camera) { _cameras.push_back(camera); }    
     void popCamera() { if (!_cameras.empty()) _cameras.pop_back(); }
@@ -70,7 +70,7 @@ protected:
     typedef std::vector<Camera*> Cameras;
 
     ref_ptr<State>          _state;
-    observer_ptr<View>      _view;
+    View*                   _view;
     Cameras                 _cameras;
     ref_ptr<Referenced>     _userData;
 };

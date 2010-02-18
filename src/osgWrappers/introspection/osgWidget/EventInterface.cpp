@@ -34,6 +34,11 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Callback)
 	               ____Callback__C5_Callback_R1,
 	               "",
 	               "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
 	I_ConstructorWithDefaults2(IN, osgWidget::EventType, type, , IN, void *, data, 0,
 	                           ____Callback__EventType__void_P1,
 	                           "",
@@ -67,6 +72,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgWidget::CallbackInterface)
 	I_Constructor0(____CallbackInterface,
 	               "",
 	               "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgWidget::Event)

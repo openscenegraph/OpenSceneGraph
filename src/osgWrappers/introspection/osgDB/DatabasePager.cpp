@@ -63,6 +63,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	               ____DatabasePager__C5_DatabasePager_R1,
 	               "",
 	               "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
 	I_Method0(osgDB::DatabasePager *, clone,
 	          Properties::VIRTUAL,
 	          __DatabasePager_P1__clone,

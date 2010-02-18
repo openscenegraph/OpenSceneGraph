@@ -20,11 +20,24 @@
 #undef OUT
 #endif
 
+BEGIN_ENUM_REFLECTOR(OpenThreads::Mutex::MutexType)
+	I_DeclaringFile("OpenThreads/Mutex");
+	I_EnumLabel(OpenThreads::Mutex::MUTEX_NORMAL);
+	I_EnumLabel(OpenThreads::Mutex::MUTEX_RECURSIVE);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(OpenThreads::Mutex)
 	I_DeclaringFile("OpenThreads/Mutex");
-	I_Constructor0(____Mutex,
-	               "Constructor. ",
-	               "");
+	I_ConstructorWithDefaults1(IN, OpenThreads::Mutex::MutexType, type, OpenThreads::Mutex::MUTEX_NORMAL,
+	                           Properties::NON_EXPLICIT,
+	                           ____Mutex__MutexType,
+	                           "Constructor. ",
+	                           "");
+	I_Method0(OpenThreads::Mutex::MutexType, getMutexType,
+	          Properties::NON_VIRTUAL,
+	          __MutexType__getMutexType,
+	          "",
+	          "");
 	I_Method0(int, lock,
 	          Properties::VIRTUAL,
 	          __int__lock,
@@ -40,5 +53,8 @@ BEGIN_OBJECT_REFLECTOR(OpenThreads::Mutex)
 	          __int__trylock,
 	          "Test if mutex can be locked. ",
 	          "0 if normal, -1 if errno set, errno code otherwise.  ");
+	I_SimpleProperty(OpenThreads::Mutex::MutexType, MutexType, 
+	                 __MutexType__getMutexType, 
+	                 0);
 END_REFLECTOR
 

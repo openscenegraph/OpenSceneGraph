@@ -40,19 +40,23 @@ class OSG_EXPORT ObserverNodePath : public osg::Observer
 
         bool valid() const { return _valid; }
 
+
+        /** get the NodePath from the first parental chain back to root, plus the specified node.*/
+        void setNodePathTo(osg::Node* node);
+
         void setNodePath(const osg::RefNodePath& nodePath);
 
         void setNodePath(const osg::NodePath& nodePath);
 
         void clearNodePath();
 
-        /** Get a thread safe RefNodePath.*/
+        /** Get a thread safe RefNodePath, return true if NodePath is valid.*/
         bool getRefNodePath(RefNodePath& refNodePath) const;
 
         /** Get a lightweight NodePath that isn't thread safe but
           * may be safely used in single threaded applications, or when
           * its known that the NodePath won't be invalidated during usage
-          * of the NodePath.*/
+          * of the NodePath. return true if NodePath is valid.*/
         bool getNodePath(NodePath& nodePath) const;
 
     protected:

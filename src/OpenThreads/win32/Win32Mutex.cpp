@@ -83,7 +83,6 @@ static void _S_nsec_sleep(int __log_nsec) {
 //
 Mutex::Mutex(MutexType type):
     _mutexType(type)
-)
 {
     Win32MutexPrivateData *pd = new Win32MutexPrivateData();
     _prvData = static_cast<void *>(pd);

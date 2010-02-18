@@ -93,7 +93,7 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
                 
                 return true;
             } 
-            else if (ea.getKey()=='>')
+            else if (ea.getKey()==')')
             {
                 double time = _isPaused ? _pauseTime : ea.getTime();
                 double animationTime = (time+_timeOffset)*_timeScale;
@@ -107,7 +107,7 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
                 
                 return true;
             } 
-            else if (ea.getKey()=='<')
+            else if (ea.getKey()=='(')
             {
                 double time = _isPaused ? _pauseTime : ea.getTime();
                 double animationTime = (time+_timeOffset)*_timeScale;

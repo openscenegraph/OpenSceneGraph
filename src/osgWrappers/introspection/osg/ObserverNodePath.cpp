@@ -42,6 +42,11 @@ BEGIN_OBJECT_REFLECTOR(osg::ObserverNodePath)
 	          __bool__valid,
 	          "",
 	          "");
+	I_Method1(void, setNodePathTo, IN, osg::Node *, node,
+	          Properties::NON_VIRTUAL,
+	          __void__setNodePathTo__osg_Node_P1,
+	          "get the NodePath from the first parental chain back to root, plus the specified node. ",
+	          "");
 	I_Method1(void, setNodePath, IN, const osg::RefNodePath &, nodePath,
 	          Properties::NON_VIRTUAL,
 	          __void__setNodePath__C5_osg_RefNodePath_R1,
@@ -60,13 +65,13 @@ BEGIN_OBJECT_REFLECTOR(osg::ObserverNodePath)
 	I_Method1(bool, getRefNodePath, IN, osg::RefNodePath &, refNodePath,
 	          Properties::NON_VIRTUAL,
 	          __bool__getRefNodePath__RefNodePath_R1,
-	          "Get a thread safe RefNodePath. ",
+	          "Get a thread safe RefNodePath, return true if NodePath is valid. ",
 	          "");
 	I_Method1(bool, getNodePath, IN, osg::NodePath &, nodePath,
 	          Properties::NON_VIRTUAL,
 	          __bool__getNodePath__NodePath_R1,
 	          "Get a lightweight NodePath that isn't thread safe but may be safely used in single threaded applications, or when its known that the NodePath won't be invalidated during usage of the NodePath. ",
-	          "");
+	          "return true if NodePath is valid. ");
 	I_ProtectedMethod1(void, _setNodePath, IN, const osg::NodePath &, nodePath,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -88,6 +93,9 @@ BEGIN_OBJECT_REFLECTOR(osg::ObserverNodePath)
 	I_SimpleProperty(const osg::RefNodePath &, NodePath, 
 	                 0, 
 	                 __void__setNodePath__C5_osg_RefNodePath_R1);
+	I_SimpleProperty(osg::Node *, NodePathTo, 
+	                 0, 
+	                 __void__setNodePathTo__osg_Node_P1);
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Node > >, osg::RefNodePath)

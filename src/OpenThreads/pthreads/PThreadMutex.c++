@@ -30,17 +30,25 @@ using namespace OpenThreads;
 //
 // Use: public.
 //
-Mutex::Mutex() {
+Mutex::Mutex(MutexType type):
+    _mutexType(type)
+{
 
     pthread_mutexattr_t mutex_attr;
     pthread_mutexattr_init( &mutex_attr );
     
     PThreadMutexPrivateData *pd = new PThreadMutexPrivateData();
-	
-#ifndef __linux__ // (not available until NPTL) [
-    pthread_mutexattr_settype( &mutex_attr, PTHREAD_MUTEX_ERRORCHECK );
-#endif // ] __linux__
 
+    if (type==MUTEX_RECURSIVE)
+    {
+        pthread_mutexattr_settype( &mutex_attr, PTHREAD_MUTEX_RECURSIVE );
+    }
+    else
+    {
+    #ifndef __linux__ // (not available until NPTL) [
+        pthread_mutexattr_settype( &mutex_attr, PTHREAD_MUTEX_ERRORCHECK );
+    #endif // ] __linux__
+    }
 #ifdef ALLOW_PRIORITY_SCHEDULING // [
 
 #ifdef __sun // [

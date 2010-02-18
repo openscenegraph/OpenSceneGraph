@@ -34,7 +34,9 @@ using namespace OpenThreads;
 //
 // Use: public.
 //
-Mutex::Mutex() {
+Mutex::Mutex(MutexType type):
+    _mutexType(type)
+{
 
     SprocMutexPrivateData *pd = new SprocMutexPrivateData();
 

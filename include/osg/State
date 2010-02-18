@@ -19,7 +19,7 @@
 #include <osg/Matrix>
 #include <osg/Uniform>
 #include <osg/BufferObject>
-#include <osg/observer_ptr>
+#include <osg/Observer>
 
 #include <osg/FrameStamp>
 #include <osg/DisplaySettings>

@@ -41,11 +41,15 @@
 #include <osg/TexGen>
 #include <osg/ClipPlane>
 #include <osg/Fog>
+#include <osg/PolygonMode>
+#include <osg/PolygonOffset>
+#include <osg/Texture1D>
 
 #include <sstream>
 
-#ifndef GL_PERSPECTIVE_CORRECTION_HINT
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
     #define GL_PERSPECTIVE_CORRECTION_HINT 0x0C50
+    #define GL_POLYGON_SMOOTH_HINT 0x0C53
 #endif
 
 using namespace osgDB;

@@ -95,11 +95,21 @@ public:
                     pixelFormat = GL_RGBA;
                 else 
                     pixelFormat = GL_RGB;
+                
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
-                 if (pixelFormat = GL_RGB))
-                    if ( glGetIntegerv(IMPLEMENTATION_COLOR_READ_FORMAT_OES) != GL_RGB ||
-                         glGetIntegerv(IMPLEMENTATION_COLOR_READ_FORMAT_OES) != GL_UNSIGNED_BYTE )
+                 if (pixelFormat == GL_RGB)
+                 {
+                    GLint value;
+                    #ifndef GL_IMPLEMENTATION_COLOR_READ_FORMAT
+                        #define GL_IMPLEMENTATION_COLOR_READ_FORMAT 0x8B9B
+                    #endif
+                    glGetIntegerv(GL_IMPLEMENTATION_COLOR_READ_FORMAT, &value);
+                    if ( value != GL_RGB ||
+                         value != GL_UNSIGNED_BYTE )
+                    {
                         pixelFormat = GL_RGBA;//always supported
+                    }
+                 }
 #endif
                 int width = gc->getTraits()->width;
                 int height = gc->getTraits()->height;

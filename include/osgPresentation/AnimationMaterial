@@ -89,7 +89,7 @@ class OSGPRESENTATION_EXPORT AnimationMaterial : public virtual osg::Object
 };
 
 
-class AnimationMaterialCallback : public osg::NodeCallback
+class OSGPRESENTATION_EXPORT AnimationMaterialCallback : public osg::NodeCallback
 {
     public:
 

@@ -33,7 +33,6 @@
 BEGIN_OBJECT_REFLECTOR(osgViewer::CompositeViewer)
 	I_DeclaringFile("osgViewer/CompositeViewer");
 	I_BaseType(osgViewer::ViewerBase);
-	I_VirtualBaseType(osg::Object);
 	I_Constructor0(____CompositeViewer,
 	               "",
 	               "");

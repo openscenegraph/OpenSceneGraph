@@ -94,6 +94,18 @@ OpenThreads::Mutex* Observer::getGlobalObserverMutex()
     return s_ReferencedGlobalMutext.get();
 }
 
+// helper class for forcing the global mutex to be constructed when the library is loaded. 
+struct InitGlobalMutexes
+{
+    InitGlobalMutexes()
+    {
+        Referenced::getGlobalReferencedMutex();
+        Observer::getGlobalObserverMutex();
+    }
+};
+static InitGlobalMutexes s_initGlobalMutexes;
+
+
 #if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
 static bool s_useThreadSafeReferenceCounting = getenv("OSG_THREAD_SAFE_REF_UNREF")!=0;
 #endif

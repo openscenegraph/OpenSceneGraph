@@ -24,7 +24,8 @@ namespace osg {
 class OSG_EXPORT Observer
 {
     public:
-        virtual ~Observer() {}
+        Observer();
+        virtual ~Observer();
 
         /** Get the optional global observer mutex, this can be shared between all osg::Observer.*/
         static OpenThreads::Mutex* getGlobalObserverMutex();

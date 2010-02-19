@@ -16,6 +16,14 @@
 
 using namespace osg;
 
+Observer::Observer()
+{
+}
+
+Observer::~Observer()
+{
+}
+
 ObserverSet::ObserverSet()
 {
     //OSG_NOTICE<<"ObserverSet::ObserverSet() "<<this<<std::endl;

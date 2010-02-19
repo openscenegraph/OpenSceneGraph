@@ -13,6 +13,7 @@
 #include <osg/GLExtensions>
 #include <osg/TexEnvFilter>
 #include <osg/State>
+#include <osg/Notify>
 
 using namespace osg;
 
@@ -38,6 +39,6 @@ void TexEnvFilter::apply(State& state) const
         glTexEnvf(GL_TEXTURE_FILTER_CONTROL_EXT, GL_TEXTURE_LOD_BIAS_EXT, _lodBias);
     }
 #else
-    osg::notify(osg::NOTICE)<<"Warning: TexEnvFilter::apply(State&) - not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: TexEnvFilter::apply(State&) - not supported."<<std::endl;
 #endif
 }

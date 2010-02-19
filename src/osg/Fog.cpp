@@ -13,6 +13,7 @@
 #include <osg/GLExtensions>
 #include <osg/State>
 #include <osg/Fog>
+#include <osg/Notify>
 
 using namespace osg;
 
@@ -56,6 +57,6 @@ void Fog::apply(State& state) const
         glFogi(GL_FOG_COORDINATE_SOURCE,_fogCoordinateSource);
     }
 #else
-    osg::notify(osg::NOTICE)<<"Warning: Fog::apply(State&) - not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: Fog::apply(State&) - not supported."<<std::endl;
 #endif
 }

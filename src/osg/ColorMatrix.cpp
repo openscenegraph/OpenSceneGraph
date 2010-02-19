@@ -14,6 +14,7 @@
 #include <osg/ColorMatrix>
 #include <osg/GL>
 #include <osg/State>
+#include <osg/Notify>
 
 using namespace osg;
 
@@ -39,6 +40,6 @@ void ColorMatrix::apply(State& state) const
         glMatrixMode( GL_MODELVIEW );
     }
 #else
-    osg::notify(osg::NOTICE)<<"Warning: ColorMatrix::apply(State&) - not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: ColorMatrix::apply(State&) - not supported."<<std::endl;
 #endif
 }

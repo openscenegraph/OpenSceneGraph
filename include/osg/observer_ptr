@@ -44,6 +44,7 @@ class observer_ptr : public Observer
 
         ~observer_ptr()
         {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*getObserverMutex());
             if (_ptr) _ptr->removeObserver(this);
         }
 

@@ -98,9 +98,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
           */
         void addMimeTypeExtensionMapping(const std::string fromMimeType, const std::string toExt);
 
-        void addDotOsgWrapper(DotOsgWrapper* wrapper);
-        void removeDotOsgWrapper(DotOsgWrapper* wrapper);
-
         void addReaderWriter(ReaderWriter* rw);
         void removeReaderWriter(ReaderWriter* rw);
 

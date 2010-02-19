@@ -3,6 +3,7 @@
 #include <osg/Notify>
 #include <osg/Geode>
 #include <osg/GL>
+#include <osg/FrameBufferObject>
 
 #include <osgDB/Registry>
 #include <osgDB/FileUtils>

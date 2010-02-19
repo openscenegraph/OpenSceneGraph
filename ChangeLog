@@ -1,3 +1,2778 @@
+2010-02-19 09:02  robert
+
+	* include/osg/ObserverNodePath, src/osg/Observer.cpp,
+	  src/osg/Referenced.cpp: Added an InitGlobalMutexes to enforce
+	  early construction and hence late destruction of singleton
+	  mutexes.
+
+2010-02-18 22:53  robert
+
+	* include/osg/Observer: Added newline.
+
+2010-02-18 22:20  robert
+
+	* src/OpenThreads/win32/Win32Mutex.cpp: From Mourad Boufarguine,
+	  fixed typo.
+
+2010-02-18 22:17  robert
+
+	* src/osgWrappers/introspection/OpenThreads/Mutex.cpp,
+	  src/osgWrappers/introspection/OpenThreads/ReentrantMutex.cpp,
+	  src/osgWrappers/introspection/osgDB/DatabasePager.cpp,
+	  src/osgWrappers/introspection/osgViewer/Scene.cpp,
+	  src/osgWrappers/introspection/osgWidget/EventInterface.cpp:
+	  Updated wrappers
+
+2010-02-18 22:17  robert
+
+	* src/osgWrappers/introspection/osg/Observer.cpp,
+	  src/osgWrappers/introspection/osg/ObserverNodePath.cpp,
+	  src/osgWrappers/introspection/osg/Referenced.cpp: Updated
+	  wrappers
+
+2010-02-18 21:24  robert
+
+	* src/OpenThreads/CMakeLists.txt: Updated version number of
+	  OpenThreads to reflect recent changes
+
+2010-02-18 21:21  robert
+
+	* include/osgDB/DatabasePager, src/osgDB/DatabasePager.cpp:
+	  Completed usage of ObserverNodePath to fix longstanding crash
+	  that occurred when nodes in parental chain of a newly loaded node
+	  had been deleted.
+
+2010-02-18 21:21  robert
+
+	* include/osg/Observer, include/osg/ObserverNodePath,
+	  include/osg/Referenced, src/osg/CMakeLists.txt,
+	  src/osg/Observer.cpp, src/osg/ObserverNodePath.cpp,
+	  src/osg/Referenced.cpp: Refactored the osg::Referenced
+	  observerset code so that it now uses a dedicated ObserverSet
+	  class,
+	  which utilises a global recursive mutex that is dedicated to
+	  manage Observer and ObserverSet.
+	  
+	  The new global mutex for observers avoids problems with deadlocks
+	  that were occurring previously when
+	  an osg::Refenced object was being deleted at the same time as on
+	  osg::ObserverNodePath.
+
+2010-02-18 21:18  robert
+
+	* include/osg/RenderInfo, include/osg/State: Replaced use of
+	  observer_ptr<> with straight C pointer to avoid thrashing of an
+	  observer_ptr<> every frame.
+	  
+	  Changed include to point to new Observer header
+
+2010-02-18 21:17  robert
+
+	* include/osgWidget/EventInterface: Added className() to assist
+	  with debugging
+
+2010-02-18 21:15  robert
+
+	* src/osgGA/AnimationPathManipulator.cpp: Changed controls for
+	  changing animation speed to '(' and ')' to avoid overlap with
+	  window resize handler.
+
+2010-02-18 20:14  robert
+
+	* include/OpenThreads/Mutex, include/OpenThreads/ReentrantMutex,
+	  src/OpenThreads/pthreads/PThreadMutex.c++,
+	  src/OpenThreads/sproc/SprocMutex.c++,
+	  src/OpenThreads/win32/Win32Mutex.cpp: Refactored the
+	  ReentrantMutex support so that it utilises the underling thread
+	  implementation for recusive mutex support.
+
+2010-02-18 09:00  robert
+
+	* include/osg/ObserverNodePath: Added new setNodePathTo() method
+
+2010-02-17 10:09  robert
+
+	* src/osg/ObserverNodePath.cpp, src/osg/Referenced.cpp: Fixed
+	  double addition of source node when doing
+	  ObserverNodPath::setNodePathTo()
+	  
+	  Fixed comment in Referenced.cpp
+
+2010-02-16 17:38  robert
+
+	* include/osgDB/DatabasePager,
+	  include/osgShadow/ViewDependentShadowTechnique,
+	  include/osgViewer/Scene: Added className() implementation to help
+	  wiht debugging.
+
+2010-02-16 14:05  robert
+
+	* include/osg/observer_ptr: Fixed crash
+
+2010-02-16 11:10  robert
+
+	* include/osg/observer_ptr: Threads safety fixes based on
+	  suggestions from Tim Moore.
+
+2010-02-16 08:53  robert
+
+	* src/osgWrappers/introspection/osgAnimation/EaseMotion.cpp:
+	  Updated wrappers
+
+2010-02-15 23:47  cedricpinson
+
+	* include/osgAnimation/EaseMotion: From Jeremy Moles, add new
+	  EaseMotion and add example osganimationeasemotion to demonstrate
+	  them
+
+2010-02-15 20:15  robert
+
+	* src/osgWrappers/introspection/osg/NodeTrackerCallback.cpp,
+	  src/osgWrappers/introspection/osg/Observer.cpp,
+	  src/osgWrappers/introspection/osg/ObserverNodePath.cpp,
+	  src/osgWrappers/introspection/osg/Referenced.cpp,
+	  src/osgWrappers/introspection/osg/State.cpp,
+	  src/osgWrappers/introspection/osg/Timer.cpp,
+	  src/osgWrappers/introspection/osg/observer_ptr.cpp,
+	  src/osgWrappers/introspection/osgDB/DatabasePager.cpp,
+	  src/osgWrappers/introspection/osgDB/DotOsgWrapper.cpp,
+	  src/osgWrappers/introspection/osgDB/PluginQuery.cpp,
+	  src/osgWrappers/introspection/osgGA/NodeTrackerManipulator.cpp,
+	  src/osgWrappers/introspection/osgWidget/Widget.cpp,
+	  src/osgWrappers/introspection/osgWidget/Window.cpp: Upadted
+	  wrappers
+
+2010-02-15 20:15  robert
+
+	* include/osg/NodeTrackerCallback, include/osgGA/DriveManipulator,
+	  include/osgGA/FlightManipulator,
+	  include/osgGA/NodeTrackerManipulator,
+	  include/osgGA/SphericalManipulator,
+	  include/osgGA/TerrainManipulator,
+	  include/osgGA/TrackballManipulator, include/osgGA/UFOManipulator,
+	  src/osg/NodeTrackerCallback.cpp,
+	  src/osgGA/NodeTrackerManipulator.cpp: Refactor various
+	  NodeTracker and MatrixManipulator classes to use the
+	  osg::ObserverNodePath and osg::oberserver_ptr<> classes
+
+2010-02-15 20:14  robert
+
+	* include/osg/ObserverNodePath, src/osg/CMakeLists.txt,
+	  src/osg/ObserverNodePath.cpp: Introduced new
+	  osg::ObserverNodePath class that robustly manages a NodePath in a
+	  thread safe manner,
+	  making it easier for users to track a NodePath even when nodes in
+	  the path get deleted.
+
+2010-02-15 20:12  robert
+
+	* include/osg/Observer, include/osg/Referenced,
+	  include/osg/observer_ptr, src/osg/Referenced.cpp: Refactored the
+	  osg::Observer to introduce a new bool
+	  Observer::objectUnreferenced(void*) method that adds
+	  the extra capability of making it possible for Observers to
+	  assume ownership of a object that would otherwsie be deleted.
+	  
+	  Added a thread safe ref_ptr<T> observer_ptr<T>::lock() method for
+	  robust access to an observed object. This
+	  makes observer_ptr<> more equivilant to boosts weak_ptr.
+
+2010-02-15 11:36  robert
+
+	* include/osg/Notify: Added osg:: qualifyer to OSG_NOTIFY macro
+
+2010-02-12 11:45  robert
+
+	* CMakeLists.txt, include/osg/Notify, src/osg/Config.in,
+	  src/osg/Notify.cpp: Introduced OSG_WARN, OSG_NOTICE, OSG_INFO,
+	  OSG_DEBUG convinience macros that map to OSG_NOTIFY(osg::WARN)
+	  etc.
+	  
+	  Introduced the OSG_NOTIFY_DISABLE Cmake variable +
+	  include/osg/Config #define to control whether the OpenSceneGraph
+	  build
+	  should disable the notification system completely. By setting
+	  OSG_NOTIFY_DISABLE to ON in CMake and then rebuilding the
+	  the OSG you can get a slightly smaller (~1%) and more slightly
+	  efficient library which can be good for shipping applications,
+	  but with downside of reduced ability to detect runtime problems
+	  and their causes.
+
+2010-02-11 11:56  robert
+
+	* src/osgPlugins/3ds/ReaderWriter3DS.cpp,
+	  src/osgPlugins/3ds/WriterCompareTriangle.cpp,
+	  src/osgPlugins/3ds/WriterCompareTriangle.h,
+	  src/osgPlugins/3ds/WriterNodeVisitor.cpp,
+	  src/osgPlugins/3ds/WriterNodeVisitor.h: From Sukender, "- Added
+	  support for extended filenames (=not 8.3) for images: reads
+	  without crashing, optionnally write extended filenames (correctly
+	  truncate names if option is OFF). Write option is OFF by default.
+	  - Improved identifiers generation in duplicate name handling (was
+	  limited to 1000 name collisions, which can be very short for some
+	  usages).
+	  - Set all read/write operations use a custom log function that
+	  will redirect lib3DS log to osg::notify() (was only used for
+	  streams)
+	  - Removed custom code (now uses osgDB::getFilePath())
+	  - Added missing supportsOption() calls
+	  - Cleaned a few minor things"
+
+2010-02-11 11:17  robert
+
+	* CMakeLists.txt, src/osg/CMakeLists.txt, src/osgDB/CMakeLists.txt:
+	  From Alberto Luaces, "he new GNU linker, "gold", is going to
+	  replace soon the current ld in
+	  almost all Linux distributions. Although it is 100% compatible
+	  with ld,
+	  by default it gives an error if a library has unresolved symbols
+	  at link
+	  time, that is, it has set -Wl,--no-undefined by default. Debian
+	  folks
+	  have found that libosg.so and libosgDB.so use some functions
+	  belonging
+	  to libdl.so {dlsym,dlopen,dlclose,dlerror} without linking to it.
+	  
+	  My changes link those two libraries to libdl.so explicitly in the
+	  same
+	  way it is already done for libm.so and librt.so."
+
+2010-02-11 11:13  robert
+
+	* src/osgDB/CMakeLists.txt: From Wang Rui, "Just a minor fix of the
+	  src/osgDB/CMakeLists.txt, change:
+	  
+	  SET(COMPRESSION_LIBRARIES ${ZLIB_LIBRARY})
+	  ...
+	  LINK_EXTERNAL(${LIB_NAME} ${OSGDB_PLATFORM_SPECIFIC_LIBRARIES})
+	  
+	  to
+	  
+	  SET(COMPRESSION_LIBRARIES ZLIB_LIBRARY)
+	  ...
+	  LINK_EXTERNAL(${LIB_NAME} ${OSGDB_PLATFORM_SPECIFIC_LIBRARIES}
+	  ${COMPRESSION_LIBRARIES})
+	  LINK_WITH_VARIABLES(${LIB_NAME} ${COMPRESSION_LIBRARIES})
+	  
+	  
+	  I notice that the LINK_EXTERNAL macro won't distinguish between
+	  debug
+	  and release dependences, which means that osgDB will use the
+	  release
+	  version of zlib for all build configurations. Under Win32, this
+	  will
+	  cause a manifest problem: all applications using osgDB may
+	  complain
+	  "failed to start because msvcr80.dll was not found" or similar
+	  messages.
+	  
+	  This change will make it back to normal."
+
+2010-02-11 11:06  robert
+
+	* src/osg/GLBeginEndAdapter.cpp: Fixed the rotation of normals
+
+2010-02-11 09:13  robert
+
+	* src/osgDB/InputStream.cpp, src/osgDB/OutputStream.cpp: Added
+	  futher use of readSize/writeSize.
+
+2010-02-10 19:36  robert
+
+	* src/osgWrappers/serializers/osg/AnimationPath.cpp,
+	  src/osgWrappers/serializers/osg/Billboard.cpp,
+	  src/osgWrappers/serializers/osg/Camera.cpp,
+	  src/osgWrappers/serializers/osg/ConvexPlanarOccluder.cpp,
+	  src/osgWrappers/serializers/osg/FragmentProgram.cpp,
+	  src/osgWrappers/serializers/osg/Geometry.cpp,
+	  src/osgWrappers/serializers/osg/ImageSequence.cpp,
+	  src/osgWrappers/serializers/osg/LOD.cpp,
+	  src/osgWrappers/serializers/osg/Node.cpp,
+	  src/osgWrappers/serializers/osg/Program.cpp,
+	  src/osgWrappers/serializers/osg/Shader.cpp,
+	  src/osgWrappers/serializers/osg/StateSet.cpp,
+	  src/osgWrappers/serializers/osg/TransferFunction1D.cpp,
+	  src/osgWrappers/serializers/osg/VertexProgram.cpp: replaced
+	  reading and writing of std::container.size() using
+	  InputStream::readSize() and OutputStream::writeSize() to make
+	  the type writing more explictly tied to the size type, with use
+	  of unsigned int as the default size. This approach
+	  ensures that we get the same results under 32 and 64bit builds.
+
+2010-02-10 17:03  robert
+
+	* include/osgDB/InputStream, include/osgDB/OutputStream,
+	  src/osgDB/InputStream.cpp, src/osgDB/OutputStream.cpp: Added
+	  OutputStream::writeSize and InputStream::readSize methods to help
+	  out with ensure that 32bit and 64bit builds all
+	  use the same 32bit type for sizes.
+
+2010-02-10 16:23  robert
+
+	* include/osgDB/DotOsgWrapper, src/osgDB/DotOsgWrapper.cpp: Fixed
+	  automatic loading of plugins
+
+2010-02-10 15:18  robert
+
+	* src/osgViewer/PixelBufferWin32.cpp: Changed NOTIFY to OSG_NOTIFY
+
+2010-02-10 12:48  robert
+
+	* include/osg/Notify: Fixed typo
+
+2010-02-10 12:44  robert
+
+	* include/osg/Notify, src/osg/BufferObject.cpp, src/osg/Camera.cpp,
+	  src/osg/CullSettings.cpp, src/osg/GL2Extensions.cpp,
+	  src/osg/GLExtensions.cpp, src/osg/GraphicsContext.cpp,
+	  src/osg/OperationThread.cpp, src/osg/State.cpp, src/osg/View.cpp,
+	  src/osgDB/DatabasePager.cpp, src/osgDB/DynamicLibrary.cpp,
+	  src/osgDB/FileCache.cpp, src/osgDB/FileUtils.cpp,
+	  src/osgDB/Registry.cpp, src/osgGA/DriveManipulator.cpp,
+	  src/osgGA/TerrainManipulator.cpp,
+	  src/osgPlugins/curl/ReaderWriterCURL.cpp,
+	  src/osgPlugins/ive/DataInputStream.cpp,
+	  src/osgPlugins/ive/DataOutputStream.cpp,
+	  src/osgPlugins/ive/Image.cpp, src/osgPlugins/ive/Uniform.cpp,
+	  src/osgPlugins/osg/AsciiStreamOperator.h,
+	  src/osgPlugins/osg/ReaderWriterOSG.cpp,
+	  src/osgPlugins/osg/ReaderWriterOSG2.cpp,
+	  src/osgTerrain/GeometryTechnique.cpp, src/osgTerrain/Layer.cpp,
+	  src/osgTerrain/TerrainTechnique.cpp,
+	  src/osgTerrain/TerrainTile.cpp, src/osgUtil/CullVisitor.cpp,
+	  src/osgUtil/Optimizer.cpp, src/osgUtil/RenderStage.cpp,
+	  src/osgViewer/CompositeViewer.cpp,
+	  src/osgViewer/GraphicsWindowCarbon.cpp,
+	  src/osgViewer/GraphicsWindowWin32.cpp,
+	  src/osgViewer/GraphicsWindowX11.cpp, src/osgViewer/Renderer.cpp,
+	  src/osgViewer/StatsHandler.cpp, src/osgViewer/View.cpp,
+	  src/osgViewer/Viewer.cpp, src/osgViewer/ViewerBase.cpp,
+	  src/osgViewer/ViewerEventHandlers.cpp: Convert NOTIFY to
+	  OSG_NOTIFY to avoid problems with polution of users apps with the
+	  NOTIFY macro
+
+2010-02-10 11:21  robert
+
+	* include/osgDB/DatabasePager, src/osgDB/DatabasePager.cpp: Added
+	  pruning of requests that haven't been reissued since the last
+	  frame.
+
+2010-02-09 19:30  robert
+
+	* src/osgDB/FileCache.cpp: Added enabling of threadsafe ref/unref
+	  in FileCache.
+
+2010-02-09 18:24  robert
+
+	* src/osg/BufferObject.cpp, src/osg/Camera.cpp,
+	  src/osg/CullSettings.cpp, src/osg/GL2Extensions.cpp,
+	  src/osg/GLExtensions.cpp, src/osg/GraphicsContext.cpp,
+	  src/osg/OperationThread.cpp, src/osg/State.cpp, src/osg/View.cpp,
+	  src/osgDB/DatabasePager.cpp, src/osgDB/DynamicLibrary.cpp,
+	  src/osgDB/FileCache.cpp, src/osgDB/FileUtils.cpp,
+	  src/osgDB/Registry.cpp, src/osgGA/DriveManipulator.cpp,
+	  src/osgGA/TerrainManipulator.cpp,
+	  src/osgPlugins/curl/ReaderWriterCURL.cpp,
+	  src/osgPlugins/ive/DataInputStream.cpp,
+	  src/osgPlugins/ive/DataOutputStream.cpp,
+	  src/osgPlugins/ive/Image.cpp, src/osgPlugins/ive/Uniform.cpp,
+	  src/osgPlugins/osg/AsciiStreamOperator.h,
+	  src/osgPlugins/osg/ReaderWriterOSG.cpp,
+	  src/osgPlugins/osg/ReaderWriterOSG2.cpp,
+	  src/osgTerrain/GeometryTechnique.cpp, src/osgTerrain/Layer.cpp,
+	  src/osgTerrain/TerrainTechnique.cpp,
+	  src/osgTerrain/TerrainTile.cpp, src/osgUtil/CullVisitor.cpp,
+	  src/osgUtil/Optimizer.cpp, src/osgUtil/RenderStage.cpp,
+	  src/osgViewer/CompositeViewer.cpp,
+	  src/osgViewer/GraphicsWindowCarbon.cpp,
+	  src/osgViewer/GraphicsWindowWin32.cpp,
+	  src/osgViewer/GraphicsWindowX11.cpp,
+	  src/osgViewer/PixelBufferWin32.cpp, src/osgViewer/Renderer.cpp,
+	  src/osgViewer/StatsHandler.cpp, src/osgViewer/View.cpp,
+	  src/osgViewer/Viewer.cpp, src/osgViewer/ViewerBase.cpp,
+	  src/osgViewer/ViewerEventHandlers.cpp: Converted osg::notify
+	  usage to NOTIFY
+
+2010-02-09 17:39  robert
+
+	* include/osg/Notify: Introduced NOTIFY macro to help out with
+	  avoiding using of streams with notification level is below the
+	  user defined cutoff. This addition has been introduced to help
+	  out with avoid threading performance issues with the Microsoft
+	  ostream implementation.
+
+2010-02-09 17:38  robert
+
+	* include/osg/Timer: Added extra elaspedTime_*() methods to help
+	  with reporting times in milliseconds etc.
+
+2010-02-04 10:20  robert
+
+	* include/osgDB/ObjectWrapper, src/osgDB/ObjectWrapper.cpp: From
+	  Wang Rui, "I also did a small fix to the ObjectWrapper header, to
+	  add a
+	  OSGDB_EXPORT macro to RegisterCompressorProxy, and modified the
+	  findCompressor() method to look for custom compressors in
+	  libraries
+	  such like osgdb_compressor_name.so, which was described in the
+	  wiki
+	  page chapter 2.4."
+
+2010-02-03 09:35  robert
+
+	* src/osgDB/ObjectWrapper.cpp: Added #define for GL3 build
+
+2010-02-03 09:35  robert
+
+	* include/osg/Fog, include/osg/Point,
+	  src/osgWrappers/serializers/osg/Camera.cpp,
+	  src/osgWrappers/serializers/osg/ClearNode.cpp: Added #defines for
+	  GL3 build
+
+2010-02-02 11:16  robert
+
+	* src/osgPlugins/txp/ReaderWriterTXP.cpp,
+	  src/osgPlugins/txp/ReaderWriterTXP.h,
+	  src/osgPlugins/txp/TXPNode.cpp: From Ryan Kawicki, added removal
+	  of TXPArchive from ReaderWriterTXP when the TXPNode destructs to
+	  fix memory consumption issue relating to leaving unused archives
+	  in memory.
+
+2010-02-02 11:02  robert
+
+	* src/osgPlugins/txp/ReaderWriterTXP.cpp: Fixed indentation.
+
+2010-02-01 10:04  robert
+
+	* src/osgPlugins/quicktime/MovieData.cpp: From Serge Lages, build
+	  fix
+
+2010-01-31 18:24  robert
+
+	* include/osgDB/Serializer, src/osgAnimation/StackedTransform.cpp,
+	  src/osgAnimation/UpdateMatrixTransform.cpp,
+	  src/osgPlugins/Inventor/ConvertFromInventor.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgAnimation/UpdateMatrixTransform.cpp:
+	  Build fixes for build without ref_ptr<> automatic type conversion
+
+2010-01-31 18:23  robert
+
+	* CMakeModules/FindInventor.cmake: From Jan Peciva, improvements to
+	  Inventor find operation
+
+2010-01-31 12:55  robert
+
+	* src/osgPlugins/Inventor/CMakeLists.txt,
+	  src/osgPlugins/Inventor/ConvertFromInventor.cpp,
+	  src/osgPlugins/Inventor/ConvertFromInventor.h,
+	  src/osgPlugins/Inventor/ConvertToInventor.cpp,
+	  src/osgPlugins/Inventor/GroupSoLOD.cpp,
+	  src/osgPlugins/Inventor/GroupSoLOD.h,
+	  src/osgPlugins/Inventor/PendulumCallback.cpp,
+	  src/osgPlugins/Inventor/README.txt,
+	  src/osgPlugins/Inventor/ReaderWriterIV.cpp,
+	  src/osgPlugins/Inventor/ReaderWriterIV.h,
+	  src/osgPlugins/Inventor/ShuttleCallback.cpp: From Jan Peciva, "I
+	  am sending improved version of Inventor plugin. Attaching just
+	  modified files, while GroupSoLOD.h and .cpp was deleted. Please,
+	  delete
+	  it from repository, it is not used any longer and I doubt if it
+	  is
+	  probably not used for anything meaningful for a while. In the new
+	  code,
+	  there is no GroupSoLOD. Please, delete it.
+	  
+	  I am using new plugin version for about 1.5 month so I consider
+	  it
+	  stable by myself.
+	  
+	  List of changes:
+	  - rewritten Inventor state stack
+	  - shaders support
+	  - light attenuation support
+	  - support for reading from stream (readNode(std::istream& fin,
+	  options))
+	  - improved grouping node handling (SoSeparator, SoGroup,...)
+	  - fixed transformation bug when two SoShapes/Drawables with
+	  different transformations are placed bellow one grouping node
+	  - introduced preprocessing to handle more advanced usage schemes
+	  of SoLOD and SoSwitch nodes
+	  - unused code clean up
+	  - improved notify messages
+	  - animation callbacks fixes
+	  - FindInventor.cmake improved finding routines, support for Coin3
+	  and Coin4"
+
+2010-01-29 17:20  robert
+
+	* include/osgTerrain/GeometryTechnique,
+	  src/osgWrappers/introspection/osgTerrain/GeometryTechnique.cpp:
+	  Changed GeometryTechnique::private to protected, updated wrappers
+
+2010-01-29 14:55  robert
+
+	* src/osgWidget/Input.cpp: From Trajce Nikolov, bug fixes
+
+2010-01-29 11:58  robert
+
+	* src/osgWrappers/serializers/osgText/TextBase.cpp: Removed
+	  redudent string;
+
+2010-01-29 11:35  robert
+
+	* src/osgWrappers/serializers/CMakeLists.txt,
+	  src/osgWrappers/serializers/osg/PagedLOD.cpp,
+	  src/osgWrappers/serializers/osg/ProxyNode.cpp,
+	  src/osgWrappers/serializers/osgText,
+	  src/osgWrappers/serializers/osgText/CMakeLists.txt,
+	  src/osgWrappers/serializers/osgText/FadeText.cpp,
+	  src/osgWrappers/serializers/osgText/Text.cpp,
+	  src/osgWrappers/serializers/osgText/Text3D.cpp,
+	  src/osgWrappers/serializers/osgText/TextBase.cpp: From Wang Rui,
+	  osgText serializers and support for PagedLOD+ProxyNode
+
+2010-01-28 12:10  robert
+
+	* src/osgWrappers/introspection/osgDB/ObjectWrapper.cpp: Updated
+	  wrappers
+
+2010-01-28 11:47  robert
+
+	* src/osgWrappers/introspection/osgAnimation/Assert.cpp,
+	  src/osgWrappers/introspection/osgAnimation/FindParentAnimationManagerVisitor.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Sampler.cpp,
+	  src/osgWrappers/introspection/osgDB/FileUtils.cpp,
+	  src/osgWrappers/introspection/osgParticle/ParticleProcessor.cpp,
+	  src/osgWrappers/introspection/osgParticle/ParticleSystem.cpp,
+	  src/osgWrappers/introspection/osgParticle/PrecipitationEffect.cpp,
+	  src/osgWrappers/introspection/osgWidget/Input.cpp: Updated
+	  wrappers
+
+2010-01-28 11:44  robert
+
+	* src/osgWrappers/introspection/genwrapper.conf: Fixed typo
+
+2010-01-28 10:59  robert
+
+	* src/osgPlugins/exr/ReaderWriterEXR.cpp: From Martin Lambers, "Fix
+	  static linking with EXR plugin on MinGW"
+
+2010-01-28 10:45  robert
+
+	* include/osgDB/FileUtils, src/osgDB/FileUtils.cpp: Fom Sukender,
+	  "Added copyFile() and comments in FileUtils."
+	  
+	  From Robert Osfield, build fix for linux/gcc and reformating to
+	  keep coding style consistent with rest of OSG
+
+2010-01-28 08:59  robert
+
+	* src/osgWrappers/serializers/osg/AlphaFunc.cpp,
+	  src/osgWrappers/serializers/osg/AnimationPath.cpp,
+	  src/osgWrappers/serializers/osg/AnimationPathCallback.cpp,
+	  src/osgWrappers/serializers/osg/AudioSink.cpp,
+	  src/osgWrappers/serializers/osg/AudioStream.cpp,
+	  src/osgWrappers/serializers/osg/AutoTransform.cpp,
+	  src/osgWrappers/serializers/osg/Billboard.cpp,
+	  src/osgWrappers/serializers/osg/BlendColor.cpp,
+	  src/osgWrappers/serializers/osg/BlendEquation.cpp,
+	  src/osgWrappers/serializers/osg/BlendFunc.cpp,
+	  src/osgWrappers/serializers/osg/Box.cpp,
+	  src/osgWrappers/serializers/osg/Camera.cpp,
+	  src/osgWrappers/serializers/osg/CameraView.cpp,
+	  src/osgWrappers/serializers/osg/Capsule.cpp,
+	  src/osgWrappers/serializers/osg/ClampColor.cpp,
+	  src/osgWrappers/serializers/osg/ClearNode.cpp,
+	  src/osgWrappers/serializers/osg/ClipNode.cpp,
+	  src/osgWrappers/serializers/osg/ClipPlane.cpp,
+	  src/osgWrappers/serializers/osg/ClusterCullingCallback.cpp,
+	  src/osgWrappers/serializers/osg/ColorMask.cpp,
+	  src/osgWrappers/serializers/osg/ColorMatrix.cpp,
+	  src/osgWrappers/serializers/osg/CompositeShape.cpp,
+	  src/osgWrappers/serializers/osg/Cone.cpp,
+	  src/osgWrappers/serializers/osg/ConvexHull.cpp,
+	  src/osgWrappers/serializers/osg/ConvexPlanarOccluder.cpp,
+	  src/osgWrappers/serializers/osg/CoordinateSystemNode.cpp,
+	  src/osgWrappers/serializers/osg/CullFace.cpp,
+	  src/osgWrappers/serializers/osg/Cylinder.cpp,
+	  src/osgWrappers/serializers/osg/Depth.cpp,
+	  src/osgWrappers/serializers/osg/DrawPixels.cpp,
+	  src/osgWrappers/serializers/osg/Drawable.cpp,
+	  src/osgWrappers/serializers/osg/EllipsoidModel.cpp,
+	  src/osgWrappers/serializers/osg/Fog.cpp,
+	  src/osgWrappers/serializers/osg/FragmentProgram.cpp,
+	  src/osgWrappers/serializers/osg/FrontFace.cpp,
+	  src/osgWrappers/serializers/osg/Geode.cpp,
+	  src/osgWrappers/serializers/osg/Geometry.cpp,
+	  src/osgWrappers/serializers/osg/Group.cpp,
+	  src/osgWrappers/serializers/osg/HeightField.cpp,
+	  src/osgWrappers/serializers/osg/Hint.cpp,
+	  src/osgWrappers/serializers/osg/Image.cpp,
+	  src/osgWrappers/serializers/osg/ImageSequence.cpp,
+	  src/osgWrappers/serializers/osg/ImageStream.cpp,
+	  src/osgWrappers/serializers/osg/LOD.cpp,
+	  src/osgWrappers/serializers/osg/Light.cpp,
+	  src/osgWrappers/serializers/osg/LightModel.cpp,
+	  src/osgWrappers/serializers/osg/LightSource.cpp,
+	  src/osgWrappers/serializers/osg/LineStipple.cpp,
+	  src/osgWrappers/serializers/osg/LineWidth.cpp,
+	  src/osgWrappers/serializers/osg/LogicOp.cpp,
+	  src/osgWrappers/serializers/osg/Material.cpp,
+	  src/osgWrappers/serializers/osg/MatrixTransform.cpp,
+	  src/osgWrappers/serializers/osg/Multisample.cpp,
+	  src/osgWrappers/serializers/osg/Node.cpp,
+	  src/osgWrappers/serializers/osg/NodeCallback.cpp,
+	  src/osgWrappers/serializers/osg/NodeTrackerCallback.cpp,
+	  src/osgWrappers/serializers/osg/Object.cpp,
+	  src/osgWrappers/serializers/osg/OccluderNode.cpp,
+	  src/osgWrappers/serializers/osg/OcclusionQueryNode.cpp,
+	  src/osgWrappers/serializers/osg/PagedLOD.cpp,
+	  src/osgWrappers/serializers/osg/Point.cpp,
+	  src/osgWrappers/serializers/osg/PointSprite.cpp,
+	  src/osgWrappers/serializers/osg/PolygonMode.cpp,
+	  src/osgWrappers/serializers/osg/PolygonOffset.cpp,
+	  src/osgWrappers/serializers/osg/PolygonStipple.cpp,
+	  src/osgWrappers/serializers/osg/PositionAttitudeTransform.cpp,
+	  src/osgWrappers/serializers/osg/Program.cpp,
+	  src/osgWrappers/serializers/osg/Projection.cpp,
+	  src/osgWrappers/serializers/osg/ProxyNode.cpp,
+	  src/osgWrappers/serializers/osg/Scissor.cpp,
+	  src/osgWrappers/serializers/osg/Sequence.cpp,
+	  src/osgWrappers/serializers/osg/ShadeModel.cpp,
+	  src/osgWrappers/serializers/osg/Shader.cpp,
+	  src/osgWrappers/serializers/osg/ShaderBinary.cpp,
+	  src/osgWrappers/serializers/osg/Shape.cpp,
+	  src/osgWrappers/serializers/osg/ShapeDrawable.cpp,
+	  src/osgWrappers/serializers/osg/Sphere.cpp,
+	  src/osgWrappers/serializers/osg/StateAttribute.cpp,
+	  src/osgWrappers/serializers/osg/StateSet.cpp,
+	  src/osgWrappers/serializers/osg/Stencil.cpp,
+	  src/osgWrappers/serializers/osg/StencilTwoSided.cpp,
+	  src/osgWrappers/serializers/osg/Switch.cpp,
+	  src/osgWrappers/serializers/osg/TessellationHints.cpp,
+	  src/osgWrappers/serializers/osg/TexEnv.cpp,
+	  src/osgWrappers/serializers/osg/TexEnvCombine.cpp,
+	  src/osgWrappers/serializers/osg/TexEnvFilter.cpp,
+	  src/osgWrappers/serializers/osg/TexGen.cpp,
+	  src/osgWrappers/serializers/osg/TexGenNode.cpp,
+	  src/osgWrappers/serializers/osg/TexMat.cpp,
+	  src/osgWrappers/serializers/osg/Texture.cpp,
+	  src/osgWrappers/serializers/osg/Texture1D.cpp,
+	  src/osgWrappers/serializers/osg/Texture2D.cpp,
+	  src/osgWrappers/serializers/osg/Texture2DArray.cpp,
+	  src/osgWrappers/serializers/osg/Texture3D.cpp,
+	  src/osgWrappers/serializers/osg/TextureCubeMap.cpp,
+	  src/osgWrappers/serializers/osg/TextureRectangle.cpp,
+	  src/osgWrappers/serializers/osg/TransferFunction.cpp,
+	  src/osgWrappers/serializers/osg/TransferFunction1D.cpp,
+	  src/osgWrappers/serializers/osg/Transform.cpp,
+	  src/osgWrappers/serializers/osg/TriangleMesh.cpp,
+	  src/osgWrappers/serializers/osg/Uniform.cpp,
+	  src/osgWrappers/serializers/osg/VertexProgram.cpp,
+	  src/osgWrappers/serializers/osg/Viewport.cpp: Added files back in
+	  with the execution bit correctly disabled.
+
+2010-01-28 08:58  robert
+
+	* src/osgWrappers/serializers/osg/AlphaFunc.cpp,
+	  src/osgWrappers/serializers/osg/AnimationPath.cpp,
+	  src/osgWrappers/serializers/osg/AnimationPathCallback.cpp,
+	  src/osgWrappers/serializers/osg/AudioSink.cpp,
+	  src/osgWrappers/serializers/osg/AudioStream.cpp,
+	  src/osgWrappers/serializers/osg/AutoTransform.cpp,
+	  src/osgWrappers/serializers/osg/Billboard.cpp,
+	  src/osgWrappers/serializers/osg/BlendColor.cpp,
+	  src/osgWrappers/serializers/osg/BlendEquation.cpp,
+	  src/osgWrappers/serializers/osg/BlendFunc.cpp,
+	  src/osgWrappers/serializers/osg/Box.cpp,
+	  src/osgWrappers/serializers/osg/Camera.cpp,
+	  src/osgWrappers/serializers/osg/CameraView.cpp,
+	  src/osgWrappers/serializers/osg/Capsule.cpp,
+	  src/osgWrappers/serializers/osg/ClampColor.cpp,
+	  src/osgWrappers/serializers/osg/ClearNode.cpp,
+	  src/osgWrappers/serializers/osg/ClipNode.cpp,
+	  src/osgWrappers/serializers/osg/ClipPlane.cpp,
+	  src/osgWrappers/serializers/osg/ClusterCullingCallback.cpp,
+	  src/osgWrappers/serializers/osg/ColorMask.cpp,
+	  src/osgWrappers/serializers/osg/ColorMatrix.cpp,
+	  src/osgWrappers/serializers/osg/CompositeShape.cpp,
+	  src/osgWrappers/serializers/osg/Cone.cpp,
+	  src/osgWrappers/serializers/osg/ConvexHull.cpp,
+	  src/osgWrappers/serializers/osg/ConvexPlanarOccluder.cpp,
+	  src/osgWrappers/serializers/osg/CoordinateSystemNode.cpp,
+	  src/osgWrappers/serializers/osg/CullFace.cpp,
+	  src/osgWrappers/serializers/osg/Cylinder.cpp,
+	  src/osgWrappers/serializers/osg/Depth.cpp,
+	  src/osgWrappers/serializers/osg/DrawPixels.cpp,
+	  src/osgWrappers/serializers/osg/Drawable.cpp,
+	  src/osgWrappers/serializers/osg/EllipsoidModel.cpp,
+	  src/osgWrappers/serializers/osg/Fog.cpp,
+	  src/osgWrappers/serializers/osg/FragmentProgram.cpp,
+	  src/osgWrappers/serializers/osg/FrontFace.cpp,
+	  src/osgWrappers/serializers/osg/Geode.cpp,
+	  src/osgWrappers/serializers/osg/Geometry.cpp,
+	  src/osgWrappers/serializers/osg/Group.cpp,
+	  src/osgWrappers/serializers/osg/HeightField.cpp,
+	  src/osgWrappers/serializers/osg/Hint.cpp,
+	  src/osgWrappers/serializers/osg/Image.cpp,
+	  src/osgWrappers/serializers/osg/ImageSequence.cpp,
+	  src/osgWrappers/serializers/osg/ImageStream.cpp,
+	  src/osgWrappers/serializers/osg/LOD.cpp,
+	  src/osgWrappers/serializers/osg/Light.cpp,
+	  src/osgWrappers/serializers/osg/LightModel.cpp,
+	  src/osgWrappers/serializers/osg/LightSource.cpp,
+	  src/osgWrappers/serializers/osg/LineStipple.cpp,
+	  src/osgWrappers/serializers/osg/LineWidth.cpp,
+	  src/osgWrappers/serializers/osg/LogicOp.cpp,
+	  src/osgWrappers/serializers/osg/Material.cpp,
+	  src/osgWrappers/serializers/osg/MatrixTransform.cpp,
+	  src/osgWrappers/serializers/osg/Multisample.cpp,
+	  src/osgWrappers/serializers/osg/Node.cpp,
+	  src/osgWrappers/serializers/osg/NodeCallback.cpp,
+	  src/osgWrappers/serializers/osg/NodeTrackerCallback.cpp,
+	  src/osgWrappers/serializers/osg/Object.cpp,
+	  src/osgWrappers/serializers/osg/OccluderNode.cpp,
+	  src/osgWrappers/serializers/osg/OcclusionQueryNode.cpp,
+	  src/osgWrappers/serializers/osg/PagedLOD.cpp,
+	  src/osgWrappers/serializers/osg/Point.cpp,
+	  src/osgWrappers/serializers/osg/PointSprite.cpp,
+	  src/osgWrappers/serializers/osg/PolygonMode.cpp,
+	  src/osgWrappers/serializers/osg/PolygonOffset.cpp,
+	  src/osgWrappers/serializers/osg/PolygonStipple.cpp,
+	  src/osgWrappers/serializers/osg/PositionAttitudeTransform.cpp,
+	  src/osgWrappers/serializers/osg/Program.cpp,
+	  src/osgWrappers/serializers/osg/Projection.cpp,
+	  src/osgWrappers/serializers/osg/ProxyNode.cpp,
+	  src/osgWrappers/serializers/osg/Scissor.cpp,
+	  src/osgWrappers/serializers/osg/Sequence.cpp,
+	  src/osgWrappers/serializers/osg/ShadeModel.cpp,
+	  src/osgWrappers/serializers/osg/Shader.cpp,
+	  src/osgWrappers/serializers/osg/ShaderBinary.cpp,
+	  src/osgWrappers/serializers/osg/Shape.cpp,
+	  src/osgWrappers/serializers/osg/ShapeDrawable.cpp,
+	  src/osgWrappers/serializers/osg/Sphere.cpp,
+	  src/osgWrappers/serializers/osg/StateAttribute.cpp,
+	  src/osgWrappers/serializers/osg/StateSet.cpp,
+	  src/osgWrappers/serializers/osg/Stencil.cpp,
+	  src/osgWrappers/serializers/osg/StencilTwoSided.cpp,
+	  src/osgWrappers/serializers/osg/Switch.cpp,
+	  src/osgWrappers/serializers/osg/TessellationHints.cpp,
+	  src/osgWrappers/serializers/osg/TexEnv.cpp,
+	  src/osgWrappers/serializers/osg/TexEnvCombine.cpp,
+	  src/osgWrappers/serializers/osg/TexEnvFilter.cpp,
+	  src/osgWrappers/serializers/osg/TexGen.cpp,
+	  src/osgWrappers/serializers/osg/TexGenNode.cpp,
+	  src/osgWrappers/serializers/osg/TexMat.cpp,
+	  src/osgWrappers/serializers/osg/Texture.cpp,
+	  src/osgWrappers/serializers/osg/Texture1D.cpp,
+	  src/osgWrappers/serializers/osg/Texture2D.cpp,
+	  src/osgWrappers/serializers/osg/Texture2DArray.cpp,
+	  src/osgWrappers/serializers/osg/Texture3D.cpp,
+	  src/osgWrappers/serializers/osg/TextureCubeMap.cpp,
+	  src/osgWrappers/serializers/osg/TextureRectangle.cpp,
+	  src/osgWrappers/serializers/osg/TransferFunction.cpp,
+	  src/osgWrappers/serializers/osg/TransferFunction1D.cpp,
+	  src/osgWrappers/serializers/osg/Transform.cpp,
+	  src/osgWrappers/serializers/osg/TriangleMesh.cpp,
+	  src/osgWrappers/serializers/osg/Uniform.cpp,
+	  src/osgWrappers/serializers/osg/VertexProgram.cpp,
+	  src/osgWrappers/serializers/osg/Viewport.cpp: Removed files as
+	  they all have the incorrectly have the execution bit enabled,
+	  will add back in with this fixed.
+
+2010-01-28 08:53  robert
+
+	* src/osgWrappers/serializers/osgParticle,
+	  src/osgWrappers/serializers/osgParticle/AccelOperator.cpp,
+	  src/osgWrappers/serializers/osgParticle/AngularAccelOperator.cpp,
+	  src/osgWrappers/serializers/osgParticle/BoxPlacer.cpp,
+	  src/osgWrappers/serializers/osgParticle/CMakeLists.txt,
+	  src/osgWrappers/serializers/osgParticle/CenteredPlacer.cpp,
+	  src/osgWrappers/serializers/osgParticle/ConnectedParticleSystem.cpp,
+	  src/osgWrappers/serializers/osgParticle/ConstantRateCounter.cpp,
+	  src/osgWrappers/serializers/osgParticle/Counter.cpp,
+	  src/osgWrappers/serializers/osgParticle/Emitter.cpp,
+	  src/osgWrappers/serializers/osgParticle/ExplosionDebrisEffect.cpp,
+	  src/osgWrappers/serializers/osgParticle/ExplosionEffect.cpp,
+	  src/osgWrappers/serializers/osgParticle/FireEffect.cpp,
+	  src/osgWrappers/serializers/osgParticle/FluidFrictionOperator.cpp,
+	  src/osgWrappers/serializers/osgParticle/FluidProgram.cpp,
+	  src/osgWrappers/serializers/osgParticle/ForceOperator.cpp,
+	  src/osgWrappers/serializers/osgParticle/Interpolator.cpp,
+	  src/osgWrappers/serializers/osgParticle/LinearInterpolator.cpp,
+	  src/osgWrappers/serializers/osgParticle/ModularEmitter.cpp,
+	  src/osgWrappers/serializers/osgParticle/ModularProgram.cpp,
+	  src/osgWrappers/serializers/osgParticle/MultiSegmentPlacer.cpp,
+	  src/osgWrappers/serializers/osgParticle/Operator.cpp,
+	  src/osgWrappers/serializers/osgParticle/Particle.cpp,
+	  src/osgWrappers/serializers/osgParticle/ParticleEffect.cpp,
+	  src/osgWrappers/serializers/osgParticle/ParticleProcessor.cpp,
+	  src/osgWrappers/serializers/osgParticle/ParticleSystem.cpp,
+	  src/osgWrappers/serializers/osgParticle/ParticleSystemUpdater.cpp,
+	  src/osgWrappers/serializers/osgParticle/Placer.cpp,
+	  src/osgWrappers/serializers/osgParticle/PointPlacer.cpp,
+	  src/osgWrappers/serializers/osgParticle/PrecipitationEffect.cpp,
+	  src/osgWrappers/serializers/osgParticle/Program.cpp,
+	  src/osgWrappers/serializers/osgParticle/RadialShooter.cpp,
+	  src/osgWrappers/serializers/osgParticle/RandomRateCounter.cpp,
+	  src/osgWrappers/serializers/osgParticle/SectorPlacer.cpp,
+	  src/osgWrappers/serializers/osgParticle/SegmentPlacer.cpp,
+	  src/osgWrappers/serializers/osgParticle/Shooter.cpp,
+	  src/osgWrappers/serializers/osgParticle/SmokeEffect.cpp,
+	  src/osgWrappers/serializers/osgParticle/SmokeTrailEffect.cpp,
+	  src/osgWrappers/serializers/osgParticle/VariableRateCounter.cpp:
+	  From Wang Rui, added osgParticle serializers
+
+2010-01-27 17:12  robert
+
+	* src/osgPlugins/quicktime/MovieData.cpp: From Serge Lages, "Here
+	  is a fix for the Quicktime plugin, with the previous version, the
+	  size for some videos was not correct, using GetMovieBoundsRgn
+	  instead of GetMovieBox returns the real movie size.
+	  "
+
+2010-01-27 17:09  robert
+
+	* include/osgDB/InputStream, include/osgDB/OutputStream,
+	  include/osgDB/Serializer, include/osgDB/StreamOperator,
+	  include/osgParticle/ParticleProcessor,
+	  include/osgParticle/ParticleSystem,
+	  include/osgParticle/PrecipitationEffect,
+	  src/osgDB/InputStream.cpp, src/osgDB/ObjectWrapper.cpp,
+	  src/osgDB/OutputStream.cpp,
+	  src/osgPlugins/osg/AsciiStreamOperator.h,
+	  src/osgPlugins/osg/BinaryStreamOperator.h,
+	  src/osgPlugins/osg/ReaderWriterOSG2.cpp,
+	  src/osgWrappers/serializers/CMakeLists.txt,
+	  src/osgWrappers/serializers/osg/BlendFunc.cpp,
+	  src/osgWrappers/serializers/osg/Drawable.cpp,
+	  src/osgWrappers/serializers/osg/HeightField.cpp,
+	  src/osgWrappers/serializers/osg/Node.cpp,
+	  src/osgWrappers/serializers/osg/TextureCubeMap.cpp: From Wang
+	  Rui, "Changes:
+	  
+	  1. Rewrite the reading/writing exception handlers to work like
+	  the ive
+	  plugin exceptions.
+	  2. Write a header writing/checking function in
+	  ReaderWriterOSG2.cpp,
+	  which may help decide if the stream is ascii or binary. The
+	  readInputIterator() function will return null pointer if the
+	  input
+	  file is nither osgb nor osgt format, which indicates that the old
+	  .osg
+	  format could be used here, in case we've merged the two plugins
+	  together.
+	  3. Add a new ForceReadingImage option in the InputStream, which
+	  will
+	  allocate an empty image object with the filename if specifed
+	  external
+	  image file is missed. It may be useful for format converting in
+	  some
+	  cases.
+	  4. Add new osgParticle wrappers, as well as some modification to
+	  the
+	  osgParticle headers, for instance, change isEnabled() to
+	  getEnabled().
+	  5. Some fixes to the osg serialization wrappers."
+
+2010-01-27 16:31  robert
+
+	* include/osgWidget/Input, src/osgWidget/Input.cpp: From Trajce
+	  Nikolov, improvements to osgWidget::Input including selection
+	  support
+
+2010-01-27 15:53  shuber
+
+	* Xcode/OpenSceneGraph/OpenSceneGraph.xcodeproj/project.pbxproj:
+	  From Stephan Huber: updated XCode project
+
+2010-01-27 15:37  cedricpinson
+
+	* include/osgAnimation/Assert,
+	  include/osgAnimation/FindParentAnimationManagerVisitor,
+	  include/osgAnimation/VertexInfluence,
+	  src/osgAnimation/CMakeLists.txt,
+	  src/osgAnimation/FindParentAnimationManagerVisitor.cpp,
+	  src/osgAnimation/RigTransformSoftware.cpp: From Cedric Pinson,
+	  remove unused file, fix crash for old files
+
+2010-01-27 15:00  robert
+
+	* src/osgWrappers/introspection/genwrapper.conf,
+	  src/osgWrappers/introspection/osgAnimation/Channel.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Interpolator.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Keyframe.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Sampler.cpp,
+	  src/osgWrappers/introspection/osgAnimation/StackedTransform.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Target.cpp: Updated
+	  wrappers
+
+2010-01-27 13:12  robert
+
+	* src/osgWrappers/introspection/osgAnimation/AnimationUpdateCallback.cpp,
+	  src/osgWrappers/introspection/osgAnimation/StackedMatrixElement.cpp,
+	  src/osgWrappers/introspection/osgAnimation/StackedQuaternionElement.cpp,
+	  src/osgWrappers/introspection/osgAnimation/StackedRotateAxisElement.cpp,
+	  src/osgWrappers/introspection/osgAnimation/StackedScaleElement.cpp,
+	  src/osgWrappers/introspection/osgAnimation/StackedTransform.cpp,
+	  src/osgWrappers/introspection/osgAnimation/StackedTransformElement.cpp,
+	  src/osgWrappers/introspection/osgAnimation/StackedTranslateElement.cpp,
+	  src/osgWrappers/introspection/osgAnimation/UpdateBone.cpp,
+	  src/osgWrappers/introspection/osgAnimation/UpdateMaterial.cpp,
+	  src/osgWrappers/introspection/osgAnimation/UpdateMatrixTransform.cpp:
+	  Updated wrappers
+
+2010-01-27 13:12  robert
+
+	* src/osgWrappers/introspection/osgAnimation/Bone.cpp,
+	  src/osgWrappers/introspection/osgAnimation/BoneMapVisitor.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Channel.cpp,
+	  src/osgWrappers/introspection/osgAnimation/ComputeBindMatrixVisitor.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Interpolator.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Keyframe.cpp,
+	  src/osgWrappers/introspection/osgAnimation/RigGeometry.cpp,
+	  src/osgWrappers/introspection/osgAnimation/RigTransform.cpp,
+	  src/osgWrappers/introspection/osgAnimation/RigTransformHardware.cpp,
+	  src/osgWrappers/introspection/osgAnimation/RigTransformSoftware.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Sampler.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Skeleton.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Target.cpp,
+	  src/osgWrappers/introspection/osgAnimation/UpdateCallback.cpp:
+	  Updated wrappers
+
+2010-01-27 12:24  robert
+
+	* examples/osganimationhardware/osganimationhardware.cpp,
+	  examples/osganimationskinning/osganimationskinning.cpp,
+	  examples/osganimationsolid/osganimationsolid.cpp,
+	  include/osgAnimation/AnimationUpdateCallback,
+	  include/osgAnimation/Bone, include/osgAnimation/BoneMapVisitor,
+	  include/osgAnimation/Channel,
+	  include/osgAnimation/ComputeBindMatrixVisitor,
+	  include/osgAnimation/CubicBezier,
+	  include/osgAnimation/EaseMotion,
+	  include/osgAnimation/Interpolator, include/osgAnimation/Keyframe,
+	  include/osgAnimation/MorphGeometry,
+	  include/osgAnimation/RigGeometry,
+	  include/osgAnimation/RigTransform,
+	  include/osgAnimation/RigTransformHardware,
+	  include/osgAnimation/RigTransformSoftware,
+	  include/osgAnimation/Sampler, include/osgAnimation/Skeleton,
+	  include/osgAnimation/StackedMatrixElement,
+	  include/osgAnimation/StackedQuaternionElement,
+	  include/osgAnimation/StackedRotateAxisElement,
+	  include/osgAnimation/StackedScaleElement,
+	  include/osgAnimation/StackedTransform,
+	  include/osgAnimation/StackedTransformElement,
+	  include/osgAnimation/StackedTranslateElement,
+	  include/osgAnimation/Target, include/osgAnimation/UpdateBone,
+	  include/osgAnimation/UpdateCallback,
+	  include/osgAnimation/UpdateMaterial,
+	  include/osgAnimation/UpdateMatrixTransform,
+	  src/osgAnimation/Action.cpp, src/osgAnimation/Animation.cpp,
+	  src/osgAnimation/AnimationManagerBase.cpp,
+	  src/osgAnimation/BasicAnimationManager.cpp,
+	  src/osgAnimation/Bone.cpp, src/osgAnimation/BoneMapVisitor.cpp,
+	  src/osgAnimation/CMakeLists.txt,
+	  src/osgAnimation/LinkVisitor.cpp,
+	  src/osgAnimation/MorphGeometry.cpp,
+	  src/osgAnimation/RigGeometry.cpp,
+	  src/osgAnimation/RigTransformHardware.cpp,
+	  src/osgAnimation/RigTransformSoftware.cpp,
+	  src/osgAnimation/Skeleton.cpp,
+	  src/osgAnimation/StackedMatrixElement.cpp,
+	  src/osgAnimation/StackedQuaternionElement.cpp,
+	  src/osgAnimation/StackedRotateAxisElement.cpp,
+	  src/osgAnimation/StackedScaleElement.cpp,
+	  src/osgAnimation/StackedTransform.cpp,
+	  src/osgAnimation/StackedTranslateElement.cpp,
+	  src/osgAnimation/StatsHandler.cpp, src/osgAnimation/Timeline.cpp,
+	  src/osgAnimation/UpdateBone.cpp,
+	  src/osgAnimation/UpdateCallback.cpp,
+	  src/osgAnimation/UpdateMaterial.cpp,
+	  src/osgAnimation/UpdateMatrixTransform.cpp,
+	  src/osgAnimation/VertexInfluence.cpp,
+	  src/osgPlugins/bvh/ReaderWriterBVH.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgAnimation/CMakeLists.txt,
+	  src/osgWrappers/deprecated-dotosg/osgAnimation/Matrix.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgAnimation/Matrix.h,
+	  src/osgWrappers/deprecated-dotosg/osgAnimation/ReaderWriter.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgAnimation/StackedTransform.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgAnimation/UpdateMaterial.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgAnimation/UpdateMatrixTransform.cpp:
+	  From Cedric Pinson, "Here a list of changes:
+	  Bone now inherit from MatrixTransform. It simplify a lot the
+	  update of
+	  Bone matrix. It helps to have the bone system more generic. eg
+	  it's now
+	  possible to have animation data with precomputed bind matrix. The
+	  other
+	  benefit, is now the collada plugin will be able to use
+	  osgAnimation to
+	  display skinned mesh. Michael Plating did a great work to improve
+	  this
+	  aspect, he is working on the collada plugin and should be able to
+	  submit
+	  a new version soon.
+	  The RigGeometry has been refactored so now it works when you save
+	  and
+	  reload RigGeometry because the source is not touched anymore. The
+	  benefit with this update is that it should be now possible to use
+	  a
+	  MorphGeometry as source for a RigGeometry.
+	  
+	  The bad news is that the format has changed, so i have rebuild
+	  osg-data
+	  related to osgAnimation data, updated the blender exporter to
+	  export to
+	  the new format.
+	  The fbx plugin could be touched about this commit, i dont compile
+	  it so
+	  i can't give more information about it.
+	  The bvh plugin has been updated by Wang rui so this one is fixed
+	  with
+	  the new code of osgAnimation.
+	  The examples has been updated to work with the new code too...
+	  
+	  The example osg-data/example.osg should be remove, it's an old
+	  example
+	  that does not work.
+	  
+	  For people using blender the blender exporter up to date is here:
+	  http://hg.plopbyte.net/osgexport2/
+	  it will be merge to http://hg.plopbyte.net/osgexport/ as soon as
+	  the
+	  modification will be push in the trunk.
+	  "
+
+2010-01-26 17:07  robert
+
+	* src/osgWrappers/introspection/osgWidget/Input.cpp: Updated
+	  wrappers
+
+2010-01-26 17:04  robert
+
+	* src/osgViewer/PixelBufferWin32.cpp,
+	  src/osgViewer/PixelBufferX11.cpp: From Laurens Voerman, "Wile
+	  working with pbuffers I noticed that the Win32 implementation
+	  uses the attribute WGL_PBUFFER_LARGEST_ARB.
+	  
+	  > quote from
+	  http://www.opengl.org/registry/specs/ARB/wgl_pbuffer.txt
+	  > The following attributes are supported by wglCreatePbufferARB:
+	  >
+	  > WGL_PBUFFER_LARGEST_ARB If this attribute is set to a
+	  > non-zero value, the largest
+	  > available pbuffer is allocated
+	  > when the allocation of the pbuffer
+	  > would otherwise fail due to
+	  > insufficient resources. The width
+	  > or height of the allocated pbuffer
+	  > never exceeds <iWidth> and <iHeight>,
+	  > respectively. Use wglQueryPbufferARB
+	  > to retrieve the dimensions of the
+	  > allocated pbuffer.
+	  
+	  It notifies the user when the size is not as requested, but I
+	  could find no way for the program to detect this. I've added two
+	  lines to write the new size back into the _traits, I think this
+	  is appropriate, but I am not absolutely sure.
+	  
+	  In PixelBufferX11 was no support, so I've added
+	  GLX_LARGEST_PBUFFER(_SGIX) support, with the same writeback to
+	  the _trais.
+	  
+	  
+	  I have tested the GLX_LARGEST_PBUFFER version on linux and the
+	  WGL_PBUFFER_LARGEST_ARB with windows, all tested with the
+	  modified autocapture I just submitted.
+	  
+	  
+	  "autocapture --pbuffer --window 100 100 18192 18192
+	  cow.osg.\[0,0,-22.7\].trans"
+	  gives me a 4096x4096 image on my windows machine,
+	  and a 8192x8192 image on linux."
+
+2010-01-26 16:59  robert
+
+	* include/osgWidget/Input, src/osgWidget/Input.cpp: From Trajce
+	  Nikolov, various improvements of the workings of
+	  osgWidget::Input.
+
+2010-01-26 16:50  robert
+
+	* include/osg/ImageUtils: From Juan Hernando, fixed typo in
+	  handling of RGBA and BGRA data
+
+2010-01-26 16:48  robert
+
+	* examples/osgautocapture/osgautocapture.cpp: Added .get() to fix
+	  build
+
+2010-01-26 16:41  robert
+
+	* src/osgWrappers/introspection/osgViewer/View.cpp: Updated
+	  wrappers
+
+2010-01-26 16:30  robert
+
+	* include/osgDB/Serializer,
+	  src/osgWrappers/serializers/osg/StateSet.cpp: From Tony Horrobin,
+	  "This fix just makes a couple of calls to ref_ptr<>::get() to
+	  satisfy the compiler.
+	  
+	  The changes make the build successful under Windows 7/VC2005 and
+	  Ubuntu 9.10 with OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION set
+	  to OFF.
+	  "
+
+2010-01-26 15:37  robert
+
+	* examples/osgQtBrowser/CMakeLists.txt: From Laurence Muller,
+	  "attached the CMakeList.txt to fix the issue described in:
+	  http://lists.openscenegraph.org/pipermail/osg-users-openscenegraph.org/2010-January/037792.html
+	  
+	  Issue:
+	  osgQtBrowser fails to compile because it can not find the QTCore
+	  header files
+	  
+	  Fix:
+	  Add the QT_QTCORE_INCLUDE_DIR to the CMakeList.txt file
+	  
+	  Patch:
+	  ...\OpenSceneGraphSVN\examples\osgQtBrowser\CMakeLists.txt
+	  change (line 17): INCLUDE_DIRECTORIES(${QT_INCLUDE_DIR} )
+	  to (line 17): INCLUDE_DIRECTORIES(${QT_INCLUDE_DIR}
+	  ${QT_QTCORE_INCLUDE_DIR})
+	  "
+
+2010-01-26 15:08  robert
+
+	* include/osgViewer/View, src/osgViewer/View.cpp: From Jan Peciva,
+	  "I am sending one more improvement (separately from Inventor
+	  plugin).
+	  I found very useful to have a control whether
+	  osgView::setCameraManipulator does or does not reset camera to
+	  home position.
+	  
+	  I extended method signature as follows:
+	  void setCameraManipulator(osgGA::MatrixManipulator* manipulator,
+	  bool resetPosition = true);
+	  
+	  keeping the current usage intact (default parameter), while
+	  enabling user to disable the position reset. That can be useful
+	  in the situation when manipulator position was already loaded,
+	  for example from a file (user specification), or defined any
+	  other way, while we do not want to be reset to home position.
+	  Other usability is usage of two manipulators in a modeling
+	  program (orbiting around the model, walking on the model) and
+	  changing between them while we want to preserve the position of a
+	  camera in the change. Games may benefit from it as well when we
+	  change from user-defined helicopter manipulator to soldier
+	  manipulator because the user escaped the helicopter. The camera
+	  will change manipulator but the position is expected to be kept
+	  in the transition (provided that user makes the state transition
+	  between the two manipulators himself).
+	  "
+
+2010-01-26 14:57  robert
+
+	* include/osgViewer/View, src/osgViewer/View.cpp: Removal of
+	  redundant spaces at ends of lines
+
+2010-01-26 14:54  robert
+
+	* src/osgWrappers/introspection/osg/KdTree.cpp: updated wrappers
+
+2010-01-26 13:05  robert
+
+	* include/osg/KdTree, src/osg/KdTree.cpp: From Lars Nilsson,
+	  "Attached is a small program doing intersection calculations,
+	  both with and without KdTree. The geometry is a TRIANGLE_STRIP
+	  consisting of five vertices, all with the same rather high
+	  Z-value. If the intersection calculation uses KdTree, it fails.
+	  When I changed osg::Vec3 to osg::Vec3d in a few places in
+	  osg::KdTree it finds the correct intersection point."
+	  
+	  From Robert Osfield, I didn't merge the change of parameter type
+	  of IntersectKdTree::intersect() as the internal maths is all done
+	  in Vec3s. Keeping Vec3 here hasn't effected the test results.
+
+2010-01-26 11:37  robert
+
+	* examples/osgautocapture/osgautocapture.cpp: From Laurens
+	  Voerman,"ttached is a updated version for
+	  examples\osgautocapture\osgautocapture.cpp
+	  
+	  -fixed a bug with --active command line option not rendering
+	  -added --pbuffer command line option
+	  -changed very confusing #ifdef 0
+	  -added OSG_GLES GL_RGB readPixels support if available
+	  (UNTESTED)"
+
+2010-01-26 11:16  robert
+
+	* src/osgUtil/SceneView.cpp: From Laurens Voerman, "I've removed an
+	  underscore in
+	  OpenSceneGraph/src/osgUtil/SceneView.cpp
+	  introduced in svn
+	  10915 (5 Jan 2010): "Added support for call root Camera
+	  CullCallbacks"
+	  
+	  
+	  
+	  It causes a segfault in osgViewer based apps on our linux system
+	  (OSG_STEREO=ON OSG_STEREO_MODE=QUAD_BUFFER)
+	  
+	  Problem does not show when OSG_STEREO=OFF.
+	  
+	  
+	  < 976 else _cullVisitor->traverse(*_camera);
+	  > 976 else cullVisitor->traverse(*_camera);
+	  
+	  Looks like a typo, and removing the _ does fix the problem."
+
+2010-01-26 10:37  robert
+
+	* include/osgDB/DotOsgWrapper: Changed doxygen comments to signal
+	  deprecation of this old IO classes
+
+2010-01-25 18:08  robert
+
+	* include/osgDB/DotOsgWrapper: Removed inapprorpiate OSGDB_EXPORT
+
+2010-01-25 17:07  robert
+
+	* include/osgDB/DotOsgWrapper, include/osgDB/Registry,
+	  src/osgDB/DotOsgWrapper.cpp, src/osgDB/Input.cpp,
+	  src/osgDB/Output.cpp, src/osgDB/Registry.cpp,
+	  src/osgWrappers/introspection/osgDB/DotOsgWrapper.cpp,
+	  src/osgWrappers/introspection/osgDB/Registry.cpp: Refactored the
+	  DotOsgWrapper support in osgDB::Registry so it's now provided by
+	  the osgDB::DeprecatedDotOsgWrapperManager.
+
+2010-01-25 15:25  robert
+
+	* src/osgWrappers/introspection/genwrapper.conf,
+	  src/osgWrappers/introspection/osgDB/DotOsgWrapper.cpp,
+	  src/osgWrappers/introspection/osgDB/Input.cpp,
+	  src/osgWrappers/introspection/osgDB/Registry.cpp,
+	  src/osgWrappers/introspection/osgUtil/SceneView.cpp: Updated
+	  wrappers
+
+2010-01-25 15:24  robert
+
+	* include/osgDB/Field, include/osgDB/FieldReader,
+	  include/osgDB/FieldReaderIterator, include/osgDB/Input,
+	  include/osgDB/Output, include/osgWidget/StyleManager,
+	  src/osgDB/CMakeLists.txt, src/osgDB/Field.cpp,
+	  src/osgDB/FieldReader.cpp, src/osgDB/FieldReaderIterator.cpp:
+	  Moved the declaration of osgDB::Field, FieldReader and
+	  FieldReaderIterator into include/osg/Input to centralise all the
+	  deprecated .osg parsing code into one place.
+
+2010-01-25 12:48  robert
+
+	* src/osgWrappers/introspection/osgDB/Field.cpp,
+	  src/osgWrappers/introspection/osgDB/FieldReader.cpp,
+	  src/osgWrappers/introspection/osgDB/FieldReaderIterator.cpp:
+	  Removed deprecated classes
+
+2010-01-25 11:40  robert
+
+	* include/osgDB/StreamOperator: Added back in StreamOperation with
+	  executation bit disabled
+
+2010-01-25 11:39  robert
+
+	* include/osgDB/StreamOperator: Temporily removed StreamOperation
+	  as it had execution bit enable for it.
+
+2010-01-25 11:03  robert
+
+	* include/osgDB/DataTypes, include/osgDB/InputStream,
+	  include/osgDB/ObjectWrapper, include/osgDB/OutputStream,
+	  include/osgDB/Serializer, include/osgDB/StreamOperator,
+	  src/osgDB/CMakeLists.txt, src/osgDB/InputStream.cpp,
+	  src/osgDB/OutputStream.cpp,
+	  src/osgPlugins/osg/AsciiStreamOperator.h,
+	  src/osgPlugins/osg/BinaryStreamOperator.h,
+	  src/osgPlugins/osg/ReaderWriterOSG2.cpp: From Wang Rui,
+	  refactored the InputStream/OutputStream operations so that the
+	  binar/ascii foramts are implemented via subclasses.
+
+2010-01-22 20:47  robert
+
+	* include/osgDB/DatabasePager, src/osgDB/DatabasePager.cpp: Added
+	  RequestQueue destructor and DatabaseRequest::invalidate() and
+	  valid() methods to allow the
+	  destruction of RequestQueue to remove any pointers held in
+	  DatabaseRequest attached to the scene graph, and to
+	  prevent their subsequent use in cases where the scene graph is
+	  attached to a new DatabasePager.
+
+2010-01-22 20:35  robert
+
+	* src/osg/BufferObject.cpp: Seting the notifcation level of debug
+	  message to INFO.
+
+2010-01-22 16:13  robert
+
+	* src/osgPlugins/freetype/CMakeLists.txt,
+	  src/osgPlugins/freetype/FreeTypeFont3D.cpp,
+	  src/osgPlugins/freetype/FreeTypeLibrary.cpp: Reverted fixes for
+	  Mingw as they break OSX build
+
+2010-01-22 15:16  robert
+
+	* include/osgDB/ObjectWrapper, include/osgDB/Registry,
+	  src/osgDB/InputStream.cpp, src/osgDB/ObjectWrapper.cpp,
+	  src/osgDB/OutputStream.cpp, src/osgDB/Registry.cpp: Renamed
+	  ObjectRegistry to ObjectWrapperManager, and replaced it's
+	  instance() method usage with assigning a ObjectWrapperManager
+	  to the osgDB::Registry. Added a
+	  osgDB::Registry::getObjectWrapperManager() for access of this
+	  object wrapper manager. This
+	  change centralises the singleton management in osgDB.
+	  
+	  Merged the osgDB::GlobalLookUpTable functionality into
+	  ObjectWrapperManger to keep down the number of singletons in use.
+
+2010-01-21 16:26  robert
+
+	* include/osgDB/ObjectWrapper, src/osgDB/ObjectWrapper.cpp: Added
+	  extra export for windows build
+
+2010-01-21 16:07  robert
+
+	* src/osgDB/ObjectWrapper.cpp: Added extra includes to bring in
+	  their local definitions of OpenGL enums that don't exist across
+	  all GL versions
+
+2010-01-21 13:17  shuber
+
+	* Xcode/OpenSceneGraph/OpenSceneGraph.xcodeproj/project.pbxproj:
+	  From Stephan Huber: updated XCode project
+
+2010-01-21 10:24  robert
+
+	* include/osgUtil/SceneView, src/osgUtil/SceneView.cpp,
+	  src/osgViewer/Renderer.cpp: Added support for passing on slave
+	  Camera's StateSet's to the rendering backend.
+
+2010-01-21 09:25  robert
+
+	* include/osgDB/DotOsgWrapper, include/osgDB/InputStream,
+	  include/osgDB/ObjectWrapper, include/osgDB/OutputStream: From
+	  Wang Rui, added exports for windows build
+
+2010-01-20 20:13  robert
+
+	* include/osgDB/DataTypes, include/osgDB/DotOsgWrapper,
+	  include/osgDB/InputStream, include/osgDB/ObjectWrapper,
+	  include/osgDB/OutputStream, include/osgDB/Registry,
+	  include/osgDB/Serializer, src/CMakeLists.txt,
+	  src/osgDB/CMakeLists.txt, src/osgDB/Compressors.cpp,
+	  src/osgDB/DotOsgWrapper.cpp, src/osgDB/InputStream.cpp,
+	  src/osgDB/ObjectWrapper.cpp, src/osgDB/OutputStream.cpp,
+	  src/osgDB/Registry.cpp, src/osgPlugins/osg/CMakeLists.txt,
+	  src/osgPlugins/osg/ReaderWriterOSG2.cpp,
+	  src/osgWrappers/serializers/CMakeLists.txt,
+	  src/osgWrappers/serializers/osg/AlphaFunc.cpp,
+	  src/osgWrappers/serializers/osg/AnimationPath.cpp,
+	  src/osgWrappers/serializers/osg/AnimationPathCallback.cpp,
+	  src/osgWrappers/serializers/osg/AudioSink.cpp,
+	  src/osgWrappers/serializers/osg/AudioStream.cpp,
+	  src/osgWrappers/serializers/osg/AutoTransform.cpp,
+	  src/osgWrappers/serializers/osg/Billboard.cpp,
+	  src/osgWrappers/serializers/osg/BlendColor.cpp,
+	  src/osgWrappers/serializers/osg/BlendEquation.cpp,
+	  src/osgWrappers/serializers/osg/BlendFunc.cpp,
+	  src/osgWrappers/serializers/osg/Box.cpp,
+	  src/osgWrappers/serializers/osg/CMakeLists.txt,
+	  src/osgWrappers/serializers/osg/Camera.cpp,
+	  src/osgWrappers/serializers/osg/CameraView.cpp,
+	  src/osgWrappers/serializers/osg/Capsule.cpp,
+	  src/osgWrappers/serializers/osg/ClampColor.cpp,
+	  src/osgWrappers/serializers/osg/ClearNode.cpp,
+	  src/osgWrappers/serializers/osg/ClipNode.cpp,
+	  src/osgWrappers/serializers/osg/ClipPlane.cpp,
+	  src/osgWrappers/serializers/osg/ClusterCullingCallback.cpp,
+	  src/osgWrappers/serializers/osg/ColorMask.cpp,
+	  src/osgWrappers/serializers/osg/ColorMatrix.cpp,
+	  src/osgWrappers/serializers/osg/CompositeShape.cpp,
+	  src/osgWrappers/serializers/osg/Cone.cpp,
+	  src/osgWrappers/serializers/osg/ConvexHull.cpp,
+	  src/osgWrappers/serializers/osg/ConvexPlanarOccluder.cpp,
+	  src/osgWrappers/serializers/osg/CoordinateSystemNode.cpp,
+	  src/osgWrappers/serializers/osg/CullFace.cpp,
+	  src/osgWrappers/serializers/osg/Cylinder.cpp,
+	  src/osgWrappers/serializers/osg/Depth.cpp,
+	  src/osgWrappers/serializers/osg/DrawPixels.cpp,
+	  src/osgWrappers/serializers/osg/Drawable.cpp,
+	  src/osgWrappers/serializers/osg/EllipsoidModel.cpp,
+	  src/osgWrappers/serializers/osg/Fog.cpp,
+	  src/osgWrappers/serializers/osg/FragmentProgram.cpp,
+	  src/osgWrappers/serializers/osg/FrontFace.cpp,
+	  src/osgWrappers/serializers/osg/Geode.cpp,
+	  src/osgWrappers/serializers/osg/Geometry.cpp,
+	  src/osgWrappers/serializers/osg/Group.cpp,
+	  src/osgWrappers/serializers/osg/HeightField.cpp,
+	  src/osgWrappers/serializers/osg/Hint.cpp,
+	  src/osgWrappers/serializers/osg/Image.cpp,
+	  src/osgWrappers/serializers/osg/ImageSequence.cpp,
+	  src/osgWrappers/serializers/osg/ImageStream.cpp,
+	  src/osgWrappers/serializers/osg/LOD.cpp,
+	  src/osgWrappers/serializers/osg/Light.cpp,
+	  src/osgWrappers/serializers/osg/LightModel.cpp,
+	  src/osgWrappers/serializers/osg/LightSource.cpp,
+	  src/osgWrappers/serializers/osg/LineStipple.cpp,
+	  src/osgWrappers/serializers/osg/LineWidth.cpp,
+	  src/osgWrappers/serializers/osg/LogicOp.cpp,
+	  src/osgWrappers/serializers/osg/Material.cpp,
+	  src/osgWrappers/serializers/osg/MatrixTransform.cpp,
+	  src/osgWrappers/serializers/osg/Multisample.cpp,
+	  src/osgWrappers/serializers/osg/Node.cpp,
+	  src/osgWrappers/serializers/osg/NodeCallback.cpp,
+	  src/osgWrappers/serializers/osg/NodeTrackerCallback.cpp,
+	  src/osgWrappers/serializers/osg/Object.cpp,
+	  src/osgWrappers/serializers/osg/OccluderNode.cpp,
+	  src/osgWrappers/serializers/osg/OcclusionQueryNode.cpp,
+	  src/osgWrappers/serializers/osg/PagedLOD.cpp,
+	  src/osgWrappers/serializers/osg/Point.cpp,
+	  src/osgWrappers/serializers/osg/PointSprite.cpp,
+	  src/osgWrappers/serializers/osg/PolygonMode.cpp,
+	  src/osgWrappers/serializers/osg/PolygonOffset.cpp,
+	  src/osgWrappers/serializers/osg/PolygonStipple.cpp,
+	  src/osgWrappers/serializers/osg/PositionAttitudeTransform.cpp,
+	  src/osgWrappers/serializers/osg/Program.cpp,
+	  src/osgWrappers/serializers/osg/Projection.cpp,
+	  src/osgWrappers/serializers/osg/ProxyNode.cpp,
+	  src/osgWrappers/serializers/osg/Scissor.cpp,
+	  src/osgWrappers/serializers/osg/Sequence.cpp,
+	  src/osgWrappers/serializers/osg/ShadeModel.cpp,
+	  src/osgWrappers/serializers/osg/Shader.cpp,
+	  src/osgWrappers/serializers/osg/ShaderBinary.cpp,
+	  src/osgWrappers/serializers/osg/Shape.cpp,
+	  src/osgWrappers/serializers/osg/ShapeDrawable.cpp,
+	  src/osgWrappers/serializers/osg/Sphere.cpp,
+	  src/osgWrappers/serializers/osg/StateAttribute.cpp,
+	  src/osgWrappers/serializers/osg/StateSet.cpp,
+	  src/osgWrappers/serializers/osg/Stencil.cpp,
+	  src/osgWrappers/serializers/osg/StencilTwoSided.cpp,
+	  src/osgWrappers/serializers/osg/Switch.cpp,
+	  src/osgWrappers/serializers/osg/TessellationHints.cpp,
+	  src/osgWrappers/serializers/osg/TexEnv.cpp,
+	  src/osgWrappers/serializers/osg/TexEnvCombine.cpp,
+	  src/osgWrappers/serializers/osg/TexEnvFilter.cpp,
+	  src/osgWrappers/serializers/osg/TexGen.cpp,
+	  src/osgWrappers/serializers/osg/TexGenNode.cpp,
+	  src/osgWrappers/serializers/osg/TexMat.cpp,
+	  src/osgWrappers/serializers/osg/Texture.cpp,
+	  src/osgWrappers/serializers/osg/Texture1D.cpp,
+	  src/osgWrappers/serializers/osg/Texture2D.cpp,
+	  src/osgWrappers/serializers/osg/Texture2DArray.cpp,
+	  src/osgWrappers/serializers/osg/Texture3D.cpp,
+	  src/osgWrappers/serializers/osg/TextureCubeMap.cpp,
+	  src/osgWrappers/serializers/osg/TextureRectangle.cpp,
+	  src/osgWrappers/serializers/osg/TransferFunction.cpp,
+	  src/osgWrappers/serializers/osg/TransferFunction1D.cpp,
+	  src/osgWrappers/serializers/osg/Transform.cpp,
+	  src/osgWrappers/serializers/osg/TriangleMesh.cpp,
+	  src/osgWrappers/serializers/osg/Uniform.cpp,
+	  src/osgWrappers/serializers/osg/VertexProgram.cpp,
+	  src/osgWrappers/serializers/osg/Viewport.cpp: From Wang Rui, new
+	  native binary/ascii format infrastructure and wrappers.
+	  
+	  From Robert Osfield, refactor of Wang Rui's original osg2 into 3
+	  parts - parts placed into osgDB, the ReaderWriter placed into
+	  src/osg/Plugin/osg and wrappers into
+	  src/osgWrappers/serializers/osg
+
+2010-01-20 10:35  robert
+
+	* src/osgWrappers/CMakeLists.txt,
+	  src/osgWrappers/deprecated-dotosg/osg/CMakeLists.txt,
+	  src/osgWrappers/deprecated-dotosg/osgAnimation/CMakeLists.txt,
+	  src/osgWrappers/deprecated-dotosg/osgFX/CMakeLists.txt,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/CMakeLists.txt,
+	  src/osgWrappers/deprecated-dotosg/osgShadow/CMakeLists.txt,
+	  src/osgWrappers/deprecated-dotosg/osgSim/CMakeLists.txt,
+	  src/osgWrappers/deprecated-dotosg/osgTerrain/CMakeLists.txt,
+	  src/osgWrappers/deprecated-dotosg/osgText/CMakeLists.txt,
+	  src/osgWrappers/deprecated-dotosg/osgViewer/CMakeLists.txt,
+	  src/osgWrappers/deprecated-dotosg/osgVolume/CMakeLists.txt,
+	  src/osgWrappers/deprecated-dotosg/osgWidget/CMakeLists.txt,
+	  src/osgWrappers/serializers, src/osgWrappers/serializers/osg:
+	  Introduced file globbing to deprecated-dotosg directories and
+	  added new serializers direcotory in prep for new serializers
+
+2010-01-19 13:31  robert
+
+	* src/osgWrappers/deprecated-dotosg/osg/AnimationPath.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/TransferFunction.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgFX/IO_AnisotropicLighting.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgFX/IO_BumpMapping.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgFX/IO_Cartoon.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgFX/IO_Effect.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgFX/IO_MultiTextureControl.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgFX/IO_Outline.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgFX/IO_Scribe.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgFX/IO_SpecularHighlights.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_AccelOperator.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_AngularAccelOperator.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_BoxPlacer.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_CenteredPlacer.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_ConnectedParticleSystem.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_ConstantRateCounter.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_Emitter.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_ExplosionDebrisEffect.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_ExplosionEffect.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_FireEffect.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_FluidFrictionOperator.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_FluidProgram.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_ForceOperator.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_LinearInterpolator.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_ModularEmitter.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_ModularProgram.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_MultiSegmentPlacer.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_ParticleEffect.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_ParticleProcessor.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_ParticleSystem.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_ParticleSystemUpdater.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_PointPlacer.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_Program.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_RadialShooter.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_RandomRateCounter.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_SectorPlacer.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_SegmentPlacer.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_SmokeEffect.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_SmokeTrailEffect.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_VariableRateCounter.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgShadow/ShadowMap.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgShadow/ShadowTechnique.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgShadow/ShadowTexture.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgShadow/ShadowVolume.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgShadow/ShadowedScene.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgSim/IO_BlinkSequence.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgSim/IO_DOFTransform.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgSim/IO_Impostor.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgSim/IO_LightPointNode.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgSim/IO_MultiSwitch.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgSim/IO_ObjectRecordData.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgSim/IO_OverlayNode.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgSim/IO_Sector.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgSim/IO_ShapeAttribute.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgSim/IO_VisibilityGroup.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgTerrain/CompositeLayer.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgTerrain/GeometryTechnique.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgTerrain/HeightFieldLayer.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgTerrain/ImageLayer.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgTerrain/Layer.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgTerrain/Locator.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgTerrain/SwitchLayer.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgTerrain/TerrainTile.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgText/IO_Text.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgText/IO_Text3D.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgText/IO_TextBase.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgViewer/CompositeViewer.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgViewer/View.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgViewer/Viewer.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgVolume/CompositeProperty.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgVolume/FixedFunctionTechnique.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgVolume/ImageLayer.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgVolume/Layer.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgVolume/Locator.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgVolume/Property.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgVolume/PropertyAdjustmentCallback.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgVolume/RayTracedTechnique.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgVolume/ScalarProperty.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgVolume/SwitchProperty.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgVolume/TransferFunctionProperty.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgVolume/Volume.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgVolume/VolumeTile.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgWidget/Box.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgWidget/EmbeddedWindow.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgWidget/Frame.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgWidget/Input.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgWidget/Label.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgWidget/Table.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgWidget/Widget.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgWidget/WindowManager.cpp:
+	  Replaced osgDB::RegisterDotOsgWrapperProxy usage with
+	  REGISTER_DOTOSGWRAPPER proxy to aid static linking
+
+2010-01-19 12:36  robert
+
+	* src/osgWrappers/deprecated-dotosg/CMakeLists.txt: Added
+	  CmakeList.txt for new wrapper plugins
+
+2010-01-19 12:26  robert
+
+	* src/osgDB/Registry.cpp, src/osgPlugins/CMakeLists.txt,
+	  src/osgPlugins/osg/AlphaFunc.cpp,
+	  src/osgPlugins/osg/AnimationPath.cpp,
+	  src/osgPlugins/osg/AutoTransform.cpp,
+	  src/osgPlugins/osg/Billboard.cpp,
+	  src/osgPlugins/osg/BlendColor.cpp,
+	  src/osgPlugins/osg/BlendEquation.cpp,
+	  src/osgPlugins/osg/BlendFunc.cpp, src/osgPlugins/osg/Box.cpp,
+	  src/osgPlugins/osg/CMakeLists.txt, src/osgPlugins/osg/Camera.cpp,
+	  src/osgPlugins/osg/CameraView.cpp,
+	  src/osgPlugins/osg/Capsule.cpp, src/osgPlugins/osg/ClearNode.cpp,
+	  src/osgPlugins/osg/ClipNode.cpp,
+	  src/osgPlugins/osg/ClipPlane.cpp,
+	  src/osgPlugins/osg/ClusterCullingCallback.cpp,
+	  src/osgPlugins/osg/ColorMask.cpp,
+	  src/osgPlugins/osg/ColorMatrix.cpp,
+	  src/osgPlugins/osg/CompositeShape.cpp,
+	  src/osgPlugins/osg/Cone.cpp,
+	  src/osgPlugins/osg/ConvexPlanarOccluder.cpp,
+	  src/osgPlugins/osg/CoordinateSystemNode.cpp,
+	  src/osgPlugins/osg/CullFace.cpp, src/osgPlugins/osg/Cylinder.cpp,
+	  src/osgPlugins/osg/Depth.cpp, src/osgPlugins/osg/Drawable.cpp,
+	  src/osgPlugins/osg/EllipsoidModel.cpp,
+	  src/osgPlugins/osg/Fog.cpp,
+	  src/osgPlugins/osg/FragmentProgram.cpp,
+	  src/osgPlugins/osg/FrontFace.cpp, src/osgPlugins/osg/Geode.cpp,
+	  src/osgPlugins/osg/Geometry.cpp, src/osgPlugins/osg/Group.cpp,
+	  src/osgPlugins/osg/HeightField.cpp, src/osgPlugins/osg/Image.cpp,
+	  src/osgPlugins/osg/ImageSequence.cpp, src/osgPlugins/osg/LOD.cpp,
+	  src/osgPlugins/osg/Light.cpp, src/osgPlugins/osg/LightModel.cpp,
+	  src/osgPlugins/osg/LightSource.cpp,
+	  src/osgPlugins/osg/LineStipple.cpp,
+	  src/osgPlugins/osg/LineWidth.cpp,
+	  src/osgPlugins/osg/Material.cpp, src/osgPlugins/osg/Matrix.cpp,
+	  src/osgPlugins/osg/Matrix.h,
+	  src/osgPlugins/osg/MatrixTransform.cpp,
+	  src/osgPlugins/osg/Node.cpp, src/osgPlugins/osg/NodeCallback.cpp,
+	  src/osgPlugins/osg/Object.cpp,
+	  src/osgPlugins/osg/OccluderNode.cpp,
+	  src/osgPlugins/osg/OcclusionQueryNode.cpp,
+	  src/osgPlugins/osg/PagedLOD.cpp, src/osgPlugins/osg/Point.cpp,
+	  src/osgPlugins/osg/PointSprite.cpp,
+	  src/osgPlugins/osg/PolygonMode.cpp,
+	  src/osgPlugins/osg/PolygonOffset.cpp,
+	  src/osgPlugins/osg/PositionAttitudeTransform.cpp,
+	  src/osgPlugins/osg/Program.cpp,
+	  src/osgPlugins/osg/Projection.cpp,
+	  src/osgPlugins/osg/ProxyNode.cpp, src/osgPlugins/osg/README,
+	  src/osgPlugins/osg/ReaderWriterOSG.cpp,
+	  src/osgPlugins/osg/Scissor.cpp, src/osgPlugins/osg/Sequence.cpp,
+	  src/osgPlugins/osg/ShadeModel.cpp, src/osgPlugins/osg/Shader.cpp,
+	  src/osgPlugins/osg/ShapeDrawable.cpp,
+	  src/osgPlugins/osg/Sphere.cpp,
+	  src/osgPlugins/osg/StateAttribute.cpp,
+	  src/osgPlugins/osg/StateSet.cpp, src/osgPlugins/osg/Stencil.cpp,
+	  src/osgPlugins/osg/Switch.cpp,
+	  src/osgPlugins/osg/TessellationHints.cpp,
+	  src/osgPlugins/osg/TexEnv.cpp,
+	  src/osgPlugins/osg/TexEnvCombine.cpp,
+	  src/osgPlugins/osg/TexEnvFilter.cpp,
+	  src/osgPlugins/osg/TexGen.cpp, src/osgPlugins/osg/TexGenNode.cpp,
+	  src/osgPlugins/osg/TexMat.cpp, src/osgPlugins/osg/Texture.cpp,
+	  src/osgPlugins/osg/Texture1D.cpp,
+	  src/osgPlugins/osg/Texture2D.cpp,
+	  src/osgPlugins/osg/Texture3D.cpp,
+	  src/osgPlugins/osg/TextureCubeMap.cpp,
+	  src/osgPlugins/osg/TextureRectangle.cpp,
+	  src/osgPlugins/osg/TransferFunction.cpp,
+	  src/osgPlugins/osg/Transform.cpp, src/osgPlugins/osg/Uniform.cpp,
+	  src/osgPlugins/osg/VertexProgram.cpp,
+	  src/osgPlugins/osg/Viewport.cpp, src/osgPlugins/osgAnimation,
+	  src/osgPlugins/osgFX, src/osgPlugins/osgParticle,
+	  src/osgPlugins/osgShadow, src/osgPlugins/osgSim,
+	  src/osgPlugins/osgTerrain, src/osgPlugins/osgText,
+	  src/osgPlugins/osgViewer, src/osgPlugins/osgVolume,
+	  src/osgPlugins/osgWidget, src/osgPlugins/shadow,
+	  src/osgPlugins/shadow/CMakeLists.txt,
+	  src/osgPlugins/shadow/ReaderWriterOsgShadow.cpp,
+	  src/osgPlugins/terrain, src/osgPlugins/terrain/CMakeLists.txt,
+	  src/osgPlugins/terrain/CompositeLayer.cpp,
+	  src/osgPlugins/terrain/GeometryTechnique.cpp,
+	  src/osgPlugins/terrain/HeightFieldLayer.cpp,
+	  src/osgPlugins/terrain/ImageLayer.cpp,
+	  src/osgPlugins/terrain/Layer.cpp,
+	  src/osgPlugins/terrain/Locator.cpp,
+	  src/osgPlugins/terrain/SwitchLayer.cpp,
+	  src/osgPlugins/terrain/Terrain.cpp,
+	  src/osgPlugins/terrain/TerrainTile.cpp, src/osgPlugins/view,
+	  src/osgPlugins/view/CMakeLists.txt,
+	  src/osgPlugins/view/CompositeViewer.cpp,
+	  src/osgPlugins/view/View.cpp, src/osgPlugins/view/Viewer.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgAnimation,
+	  src/osgWrappers/deprecated-dotosg/osgFX,
+	  src/osgWrappers/deprecated-dotosg/osgParticle,
+	  src/osgWrappers/deprecated-dotosg/osgShadow,
+	  src/osgWrappers/deprecated-dotosg/osgShadow/CMakeLists.txt,
+	  src/osgWrappers/deprecated-dotosg/osgShadow/ReaderWriterOsgShadow.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgSim,
+	  src/osgWrappers/deprecated-dotosg/osgTerrain,
+	  src/osgWrappers/deprecated-dotosg/osgTerrain/CMakeLists.txt,
+	  src/osgWrappers/deprecated-dotosg/osgTerrain/ReaderWriterOsgTerrain.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgText,
+	  src/osgWrappers/deprecated-dotosg/osgViewer,
+	  src/osgWrappers/deprecated-dotosg/osgViewer/CMakeLists.txt,
+	  src/osgWrappers/deprecated-dotosg/osgViewer/ReaderWriterOsgViewer.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgVolume,
+	  src/osgWrappers/deprecated-dotosg/osgWidget: Refactored the old
+	  style .osg plugin support so that the DotOsgWrappers are placed
+	  in their own dedicated plugins found in
+	  src/osgWrappers/deprecated_osg
+
+2010-01-19 12:24  robert
+
+	* CMakeLists.txt: Inserted /introspection/ into path of
+	  osgIntrospection wrappers
+
+2010-01-19 10:31  robert
+
+	* src/CMakeLists.txt, src/osgWrappers/CMakeLists.txt,
+	  src/osgWrappers/deprecated-dotosg,
+	  src/osgWrappers/deprecated-dotosg/osg,
+	  src/osgWrappers/deprecated-dotosg/osg/AlphaFunc.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/AnimationPath.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/AutoTransform.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Billboard.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/BlendColor.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/BlendEquation.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/BlendFunc.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Box.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/CMakeLists.txt,
+	  src/osgWrappers/deprecated-dotosg/osg/Camera.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/CameraView.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Capsule.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/ClearNode.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/ClipNode.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/ClipPlane.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/ClusterCullingCallback.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/ColorMask.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/ColorMatrix.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/CompositeShape.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Cone.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/ConvexPlanarOccluder.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/CoordinateSystemNode.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/CullFace.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Cylinder.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Depth.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Drawable.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/EllipsoidModel.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Fog.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/FragmentProgram.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/FrontFace.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Geode.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Geometry.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Group.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/HeightField.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Image.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/ImageSequence.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/LOD.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Light.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/LightModel.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/LightSource.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/LineStipple.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/LineWidth.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Material.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Matrix.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Matrix.h,
+	  src/osgWrappers/deprecated-dotosg/osg/MatrixTransform.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Node.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/NodeCallback.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Object.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/OccluderNode.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/OcclusionQueryNode.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/PagedLOD.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Point.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/PointSprite.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/PolygonMode.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/PolygonOffset.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/PositionAttitudeTransform.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Program.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Projection.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/ProxyNode.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Scissor.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Sequence.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/ShadeModel.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Shader.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/ShapeDrawable.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Sphere.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/StateAttribute.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/StateSet.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Stencil.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Switch.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/TessellationHints.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/TexEnv.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/TexEnvCombine.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/TexEnvFilter.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/TexGen.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/TexGenNode.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/TexMat.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Texture.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Texture1D.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Texture2D.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Texture3D.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/TextureCubeMap.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/TextureRectangle.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/TransferFunction.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Transform.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Uniform.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/VertexProgram.cpp,
+	  src/osgWrappers/deprecated-dotosg/osg/Viewport.cpp: Added
+	  deprecated-dot/osg directory from the contents of the
+	  src/osgPlugins/osg and CMakeLists.txt in prep for creating the
+	  plugin mechanism for .osg support
+
+2010-01-19 09:54  shuber
+
+	* Xcode/OpenSceneGraph/OpenSceneGraph.xcodeproj/project.pbxproj:
+	  From Stephan Huber: updated XCode projects
+
+2010-01-18 20:49  robert
+
+	* src/osgWrappers/CMakeLists.txt: Added introspection directory
+
+2010-01-18 19:56  robert
+
+	* src/osgWrappers/introspection/CMakeLists.txt,
+	  src/osgWrappers/introspection/OpenThreads,
+	  src/osgWrappers/introspection/OpenThreads/Atomic.cpp,
+	  src/osgWrappers/introspection/OpenThreads/Barrier.cpp,
+	  src/osgWrappers/introspection/OpenThreads/Block.cpp,
+	  src/osgWrappers/introspection/OpenThreads/Condition.cpp,
+	  src/osgWrappers/introspection/OpenThreads/Mutex.cpp,
+	  src/osgWrappers/introspection/OpenThreads/ReadWriteMutex.cpp,
+	  src/osgWrappers/introspection/OpenThreads/ReentrantMutex.cpp,
+	  src/osgWrappers/introspection/OpenThreads/Thread.cpp,
+	  src/osgWrappers/introspection/osg,
+	  src/osgWrappers/introspection/osg/AlphaFunc.cpp,
+	  src/osgWrappers/introspection/osg/AnimationPath.cpp,
+	  src/osgWrappers/introspection/osg/ApplicationUsage.cpp,
+	  src/osgWrappers/introspection/osg/ArgumentParser.cpp,
+	  src/osgWrappers/introspection/osg/Array.cpp,
+	  src/osgWrappers/introspection/osg/ArrayDispatchers.cpp,
+	  src/osgWrappers/introspection/osg/AudioStream.cpp,
+	  src/osgWrappers/introspection/osg/AutoTransform.cpp,
+	  src/osgWrappers/introspection/osg/Billboard.cpp,
+	  src/osgWrappers/introspection/osg/BlendColor.cpp,
+	  src/osgWrappers/introspection/osg/BlendEquation.cpp,
+	  src/osgWrappers/introspection/osg/BlendFunc.cpp,
+	  src/osgWrappers/introspection/osg/BoundingBox.cpp,
+	  src/osgWrappers/introspection/osg/BoundingSphere.cpp,
+	  src/osgWrappers/introspection/osg/BufferObject.cpp,
+	  src/osgWrappers/introspection/osg/Camera.cpp,
+	  src/osgWrappers/introspection/osg/CameraNode.cpp,
+	  src/osgWrappers/introspection/osg/CameraView.cpp,
+	  src/osgWrappers/introspection/osg/ClampColor.cpp,
+	  src/osgWrappers/introspection/osg/ClearNode.cpp,
+	  src/osgWrappers/introspection/osg/ClipNode.cpp,
+	  src/osgWrappers/introspection/osg/ClipPlane.cpp,
+	  src/osgWrappers/introspection/osg/ClusterCullingCallback.cpp,
+	  src/osgWrappers/introspection/osg/CollectOccludersVisitor.cpp,
+	  src/osgWrappers/introspection/osg/ColorMask.cpp,
+	  src/osgWrappers/introspection/osg/ColorMatrix.cpp,
+	  src/osgWrappers/introspection/osg/ComputeBoundsVisitor.cpp,
+	  src/osgWrappers/introspection/osg/ConvexPlanarOccluder.cpp,
+	  src/osgWrappers/introspection/osg/ConvexPlanarPolygon.cpp,
+	  src/osgWrappers/introspection/osg/CoordinateSystemNode.cpp,
+	  src/osgWrappers/introspection/osg/CopyOp.cpp,
+	  src/osgWrappers/introspection/osg/CullFace.cpp,
+	  src/osgWrappers/introspection/osg/CullSettings.cpp,
+	  src/osgWrappers/introspection/osg/CullStack.cpp,
+	  src/osgWrappers/introspection/osg/CullingSet.cpp,
+	  src/osgWrappers/introspection/osg/DeleteHandler.cpp,
+	  src/osgWrappers/introspection/osg/Depth.cpp,
+	  src/osgWrappers/introspection/osg/DisplaySettings.cpp,
+	  src/osgWrappers/introspection/osg/DrawPixels.cpp,
+	  src/osgWrappers/introspection/osg/Drawable.cpp,
+	  src/osgWrappers/introspection/osg/Endian.cpp,
+	  src/osgWrappers/introspection/osg/Fog.cpp,
+	  src/osgWrappers/introspection/osg/FragmentProgram.cpp,
+	  src/osgWrappers/introspection/osg/FrameBufferObject.cpp,
+	  src/osgWrappers/introspection/osg/FrameStamp.cpp,
+	  src/osgWrappers/introspection/osg/FrontFace.cpp,
+	  src/osgWrappers/introspection/osg/GL2Extensions.cpp,
+	  src/osgWrappers/introspection/osg/GLBeginEndAdapter.cpp,
+	  src/osgWrappers/introspection/osg/Geode.cpp,
+	  src/osgWrappers/introspection/osg/Geometry.cpp,
+	  src/osgWrappers/introspection/osg/GraphicsContext.cpp,
+	  src/osgWrappers/introspection/osg/GraphicsThread.cpp,
+	  src/osgWrappers/introspection/osg/Group.cpp,
+	  src/osgWrappers/introspection/osg/Hint.cpp,
+	  src/osgWrappers/introspection/osg/Image.cpp,
+	  src/osgWrappers/introspection/osg/ImageSequence.cpp,
+	  src/osgWrappers/introspection/osg/ImageStream.cpp,
+	  src/osgWrappers/introspection/osg/KdTree.cpp,
+	  src/osgWrappers/introspection/osg/LOD.cpp,
+	  src/osgWrappers/introspection/osg/Light.cpp,
+	  src/osgWrappers/introspection/osg/LightModel.cpp,
+	  src/osgWrappers/introspection/osg/LightSource.cpp,
+	  src/osgWrappers/introspection/osg/LineSegment.cpp,
+	  src/osgWrappers/introspection/osg/LineStipple.cpp,
+	  src/osgWrappers/introspection/osg/LineWidth.cpp,
+	  src/osgWrappers/introspection/osg/LogicOp.cpp,
+	  src/osgWrappers/introspection/osg/Material.cpp,
+	  src/osgWrappers/introspection/osg/Matrix.cpp,
+	  src/osgWrappers/introspection/osg/MatrixTransform.cpp,
+	  src/osgWrappers/introspection/osg/Matrixd.cpp,
+	  src/osgWrappers/introspection/osg/Matrixf.cpp,
+	  src/osgWrappers/introspection/osg/Multisample.cpp,
+	  src/osgWrappers/introspection/osg/Node.cpp,
+	  src/osgWrappers/introspection/osg/NodeCallback.cpp,
+	  src/osgWrappers/introspection/osg/NodeTrackerCallback.cpp,
+	  src/osgWrappers/introspection/osg/NodeVisitor.cpp,
+	  src/osgWrappers/introspection/osg/Notify.cpp,
+	  src/osgWrappers/introspection/osg/Object.cpp,
+	  src/osgWrappers/introspection/osg/OccluderNode.cpp,
+	  src/osgWrappers/introspection/osg/OcclusionQueryNode.cpp,
+	  src/osgWrappers/introspection/osg/OperationThread.cpp,
+	  src/osgWrappers/introspection/osg/PagedLOD.cpp,
+	  src/osgWrappers/introspection/osg/Plane.cpp,
+	  src/osgWrappers/introspection/osg/Point.cpp,
+	  src/osgWrappers/introspection/osg/PointSprite.cpp,
+	  src/osgWrappers/introspection/osg/PolygonMode.cpp,
+	  src/osgWrappers/introspection/osg/PolygonOffset.cpp,
+	  src/osgWrappers/introspection/osg/PolygonStipple.cpp,
+	  src/osgWrappers/introspection/osg/Polytope.cpp,
+	  src/osgWrappers/introspection/osg/PositionAttitudeTransform.cpp,
+	  src/osgWrappers/introspection/osg/PrimitiveSet.cpp,
+	  src/osgWrappers/introspection/osg/Program.cpp,
+	  src/osgWrappers/introspection/osg/Projection.cpp,
+	  src/osgWrappers/introspection/osg/ProxyNode.cpp,
+	  src/osgWrappers/introspection/osg/Quat.cpp,
+	  src/osgWrappers/introspection/osg/Referenced.cpp,
+	  src/osgWrappers/introspection/osg/RenderInfo.cpp,
+	  src/osgWrappers/introspection/osg/Scissor.cpp,
+	  src/osgWrappers/introspection/osg/Sequence.cpp,
+	  src/osgWrappers/introspection/osg/ShadeModel.cpp,
+	  src/osgWrappers/introspection/osg/Shader.cpp,
+	  src/osgWrappers/introspection/osg/ShadowVolumeOccluder.cpp,
+	  src/osgWrappers/introspection/osg/Shape.cpp,
+	  src/osgWrappers/introspection/osg/ShapeDrawable.cpp,
+	  src/osgWrappers/introspection/osg/State.cpp,
+	  src/osgWrappers/introspection/osg/StateAttribute.cpp,
+	  src/osgWrappers/introspection/osg/StateAttributeCallback.cpp,
+	  src/osgWrappers/introspection/osg/StateSet.cpp,
+	  src/osgWrappers/introspection/osg/Stats.cpp,
+	  src/osgWrappers/introspection/osg/Stencil.cpp,
+	  src/osgWrappers/introspection/osg/StencilTwoSided.cpp,
+	  src/osgWrappers/introspection/osg/Switch.cpp,
+	  src/osgWrappers/introspection/osg/TexEnv.cpp,
+	  src/osgWrappers/introspection/osg/TexEnvCombine.cpp,
+	  src/osgWrappers/introspection/osg/TexEnvFilter.cpp,
+	  src/osgWrappers/introspection/osg/TexGen.cpp,
+	  src/osgWrappers/introspection/osg/TexGenNode.cpp,
+	  src/osgWrappers/introspection/osg/TexMat.cpp,
+	  src/osgWrappers/introspection/osg/Texture.cpp,
+	  src/osgWrappers/introspection/osg/Texture1D.cpp,
+	  src/osgWrappers/introspection/osg/Texture2D.cpp,
+	  src/osgWrappers/introspection/osg/Texture2DArray.cpp,
+	  src/osgWrappers/introspection/osg/Texture3D.cpp,
+	  src/osgWrappers/introspection/osg/TextureCubeMap.cpp,
+	  src/osgWrappers/introspection/osg/TextureRectangle.cpp,
+	  src/osgWrappers/introspection/osg/Timer.cpp,
+	  src/osgWrappers/introspection/osg/TransferFunction.cpp,
+	  src/osgWrappers/introspection/osg/Transform.cpp,
+	  src/osgWrappers/introspection/osg/Uniform.cpp,
+	  src/osgWrappers/introspection/osg/Vec2.cpp,
+	  src/osgWrappers/introspection/osg/Vec2b.cpp,
+	  src/osgWrappers/introspection/osg/Vec2d.cpp,
+	  src/osgWrappers/introspection/osg/Vec2f.cpp,
+	  src/osgWrappers/introspection/osg/Vec2s.cpp,
+	  src/osgWrappers/introspection/osg/Vec3.cpp,
+	  src/osgWrappers/introspection/osg/Vec3b.cpp,
+	  src/osgWrappers/introspection/osg/Vec3d.cpp,
+	  src/osgWrappers/introspection/osg/Vec3f.cpp,
+	  src/osgWrappers/introspection/osg/Vec3s.cpp,
+	  src/osgWrappers/introspection/osg/Vec4.cpp,
+	  src/osgWrappers/introspection/osg/Vec4b.cpp,
+	  src/osgWrappers/introspection/osg/Vec4d.cpp,
+	  src/osgWrappers/introspection/osg/Vec4f.cpp,
+	  src/osgWrappers/introspection/osg/Vec4s.cpp,
+	  src/osgWrappers/introspection/osg/Vec4ub.cpp,
+	  src/osgWrappers/introspection/osg/VertexProgram.cpp,
+	  src/osgWrappers/introspection/osg/View.cpp,
+	  src/osgWrappers/introspection/osg/Viewport.cpp,
+	  src/osgWrappers/introspection/osg/observer_ptr.cpp,
+	  src/osgWrappers/introspection/osgAnimation,
+	  src/osgWrappers/introspection/osgAnimation/Action.cpp,
+	  src/osgWrappers/introspection/osgAnimation/ActionAnimation.cpp,
+	  src/osgWrappers/introspection/osgAnimation/ActionBlendIn.cpp,
+	  src/osgWrappers/introspection/osgAnimation/ActionBlendOut.cpp,
+	  src/osgWrappers/introspection/osgAnimation/ActionCallback.cpp,
+	  src/osgWrappers/introspection/osgAnimation/ActionStripAnimation.cpp,
+	  src/osgWrappers/introspection/osgAnimation/ActionVisitor.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Animation.cpp,
+	  src/osgWrappers/introspection/osgAnimation/AnimationManagerBase.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Assert.cpp,
+	  src/osgWrappers/introspection/osgAnimation/BasicAnimationManager.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Bone.cpp,
+	  src/osgWrappers/introspection/osgAnimation/BoneMapVisitor.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Channel.cpp,
+	  src/osgWrappers/introspection/osgAnimation/ComputeBindMatrixVisitor.cpp,
+	  src/osgWrappers/introspection/osgAnimation/CubicBezier.cpp,
+	  src/osgWrappers/introspection/osgAnimation/EaseMotion.cpp,
+	  src/osgWrappers/introspection/osgAnimation/FindParentAnimationManagerVisitor.cpp,
+	  src/osgWrappers/introspection/osgAnimation/FrameAction.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Interpolator.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Keyframe.cpp,
+	  src/osgWrappers/introspection/osgAnimation/LinkVisitor.cpp,
+	  src/osgWrappers/introspection/osgAnimation/MorphGeometry.cpp,
+	  src/osgWrappers/introspection/osgAnimation/RigGeometry.cpp,
+	  src/osgWrappers/introspection/osgAnimation/RigTransform.cpp,
+	  src/osgWrappers/introspection/osgAnimation/RigTransformHardware.cpp,
+	  src/osgWrappers/introspection/osgAnimation/RigTransformSoftware.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Sampler.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Skeleton.cpp,
+	  src/osgWrappers/introspection/osgAnimation/StatsHandler.cpp,
+	  src/osgWrappers/introspection/osgAnimation/StatsVisitor.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Target.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Timeline.cpp,
+	  src/osgWrappers/introspection/osgAnimation/TimelineAnimationManager.cpp,
+	  src/osgWrappers/introspection/osgAnimation/UpdateCallback.cpp,
+	  src/osgWrappers/introspection/osgAnimation/Vec3Packed.cpp,
+	  src/osgWrappers/introspection/osgAnimation/VertexInfluence.cpp,
+	  src/osgWrappers/introspection/osgDB,
+	  src/osgWrappers/introspection/osgDB/Archive.cpp,
+	  src/osgWrappers/introspection/osgDB/AuthenticationMap.cpp,
+	  src/osgWrappers/introspection/osgDB/Callbacks.cpp,
+	  src/osgWrappers/introspection/osgDB/DatabasePager.cpp,
+	  src/osgWrappers/introspection/osgDB/DatabaseRevisions.cpp,
+	  src/osgWrappers/introspection/osgDB/DotOsgWrapper.cpp,
+	  src/osgWrappers/introspection/osgDB/DynamicLibrary.cpp,
+	  src/osgWrappers/introspection/osgDB/Field.cpp,
+	  src/osgWrappers/introspection/osgDB/FieldReader.cpp,
+	  src/osgWrappers/introspection/osgDB/FieldReaderIterator.cpp,
+	  src/osgWrappers/introspection/osgDB/FileCache.cpp,
+	  src/osgWrappers/introspection/osgDB/FileUtils.cpp,
+	  src/osgWrappers/introspection/osgDB/ImageOptions.cpp,
+	  src/osgWrappers/introspection/osgDB/ImagePager.cpp,
+	  src/osgWrappers/introspection/osgDB/Input.cpp,
+	  src/osgWrappers/introspection/osgDB/Options.cpp,
+	  src/osgWrappers/introspection/osgDB/Output.cpp,
+	  src/osgWrappers/introspection/osgDB/ParameterOutput.cpp,
+	  src/osgWrappers/introspection/osgDB/PluginQuery.cpp,
+	  src/osgWrappers/introspection/osgDB/ReaderWriter.cpp,
+	  src/osgWrappers/introspection/osgDB/Registry.cpp,
+	  src/osgWrappers/introspection/osgDB/SharedStateManager.cpp,
+	  src/osgWrappers/introspection/osgDB/XmlParser.cpp,
+	  src/osgWrappers/introspection/osgFX,
+	  src/osgWrappers/introspection/osgFX/AnisotropicLighting.cpp,
+	  src/osgWrappers/introspection/osgFX/BumpMapping.cpp,
+	  src/osgWrappers/introspection/osgFX/Cartoon.cpp,
+	  src/osgWrappers/introspection/osgFX/Effect.cpp,
+	  src/osgWrappers/introspection/osgFX/MultiTextureControl.cpp,
+	  src/osgWrappers/introspection/osgFX/Outline.cpp,
+	  src/osgWrappers/introspection/osgFX/Registry.cpp,
+	  src/osgWrappers/introspection/osgFX/Scribe.cpp,
+	  src/osgWrappers/introspection/osgFX/SpecularHighlights.cpp,
+	  src/osgWrappers/introspection/osgFX/Technique.cpp,
+	  src/osgWrappers/introspection/osgFX/Validator.cpp,
+	  src/osgWrappers/introspection/osgGA,
+	  src/osgWrappers/introspection/osgGA/AnimationPathManipulator.cpp,
+	  src/osgWrappers/introspection/osgGA/CameraViewSwitchManipulator.cpp,
+	  src/osgWrappers/introspection/osgGA/DriveManipulator.cpp,
+	  src/osgWrappers/introspection/osgGA/EventQueue.cpp,
+	  src/osgWrappers/introspection/osgGA/EventVisitor.cpp,
+	  src/osgWrappers/introspection/osgGA/FlightManipulator.cpp,
+	  src/osgWrappers/introspection/osgGA/GUIActionAdapter.cpp,
+	  src/osgWrappers/introspection/osgGA/GUIEventAdapter.cpp,
+	  src/osgWrappers/introspection/osgGA/GUIEventHandler.cpp,
+	  src/osgWrappers/introspection/osgGA/KeySwitchMatrixManipulator.cpp,
+	  src/osgWrappers/introspection/osgGA/MatrixManipulator.cpp,
+	  src/osgWrappers/introspection/osgGA/NodeTrackerManipulator.cpp,
+	  src/osgWrappers/introspection/osgGA/SphericalManipulator.cpp,
+	  src/osgWrappers/introspection/osgGA/StateSetManipulator.cpp,
+	  src/osgWrappers/introspection/osgGA/TerrainManipulator.cpp,
+	  src/osgWrappers/introspection/osgGA/TrackballManipulator.cpp,
+	  src/osgWrappers/introspection/osgGA/UFOManipulator.cpp,
+	  src/osgWrappers/introspection/osgManipulator,
+	  src/osgWrappers/introspection/osgManipulator/AntiSquish.cpp,
+	  src/osgWrappers/introspection/osgManipulator/Command.cpp,
+	  src/osgWrappers/introspection/osgManipulator/CommandManager.cpp,
+	  src/osgWrappers/introspection/osgManipulator/Constraint.cpp,
+	  src/osgWrappers/introspection/osgManipulator/Dragger.cpp,
+	  src/osgWrappers/introspection/osgManipulator/Projector.cpp,
+	  src/osgWrappers/introspection/osgManipulator/RotateCylinderDragger.cpp,
+	  src/osgWrappers/introspection/osgManipulator/RotateSphereDragger.cpp,
+	  src/osgWrappers/introspection/osgManipulator/Scale1DDragger.cpp,
+	  src/osgWrappers/introspection/osgManipulator/Scale2DDragger.cpp,
+	  src/osgWrappers/introspection/osgManipulator/ScaleAxisDragger.cpp,
+	  src/osgWrappers/introspection/osgManipulator/Selection.cpp,
+	  src/osgWrappers/introspection/osgManipulator/TabBoxDragger.cpp,
+	  src/osgWrappers/introspection/osgManipulator/TabBoxTrackballDragger.cpp,
+	  src/osgWrappers/introspection/osgManipulator/TabPlaneDragger.cpp,
+	  src/osgWrappers/introspection/osgManipulator/TabPlaneTrackballDragger.cpp,
+	  src/osgWrappers/introspection/osgManipulator/TrackballDragger.cpp,
+	  src/osgWrappers/introspection/osgManipulator/Translate1DDragger.cpp,
+	  src/osgWrappers/introspection/osgManipulator/Translate2DDragger.cpp,
+	  src/osgWrappers/introspection/osgManipulator/TranslateAxisDragger.cpp,
+	  src/osgWrappers/introspection/osgManipulator/TranslatePlaneDragger.cpp,
+	  src/osgWrappers/introspection/osgParticle,
+	  src/osgWrappers/introspection/osgParticle/AccelOperator.cpp,
+	  src/osgWrappers/introspection/osgParticle/AngularAccelOperator.cpp,
+	  src/osgWrappers/introspection/osgParticle/BoxPlacer.cpp,
+	  src/osgWrappers/introspection/osgParticle/CenteredPlacer.cpp,
+	  src/osgWrappers/introspection/osgParticle/ConnectedParticleSystem.cpp,
+	  src/osgWrappers/introspection/osgParticle/ConstantRateCounter.cpp,
+	  src/osgWrappers/introspection/osgParticle/Counter.cpp,
+	  src/osgWrappers/introspection/osgParticle/Emitter.cpp,
+	  src/osgWrappers/introspection/osgParticle/ExplosionDebrisEffect.cpp,
+	  src/osgWrappers/introspection/osgParticle/ExplosionEffect.cpp,
+	  src/osgWrappers/introspection/osgParticle/FireEffect.cpp,
+	  src/osgWrappers/introspection/osgParticle/ForceOperator.cpp,
+	  src/osgWrappers/introspection/osgParticle/Interpolator.cpp,
+	  src/osgWrappers/introspection/osgParticle/LinearInterpolator.cpp,
+	  src/osgWrappers/introspection/osgParticle/ModularEmitter.cpp,
+	  src/osgWrappers/introspection/osgParticle/ModularProgram.cpp,
+	  src/osgWrappers/introspection/osgParticle/MultiSegmentPlacer.cpp,
+	  src/osgWrappers/introspection/osgParticle/Operator.cpp,
+	  src/osgWrappers/introspection/osgParticle/Particle.cpp,
+	  src/osgWrappers/introspection/osgParticle/ParticleEffect.cpp,
+	  src/osgWrappers/introspection/osgParticle/ParticleProcessor.cpp,
+	  src/osgWrappers/introspection/osgParticle/ParticleSystem.cpp,
+	  src/osgWrappers/introspection/osgParticle/ParticleSystemUpdater.cpp,
+	  src/osgWrappers/introspection/osgParticle/Placer.cpp,
+	  src/osgWrappers/introspection/osgParticle/PointPlacer.cpp,
+	  src/osgWrappers/introspection/osgParticle/PrecipitationEffect.cpp,
+	  src/osgWrappers/introspection/osgParticle/Program.cpp,
+	  src/osgWrappers/introspection/osgParticle/RadialShooter.cpp,
+	  src/osgWrappers/introspection/osgParticle/RandomRateCounter.cpp,
+	  src/osgWrappers/introspection/osgParticle/SectorPlacer.cpp,
+	  src/osgWrappers/introspection/osgParticle/SegmentPlacer.cpp,
+	  src/osgWrappers/introspection/osgParticle/Shooter.cpp,
+	  src/osgWrappers/introspection/osgParticle/SmokeEffect.cpp,
+	  src/osgWrappers/introspection/osgParticle/SmokeTrailEffect.cpp,
+	  src/osgWrappers/introspection/osgParticle/VariableRateCounter.cpp,
+	  src/osgWrappers/introspection/osgParticle/range.cpp,
+	  src/osgWrappers/introspection/osgPresentation,
+	  src/osgWrappers/introspection/osgPresentation/AnimationMaterial.cpp,
+	  src/osgWrappers/introspection/osgPresentation/CompileSlideCallback.cpp,
+	  src/osgWrappers/introspection/osgPresentation/PickEventHandler.cpp,
+	  src/osgWrappers/introspection/osgPresentation/SlideEventHandler.cpp,
+	  src/osgWrappers/introspection/osgPresentation/SlideShowConstructor.cpp,
+	  src/osgWrappers/introspection/osgShadow,
+	  src/osgWrappers/introspection/osgShadow/ConvexPolyhedron.cpp,
+	  src/osgWrappers/introspection/osgShadow/DebugShadowMap.cpp,
+	  src/osgWrappers/introspection/osgShadow/LightSpacePerspectiveShadowMap.cpp,
+	  src/osgWrappers/introspection/osgShadow/MinimalCullBoundsShadowMap.cpp,
+	  src/osgWrappers/introspection/osgShadow/MinimalDrawBoundsShadowMap.cpp,
+	  src/osgWrappers/introspection/osgShadow/MinimalShadowMap.cpp,
+	  src/osgWrappers/introspection/osgShadow/OccluderGeometry.cpp,
+	  src/osgWrappers/introspection/osgShadow/ParallelSplitShadowMap.cpp,
+	  src/osgWrappers/introspection/osgShadow/ShadowMap.cpp,
+	  src/osgWrappers/introspection/osgShadow/ShadowTechnique.cpp,
+	  src/osgWrappers/introspection/osgShadow/ShadowTexture.cpp,
+	  src/osgWrappers/introspection/osgShadow/ShadowVolume.cpp,
+	  src/osgWrappers/introspection/osgShadow/ShadowedScene.cpp,
+	  src/osgWrappers/introspection/osgShadow/SoftShadowMap.cpp,
+	  src/osgWrappers/introspection/osgShadow/StandardShadowMap.cpp,
+	  src/osgWrappers/introspection/osgShadow/ViewDependentShadowTechnique.cpp,
+	  src/osgWrappers/introspection/osgSim,
+	  src/osgWrappers/introspection/osgSim/BlinkSequence.cpp,
+	  src/osgWrappers/introspection/osgSim/ColorRange.cpp,
+	  src/osgWrappers/introspection/osgSim/DOFTransform.cpp,
+	  src/osgWrappers/introspection/osgSim/ElevationSlice.cpp,
+	  src/osgWrappers/introspection/osgSim/GeographicLocation.cpp,
+	  src/osgWrappers/introspection/osgSim/HeightAboveTerrain.cpp,
+	  src/osgWrappers/introspection/osgSim/Impostor.cpp,
+	  src/osgWrappers/introspection/osgSim/ImpostorSprite.cpp,
+	  src/osgWrappers/introspection/osgSim/InsertImpostorsVisitor.cpp,
+	  src/osgWrappers/introspection/osgSim/LightPoint.cpp,
+	  src/osgWrappers/introspection/osgSim/LightPointNode.cpp,
+	  src/osgWrappers/introspection/osgSim/LightPointSystem.cpp,
+	  src/osgWrappers/introspection/osgSim/LineOfSight.cpp,
+	  src/osgWrappers/introspection/osgSim/MultiSwitch.cpp,
+	  src/osgWrappers/introspection/osgSim/ObjectRecordData.cpp,
+	  src/osgWrappers/introspection/osgSim/OverlayNode.cpp,
+	  src/osgWrappers/introspection/osgSim/ScalarBar.cpp,
+	  src/osgWrappers/introspection/osgSim/ScalarsToColors.cpp,
+	  src/osgWrappers/introspection/osgSim/Sector.cpp,
+	  src/osgWrappers/introspection/osgSim/ShapeAttribute.cpp,
+	  src/osgWrappers/introspection/osgSim/SphereSegment.cpp,
+	  src/osgWrappers/introspection/osgSim/VisibilityGroup.cpp,
+	  src/osgWrappers/introspection/osgTerrain,
+	  src/osgWrappers/introspection/osgTerrain/Export.cpp,
+	  src/osgWrappers/introspection/osgTerrain/GeometryTechnique.cpp,
+	  src/osgWrappers/introspection/osgTerrain/Layer.cpp,
+	  src/osgWrappers/introspection/osgTerrain/Locator.cpp,
+	  src/osgWrappers/introspection/osgTerrain/Terrain.cpp,
+	  src/osgWrappers/introspection/osgTerrain/TerrainTechnique.cpp,
+	  src/osgWrappers/introspection/osgTerrain/TerrainTile.cpp,
+	  src/osgWrappers/introspection/osgTerrain/ValidDataOperator.cpp,
+	  src/osgWrappers/introspection/osgText,
+	  src/osgWrappers/introspection/osgText/Export.cpp,
+	  src/osgWrappers/introspection/osgText/FadeText.cpp,
+	  src/osgWrappers/introspection/osgText/Font.cpp,
+	  src/osgWrappers/introspection/osgText/Font3D.cpp,
+	  src/osgWrappers/introspection/osgText/KerningType.cpp,
+	  src/osgWrappers/introspection/osgText/String.cpp,
+	  src/osgWrappers/introspection/osgText/Text.cpp,
+	  src/osgWrappers/introspection/osgText/Text3D.cpp,
+	  src/osgWrappers/introspection/osgText/TextBase.cpp,
+	  src/osgWrappers/introspection/osgUtil,
+	  src/osgWrappers/introspection/osgUtil/ConvertVec.cpp,
+	  src/osgWrappers/introspection/osgUtil/CubeMapGenerator.cpp,
+	  src/osgWrappers/introspection/osgUtil/CullVisitor.cpp,
+	  src/osgWrappers/introspection/osgUtil/DelaunayTriangulator.cpp,
+	  src/osgWrappers/introspection/osgUtil/DisplayRequirementsVisitor.cpp,
+	  src/osgWrappers/introspection/osgUtil/DrawElementTypeSimplifier.cpp,
+	  src/osgWrappers/introspection/osgUtil/EdgeCollector.cpp,
+	  src/osgWrappers/introspection/osgUtil/GLObjectsVisitor.cpp,
+	  src/osgWrappers/introspection/osgUtil/HalfWayMapGenerator.cpp,
+	  src/osgWrappers/introspection/osgUtil/HighlightMapGenerator.cpp,
+	  src/osgWrappers/introspection/osgUtil/IncrementalCompileOperation.cpp,
+	  src/osgWrappers/introspection/osgUtil/IntersectVisitor.cpp,
+	  src/osgWrappers/introspection/osgUtil/IntersectionVisitor.cpp,
+	  src/osgWrappers/introspection/osgUtil/LineSegmentIntersector.cpp,
+	  src/osgWrappers/introspection/osgUtil/OperationArrayFunctor.cpp,
+	  src/osgWrappers/introspection/osgUtil/Optimizer.cpp,
+	  src/osgWrappers/introspection/osgUtil/PlaneIntersector.cpp,
+	  src/osgWrappers/introspection/osgUtil/PolytopeIntersector.cpp,
+	  src/osgWrappers/introspection/osgUtil/PositionalStateContainer.cpp,
+	  src/osgWrappers/introspection/osgUtil/ReflectionMapGenerator.cpp,
+	  src/osgWrappers/introspection/osgUtil/RenderBin.cpp,
+	  src/osgWrappers/introspection/osgUtil/RenderLeaf.cpp,
+	  src/osgWrappers/introspection/osgUtil/RenderStage.cpp,
+	  src/osgWrappers/introspection/osgUtil/ReversePrimitiveFunctor.cpp,
+	  src/osgWrappers/introspection/osgUtil/SceneGraphBuilder.cpp,
+	  src/osgWrappers/introspection/osgUtil/SceneView.cpp,
+	  src/osgWrappers/introspection/osgUtil/ShaderGen.cpp,
+	  src/osgWrappers/introspection/osgUtil/Simplifier.cpp,
+	  src/osgWrappers/introspection/osgUtil/SmoothingVisitor.cpp,
+	  src/osgWrappers/introspection/osgUtil/StateGraph.cpp,
+	  src/osgWrappers/introspection/osgUtil/Statistics.cpp,
+	  src/osgWrappers/introspection/osgUtil/TangentSpaceGenerator.cpp,
+	  src/osgWrappers/introspection/osgUtil/Tessellator.cpp,
+	  src/osgWrappers/introspection/osgUtil/TransformAttributeFunctor.cpp,
+	  src/osgWrappers/introspection/osgUtil/TransformCallback.cpp,
+	  src/osgWrappers/introspection/osgUtil/TriStripVisitor.cpp,
+	  src/osgWrappers/introspection/osgUtil/UpdateVisitor.cpp,
+	  src/osgWrappers/introspection/osgViewer,
+	  src/osgWrappers/introspection/osgViewer/CompositeViewer.cpp,
+	  src/osgWrappers/introspection/osgViewer/GraphicsWindow.cpp,
+	  src/osgWrappers/introspection/osgViewer/Renderer.cpp,
+	  src/osgWrappers/introspection/osgViewer/Scene.cpp,
+	  src/osgWrappers/introspection/osgViewer/View.cpp,
+	  src/osgWrappers/introspection/osgViewer/Viewer.cpp,
+	  src/osgWrappers/introspection/osgViewer/ViewerBase.cpp,
+	  src/osgWrappers/introspection/osgViewer/ViewerEventHandlers.cpp,
+	  src/osgWrappers/introspection/osgViewer/api,
+	  src/osgWrappers/introspection/osgViewer/api/Carbon,
+	  src/osgWrappers/introspection/osgViewer/api/Carbon/GraphicsHandleCarbon.cpp,
+	  src/osgWrappers/introspection/osgViewer/api/Cocoa,
+	  src/osgWrappers/introspection/osgViewer/api/Cocoa/GraphicsHandleCocoa.cpp,
+	  src/osgWrappers/introspection/osgViewer/api/Win32,
+	  src/osgWrappers/introspection/osgViewer/api/Win32/GraphicsHandleWin32.cpp,
+	  src/osgWrappers/introspection/osgViewer/api/Win32/PixelBufferWin32.cpp,
+	  src/osgWrappers/introspection/osgViewer/api/X11,
+	  src/osgWrappers/introspection/osgViewer/api/X11/GraphicsHandleX11.cpp,
+	  src/osgWrappers/introspection/osgViewer/api/X11/PixelBufferX11.cpp,
+	  src/osgWrappers/introspection/osgVolume,
+	  src/osgWrappers/introspection/osgVolume/Export.cpp,
+	  src/osgWrappers/introspection/osgVolume/FixedFunctionTechnique.cpp,
+	  src/osgWrappers/introspection/osgVolume/Layer.cpp,
+	  src/osgWrappers/introspection/osgVolume/Locator.cpp,
+	  src/osgWrappers/introspection/osgVolume/Property.cpp,
+	  src/osgWrappers/introspection/osgVolume/RayTracedTechnique.cpp,
+	  src/osgWrappers/introspection/osgVolume/Volume.cpp,
+	  src/osgWrappers/introspection/osgVolume/VolumeTechnique.cpp,
+	  src/osgWrappers/introspection/osgVolume/VolumeTile.cpp,
+	  src/osgWrappers/introspection/osgWidget,
+	  src/osgWrappers/introspection/osgWidget/Box.cpp,
+	  src/osgWrappers/introspection/osgWidget/Browser.cpp,
+	  src/osgWrappers/introspection/osgWidget/Canvas.cpp,
+	  src/osgWrappers/introspection/osgWidget/EventInterface.cpp,
+	  src/osgWrappers/introspection/osgWidget/Frame.cpp,
+	  src/osgWrappers/introspection/osgWidget/Input.cpp,
+	  src/osgWrappers/introspection/osgWidget/Label.cpp,
+	  src/osgWrappers/introspection/osgWidget/Lua.cpp,
+	  src/osgWrappers/introspection/osgWidget/PdfReader.cpp,
+	  src/osgWrappers/introspection/osgWidget/Python.cpp,
+	  src/osgWrappers/introspection/osgWidget/ScriptEngine.cpp,
+	  src/osgWrappers/introspection/osgWidget/StyleInterface.cpp,
+	  src/osgWrappers/introspection/osgWidget/StyleManager.cpp,
+	  src/osgWrappers/introspection/osgWidget/Table.cpp,
+	  src/osgWrappers/introspection/osgWidget/Types.cpp,
+	  src/osgWrappers/introspection/osgWidget/ViewerEventHandlers.cpp,
+	  src/osgWrappers/introspection/osgWidget/VncClient.cpp,
+	  src/osgWrappers/introspection/osgWidget/Widget.cpp,
+	  src/osgWrappers/introspection/osgWidget/Window.cpp,
+	  src/osgWrappers/introspection/osgWidget/WindowManager.cpp:
+	  Regenerated introspection wrappers in their new location
+
+2010-01-18 19:43  robert
+
+	* src/osgWrappers/CMakeLists.txt,
+	  src/osgWrappers/Doxyfile.template, src/osgWrappers/OpenThreads,
+	  src/osgWrappers/genwrapper.conf, src/osgWrappers/introspection,
+	  src/osgWrappers/introspection/CMakeLists.txt,
+	  src/osgWrappers/introspection/Doxyfile.template,
+	  src/osgWrappers/introspection/genwrapper.conf,
+	  src/osgWrappers/osg, src/osgWrappers/osgAnimation,
+	  src/osgWrappers/osgDB, src/osgWrappers/osgFX,
+	  src/osgWrappers/osgGA, src/osgWrappers/osgManipulator,
+	  src/osgWrappers/osgParticle, src/osgWrappers/osgShadow,
+	  src/osgWrappers/osgSim, src/osgWrappers/osgTerrain,
+	  src/osgWrappers/osgText, src/osgWrappers/osgUtil,
+	  src/osgWrappers/osgViewer, src/osgWrappers/osgVolume,
+	  src/osgWrappers/osgWidget: Cleaned out all wrappers as will be
+	  moving them all into src/osgWrappers/introspection directory, and
+	  use genwrapper to generate the new ones
+
+2010-01-18 16:39  robert
+
+	* src/osgPlugins/txp/TXPNode.cpp: Added #include <stdio.h> for
+	  Mingw build
+
+2010-01-18 16:38  robert
+
+	* src/osgPlugins/freetype/CMakeLists.txt,
+	  src/osgPlugins/freetype/FreeTypeFont3D.cpp,
+	  src/osgPlugins/freetype/FreeTypeLibrary.cpp: Restructure the
+	  includes of freetype
+
+2010-01-18 14:27  robert
+
+	* examples/CMakeLists.txt, examples/osgmovie/CMakeLists.txt,
+	  examples/osgviewerSDL/CMakeLists.txt,
+	  src/osgPlugins/curl/CMakeLists.txt,
+	  src/osgPlugins/jpeg/ReaderWriterJPEG.cpp,
+	  src/osgPlugins/png/ReaderWriterPNG.cpp: From Jean-Sebastien Guay,
+	  build fixes for Mingw
+
+2010-01-18 13:00  robert
+
+	* src/osgWrappers/osg/AudioStream.cpp: Updated wrappers
+
+2010-01-18 12:43  robert
+
+	* include/osg/AudioStream,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderAudio.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderAudio.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegImageStream.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegImageStream.hpp: From Serge Lages,
+	  "Here is a patch to allow setting an audio volume with the
+	  AudioSink interface, I've also modified the ffmpeg plugin code to
+	  implement the ImageStream's setVolume method with its AudioSink."
+
+2010-01-15 15:34  robert
+
+	* include/osgDB/Serializer, src/osgDB/CMakeLists.txt,
+	  src/osgWrappers/osgDB/Serializer.cpp: Removed the old style
+	  Serializer, moving it back into VirtuaLPlanetBuilder to make way
+	  for the new Serializer that exists in support for the new
+	  binary/ascii format.
+
+2010-01-14 15:15  robert
+
+	* include/osgText/Font, src/osgPlugins/freetype/FreeTypeFont.cpp,
+	  src/osgPlugins/txf/TXFFont.cpp, src/osgText/DefaultFont.cpp,
+	  src/osgText/Font.cpp, src/osgWrappers/osgText/Font.cpp: Added
+	  setting of the charcode during construction of
+	  osgText::Font::Glyph()
+
+2010-01-14 15:15  robert
+
+	* include/osg/Version: Updated so version
+
+2010-01-13 18:50  robert
+
+	* CMakeLists.txt: Updated rev number for 2.9.7 dev release as ABI
+	  compatibility has been broken
+
+2010-01-13 18:50  robert
+
+	* src/osgPlugins/osg/Texture.cpp,
+	  src/osgWrappers/osg/BufferObject.cpp: Updated wrappers and
+	  supported shadow texture formats
+
+2010-01-13 18:46  robert
+
+	* include/osg/BufferObject, src/osg/BufferObject.cpp: For backwards
+	  compatiblity add a staic void
+	  BufferObject::deleteBufferObject(unsigned int contextID,GLuint
+	  globj) method.
+
+2010-01-13 14:57  robert
+
+	* src/osgWrappers/osgManipulator/Dragger.cpp: Updated wrappers
+
+2010-01-13 14:16  robert
+
+	* include/osgManipulator/Dragger: Moved dispatch/recieve methods
+	  into public scope to allow easier custom usage.
+
+2010-01-13 13:31  robert
+
+	* src/osgWrappers/osg/Sequence.cpp: Updated wrappers
+
+2010-01-13 13:30  robert
+
+	* src/osgPlugins/ive/Sequence.cpp, src/osgPlugins/osg/Sequence.cpp:
+	  Changed get methods to new style ones.
+
+2010-01-13 13:30  robert
+
+	* include/osg/Sequence, include/osg/Texture1D: From Wang Rui,
+	  "Attached are two simple modifications of osg::Sequence and
+	  osg::Texture1D classes, for the reason of implementing the I/O
+	  serialization feature. In the Sequence header, I've added some
+	  more
+	  convenient functions: setTimeList/getTimeList,
+	  setLoopMode/getLoopMode, setBegin/getBegin, setEnd/getEnd,
+	  setSpeed/getSpeed and setNumRepeats/getNumRepeats.
+	  
+	  In the Texture1D header, fixed:
+	  
+	  inline void setTextureWidth(int width) const ...
+	  
+	  to:
+	  
+	  inline void setTextureWidth(int width) ..."
+	  
+	  Notes from Robert Osfield, have gone a little further with these
+	  changes and have removed some of the original get methods that
+	  were out of step with the way the rest of the OSG manages the
+	  set/get property pairs.
+
+2010-01-13 13:09  robert
+
+	* examples/osggpx/osggpx.cpp, examples/osgoutline/osgoutline.cpp:
+	  Added missing .get()'s
+
+2010-01-13 11:45  robert
+
+	* src/osgFX/Outline.cpp: Added missing .get() to fix build when
+	  compiling with no automatic type convention in ref_ptr<>
+
+2010-01-13 10:46  robert
+
+	* src/osgGA/StateSetManipulator.cpp: From Sukender, warning fix.
+
+2010-01-12 11:12  robert
+
+	* src/osgPlugins/3ds/WriterNodeVisitor.h: Convert dos line endings
+
+2010-01-12 10:00  robert
+
+	* src/osgWrappers/osgDB/XmlParser.cpp: Updated wrappers
+
+2010-01-11 17:36  robert
+
+	* include/osgDB/XmlParser, src/osgDB/XmlParser.cpp: From
+	  Jean-Sebastien Guay, "OK, so here are new changes.
+	  
+	  1. The node type will be set to ATOM on read of <tag prop="..."
+	  ... /> type tags.
+	  2. GROUP and NODE are now written using the same code (and not
+	  just duplicated code). Also NODE will not be written as an ATOM
+	  if it has no children or contents, so you need to set the type to
+	  ATOM if you want the <tag ... /> style.
+	  3. You had put the write of "/>" for ATOM after the "return
+	  true", so it had no effect... Moved to before the return.
+	  4. ATOM did not write its properties correctly, fixed.
+	  5. As an added bonus, I made the write() method indent the output
+	  so it's more readable. It brings a small public interface change
+	  but the indent argument has a default value so client code
+	  doesn't need to change (if there even is any).
+	  6. Another added bonus, I've simplified the write() method a bit
+	  by factoring out the write for children and properties into
+	  protected methods."
+
+2010-01-11 17:27  robert
+
+	* src/osgPlugins/3ds/ReaderWriter3DS.cpp: Added missing .get()
+
+2010-01-11 16:09  robert
+
+	* src/osgPlugins/3ds/ReaderWriter3DS.cpp: From Sukender, introduced
+	  usage of ref_ptr<> and local scoped_array to address more robust
+	  memory management.
+
+2010-01-11 16:03  robert
+
+	* src/osgPlugins/jp2/ReaderWriterJP2.cpp: Added desctructor with
+	  jas_cleanup().
+
+2010-01-11 14:28  robert
+
+	* src/osgPlugins/jp2/ReaderWriterJP2.cpp: From Laurens Voerman,"the
+	  current ReaderWriterJP2 has all the code for writing jp2 files
+	  (jpeg 2000), but the writing fails on my windows machine
+	  (jasper-1.900.1) because the ID for the "jp2" extention is
+	  requested before the jas_init() call. (bug introduced in svn 7645
+	  - 10 dec 2007)"
+
+2010-01-11 14:04  robert
+
+	* src/osgPlugins/3ds/WriterNodeVisitor.cpp: From Sukender, "a small
+	  fix about using non 3-charcacters long file extensions (such as
+	  "jpeg", to be converted to "jpg")."
+
+2010-01-08 11:47  robert
+
+	* src/osgWrappers/osg/Texture.cpp,
+	  src/osgWrappers/osgWidget/Frame.cpp: Updated wrappers
+
+2010-01-08 11:40  robert
+
+	* include/osgWidget/Frame, src/osgWidget/Frame.cpp: From
+	  Jean-Sebastien Guay, "was testing an osgWidget-based test app I
+	  have and noticed that I couldn't move the windows/frames around
+	  on the screen anymore. Turns out that the virtual methods'
+	  interface changed in the EventInterface base class, the third
+	  argument to mouseDrag() is now const, but it was not changed in
+	  the derived classes, so it still compiled but the derived-class
+	  version was not being called because its arguments differed.
+	  
+	  Here are the changes that fix it.
+	  "
+
+2010-01-08 11:37  robert
+
+	* src/osgShadow/StandardShadowMap.cpp: From Marius Heise,
+	  "osgShadow was using single precision variables for light
+	  positioning and orientation. This was causing precision problems
+	  (shadow jumping) with big databases (eg. geocentric created vpb).
+	  This patch fixes this by using double precision variables for
+	  light positioning and orientation. It works for all algorithms
+	  dreived form osgShadow::StandardShadowMap.
+	  "
+
+2010-01-08 11:32  robert
+
+	* include/osg/Texture, src/osg/Image.cpp,
+	  src/osgPlugins/ive/IveVersion.h, src/osgPlugins/ive/Texture.cpp,
+	  src/osgPlugins/osg/Texture.cpp,
+	  src/osgPlugins/tiff/ReaderWriterTIFF.cpp: From Rob Radtke, "I
+	  recently ran into some issues trying to save/load a scene graph
+	  as a .ive file. The problems came about because the scene graph
+	  contained depth textures in it. I have attached a patch (against
+	  the current revision: 10919) that fixes the issues that I
+	  encountered. Both attachments contain the same patch--one is a
+	  .zip file that contains the modified files and the other is a
+	  text patch file. Here is a summary of the changes I made:
+	  
+	  1) Add getShadowComparison() accessor function to osg::Texture
+	  class
+	  2) Modify ReaderWriterTiff::writeTifStream() and _readColor() (in
+	  Image.cpp) to handle pixelFormat==GL_DEPTH_COMPONENT as if it
+	  were GL_LUMINANCE
+	  3) Modify the Texture classes of the ive and osg plug-ins so that
+	  they save/load the following Texture members:
+	  _use_shadow_comparison, _shadow_compare_func and
+	  _shadow_texture_mode
+	  "
+
+2010-01-08 11:16  robert
+
+	* src/osg/OcclusionQueryNode.cpp: From Paul Martz,
+	  "OcclusionQueryNode was incorrectly marking itself as DYNAMIC, so
+	  I removed that code. And I also found some uses of dynamic_cast
+	  that could be changed to static_cast.
+	  "
+
+2010-01-08 10:52  robert
+
+	* src/osgPlugins/3ds/ReaderWriter3DS.cpp,
+	  src/osgPlugins/3ds/WriterNodeVisitor.cpp: From Sukender,
+	  "ReaderWriter3DS.cpp fixes:
+	  - Fixed creation of useless intermediate nodes
+	  
+	  WriterNodeVisitor.cpp fixes:
+	  - Fixed naming of textures (path and extension)
+	  "
+	  
+	  Note from Robert Osfield, this submission also came with changes
+	  to use of ref_ptr<> and removal of delete[]'s, but these were not
+	  merged as they didn't actually fix any memory leaks, and in once
+	  instance introduced one.
+
+2010-01-08 10:12  robert
+
+	* src/osgFX/Outline.cpp: Added newline at end of file to fix
+	  warning
+
+2010-01-07 19:13  robert
+
+	* src/osgDB/XmlParser.cpp: Fixed writing out of ATOM.
+
+2010-01-07 19:08  robert
+
+	* src/osgDB/XmlParser.cpp: From Jean-Sebastien Guay, fix to
+	  handling of xml node with contents by not children
+
+2010-01-07 17:36  robert
+
+	* src/osgDB/XmlParser.cpp: From Jean-Sebastien Guay, fixed handling
+	  of < tag /> xml syntax
+
+2010-01-07 17:20  robert
+
+	* include/OpenThreads/Atomic: From Chuck Seberino, (submitted by
+	  Stephan Huber) Chuck's original message : "I have a patch to
+	  submit that fixes the following error when building against OSX
+	  10.6.2."
+
+2010-01-07 16:49  robert
+
+	* include/osg/State, src/osg/State.cpp,
+	  src/osgWrappers/osg/State.cpp: From Lilith Bryant, "As discussed
+	  previously on the users list. Fixes the redundant calls to
+	  glActiveTexture on every State::apply after more than one
+	  texunits have been
+	  used.
+	  
+	  This is against 2.9.6 (I think SVN head is the same)
+	  
+	  Quick Synopsis:
+	  
+	  New functions:
+	  
+	  State::applyModeOnTexUnit
+	  State::applyAttributeOnTexUnit
+	  State::applyModeMapOnTexUnit
+	  State::applyAttributeMapOnTexUnit
+	  State::applyModeListOnTexUnit
+	  State::applyAttributeListOnTexUnit
+	  
+	  All copies of the normal versions, but they also set the active
+	  tex unit if
+	  absolutely necessary (i.e. only if they call something OpenGL).
+	  
+	  State::apply (*2)
+	  State::applyTextureAttribute
+	  
+	  Changed to call the above functions and no longer call
+	  setActiveTextureUnit
+	  themselves.
+	  
+	  State::setActiveTextureUnit
+	  
+	  Made inline, so the benefit of having applyModeOnTexUnit (etc)
+	  inline
+	  is retained.
+	  "
+
+2010-01-07 14:35  robert
+
+	* examples/osgmovie/osgmovie.cpp, include/osg/AudioStream,
+	  src/osgPlugins/ffmpeg/FFmpegDecoderAudio.cpp,
+	  src/osgWrappers/osg/AudioStream.cpp: Added virtual pause() method
+	  into osg::AudioSink to support pausing of a movie thread and it's
+	  associated audio.
+	  
+	  Updated osgmovie plugin to use the pause support.
+
+2010-01-07 12:14  robert
+
+	* include/osg/Image, include/osg/ImageSequence, src/osg/Image.cpp,
+	  src/osg/ImageSequence.cpp, src/osg/Texture1D.cpp,
+	  src/osg/Texture2D.cpp, src/osg/Texture2DArray.cpp,
+	  src/osg/Texture3D.cpp, src/osg/TextureCubeMap.cpp,
+	  src/osg/TextureRectangle.cpp, src/osgWrappers/osg/Image.cpp,
+	  src/osgWrappers/osg/ImageSequence.cpp: Refactored the way that
+	  osg::Image/ImageSequence manages the update callback that needs
+	  to be attached to Textures to make it possible to use the
+	  Image::update() mechansim in other subclasses from osg::Image.
+	  To enable the automatic attachment of the required update
+	  callback to call osg::Image::update(..) subclasses from
+	  osg::Image will
+	  need to implement the osg::Image::requestUpdateCall() and return
+	  true, and implement the osg::Image::update(NodeVisitor*) method
+	  to recieve the update call during the update traversal.
+
+2010-01-07 10:01  robert
+
+	* examples/osganimationhardware/osganimationhardware.cpp: Fixed
+	  warnings
+
+2010-01-07 09:45  robert
+
+	* src/osgPlugins/directshow/ReaderWriterDirectShow.cpp: From Serge
+	  Lages, "Here is a modified fix. It doesn't break the other patch
+	  for this plugin as they are for different files. I've only added
+	  the file formats handled by default with DirectShow (based on its
+	  Wikipedia page)."
+
+2010-01-07 09:43  robert
+
+	* src/osgDB/XmlParser.cpp: Imporoved spacing
+
+2010-01-07 09:11  robert
+
+	* src/osgDB/XmlParser.cpp: Reordered the readAllDataIntoBuffer() to
+	  avoid bug in failing on all calls to readXmlParser(..)
+
+2010-01-06 15:43  robert
+
+	* src/osgWrappers/osgAnimation/RigTransformHardware.cpp: Updated
+	  wrappers
+
+2010-01-06 10:41  robert
+
+	* include/osgAnimation/RigTransformHardware: Fixed type of index to
+	  int.
+
+2010-01-05 20:03  robert
+
+	* include/osgIntrospection/Value: Replaced nullptr with
+	  isNullPointer
+
+2010-01-05 11:15  robert
+
+	* src/osgWrappers/osgAnimation/RigTransformHardware.cpp,
+	  src/osgWrappers/osgAnimation/RigTransformSoftware.cpp,
+	  src/osgWrappers/osgAnimation/Skinning.cpp,
+	  src/osgWrappers/osgDB/ReaderWriter.cpp,
+	  src/osgWrappers/osgGA/KeySwitchMatrixManipulator.cpp,
+	  src/osgWrappers/osgGA/MatrixManipulator.cpp,
+	  src/osgWrappers/osgGA/SphericalManipulator.cpp,
+	  src/osgWrappers/osgGA/TerrainManipulator.cpp,
+	  src/osgWrappers/osgGA/TrackballManipulator.cpp: Updated wrappers
+
+2010-01-05 11:15  robert
+
+	* src/osgUtil/SceneView.cpp: Added support for call root Camera
+	  CullCallbacks
+
+2010-01-05 11:10  robert
+
+	* src/osgPlugins/3ds/ReaderWriter3DS.cpp: Fixed indentation
+
+2010-01-05 11:09  robert
+
+	* include/osgGA/KeySwitchMatrixManipulator,
+	  include/osgGA/MatrixManipulator,
+	  include/osgGA/TerrainManipulator,
+	  src/osgGA/KeySwitchMatrixManipulator.cpp: Added set/getDistance()
+	  method
+
+2010-01-04 15:54  shuber
+
+	* Xcode/OpenSceneGraph/OpenSceneGraph.xcodeproj/project.pbxproj:
+	  From Stephan Huber: updated XCode-project
+
+2009-12-22 14:09  cedricpinson
+
+	* include/osgAnimation/Skinning, src/osgAnimation/Timeline.cpp:
+	  From Cedric Pinson, remove unused file Skinning, cleanup file
+	  Timeline.cpp
+
+2009-12-16 15:48  robert
+
+	* include/osgDB/ReaderWriter: Moved the supports*() method into
+	  public scope to allow external injection of supported formats.
+	  Added docs to clearly state this type of inject is not generally
+	  supported by ReaderWriters.
+
+2009-12-16 15:12  robert
+
+	* AUTHORS.txt, ChangeLog: Updated ChangeLog and AUTHORS.txt to mark
+	  the point in time that the OpenSceneGraph gained it's 400th
+	  contributor!
+
 2009-12-16 15:05  robert
 
 	* src/osgPlugins/dae/daeRGeometry.cpp: From Lilith Bryant, "This

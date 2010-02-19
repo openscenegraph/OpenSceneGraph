@@ -51,7 +51,7 @@ class observer_ptr : public Observer
         {
             if (&rp==this) return *this;
 
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*getObserverMutex());
 
             if (_ptr==rp._ptr) return *this;
             if (_ptr) _ptr->removeObserver(this);
@@ -63,7 +63,8 @@ class observer_ptr : public Observer
 
         inline observer_ptr& operator = (T* ptr)
         {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*getObserverMutex());
+
             if (_ptr==ptr) return *this;
             if (_ptr) _ptr->removeObserver(this);
 
@@ -76,7 +77,7 @@ class observer_ptr : public Observer
         // robust thread safe access to pointer
         ref_ptr<T> lock() const
         {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*getObserverMutex());
             return ref_ptr<T>(_ptr);
         }
 
@@ -111,11 +112,10 @@ class observer_ptr : public Observer
         {
             T* ref_obj = static_cast<T*>(obj);
 
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*getObserverMutex());
             if (ref_obj->referenceCount() == 0) _ptr = 0;
         }
 
-        mutable OpenThreads::Mutex      _mutex;
         T*                              _ptr;
 };
 

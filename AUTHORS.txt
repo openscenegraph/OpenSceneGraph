@@ -1,6 +1,6 @@
 OpenSceneGraph Library 2.9.7
 
-400 Contributors:
+407 Contributors:
 
 Firstname Surname
 -----------------
@@ -13,40 +13,43 @@ Mike Weiblen
 Mathias Fröhlich
 Eric Wing
 Brede Johansen
-Farshid Lashkari
 Cedric Pinson
+Jean-Sebastien Guay
+Farshid Lashkari
 Bob Kuehne
 Ulrich Hertlein
 Geoff Michel
-Jean-Sebastien Guay
 Eric Sokolowsky
 Wojciech Lewandowski
 David Callu
 Martin Lavery
+Trajce Nikolov
 Michael Platings
 Tree 
 Colin McDonald
 Luigi Calori
-Trajce Nikolov
 Mike Wittman
 Roger James
 Paul Melis
 Roland Smeenk
 Mattias Helsing
+Jeremy Moles
 Chris Hanson
 Andy Skinner
 Tom Jolley
 Pavel Moloshtan
-Jeremy Moles
 Jason Beverage
 Norman Vine
 Jason Daly
 J.P. Delport
 Art Tevs
 Philip Lowman
-Alberto Farre
-André Garneau
 Alberto Luaces
+Alberto Farre
+Wang Rui
+Sukender 
+Serge Lages
+André Garneau
 Adrian Egli
 Ruben Lopez
 Randall Hopper
@@ -67,12 +70,12 @@ Joakim Simonsson
 David Spilling
 Daniel Sjölie
 Bryan Thrall
-Serge Lages
-Sukender 
+Laurens Voerman
+Tim Moore
 Melchior Franz
 Lionel Lagarde
+Jan Peciva
 Jan Ciger
-Tim Moore
 Neil Hughes
 Mike Connell
 Joran Jessurun
@@ -102,14 +105,11 @@ Martin Naylor
 Markus Trenkwalder
 Luc Frauciel
 Loic Dachary
-Laurens Voerman
 Joseph Steel
 John Shue
-Jan Peciva
 Fabien Lavignotte
 David Guthrie
 Brad Colbert
-Wang Rui
 Vivek Rajan
 Thom DeCarlo
 Tatsuhiro Nishioka
@@ -126,6 +126,7 @@ Corbin Holtz
 Brad Christiansen
 Blasius Czink
 Toshiyuki Takahei
+Tony Horrobin
 Sebastien Grignard
 Romano Magacho
 Richard Schmidt
@@ -148,7 +149,6 @@ Alberto Barbati
 Vladimir Shabanov
 Uwe Woessner
 Tugkan Calapoglu
-Tony Horrobin
 Sohey Yamamoto
 Sergey Leontyev
 Santosh Gaikwad
@@ -208,6 +208,8 @@ Martin Spott
 Martijn Kragtwijk
 Mark Sciabica
 Magnus Kessler
+Lilith Bryant
+Lars Nilsson
 Kevin Moiule
 Keith Steffen
 Katharina Plugge
@@ -228,6 +230,7 @@ Ewe Woessner
 Edgar Ellis
 David Ergo
 Daniel Trstenjak
+Chuck Seberino
 Christophe Loustaunau
 Brad Anderegg
 Aric Aumann
@@ -262,6 +265,7 @@ Sid Byce
 Shuxing Xiao
 Shane Arnott
 Sebastien Kuntz
+Ryan Kawicki
 Ruth Lang
 Ruben Smelik
 Ross Anderson
@@ -269,6 +273,7 @@ Ronny Krueger
 Ronald van Maarseveen
 Romain Charbit
 Robert Swain
+Rob Radtke
 Rob Bloemkool
 Rick Pingry
 Rick Appleton
@@ -295,6 +300,7 @@ Orhun Birsoy
 Ole-Morten Duesund
 Nicolas Brodu
 Nathan Cournia
+Mourad Boufarguine
 Morten Haukness
 Mojtaba Fathi
 Mirko Viviani
@@ -313,6 +319,8 @@ Mathia Walker
 Mason Menninger
 Martins Innus
 Martin Scheffler
+Martin Lambers
+Marius Heise
 Mario Guimaraes
 Marin Lavery
 Marco Lehmann
@@ -320,9 +328,8 @@ Marcin Prus
 Maik Keller
 Lukas Diduch
 Louis Hamilton
-Lilith Bryant
 Lewis Harmon
-Lars Nilson
+Laurence Muller
 Kyle Centers
 Kristopher Bixler
 Konstantin Matveyev
@@ -330,6 +337,7 @@ Karsten Weiss
 Karl Heijdenberg
 Jutta Sauer
 Julian Scheid
+Juan Hernando
 Josh Portway
 John Tan
 John Grant
@@ -375,7 +383,6 @@ César L. B. Silveira
 Cyril Brulebois
 Clay Fowler
 Chuck Sembroski
-Chuck Seberion
 Christopher Blaesius
 Christian Kaser
 Christian Ehrlicher

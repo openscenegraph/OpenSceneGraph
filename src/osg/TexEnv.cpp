@@ -13,6 +13,7 @@
 #include <osg/GLExtensions>
 #include <osg/TexEnv>
 #include <osg/State>
+#include <osg/Notify>
 
 using namespace osg;
 
@@ -47,6 +48,6 @@ void TexEnv::apply(State& state) const
         }
     }
 #else
-    osg::notify(osg::NOTICE)<<"Warning: TexEnv::apply(State&) - not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: TexEnv::apply(State&) - not supported."<<std::endl;
 #endif
 }

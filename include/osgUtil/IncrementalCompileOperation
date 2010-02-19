@@ -111,7 +111,7 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
             virtual bool compileCompleted(CompileSet* compileSet) = 0;
         };
 
-        class CompileSet : public osg::Referenced
+        class OSGUTIL_EXPORT CompileSet : public osg::Referenced
         {
         public:
         

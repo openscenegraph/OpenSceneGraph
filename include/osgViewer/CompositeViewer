@@ -22,7 +22,7 @@
 namespace osgViewer {
 
 /** CompsiteViewer holds a or more views to a one more scenes.*/
-class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase, public virtual osg::Object
+class OSGVIEWER_EXPORT CompositeViewer : public ViewerBase
 {
     public:
 

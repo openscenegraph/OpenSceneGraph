@@ -38,9 +38,13 @@ class observer_ptr : public Observer
     public:
         typedef T element_type;
 
-        observer_ptr() :_ptr(0L)                            {}
-        observer_ptr(T* t):_ptr(t)                          { if (_ptr) _ptr->addObserver(this); }
-        observer_ptr(const observer_ptr& rp):Observer(), _ptr(rp._ptr)  { if (_ptr) _ptr->addObserver(this); }
+        observer_ptr(): _ptr(0L)                            {}
+        observer_ptr(T* t): _ptr(t)                         { if (_ptr) _ptr->addObserver(this); }
+        observer_ptr(const observer_ptr& rp): _ptr(0L)
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*getObserverMutex());
+            if (_ptr) _ptr->addObserver(this);
+        }
 
         ~observer_ptr()
         {
@@ -79,7 +83,8 @@ class observer_ptr : public Observer
         ref_ptr<T> lock() const
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*getObserverMutex());
-            return ref_ptr<T>(_ptr);
+            if (_ptr && _ptr->referenceCount()>0) return ref_ptr<T>(_ptr);
+            else return ref_ptr<T>(_ptr);
         }
 
         // get the raw C pointer
@@ -101,23 +106,21 @@ class observer_ptr : public Observer
         // to make thread safe one should either ensure a high level that object will not be deleted
         // which operating on it, or by using the observer_ptr<>::lock() to get a ref_ptr<> that ensures the
         // objects stay alive throughout all access to it.
-        inline T& operator*() const { return *_ptr; }
-        inline T* operator->() const   { return _ptr; }
+        inline T& operator*() const   { return *_ptr; }
+        inline T* operator->() const  { return _ptr; }
 
-        inline bool operator!() const   { return _ptr==0L; }
-        inline bool valid() const       { return _ptr!=0L; }
+        inline bool operator!() const { return _ptr==0L; }
+        inline bool valid() const     { return _ptr!=0L; }
 
     protected:
 
-        virtual void objectDeleted(void* obj)
+        virtual void objectDeleted(void*)
         {
-            T* ref_obj = static_cast<T*>(obj);
-
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*getObserverMutex());
-            if (ref_obj->referenceCount() == 0) _ptr = 0;
+            _ptr = 0;
         }
 
-        T*                              _ptr;
+        T* _ptr;
 };
 
 }

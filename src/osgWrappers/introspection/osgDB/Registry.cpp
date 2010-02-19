@@ -103,16 +103,6 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __void__addMimeTypeExtensionMapping__C5_std_string__C5_std_string,
 	          "Registers a mapping of a mime-type to an extension. ",
 	          "A process fetching data over HTTP can use this facility to determine the proper ReaderWriter to use when there is no filename extension to rely upon. ");
-	I_Method1(void, addDotOsgWrapper, IN, osgDB::DotOsgWrapper *, wrapper,
-	          Properties::NON_VIRTUAL,
-	          __void__addDotOsgWrapper__DotOsgWrapper_P1,
-	          "",
-	          "");
-	I_Method1(void, removeDotOsgWrapper, IN, osgDB::DotOsgWrapper *, wrapper,
-	          Properties::NON_VIRTUAL,
-	          __void__removeDotOsgWrapper__DotOsgWrapper_P1,
-	          "",
-	          "");
 	I_Method1(void, addReaderWriter, IN, osgDB::ReaderWriter *, rw,
 	          Properties::NON_VIRTUAL,
 	          __void__addReaderWriter__ReaderWriter_P1,

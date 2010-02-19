@@ -44,12 +44,15 @@
 #include <osg/PolygonMode>
 #include <osg/PolygonOffset>
 #include <osg/Texture1D>
+#include <osg/LogicOp>
 
 #include <sstream>
 
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
-    #define GL_PERSPECTIVE_CORRECTION_HINT 0x0C50
-    #define GL_POLYGON_SMOOTH_HINT 0x0C53
+    #define GL_PERSPECTIVE_CORRECTION_HINT      0x0C50
+    #define GL_POLYGON_SMOOTH_HINT              0x0C53
+    #define GL_LINE_SMOOTH_HINT                 0x0C52
+    #define GL_FRAGMENT_SHADER_DERIVATIVE_HINT  0x8B8B
 #endif
 
 using namespace osgDB;

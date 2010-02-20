@@ -228,8 +228,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
         osg::ref_ptr<osgGA::MatrixManipulator>  _cameraManipulator;
         EventHandlers                           _eventHandlers;
 
-        typedef std::vector< osg::observer_ptr<osg::Node> >   ObserverNodePath;
-        ObserverNodePath                        _coordinateSystemNodePath;
+        osg::ObserverNodePath                   _coordinateSystemNodePath;
 
         osg::ref_ptr<osg::DisplaySettings>      _displaySettings;
         osgUtil::SceneView::FusionDistanceMode  _fusionDistanceMode;

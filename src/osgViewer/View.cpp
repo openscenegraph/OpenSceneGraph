@@ -215,7 +215,7 @@ void View::take(osg::View& rhs)
         rhs_osgViewer->_cameraManipulator = 0;
         rhs_osgViewer->_eventHandlers.clear();
 
-        rhs_osgViewer->_coordinateSystemNodePath.clear();
+        rhs_osgViewer->_coordinateSystemNodePath.clearNodePath();
 
         rhs_osgViewer->_displaySettings = 0;
     }
@@ -386,21 +386,13 @@ void View::removeEventHandler(osgGA::GUIEventHandler* eventHandler)
 
 void View::setCoordinateSystemNodePath(const osg::NodePath& nodePath)
 {
-    _coordinateSystemNodePath.clear();
-    std::copy(nodePath.begin(),
-              nodePath.end(),
-              std::back_inserter(_coordinateSystemNodePath));
+    _coordinateSystemNodePath.setNodePath(nodePath);
 }
 
 osg::NodePath View::getCoordinateSystemNodePath() const
 {
     osg::NodePath nodePath;
-    for(ObserverNodePath::const_iterator itr = _coordinateSystemNodePath.begin();
-        itr != _coordinateSystemNodePath.end();
-        ++itr)
-    {
-        nodePath.push_back(const_cast<osg::Node*>(itr->get()));
-    }
+    _coordinateSystemNodePath.getNodePath(nodePath);
     return nodePath;
 }
 

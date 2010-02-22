@@ -59,6 +59,13 @@ class OSG_EXPORT ObserverNodePath : public osg::Observer
           * of the NodePath. return true if NodePath is valid.*/
         bool getNodePath(NodePath& nodePath) const;
 
+        bool empty() const
+        {
+            if (!_valid) return true;
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*getObserverMutex());
+            return _nodePath.empty();
+        }
+
     protected:
 
         void _setNodePath(const osg::NodePath& nodePath);

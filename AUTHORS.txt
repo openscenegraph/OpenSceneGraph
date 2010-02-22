@@ -92,6 +92,7 @@ Martin Beckett
 Martin Aumueller
 Mario Valle
 Gordon Tomlinson
+Fabien Lavignotte
 Cory Riddell
 Carlo Camporesi
 Ben Discoe
@@ -107,7 +108,6 @@ Luc Frauciel
 Loic Dachary
 Joseph Steel
 John Shue
-Fabien Lavignotte
 David Guthrie
 Brad Colbert
 Vivek Rajan

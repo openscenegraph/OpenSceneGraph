@@ -412,7 +412,7 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
 
             if (_selectionMax-_selectionMin>0)
             {
-                point_type    deleteToIdx = _selectionMax;
+                unsigned int    deleteToIdx = _selectionMax;
                 for (unsigned int i=0; i < s.size()-_selectionMin; ++i)
                 {
                     s[_selectionMin+i] = deleteToIdx+i+1 < s.size() ? s[deleteToIdx+i+1] : ' ';
@@ -429,7 +429,7 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
             else
             if (mask & osgGA::GUIEventAdapter::MODKEY_CTRL)
             {
-                point_type    deleteToIdx = _textLength;
+                unsigned int    deleteToIdx = _textLength;
                 for (unsigned int i=0; i<_wordsOffsets.size()-1; ++i)
                 {
                     if (_wordsOffsets.at(i) <= _index && _index < _wordsOffsets.at(i+1))
@@ -472,7 +472,7 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
 
             if (_selectionMax-_selectionMin>0)
             {
-                point_type    deleteToIdx = _selectionMax;
+                unsigned int    deleteToIdx = _selectionMax;
                 for (unsigned int i=0; i < s.size()-_selectionMin; ++i)
                 {
                     s[_selectionMin+i] = deleteToIdx+i+1 < s.size() ? s[deleteToIdx+i+1] : ' ';

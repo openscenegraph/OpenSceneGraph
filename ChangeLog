@@ -1,3 +1,111 @@
+2010-02-22 10:10  robert
+
+	* CMakeModules/FindFFmpeg.cmake: Fixed STDINT_INCLUDE path
+
+2010-02-22 09:50  robert
+
+	* include/osgWidget/Input, src/osgWidget/Input.cpp: From Trajce
+	  Nicklov, fixes to warnings
+
+2010-02-22 08:48  robert
+
+	* src/osgDB/ObjectWrapper.cpp: Seperated out the #define of
+	  GL_PERSPECTIVE_CORRECTION_HINT to fix GL3 build
+
+2010-02-22 08:39  robert
+
+	* include/osg/observer_ptr: Added missing _ptr = rp._ptr to
+	  constructor.
+
+2010-02-20 17:36  robert
+
+	* include/osgViewer/View, src/osgViewer/View.cpp: Converted View
+	  across to use ObserverNodePath.
+
+2010-02-19 21:03  robert
+
+	* src/osgDB/ObjectWrapper.cpp: Build fixes for GLES2
+
+2010-02-19 20:58  robert
+
+	* examples/osgautocapture/osgautocapture.cpp: Fixed GLES1/GLES2
+	  build
+
+2010-02-19 20:43  robert
+
+	* src/osgPlugins/tiff/ReaderWriterTIFF.cpp: Added include of
+	  osg/FrameBufferObject to fix GLES1/GLES2 build issue
+
+2010-02-19 20:40  robert
+
+	* src/osgDB/ObjectWrapper.cpp: Build fix for GLES1 and GLES2
+
+2010-02-19 20:18  robert
+
+	* include/osg/Observer, src/osg/Observer.cpp: Moved implementation
+	  of Observer destructor and constructor from header into .cpp to
+	  avoid possible issues with imports/exports under Windows build.
+
+2010-02-19 20:14  robert
+
+	* include/osg/Drawable: Added check against OSG_GL3_AVAILABLE to
+	  avoid issues with GL3 build under linux
+
+2010-02-19 20:11  robert
+
+	* src/osg/ColorMatrix.cpp, src/osg/Fog.cpp, src/osg/TexEnv.cpp,
+	  src/osg/TexEnvFilter.cpp: Added #include <osg/Notify>, convert
+	  osg::notify usage to OSG_NOTICE
+
+2010-02-19 19:50  robert
+
+	* include/osg/observer_ptr: Clean up observer_ptr<> and removed the
+	  eronous casting of ptr in objectDeleted.
+
+2010-02-19 19:00  robert
+
+	* src/osgWrappers/introspection/osgViewer/CompositeViewer.cpp:
+	  Updated wrappers
+
+2010-02-19 18:56  robert
+
+	* include/osgViewer/CompositeViewer: Removed the uncessary
+	  subclassing from osg::Object as this base class is already
+	  pullled via ViewerBase
+
+2010-02-19 16:04  robert
+
+	* include/osg/observer_ptr: Added mutex lock to destructor.
+
+2010-02-19 15:41  robert
+
+	* include/osg/observer_ptr: Replaced local mutex with
+	  getObserverMutex().
+
+2010-02-19 14:30  robert
+
+	* include/osgPresentation/AnimationMaterial,
+	  include/osgUtil/IncrementalCompileOperation: From Fabien
+	  Lavignotte, "In order to compile on Windows with Wrappers ON,
+	  some exports are still missing on
+	  osgPresentation::AnimationMaterialCallback and
+	  osgUtil::IncrementalCompileOperation::CompileSet."
+
+2010-02-19 14:05  robert
+
+	* include/osgDB/Registry,
+	  src/osgWrappers/introspection/osgDB/Registry.cpp: Removed no
+	  longer defined methods and updated wrappers
+
+2010-02-19 09:32  robert
+
+	* AUTHORS.txt, applications/osgversion/Contributors.cpp: Updated
+	  contributors list for 2.9.7 release
+
+2010-02-19 09:21  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2010-02-19 09:02  robert
 
 	* include/osg/ObserverNodePath, src/osg/Observer.cpp,

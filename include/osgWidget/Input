@@ -92,7 +92,7 @@ class OSGWIDGET_EXPORT Input: public Label
        unsigned int             _textLength;
 
        std::vector<point_type>  _offsets;
-       std::vector<point_type>  _wordsOffsets;
+       std::vector<unsigned int> _wordsOffsets;
        std::vector<point_type>  _widths;
        osg::ref_ptr<Widget>     _cursor;
 

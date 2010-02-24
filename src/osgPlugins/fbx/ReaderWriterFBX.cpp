@@ -26,6 +26,42 @@
 #include "fbxMaterialToOsgStateSet.h"
 #include "WriterNodeVisitor.h"
 
+#if defined(WIN32) && !defined(__CYGWIN__)
+#define WIN32_LEAN_AND_MEAN
+//For MultiByteToWideChar
+#include <Windows.h>
+#endif
+
+// This function belongs in osgDB. Delete this function and use the osgDB
+// version once Robert accepts the submission.
+std::string convertStringFromCurrentCodePageToUTF8(const std::string& str)
+{
+#if defined(WIN32) && !defined(__CYGWIN__)
+	if (str.length() == 0)
+	{
+		return std::string();
+	}
+
+	int utf16Length = MultiByteToWideChar(CP_ACP, 0, str.c_str(), str.length(), 0, 0);
+	if (utf16Length <= 0)
+	{
+		osg::notify(osg::WARN) << "Cannot convert multi-byte string to UTF-8." << std::endl;
+		return std::string();
+	}
+
+	std::wstring sUTF16(utf16Length, L'\0');
+	utf16Length = MultiByteToWideChar(CP_ACP, 0, str.c_str(), str.length(), &sUTF16[0], utf16Length);
+	if (utf16Length <= 0)
+	{
+		osg::notify(osg::WARN) << "Cannot convert multi-byte string to UTF-8." << std::endl;
+		return std::string();
+	}
+
+	return osgDB::convertUTF16toUTF8(sUTF16);
+#else
+	return str;
+#endif
+}
 
 /// Returns true if the given node is a basic root group with no special information.
 /// Used in conjunction with UseFbxRoot option.
@@ -144,7 +180,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
 #ifdef OSG_USE_UTF8_FILENAME
         const std::string& utf8filename(filename);
 #else
-        std::string utf8filename(osgDB::convertStringFromCurrentCodePageToUTF8(filename));
+        std::string utf8filename(convertStringFromCurrentCodePageToUTF8(filename));
 #endif
 
         int fileFormat;
@@ -370,9 +406,9 @@ osgDB::ReaderWriter::WriteResult ReaderWriterFBX::writeNode(
 
         // The FBX SDK interprets the filename as UTF-8
 #ifdef OSG_USE_UTF8_FILENAME
-        std::string utf8filename(filename);
+        const std::string& utf8filename(filename);
 #else
-        std::string utf8filename(osgDB::convertStringFromCurrentCodePageToUTF8(filename));
+        std::string utf8filename(convertStringFromCurrentCodePageToUTF8(filename));
 #endif
 
         if (!lExporter->Initialize(utf8filename.c_str()))

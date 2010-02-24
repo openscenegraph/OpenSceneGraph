@@ -3,11 +3,6 @@
 
 #include <fbxfilesdk/fbxfilesdk_def.h>
 
-std::string readFbxBoneAnimation(
-    FBXFILESDK_NAMESPACE::KFbxNode*,
-    osg::ref_ptr<osgAnimation::AnimationManagerBase>&,
-    const char* targetName);
-
 std::string readFbxAnimation(
     FBXFILESDK_NAMESPACE::KFbxNode*,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>&,

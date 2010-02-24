@@ -1,5 +1,8 @@
+#include <cassert>
 #include <memory>
+#include <sstream>
 
+#include <osg/io_utils>
 #include <osg/Notify>
 #include <osg/MatrixTransform>
 #include <osg/Material>
@@ -9,8 +12,13 @@
 #include <osgDB/ReadFile>
 
 #include <osgAnimation/AnimationManagerBase>
+#include <osgAnimation/Bone>
 #include <osgAnimation/Skeleton>
-#include <osgAnimation/UpdateCallback>
+#include <osgAnimation/StackedMatrixElement>
+#include <osgAnimation/StackedQuaternionElement>
+#include <osgAnimation/StackedScaleElement>
+#include <osgAnimation/StackedTranslateElement>
+#include <osgAnimation/UpdateBone>
 
 #if defined(_MSC_VER)
     #pragma warning( disable : 4505 )
@@ -21,140 +29,8 @@
 #include "fbxRCamera.h"
 #include "fbxRLight.h"
 #include "fbxRMesh.h"
-
-template <typename FbxT, typename OsgT, typename ConvertFunc>
-class FbxToOsgMap
-{
-    std::map<const FbxT*, osg::ref_ptr<OsgT>> m_map;
-public:
-    ConvertFunc m_convertFunc;
-
-    FbxToOsgMap(ConvertFunc convertFunc) : m_convertFunc(convertFunc) {}
-
-    osg::ref_ptr<OsgT> Get(const FbxT* fbx)
-    {
-        if (!fbx)
-            return 0;
-        std::map<const FbxT*, osg::ref_ptr<OsgT>>::iterator it = m_map.find(fbx);
-        if (it != m_map.end())
-        {
-            return it->second;
-        }
-        osg::ref_ptr<OsgT> osgObj = m_convertFunc(fbx);
-        m_map.insert(std::pair<const FbxT*, osg::ref_ptr<OsgT>>(fbx, osgObj));
-        return osgObj;
-    }
-};
-
-struct GetOsgTexture
-{
-    const std::string& m_dir;
-
-    GetOsgTexture(const std::string& dir) : m_dir(dir) {}
-
-    static osg::Texture::WrapMode convertWrap(KFbxTexture::EWrapMode wrap)
-    {
-        return wrap == KFbxTexture::eREPEAT ?
-            osg::Texture2D::REPEAT : osg::Texture2D::CLAMP_TO_EDGE;
-    }
-
-    osg::ref_ptr<osg::Texture2D> operator () (const KFbxTexture* fbx)
-    {
-        osg::Image* pImage;
-        if ((pImage = osgDB::readImageFile(osgDB::concatPaths(m_dir, fbx->GetRelativeFileName()))) ||
-            (pImage = osgDB::readImageFile(osgDB::concatPaths(m_dir, fbx->GetFileName()))))
-        {
-            osg::ref_ptr<osg::Texture2D> pOsgTex = new osg::Texture2D;
-
-            pOsgTex->setImage(pImage);
-            pOsgTex->setWrap(osg::Texture2D::WRAP_S, convertWrap(fbx->GetWrapModeU()));
-            pOsgTex->setWrap(osg::Texture2D::WRAP_T, convertWrap(fbx->GetWrapModeV()));
-
-            return pOsgTex;
-        }
-        else
-        {
-            return 0;
-        }
-    }
-};
-
-struct GetOsgMaterial
-{
-    typedef FbxToOsgMap<KFbxTexture, osg::Texture2D, GetOsgTexture> TextureMap;
-    TextureMap m_textureMap;
-
-public:
-    osg::ref_ptr<osg::Texture2D> m_pTexture;
-
-    GetOsgMaterial(const std::string& dir) : m_textureMap(GetOsgTexture(dir)){}
-
-    osg::ref_ptr<osg::Material> operator () (const KFbxSurfaceMaterial* pFbxMat)
-    {
-        osg::ref_ptr<osg::Material> pOsgMat = new osg::Material;
-
-        const KFbxSurfaceLambert* pFbxLambert = dynamic_cast<const KFbxSurfaceLambert*>(pFbxMat);
-
-        const KFbxProperty lProperty = pFbxMat->FindProperty(KFbxSurfaceMaterial::sDiffuse);
-        if(lProperty.IsValid()){
-            int lNbTex = lProperty.GetSrcObjectCount(KFbxTexture::ClassId);
-            for (int lTextureIndex = 0; lTextureIndex < lNbTex; lTextureIndex++)
-            {
-                const KFbxTexture* lTexture = KFbxCast<KFbxTexture>(lProperty.GetSrcObject(KFbxTexture::ClassId, lTextureIndex)); 
-                if(lTexture)
-                {
-                    m_pTexture = m_textureMap.Get(lTexture);
-                }
-
-                //For now only allow 1 texture
-                break;
-            }
-        }
-
-        if (pFbxLambert)
-        {
-            fbxDouble3 color = pFbxLambert->GetDiffuseColor().Get();
-            double factor = pFbxLambert->GetDiffuseFactor().Get();
-            pOsgMat->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(
-                static_cast<float>(color[0] * factor),
-                static_cast<float>(color[1] * factor),
-                static_cast<float>(color[2] * factor),
-                static_cast<float>(1.0 - pFbxLambert->GetTransparencyFactor().Get())));
-
-            color = pFbxLambert->GetAmbientColor().Get();
-            factor = pFbxLambert->GetAmbientFactor().Get();
-            pOsgMat->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(
-                static_cast<float>(color[0] * factor),
-                static_cast<float>(color[1] * factor),
-                static_cast<float>(color[2] * factor),
-                1.0f));
-
-            color = pFbxLambert->GetEmissiveColor().Get();
-            factor = pFbxLambert->GetEmissiveFactor().Get();
-            pOsgMat->setEmission(osg::Material::FRONT_AND_BACK, osg::Vec4(
-                static_cast<float>(color[0] * factor),
-                static_cast<float>(color[1] * factor),
-                static_cast<float>(color[2] * factor),
-                1.0f));
-
-            if (const KFbxSurfacePhong* pFbxPhong = dynamic_cast<const KFbxSurfacePhong*>(pFbxLambert))
-            {
-                color = pFbxPhong->GetSpecularColor().Get();
-                factor = pFbxPhong->GetSpecularFactor().Get();
-                pOsgMat->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(
-                    static_cast<float>(color[0] * factor),
-                    static_cast<float>(color[1] * factor),
-                    static_cast<float>(color[2] * factor),
-                    1.0f));
-
-                pOsgMat->setShininess(osg::Material::FRONT_AND_BACK,
-                    static_cast<float>(pFbxPhong->GetShininess().Get()));
-            }
-        }
-
-        return pOsgMat;
-    }
-};
+#include "fbxRNode.h"
+#include "fbxMaterialToOsgStateSet.h"
 
 osg::Quat makeQuat(const fbxDouble3& degrees, ERotationOrder fbxRotOrder)
 {
@@ -259,69 +135,8 @@ void makeLocalMatrix(const KFbxNode* pNode, osg::Matrix& m)
         -fbxSclPiv[2]));
 }
 
-void getApproximateTransform(const KFbxNode* pNode, osg::Vec3& trans, osg::Quat& quat, osg::Vec3& scale)
-{
-    ERotationOrder fbxRotOrder = pNode->RotationOrder.Get();
-
-    fbxDouble3 fbxLclPos = pNode->LclTranslation.Get();
-    //fbxDouble3 fbxRotOff = pNode->RotationOffset.Get();
-    //fbxDouble3 fbxRotPiv = pNode->RotationPivot.Get();
-    fbxDouble3 fbxPreRot = pNode->PreRotation.Get();
-    fbxDouble3 fbxLclRot = pNode->LclRotation.Get();
-    fbxDouble3 fbxPostRot = pNode->PostRotation.Get();
-    //fbxDouble3 fbxSclOff = pNode->ScalingOffset.Get();
-    //fbxDouble3 fbxSclPiv = pNode->ScalingPivot.Get();
-    fbxDouble3 fbxLclScl = pNode->LclScaling.Get();
-
-    trans.set(
-        static_cast<float>(fbxLclPos[0]),
-        static_cast<float>(fbxLclPos[1]),
-        static_cast<float>(fbxLclPos[2]));
-
-    quat =
-        makeQuat(fbxPostRot, fbxRotOrder) *
-        makeQuat(fbxLclRot, fbxRotOrder) *
-        makeQuat(fbxPreRot, fbxRotOrder);
-
-    scale.set(
-        static_cast<float>(fbxLclScl[0]),
-        static_cast<float>(fbxLclScl[1]),
-        static_cast<float>(fbxLclScl[2]));
-}
-
-void getApproximateTransform(const KFbxNode* pNode, osg::Vec3& trans, osg::Vec3& euler, osg::Vec3& scale)
-{
-    //ERotationOrder fbxRotOrder = pNode->RotationOrder.Get();
-
-    fbxDouble3 fbxLclPos = pNode->LclTranslation.Get();
-    //fbxDouble3 fbxRotOff = pNode->RotationOffset.Get();
-    //fbxDouble3 fbxRotPiv = pNode->RotationPivot.Get();
-    fbxDouble3 fbxPreRot = pNode->PreRotation.Get();
-    fbxDouble3 fbxLclRot = pNode->LclRotation.Get();
-    fbxDouble3 fbxPostRot = pNode->PostRotation.Get();
-    //fbxDouble3 fbxSclOff = pNode->ScalingOffset.Get();
-    //fbxDouble3 fbxSclPiv = pNode->ScalingPivot.Get();
-    fbxDouble3 fbxLclScl = pNode->LclScaling.Get();
-
-    trans.set(
-        static_cast<float>(fbxLclPos[0]),
-        static_cast<float>(fbxLclPos[1]),
-        static_cast<float>(fbxLclPos[2]));
-
-    //TODO: Convert each rotation to a quaternion, concatenate them and extract euler from that.
-    euler.set(
-        osg::DegreesToRadians(static_cast<float>(fbxPreRot[0] + fbxLclRot[0] + fbxPostRot[0])),
-        osg::DegreesToRadians(static_cast<float>(fbxPreRot[1] + fbxLclRot[1] + fbxPostRot[1])),
-        osg::DegreesToRadians(static_cast<float>(fbxPreRot[2] + fbxLclRot[2] + fbxPostRot[2])));
-
-    scale.set(
-        static_cast<float>(fbxLclScl[0]),
-        static_cast<float>(fbxLclScl[1]),
-        static_cast<float>(fbxLclScl[2]));
-}
-
 bool readBindPose(KFbxSdkManager& pManager, KFbxNode* pNode,
-    osgAnimation::Bone* osgBone)
+                  osgAnimation::Bone* osgBone)
 {
     KArrayTemplate<KFbxPose*> pPoseList;
     KArrayTemplate<int> pIndex;
@@ -332,8 +147,127 @@ bool readBindPose(KFbxSdkManager& pManager, KFbxNode* pNode,
     }
 
     const double* pMat = pPoseList[0]->GetMatrix(pIndex[0]);
-    osgBone->setBindMatrixInBoneSpace(osg::Matrix(pMat));
+    osgBone->setMatrix(osg::Matrix(pMat));
     return true;
+}
+
+void readTranslationElement(KFbxTypedProperty<fbxDouble3>& prop,
+                            osgAnimation::UpdateMatrixTransform* pUpdate,
+                            osg::Matrix& staticTransform)
+{
+    fbxDouble3 fbxPropValue = prop.Get();
+    osg::Vec3d val(
+        fbxPropValue[0],
+        fbxPropValue[1],
+        fbxPropValue[2]);
+
+    if (prop.GetKFCurve(KFCURVENODE_T_X) ||
+        prop.GetKFCurve(KFCURVENODE_T_Y) ||
+        prop.GetKFCurve(KFCURVENODE_T_Z))
+    {
+        if (!staticTransform.isIdentity())
+        {
+            pUpdate->getStackedTransforms().push_back(new osgAnimation::StackedMatrixElement(staticTransform));
+            staticTransform.makeIdentity();
+        }
+        pUpdate->getStackedTransforms().push_back(new osgAnimation::StackedTranslateElement("translate", val));
+    }
+    else
+    {
+        staticTransform.preMultTranslate(val);
+    }
+}
+
+void readRotationElement(KFbxTypedProperty<fbxDouble3>& prop,
+                         ERotationOrder fbxRotOrder,
+                         osgAnimation::UpdateMatrixTransform* pUpdate,
+                         osg::Matrix& staticTransform)
+{
+    osg::Quat quat = makeQuat(prop.Get(), fbxRotOrder);
+
+    if (prop.GetKFCurve(KFCURVENODE_R_X) ||
+        prop.GetKFCurve(KFCURVENODE_R_Y) ||
+        prop.GetKFCurve(KFCURVENODE_R_Z))
+    {
+        if (!staticTransform.isIdentity())
+        {
+            pUpdate->getStackedTransforms().push_back(new osgAnimation::StackedMatrixElement(staticTransform));
+            staticTransform.makeIdentity();
+        }
+        pUpdate->getStackedTransforms().push_back(new osgAnimation::StackedQuaternionElement("quaternion", quat));
+    }
+    else
+    {
+        staticTransform.preMultRotate(quat);
+    }
+}
+
+void readScaleElement(KFbxTypedProperty<fbxDouble3>& prop,
+                      osgAnimation::UpdateMatrixTransform* pUpdate,
+                      osg::Matrix& staticTransform)
+{
+    fbxDouble3 fbxPropValue = prop.Get();
+    osg::Vec3d val(
+        fbxPropValue[0],
+        fbxPropValue[1],
+        fbxPropValue[2]);
+
+    if (prop.GetKFCurve(KFCURVENODE_S_X) ||
+        prop.GetKFCurve(KFCURVENODE_S_Y) ||
+        prop.GetKFCurve(KFCURVENODE_S_Z))
+    {
+        if (!staticTransform.isIdentity())
+        {
+            pUpdate->getStackedTransforms().push_back(new osgAnimation::StackedMatrixElement(staticTransform));
+            staticTransform.makeIdentity();
+        }
+        pUpdate->getStackedTransforms().push_back(new osgAnimation::StackedScaleElement("scale", val));
+    }
+    else
+    {
+        staticTransform.preMultScale(val);
+    }
+}
+
+void readUpdateMatrixTransform(osgAnimation::UpdateMatrixTransform* pUpdate, KFbxNode* pNode)
+{
+    osg::Matrix staticTransform;
+
+    readTranslationElement(pNode->LclTranslation, pUpdate, staticTransform);
+
+    fbxDouble3 fbxRotOffset = pNode->RotationOffset.Get();
+    fbxDouble3 fbxRotPiv = pNode->RotationPivot.Get();
+    staticTransform.preMultTranslate(osg::Vec3d(
+        fbxRotPiv[0] + fbxRotOffset[0],
+        fbxRotPiv[1] + fbxRotOffset[1],
+        fbxRotPiv[2] + fbxRotOffset[2]));
+
+    ERotationOrder fbxRotOrder = pNode->RotationOrder.IsValid() ? pNode->RotationOrder.Get() : eEULER_XYZ;
+
+    staticTransform.preMultRotate(makeQuat(pNode->PreRotation.Get(), fbxRotOrder));
+
+    readRotationElement(pNode->LclRotation, fbxRotOrder, pUpdate, staticTransform);
+
+    staticTransform.preMultRotate(makeQuat(pNode->PostRotation.Get(), fbxRotOrder));
+
+    fbxDouble3 fbxSclOffset = pNode->ScalingOffset.Get();
+    fbxDouble3 fbxSclPiv = pNode->ScalingPivot.Get();
+    staticTransform.preMultTranslate(osg::Vec3d(
+        fbxSclOffset[0] + fbxSclPiv[0] - fbxRotPiv[0],
+        fbxSclOffset[1] + fbxSclPiv[1] - fbxRotPiv[1],
+        fbxSclOffset[2] + fbxSclPiv[2] - fbxRotPiv[2]));
+
+    readScaleElement(pNode->LclScaling, pUpdate, staticTransform);
+
+    staticTransform.preMultTranslate(osg::Vec3d(
+        -fbxSclPiv[0],
+        -fbxSclPiv[1],
+        -fbxSclPiv[2]));
+
+    if (!staticTransform.isIdentity())
+    {
+        pUpdate->getStackedTransforms().push_back(new osgAnimation::StackedMatrixElement(staticTransform));
+    }
 }
 
 osg::Group* createGroupNode(KFbxSdkManager& pSdkManager, KFbxNode* pNode,
@@ -344,7 +278,9 @@ osg::Group* createGroupNode(KFbxSdkManager& pSdkManager, KFbxNode* pNode,
         osgAnimation::Bone* osgBone = new osgAnimation::Bone;
         osgBone->setDataVariance(osg::Object::DYNAMIC);
         osgBone->setName(pNode->GetName());
-        osgBone->setDefaultUpdateCallback(animName);
+        osgAnimation::UpdateBone* pUpdate = new osgAnimation::UpdateBone(animName);
+        readUpdateMatrixTransform(pUpdate, pNode);
+        osgBone->setUpdateCallback(pUpdate);
 
         readBindPose(pSdkManager, pNode, osgBone);
 
@@ -362,18 +298,14 @@ osg::Group* createGroupNode(KFbxSdkManager& pSdkManager, KFbxNode* pNode,
 
         osg::MatrixTransform* pTransform = new osg::MatrixTransform(localMatrix);
         pTransform->setName(pNode->GetName());
+
         if (bAnimated)
         {
-            osgAnimation::UpdateTransform* pUpdate = new osgAnimation::UpdateTransform(animName);
-
-            osg::Vec3 trans, rot, scale;
-            getApproximateTransform(pNode, trans, rot, scale);
-
-            pUpdate->getPosition()->setValue(trans);
-            pUpdate->getEuler()->setValue(rot);
-            pUpdate->getScale()->setValue(scale);
+            osgAnimation::UpdateMatrixTransform* pUpdate = new osgAnimation::UpdateMatrixTransform(animName);
+            readUpdateMatrixTransform(pUpdate, pNode);
             pTransform->setUpdateCallback(pUpdate);
         }
+
         return pTransform;
     }
 }
@@ -381,7 +313,9 @@ osg::Group* createGroupNode(KFbxSdkManager& pSdkManager, KFbxNode* pNode,
 osgDB::ReaderWriter::ReadResult readFbxNode(
     KFbxSdkManager& pSdkManager, KFbxNode* pNode,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
-    const std::string& dir, bool& bNeedSkeleton, int& nLightCount)
+    bool& bNeedSkeleton, int& nLightCount,
+    FbxMaterialToOsgStateSet& fbxMaterialToOsgStateSet,
+    const osgDB::Options* options)
 {
     if (KFbxNodeAttribute* lNodeAttribute = pNode->GetNodeAttribute())
     {
@@ -404,17 +338,13 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
     }
 
     unsigned nMaterials = pNode->GetMaterialCount();
-    std::vector<osg::ref_ptr<osg::Material>> materialList;
-    std::vector<osg::ref_ptr<osg::Texture>> textureList;
-    materialList.reserve(nMaterials);
-
-    typedef FbxToOsgMap<KFbxSurfaceMaterial, osg::Material, GetOsgMaterial> MaterialMap;
-    MaterialMap materialMap(dir);
+    std::vector<StateSetContent > stateSetList;
 
     for (unsigned i = 0; i < nMaterials; ++i)
     {
-        materialList.push_back(materialMap.Get(pNode->GetMaterial(i)));
-        textureList.push_back(materialMap.m_convertFunc.m_pTexture);
+        KFbxSurfaceMaterial* fbxMaterial = pNode->GetMaterial(i);
+        assert(fbxMaterial);
+        stateSetList.push_back(fbxMaterialToOsgStateSet.convert(fbxMaterial));
     }
 
     osg::NodeList skeletal, children;
@@ -432,8 +362,8 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
 
         bool bChildNeedSkeleton = false;
         osgDB::ReaderWriter::ReadResult childResult = readFbxNode(
-            pSdkManager, pChildNode, pAnimationManager, dir,
-            bChildNeedSkeleton, nLightCount);
+            pSdkManager, pChildNode, pAnimationManager,
+            bChildNeedSkeleton, nLightCount, fbxMaterialToOsgStateSet, options);
         if (childResult.error())
         {
             return childResult;
@@ -452,17 +382,7 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
         }
     }
 
-    std::string animName;
-    
-    if (bNeedSkeleton)
-    {
-        animName = readFbxBoneAnimation(pNode, pAnimationManager,
-            pNode->GetName());
-    }
-    else
-    {
-        animName = readFbxAnimation(pNode, pAnimationManager, pNode->GetName());
-    }
+    std::string animName = readFbxAnimation(pNode, pAnimationManager, pNode->GetName());
 
     osg::Matrix localMatrix;
     makeLocalMatrix(pNode, localMatrix);
@@ -475,7 +395,7 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
     switch (lAttributeType)
     {
     case KFbxNodeAttribute::eUNIDENTIFIED:
-        if (children.size() + skeletal.size() == 1)
+        if (bLocalMatrixIdentity && children.size() + skeletal.size() == 1)
         {
             if (children.size() == 1)
             {
@@ -490,7 +410,7 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
     case KFbxNodeAttribute::eMESH:
         {
             osgDB::ReaderWriter::ReadResult meshRes = readFbxMesh(pNode,
-                pAnimationManager, materialList, textureList);
+                pAnimationManager, stateSetList);
             if (meshRes.error())
             {
                 return meshRes;
@@ -506,6 +426,7 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
                     return osgDB::ReaderWriter::ReadResult(node);
                 }
                 osgGroup = createGroupNode(pSdkManager, pNode, animName, localMatrix, bNeedSkeleton);
+                assert(osgGroup->getStateSet() == NULL);
                 osgGroup->getOrCreateStateSet()->setMode(GL_RESCALE_NORMAL,osg::StateAttribute::ON);
 
                 osgGroup->addChild(node);

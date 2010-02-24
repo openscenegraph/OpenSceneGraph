@@ -1,3 +1,6 @@
+#include <cassert>
+#include <sstream>
+
 #include <osg/Geode>
 #include <osg/Image>
 #include <osg/MatrixTransform>
@@ -132,9 +135,8 @@ FbxT getElement(const KFbxLayerElementTemplate<FbxT>* pLayerElement,
 typedef std::map<unsigned, osg::ref_ptr<osg::Geometry> > GeometryMap;
 
 osg::Geometry* getGeometry(osg::Geode* pGeode, GeometryMap& geometryMap,
-    const std::vector<osg::ref_ptr<osg::Material>>& materialList,
-    const std::vector<osg::ref_ptr<osg::Texture>>& textureList,
-    GeometryType gt, unsigned mti, bool bNormal, bool bTexCoord, bool bColor)
+    std::vector<StateSetContent>& stateSetList,
+    GeometryType gt, unsigned int mti, bool bNormal, bool bTexCoord, bool bColor)
 {
     GeometryMap::iterator it = geometryMap.find(mti);
 
@@ -144,13 +146,7 @@ osg::Geometry* getGeometry(osg::Geode* pGeode, GeometryMap& geometryMap,
     }
 
     osg::ref_ptr<osg::Geometry> pGeometry;
-    if (gt == GEOMETRY_RIG)
-    {
-        osgAnimation::RigGeometry* pRig = new osgAnimation::RigGeometry;
-        pRig->setInfluenceMap(new osgAnimation::VertexInfluenceMap);
-        pGeometry = pRig;
-    }
-    else if (gt == GEOMETRY_MORPH)
+    if (gt == GEOMETRY_MORPH)
     {
         pGeometry = new osgAnimation::MorphGeometry;
     }
@@ -164,17 +160,16 @@ osg::Geometry* getGeometry(osg::Geode* pGeode, GeometryMap& geometryMap,
     if (bTexCoord) pGeometry->setTexCoordData(0, osg::Geometry::ArrayData(new osg::Vec2Array, osg::Geometry::BIND_PER_VERTEX));
     if (bColor) pGeometry->setColorData(osg::Geometry::ArrayData(new osg::Vec4Array, osg::Geometry::BIND_PER_VERTEX));
 
-    if (mti < materialList.size())
+    if (mti < stateSetList.size())
     {
-        pGeometry->getOrCreateStateSet()->setAttributeAndModes(materialList[mti].get());
+        const StateSetContent& ss = stateSetList[mti];
+        if(ss.first)
+            pGeometry->getOrCreateStateSet()->setAttributeAndModes(ss.first);
+        if(ss.second)
+            pGeometry->getOrCreateStateSet()->setTextureAttributeAndModes(0, ss.second);
     }
 
-    if (mti < textureList.size())
-    {
-        pGeometry->getOrCreateStateSet()->setTextureAttributeAndModes(0, textureList[mti].get());
-    }
-
-    geometryMap.insert(std::pair<unsigned, osg::ref_ptr<osg::Geometry>>(mti, pGeometry));
+    geometryMap.insert(std::pair<unsigned, osg::ref_ptr<osg::Geometry> >(mti, pGeometry));
     pGeode->addDrawable(pGeometry.get());
 
     return pGeometry.get();
@@ -195,7 +190,7 @@ osgAnimation::VertexInfluence& getVertexInfluence(
 
 void addChannel(
     osgAnimation::Channel* pChannel,
-    osg::ref_ptr<osgAnimation::AnimationManagerBase> &pAnimManager,
+    osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimManager,
     const char* pTakeName)
 {
     if (!pChannel)
@@ -225,7 +220,7 @@ void addChannel(
     pAnimation->addChannel(pChannel);
 }
 
-void readAnimation(KFbxNode* pNode, osg::Geode* pGeode,
+void readAnimation(KFbxNode* pNode, const std::string& targetName,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
     KFbxMesh* pMesh, int nShape)
 {
@@ -233,17 +228,20 @@ void readAnimation(KFbxNode* pNode, osg::Geode* pGeode,
     {
         const char* pTakeName = pNode->GetTakeNodeName(i);
 
-        KFCurve* pCurve = pMesh->GetShapeChannel(nShape, true, pTakeName);
-
-        osgAnimation::FloatLinearChannel* pChannel = new osgAnimation::FloatLinearChannel;
-        std::vector<osgAnimation::TemplateKeyframe<float> >& keyFrameCntr = *pChannel->getOrCreateSampler()->getOrCreateKeyframeContainer();
+        KFCurve* pCurve = pMesh->GetShapeChannel(nShape, false, pTakeName);
+        if (!pCurve)
+        {
+            continue;
+        }
 
         int nKeys = pCurve->KeyGetCount();
         if (!nKeys)
         {
-            float fValue = static_cast<float>(pCurve->GetValue() * 0.01);
-            keyFrameCntr.push_back(osgAnimation::FloatKeyframe(0.0f,fValue));
+            continue;
         }
+
+        osgAnimation::FloatLinearChannel* pChannel = new osgAnimation::FloatLinearChannel;
+        std::vector<osgAnimation::TemplateKeyframe<float> >& keyFrameCntr = *pChannel->getOrCreateSampler()->getOrCreateKeyframeContainer();
 
         for (int k = 0; k < nKeys; ++k)
         {
@@ -253,16 +251,17 @@ void readAnimation(KFbxNode* pNode, osg::Geode* pGeode,
             keyFrameCntr.push_back(osgAnimation::FloatKeyframe(fTime,fValue));
         }
 
-        pChannel->setTargetName(pGeode->getName());
-        pChannel->setName(pMesh->GetShapeName(nShape));
+        pChannel->setTargetName(targetName);
+        std::stringstream ss;
+        ss << nShape;
+        pChannel->setName(ss.str());
         addChannel(pChannel, pAnimationManager, pTakeName);
     }
 }
 
 osgDB::ReaderWriter::ReadResult readMesh(KFbxNode* pNode, KFbxMesh* fbxMesh,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
-    const std::vector<osg::ref_ptr<osg::Material>>& materialList,
-    const std::vector<osg::ref_ptr<osg::Texture>>& textureList,
+    std::vector<StateSetContent>& stateSetList,
     const char* szName)
 {
     GeometryMap geometryMap;
@@ -320,7 +319,7 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxNode* pNode, KFbxMesh* fbxMesh,
         int materialIndex = getPolygonIndex(pFbxMaterials, i);
 
         osg::Geometry* pGeometry = getGeometry(pGeode, geometryMap,
-            materialList, textureList, geomType, materialIndex,
+            stateSetList, geomType, materialIndex,
             pFbxNormals != 0, pFbxUVs != 0, pFbxColors != 0);
 
         osg::Vec3Array* pVertices = static_cast<osg::Vec3Array*>(
@@ -345,7 +344,6 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxNode* pNode, KFbxMesh* fbxMesh,
             fbxToOsgVertMap.insert(FbxToOsgVertexMap::value_type(v0, GIPair(pGeometry, pVertices->size())));
             fbxToOsgVertMap.insert(FbxToOsgVertexMap::value_type(v1, GIPair(pGeometry, pVertices->size() + 1)));
             fbxToOsgVertMap.insert(FbxToOsgVertexMap::value_type(v2, GIPair(pGeometry, pVertices->size() + 2)));
-
 
             pVertices->push_back(convertVec3(pFbxVertices[v0]));
             pVertices->push_back(convertVec3(pFbxVertices[v1]));
@@ -385,7 +383,16 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxNode* pNode, KFbxMesh* fbxMesh,
     for (int i = 0; i < pGeode->getNumDrawables(); ++i)
     {
         osg::Geometry* pGeometry = pGeode->getDrawable(i)->asGeometry();
-        pGeometry->setName(pGeode->getName());
+        if (pGeode->getNumDrawables() > 1)
+        {
+            std::stringstream ss;
+            ss << pGeode->getName() << " " << i + 1;
+            pGeometry->setName(ss.str());
+        }
+        else
+        {
+            pGeometry->setName(pGeode->getName());
+        }
 
         osg::DrawArrays* pDrawArrays = new osg::DrawArrays(
             GL_TRIANGLES, 0, pGeometry->getVertexArray()->getNumElements());
@@ -394,6 +401,26 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxNode* pNode, KFbxMesh* fbxMesh,
 
     if (geomType == GEOMETRY_RIG)
     {
+        typedef std::map<osg::ref_ptr<osg::Geometry>,
+            osg::ref_ptr<osgAnimation::RigGeometry> > GeometryRigGeometryMap;
+        GeometryRigGeometryMap old2newGeometryMap;
+
+        for (int i = 0; i < pGeode->getNumDrawables(); ++i)
+        {
+            osg::Geometry* pGeometry = pGeode->getDrawable(i)->asGeometry();
+            osgAnimation::RigGeometry* pRig = new osgAnimation::RigGeometry;
+            pRig->setSourceGeometry(pGeometry);
+            pRig->copyFrom(*pGeometry);
+            old2newGeometryMap.insert(GeometryRigGeometryMap::value_type(
+                pGeometry, pRig));
+            pRig->setDataVariance(osg::Object::DYNAMIC);
+            pRig->setUseDisplayList( false );
+            pGeode->setDrawable(i, pRig);
+
+            pRig->setInfluenceMap(new osgAnimation::VertexInfluenceMap);
+            pGeometry = pRig;
+        }
+
         for (int i = 0; i < nDeformerCount; ++i)
         {
             KFbxSkin* pSkin = (KFbxSkin*)fbxMesh->GetDeformer(i, KFbxDeformer::eSKIN);
@@ -418,9 +445,13 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxNode* pNode, KFbxMesh* fbxMesh,
                         it->first == fbxIndex; ++it)
                     {
                         GIPair gi = it->second;
-                        osgAnimation::RigGeometry& rig = dynamic_cast<osgAnimation::RigGeometry&>(*gi.first);
-                        osgAnimation::VertexInfluenceMap& vim = *rig.getInfluenceMap();
-                        osgAnimation::VertexInfluence& vi = getVertexInfluence(vim, pBone->GetName());
+                        osgAnimation::RigGeometry& rig =
+                            dynamic_cast<osgAnimation::RigGeometry&>(
+                            *old2newGeometryMap[gi.first]);
+                        osgAnimation::VertexInfluenceMap& vim =
+                            *rig.getInfluenceMap();
+                        osgAnimation::VertexInfluence& vi =
+                            getVertexInfluence(vim, pBone->GetName());
                         vi.push_back(osgAnimation::VertexIndexWeight(
                             gi.second, weight));
                     }
@@ -430,14 +461,13 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxNode* pNode, KFbxMesh* fbxMesh,
     }
     else if (geomType == GEOMETRY_MORPH)
     {
-        pGeode->addUpdateCallback(new osgAnimation::UpdateMorph(pGeode->getName()));
-
-
         for (int i = 0; i < pGeode->getNumDrawables(); ++i)
         {
             osg::Geometry* pGeometry = pGeode->getDrawable(i)->asGeometry();
 
             osgAnimation::MorphGeometry& morph = dynamic_cast<osgAnimation::MorphGeometry&>(*pGeometry);
+
+            pGeode->addUpdateCallback(new osgAnimation::UpdateMorph(morph.getName()));
 
             //read morph geometry
             for (int j = 0; j < nMorphShapeCount; ++j)
@@ -463,11 +493,9 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxNode* pNode, KFbxMesh* fbxMesh,
                     }
                 }
                 pMorphTarget->setName(fbxMesh->GetShapeName(j));
-                KFCurve* pCurve = fbxMesh->GetShapeChannel(j);
-                double defaultWeight = pCurve->GetValue() * 0.01;
-                morph.addMorphTarget(pMorphTarget, static_cast<float>(defaultWeight));
+                morph.addMorphTarget(pMorphTarget, 0.0f);
 
-                readAnimation(pNode, pGeode, pAnimationManager, fbxMesh, j);
+                readAnimation(pNode, morph.getName(), pAnimationManager, fbxMesh, j);
             }
         }
 
@@ -534,8 +562,7 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxNode* pNode, KFbxMesh* fbxMesh,
 
 osgDB::ReaderWriter::ReadResult readFbxMesh(KFbxNode* pNode,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
-    const std::vector<osg::ref_ptr<osg::Material>>& materialList,
-    const std::vector<osg::ref_ptr<osg::Texture>>& textureList)
+    std::vector<StateSetContent>& stateSetList)
 {
     KFbxMesh* lMesh = dynamic_cast<KFbxMesh*>(pNode->GetNodeAttribute());
 
@@ -544,5 +571,5 @@ osgDB::ReaderWriter::ReadResult readFbxMesh(KFbxNode* pNode,
         return osgDB::ReaderWriter::ReadResult::ERROR_IN_READING_FILE;
     }
 
-    return readMesh(pNode, lMesh, pAnimationManager, materialList, textureList, pNode->GetName());
+    return readMesh(pNode, lMesh, pAnimationManager, stateSetList, pNode->GetName());
 }

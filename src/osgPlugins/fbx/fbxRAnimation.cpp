@@ -4,7 +4,6 @@
 #include <osgAnimation/BasicAnimationManager>
 #include <osgAnimation/Channel>
 #include <osgAnimation/Sampler>
-#include <osgAnimation/UpdateCallback>
 
 #if defined(_MSC_VER)
     #pragma warning( disable : 4505 )
@@ -24,8 +23,7 @@ osg::Quat makeQuat(const osg::Vec3& radians, ERotationOrder fbxRotOrder)
 }
 
 void readKeys(KFCurve* curveX, KFCurve* curveY, KFCurve* curveZ,
-              float scalar, const osg::Vec3& baseValue, bool multiply,
-              std::vector<osgAnimation::TemplateKeyframe<osg::Vec3> >& keyFrameCntr)
+              std::vector<osgAnimation::TemplateKeyframe<osg::Vec3> >& keyFrameCntr, float scalar = 1.0f)
 {
     KFCurve* curves[3] = {curveX, curveY, curveZ};
 
@@ -58,36 +56,25 @@ void readKeys(KFCurve* curveX, KFCurve* curveY, KFCurve* curveZ,
     for (TimeSet::iterator it = times.begin(); it != times.end(); ++it)
     {
         float fTime = *it;
-        osg::Vec3 val(baseValue);
+        osg::Vec3 val;
         for (int i = 0; i < 3; ++i)
         {
             if (curveTimeMap[i].empty()) continue;
 
             TimeFloatMap::iterator lb = curveTimeMap[i].lower_bound(fTime);
             if (lb == curveTimeMap[i].end()) --lb;
-            if (multiply)
-            {
-                val[i] *= lb->second;
-            }
-            else
-            {
-                val[i] += lb->second;
-            }
+            val[i] = lb->second;
         }
         keyFrameCntr.push_back(osgAnimation::Vec3Keyframe(fTime, val));
     }
 }
 
 osgAnimation::Channel* readFbxChannels(KFCurve* curveX, KFCurve* curveY,
-    KFCurve* curveZ, const char* targetName, const char* channelName,
-    float scalar, const osg::Vec3& baseValue, bool multiply)
+    KFCurve* curveZ, const char* targetName, const char* channelName)
 {
-    if (!curveX && !curveY && !curveZ)
-    {
-        return 0;
-    }
-
-    if (!curveX->KeyGetCount() && !curveY->KeyGetCount() && !curveZ->KeyGetCount())
+    if (!(curveX && curveX->KeyGetCount()) &&
+        !(curveY && curveY->KeyGetCount()) &&
+        !(curveZ && curveZ->KeyGetCount()))
     {
         return 0;
     }
@@ -98,14 +85,14 @@ osgAnimation::Channel* readFbxChannels(KFCurve* curveX, KFCurve* curveY,
 
     pChannel->setTargetName(targetName);
     pChannel->setName(channelName);
-    readKeys(curveX, curveY, curveZ, scalar, baseValue, multiply, *pKeyFrameCntr);
+    readKeys(curveX, curveY, curveZ, *pKeyFrameCntr);
 
     return pChannel;
 }
 
 osgAnimation::Channel* readFbxChannels(
     KFbxTypedProperty<fbxDouble3>& fbxProp, const char* pTakeName,
-    const char* targetName, const char* channelName, const osg::Vec3& baseValue, float scalar, bool multiply)
+    const char* targetName, const char* channelName)
 {
     if (!fbxProp.IsValid()) return 0;
 
@@ -113,15 +100,16 @@ osgAnimation::Channel* readFbxChannels(
         fbxProp.GetKFCurve("X", pTakeName),
         fbxProp.GetKFCurve("Y", pTakeName),
         fbxProp.GetKFCurve("Z", pTakeName),
-        targetName, channelName, scalar,
-        baseValue * scalar, multiply);
+        targetName, channelName);
 }
 
 osgAnimation::Channel* readFbxChannelsQuat(
     KFCurve* curveX, KFCurve* curveY, KFCurve* curveZ, const char* targetName,
-    const osg::Quat& baseQuat, ERotationOrder rotOrder)
+    ERotationOrder rotOrder)
 {
-    if (!curveX && !curveY && !curveZ)
+    if (!(curveX && curveX->KeyGetCount()) &&
+        !(curveY && curveY->KeyGetCount()) &&
+        !(curveZ && curveZ->KeyGetCount()))
     {
         return 0;
     }
@@ -131,7 +119,7 @@ osgAnimation::Channel* readFbxChannelsQuat(
     pChannel->setName("quaternion");
     typedef std::vector<osgAnimation::TemplateKeyframe<osg::Vec3> > KeyFrameCntr;
     KeyFrameCntr eulerFrameCntr;
-    readKeys(curveX, curveY, curveZ, static_cast<float>(osg::PI / 180.0), osg::Vec3(0,0,0), false, eulerFrameCntr);
+    readKeys(curveX, curveY, curveZ, eulerFrameCntr, static_cast<float>(osg::PI / 180.0));
 
     osgAnimation::QuatSphericalLinearSampler::KeyframeContainerType& quatFrameCntr =
         *pChannel->getOrCreateSampler()->getOrCreateKeyframeContainer();
@@ -142,7 +130,7 @@ osgAnimation::Channel* readFbxChannelsQuat(
     {
         const osg::Vec3& euler = it->getValue();
         quatFrameCntr.push_back(osgAnimation::QuatKeyframe(
-            it->getTime(), makeQuat(euler, rotOrder) * baseQuat));
+            it->getTime(), makeQuat(euler, rotOrder)));
     }
 
     return pChannel;
@@ -152,7 +140,7 @@ osgAnimation::Animation* addChannels(
     osgAnimation::Channel* pTranslationChannel,
     osgAnimation::Channel* pRotationChannel,
     osgAnimation::Channel* pScaleChannel,
-    osg::ref_ptr<osgAnimation::AnimationManagerBase> &pAnimManager,
+    osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimManager,
     const char* pTakeName)
 {
     if (pTranslationChannel ||
@@ -189,7 +177,7 @@ osgAnimation::Animation* addChannels(
     return 0;
 }
 
-osgAnimation::Animation* readFbxBoneAnimation(KFbxNode* pNode,
+osgAnimation::Animation* readFbxAnimation(KFbxNode* pNode,
     const char* pTakeName, const char* targetName,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimManager)
 {
@@ -199,97 +187,34 @@ osgAnimation::Animation* readFbxBoneAnimation(KFbxNode* pNode,
     }
 
     ERotationOrder rotOrder = pNode->RotationOrder.IsValid() ? pNode->RotationOrder.Get() : eEULER_XYZ;
-    osg::Quat inverseRot;
 
     osgAnimation::Channel* pTranslationChannel = 0;
     osgAnimation::Channel* pRotationChannel = 0;
 
     if (pNode->LclRotation.IsValid())
     {
-        inverseRot = makeQuat(pNode->LclRotation.Get(), rotOrder).inverse();
+        fbxDouble3 fbxBaseValue = pNode->LclRotation.Get();
 
         pRotationChannel = readFbxChannelsQuat(
             pNode->LclRotation.GetKFCurve(KFCURVENODE_R_X, pTakeName),
             pNode->LclRotation.GetKFCurve(KFCURVENODE_R_Y, pTakeName),
             pNode->LclRotation.GetKFCurve(KFCURVENODE_R_Z, pTakeName),
-            targetName, inverseRot, rotOrder);
+            targetName, rotOrder);
     }
 
     if (pNode->LclTranslation.IsValid())
     {
-        fbxDouble3 fbxBaseValue = pNode->LclTranslation.Get();
-        osg::Vec3 offsetTranslation(
-            -static_cast<float>(fbxBaseValue[0]),
-            -static_cast<float>(fbxBaseValue[1]),
-            -static_cast<float>(fbxBaseValue[2]));
-
         pTranslationChannel = readFbxChannels(
             pNode->LclTranslation.GetKFCurve(KFCURVENODE_T_X, pTakeName),
             pNode->LclTranslation.GetKFCurve(KFCURVENODE_T_Y, pTakeName),
             pNode->LclTranslation.GetKFCurve(KFCURVENODE_T_Z, pTakeName),
-            targetName, "position", 1.0f, offsetTranslation, false);
-
-        if (pTranslationChannel)
-        {
-            osgAnimation::Vec3KeyframeContainer& keyFrameCntr =
-                dynamic_cast<osgAnimation::Vec3KeyframeContainer&>(
-                *pTranslationChannel->getSampler()->getKeyframeContainer());
-
-            for (int i = 0; i < keyFrameCntr.size(); ++i)
-            {
-                keyFrameCntr[i].setValue(inverseRot * keyFrameCntr[i].getValue());
-            }
-        }
+            targetName, "translate");
     }
 
     osgAnimation::Channel* pScaleChannel = readFbxChannels(
-        pNode->LclScaling, pTakeName, targetName, "scale", osg::Vec3(0,0,0), 1.0f, true);
+        pNode->LclScaling, pTakeName, targetName, "scale");
 
     return addChannels(pTranslationChannel, pRotationChannel, pScaleChannel, pAnimManager, pTakeName);
-}
-
-osgAnimation::Animation* readFbxAnimation(KFbxNode* pNode,
-    const char* pTakeName, const char* targetName,
-    osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimManager)
-{
-    if (!pTakeName) return 0;
-
-    osgAnimation::Channel* pTranslationChannel = readFbxChannels(
-        pNode->LclTranslation, pTakeName, targetName, "position", osg::Vec3(0,0,0), 1.0f, false);
-
-    //TODO: This will break if there are rotations in more than one of
-    // Pre/Lcl/Post so really they should each get their own MatrixTransform.
-    fbxDouble3 fbxPreRot = pNode->PreRotation.Get();
-    fbxDouble3 fbxPostRot = pNode->PostRotation.Get();
-    osg::Vec3 eulerOffset(
-        static_cast<float>(fbxPreRot[0] + fbxPostRot[0]),
-        static_cast<float>(fbxPreRot[1] + fbxPostRot[1]),
-        static_cast<float>(fbxPreRot[2] + fbxPostRot[2]));
-
-    osgAnimation::Channel* pRotationChannel = readFbxChannels(
-        pNode->LclRotation, pTakeName, targetName, "euler", eulerOffset, static_cast<float>(osg::PI / 180.0), false);
-
-    osgAnimation::Channel* pScaleChannel = readFbxChannels(
-        pNode->LclScaling, pTakeName, targetName, "scale", osg::Vec3(1,1,1), 1.0f, true);
-
-    return addChannels(pTranslationChannel, pRotationChannel, pScaleChannel, pAnimManager, pTakeName);
-}
-
-std::string readFbxBoneAnimation(KFbxNode* pNode,
-    osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimManager,
-    const char* targetName)
-{
-    std::string result;
-    for (int i = 1; i < pNode->GetTakeNodeCount(); ++i)
-    {
-        const char* pTakeName = pNode->GetTakeNodeName(i);
-        if (osgAnimation::Animation* pAnimation = readFbxBoneAnimation(
-            pNode, pTakeName, targetName, pAnimManager))
-        {
-            result = targetName;
-        }
-    }
-    return result;
 }
 
 std::string readFbxAnimation(KFbxNode* pNode,

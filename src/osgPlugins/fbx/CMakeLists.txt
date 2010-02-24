@@ -7,6 +7,8 @@ SET(TARGET_SRC
     fbxRMesh.cpp
     fbxRNode.cpp
     ReaderWriterFBX.cpp
+    WriterNodeVisitor.cpp
+    fbxMaterialToOsgStateSet.cpp
 )
 
 SET(TARGET_H 
@@ -16,6 +18,8 @@ SET(TARGET_H
     fbxRMesh.h
     fbxRNode.h
     ReaderWriterFBX.h
+    WriterNodeVisitor.h
+    fbxMaterialToOsgStateSet.h
 )
 
 ADD_DEFINITIONS(-DKFBX_PLUGIN -DKFBX_FBXSDK -DKFBX_NODLL)

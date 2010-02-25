@@ -1404,7 +1404,7 @@ bool CTextureRenderer::openFile(const std::string& file)
     const char *ansistr = file.c_str();
     int lenA = lstrlenA(ansistr);
     int lenW;
-    BSTR unicodestr;
+    BSTR unicodestr = 0;
 
     lenW = ::MultiByteToWideChar(CP_ACP, 0, ansistr, lenA, 0, 0);
     if (lenW > 0)
@@ -1414,10 +1414,13 @@ bool CTextureRenderer::openFile(const std::string& file)
       ::MultiByteToWideChar(CP_ACP, 0, ansistr, lenA, unicodestr, lenW);
     }
 
-    (void)StringCchCopyW(wFileName, NUMELMS(wFileName), unicodestr);
+    if (unicodestr!=0)
+    {
+        (void)StringCchCopyW(wFileName, NUMELMS(wFileName), unicodestr);
 
-    // when done, free the BSTR
-    ::SysFreeString(unicodestr);
+        // when done, free the BSTR
+        ::SysFreeString(unicodestr);
+    }
 
     HRESULT hr;
     if (!initBuildGraph())

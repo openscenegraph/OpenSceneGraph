@@ -196,7 +196,7 @@ bool Texture::TextureObjectSet::checkConsistency() const
         {
             if (_tail != to)
             {
-                osg::notify(osg::NOTICE)<<"Texture::TextureObjectSet::checkConsistency() : Error _trail != to"<<std::endl;
+                osg::notify(osg::NOTICE)<<"Texture::TextureObjectSet::checkConsistency() : Error _tail != to"<<std::endl;
                 return false;
             }
         }
@@ -309,6 +309,7 @@ void Texture::TextureObjectSet::discardAllTextureObjects()
 
     // the linked list should now be empty
     _head = 0;
+    _tail = 0;
 
     _pendingOrphanedTextureObjects.clear();
     _orphanedTextureObjects.clear();
@@ -508,7 +509,7 @@ Texture::TextureObject* Texture::TextureObjectSet::takeOrGenerate(Texture* textu
     }
 
     //
-    // no TextureObjects available to recyle so have to create one from scratch
+    // no TextureObjects available to recycle so have to create one from scratch
     //
     GLuint id;
     glGenTextures( 1L, &id );

@@ -106,16 +106,6 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
 
     String::iterator lastChar = first;
 
-    std::set<unsigned int> deliminatorSet;
-    deliminatorSet.insert(' ');
-    deliminatorSet.insert('\n');
-    deliminatorSet.insert(':');
-    deliminatorSet.insert('/');
-    deliminatorSet.insert(',');
-    deliminatorSet.insert(';');
-    deliminatorSet.insert(':');
-    deliminatorSet.insert('.');
-
     float maximumHeight = _maximumHeight / _font->getScale();
     float maximumWidth = _maximumWidth / _font->getScale();
 
@@ -222,15 +212,23 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
     // word boundary detection & wrapping
     if (lastChar!=last)
     {
-        if (deliminatorSet.count(*lastChar)==0)
-        {
-            String::iterator lastValidChar = lastChar;
-            while (lastValidChar!=first && deliminatorSet.count(*lastValidChar)==0)
-            {
-                --lastValidChar;
+        String::iterator lastValidChar = lastChar;
+          String::iterator prevChar;
+        while (lastValidChar != first){
+            prevChar = lastValidChar - 1;
 
-                //Substract off glyphs from the cursor position (to correctly center text)
-                Font3D::Glyph3D* glyph = _font->getGlyph(*lastValidChar);
+            // last char is after a hyphen
+                if(*lastValidChar == '-')
+                return lastValidChar + 1;
+
+            // last char is start of whitespace
+            if((*lastValidChar == ' ' || *lastValidChar == '\n') && (*prevChar != ' ' && *prevChar != '\n'))
+                return lastValidChar;
+
+            // Subtract off glyphs from the cursor position (to correctly center text)
+                if(*prevChar != '-')
+            {
+                Font3D::Glyph3D* glyph = _font->getGlyph(*prevChar);
                 if (glyph)
                 {
                     switch(_layout)
@@ -242,12 +240,8 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
                 }
             }
 
-            if (first!=lastValidChar)
-            {
-                ++lastValidChar;
-                lastChar = lastValidChar;
-            }
-        }
+            lastValidChar = prevChar;
+          }
     }
 
     return lastChar;
@@ -406,7 +400,8 @@ void Text3D::computeGlyphRepresentation()
 
         if (itr!=_text.end())
         {
-            // skip over return.
+            // skip over spaces and return.
+            while (*itr==' ') ++itr;
             if (*itr=='\n') ++itr;
         }
 

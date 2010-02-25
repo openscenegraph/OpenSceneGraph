@@ -119,16 +119,6 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
 
     String::iterator lastChar = first;
 
-    std::set<unsigned int> deliminatorSet;
-    deliminatorSet.insert(' ');
-    deliminatorSet.insert('\n');
-    deliminatorSet.insert(':');
-    deliminatorSet.insert('/');
-    deliminatorSet.insert(',');
-    deliminatorSet.insert(';');
-    deliminatorSet.insert(':');
-    deliminatorSet.insert('.');
-
     for(bool outOfSpace=false;lastChar!=last;++lastChar)
     {
         unsigned int charcode = *lastChar;
@@ -213,19 +203,27 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
         }
 
     }
-    
+
     // word boundary detection & wrapping
     if (lastChar!=last)
     {
-        if (deliminatorSet.count(*lastChar)==0) 
-        {
-            String::iterator lastValidChar = lastChar;
-            while (lastValidChar!=first && deliminatorSet.count(*lastValidChar)==0)
+        String::iterator lastValidChar = lastChar;
+          String::iterator prevChar;
+        while (lastValidChar != first){
+            prevChar = lastValidChar - 1;
+
+            // last char is after a hyphen
+                if(*lastValidChar == '-')
+                return lastValidChar + 1;
+
+            // last char is start of whitespace
+            if((*lastValidChar == ' ' || *lastValidChar == '\n') && (*prevChar != ' ' && *prevChar != '\n'))
+                return lastValidChar;
+
+            // Subtract off glyphs from the cursor position (to correctly center text)
+                if(*prevChar != '-')
             {
-                --lastValidChar;
-                
-                // Subtract off glyphs from the cursor position (to correctly center text)
-                Font::Glyph* glyph = activefont->getGlyph(_fontSize, *lastValidChar);
+                Font::Glyph* glyph = activefont->getGlyph(_fontSize, *prevChar);
                 if (glyph)
                 {
                     switch(_layout)
@@ -236,12 +234,9 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
                     }
                 }
             }
-            if (first!=lastValidChar)
-            {
-                ++lastValidChar;
-                lastChar = lastValidChar;
-            }
-        }
+
+            lastValidChar = prevChar;
+          }
     }
 
     return lastChar;

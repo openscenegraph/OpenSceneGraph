@@ -2057,6 +2057,10 @@ void GraphicsWindowWin32::setWindowName( const std::string & name )
 void GraphicsWindowWin32::useCursor( bool cursorOn )
 {
     _traits->useCursor = cursorOn;
+    if (_traits->useCursor == false)
+    {
+       setCursor(NoCursor);
+    }    
 }
 
 void GraphicsWindowWin32::setCursor( MouseCursor mouseCursor )
@@ -2074,7 +2078,7 @@ void GraphicsWindowWin32::setCursorImpl( MouseCursor mouseCursor )
         if (newCursor == _currentCursor) return;
     
         _currentCursor = newCursor;
-        _traits->useCursor = (_currentCursor != NULL);
+        _traits->useCursor = (_currentCursor != NULL) && (_mouseCursor != NoCursor);
     
         if (_mouseCursor != InheritCursor)
             ::SetCursor(_currentCursor);
@@ -2490,6 +2494,15 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                 case HTGROWBOX:
                     setCursorImpl(BottomRightCorner);
                     break;
+                case HTSYSMENU:
+                case HTCAPTION:
+                case HTMAXBUTTON:
+                case HTMINBUTTON:
+                case HTCLOSE:
+                case HTHELP:
+                   setCursorImpl(LeftArrowCursor);
+                   break;
+
                 default:
                     if (_traits->useCursor && _appMouseCursor != InheritCursor)
                         setCursorImpl(_appMouseCursor);

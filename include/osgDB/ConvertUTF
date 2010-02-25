@@ -38,6 +38,15 @@ extern OSGDB_EXPORT std::string convertUTF16toUTF8(const wchar_t* s);
 extern OSGDB_EXPORT std::wstring convertUTF8toUTF16(const std::string& s);
 extern OSGDB_EXPORT std::wstring convertUTF8toUTF16(const char* s);
 
+extern OSGDB_EXPORT std::string convertStringFromCurrentCodePageToUTF8(const char* source, unsigned sourceLength);
+extern OSGDB_EXPORT std::string convertStringFromUTF8toCurrentCodePage(const char* source, unsigned sourceLength);
+
+extern OSGDB_EXPORT std::string convertStringFromCurrentCodePageToUTF8(const std::string& s);
+extern OSGDB_EXPORT std::string convertStringFromCurrentCodePageToUTF8(const char* s);
+
+extern OSGDB_EXPORT std::string convertStringFromUTF8toCurrentCodePage(const std::string& s);
+extern OSGDB_EXPORT std::string convertStringFromUTF8toCurrentCodePage(const char* s);
+
 }
 
 #endif

@@ -2,6 +2,41 @@
 #include <osgDB/ObjectWrapper>
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
+#include <osgDB/Options>
+
+// _databasePath
+static bool checkDatabasePath( const osg::PagedLOD& node )
+{
+    return true;
+}
+
+static bool readDatabasePath( osgDB::InputStream& is, osg::PagedLOD& node )
+{
+    bool hasPath; is >> hasPath;
+    if ( !hasPath )
+    {
+        if ( is.getOptions() && !is.getOptions()->getDatabasePathList().empty() )
+        {
+            const std::string& optionPath = is.getOptions()->getDatabasePathList().front();
+            if ( !optionPath.empty() ) node.setDatabasePath( optionPath );
+        }
+    }
+    else
+    {
+        std::string path; is.readWrappedString( path );
+        node.setDatabasePath( path );
+    }
+    return true;
+}
+
+static bool writeDatabasePath( osgDB::OutputStream& os, const osg::PagedLOD& node )
+{
+    os << (!node.getDatabasePath().empty());
+    if ( !node.getDatabasePath().empty() )
+        os.writeWrappedString( node.getDatabasePath() );
+    os << std::endl;
+    return true;
+}
 
 // _perRangeDataList
 static bool checkRangeDataList( const osg::PagedLOD& node )
@@ -15,16 +50,18 @@ static bool readRangeDataList( osgDB::InputStream& is, osg::PagedLOD& node )
     for ( unsigned int i=0; i<size; ++i )
     {
         std::string name; is.readWrappedString( name );
-        float offset, scale;
-        double timeStamp;
-        int frameNumber;
-        is >> offset >> scale >> timeStamp >> frameNumber;
-        
         node.setFileName( i, name );
+    }
+    is >> osgDB::END_BRACKET;
+    
+    size = 0; is >> osgDB::PROPERTY("PriorityList") >> size >> osgDB::BEGIN_BRACKET;
+    for ( unsigned int i=0; i<size; ++i )
+    {
+        float offset, scale;
+        is >> offset >> scale;
+        
         node.setPriorityOffset( i, offset );
         node.setPriorityScale( i, scale );
-        node.setTimeStamp( i, timeStamp );
-        node.setFrameNumber( i, frameNumber );
     }
     is >> osgDB::END_BRACKET;
     return true;
@@ -37,8 +74,15 @@ static bool writeRangeDataList( osgDB::OutputStream& os, const osg::PagedLOD& no
     for ( unsigned int i=0; i<size; ++i )
     {
         os.writeWrappedString( node.getFileName(i) );
-        os << node.getPriorityOffset(i) << node.getPriorityScale(i)
-           << node.getTimeStamp(i) << node.getFrameNumber(i) << std::endl;
+        os << std::endl;
+    }
+    os << osgDB::END_BRACKET << std::endl;
+    
+    size = node.getNumPriorityOffsets();
+    os << osgDB::PROPERTY("PriorityList") << size << osgDB::BEGIN_BRACKET << std::endl;
+    for ( unsigned int i=0; i<size; ++i )
+    {
+        os << node.getPriorityOffset(i) << node.getPriorityScale(i) << std::endl;
     }
     os << osgDB::END_BRACKET << std::endl;
     return true;
@@ -94,7 +138,7 @@ REGISTER_OBJECT_WRAPPER( PagedLOD,
 {
     // Note: osg::Group is not in the list to prevent recording dynamic loaded children
     
-    ADD_STRING_SERIALIZER( DatabasePath, "" );  // _databasePath
+    ADD_USER_SERIALIZER( DatabasePath );  // _databasePath
     ADD_INT_SERIALIZER( FrameNumberOfLastTraversal, 0 );  // _frameNumberOfLastTraversal
     ADD_UINT_SERIALIZER( NumChildrenThatCannotBeExpired, 0 );  // _numChildrenThatCannotBeExpired
     ADD_BOOL_SERIALIZER( DisableExternalChildrenPaging, false );  // _disableExternalChildrenPaging

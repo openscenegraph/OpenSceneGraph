@@ -69,6 +69,7 @@ public:
     
     bool isBinary() const { return _in->isBinary(); }
     bool getUseFloatMatrix() const { return _useFloatMatrix; }
+    const osgDB::Options* getOptions() const { return _options.get(); }
     
     // Serialization related functions
     InputStream& operator>>( bool& b ) { _in->readBool(b); checkStream(); return *this; }
@@ -163,6 +164,7 @@ protected:
     std::vector<std::string> _fields;
     osg::ref_ptr<InputIterator> _in;
     osg::ref_ptr<InputException> _exception;
+    osg::ref_ptr<const osgDB::Options> _options;
 };
 
 void InputStream::throwException( const std::string& msg )

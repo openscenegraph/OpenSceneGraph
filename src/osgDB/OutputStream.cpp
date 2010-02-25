@@ -25,6 +25,7 @@ OutputStream::OutputStream( const osgDB::Options* options )
 :   _writeImageHint(WRITE_USE_IMAGE_HINT)
 {
     if ( !options ) return;
+    _options = options;
     
     StringList optionList;
     split( options->getOptionString(), optionList );
@@ -323,10 +324,10 @@ void OutputStream::writeImage( const osg::Image* img )
     case OutputStream::WRITE_EXTERNAL_FILE: decision = IMAGE_EXTERNAL; break;
     case OutputStream::WRITE_USE_EXTERNAL: decision = IMAGE_WRITE_OUT; break;
     default:
-        if ( img->getWriteHint()==osg::Image::STORE_INLINE && isBinary() )
+        if ( img->getWriteHint()==osg::Image::EXTERNAL_FILE )
+            decision = IMAGE_EXTERNAL;
+        else if ( isBinary() )
             decision = IMAGE_INLINE_DATA;
-        else if ( img->getWriteHint()==osg::Image::EXTERNAL_FILE )
-            decision = IMAGE_WRITE_OUT;
         break;
     }
     

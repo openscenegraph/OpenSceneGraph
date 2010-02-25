@@ -77,6 +77,7 @@ public:
     
     bool isBinary() const { return _out->isBinary(); }
     const std::string& getSchemaName() const { return _schemaName; }
+    const osgDB::Options* getOptions() const { return _options.get(); }
     
     void setWriteImageHint( WriteImageHint hint ) { _writeImageHint = hint; }
     WriteImageHint getWriteImageHint() const { return _writeImageHint; }
@@ -172,6 +173,7 @@ protected:
     std::stringstream _compressSource;
     osg::ref_ptr<OutputIterator> _out;
     osg::ref_ptr<OutputException> _exception;
+    osg::ref_ptr<const osgDB::Options> _options;
 };
 
 void OutputStream::throwException( const std::string& msg )

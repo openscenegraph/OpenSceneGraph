@@ -27,6 +27,7 @@ InputStream::InputStream( const osgDB::Options* options )
 :   _byteSwap(0), _useFloatMatrix(false), _forceReadingImage(false)
 {
     if ( !options ) return;
+    _options = options;
     
     std::string schema;
     StringList optionList;

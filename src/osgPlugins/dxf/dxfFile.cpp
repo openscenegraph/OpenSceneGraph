@@ -91,6 +91,7 @@ dxfFile::assign(codeValue& cv)
         _isNewSection = true;
     } else if (cv._groupCode == 0 && s == std::string("EOF")) {
         return 0;
+    } else if (cv._groupCode == 999) {    // skip comments
     } else if (cv._groupCode == 2 && _isNewSection) {
         _isNewSection = false;
 //        std::cout << "Reading section " << s << std::endl;

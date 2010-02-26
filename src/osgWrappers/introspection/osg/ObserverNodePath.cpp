@@ -72,6 +72,11 @@ BEGIN_OBJECT_REFLECTOR(osg::ObserverNodePath)
 	          __bool__getNodePath__NodePath_R1,
 	          "Get a lightweight NodePath that isn't thread safe but may be safely used in single threaded applications, or when its known that the NodePath won't be invalidated during usage of the NodePath. ",
 	          "return true if NodePath is valid. ");
+	I_Method0(bool, empty,
+	          Properties::NON_VIRTUAL,
+	          __bool__empty,
+	          "",
+	          "");
 	I_ProtectedMethod1(void, _setNodePath, IN, const osg::NodePath &, nodePath,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,

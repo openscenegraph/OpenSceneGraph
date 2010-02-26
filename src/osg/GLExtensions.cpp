@@ -91,18 +91,53 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
             rendererString = renderer ? (const char*)renderer : "";
 
             // get the extension list from OpenGL.
-            const char* extensions = (const char*)glGetString(GL_EXTENSIONS);
-            if (extensions==NULL) return false;
-
-            // insert the ' ' delimiated extensions words into the extensionSet.
-            const char *startOfWord = extensions;
-            const char *endOfWord;
-            while ((endOfWord = strchr(startOfWord,' '))!=NULL)
+            if( osg::getGLVersionNumber() >= 3.0 )
             {
-                extensionSet.insert(std::string(startOfWord,endOfWord));
-                startOfWord = endOfWord+1;
+                // OpenGL 3.0 adds the concept of indexed strings and
+                // deprecates calls to glGetString( GL_EXTENSIONS ), which
+                // will now generate GL_INVALID_ENUM.
+
+                // Get extensions using new indexed string interface.
+
+                typedef const GLubyte * APIENTRY PFNGLGETSTRINGIPROC( GLenum, GLuint );
+                PFNGLGETSTRINGIPROC* glGetStringi = 0;
+                setGLExtensionFuncPtr( glGetStringi, "glGetStringi");
+
+                if( glGetStringi != NULL )
+                {
+    #  ifndef GL_NUM_EXTENSIONS
+    #    define GL_NUM_EXTENSIONS 0x821D
+    #  endif
+                    GLint numExt;
+                    glGetIntegerv( GL_NUM_EXTENSIONS, &numExt );
+                    int idx;
+                    for( idx=0; idx<numExt; idx++ )
+                    {
+                        extensionSet.insert( std::string( (char*)( glGetStringi( GL_EXTENSIONS, idx ) ) ) );
+                    }
+                }
+                else
+                {
+                    osg::notify( osg::WARN ) << "isGLExtensionOrVersionSupported: Can't obtain glGetStringi function pointer." << std::endl;
+                }
             }
-            if (*startOfWord!=0) extensionSet.insert(std::string(startOfWord));
+            else
+            {
+                // Get extensions using GL1/2 interface.
+
+                const char* extensions = (const char*)glGetString(GL_EXTENSIONS);
+                if (extensions==NULL) return false;
+
+                // insert the ' ' delimiated extensions words into the extensionSet.
+                const char *startOfWord = extensions;
+                const char *endOfWord;
+                while ((endOfWord = strchr(startOfWord,' '))!=NULL)
+                {
+                    extensionSet.insert(std::string(startOfWord,endOfWord));
+                    startOfWord = endOfWord+1;
+                }
+                if (*startOfWord!=0) extensionSet.insert(std::string(startOfWord));
+            }
 
     #if defined(WIN32) && (defined(OSG_GL1_AVAILABLE) || defined(OSG_GL2_AVAILABLE) || defined(OSG_GL3_AVAILABLE))
 

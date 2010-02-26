@@ -1,14 +1,14 @@
 /*
  * Copyright 2006 Sony Computer Entertainment Inc.
  *
- * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this 
+ * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at:
  * http://research.scea.com/scea_shared_source_license.html
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License 
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
- * implied. See the License for the specific language governing permissions and limitations under the 
- * License. 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 
 #include "daeWriter.h"
@@ -19,9 +19,42 @@
 #include <dom/domConstants.h>
 #include <dae/domAny.h>
 
+#include <osgAnimation/Bone>
 #include <osgSim/DOFTransform>
 
-using namespace osgdae;
+using namespace osgDAE;
+
+
+void daeWriter::writeUpdateTransformElements(const osg::Vec3 &pos, const osg::Quat &q,    const osg::Vec3 &s)
+{
+    // Make a scale place element
+    domScale *scale = daeSafeCast< domScale >( currentNode->add( COLLADA_ELEMENT_SCALE ) );
+    scale->setSid("scale");
+    scale->getValue().append3( s.x(), s.y(), s.z() );
+
+    // Make a three rotate place elements for the euler angles
+    // TODO decompose quaternion into three euler angles
+    double angle;
+    osg::Vec3 axis;
+    q.getRotate( angle, axis );
+
+    domRotate *rot = daeSafeCast< domRotate >( currentNode->add( COLLADA_ELEMENT_ROTATE ) );
+    rot->setSid("rotateZ");
+    rot->getValue().append4( 0, 0, 1, osg::RadiansToDegrees(angle) );
+
+    rot = daeSafeCast< domRotate >( currentNode->add( COLLADA_ELEMENT_ROTATE ) );
+    rot->setSid("rotateY");
+    rot->getValue().append4( 0, 1, 0, osg::RadiansToDegrees(angle) );
+
+    rot = daeSafeCast< domRotate >( currentNode->add( COLLADA_ELEMENT_ROTATE ) );
+    rot->setSid("rotateX");
+    rot->getValue().append4( 1, 0, 0, osg::RadiansToDegrees(angle) );
+
+    // Make a translate place element
+    domTranslate *trans = daeSafeCast< domTranslate >( currentNode->add( COLLADA_ELEMENT_TRANSLATE ) );
+    trans->setSid("translate");
+    trans->getValue().append3( pos.x(), pos.y(), pos.z() );
+}
 
 //MATRIX
 void daeWriter::apply( osg::MatrixTransform &node )
@@ -38,30 +71,43 @@ void daeWriter::apply( osg::MatrixTransform &node )
     }
 
     currentNode = daeSafeCast< domNode >(currentNode->add( COLLADA_ELEMENT_NODE ) );
-    currentNode->setId(getNodeName(node,"matrixTransform").c_str());
-    
-    domMatrix *mat = daeSafeCast< domMatrix >(currentNode->add( COLLADA_ELEMENT_MATRIX ) );
-    const osg::Matrix::value_type *mat_vals = node.getMatrix().ptr();
-    //for ( int i = 0; i < 16; i++ )
-    //{
-    //  mat->getValue().append( mat_vals[i] );
-    //}
-    mat->getValue().append( mat_vals[0] );
-    mat->getValue().append( mat_vals[4] );
-    mat->getValue().append( mat_vals[8] );
-    mat->getValue().append( mat_vals[12] );
-    mat->getValue().append( mat_vals[1] );
-    mat->getValue().append( mat_vals[5] );
-    mat->getValue().append( mat_vals[9] );
-    mat->getValue().append( mat_vals[13] );
-    mat->getValue().append( mat_vals[2] );
-    mat->getValue().append( mat_vals[6] );
-    mat->getValue().append( mat_vals[10] );
-    mat->getValue().append( mat_vals[14] );
-    mat->getValue().append( mat_vals[3] );
-    mat->getValue().append( mat_vals[7] );
-    mat->getValue().append( mat_vals[11] );
-    mat->getValue().append( mat_vals[15] );
+    std::string nodeName = getNodeName(node,"matrixTransform");
+    currentNode->setId(nodeName.c_str());
+
+    osg::NodeCallback* ncb = node.getUpdateCallback();
+    bool handled = false;
+    if (ncb)
+    {
+        osgAnimation::UpdateMatrixTransform* ut = dynamic_cast<osgAnimation::UpdateMatrixTransform*>(ncb);
+        // If targeted by an animation we split up the matrix into multiple place element so they can be targeted individually
+        if (ut)
+        {
+            handled = true;
+
+            const osg::Matrix &mat = node.getMatrix();
+
+            // Note: though this is a generic matrix, based on the fact that it will be animated by and UpdateMatrixTransform,
+            // we assume the initial matrix can be decomposed into translation, rotation and scale elements
+            writeUpdateTransformElements(mat.getTrans(), mat.getRotate(), mat.getScale());
+        }
+    }
+
+    // If not targeted by an animation simply write a single matrix place element
+    if (!handled)
+    {
+        domMatrix *mat = daeSafeCast< domMatrix >(currentNode->add( COLLADA_ELEMENT_MATRIX ) );
+        nodeName += "_matrix";
+        mat->setSid(nodeName.c_str());
+
+        const osg::Matrix::value_type *mat_vals = node.getMatrix().ptr();
+        for ( int i = 0; i < 4; i++ )
+        {
+            for ( int j = 0; j < 4; j++ )
+            {
+                mat->getValue().append( mat_vals[i + j*4] );
+            }
+        }
+    }
 
     lastDepth = _nodePath.size();
 
@@ -84,41 +130,56 @@ void daeWriter::apply( osg::PositionAttitudeTransform &node )
         lastDepth--;
     }
     currentNode = daeSafeCast< domNode >(currentNode->add( COLLADA_ELEMENT_NODE ) );
-    currentNode->setId(getNodeName(node,"positionAttitudeTransform").c_str());
-    
+    std::string nodeName = getNodeName(node,"positionAttitudeTransform");
+    currentNode->setId(nodeName.c_str());
+
     const osg::Vec3 &pos = node.getPosition();
     const osg::Quat &q = node.getAttitude();
     const osg::Vec3 &s = node.getScale();
 
-    if ( pos.x() != 0 || pos.y() != 0 || pos.z() != 0 )
+    osg::NodeCallback* ncb = node.getUpdateCallback();
+    bool handled = false;
+    if (ncb)
     {
-        //make a translate
-        domTranslate *trans = daeSafeCast< domTranslate >( currentNode->add( COLLADA_ELEMENT_TRANSLATE ) );
-        trans->getValue().append( pos.x() );
-        trans->getValue().append( pos.y() );
-        trans->getValue().append( pos.z() );
+        osgAnimation::UpdateMatrixTransform* ut = dynamic_cast<osgAnimation::UpdateMatrixTransform*>(ncb);
+        // If targeted by an animation we split up the matrix into multiple place element so they can be targeted individually
+        if (ut)
+        {
+            handled = true;
+
+            writeUpdateTransformElements(pos, q, s);
+        }
     }
 
-    double angle;
-    osg::Vec3 axis;
-    q.getRotate( angle, axis );
-    if ( angle != 0 )
+    // If not targeted by an animation simply add the elements that actually contribute to placement
+    if (!handled)
     {
-        //make a rotate
-        domRotate *rot = daeSafeCast< domRotate >( currentNode->add( COLLADA_ELEMENT_ROTATE ) );
-        rot->getValue().append( axis.x() );
-        rot->getValue().append( axis.y() );
-        rot->getValue().append( axis.z() );
-        rot->getValue().append( osg::RadiansToDegrees(angle) );
-    }
+        if ( s.x() != 1 || s.y() != 1 || s.z() != 1 )
+        {
+            // Make a scale place element
+            domScale *scale = daeSafeCast< domScale >( currentNode->add( COLLADA_ELEMENT_SCALE ) );
+            scale->setSid("scale");
+            scale->getValue().append3( s.x(), s.y(), s.z() );
+        }
+
+        double angle;
+        osg::Vec3 axis;
+        q.getRotate( angle, axis );
+        if ( angle != 0 )
+        {
+            // Make a rotate place element
+            domRotate *rot = daeSafeCast< domRotate >( currentNode->add( COLLADA_ELEMENT_ROTATE ) );
+            rot->setSid("rotate");
+            rot->getValue().append4( axis.x(), axis.y(), axis.z(), osg::RadiansToDegrees(angle) );
+        }
 
     if ( s.x() != 1 || s.y() != 1 || s.z() != 1 )
-    {
-        //make a scale
-        domScale *scale = daeSafeCast< domScale >( currentNode->add( COLLADA_ELEMENT_SCALE ) );
-        scale->getValue().append( s.x() );
-        scale->getValue().append( s.y() );
-        scale->getValue().append( s.z() );
+        {
+            // Make a translate place element
+            domTranslate *trans = daeSafeCast< domTranslate >( currentNode->add( COLLADA_ELEMENT_TRANSLATE ) );
+            trans->setSid("translate");
+            trans->getValue().append3( pos.x(), pos.y(), pos.z() );
+        }
     }
 
     writeNodeExtra(node);
@@ -128,7 +189,7 @@ void daeWriter::apply( osg::PositionAttitudeTransform &node )
     traverse( node );
 }
 
-void daeWriter::apply( osg::Transform &node ) 
+void daeWriter::apply( osg::Transform &node )
 {
     debugPrint( node );
 
@@ -139,7 +200,7 @@ void daeWriter::apply( osg::Transform &node )
         lastDepth--;
     }
     currentNode = daeSafeCast< domNode >(currentNode->add( COLLADA_ELEMENT_NODE ) );
-    
+
     // If a DOFTransform node store it's data as extra "DOFTransform" data in the "OpenSceneGraph" technique
     osgSim::DOFTransform* dof = dynamic_cast<osgSim::DOFTransform*>(&node);
     if (writeExtras && dof)
@@ -223,14 +284,24 @@ void daeWriter::apply( osg::Transform &node )
         animationOn->setValue(toString<bool>(dof->getAnimationOn()).c_str());
 
         domAny *putMatrix = (domAny*)teq->add("PutMatrix" );
-        putMatrix->setValue(toString(dof->getPutMatrix()).c_str());        
+        putMatrix->setValue(toString(dof->getPutMatrix()).c_str());
 
         currentNode->setId(getNodeName(node, "doftransform").c_str());
     }
     else
     {
-        currentNode->setId(getNodeName(node, "transform").c_str());
-        osg::notify( osg::WARN ) << "some other transform type. Missing " << node.getNumChildren() << " children" << std::endl;
+        osgAnimation::Bone* bone = dynamic_cast<osgAnimation::Bone*>(&node);
+        if (bone)
+        {
+            domNode *pDomNode = daeSafeCast< domNode >(currentNode->add( COLLADA_ELEMENT_NODE ));
+            pDomNode->setType(NODETYPE_JOINT);
+            pDomNode->setId(getNodeName(node, "bone").c_str());
+        }
+        else
+        {
+            currentNode->setId(getNodeName(node, "transform").c_str());
+            osg::notify( osg::WARN ) << "some other transform type. Missing " << node.getNumChildren() << " children" << std::endl;
+        }
     }
 
     writeNodeExtra(node);
@@ -240,7 +311,9 @@ void daeWriter::apply( osg::Transform &node )
     traverse( node );
 }
 
-void daeWriter::apply( osg::CoordinateSystemNode &node ) 
+void daeWriter::apply( osg::CoordinateSystemNode &node )
 {
     osg::notify( osg::WARN ) << "CoordinateSystemNode. Missing " << node.getNumChildren() << " children" << std::endl;
 }
+
+

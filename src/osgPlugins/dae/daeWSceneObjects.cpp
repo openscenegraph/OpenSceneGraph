@@ -28,7 +28,7 @@
 #include <osg/Billboard>
 #include <osg/CameraView>
 
-using namespace osgdae;
+using namespace osgDAE;
 
 // Write non-standard node data as extra of type "Node" with "OpenSceneGraph" technique
 void daeWriter::writeNodeExtra(osg::Node &node)
@@ -128,6 +128,8 @@ void daeWriter::apply( osg::Group &node )
     }
     else
     {
+        writeAnimations(node);
+
         currentNode->setId(getNodeName(node,"group").c_str());
     }
 
@@ -353,19 +355,21 @@ void daeWriter::apply( osg::LightSource &node )
 {
     debugPrint( node );
 
-    domInstance_light *pDomInstanceLight = daeSafeCast< domInstance_light >( currentNode->add(COLLADA_ELEMENT_INSTANCE_LIGHT));
+    domInstance_light *il = daeSafeCast< domInstance_light >( currentNode->add( COLLADA_ELEMENT_INSTANCE_LIGHT ) );
     std::string name = node.getName();
     if ( name.empty() )
     {
         name = uniquify( "light" );
     }
     std::string url = "#" + name;
-    pDomInstanceLight->setUrl( url.c_str() );
+    il->setUrl( url.c_str() );
 
     if ( lib_lights == NULL )
     {
         lib_lights = daeSafeCast< domLibrary_lights >( dom->add( COLLADA_ELEMENT_LIBRARY_LIGHTS ) );
     }
+    domLight *light = daeSafeCast< domLight >( lib_lights->add( COLLADA_ELEMENT_LIGHT ) );
+    light->setId( name.c_str() );
     
     osg::Light* pOsgLight = node.getLight();
 

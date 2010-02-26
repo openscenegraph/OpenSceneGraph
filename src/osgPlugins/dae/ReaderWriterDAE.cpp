@@ -57,7 +57,7 @@ ReaderWriterDAE::readNode(const std::string& fname,
         pDAE = new DAE;
     }
 
-    osgdae::daeReader daeReader(pDAE, options && options->getOptionString().find("StrictTransparency") != std::string::npos ) ;
+    osgDAE::daeReader daeReader(pDAE, options && options->getOptionString().find("StrictTransparency") != std::string::npos ) ;
 
     // Convert file name to URI
     std::string fileURI = ConvertFilePathToColladaCompatibleURI(fileName);
@@ -75,11 +75,11 @@ ReaderWriterDAE::readNode(const std::string& fname,
             *(std::string*)options->getPluginData("DAE-DocumentURI") = fileURI;
         // Return some additional information about the document
         if (options->getPluginData("DAE-AssetUnitName"))
-             *(std::string*)options->getPluginData("DAE-AssetUnitName") = daeReader.m_AssetUnitName;
+             *(std::string*)options->getPluginData("DAE-AssetUnitName") = daeReader.getAssetUnitName();
         if (options->getPluginData("DAE-AssetUnitMeter"))
-            *(float*)options->getPluginData("DAE-AssetUnitMeter") = daeReader.m_AssetUnitMeter;
+            *(float*)options->getPluginData("DAE-AssetUnitMeter") = daeReader.getAssetUnitMeter();
         if (options->getPluginData("DAE-AssetUp_axis"))
-            *(domUpAxisType*)options->getPluginData("DAE-AssetUp_axis") = daeReader.m_AssetUp_axis;
+            *(domUpAxisType*)options->getPluginData("DAE-AssetUp_axis") = daeReader.getAssetUpAxis();
    }
 
     if (bOwnDAE)
@@ -141,14 +141,14 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
 
     osg::NodeVisitor::TraversalMode traversalMode = writeExtras ? osg::NodeVisitor::TRAVERSE_ALL_CHILDREN : osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN;
     
-    osgdae::daeWriter daeWriter(pDAE, fileURI, usePolygon, GoogleMode, traversalMode, writeExtras);
+    osgDAE::daeWriter daeWriter(pDAE, fileURI, usePolygon, GoogleMode, traversalMode, writeExtras);
     daeWriter.setRootNode( node );
     const_cast<osg::Node*>(&node)->accept( daeWriter );
 
     osgDB::ReaderWriter::WriteResult retVal( WriteResult::ERROR_IN_WRITING_FILE );
     if ( daeWriter.isSuccess() )
     {
-        if ( daeWriter.writeFile() )
+        if (pDAE->write(fileURI))
             retVal = WriteResult::FILE_SAVED;
     }
     

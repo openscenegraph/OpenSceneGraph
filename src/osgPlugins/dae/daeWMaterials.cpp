@@ -28,22 +28,22 @@
 #include "windows.h"
 #endif
 
-using namespace osgdae;
+using namespace osgDAE;
 
-void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, const std::string &geoName )
+void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMaterial, const std::string &geoName )
 {
     osg::ref_ptr<osg::StateSet> ssClean = CleanStateSet(ss); // Need to hold a ref to this or the materialMap.find() will delete it
-    domBind_material *bm = daeSafeCast< domBind_material >( ig->add( COLLADA_ELEMENT_BIND_MATERIAL ) );
-    domBind_material::domTechnique_common *tc = daeSafeCast< domBind_material::domTechnique_common >( bm->add(COLLADA_ELEMENT_TECHNIQUE_COMMON));
-    domInstance_material *im = daeSafeCast< domInstance_material >( tc->add( COLLADA_ELEMENT_INSTANCE_MATERIAL ) );
+    domBind_material::domTechnique_common *tc = daeSafeCast< domBind_material::domTechnique_common >( pDomBindMaterial->add( COLLADA_ELEMENT_TECHNIQUE_COMMON ) );
+    domInstance_material *pDomInstanceMaterial = daeSafeCast< domInstance_material >( tc->add( COLLADA_ELEMENT_INSTANCE_MATERIAL ) );
     std::string symbol = geoName + "_material";
-    im->setSymbol( symbol.c_str() );
+    pDomInstanceMaterial->setSymbol( symbol.c_str() );
 
+    // See if material already exists in cache
     MaterialMap::iterator iter = materialMap.find( ssClean );
     if ( iter != materialMap.end() )
     {
         std::string url = "#" + std::string( iter->second->getId() );
-        im->setTarget( url.c_str() );
+        pDomInstanceMaterial->setTarget( url.c_str() );
         return;
     }
 
@@ -63,7 +63,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
     mat->setId( name.c_str() );
 
     std::string url = "#" + name;
-    im->setTarget( url.c_str() );
+    pDomInstanceMaterial->setTarget( url.c_str() );
 
     domInstance_effect *ie = daeSafeCast<domInstance_effect>( mat->add( COLLADA_ELEMENT_INSTANCE_EFFECT ) );
 
@@ -82,7 +82,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
     domProfile_COMMON *pc = daeSafeCast< domProfile_COMMON >( effect->add( COLLADA_ELEMENT_PROFILE_COMMON ) );
     domProfile_COMMON::domTechnique *pc_teq = daeSafeCast< domProfile_COMMON::domTechnique >( pc->add( COLLADA_ELEMENT_TECHNIQUE ) );
     pc_teq->setSid( "t0" );
-    domProfile_COMMON::domTechnique::domPhong *phong = daeSafeCast< domProfile_COMMON::domTechnique::domPhong >( pc_teq->add(COLLADA_ELEMENT_PHONG));
+    domProfile_COMMON::domTechnique::domPhong *phong = daeSafeCast< domProfile_COMMON::domTechnique::domPhong >( pc_teq->add( COLLADA_ELEMENT_PHONG ) );
 
     osg::Texture *tex = static_cast<osg::Texture*>(ssClean->getTextureAttribute( 0, osg::StateAttribute::TEXTURE ));
     if ( ssClean->getTextureAttribute( 1, osg::StateAttribute::TEXTURE ) != NULL )
@@ -97,31 +97,33 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         img->setId( iName.c_str() );
 
         osg::Image *osgimg = tex->getImage( 0 );
-        domImage::domInit_from *imgif = daeSafeCast< domImage::domInit_from >( img->add(COLLADA_ELEMENT_INIT_FROM));
+
+        domImage::domInit_from *imgif = daeSafeCast< domImage::domInit_from >( img->add( COLLADA_ELEMENT_INIT_FROM ) );
         std::string fileURI = ReaderWriterDAE::ConvertFilePathToColladaCompatibleURI(osgDB::findDataFile(osgimg->getFileName()));
-       daeURI dd(*dae, fileURI);//fileURI.c_str() );
+        daeURI dd(*dae, fileURI);
         imgif->setValue( dd );
         // The document URI should contain the canonical path it was created with
         imgif->getValue().makeRelativeTo(doc->getDocumentURI());
 
+
 #ifndef EARTH_TEX
-        domCommon_newparam_type *np = daeSafeCast< domCommon_newparam_type >(pc->add(COLLADA_ELEMENT_NEWPARAM));
+        domCommon_newparam_type *np = daeSafeCast< domCommon_newparam_type >( pc->add(COLLADA_ELEMENT_NEWPARAM) );
         std::string surfName = efName + "-surface";
         np->setSid( surfName.c_str() );
-        domFx_surface_common *surface = daeSafeCast< domFx_surface_common >(np->add(COLLADA_ELEMENT_SURFACE));
-        domFx_surface_init_from_common *sif = daeSafeCast< domFx_surface_init_from_common >( surface->add(COLLADA_ELEMENT_INIT_FROM));
+        domFx_surface_common *surface = daeSafeCast< domFx_surface_common >( np->add(COLLADA_ELEMENT_SURFACE) );
+        domFx_surface_init_from_common *sif = daeSafeCast< domFx_surface_init_from_common >( surface->add(COLLADA_ELEMENT_INIT_FROM) );
         sif->setValue( iName.c_str() );
         surface->setType( FX_SURFACE_TYPE_ENUM_2D );
 
-        np = daeSafeCast< domCommon_newparam_type >( pc->add(COLLADA_ELEMENT_NEWPARAM));
+        np = daeSafeCast< domCommon_newparam_type >( pc->add( COLLADA_ELEMENT_NEWPARAM ) );
         std::string sampName = efName + "-sampler";
         np->setSid( sampName.c_str() );
-        domFx_sampler2D_common *sampler = daeSafeCast< domFx_sampler2D_common >( np->add(COLLADA_ELEMENT_SAMPLER2D) );
-        domFx_sampler2D_common_complexType::domSource *source = daeSafeCast< domFx_sampler2D_common_complexType::domSource >(sampler->add(COLLADA_ELEMENT_SOURCE));
+        domFx_sampler2D_common *sampler = daeSafeCast< domFx_sampler2D_common >( np->add( COLLADA_ELEMENT_SAMPLER2D ) );
+        domFx_sampler2D_common_complexType::domSource *source = daeSafeCast< domFx_sampler2D_common_complexType::domSource >( sampler->add( COLLADA_ELEMENT_SOURCE ) );
         source->setValue( surfName.c_str() ); 
 
         //set sampler state
-        domFx_sampler2D_common_complexType::domWrap_s *wrap_s = daeSafeCast< domFx_sampler2D_common_complexType::domWrap_s >(sampler->add(COLLADA_ELEMENT_WRAP_S));
+        domFx_sampler2D_common_complexType::domWrap_s *wrap_s = daeSafeCast< domFx_sampler2D_common_complexType::domWrap_s >( sampler->add( COLLADA_ELEMENT_WRAP_S ) );
         osg::Texture::WrapMode wrap = tex->getWrap( osg::Texture::WRAP_S );
         switch( wrap ) 
         {
@@ -143,7 +145,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
             break;
         }
 
-        domFx_sampler2D_common_complexType::domWrap_t *wrap_t = daeSafeCast< domFx_sampler2D_common_complexType::domWrap_t >(sampler->add( COLLADA_ELEMENT_WRAP_T));
+        domFx_sampler2D_common_complexType::domWrap_t *wrap_t = daeSafeCast< domFx_sampler2D_common_complexType::domWrap_t >( sampler->add( COLLADA_ELEMENT_WRAP_T ) );
         wrap = tex->getWrap( osg::Texture::WRAP_T );
         switch( wrap ) 
         {
@@ -166,13 +168,13 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         }
 
         const osg::Vec4 &bcol = tex->getBorderColor();
-        domFx_sampler2D_common_complexType::domBorder_color *dbcol = daeSafeCast< domFx_sampler2D_common_complexType::domBorder_color >(sampler->add(COLLADA_ELEMENT_BORDER_COLOR));
+        domFx_sampler2D_common_complexType::domBorder_color *dbcol = daeSafeCast< domFx_sampler2D_common_complexType::domBorder_color >( sampler->add( COLLADA_ELEMENT_BORDER_COLOR ) );
         dbcol->getValue().append( bcol.r() );
         dbcol->getValue().append( bcol.g() );
         dbcol->getValue().append( bcol.b() );
         dbcol->getValue().append( bcol.a() );
 
-        domFx_sampler2D_common_complexType::domMinfilter *minfilter = daeSafeCast< domFx_sampler2D_common_complexType::domMinfilter >(sampler->add(COLLADA_ELEMENT_MINFILTER));
+        domFx_sampler2D_common_complexType::domMinfilter *minfilter = daeSafeCast< domFx_sampler2D_common_complexType::domMinfilter >( sampler->add( COLLADA_ELEMENT_MINFILTER ) );
         osg::Texture::FilterMode mode = tex->getFilter( osg::Texture::MIN_FILTER );
         switch( mode )
         {
@@ -196,7 +198,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
             break;
         }
 
-        domFx_sampler2D_common_complexType::domMagfilter *magfilter = daeSafeCast< domFx_sampler2D_common_complexType::domMagfilter >(sampler->add(COLLADA_ELEMENT_MAGFILTER));
+        domFx_sampler2D_common_complexType::domMagfilter *magfilter = daeSafeCast< domFx_sampler2D_common_complexType::domMagfilter >( sampler->add( COLLADA_ELEMENT_MAGFILTER ) );
         mode = tex->getFilter( osg::Texture::MAG_FILTER );
         switch( mode )
         {
@@ -221,20 +223,20 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         }
 
 
-        domCommon_color_or_texture_type *cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add(COLLADA_ELEMENT_DIFFUSE) );
-        domCommon_color_or_texture_type_complexType::domTexture *dtex = daeSafeCast< domCommon_color_or_texture_type_complexType::domTexture >(cot->add(COLLADA_ELEMENT_TEXTURE));
+        domCommon_color_or_texture_type *cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add( COLLADA_ELEMENT_DIFFUSE ) );
+        domCommon_color_or_texture_type_complexType::domTexture *dtex = daeSafeCast< domCommon_color_or_texture_type_complexType::domTexture >( cot->add( COLLADA_ELEMENT_TEXTURE ) );
         dtex->setTexture( sampName.c_str() );
         dtex->setTexcoord( "texcoord0" );
 #else
-        domCommon_color_or_texture_type *cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add(COLLADA_ELEMENT_DIFFUSE) );
-        domCommon_color_or_texture_type_complexType::domTexture *dtex = daeSafeCast< domCommon_color_or_texture_type_complexType::domTexture >( cot->add(COLLADA_ELEMENT_TEXTURE));
+        domCommon_color_or_texture_type *cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add( COLLADA_ELEMENT_DIFFUSE ) );
+        domCommon_color_or_texture_type_complexType::domTexture *dtex = daeSafeCast< domCommon_color_or_texture_type_complexType::domTexture >( cot->add( COLLADA_ELEMENT_TEXTURE ) );
         dtex->setTexture( iName.c_str() );
         dtex->setTexcoord( "texcoord0" );
 #endif
 
-        domInstance_material::domBind_vertex_input *bvi = daeSafeCast< domInstance_material::domBind_vertex_input >(im->add(COLLADA_ELEMENT_BIND_VERTEX_INPUT));
+        domInstance_material::domBind_vertex_input *bvi = daeSafeCast< domInstance_material::domBind_vertex_input >( pDomInstanceMaterial->add( COLLADA_ELEMENT_BIND_VERTEX_INPUT ) );
         bvi->setSemantic( "texcoord0" );
-        bvi->setInput_semantic( "TEXCOORD" );
+        bvi->setInput_semantic( COMMON_PROFILE_INPUT_TEXCOORD );
         bvi->setInput_set( 0 );
     }
     osg::Material *osgmat = static_cast<osg::Material*>(ssClean->getAttribute( osg::StateAttribute::MATERIAL ));
@@ -246,15 +248,15 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         const osg::Vec4 &sCol = osgmat->getSpecularFrontAndBack()?osgmat->getSpecular( osg::Material::FRONT_AND_BACK ):osgmat->getSpecular( osg::Material::FRONT );
         float shininess = osgmat->getShininessFrontAndBack()?osgmat->getShininess( osg::Material::FRONT_AND_BACK ):osgmat->getShininess( osg::Material::FRONT );
         
-        domCommon_color_or_texture_type *cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add(COLLADA_ELEMENT_EMISSION));
-        domCommon_color_or_texture_type_complexType::domColor *col = daeSafeCast< domCommon_color_or_texture_type_complexType::domColor >( cot->add(COLLADA_ELEMENT_COLOR));
+        domCommon_color_or_texture_type *cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add( COLLADA_ELEMENT_EMISSION ) );
+        domCommon_color_or_texture_type_complexType::domColor *col = daeSafeCast< domCommon_color_or_texture_type_complexType::domColor >( cot->add( COLLADA_ELEMENT_COLOR ) );
         col->getValue().append( eCol.r() );
         col->getValue().append( eCol.g() );
         col->getValue().append( eCol.b() );
         col->getValue().append( eCol.a() );
 
-        cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add(COLLADA_ELEMENT_AMBIENT));
-        col = daeSafeCast< domCommon_color_or_texture_type_complexType::domColor >(cot->add(COLLADA_ELEMENT_COLOR));
+        cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add( COLLADA_ELEMENT_AMBIENT ) );
+        col = daeSafeCast< domCommon_color_or_texture_type_complexType::domColor >( cot->add( COLLADA_ELEMENT_COLOR ) );
         col->getValue().append( aCol.r() );
         col->getValue().append( aCol.g() );
         col->getValue().append( aCol.b() );
@@ -264,8 +266,8 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
         //### check if we really have a texture
         if ( phong->getDiffuse() == NULL )
         {
-            cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add(COLLADA_ELEMENT_DIFFUSE));
-            col = daeSafeCast< domCommon_color_or_texture_type_complexType::domColor >( cot->add(COLLADA_ELEMENT_COLOR));
+            cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add( COLLADA_ELEMENT_DIFFUSE ) );
+            col = daeSafeCast< domCommon_color_or_texture_type_complexType::domColor >( cot->add( COLLADA_ELEMENT_COLOR ) );
             col->getValue().append( dCol.r() );
             col->getValue().append( dCol.g() );
             col->getValue().append( dCol.b() );
@@ -290,7 +292,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
                 extra->setType( "color" );
                 domTechnique *teq = daeSafeCast< domTechnique >( extra->add( COLLADA_ELEMENT_TECHNIQUE ) );
                 teq->setProfile( "SCEI" );
-                domAny *any = (domAny*)(daeElement*)teq->add(COLLADA_ELEMENT_COLOR);
+                domAny *any = (domAny*)(daeElement*)teq->add( COLLADA_ELEMENT_COLOR );
 
                 std::ostringstream colVal;
                 colVal << dCol.r() << " " << dCol.g() << " " << dCol.b() << " " << dCol.a();
@@ -298,15 +300,15 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
             }
         }
 
-        cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add(COLLADA_ELEMENT_SPECULAR));
-        col = daeSafeCast< domCommon_color_or_texture_type_complexType::domColor >( cot->add(COLLADA_ELEMENT_COLOR));
+        cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add( COLLADA_ELEMENT_SPECULAR ) );
+        col = daeSafeCast< domCommon_color_or_texture_type_complexType::domColor >( cot->add( COLLADA_ELEMENT_COLOR ) );
         col->getValue().append( sCol.r() );
         col->getValue().append( sCol.g() );
         col->getValue().append( sCol.b() );
         col->getValue().append( sCol.a() );
 
-        domCommon_float_or_param_type *fop = daeSafeCast< domCommon_float_or_param_type >( phong->add(COLLADA_ELEMENT_SHININESS));
-        domCommon_float_or_param_type_complexType::domFloat *f = daeSafeCast< domCommon_float_or_param_type_complexType::domFloat >( fop->add(COLLADA_ELEMENT_FLOAT));
+        domCommon_float_or_param_type *fop = daeSafeCast< domCommon_float_or_param_type >( phong->add( COLLADA_ELEMENT_SHININESS ) );
+        domCommon_float_or_param_type_complexType::domFloat *f = daeSafeCast< domCommon_float_or_param_type_complexType::domFloat >( fop->add(COLLADA_ELEMENT_FLOAT) );
         f->setValue( shininess );
     }
 
@@ -364,9 +366,9 @@ void daeWriter::processMaterial( osg::StateSet *ss, domInstance_geometry *ig, co
             }
             else if (tex != NULL && tex->getImage( 0 ) != NULL)
             {
-                domCommon_transparent_type *ctt = daeSafeCast< domCommon_transparent_type >( phong->add(COLLADA_ELEMENT_TRANSPARENT));
+                domCommon_transparent_type *ctt = daeSafeCast< domCommon_transparent_type >( phong->add(COLLADA_ELEMENT_TRANSPARENT) );
                 ctt->setOpaque( FX_OPAQUE_ENUM_A_ONE );
-                domCommon_color_or_texture_type_complexType::domTexture * dtex = daeSafeCast< domCommon_color_or_texture_type_complexType::domTexture >( ctt->add(COLLADA_ELEMENT_TEXTURE));
+                domCommon_color_or_texture_type_complexType::domTexture * dtex = daeSafeCast< domCommon_color_or_texture_type_complexType::domTexture >( ctt->add(COLLADA_ELEMENT_TEXTURE) );
                 
     #ifndef EARTH_TEX
                 std::string sampName = efName + "-sampler";

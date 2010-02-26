@@ -18,20 +18,23 @@
 #include <dom/domInstanceWithExtra.h>
 #include <dom/domConstants.h>
 #include <osg/MatrixTransform>
+#include <osg/PositionAttitudeTransform>
 
-using namespace osgdae;
+using namespace osgDAE;
 
-daeReader::daeReader(DAE *dae_, bool strictTransparency) :
-                  m_AssetUnitName("meter"),
-                  m_AssetUnitMeter(1.0),
-                  m_AssetUp_axis(UPAXISTYPE_Y_UP),
-                  dae(dae_),
-                  rootNode(NULL),
-                  m_numlights(0),
-                  currentInstance_effect(NULL),
-                  currentEffect(NULL),
-                  m_AuthoringTool(UNKNOWN),
-                  m_StrictTransparency(strictTransparency)
+daeReader::daeReader(DAE *dae_, bool strictTransparency) : 
+                  _dae(dae_),
+                  _rootNode(NULL),
+                  _visualScene(NULL),
+                  _numlights(0),
+                  _currentInstance_effect(NULL),
+                  _currentEffect(NULL),
+                  _authoringTool(UNKNOWN),
+                  _strictTransparency(strictTransparency),
+                  _invertTransparency(false),
+                  _assetUnitName("meter"),
+                  _assetUnitMeter(1.0),
+                  _assetUp_axis(UPAXISTYPE_Y_UP)
 {
 }
 
@@ -41,69 +44,97 @@ daeReader::~daeReader()
 
 bool daeReader::convert( const std::string &fileURI ) 
 {
+    // Clear caches
+    _geometryMap.clear();
+    _materialMap.clear();
+    _materialMap2.clear();
+
     daeElement *colladaElement;
-    domInstance_rigid_body *irb;
+    
 
     daeInt count, result;
 
-    daeInt res = dae->load( fileURI.c_str() );
+    _document = _dae->open(fileURI);
     
-    if( res != DAE_OK && res != DAE_ERR_COLLECTION_ALREADY_EXISTS) 
+    if (!_document) 
     {
         osg::notify( osg::WARN ) << "Load failed in COLLADA DOM" << std::endl;
         return false;
     }
     osg::notify( osg::INFO ) << "URI loaded: " << fileURI << std::endl;
 
-    domCOLLADA* document = dae->getDom( fileURI.c_str() );
-
-    if ( !document->getScene() || !document->getScene()->getInstance_visual_scene() ) 
+    if ( !_document->getScene() || !_document->getScene()->getInstance_visual_scene() ) 
     {
         osg::notify( osg::WARN ) << "No scene found!" << std::endl;
         return false;
     }
 
-    if (document->getAsset())
+    if (_document->getAsset())
     {
-        const domAsset::domContributor_Array& ContributorArray = document->getAsset()->getContributor_array();
+        const domAsset::domContributor_Array& ContributorArray = _document->getAsset()->getContributor_array();
         size_t NumberOfContributors = ContributorArray.getCount();
         size_t CurrentContributor;
         for (CurrentContributor = 0; CurrentContributor < NumberOfContributors; CurrentContributor++)
         {
             if (ContributorArray[CurrentContributor]->getAuthoring_tool())
             {
+                const char szBlender[] = "Blender";
+                const char szDazStudio[] = "DAZ|Studio";
+                const char szSketchup[] = "Google SketchUp";
+                const char szFbx[] = "FBX";
+                const char szMaya[] = "Maya";
+
                 xsString Tool = ContributorArray[CurrentContributor]->getAuthoring_tool()->getValue();
-                if (strncmp(Tool, "Google SketchUp", 15) == 0)
-                    m_AuthoringTool = GOOGLE_SKETCHUP;
+
+                if (strncmp(Tool, szBlender, strlen(szBlender)) == 0)
+                    _authoringTool = BLENDER;
+                else if (strncmp(Tool, szDazStudio, strlen(szDazStudio)) == 0)
+                    _authoringTool = DAZ_STUDIO;
+                else if (strncmp(Tool, szFbx, strlen(szFbx)) == 0)
+                    _authoringTool = FBX_CONVERTER;
+                else if (strncmp(Tool, szSketchup, strlen(szSketchup)) == 0)
+                    _authoringTool = GOOGLE_SKETCHUP;
+                else if (strncmp(Tool, szMaya, strlen(szMaya)) == 0)
+                    _authoringTool = MAYA;
             }
         }
-        if (document->getAsset()->getUnit())
+        if (_document->getAsset()->getUnit())
         {
-            if (NULL != document->getAsset()->getUnit()->getName())
-                m_AssetUnitName = std::string(document->getAsset()->getUnit()->getName());
-            if (0 != document->getAsset()->getUnit()->getMeter())
-                m_AssetUnitMeter = document->getAsset()->getUnit()->getMeter();
+            if (NULL != _document->getAsset()->getUnit()->getName())
+                _assetUnitName = std::string(_document->getAsset()->getUnit()->getName());
+            if (0 != _document->getAsset()->getUnit()->getMeter())
+                _assetUnitMeter = _document->getAsset()->getUnit()->getMeter();
         }
-        if (document->getAsset()->getUp_axis())
-            m_AssetUp_axis = document->getAsset()->getUp_axis()->getValue();
+        if (_document->getAsset()->getUp_axis())
+            _assetUp_axis = _document->getAsset()->getUp_axis()->getValue();
     }
 
-    if (dae->getDatabase()) 
+    domInstanceWithExtra *ivs = _document->getScene()->getInstance_visual_scene();
+    _visualScene = daeSafeCast< domVisual_scene >( getElementFromURI( ivs->getUrl() ) );
+    if ( _visualScene == NULL ) 
     {
-        count = dae->getDatabase()->getElementCount(NULL, COLLADA_TYPE_INSTANCE_RIGID_BODY, NULL);
+        osg::notify( osg::WARN ) << "Unable to locate visual scene!" << std::endl;
+        return false;
+    }
+
+    if (daeDatabase* database = _dae->getDatabase()) 
+    {
+        _invertTransparency = findInvertTransparency(database);
 
         // build a std::map for lookup if Group or PositionAttitudeTransform should be created, 
         // i.e, make it easy to check if a instance_rigid_body targets a visual node
+        domInstance_rigid_body *pDomInstanceRigidBody;
+        count = database->getElementCount(NULL, COLLADA_TYPE_INSTANCE_RIGID_BODY, NULL);
         for (int i=0; i<count; i++) 
         {
-            result = dae->getDatabase()->getElement(&colladaElement, i, NULL, COLLADA_TYPE_INSTANCE_RIGID_BODY);
+            result = database->getElement(&colladaElement, i, NULL, COLLADA_TYPE_INSTANCE_RIGID_BODY);
 
             if (result == DAE_OK) 
             {
-                irb = daeSafeCast<domInstance_rigid_body>(colladaElement);
-                if (irb) 
+                pDomInstanceRigidBody = daeSafeCast<domInstance_rigid_body>(colladaElement);
+                if (pDomInstanceRigidBody) 
                 {
-                    domNode *node = daeSafeCast<domNode>(irb->getTarget().getElement());
+                    domNode *node = daeSafeCast<domNode>(pDomInstanceRigidBody->getTarget().getElement());
                     if (node && node->getId()) 
                     {
                         _targetMap[ std::string(node->getId()) ] = true;          
@@ -111,23 +142,176 @@ bool daeReader::convert( const std::string &fileURI )
                 }
             }
         }
+
+        // Build a map of elements that are targetted by animations
+        count = database->getElementCount(NULL, COLLADA_TYPE_CHANNEL, NULL);
+        for (int i=0; i<count; i++) 
+        {
+            result = database->getElement(&colladaElement, i, NULL, COLLADA_TYPE_CHANNEL);
+
+            if (result == DAE_OK) 
+            {
+                domChannel* pDomChannel = daeSafeCast<domChannel>(colladaElement);
+                if (pDomChannel) 
+                {
+                    std::string target = pDomChannel->getTarget();
+                    size_t openparenthesis = target.find_first_of('(');
+                    if (openparenthesis != std::string::npos) target.erase(openparenthesis);
+                    daeSIDResolver resolver(pDomChannel, target.c_str());
+                    daeElement *pDaeElement = resolver.getElement();
+                    if (pDaeElement)
+                    {
+                        _daeElementDomChannelMap.insert(daeElementDomChannelMap::value_type(pDaeElement, pDomChannel));
+                    }
+                    else
+                    {
+                        osg::notify( osg::WARN ) << "Could not locate <channel> target "  << pDomChannel->getTarget()<< std::endl;
+                    }
+                }
+            }
+        }
+
+        // Find all nodes that are used as bones. Note that while many files
+        // identify nodes with type="JOINT", some don't do this, while others
+        // identify every node as a joint, making it meaningless.
+        std::vector<domInstance_controller*> instanceControllers;
+        database->typeLookup(instanceControllers);
+        for (size_t i = 0; i < instanceControllers.size(); ++i) 
+        {
+            domInstance_controller* pInstanceController = instanceControllers[i];
+
+            domController *pDomController = daeSafeCast<domController>(getElementFromURI(pInstanceController->getUrl()));
+            if (!pDomController)
+            {
+                osg::notify( osg::WARN ) << "Failed to locate controller " << pInstanceController->getUrl().getURI() << std::endl;
+                continue;
+            }
+
+            const domInstance_controller::domSkeleton_Array& domSkeletonURIs = pInstanceController->getSkeleton_array();
+            std::vector<daeElement*> searchIn;
+
+            for (size_t i = 0; i < domSkeletonURIs.getCount(); ++i)
+            {
+                if (daeElement* el = getElementFromURI(domSkeletonURIs[i]->getValue()))
+                {
+                    searchIn.push_back(el);
+                    if (domNode* pJoint = daeSafeCast<domNode>(el))
+                    {
+                        _jointSet.insert(pJoint);
+                    }
+                }
+            }
+
+            if (searchIn.empty())
+            {
+                searchIn.push_back(_visualScene);
+            }
+
+            const domSkin* pSkin = pDomController->getSkin();
+            if (!pSkin) continue;
+            const domSkin::domJoints* pJoints = pSkin->getJoints();
+            if (!pJoints) continue;
+            const domInputLocal_Array& inputURIs = pJoints->getInput_array();
+
+            domSource* pDomJointsSource = NULL; 
+            for (size_t i=0; i < inputURIs.getCount(); i++)
+            {
+                if (!strcmp(inputURIs[i]->getSemantic(), COMMON_PROFILE_INPUT_JOINT))
+                {
+                    pDomJointsSource = daeSafeCast<domSource>(getElementFromURI(inputURIs[i]->getSource()));
+                    if (!pDomJointsSource)
+                    {
+                        osg::notify( osg::WARN ) << "Could not find skin joints source '" << inputURIs[i]->getSource().getURI() << "'" <<std::endl;
+                    }
+                }
+            }
+
+            if (!pDomJointsSource)
+            {
+            }
+            else if (domIDREF_array* pDomIDREFs = pDomJointsSource->getIDREF_array())
+            {
+                for (size_t i = 0; i < pDomIDREFs->getCount(); ++i)
+                {
+                    if (domNode* pJoint = daeSafeCast<domNode>(getElementFromIDRef(pDomIDREFs->getValue().get(i))))
+                    {
+                        _jointSet.insert(pJoint);
+                    }
+                }
+            }
+            else if (domName_array* pDomNames = pDomJointsSource->getName_array())
+            {
+                for (size_t i = 0; i < pDomNames->getCount(); ++i)
+                {
+                    daeString target = pDomNames->getValue().get(i);
+                    for (size_t j = 0; j < searchIn.size(); ++j)
+                    {
+                        daeSIDResolver resolver(searchIn[j], target);
+                        if (domNode* pJoint = daeSafeCast<domNode>(resolver.getElement()))
+                        {
+                            _jointSet.insert(pJoint);
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    domInstanceWithExtra *ivs = document->getScene()->getInstance_visual_scene();
-    domVisual_scene *vs = daeSafeCast< domVisual_scene >( getElementFromURI( ivs->getUrl() ) );
-    if ( vs == NULL ) 
+    // Build the actual scene graph based on the visual scene
+    _rootNode = processVisualScene( _visualScene );
+
+    osgAnimation::BasicAnimationManager* pOsgAnimationManager = processAnimationLibraries(_document);
+    if (pOsgAnimationManager)
     {
-        osg::notify( osg::WARN ) << "Unable to locate visual scene!" << std::endl;
-        return false;
+        _rootNode->addUpdateCallback(pOsgAnimationManager);
     }
-    rootNode = processVisualScene( vs );
-
+    
     return true;
 }
 
-osg::Node* daeReader::processVisualScene( domVisual_scene *scene )
+void daeReader::addChild(osg::Group* group, osg::Node* node)
 {
-    osg::Node *retVal; 
+    if (dynamic_cast<osgAnimation::Bone*>(node))
+    {
+        unsigned index = 0;
+        while (index < group->getNumChildren() &&
+            dynamic_cast<osgAnimation::Bone*>(group->getChild(index)))
+        {
+            ++index;
+        }
+        group->insertChild(index, node);
+    }
+    else
+    {
+        group->addChild(node);
+    }
+}
+
+osg::Group* daeReader::turnZUp()
+{
+    osg::PositionAttitudeTransform* pat = NULL;
+    
+    // If not Z axis up we need to rotate scene to bring the Z axis up
+    if (_assetUp_axis != UPAXISTYPE_Z_UP)
+    {
+        pat = new osg::PositionAttitudeTransform();
+        if (_assetUp_axis == UPAXISTYPE_Y_UP)
+        {
+            pat->setAttitude(osg::Quat(osg::inDegrees(90.0f), osg::Vec3(1.0f,0.0f,0.0f)));
+        }
+        else //(m_AssetUp_axis == UPAXISTYPE_X_UP)
+        {
+            pat->setAttitude(osg::Quat(osg::inDegrees(90.0f), osg::Vec3(0.0f,1.0f,0.0f)));
+        }
+    }
+
+    _assetUp_axis = UPAXISTYPE_Z_UP;
+    return pat;
+}
+
+osg::Group* daeReader::processVisualScene( domVisual_scene *scene )
+{
+    osg::Group *retVal; 
     _rootStateSet = new osg::StateSet();
 
     unsigned int nbVisualSceneGroup=scene->getNode_array().getCount();
@@ -137,36 +321,48 @@ osg::Node* daeReader::processVisualScene( domVisual_scene *scene )
         retVal = new osg::Group();
         retVal->setName("Empty Collada scene");
     }
-    else if (nbVisualSceneGroup==1)
-    {
-        osg::Node *node = processNode( scene->getNode_array()[0] );
-        if ( node != NULL )
-           retVal = node;
-        else
-        {
-           retVal = new osg::Group();
-           retVal->setName("Empty Collada scene (import failure)");
-        }
-    }
     else
-    { 
-       retVal = new osg::Group();
-       retVal->setName("Collada visual scene group");
-       for ( size_t i = 0; i < scene->getNode_array().getCount(); i++ )
-       {
-          osg::Node *node = processNode( scene->getNode_array()[i] );
-          if ( node != NULL )
-          {
-              retVal->asGroup()->addChild( node );
-          }
-       }
+    {
+        retVal = turnZUp(); 
+
+        if (!retVal)
+        {
+            retVal = new osg::Group;
+        }
+
+        _skinInstanceControllers.clear();
+
+        const domNode_Array& node_array = scene->getNode_array();
+        for (size_t i = 0; i < node_array.getCount(); i++)
+        {
+            if (osg::Node* node = processNode(node_array[i], false))
+            {
+                addChild(retVal, node);
+            }
+        }
+
+        processSkins();
+
+        if (retVal->getName().empty())
+        {
+            if (retVal->getNumChildren())
+            {
+                retVal->setName("Collada visual scene group");
+            }
+            else
+            {
+                retVal->setName("Empty Collada scene (import failure)");
+            }
+        }
     }
     retVal->setStateSet(_rootStateSet.get());
 
     return retVal;
 }
 
-osg::Node* daeReader::processExtras(domNode *node)
+
+
+osg::Group* daeReader::processExtras(domNode *node)
 {
     // See if one of the extras contains OpenSceneGraph specific information
     unsigned int numExtras = node->getExtra_array().getCount();
@@ -303,7 +499,7 @@ domTechnique* daeReader::getOpenSceneGraphProfile(domExtra* extra)
 // 0..* <instance_node>
 // 0..* <node>
 // 0..* <extra>
-osg::Node* daeReader::processNode( domNode *node )
+osg::Node* daeReader::processNode( domNode *node, bool skeleton)
 {
     // First we need to determine what kind of OSG node we need
     // If there exist any of the <lookat>, <matrix>, <rotate>, <scale>, <skew>, <translate> elements
@@ -315,17 +511,26 @@ osg::Node* daeReader::processNode( domNode *node )
                         node->getMatrix_array().getCount() +
                         node->getSkew_array().getCount();
 
-    // See if it is targeted
+    // See if it is targeted by an animation
     bool targeted = false;
     if (node->getId()) 
     {
         targeted = _targetMap[std::string(node->getId())];
     }
 
-    osg::Node *resultNode;
-    if (coordcount > 0 || targeted ) 
+
+    osg::Group *resultNode = NULL;
+
+    bool isBone = skeleton || isJoint(node);
+
+    if (coordcount > 0 || targeted || isBone) 
     {
-        resultNode = processOsgMatrixTransform(node);
+        // TODO
+        // single matrix -> MatrixTransform
+        // scale, euler, translate -> PositionAttitudeTransform
+        // if targeted -> StackedTransform
+        // otherwise a flattened -> MatrixTransform
+        resultNode = processOsgMatrixTransform(node, isBone);
     }
     else
     {
@@ -336,73 +541,89 @@ osg::Node* daeReader::processNode( domNode *node )
     // See if there is generic node info attached as extra
     processNodeExtra(resultNode, node);
 
-    resultNode->setName( node->getId() ? node->getId() : "" );
-
-    osg::Group* groupNode = resultNode->asGroup();
-
-    if (groupNode)
+    if (resultNode->getName().empty())
     {
-        // 0..* <instance_camera>
-        domInstance_camera_Array cameraInstanceArray = node->getInstance_camera_array();
-        for ( size_t i = 0; i < cameraInstanceArray.getCount(); i++ ) 
-        {
-            daeElement *el = getElementFromURI( cameraInstanceArray[i]->getUrl());
-            domCamera *c = daeSafeCast< domCamera >( el );
+        resultNode->setName( node->getId() ? node->getId() : "" );
+    }
 
-            if (c)
-                groupNode->addChild( processCamera( c ));
-            else
-                osg::notify( osg::WARN ) << "Failed to locate camera " << cameraInstanceArray[i]->getUrl().getURI() << std::endl;
+    osg::Group* attachTo = resultNode;
+
+    if (!skeleton && isJoint(node))
+    {
+        skeleton = true;
+        osgAnimation::Skeleton* pOsgSkeleton = getOrCreateSkeleton(node);
+        pOsgSkeleton->addChild(resultNode);
+        attachTo = resultNode;
+        resultNode = pOsgSkeleton;
+    }
+
+    // 0..* <instance_camera>
+    const domInstance_camera_Array& cameraInstanceArray = node->getInstance_camera_array();
+    for ( size_t i = 0; i < cameraInstanceArray.getCount(); i++ ) 
+    {
+        daeElement *el = getElementFromURI( cameraInstanceArray[i]->getUrl());
+        domCamera *c = daeSafeCast< domCamera >( el );
+
+        if (c)
+            addChild(attachTo, processCamera( c ));
+        else
+            osg::notify( osg::WARN ) << "Failed to locate camera " << cameraInstanceArray[i]->getUrl().getURI() << std::endl;
+    }
+
+    // 0..* <instance_controller>
+    const domInstance_controller_Array& controllerInstanceArray = node->getInstance_controller_array();
+    for ( size_t i = 0; i < controllerInstanceArray.getCount(); i++ ) 
+    {
+        osg::Node* pOsgNode = processInstanceController( controllerInstanceArray[i]);
+        
+        // A skin controller may return NULL,  since the RigGeometry is added as 
+        // child of the skeleton and the skeleton already is added to the scenegraph
+        if (pOsgNode)
+        {
+            addChild(attachTo, pOsgNode);
         }
+    }
 
-        // 0..* <instance_controller>
-        domInstance_controller_Array controllerInstanceArray = node->getInstance_controller_array();
-        for ( size_t i = 0; i < controllerInstanceArray.getCount(); i++ ) 
-        {
-            groupNode->addChild( processInstanceController( controllerInstanceArray[i] ));
-        }
+    // 0..* <instance_geometry>
+    const domInstance_geometry_Array& geometryInstanceArray = node->getInstance_geometry_array();
+    for ( size_t i = 0; i < geometryInstanceArray.getCount(); i++ ) 
+    {
+        addChild(attachTo, processInstanceGeometry( geometryInstanceArray[i] ));
+    }
 
-        // 0..* <instance_geometry>
-        domInstance_geometry_Array geometryInstanceArray = node->getInstance_geometry_array();
-        for ( size_t i = 0; i < geometryInstanceArray.getCount(); i++ ) 
-        {
-            groupNode->addChild( processInstanceGeometry( geometryInstanceArray[i] ));
-        }
+    // 0..* <instance_light>
+    const domInstance_light_Array& lightInstanceArray = node->getInstance_light_array();
+    for ( size_t i = 0; i < lightInstanceArray.getCount(); i++ ) 
+    {
+        daeElement *el = getElementFromURI( lightInstanceArray[i]->getUrl());
+        domLight *pDomLight = daeSafeCast< domLight >( el );
+        
+        if (pDomLight)
+            addChild(attachTo, processLight(pDomLight));
+        else
+            osg::notify( osg::WARN ) << "Failed to locate light " << lightInstanceArray[i]->getUrl().getURI() << std::endl;
+    }
 
-        // 0..* <instance_light>
-        domInstance_light_Array lightInstanceArray = node->getInstance_light_array();
-        for ( size_t i = 0; i < lightInstanceArray.getCount(); i++ ) 
-        {
-            daeElement *el = getElementFromURI( lightInstanceArray[i]->getUrl());
-            domLight *l = daeSafeCast< domLight >( el );
-            
-            if (l)
-                groupNode->addChild( processLight( l ));
-            else
-                osg::notify( osg::WARN ) << "Failed to locate light " << lightInstanceArray[i]->getUrl().getURI() << std::endl;
-        }
+    // 0..* <instance_node>
+    const domInstance_node_Array& nodeInstanceArray = node->getInstance_node_array();
+    for ( size_t i = 0; i < nodeInstanceArray.getCount(); i++ ) 
+    {
+        daeElement *el = getElementFromURI( nodeInstanceArray[i]->getUrl());
+        domNode *n = daeSafeCast< domNode >( el );
 
-        // 0..* <instance_node>
-        domInstance_node_Array nodeInstanceArray = node->getInstance_node_array();
-        for ( size_t i = 0; i < nodeInstanceArray.getCount(); i++ ) 
-        {
-            daeElement *el = getElementFromURI( nodeInstanceArray[i]->getUrl());
-            domNode *n = daeSafeCast< domNode >( el );
-
-            if (n)
-                // Recursive call
-                groupNode->addChild( processNode( n ));
-            else
-                osg::notify( osg::WARN ) << "Failed to locate node " << nodeInstanceArray[i]->getUrl().getURI() << std::endl;
-        }
-
-        // 0..* <node>
-        domNode_Array nodeArray = node->getNode_array();
-        for ( size_t i = 0; i < nodeArray.getCount(); i++ ) 
-        {
+        if (n)
             // Recursive call
-            groupNode->addChild( processNode( nodeArray[i] ));
-        }
+            addChild(attachTo, processNode( n, skeleton ));
+        else
+            osg::notify( osg::WARN ) << "Failed to locate node " << nodeInstanceArray[i]->getUrl().getURI() << std::endl;
+    }
+
+    // 0..* <node>
+    const domNode_Array& nodeArray = node->getNode_array();
+    for ( size_t i = 0; i < nodeArray.getCount(); i++ ) 
+    {
+        // Recursive call
+        addChild(attachTo, processNode( nodeArray[i], skeleton ));
     }
 
     return resultNode;

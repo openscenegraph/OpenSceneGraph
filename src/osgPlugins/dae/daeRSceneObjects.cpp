@@ -27,9 +27,9 @@
 #include <osg/CameraView>
 #include <osg/LightModel>
 
-using namespace osgdae;
+using namespace osgDAE;
 
-osg::Node* daeReader::processOsgMultiSwitch(domTechnique* teq)
+osg::Group* daeReader::processOsgMultiSwitch(domTechnique* teq)
 {
     osgSim::MultiSwitch* msw = new osgSim::MultiSwitch;
 
@@ -86,7 +86,7 @@ osg::Node* daeReader::processOsgMultiSwitch(domTechnique* teq)
     return msw;
 }
 
-osg::Node* daeReader::processOsgSwitch(domTechnique* teq)
+osg::Group* daeReader::processOsgSwitch(domTechnique* teq)
 {
     osg::Switch* sw = new osg::Switch;
 
@@ -112,7 +112,7 @@ osg::Node* daeReader::processOsgSwitch(domTechnique* teq)
     return sw;
 }
 
-osg::Node* daeReader::processOsgSequence(domTechnique* teq)
+osg::Group* daeReader::processOsgSequence(domTechnique* teq)
 {
     osg::Sequence* sq = new osg::Sequence;
 
@@ -219,7 +219,7 @@ osg::Node* daeReader::processOsgSequence(domTechnique* teq)
 }
 
 
-osg::Node* daeReader::processOsgLOD(domTechnique* teq)
+osg::Group* daeReader::processOsgLOD(domTechnique* teq)
 {
     osg::LOD* lod = new osg::LOD;
 
@@ -323,7 +323,7 @@ osg::Node* daeReader::processOsgLOD(domTechnique* teq)
 // 0..* <extra>
 osg::Node* daeReader::processLight( domLight *dlight )
 {
-    if (m_numlights >= 7)
+    if (_numlights >= 7)
     {
         osg::notify( osg::WARN ) << "More than 8 lights may not be supported by OpenGL driver." << std::endl;
     }
@@ -343,12 +343,12 @@ osg::Node* daeReader::processLight( domLight *dlight )
 
     osg::Light* light = new osg::Light();
     light->setPosition(osg::Vec4(0,0,0,1));
-    light->setLightNum(m_numlights);
+    light->setLightNum(_numlights);
 
     // Enable OpenGL lighting
     _rootStateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
     // Enable this OpenGL light
-    _rootStateSet->setMode(GL_LIGHT0 + m_numlights++, osg::StateAttribute::ON);
+    _rootStateSet->setMode(GL_LIGHT0 + _numlights++, osg::StateAttribute::ON);
     
     // Set ambient of lightmodel to zero
     // Ambient lights are added as separate lights with only an ambient term

@@ -383,6 +383,116 @@ class OSG_EXPORT Matrixf
             return  r;
         }
 
+        /** Multiply by scalar. */
+        inline Matrixf operator * (value_type rhs) const
+        {
+            return Matrixf(
+                _mat[0][0]*rhs, _mat[0][1]*rhs, _mat[0][2]*rhs, _mat[0][3]*rhs,
+                _mat[1][0]*rhs, _mat[1][1]*rhs, _mat[1][2]*rhs, _mat[1][3]*rhs,
+                _mat[2][0]*rhs, _mat[2][1]*rhs, _mat[2][2]*rhs, _mat[2][3]*rhs,
+                _mat[3][0]*rhs, _mat[3][1]*rhs, _mat[3][2]*rhs, _mat[3][3]*rhs);
+        }
+
+        /** Unary multiply by scalar. */
+        inline Matrixf& operator *= (value_type rhs)
+        {
+            _mat[0][0]*=rhs;
+            _mat[0][1]*=rhs;
+            _mat[0][2]*=rhs;
+            _mat[0][3]*=rhs;
+            _mat[1][0]*=rhs;
+            _mat[1][1]*=rhs;
+            _mat[1][2]*=rhs;
+            _mat[1][3]*=rhs;
+            _mat[2][0]*=rhs;
+            _mat[2][1]*=rhs;
+            _mat[2][2]*=rhs;
+            _mat[2][3]*=rhs;
+            _mat[3][0]*=rhs;
+            _mat[3][1]*=rhs;
+            _mat[3][2]*=rhs;
+            _mat[3][3]*=rhs;
+            return *this;
+        }  
+
+        /** Divide by scalar. */
+        inline Matrixf operator / (value_type rhs) const
+        {
+            return Matrixf(
+                _mat[0][0]/rhs, _mat[0][1]/rhs, _mat[0][2]/rhs, _mat[0][3]/rhs,
+                _mat[1][0]/rhs, _mat[1][1]/rhs, _mat[1][2]/rhs, _mat[1][3]/rhs,
+                _mat[2][0]/rhs, _mat[2][1]/rhs, _mat[2][2]/rhs, _mat[2][3]/rhs,
+                _mat[3][0]/rhs, _mat[3][1]/rhs, _mat[3][2]/rhs, _mat[3][3]/rhs);
+        }
+
+        /** Unary divide by scalar. */
+        inline Matrixf& operator /= (value_type rhs)
+        {
+            _mat[0][0]/=rhs;
+            _mat[0][1]/=rhs;
+            _mat[0][2]/=rhs;
+            _mat[0][3]/=rhs;
+            _mat[1][0]/=rhs;
+            _mat[1][1]/=rhs;
+            _mat[1][2]/=rhs;
+            _mat[1][3]/=rhs;
+            _mat[2][0]/=rhs;
+            _mat[2][1]/=rhs;
+            _mat[2][2]/=rhs;
+            _mat[2][3]/=rhs;
+            _mat[3][0]/=rhs;
+            _mat[3][1]/=rhs;
+            _mat[3][2]/=rhs;
+            _mat[3][3]/=rhs;
+            return *this;
+        }          
+
+        /** Binary vector add. */
+        inline Matrixf operator + (const Matrixf& rhs) const
+        {
+            return Matrixf(
+                _mat[0][0] + rhs._mat[0][0],
+                _mat[0][1] + rhs._mat[0][1],
+                _mat[0][2] + rhs._mat[0][2],
+                _mat[0][3] + rhs._mat[0][3],
+                _mat[1][0] + rhs._mat[1][0],
+                _mat[1][1] + rhs._mat[1][1],
+                _mat[1][2] + rhs._mat[1][2],
+                _mat[1][3] + rhs._mat[1][3],
+                _mat[2][0] + rhs._mat[2][0],
+                _mat[2][1] + rhs._mat[2][1],
+                _mat[2][2] + rhs._mat[2][2],
+                _mat[2][3] + rhs._mat[2][3],
+                _mat[3][0] + rhs._mat[3][0],
+                _mat[3][1] + rhs._mat[3][1],
+                _mat[3][2] + rhs._mat[3][2],
+                _mat[3][3] + rhs._mat[3][3]);                         
+        }
+
+        /** Unary vector add. Slightly more efficient because no temporary
+        * intermediate object.
+        */
+        inline Matrixf& operator += (const Matrixf& rhs)
+        {
+            _mat[0][0] += rhs._mat[0][0];
+            _mat[0][1] += rhs._mat[0][1];
+            _mat[0][2] += rhs._mat[0][2];
+            _mat[0][3] += rhs._mat[0][3];
+            _mat[1][0] += rhs._mat[1][0];
+            _mat[1][1] += rhs._mat[1][1];
+            _mat[1][2] += rhs._mat[1][2];
+            _mat[1][3] += rhs._mat[1][3];
+            _mat[2][0] += rhs._mat[2][0];
+            _mat[2][1] += rhs._mat[2][1];
+            _mat[2][2] += rhs._mat[2][2];
+            _mat[2][3] += rhs._mat[2][3];
+            _mat[3][0] += rhs._mat[3][0];
+            _mat[3][1] += rhs._mat[3][1];
+            _mat[3][2] += rhs._mat[3][2];
+            _mat[3][3] += rhs._mat[3][3];
+            return *this;
+        }            
+
     protected:
         value_type _mat[4][4];
 

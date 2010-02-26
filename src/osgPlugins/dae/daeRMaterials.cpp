@@ -18,6 +18,7 @@
 #include <dae/domAny.h>
 #include <dom/domCOLLADA.h>
 #include <dom/domProfile_COMMON.h>
+#include <dom/domConstants.h>
 
 #include <osg/BlendColor>
 #include <osg/BlendFunc>
@@ -29,8 +30,69 @@
 
 #include <sstream>
 
-using namespace osgdae;
+using namespace osgDAE;
 
+template <typename T>
+void daeReader::getTransparencyCounts(daeDatabase* database, int& zero, int& one) const
+{
+    std::vector<T*> constantVec;
+    database->typeLookup(constantVec);
+
+    for (size_t i = 0; i < constantVec.size(); ++i)
+    {
+        if (const domCommon_transparent_type* pTransparent = constantVec[i]->getTransparent())
+        {
+            domFx_opaque_enum opaque = pTransparent->getOpaque();
+            if (opaque == FX_OPAQUE_ENUM_RGB_ZERO)
+            {
+                ++one;
+                continue;
+            }
+        }
+
+        if (const domCommon_float_or_param_type* pTransparency = constantVec[i]->getTransparency())
+        {
+            float transparency;
+
+            domFloat transparencyParam = 1.0;
+            if (pTransparency->getFloat())
+            {
+                transparency = pTransparency->getFloat()->getValue();
+            }
+            else if (pTransparency->getParam() &&
+                GetFloatParam(pTransparency->getParam()->getRef(), transparencyParam))
+            {
+                transparency = transparencyParam;
+            }
+            else
+            {
+                continue;
+            }
+
+            if (transparency < 0.01f)
+            {
+                ++zero;
+            }
+            else if (transparency > 0.99f)
+            {
+                ++one;
+            }
+        }
+
+    }
+
+}
+
+bool daeReader::findInvertTransparency(daeDatabase* database) const
+{
+    int zero = 0, one = 0;
+    getTransparencyCounts<domProfile_COMMON::domTechnique::domConstant>(database, zero, one);
+    getTransparencyCounts<domProfile_COMMON::domTechnique::domLambert>(database, zero, one);
+    getTransparencyCounts<domProfile_COMMON::domTechnique::domPhong>(database, zero, one);
+    getTransparencyCounts<domProfile_COMMON::domTechnique::domBlinn>(database, zero, one);
+
+    return zero > one;
+}
 
 // <bind_material>
 // elements:
@@ -63,7 +125,7 @@ void daeReader::processBindMaterial( domBind_material *bm, domGeometry *geom, os
     {
         osg::Drawable* drawable = geode->getDrawable(i);
         std::string materialName = drawable->getName();
-        ReaderGeometry *cachedGeometry = dynamic_cast<ReaderGeometry*>(cachedGeode->getDrawable(i)->asGeometry());
+        osg::Geometry *cachedGeometry = dynamic_cast<osg::Geometry*>(cachedGeode->getDrawable(i)->asGeometry());
         
         domInstance_material_Array &ima = bm->getTechnique_common()->getInstance_material_array();
         std::string symbol;
@@ -79,8 +141,8 @@ void daeReader::processBindMaterial( domBind_material *bm, domGeometry *geom, os
                 {
                     // Check material cache if this material already exists
                     osg::StateSet* ss;
-                    domMaterialStateSetMap::iterator iter = materialMap.find( mat );
-                    if ( iter != materialMap.end() )
+                    domMaterialStateSetMap::iterator iter = _materialMap.find( mat );
+                    if (iter != _materialMap.end() )
                     {
                         // Reuse material
                         ss = iter->second.get();
@@ -90,12 +152,10 @@ void daeReader::processBindMaterial( domBind_material *bm, domGeometry *geom, os
                         // Create new material
                         ss = new osg::StateSet;
                         processMaterial(ss, mat);
-                        materialMap.insert(std::make_pair(mat, ss));
+                        _materialMap.insert(std::make_pair(mat, ss));
                     }
                     drawable->setStateSet(ss);
                     // Need to process bind_vertex_inputs here
-                    // This all feels like a horrible kludge to me
-                    // I wish somebody with a better knowledge of Collada and OSG than me would have a go at it!
                     // 1. Clear the texcoord arrays and associated texcoord vertex indices
                     // from the current (cloned) drawable.
                     osg::Geometry *clonedGeometry = drawable->asGeometry();
@@ -105,102 +165,13 @@ void daeReader::processBindMaterial( domBind_material *bm, domGeometry *geom, os
                         break;
                     }
                     clonedGeometry->getTexCoordArrayList().clear();
+
                     // 2. For each possible texture unit find the correct texcoord array and 
-                    // indices from the original (uncloned) drawable and place in the cloned drawable
+                    // indices from the cached drawable and place in the cloned drawable
                     // in the correct texture unit slot
-                    std::string TransparencyMapTexcoordName;
-                    osg::Texture2D *Texture;
-                    if (NULL != (Texture = dynamic_cast<osg::Texture2D*>(ss->getTextureAttribute(AMBIENT_OCCLUSION_UNIT, osg::StateAttribute::TEXTURE))))
-                    {
-                        std::string AmbientOcclusionTexcoordName = Texture->getName();
-                        if (!AmbientOcclusionTexcoordName.empty())
-                        {
-                            domInstance_material::domBind_vertex_input_Array &bvia = ima[j]->getBind_vertex_input_array();
-                            size_t k;
-                            for ( k = 0; k < bvia.getCount(); k++)
-                            {
-                                if (!strcmp(bvia[k]->getSemantic(), AmbientOcclusionTexcoordName.c_str()) && !strcmp(bvia[k]->getInput_semantic(), "TEXCOORD"))
-                                {
-                                    // OK - found the effect name, now see if I can find a matching set in the cachedGeometry
-                                    if (NULL != cachedGeometry)
-                                    {
-                                        std::map<int, int>::iterator iTr;
-                                        if (cachedGeometry->_TexcoordSetMap.end() != (iTr = cachedGeometry->_TexcoordSetMap.find(bvia[k]->getInput_set())))
-                                        {
-                                            // Copy the texture cordinates and indices (if any) into the cloned geometry
-                                            clonedGeometry->setTexCoordData(AMBIENT_OCCLUSION_UNIT, cachedGeometry->getTexCoordData(iTr->second));
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
-                            if (k == bvia.getCount())
-                                osg::notify( osg::WARN ) << "Failed to find matching <bind_vertex_input> for " << AmbientOcclusionTexcoordName << std::endl;
-                        }
-                    }
-                    if (NULL != (Texture = dynamic_cast<osg::Texture2D*>(ss->getTextureAttribute(MAIN_TEXTURE_UNIT, osg::StateAttribute::TEXTURE))))
-                    {
-                        std::string MainTextureTexcoordName = Texture->getName();
-                        if (!MainTextureTexcoordName.empty())
-                        {
-                            domInstance_material::domBind_vertex_input_Array &bvia = ima[j]->getBind_vertex_input_array();
-                            size_t k;
-                            for ( k = 0; k < bvia.getCount(); k++)
-                            {
-                                if (!strcmp(bvia[k]->getSemantic(), MainTextureTexcoordName.c_str()) && !strcmp(bvia[k]->getInput_semantic(), "TEXCOORD"))
-                                {
-                                    // OK - found the effect name, now see if I can find a matching set in the cachedGeometry
-                                    if (NULL != cachedGeometry)
-                                    {
-                                        std::map<int, int>::iterator iTr;
-                                        if (cachedGeometry->_TexcoordSetMap.end() != (iTr = cachedGeometry->_TexcoordSetMap.find(bvia[k]->getInput_set())))
-                                        {
-                                            // Copy the texture cordinates and indices (if any) into the cloned geometry
-                                            clonedGeometry->setTexCoordData(MAIN_TEXTURE_UNIT, cachedGeometry->getTexCoordData(iTr->second));
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
-                            if (k == bvia.getCount())
-                            {
-                                osg::notify( osg::WARN ) << "Failed to find matching <bind_vertex_input> for " << MainTextureTexcoordName << std::endl;
-                                // This may be a departure from the spec. For the time being I am only going to do this
-                                // for the MAIN_TEXTURE_UNIT.
-                                // Not found so just use the first TEXCOORD we have if any.
-                                if (cachedGeometry->_TexcoordSetMap.size() > 0)
-                                    clonedGeometry->setTexCoordData(MAIN_TEXTURE_UNIT, cachedGeometry->getTexCoordData(cachedGeometry->_TexcoordSetMap.begin()->second));
-                            }
-                        }
-                    }
-                    if (NULL != (Texture = dynamic_cast<osg::Texture2D*>(ss->getTextureAttribute(TRANSPARENCY_MAP_UNIT, osg::StateAttribute::TEXTURE))))
-                    {
-                        std::string TransparencyMapTexcoordName = Texture->getName();
-                        if (!TransparencyMapTexcoordName.empty())
-                        {
-                            domInstance_material::domBind_vertex_input_Array &bvia = ima[j]->getBind_vertex_input_array();
-                            size_t k;
-                            for ( k = 0; k < bvia.getCount(); k++)
-                            {
-                                if (!strcmp(bvia[k]->getSemantic(), TransparencyMapTexcoordName.c_str()) && !strcmp(bvia[k]->getInput_semantic(), "TEXCOORD"))
-                                {
-                                    // OK - found the effect name, now see if I can find a matching set in the cachedGeometry
-                                    if (NULL != cachedGeometry)
-                                    {
-                                        std::map<int, int>::iterator iTr;
-                                        if (cachedGeometry->_TexcoordSetMap.end() != (iTr = cachedGeometry->_TexcoordSetMap.find(bvia[k]->getInput_set())))
-                                        {
-                                            // Copy the texture cordinates and indices (if any) into the cloned geometry
-                                            clonedGeometry->setTexCoordData(TRANSPARENCY_MAP_UNIT, cachedGeometry->getTexCoordData(iTr->second));
-                                        }
-                                    }
-                                    break;
-                                }
-                            }
-                            if (k == bvia.getCount())
-                                osg::notify( osg::WARN ) << "Failed to find matching <bind_vertex_input> for " << TransparencyMapTexcoordName << std::endl;
-                        }
-                    }
+                    copyTextureCoordinateSet(ss, cachedGeometry, clonedGeometry, ima[j], AMBIENT_OCCLUSION_UNIT);
+                    copyTextureCoordinateSet(ss, cachedGeometry, clonedGeometry, ima[j], MAIN_TEXTURE_UNIT);
+                    copyTextureCoordinateSet(ss, cachedGeometry, clonedGeometry, ima[j], TRANSPARENCY_MAP_UNIT);
                 }
                 else
                 {
@@ -227,8 +198,8 @@ void daeReader::processBindMaterial( domBind_material *bm, domGeometry *geom, os
 // 0..* <extra>
 void    daeReader::processMaterial(osg::StateSet *ss, domMaterial *mat )
 {
-    currentInstance_effect = mat->getInstance_effect();
-    domEffect *effect = daeSafeCast< domEffect >( getElementFromURI( currentInstance_effect->getUrl() ) );
+    _currentInstance_effect = mat->getInstance_effect();
+    domEffect *effect = daeSafeCast< domEffect >( getElementFromURI( _currentInstance_effect->getUrl() ) );
     if (effect)
     {
         processEffect(ss, effect);
@@ -259,14 +230,14 @@ void daeReader::processEffect(osg::StateSet *ss, domEffect *effect )
     for ( size_t i = 0; i < effect->getFx_profile_abstract_array().getCount(); i++ )
     {
         domProfile_COMMON *pc = daeSafeCast< domProfile_COMMON >( effect->getFx_profile_abstract_array()[i] );
-        if ( pc != NULL )
+        if (pc != NULL )
         {
-            if ( hasCOMMON )
+            if (hasCOMMON )
             {
                 osg::notify( osg::WARN ) << "Effect already has a profile_COMMON. Skipping this one" << std::endl;
                 continue;
             }
-            currentEffect = effect;
+            _currentEffect = effect;
             processProfileCOMMON(ss, pc);
             hasCOMMON = true;
             continue;
@@ -345,21 +316,21 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
     // 0..1 <transparent>
     // 0..1 <transparency>
     // 0..1 <index_of_refraction>
-    if ( b != NULL )
+    if (b != NULL )
     {
-        osg::StateAttribute *EmissionStateAttribute = NULL;
-        osg::StateAttribute *AmbientStateAttribute = NULL;
-        osg::StateAttribute *DiffuseStateAttribute = NULL;
-        processColorOrTextureType( b->getEmission(), osg::Material::EMISSION, mat.get(), NULL, &EmissionStateAttribute );
+        osg::Texture2D *EmissionStateAttribute = NULL;
+        osg::Texture2D *AmbientStateAttribute = NULL;
+        osg::Texture2D *DiffuseStateAttribute = NULL;
+        processColorOrTextureType(ss, b->getEmission(), osg::Material::EMISSION, mat.get(), NULL, &EmissionStateAttribute );
         if (NULL != EmissionStateAttribute)
             osg::notify( osg::WARN ) << "Currently no support for <texture> in Emission channel " << std::endl;
 
-        processColorOrTextureType( b->getAmbient(), osg::Material::AMBIENT, mat.get(), NULL,  &AmbientStateAttribute );
+        processColorOrTextureType(ss, b->getAmbient(), osg::Material::AMBIENT, mat.get(), NULL,  &AmbientStateAttribute );
         
-        processColorOrTextureType( b->getDiffuse(), osg::Material::DIFFUSE, mat.get(), NULL, &DiffuseStateAttribute );
-        if ( DiffuseStateAttribute != NULL ) 
+        processColorOrTextureType(ss, b->getDiffuse(), osg::Material::DIFFUSE, mat.get(), NULL, &DiffuseStateAttribute );
+        if (DiffuseStateAttribute != NULL ) 
         {
-            if ( AmbientStateAttribute != NULL ) 
+            if (AmbientStateAttribute != NULL ) 
             {
                 // Set the ambient and diffuse colour white so that the incoming fragment colour ends up as a
                 // lit white colour. I modulate both textures onto this to approximate the lighting equation.
@@ -391,11 +362,11 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         }
         else
         {
-            if ( NULL != AmbientStateAttribute  ) 
+            if (NULL != AmbientStateAttribute  ) 
                 osg::notify( osg::WARN ) << "Ambient occlusion map only supported when diffuse texture also specified" << std::endl;
         }
 
-        if(processColorOrTextureType( b->getSpecular(), osg::Material::SPECULAR, mat.get(), b->getShininess() ) && (NULL != DiffuseStateAttribute) )
+        if (processColorOrTextureType(ss, b->getSpecular(), osg::Material::SPECULAR, mat.get(), b->getShininess() ) && (NULL != DiffuseStateAttribute) )
         {
             // Diffuse texture will defeat specular highlighting
             // So postpone specular - Not sure if I should do this here
@@ -419,21 +390,21 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
     // 0..1 <transparent>
     // 0..1 <transparency>
     // 0..1 <index_of_refraction>
-    else if ( p != NULL )
+    else if (p != NULL )
     {
-        osg::StateAttribute *EmissionStateAttribute = NULL;
-        osg::StateAttribute *AmbientStateAttribute = NULL;
-        osg::StateAttribute *DiffuseStateAttribute = NULL;
-        processColorOrTextureType( p->getEmission(), osg::Material::EMISSION, mat.get(), NULL, &EmissionStateAttribute );
+        osg::Texture2D *EmissionStateAttribute = NULL;
+        osg::Texture2D *AmbientStateAttribute = NULL;
+        osg::Texture2D *DiffuseStateAttribute = NULL;
+        processColorOrTextureType(ss, p->getEmission(), osg::Material::EMISSION, mat.get(), NULL, &EmissionStateAttribute );
         if (NULL != EmissionStateAttribute)
             osg::notify( osg::WARN ) << "Currently no support for <texture> in Emission channel " << std::endl;
         
-        processColorOrTextureType( p->getAmbient(), osg::Material::AMBIENT, mat.get(), NULL,  &AmbientStateAttribute );
+        processColorOrTextureType(ss, p->getAmbient(), osg::Material::AMBIENT, mat.get(), NULL,  &AmbientStateAttribute );
         
-        processColorOrTextureType( p->getDiffuse(), osg::Material::DIFFUSE, mat.get(), NULL, &DiffuseStateAttribute );
-        if ( DiffuseStateAttribute != NULL ) 
+        processColorOrTextureType(ss, p->getDiffuse(), osg::Material::DIFFUSE, mat.get(), NULL, &DiffuseStateAttribute );
+        if (DiffuseStateAttribute != NULL ) 
         {
-            if ( AmbientStateAttribute != NULL ) 
+            if (AmbientStateAttribute != NULL ) 
             {
                 // Set the ambient and diffuse colour white so that the incoming fragment colour ends up as a
                 // lit white colour. I modulate both textures onto this to approximate the lighting equation.
@@ -465,11 +436,11 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         }
         else
         {
-            if ( NULL != AmbientStateAttribute  ) 
+            if (NULL != AmbientStateAttribute  ) 
                 osg::notify( osg::WARN ) << "Ambient occlusion map only supported when diffuse texture also specified" << std::endl;
         }
         
-        if(processColorOrTextureType( p->getSpecular(), osg::Material::SPECULAR, mat.get(), p->getShininess() ) && (NULL != DiffuseStateAttribute) )
+        if (processColorOrTextureType(ss, p->getSpecular(), osg::Material::SPECULAR, mat.get(), p->getShininess() ) && (NULL != DiffuseStateAttribute) )
         {
             // Diffuse texture will defeat specular highlighting
             // So postpone specular - Not sure if I should do this here
@@ -491,21 +462,21 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
     // 0..1 <transparent>
     // 0..1 <transparency>
     // 0..1 <index_of_refraction>
-    else if ( l != NULL )
+    else if (l != NULL )
     {
-        osg::StateAttribute *EmissionStateAttribute = NULL;
-        osg::StateAttribute *AmbientStateAttribute = NULL;
-        osg::StateAttribute *DiffuseStateAttribute = NULL;
-        processColorOrTextureType( l->getEmission(), osg::Material::EMISSION, mat.get(), NULL, &EmissionStateAttribute );
+        osg::Texture2D *EmissionStateAttribute = NULL;
+        osg::Texture2D *AmbientStateAttribute = NULL;
+        osg::Texture2D *DiffuseStateAttribute = NULL;
+        processColorOrTextureType(ss, l->getEmission(), osg::Material::EMISSION, mat.get(), NULL, &EmissionStateAttribute );
         if (NULL != EmissionStateAttribute)
             osg::notify( osg::WARN ) << "Currently no support for <texture> in Emission channel " << std::endl;
         
-        processColorOrTextureType( l->getAmbient(), osg::Material::AMBIENT, mat.get(), NULL,  &AmbientStateAttribute);
+        processColorOrTextureType(ss, l->getAmbient(), osg::Material::AMBIENT, mat.get(), NULL,  &AmbientStateAttribute);
 
-        processColorOrTextureType( l->getDiffuse(), osg::Material::DIFFUSE, mat.get(), NULL, &DiffuseStateAttribute );
-        if ( DiffuseStateAttribute != NULL ) 
+        processColorOrTextureType(ss, l->getDiffuse(), osg::Material::DIFFUSE, mat.get(), NULL, &DiffuseStateAttribute );
+        if (DiffuseStateAttribute != NULL ) 
         {
-            if ( AmbientStateAttribute != NULL ) 
+            if (AmbientStateAttribute != NULL ) 
             {
                 // Set the ambient and diffuse colour white so that the incoming fragment colour ends up as a
                 // lit white colour. I modulate both textures onto this to approximate the lighting equation.
@@ -537,7 +508,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         }
         else
         {
-            if ( NULL != AmbientStateAttribute  ) 
+            if (NULL != AmbientStateAttribute  ) 
                 osg::notify( osg::WARN ) << "Ambient occlusion map only supported when diffuse texture also specified" << std::endl;
         }
 
@@ -551,11 +522,11 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
     // 0..1 <transparent>
     // 0..1 <transparency>
     // 0..1 <index_of_refraction>
-    else if ( c != NULL )
+    else if (c != NULL )
     {
-        osg::StateAttribute *sa = NULL;
-        processColorOrTextureType( c->getEmission(), osg::Material::EMISSION, mat.get(), NULL, &sa );
-        if ( sa != NULL ) 
+        osg::Texture2D *sa = NULL;
+        processColorOrTextureType(ss, c->getEmission(), osg::Material::EMISSION, mat.get(), NULL, &sa );
+        if (sa != NULL ) 
         {
             ss->setTextureMode( MAIN_TEXTURE_UNIT, GL_TEXTURE_2D, GL_TRUE );
             ss->setTextureAttribute(MAIN_TEXTURE_UNIT, new osg::TexEnv(osg::TexEnv::REPLACE) );
@@ -585,24 +556,27 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
 //        1        texture
 //        1        texcoord
 //        0..*    extra
-bool daeReader::processColorOrTextureType(    domCommon_color_or_texture_type *cot, 
-                                            osg::Material::ColorMode channel,
-                                            osg::Material *mat,
-                                            domCommon_float_or_param_type *fop,
-                                            osg::StateAttribute **sa,
-                                            bool blinn)
+bool daeReader::processColorOrTextureType(const osg::StateSet* ss,
+                                          domCommon_color_or_texture_type *cot, 
+                                          osg::Material::ColorMode channel,
+                                          osg::Material *mat,
+                                          domCommon_float_or_param_type *fop,
+                                          osg::Texture2D **sa,
+                                          bool blinn)
 {
-    if ( cot == NULL )
+    if (cot == NULL )
     {
         return false;
     }
     bool retVal = false;
 
+    std::string texCoordSet;
+
     //osg::StateAttribute *sa = NULL;
     //TODO: Make all channels process <param ref=""> type of value
-    if ( channel == osg::Material::EMISSION )
+    if (channel == osg::Material::EMISSION )
     {
-        if ( cot->getColor() != NULL )
+        if (cot->getColor() != NULL )
         {
             domFloat4 &f4 = cot->getColor()->getValue();
             mat->setEmission( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], f4[3] ) );
@@ -621,7 +595,7 @@ bool daeReader::processColorOrTextureType(    domCommon_color_or_texture_type *c
         {
             if (sa != NULL)
             {
-                *sa = processTexture( cot->getTexture() );
+                *sa = processTexture( cot->getTexture(), ss, MAIN_TEXTURE_UNIT);
                 retVal = true;
             }
             else
@@ -632,9 +606,9 @@ bool daeReader::processColorOrTextureType(    domCommon_color_or_texture_type *c
             osg::notify( osg::WARN ) << "Missing <color>, <param> or <texture> in Emission channel " << std::endl;
         }
     }
-    else if ( channel == osg::Material::AMBIENT )
+    else if (channel == osg::Material::AMBIENT )
     {
-        if ( cot->getColor() != NULL )
+        if (cot->getColor() != NULL )
         {
             domFloat4 &f4 = cot->getColor()->getValue();
             mat->setAmbient( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], f4[3] ) );
@@ -652,7 +626,7 @@ bool daeReader::processColorOrTextureType(    domCommon_color_or_texture_type *c
         else if (cot->getTexture() != NULL)
         {
             if (sa != NULL)
-                *sa = processTexture( cot->getTexture() );
+                *sa = processTexture( cot->getTexture(), ss, AMBIENT_OCCLUSION_UNIT);
             else
             {
                 osg::notify( osg::WARN ) << "Currently no support for <texture> in Ambient channel " << std::endl;
@@ -665,31 +639,31 @@ bool daeReader::processColorOrTextureType(    domCommon_color_or_texture_type *c
             osg::notify( osg::WARN ) << "Missing <color>, <param> or <texture> in Ambient channel " << std::endl;
         }
     }
-    else if ( channel == osg::Material::DIFFUSE )
+    else if (channel == osg::Material::DIFFUSE )
     {
-        if ( cot->getColor() != NULL )
+        if (cot->getColor() != NULL )
         {
             domFloat4 &f4 = cot->getColor()->getValue();
             mat->setDiffuse( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], f4[3] ) );
             retVal = true;
         }
-        else if ( cot->getTexture() != NULL)
+        else if (cot->getTexture() != NULL)
         {
             if (sa != NULL)
-                *sa = processTexture( cot->getTexture() );
+                *sa = processTexture( cot->getTexture(), ss, MAIN_TEXTURE_UNIT);
             else
             {
                 osg::notify( osg::WARN ) << "Currently no support for <texture> in Diffuse channel " << std::endl;
                 mat->setDiffuse( osg::Material::FRONT_AND_BACK, osg::Vec4( 0.8f, 0.8f, 0.8f, 1.0f ) );
             }
             domExtra *extra = cot->getTexture()->getExtra();
-            if ( extra != NULL && extra->getType() != NULL && strcmp( extra->getType(), "color" ) == 0 )
+            if (extra != NULL && extra->getType() != NULL && strcmp( extra->getType(), "color" ) == 0 )
             {
                 //the extra data for osg. Diffuse color can happen with a texture.
                 for ( unsigned int i = 0; i < extra->getTechnique_array().getCount(); i++ )
                 {
                     domTechnique *teq = extra->getTechnique_array()[i];
-                    if ( strcmp( teq->getProfile(), "SCEI" ) == 0 )
+                    if (strcmp( teq->getProfile(), "SCEI" ) == 0 )
                     {
                         osg::Vec4 col;
                         domAny *dcol = (domAny*)(daeElement*)teq->getContents()[0];
@@ -716,9 +690,9 @@ bool daeReader::processColorOrTextureType(    domCommon_color_or_texture_type *c
             osg::notify( osg::WARN ) << "Missing <color>, <param> or <texture> in Diffuse channel " << std::endl;
         }
     }
-    else if ( channel == osg::Material::SPECULAR )
+    else if (channel == osg::Material::SPECULAR )
     {
-        if ( cot->getColor() != NULL )
+        if (cot->getColor() != NULL )
         {
             domFloat4 &f4 = cot->getColor()->getValue();
             mat->setSpecular( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], f4[3] ) );
@@ -742,7 +716,7 @@ bool daeReader::processColorOrTextureType(    domCommon_color_or_texture_type *c
             osg::notify( osg::WARN ) << "Missing <color>, <param> or <texture> in Specular channel " << std::endl;
         }
 
-        if ( fop != NULL && fop->getFloat() != NULL )
+        if (fop != NULL && fop->getFloat() != NULL )
         {
             float shininess = fop->getFloat()->getValue();
             if (blinn)
@@ -758,22 +732,22 @@ bool daeReader::processColorOrTextureType(    domCommon_color_or_texture_type *c
     return retVal;
 }
 
-bool daeReader::GetFloat4Param(xsNCName Reference, domFloat4 &f4)
+bool daeReader::GetFloat4Param(xsNCName Reference, domFloat4 &f4) const
 {
     std::string MyReference = Reference;
 
     MyReference.insert(0, "./");
-    daeSIDResolver Resolver(currentEffect, MyReference.c_str());
+    daeSIDResolver Resolver(_currentEffect, MyReference.c_str());
     daeElement *el = Resolver.getElement();
     if (NULL == el)
             return false;
 
-    if (NULL != currentInstance_effect)
+    if (NULL != _currentInstance_effect)
     {
         // look here first for setparams
         // I am sure there must be a better way of doing this
         // Maybe the Collada DAE guys can give us a parameter management mechanism !
-        const domInstance_effect::domSetparam_Array& SetParamArray = currentInstance_effect->getSetparam_array();
+        const domInstance_effect::domSetparam_Array& SetParamArray = _currentInstance_effect->getSetparam_array();
         size_t NumberOfSetParams = SetParamArray.getCount();
         for (size_t i = 0; i < NumberOfSetParams; i++)
         {
@@ -805,22 +779,22 @@ bool daeReader::GetFloat4Param(xsNCName Reference, domFloat4 &f4)
         return false;
 }
 
-bool daeReader::GetFloatParam(xsNCName Reference, domFloat &f)
+bool daeReader::GetFloatParam(xsNCName Reference, domFloat &f) const
 {
     std::string MyReference = Reference;
 
     MyReference.insert(0, "./");
-    daeSIDResolver Resolver(currentEffect, MyReference.c_str());
+    daeSIDResolver Resolver(_currentEffect, MyReference.c_str());
     daeElement *el = Resolver.getElement();
     if (NULL == el)
         return false;
 
-    if (NULL != currentInstance_effect)
+    if (NULL != _currentInstance_effect)
     {
         // look here first for setparams
         // I am sure there must be a better way of doing this
         // Maybe the Collada DAE guys can give us a parameter management mechanism !
-        const domInstance_effect::domSetparam_Array& SetParamArray = currentInstance_effect->getSetparam_array();
+        const domInstance_effect::domSetparam_Array& SetParamArray = _currentInstance_effect->getSetparam_array();
         size_t NumberOfSetParams = SetParamArray.getCount();
         for (size_t i = 0; i < NumberOfSetParams; i++)
         {
@@ -852,8 +826,179 @@ bool daeReader::GetFloatParam(xsNCName Reference, domFloat &f)
         return false;
 }
 
-osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_complexType::domTexture *tex )
+osg::Texture::WrapMode getWrapMode(domFx_sampler_wrap_common domWrap)
 {
+    switch (domWrap)
+    {
+    case FX_SAMPLER_WRAP_COMMON_WRAP:
+        return osg::Texture::REPEAT;
+    case FX_SAMPLER_WRAP_COMMON_MIRROR:
+        return osg::Texture::MIRROR;
+    case FX_SAMPLER_WRAP_COMMON_CLAMP:
+        return osg::Texture::CLAMP_TO_EDGE;
+    case FX_SAMPLER_WRAP_COMMON_NONE:
+    case FX_SAMPLER_WRAP_COMMON_BORDER:
+        return osg::Texture::CLAMP_TO_BORDER;
+    }
+
+    return osg::Texture::CLAMP;
+}
+
+osg::Texture::FilterMode getFilterMode(domFx_sampler_filter_common domFilter, bool allowMipMap)
+{
+    switch (domFilter)
+    {
+    case FX_SAMPLER_FILTER_COMMON_NEAREST:
+        return osg::Texture::NEAREST;
+    case FX_SAMPLER_FILTER_COMMON_LINEAR:
+        return osg::Texture::LINEAR;
+    }
+
+    if (allowMipMap)
+    {
+        switch (domFilter)
+        {
+        case FX_SAMPLER_FILTER_COMMON_NEAREST_MIPMAP_NEAREST:
+            return osg::Texture::NEAREST_MIPMAP_NEAREST;
+        case FX_SAMPLER_FILTER_COMMON_LINEAR_MIPMAP_NEAREST:
+            return osg::Texture::LINEAR_MIPMAP_NEAREST;
+        case FX_SAMPLER_FILTER_COMMON_NEAREST_MIPMAP_LINEAR:
+            return osg::Texture::NEAREST_MIPMAP_LINEAR;
+        case FX_SAMPLER_FILTER_COMMON_NONE:
+        case FX_SAMPLER_FILTER_COMMON_LINEAR_MIPMAP_LINEAR:
+            return osg::Texture::LINEAR_MIPMAP_LINEAR;
+        }
+    }
+
+    return osg::Texture::LINEAR;
+}
+
+std::string daeReader::processImagePath(const domImage* pDomImage) const
+{
+    if (pDomImage == NULL)
+    {
+        osg::notify( osg::WARN ) << "Could not locate image for texture" << std::endl;
+        return std::string();
+    }
+
+    //Got a sampler and a surface and an imaged. Time to create the texture stuff for osg
+    if (pDomImage->getInit_from())
+    {
+        pDomImage->getInit_from()->getValue().validate();
+        if (strcmp(pDomImage->getInit_from()->getValue().getProtocol(), "file") == 0)
+        {
+            std::string path = pDomImage->getInit_from()->getValue().pathDir() +
+                pDomImage->getInit_from()->getValue().pathFile();
+            path = cdom::uriToNativePath(path);
+            if (path.empty())
+            {
+                osg::notify( osg::WARN ) << "Unable to get path from URI." << std::endl;
+                return std::string();
+            }
+#ifdef WIN32
+            // If the path has a drive specifier or a UNC name then strip the leading /
+            const char* szFilename = path.c_str();
+            if (path.size() > 2 && (path[2] == ':' || (path[1] == '/' && path[2] == '/')))
+                return szFilename + 1;
+#endif
+            return path;
+        }
+        else
+        {
+            osg::notify( osg::WARN ) << "Only images with a \"file\" scheme URI are supported in this version." << std::endl;
+        }
+    }
+    else
+    {
+        osg::notify( osg::WARN ) << "Embedded image data is not supported in this version." << std::endl;
+    }
+    return std::string();
+}
+
+float luminance(const osg::Vec4& color)
+{
+    return
+        color.r() * 0.212671f +
+        color.g() * 0.715160f +
+        color.b() * 0.072169f;
+}
+
+osg::Image* daeReader::processImageTransparency(const osg::Image* srcImg, domFx_opaque_enum opaque, float transparency) const
+{
+    int s = srcImg->s();
+    int t = srcImg->t();
+    unsigned char* pixels = new unsigned char [s * t];
+
+    if (opaque == FX_OPAQUE_ENUM_RGB_ZERO)
+    {
+        for (int i = 0; i < t; ++i)
+        {
+            for (int j = 0; j < s; ++j)
+            {
+                osg::Vec4 color(srcImg->getColor(j, i));
+
+                pixels[i * s + j] = static_cast<unsigned char>(
+                    (1.0f - luminance(color) * transparency) * 255.0f);
+            }
+        }
+    }
+    else
+    {
+        bool texHasAlpha = false;
+        switch (srcImg->getPixelFormat())
+        {
+        case GL_ALPHA:
+        case GL_LUMINANCE_ALPHA:
+        case GL_RGBA:
+        case GL_BGRA:
+            texHasAlpha = true;
+        }
+
+        if (texHasAlpha)
+        {
+            for (int i = 0; i < t; ++i)
+            {
+                for (int j = 0; j < s; ++j)
+                {
+                    osg::Vec4 color(srcImg->getColor(j, i));
+
+                    pixels[i * s + j] = static_cast<unsigned char>(
+                        color.a() * transparency * 255.0f);
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < t; ++i)
+            {
+                for (int j = 0; j < s; ++j)
+                {
+                    osg::Vec4 color(srcImg->getColor(j, i));
+
+                    pixels[i * s + j] = static_cast<unsigned char>(
+                        luminance(color) * transparency * 255.0f);
+                }
+            }
+        }
+    }
+
+    osg::Image* transparentImage = new osg::Image;
+    transparentImage->setWriteHint(osg::Image::STORE_INLINE);
+    transparentImage->setImage(s, t, 1, GL_ALPHA, GL_ALPHA, GL_UNSIGNED_BYTE, pixels, osg::Image::USE_NEW_DELETE);
+
+    return transparentImage;
+}
+
+osg::Texture2D* daeReader::processTexture(
+    domCommon_color_or_texture_type_complexType::domTexture *tex,
+    const osg::StateSet* ss, TextureUnitUsage tuu,
+    domFx_opaque_enum opaque, float transparency)
+{
+    TextureParameters parameters;
+    parameters.transparent = tuu == TRANSPARENCY_MAP_UNIT;
+    parameters.opaque = opaque;
+    parameters.transparency = transparency;
+
     //find the newparam for the sampler based on the texture attribute
     domFx_sampler2D_common *sampler = NULL;
     domFx_surface_common *surface = NULL;
@@ -862,15 +1007,15 @@ osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_
     std::string target = std::string("./") + std::string(tex->getTexture());
     osg::notify(osg::NOTICE)<<"processTexture("<<target<<")"<<std::endl;
     
-    daeSIDResolver res1( currentEffect, target.c_str() );
+    daeSIDResolver res1( _currentEffect, target.c_str() );
     daeElement *el = res1.getElement();
 
-    if ( el == NULL )
+    if (el == NULL )
     {
-        osg::notify( osg::WARN ) << "Could not locate newparam for texture sampler2D" << tex->getTexture() << std::endl;
-        osg::notify( osg::WARN ) << "Checking if data does incorrect linking straight to the image" << std::endl;
-        dae->getDatabase()->getElement( (daeElement**)&dImg, 0, tex->getTexture(), "image" );
-        if ( dImg != NULL )
+        osg::notify( osg::WARN ) << "Could not locate newparam for texture sampler2D \"" << tex->getTexture() <<
+            "\". Checking if data does incorrect linking straight to the image" << std::endl;
+        _dae->getDatabase()->getElement( (daeElement**)&dImg, 0, tex->getTexture(), "image" );
+        if (dImg != NULL )
         {
             osg::notify( osg::WARN ) << "Direct image link found. Data is incorrect but will continue to load texture" << std::endl;
         }
@@ -880,16 +1025,16 @@ osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_
         domCommon_newparam_type *cnp = daeSafeCast< domCommon_newparam_type >( el ); 
         domFx_newparam_common *npc = daeSafeCast< domFx_newparam_common >( el );
 
-        if ( cnp != NULL )
+        if (cnp != NULL )
         {
             sampler = cnp->getSampler2D();
         }
-        else if ( npc != NULL )
+        else if (npc != NULL )
         {
             sampler = npc->getFx_basic_type_common()->getSampler2D();
         }
 
-        if ( sampler == NULL )
+        if (sampler == NULL )
         {
             osg::notify( osg::WARN ) << "Wrong newparam type. Expected sampler2D" << std::endl;
             return NULL;
@@ -897,9 +1042,9 @@ osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_
 
         //find the newparam for the surface based on the sampler2D->source value
         target = std::string("./") + std::string( sampler->getSource()->getValue() );
-        daeSIDResolver res2( currentEffect, target.c_str() );
+        daeSIDResolver res2( _currentEffect, target.c_str() );
         el = res2.getElement();
-        if ( el == NULL )
+        if (el == NULL )
         {
             osg::notify( osg::WARN ) << "Could not locate newparam for source " << sampler->getSource()->getValue() << std::endl;
             return NULL;
@@ -907,16 +1052,16 @@ osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_
         cnp = daeSafeCast< domCommon_newparam_type >( el ); 
         npc = daeSafeCast< domFx_newparam_common >( el );
 
-        if ( cnp != NULL )
+        if (cnp != NULL )
         {
             surface = cnp->getSurface();
         }
-        else if ( npc != NULL )
+        else if (npc != NULL )
         {
             surface = npc->getFx_basic_type_common()->getSurface();
         }
 
-        if ( surface == NULL )
+        if (surface == NULL )
         {
             osg::notify( osg::WARN ) << "Wrong newparam type. Expected surface" << std::endl;
             return NULL;
@@ -926,207 +1071,77 @@ osg::StateAttribute *daeReader::processTexture( domCommon_color_or_texture_type_
         daeIDRef &ref = surface->getFx_surface_init_common()->getInit_from_array()[0]->getValue();
         dImg = daeSafeCast< domImage >( getElementFromIDRef( ref ) );
     }
-    if ( dImg == NULL )
+
+    parameters.filename = processImagePath(dImg);
+    if (parameters.filename.empty())
     {
-        osg::notify( osg::WARN ) << "Could not locate image for texture" << std::endl;
         return NULL;
     }
-    //Got a sampler and a surface and an imaged. Time to create the texture stuff for osg
-    osg::ref_ptr<osg::Image> img = NULL;
-    if ( dImg->getInit_from() != NULL )
+
+    //set texture parameters
+    if (sampler)
     {
-        // daeURI uri = dImg->getInit_from()->getValue();
-        dImg->getInit_from()->getValue().validate();
-        if ( std::string( dImg->getInit_from()->getValue().getProtocol() ) == std::string( "file" ) )
+        if (sampler->getWrap_s())
         {
-            //unsigned int bufSize = 1; //for the null char
-            //bufSize += dImg->getInit_from()->getValue().pathDir().size();
-            //bufSize += dImg->getInit_from()->getValue().pathFile().size();
-           std::string path =  dImg->getInit_from()->getValue().pathDir()+
-                                  dImg->getInit_from()->getValue().pathFile();
-              // remove space encodings
-              //
-              path = cdom::uriToNativePath(path);
-           if(path.empty())
-           {
-              osg::notify( osg::WARN ) << "Unable to get path from URI." << std::endl;
-              return NULL;
-           }
-#ifdef WIN32
-            // If the path has a drive specifier or a UNC name then strip the leading /
-            const char* filename =path.c_str();
-            if ((path[2] == ':') || ((path[1] == '/') && (path[2] == '/')))
-               ++filename;// = path+1;
-//            else
-//                filename = path;
-#else
-            const char* filename = path.c_str();
-#endif
-            img = osgDB::readRefImageFile( filename );
-
-            osg::notify(osg::INFO)<<"  processTexture(..) - readImage("<<filename<<")"<<std::endl;
-            
-            //Moved this below the osg::notify - Parag, 24/7/2007
-            //delete [] path;
-
-            
+            parameters.wrap_s = getWrapMode(sampler->getWrap_s()->getValue());
         }
-        else
+        if (sampler->getWrap_t())
         {
-            osg::notify( osg::WARN ) << "Only images with a \"file\" scheme URI are supported in this version." << std::endl;
-            return NULL;
+            parameters.wrap_t = getWrapMode(sampler->getWrap_s()->getValue());
         }
+
+        if (sampler->getMinfilter())
+        {
+            parameters.filter_min = getFilterMode(sampler->getMinfilter()->getValue(), true);
+        }
+        if (sampler->getMagfilter())
+        {
+            parameters.filter_min = getFilterMode(sampler->getMagfilter()->getValue(), false);
+        }
+
+        if (sampler->getBorder_color() != NULL )
+        {
+            const domFloat4& col = sampler->getBorder_color()->getValue();
+            parameters.border.set(col[0], col[1], col[2], col[3]);
+        }
+    }
+
+    osg::Texture2D* t2D = NULL;
+    TextureParametersMap::const_iterator mapIt = _textureParamMap.find(parameters);
+    if (mapIt != _textureParamMap.end())
+    {
+        t2D = mapIt->second.get();
     }
     else
     {
-        osg::notify( osg::WARN ) << "Embedded image data is not supported in this version." << std::endl;
+        osg::ref_ptr<osg::Image> img = osgDB::readRefImageFile(parameters.filename);
+
+        if (!img.valid())
+        {
+            _textureParamMap[parameters] = NULL;
             return NULL;
+        }
+
+        osg::notify(osg::INFO)<<"  processTexture(..) - readImage("<<parameters.filename<<")"<<std::endl;
+
+        if (tuu == TRANSPARENCY_MAP_UNIT)
+        {
+            img = processImageTransparency(img.get(), opaque, transparency);
+        }
+
+        t2D = new osg::Texture2D(img.get());
+
+        t2D->setWrap( osg::Texture::WRAP_S, parameters.wrap_s);
+        t2D->setWrap( osg::Texture::WRAP_T, parameters.wrap_t);
+        t2D->setFilter( osg::Texture::MIN_FILTER, parameters.filter_min);
+        t2D->setFilter( osg::Texture::MAG_FILTER, parameters.filter_mag);
+        t2D->setBorderColor(parameters.border);
+
+        _textureParamMap[parameters] = t2D;
     }
 
-    osg::Texture2D *t2D = new osg::Texture2D( img.get() );
-    //set texture parameters
-    if ( sampler != NULL )
-    {
-        if ( sampler->getWrap_s() != NULL )
-        {
-            osg::Texture::WrapMode wrap;
-            switch( sampler->getWrap_s()->getValue() )
-            {
-            case FX_SAMPLER_WRAP_COMMON_WRAP:
-                wrap = osg::Texture::REPEAT;
-                break;
-            case FX_SAMPLER_WRAP_COMMON_MIRROR:
-                wrap = osg::Texture::MIRROR;
-                break;
-            case FX_SAMPLER_WRAP_COMMON_CLAMP:
-                wrap = osg::Texture::CLAMP_TO_EDGE;
-                break;
-            case FX_SAMPLER_WRAP_COMMON_NONE:
-            case FX_SAMPLER_WRAP_COMMON_BORDER:
-                wrap = osg::Texture::CLAMP_TO_BORDER;
-                break;
-            default:
-                wrap = osg::Texture::CLAMP;
-                break;
-            }
-            t2D->setWrap( osg::Texture::WRAP_S, wrap );
-        }
-        else
-        {
-            t2D->setWrap( osg::Texture::WRAP_S, osg::Texture::REPEAT );
-        }
-        if ( sampler->getWrap_t() != NULL )
-        {
-            osg::Texture::WrapMode wrap;
-            switch( sampler->getWrap_t()->getValue() )
-            {
-            case FX_SAMPLER_WRAP_COMMON_WRAP:
-                wrap = osg::Texture::REPEAT;
-                break;
-            case FX_SAMPLER_WRAP_COMMON_MIRROR:
-                wrap = osg::Texture::MIRROR;
-                break;
-            case FX_SAMPLER_WRAP_COMMON_CLAMP:
-                wrap = osg::Texture::CLAMP_TO_EDGE;
-                break;
-            case FX_SAMPLER_WRAP_COMMON_NONE:
-            case FX_SAMPLER_WRAP_COMMON_BORDER:
-                wrap = osg::Texture::CLAMP_TO_BORDER;
-                break;
-            default:
-                wrap = osg::Texture::CLAMP;
-                break;
-            }
-            t2D->setWrap( osg::Texture::WRAP_T, wrap );
-        }
-        else
-        {
-            t2D->setWrap( osg::Texture::WRAP_T, osg::Texture::REPEAT );
-        }
-        if ( sampler->getMinfilter() != NULL )
-        {
-            osg::Texture::FilterMode mode;
-            switch( sampler->getMinfilter()->getValue() )
-            {
-            case FX_SAMPLER_FILTER_COMMON_NEAREST:
-                mode = osg::Texture::NEAREST;
-                break;
-            case FX_SAMPLER_FILTER_COMMON_LINEAR:
-                mode = osg::Texture::LINEAR;
-                break;
-            case FX_SAMPLER_FILTER_COMMON_NEAREST_MIPMAP_NEAREST:
-                mode = osg::Texture::NEAREST_MIPMAP_NEAREST;
-                break;
-            case FX_SAMPLER_FILTER_COMMON_LINEAR_MIPMAP_NEAREST:
-                mode = osg::Texture::LINEAR_MIPMAP_NEAREST;
-                break;
-            case FX_SAMPLER_FILTER_COMMON_NONE:
-            case FX_SAMPLER_FILTER_COMMON_NEAREST_MIPMAP_LINEAR:
-                mode = osg::Texture::NEAREST_MIPMAP_LINEAR;
-                break;
-            case FX_SAMPLER_FILTER_COMMON_LINEAR_MIPMAP_LINEAR:
-                mode = osg::Texture::LINEAR_MIPMAP_LINEAR;
-                break;
-            default:
-                mode = osg::Texture::LINEAR;
-                break;
-            }
-            t2D->setFilter( osg::Texture::MIN_FILTER, mode );
-        }
-        else
-        {
-            t2D->setFilter( osg::Texture::MIN_FILTER, osg::Texture::NEAREST_MIPMAP_LINEAR );
-        }
-        if ( sampler->getMagfilter() != NULL )
-        {
-            osg::Texture::FilterMode mode;
-            switch( sampler->getMagfilter()->getValue() )
-            {
-            case FX_SAMPLER_FILTER_COMMON_NEAREST:
-                mode = osg::Texture::NEAREST;
-                break;
-            case FX_SAMPLER_FILTER_COMMON_NONE:
-            case FX_SAMPLER_FILTER_COMMON_LINEAR:
-                mode = osg::Texture::LINEAR;
-                break;
-            case FX_SAMPLER_FILTER_COMMON_NEAREST_MIPMAP_NEAREST:
-                mode = osg::Texture::NEAREST_MIPMAP_NEAREST;
-                break;
-            case FX_SAMPLER_FILTER_COMMON_LINEAR_MIPMAP_NEAREST:
-                mode = osg::Texture::LINEAR_MIPMAP_NEAREST;
-                break;
-            case FX_SAMPLER_FILTER_COMMON_NEAREST_MIPMAP_LINEAR:
-                mode = osg::Texture::NEAREST_MIPMAP_LINEAR;
-                break;
-            case FX_SAMPLER_FILTER_COMMON_LINEAR_MIPMAP_LINEAR:
-                mode = osg::Texture::LINEAR_MIPMAP_LINEAR;
-                break;
-            default:
-                mode = osg::Texture::LINEAR;
-                break;
-            }
-            t2D->setFilter( osg::Texture::MAG_FILTER, mode );
-        }
-        else
-        {
-            t2D->setFilter( osg::Texture::MAG_FILTER, osg::Texture::LINEAR );
-        }
-        if ( sampler->getBorder_color() != NULL )
-        {
-            const domFloat4 &col = sampler->getBorder_color()->getValue();
-            t2D->setBorderColor( osg::Vec4( col[0], col[1], col[2], col[3] ) );
-        }
-    }
-    else 
-    {
-        t2D->setWrap( osg::Texture::WRAP_S, osg::Texture::REPEAT );
-        t2D->setWrap( osg::Texture::WRAP_T, osg::Texture::REPEAT );
-        t2D->setFilter( osg::Texture::MIN_FILTER, osg::Texture::NEAREST_MIPMAP_LINEAR );
-        t2D->setFilter( osg::Texture::MAG_FILTER, osg::Texture::LINEAR );
-    }
+    _texCoordSetMap[TextureToCoordSetMap::key_type(ss, tuu)] = tex->getTexcoord();
 
-    // Store the texcoord name in the texture object
-    t2D->setName(tex->getTexcoord());
     return t2D;
 }
 
@@ -1159,240 +1174,141 @@ void daeReader::processTransparencySettings( domCommon_transparent_type *ctt,
                                             osg::Material *material,
                                             xsNCName diffuseTextureName  )
 {
+    if (ss == NULL)
+        return;
+
     if (NULL == ctt && NULL == pTransparency)
         return;
 
-    if (ctt && ctt->getTexture() != NULL)
+    float transparency = 1.0f;
+    if (pTransparency)
     {
-        if (!diffuseTextureName || (strcmp( ctt->getTexture()->getTexture(), diffuseTextureName)))
+        if (pTransparency->getFloat())
         {
-            osg::notify( osg::WARN ) << "Currently no support for different textures in diffuse and transparent channels." << std::endl;
-            return;
+            transparency = pTransparency->getFloat()->getValue();
+        }
+        else if (pTransparency->getParam())
+        {
+            domFloat transparencyParam;
+            if (GetFloatParam(pTransparency->getParam()->getRef(), transparencyParam))
+            {
+                transparency = transparencyParam;
+            }
+        }
+
+        if (_invertTransparency)
+        {
+            transparency = 1.0f - transparency;
         }
     }
-    
-    // Fix up defaults according to 1.4.1 release notes
-    domFloat4 f4;
-    domFx_opaque_enum Opaque = FX_OPAQUE_ENUM_A_ONE;
-    if (NULL == ctt)
+
+    osg::Texture2D* pTransparentTexture = NULL;
+    osg::Vec4 transparentColor(transparency, transparency, transparency, transparency);
+
+    // Fix up defaults according to "Determining Transparency" chapter of 1.4.1 spec
+    domFx_opaque_enum opaque = FX_OPAQUE_ENUM_A_ONE;
+    if (ctt)
     {
-        f4.append(0.0f);
-        f4.append(0.0f);
-        f4.append(0.0f);
-        f4.append(1.0f);
+        opaque = ctt->getOpaque();
+        if (ctt->getColor())
+        {
+            const domFx_color_common& domColorValue = ctt->getColor()->getValue();
+            transparentColor.set(
+                domColorValue.get(0),
+                domColorValue.get(1),
+                domColorValue.get(2),
+                domColorValue.get(3));
+
+            if (opaque == FX_OPAQUE_ENUM_RGB_ZERO)
+            {
+                transparentColor.set(
+                    1.0f - transparentColor.r() * transparency,
+                    1.0f - transparentColor.g() * transparency,
+                    1.0f - transparentColor.b() * transparency,
+                    1.0f - luminance(transparentColor) * transparency);
+            }
+            else
+            {
+                float a = transparentColor.a() * transparency;
+                transparentColor.set(a, a, a, a);
+            }
+        }
+        else if (ctt->getTexture())
+        {
+            pTransparentTexture = processTexture(ctt->getTexture(), ss, TRANSPARENCY_MAP_UNIT, opaque, transparency);
+        }
+    }
+
+    if (pTransparentTexture)
+    {
+        ss->setTextureAttributeAndModes(TRANSPARENCY_MAP_UNIT, pTransparentTexture);
+        ss->setAttributeAndModes(new osg::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     }
     else
     {
-        Opaque = ctt->getOpaque();
-        if (NULL != ctt->getColor())
+        bool strictTransparency = _strictTransparency;
+        if (!strictTransparency)
         {
-            f4 = ctt->getColor()->getValue();
+            const osg::Texture* pMainTexture = dynamic_cast<osg::Texture*>(
+                ss->getTextureAttribute(MAIN_TEXTURE_UNIT, osg::StateAttribute::TEXTURE));
+            bool haveTranslucentTexture = pMainTexture &&
+                pMainTexture->getImage(0) && pMainTexture->getImage(0)->isImageTranslucent();
+            strictTransparency = !haveTranslucentTexture;
         }
-        else if ((NULL == ctt->getParam()) || !GetFloat4Param(ctt->getParam()->getRef(), f4))
-        {
-            f4.append(0.0f);
-            f4.append(0.0f);
-            f4.append(0.0f);
-            f4.append(1.0f);
-        }
-    }
 
-    domFloat Transparency = 1.0f;
-    if (NULL != pTransparency)
-    {
-        if (NULL != pTransparency->getFloat())
+        if (strictTransparency)
         {
-            Transparency = pTransparency->getFloat()->getValue();
-            if (m_AuthoringTool == GOOGLE_SKETCHUP) // Google back to front support
-                Transparency = 1.0f - Transparency;
-        }
-        else if (NULL != pTransparency->getParam())
-        {
-            if (GetFloatParam(pTransparency->getParam()->getRef(), Transparency))
+            if (transparentColor == osg::Vec4(1.0f, 1.0f, 1.0f, 1.0f))
             {
-                if (m_AuthoringTool == GOOGLE_SKETCHUP) // Google back to front support
-                    Transparency = 1.0f - Transparency;
+                return;
             }
-            else
-                Transparency = 1.0f;
-        }
-    }
 
-    if (NULL != ctt || NULL != pTransparency)
-    {
-        int SourceBlendFactor;
-        int DestBlendFactor;
-        bool SwitchOnTheBlender = false;
-        if (m_StrictTransparency)
-        {
-            // Process transparent and transparency settings accroding to a strict interpretation of the spec
-            // See https://collada.org/public_forum/viewtopic.php?f=12&t=1210
-            SwitchOnTheBlender = true;
-            switch(Opaque)
-            {
-    /*
-                case FX_OPAQUE_ENUM_RGB_ONE:
-                    if (ctt->getTexture() != NULL)
-                    {
-                        SourceBlendFactor = GL_SRC_COLOR;
-                        DestBlendFactor = GL_ONE_MINUS_SRC_COLOR;
-                    }
-                    else
-                    {
-                        SourceBlendFactor = GL_CONSTANT_COLOR;
-                        DestBlendFactor = GL_ONE_MINUS_CONSTANT_COLOR;
-                    }
-                    break;
-                case FX_OPAQUE_ALPHA_ZERO:
-                    if (ctt->getTexture() != NULL)
-                    {
-                        SourceBlendFactor = GL_ONE_MINUS_SRC_ALPHA;
-                        DestBlendFactor = GL_SRC_ALPHA;
-                    }
-                    else
-                    {
-                        SourceBlendFactor = GL_ONE_MINUS_CONSTANT_ALPHA;
-                        DestBlendFactor = GL_CONSTANT_ALPHA;
-                    }
-                    break;
-    */
-                case FX_OPAQUE_ENUM_RGB_ZERO:
-                    if (ctt->getTexture() != NULL)
-                    {
-                        SourceBlendFactor = GL_ONE_MINUS_SRC_COLOR;
-                        DestBlendFactor = GL_SRC_COLOR;
-                    }
-                    else
-                    {
-                        SourceBlendFactor = GL_ONE_MINUS_CONSTANT_COLOR;
-                        DestBlendFactor = GL_CONSTANT_COLOR;
-                    }
-                    break;
-                default:
-                    if (ctt->getTexture() != NULL)
-                    {
-                        SourceBlendFactor = GL_SRC_ALPHA;
-                        DestBlendFactor = GL_ONE_MINUS_SRC_ALPHA;
-                    }
-                    else
-                    {
-                        SourceBlendFactor = GL_CONSTANT_ALPHA;
-                        DestBlendFactor = GL_ONE_MINUS_CONSTANT_ALPHA;
-                    }
-                    break;
-            }
+            ss->setAttributeAndModes(new osg::BlendColor(transparentColor));
+            ss->setAttributeAndModes(new osg::BlendFunc(GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR));
         }
         else
         {
-            // Jump through various hoops to accomodate the multiplicity of different ways
-            // that various people have interpreted the specification
-            // I assume that the presence of either a <tansparent> or a <transparency> element
-            // means that the user may want some kind of alpha blending
-            bool HaveDiffuseTexture = false;
-            bool HaveTranslucentDiffuseTexture = false;
-            // Unfortunately isImageTransparent only works for  A_ONE_OPAQUE
-            if ((NULL != ss) &&
-                    (HaveDiffuseTexture = (GL_TRUE == ss->getTextureMode(MAIN_TEXTURE_UNIT, GL_TEXTURE_2D))) &&
-                    (NULL != dynamic_cast<osg::Texture2D*>(ss->getTextureAttribute(MAIN_TEXTURE_UNIT, osg::StateAttribute::TEXTURE))) &&
-                    (NULL != dynamic_cast<osg::Texture2D*>(ss->getTextureAttribute(MAIN_TEXTURE_UNIT, osg::StateAttribute::TEXTURE))->getImage()) &&
-                    (dynamic_cast<osg::Texture2D*>(ss->getTextureAttribute(MAIN_TEXTURE_UNIT, osg::StateAttribute::TEXTURE))->getImage()->isImageTranslucent()))
-                HaveTranslucentDiffuseTexture = true;
-            osg::Vec4 Diffuse;
-            if (material)
-                Diffuse = material->getDiffuse(osg::Material::FRONT_AND_BACK);
+            ss->setAttributeAndModes(new osg::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+        }
+    }
 
-            // Determine whether or not to switch on the blender and which blending factors to use.
-            // I switch the blender on if the supplied (or default) <transparent> and <transparency> elements work out as non opaque,
-            // or if they work out opaque and I have a translucent texture in the MAIN_TEXTURE_UNIT or a non opaque value in the diffuse colour
-            switch(Opaque)
+    ss->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+}
+
+void daeReader::copyTextureCoordinateSet(const osg::StateSet* ss, const osg::Geometry* cachedGeometry, osg::Geometry* clonedGeometry, const domInstance_material* im, TextureUnitUsage tuu)
+{
+    if (!ss->getTextureAttribute(tuu, osg::StateAttribute::TEXTURE))
+        return;
+
+    const std::string& texCoordSetName = _texCoordSetMap
+        [TextureToCoordSetMap::key_type(ss, tuu)];
+    if (!texCoordSetName.empty())
+    {
+        const domInstance_material::domBind_vertex_input_Array &bvia = im->getBind_vertex_input_array();
+        size_t k;
+        for (k = 0; k < bvia.getCount(); k++)
+        {
+            if (!strcmp(bvia[k]->getSemantic(), texCoordSetName.c_str()) && !strcmp(bvia[k]->getInput_semantic(), COMMON_PROFILE_INPUT_TEXCOORD))
             {
-    /*
-                case FX_OPAQUE_ENUM_RGB_ONE:
-                    if ((Transparency  * f4[0] > 0.99f) &&
-                        (Transparency  * f4[1] > 0.99f) &&
-                        (Transparency  * f4[2] > 0.99f))
-                    {
-                        SourceBlendFactor = GL_SRC_COLOR;
-                        DestBlendFactor = GL_ONE_MINUS_SRC_COLOR;
-                        // It would be nice to check for a translucent texture here as well
-                        if (!HaveDiffuseTexture && (Diffuse.r() < 0.99f) && (Diffuse.g() < 0.99f) && (Diffuse.b() < 0.99f))
-                            SwitchOnTheBlender = true;
-                    }
-                    else
-                    {
-                        SourceBlendFactor = GL_CONSTANT_COLOR;
-                        DestBlendFactor = GL_ONE_MINUS_CONSTANT_COLOR;
-                        SwitchOnTheBlender = true;
-                    }
-                    break;
-                case FX_OPAQUE_ALPHA_ZERO:
-                    if (Transparency  * f4[3] < 0.01f)
-                    {
-                        SourceBlendFactor = GL_ONE_MINUS_SRC_ALPHA;
-                        DestBlendFactor = GL_SRC_ALPHA;
-                        // It would be nice to check for a translucent texture here as well
-                        if (Diffuse.a() > 0.01f)
-                            SwitchOnTheBlender = true;
-                    }
-                    else
-                    {
-                        SourceBlendFactor = GL_ONE_MINUS_CONSTANT_ALPHA;
-                        DestBlendFactor = GL_CONSTANT_ALPHA;
-                        SwitchOnTheBlender = true;
-                    }
-                    break;
-    */
-                case FX_OPAQUE_ENUM_RGB_ZERO:
-                    if ((Transparency  * f4[0] < 0.01f) &&
-                        (Transparency  * f4[1] < 0.01f) &&
-                        (Transparency  * f4[2] < 0.01f))
-                    {
-                        SourceBlendFactor = GL_ONE_MINUS_SRC_COLOR;
-                        DestBlendFactor = GL_SRC_COLOR;
-                        // It would be nice to check for a translucent texture here as well
-    //                    if (!HaveDiffuseTexture && (Diffuse.r() > 0.01f) && (Diffuse.g() > 0.01f) && (Diffuse.b() > 0.01f))
-    //                        SwitchOnTheBlender = true;
-                    }
-                    else
-                    {
-                        SourceBlendFactor = GL_ONE_MINUS_CONSTANT_COLOR;
-                        DestBlendFactor = GL_CONSTANT_COLOR;
-                        SwitchOnTheBlender = true;
-                    }
-                    break;
-                default:
-                    if (Transparency  * f4[3] > 0.99f)
-                    {
-                        SourceBlendFactor = GL_SRC_ALPHA;
-                        DestBlendFactor = GL_ONE_MINUS_SRC_ALPHA;
-                        if (HaveTranslucentDiffuseTexture || (Diffuse.a() < 0.99f))
-                            SwitchOnTheBlender = true;
-                    }
-                    else
-                    {
-                        SourceBlendFactor = GL_CONSTANT_ALPHA;
-                        DestBlendFactor = GL_ONE_MINUS_CONSTANT_ALPHA;
-                        SwitchOnTheBlender = true;
-                    }
-                    break;
+                unsigned set = bvia[k]->getInput_set();
+                if (set < cachedGeometry->getNumTexCoordArrays())
+                {
+                    clonedGeometry->setTexCoordData(tuu, cachedGeometry->getTexCoordData(set));
+                }
+                else
+                {
+                    osg::notify(osg::WARN) << "Texture coordinate set " << set << " not found." << std::endl;
+                }
+                break;
             }
         }
-        if (SwitchOnTheBlender)
+        if (k == bvia.getCount())
         {
-            if ((SourceBlendFactor == GL_CONSTANT_COLOR) ||
-                (SourceBlendFactor == GL_ONE_MINUS_CONSTANT_COLOR) ||
-                (SourceBlendFactor == GL_CONSTANT_ALPHA) ||
-                (SourceBlendFactor == GL_ONE_MINUS_CONSTANT_ALPHA))
+            osg::notify( osg::WARN ) << "Failed to find matching <bind_vertex_input> for " << texCoordSetName << std::endl;
+            if (cachedGeometry->getNumTexCoordArrays())
             {
-                osg::BlendColor *bc = new osg::BlendColor();
-                bc->setConstantColor(osg::Vec4( f4[0] * Transparency, f4[1] * Transparency, f4[2] * Transparency, f4[3] * Transparency ));
-                ss->setAttribute( bc );
+                clonedGeometry->setTexCoordData(tuu, cachedGeometry->getTexCoordData(0));
             }
-            osg::BlendFunc *bf = new osg::BlendFunc(SourceBlendFactor, DestBlendFactor);
-            ss->setAttribute( bf );
-            ss->setMode( GL_BLEND, osg::StateAttribute::ON );
-
-            ss->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
         }
     }
 }

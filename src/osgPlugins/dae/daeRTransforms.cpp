@@ -1,14 +1,14 @@
 /*
  * Copyright 2006 Sony Computer Entertainment Inc.
  *
- * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this 
+ * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at:
  * http://research.scea.com/scea_shared_source_license.html
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License 
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
- * implied. See the License for the specific language governing permissions and limitations under the 
- * License. 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 
 #include "daeReader.h"
@@ -16,131 +16,115 @@
 #include <dae/domAny.h>
 #include <dom/domCOLLADA.h>
 
+#include <osgAnimation/UpdateMatrixTransform>
+#include <osgAnimation/StackedMatrixElement>
+#include <osgAnimation/StackedRotateAxisElement>
+#include <osgAnimation/StackedScaleElement>
+#include <osgAnimation/StackedTranslateElement>
 #include <osg/MatrixTransform>
 #include <osgSim/DOFTransform>
 
-using namespace osgdae;
+using namespace osgDAE;
 
 // Note <lookat>, <matrix>, <rotate>, <scale>, <skew> and <translate> may appear in any order
 // These transformations can be combined in any number and ordering to produce the desired
-// coordinate systemfor the parent <node> element. The COLLADA specificatin requires that the
-// transformation elements are processed in order and accumulate the result as if they were 
+// coordinate system for the parent <node> element. The COLLADA specificatin requires that the
+// transformation elements are processed in order and accumulate the result as if they were
 // converted to column-order matrices and concatenated using matrix post-multiplication.
-osg::Node* daeReader::processOsgMatrixTransform( domNode *node )
+osg::Transform* daeReader::processOsgMatrixTransform(domNode *node, bool isBone)
 {
-    osg::MatrixTransform* matNode = new osg::MatrixTransform;
-    osg::Matrix matrix;
+    osg::MatrixTransform* resultNode = NULL;
+
+    if (isBone)
+    {
+        resultNode = getOrCreateBone(node);
+    }
+    else
+    {
+        resultNode = new osg::MatrixTransform;
+    }
+
+    osg::NodeCallback* pNodeCallback = resultNode->getUpdateCallback();
+    std::vector<osg::ref_ptr<osgAnimation::StackedTransformElement> > transformElements;
+    osg::ref_ptr<osgAnimation::StackedTransformElement> pLastStaticTransformElement;
 
     // Process all coordinate system contributing elements in order!
     size_t count = node->getContents().getCount();
-    for (size_t i = 0; i < count; i++ ) 
+    for (size_t i = 0; i < count; i++ )
     {
-        domRotate * rot = daeSafeCast< domRotate >( node->getContents()[i] );
-        if (rot)
+        daeElement* pDaeElement = node->getContents()[i];
+        osg::ref_ptr<osgAnimation::StackedTransformElement> pTransformElement = NULL;
+
+        if (domRotate * pDomRotate = daeSafeCast< domRotate >( pDaeElement ))
         {
-            domFloat4& r = rot->getValue();
-            if (r.getCount() != 4 ) 
+            const domFloat4& r = pDomRotate->getValue();
+            if (r.getCount() != 4 )
             {
-                osg::notify(osg::WARN)<<"Data is wrong size for rotate"<<std::endl;
+                osg::notify(osg::WARN) << "Data is wrong size for rotate" << std::endl;
                 continue;
             }
 
-            // Build rotation matrix
-            osg::Matrix rotMat;
-            rotMat.makeRotate(osg::DegreesToRadians(r[3]), r[0], r[1], r[2]);
-
-            matrix = rotMat * matrix;
-            continue;
+            pTransformElement = new osgAnimation::StackedRotateAxisElement(pDomRotate->getSid() ? pDomRotate->getSid() : "", osg::Vec3(r[0], r[1], r[2]), osg::DegreesToRadians(r[3]));
         }
-
-        domTranslate * trans = daeSafeCast< domTranslate >( node->getContents()[i] );
-        if (trans != NULL)
+        else if (domTranslate * pDomTranslate = daeSafeCast< domTranslate >( pDaeElement ))
         {
-            domFloat3& t = trans->getValue();
-            if (t.getCount() != 3 ) 
+            const domFloat3& t = pDomTranslate->getValue();
+            if (t.getCount() != 3 )
             {
                 osg::notify(osg::WARN)<<"Data is wrong size for translate"<<std::endl;
                 continue;
             }
 
-            // Build translation matrix
-            osg::Matrix transMat;
-            transMat.makeTranslate(t[0], t[1], t[2]);
-
-            matrix = transMat * matrix;
-            continue;
+            pTransformElement = new osgAnimation::StackedTranslateElement(pDomTranslate->getSid() ?  pDomTranslate->getSid() : "", osg::Vec3(t[0], t[1], t[2]));
         }
-
-        domScale * scale = daeSafeCast< domScale >( node->getContents()[i] );
-        if (scale != NULL)
+        else if (domScale * pDomScale = daeSafeCast< domScale >( pDaeElement ))
         {
-            domFloat3& s = scale->getValue();
-            if (s.getCount() != 3 ) 
+            const domFloat3& s = pDomScale->getValue();
+            if (s.getCount() != 3 )
             {
                 osg::notify(osg::WARN)<<"Data is wrong size for scale"<<std::endl;
                 continue;
             }
 
-            // Build scale matrix
-            osg::Matrix scaleMat;
-            scaleMat.makeScale(s[0], s[1], s[2]);
-
-            matrix = scaleMat * matrix;
-            continue;
+            pTransformElement = new osgAnimation::StackedScaleElement(pDomScale->getSid() ? pDomScale->getSid() : "", osg::Vec3(s[0], s[1], s[2]));
         }
-
-        domMatrix * mat = daeSafeCast< domMatrix >( node->getContents()[i] );
-        if (mat != NULL)
+        else if (domMatrix * pDomMatrix = daeSafeCast< domMatrix >( pDaeElement ))
         {
-            if (mat->getValue().getCount() != 16 ) 
+            if (pDomMatrix->getValue().getCount() != 16 )
             {
                 osg::notify(osg::WARN)<<"Data is wrong size for matrix"<<std::endl;
                 continue;
             }
 
-            // Build matrix
-            osg::Matrix mMat(    mat->getValue()[0], mat->getValue()[4], mat->getValue()[8], mat->getValue()[12],
-                                mat->getValue()[1], mat->getValue()[5], mat->getValue()[9], mat->getValue()[13],
-                                mat->getValue()[2], mat->getValue()[6], mat->getValue()[10], mat->getValue()[14],
-                                mat->getValue()[3], mat->getValue()[7], mat->getValue()[11], mat->getValue()[15] );
-
-            matrix = mMat * matrix;
-            continue;
+            pTransformElement = new osgAnimation::StackedMatrixElement(pDomMatrix->getSid() ? pDomMatrix->getSid() : "",
+                osg::Matrix(    pDomMatrix->getValue()[0], pDomMatrix->getValue()[4], pDomMatrix->getValue()[8], pDomMatrix->getValue()[12],
+                pDomMatrix->getValue()[1], pDomMatrix->getValue()[5], pDomMatrix->getValue()[9], pDomMatrix->getValue()[13],
+                pDomMatrix->getValue()[2], pDomMatrix->getValue()[6], pDomMatrix->getValue()[10], pDomMatrix->getValue()[14],
+                pDomMatrix->getValue()[3], pDomMatrix->getValue()[7], pDomMatrix->getValue()[11], pDomMatrix->getValue()[15]));
         }
-
-        domLookat * la = daeSafeCast< domLookat >( node->getContents()[i] );
-        if (la != NULL)
+        else if (domLookat * pDomLookat = daeSafeCast< domLookat >( pDaeElement ))
         {
-            if (la->getValue().getCount() != 9 ) 
+            if (pDomLookat->getValue().getCount() != 9 )
             {
                 osg::notify(osg::WARN)<<"Data is wrong size for lookat"<<std::endl;
                 continue;
             }
 
-            // Build lookat matrix
-            osg::Matrix lookatMat;
-            osg::Vec3 eye(la->getValue()[0], la->getValue()[1], la->getValue()[2]);
-            osg::Vec3 center(la->getValue()[3], la->getValue()[4], la->getValue()[5] );
-            osg::Vec3 up( la->getValue()[6], la->getValue()[7], la->getValue()[8] );
-            lookatMat.makeLookAt( eye, center, up );
-            
-            matrix = lookatMat * matrix;
-            continue;
+            pTransformElement = new osgAnimation::StackedMatrixElement(pDomLookat->getSid() ? pDomLookat->getSid() : "",
+                osg::Matrix::lookAt(
+                osg::Vec3(pDomLookat->getValue()[0], pDomLookat->getValue()[1], pDomLookat->getValue()[2]),
+                osg::Vec3(pDomLookat->getValue()[3], pDomLookat->getValue()[4], pDomLookat->getValue()[5]),
+                osg::Vec3(pDomLookat->getValue()[6], pDomLookat->getValue()[7], pDomLookat->getValue()[8])));
         }
-
-        domSkew * skew = daeSafeCast< domSkew >( node->getContents()[i] );
-        if (skew != NULL)
+        else if (domSkew * pDomSkew = daeSafeCast< domSkew >( pDaeElement ))
         {
-            if (skew->getValue().getCount() != 7 ) 
+            if (pDomSkew->getValue().getCount() != 7 )
             {
                 osg::notify(osg::WARN)<<"Data is wrong size for skew"<<std::endl;
                 continue;
             }
 
-            // Skew matrix building derived from GNURealistic ShaderMan GMANMatrix4 (LGPL) matrix class
-
-            // Build skew matrix
-            domFloat7& s = skew->getValue();
+            const domFloat7& s = pDomSkew->getValue();
 
             float shear = sin(osg::DegreesToRadians(s[0]));
             // axis of rotation
@@ -148,58 +132,104 @@ osg::Node* daeReader::processOsgMatrixTransform( domNode *node )
             // axis of translation
             osg::Vec3f along(s[4],s[5],s[6]);
 
-            along.normalize();
-            osg::Vec3f a = around - (along * (around * along));
-            a.normalize();
-            
-            float an1 = around * a;
-            float an2 = around * along;
-            
-            float rx = an1 * cos(shear) - an2 * sin(shear);
-            float ry = an1 * sin(shear) + an2 * cos(shear);
+            //This maths is untested so may be transposed or negated or just completely wrong.
+            osg::Vec3f normal = along ^ around;
+            normal.normalize();
+            around.normalize();
+            along *= shear / along.length();
 
-            if (rx <= 0.0) 
+            pTransformElement = new osgAnimation::StackedMatrixElement(pDomLookat->getSid() ? pDomLookat->getSid() : "",
+                osg::Matrix(
+                normal.x() * along.x() + 1.0f, normal.x() * along.y(), normal.x() * along.z(), 0.0f,
+                normal.y() * along.x(), normal.y() * along.y() + 1.0f, normal.y() * along.z(), 0.0f,
+                normal.z() * along.x(), normal.z() * along.y(), normal.z() * along.z() + 1.0f, 0.0f,
+                0.0f, 0.0f, 0.0f, 1.0f));
+        }
+
+        if (pTransformElement)
+        {
+            daeElementDomChannelMap::iterator iter = _daeElementDomChannelMap.find(pDaeElement);
+            if (iter != _daeElementDomChannelMap.end())
             {
-                osg::notify(osg::WARN)<<"skew angle too large"<<std::endl;
-                continue;
+                // The element is animated
+
+                // First add single or collapsed transform element if any
+                if (pLastStaticTransformElement)
+                {
+                    transformElements.push_back(pLastStaticTransformElement);
+                    pLastStaticTransformElement = NULL;
+                }
+                transformElements.push_back(pTransformElement);
+
+                // Animated element so we need an AnimationUpdateCallback
+                if (!pNodeCallback)
+                {
+                    std::string name = node->getId() ? node->getId() : node->getSid() ? node->getSid() : "";
+                    resultNode->setDataVariance(osg::Object::DYNAMIC);
+
+                    pNodeCallback = new osgAnimation::UpdateMatrixTransform(name);
+                    resultNode->setUpdateCallback(pNodeCallback);
+                }
+
+                do
+                {
+                    _domChannelOsgAnimationUpdateCallbackMap[iter->second] = pNodeCallback;
+                    ++iter;
+                } while (iter != _daeElementDomChannelMap.end() && iter->first == pDaeElement);
             }
-            
-            float alpha;
-            // A parallel to B??
-            if (an1==0) 
+            else if (pLastStaticTransformElement)
             {
-                alpha=0;
-            } 
-            else 
-            {
-                alpha=ry/rx-an2/an1;
+                // Add transform element only if not identity
+                if (!pTransformElement->isIdentity())
+                {
+                    // Collapse static transform elements
+                    osg::Matrix matrix = pLastStaticTransformElement->getAsMatrix();
+                    pTransformElement->applyToMatrix(matrix);
+                    pLastStaticTransformElement = new osgAnimation::StackedMatrixElement("collapsed", matrix);
+                }
             }
-
-
-            osg::Matrix skewMat(a.x()*along.x()*alpha+1.0,    a.x()*along.y()*alpha,        a.x()*along.z()*alpha,        0,
-                                a.y()*along.x()*alpha,        a.y()*along.y()*alpha+1.0,    a.y()*along.z()*alpha,        0,
-                                a.z()*along.x()*alpha,        a.z()*along.y()*alpha,        a.z()*along.z()*alpha+1.0,    0,
-                                0,                            0,                            0,                            1);
-
-
-            matrix = skewMat * matrix;
-            continue;
+            else if (!pTransformElement->isIdentity())
+            {
+                // Store single static transform element only if not identity
+                pLastStaticTransformElement = pTransformElement;
+            }
         }
     }
 
-    matNode->setMatrix(matrix);
+    // Add final collapsed element (if any)
+    if (pLastStaticTransformElement)
+    {
+        transformElements.push_back(pLastStaticTransformElement);
+    }
+
+    // Build a matrix for the MatrixTransform and add the elements to the updateCallback
+    osg::Matrix matrix;
+
+    osgAnimation::UpdateMatrixTransform* pUpdateStackedTransform =
+        dynamic_cast<osgAnimation::UpdateMatrixTransform*>(pNodeCallback);
+
+    for (size_t i=0; i < transformElements.size(); i++)
+    {
+        transformElements[i]->applyToMatrix(matrix);
+        if (pUpdateStackedTransform)
+        {
+            pUpdateStackedTransform->getStackedTransforms().push_back(transformElements[i].get());
+        }
+    }
+
+    resultNode->setMatrix(matrix);
 
     osg::Vec3 scale = matrix.getScale();
     if ((scale.x() != 1) || (scale.y() != 1) || (scale.z() != 1))
     {
-        osg::StateSet* ss = matNode->getOrCreateStateSet();
+        osg::StateSet* ss = resultNode->getOrCreateStateSet();
         ss->setMode(GL_RESCALE_NORMAL, osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
     }
 
-    return matNode;
+    return resultNode;
 }
 
-osg::Node* daeReader::processOsgDOFTransform(domTechnique* teq)
+osg::Group* daeReader::processOsgDOFTransform(domTechnique* teq)
 {
     osgSim::DOFTransform* dof = new osgSim::DOFTransform;
 

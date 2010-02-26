@@ -843,6 +843,11 @@ struct ListDeviceAvailable
                 return _listDevice[i];
         //if (!_listDevice.empty())
         //    return _listDevice.front();
+
+        int deviceId = atoi(name.c_str());
+        if(deviceId >= 0 && deviceId < (int)_listDevice.size())
+          return _listDevice[deviceId];
+
         return DeviceEntry();
     }
 

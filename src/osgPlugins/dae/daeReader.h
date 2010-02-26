@@ -20,17 +20,20 @@
 #include <dae/daeURI.h>
 #include <dae/daeElement.h>
 #include <dom/domCommon_color_or_texture_type.h>
+#include <dom/domInputLocalOffset.h>
+#include <dom/domInstance_controller.h>
 
 #include <osg/Node>
-#include <osg/Transform>
 #include <osg/Notify>
-#include <osg/PositionAttitudeTransform>
 #include <osgDB/ReaderWriter>
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 #include <osgDB/Registry>
 #include <osg/Material>
-
+#include <osg/Texture2D>
+#include <osgAnimation/BasicAnimationManager>
+#include <osgAnimation/Bone>
+#include <osgAnimation/Skeleton>
 
 class domBind_material;
 class domCamera;
@@ -52,9 +55,8 @@ class domTranslate;
 class domRotate;
 class domVisual_scene;
 
-#include <dom/domInputLocalOffset.h>
-
-namespace osgdae {
+namespace osgDAE
+{
 
 class domSourceReader;
 
@@ -136,121 +138,266 @@ public:
 
     bool convert( const std::string &fileURI );
     
-    osg::Node* getRootNode()    { return rootNode; }
+    osg::Node* getRootNode()    { return _rootNode; }
 
-    // Additional Information
-    std::string m_AssetUnitName;
-    float m_AssetUnitMeter;
-    domUpAxisType m_AssetUp_axis;
+    const std::string& getAssetUnitName() const {return _assetUnitName;}
+    float getAssetUnitMeter() const {return _assetUnitMeter;}
+    domUpAxisType getAssetUpAxis() const {return _assetUp_axis;}
 
-    // Texture unit useage
-    enum
+    enum TextureUnitUsage
     {
         AMBIENT_OCCLUSION_UNIT = 0,
         MAIN_TEXTURE_UNIT,
         TRANSPARENCY_MAP_UNIT
     };
 
-protected:
-    //scene processing
-    osg::Node*    processVisualScene( domVisual_scene *scene );
-    osg::Node*    processNode( domNode *node );
-    osg::Node*    processOsgMatrixTransform( domNode *node );
-    //osg::Node* processInstance( domInstanceWithExtra *iwe );
+    enum InterpolationType 
+    { 
+        INTERPOLATION_UNKNOWN, 
+        INTERPOLATION_STEP, 
+        INTERPOLATION_LINEAR, 
+        INTERPOLATION_BEZIER, 
+        INTERPOLATION_HERMITE, 
+        INTERPOLATION_CARDINAL, 
+        INTERPOLATION_BSPLINE,
+
+        //COLLADA spec states that if interpolation is not specified then
+        //interpolation is application defined. Linear is a sensible default.
+        INTERPOLATION_DEFAULT = INTERPOLATION_LINEAR
+    };
+
+    enum AuthoringTool
+    {
+        UNKNOWN,
+        BLENDER,
+        DAZ_STUDIO,
+        FBX_CONVERTER,
+        AUTODESK_3DS_MAX = FBX_CONVERTER,//3ds Max exports to DAE via Autodesk's FBX converter
+        GOOGLE_SKETCHUP,
+        MAYA
+    };
+
+    class TextureParameters
+    {
+    public:
+        TextureParameters()
+            : wrap_s(osg::Texture::REPEAT), wrap_t(osg::Texture::REPEAT),
+            filter_min(osg::Texture::LINEAR_MIPMAP_LINEAR), filter_mag(osg::Texture::LINEAR),
+            transparent(false), opaque(FX_OPAQUE_ENUM_A_ONE), transparency(1.0f)
+        {}
+
+        bool operator < (const TextureParameters& rhs) const
+        {
+            int diffStr = filename.compare(rhs.filename);
+            if (diffStr) return diffStr < 0;
+            if (wrap_s != rhs.wrap_s) return wrap_s < rhs.wrap_s;
+            if (wrap_t != rhs.wrap_t) return wrap_t < rhs.wrap_t;
+            if (filter_min != rhs.filter_min) return filter_min < rhs.filter_min;
+            if (filter_mag != rhs.filter_mag) return filter_mag < rhs.filter_mag;
+            if (transparency != rhs.transparency) return transparency < rhs.transparency;
+            if (opaque != rhs.opaque) return opaque < rhs.opaque;
+            if (transparent != rhs.transparent) return transparent < rhs.transparent;
+            return border < rhs.border;
+        }
+
+        std::string filename;
+        osg::Texture::WrapMode wrap_s, wrap_t;
+        osg::Texture::FilterMode filter_min, filter_mag;
+        osg::Vec4 border;
+
+        //The following parameters are for transparency textures, to handle
+        //COLLADA's horrible transparency spec.
+        bool transparent;
+        domFx_opaque_enum opaque;
+        float transparency;
+    };
+
+    class ChannelPart : public osg::Referenced
+    {
+    public:
+        std::string name;
+        osg::ref_ptr<osgAnimation::KeyframeContainer> keyframes;
+        InterpolationType interpolation;
+    };
+
+    typedef std::map<domGeometry*, osg::ref_ptr<osg::Geode> >    domGeometryGeodeMap;
+    typedef std::map<domMaterial*, osg::ref_ptr<osg::StateSet> > domMaterialStateSetMap;
+    typedef std::map<std::string, osg::ref_ptr<osg::StateSet> >    MaterialStateSetMap;
+    typedef std::multimap< daeElement*, domChannel*> daeElementDomChannelMap;
+    typedef std::map<domChannel*, osg::ref_ptr<osg::NodeCallback> > domChannelOsgAnimationUpdateCallbackMap;
+    typedef std::map<domNode*, osg::ref_ptr<osgAnimation::Bone> > domNodeOsgBoneMap;
+    typedef std::map<domNode*, osg::ref_ptr<osgAnimation::Skeleton> > domNodeOsgSkeletonMap;
+    typedef std::map<TextureParameters, osg::ref_ptr<osg::Texture2D> > TextureParametersMap;
+    typedef std::map<std::pair<const osg::StateSet*, TextureUnitUsage>, std::string> TextureToCoordSetMap;
+
+    typedef std::map< daeElement*, domSourceReader > SourceMap;
+    typedef std::map< int, osg::IntArray*, std::less<int> > IndexMap;
+    typedef std::map< int, osg::Array*, std::less<int> > ArrayMap;
+
+    typedef std::multimap< osgAnimation::Target*, osg::ref_ptr<ChannelPart> > TargetChannelPartMap;
+    typedef std::multimap<std::pair<const domMesh*, unsigned>, std::pair<osg::ref_ptr<osg::Geometry>, GLuint> > OldToNewIndexMap;
+
+private:
+    // If the node is a bone then it should be added before any other types of
+    // node, this function makes that happen.
+    static void addChild(osg::Group*, osg::Node*);
+
+     //scene processing
+    osg::Group* turnZUp();
+    osg::Group*    processVisualScene( domVisual_scene *scene );
+    osg::Node*    processNode( domNode *node, bool skeleton );
+    osg::Transform*    processOsgMatrixTransform( domNode *node, bool isBone);
+
+    template <typename T>
+    inline void getTransparencyCounts(daeDatabase*, int& zero, int& one) const;
+
+    /** Earlier versions of the COLLADA 1.4 spec state that transparency values
+    of 0 mean 100% opacity, but this has been changed in later versions to state
+    that transparency values of 1 mean 100% opacity. Documents created by
+    different tools at different times adhere to different versions of the
+    standard. This function looks at all transparency values in the database and
+    heuristically decides which way the values should be interpreted.*/
+    bool findInvertTransparency(daeDatabase*) const;
+    
+    osgAnimation::BasicAnimationManager* processAnimationLibraries(domCOLLADA* document);
+    void processAnimationClip(osgAnimation::BasicAnimationManager* pOsgAnimationManager, domAnimation_clip* pDomAnimationClip);
+    void processAnimation(domAnimation* pDomAnimation, osgAnimation::Animation* pOsgAnimation);
+    ChannelPart* processSampler(domChannel* pDomChannel, SourceMap &sources);
+    void processAnimationChannels(domAnimation* pDomAnimation, TargetChannelPartMap& tcm);
+    void processChannel(domChannel* pDomChannel, SourceMap &sources, TargetChannelPartMap& tcm);
+    void extractTargetName(const std::string&, std::string&, std::string&, std::string&);
 
     // Processing of OSG specific info stored in node extras
-    osg::Node* processExtras(domNode *node);
+    osg::Group* processExtras(domNode *node);
     void processNodeExtra(osg::Node* osgNode, domNode *node);
     domTechnique* getOpenSceneGraphProfile(domExtra* extra);
     void processAsset( domAsset *node );
 
-    osg::Node* processOsgSwitch(domTechnique* teq);
-    osg::Node* processOsgMultiSwitch(domTechnique* teq);
-    osg::Node* processOsgLOD(domTechnique* teq);
-    osg::Node* processOsgDOFTransform(domTechnique* teq);
-    osg::Node* processOsgSequence(domTechnique* teq);
+    osg::Group* processOsgSwitch(domTechnique* teq);
+    osg::Group* processOsgMultiSwitch(domTechnique* teq);
+    osg::Group* processOsgLOD(domTechnique* teq);
+    osg::Group* processOsgDOFTransform(domTechnique* teq);
+    osg::Group* processOsgSequence(domTechnique* teq);
 
-    //geometry processing
-    class ReaderGeometry : public osg::Geometry
-    {
-    public:
-        std::map<int, int> _TexcoordSetMap;
-    };
+    // geometry processing
+    osg::Geode* getOrCreateGeometry(domGeometry *geom, domBind_material* pDomBindMaterial, const osg::Geode** ppOriginalGeode = NULL);
+    osgAnimation::Bone* getOrCreateBone(domNode *pDomNode);
+    osgAnimation::Skeleton* getOrCreateSkeleton(domNode *pDomNode);
     osg::Geode* processInstanceGeometry( domInstance_geometry *ig );
-    osg::Geode* processGeometry( domGeometry *geo );
-    osg::Geode* processInstanceController( domInstance_controller *ictrl );
 
-    typedef std::map< daeElement*, domSourceReader > SourceMap;
-    typedef std::map< int, osg::IntArray*, std::less<int> > IndexMap;
+    osg::Geode* processMesh(domMesh* pDomMesh);
+    osg::Geode* processConvexMesh(domConvex_mesh* pDomConvexMesh);
+    osg::Geode* processSpline(domSpline* pDomSpline);
+    osg::Geode* processGeometry(domGeometry *pDomGeometry);
+
+    typedef std::vector<domInstance_controller*> domInstance_controllerList;
+
+    void processSkins();
+    //Process skins attached to one skeleton
+    void processSkeletonSkins(domNode* skeletonRoot, const domInstance_controllerList&);
+    void processSkin(domSkin* pDomSkin, domNode* skeletonRoot, osgAnimation::Skeleton*, domBind_material* pDomBindMaterial);
+    osg::Node* processMorph(domMorph* pDomMorph, domBind_material* pDomBindMaterial);
+    osg::Node* processInstanceController( domInstance_controller *ictrl );
 
     template< typename T >
-    void processSinglePPrimitive(osg::Geode* geode, T *group, SourceMap &sources, GLenum mode );
+    void processSinglePPrimitive(osg::Geode* geode, const domMesh* pDomMesh, const T* group, SourceMap& sources, GLenum mode);
     
     template< typename T >
-    void processMultiPPrimitive(osg::Geode* geode, T *group, SourceMap &sources, GLenum mode );
+    void processMultiPPrimitive(osg::Geode* geode, const domMesh* pDomMesh, const T* group, SourceMap& sources, GLenum mode);
 
-    void processPolylist(osg::Geode* geode, domPolylist *group, SourceMap &sources );
+    template <typename T>
+    void processPolygons(osg::Geode* geode, const domMesh* pDomMesh, const T *group, SourceMap& sources);
 
-    void resolveArrays( domInputLocalOffset_Array &inputs, osg::Geometry *geom, 
-                        SourceMap &sources, IndexMap &index_map );
+    void processPolylist(osg::Geode* geode, const domMesh* pDomMesh, const domPolylist *group, SourceMap &sources);
+    void processPolygons(osg::Geode* geode, const domMesh* pDomMesh, const domPolygons *group, SourceMap &sources);
 
-    void processP( domP *p, osg::Geometry *&geom, IndexMap &index_map, osg::DrawArrayLengths* dal/*GLenum mode*/ );
+    void resolveMeshArrays(const domP_Array&,
+        const domInputLocalOffset_Array& inputs, const domMesh* pDomMesh,
+        osg::Geometry* geometry, SourceMap &sources,
+        std::vector<std::vector<GLuint> >& vertexLists);
 
     //material/effect processing
     void processBindMaterial( domBind_material *bm, domGeometry *geom, osg::Geode *geode, osg::Geode *cachedGeode );
     void processMaterial(osg::StateSet *ss, domMaterial *mat );
     void processEffect(osg::StateSet *ss, domEffect *effect );
     void processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc );
-    bool processColorOrTextureType( domCommon_color_or_texture_type *cot, 
+    bool processColorOrTextureType(const osg::StateSet*,
+                                    domCommon_color_or_texture_type *cot, 
                                     osg::Material::ColorMode channel, 
                                     osg::Material *mat, 
                                     domCommon_float_or_param_type *fop = NULL, 
-                                    osg::StateAttribute **sa = NULL,
+                                    osg::Texture2D **sa = NULL,
                                     bool normalizeShininess=false);
     void processTransparencySettings( domCommon_transparent_type *ctt,
                                         domCommon_float_or_param_type *pTransparency, 
-                                        osg::StateSet *ss,
+                                        osg::StateSet*,
                                         osg::Material *material,
                                         xsNCName diffuseTextureName );
-    bool GetFloat4Param(xsNCName Reference, domFloat4 &f4);
-    bool GetFloatParam(xsNCName Reference, domFloat &f);
+    bool GetFloat4Param(xsNCName Reference, domFloat4 &f4) const;
+    bool GetFloatParam(xsNCName Reference, domFloat &f) const;
 
-    osg::StateAttribute *processTexture( domCommon_color_or_texture_type_complexType::domTexture *tex );
+    std::string processImagePath(const domImage*) const;
+    osg::Image* processImageTransparency(const osg::Image*, domFx_opaque_enum, float transparency) const;
+    osg::Texture2D* processTexture( domCommon_color_or_texture_type_complexType::domTexture *tex, const osg::StateSet*, TextureUnitUsage, domFx_opaque_enum = FX_OPAQUE_ENUM_A_ONE, float transparency = 1.0f);
+    void copyTextureCoordinateSet(const osg::StateSet* ss, const osg::Geometry* cachedGeometry, osg::Geometry* clonedGeometry, const domInstance_material* im, TextureUnitUsage);
 
     //scene objects
     osg::Node* processLight( domLight *dlight );
     osg::Node* processCamera( domCamera *dcamera );
 
-protected:
-    DAE *dae;
-    osg::Node* rootNode;
+    domNode* getRootJoint(domNode*) const;
+    domNode* findJointNode(daeElement* searchFrom, domInstance_controller*) const;
+    domNode* findSkeletonNode(daeElement* searchFrom, domInstance_controller*) const;
+
+    /// Return whether the node is used as a bone. Note that while many files
+    /// identify joints with type="JOINT", some don't do this, while others
+    /// incorrectly identify every node as a joint.
+    bool isJoint(const domNode* node) const {return _jointSet.find(node) != _jointSet.end();}
+
+private:
+
+    DAE *_dae;
+    osg::Node* _rootNode;
     osg::ref_ptr<osg::StateSet> _rootStateSet;
+    domCOLLADA* _document;
+    domVisual_scene* _visualScene;
 
     std::map<std::string,bool> _targetMap;
 
-    int m_numlights;
+    int _numlights;
 
-    domInstance_effect *currentInstance_effect;
-    domEffect *currentEffect;
+    domInstance_effect *_currentInstance_effect;
+    domEffect *_currentEffect;
 
-    typedef std::map< domGeometry*, osg::ref_ptr<osg::Geode> >    domGeometryGeodeMap;
-    typedef std::map< domMaterial*, osg::ref_ptr<osg::StateSet> > domMaterialStateSetMap;
-    typedef std::map< std::string, osg::ref_ptr<osg::StateSet> >    MaterialStateSetMap;
-
+    /// Maps an animated element to a domchannel to quickly find which animation influence this element
+    // TODO a single element can be animated by multiple channels (with different members like translate.x or morphweights(2) )
+    daeElementDomChannelMap _daeElementDomChannelMap;
+    /// Maps a domchannel to an animationupdatecallback
+    domChannelOsgAnimationUpdateCallbackMap _domChannelOsgAnimationUpdateCallbackMap;
     /// Maps geometry to a Geode
-    domGeometryGeodeMap     geometryMap;
+    domGeometryGeodeMap _geometryMap;
+    /// All nodes in the document that are used as joints.
+    std::set<const domNode*> _jointSet;
+    /// Maps a node (of type joint) to a osgAnimation::Bone
+    domNodeOsgBoneMap _jointMap;
+    /// Maps a node (of type joint) to a osgAnimation::Skeleton
+    domNodeOsgSkeletonMap _skeletonMap;
     // Maps material target to stateset
-    domMaterialStateSetMap  materialMap;
+    domMaterialStateSetMap _materialMap;
     // Maps material symbol to stateset
-    MaterialStateSetMap     materialMap2;
+    MaterialStateSetMap _materialMap2;
+    TextureParametersMap _textureParamMap;
+    TextureToCoordSetMap _texCoordSetMap;
+    domInstance_controllerList _skinInstanceControllers;
+    OldToNewIndexMap _oldToNewIndexMap;
 
-    enum AuthoringTool
-    {
-        UNKNOWN,
-        GOOGLE_SKETCHUP
-    };
-    AuthoringTool m_AuthoringTool;
-    bool m_StrictTransparency;
+    AuthoringTool _authoringTool;
+    bool _strictTransparency, _invertTransparency;
+
+    // Additional Information
+    std::string _assetUnitName;
+    float _assetUnitMeter;
+    domUpAxisType _assetUp_axis;
 };
 
 }

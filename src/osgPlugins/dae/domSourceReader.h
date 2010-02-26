@@ -19,7 +19,7 @@
 
 class domSource;
 
-namespace osgdae {
+namespace osgDAE {
 
 /**
 @class domSourceReader
@@ -28,7 +28,7 @@ namespace osgdae {
 class domSourceReader
 {
 public:
-    enum ArrayType {None,Float,Vec2,Vec3,Vec4};
+    enum ArrayType {None,Float,Vec2,Vec3,Vec4,Matrix,String};
 
 public:
 
@@ -44,7 +44,9 @@ public:
     osg::Vec3Array* getVec3Array() { return m_vec3_array.get(); };
 
     osg::Vec4Array* getVec4Array() { return m_vec4_array.get(); };
-
+    
+    osg::MatrixfArray* getMatrixArray() { return m_matrix_array.get(); };
+    
     int getCount() const { return m_count; };
 
 #define ASSERT_TYPE(type)       if (type!=m_array_type) { osg::notify(osg::WARN)<<"Wrong array type requested ("#type" != "<<m_array_type<<")"<<std::endl; }
@@ -57,6 +59,8 @@ public:
 
     osg::Vec4 const& getVec4( int index ) { ASSERT_TYPE( Vec4 ); return (*m_vec4_array)[index]; };
 
+    osg::Matrixf const& getMatrix( int index ) { ASSERT_TYPE( Matrix ); return (*m_matrix_array)[index]; };
+
 #undef ASSERT_TYPE
 
 protected:
@@ -68,6 +72,7 @@ protected:
     osg::ref_ptr<osg::Vec2Array> m_vec2_array;
     osg::ref_ptr<osg::Vec3Array> m_vec3_array;
     osg::ref_ptr<osg::Vec4Array> m_vec4_array;
+    osg::ref_ptr<osg::MatrixfArray> m_matrix_array;
     
 };
 

@@ -8,14 +8,15 @@
 // OSG reader/writer plugin for the COLLADA 1.4.x ".dae" format.
 // See http://collada.org/ and http://khronos.org/collada/
 
-#define EXTENSION_NAME "dae"
-
 class ReaderWriterDAE : public osgDB::ReaderWriter
 {
 public:
     ReaderWriterDAE()
     {
-        supportsExtension(EXTENSION_NAME,"COLLADA 1.4.x DAE format");
+        // Collada document
+        supportsExtension("dae","COLLADA 1.4.x DAE format");
+        // Collada zip archive (contains one or more dae files and a manifest.xml)
+        supportsExtension("zae","COLLADA 1.4.x ZAE format");
     }
 
     const char* className() const { return "COLLADA 1.4.x DAE reader/writer"; }

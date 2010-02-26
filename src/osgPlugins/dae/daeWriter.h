@@ -1,14 +1,14 @@
 /*
  * Copyright 2006 Sony Computer Entertainment Inc.
  *
- * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this 
+ * Licensed under the SCEA Shared Source License, Version 1.0 (the "License"); you may not use this
  * file except in compliance with the License. You may obtain a copy of the License at:
  * http://research.scea.com/scea_shared_source_license.html
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License 
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or 
- * implied. See the License for the specific language governing permissions and limitations under the 
- * License. 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied. See the License for the specific language governing permissions and limitations under the
+ * License.
  */
 
 #ifndef _DAE_WRITER_H_
@@ -40,9 +40,14 @@
 #include <osgDB/FileUtils>
 #include <osgDB/Registry>
 #include <osgSim/MultiSwitch>
+#include <osgAnimation/AnimationManagerBase>
+#include <osgAnimation/UpdateBone>
+#include <osgAnimation/RigGeometry>
+#include <osgAnimation/MorphGeometry>
 
 #include <dae.h>
 #include <dae/daeDocument.h>
+#include <dom/domChannel.h>
 
 
 class domCOLLADA;
@@ -54,6 +59,7 @@ class domLibrary_geometries;
 class domLibrary_lights;
 class domLibrary_materials;
 class domLibrary_visual_scenes;
+class domLibrary_animations;
 class domMaterial;
 class domMesh;
 class domNode;
@@ -61,7 +67,7 @@ class domSource;
 class domVisual_scene;
 class domP;
 
-namespace osgdae {
+namespace osgDAE {
 
 /// Convert value to string using it's stream operator
 template <typename T>
@@ -74,11 +80,56 @@ std::string toString(T value) {
 std::string toString(osg::Vec3f value);
 std::string toString(osg::Vec3d value);
 std::string toString(osg::Matrix value);
-  
+
+// Collects all nodes that are targeted by an animation
+class FindAnimatedNodeVisitor : public osg::NodeVisitor
+{
+public:
+    FindAnimatedNodeVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
+        {}
+
+    virtual void apply(osg::Node& node)
+    {
+        osg::NodeCallback* ncb = node.getUpdateCallback();
+        if (ncb)
+        {
+            osgAnimation::AnimationUpdateCallback<osg::NodeCallback>* ut = dynamic_cast<osgAnimation::AnimationUpdateCallback<osg::NodeCallback>*>(ncb);
+            if (ut)
+            {
+                if (_updateCallbackNameNodeMap[ut->getName()] == NULL)
+                {
+                    _updateCallbackNameNodeMap[ut->getName()] = &node;
+                }
+                else
+                {
+                    // TODO store in a multimap and let the exporter create multiple <channel>s for each connected node
+                    osg::notify( osg::WARN ) << "Multiple nodes using the same update callback not supported" << std::endl;
+                }
+            }
+        }
+        traverse(node);
+    }
+
+    osg::Node* getTargetNode(const std::string& targetName)
+    {
+        UpdateCallbackNameNodeMap::iterator it = _updateCallbackNameNodeMap.find(targetName);
+        if (it != _updateCallbackNameNodeMap.end())
+        {
+            return it->second;
+        }
+        return NULL;
+    }
+
+private:
+    typedef std::map< std::string, osg::Node*>    UpdateCallbackNameNodeMap;
+    UpdateCallbackNameNodeMap _updateCallbackNameNodeMap;
+};
+
 /**
 @class daeWriter
-@brief Write a OSG scene into a DAE file 
-*/ 
+@brief Write a OSG scene into a DAE file
+*/
 class daeWriter : public osg::NodeVisitor
 {
 protected:
@@ -116,33 +167,28 @@ public:
     //virtual void  apply( osg::ClearNode &node)
     //virtual void  apply( osg::OccluderNode &node)
 
-    void writeNodeExtra(osg::Node &node);
-
-
-
     void traverse (osg::Node &node);
-  
-/*protected:
-    struct MeshData {
-        domMesh *mesh;
-        domSource *pos;
-        domSource *norm;
-        domSource *color;
-        std::vector< domSource * > texcoord;
-        std::string name;
-    };*/
+
+
 
 
 protected: //methods
+
+    void writeAnimations(osg::Node& node);
+    void writeNodeExtra(osg::Node &node);
+    void writeUpdateTransformElements(const osg::Vec3 &pos, const osg::Quat &q,    const osg::Vec3 &s);
+    void writeRigGeometry(osgAnimation::RigGeometry *pOsgRigGeometry);
+    void writeMorphGeometry(osgAnimation::MorphGeometry *pOsgMorphGeometry);
+
     void debugPrint( osg::Node &node );
-    
-    
+
+    domGeometry* getOrCreateDomGeometry(osg::Geometry* pOsgGeometry);
     bool processGeometry( osg::Geometry *geom, domGeometry *geo, const std::string &name );
     domSource* createSource( daeElement *parent, const std::string &baseName, int size, bool color = false, bool uv = false );
     template < typename Ty >
         Ty *createPrimGroup( daeString type, domMesh *mesh, domSource *norm, domSource *color, const std::vector< domSource* > &texcoord );
 
-    void processMaterial( osg::StateSet *ss, domInstance_geometry *ig, const std::string &geoName );
+    void processMaterial( osg::StateSet *ss, domBind_material *pDomBindMaterial, const std::string &geoName );
 
     void createAssetTag();
 
@@ -156,10 +202,12 @@ protected: //members
     domCOLLADA *dom;
     domLibrary_cameras *lib_cameras;
     domLibrary_effects *lib_effects;
+    domLibrary_controllers *lib_controllers;
     domLibrary_geometries *lib_geoms;
     domLibrary_lights *lib_lights;
     domLibrary_materials *lib_mats;
     domLibrary_visual_scenes *lib_vis_scenes;
+    domLibrary_animations* _domLibraryAnimations;
     domNode *currentNode;
     domVisual_scene *vs;
 
@@ -176,19 +224,20 @@ protected: //members
       return ss1->compare(*ss2, true) < 0;
     }
   };
-  
-  
 
-    std::map< std::string, int > uniqueNames;
-
-    std::map< osg::Geometry*, domGeometry * > geometryMap;
 
     typedef std::map< osg::ref_ptr<osg::StateSet>, domMaterial *, CompareStateSet> MaterialMap;
+    typedef std::stack<osg::ref_ptr<osg::StateSet> > StateSetStack;
+    typedef std::map< osg::Geometry*, domGeometry *> OsgGeometryDomGeometryMap;
+    typedef std::map< osgAnimation::RigGeometry*, domController *> OsgRigGeometryDomControllerMap;
+    typedef std::map< osgAnimation::MorphGeometry*, domController *> OsgMorphGeometryDomControllerMap;
+
+    std::map< std::string, int > uniqueNames;
+    OsgGeometryDomGeometryMap geometryMap;
+    OsgRigGeometryDomControllerMap _osgRigGeometryDomControllerMap;
+    OsgMorphGeometryDomControllerMap _osgMorphGeometryDomControllerMap;
 
     MaterialMap materialMap;
-
-    typedef std::stack<osg::ref_ptr<osg::StateSet> > StateSetStack;
-
     StateSetStack stateSetStack;
 
     osg::ref_ptr<osg::StateSet> currentStateSet;
@@ -200,7 +249,7 @@ protected: //members
     osg::StateSet* CleanStateSet(osg::StateSet* pStateSet) const;
 
 protected: //inner classes
-    class ArrayNIndices 
+    class ArrayNIndices
     {
     public:
         enum Mode { NONE = 0, VEC2 = 2, VEC3 = 3, VEC4 = 4 };
@@ -237,7 +286,7 @@ protected: //inner classes
     };
 
 private: //members
-        
+
         /** append elements (verts, normals, colors and texcoord) for file write */
         void appendGeometryIndices(osg::Geometry *geom,
                                           domP * p,
@@ -253,7 +302,7 @@ private: //members
 
         /** provide a name to node */
         std::string getNodeName(const osg::Node & node,const std::string & defaultName);
-        
+
         /** provide an unique name */
         std::string uniquify( const std::string &name );
 
@@ -263,6 +312,8 @@ private: //members
         /** Current RenderingHint */
         /** This are needed because the stateSet merge code currently does not handle it */
         int m_CurrentRenderingHint;
+
+        FindAnimatedNodeVisitor _animatedNodeCollector;
 };
 
 }

@@ -15,7 +15,7 @@
 
 #include <dom/domSource.h>
 
-using namespace osgdae;
+using namespace osgDAE;
 
 domSourceReader::domSourceReader() : m_array_type( None ), m_count( 0 )
 {}
@@ -32,7 +32,20 @@ domSourceReader::domSourceReader( domSource *src ) : m_array_type( None ), m_cou
     int stride = accessor->getStride();
     m_count = accessor->getCount();
 
-    switch ( stride ) {
+    // Only handle floats or name array for now...
+    daeDoubleArray* float_array = NULL;
+    if (src->getFloat_array()) 
+    {
+        float_array = &(src->getFloat_array()->getValue());
+    }
+    else if (src->getName_array())
+    {
+        m_array_type = String;
+        return;
+    }
+
+    switch (stride) 
+    {
         case 1:
             m_array_type = Float;
             m_float_array = new osg::FloatArray();
@@ -49,39 +62,48 @@ domSourceReader::domSourceReader( domSource *src ) : m_array_type( None ), m_cou
             m_array_type = Vec4;
             m_vec4_array = new osg::Vec4Array();
             break;
+        case 16:
+            m_array_type = Matrix;
+            m_matrix_array = new osg::MatrixfArray();
+            break;
         default:
             osg::notify(osg::WARN)<<"Unsupported stride: "<<stride<<std::endl;
             return;
     }
 
-    // Only handle floats for now...
-    daeDoubleArray* float_array = NULL;
-    if ( src->getFloat_array() != NULL ) {
-        float_array = &(src->getFloat_array()->getValue());
-    }
-    if ( !float_array ) {
-        osg::notify(osg::WARN)<<"No float array found"<<std::endl;
-        return;
-    }
-    
-    daeDoubleArray& va = *float_array;
-    for ( size_t i = 0; i < accessor->getCount(); i++ ) {
-        switch ( accessor->getStride() ) {
-            case 1:
-                m_float_array->push_back( va[i] );
-                break;
-            case 2:
-                m_vec2_array->push_back( osg::Vec2( va[i*2], va[i*2+1] ) );
-                break;
-            case 3:
-                m_vec3_array->push_back( osg::Vec3( va[i*3], va[i*3+1], va[i*3+2] ) );
-                break;
-            case 4:
-                m_vec4_array->push_back( osg::Vec4( va[i*4], va[i*4+1], va[i*4+2], va[i*4+3] ) );
-                break;
-            default:
-                osg::notify(osg::WARN)<<"Unsupported stride in Source: "<<accessor->getStride()<<std::endl;
-                return;
+    if (float_array) 
+    {
+        daeDoubleArray& va = *float_array;
+        for ( size_t i = 0; i < accessor->getCount(); i++ ) 
+        {
+            switch ( accessor->getStride() ) 
+            {
+                case 1:
+                    m_float_array->push_back(va[i]);
+                    break;
+                case 2:
+                    m_vec2_array->push_back( osg::Vec2( va[i*2], va[i*2+1]));
+                    break;
+                case 3:
+                    m_vec3_array->push_back( osg::Vec3( va[i*3], va[i*3+1], va[i*3+2]));
+                    break;
+                case 4:
+                    m_vec4_array->push_back( osg::Vec4( va[i*4], va[i*4+1], va[i*4+2], va[i*4+3]));
+                    break;
+                case 16:
+                    m_matrix_array->push_back(osg::Matrixf( va[i*16+0],    va[i*16+4],    va[i*16+8],    va[i*16+12],
+                                                            va[i*16+1],    va[i*16+5],    va[i*16+9],    va[i*16+13],
+                                                            va[i*16+2],    va[i*16+6],    va[i*16+10],    va[i*16+14],
+                                                            va[i*16+3],    va[i*16+7],    va[i*16+11],    va[i*16+15]));
+                    break;
+                default:
+                    osg::notify(osg::WARN) << "Unsupported stride in Source: " << accessor->getStride() << std::endl;
+                    return;
+            }
         }
+    }
+    else
+    {
+        osg::notify(osg::WARN) << "No float array found" << std::endl;
     }
 }

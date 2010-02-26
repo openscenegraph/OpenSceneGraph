@@ -29,6 +29,7 @@
 #include <osg/Vec2b>
 #include <osg/Vec3b>
 #include <osg/Vec4b>
+#include <osg/Matrix>
 
 #include <osg/BufferObject>
 
@@ -71,7 +72,8 @@ class OSG_EXPORT Array : public BufferData
             DoubleArrayType   = 18,
             Vec2dArrayType    = 19,
             Vec3dArrayType    = 20,
-            Vec4dArrayType    = 21
+            Vec4dArrayType    = 21,
+            MatrixArrayType   = 22            
         };
 
         Array(Type arrayType=ArrayType,GLint dataSize=0,GLenum dataType=0):
@@ -309,6 +311,8 @@ typedef TemplateArray<Vec2d,Array::Vec2dArrayType,2,GL_DOUBLE>                  
 typedef TemplateArray<Vec3d,Array::Vec3dArrayType,3,GL_DOUBLE>                   Vec3dArray;
 typedef TemplateArray<Vec4d,Array::Vec4dArrayType,4,GL_DOUBLE>                   Vec4dArray;
 
+typedef TemplateArray<Matrixf,Array::MatrixArrayType,16,GL_FLOAT>                MatrixfArray;
+
 
 class ArrayVisitor
 {
@@ -343,6 +347,8 @@ class ArrayVisitor
         virtual void apply(Vec2dArray&) {}
         virtual void apply(Vec3dArray&) {}
         virtual void apply(Vec4dArray&) {}
+        
+        virtual void apply(MatrixfArray&) {}
 };
 
 class ConstArrayVisitor
@@ -378,6 +384,8 @@ class ConstArrayVisitor
         virtual void apply(const Vec2dArray&) {}
         virtual void apply(const Vec3dArray&) {}
         virtual void apply(const Vec4dArray&) {}
+        
+        virtual void apply(const MatrixfArray&) {}
 };
 
 
@@ -414,6 +422,8 @@ class ValueVisitor
         virtual void apply(Vec2d&) {}
         virtual void apply(Vec3d&) {}
         virtual void apply(Vec4d&) {}
+        
+        virtual void apply(Matrixf&) {}
 };
 
 class ConstValueVisitor
@@ -448,6 +458,8 @@ class ConstValueVisitor
         virtual void apply(const Vec2d&) {}
         virtual void apply(const Vec3d&) {}
         virtual void apply(const Vec4d&) {}
+        
+        virtual void apply(const Matrixf&) {}
 };
 
 template<typename T, Array::Type ARRAYTYPE, int DataSize, int DataType>

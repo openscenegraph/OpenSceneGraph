@@ -12,6 +12,7 @@
  */
 
 #include "daeWriter.h"
+#include <osgAnimation/RigGeometry>
 
 #include <dom/domCOLLADA.h>
 #include <dom/domNode.h>
@@ -19,10 +20,347 @@
 #include <dom/domSource.h>
 #include <dom/domGeometry.h>
 #include <dom/domConstants.h>
+//#include <dom/domSkin.h>
 
 #include <sstream>
 
-using namespace osgdae;
+using namespace osgDAE;
+
+domGeometry* daeWriter::getOrCreateDomGeometry(osg::Geometry* pOsgGeometry)
+{
+    // See if geometry exists in cache
+    OsgGeometryDomGeometryMap::iterator iter = geometryMap.find( pOsgGeometry );
+    if ( iter != geometryMap.end() )
+    {
+        return iter->second;
+    }
+    else
+    {
+        if (!lib_geoms)
+        {
+            lib_geoms = daeSafeCast< domLibrary_geometries >( dom->add( COLLADA_ELEMENT_LIBRARY_GEOMETRIES ) );
+        }
+        domGeometry* pDomGeometry = daeSafeCast< domGeometry >( lib_geoms->add( COLLADA_ELEMENT_GEOMETRY ) );
+
+        std::string name = pOsgGeometry->getName();
+        if (name.empty())
+            name = uniquify("geometry");
+        else
+            name = uniquify(name);
+        pDomGeometry->setId( name.c_str() );
+    #ifndef EARTH_GEO
+        geometryMap.insert( std::make_pair( pOsgGeometry, pDomGeometry ) );
+    #endif
+
+        if ( !processGeometry( pOsgGeometry, pDomGeometry, name ) )
+        {
+            daeElement::removeFromParent( pDomGeometry );
+            return NULL;
+        }
+        return pDomGeometry;
+    }
+}
+
+void daeWriter::writeRigGeometry(osgAnimation::RigGeometry *pOsgRigGeometry)
+{
+    // See if controller exists in cache
+    OsgRigGeometryDomControllerMap::iterator iter = _osgRigGeometryDomControllerMap.find(pOsgRigGeometry);
+    domController* pDomController = NULL;
+    if ( iter != _osgRigGeometryDomControllerMap.end() )
+    {
+        pDomController = iter->second;
+    }
+    else
+    {
+        domGeometry* pDomGeometry = getOrCreateDomGeometry(pOsgRigGeometry);
+        if (pDomGeometry)
+        {
+            if (!lib_controllers)
+            {
+                lib_controllers = daeSafeCast< domLibrary_controllers >( dom->add( COLLADA_ELEMENT_LIBRARY_CONTROLLERS ) );
+            }
+
+            // <controller>
+            // 1 <skin>
+            //   source
+            //   0..1    <bind_shape_matrix>
+            //   3..*    <source>
+            //   1        <joints>
+            //   1      <vertex_weights>
+            //   0..1    <extra>
+            pDomController = daeSafeCast< domController >( lib_controllers->add( COLLADA_ELEMENT_CONTROLLER) );
+            std::string name = pOsgRigGeometry->getName();
+            if (name.empty())
+                name = uniquify("skincontroller");
+            else 
+                name = uniquify(name);
+            pDomController->setId( name.c_str() );
+            _osgRigGeometryDomControllerMap.insert( std::make_pair( pOsgRigGeometry, pDomController ) );
+
+            // Link <skin> to cache hit or created <geometry>
+            domSkin* pDomSkin = daeSafeCast< domSkin >(pDomController->add( COLLADA_ELEMENT_SKIN ));
+            std::string url = "#" + std::string(pDomGeometry->getId());
+            pDomSkin->setSource(url.c_str());
+
+            domSkin::domBind_shape_matrix* pDomBindShapeMatrix = daeSafeCast< domSkin::domBind_shape_matrix >(pDomSkin->add( COLLADA_ELEMENT_BIND_SHAPE_MATRIX ));
+
+            domSource* pDomJointsSource = daeSafeCast< domSource >(pDomSkin->add( COLLADA_ELEMENT_SOURCE ));
+            std::string skinJointsName = name + "_skin_joints";
+            pDomJointsSource->setId(skinJointsName.c_str());
+
+            domListOfNames jointNames; // TODO fill with joint ids
+            int size = 0; // TODO number of animated joints
+
+            osgAnimation::VertexInfluenceMap* vim = pOsgRigGeometry->getInfluenceMap();
+            osgAnimation::VertexInfluenceMap::iterator iter =    vim->begin();
+            while (iter != vim->end())
+            {
+                jointNames.append(iter->first.c_str());
+                //iter->second.getn
+                ++iter;
+            }
+
+            domName_array* pDomJointsNameArray = daeSafeCast< domName_array >(pDomJointsSource->add(COLLADA_ELEMENT_NAME_ARRAY));
+            std::string jointsNameArrayName = name + "_joints_array";
+            pDomJointsNameArray->setId(jointsNameArrayName.c_str());
+            pDomJointsNameArray->setCount(size);
+            pDomJointsNameArray->setValue(jointNames);
+            {
+                domSource::domTechnique_common* pDomSourceTechniqueCommon = daeSafeCast< domSource::domTechnique_common >(pDomJointsSource->add(COLLADA_ELEMENT_TECHNIQUE_COMMON));
+                
+                domAccessor* pDomAccessor = daeSafeCast< domAccessor >(pDomSourceTechniqueCommon->add(COLLADA_ELEMENT_ACCESSOR));
+                std::string url = "#" + jointsNameArrayName;
+                pDomAccessor->setSource(url.c_str());
+                pDomAccessor->setCount(size);
+
+                domParam* pDomParam = daeSafeCast< domParam >(pDomAccessor->add(COLLADA_ELEMENT_PARAM));
+                pDomParam->setType(COLLADA_TYPE_NAME);
+            }
+
+            domSource* pDomSkinBindPoseSource = daeSafeCast< domSource >(pDomSkin->add( COLLADA_ELEMENT_SOURCE ));
+            std::string skinBindPoseName = name + "_skin_bind_pose";
+            pDomSkinBindPoseSource->setId(skinBindPoseName.c_str());
+
+            domListOfFloats matrices; // TODO fill with bind matrices
+            int numMatrices = 0; // TODO number of bind matrices
+            domFloat_array* pDomMatricesArray = daeSafeCast< domFloat_array >(pDomSkinBindPoseSource->add(COLLADA_ELEMENT_FLOAT_ARRAY));
+            std::string matricesArrayName = name + "_matrices_array";
+            pDomMatricesArray->setId(matricesArrayName.c_str());
+            pDomMatricesArray->setCount(numMatrices);
+            pDomMatricesArray->setValue(matrices);
+            {
+                domSource::domTechnique_common* pDomSourceTechniqueCommon = daeSafeCast< domSource::domTechnique_common >(pDomSkinBindPoseSource->add(COLLADA_ELEMENT_TECHNIQUE_COMMON));
+                
+                domAccessor* pDomAccessor = daeSafeCast< domAccessor >(pDomSourceTechniqueCommon->add(COLLADA_ELEMENT_ACCESSOR));
+                std::string url = "#" + matricesArrayName;
+                pDomAccessor->setSource(url.c_str());
+                pDomAccessor->setCount(size);
+                pDomAccessor->setStride(16);
+
+                domParam* pDomParam = daeSafeCast< domParam >(pDomAccessor->add(COLLADA_ELEMENT_PARAM));
+                pDomParam->setType(COLLADA_TYPE_FLOAT4X4);
+            }
+
+            domSource* pDomSkinWeightsSource = daeSafeCast< domSource >(pDomSkin->add( COLLADA_ELEMENT_SOURCE ));
+            std::string skinWeightsName = name + "_skin_weights";
+            pDomSkinWeightsSource->setId(skinWeightsName.c_str());
+
+            domListOfFloats weights; // TODO fill with vertex weights
+            int numWeights = 0; // TODO number of vertices vertex weights
+            domFloat_array* pDomWeightsArray = daeSafeCast< domFloat_array >(pDomSkinWeightsSource->add(COLLADA_ELEMENT_FLOAT_ARRAY));
+            std::string weightsArrayName = name + "_weights_array";
+            pDomWeightsArray->setId(weightsArrayName.c_str());
+            pDomWeightsArray->setCount(numWeights);
+            pDomWeightsArray->setValue(weights);
+            {
+                domSource::domTechnique_common* pDomSourceTechniqueCommon = daeSafeCast< domSource::domTechnique_common >(pDomSkinWeightsSource->add(COLLADA_ELEMENT_TECHNIQUE_COMMON));
+                
+                domAccessor* pDomAccessor = daeSafeCast< domAccessor >(pDomSourceTechniqueCommon->add(COLLADA_ELEMENT_ACCESSOR));
+                std::string url = "#" + weightsArrayName;
+                pDomAccessor->setSource(url.c_str());
+                pDomAccessor->setCount(size);
+
+                domParam* pDomParam = daeSafeCast< domParam >(pDomAccessor->add(COLLADA_ELEMENT_PARAM));
+                pDomParam->setType(COLLADA_TYPE_FLOAT);
+            }
+
+            domSkin::domJoints* pDomJoints = daeSafeCast< domSkin::domJoints >(pDomSkin->add( COLLADA_ELEMENT_JOINTS ));
+            
+            domInputLocal* pDomInput = daeSafeCast< domInputLocal >(pDomJoints->add(COLLADA_ELEMENT_INPUT));
+            pDomInput->setSemantic(COMMON_PROFILE_INPUT_JOINT);
+            url = "#" + skinJointsName;
+            pDomInput->setSource(url.c_str());
+
+            pDomInput = daeSafeCast< domInputLocal >(pDomJoints->add(COLLADA_ELEMENT_INPUT));
+            pDomInput->setSemantic(COMMON_PROFILE_INPUT_INV_BIND_MATRIX);
+            url = "#" + skinBindPoseName;
+            pDomInput->setSource(url.c_str());
+
+            domSkin::domVertex_weights* pDomVertexWeights = daeSafeCast< domSkin::domVertex_weights >(pDomSkin->add( COLLADA_ELEMENT_VERTEX_WEIGHTS ));
+            pDomVertexWeights->setCount(0);// TODO set number of vertex weights
+
+            domInputLocalOffset* pDomInputLocalOffset = daeSafeCast< domInputLocalOffset >(pDomVertexWeights->add(COLLADA_ELEMENT_INPUT));
+            pDomInputLocalOffset->setSemantic(COMMON_PROFILE_INPUT_JOINT);
+            url = "#" + skinJointsName;
+            pDomInputLocalOffset->setSource(url.c_str());
+            pDomInputLocalOffset->setOffset(0);
+
+            pDomInputLocalOffset = daeSafeCast< domInputLocalOffset >(pDomVertexWeights->add(COLLADA_ELEMENT_INPUT));
+            pDomInputLocalOffset->setSemantic(COMMON_PROFILE_INPUT_WEIGHT);
+            url = "#" + weightsArrayName;
+            pDomInputLocalOffset->setSource(url.c_str());
+            pDomInputLocalOffset->setOffset(1);
+
+            domSkin::domVertex_weights::domVcount* pDomVcount = daeSafeCast< domSkin::domVertex_weights::domVcount >(pDomVertexWeights->add(COLLADA_ELEMENT_VCOUNT));
+            domListOfUInts valueCounts;
+            // TODO
+            pDomVcount->setValue(valueCounts);
+            domSkin::domVertex_weights::domV* pDomV = daeSafeCast< domSkin::domVertex_weights::domV >(pDomVertexWeights->add(COLLADA_ELEMENT_V));
+            domListOfInts values;
+            //TODO
+            pDomV->setValue(values);
+        }
+    }
+
+    if (pDomController)
+    {
+        // Link <instance_controller> to cache hit or created <controller>
+        domInstance_controller* pDomInstanceController = daeSafeCast< domInstance_controller >( currentNode->add( COLLADA_ELEMENT_INSTANCE_CONTROLLER ) );
+        std::string url = "#" + std::string(pDomController->getId());
+        pDomInstanceController->setUrl( url.c_str() );
+    }
+}
+
+void daeWriter::writeMorphGeometry(osgAnimation::MorphGeometry *pOsgMorphGeometry)
+{
+    // See if controller exists in cache
+    OsgMorphGeometryDomControllerMap::iterator iter = _osgMorphGeometryDomControllerMap.find(pOsgMorphGeometry);
+    domController* pDomController = NULL;
+    if ( iter != _osgMorphGeometryDomControllerMap.end() )
+    {
+        pDomController = iter->second;
+    }
+    else
+    {
+        domGeometry* pDomGeometry = getOrCreateDomGeometry(pOsgMorphGeometry);
+        if (pDomGeometry)
+        {
+            if (!lib_controllers)
+            {
+                lib_controllers = daeSafeCast< domLibrary_controllers >( dom->add( COLLADA_ELEMENT_LIBRARY_CONTROLLERS ) );
+            }
+
+            // <controller>
+            // 1 <morph source (method)>
+            //     2..*    <source>
+            //   1        <targets>
+            //        2..*    <input semantic source>
+            //        0..*    <extra>
+            //   0..* <extra>
+            pDomController = daeSafeCast< domController >( lib_controllers->add( COLLADA_ELEMENT_CONTROLLER) );
+            std::string name = pOsgMorphGeometry->getName();
+            if (name.empty())
+                name = uniquify("morphcontroller");
+            else 
+                name = uniquify(name);
+            pDomController->setId( name.c_str() );
+            _osgMorphGeometryDomControllerMap.insert( std::make_pair( pOsgMorphGeometry, pDomController ) );
+
+            // Link <morph> to cache hit or created <geometry>
+            domMorph* pDomMorph = daeSafeCast< domMorph >(pDomController->add( COLLADA_ELEMENT_MORPH ));
+            std::string url = "#" + std::string(pDomGeometry->getId());
+            pDomMorph->setSource(url.c_str());
+            pDomMorph->setMethod(MORPHMETHODTYPE_NORMALIZED);
+            //pDomMorph->setMethod(MORPHMETHODTYPE_RELATIVE);
+
+            domSource* pDomTargetsSource = daeSafeCast< domSource >(pDomMorph->add( COLLADA_ELEMENT_SOURCE ));
+            std::string targetsName = name + "_morph_targets";
+            pDomTargetsSource->setId(targetsName.c_str());
+
+            domIDREF_array* pDomIDREFArray = daeSafeCast< domIDREF_array >(pDomTargetsSource->add(COLLADA_ELEMENT_IDREF_ARRAY));
+            xsIDREFS idrefs;
+            osgAnimation::MorphGeometry::MorphTargetList morphTargetList = pOsgMorphGeometry->getMorphTargetList();
+            for (unsigned int i=0; i < morphTargetList.size(); i++)
+            {
+                domGeometry* pDomGeometry = getOrCreateDomGeometry(morphTargetList[i].getGeometry());
+                idrefs.append(pDomGeometry->getId());
+            }
+            pDomIDREFArray->setValue(idrefs);
+            std::string targetsArrayName = targetsName + "_array";
+            pDomIDREFArray->setId(targetsArrayName.c_str());
+            pDomIDREFArray->setCount(morphTargetList.size());
+
+            domSource::domTechnique_common* pDomTechniqueCommon = daeSafeCast< domSource::domTechnique_common >(pDomTargetsSource->add(COLLADA_ELEMENT_TECHNIQUE_COMMON));
+            domAccessor* pDomAccessor = daeSafeCast< domAccessor >(pDomTechniqueCommon->add(COLLADA_ELEMENT_ACCESSOR));
+            pDomAccessor->setCount(morphTargetList.size());
+            url = "#" + targetsArrayName;
+            pDomAccessor->setSource(url.c_str());
+
+            domParam* pDomParam = daeSafeCast< domParam >(pDomAccessor->add(COLLADA_ELEMENT_PARAM));
+            pDomParam->setName(COMMON_PROFILE_INPUT_MORPH_TARGET);
+            pDomParam->setType("IDREF"); // COLLADA_TYPE_IDREF does not exist
+
+            domSource* pDomWeightsSource = daeSafeCast< domSource >(pDomMorph->add( COLLADA_ELEMENT_SOURCE ));
+            std::string weightsName = name + "_morph_weights";
+            pDomWeightsSource->setId(weightsName.c_str());
+
+            domFloat_array* pDomFloatArray = daeSafeCast< domFloat_array >(pDomWeightsSource->add(COLLADA_ELEMENT_FLOAT_ARRAY));
+            domListOfFloats weights;
+            for (unsigned int i=0; i < morphTargetList.size(); i++)
+            {
+                weights.append(morphTargetList[i].getWeight());
+            }
+            pDomFloatArray->setValue(weights);
+            std::string weigthsArrayName = weightsName + "_array";
+            pDomFloatArray->setId(weigthsArrayName.c_str());
+            pDomFloatArray->setCount(morphTargetList.size());
+
+            pDomTechniqueCommon = daeSafeCast< domSource::domTechnique_common >(pDomWeightsSource->add(COLLADA_ELEMENT_TECHNIQUE_COMMON));
+            pDomAccessor = daeSafeCast< domAccessor >(pDomTechniqueCommon->add(COLLADA_ELEMENT_ACCESSOR));
+            pDomAccessor->setCount(morphTargetList.size());
+            url = "#" + weightsName;
+            pDomAccessor->setSource(url.c_str());
+
+            pDomParam = daeSafeCast< domParam >(pDomAccessor->add(COLLADA_ELEMENT_PARAM));
+            pDomParam->setName(COMMON_PROFILE_INPUT_MORPH_WEIGHT);
+            pDomParam->setType(COLLADA_TYPE_FLOAT);
+
+            domMorph::domTargets* pDomTargets = daeSafeCast< domMorph::domTargets >(pDomMorph->add( COLLADA_ELEMENT_TARGETS ));
+
+            domInputLocal* pDomTargetsInput = daeSafeCast< domInputLocal >(pDomTargets->add( COLLADA_ELEMENT_INPUT ));
+            pDomTargetsInput->setSemantic(COMMON_PROFILE_INPUT_MORPH_TARGET);
+            url = "#" + targetsName;
+            pDomTargetsInput->setSource(url.c_str());
+
+            domInputLocal* pDomWeightsInput = daeSafeCast< domInputLocal >(pDomTargets->add( COLLADA_ELEMENT_INPUT ));
+            pDomWeightsInput->setSemantic(COMMON_PROFILE_INPUT_MORPH_WEIGHT);
+            url = "#" + weightsName;
+            pDomWeightsInput->setSource(url.c_str());
+        }
+    }
+
+    if (pDomController)
+    {
+        // Transparency at drawable level
+        if (pOsgMorphGeometry->getStateSet())
+            m_CurrentRenderingHint = pOsgMorphGeometry->getStateSet()->getRenderingHint();
+
+        pushStateSet(pOsgMorphGeometry->getStateSet());
+
+        // Link <instance_controller> to cache hit or created <controller>
+        domInstance_controller* pDomInstanceController = daeSafeCast< domInstance_controller >( currentNode->add( COLLADA_ELEMENT_INSTANCE_CONTROLLER ) );
+        std::string url = "#" + std::string(pDomController->getId());
+        pDomInstanceController->setUrl( url.c_str() );
+
+        if (!stateSetStack.empty())
+        {
+            domBind_material *pDomBindMaterial = daeSafeCast< domBind_material >( pDomInstanceController->add( COLLADA_ELEMENT_BIND_MATERIAL ) );
+            processMaterial( currentStateSet.get(), pDomBindMaterial, pOsgMorphGeometry->getName() );
+        }
+
+        popStateSet(pOsgMorphGeometry->getStateSet());
+    }
+}
 
 void daeWriter::apply( osg::Geode &node )
 {
@@ -42,53 +380,50 @@ void daeWriter::apply( osg::Geode &node )
         
         if ( g != NULL )
         {
-            // Transparency at drawable level
-            if (NULL != g->getStateSet())
-                m_CurrentRenderingHint = g->getStateSet()->getRenderingHint();
-
-            pushStateSet(g->getStateSet());
-            std::map< osg::Geometry*, domGeometry *>::iterator iter = geometryMap.find( g );
-            if ( iter != geometryMap.end() )
+            osgAnimation::RigGeometry *pOsgRigGeometry = dynamic_cast<osgAnimation::RigGeometry*>(g);
+            if (pOsgRigGeometry)
             {
-                domInstance_geometry *ig = daeSafeCast< domInstance_geometry >( currentNode->add( COLLADA_ELEMENT_INSTANCE_GEOMETRY ) );
-                    
-                std::string url = "#" + std::string( iter->second->getId() );
-                ig->setUrl( url.c_str() );
-                if (!stateSetStack.empty())
-                    processMaterial( currentStateSet.get(), ig, iter->second->getId() );
+                writeRigGeometry(pOsgRigGeometry);
             }
             else
             {
-                if ( lib_geoms == NULL )
+                osgAnimation::MorphGeometry *pOsgMorphGeometry = dynamic_cast<osgAnimation::MorphGeometry*>(g);
+                if (pOsgMorphGeometry)
                 {
-                    lib_geoms = daeSafeCast< domLibrary_geometries >( dom->add( COLLADA_ELEMENT_LIBRARY_GEOMETRIES ) );
+                    writeMorphGeometry(pOsgMorphGeometry);
                 }
-                std::string name = node.getName();
-                if ( name.empty() ) name = "geometry";
-                name = uniquify( name );
-
-                domGeometryRef geo = daeSafeCast< domGeometry >( lib_geoms->add( COLLADA_ELEMENT_GEOMETRY ) );
-                geo->setId( name.c_str() );
-
-                if ( !processGeometry( g, geo, name ) )
+                else
                 {
-                    daeElement::removeFromParent( geo );
-                    continue;
-                }
+                    // Write a default osg::Geometry
 
-                domInstance_geometry *ig = daeSafeCast< domInstance_geometry >( currentNode->add( COLLADA_ELEMENT_INSTANCE_GEOMETRY ) );
+                    // Transparency at drawable level
+                    if (NULL != g->getStateSet())
+                        m_CurrentRenderingHint = g->getStateSet()->getRenderingHint();
+
+                    pushStateSet(g->getStateSet());
                     
-                std::string url = "#" + name;
-                ig->setUrl( url.c_str() );
+                    domGeometry* pDomGeometry = getOrCreateDomGeometry(g);
+                    if (pDomGeometry)
+                    {
+                        // Link <instance_geometry> to cache hit or created <geometry>
+                        domInstance_geometry *pDomInstanceGeometry = daeSafeCast< domInstance_geometry >( currentNode->add( COLLADA_ELEMENT_INSTANCE_GEOMETRY ) );
+                        std::string url = "#" + std::string(pDomGeometry->getId());
+                        pDomInstanceGeometry->setUrl( url.c_str() );
 
-#ifndef EARTH_GEO
-                geometryMap.insert( std::make_pair( g, geo ) );
-#endif
+                        if (!stateSetStack.empty())
+                        {
+                            domBind_material *pDomBindMaterial = daeSafeCast< domBind_material >( pDomInstanceGeometry->add( COLLADA_ELEMENT_BIND_MATERIAL ) );
+                            processMaterial( currentStateSet.get(), pDomBindMaterial, pDomGeometry->getId() );
+                        }
+                    }
 
-                if (!stateSetStack.empty())
-                    processMaterial( currentStateSet.get(), ig, name );
+                    popStateSet(g->getStateSet());
+                }
             }
-            popStateSet(g->getStateSet());
+        }
+        else
+        {
+            osg::notify( osg::WARN ) << "Non-geometry drawables are not supported" << std::endl;
         }
     }
 
@@ -142,36 +477,40 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
     domSource *norm = NULL;
     domSource *color = NULL;
     std::vector< domSource * >texcoord;
+    std::vector< domSource * > vertexAttribute;
     domLines *lines = NULL;
     domLinestrips *linestrips = NULL;
     domTriangles *tris = NULL;
     domTristrips *tristrips = NULL;
     domTrifans *trifans = NULL;
     domPolygons *polys = NULL;
-        domPolylist *polylist = NULL;
+    domPolylist *polylist = NULL;
     
-    //TODO: Make sure the assumptions about arrays is correct.
-    // Probably not so I should make each thing more flexible so arrays can be different sizes.
-
-    /*osg::Vec3Array *verts = (osg::Vec3Array *)geom->getVertexArray();
-    osg::IndexArray *vertInds = geom->getVertexIndices();
-
-    osg::Vec3Array *normals = (osg::Vec3Array *)geom->getNormalArray();
-    osg::IndexArray *normalInds = geom->getNormalIndices();
-
-    osg::Vec4Array *colors = (osg::Vec4Array *)geom->getColorArray();
-    osg::IndexArray *colorInds = geom->getColorIndices();*/
-
     ArrayNIndices verts( geom->getVertexArray(), geom->getVertexIndices() );
     ArrayNIndices normals( geom->getNormalArray(), geom->getNormalIndices() );
     ArrayNIndices colors( geom->getColorArray(), geom->getColorIndices() );
+
+    // RS BUG
+    // getNumTexCoordArrays may return larger number
+    // where getTexCoordArray(0) may have a BIND_OFF and an empty arrat
     std::vector<ArrayNIndices> texcoords;
     for ( unsigned int i = 0; i < geom->getNumTexCoordArrays(); i++ )
     {
-        texcoords.push_back( ArrayNIndices( geom->getTexCoordArray( i ), geom->getTexCoordIndices( i ) ) );
+        if (geom->getTexCoordArray(i))
+        {
+            texcoords.push_back( ArrayNIndices( geom->getTexCoordArray( i ), geom->getTexCoordIndices( i ) ) );
+        }
     }
-        
-    //process POSITION
+    std::vector<ArrayNIndices> vertexAttributes;
+    for ( unsigned int i = 0; i < geom->getNumVertexAttribArrays(); i++ )
+    {
+        if (geom->getVertexAttribArray(i))
+        {
+            vertexAttributes.push_back(ArrayNIndices( geom->getVertexAttribArray( i ), geom->getVertexAttribIndices(i)));
+        }
+    }
+       
+    // process POSITION
     std::string sName = name + "-positions";
     pos = createSource( mesh, sName, verts.mode );
 
@@ -218,8 +557,8 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
     vertices->setId( vName.c_str() );
 
     //make a POSITION input in it
-    domInputLocal *il = daeSafeCast< domInputLocal >( vertices->add( COLLADA_ELEMENT_INPUT) );
-    il->setSemantic(COMMON_PROFILE_INPUT_POSITION);
+    domInputLocal *il = daeSafeCast< domInputLocal >( vertices->add( COLLADA_ELEMENT_INPUT ) );
+    il->setSemantic( COMMON_PROFILE_INPUT_POSITION );
     std::string url = "#" + std::string( pos->getId() );
     il->setSource( url.c_str() );
 
@@ -272,8 +611,8 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
 
         //if NORMAL shares same indices as POSITION put it in the vertices
         /*if ( normalInds == vertInds && vertInds != NULL ) {
-            il = daeSafeCast< domInputLocal >( vertices->add( COLLADA_ELEMENT_INPUT) );
-            il->setSemantic(COMMON_PROFILE_INPUT_NORMAL);
+            il = daeSafeCast< domInputLocal >( vertices->add( COLLADA_ELEMENT_INPUT ) );
+            il->setSemantic( COMMON_PROFILE_INPUT_NORMAL );
             url = "#" + std::string(md->norm->getId());
             il->setSource( url.c_str() );
         }*/
@@ -323,8 +662,8 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
         }
         //if COLOR shares same indices as POSITION put it in the vertices
         /*if ( colorInds == vertInds && vertInds != NULL ) {
-            il = daeSafeCast< domInputLocal >( vertices->add( COLLADA_ELEMENT_INPUT) );
-            il->setSemantic(COMMON_PROFILE_INPUT_COLOR);
+            il = daeSafeCast< domInputLocal >( vertices->add( COLLADA_ELEMENT_INPUT ) );
+            il->setSemantic( COMMON_PROFILE_INPUT_COLOR );
             url = "#" + std::string(md->color->getId());
             il->setSource( url.c_str() );
         }*/
@@ -365,10 +704,10 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
             t->getTechnique_common()->getAccessor()->setCount( texcoords[ti].vec4->size() );
             for ( unsigned int i = 0; i < texcoords[ti].vec4->size(); i++ )
             {
-                t->getFloat_array()->getValue().append( (*texcoords[i].vec4)[ti].x() );
-                t->getFloat_array()->getValue().append( (*texcoords[i].vec4)[ti].y() );
-                t->getFloat_array()->getValue().append( (*texcoords[i].vec4)[ti].z() );
-                t->getFloat_array()->getValue().append( (*texcoords[i].vec4)[ti].w() );
+                t->getFloat_array()->getValue().append( (*texcoords[ti].vec4)[i].x() );
+                t->getFloat_array()->getValue().append( (*texcoords[ti].vec4)[i].y() );
+                t->getFloat_array()->getValue().append( (*texcoords[ti].vec4)[i].z() );
+                t->getFloat_array()->getValue().append( (*texcoords[ti].vec4)[i].w() );
             }
             break;
         default:
@@ -377,6 +716,63 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
             break;
         }
         texcoord.push_back( t );
+    }
+
+    //RS
+    //process TEXCOORD
+    //TODO: Do the same as normal and colors for texcoods. But in a loop since you can have many
+    for ( unsigned int ti = 0; ti < vertexAttributes.size(); ti++ )
+    {
+        if (vertexAttributes[ti].mode != ArrayNIndices::NONE)
+        {
+            std::ostringstream intstr;
+            intstr << std::dec << ti;
+            sName = name + "-vertexAttribute_" + intstr.str();
+
+            domSource *t = createSource( mesh, sName, vertexAttributes[ti].mode, false, true );
+            switch( vertexAttributes[ti].mode )
+            {
+            case ArrayNIndices::VEC2:
+                t->getFloat_array()->setCount( vertexAttributes[ti].vec2->size() *2 );
+                t->getTechnique_common()->getAccessor()->setCount( vertexAttributes[ti].vec2->size() );
+                for ( unsigned int i = 0; i < vertexAttributes[ti].vec2->size(); i++ )
+                {
+                    t->getFloat_array()->getValue().append( (*vertexAttributes[ti].vec2)[i].x() );
+                    t->getFloat_array()->getValue().append( (*vertexAttributes[ti].vec2)[i].y() );
+                }
+                break;
+            case ArrayNIndices::VEC3:
+                t->getFloat_array()->setCount( vertexAttributes[ti].vec3->size() *3 );
+                t->getTechnique_common()->getAccessor()->setCount( vertexAttributes[ti].vec3->size() );
+                for ( unsigned int i = 0; i < vertexAttributes[ti].vec3->size(); i++ )
+                {
+                    t->getFloat_array()->getValue().append( (*vertexAttributes[ti].vec3)[i].x() );
+                    t->getFloat_array()->getValue().append( (*vertexAttributes[ti].vec3)[i].y() );
+                    t->getFloat_array()->getValue().append( (*vertexAttributes[ti].vec3)[i].z() );
+                }
+                break;
+            case ArrayNIndices::VEC4:
+                t->getFloat_array()->setCount( vertexAttributes[ti].vec4->size() *4 );
+                t->getTechnique_common()->getAccessor()->setCount( vertexAttributes[ti].vec4->size() );
+                for ( unsigned int i = 0; i < vertexAttributes[ti].vec4->size(); i++ )
+                {
+                    t->getFloat_array()->getValue().append( (*vertexAttributes[ti].vec4)[i].x() );
+                    t->getFloat_array()->getValue().append( (*vertexAttributes[ti].vec4)[i].y() );
+                    t->getFloat_array()->getValue().append( (*vertexAttributes[ti].vec4)[i].z() );
+                    t->getFloat_array()->getValue().append( (*vertexAttributes[ti].vec4)[i].w() );
+                }
+                break;
+            default:
+              //##ti and not i
+                osg::notify( osg::WARN ) << "Invalid array type for vertex attribute" << ti << std::endl;
+                break;
+            }
+            vertexAttribute.push_back( t );
+        }
+        else
+        {
+            osg::notify( osg::WARN ) << "Invalid array type for vertex attribute" << ti << std::endl;
+        }
     }
 
     //process each primitive group
@@ -1135,32 +1531,32 @@ Ty *daeWriter::createPrimGroup( daeString type, domMesh *mesh, domSource *norm, 
 {
     unsigned int offset = 0;
     Ty *retVal = daeSafeCast< Ty >( mesh->add( type ) );
-    domInputLocalOffset *ilo = daeSafeCast< domInputLocalOffset >(retVal->add( COLLADA_ELEMENT_INPUT));
+    domInputLocalOffset *ilo = daeSafeCast< domInputLocalOffset >( retVal->add( COLLADA_ELEMENT_INPUT ) );
     ilo->setOffset( offset++ );
-    ilo->setSemantic(COMMON_PROFILE_INPUT_VERTEX);
+    ilo->setSemantic( COMMON_PROFILE_INPUT_VERTEX );
     std::string url = "#" + std::string(mesh->getVertices()->getId());
     ilo->setSource( url.c_str() );
     if ( norm != NULL )
     {
-        ilo = daeSafeCast< domInputLocalOffset >( retVal->add(COLLADA_ELEMENT_INPUT));
+        ilo = daeSafeCast< domInputLocalOffset >( retVal->add( COLLADA_ELEMENT_INPUT ) );
         ilo->setOffset( offset++ );
-        ilo->setSemantic( COMMON_PROFILE_INPUT_NORMAL);
+        ilo->setSemantic( COMMON_PROFILE_INPUT_NORMAL );
         url = "#" + std::string( norm->getId() );
         ilo->setSource( url.c_str() );
     }
     if ( color != NULL )
     {
-        ilo = daeSafeCast< domInputLocalOffset >( retVal->add(COLLADA_ELEMENT_INPUT));
+        ilo = daeSafeCast< domInputLocalOffset >( retVal->add( COLLADA_ELEMENT_INPUT ) );
         ilo->setOffset( offset++ );
-        ilo->setSemantic(COMMON_PROFILE_INPUT_COLOR);
+        ilo->setSemantic( COMMON_PROFILE_INPUT_COLOR );
         url = "#" + std::string( color->getId() );
         ilo->setSource( url.c_str() );
     }
     for ( unsigned int i = 0; i < texcoord.size(); i++ )
     {
-        ilo = daeSafeCast< domInputLocalOffset >( retVal->add(COLLADA_ELEMENT_INPUT));
+        ilo = daeSafeCast< domInputLocalOffset >( retVal->add( COLLADA_ELEMENT_INPUT ) );
         ilo->setOffset( offset++ );
-        ilo->setSemantic(COMMON_PROFILE_INPUT_TEXCOORD);
+        ilo->setSemantic( COMMON_PROFILE_INPUT_TEXCOORD );
         ilo->setSet( i );
         url = "#" + std::string( texcoord[i]->getId() );
         ilo->setSource( url.c_str() );

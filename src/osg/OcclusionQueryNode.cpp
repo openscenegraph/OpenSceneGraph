@@ -552,12 +552,24 @@ OcclusionQueryNode::OcclusionQueryNode( const OcclusionQueryNode& oqn, const osg
 
 
 bool
-OcclusionQueryNode::getPassed( const osg::Camera* camera, float distanceToEyePoint )
+OcclusionQueryNode::getPassed( const osg::Camera* camera, osg::NodeVisitor& nv )
 {
     if ( !_enabled )
         // Queries are not enabled. The caller should be osgUtil::CullVisitor,
         //   return true to traverse the subgraphs.
         return true;
+
+    {
+        // Two situations where we want to simply do a regular traversal:
+        //  1) it's the first frame for this camers
+        //  2) we haven't rendered for an abnormally long time (probably because we're an out-of-range LOD child)
+        // In these cases, assume we're visible to avoid blinking.
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _frameCountMutex );
+        const int& lastQueryFrame( _frameCountMap[ camera ] );
+        if( ( lastQueryFrame == 0 ) ||
+            ( (nv.getTraversalNumber() - lastQueryFrame) >  (_queryFrameCount + 1) ) )
+            return true;
+    }
 
     if (_queryGeode->getDrawable( 0 ) == NULL)
     {
@@ -568,11 +580,21 @@ OcclusionQueryNode::getPassed( const osg::Camera* camera, float distanceToEyePoi
     }
     QueryGeometry* qg = static_cast< QueryGeometry* >( _queryGeode->getDrawable( 0 ) );
 
-    // If the distance to the bounding sphere shell is positive, retrieve
-    //   the results. Others (we're inside the BS shell) we are considered
+    // Get the near plane for the upcoming distance calculation.
+    float nearPlane;
+    const osg::Matrix& proj( camera->getProjectionMatrix() );
+    if( ( proj(3,3) != 1. ) || ( proj(2,3) != 0. ) || ( proj(1,3) != 0. ) || ( proj(0,3) != 0.) )
+        nearPlane = proj(3,2) / (proj(2,2)-1.);  // frustum / perspective
+    else
+        nearPlane = (proj(3,2)+1.) / proj(2,2);  // ortho
+
+    // If the distance from the near plane to the bounding sphere shell is positive, retrieve
+    //   the results. Otherwise (near plane inside the BS shell) we are considered
     //   to have passed and don't need to retrieve the query.
     const osg::BoundingSphere& bs = getBound();
-    float distance = distanceToEyePoint  - bs._radius;
+    float distanceToEyePoint = nv.getDistanceToEyePoint( bs._center, false );
+
+    float distance = distanceToEyePoint - nearPlane - bs._radius;
     _passed = ( distance <= 0.f );
     if (!_passed)
     {

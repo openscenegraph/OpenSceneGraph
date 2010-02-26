@@ -1446,7 +1446,7 @@ void CullVisitor::apply(osg::OcclusionQueryNode& node)
     osg::Camera* camera = getCurrentCamera();
     
     // If previous query indicates visible, then traverse as usual.
-    if (node.getPassed( camera, getDistanceToEyePoint( node.getBound()._center, false ) ))
+    if (node.getPassed( camera, *this ))
         handle_cull_callbacks_and_traverse(node);
 
     // Traverse the query subtree if OcclusionQueryNode needs to issue another query.

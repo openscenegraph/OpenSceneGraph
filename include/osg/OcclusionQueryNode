@@ -88,7 +88,7 @@ public:
     
     // These methods are public so that osgUtil::CullVisitor can access them.
     // Not intended for application use.
-    bool getPassed( const osg::Camera* camera, float distanceToEyePoint );
+    bool getPassed( const osg::Camera* camera, osg::NodeVisitor& nv );
     void traverseQuery( const osg::Camera* camera, osg::NodeVisitor& nv );
     void traverseDebug( osg::NodeVisitor& nv );
 

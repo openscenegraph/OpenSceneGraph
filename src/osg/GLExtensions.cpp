@@ -91,6 +91,7 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
             rendererString = renderer ? (const char*)renderer : "";
 
             // get the extension list from OpenGL.
+            #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
             if( osg::getGLVersionNumber() >= 3.0 )
             {
                 // OpenGL 3.0 adds the concept of indexed strings and
@@ -105,9 +106,9 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
 
                 if( glGetStringi != NULL )
                 {
-    #  ifndef GL_NUM_EXTENSIONS
-    #    define GL_NUM_EXTENSIONS 0x821D
-    #  endif
+                    #  ifndef GL_NUM_EXTENSIONS
+                    #    define GL_NUM_EXTENSIONS 0x821D
+                    #  endif
                     GLint numExt;
                     glGetIntegerv( GL_NUM_EXTENSIONS, &numExt );
                     int idx;
@@ -122,6 +123,7 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
                 }
             }
             else
+            #endif
             {
                 // Get extensions using GL1/2 interface.
 

@@ -152,9 +152,9 @@ BEGIN_OBJECT_REFLECTOR(osg::OcclusionQueryNode)
 	          __bool__getPassed,
 	          "",
 	          "");
-	I_Method2(bool, getPassed, IN, const osg::Camera *, camera, IN, float, distanceToEyePoint,
+	I_Method2(bool, getPassed, IN, const osg::Camera *, camera, IN, osg::NodeVisitor &, nv,
 	          Properties::NON_VIRTUAL,
-	          __bool__getPassed__C5_osg_Camera_P1__float,
+	          __bool__getPassed__C5_osg_Camera_P1__osg_NodeVisitor_R1,
 	          "",
 	          "");
 	I_Method2(void, traverseQuery, IN, const osg::Camera *, camera, IN, osg::NodeVisitor &, nv,

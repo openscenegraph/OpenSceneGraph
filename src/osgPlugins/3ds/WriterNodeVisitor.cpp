@@ -96,10 +96,14 @@ bool is3DSpath(const std::string & s, bool extendedFilePaths) {
     if (len >= 64 || len == 0) return false;
     if (extendedFilePaths) return true;        // Extended paths are simply those that fits the 64 bytes buffer!
 
-    unsigned int tokenBegin = 0;
-    for (unsigned int tokenEnd=0; tokenEnd != std::string::npos; tokenBegin = tokenEnd+1) {
+    // For each subdirectory
+    unsigned int tokenLen;
+    for (unsigned int tokenBegin=0, tokenEnd=0; tokenEnd == std::string::npos; tokenBegin = tokenEnd+1)
+    {
         tokenEnd = s.find_first_of("/\\", tokenBegin);
-        if ( !is83(s.substr(tokenBegin, tokenEnd-tokenBegin-1)) ) return false;
+        if (tokenEnd != std::string::npos) tokenLen = tokenEnd-tokenBegin-1;        // -1 to avoid reading the separator
+        else tokenLen = len-tokenBegin;
+        if ( tokenLen>0 && !is83(s.substr(tokenBegin, tokenLen)) ) return false;
     }
     return true;
 }

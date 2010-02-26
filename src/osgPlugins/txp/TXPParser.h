@@ -79,11 +79,11 @@ class GeodeGroup : public osg::Group
 public:
 
     GeodeGroup() : osg::Group(), _geode(NULL)
-	{}
+    {}
     
     GeodeGroup(const GeodeGroup& gg,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
     osg::Group(gg, copyop), _geode(gg._geode)
-	{}
+    {}
     
     META_Node(txp, GeodeGroup);
     
@@ -117,19 +117,19 @@ public:
         _archive = archive;
     }
 
-	// Gets the archive
-	inline TXPArchive* getArchive()
-	{
-		return _archive;
-	}
-    
+    // Gets the archive
+    inline TXPArchive* getArchive()
+    {
+        return _archive.get();
+    }
+
     // Scene parser
     osg::Group *parseScene(
         trpgReadBuffer &buf,
         std::map<int,osg::ref_ptr<osg::StateSet> > &materials,
         std::map<int,osg::ref_ptr<osg::Node> > &models,
         double realMinRange, double realMaxRange, double usedMaxRange);
-        
+
     // Returns the current Top Group
     inline osg::Group* getCurrTop()
     {
@@ -148,11 +148,11 @@ public:
         return _materialMap;
     }
 
-	// Ensure material is loaded
-	inline void loadMaterial( int ix )
-	{
-		_archive->loadMaterial( ix );
-	}
+    // Ensure material is loaded
+    inline void loadMaterial( int ix )
+    {
+        _archive->loadMaterial( ix );
+    }
     
     // New to TerraPage 2.0 - local materials
     std::vector<osg::ref_ptr<osg::StateSet> >* getLocalMaterials()
@@ -269,15 +269,15 @@ public:
     }
 
     // gets tile center, from the top lod node
-	inline const osg::Vec3 getTileCenter() const
-	{
-		return _tileCenter;
-	}
+    inline const osg::Vec3 getTileCenter() const
+    {
+        return _tileCenter;
+    }
 
-	inline void setCurrentNode( osg::Node* node )
-	{
-		_currentNode = node;
-	}
+    inline void setCurrentNode( osg::Node* node )
+    {
+        _currentNode = node;
+    }
 
    // After parsing this will return the number of trpgChildRef node found.
    unsigned int GetNbChildrenRef() const;
@@ -302,7 +302,7 @@ protected:
     bool EndChildren(void *);
     
     // THE archive
-    TXPArchive    *_archive;
+    osg::ref_ptr< TXPArchive > _archive;
     
     // Current parent
     osg::Group* _currentTop;
@@ -323,14 +323,14 @@ protected:
     void replaceTileLod(osg::Group*);
     
     // Materials
-	typedef std::map<int,osg::ref_ptr<osg::StateSet> >* MaterialMapType;
-	MaterialMapType _materialMap;
+    typedef std::map<int,osg::ref_ptr<osg::StateSet> >* MaterialMapType;
+    MaterialMapType _materialMap;
     
     // Local materials
     std::vector<osg::ref_ptr<osg::StateSet> >    _localMaterials;
     
     // Model list
-	typedef std::map<int,osg::ref_ptr<osg::Node> > OSGModelsMapType;
+    typedef std::map<int,osg::ref_ptr<osg::Node> > OSGModelsMapType;
     OSGModelsMapType*      _models;
 
     // Tile header
@@ -383,7 +383,7 @@ class geomRead : public trpgr_Callback
 public:
 
     geomRead(TXPParser *in_parse) : _parse(in_parse)
-	{}
+    {}
     void *Parse(trpgToken tok,trpgReadBuffer &buf);
 protected:
     TXPParser *_parse;
@@ -395,7 +395,7 @@ class groupRead : public trpgr_Callback
 {
 public:
     groupRead(TXPParser *in_parse) : _parse(in_parse)
-	{}
+    {}
     void *Parse(trpgToken tok,trpgReadBuffer &buf);
 protected:
     TXPParser *_parse;
@@ -406,7 +406,7 @@ class attachRead : public trpgr_Callback
 {
 public:
     attachRead(TXPParser *in_parse) : _parse(in_parse)
-	{}
+    {}
     void *Parse(trpgToken tok,trpgReadBuffer &buf);
 protected:
     TXPParser *_parse;
@@ -455,7 +455,7 @@ class lodRead : public trpgr_Callback
 {
 public:
     lodRead(TXPParser *in_parse) : _parse(in_parse)
-	{}
+    {}
     void *Parse(trpgToken tok,trpgReadBuffer &buf);
 protected:
     TXPParser *_parse;
@@ -466,7 +466,7 @@ class tileHeaderRead : public trpgr_Callback
 {
 public:
     tileHeaderRead(TXPParser *in_parse) : _parse(in_parse)
-	{}
+    {}
     void *Parse(trpgToken tok,trpgReadBuffer &buf);
 protected:
     TXPParser *_parse;
@@ -478,7 +478,7 @@ class modelRefRead : public trpgr_Callback
 {
 public:
     modelRefRead(TXPParser *in_parse) : _parse(in_parse)
-	{}
+    {}
     void *Parse(trpgToken tok,trpgReadBuffer &buf);
 protected:
     TXPParser *_parse;
@@ -489,7 +489,7 @@ class billboardRead : public trpgr_Callback
 {
 public:
     billboardRead(TXPParser *in_parse) : _parse(in_parse)
-	{}
+    {}
     void *Parse(trpgToken tok,trpgReadBuffer &buf);
 protected:
     TXPParser *_parse;
@@ -500,7 +500,7 @@ class lightRead: public trpgr_Callback
 {
 public:
     lightRead(TXPParser *in_parse) : _parse(in_parse)
-	{}
+    {}
     void *Parse(trpgToken tok,trpgReadBuffer &buf);
 protected:
     TXPParser *_parse;
@@ -511,7 +511,7 @@ class layerRead: public trpgr_Callback
 {
 public:
     layerRead(TXPParser *in_parse)  : _parse(in_parse)
-	{}
+    {}
     void *Parse(trpgToken tok,trpgReadBuffer &buf);
 protected:
     TXPParser *_parse;
@@ -522,7 +522,7 @@ class labelRead: public trpgr_Callback
 {
 public:
     labelRead(TXPParser *in_parse)  : _parse(in_parse)
-	{}
+    {}
     void *Parse(trpgToken tok,trpgReadBuffer &buf);
 protected:
     TXPParser *_parse;

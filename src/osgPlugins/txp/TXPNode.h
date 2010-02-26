@@ -71,7 +71,7 @@ public:
     //If NULL is passed into loadArchive it will do the same thing it used to.
     bool loadArchive(TXPArchive*);
     
-    TXPArchive* getArchive();
+    TXPArchive* getArchive() { return _archive.get(); }
 
     void setArchive( TXPArchive* archive )
     {

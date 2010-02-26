@@ -58,7 +58,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
         //we will set our osgdb loader options on the archive and set the appropriate archive on 
         //the txpNode.
         int id = ++_archiveId;
-        TXPArchive* archive = getArchive(id,osgDB::getFilePath(fileName));
+        osg::ref_ptr< TXPArchive > archive = getArchive(id,osgDB::getFilePath(fileName));
 
         if (archive != NULL)
         {
@@ -69,8 +69,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
                archive->SetMaterialAttributesToStateSetVar(true);
             }
 
-            txpNode->loadArchive(archive);
-            
+            txpNode->loadArchive(archive.get());
+
             return txpNode.get();
         }
         else
@@ -85,7 +85,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
         int x,y,lod;
         unsigned int id;
         sscanf(name.c_str(),"tile%d_%dx%d_%u",&lod,&x,&y,&id);
-        TXPArchive* archive = getArchive(id,osgDB::getFilePath(file));
+        osg::ref_ptr< TXPArchive > archive = getArchive(id,osgDB::getFilePath(file));
 
         // The way this is done a 'tile' should only be created for lod 0 only,
         // something is wrong if this is no the case
@@ -106,7 +106,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
             return ReadResult::ERROR_IN_READING_FILE;
 
         std::vector<TXPArchive::TileLocationInfo> childrenLoc;
-        osg::ref_ptr<osg::Node> tileContent = getTileContent(info,x,y,lod,archive, childrenLoc);
+        osg::ref_ptr<osg::Node> tileContent = getTileContent(info,x,y,lod,archive.get(), childrenLoc);
         
         tileContent->setName("TileContent");
 
@@ -198,7 +198,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
         int x,y,lod;
         unsigned int id;
         sscanf(name.c_str(),"subtiles%d_%dx%d_%u",&lod,&x,&y,&id);
-        TXPArchive* archive = getArchive(id,osgDB::getFilePath(file));
+        osg::ref_ptr< TXPArchive > archive = getArchive(id,osgDB::getFilePath(file));
 
         int majorVersion, minorVersion;
         archive->GetVersion(majorVersion, minorVersion);
@@ -258,7 +258,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
                 if (!archive->getTileInfo(loc,info))
                     continue;
 
-                osg::ref_ptr<osg::Node> tileContent = getTileContent(info, loc, archive, childrenChildLoc);
+                osg::ref_ptr<osg::Node> tileContent = getTileContent(info, loc, archive.get(), childrenChildLoc);
 
                 tileContent->setName("TileContent");
 
@@ -360,7 +360,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
                     if (!archive->getTileInfo(tileX,tileY,tileLOD,info))
                     continue;
 
-                    osg::ref_ptr<osg::Node> tileContent = getTileContent(info,tileX,tileY,tileLOD,archive, childrenLoc);
+                    osg::ref_ptr<osg::Node> tileContent = getTileContent(info,tileX,tileY,tileLOD,archive.get(), childrenLoc);
 
                     tileContent->setName("TileContent");
 
@@ -563,9 +563,9 @@ bool ReaderWriterTXP::extractChildrenLocations(const std::string& name, int pare
 
 }
 
-TXPArchive *ReaderWriterTXP::getArchive(int id, const std::string& dir)
+osg::ref_ptr< TXPArchive > ReaderWriterTXP::getArchive(int id, const std::string& dir)
 {
-    TXPArchive* archive = NULL;
+    osg::ref_ptr< TXPArchive > archive = NULL;
 
     std::map< int,osg::ref_ptr<TXPArchive> >::iterator iter = _archives.find(id);
     

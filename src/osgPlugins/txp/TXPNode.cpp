@@ -98,11 +98,6 @@ TXPNode::~TXPNode()
    }
 }
 
-TXPArchive* TXPNode::getArchive()
-{
-    return _archive.get();
-}
-
 void TXPNode::traverse(osg::NodeVisitor& nv)
 {
     switch(nv.getVisitorType())

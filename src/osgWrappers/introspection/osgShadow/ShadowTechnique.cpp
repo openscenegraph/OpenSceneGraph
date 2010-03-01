@@ -95,6 +95,12 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowTechnique)
 	          __void__dirty,
 	          "Dirty so that cached data structures are updated. ",
 	          "");
+	I_ProtectedMethod1(osg::Vec3, computeOrthogonalVector, IN, const osg::Vec3 &, direction,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __osg_Vec3__computeOrthogonalVector__C5_osg_Vec3_R1,
+	                   "",
+	                   "");
 	I_SimpleProperty(osgShadow::ShadowedScene *, ShadowedScene, 
 	                 __ShadowedScene_P1__getShadowedScene, 
 	                 0);

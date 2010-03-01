@@ -14,6 +14,7 @@
 #include <osgShadow/ShadowTechnique>
 #include <osgShadow/ShadowedScene>
 #include <osg/Notify>
+#include <osg/io_utils>
 
 using namespace osgShadow;
 
@@ -91,4 +92,16 @@ void ShadowTechnique::traverse(osg::NodeVisitor& nv)
     {
         _shadowedScene->osg::Group::traverse(nv);
     }
+}
+
+osg::Vec3 ShadowTechnique::computeOrthogonalVector(const osg::Vec3& direction) const
+{
+    float length = direction.length();
+    osg::Vec3 orthogonalVector = direction ^ osg::Vec3(0.0f, 1.0f, 0.0f);
+    if (orthogonalVector.normalize()<length*0.5f)
+    {
+        orthogonalVector = direction ^ osg::Vec3(0.0f, 0.0f, 1.0f);
+        orthogonalVector.normalize();
+    }
+    return orthogonalVector;
 }

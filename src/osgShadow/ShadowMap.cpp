@@ -408,7 +408,7 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
         {
             osg::Vec3 position(lightpos.x(), lightpos.y(), lightpos.z());
             _camera->setProjectionMatrixAsPerspective(fov, 1.0, 0.1, 1000.0);
-            _camera->setViewMatrixAsLookAt(position,position+lightDir,osg::Vec3(0.0f,1.0f,0.0f));
+            _camera->setViewMatrixAsLookAt(position,position+lightDir,computeOrthogonalVector(lightDir));
         }
         else
         {
@@ -435,7 +435,7 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
                 float right = top;
 
                 _camera->setProjectionMatrixAsFrustum(-right,right,-top,top,znear,zfar);
-                _camera->setViewMatrixAsLookAt(position,bb.center(),osg::Vec3(0.0f,1.0f,0.0f));
+                _camera->setViewMatrixAsLookAt(position,bb.center(),computeOrthogonalVector(bb.center()-position));
             }
             else    // directional light
             {
@@ -457,7 +457,7 @@ void ShadowMap::cull(osgUtil::CullVisitor& cv)
                 float right = top;
 
                 _camera->setProjectionMatrixAsOrtho(-right, right, -top, top, znear, zfar);
-                _camera->setViewMatrixAsLookAt(position,bb.center(),osg::Vec3(0.0f,1.0f,0.0f));
+                _camera->setViewMatrixAsLookAt(position,bb.center(),computeOrthogonalVector(lightDir));
             }
 
 

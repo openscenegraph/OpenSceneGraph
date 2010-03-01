@@ -95,7 +95,7 @@ class OSGSHADOW_EXPORT DebugShadowMap : public ViewDependentShadowTechnique
             Texture used as ShadowMap - initialized by derived classes. 
             But it has to be defined now since DebugShadowMap::ViewData methods use it 
             */
-            osg::ref_ptr< osg::Texture2D > _texture;
+            osg::ref_ptr< osg::Texture >   _texture;
             /** 
             Camera used to render ShadowMap - initialized by derived classes.
             But it has to be defined now since DebugShadowMap::ViewData methods use it 
@@ -171,6 +171,8 @@ class OSGSHADOW_EXPORT DebugShadowMap : public ViewDependentShadowTechnique
                 ( const osg::Camera * viewCam,
                   const osg::Camera * shadowCam,
                   const ConvexPolyhedron * hull );
+
+            void dump( const char * filename = "DebugShadowDump.osg" );
         };
 
         META_ViewDependentShadowTechniqueData( ThisClass, ViewData )

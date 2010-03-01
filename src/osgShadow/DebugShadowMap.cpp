@@ -13,10 +13,11 @@
  * ViewDependentShadow codes Copyright (C) 2008 Wojciech Lewandowski
  * Thanks to to my company http://www.ai.com.pl for allowing me free this work.
 */
-
+#include <osgShadow/ShadowedScene>
 #include <osgShadow/DebugShadowMap>
 #include <osgShadow/ConvexPolyhedron>
 #include <osgUtil/RenderLeaf>
+#include <osgDB/WriteFile>
 #include <osg/Geometry>
 #include <osg/PrimitiveSet>
 #include <osg/MatrixTransform>
@@ -415,7 +416,7 @@ class DebugShadowMap::DrawableDrawWithDepthShadowComparisonOffCallback:
     public osg::Drawable::DrawCallback
 {
 public:
-    DrawableDrawWithDepthShadowComparisonOffCallback( osg::Texture2D *pTex ) 
+    DrawableDrawWithDepthShadowComparisonOffCallback( osg::Texture *pTex ) 
         : _pTexture( pTex )
     {
     }
@@ -426,17 +427,63 @@ public:
         ri.getState()->applyTextureAttribute( 0, _pTexture.get() );
 
         // Turn off depth comparison mode
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE );
+        glTexParameteri( _pTexture->getTextureTarget(), GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE );
 
         drawable->drawImplementation(ri);
 
         // Turn it back on
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, 
+        glTexParameteri( _pTexture->getTextureTarget(), GL_TEXTURE_COMPARE_MODE_ARB, 
             GL_COMPARE_R_TO_TEXTURE_ARB );            
     }
 
-    osg::ref_ptr< osg::Texture2D > _pTexture;
+    osg::ref_ptr< osg::Texture > _pTexture;
 };
+
+void DebugShadowMap::ViewData::dump( const char * filename )
+{
+    osg::ref_ptr< osg::Group > root = new osg::Group;    
+    osgUtil::CullVisitor * cv = _cv.get();
+
+#if 1
+    osg::Group * cam = cv->getRenderStage()->getCamera();
+
+    for( unsigned int i = 0; i < cam->getNumChildren(); i++ )
+    {
+        root->addChild( cam->getChild( i ) );
+    }
+#endif
+
+    root->addChild( _st->getShadowedScene() );
+
+    osg::ref_ptr< osg::MatrixTransform > transform = new osg::MatrixTransform;
+    root->addChild( transform.get() );
+
+//    updateDebugGeometry( _viewCamera.get(), _camera.get() );
+
+    for( PolytopeGeometryMap::iterator itr = _polytopeGeometryMap.begin();
+         itr != _polytopeGeometryMap.end();
+         ++itr )
+    {
+        PolytopeGeometry & pg = itr->second;
+        int i = 0;
+        {
+
+            ConvexPolyhedron cp( pg._polytope );        
+
+            pg._geometry[i] = cp.buildGeometry
+                ( pg._colorOutline, pg._colorInside, pg._geometry[i].get() );
+        }
+    }
+
+    for( unsigned int i = 0; i < _transform[0]->getNumChildren(); i++ )
+    {
+        root->addChild( _transform[0]->getChild( i ) );
+    }
+
+    osgDB::writeNodeFile( *root, std::string( filename ) );
+
+    root->removeChildren( 0, root->getNumChildren() );
+}
 
 void DebugShadowMap::ViewData::createDebugHUD( )
 {    
@@ -482,7 +529,7 @@ void DebugShadowMap::ViewData::createDebugHUD( )
               osg::Vec3(0,_hudSize[1],0) );
     
         osg::StateSet* stateset = _cameraDebugHUD->getOrCreateStateSet();
-        stateset->setTextureAttributeAndModes(0,_texture.get(),osg::StateAttribute::ON );
+        stateset->setTextureAttribute(0,_texture.get(),osg::StateAttribute::ON );
         stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
 //        stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
         stateset->setAttributeAndModes

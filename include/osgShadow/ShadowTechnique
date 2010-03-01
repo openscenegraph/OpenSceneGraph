@@ -71,6 +71,7 @@ class OSGSHADOW_EXPORT ShadowTechnique : public osg::Object
                 ShadowTechnique* _shadowTechnique;
         };
 
+        osg::Vec3 computeOrthogonalVector(const osg::Vec3& direction) const;
 
         virtual ~ShadowTechnique();
         

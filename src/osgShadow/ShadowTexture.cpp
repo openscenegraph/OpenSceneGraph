@@ -187,7 +187,7 @@ void ShadowTexture::cull(osgUtil::CullVisitor& cv)
 
             _camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
             _camera->setProjectionMatrixAsFrustum(-right,right,-top,top,znear,zfar);
-            _camera->setViewMatrixAsLookAt(position,bb.center(),osg::Vec3(0.0f,1.0f,0.0f));
+            _camera->setViewMatrixAsLookAt(position,bb.center(),computeOrthogonalVector(bb.center()-position));
             
 
             // compute the matrix which takes a vertex from local coords into tex coords
@@ -221,7 +221,7 @@ void ShadowTexture::cull(osgUtil::CullVisitor& cv)
 
             _camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
             _camera->setProjectionMatrixAsOrtho(-right, right, -top, top, znear, zfar);
-            _camera->setViewMatrixAsLookAt(position,bb.center(),osg::Vec3(0.0f,1.0f,0.0f));
+            _camera->setViewMatrixAsLookAt(position,bb.center(),computeOrthogonalVector(lightDir));
             
 
             // compute the matrix which takes a vertex from local coords into tex coords

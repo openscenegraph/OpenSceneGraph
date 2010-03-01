@@ -158,15 +158,15 @@ IF(UNIX)
     ENDIF( CMAKE_SYSTEM MATCHES "Linux" )
 ENDIF()
 
-# Make the headers visible to everything
-IF(NOT ${PROJECT_BINARY_DIR} EQUAL ${PROJECT_SOURCE_DIR})
-   INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/include)
-ENDIF()
-
 INCLUDE_DIRECTORIES(
     ${OpenSceneGraph_SOURCE_DIR}/include
     ${OPENGL_INCLUDE_DIR}
 )
+
+# Make the headers visible to everything
+IF(NOT ${PROJECT_BINARY_DIR} EQUAL ${PROJECT_SOURCE_DIR})
+   INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR}/include)
+ENDIF()
 
 # Common global definitions
 #ADD_DEFINITIONS(-D)

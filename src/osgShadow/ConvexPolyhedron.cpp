@@ -1753,7 +1753,7 @@ osg::Geometry* ConvexPolyhedron::buildGeometry( const osg::Vec4d& colorOutline,
 
     osg::Vec4Array* colors = new osg::Vec4Array;
     geometry->setColorArray(colors);
-    geometry->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+    geometry->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE_SET);
 
     for(Faces::const_iterator itr = _faces.begin();
         itr != _faces.end();

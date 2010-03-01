@@ -104,190 +104,190 @@ StandardShadowMap::StandardShadowMap():
         " // gl_TexCoord[0]      0 - can be subsituted with other index         \n"
         " // gl_TextureMatrix[0] 0 - can be subsituted with other index         \n"
         " // gl_MultiTexCoord0   0 - can be subsituted with other index         \n"
-        "                                                                       \n"    
+        "                                                                       \n"
         "const int NumEnabledLights = 1;                                        \n"
         "                                                                       \n"
         "void DynamicShadow( in vec4 ecPosition );                              \n"
-        "                                                                        \n"
+        "                                                                       \n"
         "varying vec4 colorAmbientEmissive;                                     \n"
         "                                                                       \n"
-        "void SpotLight(in int i,                                               \n" 
+        "void SpotLight(in int i,                                               \n"
         "               in vec3 eye,                                            \n"
         "               in vec3 ecPosition3,                                    \n"
-        "               in vec3 normal,                                            \n"
+        "               in vec3 normal,                                         \n"
         "               inout vec4 ambient,                                     \n"
-        "               inout vec4 diffuse,                                        \n"
+        "               inout vec4 diffuse,                                     \n"
         "               inout vec4 specular)                                    \n"
-        "{                                                                        \n"
+        "{                                                                      \n"
         "    float nDotVP;          // normal . light direction                 \n"
-        "    float nDotHV;          // normal . light half vector                \n"
-        "    float pf;              // power factor                                \n"
+        "    float nDotHV;          // normal . light half vector               \n"
+        "    float pf;              // power factor                             \n"
         "    float spotDot;         // cosine of angle between spotlight        \n"
         "    float spotAttenuation; // spotlight attenuation factor             \n"
-        "    float attenuation;     // computed attenuation factor                \n"
+        "    float attenuation;     // computed attenuation factor              \n"
         "    float d;               // distance from surface to light source    \n"
         "    vec3 VP;               // direction from surface to light position \n"
         "    vec3 halfVector;       // direction of maximum highlights          \n"
-        "                                                                        \n"
-        "    // Compute vector from surface to light position                    \n"
-        "    VP = vec3(gl_LightSource[i].position) - ecPosition3;                \n"
         "                                                                       \n"
-        "    // Compute distance between surface and light position                \n"
+        "    // Compute vector from surface to light position                   \n"
+        "    VP = vec3(gl_LightSource[i].position) - ecPosition3;               \n"
+        "                                                                       \n"
+        "    // Compute distance between surface and light position             \n"
         "    d = length(VP);                                                    \n"
-        "                                                                        \n"
+        "                                                                       \n"
         "    // Normalize the vector from surface to light position             \n"
         "    VP = normalize(VP);                                                \n"
-        "                                                                        \n"
-        "    // Compute attenuation                                                \n"
-        "    attenuation = 1.0 / (gl_LightSource[i].constantAttenuation +       \n" 
-        "                         gl_LightSource[i].linearAttenuation * d +        \n"
+        "                                                                       \n"
+        "    // Compute attenuation                                             \n"
+        "    attenuation = 1.0 / (gl_LightSource[i].constantAttenuation +       \n"
+        "                         gl_LightSource[i].linearAttenuation * d +     \n"
         "                         gl_LightSource[i].quadraticAttenuation *d*d); \n"
-        "                                                                        \n"
+        "                                                                       \n"
         "    // See if point on surface is inside cone of illumination          \n"
         "    spotDot = dot(-VP, normalize(gl_LightSource[i].spotDirection));    \n"
-        "                                                                        \n"
-        "    if (spotDot < gl_LightSource[i].spotCosCutoff)                        \n"
-        "        spotAttenuation = 0.0; // light adds no contribution            \n"
-        "    else                                                                \n"
+        "                                                                       \n"
+        "    if (spotDot < gl_LightSource[i].spotCosCutoff)                     \n"
+        "        spotAttenuation = 0.0; // light adds no contribution           \n"
+        "    else                                                               \n"
         "        spotAttenuation = pow(spotDot, gl_LightSource[i].spotExponent);\n"
-        "                                                                        \n"
-        "    // Combine the spotlight and distance attenuation.                    \n"
+        "                                                                       \n"
+        "    // Combine the spotlight and distance attenuation.                 \n"
         "    attenuation *= spotAttenuation;                                    \n"
-        "                                                                        \n"
-        "    halfVector = normalize(VP + eye);                                    \n"
-        "                                                                        \n"
+        "                                                                       \n"
+        "    halfVector = normalize(VP + eye);                                  \n"
+        "                                                                       \n"
         "    nDotVP = max(0.0, dot(normal, VP));                                \n"
         "    nDotHV = max(0.0, dot(normal, halfVector));                        \n"
-        "                                                                        \n"
+        "                                                                       \n"
         "    if (nDotVP == 0.0)                                                 \n"
-        "        pf = 0.0;                                                        \n"
-        "    else                                                                \n"
-        "        pf = pow(nDotHV, gl_FrontMaterial.shininess);                    \n"
-        "                                                                        \n"
-        "    ambient  += gl_LightSource[i].ambient * attenuation;                \n"
-        "    diffuse  += gl_LightSource[i].diffuse * nDotVP * attenuation;        \n"
-        "    specular += gl_LightSource[i].specular * pf * attenuation;            \n"
-        "}                                                                        \n"
-        "                                                                        \n"
-        "void PointLight(in int i,                                                \n"
-        "                in vec3 eye,                                            \n"
-        "                in vec3 ecPosition3,                                    \n"
+        "        pf = 0.0;                                                      \n"
+        "    else                                                               \n"
+        "        pf = pow(nDotHV, gl_FrontMaterial.shininess);                  \n"
+        "                                                                       \n"
+        "    ambient  += gl_LightSource[i].ambient * attenuation;               \n"
+        "    diffuse  += gl_LightSource[i].diffuse * nDotVP * attenuation;      \n"
+        "    specular += gl_LightSource[i].specular * pf * attenuation;         \n"
+        "}                                                                      \n"
+        "                                                                       \n"
+        "void PointLight(in int i,                                              \n"
+        "                in vec3 eye,                                           \n"
+        "                in vec3 ecPosition3,                                   \n"
         "                in vec3 normal,                                        \n"
         "                inout vec4 ambient,                                    \n"
         "                inout vec4 diffuse,                                    \n"
-        "                inout vec4 specular)                                   \n" 
-        "{                                                                        \n"
-        "    float nDotVP;      // normal . light direction                        \n"
-        "    float nDotHV;      // normal . light half vector                    \n"
-        "    float pf;          // power factor                                    \n"
-        "    float attenuation; // computed attenuation factor                    \n"
+        "                inout vec4 specular)                                   \n"
+        "{                                                                      \n"
+        "    float nDotVP;      // normal . light direction                     \n"
+        "    float nDotHV;      // normal . light half vector                   \n"
+        "    float pf;          // power factor                                 \n"
+        "    float attenuation; // computed attenuation factor                  \n"
         "    float d;           // distance from surface to light source        \n"
-        "    vec3  VP;          // direction from surface to light position        \n"
-        "    vec3  halfVector;  // direction of maximum highlights                \n"
-        "                                                                        \n"
-        "    // Compute vector from surface to light position                    \n"
-        "    VP = vec3(gl_LightSource[i].position) - ecPosition3;                \n"
-        "                                                                        \n"
-        "    // Compute distance between surface and light position                \n"
+        "    vec3  VP;          // direction from surface to light position     \n"
+        "    vec3  halfVector;  // direction of maximum highlights              \n"
+        "                                                                       \n"
+        "    // Compute vector from surface to light position                   \n"
+        "    VP = vec3(gl_LightSource[i].position) - ecPosition3;               \n"
+        "                                                                       \n"
+        "    // Compute distance between surface and light position             \n"
         "    d = length(VP);                                                    \n"
-        "                                                                        \n"
+        "                                                                       \n"
         "    // Normalize the vector from surface to light position             \n" 
         "    VP = normalize(VP);                                                \n"
-        "                                                                        \n"
-        "    // Compute attenuation                                                \n"
-        "    attenuation = 1.0 / (gl_LightSource[i].constantAttenuation +        \n"
-        "                         gl_LightSource[i].linearAttenuation * d +        \n"
+        "                                                                       \n"
+        "    // Compute attenuation                                             \n"
+        "    attenuation = 1.0 / (gl_LightSource[i].constantAttenuation +       \n"
+        "                         gl_LightSource[i].linearAttenuation * d +     \n"
         "                         gl_LightSource[i].quadraticAttenuation * d*d);\n"
-        "                                                                        \n"
-        "    halfVector = normalize(VP + eye);                                    \n"
-        "                                                                        \n"
+        "                                                                       \n"
+        "    halfVector = normalize(VP + eye);                                  \n"
+        "                                                                       \n"
         "    nDotVP = max(0.0, dot(normal, VP));                                \n"
         "    nDotHV = max(0.0, dot(normal, halfVector));                        \n"
-        "                                                                        \n"
-        "    if (nDotVP == 0.0)                                                    \n"
-        "        pf = 0.0;                                                        \n"
-        "    else                                                                \n"
+        "                                                                       \n"
+        "    if (nDotVP == 0.0)                                                 \n"
+        "        pf = 0.0;                                                      \n"
+        "    else                                                               \n"
         "        pf = pow(nDotHV, gl_FrontMaterial.shininess);                  \n"
-        "                                                                        \n"
+        "                                                                       \n"
         "    ambient += gl_LightSource[i].ambient * attenuation;                \n"
-        "    diffuse += gl_LightSource[i].diffuse * nDotVP * attenuation;        \n"
-        "    specular += gl_LightSource[i].specular * pf * attenuation;            \n"
-        "}                                                                        \n"
-        "                                                                        \n"
+        "    diffuse += gl_LightSource[i].diffuse * nDotVP * attenuation;       \n"
+        "    specular += gl_LightSource[i].specular * pf * attenuation;         \n"
+        "}                                                                      \n"
+        "                                                                       \n"
         "void DirectionalLight(in int i,                                        \n"
-        "                      in vec3 normal,                                    \n"
-        "                      inout vec4 ambient,                                \n"
-        "                      inout vec4 diffuse,                                \n"
-        "                      inout vec4 specular)                                \n"
-        "{                                                                        \n"
-        "     float nDotVP;         // normal . light direction                    \n"
-        "     float nDotHV;         // normal . light half vector                \n"
-        "     float pf;             // power factor                                \n"
-        "                                                                        \n"
-        "     nDotVP = max(0.0, dot(normal,                                        \n"
-        "                normalize(vec3(gl_LightSource[i].position))));            \n"
-        "     nDotHV = max(0.0, dot(normal,                                        \n"
+        "                      in vec3 normal,                                  \n"
+        "                      inout vec4 ambient,                              \n"
+        "                      inout vec4 diffuse,                              \n"
+        "                      inout vec4 specular)                             \n"
+        "{                                                                      \n"
+        "     float nDotVP;         // normal . light direction                 \n"
+        "     float nDotHV;         // normal . light half vector               \n"
+        "     float pf;             // power factor                             \n"
+        "                                                                       \n"
+        "     nDotVP = max(0.0, dot(normal,                                     \n"
+        "                normalize(vec3(gl_LightSource[i].position))));         \n"
+        "     nDotHV = max(0.0, dot(normal,                                     \n"
         "                      vec3(gl_LightSource[i].halfVector)));            \n"
-        "                                                                        \n"
+        "                                                                       \n"
         "     if (nDotVP == 0.0)                                                \n"
-        "         pf = 0.0;                                                        \n"
-        "     else                                                                \n"
-        "         pf = pow(nDotHV, gl_FrontMaterial.shininess);                    \n"
-        "                                                                        \n"
+        "         pf = 0.0;                                                     \n"
+        "     else                                                              \n"
+        "         pf = pow(nDotHV, gl_FrontMaterial.shininess);                 \n"
+        "                                                                       \n"
         "     ambient  += gl_LightSource[i].ambient;                            \n"
-        "     diffuse  += gl_LightSource[i].diffuse * nDotVP;                    \n"
-        "     specular += gl_LightSource[i].specular * pf;                        \n"
-        "}                                                                        \n"
-        "                                                                        \n"
-        "void main( )                                                            \n"
-        "{                                                                        \n"
-        "    // Transform vertex to clip space                                    \n"
+        "     diffuse  += gl_LightSource[i].diffuse * nDotVP;                   \n"
+        "     specular += gl_LightSource[i].specular * pf;                      \n"
+        "}                                                                      \n"
+        "                                                                       \n"
+        "void main( )                                                           \n"
+        "{                                                                      \n"
+        "    // Transform vertex to clip space                                  \n"
         "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;            \n"
         "    vec3 normal = normalize( gl_NormalMatrix * gl_Normal );            \n"
-        "                                                                        \n"
-        "    vec4  ecPos  = gl_ModelViewMatrix * gl_Vertex;                        \n"
+        "                                                                       \n"
+        "    vec4  ecPos  = gl_ModelViewMatrix * gl_Vertex;                     \n"
         "    float ecLen  = length( ecPos );                                    \n"
         "    vec3  ecPosition3 = ecPos.xyz / ecPos.w;                           \n"
-        "                                                                       \n" 
+        "                                                                       \n"
         "    vec3  eye = vec3( 0.0, 0.0, 1.0 );                                 \n"
         "    //vec3  eye = -normalize(ecPosition3);                             \n"
         "                                                                       \n"
         "    DynamicShadow( ecPos );                                            \n"
-        "                                                                        \n"
-        "     gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;          \n"
-        "                                                                        \n"
-        "    // Front Face lighting                                                \n"
-        "                                                                        \n"
-        "    // Clear the light intensity accumulators                            \n"
-        "    vec4 amb  = vec4(0.0);                                                \n"
-        "    vec4 diff = vec4(0.0);                                                \n"
-        "    vec4 spec = vec4(0.0);                                                \n"
-        "                                                                        \n"
-        "    // Loop through enabled lights, compute contribution from each        \n"
-        "    for (int i = 0; i < NumEnabledLights; i++)                          \n"
-        "   {                                                                   \n" 
+        "                                                                       \n"
+        "     gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;         \n"
+        "                                                                       \n"
+        "    // Front Face lighting                                             \n"
+        "                                                                       \n"
+        "    // Clear the light intensity accumulators                          \n"
+        "    vec4 amb  = vec4(0.0);                                             \n"
+        "    vec4 diff = vec4(0.0);                                             \n"
+        "    vec4 spec = vec4(0.0);                                             \n"
+        "                                                                       \n"
+        "    // Loop through enabled lights, compute contribution from each     \n"
+        "    for (int i = 0; i < NumEnabledLights; i++)                         \n"
+        "   {                                                                   \n"
         "       if (gl_LightSource[i].position.w == 0.0)                        \n"
-        "           DirectionalLight(i, normal, amb, diff, spec);               \n" 
+        "           DirectionalLight(i, normal, amb, diff, spec);               \n"
         "       else if (gl_LightSource[i].spotCutoff == 180.0)                 \n"
-        "           PointLight(i, eye, ecPosition3, normal, amb, diff, spec);   \n"   
-        "       else                                                            \n"  
-        "           SpotLight(i, eye, ecPosition3, normal, amb, diff, spec);    \n" 
+        "           PointLight(i, eye, ecPosition3, normal, amb, diff, spec);   \n"
+        "       else                                                            \n"
+        "           SpotLight(i, eye, ecPosition3, normal, amb, diff, spec);    \n"
         "    }                                                                  \n"
-        "                                                                       \n" 
-        "    colorAmbientEmissive = gl_FrontLightModelProduct.sceneColor +        \n"
-        "                           amb * gl_FrontMaterial.ambient;             \n"       
+        "                                                                       \n"
+        "    colorAmbientEmissive = gl_FrontLightModelProduct.sceneColor +      \n"
+        "                           amb * gl_FrontMaterial.ambient;             \n"
         "                                                                       \n"
         "    gl_FrontColor = colorAmbientEmissive +                             \n"
         "                    diff * gl_FrontMaterial.diffuse;                   \n"
-        "                                                                        \n"
-        "     gl_FrontSecondaryColor = vec4(spec*gl_FrontMaterial.specular);     \n"
-        "                                                                        \n"
-        "    gl_BackColor = gl_FrontColor;                                        \n"
+        "                                                                       \n"
+        "     gl_FrontSecondaryColor = vec4(spec*gl_FrontMaterial.specular);    \n"
+        "                                                                       \n"
+        "    gl_BackColor = gl_FrontColor;                                      \n"
         "    gl_BackSecondaryColor = gl_FrontSecondaryColor;                    \n"
-        "                                                                        \n"
-        "    gl_FogFragCoord = ecLen;                                            \n"
-        "} \n" );                                                                
-}                                                                                
+        "                                                                       \n"
+        "    gl_FogFragCoord = ecLen;                                           \n"
+        "} \n" );
+}
 
 StandardShadowMap::StandardShadowMap(const StandardShadowMap& copy, const osg::CopyOp& copyop) :
     BaseClass(copy,copyop),
@@ -426,19 +426,20 @@ void StandardShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv 
     _shadowTextureUnitPtr = &st->_shadowTextureUnit;
     _baseTextureUnitPtr   = &st->_baseTextureUnit;
 
-    _texture = new osg::Texture2D;
     { // Setup shadow texture
-        _texture->setTextureSize( st->_textureSize.x(), st->_textureSize.y());
-        _texture->setInternalFormat(GL_DEPTH_COMPONENT);
-        _texture->setShadowComparison(true);
-        _texture->setShadowTextureMode(osg::Texture2D::LUMINANCE);
-        _texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
-        _texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
+        osg::Texture2D * texture = new osg::Texture2D;
+        texture->setTextureSize( st->_textureSize.x(), st->_textureSize.y());
+        texture->setInternalFormat(GL_DEPTH_COMPONENT);
+        texture->setShadowComparison(true);
+        texture->setShadowTextureMode(osg::Texture2D::LUMINANCE);
+        texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
+        texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
 
         // the shadow comparison should fail if object is outside the texture
-        _texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_BORDER);
-        _texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_BORDER);
-        _texture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+        texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_BORDER);
+        texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_BORDER);
+        texture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+        _texture = texture;
     }
     
     _camera = new osg::Camera;
@@ -675,56 +676,41 @@ void StandardShadowMap::ViewData::aimShadowCastingCamera(
     osg::Vec3 up = lightUpVector;
     if( up.length2() <= 0 )  up.set( 0,1,0 );
 
-    if( light->getSpotCutoff() < 180.0f) // spotlight, no need for bounding box
+    osg::Vec3d position(lightPos.x(), lightPos.y(), lightPos.z());
+    if (lightPos[3]==0.0)   // infinite directional light
     {
-        osg::Vec3d position(lightPos.x(), lightPos.y(), lightPos.z());
-        float spotAngle = light->getSpotCutoff();
-
-        projection.makePerspective( spotAngle, 1.0, 0.1, 1000.0);        
-        view.makeLookAt(position,position+lightDir,up);
+        // make an orthographic projection
+        // set the position far away along the light direction
+        position = bs.center() - lightDir * bs.radius() * 2;
     }
-    else
-    {
-        if (lightPos[3]!=0.0)   // point light
+        
+    float centerDistance = (position-bs.center()).length();
+    float znear = centerDistance-bs.radius();
+    float zfar  = centerDistance+bs.radius();
+    float zNearRatio = 0.001f;
+    if (znear<zfar*zNearRatio) 
+        znear = zfar*zNearRatio;
+
+    if ( lightPos[3]!=0.0 ) {  // positional light
+        if( light->getSpotCutoff() < 180.0f) // also needs znear zfar estimates
         {
-            osg::Vec3d position(lightPos.x(), lightPos.y(), lightPos.z());
-
-            float centerDistance = (position-bs.center()).length();
-
-            float znear = centerDistance-bs.radius();
-            float zfar  = centerDistance+bs.radius();
-            float zNearRatio = 0.001f;
-            if (znear<zfar*zNearRatio)
-                znear = zfar*zNearRatio;
-
+            float spotAngle = light->getSpotCutoff();
+            projection.makePerspective( spotAngle * 2, 1.0, znear, zfar);
+            view.makeLookAt(position,position+lightDir,up);
+        } else { // standard omnidirectional positional light
             float top   = (bs.radius()/centerDistance)*znear;
             float right = top;
 
             projection.makeFrustum(-right,right,-top,top,znear,zfar);
             view.makeLookAt(position,bs.center(),up );
         }
-        else    // directional light
-        {
-            // make an orthographic projection
-
-            // set the position far away along the light direction
-            float radius = bs.radius();
-            osg::Vec3d position = bs.center() - lightDir * radius * 2;
-
-            float centerDistance = (position-bs.center()).length();
-
-            float znear = centerDistance-radius;
-            float zfar  = centerDistance+radius;
-            float zNearRatio = 0.001f;
-            if (znear<zfar*zNearRatio) 
-                znear = zfar*zNearRatio;
-
-            float top   = radius;
+    }
+    else    // directional light
+    {
+            float top   = bs.radius();
             float right = top;
-
             projection.makeOrtho(-right, right, -top, top, znear, zfar);
             view.makeLookAt(position,bs.center(),up);
-        }
     }
 }
 

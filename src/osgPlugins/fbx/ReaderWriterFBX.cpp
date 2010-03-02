@@ -1,5 +1,6 @@
 #include <sstream>
 #include <memory>
+#include <cassert>
 
 #include <osg/Notify>
 #include <osg/MatrixTransform>
@@ -133,26 +134,6 @@ public:
     }
 };
 
-class ConvertBindMatrixVisitor : public osg::NodeVisitor
-{
-public:
-    ConvertBindMatrixVisitor() : osg::NodeVisitor(TRAVERSE_ALL_CHILDREN) {}
-
-    virtual void apply(osg::MatrixTransform& node)
-    {
-        if (osgAnimation::Bone* bone = dynamic_cast<osgAnimation::Bone*>(&node))
-        {
-            bone->setInvBindMatrixInSkeletonSpace(osg::Matrix::inverse(bone->getMatrixInBoneSpace()));
-            if (const osgAnimation::Bone* parent = bone->getBoneParent())
-            {
-                bone->setInvBindMatrixInSkeletonSpace(parent->getInvBindMatrixInSkeletonSpace() * bone->getInvBindMatrixInSkeletonSpace());
-            }
-        }
-
-        traverse(node);
-    }
-};
-
 osgDB::ReaderWriter::ReadResult
 ReaderWriterFBX::readNode(const std::string& filenameInit,
                           const Options* options) const
@@ -189,9 +170,8 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
             return ReadResult::FILE_NOT_HANDLED;
         }
         KFbxImporter* lImporter = KFbxImporter::Create(pSdkManager, "");
-        lImporter->SetFileFormat(fileFormat);
 
-        if (!lImporter->Initialize(utf8filename.c_str()))
+        if (!lImporter->Initialize(utf8filename.c_str(), fileFormat))
         {
             return std::string(lImporter->GetLastErrorString());
         }
@@ -217,7 +197,9 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
 
         if (KFbxNode* pNode = pScene->GetRootNode())
         {
-            bool useFbxRoot = false;
+			pScene->SetCurrentTake(pScene->GetCurrentTakeName());
+
+			bool useFbxRoot = false;
             if (options)
             {
                 std::istringstream iss(options->getOptionString());
@@ -232,7 +214,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
             }
 
             osg::ref_ptr<osgAnimation::AnimationManagerBase> pAnimationManager;
-            bool bNeedSkeleton = false;
+            bool bIsBone = false;
             int nLightCount = 0;
             osg::ref_ptr<Options> localOptions = NULL;
             if (options)
@@ -243,22 +225,35 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
 
             std::string filePath = osgDB::getFilePath(filename);
             FbxMaterialToOsgStateSet fbxMaterialToOsgStateSet(filePath, localOptions.get());
-           
+
+			std::map<KFbxNode*, osg::Node*> nodeMap;
+			std::map<KFbxNode*, osg::Matrix> boneBindMatrices;
+			std::map<KFbxNode*, osgAnimation::Skeleton*> skeletonMap;
             ReadResult res = readFbxNode(*pSdkManager, pNode, pAnimationManager,
-                bNeedSkeleton, nLightCount, fbxMaterialToOsgStateSet, localOptions.get());
+                bIsBone, nLightCount, fbxMaterialToOsgStateSet, nodeMap,
+				boneBindMatrices, skeletonMap, localOptions.get());
 
             if (res.success())
             {
-                osg::Node* osgNode = res.getNode();
-                if (bNeedSkeleton)
-                {
-                    ConvertBindMatrixVisitor convertBindMatrixVisitor;
-                    osgNode->accept(convertBindMatrixVisitor);
-                    osgAnimation::Skeleton* osgSkeleton = new osgAnimation::Skeleton;
-                    osgSkeleton->setDefaultUpdateCallback();
-                    osgSkeleton->addChild(osgNode);
-                    osgNode = osgSkeleton;
-                }
+				for (std::map<KFbxNode*, osg::Matrix>::const_iterator it = boneBindMatrices.begin();
+					it != boneBindMatrices.end(); ++it)
+				{
+					std::map<KFbxNode*, osg::Node*>::iterator nodeIt = nodeMap.find(it->first);
+					if (nodeIt != nodeMap.end())
+					{
+						osgAnimation::Bone& osgBone = dynamic_cast<osgAnimation::Bone&>(*nodeIt->second);
+						osgBone.setInvBindMatrixInSkeletonSpace(it->second);
+					}
+					else
+					{
+						assert(0);
+					}
+				}
+
+				osg::Node* osgNode = res.getNode();
+				osgNode->getOrCreateStateSet()->setMode(GL_RESCALE_NORMAL,osg::StateAttribute::ON);
+				osgNode->getOrCreateStateSet()->setMode(GL_NORMALIZE,osg::StateAttribute::ON);
+
                 if (pAnimationManager.valid())
                 {
                     if (osgNode->getUpdateCallback())
@@ -332,6 +327,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
     }
     catch (...)
     {
+		osg::notify(osg::WARN) << "Exception thrown while importing \"" << filenameInit << '\"' << std::endl;
     }
 
     return ReadResult::ERROR_IN_READING_FILE;

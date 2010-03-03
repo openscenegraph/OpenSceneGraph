@@ -261,12 +261,12 @@ void readAnimation(KFbxNode* pNode, const std::string& targetName,
 }
 
 osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
-	KFbxNode* pNode, KFbxMesh* fbxMesh,
+    KFbxNode* pNode, KFbxMesh* fbxMesh,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
     std::vector<StateSetContent>& stateSetList,
-	const char* szName,
-	std::map<KFbxNode*, osg::Matrix>& boneBindMatrices,
-	std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap)
+    const char* szName,
+    std::map<KFbxNode*, osg::Matrix>& boneBindMatrices,
+    std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap)
 {
     GeometryMap geometryMap;
 
@@ -413,7 +413,7 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
         {
             osg::Geometry* pGeometry = pGeode->getDrawable(i)->asGeometry();
 
-			osgAnimation::RigGeometry* pRig = new osgAnimation::RigGeometry;
+            osgAnimation::RigGeometry* pRig = new osgAnimation::RigGeometry;
             pRig->setSourceGeometry(pGeometry);
             pRig->copyFrom(*pGeometry);
             old2newGeometryMap.insert(GeometryRigGeometryMap::value_type(
@@ -433,17 +433,17 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
             for (int j = 0; j < nClusters; ++j)
             {
                 KFbxCluster* pCluster = (KFbxCluster*)pSkin->GetCluster(j);
-				//assert(KFbxCluster::eNORMALIZE == pCluster->GetLinkMode());
+                //assert(KFbxCluster::eNORMALIZE == pCluster->GetLinkMode());
                 KFbxNode* pBone = pCluster->GetLink();
 
-				KFbxXMatrix transformLink;
-				pCluster->GetTransformLinkMatrix(transformLink);
-				KFbxXMatrix transformLinkInverse = transformLink.Inverse();
-				const double* pTransformLinkInverse = transformLinkInverse;
-				if (!boneBindMatrices.insert(std::pair<KFbxNode*, osg::Matrix>(pBone, osg::Matrix(pTransformLinkInverse))).second)
-				{
-					osg::notify(osg::WARN) << "Multiple meshes attached to a bone - bind matrices may be incorrect." << std::endl;
-				}
+                KFbxXMatrix transformLink;
+                pCluster->GetTransformLinkMatrix(transformLink);
+                KFbxXMatrix transformLinkInverse = transformLink.Inverse();
+                const double* pTransformLinkInverse = transformLinkInverse;
+                if (!boneBindMatrices.insert(std::pair<KFbxNode*, osg::Matrix>(pBone, osg::Matrix(pTransformLinkInverse))).second)
+                {
+                    osg::notify(osg::WARN) << "Multiple meshes attached to a bone - bind matrices may be incorrect." << std::endl;
+                }
 
                 int nIndices = pCluster->GetControlPointIndicesCount();
                 int* pIndices = pCluster->GetControlPointIndices();
@@ -555,57 +555,56 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
         }
     }
 
-    KFbxXMatrix fbxVertexTransform;
-    fbxVertexTransform.SetTRS(
+    KFbxXMatrix fbxGeometricTransform;
+    fbxGeometricTransform.SetTRS(
         pNode->GeometricTranslation.Get(),
         pNode->GeometricRotation.Get(),
         pNode->GeometricScaling.Get());
-    const double* pVertexMat = fbxVertexTransform;
-    osg::Matrix vertexMat(pVertexMat);
+    const double* pGeometricMat = fbxGeometricTransform;
+    osg::Matrix osgGeometricTransform(pGeometricMat);
 
-	// Bind shape matrix
-	// For some models this is necessary, however for other models (such as
-	// those exported from Blender) it shouldn't be applied.
-	// TODO: Figure out how to make this work in all cases.
-	KArrayTemplate<KFbxPose*> pPoseList;
-	KArrayTemplate<int> pIndex;
-	if (KFbxPose::GetBindPoseContaining(
-		pSdkManager, pNode, pPoseList, pIndex))
-	{
-		const double* pBindShapeMat = pPoseList[0]->GetMatrix(pIndex[0]);
-		vertexMat.postMult(osg::Matrix(pBindShapeMat));
-	}
-
-	osg::Node* pResult = pGeode;
-
-    if (!vertexMat.isIdentity())
+    if (geomType == GEOMETRY_RIG)
     {
-        osg::MatrixTransform* pMatTrans = new osg::MatrixTransform(vertexMat);
-        pMatTrans->addChild(pGeode);
-		pResult = pMatTrans;
+        KFbxSkin* pSkin = (KFbxSkin*)fbxMesh->GetDeformer(0, KFbxDeformer::eSKIN);
+        if (pSkin->GetClusterCount())
+        {
+            KFbxXMatrix fbxTransformMatrix;
+            pSkin->GetCluster(0)->GetTransformMatrix(fbxTransformMatrix);
+            const double* pTransformMatrix = fbxTransformMatrix;
+            osgGeometricTransform.postMult(osg::Matrix(pTransformMatrix));
+        }
     }
 
-	if (geomType == GEOMETRY_RIG)
-	{
-		//Add the geometry to the skeleton ancestor of one of the bones.
-		KFbxSkin* pSkin = (KFbxSkin*)fbxMesh->GetDeformer(0, KFbxDeformer::eSKIN);
-		if (pSkin->GetClusterCount())
-		{
-			osgAnimation::Skeleton* pSkeleton = getSkeleton(pSkin->GetCluster(0)->GetLink(), skeletonMap);
-			pSkeleton->addChild(pResult);
-			return osgDB::ReaderWriter::ReadResult::FILE_LOADED;
-		}
-	}
+    osg::Node* pResult = pGeode;
 
-	return osgDB::ReaderWriter::ReadResult(pResult);
+    if (!osgGeometricTransform.isIdentity())
+    {
+        osg::MatrixTransform* pMatTrans = new osg::MatrixTransform(osgGeometricTransform);
+        pMatTrans->addChild(pGeode);
+        pResult = pMatTrans;
+    }
+
+    if (geomType == GEOMETRY_RIG)
+    {
+        //Add the geometry to the skeleton ancestor of one of the bones.
+        KFbxSkin* pSkin = (KFbxSkin*)fbxMesh->GetDeformer(0, KFbxDeformer::eSKIN);
+        if (pSkin->GetClusterCount())
+        {
+            osgAnimation::Skeleton* pSkeleton = getSkeleton(pSkin->GetCluster(0)->GetLink(), skeletonMap);
+            pSkeleton->addChild(pResult);
+            return osgDB::ReaderWriter::ReadResult::FILE_LOADED;
+        }
+    }
+
+    return osgDB::ReaderWriter::ReadResult(pResult);
 }
 
 osgDB::ReaderWriter::ReadResult readFbxMesh(KFbxSdkManager& pSdkManager,
-	KFbxNode* pNode,
+    KFbxNode* pNode,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
-	std::vector<StateSetContent>& stateSetList,
-	std::map<KFbxNode*, osg::Matrix>& boneBindMatrices,
-	std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap)
+    std::vector<StateSetContent>& stateSetList,
+    std::map<KFbxNode*, osg::Matrix>& boneBindMatrices,
+    std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap)
 {
     KFbxMesh* lMesh = dynamic_cast<KFbxMesh*>(pNode->GetNodeAttribute());
 
@@ -615,5 +614,5 @@ osgDB::ReaderWriter::ReadResult readFbxMesh(KFbxSdkManager& pSdkManager,
     }
 
     return readMesh(pSdkManager, pNode, lMesh, pAnimationManager, stateSetList,
-		pNode->GetName(), boneBindMatrices, skeletonMap);
+        pNode->GetName(), boneBindMatrices, skeletonMap);
 }

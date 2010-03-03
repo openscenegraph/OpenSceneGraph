@@ -8,7 +8,6 @@
 #include <osg/PositionAttitudeTransform>
 #include <osg/Texture2D>
 #include <osgDB/ConvertUTF>
-
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 #include <osgDB/ReadFile>
@@ -26,43 +25,6 @@
 #include "fbxRNode.h"
 #include "fbxMaterialToOsgStateSet.h"
 #include "WriterNodeVisitor.h"
-
-#if defined(WIN32) && !defined(__CYGWIN__)
-#define WIN32_LEAN_AND_MEAN
-//For MultiByteToWideChar
-#include <Windows.h>
-#endif
-
-// This function belongs in osgDB. Delete this function and use the osgDB
-// version once Robert accepts the submission.
-std::string convertStringFromCurrentCodePageToUTF8(const std::string& str)
-{
-#if defined(WIN32) && !defined(__CYGWIN__)
-	if (str.length() == 0)
-	{
-		return std::string();
-	}
-
-	int utf16Length = MultiByteToWideChar(CP_ACP, 0, str.c_str(), str.length(), 0, 0);
-	if (utf16Length <= 0)
-	{
-		osg::notify(osg::WARN) << "Cannot convert multi-byte string to UTF-8." << std::endl;
-		return std::string();
-	}
-
-	std::wstring sUTF16(utf16Length, L'\0');
-	utf16Length = MultiByteToWideChar(CP_ACP, 0, str.c_str(), str.length(), &sUTF16[0], utf16Length);
-	if (utf16Length <= 0)
-	{
-		osg::notify(osg::WARN) << "Cannot convert multi-byte string to UTF-8." << std::endl;
-		return std::string();
-	}
-
-	return osgDB::convertUTF16toUTF8(sUTF16);
-#else
-	return str;
-#endif
-}
 
 /// Returns true if the given node is a basic root group with no special information.
 /// Used in conjunction with UseFbxRoot option.
@@ -161,7 +123,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
 #ifdef OSG_USE_UTF8_FILENAME
         const std::string& utf8filename(filename);
 #else
-        std::string utf8filename(convertStringFromCurrentCodePageToUTF8(filename));
+        std::string utf8filename(osgDB::convertStringFromCurrentCodePageToUTF8(filename));
 #endif
 
         int fileFormat;
@@ -197,9 +159,9 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
 
         if (KFbxNode* pNode = pScene->GetRootNode())
         {
-			pScene->SetCurrentTake(pScene->GetCurrentTakeName());
+            pScene->SetCurrentTake(pScene->GetCurrentTakeName());
 
-			bool useFbxRoot = false;
+            bool useFbxRoot = false;
             if (options)
             {
                 std::istringstream iss(options->getOptionString());
@@ -226,33 +188,33 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
             std::string filePath = osgDB::getFilePath(filename);
             FbxMaterialToOsgStateSet fbxMaterialToOsgStateSet(filePath, localOptions.get());
 
-			std::map<KFbxNode*, osg::Node*> nodeMap;
-			std::map<KFbxNode*, osg::Matrix> boneBindMatrices;
-			std::map<KFbxNode*, osgAnimation::Skeleton*> skeletonMap;
+            std::map<KFbxNode*, osg::Node*> nodeMap;
+            std::map<KFbxNode*, osg::Matrix> boneBindMatrices;
+            std::map<KFbxNode*, osgAnimation::Skeleton*> skeletonMap;
             ReadResult res = readFbxNode(*pSdkManager, pNode, pAnimationManager,
                 bIsBone, nLightCount, fbxMaterialToOsgStateSet, nodeMap,
-				boneBindMatrices, skeletonMap, localOptions.get());
+                boneBindMatrices, skeletonMap, localOptions.get());
 
             if (res.success())
             {
-				for (std::map<KFbxNode*, osg::Matrix>::const_iterator it = boneBindMatrices.begin();
-					it != boneBindMatrices.end(); ++it)
-				{
-					std::map<KFbxNode*, osg::Node*>::iterator nodeIt = nodeMap.find(it->first);
-					if (nodeIt != nodeMap.end())
-					{
-						osgAnimation::Bone& osgBone = dynamic_cast<osgAnimation::Bone&>(*nodeIt->second);
-						osgBone.setInvBindMatrixInSkeletonSpace(it->second);
-					}
-					else
-					{
-						assert(0);
-					}
-				}
+                for (std::map<KFbxNode*, osg::Matrix>::const_iterator it = boneBindMatrices.begin();
+                    it != boneBindMatrices.end(); ++it)
+                {
+                    std::map<KFbxNode*, osg::Node*>::iterator nodeIt = nodeMap.find(it->first);
+                    if (nodeIt != nodeMap.end())
+                    {
+                        osgAnimation::Bone& osgBone = dynamic_cast<osgAnimation::Bone&>(*nodeIt->second);
+                        osgBone.setInvBindMatrixInSkeletonSpace(it->second);
+                    }
+                    else
+                    {
+                        assert(0);
+                    }
+                }
 
-				osg::Node* osgNode = res.getNode();
-				osgNode->getOrCreateStateSet()->setMode(GL_RESCALE_NORMAL,osg::StateAttribute::ON);
-				osgNode->getOrCreateStateSet()->setMode(GL_NORMALIZE,osg::StateAttribute::ON);
+                osg::Node* osgNode = res.getNode();
+                osgNode->getOrCreateStateSet()->setMode(GL_RESCALE_NORMAL,osg::StateAttribute::ON);
+                osgNode->getOrCreateStateSet()->setMode(GL_NORMALIZE,osg::StateAttribute::ON);
 
                 if (pAnimationManager.valid())
                 {
@@ -327,7 +289,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
     }
     catch (...)
     {
-		osg::notify(osg::WARN) << "Exception thrown while importing \"" << filenameInit << '\"' << std::endl;
+        osg::notify(osg::WARN) << "Exception thrown while importing \"" << filenameInit << '\"' << std::endl;
     }
 
     return ReadResult::ERROR_IN_READING_FILE;
@@ -404,7 +366,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriterFBX::writeNode(
 #ifdef OSG_USE_UTF8_FILENAME
         const std::string& utf8filename(filename);
 #else
-        std::string utf8filename(convertStringFromCurrentCodePageToUTF8(filename));
+        std::string utf8filename(osgDB::convertStringFromCurrentCodePageToUTF8(filename));
 #endif
 
         if (!lExporter->Initialize(utf8filename.c_str()))

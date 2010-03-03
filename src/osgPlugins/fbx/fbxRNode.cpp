@@ -47,29 +47,29 @@ osg::Quat makeQuat(const fbxDouble3& degrees, ERotationOrder fbxRotOrder)
             radiansZ, osg::Vec3d(0,0,1));
     case eEULER_XZY:
         return osg::Quat(
-			radiansX, osg::Vec3d(1,0,0),
-			radiansZ, osg::Vec3d(0,0,1),
-			radiansY, osg::Vec3d(0,1,0));
+            radiansX, osg::Vec3d(1,0,0),
+            radiansZ, osg::Vec3d(0,0,1),
+            radiansY, osg::Vec3d(0,1,0));
     case eEULER_YZX:
-		return osg::Quat(
-			radiansY, osg::Vec3d(0,1,0),
-			radiansZ, osg::Vec3d(0,0,1),
-			radiansX, osg::Vec3d(1,0,0));
+        return osg::Quat(
+            radiansY, osg::Vec3d(0,1,0),
+            radiansZ, osg::Vec3d(0,0,1),
+            radiansX, osg::Vec3d(1,0,0));
     case eEULER_YXZ:
-		return osg::Quat(
-			radiansY, osg::Vec3d(0,1,0),
-			radiansX, osg::Vec3d(1,0,0),
-			radiansZ, osg::Vec3d(0,0,1));
+        return osg::Quat(
+            radiansY, osg::Vec3d(0,1,0),
+            radiansX, osg::Vec3d(1,0,0),
+            radiansZ, osg::Vec3d(0,0,1));
     case eEULER_ZXY:
         return osg::Quat(
             radiansZ, osg::Vec3d(0,0,1),
             radiansX, osg::Vec3d(1,0,0),
             radiansY, osg::Vec3d(0,1,0));
     case eEULER_ZYX:
-		return osg::Quat(
-			radiansZ, osg::Vec3d(0,0,1),
-			radiansY, osg::Vec3d(0,1,0),
-			radiansX, osg::Vec3d(1,0,0));
+        return osg::Quat(
+            radiansZ, osg::Vec3d(0,0,1),
+            radiansY, osg::Vec3d(0,1,0),
+            radiansX, osg::Vec3d(1,0,0));
     case eSPHERIC_XYZ:
         {
             //I don't know what eSPHERIC_XYZ means, so this is a complete guess.
@@ -104,7 +104,11 @@ void makeLocalMatrix(const KFbxNode* pNode, osg::Matrix& m)
     ScalingPivotInverse: inverse of ScalingPivot
     */
 
-    ERotationOrder fbxRotOrder = pNode->RotationOrder.Get();
+    // When this flag is set to false, the RotationOrder, the Pre/Post rotation
+    // values and the rotation limits should be ignored.
+    bool rotationActive = pNode->RotationActive.Get();
+
+    ERotationOrder fbxRotOrder = rotationActive ? pNode->RotationOrder.Get() : eEULER_XYZ;
 
     fbxDouble3 fbxLclPos = pNode->LclTranslation.Get();
     fbxDouble3 fbxRotOff = pNode->RotationOffset.Get();
@@ -120,10 +124,17 @@ void makeLocalMatrix(const KFbxNode* pNode, osg::Matrix& m)
         fbxLclPos[0] + fbxRotOff[0] + fbxRotPiv[0],
         fbxLclPos[1] + fbxRotOff[1] + fbxRotPiv[1],
         fbxLclPos[2] + fbxRotOff[2] + fbxRotPiv[2]));
-    m.preMultRotate(
-        makeQuat(fbxPostRot, fbxRotOrder) *
-        makeQuat(fbxLclRot, fbxRotOrder) *
-        makeQuat(fbxPreRot, fbxRotOrder));
+    if (rotationActive)
+    {
+        m.preMultRotate(
+            makeQuat(fbxPostRot, fbxRotOrder) *
+            makeQuat(fbxLclRot, fbxRotOrder) *
+            makeQuat(fbxPreRot, fbxRotOrder));
+    }
+    else
+    {
+        m.preMultRotate(makeQuat(fbxLclRot, fbxRotOrder));
+    }
     m.preMultTranslate(osg::Vec3d(
         fbxSclOff[0] + fbxSclPiv[0] - fbxRotPiv[0],
         fbxSclOff[1] + fbxSclPiv[1] - fbxRotPiv[1],
@@ -226,13 +237,24 @@ void readUpdateMatrixTransform(osgAnimation::UpdateMatrixTransform* pUpdate, KFb
         fbxRotPiv[1] + fbxRotOffset[1],
         fbxRotPiv[2] + fbxRotOffset[2]));
 
-    ERotationOrder fbxRotOrder = pNode->RotationOrder.IsValid() ? pNode->RotationOrder.Get() : eEULER_XYZ;
+    // When this flag is set to false, the RotationOrder, the Pre/Post rotation
+    // values and the rotation limits should be ignored.
+    bool rotationActive = pNode->RotationActive.Get();
 
-    staticTransform.preMultRotate(makeQuat(pNode->PreRotation.Get(), fbxRotOrder));
+    ERotationOrder fbxRotOrder = (rotationActive && pNode->RotationOrder.IsValid()) ?
+        pNode->RotationOrder.Get() : eEULER_XYZ;
+
+    if (rotationActive)
+    {
+        staticTransform.preMultRotate(makeQuat(pNode->PreRotation.Get(), fbxRotOrder));
+    }
 
     readRotationElement(pNode->LclRotation, fbxRotOrder, pUpdate, staticTransform);
 
-    staticTransform.preMultRotate(makeQuat(pNode->PostRotation.Get(), fbxRotOrder));
+    if (rotationActive)
+    {
+        staticTransform.preMultRotate(makeQuat(pNode->PostRotation.Get(), fbxRotOrder));
+    }
 
     fbxDouble3 fbxSclOffset = pNode->ScalingOffset.Get();
     fbxDouble3 fbxSclPiv = pNode->ScalingPivot.Get();
@@ -256,7 +278,7 @@ void readUpdateMatrixTransform(osgAnimation::UpdateMatrixTransform* pUpdate, KFb
 
 osg::Group* createGroupNode(KFbxSdkManager& pSdkManager, KFbxNode* pNode,
     const std::string& animName, const osg::Matrix& localMatrix, bool bNeedSkeleton,
-	std::map<KFbxNode*, osg::Node*>& nodeMap)
+    std::map<KFbxNode*, osg::Node*>& nodeMap)
 {
     if (bNeedSkeleton)
     {
@@ -267,7 +289,7 @@ osg::Group* createGroupNode(KFbxSdkManager& pSdkManager, KFbxNode* pNode,
         readUpdateMatrixTransform(pUpdate, pNode);
         osgBone->setUpdateCallback(pUpdate);
 
-		nodeMap.insert(std::pair<KFbxNode*, osg::Node*>(pNode, osgBone));
+        nodeMap.insert(std::pair<KFbxNode*, osg::Node*>(pNode, osgBone));
 
         return osgBone;
     }
@@ -300,9 +322,9 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
     bool& bIsBone, int& nLightCount,
     FbxMaterialToOsgStateSet& fbxMaterialToOsgStateSet,
-	std::map<KFbxNode*, osg::Node*>& nodeMap,
-	std::map<KFbxNode*, osg::Matrix>& boneBindMatrices,
-	std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap,
+    std::map<KFbxNode*, osg::Node*>& nodeMap,
+    std::map<KFbxNode*, osg::Matrix>& boneBindMatrices,
+    std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap,
     const osgDB::Options* options)
 {
     if (KFbxNodeAttribute* lNodeAttribute = pNode->GetNodeAttribute())
@@ -315,8 +337,8 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
         }
     }
 
-	bIsBone = false;
-	bool bCreateSkeleton = false;
+    bIsBone = false;
+    bool bCreateSkeleton = false;
 
     KFbxNodeAttribute::EAttributeType lAttributeType = KFbxNodeAttribute::eUNIDENTIFIED;
     if (pNode->GetNodeAttribute())
@@ -355,7 +377,7 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
         osgDB::ReaderWriter::ReadResult childResult = readFbxNode(
             pSdkManager, pChildNode, pAnimationManager,
             bChildIsBone, nLightCount, fbxMaterialToOsgStateSet, nodeMap,
-			boneBindMatrices, skeletonMap, options);
+            boneBindMatrices, skeletonMap, options);
         if (childResult.error())
         {
             return childResult;
@@ -364,7 +386,7 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
         {
             if (bChildIsBone)
             {
-				if (!bIsBone) bCreateSkeleton = true;
+                if (!bIsBone) bCreateSkeleton = true;
                 skeletal.push_back(osgChild);
             }
             else
@@ -401,23 +423,23 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
         break;
     case KFbxNodeAttribute::eMESH:
         {
-			size_t bindMatrixCount = boneBindMatrices.size();
+            size_t bindMatrixCount = boneBindMatrices.size();
             osgDB::ReaderWriter::ReadResult meshRes = readFbxMesh(pSdkManager,
-				pNode, pAnimationManager, stateSetList, boneBindMatrices, skeletonMap);
+                pNode, pAnimationManager, stateSetList, boneBindMatrices, skeletonMap);
             if (meshRes.error())
             {
                 return meshRes;
             }
             else if (osg::Node* node = meshRes.getNode())
             {
-				bEmpty = false;
+                bEmpty = false;
 
-				if (bindMatrixCount != boneBindMatrices.size())
-				{
-					//The mesh is skinned therefore the bind matrix will handle all transformations.
-					localMatrix.makeIdentity();
-					bLocalMatrixIdentity = true;
-				}
+                if (bindMatrixCount != boneBindMatrices.size())
+                {
+                    //The mesh is skinned therefore the bind matrix will handle all transformations.
+                    localMatrix.makeIdentity();
+                    bLocalMatrixIdentity = true;
+                }
 
                 if (animName.empty() &&
                     children.empty() &&
@@ -427,7 +449,7 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
                     return osgDB::ReaderWriter::ReadResult(node);
                 }
 
-				children.insert(children.begin(), node);
+                children.insert(children.begin(), node);
             }
         }
         break;
@@ -451,7 +473,7 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
                 }
                 else
                 {
-					children.insert(children.begin(), resGroup);
+                    children.insert(children.begin(), resGroup);
                 }
             }
         }
@@ -465,14 +487,14 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
 
     if (!osgGroup) osgGroup = createGroupNode(pSdkManager, pNode, animName, localMatrix, bIsBone, nodeMap);
 
-	osg::Group* pAddChildrenTo = osgGroup.get();
-	if (bCreateSkeleton)
-	{
-		osgAnimation::Skeleton* osgSkeleton = getSkeleton(pNode, skeletonMap);
-		osgSkeleton->setDefaultUpdateCallback();
-		pAddChildrenTo->addChild(osgSkeleton);
-		pAddChildrenTo = osgSkeleton;
-	}
+    osg::Group* pAddChildrenTo = osgGroup.get();
+    if (bCreateSkeleton)
+    {
+        osgAnimation::Skeleton* osgSkeleton = getSkeleton(pNode, skeletonMap);
+        osgSkeleton->setDefaultUpdateCallback();
+        pAddChildrenTo->addChild(osgSkeleton);
+        pAddChildrenTo = osgSkeleton;
+    }
 
     for (osg::NodeList::iterator it = skeletal.begin(); it != skeletal.end(); ++it)
     {
@@ -488,26 +510,26 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
 }
 
 osgAnimation::Skeleton* getSkeleton(KFbxNode* fbxNode,
-	std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap)
+    std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap)
 {
-	//Find the first non-skeleton ancestor of the node.
-	while (fbxNode &&
-		fbxNode->GetNodeAttribute() &&
-		fbxNode->GetNodeAttribute()->GetAttributeType() == KFbxNodeAttribute::eSKELETON)
-	{
-		fbxNode = fbxNode->GetParent();
-	}
+    //Find the first non-skeleton ancestor of the node.
+    while (fbxNode &&
+        fbxNode->GetNodeAttribute() &&
+        fbxNode->GetNodeAttribute()->GetAttributeType() == KFbxNodeAttribute::eSKELETON)
+    {
+        fbxNode = fbxNode->GetParent();
+    }
 
-	std::map<KFbxNode*, osgAnimation::Skeleton*>::const_iterator it = skeletonMap.find(fbxNode);
-	if (it == skeletonMap.end())
-	{
-		osgAnimation::Skeleton* skel = new osgAnimation::Skeleton;
-		skel->setDefaultUpdateCallback();
-		skeletonMap.insert(std::pair<KFbxNode*, osgAnimation::Skeleton*>(fbxNode, skel));
-		return skel;
-	}
-	else
-	{
-		return it->second;
-	}
+    std::map<KFbxNode*, osgAnimation::Skeleton*>::const_iterator it = skeletonMap.find(fbxNode);
+    if (it == skeletonMap.end())
+    {
+        osgAnimation::Skeleton* skel = new osgAnimation::Skeleton;
+        skel->setDefaultUpdateCallback();
+        skeletonMap.insert(std::pair<KFbxNode*, osgAnimation::Skeleton*>(fbxNode, skel));
+        return skel;
+    }
+    else
+    {
+        return it->second;
+    }
 }

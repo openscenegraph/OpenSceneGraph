@@ -6,11 +6,11 @@
 #include <osg/Material>
 #include "fbxMaterialToOsgStateSet.h"
 osgDB::ReaderWriter::ReadResult readFbxMesh(
-	FBXFILESDK_NAMESPACE::KFbxSdkManager& pSdkManager,
-	FBXFILESDK_NAMESPACE::KFbxNode* pNode,
+    FBXFILESDK_NAMESPACE::KFbxSdkManager& pSdkManager,
+    FBXFILESDK_NAMESPACE::KFbxNode* pNode,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
     std::vector<StateSetContent>&,
-	std::map<KFbxNode*, osg::Matrix>& boneBindMatrices,
-	std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap);
+    std::map<KFbxNode*, osg::Matrix>& boneBindMatrices,
+    std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap);
 
 #endif

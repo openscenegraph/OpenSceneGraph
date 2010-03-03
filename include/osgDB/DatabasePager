@@ -21,6 +21,7 @@
 #include <osg/GraphicsThread>
 #include <osg/FrameStamp>
 #include <osg/ObserverNodePath>
+#include <osg/observer_ptr>
 
 #include <OpenThreads/Thread>
 #include <OpenThreads/Mutex>
@@ -279,11 +280,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         
         /** Merge the changes to the scene graph by calling calling removeExpiredSubgraphs then addLoadedDataToSceneGraph.
           * Note, must only be called from single thread update phase. */
-        virtual void updateSceneGraph(const osg::FrameStamp& frameStamp)
-        {
-            removeExpiredSubgraphs(frameStamp);
-            addLoadedDataToSceneGraph(frameStamp);
-        }
+        virtual void updateSceneGraph(const osg::FrameStamp& frameStamp);
                 
         /** Turn the compilation of rendering objects for specified graphics context on (true) or off(false). */
         void setCompileGLObjectsForContextID(unsigned int contextID, bool on);
@@ -332,7 +329,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** Reset the Stats variables.*/
         void resetStats();
 
-        typedef std::list< osg::ref_ptr<osg::PagedLOD> >                PagedLODList;
         typedef std::set< osg::ref_ptr<osg::StateSet> >                 StateSetList;
         typedef std::vector< osg::ref_ptr<osg::Drawable> >              DrawableList;
         typedef std::pair<StateSetList,DrawableList>                    DataToCompile;
@@ -348,6 +344,28 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         friend struct DatabaseRequest;
 
         struct RequestQueue;
+
+        struct PagedLODObserver : public osg::observer_ptr<osg::PagedLOD>
+        {
+            typedef osg::observer_ptr<osg::PagedLOD> BaseClass;
+
+            PagedLODObserver(osg::PagedLOD* plod):BaseClass(plod) {}
+            PagedLODObserver(const PagedLODObserver& plodObserver):BaseClass(plodObserver) {}
+
+            PagedLODObserver& operator = (const PagedLODObserver& rhs)
+            {
+                (*static_cast<BaseClass*>(this)) = rhs;
+                return *this;
+            }
+
+            virtual void objectDeleted(void* ptr)
+            {
+                BaseClass::objectDeleted(ptr);
+            }
+        };
+
+        typedef std::list< PagedLODObserver >                PagedLODList;
+
 
         struct DatabaseRequest : public osg::Referenced
         {
@@ -442,8 +460,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         class FindCompileableGLObjectsVisitor;
         friend class FindCompileableGLObjectsVisitor;
         
-        class MarkPagedLODsVisitor;
-        
+        class CountPagedLODsVisitor;
         class FindPagedLODsVisitor;
         friend class FindPagedLODsVisitor;
 
@@ -546,12 +563,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
           * children which havn't been visited since specified expiryTime.
           * note, should be only be called from the update thread. */
         virtual void removeExpiredSubgraphs(const osg::FrameStamp &frameStamp);
-
-        /** Old expiry delay based removeExpiredSubgraphs. */
-        virtual void expiry_removeExpiredSubgraphs(const osg::FrameStamp &frameStamp);
-
-        /** New capped based removeExpiredSubgraphs. */
-        virtual void capped_removeExpiredSubgraphs(const osg::FrameStamp &frameStamp);
 
         /** Add the loaded data to the scene graph.*/
         void addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp);

@@ -1,6 +1,7 @@
 #include <cassert>
 #include <sstream>
 
+#include <osg/BlendFunc>
 #include <osg/Geode>
 #include <osg/Image>
 #include <osg/MatrixTransform>
@@ -163,11 +164,26 @@ osg::Geometry* getGeometry(osg::Geode* pGeode, GeometryMap& geometryMap,
 
     if (mti < stateSetList.size())
     {
+        bool transparent = false;
         const StateSetContent& ss = stateSetList[mti];
-        if(ss.first)
-            pGeometry->getOrCreateStateSet()->setAttributeAndModes(ss.first);
-        if(ss.second)
-            pGeometry->getOrCreateStateSet()->setTextureAttributeAndModes(0, ss.second);
+        if (osg::Material* pMaterial = ss.first)
+        {
+            pGeometry->getOrCreateStateSet()->setAttributeAndModes(pMaterial);
+            transparent = pMaterial->getDiffuse(osg::Material::FRONT).w() < 1.0f;
+        }
+        if (osg::Texture2D* pTexture = ss.second)
+        {
+            pGeometry->getOrCreateStateSet()->setTextureAttributeAndModes(0, pTexture);
+            if (!transparent && pTexture->getImage())
+            {
+                transparent = pTexture->getImage()->isImageTranslucent();
+            }
+        }
+
+        if (transparent)
+        {
+            pGeometry->getOrCreateStateSet()->setAttributeAndModes(new osg::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+        }
     }
 
     geometryMap.insert(std::pair<unsigned, osg::ref_ptr<osg::Geometry> >(mti, pGeometry));

@@ -49,12 +49,6 @@ Scene::~Scene()
 void Scene::setSceneData(osg::Node* node)
 {
     _sceneData = node;
-    
-    if (_databasePager.valid())
-    {    
-        // register any PagedLOD that need to be tracked in the scene graph
-        if (node) _databasePager->registerPagedLODs(node);
-    }
 }
 
 osg::Node* Scene::getSceneData()

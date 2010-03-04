@@ -17,6 +17,7 @@ QT4_WRAP_CPP( SOURCES_H_MOC ${SOURCES_H} )
 
 SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Export
+    ${HEADER_PATH}/QFontImplementation
     ${HEADER_PATH}/QGraphicsViewAdapter
     ${HEADER_PATH}/QWebViewImage
 )
@@ -25,6 +26,7 @@ SET(LIB_PUBLIC_HEADERS
 ADD_LIBRARY(${LIB_NAME}
     ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
     ${LIB_PUBLIC_HEADERS}
+    QFontImplementation.cpp
     QGraphicsViewAdapter.cpp
     QWebViewImage.cpp
     ${SOURCES_H_MOC}

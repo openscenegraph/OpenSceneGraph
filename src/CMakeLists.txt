@@ -26,6 +26,9 @@ FOREACH( mylibfolder
 
 ENDFOREACH()
 
+IF (QT4_FOUND AND QT_QTWEBKIT_FOUND)
+    ADD_SUBDIRECTORY(osgQt)
+ENDIF()
 
 OPTION(BUILD_OSG_WRAPPERS "Enable to build Introspection and Wrappers" OFF)
 IF(BUILD_OSG_WRAPPERS)

@@ -38,8 +38,8 @@
 #include <QtGui/QPainter>
 #include <QtGui/QtEvents>
 
-#include "QGraphicsViewAdapter.h"
-#include "QWebViewImage.h"
+#include <osgQt/QGraphicsViewAdapter>
+#include <osgQt/QWebViewImage>
 
 
 // Thread that runs the viewer's frame loop as we can't run Qt in the background...
@@ -89,7 +89,7 @@ int main(int argc, char **argv)
     bool useFrameLoopThread = true;
     if (arguments.read("--no-frame-thread")) useFrameLoopThread = false;
 
-    osg::ref_ptr<QWebViewImage> image = new QWebViewImage;
+    osg::ref_ptr<osgQt::QWebViewImage> image = new osgQt::QWebViewImage;
 
     if (arguments.argc()>1) image->navigateTo((arguments[1]));
     else image->navigateTo("http://www.youtube.com/");

@@ -840,9 +840,8 @@ osg::Texture::WrapMode getWrapMode(domFx_sampler_wrap_common domWrap)
     case FX_SAMPLER_WRAP_COMMON_BORDER:
         return osg::Texture::CLAMP_TO_BORDER;
     default:
-        ;// fall through
+        osg::notify(osg::WARN) << "Unrecognised domFx_sampler_wrap_common." << std::endl;
     }
-
     return osg::Texture::CLAMP;
 }
 
@@ -850,30 +849,21 @@ osg::Texture::FilterMode getFilterMode(domFx_sampler_filter_common domFilter, bo
 {
     switch (domFilter)
     {
+    case FX_SAMPLER_FILTER_COMMON_NONE:
     case FX_SAMPLER_FILTER_COMMON_NEAREST:
         return osg::Texture::NEAREST;
     case FX_SAMPLER_FILTER_COMMON_LINEAR:
         return osg::Texture::LINEAR;
     case FX_SAMPLER_FILTER_COMMON_NEAREST_MIPMAP_NEAREST:
-        if (allowMipMap)
-            return osg::Texture::NEAREST_MIPMAP_NEAREST;
-        break;
+        return allowMipMap ? osg::Texture::NEAREST_MIPMAP_NEAREST : osg::Texture::NEAREST;
     case FX_SAMPLER_FILTER_COMMON_LINEAR_MIPMAP_NEAREST:
-        if (allowMipMap)
-            return osg::Texture::LINEAR_MIPMAP_NEAREST;
-        break;
+        return allowMipMap ? osg::Texture::LINEAR_MIPMAP_NEAREST : osg::Texture::LINEAR;
     case FX_SAMPLER_FILTER_COMMON_NEAREST_MIPMAP_LINEAR:
-        if (allowMipMap)
-            return osg::Texture::NEAREST_MIPMAP_LINEAR;
-        break;
+        return allowMipMap ? osg::Texture::NEAREST_MIPMAP_LINEAR : osg::Texture::NEAREST;
     case FX_SAMPLER_FILTER_COMMON_LINEAR_MIPMAP_LINEAR:
-        if (allowMipMap)
-            return osg::Texture::LINEAR_MIPMAP_LINEAR;
-        break;
-    case FX_SAMPLER_FILTER_COMMON_NONE:
-        return osg::Texture::NEAREST;
+        return allowMipMap ? osg::Texture::LINEAR_MIPMAP_LINEAR : osg::Texture::LINEAR;
     default:
-        ; // Fall through
+        osg::notify(osg::WARN) << "Unrecognised domFx_sampler_filter_common." << std::endl;
     }
     return osg::Texture::LINEAR;
 }

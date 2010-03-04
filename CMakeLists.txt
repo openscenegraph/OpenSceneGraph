@@ -369,6 +369,26 @@ FIND_PACKAGE(FFmpeg)
 FIND_PACKAGE(DirectShow)
 FIND_PACKAGE(SDL)
 
+# To select a specific version of QT define DESIRED_QT_VERSION
+# via cmake -DDESIRED_QT_VERSION=4
+IF  (DESIRED_QT_VERSION)
+
+    IF  (DESIRED_QT_VERSION MATCHES 4)
+      FIND_PACKAGE(Qt4)
+    ELSE()
+      FIND_PACKAGE(Qt3)
+    ENDIF()
+
+ELSE()
+
+    FIND_PACKAGE(Qt4)
+
+    IF  (NOT QT4_FOUND)
+        FIND_PACKAGE(Qt3)
+    ENDIF()
+
+ENDIF()
+
 #use pkg-config to find various modues
 INCLUDE(FindPkgConfig OPTIONAL)
 
@@ -401,26 +421,6 @@ IF   (BUILD_OSG_EXAMPLES)
 
     SET(wxWidgets_USE_LIBS base core gl net)
     FIND_PACKAGE(wxWidgets)
-
-    # To select a specific version of QT define DESIRED_QT_VERSION
-    # via cmake -DDESIRED_QT_VERSION=4
-    IF  (DESIRED_QT_VERSION)
-
-        IF  (DESIRED_QT_VERSION MATCHES 4)
-          FIND_PACKAGE(Qt4)
-        ELSE()
-          FIND_PACKAGE(Qt3)
-        ENDIF()
-
-    ELSE()
-
-        FIND_PACKAGE(Qt4)
-
-        IF  (NOT QT4_FOUND)
-            FIND_PACKAGE(Qt3)
-        ENDIF()
-
-    ENDIF()
 
 ENDIF(BUILD_OSG_EXAMPLES)
 

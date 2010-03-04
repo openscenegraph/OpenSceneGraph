@@ -323,7 +323,7 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
     bool& bIsBone, int& nLightCount,
     FbxMaterialToOsgStateSet& fbxMaterialToOsgStateSet,
     std::map<KFbxNode*, osg::Node*>& nodeMap,
-    std::map<KFbxNode*, osg::Matrix>& boneBindMatrices,
+    BindMatrixMap& boneBindMatrices,
     std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap,
     const osgDB::Options* options)
 {

@@ -14,7 +14,9 @@
 #include <osgDB/Registry>
 #include <osgAnimation/AnimationManagerBase>
 #include <osgAnimation/Bone>
+#include <osgAnimation/RigGeometry>
 #include <osgAnimation/Skeleton>
+#include <osgAnimation/VertexInfluence>
 
 #if defined(_MSC_VER)
     #pragma warning( disable : 4505 )
@@ -95,6 +97,77 @@ public:
         m_pSdkManager->Destroy();
     }
 };
+
+void resolveBindMatrices(
+    osg::Node& root,
+    const BindMatrixMap& boneBindMatrices,
+    const std::map<KFbxNode*, osg::Node*>& nodeMap)
+{
+    std::set<std::string> nodeNames;
+    for (std::map<KFbxNode*, osg::Node*>::const_iterator it = nodeMap.begin(); it != nodeMap.end(); ++it)
+    {
+        nodeNames.insert(it->second->getName());
+    }
+
+    for (BindMatrixMap::const_iterator it = boneBindMatrices.begin();
+        it != boneBindMatrices.end();)
+    {
+        KFbxNode* const fbxBone = it->first.first;
+        std::map<KFbxNode*, osg::Node*>::const_iterator nodeIt = nodeMap.find(fbxBone);
+        if (nodeIt != nodeMap.end())
+        {
+            const osg::Matrix bindMatrix = it->second;
+            osgAnimation::Bone& osgBone = dynamic_cast<osgAnimation::Bone&>(*nodeIt->second);
+            osgBone.setInvBindMatrixInSkeletonSpace(bindMatrix);
+
+            ++it;
+            for (; it != boneBindMatrices.end() && it->first.first == fbxBone; ++it)
+            {
+                if (it->second != bindMatrix)
+                {
+                    std::string name;
+                    for (int i = 0;; ++i)
+                    {
+                        std::stringstream ss;
+                        ss << osgBone.getName() << '_' << i;
+                        name = ss.str();
+                        if (nodeNames.insert(name).second)
+                        {
+                            break;
+                        }
+                    }
+                    osgAnimation::Bone* newBone = new osgAnimation::Bone(name);
+                    newBone->setDefaultUpdateCallback();
+                    newBone->setInvBindMatrixInSkeletonSpace(it->second);
+                    osgBone.addChild(newBone);
+
+                    osgAnimation::RigGeometry* pRigGeometry = it->first.second;
+                    
+                    osgAnimation::VertexInfluenceMap* vertexInfluences = pRigGeometry->getInfluenceMap();
+
+                    osgAnimation::VertexInfluenceMap::iterator vimIt = vertexInfluences->find(osgBone.getName());
+                    if (vimIt != vertexInfluences->end())
+                    {
+                        osgAnimation::VertexInfluence vi;
+                        vi.swap(vimIt->second);
+                        vertexInfluences->erase(vimIt);
+                        osgAnimation::VertexInfluence& vi2 = (*vertexInfluences)[name];
+                        vi.swap(vi2);
+                        vi2.setName(name);
+                    }
+                    else
+                    {
+                        assert(0);
+                    }
+                }
+            }
+        }
+        else
+        {
+            assert(0);
+        }
+    }
+}
 
 osgDB::ReaderWriter::ReadResult
 ReaderWriterFBX::readNode(const std::string& filenameInit,
@@ -189,7 +262,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
             FbxMaterialToOsgStateSet fbxMaterialToOsgStateSet(filePath, localOptions.get());
 
             std::map<KFbxNode*, osg::Node*> nodeMap;
-            std::map<KFbxNode*, osg::Matrix> boneBindMatrices;
+            BindMatrixMap boneBindMatrices;
             std::map<KFbxNode*, osgAnimation::Skeleton*> skeletonMap;
             ReadResult res = readFbxNode(*pSdkManager, pNode, pAnimationManager,
                 bIsBone, nLightCount, fbxMaterialToOsgStateSet, nodeMap,
@@ -197,20 +270,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
 
             if (res.success())
             {
-                for (std::map<KFbxNode*, osg::Matrix>::const_iterator it = boneBindMatrices.begin();
-                    it != boneBindMatrices.end(); ++it)
-                {
-                    std::map<KFbxNode*, osg::Node*>::iterator nodeIt = nodeMap.find(it->first);
-                    if (nodeIt != nodeMap.end())
-                    {
-                        osgAnimation::Bone& osgBone = dynamic_cast<osgAnimation::Bone&>(*nodeIt->second);
-                        osgBone.setInvBindMatrixInSkeletonSpace(it->second);
-                    }
-                    else
-                    {
-                        assert(0);
-                    }
-                }
+                resolveBindMatrices(*res.getNode(), boneBindMatrices, nodeMap);
 
                 osg::Node* osgNode = res.getNode();
                 osgNode->getOrCreateStateSet()->setMode(GL_RESCALE_NORMAL,osg::StateAttribute::ON);

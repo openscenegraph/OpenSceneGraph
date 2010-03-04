@@ -138,7 +138,7 @@ osg::Transform* daeReader::processOsgMatrixTransform(domNode *node, bool isBone)
             around.normalize();
             along *= shear / along.length();
 
-            pTransformElement = new osgAnimation::StackedMatrixElement(pDomLookat->getSid() ? pDomLookat->getSid() : "",
+            pTransformElement = new osgAnimation::StackedMatrixElement(pDomSkew->getSid() ? pDomSkew->getSid() : "",
                 osg::Matrix(
                 normal.x() * along.x() + 1.0f, normal.x() * along.y(), normal.x() * along.z(), 0.0f,
                 normal.y() * along.x(), normal.y() * along.y() + 1.0f, normal.y() * along.z(), 0.0f,

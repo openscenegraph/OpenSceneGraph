@@ -102,7 +102,6 @@ void daeWriter::writeRigGeometry(osgAnimation::RigGeometry *pOsgRigGeometry)
             std::string url = "#" + std::string(pDomGeometry->getId());
             pDomSkin->setSource(url.c_str());
 
-            domSkin::domBind_shape_matrix* pDomBindShapeMatrix = daeSafeCast< domSkin::domBind_shape_matrix >(pDomSkin->add( COLLADA_ELEMENT_BIND_SHAPE_MATRIX ));
 
             domSource* pDomJointsSource = daeSafeCast< domSource >(pDomSkin->add( COLLADA_ELEMENT_SOURCE ));
             std::string skinJointsName = name + "_skin_joints";

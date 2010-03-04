@@ -617,7 +617,7 @@ void resolveMeshInputs(
 {
     position_source = color_source = normal_source = NULL;
     position_offset = color_offset = normal_offset = 0;
-    for (int i = 0; i < MAX_TEXTURE_COORDINATE_SETS; ++i)
+    for (unsigned int i = 0; i < MAX_TEXTURE_COORDINATE_SETS; ++i)
     {
         texcoord_sources[i] = NULL;
         texcoord_offsets[i] = NULL;
@@ -684,14 +684,14 @@ struct VertexIndices
     VertexIndices(int p, int c, int n, const int t[MAX_TEXTURE_COORDINATE_SETS])
         : position_index(p), color_index(c), normal_index(n)
     {
-        for (int i = 0; i < MAX_TEXTURE_COORDINATE_SETS; ++i) texcoord_indices[i] = t[i];
+        for (unsigned int i = 0; i < MAX_TEXTURE_COORDINATE_SETS; ++i) texcoord_indices[i] = t[i];
     }
     bool operator < (const VertexIndices& rhs) const
     {
         if (position_index != rhs.position_index) return position_index < rhs.position_index;
         if (color_index != rhs.color_index) return color_index < rhs.color_index;
         if (normal_index != rhs.normal_index) return normal_index < rhs.normal_index;
-        for (int i = 0; i < MAX_TEXTURE_COORDINATE_SETS; ++i)
+        for (unsigned int i = 0; i < MAX_TEXTURE_COORDINATE_SETS; ++i)
         {
             if (texcoord_indices[i] != rhs.texcoord_indices[i]) return texcoord_indices[i] < rhs.texcoord_indices[i];
         }
@@ -742,7 +742,7 @@ void daeReader::resolveMeshArrays(const domP_Array& domPArray,
         for (size_t i = 0; i < p.getCount(); i += stride)
         {
             int texcoord_indices[MAX_TEXTURE_COORDINATE_SETS];
-            for (int t = 0; t < MAX_TEXTURE_COORDINATE_SETS; ++t)
+            for (unsigned int t = 0; t < MAX_TEXTURE_COORDINATE_SETS; ++t)
             {
                 texcoord_indices[t] = p.get(i + texcoord_offsets[t]);
             }
@@ -772,7 +772,7 @@ void daeReader::resolveMeshArrays(const domP_Array& domPArray,
         for (size_t i = 0; i < p.getCount(); i += stride)
         {
             int texcoord_indices[MAX_TEXTURE_COORDINATE_SETS];
-            for (int t = 0; t < MAX_TEXTURE_COORDINATE_SETS; ++t)
+            for (unsigned int t = 0; t < MAX_TEXTURE_COORDINATE_SETS; ++t)
             {
                 texcoord_indices[t] = p.get(i + texcoord_offsets[t]);
             }
@@ -836,7 +836,7 @@ void daeReader::resolveMeshArrays(const domP_Array& domPArray,
         }
     }
 
-    for (int texcoord_set = 0; texcoord_set < MAX_TEXTURE_COORDINATE_SETS; ++texcoord_set)
+    for (unsigned int texcoord_set = 0; texcoord_set < MAX_TEXTURE_COORDINATE_SETS; ++texcoord_set)
     {
         if (daeElement* texcoord_source = texcoord_sources[texcoord_set])
         {

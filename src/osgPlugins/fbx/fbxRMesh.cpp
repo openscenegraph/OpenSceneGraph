@@ -260,12 +260,22 @@ void readAnimation(KFbxNode* pNode, const std::string& targetName,
     }
 }
 
+void addBindMatrix(
+    BindMatrixMap& boneBindMatrices,
+    KFbxNode* pBone,
+    const osg::Matrix& bindMatrix,
+    osgAnimation::RigGeometry* pRigGeometry)
+{
+    boneBindMatrices.insert(BindMatrixMap::value_type(
+        BindMatrixMap::key_type(pBone, pRigGeometry), bindMatrix));
+}
+
 osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
     KFbxNode* pNode, KFbxMesh* fbxMesh,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
     std::vector<StateSetContent>& stateSetList,
     const char* szName,
-    std::map<KFbxNode*, osg::Matrix>& boneBindMatrices,
+    BindMatrixMap& boneBindMatrices,
     std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap)
 {
     GeometryMap geometryMap;
@@ -440,10 +450,7 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
                 pCluster->GetTransformLinkMatrix(transformLink);
                 KFbxXMatrix transformLinkInverse = transformLink.Inverse();
                 const double* pTransformLinkInverse = transformLinkInverse;
-                if (!boneBindMatrices.insert(std::pair<KFbxNode*, osg::Matrix>(pBone, osg::Matrix(pTransformLinkInverse))).second)
-                {
-                    osg::notify(osg::WARN) << "Multiple meshes attached to a bone - bind matrices may be incorrect." << std::endl;
-                }
+                osg::Matrix bindMatrix(pTransformLinkInverse);
 
                 int nIndices = pCluster->GetControlPointIndicesCount();
                 int* pIndices = pCluster->GetControlPointIndices();
@@ -463,6 +470,7 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
                         osgAnimation::RigGeometry& rig =
                             dynamic_cast<osgAnimation::RigGeometry&>(
                             *old2newGeometryMap[gi.first]);
+                        addBindMatrix(boneBindMatrices, pBone, bindMatrix, &rig);
                         osgAnimation::VertexInfluenceMap& vim =
                             *rig.getInfluenceMap();
                         osgAnimation::VertexInfluence& vi =
@@ -603,7 +611,7 @@ osgDB::ReaderWriter::ReadResult readFbxMesh(KFbxSdkManager& pSdkManager,
     KFbxNode* pNode,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
     std::vector<StateSetContent>& stateSetList,
-    std::map<KFbxNode*, osg::Matrix>& boneBindMatrices,
+    BindMatrixMap& boneBindMatrices,
     std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap)
 {
     KFbxMesh* lMesh = dynamic_cast<KFbxMesh*>(pNode->GetNodeAttribute());

@@ -117,7 +117,7 @@ void daeReader::processSkins()
         if (pDomSkeletons.getCount() == 0)
         {
             domNode* skelNode = _skeletonMap.begin()->first;
-            if (skelNode = findSkeletonNode(skelNode, pDomInstanceController))
+            if (skelNode == findSkeletonNode(skelNode, pDomInstanceController))
             {
                 skelSkinMap[skelNode].push_back(pDomInstanceController);
             }

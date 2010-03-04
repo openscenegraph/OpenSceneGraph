@@ -602,7 +602,7 @@ void processVertices(
 // to OpenSceneGraph.
 // Why not use a vector? Because a large map of VertexIndices is used and
 // allocating vectors for each element would make it a lot slower.
-const int MAX_TEXTURE_COORDINATE_SETS = 4;
+const unsigned int MAX_TEXTURE_COORDINATE_SETS = 4;
 
 void resolveMeshInputs(
     const domInputLocalOffset_Array &inputs,

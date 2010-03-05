@@ -12,6 +12,25 @@
 
 namespace osgFFmpeg {
 
+static int decode_audio(AVCodecContext *avctx, int16_t *samples,
+                         int *frame_size_ptr,
+                         const uint8_t *buf, int buf_size)
+{
+#if LIBAVCODEC_VERSION_MAJOR >= 52
+
+    // following code segment copied from ffmpeg's avcodec_decode_audio2()
+    // implementation to avoid warnings about deprecated function usage.
+    AVPacket avpkt;
+    av_init_packet(&avpkt);
+    avpkt.data = const_cast<uint8_t *>(buf);
+    avpkt.size = buf_size;
+
+    return avcodec_decode_audio3(avctx, samples, frame_size_ptr, &avpkt);
+#else
+    // fallback for older versions of ffmpeg that don't have avcodec_decode_audio3.
+    return avcodec_decode_audio2(avctx, samples, frame_size_ptr, buf, buf_size);
+#endif
+}
 
 
 FFmpegDecoderAudio::FFmpegDecoderAudio(PacketQueue & packets, FFmpegClocks & clocks) :
@@ -294,7 +313,7 @@ size_t FFmpegDecoderAudio::decodeFrame(void * const buffer, const size_t size)
         {
             int data_size = size;
 
-            const int bytes_decoded = avcodec_decode_audio2(m_context, reinterpret_cast<int16_t*>(buffer), &data_size, m_packet_data, m_bytes_remaining);
+            const int bytes_decoded = decode_audio(m_context, reinterpret_cast<int16_t*>(buffer), &data_size, m_packet_data, m_bytes_remaining);
 
             if (bytes_decoded < 0)
             {

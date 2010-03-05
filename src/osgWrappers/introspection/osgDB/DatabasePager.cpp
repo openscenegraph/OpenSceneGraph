@@ -15,7 +15,6 @@
 #include <osg/GraphicsContext>
 #include <osg/Group>
 #include <osg/Node>
-#include <osg/PagedLOD>
 #include <osg/Referenced>
 #include <osg/State>
 #include <osgDB/DatabasePager>
@@ -37,8 +36,6 @@ BEGIN_ENUM_REFLECTOR(osgDB::DatabasePager::DrawablePolicy)
 END_REFLECTOR
 
 TYPE_NAME_ALIAS(OpenThreads::Thread::ThreadPriority, osgDB::DatabasePager::ThreadPriority)
-
-TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::PagedLOD > >, osgDB::DatabasePager::PagedLODList)
 
 TYPE_NAME_ALIAS(std::set< osg::ref_ptr< osg::StateSet > >, osgDB::DatabasePager::StateSetList)
 
@@ -405,18 +402,6 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager)
 	                   __void__removeExpiredSubgraphs__C5_osg_FrameStamp_R1,
 	                   "Iterate through the active PagedLOD nodes children removing children which havn't been visited since specified expiryTime. ",
 	                   "note, should be only be called from the update thread. ");
-	I_ProtectedMethod1(void, expiry_removeExpiredSubgraphs, IN, const osg::FrameStamp &, frameStamp,
-	                   Properties::VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__expiry_removeExpiredSubgraphs__C5_osg_FrameStamp_R1,
-	                   "Old expiry delay based removeExpiredSubgraphs. ",
-	                   "");
-	I_ProtectedMethod1(void, capped_removeExpiredSubgraphs, IN, const osg::FrameStamp &, frameStamp,
-	                   Properties::VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__capped_removeExpiredSubgraphs__C5_osg_FrameStamp_R1,
-	                   "New capped based removeExpiredSubgraphs. ",
-	                   "");
 	I_ProtectedMethod1(void, addLoadedDataToSceneGraph, IN, const osg::FrameStamp &, frameStamp,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -598,46 +583,6 @@ BEGIN_OBJECT_REFLECTOR(osg::observer_ptr< osg::GraphicsContext >)
 	                 0);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::PagedLOD >)
-	I_DeclaringFile("osg/ref_ptr");
-	I_Constructor0(____ref_ptr,
-	               "",
-	               "");
-	I_Constructor1(IN, osg::PagedLOD *, ptr,
-	               Properties::NON_EXPLICIT,
-	               ____ref_ptr__T_P1,
-	               "",
-	               "");
-	I_Constructor1(IN, const osg::ref_ptr< osg::PagedLOD > &, rp,
-	               Properties::NON_EXPLICIT,
-	               ____ref_ptr__C5_ref_ptr_R1,
-	               "",
-	               "");
-	I_Method0(osg::PagedLOD *, get,
-	          Properties::NON_VIRTUAL,
-	          __T_P1__get,
-	          "",
-	          "");
-	I_Method0(bool, valid,
-	          Properties::NON_VIRTUAL,
-	          __bool__valid,
-	          "",
-	          "");
-	I_Method0(osg::PagedLOD *, release,
-	          Properties::NON_VIRTUAL,
-	          __T_P1__release,
-	          "",
-	          "");
-	I_Method1(void, swap, IN, osg::ref_ptr< osg::PagedLOD > &, rp,
-	          Properties::NON_VIRTUAL,
-	          __void__swap__ref_ptr_R1,
-	          "",
-	          "");
-	I_SimpleProperty(osg::PagedLOD *, , 
-	                 __T_P1__get, 
-	                 0);
-END_REFLECTOR
-
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgDB::DatabasePager >)
 	I_DeclaringFile("osg/ref_ptr");
 	I_Constructor0(____ref_ptr,
@@ -677,8 +622,6 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgDB::DatabasePager >)
 	                 __T_P1__get, 
 	                 0);
 END_REFLECTOR
-
-STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osg::PagedLOD > >)
 
 STD_MAP_REFLECTOR(std::map< unsigned int COMMA  osgDB::DatabasePager::DataToCompile >)
 

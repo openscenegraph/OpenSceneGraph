@@ -171,6 +171,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	          __bool__getGlShaderInfoLog__unsigned_int__std_string_R1,
 	          "Query InfoLog from a glShader. ",
 	          "");
+
 	I_StaticMethod2(osg::Shader *, readShaderFile, IN, osg::Shader::Type, type, IN, const std::string &, fileName,
 	                __Shader_P1__readShaderFile__Type__C5_std_string_R1_S,
 	                "Read shader source from file and then constructor shader of specified type. ",
@@ -191,7 +192,6 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	                __Shader_Type__getTypeId__C5_std_string_R1_S,
 	                "",
 	                "");
-
 	I_ProtectedMethod1(bool, addProgramRef, IN, osg::Program *, program,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -218,6 +218,58 @@ BEGIN_OBJECT_REFLECTOR(osg::Shader)
 	                 __bool__setType__Type);
 	I_SimpleProperty(const char *, Typename, 
 	                 __C5_char_P1__getTypename, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::Shader::PerContextShader)
+	I_DeclaringFile("osg/Shader");
+	I_BaseType(osg::Referenced);
+	I_Constructor2(IN, const osg::Shader *, shader, IN, unsigned int, contextID,
+	               ____PerContextShader__C5_Shader_P1__unsigned_int,
+	               "",
+	               "");
+	I_Method0(GLuint, getHandle,
+	          Properties::NON_VIRTUAL,
+	          __GLuint__getHandle,
+	          "",
+	          "");
+	I_Method0(void, requestCompile,
+	          Properties::NON_VIRTUAL,
+	          __void__requestCompile,
+	          "",
+	          "");
+	I_Method1(void, compileShader, IN, osg::State &, state,
+	          Properties::NON_VIRTUAL,
+	          __void__compileShader__osg_State_R1,
+	          "",
+	          "");
+	I_Method0(bool, needsCompile,
+	          Properties::NON_VIRTUAL,
+	          __bool__needsCompile,
+	          "",
+	          "");
+	I_Method0(bool, isCompiled,
+	          Properties::NON_VIRTUAL,
+	          __bool__isCompiled,
+	          "",
+	          "");
+	I_Method1(bool, getInfoLog, IN, std::string &, infoLog,
+	          Properties::NON_VIRTUAL,
+	          __bool__getInfoLog__std_string_R1,
+	          "",
+	          "");
+	I_Method1(void, attachShader, IN, GLuint, program,
+	          Properties::NON_VIRTUAL,
+	          __void__attachShader__GLuint,
+	          "Attach our glShader to a glProgram. ",
+	          "");
+	I_Method1(void, detachShader, IN, GLuint, program,
+	          Properties::NON_VIRTUAL,
+	          __void__detachShader__GLuint,
+	          "Detach our glShader from a glProgram. ",
+	          "");
+	I_SimpleProperty(GLuint, Handle, 
+	                 __GLuint__getHandle, 
 	                 0);
 END_REFLECTOR
 

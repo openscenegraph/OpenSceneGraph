@@ -83,16 +83,17 @@ std::string osgText::findFontFile(const std::string& str)
     }
 
     // Not found, return empty string
-    osg::notify(osg::WARN)<<"Warning: font file \""<<str<<"\" not found."<<std::endl;    
+    osg::notify(osg::INFO)<<"Warning: font file \""<<str<<"\" not found."<<std::endl;    
     return std::string();
 }
 
 osgText::Font* osgText::readFontFile(const std::string& filename, const osgDB::ReaderWriter::Options* userOptions)
 {
-    if (filename=="") return 0;
+    if (filename.empty()) return 0;
 
     std::string foundFile = findFontFile(filename);
-    if (foundFile.empty()) return 0;
+    if (foundFile.empty())
+        foundFile = filename;
     
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_FontFileMutex);
 
@@ -149,10 +150,11 @@ osgText::Font* osgText::readFontStream(std::istream& stream, const osgDB::Reader
 
 osg::ref_ptr<Font> osgText::readRefFontFile(const std::string& filename, const osgDB::ReaderWriter::Options* userOptions)
 {
-    if (filename=="") return 0;
+    if (filename.empty()) return 0;
 
     std::string foundFile = findFontFile(filename);
-    if (foundFile.empty()) return 0;
+    if (foundFile.empty())
+        foundFile = filename;
     
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_FontFileMutex);
 
@@ -252,7 +254,7 @@ const Font::FontImplementation* Font::getImplementation() const
 std::string Font::getFileName() const
 {
     if (_implementation.valid()) return _implementation->getFileName();
-    return "";
+    return std::string();
 }
 
 void Font::setGlyphImageMargin(unsigned int margin)

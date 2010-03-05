@@ -486,6 +486,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                     break;
                 default:
                     dataType = 0;
+                    pixelSize = 1;
                     break;
             }
 

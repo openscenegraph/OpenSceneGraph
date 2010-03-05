@@ -1911,6 +1911,10 @@
 		6320CD4207845BC300FE3D2C /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		6320CD6E07845D6D00FE3D2C /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		6320CD7307845D6D00FE3D2C /* osgFX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0055835B0624D1E5000A808A /* osgFX.framework */; };
+		7A299121112EE3F4009973F4 /* Observer in Headers */ = {isa = PBXBuildFile; fileRef = 7A29911F112EE3EF009973F4 /* Observer */; settings = {ATTRIBUTES = (Public, ); }; };
+		7A299122112EE3F4009973F4 /* ObserverNodePath in Headers */ = {isa = PBXBuildFile; fileRef = 7A299120112EE3F3009973F4 /* ObserverNodePath */; settings = {ATTRIBUTES = (Public, ); }; };
+		7A299125112EE6C2009973F4 /* Observer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A299123112EE6C1009973F4 /* Observer.cpp */; };
+		7A299126112EE6C2009973F4 /* ObserverNodePath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A299124112EE6C1009973F4 /* ObserverNodePath.cpp */; };
 		7AA2E7CD11107FD8008EE370 /* StackedMatrixElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA2E7C411107FD7008EE370 /* StackedMatrixElement.cpp */; };
 		7AA2E7CE11107FD8008EE370 /* StackedQuaternionElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA2E7C511107FD7008EE370 /* StackedQuaternionElement.cpp */; };
 		7AA2E7CF11107FD8008EE370 /* StackedRotateAxisElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA2E7C611107FD7008EE370 /* StackedRotateAxisElement.cpp */; };
@@ -2346,7 +2350,6 @@
 		D418874A0EDEE6E000C17A84 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0037A1210C18E81E0089AA1C /* AGL.framework */; };
 		D41887BD0EDEE77900C17A84 /* Animation in Headers */ = {isa = PBXBuildFile; fileRef = D41887A80EDEE77800C17A84 /* Animation */; settings = {ATTRIBUTES = (Public, ); }; };
 		D41887BF0EDEE77900C17A84 /* AnimationManagerBase in Headers */ = {isa = PBXBuildFile; fileRef = D41887AA0EDEE77800C17A84 /* AnimationManagerBase */; settings = {ATTRIBUTES = (Public, ); }; };
-		D41887C00EDEE77900C17A84 /* Assert in Headers */ = {isa = PBXBuildFile; fileRef = D41887AB0EDEE77800C17A84 /* Assert */; settings = {ATTRIBUTES = (Public, ); }; };
 		D41887C10EDEE77900C17A84 /* Bone in Headers */ = {isa = PBXBuildFile; fileRef = D41887AC0EDEE77800C17A84 /* Bone */; settings = {ATTRIBUTES = (Public, ); }; };
 		D41887C20EDEE77900C17A84 /* Channel in Headers */ = {isa = PBXBuildFile; fileRef = D41887AD0EDEE77800C17A84 /* Channel */; settings = {ATTRIBUTES = (Public, ); }; };
 		D41887C30EDEE77900C17A84 /* CubicBezier in Headers */ = {isa = PBXBuildFile; fileRef = D41887AE0EDEE77800C17A84 /* CubicBezier */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -2405,9 +2408,7 @@
 		D42FE58B0B542DD10058A380 /* osgGA.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00557CE00624A947000A808A /* osgGA.framework */; };
 		D42FE7CF0B56521B0058A380 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D4306A9E10552D13008403DD /* BoneMapVisitor in Headers */ = {isa = PBXBuildFile; fileRef = D4306A9B10552D13008403DD /* BoneMapVisitor */; settings = {ATTRIBUTES = (Public, ); }; };
-		D4306AA010552D13008403DD /* FindParentAnimationManagerVisitor in Headers */ = {isa = PBXBuildFile; fileRef = D4306A9D10552D13008403DD /* FindParentAnimationManagerVisitor */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4306AA310552D27008403DD /* BoneMapVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4306AA110552D27008403DD /* BoneMapVisitor.cpp */; };
-		D4306AA410552D27008403DD /* FindParentAnimationManagerVisitor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4306AA210552D27008403DD /* FindParentAnimationManagerVisitor.cpp */; };
 		D4306ABC10552D9B008403DD /* TabBoxTrackballDragger in Headers */ = {isa = PBXBuildFile; fileRef = D4306ABB10552D9B008403DD /* TabBoxTrackballDragger */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4306ABE10552DA8008403DD /* TabBoxTrackballDragger.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4306ABD10552DA8008403DD /* TabBoxTrackballDragger.cpp */; };
 		D4306AE610552E2D008403DD /* osgManipulator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D47A06810B833F6E00E19024 /* osgManipulator.framework */; };
@@ -7919,6 +7920,10 @@
 		5BDF59050C1FF9BE008DDEC0 /* ShadowTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowTexture.cpp; sourceTree = "<group>"; };
 		5BDF59060C1FF9BE008DDEC0 /* ShadowVolume.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowVolume.cpp; sourceTree = "<group>"; };
 		6320CD4307845BC300FE3D2C /* osgTerrain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgTerrain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A29911F112EE3EF009973F4 /* Observer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Observer; sourceTree = "<group>"; };
+		7A299120112EE3F3009973F4 /* ObserverNodePath */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ObserverNodePath; sourceTree = "<group>"; };
+		7A299123112EE6C1009973F4 /* Observer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Observer.cpp; sourceTree = "<group>"; };
+		7A299124112EE6C1009973F4 /* ObserverNodePath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ObserverNodePath.cpp; sourceTree = "<group>"; };
 		7AA2E7C411107FD7008EE370 /* StackedMatrixElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StackedMatrixElement.cpp; path = ../../src/osgAnimation/StackedMatrixElement.cpp; sourceTree = SOURCE_ROOT; };
 		7AA2E7C511107FD7008EE370 /* StackedQuaternionElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StackedQuaternionElement.cpp; path = ../../src/osgAnimation/StackedQuaternionElement.cpp; sourceTree = SOURCE_ROOT; };
 		7AA2E7C611107FD7008EE370 /* StackedRotateAxisElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StackedRotateAxisElement.cpp; path = ../../src/osgAnimation/StackedRotateAxisElement.cpp; sourceTree = SOURCE_ROOT; };
@@ -8321,7 +8326,6 @@
 		D41887520EDEE6E000C17A84 /* osgAnimation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgAnimation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D41887A80EDEE77800C17A84 /* Animation */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Animation; path = ../../include/osgAnimation/Animation; sourceTree = SOURCE_ROOT; };
 		D41887AA0EDEE77800C17A84 /* AnimationManagerBase */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = AnimationManagerBase; path = ../../include/osgAnimation/AnimationManagerBase; sourceTree = SOURCE_ROOT; };
-		D41887AB0EDEE77800C17A84 /* Assert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Assert; path = ../../include/osgAnimation/Assert; sourceTree = SOURCE_ROOT; };
 		D41887AC0EDEE77800C17A84 /* Bone */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Bone; path = ../../include/osgAnimation/Bone; sourceTree = SOURCE_ROOT; };
 		D41887AD0EDEE77800C17A84 /* Channel */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Channel; path = ../../include/osgAnimation/Channel; sourceTree = SOURCE_ROOT; };
 		D41887AE0EDEE77800C17A84 /* CubicBezier */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CubicBezier; path = ../../include/osgAnimation/CubicBezier; sourceTree = SOURCE_ROOT; };
@@ -8365,9 +8369,7 @@
 		D421AE271018A8AB000167CB /* LinkVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LinkVisitor.cpp; path = ../../src/osgAnimation/LinkVisitor.cpp; sourceTree = SOURCE_ROOT; };
 		D425C8290E14F49F004E88FE /* Atomic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Atomic.cpp; path = common/Atomic.cpp; sourceTree = "<group>"; };
 		D4306A9B10552D13008403DD /* BoneMapVisitor */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = BoneMapVisitor; path = ../../include/osgAnimation/BoneMapVisitor; sourceTree = SOURCE_ROOT; };
-		D4306A9D10552D13008403DD /* FindParentAnimationManagerVisitor */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FindParentAnimationManagerVisitor; path = ../../include/osgAnimation/FindParentAnimationManagerVisitor; sourceTree = SOURCE_ROOT; };
 		D4306AA110552D27008403DD /* BoneMapVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BoneMapVisitor.cpp; path = ../../src/osgAnimation/BoneMapVisitor.cpp; sourceTree = SOURCE_ROOT; };
-		D4306AA210552D27008403DD /* FindParentAnimationManagerVisitor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FindParentAnimationManagerVisitor.cpp; path = ../../src/osgAnimation/FindParentAnimationManagerVisitor.cpp; sourceTree = SOURCE_ROOT; };
 		D4306ABB10552D9B008403DD /* TabBoxTrackballDragger */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TabBoxTrackballDragger; sourceTree = "<group>"; };
 		D4306ABD10552DA8008403DD /* TabBoxTrackballDragger.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TabBoxTrackballDragger.cpp; sourceTree = "<group>"; };
 		D43AB4EB0E2E01CB00623C77 /* KdTree */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = KdTree; sourceTree = "<group>"; };
@@ -13396,6 +13398,8 @@
 		BE117FB705D63B8900EB53E5 /* osg */ = {
 			isa = PBXGroup;
 			children = (
+				7A299123112EE6C1009973F4 /* Observer.cpp */,
+				7A299124112EE6C1009973F4 /* ObserverNodePath.cpp */,
 				D4A5541F1090429D00EC0CD9 /* ArrayDispatchers.cpp */,
 				D4E1E730108C57F1000A0EF2 /* GLBeginEndAdapter.cpp */,
 				D4F424CD0F5D9E3D0052261D /* AudioStream.cpp */,
@@ -13561,6 +13565,8 @@
 		BE1181ED05D63C0900EB53E5 /* osg */ = {
 			isa = PBXGroup;
 			children = (
+				7A29911F112EE3EF009973F4 /* Observer */,
+				7A299120112EE3F3009973F4 /* ObserverNodePath */,
 				D44487E7109082ED0028ABAD /* StateAttributeCallback */,
 				D4A5541D1090428900EC0CD9 /* ArrayDispatchers */,
 				D4E1E72E108C57DE000A0EF2 /* GLBeginEndAdapter */,
@@ -14016,7 +14022,6 @@
 				D4A1A25210988A01001C33DE /* RigTransformHardware */,
 				D4A1A25310988A01001C33DE /* RigTransformSoftware */,
 				D4306A9B10552D13008403DD /* BoneMapVisitor */,
-				D4306A9D10552D13008403DD /* FindParentAnimationManagerVisitor */,
 				D40277520FE7A70400CDE760 /* Action */,
 				D40277530FE7A70400CDE760 /* ActionCallback */,
 				D40277540FE7A70500CDE760 /* ActionVisitor */,
@@ -14028,7 +14033,6 @@
 				D4163D4F0F2A74CE0062226D /* TimelineAnimationManager */,
 				D41887A80EDEE77800C17A84 /* Animation */,
 				D41887AA0EDEE77800C17A84 /* AnimationManagerBase */,
-				D41887AB0EDEE77800C17A84 /* Assert */,
 				D41887AC0EDEE77800C17A84 /* Bone */,
 				D41887AD0EDEE77800C17A84 /* Channel */,
 				D41887AE0EDEE77800C17A84 /* CubicBezier */,
@@ -14067,7 +14071,6 @@
 				D4A1A25F10988A6F001C33DE /* RigTransformHardware.cpp */,
 				D4A1A26010988A70001C33DE /* RigTransformSoftware.cpp */,
 				D4306AA110552D27008403DD /* BoneMapVisitor.cpp */,
-				D4306AA210552D27008403DD /* FindParentAnimationManagerVisitor.cpp */,
 				D421AE271018A8AB000167CB /* LinkVisitor.cpp */,
 				D402775E0FE7A71C00CDE760 /* Action.cpp */,
 				D402775F0FE7A71C00CDE760 /* ActionCallback.cpp */,
@@ -15812,6 +15815,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A299121112EE3F4009973F4 /* Observer in Headers */,
+				7A299122112EE3F4009973F4 /* ObserverNodePath in Headers */,
 				D44487E8109082ED0028ABAD /* StateAttributeCallback in Headers */,
 				D4A5541E1090428900EC0CD9 /* ArrayDispatchers in Headers */,
 				D4E1E72F108C57DE000A0EF2 /* GLBeginEndAdapter in Headers */,
@@ -16138,7 +16143,6 @@
 				D4A1A25810988A01001C33DE /* RigTransform in Headers */,
 				D4A1A25610988A01001C33DE /* ActionBlendOut in Headers */,
 				D4306A9E10552D13008403DD /* BoneMapVisitor in Headers */,
-				D4306AA010552D13008403DD /* FindParentAnimationManagerVisitor in Headers */,
 				D40277580FE7A70500CDE760 /* Action in Headers */,
 				D40277590FE7A70500CDE760 /* ActionCallback in Headers */,
 				D402775A0FE7A70500CDE760 /* ActionVisitor in Headers */,
@@ -16150,7 +16154,6 @@
 				D4163D510F2A74CF0062226D /* TimelineAnimationManager in Headers */,
 				D41887BD0EDEE77900C17A84 /* Animation in Headers */,
 				D41887BF0EDEE77900C17A84 /* AnimationManagerBase in Headers */,
-				D41887C00EDEE77900C17A84 /* Assert in Headers */,
 				D41887C10EDEE77900C17A84 /* Bone in Headers */,
 				D41887C20EDEE77900C17A84 /* Channel in Headers */,
 				D41887C30EDEE77900C17A84 /* CubicBezier in Headers */,
@@ -22359,6 +22362,8 @@
 				D4F424CE0F5D9E3D0052261D /* AudioStream.cpp in Sources */,
 				D4E1E731108C57F1000A0EF2 /* GLBeginEndAdapter.cpp in Sources */,
 				D4A554201090429D00EC0CD9 /* ArrayDispatchers.cpp in Sources */,
+				7A299125112EE6C2009973F4 /* Observer.cpp in Sources */,
+				7A299126112EE6C2009973F4 /* ObserverNodePath.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -22507,7 +22512,6 @@
 				D40277670FE7A71C00CDE760 /* StatsVisitor.cpp in Sources */,
 				D421AE281018A8AB000167CB /* LinkVisitor.cpp in Sources */,
 				D4306AA310552D27008403DD /* BoneMapVisitor.cpp in Sources */,
-				D4306AA410552D27008403DD /* FindParentAnimationManagerVisitor.cpp in Sources */,
 				D4A1A26110988A70001C33DE /* ActionAnimation.cpp in Sources */,
 				D4A1A26210988A70001C33DE /* ActionBlendIn.cpp in Sources */,
 				D4A1A26310988A70001C33DE /* ActionBlendOut.cpp in Sources */,

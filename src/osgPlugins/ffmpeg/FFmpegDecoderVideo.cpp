@@ -8,6 +8,28 @@
 
 namespace osgFFmpeg {
 
+static int decode_video(AVCodecContext *avctx, AVFrame *picture,
+                         int *got_picture_ptr,
+                         const uint8_t *buf, int buf_size)
+{
+#if LIBAVCODEC_VERSION_MAJOR >= 52
+    // following code segment copied from ffmpeg avcodec_decode_video() implementation
+    // to avoid warnings about deprecated function usage.
+    AVPacket avpkt;
+    av_init_packet(&avpkt);
+    avpkt.data = const_cast<uint8_t *>(buf);
+    avpkt.size = buf_size;
+    // HACK for CorePNG to decode as normal PNG by default
+    avpkt.flags = AV_PKT_FLAG_KEY;
+
+    return avcodec_decode_video2(avctx, picture, got_picture_ptr, &avpkt);
+#else
+    // fallback for older versions of ffmpeg that don't have avcodec_decode_video2.
+    return avcodec_decode_video(avctx, picture, got_picture_ptr, buf, buf_size);
+#endif
+}
+
+
 FFmpegDecoderVideo::FFmpegDecoderVideo(PacketQueue & packets, FFmpegClocks & clocks) :
     m_packets(packets),
     m_clocks(clocks),
@@ -165,7 +187,7 @@ void FFmpegDecoderVideo::decodeLoop()
 
             int frame_finished = 0;
 
-            const int bytes_decoded = avcodec_decode_video(m_context, m_frame.get(), &frame_finished, m_packet_data, m_bytes_remaining);
+            const int bytes_decoded = decode_video(m_context, m_frame.get(), &frame_finished, m_packet_data, m_bytes_remaining);
 
             if (bytes_decoded < 0)
                 throw std::runtime_error("avcodec_decode_video failed()");

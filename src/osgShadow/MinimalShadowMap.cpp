@@ -114,6 +114,17 @@ osg::BoundingBox MinimalShadowMap::ViewData::computeShadowReceivingCoarseBounds(
     return osg::BoundingBox();
 }
 
+void MinimalShadowMap::ViewData::aimShadowCastingCamera( 
+                                        const osg::BoundingSphere &bs,
+                                        const osg::Light *light,
+                                        const osg::Vec4 &lightPos,
+                                        const osg::Vec3 &lightDir,
+                                        const osg::Vec3 &lightUpVector 
+                                        /* by default = osg::Vec3( 0, 1 0 )*/ )
+{
+    BaseClass::ViewData::aimShadowCastingCamera( bs, light, lightPos, lightDir, lightUpVector );
+}
+
 void MinimalShadowMap::ViewData::aimShadowCastingCamera
  ( const osg::Light *light, const osg::Vec4 &lightPos,
    const osg::Vec3 &lightDir, const osg::Vec3 &lightUp )
@@ -148,8 +159,7 @@ void MinimalShadowMap::ViewData::aimShadowCastingCamera
 #endif
     } 
 
-    BaseClass::ViewData::aimShadowCastingCamera
-                                    ( bb, light, lightPos, lightDir, up );
+    aimShadowCastingCamera( osg::BoundingSphere( bb ), light, lightPos, lightDir, up );
 
     // Intersect scene Receiving Shadow Polytope with shadow camera frustum
     // Important for cases where Scene extend beyond shadow camera frustum

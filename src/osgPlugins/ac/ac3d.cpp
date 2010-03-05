@@ -410,10 +410,25 @@ class FileData
 
     TextureData toTextureData(const std::string& texName)
     {
+        // If it is already there, use this
         TextureDataMap::iterator i = mTextureStates.find(texName);
-        if (i == mTextureStates.end())
-            mTextureStates[texName].setTexture(texName, mOptions.get(), mModulateTexEnv.get());
-        return mTextureStates[texName];
+        if (i != mTextureStates.end())
+            return i->second;
+        // Try to load that texture.
+        TextureData textureData;
+        textureData.setTexture(texName, mOptions.get(), mModulateTexEnv.get());
+        if (textureData.valid()) {
+            mTextureStates[texName] = textureData;
+            return textureData;
+        }
+        // still no joy?, try with the stripped filename if this is different
+        // Try the pure file name if it is different
+        std::string simpleTexName = osgDB::getSimpleFileName(texName);
+        if (simpleTexName != texName)
+            return toTextureData(simpleTexName);
+
+        // Nothing that worked, return invalid data
+        return TextureData();
     }
 
     osg::Light* getNextLight()
@@ -1160,20 +1175,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
         }
         else if (token == "texture") {
             // read the texture name
-            std::string texname = readString(stream);
-
-            // strip absolute paths
-            if (texname[0] == '/' || 
-                (isalpha(texname[0]) && texname[1] == ':')) {
-                std::string::size_type p = texname.rfind('\\');
-                if (p != std::string::npos)
-                    texname = texname.substr(p+1, std::string::npos);
-                p = texname.rfind('/');
-                if (p != std::string::npos)
-                    texname = texname.substr(p+1, std::string::npos);
-            }
-        
-            textureData = fileData.toTextureData(texname);
+            textureData = fileData.toTextureData(readString(stream));
         }
         else if (token == "texrep") {
             stream >> textureRepeat[0] >> textureRepeat[1];

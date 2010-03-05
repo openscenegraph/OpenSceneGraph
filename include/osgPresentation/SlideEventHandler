@@ -260,15 +260,8 @@ public:
 
     void setLoopPresentation(bool loop) { _loopPresentation = loop; }
     bool getLoopPresentation() const { return _loopPresentation; }
-    
-    void dispatchEvent(const KeyPosition& keyPosition);
 
-    enum ObjectMask
-    {
-        MOVIE = 1<<0,
-        OBJECTS = 1<<1,
-        ALL_OBJECTS = MOVIE | OBJECTS
-    };
+    void dispatchEvent(const KeyPosition& keyPosition);
 
 protected:
 

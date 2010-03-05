@@ -108,14 +108,14 @@ BEGIN_OBJECT_REFLECTOR(osgSim::SphereSegment)
 	          __int__getDensity,
 	          "Get the density of the sphere segment. ",
 	          "");
-	I_Method1(void, setDrawMask, IN, osgSim::SphereSegment::DrawMask, dm,
+	I_Method1(void, setDrawMask, IN, int, dm,
 	          Properties::NON_VIRTUAL,
-	          __void__setDrawMask__DrawMask,
+	          __void__setDrawMask__int,
 	          "Specify the DrawMask. ",
 	          " param dm Bitmask specifying which parts of the sphere segment should be drawn.   see DrawMask ");
-	I_Method0(osgSim::SphereSegment::DrawMask, getDrawMask,
+	I_Method0(int, getDrawMask,
 	          Properties::NON_VIRTUAL,
-	          __DrawMask__getDrawMask,
+	          __int__getDrawMask,
 	          "Get the DrawMask. ",
 	          "");
 	I_Method1(void, setSurfaceColor, IN, const osg::Vec4 &, c,
@@ -222,9 +222,9 @@ BEGIN_OBJECT_REFLECTOR(osgSim::SphereSegment)
 	I_SimpleProperty(int, Density, 
 	                 __int__getDensity, 
 	                 __void__setDensity__int);
-	I_SimpleProperty(osgSim::SphereSegment::DrawMask, DrawMask, 
-	                 __DrawMask__getDrawMask, 
-	                 __void__setDrawMask__DrawMask);
+	I_SimpleProperty(int, DrawMask, 
+	                 __int__getDrawMask, 
+	                 __void__setDrawMask__int);
 	I_SimpleProperty(osg::Vec4, EdgeLineColor, 
 	                 __osg_Vec4__getEdgeLineColor, 
 	                 __void__setEdgeLineColor__C5_osg_Vec4_R1);

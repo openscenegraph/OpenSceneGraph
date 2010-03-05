@@ -874,7 +874,7 @@ bool SphereSegment::Spoke_computeBound(osg::BoundingBox& bbox, BoundaryAngle azA
     return true;
 }
 
-void SphereSegment::setDrawMask(DrawMask dm)
+void SphereSegment::setDrawMask(int dm)
 {
     _drawMask=dm;
     dirtyAllDrawableDisplayLists();

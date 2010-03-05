@@ -49,7 +49,7 @@ TYPE_NAME_ALIAS(std::vector< osg::CullingSet::StateFrustumPair >, osg::CullingSe
 
 TYPE_NAME_ALIAS(std::vector< osg::ShadowVolumeOccluder >, osg::CullingSet::OccluderList)
 
-TYPE_NAME_ALIAS(unsigned int, osg::CullingSet::Mask)
+TYPE_NAME_ALIAS(int, osg::CullingSet::Mask)
 
 BEGIN_OBJECT_REFLECTOR(osg::CullingSet)
 	I_DeclaringFile("osg/CullingSet");

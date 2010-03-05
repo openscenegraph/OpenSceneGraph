@@ -38,16 +38,16 @@ public:
         NORMAL_MAP = 16  //< Texture in unit 1 and vertex attribute array 6
     };
 
-    typedef std::map<unsigned int, osg::ref_ptr<osg::StateSet> > StateSetMap;
+    typedef std::map<int, osg::ref_ptr<osg::StateSet> > StateSetMap;
 
     ShaderGenCache() {};
 
-    void setStateSet(unsigned int stateMask, osg::StateSet *program);
-    osg::StateSet *getStateSet(unsigned int stateMask) const;
-    osg::StateSet *getOrCreateStateSet(unsigned int stateMask);
+    void setStateSet(int stateMask, osg::StateSet *program);
+    osg::StateSet *getStateSet(int stateMask) const;
+    osg::StateSet *getOrCreateStateSet(int stateMask);
 
 protected:
-    osg::StateSet *createStateSet(unsigned int stateMask) const;
+    osg::StateSet *createStateSet(int stateMask) const;
     mutable OpenThreads::Mutex _mutex;
     StateSetMap _stateSetMap;
 

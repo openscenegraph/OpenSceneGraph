@@ -320,13 +320,6 @@ BEGIN_ENUM_REFLECTOR(osgPresentation::SlideEventHandler::WhichPosition)
 	I_EnumLabel(osgPresentation::SlideEventHandler::LAST_POSITION);
 END_REFLECTOR
 
-BEGIN_ENUM_REFLECTOR(osgPresentation::SlideEventHandler::ObjectMask)
-	I_DeclaringFile("osgPresentation/SlideEventHandler");
-	I_EnumLabel(osgPresentation::SlideEventHandler::MOVIE);
-	I_EnumLabel(osgPresentation::SlideEventHandler::OBJECTS);
-	I_EnumLabel(osgPresentation::SlideEventHandler::ALL_OBJECTS);
-END_REFLECTOR
-
 BEGIN_OBJECT_REFLECTOR(osgPresentation::SlideEventHandler)
 	I_DeclaringFile("osgPresentation/SlideEventHandler");
 	I_BaseType(osgGA::GUIEventHandler);

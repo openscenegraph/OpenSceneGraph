@@ -84,20 +84,20 @@ protected:
 
 }
 
-void ShaderGenCache::setStateSet(unsigned int stateMask, osg::StateSet *stateSet)
+void ShaderGenCache::setStateSet(int stateMask, osg::StateSet *stateSet)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
     _stateSetMap[stateMask] = stateSet;
 }
 
-osg::StateSet *ShaderGenCache::getStateSet(unsigned int stateMask) const
+osg::StateSet *ShaderGenCache::getStateSet(int stateMask) const
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
     StateSetMap::const_iterator it = _stateSetMap.find(stateMask);
     return (it != _stateSetMap.end()) ? it->second.get() : 0;
 }
 
-osg::StateSet *ShaderGenCache::getOrCreateStateSet(unsigned int stateMask)
+osg::StateSet *ShaderGenCache::getOrCreateStateSet(int stateMask)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
     StateSetMap::iterator it = _stateSetMap.find(stateMask);
@@ -110,7 +110,7 @@ osg::StateSet *ShaderGenCache::getOrCreateStateSet(unsigned int stateMask)
     return it->second.get();
 }
 
-osg::StateSet *ShaderGenCache::createStateSet(unsigned int stateMask) const
+osg::StateSet *ShaderGenCache::createStateSet(int stateMask) const
 {
     osg::StateSet *stateSet = new osg::StateSet;
     osg::Program *program = new osg::Program;
@@ -363,7 +363,7 @@ void ShaderGenVisitor::update(osg::Drawable *drawable)
     if (state->getAttribute(osg::StateAttribute::PROGRAM))
         return;
 
-    unsigned int stateMask = 0;
+    int stateMask = 0;
     //if (state->getMode(GL_BLEND) & osg::StateAttribute::ON)
     //    stateMask |= ShaderGen::BLEND;
     if (state->getMode(GL_LIGHTING) & osg::StateAttribute::ON)

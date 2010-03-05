@@ -379,16 +379,16 @@ public:
         MouseYOrientation getMouseYOrientation() const { return _mouseYOrientation; }
 
         /// set current mouse button state.
-        void setButtonMask(unsigned int mask) { _buttonMask = mask; }
+        void setButtonMask(int mask) { _buttonMask = mask; }
 
         /// get current mouse button state.
-        unsigned int getButtonMask() const { return _buttonMask; }
+        int getButtonMask() const { return _buttonMask; }
 
         /// set modifier key mask.
-        void setModKeyMask(unsigned int mask) { _modKeyMask = mask; }
+        void setModKeyMask(int mask) { _modKeyMask = mask; }
 
         /// get modifier key mask.
-        unsigned int getModKeyMask() const { return _modKeyMask; }
+        int getModKeyMask() const { return _modKeyMask; }
 
         /// set scrolling motion (for EventType::SCROLL).
         void setScrollingMotion(ScrollingMotion motion) { _scrolling.motion = motion; }
@@ -464,8 +464,8 @@ public:
         float _Ymin,_Ymax;
         float _mx;
         float _my;
-        unsigned int _buttonMask;
-        unsigned int _modKeyMask;
+        int _buttonMask;
+        int _modKeyMask;
         MouseYOrientation _mouseYOrientation;
 
         struct Scrolling {

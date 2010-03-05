@@ -120,7 +120,7 @@ class OSG_EXPORT CullingSet : public Referenced
         
         typedef std::vector<ShadowVolumeOccluder>   OccluderList;
 
-        typedef unsigned int Mask;
+        typedef int Mask;
 
         enum MaskValues
         {
@@ -140,7 +140,7 @@ class OSG_EXPORT CullingSet : public Referenced
                                           SMALL_FEATURE_CULLING|
                                           SHADOW_OCCLUSION_CULLING
         };
-        
+
         void setCullingMask(Mask mask) { _mask = mask; }
         Mask getCullingMask() const { return _mask; }
 

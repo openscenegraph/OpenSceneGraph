@@ -417,24 +417,24 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	          __MouseYOrientation__getMouseYOrientation,
 	          "get mouse-Y orientation (mouse-Y increases upwards or downwards). ",
 	          "");
-	I_Method1(void, setButtonMask, IN, unsigned int, mask,
+	I_Method1(void, setButtonMask, IN, int, mask,
 	          Properties::NON_VIRTUAL,
-	          __void__setButtonMask__unsigned_int,
+	          __void__setButtonMask__int,
 	          "set current mouse button state. ",
 	          "");
-	I_Method0(unsigned int, getButtonMask,
+	I_Method0(int, getButtonMask,
 	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getButtonMask,
+	          __int__getButtonMask,
 	          "get current mouse button state. ",
 	          "");
-	I_Method1(void, setModKeyMask, IN, unsigned int, mask,
+	I_Method1(void, setModKeyMask, IN, int, mask,
 	          Properties::NON_VIRTUAL,
-	          __void__setModKeyMask__unsigned_int,
+	          __void__setModKeyMask__int,
 	          "set modifier key mask. ",
 	          "");
-	I_Method0(unsigned int, getModKeyMask,
+	I_Method0(int, getModKeyMask,
 	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getModKeyMask,
+	          __int__getModKeyMask,
 	          "get modifier key mask. ",
 	          "");
 	I_Method1(void, setScrollingMotion, IN, osgGA::GUIEventAdapter::ScrollingMotion, motion,
@@ -524,9 +524,9 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	I_SimpleProperty(int, Button, 
 	                 __int__getButton, 
 	                 __void__setButton__int);
-	I_SimpleProperty(unsigned int, ButtonMask, 
-	                 __unsigned_int__getButtonMask, 
-	                 __void__setButtonMask__unsigned_int);
+	I_SimpleProperty(int, ButtonMask, 
+	                 __int__getButtonMask, 
+	                 __void__setButtonMask__int);
 	I_SimpleProperty(osgGA::GUIEventAdapter::EventType, EventType, 
 	                 __EventType__getEventType, 
 	                 __void__setEventType__EventType);
@@ -539,9 +539,9 @@ BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventAdapter)
 	I_SimpleProperty(int, Key, 
 	                 __int__getKey, 
 	                 __void__setKey__int);
-	I_SimpleProperty(unsigned int, ModKeyMask, 
-	                 __unsigned_int__getModKeyMask, 
-	                 __void__setModKeyMask__unsigned_int);
+	I_SimpleProperty(int, ModKeyMask, 
+	                 __int__getModKeyMask, 
+	                 __void__setModKeyMask__int);
 	I_SimpleProperty(osgGA::GUIEventAdapter::MouseYOrientation, MouseYOrientation, 
 	                 __MouseYOrientation__getMouseYOrientation, 
 	                 __void__setMouseYOrientation__MouseYOrientation);

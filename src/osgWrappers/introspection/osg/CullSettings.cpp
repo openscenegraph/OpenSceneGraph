@@ -76,7 +76,9 @@ BEGIN_ENUM_REFLECTOR(osg::CullSettings::CullingModeValues)
 	I_EnumLabel(osg::CullSettings::ENABLE_ALL_CULLING);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(unsigned int, osg::CullSettings::CullingMode)
+TYPE_NAME_ALIAS(int, osg::CullSettings::InheritanceMask)
+
+TYPE_NAME_ALIAS(int, osg::CullSettings::CullingMode)
 
 BEGIN_VALUE_REFLECTOR(osg::CullSettings)
 	I_DeclaringFile("osg/CullSettings");
@@ -98,14 +100,14 @@ BEGIN_VALUE_REFLECTOR(osg::CullSettings)
 	          __void__setDefaults,
 	          "",
 	          "");
-	I_Method1(void, setInheritanceMask, IN, unsigned int, mask,
+	I_Method1(void, setInheritanceMask, IN, osg::CullSettings::InheritanceMask, mask,
 	          Properties::NON_VIRTUAL,
-	          __void__setInheritanceMask__unsigned_int,
+	          __void__setInheritanceMask__InheritanceMask,
 	          "Set the inheritance mask used in inheritCullSettings to control which variables get overwritten by the passed in CullSettings object. ",
 	          "");
-	I_Method0(unsigned int, getInheritanceMask,
+	I_Method0(osg::CullSettings::InheritanceMask, getInheritanceMask,
 	          Properties::NON_VIRTUAL,
-	          __unsigned_int__getInheritanceMask,
+	          __InheritanceMask__getInheritanceMask,
 	          "Get the inheritance mask used in inheritCullSettings to control which variables get overwritten by the passed in CullSettings object. ",
 	          "");
 	I_Method1(void, setCullSettings, IN, const osg::CullSettings &, settings,
@@ -318,9 +320,9 @@ BEGIN_VALUE_REFLECTOR(osg::CullSettings)
 	I_SimpleProperty(bool, ImpostorsActive, 
 	                 __bool__getImpostorsActive, 
 	                 __void__setImpostorsActive__bool);
-	I_SimpleProperty(unsigned int, InheritanceMask, 
-	                 __unsigned_int__getInheritanceMask, 
-	                 __void__setInheritanceMask__unsigned_int);
+	I_SimpleProperty(osg::CullSettings::InheritanceMask, InheritanceMask, 
+	                 __InheritanceMask__getInheritanceMask, 
+	                 __void__setInheritanceMask__InheritanceMask);
 	I_SimpleProperty(osg::CullSettings::InheritanceMaskActionOnAttributeSetting, InheritanceMaskActionOnAttributeSetting, 
 	                 __InheritanceMaskActionOnAttributeSetting__getInheritanceMaskActionOnAttributeSetting, 
 	                 __void__setInheritanceMaskActionOnAttributeSetting__InheritanceMaskActionOnAttributeSetting);

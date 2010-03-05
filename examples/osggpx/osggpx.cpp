@@ -98,7 +98,7 @@ protected:
 
 double convertTime(const std::string& timestr)
 {
-    //osg::notify(osg::NOTICE)<<"       time = "<<timestr<<std::endl;
+    osg::notify(osg::NOTICE)<<"       time = "<<timestr<<std::endl;
     return 0;
 }
 
@@ -218,6 +218,7 @@ TrackSegment* computeSmoothedTrackSegment(TrackSegment* ts)
             new_points[i].latitude = (orig_points[i-1].latitude+orig_points[i].latitude+orig_points[i+1].latitude)/3.0;
             new_points[i].longitude = (orig_points[i-1].longitude+orig_points[i].longitude+orig_points[i+1].longitude)/3.0;
             new_points[i].elevation = (orig_points[i-1].elevation+orig_points[i].elevation+orig_points[i+1].elevation)/3.0;
+            new_points[i].time = (orig_points[i-1].time+orig_points[i].time+orig_points[i+1].time)/3.0;
         }
         return new_ts.release();
     }
@@ -228,6 +229,81 @@ TrackSegment* computeSmoothedTrackSegment(TrackSegment* ts)
     }
 
 }
+
+TrackSegment* computeAveragedSpeedTrackSegment(TrackSegment* ts)
+{
+    if (!ts) return 0;
+
+    osg::ref_ptr<osg::EllipsoidModel> em = new osg::EllipsoidModel;
+    const TrackSegment::TrackPoints& orig_points = ts->getTrackPoints();
+
+    if (orig_points.size()>2)
+    {
+        // only do smoothing if we have more than two points.
+        osg::ref_ptr<TrackSegment> new_ts = new TrackSegment;
+
+
+        // compute overall distance
+        double total_distance = 0;
+        for(unsigned int i=1; i<orig_points.size()-1; ++i)
+        {
+            osg::Vec3d point_a, point_b;
+            em->convertLatLongHeightToXYZ(osg::DegreesToRadians(orig_points[i].latitude), osg::DegreesToRadians(orig_points[i].longitude), orig_points[i].elevation,
+                                          point_a.x(), point_a.y(), point_a.z());
+            em->convertLatLongHeightToXYZ(osg::DegreesToRadians(orig_points[i+1].latitude), osg::DegreesToRadians(orig_points[i+1].longitude), orig_points[i+1].elevation,
+                                          point_b.x(), point_b.y(), point_b.z());
+            total_distance += (point_b-point_a).length();
+        }
+
+        double total_time = orig_points[orig_points.size()-1].time - orig_points[0].time;
+        double average_speed = total_distance/total_time;
+
+        OSG_NOTICE<<"total_time = "<<total_time<<std::endl;
+        OSG_NOTICE<<"total_distance = "<<total_distance<<std::endl;
+        OSG_NOTICE<<"average_speed = "<<average_speed<<std::endl;
+
+        TrackSegment::TrackPoints& new_points = new_ts->getTrackPoints();
+        new_points.resize(orig_points.size());
+        new_points[0] = orig_points[0];
+
+        double accumulated_distance = 0.0;
+        for(unsigned int i=0; i<orig_points.size()-1; ++i)
+        {
+            osg::Vec3d point_a, point_b;
+            em->convertLatLongHeightToXYZ(osg::DegreesToRadians(orig_points[i].latitude), osg::DegreesToRadians(orig_points[i].longitude), orig_points[i].elevation,
+                                          point_a.x(), point_a.y(), point_a.z());
+            em->convertLatLongHeightToXYZ(osg::DegreesToRadians(orig_points[i+1].latitude), osg::DegreesToRadians(orig_points[i+1].longitude), orig_points[i+1].elevation,
+                                          point_b.x(), point_b.y(), point_b.z());
+
+            accumulated_distance += (point_b-point_a).length();
+
+            new_points[i+1] = orig_points[i+1];
+            new_points[i+1].time = accumulated_distance / average_speed;
+        }
+        return new_ts.release();
+    }
+    else
+    {
+        // we have two or less points and can't do smoothing, so will just return original TrackSegment
+        return ts;
+    }
+
+}
+
+Track* computeAveragedSpeedTrack(Track* track)
+{
+    osg::ref_ptr<Track> new_track = new Track;
+
+    for(Track::TrackSegments::iterator itr = track->getTrackSegments().begin();
+        itr != track->getTrackSegments().end();
+        ++itr)
+    {
+        new_track->addTrackSegment(computeAveragedSpeedTrackSegment(itr->get()));
+    }
+
+    return new_track.release();
+}
+
 
 Track* computeSmoothedTrack(Track* track)
 {
@@ -291,8 +367,14 @@ int main(int argv, char **argc)
     typedef std::list< osg::ref_ptr<Track> > Tracks;
     Tracks tracks;
 
+    bool average = false;
+    while (arguments.read("-a") || arguments.read("--average")) average = true;
+
     bool smooth = false;
     while (arguments.read("-s") || arguments.read("--smooth")) smooth = true;
+
+    std::string outputFilename;
+    while (arguments.read("-o",outputFilename)) {}
 
     std::string trackFilename;
     while (arguments.read("-t",trackFilename))
@@ -315,6 +397,17 @@ int main(int argv, char **argc)
         Track* track = itr->get();
 
         group->addChild(createTrackModel(track, osg::Vec4(1.0,1.0,1.0,1.0)));
+
+        // smooth the track
+        if (average)
+        {
+            for(Track::TrackSegments::iterator itr = track->getTrackSegments().begin();
+                itr != track->getTrackSegments().end();
+                ++itr)
+            {
+                *itr = computeAveragedSpeedTrackSegment(itr->get());
+            }
+        }
 
         // smooth the track
         if (smooth)
@@ -399,6 +492,45 @@ int main(int argv, char **argc)
         osg::notify(osg::NOTICE)<<"totalAscent = "<<totalAscent<<"m, "<<totalAscent*metersToFeet<<"ft"<<std::endl;
         osg::notify(osg::NOTICE)<<"totalDescent = "<<totalDescent<<"m, "<<totalDescent*metersToFeet<<"ft"<<std::endl;
 
+    }
+
+    if (!outputFilename.empty())
+    {
+        std::ofstream fout(outputFilename.c_str());
+
+        fout<<"<?xml version=\"1.0\" encoding=\"utf-8\"?><gpx version=\"1.0\" creator=\"osggpx\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns=\"http://www.topografix.com/GPX/1/0\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">"<<std::endl;
+
+        for(Tracks::iterator itr = tracks.begin();
+            itr != tracks.end();
+            ++itr)
+        {
+            Track* track = itr->get();
+
+            fout<<"<trk>"<<std::endl;
+            fout<<"<desc>The track description</desc>"<<std::endl;
+            for(Track::TrackSegments::iterator itr = track->getTrackSegments().begin();
+                itr != track->getTrackSegments().end();
+                ++itr)
+            {
+                TrackSegment* ts = itr->get();
+                fout<<"<trkseg>"<<std::endl;
+
+                for(TrackSegment::TrackPoints::iterator pitr = ts->getTrackPoints().begin();
+                    pitr != ts->getTrackPoints().end();
+                    ++pitr)
+                {
+                    fout<<"<trkpt lat=\""<<pitr->latitude<<"\" lon=\""<<pitr->longitude<<"\">"<<std::endl;
+                    fout<<"<ele>"<<pitr->elevation<<"</ele>"<<std::endl;
+                    fout<<"<time>"<<pitr->time<<"</time>"<<std::endl;
+                    fout<<"</trkpt>"<<std::endl;
+                }
+
+                fout<<"</trkseg>"<<std::endl;
+
+            }
+            fout<<"</trk>"<<std::endl;
+        }
+        fout<<"</gpx>"<<std::endl;
     }
 
     osgViewer::Viewer viewer(arguments);

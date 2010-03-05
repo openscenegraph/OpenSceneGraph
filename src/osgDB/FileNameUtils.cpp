@@ -186,7 +186,7 @@ bool osgDB::equalCaseInsensitive(const std::string& lhs,const char* rhs)
 bool osgDB::containsServerAddress(const std::string& filename)
 {
     // need to check for ://
-    std::string::size_type pos(filename.find_first_of("://"));
+    std::string::size_type pos(filename.find("://"));
     if (pos == std::string::npos) 
         return false;
     std::string proto(filename.substr(0, pos));
@@ -196,7 +196,7 @@ bool osgDB::containsServerAddress(const std::string& filename)
 
 std::string osgDB::getServerProtocol(const std::string& filename)
 {
-    std::string::size_type pos(filename.find_first_of("://"));
+    std::string::size_type pos(filename.find("://"));
     if (pos != std::string::npos)
         return filename.substr(0,pos);
 
@@ -205,7 +205,7 @@ std::string osgDB::getServerProtocol(const std::string& filename)
 
 std::string osgDB::getServerAddress(const std::string& filename)
 {
-    std::string::size_type pos(filename.find_first_of("://"));
+    std::string::size_type pos(filename.find("://"));
     
     if (pos != std::string::npos)
     {

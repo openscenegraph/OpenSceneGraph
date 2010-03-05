@@ -16,13 +16,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <osg/Endian>
 
 /* trpage_swap.h
     Byte swapping utility functions.
     */
 
 #include <trpage_swap.h>
-
 /*
 ** func:    swap_two( in, out )
 **
@@ -200,9 +200,7 @@ trpgllong trpg_byteswap_llong ( trpgllong number )
 
 TX_CPPDECL trpgEndian trpg_cpu_byte_order(void)
 {
-    static char big_endian_100[2] = { 0, 100 };
-
-    if ( (*((short*) big_endian_100)) == 100 )
+    if (osg::getCpuByteOrder()==osg::BigEndian)
         return BigEndian;
     else 
         return LittleEndian;

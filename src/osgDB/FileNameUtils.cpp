@@ -224,7 +224,7 @@ std::string osgDB::getServerAddress(const std::string& filename)
 
 std::string osgDB::getServerFileName(const std::string& filename)
 {
-    std::string::size_type pos(filename.find_first_of("://"));
+    std::string::size_type pos(filename.find("://"));
 
     if (pos != std::string::npos)
     {

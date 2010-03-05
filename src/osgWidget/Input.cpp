@@ -590,10 +590,10 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
 
             if (_selectionMax-_selectionMin>0)
             {
-                point_type    deleteToIdx = _selectionMax;
+                unsigned int deleteToIdx = _selectionMax;
                 for (unsigned int i=0; i < s.size()-_selectionMin; ++i)
                 {
-                    s[_selectionMin+i] = deleteToIdx+i+1 < s.size() ? s[deleteToIdx+i+1] : ' ';
+                    s[_selectionMin+i] = (deleteToIdx+i+1 < s.size()) ? s[deleteToIdx+i+1] : ' ';
                 }
 
                 _text->update();

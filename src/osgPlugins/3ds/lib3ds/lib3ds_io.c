@@ -171,13 +171,13 @@ lib3ds_io_read_word(Lib3dsIo *io) {
     lib3ds_io_read(io, b, 2);
     w = ((uint16_t)b[1] << 8) |
         ((uint16_t)b[0]);
-	/* --- Code for OpenSceneGraph --- */
+    /* --- Code for OpenSceneGraph --- */
     if (s_requiresByteSwap)
     {
-        osg::swapBytes2((char*)w);
+        osg::swapBytes2((char*)&w);
     }
-	/* --- (end) Code for OpenSceneGraph --- */
-	return(w);
+    /* --- (end) Code for OpenSceneGraph --- */
+    return(w);
 }
 
 
@@ -195,12 +195,12 @@ lib3ds_io_read_dword(Lib3dsIo *io) {
         ((uint32_t)b[2] << 16) |
         ((uint32_t)b[1] << 8) |
         ((uint32_t)b[0]);
-	/* --- Code for OpenSceneGraph --- */
+    /* --- Code for OpenSceneGraph --- */
     if (s_requiresByteSwap)
     {
-        osg::swapBytes4((char*)d);
+        osg::swapBytes4((char*)&d);
     }
-	/* --- (end) Code for OpenSceneGraph --- */
+    /* --- (end) Code for OpenSceneGraph --- */
     return(d);
 }
 
@@ -230,13 +230,13 @@ lib3ds_io_read_intw(Lib3dsIo *io) {
     lib3ds_io_read(io, b, 2);
     w = ((uint16_t)b[1] << 8) |
         ((uint16_t)b[0]);
-	/* --- Code for OpenSceneGraph --- */
+    /* --- Code for OpenSceneGraph --- */
     if (s_requiresByteSwap)
     {
-        osg::swapBytes2((char*)w);
+        osg::swapBytes2((char*)&w);
     }
-	/* --- (end) Code for OpenSceneGraph --- */
-	return((int16_t)w);
+    /* --- (end) Code for OpenSceneGraph --- */
+    return((int16_t)w);
 }
 
 
@@ -254,12 +254,12 @@ lib3ds_io_read_intd(Lib3dsIo *io) {
         ((uint32_t)b[2] << 16) |
         ((uint32_t)b[1] << 8) |
         ((uint32_t)b[0]);
-	/* --- Code for OpenSceneGraph --- */
+    /* --- Code for OpenSceneGraph --- */
     if (s_requiresByteSwap)
     {
-        osg::swapBytes4((char*)d);
+        osg::swapBytes4((char*)&d);
     }
-	/* --- (end) Code for OpenSceneGraph --- */
+    /* --- (end) Code for OpenSceneGraph --- */
     return((int32_t)d);
 }
 
@@ -278,13 +278,13 @@ lib3ds_io_read_float(Lib3dsIo *io) {
                     ((uint32_t)b[2] << 16) |
                     ((uint32_t)b[1] << 8) |
                     ((uint32_t)b[0]);
-	/* --- Code for OpenSceneGraph --- */
+    /* --- Code for OpenSceneGraph --- */
     if (s_requiresByteSwap)
     {
-		osg::swapBytes4((char*)d.dword_value);
+        osg::swapBytes4((char*)&(d.dword_value));
     }
-	/* --- (end) Code for OpenSceneGraph --- */
-	return d.float_value;
+    /* --- (end) Code for OpenSceneGraph --- */
+    return d.float_value;
 }
 
 
@@ -360,14 +360,14 @@ lib3ds_io_write_byte(Lib3dsIo *io, uint8_t b) {
  */
 void
 lib3ds_io_write_word(Lib3dsIo *io, uint16_t w) {
-	/* --- Code for OpenSceneGraph --- */
+    /* --- Code for OpenSceneGraph --- */
     if (s_requiresByteSwap)
     {
-		osg::swapBytes2((char*)w);
+            osg::swapBytes2((char*)&w);
     }
-	/* --- (end) Code for OpenSceneGraph --- */
+    /* --- (end) Code for OpenSceneGraph --- */
 
-	uint8_t b[2];
+    uint8_t b[2];
 
     assert(io);
     b[1] = ((uint16_t)w & 0xFF00) >> 8;
@@ -383,12 +383,12 @@ lib3ds_io_write_word(Lib3dsIo *io, uint16_t w) {
  */
 void
 lib3ds_io_write_dword(Lib3dsIo *io, uint32_t d) {
-	/* --- Code for OpenSceneGraph --- */
+    /* --- Code for OpenSceneGraph --- */
     if (s_requiresByteSwap)
     {
-        osg::swapBytes4((char*)d);
+        osg::swapBytes4((char*)&d);
     }
-	/* --- (end) Code for OpenSceneGraph --- */
+    /* --- (end) Code for OpenSceneGraph --- */
     uint8_t b[4];
 
     assert(io);
@@ -419,12 +419,12 @@ lib3ds_io_write_intb(Lib3dsIo *io, int8_t b) {
  */
 void
 lib3ds_io_write_intw(Lib3dsIo *io, int16_t w) {
-	/* --- Code for OpenSceneGraph --- */
+    /* --- Code for OpenSceneGraph --- */
     if (s_requiresByteSwap)
     {
-        osg::swapBytes2((char*)w);
+        osg::swapBytes2((char*)&w);
     }
-	/* --- (end) Code for OpenSceneGraph --- */
+    /* --- (end) Code for OpenSceneGraph --- */
     uint8_t b[2];
 
     assert(io);
@@ -441,12 +441,12 @@ lib3ds_io_write_intw(Lib3dsIo *io, int16_t w) {
  */
 void
 lib3ds_io_write_intd(Lib3dsIo *io, int32_t d) {
-	/* --- Code for OpenSceneGraph --- */
+    /* --- Code for OpenSceneGraph --- */
     if (s_requiresByteSwap)
     {
-        osg::swapBytes4((char*)d);
+        osg::swapBytes4((char*)&d);
     }
-	/* --- (end) Code for OpenSceneGraph --- */
+    /* --- (end) Code for OpenSceneGraph --- */
     uint8_t b[4];
 
     assert(io);
@@ -470,12 +470,12 @@ lib3ds_io_write_float(Lib3dsIo *io, float l) {
 
     assert(io);
     d.float_value = l;
-	/* --- Code for OpenSceneGraph --- */
+    /* --- Code for OpenSceneGraph --- */
     if (s_requiresByteSwap)
     {
-		osg::swapBytes4((char*)d.dword_value);
+        osg::swapBytes4((char*)&d.dword_value);
     }
-	/* --- (end) Code for OpenSceneGraph --- */
+    /* --- (end) Code for OpenSceneGraph --- */
     b[3] = (uint8_t)(((uint32_t)d.dword_value & 0xFF000000) >> 24);
     b[2] = (uint8_t)(((uint32_t)d.dword_value & 0x00FF0000) >> 16);
     b[1] = (uint8_t)(((uint32_t)d.dword_value & 0x0000FF00) >> 8);

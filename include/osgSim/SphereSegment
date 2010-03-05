@@ -194,10 +194,10 @@ public:
     @param dm   Bitmask specifying which parts of the sphere segment should be drawn.
     @see DrawMask
     */
-    void setDrawMask(DrawMask dm);
+    void setDrawMask(int dm);
 
     /** Get the DrawMask */
-    DrawMask getDrawMask() const { return _drawMask; }
+    int getDrawMask() const { return _drawMask; }
 
     /** Set the color of the surface. */
     void setSurfaceColor(const osg::Vec4& c);
@@ -305,11 +305,11 @@ private:
     int _density;
 
     // Draw details
-    DrawMask _drawMask;
-    osg::Vec4 _surfaceColor;
-    osg::Vec4 _spokeColor;
-    osg::Vec4 _edgeLineColor;
-    osg::Vec4 _planeColor;
+    int         _drawMask;
+    osg::Vec4   _surfaceColor;
+    osg::Vec4   _spokeColor;
+    osg::Vec4   _edgeLineColor;
+    osg::Vec4   _planeColor;
 };
 
 }

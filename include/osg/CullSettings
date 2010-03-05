@@ -79,14 +79,16 @@ class OSG_EXPORT CullSettings
             READ_BUFFER                             = (0x1 << 18),
 
             NO_VARIABLES                            = 0x00000000,
-            ALL_VARIABLES                           = 0xFFFFFFFF
+            ALL_VARIABLES                           = 0x7FFFFFFF
         };
 
+        typedef int InheritanceMask;
+
         /** Set the inheritance mask used in inheritCullSettings to control which variables get overwritten by the passed in CullSettings object.*/
-        void setInheritanceMask(unsigned int mask) { _inheritanceMask = mask; }
+        void setInheritanceMask(InheritanceMask mask) { _inheritanceMask = mask; }
 
         /** Get the inheritance mask used in inheritCullSettings to control which variables get overwritten by the passed in CullSettings object.*/
-        unsigned int getInheritanceMask() const { return _inheritanceMask; }
+        InheritanceMask getInheritanceMask() const { return _inheritanceMask; }
         
         /** Set the local cull settings values from specified CullSettings object.*/
         void setCullSettings(const CullSettings& settings);
@@ -190,7 +192,7 @@ class OSG_EXPORT CullSettings
                                           CLUSTER_CULLING
         };
         
-        typedef unsigned int CullingMode;
+        typedef int CullingMode;
 
         /** Set the culling mode for the CullVisitor to use.*/
         void setCullingMode(CullingMode mode) { _cullingMode = mode; applyMaskAction(CULLING_MODE); }
@@ -244,7 +246,7 @@ class OSG_EXPORT CullSettings
 
     protected:
 
-        unsigned int                                _inheritanceMask;
+        InheritanceMask                             _inheritanceMask;
         InheritanceMaskActionOnAttributeSetting     _inheritanceMaskActionOnAttributeSetting;
 
         ComputeNearFarMode                          _computeNearFar;

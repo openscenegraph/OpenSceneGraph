@@ -32,7 +32,7 @@ BEGIN_ENUM_REFLECTOR(osgUtil::ShaderGenCache::StateMask)
 	I_EnumLabel(osgUtil::ShaderGenCache::NORMAL_MAP);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osg::ref_ptr< osg::StateSet > >, osgUtil::ShaderGenCache::StateSetMap)
+TYPE_NAME_ALIAS(std::map< int COMMA  osg::ref_ptr< osg::StateSet > >, osgUtil::ShaderGenCache::StateSetMap)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::ShaderGenCache)
 	I_DeclaringFile("osgUtil/ShaderGen");
@@ -40,30 +40,30 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::ShaderGenCache)
 	I_Constructor0(____ShaderGenCache,
 	               "",
 	               "");
-	I_Method2(void, setStateSet, IN, unsigned int, stateMask, IN, osg::StateSet *, program,
+	I_Method2(void, setStateSet, IN, int, stateMask, IN, osg::StateSet *, program,
 	          Properties::NON_VIRTUAL,
-	          __void__setStateSet__unsigned_int__osg_StateSet_P1,
+	          __void__setStateSet__int__osg_StateSet_P1,
 	          "",
 	          "");
-	I_Method1(osg::StateSet *, getStateSet, IN, unsigned int, stateMask,
+	I_Method1(osg::StateSet *, getStateSet, IN, int, stateMask,
 	          Properties::NON_VIRTUAL,
-	          __osg_StateSet_P1__getStateSet__unsigned_int,
+	          __osg_StateSet_P1__getStateSet__int,
 	          "",
 	          "");
-	I_Method1(osg::StateSet *, getOrCreateStateSet, IN, unsigned int, stateMask,
+	I_Method1(osg::StateSet *, getOrCreateStateSet, IN, int, stateMask,
 	          Properties::NON_VIRTUAL,
-	          __osg_StateSet_P1__getOrCreateStateSet__unsigned_int,
+	          __osg_StateSet_P1__getOrCreateStateSet__int,
 	          "",
 	          "");
-	I_ProtectedMethod1(osg::StateSet *, createStateSet, IN, unsigned int, stateMask,
+	I_ProtectedMethod1(osg::StateSet *, createStateSet, IN, int, stateMask,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
-	                   __osg_StateSet_P1__createStateSet__unsigned_int,
+	                   __osg_StateSet_P1__createStateSet__int,
 	                   "",
 	                   "");
 	I_IndexedProperty(osg::StateSet *, StateSet, 
-	                  __osg_StateSet_P1__getStateSet__unsigned_int, 
-	                  __void__setStateSet__unsigned_int__osg_StateSet_P1, 
+	                  __osg_StateSet_P1__getStateSet__int, 
+	                  __void__setStateSet__int__osg_StateSet_P1, 
 	                  0);
 END_REFLECTOR
 
@@ -127,5 +127,5 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::ShaderGenVisitor)
 	                 __void__setStateCache__ShaderGenCache_P1);
 END_REFLECTOR
 
-STD_MAP_REFLECTOR(std::map< unsigned int COMMA  osg::ref_ptr< osg::StateSet > >)
+STD_MAP_REFLECTOR(std::map< int COMMA  osg::ref_ptr< osg::StateSet > >)
 

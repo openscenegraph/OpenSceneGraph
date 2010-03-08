@@ -12,7 +12,7 @@ static int decode_video(AVCodecContext *avctx, AVFrame *picture,
                          int *got_picture_ptr,
                          const uint8_t *buf, int buf_size)
 {
-#if LIBAVCODEC_VERSION_MAJOR >= 52
+#if LIBAVCODEC_VERSION_MAJOR >= 53 || (LIBAVCODEC_VERSION_MAJOR==52 && LIBAVCODEC_VERSION_MINOR>=32)
     // following code segment copied from ffmpeg avcodec_decode_video() implementation
     // to avoid warnings about deprecated function usage.
     AVPacket avpkt;

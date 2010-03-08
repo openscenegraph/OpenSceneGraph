@@ -16,7 +16,7 @@ static int decode_audio(AVCodecContext *avctx, int16_t *samples,
                          int *frame_size_ptr,
                          const uint8_t *buf, int buf_size)
 {
-#if LIBAVCODEC_VERSION_MAJOR >= 52
+#if LIBAVCODEC_VERSION_MAJOR >= 53 || (LIBAVCODEC_VERSION_MAJOR==52 && LIBAVCODEC_VERSION_MINOR>=32)
 
     // following code segment copied from ffmpeg's avcodec_decode_audio2()
     // implementation to avoid warnings about deprecated function usage.

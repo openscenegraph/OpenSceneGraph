@@ -583,7 +583,7 @@ osg::Image* InputStream::readImage()
     
     if ( readFromExternal )
     {
-        image = osgDB::readImageFile( name );
+        image = osgDB::readImageFile( name, getOptions() );
         if ( !image && _forceReadingImage ) image = new osg::Image;
     }
     if ( image.valid() )

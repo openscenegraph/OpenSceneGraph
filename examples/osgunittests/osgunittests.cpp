@@ -33,6 +33,8 @@
 
 #include <iostream>
 
+extern void runFileNameUtilsTest(osg::ArgumentParser& arguments);
+
 void testFrustum(double left,double right,double bottom,double top,double zNear,double zFar)
 {
     osg::Matrix f;
@@ -585,7 +587,10 @@ int main( int argc, char** argv )
     while (arguments.read("matrix")) printMatrixTest = true; 
 
     bool printSizeOfTest = false; 
-    while (arguments.read("sizeof")) printSizeOfTest = true; 
+    while (arguments.read("sizeof")) printSizeOfTest = true;
+
+    bool printFileNameUtilsTests = false;
+    while (arguments.read("filenames")) printFileNameUtilsTests = true;
 
     bool printQuatTest = false; 
     while (arguments.read("quat")) printQuatTest = true;
@@ -696,6 +701,12 @@ int main( int argc, char** argv )
          osgUtx::TestGraph::instance().root()->accept( printer );    
          std::cout<<std::endl;
     }
+
+    if (printFileNameUtilsTests)
+    {
+        runFileNameUtilsTest(arguments);
+    }
+
 
     if (doTestThreadInitAndExit)
     {

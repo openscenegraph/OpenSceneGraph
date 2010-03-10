@@ -694,7 +694,12 @@ IF(APPLE)
         # version information we need. (Darwin versions can be changed
         # independently of OS X versions.)
         # It does look like CMake handles the CMAKE_OSX_SYSROOT automatically.
-        IF(EXISTS /Developer/SDKs/MacOSX10.5.sdk)
+        IF(EXISTS /Developer/SDKs/MacOSX10.6.sdk)
+            SET(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for OSX" FORCE)
+            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.6 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+            SET(OSG_WINDOWING_SYSTEM "Cocoa" CACHE STRING "Forced Cocoa windowing system in 64 bits snow leopard"  FORCE)
+            SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio " CACHE STRING "Forced imageio default image plugin for OSX in 64 bits snow leopard" FORCE)
+        ELSEIF(EXISTS /Developer/SDKs/MacOSX10.5.sdk)
             # 64-bit compiles are not supported with Carbon. We should enable 
             # 64-bit compilation by default once osgviewer has been 
             # rewritten with Cocoa.

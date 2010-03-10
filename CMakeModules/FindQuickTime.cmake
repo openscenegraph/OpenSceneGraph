@@ -15,7 +15,7 @@
 IF(APPLE)
   FIND_PATH(QUICKTIME_INCLUDE_DIR QuickTime/QuickTime.h)
   FIND_LIBRARY(QUICKTIME_LIBRARY QuickTime)
-ELSE(APPLE)
+ELSE()
   FIND_PATH(QUICKTIME_INCLUDE_DIR QuickTime.h
     $ENV{QUICKTIME_DIR}/include
     $ENV{QUICKTIME_DIR}
@@ -39,11 +39,24 @@ ELSE(APPLE)
     PATH_SUFFIXES lib64 lib
   )
   FIND_LIBRARY(QUICKTIME_LIBRARY QuickTime)
-ENDIF(APPLE)
+ENDIF()
+
 
 SET(QUICKTIME_FOUND "NO")
 IF(QUICKTIME_LIBRARY AND QUICKTIME_INCLUDE_DIR)
   SET(QUICKTIME_FOUND "YES")
-ENDIF(QUICKTIME_LIBRARY AND QUICKTIME_INCLUDE_DIR)
+ENDIF()
 
-
+IF(APPLE)
+    #Quicktime is not supported under 64bit OSX build so we need to detect it and disable it.
+    #First check to see if we are running with a native 64-bit compiler (10.6 default) and implicit arch
+    IF(NOT CMAKE_OSX_ARCHITECTURES AND CMAKE_SIZEOF_VOID_P EQUAL 8)
+        SET(QUICKTIME_FOUND "NO")
+    ELSE()
+        #Otherwise check to see if 64-bit is explicitly called for.
+        LIST(FIND CMAKE_OSX_ARCHITECTURES "x86_64" has64Compile)
+        IF(NOT has64Compile EQUAL -1)
+            SET(QUICKTIME_FOUND "NO")
+        ENDIF()
+    ENDIF()
+ENDIF()

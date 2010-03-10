@@ -458,7 +458,8 @@ void daeReader::processSinglePPrimitive(osg::Geode* geode,
     const domMesh* pDomMesh, const T* group, SourceMap& sources, GLenum mode)
 {
     osg::Geometry *geometry = new osg::Geometry();
-    geometry->setName(group->getMaterial());
+    if (NULL != group->getMaterial())
+        geometry->setName(group->getMaterial());
     geode->addDrawable( geometry );
 
     osg::DrawElementsUInt* pDrawElements = new osg::DrawElementsUInt(mode);
@@ -477,7 +478,8 @@ void daeReader::processMultiPPrimitive(osg::Geode* geode,
     const domMesh* pDomMesh, const T* group, SourceMap &sources, GLenum mode)
 {
     osg::Geometry *geometry = new osg::Geometry();
-    geometry->setName(group->getMaterial());
+    if (NULL != group->getMaterial())
+        geometry->setName(group->getMaterial());
     geode->addDrawable( geometry );
 
     std::vector<std::vector<GLuint> > indexLists;
@@ -502,7 +504,8 @@ void daeReader::processPolylist(osg::Geode* geode, const domMesh* pDomMesh, cons
     }
 
     osg::Geometry* geometry = new osg::Geometry();
-    geometry->setName(group->getMaterial());
+    if (NULL != group->getMaterial())
+        geometry->setName(group->getMaterial());
     geode->addDrawable(geometry);
 
     std::vector<std::vector<GLuint> > vertexLists;

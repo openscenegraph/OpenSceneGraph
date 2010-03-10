@@ -103,6 +103,8 @@ public:
 
 		value_type		m_Elem;
 		bool			m_Marker;
+        private:
+                node& operator = (const node&) { return *this; }
 	};
 
 

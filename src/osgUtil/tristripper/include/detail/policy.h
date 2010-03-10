@@ -32,6 +32,7 @@ public:
 	void Challenge(strip Strip, size_t Degree, size_t CacheHits);
 
 private:
+        policy& operator = (const policy&) { return *this; }
 	strip	m_Strip;
 	size_t	m_Degree;
 	size_t	m_CacheHits;

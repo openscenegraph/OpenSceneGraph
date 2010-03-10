@@ -110,7 +110,8 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                     FILE_LOADED, //!< File successfully found, loaded, and converted into osg.
                     FILE_LOADED_FROM_CACHE, //!< File found in cache and returned.
                     ERROR_IN_READING_FILE, //!< File found, loaded, but an error was encountered during processing.
-                    FILE_REQUESTED //!< Asyncronous file read has been requested, but returning immediatiely, keep polling plugin till file read has been completed.
+                    FILE_REQUESTED, //!< Asyncronous file read has been requested, but returning immediatiely, keep polling plugin till file read has been completed.
+                    INSUFFICIENT_MEMORY_TO_LOAD //!< File found but not loaded because estimated memory usage is not enought
                 };
 
                 ReadResult(ReadStatus status=FILE_NOT_HANDLED):_status(status) {}
@@ -150,6 +151,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                 bool error() const { return _status==ERROR_IN_READING_FILE; }
                 bool notHandled() const { return _status==FILE_NOT_HANDLED || _status==NOT_IMPLEMENTED; }
                 bool notFound() const { return _status==FILE_NOT_FOUND; }
+                bool notEnoughMemory() const { return _status==INSUFFICIENT_MEMORY_TO_LOAD; }
 
             protected:
             

@@ -263,6 +263,7 @@ BEGIN_ENUM_REFLECTOR(osgDB::ReaderWriter::ReadResult::ReadStatus)
 	I_EnumLabel(osgDB::ReaderWriter::ReadResult::FILE_LOADED_FROM_CACHE);
 	I_EnumLabel(osgDB::ReaderWriter::ReadResult::ERROR_IN_READING_FILE);
 	I_EnumLabel(osgDB::ReaderWriter::ReadResult::FILE_REQUESTED);
+	I_EnumLabel(osgDB::ReaderWriter::ReadResult::INSUFFICIENT_MEMORY_TO_LOAD);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osgDB::ReaderWriter::ReadResult)
@@ -414,6 +415,11 @@ BEGIN_VALUE_REFLECTOR(osgDB::ReaderWriter::ReadResult)
 	I_Method0(bool, notFound,
 	          Properties::NON_VIRTUAL,
 	          __bool__notFound,
+	          "",
+	          "");
+	I_Method0(bool, notEnoughMemory,
+	          Properties::NON_VIRTUAL,
+	          __bool__notEnoughMemory,
 	          "",
 	          "");
 	I_SimpleProperty(osgDB::Archive *, Archive, 

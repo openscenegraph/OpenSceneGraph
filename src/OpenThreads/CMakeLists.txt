@@ -27,6 +27,10 @@ SET(OPENTHREADS_CONFIG_HEADER "${PROJECT_BINARY_DIR}/include/OpenThreads/Config"
 CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/common/Config.in"
                "${OPENTHREADS_CONFIG_HEADER}")
 
+SET(OPENTHREADS_VERSION_HEADER "${PROJECT_SOURCE_DIR}/include/OpenThreads/Version")
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/common/Version.in"
+               "${OPENTHREADS_VERSION_HEADER}")
+
 
 ################################################################################
 # Set Version Info resource file

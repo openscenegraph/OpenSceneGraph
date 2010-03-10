@@ -4,6 +4,7 @@ SET(TARGET_SRC
     osgunittests.cpp 
     performance.cpp
     MultiThreadRead.cpp
+    FileNameUtils.cpp
 )
 
 SET(TARGET_H 

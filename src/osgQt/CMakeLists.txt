@@ -20,6 +20,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/QFontImplementation
     ${HEADER_PATH}/QGraphicsViewAdapter
     ${HEADER_PATH}/QWebViewImage
+    ${HEADER_PATH}/QWidgetImage
 )
 
 # FIXME: For OS X, need flag for Framework or dylib
@@ -29,6 +30,7 @@ ADD_LIBRARY(${LIB_NAME}
     QFontImplementation.cpp
     QGraphicsViewAdapter.cpp
     QWebViewImage.cpp
+    QWidgetImage.cpp
     ${SOURCES_H_MOC}
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )

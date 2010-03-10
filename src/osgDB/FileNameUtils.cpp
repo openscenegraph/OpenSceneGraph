@@ -138,13 +138,23 @@ std::string osgDB::convertToLowerCase(const std::string& str)
 // strip one level of extension from the filename.
 std::string osgDB::getNameLessExtension(const std::string& fileName)
 {
-    std::string::size_type dot = fileName.find_last_of('.'); 
-    std::string::size_type back_slash = fileName.find_last_of('\\');
-    std::string::size_type slash = fileName.find_last_of('/'); 
-    if (dot==std::string::npos || (dot<back_slash && dot<slash)) return fileName;
+    std::string::size_type dot = fileName.find_last_of('.');
+    std::string::size_type slash = fileName.find_last_of("/\\");        // Finds forward slash *or* back slash
+    if (dot==std::string::npos || (slash!=std::string::npos && dot<slash)) return fileName;
     return std::string(fileName.begin(),fileName.begin()+dot);
 }
 
+
+// strip all extensions from the filename.
+std::string osgDB::getNameLessAllExtensions(const std::string& fileName)
+{
+    // Finds start serach position: from last slash, or the begining of the string if none found
+    std::string::size_type startPos = fileName.find_last_of("/\\");            // Finds forward slash *or* back slash
+    if (startPos == std::string::npos) startPos = 0;
+    std::string::size_type dot = fileName.find_first_of('.', startPos);        // Finds *FIRST* dot from start pos
+    if (dot==std::string::npos) return fileName;
+    return std::string(fileName.begin(),fileName.begin()+dot);
+}
 
 std::string osgDB::getStrippedName(const std::string& fileName)
 {

@@ -33,29 +33,17 @@ using namespace std;
 
 std::string osgDB::getFilePath(const std::string& fileName)
 {
-    std::string::size_type slash1 = fileName.find_last_of('/');
-    std::string::size_type slash2 = fileName.find_last_of('\\');
-    if (slash1==std::string::npos) 
-    {
-        if (slash2==std::string::npos) return std::string();
-        return std::string(fileName,0,slash2);
-    }
-    if (slash2==std::string::npos) return std::string(fileName,0,slash1);
-    return std::string(fileName, 0, slash1>slash2 ?  slash1 : slash2);
+    std::string::size_type slash = fileName.find_last_of("/\\");
+    if (slash==std::string::npos) return std::string();
+    else return std::string(fileName, 0, slash);
 }
 
 
 std::string osgDB::getSimpleFileName(const std::string& fileName)
 {
-    std::string::size_type slash1 = fileName.find_last_of('/');
-    std::string::size_type slash2 = fileName.find_last_of('\\');
-    if (slash1==std::string::npos) 
-    {
-        if (slash2==std::string::npos) return fileName;
-        return std::string(fileName.begin()+slash2+1,fileName.end());
-    }
-    if (slash2==std::string::npos) return std::string(fileName.begin()+slash1+1,fileName.end());
-    return std::string(fileName.begin()+(slash1>slash2?slash1:slash2)+1,fileName.end());
+    std::string::size_type slash = fileName.find_last_of("/\\");
+    if (slash==std::string::npos) return fileName;
+    else return std::string(fileName.begin()+slash+1,fileName.end());
 }
 
 

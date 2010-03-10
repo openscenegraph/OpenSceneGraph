@@ -902,14 +902,14 @@ osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *
 {
     if (texture && *(texture->name))
     {
-        osg::notify(osg::NOTICE)<<"texture->name="<<texture->name<<", _directory="<<_directory<<std::endl;
+        osg::notify(osg::INFO)<<"texture->name="<<texture->name<<", _directory="<<_directory<<std::endl;
 
         std::string fileName = osgDB::findFileInDirectory(texture->name,_directory,osgDB::CASE_INSENSITIVE);
         if (fileName.empty())
         {
             // file not found in .3ds file's directory, so we'll look in the datafile path list.
             fileName = osgDB::findDataFile(texture->name,options, osgDB::CASE_INSENSITIVE);
-            osg::notify(osg::NOTICE)<<"texture->name="<<texture->name<<", _directory="<<_directory<<std::endl;
+            osg::notify(osg::INFO)<<"texture->name="<<texture->name<<", _directory="<<_directory<<std::endl;
         }
 
         if (fileName.empty())

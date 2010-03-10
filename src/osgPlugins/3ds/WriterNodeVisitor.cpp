@@ -15,6 +15,7 @@
 
 #include <osg/io_utils>
 #include <osg/CullFace>
+#include <osg/Billboard>
 #include <osgDB/WriteFile>
 
 #include "WriterNodeVisitor.h"
@@ -658,7 +659,7 @@ int WriterNodeVisitor::processStateSet(osg::StateSet* ss)
 }
 
 /** 
-*  Add a vertice to the index and link him with the Triangle index and the drawable.
+*  Add a vertice to the index and link it with the Triangle index and the drawable.
 *  \param index_vert is the map where the vertice are stored.
 *  \param index is the indice of the vertice's position in the vec3.
 *  \param drawable_n is the number of the drawable.
@@ -680,17 +681,19 @@ WriterNodeVisitor::getMeshIndexForGeometryIndex(MapIndices & index_vert,
 
 
 void 
-WriterNodeVisitor::buildMesh(osg::Geode                  &    geo,
-                             MapIndices                  &    index_vert,
-                             bool                        texcoords,
-                             Lib3dsMesh                  *    mesh)
+WriterNodeVisitor::buildMesh(osg::Geode        & geo,
+                             const osg::Matrix & mat,
+                             MapIndices        & index_vert,
+                             bool                texcoords,
+                             Lib3dsMesh        * mesh)
 {
     osg::notify(osg::DEBUG_INFO) << "Building Mesh" << std::endl;
 
     if (!mesh) throw "Allocation error";        // TODO
 
-    lib3ds_mesh_resize_vertices(mesh, index_vert.size(), texcoords ? 1 : 0, 0);
     // Write points
+    assert(index_vert.size() <= MAX_VERTICES);
+    lib3ds_mesh_resize_vertices(mesh, index_vert.size(), texcoords ? 1 : 0, 0);
 
     for(MapIndices::iterator it = index_vert.begin(); it != index_vert.end();++it)
     {
@@ -699,7 +702,7 @@ WriterNodeVisitor::buildMesh(osg::Geode                  &    geo,
         if (g->getVertexArray()->getType() != osg::Array::Vec3ArrayType)
             throw "Vertex array is not Vec3. Not implemented";        // TODO
         const osg::Vec3Array & vecs= *static_cast<osg::Vec3Array *>(g->getVertexArray());
-        copyOsgVectorToLib3dsVector(mesh->vertices[it->second], vecs[it->first.first]);
+        copyOsgVectorToLib3dsVector(mesh->vertices[it->second], vecs[it->first.first]*mat);
     }
 
     // Write texture coords (Texture 0 only)
@@ -744,50 +747,59 @@ WriterNodeVisitor::calcVertices(osg::Geode & geo)
 
 
 void
-WriterNodeVisitor::buildFaces(osg::Geode     &    geo,
-                              ListTriangle   &    listTriangles,
+WriterNodeVisitor::buildFaces(osg::Geode        & geo,
+                              const osg::Matrix & mat,
+                              ListTriangle      & listTriangles,
                               bool                texcoords)
 {
     MapIndices index_vert;
-    unsigned int nbFace = 0;
     Lib3dsMesh *mesh = lib3ds_mesh_new( getUniqueName(geo.getName().empty() ? geo.className() : geo.getName(), "geo").c_str() );
-    unsigned int nbTriangles = listTriangles.size();
+    if (!mesh) throw "Allocation error";
 
-    lib3ds_mesh_resize_faces(mesh, nbTriangles);
+    unsigned int nbTrianglesRemaining = listTriangles.size();
+    unsigned int nbVerticesRemaining  = calcVertices(geo);
 
-    unsigned int nbVertices = calcVertices(geo);
-    if (listTriangles.size() >= MAX_FACES-2 ||
-       ((nbVertices) >= MAX_VERTICES-2))
+    lib3ds_mesh_resize_faces   (mesh, osg::minimum(nbTrianglesRemaining, MAX_FACES));
+    lib3ds_mesh_resize_vertices(mesh, osg::minimum(nbVerticesRemaining,  MAX_VERTICES), texcoords ? 0 : 1, 0);        // Not mandatory but will allocate once a big block
+
+    // Test if the mesh will be split and needs sorting
+    if (nbVerticesRemaining >= MAX_VERTICES || nbTrianglesRemaining >= MAX_FACES)
     {
         osg::notify(osg::INFO) << "Sorting elements..." << std::endl;
-        WriterCompareTriangle cmp(geo, nbVertices);
+        WriterCompareTriangle cmp(geo, nbVerticesRemaining);
         std::sort(listTriangles.begin(), listTriangles.end(), cmp);
     }
 
+    unsigned int numFace = 0;        // Current face index
     for (ListTriangle::iterator it = listTriangles.begin(); it != listTriangles.end(); ++it) //Go through the triangle list to define meshs
     {
-        // Using -2 due to the fact that we treat 3 faces in one time (=the algorithm may overrun the limit by 2).
-        if ((index_vert.size() >= MAX_VERTICES-2 ||        // If mesh is full
-            nbFace >= MAX_FACES-2))
+        // Test if the mesh will be full after adding a face
+        if (index_vert.size()+3 >= MAX_VERTICES || numFace+1 >= MAX_FACES)
         {
-            // Finnishing mesh
-            lib3ds_mesh_resize_faces(mesh, nbFace);
-            buildMesh(geo, index_vert, texcoords, mesh);
+            // Finnish mesh
+            lib3ds_mesh_resize_faces   (mesh, numFace);
+            //lib3ds_mesh_resize_vertices() will be called in buildMesh()
+            buildMesh(geo, mat, index_vert, texcoords, mesh);
 
-            // Creating a new mesh
+            // "Reset" values and start over a new mesh
             index_vert.clear();
+            nbTrianglesRemaining -= numFace;
+            numFace = 0;
+            // We can't call a thing like "nbVerticesRemaining -= ...;" because points may be used multiple times.
+            // [Sukender: An optimisation here would take too much time I think.]
+
             mesh = lib3ds_mesh_new( getUniqueName(geo.getName().empty() ? geo.className() : geo.getName(), "geo").c_str());
-            nbTriangles -= nbFace;
-            nbFace = 0;
-            lib3ds_mesh_resize_faces(mesh, nbTriangles);
+            if (!mesh) throw "Allocation error";
+            lib3ds_mesh_resize_faces   (mesh, osg::minimum(nbTrianglesRemaining, MAX_FACES));
+            lib3ds_mesh_resize_vertices(mesh, osg::minimum(nbVerticesRemaining,  MAX_VERTICES), texcoords ? 0 : 1, 0);        // Not mandatory but will allocate once a big block
         }
-        Lib3dsFace & face = mesh->faces[nbFace++];
+        Lib3dsFace & face = mesh->faces[numFace++];
         face.index[0] = getMeshIndexForGeometryIndex(index_vert, it->first.t1, it->second);
         face.index[1] = getMeshIndexForGeometryIndex(index_vert, it->first.t2, it->second);
         face.index[2] = getMeshIndexForGeometryIndex(index_vert, it->first.t3, it->second);
         face.material = it->first.material;
     }
-    buildMesh(geo, index_vert, texcoords, mesh); //When a Mesh is completed without restriction of vertices number
+    buildMesh(geo, mat, index_vert, texcoords, mesh); //When a Mesh is completed without restriction of vertices number
 }
 
 void 
@@ -840,11 +852,9 @@ void WriterNodeVisitor::failedApply()
     osg::notify(osg::NOTICE) << "Error going through node" << std::endl;
 }
 
-void WriterNodeVisitor::apply( osg::Geode &node )
-{
+void WriterNodeVisitor::apply( osg::Geode &node ) {
     pushStateSet(node.getStateSet());
     //_nameStack.push_back(node.getName());
-    //osg::Matrix m = osg::computeLocalToWorld(getNodePath());
     unsigned int count = node.getNumDrawables();
     ListTriangle listTriangles;
     bool texcoords = false;
@@ -860,7 +870,8 @@ void WriterNodeVisitor::apply( osg::Geode &node )
     }
     if (count > 0)
     {
-        buildFaces(node, listTriangles, texcoords);
+        osg::Matrix mat( osg::computeLocalToWorld(getNodePath()) );
+        buildFaces(node, mat, listTriangles, texcoords);
     }
     popStateSet(node.getStateSet());
     //_nameStack.pop_back();
@@ -868,23 +879,71 @@ void WriterNodeVisitor::apply( osg::Geode &node )
         traverse(node);
 }
 
-void WriterNodeVisitor::apply(osg::Group &node)
-{
+void WriterNodeVisitor::apply( osg::Billboard &node ) {
+    // TODO Does not handle Billboards' points yet
+
+    pushStateSet(node.getStateSet());
     Lib3dsMeshInstanceNode * parent = _cur3dsNode;
-    Lib3dsMeshInstanceNode * node3ds = lib3ds_node_new_mesh_instance(NULL, getUniqueName(node.getName().empty() ? node.className() : getFileName(node.getName()), "grp").c_str(), NULL, NULL, NULL);
-    lib3ds_file_append_node(file3ds, reinterpret_cast<Lib3dsNode*>(node3ds), reinterpret_cast<Lib3dsNode*>(parent));
-    _cur3dsNode = node3ds;
+
+    unsigned int count = node.getNumDrawables();
+    ListTriangle listTriangles;
+    bool texcoords = false;
+    osg::notify(osg::NOTICE) << "Warning: 3DS writer is incomplete for Billboards (rotation not implemented)." << std::endl;
+    osg::Matrix m( osg::computeLocalToWorld(getNodePath()) );
+    for ( unsigned int i = 0; i < count; i++ )
+    {
+        osg::Geometry *g = node.getDrawable( i )->asGeometry();
+        if ( g != NULL )
+        {
+            listTriangles.clear();
+            _cur3dsNode = parent;
+
+            pushStateSet(g->getStateSet());
+            createListTriangle(g, listTriangles, texcoords, i);
+            popStateSet(g->getStateSet());
+
+            osg::Matrix currentBillBoardMat(osg::Matrix::translate(node.getPosition(i)) * m);        // TODO handle rotation
+            apply3DSMatrixNode(node, currentBillBoardMat, "bil");        // Add a 3DS matrix node
+            buildFaces(node, currentBillBoardMat, listTriangles, texcoords);
+        }
+    }
+
     if (suceedLastApply())
         traverse(node);
     _cur3dsNode = parent;
+    popStateSet(node.getStateSet());
+}
+
+
+
+void WriterNodeVisitor::apply(osg::Group &node)
+{
+    pushStateSet(node.getStateSet());
+    Lib3dsMeshInstanceNode * parent = _cur3dsNode;
+    apply3DSMatrixNode(node, osg::computeLocalToWorld(getNodePath()), "grp");
+    if (suceedLastApply())
+        traverse(node);
+    _cur3dsNode = parent;
+    popStateSet(node.getStateSet());
 }
 
 void WriterNodeVisitor::apply(osg::MatrixTransform &node)
 {
+    pushStateSet(node.getStateSet());
+    Lib3dsMeshInstanceNode * parent = _cur3dsNode;
+    apply3DSMatrixNode(node, osg::computeLocalToWorld(getNodePath()), "mtx");
+    if (suceedLastApply())
+        traverse(node);
+    _cur3dsNode = parent;
+    popStateSet(node.getStateSet());
+}
+
+void WriterNodeVisitor::apply3DSMatrixNode(osg::Node &node, const osg::Matrix & m, const char * const prefix)
+{
     Lib3dsMeshInstanceNode * parent = _cur3dsNode;
 
-    const osg::Matrix & m = node.getMatrix();
-    //const osg::Matrix m( osg::computeWorldToLocal(getNodePath()) );        // [NEEDS TESTING!] 3DS matrices always contain world to local transformation (not local transform; ie. from parent)
+    //const osg::Matrix & m = node.getMatrix();
+    //const osg::Matrix m( osg::computeLocalToWorld(nodePath) );        // [NEEDS TESTING!] 3DS matrices always contain world to local transformation (not local transform; ie. from parent)
 
     // Transform data used to be given to lib3ds_node_new_mesh_instance(), but it seems buggy (pivot problem? bug in conversion?).
     float pos[3];
@@ -897,7 +956,7 @@ void WriterNodeVisitor::apply(osg::MatrixTransform &node)
     copyOsgVectorToLib3dsVector(scl, osgScl);
     copyOsgQuatToLib3dsQuat(rot, osgRot);
     Lib3dsMeshInstanceNode * node3ds = lib3ds_node_new_mesh_instance
-        (NULL, getUniqueName(node.getName().empty() ? node.className() : node.getName(), "mtx").c_str(), pos, scl, rot);
+        (NULL, getUniqueName(node.getName().empty() ? node.className() : node.getName(), prefix).c_str(), pos, scl, rot);
 
     //// Create a mesh instance with no transform and then copy the matrix (doesn't work)
     //Lib3dsMeshInstanceNode * node3ds = lib3ds_node_new_mesh_instance
@@ -906,7 +965,4 @@ void WriterNodeVisitor::apply(osg::MatrixTransform &node)
 
     lib3ds_file_append_node(file3ds, reinterpret_cast<Lib3dsNode*>(node3ds), reinterpret_cast<Lib3dsNode*>(parent));
     _cur3dsNode = node3ds;
-    if (suceedLastApply())
-        traverse(node);
-    _cur3dsNode = parent;
 }

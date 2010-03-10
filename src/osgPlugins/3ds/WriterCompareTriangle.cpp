@@ -48,13 +48,14 @@ void WriterCompareTriangle::cutscene(int nbVertices, const osg::BoundingBox & sc
     unsigned int nbVerticesY = static_cast<unsigned int>( (nbVertices * k) / (length.z() * length.x()) );
     unsigned int nbVerticesZ = static_cast<unsigned int>( (nbVertices * k) / (length.x() * length.y()) );
 
-    setMaxMin (nbVerticesX, nbVerticesY, nbVerticesZ); // This function prevent from cut scene in too many blocs
+    setMaxMin (nbVerticesX, nbVerticesY, nbVerticesZ); // This function prevent from cutting the scene in too many blocs
 
-    osg::notify(osg::ALWAYS) << "Cutting x by " << nbVerticesX << std::endl
+    osg::notify(osg::INFO)
+        << "Cutting x by " << nbVerticesX << std::endl
         << "Cutting y by " << nbVerticesY << std::endl
         << "Cutting z by " << nbVerticesZ << std::endl;
 
-    osg::BoundingBox::value_type blocX = length.x() / nbVerticesX; //This 3 lines set the size of a bloc in x, y and z
+    osg::BoundingBox::value_type blocX = length.x() / nbVerticesX;    // These 3 lines set the size of a bloc in x, y and z
     osg::BoundingBox::value_type blocY = length.y() / nbVerticesY;
     osg::BoundingBox::value_type blocZ = length.z() / nbVerticesZ;
 

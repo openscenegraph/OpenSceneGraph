@@ -61,6 +61,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
         bool        suceedLastApply() const;
         void        failedApply();
         virtual void apply(osg::Geode &node);
+        virtual void apply(osg::Billboard &node);
 
         virtual void apply(osg::Group &node);
         virtual void apply(osg::MatrixTransform &node);
@@ -134,10 +135,11 @@ class WriterNodeVisitor: public osg::NodeVisitor
         /** 
         *  Fill the faces field of the mesh and call buildMesh().
         *  \param geo is the geode who contain vertice and faces.
+        *  \param mat Local to world matrix applied to the geode
         *  \param listTriangles contain all the meshs faces.
         *  \param texcoords tell us if we have to treat texture coord.
         */
-        void buildFaces(osg::Geode & geo, ListTriangle & listTriangles, bool texcoords);
+        void buildFaces(osg::Geode & geo, const osg::Matrix & mat, ListTriangle & listTriangles, bool texcoords);
 
         /** 
         *  Calculate the number of vertices in the geode.
@@ -149,16 +151,17 @@ class WriterNodeVisitor: public osg::NodeVisitor
         /** 
         *  Build a mesh
         *  \param geo is the geode who contain vertice and faces
+        *  \param mat Local to world matrix applied to the geode
         *  \param index_vert is the index used to build the new mesh
         *  \param texcoords tell us if we have to treat texture coord
         *  \param mesh is the mesh with faces filled
-        *  \return the place of the box in the vector.
         *  \sa See cutScene() about the definition of the boxes for faces sorting.
         */
         void
-        buildMesh(osg::Geode        &    geo, 
-                  MapIndices        &    index_vert, 
-                  bool                   texcoords,        
+        buildMesh(osg::Geode        &    geo,
+                  const osg::Matrix &    mat,
+                  MapIndices        &    index_vert,
+                  bool                   texcoords,       
                   Lib3dsMesh             *mesh);
 
         /** 
@@ -192,6 +195,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
         typedef std::stack<osg::ref_ptr<osg::StateSet> > StateSetStack;
         typedef std::map< osg::ref_ptr<osg::StateSet>, Material, CompareStateSet> MaterialMap;
 
+        void apply3DSMatrixNode(osg::Node &node, const osg::Matrix & m, const char * const prefix);
 
         bool                                _suceedLastApply;
         std::string                         _directory;

@@ -4,7 +4,7 @@
 #  full path of the library name. in order to differentiate release and debug, this macro get the
 #  NAME of the variables, so the macro gets as arguments the target name and the following list of parameters
 #  is intended as a list of variable names each one containing  the path of the libraries to link to
-#  The existance of a varibale name with _DEBUG appended is tested and, in case it' s value is used
+#  The existance of a variable name with _DEBUG appended is tested and, in case it' s value is used
 #  for linking to when in debug mode 
 #  the content of this library for linking when in debugging
 #######################################################################################################
@@ -30,10 +30,10 @@ MACRO(LINK_INTERNAL TRGTNAME)
                 #CMake 2.4.7, at least seem to use PREFIX instead of IMPORT_PREFIX  for computing linkage info to use into projects,
                 # so we full path name to specify linkage, this prevent automatic inferencing of dependencies, so we add explicit depemdencies
                 #to library targets used
-                TARGET_LINK_LIBRARIES(${TRGTNAME} optimized "${OUTPUT_LIBDIR}/${LINKLIB}.lib" debug "${OUTPUT_LIBDIR}/${LINKLIB}${CMAKE_DEBUG_POSTFIX}.lib")
+                TARGET_LINK_LIBRARIES(${TRGTNAME} optimized "${OUTPUT_LIBDIR}/${LINKLIB}${CMAKE_RELEASE_POSTFIX}.lib" debug "${OUTPUT_LIBDIR}/${LINKLIB}${CMAKE_DEBUG_POSTFIX}.lib")
                 ADD_DEPENDENCIES(${TRGTNAME} ${LINKLIB})
             ELSE(MSVC AND OSG_MSVC_VERSIONED_DLL)
-                TARGET_LINK_LIBRARIES(${TRGTNAME} optimized "${LINKLIB}" debug "${LINKLIB}${CMAKE_DEBUG_POSTFIX}")
+                TARGET_LINK_LIBRARIES(${TRGTNAME} optimized "${LINKLIB}${CMAKE_RELEASE_POSTFIX}" debug "${LINKLIB}${CMAKE_DEBUG_POSTFIX}")
             ENDIF(MSVC AND OSG_MSVC_VERSIONED_DLL)
         ENDFOREACH(LINKLIB)
     ENDIF(${CMAKE_MAJOR_VERSION} EQUAL 2 AND ${CMAKE_MINOR_VERSION} GREATER 4)
@@ -267,8 +267,11 @@ MACRO(SETUP_EXE IS_COMMANDLINE_APP)
     ENDIF(${IS_COMMANDLINE_APP})
 
     SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PROJECT_LABEL "${TARGET_LABEL}")
-    SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}")
     SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES OUTPUT_NAME ${TARGET_NAME})
+    SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES DEBUG_OUTPUT_NAME "${TARGET_NAME}${CMAKE_DEBUG_POSTFIX}")
+    SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES RELEASE_OUTPUT_NAME "${TARGET_NAME}${CMAKE_RELEASE_POSTFIX}")
+    SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES RELWITHDEBINFO_OUTPUT_NAME "${TARGET_NAME}${CMAKE_RELWITHDEBINFO_POSTFIX}")
+    SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES MINSIZEREL_OUTPUT_NAME "${TARGET_NAME}${CMAKE_MINSIZEREL_POSTFIX}")
 
     IF(MSVC_IDE AND OSG_MSVC_VERSIONED_DLL)
             SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PREFIX "../")    

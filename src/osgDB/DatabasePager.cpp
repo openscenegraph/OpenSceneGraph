@@ -619,6 +619,7 @@ void DatabasePager::DatabaseThread::run()
 
             if (rr.validNode()) databaseRequest->_loadedModel = rr.getNode();
             if (rr.error()) OSG_NOTIFY(osg::WARN)<<"Error in reading file "<<databaseRequest->_fileName<<" : "<<rr.message() << std::endl;
+            if (rr.notEnoughMemory()) OSG_INFO<<"Not enought memory to load file "<<databaseRequest->_fileName << std::endl;
 
             if (databaseRequest->_loadedModel.valid() &&
                 fileCache.valid() &&

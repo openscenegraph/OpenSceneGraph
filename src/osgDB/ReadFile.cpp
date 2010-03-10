@@ -68,7 +68,8 @@ Node* osgDB::readNodeFile(const std::string& filename,const Options* options)
 {
     ReaderWriter::ReadResult rr = Registry::instance()->readNode(filename,options);
     if (rr.validNode()) return rr.takeNode();
-    if (rr.error()) notify(WARN) << rr.message() << std::endl;
+    if (rr.error()) OSG_WARN << rr.message() << std::endl;
+    if (rr.notEnoughMemory()) OSG_INFO << "Not enought memory to load file "<<filename << std::endl;
     return NULL;
 }
 

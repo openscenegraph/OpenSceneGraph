@@ -132,28 +132,6 @@ OutputStream& OutputStream::operator<<( const osg::Matrixd& mat )
     return *this;
 }
 
-void OutputStream::writeWrappedString( const std::string& str )
-{
-    if ( !isBinary() )
-    {
-        std::string wrappedStr;
-        unsigned int size = str.size();
-        for ( unsigned int i=0; i<size; ++i )
-        {
-            char ch = str[i];
-            if ( ch=='\"' ) wrappedStr += '\\';
-            else if ( ch=='\\' ) wrappedStr += '\\';
-            wrappedStr += ch;
-        }
-        
-        wrappedStr.insert( 0, 1, '\"' );
-        wrappedStr += '\"';
-        *this << wrappedStr;
-    }
-    else
-        *this << str;
-}
-
 void OutputStream::writeArray( const osg::Array* a )
 {
     if ( !a ) return;
@@ -311,6 +289,10 @@ void OutputStream::writePrimitiveSet( const osg::PrimitiveSet* p )
 void OutputStream::writeImage( const osg::Image* img )
 {
     if ( !img ) return;
+    
+    unsigned int id = findOrCreateObjectID( img );
+    *this << PROPERTY("ImageID") << id << std::endl;  // Write image ID
+    if ( getException() ) return;
     
     *this << PROPERTY("FileName"); writeWrappedString(img->getFileName()); *this << std::endl;
     *this << PROPERTY("WriteHint") << (int)img->getWriteHint();
@@ -487,7 +469,7 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
             else
             {
                 *this << _compressorName;
-                _out->getStream()->flush();
+                _out->flush();
                 _out->setStream( &_compressSource );
                 return;
             }
@@ -501,6 +483,7 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
         {
         case WRITE_SCENE: typeString = "Scene"; break;
         case WRITE_IMAGE: typeString = "Image"; break;
+        case WRITE_OBJECT: typeString = "Object"; break;
         default: break;
         }
         
@@ -515,12 +498,16 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
 
 void OutputStream::compress( std::ostream* ostream )
 {
+    if ( _compressorName.empty() || !isBinary() ) return;
     _fields.clear();
     _fields.push_back( "Compression" );
-    if ( _compressorName.empty() || !isBinary() ) return;
     
     BaseCompressor* compressor = Registry::instance()->getObjectWrapperManager()->findCompressor(_compressorName);
-    if ( !compressor || !ostream ) return;
+    if ( !compressor || !ostream )
+    {
+        _fields.pop_back();
+        return;
+    }
     
     if ( !compressor->compress(*ostream, _compressSource.str()) )
         throwException( "OutputStream: Failed to compress stream." );

@@ -100,6 +100,23 @@ public:
     
     virtual void writeCharArray( const char* s, unsigned int size ) {}
     
+    virtual void writeWrappedString( const std::string& str )
+    {
+        std::string wrappedStr;
+        unsigned int size = str.size();
+        for ( unsigned int i=0; i<size; ++i )
+        {
+            char ch = str[i];
+            if ( ch=='\"' ) wrappedStr += '\\';
+            else if ( ch=='\\' ) wrappedStr += '\\';
+            wrappedStr += ch;
+        }
+        
+        wrappedStr.insert( 0, 1, '\"' );
+        wrappedStr += '\"';
+        writeString( wrappedStr );
+    }
+    
 protected:
     bool _readyForEndBracket;
     int _indent;
@@ -212,6 +229,68 @@ public:
     }
     
     virtual void readCharArray( char* s, unsigned int size ) {}
+    
+    virtual void readWrappedString( std::string& str )
+    {
+        readString( str );
+        if ( str[0]=='\"' )
+        {
+            if ( str.size()==1 || (*str.rbegin())!='\"' )
+            {
+                char ch;
+                do
+                {
+                    _in->get( ch ); checkStream();
+                    if ( ch=='\\' )
+                    {
+                        _in->get( ch ); checkStream();
+                        if ( ch=='\"' )
+                        {
+                            str += ch; ch = 0;
+                        }
+                        else if ( ch=='\\' )
+                        {
+                            str += ch;
+                        }
+                        else
+                        {
+                            str += '\\'; str += ch;
+                        }
+                    }
+                    else
+                        str += ch;
+                } while ( ch!='\"' );
+            }
+            str = str.substr(1, str.size()-2);
+        }
+    }
+    
+    virtual bool matchString( const std::string& str )
+    {
+        std::string s; readString(s);
+        if ( s==str ) return true;
+        else _in->seekg( -(int)(s.length()), std::ios::cur );
+        return false;
+    }
+    
+    virtual void advanceToCurrentEndBracket()
+    {
+        std::string passString;
+        unsigned int blocks = 0;
+        while ( !_in->eof() )
+        {
+            passString.clear();
+            readString( passString );
+            
+            if ( passString=="}" )
+            {
+                if ( blocks<=0 ) return;
+                else blocks--;
+            }
+            else if ( passString=="{" )
+                blocks++;
+        }
+    }
 };
 
 #endif

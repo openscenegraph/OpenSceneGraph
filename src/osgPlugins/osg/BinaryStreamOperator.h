@@ -65,6 +65,9 @@ public:
     
     virtual void writeCharArray( const char* s, unsigned int size )
     { if ( size>0 ) _out->write( s, size ); }
+    
+    virtual void writeWrappedString( const std::string& str )
+    { writeString( str ); }
 };
 
 class BinaryInputIterator : public osgDB::InputIterator
@@ -176,6 +179,9 @@ public:
     
     virtual void readCharArray( char* s, unsigned int size )
     { if ( size>0 ) _in->read( s, size ); }
+    
+    virtual void readWrappedString( std::string& str )
+    { readString( str ); }
     
 protected:
     int _byteSwap;

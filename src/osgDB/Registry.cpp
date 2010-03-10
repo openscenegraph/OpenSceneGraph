@@ -43,10 +43,10 @@
     using std::tolower;
 #endif
 
-#ifdef OSG_DEBUG_POSTFIX
-    #define OSG_DEBUG_POSTFIX_WITH_QUOTES ADDQUOTES(OSG_DEBUG_POSTFIX)
+#ifdef OSG_LIBRARY_POSTFIX
+    #define OSG_LIBRARY_POSTFIX_WITH_QUOTES ADDQUOTES(OSG_LIBRARY_POSTFIX)
 #else
-    #define OSG_DEBUG_POSTFIX_WITH_QUOTES "d"
+    #define OSG_LIBRARY_POSTFIX_WITH_QUOTES ""
 #endif
 
 using namespace osg;
@@ -608,31 +608,15 @@ std::string Registry::createLibraryNameForExtension(const std::string& ext)
 #endif
 
 #if defined(__CYGWIN__)
-    #ifdef _DEBUG
-        return prepend+"cygwin_"+"osgdb_"+lowercase_ext+OSG_DEBUG_POSTFIX_WITH_QUOTES+".dll";
-    #else
-        return prepend+"cygwin_"+"osgdb_"+lowercase_ext+".dll";
-    #endif
+    return prepend+"cygwin_"+"osgdb_"+lowercase_ext+OSG_LIBRARY_POSTFIX_WITH_QUOTES+".dll";
 #elif defined(__MINGW32__)
-    return prepend+"mingw_"+"osgdb_"+lowercase_ext+".dll";
+    return prepend+"mingw_"+"osgdb_"+lowercase_ext+OSG_LIBRARY_POSTFIX_WITH_QUOTES+".dll";
 #elif defined(WIN32)
-    #ifdef _DEBUG
-        return prepend+"osgdb_"+lowercase_ext+ OSG_DEBUG_POSTFIX_WITH_QUOTES +".dll";
-    #else
-        return prepend+"osgdb_"+lowercase_ext+".dll";
-    #endif
+    return prepend+"osgdb_"+lowercase_ext+OSG_LIBRARY_POSTFIX_WITH_QUOTES+".dll";
 #elif macintosh
-    #ifdef _DEBUG
-        return prepend+"osgdb_"+lowercase_ext+ OSG_DEBUG_POSTFIX_WITH_QUOTES;
-    #else
-        return prepend+"osgdb_"+lowercase_ext;
-    #endif
+    return prepend+"osgdb_"+lowercase_ext+OSG_LIBRARY_POSTFIX_WITH_QUOTES;
 #else
-    #ifdef _DEBUG
-         return prepend+"osgdb_"+lowercase_ext+ OSG_DEBUG_POSTFIX_WITH_QUOTES + ADDQUOTES(OSG_PLUGIN_EXTENSION);
-    #else
-         return prepend+"osgdb_"+lowercase_ext+ADDQUOTES(OSG_PLUGIN_EXTENSION);
-    #endif
+    return prepend+"osgdb_"+lowercase_ext+OSG_LIBRARY_POSTFIX_WITH_QUOTES+ADDQUOTES(OSG_PLUGIN_EXTENSION);
 #endif
 
 }
@@ -640,27 +624,15 @@ std::string Registry::createLibraryNameForExtension(const std::string& ext)
 std::string Registry::createLibraryNameForNodeKit(const std::string& name)
 {
 #if defined(__CYGWIN__)
-    return "cyg"+name+".dll";
+    return "cyg"+name+OSG_LIBRARY_POSTFIX_WITH_QUOTES+".dll";
 #elif defined(__MINGW32__)
-    return "lib"+name+".dll";
+    return "lib"+name+OSG_LIBRARY_POSTFIX_WITH_QUOTES+".dll";
 #elif defined(WIN32)
-    #ifdef _DEBUG
-        return name+OSG_DEBUG_POSTFIX_WITH_QUOTES +".dll";
-    #else
-        return name+".dll";
-    #endif
+    return name+OSG_LIBRARY_POSTFIX_WITH_QUOTES+".dll";
 #elif macintosh
-    #ifdef _DEBUG
-        return name+OSGDEBUG_POSTFIX_WITH_QUOTES;
-    #else
-        return name;
-    #endif
+    return name+OSG_LIBRARY_POSTFIX_WITH_QUOTES;
 #else
-    #ifdef _DEBUG
-        return "lib"+name+OSG_DEBUG_POSTFIX_WITH_QUOTES + ADDQUOTES(OSG_PLUGIN_EXTENSION);
-    #else
-        return "lib"+name+ADDQUOTES(OSG_PLUGIN_EXTENSION);
-    #endif
+    return "lib"+name+OSG_LIBRARY_POSTFIX_WITH_QUOTES + ADDQUOTES(OSG_PLUGIN_EXTENSION);
 #endif
 }
 

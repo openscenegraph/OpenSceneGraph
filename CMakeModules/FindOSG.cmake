@@ -61,7 +61,7 @@ MACRO(FIND_OSG_LIBRARY MYLIBRARY MYLIBRARYNAME)
     )
     
     FIND_LIBRARY(${MYLIBRARY}
-        NAMES ${MYLIBRARYNAME}
+        NAMES "${MYLIBRARYNAME}${CMAKE_RELEASE_POSTFIX}"
         PATHS
         ${OSG_DIR}/lib/Release
         ${OSG_DIR}/lib64/Release
@@ -81,7 +81,7 @@ MACRO(FIND_OSG_LIBRARY MYLIBRARY MYLIBRARYNAME)
     )
 
     FIND_LIBRARY(${MYLIBRARY}
-        NAMES ${MYLIBRARYNAME}
+        NAMES "${MYLIBRARYNAME}${CMAKE_RELEASE_POSTFIX}"
         PATHS
         ~/Library/Frameworks
         /Library/Frameworks

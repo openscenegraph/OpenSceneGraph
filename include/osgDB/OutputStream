@@ -60,7 +60,8 @@ public:
     {
         WRITE_UNKNOWN = 0,
         WRITE_SCENE,
-        WRITE_IMAGE
+        WRITE_IMAGE,
+        WRITE_OBJECT
     };
     
     enum WriteImageHint
@@ -133,7 +134,7 @@ public:
     { writeObject(ptr.get()); return *this; }
     
     // Convenient methods for writing
-    void writeWrappedString( const std::string& str );
+    void writeWrappedString( const std::string& str ) { _out->writeWrappedString(str); }
     void writeCharArray( const char* s, unsigned int size ) { _out->writeCharArray(s, size); }
 
     // method for converting all data structure sizes to unsigned int to ensure architecture portability.

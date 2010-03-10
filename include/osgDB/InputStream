@@ -61,7 +61,8 @@ public:
     {
         READ_UNKNOWN = 0,
         READ_SCENE,
-        READ_IMAGE
+        READ_IMAGE,
+        READ_OBJECT
     };
     
     InputStream( const osgDB::Options* options );
@@ -123,9 +124,9 @@ public:
     { ptr = static_cast<T*>(readObject()); return *this; }
     
     // Convenient methods for reading
-    bool matchString( const std::string& str );
-    void advanceToCurrentEndBracket();
-    void readWrappedString( std::string& str );
+    bool matchString( const std::string& str ) { return _in->matchString(str); }
+    void advanceToCurrentEndBracket() { _in->advanceToCurrentEndBracket(); }
+    void readWrappedString( std::string& str ) { _in->readWrappedString(str); checkStream(); }
     void readCharArray( char* s, unsigned int size ) { _in->readCharArray(s, size); }
 
     // readSize() use unsigned int for all sizes.

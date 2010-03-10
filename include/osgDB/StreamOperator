@@ -39,6 +39,9 @@ public:
     virtual void writeProperty( const ObjectProperty& prop ) = 0;
     virtual void writeMark( const ObjectMark& mark ) = 0;
     virtual void writeCharArray( const char* s, unsigned int size ) = 0;
+    virtual void writeWrappedString( const std::string& str ) = 0;
+    
+    virtual void flush() { _out->flush(); }
     
 protected:
     std::ostream* _out;
@@ -79,6 +82,10 @@ public:
     virtual void readProperty( ObjectProperty& prop ) = 0;
     virtual void readMark( ObjectMark& mark ) = 0;
     virtual void readCharArray( char* s, unsigned int size ) = 0;
+    virtual void readWrappedString( std::string& str ) = 0;
+    
+    virtual bool matchString( const std::string& str ) { return false; }
+    virtual void advanceToCurrentEndBracket() {}
     
 protected:
     std::istream* _in;

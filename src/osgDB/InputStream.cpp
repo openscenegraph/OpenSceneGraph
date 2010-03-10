@@ -161,77 +161,6 @@ InputStream& InputStream::operator>>( osg::Matrixd& mat )
     return *this;
 }
 
-bool InputStream::matchString( const std::string& str )
-{
-    if ( !isBinary() )
-    {
-        std::string s; *this >> s;
-        if ( s==str ) return true;
-        else _in->getStream()->seekg( -(int)(s.length()), std::ios::cur );
-    }
-    return false;
-}
-
-void InputStream::advanceToCurrentEndBracket()
-{
-    if ( isBinary() )
-        return;
-    
-    std::string passString;
-    unsigned int blocks = 0;
-    while ( !_in->getStream()->eof() )
-    {
-        passString.clear();
-        *this >> passString;
-        
-        if ( passString=="}" )
-        {
-            if ( blocks<=0 ) return;
-            else blocks--;
-        }
-        else if ( passString=="{" )
-            blocks++;
-    }
-}
-
-void InputStream::readWrappedString( std::string& str )
-{
-    *this >> str;
-    if ( !isBinary() )
-    {
-        if ( str[0]=='\"' )
-        {
-            if ( str.size()==1 || (*str.rbegin())!='\"' )
-            {
-                char ch;
-                do
-                {
-                    _in->getStream()->get( ch ); checkStream();
-                    if ( ch=='\\' )
-                    {
-                        _in->getStream()->get( ch ); checkStream();
-                        if ( ch=='\"' )
-                        {
-                            str += ch; ch = 0;
-                        }
-                        else if ( ch=='\\' )
-                        {
-                            str += ch;
-                        }
-                        else
-                        {
-                            str += '\\'; str += ch;
-                        }
-                    }
-                    else
-                        str += ch;
-                } while ( ch!='\"' );
-            }
-            str = str.substr(1, str.size()-2);
-        }
-    }
-}
-
 osg::Array* InputStream::readArray()
 {
     osg::ref_ptr<osg::Array> array = NULL;
@@ -486,6 +415,17 @@ osg::PrimitiveSet* InputStream::readPrimitiveSet()
 
 osg::Image* InputStream::readImage()
 {
+    unsigned int id = 0;
+    *this >> PROPERTY("ImageID") >> id;
+    if ( getException() ) return NULL;
+    
+    IdentifierMap::iterator itr = _identifierMap.find( id );
+    if ( itr!=_identifierMap.end() )
+    {
+        advanceToCurrentEndBracket();
+        return static_cast<osg::Image*>( itr->second.get() );
+    }
+    
     std::string name;
     int writeHint, decision = IMAGE_EXTERNAL;
     *this >> PROPERTY("FileName"); readWrappedString(name);
@@ -693,6 +633,7 @@ InputStream::ReadType InputStream::start( InputIterator* inIterator )
         std::string typeString; *this >> typeString;
         if ( typeString=="Scene" ) type = READ_SCENE;
         else if ( typeString=="Image" ) type = READ_IMAGE;
+        else if ( typeString=="Object" ) type = READ_OBJECT;
         
         std::string osgName, osgVersion;
         *this >> PROPERTY("#Version") >> version;
@@ -712,12 +653,16 @@ InputStream::ReadType InputStream::start( InputIterator* inIterator )
 
 void InputStream::decompress()
 {
+    if ( !isBinary() ) return;
     _fields.clear();
     _fields.push_back( "Decompression" );
-    if ( !isBinary() ) return;
     
     std::string compressorName; *this >> compressorName;
-    if ( compressorName=="0" ) return;
+    if ( compressorName=="0" )
+    {
+        _fields.pop_back();
+        return;
+    }
     
     BaseCompressor* compressor = Registry::instance()->getObjectWrapperManager()->findCompressor(compressorName);
     if ( !compressor )
@@ -773,7 +718,7 @@ void InputStream::readArrayImplementation( T* a, int read_size, bool useByteSwap
         a->resize( size );
         if ( isBinary() )
         {
-            _in->getStream()->read( (char*)&((*a)[0]), read_size*size ); checkStream();
+            readCharArray( (char*)&((*a)[0]), read_size*size ); checkStream();
             if ( useByteSwap && _byteSwap )
             {
                 for ( int i=0; i<size; ++i )

@@ -94,15 +94,18 @@ osg::Matrix copyLib3dsMatrixToOsgMatrix(const Lib3dsMatrix mat)
     return osgMatrix;
 }
 
-void copyLib3dsVec3ToOsgVec3(osg::Vec3f osgVec, const float vertices[3]) {
+void copyLib3dsVec3ToOsgVec3(osg::Vec3f osgVec, const float vertices[3])
+{
     return osgVec.set(vertices[0], vertices[1], vertices[2]);
 }
 
-osg::Vec3f copyLib3dsVec3ToOsgVec3(const float vertices[3]) {
+osg::Vec3f copyLib3dsVec3ToOsgVec3(const float vertices[3])
+{
     return osg::Vec3f(vertices[0], vertices[1], vertices[2]);
 }
 
-osg::Quat copyLib3dsQuatToOsgQuat(const float quat[4]) {
+osg::Quat copyLib3dsQuatToOsgQuat(const float quat[4])
+{
     return osg::Quat(quat[0], quat[1], quat[2], quat[3]);
 }
 
@@ -225,22 +228,22 @@ ReaderWriter3DS::ReaderWriter3DS()
     setByteOrder();
 
 #if 0
-    osg::notify(osg::NOTICE)<<"3DS reader sizes:"<<std::endl;
-    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsBool)="<<sizeof(Lib3dsBool)<<std::endl;
-    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsByte)="<<sizeof(Lib3dsByte)<<std::endl;
-    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsWord)="<<sizeof(Lib3dsWord)<<std::endl;
-    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsDword)="<<sizeof(Lib3dsDword)<<std::endl;
-    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsIntb)="<<sizeof(Lib3dsIntb)<<std::endl;
-    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsIntw)="<<sizeof(Lib3dsIntw)<<std::endl;
-    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsIntd)="<<sizeof(Lib3dsIntd)<<std::endl;
-    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsFloat)="<<sizeof(Lib3dsFloat)<<std::endl;
-    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsDouble)="<<sizeof(Lib3dsDouble)<<std::endl;
-    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsVector)="<<sizeof(Lib3dsVector)<<std::endl;
-    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsTexel)="<<sizeof(Lib3dsTexel)<<std::endl;
-    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsQuat)="<<sizeof(Lib3dsQuat)<<std::endl;
-    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsMatrix)="<<sizeof(Lib3dsMatrix)<<std::endl;
-    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsRgb)="<<sizeof(Lib3dsRgb)<<std::endl;
-    osg::notify(osg::NOTICE)<<"  sizeof(Lib3dsRgba)="<<sizeof(Lib3dsRgba)<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"3DS reader sizes:"<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsBool)="<<sizeof(Lib3dsBool)<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsByte)="<<sizeof(Lib3dsByte)<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsWord)="<<sizeof(Lib3dsWord)<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsDword)="<<sizeof(Lib3dsDword)<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsIntb)="<<sizeof(Lib3dsIntb)<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsIntw)="<<sizeof(Lib3dsIntw)<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsIntd)="<<sizeof(Lib3dsIntd)<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsFloat)="<<sizeof(Lib3dsFloat)<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsDouble)="<<sizeof(Lib3dsDouble)<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsVector)="<<sizeof(Lib3dsVector)<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsTexel)="<<sizeof(Lib3dsTexel)<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsQuat)="<<sizeof(Lib3dsQuat)<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsMatrix)="<<sizeof(Lib3dsMatrix)<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsRgb)="<<sizeof(Lib3dsRgb)<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsRgba)="<<sizeof(Lib3dsRgba)<<std::endl;
 #endif
 
 }
@@ -253,7 +256,8 @@ ReaderWriter3DS::ReaderObject::ReaderObject(const osgDB::ReaderWriter::Options* 
     checkForEspilonIdentityMatrices(false),
     restoreMatrixTransformsNoMeshes(false)
 {
-    if (options) {
+    if (options)
+    {
         std::istringstream iss(options->getOptionString());
         std::string opt; 
         while (iss >> opt) 
@@ -272,7 +276,8 @@ ReaderWriter3DS::ReaderObject::ReaderObject(const osgDB::ReaderWriter::Options* 
 /**
     These print methods for 3ds hacking
 */
-void pad(int level) {
+void pad(int level)
+{
     for(int i=0;i<level;i++) std::cout<<"  ";
 }
 void print(Lib3dsMesh *mesh,int level);
@@ -280,42 +285,56 @@ void print(Lib3dsUserData *user,int level);
 void print(Lib3dsMeshInstanceNode *object,int level);
 void print(Lib3dsNode *node, int level);
 
-void print(Lib3dsMatrix matrix,int level) {
+void print(Lib3dsMatrix matrix,int level)
+{
     pad(level); cout << matrix[0][0] <<" "<< matrix[0][1] <<" "<< matrix[0][2] <<" "<< matrix[0][3] << endl;
     pad(level); cout << matrix[1][0] <<" "<< matrix[1][1] <<" "<< matrix[1][2] <<" "<< matrix[1][3] << endl;
     pad(level); cout << matrix[2][0] <<" "<< matrix[2][1] <<" "<< matrix[2][2] <<" "<< matrix[2][3] << endl;
     pad(level); cout << matrix[3][0] <<" "<< matrix[3][1] <<" "<< matrix[3][2] <<" "<< matrix[3][3] << endl;
 }
-void print(Lib3dsMesh *mesh,int level) {
-    if (mesh) {
+void print(Lib3dsMesh *mesh,int level)
+{
+    if (mesh)
+    {
         pad(level); cout << "mesh name " << mesh->name  << endl;
         print(mesh->matrix,level);
-    } else {
+    }
+    else
+    {
         pad(level); cout << "no mesh " << endl;
     }
 }
-void print(Lib3dsUserData *user,int level) {
-    if (user) {
+void print(Lib3dsUserData *user,int level)
+{
+    if (user)
+    {
         pad(level); cout << "user data" << endl;
         //print(user->mesh,level+1);
-    } else {
+    }
+    else
+    {
         pad(level); cout << "no user data" << endl;
     }
 }
 
-void print(Lib3dsMeshInstanceNode *object,int level) {
-    if (object) {
+void print(Lib3dsMeshInstanceNode *object,int level)
+{
+    if (object)
+    {
         pad(level); cout << "objectdata instance [" << object->instance_name << "]" << endl;
         pad(level); cout << "pivot     " << object->pivot[0] <<" "<< object->pivot[1] <<" "<< object->pivot[2] << endl;
         pad(level); cout << "pos       " << object->pos[0] <<" "<< object->pos[1] <<" "<< object->pos[2] << endl;
         pad(level); cout << "scl       " << object->scl[0] <<" "<< object->scl[1] <<" "<< object->scl[2] << endl;
         pad(level); cout << "rot       " << object->rot[0] <<" "<< object->rot[1] <<" "<< object->rot[2] <<" "<< object->rot[3] << endl;
-    } else {
+    }
+    else
+    {
         pad(level); cout << "no object data" << endl;
     }
 }
 
-void print(Lib3dsNode *node, int level) {
+void print(Lib3dsNode *node, int level)
+{
 
     pad(level); cout << "node name [" << node->name << "]" << endl;
     pad(level); cout << "node id    " << node->user_id << endl;
@@ -323,16 +342,20 @@ void print(Lib3dsNode *node, int level) {
     pad(level); cout << "node matrix:" << endl;
     print(node->matrix,level+1);
 
-    if (node->type == LIB3DS_NODE_MESH_INSTANCE) {
+    if (node->type == LIB3DS_NODE_MESH_INSTANCE)
+    {
         pad(level); cout << "mesh instance data:" << endl;
         print(reinterpret_cast<Lib3dsMeshInstanceNode *>(node),level+1);
-    } else {
+    }
+    else
+    {
         pad(level); cout << "node is not a mesh instance (not handled)" << endl;
     }
 
     print(&node->user_ptr,level);
 
-    for(Lib3dsNode *child=node->childs; child; child=child->next) {
+    for(Lib3dsNode *child=node->childs; child; child=child->next)
+    {
         print(child,level+1);
     }
 
@@ -386,7 +409,8 @@ void ReaderWriter3DS::ReaderObject::addDrawableFromFace(osg::Geode * geode, Face
 // Transforms points by matrix if 'matrix' is not NULL
 // Creates a Geode and Geometry (as parent,child) and adds the Geode to 'parent' parameter iff 'parent' is non-NULL
 // Returns ptr to the Geode
-osg::Node* ReaderWriter3DS::ReaderObject::processMesh(StateSetMap& drawStateMap,osg::Group* parent,Lib3dsMesh* mesh, const osg::Matrix * matrix) {
+osg::Node* ReaderWriter3DS::ReaderObject::processMesh(StateSetMap& drawStateMap,osg::Group* parent,Lib3dsMesh* mesh, const osg::Matrix * matrix)
+{
     typedef std::vector<FaceList> MaterialFaceMap;
     MaterialFaceMap materialFaceMap;
     unsigned int numMaterials = drawStateMap.size();
@@ -394,16 +418,19 @@ osg::Node* ReaderWriter3DS::ReaderObject::processMesh(StateSetMap& drawStateMap,
     FaceList defaultMaterialFaceList;
     for (unsigned int i=0; i<mesh->nfaces; ++i)
     {
-        if (mesh->faces[i].material>=0) {
+        if (mesh->faces[i].material>=0)
+        {
             materialFaceMap[mesh->faces[i].material].push_back(i);
         }
         else
+        {
             defaultMaterialFaceList.push_back(i);
+        }
     }
     if (materialFaceMap.empty() && defaultMaterialFaceList.empty())
     {
-        osg::notify(osg::NOTICE)<<"Warning : no triangles assigned to mesh '"<<mesh->name<<"'"<< std::endl;
-        //osg::notify(osg::INFO) << "No material assigned to mesh '" << mesh->name << "'" << std::endl;
+        OSG_NOTIFY(osg::NOTICE)<<"Warning : no triangles assigned to mesh '"<<mesh->name<<"'"<< std::endl;
+        //OSG_NOTIFY(osg::INFO) << "No material assigned to mesh '" << mesh->name << "'" << std::endl;
         return NULL;
     }
     else
@@ -472,8 +499,10 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap drawStateMap,L
     bool pivoted = pivot.x()!=0 || pivot.y()!=0 || pivot.z()!=0;
 
     osg::Matrix meshMat;
-    if (mesh) {
-         if (!noMatrixTransforms) {
+    if (mesh)
+    {
+         if (!noMatrixTransforms)
+         {
             // There can be a transform directly on a mesh instance (= as if a osg::MatrixTransform and a osg::Geode were merged together) in object->pos/rot/scl
             if (!pivoted) {
                 meshMat = osg::Matrix::inverse(copyLib3dsMatrixToOsgMatrix(mesh->matrix));
@@ -492,21 +521,27 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap drawStateMap,L
     }
 
     bool isOsgNodeMatrixIdentity = false;
-    if (osgNodeMatrix.isIdentity() || (checkForEspilonIdentityMatrices && isIdentityEquivalent(osgNodeMatrix, MATRIX_EPSILON))) {
+    if (osgNodeMatrix.isIdentity() || (checkForEspilonIdentityMatrices && isIdentityEquivalent(osgNodeMatrix, MATRIX_EPSILON)))
+    {
         isOsgNodeMatrixIdentity = true;
     }
 
 
-    //if (node->childs != NULL || pivoted || (!isOsgNodeMatrixIdentity && !noMatrixTransforms)) {
-    if (node->childs != NULL || (!isOsgNodeMatrixIdentity && !noMatrixTransforms)) {
-        if (isOsgNodeMatrixIdentity || noMatrixTransforms) {
+    //if (node->childs != NULL || pivoted || (!isOsgNodeMatrixIdentity && !noMatrixTransforms))
+    if (node->childs != NULL || (!isOsgNodeMatrixIdentity && !noMatrixTransforms))
+    {
+        if (isOsgNodeMatrixIdentity || noMatrixTransforms)
+        {
             group = new osg::Group;
-        } else {
+        }
+        else
+        {
             group = new osg::MatrixTransform(osgNodeMatrix);
         }
     }
 
-    if (group) {
+    if (group)
+    {
         if (strcmp(node->name, "$$$DUMMY") == 0) 
         {
             if (node->type == LIB3DS_NODE_MESH_INSTANCE)
@@ -516,32 +551,42 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap drawStateMap,L
             group->setName(node->name);
 
         // Handle all children of this node for hierarchical assemblies
-        for (Lib3dsNode *p=node->childs; p!=NULL; p=p->next) {
+        for (Lib3dsNode *p=node->childs; p!=NULL; p=p->next)
+        {
             group->addChild(processNode(drawStateMap,f,p));
         }
-    } else {
+    }
+    else
+    {
         assert(node->childs == NULL);        // Else we must have a group to put childs into
     }
 
     // Handle mesh
-    if (mesh) {
+    if (mesh)
+    {
         osg::Matrix * meshAppliedMatPtr = NULL;
-        if (!meshMat.isIdentity() && !(checkForEspilonIdentityMatrices && isIdentityEquivalent(meshMat, MATRIX_EPSILON))) {
+        if (!meshMat.isIdentity() && !(checkForEspilonIdentityMatrices && isIdentityEquivalent(meshMat, MATRIX_EPSILON)))
+        {
             meshAppliedMatPtr = &meshMat;
         }
 
-        if(group) {
+        if (group)
+        {
             // add our geometry to group (where our children already are)
             // creates geometry under modifier node
             processMesh(drawStateMap,group,mesh,meshAppliedMatPtr);
             return group;
-        } else {
+        }
+        else
+        {
             // didnt use group for children
             // return a ptr directly to the Geode for this mesh
             return processMesh(drawStateMap,NULL,mesh,meshAppliedMatPtr);
         }
 
-    } else {
+    }
+    else
+    {
         // no mesh for this node - probably a camera or something of that persuasion
         //cout << "no mesh for object " << node->name << endl;
         return group; // we have no mesh, but we might have children
@@ -549,7 +594,8 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap drawStateMap,L
 }
 
 
-static long filei_seek_func(void *self, long offset, Lib3dsIoSeek origin) {
+static long filei_seek_func(void *self, long offset, Lib3dsIoSeek origin)
+{
     std::istream *f = reinterpret_cast<std::istream*>(self);
     ios_base::seekdir o = ios_base::beg;
     if (origin == LIB3DS_SEEK_CUR) o = ios_base::cur;
@@ -559,7 +605,8 @@ static long filei_seek_func(void *self, long offset, Lib3dsIoSeek origin) {
     return f->fail() ? -1 : 0;
 }
 
-static long fileo_seek_func(void *self, long offset, Lib3dsIoSeek origin) {
+static long fileo_seek_func(void *self, long offset, Lib3dsIoSeek origin)
+{
     std::ostream *f = reinterpret_cast<std::ostream*>(self);
     ios_base::seekdir o = ios_base::beg;
     if (origin == LIB3DS_SEEK_CUR) o = ios_base::cur;
@@ -569,24 +616,28 @@ static long fileo_seek_func(void *self, long offset, Lib3dsIoSeek origin) {
     return f->fail() ? -1 : 0;
 }
 
-static long filei_tell_func(void *self) {
+static long filei_tell_func(void *self)
+{
     std::istream *f = reinterpret_cast<std::istream*>(self);
     return f->tellg();
 }
 
-static long fileo_tell_func(void *self) {
+static long fileo_tell_func(void *self)
+{
     std::ostream *f = reinterpret_cast<std::ostream*>(self);
     return f->tellp();
 }
 
 
-static size_t filei_read_func(void *self, void *buffer, size_t size) {
+static size_t filei_read_func(void *self, void *buffer, size_t size)
+{
     std::istream *f = reinterpret_cast<std::istream*>(self);
     f->read(reinterpret_cast<char*>(buffer), size);
     return f->gcount();
 }
 
-static size_t fileo_write_func(void *self, const void *buffer, size_t size) {
+static size_t fileo_write_func(void *self, const void *buffer, size_t size)
+{
     std::ostream *f = reinterpret_cast<std::ostream*>(self);
     f->write(static_cast<const char*>(buffer), size);
     return f->fail() ? 0 : size;
@@ -600,7 +651,7 @@ static void fileio_log_func(void *self, Lib3dsLogLevel level, int indent, const 
     else if (level == LIB3DS_LOG_WARN) l = osg::NOTICE;
     else if (level == LIB3DS_LOG_INFO) l = osg::INFO;
     else if (level == LIB3DS_LOG_DEBUG) l = osg::DEBUG_INFO;
-    osg::notify(l) << msg << std::endl;
+    OSG_NOTIFY(l) << msg << std::endl;
 }
 
 
@@ -699,11 +750,12 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::constructFrom3dsFile(Lib3dsFile
     {
         int level=0;
         std::cout << "NODE TRAVERSAL of 3ds file "<<f->name<<std::endl;
-        for(Lib3dsNode *node=f->nodes; node; node=node->next) {
+        for(Lib3dsNode *node=f->nodes; node; node=node->next)
+        {
             print(node,level+1);
         }
         std::cout << "MESH TRAVERSAL of 3ds file "<<f->name<<std::endl;
-        for (int imesh=0; imesh<f->nmeshes; ++imesh) {
+        for (int imesh=0; imesh<f->nmeshes; ++imesh){
             print(f->meshes[imesh],level+1);
         }
     }
@@ -715,26 +767,34 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::constructFrom3dsFile(Lib3dsFile
 
     // MIKEC: have found 3ds files with NO node structure - only meshes, for this case we fall back to the old traverse-by-meshes code
     // Loading and re-exporting these files from 3DS produces a file with correct node structure, so perhaps these are not 100% conformant?
-    if (f->nodes == NULL) {
-        osg::notify(osg::WARN)<<"Warning: in 3ds loader: file has no nodes, traversing by meshes instead"<< std::endl;
+    if (f->nodes == NULL)
+    {
+        OSG_NOTIFY(osg::WARN)<<"Warning: in 3ds loader: file has no nodes, traversing by meshes instead"<< std::endl;
         traverse_nodes=true;
     }
 
     osg::Node* group = NULL;
 
-    if (traverse_nodes) { // old method
+    if (traverse_nodes) // old method
+    {
         group = new osg::Group();
-        for (int imesh=0; imesh<f->nmeshes; ++imesh) {
+        for (int imesh=0; imesh<f->nmeshes; ++imesh)
+        {
             reader.processMesh(drawStateMap,group->asGroup(),f->meshes[imesh],NULL);
         }
-    } else { // new method
+    }
+    else
+    { // new method
         Lib3dsNode *node=f->nodes;
         if (!node->next)
+        {
             group = reader.processNode(drawStateMap,f,node);
+        }
         else
         {
             group = new osg::Group();
-            for(; node; node=node->next) {
+            for(; node; node=node->next)
+            {
                 group->asGroup()->addChild(reader.processNode(drawStateMap,f,node));
             }
         }
@@ -743,7 +803,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::constructFrom3dsFile(Lib3dsFile
 
     if (osg::getNotifyLevel()>=osg::INFO)
     {
-        osg::notify(osg::NOTICE) << "Final OSG node structure looks like this:"<< endl;
+        OSG_NOTIFY(osg::NOTICE) << "Final OSG node structure looks like this:"<< endl;
         PrintVisitor pv(osg::notify(osg::NOTICE));
         group->accept(pv);
     }
@@ -902,14 +962,14 @@ osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *
 {
     if (texture && *(texture->name))
     {
-        osg::notify(osg::INFO)<<"texture->name="<<texture->name<<", _directory="<<_directory<<std::endl;
+        OSG_NOTIFY(osg::INFO)<<"texture->name="<<texture->name<<", _directory="<<_directory<<std::endl;
 
         std::string fileName = osgDB::findFileInDirectory(texture->name,_directory,osgDB::CASE_INSENSITIVE);
         if (fileName.empty())
         {
             // file not found in .3ds file's directory, so we'll look in the datafile path list.
             fileName = osgDB::findDataFile(texture->name,options, osgDB::CASE_INSENSITIVE);
-            osg::notify(osg::INFO)<<"texture->name="<<texture->name<<", _directory="<<_directory<<std::endl;
+            OSG_NOTIFY(osg::INFO)<<"texture->name="<<texture->name<<", _directory="<<_directory<<std::endl;
         }
 
         if (fileName.empty())
@@ -918,30 +978,33 @@ osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *
             {
                 // if 3DS file is loaded from http, just attempt to load texture from same location.
                 fileName = _directory + "/" + texture->name;
-            } else {
-                osg::notify(osg::WARN) << "texture '"<<texture->name<<"' not found"<< std::endl;
+            }
+            else
+            {
+                OSG_NOTIFY(osg::WARN) << "texture '"<<texture->name<<"' not found"<< std::endl;
                 return NULL;
             }
         }
 
-        if (label) osg::notify(osg::DEBUG_INFO) << label;
-        else osg::notify(osg::DEBUG_INFO) << "texture name";
-        osg::notify(osg::DEBUG_INFO) << " '"<<texture->name<<"'"<< std::endl;
-        osg::notify(osg::DEBUG_INFO) << "    texture flag        "<<texture->flags<< std::endl;
-        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_DECALE       "<<((texture->flags)&LIB3DS_TEXTURE_DECALE)<< std::endl;
-        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_MIRROR       "<<((texture->flags)&LIB3DS_TEXTURE_MIRROR)<< std::endl;
-        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_NEGATE       "<<((texture->flags)&LIB3DS_TEXTURE_NEGATE)<< std::endl;
-        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_NO_TILE      "<<((texture->flags)&LIB3DS_TEXTURE_NO_TILE)<< std::endl;
-        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_SUMMED_AREA  "<<((texture->flags)&LIB3DS_TEXTURE_SUMMED_AREA)<< std::endl;
-        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_ALPHA_SOURCE "<<((texture->flags)&LIB3DS_TEXTURE_ALPHA_SOURCE)<< std::endl;
-        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_TINT         "<<((texture->flags)&LIB3DS_TEXTURE_TINT)<< std::endl;
-        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_IGNORE_ALPHA "<<((texture->flags)&LIB3DS_TEXTURE_IGNORE_ALPHA)<< std::endl;
-        osg::notify(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_RGB_TINT     "<<((texture->flags)&LIB3DS_TEXTURE_RGB_TINT)<< std::endl;
+        if (label) { OSG_NOTIFY(osg::DEBUG_INFO) << label; }
+        else { OSG_NOTIFY(osg::DEBUG_INFO) << "texture name"; }
+
+        OSG_NOTIFY(osg::DEBUG_INFO) << " '"<<texture->name<<"'"<< std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO) << "    texture flag        "<<texture->flags<< std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_DECALE       "<<((texture->flags)&LIB3DS_TEXTURE_DECALE)<< std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_MIRROR       "<<((texture->flags)&LIB3DS_TEXTURE_MIRROR)<< std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_NEGATE       "<<((texture->flags)&LIB3DS_TEXTURE_NEGATE)<< std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_NO_TILE      "<<((texture->flags)&LIB3DS_TEXTURE_NO_TILE)<< std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_SUMMED_AREA  "<<((texture->flags)&LIB3DS_TEXTURE_SUMMED_AREA)<< std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_ALPHA_SOURCE "<<((texture->flags)&LIB3DS_TEXTURE_ALPHA_SOURCE)<< std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_TINT         "<<((texture->flags)&LIB3DS_TEXTURE_TINT)<< std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_IGNORE_ALPHA "<<((texture->flags)&LIB3DS_TEXTURE_IGNORE_ALPHA)<< std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_RGB_TINT     "<<((texture->flags)&LIB3DS_TEXTURE_RGB_TINT)<< std::endl;
 
         osg::ref_ptr<osg::Image> osg_image = osgDB::readRefImageFile(fileName.c_str(), options); //Absolute Path
         if (!osg_image.valid())
         {
-            osg::notify(osg::NOTICE) << "Warning: Cannot create texture "<<texture->name<< std::endl;
+            OSG_NOTIFY(osg::NOTICE) << "Warning: Cannot create texture "<<texture->name<< std::endl;
             return NULL;
         }
         if (osg_image->getFileName().empty()) // it should be done in OSG with osgDB::readRefImageFile(fileName.c_str());
@@ -1070,7 +1133,8 @@ osg::StateSet* ReaderWriter3DS::ReaderObject::createStateSet(Lib3dsMaterial *mat
 }
 
 
-osgDB::ReaderWriter::WriteResult ReaderWriter3DS::writeNode(const osg::Node& node,const std::string& fileName,const Options* options) const {
+osgDB::ReaderWriter::WriteResult ReaderWriter3DS::writeNode(const osg::Node& node,const std::string& fileName,const Options* options) const
+{
     std::string ext = osgDB::getLowerCaseFileExtension(fileName);
     if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
@@ -1083,16 +1147,10 @@ osgDB::ReaderWriter::WriteResult ReaderWriter3DS::writeNode(const osg::Node& nod
     Lib3dsFile * file3ds = lib3ds_file_new();
     if (!file3ds) return WriteResult(WriteResult::ERROR_IN_WRITING_FILE);
 
-    try {
-        osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
-        local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
-
-        if (!createFileObject(node, file3ds, fileName, local_opt)) ok = false;
-        if (ok && !lib3ds_file_save(file3ds, fileName.c_str())) ok = false;
-    } catch (...) {
-        lib3ds_file_free(file3ds);
-        throw;
-    }
+    osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
+    local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
+    if (!createFileObject(node, file3ds, fileName, local_opt)) ok = false;
+    if (ok && !lib3ds_file_save(file3ds, fileName.c_str())) ok = false;
     lib3ds_file_free(file3ds);
 
     return ok ? WriteResult(WriteResult::FILE_SAVED) : WriteResult(WriteResult::ERROR_IN_WRITING_FILE);
@@ -1100,17 +1158,20 @@ osgDB::ReaderWriter::WriteResult ReaderWriter3DS::writeNode(const osg::Node& nod
 }
 
 
-osgDB::ReaderWriter::WriteResult ReaderWriter3DS::writeNode(const osg::Node& node,std::ostream& fout,const Options* options) const {
-    //osg::notify(osg::WARN) << "!!WARNING!! 3DS write support is incomplete" << std::endl;
+osgDB::ReaderWriter::WriteResult ReaderWriter3DS::writeNode(const osg::Node& node,std::ostream& fout,const Options* options) const
+{
+    //OSG_NOTIFY(osg::WARN) << "!!WARNING!! 3DS write support is incomplete" << std::endl;
     std::string optFileName;
-    if (options) {
+    if (options)
+    {
         optFileName = options->getPluginStringData("STREAM_FILENAME");
     }
 
     return doWriteNode(node, fout, options, optFileName);
 }
 
-osgDB::ReaderWriter::WriteResult ReaderWriter3DS::doWriteNode(const osg::Node& node,std::ostream& fout, const Options* options, const std::string & fileNamelib3ds) const {
+osgDB::ReaderWriter::WriteResult ReaderWriter3DS::doWriteNode(const osg::Node& node,std::ostream& fout, const Options* options, const std::string & fileNamelib3ds) const
+{
     osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
     local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileNamelib3ds));
 
@@ -1126,26 +1187,20 @@ osgDB::ReaderWriter::WriteResult ReaderWriter3DS::doWriteNode(const osg::Node& n
     if (!file3ds) return WriteResult(WriteResult::ERROR_IN_WRITING_FILE);
 
     bool ok = true;
-    try {
-        if (!createFileObject(node, file3ds, fileNamelib3ds, local_opt.get())) ok = false;
-        if (ok && !lib3ds_file_write(file3ds, &io)) ok = false;
-        
-    } catch (...) {
-        lib3ds_file_free(file3ds);
-        throw;
-    }
+    if (!createFileObject(node, file3ds, fileNamelib3ds, local_opt.get())) ok = false;
+    if (ok && !lib3ds_file_write(file3ds, &io)) ok = false;
     lib3ds_file_free(file3ds);
 
     return ok ? WriteResult(WriteResult::FILE_SAVED) : WriteResult(WriteResult::ERROR_IN_WRITING_FILE);
     //return ok ? WriteResult(WriteResult::FILE_SAVED) : WriteResult(WriteResult::FILE_NOT_HANDLED);
 }
 
-bool ReaderWriter3DS::createFileObject(const osg::Node& node, Lib3dsFile * file3ds,const std::string& fileName, const osgDB::ReaderWriter::Options* options) const {
+bool ReaderWriter3DS::createFileObject(const osg::Node& node, Lib3dsFile * file3ds,const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
+{
     WriterNodeVisitor w(file3ds, fileName, options, osgDB::getFilePath(node.getName()));
     const_cast<osg::Node &>(node).accept(w);                // Ugly const_cast<> for visitor...
-    if (!w.suceedLastApply())
-        return false;
+    if (!w.succeeded()) return false;
     w.writeMaterials();
-    return true;    //w.good();
+    return w.succeeded();
 }
 

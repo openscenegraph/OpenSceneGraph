@@ -1,4 +1,5 @@
 #include "WriterCompareTriangle.h"
+#include <assert.h>
 
 WriterCompareTriangle::WriterCompareTriangle(const osg::Geode & geode, unsigned int nbVertices) : geode(geode) 
 {
@@ -50,7 +51,7 @@ void WriterCompareTriangle::cutscene(int nbVertices, const osg::BoundingBox & sc
 
     setMaxMin (nbVerticesX, nbVerticesY, nbVerticesZ); // This function prevent from cutting the scene in too many blocs
 
-    osg::notify(osg::INFO)
+    OSG_NOTIFY(osg::INFO)
         << "Cutting x by " << nbVerticesX << std::endl
         << "Cutting y by " << nbVerticesY << std::endl
         << "Cutting z by " << nbVerticesZ << std::endl;
@@ -119,16 +120,17 @@ WriterCompareTriangle::inWhichBox(const osg::BoundingBox::value_type x,
     for (unsigned int i = 0; i < boxList.size(); ++i)
     {
         if (x >= boxList[i].xMin() && 
-            x < boxList[i].xMax() &&
+            x <  boxList[i].xMax() &&
             y >= boxList[i].yMin() &&
-            y < boxList[i].yMax() &&
+            y <  boxList[i].yMax() &&
             z >= boxList[i].zMin() &&
-            z < boxList[i].zMax())
+            z <  boxList[i].zMax())
         {
             return i;
         }
     }
-    throw "Point is not in any blocs";
+    assert(false && "Point is not in any blocs");
+    return 0;
 }
 
 int WriterCompareTriangle::inWhichBox(const osg::BoundingBox::vec_type & point) const {

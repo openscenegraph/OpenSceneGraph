@@ -186,7 +186,7 @@ class OSG_EXPORT Shader : public osg::Object
 
     public:
         /** PerContextShader (PCS) is an OSG-internal encapsulation of glShader per-GL context. */
-        class PerContextShader : public osg::Referenced
+        class OSG_EXPORT PerContextShader : public osg::Referenced
         {
             public:
                 PerContextShader(const Shader* shader, unsigned int contextID);

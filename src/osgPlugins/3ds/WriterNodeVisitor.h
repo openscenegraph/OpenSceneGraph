@@ -58,8 +58,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
                         const osgDB::ReaderWriter::Options* options, 
                         const std::string & srcDirectory);
 
-        bool        suceedLastApply() const;
-        void        failedApply();
+        bool succeeded() const { return _succeeded; }
         virtual void apply(osg::Geode &node);
         virtual void apply(osg::Billboard &node);
 
@@ -145,8 +144,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
         *  Calculate the number of vertices in the geode.
         *  \return the number of vertices in the geode.
         */
-        unsigned int 
-        calcVertices(osg::Geode & geo);
+        unsigned int calcVertices(osg::Geode & geo);
 
         /** 
         *  Build a mesh
@@ -197,7 +195,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
 
         void apply3DSMatrixNode(osg::Node &node, const osg::Matrix & m, const char * const prefix);
 
-        bool                                _suceedLastApply;
+        bool                                _succeeded;
         std::string                         _directory;
         std::string                         _srcDirectory;
         Lib3dsFile *                        file3ds;

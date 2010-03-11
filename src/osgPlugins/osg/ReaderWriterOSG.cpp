@@ -107,8 +107,12 @@ USE_DOTOSGWRAPPER(Viewport)
 class OSGReaderWriter : public ReaderWriter
 {
     public:
-    
-        OSGReaderWriter()
+
+        mutable OpenThreads::Mutex _mutex;
+        mutable bool _wrappersLoaded;
+
+        OSGReaderWriter():
+            _wrappersLoaded(false)
         {
 
             supportsExtension("osg","OpenSceneGraph Ascii file format");
@@ -118,19 +122,31 @@ class OSGReaderWriter : public ReaderWriter
             supportsOption("includeExternalReferences","Export option");
             supportsOption("writeExternalReferenceFiles","Export option");
 
+        }
+
+        virtual const char* className() const { return "OSG Reader/Writer"; }
+
+        bool loadWrappers() const
+        {
+            if (_wrappersLoaded) return true;
+
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            if (_wrappersLoaded) return true;
+
             std::string filename = osgDB::Registry::instance()->createLibraryNameForExtension("deprecated_osg");
             if (osgDB::Registry::instance()->loadLibrary(filename)==osgDB::Registry::LOADED)
             {
-                OSG_NOTIFY(osg::NOTICE)<<"Constructor OSGReaderWriter - loaded OK"<<std::endl;
+                OSG_INFO<<"OSGReaderWriter wrappers loaded OK"<<std::endl;
+                _wrappersLoaded = true;
+                return true;
             }
             else
             {
-                OSG_NOTIFY(osg::NOTICE)<<"Constructor OSGReaderWriter - failed to load"<<std::endl;
+                OSG_NOTICE<<"OSGReaderWriter wrappers failed to load"<<std::endl;
+                _wrappersLoaded = true;
+                return false;
             }
-
         }
-    
-        virtual const char* className() const { return "OSG Reader/Writer"; }
 
         virtual ReadResult readObject(const std::string& file, const Options* opt) const
         {
@@ -162,6 +178,8 @@ class OSGReaderWriter : public ReaderWriter
 
         virtual ReadResult readObject(std::istream& fin, const Options* options) const
         {
+            loadWrappers();
+
             fin.imbue(std::locale::classic());
 
             Input fr;
@@ -224,6 +242,8 @@ class OSGReaderWriter : public ReaderWriter
         
         virtual ReadResult readNode(std::istream& fin, const Options* options) const
         {
+            loadWrappers();
+
             fin.imbue(std::locale::classic());
 
             Input fr;
@@ -313,9 +333,10 @@ class OSGReaderWriter : public ReaderWriter
 
         virtual WriteResult writeObject(const Object& obj,std::ostream& fout, const osgDB::ReaderWriter::Options* options) const
         {
-
             if (fout)
             {
+                loadWrappers();
+
                 Output foutput;
                 foutput.setOptions(options);
 
@@ -338,10 +359,11 @@ class OSGReaderWriter : public ReaderWriter
             std::string ext = getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
-
             Output fout(fileName.c_str());
             if (fout)
             {
+                loadWrappers();
+
                 fout.setOptions(options);
 
                 fout.imbue(std::locale::classic());
@@ -357,10 +379,10 @@ class OSGReaderWriter : public ReaderWriter
 
         virtual WriteResult writeNode(const Node& node, std::ostream& fout, const osgDB::ReaderWriter::Options* options) const
         {
-
-
             if (fout)
             {
+                loadWrappers();
+
                 Output foutput;
                 foutput.setOptions(options);
 

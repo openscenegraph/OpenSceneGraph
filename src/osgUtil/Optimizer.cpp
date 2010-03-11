@@ -39,6 +39,7 @@
 #include <osgUtil/TriStripVisitor>
 #include <osgUtil/Tessellator>
 #include <osgUtil/Statistics>
+#include <osgUtil/MeshOptimizers>
 
 #include <typeinfo>
 #include <algorithm>
@@ -54,7 +55,7 @@ void Optimizer::reset()
 {
 }
 
-static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","OFF | DEFAULT | FLATTEN_STATIC_TRANSFORMS | FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | MERGE_GEODES | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY | OPTIMIZE_TEXTURE_SETTINGS | REMOVE_LOADED_PROXY_NODES | TESSELLATE_GEOMETRY | CHECK_GEOMETRY |  FLATTEN_BILLBOARDS | TEXTURE_ATLAS_BUILDER | STATIC_OBJECT_DETECTION");
+static osg::ApplicationUsageProxy Optimizer_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_OPTIMIZER \"<type> [<type>]\"","OFF | DEFAULT | FLATTEN_STATIC_TRANSFORMS | FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS | REMOVE_REDUNDANT_NODES | COMBINE_ADJACENT_LODS | SHARE_DUPLICATE_STATE | MERGE_GEOMETRY | MERGE_GEODES | SPATIALIZE_GROUPS  | COPY_SHARED_NODES  | TRISTRIP_GEOMETRY | OPTIMIZE_TEXTURE_SETTINGS | REMOVE_LOADED_PROXY_NODES | TESSELLATE_GEOMETRY | CHECK_GEOMETRY |  FLATTEN_BILLBOARDS | TEXTURE_ATLAS_BUILDER | STATIC_OBJECT_DETECTION | INDEX_MESH | VERTEX_POSTTRANSFORM | VERTEX_PRETRANSFORM");
 
 void Optimizer::optimize(osg::Node* node)
 {
@@ -124,6 +125,15 @@ void Optimizer::optimize(osg::Node* node)
         
         if(str.find("~STATIC_OBJECT_DETECTION")!=std::string::npos) options ^= STATIC_OBJECT_DETECTION;
         else if(str.find("STATIC_OBJECT_DETECTION")!=std::string::npos) options |= STATIC_OBJECT_DETECTION;
+
+        if(str.find("~INDEX_MESH")!=std::string::npos) options ^= INDEX_MESH;
+        else if(str.find("INDEX_MESH")!=std::string::npos) options |= INDEX_MESH;
+
+        if(str.find("~VERTEX_POSTTRANSFORM")!=std::string::npos) options ^= VERTEX_POSTTRANSFORM;
+        else if(str.find("VERTEX_POSTTRANSFORM")!=std::string::npos) options |= VERTEX_POSTTRANSFORM;
+
+        if(str.find("~VERTEX_PRETRANSFORM")!=std::string::npos) options ^= VERTEX_PRETRANSFORM;
+        else if(str.find("VERTEX_PRETRANSFORM")!=std::string::npos) options |= VERTEX_PRETRANSFORM;
 
     }
     else
@@ -345,6 +355,30 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         SpatializeGroupsVisitor sv(this);
         node->accept(sv);
         sv.divide();
+    }
+
+    if (options & INDEX_MESH)
+    {
+        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing INDEX_MESH"<<std::endl;
+        IndexMeshVisitor imv(this);
+        node->accept(imv);
+        imv.makeMesh();
+    }
+
+    if (options & VERTEX_POSTTRANSFORM)
+    {
+        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing VERTEX_POSTTRANSFORM"<<std::endl;
+        VertexCacheVisitor vcv;
+        node->accept(vcv);
+        vcv.optimizeVertices();
+    }
+
+    if (options & VERTEX_PRETRANSFORM)
+    {
+        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing VERTEX_PRETRANSFORM"<<std::endl;
+        VertexAccessOrderVisitor vaov;
+        node->accept(vaov);
+        vaov.optimizeOrder();
     }
 
     if (osg::getNotifyLevel()>=osg::INFO)

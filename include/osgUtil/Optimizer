@@ -85,6 +85,9 @@ class OSGUTIL_EXPORT Optimizer
             TEXTURE_ATLAS_BUILDER =     (1 << 15),
             STATIC_OBJECT_DETECTION =   (1 << 16),
             FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS = (1 << 17),
+            INDEX_MESH =                (1 << 18),
+            VERTEX_POSTTRANSFORM =      (1 << 19),
+            VERTEX_PRETRANSFORM =       (1 << 20),
             DEFAULT_OPTIMIZATIONS = FLATTEN_STATIC_TRANSFORMS |
                                 REMOVE_REDUNDANT_NODES |
                                 REMOVE_LOADED_PROXY_NODES |

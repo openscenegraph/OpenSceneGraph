@@ -24,6 +24,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/IntersectVisitor
     ${HEADER_PATH}/IncrementalCompileOperation
     ${HEADER_PATH}/LineSegmentIntersector
+    ${HEADER_PATH}/MeshOptimizers
     ${HEADER_PATH}/OperationArrayFunctor
     ${HEADER_PATH}/Optimizer
     ${HEADER_PATH}/PlaneIntersector
@@ -67,6 +68,7 @@ ADD_LIBRARY(${LIB_NAME}
     IntersectVisitor.cpp
     IncrementalCompileOperation.cpp
     LineSegmentIntersector.cpp
+    MeshOptimizers.cpp
     Optimizer.cpp
     PlaneIntersector.cpp
     PolytopeIntersector.cpp

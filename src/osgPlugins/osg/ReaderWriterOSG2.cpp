@@ -110,21 +110,11 @@ public:
                         "<IncludeFile> writes the image file itself to stream; "
                         "<UseExternal> writes only the filename; "
                         "<WriteOut> writes Image::data() to disk as external file." );
-
-        std::string filename = osgDB::Registry::instance()->createLibraryNameForExtension("serializers_osg");
-        if (osgDB::Registry::instance()->loadLibrary(filename)==osgDB::Registry::LOADED)
-        {
-            OSG_NOTIFY(osg::NOTICE)<<"Constructor ReaderWriterOSG2 - loaded OK"<<std::endl;
-        }
-        else
-        {
-            OSG_NOTIFY(osg::NOTICE)<<"Constructor ReaderWriterOSG2 - failed to load"<<std::endl;
-        }
     }
-    
-    virtual const char* className() const
-    { return "OpenSceneGraph Native Format Reader/Writer"; }
-    
+
+    virtual const char* className() const { return "OpenSceneGraph Native Format Reader/Writer"; }
+
+
     Options* prepareReading( ReadResult& result, std::string& fileName, const Options* options ) const
     {
         std::string ext = osgDB::getLowerCaseFileExtension( fileName );

@@ -607,6 +607,3 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
     while (arguments.read("--gl-profile-mask", _glContextProfileMask)) {}
 
 }
-
-
-

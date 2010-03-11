@@ -30,16 +30,21 @@ class RenderBinPrototypeList : osg::depends_on<OpenThreads::Mutex*, osg::Referen
                                public osg::Referenced, public std::map< std::string, osg::ref_ptr<RenderBin> >
 {
     public:
-        RenderBinPrototypeList() {}
+        RenderBinPrototypeList()
+        {
+            add("RenderBin",new RenderBin(RenderBin::getDefaultRenderBinSortMode()));
+            add("StateSortedBin",new RenderBin(RenderBin::SORT_BY_STATE));
+            add("DepthSortedBin",new RenderBin(RenderBin::SORT_BACK_TO_FRONT));
+            add("TraversalOrderBin",new RenderBin(RenderBin::TRAVERSAL_ORDER));
+        }
+
+        void add(const std::string& name, RenderBin* bin)
+        {
+            (*this)[name] = bin;
+        }
+
         ~RenderBinPrototypeList() {}
 };
-
-// register a RenderStage prototype with the RenderBin prototype list.
-RegisterRenderBinProxy s_registerRenderBinProxy("RenderBin",new RenderBin(RenderBin::getDefaultRenderBinSortMode()));
-RegisterRenderBinProxy s_registerStateSortedBinProxy("StateSortedBin",new RenderBin(RenderBin::SORT_BY_STATE));
-RegisterRenderBinProxy s_registerDepthSortedBinProxy("DepthSortedBin",new RenderBin(RenderBin::SORT_BACK_TO_FRONT));
-RegisterRenderBinProxy s_registerTraversalOrderProxy("TraversalOrderBin",new RenderBin(RenderBin::TRAVERSAL_ORDER));
-
 
 static RenderBinPrototypeList* renderBinPrototypeList()
 {

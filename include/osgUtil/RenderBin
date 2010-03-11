@@ -169,26 +169,6 @@ class OSGUTIL_EXPORT RenderBin : public osg::Object
 
 };
 
-/** Proxy class for automatic registration of renderbins with the RenderBin prototypelist.*/
-class RegisterRenderBinProxy
-{
-    public:
-        RegisterRenderBinProxy(const std::string& binName,RenderBin* proto)
-        {
-            _rb = proto;
-            RenderBin::addRenderBinPrototype(binName,_rb.get());
-        }
-
-        ~RegisterRenderBinProxy()
-        {
-            RenderBin::removeRenderBinPrototype(_rb.get());
-        }
-        
-    protected:
-        osg::ref_ptr<RenderBin> _rb;
-};
-
-
 }
 
 #endif

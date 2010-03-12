@@ -555,7 +555,7 @@ TriangleScore computeTriScores(Vertex& vert, const VertexList& vertices,
                                TriangleList& triangles, vector<unsigned>& triStore)
 {
     float bestScore = 0.0;
-    unsigned bestTri;
+    unsigned bestTri = 0;
     for (size_t i = vert.triList;
          i < vert.triList + vert.numActiveTris;
          ++i)

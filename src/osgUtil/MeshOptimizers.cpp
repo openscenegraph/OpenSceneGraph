@@ -429,7 +429,7 @@ struct LRUCache
         }
         // Now make room still needed for new cache entries
         size_t newEnts = end - begin;
-        ssize_t spaceNeeded = newEnts - (entries.rend() - validEnd);
+        int spaceNeeded = newEnts - (entries.rend() - validEnd);
         if (spaceNeeded > 0)
         {
             if (maxSize - entries.size() >= static_cast<unsigned>(spaceNeeded))

@@ -1053,19 +1053,29 @@ void GraphicsWindowCarbon::transformMouseXY(float& x, float& y)
 
 class CarbonWindowingSystemInterface : public  DarwinWindowingSystemInterface {
 public:
-    CarbonWindowingSystemInterface()
-    :    DarwinWindowingSystemInterface()
+    CarbonWindowingSystemInterface() : DarwinWindowingSystemInterface()
     {
+    }
+
+    virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits) 
+    {
+        _init();
+
+        return createGraphicsContextImplementation<PixelBufferCarbon, GraphicsWindowCarbon>(traits);
+    }
+
+    virtual void _init()
+    {
+        if (_initialized) return;
+
+        DarwinWindowingSystemInterface::init();
+
         // register application event handler and AppleEventHandler to get quit-events:
         static const EventTypeSpec menueventSpec = {kEventClassCommand, kEventCommandProcess};
         OSErr status = InstallEventHandler(GetApplicationEventTarget(), NewEventHandlerUPP(ApplicationEventHandler), 1, &menueventSpec, 0, NULL);
         status = AEInstallEventHandler( kCoreEventClass, kAEQuitApplication, NewAEEventHandlerUPP(QuitAppleEventHandler), 0, false);
     }
-    
-    virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits) 
-    {
-        return createGraphicsContextImplementation<PixelBufferCarbon, GraphicsWindowCarbon>(traits);
-    }
+
 };
 
 

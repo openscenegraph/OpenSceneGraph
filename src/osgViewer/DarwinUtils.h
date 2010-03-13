@@ -90,7 +90,9 @@ struct DarwinWindowingSystemInterface : public osg::GraphicsContext::WindowingSy
         unsigned int getScreenContaining(int x, int y, int w, int h);
     
     protected:
-    
+
+        virtual void _init();
+
         /** implementation of setScreenResolution */
         bool setScreenResolutionImpl(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, unsigned int width, unsigned int height) ;
 
@@ -117,6 +119,8 @@ struct DarwinWindowingSystemInterface : public osg::GraphicsContext::WindowingSy
     
     
     private:
+
+        bool                  _initialized;
         CGDisplayCount        _displayCount;
         CGDirectDisplayID*    _displayIds;
 

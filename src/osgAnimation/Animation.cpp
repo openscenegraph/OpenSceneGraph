@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -16,13 +16,18 @@
 
 using namespace osgAnimation;
 
-Animation::Animation(const osgAnimation::Animation& anim, const osg::CopyOp& c)
+Animation::Animation(const osgAnimation::Animation& anim, const osg::CopyOp& copyop): osg::Object(anim, copyop),
+    _duration(anim._duration),
+    _originalDuration(anim._originalDuration),
+    _weight(anim._weight),
+    _startTime(anim._startTime),
+    _playmode(anim._playmode)
 {
-    _duration = anim._duration;
-    _originalDuration = anim._originalDuration;
-    _weight = anim._weight;
-    _startTime = anim._startTime;
-    _playmode = anim._playmode;
+    const ChannelList& cl = anim.getChannels();
+    for (ChannelList::const_iterator it = cl.begin(); it != cl.end(); ++it)
+    {
+        addChannel(it->get()->clone());
+    }
 }
 
 
@@ -90,7 +95,7 @@ void Animation::setWeight (float weight)
     _weight = weight;
 }
 
-bool Animation::update (float time)
+bool Animation::update (float time, int priority)
 {
     if (!_duration) // if not initialized then do it
         computeDuration();
@@ -128,13 +133,10 @@ bool Animation::update (float time)
         break;
     }
 
-    //  std::cout << "t " << t << " / " << _duration << std::endl;
-
     ChannelList::const_iterator chan;
-    for( chan=_channels.begin(); chan!=_channels.end(); ++chan) 
+    for( chan=_channels.begin(); chan!=_channels.end(); ++chan)
     {
-        (*chan)->setWeight(_weight);
-        (*chan)->update(t);
+        (*chan)->update(t, _weight, priority);
     }
     return true;
 }

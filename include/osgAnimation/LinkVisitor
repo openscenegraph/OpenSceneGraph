@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -16,37 +16,39 @@
 #define OSGANIMATION_NODE_VISITOR_H
 
 #include <osg/NodeVisitor>
+#include <osg/StateSet>
 #include <osgAnimation/Animation>
-#include <osgAnimation/UpdateCallback>
 
 namespace osgAnimation 
 {
+    class AnimationUpdateCallbackBase;
 
-    struct LinkVisitor : public osg::NodeVisitor
+    /** This class is instancied by the AnimationManagerBase, it will link animation target to updatecallback that have the same name
+     */
+    class OSGANIMATION_EXPORT LinkVisitor : public osg::NodeVisitor
     {
+    public:
+        LinkVisitor();
+
+        META_NodeVisitor("osgAnimation","LinkVisitor");
+
+        void apply(osg::Node& node);
+        void apply(osg::Geode& node);
+
+        AnimationList& getAnimationList();
+        void reset();
+        unsigned int getNbLinkedTarget() const { return _nbLinkedTarget; }
+
+    protected:
+
+        void handle_stateset(osg::StateSet* stateset);
+        void link(osgAnimation::AnimationUpdateCallbackBase* cb);
+
+        // animation list to link
         AnimationList _animations;
+
+        // number of success link done
         unsigned int _nbLinkedTarget;
-        
-        LinkVisitor(Animation* animation) : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) { _animations.push_back(animation); _nbLinkedTarget = 0;}
-        LinkVisitor(const AnimationList& animations) : osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) { _animations = animations; _nbLinkedTarget = 0;}
-
-        META_NodeVisitor("osgAnimation","LinkVisitor")
-
-        void apply(osg::Node& node) 
-        {
-            osgAnimation::AnimationUpdateCallback* cb = dynamic_cast<osgAnimation::AnimationUpdateCallback*>(node.getUpdateCallback());
-            if (cb) 
-            {
-                int result = 0;
-                for (int i = 0; i < (int)_animations.size(); i++)
-                {
-                    result += cb->link(_animations[i].get());
-                    _nbLinkedTarget += result;
-                }
-                std::cout << "LinkVisitor links " << result << " for \"" << cb->getName() << '"' << std::endl;
-            }
-            traverse(node);
-        }
     };
 
 }

@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -14,6 +14,7 @@
 
 #include <osgAnimation/AnimationManagerBase>
 #include <osgAnimation/LinkVisitor>
+#include <algorithm>
 
 using namespace osgAnimation;
 
@@ -21,23 +22,27 @@ AnimationManagerBase::~AnimationManagerBase() {}
 
 AnimationManagerBase::AnimationManagerBase()
 {
-    _needToLink = false; 
+    _needToLink = false;
+    _automaticLink = true;
 }
 
 void AnimationManagerBase::clearTargets()
 {
-    for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
+    for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); ++it)
         (*it).get()->reset();
 }
-void AnimationManagerBase::normalizeTargets()
+
+void AnimationManagerBase::dirty()
 {
-    for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
-        (*it).get()->normalize();
+    _needToLink = true;
 }
+
+void AnimationManagerBase::setAutomaticLink(bool state) { _automaticLink = state; }
+bool AnimationManagerBase::isAutomaticLink() const { return _automaticLink; }
 
 void AnimationManagerBase::operator()(osg::Node* node, osg::NodeVisitor* nv)
 { 
-    if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR) 
+    if (nv && nv->getVisitorType() == osg::NodeVisitor::UPDATE_VISITOR)
     {
         if (needToLink())
         {
@@ -57,22 +62,30 @@ void AnimationManagerBase::operator()(osg::Node* node, osg::NodeVisitor* nv)
 }
 
 
-AnimationManagerBase::AnimationManagerBase(const AnimationManagerBase& b, const osg::CopyOp& copyop) : osg::NodeCallback(b,copyop) 
+AnimationManagerBase::AnimationManagerBase(const AnimationManagerBase& b, const osg::CopyOp& copyop) : osg::NodeCallback(b,copyop)
 {
-    _animations = b._animations;
-    _targets = b._targets;
-    _needToLink = b._needToLink;
+    const AnimationList& animationList = b.getAnimationList();
+    for (AnimationList::const_iterator it = animationList.begin();
+         it != animationList.end();
+         ++it)
+    {
+        Animation* animation = dynamic_cast<osgAnimation::Animation*>(it->get()->clone(copyop));
+        _animations.push_back(animation);
+    }
+    _needToLink = true;
+    _automaticLink = b._automaticLink;
+    buildTargetReference();
 }
 
 void AnimationManagerBase::buildTargetReference()
 {
     _targets.clear();
-    for( AnimationList::iterator iterAnim = _animations.begin(); iterAnim != _animations.end(); ++iterAnim ) 
+    for( AnimationList::iterator iterAnim = _animations.begin(); iterAnim != _animations.end(); ++iterAnim )
     {
         Animation* anim = (*iterAnim).get();
         for (ChannelList::iterator it = anim->getChannels().begin();
              it != anim->getChannels().end();
-             it++)
+             ++it)
             _targets.insert((*it)->getTarget());
     }
 }
@@ -85,14 +98,38 @@ void AnimationManagerBase::registerAnimation (Animation* animation)
     buildTargetReference();
 }
 
-bool AnimationManagerBase::needToLink() const { return _needToLink; }
+void AnimationManagerBase::unregisterAnimation (Animation* animation)
+{
+    AnimationList::iterator it = std::find(_animations.begin(), _animations.end(), animation);
+    if (it != _animations.end())
+    {
+        _animations.erase(it);
+    }
+    buildTargetReference();
+}
+
+bool AnimationManagerBase::needToLink() const { return _needToLink && isAutomaticLink(); }
 
 
+void AnimationManagerBase::setLinkVisitor(LinkVisitor* visitor)
+{
+    _linker = visitor;
+}
+
+LinkVisitor* AnimationManagerBase::getOrCreateLinkVisitor()
+{
+    if (!_linker.valid())
+        _linker = new LinkVisitor;
+    return _linker.get();
+}
 
 void AnimationManagerBase::link(osg::Node* subgraph)
 {
-    LinkVisitor linker(_animations);
-    subgraph->accept(linker);
+    LinkVisitor* linker = getOrCreateLinkVisitor();
+    linker->getAnimationList().clear();
+    linker->getAnimationList() = _animations;
+
+    subgraph->accept(*linker);
     _needToLink = false;
     buildTargetReference();
 }

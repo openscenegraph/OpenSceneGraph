@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -31,7 +31,7 @@ namespace osgAnimation
         META_Object(osgAnimation, Animation)
 
         Animation() : _duration(0), _weight(0), _startTime(0), _playmode(LOOP) {}
-        Animation(const osgAnimation::Animation& anim, const osg::CopyOp&);
+        Animation(const osgAnimation::Animation&, const osg::CopyOp&);
 
         enum PlayMode
         {
@@ -71,10 +71,12 @@ namespace osgAnimation
         void setWeight (float weight);
         float getWeight() const;
 
-        bool update (float time);
+        bool update (float time, int priority = 0);
         void resetTargets();
 
         void setPlaymode (PlayMode mode) { _playmode = mode; }
+        PlayMode getPlayMode() const { return _playmode; }
+        
         void setStartTime(float time)  { _startTime = time;}
         float getStartTime() const { return _startTime;}
 

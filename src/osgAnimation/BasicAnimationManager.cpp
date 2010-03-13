@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -38,7 +38,7 @@ void BasicAnimationManager::stopAll()
     for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim ) 
     {
         AnimationList& list = iterAnim->second;
-        for (AnimationList::iterator it = list.begin(); it != list.end(); it++)
+        for (AnimationList::iterator it = list.begin(); it != list.end(); ++it)
             (*it)->resetTargets();
     }
     _animationsPlaying.clear();
@@ -47,14 +47,14 @@ void BasicAnimationManager::stopAll()
 void BasicAnimationManager::playAnimation(Animation* pAnimation, int priority, float weight)
 {
     if (!findAnimation(pAnimation))
-    {
         return;
-    }
 
     if ( isPlaying(pAnimation) )
         stopAnimation(pAnimation);
   
     _animationsPlaying[priority].push_back(pAnimation);
+    // for debug
+    //std::cout << "player Animation " << pAnimation->getName() << " at " << _lastUpdate << std::endl;
     pAnimation->setStartTime(_lastUpdate);
     pAnimation->setWeight(weight);
 }
@@ -62,10 +62,10 @@ void BasicAnimationManager::playAnimation(Animation* pAnimation, int priority, f
 bool BasicAnimationManager::stopAnimation(Animation* pAnimation)
 {
     // search though the layer and remove animation
-    for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim ) 
+    for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim )
     {
         AnimationList& list = iterAnim->second;
-        for (AnimationList::iterator it = list.begin(); it != list.end(); it++)
+        for (AnimationList::iterator it = list.begin(); it != list.end(); ++it)
             if( (*it) == pAnimation )
             {
                 (*it)->resetTargets();
@@ -79,11 +79,10 @@ bool BasicAnimationManager::stopAnimation(Animation* pAnimation)
 
 void BasicAnimationManager::update (double time)
 {
-    if (!_lastUpdate)
-        _lastUpdate = time;
+    _lastUpdate = time; // keep time of last update
 
     // could filtered with an active flag
-    for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
+    for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); ++it)
         (*it).get()->reset();
 
     // update from high priority to low priority
@@ -91,11 +90,20 @@ void BasicAnimationManager::update (double time)
     {
         // update all animation
         std::vector<int> toremove;
+        int priority = iterAnim->first;
         AnimationList& list = iterAnim->second;
         for (unsigned int i = 0; i < list.size(); i++)
         {
-            if (! list[i]->update(time))
+            if (! list[i]->update(time, priority)) 
+            {
+                // debug
+                // std::cout << list[i]->getName() << " finished at " << time << std::endl;
                 toremove.push_back(i);
+            } else 
+            {
+                // debug
+                //std::cout << list[i]->getName() << " updated" << std::endl;
+            }
         }
 
         // remove finished animation
@@ -105,9 +113,6 @@ void BasicAnimationManager::update (double time)
             toremove.pop_back();
         }
     }
-
-    for (TargetSet::iterator it = _targets.begin(); it != _targets.end(); it++)
-        (*it).get()->normalize();
 }
 
 
@@ -127,7 +132,7 @@ bool BasicAnimationManager::isPlaying(Animation* pAnimation)
     for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim )
     {
         AnimationList& list = iterAnim->second;
-        for (AnimationList::iterator it = list.begin(); it != list.end(); it++)
+        for (AnimationList::iterator it = list.begin(); it != list.end(); ++it)
             if ( (*it) == pAnimation )
                 return true;
     }
@@ -140,7 +145,7 @@ bool BasicAnimationManager::isPlaying(const std::string& name)
     for( AnimationLayers::iterator iterAnim = _animationsPlaying.begin(); iterAnim != _animationsPlaying.end(); ++iterAnim )
     {
         AnimationList& list = iterAnim->second;
-        for (AnimationList::iterator it = list.begin(); it != list.end(); it++)
+        for (AnimationList::iterator it = list.begin(); it != list.end(); ++it)
             if ( (*it)->getName() == name )
                 return true;
     }

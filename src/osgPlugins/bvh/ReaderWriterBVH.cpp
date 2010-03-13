@@ -8,6 +8,10 @@
 
 #include <osgAnimation/Bone>
 #include <osgAnimation/Skeleton>
+#include <osgAnimation/UpdateBone>
+#include <osgAnimation/StackedTransform>
+#include <osgAnimation/StackedTranslateElement>
+#include <osgAnimation/StackedQuaternionElement>
 #include <osgAnimation/BasicAnimationManager>
 
 class BvhMotionBuilder : public osg::Referenced
@@ -39,7 +43,17 @@ public:
             if ( fr.readSequence(offset) )
             {
                 // Process OFFSET section
-                parent->setBindMatrixInBoneSpace( osg::Matrix::translate(offset) );
+                parent->setMatrixInSkeletonSpace( osg::Matrix::translate(offset) *
+                                                  parent->getMatrixInSkeletonSpace() );
+                osgAnimation::UpdateBone* updateBone =
+                    static_cast<osgAnimation::UpdateBone*>( parent->getUpdateCallback() );
+                if ( updateBone )
+                {
+                    osgAnimation::StackedTransform& stack = updateBone->getStackedTransforms();
+                    stack.push_back( new osgAnimation::StackedTranslateElement("position", offset) );
+                    stack.push_back( new osgAnimation::StackedQuaternionElement("quaternion", osg::Quat()) );
+                }
+                
                 if ( _drawingFlag && parent->getNumParents() && level>0 )
                     parent->getParent(0)->addChild( createRefGeometry(offset, 0.5).get() );
             }
@@ -77,9 +91,10 @@ public:
                 {
                     // Process End Site section
                     osg::ref_ptr<osgAnimation::Bone> bone = new osgAnimation::Bone( parent->getName()+"End" );
-                    bone->setBindMatrixInBoneSpace( osg::Matrix::translate(offsetEndSite) );
+                    bone->setMatrixInSkeletonSpace( osg::Matrix::translate(offsetEndSite) *
+                                                    bone->getMatrixInSkeletonSpace() );
                     bone->setDataVariance( osg::Object::DYNAMIC );
-                    parent->addChild( bone.get() );
+                    parent->insertChild( 0, bone.get() );
 
                     if ( _drawingFlag )
                         parent->addChild( createRefGeometry(offsetEndSite, 0.5).get() );
@@ -94,9 +109,9 @@ public:
 
             // Process JOINT section
             osg::ref_ptr<osgAnimation::Bone> bone = new osgAnimation::Bone( fr[1].getStr() );
-            bone->setDefaultUpdateCallback();
             bone->setDataVariance( osg::Object::DYNAMIC );
-            parent->addChild( bone.get() );
+            bone->setDefaultUpdateCallback();
+            parent->insertChild( 0, bone.get() );
             _joints.push_back( JointNode(bone, 0) );
 
             int entry = fr[1].getNoNestedBrackets();
@@ -194,8 +209,13 @@ public:
         osgDB::Input fr;
         fr.attach( &stream );
 
+        osg::ref_ptr<osgAnimation::Bone> boneroot = new osgAnimation::Bone( "Root" );
+        boneroot->setDefaultUpdateCallback();
+
         osg::ref_ptr<osgAnimation::Skeleton> skelroot = new osgAnimation::Skeleton;
         skelroot->setDefaultUpdateCallback();
+        skelroot->insertChild( 0, boneroot.get() );
+
         osg::ref_ptr<osgAnimation::Animation> anim = new osgAnimation::Animation;
 
         while( !fr.eof() )
@@ -203,7 +223,7 @@ public:
             if ( fr.matchSequence("HIERARCHY") )
             {
                 ++fr;
-                buildHierarchy( fr, 0, skelroot.get() );
+                buildHierarchy( fr, 0, boneroot.get() );
             }
             else if ( fr.matchSequence("MOTION") )
             {

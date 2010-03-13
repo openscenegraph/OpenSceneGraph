@@ -42,7 +42,7 @@ void StateAttribute::removeParent(osg::StateSet* object)
 }
 
 
-void StateAttribute::setUpdateCallback(Callback* uc)
+void StateAttribute::setUpdateCallback(StateAttributeCallback* uc)
 {
     osg::notify(osg::INFO)<<"StateAttribute::Setting Update callbacks"<<std::endl;
 
@@ -69,7 +69,7 @@ void StateAttribute::setUpdateCallback(Callback* uc)
     }
 }
 
-void StateAttribute::setEventCallback(Callback* ec)
+void StateAttribute::setEventCallback(StateAttributeCallback* ec)
 {
     osg::notify(osg::INFO)<<"StateAttribute::Setting Event callbacks"<<std::endl;
 

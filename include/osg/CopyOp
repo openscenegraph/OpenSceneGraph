@@ -24,12 +24,15 @@ class Image;
 class Texture;
 class StateSet;
 class StateAttribute;
+class StateAttributeCallback;
 class Uniform;
 class Node;
 class Drawable;
 class Array;
 class PrimitiveSet;
 class Shape;
+class NodeCallback;
+
 
 /** Copy Op(erator) used to control whether shallow or deep copy is used
   * during copy construction and clone operation.*/
@@ -52,6 +55,7 @@ class OSG_EXPORT CopyOp
             DEEP_COPY_PRIMITIVES        = 1<<8,
             DEEP_COPY_SHAPES            = 1<<9,
             DEEP_COPY_UNIFORMS          = 1<<10,
+            DEEP_COPY_CALLBACKS         = 1<<11,
             DEEP_COPY_ALL               = 0x7FFFFFFF
         };
 
@@ -72,6 +76,8 @@ class OSG_EXPORT CopyOp
         virtual PrimitiveSet*   operator() (const PrimitiveSet* primitives) const;
         virtual Shape*          operator() (const Shape* shape) const;
         virtual Uniform*        operator() (const Uniform* shape) const;
+        virtual NodeCallback*   operator() (const NodeCallback* nodecallback) const;
+        virtual StateAttributeCallback* operator() (const StateAttributeCallback* stateattributecallback) const;
 
     protected:
     

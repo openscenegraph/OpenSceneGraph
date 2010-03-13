@@ -1,5 +1,5 @@
 /*  -*-c++-*- 
- *  Copyright (C) 2008 Cedric Pinson <mornifle@plopbyte.net>
+ *  Copyright (C) 2008 Cedric Pinson <cedric.pinson@plopbyte.net>
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -22,7 +22,8 @@
 
 #include <osgAnimation/BasicAnimationManager>
 #include <osgAnimation/Channel>
-#include <osgAnimation/UpdateCallback>
+#include <osgAnimation/UpdateMatrixTransform>
+#include <osgAnimation/StackedTranslateElement>
 
 using namespace osgAnimation;
 
@@ -74,7 +75,9 @@ int main (int argc, char* argv[])
     osg::ref_ptr<osg::MatrixTransform> trans = new osg::MatrixTransform();
     trans->setName("AnimatedNode");
     trans->setDataVariance(osg::Object::DYNAMIC);
-    trans->setUpdateCallback(new osgAnimation::UpdateTransform("AnimatedCallback"));
+    osgAnimation::UpdateMatrixTransform* updatecb = new osgAnimation::UpdateMatrixTransform("AnimatedCallback");
+    updatecb->getStackedTransforms().push_back(new osgAnimation::StackedTranslateElement("position"));
+    trans->setUpdateCallback(updatecb);
     trans->setMatrix(osg::Matrix::identity());
     trans->addChild (geode.get());
 

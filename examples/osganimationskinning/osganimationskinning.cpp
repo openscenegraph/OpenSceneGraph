@@ -18,6 +18,7 @@
 #include <osg/Geode>
 #include <osgViewer/Viewer>
 #include <osgGA/TrackballManipulator>
+#include <osgDB/WriteFile>
 #include <osgUtil/SmoothingVisitor>
 #include <osg/io_utils>
 
@@ -25,6 +26,11 @@
 #include <osgAnimation/Skeleton>
 #include <osgAnimation/RigGeometry>
 #include <osgAnimation/BasicAnimationManager>
+#include <osgAnimation/UpdateMatrixTransform>
+#include <osgAnimation/UpdateBone>
+#include <osgAnimation/StackedTransform>
+#include <osgAnimation/StackedTranslateElement>
+#include <osgAnimation/StackedRotateAxisElement>
 
 osg::Geode* createAxis()
 {
@@ -58,8 +64,9 @@ osg::Geode* createAxis()
 
 osgAnimation::RigGeometry* createTesselatedBox(int nsplit, float size)
 {
-    osgAnimation::RigGeometry* geometry = new osgAnimation::RigGeometry;
+    osgAnimation::RigGeometry* riggeometry = new osgAnimation::RigGeometry;
 
+    osg::Geometry* geometry = new osg::Geometry;
     osg::ref_ptr<osg::Vec3Array> vertices (new osg::Vec3Array());
     osg::ref_ptr<osg::Vec3Array> colors (new osg::Vec3Array());
     geometry->setVertexArray (vertices.get());
@@ -119,7 +126,8 @@ osgAnimation::RigGeometry* createTesselatedBox(int nsplit, float size)
   
     geometry->addPrimitiveSet(new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLES, array->size(), &array->front()));
     geometry->setUseDisplayList( false );
-    return geometry;
+    riggeometry->setSourceGeometry(geometry);
+    return riggeometry;
 }
 
 
@@ -163,22 +171,27 @@ int main (int argc, char* argv[])
     osg::ref_ptr<osgAnimation::Skeleton> skelroot = new osgAnimation::Skeleton;
     skelroot->setDefaultUpdateCallback();
     osg::ref_ptr<osgAnimation::Bone> root = new osgAnimation::Bone;
-    {
-        root->setBindMatrixInBoneSpace(osg::Matrix::identity());
-        root->setBindMatrixInBoneSpace(osg::Matrix::translate(-1,0,0));
-        root->setName("root");
-        root->setDefaultUpdateCallback();
-    }
+    root->setInvBindMatrixInSkeletonSpace(osg::Matrix::inverse(osg::Matrix::translate(-1,0,0)));
+    root->setName("root");
+    osgAnimation::UpdateBone* pRootUpdate = new osgAnimation::UpdateBone("root");
+    pRootUpdate->getStackedTransforms().push_back(new osgAnimation::StackedTranslateElement("translate",osg::Vec3(-1,0,0)));
+    root->setUpdateCallback(pRootUpdate);
 
     osg::ref_ptr<osgAnimation::Bone> right0 = new osgAnimation::Bone;
-    right0->setBindMatrixInBoneSpace(osg::Matrix::translate(1,0,0));
+    right0->setInvBindMatrixInSkeletonSpace(osg::Matrix::inverse(osg::Matrix::translate(0,0,0)));
     right0->setName("right0");
-    right0->setDefaultUpdateCallback("right0");
+    osgAnimation::UpdateBone* pRight0Update = new osgAnimation::UpdateBone("right0");
+    pRight0Update->getStackedTransforms().push_back(new osgAnimation::StackedTranslateElement("translate", osg::Vec3(1,0,0)));
+    pRight0Update->getStackedTransforms().push_back(new osgAnimation::StackedRotateAxisElement("rotate", osg::Vec3(0,0,1), 0));
+    right0->setUpdateCallback(pRight0Update);
 
     osg::ref_ptr<osgAnimation::Bone> right1 = new osgAnimation::Bone;
-    right1->setBindMatrixInBoneSpace(osg::Matrix::translate(1,0,0));
+    right1->setInvBindMatrixInSkeletonSpace(osg::Matrix::inverse(osg::Matrix::translate(1,0,0)));
     right1->setName("right1");
-    right1->setDefaultUpdateCallback("right1");
+    osgAnimation::UpdateBone* pRight1Update = new osgAnimation::UpdateBone("right1");
+    pRight1Update->getStackedTransforms().push_back(new osgAnimation::StackedTranslateElement("translate", osg::Vec3(1,0,0)));
+    pRight1Update->getStackedTransforms().push_back(new osgAnimation::StackedRotateAxisElement("rotate", osg::Vec3(0,0,1), 0));
+    right1->setUpdateCallback(pRight1Update);
 
     root->addChild(right0.get());
     right0->addChild(right1.get());
@@ -190,33 +203,27 @@ int main (int argc, char* argv[])
 
     osgAnimation::Animation* anim = new osgAnimation::Animation;
     {
-        osgAnimation::QuatKeyframeContainer* keys0 = new osgAnimation::QuatKeyframeContainer;
-        osg::Quat rotate;
-        rotate.makeRotate(osg::PI_2, osg::Vec3(0,0,1));
-        keys0->push_back(osgAnimation::QuatKeyframe(0,osg::Quat(0,0,0,1)));
-        keys0->push_back(osgAnimation::QuatKeyframe(3,rotate));
-        keys0->push_back(osgAnimation::QuatKeyframe(6,rotate));
-        osgAnimation::QuatSphericalLinearSampler* sampler = new osgAnimation::QuatSphericalLinearSampler;
+        osgAnimation::FloatKeyframeContainer* keys0 = new osgAnimation::FloatKeyframeContainer;
+        keys0->push_back(osgAnimation::FloatKeyframe(0,0));
+        keys0->push_back(osgAnimation::FloatKeyframe(3,osg::PI_2));
+        keys0->push_back(osgAnimation::FloatKeyframe(6,osg::PI_2));
+        osgAnimation::FloatLinearSampler* sampler = new osgAnimation::FloatLinearSampler;
         sampler->setKeyframeContainer(keys0);
-        // osgAnimation::AnimationUpdateCallback* cb = dynamic_cast<osgAnimation::AnimationUpdateCallback*>(right0->getUpdateCallback());
-        osgAnimation::QuatSphericalLinearChannel* channel = new osgAnimation::QuatSphericalLinearChannel(sampler);
-        channel->setName("quaternion");
+        osgAnimation::FloatLinearChannel* channel = new osgAnimation::FloatLinearChannel(sampler);
+        channel->setName("rotate");
         channel->setTargetName("right0");
         anim->addChannel(channel);
     }
 
     {
-        osgAnimation::QuatKeyframeContainer* keys1 = new osgAnimation::QuatKeyframeContainer;
-        osg::Quat rotate;
-        rotate.makeRotate(osg::PI_2, osg::Vec3(0,0,1));
-        keys1->push_back(osgAnimation::QuatKeyframe(0,osg::Quat(0,0,0,1)));
-        keys1->push_back(osgAnimation::QuatKeyframe(3,osg::Quat(0,0,0,1)));
-        keys1->push_back(osgAnimation::QuatKeyframe(6,rotate));
-        osgAnimation::QuatSphericalLinearSampler* sampler = new osgAnimation::QuatSphericalLinearSampler;
+        osgAnimation::FloatKeyframeContainer* keys1 = new osgAnimation::FloatKeyframeContainer;
+        keys1->push_back(osgAnimation::FloatKeyframe(0,0));
+        keys1->push_back(osgAnimation::FloatKeyframe(3,0));
+        keys1->push_back(osgAnimation::FloatKeyframe(6,osg::PI_2));
+        osgAnimation::FloatLinearSampler* sampler = new osgAnimation::FloatLinearSampler;
         sampler->setKeyframeContainer(keys1);
-        osgAnimation::QuatSphericalLinearChannel* channel = new osgAnimation::QuatSphericalLinearChannel(sampler);
-        //osgAnimation::AnimationUpdateCallback* cb = dynamic_cast<osgAnimation::AnimationUpdateCallback*>(right1->getUpdateCallback());
-        channel->setName("quaternion");
+        osgAnimation::FloatLinearChannel* channel = new osgAnimation::FloatLinearChannel(sampler);
+        channel->setName("rotate");
         channel->setTargetName("right1");
         anim->addChannel(channel);
     }
@@ -245,7 +252,7 @@ int main (int argc, char* argv[])
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geom);
     skelroot->addChild(geode);
-    osg::ref_ptr<osg::Vec3Array> src = dynamic_cast<osg::Vec3Array*>(geom->getVertexArray());
+    osg::ref_ptr<osg::Vec3Array> src = dynamic_cast<osg::Vec3Array*>(geom->getSourceGeometry()->getVertexArray());
     geom->getOrCreateStateSet()->setMode(GL_LIGHTING, false);
     geom->setDataVariance(osg::Object::DYNAMIC);
 
@@ -260,6 +267,7 @@ int main (int argc, char* argv[])
         viewer.frame();
     }
 
+    osgDB::writeNodeFile(*scene, "skinning.osg");
     return 0;
 }
 

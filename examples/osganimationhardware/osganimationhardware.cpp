@@ -29,6 +29,7 @@
 #include <osgAnimation/RigGeometry>
 #include <osgAnimation/RigTransformHardware>
 #include <osgAnimation/AnimationManagerBase>
+#include <osgAnimation/BoneMapVisitor>
 
 #include <sstream>
 
@@ -43,6 +44,15 @@ osg::ref_ptr<osg::Program> program;
 // show how to override the default RigTransformHardware for customized usage
 struct MyRigTransformHardware : public osgAnimation::RigTransformHardware
 {
+
+    void operator()(osgAnimation::RigGeometry& geom)
+    {
+        if (_needInit)
+            if (!init(geom))
+                return;
+        computeMatrixPaletteUniform(geom.getMatrixFromSkeletonToGeometry(), geom.getInvMatrixFromSkeletonToGeometry());
+    }
+
     bool init(osgAnimation::RigGeometry& geom)
     {
         osg::Vec3Array* pos = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
@@ -56,7 +66,9 @@ struct MyRigTransformHardware : public osgAnimation::RigTransformHardware
             return false;
         }
 
-        osgAnimation::Bone::BoneMap bm = geom.getSkeleton()->getBoneMap();
+        osgAnimation::BoneMapVisitor mapVisitor;
+        geom.getSkeleton()->accept(mapVisitor);
+        osgAnimation::BoneMap bm = mapVisitor.getBoneMap();
 
         if (!createPalette(pos->size(),bm, geom.getVertexInfluenceSet().getVertexToBoneList()))
             return false;
@@ -136,8 +148,11 @@ struct SetupRigGeometry : public osg::NodeVisitor
                 rig->setRigTransformImplementation(new MyRigTransformHardware);
         }
 
+#if 0
         if (geom.getName() != std::string("BoundingBox")) // we disable compute of bounding box for all geometry except our bounding box
             geom.setComputeBoundingBoxCallback(new osg::Drawable::ComputeBoundingBoxCallback);
+//            geom.setInitialBound(new osg::Drawable::ComputeBoundingBoxCallback);
+#endif
     }
 };
 

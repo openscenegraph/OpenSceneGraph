@@ -253,7 +253,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
             int nLightCount = 0;
             osg::ref_ptr<Options> localOptions = NULL;
             if (options)
-                localOptions = options->cloneOptions();
+                localOptions = new osgDB::ReaderWriter::Options(*options);
             else
                 localOptions = new osgDB::ReaderWriter::Options();
             localOptions->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_IMAGES);

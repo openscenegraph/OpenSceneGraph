@@ -118,10 +118,18 @@ public:
     Options* prepareReading( ReadResult& result, std::string& fileName, const Options* options ) const
     {
         std::string ext = osgDB::getLowerCaseFileExtension( fileName );
-        if ( !acceptsExtension(ext) ) result = ReadResult::FILE_NOT_HANDLED;
+        if ( !acceptsExtension(ext) )
+        {
+            result = ReadResult::FILE_NOT_HANDLED;
+            return 0;
+        }
         fileName = osgDB::findDataFile( fileName, options );
-        if ( fileName.empty() ) result = ReadResult::FILE_NOT_FOUND;
-        
+        if ( fileName.empty() )
+        {
+            result = ReadResult::FILE_NOT_FOUND;
+            return 0;
+        }
+
         osg::ref_ptr<Options> local_opt = options ?
             static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
         local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));

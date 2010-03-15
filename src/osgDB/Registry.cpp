@@ -239,6 +239,19 @@ Registry::Registry()
     addFileExtensionAlias("vert",   "glsl");
     addFileExtensionAlias("frag",   "glsl");
 
+
+#if defined(DARWIN_IMAGEIO)
+    addFileExtensionAlias("jpg",  "imageio");
+    addFileExtensionAlias("jpe",  "imageio");
+    addFileExtensionAlias("jpeg", "imageio");
+    addFileExtensionAlias("tif",  "imageio");
+    addFileExtensionAlias("tiff", "imageio");
+    addFileExtensionAlias("gif",  "imageio");
+    addFileExtensionAlias("png",  "imageio");
+    addFileExtensionAlias("psd",  "imageio");
+    addFileExtensionAlias("tga",  "imageio");
+#endif
+
 #if defined(DARWIN_QUICKTIME)
     addFileExtensionAlias("jpg",  "qt");
     addFileExtensionAlias("jpe",  "qt");

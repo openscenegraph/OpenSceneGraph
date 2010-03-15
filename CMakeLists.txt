@@ -206,6 +206,15 @@ IF(WIN32)
         IF(MSVC_DISABLE_CHECKED_ITERATORS)
             ADD_DEFINITIONS(-D_SECURE_SCL=0)
         ENDIF(MSVC_DISABLE_CHECKED_ITERATORS)
+
+        OPTION(MSVC_USE_DEFAULT_STACK_SIZE "Set to ON to use the default Visual C++ stack size. CMake forces a high stack size by default, which can cause problems for applications with large number of threads." OFF)
+        MARK_AS_ADVANCED(MSVC_USE_DEFAULT_STACK_SIZE)
+        IF(MSVC_USE_DEFAULT_STACK_SIZE)
+            STRING(REGEX REPLACE "/STACK:[0-9]+" "" CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS}")
+            STRING(REGEX REPLACE "/STACK:[0-9]+" "" CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}")
+            STRING(REGEX REPLACE "/STACK:[0-9]+" "" CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS}")
+        ENDIF(MSVC_USE_DEFAULT_STACK_SIZE)
+
     ENDIF()
 
     #needed for net plugin

@@ -701,16 +701,19 @@ void Viewer::eventTraversal()
                 {
                     if (getCameraWithFocus())
                     {
-                        osg::Viewport* viewport = getCameraWithFocus()->getViewport();
-                        osg::Matrix localCameraVPW = getCameraWithFocus()->getViewMatrix() * getCameraWithFocus()->getProjectionMatrix();
-                        if (viewport) localCameraVPW *= viewport->computeWindowMatrix();
+                        if (getCameraWithFocus()!=getCamera())
+                        {
+                            osg::Viewport* viewport = getCameraWithFocus()->getViewport();
+                            osg::Matrix localCameraVPW = getCameraWithFocus()->getViewMatrix() * getCameraWithFocus()->getProjectionMatrix();
+                            if (viewport) localCameraVPW *= viewport->computeWindowMatrix();
 
-                        osg::Matrix matrix( osg::Matrix::inverse(localCameraVPW) * masterCameraVPW );
+                            osg::Matrix matrix( osg::Matrix::inverse(localCameraVPW) * masterCameraVPW );
 
-                        osg::Vec3d new_coord = osg::Vec3d(x,y,0.0) * matrix;
+                            osg::Vec3d new_coord = osg::Vec3d(x,y,0.0) * matrix;
 
-                        x = new_coord.x();
-                        y = new_coord.y();
+                            x = new_coord.x();
+                            y = new_coord.y();
+                        }
 
                         // OSG_NOTIFY(osg::NOTICE)<<"pointer event new_coord.x()="<<new_coord.x()<<" new_coord.y()="<<new_coord.y()<<std::endl;
 

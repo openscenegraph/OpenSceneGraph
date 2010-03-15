@@ -14,6 +14,7 @@
 #include <cstdlib>
 
 #include <osg/Notify>
+#include <osg/Image>
 #include <osg/Timer>
 #include <osg/ref_ptr>
 #include <osg/Referenced>
@@ -113,7 +114,7 @@ void QuicktimeLiveImageStream::createImage()
                               GL_UNSIGNED_INT_8_8_8_8;
 
     setImage(m_videoRectWidth,m_videoRectHeight,1,
-            (GLint) GL_RGBA8, (GLenum)GL_BGRA_EXT, internalFormat,
+            (GLint) GL_RGBA8, (GLenum)GL_BGRA, internalFormat,
             (unsigned char*)buffer,osg::Image::NO_DELETE,4);
 }
 

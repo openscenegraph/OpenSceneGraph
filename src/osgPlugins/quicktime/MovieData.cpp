@@ -8,6 +8,7 @@
  */
 #include <osg/GL>
 #include <osg/Endian>
+#include <osg/Image>
 #include <osgDB/FileNameUtils>
 
 #include "MovieData.h"
@@ -28,7 +29,6 @@ MovieData::~MovieData()
     if (_gw) DisposeGWorld(_gw);
 
     if (_movie) {
-        CloseMovieFile(_resref);
         DisposeMovie(_movie);
     }
 }
@@ -38,23 +38,71 @@ MovieData::~MovieData()
     
 void MovieData::load(osg::Image* image, std::string afilename, float startTime)
 {
-    Rect bounds;
-    std::string filename = afilename;
-    if (!osgDB::isFileNameNativeStyle(filename)) 
-        filename = osgDB::convertFileNameToNativeStyle(filename);
-
-    osg::notify(osg::INFO) << "MovieData :: opening movie '" << filename << "'" << std::endl;
+    bool isUrl( osgDB::containsServerAddress(afilename) );
     
-    OSStatus err = MakeMovieFromPath(filename.c_str(), &_movie, _resref);
-    if (err !=0) {
-        _fError = true;
-        osg::notify(osg::FATAL) << " MovieData :: MakeMovieFromPath failed with err " << err << std::endl;
-        return;
+    std::string filename = afilename;
+    if (!isUrl) {
+        if (!osgDB::isFileNameNativeStyle(filename)) 
+            filename = osgDB::convertFileNameToNativeStyle(filename);
+    }
+    
+    image->setFileName(filename);
+    
+
+    QTNewMoviePropertyElement newMovieProperties[2];
+    CFStringRef movieLocation = CFStringCreateWithCString(NULL, filename.c_str(), kCFStringEncodingUTF8);
+    CFURLRef movieURL(NULL);
+    Boolean trueValue = true;
+
+    newMovieProperties[0].propClass = kQTPropertyClass_DataLocation;
+    if (!isUrl) 
+    {
+        #ifdef __APPLE__
+            newMovieProperties[0].propID = kQTDataLocationPropertyID_CFStringPosixPath;
+        #else
+            newMovieProperties[0].propID = kQTDataLocationPropertyID_CFStringWindowsPath;
+        #endif
+        
+        newMovieProperties[0].propValueSize = sizeof(CFStringRef);
+        newMovieProperties[0].propValueAddress = &movieLocation;
+    } 
+    else 
+    {
+        movieURL = CFURLCreateWithString(kCFAllocatorDefault, movieLocation, NULL);
+        
+        newMovieProperties[0].propID = kQTDataLocationPropertyID_CFURL;
+        newMovieProperties[0].propValueSize = sizeof(movieURL);
+        newMovieProperties[0].propValueAddress = (void*)&movieURL;
     }
 
-    GetMovieBox(_movie, &bounds);
-    _checkMovieError("Can't get movie box\n");
+    // make movie active
+    newMovieProperties[1].propClass = kQTPropertyClass_NewMovieProperty;
+    newMovieProperties[1].propID = kQTNewMoviePropertyID_Active;
+    newMovieProperties[1].propValueSize = sizeof(trueValue);
+    newMovieProperties[1].propValueAddress = &trueValue;
     
+    // Instantiate the Movie
+    OSStatus status = NewMovieFromProperties(2, newMovieProperties, 0, NULL, &_movie);
+    CFRelease(movieLocation);
+    if (movieURL) CFRelease(movieURL);
+    
+    if (status !=0) {
+        _fError = true;
+        osg::notify(osg::FATAL) << " MovieData :: NewMovieFromProperties failed with err " << status<< std::endl;
+        return;
+    }
+    
+    
+    Rect bounds;
+ 
+#ifdef __APPLE__
+    GetRegionBounds(GetMovieBoundsRgn(_movie), &bounds);
+#else
+    bounds = (*GetMovieBoundsRgn(_movie))->rgnBBox;
+#endif
+
+    _checkMovieError("Can't get movie bounds\n");
+
     OffsetRect(&bounds, -bounds.left, -bounds.top);
     SetMovieBox(_movie, &bounds);
     _checkMovieError("Can't set movie box\n");
@@ -116,7 +164,7 @@ void MovieData::_initImage(osg::Image* image)
 
     image->setImage(_textureWidth,_textureHeight,1,
                    (GLint) GL_RGBA8,
-                   (GLenum)GL_BGRA_EXT,
+                   (GLenum)GL_BGRA,
                    internalFormat,
                    (unsigned char*) buffer,osg::Image::NO_DELETE,4);
 

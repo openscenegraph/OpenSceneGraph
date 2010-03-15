@@ -88,6 +88,9 @@ BEGIN_ENUM_REFLECTOR(osgUtil::Optimizer::OptimizationOptions)
 	I_EnumLabel(osgUtil::Optimizer::TEXTURE_ATLAS_BUILDER);
 	I_EnumLabel(osgUtil::Optimizer::STATIC_OBJECT_DETECTION);
 	I_EnumLabel(osgUtil::Optimizer::FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS);
+	I_EnumLabel(osgUtil::Optimizer::INDEX_MESH);
+	I_EnumLabel(osgUtil::Optimizer::VERTEX_POSTTRANSFORM);
+	I_EnumLabel(osgUtil::Optimizer::VERTEX_PRETRANSFORM);
 	I_EnumLabel(osgUtil::Optimizer::DEFAULT_OPTIMIZATIONS);
 	I_EnumLabel(osgUtil::Optimizer::ALL_OPTIMIZATIONS);
 END_REFLECTOR

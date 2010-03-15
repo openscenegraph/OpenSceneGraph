@@ -28,14 +28,6 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osgUtil::RegisterRenderBinProxy)
-	I_DeclaringFile("osgUtil/RenderBin");
-	I_Constructor2(IN, const std::string &, binName, IN, osgUtil::RenderBin *, proto,
-	               ____RegisterRenderBinProxy__C5_std_string_R1__RenderBin_P1,
-	               "",
-	               "");
-END_REFLECTOR
-
 BEGIN_ENUM_REFLECTOR(osgUtil::RenderBin::SortMode)
 	I_DeclaringFile("osgUtil/RenderBin");
 	I_EnumLabel(osgUtil::RenderBin::SORT_BY_STATE);

@@ -527,8 +527,6 @@ OcclusionQueryNode::OcclusionQueryNode()
     _queryFrameCount( 5 ),
     _debugBB( false )
 {
-    setDataVariance( osg::Object::DYNAMIC );
-
     // OQN has two Geode member variables, one for doing the
     //   query and one for rendering the debug geometry.
     //   Create and initialize them.
@@ -554,29 +552,49 @@ OcclusionQueryNode::OcclusionQueryNode( const OcclusionQueryNode& oqn, const osg
 
 
 bool
-OcclusionQueryNode::getPassed( const osg::Camera* camera, float distanceToEyePoint )
+OcclusionQueryNode::getPassed( const osg::Camera* camera, osg::NodeVisitor& nv )
 {
     if ( !_enabled )
         // Queries are not enabled. The caller should be osgUtil::CullVisitor,
         //   return true to traverse the subgraphs.
         return true;
 
-    // In the future, we could hold a reference directly to the QueryDrawable
-    //   to avoid the dynamic_cast.
-    QueryGeometry* qg = dynamic_cast< QueryGeometry* >( _queryGeode->getDrawable( 0 ) );
-    if (qg == NULL)
+    {
+        // Two situations where we want to simply do a regular traversal:
+        //  1) it's the first frame for this camers
+        //  2) we haven't rendered for an abnormally long time (probably because we're an out-of-range LOD child)
+        // In these cases, assume we're visible to avoid blinking.
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _frameCountMutex );
+        const int& lastQueryFrame( _frameCountMap[ camera ] );
+        if( ( lastQueryFrame == 0 ) ||
+            ( (nv.getTraversalNumber() - lastQueryFrame) >  (_queryFrameCount + 1) ) )
+            return true;
+    }
+
+    if (_queryGeode->getDrawable( 0 ) == NULL)
     {
         osg::notify( osg::FATAL ) <<
             "osgOQ: OcclusionQueryNode: No QueryGeometry." << std::endl;
         // Something's broke. Return true so we at least render correctly.
         return true;
     }
+    QueryGeometry* qg = static_cast< QueryGeometry* >( _queryGeode->getDrawable( 0 ) );
 
-    // If the distance to the bounding sphere shell is positive, retrieve
-    //   the results. Others (we're inside the BS shell) we are considered
+    // Get the near plane for the upcoming distance calculation.
+    float nearPlane;
+    const osg::Matrix& proj( camera->getProjectionMatrix() );
+    if( ( proj(3,3) != 1. ) || ( proj(2,3) != 0. ) || ( proj(1,3) != 0. ) || ( proj(0,3) != 0.) )
+        nearPlane = proj(3,2) / (proj(2,2)-1.);  // frustum / perspective
+    else
+        nearPlane = (proj(3,2)+1.) / proj(2,2);  // ortho
+
+    // If the distance from the near plane to the bounding sphere shell is positive, retrieve
+    //   the results. Otherwise (near plane inside the BS shell) we are considered
     //   to have passed and don't need to retrieve the query.
     const osg::BoundingSphere& bs = getBound();
-    float distance = distanceToEyePoint  - bs._radius;
+    float distanceToEyePoint = nv.getDistanceToEyePoint( bs._center, false );
+
+    float distance = distanceToEyePoint - nearPlane - bs._radius;
     _passed = ( distance <= 0.f );
     if (!_passed)
     {
@@ -641,10 +659,10 @@ OcclusionQueryNode::computeBound() const
         (*v)[6] = osg::Vec3( bb._min.x(), bb._max.y(), bb._max.z() );
         (*v)[7] = osg::Vec3( bb._max.x(), bb._max.y(), bb._max.z() );
 
-        osg::Geometry* geom = dynamic_cast< osg::Geometry* >( nonConstThis->_queryGeode->getDrawable( 0 ) );
+        osg::Geometry* geom = static_cast< osg::Geometry* >( nonConstThis->_queryGeode->getDrawable( 0 ) );
         geom->setVertexArray( v.get() );
 
-        geom = dynamic_cast< osg::Geometry* >( nonConstThis->_debugGeode->getDrawable( 0 ) );
+        geom = static_cast< osg::Geometry* >( nonConstThis->_debugGeode->getDrawable( 0 ) );
         geom->setVertexArray( v.get() );
     }
 
@@ -798,10 +816,13 @@ OcclusionQueryNode::createSupportNodes()
 void
 OcclusionQueryNode::releaseGLObjects( osg::State* state ) const
 {
-    // Query object discard and deletion is handled by QueryGeometry support class.
-    OcclusionQueryNode* nonConstThis = const_cast< OcclusionQueryNode* >( this );
-    QueryGeometry* qg = dynamic_cast< QueryGeometry* >( nonConstThis->_queryGeode->getDrawable( 0 ) );
-    qg->releaseGLObjects( state );
+    if(_queryGeode->getDrawable( 0 ) != NULL)
+    {
+        // Query object discard and deletion is handled by QueryGeometry support class.
+        OcclusionQueryNode* nonConstThis = const_cast< OcclusionQueryNode* >( this );
+        QueryGeometry* qg = static_cast< QueryGeometry* >( nonConstThis->_queryGeode->getDrawable( 0 ) );
+        qg->releaseGLObjects( state );
+    }
 }
 
 void

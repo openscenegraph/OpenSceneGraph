@@ -233,9 +233,9 @@ Registry::Registry()
     addFileExtensionAlias("osgb", "osg");
     addFileExtensionAlias("osgx", "osg");
 
-    addFileExtensionAlias("osgShadow", "shadow");
+    addFileExtensionAlias("osgShadow",  "shadow");
     addFileExtensionAlias("osgTerrain", "terrain");
-    addFileExtensionAlias("osgViewer", "view");
+    addFileExtensionAlias("osgViewer",  "view");
 
     addFileExtensionAlias("sgi",  "rgb");
     addFileExtensionAlias("rgba", "rgb");
@@ -243,18 +243,19 @@ Registry::Registry()
     addFileExtensionAlias("inta", "rgb");
     addFileExtensionAlias("bw",   "rgb");
 
-    addFileExtensionAlias("ivz",   "gz");
-    addFileExtensionAlias("ozg",   "gz");
+    addFileExtensionAlias("ivz",  "gz");
+    addFileExtensionAlias("ozg",  "gz");
     
-    addFileExtensionAlias("mag",   "dicom");
+    addFileExtensionAlias("mag",  "dicom");
     addFileExtensionAlias("ph",   "dicom");
-    addFileExtensionAlias("ima",   "dicom");
-    addFileExtensionAlias("dcm",   "dicom");
-    addFileExtensionAlias("dic",   "dicom");
+    addFileExtensionAlias("ima",  "dicom");
+    addFileExtensionAlias("dcm",  "dicom");
+    addFileExtensionAlias("dic",  "dicom");
 
     addFileExtensionAlias("gl",   "glsl");
-    addFileExtensionAlias("vert",   "glsl");
-    addFileExtensionAlias("frag",   "glsl");
+    addFileExtensionAlias("vert", "glsl");
+    addFileExtensionAlias("frag", "glsl");
+    addFileExtensionAlias("geom", "glsl");
 
 
 #if defined(DARWIN_IMAGEIO)
@@ -309,10 +310,10 @@ Registry::Registry()
 
     // support QuickTime for Windows
     #if defined(USE_QUICKTIME)
-        addFileExtensionAlias("mov", "qt");
+        addFileExtensionAlias("mov",  "qt");
         addFileExtensionAlias("live", "qt");
-        addFileExtensionAlias("mpg", "qt");
-        addFileExtensionAlias("avi", "qt");
+        addFileExtensionAlias("mpg",  "qt");
+        addFileExtensionAlias("avi",  "qt");
     #endif
 #endif
 
@@ -329,13 +330,13 @@ Registry::Registry()
     #endif
     
     // add alias for the text/freetype plugin.
-    addFileExtensionAlias("ttf",   "freetype");  // true type
-    addFileExtensionAlias("ttc",   "freetype");  // true type
-    addFileExtensionAlias("cid",   "freetype");  // Postscript CID-Fonts
-    addFileExtensionAlias("cff",   "freetype");  // OpenType
-    addFileExtensionAlias("cef",   "freetype");  // OpenType
-    addFileExtensionAlias("fon",   "freetype");  // Windows bitmap fonts
-    addFileExtensionAlias("fnt",   "freetype");  // Windows bitmap fonts
+    addFileExtensionAlias("ttf",    "freetype");  // true type
+    addFileExtensionAlias("ttc",    "freetype");  // true type
+    addFileExtensionAlias("cid",    "freetype");  // Postscript CID-Fonts
+    addFileExtensionAlias("cff",    "freetype");  // OpenType
+    addFileExtensionAlias("cef",    "freetype");  // OpenType
+    addFileExtensionAlias("fon",    "freetype");  // Windows bitmap fonts
+    addFileExtensionAlias("fnt",    "freetype");  // Windows bitmap fonts
     addFileExtensionAlias("text3d", "freetype"); // use 3D Font instead of 2D Font
 
     // wont't add type1 and type2 until resolve extension collision with Performer binary and ascii files.
@@ -350,8 +351,8 @@ Registry::Registry()
     
 
     // add revision file mappings
-    addFileExtensionAlias("added", "revisions");
-    addFileExtensionAlias("removed", "revisions");
+    addFileExtensionAlias("added",    "revisions");
+    addFileExtensionAlias("removed",  "revisions");
     addFileExtensionAlias("modified", "revisions");
 
 

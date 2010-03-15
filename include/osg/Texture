@@ -614,18 +614,12 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             public:
                 Extensions(unsigned int contextID);
 
-                Extensions(const Extensions& rhs);
-                
-                void lowestCommonDenominator(const Extensions& rhs);
-                
-                void setupGLExtensions(unsigned int contextID);
-
                 void setMultiTexturingSupported(bool flag) { _isMultiTexturingSupported=flag; }
                 bool isMultiTexturingSupported() const { return _isMultiTexturingSupported; }
 
                 void setTextureFilterAnisotropicSupported(bool flag) { _isTextureFilterAnisotropicSupported=flag; }
                 bool isTextureFilterAnisotropicSupported() const { return _isTextureFilterAnisotropicSupported; }
-                
+
                 void setTextureCompressionARBSupported(bool flag) { _isTextureCompressionARBSupported=flag; }
                 bool isTextureCompressionARBSupported() const { return _isTextureCompressionARBSupported; }
 
@@ -662,10 +656,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 bool isCompressedTexImage2DSupported() const { return _glCompressedTexImage2D!=0; }
                 bool isCompressedTexSubImage2DSupported() const { return _glCompressedTexSubImage2D!=0; }
                 
-                void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data) const;
-                void glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei type, const GLvoid *data) const;
-                void glGetCompressedTexImage(GLenum target, GLint level, GLvoid *data) const;
-
                 bool isClientStorageSupported() const { return _isClientStorageSupported; }
 
                 bool isNonPowerOfTwoTextureSupported(GLenum filter) const
@@ -678,13 +668,48 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 void setTextureIntegerSupported(bool flag) { _isTextureIntegerEXTSupported=flag; }
                 bool isTextureIntegerSupported() const { return _isTextureIntegerEXTSupported; }
 
-                void glTexParameterIiv(GLenum target, GLenum pname, const GLint* data) const;
-                void glTexParameterIuiv(GLenum target, GLenum pname, const GLuint* data) const;
+                void glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data) const
+                {
+                    _glCompressedTexImage2D(target, level, internalformat, width, height, border, imageSize, data);
+                }
+
+                void glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data) const
+                {
+                    _glCompressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, data);
+                }
+
+                void glGetCompressedTexImage(GLenum target, GLint level, GLvoid *data) const
+                {
+                    _glGetCompressedTexImage(target, level, data);
+                }
+
+                void glTexParameterIiv(GLenum target, GLenum pname, const GLint* data) const
+                {
+                    glTexParameterIiv(target, pname, data);
+                }
+
+                void glTexParameterIuiv(GLenum target, GLenum pname, const GLuint* data) const
+                {
+                    glTexParameterIuiv(target, pname, data);
+                }
 
             protected:
 
                 ~Extensions() {}
-                
+
+                typedef void (APIENTRY * CompressedTexImage2DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
+                typedef void (APIENTRY * CompressedTexSubImage2DArbProc) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data);
+                typedef void (APIENTRY * GetCompressedTexImageArbProc) (GLenum target, GLint level, GLvoid *data);
+                typedef void (APIENTRY * TexParameterIivProc)(GLenum target, GLenum pname, const GLint* data);
+                typedef void (APIENTRY * TexParameterIuivProc)(GLenum target, GLenum pname, const GLuint* data);
+
+                CompressedTexImage2DArbProc     _glCompressedTexImage2D;
+                CompressedTexSubImage2DArbProc  _glCompressedTexSubImage2D;
+                GetCompressedTexImageArbProc    _glGetCompressedTexImage;
+                TexParameterIivProc             _glTexParameterIiv;
+                TexParameterIuivProc            _glTexParameterIuiv;
+
+
                 bool    _isMultiTexturingSupported;
                 bool    _isTextureFilterAnisotropicSupported;
                 bool    _isTextureCompressionARBSupported;
@@ -703,19 +728,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
                 GLint   _maxTextureSize;
                 GLint   _numTextureUnits;
-
-                typedef void (APIENTRY * CompressedTexImage2DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
-                typedef void (APIENTRY * CompressedTexSubImage2DArbProc) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data);
-                typedef void (APIENTRY * GetCompressedTexImageArbProc) (GLenum target, GLint level, GLvoid *data);
-                typedef void (APIENTRY * TexParameterIivProc)(GLenum target, GLenum pname, const GLint* data);
-                typedef void (APIENTRY * TexParameterIuivProc)(GLenum target, GLenum pname, const GLuint* data);
-
-                CompressedTexImage2DArbProc     _glCompressedTexImage2D;
-                CompressedTexSubImage2DArbProc  _glCompressedTexSubImage2D;
-                GetCompressedTexImageArbProc    _glGetCompressedTexImage;
-                TexParameterIivProc             _glTexParameterIiv;
-                TexParameterIuivProc            _glTexParameterIuiv;
-
         };
         
         /** Gets the extension for the specified context. Creates the

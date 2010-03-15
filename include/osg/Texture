@@ -685,12 +685,12 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
                 void glTexParameterIiv(GLenum target, GLenum pname, const GLint* data) const
                 {
-                    glTexParameterIiv(target, pname, data);
+                    _glTexParameterIiv(target, pname, data);
                 }
 
                 void glTexParameterIuiv(GLenum target, GLenum pname, const GLuint* data) const
                 {
-                    glTexParameterIuiv(target, pname, data);
+                    _glTexParameterIuiv(target, pname, data);
                 }
 
             protected:

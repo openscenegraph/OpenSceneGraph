@@ -2,7 +2,7 @@
 
 #include "PendulumCallback.h"
 
-PendulumCallback::PendulumCallback(const osg::Vec3& axis, 
+PendulumCallback::PendulumCallback(const osg::Vec3& axis,
                                          float startAngle, float endAngle,
                                          float frequency)
 {
@@ -10,7 +10,7 @@ PendulumCallback::PendulumCallback(const osg::Vec3& axis,
     _startAngle = startAngle;
     _endAngle = endAngle;
     _frequency = frequency;
-    
+
     _previousTraversalNumber = -1;
     _previousTime = -1.0;
     _angle = 0.0;
@@ -26,24 +26,26 @@ void PendulumCallback::operator() (osg::Node* node, osg::NodeVisitor* nv)
         return;
 
     const osg::FrameStamp* fs = nv->getFrameStamp();
-    if (!fs) 
-        return; 
-    
+    if (!fs)
+        return;
+
     // ensure that we do not operate on this node more than
     // once during this traversal.  This is an issue since node
     // can be shared between multiple parents.
     if (nv->getTraversalNumber()!=_previousTraversalNumber)
     {
         double currentTime = fs->getSimulationTime();
+        if (_previousTime == -1.)
+            _previousTime = currentTime;
         _angle += (currentTime - _previousTime) * 2 * osg::PI * _frequency;
-        
-        double frac = 0.5 + 0.5 * sin(_angle);
-        double rotAngle = _endAngle  - _startAngle - osg::PI 
+
+        double frac = 0.5 - 0.5 * cos(_angle);
+        double rotAngle = //_endAngle  - _startAngle - osg::PI
                 + (1.0 - frac) * _startAngle + frac * _endAngle;
 
         // update the specified transform
         transform->setMatrix(osg::Matrix::rotate(rotAngle, _axis));
-            
+
         _previousTraversalNumber = nv->getTraversalNumber();
         _previousTime = currentTime;
     }
@@ -52,3 +54,4 @@ void PendulumCallback::operator() (osg::Node* node, osg::NodeVisitor* nv)
     traverse(node,nv);
 
 }
+

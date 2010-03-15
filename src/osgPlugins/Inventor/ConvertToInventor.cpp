@@ -236,7 +236,7 @@ void osgArray2ivMField_template(const osg::Array *array, fieldClass &field, int 
     int z;
     for (i=0, z=0; i<num; i++)
       if (z == numItemsUntilMinusOne) {
-        a[i] = -1;
+        a[i] = ivType(-1);
         z = 0;
       } else {
         a[i] = ivType(*ptr);
@@ -1920,7 +1920,7 @@ void ConvertToInventor::apply(osg::Billboard& node)
       // Rotate billboard correctly (OSG->IV conversion)
       // Note: use SoTransform instead of SoRotation because SoRotation is not supported by VRML1.
       SoTransform *transform = new SoTransform;
-      transform->rotation = SbRotation(SbVec3f(1.f,0.f,0.f), -M_PI_2);
+      transform->rotation = SbRotation(SbVec3f(1.f,0.f,0.f), float(-M_PI_2));
 
       SoSeparator *separator = new SoSeparator;
       separator->addChild(translation);
@@ -2047,3 +2047,4 @@ void ConvertToInventor::apply(osg::LOD& node)
 
   popInventorState();
 }
+

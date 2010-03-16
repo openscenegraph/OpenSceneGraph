@@ -802,19 +802,35 @@ void GeometryTechnique::applyColorLayers()
 
 void GeometryTechnique::applyTransparency()
 {
-    if (_terrainTile->getBlendingPolicy()==TerrainTile::DO_NOT_SET_BLENDING)
+    TerrainTile::BlendingPolicy blendingPolicy = _terrainTile->getBlendingPolicy();
+    if (blendingPolicy == TerrainTile::INHERIT && _terrainTile->getTerrain())
     {
+        OSG_INFO<<"GeometryTechnique::applyTransparency() inheriting policy from Terrain"<<std::endl;
+        blendingPolicy = _terrainTile->getTerrain()->getBlendingPolicy();
+    }
+
+    if (blendingPolicy == TerrainTile::INHERIT)
+    {
+        OSG_INFO<<"GeometryTechnique::applyTransparency() policy is INHERIT, defaulting to ENABLE_BLENDING_WHEN_ALPHA_PRESENT"<<std::endl;
+        blendingPolicy = TerrainTile::ENABLE_BLENDING_WHEN_ALPHA_PRESENT;
+    }
+
+    if (blendingPolicy == TerrainTile::DO_NOT_SET_BLENDING)
+    {
+        OSG_INFO<<"blendingPolicy == TerrainTile::DO_NOT_SET_BLENDING"<<std::endl;
         return;
     }
 
     bool enableBlending = false;
 
-    if (_terrainTile->getBlendingPolicy()==TerrainTile::ENABLE_BLENDING)
+    if (blendingPolicy == TerrainTile::ENABLE_BLENDING)
     {
+        OSG_INFO<<"blendingPolicy == TerrainTile::ENABLE_BLENDING"<<std::endl;
         enableBlending = true;
     }
-    else if (_terrainTile->getBlendingPolicy()==TerrainTile::ENABLE_BLENDING_WHEN_ALPHA_PRESENT)
+    else if (blendingPolicy == TerrainTile::ENABLE_BLENDING_WHEN_ALPHA_PRESENT)
     {
+        OSG_INFO<<"blendingPolicy == TerrainTile::ENABLE_BLENDING_WHEN_ALPHA_PRESENT"<<std::endl;
         for(unsigned int i=0; i<_terrainTile->getNumColorLayers(); ++i)
         {
             osg::Image* image = (_terrainTile->getColorLayer(i)!=0) ? _terrainTile->getColorLayer(i)->getImage() : 0;

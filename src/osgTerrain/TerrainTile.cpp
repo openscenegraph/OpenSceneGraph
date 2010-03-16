@@ -62,7 +62,7 @@ TerrainTile::TerrainTile():
     _hasBeenTraversal(false),
     _requiresNormals(true),
     _treatBoundariesToValidDataAsDefaultValue(false),
-    _blendingPolicy(ENABLE_BLENDING_WHEN_ALPHA_PRESENT)
+    _blendingPolicy(INHERIT)
 {
     setThreadSafeRefUnref(true);
 }

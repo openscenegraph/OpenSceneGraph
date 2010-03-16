@@ -159,9 +159,10 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
 
         enum BlendingPolicy
         {
+            INHERIT, /** Default - check for the any BlendingPolicy set on the enclosing osgTerrain::Terrain node, and if it's also INHERIT then assume ENABLE_BLENDING_WHEN_ALPHA_PRESENT. */
             DO_NOT_SET_BLENDING,
             ENABLE_BLENDING,
-            ENABLE_BLENDING_WHEN_ALPHA_PRESENT /** Default - check colour layers for alpha value and if present enable blending. */
+            ENABLE_BLENDING_WHEN_ALPHA_PRESENT /** check colour layers for alpha value and if present enable blending. */
         };
 
         /** Set the policy to use when deciding whether to enable/disable blending and use of transparent bin.*/

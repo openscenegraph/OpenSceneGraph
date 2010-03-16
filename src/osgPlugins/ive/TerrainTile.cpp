@@ -31,6 +31,11 @@ void TerrainTile::write(DataOutputStream* out)
     else
         out_THROW_EXCEPTION("Terrain::write(): Could not cast this osgTerrain::Terrain to an osg::Group.");
 
+    if (out->getVersion() >= VERSION_0044)
+    {
+        out->writeInt(getBlendingPolicy());
+    }
+
     if (out->getVersion() >= VERSION_0026)
     {
         out->writeInt(getTileID().level);
@@ -83,6 +88,11 @@ void TerrainTile::read(DataInputStream* in)
         ((ive::Group*)(group))->read(in);
     else
         in_THROW_EXCEPTION("Terrain::read(): Could not cast this osgTerrain::Terrain to an osg::Group.");
+
+    if (in->getVersion() >= VERSION_0044)
+    {
+        setBlendingPolicy(static_cast<osgTerrain::TerrainTile::BlendingPolicy>(in->readInt()));
+    }
 
     if (in->getVersion() >= VERSION_0026)
     {

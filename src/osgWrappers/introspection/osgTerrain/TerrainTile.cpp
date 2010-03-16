@@ -30,6 +30,13 @@
 #undef OUT
 #endif
 
+BEGIN_ENUM_REFLECTOR(osgTerrain::TerrainTile::BlendingPolicy)
+	I_DeclaringFile("osgTerrain/TerrainTile");
+	I_EnumLabel(osgTerrain::TerrainTile::DO_NOT_SET_BLENDING);
+	I_EnumLabel(osgTerrain::TerrainTile::ENABLE_BLENDING);
+	I_EnumLabel(osgTerrain::TerrainTile::ENABLE_BLENDING_WHEN_ALPHA_PRESENT);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTile)
 	I_DeclaringFile("osgTerrain/TerrainTile");
 	I_BaseType(osg::Group);
@@ -190,6 +197,16 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTile)
 	          __bool__getTreatBoundariesToValidDataAsDefaultValue,
 	          "Get whether the TeatBoundariesToValidDataAsDefaultValue hint. ",
 	          "");
+	I_Method1(void, setBlendingPolicy, IN, osgTerrain::TerrainTile::BlendingPolicy, policy,
+	          Properties::NON_VIRTUAL,
+	          __void__setBlendingPolicy__BlendingPolicy,
+	          "Set the policy to use when deciding whether to enable/disable blending and use of transparent bin. ",
+	          "");
+	I_Method0(osgTerrain::TerrainTile::BlendingPolicy, getBlendingPolicy,
+	          Properties::NON_VIRTUAL,
+	          __BlendingPolicy__getBlendingPolicy,
+	          "Get the policy to use when deciding whether to enable/disable blending and use of transparent bin. ",
+	          "");
 	I_Method1(void, setDirty, IN, bool, dirty,
 	          Properties::NON_VIRTUAL,
 	          __void__setDirty__bool,
@@ -218,6 +235,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTile)
 	                __osg_ref_ptrT1_TileLoadedCallback__R1__getTileLoadedCallback_S,
 	                "",
 	                "");
+	I_SimpleProperty(osgTerrain::TerrainTile::BlendingPolicy, BlendingPolicy, 
+	                 __BlendingPolicy__getBlendingPolicy, 
+	                 __void__setBlendingPolicy__BlendingPolicy);
 	I_ArrayProperty(osgTerrain::Layer *, ColorLayer, 
 	                __Layer_P1__getColorLayer__unsigned_int, 
 	                __void__setColorLayer__unsigned_int__Layer_P1, 

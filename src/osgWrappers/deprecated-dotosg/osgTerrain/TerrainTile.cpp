@@ -34,6 +34,15 @@ bool TerrainTile_readLocalData(osg::Object& obj, osgDB::Input &fr)
     osg::ref_ptr<osg::Object> readObject = fr.readObjectOfType(osgDB::type_wrapper<osgTerrain::Locator>());
     if (readObject.valid()) itrAdvanced = true;
 
+    std::string blendingPolicy;
+    if (fr.read("BlendingPolicy",blendingPolicy))
+    {
+        if (blendingPolicy == "INHERIT") terrainTile.setBlendingPolicy(osgTerrain::TerrainTile::INHERIT);
+        else if (blendingPolicy == "DO_NOT_SET_BLENDING") terrainTile.setBlendingPolicy(osgTerrain::TerrainTile::DO_NOT_SET_BLENDING);
+        else if (blendingPolicy == "ENABLE_BLENDING") terrainTile.setBlendingPolicy(osgTerrain::TerrainTile::ENABLE_BLENDING);
+        else if (blendingPolicy == "ENABLE_BLENDING_WHEN_ALPHA_PRESENT") terrainTile.setBlendingPolicy(osgTerrain::TerrainTile::ENABLE_BLENDING_WHEN_ALPHA_PRESENT);
+    }
+
     osgTerrain::Locator* locator = dynamic_cast<osgTerrain::Locator*>(readObject.get());
     if (locator) terrainTile.setLocator(locator);
 
@@ -192,6 +201,14 @@ bool TerrainTile_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
 
     int prec = fw.precision();
     fw.precision(15);
+
+    switch(terrainTile.getBlendingPolicy())
+    {
+        case(osgTerrain::TerrainTile::INHERIT): fw.indent()<<"BlendingPolicy INHERIT"<<std::endl; break;
+        case(osgTerrain::TerrainTile::DO_NOT_SET_BLENDING): fw.indent()<<"BlendingPolicy DO_NOT_SET_BLENDING"<<std::endl; break;
+        case(osgTerrain::TerrainTile::ENABLE_BLENDING): fw.indent()<<"BlendingPolicy ENABLE_BLENDING"<<std::endl; break;
+        case(osgTerrain::TerrainTile::ENABLE_BLENDING_WHEN_ALPHA_PRESENT): fw.indent()<<"BlendingPolicy ENABLE_BLENDING_WHEN_ALPHA_PRESENT"<<std::endl; break;
+    }
 
     if (terrainTile.getLocator())
     {

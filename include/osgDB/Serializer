@@ -862,8 +862,17 @@ public:
     osg::ref_ptr<MySerializer> serializer = new MySerializer( \
         #PROP, MyClass::DEF, &MyClass::get##PROP, &MyClass::set##PROP)
 
+#define BEGIN_ENUM_SERIALIZER4(PROPERTIES_CLASS, PROP, DEF) \
+    { typedef osgDB::EnumSerializer<MyClass, PROPERTIES_CLASS::PROP, void> MySerializer; \
+    osg::ref_ptr<MySerializer> serializer = new MySerializer( \
+        #PROP, PROPERTIES_CLASS::DEF, &MyClass::get##PROP, &MyClass::set##PROP)
+
+
 #define ADD_ENUM_VALUE(VALUE) \
     serializer->add(#VALUE, MyClass::VALUE)
+
+#define ADD_ENUM_CLASS_VALUE(CLASS, VALUE) \
+    serializer->add(#VALUE, CLASS::VALUE)
 
 #define END_ENUM_SERIALIZER() \
     wrapper->addSerializer(serializer.get()); }

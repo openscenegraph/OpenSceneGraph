@@ -46,6 +46,12 @@ extern OSGDB_EXPORT bool makeDirectory( const std::string &directoryPath );
 // Make a new directory for a given file.
 extern OSGDB_EXPORT bool makeDirectoryForFile( const std::string &filePath );
     
+// Get current working directory.
+extern OSGDB_EXPORT std::string getCurrentWorkingDirectory( void );
+
+// Set current working directory.
+extern OSGDB_EXPORT bool setCurrentWorkingDirectory( const std::string &newCurrentWorkingDirectory );
+
 
 /** return true if a file exists. */
 extern OSGDB_EXPORT bool fileExists(const std::string& filename);
@@ -96,7 +102,7 @@ inline FilePathList& getLibraryFilePathList() { return osgDB::Registry::instance
 
 extern OSGDB_EXPORT std::string findLibraryFile(const std::string& filename,CaseSensitivity caseSensitivity=CASE_SENSITIVE);
 
-/** convert a string containing a list of paths  delimited either with ';' (Windows) or ':' (All other platforms) into FilePath representation.*/
+/** convert a string containing a list of paths delimited either with ';' (Windows) or ':' (All other platforms) into FilePath representation.*/
 extern OSGDB_EXPORT void convertStringPathIntoFilePathList(const std::string& paths,FilePathList& filepath);
 
 extern OSGDB_EXPORT void appendPlatformSpecificLibraryFilePaths(FilePathList& filepath);

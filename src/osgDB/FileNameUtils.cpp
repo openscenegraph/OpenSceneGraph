@@ -232,6 +232,10 @@ std::string osgDB::concatPaths(const std::string& left, const std::string& right
     const char delimiterForeign = '\\';
 #endif
 
+    if(left.empty())
+    {
+        return(right);
+    }
     char lastChar = left[left.size() - 1];
 
     if(lastChar == delimiterNative)

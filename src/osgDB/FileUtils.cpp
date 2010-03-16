@@ -11,6 +11,15 @@
  * OpenSceneGraph Public License for more details.
 */
 
+// handle TCHAR type on various platforms
+// #ifndef is inspired by https://svn.apache.org/repos/asf/logging/log4cxx/tags/v0_9_4/include/log4cxx/helpers/tchar.h
+// defining type as plain char is from unzip.h, line 64
+
+#ifndef TCHAR
+typedef char TCHAR;
+#endif
+
+
 // currently this impl is for _all_ platforms, except as defined.
 // the mac version will change soon to reflect the path scheme under osx, but
 // for now, the above include is commented out, and the below code takes precedence.
@@ -190,6 +199,42 @@ bool osgDB::makeDirectoryForFile( const std::string &path )
 {
     return makeDirectory( getFilePath( path ));
 }
+
+
+std::string osgDB::getCurrentWorkingDirectory( void )
+{
+    // MAX_PATH/cwd inspired by unzip.cpp
+#ifndef MAX_PATH
+    #define MAX_PATH 1024
+#endif
+    TCHAR rootdir[MAX_PATH];
+    if(getcwd(rootdir,MAX_PATH-1))
+    {
+        return(rootdir);
+    }
+    return("");
+}// osgDB::getCurrentWorkingDirectory
+
+
+
+bool osgDB::setCurrentWorkingDirectory( const std::string &newCurrentWorkingDirectory )
+{
+    if (newCurrentWorkingDirectory.empty())
+    {
+        osg::notify(osg::DEBUG_INFO) << "osgDB::setCurrentWorkingDirectory(): called with empty string." << std::endl;
+        return false;
+    }
+    
+#ifdef OSG_USE_UTF8_FILENAME
+    return _wchdir( OSGDB_STRING_TO_FILENAME(newCurrentWorkingDirectory).c_str()) == 0;
+#else
+    return chdir( newCurrentWorkingDirectory.c_str()) == 0;
+#endif
+
+    return true;
+} // osgDB::setCurrentWorkingDirectory
+
+
 
 void osgDB::convertStringPathIntoFilePathList(const std::string& paths,FilePathList& filepath)
 {

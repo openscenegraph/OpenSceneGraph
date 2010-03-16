@@ -21,7 +21,8 @@ using namespace osgTerrain;
 
 Terrain::Terrain():
     _sampleRatio(1.0),
-    _verticalScale(1.0)
+    _verticalScale(1.0),
+    _blendingPolicy(TerrainTile::INHERIT)
 {
     _terrainTechnique = new GeometryTechnique;
 }
@@ -30,6 +31,7 @@ Terrain::Terrain(const Terrain& ts, const osg::CopyOp& copyop):
     osg::Group(ts,copyop),
     _sampleRatio(ts._sampleRatio),
     _verticalScale(ts._verticalScale),
+    _blendingPolicy(ts._blendingPolicy),
     _terrainTechnique(ts._terrainTechnique)
 {
 }

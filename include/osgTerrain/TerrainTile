@@ -156,6 +156,21 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
         /** Get whether the TeatBoundariesToValidDataAsDefaultValue hint.*/
         bool getTreatBoundariesToValidDataAsDefaultValue() const { return _treatBoundariesToValidDataAsDefaultValue; }
 
+
+        enum BlendingPolicy
+        {
+            DO_NOT_SET_BLENDING,
+            ENABLE_BLENDING,
+            ENABLE_BLENDING_WHEN_ALPHA_PRESENT /** Default - check colour layers for alpha value and if present enable blending. */
+        };
+
+        /** Set the policy to use when deciding whether to enable/disable blending and use of transparent bin.*/
+        void setBlendingPolicy(BlendingPolicy policy) { _blendingPolicy = policy; }
+
+        /** Get the policy to use when deciding whether to enable/disable blending and use of transparent bin.*/
+        BlendingPolicy getBlendingPolicy() const { return _blendingPolicy; }
+
+
         /** Set the dirty flag on/off.*/
         void setDirty(bool dirty);
 
@@ -171,7 +186,7 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
             virtual bool deferExternalLayerLoading() const = 0;
             virtual void loaded(osgTerrain::TerrainTile* tile, const osgDB::ReaderWriter::Options* options) const = 0;
         };
-        
+
         static void setTileLoadedCallback(TileLoadedCallback* lc);
         static osg::ref_ptr<TileLoadedCallback>& getTileLoadedCallback();
 
@@ -185,27 +200,27 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
 
         virtual ~TerrainTile();
 
-
         typedef std::vector< osg::ref_ptr<Layer> > Layers;
 
         friend class Terrain;
 
         Terrain*                            _terrain;
-        
+
         bool                                _dirty;
         bool                                _hasBeenTraversal;
-        
+
         TileID                              _tileID;
 
         osg::ref_ptr<TerrainTechnique>      _terrainTechnique;
         osg::ref_ptr<Locator>               _locator;
-        
+
         osg::ref_ptr<Layer>                 _elevationLayer;
 
         Layers                              _colorLayers;
-        
+
         bool                                _requiresNormals;
         bool                                _treatBoundariesToValidDataAsDefaultValue;
+        BlendingPolicy                      _blendingPolicy;
 };
 
 /** Helper callback for managing optional sets of layers, that loading of is deffered to this callback,

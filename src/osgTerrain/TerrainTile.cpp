@@ -61,7 +61,8 @@ TerrainTile::TerrainTile():
     _dirty(false),
     _hasBeenTraversal(false),
     _requiresNormals(true),
-    _treatBoundariesToValidDataAsDefaultValue(false)
+    _treatBoundariesToValidDataAsDefaultValue(false),
+    _blendingPolicy(ENABLE_BLENDING_WHEN_ALPHA_PRESENT)
 {
     setThreadSafeRefUnref(true);
 }
@@ -74,7 +75,8 @@ TerrainTile::TerrainTile(const TerrainTile& terrain,const osg::CopyOp& copyop):
     _elevationLayer(terrain._elevationLayer),
     _colorLayers(terrain._colorLayers),
     _requiresNormals(terrain._requiresNormals),
-    _treatBoundariesToValidDataAsDefaultValue(terrain._treatBoundariesToValidDataAsDefaultValue)
+    _treatBoundariesToValidDataAsDefaultValue(terrain._treatBoundariesToValidDataAsDefaultValue),
+    _blendingPolicy(terrain._blendingPolicy)
 {
     if (terrain.getTerrainTechnique()) 
     {

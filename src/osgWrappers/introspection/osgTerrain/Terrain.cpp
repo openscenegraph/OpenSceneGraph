@@ -90,6 +90,16 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	          __float__getVerticalScale,
 	          "Get the vertical scale hint. ",
 	          "");
+	I_Method1(void, setBlendingPolicy, IN, osgTerrain::TerrainTile::BlendingPolicy, policy,
+	          Properties::NON_VIRTUAL,
+	          __void__setBlendingPolicy__TerrainTile_BlendingPolicy,
+	          "Set the default policy to use when deciding whether to enable/disable blending and use of transparent bin. ",
+	          "Note, the Terrain::BlendingPolicy value only sets the value for the TerrainTiles it encloses for the TerrainTile's that have their policy set to INHERIT. INHERIT is the default BlendingPolicy for both Terrain and TerrainTile, and if both are left to INERHIT then the policy used is ENABLE_BLENDING_WHEN_ALPHA_PRESENT. ");
+	I_Method0(osgTerrain::TerrainTile::BlendingPolicy, getBlendingPolicy,
+	          Properties::NON_VIRTUAL,
+	          __TerrainTile_BlendingPolicy__getBlendingPolicy,
+	          "Get the default policy to use when deciding whether to enable/disable blending and use of transparent bin. ",
+	          "");
 	I_Method1(osgTerrain::TerrainTile *, getTile, IN, const osgTerrain::TileID &, tileID,
 	          Properties::NON_VIRTUAL,
 	          __TerrainTile_P1__getTile__C5_TileID_R1,
@@ -133,6 +143,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	                   __void__unregisterTerrainTile__TerrainTile_P1,
 	                   "",
 	                   "");
+	I_SimpleProperty(osgTerrain::TerrainTile::BlendingPolicy, BlendingPolicy, 
+	                 __TerrainTile_BlendingPolicy__getBlendingPolicy, 
+	                 __void__setBlendingPolicy__TerrainTile_BlendingPolicy);
 	I_SimpleProperty(float, SampleRatio, 
 	                 __float__getSampleRatio, 
 	                 __void__setSampleRatio__float);

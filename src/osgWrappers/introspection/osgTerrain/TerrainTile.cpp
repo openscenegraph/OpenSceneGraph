@@ -32,6 +32,7 @@
 
 BEGIN_ENUM_REFLECTOR(osgTerrain::TerrainTile::BlendingPolicy)
 	I_DeclaringFile("osgTerrain/TerrainTile");
+	I_EnumLabel(osgTerrain::TerrainTile::INHERIT);
 	I_EnumLabel(osgTerrain::TerrainTile::DO_NOT_SET_BLENDING);
 	I_EnumLabel(osgTerrain::TerrainTile::ENABLE_BLENDING);
 	I_EnumLabel(osgTerrain::TerrainTile::ENABLE_BLENDING_WHEN_ALPHA_PRESENT);

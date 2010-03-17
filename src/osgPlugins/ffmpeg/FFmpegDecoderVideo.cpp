@@ -167,7 +167,9 @@ void FFmpegDecoderVideo::decodeLoop()
 
             // Find out the frame pts
 
-            if (packet.packet.dts == AV_NOPTS_VALUE && m_frame->opaque != 0 && *reinterpret_cast<const int64_t*>(m_frame->opaque) != AV_NOPTS_VALUE)
+            if (packet.packet.dts == AV_NOPTS_VALUE &&
+                m_frame->opaque != 0 &&
+                *reinterpret_cast<const int64_t*>(m_frame->opaque) != AV_NOPTS_VALUE)
             {
                 pts = *reinterpret_cast<const int64_t*>(m_frame->opaque);
             }

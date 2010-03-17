@@ -77,6 +77,31 @@ void Scene::setImagePager(osgDB::ImagePager* ip)
     _imagePager = ip;
 }
 
+void Scene::updateSceneGraph(osg::NodeVisitor& updateVisitor)
+{
+    if (!_sceneData) return;
+
+    if (getSceneData())
+    {
+        updateVisitor.setImageRequestHandler(getImagePager());
+        getSceneData()->accept(updateVisitor);
+    }
+
+    if (getDatabasePager())
+    {
+        // synchronize changes required by the DatabasePager thread to the scene graph
+        getDatabasePager()->updateSceneGraph((*updateVisitor.getFrameStamp()));
+    }
+
+    if (getImagePager())
+    {
+        // synchronize changes required by the DatabasePager thread to the scene graph
+        getImagePager()->updateSceneGraph(*(updateVisitor.getFrameStamp()));
+    }
+
+
+}
+
 
 Scene* Scene::getScene(osg::Node* node)
 {

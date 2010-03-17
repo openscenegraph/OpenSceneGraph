@@ -886,14 +886,14 @@ DatabasePager::DatabasePager()
     if( (ptr = getenv("OSG_EXPIRY_DELAY")) != 0)
     {
         _expiryDelay = osg::asciiToDouble(ptr);
-        osg::notify(osg::NOTICE)<<"Expiry delay = "<<_expiryDelay<<std::endl;
+        osg::notify(osg::NOTICE)<<"DatabasePager: Expiry delay = "<<_expiryDelay<<std::endl;
     }
 
     _expiryFrames = 1; // Last frame will not be expired
     if( (ptr = getenv("OSG_EXPIRY_FRAMES")) != 0)
     {
         _expiryFrames = atoi(ptr);
-        osg::notify(osg::NOTICE)<<"Expiry frames = "<<_expiryFrames<<std::endl;
+        osg::notify(osg::NOTICE)<<"DatabasePager: Expiry frames = "<<_expiryFrames<<std::endl;
     }
 
     if( (ptr = getenv("OSG_RELEASE_DELAY")) != 0)
@@ -907,7 +907,7 @@ DatabasePager::DatabasePager()
             setReleaseDelay(osg::asciiToDouble(ptr));
         }
             
-        osg::notify(osg::NOTICE)<<"Release delay = "<<_releaseDelay<<std::endl;
+        osg::notify(osg::NOTICE)<<"DatabasePager: Release delay = "<<_releaseDelay<<std::endl;
     }
     else
     {
@@ -1748,14 +1748,6 @@ void DatabasePager::capped_removeExpiredSubgraphs(const osg::FrameStamp& frameSt
                               " A="<<time_a<<" avg="<<s_total_time_stage_a/s_total_iter_stage_a<<" max = "<<s_total_max_stage_a<<
                               " B="<<time_b<<" avg="<<s_total_time_stage_b/s_total_iter_stage_b<<" max = "<<s_total_max_stage_b<<
                               " C="<<time_c<<" avg="<<s_total_time_stage_c/s_total_iter_stage_c<<" max = "<<s_total_max_stage_c<<std::endl;
-
-    
-    if (osgDB::Registry::instance()->getSharedStateManager()) 
-        osgDB::Registry::instance()->getSharedStateManager()->prune();
-
-    // update the Registry object cache.
-    osgDB::Registry::instance()->updateTimeStampOfObjectsInCacheWithExternalReferences(frameStamp.getReferenceTime());
-    osgDB::Registry::instance()->removeExpiredObjectsInCache(expiryTime);
 }
 
 void DatabasePager::expiry_removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
@@ -1850,16 +1842,6 @@ void DatabasePager::expiry_removeExpiredSubgraphs(const osg::FrameStamp& frameSt
 
     osg::notify(osg::INFO)<<"_activePagedLODList.size()="<<_activePagedLODList.size()<<" overall = "<<time<<
                               " avg="<<s_total_time/s_total_iter<<" max = "<<s_total_max<<std::endl;
-     
-   
-    if (osgDB::Registry::instance()->getSharedStateManager()) 
-        osgDB::Registry::instance()->getSharedStateManager()->prune();
-
-    // update the Registry object cache.
-    osgDB::Registry::instance()->updateTimeStampOfObjectsInCacheWithExternalReferences(frameStamp.getReferenceTime());
-    osgDB::Registry::instance()->removeExpiredObjectsInCache(expiryTime);
-
-
 }
 
 class DatabasePager::FindPagedLODsVisitor : public osg::NodeVisitor

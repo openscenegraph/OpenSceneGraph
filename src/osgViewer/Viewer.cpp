@@ -876,23 +876,16 @@ void Viewer::updateTraversal()
     _updateVisitor->setFrameStamp(getFrameStamp());
     _updateVisitor->setTraversalNumber(getFrameStamp()->getFrameNumber());
 
-    if (getSceneData())
-    {
-        _updateVisitor->setImageRequestHandler(_scene->getImagePager());
-        getSceneData()->accept(*_updateVisitor);
-    }
-    
-    if (_scene->getDatabasePager())
-    {    
-        // synchronize changes required by the DatabasePager thread to the scene graph
-        _scene->getDatabasePager()->updateSceneGraph(*_frameStamp);
-    }
+    _scene->updateSceneGraph(*_updateVisitor);
 
-    if (_scene->getImagePager())
-    {    
-        // synchronize changes required by the DatabasePager thread to the scene graph
-        _scene->getImagePager()->updateSceneGraph(*_frameStamp);
-    }
+    // if we have a shared state manager prune any unused entries
+    if (osgDB::Registry::instance()->getSharedStateManager())
+        osgDB::Registry::instance()->getSharedStateManager()->prune();
+
+    // update the Registry object cache.
+    osgDB::Registry::instance()->updateTimeStampOfObjectsInCacheWithExternalReferences(*getFrameStamp());
+    osgDB::Registry::instance()->removeExpiredObjectsInCache(*getFrameStamp());
+
 
     if (_updateOperations.valid())
     {

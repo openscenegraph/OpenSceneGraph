@@ -27,9 +27,14 @@
 #include "types.h"
 #endif
 
+#include <iostream>
+using namespace std;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+
 
 /*!
  * Triangular mesh point
@@ -125,8 +130,8 @@ extern LIB3DSAPI void lib3ds_mesh_free_face_list(Lib3dsMesh *mesh);
 extern LIB3DSAPI void lib3ds_mesh_bounding_box(Lib3dsMesh *mesh, Lib3dsVector min, Lib3dsVector max);
 extern LIB3DSAPI void lib3ds_mesh_calculate_normals(Lib3dsMesh *mesh, Lib3dsVector *normalL);
 extern LIB3DSAPI void lib3ds_mesh_dump(Lib3dsMesh *mesh);
-extern LIB3DSAPI Lib3dsBool lib3ds_mesh_read(Lib3dsMesh *mesh, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_mesh_write(Lib3dsMesh *mesh, FILE *f);
+extern LIB3DSAPI Lib3dsBool lib3ds_mesh_read(Lib3dsMesh *mesh, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_mesh_write(Lib3dsMesh *mesh, iostream *strm);
 
 #ifdef __cplusplus
 }

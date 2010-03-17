@@ -93,20 +93,20 @@ lib3ds_chunk_enable_dump(Lib3dsBool enable, Lib3dsBool unknown)
  * \return   True on success, False otherwise.
  */
 Lib3dsBool
-lib3ds_chunk_read(Lib3dsChunk *c, FILE *f)
+lib3ds_chunk_read(Lib3dsChunk *c, iostream *strm)
 {
   ASSERT(c);
-  ASSERT(f);
-  c->cur=ftell(f);
-  c->chunk=lib3ds_word_read(f);
-  c->size=lib3ds_dword_read(f);
+  ASSERT(strm);
+  c->cur=strm->tellg();           
+  c->chunk=lib3ds_word_read(strm);
+  c->size=lib3ds_dword_read(strm);
   c->end=c->cur+c->size;
   c->cur+=6;
-  if (ferror(f) || (c->size<6)) {
+
+  if (strm->fail()||(c->size<6)) {    
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);
-  
 }
 
 
@@ -114,11 +114,11 @@ lib3ds_chunk_read(Lib3dsChunk *c, FILE *f)
  * \ingroup chunk
  */
 Lib3dsBool
-lib3ds_chunk_read_start(Lib3dsChunk *c, Lib3dsWord chunk, FILE *f)
+lib3ds_chunk_read_start(Lib3dsChunk *c, Lib3dsWord chunk, iostream *strm)
 {
   ASSERT(c);
-  ASSERT(f);
-  if (!lib3ds_chunk_read(c, f)) {
+  ASSERT(strm);
+  if (!lib3ds_chunk_read(c, strm)) {
     return(LIB3DS_FALSE);
   }
   lib3ds_chunk_debug_enter(c);
@@ -130,9 +130,9 @@ lib3ds_chunk_read_start(Lib3dsChunk *c, Lib3dsWord chunk, FILE *f)
  * \ingroup chunk
  */
 void
-lib3ds_chunk_read_tell(Lib3dsChunk *c, FILE *f)
+lib3ds_chunk_read_tell(Lib3dsChunk *c, iostream *strm)
 {
-  c->cur=ftell(f);
+    c->cur=strm->tellg();
 }
 
 
@@ -140,7 +140,7 @@ lib3ds_chunk_read_tell(Lib3dsChunk *c, FILE *f)
  * \ingroup chunk
  */
 Lib3dsWord
-lib3ds_chunk_read_next(Lib3dsChunk *c, FILE *f)
+lib3ds_chunk_read_next(Lib3dsChunk *c, iostream *strm)
 {
   Lib3dsChunk d;
 
@@ -149,9 +149,9 @@ lib3ds_chunk_read_next(Lib3dsChunk *c, FILE *f)
     return(0);
   }
 
-  fseek(f, (long)c->cur, SEEK_SET);
-  d.chunk=lib3ds_word_read(f);
-  d.size=lib3ds_dword_read(f);
+  strm->seekg((long)c->cur,ios_base::beg);
+  d.chunk=lib3ds_word_read(strm);
+  d.size=lib3ds_dword_read(strm);
   lib3ds_chunk_debug_dump(&d);
   c->cur+=d.size;
   return(d.chunk);
@@ -162,9 +162,9 @@ lib3ds_chunk_read_next(Lib3dsChunk *c, FILE *f)
  * \ingroup chunk
  */
 void
-lib3ds_chunk_read_reset(Lib3dsChunk *, FILE *f)
-{
-  fseek(f, -6, SEEK_CUR);
+lib3ds_chunk_read_reset(Lib3dsChunk *, iostream *strm)
+{  
+  strm->seekg(-6,ios_base::cur);
 }
 
 
@@ -172,10 +172,10 @@ lib3ds_chunk_read_reset(Lib3dsChunk *, FILE *f)
  * \ingroup chunk
  */
 void
-lib3ds_chunk_read_end(Lib3dsChunk *c, FILE *f)
+lib3ds_chunk_read_end(Lib3dsChunk *c, iostream *strm)
 {
   lib3ds_chunk_debug_leave(c);
-  fseek(f, c->end, SEEK_SET);
+  strm->seekg(c->end,ios_base::beg);
 }
 
 
@@ -190,14 +190,14 @@ lib3ds_chunk_read_end(Lib3dsChunk *c, FILE *f)
  * \return   True on success, False otherwise.
  */
 Lib3dsBool
-lib3ds_chunk_write(Lib3dsChunk *c, FILE *f)
+lib3ds_chunk_write(Lib3dsChunk *c, iostream *strm)
 {
   ASSERT(c);
-  if (!lib3ds_word_write(c->chunk, f)) {
+  if (!lib3ds_word_write(c->chunk, strm)) {
     LIB3DS_ERROR_LOG;
     return(LIB3DS_FALSE);
   }
-  if (!lib3ds_dword_write(c->size, f)) {
+  if (!lib3ds_dword_write(c->size, strm)) {
     LIB3DS_ERROR_LOG;
     return(LIB3DS_FALSE);
   }
@@ -209,15 +209,15 @@ lib3ds_chunk_write(Lib3dsChunk *c, FILE *f)
  * \ingroup chunk
  */
 Lib3dsBool
-lib3ds_chunk_write_start(Lib3dsChunk *c, FILE *f)
+lib3ds_chunk_write_start(Lib3dsChunk *c, iostream *strm)
 {
   ASSERT(c);
   c->size=0;
-  c->cur=ftell(f);
-  if (!lib3ds_word_write(c->chunk, f)) {
+  c->cur=strm->tellp();
+  if (!lib3ds_word_write(c->chunk, strm)) {
     return(LIB3DS_FALSE);
   }
-  if (!lib3ds_dword_write(c->size, f)) {
+  if (!lib3ds_dword_write(c->size, strm)) {
     return(LIB3DS_FALSE);
   }
   return(LIB3DS_TRUE);
@@ -228,19 +228,19 @@ lib3ds_chunk_write_start(Lib3dsChunk *c, FILE *f)
  * \ingroup chunk
  */
 Lib3dsBool
-lib3ds_chunk_write_end(Lib3dsChunk *c, FILE *f)
+lib3ds_chunk_write_end(Lib3dsChunk *c, iostream *strm)
 {
   ASSERT(c);
-  c->size=ftell(f) - c->cur;
-  fseek(f, c->cur+2, SEEK_SET);
-  if (!lib3ds_dword_write(c->size, f)) {
+  c->size=(Lib3dsDword)(strm->tellp()) - c->cur;
+  strm->seekp(c->cur+2,ios_base::beg);  
+  if (!lib3ds_dword_write(c->size, strm)) {
     LIB3DS_ERROR_LOG;
     return(LIB3DS_FALSE);
   }
 
   c->cur+=c->size;
-  fseek(f, c->cur, SEEK_SET);
-  if (ferror(f)) {
+  strm->seekp(c->cur, ios_base::beg);
+  if (strm->fail()) {
     LIB3DS_ERROR_LOG;
     return(LIB3DS_FALSE);
   }

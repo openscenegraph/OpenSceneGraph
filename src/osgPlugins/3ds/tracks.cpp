@@ -196,20 +196,20 @@ lib3ds_bool_track_eval(Lib3dsBoolTrack *track, Lib3dsBool *p, Lib3dsFloat t)
  * \ingroup tracks 
  */
 Lib3dsBool
-lib3ds_bool_track_read(Lib3dsBoolTrack *track, FILE *f)
+lib3ds_bool_track_read(Lib3dsBoolTrack *track, iostream *strm)
 {
   int keys;
   int i;
   Lib3dsBoolKey *k;
 
-  track->flags=lib3ds_word_read(f);
-  lib3ds_dword_read(f);
-  lib3ds_dword_read(f);
-  keys=lib3ds_intd_read(f);
+  track->flags=lib3ds_word_read(strm);
+  lib3ds_dword_read(strm);
+  lib3ds_dword_read(strm);
+  keys=lib3ds_intd_read(strm);
 
   for (i=0; i<keys; ++i) {
     k=lib3ds_bool_key_new();
-    if (!lib3ds_tcb_read(&k->tcb, f)) {
+    if (!lib3ds_tcb_read(&k->tcb, strm)) {
       return(LIB3DS_FALSE);
     }
     lib3ds_bool_track_insert(track, k);
@@ -223,20 +223,20 @@ lib3ds_bool_track_read(Lib3dsBoolTrack *track, FILE *f)
  * \ingroup tracks 
  */
 Lib3dsBool
-lib3ds_bool_track_write(Lib3dsBoolTrack *track, FILE *f)
+lib3ds_bool_track_write(Lib3dsBoolTrack *track, iostream *strm)
 {
   Lib3dsBoolKey *k;
   Lib3dsDword num=0;
   for (k=track->keyL; k; k=k->next) {
     ++num;
   }
-  lib3ds_word_write((Lib3dsWord)track->flags,f);
-  lib3ds_dword_write(0,f);
-  lib3ds_dword_write(0,f);
-  lib3ds_dword_write(num,f);
+  lib3ds_word_write((Lib3dsWord)track->flags,strm);
+  lib3ds_dword_write(0,strm);
+  lib3ds_dword_write(0,strm);
+  lib3ds_dword_write(num,strm);
 
   for (k=track->keyL; k; k=k->next) {
-    if (!lib3ds_tcb_write(&k->tcb,f)) {
+    if (!lib3ds_tcb_write(&k->tcb,strm)) {
       return(LIB3DS_FALSE);
     }
   }
@@ -500,23 +500,23 @@ lib3ds_lin1_track_eval(Lib3dsLin1Track *track, Lib3dsFloat *p, Lib3dsFloat t)
  * \ingroup tracks 
  */
 Lib3dsBool
-lib3ds_lin1_track_read(Lib3dsLin1Track *track, FILE *f)
+lib3ds_lin1_track_read(Lib3dsLin1Track *track, iostream *strm)
 {
   int keys;
   int i;
   Lib3dsLin1Key *k;
 
-  track->flags=lib3ds_word_read(f);
-  lib3ds_dword_read(f);
-  lib3ds_dword_read(f);
-  keys=lib3ds_intd_read(f);
+  track->flags=lib3ds_word_read(strm);
+  lib3ds_dword_read(strm);
+  lib3ds_dword_read(strm);
+  keys=lib3ds_intd_read(strm);
 
   for (i=0; i<keys; ++i) {
     k=lib3ds_lin1_key_new();
-    if (!lib3ds_tcb_read(&k->tcb, f)) {
+    if (!lib3ds_tcb_read(&k->tcb, strm)) {
       return(LIB3DS_FALSE);
     }
-    k->value=lib3ds_float_read(f);
+    k->value=lib3ds_float_read(strm);
     lib3ds_lin1_track_insert(track, k);
   }
   lib3ds_lin1_track_setup(track);
@@ -528,23 +528,23 @@ lib3ds_lin1_track_read(Lib3dsLin1Track *track, FILE *f)
  * \ingroup tracks 
  */
 Lib3dsBool
-lib3ds_lin1_track_write(Lib3dsLin1Track *track, FILE *f)
+lib3ds_lin1_track_write(Lib3dsLin1Track *track, iostream *strm)
 {
   Lib3dsLin1Key *k;
   Lib3dsDword num=0;
   for (k=track->keyL; k; k=k->next) {
     ++num;
   }
-  lib3ds_word_write((Lib3dsWord)track->flags,f);
-  lib3ds_dword_write(0,f);
-  lib3ds_dword_write(0,f);
-  lib3ds_dword_write(num,f);
+  lib3ds_word_write((Lib3dsWord)track->flags,strm);
+  lib3ds_dword_write(0,strm);
+  lib3ds_dword_write(0,strm);
+  lib3ds_dword_write(num,strm);
 
   for (k=track->keyL; k; k=k->next) {
-    if (!lib3ds_tcb_write(&k->tcb,f)) {
+    if (!lib3ds_tcb_write(&k->tcb,strm)) {
       return(LIB3DS_FALSE);
     }
-    lib3ds_float_write(k->value,f);
+    lib3ds_float_write(k->value,strm);
   }
   return(LIB3DS_TRUE);
 }
@@ -809,24 +809,24 @@ lib3ds_lin3_track_eval(Lib3dsLin3Track *track, Lib3dsVector p, Lib3dsFloat t)
  * \ingroup tracks 
  */
 Lib3dsBool
-lib3ds_lin3_track_read(Lib3dsLin3Track *track, FILE *f)
+lib3ds_lin3_track_read(Lib3dsLin3Track *track, iostream *strm)
 {
   int keys;
   int i,j;
   Lib3dsLin3Key *k;
 
-  track->flags=lib3ds_word_read(f);
-  lib3ds_dword_read(f);
-  lib3ds_dword_read(f);
-  keys=lib3ds_intd_read(f);
+  track->flags=lib3ds_word_read(strm);
+  lib3ds_dword_read(strm);
+  lib3ds_dword_read(strm);
+  keys=lib3ds_intd_read(strm);
 
   for (i=0; i<keys; ++i) {
     k=lib3ds_lin3_key_new();
-    if (!lib3ds_tcb_read(&k->tcb, f)) {
+    if (!lib3ds_tcb_read(&k->tcb, strm)) {
       return(LIB3DS_FALSE);
     }
     for (j=0; j<3; ++j) {
-      k->value[j]=lib3ds_float_read(f);
+      k->value[j]=lib3ds_float_read(strm);
     }
     lib3ds_lin3_track_insert(track, k);
   }
@@ -839,23 +839,23 @@ lib3ds_lin3_track_read(Lib3dsLin3Track *track, FILE *f)
  * \ingroup tracks 
  */
 Lib3dsBool
-lib3ds_lin3_track_write(Lib3dsLin3Track *track, FILE *f)
+lib3ds_lin3_track_write(Lib3dsLin3Track *track, iostream *strm)
 {
   Lib3dsLin3Key *k;
   Lib3dsDword num=0;
   for (k=track->keyL; k; k=k->next) {
     ++num;
   }
-  lib3ds_word_write((Lib3dsWord)track->flags,f);
-  lib3ds_dword_write(0,f);
-  lib3ds_dword_write(0,f);
-  lib3ds_dword_write(num,f);
+  lib3ds_word_write((Lib3dsWord)track->flags,strm);
+  lib3ds_dword_write(0,strm);
+  lib3ds_dword_write(0,strm);
+  lib3ds_dword_write(num,strm);
 
   for (k=track->keyL; k; k=k->next) {
-    if (!lib3ds_tcb_write(&k->tcb,f)) {
+    if (!lib3ds_tcb_write(&k->tcb,strm)) {
       return(LIB3DS_FALSE);
     }
-    lib3ds_vector_write(k->value,f);
+    lib3ds_vector_write(k->value,strm);
   }
   return(LIB3DS_TRUE);
 }
@@ -1156,25 +1156,25 @@ lib3ds_quat_track_eval(Lib3dsQuatTrack *track, Lib3dsQuat q, Lib3dsFloat t)
  * \ingroup tracks 
  */
 Lib3dsBool
-lib3ds_quat_track_read(Lib3dsQuatTrack *track, FILE *f)
+lib3ds_quat_track_read(Lib3dsQuatTrack *track, iostream *strm)
 {
   int keys;
   int i,j;
   Lib3dsQuatKey *k;
 
-  track->flags=lib3ds_word_read(f);
-  lib3ds_dword_read(f);
-  lib3ds_dword_read(f);
-  keys=lib3ds_intd_read(f);
+  track->flags=lib3ds_word_read(strm);
+  lib3ds_dword_read(strm);
+  lib3ds_dword_read(strm);
+  keys=lib3ds_intd_read(strm);
 
   for (i=0; i<keys; ++i) {
     k=lib3ds_quat_key_new();
-    if (!lib3ds_tcb_read(&k->tcb, f)) {
+    if (!lib3ds_tcb_read(&k->tcb, strm)) {
       return(LIB3DS_FALSE);
     }
-    k->angle=lib3ds_float_read(f);
+    k->angle=lib3ds_float_read(strm);
     for (j=0; j<3; ++j) {
-      k->axis[j]=lib3ds_float_read(f);
+      k->axis[j]=lib3ds_float_read(strm);
     }
     lib3ds_quat_track_insert(track, k);
   }
@@ -1187,24 +1187,24 @@ lib3ds_quat_track_read(Lib3dsQuatTrack *track, FILE *f)
  * \ingroup tracks 
  */
 Lib3dsBool
-lib3ds_quat_track_write(Lib3dsQuatTrack *track, FILE *f)
+lib3ds_quat_track_write(Lib3dsQuatTrack *track, iostream *strm)
 {
   Lib3dsQuatKey *k;
   Lib3dsDword num=0;
   for (k=track->keyL; k; k=k->next) {
     ++num;
   }
-  lib3ds_word_write((Lib3dsWord)track->flags,f);
-  lib3ds_dword_write(0,f);
-  lib3ds_dword_write(0,f);
-  lib3ds_dword_write(num,f);
+  lib3ds_word_write((Lib3dsWord)track->flags,strm);
+  lib3ds_dword_write(0,strm);
+  lib3ds_dword_write(0,strm);
+  lib3ds_dword_write(num,strm);
 
   for (k=track->keyL; k; k=k->next) {
-    if (!lib3ds_tcb_write(&k->tcb,f)) {
+    if (!lib3ds_tcb_write(&k->tcb,strm)) {
       return(LIB3DS_FALSE);
     }
-    lib3ds_float_write(k->angle,f);
-    lib3ds_vector_write(k->axis,f);
+    lib3ds_float_write(k->angle,strm);
+    lib3ds_vector_write(k->axis,strm);
   }
   return(LIB3DS_TRUE);
 }
@@ -1364,7 +1364,7 @@ lib3ds_morph_track_eval(Lib3dsMorphTrack *track, char *p, Lib3dsFloat t)
  * \ingroup tracks
  */
 Lib3dsBool
-lib3ds_morph_track_read(Lib3dsMorphTrack *, FILE *)
+lib3ds_morph_track_read(Lib3dsMorphTrack *, iostream *strm)
 {
   /* FIXME: */
   return(LIB3DS_TRUE);
@@ -1375,7 +1375,7 @@ lib3ds_morph_track_read(Lib3dsMorphTrack *, FILE *)
  * \ingroup tracks 
  */
 Lib3dsBool
-lib3ds_morph_track_write(Lib3dsMorphTrack *, FILE *)
+lib3ds_morph_track_write(Lib3dsMorphTrack *, iostream *strm)
 {
   /* FIXME: */
   ASSERT(0);

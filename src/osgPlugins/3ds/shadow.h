@@ -27,6 +27,9 @@
 #include "types.h"
 #endif
 
+#include <iostream>
+using namespace std;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -45,8 +48,8 @@ struct _Lib3dsShadow {
     Lib3dsFloat ray_bias;
 };
 
-extern LIB3DSAPI Lib3dsBool lib3ds_shadow_read(Lib3dsShadow *shadow, FILE *f);
-extern LIB3DSAPI Lib3dsBool lib3ds_shadow_write(Lib3dsShadow *shadow, FILE *f);
+extern LIB3DSAPI Lib3dsBool lib3ds_shadow_read(Lib3dsShadow *shadow, iostream *strm);
+extern LIB3DSAPI Lib3dsBool lib3ds_shadow_write(Lib3dsShadow *shadow, iostream *strm);
 
 #ifdef __cplusplus
 }

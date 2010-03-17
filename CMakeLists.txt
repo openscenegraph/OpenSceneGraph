@@ -887,14 +887,14 @@ IF(REQUIRES_LIBPATH_MESSAGE)
     IF (NOT OSG_LIBPATH_MESSAGE_HAS_BEEN_RUN_BEFORE)
         SET(OSG_LIBPATH_MESSAGE_HAS_BEEN_RUN_BEFORE 1 CACHE INTERNAL "Flag to track whether the libpath message has been reported before")
 
-        MESSAGE("\nThe build system is configured to instal libraries to ${CMAKE_INSTALL_PREFIX}/lib${LIB_POSTFIX}\n"
+        MESSAGE("\nThe build system is configured to install libraries to ${CMAKE_INSTALL_PREFIX}/lib${LIB_POSTFIX}\n"
             "Your applications may not be able to find your installed libraries unless you:\n"
             "    set your LD_LIBRARY_PATH (user specific) or\n"
             "    update your ld.so configuration (system wide)")
         IF(IS_DIRECTORY /etc/ld.so.conf.d)
             MESSAGE("You have an ld.so.conf.d directory on your system, so if you wish to ensure that\n"
-                "applications find the installed osg libraries, system wide, you could install a\n"
-                "openscenegraph specific ld.so configuration with:\n"
+                "applications find the installed osg libraries, system wide, you could install an\n"
+                "OpenSceneGraph specific ld.so configuration with:\n"
                 "    sudo make install_ld_conf\n")
             CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/ld.so.conf.d/openscenegraph.conf.in
                 ${PROJECT_BINARY_DIR}/packaging/ld.so.conf.d/openscenegraph.conf

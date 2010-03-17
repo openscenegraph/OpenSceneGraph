@@ -252,6 +252,8 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
                 {
                     MESHASSERT( _colors->size() == static_cast< size_t >( nElems ) );
                 }
+
+                result = true;
             }
             catch( exception& e )
             {
@@ -305,16 +307,21 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         geom->setVertexArray(_vertices.get());
 
         // If the normals are not calculated calculate the normals for faces
-        if(!_normals.valid())
-            _calculateNormals();
+        if(_triangles.valid())
+        {
+            if(!_normals.valid())
+                _calculateNormals();
 
-        
-        // set the normals
-        geom->setNormalArray(_normals.get());
-        geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+            // set the normals
+            geom->setNormalArray(_normals.get());
+            geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
+        }
         
         // Add the premetive set
-        geom->addPrimitiveSet(_triangles.get());
+        if (_triangles.valid() && _triangles->size() > 0 )
+            geom->addPrimitiveSet(_triangles.get());
+        else
+            geom->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, _vertices->size()));
 
         // if color info is given set the color array
         if(_colors.valid())

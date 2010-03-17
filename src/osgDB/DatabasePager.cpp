@@ -1430,7 +1430,7 @@ bool DatabasePager::requiresUpdateSceneGraph() const
     
 }
 
-#define UPDATE_TIMING 1
+// #define UPDATE_TIMING 1
 void DatabasePager::updateSceneGraph(const osg::FrameStamp& frameStamp)
 {
 #ifdef UPDATE_TIMING

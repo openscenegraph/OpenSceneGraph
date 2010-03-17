@@ -12,7 +12,7 @@
 */
 
 //
-// OpenFlight® loader for OpenSceneGraph
+// OpenFlight(R) loader for OpenSceneGraph
 //
 //  Copyright (C) 2005-2007  Brede Johansen
 //
@@ -78,115 +78,105 @@ ReaderWriter::ReadResult ReaderWriterATTR::readObject(const std::string& file, c
 
     AttrData* attr = new AttrData;
 
-    try
-    {
-        attr->texels_u  = in.readInt32();
-        attr->texels_v  = in.readInt32();
-        attr->direction_u  = in.readInt32();
-        attr->direction_v  = in.readInt32();
-        attr->x_up  = in.readInt32();
-        attr->y_up  = in.readInt32();
-        attr->fileFormat  = in.readInt32();
-        attr->minFilterMode  = in.readInt32();
-        attr->magFilterMode  = in.readInt32();
-        attr->wrapMode  = in.readInt32(AttrData::WRAP_REPEAT);
+    attr->texels_u  = in.readInt32();
+    attr->texels_v  = in.readInt32();
+    attr->direction_u  = in.readInt32();
+    attr->direction_v  = in.readInt32();
+    attr->x_up  = in.readInt32();
+    attr->y_up  = in.readInt32();
+    attr->fileFormat  = in.readInt32();
+    attr->minFilterMode  = in.readInt32();
+    attr->magFilterMode  = in.readInt32();
+    attr->wrapMode  = in.readInt32(AttrData::WRAP_REPEAT);
 
-        attr->wrapMode_u  = in.readInt32();
-        if (attr->wrapMode_u == AttrData::WRAP_NONE)
-            attr->wrapMode_u = attr->wrapMode;
+    attr->wrapMode_u  = in.readInt32();
+    if (attr->wrapMode_u == AttrData::WRAP_NONE)
+        attr->wrapMode_u = attr->wrapMode;
 
-        attr->wrapMode_v  = in.readInt32();
-        if (attr->wrapMode_v == AttrData::WRAP_NONE)
-            attr->wrapMode_v = attr->wrapMode;
+    attr->wrapMode_v  = in.readInt32();
+    if (attr->wrapMode_v == AttrData::WRAP_NONE)
+        attr->wrapMode_v = attr->wrapMode;
 
-        attr->modifyFlag = in.readInt32();
-        attr->pivot_x  = in.readInt32();
-        attr->pivot_y  = in.readInt32();
+    attr->modifyFlag = in.readInt32();
+    attr->pivot_x  = in.readInt32();
+    attr->pivot_y  = in.readInt32();
 
-        // v11 ends here
+    // v11 ends here
 //      if (in.eof() || (_flt_version <= 11)) return true;
 #if 1
-        attr->texEnvMode = in.readInt32(AttrData::TEXENV_MODULATE);
-        attr->intensityAsAlpha = in.readInt32();
-        in.forward(4*8);
-        in.forward(4);
-        attr->size_u = in.readFloat64();
-        attr->size_v = in.readFloat64();
-        attr->originCode = in.readInt32();
-        attr->kernelVersion = in.readInt32();
-        attr->intFormat = in.readInt32();
-        attr->extFormat = in.readInt32();
-        attr->useMips = in.readInt32();
-        for (int n=0; n<8; n++)
-            attr->of_mips[n] = in.readFloat32();
-        attr->useLodScale = in.readInt32();
-        attr->lod0 = in.readFloat32();
-        attr->scale0 = in.readFloat32();
-        attr->lod1 = in.readFloat32();
-        attr->scale1 = in.readFloat32();
-        attr->lod2 = in.readFloat32();
-        attr->scale2 = in.readFloat32();
-        attr->lod3 = in.readFloat32();
-        attr->scale3 = in.readFloat32();
-        attr->lod4 = in.readFloat32();
-        attr->scale4 = in.readFloat32();
-        attr->lod5 = in.readFloat32();
-        attr->scale5 = in.readFloat32();
-        attr->lod6 = in.readFloat32();
-        attr->scale6 = in.readFloat32();
-        attr->lod7 = in.readFloat32();
-        attr->scale7 = in.readFloat32();
-        attr->clamp = in.readFloat32();
-        attr->magFilterAlpha = in.readInt32();
-        attr->magFilterColor = in.readInt32();
-        in.forward(4);
-        in.forward(4*8);
-        attr->lambertMeridian = in.readFloat64();
-        attr->lambertUpperLat = in.readFloat64();
-        attr->lambertlowerLat = in.readFloat64();
-        in.forward(8);
-        in.forward(4*5);
-        attr->useDetail = in.readInt32(  );
-        attr->txDetail_j = in.readInt32();
-        attr->txDetail_k = in.readInt32();
-        attr->txDetail_m = in.readInt32();
-        attr->txDetail_n = in.readInt32();
-        attr->txDetail_s = in.readInt32( );
-        attr->useTile = in.readInt32();
-        attr->txTile_ll_u= in.readFloat32();
-        attr->txTile_ll_v = in.readFloat32();
-        attr->txTile_ur_u = in.readFloat32();
-        attr->txTile_ur_v = in.readFloat32();
-        attr->projection = in.readInt32();
-        attr->earthModel = in.readInt32();
-        in.forward(4);
-        attr->utmZone = in.readInt32();
-        attr->imageOrigin = in.readInt32();
-        attr->geoUnits = in.readInt32();
-        in.forward(4);
-        in.forward(4);
-        attr->hemisphere = in.readInt32();
-        in.forward(4);
-        in.forward(4);
-        in.forward(149*4);
-        attr->comments = in.readString(512);
+    attr->texEnvMode = in.readInt32(AttrData::TEXENV_MODULATE);
+    attr->intensityAsAlpha = in.readInt32();
+    in.forward(4*8);
+    in.forward(4);
+    attr->size_u = in.readFloat64();
+    attr->size_v = in.readFloat64();
+    attr->originCode = in.readInt32();
+    attr->kernelVersion = in.readInt32();
+    attr->intFormat = in.readInt32();
+    attr->extFormat = in.readInt32();
+    attr->useMips = in.readInt32();
+    for (int n=0; n<8; n++)
+        attr->of_mips[n] = in.readFloat32();
+    attr->useLodScale = in.readInt32();
+    attr->lod0 = in.readFloat32();
+    attr->scale0 = in.readFloat32();
+    attr->lod1 = in.readFloat32();
+    attr->scale1 = in.readFloat32();
+    attr->lod2 = in.readFloat32();
+    attr->scale2 = in.readFloat32();
+    attr->lod3 = in.readFloat32();
+    attr->scale3 = in.readFloat32();
+    attr->lod4 = in.readFloat32();
+    attr->scale4 = in.readFloat32();
+    attr->lod5 = in.readFloat32();
+    attr->scale5 = in.readFloat32();
+    attr->lod6 = in.readFloat32();
+    attr->scale6 = in.readFloat32();
+    attr->lod7 = in.readFloat32();
+    attr->scale7 = in.readFloat32();
+    attr->clamp = in.readFloat32();
+    attr->magFilterAlpha = in.readInt32();
+    attr->magFilterColor = in.readInt32();
+    in.forward(4);
+    in.forward(4*8);
+    attr->lambertMeridian = in.readFloat64();
+    attr->lambertUpperLat = in.readFloat64();
+    attr->lambertlowerLat = in.readFloat64();
+    in.forward(8);
+    in.forward(4*5);
+    attr->useDetail = in.readInt32(  );
+    attr->txDetail_j = in.readInt32();
+    attr->txDetail_k = in.readInt32();
+    attr->txDetail_m = in.readInt32();
+    attr->txDetail_n = in.readInt32();
+    attr->txDetail_s = in.readInt32( );
+    attr->useTile = in.readInt32();
+    attr->txTile_ll_u= in.readFloat32();
+    attr->txTile_ll_v = in.readFloat32();
+    attr->txTile_ur_u = in.readFloat32();
+    attr->txTile_ur_v = in.readFloat32();
+    attr->projection = in.readInt32();
+    attr->earthModel = in.readInt32();
+    in.forward(4);
+    attr->utmZone = in.readInt32();
+    attr->imageOrigin = in.readInt32();
+    attr->geoUnits = in.readInt32();
+    in.forward(4);
+    in.forward(4);
+    attr->hemisphere = in.readInt32();
+    in.forward(4);
+    in.forward(4);
+    in.forward(149*4);
+    attr->comments = in.readString(512);
 
-        // v12 ends here
+    // v12 ends here
 //      if (in.eof() || (_flt_version <= 12)) return true;
 
-        in.forward(14*4);
-        attr->attrVersion = in.readInt32();
-        attr->controlPoints = in.readInt32();
-        attr->numSubtextures = in.readInt32();
+    in.forward(14*4);
+    attr->attrVersion = in.readInt32();
+    attr->controlPoints = in.readInt32();
+    attr->numSubtextures = in.readInt32();
 #endif
-    }
-    catch(...)
-    {
-        if (!fin.eof())
-        {
-            throw;
-        }
-    }
 
     fin.close();
 

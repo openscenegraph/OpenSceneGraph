@@ -48,7 +48,8 @@ class PushLevel : public Record
         virtual ~PushLevel() {}
 };
 
-RegisterRecordProxy<PushLevel> g_PushLevel(PUSH_LEVEL_OP);
+REGISTER_FLTRECORD(PushLevel, PUSH_LEVEL_OP)
+
 
 
 /** PophLevel
@@ -86,7 +87,8 @@ class PopLevel : public Record
         virtual ~PopLevel() {}
 };
 
-RegisterRecordProxy<PopLevel> g_PopLevel(POP_LEVEL_OP);
+REGISTER_FLTRECORD(PopLevel, POP_LEVEL_OP)
+
 
 
 /** PushSubface
@@ -109,7 +111,8 @@ class PushSubface : public Record
         virtual ~PushSubface() {}
 };
 
-RegisterRecordProxy<PushSubface> g_PushSubface(PUSH_SUBFACE_OP);
+REGISTER_FLTRECORD(PushSubface, PUSH_SUBFACE_OP)
+
 
 
 /** PopSubface
@@ -132,7 +135,8 @@ class PopSubface : public Record
         virtual ~PopSubface() {}
 };
 
-RegisterRecordProxy<PopSubface> g_PopSubface(POP_SUBFACE_OP);
+REGISTER_FLTRECORD(PopSubface, POP_SUBFACE_OP)
+
 
 
 /** PushExtension
@@ -156,7 +160,8 @@ class PushExtension : public Record
         virtual ~PushExtension() {}
 };
 
-RegisterRecordProxy<PushExtension> g_PushExtension(PUSH_EXTENSION_OP);
+REGISTER_FLTRECORD(PushExtension, PUSH_EXTENSION_OP)
+
 
 
 /** PopExtension
@@ -180,7 +185,8 @@ class PopExtension : public Record
         virtual ~PopExtension() {}
 };
 
-RegisterRecordProxy<PopExtension> g_PopExtension(POP_EXTENSION_OP);
+REGISTER_FLTRECORD(PopExtension, POP_EXTENSION_OP)
+
 
 
 /** PushAttribute - Reserved subtree
@@ -203,7 +209,8 @@ class PushAttribute : public Record
         virtual ~PushAttribute() {}
 };
 
-RegisterRecordProxy<PushAttribute> g_PushAttribute(PUSH_ATTRIBUTE_OP);
+REGISTER_FLTRECORD(PushAttribute, PUSH_ATTRIBUTE_OP)
+
 
 
 /** PopAttribute
@@ -226,7 +233,8 @@ class PopAttribute : public Record
         virtual ~PopAttribute() {}
 };
 
-RegisterRecordProxy<PopAttribute> g_PopAttribute(POP_ATTRIBUTE_OP);
+REGISTER_FLTRECORD(PopAttribute, POP_ATTRIBUTE_OP)
+
 
 
 } // end namespace

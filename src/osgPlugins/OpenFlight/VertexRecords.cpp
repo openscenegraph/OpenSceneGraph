@@ -76,7 +76,8 @@ class VertexC : public Record
         }
 };
 
-RegisterRecordProxy<VertexC> g_VertexC(VERTEX_C_OP);
+REGISTER_FLTRECORD(VertexC, VERTEX_C_OP)
+
 
 
 class VertexCN : public Record
@@ -115,7 +116,8 @@ class VertexCN : public Record
         }
 };
 
-RegisterRecordProxy<VertexCN> g_VertexCN(VERTEX_CN_OP);
+REGISTER_FLTRECORD(VertexCN, VERTEX_CN_OP)
+
 
 
 class VertexCT : public Record
@@ -154,7 +156,8 @@ class VertexCT : public Record
         }
 };
 
-RegisterRecordProxy<VertexCT> g_VertexCT(VERTEX_CT_OP);
+REGISTER_FLTRECORD(VertexCT, VERTEX_CT_OP)
+
 
 
 class VertexCNT : public Record
@@ -211,7 +214,8 @@ class VertexCNT : public Record
         }
 };
 
-RegisterRecordProxy<VertexCNT> g_VertexCNT(VERTEX_CNT_OP);
+REGISTER_FLTRECORD(VertexCNT, VERTEX_CNT_OP)
+
 
 
 /** Absolute Vertex -
@@ -252,7 +256,8 @@ class AbsoluteVertex : public Record
         }
 };
 
-RegisterRecordProxy<AbsoluteVertex> g_AbsoluteVertex(OLD_ABSOLUTE_VERTEX_OP);
+REGISTER_FLTRECORD(AbsoluteVertex, OLD_ABSOLUTE_VERTEX_OP)
+
 
 
 /** Shaded Vertex
@@ -300,7 +305,8 @@ class ShadedVertex : public Record
         }
 };
 
-RegisterRecordProxy<ShadedVertex> g_ShadedVertex(OLD_SHADED_VERTEX_OP);
+REGISTER_FLTRECORD(ShadedVertex, OLD_SHADED_VERTEX_OP)
+
 
 
 /** Normal Vertex
@@ -348,6 +354,7 @@ class NormalVertex : public Record
         }
 };
 
-RegisterRecordProxy<NormalVertex> g_NormalVertex(OLD_NORMAL_VERTEX_OP);
+REGISTER_FLTRECORD(NormalVertex, OLD_NORMAL_VERTEX_OP)
+
 
 } // end namespace

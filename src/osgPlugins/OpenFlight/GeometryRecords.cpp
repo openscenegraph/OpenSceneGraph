@@ -536,7 +536,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<Face> g_Face(FACE_OP);
+REGISTER_FLTRECORD(Face, FACE_OP)
+
 
 
 /** VertexList -
@@ -592,7 +593,8 @@ protected:
 };
 
 
-RegisterRecordProxy<VertexListRecord> g_VertexList(VERTEX_LIST_OP);
+REGISTER_FLTRECORD(VertexListRecord, VERTEX_LIST_OP)
+
 
 
 /** MorphVertexList -
@@ -681,7 +683,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<MorphVertexList> g_MorphVertexList(MORPH_VERTEX_LIST_OP);
+REGISTER_FLTRECORD(MorphVertexList, MORPH_VERTEX_LIST_OP)
+
 
 
 /* Mesh record
@@ -1016,7 +1019,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<Mesh> g_Mesh(MESH_OP);
+REGISTER_FLTRECORD(Mesh, MESH_OP)
+
 
 
 
@@ -1133,7 +1137,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<LocalVertexPool> g_LocalVertexPool(LOCAL_VERTEX_POOL_OP);
+REGISTER_FLTRECORD(LocalVertexPool, LOCAL_VERTEX_POOL_OP)
+
 
 
 
@@ -1271,7 +1276,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<MeshPrimitive> g_MeshPrimitive(MESH_PRIMITIVE_OP);
+REGISTER_FLTRECORD(MeshPrimitive, MESH_PRIMITIVE_OP)
+
 
 
 } // end namespace

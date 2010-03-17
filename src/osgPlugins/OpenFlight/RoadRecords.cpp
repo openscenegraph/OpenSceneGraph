@@ -60,7 +60,7 @@ class RoadSegment : public PrimaryRecord
         }
 };
 
-RegisterRecordProxy<RoadSegment> g_RoadSegment(ROAD_SEGMENT_OP);
+REGISTER_FLTRECORD(RoadSegment, ROAD_SEGMENT_OP)
 
 
 /** RoadConstruction
@@ -98,7 +98,8 @@ class RoadConstruction : public PrimaryRecord
         }
 };
 
-RegisterRecordProxy<RoadConstruction> g_RoadConstruction(ROAD_CONSTRUCTION_OP);
+REGISTER_FLTRECORD(RoadConstruction, ROAD_CONSTRUCTION_OP)
+
 
 
 /** RoadPath
@@ -132,7 +133,8 @@ class RoadPath : public PrimaryRecord
         }
 };
 
-RegisterRecordProxy<RoadPath> g_RoadPath(ROAD_PATH_OP);
+REGISTER_FLTRECORD(RoadPath, ROAD_PATH_OP)
+
 
 
 } // end namespace

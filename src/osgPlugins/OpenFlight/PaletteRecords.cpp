@@ -60,7 +60,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<VertexPalette> g_VertexPalette(VERTEX_PALETTE_OP);
+REGISTER_FLTRECORD(VertexPalette, VERTEX_PALETTE_OP)
+
 
 
 class ColorPalette : public Record
@@ -140,7 +141,8 @@ protected:
 };
 
 
-RegisterRecordProxy<ColorPalette> g_ColorPalette(COLOR_PALETTE_OP);
+REGISTER_FLTRECORD(ColorPalette, COLOR_PALETTE_OP)
+
 
 
 class NameTable : public Record
@@ -160,7 +162,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<NameTable> g_NameTable(NAME_TABLE_OP);
+REGISTER_FLTRECORD(NameTable, NAME_TABLE_OP)
+
 
 
 class MaterialPalette : public Record
@@ -204,7 +207,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<MaterialPalette> g_MaterialPalette(MATERIAL_PALETTE_OP);
+REGISTER_FLTRECORD(MaterialPalette, MATERIAL_PALETTE_OP)
+
 
 
 class OldMaterialPalette : public Record
@@ -251,7 +255,8 @@ protected:
 
 };
 
-RegisterRecordProxy<OldMaterialPalette> g_OldMaterialPalette(OLD_MATERIAL_PALETTE_OP);
+REGISTER_FLTRECORD(OldMaterialPalette, OLD_MATERIAL_PALETTE_OP)
+
 
 
 class TexturePalette : public Record
@@ -466,7 +471,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<TexturePalette> g_TexturePalette(TEXTURE_PALETTE_OP);
+REGISTER_FLTRECORD(TexturePalette, TEXTURE_PALETTE_OP)
+
 
 
 class EyepointAndTrackplanePalette : public Record
@@ -484,7 +490,8 @@ protected:
     virtual void readRecord(RecordInputStream& /*in*/, Document& /*document*/) {}
 };
 
-RegisterRecordProxy<EyepointAndTrackplanePalette> g_EyepointAndTrackplanePalette(EYEPOINT_AND_TRACKPLANE_PALETTE_OP);
+REGISTER_FLTRECORD(EyepointAndTrackplanePalette, EYEPOINT_AND_TRACKPLANE_PALETTE_OP)
+
 
 
 class LinkagePalette : public Record
@@ -502,7 +509,8 @@ protected:
     virtual void readRecord(RecordInputStream& /*in*/, Document& /*document*/) {}
 };
 
-RegisterRecordProxy<LinkagePalette> g_LinkagePalette(LINKAGE_PALETTE_OP);
+REGISTER_FLTRECORD(LinkagePalette, LINKAGE_PALETTE_OP)
+
 
 
 class SoundPalette : public Record
@@ -520,7 +528,8 @@ protected:
     virtual void readRecord(RecordInputStream& /*in*/, Document& /*document*/) {}
 };
 
-RegisterRecordProxy<SoundPalette> g_SoundPalette(SOUND_PALETTE_OP);
+REGISTER_FLTRECORD(SoundPalette, SOUND_PALETTE_OP)
+
 
 
 class LightSourcePalette : public Record
@@ -599,7 +608,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<LightSourcePalette> g_LightSourcePalette(LIGHT_SOURCE_PALETTE_OP);
+REGISTER_FLTRECORD(LightSourcePalette, LIGHT_SOURCE_PALETTE_OP)
+
 
 
 class LightPointAppearancePalette : public Record
@@ -681,7 +691,8 @@ protected:
 
 };
 
-RegisterRecordProxy<LightPointAppearancePalette> g_LightPointAppearancePalette(LIGHT_POINT_APPEARANCE_PALETTE_OP);
+REGISTER_FLTRECORD(LightPointAppearancePalette, LIGHT_POINT_APPEARANCE_PALETTE_OP)
+
 
 
 class LightPointAnimationPalette : public Record
@@ -739,7 +750,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<LightPointAnimationPalette> g_LightPointAnimationPalette(LIGHT_POINT_ANIMATION_PALETTE_OP);
+REGISTER_FLTRECORD(LightPointAnimationPalette, LIGHT_POINT_ANIMATION_PALETTE_OP)
+
 
 
 class LineStylePalette : public Record
@@ -759,7 +771,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<LineStylePalette> g_LineStylePalette(LINE_STYLE_PALETTE_OP);
+REGISTER_FLTRECORD(LineStylePalette, LINE_STYLE_PALETTE_OP)
+
 
 
 class TextureMappingPalette : public Record
@@ -779,7 +792,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<TextureMappingPalette> g_TextureMappingPalette(TEXTURE_MAPPING_PALETTE_OP);
+REGISTER_FLTRECORD(TextureMappingPalette, TEXTURE_MAPPING_PALETTE_OP)
+
 
 
 class ShaderPalette : public Record
@@ -876,7 +890,8 @@ protected:
     }
 };
 
-RegisterRecordProxy<ShaderPalette> g_ShaderPalette(SHADER_PALETTE_OP);
+REGISTER_FLTRECORD(ShaderPalette, SHADER_PALETTE_OP)
+
 
 } // end namespace
 

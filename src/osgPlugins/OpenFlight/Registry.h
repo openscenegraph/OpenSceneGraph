@@ -122,6 +122,27 @@ class RegisterRecordProxy
         ~RegisterRecordProxy() {}
 };
 
+//////////////////////////////////////////////////////////////////////////
+
+extern "C"
+{
+    typedef void (* CRecordFunction) (void);
+}
+
+struct RecordFunctionProxy
+{
+    RecordFunctionProxy(CRecordFunction function) { (function)(); }
+};
+
+#define USE_FLTRECORD(recname, opcode) \
+    extern "C" void osgfltrec_##recname_##opcode(void); \
+    static flt::RecordFunctionProxy proxy_fltrecord_##recname_##opcode(osgfltrec_##recname_##opcode);
+
+#define REGISTER_FLTRECORD(recname, opcode) \
+    extern "C" void osgfltrec_##recname_##opcode(void) {} \
+    static flt::RegisterRecordProxy<recname> g_proxy_fltrecord_##recname_##opcode(opcode);
+
+
 } // end namespace
 
 #endif

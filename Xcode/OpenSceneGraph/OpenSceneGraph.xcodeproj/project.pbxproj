@@ -2295,6 +2295,7 @@
 		D40F5E1D0FFA345D002E7744 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D40F5E720FFA34A1002E7744 /* osgVolume.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4C9C8320E91148900F8C4A0 /* osgVolume.framework */; };
 		D40F5E940FFA34C2002E7744 /* osgFX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0055835B0624D1E5000A808A /* osgFX.framework */; };
+		D413C09A1150D994009021E6 /* FileNameUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D413C0991150D994009021E6 /* FileNameUtils.cpp */; };
 		D4163D1B0F2A6A290062226D /* ImageUtils in Headers */ = {isa = PBXBuildFile; fileRef = D4163D1A0F2A6A290062226D /* ImageUtils */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4163D1D0F2A6A540062226D /* ImageUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4163D1C0F2A6A540062226D /* ImageUtils.cpp */; };
 		D4163D1F0F2A6A910062226D /* CameraViewSwitchManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4163D1E0F2A6A900062226D /* CameraViewSwitchManipulator.cpp */; };
@@ -8278,6 +8279,7 @@
 		D40F5E050FFA33DC002E7744 /* PickEventHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PickEventHandler.cpp; sourceTree = "<group>"; };
 		D40F5E060FFA33DC002E7744 /* SlideEventHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SlideEventHandler.cpp; sourceTree = "<group>"; };
 		D40F5E070FFA33DD002E7744 /* SlideShowConstructor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SlideShowConstructor.cpp; sourceTree = "<group>"; };
+		D413C0991150D994009021E6 /* FileNameUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileNameUtils.cpp; sourceTree = "<group>"; };
 		D4163D1A0F2A6A290062226D /* ImageUtils */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ImageUtils; sourceTree = "<group>"; };
 		D4163D1C0F2A6A540062226D /* ImageUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ImageUtils.cpp; sourceTree = "<group>"; };
 		D4163D1E0F2A6A900062226D /* CameraViewSwitchManipulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CameraViewSwitchManipulator.cpp; sourceTree = "<group>"; };
@@ -12725,6 +12727,7 @@
 		00EF4F7B06CB14BB008ACEFF /* osgunittests */ = {
 			isa = PBXGroup;
 			children = (
+				D413C0991150D994009021E6 /* FileNameUtils.cpp */,
 				D4C9CAD40E91319200F8C4A0 /* MultiThreadRead.cpp */,
 				D4C9CAD50E91319200F8C4A0 /* MultiThreadRead.h */,
 				D48EC7B30B4FCA29000E05A4 /* UnitTestFramework.cpp */,
@@ -22118,6 +22121,7 @@
 				D48EC7B60B4FCA2A000E05A4 /* UnitTestFramework.cpp in Sources */,
 				D48EC7B80B4FCA2A000E05A4 /* UnitTests_osg.cpp in Sources */,
 				D4C9CAD60E91319200F8C4A0 /* MultiThreadRead.cpp in Sources */,
+				D413C09A1150D994009021E6 /* FileNameUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

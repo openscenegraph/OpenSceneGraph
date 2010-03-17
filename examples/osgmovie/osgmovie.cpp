@@ -320,6 +320,30 @@ osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,flo
     }
 }
 
+class CustomAudioSink : public osg::AudioSink
+{
+    public:
+    
+        CustomAudioSink(osg::AudioStream* audioStream):
+            _playing(false),
+            _audioStream(audioStream) {}
+        
+        virtual void startPlaying()
+        {
+            _playing = true; 
+            osg::notify(osg::NOTICE)<<"CustomAudioSink()::startPlaying()"<<std::endl;
+            
+            osg::notify(osg::NOTICE)<<"  audioFrequency()="<<_audioStream->audioFrequency()<<std::endl;
+            osg::notify(osg::NOTICE)<<"  audioNbChannels()="<<_audioStream->audioNbChannels()<<std::endl;
+            osg::notify(osg::NOTICE)<<"  audioSampleFormat()="<<_audioStream->audioSampleFormat()<<std::endl;
+            
+        }
+        virtual bool playing() const { return _playing; }
+
+        bool                                _playing;
+        osg::observer_ptr<osg::AudioStream> _audioStream;
+};
+
 int main(int argc, char** argv)
 {
     // use an ArgumentParser object to manage the program arguments.
@@ -425,6 +449,9 @@ int main(int argc, char** argv)
     osg::Vec3 bottomright = pos;
 
     bool xyPlane = fullscreen;
+    
+    bool useOpenALAudio = false;
+    while(arguments.read("--OpenAL")) { useOpenALAudio = true; }
 
     for(int i=1;i<arguments.argc();++i)
     {
@@ -432,7 +459,19 @@ int main(int argc, char** argv)
         {
             osg::Image* image = osgDB::readImageFile(arguments[i]);
             osg::ImageStream* imagestream = dynamic_cast<osg::ImageStream*>(image);
-            if (imagestream) imagestream->play();
+            if (imagestream) 
+            {
+                osg::ImageStream::AudioStreams& audioStreams = imagestream->getAudioStreams();
+                if (useOpenALAudio && !audioStreams.empty())
+                {
+                    osg::AudioStream* audioStream = audioStreams[0].get();
+                    osg::notify(osg::NOTICE)<<"AudioStream read ["<<audioStream->getName()<<"]"<<std::endl;
+                    audioStream->setAudioSink(new CustomAudioSink(audioStream));
+                }
+
+
+                imagestream->play();
+            }
 
             if (image)
             {

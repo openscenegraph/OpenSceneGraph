@@ -1,0 +1,23 @@
+
+#ifndef HEADER_GUARD_OSGFFMPEG_FFMPEG_SAMPLE_FORMAT_H
+#define HEADER_GUARD_OSGFFMPEG_FFMPEG_SAMPLE_FORMAT_H
+
+
+
+namespace osgFFmpeg
+{
+
+    enum FFmpegSampleFormat
+    {
+        SAMPLE_FORMAT_U8,    //= SAMPLE_FMT_U8,
+        SAMPLE_FORMAT_S16,    //= SAMPLE_FMT_S16,
+        SAMPLE_FORMAT_S24,    //= SAMPLE_FMT_S24,
+        SAMPLE_FORMAT_S32,    //= SAMPLE_FMT_S32,
+        SAMPLE_FORMAT_F32    //= SAMPLE_FMT_FLT
+    };
+
+}
+
+
+
+#endif // HEADER_GUARD_OSGFFMPEG_FFMPEG_SAMPLE_FORMAT_H

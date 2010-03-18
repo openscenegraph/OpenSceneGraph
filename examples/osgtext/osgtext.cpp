@@ -22,6 +22,7 @@
 #include <osgDB/WriteFile>
 #include <osgDB/Registry>
 
+#include <osgGA/StateSetManipulator>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
 
@@ -701,6 +702,7 @@ int main(int argc, char** argv)
     osgDB::writeNodeFile(*viewer.getSceneData(),"text.osg");
 #endif
 
+    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
     viewer.addEventHandler(new osgViewer::StatsHandler());
 
     viewer.run();

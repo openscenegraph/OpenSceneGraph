@@ -33,6 +33,8 @@ public:
     FbxMaterialToOsgStateSet::FbxMaterialToOsgStateSet(const std::string& dir, const osgDB::Options* options) :
         _options(options),
         _dir(dir) {}
+
+    void checkInvertTransparency();
 private:
     //Convert a texture fbx to an osg texture.
     osg::ref_ptr<osg::Texture2D>

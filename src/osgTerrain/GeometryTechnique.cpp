@@ -16,6 +16,7 @@
 #include <osgTerrain/Terrain>
 
 #include <osgUtil/SmoothingVisitor>
+#include <osgUtil/MeshOptimizers>
 
 #include <osgDB/FileUtils>
 
@@ -690,13 +691,31 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
     geometry->setUseDisplayList(false);
     geometry->setUseVertexBufferObjects(true);
-    
-    
+
+#if 0
+    {
+        osgUtil::VertexCacheMissVisitor vcmv_before;
+        osgUtil::VertexCacheMissVisitor vcmv_after;
+        osgUtil::VertexCacheVisitor vcv;
+        osgUtil::VertexAccessOrderVisitor vaov;
+
+        vcmv_before.doGeometry(*geometry);
+        vcv.optimizeVertices(*geometry);
+        vaov.optimizeOrder(*geometry);
+        vcmv_after.doGeometry(*geometry);
+#if 0
+        OSG_NOTICE<<"vcmv_before.triangles="<<vcmv_before.triangles<<std::endl;
+        OSG_NOTICE<<"vcmv_before.misses="<<vcmv_before.misses<<std::endl;
+        OSG_NOTICE<<"vcmv_after.misses="<<vcmv_after.misses<<std::endl;
+        OSG_NOTICE<<std::endl;
+#endif
+    }
+#endif
+
     if (osgDB::Registry::instance()->getBuildKdTreesHint()==osgDB::ReaderWriter::Options::BUILD_KDTREES &&
         osgDB::Registry::instance()->getKdTreeBuilder())
     {
-    
-        
+
         //osg::Timer_t before = osg::Timer::instance()->tick();
         //OSG_NOTICE<<"osgTerrain::GeometryTechnique::build kd tree"<<std::endl;
         osg::ref_ptr<osg::KdTreeBuilder> builder = osgDB::Registry::instance()->getKdTreeBuilder()->clone();

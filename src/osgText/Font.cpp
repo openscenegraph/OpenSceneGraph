@@ -461,6 +461,8 @@ Font::GlyphTexture::GlyphTexture():
     _partUsedX(0),
     _partUsedY(0)
 {
+    setWrap(WRAP_S, CLAMP_TO_EDGE);
+    setWrap(WRAP_T, CLAMP_TO_EDGE);
 }
 
 Font::GlyphTexture::~GlyphTexture() 
@@ -536,9 +538,11 @@ void Font::GlyphTexture::addGlyph(Glyph* glyph, int posX, int posY)
     // set up the details of where to place glyph's image in the texture.
     glyph->setTexture(this);
     glyph->setTexturePosition(posX,posY);
-    unsigned int sizeAdjustment = 1;
-    glyph->setMinTexCoord(osg::Vec2((float)(posX)/(float)(getTextureWidth()-sizeAdjustment),(float)(posY)/(float)(getTextureHeight()-sizeAdjustment)));
-    glyph->setMaxTexCoord(osg::Vec2((float)(posX+glyph->s())/(float)(getTextureWidth()-sizeAdjustment),(float)(posY+glyph->t())/(float)(getTextureHeight()-sizeAdjustment)));
+
+    glyph->setMinTexCoord( osg::Vec2( static_cast<float>(posX)/static_cast<float>(getTextureWidth()),
+                                      static_cast<float>(posY)/static_cast<float>(getTextureHeight()) ) );
+    glyph->setMaxTexCoord( osg::Vec2( static_cast<float>(posX+glyph->s())/static_cast<float>(getTextureWidth()),
+                                      static_cast<float>(posY+glyph->t())/static_cast<float>(getTextureHeight()) ) );
 }
 
 void Font::GlyphTexture::apply(osg::State& state) const

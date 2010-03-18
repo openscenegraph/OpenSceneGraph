@@ -270,6 +270,8 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
 
             if (res.success())
             {
+                fbxMaterialToOsgStateSet.checkInvertTransparency();
+
                 resolveBindMatrices(*res.getNode(), boneBindMatrices, nodeMap);
 
                 osg::Node* osgNode = res.getNode();

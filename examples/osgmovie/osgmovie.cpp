@@ -43,7 +43,7 @@ class MovieEventHandler : public osgGA::GUIEventHandler
 {
 public:
 
-    MovieEventHandler():_playToggle(true),_trackMouse(false) {}
+    MovieEventHandler():_trackMouse(false) {}
 
     void setMouseTracking(bool track) { _trackMouse = track; }
     bool getMouseTracking() const { return _trackMouse; }
@@ -116,7 +116,6 @@ protected:
     };
 
 
-    bool            _playToggle;
     bool            _trackMouse;
     ImageStreamList _imageStreamList;
     unsigned int    _seekIncr;
@@ -212,17 +211,16 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                     itr!=_imageStreamList.end();
                     ++itr)
                 {
-                    _playToggle = !_playToggle;
-                    if ( _playToggle )
+                    osg::ImageStream::StreamStatus playToggle = (*itr)->getStatus();
+                    if (playToggle != osg::ImageStream::PLAYING)
                     {
-                        // playing, so pause
-                        std::cout<<"Play"<<std::endl;
+                        std::cout<< (*itr).get() << " Play"<<std::endl;
                         (*itr)->play();
                     }
                     else
                     {
                         // playing, so pause
-                        std::cout<<"Pause"<<std::endl;
+                        std::cout<< (*itr).get() << " Pause"<<std::endl;
                         (*itr)->pause();
                     }
                 }
@@ -234,7 +232,7 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                     itr!=_imageStreamList.end();
                     ++itr)
                 {
-                    std::cout<<"Restart"<<std::endl;
+                    std::cout<< (*itr).get() << " Restart"<<std::endl;
                     (*itr)->rewind();
                     (*itr)->play();
                 }
@@ -265,14 +263,50 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 {
                     if ( (*itr)->getLoopingMode() == osg::ImageStream::LOOPING)
                     {
-                        std::cout<<"Toggle Looping Off"<<std::endl;
+                        std::cout<< (*itr).get() << " Toggle Looping Off"<<std::endl;
                         (*itr)->setLoopingMode( osg::ImageStream::NO_LOOPING );
                     }
                     else
                     {
-                        std::cout<<"Toggle Looping On"<<std::endl;
+                        std::cout<< (*itr).get() << " Toggle Looping On"<<std::endl;
                         (*itr)->setLoopingMode( osg::ImageStream::LOOPING );
                     }
+                }
+                return true;
+            }
+            else if (ea.getKey()=='+')
+            {
+                for(ImageStreamList::iterator itr=_imageStreamList.begin();
+                    itr!=_imageStreamList.end();
+                    ++itr)
+                {
+                    double tm = (*itr)->getTimeMultiplier();
+                    tm += 0.1;
+                    (*itr)->setTimeMultiplier(tm);
+                    std::cout << (*itr).get() << " Increase speed rate "<< (*itr)->getTimeMultiplier() << std::endl;
+                }
+                return true;
+            }
+            else if (ea.getKey()=='-')
+            {
+                for(ImageStreamList::iterator itr=_imageStreamList.begin();
+                    itr!=_imageStreamList.end();
+                    ++itr)
+                {
+                    double tm = (*itr)->getTimeMultiplier();
+                    tm -= 0.1;
+                    (*itr)->setTimeMultiplier(tm);
+                    std::cout << (*itr).get() << " Decrease speed rate "<< (*itr)->getTimeMultiplier() << std::endl;
+                }
+                return true;
+            }
+            else if (ea.getKey()=='o')
+            {
+                for(ImageStreamList::iterator itr=_imageStreamList.begin();
+                    itr!=_imageStreamList.end();
+                    ++itr)
+                {
+                    std::cout<< (*itr).get() << " Frame rate  "<< (*itr)->getFrameRate() <<std::endl;
                 }
                 return true;
             }
@@ -290,6 +324,9 @@ void MovieEventHandler::getUsage(osg::ApplicationUsage& usage) const
     usage.addKeyboardMouseBinding("p","Play/Pause movie");
     usage.addKeyboardMouseBinding("r","Restart movie");
     usage.addKeyboardMouseBinding("l","Toggle looping of movie");
+    usage.addKeyboardMouseBinding("+","Increase speed of movie");
+    usage.addKeyboardMouseBinding("-","Decrease speed of movie");
+    usage.addKeyboardMouseBinding("o","Display frame rate of movie");
     usage.addKeyboardMouseBinding(">","Advance the movie using seek");
 }
 
@@ -339,32 +376,32 @@ osg::Geometry* myCreateTexturedQuadGeometry(const osg::Vec3& pos,float width,flo
     }
 }
 
-class CustomAudioSink : public osg::AudioSink
+#if USE_SDL
+
+class SDLAudioSink : public osg::AudioSink
 {
     public:
-    
-        CustomAudioSink(osg::AudioStream* audioStream):
+
+        SDLAudioSink(osg::AudioStream* audioStream):
             _started(false),
             _paused(false),
             _audioStream(audioStream) {}
-        
-        virtual void startPlaying()
-        {
-            _playing = true; 
-            osg::notify(osg::NOTICE)<<"CustomAudioSink()::startPlaying()"<<std::endl;
-            
-            osg::notify(osg::NOTICE)<<"  audioFrequency()="<<_audioStream->audioFrequency()<<std::endl;
-            osg::notify(osg::NOTICE)<<"  audioNbChannels()="<<_audioStream->audioNbChannels()<<std::endl;
-            osg::notify(osg::NOTICE)<<"  audioSampleFormat()="<<_audioStream->audioSampleFormat()<<std::endl;
-            
-        }
-        virtual bool playing() const { return _playing; }
+
+        ~SDLAudioSink();
+
+        virtual void play();
+        virtual void pause();
+        virtual void stop();
+
+        virtual bool playing() const { return _started && !_paused; }
 
 
         bool                                _started;
         bool                                _paused;
         osg::observer_ptr<osg::AudioStream> _audioStream;
 };
+
+#endif
 
 int main(int argc, char** argv)
 {
@@ -472,8 +509,12 @@ int main(int argc, char** argv)
 
     bool xyPlane = fullscreen;
     
-    bool useOpenALAudio = false;
-    while(arguments.read("--OpenAL")) { useOpenALAudio = true; }
+    bool useAudioSink = false;
+    while(arguments.read("--audio")) { useAudioSink = true; }
+    
+#if USE_SDL
+    unsigned int numAudioStreamsEnabled = 0;
+#endif
 
     for(int i=1;i<arguments.argc();++i)
     {
@@ -484,11 +525,18 @@ int main(int argc, char** argv)
             if (imagestream) 
             {
                 osg::ImageStream::AudioStreams& audioStreams = imagestream->getAudioStreams();
-                if (useOpenALAudio && !audioStreams.empty())
+                if (useAudioSink && !audioStreams.empty())
                 {
                     osg::AudioStream* audioStream = audioStreams[0].get();
                     osg::notify(osg::NOTICE)<<"AudioStream read ["<<audioStream->getName()<<"]"<<std::endl;
-                    audioStream->setAudioSink(new CustomAudioSink(audioStream));
+#if USE_SDL
+                    if (numAudioStreamsEnabled==0)
+                    {
+                        audioStream->setAudioSink(new SDLAudioSink(audioStream));
+                        
+                        ++numAudioStreamsEnabled;
+                    }
+#endif
                 }
 
 
@@ -497,14 +545,27 @@ int main(int argc, char** argv)
 
             if (image)
             {
-                osg::notify(osg::NOTICE)<<"image->s()"<<image->s()<<" image-t()="<<image->t()<<std::endl;
+                osg::notify(osg::NOTICE)<<"image->s()"<<image->s()<<" image-t()="<<image->t()<<" aspectRatio="<<image->getPixelAspectRatio()<<std::endl;
 
-                geode->addDrawable(myCreateTexturedQuadGeometry(pos,image->s(),image->t(),image, useTextureRectangle, xyPlane, flip));
+                float width = image->s() * image->getPixelAspectRatio();
+                float height = image->t();
 
-                bottomright = pos + osg::Vec3(static_cast<float>(image->s()),static_cast<float>(image->t()),0.0f);
+                osg::ref_ptr<osg::Drawable> drawable = myCreateTexturedQuadGeometry(pos, width, height,image, useTextureRectangle, xyPlane, flip);
+                
+                if (image->isImageTranslucent())
+                {
+                    osg::notify(osg::NOTICE)<<"Transparent movie, enabling blending."<<std::endl;
 
-                if (xyPlane) pos.y() += image->t()*1.05f;
-                else pos.z() += image->t()*1.05f;
+                    drawable->getOrCreateStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
+                    drawable->getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+                }
+
+                geode->addDrawable(drawable.get());
+
+                bottomright = pos + osg::Vec3(width,height,0.0f);
+
+                if (xyPlane) pos.y() += height*1.05f;
+                else pos.z() += height*1.05f;
             }
             else
             {
@@ -545,8 +606,44 @@ int main(int argc, char** argv)
     if (fullscreen)
     {
         viewer.realize();
+        
+        viewer.getCamera()->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,1.0f));
 
+        float screenAspectRatio = 1280.0f/1024.0f;
+
+        osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
+        if (wsi) 
+        {
+            unsigned int width, height;
+            wsi->getScreenResolution(osg::GraphicsContext::ScreenIdentifier(0), width, height);
+            
+            screenAspectRatio = float(width) / float(height);
+        }
+        
+        float modelAspectRatio = (bottomright.x()-topleft.x())/(bottomright.y()-topleft.y());
+        
         viewer.getCamera()->setViewMatrix(osg::Matrix::identity());
+
+
+        osg::Vec3 center = (bottomright + topleft)*0.5f;
+        osg::Vec3 dx(bottomright.x()-center.x(), 0.0f, 0.0f);
+        osg::Vec3 dy(0.0f, topleft.y()-center.y(), 0.0f);
+
+        float ratio = modelAspectRatio/screenAspectRatio;
+
+        if (ratio>1.0f)
+        {
+            // use model width as the control on model size.
+            bottomright = center + dx - dy * ratio;
+            topleft = center - dx + dy * ratio;
+        }
+        else
+        {
+            // use model height as the control on model size.
+            bottomright = center + dx / ratio - dy;
+            topleft = center - dx / ratio + dy;
+        }
+
         viewer.getCamera()->setProjectionMatrixAsOrtho2D(topleft.x(),bottomright.x(),topleft.y(),bottomright.y());
 
         while(!viewer.done())
@@ -561,4 +658,84 @@ int main(int argc, char** argv)
         return viewer.run();
     }
 }
+
+#if USE_SDL
+
+#include "SDL.h"
+
+static void soundReadCallback(void * user_data, uint8_t * data, int datalen)
+{
+    SDLAudioSink * sink = reinterpret_cast<SDLAudioSink*>(user_data);
+    osg::ref_ptr<osg::AudioStream> as = sink->_audioStream.get();
+    if (as.valid())
+    {
+        as->consumeAudioBuffer(data, datalen);
+    }
+}
+
+SDLAudioSink::~SDLAudioSink()
+{
+    stop();
+}
+
+void SDLAudioSink::play()
+{
+    if (_started)
+    {
+        if (_paused)
+        {
+            SDL_PauseAudio(0);
+            _paused = false;
+        }
+        return;
+    }
+
+    _started = true;
+    _paused = false;
+
+    osg::notify(osg::NOTICE)<<"SDLAudioSink()::startPlaying()"<<std::endl;
+
+    osg::notify(osg::NOTICE)<<"  audioFrequency()="<<_audioStream->audioFrequency()<<std::endl;
+    osg::notify(osg::NOTICE)<<"  audioNbChannels()="<<_audioStream->audioNbChannels()<<std::endl;
+    osg::notify(osg::NOTICE)<<"  audioSampleFormat()="<<_audioStream->audioSampleFormat()<<std::endl;
+
+    SDL_AudioSpec specs = { 0 };
+    SDL_AudioSpec wanted_specs = { 0 };
+
+    wanted_specs.freq = _audioStream->audioFrequency();
+    wanted_specs.format = AUDIO_S16SYS;
+    wanted_specs.channels = _audioStream->audioNbChannels();
+    wanted_specs.silence = 0;
+    wanted_specs.samples = 1024;
+    wanted_specs.callback = soundReadCallback;
+    wanted_specs.userdata = this;
+
+    if (SDL_OpenAudio(&wanted_specs, &specs) < 0)
+        throw "SDL_OpenAudio() failed (" + std::string(SDL_GetError()) + ")";
+
+    SDL_PauseAudio(0);
+
+}
+
+void SDLAudioSink::pause()
+{
+    if (_started)
+    {
+        SDL_PauseAudio(1);
+        _paused = true;
+    }
+}
+
+void SDLAudioSink::stop()
+{
+    if (_started)
+    {
+        if (!_paused) SDL_PauseAudio(1);
+        SDL_CloseAudio();
+
+        osg::notify(osg::NOTICE)<<"~SDLAudioSink() destructor, but still playing"<<std::endl;
+    }
+}
+
+#endif
 

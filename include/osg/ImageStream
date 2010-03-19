@@ -78,7 +78,8 @@ class OSG_EXPORT ImageStream : public Image
 
 
         virtual double getLength() const { return 0.0; }
-        
+        virtual double getFrameRate() const { return 0.0; } 
+
         virtual void setReferenceTime(double) {}
         virtual double getReferenceTime() const { return 0.0; }
                 
@@ -87,7 +88,6 @@ class OSG_EXPORT ImageStream : public Image
         
         virtual void setVolume(float) {}
         virtual float getVolume() const { return 0.0f; }
-
 
         typedef std::vector< osg::ref_ptr<osg::AudioStream> > AudioStreams;
         void setAudioStreams(const AudioStreams& asl) { _audioStreams = asl; }

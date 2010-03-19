@@ -197,6 +197,26 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::DrawElements)
 	                      __void__releaseGLObjects__State_P1,
 	                      "If State is non-zero, this function releases OpenGL objects for the specified graphics context. ",
 	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
+	I_Method1(void, reserveElements, IN, unsigned int, numIndices,
+	          Properties::PURE_VIRTUAL,
+	          __void__reserveElements__unsigned_int,
+	          "",
+	          "");
+	I_Method2(void, setElement, IN, unsigned, int, IN, unsigned, int,
+	          Properties::PURE_VIRTUAL,
+	          __void__setElement__unsigned__unsigned,
+	          "",
+	          "");
+	I_Method1(unsigned int, getElement, IN, unsigned, int,
+	          Properties::PURE_VIRTUAL,
+	          __unsigned_int__getElement__unsigned,
+	          "",
+	          "");
+	I_Method1(void, addElement, IN, unsigned, int,
+	          Properties::PURE_VIRTUAL,
+	          __void__addElement__unsigned,
+	          "",
+	          "");
 	I_SimpleProperty(osg::DrawElements *, DrawElements, 
 	                 __DrawElements_P1__getDrawElements, 
 	                 0);

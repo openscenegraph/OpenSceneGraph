@@ -2,12 +2,13 @@
 #include "FFmpegDecoder.hpp"
 
 #include <osg/Notify>
+#include <osgDB/FileNameUtils>
 
 #include <cassert>
 #include <limits>
 #include <stdexcept>
 #include <string.h>
-
+#include <iostream>
 
 
 namespace osgFFmpeg {
@@ -54,24 +55,48 @@ bool FFmpegDecoder::open(const std::string & filename)
 
             formatParams.channel = 0;
             formatParams.standard = 0;
+#if 1
+            formatParams.width = 320;
+            formatParams.height = 240;
+#else
             formatParams.width = 640;
             formatParams.height = 480;
+#endif            
             formatParams.time_base.num = 1;
-            formatParams.time_base.den = 50;
+            formatParams.time_base.den = 30;
 
-            iformat = av_find_input_format("video4linux2");
+            std::string format = "video4linux2";
+            iformat = av_find_input_format(format.c_str());
             
             if (iformat)
             {
-                osg::notify(osg::NOTICE)<<"Found input format"<<std::endl;
+                osg::notify(osg::NOTICE)<<"Found input format: "<<format<<std::endl;
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"Failed to find input_format"<<std::endl;
+                osg::notify(osg::NOTICE)<<"Failed to find input format: "<<format<<std::endl;
             }
 
-            if (av_open_input_file(&p_format_context, filename.c_str(), iformat, 0, &formatParams) != 0)
-                throw std::runtime_error("av_open_input_file() failed");
+            int error = av_open_input_file(&p_format_context, filename.c_str(), iformat, 0, &formatParams);
+            if (error != 0)
+            {
+                std::string error_str;
+                switch (error)
+                {
+                    //case AVERROR_UNKNOWN: error_str = "AVERROR_UNKNOWN"; break;   // same value as AVERROR_INVALIDDATA
+                    case AVERROR_IO: error_str = "AVERROR_IO"; break;
+                    case AVERROR_NUMEXPECTED: error_str = "AVERROR_NUMEXPECTED"; break;
+                    case AVERROR_INVALIDDATA: error_str = "AVERROR_INVALIDDATA"; break;
+                    case AVERROR_NOMEM: error_str = "AVERROR_NOMEM"; break;
+                    case AVERROR_NOFMT: error_str = "AVERROR_NOFMT"; break;
+                    case AVERROR_NOTSUPP: error_str = "AVERROR_NOTSUPP"; break;
+                    case AVERROR_NOENT: error_str = "AVERROR_NOENT"; break;
+                    case AVERROR_PATCHWELCOME: error_str = "AVERROR_PATCHWELCOME"; break;
+                    default: error_str = "Unknown error"; break;
+                }
+
+                throw std::runtime_error("av_open_input_file() failed : " + error_str);
+            }
         }
         else
         {
@@ -141,11 +166,17 @@ bool FFmpegDecoder::readNextPacket()
     case NORMAL:
         return readNextPacketNormal();
 
+    case PAUSE:
+        return false;
+
     case END_OF_STREAM:
         return readNextPacketEndOfStream();
 
     case REWINDING:
         return readNextPacketRewinding();
+
+    case SEEKING:
+        return readNextPacketSeeking();
 
     default:
         assert(false);
@@ -164,8 +195,23 @@ void FFmpegDecoder::rewind()
     rewindButDontFlushQueues();
 }
 
+void FFmpegDecoder::seek(double time) 
+{
+    m_pending_packet.clear();
 
+    flushAudioQueue();
+    flushVideoQueue();
+    seekButDontFlushQueues(time);
+}
 
+void FFmpegDecoder::pause() 
+{
+    m_pending_packet.clear();
+
+    flushAudioQueue();
+    flushVideoQueue();
+    m_state = PAUSE;
+}
 
 void FFmpegDecoder::findAudioStream()
 {
@@ -239,7 +285,10 @@ bool FFmpegDecoder::readNextPacketNormal()
         {
             // If we reach the end of the stream, change the decoder state
             if (loop())
+            {
+                m_clocks.reset(m_start);
                 rewindButDontFlushQueues();
+            }
             else
                 m_state = END_OF_STREAM;
 
@@ -312,13 +361,40 @@ void FFmpegDecoder::rewindButDontFlushQueues()
 {
     const AVRational AvTimeBaseQ = { 1, AV_TIME_BASE }; // = AV_TIME_BASE_Q
 
-    const int64_t pos = m_clocks.getStartTime() * AV_TIME_BASE;
+    const int64_t pos = int64_t(m_clocks.getStartTime() * double(AV_TIME_BASE));
     const int64_t seek_target = av_rescale_q(pos, AvTimeBaseQ, m_video_stream->time_base);
 
     if (av_seek_frame(m_format_context.get(), m_video_index, seek_target, 0/*AVSEEK_FLAG_BYTE |*/ /*AVSEEK_FLAG_BACKWARD*/) < 0)
         throw std::runtime_error("av_seek_frame failed()");
 
+    m_clocks.rewind();
     m_state = REWINDING;
+}
+
+bool FFmpegDecoder::readNextPacketSeeking() 
+{
+    const FFmpegPacket packet(FFmpegPacket::PACKET_FLUSH);
+
+    if (m_audio_queue.timedPush(packet, 10) && m_video_queue.timedPush(packet, 10))
+        m_state = NORMAL;
+
+    return false;    
+}
+
+void FFmpegDecoder::seekButDontFlushQueues(double time)
+{
+    const AVRational AvTimeBaseQ = { 1, AV_TIME_BASE }; // = AV_TIME_BASE_Q
+
+    const int64_t pos = int64_t(m_clocks.getStartTime()+time * double(AV_TIME_BASE));
+    const int64_t seek_target = av_rescale_q(pos, AvTimeBaseQ, m_video_stream->time_base);
+
+    m_clocks.setSeekTime(time);
+
+    if (av_seek_frame(m_format_context.get(), m_video_index, seek_target, 0/*AVSEEK_FLAG_BYTE |*/ /*AVSEEK_FLAG_BACKWARD*/) < 0)
+        throw std::runtime_error("av_seek_frame failed()");
+
+    m_clocks.seek(time);
+    m_state = SEEKING;    
 }
 
 

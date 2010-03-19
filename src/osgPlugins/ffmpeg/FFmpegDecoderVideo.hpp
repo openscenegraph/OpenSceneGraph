@@ -65,6 +65,7 @@ public:
     ~FFmpegDecoderVideo();
 
     void open(AVStream * stream);
+    void pause(bool pause);
     void close(bool waitForThreadToExit);
 
     virtual void run();
@@ -74,7 +75,7 @@ public:
 
     int width() const;
     int height() const;
-    double aspectRatio() const;
+    float pixelAspectRatio() const;
     bool alphaChannel() const;
     double frameRate() const;
     const uint8_t * image() const;
@@ -85,11 +86,11 @@ private:
 
     void decodeLoop();
     void findAspectRatio();
-    void publishFrame(double delay);
+    void publishFrame(double delay, bool audio_disabled);
     double synchronizeVideo(double pts);
-    void yuva420pToRgba(AVPicture *dst, const AVPicture *src, int width, int height);
+    void yuva420pToRgba(AVPicture *dst, AVPicture *src, int width, int height);
 
-    int convert(AVPicture *dst, int dst_pix_fmt, const AVPicture *src,
+    int convert(AVPicture *dst, int dst_pix_fmt, AVPicture *src,
                 int src_pix_fmt, int src_width, int src_height);
 
 
@@ -114,12 +115,13 @@ private:
     PublishFunc             m_publish_func;
 
     double                  m_frame_rate;
-    double                  m_aspect_ratio;
+    float                   m_pixel_aspect_ratio;
     int                     m_width;
     int                     m_height;
     size_t                  m_next_frame_index;
     bool                    m_alpha_channel;
 
+    bool                    m_paused;
     volatile bool           m_exit;
     
 #ifdef USE_SWSCALE    
@@ -155,9 +157,9 @@ inline int FFmpegDecoderVideo::height() const
 }
 
 
-inline double FFmpegDecoderVideo::aspectRatio() const
+inline float FFmpegDecoderVideo::pixelAspectRatio() const
 {
-    return m_aspect_ratio;
+    return m_pixel_aspect_ratio;
 }
 
 

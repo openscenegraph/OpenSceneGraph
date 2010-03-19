@@ -21,7 +21,6 @@ namespace osgFFmpeg
         
         void consumeAudioBuffer(void * const buffer, const size_t size);
         
-        bool audioStream() const;
         int audioFrequency() const;
         int audioNbChannels() const;
         osg::AudioStream::SampleFormat audioSampleFormat() const;

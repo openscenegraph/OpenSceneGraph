@@ -8,6 +8,28 @@
 
 namespace osgFFmpeg {
 
+static int decode_video(AVCodecContext *avctx, AVFrame *picture,
+                         int *got_picture_ptr,
+                         const uint8_t *buf, int buf_size)
+{
+#if LIBAVCODEC_VERSION_MAJOR >= 53 || (LIBAVCODEC_VERSION_MAJOR==52 && LIBAVCODEC_VERSION_MINOR>=32)
+    // following code segment copied from ffmpeg avcodec_decode_video() implementation
+    // to avoid warnings about deprecated function usage.
+    AVPacket avpkt;
+    av_init_packet(&avpkt);
+    avpkt.data = const_cast<uint8_t *>(buf);
+    avpkt.size = buf_size;
+    // HACK for CorePNG to decode as normal PNG by default
+    avpkt.flags = AV_PKT_FLAG_KEY;
+
+    return avcodec_decode_video2(avctx, picture, got_picture_ptr, &avpkt);
+#else
+    // fallback for older versions of ffmpeg that don't have avcodec_decode_video2.
+    return avcodec_decode_video(avctx, picture, got_picture_ptr, buf, buf_size);
+#endif
+}
+
+
 FFmpegDecoderVideo::FFmpegDecoderVideo(PacketQueue & packets, FFmpegClocks & clocks) :
     m_packets(packets),
     m_clocks(clocks),
@@ -20,6 +42,7 @@ FFmpegDecoderVideo::FFmpegDecoderVideo(PacketQueue & packets, FFmpegClocks & clo
     m_writeBuffer(0),
     m_user_data(0),
     m_publish_func(0),
+    m_paused(true),
     m_exit(false)
 #ifdef USE_SWSCALE
     ,m_swscale_ctx(0)
@@ -32,7 +55,7 @@ FFmpegDecoderVideo::FFmpegDecoderVideo(PacketQueue & packets, FFmpegClocks & clo
 
 FFmpegDecoderVideo::~FFmpegDecoderVideo()
 {
-    osg::notify(osg::NOTICE)<<"Destructing FFmpegDecoderVideo..."<<std::endl;
+    osg::notify(osg::INFO)<<"Destructing FFmpegDecoderVideo..."<<std::endl;
 
 
     if (isRunning())
@@ -53,7 +76,7 @@ FFmpegDecoderVideo::~FFmpegDecoderVideo()
     }
 #endif
 
-    osg::notify(osg::NOTICE)<<"Destructed FFmpegDecoderVideo"<<std::endl;
+    osg::notify(osg::INFO)<<"Destructed FFmpegDecoderVideo"<<std::endl;
 }
 
 
@@ -117,6 +140,13 @@ void FFmpegDecoderVideo::close(bool waitForThreadToExit)
     }
 }
 
+void FFmpegDecoderVideo::pause(bool pause)
+{
+    if(pause)
+        m_paused = true;
+    else
+        m_paused = false;
+}
 
 void FFmpegDecoderVideo::run()
 {
@@ -157,7 +187,7 @@ void FFmpegDecoderVideo::decodeLoop()
 
             int frame_finished = 0;
 
-            const int bytes_decoded = avcodec_decode_video(m_context, m_frame.get(), &frame_finished, m_packet_data, m_bytes_remaining);
+            const int bytes_decoded = decode_video(m_context, m_frame.get(), &frame_finished, m_packet_data, m_bytes_remaining);
 
             if (bytes_decoded < 0)
                 throw std::runtime_error("avcodec_decode_video failed()");
@@ -167,13 +197,13 @@ void FFmpegDecoderVideo::decodeLoop()
 
             // Find out the frame pts
 
-            if (packet.packet.dts == AV_NOPTS_VALUE &&
+            if (packet.packet.dts == int64_t(AV_NOPTS_VALUE) &&
                 m_frame->opaque != 0 &&
-                *reinterpret_cast<const int64_t*>(m_frame->opaque) != AV_NOPTS_VALUE)
+                *reinterpret_cast<const int64_t*>(m_frame->opaque) != int64_t(AV_NOPTS_VALUE))
             {
                 pts = *reinterpret_cast<const int64_t*>(m_frame->opaque);
             }
-            else if (packet.packet.dts != AV_NOPTS_VALUE)
+            else if (packet.packet.dts != int64_t(AV_NOPTS_VALUE))
             {
                 pts = packet.packet.dts;
             }
@@ -190,8 +220,13 @@ void FFmpegDecoderVideo::decodeLoop()
                 const double synched_pts = m_clocks.videoSynchClock(m_frame.get(), av_q2d(m_stream->time_base), pts);
                 const double frame_delay = m_clocks.videoRefreshSchedule(synched_pts);
 
-                publishFrame(frame_delay);
+                publishFrame(frame_delay, m_clocks.audioDisabled());
             }
+        }
+
+        while(m_paused && !m_exit)
+        {
+            microSleep(10000);
         }
 
         // Get the next packet
@@ -214,7 +249,6 @@ void FFmpegDecoderVideo::decodeLoop()
             else if (packet.type == FFmpegPacket::PACKET_FLUSH)
             {
                 avcodec_flush_buffers(m_context);
-                m_clocks.rewindVideo();
             }
         }
     }
@@ -224,61 +258,69 @@ void FFmpegDecoderVideo::decodeLoop()
 
 void FFmpegDecoderVideo::findAspectRatio()
 {
-    double ratio = 0.0;
+    float ratio = 0.0f;
 
     if (m_context->sample_aspect_ratio.num != 0)
-        ratio = (av_q2d(m_context->sample_aspect_ratio) * m_width) / m_height;
+        ratio = float(av_q2d(m_context->sample_aspect_ratio));
 
-    if (ratio <= 0.0)
-        ratio = double(m_width) / double(m_height);
+    if (ratio <= 0.0f)
+        ratio = 1.0f;
 
-    m_aspect_ratio = ratio;
+    m_pixel_aspect_ratio = ratio;
 }
 
-int FFmpegDecoderVideo::convert(AVPicture *dst, int dst_pix_fmt, const AVPicture *src,
+int FFmpegDecoderVideo::convert(AVPicture *dst, int dst_pix_fmt, AVPicture *src,
             int src_pix_fmt, int src_width, int src_height)
 {
     osg::Timer_t startTick = osg::Timer::instance()->tick();
 #ifdef USE_SWSCALE
     if (m_swscale_ctx==0)
     {
-        m_swscale_ctx = sws_getContext(src_width, src_height, src_pix_fmt,
-                                      src_width, src_height, dst_pix_fmt,                                    
+        m_swscale_ctx = sws_getContext(src_width, src_height, (PixelFormat) src_pix_fmt,
+                                      src_width, src_height, (PixelFormat) dst_pix_fmt,
                                       /*SWS_BILINEAR*/ SWS_BICUBIC, NULL, NULL, NULL);
     }
     
 
-    osg::notify(osg::NOTICE)<<"Using sws_scale ";
-
+    osg::notify(osg::INFO)<<"Using sws_scale ";
+    
     int result =  sws_scale(m_swscale_ctx,
-                            src->data, src->linesize, 0, src_height,
-                            dst->data, dst->linesize);
+                            (src->data), (src->linesize), 0, src_height,
+                            (dst->data), (dst->linesize));
 #else
 
-    osg::notify(osg::NOTICE)<<"Using img_convert ";
+    osg::notify(osg::INFO)<<"Using img_convert ";
 
     int result = img_convert(dst, dst_pix_fmt, src,
                              src_pix_fmt, src_width, src_height);
 
 #endif
     osg::Timer_t endTick = osg::Timer::instance()->tick();
-    osg::notify(osg::NOTICE)<<" time = "<<osg::Timer::instance()->delta_m(startTick,endTick)<<"ms"<<std::endl;
+    osg::notify(osg::INFO)<<" time = "<<osg::Timer::instance()->delta_m(startTick,endTick)<<"ms"<<std::endl;
 
     return result;
 }
 
 
-void FFmpegDecoderVideo::publishFrame(const double delay)
+void FFmpegDecoderVideo::publishFrame(const double delay, bool audio_disabled)
 {
     // If no publishing function, just ignore the frame
     if (m_publish_func == 0)
         return;
 
+#if 1
+    // new code from Jean-Sebasiten Guay - needs testing as we're unclear on the best solution
+    // If the display delay is too small, we better skip the frame.
+    if (!audio_disabled && delay < -0.010)
+        return;
+#else
+    // original solution that hung on video stream over web.
     // If the display delay is too small, we better skip the frame.
     if (delay < -0.010)
         return;
-        
-    const AVPicture * const src = (const AVPicture *) m_frame.get();
+#endif
+
+    AVPicture * const src = (AVPicture *) m_frame.get();
     AVPicture * const dst = (AVPicture *) m_frame_rgba.get();
 
     // Assign appropriate parts of the buffer to image planes in m_frame_rgba
@@ -314,7 +356,7 @@ void FFmpegDecoderVideo::publishFrame(const double delay)
 
 
 
-void FFmpegDecoderVideo::yuva420pToRgba(AVPicture * const dst, const AVPicture * const src, int width, int height)
+void FFmpegDecoderVideo::yuva420pToRgba(AVPicture * const dst, AVPicture * const src, int width, int height)
 {
     convert(dst, PIX_FMT_RGB32, src, m_context->pix_fmt, width, height);
 

@@ -12,6 +12,25 @@
 
 namespace osgFFmpeg {
 
+static int decode_audio(AVCodecContext *avctx, int16_t *samples,
+                         int *frame_size_ptr,
+                         const uint8_t *buf, int buf_size)
+{
+#if LIBAVCODEC_VERSION_MAJOR >= 53 || (LIBAVCODEC_VERSION_MAJOR==52 && LIBAVCODEC_VERSION_MINOR>=32)
+
+    // following code segment copied from ffmpeg's avcodec_decode_audio2()
+    // implementation to avoid warnings about deprecated function usage.
+    AVPacket avpkt;
+    av_init_packet(&avpkt);
+    avpkt.data = const_cast<uint8_t *>(buf);
+    avpkt.size = buf_size;
+
+    return avcodec_decode_audio3(avctx, samples, frame_size_ptr, &avpkt);
+#else
+    // fallback for older versions of ffmpeg that don't have avcodec_decode_audio3.
+    return avcodec_decode_audio2(avctx, samples, frame_size_ptr, buf, buf_size);
+#endif
+}
 
 
 FFmpegDecoderAudio::FFmpegDecoderAudio(PacketQueue & packets, FFmpegClocks & clocks) :
@@ -25,6 +44,7 @@ FFmpegDecoderAudio::FFmpegDecoderAudio(PacketQueue & packets, FFmpegClocks & clo
     m_audio_buf_size(0),
     m_audio_buf_index(0),
     m_end_of_stream(false),
+    m_paused(true),
     m_exit(false)
 {
 
@@ -88,6 +108,18 @@ void FFmpegDecoderAudio::open(AVStream * const stream)
     }
 }
 
+void FFmpegDecoderAudio::pause(bool pause)
+{
+    if (pause != m_paused)
+    {
+        m_paused = pause;
+        if (m_audio_sink.valid())
+        {
+            if (m_paused) m_audio_sink->pause();
+            else m_audio_sink->play();
+        }
+    }
+}
 
 void FFmpegDecoderAudio::close(bool waitForThreadToExit)
 {
@@ -99,6 +131,22 @@ void FFmpegDecoderAudio::close(bool waitForThreadToExit)
     }
 }
 
+void FFmpegDecoderAudio::setVolume(float volume)
+{
+    if (m_audio_sink.valid())
+    {
+        m_audio_sink->setVolume(volume);
+    }
+}
+
+float FFmpegDecoderAudio::getVolume() const
+{
+    if (m_audio_sink.valid())
+    {
+        return m_audio_sink->getVolume();
+    }
+    return 0.0f;
+}
 
 void FFmpegDecoderAudio::run()
 {
@@ -130,7 +178,6 @@ void FFmpegDecoderAudio::setAudioSink(osg::ref_ptr<osg::AudioSink> audio_sink)
 
 void FFmpegDecoderAudio::fillBuffer(void * const buffer, size_t size)
 {
-    size_t filled = 0;
     uint8_t * dst_buffer = reinterpret_cast<uint8_t*>(buffer);
 
     while (size != 0)
@@ -176,7 +223,7 @@ void FFmpegDecoderAudio::decodeLoop()
     if (! skip_audio && ! m_audio_sink->playing())
     {
         m_clocks.audioSetDelay(m_audio_sink->getDelay());
-        m_audio_sink->startPlaying();
+        m_audio_sink->play();
     }
     else
     {
@@ -185,6 +232,21 @@ void FFmpegDecoderAudio::decodeLoop()
 
     while (! m_exit)
     {
+
+        if(m_paused)
+        {
+            m_clocks.pause(true);
+            m_pause_timer.setStartTick();
+
+            while(m_paused)
+            {
+                microSleep(10000);
+            }
+
+            m_clocks.setPauseTime(m_pause_timer.time_s());
+            m_clocks.pause(false);
+        }
+
         // If skipping audio, make sure the audio stream is still consumed.
         if (skip_audio)
         {
@@ -194,7 +256,6 @@ void FFmpegDecoderAudio::decodeLoop()
             if (packet.valid())
                 packet.clear();
         }
-
         // Else, just idle in this thread.
         // Note: If m_audio_sink has an audio callback, this thread will still be awaken
         // from time to time to refill the audio buffer.
@@ -252,7 +313,7 @@ size_t FFmpegDecoderAudio::decodeFrame(void * const buffer, const size_t size)
         {
             int data_size = size;
 
-            const int bytes_decoded = avcodec_decode_audio2(m_context, reinterpret_cast<int16_t*>(buffer), &data_size, m_packet_data, m_bytes_remaining);
+            const int bytes_decoded = decode_audio(m_context, reinterpret_cast<int16_t*>(buffer), &data_size, m_packet_data, m_bytes_remaining);
 
             if (bytes_decoded < 0)
             {
@@ -285,7 +346,7 @@ size_t FFmpegDecoderAudio::decodeFrame(void * const buffer, const size_t size)
 
         if (m_packet.type == FFmpegPacket::PACKET_DATA)
         {
-            if (m_packet.packet.pts != AV_NOPTS_VALUE)
+            if (m_packet.packet.pts != int64_t(AV_NOPTS_VALUE))
             {
                 const double pts = av_q2d(m_stream->time_base) * m_packet.packet.pts;
                 m_clocks.audioSetBufferEndPts(pts);
@@ -301,7 +362,6 @@ size_t FFmpegDecoderAudio::decodeFrame(void * const buffer, const size_t size)
         else if (m_packet.type == FFmpegPacket::PACKET_FLUSH)
         {
             avcodec_flush_buffers(m_context);
-            m_clocks.rewindAudio();
         }
 
         // just output silence when we reached the end of stream

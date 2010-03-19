@@ -119,6 +119,7 @@ protected:
     bool            _playToggle;
     bool            _trackMouse;
     ImageStreamList _imageStreamList;
+    unsigned int    _seekIncr;
 
 };
 
@@ -239,6 +240,23 @@ bool MovieEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
                 }
                 return true;
             }
+            else if (ea.getKey()=='>')
+            {
+                for(ImageStreamList::iterator itr=_imageStreamList.begin();
+                    itr!=_imageStreamList.end();
+                    ++itr)
+                {
+                    std::cout<<"Seeking"<<std::endl;
+                    if(_seekIncr > 3) _seekIncr = 0;
+                    double length = (*itr)->getLength();
+                    double t_pos = (length/4.0f)*_seekIncr;
+                    //(*itr)->rewind();
+                    (*itr)->seek(t_pos);
+                    (*itr)->play();
+                    _seekIncr++;
+                }
+                return true;
+            }
             else if (ea.getKey()=='L')
             {
                 for(ImageStreamList::iterator itr=_imageStreamList.begin();
@@ -272,6 +290,7 @@ void MovieEventHandler::getUsage(osg::ApplicationUsage& usage) const
     usage.addKeyboardMouseBinding("p","Play/Pause movie");
     usage.addKeyboardMouseBinding("r","Restart movie");
     usage.addKeyboardMouseBinding("l","Toggle looping of movie");
+    usage.addKeyboardMouseBinding(">","Advance the movie using seek");
 }
 
 
@@ -325,7 +344,8 @@ class CustomAudioSink : public osg::AudioSink
     public:
     
         CustomAudioSink(osg::AudioStream* audioStream):
-            _playing(false),
+            _started(false),
+            _paused(false),
             _audioStream(audioStream) {}
         
         virtual void startPlaying()
@@ -340,7 +360,9 @@ class CustomAudioSink : public osg::AudioSink
         }
         virtual bool playing() const { return _playing; }
 
-        bool                                _playing;
+
+        bool                                _started;
+        bool                                _paused;
         osg::observer_ptr<osg::AudioStream> _audioStream;
 };
 

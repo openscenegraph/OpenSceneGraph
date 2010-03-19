@@ -18,7 +18,7 @@ FFmpegImageStream::FFmpegImageStream() :
     m_commands(0),
     m_frame_published_flag(false)
 {
-    setOrigin(osg::Image::BOTTOM_LEFT);
+    setOrigin(osg::Image::TOP_LEFT);
 
     std::auto_ptr<FFmpegDecoder> decoder(new FFmpegDecoder);
     std::auto_ptr<CommandQueue> commands(new CommandQueue);
@@ -39,11 +39,11 @@ FFmpegImageStream::FFmpegImageStream(const FFmpegImageStream & image, const osg:
 
 FFmpegImageStream::~FFmpegImageStream()
 {
-    osg::notify(osg::NOTICE)<<"Destructing FFMpegImageStream..."<<std::endl;
+    osg::notify(osg::INFO)<<"Destructing FFmpegImageStream..."<<std::endl;
 
     quit(true);
     
-    osg::notify(osg::NOTICE)<<"Have done quit"<<std::endl;
+    osg::notify(osg::INFO)<<"Have done quit"<<std::endl;
 
     // release athe audio streams to make sure that the decoder doesn't retain any external
     // refences.
@@ -55,7 +55,7 @@ FFmpegImageStream::~FFmpegImageStream()
 
     delete m_commands;
 
-    osg::notify(osg::NOTICE)<<"Destructed FFMpegImageStream."<<std::endl;
+    osg::notify(osg::INFO)<<"Destructed FFMpegImageStream."<<std::endl;
 }
 
 
@@ -71,16 +71,24 @@ bool FFmpegImageStream::open(const std::string & filename)
         m_decoder->video_decoder().width(), m_decoder->video_decoder().height(), 1, GL_RGBA, GL_BGRA, GL_UNSIGNED_BYTE,
         const_cast<unsigned char *>(m_decoder->video_decoder().image()), NO_DELETE
     );
-    
-    setOrigin(osg::Image::TOP_LEFT);
+
+
+    setPixelAspectRatio(m_decoder->video_decoder().pixelAspectRatio());
+
+    osg::notify(osg::NOTICE)<<"ffmpeg::open("<<filename<<") size("<<s()<<", "<<t()<<") aspect ratio "<<m_decoder->video_decoder().pixelAspectRatio()<<std::endl;
+
+#if 1
+    // swscale is reported errors and then crashing when rescaling video of size less than 10 by 10.
+    if (s()<=10 || t()<=10) return false;
+#endif
 
     m_decoder->video_decoder().setUserData(this);
     m_decoder->video_decoder().setPublishCallback(publishNewFrame);
-    
+
     if (m_decoder->audio_decoder().validContext())
     {
         osg::notify(osg::NOTICE)<<"Attaching FFmpegAudioStream"<<std::endl;
-    
+
         getAudioStreams().push_back(new FFmpegAudioStream(m_decoder.get()));
     }
 
@@ -122,6 +130,11 @@ void FFmpegImageStream::rewind()
     m_commands->push(CMD_REWIND);
 }
 
+void FFmpegImageStream::seek(double time) {
+    m_seek_time = time;
+    m_commands->push(CMD_SEEK);
+}
+
 
 
 void FFmpegImageStream::quit(bool waitForThreadToExit)
@@ -139,32 +152,41 @@ void FFmpegImageStream::quit(bool waitForThreadToExit)
     m_decoder->close(waitForThreadToExit);
 }
 
+void FFmpegImageStream::setVolume(float volume)
+{
+    m_decoder->audio_decoder().setVolume(volume);
+}
 
-double FFmpegImageStream::duration() const
+float FFmpegImageStream::getVolume() const
+{
+    return m_decoder->audio_decoder().getVolume();
+}
+
+double FFmpegImageStream::getLength() const
 { 
     return m_decoder->duration(); 
 }
 
 
+double FFmpegImageStream::getReferenceTime () const
+{
+    return m_decoder->reference();
+}
 
-bool FFmpegImageStream::videoAlphaChannel() const 
+
+
+double FFmpegImageStream::getFrameRate() const
+{ 
+    return m_decoder->video_decoder().frameRate(); 
+}
+
+
+
+bool FFmpegImageStream::isImageTranslucent() const 
 { 
     return m_decoder->video_decoder().alphaChannel(); 
 }
 
-
-
-double FFmpegImageStream::videoAspectRatio() const
-{ 
-    return m_decoder->video_decoder().aspectRatio();
-}
-
-
-
-double FFmpegImageStream::videoFrameRate() const
-{ 
-    return m_decoder->video_decoder().frameRate(); 
-}
 
 
 void FFmpegImageStream::run()
@@ -232,6 +254,10 @@ bool FFmpegImageStream::handleCommand(const Command cmd)
         cmdRewind();
         return true;
 
+    case CMD_SEEK:
+        cmdSeek(m_seek_time);
+        return true;
+
     case CMD_STOP:
         return false;
 
@@ -252,6 +278,9 @@ void FFmpegImageStream::cmdPlay()
 
         if (! m_decoder->video_decoder().isRunning())
             m_decoder->video_decoder().start();
+
+        m_decoder->video_decoder().pause(false);
+        m_decoder->audio_decoder().pause(false);
     }
 
     _status = PLAYING;
@@ -263,7 +292,8 @@ void FFmpegImageStream::cmdPause()
 {
     if (_status == PLAYING)
     {
-
+        m_decoder->video_decoder().pause(true);
+        m_decoder->audio_decoder().pause(true);
     }
 
     _status = PAUSED;
@@ -276,6 +306,10 @@ void FFmpegImageStream::cmdRewind()
     m_decoder->rewind();
 }
 
+void FFmpegImageStream::cmdSeek(double time) 
+{
+    m_decoder->seek(time);
+}
 
 
 void FFmpegImageStream::publishNewFrame(const FFmpegDecoderVideo &, void * user_data)

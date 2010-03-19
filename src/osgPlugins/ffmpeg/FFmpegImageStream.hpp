@@ -30,14 +30,17 @@ namespace osgFFmpeg
         virtual void play();
         virtual void pause();
         virtual void rewind();
+        virtual void seek(double time);
         virtual void quit(bool waitForThreadToExit = true);
 
-        double duration() const;
+        virtual void setVolume(float volume);
+        virtual float getVolume() const;
 
-        bool videoAlphaChannel() const;
-        double videoAspectRatio() const;
-        double videoFrameRate() const;
+        virtual double getLength() const;
+        virtual double getReferenceTime () const; 
+        virtual double getFrameRate() const;
 
+        virtual bool isImageTranslucent() const;
 
     private:
 
@@ -46,7 +49,8 @@ namespace osgFFmpeg
             CMD_PLAY,
             CMD_PAUSE,
             CMD_STOP,
-            CMD_REWIND
+            CMD_REWIND,
+            CMD_SEEK
         };
 
         typedef MessageQueue<Command> CommandQueue;
@@ -62,6 +66,7 @@ namespace osgFFmpeg
         void cmdPlay();
         void cmdPause();
         void cmdRewind();
+        void cmdSeek(double time);
 
         static void publishNewFrame(const FFmpegDecoderVideo &, void * user_data);
 
@@ -70,7 +75,8 @@ namespace osgFFmpeg
 
         Mutex            m_mutex;
         Condition        m_frame_published_cond;
-        bool            m_frame_published_flag;
+        bool             m_frame_published_flag;
+        double           m_seek_time;
     };
 
 }

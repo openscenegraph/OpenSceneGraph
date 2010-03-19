@@ -6,6 +6,7 @@
 extern "C"
 {
 #define __STDC_CONSTANT_MACROS
+#include <errno.h>    // for error codes defined in avformat.h
 #include <stdint.h>
 #include <avcodec.h>
 #include <avformat.h>

@@ -416,9 +416,16 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     // populate primitive sets
 //    bool optimizeOrientations = elevations!=0;
     bool swapOrientation = !(masterLocator->orientationOpenGL());
+
+    bool smallTile = numVertices <= 16384;
+
+    // osg::notify(osg::NOTICE)<<"smallTile = "<<smallTile<<std::endl;
     
-    osg::ref_ptr<osg::DrawElementsUInt> elements = new osg::DrawElementsUInt(GL_TRIANGLES);
-    elements->reserve((numRows-1) * (numColumns-1) * 6);
+    osg::ref_ptr<osg::DrawElements> elements = smallTile ? 
+        static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_TRIANGLES)) :
+        static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_TRIANGLES));
+        
+    elements->reserveElements((numRows-1) * (numColumns-1) * 6);
 
     geometry->addPrimitiveSet(elements.get());
 
@@ -463,31 +470,31 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
                 if (fabsf(e00-e11)<fabsf(e01-e10))
                 {
-                    elements->push_back(i01);
-                    elements->push_back(i00);
-                    elements->push_back(i11);
+                    elements->addElement(i01);
+                    elements->addElement(i00);
+                    elements->addElement(i11);
 
-                    elements->push_back(i00);
-                    elements->push_back(i10);
-                    elements->push_back(i11);
+                    elements->addElement(i00);
+                    elements->addElement(i10);
+                    elements->addElement(i11);
                 }
                 else
                 {
-                    elements->push_back(i01);
-                    elements->push_back(i00);
-                    elements->push_back(i10);
+                    elements->addElement(i01);
+                    elements->addElement(i00);
+                    elements->addElement(i10);
 
-                    elements->push_back(i01);
-                    elements->push_back(i10);
-                    elements->push_back(i11);
+                    elements->addElement(i01);
+                    elements->addElement(i10);
+                    elements->addElement(i11);
                 }
             }
             else if (numValid==3)
             {
-                if (i00>=0) elements->push_back(i00);
-                if (i01>=0) elements->push_back(i01);
-                if (i11>=0) elements->push_back(i11);
-                if (i10>=0) elements->push_back(i10);
+                if (i00>=0) elements->addElement(i00);
+                if (i01>=0) elements->addElement(i01);
+                if (i11>=0) elements->addElement(i11);
+                if (i10>=0) elements->addElement(i10);
             }
             
         }
@@ -506,7 +513,9 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
     if (createSkirt)
     {
-        osg::ref_ptr<osg::DrawElementsUShort> skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
+        osg::ref_ptr<osg::DrawElements> skirtDrawElements = smallTile ? 
+            static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUAD_STRIP)) :
+            static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_QUAD_STRIP));
 
         // create bottom skirt vertices
         int r,c;
@@ -528,24 +537,28 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                     itr->second.first->push_back((*itr->second.first)[orig_i]);
                 }
                 
-                skirtDrawElements->push_back(orig_i);
-                skirtDrawElements->push_back(new_i);
+                skirtDrawElements->addElement(orig_i);
+                skirtDrawElements->addElement(new_i);
             }
             else
             {
-                if (!skirtDrawElements->empty())
+                if (skirtDrawElements->getNumIndices()!=0)
                 {
                     geometry->addPrimitiveSet(skirtDrawElements.get());
-                    skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
+                    skirtDrawElements = smallTile ? 
+                        static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUAD_STRIP)) :
+                        static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_QUAD_STRIP));
                 }
                 
             }
         }
 
-        if (!skirtDrawElements->empty())
+        if (skirtDrawElements->getNumIndices()!=0)
         {
             geometry->addPrimitiveSet(skirtDrawElements.get());
-            skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
+            skirtDrawElements = smallTile ? 
+                        static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUAD_STRIP)) :
+                        static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_QUAD_STRIP));
         }
 
         // create right skirt vertices
@@ -566,24 +579,28 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                     itr->second.first->push_back((*itr->second.first)[orig_i]);
                 }
                 
-                skirtDrawElements->push_back(orig_i);
-                skirtDrawElements->push_back(new_i);
+                skirtDrawElements->addElement(orig_i);
+                skirtDrawElements->addElement(new_i);
             }
             else
             {
-                if (!skirtDrawElements->empty())
+                if (skirtDrawElements->getNumIndices()!=0)
                 {
                     geometry->addPrimitiveSet(skirtDrawElements.get());
-                    skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
+                    skirtDrawElements = smallTile ? 
+                        static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUAD_STRIP)) :
+                        static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_QUAD_STRIP));
                 }
                 
             }
         }
 
-        if (!skirtDrawElements->empty())
+        if (skirtDrawElements->getNumIndices()!=0)
         {
             geometry->addPrimitiveSet(skirtDrawElements.get());
-            skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
+            skirtDrawElements = smallTile ? 
+                        static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUAD_STRIP)) :
+                        static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_QUAD_STRIP));
         }
 
         // create top skirt vertices
@@ -604,24 +621,28 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                     itr->second.first->push_back((*itr->second.first)[orig_i]);
                 }
                 
-                skirtDrawElements->push_back(orig_i);
-                skirtDrawElements->push_back(new_i);
+                skirtDrawElements->addElement(orig_i);
+                skirtDrawElements->addElement(new_i);
             }
             else
             {
-                if (!skirtDrawElements->empty())
+                if (skirtDrawElements->getNumIndices()!=0)
                 {
                     geometry->addPrimitiveSet(skirtDrawElements.get());
-                    skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
+                    skirtDrawElements = smallTile ? 
+                        static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUAD_STRIP)) :
+                        static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_QUAD_STRIP));
                 }
                 
             }
         }
 
-        if (!skirtDrawElements->empty())
+        if (skirtDrawElements->getNumIndices()!=0)
         {
             geometry->addPrimitiveSet(skirtDrawElements.get());
-            skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
+            skirtDrawElements = smallTile ? 
+                        static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUAD_STRIP)) :
+                        static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_QUAD_STRIP));
         }
 
         // create left skirt vertices
@@ -642,12 +663,12 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                     itr->second.first->push_back((*itr->second.first)[orig_i]);
                 }
                 
-                skirtDrawElements->push_back(orig_i);
-                skirtDrawElements->push_back(new_i);
+                skirtDrawElements->addElement(orig_i);
+                skirtDrawElements->addElement(new_i);
             }
             else
             {
-                if (!skirtDrawElements->empty())
+                if (skirtDrawElements->getNumIndices()!=0)
                 {
                     geometry->addPrimitiveSet(skirtDrawElements.get());
                     skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
@@ -656,10 +677,12 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
             }
         }
 
-        if (!skirtDrawElements->empty())
+        if (skirtDrawElements->getNumIndices()!=0)
         {
             geometry->addPrimitiveSet(skirtDrawElements.get());
-            skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
+            smallTile ? 
+                static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUAD_STRIP)) :
+                static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_QUAD_STRIP));
         }
     }
 

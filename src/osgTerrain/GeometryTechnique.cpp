@@ -242,14 +242,16 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
     // OSG_NOTICE<<"Sample ratio="<<sampleRatio<<std::endl;
 
-    if (sampleRatio!=1.0f)
+    unsigned int minimumNumColumns = 16u;
+    unsigned int minimumNumRows = 16u;
+
+    if ((sampleRatio!=1.0f) && (numColumns>minimumNumColumns) && (numRows>minimumNumRows))
     {
-    
         unsigned int originalNumColumns = numColumns;
         unsigned int originalNumRows = numRows;
     
-        numColumns = std::max((unsigned int) (float(originalNumColumns)*sqrtf(sampleRatio)), 4u);
-        numRows = std::max((unsigned int) (float(originalNumRows)*sqrtf(sampleRatio)),4u);
+        numColumns = std::max((unsigned int) (float(originalNumColumns)*sqrtf(sampleRatio)), minimumNumColumns);
+        numRows = std::max((unsigned int) (float(originalNumRows)*sqrtf(sampleRatio)),minimumNumRows);
 
         i_sampleFactor = double(originalNumColumns-1)/double(numColumns-1);
         j_sampleFactor = double(originalNumRows-1)/double(numRows-1);

@@ -324,6 +324,7 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
     FbxMaterialToOsgStateSet& fbxMaterialToOsgStateSet,
     std::map<KFbxNode*, osg::Node*>& nodeMap,
     BindMatrixMap& boneBindMatrices,
+    const std::set<const KFbxNode*>& fbxSkeletons,
     std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap,
     const osgDB::Options* options)
 {
@@ -348,6 +349,11 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
         {
             bIsBone = true;
         }
+    }
+
+    if (!bIsBone && fbxSkeletons.find(pNode) != fbxSkeletons.end())
+    {
+        bIsBone = true;
     }
 
     unsigned nMaterials = pNode->GetMaterialCount();
@@ -377,7 +383,7 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
         osgDB::ReaderWriter::ReadResult childResult = readFbxNode(
             pSdkManager, pChildNode, pAnimationManager,
             bChildIsBone, nLightCount, fbxMaterialToOsgStateSet, nodeMap,
-            boneBindMatrices, skeletonMap, options);
+            boneBindMatrices, fbxSkeletons, skeletonMap, options);
         if (childResult.error())
         {
             return childResult;
@@ -425,7 +431,8 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
         {
             size_t bindMatrixCount = boneBindMatrices.size();
             osgDB::ReaderWriter::ReadResult meshRes = readFbxMesh(pSdkManager,
-                pNode, pAnimationManager, stateSetList, boneBindMatrices, skeletonMap);
+                pNode, pAnimationManager, stateSetList, boneBindMatrices,
+                fbxSkeletons, skeletonMap);
             if (meshRes.error())
             {
                 return meshRes;
@@ -490,7 +497,7 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
     osg::Group* pAddChildrenTo = osgGroup.get();
     if (bCreateSkeleton)
     {
-        osgAnimation::Skeleton* osgSkeleton = getSkeleton(pNode, skeletonMap);
+        osgAnimation::Skeleton* osgSkeleton = getSkeleton(pNode, fbxSkeletons, skeletonMap);
         osgSkeleton->setDefaultUpdateCallback();
         pAddChildrenTo->addChild(osgSkeleton);
         pAddChildrenTo = osgSkeleton;
@@ -510,12 +517,14 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
 }
 
 osgAnimation::Skeleton* getSkeleton(KFbxNode* fbxNode,
+    const std::set<const KFbxNode*>& fbxSkeletons,
     std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap)
 {
     //Find the first non-skeleton ancestor of the node.
     while (fbxNode &&
-        fbxNode->GetNodeAttribute() &&
-        fbxNode->GetNodeAttribute()->GetAttributeType() == KFbxNodeAttribute::eSKELETON)
+        ((fbxNode->GetNodeAttribute() &&
+        fbxNode->GetNodeAttribute()->GetAttributeType() == KFbxNodeAttribute::eSKELETON) ||
+        fbxSkeletons.find(fbxNode) != fbxSkeletons.end()))
     {
         fbxNode = fbxNode->GetParent();
     }

@@ -11,6 +11,7 @@ osgDB::ReaderWriter::ReadResult readFbxMesh(
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
     std::vector<StateSetContent>&,
     BindMatrixMap& boneBindMatrices,
+    const std::set<const KFbxNode*>& fbxSkeletons,
     std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap);
 
 #endif

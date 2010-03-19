@@ -292,6 +292,7 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
     std::vector<StateSetContent>& stateSetList,
     const char* szName,
     BindMatrixMap& boneBindMatrices,
+    const std::set<const KFbxNode*>& fbxSkeletons,
     std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap)
 {
     GeometryMap geometryMap;
@@ -299,7 +300,7 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
     osg::Geode* pGeode = new osg::Geode;
     pGeode->setName(szName);
 
-    const KFbxLayer* pFbxLayer = 0;
+    const KFbxLayer* pFbxLayer = fbxMesh->GetLayer(0);
     const KFbxLayerElementNormal* pFbxNormals = 0;
     const KFbxLayerElementUV* pFbxUVs = 0;
     const KFbxLayerElementVertexColor* pFbxColors = 0;
@@ -307,7 +308,7 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
 
     const KFbxVector4* pFbxVertices = fbxMesh->GetControlPoints();
 
-    if (pFbxLayer = fbxMesh->GetLayer(0))
+    if (pFbxLayer)
     {
         pFbxNormals = pFbxLayer->GetNormals();
         pFbxColors = pFbxLayer->GetVertexColors();
@@ -614,7 +615,8 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
         KFbxSkin* pSkin = (KFbxSkin*)fbxMesh->GetDeformer(0, KFbxDeformer::eSKIN);
         if (pSkin->GetClusterCount())
         {
-            osgAnimation::Skeleton* pSkeleton = getSkeleton(pSkin->GetCluster(0)->GetLink(), skeletonMap);
+            osgAnimation::Skeleton* pSkeleton = getSkeleton(
+                pSkin->GetCluster(0)->GetLink(), fbxSkeletons, skeletonMap);
             pSkeleton->addChild(pResult);
             return osgDB::ReaderWriter::ReadResult::FILE_LOADED;
         }
@@ -628,6 +630,7 @@ osgDB::ReaderWriter::ReadResult readFbxMesh(KFbxSdkManager& pSdkManager,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
     std::vector<StateSetContent>& stateSetList,
     BindMatrixMap& boneBindMatrices,
+    const std::set<const KFbxNode*>& fbxSkeletons,
     std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap)
 {
     KFbxMesh* lMesh = dynamic_cast<KFbxMesh*>(pNode->GetNodeAttribute());
@@ -638,5 +641,5 @@ osgDB::ReaderWriter::ReadResult readFbxMesh(KFbxSdkManager& pSdkManager,
     }
 
     return readMesh(pSdkManager, pNode, lMesh, pAnimationManager, stateSetList,
-        pNode->GetName(), boneBindMatrices, skeletonMap);
+        pNode->GetName(), boneBindMatrices, fbxSkeletons, skeletonMap);
 }

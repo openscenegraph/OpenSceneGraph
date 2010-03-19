@@ -1,6 +1,5 @@
 #include <sstream>
 #include <memory>
-#include <cassert>
 
 #include <osg/Notify>
 #include <osg/MatrixTransform>
@@ -157,14 +156,15 @@ void resolveBindMatrices(
                     }
                     else
                     {
-                        assert(0);
+                        osg::notify(osg::WARN) << "No vertex influences found for \"" << osgBone.getName() << "\"" << std::endl;
                     }
                 }
             }
         }
         else
         {
-            assert(0);
+            osg::notify(osg::WARN) << "No bone found for \"" << fbxBone->GetName() << "\"" << std::endl;
+            ++it;
         }
     }
 }

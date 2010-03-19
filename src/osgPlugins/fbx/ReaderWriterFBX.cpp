@@ -97,6 +97,30 @@ public:
     }
 };
 
+//Some files don't correctly mark their skeleton nodes, so this function infers
+//them from the nodes that skin deformers linked to.
+void findLinkedFbxSkeletonNodes(KFbxNode* pNode, std::set<const KFbxNode*>& fbxSkeletons)
+{
+    if (const KFbxGeometry* pMesh = dynamic_cast<const KFbxGeometry*>(pNode->GetNodeAttribute()))
+    {
+        for (int i = 0; i < pMesh->GetDeformerCount(KFbxDeformer::eSKIN); ++i)
+        {
+            const KFbxSkin* pSkin = (const KFbxSkin*)pMesh->GetDeformer(i, KFbxDeformer::eSKIN);
+
+            for (int j = 0; j < pSkin->GetClusterCount(); ++j)
+            {
+                const KFbxNode* pSkeleton = pSkin->GetCluster(j)->GetLink();
+                fbxSkeletons.insert(pSkeleton);
+            }
+        }
+    }
+
+    for (int i = 0; i < pNode->GetChildCount(); ++i)
+    {
+        findLinkedFbxSkeletonNodes(pNode->GetChild(i), fbxSkeletons);
+    }
+}
+
 void resolveBindMatrices(
     osg::Node& root,
     const BindMatrixMap& boneBindMatrices,
@@ -141,7 +165,7 @@ void resolveBindMatrices(
                     osgBone.addChild(newBone);
 
                     osgAnimation::RigGeometry* pRigGeometry = it->first.second;
-                    
+
                     osgAnimation::VertexInfluenceMap* vertexInfluences = pRigGeometry->getInfluenceMap();
 
                     osgAnimation::VertexInfluenceMap::iterator vimIt = vertexInfluences->find(osgBone.getName());
@@ -261,12 +285,15 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
             std::string filePath = osgDB::getFilePath(filename);
             FbxMaterialToOsgStateSet fbxMaterialToOsgStateSet(filePath, localOptions.get());
 
+            std::set<const KFbxNode*> fbxSkeletons;
+            findLinkedFbxSkeletonNodes(pNode, fbxSkeletons);
+
             std::map<KFbxNode*, osg::Node*> nodeMap;
             BindMatrixMap boneBindMatrices;
             std::map<KFbxNode*, osgAnimation::Skeleton*> skeletonMap;
             ReadResult res = readFbxNode(*pSdkManager, pNode, pAnimationManager,
                 bIsBone, nLightCount, fbxMaterialToOsgStateSet, nodeMap,
-                boneBindMatrices, skeletonMap, localOptions.get());
+                boneBindMatrices, fbxSkeletons, skeletonMap, localOptions.get());
 
             if (res.success())
             {

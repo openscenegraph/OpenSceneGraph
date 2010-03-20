@@ -80,7 +80,9 @@ FbxMaterialToOsgStateSet::convert(const KFbxSurfaceMaterial* pFbxMat)
                 static_cast<float>(pFbxPhong->GetShininess().Get()));
         }
     }
-    return std::make_pair(pOsgMat.release(), pOsgTex.release());
+    StateSetContent result(pOsgMat.release(), pOsgTex.release());
+    _kFbxMaterialMap.insert(KFbxMaterialMap::value_type(pFbxMat, result));
+    return result;
 }
 
 osg::ref_ptr<osg::Texture2D>
@@ -107,5 +109,36 @@ FbxMaterialToOsgStateSet::fbxTextureToOsgTexture(const KFbxTexture* fbx)
     else
     {
         return NULL;
+    }
+}
+
+void FbxMaterialToOsgStateSet::checkInvertTransparency()
+{
+    int zeroAlpha = 0, oneAlpha = 0;
+    for (KFbxMaterialMap::const_iterator it = _kFbxMaterialMap.begin(); it != _kFbxMaterialMap.end(); ++it)
+    {
+        const osg::Material* pMaterial = it->second.first;
+        float alpha = pMaterial->getDiffuse(osg::Material::FRONT).a();
+        if (alpha > 0.999f)
+        {
+            ++oneAlpha;
+        }
+        else if (alpha < 0.001f)
+        {
+            ++zeroAlpha;
+        }
+    }
+
+    if (zeroAlpha > oneAlpha)
+    {
+        //Transparency values seem to be back to front so invert them.
+
+        for (KFbxMaterialMap::const_iterator it = _kFbxMaterialMap.begin(); it != _kFbxMaterialMap.end(); ++it)
+        {
+            osg::Material* pMaterial = it->second.first;
+            osg::Vec4 diffuse = pMaterial->getDiffuse(osg::Material::FRONT);
+            diffuse.a() = 1.0f - diffuse.a();
+            pMaterial->setDiffuse(osg::Material::FRONT_AND_BACK, diffuse);
+        }
     }
 }

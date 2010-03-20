@@ -1068,7 +1068,7 @@ public:
     {
         if (_initialized) return;
 
-        DarwinWindowingSystemInterface::init();
+        DarwinWindowingSystemInterface::_init();
 
         // register application event handler and AppleEventHandler to get quit-events:
         static const EventTypeSpec menueventSpec = {kEventClassCommand, kEventCommandProcess};

@@ -221,11 +221,21 @@ static long getDictLong(CFDictionaryRef refDict, CFStringRef key)        // cons
 
 /** ctor, get a list of all attached displays */
 DarwinWindowingSystemInterface::DarwinWindowingSystemInterface() :
-    _initialized(false),
     _displayCount(0),
     _displayIds(NULL)
 {
-}
+    ProcessSerialNumber sn = { 0, kCurrentProcess };
+    TransformProcessType(&sn,kProcessTransformToForegroundApplication);
+    SetFrontProcess(&sn);
+    
+    if( CGGetActiveDisplayList( 0, NULL, &_displayCount ) != CGDisplayNoErr )
+        osg::notify(osg::WARN) << "DarwinWindowingSystemInterface: could not get # of screens" << std::endl;
+        
+    _displayIds = new CGDirectDisplayID[_displayCount];
+    if( CGGetActiveDisplayList( _displayCount, _displayIds, &_displayCount ) != CGDisplayNoErr )
+        osg::notify(osg::WARN) << "DarwinWindowingSystemInterface: CGGetActiveDisplayList failed" << std::endl;
+    
+    }
 
 /** dtor */
 DarwinWindowingSystemInterface::~DarwinWindowingSystemInterface()
@@ -240,51 +250,12 @@ DarwinWindowingSystemInterface::~DarwinWindowingSystemInterface()
     _displayIds = NULL;
 }
 
-void DarwinWindowingSystemInterface::_init()
-{
-    if (_initialized) return;
-
-    ProcessSerialNumber sn = { 0, kCurrentProcess };
-    TransformProcessType(&sn,kProcessTransformToForegroundApplication);
-    SetFrontProcess(&sn);
-
-    if( CGGetActiveDisplayList( 0, NULL, &_displayCount ) != CGDisplayNoErr )
-    {
-        osg::notify(osg::WARN) << "DarwinWindowingSystemInterface: could not get # of screens" << std::endl;
-        _displayCount = 0;
-
-        _initialized = true;
-        return;
-    }
-
-    _displayIds = new CGDirectDisplayID[_displayCount];
-
-    if( CGGetActiveDisplayList( _displayCount, _displayIds, &_displayCount ) != CGDisplayNoErr )
-    {
-        osg::notify(osg::WARN) << "DarwinWindowingSystemInterface: CGGetActiveDisplayList failed" << std::endl;
-    }
-
-    _initialized = true;
-}
-
 /** @return a CGDirectDisplayID for a ScreenIdentifier */
-CGDirectDisplayID DarwinWindowingSystemInterface::getDisplayID(const osg::GraphicsContext::ScreenIdentifier& si)
-{
-    _init();
-
-    if (_displayCount==0)
-    {
-        osg::notify(osg::WARN) << "DarwinWindowingSystemInterface::getDisplayID(..) no valid screens available returning 0 instead." << std::endl;
-        return 0;
-    }
-
+CGDirectDisplayID DarwinWindowingSystemInterface::getDisplayID(const osg::GraphicsContext::ScreenIdentifier& si) {
     if (si.screenNum < static_cast<int>(_displayCount))
-    {
         return _displayIds[si.screenNum];
-    }
-    else
-    {
-        osg::notify(osg::WARN) << "DarwinWindowingSystemInterface::getDisplayID(..) invalid screen # " << si.screenNum << ", returning main-screen instead." << std::endl;
+    else {
+        osg::notify(osg::WARN) << "GraphicsWindowCarbon :: invalid screen # " << si.screenNum << ", returning main-screen instead" << std::endl;
         return _displayIds[0];
     }
 }
@@ -292,24 +263,11 @@ CGDirectDisplayID DarwinWindowingSystemInterface::getDisplayID(const osg::Graphi
 /** @return count of attached screens */
 unsigned int DarwinWindowingSystemInterface::getNumScreens(const osg::GraphicsContext::ScreenIdentifier& si) 
 {
-    _init();
-
     return _displayCount;
 }
 
 void DarwinWindowingSystemInterface::getScreenSettings(const osg::GraphicsContext::ScreenIdentifier& si, osg::GraphicsContext::ScreenSettings & resolution)
 {
-    _init();
-
-    if (_displayCount==0)
-    {
-        resolution.width = 0;
-        resolution.height = 0;
-        resolution.colorDepth = 0;
-        resolution.refreshRate = 0;
-        return;
-    }
-
     CGDirectDisplayID id = getDisplayID(si);
     resolution.width = CGDisplayPixelsWide(id);
     resolution.height = CGDisplayPixelsHigh(id);
@@ -319,51 +277,33 @@ void DarwinWindowingSystemInterface::getScreenSettings(const osg::GraphicsContex
 }
 
 
-void DarwinWindowingSystemInterface::enumerateScreenSettings(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, osg::GraphicsContext::ScreenSettingsList & resolutionList)
-{
-    _init();
+void DarwinWindowingSystemInterface::enumerateScreenSettings(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, osg::GraphicsContext::ScreenSettingsList & resolutionList) {
+        // Warning! This method has not been tested.
+        resolutionList.clear();
 
-    // Warning! This method has not been tested.
-    resolutionList.clear();
+        CGDirectDisplayID displayid = getDisplayID(screenIdentifier);
+        CFArrayRef availableModes = CGDisplayAvailableModes(displayid);
+        unsigned int numberOfAvailableModes = CFArrayGetCount(availableModes);
+        for (unsigned int i=0; i<numberOfAvailableModes; ++i) {
+            // look at each mode in the available list
+            CFDictionaryRef mode = (CFDictionaryRef)CFArrayGetValueAtIndex(availableModes, i);
+            osg::GraphicsContext::ScreenSettings tmpSR;
 
-    if (_displayCount==0)
-    {
-        return;
+            long width = getDictLong(mode, kCGDisplayWidth);
+            tmpSR.width = width<=0 ? 0 : width;
+            long height = getDictLong(mode, kCGDisplayHeight);
+            tmpSR.height = height<=0 ? 0 : height;
+            long rate = getDictLong(mode, kCGDisplayRefreshRate);
+            tmpSR.refreshRate = rate<=0 ? 0 : rate;
+            long depth = getDictLong(mode, kCGDisplayBitsPerPixel);
+            tmpSR.colorDepth = depth<=0 ? 0 : depth;
+
+            resolutionList.push_back(tmpSR);
+        }
     }
-
-    CGDirectDisplayID displayid = getDisplayID(screenIdentifier);
-    CFArrayRef availableModes = CGDisplayAvailableModes(displayid);
-    unsigned int numberOfAvailableModes = CFArrayGetCount(availableModes);
-    for (unsigned int i=0; i<numberOfAvailableModes; ++i) {
-        // look at each mode in the available list
-        CFDictionaryRef mode = (CFDictionaryRef)CFArrayGetValueAtIndex(availableModes, i);
-        osg::GraphicsContext::ScreenSettings tmpSR;
-
-        long width = getDictLong(mode, kCGDisplayWidth);
-        tmpSR.width = width<=0 ? 0 : width;
-        long height = getDictLong(mode, kCGDisplayHeight);
-        tmpSR.height = height<=0 ? 0 : height;
-        long rate = getDictLong(mode, kCGDisplayRefreshRate);
-        tmpSR.refreshRate = rate<=0 ? 0 : rate;
-        long depth = getDictLong(mode, kCGDisplayBitsPerPixel);
-        tmpSR.colorDepth = depth<=0 ? 0 : depth;
-
-        resolutionList.push_back(tmpSR);
-    }
-}
 
 /** return the top left coord of a specific screen in global screen space */
-void DarwinWindowingSystemInterface::getScreenTopLeft(const osg::GraphicsContext::ScreenIdentifier& si, int& x, int& y)
-{
-    _init();
-
-    if (_displayCount==0)
-    {
-        x = 0;
-        y = 0;
-        return;
-    }
-
+void DarwinWindowingSystemInterface::getScreenTopLeft(const osg::GraphicsContext::ScreenIdentifier& si, int& x, int& y) {
     CGRect bounds = CGDisplayBounds( getDisplayID(si) );
     x = static_cast<int>(bounds.origin.x);
     y = static_cast<int>(bounds.origin.y);
@@ -376,10 +316,8 @@ bool DarwinWindowingSystemInterface::setScreenSettings(const osg::GraphicsContex
 {
     bool result = setScreenResolutionImpl(si, settings.width, settings.height);
     if (result)
-    {
         setScreenRefreshRateImpl(si, settings.refreshRate);
-    }
-
+    
     return result;
 }
 
@@ -388,13 +326,6 @@ bool DarwinWindowingSystemInterface::setScreenSettings(const osg::GraphicsContex
 /** implementation of setScreenResolution */
 bool DarwinWindowingSystemInterface::setScreenResolutionImpl(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, unsigned int width, unsigned int height) 
 { 
-    _init();
-
-    if (_displayCount==0)
-    {
-        return false;
-    }
-
     CGDirectDisplayID displayid = getDisplayID(screenIdentifier);
     
     // add next line and on following line replace hard coded depth and refresh rate
@@ -413,15 +344,8 @@ bool DarwinWindowingSystemInterface::setScreenResolutionImpl(const osg::Graphics
 }
 
 /** implementation of setScreenRefreshRate */
-bool DarwinWindowingSystemInterface::setScreenRefreshRateImpl(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, double refreshRate)
-{ 
-    _init();
-
-    if (_displayCount==0)
-    {
-        return false;
-    }
-
+bool DarwinWindowingSystemInterface::setScreenRefreshRateImpl(const osg::GraphicsContext::ScreenIdentifier& screenIdentifier, double refreshRate) { 
+    
     boolean_t  success(false);
     unsigned width, height;
     getScreenResolution(screenIdentifier, width, height);
@@ -447,13 +371,6 @@ bool DarwinWindowingSystemInterface::setScreenRefreshRateImpl(const osg::Graphic
 
 unsigned int DarwinWindowingSystemInterface::getScreenContaining(int x, int y, int w, int h)
 {
-    _init();
-
-    if (_displayCount==0)
-    {
-        return 0;
-    }
-
     CGRect rect = CGRectMake(x,y,w,h);
     for(unsigned int i = 0; i < _displayCount; ++i) {
         CGRect bounds = CGDisplayBounds( getDisplayID(i) );
@@ -464,5 +381,10 @@ unsigned int DarwinWindowingSystemInterface::getScreenContaining(int x, int y, i
     
     return 0;
 }
+
+
+
+
+
 
 }

@@ -1378,17 +1378,16 @@ GraphicsWindowCocoa::~GraphicsWindowCocoa()
 // CocoaWindowingSystemInterface
 // ----------------------------------------------------------------------------------------------------------
 
-struct CocoaWindowingSystemInterface : public DarwinWindowingSystemInterface
-{
-
-    CocoaWindowingSystemInterface() : DarwinWindowingSystemInterface()
-    {
+struct CocoaWindowingSystemInterface : public DarwinWindowingSystemInterface {
+    
+    CocoaWindowingSystemInterface()
+    :    DarwinWindowingSystemInterface()
+    
+    {        
     }
-
+    
     void initAsStandaloneApplication() 
     {
-        _init();
-
         static bool s_inited = false;
         if (s_inited) return;
         s_inited = true;
@@ -1418,8 +1417,6 @@ struct CocoaWindowingSystemInterface : public DarwinWindowingSystemInterface
     
     virtual osg::GraphicsContext* createGraphicsContext(osg::GraphicsContext::Traits* traits) 
     {
-        _init();
-
         if (!traits->pbuffer) 
         {
             GraphicsWindowCocoa::WindowData* windowData = traits->inheritedWindowData ? dynamic_cast<GraphicsWindowCocoa::WindowData*>(traits->inheritedWindowData.get()) : NULL;

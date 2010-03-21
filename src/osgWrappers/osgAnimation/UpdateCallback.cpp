@@ -32,6 +32,59 @@
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::AnimationUpdateCallback)
 	I_DeclaringFile("osgAnimation/UpdateCallback");
 	I_BaseType(osg::NodeCallback);
+	I_BaseType(osgAnimation::AnimationUpdateCallbackBase);
+	I_Constructor0(____AnimationUpdateCallback,
+	               "",
+	               "");
+	I_Constructor1(IN, const std::string &, name,
+	               Properties::NON_EXPLICIT,
+	               ____AnimationUpdateCallback__C5_std_string_R1,
+	               "",
+	               "");
+	I_Constructor2(IN, const osgAnimation::AnimationUpdateCallback &, apc, IN, const osg::CopyOp &, copyop,
+	               ____AnimationUpdateCallback__C5_AnimationUpdateCallback_R1__C5_osg_CopyOp_R1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method0(const std::string &, getName,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string_R1__getName,
+	          "Get the name of object. ",
+	          "");
+	I_Method1(bool, link, IN, osgAnimation::Channel *, channel,
+	          Properties::VIRTUAL,
+	          __bool__link__Channel_P1,
+	          "",
+	          "");
+	I_Method1(int, link, IN, osgAnimation::Animation *, animation,
+	          Properties::VIRTUAL,
+	          __int__link__Animation_P1,
+	          "",
+	          "");
 	I_ConstructorWithDefaults1(IN, const std::string &, name, "",
 	                           Properties::NON_EXPLICIT,
 	                           ____AnimationUpdateCallback__C5_std_string_R1,
@@ -69,17 +122,33 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::AnimationUpdateCallback)
 	I_SimpleProperty(osgAnimation::AnimationManagerBase *, AnimationManager, 
 	                 __osgAnimation_AnimationManagerBase_P1__getAnimationManager, 
 	                 0);
+	I_SimpleProperty(const std::string &, Name, 
+	                 __C5_std_string_R1__getName, 
+	                 0);
 END_REFLECTOR
 
-BEGIN_OBJECT_REFLECTOR(osgAnimation::UpdateTransform)
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::AnimationUpdateCallback)
 	I_DeclaringFile("osgAnimation/UpdateCallback");
-	I_BaseType(osgAnimation::AnimationUpdateCallback);
+	I_BaseType(osg::NodeCallback);
+	I_BaseType(osgAnimation::AnimationUpdateCallbackBase);
+	I_Constructor0(____AnimationUpdateCallback,
+	               "",
+	               "");
+	I_Constructor1(IN, const std::string &, name,
+	               Properties::NON_EXPLICIT,
+	               ____AnimationUpdateCallback__C5_std_string_R1,
+	               "",
+	               "");
+	I_Constructor2(IN, const osgAnimation::AnimationUpdateCallback &, apc, IN, const osg::CopyOp &, copyop,
+	               ____AnimationUpdateCallback__C5_AnimationUpdateCallback_R1__C5_osg_CopyOp_R1,
+	               "",
+	               "");
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -99,6 +168,91 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::UpdateTransform)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method0(const std::string &, getName,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string_R1__getName,
+	          "Get the name of object. ",
+	          "");
+	I_Method1(bool, link, IN, osgAnimation::Channel *, channel,
+	          Properties::VIRTUAL,
+	          __bool__link__Channel_P1,
+	          "",
+	          "");
+	I_Method1(int, link, IN, osgAnimation::Animation *, animation,
+	          Properties::VIRTUAL,
+	          __int__link__Animation_P1,
+	          "",
+	          "");
+	I_ConstructorWithDefaults1(IN, const std::string &, name, "",
+	                           Properties::NON_EXPLICIT,
+	                           ____AnimationUpdateCallback__C5_std_string_R1,
+	                           "",
+	                           "");
+	I_Constructor2(IN, const osgAnimation::AnimationUpdateCallback &, apc, IN, const osg::CopyOp &, copyop,
+	               ____AnimationUpdateCallback__C5_AnimationUpdateCallback_R1__C5_osg_CopyOp_R1,
+	               "",
+	               "");
+	I_Method0(osgAnimation::AnimationManagerBase *, getAnimationManager,
+	          Properties::NON_VIRTUAL,
+	          __osgAnimation_AnimationManagerBase_P1__getAnimationManager,
+	          "",
+	          "");
+	I_Method0(bool, needLink,
+	          Properties::PURE_VIRTUAL,
+	          __bool__needLink,
+	          "",
+	          "");
+	I_Method1(bool, link, IN, osgAnimation::Channel *, channel,
+	          Properties::PURE_VIRTUAL,
+	          __bool__link__osgAnimation_Channel_P1,
+	          "",
+	          "");
+	I_Method1(int, link, IN, osgAnimation::Animation *, animation,
+	          Properties::VIRTUAL,
+	          __int__link__osgAnimation_Animation_P1,
+	          "",
+	          "");
+	I_Method0(void, updateLink,
+	          Properties::VIRTUAL,
+	          __void__updateLink,
+	          "",
+	          "");
+	I_SimpleProperty(osgAnimation::AnimationManagerBase *, AnimationManager, 
+	                 __osgAnimation_AnimationManagerBase_P1__getAnimationManager, 
+	                 0);
+	I_SimpleProperty(const std::string &, Name, 
+	                 __C5_std_string_R1__getName, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::UpdateTransform)
+	I_DeclaringFile("osgAnimation/UpdateCallback");
+	I_BaseType(osgAnimation::AnimationUpdateCallback);
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "",
+	          "");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "",
+	          "");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "",
+	          "");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "",
+	          "");
 	I_ConstructorWithDefaults1(IN, const std::string &, name, "",
 	                           Properties::NON_EXPLICIT,
 	                           ____UpdateTransform__C5_std_string_R1,
@@ -119,12 +273,12 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::UpdateTransform)
 	          "",
 	          "");
 	I_Method0(bool, needLink,
-	          Properties::VIRTUAL,
+	          Properties::NON_VIRTUAL,
 	          __bool__needLink,
 	          "",
 	          "");
 	I_Method1(bool, link, IN, osgAnimation::Channel *, channel,
-	          Properties::VIRTUAL,
+	          Properties::NON_VIRTUAL,
 	          __bool__link__osgAnimation_Channel_P1,
 	          "",
 	          "");

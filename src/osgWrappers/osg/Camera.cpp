@@ -43,6 +43,8 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(std::map< osg::Camera::BufferComponent COMMA  osg::Camera::Attachment >, osg::Camera::BufferAttachmentMap)
+
 BEGIN_ENUM_REFLECTOR(osg::Camera::TransformOrder)
 	I_DeclaringFile("osg/Camera");
 	I_EnumLabel(osg::Camera::PRE_MULTIPLY);
@@ -95,8 +97,6 @@ BEGIN_ENUM_REFLECTOR(osg::Camera::BufferComponent)
 	I_EnumLabel(osg::Camera::COLOR_BUFFER14);
 	I_EnumLabel(osg::Camera::COLOR_BUFFER15);
 END_REFLECTOR
-
-TYPE_NAME_ALIAS(std::map< osg::Camera::BufferComponent COMMA  osg::Camera::Attachment >, osg::Camera::BufferAttachmentMap)
 
 BEGIN_OBJECT_REFLECTOR(osg::Camera)
 	I_DeclaringFile("osg/Camera");
@@ -787,7 +787,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Camera::DrawCallback)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

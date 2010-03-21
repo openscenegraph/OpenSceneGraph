@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(std::vector< unsigned int >, osg::Image::MipmapDataType)
+
 BEGIN_ENUM_REFLECTOR(osg::Image::WriteHint)
 	I_DeclaringFile("osg/Image");
 	I_EnumLabel(osg::Image::NO_PREFERENCE);
@@ -48,8 +50,6 @@ BEGIN_ENUM_REFLECTOR(osg::Image::Origin)
 	I_EnumLabel(osg::Image::TOP_LEFT);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< unsigned int >, osg::Image::MipmapDataType)
-
 BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_DeclaringFile("osg/Image");
 	I_BaseType(osg::Object);
@@ -65,7 +65,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	          __Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __Object_P1__clone__C5_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -218,6 +218,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_Method0(unsigned int, getPacking,
 	          Properties::NON_VIRTUAL,
 	          __unsigned_int__getPacking,
+	          "",
+	          "");
+	I_Method1(void, setPixelAspectRatio, IN, float, pixelAspectRatio,
+	          Properties::NON_VIRTUAL,
+	          __void__setPixelAspectRatio__float,
+	          "",
+	          "");
+	I_Method0(float, getPixelAspectRatio,
+	          Properties::NON_VIRTUAL,
+	          __float__getPixelAspectRatio,
 	          "",
 	          "");
 	I_Method0(unsigned int, getPixelSizeInBits,
@@ -464,6 +474,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	I_SimpleProperty(unsigned int, Packing, 
 	                 __unsigned_int__getPacking, 
 	                 __void__setPacking__unsigned_int);
+	I_SimpleProperty(float, PixelAspectRatio, 
+	                 __float__getPixelAspectRatio, 
+	                 __void__setPixelAspectRatio__float);
 	I_SimpleProperty(osg::PixelBufferObject *, PixelBufferObject, 
 	                 __PixelBufferObject_P1__getPixelBufferObject, 
 	                 __void__setPixelBufferObject__PixelBufferObject_P1);

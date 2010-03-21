@@ -50,7 +50,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::VertexInfluenceMap)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -117,8 +117,16 @@ BEGIN_VALUE_REFLECTOR(osgAnimation::VertexInfluenceSet)
 	          __void__clear,
 	          "",
 	          "");
+	I_Method0(const osgAnimation::VertexInfluenceSet::VertexIndexToBoneWeightMap &, getVertexToBoneList,
+	          Properties::NON_VIRTUAL,
+	          __C5_VertexIndexToBoneWeightMap_R1__getVertexToBoneList,
+	          "",
+	          "");
 	I_SimpleProperty(const osgAnimation::VertexInfluenceSet::UniqVertexSetToBoneSetList &, UniqVertexSetToBoneSetList, 
 	                 __C5_UniqVertexSetToBoneSetList_R1__getUniqVertexSetToBoneSetList, 
+	                 0);
+	I_SimpleProperty(const osgAnimation::VertexInfluenceSet::VertexIndexToBoneWeightMap &, VertexToBoneList, 
+	                 __C5_VertexIndexToBoneWeightMap_R1__getVertexToBoneList, 
 	                 0);
 END_REFLECTOR
 

@@ -10,7 +10,14 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Matrixf>
+#include <osg/Quat>
+#include <osg/Vec2>
+#include <osg/Vec3>
+#include <osg/Vec4>
+#include <osgAnimation/CubicBezier>
 #include <osgAnimation/Keyframe>
+#include <osgAnimation/Vec3Packed>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -57,6 +64,10 @@ TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframe< float >, osgAnimation::FloatKeyf
 
 TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframeContainer< float >, osgAnimation::FloatKeyframeContainer)
 
+TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframe< double >, osgAnimation::DoubleKeyframe)
+
+TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframeContainer< double >, osgAnimation::DoubleKeyframeContainer)
+
 TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframe< osg::Vec2 >, osgAnimation::Vec2Keyframe)
 
 TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframeContainer< osg::Vec2 >, osgAnimation::Vec2KeyframeContainer)
@@ -72,6 +83,10 @@ TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframeContainer< osg::Vec4 >, osgAnimati
 TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframe< osg::Quat >, osgAnimation::QuatKeyframe)
 
 TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframeContainer< osg::Quat >, osgAnimation::QuatKeyframeContainer)
+
+TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframe< osg::Matrixf >, osgAnimation::MatrixKeyframe)
+
+TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframeContainer< osg::Matrixf >, osgAnimation::MatrixKeyframeContainer)
 
 TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframe< osgAnimation::Vec3Packed >, osgAnimation::Vec3PackedKeyframe)
 
@@ -97,27 +112,77 @@ TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframe< osgAnimation::Vec4CubicBezier >,
 
 TYPE_NAME_ALIAS(osgAnimation::TemplateKeyframeContainer< osgAnimation::Vec4CubicBezier >, osgAnimation::Vec4CubicBezierKeyframeContainer)
 
+BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateKeyframe< double >)
+	I_DeclaringFile("osgAnimation/Keyframe");
+	I_BaseType(osgAnimation::Keyframe);
+	I_Constructor0(____TemplateKeyframe,
+	               "",
+	               "");
+	I_Constructor2(IN, float, time, IN, const double &, value,
+	               ____TemplateKeyframe__float__C5_T_R1,
+	               "",
+	               "");
+	I_Method1(void, setValue, IN, const double &, value,
+	          Properties::NON_VIRTUAL,
+	          __void__setValue__C5_T_R1,
+	          "",
+	          "");
+	I_Method0(const double &, getValue,
+	          Properties::NON_VIRTUAL,
+	          __C5_T_R1__getValue,
+	          "",
+	          "");
+	I_SimpleProperty(const double &, Value, 
+	                 __C5_T_R1__getValue, 
+	                 __void__setValue__C5_T_R1);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateKeyframe< float >)
 	I_DeclaringFile("osgAnimation/Keyframe");
 	I_BaseType(osgAnimation::Keyframe);
 	I_Constructor0(____TemplateKeyframe,
 	               "",
 	               "");
-	I_Constructor2(IN, float, time, IN, const T &, value,
+	I_Constructor2(IN, float, time, IN, const float &, value,
 	               ____TemplateKeyframe__float__C5_T_R1,
 	               "",
 	               "");
-	I_Method1(void, setValue, IN, const T &, value,
+	I_Method1(void, setValue, IN, const float &, value,
 	          Properties::NON_VIRTUAL,
 	          __void__setValue__C5_T_R1,
 	          "",
 	          "");
-	I_Method0(const T &, getValue,
+	I_Method0(const float &, getValue,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getValue,
 	          "",
 	          "");
-	I_SimpleProperty(const T &, Value, 
+	I_SimpleProperty(const float &, Value, 
+	                 __C5_T_R1__getValue, 
+	                 __void__setValue__C5_T_R1);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateKeyframe< osg::Matrixf >)
+	I_DeclaringFile("osgAnimation/Keyframe");
+	I_BaseType(osgAnimation::Keyframe);
+	I_Constructor0(____TemplateKeyframe,
+	               "",
+	               "");
+	I_Constructor2(IN, float, time, IN, const osg::Matrixf &, value,
+	               ____TemplateKeyframe__float__C5_T_R1,
+	               "",
+	               "");
+	I_Method1(void, setValue, IN, const osg::Matrixf &, value,
+	          Properties::NON_VIRTUAL,
+	          __void__setValue__C5_T_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Matrixf &, getValue,
+	          Properties::NON_VIRTUAL,
+	          __C5_T_R1__getValue,
+	          "",
+	          "");
+	I_SimpleProperty(const osg::Matrixf &, Value, 
 	                 __C5_T_R1__getValue, 
 	                 __void__setValue__C5_T_R1);
 END_REFLECTOR
@@ -128,21 +193,21 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateKeyframe< osg::Quat >)
 	I_Constructor0(____TemplateKeyframe,
 	               "",
 	               "");
-	I_Constructor2(IN, float, time, IN, const T &, value,
+	I_Constructor2(IN, float, time, IN, const osg::Quat &, value,
 	               ____TemplateKeyframe__float__C5_T_R1,
 	               "",
 	               "");
-	I_Method1(void, setValue, IN, const T &, value,
+	I_Method1(void, setValue, IN, const osg::Quat &, value,
 	          Properties::NON_VIRTUAL,
 	          __void__setValue__C5_T_R1,
 	          "",
 	          "");
-	I_Method0(const T &, getValue,
+	I_Method0(const osg::Quat &, getValue,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getValue,
 	          "",
 	          "");
-	I_SimpleProperty(const T &, Value, 
+	I_SimpleProperty(const osg::Quat &, Value, 
 	                 __C5_T_R1__getValue, 
 	                 __void__setValue__C5_T_R1);
 END_REFLECTOR
@@ -153,21 +218,21 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateKeyframe< osg::Vec2 >)
 	I_Constructor0(____TemplateKeyframe,
 	               "",
 	               "");
-	I_Constructor2(IN, float, time, IN, const T &, value,
+	I_Constructor2(IN, float, time, IN, const osg::Vec2 &, value,
 	               ____TemplateKeyframe__float__C5_T_R1,
 	               "",
 	               "");
-	I_Method1(void, setValue, IN, const T &, value,
+	I_Method1(void, setValue, IN, const osg::Vec2 &, value,
 	          Properties::NON_VIRTUAL,
 	          __void__setValue__C5_T_R1,
 	          "",
 	          "");
-	I_Method0(const T &, getValue,
+	I_Method0(const osg::Vec2 &, getValue,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getValue,
 	          "",
 	          "");
-	I_SimpleProperty(const T &, Value, 
+	I_SimpleProperty(const osg::Vec2 &, Value, 
 	                 __C5_T_R1__getValue, 
 	                 __void__setValue__C5_T_R1);
 END_REFLECTOR
@@ -178,21 +243,21 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateKeyframe< osg::Vec3 >)
 	I_Constructor0(____TemplateKeyframe,
 	               "",
 	               "");
-	I_Constructor2(IN, float, time, IN, const T &, value,
+	I_Constructor2(IN, float, time, IN, const osg::Vec3 &, value,
 	               ____TemplateKeyframe__float__C5_T_R1,
 	               "",
 	               "");
-	I_Method1(void, setValue, IN, const T &, value,
+	I_Method1(void, setValue, IN, const osg::Vec3 &, value,
 	          Properties::NON_VIRTUAL,
 	          __void__setValue__C5_T_R1,
 	          "",
 	          "");
-	I_Method0(const T &, getValue,
+	I_Method0(const osg::Vec3 &, getValue,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getValue,
 	          "",
 	          "");
-	I_SimpleProperty(const T &, Value, 
+	I_SimpleProperty(const osg::Vec3 &, Value, 
 	                 __C5_T_R1__getValue, 
 	                 __void__setValue__C5_T_R1);
 END_REFLECTOR
@@ -203,21 +268,21 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateKeyframe< osg::Vec4 >)
 	I_Constructor0(____TemplateKeyframe,
 	               "",
 	               "");
-	I_Constructor2(IN, float, time, IN, const T &, value,
+	I_Constructor2(IN, float, time, IN, const osg::Vec4 &, value,
 	               ____TemplateKeyframe__float__C5_T_R1,
 	               "",
 	               "");
-	I_Method1(void, setValue, IN, const T &, value,
+	I_Method1(void, setValue, IN, const osg::Vec4 &, value,
 	          Properties::NON_VIRTUAL,
 	          __void__setValue__C5_T_R1,
 	          "",
 	          "");
-	I_Method0(const T &, getValue,
+	I_Method0(const osg::Vec4 &, getValue,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getValue,
 	          "",
 	          "");
-	I_SimpleProperty(const T &, Value, 
+	I_SimpleProperty(const osg::Vec4 &, Value, 
 	                 __C5_T_R1__getValue, 
 	                 __void__setValue__C5_T_R1);
 END_REFLECTOR
@@ -228,21 +293,21 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateKeyframe< osgAnimation::DoubleCubic
 	I_Constructor0(____TemplateKeyframe,
 	               "",
 	               "");
-	I_Constructor2(IN, float, time, IN, const T &, value,
+	I_Constructor2(IN, float, time, IN, const osgAnimation::DoubleCubicBezier &, value,
 	               ____TemplateKeyframe__float__C5_T_R1,
 	               "",
 	               "");
-	I_Method1(void, setValue, IN, const T &, value,
+	I_Method1(void, setValue, IN, const osgAnimation::DoubleCubicBezier &, value,
 	          Properties::NON_VIRTUAL,
 	          __void__setValue__C5_T_R1,
 	          "",
 	          "");
-	I_Method0(const T &, getValue,
+	I_Method0(const osgAnimation::DoubleCubicBezier &, getValue,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getValue,
 	          "",
 	          "");
-	I_SimpleProperty(const T &, Value, 
+	I_SimpleProperty(const osgAnimation::DoubleCubicBezier &, Value, 
 	                 __C5_T_R1__getValue, 
 	                 __void__setValue__C5_T_R1);
 END_REFLECTOR
@@ -253,21 +318,21 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateKeyframe< osgAnimation::FloatCubicB
 	I_Constructor0(____TemplateKeyframe,
 	               "",
 	               "");
-	I_Constructor2(IN, float, time, IN, const T &, value,
+	I_Constructor2(IN, float, time, IN, const osgAnimation::FloatCubicBezier &, value,
 	               ____TemplateKeyframe__float__C5_T_R1,
 	               "",
 	               "");
-	I_Method1(void, setValue, IN, const T &, value,
+	I_Method1(void, setValue, IN, const osgAnimation::FloatCubicBezier &, value,
 	          Properties::NON_VIRTUAL,
 	          __void__setValue__C5_T_R1,
 	          "",
 	          "");
-	I_Method0(const T &, getValue,
+	I_Method0(const osgAnimation::FloatCubicBezier &, getValue,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getValue,
 	          "",
 	          "");
-	I_SimpleProperty(const T &, Value, 
+	I_SimpleProperty(const osgAnimation::FloatCubicBezier &, Value, 
 	                 __C5_T_R1__getValue, 
 	                 __void__setValue__C5_T_R1);
 END_REFLECTOR
@@ -278,21 +343,21 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateKeyframe< osgAnimation::Vec2CubicBe
 	I_Constructor0(____TemplateKeyframe,
 	               "",
 	               "");
-	I_Constructor2(IN, float, time, IN, const T &, value,
+	I_Constructor2(IN, float, time, IN, const osgAnimation::Vec2CubicBezier &, value,
 	               ____TemplateKeyframe__float__C5_T_R1,
 	               "",
 	               "");
-	I_Method1(void, setValue, IN, const T &, value,
+	I_Method1(void, setValue, IN, const osgAnimation::Vec2CubicBezier &, value,
 	          Properties::NON_VIRTUAL,
 	          __void__setValue__C5_T_R1,
 	          "",
 	          "");
-	I_Method0(const T &, getValue,
+	I_Method0(const osgAnimation::Vec2CubicBezier &, getValue,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getValue,
 	          "",
 	          "");
-	I_SimpleProperty(const T &, Value, 
+	I_SimpleProperty(const osgAnimation::Vec2CubicBezier &, Value, 
 	                 __C5_T_R1__getValue, 
 	                 __void__setValue__C5_T_R1);
 END_REFLECTOR
@@ -303,21 +368,21 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateKeyframe< osgAnimation::Vec3CubicBe
 	I_Constructor0(____TemplateKeyframe,
 	               "",
 	               "");
-	I_Constructor2(IN, float, time, IN, const T &, value,
+	I_Constructor2(IN, float, time, IN, const osgAnimation::Vec3CubicBezier &, value,
 	               ____TemplateKeyframe__float__C5_T_R1,
 	               "",
 	               "");
-	I_Method1(void, setValue, IN, const T &, value,
+	I_Method1(void, setValue, IN, const osgAnimation::Vec3CubicBezier &, value,
 	          Properties::NON_VIRTUAL,
 	          __void__setValue__C5_T_R1,
 	          "",
 	          "");
-	I_Method0(const T &, getValue,
+	I_Method0(const osgAnimation::Vec3CubicBezier &, getValue,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getValue,
 	          "",
 	          "");
-	I_SimpleProperty(const T &, Value, 
+	I_SimpleProperty(const osgAnimation::Vec3CubicBezier &, Value, 
 	                 __C5_T_R1__getValue, 
 	                 __void__setValue__C5_T_R1);
 END_REFLECTOR
@@ -328,21 +393,21 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateKeyframe< osgAnimation::Vec3Packed 
 	I_Constructor0(____TemplateKeyframe,
 	               "",
 	               "");
-	I_Constructor2(IN, float, time, IN, const T &, value,
+	I_Constructor2(IN, float, time, IN, const osgAnimation::Vec3Packed &, value,
 	               ____TemplateKeyframe__float__C5_T_R1,
 	               "",
 	               "");
-	I_Method1(void, setValue, IN, const T &, value,
+	I_Method1(void, setValue, IN, const osgAnimation::Vec3Packed &, value,
 	          Properties::NON_VIRTUAL,
 	          __void__setValue__C5_T_R1,
 	          "",
 	          "");
-	I_Method0(const T &, getValue,
+	I_Method0(const osgAnimation::Vec3Packed &, getValue,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getValue,
 	          "",
 	          "");
-	I_SimpleProperty(const T &, Value, 
+	I_SimpleProperty(const osgAnimation::Vec3Packed &, Value, 
 	                 __C5_T_R1__getValue, 
 	                 __void__setValue__C5_T_R1);
 END_REFLECTOR
@@ -353,26 +418,52 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateKeyframe< osgAnimation::Vec4CubicBe
 	I_Constructor0(____TemplateKeyframe,
 	               "",
 	               "");
-	I_Constructor2(IN, float, time, IN, const T &, value,
+	I_Constructor2(IN, float, time, IN, const osgAnimation::Vec4CubicBezier &, value,
 	               ____TemplateKeyframe__float__C5_T_R1,
 	               "",
 	               "");
-	I_Method1(void, setValue, IN, const T &, value,
+	I_Method1(void, setValue, IN, const osgAnimation::Vec4CubicBezier &, value,
 	          Properties::NON_VIRTUAL,
 	          __void__setValue__C5_T_R1,
 	          "",
 	          "");
-	I_Method0(const T &, getValue,
+	I_Method0(const osgAnimation::Vec4CubicBezier &, getValue,
 	          Properties::NON_VIRTUAL,
 	          __C5_T_R1__getValue,
 	          "",
 	          "");
-	I_SimpleProperty(const T &, Value, 
+	I_SimpleProperty(const osgAnimation::Vec4CubicBezier &, Value, 
 	                 __C5_T_R1__getValue, 
 	                 __void__setValue__C5_T_R1);
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateKeyframeContainer< double >)
+	I_DeclaringFile("osgAnimation/Keyframe");
+	I_BaseType(osgAnimation::KeyframeContainer);
+	I_Constructor0(____TemplateKeyframeContainer,
+	               "",
+	               "");
+	I_Method0(unsigned int, size,
+	          Properties::VIRTUAL,
+	          __unsigned_int__size,
+	          "",
+	          "");
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateKeyframeContainer< float >)
+	I_DeclaringFile("osgAnimation/Keyframe");
+	I_BaseType(osgAnimation::KeyframeContainer);
+	I_Constructor0(____TemplateKeyframeContainer,
+	               "",
+	               "");
+	I_Method0(unsigned int, size,
+	          Properties::VIRTUAL,
+	          __unsigned_int__size,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::TemplateKeyframeContainer< osg::Matrixf >)
 	I_DeclaringFile("osgAnimation/Keyframe");
 	I_BaseType(osgAnimation::KeyframeContainer);
 	I_Constructor0(____TemplateKeyframeContainer,

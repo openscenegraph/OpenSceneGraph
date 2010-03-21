@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(std::vector< std::string >, osgDB::DirectoryContents)
+
 BEGIN_ENUM_REFLECTOR(osgDB::CaseSensitivity)
 	I_DeclaringFile("osgDB/FileUtils");
 	I_EnumLabel(osgDB::CASE_SENSITIVE);
@@ -32,6 +34,4 @@ BEGIN_ENUM_REFLECTOR(osgDB::FileType)
 	I_EnumLabel(osgDB::REGULAR_FILE);
 	I_EnumLabel(osgDB::DIRECTORY);
 END_REFLECTOR
-
-TYPE_NAME_ALIAS(std::vector< std::string >, osgDB::DirectoryContents)
 

@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(std::vector< osg::observer_ptr< osg::Node > >, osgGA::NodeTrackerManipulator::ObserverNodePath)
+
 BEGIN_ENUM_REFLECTOR(osgGA::NodeTrackerManipulator::TrackerMode)
 	I_DeclaringFile("osgGA/NodeTrackerManipulator");
 	I_EnumLabel(osgGA::NodeTrackerManipulator::NODE_CENTER);
@@ -38,8 +40,6 @@ BEGIN_ENUM_REFLECTOR(osgGA::NodeTrackerManipulator::RotationMode)
 	I_EnumLabel(osgGA::NodeTrackerManipulator::TRACKBALL);
 	I_EnumLabel(osgGA::NodeTrackerManipulator::ELEVATION_AZIM);
 END_REFLECTOR
-
-TYPE_NAME_ALIAS(std::vector< osg::observer_ptr< osg::Node > >, osgGA::NodeTrackerManipulator::ObserverNodePath)
 
 BEGIN_OBJECT_REFLECTOR(osgGA::NodeTrackerManipulator)
 	I_DeclaringFile("osgGA/NodeTrackerManipulator");

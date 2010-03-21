@@ -15,6 +15,7 @@
 #include <osg/NodeVisitor>
 #include <osgAnimation/Animation>
 #include <osgAnimation/AnimationManagerBase>
+#include <osgAnimation/LinkVisitor>
 #include <osgAnimation/Target>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -42,9 +43,14 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::AnimationManagerBase)
 	          __void__buildTargetReference,
 	          "",
 	          "");
-	I_Method1(void, registerAnimation, IN, osgAnimation::Animation *, animation,
+	I_Method1(void, registerAnimation, IN, osgAnimation::Animation *, x,
 	          Properties::VIRTUAL,
 	          __void__registerAnimation__Animation_P1,
+	          "",
+	          "");
+	I_Method1(void, unregisterAnimation, IN, osgAnimation::Animation *, x,
+	          Properties::VIRTUAL,
+	          __void__unregisterAnimation__Animation_P1,
 	          "",
 	          "");
 	I_Method1(void, link, IN, osg::Node *, subgraph,
@@ -70,16 +76,42 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::AnimationManagerBase)
 	I_Method0(void, clearTargets,
 	          Properties::NON_VIRTUAL,
 	          __void__clearTargets,
-	          "Operation that must be done each frame. ",
+	          "Reset the value of targets this Operation must be done each frame. ",
 	          "");
-	I_Method0(void, normalizeTargets,
+	I_Method0(osgAnimation::LinkVisitor *, getOrCreateLinkVisitor,
 	          Properties::NON_VIRTUAL,
-	          __void__normalizeTargets,
+	          __LinkVisitor_P1__getOrCreateLinkVisitor,
+	          "",
+	          "");
+	I_Method1(void, setLinkVisitor, IN, osgAnimation::LinkVisitor *, x,
+	          Properties::NON_VIRTUAL,
+	          __void__setLinkVisitor__LinkVisitor_P1,
+	          "",
+	          "");
+	I_Method1(void, setAutomaticLink, IN, bool, x,
+	          Properties::NON_VIRTUAL,
+	          __void__setAutomaticLink__bool,
+	          "set a flag to define the behaviour ",
+	          "");
+	I_Method0(bool, isAutomaticLink,
+	          Properties::NON_VIRTUAL,
+	          __bool__isAutomaticLink,
+	          "",
+	          "");
+	I_Method0(void, dirty,
+	          Properties::NON_VIRTUAL,
+	          __void__dirty,
 	          "",
 	          "");
 	I_SimpleProperty(const osgAnimation::AnimationList &, AnimationList, 
 	                 __C5_AnimationList_R1__getAnimationList, 
 	                 0);
+	I_SimpleProperty(bool, AutomaticLink, 
+	                 0, 
+	                 __void__setAutomaticLink__bool);
+	I_SimpleProperty(osgAnimation::LinkVisitor *, LinkVisitor, 
+	                 0, 
+	                 __void__setLinkVisitor__LinkVisitor_P1);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgAnimation::Target >)

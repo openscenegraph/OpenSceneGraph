@@ -28,6 +28,9 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(std::list< osg::observer_ptr< osgWidget::Window > >, osgWidget::Window::WindowList)
+
+
 BEGIN_ENUM_REFLECTOR(osgWidget::Window::Strata)
 	I_DeclaringFile("osgWidget/Window");
 	I_EnumLabel(osgWidget::Window::STRATA_NONE);
@@ -57,9 +60,6 @@ BEGIN_ENUM_REFLECTOR(osgWidget::Window::HorizontalAnchor)
 	I_EnumLabel(osgWidget::Window::HA_LEFT);
 	I_EnumLabel(osgWidget::Window::HA_RIGHT);
 END_REFLECTOR
-
-TYPE_NAME_ALIAS(std::list< osg::observer_ptr< osgWidget::Window > >, osgWidget::Window::WindowList)
-
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgWidget::Window)
 	I_DeclaringFile("osgWidget/Window");
@@ -861,7 +861,7 @@ BEGIN_OBJECT_REFLECTOR(osgWidget::Window::EmbeddedWindow)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

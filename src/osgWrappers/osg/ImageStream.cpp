@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/AudioStream>
 #include <osg/CopyOp>
 #include <osg/Image>
 #include <osg/ImageStream>
@@ -22,6 +23,8 @@
 #ifdef OUT
 #undef OUT
 #endif
+
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::AudioStream > >, osg::ImageStream::AudioStreams)
 
 BEGIN_ENUM_REFLECTOR(osg::ImageStream::StreamStatus)
 	I_DeclaringFile("osg/ImageStream");
@@ -52,7 +55,7 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageStream)
 	          __Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __Object_P1__clone__C5_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -122,6 +125,11 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageStream)
 	          __double__getLength,
 	          "",
 	          "");
+	I_Method0(double, getFrameRate,
+	          Properties::VIRTUAL,
+	          __double__getFrameRate,
+	          "",
+	          "");
 	I_Method1(void, setReferenceTime, IN, double, x,
 	          Properties::VIRTUAL,
 	          __void__setReferenceTime__double,
@@ -152,12 +160,33 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageStream)
 	          __float__getVolume,
 	          "",
 	          "");
+	I_Method1(void, setAudioStreams, IN, const osg::ImageStream::AudioStreams &, asl,
+	          Properties::NON_VIRTUAL,
+	          __void__setAudioStreams__C5_AudioStreams_R1,
+	          "",
+	          "");
+	I_Method0(osg::ImageStream::AudioStreams &, getAudioStreams,
+	          Properties::NON_VIRTUAL,
+	          __AudioStreams_R1__getAudioStreams,
+	          "",
+	          "");
+	I_Method0(const osg::ImageStream::AudioStreams &, getAudioStreams,
+	          Properties::NON_VIRTUAL,
+	          __C5_AudioStreams_R1__getAudioStreams,
+	          "",
+	          "");
 	I_ProtectedMethod0(void, applyLoopingMode,
 	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __void__applyLoopingMode,
 	                   "",
 	                   "");
+	I_SimpleProperty(const osg::ImageStream::AudioStreams &, AudioStreams, 
+	                 __C5_AudioStreams_R1__getAudioStreams, 
+	                 __void__setAudioStreams__C5_AudioStreams_R1);
+	I_SimpleProperty(double, FrameRate, 
+	                 __double__getFrameRate, 
+	                 0);
 	I_SimpleProperty(double, Length, 
 	                 __double__getLength, 
 	                 0);
@@ -177,4 +206,46 @@ BEGIN_OBJECT_REFLECTOR(osg::ImageStream)
 	                 __float__getVolume, 
 	                 __void__setVolume__float);
 END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::AudioStream >)
+	I_DeclaringFile("osg/ref_ptr");
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::AudioStream *, ptr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osg::AudioStream > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osg::AudioStream *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osg::AudioStream *, release,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::AudioStream > &, rp,
+	          Properties::NON_VIRTUAL,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osg::AudioStream *, , 
+	                 __T_P1__get, 
+	                 0);
+END_REFLECTOR
+
+STD_VECTOR_REFLECTOR(std::vector< osg::ref_ptr< osg::AudioStream > >)
 

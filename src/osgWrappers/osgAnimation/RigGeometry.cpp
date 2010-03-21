@@ -12,9 +12,11 @@
 
 #include <osg/CopyOp>
 #include <osg/Geometry>
+#include <osg/Matrix>
 #include <osg/Object>
-#include <osg/Vec3>
+#include <osg/RenderInfo>
 #include <osgAnimation/RigGeometry>
+#include <osgAnimation/RigTransform>
 #include <osgAnimation/Skeleton>
 #include <osgAnimation/VertexInfluence>
 
@@ -32,11 +34,6 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::RigGeometry)
 	I_Constructor0(____RigGeometry,
 	               "",
 	               "");
-	I_Constructor1(IN, const osg::Geometry &, b,
-	               Properties::NON_EXPLICIT,
-	               ____RigGeometry__C5_osg_Geometry_R1,
-	               "",
-	               "");
 	I_ConstructorWithDefaults2(IN, const osgAnimation::RigGeometry &, b, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
 	                           ____RigGeometry__C5_RigGeometry_R1__C5_osg_CopyOp_R1,
 	                           "",
@@ -46,7 +43,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::RigGeometry)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -68,17 +65,17 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::RigGeometry)
 	          "Must be defined by derived classes. ");
 	I_Method1(void, setInfluenceMap, IN, osgAnimation::VertexInfluenceMap *, vertexInfluenceMap,
 	          Properties::NON_VIRTUAL,
-	          __void__setInfluenceMap__osgAnimation_VertexInfluenceMap_P1,
+	          __void__setInfluenceMap__VertexInfluenceMap_P1,
 	          "",
 	          "");
 	I_Method0(const osgAnimation::VertexInfluenceMap *, getInfluenceMap,
 	          Properties::NON_VIRTUAL,
-	          __C5_osgAnimation_VertexInfluenceMap_P1__getInfluenceMap,
+	          __C5_VertexInfluenceMap_P1__getInfluenceMap,
 	          "",
 	          "");
 	I_Method0(osgAnimation::VertexInfluenceMap *, getInfluenceMap,
 	          Properties::NON_VIRTUAL,
-	          __osgAnimation_VertexInfluenceMap_P1__getInfluenceMap,
+	          __VertexInfluenceMap_P1__getInfluenceMap,
 	          "",
 	          "");
 	I_Method0(const osgAnimation::Skeleton *, getSkeleton,
@@ -91,6 +88,11 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::RigGeometry)
 	          __Skeleton_P1__getSkeleton,
 	          "",
 	          "");
+	I_Method1(void, setSkeleton, IN, osgAnimation::Skeleton *, x,
+	          Properties::NON_VIRTUAL,
+	          __void__setSkeleton__Skeleton_P1,
+	          "",
+	          "");
 	I_Method1(void, setNeedToComputeMatrix, IN, bool, state,
 	          Properties::NON_VIRTUAL,
 	          __void__setNeedToComputeMatrix__bool,
@@ -101,14 +103,14 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::RigGeometry)
 	          __bool__getNeedToComputeMatrix,
 	          "",
 	          "");
-	I_Method0(void, buildVertexSet,
+	I_Method0(void, buildVertexInfluenceSet,
 	          Properties::NON_VIRTUAL,
-	          __void__buildVertexSet,
+	          __void__buildVertexInfluenceSet,
 	          "",
 	          "");
-	I_Method1(void, buildTransformer, IN, osgAnimation::Skeleton *, root,
+	I_Method0(const osgAnimation::VertexInfluenceSet &, getVertexInfluenceSet,
 	          Properties::NON_VIRTUAL,
-	          __void__buildTransformer__Skeleton_P1,
+	          __C5_VertexInfluenceSet_R1__getVertexInfluenceSet,
 	          "",
 	          "");
 	I_Method0(void, computeMatrixFromRootSkeleton,
@@ -116,43 +118,79 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::RigGeometry)
 	          __void__computeMatrixFromRootSkeleton,
 	          "",
 	          "");
-	I_Method0(void, transformSoftwareMethod,
+	I_Method1(void, setRigTransformImplementation, IN, osgAnimation::RigTransform *, x,
+	          Properties::NON_VIRTUAL,
+	          __void__setRigTransformImplementation__RigTransform_P1,
+	          "",
+	          "");
+	I_Method0(osgAnimation::RigTransform *, getRigTransformImplementation,
+	          Properties::NON_VIRTUAL,
+	          __RigTransform_P1__getRigTransformImplementation,
+	          "",
+	          "");
+	I_Method1(void, drawImplementation, IN, osg::RenderInfo &, renderInfo,
 	          Properties::VIRTUAL,
-	          __void__transformSoftwareMethod,
+	          __void__drawImplementation__osg_RenderInfo_R1,
+	          "Draw Geometry directly ignoring an OpenGL display list which could be attached. ",
+	          "This is the internal draw method which does the drawing itself, and is the method to override when deriving from Geometry for user-drawn objects. ");
+	I_Method0(void, update,
+	          Properties::NON_VIRTUAL,
+	          __void__update,
 	          "",
 	          "");
-	I_Method0(const osgAnimation::VertexInfluenceSet &, getVertexInfluenceSet,
+	I_Method0(const osg::Matrix &, getMatrixFromSkeletonToGeometry,
 	          Properties::NON_VIRTUAL,
-	          __C5_osgAnimation_VertexInfluenceSet_R1__getVertexInfluenceSet,
+	          __C5_osg_Matrix_R1__getMatrixFromSkeletonToGeometry,
 	          "",
 	          "");
-	I_Method0(const std::vector< osg::Vec3 > &, getPositionSource,
+	I_Method0(const osg::Matrix &, getInvMatrixFromSkeletonToGeometry,
 	          Properties::NON_VIRTUAL,
-	          __C5_std_vectorT1_osg_Vec3__R1__getPositionSource,
+	          __C5_osg_Matrix_R1__getInvMatrixFromSkeletonToGeometry,
 	          "",
 	          "");
-	I_Method0(const std::vector< osg::Vec3 > &, getNormalSource,
+	I_Method0(osg::Geometry *, getSourceGeometry,
 	          Properties::NON_VIRTUAL,
-	          __C5_std_vectorT1_osg_Vec3__R1__getNormalSource,
+	          __osg_Geometry_P1__getSourceGeometry,
+	          "",
+	          "");
+	I_Method0(const osg::Geometry *, getSourceGeometry,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Geometry_P1__getSourceGeometry,
+	          "",
+	          "");
+	I_Method1(void, setSourceGeometry, IN, osg::Geometry *, geometry,
+	          Properties::NON_VIRTUAL,
+	          __void__setSourceGeometry__osg_Geometry_P1,
+	          "",
+	          "");
+	I_Method1(void, copyFrom, IN, osg::Geometry &, from,
+	          Properties::NON_VIRTUAL,
+	          __void__copyFrom__osg_Geometry_R1,
 	          "",
 	          "");
 	I_SimpleProperty(osgAnimation::VertexInfluenceMap *, InfluenceMap, 
-	                 __osgAnimation_VertexInfluenceMap_P1__getInfluenceMap, 
-	                 __void__setInfluenceMap__osgAnimation_VertexInfluenceMap_P1);
+	                 __VertexInfluenceMap_P1__getInfluenceMap, 
+	                 __void__setInfluenceMap__VertexInfluenceMap_P1);
+	I_SimpleProperty(const osg::Matrix &, InvMatrixFromSkeletonToGeometry, 
+	                 __C5_osg_Matrix_R1__getInvMatrixFromSkeletonToGeometry, 
+	                 0);
+	I_SimpleProperty(const osg::Matrix &, MatrixFromSkeletonToGeometry, 
+	                 __C5_osg_Matrix_R1__getMatrixFromSkeletonToGeometry, 
+	                 0);
 	I_SimpleProperty(bool, NeedToComputeMatrix, 
 	                 __bool__getNeedToComputeMatrix, 
 	                 __void__setNeedToComputeMatrix__bool);
-	I_SimpleProperty(const std::vector< osg::Vec3 > &, NormalSource, 
-	                 __C5_std_vectorT1_osg_Vec3__R1__getNormalSource, 
-	                 0);
-	I_SimpleProperty(const std::vector< osg::Vec3 > &, PositionSource, 
-	                 __C5_std_vectorT1_osg_Vec3__R1__getPositionSource, 
-	                 0);
+	I_SimpleProperty(osgAnimation::RigTransform *, RigTransformImplementation, 
+	                 __RigTransform_P1__getRigTransformImplementation, 
+	                 __void__setRigTransformImplementation__RigTransform_P1);
 	I_SimpleProperty(osgAnimation::Skeleton *, Skeleton, 
 	                 __Skeleton_P1__getSkeleton, 
-	                 0);
+	                 __void__setSkeleton__Skeleton_P1);
+	I_SimpleProperty(osg::Geometry *, SourceGeometry, 
+	                 __osg_Geometry_P1__getSourceGeometry, 
+	                 __void__setSourceGeometry__osg_Geometry_P1);
 	I_SimpleProperty(const osgAnimation::VertexInfluenceSet &, VertexInfluenceSet, 
-	                 __C5_osgAnimation_VertexInfluenceSet_R1__getVertexInfluenceSet, 
+	                 __C5_VertexInfluenceSet_R1__getVertexInfluenceSet, 
 	                 0);
 END_REFLECTOR
 

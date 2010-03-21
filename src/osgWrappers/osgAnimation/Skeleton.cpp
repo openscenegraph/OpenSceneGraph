@@ -26,7 +26,7 @@
 
 BEGIN_OBJECT_REFLECTOR(osgAnimation::Skeleton)
 	I_DeclaringFile("osgAnimation/Skeleton");
-	I_BaseType(osgAnimation::Bone);
+	I_BaseType(osg::MatrixTransform);
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
@@ -57,21 +57,16 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Skeleton)
 	          __void__accept__osg_NodeVisitor_R1,
 	          "Visitor Pattern : calls the apply method of a NodeVisitor with this node's type. ",
 	          "");
-	I_ConstructorWithDefaults2(IN, const osgAnimation::Skeleton &, b, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____Skeleton__C5_Skeleton_R1__C5_osg_CopyOp_R1,
-	                           "",
-	                           "");
 	I_Constructor0(____Skeleton,
+	               "",
+	               "");
+	I_Constructor2(IN, const osgAnimation::Skeleton &, x, IN, const osg::CopyOp &, x,
+	               ____Skeleton__C5_Skeleton_R1__C5_osg_CopyOp_R1,
 	               "",
 	               "");
 	I_Method0(void, setDefaultUpdateCallback,
 	          Properties::NON_VIRTUAL,
 	          __void__setDefaultUpdateCallback,
-	          "",
-	          "");
-	I_Method0(void, computeBindMatrix,
-	          Properties::VIRTUAL,
-	          __void__computeBindMatrix,
 	          "",
 	          "");
 END_REFLECTOR
@@ -84,7 +79,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Skeleton::UpdateSkeleton)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -107,9 +102,14 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Skeleton::UpdateSkeleton)
 	I_Constructor0(____UpdateSkeleton,
 	               "",
 	               "");
-	I_ConstructorWithDefaults2(IN, const osgAnimation::Skeleton::UpdateSkeleton &, us, , IN, const osg::CopyOp &, copyop, osg::CopyOp::SHALLOW_COPY,
-	                           ____UpdateSkeleton__C5_UpdateSkeleton_R1__C5_osg_CopyOp_R1,
-	                           "",
-	                           "");
+	I_Constructor2(IN, const osgAnimation::Skeleton::UpdateSkeleton &, x, IN, const osg::CopyOp &, x,
+	               ____UpdateSkeleton__C5_UpdateSkeleton_R1__C5_osg_CopyOp_R1,
+	               "",
+	               "");
+	I_Method0(bool, needToValidate,
+	          Properties::NON_VIRTUAL,
+	          __bool__needToValidate,
+	          "",
+	          "");
 END_REFLECTOR
 

@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <OpenThreads/Mutex>
 #include <osg/BoundingBox>
 #include <osg/CopyOp>
 #include <osg/Object>
@@ -26,6 +27,12 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(OpenThreads::Mutex, osgParticle::ParticleSystem::ReadWriterMutex)
+
+TYPE_NAME_ALIAS(OpenThreads::ScopedLock< OpenThreads::Mutex >, osgParticle::ParticleSystem::ScopedReadLock)
+
+TYPE_NAME_ALIAS(OpenThreads::ScopedLock< OpenThreads::Mutex >, osgParticle::ParticleSystem::ScopedWriteLock)
+
 BEGIN_ENUM_REFLECTOR(osgParticle::ParticleSystem::Alignment)
 	I_DeclaringFile("osgParticle/ParticleSystem");
 	I_EnumLabel(osgParticle::ParticleSystem::BILLBOARD);
@@ -37,12 +44,6 @@ BEGIN_ENUM_REFLECTOR(osgParticle::ParticleSystem::ParticleScaleReferenceFrame)
 	I_EnumLabel(osgParticle::ParticleSystem::LOCAL_COORDINATES);
 	I_EnumLabel(osgParticle::ParticleSystem::WORLD_COORDINATES);
 END_REFLECTOR
-
-TYPE_NAME_ALIAS(OpenThreads::Mutex, osgParticle::ParticleSystem::ReadWriterMutex)
-
-TYPE_NAME_ALIAS(OpenThreads::ScopedLock< OpenThreads::Mutex >, osgParticle::ParticleSystem::ScopedReadLock)
-
-TYPE_NAME_ALIAS(OpenThreads::ScopedLock< OpenThreads::Mutex >, osgParticle::ParticleSystem::ScopedWriteLock)
 
 BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	I_DeclaringFile("osgParticle/ParticleSystem");
@@ -59,7 +60,7 @@ BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystem)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

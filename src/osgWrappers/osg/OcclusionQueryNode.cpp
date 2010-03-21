@@ -72,7 +72,7 @@ BEGIN_OBJECT_REFLECTOR(osg::OcclusionQueryNode)
 	          __osg_BoundingSphere__computeBound,
 	          "Compute the bounding sphere around Node's geometry or children. ",
 	          "This method is automatically called by getBound() when the bounding sphere has been marked dirty via dirtyBound(). ");
-	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, x, 0,
+	I_MethodWithDefaults1(void, releaseGLObjects, IN, osg::State *, state, 0,
 	                      Properties::VIRTUAL,
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",
@@ -152,9 +152,9 @@ BEGIN_OBJECT_REFLECTOR(osg::OcclusionQueryNode)
 	          __bool__getPassed,
 	          "",
 	          "");
-	I_Method2(bool, getPassed, IN, const osg::Camera *, camera, IN, float, distanceToEyePoint,
+	I_Method2(bool, getPassed, IN, const osg::Camera *, camera, IN, osg::NodeVisitor &, nv,
 	          Properties::NON_VIRTUAL,
-	          __bool__getPassed__C5_osg_Camera_P1__float,
+	          __bool__getPassed__C5_osg_Camera_P1__osg_NodeVisitor_R1,
 	          "",
 	          "");
 	I_Method2(void, traverseQuery, IN, const osg::Camera *, camera, IN, osg::NodeVisitor &, nv,

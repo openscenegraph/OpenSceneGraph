@@ -28,5 +28,5 @@ TYPE_NAME_ALIAS(osg::BoundingBoxImpl< osg::Vec3f >, osg::BoundingBoxf)
 
 TYPE_NAME_ALIAS(osg::BoundingBoxImpl< osg::Vec3d >, osg::BoundingBoxd)
 
-TYPE_NAME_ALIAS(osg::BoundingBoxf, osg::BoundingBox)
+TYPE_NAME_ALIAS(osg::BoundingBoxd, osg::BoundingBox)
 

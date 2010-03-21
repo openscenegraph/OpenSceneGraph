@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(unsigned int, osg::CullSettings::CullingMode)
+
 BEGIN_ENUM_REFLECTOR(osg::CullSettings::VariablesMask)
 	I_DeclaringFile("osg/CullSettings");
 	I_EnumLabel(osg::CullSettings::COMPUTE_NEAR_FAR_MODE);
@@ -72,8 +74,6 @@ BEGIN_ENUM_REFLECTOR(osg::CullSettings::CullingModeValues)
 	I_EnumLabel(osg::CullSettings::DEFAULT_CULLING);
 	I_EnumLabel(osg::CullSettings::ENABLE_ALL_CULLING);
 END_REFLECTOR
-
-TYPE_NAME_ALIAS(unsigned int, osg::CullSettings::CullingMode)
 
 BEGIN_VALUE_REFLECTOR(osg::CullSettings)
 	I_DeclaringFile("osg/CullSettings");

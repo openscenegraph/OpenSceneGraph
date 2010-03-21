@@ -39,7 +39,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Animation)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -62,7 +62,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Animation)
 	I_Constructor0(____Animation,
 	               "",
 	               "");
-	I_Constructor2(IN, const osgAnimation::Animation &, anim, IN, const osg::CopyOp &, x,
+	I_Constructor2(IN, const osgAnimation::Animation &, x, IN, const osg::CopyOp &, x,
 	               ____Animation__C5_osgAnimation_Animation_R1__C5_osg_CopyOp_R1,
 	               "",
 	               "");
@@ -106,11 +106,11 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Animation)
 	          __float__getWeight,
 	          "",
 	          "");
-	I_Method1(bool, update, IN, float, time,
-	          Properties::NON_VIRTUAL,
-	          __bool__update__float,
-	          "",
-	          "");
+	I_MethodWithDefaults2(bool, update, IN, float, time, , IN, int, priority, 0,
+	                      Properties::NON_VIRTUAL,
+	                      __bool__update__float__int,
+	                      "",
+	                      "");
 	I_Method0(void, resetTargets,
 	          Properties::NON_VIRTUAL,
 	          __void__resetTargets,
@@ -119,6 +119,11 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Animation)
 	I_Method1(void, setPlaymode, IN, osgAnimation::Animation::PlayMode, mode,
 	          Properties::NON_VIRTUAL,
 	          __void__setPlaymode__PlayMode,
+	          "",
+	          "");
+	I_Method0(osgAnimation::Animation::PlayMode, getPlayMode,
+	          Properties::NON_VIRTUAL,
+	          __PlayMode__getPlayMode,
 	          "",
 	          "");
 	I_Method1(void, setStartTime, IN, float, time,
@@ -143,6 +148,9 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Animation)
 	I_SimpleProperty(double, Duration, 
 	                 0, 
 	                 __void__setDuration__double);
+	I_SimpleProperty(osgAnimation::Animation::PlayMode, PlayMode, 
+	                 __PlayMode__getPlayMode, 
+	                 0);
 	I_SimpleProperty(osgAnimation::Animation::PlayMode, Playmode, 
 	                 0, 
 	                 __void__setPlaymode__PlayMode);

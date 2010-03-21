@@ -50,9 +50,31 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::CompositeMotion)
 	I_PublicMemberProperty(osgAnimation::CompositeMotion::MotionList, _motions);
 END_REFLECTOR
 
+BEGIN_VALUE_REFLECTOR(osgAnimation::InBackFunction)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_Constructor0(____InBackFunction,
+	               "",
+	               "");
+	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
+	                __void__getValueAt__float__float_R1_S,
+	                "",
+	                "");
+END_REFLECTOR
+
 BEGIN_VALUE_REFLECTOR(osgAnimation::InBounceFunction)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_Constructor0(____InBounceFunction,
+	               "",
+	               "");
+	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
+	                __void__getValueAt__float__float_R1_S,
+	                "",
+	                "");
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgAnimation::InCircFunction)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_Constructor0(____InCircFunction,
 	               "",
 	               "");
 	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
@@ -72,6 +94,39 @@ BEGIN_VALUE_REFLECTOR(osgAnimation::InCubicFunction)
 	                "");
 END_REFLECTOR
 
+BEGIN_VALUE_REFLECTOR(osgAnimation::InElasticFunction)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_Constructor0(____InElasticFunction,
+	               "",
+	               "");
+	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
+	                __void__getValueAt__float__float_R1_S,
+	                "",
+	                "");
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgAnimation::InExpoFunction)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_Constructor0(____InExpoFunction,
+	               "",
+	               "");
+	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
+	                __void__getValueAt__float__float_R1_S,
+	                "",
+	                "");
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgAnimation::InOutBackFunction)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_Constructor0(____InOutBackFunction,
+	               "",
+	               "");
+	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
+	                __void__getValueAt__float__float_R1_S,
+	                "",
+	                "");
+END_REFLECTOR
+
 BEGIN_VALUE_REFLECTOR(osgAnimation::InOutBounceFunction)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_Constructor0(____InOutBounceFunction,
@@ -83,9 +138,42 @@ BEGIN_VALUE_REFLECTOR(osgAnimation::InOutBounceFunction)
 	                "");
 END_REFLECTOR
 
+BEGIN_VALUE_REFLECTOR(osgAnimation::InOutCircFunction)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_Constructor0(____InOutCircFunction,
+	               "",
+	               "");
+	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
+	                __void__getValueAt__float__float_R1_S,
+	                "",
+	                "");
+END_REFLECTOR
+
 BEGIN_VALUE_REFLECTOR(osgAnimation::InOutCubicFunction)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_Constructor0(____InOutCubicFunction,
+	               "",
+	               "");
+	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
+	                __void__getValueAt__float__float_R1_S,
+	                "",
+	                "");
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgAnimation::InOutElasticFunction)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_Constructor0(____InOutElasticFunction,
+	               "",
+	               "");
+	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
+	                __void__getValueAt__float__float_R1_S,
+	                "",
+	                "");
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgAnimation::InOutExpoFunction)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_Constructor0(____InOutExpoFunction,
 	               "",
 	               "");
 	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
@@ -116,6 +204,17 @@ BEGIN_VALUE_REFLECTOR(osgAnimation::InOutQuartFunction)
 	                "");
 END_REFLECTOR
 
+BEGIN_VALUE_REFLECTOR(osgAnimation::InOutSineFunction)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_Constructor0(____InOutSineFunction,
+	               "",
+	               "");
+	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
+	                __void__getValueAt__float__float_R1_S,
+	                "",
+	                "");
+END_REFLECTOR
+
 BEGIN_VALUE_REFLECTOR(osgAnimation::InQuadFunction)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_Constructor0(____InQuadFunction,
@@ -138,6 +237,17 @@ BEGIN_VALUE_REFLECTOR(osgAnimation::InQuartFunction)
 	                "");
 END_REFLECTOR
 
+BEGIN_VALUE_REFLECTOR(osgAnimation::InSineFunction)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_Constructor0(____InSineFunction,
+	               "",
+	               "");
+	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
+	                __void__getValueAt__float__float_R1_S,
+	                "",
+	                "");
+END_REFLECTOR
+
 BEGIN_VALUE_REFLECTOR(osgAnimation::LinearFunction)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_Constructor0(____LinearFunction,
@@ -149,13 +259,13 @@ BEGIN_VALUE_REFLECTOR(osgAnimation::LinearFunction)
 	                "");
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(float, osgAnimation::Motion::value_type)
+
 BEGIN_ENUM_REFLECTOR(osgAnimation::Motion::TimeBehaviour)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_EnumLabel(osgAnimation::Motion::CLAMP);
 	I_EnumLabel(osgAnimation::Motion::LOOP);
 END_REFLECTOR
-
-TYPE_NAME_ALIAS(float, osgAnimation::Motion::value_type)
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Motion)
 	I_DeclaringFile("osgAnimation/EaseMotion");
@@ -230,6 +340,17 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Motion)
 	                 0);
 END_REFLECTOR
 
+BEGIN_VALUE_REFLECTOR(osgAnimation::OutBackFunction)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_Constructor0(____OutBackFunction,
+	               "",
+	               "");
+	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
+	                __void__getValueAt__float__float_R1_S,
+	                "",
+	                "");
+END_REFLECTOR
+
 BEGIN_VALUE_REFLECTOR(osgAnimation::OutBounceFunction)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_Constructor0(____OutBounceFunction,
@@ -241,9 +362,42 @@ BEGIN_VALUE_REFLECTOR(osgAnimation::OutBounceFunction)
 	                "");
 END_REFLECTOR
 
+BEGIN_VALUE_REFLECTOR(osgAnimation::OutCircFunction)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_Constructor0(____OutCircFunction,
+	               "",
+	               "");
+	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
+	                __void__getValueAt__float__float_R1_S,
+	                "",
+	                "");
+END_REFLECTOR
+
 BEGIN_VALUE_REFLECTOR(osgAnimation::OutCubicFunction)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_Constructor0(____OutCubicFunction,
+	               "",
+	               "");
+	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
+	                __void__getValueAt__float__float_R1_S,
+	                "",
+	                "");
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgAnimation::OutElasticFunction)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_Constructor0(____OutElasticFunction,
+	               "",
+	               "");
+	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
+	                __void__getValueAt__float__float_R1_S,
+	                "",
+	                "");
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgAnimation::OutExpoFunction)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_Constructor0(____OutExpoFunction,
 	               "",
 	               "");
 	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
@@ -266,6 +420,17 @@ END_REFLECTOR
 BEGIN_VALUE_REFLECTOR(osgAnimation::OutQuartFunction)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_Constructor0(____OutQuartFunction,
+	               "",
+	               "");
+	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
+	                __void__getValueAt__float__float_R1_S,
+	                "",
+	                "");
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osgAnimation::OutSineFunction)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_Constructor0(____OutSineFunction,
 	               "",
 	               "");
 	I_StaticMethod2(void, getValueAt, IN, float, t, IN, float &, result,
@@ -299,6 +464,36 @@ TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::OutBounceFunctio
 TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::InBounceFunction >, osgAnimation::InBounceMotion)
 
 TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::InOutBounceFunction >, osgAnimation::InOutBounceMotion)
+
+TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::OutElasticFunction >, osgAnimation::OutElasticMotion)
+
+TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::InElasticFunction >, osgAnimation::InElasticMotion)
+
+TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::InOutElasticFunction >, osgAnimation::InOutElasticMotion)
+
+TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::OutSineFunction >, osgAnimation::OutSineMotion)
+
+TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::InSineFunction >, osgAnimation::InSineMotion)
+
+TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::InOutSineFunction >, osgAnimation::InOutSineMotion)
+
+TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::OutBackFunction >, osgAnimation::OutBackMotion)
+
+TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::InBackFunction >, osgAnimation::InBackMotion)
+
+TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::InOutBackFunction >, osgAnimation::InOutBackMotion)
+
+TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::OutCircFunction >, osgAnimation::OutCircMotion)
+
+TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::InCircFunction >, osgAnimation::InCircMotion)
+
+TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::InOutCircFunction >, osgAnimation::InOutCircMotion)
+
+TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::OutExpoFunction >, osgAnimation::OutExpoMotion)
+
+TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::InExpoFunction >, osgAnimation::InExpoMotion)
+
+TYPE_NAME_ALIAS(osgAnimation::MathMotionTemplate< osgAnimation::InOutExpoFunction >, osgAnimation::InOutExpoMotion)
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgAnimation::Motion >)
 	I_DeclaringFile("osg/ref_ptr");
@@ -340,7 +535,35 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgAnimation::Motion >)
 	                 0);
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InBackFunction >)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_BaseType(osgAnimation::Motion);
+	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
+	                           ____MathMotionTemplate__float__float__float__TimeBehaviour,
+	                           "",
+	                           "");
+	I_Method2(void, getValueInNormalizedRange, IN, float, t, IN, osgAnimation::Motion::value_type &, result,
+	          Properties::VIRTUAL,
+	          __void__getValueInNormalizedRange__float__value_type_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InBounceFunction >)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_BaseType(osgAnimation::Motion);
+	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
+	                           ____MathMotionTemplate__float__float__float__TimeBehaviour,
+	                           "",
+	                           "");
+	I_Method2(void, getValueInNormalizedRange, IN, float, t, IN, osgAnimation::Motion::value_type &, result,
+	          Properties::VIRTUAL,
+	          __void__getValueInNormalizedRange__float__value_type_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InCircFunction >)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_BaseType(osgAnimation::Motion);
 	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
@@ -368,6 +591,48 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InCubicFu
 	          "");
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InElasticFunction >)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_BaseType(osgAnimation::Motion);
+	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
+	                           ____MathMotionTemplate__float__float__float__TimeBehaviour,
+	                           "",
+	                           "");
+	I_Method2(void, getValueInNormalizedRange, IN, float, t, IN, osgAnimation::Motion::value_type &, result,
+	          Properties::VIRTUAL,
+	          __void__getValueInNormalizedRange__float__value_type_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InExpoFunction >)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_BaseType(osgAnimation::Motion);
+	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
+	                           ____MathMotionTemplate__float__float__float__TimeBehaviour,
+	                           "",
+	                           "");
+	I_Method2(void, getValueInNormalizedRange, IN, float, t, IN, osgAnimation::Motion::value_type &, result,
+	          Properties::VIRTUAL,
+	          __void__getValueInNormalizedRange__float__value_type_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InOutBackFunction >)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_BaseType(osgAnimation::Motion);
+	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
+	                           ____MathMotionTemplate__float__float__float__TimeBehaviour,
+	                           "",
+	                           "");
+	I_Method2(void, getValueInNormalizedRange, IN, float, t, IN, osgAnimation::Motion::value_type &, result,
+	          Properties::VIRTUAL,
+	          __void__getValueInNormalizedRange__float__value_type_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InOutBounceFunction >)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_BaseType(osgAnimation::Motion);
@@ -382,7 +647,49 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InOutBoun
 	          "");
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InOutCircFunction >)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_BaseType(osgAnimation::Motion);
+	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
+	                           ____MathMotionTemplate__float__float__float__TimeBehaviour,
+	                           "",
+	                           "");
+	I_Method2(void, getValueInNormalizedRange, IN, float, t, IN, osgAnimation::Motion::value_type &, result,
+	          Properties::VIRTUAL,
+	          __void__getValueInNormalizedRange__float__value_type_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InOutCubicFunction >)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_BaseType(osgAnimation::Motion);
+	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
+	                           ____MathMotionTemplate__float__float__float__TimeBehaviour,
+	                           "",
+	                           "");
+	I_Method2(void, getValueInNormalizedRange, IN, float, t, IN, osgAnimation::Motion::value_type &, result,
+	          Properties::VIRTUAL,
+	          __void__getValueInNormalizedRange__float__value_type_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InOutElasticFunction >)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_BaseType(osgAnimation::Motion);
+	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
+	                           ____MathMotionTemplate__float__float__float__TimeBehaviour,
+	                           "",
+	                           "");
+	I_Method2(void, getValueInNormalizedRange, IN, float, t, IN, osgAnimation::Motion::value_type &, result,
+	          Properties::VIRTUAL,
+	          __void__getValueInNormalizedRange__float__value_type_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InOutExpoFunction >)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_BaseType(osgAnimation::Motion);
 	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
@@ -424,6 +731,20 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InOutQuar
 	          "");
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InOutSineFunction >)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_BaseType(osgAnimation::Motion);
+	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
+	                           ____MathMotionTemplate__float__float__float__TimeBehaviour,
+	                           "",
+	                           "");
+	I_Method2(void, getValueInNormalizedRange, IN, float, t, IN, osgAnimation::Motion::value_type &, result,
+	          Properties::VIRTUAL,
+	          __void__getValueInNormalizedRange__float__value_type_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InQuadFunction >)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_BaseType(osgAnimation::Motion);
@@ -452,7 +773,35 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InQuartFu
 	          "");
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::InSineFunction >)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_BaseType(osgAnimation::Motion);
+	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
+	                           ____MathMotionTemplate__float__float__float__TimeBehaviour,
+	                           "",
+	                           "");
+	I_Method2(void, getValueInNormalizedRange, IN, float, t, IN, osgAnimation::Motion::value_type &, result,
+	          Properties::VIRTUAL,
+	          __void__getValueInNormalizedRange__float__value_type_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::LinearFunction >)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_BaseType(osgAnimation::Motion);
+	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
+	                           ____MathMotionTemplate__float__float__float__TimeBehaviour,
+	                           "",
+	                           "");
+	I_Method2(void, getValueInNormalizedRange, IN, float, t, IN, osgAnimation::Motion::value_type &, result,
+	          Properties::VIRTUAL,
+	          __void__getValueInNormalizedRange__float__value_type_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::OutBackFunction >)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_BaseType(osgAnimation::Motion);
 	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
@@ -480,7 +829,49 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::OutBounce
 	          "");
 END_REFLECTOR
 
+BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::OutCircFunction >)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_BaseType(osgAnimation::Motion);
+	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
+	                           ____MathMotionTemplate__float__float__float__TimeBehaviour,
+	                           "",
+	                           "");
+	I_Method2(void, getValueInNormalizedRange, IN, float, t, IN, osgAnimation::Motion::value_type &, result,
+	          Properties::VIRTUAL,
+	          __void__getValueInNormalizedRange__float__value_type_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::OutCubicFunction >)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_BaseType(osgAnimation::Motion);
+	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
+	                           ____MathMotionTemplate__float__float__float__TimeBehaviour,
+	                           "",
+	                           "");
+	I_Method2(void, getValueInNormalizedRange, IN, float, t, IN, osgAnimation::Motion::value_type &, result,
+	          Properties::VIRTUAL,
+	          __void__getValueInNormalizedRange__float__value_type_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::OutElasticFunction >)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_BaseType(osgAnimation::Motion);
+	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
+	                           ____MathMotionTemplate__float__float__float__TimeBehaviour,
+	                           "",
+	                           "");
+	I_Method2(void, getValueInNormalizedRange, IN, float, t, IN, osgAnimation::Motion::value_type &, result,
+	          Properties::VIRTUAL,
+	          __void__getValueInNormalizedRange__float__value_type_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::OutExpoFunction >)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_BaseType(osgAnimation::Motion);
 	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
@@ -509,6 +900,20 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::OutQuadFu
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::OutQuartFunction >)
+	I_DeclaringFile("osgAnimation/EaseMotion");
+	I_BaseType(osgAnimation::Motion);
+	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,
+	                           ____MathMotionTemplate__float__float__float__TimeBehaviour,
+	                           "",
+	                           "");
+	I_Method2(void, getValueInNormalizedRange, IN, float, t, IN, osgAnimation::Motion::value_type &, result,
+	          Properties::VIRTUAL,
+	          __void__getValueInNormalizedRange__float__value_type_R1,
+	          "",
+	          "");
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osgAnimation::MathMotionTemplate< osgAnimation::OutSineFunction >)
 	I_DeclaringFile("osgAnimation/EaseMotion");
 	I_BaseType(osgAnimation::Motion);
 	I_ConstructorWithDefaults4(IN, float, startValue, 0, IN, float, duration, 1, IN, float, changeValue, 1, IN, osgAnimation::Motion::TimeBehaviour, tb, osgAnimation::Motion::CLAMP,

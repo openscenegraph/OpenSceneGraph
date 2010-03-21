@@ -38,6 +38,10 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(std::vector< osg::Node * >, osg::Drawable::ParentList)
+
+TYPE_NAME_ALIAS(unsigned int, osg::Drawable::AttributeType)
+
 BEGIN_ENUM_REFLECTOR(osg::Drawable::AttributeTypes)
 	I_DeclaringFile("osg/Drawable");
 	I_EnumLabel(osg::Drawable::VERTICES);
@@ -58,10 +62,6 @@ BEGIN_ENUM_REFLECTOR(osg::Drawable::AttributeTypes)
 	I_EnumLabel(osg::Drawable::TEXTURE_COORDS_6);
 	I_EnumLabel(osg::Drawable::TEXTURE_COORDS_7);
 END_REFLECTOR
-
-TYPE_NAME_ALIAS(std::vector< osg::Node * >, osg::Drawable::ParentList)
-
-TYPE_NAME_ALIAS(unsigned int, osg::Drawable::AttributeType)
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Drawable)
 	I_DeclaringFile("osg/Drawable");
@@ -622,7 +622,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::ComputeBoundingBoxCallback)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -746,7 +746,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::CullCallback)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -793,7 +793,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::DrawCallback)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -835,7 +835,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::EventCallback)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",
@@ -877,7 +877,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Drawable::UpdateCallback)
 	          __osg_Object_P1__cloneType,
 	          "Clone the type of an object, with Object* return type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, copyop,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
 	          "Clone an object, with Object* return type. ",

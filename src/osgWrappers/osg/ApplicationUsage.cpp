@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+TYPE_NAME_ALIAS(std::map< std::string COMMA  std::string >, osg::ApplicationUsage::UsageMap)
+
 BEGIN_ENUM_REFLECTOR(osg::ApplicationUsage::Type)
 	I_DeclaringFile("osg/ApplicationUsage");
 	I_EnumLabel(osg::ApplicationUsage::NO_HELP);
@@ -29,15 +31,9 @@ BEGIN_ENUM_REFLECTOR(osg::ApplicationUsage::Type)
 	I_EnumLabel(osg::ApplicationUsage::HELP_ALL);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::map< std::string COMMA  std::string >, osg::ApplicationUsage::UsageMap)
-
 BEGIN_OBJECT_REFLECTOR(osg::ApplicationUsage)
 	I_DeclaringFile("osg/ApplicationUsage");
 	I_BaseType(osg::Referenced);
-	I_StaticMethod0(osg::ApplicationUsage *, instance,
-	                __ApplicationUsage_P1__instance_S,
-	                "",
-	                "");
 	I_Constructor0(____ApplicationUsage,
 	               "",
 	               "");
@@ -166,6 +162,10 @@ BEGIN_OBJECT_REFLECTOR(osg::ApplicationUsage)
 	          __void__writeEnvironmentSettings__std_ostream_R1,
 	          "",
 	          "");
+	I_StaticMethod0(osg::ApplicationUsage *, instance,
+	                __ApplicationUsage_P1__instance_S,
+	                "",
+	                "");
 	I_SimpleProperty(const std::string &, ApplicationName, 
 	                 __C5_std_string_R1__getApplicationName, 
 	                 __void__setApplicationName__C5_std_string_R1);

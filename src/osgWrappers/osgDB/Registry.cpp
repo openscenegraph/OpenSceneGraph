@@ -12,6 +12,7 @@
 
 #include <osg/ArgumentParser>
 #include <osg/Drawable>
+#include <osg/FrameStamp>
 #include <osg/Image>
 #include <osg/KdTree>
 #include <osg/Node>
@@ -69,6 +70,8 @@ BEGIN_VALUE_REFLECTOR(osgDB::RegisterDotOsgWrapperProxy)
 	                           "");
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgDB::ReaderWriter > >, osgDB::Registry::ReaderWriterList)
+
 BEGIN_ENUM_REFLECTOR(osgDB::Registry::LoadStatus)
 	I_DeclaringFile("osgDB/Registry");
 	I_EnumLabel(osgDB::Registry::NOT_LOADED);
@@ -76,15 +79,9 @@ BEGIN_ENUM_REFLECTOR(osgDB::Registry::LoadStatus)
 	I_EnumLabel(osgDB::Registry::LOADED);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgDB::ReaderWriter > >, osgDB::Registry::ReaderWriterList)
-
 BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_DeclaringFile("osgDB/Registry");
 	I_BaseType(osg::Referenced);
-	I_StaticMethodWithDefaults1(osgDB::Registry *, instance, IN, bool, erase, false,
-	                            __Registry_P1__instance__bool_S,
-	                            "",
-	                            "");
 	I_Method1(void, readCommandLine, IN, osg::ArgumentParser &, commandLine,
 	          Properties::NON_VIRTUAL,
 	          __void__readCommandLine__osg_ArgumentParser_R1,
@@ -490,16 +487,26 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __C5_FilePathList_R1__getLibraryFilePathList,
 	          "get the const library file path which is used when search for library (dso/dll's) files. ",
 	          "");
-	I_Method1(void, updateTimeStampOfObjectsInCacheWithExternalReferences, IN, double, currentTime,
+	I_Method1(void, updateTimeStampOfObjectsInCacheWithExternalReferences, IN, const osg::FrameStamp &, frameStamp,
 	          Properties::NON_VIRTUAL,
-	          __void__updateTimeStampOfObjectsInCacheWithExternalReferences__double,
+	          __void__updateTimeStampOfObjectsInCacheWithExternalReferences__C5_osg_FrameStamp_R1,
 	          "For each object in the cache which has an reference count greater than 1 (and therefore referenced by elsewhere in the application) set the time stamp for that object in the cache to specified time. ",
-	          "This would typically be called once per frame by applications which are doing database paging, and need to prune objects that are no longer required. Time value is time in seconds. ");
-	I_Method1(void, removeExpiredObjectsInCache, IN, double, expiryTime,
+	          "This would typically be called once per frame by applications which are doing database paging, and need to prune objects that are no longer required. The time used is taken from the FrameStamp::getReferenceTime(). ");
+	I_Method1(void, removeExpiredObjectsInCache, IN, const osg::FrameStamp &, frameStamp,
 	          Properties::NON_VIRTUAL,
-	          __void__removeExpiredObjectsInCache__double,
+	          __void__removeExpiredObjectsInCache__C5_osg_FrameStamp_R1,
 	          "Removed object in the cache which have a time stamp at or before the specified expiry time. ",
-	          "This would typically be called once per frame by applications which are doing database paging, and need to prune objects that are no longer required, and called after the a called after the call to updateTimeStampOfObjectsInCacheWithExternalReferences(currentTime). Note, the currentTime is not the expiryTime, one would typically set the expiry time to a fixed amount of time before currentTime, such as expiryTime = currentTime-10.0. Time value is time in seconds. ");
+	          "This would typically be called once per frame by applications which are doing database paging, and need to prune objects that are no longer required, and called after the a called after the call to updateTimeStampOfObjectsInCacheWithExternalReferences(frameStamp). ");
+	I_Method1(void, setExpiryDelay, IN, double, expiryDelay,
+	          Properties::NON_VIRTUAL,
+	          __void__setExpiryDelay__double,
+	          "set hint to viewer code calling removeExpiredObjectsInCache to specify how long it should give before expiring objects in Registry cache, ",
+	          "");
+	I_Method0(double, getExpiryDelay,
+	          Properties::NON_VIRTUAL,
+	          __double__getExpiryDelay,
+	          "",
+	          "");
 	I_Method0(void, clearObjectCache,
 	          Properties::NON_VIRTUAL,
 	          __void__clearObjectCache,
@@ -565,6 +572,10 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	          __void__addArchiveExtension__C5_std_string,
 	          "Add an Archive extension. ",
 	          "");
+	I_StaticMethodWithDefaults1(osgDB::Registry *, instance, IN, bool, erase, false,
+	                            __Registry_P1__instance__bool_S,
+	                            "",
+	                            "");
 	I_ProtectedConstructor0(____Registry,
 	                        "constructor is private, as its a singleton, preventing construction other than via the instance() method and therefore ensuring only one copy is ever constructed ",
 	                        "");
@@ -601,6 +612,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Registry)
 	I_SimpleProperty(const osgDB::FilePathList &, DataFilePathList, 
 	                 __C5_FilePathList_R1__getDataFilePathList, 
 	                 __void__setDataFilePathList__C5_FilePathList_R1);
+	I_SimpleProperty(double, ExpiryDelay, 
+	                 __double__getExpiryDelay, 
+	                 __void__setExpiryDelay__double);
 	I_SimpleProperty(osgDB::FileCache *, FileCache, 
 	                 __FileCache_P1__getFileCache, 
 	                 __void__setFileCache__FileCache_P1);

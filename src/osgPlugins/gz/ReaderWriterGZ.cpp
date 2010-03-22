@@ -173,7 +173,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterGZ::readFile(ObjectType objectType, 
     osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
     local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
-    std::ifstream fin(fileName.c_str());
+    std::ifstream fin(fileName.c_str(), std::ios::binary|std::ios::in);
     if (!fin) return ReadResult::ERROR_IN_READING_FILE;
     
 
@@ -251,7 +251,7 @@ bool ReaderWriterGZ::read(std::istream& fin, std::string& destination) const
     strm.avail_in = 0;
     strm.next_in = Z_NULL;
     ret = inflateInit2(&strm,
-                       15 + 32 // autodected zlib or gzip header
+                       15 + 32 // autodetected zlib or gzip header
                        );
     if (ret != Z_OK)
         return false;
@@ -259,7 +259,8 @@ bool ReaderWriterGZ::read(std::istream& fin, std::string& destination) const
     /* decompress until deflate stream ends or end of file */
     do {
 
-        strm.avail_in = fin.readsome((char*)in, CHUNK);
+        fin.read((char*)in, CHUNK);
+        strm.avail_in = fin.gcount();
 
         if (fin.fail())
         {

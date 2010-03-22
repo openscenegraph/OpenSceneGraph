@@ -261,7 +261,7 @@ private:
     
     osgAnimation::BasicAnimationManager* processAnimationLibraries(domCOLLADA* document);
     void processAnimationClip(osgAnimation::BasicAnimationManager* pOsgAnimationManager, domAnimation_clip* pDomAnimationClip);
-    void processAnimation(domAnimation* pDomAnimation, osgAnimation::Animation* pOsgAnimation);
+    void processAnimationMap(const TargetChannelPartMap&, osgAnimation::Animation* pOsgAnimation);
     ChannelPart* processSampler(domChannel* pDomChannel, SourceMap &sources);
     void processAnimationChannels(domAnimation* pDomAnimation, TargetChannelPartMap& tcm);
     void processChannel(domChannel* pDomChannel, SourceMap &sources, TargetChannelPartMap& tcm);

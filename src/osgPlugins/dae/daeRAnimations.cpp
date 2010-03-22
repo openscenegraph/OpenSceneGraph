@@ -54,11 +54,16 @@ osgAnimation::BasicAnimationManager* daeReader::processAnimationLibraries(domCOL
             for (size_t i=0; i < domAnimationsLibraries.getCount(); i++)
             {
                 domAnimation_Array domAnimations = domAnimationsLibraries[i]->getAnimation_array();
+
+                TargetChannelPartMap tcm;
+
                 // Process all animations in this library
                 for (size_t j=0; j < domAnimations.getCount(); j++)
                 {
-                    processAnimation(domAnimations[j], pOsgAnimation);
+                    processAnimationChannels(domAnimations[j], tcm);
                 }
+
+                processAnimationMap(tcm, pOsgAnimation);
             }
         }
     }
@@ -89,6 +94,8 @@ void daeReader::processAnimationClip(osgAnimation::BasicAnimationManager* pOsgAn
         pOsgAnimation->setDuration(duration);
     }
 
+    TargetChannelPartMap tcm;
+
     // 1..* <instance_animation>
     domInstanceWithExtra_Array domInstanceArray = pDomAnimationClip->getInstance_animation_array();
     for (size_t i=0; i < domInstanceArray.getCount(); i++)
@@ -96,14 +103,15 @@ void daeReader::processAnimationClip(osgAnimation::BasicAnimationManager* pOsgAn
         domAnimation *pDomAnimation = daeSafeCast<domAnimation>(getElementFromURI(domInstanceArray[i]->getUrl()));
         if (pDomAnimation)
         {
-            // getorcreateanimation
-            processAnimation(pDomAnimation, pOsgAnimation);
+            processAnimationChannels(pDomAnimation, tcm);
         }
         else
         {
             osg::notify( osg::WARN ) << "Failed to locate animation " << domInstanceArray[i]->getUrl().getURI() << std::endl;
         }
     }
+
+    processAnimationMap(tcm, pOsgAnimation);
 }
 
 struct KeyFrameComparator
@@ -147,7 +155,8 @@ void deCasteljau(osgAnimation::TemplateCubicBezier<T>& l, osgAnimation::Template
 
 void mergeKeyframeContainers(osgAnimation::Vec3CubicBezierKeyframeContainer* to,
                     osgAnimation::FloatCubicBezierKeyframeContainer** from,
-                    daeReader::InterpolationType interpolationType)
+                    daeReader::InterpolationType interpolationType,
+                    const osg::Vec3& defaultValue)
 {
     assert(to->empty());
 
@@ -172,7 +181,7 @@ void mergeKeyframeContainers(osgAnimation::Vec3CubicBezierKeyframeContainer* to,
     {
         const float time = *it;
 
-        osgAnimation::Vec3CubicBezier value;
+        osgAnimation::Vec3CubicBezier value(defaultValue);
 
         for (int i = 0; i < 3; ++i)
         {
@@ -340,29 +349,22 @@ void reorderControlPoints(osgAnimation::TemplateKeyframeContainer<osgAnimation::
 // option 3
 //        1..* <animation>
 // 0..* <extra>
-void daeReader::processAnimation(domAnimation* pDomAnimation, osgAnimation::Animation* pOsgAnimation)
+void daeReader::processAnimationMap(const TargetChannelPartMap& tcm, osgAnimation::Animation* pOsgAnimation)
 {
-    // in an <animation>, you can have either a child <animation> and/or a <sampler> and <channel>
-    domSampler_Array domSamplers = pDomAnimation->getSampler_array();
-    domAnimation_Array domAnimations = pDomAnimation->getAnimation_array();
-
-    TargetChannelPartMap tcm;
-    processAnimationChannels(pDomAnimation, tcm);
-
-    for (TargetChannelPartMap::iterator lb = tcm.begin(), end = tcm.end(); lb != end;)
+    for (TargetChannelPartMap::const_iterator lb = tcm.begin(), end = tcm.end(); lb != end;)
     {
-        TargetChannelPartMap::iterator ub = tcm.upper_bound(lb->first);
+        TargetChannelPartMap::const_iterator ub = tcm.upper_bound(lb->first);
 
         osgAnimation::Channel* pOsgAnimationChannel = NULL;
         std::string channelName, targetName, componentName;
 
-        if (dynamic_cast<osgAnimation::Vec3Target*>(lb->first))
+        if (osgAnimation::Vec3Target* pTarget = dynamic_cast<osgAnimation::Vec3Target*>(lb->first))
         {
             osgAnimation::FloatCubicBezierKeyframeContainer* fkfConts[3] = {NULL, NULL, NULL};
             osgAnimation::Vec3CubicBezierKeyframeContainer* vkfCont = NULL;
             InterpolationType interpolationType = INTERPOLATION_DEFAULT;
 
-            for (TargetChannelPartMap::iterator it = lb; it != ub; ++it)
+            for (TargetChannelPartMap::const_iterator it = lb; it != ub; ++it)
             {
                 ChannelPart* channelPart = it->second.get();
                 extractTargetName(channelPart->name, channelName, targetName, componentName);
@@ -401,7 +403,7 @@ void daeReader::processAnimation(domAnimation* pDomAnimation, osgAnimation::Anim
             if (!pOsgAnimationChannel && (fkfConts[0] || fkfConts[1] || fkfConts[2]))
             {
                 vkfCont = new osgAnimation::Vec3CubicBezierKeyframeContainer;
-                mergeKeyframeContainers(vkfCont, fkfConts, interpolationType);
+                mergeKeyframeContainers(vkfCont, fkfConts, interpolationType, pTarget->getValue());
             }
 
             if (vkfCont)

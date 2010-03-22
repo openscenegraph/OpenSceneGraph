@@ -2265,6 +2265,8 @@
 		D4035FE20B52EB4D00CB9E15 /* osgViewer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00FB21010B015CF20052DD79 /* osgViewer.framework */; };
 		D403BCED0F67C18E00D49A89 /* MorphGeometry in Headers */ = {isa = PBXBuildFile; fileRef = D403BCEC0F67C18E00D49A89 /* MorphGeometry */; settings = {ATTRIBUTES = (Public, ); }; };
 		D403BCEF0F67C1F500D49A89 /* MorphGeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D403BCEE0F67C1F500D49A89 /* MorphGeometry.cpp */; };
+		D408196E11576BDC00358D43 /* MeshOptimizers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D408196D11576BDC00358D43 /* MeshOptimizers.cpp */; };
+		D408197011576BEE00358D43 /* MeshOptimizers in Headers */ = {isa = PBXBuildFile; fileRef = D408196F11576BEE00358D43 /* MeshOptimizers */; settings = {ATTRIBUTES = (Public, ); }; };
 		D40B52340F5804E3004D300C /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		D40B52350F5804E3004D300C /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		D40B52370F5804E3004D300C /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB77AAFE841565C02AAC07 /* Carbon.framework */; };
@@ -8264,6 +8266,8 @@
 		D40359240B512BF300CB9E15 /* GraphicsWindowCarbon */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = GraphicsWindowCarbon; path = api/Carbon/GraphicsWindowCarbon; sourceTree = "<group>"; };
 		D403BCEC0F67C18E00D49A89 /* MorphGeometry */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = MorphGeometry; path = ../../include/osgAnimation/MorphGeometry; sourceTree = SOURCE_ROOT; };
 		D403BCEE0F67C1F500D49A89 /* MorphGeometry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MorphGeometry.cpp; path = ../../src/osgAnimation/MorphGeometry.cpp; sourceTree = SOURCE_ROOT; };
+		D408196D11576BDC00358D43 /* MeshOptimizers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MeshOptimizers.cpp; sourceTree = "<group>"; };
+		D408196F11576BEE00358D43 /* MeshOptimizers */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MeshOptimizers; sourceTree = "<group>"; };
 		D40B523C0F5804E3004D300C /* osgdb_imageio.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_imageio.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		D40B52B60F580568004D300C /* ReaderWriterImageIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ReaderWriterImageIO.cpp; path = ../../src/osgPlugins/imageio/ReaderWriterImageIO.cpp; sourceTree = SOURCE_ROOT; };
 		D40B52B90F5805C2004D300C /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
@@ -13745,6 +13749,7 @@
 		BE1185F605D71A1300EB53E5 /* osgUtil */ = {
 			isa = PBXGroup;
 			children = (
+				D408196D11576BDC00358D43 /* MeshOptimizers.cpp */,
 				D463DE5510D7DFB700B4B1DA /* tristripper */,
 				D49029B00F80E81800AEB8BC /* ShaderGen.cpp */,
 				D49029B10F80E81800AEB8BC /* PrintVisitor.cpp */,
@@ -13790,6 +13795,7 @@
 		BE11863105D71A8500EB53E5 /* osgUtil */ = {
 			isa = PBXGroup;
 			children = (
+				D408196F11576BEE00358D43 /* MeshOptimizers */,
 				D49029B60F80E83900AEB8BC /* ShaderGen */,
 				D49029B70F80E83900AEB8BC /* PrintVisitor */,
 				D49029B80F80E83900AEB8BC /* IncrementalCompileOperation */,
@@ -15995,6 +16001,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D408197011576BEE00358D43 /* MeshOptimizers in Headers */,
 				D49029B90F80E83900AEB8BC /* ShaderGen in Headers */,
 				D49029BA0F80E83900AEB8BC /* PrintVisitor in Headers */,
 				D49029BB0F80E83900AEB8BC /* IncrementalCompileOperation in Headers */,
@@ -22414,6 +22421,7 @@
 				D463DE6C10D7DFB900B4B1DA /* connectivity_graph.cpp in Sources */,
 				D463DE6D10D7DFB900B4B1DA /* policy.cpp in Sources */,
 				D463DE6E10D7DFB900B4B1DA /* tri_stripper.cpp in Sources */,
+				D408196E11576BDC00358D43 /* MeshOptimizers.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

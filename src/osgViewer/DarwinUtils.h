@@ -116,9 +116,8 @@ struct DarwinWindowingSystemInterface : public osg::GraphicsContext::WindowingSy
                 else return 0;
             }
         }
-    
-    
-    private:
+
+    protected:
 
         bool                  _initialized;
         CGDisplayCount        _displayCount;

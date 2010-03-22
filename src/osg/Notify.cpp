@@ -219,7 +219,7 @@ std::ostream& osg::notify(const osg::NotifySeverity severity)
 
 void osg::StandardNotifyHandler::notify(osg::NotifySeverity severity, const char *message)
 {
-#if 0
+#if 1
     if (severity <= osg::WARN) 
         fputs(message, stderr);
     else

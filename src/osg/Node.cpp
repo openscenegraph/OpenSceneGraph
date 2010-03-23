@@ -74,10 +74,10 @@ Node::Node(const Node& node,const CopyOp& copyop):
         _boundingSphere(node._boundingSphere),
         _boundingSphereComputed(node._boundingSphereComputed),
         _parents(), // leave empty as parentList is managed by Group.
-        _updateCallback(node._updateCallback),
+        _updateCallback(copyop(node._updateCallback.get())),
         _numChildrenRequiringUpdateTraversal(0), // assume no children yet.
         _numChildrenRequiringEventTraversal(0), // assume no children yet.
-        _cullCallback(node._cullCallback),
+        _cullCallback(copyop(node._cullCallback.get())),
         _cullingActive(node._cullingActive),
         _numChildrenWithCullingDisabled(0), // assume no children yet.
         _numChildrenWithOccluderNodes(0),

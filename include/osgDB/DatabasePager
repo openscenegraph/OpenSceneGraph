@@ -404,19 +404,33 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
             bool isRequestCurrent (int frameNumber) const
             {
-                return frameNumber - _frameNumberLastRequest <= 1;
+                return _valid && (frameNumber - _frameNumberLastRequest <= 1);
             }
         };
         
         struct RequestQueue : public osg::Referenced
         {
         public:
-            typedef std::vector< osg::ref_ptr<DatabaseRequest> > RequestList;
 
-            void sort();
+            RequestQueue(DatabasePager* pager);
 
-            RequestList         _requestList;
-            OpenThreads::Mutex  _requestMutex;
+            void add(DatabaseRequest* databaseRequest);
+
+            void takeFirst(osg::ref_ptr<DatabaseRequest>& databaseRequest);
+
+            /// prune all the old requests and then return true if requestList left empty
+            bool pruneOldRequestsAndCheckIfEmpty();
+
+            virtual void updateBlock() {}
+
+            void clear();
+
+            typedef std::list< osg::ref_ptr<DatabaseRequest> > RequestList;
+
+            DatabasePager*              _pager;
+            RequestList                 _requestList;
+            OpenThreads::Mutex          _requestMutex;
+            int                         _frameNumberLastPruned;
 
         protected:
             virtual ~RequestQueue();
@@ -434,23 +448,12 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
             void release() { _block->release(); }
 
-            void updateBlock()
-            {
-                _block->set((!_requestList.empty() || !_childrenToDeleteList.empty()) &&
-                            !_pager->_databasePagerThreadPaused);
-            }
+            virtual void updateBlock();
 
-            void clear();
-
-            void add(DatabaseRequest* databaseRequest);
-
-            void takeFirst(osg::ref_ptr<DatabaseRequest>& databaseRequest);
 
             osg::ref_ptr<osg::RefBlock> _block;
 
-            DatabasePager*              _pager;
             std::string                 _name;
-            int                         _frameNumberLastPruned;
 
             OpenThreads::Mutex          _childrenToDeleteListMutex;
             ObjectList                  _childrenToDeleteList;

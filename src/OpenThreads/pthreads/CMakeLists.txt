@@ -30,6 +30,7 @@ ENDIF()
 SET(CMAKE_REQUIRED_LIBRARIES_SAFE "${CMAKE_REQUIRED_LIBRARIES}")
 SET(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
+
 CHECK_FUNCTION_EXISTS(pthread_yield HAVE_PTHREAD_YIELD)
 IF(HAVE_PTHREAD_YIELD)
   ADD_DEFINITIONS(-DHAVE_PTHREAD_YIELD)
@@ -65,15 +66,32 @@ ENDIF()
 
 CHECK_FUNCTION_EXISTS(pthread_setaffinity_np HAVE_PTHREAD_SETAFFINITY_NP)
 IF(HAVE_PTHREAD_SETAFFINITY_NP)
+  # double check that pthread_setaffinity_np is available as FreeBSD header doesn't contain required function
+  CHECK_CXX_SOURCE_COMPILES("
+        #include <pthread.h>
+        int main() {
+        cpu_set_t cpumask;
+        CPU_ZERO( &cpumask );
+        CPU_SET( 0, &cpumask );
+        pthread_setaffinity_np( pthread_self(), sizeof(cpumask), &cpumask);
+        return 0;
+        }" COMPILES_PTHREAD_SETAFFINITY_NP)
+
+    IF (NOT COMPILES_PTHREAD_SETAFFINITY_NP)
+        SET(HAVE_PTHREAD_SETAFFINITY_NP OFF)
+    ENDIF()
+ENDIF()
+
+IF(HAVE_PTHREAD_SETAFFINITY_NP)
   ADD_DEFINITIONS(-DHAVE_PTHREAD_SETAFFINITY_NP)
 ELSE()
   CHECK_CXX_SOURCE_COMPILES("
-#include <sched.h>
-int main() {
-  cpu_set_t cpumask;
-  sched_setaffinity( 0, sizeof(cpumask), &cpumask );
-  return 0;
-}" HAVE_THREE_PARAM_SCHED_SETAFFINITY)
+        #include <sched.h>
+        int main() {
+        cpu_set_t cpumask;
+        sched_setaffinity( 0, sizeof(cpumask), &cpumask );
+        return 0;
+        }" HAVE_THREE_PARAM_SCHED_SETAFFINITY)
   IF(HAVE_THREE_PARAM_SCHED_SETAFFINITY)
     ADD_DEFINITIONS(-DHAVE_THREE_PARAM_SCHED_SETAFFINITY)
   ELSE()

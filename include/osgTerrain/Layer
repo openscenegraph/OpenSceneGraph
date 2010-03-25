@@ -191,6 +191,53 @@ class OSGTERRAIN_EXPORT Layer : public osg::Object
             return false;
         }
 
+        inline bool getInterpolatedValidValue(double ndc_x, double ndc_y, float& value)
+        {
+            unsigned int i,j;
+            double ir, jr;
+            computeIndices(ndc_x, ndc_y, i, j, ir, jr);
+            value = 0.0f;
+            double div = 0.0f;
+            float v,r;
+
+            r = (1.0f-ir)*(1.0f-jr);
+            if (r>0.0 && getValidValue(i,j,v))
+            {
+                value += v*r;
+                div += r;
+            }
+
+            r = (ir)*(1.0f-jr);
+            if (r>0.0 && getValidValue(i+1,j,v))
+            {
+                value += v*r;
+                div += r;
+            }
+
+            r = (ir)*(jr);
+            if (r>0.0 && getValidValue(i+1,j+1,v))
+            {
+                value += v*r;
+                div += r;
+            }
+
+            r = (1.0f-ir)*(jr);
+            if (r>0.0 && getValidValue(i,j+1,v))
+            {
+                value += v*r;
+                div += r;
+            }
+
+            if (div != 0.0)
+            {
+                value /= div;
+                return true;
+            }
+
+            value = 0.0;
+            return false;
+        }
+
         /** increment the modified count."*/
         virtual void dirty() {};
 

@@ -310,7 +310,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
 
                 Locator* locator = colorLayer->getLocator();
                 if (!locator)
-                {            
+                {
                     osgTerrain::SwitchLayer* switchLayer = dynamic_cast<osgTerrain::SwitchLayer*>(colorLayer);
                     if (switchLayer)
                     {
@@ -321,8 +321,8 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                             locator = switchLayer->getLayer(switchLayer->getActiveLayer())->getLocator();
                         }
                     }
-                }            
-            
+                }
+
                 TexCoordLocatorPair& tclp = layerToTexCoordMap[colorLayer];
                 tclp.first = new osg::Vec2Array;
                 tclp.first->reserve(numVertices);
@@ -355,25 +355,20 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
         {
             unsigned int iv = j*numColumns + i;
             osg::Vec3d ndc( ((double)i)/(double)(numColumns-1), ((double)j)/(double)(numRows-1), 0.0);
-     
+
             bool validValue = true;
-     
-            
-            unsigned int i_equiv = i_sampleFactor==1.0 ? i : (unsigned int) (double(i)*i_sampleFactor);
-            unsigned int j_equiv = i_sampleFactor==1.0 ? j : (unsigned int) (double(j)*j_sampleFactor);
-            
             if (elevationLayer)
             {
                 float value = 0.0f;
-                validValue = elevationLayer->getValidValue(i_equiv,j_equiv, value);
-                // OSG_INFO<<"i="<<i<<" j="<<j<<" z="<<value<<std::endl;
+                if (sampleRatio==1.0) validValue = elevationLayer->getValidValue(i,j,value);
+                else validValue = elevationLayer->getInterpolatedValidValue(ndc.x(), ndc.y(), value);
                 ndc.z() = value*scaleHeight;
             }
-            
+
             if (validValue)
             {
                 indices[iv] = vertices->size();
-            
+
                 osg::Vec3d model;
                 masterLocator->convertLocalToModel(ndc, model);
 
@@ -416,7 +411,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
             }
         }
     }
-    
+
     // populate primitive sets
 //    bool optimizeOrientations = elevations!=0;
     bool swapOrientation = !(masterLocator->orientationOpenGL());

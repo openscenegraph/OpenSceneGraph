@@ -126,7 +126,7 @@ bool Animation::update (double time, int priority)
         else 
         {
             int tt = (int) (t / _duration);
-            t = fmod(t, (float)_duration);
+            t = fmod(t, _duration);
             if (tt%2)
                 t = _duration - t;
         }

@@ -57,7 +57,9 @@ osg::Geometry* createEaseMotionGeometry(osgAnimation::Motion* motion) {
     return geom;
 }
 
-struct EaseMotionSampler: public osg::NodeCallback {
+class EaseMotionSampler: public osg::NodeCallback
+{
+public:
     float     _previous;
     osg::Vec3 _pos;
 

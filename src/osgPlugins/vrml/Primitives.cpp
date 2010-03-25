@@ -14,6 +14,122 @@
 
 #include <osg/CullFace>
 
+osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97IndexedLineSet(openvrml::node *vrml_ifs) const
+{
+    osg::ref_ptr<osg::Geometry> osg_geom = new osg::Geometry();
+
+    osg_geom->addPrimitiveSet(new osg::DrawArrayLengths(osg::PrimitiveSet::LINE_STRIP));
+
+    // get array of vertex coordinate_nodes
+    if(vrml_ifs->type().id() == "IndexedLineSet")
+    {
+        std::auto_ptr<openvrml::field_value> fv = vrml_ifs->field("coord");
+        const openvrml::sfnode *sfn = dynamic_cast<const openvrml::sfnode *>(fv.get());
+
+        openvrml::coordinate_node *vrml_coord_node = dynamic_cast<openvrml::coordinate_node *>((sfn->value()).get());
+        const std::vector<openvrml::vec3f> &vrml_coord = vrml_coord_node->point();
+
+        osg::ref_ptr<osg::Vec3Array> osg_vertices = new osg::Vec3Array();
+
+        unsigned i;
+        for (i = 0; i < vrml_coord.size(); i++)
+        {
+            openvrml::vec3f vec = vrml_coord[i];
+            osg_vertices->push_back(osg::Vec3(vec[0], vec[1], vec[2]));
+        }
+
+        osg_geom->setVertexArray(osg_vertices.get());
+
+        // get array of vertex indices
+        std::auto_ptr<openvrml::field_value> fv2 = vrml_ifs->field("coordIndex");
+        const openvrml::mfint32 *vrml_coord_index = dynamic_cast<const openvrml::mfint32 *>(fv2.get());
+
+        osg::ref_ptr<osg::IntArray> osg_vert_index = new osg::IntArray();
+
+        int num_vert = 0;
+        for (i = 0; i < vrml_coord_index->value().size(); i++)
+        {
+            int index = vrml_coord_index->value()[i];
+            if (index == -1)
+            {
+                static_cast<osg::DrawArrayLengths*>(osg_geom->getPrimitiveSet(0))->push_back(num_vert);
+                num_vert = 0;
+            }
+            else
+            {
+                osg_vert_index->push_back(index);
+                ++num_vert;
+            }
+        }
+
+        if (num_vert)
+        {
+            //GvdB: Last coordIndex wasn't -1
+            static_cast<osg::DrawArrayLengths*>(osg_geom->getPrimitiveSet(0))->push_back(num_vert);
+        }
+
+        osg_geom->setVertexIndices(osg_vert_index.get());
+    }
+
+    // get array of colours per vertex (if specified)
+    {
+        std::auto_ptr<openvrml::field_value> fv = vrml_ifs->field("color");
+        const openvrml::sfnode *sfn = dynamic_cast<const openvrml::sfnode *>(fv.get());
+        openvrml::color_node *vrml_color_node = dynamic_cast<openvrml::color_node *>(sfn->value().get());
+
+        if (vrml_color_node != 0) // if no colors, node is NULL pointer
+        {
+            const std::vector<openvrml::color> &vrml_colors = vrml_color_node->color();
+
+            osg::ref_ptr<osg::Vec3Array> osg_colors = new osg::Vec3Array();
+
+            unsigned i;
+            for (i = 0; i < vrml_colors.size(); i++)
+            {
+                const openvrml::color color = vrml_colors[i];
+                osg_colors->push_back(osg::Vec3(color.r(), color.g(), color.b()));
+            }
+            osg_geom->setColorArray(osg_colors.get());
+
+            // get array of color indices
+            std::auto_ptr<openvrml::field_value> fv2 = vrml_ifs->field("colorIndex");
+            const openvrml::mfint32 *vrml_color_index = dynamic_cast<const openvrml::mfint32 *>(fv2.get());
+
+            osg::ref_ptr<osg::IntArray> osg_color_index = new osg::IntArray();
+
+            if(vrml_color_index->value().size() > 0)
+            {
+                for (i = 0; i < vrml_color_index->value().size(); i++)
+                {
+                    int index = vrml_color_index->value()[i];
+                    if (index != -1) {
+                        osg_color_index->push_back(index);
+                    }
+                }
+                osg_geom->setColorIndices(osg_color_index.get());
+            } else
+                // unspecified, use coordIndices field
+                osg_geom->setColorIndices(osg_geom->getVertexIndices());
+
+            // get color binding
+            std::auto_ptr<openvrml::field_value> fv3 = vrml_ifs->field("colorPerVertex");
+            const openvrml::sfbool *vrml_color_per_vertex = dynamic_cast<const openvrml::sfbool *>(fv3.get());
+
+            if (vrml_color_per_vertex->value())
+            {
+                osg_geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
+            } else
+            {
+                osg_geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+            }
+        }
+    }
+
+    osg_geom->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+
+    return osg_geom;
+}
+
 osg::ref_ptr<osg::Geometry> ReaderWriterVRML2::convertVRML97Box(openvrml::node* vrml_box) const
 {
     std::auto_ptr<openvrml::field_value> fv = vrml_box->field("size");

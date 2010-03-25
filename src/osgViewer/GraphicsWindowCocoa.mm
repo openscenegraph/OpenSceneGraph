@@ -673,9 +673,11 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     if (!_win) return;
     
     NSString* chars = [theEvent charactersIgnoringModifiers]; 
-    unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask) );
-    // std::cout << "key dn: " <<[chars characterAtIndex:0] << "=" << keyCode << std::endl;   
-    _win->getEventQueue()->keyPress( remapCocoaKey(keyCode), [theEvent timestamp]);
+    if ((chars) && ([chars length] > 0)) {
+        unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask) );
+        // std::cout << "key dn: " <<[chars characterAtIndex:0] << "=" << keyCode << std::endl;   
+        _win->getEventQueue()->keyPress( remapCocoaKey(keyCode), [theEvent timestamp]);
+    }
 }
 
 
@@ -684,9 +686,11 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     if (!_win) return;
     
     NSString* chars = [theEvent charactersIgnoringModifiers]; 
-    unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask));
-    // std::cout << "key up: " <<[chars characterAtIndex:0] << "=" << keyCode << std::endl;   
-    _win->getEventQueue()->keyRelease( remapCocoaKey(keyCode), [theEvent timestamp]);
+    if ((chars) && ([chars length] > 0)) {
+        unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask));
+        // std::cout << "key up: " <<[chars characterAtIndex:0] << "=" << keyCode << std::endl;   
+        _win->getEventQueue()->keyRelease( remapCocoaKey(keyCode), [theEvent timestamp]);
+    }
 }
 
 
@@ -853,6 +857,8 @@ void GraphicsWindowCocoa::init()
     _ownsWindow = false;
     _context = NULL;
     _window = NULL;
+    _pixelformat = NULL;
+    
     _updateContext = false;
     _valid = _initialized = true;
 }
@@ -973,8 +979,8 @@ bool GraphicsWindowCocoa::realizeImplementation()
         sharedContext = graphicsHandleCocoa->getNSOpenGLContext();
     }
     
-    NSOpenGLPixelFormat* pixelformat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attr ];
-    _context = [[NSOpenGLContext alloc] initWithFormat: pixelformat shareContext: sharedContext];
+    _pixelformat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attr ];
+    _context = [[NSOpenGLContext alloc] initWithFormat: _pixelformat shareContext: sharedContext];
     
     if (!_context) {
         osg::notify(osg::WARN) << "GraphicsWindowCocoa::realizeImplementation :: could not create context" << std::endl;
@@ -1158,7 +1164,8 @@ bool GraphicsWindowCocoa::setWindowDecorationImplementation(bool flag)
     if (new_win) {
         [new_win setContentView: [_window contentView]];
         setupNSWindow(new_win);
-        [new_win setTitle: [_window title]];
+        NSString* title = (_traits.valid()) ? [NSString stringWithUTF8String: _traits->windowName.c_str()] : @"";
+        [new_win setTitle: title ];
         [_window close];
         [_window release];
 
@@ -1277,9 +1284,8 @@ void GraphicsWindowCocoa::setWindowName (const std::string & name)
         
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
-    NSString* title = [NSString stringWithCString: name.c_str() encoding: NSUTF8StringEncoding];
+    NSString* title = [NSString stringWithUTF8String: name.c_str()];
     [_window setTitle: title];
-    [title release];
     [pool release];
 }
 

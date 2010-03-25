@@ -139,6 +139,7 @@
 				001D068A065AB60D003310BF /* PBXTargetDependency */,
 				001D0698065AB60D003310BF /* PBXTargetDependency */,
 				001D068C065AB60D003310BF /* PBXTargetDependency */,
+				D4AD1C15115B57B400FA01D9 /* PBXTargetDependency */,
 				008F44E306CC045A00F4220C /* PBXTargetDependency */,
 				008F44E506CC045A00F4220C /* PBXTargetDependency */,
 				0079505B09D365DD003FC8A1 /* PBXTargetDependency */,
@@ -278,6 +279,7 @@
 				D4C296961158B1CB007A2AF5 /* PBXTargetDependency */,
 				D4C2969A1158B1CB007A2AF5 /* PBXTargetDependency */,
 				D4C2969C1158B1CB007A2AF5 /* PBXTargetDependency */,
+				D4AD1C17115B57B600FA01D9 /* PBXTargetDependency */,
 				D4C2969E1158B1CB007A2AF5 /* PBXTargetDependency */,
 				D4C296A01158B1CB007A2AF5 /* PBXTargetDependency */,
 				D4C296A21158B1CB007A2AF5 /* PBXTargetDependency */,
@@ -2622,6 +2624,14 @@
 		D4AC4E320E0D26320032DD35 /* Fog.h in Headers */ = {isa = PBXBuildFile; fileRef = D4AC4E2E0E0D26320032DD35 /* Fog.h */; };
 		D4AC4E330E0D26320032DD35 /* LineStipple.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4AC4E2F0E0D26320032DD35 /* LineStipple.cpp */; };
 		D4AC4E340E0D26320032DD35 /* LineStipple.h in Headers */ = {isa = PBXBuildFile; fileRef = D4AC4E300E0D26320032DD35 /* LineStipple.h */; };
+		D4AD1BB1115B570200FA01D9 /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
+		D4AD1BB2115B570200FA01D9 /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
+		D4AD1C0D115B576600FA01D9 /* ply.h in Headers */ = {isa = PBXBuildFile; fileRef = D4AD1C07115B576600FA01D9 /* ply.h */; };
+		D4AD1C0E115B576600FA01D9 /* plyfile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4AD1C08115B576600FA01D9 /* plyfile.cpp */; };
+		D4AD1C0F115B576600FA01D9 /* ReaderWriterPLY.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4AD1C09115B576600FA01D9 /* ReaderWriterPLY.cpp */; };
+		D4AD1C10115B576600FA01D9 /* typedefs.h in Headers */ = {isa = PBXBuildFile; fileRef = D4AD1C0A115B576600FA01D9 /* typedefs.h */; };
+		D4AD1C11115B576600FA01D9 /* vertexData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D4AD1C0B115B576600FA01D9 /* vertexData.cpp */; };
+		D4AD1C12115B576600FA01D9 /* vertexData.h in Headers */ = {isa = PBXBuildFile; fileRef = D4AD1C0C115B576600FA01D9 /* vertexData.h */; };
 		D4C28F9B1157E75A007A2AF5 /* GraphicsHandleCocoa in Copy SubHeaders to api:Cocoa */ = {isa = PBXBuildFile; fileRef = D4C28F981157E759007A2AF5 /* GraphicsHandleCocoa */; };
 		D4C28F9C1157E75A007A2AF5 /* GraphicsWindowCocoa in Copy SubHeaders to api:Cocoa */ = {isa = PBXBuildFile; fileRef = D4C28F991157E75A007A2AF5 /* GraphicsWindowCocoa */; };
 		D4C28F9D1157E75A007A2AF5 /* PixelBufferCocoa in Copy SubHeaders to api:Cocoa */ = {isa = PBXBuildFile; fileRef = D4C28F9A1157E75A007A2AF5 /* PixelBufferCocoa */; };
@@ -6296,6 +6306,27 @@
 			remoteGlobalIDString = BE11876905D75C2700EB53E5;
 			remoteInfo = osgText;
 		};
+		D4AD1BAD115B570200FA01D9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BE1188E605D764C400EB53E5;
+			remoteInfo = osgDB;
+		};
+		D4AD1C14115B57B400FA01D9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D4AD1BAB115B570200FA01D9 /* osgdb_ply */;
+			remoteInfo = osgdb_ply;
+		};
+		D4AD1C16115B57B600FA01D9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D4AD1BAB115B570200FA01D9 /* osgdb_ply */;
+			remoteInfo = osgdb_ply;
+		};
 		D4C2911F115825BA007A2AF5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -6650,7 +6681,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = D4C296531158B1CB007A2AF5 /* osgPlugins 64bit */;
+			remoteGlobalIDString = D4C296531158B1CB007A2AF5;
 			remoteInfo = "osgPlugins 64bit";
 		};
 		D4C6F0370B830A3D0052E667 /* PBXContainerItemProxy */ = {
@@ -8599,6 +8630,13 @@
 		D4AC4E2E0E0D26320032DD35 /* Fog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Fog.h; sourceTree = "<group>"; };
 		D4AC4E2F0E0D26320032DD35 /* LineStipple.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LineStipple.cpp; sourceTree = "<group>"; };
 		D4AC4E300E0D26320032DD35 /* LineStipple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LineStipple.h; sourceTree = "<group>"; };
+		D4AD1BBA115B570200FA01D9 /* osgdb_ply.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = osgdb_ply.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		D4AD1C07115B576600FA01D9 /* ply.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ply.h; sourceTree = "<group>"; };
+		D4AD1C08115B576600FA01D9 /* plyfile.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = plyfile.cpp; sourceTree = "<group>"; };
+		D4AD1C09115B576600FA01D9 /* ReaderWriterPLY.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ReaderWriterPLY.cpp; sourceTree = "<group>"; };
+		D4AD1C0A115B576600FA01D9 /* typedefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = typedefs.h; sourceTree = "<group>"; };
+		D4AD1C0B115B576600FA01D9 /* vertexData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vertexData.cpp; sourceTree = "<group>"; };
+		D4AD1C0C115B576600FA01D9 /* vertexData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vertexData.h; sourceTree = "<group>"; };
 		D4C28F981157E759007A2AF5 /* GraphicsHandleCocoa */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = GraphicsHandleCocoa; path = api/Cocoa/GraphicsHandleCocoa; sourceTree = "<group>"; };
 		D4C28F991157E75A007A2AF5 /* GraphicsWindowCocoa */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = GraphicsWindowCocoa; path = api/Cocoa/GraphicsWindowCocoa; sourceTree = "<group>"; };
 		D4C28F9A1157E75A007A2AF5 /* PixelBufferCocoa */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = PixelBufferCocoa; path = api/Cocoa/PixelBufferCocoa; sourceTree = "<group>"; };
@@ -10619,6 +10657,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D4AD1BB0115B570200FA01D9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4AD1BB1115B570200FA01D9 /* osg.framework in Frameworks */,
+				D4AD1BB2115B570200FA01D9 /* osgDB.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D4C29122115825BA007A2AF5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -11975,6 +12022,7 @@
 		00558606062622D8000A808A /* osgPlugins */ = {
 			isa = PBXGroup;
 			children = (
+				D4AD1C05115B576600FA01D9 /* ply */,
 				D4C2917411582631007A2AF5 /* imageio */,
 				001DFCC9065A920F003310BF /* 3dc */,
 				001DFD20065A9660003310BF /* ac */,
@@ -12947,6 +12995,7 @@
 				D41887520EDEE6E000C17A84 /* osgAnimation.framework */,
 				D41888810EDEE8E200C17A84 /* osganimationviewer.app */,
 				D4C29129115825BA007A2AF5 /* osgdb_.so */,
+				D4AD1BBA115B570200FA01D9 /* osgdb_ply.so */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -14114,6 +14163,20 @@
 			);
 			name = osgimagesequence;
 			sourceTree = "<group>";
+		};
+		D4AD1C05115B576600FA01D9 /* ply */ = {
+			isa = PBXGroup;
+			children = (
+				D4AD1C07115B576600FA01D9 /* ply.h */,
+				D4AD1C08115B576600FA01D9 /* plyfile.cpp */,
+				D4AD1C09115B576600FA01D9 /* ReaderWriterPLY.cpp */,
+				D4AD1C0A115B576600FA01D9 /* typedefs.h */,
+				D4AD1C0B115B576600FA01D9 /* vertexData.cpp */,
+				D4AD1C0C115B576600FA01D9 /* vertexData.h */,
+			);
+			name = ply;
+			path = ../../src/osgPlugins/ply;
+			sourceTree = SOURCE_ROOT;
 		};
 		D4C28F961157E731007A2AF5 /* Cocoa */ = {
 			isa = PBXGroup;
@@ -16010,6 +16073,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D4AD1BAE115B570200FA01D9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4AD1C0D115B576600FA01D9 /* ply.h in Headers */,
+				D4AD1C10115B576600FA01D9 /* typedefs.h in Headers */,
+				D4AD1C12115B576600FA01D9 /* vertexData.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19132,6 +19205,24 @@
 			productReference = D48F10750E3A1FD600DAAB64 /* osgimagesequence.app */;
 			productType = "com.apple.product-type.application";
 		};
+		D4AD1BAB115B570200FA01D9 /* osgdb_ply */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D4AD1BB3115B570200FA01D9 /* Build configuration list for PBXNativeTarget "osgdb_ply" */;
+			buildPhases = (
+				D4AD1BAE115B570200FA01D9 /* Headers */,
+				D4AD1BAF115B570200FA01D9 /* Sources */,
+				D4AD1BB0115B570200FA01D9 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D4AD1BAC115B570200FA01D9 /* PBXTargetDependency */,
+			);
+			name = osgdb_ply;
+			productName = osgdb_3dc;
+			productReference = D4AD1BBA115B570200FA01D9 /* osgdb_ply.so */;
+			productType = "com.apple.product-type.library.dynamic";
+		};
 		D4C2911D115825BA007A2AF5 /* osgdb_imageio */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D4C29125115825BA007A2AF5 /* Build configuration list for PBXNativeTarget "osgdb_imageio" */;
@@ -19285,6 +19376,7 @@
 				001D0337065AAE11003310BF /* osgdb_osgtgz */,
 				001D0357065AAE7A003310BF /* osgdb_pic */,
 				001D037A065AAEEC003310BF /* osgdb_pnm */,
+				D4AD1BAB115B570200FA01D9 /* osgdb_ply */,
 				001D0600065AB39D003310BF /* osgdb_qt */,
 				001D0396065AAF46003310BF /* osgdb_rgb */,
 				008F44B906CC023100F4220C /* osgdb_rot */,
@@ -22212,6 +22304,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D4AD1BAF115B570200FA01D9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4AD1C0E115B576600FA01D9 /* plyfile.cpp in Sources */,
+				D4AD1C0F115B576600FA01D9 /* ReaderWriterPLY.cpp in Sources */,
+				D4AD1C11115B576600FA01D9 /* vertexData.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		D4C29121115825BA007A2AF5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -25120,6 +25222,21 @@
 			isa = PBXTargetDependency;
 			target = BE11876905D75C2700EB53E5 /* osgText */;
 			targetProxy = D49075500E9E2EE80073A649 /* PBXContainerItemProxy */;
+		};
+		D4AD1BAC115B570200FA01D9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BE1188E605D764C400EB53E5 /* osgDB */;
+			targetProxy = D4AD1BAD115B570200FA01D9 /* PBXContainerItemProxy */;
+		};
+		D4AD1C15115B57B400FA01D9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D4AD1BAB115B570200FA01D9 /* osgdb_ply */;
+			targetProxy = D4AD1C14115B57B400FA01D9 /* PBXContainerItemProxy */;
+		};
+		D4AD1C17115B57B600FA01D9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D4AD1BAB115B570200FA01D9 /* osgdb_ply */;
+			targetProxy = D4AD1C16115B57B600FA01D9 /* PBXContainerItemProxy */;
 		};
 		D4C2911E115825BA007A2AF5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -35198,6 +35315,201 @@
 				ZERO_LINK = NO;
 			};
 			name = "Release 32bit Carbon";
+		};
+		D4AD1BB4115B570200FA01D9 /* Debug 32bit Carbon */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = "@executable_path/../PlugIns";
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgdb_ply;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = "Debug 32bit Carbon";
+		};
+		D4AD1BB5115B570200FA01D9 /* Release 32bit Carbon */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = "@executable_path/../PlugIns";
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgdb_ply;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = "Release 32bit Carbon";
+		};
+		D4AD1BB6115B570200FA01D9 /* Debug 32bit Cocoa */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = "@executable_path/../PlugIns";
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgdb_ply;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = "Debug 32bit Cocoa";
+		};
+		D4AD1BB7115B570200FA01D9 /* Release 32bit Cocoa */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = "@executable_path/../PlugIns";
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgdb_ply;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = "Release 32bit Cocoa";
+		};
+		D4AD1BB8115B570200FA01D9 /* Debug 64bit Cocoa */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DEBUGGING_SYMBOLS = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = "@executable_path/../PlugIns";
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgdb_ply;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = "Debug 64bit Cocoa";
+		};
+		D4AD1BB9115B570200FA01D9 /* Release 64bit Cocoa */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEPLOYMENT_POSTPROCESSING = YES;
+				DYLIB_COMPATIBILITY_VERSION = "";
+				DYLIB_CURRENT_VERSION = "";
+				EXECUTABLE_EXTENSION = so;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = __USE_OSX_AGL_IMPLEMENTATION__;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_TREAT_NONCONFORMANT_CODE_ERRORS_AS_WARNINGS = YES;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				INSTALL_PATH = "@executable_path/../PlugIns";
+				LIBRARY_STYLE = BUNDLE;
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = (
+					"-framework",
+					OpenThreads,
+				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = osgdb_ply;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = NO;
+			};
+			name = "Release 64bit Cocoa";
 		};
 		D4C29126115825BA007A2AF5 /* Debug 32bit Carbon */ = {
 			isa = XCBuildConfiguration;
@@ -57626,6 +57938,19 @@
 				D4C293AB11582AF5007A2AF5 /* Release 32bit Cocoa */,
 				D4C2930D11582A45007A2AF5 /* Debug 64bit Cocoa */,
 				D4C2944911582BB9007A2AF5 /* Release 64bit Cocoa */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = "Debug 32bit Carbon";
+		};
+		D4AD1BB3115B570200FA01D9 /* Build configuration list for PBXNativeTarget "osgdb_ply" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D4AD1BB4115B570200FA01D9 /* Debug 32bit Carbon */,
+				D4AD1BB5115B570200FA01D9 /* Release 32bit Carbon */,
+				D4AD1BB6115B570200FA01D9 /* Debug 32bit Cocoa */,
+				D4AD1BB7115B570200FA01D9 /* Release 32bit Cocoa */,
+				D4AD1BB8115B570200FA01D9 /* Debug 64bit Cocoa */,
+				D4AD1BB9115B570200FA01D9 /* Release 64bit Cocoa */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = "Debug 32bit Carbon";

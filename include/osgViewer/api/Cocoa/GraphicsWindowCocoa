@@ -25,12 +25,14 @@
 @class GraphicsWindowCocoaWindow;
 @class GraphicsWindowCocoaGLView;
 @class NSOpenGLContext;
+@class NSOpenGLPixelFormat;
 @class NSWindow;
 @class NSView;
 #else
 class GraphicsWindowCocoaGLView;
 class GraphicsWindowCocoaWindow;
 class NSOpenGLContext;
+class NSOpenGLPixelFormat;
 class NSWindow;
 class NSView;
 #endif
@@ -158,6 +160,7 @@ class GraphicsWindowCocoa : public osgViewer::GraphicsWindow, public osgViewer::
         
         NSOpenGLContext* getContext() { return _context; }
         GraphicsWindowCocoaWindow* getWindow() { return _window; }
+        NSOpenGLPixelFormat* getPixelFormat() { return _pixelformat; }
                 
         void setVSync(bool f);
         
@@ -190,6 +193,7 @@ class GraphicsWindowCocoa : public osgViewer::GraphicsWindow, public osgViewer::
         GraphicsWindowCocoaWindow*      _window;
         GraphicsWindowCocoaGLView*      _view;
         NSOpenGLContext*                _context;
+        NSOpenGLPixelFormat*            _pixelformat;
         bool                            _updateContext;
 };
 

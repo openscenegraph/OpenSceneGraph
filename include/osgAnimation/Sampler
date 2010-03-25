@@ -16,8 +16,8 @@
  *         Michael Platings <mplatings@pixelpower.com>
  */
 
-#ifndef OSGANIMATION_SAMPLER_H
-#define OSGANIMATION_SAMPLER_H
+#ifndef OSGANIMATION_SAMPLER
+#define OSGANIMATION_SAMPLER 1
 
 #include <vector>
 #include <iostream>
@@ -50,7 +50,7 @@ namespace osgAnimation
         TemplateSampler() {}
         ~TemplateSampler() {}
 
-        void getValueAt(float time, UsingType& result) const { _functor.getValue(*_keyframes, time, result);}
+        void getValueAt(double time, UsingType& result) const { _functor.getValue(*_keyframes, time, result);}
         void setKeyframeContainer(KeyframeContainerType* kf) { _keyframes = kf;}
 
         virtual KeyframeContainer* getKeyframeContainer() { return _keyframes.get(); }
@@ -66,17 +66,17 @@ namespace osgAnimation
             return _keyframes.get();
         }
 
-        float getStartTime() const 
+        double getStartTime() const 
         {
             if (!_keyframes)
-                return 0.0f;
+                return 0.0;
             return _keyframes->front().getTime();
         }
 
-        float getEndTime() const 
+        double getEndTime() const 
         {
             if (!_keyframes)
-                return 0.0f;
+                return 0.0;
             return _keyframes->back().getTime();
         }
 
@@ -101,9 +101,9 @@ namespace osgAnimation
         {
         }
 
-        void getValueAt(float time, typename VALUESAMPLERTYPE::FunctorType::UsingType& result)
+        void getValueAt(double time, typename VALUESAMPLERTYPE::FunctorType::UsingType& result)
         {
-            float newtime;
+            double newtime;
             _time.getValueAt(time, newtime);
             _value.getValueAt(newtime, result);
         }

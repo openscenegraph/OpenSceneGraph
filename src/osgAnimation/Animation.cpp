@@ -80,7 +80,7 @@ void Animation::setDuration(double duration)
     _duration = duration;
 }
 
-float Animation::getDuration() const
+double Animation::getDuration() const
 {
     return _duration;
 }
@@ -95,14 +95,14 @@ void Animation::setWeight (float weight)
     _weight = weight;
 }
 
-bool Animation::update (float time, int priority)
+bool Animation::update (double time, int priority)
 {
     if (!_duration) // if not initialized then do it
         computeDuration();
 
     double ratio = _originalDuration / _duration;
 
-    float t = (time - _startTime) * ratio;
+    double t = (time - _startTime) * ratio;
     switch (_playmode) 
     {
     case ONCE:
@@ -117,7 +117,7 @@ bool Animation::update (float time, int priority)
         if (!_duration)
             t = _startTime;
         else if (t > _duration)
-            t = fmod(t, (float)_duration);
+            t = fmod(t, _duration);
         //      std::cout << "t " << t << " duration " << _duration << std::endl;
         break;
     case PPONG: 

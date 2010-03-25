@@ -31,11 +31,11 @@ namespace osgAnimation
     class Keyframe 
     {
     public:
-        float getTime() const { return _time; }
-        void setTime(float time) { _time = time; }
+        double getTime() const { return _time; }
+        void setTime(double time) { _time = time; }
               
     protected:
-        float _time;
+        double _time;
 
     };
 
@@ -48,7 +48,7 @@ namespace osgAnimation
         TemplateKeyframe () {}
         ~TemplateKeyframe () {}
 
-        TemplateKeyframe (float time, const T& value) 
+        TemplateKeyframe (double time, const T& value) 
         { 
             _time = time;
             _value = value;

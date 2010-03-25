@@ -16,8 +16,8 @@
  *         Michael Platings <mplatings@pixelpower.com>
  */
 
-#ifndef OSGANIMATION_CHANNEL_H
-#define OSGANIMATION_CHANNEL_H
+#ifndef OSGANIMATION_CHANNEL
+#define OSGANIMATION_CHANNEL 1
 
 #include <osgAnimation/Export>
 #include <osgAnimation/Sampler>
@@ -37,7 +37,7 @@ namespace osgAnimation
         virtual ~Channel();
         virtual Channel* clone() const = 0;
 
-        virtual void update(float time, float weight, int priority) = 0;
+        virtual void update(double time, float weight, int priority) = 0;
         virtual void reset() = 0;
         virtual Target* getTarget() = 0;
         virtual bool setTarget(Target*) = 0;
@@ -45,8 +45,8 @@ namespace osgAnimation
         const std::string& getName() const;
         void setName(const std::string& name);
 
-        virtual float getStartTime() const = 0;
-        virtual float getEndTime() const = 0;
+        virtual double getStartTime() const = 0;
+        virtual double getEndTime() const = 0;
 
         const std::string& getTargetName() const;
         void setTargetName(const std::string& name);
@@ -113,7 +113,7 @@ namespace osgAnimation
         }
 
         virtual ~TemplateChannel() {}
-        virtual void update(float time, float weight, int priority) 
+        virtual void update(double time, float weight, int priority) 
         {
             // skip if weight == 0
             if (weight < 1e-4)
@@ -148,8 +148,8 @@ namespace osgAnimation
         const TargetType* getTargetTyped() const { return _target.get(); }
         void setTarget(TargetType* target) { _target = target; }
 
-        virtual float getStartTime() const { return _sampler->getStartTime(); }
-        virtual float getEndTime() const { return _sampler->getEndTime(); }
+        virtual double getStartTime() const { return _sampler->getStartTime(); }
+        virtual double getEndTime() const { return _sampler->getEndTime(); }
 
     protected:
         osg::ref_ptr<TargetType> _target;

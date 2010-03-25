@@ -13,8 +13,8 @@
 */
 
 
-#ifndef OSGANIMATION_TARGET_H
-#define OSGANIMATION_TARGET_H
+#ifndef OSGANIMATION_TARGET
+#define OSGANIMATION_TARGET 1
 
 #include <vector>
 #include <osg/Quat>

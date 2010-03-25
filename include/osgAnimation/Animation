@@ -12,8 +12,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGANIMATION_ANIMATION_H
-#define OSGANIMATION_ANIMATION_H
+#ifndef OSGANIMATION_ANIMATION
+#define OSGANIMATION_ANIMATION 1
 
 #include <osg/Object>
 #include <osgAnimation/Export>
@@ -65,20 +65,20 @@ namespace osgAnimation
          */
         void computeDuration();
 
-        float getDuration() const;
+        double getDuration() const;
 
 
         void setWeight (float weight);
         float getWeight() const;
 
-        bool update (float time, int priority = 0);
+        bool update (double time, int priority = 0);
         void resetTargets();
 
         void setPlaymode (PlayMode mode) { _playmode = mode; }
         PlayMode getPlayMode() const { return _playmode; }
         
-        void setStartTime(float time)  { _startTime = time;}
-        float getStartTime() const { return _startTime;}
+        void setStartTime(double time)  { _startTime = time;}
+        double getStartTime() const { return _startTime;}
 
     protected:
 
@@ -89,7 +89,7 @@ namespace osgAnimation
         double _duration;
         double _originalDuration;
         float _weight;
-        float _startTime;
+        double _startTime;
         PlayMode _playmode;
         ChannelList _channels;
 

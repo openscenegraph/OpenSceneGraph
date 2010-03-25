@@ -857,6 +857,8 @@ void GraphicsWindowCocoa::init()
     _ownsWindow = false;
     _context = NULL;
     _window = NULL;
+    _pixelformat = NULL;
+    
     _updateContext = false;
     _valid = _initialized = true;
 }
@@ -977,8 +979,8 @@ bool GraphicsWindowCocoa::realizeImplementation()
         sharedContext = graphicsHandleCocoa->getNSOpenGLContext();
     }
     
-    NSOpenGLPixelFormat* pixelformat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attr ];
-    _context = [[NSOpenGLContext alloc] initWithFormat: pixelformat shareContext: sharedContext];
+    _pixelformat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attr ];
+    _context = [[NSOpenGLContext alloc] initWithFormat: _pixelformat shareContext: sharedContext];
     
     if (!_context) {
         osg::notify(osg::WARN) << "GraphicsWindowCocoa::realizeImplementation :: could not create context" << std::endl;

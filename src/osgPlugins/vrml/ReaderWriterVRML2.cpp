@@ -315,6 +315,9 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
                 if (node_ptr->type().id()=="IndexedFaceSet")
                     osg_geom = convertVRML97IndexedFaceSet(node_ptr.get());
 
+                else if (node_ptr->type().id()=="IndexedLineSet")
+                    osg_geom = convertVRML97IndexedLineSet(node_ptr.get());
+
                 else if (node_ptr->type().id() == "Box")
                     osg_geom = convertVRML97Box(node_ptr.get());
 
@@ -352,7 +355,7 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
                 openvrml::appearance_node *vrml_app = dynamic_cast<openvrml::appearance_node *>(sfn->value().get());
 
                 const boost::intrusive_ptr<openvrml::node> vrml_material_node = vrml_app->material();
-                const boost::intrusive_ptr<openvrml::node> vrml_texture_node = vrml_app->texture();
+                const boost::intrusive_ptr<openvrml::texture_node> vrml_texture_node = openvrml::node_cast<openvrml::texture_node*>(vrml_app->texture().get());
                 const openvrml::material_node *vrml_material = dynamic_cast<const openvrml::material_node *>(vrml_material_node.get());
 
                 if (vrml_material != NULL)
@@ -400,57 +403,83 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
                 // if texture is provided
                 if (vrml_texture_node != 0)
                 {
-                    std::auto_ptr<openvrml::field_value> texture_url_fv = vrml_texture_node->field("url");
-                    const openvrml::mfstring *mfs = dynamic_cast<const openvrml::mfstring *>(texture_url_fv.get());
-                    const std::string &url = mfs->value()[0];
+                    osg::ref_ptr<osg::Image> image;
 
-                    osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(url);
+                    if (vrml_texture_node->type().id() == "ImageTexture")
+                    {
+                        try
+                        {
+                            std::auto_ptr<openvrml::field_value> texture_url_fv = vrml_texture_node->field("url");
+                            const openvrml::mfstring *mfs = dynamic_cast<const openvrml::mfstring *>(texture_url_fv.get());
+                            const std::string &url = mfs->value()[0];
+                            
+                            image = osgDB::readRefImageFile(url);
+                            
+                            if (!image.valid())
+                            {
+                                std::cerr << "texture file " << url << " not found !" << std::endl << std::flush;
+                            }
+                        }
+                        catch (openvrml::unsupported_interface&)
+                        {
+                            // no url field in the texture
+                        }
+                    }
 
-                    if (image != 0)
+                    if (!image.valid())
+                    {
+                        // If we cannot read the image try the openvrml builtin mechanisms to read the image.
+                        // This includes PixelTexture fields.
+                        const openvrml::image& vrml_image = vrml_texture_node->image();
+
+                        // Convert to an osg image
+                        image = new osg::Image;
+                        image->allocateImage(vrml_image.x(), vrml_image.y(), 1, GL_RGBA, GL_UNSIGNED_BYTE);
+                        for (std::size_t y = 0; y < vrml_image.y(); ++y)
+                        {
+                            for (std::size_t x = 0; x < vrml_image.x(); ++x)
+                            {
+                                openvrml::int32 p = vrml_image.pixel(x, y);
+                                unsigned char* data = image->data(x, y);
+                                data[0] = 0xff & (p >> 24);
+                                data[1] = 0xff & (p >> 16);
+                                data[2] = 0xff & (p >> 8);
+                                data[3] = 0xff & (p >> 0);
+                            }
+                        }
+                    }
+
+                    if (image.valid())
                     {
                         osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D;
                         texture->setImage(image.get());
 
-                        // defaults
-                        texture->setWrap(osg::Texture::WRAP_S, osg::Texture::REPEAT);
+                        // get the real texture wrapping parameters
+                        if (vrml_texture_node->repeat_s())
+                        {
+                            texture->setWrap(osg::Texture::WRAP_S, osg::Texture::REPEAT);
+                        }
+                        else
+                        {
+                            texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP);
+                        }
+
+                        if (vrml_texture_node->repeat_t())
+                        {
+                            texture->setWrap(osg::Texture::WRAP_T, osg::Texture::REPEAT);
+                        }
+                        else
+                        {
+                            texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP);
+                        }
                         texture->setWrap(osg::Texture::WRAP_R, osg::Texture::REPEAT);
-                        texture->setWrap(osg::Texture::WRAP_T, osg::Texture::REPEAT);
-
-                        // get the real texture wrapping parameters (if any)
-                        try
-                        {
-                            std::auto_ptr<openvrml::field_value> wrap_fv = vrml_texture_node->field("repeatS");
-                            const openvrml::sfbool *sfb = dynamic_cast<const openvrml::sfbool *>(wrap_fv.get());
-
-                            if (!sfb->value())
-                                texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP);
-
-                        }
-                        catch (...)
-                        {
-                            // nothing specified
-                        }
-
-                        try
-                        {
-                            std::auto_ptr<openvrml::field_value> wrap_fv = vrml_texture_node->field("repeatT");
-                            const openvrml::sfbool *sfb = dynamic_cast<const openvrml::sfbool *>(wrap_fv.get());
-
-                            if (!sfb->value())
-                                texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP);
-                        }
-                        catch (...)
-                        {
-                            // nothing specified
-                        }
 
                         osg_stateset->setTextureAttributeAndModes(0, texture.get());
-                        //osg_stateset->setMode(GL_BLEND,osg::StateAttribute::ON);  //bhbn
 
-                    }
-                    else
-                    {
-                        std::cerr << "texture file " << url << " not found !" << std::endl << std::flush;
+                        if (image->isImageTranslucent()) {
+                            osg_stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
+                            osg_stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+                        }
                     }
                 }
             }

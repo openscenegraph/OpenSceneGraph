@@ -85,6 +85,7 @@ private:
 
 
     osg::ref_ptr<osg::Geometry> convertVRML97IndexedFaceSet(openvrml::node *vrml_ifs) const;
+    osg::ref_ptr<osg::Geometry> convertVRML97IndexedLineSet(openvrml::node *vrml_ifs) const;
     osg::ref_ptr<osg::Geometry> convertVRML97Box(openvrml::node* vrml_box) const;
     osg::ref_ptr<osg::Geometry> convertVRML97Sphere(openvrml::node* vrml_sphere) const;
     osg::ref_ptr<osg::Geometry> convertVRML97Cone(openvrml::node* vrml_cone) const;

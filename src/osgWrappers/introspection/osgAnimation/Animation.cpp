@@ -91,9 +91,9 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Animation)
 	          __void__computeDuration,
 	          "Compute duration from channel and keyframes if the duration is not specified you should call this method before using it. ",
 	          "");
-	I_Method0(float, getDuration,
+	I_Method0(double, getDuration,
 	          Properties::NON_VIRTUAL,
-	          __float__getDuration,
+	          __double__getDuration,
 	          "",
 	          "");
 	I_Method1(void, setWeight, IN, float, weight,
@@ -106,9 +106,9 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Animation)
 	          __float__getWeight,
 	          "",
 	          "");
-	I_MethodWithDefaults2(bool, update, IN, float, time, , IN, int, priority, 0,
+	I_MethodWithDefaults2(bool, update, IN, double, time, , IN, int, priority, 0,
 	                      Properties::NON_VIRTUAL,
-	                      __bool__update__float__int,
+	                      __bool__update__double__int,
 	                      "",
 	                      "");
 	I_Method0(void, resetTargets,
@@ -126,14 +126,14 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Animation)
 	          __PlayMode__getPlayMode,
 	          "",
 	          "");
-	I_Method1(void, setStartTime, IN, float, time,
+	I_Method1(void, setStartTime, IN, double, time,
 	          Properties::NON_VIRTUAL,
-	          __void__setStartTime__float,
+	          __void__setStartTime__double,
 	          "",
 	          "");
-	I_Method0(float, getStartTime,
+	I_Method0(double, getStartTime,
 	          Properties::NON_VIRTUAL,
-	          __float__getStartTime,
+	          __double__getStartTime,
 	          "",
 	          "");
 	I_ProtectedMethod0(double, computeDurationFromChannels,
@@ -146,7 +146,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Animation)
 	                 __ChannelList_R1__getChannels, 
 	                 0);
 	I_SimpleProperty(double, Duration, 
-	                 0, 
+	                 __double__getDuration, 
 	                 __void__setDuration__double);
 	I_SimpleProperty(osgAnimation::Animation::PlayMode, PlayMode, 
 	                 __PlayMode__getPlayMode, 
@@ -154,9 +154,9 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Animation)
 	I_SimpleProperty(osgAnimation::Animation::PlayMode, Playmode, 
 	                 0, 
 	                 __void__setPlaymode__PlayMode);
-	I_SimpleProperty(float, StartTime, 
-	                 __float__getStartTime, 
-	                 __void__setStartTime__float);
+	I_SimpleProperty(double, StartTime, 
+	                 __double__getStartTime, 
+	                 __void__setStartTime__double);
 	I_SimpleProperty(float, Weight, 
 	                 __float__getWeight, 
 	                 __void__setWeight__float);

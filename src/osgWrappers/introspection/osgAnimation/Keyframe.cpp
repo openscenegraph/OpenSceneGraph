@@ -25,19 +25,19 @@ BEGIN_VALUE_REFLECTOR(osgAnimation::Keyframe)
 	I_Constructor0(____Keyframe,
 	               "",
 	               "");
-	I_Method0(float, getTime,
+	I_Method0(double, getTime,
 	          Properties::NON_VIRTUAL,
-	          __float__getTime,
+	          __double__getTime,
 	          "",
 	          "");
-	I_Method1(void, setTime, IN, float, time,
+	I_Method1(void, setTime, IN, double, time,
 	          Properties::NON_VIRTUAL,
-	          __void__setTime__float,
+	          __void__setTime__double,
 	          "",
 	          "");
-	I_SimpleProperty(float, Time, 
-	                 __float__getTime, 
-	                 __void__setTime__float);
+	I_SimpleProperty(double, Time, 
+	                 __double__getTime, 
+	                 __void__setTime__double);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::KeyframeContainer)

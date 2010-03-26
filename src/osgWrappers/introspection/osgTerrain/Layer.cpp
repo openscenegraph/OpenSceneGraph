@@ -756,6 +756,11 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Layer)
 	          __bool__getInterpolatedValue__double__double__float_R1,
 	          "",
 	          "");
+	I_Method3(bool, getInterpolatedValidValue, IN, double, ndc_x, IN, double, ndc_y, IN, float &, value,
+	          Properties::NON_VIRTUAL,
+	          __bool__getInterpolatedValidValue__double__double__float_R1,
+	          "",
+	          "");
 	I_Method0(void, dirty,
 	          Properties::VIRTUAL,
 	          __void__dirty,

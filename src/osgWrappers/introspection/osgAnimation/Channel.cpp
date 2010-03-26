@@ -38,9 +38,9 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Channel)
 	          __Channel_P1__clone,
 	          "",
 	          "");
-	I_Method3(void, update, IN, float, time, IN, float, weight, IN, int, priority,
+	I_Method3(void, update, IN, double, time, IN, float, weight, IN, int, priority,
 	          Properties::PURE_VIRTUAL,
-	          __void__update__float__float__int,
+	          __void__update__double__float__int,
 	          "",
 	          "");
 	I_Method0(void, reset,
@@ -68,14 +68,14 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Channel)
 	          __void__setName__C5_std_string_R1,
 	          "",
 	          "");
-	I_Method0(float, getStartTime,
+	I_Method0(double, getStartTime,
 	          Properties::PURE_VIRTUAL,
-	          __float__getStartTime,
+	          __double__getStartTime,
 	          "",
 	          "");
-	I_Method0(float, getEndTime,
+	I_Method0(double, getEndTime,
 	          Properties::PURE_VIRTUAL,
-	          __float__getEndTime,
+	          __double__getEndTime,
 	          "",
 	          "");
 	I_Method0(const std::string &, getTargetName,
@@ -103,8 +103,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Channel)
 	          __bool__createKeyframeContainerFromTargetValue,
 	          "",
 	          "");
-	I_SimpleProperty(float, EndTime, 
-	                 __float__getEndTime, 
+	I_SimpleProperty(double, EndTime, 
+	                 __double__getEndTime, 
 	                 0);
 	I_SimpleProperty(const std::string &, Name, 
 	                 __C5_std_string_R1__getName, 
@@ -112,8 +112,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Channel)
 	I_SimpleProperty(osgAnimation::Sampler *, Sampler, 
 	                 __Sampler_P1__getSampler, 
 	                 0);
-	I_SimpleProperty(float, StartTime, 
-	                 __float__getStartTime, 
+	I_SimpleProperty(double, StartTime, 
+	                 __double__getStartTime, 
 	                 0);
 	I_SimpleProperty(osgAnimation::Target *, Target, 
 	                 __Target_P1__getTarget, 

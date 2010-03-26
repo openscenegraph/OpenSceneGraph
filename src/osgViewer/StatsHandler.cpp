@@ -260,21 +260,35 @@ void StatsHandler::reset()
 
 void StatsHandler::setUpHUDCamera(osgViewer::ViewerBase* viewer)
 {
-    osgViewer::GraphicsWindow* window = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
+    // Try GraphicsWindow first so we're likely to get the main viewer window
+    osg::GraphicsContext* context = dynamic_cast<osgViewer::GraphicsWindow*>(_camera->getGraphicsContext());
 
-    if (!window)
+    if (!context)
     {
         osgViewer::Viewer::Windows windows;
         viewer->getWindows(windows);
 
-        if (windows.empty()) return;
+        if (!windows.empty()) context = windows.front();
+        else
+        {
+            // No GraphicsWindows were found, so let's try to find a GraphicsContext
+            context = _camera->getGraphicsContext();
 
-        window = windows.front();
+            if (!context)
+            {
+                osgViewer::Viewer::Contexts contexts;
+                viewer->getContexts(contexts);
+
+                if (contexts.empty()) return;
+
+                context = contexts.front();
+            }
+        }
     }
 
-    _camera->setGraphicsContext(window);
+    _camera->setGraphicsContext(context);
 
-    _camera->setViewport(0, 0, window->getTraits()->width, window->getTraits()->height);
+    _camera->setViewport(0, 0, context->getTraits()->width, context->getTraits()->height);
     
     _camera->setRenderOrder(osg::Camera::POST_RENDER, 10);
 

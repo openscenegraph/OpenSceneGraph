@@ -152,10 +152,16 @@ IF(UNIX)
     FIND_PACKAGE(X11)
     # Some Unicies need explicit linkage to the Math library or the build fails.
     FIND_LIBRARY(MATH_LIBRARY m)
+
     FIND_LIBRARY(DL_LIBRARY dl)
+    IF(NOT DL_LIBRARY)
+        SET(DL_LIBRARY "") # change from NOTFOUND to empty when passed to linker
+    ENDIF()
+
     IF( CMAKE_SYSTEM MATCHES "Linux" )
         FIND_LIBRARY( RT_LIBRARY rt )
     ENDIF( CMAKE_SYSTEM MATCHES "Linux" )
+
 ENDIF()
 
 INCLUDE_DIRECTORIES(

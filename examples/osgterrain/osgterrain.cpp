@@ -73,6 +73,58 @@ T* findTopMostNodeOfType(osg::Node* node)
     return fnotv._foundNode;
 }
 
+// class to handle events with a pick
+class TerrainHandler : public osgGA::GUIEventHandler {
+public:
+
+    TerrainHandler(osgTerrain::Terrain* terrain):
+        _terrain(terrain) {}
+
+    bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
+    {
+        switch(ea.getEventType())
+        {
+            case(osgGA::GUIEventAdapter::KEYDOWN):
+            {
+                if (ea.getKey()=='r')
+                {
+                    _terrain->setSampleRatio(_terrain->getSampleRatio()*0.5);
+                    osg::notify(osg::NOTICE)<<"Sample ratio "<<_terrain->getSampleRatio()<<std::endl;
+                    return true;
+                }
+                else if (ea.getKey()=='R')
+                {
+                    _terrain->setSampleRatio(_terrain->getSampleRatio()/0.5);
+                    osg::notify(osg::NOTICE)<<"Sample ratio "<<_terrain->getSampleRatio()<<std::endl;
+                    return true;
+                }
+                else if (ea.getKey()=='v')
+                {
+                    _terrain->setVerticalScale(_terrain->getVerticalScale()*1.25);
+                    osg::notify(osg::NOTICE)<<"Vertical scale "<<_terrain->getVerticalScale()<<std::endl;
+                    return true;
+                }
+                else if (ea.getKey()=='V')
+                {
+                    _terrain->setVerticalScale(_terrain->getVerticalScale()/1.25);
+                    osg::notify(osg::NOTICE)<<"Vertical scale "<<_terrain->getVerticalScale()<<std::endl;
+                    return true;
+                }
+
+                return false;
+            }
+            default:
+                return false;
+        }
+    }
+
+protected:
+
+    ~TerrainHandler() {}
+
+    osg::ref_ptr<osgTerrain::Terrain>  _terrain;
+};
+
 int main(int argc, char** argv)
 {
     osg::ArgumentParser arguments(&argc, argv);
@@ -155,6 +207,9 @@ int main(int argc, char** argv)
     terrain->setSampleRatio(sampleRatio);
     terrain->setVerticalScale(verticalScale);
     terrain->setBlendingPolicy(blendingPolicy);
+
+    // register our custom handler for adjust Terrain settings
+    viewer.addEventHandler(new TerrainHandler(terrain));
 
     // add a viewport to the viewer and attach the scene graph.
     viewer.setSceneData( rootnode );

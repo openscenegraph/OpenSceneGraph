@@ -41,6 +41,9 @@ struct Triangle
 typedef std::map<std::pair<unsigned int, unsigned int>, unsigned int> MapIndices;
 typedef std::vector<std::pair<Triangle, int> > ListTriangle; //the int is the drawable of the triangle
 
+namespace pluginfbx
+{
+
 ///\author Capo (Thibault Caporal)
 class WriterNodeVisitor: public osg::NodeVisitor
 {
@@ -252,5 +255,8 @@ class WriterNodeVisitor: public osg::NodeVisitor
         const osgDB::ReaderWriter::Options* _options;
         const std::string                   _srcDirectory;
 };
+
+// end namespace pluginfbx
+}
 
 #endif // _FBX_WRITER_NODE_VISITOR_HEADER__

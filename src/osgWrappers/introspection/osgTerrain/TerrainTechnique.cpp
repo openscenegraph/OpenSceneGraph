@@ -27,38 +27,6 @@
 #undef OUT
 #endif
 
-BEGIN_VALUE_REFLECTOR(osgTerrain::TerrainNeighbours)
-	I_DeclaringFile("osgTerrain/TerrainTechnique");
-	I_Constructor0(____TerrainNeighbours,
-	               "",
-	               "");
-	I_Method0(void, clear,
-	          Properties::NON_VIRTUAL,
-	          __void__clear,
-	          "",
-	          "");
-	I_Method1(void, addNeighbour, IN, osgTerrain::TerrainTile *, tile,
-	          Properties::NON_VIRTUAL,
-	          __void__addNeighbour__TerrainTile_P1,
-	          "",
-	          "");
-	I_Method1(void, removeNeighbour, IN, osgTerrain::TerrainTile *, tile,
-	          Properties::NON_VIRTUAL,
-	          __void__removeNeighbour__TerrainTile_P1,
-	          "",
-	          "");
-	I_Method1(bool, containsNeighbour, IN, osgTerrain::TerrainTile *, tile,
-	          Properties::NON_VIRTUAL,
-	          __bool__containsNeighbour__TerrainTile_P1,
-	          "",
-	          "");
-	I_ProtectedConstructor1(IN, const osgTerrain::TerrainNeighbours &, tn,
-	                        Properties::NON_EXPLICIT,
-	                        ____TerrainNeighbours__C5_TerrainNeighbours_R1,
-	                        "",
-	                        "");
-END_REFLECTOR
-
 BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTechnique)
 	I_DeclaringFile("osgTerrain/TerrainTechnique");
 	I_BaseType(osg::Object);

@@ -91,6 +91,9 @@ class OSGTERRAIN_EXPORT Terrain : public osg::Group
         /** Get the const TerrainTechnique protype*/
         const TerrainTechnique* getTerrainTechniquePrototype() const { return _terrainTechnique.get(); }
 
+        /** Tell the Terrain node to call the terrainTile's TerrainTechnique on the next update traversal.*/
+        void updateTerrainTileOnNextFrame(TerrainTile* terrainTile);
+
     protected:
 
         virtual ~Terrain();
@@ -112,6 +115,7 @@ class OSGTERRAIN_EXPORT Terrain : public osg::Group
         mutable OpenThreads::Mutex          _mutex;
         TerrainTileSet                      _terrainTileSet;
         TerrainTileMap                      _terrainTileMap;
+        TerrainTileSet                      _updateTerrainTileSet;
 
         osg::ref_ptr<TerrainTechnique>      _terrainTechnique;
 };

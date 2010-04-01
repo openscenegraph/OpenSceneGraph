@@ -25,7 +25,31 @@ namespace osgTerrain {
 
 class TerrainTile;
 
-class OSGTERRAIN_EXPORT TerrainTechnique : public osg::Object
+class OSGTERRAIN_EXPORT TerrainNeighbours
+{
+    public:
+
+        TerrainNeighbours();
+        ~TerrainNeighbours();
+
+        void clear();
+        void addNeighbour(TerrainTile* tile);
+        void removeNeighbour(TerrainTile* tile);
+        bool containsNeighbour(TerrainTile* tile) const;
+
+    protected:
+
+        TerrainNeighbours(const TerrainNeighbours& tn) {}
+        TerrainNeighbours& operator = (const TerrainNeighbours& rhs) { return *this; }
+
+        typedef std::set<TerrainTile*> Neighbours;
+
+        mutable OpenThreads::Mutex      _neighboursMutex;
+        Neighbours                      _neighbours;
+};
+
+
+class OSGTERRAIN_EXPORT TerrainTechnique : public osg::Object, public osg::Observer
 {
     public:
 
@@ -33,7 +57,7 @@ class OSGTERRAIN_EXPORT TerrainTechnique : public osg::Object
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
         TerrainTechnique(const TerrainTechnique&,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
-        
+
         META_Object(osgTerrain, TerrainTechnique);
 
         TerrainTile* getTerrainTile() { return _terrainTile; }
@@ -56,15 +80,26 @@ class OSGTERRAIN_EXPORT TerrainTechnique : public osg::Object
         * for all graphics contexts. */
         virtual void releaseGLObjects(osg::State* = 0) const {}
 
+        void addNeighbour(TerrainTile* tile) { _neighbours.addNeighbour(tile); }
+        void removeNeighbour(TerrainTile* tile) {  _neighbours.removeNeighbour(tile); }
+
+        bool containsNeighbour(TerrainTile* tile) { return _neighbours.containsNeighbour(tile); }
+        TerrainNeighbours& getNeighbours() { return _neighbours; }
+        const TerrainNeighbours& getNeighbours() const { return _neighbours; }
+
     protected:
-    
-        void setDirty(bool dirty);
 
         virtual ~TerrainTechnique();
-        
+
+        void setTerrainTile(TerrainTile* tile);
+        void setDirty(bool dirty);
+
         friend class osgTerrain::TerrainTile;
 
-        TerrainTile*    _terrainTile;
+        TerrainTile*            _terrainTile;
+
+
+        TerrainNeighbours       _neighbours;
 
 };
 

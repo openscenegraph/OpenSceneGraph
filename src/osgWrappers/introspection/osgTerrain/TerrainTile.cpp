@@ -38,6 +38,19 @@ BEGIN_ENUM_REFLECTOR(osgTerrain::TerrainTile::BlendingPolicy)
 	I_EnumLabel(osgTerrain::TerrainTile::ENABLE_BLENDING_WHEN_ALPHA_PRESENT);
 END_REFLECTOR
 
+BEGIN_ENUM_REFLECTOR(osgTerrain::TerrainTile::DirtyMask)
+	I_DeclaringFile("osgTerrain/TerrainTile");
+	I_EnumLabel(osgTerrain::TerrainTile::NOT_DIRTY);
+	I_EnumLabel(osgTerrain::TerrainTile::IMAGERY_DIRTY);
+	I_EnumLabel(osgTerrain::TerrainTile::ELEVATION_DIRTY);
+	I_EnumLabel(osgTerrain::TerrainTile::LEFT_EDGE_DIRTY);
+	I_EnumLabel(osgTerrain::TerrainTile::RIGHT_EDGE_DIRTY);
+	I_EnumLabel(osgTerrain::TerrainTile::TOP_EDGE_DIRTY);
+	I_EnumLabel(osgTerrain::TerrainTile::BOTTOM_EDGE_DIRTY);
+	I_EnumLabel(osgTerrain::TerrainTile::EDGES_DIRTY);
+	I_EnumLabel(osgTerrain::TerrainTile::ALL_DIRTY);
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTile)
 	I_DeclaringFile("osgTerrain/TerrainTile");
 	I_BaseType(osg::Group);
@@ -213,9 +226,19 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTile)
 	          __void__setDirty__bool,
 	          "Set the dirty flag on/off. ",
 	          "");
-	I_Method0(bool, getDirty,
+	I_Method0(int, getDirty,
 	          Properties::NON_VIRTUAL,
-	          __bool__getDirty,
+	          __int__getDirty,
+	          "return true if the any of the DirtyMask are set. ",
+	          "");
+	I_Method1(void, setDirtyMask, IN, int, dirtyMask,
+	          Properties::NON_VIRTUAL,
+	          __void__setDirtyMask__int,
+	          "Set the dirty flag on/off. ",
+	          "");
+	I_Method0(int, getDirtyMask,
+	          Properties::NON_VIRTUAL,
+	          __int__getDirtyMask,
 	          "return true if the tile is dirty and needs to be updated, ",
 	          "");
 	I_Method0(osg::BoundingSphere, computeBound,
@@ -247,8 +270,11 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTile)
 	                0, 
 	                0);
 	I_SimpleProperty(bool, Dirty, 
-	                 __bool__getDirty, 
+	                 0, 
 	                 __void__setDirty__bool);
+	I_SimpleProperty(int, DirtyMask, 
+	                 __int__getDirtyMask, 
+	                 __void__setDirtyMask__int);
 	I_SimpleProperty(osgTerrain::Layer *, ElevationLayer, 
 	                 __Layer_P1__getElevationLayer, 
 	                 __void__setElevationLayer__Layer_P1);

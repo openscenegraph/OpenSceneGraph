@@ -38,16 +38,7 @@ class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
         
         virtual Locator* computeMasterLocator();
         
-        virtual osg::Vec3d computeCenterModel(Locator* masterLocator);
         
-        virtual void generateGeometry(Locator* masterLocator, const osg::Vec3d& centerModel);
-        
-        virtual void applyColorLayers();
-        
-        virtual void applyTransparency();
-        
-        virtual void smoothGeometry();
-
         virtual void update(osgUtil::UpdateVisitor* nv);
 
         virtual void cull(osgUtil::CullVisitor* nv);
@@ -86,24 +77,32 @@ class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
 
         virtual ~GeometryTechnique();
 
-        struct BufferData
+        class BufferData : public osg::Referenced
         {
+        public:
+            BufferData() {}
+
             osg::ref_ptr<osg::MatrixTransform>  _transform;
             osg::ref_ptr<osg::Geode>            _geode;
             osg::ref_ptr<osg::Geometry>         _geometry;
-        };
-        
-        unsigned int                        _currentReadOnlyBuffer;
-        unsigned int                        _currentWriteBuffer;
-        
-        BufferData                          _bufferData[2];
-        
-        void swapBuffers();
 
-        inline BufferData& getReadOnlyBuffer() { return _bufferData[_currentReadOnlyBuffer]; }
-        inline BufferData& getWriteBuffer() { return _bufferData[_currentWriteBuffer]; }
-        
-                
+        protected:
+            ~BufferData() {}
+        };
+
+        virtual osg::Vec3d computeCenterModel(BufferData& buffer, Locator* masterLocator);
+
+        virtual void generateGeometry(BufferData& buffer, Locator* masterLocator, const osg::Vec3d& centerModel);
+
+        virtual void applyColorLayers(BufferData& buffer);
+
+        virtual void applyTransparency(BufferData& buffer);
+
+
+        OpenThreads::Mutex                  _writeBufferMutex;
+        osg::ref_ptr<BufferData>            _currentBufferData;
+        osg::ref_ptr<BufferData>            _newBufferData;
+
         float                               _filterBias;
         osg::ref_ptr<osg::Uniform>          _filterBiasUniform;
         float                               _filterWidth;

@@ -15,7 +15,6 @@
 #include <osg/Object>
 #include <osg/State>
 #include <osg/Uniform>
-#include <osg/Vec3d>
 #include <osgTerrain/GeometryTechnique>
 #include <osgTerrain/Locator>
 #include <osgUtil/CullVisitor>
@@ -79,31 +78,6 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::GeometryTechnique)
 	I_Method0(osgTerrain::Locator *, computeMasterLocator,
 	          Properties::VIRTUAL,
 	          __Locator_P1__computeMasterLocator,
-	          "",
-	          "");
-	I_Method1(osg::Vec3d, computeCenterModel, IN, osgTerrain::Locator *, masterLocator,
-	          Properties::VIRTUAL,
-	          __osg_Vec3d__computeCenterModel__Locator_P1,
-	          "",
-	          "");
-	I_Method2(void, generateGeometry, IN, osgTerrain::Locator *, masterLocator, IN, const osg::Vec3d &, centerModel,
-	          Properties::VIRTUAL,
-	          __void__generateGeometry__Locator_P1__C5_osg_Vec3d_R1,
-	          "",
-	          "");
-	I_Method0(void, applyColorLayers,
-	          Properties::VIRTUAL,
-	          __void__applyColorLayers,
-	          "",
-	          "");
-	I_Method0(void, applyTransparency,
-	          Properties::VIRTUAL,
-	          __void__applyTransparency,
-	          "",
-	          "");
-	I_Method0(void, smoothGeometry,
-	          Properties::VIRTUAL,
-	          __void__smoothGeometry,
 	          "",
 	          "");
 	I_Method1(void, update, IN, osgUtil::UpdateVisitor *, nv,
@@ -171,22 +145,28 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::GeometryTechnique)
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",
 	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
-	I_ProtectedMethod0(void, swapBuffers,
-	                   Properties::NON_VIRTUAL,
+	I_ProtectedMethod2(osg::Vec3d, computeCenterModel, IN, osg::BufferData &, buffer, IN, osgTerrain::Locator *, masterLocator,
+	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __void__swapBuffers,
+	                   __osg_Vec3d__computeCenterModel__BufferData_R1__Locator_P1,
 	                   "",
 	                   "");
-	I_ProtectedMethod0(osg::BufferData &, getReadOnlyBuffer,
-	                   Properties::NON_VIRTUAL,
+	I_ProtectedMethod3(void, generateGeometry, IN, osg::BufferData &, buffer, IN, osgTerrain::Locator *, masterLocator, IN, const osg::Vec3d &, centerModel,
+	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __BufferData_R1__getReadOnlyBuffer,
+	                   __void__generateGeometry__BufferData_R1__Locator_P1__C5_osg_Vec3d_R1,
 	                   "",
 	                   "");
-	I_ProtectedMethod0(osg::BufferData &, getWriteBuffer,
-	                   Properties::NON_VIRTUAL,
+	I_ProtectedMethod1(void, applyColorLayers, IN, osg::BufferData &, buffer,
+	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __BufferData_R1__getWriteBuffer,
+	                   __void__applyColorLayers__BufferData_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod1(void, applyTransparency, IN, osg::BufferData &, buffer,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__applyTransparency__BufferData_R1,
 	                   "",
 	                   "");
 	I_SimpleProperty(float, FilterBias, 

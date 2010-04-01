@@ -125,6 +125,11 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	          __C5_TerrainTechnique_P1__getTerrainTechniquePrototype,
 	          "Get the const TerrainTechnique protype. ",
 	          "");
+	I_Method1(void, updateTerrainTileOnNextFrame, IN, osgTerrain::TerrainTile *, terrainTile,
+	          Properties::NON_VIRTUAL,
+	          __void__updateTerrainTileOnNextFrame__TerrainTile_P1,
+	          "Tell the Terrain node to call the terrainTile's TerrainTechnique on the next update traversal. ",
+	          "");
 	I_ProtectedMethod0(void, dirtyRegisteredTiles,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,

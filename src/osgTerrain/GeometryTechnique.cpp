@@ -15,7 +15,6 @@
 #include <osgTerrain/TerrainTile>
 #include <osgTerrain/Terrain>
 
-#include <osgUtil/SmoothingVisitor>
 #include <osgUtil/MeshOptimizers>
 
 #include <osgDB/FileUtils>
@@ -32,10 +31,7 @@ using namespace osgTerrain;
 
 #define NEW_COORD_CODE
 
-GeometryTechnique::GeometryTechnique():
-    _currentReadOnlyBuffer(1),
-    _currentWriteBuffer(0)
-    
+GeometryTechnique::GeometryTechnique()
 {
     setFilterBias(0);
     setFilterWidth(0.1);
@@ -44,9 +40,7 @@ GeometryTechnique::GeometryTechnique():
 }
 
 GeometryTechnique::GeometryTechnique(const GeometryTechnique& gt,const osg::CopyOp& copyop):
-    TerrainTechnique(gt,copyop),
-    _currentReadOnlyBuffer(1),
-    _currentWriteBuffer(0)
+    TerrainTechnique(gt,copyop)
 {
     setFilterBias(gt._filterBias);
     setFilterWidth(gt._filterWidth);
@@ -55,11 +49,6 @@ GeometryTechnique::GeometryTechnique(const GeometryTechnique& gt,const osg::Copy
 
 GeometryTechnique::~GeometryTechnique()
 {
-}
-
-void GeometryTechnique::swapBuffers()
-{
-    std::swap(_currentReadOnlyBuffer,_currentWriteBuffer);
 }
 
 void GeometryTechnique::setFilterBias(float filterBias)
@@ -112,23 +101,57 @@ void GeometryTechnique::init()
     
     if (!_terrainTile) return;
 
-    BufferData& buffer = getWriteBuffer();
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_writeBufferMutex);
+
+    // take a temporary referecen
+    osg::ref_ptr<TerrainTile> tile = _terrainTile;
+
+    if (_terrainTile->getDirtyMask()==0) return;
+
+    osg::ref_ptr<BufferData> buffer = new BufferData;
 
     Locator* masterLocator = computeMasterLocator();
 
-    osg::Vec3d centerModel = computeCenterModel(masterLocator);
+    osg::Vec3d centerModel = computeCenterModel(*buffer, masterLocator);
 
-    generateGeometry(masterLocator, centerModel);
+    if ((_terrainTile->getDirtyMask() & TerrainTile::IMAGERY_DIRTY)==0)
+    {
+        generateGeometry(*buffer, masterLocator, centerModel);
 
-    applyColorLayers();
+        osg::ref_ptr<BufferData> read_buffer = _currentBufferData;
 
-    applyTransparency();
+        osg::StateSet* stateset = read_buffer->_geode->getStateSet();
+        if (stateset)
+        {
+            // OSG_NOTICE<<"Reusing StateSet"<<std::endl;
+            buffer->_geode->setStateSet(stateset);
+        }
+        else
+        {
+            applyColorLayers(*buffer);
+            applyTransparency(*buffer);
+        }
+    }
+    else
+    {
+        generateGeometry(*buffer, masterLocator, centerModel);
+        applyColorLayers(*buffer);
+        applyTransparency(*buffer);
+    }
 
-    // smoothGeometry();
+    if (buffer->_transform.valid()) buffer->_transform->setThreadSafeRefUnref(true);
 
-    if (buffer._transform.valid()) buffer._transform->setThreadSafeRefUnref(true);
+    if (!_currentBufferData)
+    {
+        _currentBufferData = buffer;
+    }
+    else
+    {
+        _newBufferData = buffer;
+        if (_terrainTile->getTerrain()) _terrainTile->getTerrain()->updateTerrainTileOnNextFrame(_terrainTile);
+    }
 
-    swapBuffers();
+    _terrainTile->setDirtyMask(0);
 }
 
 Locator* GeometryTechnique::computeMasterLocator()
@@ -149,12 +172,10 @@ Locator* GeometryTechnique::computeMasterLocator()
     return masterLocator;
 }
 
-osg::Vec3d GeometryTechnique::computeCenterModel(Locator* masterLocator)
+osg::Vec3d GeometryTechnique::computeCenterModel(BufferData& buffer, Locator* masterLocator)
 {
     if (!masterLocator) return osg::Vec3d(0.0,0.0,0.0);
 
-    BufferData& buffer = getWriteBuffer();
-    
     osgTerrain::Layer* elevationLayer = _terrainTile->getElevationLayer();
     osgTerrain::Layer* colorLayer = _terrainTile->getColorLayer(0);
 
@@ -211,32 +232,460 @@ osg::Vec3d GeometryTechnique::computeCenterModel(Locator* masterLocator)
     return centerModel;
 }
 
-void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3d& centerModel)
+class VertexNormalGenerator
 {
-    BufferData& buffer = getWriteBuffer();
-    
+    public:
+
+        typedef std::vector<int> Indices;
+        typedef std::pair< osg::ref_ptr<osg::Vec2Array>, Locator* > TexCoordLocatorPair;
+        typedef std::map< Layer*, TexCoordLocatorPair > LayerToTexCoordMap;
+
+        VertexNormalGenerator(Locator* masterLocator, const osg::Vec3d& centerModel, int numRows, int numColmns, float scaleHeight, bool createSkirt);
+
+        void populateCenter(osgTerrain::Layer* elevationLayer, LayerToTexCoordMap& layerToTexCoordMap);
+        void populateLeftBoundary(osgTerrain::Layer* elevationLayer);
+        void populateRightBoundary(osgTerrain::Layer* elevationLayer);
+        void populateAboveBoundary(osgTerrain::Layer* elevationLayer);
+        void populateBelowBoundary(osgTerrain::Layer* elevationLayer);
+
+        void computeNormals();
+
+        unsigned int capacity() const { return _vertices->capacity(); }
+
+        inline void setVertex(int c, int r, const osg::Vec3& v, const osg::Vec3& n)
+        {
+            int& i = index(c,r);
+            if (i==0)
+            {
+                if (r<0 || r>=_numRows || c<0 || c>=_numColumns)
+                {
+                    i = -(1+_boundaryVertices->size());
+                    _boundaryVertices->push_back(v);
+                    // OSG_NOTICE<<"setVertex("<<c<<", "<<r<<", ["<<v<<"], ["<<n<<"]), i="<<i<<" _boundaryVertices["<<-i-1<<"]="<<(*_boundaryVertices)[-i-1]<<"]"<<std::endl;
+                }
+                else
+                {
+                    i = _vertices->size() + 1;
+                    _vertices->push_back(v);
+                    _normals->push_back(n);
+                    // OSG_NOTICE<<"setVertex("<<c<<", "<<r<<", ["<<v<<"], ["<<n<<"]), i="<<i<<" _vertices["<<i-1<<"]="<<(*_vertices)[i-1]<<"]"<<std::endl;
+                }
+            }
+            else if (i<0)
+            {
+                (*_boundaryVertices)[-i-1] = v;
+                // OSG_NOTICE<<"setVertex("<<c<<", "<<r<<", ["<<v<<"], ["<<n<<"] _boundaryVertices["<<-i-1<<"]="<<(*_boundaryVertices)[-i-1]<<"]"<<std::endl;
+            }
+            else
+            {
+                // OSG_NOTICE<<"Overwriting setVertex("<<c<<", "<<r<<", ["<<v<<"], ["<<n<<"]"<<std::endl;
+                // OSG_NOTICE<<"     previous values ( vertex ["<<(*_vertices)[i-1]<<"], normal (*_normals)[i-1] ["<<n<<"]"<<std::endl;
+                // (*_vertices)[i-1] = v;
+
+                // average the vertex positions
+                (*_vertices)[i-1] = ((*_vertices)[i-1] + v)*0.5f;
+
+                (*_normals)[i-1] = n;
+            }
+        }
+
+        inline int& index(int c, int r) { return _indices[(r+1)*(_numColumns+2)+c+1]; }
+
+        inline int index(int c, int r) const { return _indices[(r+1)*(_numColumns+2)+c+1]; }
+
+        inline int vertex_index(int c, int r) const { int i = _indices[(r+1)*(_numColumns+2)+c+1]; return i-1; }
+
+        inline bool vertex(int c, int r, osg::Vec3& v) const
+        {
+            int i = index(c,r);
+            if (i==0) return false;
+            if (i<0) v = (*_boundaryVertices)[-i-1];
+            else v = (*_vertices)[i-1];
+            return true;
+        }
+
+        inline bool computeNormal(int c, int r, osg::Vec3& n) const
+        {
+            osg::Vec3 center;
+            bool center_valid  = vertex(c, r,  center);
+            if (!center_valid) return false;
+
+            osg::Vec3 top_left, top_right, bottom_left, bottom_right;
+            bool top_left_valid  = vertex(c-1, r+1,  top_left);
+            bool top_right_valid  = vertex(c+1, r+1,  top_right);
+            bool bottom_left_valid  = vertex(c-1, r-1,  bottom_left);
+            bool bottom_right_valid  = vertex(c+1, r-1,  bottom_right);
+
+            osg::Vec3 left, right, top,  bottom;
+            bool left_valid  = vertex(c-1, r,  left);
+            bool right_valid = vertex(c+1, r,   right);
+            bool bottom_valid = vertex(c,   r-1, bottom);
+            bool top_valid = vertex(c,   r+1, top);
+
+            osg::Vec3 dx(0.0f,0.0f,0.0f);
+            osg::Vec3 dy(0.0f,0.0f,0.0f);
+            osg::Vec3 zero(0.0f,0.0f,0.0f);
+            const float ratio = 0.5f;
+            if (left_valid)
+            {
+                dx = center-left;
+                if (top_left_valid) dy += (top_left-left)*ratio;
+                if (bottom_left_valid) dy += (left-bottom_left)*ratio;
+            }
+            if (right_valid)
+            {
+                dx = right-center;
+                if (top_right_valid) dy += (top_right-right)*ratio;
+                if (bottom_right_valid) dy += (right-bottom_right)*ratio;
+            }
+            if (bottom_valid)
+            {
+                dy += center-bottom;
+                if (bottom_left_valid) dx += (bottom-bottom_left)*ratio;
+                if (bottom_right_valid) dx += (bottom_right-bottom)*ratio;
+            }
+            if (top_valid)
+            {
+                dy += top-center;
+                if (top_left_valid) dx += (top-top_left)*ratio;
+                if (top_right_valid) dx += (top_right-top)*ratio;
+            }
+
+            if (dx==zero || dy==zero) return false;
+
+            n = dx ^ dy;
+            return n.normalize() != 0.0f;
+        }
+
+        Locator*                        _masterLocator;
+        const osg::Vec3d                _centerModel;
+        int                             _numRows;
+        int                             _numColumns;
+        float                           _scaleHeight;
+
+        Indices                         _indices;
+
+        osg::ref_ptr<osg::Vec3Array>    _vertices;
+        osg::ref_ptr<osg::Vec3Array>    _normals;
+        osg::ref_ptr<osg::FloatArray>   _elevations;
+
+        osg::ref_ptr<osg::Vec3Array>    _boundaryVertices;
+
+};
+
+VertexNormalGenerator::VertexNormalGenerator(Locator* masterLocator, const osg::Vec3d& centerModel, int numRows, int numColumns, float scaleHeight, bool createSkirt):
+    _masterLocator(masterLocator),
+    _centerModel(centerModel),
+    _numRows(numRows),
+    _numColumns(numColumns),
+    _scaleHeight(scaleHeight)
+{
+    int numVerticesInBody = numColumns*numRows;
+    int numVerticesInSkirt = createSkirt ? numColumns*2 + numRows*2 - 4 : 0;
+    int numVertices = numVerticesInBody+numVerticesInSkirt;
+
+    _indices.resize((_numRows+2)*(_numRows+2),0);
+
+    _vertices = new osg::Vec3Array;
+    _vertices->reserve(numVertices);
+
+    _normals = new osg::Vec3Array;
+    _normals->reserve(numVertices);
+
+    _elevations = new osg::FloatArray;
+    _elevations->reserve(numVertices);
+
+    _boundaryVertices = new osg::Vec3Array;
+    _boundaryVertices->reserve(_numRows*2 + _numColumns*2 + 4);
+}
+
+void VertexNormalGenerator::populateCenter(osgTerrain::Layer* elevationLayer, LayerToTexCoordMap& layerToTexCoordMap)
+{
+    // OSG_NOTICE<<std::endl<<"VertexNormalGenerator::populateCenter("<<elevationLayer<<")"<<std::endl;
+
+    bool sampled = elevationLayer &&
+                   ( (elevationLayer->getNumRows()!=static_cast<unsigned int>(_numRows)) ||
+                     (elevationLayer->getNumColumns()!=static_cast<unsigned int>(_numColumns)) );
+
+    for(int j=0; j<_numRows; ++j)
+    {
+        for(int i=0; i<_numColumns; ++i)
+        {
+            osg::Vec3d ndc( ((double)i)/(double)(_numColumns-1), ((double)j)/(double)(_numRows-1), 0.0);
+
+            bool validValue = true;
+            if (elevationLayer)
+            {
+                float value = 0.0f;
+                if (sampled) validValue = elevationLayer->getInterpolatedValidValue(ndc.x(), ndc.y(), value); 
+                else validValue = elevationLayer->getValidValue(i,j,value);
+                ndc.z() = value*_scaleHeight;
+            }
+
+            if (validValue)
+            {
+                osg::Vec3d model;
+                _masterLocator->convertLocalToModel(ndc, model);
+
+                for(VertexNormalGenerator::LayerToTexCoordMap::iterator itr = layerToTexCoordMap.begin();
+                    itr != layerToTexCoordMap.end();
+                    ++itr)
+                {
+                    osg::Vec2Array* texcoords = itr->second.first.get();
+                    Locator* colorLocator = itr->second.second;
+                    if (colorLocator != _masterLocator)
+                    {
+                        osg::Vec3d color_ndc;
+                        Locator::convertLocalCoordBetween(*_masterLocator, ndc, *colorLocator, color_ndc);
+                        (*texcoords).push_back(osg::Vec2(color_ndc.x(), color_ndc.y()));
+                    }
+                    else
+                    {
+                        (*texcoords).push_back(osg::Vec2(ndc.x(), ndc.y()));
+                    }
+                }
+
+                if (_elevations.valid())
+                {
+                    (*_elevations).push_back(ndc.z());
+                }
+
+                // compute the local normal
+                osg::Vec3d ndc_one = ndc; ndc_one.z() += 1.0;
+                osg::Vec3d model_one;
+                _masterLocator->convertLocalToModel(ndc_one, model_one);
+                model_one = model_one - model;
+                model_one.normalize();
+
+                setVertex(i, j, osg::Vec3(model-_centerModel), model_one);
+            }
+        }
+    }
+}
+
+void VertexNormalGenerator::populateLeftBoundary(osgTerrain::Layer* elevationLayer)
+{
+    // OSG_NOTICE<<"   VertexNormalGenerator::populateLeftBoundary("<<elevationLayer<<")"<<std::endl;
+
+    if (!elevationLayer) return;
+
+    bool sampled = elevationLayer &&
+                   ( (elevationLayer->getNumRows()!=static_cast<unsigned int>(_numRows)) ||
+                     (elevationLayer->getNumColumns()!=static_cast<unsigned int>(_numColumns)) );
+
+    for(int j=0; j<_numRows; ++j)
+    {
+        for(int i=-1; i<=0; ++i)
+        {
+            osg::Vec3d ndc( ((double)i)/(double)(_numColumns-1), ((double)j)/(double)(_numRows-1), 0.0);
+            osg::Vec3d left_ndc( 1.0+ndc.x(), ndc.y(), 0.0);
+
+            bool validValue = true;
+            if (elevationLayer)
+            {
+                float value = 0.0f;
+                if (sampled) validValue = elevationLayer->getInterpolatedValidValue(left_ndc.x(), left_ndc.y(), value);
+                else validValue = elevationLayer->getValidValue((_numColumns-1)+i,j,value);
+                ndc.z() = value*_scaleHeight;
+
+                ndc.z() += 0.f;
+            }
+
+            if (validValue)
+            {
+                osg::Vec3d model;
+                _masterLocator->convertLocalToModel(ndc, model);
+
+                // compute the local normal
+                osg::Vec3d ndc_one = ndc; ndc_one.z() += 1.0;
+                osg::Vec3d model_one;
+                _masterLocator->convertLocalToModel(ndc_one, model_one);
+                model_one = model_one - model;
+                model_one.normalize();
+
+                setVertex(i, j, osg::Vec3(model-_centerModel), model_one);
+                // OSG_NOTICE<<"       setVertex("<<i<<", "<<j<<"..)"<<std::endl;
+            }
+        }
+    }
+}
+
+void VertexNormalGenerator::populateRightBoundary(osgTerrain::Layer* elevationLayer)
+{
+    // OSG_NOTICE<<"   VertexNormalGenerator::populateRightBoundary("<<elevationLayer<<")"<<std::endl;
+
+    if (!elevationLayer) return;
+
+    bool sampled = elevationLayer &&
+                   ( (elevationLayer->getNumRows()!=static_cast<unsigned int>(_numRows)) ||
+                     (elevationLayer->getNumColumns()!=static_cast<unsigned int>(_numColumns)) );
+
+    for(int j=0; j<_numRows; ++j)
+    {
+        for(int i=_numColumns-1; i<_numColumns+1; ++i)
+        {
+            osg::Vec3d ndc( ((double)i)/(double)(_numColumns-1), ((double)j)/(double)(_numRows-1), 0.0);
+            osg::Vec3d right_ndc(ndc.x()-1.0, ndc.y(), 0.0);
+
+            bool validValue = true;
+            if (elevationLayer)
+            {
+                float value = 0.0f;
+                if (sampled) validValue = elevationLayer->getInterpolatedValidValue(right_ndc.x(), right_ndc.y(), value);
+                else validValue = elevationLayer->getValidValue(i-(_numColumns-1),j,value);
+                ndc.z() = value*_scaleHeight;
+            }
+
+            if (validValue)
+            {
+                osg::Vec3d model;
+                _masterLocator->convertLocalToModel(ndc, model);
+
+                // compute the local normal
+                osg::Vec3d ndc_one = ndc; ndc_one.z() += 1.0;
+                osg::Vec3d model_one;
+                _masterLocator->convertLocalToModel(ndc_one, model_one);
+                model_one = model_one - model;
+                model_one.normalize();
+
+                setVertex(i, j, osg::Vec3(model-_centerModel), model_one);
+                // OSG_NOTICE<<"       setVertex("<<i<<", "<<j<<"..)"<<std::endl;
+            }
+        }
+    }
+}
+
+void VertexNormalGenerator::populateAboveBoundary(osgTerrain::Layer* elevationLayer)
+{
+    // OSG_NOTICE<<"   VertexNormalGenerator::populateAboveBoundary("<<elevationLayer<<")"<<std::endl;
+
+    if (!elevationLayer) return;
+
+    bool sampled = elevationLayer &&
+                   ( (elevationLayer->getNumRows()!=static_cast<unsigned int>(_numRows)) ||
+                     (elevationLayer->getNumColumns()!=static_cast<unsigned int>(_numColumns)) );
+
+    for(int j=_numRows-1; j<_numRows+1; ++j)
+    {
+        for(int i=0; i<_numColumns; ++i)
+        {
+            osg::Vec3d ndc( ((double)i)/(double)(_numColumns-1), ((double)j)/(double)(_numRows-1), 0.0);
+            osg::Vec3d above_ndc( ndc.x(), ndc.y()-1.0, 0.0);
+
+            bool validValue = true;
+            if (elevationLayer)
+            {
+                float value = 0.0f;
+                if (sampled) validValue = elevationLayer->getInterpolatedValidValue(above_ndc.x(), above_ndc.y(), value);
+                else validValue = elevationLayer->getValidValue(i,j-(_numRows-1),value);
+                ndc.z() = value*_scaleHeight;
+            }
+
+            if (validValue)
+            {
+                osg::Vec3d model;
+                _masterLocator->convertLocalToModel(ndc, model);
+
+                // compute the local normal
+                osg::Vec3d ndc_one = ndc; ndc_one.z() += 1.0;
+                osg::Vec3d model_one;
+                _masterLocator->convertLocalToModel(ndc_one, model_one);
+                model_one = model_one - model;
+                model_one.normalize();
+
+                setVertex(i, j, osg::Vec3(model-_centerModel), model_one);
+                // OSG_NOTICE<<"       setVertex("<<i<<", "<<j<<"..)"<<std::endl;
+            }
+        }
+    }
+}
+
+void VertexNormalGenerator::populateBelowBoundary(osgTerrain::Layer* elevationLayer)
+{
+    // OSG_NOTICE<<"   VertexNormalGenerator::populateBelowBoundary("<<elevationLayer<<")"<<std::endl;
+
+    if (!elevationLayer) return;
+
+    bool sampled = elevationLayer &&
+                   ( (elevationLayer->getNumRows()!=static_cast<unsigned int>(_numRows)) ||
+                     (elevationLayer->getNumColumns()!=static_cast<unsigned int>(_numColumns)) );
+
+    for(int j=-1; j<=0; ++j)
+    {
+        for(int i=0; i<_numColumns; ++i)
+        {
+            osg::Vec3d ndc( ((double)i)/(double)(_numColumns-1), ((double)j)/(double)(_numRows-1), 0.0);
+            osg::Vec3d below_ndc( ndc.x(), 1.0+ndc.y(), 0.0);
+
+            bool validValue = true;
+            if (elevationLayer)
+            {
+                float value = 0.0f;
+                if (sampled) validValue = elevationLayer->getInterpolatedValidValue(below_ndc.x(), below_ndc.y(), value);
+                else validValue = elevationLayer->getValidValue(i,(_numRows-1)+j,value);
+                ndc.z() = value*_scaleHeight;
+            }
+
+            if (validValue)
+            {
+                osg::Vec3d model;
+                _masterLocator->convertLocalToModel(ndc, model);
+
+                // compute the local normal
+                osg::Vec3d ndc_one = ndc; ndc_one.z() += 1.0;
+                osg::Vec3d model_one;
+                _masterLocator->convertLocalToModel(ndc_one, model_one);
+                model_one = model_one - model;
+                model_one.normalize();
+
+                setVertex(i, j, osg::Vec3(model-_centerModel), model_one);
+                // OSG_NOTICE<<"       setVertex("<<i<<", "<<j<<"..)"<<std::endl;
+            }
+        }
+    }
+}
+
+
+void VertexNormalGenerator::computeNormals()
+{
+    // compute normals for the center section
+    for(int j=0; j<_numRows; ++j)
+    {
+        for(int i=0; i<_numColumns; ++i)
+        {
+            int vi = vertex_index(i, j);
+            if (vi>=0) computeNormal(i, j, (*_normals)[vi]);
+            else OSG_NOTICE<<"Not computing normal, vi="<<vi<<std::endl;
+        }
+    }
+}
+
+void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLocator, const osg::Vec3d& centerModel)
+{
+    Terrain* terrain = _terrainTile->getTerrain();
     osgTerrain::Layer* elevationLayer = _terrainTile->getElevationLayer();
+
 
     buffer._geode = new osg::Geode;
     if(buffer._transform.valid())
         buffer._transform->addChild(buffer._geode.get());
-    
+
     buffer._geometry = new osg::Geometry;
     buffer._geode->addDrawable(buffer._geometry.get());
-        
+
     osg::Geometry* geometry = buffer._geometry.get();
 
     unsigned int numRows = 20;
     unsigned int numColumns = 20;
-    
+
     if (elevationLayer)
     {
         numColumns = elevationLayer->getNumColumns();
         numRows = elevationLayer->getNumRows();
     }
-    
-    float sampleRatio = _terrainTile->getTerrain() ? _terrainTile->getTerrain()->getSampleRatio() : 1.0f;
-    
+
+    float sampleRatio = terrain ? terrain->getSampleRatio() : 1.0f;
+
     double i_sampleFactor = 1.0;
     double j_sampleFactor = 1.0;
 
@@ -270,37 +719,34 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     }
     
     bool createSkirt = skirtHeight != 0.0f;
-  
-    unsigned int numVerticesInBody = numColumns*numRows;
-    unsigned int numVerticesInSkirt = createSkirt ? numColumns*2 + numRows*2 - 4 : 0;
-    unsigned int numVertices = numVerticesInBody+numVerticesInSkirt;
+
+
+    float scaleHeight = terrain ? terrain->getVerticalScale() : 1.0f;
+
+    // construct the VertexNormalGenerator which will manage the generation and the vertices and normals
+    VertexNormalGenerator VNG(masterLocator, centerModel, numRows, numColumns, scaleHeight, createSkirt);
+
+    unsigned int numVertices = VNG.capacity();
 
     // allocate and assign vertices
-    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
-    vertices->reserve(numVertices);
-    geometry->setVertexArray(vertices.get());
+    geometry->setVertexArray(VNG._vertices.get());
 
     // allocate and assign normals
-    osg::ref_ptr<osg::Vec3Array> normals = new osg::Vec3Array;
-    if (normals.valid()) normals->reserve(numVertices);
-    geometry->setNormalArray(normals.get());
+    geometry->setNormalArray(VNG._normals.get());
     geometry->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
-    
 
-    //float minHeight = 0.0;
-    float scaleHeight = _terrainTile->getTerrain() ? _terrainTile->getTerrain()->getVerticalScale() : 1.0f;
 
     // allocate and assign tex coords
-    typedef std::pair< osg::ref_ptr<osg::Vec2Array>, Locator* > TexCoordLocatorPair;
-    typedef std::map< Layer*, TexCoordLocatorPair > LayerToTexCoordMap;
+    // typedef std::pair< osg::ref_ptr<osg::Vec2Array>, Locator* > TexCoordLocatorPair;
+    // typedef std::map< Layer*, TexCoordLocatorPair > LayerToTexCoordMap;
 
-    LayerToTexCoordMap layerToTexCoordMap;
+    VertexNormalGenerator::LayerToTexCoordMap layerToTexCoordMap;
     for(unsigned int layerNum=0; layerNum<_terrainTile->getNumColorLayers(); ++layerNum)
     {
         osgTerrain::Layer* colorLayer = _terrainTile->getColorLayer(layerNum);
         if (colorLayer)
         {
-            LayerToTexCoordMap::iterator itr = layerToTexCoordMap.find(colorLayer);
+            VertexNormalGenerator::LayerToTexCoordMap::iterator itr = layerToTexCoordMap.find(colorLayer);
             if (itr!=layerToTexCoordMap.end())
             {
                 geometry->setTexCoordArray(layerNum, itr->second.first.get());
@@ -323,7 +769,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                     }
                 }
 
-                TexCoordLocatorPair& tclp = layerToTexCoordMap[colorLayer];
+                VertexNormalGenerator::TexCoordLocatorPair& tclp = layerToTexCoordMap[colorLayer];
                 tclp.first = new osg::Vec2Array;
                 tclp.first->reserve(numVertices);
                 tclp.second = locator ? locator : masterLocator;
@@ -332,10 +778,6 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
         }
     }
 
-    osg::ref_ptr<osg::FloatArray> elevations = new osg::FloatArray;
-    if (elevations.valid()) elevations->reserve(numVertices);
-        
-
     // allocate and assign color
     osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array(1);
     (*colors)[0].set(1.0f,1.0f,1.0f,1.0f);
@@ -343,131 +785,123 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     geometry->setColorArray(colors.get());
     geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-
-    typedef std::vector<int> Indices;
-    Indices indices(numVertices, -1);
-    
+    //
     // populate vertex and tex coord arrays
-    unsigned int i, j;
-    for(j=0; j<numRows; ++j)
+    //
+    VNG.populateCenter(elevationLayer, layerToTexCoordMap);
+    if (terrain)
     {
-        for(i=0; i<numColumns; ++i)
+        TileID tileID = _terrainTile->getTileID();
+
+        osg::ref_ptr<TerrainTile> left_tile  = terrain->getTile(TileID(tileID.level, tileID.x-1, tileID.y));
+        osg::ref_ptr<TerrainTile> right_tile = terrain->getTile(TileID(tileID.level, tileID.x+1, tileID.y));
+        osg::ref_ptr<TerrainTile> top_tile = terrain->getTile(TileID(tileID.level, tileID.x, tileID.y+1));
+        osg::ref_ptr<TerrainTile> bottom_tile = terrain->getTile(TileID(tileID.level, tileID.x, tileID.y-1));
+
+        VNG.populateLeftBoundary(left_tile.valid() ? left_tile->getElevationLayer() : 0);
+        VNG.populateRightBoundary(right_tile.valid() ? right_tile->getElevationLayer() : 0);
+        VNG.populateAboveBoundary(top_tile.valid() ? top_tile->getElevationLayer() : 0);
+        VNG.populateBelowBoundary(bottom_tile.valid() ? bottom_tile->getElevationLayer() : 0);
+
+        _neighbours.clear();
+
+         bool updateNeighboursImmediately = true;
+
+        if (left_tile.valid())   addNeighbour(left_tile.get());
+        if (right_tile.valid())  addNeighbour(right_tile.get());
+        if (top_tile.valid())    addNeighbour(top_tile.get());
+        if (bottom_tile.valid()) addNeighbour(bottom_tile.get());
+
+
+        if (left_tile.valid())
         {
-            unsigned int iv = j*numColumns + i;
-            osg::Vec3d ndc( ((double)i)/(double)(numColumns-1), ((double)j)/(double)(numRows-1), 0.0);
-
-            bool validValue = true;
-            if (elevationLayer)
+            if (!(left_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
             {
-                float value = 0.0f;
-                if (sampleRatio==1.0) validValue = elevationLayer->getValidValue(i,j,value);
-                else validValue = elevationLayer->getInterpolatedValidValue(ndc.x(), ndc.y(), value);
-                ndc.z() = value*scaleHeight;
-            }
-
-            if (validValue)
-            {
-                indices[iv] = vertices->size();
-
-                osg::Vec3d model;
-                masterLocator->convertLocalToModel(ndc, model);
-
-                (*vertices).push_back(model - centerModel);
-
-                for(LayerToTexCoordMap::iterator itr = layerToTexCoordMap.begin();
-                    itr != layerToTexCoordMap.end();
-                    ++itr)
+                left_tile->setDirtyMask(left_tile->getDirtyMask() | TerrainTile::LEFT_EDGE_DIRTY);
+                if (updateNeighboursImmediately)
                 {
-                    osg::Vec2Array* texcoords = itr->second.first.get();
-                    Locator* colorLocator = itr->second.second;
-                    if (colorLocator != masterLocator)
-                    {
-                        osg::Vec3d color_ndc;
-                        Locator::convertLocalCoordBetween(*masterLocator, ndc, *colorLocator, color_ndc);
-                        (*texcoords).push_back(osg::Vec2(color_ndc.x(), color_ndc.y()));
-                    }
-                    else
-                    {
-                        (*texcoords).push_back(osg::Vec2(ndc.x(), ndc.y()));
-                    }
+                    left_tile->init();
                 }
-
-                if (elevations.valid())
-                {
-                    (*elevations).push_back(ndc.z());
-                }
-
-                // compute the local normal
-                osg::Vec3d ndc_one = ndc; ndc_one.z() += 1.0;
-                osg::Vec3d model_one;
-                masterLocator->convertLocalToModel(ndc_one, model_one);
-                model_one = model_one - model;
-                model_one.normalize();            
-                (*normals).push_back(model_one);
             }
-            else
+        }
+        if (right_tile.valid())
+        {
+            if (!(right_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
             {
-                indices[iv] = -1;
+                right_tile->setDirtyMask(right_tile->getDirtyMask() | TerrainTile::RIGHT_EDGE_DIRTY);
+                if (updateNeighboursImmediately) right_tile->init();
+            }
+        }
+        if (top_tile.valid())
+        {
+            if (!(top_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
+            {
+                top_tile->setDirtyMask(top_tile->getDirtyMask() | TerrainTile::TOP_EDGE_DIRTY);
+                if (updateNeighboursImmediately) top_tile->init();
+            }
+        }
+
+        if (bottom_tile)
+        {
+            if (!(bottom_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
+            {
+                bottom_tile->setDirtyMask(bottom_tile->getDirtyMask() | TerrainTile::BOTTOM_EDGE_DIRTY);
+                if (updateNeighboursImmediately) bottom_tile->init();
             }
         }
     }
 
-    // populate primitive sets
-//    bool optimizeOrientations = elevations!=0;
-    bool swapOrientation = !(masterLocator->orientationOpenGL());
+    osg::ref_ptr<osg::Vec3Array> skirtVectors = new osg::Vec3Array((*VNG._normals));
+    VNG.computeNormals();
 
+    //
+    // populate the primitive data
+    //
+    bool swapOrientation = !(masterLocator->orientationOpenGL());
     bool smallTile = numVertices <= 16384;
 
     // OSG_NOTICE<<"smallTile = "<<smallTile<<std::endl;
-    
+
     osg::ref_ptr<osg::DrawElements> elements = smallTile ? 
         static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_TRIANGLES)) :
         static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_TRIANGLES));
-        
+
     elements->reserveElements((numRows-1) * (numColumns-1) * 6);
 
     geometry->addPrimitiveSet(elements.get());
 
+
+    unsigned int i, j;
     for(j=0; j<numRows-1; ++j)
     {
         for(i=0; i<numColumns-1; ++i)
         {
-            int i00;
-            int i01;
+            // remap indices to final vertex positions
+            int i00 = VNG.vertex_index(i,   j);
+            int i01 = VNG.vertex_index(i,   j+1);
+            int i10 = VNG.vertex_index(i+1, j);
+            int i11 = VNG.vertex_index(i+1, j+1);
+
             if (swapOrientation)
             {
-                i01 = j*numColumns + i;
-                i00 = i01+numColumns;
-            }
-            else
-            {
-                i00 = j*numColumns + i;
-                i01 = i00+numColumns;
+                std::swap(i00,i01);
+                std::swap(i10,i11);
             }
 
-            int i10 = i00+1;
-            int i11 = i01+1;
-
-            // remap indices to final vertex positions
-            i00 = indices[i00];
-            i01 = indices[i01];
-            i10 = indices[i10];
-            i11 = indices[i11];
-            
             unsigned int numValid = 0;
             if (i00>=0) ++numValid;
             if (i01>=0) ++numValid;
             if (i10>=0) ++numValid;
             if (i11>=0) ++numValid;
-            
+
             if (numValid==4)
             {
-                float e00 = (*elevations)[i00];
-                float e10 = (*elevations)[i10];
-                float e01 = (*elevations)[i01];
-                float e11 = (*elevations)[i11];
-
-                if (fabsf(e00-e11)<fabsf(e01-e10))
+                // optimize which way to put the diagonal by choosing to
+                // place it between the two corners that have the least curvature
+                // relative to each other.
+                float dot_00_11 = (*VNG._normals)[i00] * (*VNG._normals)[i11];
+                float dot_01_10 = (*VNG._normals)[i01] * (*VNG._normals)[i10];
+                if (dot_00_11 > dot_01_10)
                 {
                     elements->addElement(i01);
                     elements->addElement(i00);
@@ -495,23 +929,15 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                 if (i11>=0) elements->addElement(i11);
                 if (i10>=0) elements->addElement(i10);
             }
-            
         }
     }
-    
-    osg::ref_ptr<osg::Vec3Array> skirtVectors = new osg::Vec3Array((*normals));
-    
-    if (elevationLayer)
-    {
-        smoothGeometry();
-        
-        normals = dynamic_cast<osg::Vec3Array*>(geometry->getNormalArray());
-        
-        if (!normals) createSkirt = false;
-    }
+
 
     if (createSkirt)
     {
+        osg::ref_ptr<osg::Vec3Array> vertices = VNG._vertices.get();
+        osg::ref_ptr<osg::Vec3Array> normals = VNG._normals.get();
+
         osg::ref_ptr<osg::DrawElements> skirtDrawElements = smallTile ? 
             static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUAD_STRIP)) :
             static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_QUAD_STRIP));
@@ -521,7 +947,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
         r=0;
         for(c=0;c<static_cast<int>(numColumns);++c)
         {
-            int orig_i = indices[(r)*numColumns+c]; // index of original vertex of grid
+            int orig_i = VNG.vertex_index(c,r);
             if (orig_i>=0)
             {
                 unsigned int new_i = vertices->size(); // index of new index of added skirt point
@@ -529,7 +955,7 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
                 (*vertices).push_back(new_v);
                 if (normals.valid()) (*normals).push_back((*normals)[orig_i]);
 
-                for(LayerToTexCoordMap::iterator itr = layerToTexCoordMap.begin();
+                for(VertexNormalGenerator::LayerToTexCoordMap::iterator itr = layerToTexCoordMap.begin();
                     itr != layerToTexCoordMap.end();
                     ++itr)
                 {
@@ -564,14 +990,14 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
         c=numColumns-1;
         for(r=0;r<static_cast<int>(numRows);++r)
         {
-            int orig_i = indices[(r)*numColumns+c]; // index of original vertex of grid
+            int orig_i = VNG.vertex_index(c,r); // index of original vertex of grid
             if (orig_i>=0)
             {
                 unsigned int new_i = vertices->size(); // index of new index of added skirt point
                 osg::Vec3 new_v = (*vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
                 (*vertices).push_back(new_v);
                 if (normals.valid()) (*normals).push_back((*normals)[orig_i]);
-                for(LayerToTexCoordMap::iterator itr = layerToTexCoordMap.begin();
+                for(VertexNormalGenerator::LayerToTexCoordMap::iterator itr = layerToTexCoordMap.begin();
                     itr != layerToTexCoordMap.end();
                     ++itr)
                 {
@@ -606,14 +1032,14 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
         r=numRows-1;
         for(c=numColumns-1;c>=0;--c)
         {
-            int orig_i = indices[(r)*numColumns+c]; // index of original vertex of grid
+            int orig_i = VNG.vertex_index(c,r); // index of original vertex of grid
             if (orig_i>=0)
             {
                 unsigned int new_i = vertices->size(); // index of new index of added skirt point
                 osg::Vec3 new_v = (*vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
                 (*vertices).push_back(new_v);
                 if (normals.valid()) (*normals).push_back((*normals)[orig_i]);
-                for(LayerToTexCoordMap::iterator itr = layerToTexCoordMap.begin();
+                for(VertexNormalGenerator::LayerToTexCoordMap::iterator itr = layerToTexCoordMap.begin();
                     itr != layerToTexCoordMap.end();
                     ++itr)
                 {
@@ -648,14 +1074,14 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
         c=0;
         for(r=numRows-1;r>=0;--r)
         {
-            int orig_i = indices[(r)*numColumns+c]; // index of original vertex of grid
+            int orig_i = VNG.vertex_index(c,r); // index of original vertex of grid
             if (orig_i>=0)
             {
                 unsigned int new_i = vertices->size(); // index of new index of added skirt point
                 osg::Vec3 new_v = (*vertices)[orig_i] - ((*skirtVectors)[orig_i])*skirtHeight;
                 (*vertices).push_back(new_v);
                 if (normals.valid()) (*normals).push_back((*normals)[orig_i]);
-                for(LayerToTexCoordMap::iterator itr = layerToTexCoordMap.begin();
+                for(VertexNormalGenerator::LayerToTexCoordMap::iterator itr = layerToTexCoordMap.begin();
                     itr != layerToTexCoordMap.end();
                     ++itr)
                 {
@@ -722,10 +1148,8 @@ void GeometryTechnique::generateGeometry(Locator* masterLocator, const osg::Vec3
     }
 }
 
-void GeometryTechnique::applyColorLayers()
+void GeometryTechnique::applyColorLayers(BufferData& buffer)
 {
-    BufferData& buffer = getWriteBuffer();
-
     typedef std::map<osgTerrain::Layer*, osg::Texture*> LayerToTextureMap;
     LayerToTextureMap layerToTextureMap;
     
@@ -816,7 +1240,7 @@ void GeometryTechnique::applyColorLayers()
     }
 }
 
-void GeometryTechnique::applyTransparency()
+void GeometryTechnique::applyTransparency(BufferData& buffer)
 {
     TerrainTile::BlendingPolicy blendingPolicy = _terrainTile->getBlendingPolicy();
     if (blendingPolicy == TerrainTile::INHERIT && _terrainTile->getTerrain())
@@ -860,7 +1284,6 @@ void GeometryTechnique::applyTransparency()
 
     if (enableBlending)
     {
-        BufferData& buffer = getWriteBuffer();
         osg::StateSet* stateset = buffer._geode->getOrCreateStateSet();
         stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
         stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
@@ -868,35 +1291,27 @@ void GeometryTechnique::applyTransparency()
 
 }
 
-void GeometryTechnique::smoothGeometry()
-{
-    BufferData& buffer = getWriteBuffer();
-    
-    if (buffer._geometry.valid())
-    {
-        osgUtil::SmoothingVisitor smoother;
-        smoother.smooth(*buffer._geometry);
-    }
-}
-
 void GeometryTechnique::update(osgUtil::UpdateVisitor* uv)
 {
     if (_terrainTile) _terrainTile->osg::Group::traverse(*uv);
+
+    if (_newBufferData.valid())
+    {
+        _currentBufferData = _newBufferData;
+        _newBufferData = 0;
+    }
 }
 
 
 void GeometryTechnique::cull(osgUtil::CullVisitor* cv)
 {
-    BufferData& buffer = getReadOnlyBuffer();
-
-#if 0
-    if (buffer._terrainTile) buffer._terrainTile->osg::Group::traverse(*cv);
-#else
-    if (buffer._transform.valid())
+    if (_currentBufferData.valid())
     {
-        buffer._transform->accept(*cv);
+        if (_currentBufferData->_transform.valid())
+        {
+            _currentBufferData->_transform->accept(*cv);
+        }
     }
-#endif    
 }
 
 
@@ -914,8 +1329,7 @@ void GeometryTechnique::traverse(osg::NodeVisitor& nv)
         {
             update(uv);
             return;
-        }        
-        
+        }
     }
     else if (nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR)
     {
@@ -934,8 +1348,10 @@ void GeometryTechnique::traverse(osg::NodeVisitor& nv)
         _terrainTile->init();
     }
 
-    BufferData& buffer = getReadOnlyBuffer();
-    if (buffer._transform.valid()) buffer._transform->accept(nv);
+    if (_currentBufferData.valid())
+    {
+        if (_currentBufferData->_transform.valid()) _currentBufferData->_transform->accept(nv);
+    }
 }
 
 
@@ -945,7 +1361,7 @@ void GeometryTechnique::cleanSceneGraph()
 
 void GeometryTechnique::releaseGLObjects(osg::State* state) const
 {
-    if (_bufferData[0]._transform.valid()) _bufferData[0]._transform->releaseGLObjects(state);
-    if (_bufferData[1]._transform.valid()) _bufferData[1]._transform->releaseGLObjects(state);    
+    if (_currentBufferData.valid() && _currentBufferData->_transform.valid()) _currentBufferData->_transform->releaseGLObjects(state);
+    if (_newBufferData.valid() && _newBufferData->_transform.valid()) _newBufferData->_transform->releaseGLObjects(state);
 }
 

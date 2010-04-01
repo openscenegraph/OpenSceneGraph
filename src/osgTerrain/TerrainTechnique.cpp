@@ -16,6 +16,48 @@
 
 using namespace osgTerrain;
 
+/////////////////////////////////////////////////////////////////////////////////////
+//
+// TerrainNeighbours
+//
+TerrainNeighbours::TerrainNeighbours()
+{
+}
+
+TerrainNeighbours::~TerrainNeighbours()
+{
+    clear();
+}
+
+void TerrainNeighbours::addNeighbour(TerrainTile* tile)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_neighboursMutex);
+    _neighbours.insert(tile);
+}
+
+void TerrainNeighbours::removeNeighbour(TerrainTile* tile)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_neighboursMutex);
+    _neighbours.erase(tile);
+}
+
+void TerrainNeighbours::clear()
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_neighboursMutex);
+    _neighbours.clear();
+}
+
+
+bool TerrainNeighbours::containsNeighbour(TerrainTile* tile) const
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_neighboursMutex);
+    return _neighbours.count(tile)!=0;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+//
+// TerrainTechnique
+//
 TerrainTechnique::TerrainTechnique():
     _terrainTile(0)
 {
@@ -30,6 +72,15 @@ TerrainTechnique::TerrainTechnique(const TerrainTechnique& TerrainTechnique,cons
 
 TerrainTechnique::~TerrainTechnique()
 {
+}
+
+void TerrainTechnique::setTerrainTile(TerrainTile* tile)
+{
+    if (_terrainTile==tile) return;
+
+    _neighbours.clear();
+
+    _terrainTile = tile;
 }
 
 void TerrainTechnique::init()

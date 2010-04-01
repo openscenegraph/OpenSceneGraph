@@ -58,7 +58,7 @@ osg::ref_ptr<TerrainTile::TileLoadedCallback>& TerrainTile::getTileLoadedCallbac
 
 TerrainTile::TerrainTile():
     _terrain(0),
-    _dirty(false),
+    _dirtyMask(NOT_DIRTY),
     _hasBeenTraversal(false),
     _requiresNormals(true),
     _treatBoundariesToValidDataAsDefaultValue(false),
@@ -70,7 +70,7 @@ TerrainTile::TerrainTile():
 TerrainTile::TerrainTile(const TerrainTile& terrain,const osg::CopyOp& copyop):
     Group(terrain,copyop),
     _terrain(0),
-    _dirty(false),
+    _dirtyMask(NOT_DIRTY),
     _hasBeenTraversal(false),
     _elevationLayer(terrain._elevationLayer),
     _colorLayers(terrain._colorLayers),
@@ -86,6 +86,11 @@ TerrainTile::TerrainTile(const TerrainTile& terrain,const osg::CopyOp& copyop):
 
 TerrainTile::~TerrainTile()
 {
+    if (_terrainTechnique.valid())
+    {
+        _terrainTechnique->setTerrainTile(0);
+    }
+
     if (_terrain) setTerrain(0);
 }
 
@@ -134,9 +139,9 @@ void TerrainTile::traverse(osg::NodeVisitor& nv)
                 }
             }
         }
-        
+
         init();
-                    
+
         _hasBeenTraversal = true;
     }
 
@@ -162,7 +167,7 @@ void TerrainTile::traverse(osg::NodeVisitor& nv)
 void TerrainTile::init()
 {
     if (!_terrainTechnique)
-    {        
+    {
         if (_terrain && _terrain->getTerrainTechniquePrototype())
         {            
             osg::ref_ptr<osg::Object> object = _terrain->getTerrainTechniquePrototype()->clone(osg::CopyOp::DEEP_COPY_ALL);
@@ -177,45 +182,47 @@ void TerrainTile::init()
     if (_terrainTechnique.valid() && getDirty())
     {
         _terrainTechnique->init();
-        
-        setDirty(false);
-    }    
+    }
 }
 
 void TerrainTile::setTerrainTechnique(TerrainTechnique* terrainTechnique)
 {
     if (_terrainTechnique == terrainTechnique) return; 
 
-    int dirtyDelta = _dirty ? -1 : 0;
+    int dirtyDelta = (_dirtyMask==NOT_DIRTY) ? 0 : -1;
 
     if (_terrainTechnique.valid()) 
     {
-        _terrainTechnique->_terrainTile = 0;
+        _terrainTechnique->setTerrainTile(0);
     }
 
     _terrainTechnique = terrainTechnique;
     
     if (_terrainTechnique.valid()) 
     {
-        _terrainTechnique->_terrainTile = this;
+        _terrainTechnique->setTerrainTile(this);
         ++dirtyDelta;        
     }
     
-    if (dirtyDelta>0) setDirty(true);
-    else if (dirtyDelta<0) setDirty(false);
+    if (dirtyDelta>0) setDirtyMask(ALL_DIRTY);
+    else if (dirtyDelta<0) setDirtyMask(NOT_DIRTY);
 }
 
-void TerrainTile::setDirty(bool dirty)
+void TerrainTile::setDirtyMask(int dirtyMask)
 {
-    if (_dirty==dirty) return;
+    if (_dirtyMask==dirtyMask) return;
 
-    _dirty = dirty;
+    int dirtyDelta = (_dirtyMask==NOT_DIRTY) ? 0 : -1;
 
-    if (_dirty)
+    _dirtyMask = dirtyMask;
+
+    if (_dirtyMask!=NOT_DIRTY) dirtyDelta += 1;
+
+    if (dirtyDelta>0)
     {
         setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
     }
-    else if (getNumChildrenRequiringUpdateTraversal()>0) 
+    else if (dirtyDelta<0 && getNumChildrenRequiringUpdateTraversal()>0)
     {
         setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-1);
     }

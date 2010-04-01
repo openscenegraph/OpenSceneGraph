@@ -27,9 +27,42 @@
 #undef OUT
 #endif
 
+BEGIN_VALUE_REFLECTOR(osgTerrain::TerrainNeighbours)
+	I_DeclaringFile("osgTerrain/TerrainTechnique");
+	I_Constructor0(____TerrainNeighbours,
+	               "",
+	               "");
+	I_Method0(void, clear,
+	          Properties::NON_VIRTUAL,
+	          __void__clear,
+	          "",
+	          "");
+	I_Method1(void, addNeighbour, IN, osgTerrain::TerrainTile *, tile,
+	          Properties::NON_VIRTUAL,
+	          __void__addNeighbour__TerrainTile_P1,
+	          "",
+	          "");
+	I_Method1(void, removeNeighbour, IN, osgTerrain::TerrainTile *, tile,
+	          Properties::NON_VIRTUAL,
+	          __void__removeNeighbour__TerrainTile_P1,
+	          "",
+	          "");
+	I_Method1(bool, containsNeighbour, IN, osgTerrain::TerrainTile *, tile,
+	          Properties::NON_VIRTUAL,
+	          __bool__containsNeighbour__TerrainTile_P1,
+	          "",
+	          "");
+	I_ProtectedConstructor1(IN, const osgTerrain::TerrainNeighbours &, tn,
+	                        Properties::NON_EXPLICIT,
+	                        ____TerrainNeighbours__C5_TerrainNeighbours_R1,
+	                        "",
+	                        "");
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTechnique)
 	I_DeclaringFile("osgTerrain/TerrainTechnique");
 	I_BaseType(osg::Object);
+	I_BaseType(osg::Observer);
 	I_Constructor0(____TerrainTechnique,
 	               "",
 	               "");
@@ -102,12 +135,46 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTechnique)
 	                      __void__releaseGLObjects__osg_State_P1,
 	                      "If State is non-zero, this function releases any associated OpenGL objects for the specified graphics context. ",
 	                      "Otherwise, releases OpenGL objects for all graphics contexts. ");
+	I_Method1(void, addNeighbour, IN, osgTerrain::TerrainTile *, tile,
+	          Properties::NON_VIRTUAL,
+	          __void__addNeighbour__TerrainTile_P1,
+	          "",
+	          "");
+	I_Method1(void, removeNeighbour, IN, osgTerrain::TerrainTile *, tile,
+	          Properties::NON_VIRTUAL,
+	          __void__removeNeighbour__TerrainTile_P1,
+	          "",
+	          "");
+	I_Method1(bool, containsNeighbour, IN, osgTerrain::TerrainTile *, tile,
+	          Properties::NON_VIRTUAL,
+	          __bool__containsNeighbour__TerrainTile_P1,
+	          "",
+	          "");
+	I_Method0(osgTerrain::TerrainNeighbours &, getNeighbours,
+	          Properties::NON_VIRTUAL,
+	          __TerrainNeighbours_R1__getNeighbours,
+	          "",
+	          "");
+	I_Method0(const osgTerrain::TerrainNeighbours &, getNeighbours,
+	          Properties::NON_VIRTUAL,
+	          __C5_TerrainNeighbours_R1__getNeighbours,
+	          "",
+	          "");
+	I_ProtectedMethod1(void, setTerrainTile, IN, osgTerrain::TerrainTile *, tile,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__setTerrainTile__TerrainTile_P1,
+	                   "",
+	                   "");
 	I_ProtectedMethod1(void, setDirty, IN, bool, dirty,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __void__setDirty__bool,
 	                   "",
 	                   "");
+	I_SimpleProperty(osgTerrain::TerrainNeighbours &, Neighbours, 
+	                 __TerrainNeighbours_R1__getNeighbours, 
+	                 0);
 	I_SimpleProperty(osgTerrain::TerrainTile *, TerrainTile, 
 	                 __TerrainTile_P1__getTerrainTile, 
 	                 0);

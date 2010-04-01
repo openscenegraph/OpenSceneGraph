@@ -51,7 +51,11 @@ private:
 
 void user_error_fn(png_structp png_ptr, png_const_charp error_msg)
 {
+#ifdef OSG_CPP_EXCEPTIONS_AVAILABLE
     throw PNGError(error_msg);
+#else
+    osg::notify(osg::WARN) << "PNG lib warning : " << error_msg << std::endl;
+#endif
 }
 
 void user_warning_fn(png_structp png_ptr, png_const_charp warning_msg)
@@ -166,14 +170,15 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
             // Set custom error handlers
             png_set_error_fn(png, png_get_error_ptr(png), user_error_fn, user_warning_fn);
 
+            #ifdef OSG_CPP_EXCEPTIONS_AVAILABLE
             try
+            #endif
             {
-
                 info = png_create_info_struct(png);
                 endinfo = png_create_info_struct(png);
 
                 fin.read((char*)header,8);
-                if (fin.gcount() == 8 && png_check_sig(header, 8))
+                if (fin.gcount() == 8 && png_sig_cmp(header, 0, 8) == 0)
                     png_set_read_fn(png,&fin,png_read_istream); //Use custom read function that will get data from istream
                 else
                 {
@@ -224,7 +229,14 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
                 if (color == PNG_COLOR_TYPE_PALETTE)
                     png_set_palette_to_rgb(png);
                 if (color == PNG_COLOR_TYPE_GRAY && depth < 8)
+                {
+                #if PNG_LIBPNG_VER >= 10209
+                    png_set_expand_gray_1_2_4_to_8(png);
+                #else
+                    // use older now deprecated but identical call
                     png_set_gray_1_2_4_to_8(png);
+                #endif
+                }
                 if (png_get_valid(png, info, PNG_INFO_tRNS))
                     png_set_tRNS_to_alpha(png);
 
@@ -300,13 +312,16 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
                     osg::Image::USE_NEW_DELETE);
 
                 return pOsgImage;
+
             }
+            #ifdef OSG_CPP_EXCEPTIONS_AVAILABLE
             catch (PNGError& err)
             {
                 osg::notify(osg::WARN) << err << std::endl;
                 png_destroy_read_struct(&png, &info, &endinfo);
                 return ReadResult::ERROR_IN_READING_FILE;
             }
+            #endif
         }
 
         int getCompressionLevel(const osgDB::ReaderWriter::Options *options) const

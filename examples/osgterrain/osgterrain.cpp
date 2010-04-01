@@ -168,6 +168,9 @@ int main(int argc, char** argv)
     // add the record camera path handler
     viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
 
+    // add the window size toggle handler
+    viewer.addEventHandler(new osgViewer::WindowSizeHandler);
+
     // obtain the vertical scale
     float verticalScale = 1.0f;
     while(arguments.read("-v",verticalScale)) {}

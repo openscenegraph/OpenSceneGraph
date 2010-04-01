@@ -15,6 +15,17 @@
 
 SET(COLLADA_DOM_ROOT "$ENV{COLLADA_DIR}/dom" CACHE PATH "Location of Collada DOM directory")
 
+IF(APPLE)
+    SET(COLLADA_BUILDNAME "mac")
+ELSEIF(MINGW)
+    SET(COLLADA_BUILDNAME "mingw")
+ELSEIF(MSVC90)
+    SET(COLLADA_BUILDNAME "vc9")
+ELSE(APPLE)
+    SET(COLLADA_BUILDNAME "vc8")
+ENDIF(APPLE)
+
+
 FIND_PATH(COLLADA_INCLUDE_DIR dae.h
     ${COLLADA_DOM_ROOT}/include
     $ENV{COLLADA_DIR}/include
@@ -37,10 +48,10 @@ FIND_PATH(COLLADA_INCLUDE_DIR dae.h
 )
 
 FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY 
-    NAMES collada_dom collada14dom libcollada14dom21
+    NAMES collada_dom collada14dom Collada14Dom libcollada14dom21 libcollada14dom22
     PATHS
-    ${COLLADA_DOM_ROOT}/build/vc8-1.4
-    $ENV{COLLADA_DIR}/build/vc8-1.4
+    ${COLLADA_DOM_ROOT}/build/${COLLADA_BUILDNAME}-1.4
+    $ENV{COLLADA_DIR}/build/${COLLADA_BUILDNAME}-1.4
     $ENV{COLLADA_DIR}/lib
     $ENV{COLLADA_DIR}/lib-dbg
     $ENV{COLLADA_DIR}
@@ -62,10 +73,10 @@ FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY
 )
 
 FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY_DEBUG 
-    NAMES collada_dom-d collada14dom-d libcollada14dom21-d
+    NAMES collada_dom-d collada14dom-d Collada14Dom-d libcollada14dom21-d libcollada14dom22-d
     PATHS
-    ${COLLADA_DOM_ROOT}/build/vc8-1.4-d
-    $ENV{COLLADA_DIR}/build/vc8-1.4-d
+    ${COLLADA_DOM_ROOT}/build/${COLLADA_BUILDNAME}-1.4-d
+    $ENV{COLLADA_DIR}/build/${COLLADA_BUILDNAME}-1.4-d
     $ENV{COLLADA_DIR}/lib
     $ENV{COLLADA_DIR}/lib-dbg
     $ENV{COLLADA_DIR}
@@ -87,10 +98,10 @@ FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY_DEBUG
 )
 
 FIND_LIBRARY(COLLADA_STATIC_LIBRARY 
-    NAMES libcollada14dom21-s
+    NAMES libcollada14dom21-s  libcollada14dom22-s
     PATHS
-    ${COLLADA_DOM_ROOT}/build/vc8-1.4
-    $ENV{COLLADA_DIR}/build/vc8-1.4
+    ${COLLADA_DOM_ROOT}/build/${COLLADA_BUILDNAME}-1.4
+    $ENV{COLLADA_DIR}/build/${COLLADA_BUILDNAME}-1.4
     $ENV{COLLADA_DIR}/lib
     $ENV{COLLADA_DIR}/lib-dbg
     $ENV{COLLADA_DIR}
@@ -112,10 +123,10 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY
 )
 
 FIND_LIBRARY(COLLADA_STATIC_LIBRARY_DEBUG 
-    NAMES collada_dom-sd collada14dom-sd libcollada14dom21-sd
+    NAMES collada_dom-sd collada14dom-sd libcollada14dom21-sd libcollada14dom22-sd
     PATHS
-    ${COLLADA_DOM_ROOT}/build/vc8-1.4-d
-    $ENV{COLLADA_DIR}/build/vc8-1.4-d
+    ${COLLADA_DOM_ROOT}/build/${COLLADA_BUILDNAME}-1.4-d
+    $ENV{COLLADA_DIR}/build/${COLLADA_BUILDNAME}-1.4-d
     $ENV{COLLADA_DIR}/lib
     $ENV{COLLADA_DIR}/lib-dbg
     $ENV{COLLADA_DIR}
@@ -135,8 +146,6 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY_DEBUG
     [HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session\ Manager\\Environment;OSG_ROOT]/lib
     /usr/freeware/lib64
 )
-
-IF(COLLADA_STATIC_LIBRARY)
 
     # find extra libraries that the static linking requires
 
@@ -168,105 +177,80 @@ IF(COLLADA_STATIC_LIBRARY)
         ENDIF(WIN32)
     ENDIF(ZLIB_FOUND)
 
-    IF(WIN32)
+    FIND_LIBRARY(COLLADA_PCRECPP_LIBRARY
+        NAMES pcrecpp
+        PATHS
+        ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/${COLLADA_BUILDNAME}
+        ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/mac
+        ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/mingw
+    )
 
-        FIND_LIBRARY(COLLADA_PCRECPP_LIBRARY
-            NAMES pcrecpp
-            PATHS
-            ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/vc8    
-            ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/vc9
-            ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/mac
-            ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/mingw    
-        )
+    FIND_LIBRARY(COLLADA_PCRECPP_LIBRARY_DEBUG
+        NAMES pcrecpp-d
+        PATHS
+        ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/${COLLADA_BUILDNAME}
+        ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/mac
+        ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/mingw
+    )
 
-        FIND_LIBRARY(COLLADA_PCRECPP_LIBRARY_DEBUG 
-            NAMES pcrecpp-d
-            PATHS
-            ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/vc8    
-            ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/vc9
-            ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/mac
-            ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/mingw    
-        )
+    FIND_LIBRARY(COLLADA_PCRE_LIBRARY
+        NAMES pcre
+        PATHS
+        ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/${COLLADA_BUILDNAME}
+        ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/mac
+        ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/mingw
+    )
 
-        FIND_LIBRARY(COLLADA_PCRE_LIBRARY
-            NAMES pcre
-            PATHS
-            ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/vc8    
-            ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/vc9
-            ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/mac
-            ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/mingw    
-        )
+    FIND_LIBRARY(COLLADA_PCRE_LIBRARY_DEBUG
+        NAMES pcre-d
+        PATHS
+        ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/${COLLADA_BUILDNAME}
+        ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/mac
+        ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/mingw
+    )
 
-        FIND_LIBRARY(COLLADA_PCRE_LIBRARY_DEBUG 
-            NAMES pcre-d
-            PATHS
-            ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/vc8    
-            ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/vc9
-            ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/mac
-            ${COLLADA_DOM_ROOT}/external-libs/pcre/lib/mingw
-        )
+    FIND_LIBRARY(COLLADA_MINIZIP_LIBRARY
+        NAMES minizip
+        PATHS
+        ${COLLADA_DOM_ROOT}/external-libs/minizip/win32/lib
+        ${COLLADA_DOM_ROOT}/external-libs/minizip/mac
+    )
 
-        FIND_LIBRARY(COLLADA_MINIZIP_LIBRARY
-            NAMES minizip
-            PATHS
-            ${COLLADA_DOM_ROOT}/external-libs/minizip/win32/lib
-            ${COLLADA_DOM_ROOT}/external-libs/minizip/mac
-        )
+    FIND_LIBRARY(COLLADA_MINIZIP_LIBRARY_DEBUG
+        NAMES minizip-d
+        PATHS
+        ${COLLADA_DOM_ROOT}/external-libs/minizip/win32/lib
+        ${COLLADA_DOM_ROOT}/external-libs/minizip/mac
+    )
 
-        FIND_LIBRARY(COLLADA_MINIZIP_LIBRARY_DEBUG
-            NAMES minizip-d
-            PATHS
-            ${COLLADA_DOM_ROOT}/external-libs/minizip/win32/lib
-            ${COLLADA_DOM_ROOT}/external-libs/minizip/mac
-        )
-    
-    ENDIF(WIN32)
+    FIND_LIBRARY(COLLADA_BOOST_FILESYSTEM_LIBRARY
+        NAMES libboost_filesystem boost_filesystem
+        PATHS
+        ${COLLADA_DOM_ROOT}/external-libs/boost/lib/${COLLADA_BUILDNAME}
+        ${COLLADA_DOM_ROOT}/external-libs/boost/lib/mingw
+    )
 
-ENDIF(COLLADA_STATIC_LIBRARY)
+    FIND_LIBRARY(COLLADA_BOOST_FILESYSTEM_LIBRARY_DEBUG
+        NAMES libboost_filesystem-d boost_filesystem-d
+        PATHS
+        ${COLLADA_DOM_ROOT}/external-libs/boost/lib/${COLLADA_BUILDNAME}
+        ${COLLADA_DOM_ROOT}/external-libs/boost/lib/mingw
+    )
 
-IF(COLLADA_DYNAMIC_LIBRARY OR COLLADA_STATIC_LIBRARY)
+    FIND_LIBRARY(COLLADA_BOOST_SYSTEM_LIBRARY
+        NAMES libboost_system boost_system
+        PATHS
+        ${COLLADA_DOM_ROOT}/external-libs/boost/lib/${COLLADA_BUILDNAME}
+        ${COLLADA_DOM_ROOT}/external-libs/boost/lib/mingw
+    )
 
-    IF(WIN32)
-    
-        FIND_LIBRARY(COLLADA_BOOST_FILESYSTEM_LIBRARY
-            NAMES libboost_filesystem
-            PATHS
-            ${COLLADA_DOM_ROOT}/external-libs/boost/lib/vc8
-            ${COLLADA_DOM_ROOT}/external-libs/boost/lib/vc9
-            ${COLLADA_DOM_ROOT}/external-libs/boost/lib/mingw
-        )
+    FIND_LIBRARY(COLLADA_BOOST_SYSTEM_LIBRARY_DEBUG
+        NAMES libboost_system-d boost_system-d
+        PATHS
+        ${COLLADA_DOM_ROOT}/external-libs/boost/lib/${COLLADA_BUILDNAME}
+        ${COLLADA_DOM_ROOT}/external-libs/boost/lib/mingw
+    )
 
-        FIND_LIBRARY(COLLADA_BOOST_FILESYSTEM_LIBRARY_DEBUG
-            NAMES libboost_filesystem-d
-            PATHS
-            ${COLLADA_DOM_ROOT}/external-libs/boost/lib/vc8
-            ${COLLADA_DOM_ROOT}/external-libs/boost/lib/vc9
-            ${COLLADA_DOM_ROOT}/external-libs/boost/lib/mingw
-        )
-
-        FIND_LIBRARY(COLLADA_BOOST_SYSTEM_LIBRARY
-            NAMES libboost_system
-            PATHS
-            ${COLLADA_DOM_ROOT}/external-libs/boost/lib/vc8
-            ${COLLADA_DOM_ROOT}/external-libs/boost/lib/vc9
-            ${COLLADA_DOM_ROOT}/external-libs/boost/lib/mingw
-        )
-
-        FIND_LIBRARY(COLLADA_BOOST_SYSTEM_LIBRARY_DEBUG
-            NAMES libboost_system-d
-            PATHS
-            ${COLLADA_DOM_ROOT}/external-libs/boost/lib/vc8
-            ${COLLADA_DOM_ROOT}/external-libs/boost/lib/vc9
-            ${COLLADA_DOM_ROOT}/external-libs/boost/lib/mingw
-        )
-
-      FIND_PATH(COLLADA_BOOST_INCLUDE_DIR boost/filesystem/convenience.hpp
-        ${COLLADA_DOM_ROOT}/external-libs/boost
-      ) 
-
-    ENDIF(WIN32)
-
-ENDIF(COLLADA_DYNAMIC_LIBRARY OR COLLADA_STATIC_LIBRARY)
 
 SET(COLLADA_FOUND "NO")
 IF(COLLADA_DYNAMIC_LIBRARY OR COLLADA_STATIC_LIBRARY)

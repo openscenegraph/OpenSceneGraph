@@ -82,10 +82,7 @@ class OSGTERRAIN_EXPORT TerrainTechnique : public osg::Object, public osg::Obser
 
         void addNeighbour(TerrainTile* tile) { _neighbours.addNeighbour(tile); }
         void removeNeighbour(TerrainTile* tile) {  _neighbours.removeNeighbour(tile); }
-
         bool containsNeighbour(TerrainTile* tile) { return _neighbours.containsNeighbour(tile); }
-        TerrainNeighbours& getNeighbours() { return _neighbours; }
-        const TerrainNeighbours& getNeighbours() const { return _neighbours; }
 
     protected:
 

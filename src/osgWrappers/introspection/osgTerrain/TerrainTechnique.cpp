@@ -118,16 +118,6 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTechnique)
 	          __bool__containsNeighbour__TerrainTile_P1,
 	          "",
 	          "");
-	I_Method0(osgTerrain::TerrainNeighbours &, getNeighbours,
-	          Properties::NON_VIRTUAL,
-	          __TerrainNeighbours_R1__getNeighbours,
-	          "",
-	          "");
-	I_Method0(const osgTerrain::TerrainNeighbours &, getNeighbours,
-	          Properties::NON_VIRTUAL,
-	          __C5_TerrainNeighbours_R1__getNeighbours,
-	          "",
-	          "");
 	I_ProtectedMethod1(void, setTerrainTile, IN, osgTerrain::TerrainTile *, tile,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
@@ -140,9 +130,6 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTechnique)
 	                   __void__setDirty__bool,
 	                   "",
 	                   "");
-	I_SimpleProperty(osgTerrain::TerrainNeighbours &, Neighbours, 
-	                 __TerrainNeighbours_R1__getNeighbours, 
-	                 0);
 	I_SimpleProperty(osgTerrain::TerrainTile *, TerrainTile, 
 	                 __TerrainTile_P1__getTerrainTile, 
 	                 0);

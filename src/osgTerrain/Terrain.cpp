@@ -30,7 +30,7 @@ Terrain::Terrain():
 }
 
 Terrain::Terrain(const Terrain& ts, const osg::CopyOp& copyop):
-    osg::Group(ts,copyop),
+    osg::CoordinateSystemNode(ts,copyop),
     _sampleRatio(ts._sampleRatio),
     _verticalScale(ts._verticalScale),
     _blendingPolicy(ts._blendingPolicy),
@@ -69,7 +69,7 @@ void Terrain::traverse(osg::NodeVisitor& nv)
                 ++itr)
             {
                 TerrainTile* tile = *itr;
-                if (tile->getTerrainTechnique()) tile->getTerrainTechnique()->update(uv);
+                tile->traverse(nv);
             }
             _updateTerrainTileSet.clear();
         }

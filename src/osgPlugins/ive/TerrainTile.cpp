@@ -153,7 +153,7 @@ osgTerrain::TerrainTechnique* TerrainTile::readTerrainTechnique(DataInputStream*
 {
     bool hasTechnique = in->readBool();
     if (!hasTechnique) return 0;
-    
+
     int id = in->readInt();
     if (id==IVEGEOMETRYTECHNIQUE)
     {

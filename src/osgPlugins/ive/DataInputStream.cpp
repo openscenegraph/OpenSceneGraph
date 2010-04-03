@@ -112,6 +112,7 @@
 
 #include "Text.h"
 
+#include "Terrain.h"
 #include "TerrainTile.h"
 #include "Locator.h"
 #include "ImageLayer.h"
@@ -1835,6 +1836,10 @@ osg::Node* DataInputStream::readNode()
     else if(nodeTypeID== IVETERRAINTILE){
         node = new osgTerrain::TerrainTile();
         ((ive::TerrainTile*)(node.get()))->read(this);
+    }
+    else if(nodeTypeID== IVETERRAIN){
+        node = new osgTerrain::Terrain();
+        ((ive::Terrain*)(node.get()))->read(this);
     }
     else if(nodeTypeID== IVEVOLUME){
         node = new osgVolume::Volume();

@@ -78,8 +78,7 @@ class OSGTERRAIN_EXPORT TerrainTile : public osg::Group
         virtual void traverse(osg::NodeVisitor& nv);
 
         /** Call init on any attached TerrainTechnique.*/
-        void init();
-
+        void init(int dirtyMask, bool assumeMultiThreaded);
 
         /** Set the Terrain that this Terrain tile is a member of.*/
         void setTerrain(Terrain* ts);

@@ -95,7 +95,7 @@ void GeometryTechnique::setFilterMatrixAs(FilterType filterType)
     };
 }
 
-void GeometryTechnique::init()
+void GeometryTechnique::init(int dirtyMask, bool assumeMultiThreaded)
 {
     OSG_INFO<<"Doing GeometryTechnique::init()"<<std::endl;
     
@@ -106,7 +106,7 @@ void GeometryTechnique::init()
     // take a temporary referecen
     osg::ref_ptr<TerrainTile> tile = _terrainTile;
 
-    if (_terrainTile->getDirtyMask()==0) return;
+    if (dirtyMask==0) return;
 
     osg::ref_ptr<BufferData> buffer = new BufferData;
 
@@ -114,7 +114,7 @@ void GeometryTechnique::init()
 
     osg::Vec3d centerModel = computeCenterModel(*buffer, masterLocator);
 
-    if ((_terrainTile->getDirtyMask() & TerrainTile::IMAGERY_DIRTY)==0)
+    if ((dirtyMask & TerrainTile::IMAGERY_DIRTY)==0)
     {
         generateGeometry(*buffer, masterLocator, centerModel);
 
@@ -141,12 +141,14 @@ void GeometryTechnique::init()
 
     if (buffer->_transform.valid()) buffer->_transform->setThreadSafeRefUnref(true);
 
-    if (!_currentBufferData)
+    if (!_currentBufferData || !assumeMultiThreaded)
     {
+        // no currentBufferData so we must be the first init to be applied
         _currentBufferData = buffer;
     }
     else
     {
+        // there is already an active _currentBufferData so we'll request that this gets swapped on next frame.
         _newBufferData = buffer;
         if (_terrainTile->getTerrain()) _terrainTile->getTerrain()->updateTerrainTileOnNextFrame(_terrainTile);
     }
@@ -259,7 +261,7 @@ class VertexNormalGenerator
             {
                 if (r<0 || r>=_numRows || c<0 || c>=_numColumns)
                 {
-                    i = -(1+_boundaryVertices->size());
+                    i = -(1+static_cast<int>(_boundaryVertices->size()));
                     _boundaryVertices->push_back(v);
                     // OSG_NOTICE<<"setVertex("<<c<<", "<<r<<", ["<<v<<"], ["<<n<<"]), i="<<i<<" _boundaryVertices["<<-i-1<<"]="<<(*_boundaryVertices)[-i-1]<<"]"<<std::endl;
                 }
@@ -817,27 +819,27 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
         {
             if (!(left_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
             {
-                left_tile->setDirtyMask(left_tile->getDirtyMask() | TerrainTile::LEFT_EDGE_DIRTY);
-                if (updateNeighboursImmediately)
-                {
-                    left_tile->init();
-                }
+                int dirtyMask = left_tile->getDirtyMask() | TerrainTile::LEFT_EDGE_DIRTY;
+                if (updateNeighboursImmediately) left_tile->init(dirtyMask, true);
+                else left_tile->setDirtyMask(dirtyMask);
             }
         }
         if (right_tile.valid())
         {
             if (!(right_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
             {
-                right_tile->setDirtyMask(right_tile->getDirtyMask() | TerrainTile::RIGHT_EDGE_DIRTY);
-                if (updateNeighboursImmediately) right_tile->init();
+                int dirtyMask = right_tile->getDirtyMask() | TerrainTile::RIGHT_EDGE_DIRTY;
+                if (updateNeighboursImmediately) right_tile->init(dirtyMask, true);
+                else right_tile->setDirtyMask(dirtyMask);
             }
         }
         if (top_tile.valid())
         {
             if (!(top_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
             {
-                top_tile->setDirtyMask(top_tile->getDirtyMask() | TerrainTile::TOP_EDGE_DIRTY);
-                if (updateNeighboursImmediately) top_tile->init();
+                int dirtyMask = top_tile->getDirtyMask() | TerrainTile::TOP_EDGE_DIRTY;
+                if (updateNeighboursImmediately) top_tile->init(dirtyMask, true);
+                else top_tile->setDirtyMask(dirtyMask);
             }
         }
 
@@ -845,8 +847,9 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
         {
             if (!(bottom_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
             {
-                bottom_tile->setDirtyMask(bottom_tile->getDirtyMask() | TerrainTile::BOTTOM_EDGE_DIRTY);
-                if (updateNeighboursImmediately) bottom_tile->init();
+                int dirtyMask = bottom_tile->getDirtyMask() | TerrainTile::BOTTOM_EDGE_DIRTY;
+                if (updateNeighboursImmediately) bottom_tile->init(dirtyMask, true);
+                else bottom_tile->setDirtyMask(dirtyMask);
             }
         }
     }
@@ -1322,7 +1325,7 @@ void GeometryTechnique::traverse(osg::NodeVisitor& nv)
     // if app traversal update the frame count.
     if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)
     {
-        if (_terrainTile->getDirty()) _terrainTile->init();
+        if (_terrainTile->getDirty()) _terrainTile->init(_terrainTile->getDirtyMask(), false);
 
         osgUtil::UpdateVisitor* uv = dynamic_cast<osgUtil::UpdateVisitor*>(&nv);
         if (uv)
@@ -1345,7 +1348,7 @@ void GeometryTechnique::traverse(osg::NodeVisitor& nv)
     if (_terrainTile->getDirty()) 
     {
         OSG_INFO<<"******* Doing init ***********"<<std::endl;
-        _terrainTile->init();
+        _terrainTile->init(_terrainTile->getDirtyMask(), false);
     }
 
     if (_currentBufferData.valid())

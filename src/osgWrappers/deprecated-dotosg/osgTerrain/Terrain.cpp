@@ -13,7 +13,7 @@ REGISTER_DOTOSGWRAPPER(Terrain)
 (
     new osgTerrain::Terrain,
     "Terrain",
-    "Object Node Terrain Group",
+    "Object Node Terrain CoordinateSystemNode Group",
     &Terrain_readLocalData,
     &Terrain_writeLocalData
 );

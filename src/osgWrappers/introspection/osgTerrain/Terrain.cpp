@@ -27,7 +27,7 @@
 
 BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	I_DeclaringFile("osgTerrain/Terrain");
-	I_BaseType(osg::Group);
+	I_BaseType(osg::CoordinateSystemNode);
 	I_Constructor0(____Terrain,
 	               "",
 	               "");

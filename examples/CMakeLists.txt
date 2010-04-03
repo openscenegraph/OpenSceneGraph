@@ -171,14 +171,6 @@ IF(DYNAMIC_OPENSCENEGRAPH)
         IF (BUILD_QT_EXAMPLES AND QT_QTOPENGL_LIBRARY)
             ADD_SUBDIRECTORY(osgviewerQT)
         ENDIF()
-
-        IF (BUILD_QT_EXAMPLES AND QT4_FOUND)
-            ADD_SUBDIRECTORY(osgviewerQtWidget)
-
-            IF (QT_QTWEBKIT_FOUND)
-                ADD_SUBDIRECTORY(osgQtBrowser)
-            ENDIF()
-        ENDIF()
     ENDIF()
 
     IF   (FLTK_FOUND)

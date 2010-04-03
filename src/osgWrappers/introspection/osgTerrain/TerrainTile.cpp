@@ -96,9 +96,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTile)
 	          __void__traverse__osg_NodeVisitor_R1,
 	          "Traverse downwards : calls children's accept method with NodeVisitor. ",
 	          "");
-	I_Method0(void, init,
+	I_Method2(void, init, IN, int, dirtyMask, IN, bool, assumeMultiThreaded,
 	          Properties::NON_VIRTUAL,
-	          __void__init,
+	          __void__init__int__bool,
 	          "Call init on any attached TerrainTechnique. ",
 	          "");
 	I_Method1(void, setTerrain, IN, osgTerrain::Terrain *, ts,

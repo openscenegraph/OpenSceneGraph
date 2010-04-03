@@ -70,9 +70,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::GeometryTechnique)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method0(void, init,
+	I_Method2(void, init, IN, int, dirtyMask, IN, bool, assumeMultiThreaded,
 	          Properties::VIRTUAL,
-	          __void__init,
+	          __void__init__int__bool,
 	          "",
 	          "");
 	I_Method0(osgTerrain::Locator *, computeMasterLocator,

@@ -73,9 +73,9 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTechnique)
 	          __C5_TerrainTile_P1__getTerrainTile,
 	          "",
 	          "");
-	I_Method0(void, init,
+	I_Method2(void, init, IN, int, dirtyMask, IN, bool, assumeMultiThreaded,
 	          Properties::VIRTUAL,
-	          __void__init,
+	          __void__init__int__bool,
 	          "",
 	          "");
 	I_Method1(void, update, IN, osgUtil::UpdateVisitor *, nv,

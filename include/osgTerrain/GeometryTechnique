@@ -34,7 +34,7 @@ class OSGTERRAIN_EXPORT GeometryTechnique : public TerrainTechnique
         
         META_Object(osgTerrain, GeometryTechnique);
         
-        virtual void init();
+        virtual void init(int dirtyMask, bool assumeMultiThreaded);
         
         virtual Locator* computeMasterLocator();
         

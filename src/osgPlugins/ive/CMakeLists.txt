@@ -101,6 +101,7 @@ SET(TARGET_SRC
     Stencil.cpp
     Switch.cpp
     SwitchLayer.cpp
+    Terrain.cpp
     TerrainTile.cpp
     TexEnvCombine.cpp
     TexEnv.cpp

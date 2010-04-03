@@ -103,6 +103,7 @@
 
 #include "Text.h"
 
+#include "Terrain.h"
 #include "TerrainTile.h"
 #include "Locator.h"
 #include "ImageLayer.h"
@@ -1333,9 +1334,6 @@ void DataOutputStream::writeNode(const osg::Node* node)
         else if(dynamic_cast<const osg::Switch*>(node)){
             ((ive::Switch*)(node))->write(this);
         }
-        else if(dynamic_cast<const osg::CoordinateSystemNode*>(node)){
-            ((ive::CoordinateSystemNode*)(node))->write(this);
-        }
         else if(dynamic_cast<const osgSim::MultiSwitch*>(node)){
             ((ive::MultiSwitch*)(node))->write(this);
         }
@@ -1378,9 +1376,17 @@ void DataOutputStream::writeNode(const osg::Node* node)
         else if(dynamic_cast<const osgTerrain::TerrainTile*>(node)){
             ((ive::TerrainTile*)(node))->write(this);
         }
+        else if(dynamic_cast<const osgTerrain::Terrain*>(node)){
+            ((ive::Terrain*)(node))->write(this);
+        }
         else if(dynamic_cast<const osgVolume::Volume*>(node)){
             ((ive::Volume*)(node))->write(this);
         }
+
+        else if(dynamic_cast<const osg::CoordinateSystemNode*>(node)){
+            ((ive::CoordinateSystemNode*)(node))->write(this);
+        }
+
         else if(dynamic_cast<const osgVolume::VolumeTile*>(node)){
             ((ive::VolumeTile*)(node))->write(this);
         }

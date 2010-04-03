@@ -83,9 +83,9 @@ void TerrainTechnique::setTerrainTile(TerrainTile* tile)
     _terrainTile = tile;
 }
 
-void TerrainTechnique::init()
+void TerrainTechnique::init(int dirtyMask, bool assumeMultiThreaded)
 {
-    OSG_NOTIFY(osg::NOTICE)<<className()<<"::initialize(..) not implementated yet"<<std::endl;
+    OSG_NOTIFY(osg::NOTICE)<<className()<<"::init(..) not implementated yet"<<std::endl;
 }
 
 void TerrainTechnique::update(osgUtil::UpdateVisitor* uv)
@@ -112,7 +112,7 @@ void TerrainTechnique::traverse(osg::NodeVisitor& nv)
     // if app traversal update the frame count.
     if (nv.getVisitorType()==osg::NodeVisitor::UPDATE_VISITOR)
     {
-        if (_terrainTile->getDirty()) _terrainTile->init();
+        if (_terrainTile->getDirty()) _terrainTile->init(_terrainTile->getDirtyMask(), false);
 
         osgUtil::UpdateVisitor* uv = dynamic_cast<osgUtil::UpdateVisitor*>(&nv);
         if (uv)
@@ -132,7 +132,10 @@ void TerrainTechnique::traverse(osg::NodeVisitor& nv)
         }
     }
 
-    if (_terrainTile->getDirty()) _terrainTile->init();
+    if (_terrainTile->getDirty())
+    {
+        _terrainTile->init(_terrainTile->getDirtyMask(), false);
+    }
 
     // otherwise fallback to the Group::traverse()
     _terrainTile->osg::Group::traverse(nv);

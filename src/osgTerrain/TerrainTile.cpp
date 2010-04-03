@@ -140,7 +140,7 @@ void TerrainTile::traverse(osg::NodeVisitor& nv)
             }
         }
 
-        init();
+        init(getDirtyMask(), false);
 
         _hasBeenTraversal = true;
     }
@@ -164,7 +164,7 @@ void TerrainTile::traverse(osg::NodeVisitor& nv)
     }
 }
 
-void TerrainTile::init()
+void TerrainTile::init(int dirtyMask, bool assumeMultiThreaded)
 {
     if (!_terrainTechnique)
     {
@@ -179,9 +179,9 @@ void TerrainTile::init()
         }
     }
 
-    if (_terrainTechnique.valid() && getDirty())
+    if (_terrainTechnique.valid())
     {
-        _terrainTechnique->init();
+        _terrainTechnique->init(dirtyMask, assumeMultiThreaded);
     }
 }
 
@@ -218,6 +218,15 @@ void TerrainTile::setDirtyMask(int dirtyMask)
 
     if (_dirtyMask!=NOT_DIRTY) dirtyDelta += 1;
 
+#if 1
+    if (dirtyDelta>0)
+    {
+        // need to signal that we need an update
+        if (_terrain) _terrain->updateTerrainTileOnNextFrame(this);
+    }
+#else
+
+    // setNumChildrenRequeingUpdateTraversal() isn't thread safe so should avoid using it.
     if (dirtyDelta>0)
     {
         setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
@@ -226,6 +235,7 @@ void TerrainTile::setDirtyMask(int dirtyMask)
     {
         setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()-1);
     }
+#endif
 }
 
 

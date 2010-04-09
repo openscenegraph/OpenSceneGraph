@@ -308,6 +308,53 @@ class VertexNormalGenerator
 
         inline bool computeNormal(int c, int r, osg::Vec3& n) const
         {
+#if 1
+            return computeNormalWithNoDiagonals(c,r,n);
+#else
+            return computeNormalWithDiagonals(c,r,n);
+#endif
+        }
+
+        inline bool computeNormalWithNoDiagonals(int c, int r, osg::Vec3& n) const
+        {
+            osg::Vec3 center;
+            bool center_valid  = vertex(c, r,  center);
+            if (!center_valid) return false;
+
+            osg::Vec3 left, right, top,  bottom;
+            bool left_valid  = vertex(c-1, r,  left);
+            bool right_valid = vertex(c+1, r,   right);
+            bool bottom_valid = vertex(c,   r-1, bottom);
+            bool top_valid = vertex(c,   r+1, top);
+
+            osg::Vec3 dx(0.0f,0.0f,0.0f);
+            osg::Vec3 dy(0.0f,0.0f,0.0f);
+            osg::Vec3 zero(0.0f,0.0f,0.0f);
+            if (left_valid)
+            {
+                dx = center-left;
+            }
+            if (right_valid)
+            {
+                dx = right-center;
+            }
+            if (bottom_valid)
+            {
+                dy += center-bottom;
+            }
+            if (top_valid)
+            {
+                dy += top-center;
+            }
+
+            if (dx==zero || dy==zero) return false;
+
+            n = dx ^ dy;
+            return n.normalize() != 0.0f;
+        }
+
+        inline bool computeNormalWithDiagonals(int c, int r, osg::Vec3& n) const
+        {
             osg::Vec3 center;
             bool center_valid  = vertex(c, r,  center);
             if (!center_valid) return false;
@@ -800,6 +847,12 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
         osg::ref_ptr<TerrainTile> top_tile = terrain->getTile(TileID(tileID.level, tileID.x, tileID.y+1));
         osg::ref_ptr<TerrainTile> bottom_tile = terrain->getTile(TileID(tileID.level, tileID.x, tileID.y-1));
 
+#if 0
+        osg::ref_ptr<TerrainTile> top_left_tile  = terrain->getTile(TileID(tileID.level, tileID.x-1, tileID.y+1));
+        osg::ref_ptr<TerrainTile> top_right_tile = terrain->getTile(TileID(tileID.level, tileID.x+1, tileID.y+1));
+        osg::ref_ptr<TerrainTile> bottom_left_tile = terrain->getTile(TileID(tileID.level, tileID.x-1, tileID.y-1));
+        osg::ref_ptr<TerrainTile> bottom_right_tile = terrain->getTile(TileID(tileID.level, tileID.x+1, tileID.y-1));
+#endif
         VNG.populateLeftBoundary(left_tile.valid() ? left_tile->getElevationLayer() : 0);
         VNG.populateRightBoundary(right_tile.valid() ? right_tile->getElevationLayer() : 0);
         VNG.populateAboveBoundary(top_tile.valid() ? top_tile->getElevationLayer() : 0);
@@ -814,6 +867,12 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
         if (top_tile.valid())    addNeighbour(top_tile.get());
         if (bottom_tile.valid()) addNeighbour(bottom_tile.get());
 
+#if 0
+        if (bottom_left_tile.valid()) addNeighbour(bottom_left_tile.get());
+        if (bottom_right_tile.valid()) addNeighbour(bottom_right_tile.get());
+        if (top_left_tile.valid()) addNeighbour(top_left_tile.get());
+        if (top_right_tile.valid()) addNeighbour(top_right_tile.get());
+#endif
 
         if (left_tile.valid())
         {
@@ -843,7 +902,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
             }
         }
 
-        if (bottom_tile)
+        if (bottom_tile.valid())
         {
             if (!(bottom_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
             {
@@ -852,6 +911,48 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
                 else bottom_tile->setDirtyMask(dirtyMask);
             }
         }
+
+#if 0
+        if (bottom_left_tile.valid())
+        {
+            if (!(bottom_left_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
+            {
+                int dirtyMask = bottom_left_tile->getDirtyMask() | TerrainTile::BOTTOM_LEFT_CORNER_DIRTY;
+                if (updateNeighboursImmediately) bottom_left_tile->init(dirtyMask, true);
+                else bottom_left_tile->setDirtyMask(dirtyMask);
+            }
+        }
+
+        if (bottom_right_tile.valid())
+        {
+            if (!(bottom_right_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
+            {
+                int dirtyMask = bottom_right_tile->getDirtyMask() | TerrainTile::BOTTOM_RIGHT_CORNER_DIRTY;
+                if (updateNeighboursImmediately) bottom_right_tile->init(dirtyMask, true);
+                else bottom_right_tile->setDirtyMask(dirtyMask);
+            }
+        }
+
+        if (top_right_tile.valid())
+        {
+            if (!(top_right_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
+            {
+                int dirtyMask = top_right_tile->getDirtyMask() | TerrainTile::TOP_RIGHT_CORNER_DIRTY;
+                if (updateNeighboursImmediately) top_right_tile->init(dirtyMask, true);
+                else top_right_tile->setDirtyMask(dirtyMask);
+            }
+        }
+
+        if (top_left_tile.valid())
+        {
+            if (!(top_left_tile->getTerrainTechnique()->containsNeighbour(_terrainTile)))
+            {
+                int dirtyMask = top_left_tile->getDirtyMask() | TerrainTile::TOP_LEFT_CORNER_DIRTY;
+                if (updateNeighboursImmediately) top_left_tile->init(dirtyMask, true);
+                else top_left_tile->setDirtyMask(dirtyMask);
+            }
+        }
+#endif
     }
 
     osg::ref_ptr<osg::Vec3Array> skirtVectors = new osg::Vec3Array((*VNG._normals));

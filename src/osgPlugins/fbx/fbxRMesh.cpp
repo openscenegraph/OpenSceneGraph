@@ -263,7 +263,7 @@ void readAnimation(KFbxNode* pNode, const std::string& targetName,
         for (int k = 0; k < nKeys; ++k)
         {
             KFCurveKey key = pCurve->KeyGet(k);
-            float fTime = static_cast<float>(key.GetTime().GetSecondDouble());
+            double fTime = key.GetTime().GetSecondDouble();
             float fValue = static_cast<float>(key.GetValue() * 0.01);
             keyFrameCntr.push_back(osgAnimation::FloatKeyframe(fTime,fValue));
         }

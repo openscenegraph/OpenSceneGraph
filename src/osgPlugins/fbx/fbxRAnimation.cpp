@@ -27,8 +27,8 @@ void readKeys(KFCurve* curveX, KFCurve* curveY, KFCurve* curveZ,
 {
     KFCurve* curves[3] = {curveX, curveY, curveZ};
 
-    typedef std::set<float> TimeSet;
-    typedef std::map<float, float> TimeFloatMap;
+    typedef std::set<double> TimeSet;
+    typedef std::map<double, float> TimeFloatMap;
     TimeSet times;
     TimeFloatMap curveTimeMap[3];
 
@@ -40,14 +40,14 @@ void readKeys(KFCurve* curveX, KFCurve* curveY, KFCurve* curveZ,
 
         if (!nKeys)
         {
-            times.insert(0.0f);
-            curveTimeMap[nCurve][0.0f] = static_cast<float>(pCurve->GetValue()) * scalar;
+            times.insert(0.0);
+            curveTimeMap[nCurve][0.0] = static_cast<float>(pCurve->GetValue()) * scalar;
         }
 
         for (int i = 0; i < nKeys; ++i)
         {
             KFCurveKey key = pCurve->KeyGet(i);
-            float fTime = static_cast<float>(key.GetTime().GetSecondDouble());
+            double fTime = key.GetTime().GetSecondDouble();
             times.insert(fTime);
             curveTimeMap[nCurve][fTime] = static_cast<float>(key.GetValue()) * scalar;
         }
@@ -55,7 +55,7 @@ void readKeys(KFCurve* curveX, KFCurve* curveY, KFCurve* curveZ,
 
     for (TimeSet::iterator it = times.begin(); it != times.end(); ++it)
     {
-        float fTime = *it;
+        double fTime = *it;
         osg::Vec3 val;
         for (int i = 0; i < 3; ++i)
         {

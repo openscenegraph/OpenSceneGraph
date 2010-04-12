@@ -13,7 +13,7 @@ public:
     ReaderWriterFBX()
     {
         supportsExtension("fbx", "FBX format");
-        supportsOption("Embedded", "Embed textures in FBX file when writing");
+        supportsOption("Embedded", "(Write option) Embed textures in FBX file");
         supportsOption("UseFbxRoot", "(Read/write option) If the source OSG root node is a simple group with no stateset, the writer will put its children directly under the FBX root, and vice-versa for reading");
     }
 

@@ -35,13 +35,32 @@ struct Triangle
     unsigned int t1;
     unsigned int t2;
     unsigned int t3;
+    unsigned int normalIndex;        ///< Normal index for all bindings except BIND_PER_VERTEX and BIND_OFF.
     int material;
 };
 
-typedef std::map<std::pair<unsigned int, unsigned int>, unsigned int> MapIndices;
-typedef std::vector<std::pair<Triangle, int> > ListTriangle; //the int is the drawable of the triangle
+struct VertexIndex
+{
+    VertexIndex(unsigned int vertexIndex, unsigned int drawableIndex, unsigned int normalIndex)
+        : vertexIndex(vertexIndex), drawableIndex(drawableIndex), normalIndex(normalIndex)
+    {}
+    VertexIndex(const VertexIndex & v) : vertexIndex(v.vertexIndex), drawableIndex(v.drawableIndex), normalIndex(v.normalIndex) {}
 
-///\author Capo (Thibault Caporal)
+    unsigned int vertexIndex;        ///< Index of the vertice position in the vec3 array
+    unsigned int drawableIndex;
+    unsigned int normalIndex;        ///< Normal index for all bindings except BIND_PER_VERTEX and BIND_OFF.
+
+    bool operator<(const VertexIndex & v) const {
+        if (drawableIndex!=v.drawableIndex) return drawableIndex<v.drawableIndex;
+        return vertexIndex<v.vertexIndex;
+    }
+};
+
+typedef std::vector<std::pair<Triangle, int> > ListTriangle; //the int is the drawable of the triangle
+typedef std::map<VertexIndex, unsigned int> MapIndices;        ///< Map OSG indices to FBX mesh indices
+
+
+///\author Capo (Thibault Caporal), Sukender (Benoit Neil)
 class WriterNodeVisitor: public osg::NodeVisitor
 {
     public:
@@ -191,17 +210,6 @@ class WriterNodeVisitor: public osg::NodeVisitor
                                             MapIndices&       index_vert,
                                             bool              texcoords,       
                                             KFbxMesh*         fbxMesh);
-
-        /**
-        *  Add a vertex to the index and link him with the Triangle index and the drawable.
-        *  \param index_vert is the map where the vertices are stored.
-        *  \param index is the indices of the vertices position in the vec3.
-        *  \param drawable_n is the number of the drawable.
-        *  \return the position of the vertices in the final mesh.
-        */
-        unsigned int getMeshIndexForGeometryIndex(MapIndices&  index_vert,
-                                                  unsigned int index,
-                                                  unsigned int drawable_n);
 
         /**
         *  Create the list of faces from the geode.

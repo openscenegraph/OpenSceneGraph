@@ -7,6 +7,7 @@ SET(TARGET_SRC
     fbxRMesh.cpp
     fbxRNode.cpp
     ReaderWriterFBX.cpp
+    WriterCompareTriangle.cpp
     WriterNodeVisitor.cpp
     fbxMaterialToOsgStateSet.cpp
 )
@@ -18,6 +19,7 @@ SET(TARGET_H
     fbxRMesh.h
     fbxRNode.h
     ReaderWriterFBX.h
+    WriterCompareTriangle.h
     WriterNodeVisitor.h
     fbxMaterialToOsgStateSet.h
 )

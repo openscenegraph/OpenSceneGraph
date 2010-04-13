@@ -46,7 +46,11 @@ BEGIN_ENUM_REFLECTOR(osgTerrain::TerrainTile::DirtyMask)
 	I_EnumLabel(osgTerrain::TerrainTile::LEFT_EDGE_DIRTY);
 	I_EnumLabel(osgTerrain::TerrainTile::RIGHT_EDGE_DIRTY);
 	I_EnumLabel(osgTerrain::TerrainTile::TOP_EDGE_DIRTY);
+	I_EnumLabel(osgTerrain::TerrainTile::TOP_LEFT_CORNER_DIRTY);
+	I_EnumLabel(osgTerrain::TerrainTile::TOP_RIGHT_CORNER_DIRTY);
 	I_EnumLabel(osgTerrain::TerrainTile::BOTTOM_EDGE_DIRTY);
+	I_EnumLabel(osgTerrain::TerrainTile::BOTTOM_LEFT_CORNER_DIRTY);
+	I_EnumLabel(osgTerrain::TerrainTile::BOTTOM_RIGHT_CORNER_DIRTY);
 	I_EnumLabel(osgTerrain::TerrainTile::EDGES_DIRTY);
 	I_EnumLabel(osgTerrain::TerrainTile::ALL_DIRTY);
 END_REFLECTOR

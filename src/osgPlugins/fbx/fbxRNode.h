@@ -25,6 +25,6 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
     BindMatrixMap& boneBindMatrices,
     const std::set<const KFbxNode*>& fbxSkeletons,
     std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap,
-    const osgDB::Options* options = NULL);
+    const osgDB::Options&);
 
 #endif

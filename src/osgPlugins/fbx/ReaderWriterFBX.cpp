@@ -293,7 +293,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
             std::map<KFbxNode*, osgAnimation::Skeleton*> skeletonMap;
             ReadResult res = readFbxNode(*pSdkManager, pNode, pAnimationManager,
                 bIsBone, nLightCount, fbxMaterialToOsgStateSet, nodeMap,
-                boneBindMatrices, fbxSkeletons, skeletonMap, localOptions.get());
+                boneBindMatrices, fbxSkeletons, skeletonMap, *localOptions);
 
             if (res.success())
             {

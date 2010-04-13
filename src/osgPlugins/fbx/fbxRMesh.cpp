@@ -29,28 +29,12 @@ enum GeometryType
     GEOMETRY_MORPH
 };
 
-osg::Vec3 convertVec3(const KFbxVector4& v)
+osg::Vec3d convertVec3(const KFbxVector4& v)
 {
-    return osg::Vec3(
-        static_cast<float>(v[0]),
-        static_cast<float>(v[1]),
-        static_cast<float>(v[2]));
-}
-
-osg::Vec2 convertVec2(const KFbxVector2& v)
-{
-    return osg::Vec2(
-        static_cast<float>(v[0]),
-        static_cast<float>(v[1]));
-}
-
-osg::Vec4 convertColor(const KFbxColor& color)
-{
-    return osg::Vec4(
-        static_cast<float>(color.mRed),
-        static_cast<float>(color.mGreen),
-        static_cast<float>(color.mBlue),
-        static_cast<float>(color.mAlpha));
+    return osg::Vec3d(
+        v[0],
+        v[1],
+        v[2]);
 }
 
 template <typename T>
@@ -136,9 +120,25 @@ FbxT getElement(const KFbxLayerElementTemplate<FbxT>* pLayerElement,
 
 typedef std::map<unsigned, osg::ref_ptr<osg::Geometry> > GeometryMap;
 
+osg::Array* createVec2Array(bool doublePrecision)
+{
+    if  (doublePrecision) return new osg::Vec2dArray;
+    else return new osg::Vec2Array;
+}
+osg::Array* createVec3Array(bool doublePrecision)
+{
+    if  (doublePrecision) return new osg::Vec3dArray;
+    else return new osg::Vec3Array;
+}
+osg::Array* createVec4Array(bool doublePrecision)
+{
+    if  (doublePrecision) return new osg::Vec4dArray;
+    else return new osg::Vec4Array;
+}
+
 osg::Geometry* getGeometry(osg::Geode* pGeode, GeometryMap& geometryMap,
     std::vector<StateSetContent>& stateSetList,
-    GeometryType gt, unsigned int mti, bool bNormal, bool bTexCoord, bool bColor)
+    GeometryType gt, unsigned int mti, bool bNormal, bool bTexCoord, bool bColor, const osgDB::Options& options)
 {
     GeometryMap::iterator it = geometryMap.find(mti);
 
@@ -157,10 +157,12 @@ osg::Geometry* getGeometry(osg::Geode* pGeode, GeometryMap& geometryMap,
         pGeometry = new osg::Geometry;
     }
 
-    pGeometry->setVertexData(osg::Geometry::ArrayData(new osg::Vec3Array, osg::Geometry::BIND_PER_VERTEX));
-    if (bNormal) pGeometry->setNormalData(osg::Geometry::ArrayData(new osg::Vec3Array, osg::Geometry::BIND_PER_VERTEX));
-    if (bTexCoord) pGeometry->setTexCoordData(0, osg::Geometry::ArrayData(new osg::Vec2Array, osg::Geometry::BIND_PER_VERTEX));
-    if (bColor) pGeometry->setColorData(osg::Geometry::ArrayData(new osg::Vec4Array, osg::Geometry::BIND_PER_VERTEX));
+    osgDB::Options::PrecisionHint precision = options.getPrecisionHint();
+
+    pGeometry->setVertexData(osg::Geometry::ArrayData(createVec3Array((precision & osgDB::Options::DOUBLE_PRECISION_VERTEX) != 0), osg::Geometry::BIND_PER_VERTEX));
+    if (bNormal) pGeometry->setNormalData(osg::Geometry::ArrayData(createVec3Array((precision & osgDB::Options::DOUBLE_PRECISION_NORMAL) != 0), osg::Geometry::BIND_PER_VERTEX));
+    if (bTexCoord) pGeometry->setTexCoordData(0, osg::Geometry::ArrayData(createVec2Array((precision & osgDB::Options::DOUBLE_PRECISION_TEX_COORD) != 0), osg::Geometry::BIND_PER_VERTEX));
+    if (bColor) pGeometry->setColorData(osg::Geometry::ArrayData(createVec4Array((precision & osgDB::Options::DOUBLE_PRECISION_COLOR) != 0), osg::Geometry::BIND_PER_VERTEX));
 
     if (mti < stateSetList.size())
     {
@@ -286,6 +288,51 @@ void addBindMatrix(
         BindMatrixMap::key_type(pBone, pRigGeometry), bindMatrix));
 }
 
+void addVec2ArrayElement(osg::Array& a, const KFbxVector2& v)
+{
+    if (a.getType() == osg::Array::Vec2dArrayType)
+    {
+        static_cast<osg::Vec2dArray&>(a).push_back(osg::Vec2d(v[0], v[1]));
+    }
+    else
+    {
+        static_cast<osg::Vec2Array&>(a).push_back(osg::Vec2(
+            static_cast<float>(v[0]),
+            static_cast<float>(v[1])));
+    }
+}
+
+void addVec3ArrayElement(osg::Array& a, const KFbxVector4& v)
+{
+    if (a.getType() == osg::Array::Vec3dArrayType)
+    {
+        static_cast<osg::Vec3dArray&>(a).push_back(osg::Vec3d(v[0], v[1], v[2]));
+    }
+    else
+    {
+        static_cast<osg::Vec3Array&>(a).push_back(osg::Vec3(
+            static_cast<float>(v[0]),
+            static_cast<float>(v[1]),
+            static_cast<float>(v[2])));
+    }
+}
+
+void addColorArrayElement(osg::Array& a, const KFbxColor& c)
+{
+    if (a.getType() == osg::Array::Vec4dArrayType)
+    {
+        static_cast<osg::Vec4dArray&>(a).push_back(osg::Vec4d(c.mRed, c.mGreen, c.mBlue, c.mAlpha));
+    }
+    else
+    {
+        static_cast<osg::Vec4Array&>(a).push_back(osg::Vec4(
+            static_cast<float>(c.mRed),
+            static_cast<float>(c.mGreen),
+            static_cast<float>(c.mBlue),
+            static_cast<float>(c.mAlpha)));
+    }
+}
+
 osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
     KFbxNode* pNode, KFbxMesh* fbxMesh,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
@@ -293,7 +340,8 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
     const char* szName,
     BindMatrixMap& boneBindMatrices,
     const std::set<const KFbxNode*>& fbxSkeletons,
-    std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap)
+    std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap,
+    const osgDB::Options& options)
 {
     GeometryMap geometryMap;
 
@@ -351,16 +399,12 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
 
         osg::Geometry* pGeometry = getGeometry(pGeode, geometryMap,
             stateSetList, geomType, materialIndex,
-            pFbxNormals != 0, pFbxUVs != 0, pFbxColors != 0);
+            pFbxNormals != 0, pFbxUVs != 0, pFbxColors != 0, options);
 
-        osg::Vec3Array* pVertices = static_cast<osg::Vec3Array*>(
-            pGeometry->getVertexArray());
-        osg::Vec3Array* pNormals = static_cast<osg::Vec3Array*>(
-            pGeometry->getNormalArray());
-        osg::Vec2Array* pTexCoords = static_cast<osg::Vec2Array*>(
-            pGeometry->getTexCoordArray(0));
-        osg::Vec4Array* pColors = static_cast<osg::Vec4Array*>(
-            pGeometry->getColorArray());
+        osg::Array* pVertices = pGeometry->getVertexArray();
+        osg::Array* pNormals = pGeometry->getNormalArray();
+        osg::Array* pTexCoords = pGeometry->getTexCoordArray(0);
+        osg::Array* pColors = pGeometry->getColorArray();
 
         int nVertex0 = nVertex;
         nVertex += (std::min)(2, lPolygonSize);
@@ -372,13 +416,13 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
                 v1 = fbxMesh->GetPolygonVertex(i, j - 1),
                 v2 = fbxMesh->GetPolygonVertex(i, j);
 
-            fbxToOsgVertMap.insert(FbxToOsgVertexMap::value_type(v0, GIPair(pGeometry, pVertices->size())));
-            fbxToOsgVertMap.insert(FbxToOsgVertexMap::value_type(v1, GIPair(pGeometry, pVertices->size() + 1)));
-            fbxToOsgVertMap.insert(FbxToOsgVertexMap::value_type(v2, GIPair(pGeometry, pVertices->size() + 2)));
+            fbxToOsgVertMap.insert(FbxToOsgVertexMap::value_type(v0, GIPair(pGeometry, pVertices->getNumElements())));
+            fbxToOsgVertMap.insert(FbxToOsgVertexMap::value_type(v1, GIPair(pGeometry, pVertices->getNumElements() + 1)));
+            fbxToOsgVertMap.insert(FbxToOsgVertexMap::value_type(v2, GIPair(pGeometry, pVertices->getNumElements() + 2)));
 
-            pVertices->push_back(convertVec3(pFbxVertices[v0]));
-            pVertices->push_back(convertVec3(pFbxVertices[v1]));
-            pVertices->push_back(convertVec3(pFbxVertices[v2]));
+            addVec3ArrayElement(*pVertices, pFbxVertices[v0]);
+            addVec3ArrayElement(*pVertices, pFbxVertices[v1]);
+            addVec3ArrayElement(*pVertices, pFbxVertices[v2]);
 
             if (pNormals)
             {
@@ -386,27 +430,27 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
                 int n1 = getVertexIndex(pFbxNormals, fbxMesh, i, j - 1, nVertex - 1);
                 int n2 = getVertexIndex(pFbxNormals, fbxMesh, i, j, nVertex);
 
-                osgToFbxNormMap.insert(OsgToFbxNormalMap::value_type(GIPair(pGeometry, pNormals->size()), n0));
-                osgToFbxNormMap.insert(OsgToFbxNormalMap::value_type(GIPair(pGeometry, pNormals->size() + 1), n1));
-                osgToFbxNormMap.insert(OsgToFbxNormalMap::value_type(GIPair(pGeometry, pNormals->size() + 2), n2));
+                osgToFbxNormMap.insert(OsgToFbxNormalMap::value_type(GIPair(pGeometry, pNormals->getNumElements()), n0));
+                osgToFbxNormMap.insert(OsgToFbxNormalMap::value_type(GIPair(pGeometry, pNormals->getNumElements() + 1), n1));
+                osgToFbxNormMap.insert(OsgToFbxNormalMap::value_type(GIPair(pGeometry, pNormals->getNumElements() + 2), n2));
 
-                pNormals->push_back(convertVec3(pFbxNormals->GetDirectArray().GetAt(n0)));
-                pNormals->push_back(convertVec3(pFbxNormals->GetDirectArray().GetAt(n1)));
-                pNormals->push_back(convertVec3(pFbxNormals->GetDirectArray().GetAt(n2)));
+                addVec3ArrayElement(*pNormals, pFbxNormals->GetDirectArray().GetAt(n0));
+                addVec3ArrayElement(*pNormals, pFbxNormals->GetDirectArray().GetAt(n1));
+                addVec3ArrayElement(*pNormals, pFbxNormals->GetDirectArray().GetAt(n2));
             }
 
             if (pTexCoords)
             {
-                pTexCoords->push_back(convertVec2(getElement(pFbxUVs, fbxMesh, i, 0, nVertex0)));
-                pTexCoords->push_back(convertVec2(getElement(pFbxUVs, fbxMesh, i, j - 1, nVertex - 1)));
-                pTexCoords->push_back(convertVec2(getElement(pFbxUVs, fbxMesh, i, j, nVertex)));
+                addVec2ArrayElement(*pTexCoords, getElement(pFbxUVs, fbxMesh, i, 0, nVertex0));
+                addVec2ArrayElement(*pTexCoords, getElement(pFbxUVs, fbxMesh, i, j - 1, nVertex - 1));
+                addVec2ArrayElement(*pTexCoords, getElement(pFbxUVs, fbxMesh, i, j, nVertex));
             }
 
             if (pColors)
             {
-                pColors->push_back(convertColor(getElement(pFbxColors, fbxMesh, i, 0, nVertex0)));
-                pColors->push_back(convertColor(getElement(pFbxColors, fbxMesh, i, j - 1, nVertex - 1)));
-                pColors->push_back(convertColor(getElement(pFbxColors, fbxMesh, i, j, nVertex)));
+                addColorArrayElement(*pColors, getElement(pFbxColors, fbxMesh, i, 0, nVertex0));
+                addColorArrayElement(*pColors, getElement(pFbxColors, fbxMesh, i, j - 1, nVertex - 1));
+                addColorArrayElement(*pColors, getElement(pFbxColors, fbxMesh, i, j, nVertex));
             }
         }
     }
@@ -554,7 +598,7 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
             int nControlPoints = pMorphShape->GetControlPointsCount();
             for (int fbxIndex = 0; fbxIndex < nControlPoints; ++fbxIndex)
             {
-                osg::Vec3 vPos = convertVec3(pControlPoints[fbxIndex]);
+                osg::Vec3d vPos = convertVec3(pControlPoints[fbxIndex]);
                 for (FbxToOsgVertexMap::const_iterator it =
                     fbxToOsgVertMap.find(fbxIndex);
                     it != fbxToOsgVertMap.end() &&
@@ -564,13 +608,29 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
                     osgAnimation::MorphGeometry& morphGeom =
                         dynamic_cast<osgAnimation::MorphGeometry&>(*gi.first);
                     osg::Geometry* pGeometry = morphGeom.getMorphTarget(i).getGeometry();
-                    osg::Vec3Array* pVertices = static_cast<osg::Vec3Array*>(pGeometry->getVertexArray());
-                    (*pVertices)[gi.second] = vPos;
 
-                    if (pFbxShapeNormals)
+                    if (pGeometry->getVertexArray()->getType() == osg::Array::Vec3dArrayType)
                     {
-                        if (osg::Vec3Array* pNormals = static_cast<osg::Vec3Array*>(pGeometry->getNormalArray()))
+                        osg::Vec3dArray* pVertices = static_cast<osg::Vec3dArray*>(pGeometry->getVertexArray());
+                        (*pVertices)[gi.second] = vPos;
+                    }
+                    else
+                    {
+                        osg::Vec3Array* pVertices = static_cast<osg::Vec3Array*>(pGeometry->getVertexArray());
+                        (*pVertices)[gi.second] = vPos;
+                    }
+
+                    if (pFbxShapeNormals && pGeometry->getNormalArray())
+                    {
+                        if (pGeometry->getNormalArray()->getType() == osg::Array::Vec3dArrayType)
                         {
+                            osg::Vec3dArray* pNormals = static_cast<osg::Vec3dArray*>(pGeometry->getNormalArray());
+                            (*pNormals)[gi.second] = convertVec3(
+                                pFbxShapeNormals->GetDirectArray().GetAt(osgToFbxNormMap[gi]));
+                        }
+                        else
+                        {
+                            osg::Vec3Array* pNormals = static_cast<osg::Vec3Array*>(pGeometry->getNormalArray());
                             (*pNormals)[gi.second] = convertVec3(
                                 pFbxShapeNormals->GetDirectArray().GetAt(osgToFbxNormMap[gi]));
                         }
@@ -631,7 +691,8 @@ osgDB::ReaderWriter::ReadResult readFbxMesh(KFbxSdkManager& pSdkManager,
     std::vector<StateSetContent>& stateSetList,
     BindMatrixMap& boneBindMatrices,
     const std::set<const KFbxNode*>& fbxSkeletons,
-    std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap)
+    std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap,
+    const osgDB::Options& options)
 {
     KFbxMesh* lMesh = dynamic_cast<KFbxMesh*>(pNode->GetNodeAttribute());
 
@@ -641,5 +702,5 @@ osgDB::ReaderWriter::ReadResult readFbxMesh(KFbxSdkManager& pSdkManager,
     }
 
     return readMesh(pSdkManager, pNode, lMesh, pAnimationManager, stateSetList,
-        pNode->GetName(), boneBindMatrices, fbxSkeletons, skeletonMap);
+        pNode->GetName(), boneBindMatrices, fbxSkeletons, skeletonMap, options);
 }

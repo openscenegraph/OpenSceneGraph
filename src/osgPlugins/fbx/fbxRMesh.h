@@ -12,6 +12,7 @@ osgDB::ReaderWriter::ReadResult readFbxMesh(
     std::vector<StateSetContent>&,
     BindMatrixMap& boneBindMatrices,
     const std::set<const KFbxNode*>& fbxSkeletons,
-    std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap);
+    std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap,
+    const osgDB::Options&);
 
 #endif

@@ -40,7 +40,8 @@ class observer_ptr : public Observer
 
         observer_ptr(): _ptr(0L)                            {}
         observer_ptr(T* t): _ptr(t)                         { if (_ptr) _ptr->addObserver(this); }
-        observer_ptr(const observer_ptr& rp)
+        observer_ptr(const observer_ptr& rp):
+            Observer()
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*getObserverMutex());
             _ptr = rp._ptr;

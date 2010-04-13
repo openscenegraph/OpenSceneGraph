@@ -561,7 +561,8 @@ class OSG_EXPORT BufferData : public Object
         BufferData(const BufferData& bd,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             osg::Object(bd,copyop),
             _modifiedCount(0),
-            _bufferIndex(0) {}
+            _bufferIndex(0),
+            _modifiedCallback(bd._modifiedCallback) {}
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const BufferData*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
@@ -580,8 +581,29 @@ class OSG_EXPORT BufferData : public Object
         GLBufferObject* getGLBufferObject(unsigned int contextID) const { return _bufferObject.valid() ? _bufferObject->getGLBufferObject(contextID) : 0; }
         GLBufferObject* getOrCreateGLBufferObject(unsigned int contextID) const { return _bufferObject.valid() ? _bufferObject->getOrCreateGLBufferObject(contextID) : 0; }
 
-        /** Dirty the primitive, which increments the modified count, to force buffer objects to update. */
-        inline void dirty() { ++_modifiedCount; if (_bufferObject.valid()) _bufferObject->dirty(); }
+        struct ModifiedCallback : public virtual osg::Object
+        {
+            ModifiedCallback() {}
+
+            ModifiedCallback(const ModifiedCallback&,const CopyOp&) {}
+
+            META_Object(osg,ModifiedCallback);
+
+            virtual void modified(BufferData* bufferData) const {}
+        };
+
+        void setModifiedCallback(ModifiedCallback* md) { _modifiedCallback = md; }
+        ModifiedCallback* getModifiedCallback() { return _modifiedCallback.get(); }
+        const ModifiedCallback* getModifiedCallback() const { return _modifiedCallback.get(); }
+
+        /** Dirty the primitive, which increments the modified count, to force buffer objects to update.
+          * If a ModifiedCallback is attached to this BufferData then the callback is called prior to the bufferObject's dirty is called. */
+        inline void dirty()
+        {
+            ++_modifiedCount;
+            if (_modifiedCallback.valid()) _modifiedCallback->modified(this);
+            if (_bufferObject.valid()) _bufferObject->dirty();
+        }
 
         /** Set the modified count value.*/
         inline void setModifiedCount(unsigned int value) { _modifiedCount=value; }
@@ -597,6 +619,7 @@ class OSG_EXPORT BufferData : public Object
 
         unsigned int                    _bufferIndex;
         osg::ref_ptr<BufferObject>      _bufferObject;
+        osg::ref_ptr<ModifiedCallback>  _modifiedCallback;
 };
 
 

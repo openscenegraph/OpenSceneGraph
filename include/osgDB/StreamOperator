@@ -84,7 +84,7 @@ public:
     virtual void readCharArray( char* s, unsigned int size ) = 0;
     virtual void readWrappedString( std::string& str ) = 0;
     
-    virtual bool matchString( const std::string& str ) { return false; }
+    virtual bool matchString( const std::string& /*str*/ ) { return false; }
     virtual void advanceToCurrentEndBracket() {}
     
 protected:

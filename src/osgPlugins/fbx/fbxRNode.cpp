@@ -326,7 +326,7 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
     BindMatrixMap& boneBindMatrices,
     const std::set<const KFbxNode*>& fbxSkeletons,
     std::map<KFbxNode*, osgAnimation::Skeleton*>& skeletonMap,
-    const osgDB::Options* options)
+    const osgDB::Options& options)
 {
     if (KFbxNodeAttribute* lNodeAttribute = pNode->GetNodeAttribute())
     {
@@ -432,7 +432,7 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
             size_t bindMatrixCount = boneBindMatrices.size();
             osgDB::ReaderWriter::ReadResult meshRes = readFbxMesh(pSdkManager,
                 pNode, pAnimationManager, stateSetList, boneBindMatrices,
-                fbxSkeletons, skeletonMap);
+                fbxSkeletons, skeletonMap, options);
             if (meshRes.error())
             {
                 return meshRes;

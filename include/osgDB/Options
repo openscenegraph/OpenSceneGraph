@@ -60,6 +60,30 @@ class OSGDB_EXPORT Options : public osg::Object
                                     CACHE_SHADERS
         };
 
+        /// Bit mask for which geometry attributes should be imported with double precision where source data is held in double precision
+        /// This is useful for data that will be pre-processed before rendering.
+        /// In general the geometry should be converted to floating point before rendering to ensure good performance.
+        enum PrecisionHint
+        {
+            FLOAT_PRECISION_ALL              = 0,
+
+            DOUBLE_PRECISION_VERTEX          = 1<<0,
+            DOUBLE_PRECISION_NORMAL          = 1<<1,
+            DOUBLE_PRECISION_COLOR           = 1<<2,
+            DOUBLE_PRECISION_SECONDARY_COLOR = 1<<3,
+            DOUBLE_PRECISION_FOG_COORD       = 1<<4,
+            DOUBLE_PRECISION_TEX_COORD       = 1<<5,
+            DOUBLE_PRECISION_VERTEX_ATTRIB   = 1<<6,
+
+            DOUBLE_PRECISION_ALL = DOUBLE_PRECISION_VERTEX |
+                                   DOUBLE_PRECISION_NORMAL |
+                                   DOUBLE_PRECISION_COLOR |
+                                   DOUBLE_PRECISION_SECONDARY_COLOR |
+                                   DOUBLE_PRECISION_FOG_COORD |
+                                   DOUBLE_PRECISION_TEX_COORD |
+                                   DOUBLE_PRECISION_VERTEX_ATTRIB
+        };
+
         /// range of options of whether to build kdtrees automatically on loading
         enum BuildKdTreesHint
         {
@@ -72,12 +96,14 @@ class OSGDB_EXPORT Options : public osg::Object
         Options():
             osg::Object(true),
             _objectCacheHint(CACHE_ARCHIVES),
+            _precisionHint(FLOAT_PRECISION_ALL),
             _buildKdTreesHint(NO_PREFERENCE) {}
 
         Options(const std::string& str):
             osg::Object(true),
             _str(str),
             _objectCacheHint(CACHE_ARCHIVES),
+            _precisionHint(FLOAT_PRECISION_ALL),
             _buildKdTreesHint(NO_PREFERENCE) {}
 
         Options(const Options& options,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
@@ -108,6 +134,11 @@ class OSGDB_EXPORT Options : public osg::Object
         /** Get whether the Registry::ObjectCache should be used by default.*/
         CacheHintOptions getObjectCacheHint() const { return _objectCacheHint; }
 
+        /** Set which geometry attributes plugins should import at double precision. */
+        void setPrecisionHint(PrecisionHint hint) { _precisionHint = hint; }
+
+        /** Get which geometry attributes plugins should import at double precision. */
+        PrecisionHint getPrecisionHint() const { return _precisionHint; }
 
         /** Set whether the KdTrees should be built for geometry in the loader model. */
         void setBuildKdTreesHint(BuildKdTreesHint hint) { _buildKdTreesHint = hint; }
@@ -200,6 +231,7 @@ class OSGDB_EXPORT Options : public osg::Object
         std::string                     _str;
         FilePathList                    _databasePaths;
         CacheHintOptions                _objectCacheHint;
+        PrecisionHint                   _precisionHint;
         BuildKdTreesHint                _buildKdTreesHint;
         osg::ref_ptr<AuthenticationMap> _authenticationMap;
 

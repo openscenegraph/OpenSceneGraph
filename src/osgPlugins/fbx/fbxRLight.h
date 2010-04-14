@@ -5,6 +5,6 @@
 #include <osgDB/ReaderWriter>
 
 osgDB::ReaderWriter::ReadResult readFbxLight(
-    FBXFILESDK_NAMESPACE::KFbxNode* pNode, int& nLightCount);
+    KFbxNode* pNode, int& nLightCount);
 
 #endif

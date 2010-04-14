@@ -318,7 +318,9 @@ osg::Group* createGroupNode(KFbxSdkManager& pSdkManager, KFbxNode* pNode,
 }
 
 osgDB::ReaderWriter::ReadResult readFbxNode(
-    KFbxSdkManager& pSdkManager, KFbxNode* pNode,
+    KFbxSdkManager& pSdkManager,
+    KFbxScene& fbxScene,
+    KFbxNode* pNode,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
     bool& bIsBone, int& nLightCount,
     FbxMaterialToOsgStateSet& fbxMaterialToOsgStateSet,
@@ -381,7 +383,7 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
 
         bool bChildIsBone = false;
         osgDB::ReaderWriter::ReadResult childResult = readFbxNode(
-            pSdkManager, pChildNode, pAnimationManager,
+            pSdkManager, fbxScene, pChildNode, pAnimationManager,
             bChildIsBone, nLightCount, fbxMaterialToOsgStateSet, nodeMap,
             boneBindMatrices, fbxSkeletons, skeletonMap, options);
         if (childResult.error())
@@ -402,7 +404,7 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
         }
     }
 
-    std::string animName = readFbxAnimation(pNode, pAnimationManager, pNode->GetName());
+    std::string animName = readFbxAnimation(pNode, fbxScene, pAnimationManager, pNode->GetName());
 
     osg::Matrix localMatrix;
     makeLocalMatrix(pNode, localMatrix);
@@ -430,7 +432,7 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
     case KFbxNodeAttribute::eMESH:
         {
             size_t bindMatrixCount = boneBindMatrices.size();
-            osgDB::ReaderWriter::ReadResult meshRes = readFbxMesh(pSdkManager,
+            osgDB::ReaderWriter::ReadResult meshRes = readFbxMesh(pSdkManager, fbxScene,
                 pNode, pAnimationManager, stateSetList, boneBindMatrices,
                 fbxSkeletons, skeletonMap, options);
             if (meshRes.error())

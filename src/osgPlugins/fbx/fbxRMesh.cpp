@@ -239,42 +239,57 @@ void addChannel(
     pAnimation->addChannel(pChannel);
 }
 
-void readAnimation(KFbxNode* pNode, const std::string& targetName,
+void readAnimation(KFbxNode* pNode, KFbxScene& fbxScene, const std::string& targetName,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
     KFbxMesh* pMesh, int nShape)
 {
-    for (int i = 1; i < pNode->GetTakeNodeCount(); ++i)
+    for (int i = 0; i < fbxScene.GetSrcObjectCount(FBX_TYPE(KFbxAnimStack)); ++i)
     {
-        const char* pTakeName = pNode->GetTakeNodeName(i);
+        KFbxAnimStack* pAnimStack = KFbxCast<KFbxAnimStack>(fbxScene.GetSrcObject(FBX_TYPE(KFbxAnimStack), i));
 
-        KFCurve* pCurve = pMesh->GetShapeChannel(nShape, false, pTakeName);
-        if (!pCurve)
-        {
+        int nbAnimLayers = pAnimStack->GetMemberCount(FBX_TYPE(KFbxAnimLayer));
+
+        const char* pTakeName = pAnimStack->GetName();
+
+        if (!pTakeName || !*pTakeName)
             continue;
-        }
 
-        int nKeys = pCurve->KeyGetCount();
-        if (!nKeys)
+        for (int j = 0; j < nbAnimLayers; j++)
         {
-            continue;
+            KFbxAnimLayer* pAnimLayer = pAnimStack->GetMember(FBX_TYPE(KFbxAnimLayer), j);
+
+            KFbxAnimCurve* pCurve = pMesh->GetShapeChannel(nShape, pAnimLayer);
+            if (!pCurve)
+            {
+                continue;
+            }
+
+            int nKeys = pCurve->KeyGetCount();
+            if (!nKeys)
+            {
+                continue;
+            }
+
+            osgAnimation::FloatLinearChannel* pChannel = new osgAnimation::FloatLinearChannel;
+            std::vector<osgAnimation::TemplateKeyframe<float> >& keyFrameCntr = *pChannel->getOrCreateSampler()->getOrCreateKeyframeContainer();
+
+            for (int k = 0; k < nKeys; ++k)
+            {
+                KFbxAnimCurveKey key = pCurve->KeyGet(k);
+                double fTime = key.GetTime().GetSecondDouble();
+                float fValue = static_cast<float>(key.GetValue() * 0.01);
+                keyFrameCntr.push_back(osgAnimation::FloatKeyframe(fTime,fValue));
+            }
+
+            pChannel->setTargetName(targetName);
+            std::stringstream ss;
+            ss << nShape;
+            pChannel->setName(ss.str());
+            addChannel(pChannel, pAnimationManager, pTakeName);
         }
+    }
 
-        osgAnimation::FloatLinearChannel* pChannel = new osgAnimation::FloatLinearChannel;
-        std::vector<osgAnimation::TemplateKeyframe<float> >& keyFrameCntr = *pChannel->getOrCreateSampler()->getOrCreateKeyframeContainer();
-
-        for (int k = 0; k < nKeys; ++k)
-        {
-            KFCurveKey key = pCurve->KeyGet(k);
-            double fTime = key.GetTime().GetSecondDouble();
-            float fValue = static_cast<float>(key.GetValue() * 0.01);
-            keyFrameCntr.push_back(osgAnimation::FloatKeyframe(fTime,fValue));
-        }
-
-        pChannel->setTargetName(targetName);
-        std::stringstream ss;
-        ss << nShape;
-        pChannel->setName(ss.str());
-        addChannel(pChannel, pAnimationManager, pTakeName);
+    {
     }
 }
 
@@ -334,6 +349,7 @@ void addColorArrayElement(osg::Array& a, const KFbxColor& c)
 }
 
 osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
+    KFbxScene& fbxScene,
     KFbxNode* pNode, KFbxMesh* fbxMesh,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
     std::vector<StateSetContent>& stateSetList,
@@ -455,7 +471,7 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
         }
     }
 
-    for (int i = 0; i < pGeode->getNumDrawables(); ++i)
+    for (unsigned i = 0; i < pGeode->getNumDrawables(); ++i)
     {
         osg::Geometry* pGeometry = pGeode->getDrawable(i)->asGeometry();
         if (pGeode->getNumDrawables() > 1)
@@ -480,7 +496,7 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
             osg::ref_ptr<osgAnimation::RigGeometry> > GeometryRigGeometryMap;
         GeometryRigGeometryMap old2newGeometryMap;
 
-        for (int i = 0; i < pGeode->getNumDrawables(); ++i)
+        for (unsigned i = 0; i < pGeode->getNumDrawables(); ++i)
         {
             osg::Geometry* pGeometry = pGeode->getDrawable(i)->asGeometry();
 
@@ -545,7 +561,7 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
     }
     else if (geomType == GEOMETRY_MORPH)
     {
-        for (int i = 0; i < pGeode->getNumDrawables(); ++i)
+        for (unsigned i = 0; i < pGeode->getNumDrawables(); ++i)
         {
             osg::Geometry* pGeometry = pGeode->getDrawable(i)->asGeometry();
 
@@ -579,7 +595,7 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
                 pMorphTarget->setName(fbxMesh->GetShapeName(j));
                 morph.addMorphTarget(pMorphTarget, 0.0f);
 
-                readAnimation(pNode, morph.getName(), pAnimationManager, fbxMesh, j);
+                readAnimation(pNode, fbxScene, morph.getName(), pAnimationManager, fbxMesh, j);
             }
         }
 
@@ -686,6 +702,7 @@ osgDB::ReaderWriter::ReadResult readMesh(KFbxSdkManager& pSdkManager,
 }
 
 osgDB::ReaderWriter::ReadResult readFbxMesh(KFbxSdkManager& pSdkManager,
+    KFbxScene& fbxScene,
     KFbxNode* pNode,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
     std::vector<StateSetContent>& stateSetList,
@@ -701,6 +718,6 @@ osgDB::ReaderWriter::ReadResult readFbxMesh(KFbxSdkManager& pSdkManager,
         return osgDB::ReaderWriter::ReadResult::ERROR_IN_READING_FILE;
     }
 
-    return readMesh(pSdkManager, pNode, lMesh, pAnimationManager, stateSetList,
+    return readMesh(pSdkManager, fbxScene, pNode, lMesh, pAnimationManager, stateSetList,
         pNode->GetName(), boneBindMatrices, fbxSkeletons, skeletonMap, options);
 }

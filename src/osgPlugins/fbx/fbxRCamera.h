@@ -5,6 +5,6 @@
 #include <osgDB/ReaderWriter>
 
 osgDB::ReaderWriter::ReadResult readFbxCamera(
-    FBXFILESDK_NAMESPACE::KFbxNode* pNode);
+    KFbxNode* pNode);
 
 #endif

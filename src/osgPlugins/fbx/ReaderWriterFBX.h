@@ -6,6 +6,7 @@
 ///////////////////////////////////////////////////////////////////////////
 // OSG reader plugin for the ".fbx" format.
 // See http://usa.autodesk.com/adsk/servlet/index?siteID=123112&id=6837478
+// This plugin requires the FBX SDK version 2011.2
 
 class ReaderWriterFBX : public osgDB::ReaderWriter
 {

@@ -15,8 +15,9 @@ osgAnimation::Skeleton* getSkeleton(KFbxNode*,
     std::map<KFbxNode*, osgAnimation::Skeleton*>&);
 
 osgDB::ReaderWriter::ReadResult readFbxNode(
-    FBXFILESDK_NAMESPACE::KFbxSdkManager& pSdkManager,
-    FBXFILESDK_NAMESPACE::KFbxNode* pNode,
+    KFbxSdkManager& pSdkManager,
+    KFbxScene& fbxScene,
+    KFbxNode* pNode,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
     bool& bIsBone,
     int& nLightCount,

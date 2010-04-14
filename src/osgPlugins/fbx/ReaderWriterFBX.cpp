@@ -92,7 +92,6 @@ public:
 
     ~CleanUpFbx()
     {
-        KFbxIOSettings::IOSettingsRef().FreeIOSettings();
         m_pSdkManager->Destroy();
     }
 };
@@ -214,6 +213,8 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
 
         CleanUpFbx cleanUpFbx(pSdkManager);
 
+        pSdkManager->SetIOSettings(KFbxIOSettings::Create(pSdkManager, IOSROOT));
+
         KFbxScene* pScene = KFbxScene::Create(pSdkManager, "");
 
         // The FBX SDK interprets the filename as UTF-8
@@ -223,14 +224,9 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
         std::string utf8filename(osgDB::convertStringFromCurrentCodePageToUTF8(filename));
 #endif
 
-        int fileFormat;
-        if (!pSdkManager->GetIOPluginRegistry()->DetectFileFormat(utf8filename.c_str(), fileFormat))
-        {
-            return ReadResult::FILE_NOT_HANDLED;
-        }
         KFbxImporter* lImporter = KFbxImporter::Create(pSdkManager, "");
 
-        if (!lImporter->Initialize(utf8filename.c_str(), fileFormat))
+        if (!lImporter->Initialize(utf8filename.c_str(), -1, pSdkManager->GetIOSettings()))
         {
             return std::string(lImporter->GetLastErrorString());
         }
@@ -291,7 +287,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
             std::map<KFbxNode*, osg::Node*> nodeMap;
             BindMatrixMap boneBindMatrices;
             std::map<KFbxNode*, osgAnimation::Skeleton*> skeletonMap;
-            ReadResult res = readFbxNode(*pSdkManager, pNode, pAnimationManager,
+            ReadResult res = readFbxNode(*pSdkManager, *pScene, pNode, pAnimationManager,
                 bIsBone, nLightCount, fbxMaterialToOsgStateSet, nodeMap,
                 boneBindMatrices, fbxSkeletons, skeletonMap, *localOptions);
 
@@ -407,6 +403,8 @@ osgDB::ReaderWriter::WriteResult ReaderWriterFBX::writeNode(
 
         CleanUpFbx cleanUpFbx(pSdkManager);
 
+        pSdkManager->SetIOSettings(KFbxIOSettings::Create(pSdkManager, IOSROOT));
+
         bool useFbxRoot = false;
         if (options)
         {
@@ -416,9 +414,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriterFBX::writeNode(
             {
                 if (opt == "Embedded")
                 {
-                    IOSREF.SetBoolProp(EXP_FBX_EMBEDDED, true);
-                    if (KFbxIOSettings::IOSettingsRef().IsIOSettingsAllocated())
-                        KFbxIOSettings::IOSettingsRef().AllocateIOSettings(*pSdkManager);
+                    pSdkManager->GetIOSettings()->SetBoolProp(EXP_FBX_EMBEDDED, true);
                 }
                 else if (opt == "UseFbxRoot")
                 {

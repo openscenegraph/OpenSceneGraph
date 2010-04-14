@@ -513,7 +513,7 @@ WriterNodeVisitor::setLayerTextureAndMaterial(KFbxMesh* mesh)
         }
     }
     mesh->GetLayer(0)->SetMaterials(lMaterialLayer);
-    mesh->GetLayer(0)->SetDiffuseTextures(lTextureDiffuseLayer);
+    mesh->GetLayer(0)->SetTextures(KFbxLayerElement::eDIFFUSE_TEXTURES, lTextureDiffuseLayer);
 }
 
 void
@@ -654,7 +654,7 @@ void WriterNodeVisitor::buildFaces(const osg::Geode& geo,
         lLayer = mesh->GetLayer(0);
     }
     setLayerTextureAndMaterial(mesh);
-    lLayer->GetDiffuseTextures()->GetIndexArray().SetCount(listTriangles.size());
+    lLayer->GetTextures(KFbxLayerElement::eDIFFUSE_TEXTURES)->GetIndexArray().SetCount(listTriangles.size());
     lLayer->GetMaterials()->GetIndexArray().SetCount(listTriangles.size());
 
     unsigned int i = 0;
@@ -667,7 +667,7 @@ void WriterNodeVisitor::buildFaces(const osg::Geode& geo,
         else
         {
             mesh->BeginPolygon(i);
-            lLayer->GetDiffuseTextures()->GetIndexArray().SetAt(i, it->first.material);
+            lLayer->GetTextures(KFbxLayerElement::eDIFFUSE_TEXTURES)->GetIndexArray().SetAt(i, it->first.material);
             lLayer->GetMaterials()->GetIndexArray().SetAt(i, it->first.material);
         }
         addPolygon(mesh, index_vert, it->first, it->second);
@@ -721,13 +721,6 @@ void WriterNodeVisitor::apply(osg::Geode& node)
     KFbxNode* nodeFBX = KFbxNode::Create(_pSdkManager, node.getName().empty() ? "DefaultName" : node.getName().c_str());
     _curFbxNode->AddChild(nodeFBX);
     _curFbxNode = nodeFBX;
-    if (false)
-    {
-        KFbxProperty lProperty = KFbxProperty::Create(_curFbxNode, "nameGeode", DTString, "label2");
-        std::ostringstream oss;
-        oss << node.getName().c_str() << ".metaData";
-        lProperty.Set(new KString(oss.str().c_str()), eSTRING);
-    }
     unsigned int count = node.getNumDrawables();
     ListTriangle listTriangles;
     bool texcoords = false;
@@ -760,13 +753,6 @@ void WriterNodeVisitor::apply(osg::Group& node)
     KFbxNode* nodeFBX = KFbxNode::Create(_pSdkManager, node.getName().empty() ? "DefaultName" : node.getName().c_str());
     _curFbxNode->AddChild(nodeFBX);
     _curFbxNode = nodeFBX;
-    if (false)
-    {
-        KFbxProperty lProperty = KFbxProperty::Create(_curFbxNode, "nameGeode", DTString, "label2");
-        std::ostringstream oss;
-        oss << node.getName().c_str() << ".metaData";
-        lProperty.Set(new KString(oss.str().c_str()), eSTRING);
-    }
     traverse(node);
     _curFbxNode = parent;
 }
@@ -776,13 +762,6 @@ void WriterNodeVisitor::apply(osg::MatrixTransform& node)
     KFbxNode* parent = _curFbxNode;
     _curFbxNode = KFbxNode::Create(_pSdkManager, node.getName().empty() ? "DefaultName" : node.getName().c_str());
     parent->AddChild(_curFbxNode);
-    if (false)
-    {
-        KFbxProperty lProperty = KFbxProperty::Create(_curFbxNode, "nameGeode", DTString, "label2");
-        std::ostringstream oss;
-        oss << node.getName().c_str() << ".metaData";
-        lProperty.Set(new KString(oss.str().c_str()), eSTRING);
-    }
 
     const osg::Matrix& matrix = node.getMatrix();
     osg::Vec3d pos, scl;

@@ -4,7 +4,8 @@
 #include <fbxfilesdk/fbxfilesdk_def.h>
 
 std::string readFbxAnimation(
-    FBXFILESDK_NAMESPACE::KFbxNode*,
+    KFbxNode*,
+    KFbxScene& fbxScene,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>&,
     const char* targetName);
 

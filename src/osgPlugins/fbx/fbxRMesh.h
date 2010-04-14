@@ -6,8 +6,9 @@
 #include <osg/Material>
 #include "fbxRNode.h"
 osgDB::ReaderWriter::ReadResult readFbxMesh(
-    FBXFILESDK_NAMESPACE::KFbxSdkManager& pSdkManager,
-    FBXFILESDK_NAMESPACE::KFbxNode* pNode,
+    KFbxSdkManager& pSdkManager,
+    KFbxScene& fbxScene,
+    KFbxNode* pNode,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
     std::vector<StateSetContent>&,
     BindMatrixMap& boneBindMatrices,

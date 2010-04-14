@@ -599,7 +599,17 @@ int ViewerBase::run()
         osg::Timer_t startFrameTick = osg::Timer::instance()->tick();
         if (_runFrameScheme==ON_DEMAND)
         {
-            if (checkNeedToDoFrame()) frame();
+            if (checkNeedToDoFrame())
+            {
+                frame();
+            }
+            else
+            {
+                // we don't need to render a frame but we don't want to spin the run loop so make sure the minimum
+                // loop time is 1/100th of second, if not otherwise set, so enabling the frame microSleep below to
+                // avoid consume excessive CPU resources.
+                if (minFrameTime==0.0) minFrameTime=0.01;
+            }
         }
         else
         {

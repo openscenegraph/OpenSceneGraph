@@ -97,11 +97,26 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferData)
 	          __GLBufferObject_P1__getOrCreateGLBufferObject__unsigned_int,
 	          "",
 	          "");
+	I_Method1(void, setModifiedCallback, IN, osg::BufferData::ModifiedCallback *, md,
+	          Properties::NON_VIRTUAL,
+	          __void__setModifiedCallback__ModifiedCallback_P1,
+	          "",
+	          "");
+	I_Method0(osg::BufferData::ModifiedCallback *, getModifiedCallback,
+	          Properties::NON_VIRTUAL,
+	          __ModifiedCallback_P1__getModifiedCallback,
+	          "",
+	          "");
+	I_Method0(const osg::BufferData::ModifiedCallback *, getModifiedCallback,
+	          Properties::NON_VIRTUAL,
+	          __C5_ModifiedCallback_P1__getModifiedCallback,
+	          "",
+	          "");
 	I_Method0(void, dirty,
 	          Properties::NON_VIRTUAL,
 	          __void__dirty,
 	          "Dirty the primitive, which increments the modified count, to force buffer objects to update. ",
-	          "");
+	          "If a ModifiedCallback is attached to this BufferData then the callback is called prior to the bufferObject's dirty is called. ");
 	I_Method1(void, setModifiedCount, IN, unsigned int, value,
 	          Properties::NON_VIRTUAL,
 	          __void__setModifiedCount__unsigned_int,
@@ -121,12 +136,57 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferData)
 	I_SimpleProperty(const GLvoid *, DataPointer, 
 	                 __C5_GLvoid_P1__getDataPointer, 
 	                 0);
+	I_SimpleProperty(osg::BufferData::ModifiedCallback *, ModifiedCallback, 
+	                 __ModifiedCallback_P1__getModifiedCallback, 
+	                 __void__setModifiedCallback__ModifiedCallback_P1);
 	I_SimpleProperty(unsigned int, ModifiedCount, 
 	                 __unsigned_int__getModifiedCount, 
 	                 __void__setModifiedCount__unsigned_int);
 	I_SimpleProperty(unsigned int, TotalDataSize, 
 	                 __unsigned_int__getTotalDataSize, 
 	                 0);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::BufferData::ModifiedCallback)
+	I_DeclaringFile("osg/BufferObject");
+	I_VirtualBaseType(osg::Object);
+	I_Constructor0(____ModifiedCallback,
+	               "",
+	               "");
+	I_Constructor2(IN, const osg::BufferData::ModifiedCallback &, x, IN, const osg::CopyOp &, x,
+	               ____ModifiedCallback__C5_ModifiedCallback_R1__C5_CopyOp_R1,
+	               "",
+	               "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
+	I_Method0(const char *, className,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__className,
+	          "return the name of the object's class type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(void, modified, IN, osg::BufferData *, bufferData,
+	          Properties::VIRTUAL,
+	          __void__modified__BufferData_P1,
+	          "",
+	          "");
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::BufferObject)

@@ -37,6 +37,19 @@ BEGIN_ENUM_REFLECTOR(osgDB::Options::CacheHintOptions)
 	I_EnumLabel(osgDB::Options::CACHE_ALL);
 END_REFLECTOR
 
+BEGIN_ENUM_REFLECTOR(osgDB::Options::PrecisionHint)
+	I_DeclaringFile("osgDB/Options");
+	I_EnumLabel(osgDB::Options::FLOAT_PRECISION_ALL);
+	I_EnumLabel(osgDB::Options::DOUBLE_PRECISION_VERTEX);
+	I_EnumLabel(osgDB::Options::DOUBLE_PRECISION_NORMAL);
+	I_EnumLabel(osgDB::Options::DOUBLE_PRECISION_COLOR);
+	I_EnumLabel(osgDB::Options::DOUBLE_PRECISION_SECONDARY_COLOR);
+	I_EnumLabel(osgDB::Options::DOUBLE_PRECISION_FOG_COORD);
+	I_EnumLabel(osgDB::Options::DOUBLE_PRECISION_TEX_COORD);
+	I_EnumLabel(osgDB::Options::DOUBLE_PRECISION_VERTEX_ATTRIB);
+	I_EnumLabel(osgDB::Options::DOUBLE_PRECISION_ALL);
+END_REFLECTOR
+
 BEGIN_ENUM_REFLECTOR(osgDB::Options::BuildKdTreesHint)
 	I_DeclaringFile("osgDB/Options");
 	I_EnumLabel(osgDB::Options::NO_PREFERENCE);
@@ -123,6 +136,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Options)
 	          Properties::NON_VIRTUAL,
 	          __CacheHintOptions__getObjectCacheHint,
 	          "Get whether the Registry::ObjectCache should be used by default. ",
+	          "");
+	I_Method1(void, setPrecisionHint, IN, osgDB::Options::PrecisionHint, hint,
+	          Properties::NON_VIRTUAL,
+	          __void__setPrecisionHint__PrecisionHint,
+	          "Set which geometry attributes plugins should import at double precision. ",
+	          "");
+	I_Method0(osgDB::Options::PrecisionHint, getPrecisionHint,
+	          Properties::NON_VIRTUAL,
+	          __PrecisionHint__getPrecisionHint,
+	          "Get which geometry attributes plugins should import at double precision. ",
 	          "");
 	I_Method1(void, setBuildKdTreesHint, IN, osgDB::Options::BuildKdTreesHint, hint,
 	          Properties::NON_VIRTUAL,
@@ -265,6 +288,9 @@ BEGIN_OBJECT_REFLECTOR(osgDB::Options)
 	                  __void_P1__getPluginData__C5_std_string_R1, 
 	                  __void__setPluginData__C5_std_string_R1__void_P1, 
 	                  0);
+	I_SimpleProperty(osgDB::Options::PrecisionHint, PrecisionHint, 
+	                 __PrecisionHint__getPrecisionHint, 
+	                 __void__setPrecisionHint__PrecisionHint);
 	I_SimpleProperty(osgDB::ReadFileCallback *, ReadFileCallback, 
 	                 __ReadFileCallback_P1__getReadFileCallback, 
 	                 __void__setReadFileCallback__ReadFileCallback_P1);

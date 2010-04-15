@@ -161,7 +161,7 @@ public:
           triangle.t2 = i2;
           triangle.t3 = i3;
           triangle.material = _material;
-          _listTriangles.push_back(std::pair<Triangle, unsigned int>(triangle, _drawable_n));
+          _listTriangles.push_back(ListTriangle::value_type(triangle, _drawable_n));
       }
       virtual void begin(GLenum mode)
       {

@@ -225,7 +225,6 @@ ReaderWriter3DS::ReaderWriter3DS()
     supportsOption("noMatrixTransforms", "(Read option) Set the plugin to apply matrices into the mesh vertices (\"old behaviour\") instead of restoring them (\"new behaviour\"). You may use this option to avoid a few rounding errors.");
     supportsOption("checkForEspilonIdentityMatrices", "(Read option) If not set, then consider \"almost identity\" matrices to be identity ones (in case of rounding errors).");
     supportsOption("restoreMatrixTransformsNoMeshes", "(Read option) Makes an exception to the behaviour when 'noMatrixTransforms' is not set for mesh instances. When a mesh instance has a transform on it, the reader creates a MatrixTransform above the Geode. If you don't want the hierarchy to be modified, then you can use this option to merge the transform into vertices.");
-    setByteOrder();
 
 #if 0
     OSG_NOTIFY(osg::NOTICE)<<"3DS reader sizes:"<<std::endl;

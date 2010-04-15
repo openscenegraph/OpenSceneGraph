@@ -839,34 +839,6 @@ DatabasePager::DatabasePager()
     _numFramesActive = 0;
     _frameNumber = 0;
     
-    const char* str = getenv("OSG_DATABASE_PAGER_PRIORITY");
-    if (str)
-    {
-        if (strcmp(str,"DEFAULT")==0)
-        {
-            setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_DEFAULT);
-        }
-        else if (strcmp(str,"MIN")==0)
-        {
-            setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_MIN);
-        }
-        else if (strcmp(str,"LOW")==0)
-        {
-            setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_LOW);
-        }
-        else if (strcmp(str,"NOMINAL")==0)
-        {
-            setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_NOMINAL);
-        }
-        else if (strcmp(str,"HIGH")==0)
-        {
-            setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_HIGH);
-        } 
-        else if (strcmp(str,"MAX")==0)
-        {
-            setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_MAX);
-        } 
-    }
 
 #if __APPLE__
     // OSX really doesn't like compiling display lists, and performs poorly when they are used,
@@ -876,7 +848,7 @@ DatabasePager::DatabasePager()
     _drawablePolicy = DO_NOT_MODIFY_DRAWABLE_SETTINGS;
 #endif    
     
-    str = getenv("OSG_DATABASE_PAGER_GEOMETRY");
+    const char* str = getenv("OSG_DATABASE_PAGER_GEOMETRY");
     if (!str) str = getenv("OSG_DATABASE_PAGER_DRAWABLE");
     if (str)
     {
@@ -1002,6 +974,34 @@ DatabasePager::DatabasePager()
         osg::DisplaySettings::instance()->getNumOfDatabaseThreadsHint(),
         osg::DisplaySettings::instance()->getNumOfHttpDatabaseThreadsHint());
 
+    str = getenv("OSG_DATABASE_PAGER_PRIORITY");
+    if (str)
+    {
+        if (strcmp(str,"DEFAULT")==0)
+        {
+            setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_DEFAULT);
+        }
+        else if (strcmp(str,"MIN")==0)
+        {
+            setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_MIN);
+        }
+        else if (strcmp(str,"LOW")==0)
+        {
+            setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_LOW);
+        }
+        else if (strcmp(str,"NOMINAL")==0)
+        {
+            setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_NOMINAL);
+        }
+        else if (strcmp(str,"HIGH")==0)
+        {
+            setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_HIGH);
+        }
+        else if (strcmp(str,"MAX")==0)
+        {
+            setSchedulePriority(OpenThreads::Thread::THREAD_PRIORITY_MAX);
+        }
+    }
 }
 
 DatabasePager::DatabasePager(const DatabasePager& rhs)

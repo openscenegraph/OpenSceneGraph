@@ -395,9 +395,9 @@ void DatabasePager::RequestQueue::takeFirst(osg::ref_ptr<DatabaseRequest>& datab
             else
             {
                 (*citr)->invalidate();
-
-                citr = _requestList.erase(citr);
+                
                 OSG_INFO<<"DatabasePager::RequestQueue::takeFirst(): Pruning "<<(*citr)<<std::endl;
+                citr = _requestList.erase(citr);
             }
 
         }

@@ -17,16 +17,6 @@
 */
 #include "lib3ds_impl.h"
 
-/* --- Code for OpenSceneGraph --- */
-#include "lib3ds.h"		// For setByteOrder()
-#include <osg/Endian>
-
-static bool s_requiresByteSwap = false;
-extern LIB3DSAPI void setByteOrder()
-{
-    s_requiresByteSwap = osg::getCpuByteOrder()==osg::BigEndian;
-}
-/* --- (end) Code for OpenSceneGraph --- */
 
 typedef union {
     uint32_t dword_value;
@@ -171,12 +161,6 @@ lib3ds_io_read_word(Lib3dsIo *io) {
     lib3ds_io_read(io, b, 2);
     w = ((uint16_t)b[1] << 8) |
         ((uint16_t)b[0]);
-    /* --- Code for OpenSceneGraph --- */
-    if (s_requiresByteSwap)
-    {
-        osg::swapBytes2((char*)&w);
-    }
-    /* --- (end) Code for OpenSceneGraph --- */
     return(w);
 }
 
@@ -195,12 +179,6 @@ lib3ds_io_read_dword(Lib3dsIo *io) {
         ((uint32_t)b[2] << 16) |
         ((uint32_t)b[1] << 8) |
         ((uint32_t)b[0]);
-    /* --- Code for OpenSceneGraph --- */
-    if (s_requiresByteSwap)
-    {
-        osg::swapBytes4((char*)&d);
-    }
-    /* --- (end) Code for OpenSceneGraph --- */
     return(d);
 }
 
@@ -230,12 +208,6 @@ lib3ds_io_read_intw(Lib3dsIo *io) {
     lib3ds_io_read(io, b, 2);
     w = ((uint16_t)b[1] << 8) |
         ((uint16_t)b[0]);
-    /* --- Code for OpenSceneGraph --- */
-    if (s_requiresByteSwap)
-    {
-        osg::swapBytes2((char*)&w);
-    }
-    /* --- (end) Code for OpenSceneGraph --- */
     return((int16_t)w);
 }
 
@@ -254,12 +226,6 @@ lib3ds_io_read_intd(Lib3dsIo *io) {
         ((uint32_t)b[2] << 16) |
         ((uint32_t)b[1] << 8) |
         ((uint32_t)b[0]);
-    /* --- Code for OpenSceneGraph --- */
-    if (s_requiresByteSwap)
-    {
-        osg::swapBytes4((char*)&d);
-    }
-    /* --- (end) Code for OpenSceneGraph --- */
     return((int32_t)d);
 }
 
@@ -278,12 +244,6 @@ lib3ds_io_read_float(Lib3dsIo *io) {
                     ((uint32_t)b[2] << 16) |
                     ((uint32_t)b[1] << 8) |
                     ((uint32_t)b[0]);
-    /* --- Code for OpenSceneGraph --- */
-    if (s_requiresByteSwap)
-    {
-        osg::swapBytes4((char*)&(d.dword_value));
-    }
-    /* --- (end) Code for OpenSceneGraph --- */
     return d.float_value;
 }
 
@@ -360,13 +320,6 @@ lib3ds_io_write_byte(Lib3dsIo *io, uint8_t b) {
  */
 void
 lib3ds_io_write_word(Lib3dsIo *io, uint16_t w) {
-    /* --- Code for OpenSceneGraph --- */
-    if (s_requiresByteSwap)
-    {
-            osg::swapBytes2((char*)&w);
-    }
-    /* --- (end) Code for OpenSceneGraph --- */
-
     uint8_t b[2];
 
     assert(io);
@@ -383,12 +336,6 @@ lib3ds_io_write_word(Lib3dsIo *io, uint16_t w) {
  */
 void
 lib3ds_io_write_dword(Lib3dsIo *io, uint32_t d) {
-    /* --- Code for OpenSceneGraph --- */
-    if (s_requiresByteSwap)
-    {
-        osg::swapBytes4((char*)&d);
-    }
-    /* --- (end) Code for OpenSceneGraph --- */
     uint8_t b[4];
 
     assert(io);
@@ -419,12 +366,6 @@ lib3ds_io_write_intb(Lib3dsIo *io, int8_t b) {
  */
 void
 lib3ds_io_write_intw(Lib3dsIo *io, int16_t w) {
-    /* --- Code for OpenSceneGraph --- */
-    if (s_requiresByteSwap)
-    {
-        osg::swapBytes2((char*)&w);
-    }
-    /* --- (end) Code for OpenSceneGraph --- */
     uint8_t b[2];
 
     assert(io);
@@ -441,12 +382,6 @@ lib3ds_io_write_intw(Lib3dsIo *io, int16_t w) {
  */
 void
 lib3ds_io_write_intd(Lib3dsIo *io, int32_t d) {
-    /* --- Code for OpenSceneGraph --- */
-    if (s_requiresByteSwap)
-    {
-        osg::swapBytes4((char*)&d);
-    }
-    /* --- (end) Code for OpenSceneGraph --- */
     uint8_t b[4];
 
     assert(io);
@@ -465,17 +400,11 @@ lib3ds_io_write_intd(Lib3dsIo *io, int32_t d) {
  */
 void
 lib3ds_io_write_float(Lib3dsIo *io, float l) {
-	uint8_t b[4];
+    uint8_t b[4];
     Lib3dsDwordFloat d;
 
     assert(io);
     d.float_value = l;
-    /* --- Code for OpenSceneGraph --- */
-    if (s_requiresByteSwap)
-    {
-        osg::swapBytes4((char*)&d.dword_value);
-    }
-    /* --- (end) Code for OpenSceneGraph --- */
     b[3] = (uint8_t)(((uint32_t)d.dword_value & 0xFF000000) >> 24);
     b[2] = (uint8_t)(((uint32_t)d.dword_value & 0x00FF0000) >> 16);
     b[1] = (uint8_t)(((uint32_t)d.dword_value & 0x0000FF00) >> 8);

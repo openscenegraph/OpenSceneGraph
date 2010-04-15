@@ -500,7 +500,7 @@ void Shader::PerContextShader::compileShader(osg::State& state)
     }
 
     GLint compiled = GL_FALSE;
-    const char* sourceText = source.c_str();
+    const GLchar* sourceText = reinterpret_cast<const GLchar*>(source.c_str());
     _extensions->glShaderSource( _glShaderHandle, 1, &sourceText, NULL );
     _extensions->glCompileShader( _glShaderHandle );
     _extensions->glGetShaderiv( _glShaderHandle, GL_COMPILE_STATUS, &compiled );

@@ -490,7 +490,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
         itr != programBindlist.end(); ++itr )
     {
         osg::notify(osg::NOTICE)<<"Program's vertex attrib binding "<<itr->second<<", "<<itr->first<<std::endl;
-        _extensions->glBindAttribLocation( _glProgramHandle, itr->second, itr->first.c_str() );
+        _extensions->glBindAttribLocation( _glProgramHandle, itr->second, reinterpret_cast<const GLchar*>(itr->first.c_str()) );
     }
 
     // set any explicit vertex attribute bindings that are set up via osg::State, such as the vertex arrays
@@ -502,7 +502,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
             itr != stateBindlist.end(); ++itr )
         {
             osg::notify(osg::NOTICE)<<"State's vertex attrib binding "<<itr->second<<", "<<itr->first<<std::endl;
-            _extensions->glBindAttribLocation( _glProgramHandle, itr->second, itr->first.c_str() );
+            _extensions->glBindAttribLocation( _glProgramHandle, itr->second, reinterpret_cast<const GLchar*>(itr->first.c_str()) );
         }
     }
 
@@ -511,7 +511,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
     for( FragDataBindingList::const_iterator itr = fdbindlist.begin();
         itr != fdbindlist.end(); ++itr )
     {
-        _extensions->glBindFragDataLocation( _glProgramHandle, itr->second, itr->first.c_str() );
+        _extensions->glBindFragDataLocation( _glProgramHandle, itr->second, reinterpret_cast<const GLchar*>(itr->first.c_str()) );
     }
 
     // link the glProgram
@@ -562,7 +562,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
             
             if( loc != -1 )
             {
-                _uniformInfoMap[name] = ActiveVarInfo(loc,type,size);
+                _uniformInfoMap[reinterpret_cast<char*>(name)] = ActiveVarInfo(loc,type,size);
 
                 osg::notify(osg::INFO)
                     << "\tUniform \"" << name << "\""
@@ -594,7 +594,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
             
             if( loc != -1 )
             {
-                _attribInfoMap[name] = ActiveVarInfo(loc,type,size);
+                _attribInfoMap[reinterpret_cast<char*>(name)] = ActiveVarInfo(loc,type,size);
 
                 osg::notify(osg::INFO)
                     << "\tAttrib \"" << name << "\""

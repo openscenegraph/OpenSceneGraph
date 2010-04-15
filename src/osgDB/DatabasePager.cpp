@@ -326,8 +326,8 @@ bool DatabasePager::RequestQueue::pruneOldRequestsAndCheckIfEmpty()
             {
                 (*citr)->invalidate();
 
-                citr = _requestList.erase(citr);
                 OSG_INFO<<"DatabasePager::RequestQueue::pruneOldRequestsAndCheckIfEmpty(): Pruning "<<(*citr)<<std::endl;
+                citr = _requestList.erase(citr);
             }
         }
 

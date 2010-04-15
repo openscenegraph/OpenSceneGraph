@@ -157,23 +157,6 @@ void ViewerBase::setUpThreading()
 
                 Scenes scenes;
                 getScenes(scenes);
-                
-                for(Scenes::iterator itr = scenes.begin();
-                    itr != scenes.end();
-                    ++itr)
-                {
-                    Scene* scene = *itr;
-                    osgDB::DatabasePager* dp = scene->getDatabasePager();
-                    if (dp)
-                    {
-                        for(unsigned int i=0; i<dp->getNumDatabaseThreads(); ++i)
-                        {
-                            osgDB::DatabasePager::DatabaseThread* dt = dp->getDatabaseThread(i);
-                            dt->setProcessorAffinity(1);
-                        }
-                    }
-                }
-            
             }
         }
     }

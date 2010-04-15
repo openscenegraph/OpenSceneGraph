@@ -2158,7 +2158,7 @@ bool GL2Extensions::getProgramInfoLog( GLuint program, std::string& result ) con
     {
         GLchar* infoLog = new GLchar[bufLen];
         glGetProgramInfoLog( program, bufLen, &strLen, infoLog );
-        if( strLen > 0 ) result = infoLog;
+        if( strLen > 0 ) result = reinterpret_cast<char*>(infoLog);
         delete [] infoLog;
     }
     return (strLen > 0);
@@ -2175,7 +2175,7 @@ bool GL2Extensions::getShaderInfoLog( GLuint shader, std::string& result ) const
     {
         GLchar* infoLog = new GLchar[bufLen];
         glGetShaderInfoLog( shader, bufLen, &strLen, infoLog );
-        if( strLen > 0 ) result = infoLog;
+        if( strLen > 0 ) result = reinterpret_cast<char*>(infoLog);
         delete [] infoLog;
     }
     return (strLen > 0);
@@ -2194,7 +2194,7 @@ bool GL2Extensions::getAttribLocation( const char* attribName, GLuint& location 
     if( linked == GL_FALSE ) return false;
 
     // is there such a named attribute?
-    GLint loc = glGetAttribLocation( program, attribName );
+    GLint loc = glGetAttribLocation( program, reinterpret_cast<const GLchar*>(attribName) );
     if( loc < 0 ) return false;
 
     location = loc;
@@ -2217,7 +2217,7 @@ bool GL2Extensions::getFragDataLocation( const char* fragDataName, GLuint& locat
     if (_glGetFragDataLocation == NULL) return false;
 
     // is there such a named attribute?
-    GLint loc = glGetFragDataLocation( program, fragDataName );
+    GLint loc = glGetFragDataLocation( program, reinterpret_cast<const GLchar*>(fragDataName) );
     if( loc < 0 ) return false;
 
     location = loc;

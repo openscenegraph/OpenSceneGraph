@@ -5,7 +5,7 @@
 *
 * Copyright (C) ???
 *
-* Writing support added 2007 by Sukender (Benoit Neil), http://sukender.free.fr,
+* Writing support added 2009 by Sukender (Benoit Neil), http://sukender.free.fr,
 * strongly inspired by the OBJ writer object by Stephan Huber
 *
 * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for
@@ -193,7 +193,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
         typedef std::stack<osg::ref_ptr<osg::StateSet> > StateSetStack;
         typedef std::map< osg::ref_ptr<osg::StateSet>, Material, CompareStateSet> MaterialMap;
 
-        void apply3DSMatrixNode(osg::Node &node, const osg::Matrix & m, const char * const prefix);
+        void apply3DSMatrixNode(osg::Node &node, const osg::Matrix * m, const char * const prefix);
 
         bool                                _succeeded;
         std::string                         _directory;

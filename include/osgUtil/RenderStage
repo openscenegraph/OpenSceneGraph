@@ -87,6 +87,12 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
 
         /** Get the viewport. */
         osg::Viewport* getViewport() { return _viewport.get(); }
+        
+        /** Set the initial view matrix.*/
+        void setInitialViewMatrix(const osg::RefMatrix* matrix) { _initialViewMatrix = matrix; }
+        
+        /** Get the initial view matrix.*/
+        const osg::RefMatrix* getInitialViewMatrix() { return _initialViewMatrix.get(); }
 
         /** Set the clear mask used in glClear(..).
           * Defaults to GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT. */
@@ -263,6 +269,7 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
 
         // viewport x,y,width,height.
         osg::ref_ptr<osg::Viewport>         _viewport;
+        osg::ref_ptr<const osg::RefMatrix>  _initialViewMatrix;
         
         GLenum                              _drawBuffer;
         bool                                _drawBufferApplyMask;

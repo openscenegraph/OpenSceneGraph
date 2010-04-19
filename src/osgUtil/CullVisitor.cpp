@@ -1323,7 +1323,8 @@ void CullVisitor::apply(osg::Camera& camera)
         osg::Viewport* viewport = camera.getViewport()!=0 ? camera.getViewport() : previous_stage->getViewport();
         rtts->setViewport( viewport );
         
-
+        // set initial view matrix
+        rtts->setInitialViewMatrix(modelview);
 
         // set up to charge the same PositionalStateContainer is the parent previous stage.
         osg::Matrix inheritedMVtolocalMV;

@@ -1096,6 +1096,8 @@ void RenderStage::draw(osg::RenderInfo& renderInfo,RenderLeaf*& previous)
 {
     if (_stageDrawnThisFrame) return;
 
+    if(_initialViewMatrix.valid()) renderInfo.getState()->setInitialViewMatrix(_initialViewMatrix.get());
+
     // push the stages camera so that drawing code can query it     
     if (_camera) renderInfo.pushCamera(_camera);
 

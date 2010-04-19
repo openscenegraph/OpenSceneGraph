@@ -932,6 +932,7 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
     // achieves a certain amount of frame cohereancy of memory allocation.
     rendergraph->clean();
 
+    renderStage->setInitialViewMatrix(mv.get());
     renderStage->setViewport(viewport);
     renderStage->setClearColor(_camera->getClearColor());
     renderStage->setClearDepth(_camera->getClearDepth());
@@ -1061,8 +1062,6 @@ void SceneView::draw()
 
     // assume the the draw which is about to happen could generate GL objects that need flushing in the next frame.
     _requiresFlush = true;
-
-    state->setInitialViewMatrix(new osg::RefMatrix(getViewMatrix()));
 
     RenderLeaf* previous = NULL;
     if (_displaySettings.valid() && _displaySettings->getStereo()) 

@@ -23,14 +23,21 @@
 
 namespace osgDAE {
 
-std::string toString(osg::Vec3 value)
+std::string toString(const osg::Vec3f& value)
 {
     std::stringstream str;
     str << value.x() << " " << value.y() << " " << value.z();
     return str.str();
 }
 
-std::string toString(osg::Matrix value)
+std::string toString(const osg::Vec3d& value)
+{
+    std::stringstream str;
+    str << value.x() << " " << value.y() << " " << value.z();
+    return str.str();
+}
+
+std::string toString(const osg::Matrix& value)
 {
     std::stringstream str;
     str << value(0,0) << " " << value(1,0) << " " << value(2,0) << " " << value(3,0) << " "
@@ -41,13 +48,17 @@ std::string toString(osg::Matrix value)
 }
 
 
-daeWriter::daeWriter( DAE *dae_, const std::string &fileURI, bool _usePolygons,  bool GoogleMode, TraversalMode tm, bool _writeExtras) : osg::NodeVisitor( tm ),
+daeWriter::daeWriter( DAE *dae_, const std::string &fileURI, bool _usePolygons,  bool googleMode, TraversalMode tm, bool _writeExtras, bool earthTex, bool zUpAxis, bool forceTexture) : osg::NodeVisitor( tm ),
                                         dae(dae_),
                                         _domLibraryAnimations(NULL),
                                         writeExtras(_writeExtras),
                                         rootName(*dae_),
                                         usePolygons (_usePolygons),
-                                        m_GoogleMode(GoogleMode)
+                                        m_GoogleMode(googleMode),
+                                        m_EarthTex(earthTex),
+                                        m_ZUpAxis(zUpAxis),
+                                        m_ForceTexture(forceTexture),
+                                        m_CurrentRenderingHint(osg::StateSet::DEFAULT_BIN)
 {
     success = true;
 
@@ -68,7 +79,7 @@ daeWriter::daeWriter( DAE *dae_, const std::string &fileURI, bool _usePolygons, 
     currentNode->setId( "sceneRoot" );
 
     //create Asset
-    createAssetTag();
+    createAssetTag(m_ZUpAxis);
 
     lib_cameras = NULL;
     lib_effects = NULL;
@@ -149,7 +160,7 @@ std::string daeWriter::uniquify( const std::string &name )
     return "";
 }
 
-void daeWriter::createAssetTag()
+void daeWriter::createAssetTag( bool isZUpAxis )
 {
     domAsset *asset = daeSafeCast< domAsset >(dom->add( COLLADA_ELEMENT_ASSET ) );
     domAsset::domCreated *c = daeSafeCast< domAsset::domCreated >(asset->add(COLLADA_ELEMENT_CREATED));

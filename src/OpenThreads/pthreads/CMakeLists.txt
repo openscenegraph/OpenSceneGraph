@@ -127,10 +127,20 @@ INSTALL(
     LIBRARY DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads
     RUNTIME DESTINATION bin COMPONENT libopenthreads
 )
-INSTALL(
-    FILES ${OpenThreads_PUBLIC_HEADERS}
-    DESTINATION include/OpenThreads
-    COMPONENT libopenthreads-dev
+
+IF(!OSG_COMPILE_FRAMEWORKS)
+   INSTALL(
+       FILES ${OpenThreads_PUBLIC_HEADERS}
+       DESTINATION include/OpenThreads
+       COMPONENT libopenthreads-dev
 )
 
+ELSE()
+    SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES
+         FRAMEWORK TRUE
+         FRAMEWORK_VERSION ${OPENTHREADS_VERSION}
+         PUBLIC_HEADER  "${OpenThreads_PUBLIC_HEADERS}"
+         INSTALL_NAME_DIR "${OSG_COMPILE_FRAMEWORKS_INSTALL_NAME_DIR}"
+    )
+ENDIF()
 #commented out# INCLUDE(ModuleInstall OPTIONAL)

@@ -776,6 +776,10 @@ public:
 #define ADD_UINT_SERIALIZER(PROP, DEF) \
     wrapper->addSerializer( new osgDB::PropByValSerializer< MyClass, unsigned int >( \
         #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+        
+#define ADD_GLINT_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByValSerializer< MyClass, GLint >( \
+        #PROP, ((int)(DEF)), &MyClass::get##PROP, &MyClass::set##PROP) )
 
 #define ADD_HEXINT_SERIALIZER(PROP, DEF) \
     wrapper->addSerializer( new osgDB::PropByValSerializer< MyClass, unsigned int >( \

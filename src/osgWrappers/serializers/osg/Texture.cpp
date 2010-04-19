@@ -86,7 +86,7 @@ REGISTER_OBJECT_WRAPPER( Texture,
     ADD_BOOL_SERIALIZER( ClientStorageHint, false );  // _clientStorageHint
     ADD_BOOL_SERIALIZER( ResizeNonPowerOfTwoHint, false );  // _resizeNonPowerOfTwoHint
     ADD_VEC4D_SERIALIZER( BorderColor, osg::Vec4d(0.0,0.0,0.0,0.0) );  // _borderColor
-    ADD_INT_SERIALIZER( BorderWidth, 0 );  // _borderWidth
+    ADD_GLINT_SERIALIZER( BorderWidth, 0 );  // _borderWidth
     
     BEGIN_ENUM_SERIALIZER( InternalFormatMode, USE_IMAGE_DATA_FORMAT );
         ADD_ENUM_VALUE( USE_IMAGE_DATA_FORMAT );

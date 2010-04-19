@@ -8,6 +8,6 @@ REGISTER_OBJECT_WRAPPER( LineStipple,
                          osg::LineStipple,
                          "osg::Object osg::StateAttribute osg::LineStipple" )
 {
-    ADD_INT_SERIALIZER( Factor, 1 );  // _factor
+    ADD_GLINT_SERIALIZER( Factor, 1 );  // _factor
     ADD_HEXSHORT_SERIALIZER( Pattern, 0xffff );  // _pattern
 }

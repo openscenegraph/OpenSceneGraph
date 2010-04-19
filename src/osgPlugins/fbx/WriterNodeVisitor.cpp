@@ -25,6 +25,13 @@
 #include "WriterNodeVisitor.h"
 #include <limits.h>
 
+
+// Use namespace qualification to avoid static-link symbol collitions
+// from multiply defined symbols.
+namespace pluginfbx
+{
+
+
 /** writes all primitives of a primitive-set out to a stream, decomposes quads to triangles, line-strips to lines etc */
 class PrimitiveIndexWriter : public osg::PrimitiveIndexFunctor
 {
@@ -781,4 +788,7 @@ void WriterNodeVisitor::apply(osg::MatrixTransform& node)
 
     traverse(node);
     _curFbxNode = parent;
+}
+
+// end namespace pluginfbx
 }

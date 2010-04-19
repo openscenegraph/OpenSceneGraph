@@ -1196,7 +1196,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriter3DS::doWriteNode(const osg::Node& n
 
 bool ReaderWriter3DS::createFileObject(const osg::Node& node, Lib3dsFile * file3ds,const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
 {
-    WriterNodeVisitor w(file3ds, fileName, options, osgDB::getFilePath(node.getName()));
+    plugin3ds::WriterNodeVisitor w(file3ds, fileName, options, osgDB::getFilePath(node.getName()));
     const_cast<osg::Node &>(node).accept(w);                // Ugly const_cast<> for visitor...
     if (!w.succeeded()) return false;
     w.writeMaterials();

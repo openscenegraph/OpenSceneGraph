@@ -126,6 +126,11 @@ bool is3DSpath(const std::string & s, bool extendedFilePaths)
 }
 
 
+// Use namespace qualification to avoid static-link symbol collitions
+// from multiply defined symbols.
+namespace plugin3ds
+{
+
 
 /** writes all primitives of a primitive-set out to a stream, decomposes quads to triangles, line-strips to lines etc */
 class PrimitiveIndexWriter : public osg::PrimitiveIndexFunctor
@@ -1054,4 +1059,7 @@ void WriterNodeVisitor::apply3DSMatrixNode(osg::Node &node, const osg::Matrix * 
 
     lib3ds_file_append_node(file3ds, reinterpret_cast<Lib3dsNode*>(node3ds), reinterpret_cast<Lib3dsNode*>(parent));
     _cur3dsNode = node3ds;
+}
+
+// end namespace plugin3ds
 }

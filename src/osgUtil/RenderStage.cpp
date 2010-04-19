@@ -331,7 +331,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
         osg::FBOExtensions* fbo_ext = osg::FBOExtensions::instance(state.getContextID(),true);
         bool fbo_supported = fbo_ext && fbo_ext->isSupported();
         
-        if (fbo_supported && !_fbo)
+        if (fbo_supported)
         {
             OSG_NOTIFY(osg::INFO)<<"Setting up osg::Camera::FRAME_BUFFER_OBJECT"<<std::endl;
 

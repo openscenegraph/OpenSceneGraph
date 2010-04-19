@@ -59,6 +59,7 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation, public OpenGLQu
         Renderer(osg::Camera* camera);
 
         osgUtil::SceneView* getSceneView(unsigned int i) { return _sceneView[i].get(); }
+        const osgUtil::SceneView* getSceneView(unsigned int i) const { return _sceneView[i].get(); }
 
         void setDone(bool done) { _done = done; }
         bool getDone() { return _done; }
@@ -125,6 +126,10 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation, public OpenGLQu
           * A ratio near 0.1 will lead to paged databases being compiled and merged closer but reduse the chances of frame drop.*/
         void setConservativeTimeRatio(double ratio) { _conservativeTimeRatio = ratio; }
         double getConservativeTimeRatio() const { return _conservativeTimeRatio; }
+
+        /** Force update of state associated with cameras. */
+        void setCameraRequiresSetUp(bool flag);
+        bool getCameraRequiresSetUp() const;
 
     protected:
     

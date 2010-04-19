@@ -743,3 +743,25 @@ void Renderer::release()
     _availableQueue.release();
     _drawQueue.release();
 }
+
+void Renderer::setCameraRequiresSetUp(bool flag)
+{
+    for (int i = 0; i < 2; ++i)
+    {
+        osgUtil::SceneView* sv = getSceneView(i);
+        osgUtil::RenderStage* rs = sv ? sv->getRenderStage() : 0;
+        if (rs) rs->setCameraRequiresSetUp(flag);
+    }
+}
+
+bool Renderer::getCameraRequiresSetUp() const
+{
+    bool result = false;
+    for (int i = 0; i < 2; ++i)
+    {
+        const osgUtil::SceneView* sv = getSceneView(i);
+        const osgUtil::RenderStage* rs = sv ? sv->getRenderStage() : 0;
+        if (rs) result = result || rs->getCameraRequiresSetUp();
+    }
+    return result;
+}

@@ -38,7 +38,7 @@ void AnimationManagerBase::dirty()
 }
 
 void AnimationManagerBase::setAutomaticLink(bool state) { _automaticLink = state; }
-bool AnimationManagerBase::isAutomaticLink() const { return _automaticLink; }
+bool AnimationManagerBase::getAutomaticLink() const { return _automaticLink; }
 
 void AnimationManagerBase::operator()(osg::Node* node, osg::NodeVisitor* nv)
 { 
@@ -108,7 +108,7 @@ void AnimationManagerBase::unregisterAnimation (Animation* animation)
     buildTargetReference();
 }
 
-bool AnimationManagerBase::needToLink() const { return _needToLink && isAutomaticLink(); }
+bool AnimationManagerBase::needToLink() const { return _needToLink && getAutomaticLink(); }
 
 
 void AnimationManagerBase::setLinkVisitor(LinkVisitor* visitor)

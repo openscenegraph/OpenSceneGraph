@@ -35,10 +35,10 @@ public:
     { addToCurrentNode( b ? std::string("TRUE") : std::string("FALSE") ); }
     
     virtual void writeChar( char c )
-    { _sstream << c; addToCurrentNode( _sstream.str() ); _sstream.str(""); }
+    { _sstream << (short)c; addToCurrentNode( _sstream.str() ); _sstream.str(""); }
     
     virtual void writeUChar( unsigned char c )
-    { _sstream << c; addToCurrentNode( _sstream.str() ); _sstream.str(""); }
+    { _sstream << (unsigned short)c; addToCurrentNode( _sstream.str() ); _sstream.str(""); }
     
     virtual void writeShort( short s )
     { _sstream << s; addToCurrentNode( _sstream.str() ); _sstream.str(""); }
@@ -326,13 +326,25 @@ public:
     }
     
     virtual void readChar( char& c )
-    { if ( prepareStream() ) _sstream >> c; }
+    {
+        short s = 0;
+        if ( prepareStream() ) _sstream >> s;
+        c = (char)s;
+    }
     
     virtual void readSChar( signed char& c )
-    { if ( prepareStream() ) _sstream >> c; }
+    {
+        short s = 0;
+        if ( prepareStream() ) _sstream >> s;
+        c = (signed char)s;
+    }
     
     virtual void readUChar( unsigned char& c )
-    { if ( prepareStream() ) _sstream >> c; }
+    {
+        unsigned short s = 0;
+        if ( prepareStream() ) _sstream >> s;
+        c = (unsigned char)s;
+    }
     
     virtual void readShort( short& s )
     { if ( prepareStream() ) _sstream >> s; }

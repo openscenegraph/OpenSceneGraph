@@ -72,7 +72,7 @@ int main (int argc, char* argv[])
     animation->addChannel(channel0);
     animation->setName("Morph");
     animation->computeDuration();
-    animation->setPlaymode(osgAnimation::Animation::PPONG);
+    animation->setPlayMode(osgAnimation::Animation::PPONG);
     osgAnimation::BasicAnimationManager* bam = new osgAnimation::BasicAnimationManager;
     bam->registerAnimation(animation);
 

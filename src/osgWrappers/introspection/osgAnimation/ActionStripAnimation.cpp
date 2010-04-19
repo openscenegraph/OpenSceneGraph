@@ -112,7 +112,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::ActionStripAnimation)
 	          "",
 	          "");
 	I_Method1(void, setLoop, IN, unsigned int, loop,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__setLoop__unsigned_int,
 	          "",
 	          "");

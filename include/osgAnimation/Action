@@ -113,7 +113,7 @@ namespace osgAnimation
         double getDuration() const { return _numberFrame * 1.0 / _fps; }
 
         // 0 means infini else it's the number of loop
-        virtual void setLoop(int nb) { _loop = nb; }
+        virtual void setLoop(unsigned int nb) { _loop = nb; }
         virtual unsigned int getLoop() const { return _loop;}
 
         // get the number of loop, the frame relative to loop.

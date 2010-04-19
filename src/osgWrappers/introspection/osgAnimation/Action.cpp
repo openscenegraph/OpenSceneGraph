@@ -120,9 +120,9 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Action)
 	          __double__getDuration,
 	          "",
 	          "");
-	I_Method1(void, setLoop, IN, int, nb,
+	I_Method1(void, setLoop, IN, unsigned int, nb,
 	          Properties::VIRTUAL,
-	          __void__setLoop__int,
+	          __void__setLoop__unsigned_int,
 	          "",
 	          "");
 	I_Method0(unsigned int, getLoop,
@@ -150,9 +150,9 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Action)
 	I_SimpleProperty(unsigned int, FramesPerSecond, 
 	                 __unsigned_int__getFramesPerSecond, 
 	                 0);
-	I_SimpleProperty(int, Loop, 
-	                 0, 
-	                 __void__setLoop__int);
+	I_SimpleProperty(unsigned int, Loop, 
+	                 __unsigned_int__getLoop, 
+	                 __void__setLoop__unsigned_int);
 	I_SimpleProperty(unsigned int, NumFrames, 
 	                 0, 
 	                 __void__setNumFrames__unsigned_int);

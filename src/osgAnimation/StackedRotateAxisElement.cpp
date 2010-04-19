@@ -34,13 +34,13 @@ void StackedRotateAxisElement::update()
 }
 
 const osg::Vec3& StackedRotateAxisElement::getAxis() const { return _axis; }
-const double StackedRotateAxisElement::getAngle() const { return _angle; }
+double StackedRotateAxisElement::getAngle() const { return _angle; }
 void StackedRotateAxisElement::setAxis(const osg::Vec3& axis)
 {
     _axis = axis;
 }
 
-void StackedRotateAxisElement::setAngle(const double& angle)
+void StackedRotateAxisElement::setAngle(double angle)
 {
     _angle = angle;
 }

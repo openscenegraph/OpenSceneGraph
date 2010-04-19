@@ -116,9 +116,9 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Animation)
 	          __void__resetTargets,
 	          "",
 	          "");
-	I_Method1(void, setPlaymode, IN, osgAnimation::Animation::PlayMode, mode,
+	I_Method1(void, setPlayMode, IN, osgAnimation::Animation::PlayMode, mode,
 	          Properties::NON_VIRTUAL,
-	          __void__setPlaymode__PlayMode,
+	          __void__setPlayMode__PlayMode,
 	          "",
 	          "");
 	I_Method0(osgAnimation::Animation::PlayMode, getPlayMode,
@@ -150,10 +150,7 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::Animation)
 	                 __void__setDuration__double);
 	I_SimpleProperty(osgAnimation::Animation::PlayMode, PlayMode, 
 	                 __PlayMode__getPlayMode, 
-	                 0);
-	I_SimpleProperty(osgAnimation::Animation::PlayMode, Playmode, 
-	                 0, 
-	                 __void__setPlaymode__PlayMode);
+	                 __void__setPlayMode__PlayMode);
 	I_SimpleProperty(double, StartTime, 
 	                 __double__getStartTime, 
 	                 __void__setStartTime__double);

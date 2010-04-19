@@ -111,5 +111,5 @@ REGISTER_OBJECT_WRAPPER( Geometry,
     ADD_USER_SERIALIZER( TexCoordData );  // _texCoordList
     ADD_USER_SERIALIZER( VertexAttribData );  // _vertexAttribList
     ADD_BOOL_SERIALIZER( FastPathHint, true );  // _fastPathHint
-    ADD_OBJECT_SERIALIZER( InternalOptimizedGeometry, osg::Geometry, NULL );  // _internalOptimizedGeometry
+    //ADD_OBJECT_SERIALIZER( InternalOptimizedGeometry, osg::Geometry, NULL );  // _internalOptimizedGeometry
 }

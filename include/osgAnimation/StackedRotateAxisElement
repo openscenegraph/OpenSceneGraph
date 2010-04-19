@@ -39,9 +39,9 @@ namespace osgAnimation
         void update();
 
         const osg::Vec3& getAxis() const;
-        const double getAngle() const;
+        double getAngle() const;
         void setAxis(const osg::Vec3&);
-        void setAngle(const double&);
+        void setAngle(double);
 
         virtual Target* getOrCreateTarget();
         virtual Target* getTarget() {return _target.get();}

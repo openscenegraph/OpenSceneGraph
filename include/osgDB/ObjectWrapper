@@ -139,6 +139,13 @@ protected:
     typedef CLASS MyClass; \
     void wrapper_propfunc_##NAME(osgDB::ObjectWrapper* wrapper)
 
+#define REGISTER_OBJECT_WRAPPER2(NAME, PROTO, CLASS, CLASSNAME, ASSOCIATES) \
+    extern void wrapper_propfunc_##NAME(osgDB::ObjectWrapper*); \
+    static osgDB::RegisterWrapperProxy wrapper_proxy_##NAME( \
+        PROTO, CLASSNAME, ASSOCIATES, &wrapper_propfunc_##NAME); \
+    typedef CLASS MyClass; \
+    void wrapper_propfunc_##NAME(osgDB::ObjectWrapper* wrapper)
+
 class OSGDB_EXPORT RegisterCompressorProxy
 {
 public:

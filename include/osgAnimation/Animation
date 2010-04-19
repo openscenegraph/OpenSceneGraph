@@ -74,7 +74,7 @@ namespace osgAnimation
         bool update (double time, int priority = 0);
         void resetTargets();
 
-        void setPlaymode (PlayMode mode) { _playmode = mode; }
+        void setPlayMode (PlayMode mode) { _playmode = mode; }
         PlayMode getPlayMode() const { return _playmode; }
         
         void setStartTime(double time)  { _startTime = time;}

@@ -93,6 +93,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::AnimationManagerBase)
 	          __void__setAutomaticLink__bool,
 	          "set a flag to define the behaviour ",
 	          "");
+	I_Method0(bool, getAutomaticLink,
+	          Properties::NON_VIRTUAL,
+	          __bool__getAutomaticLink,
+	          "",
+	          "");
 	I_Method0(bool, isAutomaticLink,
 	          Properties::NON_VIRTUAL,
 	          __bool__isAutomaticLink,
@@ -107,7 +112,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::AnimationManagerBase)
 	                 __C5_AnimationList_R1__getAnimationList, 
 	                 0);
 	I_SimpleProperty(bool, AutomaticLink, 
-	                 0, 
+	                 __bool__getAutomaticLink, 
 	                 __void__setAutomaticLink__bool);
 	I_SimpleProperty(osgAnimation::LinkVisitor *, LinkVisitor, 
 	                 0, 

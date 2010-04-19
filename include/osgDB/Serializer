@@ -499,7 +499,8 @@ public:
             {
                 is >> BEGIN_BRACKET;
                 P* value = dynamic_cast<P*>( is.readObject() );
-                (object.*_setter)( value );
+                if ( ParentType::_defaultValue!=value )
+                    (object.*_setter)( value );
                 is >> END_BRACKET;
             }
         }
@@ -567,7 +568,8 @@ public:
             {
                 is >> BEGIN_BRACKET;
                 P* value = dynamic_cast<P*>( is.readImage() );
-                (object.*_setter)( value );
+                if ( ParentType::_defaultValue!=value )
+                    (object.*_setter)( value );
                 is >> END_BRACKET;
             }
         }

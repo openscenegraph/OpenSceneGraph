@@ -93,9 +93,9 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::StackedRotateAxisElement)
 	          __C5_osg_Vec3_R1__getAxis,
 	          "",
 	          "");
-	I_Method0(const double, getAngle,
+	I_Method0(double, getAngle,
 	          Properties::NON_VIRTUAL,
-	          __C5_double__getAngle,
+	          __double__getAngle,
 	          "",
 	          "");
 	I_Method1(void, setAxis, IN, const osg::Vec3 &, x,
@@ -103,9 +103,9 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::StackedRotateAxisElement)
 	          __void__setAxis__C5_osg_Vec3_R1,
 	          "",
 	          "");
-	I_Method1(void, setAngle, IN, const double &, x,
+	I_Method1(void, setAngle, IN, double, x,
 	          Properties::NON_VIRTUAL,
-	          __void__setAngle__C5_double_R1,
+	          __void__setAngle__double,
 	          "",
 	          "");
 	I_Method0(osgAnimation::Target *, getOrCreateTarget,
@@ -123,9 +123,9 @@ BEGIN_OBJECT_REFLECTOR(osgAnimation::StackedRotateAxisElement)
 	          __C5_Target_P1__getTarget,
 	          "",
 	          "");
-	I_SimpleProperty(const double &, Angle, 
-	                 0, 
-	                 __void__setAngle__C5_double_R1);
+	I_SimpleProperty(double, Angle, 
+	                 __double__getAngle, 
+	                 __void__setAngle__double);
 	I_SimpleProperty(osg::Matrix, AsMatrix, 
 	                 __osg_Matrix__getAsMatrix, 
 	                 0);

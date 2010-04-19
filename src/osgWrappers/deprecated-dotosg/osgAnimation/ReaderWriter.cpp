@@ -187,10 +187,10 @@ bool Animation_readLocalData(Object& obj, Input& fr)
 
     if (fr.matchSequence("playmode %w"))
     {
-        if      (fr[1].matchWord("ONCE")) anim.setPlaymode(osgAnimation::Animation::ONCE);
-        else if (fr[1].matchWord("STAY")) anim.setPlaymode(osgAnimation::Animation::STAY);
-        else if (fr[1].matchWord("LOOP")) anim.setPlaymode(osgAnimation::Animation::LOOP);
-        else if (fr[1].matchWord("PPONG")) anim.setPlaymode(osgAnimation::Animation::PPONG);
+        if      (fr[1].matchWord("ONCE")) anim.setPlayMode(osgAnimation::Animation::ONCE);
+        else if (fr[1].matchWord("STAY")) anim.setPlayMode(osgAnimation::Animation::STAY);
+        else if (fr[1].matchWord("LOOP")) anim.setPlayMode(osgAnimation::Animation::LOOP);
+        else if (fr[1].matchWord("PPONG")) anim.setPlayMode(osgAnimation::Animation::PPONG);
         fr += 2;
         iteratorAdvanced = true;
     }

@@ -54,7 +54,8 @@ namespace osgAnimation
 
         /// set a flag to define the behaviour
         void setAutomaticLink(bool);
-        bool isAutomaticLink() const;
+        bool getAutomaticLink() const;
+        bool isAutomaticLink() const { return getAutomaticLink(); }
         void dirty();
 
     protected:

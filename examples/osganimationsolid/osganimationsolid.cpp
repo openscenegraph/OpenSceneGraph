@@ -99,7 +99,7 @@ int main (int argc, char* argv[])
     channelAnimation1->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::Vec3Keyframe(2, osg::Vec3(1,1,0)));
     osgAnimation::Animation* anim1 = new osgAnimation::Animation;
     anim1->addChannel(channelAnimation1);
-    anim1->setPlaymode(osgAnimation::Animation::PPONG); 
+    anim1->setPlayMode(osgAnimation::Animation::PPONG);
 
 
     osgAnimation::Vec3LinearChannel* channelAnimation2 = new osgAnimation::Vec3LinearChannel;
@@ -109,7 +109,7 @@ int main (int argc, char* argv[])
     channelAnimation2->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::Vec3Keyframe(1.5, osg::Vec3(2*osg::PI,0,0)));
     osgAnimation::Animation* anim2 = new osgAnimation::Animation;
     anim2->addChannel(channelAnimation2);
-    anim2->setPlaymode(osgAnimation::Animation::LOOP); 
+    anim2->setPlayMode(osgAnimation::Animation::LOOP);
                                                                                      
 
     // We register all animation inside the scheduler

@@ -1915,6 +1915,8 @@
 		7A299122112EE3F4009973F4 /* ObserverNodePath in Headers */ = {isa = PBXBuildFile; fileRef = 7A299120112EE3F3009973F4 /* ObserverNodePath */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A299125112EE6C2009973F4 /* Observer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A299123112EE6C1009973F4 /* Observer.cpp */; };
 		7A299126112EE6C2009973F4 /* ObserverNodePath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A299124112EE6C1009973F4 /* ObserverNodePath.cpp */; };
+		7A2993E1117C4E13009973F4 /* Terrain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A2993DF117C4E13009973F4 /* Terrain.cpp */; };
+		7A2993E2117C4E13009973F4 /* Terrain.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A2993E0117C4E13009973F4 /* Terrain.h */; };
 		7AA2E7CD11107FD8008EE370 /* StackedMatrixElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA2E7C411107FD7008EE370 /* StackedMatrixElement.cpp */; };
 		7AA2E7CE11107FD8008EE370 /* StackedQuaternionElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA2E7C511107FD7008EE370 /* StackedQuaternionElement.cpp */; };
 		7AA2E7CF11107FD8008EE370 /* StackedRotateAxisElement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7AA2E7C611107FD7008EE370 /* StackedRotateAxisElement.cpp */; };
@@ -7927,6 +7929,8 @@
 		7A299120112EE3F3009973F4 /* ObserverNodePath */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ObserverNodePath; sourceTree = "<group>"; };
 		7A299123112EE6C1009973F4 /* Observer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Observer.cpp; sourceTree = "<group>"; };
 		7A299124112EE6C1009973F4 /* ObserverNodePath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ObserverNodePath.cpp; sourceTree = "<group>"; };
+		7A2993DF117C4E13009973F4 /* Terrain.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Terrain.cpp; sourceTree = "<group>"; };
+		7A2993E0117C4E13009973F4 /* Terrain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Terrain.h; sourceTree = "<group>"; };
 		7AA2E7C411107FD7008EE370 /* StackedMatrixElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StackedMatrixElement.cpp; path = ../../src/osgAnimation/StackedMatrixElement.cpp; sourceTree = SOURCE_ROOT; };
 		7AA2E7C511107FD7008EE370 /* StackedQuaternionElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StackedQuaternionElement.cpp; path = ../../src/osgAnimation/StackedQuaternionElement.cpp; sourceTree = SOURCE_ROOT; };
 		7AA2E7C611107FD7008EE370 /* StackedRotateAxisElement.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StackedRotateAxisElement.cpp; path = ../../src/osgAnimation/StackedRotateAxisElement.cpp; sourceTree = SOURCE_ROOT; };
@@ -13113,6 +13117,8 @@
 		5BC2F6820C44C99800671A68 /* ive */ = {
 			isa = PBXGroup;
 			children = (
+				7A2993DF117C4E13009973F4 /* Terrain.cpp */,
+				7A2993E0117C4E13009973F4 /* Terrain.h */,
 				D4BE536E0FB2CC71002E442A /* VolumeCompositeProperty.cpp */,
 				D4BE536F0FB2CC71002E442A /* VolumeCompositeProperty.h */,
 				D4BE53700FB2CC71002E442A /* VolumeProperty.h */,
@@ -14998,6 +15004,7 @@
 				D4BE537F0FB2CC72002E442A /* VolumeScalarProperty.h in Headers */,
 				D4BE53810FB2CC72002E442A /* VolumeSwitchProperty.h in Headers */,
 				D4BE53830FB2CC72002E442A /* VolumeTransferFunctionProperty.h in Headers */,
+				7A2993E2117C4E13009973F4 /* Terrain.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21363,6 +21370,7 @@
 				D4BE537E0FB2CC72002E442A /* VolumeScalarProperty.cpp in Sources */,
 				D4BE53800FB2CC72002E442A /* VolumeSwitchProperty.cpp in Sources */,
 				D4BE53820FB2CC72002E442A /* VolumeTransferFunctionProperty.cpp in Sources */,
+				7A2993E1117C4E13009973F4 /* Terrain.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

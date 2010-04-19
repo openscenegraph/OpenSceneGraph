@@ -1,4 +1,3 @@
-
 # FIXME: For OS X, need flag for Framework or dylib
 IF(DYNAMIC_OPENSCENEGRAPH)
     ADD_DEFINITIONS(-DOSGVIEWER_LIBRARY)
@@ -70,32 +69,59 @@ ELSE()
     ENDIF()
     
     IF(${OSG_WINDOWING_SYSTEM} STREQUAL "Cocoa")
-        ADD_DEFINITIONS(-DUSE_DARWIN_COCOA_IMPLEMENTATION)
-        SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} 
-            ${HEADER_PATH}/api/Cocoa/GraphicsHandleCocoa
-            ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa
-            ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa
-        )
+        ADD_DEFINITIONS(-DUSE_DARWIN_COCOA_IMPLEMENTATION)    
+ 
+        IF(OSG_COMPILE_FRAMEWORKS)
+           SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} 
+                 ${HEADER_PATH}/api/Cocoa/GraphicsHandleCocoa
+                 ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa
+                 ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa
+             )
+            SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Cocoa/GraphicsHandleCocoa PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Cocoa) 
+            SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Cocoa)
+            SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Cocoa)
+        ELSE()
+            SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} 
+                ${HEADER_PATH}/api/Cocoa/GraphicsHandleCocoa
+                ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa
+                ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa
+            )
+        ENDIF()  
+  
         SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} 
             GraphicsWindowCocoa.mm
             DarwinUtils.h
             DarwinUtils.mm
             PixelBufferCocoa.mm
         )
-    SET(LIB_EXTRA_LIBS ${COCOA_LIBRARY} ${LIB_EXTRA_LIBS})
+        SET(LIB_EXTRA_LIBS ${COCOA_LIBRARY} ${LIB_EXTRA_LIBS})
     ELSEIF(${OSG_WINDOWING_SYSTEM} STREQUAL "Carbon")
-        ADD_DEFINITIONS(-DUSE_DARWIN_CARBON_IMPLEMENTATION)
-        SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} 
-            ${HEADER_PATH}/api/Carbon/GraphicsHandleCarbon
-            ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon
-            ${HEADER_PATH}/api/Carbon/PixelBufferCarbon
-        )
+        ADD_DEFINITIONS(-DUSE_DARWIN_CARBON_IMPLEMENTATION)     
+ 
+        IF(OSG_COMPILE_FRAMEWORKS)
+           SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} 
+                 ${HEADER_PATH}/api/Carbon/GraphicsHandleCarbon
+                 ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon
+                 ${HEADER_PATH}/api/Carbon/PixelBufferCarbon
+             )
+            SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Carbon/GraphicsHandleCarbon PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Carbon) 
+            SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Carbon)
+            SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Carbon/PixelBufferCarbon PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Carbon)
+        ELSE()
+            SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} 
+                ${HEADER_PATH}/api/Carbon/GraphicsHandleCarbon
+                ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon
+                ${HEADER_PATH}/api/Carbon/PixelBufferCarbon
+            )
+        ENDIF()   
+ 
         SET(LIB_COMMON_FILES ${LIB_COMMON_FILES} 
             GraphicsWindowCarbon.cpp
             DarwinUtils.h
             DarwinUtils.mm
             PixelBufferCarbon.cpp
         )
+        
         SET(LIB_EXTRA_LIBS ${COCOA_LIBRARY} ${LIB_EXTRA_LIBS})
     ELSE()
         # X11 for everybody else

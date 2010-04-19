@@ -97,6 +97,9 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
 {
     SERIALIZER();
 
+    std::istringstream iss(options->getOptionString());
+    std::string opt; 
+
     bool bOwnDAE = false;
     DAE* pDAE = NULL;
 
@@ -104,29 +107,47 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
     if( ! acceptsExtension(ext) ) return WriteResult::FILE_NOT_HANDLED;
 
     // Process options
-    bool usePolygon(false);    // Use plugin option "polygon" to enable
-    bool GoogleMode(false); // Use plugin option "GoogleMode" to enable
-    bool writeExtras(true); // Use plugin option "NoExtras" to disable
+    bool usePolygon(false);   // Use plugin option "polygon" to enable
+    bool googleMode(false);   // Use plugin option "GoogleMode" to enable
+    bool writeExtras(true);   // Use plugin option "NoExtras" to disable
+    bool earthTex(false);     // Use plugin option "DaeEarthTex" to enable
+    bool zUpAxis(false);      // Use plugin option "ZUpAxis" to enable
+    bool forceTexture(false); // Use plugin option "ForceTexture" to enable
     if( options )
     {
         pDAE = (DAE*)options->getPluginData("DAE");
-        std::istringstream iss( options->getOptionString() );
+        // Sukender's note: I don't know why DAE seems to accept comma-sparated options instead of space-separated options as other ReaderWriters. However, to avoid breaking compatibility, here's a workaround:
+        std::string optString( options->getOptionString() );
+        for(std::string::iterator it=optString.begin(); it!=optString.end(); ++it) {
+            if (*it == ' ') *it = ',';
+        }
+        std::istringstream iss( optString );
         std::string opt;
 
+        bool unrecognizedOption = false;
+        //while (iss >> opt)
         while( std::getline( iss, opt, ',' ) )
         {
             if( opt == "polygon")  usePolygon = true;
-            else if (opt == "GoogleMode") GoogleMode = true;
+            else if (opt == "GoogleMode") googleMode = true;
             else if (opt == "NoExtras") writeExtras = false;
+            else if (opt == "DaeEarthTex") earthTex = true;
+            else if (opt == "ZUpAxis") zUpAxis = true;
+            else if (opt == "ForceTexture") forceTexture = true;
             else
             {
-              osg::notify(osg::WARN)
-                  << std::endl << "COLLADA dae plugin: unrecognized option \"" << opt <<  std::endl 
-                  << "comma-delimited options:" <<  std::endl <<  std::endl 
-                  << "\tpolygon = use polygons instead of polylists for element" <<  std::endl 
-                  << "\tGoogleMode = write files suitable for use by Google products" <<  std::endl 
-                  << "example: osgviewer -O polygon bar.dae" <<  std::endl << std::endl;
+                osg::notify(osg::NOTICE)
+                    << std::endl << "COLLADA dae plugin: unrecognized option \"" << opt <<  std::endl;
+                unrecognizedOption = true;
             }
+        }
+        if (unrecognizedOption) {
+            // TODO Remove this or make use of supportedOptions()
+            osg::notify(osg::NOTICE)
+                << "comma-delimited options:" <<  std::endl <<  std::endl 
+                << "\tpolygon = use polygons instead of polylists for element" <<  std::endl 
+                << "\tGoogleMode = write files suitable for use by Google products" <<  std::endl 
+                << "example: osgviewer -O polygon bar.dae" <<  std::endl << std::endl;
         }
     }
 
@@ -141,7 +162,7 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
 
     osg::NodeVisitor::TraversalMode traversalMode = writeExtras ? osg::NodeVisitor::TRAVERSE_ALL_CHILDREN : osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN;
     
-    osgDAE::daeWriter daeWriter(pDAE, fileURI, usePolygon, GoogleMode, traversalMode, writeExtras);
+    osgDAE::daeWriter daeWriter(pDAE, fileURI, usePolygon, googleMode, traversalMode, writeExtras, earthTex, zUpAxis, forceTexture);
     daeWriter.setRootNode( node );
     const_cast<osg::Node*>(&node)->accept( daeWriter );
 

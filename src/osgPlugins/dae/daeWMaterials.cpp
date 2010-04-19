@@ -100,139 +100,147 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
 
         domImage::domInit_from *imgif = daeSafeCast< domImage::domInit_from >( img->add( COLLADA_ELEMENT_INIT_FROM ) );
         std::string fileURI = ReaderWriterDAE::ConvertFilePathToColladaCompatibleURI(osgDB::findDataFile(osgimg->getFileName()));
+        if (fileURI=="" && m_ForceTexture)
+        {
+            fileURI = osgimg->getFileName();
+        }
+
         daeURI dd(*dae, fileURI);
         imgif->setValue( dd );
         // The document URI should contain the canonical path it was created with
         imgif->getValue().makeRelativeTo(doc->getDocumentURI());
 
-
-#ifndef EARTH_TEX
-        domCommon_newparam_type *np = daeSafeCast< domCommon_newparam_type >( pc->add(COLLADA_ELEMENT_NEWPARAM) );
-        std::string surfName = efName + "-surface";
-        np->setSid( surfName.c_str() );
-        domFx_surface_common *surface = daeSafeCast< domFx_surface_common >( np->add(COLLADA_ELEMENT_SURFACE) );
-        domFx_surface_init_from_common *sif = daeSafeCast< domFx_surface_init_from_common >( surface->add(COLLADA_ELEMENT_INIT_FROM) );
-        sif->setValue( iName.c_str() );
-        surface->setType( FX_SURFACE_TYPE_ENUM_2D );
-
-        np = daeSafeCast< domCommon_newparam_type >( pc->add( COLLADA_ELEMENT_NEWPARAM ) );
-        std::string sampName = efName + "-sampler";
-        np->setSid( sampName.c_str() );
-        domFx_sampler2D_common *sampler = daeSafeCast< domFx_sampler2D_common >( np->add( COLLADA_ELEMENT_SAMPLER2D ) );
-        domFx_sampler2D_common_complexType::domSource *source = daeSafeCast< domFx_sampler2D_common_complexType::domSource >( sampler->add( COLLADA_ELEMENT_SOURCE ) );
-        source->setValue( surfName.c_str() ); 
-
-        //set sampler state
-        domFx_sampler2D_common_complexType::domWrap_s *wrap_s = daeSafeCast< domFx_sampler2D_common_complexType::domWrap_s >( sampler->add( COLLADA_ELEMENT_WRAP_S ) );
-        osg::Texture::WrapMode wrap = tex->getWrap( osg::Texture::WRAP_S );
-        switch( wrap ) 
+        if (!m_EarthTex)
         {
-        case osg::Texture::CLAMP:
-        case osg::Texture::CLAMP_TO_EDGE:
-            wrap_s->setValue( FX_SAMPLER_WRAP_COMMON_CLAMP );
-            break;
-        case osg::Texture::CLAMP_TO_BORDER:
-            wrap_s->setValue( FX_SAMPLER_WRAP_COMMON_BORDER );
-            break;
-        case osg::Texture::REPEAT:
-            wrap_s->setValue( FX_SAMPLER_WRAP_COMMON_WRAP );
-            break;
-        case osg::Texture::MIRROR:
-            wrap_s->setValue( FX_SAMPLER_WRAP_COMMON_MIRROR );
-            break;
-        default:
-            wrap_s->setValue( FX_SAMPLER_WRAP_COMMON_NONE );
-            break;
-        }
+            domCommon_newparam_type *np = daeSafeCast< domCommon_newparam_type >( pc->add(COLLADA_ELEMENT_NEWPARAM) );
+            std::string surfName = efName + "-surface";
+            np->setSid( surfName.c_str() );
+            domFx_surface_common *surface = daeSafeCast< domFx_surface_common >( np->add(COLLADA_ELEMENT_SURFACE) );
+            domFx_surface_init_from_common *sif = daeSafeCast< domFx_surface_init_from_common >( surface->add(COLLADA_ELEMENT_INIT_FROM) );
+            sif->setValue( iName.c_str() );
+            surface->setType( FX_SURFACE_TYPE_ENUM_2D );
 
-        domFx_sampler2D_common_complexType::domWrap_t *wrap_t = daeSafeCast< domFx_sampler2D_common_complexType::domWrap_t >( sampler->add( COLLADA_ELEMENT_WRAP_T ) );
-        wrap = tex->getWrap( osg::Texture::WRAP_T );
-        switch( wrap ) 
+            np = daeSafeCast< domCommon_newparam_type >( pc->add( COLLADA_ELEMENT_NEWPARAM ) );
+            std::string sampName = efName + "-sampler";
+            np->setSid( sampName.c_str() );
+            domFx_sampler2D_common *sampler = daeSafeCast< domFx_sampler2D_common >( np->add( COLLADA_ELEMENT_SAMPLER2D ) );
+            domFx_sampler2D_common_complexType::domSource *source = daeSafeCast< domFx_sampler2D_common_complexType::domSource >( sampler->add( COLLADA_ELEMENT_SOURCE ) );
+            source->setValue( surfName.c_str() ); 
+
+            //set sampler state
+            domFx_sampler2D_common_complexType::domWrap_s *wrap_s = daeSafeCast< domFx_sampler2D_common_complexType::domWrap_s >( sampler->add( COLLADA_ELEMENT_WRAP_S ) );
+            osg::Texture::WrapMode wrap = tex->getWrap( osg::Texture::WRAP_S );
+            switch( wrap ) 
+            {
+            case osg::Texture::CLAMP:
+            case osg::Texture::CLAMP_TO_EDGE:
+                wrap_s->setValue( FX_SAMPLER_WRAP_COMMON_CLAMP );
+                break;
+            case osg::Texture::CLAMP_TO_BORDER:
+                wrap_s->setValue( FX_SAMPLER_WRAP_COMMON_BORDER );
+                break;
+            case osg::Texture::REPEAT:
+                wrap_s->setValue( FX_SAMPLER_WRAP_COMMON_WRAP );
+                break;
+            case osg::Texture::MIRROR:
+                wrap_s->setValue( FX_SAMPLER_WRAP_COMMON_MIRROR );
+                break;
+            default:
+                wrap_s->setValue( FX_SAMPLER_WRAP_COMMON_NONE );
+                break;
+            }
+
+            domFx_sampler2D_common_complexType::domWrap_t *wrap_t = daeSafeCast< domFx_sampler2D_common_complexType::domWrap_t >( sampler->add( COLLADA_ELEMENT_WRAP_T ) );
+            wrap = tex->getWrap( osg::Texture::WRAP_T );
+            switch( wrap ) 
+            {
+            case osg::Texture::CLAMP:
+            case osg::Texture::CLAMP_TO_EDGE:
+                wrap_t->setValue( FX_SAMPLER_WRAP_COMMON_CLAMP );
+                break;
+            case osg::Texture::CLAMP_TO_BORDER:
+                wrap_t->setValue( FX_SAMPLER_WRAP_COMMON_BORDER );
+                break;
+            case osg::Texture::REPEAT:
+                wrap_t->setValue( FX_SAMPLER_WRAP_COMMON_WRAP );
+                break;
+            case osg::Texture::MIRROR:
+                wrap_t->setValue( FX_SAMPLER_WRAP_COMMON_MIRROR );
+                break;
+            default:
+                wrap_t->setValue( FX_SAMPLER_WRAP_COMMON_NONE );
+                break;
+            }
+
+            const osg::Vec4 &bcol = tex->getBorderColor();
+            domFx_sampler2D_common_complexType::domBorder_color *dbcol = daeSafeCast< domFx_sampler2D_common_complexType::domBorder_color >( sampler->add( COLLADA_ELEMENT_BORDER_COLOR ) );
+            dbcol->getValue().append( bcol.r() );
+            dbcol->getValue().append( bcol.g() );
+            dbcol->getValue().append( bcol.b() );
+            dbcol->getValue().append( bcol.a() );
+
+            domFx_sampler2D_common_complexType::domMinfilter *minfilter = daeSafeCast< domFx_sampler2D_common_complexType::domMinfilter >( sampler->add( COLLADA_ELEMENT_MINFILTER ) );
+            osg::Texture::FilterMode mode = tex->getFilter( osg::Texture::MIN_FILTER );
+            switch( mode )
+            {
+            case osg::Texture::LINEAR:
+                minfilter->setValue( FX_SAMPLER_FILTER_COMMON_LINEAR );
+                break;
+            case osg::Texture::LINEAR_MIPMAP_LINEAR:
+                minfilter->setValue( FX_SAMPLER_FILTER_COMMON_LINEAR_MIPMAP_LINEAR );
+                break;
+            case osg::Texture::LINEAR_MIPMAP_NEAREST:
+                minfilter->setValue( FX_SAMPLER_FILTER_COMMON_LINEAR_MIPMAP_NEAREST );
+                break;
+            case osg::Texture::NEAREST:
+                minfilter->setValue( FX_SAMPLER_FILTER_COMMON_NEAREST );
+                break;
+            case osg::Texture::NEAREST_MIPMAP_LINEAR:
+                minfilter->setValue( FX_SAMPLER_FILTER_COMMON_NEAREST_MIPMAP_LINEAR );
+                break;
+            case osg::Texture::NEAREST_MIPMAP_NEAREST:
+                minfilter->setValue( FX_SAMPLER_FILTER_COMMON_NEAREST_MIPMAP_NEAREST );
+                break;
+            }
+
+            domFx_sampler2D_common_complexType::domMagfilter *magfilter = daeSafeCast< domFx_sampler2D_common_complexType::domMagfilter >( sampler->add( COLLADA_ELEMENT_MAGFILTER ) );
+            mode = tex->getFilter( osg::Texture::MAG_FILTER );
+            switch( mode )
+            {
+            case osg::Texture::LINEAR:
+                magfilter->setValue( FX_SAMPLER_FILTER_COMMON_LINEAR );
+                break;
+            case osg::Texture::LINEAR_MIPMAP_LINEAR:
+                magfilter->setValue( FX_SAMPLER_FILTER_COMMON_LINEAR_MIPMAP_LINEAR );
+                break;
+            case osg::Texture::LINEAR_MIPMAP_NEAREST:
+                magfilter->setValue( FX_SAMPLER_FILTER_COMMON_LINEAR_MIPMAP_NEAREST );
+                break;
+            case osg::Texture::NEAREST:
+                magfilter->setValue( FX_SAMPLER_FILTER_COMMON_NEAREST );
+                break;
+            case osg::Texture::NEAREST_MIPMAP_LINEAR:
+                magfilter->setValue( FX_SAMPLER_FILTER_COMMON_NEAREST_MIPMAP_LINEAR );
+                break;
+            case osg::Texture::NEAREST_MIPMAP_NEAREST:
+                magfilter->setValue( FX_SAMPLER_FILTER_COMMON_NEAREST_MIPMAP_NEAREST );
+                break;
+            }
+
+
+            domCommon_color_or_texture_type *cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add( COLLADA_ELEMENT_DIFFUSE ) );
+            domCommon_color_or_texture_type_complexType::domTexture *dtex = daeSafeCast< domCommon_color_or_texture_type_complexType::domTexture >( cot->add( COLLADA_ELEMENT_TEXTURE ) );
+            dtex->setTexture( sampName.c_str() );
+            dtex->setTexcoord( "texcoord0" );
+        }
+        else
         {
-        case osg::Texture::CLAMP:
-        case osg::Texture::CLAMP_TO_EDGE:
-            wrap_t->setValue( FX_SAMPLER_WRAP_COMMON_CLAMP );
-            break;
-        case osg::Texture::CLAMP_TO_BORDER:
-            wrap_t->setValue( FX_SAMPLER_WRAP_COMMON_BORDER );
-            break;
-        case osg::Texture::REPEAT:
-            wrap_t->setValue( FX_SAMPLER_WRAP_COMMON_WRAP );
-            break;
-        case osg::Texture::MIRROR:
-            wrap_t->setValue( FX_SAMPLER_WRAP_COMMON_MIRROR );
-            break;
-        default:
-            wrap_t->setValue( FX_SAMPLER_WRAP_COMMON_NONE );
-            break;
+            // Earth tex
+            domCommon_color_or_texture_type *cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add( COLLADA_ELEMENT_DIFFUSE ) );
+            domCommon_color_or_texture_type_complexType::domTexture *dtex = daeSafeCast< domCommon_color_or_texture_type_complexType::domTexture >( cot->add( COLLADA_ELEMENT_TEXTURE ) );
+            dtex->setTexture( iName.c_str() );
+            dtex->setTexcoord( "texcoord0" );
         }
-
-        const osg::Vec4 &bcol = tex->getBorderColor();
-        domFx_sampler2D_common_complexType::domBorder_color *dbcol = daeSafeCast< domFx_sampler2D_common_complexType::domBorder_color >( sampler->add( COLLADA_ELEMENT_BORDER_COLOR ) );
-        dbcol->getValue().append( bcol.r() );
-        dbcol->getValue().append( bcol.g() );
-        dbcol->getValue().append( bcol.b() );
-        dbcol->getValue().append( bcol.a() );
-
-        domFx_sampler2D_common_complexType::domMinfilter *minfilter = daeSafeCast< domFx_sampler2D_common_complexType::domMinfilter >( sampler->add( COLLADA_ELEMENT_MINFILTER ) );
-        osg::Texture::FilterMode mode = tex->getFilter( osg::Texture::MIN_FILTER );
-        switch( mode )
-        {
-        case osg::Texture::LINEAR:
-            minfilter->setValue( FX_SAMPLER_FILTER_COMMON_LINEAR );
-            break;
-        case osg::Texture::LINEAR_MIPMAP_LINEAR:
-            minfilter->setValue( FX_SAMPLER_FILTER_COMMON_LINEAR_MIPMAP_LINEAR );
-            break;
-        case osg::Texture::LINEAR_MIPMAP_NEAREST:
-            minfilter->setValue( FX_SAMPLER_FILTER_COMMON_LINEAR_MIPMAP_NEAREST );
-            break;
-        case osg::Texture::NEAREST:
-            minfilter->setValue( FX_SAMPLER_FILTER_COMMON_NEAREST );
-            break;
-        case osg::Texture::NEAREST_MIPMAP_LINEAR:
-            minfilter->setValue( FX_SAMPLER_FILTER_COMMON_NEAREST_MIPMAP_LINEAR );
-            break;
-        case osg::Texture::NEAREST_MIPMAP_NEAREST:
-            minfilter->setValue( FX_SAMPLER_FILTER_COMMON_NEAREST_MIPMAP_NEAREST );
-            break;
-        }
-
-        domFx_sampler2D_common_complexType::domMagfilter *magfilter = daeSafeCast< domFx_sampler2D_common_complexType::domMagfilter >( sampler->add( COLLADA_ELEMENT_MAGFILTER ) );
-        mode = tex->getFilter( osg::Texture::MAG_FILTER );
-        switch( mode )
-        {
-        case osg::Texture::LINEAR:
-            magfilter->setValue( FX_SAMPLER_FILTER_COMMON_LINEAR );
-            break;
-        case osg::Texture::LINEAR_MIPMAP_LINEAR:
-            magfilter->setValue( FX_SAMPLER_FILTER_COMMON_LINEAR_MIPMAP_LINEAR );
-            break;
-        case osg::Texture::LINEAR_MIPMAP_NEAREST:
-            magfilter->setValue( FX_SAMPLER_FILTER_COMMON_LINEAR_MIPMAP_NEAREST );
-            break;
-        case osg::Texture::NEAREST:
-            magfilter->setValue( FX_SAMPLER_FILTER_COMMON_NEAREST );
-            break;
-        case osg::Texture::NEAREST_MIPMAP_LINEAR:
-            magfilter->setValue( FX_SAMPLER_FILTER_COMMON_NEAREST_MIPMAP_LINEAR );
-            break;
-        case osg::Texture::NEAREST_MIPMAP_NEAREST:
-            magfilter->setValue( FX_SAMPLER_FILTER_COMMON_NEAREST_MIPMAP_NEAREST );
-            break;
-        }
-
-
-        domCommon_color_or_texture_type *cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add( COLLADA_ELEMENT_DIFFUSE ) );
-        domCommon_color_or_texture_type_complexType::domTexture *dtex = daeSafeCast< domCommon_color_or_texture_type_complexType::domTexture >( cot->add( COLLADA_ELEMENT_TEXTURE ) );
-        dtex->setTexture( sampName.c_str() );
-        dtex->setTexcoord( "texcoord0" );
-#else
-        domCommon_color_or_texture_type *cot = daeSafeCast< domCommon_color_or_texture_type >( phong->add( COLLADA_ELEMENT_DIFFUSE ) );
-        domCommon_color_or_texture_type_complexType::domTexture *dtex = daeSafeCast< domCommon_color_or_texture_type_complexType::domTexture >( cot->add( COLLADA_ELEMENT_TEXTURE ) );
-        dtex->setTexture( iName.c_str() );
-        dtex->setTexcoord( "texcoord0" );
-#endif
 
         domInstance_material::domBind_vertex_input *bvi = daeSafeCast< domInstance_material::domBind_vertex_input >( pDomInstanceMaterial->add( COLLADA_ELEMENT_BIND_VERTEX_INPUT ) );
         bvi->setSemantic( "texcoord0" );
@@ -370,13 +378,16 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
                 ctt->setOpaque( FX_OPAQUE_ENUM_A_ONE );
                 domCommon_color_or_texture_type_complexType::domTexture * dtex = daeSafeCast< domCommon_color_or_texture_type_complexType::domTexture >( ctt->add(COLLADA_ELEMENT_TEXTURE) );
                 
-    #ifndef EARTH_TEX
-                std::string sampName = efName + "-sampler";
-                dtex->setTexture( sampName.c_str() );
-    #else
-                std::string iName = efName + "-image";
-                dtex->setTexture( iName.c_str() );
-    #endif
+                if (!m_EarthTex)
+                {
+                    std::string sampName = efName + "-sampler";
+                    dtex->setTexture( sampName.c_str() );
+                }
+                else
+                {
+                    std::string iName = efName + "-image";
+                    dtex->setTexture( iName.c_str() );
+                }
                 dtex->setTexcoord( "texcoord0" );           
             }
             else

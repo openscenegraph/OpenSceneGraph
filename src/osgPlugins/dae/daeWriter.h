@@ -135,7 +135,7 @@ class daeWriter : public osg::NodeVisitor
 protected:
     class ArrayNIndices;
 public:
-    daeWriter( DAE *dae_, const std::string &fileURI, bool usePolygons=false, bool GoogleMode = false,TraversalMode tm=TRAVERSE_ALL_CHILDREN, bool writeExtras = true);
+    daeWriter( DAE *dae_, const std::string &fileURI, bool usePolygons=false, bool googleMode = false, TraversalMode tm=TRAVERSE_ALL_CHILDREN, bool writeExtras = true, bool earthTex = false, bool zUpAxis=false, bool forceTexture=false);
     virtual ~daeWriter();
 
     void setRootNode( const osg::Node &node );
@@ -190,7 +190,7 @@ protected: //methods
 
     void processMaterial( osg::StateSet *ss, domBind_material *pDomBindMaterial, const std::string &geoName );
 
-    void createAssetTag();
+    void createAssetTag(bool isZUpAxis);
 
     void pushStateSet(osg::StateSet* ss);
 
@@ -306,8 +306,17 @@ private: //members
         /** provide an unique name */
         std::string uniquify( const std::string &name );
 
-        /** work in Google compatibility mode */
+        /** work in Google compatibility mode. In daeWMaterials, change transparency color. And in daeWGeometry, replace tristrip and trifans by triangles*/
         bool m_GoogleMode;
+
+        /** work in Google compatibility mode for textures*/
+        bool m_EarthTex;
+
+        /** indicates if the up axis is on Z axis*/
+        bool m_ZUpAxis;
+
+        /** force the use an image for a texture, even if the file is not found*/
+        bool m_ForceTexture;
 
         /** Current RenderingHint */
         /** This are needed because the stateSet merge code currently does not handle it */

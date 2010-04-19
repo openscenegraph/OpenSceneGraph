@@ -17,6 +17,15 @@ public:
         supportsExtension("dae","COLLADA 1.4.x DAE format");
         // Collada zip archive (contains one or more dae files and a manifest.xml)
         supportsExtension("zae","COLLADA 1.4.x ZAE format");
+
+        supportsOption("polygon", "Use polygons instead of polylists for element (Write option)");
+        supportsOption("GoogleMode", "Write files suitable for use by Google products");
+        supportsOption("NoExtras", "Write option (Undocumented)");
+        supportsOption("DaeEarthTex", "DAE settings for writing earth textures");
+        supportsOption("ZUpAxis", "indicates if the up axis is on Z axis");
+        supportsOption("ForceTexture", "force the use an image for a texture, even if the file is not found");
+
+        supportsOption("StrictTransparency", "Read option (Undocumented)");
     }
 
     const char* className() const { return "COLLADA 1.4.x DAE reader/writer"; }

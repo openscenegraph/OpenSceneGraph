@@ -59,6 +59,8 @@ struct VertexIndex
 typedef std::vector<std::pair<Triangle, int> > ListTriangle; //the int is the drawable of the triangle
 typedef std::map<VertexIndex, unsigned int> MapIndices;        ///< Map OSG indices to FBX mesh indices
 
+namespace pluginfbx
+{
 
 ///\author Capo (Thibault Caporal), Sukender (Benoit Neil)
 class WriterNodeVisitor: public osg::NodeVisitor
@@ -260,5 +262,8 @@ class WriterNodeVisitor: public osg::NodeVisitor
         const osgDB::ReaderWriter::Options* _options;
         const std::string                   _srcDirectory;
 };
+
+// end namespace pluginfbx
+}
 
 #endif // _FBX_WRITER_NODE_VISITOR_HEADER__

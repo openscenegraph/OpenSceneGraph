@@ -424,7 +424,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriterFBX::writeNode(
         }
 
         KFbxScene* pScene = KFbxScene::Create(pSdkManager, "");
-        WriterNodeVisitor writerNodeVisitor(pScene, pSdkManager, filename,
+        pluginfbx::WriterNodeVisitor writerNodeVisitor(pScene, pSdkManager, filename,
             options, osgDB::getFilePath(node.getName().empty() ? filename : node.getName()));
         if (useFbxRoot && isBasicRootNode(node))
         {

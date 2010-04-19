@@ -48,6 +48,9 @@ void copyOsgMatrixToLib3dsMatrix(Lib3dsMatrix lib3ds_matrix, const osg::Matrix& 
 typedef std::map<std::pair<unsigned int, unsigned int>, unsigned int> MapIndices;
 typedef std::vector<std::pair<Triangle, int> > ListTriangle; //the int is the drawable of the triangle
 
+namespace plugin3ds
+{
+
 class WriterNodeVisitor: public osg::NodeVisitor
 {
     public:
@@ -212,5 +215,8 @@ class WriterNodeVisitor: public osg::NodeVisitor
         bool                                _extendedFilePaths;
         std::set<osg::Image *>              _imageSet;
 };
+
+// end namespace plugin3ds
+}
 
 #endif

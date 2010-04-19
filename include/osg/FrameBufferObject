@@ -153,6 +153,7 @@ namespace osg
         typedef void APIENTRY TglFramebufferRenderbuffer(GLenum, GLenum, GLenum, GLuint);
         typedef void APIENTRY TglGenerateMipmap(GLenum);
         typedef void APIENTRY TglBlitFramebuffer(GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum);
+        typedef void APIENTRY TglGetRenderbufferParameteriv(GLenum, GLenum, GLint*);
 
         TglBindRenderbuffer* glBindRenderbuffer;
         TglGenRenderbuffers* glGenRenderbuffers;
@@ -171,6 +172,7 @@ namespace osg
         TglFramebufferRenderbuffer* glFramebufferRenderbuffer;
         TglGenerateMipmap* glGenerateMipmap;
         TglBlitFramebuffer* glBlitFramebuffer;
+        TglGetRenderbufferParameteriv* glGetRenderbufferParameteriv;
 
         static FBOExtensions* instance(unsigned contextID, bool createIfNotInitalized);
 

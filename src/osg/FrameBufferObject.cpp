@@ -75,6 +75,7 @@ FBOExtensions::FBOExtensions(unsigned int contextID)
     LOAD_FBO_EXT(glFramebufferTextureLayer);
     LOAD_FBO_EXT(glFramebufferRenderbuffer);
     LOAD_FBO_EXT(glGenerateMipmap);
+    LOAD_FBO_EXT(glGetRenderbufferParameteriv);
 
     _supported = 
         glBindRenderbuffer != 0 &&
@@ -89,7 +90,8 @@ FBOExtensions::FBOExtensions(unsigned int contextID)
         glFramebufferTexture2D != 0 &&
         glFramebufferTexture3D != 0 &&
         glFramebufferRenderbuffer != 0 &&
-        glGenerateMipmap != 0;
+        glGenerateMipmap != 0 &&
+        glGetRenderbufferParameteriv != 0;
 
     LOAD_FBO_EXT(glBlitFramebuffer);
     LOAD_FBO_EXT(glRenderbufferStorageMultisample);

@@ -1398,7 +1398,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         group->addChild(geode);
         geode->addDrawable(createBackgroundRectangle(pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
                                                         7 * characterSize + 2 * backgroundMargin,
-                                                        19 * characterSize + 2 * backgroundMargin,
+                                                        20 * characterSize + 2 * backgroundMargin,
                                                         backgroundColor));
 
         // Camera scene & primitive stats static text
@@ -1445,7 +1445,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         {
             geode->addDrawable(createBackgroundRectangle(pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
                                                             5 * characterSize + 2 * backgroundMargin,
-                                                            19 * characterSize + 2 * backgroundMargin,
+                                                            20 * characterSize + 2 * backgroundMargin,
                                                             backgroundColor));
 
             // Camera scene stats

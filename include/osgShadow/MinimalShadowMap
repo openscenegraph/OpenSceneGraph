@@ -43,16 +43,16 @@ class OSGSHADOW_EXPORT MinimalShadowMap : public StandardShadowMap
         void setModellingSpaceToWorldTransform( const osg::Matrix & modellingSpaceToWorld )
             { _modellingSpaceToWorld = modellingSpaceToWorld; }
 
-        const osg::Matrix & getModellingSpaceToWorldTransform( void )
+        const osg::Matrix & getModellingSpaceToWorldTransform( void ) const
             { return _modellingSpaceToWorld; }
 
-        float getMaxFarPlane( )
+        float getMaxFarPlane( ) const
             { return _maxFarPlane; }
 
         void setMaxFarPlane( float maxFarPlane )
             { _maxFarPlane = maxFarPlane; }
 
-        float getMinLightMargin( )
+        float getMinLightMargin( ) const
             { return _minLightMargin; }
 
         void setMinLightMargin( float minLightMargin )
@@ -70,7 +70,7 @@ class OSGSHADOW_EXPORT MinimalShadowMap : public StandardShadowMap
                     { _shadowReceivingCoarseBoundAccuracy = accuracy; }
 
         ShadowReceivingCoarseBoundAccuracy 
-                getShadowReceivingCoarseBoundAccuracy()            
+                getShadowReceivingCoarseBoundAccuracy() const
                     { return _shadowReceivingCoarseBoundAccuracy; }
 
     protected:

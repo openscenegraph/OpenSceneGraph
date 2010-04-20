@@ -275,10 +275,10 @@ ParallelSplitShadowMap::ParallelSplitShadowMap(const ParallelSplitShadowMap& cop
 {
 }
 
-void ParallelSplitShadowMap::setAmbientBias(const osg::Vec2& ambientBias)
+void ParallelSplitShadowMap::setAmbientBias(const osg::Vec2d& ambientBias)
 {
     _ambientBias = ambientBias;
-    if (_ambientBiasUniform ) _ambientBiasUniform->set(_ambientBias);
+    if (_ambientBiasUniform ) _ambientBiasUniform->set(osg::Vec2f(_ambientBias.x(), _ambientBias.y()));
 }
 
 void ParallelSplitShadowMap::init(){

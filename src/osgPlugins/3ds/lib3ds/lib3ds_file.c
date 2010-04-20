@@ -452,7 +452,8 @@ compare_node_id( const void *a, const void *b ) {
 
 static int 
 compare_node_id2( const void *a, const void *b ) {
-   return (int)(*((unsigned short*)a)) - (int)((*((Lib3dsNode**)b))->node_id);
+   // not a is a pointer in the calling bsearch routine the user_id is an unsigned, while the node_id is an unsigned short?!
+   return (int)(*((unsigned*)a)) - (int)((*((Lib3dsNode**)b))->node_id);
 }
 
 

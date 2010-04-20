@@ -178,19 +178,19 @@ static rfbBool rfbInitConnection(rfbClient* client)
       if (!SendScaleSetting(client, client->appData.scaleSetting))
           return FALSE;
       if (!SendFramebufferUpdateRequest(client,
-			      client->updateRect.x / client->appData.scaleSetting,
-			      client->updateRect.y / client->appData.scaleSetting,
-			      client->updateRect.w / client->appData.scaleSetting,
-			      client->updateRect.h / client->appData.scaleSetting,
-			      FALSE))
-	      return FALSE;
+                  client->updateRect.x / client->appData.scaleSetting,
+                  client->updateRect.y / client->appData.scaleSetting,
+                  client->updateRect.w / client->appData.scaleSetting,
+                  client->updateRect.h / client->appData.scaleSetting,
+                  FALSE))
+          return FALSE;
   }
   else
   {
       if (!SendFramebufferUpdateRequest(client,
-			      client->updateRect.x, client->updateRect.y,
-			      client->updateRect.w, client->updateRect.h,
-			      FALSE))
+                  client->updateRect.x, client->updateRect.y,
+                  client->updateRect.w, client->updateRect.h,
+                  FALSE))
       return FALSE;
   }
 

@@ -29,7 +29,7 @@ void GUIEventHandler::operator()(osg::Node* node, osg::NodeVisitor* nv)
             handleWithCheckAgainstIgnoreHandledEventsMask(*(*itr), *(ev->getActionAdapter()), node, nv);
         }
     }
-    if (node->getNumChildrenRequiringEventTraversal()>0) traverse(node,nv);
+    if (node->getNumChildrenRequiringEventTraversal()>0 || _nestedCallback.valid()) traverse(node,nv);
 }
 
 void GUIEventHandler::event(osg::NodeVisitor* nv, osg::Drawable* drawable)

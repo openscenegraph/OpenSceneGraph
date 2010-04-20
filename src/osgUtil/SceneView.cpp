@@ -1112,6 +1112,20 @@ void SceneView::draw()
                     _renderStageRight->setDrawBuffer(_camera->getDrawBuffer());
                     _renderStageRight->setReadBuffer(_camera->getDrawBuffer());
                 }
+
+                // ensure that all color planes are active.
+                osg::ColorMask* cmask = static_cast<osg::ColorMask*>(_localStateSet->getAttribute(osg::StateAttribute::COLORMASK));
+                if (cmask)
+                {
+                    cmask->setMask(true,true,true,true);
+                }
+                else
+                {
+                    cmask = new osg::ColorMask(true,true,true,true);
+                    _localStateSet->setAttribute(cmask);
+                }
+                _renderStageLeft->setColorMask(cmask);
+                _renderStageRight->setColorMask(cmask);
                 
                 _localStateSet->setAttribute(getViewport());
 

@@ -43,6 +43,8 @@ void Statistics::reset()
     nlights=0;
     nbins=0;
     nimpostor=0;
+    numStateGraphs=0;
+    numOrderedLeaves=0;
 
     _vertexCount=0;
     _primitiveCount.clear();            
@@ -111,6 +113,8 @@ void Statistics::add(const Statistics& stats)
     nlights += stats.nlights;
     nbins += stats.nbins;
     nimpostor += stats.nimpostor;
+    numStateGraphs += stats.numStateGraphs;
+    numOrderedLeaves += stats.numOrderedLeaves;
 
     _vertexCount += stats._vertexCount;
     // _primitiveCount += stats._primitiveCount;   

@@ -380,8 +380,9 @@ void Renderer::cull()
             stats->setAttribute(frameNumber, "Visible number of lights", static_cast<double>(sceneStats.nlights));
             stats->setAttribute(frameNumber, "Visible number of render bins", static_cast<double>(sceneStats.nbins));
             stats->setAttribute(frameNumber, "Visible depth", static_cast<double>(sceneStats.depth));
-            stats->setAttribute(frameNumber, "Visible number of materials", static_cast<double>(sceneStats.nummat));
+            stats->setAttribute(frameNumber, "Number of StateGraphs", static_cast<double>(sceneStats.numStateGraphs));
             stats->setAttribute(frameNumber, "Visible number of impostors", static_cast<double>(sceneStats.nimpostor));
+            stats->setAttribute(frameNumber, "Number of ordered leaves", static_cast<double>(sceneStats.numOrderedLeaves));
 
             osgUtil::Statistics::PrimitiveCountMap& pcm = sceneStats.getPrimitiveCountMap();
             stats->setAttribute(frameNumber, "Visible number of GL_POINTS", static_cast<double>(pcm[GL_POINTS]));
@@ -598,8 +599,9 @@ void Renderer::cull_draw()
         stats->setAttribute(frameNumber, "Visible number of lights", static_cast<double>(sceneStats.nlights));
         stats->setAttribute(frameNumber, "Visible number of render bins", static_cast<double>(sceneStats.nbins));
         stats->setAttribute(frameNumber, "Visible depth", static_cast<double>(sceneStats.depth));
-        stats->setAttribute(frameNumber, "Visible number of materials", static_cast<double>(sceneStats.nummat));
+        stats->setAttribute(frameNumber, "Number of StateGraphs", static_cast<double>(sceneStats.numStateGraphs));
         stats->setAttribute(frameNumber, "Visible number of impostors", static_cast<double>(sceneStats.nimpostor));
+        stats->setAttribute(frameNumber, "Number of ordered leaves", static_cast<double>(sceneStats.numOrderedLeaves));
     }
 
 #if 0

@@ -100,10 +100,10 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
         inline const osg::Light* getUserLight() const { return _userLight; }
 
         /** Set the values for the ambient bias the shader will use.*/
-        void setAmbientBias(const osg::Vec2d& ambientBias );
+        void setAmbientBias(const osg::Vec2& ambientBias );
         
         /** Get the values for the ambient bias the shader will use.*/
-        const osg::Vec2d& getAmbientBias() const { return _ambientBias; }
+        const osg::Vec2& getAmbientBias() const { return _ambientBias; }
 
         /**
          * you can overwrite the fragment shader if you like to modify it yourself, own fragment shader can be used
@@ -190,7 +190,7 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
 
         bool _debug_color_in_GLSL;
 
-        osg::Vec2f _polgyonOffset;
+        osg::Vec2 _polgyonOffset;
         bool _user_polgyonOffset_set;
 
         unsigned int _resolution;
@@ -209,7 +209,7 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
         SplitCalcMode   _SplitCalcMode;
 
         osg::Uniform*   _ambientBiasUniform;
-        osg::Vec2d      _ambientBias;
+        osg::Vec2       _ambientBias;
 
 };
 }

@@ -77,9 +77,9 @@ std::string toString(T value) {
     return str.str();
 }
 
-std::string toString(osg::Vec3f value);
-std::string toString(osg::Vec3d value);
-std::string toString(osg::Matrix value);
+std::string toString(const osg::Vec3f& value);
+std::string toString(const osg::Vec3d& value);
+std::string toString(const osg::Matrix& value);
 
 // Collects all nodes that are targeted by an animation
 class FindAnimatedNodeVisitor : public osg::NodeVisitor

@@ -109,9 +109,9 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::StandardShadowMap)
 	          __void__setTextureSize__C5_osg_Vec2s_R1,
 	          "",
 	          "");
-	I_Method0(osg::Vec2s, getTextureSize,
+	I_Method0(const osg::Vec2s &, getTextureSize,
 	          Properties::NON_VIRTUAL,
-	          __osg_Vec2s__getTextureSize,
+	          __C5_osg_Vec2s_R1__getTextureSize,
 	          "",
 	          "");
 	I_Method1(void, setLight, IN, osg::Light *, light,
@@ -122,6 +122,11 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::StandardShadowMap)
 	I_Method0(osg::Light *, getLight,
 	          Properties::NON_VIRTUAL,
 	          __osg_Light_P1__getLight,
+	          "",
+	          "");
+	I_Method0(const osg::Light *, getLight,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Light_P1__getLight,
 	          "",
 	          "");
 	I_Method0(osg::Shader *, getShadowVertexShader,
@@ -203,8 +208,8 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::StandardShadowMap)
 	I_SimpleProperty(osg::Shader *, ShadowVertexShader, 
 	                 __osg_Shader_P1__getShadowVertexShader, 
 	                 __void__setShadowVertexShader__osg_Shader_P1);
-	I_SimpleProperty(osg::Vec2s, TextureSize, 
-	                 __osg_Vec2s__getTextureSize, 
+	I_SimpleProperty(const osg::Vec2s &, TextureSize, 
+	                 __C5_osg_Vec2s_R1__getTextureSize, 
 	                 __void__setTextureSize__C5_osg_Vec2s_R1);
 END_REFLECTOR
 

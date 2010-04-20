@@ -110,30 +110,60 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ParallelSplitShadowMap)
 	          __void__setTextureResolution__unsigned_int,
 	          "Set the texture resolution. ",
 	          "");
+	I_Method0(unsigned int, getTextureResolution,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getTextureResolution,
+	          "Get the texture resolution. ",
+	          "");
 	I_Method1(void, setMaxFarDistance, IN, double, farDist,
 	          Properties::NON_VIRTUAL,
 	          __void__setMaxFarDistance__double,
 	          "Set the max far distance. ",
+	          "");
+	I_Method0(double, getMaxFarDistance,
+	          Properties::NON_VIRTUAL,
+	          __double__getMaxFarDistance,
+	          "Get the max far distance. ",
 	          "");
 	I_Method1(void, setMoveVCamBehindRCamFactor, IN, double, distFactor,
 	          Properties::NON_VIRTUAL,
 	          __void__setMoveVCamBehindRCamFactor__double,
 	          "Set the factor for moving the virtual camera behind the real camera. ",
 	          "");
+	I_Method0(double, getMoveVCamBehindRCamFactor,
+	          Properties::NON_VIRTUAL,
+	          __double__getMoveVCamBehindRCamFactor,
+	          "Get the factor for moving the virtual camera behind the real camera. ",
+	          "");
 	I_Method1(void, setMinNearDistanceForSplits, IN, double, nd,
 	          Properties::NON_VIRTUAL,
 	          __void__setMinNearDistanceForSplits__double,
 	          "Set min near distance for splits. ",
+	          "");
+	I_Method0(double, getMinNearDistanceForSplits,
+	          Properties::NON_VIRTUAL,
+	          __double__getMinNearDistanceForSplits,
+	          "Get min near distance for splits. ",
 	          "");
 	I_Method1(void, setUserLight, IN, osg::Light *, light,
 	          Properties::NON_VIRTUAL,
 	          __void__setUserLight__osg_Light_P1,
 	          "set a user defined light for shadow simulation (sun light, . ",
 	          ".. ) when this light get passed to pssm, the scene's light are no longer collected and simulated. just this user passed light, it needs to be a directional light. ");
+	I_Method0(const osg::Light *, getUserLight,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Light_P1__getUserLight,
+	          "get the user defined light for shadow simulation ",
+	          "");
 	I_Method1(void, setAmbientBias, IN, const osg::Vec2 &, ambientBias,
 	          Properties::NON_VIRTUAL,
 	          __void__setAmbientBias__C5_osg_Vec2_R1,
 	          "Set the values for the ambient bias the shader will use. ",
+	          "");
+	I_Method0(const osg::Vec2 &, getAmbientBias,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Vec2_R1__getAmbientBias,
+	          "Get the values for the ambient bias the shader will use. ",
 	          "");
 	I_Method1(void, setFragmentShaderGenerator, IN, osgShadow::ParallelSplitShadowMap::FragmentShaderGenerator *, fsw,
 	          Properties::NON_VIRTUAL,
@@ -150,29 +180,34 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::ParallelSplitShadowMap)
 	                      __void__setSplitCalculationMode__SplitCalcMode,
 	                      "set split calculation mode ",
 	                      "");
+	I_Method0(osgShadow::ParallelSplitShadowMap::SplitCalcMode, getSplitCalculationMode,
+	          Properties::NON_VIRTUAL,
+	          __SplitCalcMode__getSplitCalculationMode,
+	          "get split calculation mode ",
+	          "");
 	I_SimpleProperty(const osg::Vec2 &, AmbientBias, 
-	                 0, 
+	                 __C5_osg_Vec2_R1__getAmbientBias, 
 	                 __void__setAmbientBias__C5_osg_Vec2_R1);
 	I_SimpleProperty(osgShadow::ParallelSplitShadowMap::FragmentShaderGenerator *, FragmentShaderGenerator, 
 	                 0, 
 	                 __void__setFragmentShaderGenerator__FragmentShaderGenerator_P1);
 	I_SimpleProperty(double, MaxFarDistance, 
-	                 0, 
+	                 __double__getMaxFarDistance, 
 	                 __void__setMaxFarDistance__double);
 	I_SimpleProperty(double, MinNearDistanceForSplits, 
-	                 0, 
+	                 __double__getMinNearDistanceForSplits, 
 	                 __void__setMinNearDistanceForSplits__double);
 	I_SimpleProperty(double, MoveVCamBehindRCamFactor, 
-	                 0, 
+	                 __double__getMoveVCamBehindRCamFactor, 
 	                 __void__setMoveVCamBehindRCamFactor__double);
 	I_SimpleProperty(const osg::Vec2f &, PolygonOffset, 
 	                 __C5_osg_Vec2f_R1__getPolygonOffset, 
 	                 __void__setPolygonOffset__C5_osg_Vec2f_R1);
 	I_SimpleProperty(osgShadow::ParallelSplitShadowMap::SplitCalcMode, SplitCalculationMode, 
-	                 0, 
+	                 __SplitCalcMode__getSplitCalculationMode, 
 	                 __void__setSplitCalculationMode__SplitCalcMode);
 	I_SimpleProperty(unsigned int, TextureResolution, 
-	                 0, 
+	                 __unsigned_int__getTextureResolution, 
 	                 __void__setTextureResolution__unsigned_int);
 	I_SimpleProperty(osg::Light *, UserLight, 
 	                 0, 

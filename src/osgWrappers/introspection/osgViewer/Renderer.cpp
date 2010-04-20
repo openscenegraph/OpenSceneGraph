@@ -92,6 +92,11 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Renderer)
 	          __osgUtil_SceneView_P1__getSceneView__unsigned_int,
 	          "",
 	          "");
+	I_Method1(const osgUtil::SceneView *, getSceneView, IN, unsigned int, i,
+	          Properties::NON_VIRTUAL,
+	          __C5_osgUtil_SceneView_P1__getSceneView__unsigned_int,
+	          "",
+	          "");
 	I_Method1(void, setDone, IN, bool, done,
 	          Properties::NON_VIRTUAL,
 	          __void__setDone__bool,
@@ -187,6 +192,16 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Renderer)
 	          __double__getConservativeTimeRatio,
 	          "",
 	          "");
+	I_Method1(void, setCameraRequiresSetUp, IN, bool, flag,
+	          Properties::NON_VIRTUAL,
+	          __void__setCameraRequiresSetUp__bool,
+	          "Force update of state associated with cameras. ",
+	          "");
+	I_Method0(bool, getCameraRequiresSetUp,
+	          Properties::NON_VIRTUAL,
+	          __bool__getCameraRequiresSetUp,
+	          "",
+	          "");
 	I_ProtectedMethod1(void, updateSceneView, IN, osgUtil::SceneView *, sceneView,
 	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,
@@ -199,6 +214,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::Renderer)
 	                   __void__flushAndCompile__double__osgUtil_SceneView_P1__osgDB_DatabasePager_P1__osg_GraphicsThread_P1,
 	                   "",
 	                   "");
+	I_SimpleProperty(bool, CameraRequiresSetUp, 
+	                 __bool__getCameraRequiresSetUp, 
+	                 __void__setCameraRequiresSetUp__bool);
 	I_SimpleProperty(bool, CompileOnNextDraw, 
 	                 __bool__getCompileOnNextDraw, 
 	                 __void__setCompileOnNextDraw__bool);

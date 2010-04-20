@@ -110,6 +110,8 @@ class OSGUTIL_EXPORT Statistics : public osg::PrimitiveFunctor
         void addBins(int np) { nbins+= np; }
 
         void setBinNo(int n) { _binNo=n;}
+        void addStateGraphs(int n) { numStateGraphs += n; }
+        void addOrderedLeaves(int n) { numOrderedLeaves += n; }
         
         void add(const Statistics& stats);
                 
@@ -123,12 +125,13 @@ class OSGUTIL_EXPORT Statistics : public osg::PrimitiveFunctor
         /// deprecated
         PrimitiveCountMap::iterator GetPrimitivesEnd() { return _primitives_count.end(); }
 
-        int numDrawables, nummat, nbins;
+        int numDrawables, nummat, nbins, numStateGraphs;
         int nlights;
         int depth; // depth into bins - eg 1.1,1.2,1.3 etc
         int _binNo;
         StatsType stattype;
         int nimpostor; // number of impostors rendered
+        int numOrderedLeaves;   // leaves from RenderBin fine grain ordering
         
         unsigned int        _vertexCount;
         PrimitiveValueMap    _primitiveCount;

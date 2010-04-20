@@ -412,9 +412,10 @@ struct CameraSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCall
                 STATS_ATTRIBUTE("Visible number of lights")
                 STATS_ATTRIBUTE("Visible number of render bins")
                 STATS_ATTRIBUTE("Visible depth")
-                STATS_ATTRIBUTE("Visible number of materials")
+                STATS_ATTRIBUTE("Number of StateGraphs")
                 STATS_ATTRIBUTE("Visible number of impostors")
                 STATS_ATTRIBUTE("Visible number of drawables")
+                STATS_ATTRIBUTE("Number of ordered leaves")
                 STATS_ATTRIBUTE("Visible vertex count")
 
                 STATS_ATTRIBUTE("Visible number of GL_POINTS")
@@ -1417,9 +1418,10 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         viewStr << "Lights" << std::endl;
         viewStr << "Bins" << std::endl;
         viewStr << "Depth" << std::endl;
-        viewStr << "Materials" << std::endl;
+        viewStr << "State graphs" << std::endl;
         viewStr << "Imposters" << std::endl;
         viewStr << "Drawables" << std::endl;
+        viewStr << "Sorted" << std::endl;
         viewStr << "Vertices" << std::endl;
         viewStr << "Points" << std::endl;
         viewStr << "Lines" << std::endl;

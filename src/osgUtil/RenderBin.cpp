@@ -522,7 +522,7 @@ bool RenderBin::getStats(Statistics& stats) const
 
     // different by return type - collects the stats in this renderrBin
     bool statsCollected = false;
-
+    stats.addOrderedLeaves(_renderLeafList.size());
     // draw fine grained ordering.
     for(RenderLeafList::const_iterator dw_itr = _renderLeafList.begin();
         dw_itr != _renderLeafList.end();
@@ -543,7 +543,7 @@ bool RenderBin::getStats(Statistics& stats) const
         }
         statsCollected = true;
     }
-
+    stats.addStateGraphs(_stateGraphList.size());
     for(StateGraphList::const_iterator oitr=_stateGraphList.begin();
         oitr!=_stateGraphList.end();
         ++oitr)

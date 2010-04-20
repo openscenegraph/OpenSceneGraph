@@ -132,6 +132,16 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	          __osg_Viewport_P1__getViewport,
 	          "Get the viewport. ",
 	          "");
+	I_Method1(void, setInitialViewMatrix, IN, const osg::RefMatrix *, matrix,
+	          Properties::NON_VIRTUAL,
+	          __void__setInitialViewMatrix__C5_osg_RefMatrix_P1,
+	          "Set the initial view matrix. ",
+	          "");
+	I_Method0(const osg::RefMatrix *, getInitialViewMatrix,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_RefMatrix_P1__getInitialViewMatrix,
+	          "Get the initial view matrix. ",
+	          "");
 	I_Method1(void, setClearMask, IN, GLbitfield, mask,
 	          Properties::NON_VIRTUAL,
 	          __void__setClearMask__GLbitfield,
@@ -491,6 +501,9 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_SimpleProperty(const osg::Matrix &, InheritedPositionalStateContainerMatrix, 
 	                 __C5_osg_Matrix_R1__getInheritedPositionalStateContainerMatrix, 
 	                 __void__setInheritedPositionalStateContainerMatrix__C5_osg_Matrix_R1);
+	I_SimpleProperty(const osg::RefMatrix *, InitialViewMatrix, 
+	                 __C5_osg_RefMatrix_P1__getInitialViewMatrix, 
+	                 __void__setInitialViewMatrix__C5_osg_RefMatrix_P1);
 	I_SimpleProperty(osg::FrameBufferObject *, MultisampleResolveFramebufferObject, 
 	                 __osg_FrameBufferObject_P1__getMultisampleResolveFramebufferObject, 
 	                 __void__setMultisampleResolveFramebufferObject__osg_FrameBufferObject_P1);

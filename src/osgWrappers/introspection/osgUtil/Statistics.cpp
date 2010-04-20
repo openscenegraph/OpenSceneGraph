@@ -202,6 +202,16 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Statistics)
 	          __void__setBinNo__int,
 	          "",
 	          "");
+	I_Method1(void, addStateGraphs, IN, int, n,
+	          Properties::NON_VIRTUAL,
+	          __void__addStateGraphs__int,
+	          "",
+	          "");
+	I_Method1(void, addOrderedLeaves, IN, int, n,
+	          Properties::NON_VIRTUAL,
+	          __void__addOrderedLeaves__int,
+	          "",
+	          "");
 	I_Method1(void, add, IN, const osgUtil::Statistics &, stats,
 	          Properties::NON_VIRTUAL,
 	          __void__add__C5_Statistics_R1,
@@ -245,11 +255,13 @@ BEGIN_OBJECT_REFLECTOR(osgUtil::Statistics)
 	I_PublicMemberProperty(int, numDrawables);
 	I_PublicMemberProperty(int, nummat);
 	I_PublicMemberProperty(int, nbins);
+	I_PublicMemberProperty(int, numStateGraphs);
 	I_PublicMemberProperty(int, nlights);
 	I_PublicMemberProperty(int, depth);
 	I_PublicMemberProperty(int, _binNo);
 	I_PublicMemberProperty(osgUtil::Statistics::StatsType, stattype);
 	I_PublicMemberProperty(int, nimpostor);
+	I_PublicMemberProperty(int, numOrderedLeaves);
 	I_PublicMemberProperty(unsigned int, _vertexCount);
 	I_PublicMemberProperty(osgUtil::Statistics::PrimitiveValueMap, _primitiveCount);
 	I_PublicMemberProperty(GLenum, _currentPrimitiveFunctorMode);

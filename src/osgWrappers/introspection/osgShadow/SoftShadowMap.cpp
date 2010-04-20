@@ -57,9 +57,9 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::SoftShadowMap)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(void, setSoftnessWidth, IN, const float, softnessWidth,
+	I_Method1(void, setSoftnessWidth, IN, float, softnessWidth,
 	          Properties::NON_VIRTUAL,
-	          __void__setSoftnessWidth__C5_float,
+	          __void__setSoftnessWidth__float,
 	          "Set the values for width of the soft penumbra the shader will use. ",
 	          "Zero is for hard shadow (no penumbra). 0.01 is already very soft penumbra. Default is 0.005. ");
 	I_Method0(float, getSoftnessWidth,
@@ -67,9 +67,9 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::SoftShadowMap)
 	          __float__getSoftnessWidth,
 	          "Get the value used for width of the soft penumbra in the shader. ",
 	          "");
-	I_Method1(void, setJitteringScale, IN, const float, jitteringScale,
+	I_Method1(void, setJitteringScale, IN, float, jitteringScale,
 	          Properties::NON_VIRTUAL,
-	          __void__setJitteringScale__C5_float,
+	          __void__setJitteringScale__float,
 	          "Set the values for jittering scale the shader will use. ",
 	          "Zero is no jittering (i.e. see the banding in penumbra) High values (>64) cause 'pixelization' of the penumbra. Usually but not necessarily power of two number. Default is 32. ");
 	I_Method0(float, getJitteringScale,
@@ -123,9 +123,9 @@ BEGIN_OBJECT_REFLECTOR(osgShadow::SoftShadowMap)
 	                 __void__setJitterTextureUnit__unsigned_int);
 	I_SimpleProperty(float, JitteringScale, 
 	                 __float__getJitteringScale, 
-	                 0);
+	                 __void__setJitteringScale__float);
 	I_SimpleProperty(float, SoftnessWidth, 
 	                 __float__getSoftnessWidth, 
-	                 0);
+	                 __void__setSoftnessWidth__float);
 END_REFLECTOR
 

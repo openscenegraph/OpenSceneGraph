@@ -244,7 +244,7 @@ ParallelSplitShadowMap::ParallelSplitShadowMap(osg::Geode** gr, int icountplanes
     _userLight(NULL),
     _GLSL_shadow_filtered(true),
     _ambientBiasUniform(NULL),
-    _ambientBias(0.1,0.3)
+    _ambientBias(0.1f,0.3f)
 {
     _displayTexturesGroupingNode = gr;
     _number_of_splits = icountplanes;
@@ -275,7 +275,7 @@ ParallelSplitShadowMap::ParallelSplitShadowMap(const ParallelSplitShadowMap& cop
 {
 }
 
-void ParallelSplitShadowMap::setAmbientBias(const osg::Vec2d& ambientBias)
+void ParallelSplitShadowMap::setAmbientBias(const osg::Vec2& ambientBias)
 {
     _ambientBias = ambientBias;
     if (_ambientBiasUniform ) _ambientBiasUniform->set(osg::Vec2f(_ambientBias.x(), _ambientBias.y()));

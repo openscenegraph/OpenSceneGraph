@@ -64,28 +64,46 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
         inline void setPolygonOffset(const osg::Vec2f& p) { _polgyonOffset = p;_user_polgyonOffset_set=true;}
 
         /** Get the polygon offset osg::Vec2f(factor,unit) */
-        inline const osg::Vec2f& getPolygonOffset() { return _polgyonOffset;}
+        inline const osg::Vec2f& getPolygonOffset() const { return _polgyonOffset;}
 
         /** Set the texture resolution */
         inline void setTextureResolution(unsigned int resolution) { _resolution = resolution; }
+        
+        /** Get the texture resolution */
+        inline unsigned int getTextureResolution() const { return _resolution; }
 
         /** Set the max far distance */
         inline void setMaxFarDistance(double farDist) { _setMaxFarDistance = farDist; _isSetMaxFarDistance = true; }
 
+        /** Get the max far distance */
+        inline double getMaxFarDistance() const { return _setMaxFarDistance; }
+
         /** Set the factor for moving the virtual camera behind the real camera*/
         inline void setMoveVCamBehindRCamFactor(double distFactor ) { _move_vcam_behind_rcam_factor = distFactor; }
 
+        /** Get the factor for moving the virtual camera behind the real camera*/
+        inline double getMoveVCamBehindRCamFactor() const { return _move_vcam_behind_rcam_factor; }
+
         /** Set min near distance for splits */
         inline void setMinNearDistanceForSplits(double nd){ _split_min_near_dist=nd; }
+        
+        /** Get min near distance for splits */
+        inline double getMinNearDistanceForSplits() const { return _split_min_near_dist; }
 
         /** set a user defined light for shadow simulation (sun light, ... )
          *    when this light get passed to pssm, the scene's light are no longer collected
          *    and simulated. just this user passed light, it needs to be a directional light.
          */
         inline void setUserLight(osg::Light* light) { _userLight = light; }
+        
+        /** get the user defined light for shadow simulation */
+        inline const osg::Light* getUserLight() const { return _userLight; }
 
         /** Set the values for the ambient bias the shader will use.*/
-        void setAmbientBias(const osg::Vec2& ambientBias );
+        void setAmbientBias(const osg::Vec2d& ambientBias );
+        
+        /** Get the values for the ambient bias the shader will use.*/
+        const osg::Vec2d& getAmbientBias() const { return _ambientBias; }
 
         /**
          * you can overwrite the fragment shader if you like to modify it yourself, own fragment shader can be used
@@ -111,6 +129,9 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
 
         /** set split calculation mode */
         inline void setSplitCalculationMode(SplitCalcMode scm=SPLIT_EXP) { _SplitCalcMode = scm; }
+        
+        /** get split calculation mode */
+        inline SplitCalcMode getSplitCalculationMode() const { return _SplitCalcMode; }
 
 
     protected :

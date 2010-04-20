@@ -36,7 +36,7 @@ class OSGSHADOW_EXPORT SoftShadowMap : public ShadowMap
         /** Set the values for width of the soft penumbra the shader will use.
          *  Zero is for hard shadow (no penumbra). 0.01 is already very soft penumbra.
          *  Default is 0.005.*/
-        void setSoftnessWidth(const float softnessWidth);
+        void setSoftnessWidth(float softnessWidth);
 
         /** Get the value used for width of the soft penumbra in the shader.*/
         float getSoftnessWidth() const { return _softnessWidth; }
@@ -46,7 +46,7 @@ class OSGSHADOW_EXPORT SoftShadowMap : public ShadowMap
          *  High values (>64) cause 'pixelization' of the penumbra.
          *  Usually but not necessarily power of two number.
          *  Default is 32. */
-        void setJitteringScale(const float jitteringScale);
+        void setJitteringScale(float jitteringScale);
 
         /** Get the value used for jittering scale in the shader.*/
         float getJitteringScale() const { return _jitteringScale; }

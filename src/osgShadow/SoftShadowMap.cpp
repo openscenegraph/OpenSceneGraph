@@ -177,13 +177,13 @@ ShadowMap(copy,copyop),
 {
 }
 
-void SoftShadowMap::setJitteringScale(const float jitteringScale)
+void SoftShadowMap::setJitteringScale(float jitteringScale)
 {
     _jitteringScale = jitteringScale;
     if (_jitteringScaleUniform.valid()) _jitteringScaleUniform->set(_jitteringScale);
 }
 
-void SoftShadowMap::setSoftnessWidth(const float softnessWidth)
+void SoftShadowMap::setSoftnessWidth(float softnessWidth)
 {
     _softnessWidth = softnessWidth;
     if (_softnessWidthUniform.valid()) _softnessWidthUniform->set(_softnessWidth);

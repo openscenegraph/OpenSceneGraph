@@ -747,7 +747,7 @@ public:
 
 // ADDING MANIPULATORS
 #define ADD_SERIALIZER(S) \
-    wrapper->addSerializer(S)
+    wrapper->addSerializer( (S) )
 
 #define ADD_USER_SERIALIZER(PROP) \
     wrapper->addSerializer( new osgDB::UserSerializer<MyClass>( \
@@ -792,6 +792,16 @@ public:
 #define ADD_DOUBLE_SERIALIZER(PROP, DEF) \
     wrapper->addSerializer( new osgDB::PropByValSerializer< MyClass, double >( \
         #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_VEC2F_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, osg::Vec2f >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_VEC2D_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, osg::Vec2d >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP) )
+
+#define ADD_VEC2_SERIALIZER(PROP, DEF) ADD_VEC2F_SERIALIZER(PROP, DEF)
 
 #define ADD_VEC3F_SERIALIZER(PROP, DEF) \
     wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, osg::Vec3f >( \

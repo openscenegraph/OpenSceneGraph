@@ -69,7 +69,7 @@ class OSGSHADOW_EXPORT DebugShadowMap : public ViewDependentShadowTechnique
         void setDebugDraw( bool draw ) { _doDebugDraw = draw; }
 
         /** Tell if debuging hud & rendering of debug volumes is active */
-        bool getDebugDraw( void )      { return _doDebugDraw; }
+        bool getDebugDraw( void ) const { return _doDebugDraw; }
 
     protected:
         /** Classic protected OSG destructor */

@@ -86,7 +86,10 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow, p
         
         /** Set mouse cursor to a specific shape.*/
         virtual void setCursor(MouseCursor cursor);
-        
+
+        /** Set sync-to-vblank. */
+        virtual void setSyncToVBlank(bool on);
+
         /** Handle a native (Win32) windowing event as received from the system */
         virtual LRESULT handleNativeWindowingEvent( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
         

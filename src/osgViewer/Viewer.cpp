@@ -211,12 +211,10 @@ Viewer::~Viewer()
 {
     //OSG_NOTIFY(osg::NOTICE)<<"Viewer::~Viewer()"<<std::endl;
 
-
     Threads threads;
     getAllThreads(threads);
 
     OSG_NOTIFY(osg::INFO)<<"Viewer::~Viewer():: start destructor getThreads = "<<threads.size()<<std::endl;
-
 
     stopThreading();
 
@@ -241,8 +239,7 @@ Viewer::~Viewer()
 
     getAllThreads(threads);
 
-    OSG_NOTIFY(osg::INFO)<<"Viewer::~Viewer() end destrcutor getThreads = "<<threads.size()<<std::endl;
-
+    OSG_NOTIFY(osg::INFO)<<"Viewer::~Viewer() end destructor getThreads = "<<threads.size()<<std::endl;
 }
 
 void Viewer::take(View& rhs)

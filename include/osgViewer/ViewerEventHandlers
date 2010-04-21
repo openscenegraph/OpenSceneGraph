@@ -68,7 +68,9 @@ class OSGVIEWER_EXPORT HelpHandler : public osgGA::GUIEventHandler
 
 };
 
-/** Event handler for adding on screen stats reporting to Viewers.*/
+/**
+ * Event handler for adding on screen stats reporting to Viewers.
+ */
 class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
 {
     public:
@@ -90,6 +92,9 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
 
         void setKeyEventPrintsOutStats(int key) { _keyEventPrintsOutStats = key; }
         int getKeyEventPrintsOutStats() const { return _keyEventPrintsOutStats; }
+
+        void setKeyEventToggleVSync(int key) { _keyEventToggleVSync = key; }
+        int getKeyEventToggleVSync() const { return _keyEventToggleVSync; }
 
         double getBlockMultiplier() const { return _blockMultiplier; }
 
@@ -123,6 +128,7 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
 
         int                                 _keyEventTogglesOnScreenStats;
         int                                 _keyEventPrintsOutStats;
+        int                                 _keyEventToggleVSync;
 
         int                                 _statsType;
 

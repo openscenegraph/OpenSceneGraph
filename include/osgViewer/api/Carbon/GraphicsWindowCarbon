@@ -36,7 +36,8 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow, public osgViewer:
             _initialized(false),
             _realized(false),
             _ownsWindow(true),
-            _currentCursor(RightArrowCursor)
+            _currentCursor(RightArrowCursor),
+            _currentVSync(true)
         {
             _traits = traits;
 
@@ -108,7 +109,10 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow, public osgViewer:
         virtual void setWindowName (const std::string & name);
         virtual void useCursor(bool cursorOn);
         virtual void setCursor(MouseCursor mouseCursor);
-        
+
+        /** Set sync-to-vblank. */
+        virtual void setSyncToVBlank(bool on);
+
         WindowRef getNativeWindowRef() { return _window; }
         
         bool handleMouseEvent(EventRef theEvent);
@@ -168,6 +172,7 @@ class GraphicsWindowCarbon : public osgViewer::GraphicsWindow, public osgViewer:
         bool            _closeRequested;
         UInt32          _lastModifierKeys;
         MouseCursor     _currentCursor;
+        bool            _currentVSync;
 };
 
 }

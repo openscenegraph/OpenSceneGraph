@@ -134,6 +134,14 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
         /** Create a new mouse cursor from the usual bitmap data.*/
         //virtual MouseCursor createCursor(const char *data, const char *mask, unsigned w, unsigned h, unsigned hotx, unsigned hoty) { osg::notify(osg::NOTICE)<<"GraphicsWindow::createCursor(..) not implemented."<<std::endl; }
 
+        /** Set sync-to-vblank. */
+        virtual void setSyncToVBlank(bool on)
+        {
+            osg::notify(osg::NOTICE) << "GraphicsWindow::setSyncToVBlank(" << on << ") not implemented." << std::endl;
+        }
+
+        bool getSyncToVBlank() const { return _traits.valid() ? _traits->vsync : true; }
+
     public:
 
         /** Return whether a valid and usable GraphicsContext has been created.*/

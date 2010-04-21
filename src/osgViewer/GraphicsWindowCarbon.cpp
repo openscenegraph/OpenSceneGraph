@@ -345,19 +345,18 @@ void GraphicsWindowCarbon::installEventHandler() {
 
 bool GraphicsWindowCarbon::realizeImplementation()
 {
-    
     if (!_initialized) init();
     if (!_initialized) return false;
     if (!_traits) return false;
-    
-    OSG_NOTIFY(osg::INFO) << "GraphicsWindowCarbon:: realizeIMplementation" << std::endl;
+ 
+    osg::notify(osg::INFO) << "GraphicsWindowCarbon::realizeImplementation" << std::endl;
     
     setWindowDecoration(_traits->windowDecoration);
     useCursor(_traits->useCursor);
 
     // move the window to the right screen
     DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
-    int screenLeft(0), screenTop(0);
+    int screenLeft = 0, screenTop = 0;
     if (wsi) 
     {
         wsi->getScreenTopLeft((*_traits), screenLeft, screenTop);
@@ -377,10 +376,10 @@ bool GraphicsWindowCarbon::realizeImplementation()
         err = CreateNewWindow(kDocumentWindowClass, attr, &bounds, &_window);
 
         if (err) {
-            OSG_NOTIFY(osg::WARN) << "GraphicsWindowCarbon::realizeImplementation() failed creating a window: " << err << std::endl;
+            OSG_NOTIFY(osg::WARN) << "GraphicsWindowCarbon::realizeImplementation: failed to create window: " << err << std::endl;
             return false;
         } else {
-            OSG_NOTIFY(osg::INFO) << "GraphicsWindowCarbon::realizeImplementation() - window created with bounds(" << bounds.top << ", " << bounds.left << ", " << bounds.bottom << ", " << bounds.right << ")" << std::endl;
+            OSG_NOTIFY(osg::INFO) << "GraphicsWindowCarbon::realizeImplementation: window created with bounds(" << bounds.top << ", " << bounds.left << ", " << bounds.bottom << ", " << bounds.right << ")" << std::endl;
         }
     }
     else {
@@ -407,10 +406,8 @@ bool GraphicsWindowCarbon::realizeImplementation()
     }
 
     _context = aglCreateContext (_pixelFormat, sharedContextCarbon);
-
-
     if (!_context) {
-        OSG_NOTIFY(osg::WARN) << "GraphicsWindowCarbon::realizeImplementation failed creating a context: " << aglGetError() << std::endl;
+        OSG_NOTIFY(osg::WARN) << "GraphicsWindowCarbon::realizeImplementation: failed to create context: " << aglGetError() << std::endl;
         return false;
     }
 
@@ -441,17 +438,18 @@ bool GraphicsWindowCarbon::realizeImplementation()
 #endif    
         if (cgerr != kCGLNoError )
         {
-            OSG_NOTIFY(osg::INFO) << "GraphicsWindowCarbon:: Multi-threaded OpenGL Execution not available" << std::endl;
+            OSG_NOTIFY(osg::INFO) << "GraphicsWindowCarbon::realizeImplementation: multi-threaded OpenGL Execution not available" << std::endl;
         } 
     }
-    
+
     InitCursor();
-    
-    //enable vsync
+
+    // enable vsync
     if (_traits->vsync) {
         GLint swap = 1;
         aglSetInteger (_context, AGL_SWAP_INTERVAL, &swap);
     }
+    _currentVSync = _traits->vsync;
 
     _realized = true;
     return _realized;
@@ -485,7 +483,7 @@ void GraphicsWindowCarbon::closeImplementation()
     // OSG_NOTIFY(osg::INFO) << "GraphicsWindowCarbon::closeImplementation" << std::endl;
     _valid = false;
     _realized = false;
-    
+
     // there's a possibility that the MenubarController is destructed already, so prevent a crash:
     MenubarController* mbc = MenubarController::instance();
     if (mbc) mbc->detachWindow(this);
@@ -495,7 +493,7 @@ void GraphicsWindowCarbon::closeImplementation()
         aglDestroyPixelFormat(_pixelFormat);
         _pixelFormat = NULL;
     }
-    
+ 
     if (_context) 
     {
         aglSetDrawable(_context, NULL);
@@ -503,7 +501,7 @@ void GraphicsWindowCarbon::closeImplementation()
         aglDestroyContext(_context);
         _context = NULL;
     }
-    
+ 
     if (_ownsWindow && _window) DisposeWindow(_window);
     _window = NULL;
 }
@@ -512,6 +510,16 @@ void GraphicsWindowCarbon::closeImplementation()
 
 void GraphicsWindowCarbon::swapBuffersImplementation()
 {
+    // check for vsync change
+    if (_traits.valid() && _traits->vsync != _currentVSync)
+    {
+        const bool on = _traits->vsync;
+        GLint swap = (on ? 1 : 0);
+        aglSetInteger (_context, AGL_SWAP_INTERVAL, &swap);
+        osg::notify(osg::NOTICE) << "GraphicsWindowCarbon: VSync=" << (on ? "on" : "off") << std::endl;
+        _currentVSync = on;
+    }
+
     aglSwapBuffers(_context);
 }
 
@@ -566,7 +574,7 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
         if (mouseButton==3) mouseButton = 2;
         else if (mouseButton==2) mouseButton = 3;
         
-        // check tablet pointer device and map it to a musebutton
+        // check tablet pointer device and map it to a mouse button
         TabletProximityRec    theTabletRecord;    // The Tablet Proximity Record
         // Extract the Tablet Proximity reccord from the event.
         if(noErr == GetEventParameter(theEvent, kEventParamTabletProximityRec,
@@ -585,7 +593,7 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
                     pointerType = osgGA::GUIEventAdapter::PUCK;
                     break;
                     
-                case 3: //eraser
+                case 3: // eraser
                     pointerType = osgGA::GUIEventAdapter::ERASER;
                     break;
 
@@ -615,8 +623,8 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
         {
             case kEventMouseDown:
                 {
-                    float mx =wheresMyMouse.h;
-                    float my =wheresMyMouse.v;
+                    float mx = wheresMyMouse.h;
+                    float my = wheresMyMouse.v;
                     transformMouseXY(mx, my);
                     
                     lastEmulatedMouseButton = 0;
@@ -641,8 +649,8 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
                 break;
             case kEventMouseUp:
                 {
-                    float mx =wheresMyMouse.h;
-                    float my =wheresMyMouse.v;
+                    float mx = wheresMyMouse.h;
+                    float my = wheresMyMouse.v;
                     transformMouseXY(mx, my);
                     if (lastEmulatedMouseButton > 0) {
                         getEventQueue()->mouseButtonRelease(mx, my, lastEmulatedMouseButton);
@@ -662,11 +670,10 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
                                     sizeof(TabletPointRec), NULL, (void *)&theTabletRecord)) {
                     
                         getEventQueue()->penPressure(theTabletRecord.pressure / 65535.0f);
-            
                     }
                     
-                    float mx =wheresMyMouse.h;
-                    float my =wheresMyMouse.v;
+                    float mx = wheresMyMouse.h;
+                    float my = wheresMyMouse.v;
                     transformMouseXY(mx, my);
                     getEventQueue()->mouseMotion(mx, my);
                 }
@@ -705,23 +712,23 @@ bool GraphicsWindowCarbon::handleMouseEvent(EventRef theEvent)
             case 11:
                 {
                     enum
-                        {
+                    {
                         kEventParamMouseWheelSmoothVerticalDelta       = 'saxy', // typeSInt32
                         kEventParamMouseWheelSmoothHorizontalDelta     = 'saxx' // typeSInt32
-                        };
+                    };
                     
                     SInt32 scroll_delta_x = 0;
                     SInt32 scroll_delta_y = 0;
                     OSErr err = noErr;
                     err = GetEventParameter( theEvent, kEventParamMouseWheelSmoothVerticalDelta, typeLongInteger, NULL, sizeof(scroll_delta_y), NULL, &scroll_delta_y );
                     err = GetEventParameter( theEvent, kEventParamMouseWheelSmoothHorizontalDelta, typeLongInteger, NULL, sizeof(scroll_delta_x), NULL, &scroll_delta_x );
-                    
+
                     if ((scroll_delta_x != 0) || (scroll_delta_y != 0)) {
                         getEventQueue()->mouseScroll2D( scroll_delta_x, scroll_delta_y);
                     }
                 }
                 break;
-            
+ 
             default:
                 return false;
         }
@@ -759,15 +766,16 @@ bool GraphicsWindowCarbon::handleKeyboardEvent(EventRef theEvent)
         case kEventRawKeyDown:
         case kEventRawKeyRepeat:
         {
+            //osg::notify(osg::INFO) << "GraphicsWindowCarbon::keyPress Up" << std::endl;
             //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
-            OSG_NOTIFY(osg::INFO) << "GraphicsWindowCarbon::keyPress" << std::endl;
+            //OSG_NOTIFY(osg::INFO) << "GraphicsWindowCarbon::keyPress" << std::endl;
             getEventQueue()->keyPress(keychar);
             break;
         }
         
         case kEventRawKeyUp:
         {                 
-            OSG_NOTIFY(osg::INFO) << "GraphicsWindowCarbon::keyPress" << std::endl;
+            //OSG_NOTIFY(osg::INFO) << "GraphicsWindowCarbon::keyPress" << std::endl;
             //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
             getEventQueue()->keyRelease(keychar);
             break;
@@ -940,34 +948,24 @@ void GraphicsWindowCarbon::grabFocus()
 void GraphicsWindowCarbon::grabFocusIfPointerInWindow()
 {
    // TODO: implement
-   OSG_NOTIFY(osg::ALWAYS) << "GraphicsWindowCarbon::grabFocusIfPointerInWindow" << std::endl;
+   OSG_NOTIFY(osg::ALWAYS) << "GraphicsWindowCarbon::grabFocusIfPointerInWindow: not implemented" << std::endl;
 }
 
 
 void GraphicsWindowCarbon::useCursor(bool cursorOn)
 {
-
     if (_traits.valid())
         _traits->useCursor = cursorOn;
     DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     if (wsi == NULL) {
-        OSG_NOTIFY(osg::WARN) << "GraphicsWindowCarbon::useCursor :: could not get OSXCarbonWindowingSystemInterface" << std::endl;
+        OSG_NOTIFY(osg::WARN) << "GraphicsWindowCarbon::useCursor: could not get OSXCarbonWindowingSystemInterface" << std::endl;
         return;
     }
     
     CGDirectDisplayID displayId = wsi->getDisplayID((*_traits));
-    CGDisplayErr err = kCGErrorSuccess;
-    switch (cursorOn)
-    {
-        case true:
-            err = CGDisplayShowCursor(displayId);
-            break;
-        case false:
-            err = CGDisplayHideCursor(displayId);
-            break;
-    }
+    CGDisplayErr err = (cursorOn ? CGDisplayShowCursor(displayId) : CGDisplayHideCursor(displayId));
     if (err != kCGErrorSuccess) {
-        OSG_NOTIFY(osg::WARN) << "GraphicsWindowCarbon::useCursor failed with " << err << std::endl;
+        OSG_NOTIFY(osg::WARN) << "GraphicsWindowCarbon::useCursor: failed with " << err << std::endl;
     }
 }
 
@@ -975,9 +973,10 @@ void GraphicsWindowCarbon::useCursor(bool cursorOn)
 // FIXME: I used deprecated functions, but don't know if there are any substitutable newer functions...
 void GraphicsWindowCarbon::setCursor(MouseCursor mouseCursor)
 {
-    UInt32 cursor;
     if (_currentCursor == mouseCursor)
       return;
+
+    UInt32 cursor;
     switch (mouseCursor) 
     {
         case NoCursor:
@@ -1009,6 +1008,12 @@ void GraphicsWindowCarbon::setCursor(MouseCursor mouseCursor)
     ShowCursor();
 }
 
+void GraphicsWindowCarbon::setSyncToVBlank(bool on)
+{
+    if (_traits.valid()) {
+        _traits->vsync = on;
+    }
+}
 
 void GraphicsWindowCarbon::setWindowName (const std::string& name) 
 {
@@ -1026,7 +1031,7 @@ void GraphicsWindowCarbon::requestWarpPointer(float x,float y)
 
     DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     if (wsi == NULL) {
-        OSG_NOTIFY(osg::WARN) << "GraphicsWindowCarbon::useCursor :: could not get OSXCarbonWindowingSystemInterface" << std::endl;
+        OSG_NOTIFY(osg::WARN) << "GraphicsWindowCarbon::useCursor: could not get OSXCarbonWindowingSystemInterface" << std::endl;
         return;
     }
 

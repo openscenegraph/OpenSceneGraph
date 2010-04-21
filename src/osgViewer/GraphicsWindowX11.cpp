@@ -1066,6 +1066,14 @@ void GraphicsWindowX11::swapBuffersImplementation()
         eglSwapBuffers( _eglDisplay, _eglSurface );
         checkEGLError("after eglSwapBuffers()");
     #else
+#if 0
+        if (_traits.valid() && _traits->vsync) {
+
+            unsigned int counter;
+            glXGetVideoSyncSGI(&counter);
+            glXWaitVideoSyncSGI(1, 0, &counter);
+        }
+#endif
         glXSwapBuffers( _display, _window );
     #endif
 

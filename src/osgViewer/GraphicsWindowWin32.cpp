@@ -1778,46 +1778,53 @@ bool GraphicsWindowWin32::realizeImplementation()
         init();
         if (!_initialized) return false;
     }
-    {
-        
-        if (_traits.valid() && _traits->sharedContext)
-        {
-            GraphicsHandleWin32* graphicsHandleWin32 = dynamic_cast<GraphicsHandleWin32*>(_traits->sharedContext);
-            if (graphicsHandleWin32)
-            {
-                struct RestoreContext
-                {
-                    RestoreContext()
-                    {
-                        _hdc = wglGetCurrentDC();
-                        _hglrc = wglGetCurrentContext();
-                    }
-                    ~RestoreContext()
-                    {
-                        if (_hdc)
-                        {
-                            wglMakeCurrent(_hdc,_hglrc);
-                        }
-                    }
-                protected:
-                    HDC        _hdc;
-                    HGLRC    _hglrc;
-                } restoreContext;
-                
-                _realized = true;
-                bool result = makeCurrent();
-                _realized = false;
 
-                if (!result) 
+    if (_traits.valid() && (_traits->sharedContext || _traits->vsync))
+    {
+        // make context current so we can test capabilities and set up context sharing
+        struct RestoreContext
+        {
+            RestoreContext()
+            {
+                _hdc = wglGetCurrentDC();
+                _hglrc = wglGetCurrentContext();
+            }
+            ~RestoreContext()
+            {
+                if (_hdc)
                 {
-                    return false;        
-                }
-                if (!wglShareLists(graphicsHandleWin32->getWGLContext(), getWGLContext()))
-                {
-                    reportErrorForScreen("GraphicsWindowWin32::realizeImplementation() - Unable to share OpenGL context", _traits->screenNum, ::GetLastError());
-                    return false;
+                    wglMakeCurrent(_hdc,_hglrc);
                 }
             }
+        protected:
+            HDC        _hdc;
+            HGLRC    _hglrc;
+        } restoreContext;
+
+        _realized = true;
+        bool result = makeCurrent();
+        _realized = false;
+
+        if (!result)
+        {
+            return false;
+        }
+
+        // set up sharing of contexts if required
+        GraphicsHandleWin32* graphicsHandleWin32 = dynamic_cast<GraphicsHandleWin32*>(_traits->sharedContext);
+        if (graphicsHandleWin32)
+        {
+            if (!wglShareLists(graphicsHandleWin32->getWGLContext(), getWGLContext()))
+            {
+                reportErrorForScreen("GraphicsWindowWin32::realizeImplementation() - Unable to share OpenGL context", _traits->screenNum, ::GetLastError());
+                return false;
+            }
+        }
+
+        // if vysnc should be on then enable it.
+        if (_traits->vsync)
+        {
+            setSyncToVBlank(_traits->vsync);
         }
     }
 
@@ -2162,6 +2169,36 @@ HCURSOR GraphicsWindowWin32::getOrCreateCursor(MouseCursor mouseCursor)
     }
     
     return _mouseCursorMap[mouseCursor];
+}
+
+void GraphicsWindowWin32::setSyncToVBlank( bool on )
+{
+    if (_traits.valid())
+    {
+        _traits->vsync = on;
+    }
+
+#if 0
+    // we ought to properly check if the extension is listed as supported rather than just
+    // if the function pointer resolves through wglGetProcAddress, but in practice everything
+    // supports this extension
+    typedef BOOL (APIENTRY *PFNWGLSWAPINTERVALFARPROC)( int );
+    PFNWGLSWAPINTERVALFARPROC wglSwapIntervalEXT = 0;
+
+    wglSwapIntervalEXT = (PFNWGLSWAPINTERVALFARPROC)wglGetProcAddress( "wglSwapIntervalEXT" );
+    if( wglSwapIntervalEXT )
+    {
+        int swapInterval = (on ? 1 : 0);
+        wglSwapIntervalEXT(swapInterval);
+        OSG_INFO << "GraphicsWindowWin32::setSyncToVBlank " << (on ? "on" : "off") << std::endl;
+    }
+    else
+    {
+        OSG_INFO << "GraphicsWindowWin32::setSyncToVBlank(bool) not supported" << std::endl;
+    }
+#else
+    OSG_INFO << "GraphicsWindowWin32::setSyncToVBlank(bool) not yet implemented."<< std::endl;
+#endf
 }
 
 void GraphicsWindowWin32::adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol, unsigned int& modifierMask )

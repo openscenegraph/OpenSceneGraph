@@ -917,11 +917,10 @@ int main(int argc, char **argv)
 {
     // use an ArgumentParser object to manage the program arguments.
     ArgumentParser arguments(&argc,argv);
-    arguments.getApplicationUsage()
-        ->setDescription(arguments.getApplicationName()
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()
                          + " demonstrates using a floating point depth buffer.\nThe user can invert the depth buffer range and choose among available multi-sample configurations.");
-    arguments.getApplicationUsage()
-        ->addCommandLineOption("--far <number>", "Set far plane value");
+    arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
+    arguments.getApplicationUsage()->addCommandLineOption("--far <number>", "Set far plane value");
     // if user request help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
@@ -948,6 +947,11 @@ int main(int argc, char **argv)
     const GraphicsContext::Traits* traits = gc->getTraits();
     width = traits->width;
     height = traits->height;
+    if (arguments.argc()<=1)
+    {
+        arguments.getApplicationUsage()->write(std::cout,osg::ApplicationUsage::COMMAND_LINE_OPTION);
+        return 1;
+    }
     ref_ptr<Node> loadedModel = osgDB::readNodeFiles(arguments);
     if (!loadedModel) {
         cerr << "couldn't load " << argv[1] << "\n";

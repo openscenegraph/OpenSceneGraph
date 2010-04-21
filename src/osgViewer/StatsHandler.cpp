@@ -1397,7 +1397,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         geode->setCullingActive(false);
         group->addChild(geode);
         geode->addDrawable(createBackgroundRectangle(pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
-                                                        7 * characterSize + 2 * backgroundMargin,
+                                                        10 * characterSize + 2 * backgroundMargin,
                                                         20 * characterSize + 2 * backgroundMargin,
                                                         backgroundColor));
 
@@ -1421,7 +1421,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         viewStr << "State graphs" << std::endl;
         viewStr << "Imposters" << std::endl;
         viewStr << "Drawables" << std::endl;
-        viewStr << "Sorted" << std::endl;
+        viewStr << "Sorted Drawables" << std::endl;
         viewStr << "Vertices" << std::endl;
         viewStr << "Points" << std::endl;
         viewStr << "Lines" << std::endl;
@@ -1437,7 +1437,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         camStaticText->setText(viewStr.str());
 
         // Move camera block to the right
-        pos.x() += 7 * characterSize + 2 * backgroundMargin + backgroundSpacing;
+        pos.x() += 10 * characterSize + 2 * backgroundMargin + backgroundSpacing;
 
         // Add camera scene stats, one block per camera
         int cameraCounter = 0;

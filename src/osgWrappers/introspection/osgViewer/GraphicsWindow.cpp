@@ -157,11 +157,21 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	          __void__setCursor__MouseCursor,
 	          "Set mouse cursor to a specific shape. ",
 	          "");
+	I_Method1(void, setSyncToVBlank, IN, bool, on,
+	          Properties::VIRTUAL,
+	          __void__setSyncToVBlank__bool,
+	          "Create a new mouse cursor from the usual bitmap data. ",
+	          "Set sync-to-vblank. ");
+	I_Method0(bool, getSyncToVBlank,
+	          Properties::NON_VIRTUAL,
+	          __bool__getSyncToVBlank,
+	          "",
+	          "");
 	I_Method0(bool, valid,
 	          Properties::VIRTUAL,
 	          __bool__valid,
-	          "Create a new mouse cursor from the usual bitmap data. ",
-	          "Return whether a valid and usable GraphicsContext has been created. ");
+	          "Return whether a valid and usable GraphicsContext has been created. ",
+	          "");
 	I_Method0(bool, realizeImplementation,
 	          Properties::VIRTUAL,
 	          __bool__realizeImplementation,
@@ -223,6 +233,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindow)
 	I_SimpleProperty(osgGA::EventQueue *, EventQueue, 
 	                 __osgGA_EventQueue_P1__getEventQueue, 
 	                 __void__setEventQueue__osgGA_EventQueue_P1);
+	I_SimpleProperty(bool, SyncToVBlank, 
+	                 __bool__getSyncToVBlank, 
+	                 __void__setSyncToVBlank__bool);
 	I_SimpleProperty(bool, WindowDecoration, 
 	                 __bool__getWindowDecoration, 
 	                 __void__setWindowDecoration__bool);
@@ -269,8 +282,8 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::GraphicsWindowEmbedded)
 	I_Method0(bool, valid,
 	          Properties::VIRTUAL,
 	          __bool__valid,
-	          "Create a new mouse cursor from the usual bitmap data. ",
-	          "Return whether a valid and usable GraphicsContext has been created. ");
+	          "Return whether a valid and usable GraphicsContext has been created. ",
+	          "");
 	I_Method0(bool, realizeImplementation,
 	          Properties::VIRTUAL,
 	          __bool__realizeImplementation,

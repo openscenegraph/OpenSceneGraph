@@ -345,7 +345,9 @@ std::string& osg::getGLExtensionDisableString()
 
 
 #if defined(WIN32)
-    #define WIN32_LEAN_AND_MEAN
+    #ifndef WIN32_LEAN_AND_MEAN
+        #define WIN32_LEAN_AND_MEAN
+    #endif // WIN32_LEAN_AND_MEAN
     #ifndef NOMINMAX
         #define NOMINMAX
     #endif // NOMINMAX
@@ -375,10 +377,10 @@ void* osg::getGLExtensionFuncPtr(const char *funcName)
 #if defined(WIN32)
 
     #if defined(OSG_GLES2_AVAILABLE)
-        static HMODULE hmodule = GetModuleHandle("libGLESv2.dll");
+        static HMODULE hmodule = GetModuleHandle(TEXT("libGLESv2.dll"));
         return convertPointerType<void*, PROC>(GetProcAddress(hmodule, funcName));
     #elif defined(OSG_GLES1_AVAILABLE)
-        static HMODULE hmodule = GetModuleHandle("libgles_cm.dll");
+        static HMODULE hmodule = GetModuleHandleA(TEXT("libgles_cm.dll"));
         return convertPointerType<void*, PROC>(GetProcAddress(hmodule, funcName));
     #else
         return convertPointerType<void*, PROC>(wglGetProcAddress(funcName));

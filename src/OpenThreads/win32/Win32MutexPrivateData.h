@@ -19,12 +19,8 @@
 #ifndef _Win32MUTEXPRIVATEDATA_H_
 #define _Win32MUTEXPRIVATEDATA_H_
 
-
-#ifndef _WINDOWS_
-#define WIN32_LEAN_AND_MEAN
-#define _WIN32_WINNT 0x0400  // was missing : adegli
 #include <windows.h>
-#endif
+
 namespace OpenThreads {
 
 class Win32MutexPrivateData {

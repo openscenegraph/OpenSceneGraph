@@ -149,7 +149,7 @@ std::string convertStringFromUTF8toCurrentCodePage(const char* source, unsigned 
     }
 
     std::string sDest(destLen, '\0');
-    destLen = WideCharToMultiByte(CP_ACP, 0, utf16.c_str(), sourceLength, 0, 0, 0, 0);
+    destLen = WideCharToMultiByte(CP_ACP, 0, utf16.c_str(), sourceLength, &sDest[0], destLen, 0, 0);
     if (destLen <= 0)
     {
         osg::notify(osg::WARN) << "Cannot convert multi-byte string to UTF-8." << std::endl;

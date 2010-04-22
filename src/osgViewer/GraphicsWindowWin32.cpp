@@ -2198,7 +2198,7 @@ void GraphicsWindowWin32::setSyncToVBlank( bool on )
     }
 #else
     OSG_INFO << "GraphicsWindowWin32::setSyncToVBlank(bool) not yet implemented."<< std::endl;
-#endf
+#endif
 }
 
 void GraphicsWindowWin32::adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol, unsigned int& modifierMask )

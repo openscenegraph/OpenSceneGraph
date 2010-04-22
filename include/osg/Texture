@@ -222,6 +222,10 @@
     #define GL_TEXTURE_DEPTH                  0x8071
 #endif
 
+#ifndef GL_TEXTURE_2D_MULTISAMPLE
+    #define GL_TEXTURE_2D_MULTISAMPLE         0x9100
+#endif
+
 // Integer teture extension as in http://www.opengl.org/registry/specs/EXT/texture_integer.txt
 #ifndef GL_EXT_texture_integer
     #define GL_RGBA32UI_EXT                                    0x8D70
@@ -619,7 +623,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
                 void setTextureFilterAnisotropicSupported(bool flag) { _isTextureFilterAnisotropicSupported=flag; }
                 bool isTextureFilterAnisotropicSupported() const { return _isTextureFilterAnisotropicSupported; }
-
+                
                 void setTextureCompressionARBSupported(bool flag) { _isTextureCompressionARBSupported=flag; }
                 bool isTextureCompressionARBSupported() const { return _isTextureCompressionARBSupported; }
 
@@ -637,6 +641,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
                 void setGenerateMipMapSupported(bool flag) { _isGenerateMipMapSupported=flag; }
                 bool isGenerateMipMapSupported() const { return _isGenerateMipMapSupported; }
+
+                void setTextureMultisampledSupported(bool flag) { _isTextureMultisampledSupported=flag; }
+                bool isTextureMultisampledSupported() const { return _isTextureMultisampledSupported; }
 
                 void setShadowSupported(bool flag) { _isShadowSupported = flag; }
                 bool isShadowSupported() const { return _isShadowSupported; }
@@ -683,6 +690,11 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                     _glGetCompressedTexImage(target, level, data);
                 }
 
+                void glTexImage2DMultisample(GLenum target, GLsizei samples, GLint internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations) const
+                {
+                    _glTexImage2DMultisample(target, samples, internalformat, width, height, fixedsamplelocations);
+                }
+
                 void glTexParameterIiv(GLenum target, GLenum pname, const GLint* data) const
                 {
                     _glTexParameterIiv(target, pname, data);
@@ -696,16 +708,18 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             protected:
 
                 ~Extensions() {}
-
+                
                 typedef void (APIENTRY * CompressedTexImage2DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
                 typedef void (APIENTRY * CompressedTexSubImage2DArbProc) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data);
                 typedef void (APIENTRY * GetCompressedTexImageArbProc) (GLenum target, GLint level, GLvoid *data);
+                typedef void (APIENTRY * TexImage2DMultisample)(GLenum target, GLsizei samples, GLint internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
                 typedef void (APIENTRY * TexParameterIivProc)(GLenum target, GLenum pname, const GLint* data);
                 typedef void (APIENTRY * TexParameterIuivProc)(GLenum target, GLenum pname, const GLuint* data);
 
                 CompressedTexImage2DArbProc     _glCompressedTexImage2D;
                 CompressedTexSubImage2DArbProc  _glCompressedTexSubImage2D;
                 GetCompressedTexImageArbProc    _glGetCompressedTexImage;
+                TexImage2DMultisample           _glTexImage2DMultisample;
                 TexParameterIivProc             _glTexParameterIiv;
                 TexParameterIuivProc            _glTexParameterIuiv;
 
@@ -718,6 +732,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 bool    _isTextureEdgeClampSupported;
                 bool    _isTextureBorderClampSupported;
                 bool    _isGenerateMipMapSupported;
+                bool    _isTextureMultisampledSupported;
                 bool    _isShadowSupported;
                 bool    _isShadowAmbientSupported;
                 bool    _isClientStorageSupported;
@@ -760,6 +775,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
           * or use a texture binding. Note: Don't call this method directly
           * unless you're implementing a subload callback. */
         void applyTexImage2D_subload(State& state, GLenum target, const Image* image, GLsizei width, GLsizei height, GLint inInternalFormat, GLsizei numMipmapLevels) const;
+
 
         /** Returned by mipmapBeforeTexImage() to indicate what
           * mipmapAfterTexImage() should do */

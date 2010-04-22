@@ -821,6 +821,11 @@ GraphicsContext* setupGC(osgViewer::Viewer& viewer, ArgumentParser& arguments)
             }
         }
     }
+    if (validConfigs.empty())
+    {
+        cout << "no valid frame buffer configurations!\n";
+        return 0;
+    }
     cout << "valid frame buffer configurations:\n";
     for (vector<FboConfig>::iterator itr = validConfigs.begin(),
              end = validConfigs.end();

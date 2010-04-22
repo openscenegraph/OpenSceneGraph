@@ -19,10 +19,7 @@
 #ifndef _HandleHolder_H_
 #define _HandleHolder_H_
 
-#ifndef _WINDOWS_
-#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#endif
 
 /************************************************************************/
 /* Class that holds HANDLES ensuring proper destruction                 */

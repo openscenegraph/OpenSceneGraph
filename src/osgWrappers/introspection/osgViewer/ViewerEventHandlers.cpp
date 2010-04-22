@@ -444,6 +444,16 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::StatsHandler)
 	          __int__getKeyEventPrintsOutStats,
 	          "",
 	          "");
+	I_Method1(void, setKeyEventToggleVSync, IN, int, key,
+	          Properties::NON_VIRTUAL,
+	          __void__setKeyEventToggleVSync__int,
+	          "",
+	          "");
+	I_Method0(int, getKeyEventToggleVSync,
+	          Properties::NON_VIRTUAL,
+	          __int__getKeyEventToggleVSync,
+	          "",
+	          "");
 	I_Method0(double, getBlockMultiplier,
 	          Properties::NON_VIRTUAL,
 	          __double__getBlockMultiplier,
@@ -531,6 +541,9 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::StatsHandler)
 	I_SimpleProperty(int, KeyEventPrintsOutStats, 
 	                 __int__getKeyEventPrintsOutStats, 
 	                 __void__setKeyEventPrintsOutStats__int);
+	I_SimpleProperty(int, KeyEventToggleVSync, 
+	                 __int__getKeyEventToggleVSync, 
+	                 __void__setKeyEventToggleVSync__int);
 	I_SimpleProperty(int, KeyEventTogglesOnScreenStats, 
 	                 __int__getKeyEventTogglesOnScreenStats, 
 	                 __void__setKeyEventTogglesOnScreenStats__int);

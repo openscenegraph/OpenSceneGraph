@@ -158,6 +158,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Texture
     ${HEADER_PATH}/Texture1D
     ${HEADER_PATH}/Texture2D
+    ${HEADER_PATH}/Texture2DMultisample
     ${HEADER_PATH}/Texture2DArray
     ${HEADER_PATH}/Texture3D
     ${HEADER_PATH}/TextureCubeMap
@@ -317,6 +318,7 @@ ADD_LIBRARY(${LIB_NAME}
     Texture1D.cpp
     Texture2DArray.cpp
     Texture2D.cpp
+    Texture2DMultisample.cpp
     Texture3D.cpp
     Texture.cpp
     TextureCubeMap.cpp

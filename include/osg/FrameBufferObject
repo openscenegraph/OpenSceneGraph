@@ -345,6 +345,7 @@ namespace osg
  **************************************************************************/
     class Texture1D;
     class Texture2D;
+    class Texture2DMultisample;
     class Texture3D;
     class Texture2DArray;
     class TextureCubeMap;
@@ -359,6 +360,7 @@ namespace osg
         explicit FrameBufferAttachment(RenderBuffer* target);
         explicit FrameBufferAttachment(Texture1D* target, int level = 0);
         explicit FrameBufferAttachment(Texture2D* target, int level = 0);
+        explicit FrameBufferAttachment(Texture2DMultisample* target, int level = 0);
         explicit FrameBufferAttachment(Texture3D* target, int zoffset, int level = 0);
         explicit FrameBufferAttachment(Texture2DArray* target, int layer, int level = 0);
         explicit FrameBufferAttachment(TextureCubeMap* target, int face, int level = 0);

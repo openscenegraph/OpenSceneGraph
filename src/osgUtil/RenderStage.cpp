@@ -15,6 +15,7 @@
 #include <osg/Notify>
 #include <osg/Texture1D>
 #include <osg/Texture2D>
+#include <osg/Texture2DMultisample>
 #include <osg/Texture3D>
 #include <osg/TextureRectangle>
 #include <osg/TextureCubeMap>
@@ -283,6 +284,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
             osg::Texture* texture = itr->second._texture.get();
             osg::Texture1D* texture1D = 0;
             osg::Texture2D* texture2D = 0;
+            osg::Texture2DMultisample* texture2DMS = 0;
             osg::Texture3D* texture3D = 0;
             osg::TextureCubeMap* textureCubeMap = 0;
             osg::TextureRectangle* textureRectangle = 0;
@@ -298,6 +300,13 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                 if (texture2D->getTextureWidth()==0 || texture2D->getTextureHeight()==0)
                 {
                     texture2D->setTextureSize(width,height);
+                }
+            }
+            else if (0 != (texture2DMS = dynamic_cast<osg::Texture2DMultisample*>(texture)))
+            {
+                if (texture2DMS->getTextureWidth()==0 || texture2DMS->getTextureHeight()==0)
+                {
+                    texture2DMS->setTextureSize(width,height);
                 }
             }
             else if (0 != (texture3D = dynamic_cast<osg::Texture3D*>(texture)))

@@ -1779,7 +1779,7 @@ bool GraphicsWindowWin32::realizeImplementation()
         if (!_initialized) return false;
     }
 
-    if (_traits.valid() && (_traits->sharedContext || _traits->vsync))
+    if (_traits.valid() && (_traits->sharedContext /*|| _traits->vsync*/))
     {
         // make context current so we can test capabilities and set up context sharing
         struct RestoreContext

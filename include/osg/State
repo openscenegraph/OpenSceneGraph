@@ -52,7 +52,7 @@
 namespace osg {
 
 /** macro for use with osg::StateAttribute::apply methods for detecting and
-* reporting OpenGL error messages.*/
+  * reporting OpenGL error messages.*/
 #define OSG_GL_DEBUG(message) \
     if (state.getFineGrainedErrorDetection()) \
     { \
@@ -93,21 +93,21 @@ class VertexAttribAlias
 
 
 /** Encapsulates the current applied OpenGL modes, attributes and vertex arrays settings,
-* implements lazy state updating and provides accessors for querying the current state.
-* The venerable Red Book says that "OpenGL is a state machine", and this class
-* represents the OpenGL state in OSG. Furthermore, \c State also has other
-* important features:
-* - It works as a stack of states (see \c pushStateSet() and
-*   \c popStateSet()). Manipulating this stack of OpenGL states manually is
-*   seldom needed, since OSG does this in the most common situations.
-* - It implements lazy state updating. This means that, if one requests a
-*   state change and that particular state is already in the requested state,
-*   no OpenGL call will be made. This ensures that the OpenGL pipeline is not
-*   stalled by unnecessary state changes.
-* - It allows to query the current OpenGL state without calls to \c glGet*(),
-*   which typically stall the graphics pipeline (see, for instance,
-*   \c captureCurrentState() and \c getModelViewMatrix()).
-*/
+  * implements lazy state updating and provides accessors for querying the current state.
+  * The venerable Red Book says that "OpenGL is a state machine", and this class
+  * represents the OpenGL state in OSG. Furthermore, \c State also has other
+  * important features:
+  * - It works as a stack of states (see \c pushStateSet() and
+  *   \c popStateSet()). Manipulating this stack of OpenGL states manually is
+  *   seldom needed, since OSG does this in the most common situations.
+  * - It implements lazy state updating. This means that, if one requests a
+  *   state change and that particular state is already in the requested state,
+  *   no OpenGL call will be made. This ensures that the OpenGL pipeline is not
+  *   stalled by unnecessary state changes.
+  * - It allows to query the current OpenGL state without calls to \c glGet*(),
+  *   which typically stall the graphics pipeline (see, for instance,
+  *   \c captureCurrentState() and \c getModelViewMatrix()).
+  */
 class OSG_EXPORT State : public Referenced, public Observer
 {
     public :
@@ -147,7 +147,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         void popStateSet();
 
         /** pop all statesets off state stack, ensuring it is empty ready for the next frame.
-        * Note, to return OpenGL to default state, one should do any state.popAllStatSets(); state.apply().*/
+          * Note, to return OpenGL to default state, one should do any state.popAllStatSets(); state.apply().*/
         void popAllStateSets();
 
         /** Insert stateset onto state stack.*/
@@ -232,14 +232,14 @@ class OSG_EXPORT State : public Referenced, public Observer
         void apply(const StateSet* dstate);
 
         /** Updates the OpenGL state so that it matches the \c StateSet at the
-        * top of the stack of <tt>StateSet</tt>s maintained internally by a
-        * \c State.
-        */
+          * top of the stack of <tt>StateSet</tt>s maintained internally by a
+          * \c State.
+         */
         void apply();
 
 
         /** Set whether a particular OpenGL mode is valid in the current graphics context.
-        * Use to disable OpenGL modes that are not supported by current graphics drivers/context.*/
+          * Use to disable OpenGL modes that are not supported by current graphics drivers/context.*/
         inline void setModeValidity(StateAttribute::GLMode mode,bool valid)
         {
             ModeStack& ms = _modeMap[mode];
@@ -247,7 +247,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         }
 
         /** Get whether a particular OpenGL mode is valid in the current graphics context.
-        * Use to disable OpenGL modes that are not supported by current graphics drivers/context.*/
+          * Use to disable OpenGL modes that are not supported by current graphics drivers/context.*/
         inline bool getModeValidity(StateAttribute::GLMode mode)
         {
             ModeStack& ms = _modeMap[mode];
@@ -267,13 +267,13 @@ class OSG_EXPORT State : public Referenced, public Observer
 
 
         /** Apply an OpenGL mode if required. This is a wrapper around
-        * \c glEnable() and \c glDisable(), that just actually calls these
-        * functions if the \c enabled flag is different than the current
-        * state.
-        * @return \c true if the state was actually changed. \c false
-        *         otherwise. Notice that a \c false return does not indicate
-        *         an error, it just means that the mode was already set to the
-        *         same value as the \c enabled parameter.
+          * \c glEnable() and \c glDisable(), that just actually calls these
+          * functions if the \c enabled flag is different than the current
+          * state.
+          * @return \c true if the state was actually changed. \c false
+          *         otherwise. Notice that a \c false return does not indicate
+          *         an error, it just means that the mode was already set to the
+          *         same value as the \c enabled parameter.
         */
         inline bool applyMode(StateAttribute::GLMode mode,bool enabled)
         {
@@ -351,19 +351,19 @@ class OSG_EXPORT State : public Referenced, public Observer
         void haveAppliedMode(StateAttribute::GLMode mode,StateAttribute::GLModeValue value);
 
         /** Mode has been set externally, therefore dirty the associated mode in osg::State
-        * so it is applied on next call to osg::State::apply(..)*/
+          * so it is applied on next call to osg::State::apply(..)*/
         void haveAppliedMode(StateAttribute::GLMode mode);
 
         /** Attribute has been applied externally, update state to reflect this setting.*/
         void haveAppliedAttribute(const StateAttribute* attribute);
 
-        /** Attribute has been applied externally,
-        * and therefore this attribute type has been dirtied
-        * and will need to be re-applied on next osg::State.apply(..).
-        * note, if you have an osg::StateAttribute which you have applied externally
-        * then use the have_applied(attribute) method as this will cause the osg::State to
-        * track the current state more accurately and enable lazy state updating such
-        * that only changed state will be applied.*/
+        /** Attribute has been applied externally, 
+          * and therefore this attribute type has been dirtied 
+          * and will need to be re-applied on next osg::State.apply(..).
+          * note, if you have an osg::StateAttribute which you have applied externally
+          * then use the have_applied(attribute) method as this will cause the osg::State to
+          * track the current state more accurately and enable lazy state updating such
+          * that only changed state will be applied.*/
         void haveAppliedAttribute(StateAttribute::Type type, unsigned int member=0);
 
         /** Get whether the current specified mode is enabled (true) or disabled (false).*/
@@ -376,19 +376,19 @@ class OSG_EXPORT State : public Referenced, public Observer
         void haveAppliedTextureMode(unsigned int unit, StateAttribute::GLMode mode,StateAttribute::GLModeValue value);
 
         /** texture Mode has been set externally, therefore dirty the associated mode in osg::State
-        * so it is applied on next call to osg::State::apply(..)*/
+          * so it is applied on next call to osg::State::apply(..)*/
         void haveAppliedTextureMode(unsigned int unit, StateAttribute::GLMode mode);
 
         /** texture Attribute has been applied externally, update state to reflect this setting.*/
         void haveAppliedTextureAttribute(unsigned int unit, const StateAttribute* attribute);
 
         /** texture Attribute has been applied externally,
-        * and therefore this attribute type has been dirtied
-        * and will need to be re-applied on next osg::State.apply(..).
-        * note, if you have an osg::StateAttribute which you have applied externally
-        * then use the have_applied(attribute) method as this will the osg::State to
-        * track the current state more accurately and enable lazy state updating such
-        * that only changed state will be applied.*/
+          * and therefore this attribute type has been dirtied
+          * and will need to be re-applied on next osg::State.apply(..).
+          * note, if you have an osg::StateAttribute which you have applied externally
+          * then use the have_applied(attribute) method as this will the osg::State to
+          * track the current state more accurately and enable lazy state updating such
+          * that only changed state will be applied.*/
         void haveAppliedTextureAttribute(unsigned int unit, StateAttribute::Type type, unsigned int member=0);
 
         /** Get whether the current specified texture mode is enabled (true) or disabled (false).*/
@@ -576,9 +576,9 @@ class OSG_EXPORT State : public Referenced, public Observer
         }
 
         /** wrapper around glEnableClientState(GL_VERTEX_ARRAY);glVertexPointer(..);
-        * note, only updates values that change.*/
+          * note, only updates values that change.*/
         inline void setVertexPointer( GLint size, GLenum type,
-                                    GLsizei stride, const GLvoid *ptr )
+                                      GLsizei stride, const GLvoid *ptr )
         {
         #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
             if (_useVertexAttributeAliasing)
@@ -606,7 +606,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         }
 
         /** wrapper around glDisableClientState(GL_VERTEX_ARRAY).
-        * note, only updates values that change.*/
+          * note, only updates values that change.*/
         inline void disableVertexPointer()
         {
         #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
@@ -625,7 +625,7 @@ class OSG_EXPORT State : public Referenced, public Observer
                 }
             }
         #else
-                disableVertexAttribPointer(_vertexAlias._location);
+            disableVertexAttribPointer(_vertexAlias._location);
         #endif
         }
 
@@ -667,9 +667,9 @@ class OSG_EXPORT State : public Referenced, public Observer
         }
 
         /** wrapper around glEnableClientState(GL_NORMAL_ARRAY);glNormalPointer(..);
-        * note, only updates values that change.*/
+          * note, only updates values that change.*/
         inline void setNormalPointer( GLenum type, GLsizei stride,
-                                    const GLvoid *ptr )
+                                      const GLvoid *ptr )
         {
         #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
             if (_useVertexAttributeAliasing)
@@ -697,7 +697,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         }
 
         /** wrapper around glDisableClientState(GL_NORMAL_ARRAY);
-        * note, only updates values that change.*/
+          * note, only updates values that change.*/
         inline void disableNormalPointer()
         {
         #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
@@ -758,9 +758,9 @@ class OSG_EXPORT State : public Referenced, public Observer
 
 
         /** wrapper around glEnableClientState(GL_COLOR_ARRAY);glColorPointer(..);
-        * note, only updates values that change.*/
+          * note, only updates values that change.*/
         inline void setColorPointer( GLint size, GLenum type,
-                                    GLsizei stride, const GLvoid *ptr )
+                                     GLsizei stride, const GLvoid *ptr )
         {
         #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
             if (_useVertexAttributeAliasing)
@@ -788,7 +788,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         }
 
         /** wrapper around glDisableClientState(GL_COLOR_ARRAY);
-        * note, only updates values that change.*/
+          * note, only updates values that change.*/
         inline void disableColorPointer()
         {
         #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
@@ -852,11 +852,11 @@ class OSG_EXPORT State : public Referenced, public Observer
         }
 
         /** wrapper around glEnableClientState(GL_SECONDARY_COLOR_ARRAY);glSecondayColorPointer(..);
-        * note, only updates values that change.*/
+          * note, only updates values that change.*/
         void setSecondaryColorPointer( GLint size, GLenum type, GLsizei stride, const GLvoid *ptr );
 
         /** wrapper around glDisableClientState(GL_SECONDARY_COLOR_ARRAY);
-        * note, only updates values that change.*/
+          * note, only updates values that change.*/
         inline void disableSecondaryColorPointer()
         {
         #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
@@ -920,11 +920,11 @@ class OSG_EXPORT State : public Referenced, public Observer
 
 
         /** wrapper around glEnableClientState(GL_FOG_COORDINATE_ARRAY);glFogCoordPointer(..);
-        * note, only updates values that change.*/
+          * note, only updates values that change.*/
         void setFogCoordPointer( GLenum type, GLsizei stride, const GLvoid *ptr );
 
         /** wrapper around glDisableClientState(GL_FOG_COORDINATE_ARRAY);
-        * note, only updates values that change.*/
+          * note, only updates values that change.*/
         inline void disableFogCoordPointer()
         {
         #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
@@ -986,7 +986,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         }
 
         /** wrapper around glEnableClientState(GL_TEXTURE_COORD_ARRAY);glTexCoordPointer(..);
-        * note, only updates values that change.*/
+          * note, only updates values that change.*/
         inline void setTexCoordPointer( unsigned int unit,
                                         GLint size, GLenum type,
                                         GLsizei stride, const GLvoid *ptr )
@@ -1023,7 +1023,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         }
 
         /** wrapper around glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-        * note, only updates values that change.*/
+          * note, only updates values that change.*/
         inline void disableTexCoordPointer( unsigned int unit )
         {
         #ifdef OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE
@@ -1126,16 +1126,16 @@ class OSG_EXPORT State : public Referenced, public Observer
 
 
         /** Set the current texture unit, return true if selected,
-        * false if selection failed such as when multi texturing is not supported.
-        * note, only updates values that change.*/
+          * false if selection failed such as when multi texturing is not supported.
+          * note, only updates values that change.*/
         inline bool setActiveTextureUnit( unsigned int unit );
-
+        
         /** Get the current texture unit.*/
         unsigned int getActiveTextureUnit() const { return _currentActiveTextureUnit; }
 
         /** Set the current tex coord array texture unit, return true if selected,
-        * false if selection failed such as when multi texturing is not supported.
-        * note, only updates values that change.*/
+          * false if selection failed such as when multi texturing is not supported.
+          * note, only updates values that change.*/
         bool setClientActiveTextureUnit( unsigned int unit );
 
         /** Get the current tex coord array texture unit.*/
@@ -1161,13 +1161,13 @@ class OSG_EXPORT State : public Referenced, public Observer
         }
 
         /** wrapper around glEnableVertexAttribArrayARB(index);glVertexAttribPointerARB(..);
-        * note, only updates values that change.*/
+          * note, only updates values that change.*/
         void setVertexAttribPointer( unsigned int index,
-                                    GLint size, GLenum type, GLboolean normalized,
-                                    GLsizei stride, const GLvoid *ptr );
+                                     GLint size, GLenum type, GLboolean normalized,
+                                     GLsizei stride, const GLvoid *ptr );
 
         /** wrapper around DisableVertexAttribArrayARB(index);
-        * note, only updates values that change.*/
+          * note, only updates values that change.*/
         void disableVertexAttribPointer( unsigned int index );
 
         void disableVertexAttribPointersAboveAndIncluding( unsigned int index );
@@ -1233,8 +1233,8 @@ class OSG_EXPORT State : public Referenced, public Observer
 
 
         /** Set the DisplaySettings. Note, nothing is applied, the visual settings are just
-        * used in the State object to pass the current visual settings to Drawables
-        * during rendering. */
+          * used in the State object to pass the current visual settings to Drawables
+          * during rendering. */
         inline void setDisplaySettings(DisplaySettings* vs) { _displaySettings = vs; }
 
         /** Get the DisplaySettings */
@@ -1246,7 +1246,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         void setAbortRenderingPtr(bool* abortPtr) { _abortRenderingPtr = abortPtr; }
 
         /** Get flag for early termination of the draw traversal,
-        * if true steps should be taken to complete rendering early.*/
+          * if true steps should be taken to complete rendering early.*/
         bool getAbortRendering() const { return _abortRenderingPtr!=0?(*_abortRenderingPtr):false; }
 
 
@@ -1276,9 +1276,9 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         /** Get the number of dynamic objects that will be rendered in this graphics context this frame.*/
         unsigned int getDynamicObjectCount() const { return _dynamicObjectCount; }
-
-        /** Decrement the number of dynamic objects left to render this frame, and once the count goes to zero call the
-        * DynamicObjectRenderingCompletedCallback to inform of completion.*/
+        
+        /** Decrement the number of dynamic objects left to render this frame, and once the count goes to zero call the 
+          * DynamicObjectRenderingCompletedCallback to inform of completion.*/
         inline void decrementDynamicObjectCount()
         {
             --_dynamicObjectCount;
@@ -1420,13 +1420,13 @@ class OSG_EXPORT State : public Referenced, public Observer
 
 
         /** Apply an OpenGL mode if required, passing in mode, enable flag and
-        * appropriate mode stack. This is a wrapper around \c glEnable() and
-        * \c glDisable(), that just actually calls these functions if the
-        * \c enabled flag is different than the current state.
-        * @return \c true if the state was actually changed. \c false
-        *         otherwise. Notice that a \c false return does not indicate
-        *         an error, it just means that the mode was already set to the
-        *         same value as the \c enabled parameter.
+          * appropriate mode stack. This is a wrapper around \c glEnable() and
+          * \c glDisable(), that just actually calls these functions if the
+          * \c enabled flag is different than the current state.
+          * @return \c true if the state was actually changed. \c false
+          *         otherwise. Notice that a \c false return does not indicate
+          *         an error, it just means that the mode was already set to the
+          *         same value as the \c enabled parameter.
         */
         inline bool applyMode(StateAttribute::GLMode mode,bool enabled,ModeStack& ms)
         {

@@ -69,32 +69,35 @@ void TransferFunction1D::clear(const osg::Vec4& color)
 
 void TransferFunction1D::assignToImage(float lower_v, const osg::Vec4& lower_c, float upper_v, const osg::Vec4& upper_c)
 {
+    int endPos = getNumberImageCells()-1;
     float minimum = _colorMap.begin()->first;
     float maximum = _colorMap.rbegin()->first;
-    float endPos = float(getNumberImageCells()-1);
-    float multiplier = endPos/(maximum - minimum);
+    float multiplier = float(endPos)/(maximum - minimum);
     osg::Vec4* imageData = reinterpret_cast<osg::Vec4*>(_image->data());
 
     float lower_iPos = (lower_v - minimum)*multiplier;
     float upper_iPos = (upper_v - minimum)*multiplier;
 
-    float start_iPos = ceilf(lower_iPos);
-    if (start_iPos<0.0f) start_iPos=0.0f;
-    if (start_iPos>endPos) return;
+    int start_iPos = static_cast<int>(ceilf(lower_iPos));
+    if (start_iPos < 0) start_iPos = 0;
+    if (start_iPos > endPos) return;
 
-    float end_iPos = floorf(upper_iPos);
-    if (end_iPos<0.0f) return;
-    if (end_iPos>endPos) end_iPos=endPos;
+    int end_iPos = static_cast<int>(floorf(upper_iPos));
+    if (end_iPos < 0) return;
+    if (end_iPos > endPos) end_iPos = endPos;
 
     //osg::notify(osg::NOTICE)<<"TransferFunction1D::assignToImage[lower_v="<<lower_v<<", lower_c="<<lower_c<<", upper_v="<<upper_v<<" upper_c="<<upper_c<<std::endl;
     //osg::notify(osg::NOTICE)<<"  lower_iPos="<<lower_iPos<<"  start_iPpos="<<start_iPos<<std::endl;
     //osg::notify(osg::NOTICE)<<"  upper_iPos="<<upper_iPos<<"  end_iPpos="<<end_iPos<<std::endl;
 
-    Vec4 delta_c = (upper_c-lower_c)/(upper_iPos-lower_iPos);
-    unsigned int i=static_cast<unsigned int>(start_iPos);
-    for(float iPos=start_iPos;
-        iPos<=end_iPos;
-        ++iPos, ++i)
+    // upper_iPos can be identical to lower_iPos in case an underflow occurred while calculation the values;
+    // if both values are identical delta_c is identical to the null vector otherwise it is calculated like follows:
+    Vec4 delta_c;
+    if (upper_iPos != lower_iPos)
+      delta_c = (upper_c-lower_c)/(upper_iPos-lower_iPos);
+
+    float iPos = static_cast<float>(start_iPos);
+    for(int i=start_iPos; i<=end_iPos; ++i, ++iPos)
     {
         imageData[i] = lower_c + delta_c*(iPos-lower_iPos);
         //osg::notify(osg::NOTICE)<<"    imageData["<<i<<"] = "<<imageData[i]<<std::endl;

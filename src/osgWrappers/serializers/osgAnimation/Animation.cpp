@@ -23,7 +23,7 @@ static void readContainer( osgDB::InputStream& is, ContainerType* container )
     if ( hasContainer )
     {
         unsigned int size = 0;
-        is >> size >> osgDB::BEGIN_BRACKET;
+        size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
         for ( unsigned int i=0; i<size; ++i )
         {
             double time = 0.0f;
@@ -44,7 +44,7 @@ static void readContainer2( osgDB::InputStream& is, ContainerType* container )
     if ( hasContainer )
     {
         unsigned int size = 0;
-        is >> size >> osgDB::BEGIN_BRACKET;
+        size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
         for ( unsigned int i=0; i<size; ++i )
         {
             double time = 0.0f;
@@ -90,7 +90,7 @@ static void writeContainer( osgDB::OutputStream& os, ContainerType* container )
     os << osgDB::PROPERTY("KeyFrameContainer") << (container!=NULL);
     if ( container!=NULL )
     {
-        os << container->size() << osgDB::BEGIN_BRACKET << std::endl;
+        os.writeSize(container->size()); os << osgDB::BEGIN_BRACKET << std::endl;
         for ( unsigned int i=0; i<container->size(); ++i )
         {
             os << (*container)[i].getTime() << (*container)[i].getValue() << std::endl;
@@ -107,7 +107,7 @@ static void writeContainer2( osgDB::OutputStream& os, ContainerType* container )
     os << osgDB::PROPERTY("KeyFrameContainer") << (container!=NULL);
     if ( container!=NULL )
     {
-        os << container->size() << osgDB::BEGIN_BRACKET << std::endl;
+        os.writeSize(container->size()); os << osgDB::BEGIN_BRACKET << std::endl;
         for ( unsigned int i=0; i<container->size(); ++i )
         {
             const KeyType& keyframe = (*container)[i];
@@ -149,7 +149,7 @@ static bool checkChannels( const osgAnimation::Animation& ani )
 
 static bool readChannels( osgDB::InputStream& is, osgAnimation::Animation& ani )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         std::string type;
@@ -194,7 +194,7 @@ static bool readChannels( osgDB::InputStream& is, osgAnimation::Animation& ani )
 static bool writeChannels( osgDB::OutputStream& os, const osgAnimation::Animation& ani )
 {
     const osgAnimation::ChannelList& channels = ani.getChannels();
-    os << channels.size() << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(channels.size()); os << osgDB::BEGIN_BRACKET << std::endl;
     for ( osgAnimation::ChannelList::const_iterator itr=channels.begin();
           itr!=channels.end(); ++itr )
     {

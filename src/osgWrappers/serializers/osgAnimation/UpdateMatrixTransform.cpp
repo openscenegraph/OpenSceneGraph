@@ -14,7 +14,7 @@ static bool checkStackedTransforms( const osgAnimation::UpdateMatrixTransform& o
 static bool readStackedTransforms( osgDB::InputStream& is, osgAnimation::UpdateMatrixTransform& obj )
 {
     osgAnimation::StackedTransform& transform = obj.getStackedTransforms();
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         osgAnimation::StackedTransformElement* element =
@@ -28,7 +28,7 @@ static bool readStackedTransforms( osgDB::InputStream& is, osgAnimation::UpdateM
 static bool writeStackedTransforms( osgDB::OutputStream& os, const osgAnimation::UpdateMatrixTransform& obj )
 {
     const osgAnimation::StackedTransform& transform = obj.getStackedTransforms();
-    os << transform.size() << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(transform.size()); os << osgDB::BEGIN_BRACKET << std::endl;
     for ( osgAnimation::StackedTransform::const_iterator itr=transform.begin();
           itr!=transform.end(); ++itr )
     {

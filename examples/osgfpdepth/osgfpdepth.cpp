@@ -403,7 +403,7 @@ AppState::AppState(osgViewer::Viewer* viewer_)
     inverted->setText("inverted depth test");
     textInverted = new Geode;
     textInverted->addDrawable(inverted);
-    textInverted->setNodeMask(~0);
+    textInverted->setNodeMask(~0u);
     textProjection->addChild(textInverted);
     textProjection->getOrCreateStateSet()->setRenderBinDetails(11, "RenderBin");
 }
@@ -444,9 +444,9 @@ void AppState::updateDisplayedTexture()
     if (displayScene
         || (validConfigs[currentConfig].depthSamples == 0
             && validConfigs[currentConfig].coverageSamples == 0))
-        textNotAvailable->setNodeMask(0);
+        textNotAvailable->setNodeMask(0u);
     else
-        textNotAvailable->setNodeMask(~0);
+        textNotAvailable->setNodeMask(~0u);
 }
 
 void AppState::updateNear()
@@ -553,14 +553,14 @@ public:
                     _appState->camera->setClearDepth(1.0f);
                     depth->setFunction(Depth::LESS);
                     depth->setRange(0.0f, 1.0f);
-                    _appState->textInverted->setNodeMask(0);
+                    _appState->textInverted->setNodeMask(0u);
                 }
                 else
                 {
                     _appState->camera->setClearDepth(0.0f);
                     depth->setFunction(Depth::GEQUAL);
                     depth->setRange(1.0f, 0.0f);
-                    _appState->textInverted->setNodeMask(~0);
+                    _appState->textInverted->setNodeMask(~0u);
                 }
                 return true;
             }

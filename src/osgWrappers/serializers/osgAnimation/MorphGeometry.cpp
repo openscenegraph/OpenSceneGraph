@@ -10,7 +10,7 @@ static bool checkMorphTargets( const osgAnimation::MorphGeometry& geom )
 
 static bool readMorphTargets( osgDB::InputStream& is, osgAnimation::MorphGeometry& geom )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
         float weight = 0.0f;
@@ -25,7 +25,7 @@ static bool readMorphTargets( osgDB::InputStream& is, osgAnimation::MorphGeometr
 static bool writeMorphTargets( osgDB::OutputStream& os, const osgAnimation::MorphGeometry& geom )
 {
     const osgAnimation::MorphGeometry::MorphTargetList& targets = geom.getMorphTargetList();
-    os << targets.size() << osgDB::BEGIN_BRACKET << std::endl;
+    os.writeSize(targets.size()); os << osgDB::BEGIN_BRACKET << std::endl;
     for ( osgAnimation::MorphGeometry::MorphTargetList::const_iterator itr=targets.begin();
           itr!=targets.end(); ++itr )
     {

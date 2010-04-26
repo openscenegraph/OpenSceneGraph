@@ -1911,6 +1911,8 @@
 		6320CD4207845BC300FE3D2C /* osg.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE117FB305D63B3800EB53E5 /* osg.framework */; };
 		6320CD6E07845D6D00FE3D2C /* osgDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE1188E705D764C400EB53E5 /* osgDB.framework */; };
 		6320CD7307845D6D00FE3D2C /* osgFX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0055835B0624D1E5000A808A /* osgFX.framework */; };
+		7A0C133A11859CED009EE053 /* Texture2DMultisample in Headers */ = {isa = PBXBuildFile; fileRef = 7A0C133911859CEC009EE053 /* Texture2DMultisample */; settings = {ATTRIBUTES = (Public, ); }; };
+		7A0C133C11859D09009EE053 /* Texture2DMultisample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A0C133B11859D08009EE053 /* Texture2DMultisample.cpp */; };
 		7A299121112EE3F4009973F4 /* Observer in Headers */ = {isa = PBXBuildFile; fileRef = 7A29911F112EE3EF009973F4 /* Observer */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A299122112EE3F4009973F4 /* ObserverNodePath in Headers */ = {isa = PBXBuildFile; fileRef = 7A299120112EE3F3009973F4 /* ObserverNodePath */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A299125112EE6C2009973F4 /* Observer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A299123112EE6C1009973F4 /* Observer.cpp */; };
@@ -7925,6 +7927,8 @@
 		5BDF59050C1FF9BE008DDEC0 /* ShadowTexture.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowTexture.cpp; sourceTree = "<group>"; };
 		5BDF59060C1FF9BE008DDEC0 /* ShadowVolume.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShadowVolume.cpp; sourceTree = "<group>"; };
 		6320CD4307845BC300FE3D2C /* osgTerrain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgTerrain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A0C133911859CEC009EE053 /* Texture2DMultisample */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Texture2DMultisample; sourceTree = "<group>"; };
+		7A0C133B11859D08009EE053 /* Texture2DMultisample.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Texture2DMultisample.cpp; sourceTree = "<group>"; };
 		7A29911F112EE3EF009973F4 /* Observer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Observer; sourceTree = "<group>"; };
 		7A299120112EE3F3009973F4 /* ObserverNodePath */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ObserverNodePath; sourceTree = "<group>"; };
 		7A299123112EE6C1009973F4 /* Observer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Observer.cpp; sourceTree = "<group>"; };
@@ -13411,6 +13415,7 @@
 		BE117FB705D63B8900EB53E5 /* osg */ = {
 			isa = PBXGroup;
 			children = (
+				7A0C133B11859D08009EE053 /* Texture2DMultisample.cpp */,
 				7A299123112EE6C1009973F4 /* Observer.cpp */,
 				7A299124112EE6C1009973F4 /* ObserverNodePath.cpp */,
 				D4A5541F1090429D00EC0CD9 /* ArrayDispatchers.cpp */,
@@ -13578,6 +13583,7 @@
 		BE1181ED05D63C0900EB53E5 /* osg */ = {
 			isa = PBXGroup;
 			children = (
+				7A0C133911859CEC009EE053 /* Texture2DMultisample */,
 				7A29911F112EE3EF009973F4 /* Observer */,
 				7A299120112EE3F3009973F4 /* ObserverNodePath */,
 				D44487E7109082ED0028ABAD /* StateAttributeCallback */,
@@ -15831,6 +15837,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A0C133A11859CED009EE053 /* Texture2DMultisample in Headers */,
 				7A299121112EE3F4009973F4 /* Observer in Headers */,
 				7A299122112EE3F4009973F4 /* ObserverNodePath in Headers */,
 				D44487E8109082ED0028ABAD /* StateAttributeCallback in Headers */,
@@ -22383,6 +22390,7 @@
 				D4A554201090429D00EC0CD9 /* ArrayDispatchers.cpp in Sources */,
 				7A299125112EE6C2009973F4 /* Observer.cpp in Sources */,
 				7A299126112EE6C2009973F4 /* ObserverNodePath.cpp in Sources */,
+				7A0C133C11859D09009EE053 /* Texture2DMultisample.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

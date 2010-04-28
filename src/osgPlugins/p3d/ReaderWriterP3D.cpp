@@ -833,20 +833,20 @@ bool ReaderWriterP3DXML::getJumpProperties(osgDB::XmlNode*cur, bool& relativeJum
 
     if (getProperty(cur, "slide", slideNum)) 
     {
-        osg::notify(osg::NOTICE)<<"slide "<<slideNum<<std::endl;
+        OSG_INFO<<"slide "<<slideNum<<std::endl;
         propertyRead = true;
     }
 
     if (getProperty(cur, "layer", layerNum))
     {
-        osg::notify(osg::NOTICE)<<"layer "<<layerNum<<std::endl;
+        OSG_INFO<<"layer "<<layerNum<<std::endl;
         propertyRead = true;
     }
 
     std::string jumpType;
     if (getProperty(cur, "jump", jumpType))
     {
-        osg::notify(osg::NOTICE)<<"jump "<<jumpType<<std::endl;
+        OSG_INFO<<"jump "<<jumpType<<std::endl;
         propertyRead = true;
         relativeJump = (jumpType=="relative") || (jumpType=="Relative") || (jumpType=="RELATIVE") ;
     }
@@ -980,7 +980,7 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
 void ReaderWriterP3DXML::parseStereoPair(osgPresentation::SlideShowConstructor& constructor, osgDB::XmlNode*cur) const
 {
 
-    osg::notify(osg::NOTICE)<<"ReaderWriterP3DXML::parseStereoPair()"<<std::endl;
+    OSG_INFO<<"ReaderWriterP3DXML::parseStereoPair()"<<std::endl;
 
 
     std::string filenameLeft;
@@ -1011,8 +1011,8 @@ void ReaderWriterP3DXML::parseStereoPair(osgPresentation::SlideShowConstructor& 
         }
     }
 
-    osg::notify(osg::NOTICE)<<"    filenameLeft="<<filenameLeft<<std::endl;
-    osg::notify(osg::NOTICE)<<"    filenameRight="<<filenameRight<<std::endl;
+    OSG_INFO<<"    filenameLeft="<<filenameLeft<<std::endl;
+    OSG_INFO<<"    filenameRight="<<filenameRight<<std::endl;
 
 
     if (!filenameLeft.empty() && !filenameRight.empty()) 
@@ -1092,7 +1092,7 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
     // create a keyPosition just in case we need it.
     osgPresentation::KeyPosition keyPosition;
 
-    osg::notify(osg::INFO)<<std::endl<<"parseLayer"<<std::endl;
+    OSG_INFO<<std::endl<<"parseLayer"<<std::endl;
 
     float totalIndent = 0.0f;
 
@@ -1103,19 +1103,19 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
         osgDB::XmlNode* cur = itr->get();
         if (cur->name == "run")
         {
-            osg::notify(osg::INFO)<<"run ["<<cur->contents<<"]"<<std::endl;
+            OSG_INFO<<"run ["<<cur->contents<<"]"<<std::endl;
             constructor.addLayerRunString(cur->contents);
         }
         else if (cur->name == "jump")
         {
-            osg::notify(osg::NOTICE)<<"Parsed Jump "<<std::endl;
+            OSG_INFO<<"Parsed Jump "<<std::endl;
 
             bool relativeJump = true;
             int slideNum = 0;
             int layerNum = 0;
             if (getJumpProperties(cur, relativeJump, slideNum, layerNum))
             {
-                osg::notify(osg::NOTICE)<<"Layer Jump "<<relativeJump<<","<< slideNum<<", "<<layerNum<<std::endl;
+                OSG_INFO<<"Layer Jump "<<relativeJump<<","<< slideNum<<", "<<layerNum<<std::endl;
             
                 constructor.setLayerJump(relativeJump, slideNum, layerNum);
             }
@@ -1127,7 +1127,7 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
             int layerNum = 0;
             getJumpProperties(cur, relativeJump, slideNum, layerNum);
 
-            osg::notify(osg::INFO)<<"click_to_run ["<<cur->contents<<"]"<<std::endl;
+            OSG_INFO<<"click_to_run ["<<cur->contents<<"]"<<std::endl;
             constructor.layerClickToDoOperation(cur->contents,osgPresentation::RUN, relativeJump, slideNum, layerNum);
         }
         else if (cur->name == "click_to_load")
@@ -1137,7 +1137,7 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
             int layerNum = 0;
             getJumpProperties(cur, relativeJump, slideNum, layerNum);
 
-            osg::notify(osg::INFO)<<"click_to_load ["<<cur->contents<<"]"<<std::endl;
+            OSG_INFO<<"click_to_load ["<<cur->contents<<"]"<<std::endl;
             constructor.layerClickToDoOperation(cur->contents,osgPresentation::LOAD, relativeJump, slideNum, layerNum);
         }
 
@@ -1150,7 +1150,7 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
 
             if (getKeyPositionInner( cur, keyPosition))
             {
-                osg::notify(osg::INFO)<<"click_to_event ["<<keyPosition._key<<"]"<<std::endl;
+                OSG_INFO<<"click_to_event ["<<keyPosition._key<<"]"<<std::endl;
                 constructor.layerClickEventOperation(keyPosition, relativeJump, slideNum, layerNum);
             }
         }
@@ -1183,7 +1183,7 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
         }
         else if (cur->name == "bullet")
         {
-            osg::notify(osg::INFO)<<"bullet ["<<cur->contents<<"]"<<std::endl;
+            OSG_INFO<<"bullet ["<<cur->contents<<"]"<<std::endl;
             osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getTextPositionData();
             bool positionRead = getProperties(cur,positionData);
 
@@ -1217,6 +1217,21 @@ void ReaderWriterP3DXML::parseLayer(osgPresentation::SlideShowConstructor& const
             constructor.addImage(cur->getTrimmedContents(),
                                     positionRead ? positionData : constructor.getImagePositionData(),
                                     imageData);
+        }
+        else if (cur->name == "graph")
+        {
+            osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getImagePositionData();
+            bool positionRead = getProperties(cur,positionData);
+
+            osgPresentation::SlideShowConstructor::ImageData imageData;// = constructor.getImageData();
+            getProperties(cur,imageData);
+
+            std::string options;
+            getProperty(cur, "options", options);
+
+            constructor.addGraph(cur->getTrimmedContents(), options,
+                                 positionRead ? positionData : constructor.getImagePositionData(),
+                                 imageData);
         }
         else if (cur->name == "vnc")
         {
@@ -1287,7 +1302,7 @@ void ReaderWriterP3DXML::parseBullets(osgPresentation::SlideShowConstructor& con
 {
     constructor.addLayer(inheritPreviousLayers, defineAsBaseLayer);
 
-    osg::notify(osg::INFO)<<"bullets ["<<cur->contents<<"]"<<std::endl;
+    OSG_INFO<<"bullets ["<<cur->contents<<"]"<<std::endl;
     osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getTextPositionData();
     bool positionRead = getProperties(cur,positionData);
 
@@ -1304,7 +1319,7 @@ void ReaderWriterP3DXML::parseText(osgPresentation::SlideShowConstructor& constr
 {
     constructor.addLayer(inheritPreviousLayers, defineAsBaseLayer);
 
-    osg::notify(osg::INFO)<<"text ["<<cur->contents<<"]"<<std::endl;
+    OSG_INFO<<"text ["<<cur->contents<<"]"<<std::endl;
     osgPresentation::SlideShowConstructor::PositionData positionData = constructor.getTextPositionData();
     bool positionRead = getProperties(cur,positionData);
 
@@ -1397,7 +1412,7 @@ void ReaderWriterP3DXML::parsePdfDocument(osgPresentation::SlideShowConstructor&
     if (pdfImage)
     {
         int numPages = pdfImage->getNumOfPages();
-        osg::notify(osg::NOTICE)<<"NumOfPages = "<<numPages<<std::endl;
+        OSG_INFO<<"NumOfPages = "<<numPages<<std::endl;
 
         if (numPages>1)
         {
@@ -1534,7 +1549,7 @@ struct MyFindFileCallback : public osgDB::FindFileCallback
 {
     virtual std::string findDataFile(const std::string& filename, const osgDB::Options* options, osgDB::CaseSensitivity caseSensitivity)
     {
-        osg::notify(osg::NOTICE)<<std::endl<<std::endl<<"find file "<<filename<<std::endl;
+        OSG_INFO<<std::endl<<std::endl<<"find file "<<filename<<std::endl;
 
         const osgDB::FilePathList& paths = options ? options->getDatabasePathList() : osgDB::getDataFilePathList();
 
@@ -1547,11 +1562,11 @@ struct MyFindFileCallback : public osgDB::FindFileCallback
             if (osgDB::containsServerAddress(path))
             {
                 osgDB::ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension("curl");
-                osg::notify(osg::NOTICE)<<"  file on server "<<*itr<<", try path "<<newpath<<std::endl;
-                osg::notify(osg::NOTICE)<<"  we have curl rw= "<<rw<<std::endl;
+                OSG_INFO<<"  file on server "<<*itr<<", try path "<<newpath<<std::endl;
+                OSG_INFO<<"  we have curl rw= "<<rw<<std::endl;
                 if (rw && rw->fileExists(newpath, options))
                 {
-                    osg::notify(osg::NOTICE)<<"  FOUND on server "<<newpath<<std::endl;
+                    OSG_INFO<<"  FOUND on server "<<newpath<<std::endl;
                     return newpath;
                 }
             }
@@ -1559,7 +1574,7 @@ struct MyFindFileCallback : public osgDB::FindFileCallback
             {
                 if(osgDB::fileExists(newpath))
                 {
-                    osg::notify(osg::NOTICE)<<" FOUND "<<newpath<<std::endl;
+                    OSG_INFO<<" FOUND "<<newpath<<std::endl;
                     return newpath;
                 }
             }
@@ -1588,7 +1603,7 @@ class MyReadFileCallback : public virtual osgDB::ReadFileCallback
 
         osgDB::ReaderWriter::ReadResult readLocal(ObjectType type, const std::string& filename, const osgDB::Options* options)
         {
-            osg::notify(osg::NOTICE)<<"Trying local file "<<filename<<std::endl;
+            OSG_INFO<<"Trying local file "<<filename<<std::endl;
 
             switch(type)
             {
@@ -1609,7 +1624,7 @@ class MyReadFileCallback : public virtual osgDB::ReadFileCallback
             if (!fileCache) fileCache = osgDB::Registry::instance()->getFileCache();
             if (!fileCache) return osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND;
 
-            osg::notify(osg::NOTICE)<<"Trying fileCache "<<filename<<std::endl;
+            OSG_INFO<<"Trying fileCache "<<filename<<std::endl;
 
             osgDB::ReaderWriter::ReadResult result;
             if (fileCache && fileCache->isFileAppropriateForFileCache(filename))
@@ -1637,15 +1652,15 @@ class MyReadFileCallback : public virtual osgDB::ReadFileCallback
 
                     if (result.success())
                     {
-                        osg::notify(osg::INFO)<<"   File read from FileCache."<<std::endl;
+                        OSG_INFO<<"   File read from FileCache."<<std::endl;
                         return result;
                     }
 
-                    osg::notify(osg::NOTICE)<<"   File in FileCache, but not successfully read"<<std::endl;
+                    OSG_INFO<<"   File in FileCache, but not successfully read"<<std::endl;
                 }
                 else
                 {
-                    osg::notify(osg::INFO)<<"   File does not exist in FileCache: "<<fileCache->createCacheFileName(filename)<<std::endl;
+                    OSG_INFO<<"   File does not exist in FileCache: "<<fileCache->createCacheFileName(filename)<<std::endl;
                 }
             }
 
@@ -1655,7 +1670,7 @@ class MyReadFileCallback : public virtual osgDB::ReadFileCallback
 
         osgDB::ReaderWriter::ReadResult readServer(ObjectType type, const std::string& filename, const osgDB::Options* options)
         {
-            osg::notify(osg::NOTICE)<<"Trying server file "<<filename<<std::endl;
+            OSG_INFO<<"Trying server file "<<filename<<std::endl;
 
             osgDB::ReaderWriter::ReadResult result;
             osgDB::ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension("curl");
@@ -1736,7 +1751,7 @@ class MyReadFileCallback : public virtual osgDB::ReadFileCallback
 
                 if (result.success())
                 {
-                    osg::notify(osg::INFO)<<"   inserting object into file cache "<<filename<<", "<<result.getObject()<<std::endl;
+                    OSG_INFO<<"   inserting object into file cache "<<filename<<", "<<result.getObject()<<std::endl;
                     _objectCache[filename] = result.getObject();
 
                     options->setPluginStringData("filename",newpath);
@@ -1752,24 +1767,24 @@ class MyReadFileCallback : public virtual osgDB::ReadFileCallback
             if (!fileCache) fileCache = osgDB::Registry::instance()->getFileCache();
             if (fileCache && !fileCache->isFileAppropriateForFileCache(filename)) fileCache = 0;
 
-            osg::notify(osg::NOTICE)<<"MyReadFileCallback::reading file "<<filename<<std::endl;
+            OSG_INFO<<"MyReadFileCallback::reading file "<<filename<<std::endl;
             ObjectCache::iterator itr = _objectCache.find(filename);
             if (itr != _objectCache.end())
             {
                 // object is in cache, just retrieve it.
                 if (itr->second.valid())
                 {
-                    osg::notify(osg::INFO)<<"File retrieved from cache, filename="<<filename<<std::endl;
+                    OSG_INFO<<"File retrieved from cache, filename="<<filename<<std::endl;
                     return itr->second.get();
                 }
                 else
                 {
-                    osg::notify(osg::INFO)<<"File failed to load previously, won't attempt a second time "<<filename<<std::endl;
+                    OSG_INFO<<"File failed to load previously, won't attempt a second time "<<filename<<std::endl;
                     return osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND;
                 }
             }
 
-            osg::notify(osg::NOTICE)<<"   MyReadFileCallback::reading file A"<<filename<<std::endl;
+            OSG_INFO<<"   MyReadFileCallback::reading file A"<<filename<<std::endl;
 
             {
                 bool checkLocalFiles = true;
@@ -1786,7 +1801,7 @@ class MyReadFileCallback : public virtual osgDB::ReadFileCallback
                 if (result.success()) return result;
             }
 
-            osg::notify(osg::NOTICE)<<"   MyReadFileCallback::reading file B"<<filename<<std::endl;
+            OSG_INFO<<"   MyReadFileCallback::reading file B"<<filename<<std::endl;
 
             {
                 bool checkLocalFiles = false;
@@ -1803,7 +1818,7 @@ class MyReadFileCallback : public virtual osgDB::ReadFileCallback
                 if (result.success()) return result;
             }
 
-            osg::notify(osg::NOTICE)<<"   MyReadFileCallback::reading file C"<<filename<<std::endl;
+            OSG_INFO<<"   MyReadFileCallback::reading file C"<<filename<<std::endl;
 
             _objectCache[filename] = 0;
 
@@ -1844,7 +1859,7 @@ class MyReadFileCallback : public virtual osgDB::ReadFileCallback
 osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(const std::string& file,
                                                            const osgDB::ReaderWriter::Options* options) const
 {
-    osg::notify(osg::NOTICE)<<"readNode("<<file<<")"<<std::endl;
+    OSG_INFO<<"readNode("<<file<<")"<<std::endl;
 
 
     std::string ext = osgDB::getLowerCaseFileExtension(file);
@@ -1859,7 +1874,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(const std::string& 
     if (nestedExtension=="preview" || nestedExtension=="main")
     {
         fileName = fileNameSansNestedExtension + "." + ext;
-        osg::notify(osg::NOTICE)<<"Removed nested extension "<<nestedExtension<<" result = "<<fileName<<std::endl;
+        OSG_INFO<<"Removed nested extension "<<nestedExtension<<" result = "<<fileName<<std::endl;
     }
 
     fileName = osgDB::findDataFile( fileName, options );
@@ -1906,7 +1921,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Inp
 
     doc->read(input);
 
-    osg::notify(osg::INFO)<<"P3D xml file read, now building presentation scene graph."<<std::endl;
+    OSG_INFO<<"P3D xml file read, now building presentation scene graph."<<std::endl;
 
 #if 0
     std::ofstream fout("output.p3d");
@@ -1954,9 +1969,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterP3DXML::readNode(osgDB::XmlNode::Inp
     // if we are looking for a holding slide, but one isn't present return NULL.
     if (readOnlyHoldingPage && !hasHoldingSlide) return 0;
 
-    osg::notify(osg::NOTICE)<<"hasHoldingSlide "<<hasHoldingSlide<<std::endl;
-    osg::notify(osg::NOTICE)<<"readOnlyHoldingPage "<<readOnlyHoldingPage<<std::endl;
-    osg::notify(osg::NOTICE)<<"readOnlyMainPresentation "<<readOnlyMainPresentation<<std::endl;
+    OSG_INFO<<"hasHoldingSlide "<<hasHoldingSlide<<std::endl;
+    OSG_INFO<<"readOnlyHoldingPage "<<readOnlyHoldingPage<<std::endl;
+    OSG_INFO<<"readOnlyMainPresentation "<<readOnlyMainPresentation<<std::endl;
 
     osg::ref_ptr<osg::Node> presentation_node;
 
@@ -2035,7 +2050,7 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
         if (cur->name=="env")
         {
             char* str = strdup(cur->contents.c_str());
-            osg::notify(osg::INFO)<<"putenv("<<str<<")"<<std::endl;
+            OSG_INFO<<"putenv("<<str<<")"<<std::endl;
             putenv(str);
         }
     }
@@ -2072,11 +2087,11 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
             if (relativePath && !pathToPresentation.empty())
             {
                 newpath = osgDB::concatPaths(pathToPresentation, newpath);
-                osg::notify(osg::NOTICE)<<"relative path = "<<cur->contents<<", newpath="<<newpath<<std::endl;
+                OSG_INFO<<"relative path = "<<cur->contents<<", newpath="<<newpath<<std::endl;
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"absolute path = "<<cur->contents<<", newpath="<<newpath<<std::endl;
+                OSG_INFO<<"absolute path = "<<cur->contents<<", newpath="<<newpath<<std::endl;
             }
 
             if (readFileCallback) readFileCallback->_paths.push_back(newpath);
@@ -2108,7 +2123,7 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
             bool fontRead = getProperties(cur,constructor.getTitleFontDataDefault());
             if (fontRead) 
             {
-                osg::notify(osg::INFO)<<"Title font details read"<<std::endl;
+                OSG_INFO<<"Title font details read"<<std::endl;
             }
         }
         else if (cur->name == "text-settings")
@@ -2116,7 +2131,7 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
             bool fontRead = getProperties(cur,constructor.getTextFontDataDefault());
             if (fontRead) 
             {
-                osg::notify(osg::INFO)<<"Text font details read"<<std::endl;
+                OSG_INFO<<"Text font details read"<<std::endl;
             }
         }
         /*else if (cur->name == "ratio")
@@ -2127,7 +2142,7 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
         }*/
         else if (cur->name == "path")
         {
-            osg::notify(osg::INFO)<<"Appending search path "<<cur->contents<<std::endl;
+            OSG_INFO<<"Appending search path "<<cur->contents<<std::endl;
             osgDB::getDataFilePathList().push_front(expandEnvVarsInFileName(cur->contents));
         }
         else if (cur->name == "bgcolor")

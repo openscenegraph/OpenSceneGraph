@@ -32,7 +32,7 @@ namespace osgDot {
     std::stringstream label;
     label << "<top> " << node.className();
     if ( !node.getName().empty() ) { label << "| " << node.getName(); }
-    drawNode( id, "record", "solid", label.str(), "black", "white" );
+    drawNode( id, "record", "solid", label.str(), "brown", "white" );
   }
 
   void SimpleDotVisitor::handle(osg::Group& node, int id) {
@@ -50,7 +50,7 @@ namespace osgDot {
     std::stringstream label;
     label << "<top> " << stateset.className();
     if ( !stateset.getName().empty() ) { label << "| " << stateset.getName(); }
-    drawNode( id, "record", "solid, filled", label.str(), "gray90", "white" );
+    drawNode( id, "Mrecord", "solid", label.str(), "green", "white" );
   }
 
   void SimpleDotVisitor::handle(osg::Node& node, osg::StateSet& stateset, int parentID, int childID ) {
@@ -61,7 +61,7 @@ namespace osgDot {
     std::stringstream label;
     label << "<top> " << drawable.className();
     if ( !drawable.getName().empty() ) { label << "| " << drawable.getName(); }
-    drawNode( id, "record", "solid, filled", label.str(), "gray90", "white" );
+    drawNode( id, "record", "solid", label.str(), "blue", "white" );
   }
 
   void SimpleDotVisitor::handle(osg::Geode& geode, osg::Drawable& drawable, int parentID, int childID ) {

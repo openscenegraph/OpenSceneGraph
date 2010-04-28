@@ -50,14 +50,16 @@ std::string osgDB::getSimpleFileName(const std::string& fileName)
 std::string osgDB::getFileExtension(const std::string& fileName)
 {
     std::string::size_type dot = fileName.find_last_of('.');
-    if (dot==std::string::npos) return std::string("");
+    std::string::size_type slash = fileName.find_last_of("/\\");
+    if (dot==std::string::npos || (slash!=std::string::npos && dot<slash)) return std::string("");
     return std::string(fileName.begin()+dot+1,fileName.end());
 }
 
 std::string osgDB::getFileExtensionIncludingDot(const std::string& fileName)
 {
     std::string::size_type dot = fileName.find_last_of('.');
-    if (dot==std::string::npos) return std::string("");
+    std::string::size_type slash = fileName.find_last_of("/\\");
+    if (dot==std::string::npos || (slash!=std::string::npos && dot<slash)) return std::string("");
     return std::string(fileName.begin()+dot,fileName.end());
 }
 

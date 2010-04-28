@@ -267,11 +267,11 @@ class OSG_EXPORT VertexProgram : public StateAttribute
                 
                 bool _isVertexProgramSupported;
                 
-                typedef void (APIENTRY * BindProgramProc) (GLenum target, GLuint id);
-                typedef void (APIENTRY * GenProgramsProc) (GLsizei n, GLuint *programs);
-                typedef void (APIENTRY * DeleteProgramsProc) (GLsizei n, GLuint *programs);
-                typedef void (APIENTRY * ProgramStringProc) (GLenum target, GLenum format, GLsizei len, const void *string); 
-                typedef void (APIENTRY * ProgramLocalParameter4fvProc) (GLenum target, GLuint index, const GLfloat *params);
+                typedef void (GL_APIENTRY * BindProgramProc) (GLenum target, GLuint id);
+                typedef void (GL_APIENTRY * GenProgramsProc) (GLsizei n, GLuint *programs);
+                typedef void (GL_APIENTRY * DeleteProgramsProc) (GLsizei n, GLuint *programs);
+                typedef void (GL_APIENTRY * ProgramStringProc) (GLenum target, GLenum format, GLsizei len, const void *string); 
+                typedef void (GL_APIENTRY * ProgramLocalParameter4fvProc) (GLenum target, GLuint index, const GLfloat *params);
 
                 BindProgramProc _glBindProgram;
                 GenProgramsProc _glGenPrograms;

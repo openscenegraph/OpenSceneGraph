@@ -93,7 +93,7 @@ class OSG_EXPORT BlendColor : public StateAttribute
                 ~Extensions() {}
                 
 
-                typedef void (APIENTRY * GLBlendColorProc) (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
+                typedef void (GL_APIENTRY * GLBlendColorProc) (GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha);
                 bool                _isBlendColorSupported;
                 GLBlendColorProc    _glBlendColor;
 

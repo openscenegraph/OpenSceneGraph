@@ -2182,7 +2182,7 @@ void GraphicsWindowWin32::setSyncToVBlank( bool on )
     // we ought to properly check if the extension is listed as supported rather than just
     // if the function pointer resolves through wglGetProcAddress, but in practice everything
     // supports this extension
-    typedef BOOL (APIENTRY *PFNWGLSWAPINTERVALFARPROC)( int );
+    typedef BOOL (GL_APIENTRY *PFNWGLSWAPINTERVALFARPROC)( int );
     PFNWGLSWAPINTERVALFARPROC wglSwapIntervalEXT = 0;
 
     wglSwapIntervalEXT = (PFNWGLSWAPINTERVALFARPROC)wglGetProcAddress( "wglSwapIntervalEXT" );

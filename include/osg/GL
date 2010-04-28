@@ -17,69 +17,6 @@
 #include <osg/Config>
 #include <osg/Export>
 
-#ifndef WIN32
-
-    // Required for compatibility with glext.h sytle function definitions of 
-    // OpenGL extensions, such as in src/osg/Point.cpp.
-    #ifndef APIENTRY
-        #define APIENTRY
-    #endif
-
-#else // WIN32
-
-    #if defined(__CYGWIN__) || defined(__MINGW32__)
-
-        #ifndef APIENTRY
-            #define GLUT_APIENTRY_DEFINED
-            #define APIENTRY    __stdcall
-        #endif
-               // XXX This is from Win32's <windef.h> 
-        #ifndef CALLBACK
-            #define CALLBACK __stdcall
-        #endif
-
-    #else // ! __CYGWIN__
-
-        // Under Windows avoid including <windows.h>
-        // to avoid name space pollution, but Win32's <GL/gl.h> 
-        // needs APIENTRY and WINGDIAPI defined properly. 
-           // XXX This is from Win32's <windef.h> 
-        #ifndef APIENTRY
-            #define GLUT_APIENTRY_DEFINED
-            #if (_MSC_VER >= 800) || defined(_STDCALL_SUPPORTED)
-                #define WINAPI        __stdcall
-                #define APIENTRY    WINAPI
-            #else
-                #define APIENTRY
-            #endif
-        #endif
-
-         // XXX This is from Win32's <windef.h> 
-        #ifndef CALLBACK
-            #if (_MSC_VER >= 800) || defined(_STDCALL_SUPPORTED)
-                #define CALLBACK __stdcall
-            #else
-                #define CALLBACK
-            #endif
-        #endif
-
-    #endif // __CYGWIN__
-
-           // XXX This is from Win32's <wingdi.h> and <winnt.h> 
-    #ifndef WINGDIAPI
-        #define GLUT_WINGDIAPI_DEFINED
-        #define DECLSPEC_IMPORT    __declspec(dllimport)
-        #define WINGDIAPI DECLSPEC_IMPORT
-    #endif
-           // XXX This is from Win32's <ctype.h>
-
-    #if !defined(_WCHAR_T_DEFINED) && !(defined(__GNUC__)&&((__GNUC__ == 3)||(__GNUC__ == 4)))
-        typedef unsigned short wchar_t;
-        #define _WCHAR_T_DEFINED
-    #endif
-
-#endif // WIN32
-
 #if defined(OSG_GLES1_AVAILABLE)
 
     #ifdef __APPLE__
@@ -105,7 +42,74 @@
     #define GL3_PROTOTYPES 1
     #include <GL3/gl3.h>
 
+    #ifndef GL_APIENTRY
+        #define GL_APIENTRY APIENTRY
+    #endif // GL_APIENTRY
+
 #else
+
+    #ifndef WIN32
+
+        // Required for compatibility with glext.h sytle function definitions of 
+        // OpenGL extensions, such as in src/osg/Point.cpp.
+        #ifndef APIENTRY
+            #define APIENTRY
+        #endif
+
+    #else // WIN32
+
+        #if defined(__CYGWIN__) || defined(__MINGW32__)
+
+            #ifndef APIENTRY
+                 #define GLUT_APIENTRY_DEFINED
+                 #define APIENTRY __stdcall
+            #endif
+             // XXX This is from Win32's <windef.h> 
+            #ifndef CALLBACK
+                #define CALLBACK __stdcall
+            #endif
+
+        #else // ! __CYGWIN__
+
+            // Under Windows avoid including <windows.h>
+            // to avoid name space pollution, but Win32's <GL/gl.h> 
+            // needs APIENTRY and WINGDIAPI defined properly. 
+            // XXX This is from Win32's <windef.h> 
+            #ifndef APIENTRY
+                #define GLUT_APIENTRY_DEFINED
+                #if (_MSC_VER >= 800) || defined(_STDCALL_SUPPORTED)
+                    #define WINAPI __stdcall
+                    #define APIENTRY WINAPI
+                #else
+                    #define APIENTRY
+                #endif
+            #endif
+
+             // XXX This is from Win32's <windef.h> 
+            #ifndef CALLBACK
+                #if (_MSC_VER >= 800) || defined(_STDCALL_SUPPORTED)
+                    #define CALLBACK __stdcall
+                #else
+                    #define CALLBACK
+                #endif
+            #endif
+
+        #endif // __CYGWIN__
+
+        // XXX This is from Win32's <wingdi.h> and <winnt.h> 
+        #ifndef WINGDIAPI
+            #define GLUT_WINGDIAPI_DEFINED
+            #define DECLSPEC_IMPORT __declspec(dllimport)
+            #define WINGDIAPI DECLSPEC_IMPORT
+        #endif
+        
+        // XXX This is from Win32's <ctype.h>
+        #if !defined(_WCHAR_T_DEFINED) && !(defined(__GNUC__)&&((__GNUC__ == 3)||(__GNUC__ == 4)))
+            typedef unsigned short wchar_t;
+            #define _WCHAR_T_DEFINED
+        #endif
+
+    #endif // WIN32
 
     #ifndef __gl_h_
         #ifdef __APPLE__
@@ -114,6 +118,10 @@
             #include <GL/gl.h>
         #endif
     #endif
+    
+    #ifndef GL_APIENTRY
+        #define GL_APIENTRY APIENTRY
+    #endif // GL_APIENTRY
 
 #endif
 

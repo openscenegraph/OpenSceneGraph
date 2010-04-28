@@ -1660,19 +1660,19 @@ class OSG_EXPORT State : public Referenced, public Observer
         mutable bool _isVertexBufferObjectSupported;
         bool computeVertexBufferObjectSupported() const;
 
-        typedef void (APIENTRY * ActiveTextureProc) (GLenum texture);
-        typedef void (APIENTRY * FogCoordPointerProc) (GLenum type, GLsizei stride, const GLvoid *pointer);
-        typedef void (APIENTRY * SecondaryColorPointerProc) (GLint size, GLenum type, GLsizei stride, const GLvoid *pointer);
-        typedef void (APIENTRY * MultiTexCoord4fProc) (GLenum target, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-        typedef void (APIENTRY * VertexAttrib4fProc)(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
-        typedef void (APIENTRY * VertexAttrib4fvProc)(GLuint index, const GLfloat *v);
-        typedef void (APIENTRY * VertexAttribPointerProc) (unsigned int, GLint, GLenum, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
-        typedef void (APIENTRY * EnableVertexAttribProc) (unsigned int);
-        typedef void (APIENTRY * DisableVertexAttribProc) (unsigned int);
-        typedef void (APIENTRY * BindBufferProc) (GLenum target, GLuint buffer);
+        typedef void (GL_APIENTRY * ActiveTextureProc) (GLenum texture);
+        typedef void (GL_APIENTRY * FogCoordPointerProc) (GLenum type, GLsizei stride, const GLvoid *pointer);
+        typedef void (GL_APIENTRY * SecondaryColorPointerProc) (GLint size, GLenum type, GLsizei stride, const GLvoid *pointer);
+        typedef void (GL_APIENTRY * MultiTexCoord4fProc) (GLenum target, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+        typedef void (GL_APIENTRY * VertexAttrib4fProc)(GLuint index, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
+        typedef void (GL_APIENTRY * VertexAttrib4fvProc)(GLuint index, const GLfloat *v);
+        typedef void (GL_APIENTRY * VertexAttribPointerProc) (unsigned int, GLint, GLenum, GLboolean normalized, GLsizei stride, const GLvoid *pointer);
+        typedef void (GL_APIENTRY * EnableVertexAttribProc) (unsigned int);
+        typedef void (GL_APIENTRY * DisableVertexAttribProc) (unsigned int);
+        typedef void (GL_APIENTRY * BindBufferProc) (GLenum target, GLuint buffer);
 
-        typedef void (APIENTRY * DrawArraysInstancedProc)( GLenum mode, GLint first, GLsizei count, GLsizei primcount );
-        typedef void (APIENTRY * DrawElementsInstancedProc)( GLenum mode, GLsizei count, GLenum type, const GLvoid *indices, GLsizei primcount );
+        typedef void (GL_APIENTRY * DrawArraysInstancedProc)( GLenum mode, GLint first, GLsizei count, GLsizei primcount );
+        typedef void (GL_APIENTRY * DrawElementsInstancedProc)( GLenum mode, GLsizei count, GLenum type, const GLvoid *indices, GLsizei primcount );
 
         bool                        _extensionProcsInitialized;
         GLint                       _glMaxTextureCoords;

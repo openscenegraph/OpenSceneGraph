@@ -157,7 +157,7 @@ class OSG_EXPORT BlendFunc : public StateAttribute
             ~Extensions() {}
 
 
-            typedef void (APIENTRY * GLBlendFuncSeparateProc) (GLenum sfactorRGB,
+            typedef void (GL_APIENTRY * GLBlendFuncSeparateProc) (GLenum sfactorRGB,
                                                                GLenum dfactorRGB,
                                                                GLenum sfactorAlpha,
                                                                GLenum dfactorAlpha);

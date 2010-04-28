@@ -161,7 +161,7 @@ class OSG_EXPORT StencilTwoSided : public StateAttribute
                 
                 bool _isStencilTwoSidedSupported;
                 
-                typedef void (APIENTRY * ActiveStencilFaceProc) (GLenum);
+                typedef void (GL_APIENTRY * ActiveStencilFaceProc) (GLenum);
                 ActiveStencilFaceProc _glActiveStencilFace;
         };
         

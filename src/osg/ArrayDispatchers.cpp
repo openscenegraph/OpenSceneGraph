@@ -22,16 +22,16 @@ namespace osg
 {
 
 #if defined(OSG_GLES1_AVAILABLE)
-inline void APIENTRY glColor4ubv(const GLubyte* c) { glColor4ub(c[0], c[1], c[2], c[3]); }
-inline void APIENTRY glColor3fv(const GLfloat* c) { glColor4f(c[0], c[1], c[2], 1.0f); }
-inline void APIENTRY glColor4fv(const GLfloat* c) { glColor4f(c[0], c[1], c[2], c[3]); }
-inline void APIENTRY glColor3dv(const GLdouble* c) { glColor4f(c[0], c[1], c[2], 1.0f); }
-inline void APIENTRY glColor4dv(const GLdouble* c) { glColor4f(c[0], c[1], c[2], c[3]); }
+inline void GL_APIENTRY glColor4ubv(const GLubyte* c) { glColor4ub(c[0], c[1], c[2], c[3]); }
+inline void GL_APIENTRY glColor3fv(const GLfloat* c) { glColor4f(c[0], c[1], c[2], 1.0f); }
+inline void GL_APIENTRY glColor4fv(const GLfloat* c) { glColor4f(c[0], c[1], c[2], c[3]); }
+inline void GL_APIENTRY glColor3dv(const GLdouble* c) { glColor4f(c[0], c[1], c[2], 1.0f); }
+inline void GL_APIENTRY glColor4dv(const GLdouble* c) { glColor4f(c[0], c[1], c[2], c[3]); }
 
-inline void APIENTRY glNormal3bv(const GLbyte* n) { const float div = 1.0f/128.0f; glNormal3f(float(n[0])*div, float(n[1])*div, float(n[3])*div); }
-inline void APIENTRY glNormal3sv(const GLshort* n) { const float div = 1.0f/32768.0f; glNormal3f(float(n[0])*div, float(n[1])*div, float(n[3])*div); }
-inline void APIENTRY glNormal3fv(const GLfloat* n) { glNormal3f(n[0], n[1], n[3]); }
-inline void APIENTRY glNormal3dv(const GLdouble* n) { glNormal3f(n[0], n[1], n[3]); }
+inline void GL_APIENTRY glNormal3bv(const GLbyte* n) { const float div = 1.0f/128.0f; glNormal3f(float(n[0])*div, float(n[1])*div, float(n[3])*div); }
+inline void GL_APIENTRY glNormal3sv(const GLshort* n) { const float div = 1.0f/32768.0f; glNormal3f(float(n[0])*div, float(n[1])*div, float(n[3])*div); }
+inline void GL_APIENTRY glNormal3fv(const GLfloat* n) { glNormal3f(n[0], n[1], n[3]); }
+inline void GL_APIENTRY glNormal3dv(const GLdouble* n) { glNormal3f(n[0], n[1], n[3]); }
 #endif
 
 template<typename T>
@@ -39,7 +39,7 @@ class TemplateAttributeDispatch : public AttributeDispatch
 {
     public:
 
-        typedef void (APIENTRY * F) (const T*);
+        typedef void (GL_APIENTRY * F) (const T*);
 
         TemplateAttributeDispatch(F functionPtr, unsigned int stride):
             _functionPtr(functionPtr), _stride(stride), _array(0) {}
@@ -64,7 +64,7 @@ class TemplateAttributeWithIndicesDispatch : public AttributeDispatch
 {
     public:
 
-        typedef void (APIENTRY * F) (const T*);
+        typedef void (GL_APIENTRY * F) (const T*);
 
         TemplateAttributeWithIndicesDispatch(F functionPtr, unsigned int stride):
             _functionPtr(functionPtr), _stride(stride), _array(0), _indices(0) {}
@@ -148,7 +148,7 @@ class TemplateTargetAttributeDispatch : public AttributeDispatch
 {
     public:
 
-        typedef void (APIENTRY * F) (I, const T*);
+        typedef void (GL_APIENTRY * F) (I, const T*);
 
         TemplateTargetAttributeDispatch(I target, F functionPtr, unsigned int stride):
             _functionPtr(functionPtr), _target(target), _stride(stride), _array(0) {}
@@ -175,7 +175,7 @@ class TemplateTargetAttributeWithIndicesDispatch : public AttributeDispatch
 {
     public:
 
-        typedef void (APIENTRY * F) (I, const T*);
+        typedef void (GL_APIENTRY * F) (I, const T*);
 
         TemplateTargetAttributeWithIndicesDispatch(I target, F functionPtr, unsigned int stride):
             _functionPtr(functionPtr), _target(target), _stride(stride), _array(0), _indices(0) {}
@@ -265,7 +265,7 @@ public:
         _glBeginEndAdapter(glBeginEndAdapter) {}
 
     template<typename T>
-    void assign(Array::Type type, void (APIENTRY *functionPtr) (const T*), unsigned int stride)
+    void assign(Array::Type type, void (GL_APIENTRY *functionPtr) (const T*), unsigned int stride)
     {
         if ((unsigned int)type >= _attributeDispatchList.size()) _attributeDispatchList.resize(type+1);
         _attributeDispatchList[type] = functionPtr ? new TemplateAttributeDispatch<T>(functionPtr, stride) : 0;
@@ -275,7 +275,7 @@ public:
     }
 
     template<typename I, typename T>
-    void targetAssign(I target, Array::Type type, void (APIENTRY *functionPtr) (I, const T*), unsigned int stride)
+    void targetAssign(I target, Array::Type type, void (GL_APIENTRY *functionPtr) (I, const T*), unsigned int stride)
     {
         if ((unsigned int)type >= _attributeDispatchList.size()) _attributeDispatchList.resize(type+1);
         _attributeDispatchList[type] = functionPtr ? new TemplateTargetAttributeDispatch<I,T>(target, functionPtr, stride) : 0;

@@ -118,9 +118,9 @@ class OSG_EXPORT Point : public StateAttribute
                 bool _isPointParametersSupported;
                 bool _isPointSpriteCoordOriginSupported;
 
-                typedef void (APIENTRY * GLPointParameteriProc) (GLenum pname, GLint param);
-                typedef void (APIENTRY * GLPointParameterfProc) (GLenum pname, GLfloat param);
-                typedef void (APIENTRY * GLPointParameterfvProc) (GLenum pname, const GLfloat *params);
+                typedef void (GL_APIENTRY * GLPointParameteriProc) (GLenum pname, GLint param);
+                typedef void (GL_APIENTRY * GLPointParameterfProc) (GLenum pname, GLfloat param);
+                typedef void (GL_APIENTRY * GLPointParameterfvProc) (GLenum pname, const GLfloat *params);
 
                 GLPointParameteriProc   _glPointParameteri;
                 GLPointParameterfProc   _glPointParameterf;

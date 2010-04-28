@@ -123,8 +123,8 @@ class OSG_EXPORT BlendEquation : public StateAttribute
 
                 ~Extensions() {}
                 
-                typedef void (APIENTRY * GLBlendEquationProc)(GLenum mode);
-                typedef void (APIENTRY * GLBlendEquationSeparateProc)(GLenum modeRGB, GLenum modeAlpha);
+                typedef void (GL_APIENTRY * GLBlendEquationProc)(GLenum mode);
+                typedef void (GL_APIENTRY * GLBlendEquationSeparateProc)(GLenum modeRGB, GLenum modeAlpha);
 
                 bool                _isBlendEquationSupported;
                 bool                _isBlendEquationSeparateSupported;

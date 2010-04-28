@@ -1053,6 +1053,33 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
     _currentLayer->addChild(subgraph);
 }
 
+void SlideShowConstructor::addGraph(const std::string& filename,const std::string& options,const PositionData& positionData, const ImageData& imageData)
+{
+    std::string tmpDirectory("/tmp/");
+    std::string tmpSvgFileName(tmpDirectory+osgDB::getStrippedName(filename)+std::string(".svg"));
+    std::string dotFileName = filename;
+
+    if (osgDB::getFileExtension(filename)=="dot")
+    {
+        dotFileName = filename;
+    }
+    else
+    {
+        dotFileName = tmpDirectory+osgDB::getStrippedName(filename)+std::string(".dot");
+        osg::ref_ptr<osg::Node> model = osgDB::readNodeFile(filename);
+        if (!model) return;
+
+        osgDB::writeNodeFile(*model, dotFileName);
+    }
+
+    std::stringstream command;
+    command<<"dot -Tsvg "<<dotFileName<<" -o "<<tmpSvgFileName;
+    int result = system(command.str().c_str());
+    if (result==0) addImage(tmpSvgFileName, positionData, imageData);
+    else OSG_NOTICE<<"Error: SlideShowConstructor::addGraph() system("<<command.str()<<") failed with return "<<result<<std::endl;
+}
+
+
 void SlideShowConstructor::addVNC(const std::string& hostname, const PositionData& positionData, const ImageData& imageData)
 {
     addInteractiveImage(hostname+".vnc", positionData, imageData);

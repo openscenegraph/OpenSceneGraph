@@ -176,7 +176,7 @@ osgDB::Options* createOptions(const osgDB::ReaderWriter::Options* options)
     return local_options.release();
 }
 
-osg::Node* p3d::readHoldingSlide(const std::string& filename)
+osg::ref_ptr<osg::Node> p3d::readHoldingSlide(const std::string& filename)
 {
     std::string ext = osgDB::getFileExtension(filename);
     if (!osgDB::equalCaseInsensitive(ext,"xml") && 
@@ -186,10 +186,10 @@ osg::Node* p3d::readHoldingSlide(const std::string& filename)
     options->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_NONE);
     options->setOptionString("preview");
 
-    return osgDB::readNodeFile(filename, options.get());
+    return osgDB::readRefNodeFile(filename, options.get());
 }
 
-osg::Node* p3d::readPresentation(const std::string& filename,const osgDB::ReaderWriter::Options* options)
+osg::ref_ptr<osg::Node> p3d::readPresentation(const std::string& filename,const osgDB::ReaderWriter::Options* options)
 {
     std::string ext = osgDB::getFileExtension(filename);
     if (!osgDB::equalCaseInsensitive(ext,"xml") &&
@@ -198,10 +198,10 @@ osg::Node* p3d::readPresentation(const std::string& filename,const osgDB::Reader
     osg::ref_ptr<osgDB::Options> local_options = createOptions(options);
     local_options->setOptionString("main");
 
-    return osgDB::readNodeFile(filename, local_options.get());
+    return osgDB::readRefNodeFile(filename, local_options.get());
 }
 
-osg::Node* p3d::readShowFiles(osg::ArgumentParser& arguments,const osgDB::ReaderWriter::Options* options)
+osg::ref_ptr<osg::Node> p3d::readShowFiles(osg::ArgumentParser& arguments,const osgDB::ReaderWriter::Options* options)
 {
     osg::ref_ptr<osgDB::Options> local_options = createOptions(options);
     local_options->setOptionString("main");
@@ -290,5 +290,5 @@ osg::Node* p3d::readShowFiles(osg::ArgumentParser& arguments,const osgDB::Reader
         root->accept(avecv);
     }
 
-    return root.release();    
+    return root;
 }

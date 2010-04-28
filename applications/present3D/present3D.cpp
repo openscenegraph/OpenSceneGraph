@@ -682,7 +682,6 @@ int main( int argc, char **argv )
 
     osg::ref_ptr<osgDB::ReaderWriter::Options> cacheAllOption = new osgDB::ReaderWriter::Options;
     cacheAllOption->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_ALL);
-    
     osgDB::Registry::instance()->setOptions(cacheAllOption.get());
 
     // read the scene from the list of file specified commandline args.

@@ -26,11 +26,11 @@ bool readEnvVars(osg::ArgumentParser& arguments);
 
 bool readEnvVars(const std::string& filename);
 
-osg::Node* readHoldingSlide(const std::string& filename);
+osg::ref_ptr<osg::Node> readHoldingSlide(const std::string& filename);
 
-osg::Node* readPresentation(const std::string& filename,const osgDB::ReaderWriter::Options* options);
+osg::ref_ptr<osg::Node> readPresentation(const std::string& filename,const osgDB::ReaderWriter::Options* options);
 
-osg::Node* readShowFiles(osg::ArgumentParser& arguments,const osgDB::ReaderWriter::Options* options);
+osg::ref_ptr<osg::Node> readShowFiles(osg::ArgumentParser& arguments,const osgDB::ReaderWriter::Options* options);
 
 }
 

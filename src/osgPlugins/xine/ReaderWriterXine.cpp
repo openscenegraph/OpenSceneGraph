@@ -326,9 +326,8 @@ class ReaderWriterXine : public osgDB::ReaderWriter
             const char* user_home = xine_get_homedir();
             if(user_home)
             {
-                char* cfgfile = NULL;
-                int result = asprintf(&(cfgfile), "%s/.xine/config", user_home);                
-                if (result>0) xine_config_load(_xine, cfgfile);
+                std::string configFile(std::string(user_home)+"/.xine/config");
+                xine_config_load(_xine, configFile.c_str());
             }
 
             xine_init(_xine);

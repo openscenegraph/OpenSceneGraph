@@ -144,24 +144,24 @@ namespace osg
     class OSG_EXPORT FBOExtensions : public osg::Referenced
     {
     public:
-        typedef void APIENTRY TglBindRenderbuffer(GLenum, GLuint);
-        typedef void APIENTRY TglDeleteRenderbuffers(GLsizei n, const GLuint *renderbuffers);
-        typedef void APIENTRY TglGenRenderbuffers(GLsizei, GLuint *);
-        typedef void APIENTRY TglRenderbufferStorage(GLenum, GLenum, GLsizei, GLsizei);
-        typedef void APIENTRY TglRenderbufferStorageMultisample(GLenum, GLsizei, GLenum, GLsizei, GLsizei);
-        typedef void APIENTRY TglRenderbufferStorageMultisampleCoverageNV(GLenum, GLsizei, GLsizei, GLenum, GLsizei, GLsizei);
-        typedef void APIENTRY TglBindFramebuffer(GLenum, GLuint);
-        typedef void APIENTRY TglDeleteFramebuffers(GLsizei n, const GLuint *framebuffers);
-        typedef void APIENTRY TglGenFramebuffers(GLsizei, GLuint *);
-        typedef GLenum APIENTRY TglCheckFramebufferStatus(GLenum);
-        typedef void APIENTRY TglFramebufferTexture1D(GLenum, GLenum, GLenum, GLuint, GLint);
-        typedef void APIENTRY TglFramebufferTexture2D(GLenum, GLenum, GLenum, GLuint, GLint);
-        typedef void APIENTRY TglFramebufferTexture3D(GLenum, GLenum, GLenum, GLuint, GLint, GLint);
-        typedef void APIENTRY TglFramebufferTextureLayer(GLenum, GLenum, GLuint, GLint, GLint);
-        typedef void APIENTRY TglFramebufferRenderbuffer(GLenum, GLenum, GLenum, GLuint);
-        typedef void APIENTRY TglGenerateMipmap(GLenum);
-        typedef void APIENTRY TglBlitFramebuffer(GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum);
-        typedef void APIENTRY TglGetRenderbufferParameteriv(GLenum, GLenum, GLint*);
+        typedef void GL_APIENTRY TglBindRenderbuffer(GLenum, GLuint);
+        typedef void GL_APIENTRY TglDeleteRenderbuffers(GLsizei n, const GLuint *renderbuffers);
+        typedef void GL_APIENTRY TglGenRenderbuffers(GLsizei, GLuint *);
+        typedef void GL_APIENTRY TglRenderbufferStorage(GLenum, GLenum, GLsizei, GLsizei);
+        typedef void GL_APIENTRY TglRenderbufferStorageMultisample(GLenum, GLsizei, GLenum, GLsizei, GLsizei);
+        typedef void GL_APIENTRY TglRenderbufferStorageMultisampleCoverageNV(GLenum, GLsizei, GLsizei, GLenum, GLsizei, GLsizei);
+        typedef void GL_APIENTRY TglBindFramebuffer(GLenum, GLuint);
+        typedef void GL_APIENTRY TglDeleteFramebuffers(GLsizei n, const GLuint *framebuffers);
+        typedef void GL_APIENTRY TglGenFramebuffers(GLsizei, GLuint *);
+        typedef GLenum GL_APIENTRY TglCheckFramebufferStatus(GLenum);
+        typedef void GL_APIENTRY TglFramebufferTexture1D(GLenum, GLenum, GLenum, GLuint, GLint);
+        typedef void GL_APIENTRY TglFramebufferTexture2D(GLenum, GLenum, GLenum, GLuint, GLint);
+        typedef void GL_APIENTRY TglFramebufferTexture3D(GLenum, GLenum, GLenum, GLuint, GLint, GLint);
+        typedef void GL_APIENTRY TglFramebufferTextureLayer(GLenum, GLenum, GLuint, GLint, GLint);
+        typedef void GL_APIENTRY TglFramebufferRenderbuffer(GLenum, GLenum, GLenum, GLuint);
+        typedef void GL_APIENTRY TglGenerateMipmap(GLenum);
+        typedef void GL_APIENTRY TglBlitFramebuffer(GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLbitfield, GLenum);
+        typedef void GL_APIENTRY TglGetRenderbufferParameteriv(GLenum, GLenum, GLint*);
 
         TglBindRenderbuffer* glBindRenderbuffer;
         TglGenRenderbuffers* glGenRenderbuffers;

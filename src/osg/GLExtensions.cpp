@@ -100,7 +100,7 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
 
                 // Get extensions using new indexed string interface.
 
-                typedef const GLubyte * APIENTRY PFNGLGETSTRINGIPROC( GLenum, GLuint );
+                typedef const GLubyte * GL_APIENTRY PFNGLGETSTRINGIPROC( GLenum, GLuint );
                 PFNGLGETSTRINGIPROC* glGetStringi = 0;
                 setGLExtensionFuncPtr( glGetStringi, "glGetStringi");
 
@@ -342,113 +342,121 @@ std::string& osg::getGLExtensionDisableString()
     }
 #endif
 
+#ifdef OSG_GL_LIBRARY_STATIC
 
+    void* osg::getGLExtensionFuncPtr(const char *funcName)
+    {
+        OSG_NOTICE<<"osg::getGLExtensionFuncPtr("<<functName") mapping not implemented for static GL lib yet."<<std::endl;
+        return 0;
+    }
 
-#if defined(WIN32)
-    #ifndef WIN32_LEAN_AND_MEAN
-        #define WIN32_LEAN_AND_MEAN
-    #endif // WIN32_LEAN_AND_MEAN
-    #ifndef NOMINMAX
-        #define NOMINMAX
-    #endif // NOMINMAX
-    #include <windows.h>
-#elif defined(__APPLE__)
-    // The NS*Symbol* stuff found in <mach-o/dyld.h> is deprecated.
-    // Since 10.3 (Panther) OS X has provided the dlopen/dlsym/dlclose
-    // family of functions under <dlfcn.h>. Since 10.4 (Tiger), Apple claimed
-    // the dlfcn family was significantly faster than the NS*Symbol* family.
-    // Since 'deprecated' needs to be taken very seriously with the 
-    // coming of 10.5 (Leopard), it makes sense to use the dlfcn family when possible.
-    #include <AvailabilityMacros.h>
-    #if !defined(MAC_OS_X_VERSION_10_3) || (MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_3)
-        #define USE_APPLE_LEGACY_NSSYMBOL
-        #include <mach-o/dyld.h>
+#else
+    #if defined(WIN32)
+        #ifndef WIN32_LEAN_AND_MEAN
+            #define WIN32_LEAN_AND_MEAN
+        #endif // WIN32_LEAN_AND_MEAN
+        #ifndef NOMINMAX
+            #define NOMINMAX
+        #endif // NOMINMAX
+        #include <windows.h>
+    #elif defined(__APPLE__)
+        // The NS*Symbol* stuff found in <mach-o/dyld.h> is deprecated.
+        // Since 10.3 (Panther) OS X has provided the dlopen/dlsym/dlclose
+        // family of functions under <dlfcn.h>. Since 10.4 (Tiger), Apple claimed
+        // the dlfcn family was significantly faster than the NS*Symbol* family.
+        // Since 'deprecated' needs to be taken very seriously with the
+        // coming of 10.5 (Leopard), it makes sense to use the dlfcn family when possible.
+        #include <AvailabilityMacros.h>
+        #if !defined(MAC_OS_X_VERSION_10_3) || (MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_3)
+            #define USE_APPLE_LEGACY_NSSYMBOL
+            #include <mach-o/dyld.h>
+        #else
+            #include <dlfcn.h>
+        #endif
     #else
         #include <dlfcn.h>
     #endif
-#else
-    #include <dlfcn.h>
-#endif
 
-void* osg::getGLExtensionFuncPtr(const char *funcName)
-{
-    // OSG_NOTIFY(osg::NOTICE)<<"osg::getGLExtensionFuncPtr("<<funcName<<")"<<std::endl;
-    
-#if defined(WIN32)
+    void* osg::getGLExtensionFuncPtr(const char *funcName)
+    {
+        // OSG_NOTIFY(osg::NOTICE)<<"osg::getGLExtensionFuncPtr("<<funcName<<")"<<std::endl;
 
-    #if defined(OSG_GLES2_AVAILABLE)
-        static HMODULE hmodule = GetModuleHandle(TEXT("libGLESv2.dll"));
-        return convertPointerType<void*, PROC>(GetProcAddress(hmodule, funcName));
-    #elif defined(OSG_GLES1_AVAILABLE)
-        static HMODULE hmodule = GetModuleHandleA(TEXT("libgles_cm.dll"));
-        return convertPointerType<void*, PROC>(GetProcAddress(hmodule, funcName));
-    #else
-        return convertPointerType<void*, PROC>(wglGetProcAddress(funcName));
-    #endif
+    #if defined(WIN32)
 
-#elif defined(__APPLE__)
+        #if defined(OSG_GLES2_AVAILABLE)
+            static HMODULE hmodule = GetModuleHandle(TEXT("libGLESv2.dll"));
+            return convertPointerType<void*, PROC>(GetProcAddress(hmodule, funcName));
+        #elif defined(OSG_GLES1_AVAILABLE)
+            static HMODULE hmodule = GetModuleHandleA(TEXT("libgles_cm.dll"));
+            return convertPointerType<void*, PROC>(GetProcAddress(hmodule, funcName));
+        #else
+            return convertPointerType<void*, PROC>(wglGetProcAddress(funcName));
+        #endif
 
-    #if defined(USE_APPLE_LEGACY_NSSYMBOL)
-        std::string temp( "_" );
-        temp += funcName;    // Mac OS X prepends an underscore on function names
-        if ( NSIsSymbolNameDefined( temp.c_str() ) )
-        {
-            NSSymbol symbol = NSLookupAndBindSymbol( temp.c_str() );
-            return NSAddressOfSymbol( symbol );
-        } else
-            return NULL;
-    #else
-        // I am uncertain of the correct and ideal usage of dlsym here.
-        // On the surface, it would seem that the FreeBSD implementation 
-        // would be the ideal one to copy, but ELF and Mach-o are different
-        // and Apple's man page says the following about using RTLD_DEFAULT: 
-        // "This can be a costly search and should be avoided."
-        // The documentation mentions nothing about passing in 0 so I must
-        // assume the behavior is undefined.
-        // So I could try copying the Sun method which I think all this 
-        // actually originated from.
+    #elif defined(__APPLE__)
 
-        // return dlsym( RTLD_DEFAULT, funcName );
+        #if defined(USE_APPLE_LEGACY_NSSYMBOL)
+            std::string temp( "_" );
+            temp += funcName;    // Mac OS X prepends an underscore on function names
+            if ( NSIsSymbolNameDefined( temp.c_str() ) )
+            {
+                NSSymbol symbol = NSLookupAndBindSymbol( temp.c_str() );
+                return NSAddressOfSymbol( symbol );
+            } else
+                return NULL;
+        #else
+            // I am uncertain of the correct and ideal usage of dlsym here.
+            // On the surface, it would seem that the FreeBSD implementation
+            // would be the ideal one to copy, but ELF and Mach-o are different
+            // and Apple's man page says the following about using RTLD_DEFAULT:
+            // "This can be a costly search and should be avoided."
+            // The documentation mentions nothing about passing in 0 so I must
+            // assume the behavior is undefined.
+            // So I could try copying the Sun method which I think all this
+            // actually originated from.
+
+            // return dlsym( RTLD_DEFAULT, funcName );
+            static void *handle = dlopen((const char *)0L, RTLD_LAZY);
+            return dlsym(handle, funcName);
+        #endif
+
+    #elif defined (__sun)
+
         static void *handle = dlopen((const char *)0L, RTLD_LAZY);
         return dlsym(handle, funcName);
+
+    #elif defined (__sgi)
+
+        static void *handle = dlopen((const char *)0L, RTLD_LAZY);
+        return dlsym(handle, funcName);
+
+    #elif defined (__FreeBSD__)
+
+        return dlsym( RTLD_DEFAULT, funcName );
+
+    #elif defined (__linux__)
+
+        typedef void (*__GLXextFuncPtr)(void);
+        typedef __GLXextFuncPtr (*GetProcAddressARBProc)(const char*);
+
+        #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+        static GetProcAddressARBProc s_glXGetProcAddressARB = convertPointerType<GetProcAddressARBProc, void*>(dlsym(0, "glXGetProcAddressARB"));
+        if (s_glXGetProcAddressARB)
+        {
+            return convertPointerType<void*, __GLXextFuncPtr>((s_glXGetProcAddressARB)(funcName));
+        }
+        #endif
+
+        return dlsym(0, funcName);
+
+    #elif defined (__QNX__)
+
+        return dlsym(RTLD_DEFAULT, funcName);
+
+    #else // all other unixes
+
+        return dlsym(0, funcName);
+
     #endif
-
-#elif defined (__sun) 
-
-     static void *handle = dlopen((const char *)0L, RTLD_LAZY);
-     return dlsym(handle, funcName);
-    
-#elif defined (__sgi)
-
-     static void *handle = dlopen((const char *)0L, RTLD_LAZY);
-     return dlsym(handle, funcName);
-
-#elif defined (__FreeBSD__)
-
-    return dlsym( RTLD_DEFAULT, funcName );
-
-#elif defined (__linux__)
-
-    typedef void (*__GLXextFuncPtr)(void);
-    typedef __GLXextFuncPtr (*GetProcAddressARBProc)(const char*);
-    
-    #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
-    static GetProcAddressARBProc s_glXGetProcAddressARB = convertPointerType<GetProcAddressARBProc, void*>(dlsym(0, "glXGetProcAddressARB"));
-    if (s_glXGetProcAddressARB)
-    {
-        return convertPointerType<void*, __GLXextFuncPtr>((s_glXGetProcAddressARB)(funcName));
     }
-    #endif
-
-    return dlsym(0, funcName);
-
-#elif defined (__QNX__)
-
-    return dlsym(RTLD_DEFAULT, funcName);
-
-#else // all other unixes
-
-    return dlsym(0, funcName);
-
 #endif
-}

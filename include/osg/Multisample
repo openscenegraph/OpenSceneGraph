@@ -121,7 +121,7 @@ class OSG_EXPORT Multisample : public StateAttribute
                 bool    _isMultisampleSupported;
                 bool    _isMultisampleFilterHintSupported;
                 
-                typedef void (APIENTRY * GLSampleCoverageProc) (GLclampf value, GLboolean invert);
+                typedef void (GL_APIENTRY * GLSampleCoverageProc) (GLclampf value, GLboolean invert);
                 GLSampleCoverageProc _glSampleCoverage;
 
         };

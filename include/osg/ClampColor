@@ -105,7 +105,7 @@ class OSG_EXPORT ClampColor : public StateAttribute
 
                 ~Extensions() {}
                 
-                typedef void (APIENTRY * GLClampColorProc) (GLenum target, GLenum mode);
+                typedef void (GL_APIENTRY * GLClampColorProc) (GLenum target, GLenum mode);
                 bool                _isClampColorSupported;
                 GLClampColorProc    _glClampColor;
 

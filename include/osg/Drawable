@@ -671,54 +671,54 @@ class OSG_EXPORT Drawable : public Object
 
             friend class ArrayDispatchers;
 
-            typedef void (APIENTRY * FogCoordProc) (const GLfloat* coord);
+            typedef void (GL_APIENTRY * FogCoordProc) (const GLfloat* coord);
 
-            typedef void (APIENTRY * VertexAttrib1sProc) (GLuint index, GLshort s);
-            typedef void (APIENTRY * VertexAttrib1fProc) (GLuint index, GLfloat f);
-            typedef void (APIENTRY * VertexAttrib1dProc) (GLuint index, GLdouble f);
-            typedef void (APIENTRY * VertexAttribfvProc) (GLuint index, const GLfloat * v);
-            typedef void (APIENTRY * VertexAttribdvProc) (GLuint index, const GLdouble * v);
-            typedef void (APIENTRY * VertexAttribubvProc) (GLuint index, const GLubyte * v);
+            typedef void (GL_APIENTRY * VertexAttrib1sProc) (GLuint index, GLshort s);
+            typedef void (GL_APIENTRY * VertexAttrib1fProc) (GLuint index, GLfloat f);
+            typedef void (GL_APIENTRY * VertexAttrib1dProc) (GLuint index, GLdouble f);
+            typedef void (GL_APIENTRY * VertexAttribfvProc) (GLuint index, const GLfloat * v);
+            typedef void (GL_APIENTRY * VertexAttribdvProc) (GLuint index, const GLdouble * v);
+            typedef void (GL_APIENTRY * VertexAttribubvProc) (GLuint index, const GLubyte * v);
 
-            typedef void (APIENTRY * SecondaryColor3ubvProc) (const GLubyte* coord);
-            typedef void (APIENTRY * SecondaryColor3fvProc) (const GLfloat* coord);
+            typedef void (GL_APIENTRY * SecondaryColor3ubvProc) (const GLubyte* coord);
+            typedef void (GL_APIENTRY * SecondaryColor3fvProc) (const GLfloat* coord);
 
-            typedef void (APIENTRY * MultiTexCoord1fProc) (GLenum target,GLfloat coord);
-            typedef void (APIENTRY * MultiTexCoordfvProc) (GLenum target,const GLfloat* coord);
-            typedef void (APIENTRY * MultiTexCoord1dProc) (GLenum target,GLdouble coord);
-            typedef void (APIENTRY * MultiTexCoorddvProc) (GLenum target,const GLdouble* coord);
+            typedef void (GL_APIENTRY * MultiTexCoord1fProc) (GLenum target,GLfloat coord);
+            typedef void (GL_APIENTRY * MultiTexCoordfvProc) (GLenum target,const GLfloat* coord);
+            typedef void (GL_APIENTRY * MultiTexCoord1dProc) (GLenum target,GLdouble coord);
+            typedef void (GL_APIENTRY * MultiTexCoorddvProc) (GLenum target,const GLdouble* coord);
 
 
-            typedef void (APIENTRY * GenBuffersProc) (GLsizei n, GLuint *buffers);
-            typedef void (APIENTRY * BindBufferProc) (GLenum target, GLuint buffer);
-            typedef void (APIENTRY * BufferDataProc) (GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage);
-            typedef void (APIENTRY * BufferSubDataProc) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data);
-            typedef void (APIENTRY * DeleteBuffersProc) (GLsizei n, const GLuint *buffers);
-            typedef GLboolean (APIENTRY * IsBufferProc) (GLuint buffer);
-            typedef void (APIENTRY * GetBufferSubDataProc) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data);
-            typedef GLvoid* (APIENTRY * MapBufferProc) (GLenum target, GLenum access);
-            typedef GLboolean (APIENTRY * UnmapBufferProc) (GLenum target);
-            typedef void (APIENTRY * GetBufferParameterivProc) (GLenum target, GLenum pname, GLint *params);
-            typedef void (APIENTRY * GetBufferPointervProc) (GLenum target, GLenum pname, GLvoid* *params);
+            typedef void (GL_APIENTRY * GenBuffersProc) (GLsizei n, GLuint *buffers);
+            typedef void (GL_APIENTRY * BindBufferProc) (GLenum target, GLuint buffer);
+            typedef void (GL_APIENTRY * BufferDataProc) (GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage);
+            typedef void (GL_APIENTRY * BufferSubDataProc) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data);
+            typedef void (GL_APIENTRY * DeleteBuffersProc) (GLsizei n, const GLuint *buffers);
+            typedef GLboolean (GL_APIENTRY * IsBufferProc) (GLuint buffer);
+            typedef void (GL_APIENTRY * GetBufferSubDataProc) (GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data);
+            typedef GLvoid* (GL_APIENTRY * MapBufferProc) (GLenum target, GLenum access);
+            typedef GLboolean (GL_APIENTRY * UnmapBufferProc) (GLenum target);
+            typedef void (GL_APIENTRY * GetBufferParameterivProc) (GLenum target, GLenum pname, GLint *params);
+            typedef void (GL_APIENTRY * GetBufferPointervProc) (GLenum target, GLenum pname, GLvoid* *params);
 
-            typedef void (APIENTRY * GenOcclusionQueriesProc) ( GLsizei n, GLuint *ids );
-            typedef void (APIENTRY * DeleteOcclusionQueriesProc) ( GLsizei n, const GLuint *ids );
-            typedef GLboolean (APIENTRY * IsOcclusionQueryProc) ( GLuint id );
-            typedef void (APIENTRY * BeginOcclusionQueryProc) ( GLuint id );
-            typedef void (APIENTRY * EndOcclusionQueryProc) ();
-            typedef void (APIENTRY * GetOcclusionQueryivProc) ( GLuint id, GLenum pname, GLint *params );
-            typedef void (APIENTRY * GetOcclusionQueryuivProc) ( GLuint id, GLenum pname, GLuint *params );
-            typedef void (APIENTRY * GetOcclusionQueryui64vProc) ( GLuint id, GLenum pname, GLuint64EXT *params );
+            typedef void (GL_APIENTRY * GenOcclusionQueriesProc) ( GLsizei n, GLuint *ids );
+            typedef void (GL_APIENTRY * DeleteOcclusionQueriesProc) ( GLsizei n, const GLuint *ids );
+            typedef GLboolean (GL_APIENTRY * IsOcclusionQueryProc) ( GLuint id );
+            typedef void (GL_APIENTRY * BeginOcclusionQueryProc) ( GLuint id );
+            typedef void (GL_APIENTRY * EndOcclusionQueryProc) ();
+            typedef void (GL_APIENTRY * GetOcclusionQueryivProc) ( GLuint id, GLenum pname, GLint *params );
+            typedef void (GL_APIENTRY * GetOcclusionQueryuivProc) ( GLuint id, GLenum pname, GLuint *params );
+            typedef void (GL_APIENTRY * GetOcclusionQueryui64vProc) ( GLuint id, GLenum pname, GLuint64EXT *params );
 
-            typedef void (APIENTRY *GenQueriesProc) (GLsizei n, GLuint *ids);
-            typedef void (APIENTRY *DeleteQueriesProc) (GLsizei n, const GLuint *ids);
-            typedef GLboolean (APIENTRY *IsQueryProc) (GLuint id);
-            typedef void (APIENTRY *BeginQueryProc) (GLenum target, GLuint id);
-            typedef void (APIENTRY *EndQueryProc) (GLenum target);
-            typedef void (APIENTRY *GetQueryivProc) (GLenum target, GLenum pname, GLint *params);
-            typedef void (APIENTRY *GetQueryObjectivProc) (GLuint id, GLenum pname, GLint *params);
-            typedef void (APIENTRY *GetQueryObjectuivProc) (GLuint id, GLenum pname, GLuint *params);
-            typedef void (APIENTRY *GetQueryObjectui64vProc) (GLuint id, GLenum pname, GLuint64EXT *params);
+            typedef void (GL_APIENTRY *GenQueriesProc) (GLsizei n, GLuint *ids);
+            typedef void (GL_APIENTRY *DeleteQueriesProc) (GLsizei n, const GLuint *ids);
+            typedef GLboolean (GL_APIENTRY *IsQueryProc) (GLuint id);
+            typedef void (GL_APIENTRY *BeginQueryProc) (GLenum target, GLuint id);
+            typedef void (GL_APIENTRY *EndQueryProc) (GLenum target);
+            typedef void (GL_APIENTRY *GetQueryivProc) (GLenum target, GLenum pname, GLint *params);
+            typedef void (GL_APIENTRY *GetQueryObjectivProc) (GLuint id, GLenum pname, GLint *params);
+            typedef void (GL_APIENTRY *GetQueryObjectuivProc) (GLuint id, GLenum pname, GLuint *params);
+            typedef void (GL_APIENTRY *GetQueryObjectui64vProc) (GLuint id, GLenum pname, GLuint64EXT *params);
 
             ~Extensions() {}
 

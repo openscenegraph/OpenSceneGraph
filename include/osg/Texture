@@ -709,12 +709,12 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
                 ~Extensions() {}
                 
-                typedef void (APIENTRY * CompressedTexImage2DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
-                typedef void (APIENTRY * CompressedTexSubImage2DArbProc) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data);
-                typedef void (APIENTRY * GetCompressedTexImageArbProc) (GLenum target, GLint level, GLvoid *data);
-                typedef void (APIENTRY * TexImage2DMultisample)(GLenum target, GLsizei samples, GLint internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
-                typedef void (APIENTRY * TexParameterIivProc)(GLenum target, GLenum pname, const GLint* data);
-                typedef void (APIENTRY * TexParameterIuivProc)(GLenum target, GLenum pname, const GLuint* data);
+                typedef void (GL_APIENTRY * CompressedTexImage2DArbProc) (GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data);
+                typedef void (GL_APIENTRY * CompressedTexSubImage2DArbProc) (GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data);
+                typedef void (GL_APIENTRY * GetCompressedTexImageArbProc) (GLenum target, GLint level, GLvoid *data);
+                typedef void (GL_APIENTRY * TexImage2DMultisample)(GLenum target, GLsizei samples, GLint internalformat, GLsizei width, GLsizei height, GLboolean fixedsamplelocations);
+                typedef void (GL_APIENTRY * TexParameterIivProc)(GLenum target, GLenum pname, const GLint* data);
+                typedef void (GL_APIENTRY * TexParameterIuivProc)(GLenum target, GLenum pname, const GLuint* data);
 
                 CompressedTexImage2DArbProc     _glCompressedTexImage2D;
                 CompressedTexSubImage2DArbProc  _glCompressedTexSubImage2D;

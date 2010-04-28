@@ -28,9 +28,9 @@
     #endif
 
     #if defined(GLU_TESS_CALLBACK_TRIPLEDOT)
-        typedef void (APIENTRY *GLU_TESS_CALLBACK)(...);
+        typedef void (GL_APIENTRY *GLU_TESS_CALLBACK)(...);
     #else
-        typedef void (APIENTRY *GLU_TESS_CALLBACK)();
+        typedef void (GL_APIENTRY *GLU_TESS_CALLBACK)();
     #endif
 
 #endif

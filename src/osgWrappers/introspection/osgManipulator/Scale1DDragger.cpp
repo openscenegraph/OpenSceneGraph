@@ -40,6 +40,11 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DDragger)
 	                           ____Scale1DDragger__ScaleMode,
 	                           "",
 	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
@@ -80,9 +85,9 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DDragger)
 	          __void__setColor__C5_osg_Vec4_R1,
 	          "Set/Get color for dragger. ",
 	          "");
-	I_Method0(const osg::Vec4, getColor,
+	I_Method0(const osg::Vec4 &, getColor,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec4__getColor,
+	          __C5_osg_Vec4_R1__getColor,
 	          "",
 	          "");
 	I_Method1(void, setPickColor, IN, const osg::Vec4 &, color,
@@ -90,9 +95,9 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DDragger)
 	          __void__setPickColor__C5_osg_Vec4_R1,
 	          "Set/Get pick color for dragger. ",
 	          "Pick color is color of the dragger when picked. It gives a visual feedback to show that the dragger has been picked. ");
-	I_Method0(const osg::Vec4, getPickColor,
+	I_Method0(const osg::Vec4 &, getPickColor,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec4__getPickColor,
+	          __C5_osg_Vec4_R1__getPickColor,
 	          "",
 	          "");
 	I_Method1(void, setLeftHandleNode, IN, osg::Node &, node,
@@ -110,9 +115,19 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DDragger)
 	          __osg_Node_P1__getLeftHandleNode,
 	          "",
 	          "");
+	I_Method0(const osg::Node *, getLeftHandleNode,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Node_P1__getLeftHandleNode,
+	          "",
+	          "");
 	I_Method0(osg::Node *, getRightHandleNode,
 	          Properties::NON_VIRTUAL,
 	          __osg_Node_P1__getRightHandleNode,
+	          "",
+	          "");
+	I_Method0(const osg::Node *, getRightHandleNode,
+	          Properties::NON_VIRTUAL,
+	          __C5_osg_Node_P1__getRightHandleNode,
 	          "",
 	          "");
 	I_Method1(void, setLeftHandlePosition, IN, double, pos,
@@ -136,7 +151,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DDragger)
 	          "",
 	          "");
 	I_SimpleProperty(const osg::Vec4 &, Color, 
-	                 0, 
+	                 __C5_osg_Vec4_R1__getColor, 
 	                 __void__setColor__C5_osg_Vec4_R1);
 	I_SimpleProperty(osg::Node &, LeftHandleNode, 
 	                 0, 
@@ -148,7 +163,7 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Scale1DDragger)
 	                 __double__getMinScale, 
 	                 __void__setMinScale__double);
 	I_SimpleProperty(const osg::Vec4 &, PickColor, 
-	                 0, 
+	                 __C5_osg_Vec4_R1__getPickColor, 
 	                 __void__setPickColor__C5_osg_Vec4_R1);
 	I_SimpleProperty(osg::Node &, RightHandleNode, 
 	                 0, 

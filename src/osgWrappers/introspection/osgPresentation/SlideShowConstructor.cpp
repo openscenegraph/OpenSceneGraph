@@ -16,7 +16,7 @@
 #include <osg/Switch>
 #include <osg/Vec3>
 #include <osg/Vec4>
-#include <osgDB/ReaderWriter>
+#include <osgDB/Options>
 #include <osgPresentation/SlideEventHandler>
 #include <osgPresentation/SlideShowConstructor>
 
@@ -101,9 +101,9 @@ BEGIN_VALUE_REFLECTOR(osgPresentation::SlideShowConstructor)
 	          __void__setLayerJump__bool__int__int,
 	          "",
 	          "");
-	I_Constructor1(IN, const osgDB::ReaderWriter::Options *, options,
+	I_Constructor1(IN, osgDB::Options *, options,
 	               Properties::NON_EXPLICIT,
-	               ____SlideShowConstructor__C5_osgDB_ReaderWriter_Options_P1,
+	               ____SlideShowConstructor__osgDB_Options_P1,
 	               "",
 	               "");
 	I_Method0(void, createPresentation,
@@ -289,6 +289,11 @@ BEGIN_VALUE_REFLECTOR(osgPresentation::SlideShowConstructor)
 	I_Method5(void, addStereoImagePair, IN, const std::string &, filenameLeft, IN, const osgPresentation::SlideShowConstructor::ImageData &, imageDataLeft, IN, const std::string &, filenameRight, IN, const osgPresentation::SlideShowConstructor::ImageData &, imageDataRight, IN, const osgPresentation::SlideShowConstructor::PositionData &, positionData,
 	          Properties::NON_VIRTUAL,
 	          __void__addStereoImagePair__C5_std_string_R1__C5_ImageData_R1__C5_std_string_R1__C5_ImageData_R1__C5_PositionData_R1,
+	          "",
+	          "");
+	I_Method4(void, addGraph, IN, const std::string &, filename, IN, const std::string &, options, IN, const osgPresentation::SlideShowConstructor::PositionData &, positionData, IN, const osgPresentation::SlideShowConstructor::ImageData &, imageData,
+	          Properties::NON_VIRTUAL,
+	          __void__addGraph__C5_std_string_R1__C5_std_string_R1__C5_PositionData_R1__C5_ImageData_R1,
 	          "",
 	          "");
 	I_Method3(void, addVNC, IN, const std::string &, filename, IN, const osgPresentation::SlideShowConstructor::PositionData &, positionData, IN, const osgPresentation::SlideShowConstructor::ImageData &, imageData,

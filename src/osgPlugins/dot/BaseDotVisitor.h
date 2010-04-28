@@ -26,6 +26,8 @@
 #include <osg/Geode>
 #include <osg/ref_ptr>
 
+#include <osgDB/Options>
+
 namespace osgDot {
 
   class BaseDotVisitor : public osg::NodeVisitor {
@@ -36,6 +38,8 @@ namespace osgDot {
     BaseDotVisitor();
 
     virtual ~BaseDotVisitor();
+
+    void setOptions(const osgDB::Options* options);
 
     bool run( osg::Node& root, std::ostream* ostream );
 
@@ -61,6 +65,9 @@ namespace osgDot {
     virtual void handle(osg::Geode& geode, osg::Drawable& drawable, int parentID, int childID);
     virtual void handle(osg::Drawable& drawable, osg::StateSet& stateset, int parentID, int childID );
 
+    osg::ref_ptr<osgDB::Options> _options;
+
+    std::string       _rankdir;
 
     std::stringstream _nodes;
     std::stringstream _edges;

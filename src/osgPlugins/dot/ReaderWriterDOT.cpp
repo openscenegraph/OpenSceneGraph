@@ -34,8 +34,10 @@ class ReaderWriterDOT : public osgDB::ReaderWriter {
       return WriteResult(WriteResult::ERROR_IN_WRITING_FILE);
     }
     
-    virtual WriteResult writeNode(const osg::Node& node,std::ostream& fout,const Options* options = NULL) const {
+    virtual WriteResult writeNode(const osg::Node& node,std::ostream& fout,const Options* options = NULL) const
+    {
       osgDot::SimpleDotVisitor sdv;
+      sdv.setOptions(options);
       sdv.run( *const_cast<osg::Node*>( &node ), &fout );
       return WriteResult(WriteResult::FILE_SAVED);
     }

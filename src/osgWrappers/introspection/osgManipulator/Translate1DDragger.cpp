@@ -32,6 +32,11 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Translate1DDragger)
 	I_Constructor0(____Translate1DDragger,
 	               "",
 	               "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,
@@ -66,9 +71,9 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Translate1DDragger)
 	          __void__setColor__C5_osg_Vec4_R1,
 	          "Set/Get color for dragger. ",
 	          "");
-	I_Method0(const osg::Vec4, getColor,
+	I_Method0(const osg::Vec4 &, getColor,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec4__getColor,
+	          __C5_osg_Vec4_R1__getColor,
 	          "",
 	          "");
 	I_Method1(void, setPickColor, IN, const osg::Vec4 &, color,
@@ -76,9 +81,9 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Translate1DDragger)
 	          __void__setPickColor__C5_osg_Vec4_R1,
 	          "Set/Get pick color for dragger. ",
 	          "Pick color is color of the dragger when picked. It gives a visual feedback to show that the dragger has been picked. ");
-	I_Method0(const osg::Vec4, getPickColor,
+	I_Method0(const osg::Vec4 &, getPickColor,
 	          Properties::NON_VIRTUAL,
-	          __C5_osg_Vec4__getPickColor,
+	          __C5_osg_Vec4_R1__getPickColor,
 	          "",
 	          "");
 	I_Method1(void, setCheckForNodeInNodePath, IN, bool, onOff,
@@ -90,10 +95,10 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::Translate1DDragger)
 	                 0, 
 	                 __void__setCheckForNodeInNodePath__bool);
 	I_SimpleProperty(const osg::Vec4 &, Color, 
-	                 0, 
+	                 __C5_osg_Vec4_R1__getColor, 
 	                 __void__setColor__C5_osg_Vec4_R1);
 	I_SimpleProperty(const osg::Vec4 &, PickColor, 
-	                 0, 
+	                 __C5_osg_Vec4_R1__getPickColor, 
 	                 __void__setPickColor__C5_osg_Vec4_R1);
 END_REFLECTOR
 

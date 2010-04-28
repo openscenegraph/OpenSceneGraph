@@ -27,6 +27,11 @@ BEGIN_OBJECT_REFLECTOR(osgManipulator::TabBoxTrackballDragger)
 	I_Constructor0(____TabBoxTrackballDragger,
 	               "",
 	               "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "clone an object of the same type as the node. ",
+	          "");
 	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
 	          Properties::VIRTUAL,
 	          __bool__isSameKindAs__C5_osg_Object_P1,

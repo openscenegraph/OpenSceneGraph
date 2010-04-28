@@ -69,7 +69,7 @@ void KeySwitchMatrixManipulator::setDistance(double distance)
 
 double KeySwitchMatrixManipulator::getDistance() const
 {
-    if(!_current)
+    if(_current)
     {
         return _current->getDistance();
     }

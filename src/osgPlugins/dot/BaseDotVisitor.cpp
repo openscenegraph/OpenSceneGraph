@@ -18,23 +18,51 @@
 #include <osg/Node>
 #include <osg/Geode>
 #include <osg/Group>
+#include <osg/Notify>
 
 using namespace osg;
 
 namespace osgDot {
 
-  BaseDotVisitor::BaseDotVisitor() {
+  BaseDotVisitor::BaseDotVisitor()
+  {
+    _rankdir = "rankdir = LR;";
   }
 
   BaseDotVisitor::~BaseDotVisitor() {
   }
 
-  bool BaseDotVisitor::run( osg::Node& root, std::ostream* fout ) {
+    void BaseDotVisitor::setOptions(const osgDB::Options* options)
+    {
+        _options = const_cast<osgDB::Options*>(options);
+        OSG_INFO<<"BaseDotVisitor::setOptions("<<options<<")"<<std::endl;
+        if (_options.valid() && !(_options->getOptionString().empty()))
+        {
+
+            std::string optionString = _options->getOptionString();
+
+            OSG_INFO<<"  BaseDotVisitor::optionString ("<<optionString<<")"<<std::endl;
+
+            std::string::size_type pos = optionString.find("rankdir");
+            if (pos!=std::string::npos)
+            {
+                std::string::size_type semi_pos = optionString.find(";",pos);
+                if (semi_pos!=std::string::npos)
+                {
+                    _rankdir = optionString.substr(pos, semi_pos-pos);
+                    OSG_INFO<<"  BaseDotVisitor::Set _rankdir to "<<_rankdir<<std::endl;
+                }
+            }
+        }
+
+    }
+
+    bool BaseDotVisitor::run( osg::Node& root, std::ostream* fout ) {
     setTraversalMode( TRAVERSE_ALL_CHILDREN );
     if ( fout && *fout ) {
       root.accept( *this );
       
-      *fout << "digraph osg_scenegraph { rankdir = LR;" << std::endl;
+      *fout << "digraph osg_scenegraph { "<<_rankdir<< std::endl;
       
       *fout << _nodes.str() << _edges.str();
       

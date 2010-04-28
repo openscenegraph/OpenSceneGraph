@@ -838,6 +838,8 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
     // populate vertex and tex coord arrays
     //
     VNG.populateCenter(elevationLayer, layerToTexCoordMap);
+
+#if 0
     if (terrain)
     {
         TileID tileID = _terrainTile->getTileID();
@@ -954,6 +956,8 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
         }
 #endif
     }
+#endif
+
 
     osg::ref_ptr<osg::Vec3Array> skirtVectors = new osg::Vec3Array((*VNG._normals));
     VNG.computeNormals();

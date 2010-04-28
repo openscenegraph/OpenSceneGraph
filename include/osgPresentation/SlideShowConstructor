@@ -263,7 +263,7 @@ public:
     };
 
 
-    SlideShowConstructor(const osgDB::ReaderWriter::Options* options);
+    SlideShowConstructor(osgDB::Options* options);
 
     void createPresentation();
     
@@ -398,7 +398,7 @@ protected:
         return stateset;
     }
 
-    osg::ref_ptr<const osgDB::ReaderWriter::Options> _options;
+    osg::ref_ptr<osgDB::Options> _options;
 
     osg::Vec3   _slideOrigin;
     osg::Vec3   _eyeOrigin;

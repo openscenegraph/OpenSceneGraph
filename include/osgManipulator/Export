@@ -28,6 +28,7 @@
 #endif
 
 #define META_OSGMANIPULATOR_Object(library,name) \
+virtual osg::Object* cloneType() const { return new name (); } \
 virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const name *>(obj)!=NULL; } \
 virtual const char* libraryName() const { return #library; }\
 virtual const char* className() const { return #name; }

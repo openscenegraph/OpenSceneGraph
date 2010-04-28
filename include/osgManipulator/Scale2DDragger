@@ -51,7 +51,7 @@ class OSGMANIPULATOR_EXPORT Scale2DDragger : public Dragger
 
         /** Set/Get color for dragger. */
         inline void setColor(const osg::Vec4& color) { _color = color; setMaterialColor(_color,*this); }
-        inline const osg::Vec4 getColor() const { return _color; }
+        inline const osg::Vec4& getColor() const { return _color; }
 
         /**
          * Set/Get pick color for dragger. Pick color is color of the dragger
@@ -59,27 +59,31 @@ class OSGMANIPULATOR_EXPORT Scale2DDragger : public Dragger
          * been picked.
          */
         inline void setPickColor(const osg::Vec4& color) { _pickColor = color; }
-        inline const osg::Vec4 getPickColor() const { return _pickColor; }
+        inline const osg::Vec4& getPickColor() const { return _pickColor; }
 
         /** Set/Get the handle nodes for dragger. */
         inline void setTopLeftHandleNode (osg::Node& node) { _topLeftHandleNode = &node; }
         inline osg::Node* getTopLeftHandleNode() { return _topLeftHandleNode.get(); }
+        inline const osg::Node* getTopLeftHandleNode() const { return _topLeftHandleNode.get(); }
         inline void setBottomLeftHandleNode (osg::Node& node) { _bottomLeftHandleNode = &node; }
         inline osg::Node* getBottomLeftHandleNode() { return _bottomLeftHandleNode.get(); }
+        inline const osg::Node* getBottomLeftHandleNode() const { return _bottomLeftHandleNode.get(); }
         inline void setTopRightHandleNode(osg::Node& node) { _topRightHandleNode = &node; }
         inline osg::Node* getTopRightHandleNode() { return _topRightHandleNode.get(); }
+        inline const osg::Node* getTopRightHandleNode() const { return _topRightHandleNode.get(); }
         inline void setBottomRightHandleNode(osg::Node& node) { _bottomRightHandleNode = &node; }
         inline osg::Node* getBottomRightHandleNode() { return _bottomRightHandleNode.get(); }
+        inline const osg::Node* getBottomRightHandleNode() const { return _bottomRightHandleNode.get(); }
 
         /** Set/Get the handle nodes postion for dragger. */
         inline void setTopLeftHandlePosition(const osg::Vec2d& pos) { _topLeftHandlePosition = pos; }
-        const osg::Vec2d& getTopLeftHandlePosition() { return _topLeftHandlePosition; }
+        const osg::Vec2d& getTopLeftHandlePosition() const { return _topLeftHandlePosition; }
         inline void setBottomLeftHandlePosition(const osg::Vec2d& pos) { _bottomLeftHandlePosition = pos; }
-        const osg::Vec2d& getBottomLeftHandlePosition() { return _bottomLeftHandlePosition; }
+        const osg::Vec2d& getBottomLeftHandlePosition() const { return _bottomLeftHandlePosition; }
         inline void setTopRightHandlePosition(const osg::Vec2d& pos) { _topRightHandlePosition = pos; }
-        const osg::Vec2d& getTopRightHandlePosition() { return _topRightHandlePosition; }
+        const osg::Vec2d& getTopRightHandlePosition() const { return _topRightHandlePosition; }
         inline void setBottomRightHandlePosition(const osg::Vec2d& pos){ _bottomRightHandlePosition = pos; }
-        const osg::Vec2d& getBottomRightHandlePosition() { return _bottomRightHandlePosition; }
+        const osg::Vec2d& getBottomRightHandlePosition() const { return _bottomRightHandlePosition; }
 
     protected:
 

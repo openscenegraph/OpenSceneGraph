@@ -6,7 +6,7 @@
 REGISTER_OBJECT_WRAPPER( osgTerrain_Terrain,
                          new osgTerrain::Terrain,
                          osgTerrain::Terrain,
-                         "osg::Object osg::Node osg::CoordinateSystemNode osgTerrain::Terrain" )
+                         "osg::Object osg::Node osg::Group osg::CoordinateSystemNode osgTerrain::Terrain" )
 {
     ADD_FLOAT_SERIALIZER( SampleRatio, 1.0f );  // _sampleRatio
     ADD_FLOAT_SERIALIZER( VerticalScale, 1.0f );  // _verticalScale

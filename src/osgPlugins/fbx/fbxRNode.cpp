@@ -416,19 +416,6 @@ osgDB::ReaderWriter::ReadResult readFbxNode(
 
     switch (lAttributeType)
     {
-    case KFbxNodeAttribute::eUNIDENTIFIED:
-        if (bLocalMatrixIdentity && children.size() + skeletal.size() == 1)
-        {
-            if (children.size() == 1)
-            {
-                return osgDB::ReaderWriter::ReadResult(children.front().get());
-            }
-            else
-            {
-                return osgDB::ReaderWriter::ReadResult(skeletal.front().get());
-            }
-        }
-        break;
     case KFbxNodeAttribute::eMESH:
         {
             size_t bindMatrixCount = boneBindMatrices.size();

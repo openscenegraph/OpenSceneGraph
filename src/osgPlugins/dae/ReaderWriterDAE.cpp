@@ -39,10 +39,10 @@ ReaderWriterDAE::readNode(const std::string& fname,
 
     bool bOwnDAE = false;
     DAE* pDAE = NULL;
-   
+
     if ( options )
         pDAE = (DAE*)options->getPluginData("DAE");
-    
+
     std::string ext( osgDB::getLowerCaseFileExtension(fname) );
     if( ! acceptsExtension(ext) ) return ReadResult::FILE_NOT_HANDLED;
 
@@ -80,7 +80,7 @@ ReaderWriterDAE::readNode(const std::string& fname,
             *(float*)options->getPluginData("DAE-AssetUnitMeter") = daeReader.getAssetUnitMeter();
         if (options->getPluginData("DAE-AssetUp_axis"))
             *(domUpAxisType*)options->getPluginData("DAE-AssetUp_axis") = daeReader.getAssetUpAxis();
-   }
+    }
 
     if (bOwnDAE)
         delete pDAE;
@@ -96,9 +96,6 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
         const std::string& fname, const osgDB::ReaderWriter::Options* options ) const
 {
     SERIALIZER();
-
-    std::istringstream iss(options->getOptionString());
-    std::string opt; 
 
     bool bOwnDAE = false;
     DAE* pDAE = NULL;
@@ -161,7 +158,7 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
     std::string fileURI = ConvertFilePathToColladaCompatibleURI(fname);
 
     osg::NodeVisitor::TraversalMode traversalMode = writeExtras ? osg::NodeVisitor::TRAVERSE_ALL_CHILDREN : osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN;
-    
+
     osgDAE::daeWriter daeWriter(pDAE, fileURI, usePolygon, googleMode, traversalMode, writeExtras, earthTex, zUpAxis, forceTexture);
     daeWriter.setRootNode( node );
     const_cast<osg::Node*>(&node)->accept( daeWriter );
@@ -172,7 +169,7 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
         if (pDAE->write(fileURI))
             retVal = WriteResult::FILE_SAVED;
     }
-    
+
     if ( options )
     {
         if (!bOwnDAE)

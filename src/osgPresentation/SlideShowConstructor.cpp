@@ -90,7 +90,7 @@ public:
     }        
 };
 
-SlideShowConstructor::SlideShowConstructor(const osgDB::ReaderWriter::Options* options):
+SlideShowConstructor::SlideShowConstructor(osgDB::Options* options):
     _options(options)
 {
     _slideDistance = osg::DisplaySettings::instance()->getScreenDistance();
@@ -780,6 +780,9 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
     if (!_currentLayer) addLayer();
 
     osg::Image* image = osgDB::readImageFile(filename, _options.get());
+
+    OSG_NOTICE<<"addImage(filename="<<filename<<", image="<<image<<std::endl;
+
     if (image) recordOptionsFilePath(_options.get());
 
     if (!image) return;
@@ -1055,8 +1058,12 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
 
 void SlideShowConstructor::addGraph(const std::string& filename,const std::string& options,const PositionData& positionData, const ImageData& imageData)
 {
+    static int s_count=0;
+
     std::string tmpDirectory("/tmp/");
-    std::string tmpSvgFileName(tmpDirectory+osgDB::getStrippedName(filename)+std::string(".svg"));
+    std::stringstream svgFileNameStream;
+    svgFileNameStream << tmpDirectory<<osgDB::getStrippedName(filename)<<s_count<<std::string(".svg");
+    std::string tmpSvgFileName(svgFileNameStream.str());
     std::string dotFileName = filename;
 
     if (osgDB::getFileExtension(filename)=="dot")
@@ -1065,17 +1072,40 @@ void SlideShowConstructor::addGraph(const std::string& filename,const std::strin
     }
     else
     {
-        dotFileName = tmpDirectory+osgDB::getStrippedName(filename)+std::string(".dot");
-        osg::ref_ptr<osg::Node> model = osgDB::readNodeFile(filename);
+        osg::ref_ptr<osg::Node> model = osgDB::readNodeFile(filename, _options.get());
         if (!model) return;
 
-        osgDB::writeNodeFile(*model, dotFileName);
+        dotFileName = tmpDirectory+osgDB::getStrippedName(filename)+std::string(".dot");
+
+        OSG_NOTICE<<"addGraph(options="<<options<<std::endl;
+
+        osg::ref_ptr<osgDB::Options> opts = _options.valid() ? _options->cloneOptions() : (new osgDB::Options);
+        if (!options.empty())
+        {
+            opts->setOptionString(options);
+        }
+        opts->setObjectCacheHint(osgDB::Options::CACHE_NONE);
+
+        osgDB::writeNodeFile(*model, dotFileName, opts.get());
     }
 
     std::stringstream command;
     command<<"dot -Tsvg "<<dotFileName<<" -o "<<tmpSvgFileName;
     int result = system(command.str().c_str());
-    if (result==0) addImage(tmpSvgFileName, positionData, imageData);
+    if (result==0)
+    {
+        osg::ref_ptr<osgDB::Options> previousOptions = _options;
+
+        // switch off cache so we make sure that we re-read the generated svg each time.
+        _options = _options.valid() ? _options->cloneOptions() : (new osgDB::Options);
+        _options->setObjectCacheHint(osgDB::Options::CACHE_NONE);
+
+        addImage(tmpSvgFileName, positionData, imageData);
+
+        _options = previousOptions;
+
+        ++s_count;
+    }
     else OSG_NOTICE<<"Error: SlideShowConstructor::addGraph() system("<<command.str()<<") failed with return "<<result<<std::endl;
 }
 

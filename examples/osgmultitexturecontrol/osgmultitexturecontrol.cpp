@@ -350,23 +350,31 @@ int main( int argc, char **argv )
         if (!terrain)
         {
             terrain = new osgTerrain::Terrain;
+
+            osg::CoordinateSystemNode* csn = findTopMostNodeOfType<osg::CoordinateSystemNode>(rootnode);
+            if (csn)
+            {
+                terrain->set(*csn);
+            }
+
             terrain->addChild(rootnode);
 
             rootnode = terrain;
-        }    
+            csn = terrain;
+        }
 
         terrain->setSampleRatio(sampleRatio);
         terrain->setVerticalScale(verticalScale);
 
-        // register our custom handler for adjust Terrain settings        
+        // register our custom handler for adjust Terrain settings
         viewer.addEventHandler(new TerrainHandler(terrain));
 
-        osg::CoordinateSystemNode* csn = findTopMostNodeOfType<osg::CoordinateSystemNode>(rootnode);
 
         unsigned int numLayers = 1;
         osgFX::MultiTextureControl* mtc = findTopMostNodeOfType<osgFX::MultiTextureControl>(rootnode);
         if (mtc)
         {
+
             numLayers = mtc->getNumTextureWeights();
 
             // switch on just the first texture layer.
@@ -391,15 +399,13 @@ int main( int argc, char **argv )
             maxElevationTransition /= 2.0;
         }
 
-        ElevationLayerBlendingCallback* elbc = new ElevationLayerBlendingCallback(mtc, elevations);
 
-        // assign to the most appropriate node (the CoordinateSystemNode is best as it provides the elevation on the globe.)
-        // note we must assign callback as both an update and cull callback, as update callback to do the update of
+        // we must assign callback as both an update and cull callback, as update callback to do the update of
         // the the osgFX::MultiTextureControl node a thread safe way, and as a cull callback to gather the camera
         // position information.
-        osg::Node* nodeToAssignCallbackTo = csn ? csn : (mtc ? mtc : rootnode);
-        nodeToAssignCallbackTo->setUpdateCallback(elbc);    
-        nodeToAssignCallbackTo->setCullCallback(elbc);    
+        ElevationLayerBlendingCallback* elbc = new ElevationLayerBlendingCallback(mtc, elevations);
+        terrain->setUpdateCallback(elbc);
+        terrain->setCullCallback(elbc);
 
         // add a viewport to the viewer and attach the scene graph.
         viewer.setSceneData( rootnode );

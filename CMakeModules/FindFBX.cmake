@@ -9,7 +9,7 @@
 # correspond to the ./configure --prefix=$FBX_DIR
 
 IF(WIN32)
-SET(FBX_ROOT "$ENV{PROGRAMFILES}/Autodesk/FBX/FbxSdk/2010.2" CACHE PATH "Location of FBX SDK directory")
+SET(FBX_ROOT "$ENV{PROGRAMFILES}/Autodesk/FBX/FbxSdk/2011.2" CACHE PATH "Location of FBX SDK directory")
 ELSE(WIN32)
 SET(FBX_ROOT $ENV{FBX_DIR} CACHE PATH "Location of FBX SDK directory")
 ENDIF(WIN32)

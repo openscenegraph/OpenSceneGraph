@@ -77,24 +77,18 @@ XmlNode* osgDB::readXmlStream(std::istream& fin)
     return root.release();
 }
 
-
-XmlNode::Input::Input():
-    _currentPos(0)
+XmlNode::ControlMap::ControlMap()
 {
     setUpControlMappings();
 }
 
-XmlNode::Input::Input(const Input&):
-    _currentPos(0)
+void XmlNode::ControlMap::addControlToCharacter(const std::string& control, int c)
 {
-    setUpControlMappings();
+    _controlToCharacterMap[control] = c;
+    _characterToControlMap[c] = control;
 }
 
-XmlNode::Input::~Input()
-{
-}
-
-void XmlNode::Input::setUpControlMappings()
+void XmlNode::ControlMap::setUpControlMappings()
 {
     addControlToCharacter("&amp;",'&');
     addControlToCharacter("&lt;",'<');
@@ -103,12 +97,20 @@ void XmlNode::Input::setUpControlMappings()
     addControlToCharacter("&apos;",'\'');
 }
 
-void XmlNode::Input::addControlToCharacter(const std::string& control, int c)
+XmlNode::Input::Input():
+    _currentPos(0)
 {
-    _controlToCharacterMap[control] = c;
-    _characterToControlMap[c] = control;
 }
 
+XmlNode::Input::Input(const Input&):
+    ControlMap(),
+    _currentPos(0)
+{
+}
+
+XmlNode::Input::~Input()
+{
+}
 void XmlNode::Input::open(const std::string& filename)
 {
     _fin.open(filename.c_str());
@@ -363,30 +365,41 @@ bool XmlNode::read(Input& input)
 
 bool XmlNode::write(std::ostream& fout, const std::string& indent) const
 {
+    ControlMap controlMap;
+    return write(controlMap, fout, indent);
+}
+
+bool XmlNode::write(const ControlMap& controlMap, std::ostream& fout, const std::string& indent) const
+{
     switch(type)
     {
         case(UNASSIGNED):
+            OSG_NOTICE<<"UNASSIGNED"<<std::endl;
             return false;
         case(ATOM):
         {
             fout<<indent<<"<"<<name;
-            writeProperties(fout);
+            writeProperties(controlMap, fout);
             fout<<" />"<<std::endl;
             return true;
         }
         case(ROOT):
         {
-            writeChildren(fout, indent);
+            writeChildren(controlMap, fout, indent);
             return true;
         }
         case(NODE):
+            fout<<indent<<"<"<<name;
+            writeProperties(controlMap,fout);
+            fout<<">"; writeString(controlMap, fout, contents); fout<<"</"<<name<<">"<<std::endl;
+            return true;
         case(GROUP):
         {
             fout<<indent<<"<"<<name;
-            writeProperties(fout);
+            writeProperties(controlMap,fout);
             fout<<">"<<std::endl;
 
-            writeChildren(fout, indent + "  ");
+            writeChildren(controlMap, fout, indent + "  ");
 
             fout<<indent<<"</"<<name<<">"<<std::endl;
             return true;
@@ -405,13 +418,21 @@ bool XmlNode::write(std::ostream& fout, const std::string& indent) const
     return false;
 }
 
-bool XmlNode::writeString(std::ostream& fout, const std::string& str) const
+bool XmlNode::writeString(const ControlMap& controlMap, std::ostream& fout, const std::string& str) const
 {
-    fout<<str;
+    for(std::string::const_iterator itr = str.begin();
+        itr != str.end();
+        ++itr)
+    {
+        int c = *itr;
+        ControlMap::CharacterToControlMap::const_iterator citr = controlMap._characterToControlMap.find(c);
+        if (citr != controlMap._characterToControlMap.end()) fout << citr->second;
+        else fout.put(c);
+    }
     return true;
 }
 
-bool XmlNode::writeChildren(std::ostream& fout, const std::string& indent) const
+bool XmlNode::writeChildren(const ControlMap& controlMap, std::ostream& fout, const std::string& indent) const
 {
     for(Children::const_iterator citr = children.begin();
         citr != children.end();
@@ -424,14 +445,14 @@ bool XmlNode::writeChildren(std::ostream& fout, const std::string& indent) const
     return true;
 }
 
-bool XmlNode::writeProperties(std::ostream& fout) const
+bool XmlNode::writeProperties(const ControlMap& controlMap, std::ostream& fout) const
 {
     for(Properties::const_iterator oitr = properties.begin();
         oitr != properties.end();
         ++oitr)
     {
         fout<<" "<<oitr->first<<"=\"";
-        if (!writeString(fout,oitr->second))
+        if (!writeString(controlMap,fout,oitr->second))
             return false;
         fout<<"\"";
     }

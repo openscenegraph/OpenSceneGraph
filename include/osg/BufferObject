@@ -589,7 +589,7 @@ class OSG_EXPORT BufferData : public Object
 
             META_Object(osg,ModifiedCallback);
 
-            virtual void modified(BufferData* bufferData) const {}
+            virtual void modified(BufferData* /*bufferData*/) const {}
         };
 
         void setModifiedCallback(ModifiedCallback* md) { _modifiedCallback = md; }

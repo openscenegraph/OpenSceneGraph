@@ -56,21 +56,26 @@ BEGIN_OBJECT_REFLECTOR(osgDB::XmlNode)
 	                      __bool__write__std_ostream_R1__C5_std_string_R1,
 	                      "",
 	                      "");
-	I_Method2(bool, writeString, IN, std::ostream &, fout, IN, const std::string &, str,
+	I_MethodWithDefaults3(bool, write, IN, const osgDB::XmlNode::ControlMap &, controlMap, , IN, std::ostream &, fout, , IN, const std::string &, indent, "",
+	                      Properties::NON_VIRTUAL,
+	                      __bool__write__C5_ControlMap_R1__std_ostream_R1__C5_std_string_R1,
+	                      "",
+	                      "");
+	I_Method3(bool, writeString, IN, const osgDB::XmlNode::ControlMap &, controlMap, IN, std::ostream &, fout, IN, const std::string &, str,
 	          Properties::NON_VIRTUAL,
-	          __bool__writeString__std_ostream_R1__C5_std_string_R1,
+	          __bool__writeString__C5_ControlMap_R1__std_ostream_R1__C5_std_string_R1,
 	          "",
 	          "");
-	I_ProtectedMethod2(bool, writeChildren, IN, std::ostream &, fout, IN, const std::string &, indent,
+	I_ProtectedMethod3(bool, writeChildren, IN, const osgDB::XmlNode::ControlMap &, controlMap, IN, std::ostream &, fout, IN, const std::string &, indent,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
-	                   __bool__writeChildren__std_ostream_R1__C5_std_string_R1,
+	                   __bool__writeChildren__C5_ControlMap_R1__std_ostream_R1__C5_std_string_R1,
 	                   "",
 	                   "");
-	I_ProtectedMethod1(bool, writeProperties, IN, std::ostream &, fout,
+	I_ProtectedMethod2(bool, writeProperties, IN, const osgDB::XmlNode::ControlMap &, controlMap, IN, std::ostream &, fout,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
-	                   __bool__writeProperties__std_ostream_R1,
+	                   __bool__writeProperties__C5_ControlMap_R1__std_ostream_R1,
 	                   "",
 	                   "");
 	I_SimpleProperty(std::string, TrimmedContents, 
@@ -83,14 +88,29 @@ BEGIN_OBJECT_REFLECTOR(osgDB::XmlNode)
 	I_PublicMemberProperty(osgDB::XmlNode::Children, children);
 END_REFLECTOR
 
+TYPE_NAME_ALIAS(std::map< std::string COMMA  int >, osgDB::XmlNode::ControlMap::ControlToCharacterMap)
+
+TYPE_NAME_ALIAS(std::map< int COMMA  std::string >, osgDB::XmlNode::ControlMap::CharacterToControlMap)
+
+BEGIN_VALUE_REFLECTOR(osgDB::XmlNode::ControlMap)
+	I_DeclaringFile("osgDB/XmlParser");
+	I_Constructor0(____ControlMap,
+	               "",
+	               "");
+	I_Method2(void, addControlToCharacter, IN, const std::string &, control, IN, int, c,
+	          Properties::NON_VIRTUAL,
+	          __void__addControlToCharacter__C5_std_string_R1__int,
+	          "",
+	          "");
+	I_PublicMemberProperty(osgDB::XmlNode::ControlMap::ControlToCharacterMap, _controlToCharacterMap);
+	I_PublicMemberProperty(osgDB::XmlNode::ControlMap::CharacterToControlMap, _characterToControlMap);
+END_REFLECTOR
+
 TYPE_NAME_ALIAS(std::string::size_type, osgDB::XmlNode::Input::size_type)
 
-TYPE_NAME_ALIAS(std::map< std::string COMMA  int >, osgDB::XmlNode::Input::ControlToCharacterMap)
-
-TYPE_NAME_ALIAS(std::map< int COMMA  std::string >, osgDB::XmlNode::Input::CharacterToControlMap)
-
-BEGIN_VALUE_REFLECTOR(osgDB::XmlNode::Input)
+BEGIN_OBJECT_REFLECTOR(osgDB::XmlNode::Input)
 	I_DeclaringFile("osgDB/XmlParser");
+	I_BaseType(osgDB::XmlNode::ControlMap);
 	I_Constructor0(____Input,
 	               "",
 	               "");
@@ -144,16 +164,9 @@ BEGIN_VALUE_REFLECTOR(osgDB::XmlNode::Input)
 	          __bool__match__C5_std_string_R1,
 	          "",
 	          "");
-	I_Method2(void, addControlToCharacter, IN, const std::string &, control, IN, int, c,
-	          Properties::NON_VIRTUAL,
-	          __void__addControlToCharacter__C5_std_string_R1__int,
-	          "",
-	          "");
 	I_SimpleProperty(int, , 
 	                 __int__get, 
 	                 0);
-	I_PublicMemberProperty(osgDB::XmlNode::Input::ControlToCharacterMap, _controlToCharacterMap);
-	I_PublicMemberProperty(osgDB::XmlNode::Input::CharacterToControlMap, _characterToControlMap);
 END_REFLECTOR
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgDB::XmlNode >)

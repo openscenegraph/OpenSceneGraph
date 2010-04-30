@@ -5,6 +5,7 @@ SET(TARGET_SRC
     present3D.cpp
     ReadShowFile.cpp
     ShowEventHandler.cpp
+    SpellChecker.cpp
 )
 
 SET(TARGET_H
@@ -13,6 +14,7 @@ SET(TARGET_H
     PointsEventHandler.h
     ReadShowFile.h
     ShowEventHandler.h
+    SpellChecker.h
 )
 
 IF (SDL_FOUND)

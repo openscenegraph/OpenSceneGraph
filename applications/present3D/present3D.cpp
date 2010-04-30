@@ -44,7 +44,7 @@
 #include "PointsEventHandler.h"
 #include "Cluster.h"
 #include "ExportHTML.h"
-
+#include "SpellChecker.h"
 
 #include <sstream>
 #include <fstream>
@@ -427,6 +427,15 @@ int main( int argc, char **argv )
     osg::Vec4 clearColor(0.0f,0.0f,0.0f,0.0f);
     
     while (arguments.read("--clear-color",clearColor[0],clearColor[1],clearColor[2],clearColor[3])) {}
+
+    std::string filename;
+    if (arguments.read("--spell-check",filename))
+    {
+        p3d::SpellChecker spellChecker;
+        spellChecker.checkP3dXml(filename);
+        return 1;
+    }
+
 
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);

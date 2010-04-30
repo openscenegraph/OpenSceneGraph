@@ -182,7 +182,7 @@ BEGIN_OBJECT_REFLECTOR(osg::BufferData::ModifiedCallback)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(void, modified, IN, osg::BufferData *, bufferData,
+	I_Method1(void, modified, IN, osg::BufferData *, x,
 	          Properties::VIRTUAL,
 	          __void__modified__BufferData_P1,
 	          "",

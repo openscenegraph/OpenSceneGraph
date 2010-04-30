@@ -171,7 +171,7 @@ Referenced::Referenced():
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getNumObjectMutex());
         ++s_numObjects;
-        OSG_NOTICE<<"Object created, total num="<<s_numObjects<<std::endl;
+        printf("Object created, total num=%d\n",s_numObjects);
     }
 #endif
 
@@ -198,7 +198,7 @@ Referenced::Referenced(bool threadSafeRefUnref):
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getNumObjectMutex());
         ++s_numObjects;
-        OSG_NOTICE<<"Object created, total num="<<s_numObjects<<std::endl;
+        printf("Object created, total num=%d\n",s_numObjects);
     }
 #endif
 }
@@ -224,7 +224,7 @@ Referenced::Referenced(const Referenced&):
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getNumObjectMutex());
         ++s_numObjects;
-        OSG_NOTICE<<"Object created, total num="<<s_numObjects<<std::endl;
+        printf("Object created, total num=%d\n",s_numObjects);
     }
 #endif
 }
@@ -235,7 +235,7 @@ Referenced::~Referenced()
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getNumObjectMutex());
         --s_numObjects;
-        OSG_NOTICE<<"Object deleted, total num="<<s_numObjects<<std::endl;
+        printf("Object created, total num=%d\n",s_numObjects);
     }
 #endif
 

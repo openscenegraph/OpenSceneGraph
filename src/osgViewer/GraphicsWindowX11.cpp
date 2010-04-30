@@ -282,6 +282,16 @@ Display* GraphicsWindowX11::getDisplayToUse() const
 
 bool GraphicsWindowX11::createVisualInfo()
 {
+    if (_visualInfo)
+    {
+    #ifdef OSG_USE_EGL
+        delete _visualInfo;
+    #else
+        XFree(_visualInfo);
+    #endif
+        _visualInfo = 0;
+    }
+
     if( _window != 0 )
     {
         XWindowAttributes watt;

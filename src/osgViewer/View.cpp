@@ -427,7 +427,7 @@ void View::setUpViewAcrossAllScreens()
         return;
     }
 
-    osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance();
+    osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance().get();
 
     double fovy, aspectRatio, zNear, zFar;
     _camera->getProjectionMatrixAsPerspective(fovy, aspectRatio, zNear, zFar);
@@ -575,7 +575,7 @@ void View::setUpViewAcrossAllScreens()
 
 void View::setUpViewInWindow(int x, int y, int width, int height, unsigned int screenNum)
 {
-    osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance();
+    osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance().get();
 
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(ds);
 
@@ -633,7 +633,7 @@ void View::setUpViewOnSingleScreen(unsigned int screenNum)
         return;
     }
 
-    osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance();
+    osg::DisplaySettings* ds = _displaySettings.valid() ? _displaySettings.get() : osg::DisplaySettings::instance().get();
 
     osg::GraphicsContext::ScreenIdentifier si;
     si.readDISPLAY();

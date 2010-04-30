@@ -23,10 +23,10 @@
 using namespace osg;
 using namespace std;
 
-DisplaySettings* DisplaySettings::instance()
+ref_ptr<DisplaySettings>& DisplaySettings::instance()
 {
     static ref_ptr<DisplaySettings> s_displaySettings = new DisplaySettings;
-    return s_displaySettings.get();
+    return s_displaySettings;
 }
 
 DisplaySettings::DisplaySettings(const DisplaySettings& vs):Referenced(true)

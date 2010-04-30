@@ -195,7 +195,7 @@ Renderer::Renderer(osg::Camera* camera):
     osgViewer::View* view = dynamic_cast<osgViewer::View*>(_camera->getView());
 
     osg::DisplaySettings* ds = _camera->getDisplaySettings() ?  _camera->getDisplaySettings() :
-                               ((view && view->getDisplaySettings()) ?  view->getDisplaySettings() :  osg::DisplaySettings::instance());
+                               ((view && view->getDisplaySettings()) ?  view->getDisplaySettings() :  osg::DisplaySettings::instance().get());
 
     unsigned int sceneViewOptions = osgUtil::SceneView::HEADLIGHT;
     if (view)
@@ -291,7 +291,7 @@ void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
     if (databasePager) databasePager->setCompileGLObjectsForContextID(state->getContextID(), true);
 
     osg::DisplaySettings* ds = _camera->getDisplaySettings() ?  _camera->getDisplaySettings() :
-                               ((view &&view->getDisplaySettings()) ?  view->getDisplaySettings() :  osg::DisplaySettings::instance());
+                               ((view &&view->getDisplaySettings()) ?  view->getDisplaySettings() :  osg::DisplaySettings::instance().get());
 
     sceneView->setDisplaySettings(ds);
 

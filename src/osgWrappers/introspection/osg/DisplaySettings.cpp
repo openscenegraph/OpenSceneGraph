@@ -67,8 +67,8 @@ TYPE_NAME_ALIAS(int, osg::DisplaySettings::ImplicitBufferAttachmentMask)
 BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	I_DeclaringFile("osg/DisplaySettings");
 	I_BaseType(osg::Referenced);
-	I_StaticMethod0(osg::DisplaySettings *, instance,
-	                __DisplaySettings_P1__instance_S,
+	I_StaticMethod0(osg::ref_ptr< osg::DisplaySettings > &, instance,
+	                __ref_ptrT1_DisplaySettings__R1__instance_S,
 	                "Maintain a DisplaySettings singleton for objects to query at runtime. ",
 	                "");
 	I_Constructor0(____DisplaySettings,
@@ -589,5 +589,45 @@ BEGIN_OBJECT_REFLECTOR(osg::DisplaySettings)
 	I_SimpleProperty(osg::DisplaySettings::StereoMode, StereoMode, 
 	                 __StereoMode__getStereoMode, 
 	                 __void__setStereoMode__StereoMode);
+END_REFLECTOR
+
+BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::DisplaySettings >)
+	I_DeclaringFile("osg/ref_ptr");
+	I_Constructor0(____ref_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::DisplaySettings *, ptr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__T_P1,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osg::DisplaySettings > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Method0(osg::DisplaySettings *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_Method0(osg::DisplaySettings *, release,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__release,
+	          "",
+	          "");
+	I_Method1(void, swap, IN, osg::ref_ptr< osg::DisplaySettings > &, rp,
+	          Properties::NON_VIRTUAL,
+	          __void__swap__ref_ptr_R1,
+	          "",
+	          "");
+	I_SimpleProperty(osg::DisplaySettings *, , 
+	                 __T_P1__get, 
+	                 0);
 END_REFLECTOR
 

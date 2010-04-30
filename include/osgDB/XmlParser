@@ -66,7 +66,26 @@ class OSGDB_EXPORT XmlNode : public osg::Referenced
 
     public:
 
-        class OSGDB_EXPORT Input
+        class OSGDB_EXPORT ControlMap
+        {
+            public:
+                ControlMap();
+
+                typedef std::map< std::string, int > ControlToCharacterMap;
+                typedef std::map< int, std::string> CharacterToControlMap;
+
+                void addControlToCharacter(const std::string& control, int c);
+
+                ControlToCharacterMap _controlToCharacterMap;
+                CharacterToControlMap _characterToControlMap;
+
+            private:
+
+                void setUpControlMappings();
+
+        };
+
+        class OSGDB_EXPORT Input : public ControlMap
         {
             public:
 
@@ -110,18 +129,7 @@ class OSGDB_EXPORT XmlNode : public osg::Referenced
 
                 bool match(const std::string& str) { return (_currentPos<_buffer.size()) ? _buffer.compare(_currentPos, str.size(), str)==0 : false; }
 
-
-                typedef std::map< std::string, int > ControlToCharacterMap;
-                typedef std::map< int, std::string> CharacterToControlMap;
-
-                void addControlToCharacter(const std::string& control, int c);
-
-                ControlToCharacterMap _controlToCharacterMap;
-                CharacterToControlMap _characterToControlMap;
-
             private:
-
-                void setUpControlMappings();
 
                 size_type _currentPos;
 
@@ -131,14 +139,15 @@ class OSGDB_EXPORT XmlNode : public osg::Referenced
         };
 
         bool read(Input& input);
-
         bool write(std::ostream& fout, const std::string& indent = "") const;
-        bool writeString(std::ostream& fout, const std::string& str) const;
+
+        bool write(const ControlMap& controlMap, std::ostream& fout, const std::string& indent = "") const;
+        bool writeString(const ControlMap& controlMap, std::ostream& fout, const std::string& str) const;
 
     protected:
 
-        bool writeChildren(std::ostream& fout, const std::string& indent) const;
-        bool writeProperties(std::ostream& fout) const;
+        bool writeChildren(const ControlMap& controlMap, std::ostream& fout, const std::string& indent) const;
+        bool writeProperties(const ControlMap& controlMap, std::ostream& fout) const;
 };
 
 }

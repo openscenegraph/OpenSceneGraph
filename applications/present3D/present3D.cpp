@@ -436,6 +436,31 @@ int main( int argc, char **argv )
         return 1;
     }
 
+    if (arguments.read("--strip-text",filename))
+    {
+        p3d::XmlPatcher patcher;
+        // patcher.stripP3dXml(filename, osg::notify(osg::NOTICE));
+
+        osg::ref_ptr<osgDB::XmlNode> newNode = patcher.simplifyP3dXml(filename);
+        if (newNode.valid())
+        {
+            newNode->write(std::cout);
+        }
+        return 1;
+    }
+
+    std::string lhs_filename, rhs_filename;
+    if (arguments.read("--merge",lhs_filename, rhs_filename))
+    {
+        p3d::XmlPatcher patcher;
+        osg::ref_ptr<osgDB::XmlNode> newNode = patcher.mergeP3dXml(lhs_filename, rhs_filename);
+        if (newNode.valid())
+        {
+            newNode->write(std::cout);
+        }
+        return 1;
+    }
+
 
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);

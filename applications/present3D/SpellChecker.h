@@ -34,6 +34,23 @@ class SpellChecker
         WordList suggest(const std::string& word) const;
 };
 
+
+class XmlPatcher
+{
+    public:
+        XmlPatcher();
+
+        void stripP3dXml(const std::string& filename, std::ostream& fout) const;
+        void stripXml(osgDB::XmlNode* xmlNode, std::ostream& fout) const;
+
+        osgDB::XmlNode* simplifyP3dXml(const std::string& filename) const;
+        osgDB::XmlNode* simplifyXml(osgDB::XmlNode* xmlNode) const;
+
+        osgDB::XmlNode* mergeP3dXml(const std::string& lhs_filename, const std::string& rhs_filename) const;
+        osgDB::XmlNode* mergeXml(osgDB::XmlNode* lhs_node, osgDB::XmlNode* rhs_node) const;
+
+};
+
 }
 
 #endif

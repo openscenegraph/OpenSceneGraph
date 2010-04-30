@@ -12,6 +12,7 @@
 
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
+#include <osg/Notify>
 
 #include <iostream>
 
@@ -88,4 +89,168 @@ bool SpellChecker::isCorrect(const std::string& word) const
 SpellChecker::WordList SpellChecker::suggest(const std::string& word) const
 {
     return WordList();
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+XmlPatcher::XmlPatcher()
+{
+}
+
+void XmlPatcher::stripP3dXml(const std::string& filename, std::ostream& fout) const
+{
+    std::string foundFileName = osgDB::findDataFile( filename );
+    if (foundFileName.empty()) return;
+
+    std::ifstream fin(foundFileName.c_str());
+
+    osgDB::XmlNode::Input input;
+    input.attach(fin);
+    input.readAllDataIntoBuffer();
+
+    osg::ref_ptr<osgDB::XmlNode> doc = new osgDB::XmlNode;
+    doc->read(input);
+
+    if (!doc) return;
+
+    stripXml(doc.get(), fout);
+}
+
+void XmlPatcher::stripXml(osgDB::XmlNode* node, std::ostream& fout) const
+{
+    if (node->name=="presentation" ||
+        node->name=="slide" ||
+        node->name=="layer" ||
+        node->name=="page" ||
+        node->name=="paragraph" ||
+        node->name=="bullet")
+    {
+        if (!(node->children.empty()))
+        {
+            fout<<"<"<<node->name<<">"<<std::endl;
+            for(osgDB::XmlNode::Children::iterator itr = node->children.begin();
+                itr != node->children.end();
+                ++itr)
+            {
+                stripXml(itr->get(), fout);
+            }
+            fout<<"</"<<node->name<<">"<<std::endl;
+        }
+        else
+        {
+            fout<<"<"<<node->name<<">"<<node->contents<<"</"<<node->name<<">"<<std::endl;
+        }
+    }
+    else
+    {
+        for(osgDB::XmlNode::Children::iterator itr = node->children.begin();
+            itr != node->children.end();
+            ++itr)
+        {
+            stripXml(itr->get(), fout);
+        }
+    }
+}
+
+osgDB::XmlNode* XmlPatcher::simplifyP3dXml(const std::string& filename) const
+{
+    std::string foundFileName = osgDB::findDataFile( filename );
+    if (foundFileName.empty()) return 0;
+
+    std::ifstream fin(foundFileName.c_str());
+
+    osgDB::XmlNode::Input input;
+    input.attach(fin);
+    input.readAllDataIntoBuffer();
+
+    osg::ref_ptr<osgDB::XmlNode> doc = new osgDB::XmlNode;
+    doc->read(input);
+
+    if (!doc) return 0;
+
+    return simplifyXml(doc.get());
+}
+
+osgDB::XmlNode* XmlPatcher::simplifyXml(osgDB::XmlNode* node) const
+{
+    if (node->name.empty() ||
+        node->name=="presentation" ||
+        node->name=="slide" ||
+        node->name=="layer" ||
+        node->name=="page" ||
+        node->name=="paragraph" ||
+        node->name=="bullet")
+    {
+        osgDB::XmlNode* newNode = new osgDB::XmlNode;
+        newNode->type = node->type;
+        newNode->name = node->name;
+        newNode->contents = node->contents;
+        for(osgDB::XmlNode::Children::iterator itr = node->children.begin();
+            itr != node->children.end();
+            ++itr)
+        {
+            osgDB::XmlNode* child = simplifyXml(itr->get());
+            if (child)  newNode->children.push_back(child);
+        }
+        return newNode;
+    }
+    else
+    {
+        return 0;
+    }
+}
+osgDB::XmlNode* XmlPatcher::mergeP3dXml(const std::string& lhs_filename, const std::string& rhs_filename) const
+{
+    std::string lhs_foundFileName = osgDB::findDataFile( lhs_filename );
+    if (lhs_foundFileName.empty()) return 0;
+
+    std::string rhs_foundFileName = osgDB::findDataFile( rhs_filename );
+    if (rhs_foundFileName.empty()) return 0;
+
+    osg::ref_ptr<osgDB::XmlNode> lhs_doc = new osgDB::XmlNode;
+    osg::ref_ptr<osgDB::XmlNode> rhs_doc = new osgDB::XmlNode;
+
+    {
+        std::ifstream fin(lhs_foundFileName.c_str());
+
+        osgDB::XmlNode::Input input;
+        input.attach(fin);
+        input.readAllDataIntoBuffer();
+
+        lhs_doc->read(input);
+        if (!lhs_doc) return 0;
+    }
+
+    {
+        std::ifstream fin(rhs_foundFileName.c_str());
+
+        osgDB::XmlNode::Input input;
+        input.attach(fin);
+        input.readAllDataIntoBuffer();
+
+        rhs_doc->read(input);
+        if (!rhs_doc) return 0;
+    }
+
+    lhs_doc = mergeXml(lhs_doc.get(), rhs_doc.get());
+    return lhs_doc.release();
+}
+
+osgDB::XmlNode* XmlPatcher::mergeXml(osgDB::XmlNode* lhs_node, osgDB::XmlNode* rhs_node) const
+{
+    if (lhs_node->name == rhs_node->name)
+    {
+        lhs_node->contents = rhs_node->contents;
+        osgDB::XmlNode::Children::iterator rhs_itr = rhs_node->children.begin();
+        for(osgDB::XmlNode::Children::iterator lhs_itr = lhs_node->children.begin();
+            lhs_itr != lhs_node->children.end() && rhs_itr != rhs_node->children.end();
+            ++lhs_itr)
+        {
+            if ((*lhs_itr)->name == (*rhs_itr)->name)
+            {
+                mergeXml(lhs_itr->get(), rhs_itr->get());
+                ++rhs_itr;
+            }
+        }
+    }
+    return lhs_node;
 }

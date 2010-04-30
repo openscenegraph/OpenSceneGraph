@@ -781,8 +781,6 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
 
     osg::Image* image = osgDB::readImageFile(filename, _options.get());
 
-    OSG_NOTICE<<"addImage(filename="<<filename<<", image="<<image<<std::endl;
-
     if (image) recordOptionsFilePath(_options.get());
 
     if (!image) return;
@@ -1056,11 +1054,27 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
     _currentLayer->addChild(subgraph);
 }
 
-void SlideShowConstructor::addGraph(const std::string& filename,const std::string& options,const PositionData& positionData, const ImageData& imageData)
+void SlideShowConstructor::addGraph(const std::string& contents,const std::string& options,const PositionData& positionData, const ImageData& imageData)
 {
     static int s_count=0;
 
+    if (contents.empty()) return;
+
     std::string tmpDirectory("/tmp/");
+
+    std::string filename = contents;
+    std::string ext = osgDB::getFileExtension(contents);
+    if (ext.empty())
+    {
+        std::stringstream dotFileNameStream;
+        dotFileNameStream << tmpDirectory<<"graph_"<<s_count<<std::string(".dot");
+        filename = dotFileNameStream.str();
+
+        // write out the string to the temporary file.
+        std::ofstream fout(filename.c_str());
+        fout<<contents.c_str();
+    }
+
     std::stringstream svgFileNameStream;
     svgFileNameStream << tmpDirectory<<osgDB::getStrippedName(filename)<<s_count<<std::string(".svg");
     std::string tmpSvgFileName(svgFileNameStream.str());
@@ -1076,8 +1090,6 @@ void SlideShowConstructor::addGraph(const std::string& filename,const std::strin
         if (!model) return;
 
         dotFileName = tmpDirectory+osgDB::getStrippedName(filename)+std::string(".dot");
-
-        OSG_NOTICE<<"addGraph(options="<<options<<std::endl;
 
         osg::ref_ptr<osgDB::Options> opts = _options.valid() ? _options->cloneOptions() : (new osgDB::Options);
         if (!options.empty())

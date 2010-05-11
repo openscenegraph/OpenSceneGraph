@@ -13,20 +13,16 @@
  */
 
 #include <cassert>
-#include <sstream>
-#include <map>
 #include <osg/CullFace>
-#include <osg/Math>
 #include <osg/MatrixTransform>
 #include <osg/NodeVisitor>
 #include <osg/PrimitiveSet>
 #include <osgDB/FileUtils>
 #include <osgDB/WriteFile>
 #include "WriterNodeVisitor.h"
-#include <limits.h>
 
 
-// Use namespace qualification to avoid static-link symbol collitions
+// Use namespace qualification to avoid static-link symbol collisions
 // from multiply defined symbols.
 namespace pluginfbx
 {
@@ -585,6 +581,7 @@ WriterNodeVisitor::setControlPointAndNormalsAndUV(const osg::Geode& geo,
 
 
         const osg::Array * basenormals = pGeometry->getNormalArray();
+
         if (basenormals && basenormals->getNumElements()>0)
         {
             KFbxVector4 normal;
@@ -734,6 +731,9 @@ void WriterNodeVisitor::apply(osg::Geode& node)
     for (MaterialMap::iterator it = _materialMap.begin(); it != _materialMap.end(); ++it)
         it->second.setIndex(-1);
     _lastMaterialIndex = 0;
+    if(node.getStateSet()){
+        pushStateSet(node.getStateSet());
+    }
     for (unsigned int i = 0; i < count; ++i)
     {
         const osg::Geometry* g = node.getDrawable(i)->asGeometry();
@@ -743,7 +743,10 @@ void WriterNodeVisitor::apply(osg::Geode& node)
             createListTriangle(g, listTriangles, texcoords, i);
             popStateSet(g->getStateSet());
         }
-    }   
+    }
+    if(node.getStateSet()){
+        popStateSet(node.getStateSet());
+    }
     if (count > 0)
     {
         buildFaces(node, listTriangles, texcoords);

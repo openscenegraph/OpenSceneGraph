@@ -30,7 +30,7 @@ public:
     StateSetContent convert(const KFbxSurfaceMaterial* pFbxMat);
 
     //dir is the directory where fbx is stored (for relative path).
-    FbxMaterialToOsgStateSet::FbxMaterialToOsgStateSet(const std::string& dir, const osgDB::Options* options) :
+    FbxMaterialToOsgStateSet(const std::string& dir, const osgDB::Options* options) :
         _options(options),
         _dir(dir) {}
 

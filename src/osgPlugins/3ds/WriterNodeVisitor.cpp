@@ -389,7 +389,12 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor & writerNodeVisitor, osg
         diffuse = mat->getDiffuse(osg::Material::FRONT);
         ambient = mat->getAmbient(osg::Material::FRONT);
         specular = mat->getSpecular(osg::Material::FRONT);
-        shininess = mat->getShininess(osg::Material::FRONT);
+        shininess = mat->getShininess(osg::Material::FRONT) / 128.f;
+        // OpenGL shininess = pow(2, 10.0*mat->shininess);            (As in lib3ds example)
+        // => mat->shininess = log.2( OpenGL shininess ) /10        (if values are >0)
+        // => mat->shininess = log( OpenGL shininess ) / log(2) /10
+        //shininess = mat->getShininess(osg::Material::FRONT) <= 0 ? 0 : log( mat->getShininess(osg::Material::FRONT) ) / log(2.f) / 10.f;
+
         transparency = 1-diffuse.w();
         name = writerNodeVisitor.getUniqueName(mat->getName(),"mat");
         osg::StateAttribute * attribute = stateset->getAttribute(osg::StateAttribute::CULLFACE);
@@ -421,7 +426,8 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor & writerNodeVisitor, osg
         if(img)
         {
             texture_transparency = (stateset->getMode(GL_BLEND) == osg::StateAttribute::ON);
-            texture_no_tile = (tex->getWrap(osg::Texture2D::WRAP_S) == osg::Texture2D::CLAMP);
+            osg::Texture::WrapMode wrapS = tex->getWrap(osg::Texture2D::WRAP_S);
+            texture_no_tile = !(wrapS == osg::Texture2D::REPEAT || wrapS == osg::Texture2D::MIRROR);
             image = img;
         }
     }
@@ -576,8 +582,11 @@ void WriterNodeVisitor::writeMaterials()
                     _imageSet.insert(mat.image.get());
                     osgDB::writeImageFile(*(mat.image), path);
                 }
+                // Here we don't assume anything about initial flags state (actually it is set to LIB3DS_TEXTURE_NO_TILE by lib3DS, but this is subject to change)
                 if (mat.texture_transparency) tex.flags |= LIB3DS_TEXTURE_ALPHA_SOURCE;
+                else tex.flags &= ~LIB3DS_TEXTURE_ALPHA_SOURCE;
                 if (mat.texture_no_tile) tex.flags |= LIB3DS_TEXTURE_NO_TILE;
+                else tex.flags &= ~LIB3DS_TEXTURE_NO_TILE;
             }
             if (!succeeded())
                 return;

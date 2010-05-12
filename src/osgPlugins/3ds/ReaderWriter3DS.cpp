@@ -1047,12 +1047,13 @@ osg::StateSet* ReaderWriter3DS::ReaderObject::createStateSet(Lib3dsMaterial *mat
     osg::Vec4 specular(mat->specular[0],mat->specular[1],mat->specular[2],alpha);
     specular *= mat->shin_strength;
 
-    float shininess = mat->shininess;
+    float shininess = mat->shininess*128.0f;
+    //float shininess = pow(2, 10.0*mat->shininess);        // As in lib3ds example
     material->setName(mat->name);
     material->setAmbient(osg::Material::FRONT_AND_BACK,ambient);
     material->setDiffuse(osg::Material::FRONT_AND_BACK,diffuse);
     material->setSpecular(osg::Material::FRONT_AND_BACK,specular);
-    material->setShininess(osg::Material::FRONT_AND_BACK,shininess*128.0f);
+    material->setShininess(osg::Material::FRONT_AND_BACK,shininess);
 
     stateset->setAttribute(material);
 

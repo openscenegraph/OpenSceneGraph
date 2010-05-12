@@ -254,6 +254,10 @@ Referenced::~Referenced()
 #else
     if (_observerSet) delete static_cast<ObserverSet*>(_observerSet);
 #endif
+
+#if !defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
+    if (_refMutex) delete _refMutex;
+#endif
 }
 
 ObserverSet* Referenced::getOrCreateObserverSet() const

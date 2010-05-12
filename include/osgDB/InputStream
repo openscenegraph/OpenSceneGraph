@@ -161,6 +161,7 @@ protected:
     
     int _byteSwap;
     bool _useFloatMatrix;
+    bool _useSchemaData;
     bool _forceReadingImage;
     std::vector<std::string> _fields;
     osg::ref_ptr<InputIterator> _in;

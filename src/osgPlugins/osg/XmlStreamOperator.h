@@ -475,7 +475,7 @@ protected:
         if ( isReadable() ) return true;
         _sstream.clear();
         
-        osgDB::XmlNode* current = _nodePath.back();
+        osgDB::XmlNode* current = _nodePath.back().get();
         if ( !current->name.empty() )
         {
             _sstream.str( current->name );

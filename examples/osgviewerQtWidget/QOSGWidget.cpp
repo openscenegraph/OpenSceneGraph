@@ -124,7 +124,7 @@ QOSGWidget::QOSGWidget( QWidget * parent, WindowFlags f)
 
 void QOSGWidget::createContext(QWidget * parent)
 {
-    osg::DisplaySettings* ds = osg::DisplaySettings::instance();
+    osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
 
     osg::ref_ptr<osg::GraphicsContext::Traits> traits = 
         new osg::GraphicsContext::Traits;

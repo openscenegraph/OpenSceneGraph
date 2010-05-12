@@ -97,7 +97,7 @@ class OSGSHADOW_EXPORT ParallelSplitShadowMap :  public ShadowTechnique
         inline void setUserLight(osg::Light* light) { _userLight = light; }
         
         /** get the user defined light for shadow simulation */
-        inline const osg::Light* getUserLight() const { return _userLight; }
+        inline const osg::Light* getUserLight() const { return _userLight.get(); }
 
         /** Set the values for the ambient bias the shader will use.*/
         void setAmbientBias(const osg::Vec2& ambientBias );

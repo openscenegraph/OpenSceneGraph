@@ -1069,7 +1069,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
                 {
                     itr->second.first->push_back((*itr->second.first)[orig_i]);
                 }
-                
+
                 skirtDrawElements->addElement(orig_i);
                 skirtDrawElements->addElement(new_i);
             }
@@ -1078,18 +1078,18 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
                 if (skirtDrawElements->getNumIndices()!=0)
                 {
                     geometry->addPrimitiveSet(skirtDrawElements.get());
-                    skirtDrawElements = smallTile ? 
+                    skirtDrawElements = smallTile ?
                         static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUAD_STRIP)) :
                         static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_QUAD_STRIP));
                 }
-                
+
             }
         }
 
         if (skirtDrawElements->getNumIndices()!=0)
         {
             geometry->addPrimitiveSet(skirtDrawElements.get());
-            skirtDrawElements = smallTile ? 
+            skirtDrawElements = smallTile ?
                         static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUAD_STRIP)) :
                         static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_QUAD_STRIP));
         }
@@ -1111,7 +1111,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
                 {
                     itr->second.first->push_back((*itr->second.first)[orig_i]);
                 }
-                
+
                 skirtDrawElements->addElement(orig_i);
                 skirtDrawElements->addElement(new_i);
             }
@@ -1120,11 +1120,11 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
                 if (skirtDrawElements->getNumIndices()!=0)
                 {
                     geometry->addPrimitiveSet(skirtDrawElements.get());
-                    skirtDrawElements = smallTile ? 
+                    skirtDrawElements = smallTile ?
                         static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUAD_STRIP)) :
                         static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_QUAD_STRIP));
                 }
-                
+
             }
         }
 
@@ -1153,7 +1153,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
                 {
                     itr->second.first->push_back((*itr->second.first)[orig_i]);
                 }
-                
+
                 skirtDrawElements->addElement(orig_i);
                 skirtDrawElements->addElement(new_i);
             }
@@ -1162,11 +1162,11 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
                 if (skirtDrawElements->getNumIndices()!=0)
                 {
                     geometry->addPrimitiveSet(skirtDrawElements.get());
-                    skirtDrawElements = smallTile ? 
+                    skirtDrawElements = smallTile ?
                         static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUAD_STRIP)) :
                         static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_QUAD_STRIP));
                 }
-                
+
             }
         }
 
@@ -1195,7 +1195,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
                 {
                     itr->second.first->push_back((*itr->second.first)[orig_i]);
                 }
-                
+
                 skirtDrawElements->addElement(orig_i);
                 skirtDrawElements->addElement(new_i);
             }
@@ -1206,16 +1206,12 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
                     geometry->addPrimitiveSet(skirtDrawElements.get());
                     skirtDrawElements = new osg::DrawElementsUShort(GL_QUAD_STRIP);
                 }
-                
             }
         }
 
         if (skirtDrawElements->getNumIndices()!=0)
         {
             geometry->addPrimitiveSet(skirtDrawElements.get());
-            smallTile ? 
-                static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_QUAD_STRIP)) :
-                static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_QUAD_STRIP));
         }
     }
 

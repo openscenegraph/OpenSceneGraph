@@ -59,11 +59,11 @@ struct GeometryHints
     osg::Vec3           position;
     osg::Vec3           widthVec;
     osg::Vec3           heightVec;
-    
+
     osg::Vec4           backgroundColor;
-    
+
     AspectRatioPolicy   aspectRatioPolicy;
-    
+
     unsigned int        widthResolution;
     unsigned int        heightResolution;
 
@@ -79,21 +79,21 @@ class PdfImage : public osg::Image
             _pageNum(0),
             _nextPageKeyEvent('n'),
             _previousPageKeyEvent('p') {}
-    
+
         void setBackgroundColor(const osg::Vec4& backgroundColor) { _backgroundColor = backgroundColor; }
         const osg::Vec4& getBackgroundColor() const { return _backgroundColor; }
 
         int getPageNum() const { return _pageNum; }
-    
-	virtual int getNumOfPages() = 0;
-        
+
+        virtual int getNumOfPages() = 0;
+
         virtual bool page(int pageNum) = 0;
 
         bool previous()
         {
             return page(_pageNum-1);
         }
-        
+
         bool next()
         { 
              return page(_pageNum+1);
@@ -104,17 +104,17 @@ class PdfImage : public osg::Image
 
         void setPreviousPageKeyEvent(int key) { _previousPageKeyEvent = key; }
         int getPreviousPageKeyEvent() const { return _previousPageKeyEvent; }
-        
+
     protected:
-    
+
         virtual ~PdfImage() {}
-        
+
         osg::Vec4 _backgroundColor;
 
         int _pageNum;
         int _nextPageKeyEvent;
         int _previousPageKeyEvent;
-    
+
 };
 
 
@@ -122,11 +122,11 @@ class PdfImage : public osg::Image
 class OSGWIDGET_EXPORT PdfReader : public osg::Geode
 {
     public:
-    
+
         PdfReader() {}
 
         PdfReader(const std::string& filename, const GeometryHints& hints = GeometryHints());
-        
+
         bool assign(PdfImage* pdfImage, const GeometryHints& hints = GeometryHints());
 
         bool open(const std::string& filename, const GeometryHints& hints = GeometryHints());
@@ -134,11 +134,11 @@ class OSGWIDGET_EXPORT PdfReader : public osg::Geode
         bool page(int pageNum);
 
         bool previous();
-        
+
         bool next();
 
     protected:
-    
+
         osg::ref_ptr<PdfImage> _pdfImage;
 };
 

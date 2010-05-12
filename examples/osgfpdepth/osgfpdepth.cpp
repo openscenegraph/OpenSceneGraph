@@ -404,7 +404,7 @@ AppState::AppState(osgViewer::Viewer* viewer_)
     textInverted = new Geode;
     textInverted->addDrawable(inverted);
     textInverted->setNodeMask(~0u);
-    textProjection->addChild(textInverted);
+    textProjection->addChild(textInverted.get());
     textProjection->getOrCreateStateSet()->setRenderBinDetails(11, "RenderBin");
 }
 
@@ -641,7 +641,7 @@ void ResizedCallback::resizedImplementation(GraphicsContext* gc, int x, int y,
                                             int width, int height)
 {
     gc->resizedImplementation(x, y, width, height);
-    makeTexturesAndGeometry(width, height, _appState->sw);
+    makeTexturesAndGeometry(width, height, _appState->sw.get());
     _appState->setStateFromConfig(validConfigs[_appState
                                                ->currentConfig]);
     osgViewer::Viewer* viewer = _appState->viewer;
@@ -693,9 +693,7 @@ GraphicsContext* setupGC(osgViewer::Viewer& viewer, ArgumentParser& arguments)
         return 0;
     }
 
-    DisplaySettings* ds = viewer.getDisplaySettings();
-    if (!ds)
-        ds = DisplaySettings::instance();
+    DisplaySettings* ds = viewer.getDisplaySettings() ? viewer.getDisplaySettings() : DisplaySettings::instance().get();
     GraphicsContext::ScreenIdentifier si;
     si.readDISPLAY();
 
@@ -769,7 +767,7 @@ GraphicsContext* setupGC(osgViewer::Viewer& viewer, ArgumentParser& arguments)
     BufferConfigList colorConfigs;
     BufferConfigList depthConfigs;
     vector<int> coverageConfigs;
-    getPossibleConfigs(gc, colorConfigs, depthConfigs, coverageConfigs);
+    getPossibleConfigs(gc.get(), colorConfigs, depthConfigs, coverageConfigs);
     int coverageSampleConfigs = (coverageConfigs.size() - 4) / 2;
     cout << "color configs\nname\tbits\n";
     for (BufferConfigList::const_iterator colorItr = colorConfigs.begin(),
@@ -786,9 +784,9 @@ GraphicsContext* setupGC(osgViewer::Viewer& viewer, ArgumentParser& arguments)
             FboConfig config(root, colorItr->format, depthItr->format,
                              colorItr->bits, depthItr->bits);
             FboData data;
-            if (createFBO(gc, config, data))
+            if (createFBO(gc.get(), config, data))
                 validConfigs.push_back(config);
-            destroyFBO(gc, data);
+            destroyFBO(gc.get(), data);
             if (coverageConfigs.size() > 0)
             {
                 //CSAA provides a list of all supported AA modes for
@@ -813,10 +811,10 @@ GraphicsContext* setupGC(osgViewer::Viewer& viewer, ArgumentParser& arguments)
                     }
                     config.name = msText.str();
 
-                    if (createFBO(gc, config, data)) {
+                    if (createFBO(gc.get(), config, data)) {
                         validConfigs.push_back( config);
                     }
-                    destroyFBO(gc, data);
+                    destroyFBO(gc.get(), data);
                 }
             }
         }
@@ -885,9 +883,9 @@ void setAttachmentsFromConfig(Camera* camera, const FboConfig& config)
     if (config.coverageSamples != 0 || config.depthSamples != 0)
         camera->attach(Camera::DEPTH_BUFFER, config.depthFormat);
     else if (config.depthFormat == GL_DEPTH_COMPONENT24)
-        camera->attach(Camera::DEPTH_BUFFER, depthTexture24);
+        camera->attach(Camera::DEPTH_BUFFER, depthTexture24.get());
     else
-        camera->attach(Camera::DEPTH_BUFFER, depthTexture);
+        camera->attach(Camera::DEPTH_BUFFER, depthTexture.get());
 }
 
 // Create the parts of the local scene graph used to display the final
@@ -911,9 +909,9 @@ Switch* makeTexturesAndGeometry(int width, int height, Switch* sw)
     else
         depthTexture = depthTexture24;
     sw->removeChildren(0, sw->getNumChildren());
-    sw->addChild(createTextureQuad(colorTexture));
-    sw->addChild(createTextureQuad(depthTexture));
-    sw->addChild(createTextureQuad(depthTexture24));
+    sw->addChild(createTextureQuad(colorTexture.get()));
+    sw->addChild(createTextureQuad(depthTexture.get()));
+    sw->addChild(createTextureQuad(depthTexture24.get()));
     sw->setSingleChildOn(0);
     return sw;
 }
@@ -965,15 +963,15 @@ int main(int argc, char **argv)
     osgUtil::Optimizer optimizer;
     optimizer.optimize(loadedModel.get());
     // creates texture to be rendered
-    Switch* sw = makeTexturesAndGeometry(width, height, appState->sw);
+    Switch* sw = makeTexturesAndGeometry(width, height, appState->sw.get());
     ref_ptr<Camera> rttCamera = makeRttCamera(gc, width, height);
     rttCamera->setRenderOrder(Camera::PRE_RENDER);
-    viewer.addSlave(rttCamera);
+    viewer.addSlave(rttCamera.get());
     appState->camera = rttCamera;
     // geometry and slave camera to display the result
     Group* displayRoot = new Group;
     displayRoot->addChild(sw);
-    displayRoot->addChild(appState->textProjection);
+    displayRoot->addChild(appState->textProjection.get());
     StateSet* displaySS = displayRoot->getOrCreateStateSet();
     displaySS->setMode(GL_LIGHTING, StateAttribute::OFF);
     displaySS->setMode(GL_DEPTH_TEST, StateAttribute::OFF);
@@ -990,7 +988,7 @@ int main(int argc, char **argv)
     texCamera->setCullingMode(CullSettings::NO_CULLING);
     texCamera->setProjectionResizePolicy(Camera::FIXED);
     viewer.addSlave(texCamera, Matrixd(), Matrixd(), false);
-    viewer.addEventHandler(new ConfigHandler(appState));
+    viewer.addEventHandler(new ConfigHandler(appState.get()));
 
     // add model to the viewer.
     Group* sceneRoot = new Group;

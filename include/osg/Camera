@@ -460,8 +460,7 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         { 
             if( effectiveMask && _implicitBufferAttachmentRenderMask == USE_DISPLAY_SETTINGS_MASK )
             {
-                const DisplaySettings * ds = getDisplaySettings();
-                if ( !ds ) ds = DisplaySettings::instance();
+                const DisplaySettings * ds = _displaySettings.valid() ? _displaySettings.get() : DisplaySettings::instance().get();
                 return ds->getImplicitBufferAttachmentRenderMask();
             }
             else
@@ -479,9 +478,8 @@ class OSG_EXPORT Camera : public Transform, public CullSettings
         { 
             if( effectiveMask && _implicitBufferAttachmentResolveMask == USE_DISPLAY_SETTINGS_MASK )
             {
-                const DisplaySettings * ds = getDisplaySettings();
-                if ( !ds ) ds = DisplaySettings::instance();
-                return ds->getImplicitBufferAttachmentRenderMask();
+                const DisplaySettings * ds = _displaySettings.valid() ? _displaySettings.get() : DisplaySettings::instance().get();
+                return ds->getImplicitBufferAttachmentResolveMask();
             }
             else
             {

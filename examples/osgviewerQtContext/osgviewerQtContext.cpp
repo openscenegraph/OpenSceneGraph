@@ -50,7 +50,7 @@ public:
     
     osg::Camera* createCamera( int x, int y, int w, int h, const std::string& name="", bool windowDecoration=false )
     {
-        osg::DisplaySettings* ds = osg::DisplaySettings::instance();
+        osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
         traits->windowName = name;
         traits->windowDecoration = windowDecoration;

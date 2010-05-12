@@ -229,7 +229,7 @@ int main( int argc, char **argv )
         }
     }
     if (use_pbuffer) {
-        osg::DisplaySettings* ds = osg::DisplaySettings::instance();
+        osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(ds);
 
         if (viewer.getCamera()->getGraphicsContext() && viewer.getCamera()->getGraphicsContext()->getTraits()) {

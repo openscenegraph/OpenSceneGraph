@@ -77,7 +77,16 @@ public:
         triangle.t1 = i1;
         triangle.t2 = i2;
         triangle.t3 = i3;
-        triangle.normalIndex = _curNormalIndex;
+        if (_normalBinding == osg::Geometry::BIND_PER_VERTEX){
+            triangle.normalIndex1 = i1;
+            triangle.normalIndex2 = i2;
+            triangle.normalIndex3 = i3;
+        }
+        else{
+            triangle.normalIndex1 = _curNormalIndex;
+            triangle.normalIndex2 = _curNormalIndex;
+            triangle.normalIndex3 = _curNormalIndex;
+        }
         triangle.material = _material;
         _listTriangles.push_back(std::make_pair(triangle, _drawable_n));
     }
@@ -486,9 +495,9 @@ unsigned int addPolygon(MapIndices & index_vert, unsigned int vertIndex, unsigne
 
 void addPolygon(KFbxMesh * mesh, MapIndices & index_vert, const Triangle & tri, unsigned int drawableNum)
 {
-    mesh->AddPolygon(addPolygon(index_vert, tri.t1, tri.normalIndex, drawableNum));
-    mesh->AddPolygon(addPolygon(index_vert, tri.t2, tri.normalIndex, drawableNum));
-    mesh->AddPolygon(addPolygon(index_vert, tri.t3, tri.normalIndex, drawableNum));
+    mesh->AddPolygon(addPolygon(index_vert, tri.t1, tri.normalIndex1, drawableNum));
+    mesh->AddPolygon(addPolygon(index_vert, tri.t2, tri.normalIndex2, drawableNum));
+    mesh->AddPolygon(addPolygon(index_vert, tri.t3, tri.normalIndex3, drawableNum));
 }
 
 

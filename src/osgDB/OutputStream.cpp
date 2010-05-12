@@ -22,7 +22,7 @@
 using namespace osgDB;
 
 OutputStream::OutputStream( const osgDB::Options* options )
-:   _writeImageHint(WRITE_USE_IMAGE_HINT)
+:   _writeImageHint(WRITE_USE_IMAGE_HINT), _useSchemaData(false)
 {
     if ( !options ) return;
     _options = options;
@@ -35,6 +35,10 @@ OutputStream::OutputStream( const osgDB::Options* options )
         if ( option=="Ascii" )
         {
             // Omit this
+        }
+        else if ( option=="SchemaData" )
+        {
+            _useSchemaData = true;
         }
         else
         {
@@ -422,12 +426,31 @@ void OutputStream::writeObject( const osg::Object* obj )
         const StringList& associates = wrapper->getAssociates();
         for ( StringList::const_iterator itr=associates.begin(); itr!=associates.end(); ++itr )
         {
-            ObjectWrapper* assocWrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(*itr);
+            const std::string& assocName = *itr;
+            ObjectWrapper* assocWrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(assocName);
             if ( !assocWrapper )
             {
                 osg::notify(osg::WARN) << "OutputStream::writeObject(): Unsupported associated class "
-                                       << *itr << std::endl;
+                                       << assocName << std::endl;
                 continue;
+            }
+            else if ( _useSchemaData )
+            {
+                if ( _inbuiltSchemaMap.find(assocName)==_inbuiltSchemaMap.end() )
+                {
+                    StringList properties;
+                    assocWrapper->writeSchema( properties );
+                    if ( properties.size()>0 )
+                    {
+                        std::string propertiesString;
+                        for ( StringList::iterator sitr=properties.begin(); sitr!=properties.end(); ++sitr )
+                        {
+                            propertiesString += *sitr;
+                            propertiesString += ' ';
+                        }
+                        _inbuiltSchemaMap[assocName] = propertiesString;
+                    }
+                }
             }
             _fields.push_back( assocWrapper->getName() );
             
@@ -455,8 +478,16 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
     {
         *this << (unsigned int)type << (unsigned int)PLUGIN_VERSION;
         
-        if ( sizeof(osg::Matrix::value_type)==FLOAT_SIZE ) *this << (unsigned int)0;
-        else *this << (unsigned int)1;  // Record matrix value type of current built OSG
+        bool useCompressSource = false;
+        unsigned int attributes = 0;
+        if ( sizeof(osg::Matrix::value_type)!=FLOAT_SIZE )
+            attributes |= 0x1;  // Record matrix value type of current built OSG
+        if ( _useSchemaData )
+        {
+            attributes |= 0x2;  // Record if we use inbuilt schema data or not
+            useCompressSource = true;
+        }
+        *this << attributes;
         
         if ( !_compressorName.empty() )
         {
@@ -465,16 +496,22 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
             {
                 osg::notify(osg::WARN) << "OutputStream::start(): No such compressor "
                                        << _compressorName << std::endl;
+                _compressorName.clear();
             }
             else
             {
-                *this << _compressorName;
-                _out->flush();
-                _out->setStream( &_compressSource );
-                return;
+                useCompressSource = true;
             }
         }
-        *this << std::string("0");
+        if ( !_compressorName.empty() ) *this << _compressorName;
+        else *this << std::string("0");  // No compressor
+        
+        // Compressors and inbuilt schema use a new stream, which will be merged with the original one at the end.
+        if ( useCompressSource )
+        {
+            _out->flush();
+            _out->setStream( &_compressSource );
+        }
     }
     else
     {
@@ -498,20 +535,51 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
 
 void OutputStream::compress( std::ostream* ostream )
 {
-    if ( _compressorName.empty() || !isBinary() ) return;
     _fields.clear();
-    _fields.push_back( "Compression" );
+    if ( !isBinary() ) return;
     
-    BaseCompressor* compressor = Registry::instance()->getObjectWrapperManager()->findCompressor(_compressorName);
-    if ( !compressor || !ostream )
+    std::stringstream schemaSource;
+    if ( _useSchemaData )
     {
+        _fields.push_back( "SchemaData" );
+        
+        std::string schemaData;
+        for ( std::map<std::string, std::string>::iterator itr=_inbuiltSchemaMap.begin();
+              itr!=_inbuiltSchemaMap.end(); ++itr )
+        {
+            schemaData += itr->first + '=';
+            schemaData += itr->second;
+            schemaData += '\n';
+        }
+        
+        int size = schemaData.size();
+        schemaSource.write( (char*)&size, INT_SIZE );
+        schemaSource.write( schemaData.c_str(), size );
+        
+        _inbuiltSchemaMap.clear();
         _fields.pop_back();
-        return;
     }
     
-    if ( !compressor->compress(*ostream, _compressSource.str()) )
-        throwException( "OutputStream: Failed to compress stream." );
-    _fields.pop_back();
+    if ( !_compressorName.empty() )
+    {
+        _fields.push_back( "Compression" );
+        BaseCompressor* compressor = Registry::instance()->getObjectWrapperManager()->findCompressor(_compressorName);
+        if ( !compressor || !ostream )
+        {
+            _fields.pop_back();
+            return;
+        }
+        
+        if ( !compressor->compress(*ostream, schemaSource.str() + _compressSource.str()) )
+            throwException( "OutputStream: Failed to compress stream." );
+        if ( getException() ) return;
+        _fields.pop_back();
+    }
+    else if ( _useSchemaData )
+    {
+        std::string str = schemaSource.str() + _compressSource.str();
+        ostream->write( str.c_str(), str.size() );
+    }
 }
 
 void OutputStream::writeSchema( std::ostream& fout )

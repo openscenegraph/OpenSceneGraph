@@ -168,6 +168,8 @@ protected:
     ObjectMap _objectMap;
     
     WriteImageHint _writeImageHint;
+    bool _useSchemaData;
+    std::map<std::string, std::string> _inbuiltSchemaMap;
     std::vector<std::string> _fields;
     std::string _schemaName;
     std::string _compressorName;

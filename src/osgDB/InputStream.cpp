@@ -24,7 +24,7 @@ using namespace osgDB;
 static std::string s_lastSchema;
 
 InputStream::InputStream( const osgDB::Options* options )
-:   _byteSwap(0), _useFloatMatrix(false), _forceReadingImage(false)
+:   _byteSwap(0), _useFloatMatrix(true), _useSchemaData(false), _forceReadingImage(false)
 {
     if ( !options ) return;
     _options = options;
@@ -624,9 +624,9 @@ InputStream::ReadType InputStream::start( InputIterator* inIterator )
         *this >> typeValue >> version;
         type = static_cast<ReadType>(typeValue);
         
-        unsigned int matrixValueType; *this >> matrixValueType;
-        if ( matrixValueType==0 ) _useFloatMatrix = true;
-        else _useFloatMatrix = false;
+        unsigned int attributes; *this >> attributes;
+        if ( attributes&0x1 ) _useFloatMatrix = false;
+        if ( attributes&0x2 ) _useSchemaData = true;
     }
     if ( !isBinary() )
     {
@@ -655,29 +655,36 @@ void InputStream::decompress()
 {
     if ( !isBinary() ) return;
     _fields.clear();
-    _fields.push_back( "Decompression" );
     
     std::string compressorName; *this >> compressorName;
-    if ( compressorName=="0" )
+    if ( compressorName!="0" )
     {
+        std::string data;
+        _fields.push_back( "Decompression" );
+        
+        BaseCompressor* compressor = Registry::instance()->getObjectWrapperManager()->findCompressor(compressorName);
+        if ( !compressor )
+        {
+            osg::notify(osg::WARN) << "InputStream::decompress(): No such compressor "
+                                   << compressorName << std::endl;
+        }
+        
+        if ( !compressor->decompress(*(_in->getStream()), data) )
+            throwException( "InputStream: Failed to decompress stream." );
+        if ( getException() ) return;
+        
+        _in->setStream( new std::stringstream(data) );
         _fields.pop_back();
-        return;
     }
     
-    BaseCompressor* compressor = Registry::instance()->getObjectWrapperManager()->findCompressor(compressorName);
-    if ( !compressor )
+    if ( _useSchemaData )
     {
-        osg::notify(osg::WARN) << "InputStream::decompress(): No such compressor "
-                               << compressorName << std::endl;
+        _fields.push_back( "SchemaData" );
+        std::string schemaSource; *this >> schemaSource;
+        std::istringstream iss( schemaSource );
+        readSchema( iss );
+        _fields.pop_back();
     }
-    
-    std::string data;
-    if ( !compressor->decompress(*(_in->getStream()), data) )
-        throwException( "InputStream: Failed to decompress stream." );
-    if ( getException() ) return;
-    
-    _in->setStream( new std::stringstream(data) );
-    _fields.pop_back();
 }
 
 // PROTECTED METHODS

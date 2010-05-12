@@ -103,7 +103,8 @@ public:
         supportsOption( "Ascii", "Import/Export option: Force reading/writing ascii file" );
         supportsOption( "XML", "Import/Export option: Force reading/writing XML file" );
         supportsOption( "ForceReadingImage", "Import option: Load an empty image instead if required file missed" );
-        supportsOption( "SchemaFile=<file>", "Import/Export option: Use/Record a ascii schema file" );
+        supportsOption( "SchemaData", "Export option: Record inbuilt schema data into a binary file" );
+        supportsOption( "SchemaFile=<file>", "Import/Export option: Use/Record an ascii schema file" );
         supportsOption( "Compressor=<name>", "Export option: Use an inbuilt or user-defined compressor" );
         supportsOption( "WriteImageHint=<hint>", "Export option: Hint of writing image to stream: "
                         "<IncludeData> writes Image::data() directly; "

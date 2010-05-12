@@ -115,6 +115,11 @@ void  PixelBufferCarbon::closeImplementation()
     if (_pbuffer) aglDestroyPBuffer(_pbuffer);
     if (_context) aglDestroyContext(_context);
     if (_pixelformat) aglDestroyPixelFormat(_pixelformat);
+    
+    _pbuffer = NULL;
+    _context = NULL;
+    _pixelformat = NULL;
+    
     _valid = _realized = false;
 }
 

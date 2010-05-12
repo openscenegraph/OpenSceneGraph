@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1999-2008 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1999-2008 Robert Osfield
  *
  * This software is open source and may be redistributed and/or modified under  
  * the terms of the GNU General Public License (GPL) version 2.0.
@@ -24,13 +24,13 @@
 class CairoImage : public osg::Referenced
 {
     public:
-    
+
         CairoImage(osg::Image* image):
             _image(image),
             _surface(0),
             _context(0) {}
-            
-        
+
+
         void create(int width, int height)
         {
             if (_image->data() && width==_image->s() && height==_image->t()) 
@@ -45,25 +45,25 @@ class CairoImage : public osg::Referenced
             _image->setPixelFormat(GL_BGRA);
             _image->setDataVariance(osg::Object::DYNAMIC);            
             _image->setOrigin(osg::Image::TOP_LEFT);
-            
-            
+
+
             // create a cairo surface for this image data
             _surface = cairo_image_surface_create_for_data(
                     _image->data(),
                     CAIRO_FORMAT_ARGB32, 
                     width, height, 
                     _image->getRowSizeInBytes());
-            
+
             // create a context for the surface
             _context = cairo_create(_surface);            
-        }        
-        
+        }
+
         void destroy()
         {
             if (_surface) cairo_surface_destroy(_surface);
-	    if (_context) cairo_destroy(_context);
+            if (_context) cairo_destroy(_context);
         }
-        
+
         cairo_surface_t* getSurface() { return _surface; }
         const cairo_surface_t* getSurface() const { return _surface; }
 
@@ -85,51 +85,51 @@ class CairoImage : public osg::Referenced
 class PopplerPdfImage : public osgWidget::PdfImage
 {
     public:
-    
+
         PopplerPdfImage():
             _doc(0)
         {
-            _cairoImage = new CairoImage(this);        
+            _cairoImage = new CairoImage(this);
         }
-            
+
         virtual ~PopplerPdfImage()
         {
             _cairoImage = 0;
-            
+
             if (_doc)
             {
-        	g_object_unref(_doc);
+                g_object_unref(_doc);
             }
         }
-    
+
         PopplerDocument* _doc;
-    
-	int getNumOfPages() { return _doc ? poppler_document_get_n_pages(_doc) : 0; }
+
+        int getNumOfPages() { return _doc ? poppler_document_get_n_pages(_doc) : 0; }
 
         bool open(const std::string& filename)
         {
             osg::notify(osg::NOTICE)<<"open("<<filename<<")"<<std::endl;
-            
+
             std::string foundFile = osgDB::findDataFile(filename);
             if (foundFile.empty())
             {
                 osg::notify(osg::NOTICE)<<"could not find filename="<<filename<<std::endl;
                 return false;
             }
-            
+
             osg::notify(osg::NOTICE)<<"foundFile = "<<foundFile<<std::endl;
             foundFile = osgDB::getRealPath(foundFile);
             osg::notify(osg::NOTICE)<<"foundFile = "<<foundFile<<std::endl;
 
-	    static bool gTypeInit = false;
+            static bool gTypeInit = false;
 
-	    if(!gTypeInit)
+            if(!gTypeInit)
             {
-		g_type_init();
+                g_type_init();
 
-		gTypeInit = true;
-	    }
-            
+                gTypeInit = true;
+            }
+
 #if defined(WIN32) && !defined(__CYGWIN__)
             std::string uri = std::string("file:///") + foundFile;
 #else
@@ -143,15 +143,15 @@ class PopplerPdfImage : public osgWidget::PdfImage
 
                 return false;
             }
-            
-            if (_doc) 
+
+            if (_doc)
             {
                 g_object_unref(_doc);
             }
-            
+
             _doc = doc;
             _pageNum = 0;
-            
+
             setFileName(filename);
 
             osg::notify(osg::NOTICE)<<"getNumOfPages()=="<<getNumOfPages()<<std::endl;
@@ -165,12 +165,12 @@ class PopplerPdfImage : public osgWidget::PdfImage
 
             return true;
         }
-        
+
         virtual bool sendKeyEvent(int key, bool keyDown)
         {
             if (keyDown && key!=0)
             {
-                if (key==_nextPageKeyEvent) 
+                if (key==_nextPageKeyEvent)
                 {
                     next();
                     return true;
@@ -184,17 +184,17 @@ class PopplerPdfImage : public osgWidget::PdfImage
             return false;
         }
 
-        
+
         virtual bool page(int pageNum)
         {
             if (!_doc) return false;
-            
+
             if (pageNum<0 || pageNum>=getNumOfPages()) return false;
 
-	    PopplerPage* page = poppler_document_get_page(_doc, pageNum);
+            PopplerPage* page = poppler_document_get_page(_doc, pageNum);
 
-	    if(!page) return false;
-            
+            if(!page) return false;
+
             _pageNum = pageNum;
 
             double w = 0.0f;
@@ -207,7 +207,7 @@ class PopplerPdfImage : public osgWidget::PdfImage
             osg::clearImageToColor(this, _backgroundColor);
 
             cairo_save(_cairoImage->getContext());
-            
+
                 cairo_rectangle(_cairoImage->getContext(), 0.0, 0.0, double(s()), double(t()));
                 cairo_scale(_cairoImage->getContext(), double(s())/w, double(t())/h);
                 poppler_page_render(page, _cairoImage->getContext());
@@ -215,9 +215,9 @@ class PopplerPdfImage : public osgWidget::PdfImage
             cairo_restore(_cairoImage->getContext());
 
             dirty();
-            
+
             return true;
-	}
+    }
 
 
     protected:
@@ -230,12 +230,12 @@ class PopplerPdfImage : public osgWidget::PdfImage
 class ReaderWriterPDF : public osgDB::ReaderWriter
 {
     public:
-    
+
         ReaderWriterPDF()
         {
             supportsExtension("pdf","PDF plugin");
         }
-        
+
         virtual const char* className() const { return "PDF plugin"; }
 
         virtual osgDB::ReaderWriter::ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
@@ -255,25 +255,25 @@ class ReaderWriterPDF : public osgDB::ReaderWriter
             {
                 return osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND;
             }
-            
+
             osg::ref_ptr<PopplerPdfImage> image = new PopplerPdfImage;
             image->setDataVariance(osg::Object::DYNAMIC);
-            
+
             image->setOrigin(osg::Image::TOP_LEFT);
 
             if (!image->open(file))
             {
                 return "Could not open "+file;
             }
-            
+
             return image.get();
         }
-        
+
         virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& fileName, const osgDB::ReaderWriter::Options* options) const
         {
             osgDB::ReaderWriter::ReadResult result = readImage(fileName, options);
             if (!result.validImage()) return result;
-            
+
 
             osg::ref_ptr<osgWidget::PdfReader> pdfReader = new osgWidget::PdfReader();
             if (pdfReader->assign(dynamic_cast<osgWidget::PdfImage*>(result.getImage())))

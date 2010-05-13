@@ -26,7 +26,7 @@ class ReaderWriterDOT : public osgDB::ReaderWriter {
         return WriteResult::FILE_NOT_HANDLED;
       }
 
-      std::ofstream o( fileName.c_str(), std::ios_base::out );
+      osgDB::ofstream o( fileName.c_str(), std::ios_base::out );
       if ( o ) {
         return writeNode( node, o, options );
       }

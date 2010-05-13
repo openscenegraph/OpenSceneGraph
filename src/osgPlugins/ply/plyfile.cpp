@@ -47,6 +47,7 @@ WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
 #include <string.h>
 
 #include <osg/Math>
+#include <osgDB/FileUtils>
 
 #if defined(_MSC_VER) && defined(OSG_DISABLE_MSVC_WARNINGS)
     #pragma warning( disable : 4996 )
@@ -314,7 +315,7 @@ PlyFile *ply_open_for_writing(
 
   /* open the file for writing */
 
-  fp = fopen (name, "wb");
+  fp = osgDB::fopen (name, "wb");
   free (name); //wjs remove memory leak//
   if (fp == NULL) {
     return (NULL);
@@ -945,7 +946,7 @@ PlyFile *ply_open_for_reading(
 
   /* open the file for reading */
 
-  fp = fopen (name, "rb");
+  fp = osgDB::fopen (name, "rb");
   free(name);
   if (fp == NULL)
     return (NULL);

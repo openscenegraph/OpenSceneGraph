@@ -173,7 +173,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterGZ::readFile(ObjectType objectType, 
     osg::ref_ptr<Options> local_opt = options ? static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
     local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
 
-    std::ifstream fin(fileName.c_str(), std::ios::binary|std::ios::in);
+    osgDB::ifstream fin(fileName.c_str(), std::ios::binary|std::ios::in);
     if (!fin) return ReadResult::ERROR_IN_READING_FILE;
     
 
@@ -227,7 +227,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriterGZ::writeFile(ObjectType objectType
     std::stringstream strstream;
     osgDB::ReaderWriter::WriteResult writeResult = writeFile(objectType, object, rw, strstream, options);
     
-    std::ofstream fout(fullFileName.c_str());
+    osgDB::ofstream fout(fullFileName.c_str());
     
     write(fout,strstream.str());
     

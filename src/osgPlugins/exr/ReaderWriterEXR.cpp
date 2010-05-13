@@ -203,7 +203,7 @@ public:
         std::string fileName = osgDB::findDataFile( file, options );
         if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-        std::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
+        osgDB::ifstream istream(fileName.c_str(), std::ios::in | std::ios::binary);
         if(!istream) return ReadResult::FILE_NOT_HANDLED;
         
         ReadResult rr = readEXRStream(istream);
@@ -229,7 +229,7 @@ public:
         std::string ext = osgDB::getFileExtension(fileName);
         if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
-        std::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
+        osgDB::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
         if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
 
         bool success = writeEXRStream(img, fout, fileName);

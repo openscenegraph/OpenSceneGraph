@@ -194,7 +194,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string& f
     resource_fetcher fetcher;
     openvrml::browser *b = new openvrml::browser(fetcher, null, null);
 
-    std::ifstream vrml_stream(fileName.c_str());
+    osgDB::ifstream vrml_stream(fileName.c_str());
 
     try
     {

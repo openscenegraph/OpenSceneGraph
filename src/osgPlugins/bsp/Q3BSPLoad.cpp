@@ -1,13 +1,13 @@
 
 #include "Q3BSPLoad.h"
-
+#include <osgDB/fstream>
 
 using namespace bsp;
 
 
 bool Q3BSPLoad::Load(const std::string& filename, int curveTessellation)
 {
-  std::ifstream file(filename.c_str(),std::ios::binary);
+  osgDB::ifstream file(filename.c_str(),std::ios::binary);
   if(!file.is_open())
     {
       //errorLog.OutputError("Unable to open %s", filename);

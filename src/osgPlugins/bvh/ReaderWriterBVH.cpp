@@ -379,7 +379,7 @@ public:
         std::string fileName = osgDB::findDataFile( file, options );
         if ( fileName.empty() ) return ReadResult::FILE_NOT_FOUND;
 
-        std::ifstream stream( fileName.c_str(), std::ios::in|std::ios::binary );
+        osgDB::ifstream stream( fileName.c_str(), std::ios::in|std::ios::binary );
         if( !stream ) return ReadResult::ERROR_IN_READING_FILE;
         return readNode( stream, options );
     }

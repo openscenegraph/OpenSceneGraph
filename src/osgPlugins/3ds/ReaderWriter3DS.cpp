@@ -702,7 +702,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::readNode(const std::string& fil
     // Do not use the lib3ds_file_open() as:
     //   1. It relies on FILE* instead of iostreams (less safe)
     //   2. It doesn't allow us to set a custom log output
-    std::ifstream fin(fileName.c_str(), std::ios_base::in | std::ios_base::binary);
+    osgDB::ifstream fin(fileName.c_str(), std::ios_base::in | std::ios_base::binary);
     if (!fin.good()) return ReadResult::ERROR_IN_READING_FILE;
     return doReadNode(fin, options, fileName);
 /*
@@ -1139,7 +1139,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriter3DS::writeNode(const osg::Node& nod
     if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
     osgDB::makeDirectoryForFile(fileName.c_str());
-    std::ofstream fout(fileName.c_str(), std::ios_base::out | std::ios_base::binary);
+    osgDB::ofstream fout(fileName.c_str(), std::ios_base::out | std::ios_base::binary);
     if (!fout.good()) return WriteResult::ERROR_IN_WRITING_FILE;
     return doWriteNode(node, fout, options, fileName);
 /*

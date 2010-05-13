@@ -610,7 +610,7 @@ osg::Geometry* StatsHandler::createBackgroundRectangle(const osg::Vec3& pos, con
     geometry->setColorArray(colors);
     geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-    osg::DrawElementsUInt *base =  new osg::DrawElementsUInt(osg::PrimitiveSet::QUADS,0);
+    osg::DrawElementsUShort *base =  new osg::DrawElementsUShort(osg::PrimitiveSet::TRIANGLE_FAN,0);
     base->push_back(0);
     base->push_back(1);
     base->push_back(2);
@@ -986,7 +986,9 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
     stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
     stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
     stateset->setMode(GL_DEPTH_TEST,osg::StateAttribute::OFF);
+#ifdef OSG_GL1_AVAILABLE
     stateset->setAttribute(new osg::PolygonMode(), osg::StateAttribute::PROTECTED);
+#endif
 
     std::string font("fonts/arial.ttf");
 
@@ -1114,10 +1116,16 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
         float topOfViewerStats = pos.y() + characterSize;
 
+        double cameraSize = 4.5 * cameras.size();
+        if(!acquireGPUStats) //reduce size if GPU stats not needed
+        {
+            cameraSize -= 1.5 * cameras.size();
+        }
+
         geode->addDrawable(createBackgroundRectangle(
             pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
             _statsWidth - 2 * backgroundMargin,
-            (3 + 4.5 * cameras.size()) * characterSize + 2 * backgroundMargin,
+            (3 + cameraSize) * characterSize + 2 * backgroundMargin,
             backgroundColor) );
 
         {
@@ -1237,7 +1245,10 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             {
                 statsGraph->addStatGraph(viewer->getViewerStats(), (*citr)->getStats(), colorCull, 0.016, "Cull traversal time taken");
                 statsGraph->addStatGraph(viewer->getViewerStats(), (*citr)->getStats(), colorDraw, 0.016, "Draw traversal time taken");
-                statsGraph->addStatGraph(viewer->getViewerStats(), (*citr)->getStats(), colorGPU, 0.016, "GPU draw time taken");
+                if(acquireGPUStats)
+                {
+                    statsGraph->addStatGraph(viewer->getViewerStats(), (*citr)->getStats(), colorGPU, 0.016, "GPU draw time taken");
+                }
             }
 
             geode->addDrawable(createBackgroundRectangle( pos + osg::Vec3(-backgroundMargin, backgroundMargin, 0),

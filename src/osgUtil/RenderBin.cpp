@@ -160,11 +160,13 @@ RenderBin::RenderBin(SortMode mode)
         _stateset->setThreadSafeRefUnref(true);
         
          // set up an alphafunc by default to speed up blending operations.
+#ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
         osg::AlphaFunc* alphafunc = new osg::AlphaFunc;
         alphafunc->setFunction(osg::AlphaFunc::GREATER,0.0f);
         alphafunc->setThreadSafeRefUnref(true);
         
         _stateset->setAttributeAndModes(alphafunc, osg::StateAttribute::ON);
+#endif
     }
 #endif    
 }

@@ -255,7 +255,7 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
     if (!mtlPath.empty())
     {
         // Try to open the file, bail out if we fail
-        mtlFile = new std::ifstream(mtlPath.c_str(), std::ifstream::in);
+        mtlFile = new osgDB::ifstream(mtlPath.c_str(), std::ifstream::in);
         if (!mtlFile)
             return NULL;
     }
@@ -569,7 +569,7 @@ bool MDLReader::readFile(const std::string & file)
 
     // Try to open the file
     fileName = findDataFile(file, CASE_INSENSITIVE);
-    mdlFile = new std::ifstream(fileName.c_str(), std::ios::binary);
+    mdlFile = new osgDB::ifstream(fileName.c_str(), std::ios::binary);
     if (!mdlFile)
     {
         osg::notify(osg::NOTICE) << "MDL file not found" << std::endl;

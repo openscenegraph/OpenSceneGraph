@@ -1182,7 +1182,7 @@ public:
 #else
         // Only here to help test istream backend. The file version is better because 
         // the filenname.extension could potentially be used by ImageIO to hint what the format type is.
-        std::ifstream istream(full_file_name.c_str(), std::ios::in | std::ios::binary);
+        osgDB::ifstream istream(full_file_name.c_str(), std::ios::in | std::ios::binary);
         if(!istream) return ReadResult::FILE_NOT_HANDLED;
         ReadResult read_result = readImage(istream);
 #endif
@@ -1274,7 +1274,7 @@ public:
 #else
         // Only here to help test ostream backend. The file version is better because 
         // the filenname.extension could potentially be used by ImageIO to hint what the format type is.
-        std::ofstream fout(file_name.c_str(), std::ios::out | std::ios::binary);
+        osgDB::ofstream fout(file_name.c_str(), std::ios::out | std::ios::binary);
         if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
         return writeImage(osg_image, fout, the_options);
 #endif        

@@ -92,7 +92,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterPaths::readObject(const std::string&
     osg::ref_ptr<osgDB::ReaderWriter::Options> local_opt = options ? static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
     local_opt->setPluginStringData("filename",fileName);
 
-    std::ifstream input(fileName.c_str());
+    osgDB::ifstream input(fileName.c_str());
 
     return readObject(input, local_opt.get());
 }

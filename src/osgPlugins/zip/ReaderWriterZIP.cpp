@@ -52,7 +52,7 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
                 osg::notify(osg::INFO)<<"ReaderWriterZIP::readNode( "<<fileName.c_str()<<" )\n";
 
                 // First open file as stream
-                std::ifstream srcFileStrm(fileName.c_str(),std::ios::in|std::ios::binary);
+                osgDB::ifstream srcFileStrm(fileName.c_str(),std::ios::in|std::ios::binary);
                 if (!srcFileStrm.fail())
                 {
                     // Now read entire zip file into stream buffer

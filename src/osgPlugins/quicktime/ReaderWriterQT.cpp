@@ -342,7 +342,7 @@ public:
             
         QuicktimeImportExport importer;
 
-        std::ifstream is;
+        osgDB::ifstream is;
         is.open (fileName.c_str(), std::ios::binary | std::ios::in );
         is.seekg (0, std::ios::end);
         long length = is.tellg();
@@ -424,7 +424,7 @@ public:
         if (cur == extmap.end())
          return WriteResult::FILE_NOT_HANDLED;
 
-        std::ofstream os(fileName.c_str(), std::ios::binary | std::ios::trunc | std::ios::out);
+        osgDB::ofstream os(fileName.c_str(), std::ios::binary | std::ios::trunc | std::ios::out);
         if(os.good()) 
         {
             QuicktimeImportExport exporter;

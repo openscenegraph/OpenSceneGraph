@@ -26,7 +26,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
             std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            std::ifstream fin(fileName.c_str());
+            osgDB::ifstream fin(fileName.c_str());
 
             if (ext=="revisions") return readRevisions(fin, file, options);
             else return readFileList(fin, file, options);

@@ -742,7 +742,7 @@ public:
     
         if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
         
-        std::ifstream stream(fileName.c_str(), std::ios::in | std::ios::binary);
+        osgDB::ifstream stream(fileName.c_str(), std::ios::in | std::ios::binary);
         if(!stream) return ReadResult::FILE_NOT_HANDLED;
         ReadResult rr = readImage(stream, options);
         if(rr.validImage()) rr.getImage()->setFileName(file);
@@ -784,7 +784,7 @@ public:
         std::string ext = osgDB::getFileExtension(file);
         if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
 
-        std::ofstream fout(file.c_str(), std::ios::out | std::ios::binary);
+        osgDB::ofstream fout(file.c_str(), std::ios::out | std::ios::binary);
         if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
 
         return writeImage(image,fout,options);

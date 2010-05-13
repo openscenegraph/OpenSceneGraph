@@ -90,7 +90,7 @@ private:
       {
         osg::notify(osg::INFO) << "ReaderWriterSTL::writeNode: Files are seperated written" << std::endl;
       } else {
-        m_f = new std::ofstream(m_fout.c_str());        
+        m_f = new osgDB::ofstream(m_fout.c_str());        
         *m_f << "solid " << counter << std::endl;
       }
     };
@@ -106,7 +106,7 @@ private:
       
       if (m_options && (m_options->getOptionString() == "separateFiles")) {
         std::string sepFile = m_fout + i2s(counter);
-        m_f = new std::ofstream(sepFile.c_str());
+        m_f = new osgDB::ofstream(sepFile.c_str());
         *m_f << "solid " << std::endl;
       }
       

@@ -245,6 +245,8 @@ ADD_LIBRARY(${LIB_NAME}
     GLExtensions.cpp
     GLBeginEndAdapter.cpp
     GLObjects.cpp
+    GLStaticLibrary.h
+    GLStaticLibrary.cpp
     GraphicsContext.cpp
     GraphicsThread.cpp
     Group.cpp

@@ -76,13 +76,13 @@ class OSG_EXPORT Referenced
 
         /** Increment the reference count by one, indicating that 
             this object has another pointer which is referencing it.*/
-        inline void ref() const;
+        inline int ref() const;
         
         /** Decrement the reference count by one, indicating that 
             a pointer to this object is referencing it.  If the
             reference count goes to zero, it is assumed that this object
             is no longer referenced and is automatically deleted.*/
-        inline void unref() const;
+        inline int unref() const;
         
         /** Decrement the reference count by one, indicating that 
             a pointer to this object is referencing it.  However, do
@@ -90,7 +90,7 @@ class OSG_EXPORT Referenced
             should only be called if the user knows exactly who will
             be responsible for, one should prefer unref() over unref_nodelete() 
             as the later can lead to memory leaks.*/
-        void unref_nodelete() const;
+        int unref_nodelete() const;
         
         /** Return the number pointers currently referencing this object. */
         inline int referenceCount() const { return _refCount; }
@@ -155,37 +155,41 @@ class OSG_EXPORT Referenced
 #endif
 };
 
-inline void Referenced::ref() const
+inline int Referenced::ref() const
 {
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
-    ++_refCount;
+    return ++_refCount;
 #else
     if (_refMutex)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex); 
-        ++_refCount;
+        return ++_refCount;
     }
     else
     {
-        ++_refCount;
+        return ++_refCount;
     }
 #endif
 }
 
-inline void Referenced::unref() const
+inline int Referenced::unref() const
 {
+    int newRef;
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
-    bool needDelete = ((--_refCount) == 0);
+    newRef = --_refCount;
+    bool needDelete = (newRef == 0);
 #else
     bool needDelete = false;
     if (_refMutex)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex); 
-        needDelete = (--_refCount)==0;
+        newRef = --_refCount;
+        needDelete = newRef==0;
     }
     else
     {
-        needDelete = (--_refCount)==0;
+        newRef = --_refCount;
+        needDelete = newRef==0;
     }
 #endif
 
@@ -193,6 +197,7 @@ inline void Referenced::unref() const
     {
         signalObserversAndDelete(true,true,true);
     }
+    return newRef;
 }
 
 // intrusive_ptr_add_ref and intrusive_ptr_release allow

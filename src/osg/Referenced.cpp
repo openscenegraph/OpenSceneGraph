@@ -87,20 +87,12 @@ OpenThreads::Mutex* Referenced::getGlobalReferencedMutex()
     return s_ReferencedGlobalMutext.get();
 }
 
-// we'll implement Observer::getGlobalObserverMutex() here for convinience as ResetPointer is available.
-OpenThreads::Mutex* Observer::getGlobalObserverMutex()
-{
-    static GlobalMutexPointer s_ReferencedGlobalMutext = new OpenThreads::Mutex(OpenThreads::Mutex::MUTEX_RECURSIVE);
-    return s_ReferencedGlobalMutext.get();
-}
-
 // helper class for forcing the global mutex to be constructed when the library is loaded. 
 struct InitGlobalMutexes
 {
     InitGlobalMutexes()
     {
         Referenced::getGlobalReferencedMutex();
-        Observer::getGlobalObserverMutex();
     }
 };
 static InitGlobalMutexes s_initGlobalMutexes;
@@ -302,21 +294,16 @@ void Referenced::signalObserversAndDelete(bool signalUnreferened, bool signalDel
             observerSet->signalObjectUnreferenced(const_cast<Referenced*>(this));
         }
 
-        if (_refCount!=0)
-        {
-            OSG_NOTICE<<"Referenced::signalObserversAndDelete(,,) disabling delete as _refCount="<<_refCount<<std::endl;
-            return;
-        }
-
         if (signalDelete)
         {
             observerSet->signalObjectDeleted(const_cast<Referenced*>(this));
         }
     }
 
-    if (doDelete && _refCount==0)
+    if (doDelete)
     {
-        //OSG_NOTICE<<"Referenced::signalObserversAndDelete(,,) doing delete as _refCount="<<_refCount<<std::endl;
+        if (_refCount!=0) OSG_NOTICE<<"Warning Referenced::signalObserversAndDelete(,,) doing delete with _refCount="<<_refCount<<std::endl;
+
         if (getDeleteHandler()) deleteUsingDeleteHandler();
         else delete this;
     }
@@ -347,20 +334,24 @@ void Referenced::setThreadSafeRefUnref(bool threadSafe)
 #endif
 }
 
-void Referenced::unref_nodelete() const
+int Referenced::unref_nodelete() const
 {
+    int result;
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
-    bool needUnreferencedSignal = ((--_refCount) == 0);
+    result = --_refCount;
+    bool needUnreferencedSignal = (result == 0);
 #else
     bool needUnreferencedSignal = false;
     if (_refMutex)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex);
-        needUnreferencedSignal = ((--_refCount) == 0);
+        result = --_refCount;
+        needUnreferencedSignal = (result == 0);
     }
     else
     {
-        needUnreferencedSignal = ((--_refCount) == 0);
+        result = --_refCount;
+        needUnreferencedSignal = (result == 0);
     }
 #endif
 
@@ -368,6 +359,7 @@ void Referenced::unref_nodelete() const
     {
         signalObserversAndDelete(true,false,false);
     }
+    return result;
 }
 
 void Referenced::deleteUsingDeleteHandler() const

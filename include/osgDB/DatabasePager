@@ -345,27 +345,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         struct RequestQueue;
 
-        struct PagedLODObserver : public osg::observer_ptr<osg::PagedLOD>
-        {
-            typedef osg::observer_ptr<osg::PagedLOD> BaseClass;
-
-            PagedLODObserver(osg::PagedLOD* plod):BaseClass(plod) {}
-            PagedLODObserver(const PagedLODObserver& plodObserver):BaseClass(plodObserver) {}
-
-            PagedLODObserver& operator = (const PagedLODObserver& rhs)
-            {
-                (*static_cast<BaseClass*>(this)) = rhs;
-                return *this;
-            }
-
-            virtual void objectDeleted(void* ptr)
-            {
-                BaseClass::objectDeleted(ptr);
-            }
-        };
-
+        typedef osg::observer_ptr<osg::PagedLOD> PagedLODObserver;
         typedef std::list< PagedLODObserver >                PagedLODList;
-
 
         struct DatabaseRequest : public osg::Referenced
         {

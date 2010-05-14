@@ -27,11 +27,6 @@ class OSG_EXPORT Observer
         Observer();
         virtual ~Observer();
 
-        /** Get the optional global observer mutex, this can be shared between all osg::Observer.*/
-        static OpenThreads::Mutex* getGlobalObserverMutex();
-
-        inline OpenThreads::Mutex* getObserverMutex() const { return osg::Observer::getGlobalObserverMutex(); }
-
         /** objectUnreferenced(void*) is called when the observed object's referenced count goes to zero, indicating that
         * the object will be deleted unless a new reference is made to it.  If you wish to prevent deletion of the object
         * then it's reference count should be incremented such as via taking a ref_ptr<> to it, if no refernce is taken
@@ -54,12 +49,13 @@ class OSG_EXPORT ObserverSet
         ObserverSet();
         ~ObserverSet();
 
-        inline OpenThreads::Mutex* getObserverSetMutex() const { return osg::Observer::getGlobalObserverMutex(); }
+        inline OpenThreads::Mutex* getObserverSetMutex() const { return &_mutex; }
 
         void addObserver(Observer* observer);
         void removeObserver(Observer* observer);
 
         void signalObjectUnreferenced(void* ptr);
+
         void signalObjectDeleted(void* ptr);
 
         typedef std::set<Observer*> Observers;
@@ -68,7 +64,8 @@ class OSG_EXPORT ObserverSet
 
     protected:
 
-        Observers _observers;
+        mutable OpenThreads::Mutex      _mutex;
+        Observers                       _observers;
 };
 
 }

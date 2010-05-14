@@ -26,11 +26,6 @@
 #include <vector>
 #include <set>
 
-#if defined(WIN32)
-#include <windows.h>
-#endif
-
-
 typedef std::set<std::string>  ExtensionSet;
 static osg::buffered_object<ExtensionSet> s_glExtensionSetList;
 static osg::buffered_object<std::string> s_glRendererList;
@@ -344,10 +339,11 @@ std::string& osg::getGLExtensionDisableString()
 
 #ifdef OSG_GL_LIBRARY_STATIC
 
+    #include "GLStaticLibrary.h"
+
     void* osg::getGLExtensionFuncPtr(const char *funcName)
     {
-        OSG_NOTICE<<"osg::getGLExtensionFuncPtr("<<functName") mapping not implemented for static GL lib yet."<<std::endl;
-        return 0;
+        return GLStaticLibrary::getProcAddress(funcName);
     }
 
 #else

@@ -238,7 +238,7 @@ Referenced::~Referenced()
     }
 
     // signal observers that we are being deleted.
-    signalObserversAndDelete(false, true, false);
+    signalObserversAndDelete(true, false);
 
     // delete the ObserverSet
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
@@ -278,7 +278,7 @@ ObserverSet* Referenced::getOrCreateObserverSet() const
 #endif
 }
 
-void Referenced::signalObserversAndDelete(bool signalUnreferened, bool signalDelete, bool doDelete) const
+void Referenced::signalObserversAndDelete(bool signalDelete, bool doDelete) const
 {
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
     ObserverSet* observerSet = static_cast<ObserverSet*>(_observerSet.get());
@@ -286,18 +286,10 @@ void Referenced::signalObserversAndDelete(bool signalUnreferened, bool signalDel
     ObserverSet* observerSet = static_cast<ObserverSet*>(_observerSet);
 #endif
 
-    if (observerSet)
+    if (observerSet && signalDelete)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*(observerSet->getObserverSetMutex()));
-        if (signalUnreferened)
-        {
-            observerSet->signalObjectUnreferenced(const_cast<Referenced*>(this));
-        }
-
-        if (signalDelete)
-        {
-            observerSet->signalObjectDeleted(const_cast<Referenced*>(this));
-        }
+        observerSet->signalObjectDeleted(const_cast<Referenced*>(this));
     }
 
     if (doDelete)
@@ -334,32 +326,22 @@ void Referenced::setThreadSafeRefUnref(bool threadSafe)
 #endif
 }
 
-int Referenced::unref_nodelete(bool signalObserversOnZeroRefCount) const
+int Referenced::unref_nodelete() const
 {
-    int result;
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
-    result = --_refCount;
-    bool needUnreferencedSignal = (result == 0);
+    return --_refCount;
 #else
     bool needUnreferencedSignal = false;
     if (_refMutex)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex);
-        result = --_refCount;
-        needUnreferencedSignal = (result == 0);
+        return --_refCount;
     }
     else
     {
-        result = --_refCount;
-        needUnreferencedSignal = (result == 0);
+        return --_refCount;
     }
 #endif
-
-    if (needUnreferencedSignal && signalObserversOnZeroRefCount)
-    {
-        signalObserversAndDelete(true,false,false);
-    }
-    return result;
 }
 
 void Referenced::deleteUsingDeleteHandler() const

@@ -90,11 +90,8 @@ class OSG_EXPORT Referenced
             should only be called if the user knows exactly who will
             be responsible for, one should prefer unref() over unref_nodelete() 
             as the later can lead to memory leaks.
-
-            @param signalObserversOnZeroRefCount - By default true, adjust the reference count and send
-            any signal to observers if ref count goes to zero.
         */
-        int unref_nodelete(bool signalObserversOnZeroRefCount = true) const;
+        int unref_nodelete() const;
         
         /** Return the number pointers currently referencing this object. */
         inline int referenceCount() const { return _refCount; }
@@ -141,7 +138,7 @@ class OSG_EXPORT Referenced
     
         virtual ~Referenced();
 
-        void signalObserversAndDelete(bool signalUnreferened, bool signalDelete, bool doDelete) const;
+        void signalObserversAndDelete(bool signalDelete, bool doDelete) const;
 
         void deleteUsingDeleteHandler() const;
 
@@ -199,7 +196,7 @@ inline int Referenced::unref() const
 
     if (needDelete)
     {
-        signalObserversAndDelete(true,true,true);
+        signalObserversAndDelete(true,true);
     }
     return newRef;
 }

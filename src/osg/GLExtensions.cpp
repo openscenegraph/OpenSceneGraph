@@ -26,6 +26,32 @@
 #include <vector>
 #include <set>
 
+#if defined(WIN32)
+    #ifndef WIN32_LEAN_AND_MEAN
+        #define WIN32_LEAN_AND_MEAN
+    #endif // WIN32_LEAN_AND_MEAN
+    #ifndef NOMINMAX
+        #define NOMINMAX
+    #endif // NOMINMAX
+    #include <windows.h>
+#elif defined(__APPLE__)
+    // The NS*Symbol* stuff found in <mach-o/dyld.h> is deprecated.
+    // Since 10.3 (Panther) OS X has provided the dlopen/dlsym/dlclose
+    // family of functions under <dlfcn.h>. Since 10.4 (Tiger), Apple claimed
+    // the dlfcn family was significantly faster than the NS*Symbol* family.
+    // Since 'deprecated' needs to be taken very seriously with the
+    // coming of 10.5 (Leopard), it makes sense to use the dlfcn family when possible.
+    #include <AvailabilityMacros.h>
+    #if !defined(MAC_OS_X_VERSION_10_3) || (MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_3)
+        #define USE_APPLE_LEGACY_NSSYMBOL
+        #include <mach-o/dyld.h>
+    #else
+        #include <dlfcn.h>
+    #endif
+#else
+    #include <dlfcn.h>
+#endif
+
 typedef std::set<std::string>  ExtensionSet;
 static osg::buffered_object<ExtensionSet> s_glExtensionSetList;
 static osg::buffered_object<std::string> s_glRendererList;
@@ -347,31 +373,6 @@ std::string& osg::getGLExtensionDisableString()
     }
 
 #else
-    #if defined(WIN32)
-        #ifndef WIN32_LEAN_AND_MEAN
-            #define WIN32_LEAN_AND_MEAN
-        #endif // WIN32_LEAN_AND_MEAN
-        #ifndef NOMINMAX
-            #define NOMINMAX
-        #endif // NOMINMAX
-        #include <windows.h>
-    #elif defined(__APPLE__)
-        // The NS*Symbol* stuff found in <mach-o/dyld.h> is deprecated.
-        // Since 10.3 (Panther) OS X has provided the dlopen/dlsym/dlclose
-        // family of functions under <dlfcn.h>. Since 10.4 (Tiger), Apple claimed
-        // the dlfcn family was significantly faster than the NS*Symbol* family.
-        // Since 'deprecated' needs to be taken very seriously with the
-        // coming of 10.5 (Leopard), it makes sense to use the dlfcn family when possible.
-        #include <AvailabilityMacros.h>
-        #if !defined(MAC_OS_X_VERSION_10_3) || (MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_3)
-            #define USE_APPLE_LEGACY_NSSYMBOL
-            #include <mach-o/dyld.h>
-        #else
-            #include <dlfcn.h>
-        #endif
-    #else
-        #include <dlfcn.h>
-    #endif
 
     void* osg::getGLExtensionFuncPtr(const char *funcName)
     {

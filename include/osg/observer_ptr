@@ -72,23 +72,31 @@ struct UnsafeWeakReference : public WeakReference<T>
     }
 };
 /**
- * Delete the WeakReference object if necessary while negociating
- * with the observer in the referenced object.
- */
+   Delete the WeakReference object, if necessary. The WeakReference
+   should be deleted when the last observer_ptr pointing to it goes
+   out of scope; this avoids a memory leak. A race must be prevented
+   between this function and WeakReference::objectDeleted(). If the
+   referenced object is being deleted at the same time as this
+   function is called, we can't prevent objectDeleted() from being
+   run, so we need to leave the WeakReference in a valid state and let
+   objectDeleted() delete it. */
 template<typename T>
 void maybeDelete(WeakReference<T>* weakRef)
 {
     if (!weakRef || weakRef->unref_nodelete() > 0)
         return;
+    // No other observer_ptrs hold weakRef, so clean up.
     bool doDelete = false;
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(weakRef->_mutex);
         if (!weakRef->_ptr)
         {
+            // The object has already been deleted; it's OK to delete weakRef.
             doDelete = true;
         }
         else
         {
+            // Carefully remove weakRef as an observer.
             UnsafeWeakReference<T>* unsafe
                 = dynamic_cast<UnsafeWeakReference<T>*>(weakRef);
             if (!unsafe && weakRef->_ptr->ref() == 1)
@@ -100,6 +108,9 @@ void maybeDelete(WeakReference<T>* weakRef)
             }
             else
             {
+                // The referenced object won't be deleted until we
+                // decrement the reference count, so go ahead and
+                // remove the observer.
                 doDelete = true;
                 weakRef->_ptr->removeObserver(weakRef);
                 if (!unsafe)

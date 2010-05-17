@@ -89,8 +89,7 @@ class OSG_EXPORT Referenced
             not delete it, even if ref count goes to 0.  Warning, unref_nodelete() 
             should only be called if the user knows exactly who will
             be responsible for, one should prefer unref() over unref_nodelete() 
-            as the later can lead to memory leaks.
-        */
+            as the later can lead to memory leaks.*/
         int unref_nodelete() const;
         
         /** Return the number pointers currently referencing this object. */

@@ -48,25 +48,6 @@ void ObserverSet::removeObserver(Observer* observer)
     _observers.erase(observer);
 }
 
-void ObserverSet::signalObjectUnreferenced(void* ptr)
-{
-    for(Observers::iterator itr = _observers.begin();
-        itr != _observers.end();
-        )
-    {
-        if ((*itr)->objectUnreferenced(ptr))
-        {
-            Observers::iterator orig_itr = itr;
-            ++itr;
-            _observers.erase(orig_itr);
-        }
-        else
-        {
-            ++itr;
-        }
-    }
-}
-
 void ObserverSet::signalObjectDeleted(void* ptr)
 {
     for(Observers::iterator itr = _observers.begin();

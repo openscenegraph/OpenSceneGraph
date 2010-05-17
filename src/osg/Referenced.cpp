@@ -334,7 +334,7 @@ void Referenced::setThreadSafeRefUnref(bool threadSafe)
 #endif
 }
 
-int Referenced::unref_nodelete() const
+int Referenced::unref_nodelete(bool signalObserversOnZeroRefCount) const
 {
     int result;
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
@@ -355,7 +355,7 @@ int Referenced::unref_nodelete() const
     }
 #endif
 
-    if (needUnreferencedSignal)
+    if (needUnreferencedSignal && signalObserversOnZeroRefCount)
     {
         signalObserversAndDelete(true,false,false);
     }

@@ -89,8 +89,12 @@ class OSG_EXPORT Referenced
             not delete it, even if ref count goes to 0.  Warning, unref_nodelete() 
             should only be called if the user knows exactly who will
             be responsible for, one should prefer unref() over unref_nodelete() 
-            as the later can lead to memory leaks.*/
-        int unref_nodelete() const;
+            as the later can lead to memory leaks.
+
+            @param signalObserversOnZeroRefCount - By default true, adjust the reference count and send
+            any signal to observers if ref count goes to zero.
+        */
+        int unref_nodelete(bool signalObserversOnZeroRefCount = true) const;
         
         /** Return the number pointers currently referencing this object. */
         inline int referenceCount() const { return _refCount; }

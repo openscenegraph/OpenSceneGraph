@@ -47,7 +47,7 @@ struct WeakReference : public Observer, public Referenced
             // The object is in the process of being deleted, but our
             // objectDeleted() method hasn't been run yet (and we're
             // blocking it -- and the final destruction -- with our lock).
-            _ptr->unref_nodelete();
+            _ptr->unref_nodelete(false);
             return 0;
         }
         return _ptr;

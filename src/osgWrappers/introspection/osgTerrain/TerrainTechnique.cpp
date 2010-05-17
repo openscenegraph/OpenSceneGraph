@@ -30,7 +30,6 @@
 BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTechnique)
 	I_DeclaringFile("osgTerrain/TerrainTechnique");
 	I_BaseType(osg::Object);
-	I_BaseType(osg::Observer);
 	I_Constructor0(____TerrainTechnique,
 	               "",
 	               "");

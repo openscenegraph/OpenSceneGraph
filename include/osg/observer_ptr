@@ -30,7 +30,27 @@ struct WeakReference : public Observer, public Referenced
 {
     WeakReference(const T* ptr) : _ptr(const_cast<T*>(ptr)) {}
 
-    void objectDeleted(void*);
+    virtual void objectDeleted(void*)
+    {
+        bool deleteNeeded = false;
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            if (!_ptr)
+            {
+                // The last weak reference was deleted after the last
+                // reference, but the observer hasn't run yet. The
+                // observer can't be prevented from running, so it
+                // must delete itself.
+                deleteNeeded = true;
+            }
+            else
+            {
+                _ptr = 0;
+            }
+        }
+        if (deleteNeeded) delete this;
+    }
+    
     /**
      * "Lock" a Referenced object i.e., protect it from being deleted
      * by incrementing its reference count.
@@ -71,6 +91,7 @@ struct UnsafeWeakReference : public WeakReference<T>
         return 0;
     }
 };
+
 /**
    Delete the WeakReference object, if necessary. The WeakReference
    should be deleted when the last observer_ptr pointing to it goes
@@ -259,27 +280,6 @@ protected:
     WeakReference<T>* _reference;
 };
 
-template<typename T>
-void WeakReference<T>::objectDeleted(void*)
-{
-    bool deleteNeeded = false;
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-        if (!_ptr)
-        {
-            // The last weak reference was deleted after the last
-            // reference, but the observer hasn't run yet. The
-            // observer can't be prevented from running, so it
-            // must delete itself.
-            deleteNeeded = true;
-        }
-        else
-        {
-            _ptr = 0;
-        }
-    }
-    if (deleteNeeded) delete this;
-}
 
 template<typename T>
 WeakReference<T>*

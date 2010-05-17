@@ -21,9 +21,8 @@
 #undef OUT
 #endif
 
-BEGIN_OBJECT_REFLECTOR(osg::ObserverNodePath)
+BEGIN_VALUE_REFLECTOR(osg::ObserverNodePath)
 	I_DeclaringFile("osg/ObserverNodePath");
-	I_BaseType(osg::Observer);
 	I_Constructor0(____ObserverNodePath,
 	               "",
 	               "");
@@ -37,11 +36,6 @@ BEGIN_OBJECT_REFLECTOR(osg::ObserverNodePath)
 	               ____ObserverNodePath__C5_osg_NodePath_R1,
 	               "",
 	               "");
-	I_Method0(bool, valid,
-	          Properties::NON_VIRTUAL,
-	          __bool__valid,
-	          "",
-	          "");
 	I_Method1(void, setNodePathTo, IN, osg::Node *, node,
 	          Properties::NON_VIRTUAL,
 	          __void__setNodePathTo__osg_Node_P1,
@@ -89,12 +83,6 @@ BEGIN_OBJECT_REFLECTOR(osg::ObserverNodePath)
 	                   __void___clearNodePath,
 	                   "",
 	                   "");
-	I_ProtectedMethod1(bool, objectUnreferenced, IN, void *, x,
-	                   Properties::VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __bool__objectUnreferenced__void_P1,
-	                   "objectUnreferenced(void*) is called when the observed object's referenced count goes to zero, indicating that the object will be deleted unless a new reference is made to it. ",
-	                   "If you wish to prevent deletion of the object then it's reference count should be incremented such as via taking a ref_ptr<> to it, if no refernce is taken by any of the observers of the object then the object will be deleted, and objectDeleted will in turn be called. return true if the Observer wishes to removed from the oberseved objects observer set. ");
 	I_SimpleProperty(const osg::RefNodePath &, NodePath, 
 	                 0, 
 	                 __void__setNodePath__C5_osg_RefNodePath_R1);
@@ -103,7 +91,5 @@ BEGIN_OBJECT_REFLECTOR(osg::ObserverNodePath)
 	                 __void__setNodePathTo__osg_Node_P1);
 END_REFLECTOR
 
-TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osg::Node > >, osg::RefNodePath)
-
-STD_LIST_REFLECTOR(std::list< osg::ref_ptr< osg::Node > >)
+TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Node > >, osg::RefNodePath)
 

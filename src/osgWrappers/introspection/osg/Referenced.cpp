@@ -53,19 +53,19 @@ BEGIN_OBJECT_REFLECTOR(osg::Referenced)
 	          __OpenThreads_Mutex_P1__getRefMutex,
 	          "Get the mutex used to ensure thread safety of ref()/unref(). ",
 	          "");
-	I_Method0(void, ref,
+	I_Method0(int, ref,
 	          Properties::NON_VIRTUAL,
-	          __void__ref,
+	          __int__ref,
 	          "Increment the reference count by one, indicating that this object has another pointer which is referencing it. ",
 	          "");
-	I_Method0(void, unref,
+	I_Method0(int, unref,
 	          Properties::NON_VIRTUAL,
-	          __void__unref,
+	          __int__unref,
 	          "Decrement the reference count by one, indicating that a pointer to this object is referencing it. ",
 	          "If the reference count goes to zero, it is assumed that this object is no longer referenced and is automatically deleted. ");
-	I_Method0(void, unref_nodelete,
+	I_Method0(int, unref_nodelete,
 	          Properties::NON_VIRTUAL,
-	          __void__unref_nodelete,
+	          __int__unref_nodelete,
 	          "Decrement the reference count by one, indicating that a pointer to this object is referencing it. ",
 	          "However, do not delete it, even if ref count goes to 0. Warning, unref_nodelete() should only be called if the user knows exactly who will be responsible for, one should prefer unref() over unref_nodelete() as the later can lead to memory leaks. ");
 	I_Method0(int, referenceCount,
@@ -113,10 +113,10 @@ BEGIN_OBJECT_REFLECTOR(osg::Referenced)
 	                __DeleteHandler_P1__getDeleteHandler_S,
 	                "Get a DeleteHandler. ",
 	                "");
-	I_ProtectedMethod3(void, signalObserversAndDelete, IN, bool, signalUnreferened, IN, bool, signalDelete, IN, bool, doDelete,
+	I_ProtectedMethod2(void, signalObserversAndDelete, IN, bool, signalDelete, IN, bool, doDelete,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
-	                   __void__signalObserversAndDelete__bool__bool__bool,
+	                   __void__signalObserversAndDelete__bool__bool,
 	                   "",
 	                   "");
 	I_ProtectedMethod0(void, deleteUsingDeleteHandler,

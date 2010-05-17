@@ -951,16 +951,20 @@ TYPE_NAME_ALIAS(std::list< osg::observer_ptr< osgWidget::Widget > >, osgWidget::
 
 BEGIN_OBJECT_REFLECTOR(osg::observer_ptr< osgWidget::Widget >)
 	I_DeclaringFile("osg/observer_ptr");
-	I_BaseType(osg::Observer);
 	I_Constructor0(____observer_ptr,
 	               "",
 	               "");
-	I_Constructor1(IN, osgWidget::Widget *, t,
+	I_Constructor1(IN, osg::ref_ptr< osgWidget::Widget > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____observer_ptr__ref_ptrT1_T__R1,
+	               "Create a observer_ptr from a ref_ptr. ",
+	               "");
+	I_Constructor1(IN, osgWidget::Widget *, rp,
 	               Properties::NON_EXPLICIT,
 	               ____observer_ptr__T_P1,
-	               "",
-	               "");
-	I_Constructor1(IN, const osg::observer_ptr< osgWidget::Widget > &, rp,
+	               "Create a observer_ptr from a raw pointer. ",
+	               "For compatibility; the result might not be lockable. ");
+	I_Constructor1(IN, const osg::observer_ptr< osgWidget::Widget > &, wp,
 	               Properties::NON_EXPLICIT,
 	               ____observer_ptr__C5_observer_ptr_R1,
 	               "",
@@ -968,8 +972,8 @@ BEGIN_OBJECT_REFLECTOR(osg::observer_ptr< osgWidget::Widget >)
 	I_Method0(osg::ref_ptr< osgWidget::Widget >, lock,
 	          Properties::NON_VIRTUAL,
 	          __ref_ptrT1_T___lock,
-	          "",
-	          "");
+	          "Create a ref_ptr from a observer_ptr. ",
+	          "The ref_ptr will be valid if the referenced object hasn't been deleted and has a ref count > 0. ");
 	I_Method0(osgWidget::Widget *, get,
 	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
@@ -980,12 +984,6 @@ BEGIN_OBJECT_REFLECTOR(osg::observer_ptr< osgWidget::Widget >)
 	          __bool__valid,
 	          "",
 	          "");
-	I_ProtectedMethod1(void, objectDeleted, IN, void *, x,
-	                   Properties::VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__objectDeleted__void_P1,
-	                   "objectDeleted is called when the observed object is about to be deleted. ",
-	                   "The observer will be automatically removed from the observerd objects observer set so there is no need for the objectDeleted implementation to call removeObserver() on the observed object. ");
 	I_SimpleProperty(osgWidget::Widget *, , 
 	                 __T_P1__get, 
 	                 0);

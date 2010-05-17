@@ -54,7 +54,6 @@ TYPE_NAME_ALIAS(std::vector< osg::State::AttributePair >, osg::State::AttributeV
 BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_DeclaringFile("osg/State");
 	I_BaseType(osg::Referenced);
-	I_BaseType(osg::Observer);
 	I_Constructor0(____State,
 	               "",
 	               "");

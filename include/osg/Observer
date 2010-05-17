@@ -55,6 +55,9 @@ class OSG_EXPORT ObserverSet
 
     protected:
 
+        ObserverSet(const ObserverSet& rhs) {}
+        ObserverSet& operator = (const ObserverSet& rhs) { return *this; }
+
         mutable OpenThreads::Mutex      _mutex;
         Observers                       _observers;
 };

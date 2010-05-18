@@ -1744,7 +1744,7 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
         }
         else
         {
-            itr = _inactivePagedLODList.erase(itr);
+            itr = _activePagedLODList.erase(itr);
             OSG_NOTICE<<"DatabasePager::removeExpiredSubgraphs() _activePagedLOD has been invalidated, but ignored"<<std::endl;
         }
     }

@@ -100,8 +100,8 @@ class OSGSIM_EXPORT DOFTransform : public osg::Transform
             RHP
         };
 
-        void setHPRMultOrder(const MultOrder order) { _multOrder = order; }
-        inline const MultOrder getHPRMultOrder() const { return _multOrder;}
+        void setHPRMultOrder(MultOrder order) { _multOrder = order; }
+        inline MultOrder getHPRMultOrder() const { return _multOrder;}
 
         void setAnimationOn(bool do_animate);
         inline bool getAnimationOn() const { return _animationOn; }

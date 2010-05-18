@@ -36,6 +36,9 @@ class OSGSIM_EXPORT SequenceGroup : public osg::Object
        SequenceGroup(double baseTime);
 
        META_Object(osgSim,SequenceGroup);
+       
+       inline void setBaseTime( double t ) { _baseTime = t; }
+       inline double getBaseTime() const { return _baseTime; }
 
        double      _baseTime;
 };

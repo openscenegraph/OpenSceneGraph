@@ -169,6 +169,19 @@ BEGIN_OBJECT_REFLECTOR(osgSim::SequenceGroup)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
+	I_Method1(void, setBaseTime, IN, double, t,
+	          Properties::NON_VIRTUAL,
+	          __void__setBaseTime__double,
+	          "",
+	          "");
+	I_Method0(double, getBaseTime,
+	          Properties::NON_VIRTUAL,
+	          __double__getBaseTime,
+	          "",
+	          "");
+	I_SimpleProperty(double, BaseTime, 
+	                 __double__getBaseTime, 
+	                 __void__setBaseTime__double);
 	I_PublicMemberProperty(double, _baseTime);
 END_REFLECTOR
 

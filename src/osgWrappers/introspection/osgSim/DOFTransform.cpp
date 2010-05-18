@@ -245,14 +245,14 @@ BEGIN_OBJECT_REFLECTOR(osgSim::DOFTransform)
 	          __unsigned_long__getLimitationFlags,
 	          "",
 	          "");
-	I_Method1(void, setHPRMultOrder, IN, const osgSim::DOFTransform::MultOrder, order,
+	I_Method1(void, setHPRMultOrder, IN, osgSim::DOFTransform::MultOrder, order,
 	          Properties::NON_VIRTUAL,
-	          __void__setHPRMultOrder__C5_MultOrder,
+	          __void__setHPRMultOrder__MultOrder,
 	          "",
 	          "");
-	I_Method0(const osgSim::DOFTransform::MultOrder, getHPRMultOrder,
+	I_Method0(osgSim::DOFTransform::MultOrder, getHPRMultOrder,
 	          Properties::NON_VIRTUAL,
-	          __C5_MultOrder__getHPRMultOrder,
+	          __MultOrder__getHPRMultOrder,
 	          "",
 	          "");
 	I_Method1(void, setAnimationOn, IN, bool, do_animate,
@@ -292,9 +292,9 @@ BEGIN_OBJECT_REFLECTOR(osgSim::DOFTransform)
 	I_SimpleProperty(const osg::Vec3 &, CurrentTranslate, 
 	                 __C5_osg_Vec3_R1__getCurrentTranslate, 
 	                 __void__setCurrentTranslate__C5_osg_Vec3_R1);
-	I_SimpleProperty(const osgSim::DOFTransform::MultOrder, HPRMultOrder, 
-	                 __C5_MultOrder__getHPRMultOrder, 
-	                 __void__setHPRMultOrder__C5_MultOrder);
+	I_SimpleProperty(osgSim::DOFTransform::MultOrder, HPRMultOrder, 
+	                 __MultOrder__getHPRMultOrder, 
+	                 __void__setHPRMultOrder__MultOrder);
 	I_SimpleProperty(const osg::Vec3 &, IncrementHPR, 
 	                 __C5_osg_Vec3_R1__getIncrementHPR, 
 	                 __void__setIncrementHPR__C5_osg_Vec3_R1);

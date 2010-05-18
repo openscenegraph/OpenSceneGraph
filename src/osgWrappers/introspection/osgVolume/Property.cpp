@@ -449,9 +449,9 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::PropertyAdjustmentCallback)
 	          __void__setKeyEventCycleForward__int,
 	          "",
 	          "");
-	I_Method0(int, getKeyEventCyclesForward,
+	I_Method0(int, getKeyEventCycleForward,
 	          Properties::NON_VIRTUAL,
-	          __int__getKeyEventCyclesForward,
+	          __int__getKeyEventCycleForward,
 	          "",
 	          "");
 	I_Method1(void, setKeyEventCycleBackward, IN, int, key,
@@ -459,9 +459,9 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::PropertyAdjustmentCallback)
 	          __void__setKeyEventCycleBackward__int,
 	          "",
 	          "");
-	I_Method0(int, getKeyEventCyclesBackward,
+	I_Method0(int, getKeyEventCycleBackward,
 	          Properties::NON_VIRTUAL,
-	          __int__getKeyEventCyclesBackward,
+	          __int__getKeyEventCycleBackward,
 	          "",
 	          "");
 	I_Method1(void, setKeyEventActivatesTransparencyAdjustment, IN, int, key,
@@ -479,9 +479,9 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::PropertyAdjustmentCallback)
 	          __void__setKeyEventActivatesSampleDensityAdjustment__int,
 	          "",
 	          "");
-	I_Method0(int, getKeyEventActivatesSampleAdjustment,
+	I_Method0(int, getKeyEventActivatesSampleDensityAdjustment,
 	          Properties::NON_VIRTUAL,
-	          __int__getKeyEventActivatesSampleAdjustment,
+	          __int__getKeyEventActivatesSampleDensityAdjustment,
 	          "",
 	          "");
 	I_Method1(void, setKeyEventActivatesAlphaFuncAdjustment, IN, int, key,
@@ -502,27 +502,18 @@ BEGIN_OBJECT_REFLECTOR(osgVolume::PropertyAdjustmentCallback)
 	I_SimpleProperty(int, KeyEventActivatesAlphaFuncAdjustment, 
 	                 __int__getKeyEventActivatesAlphaFuncAdjustment, 
 	                 __void__setKeyEventActivatesAlphaFuncAdjustment__int);
-	I_SimpleProperty(int, KeyEventActivatesSampleAdjustment, 
-	                 __int__getKeyEventActivatesSampleAdjustment, 
-	                 0);
 	I_SimpleProperty(int, KeyEventActivatesSampleDensityAdjustment, 
-	                 0, 
+	                 __int__getKeyEventActivatesSampleDensityAdjustment, 
 	                 __void__setKeyEventActivatesSampleDensityAdjustment__int);
 	I_SimpleProperty(int, KeyEventActivatesTransparencyAdjustment, 
 	                 __int__getKeyEventActivatesTransparencyAdjustment, 
 	                 __void__setKeyEventActivatesTransparencyAdjustment__int);
 	I_SimpleProperty(int, KeyEventCycleBackward, 
-	                 0, 
+	                 __int__getKeyEventCycleBackward, 
 	                 __void__setKeyEventCycleBackward__int);
 	I_SimpleProperty(int, KeyEventCycleForward, 
-	                 0, 
+	                 __int__getKeyEventCycleForward, 
 	                 __void__setKeyEventCycleForward__int);
-	I_SimpleProperty(int, KeyEventCyclesBackward, 
-	                 __int__getKeyEventCyclesBackward, 
-	                 0);
-	I_SimpleProperty(int, KeyEventCyclesForward, 
-	                 __int__getKeyEventCyclesForward, 
-	                 0);
 	I_PublicMemberProperty(int, _cyleForwardKey);
 	I_PublicMemberProperty(int, _cyleBackwardKey);
 	I_PublicMemberProperty(int, _transparencyKey);

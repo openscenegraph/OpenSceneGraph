@@ -153,6 +153,11 @@ BEGIN_OBJECT_REFLECTOR(osgSim::LightPointNode)
 	          __osgSim_LightPointSystem_P1__getLightPointSystem,
 	          "",
 	          "");
+	I_Method0(const osgSim::LightPointSystem *, getLightPointSystem,
+	          Properties::NON_VIRTUAL,
+	          __C5_osgSim_LightPointSystem_P1__getLightPointSystem,
+	          "",
+	          "");
 	I_MethodWithDefaults1(void, setPointSprite, IN, bool, enable, true,
 	                      Properties::NON_VIRTUAL,
 	                      __void__setPointSprite__bool,

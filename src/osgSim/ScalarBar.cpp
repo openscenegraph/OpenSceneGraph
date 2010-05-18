@@ -55,7 +55,7 @@ void ScalarBar::setTitle(const std::string& title)
     createDrawables();
 }
 
-std::string ScalarBar::getTitle() const
+const std::string& ScalarBar::getTitle() const
 {
     return _title;
 }

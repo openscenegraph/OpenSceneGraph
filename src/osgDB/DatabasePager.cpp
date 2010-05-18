@@ -1569,10 +1569,14 @@ public:
     virtual void apply(osg::PagedLOD& plod)
     {
         ++_numPagedLODs;
+        _pagedLODs.insert(&plod);
         traverse(plod);
     }
-    
-    int _numPagedLODs;
+
+
+    typedef std::set<osg::PagedLOD*> PagedLODset;
+    PagedLODset         _pagedLODs;
+    int                 _numPagedLODs;
 };
 
 void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
@@ -1684,15 +1688,16 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
 
     for(PagedLODList::iterator itr = _inactivePagedLODList.begin();
         itr!=_inactivePagedLODList.end() && countPagedLODsVisitor._numPagedLODs<numToPrune;
-        ++itr)
+        )
     {
         osg::ref_ptr<osg::PagedLOD> plod = itr->lock();
-        if (plod.valid())
+        if (plod.valid() && countPagedLODsVisitor._pagedLODs.count(plod.get())==0)
         {
             osg::NodeList localChildrenRemoved;
             plod->removeExpiredChildren(expiryTime, expiryFrame, localChildrenRemoved);
             if (!localChildrenRemoved.empty())
             {
+
                 for(osg::NodeList::iterator critr = localChildrenRemoved.begin();
                     critr!=localChildrenRemoved.end();
                     ++critr)
@@ -1702,19 +1707,23 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
 
                 std::copy(localChildrenRemoved.begin(),localChildrenRemoved.end(),std::back_inserter(childrenRemoved));
             }
+
+            // advance the iterator to the next element
+            ++itr;
         }
         else
         {
+            itr = _inactivePagedLODList.erase(itr);
             OSG_NOTICE<<"DatabasePager::removeExpiredSubgraphs() _inactivePagedLOD has been invalidated, but ignored"<<std::endl;
         }
     }
     
     for(PagedLODList::iterator itr = _activePagedLODList.begin();
         itr!=_activePagedLODList.end() && countPagedLODsVisitor._numPagedLODs<numToPrune;
-        ++itr)
+        )
     {
         osg::ref_ptr<osg::PagedLOD> plod = itr->lock();
-        if (plod.valid())
+        if (plod.valid() && countPagedLODsVisitor._pagedLODs.count(plod.get())==0)
         {
             osg::NodeList localChildrenRemoved;
             plod->removeExpiredChildren(expiryTime, expiryFrame, localChildrenRemoved);
@@ -1729,9 +1738,13 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
 
                 std::copy(localChildrenRemoved.begin(),localChildrenRemoved.end(),std::back_inserter(childrenRemoved));
             }
+
+            // advance the iterator to the next element
+            ++itr;
         }
         else
         {
+            itr = _inactivePagedLODList.erase(itr);
             OSG_NOTICE<<"DatabasePager::removeExpiredSubgraphs() _activePagedLOD has been invalidated, but ignored"<<std::endl;
         }
     }

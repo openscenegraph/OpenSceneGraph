@@ -177,7 +177,7 @@ public:
     void setTitle(const std::string& title);
 
     /** Get the title for the ScalarBar. */
-    std::string getTitle() const;
+    const std::string& getTitle() const;
 
 
     /** Set the position of scalar bar's lower left corner.*/
@@ -190,7 +190,7 @@ public:
     void setWidth(float width);
 
     /** Get the width of the scalar bar.*/
-    float getWidth() { return _width; }
+    float getWidth() const { return _width; }
 
     /** Set the aspect ration (y/x) for the displayed bar. Bear in mind you
     may want to change this if you change the orientation. */

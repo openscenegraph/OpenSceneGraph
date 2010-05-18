@@ -81,6 +81,7 @@ class OSGSIM_EXPORT LightPointNode : public osg::Node
         void setLightPointSystem( osgSim::LightPointSystem* lps) { _lightSystem = lps; }
 
         osgSim::LightPointSystem* getLightPointSystem() { return _lightSystem.get(); }
+        const osgSim::LightPointSystem* getLightPointSystem() const { return _lightSystem.get(); }
 
         void setPointSprite(bool enable=true) { _pointSprites = enable; }
 

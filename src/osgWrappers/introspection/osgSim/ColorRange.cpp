@@ -37,13 +37,18 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ColorRange)
 	          __void__setColors__C5_std_vectorT1_osg_Vec4__R1,
 	          "Set the range of colors. ",
 	          "");
+	I_Method0(const std::vector< osg::Vec4 > &, getColors,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_vectorT1_osg_Vec4__R1__getColors,
+	          "Get the range of colors. ",
+	          "");
 	I_Method1(osg::Vec4, getColor, IN, float, scalar,
 	          Properties::VIRTUAL,
 	          __osg_Vec4__getColor__float,
 	          "Get the color for a given scalar value. ",
 	          "");
 	I_SimpleProperty(const std::vector< osg::Vec4 > &, Colors, 
-	                 0, 
+	                 __C5_std_vectorT1_osg_Vec4__R1__getColors, 
 	                 __void__setColors__C5_std_vectorT1_osg_Vec4__R1);
 END_REFLECTOR
 

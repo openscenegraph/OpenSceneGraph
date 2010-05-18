@@ -110,9 +110,9 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ScalarBar)
 	          __void__setTitle__C5_std_string_R1,
 	          "Set the title for the ScalarBar, set \"\" for no title. ",
 	          "");
-	I_Method0(std::string, getTitle,
+	I_Method0(const std::string &, getTitle,
 	          Properties::NON_VIRTUAL,
-	          __std_string__getTitle,
+	          __C5_std_string_R1__getTitle,
 	          "Get the title for the ScalarBar. ",
 	          "");
 	I_Method1(void, setPosition, IN, const osg::Vec3 &, pos,
@@ -210,8 +210,8 @@ BEGIN_OBJECT_REFLECTOR(osgSim::ScalarBar)
 	I_SimpleProperty(const osgSim::ScalarBar::TextProperties &, TextProperties, 
 	                 __C5_TextProperties_R1__getTextProperties, 
 	                 __void__setTextProperties__C5_TextProperties_R1);
-	I_SimpleProperty(std::string, Title, 
-	                 __std_string__getTitle, 
+	I_SimpleProperty(const std::string &, Title, 
+	                 __C5_std_string_R1__getTitle, 
 	                 __void__setTitle__C5_std_string_R1);
 	I_SimpleProperty(float, Width, 
 	                 __float__getWidth, 

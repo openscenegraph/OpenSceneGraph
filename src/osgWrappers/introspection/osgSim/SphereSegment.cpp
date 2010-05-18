@@ -123,9 +123,9 @@ BEGIN_OBJECT_REFLECTOR(osgSim::SphereSegment)
 	          __void__setSurfaceColor__C5_osg_Vec4_R1,
 	          "Set the color of the surface. ",
 	          "");
-	I_Method0(osg::Vec4, getSurfaceColor,
+	I_Method0(const osg::Vec4 &, getSurfaceColor,
 	          Properties::NON_VIRTUAL,
-	          __osg_Vec4__getSurfaceColor,
+	          __C5_osg_Vec4_R1__getSurfaceColor,
 	          "Get the color of the surface. ",
 	          "");
 	I_Method1(void, setSpokeColor, IN, const osg::Vec4 &, c,
@@ -133,9 +133,9 @@ BEGIN_OBJECT_REFLECTOR(osgSim::SphereSegment)
 	          __void__setSpokeColor__C5_osg_Vec4_R1,
 	          "Set the color of the spokes. ",
 	          "");
-	I_Method0(osg::Vec4, getSpokeColor,
+	I_Method0(const osg::Vec4 &, getSpokeColor,
 	          Properties::NON_VIRTUAL,
-	          __osg_Vec4__getSpokeColor,
+	          __C5_osg_Vec4_R1__getSpokeColor,
 	          "Get the color of the spokes. ",
 	          "");
 	I_Method1(void, setEdgeLineColor, IN, const osg::Vec4 &, c,
@@ -143,9 +143,9 @@ BEGIN_OBJECT_REFLECTOR(osgSim::SphereSegment)
 	          __void__setEdgeLineColor__C5_osg_Vec4_R1,
 	          "Set the color of the edge line. ",
 	          "");
-	I_Method0(osg::Vec4, getEdgeLineColor,
+	I_Method0(const osg::Vec4 &, getEdgeLineColor,
 	          Properties::NON_VIRTUAL,
-	          __osg_Vec4__getEdgeLineColor,
+	          __C5_osg_Vec4_R1__getEdgeLineColor,
 	          "Get the color of the edge line. ",
 	          "");
 	I_Method1(void, setSideColor, IN, const osg::Vec4 &, c,
@@ -153,9 +153,9 @@ BEGIN_OBJECT_REFLECTOR(osgSim::SphereSegment)
 	          __void__setSideColor__C5_osg_Vec4_R1,
 	          "Set the color of the planes. ",
 	          "");
-	I_Method0(osg::Vec4, getSideColor,
+	I_Method0(const osg::Vec4 &, getSideColor,
 	          Properties::NON_VIRTUAL,
-	          __osg_Vec4__getSideColor,
+	          __C5_osg_Vec4_R1__getSideColor,
 	          "Get the color of the planes. ",
 	          "");
 	I_Method1(void, setAllColors, IN, const osg::Vec4 &, c,
@@ -225,20 +225,20 @@ BEGIN_OBJECT_REFLECTOR(osgSim::SphereSegment)
 	I_SimpleProperty(int, DrawMask, 
 	                 __int__getDrawMask, 
 	                 __void__setDrawMask__int);
-	I_SimpleProperty(osg::Vec4, EdgeLineColor, 
-	                 __osg_Vec4__getEdgeLineColor, 
+	I_SimpleProperty(const osg::Vec4 &, EdgeLineColor, 
+	                 __C5_osg_Vec4_R1__getEdgeLineColor, 
 	                 __void__setEdgeLineColor__C5_osg_Vec4_R1);
 	I_SimpleProperty(float, Radius, 
 	                 __float__getRadius, 
 	                 __void__setRadius__float);
-	I_SimpleProperty(osg::Vec4, SideColor, 
-	                 __osg_Vec4__getSideColor, 
+	I_SimpleProperty(const osg::Vec4 &, SideColor, 
+	                 __C5_osg_Vec4_R1__getSideColor, 
 	                 __void__setSideColor__C5_osg_Vec4_R1);
-	I_SimpleProperty(osg::Vec4, SpokeColor, 
-	                 __osg_Vec4__getSpokeColor, 
+	I_SimpleProperty(const osg::Vec4 &, SpokeColor, 
+	                 __C5_osg_Vec4_R1__getSpokeColor, 
 	                 __void__setSpokeColor__C5_osg_Vec4_R1);
-	I_SimpleProperty(osg::Vec4, SurfaceColor, 
-	                 __osg_Vec4__getSurfaceColor, 
+	I_SimpleProperty(const osg::Vec4 &, SurfaceColor, 
+	                 __C5_osg_Vec4_R1__getSurfaceColor, 
 	                 __void__setSurfaceColor__C5_osg_Vec4_R1);
 END_REFLECTOR
 

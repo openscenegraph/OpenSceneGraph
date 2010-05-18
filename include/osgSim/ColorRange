@@ -47,6 +47,9 @@ public:
 
     /** Set the range of colors. */
     void setColors(const std::vector<osg::Vec4>& colors);
+    
+    /** Get the range of colors */
+    const std::vector<osg::Vec4>& getColors() const { return _colors; }
 
     /** Get the color for a given scalar value. */
     osg::Vec4 getColor(float scalar) const;

@@ -203,25 +203,25 @@ public:
     void setSurfaceColor(const osg::Vec4& c);
 
     /** Get the color of the surface. */
-    osg::Vec4 getSurfaceColor() const { return _surfaceColor; }
+    const osg::Vec4& getSurfaceColor() const { return _surfaceColor; }
 
     /** Set the color of the spokes. */
     void setSpokeColor(const osg::Vec4& c);
 
     /** Get the color of the spokes. */
-    osg::Vec4 getSpokeColor() const { return _spokeColor; }
+    const osg::Vec4& getSpokeColor() const { return _spokeColor; }
 
     /** Set the color of the edge line. */
     void setEdgeLineColor(const osg::Vec4& c);
 
     /** Get the color of the edge line. */
-    osg::Vec4 getEdgeLineColor() const { return _edgeLineColor; }
+    const osg::Vec4& getEdgeLineColor() const { return _edgeLineColor; }
 
     /** Set the color of the planes. */
     void setSideColor(const osg::Vec4& c);
 
     /** Get the color of the planes. */
-    osg::Vec4 getSideColor() const { return _planeColor; }
+    const osg::Vec4& getSideColor() const { return _planeColor; }
 
     /** Set color of all components. */
     void setAllColors(const osg::Vec4& c);

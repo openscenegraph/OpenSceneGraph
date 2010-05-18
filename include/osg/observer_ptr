@@ -241,7 +241,7 @@ public:
     bool operator < (const observer_ptr& wp) const
     { return _reference < wp._reference; }
     bool operator > (const observer_ptr& wp) const
-    { return _reference < wp._reference; }
+    { return _reference > wp._reference; }
     // Non-strict interface, for compatibility
     // comparison operator for const T*.
     inline bool operator == (const T* ptr) const

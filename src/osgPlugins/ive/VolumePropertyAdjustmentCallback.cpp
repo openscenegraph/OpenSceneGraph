@@ -32,10 +32,10 @@ void VolumePropertyAdjustmentCallback::write(DataOutputStream* out)
         out_THROW_EXCEPTION("VolumePropertyAdjustmentCallback::write(): Could not cast this osg::VolumePropertyAdjustmentCallback to an osg::Object.");
     // Write VolumePropertyAdjustmentCallback's properties.
 
-    out->writeInt(getKeyEventCyclesForward());
-    out->writeInt(getKeyEventCyclesBackward());
+    out->writeInt(getKeyEventCycleForward());
+    out->writeInt(getKeyEventCycleBackward());
     out->writeInt(getKeyEventActivatesTransparencyAdjustment());
-    out->writeInt(getKeyEventActivatesSampleAdjustment());
+    out->writeInt(getKeyEventActivatesSampleDensityAdjustment());
     out->writeInt(getKeyEventActivatesAlphaFuncAdjustment());
 
 }

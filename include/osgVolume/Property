@@ -361,16 +361,16 @@ class OSGVOLUME_EXPORT PropertyAdjustmentCallback : public osgGA::GUIEventHandle
         META_Object(osgVolume,PropertyAdjustmentCallback);
 
         void setKeyEventCycleForward(int key) { _cyleForwardKey = key; }
-        int getKeyEventCyclesForward() const { return _cyleForwardKey; }
+        int getKeyEventCycleForward() const { return _cyleForwardKey; }
 
         void setKeyEventCycleBackward(int key) { _cyleBackwardKey = key; }
-        int getKeyEventCyclesBackward() const { return _cyleBackwardKey; }
+        int getKeyEventCycleBackward() const { return _cyleBackwardKey; }
 
         void setKeyEventActivatesTransparencyAdjustment(int key) { _transparencyKey = key; }
         int getKeyEventActivatesTransparencyAdjustment() const { return _transparencyKey; }
 
         void setKeyEventActivatesSampleDensityAdjustment(int key) { _sampleDensityKey = key; }
-        int getKeyEventActivatesSampleAdjustment() const { return _sampleDensityKey; }
+        int getKeyEventActivatesSampleDensityAdjustment() const { return _sampleDensityKey; }
 
         void setKeyEventActivatesAlphaFuncAdjustment(int key) { _alphaFuncKey = key; }
         int getKeyEventActivatesAlphaFuncAdjustment() const { return _alphaFuncKey; }

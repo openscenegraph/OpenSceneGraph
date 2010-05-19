@@ -254,7 +254,7 @@ public:
     inline bool operator != (const T* ptr) const
     {
         if (!_reference)
-            return ptr;
+            return ptr != 0;
         else
             return (_reference->_ptr!=ptr);
     }

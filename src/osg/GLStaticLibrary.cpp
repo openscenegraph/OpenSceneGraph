@@ -75,7 +75,6 @@ void initGLES2ProcAddress()
     ADD_FUNCTION(glDeleteTextures)
     ADD_FUNCTION(glDepthFunc)
     ADD_FUNCTION(glDepthMask)
-
     ADD_FUNCTION(glDepthRangef)
     ADD_FUNCTION(glDetachShader)
     ADD_FUNCTION(glDisable)
@@ -205,8 +204,7 @@ void* GLStaticLibrary::getProcAddress(const char* procName)
     }
 
     GLProcAddressMap::const_iterator iter = sProcAddressMap.find(procName);
-    return iter != sProcAddressMap.end() ? iter->second : 0;
+    return iter != sProcAddressMap.end() ? reinterpret_cast<void*>(iter->second) : 0;
 }
 
 #endif  // OSG_GLES2_LIBRARY_STATIC
-

@@ -108,6 +108,9 @@ void maybeDelete(WeakReference<T>* weakRef)
         return;
     // No other observer_ptrs hold weakRef, so clean up.
     bool doDelete = false;
+    bool doRemove = false;
+    UnsafeWeakReference<T>* unsafe = 0;
+    T* ptr = 0;
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(weakRef->_mutex);
         if (!weakRef->_ptr)
@@ -117,9 +120,9 @@ void maybeDelete(WeakReference<T>* weakRef)
         }
         else
         {
+            ptr = weakRef->_ptr;
             // Carefully remove weakRef as an observer.
-            UnsafeWeakReference<T>* unsafe
-                = dynamic_cast<UnsafeWeakReference<T>*>(weakRef);
+            unsafe = dynamic_cast<UnsafeWeakReference<T>*>(weakRef);
             if (!unsafe && weakRef->_ptr->ref() == 1)
             {
                 // The referenced object is being deleted, so the
@@ -130,14 +133,20 @@ void maybeDelete(WeakReference<T>* weakRef)
             else
             {
                 // The referenced object won't be deleted until we
-                // decrement the reference count, so go ahead and
-                // remove the observer.
+                // decrement the reference count, so remove the
+                // observer. However, we need to give up the lock on
+                // weakRef first, to avoid an ordering deadlock;
+                // removeObserver takes a lock on the observer set.
+                doRemove = true;
                 doDelete = true;
-                weakRef->_ptr->removeObserver(weakRef);
-                if (!unsafe)
-                    weakRef->_ptr->unref_nodelete();
             }
         }
+    }
+    if (doRemove)
+    {
+        ptr->removeObserver(weakRef);
+        if (!unsafe)
+            ptr->unref_nodelete();
     }
     if (doDelete) delete weakRef;
 }

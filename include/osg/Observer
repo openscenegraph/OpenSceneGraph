@@ -15,7 +15,7 @@
 #define OSG_OBSERVER 1
 
 #include <OpenThreads/Mutex>
-#include <osg/Export>
+#include <osg/Referenced>
 #include <set>
 
 namespace osg {
@@ -35,12 +35,20 @@ class OSG_EXPORT Observer
 };
 
 /** Class used by osg::Referenced to track the observers assoicated with it.*/
-class OSG_EXPORT ObserverSet
+class OSG_EXPORT ObserverSet : public osg::Referenced
 {
     public:
 
-        ObserverSet();
-        ~ObserverSet();
+        ObserverSet(const Referenced* observedObject);
+
+        Referenced* getObserverdObject() { return _observedObject; }
+        const Referenced* getObserverdObject() const { return _observedObject; }
+
+        /** "Lock" a Referenced object i.e., protect it from being deleted
+          *  by incrementing its reference count.
+          *
+          * returns null if object doesn't exist anymore. */
+        Referenced* addRefLock();
 
         inline OpenThreads::Mutex* getObserverSetMutex() const { return &_mutex; }
 
@@ -57,8 +65,10 @@ class OSG_EXPORT ObserverSet
 
         ObserverSet(const ObserverSet& rhs) {}
         ObserverSet& operator = (const ObserverSet& rhs) { return *this; }
+        virtual ~ObserverSet();
 
         mutable OpenThreads::Mutex      _mutex;
+        Referenced*                     _observedObject;
         Observers                       _observers;
 };
 

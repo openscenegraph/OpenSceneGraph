@@ -546,9 +546,9 @@ BEGIN_OBJECT_REFLECTOR(osg::observer_ptr< osg::GraphicsContext >)
 	I_Constructor0(____observer_ptr,
 	               "",
 	               "");
-	I_Constructor1(IN, osg::ref_ptr< osg::GraphicsContext > &, rp,
+	I_Constructor1(IN, const osg::ref_ptr< osg::GraphicsContext > &, rp,
 	               Properties::NON_EXPLICIT,
-	               ____observer_ptr__ref_ptrT1_T__R1,
+	               ____observer_ptr__C5_ref_ptrT1_T__R1,
 	               "Create a observer_ptr from a ref_ptr. ",
 	               "");
 	I_Constructor1(IN, osg::GraphicsContext *, rp,

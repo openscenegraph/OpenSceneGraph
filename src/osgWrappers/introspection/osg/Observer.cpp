@@ -12,6 +12,7 @@
 
 #include <OpenThreads/Mutex>
 #include <osg/Observer>
+#include <osg/Referenced>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN

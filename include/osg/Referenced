@@ -14,12 +14,12 @@
 #ifndef OSG_REFERENCED
 #define OSG_REFERENCED 1
 
-#include <osg/Observer>
+#include <osg/Export>
 
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
-
 #include <OpenThreads/Atomic>
+
 #if !defined(_OPENTHREADS_ATOMIC_USE_MUTEX)
 # define _OSG_REFERENCED_USE_ATOMIC_OPERATIONS
 #endif
@@ -110,10 +110,10 @@ class OSG_EXPORT Referenced
         ObserverSet* getOrCreateObserverSet() const;
 
         /** Add a Observer that is observing this object, notify the Observer when this object gets deleted.*/
-        void addObserver(Observer* observer) const { getOrCreateObserverSet()->addObserver(observer); }
+        void addObserver(Observer* observer) const;
 
         /** remove Observer that is observing this object.*/
-        void removeObserver(Observer* observer) const { getOrCreateObserverSet()->removeObserver(observer); }
+        void removeObserver(Observer* observer) const;
 
     public:
 

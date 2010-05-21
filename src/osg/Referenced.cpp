@@ -350,7 +350,6 @@ int Referenced::unref_nodelete() const
 #if defined(_OSG_REFERENCED_USE_ATOMIC_OPERATIONS)
     return --_refCount;
 #else
-    bool needUnreferencedSignal = false;
     if (_refMutex)
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(*_refMutex);

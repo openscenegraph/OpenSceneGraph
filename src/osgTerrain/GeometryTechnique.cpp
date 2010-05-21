@@ -481,16 +481,58 @@ void VertexNormalGenerator::populateCenter(osgTerrain::Layer* elevationLayer, La
                     ++itr)
                 {
                     osg::Vec2Array* texcoords = itr->second.first.get();
-                    Locator* colorLocator = itr->second.second;
-                    if (colorLocator != _masterLocator)
+                    osgTerrain::ImageLayer* imageLayer(dynamic_cast<osgTerrain::ImageLayer*>(itr->first));
+
+                    if (imageLayer != NULL)
                     {
-                        osg::Vec3d color_ndc;
-                        Locator::convertLocalCoordBetween(*_masterLocator, ndc, *colorLocator, color_ndc);
-                        (*texcoords).push_back(osg::Vec2(color_ndc.x(), color_ndc.y()));
+                        Locator* colorLocator = itr->second.second;
+                        if (colorLocator != _masterLocator)
+                        {
+                            osg::Vec3d color_ndc;
+                            Locator::convertLocalCoordBetween(*_masterLocator, ndc, *colorLocator, color_ndc);
+                            (*texcoords).push_back(osg::Vec2(color_ndc.x(), color_ndc.y()));
+                        }
+                        else
+                        {
+                            (*texcoords).push_back(osg::Vec2(ndc.x(), ndc.y()));
+                        }
                     }
                     else
                     {
-                        (*texcoords).push_back(osg::Vec2(ndc.x(), ndc.y()));
+                        osgTerrain::ContourLayer* contourLayer(dynamic_cast<osgTerrain::ContourLayer*>(itr->first));
+
+                        bool texCoordSet = false;
+                        if (contourLayer)
+                        {
+                            osg::TransferFunction1D* transferFunction = contourLayer->getTransferFunction();
+                            if (transferFunction)
+                            {
+                                float difference = transferFunction->getMaximum()-transferFunction->getMinimum();
+                                if (difference != 0.0f)
+                                {
+                                    osg::Vec3d           color_ndc;
+                                    osgTerrain::Locator* colorLocator(itr->second.second);
+
+                                    if (colorLocator != _masterLocator)
+                                    {
+                                        Locator::convertLocalCoordBetween(*_masterLocator,ndc,*colorLocator,color_ndc);
+                                    }
+                                    else
+                                    {
+                                        color_ndc = ndc;
+                                    }
+
+                                    color_ndc[2] /= _scaleHeight;
+
+                                    (*texcoords).push_back(osg::Vec2((color_ndc[2]-transferFunction->getMinimum())/difference,0.0f));
+                                    texCoordSet = true;
+                                }
+                            }
+                        }
+                        if (!texCoordSet)
+                        {
+                            (*texcoords).push_back(osg::Vec2(0.0f,0.0f));
+                        }
                     }
                 }
 
@@ -539,7 +581,6 @@ void VertexNormalGenerator::populateLeftBoundary(osgTerrain::Layer* elevationLay
 
                 ndc.z() += 0.f;
             }
-
             if (validValue)
             {
                 osg::Vec3d model;

@@ -935,7 +935,7 @@ int main(int argc, char** argv)
     viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
     
     // enable the use of compile contexts and associated threads.
-    osg::DisplaySettings::instance()->setCompileContextsHint(true);
+    // osg::DisplaySettings::instance()->setCompileContextsHint(true);
 
     // realize the graphics windows.
     viewer.realize();

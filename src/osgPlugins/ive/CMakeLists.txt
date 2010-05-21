@@ -112,6 +112,7 @@ SET(TARGET_SRC
     Text.cpp
     Texture1D.cpp
     Texture2D.cpp
+    Texture2DArray.cpp
     Texture3D.cpp
     Texture.cpp
     TextureCubeMap.cpp
@@ -240,6 +241,7 @@ SET(TARGET_H
     Text.h
     Texture1D.h
     Texture2D.h
+    Texture2DArray.h
     Texture3D.h
     TextureCubeMap.h
     Texture.h

@@ -36,6 +36,7 @@
 #include "LineStipple.h"
 #include "Texture1D.h"
 #include "Texture2D.h"
+#include "Texture2DArray.h"
 #include "Texture3D.h"
 #include "TextureCubeMap.h"
 #include "TextureRectangle.h"
@@ -1061,6 +1062,10 @@ void DataOutputStream::writeStateAttribute(const osg::StateAttribute* attribute)
         // This is a Texture2D
         else if(dynamic_cast<const osg::Texture3D*>(attribute)){
             ((ive::Texture3D*)(attribute))->write(this);
+        }
+        // This is a Texture2DArray
+        else if(dynamic_cast<const osg::Texture2DArray*>(attribute)){
+            ((ive::Texture2DArray*)(attribute))->write(this);
         }
         // This is a TextureCubeMap
         else if(dynamic_cast<const osg::TextureCubeMap*>(attribute)){

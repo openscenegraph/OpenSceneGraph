@@ -35,6 +35,7 @@
 #include "LineStipple.h"
 #include "Texture1D.h"
 #include "Texture2D.h"
+#include "Texture2DArray.h"
 #include "Texture3D.h"
 #include "TextureCubeMap.h"
 #include "TextureRectangle.h"
@@ -1436,6 +1437,10 @@ osg::StateAttribute* DataInputStream::readStateAttribute()
     else if(attributeID == IVETEXTURE2D){
         attribute = new osg::Texture2D();
         ((ive::Texture2D*)(attribute.get()))->read(this);
+    }
+    else if(attributeID == IVETEXTURE2DARRAY){
+        attribute = new osg::Texture2DArray();
+        ((ive::Texture2DArray*)(attribute.get()))->read(this);
     }
     else if(attributeID == IVETEXTURE3D){
         attribute = new osg::Texture3D();

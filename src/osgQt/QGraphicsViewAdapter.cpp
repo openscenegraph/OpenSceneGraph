@@ -13,7 +13,6 @@
 
 #include <osgQt/QGraphicsViewAdapter>
 #include <osgQt/QWidgetImage>
-#include <osgQt/QWebViewImage>
 
 #include <QtOpenGL/QGLWidget>
 
@@ -310,11 +309,7 @@ bool QGraphicsViewAdapter::handlePointerEvent(int x, int y, int buttonMask)
 
         if (eventType==QEvent::MouseButtonPress)
         {
-            QWidgetImage* qwidgetImage = dynamic_cast<QWidgetImage*>(_image.get());
-            if (qwidgetImage) qwidgetImage->focusWidget(true);
-            
-            QWebViewImage* qwebViewImage = dynamic_cast<QWebViewImage*>(_image.get());
-            if (qwebViewImage) qwebViewImage->focusBrowser(true);
+            _image->sendFocusHint(true);
         }
 
         QMouseEvent event(eventType, QPoint(x, y), qtButton, qtMouseButtons, 0);

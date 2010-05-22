@@ -29,17 +29,18 @@ class OSGQT_EXPORT QWidgetImage : public osg::Image
         QWidget* getQWidget() { return _widget; }
         QGraphicsViewAdapter* getQGraphicsViewAdapter() { return _adapter; }
 
-        void focusWidget(bool focus);
 
         void clearWriteBuffer();
 
         void render();
 
-        virtual void setFrameLastRendered(const osg::FrameStamp* frameStamp);
+        virtual bool sendFocusHint(bool focus);
 
         virtual bool sendPointerEvent(int x, int y, int buttonMask);
 
         virtual bool sendKeyEvent(int key, bool keyDown);
+
+        virtual void setFrameLastRendered(const osg::FrameStamp* frameStamp);
 
     protected:
 

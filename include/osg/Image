@@ -337,6 +337,9 @@ class OSG_EXPORT Image : public BufferData
             virtual void operator () (osg::StateAttribute* attr, osg::NodeVisitor* nv);
         };
 
+        /** method for hinting whether to enable or disable focus to images acting as front ends to interactive surfaces such as a vnc or browser window.  Return true if handled. */
+        virtual bool sendFocusHint(bool focus) { return false; }
+
         /** method for sending pointer events to images that are acting as front ends to interactive surfaces such as a vnc or browser window.  Return true if handled. */
         virtual bool sendPointerEvent(int /*x*/, int /*y*/, int /*buttonMask*/) { return false; }
 

@@ -31,10 +31,11 @@ QWidgetImage::QWidgetImage( QWidget* widget )
     _adapter = new QGraphicsViewAdapter(this, _widget.data());
 }
 
-void QWidgetImage::focusWidget(bool focus)
+bool QWidgetImage::sendFocusHint(bool focus)
 {
     QFocusEvent event(focus ? QEvent::FocusIn : QEvent::FocusOut, Qt::OtherFocusReason);
     QCoreApplication::sendEvent(_widget, &event);
+    return true;
 }
 
 void QWidgetImage::clearWriteBuffer()

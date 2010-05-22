@@ -14,6 +14,9 @@
 #ifndef QWEBVIEWIMAGE
 #define QWEBVIEWIMAGE
 
+// make sure this header isn't built as par of osgQt, leaving it to applications to build
+#if !defined(OSGQT_LIBRARY) && !defined(OSG_LIBRARY_STATIC)
+
 #include <osgWidget/Browser>
 #include <osgQt/QGraphicsViewAdapter>
 
@@ -24,25 +27,62 @@ class OSGQT_EXPORT QWebViewImage : public osgWidget::BrowserImage
 {
     public:
 
-        QWebViewImage();
+        QWebViewImage()
+        {
+            // make sure we have a valid QApplication before we start creating widgets.
+            getOrCreateQApplication();
 
-        virtual void navigateTo(const std::string& url);
+            _webView = new QWebView;
+
+            _webPage = new QWebPage;
+            _webPage->settings()->setAttribute(QWebSettings::JavascriptEnabled, true);
+            _webPage->settings()->setAttribute(QWebSettings::PluginsEnabled, true);
+
+            _webView->setPage(_webPage);
+
+            _adapter = new QGraphicsViewAdapter(this, _webView.data());
+        }
+
+        virtual void navigateTo(const std::string& url)
+        {
+            _webView->load(QUrl(url.c_str()));
+        }
 
         QWebView* getQWebView() { return _webView; }
         QWebPage* getQWebPage() { return _webPage; }
         QGraphicsViewAdapter* getQGraphicsViewAdapter() { return _adapter; }
 
-        void focusBrowser(bool focus);
+        void clearWriteBuffer()
+        {
+            _adapter->clearWriteBuffer();
+        }
 
-        void clearWriteBuffer();
+        void render()
+        {
+            _adapter->render();
+        }
 
-        void render();
+        virtual bool sendFocusHint(bool focus)
+        {
+            QFocusEvent event(focus ? QEvent::FocusIn : QEvent::FocusOut, Qt::OtherFocusReason);
+            QCoreApplication::sendEvent(_webPage, &event);
+            return true;
+        }
 
-        virtual void setFrameLastRendered(const osg::FrameStamp* frameStamp);
+        virtual bool sendPointerEvent(int x, int y, int buttonMask)
+        {
+            return _adapter->sendPointerEvent(x,y,buttonMask);
+        }
 
-        virtual bool sendPointerEvent(int x, int y, int buttonMask);
+        virtual bool sendKeyEvent(int key, bool keyDown)
+        {
+            return QWebViewImage::_adapter->sendKeyEvent(key, keyDown);
+        }
 
-        virtual bool sendKeyEvent(int key, bool keyDown);
+        virtual void setFrameLastRendered(const osg::FrameStamp* frameStamp)
+        {
+            _adapter->setFrameLastRendered(frameStamp);
+        }
 
     protected:
 
@@ -52,5 +92,7 @@ class OSGQT_EXPORT QWebViewImage : public osgWidget::BrowserImage
 };
 
 }
+
+#endif
 
 #endif

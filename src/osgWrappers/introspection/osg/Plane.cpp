@@ -40,8 +40,8 @@ BEGIN_VALUE_REFLECTOR(osg::Plane)
 	I_Comparator(osgIntrospection::PartialOrderComparator<reflected_type>);	// user-defined
 	I_DeclaringFile("osg/Plane");
 	I_Constructor0(____Plane,
-	               "",
-	               "");
+	               "Default constructor. ",
+	               "The default constructor initializes all values to zero. Although the method osg::Plane::valid() will return true after the default constructors call the plane is mathematically invalid! Default data do not describe a valid plane.  ");
 	I_Constructor1(IN, const osg::Plane &, pl,
 	               Properties::NON_EXPLICIT,
 	               ____Plane__C5_Plane_R1,
@@ -49,30 +49,30 @@ BEGIN_VALUE_REFLECTOR(osg::Plane)
 	               "");
 	I_Constructor4(IN, osg::Plane::value_type, a, IN, osg::Plane::value_type, b, IN, osg::Plane::value_type, c, IN, osg::Plane::value_type, d,
 	               ____Plane__value_type__value_type__value_type__value_type,
-	               "",
-	               "");
+	               "Constructor. ",
+	               "The plane is described as a*x+b*y+c*z+d = 0. You may call osg::Plane::MakeUnitLength afterwards if the passed values are not normalized.  ");
 	I_Constructor1(IN, const osg::Vec4f &, vec,
 	               Properties::NON_EXPLICIT,
 	               ____Plane__C5_Vec4f_R1,
-	               "",
-	               "");
+	               "Constructor. ",
+	               "The plane can also be described as vec*[x,y,z,1]. You may call osg::Plane::MakeUnitLength afterwards if the passed values are not normalized.  ");
 	I_Constructor1(IN, const osg::Vec4d &, vec,
 	               Properties::NON_EXPLICIT,
 	               ____Plane__C5_Vec4d_R1,
-	               "",
-	               "");
+	               "Constructor. ",
+	               "The plane can also be described as vec*[x,y,z,1]. You may call osg::Plane::MakeUnitLength afterwards if the passed values are not normalized.  ");
 	I_Constructor2(IN, const osg::Plane::Vec3_type &, norm, IN, osg::Plane::value_type, d,
 	               ____Plane__C5_Vec3_type_R1__value_type,
-	               "",
-	               "");
+	               "Constructor. ",
+	               " param norm The normal of the plane.  d The negative distance from the point of origin to the plane.   remark You may call osg::Plane::MakeUnitLength afterwards if the passed normal was not normalized. ");
 	I_Constructor3(IN, const osg::Plane::Vec3_type &, v1, IN, const osg::Plane::Vec3_type &, v2, IN, const osg::Plane::Vec3_type &, v3,
 	               ____Plane__C5_Vec3_type_R1__C5_Vec3_type_R1__C5_Vec3_type_R1,
-	               "",
-	               "");
+	               "Constructor. ",
+	               " param v1 Point in the plane.  v2 Point in the plane.  v3 Point in the plane.   remark After this constructor call the plane's normal is normalized in case the three points described a mathematically valid plane. The normal is determined by building the cross product of (v2-v1) ^ (v3-v2). ");
 	I_Constructor2(IN, const osg::Plane::Vec3_type &, norm, IN, const osg::Plane::Vec3_type &, point,
 	               ____Plane__C5_Vec3_type_R1__C5_Vec3_type_R1,
-	               "",
-	               "");
+	               "Constructor. ",
+	               " param norm The normal of the plane.  point A point of the plane.   remark You may call osg::Plane::MakeUnitLength afterwards if the passed normal was not normalized. ");
 	I_Method1(void, set, IN, const osg::Plane &, pl,
 	          Properties::NON_VIRTUAL,
 	          __void__set__C5_Plane_R1,
@@ -116,7 +116,7 @@ BEGIN_VALUE_REFLECTOR(osg::Plane)
 	I_Method0(void, makeUnitLength,
 	          Properties::NON_VIRTUAL,
 	          __void__makeUnitLength,
-	          "",
+	          "This method multiplies the coefficients of the plane equation with a constant factor so that the equation a^2+b^2+c^2 = 1 holds. ",
 	          "");
 	I_Method0(void, calculateUpperLowerBBCorners,
 	          Properties::NON_VIRTUAL,
@@ -126,8 +126,8 @@ BEGIN_VALUE_REFLECTOR(osg::Plane)
 	I_Method0(bool, valid,
 	          Properties::NON_VIRTUAL,
 	          __bool__valid,
-	          "",
-	          "");
+	          "Checks if all internal values describing the plane have valid numbers. ",
+	          "This method does not check if the plane is mathematically correctly described!  The only case where all elements have valid numbers and the plane description is invalid occurs if the plane's normal is zero.  ");
 	I_Method0(bool, isNaN,
 	          Properties::NON_VIRTUAL,
 	          __bool__isNaN,
@@ -156,13 +156,13 @@ BEGIN_VALUE_REFLECTOR(osg::Plane)
 	I_Method1(float, distance, IN, const osg::Vec3f &, v,
 	          Properties::NON_VIRTUAL,
 	          __float__distance__C5_osg_Vec3f_R1,
-	          "calculate the distance between a point and the plane. ",
-	          "");
+	          "Calculate the distance between a point and the plane. ",
+	          "This method only leads to real distance values if the plane's norm is 1.  osg::Plane::makeUnitLength  ");
 	I_Method1(double, distance, IN, const osg::Vec3d &, v,
 	          Properties::NON_VIRTUAL,
 	          __double__distance__C5_osg_Vec3d_R1,
-	          "",
-	          "");
+	          "Calculate the distance between a point and the plane. ",
+	          "This method only leads to real distance values if the plane's norm is 1.  osg::Plane::makeUnitLength  ");
 	I_Method1(float, dotProductNormal, IN, const osg::Vec3f &, v,
 	          Properties::NON_VIRTUAL,
 	          __float__dotProductNormal__C5_osg_Vec3f_R1,

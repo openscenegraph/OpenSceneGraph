@@ -386,6 +386,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Image)
 	          __void__update__NodeVisitor_P1,
 	          "update method for osg::Image subclasses that update themselves during the update traversal. ",
 	          "");
+	I_Method1(bool, sendFocusHint, IN, bool, focus,
+	          Properties::VIRTUAL,
+	          __bool__sendFocusHint__bool,
+	          "method for hinting whether to enable or disable focus to images acting as front ends to interactive surfaces such as a vnc or browser window. ",
+	          "Return true if handled. ");
 	I_Method3(bool, sendPointerEvent, IN, int, x, IN, int, x, IN, int, x,
 	          Properties::VIRTUAL,
 	          __bool__sendPointerEvent__int__int__int,

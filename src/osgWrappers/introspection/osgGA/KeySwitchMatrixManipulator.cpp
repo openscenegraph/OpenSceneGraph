@@ -103,11 +103,6 @@ BEGIN_OBJECT_REFLECTOR(osgGA::KeySwitchMatrixManipulator)
 	          __C5_MatrixManipulator_P1__getMatrixManipulatorWithKey__unsigned_int,
 	          "Get const manipulator assigned to a specified key. ",
 	          "");
-	I_Method1(void, setMinimumDistance, IN, float, minimumDistance,
-	          Properties::VIRTUAL,
-	          __void__setMinimumDistance__float,
-	          "set the minimum distance (as ratio) the eye point can be zoomed in towards the center before the center is pushed forward. ",
-	          "");
 	I_Method1(void, setCoordinateFrameCallback, IN, osgGA::MatrixManipulator::CoordinateFrameCallback *, cb,
 	          Properties::VIRTUAL,
 	          __void__setCoordinateFrameCallback__CoordinateFrameCallback_P1,
@@ -143,16 +138,6 @@ BEGIN_OBJECT_REFLECTOR(osgGA::KeySwitchMatrixManipulator)
 	          __float__getFusionDistanceValue,
 	          "Get the FusionDistanceValue. ",
 	          "Used by SceneView for setting up stereo convergence. ");
-	I_Method1(void, setDistance, IN, double, distance,
-	          Properties::NON_VIRTUAL,
-	          __void__setDistance__double,
-	          "Set the distance property. ",
-	          "");
-	I_Method0(double, getDistance,
-	          Properties::VIRTUAL,
-	          __double__getDistance,
-	          "Get the distance property. ",
-	          "");
 	I_Method1(void, setNode, IN, osg::Node *, x,
 	          Properties::VIRTUAL,
 	          __void__setNode__osg_Node_P1,
@@ -181,7 +166,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::KeySwitchMatrixManipulator)
 	I_Method0(void, computeHomePosition,
 	          Properties::VIRTUAL,
 	          __void__computeHomePosition,
-	          "Compute the home position. ",
+	          "",
 	          "");
 	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
 	          Properties::VIRTUAL,
@@ -218,9 +203,6 @@ BEGIN_OBJECT_REFLECTOR(osgGA::KeySwitchMatrixManipulator)
 	I_SimpleProperty(osgGA::MatrixManipulator *, CurrentMatrixManipulator, 
 	                 __MatrixManipulator_P1__getCurrentMatrixManipulator, 
 	                 0);
-	I_SimpleProperty(double, Distance, 
-	                 __double__getDistance, 
-	                 __void__setDistance__double);
 	I_SimpleProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode, 
 	                 __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode, 
 	                 0);
@@ -236,9 +218,6 @@ BEGIN_OBJECT_REFLECTOR(osgGA::KeySwitchMatrixManipulator)
 	I_SimpleProperty(osg::Matrixd, Matrix, 
 	                 __osg_Matrixd__getMatrix, 
 	                 0);
-	I_SimpleProperty(float, MinimumDistance, 
-	                 0, 
-	                 __void__setMinimumDistance__float);
 	I_SimpleProperty(osg::Node *, Node, 
 	                 __osg_Node_P1__getNode, 
 	                 __void__setNode__osg_Node_P1);

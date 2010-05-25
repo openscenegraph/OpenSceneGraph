@@ -10,13 +10,12 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
-#include <osg/ApplicationUsage>
+#include <osg/CopyOp>
 #include <osg/Matrixd>
 #include <osg/Node>
-#include <osgGA/GUIActionAdapter>
-#include <osgGA/GUIEventAdapter>
+#include <osg/Object>
+#include <osg/Vec3d>
 #include <osgGA/TerrainManipulator>
-#include <osgUtil/SceneView>
 
 // Must undefine IN and OUT macros defined in Windows headers
 #ifdef IN
@@ -28,23 +27,49 @@
 
 BEGIN_ENUM_REFLECTOR(osgGA::TerrainManipulator::RotationMode)
 	I_DeclaringFile("osgGA/TerrainManipulator");
-	I_EnumLabel(osgGA::TerrainManipulator::ELEVATION_HEADING_ROLL);
-	I_EnumLabel(osgGA::TerrainManipulator::ELEVATION_HEADING);
+	I_EnumLabel(osgGA::TerrainManipulator::ELEVATION_AZIM_ROLL);
+	I_EnumLabel(osgGA::TerrainManipulator::ELEVATION_AZIM);
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgGA::TerrainManipulator)
 	I_DeclaringFile("osgGA/TerrainManipulator");
-	I_BaseType(osgGA::MatrixManipulator);
-	I_Constructor0(____TerrainManipulator,
-	               "",
-	               "");
+	I_BaseType(osgGA::OrbitManipulator);
+	I_ConstructorWithDefaults1(IN, int, flags, osgGA::StandardManipulator::DEFAULT_SETTINGS,
+	                           Properties::NON_EXPLICIT,
+	                           ____TerrainManipulator__int,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults2(IN, const osgGA::TerrainManipulator &, tm, , IN, const osg::CopyOp &, copyOp, osg::CopyOp::SHALLOW_COPY,
+	                           ____TerrainManipulator__C5_TerrainManipulator_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(void, setRotationMode, IN, osgGA::TerrainManipulator::RotationMode, mode,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__setRotationMode__RotationMode,
 	          "",
 	          "");
@@ -58,153 +83,45 @@ BEGIN_OBJECT_REFLECTOR(osgGA::TerrainManipulator)
 	          __void__setByMatrix__C5_osg_Matrixd_R1,
 	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
 	          "");
-	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix,
+	I_Method3(void, setTransformation, IN, const osg::Vec3d &, eye, IN, const osg::Vec3d &, center, IN, const osg::Vec3d &, up,
 	          Properties::VIRTUAL,
-	          __void__setByInverseMatrix__C5_osg_Matrixd_R1,
-	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
-	          "");
-	I_Method0(osg::Matrixd, getMatrix,
-	          Properties::VIRTUAL,
-	          __osg_Matrixd__getMatrix,
-	          "get the position of the manipulator as 4x4 Matrix. ",
-	          "");
-	I_Method0(osg::Matrixd, getInverseMatrix,
-	          Properties::VIRTUAL,
-	          __osg_Matrixd__getInverseMatrix,
-	          "get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix. ",
-	          "");
-	I_Method0(osgUtil::SceneView::FusionDistanceMode, getFusionDistanceMode,
-	          Properties::VIRTUAL,
-	          __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode,
-	          "Get the FusionDistanceMode. ",
-	          "Used by SceneView for setting up stereo convergence. ");
-	I_Method0(float, getFusionDistanceValue,
-	          Properties::VIRTUAL,
-	          __float__getFusionDistanceValue,
-	          "Get the FusionDistanceValue. ",
-	          "Used by SceneView for setting up stereo convergence. ");
-	I_Method1(void, setDistance, IN, double, distance,
-	          Properties::NON_VIRTUAL,
-	          __void__setDistance__double,
-	          "Set the distance of the trackball. ",
-	          "");
-	I_Method0(double, getDistance,
-	          Properties::VIRTUAL,
-	          __double__getDistance,
-	          "Get the distance of the trackball. ",
+	          __void__setTransformation__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1,
+	          "",
 	          "");
 	I_Method1(void, setNode, IN, osg::Node *, x,
 	          Properties::VIRTUAL,
 	          __void__setNode__osg_Node_P1,
-	          "Attach a node to the manipulator. ",
-	          "Automatically detaches previously attached node. setNode(NULL) detaches previously nodes. Is ignored by manipulators which do not require a reference model. ");
-	I_Method0(const osg::Node *, getNode,
-	          Properties::VIRTUAL,
-	          __C5_osg_Node_P1__getNode,
-	          "Return node if attached. ",
-	          "");
-	I_Method0(osg::Node *, getNode,
-	          Properties::VIRTUAL,
-	          __osg_Node_P1__getNode,
-	          "Return node if attached. ",
-	          "");
-	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
-	          Properties::VIRTUAL,
-	          __void__home__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
-	          "Move the camera to the default position. ",
-	          "May be ignored by manipulators if home functionality is not appropriate. ");
-	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
-	          Properties::VIRTUAL,
-	          __void__init__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
-	          "Start/restart the manipulator. ",
-	          "");
-	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
-	          Properties::VIRTUAL,
-	          __bool__handle__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
-	          "handle events, return true if handled, false otherwise. ",
-	          "");
-	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
-	          Properties::VIRTUAL,
-	          __void__getUsage__osg_ApplicationUsage_R1,
-	          "Get the keyboard and mouse usage of this manipulator. ",
-	          "");
+	          "Attach a node to the manipulator, automatically detaching any previously attached node. ",
+	          "setNode(NULL) detaches previous nodes. May be ignored by manipulators which do not require a reference model. ");
+	I_ProtectedMethod3(bool, performMovementMiddleMouseButton, IN, const double, dt, IN, const double, dx, IN, const double, dy,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__performMovementMiddleMouseButton__C5_double__C5_double__C5_double,
+	                   "",
+	                   "");
+	I_ProtectedMethod3(bool, performMovementRightMouseButton, IN, const double, dt, IN, const double, dx, IN, const double, dy,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__performMovementRightMouseButton__C5_double__C5_double__C5_double,
+	                   "",
+	                   "");
 	I_ProtectedMethod3(bool, intersect, IN, const osg::Vec3d &, start, IN, const osg::Vec3d &, end, IN, osg::Vec3d &, intersection,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,
 	                   __bool__intersect__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1__osg_Vec3d_R1,
 	                   "",
 	                   "");
-	I_ProtectedMethod0(void, flushMouseEventStack,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__flushMouseEventStack,
-	                   "Reset the internal GUIEvent stack. ",
-	                   "");
-	I_ProtectedMethod1(void, addMouseEvent, IN, const osgGA::GUIEventAdapter &, ea,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__addMouseEvent__C5_GUIEventAdapter_R1,
-	                   "Add the current mouse GUIEvent to internal stack. ",
-	                   "");
-	I_ProtectedMethod3(void, computePosition, IN, const osg::Vec3d &, eye, IN, const osg::Vec3d &, lv, IN, const osg::Vec3d &, up,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__computePosition__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1__C5_osg_Vec3d_R1,
-	                   "",
-	                   "");
-	I_ProtectedMethod0(bool, calcMovement,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __bool__calcMovement,
-	                   "For the give mouse movement calculate the movement of the camera. ",
-	                   "Return true is camera has moved and a redraw is required. ");
-	I_ProtectedMethod6(void, trackball, IN, osg::Vec3 &, axis, IN, double &, angle, IN, double, p1x, IN, double, p1y, IN, double, p2x, IN, double, p2y,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__trackball__osg_Vec3_R1__double_R1__double__double__double__double,
-	                   "",
-	                   "");
-	I_ProtectedMethod3(double, tb_project_to_sphere, IN, double, r, IN, double, x, IN, double, y,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __double__tb_project_to_sphere__double__double__double,
-	                   "",
-	                   "");
-	I_ProtectedMethod0(bool, isMouseMoving,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __bool__isMouseMoving,
-	                   "Check the speed at which the mouse is moving. ",
-	                   "If speed is below a threshold then return false, otherwise return true. ");
 	I_ProtectedMethod0(void, clampOrientation,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __void__clampOrientation,
 	                   "",
 	                   "");
-	I_SimpleProperty(const osg::Matrixd &, ByInverseMatrix, 
-	                 0, 
-	                 __void__setByInverseMatrix__C5_osg_Matrixd_R1);
 	I_SimpleProperty(const osg::Matrixd &, ByMatrix, 
 	                 0, 
 	                 __void__setByMatrix__C5_osg_Matrixd_R1);
-	I_SimpleProperty(double, Distance, 
-	                 __double__getDistance, 
-	                 __void__setDistance__double);
-	I_SimpleProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode, 
-	                 __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode, 
-	                 0);
-	I_SimpleProperty(float, FusionDistanceValue, 
-	                 __float__getFusionDistanceValue, 
-	                 0);
-	I_SimpleProperty(osg::Matrixd, InverseMatrix, 
-	                 __osg_Matrixd__getInverseMatrix, 
-	                 0);
-	I_SimpleProperty(osg::Matrixd, Matrix, 
-	                 __osg_Matrixd__getMatrix, 
-	                 0);
 	I_SimpleProperty(osg::Node *, Node, 
-	                 __osg_Node_P1__getNode, 
+	                 0, 
 	                 __void__setNode__osg_Node_P1);
 	I_SimpleProperty(osgGA::TerrainManipulator::RotationMode, RotationMode, 
 	                 __RotationMode__getRotationMode, 

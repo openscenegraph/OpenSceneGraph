@@ -13,7 +13,7 @@
 #include <osg/ApplicationUsage>
 #include <osg/Matrixd>
 #include <osg/Node>
-#include <osg/Vec3>
+#include <osg/Vec3d>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
 #include <osgGA/UFOManipulator>
@@ -102,9 +102,9 @@ BEGIN_OBJECT_REFLECTOR(osgGA::UFOManipulator)
 	          __void__getUsage__osg_ApplicationUsage_R1,
 	          "Reports Usage parameters to the application. ",
 	          "");
-	I_Method3(void, getCurrentPositionAsLookAt, IN, osg::Vec3 &, eye, IN, osg::Vec3 &, center, IN, osg::Vec3 &, up,
+	I_Method3(void, getCurrentPositionAsLookAt, IN, osg::Vec3d &, eye, IN, osg::Vec3d &, center, IN, osg::Vec3d &, up,
 	          Properties::NON_VIRTUAL,
-	          __void__getCurrentPositionAsLookAt__osg_Vec3_R1__osg_Vec3_R1__osg_Vec3_R1,
+	          __void__getCurrentPositionAsLookAt__osg_Vec3d_R1__osg_Vec3d_R1__osg_Vec3d_R1,
 	          "Report the current position as LookAt vectors. ",
 	          "");
 	I_Method1(void, setMinHeight, IN, double, in_min_height,

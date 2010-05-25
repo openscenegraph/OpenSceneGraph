@@ -10,6 +10,7 @@
 #include <osgIntrospection/StaticMethodInfo>
 #include <osgIntrospection/Attributes>
 
+#include <osg/Camera>
 #include <osg/CoordinateSystemNode>
 #include <osg/Matrixd>
 #include <osg/Node>
@@ -35,16 +36,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(void, setMinimumDistance, IN, float, minimumDistance,
-	          Properties::VIRTUAL,
-	          __void__setMinimumDistance__float,
-	          "set the minimum distance (as ratio) the eye point can be zoomed in towards the center before the center is pushed forward. ",
-	          "");
-	I_Method0(float, getMinimumDistance,
-	          Properties::NON_VIRTUAL,
-	          __float__getMinimumDistance,
-	          "get the minimum distance (as ratio) the eye point can be zoomed in ",
-	          "");
 	I_Method1(void, setCoordinateFrameCallback, IN, osgGA::MatrixManipulator::CoordinateFrameCallback *, cb,
 	          Properties::VIRTUAL,
 	          __void__setCoordinateFrameCallback__CoordinateFrameCallback_P1,
@@ -110,16 +101,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
 	          __float__getFusionDistanceValue,
 	          "Get the FusionDistanceValue. ",
 	          "Used by SceneView for setting up stereo convergence. ");
-	I_Method1(void, setDistance, IN, double, x,
-	          Properties::NON_VIRTUAL,
-	          __void__setDistance__double,
-	          "Set the distance parameter (used by TrackballManipulator etc. ",
-	          ") ");
-	I_Method0(double, getDistance,
-	          Properties::VIRTUAL,
-	          __double__getDistance,
-	          "Get the distance parameter. ",
-	          "");
 	I_Method1(void, setIntersectTraversalMask, IN, unsigned int, mask,
 	          Properties::NON_VIRTUAL,
 	          __void__setIntersectTraversalMask__unsigned_int,
@@ -165,11 +146,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
 	          __bool__getAutoComputeHomePosition,
 	          "Get whether the automatic compute of the home position is enabled. ",
 	          "");
-	I_Method0(void, computeHomePosition,
-	          Properties::VIRTUAL,
-	          __void__computeHomePosition,
-	          "Compute the home position. ",
-	          "");
+	I_MethodWithDefaults2(void, computeHomePosition, IN, const osg::Camera *, camera, NULL, IN, bool, useBoundingBox, false,
+	                      Properties::VIRTUAL,
+	                      __void__computeHomePosition__C5_osg_Camera_P1__bool,
+	                      "Compute the home position. ",
+	                      "");
 	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
 	          Properties::VIRTUAL,
 	          __void__home__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
@@ -193,6 +174,16 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
 	I_ProtectedConstructor0(____MatrixManipulator,
 	                        "",
 	                        "");
+	I_ProtectedConstructorWithDefaults2(IN, const osgGA::MatrixManipulator &, mm, , IN, const osg::CopyOp &, copyOp, osg::CopyOp::SHALLOW_COPY,
+	                                    ____MatrixManipulator__C5_MatrixManipulator_R1__C5_osg_CopyOp_R1,
+	                                    "",
+	                                    "");
+	I_ProtectedMethod0(std::string, getManipulatorName,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::CONST,
+	                   __std_string__getManipulatorName,
+	                   "",
+	                   "");
 	I_SimpleProperty(bool, AutoComputeHomePosition, 
 	                 __bool__getAutoComputeHomePosition, 
 	                 __void__setAutoComputeHomePosition__bool);
@@ -205,9 +196,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
 	I_SimpleProperty(osgGA::MatrixManipulator::CoordinateFrameCallback *, CoordinateFrameCallback, 
 	                 __CoordinateFrameCallback_P1__getCoordinateFrameCallback, 
 	                 __void__setCoordinateFrameCallback__CoordinateFrameCallback_P1);
-	I_SimpleProperty(double, Distance, 
-	                 __double__getDistance, 
-	                 __void__setDistance__double);
 	I_SimpleProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode, 
 	                 __osgUtil_SceneView_FusionDistanceMode__getFusionDistanceMode, 
 	                 0);
@@ -223,9 +211,6 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
 	I_SimpleProperty(osg::Matrixd, Matrix, 
 	                 __osg_Matrixd__getMatrix, 
 	                 0);
-	I_SimpleProperty(float, MinimumDistance, 
-	                 __float__getMinimumDistance, 
-	                 __void__setMinimumDistance__float);
 	I_SimpleProperty(osg::Node *, Node, 
 	                 __osg_Node_P1__getNode, 
 	                 __void__setNode__osg_Node_P1);

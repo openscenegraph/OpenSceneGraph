@@ -74,7 +74,7 @@ BEGIN_OBJECT_REFLECTOR(osgGA::DriveManipulator)
 	I_Method0(void, computeHomePosition,
 	          Properties::VIRTUAL,
 	          __void__computeHomePosition,
-	          "Compute the home position. ",
+	          "",
 	          "");
 	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
 	          Properties::VIRTUAL,

@@ -30,7 +30,7 @@ and the associated switch keys, can be configured.
 */
 class OSGGA_EXPORT KeySwitchMatrixManipulator : public MatrixManipulator
 {
-public:
+    public:
 
         typedef std::pair<std::string, osg::ref_ptr<MatrixManipulator> > NamedManipulator;
         typedef std::map<int, NamedManipulator> KeyManipMap;
@@ -124,7 +124,7 @@ public:
         /** Get the keyboard and mouse usage of this manipulator.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const;
 
-private:
+    private:
 
         KeyManipMap _manips;
 

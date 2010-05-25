@@ -36,11 +36,11 @@ amount of default functionality, for classes which wish to control OSG cameras
 in response to GUI events.
 
 */
-class OSGGA_EXPORT MatrixManipulator : public GUIEventHandler {
+class OSGGA_EXPORT MatrixManipulator : public GUIEventHandler
+{
+        typedef GUIEventHandler inherited;
 
-    typedef GUIEventHandler inherited;
-
-public:
+    public:
 
         // We are not using META_Object as this is abstract class.
         // Use META_Object(osgGA,YourManipulator); in your descendant non-abstract classes.
@@ -162,7 +162,7 @@ public:
         /** Handle events, return true if handled, false otherwise. */
         virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
 
-protected:
+    protected:
 
         MatrixManipulator();
         MatrixManipulator(const MatrixManipulator& mm, const osg::CopyOp& copyOp = osg::CopyOp::SHALLOW_COPY);

@@ -29,10 +29,10 @@ OrbitManipulator::OrbitManipulator( int flags )
      _distance( 1. ),
      _trackballSize( 0.8 )
 {
-   setMinimumDistance( 0.05, true );
-   setWheelZoomFactor( 0.1 );
-   if( _flags & SET_CENTER_ON_WHEEL_UP )
-      setAnimationTime( 0.2 );
+    setMinimumDistance( 0.05, true );
+    setWheelZoomFactor( 0.1 );
+    if( _flags & SET_CENTER_ON_WHEEL_UP )
+        setAnimationTime( 0.2 );
 }
 
 
@@ -52,28 +52,28 @@ OrbitManipulator::OrbitManipulator( const OrbitManipulator& om, const CopyOp& co
 /** Set the position of the manipulator using a 4x4 matrix.*/
 void OrbitManipulator::setByMatrix( const osg::Matrixd& matrix )
 {
-   _center = osg::Vec3d( 0., 0., -_distance ) * matrix;
-   _rotation = matrix.getRotate();
+    _center = osg::Vec3d( 0., 0., -_distance ) * matrix;
+    _rotation = matrix.getRotate();
 
-   // fix current rotation
-   if( getVerticalAxisFixed() )
-      fixVerticalAxis( _center, _rotation, true );
+    // fix current rotation
+    if( getVerticalAxisFixed() )
+        fixVerticalAxis( _center, _rotation, true );
 }
 
 
 /** Set the position of the manipulator using a 4x4 matrix.*/
 void OrbitManipulator::setByInverseMatrix( const osg::Matrixd& matrix )
 {
-   setByMatrix( osg::Matrixd::inverse( matrix ) );
+    setByMatrix( osg::Matrixd::inverse( matrix ) );
 }
 
 
 /** Get the position of the manipulator as 4x4 matrix.*/
 osg::Matrixd OrbitManipulator::getMatrix() const
 {
-   return osg::Matrixd::translate( 0., 0., _distance ) *
-          osg::Matrixd::rotate( _rotation ) *
-          osg::Matrixd::translate( _center );
+    return osg::Matrixd::translate( 0., 0., _distance ) *
+           osg::Matrixd::rotate( _rotation ) *
+           osg::Matrixd::translate( _center );
 }
 
 
@@ -81,109 +81,111 @@ osg::Matrixd OrbitManipulator::getMatrix() const
     typically used as a model view matrix.*/
 osg::Matrixd OrbitManipulator::getInverseMatrix() const
 {
-   return osg::Matrixd::translate( -_center ) *
-          osg::Matrixd::rotate( _rotation.inverse() ) *
-          osg::Matrixd::translate( 0.0, 0.0, -_distance );
+    return osg::Matrixd::translate( -_center ) *
+           osg::Matrixd::rotate( _rotation.inverse() ) *
+           osg::Matrixd::translate( 0.0, 0.0, -_distance );
 }
 
 
 // doc in parent
 void OrbitManipulator::setTransformation( const osg::Vec3d& eye, const osg::Quat& rotation )
 {
-   _center = eye + rotation * osg::Vec3d( 0., 0., -_distance );
-   _rotation = rotation;
+    _center = eye + rotation * osg::Vec3d( 0., 0., -_distance );
+    _rotation = rotation;
 
-   // fix current rotation
-   if( getVerticalAxisFixed() )
-      fixVerticalAxis( _center, _rotation, true );
+    // fix current rotation
+    if( getVerticalAxisFixed() )
+        fixVerticalAxis( _center, _rotation, true );
 }
 
 
 // doc in parent
 void OrbitManipulator::getTransformation( osg::Vec3d& eye, osg::Quat& rotation ) const
 {
-   eye = _center - _rotation * osg::Vec3d( 0., 0., -_distance );
-   rotation = _rotation;
+    eye = _center - _rotation * osg::Vec3d( 0., 0., -_distance );
+    rotation = _rotation;
 }
 
 
 // doc in parent
 void OrbitManipulator::setTransformation( const osg::Vec3d& center, const osg::Vec3d& eye, const osg::Vec3d& up )
 {
-   Vec3d lv( center - eye );
+    Vec3d lv( center - eye );
 
-   Vec3d f( lv );
-   f.normalize();
-   Vec3d s( f^up );
-   s.normalize();
-   Vec3d u( s^f );
-   u.normalize();
+    Vec3d f( lv );
+    f.normalize();
+    Vec3d s( f^up );
+    s.normalize();
+    Vec3d u( s^f );
+    u.normalize();
 
-   osg::Matrixd rotation_matrix( s[0], u[0], -f[0], 0.0f,
-                           s[1], u[1], -f[1], 0.0f,
-                           s[2], u[2], -f[2], 0.0f,
-                           0.0f, 0.0f,  0.0f, 1.0f );
+    osg::Matrixd rotation_matrix( s[0], u[0], -f[0], 0.0f,
+                            s[1], u[1], -f[1], 0.0f,
+                            s[2], u[2], -f[2], 0.0f,
+                            0.0f, 0.0f,  0.0f, 1.0f );
 
-   _center = center;
-   _distance = lv.length();
-   _rotation = rotation_matrix.getRotate().inverse();
+    _center = center;
+    _distance = lv.length();
+    _rotation = rotation_matrix.getRotate().inverse();
 
-   // fix current rotation
-   if( getVerticalAxisFixed() )
-      fixVerticalAxis( _center, _rotation, true );
+    // fix current rotation
+    if( getVerticalAxisFixed() )
+        fixVerticalAxis( _center, _rotation, true );
 }
 
 
 // doc in parent
 void OrbitManipulator::getTransformation( osg::Vec3d& center, osg::Vec3d& eye, osg::Vec3d& up ) const
 {
-   center = _center;
-   eye = _center + _rotation * osg::Vec3d( 0., 0., _distance );
-   up = _rotation * osg::Vec3d( 0., 1., 0. );
+    center = _center;
+    eye = _center + _rotation * osg::Vec3d( 0., 0., _distance );
+    up = _rotation * osg::Vec3d( 0., 1., 0. );
 }
 
 
 // doc in parent
 bool OrbitManipulator::handleMouseWheel( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   switch( ea.getScrollingMotion() ) {
+    switch( ea.getScrollingMotion() )
+    {
+        // mouse scroll up event
+        case GUIEventAdapter::SCROLL_UP:
+        {
 
-      // mouse scroll up event
-      case GUIEventAdapter::SCROLL_UP: {
+            if( _flags & SET_CENTER_ON_WHEEL_UP )
+            {
 
-         if( _flags & SET_CENTER_ON_WHEEL_UP ) {
+                if( getAnimationTime() <= 0. )
+                {
+                    // center by mouse intersection (no animation)
+                    setCenterByMousePointerIntersection( ea, us );
+                }
+                else
+                {
+                    // start new animation only if there is no animation in progress
+                    if( !isAnimating() )
+                        startAnimationByMousePointerIntersection( ea, us );
 
-            if( getAnimationTime() <= 0. )
-
-               // center by mouse intersection (no animation)
-               setCenterByMousePointerIntersection( ea, us );
-
-            else {
-
-               // start new animation only if there is no animation in progress
-               if( !isAnimating() )
-                  startAnimationByMousePointerIntersection( ea, us );
-
+                }
             }
-         }
 
-         // perform zoom
-         zoomModel( -_wheelZoomFactor, true );
-         us.requestRedraw();
-         us.requestContinuousUpdate( isAnimating() || _thrown );
-         return true;
-      }
+            // perform zoom
+            zoomModel( -_wheelZoomFactor, true );
+            us.requestRedraw();
+            us.requestContinuousUpdate( isAnimating() || _thrown );
+            return true;
+        }
 
-      // mouse scroll down event
-      case GUIEventAdapter::SCROLL_DOWN:
-         zoomModel( _wheelZoomFactor, true );
-         us.requestRedraw();
-         us.requestContinuousUpdate( false );
-         return true;
+        // mouse scroll down event
+        case GUIEventAdapter::SCROLL_DOWN:
+            zoomModel( _wheelZoomFactor, true );
+            us.requestRedraw();
+            us.requestContinuousUpdate( false );
+            return true;
 
-      // unhandled mouse scrolling motion
-      default:
-         return false;
+        // unhandled mouse scrolling motion
+        default:
+            return false;
    }
 }
 
@@ -191,12 +193,12 @@ bool OrbitManipulator::handleMouseWheel( const GUIEventAdapter& ea, GUIActionAda
 // doc in parent
 bool OrbitManipulator::performMovementLeftMouseButton( const double dt, const double dx, const double dy )
 {
-   // rotate camera
-   if( getVerticalAxisFixed() )
-      rotateWithFixedVertical( dx, dy );
-   else
-      rotateTrackball( _ga_t0->getXnormalized(), _ga_t0->getYnormalized(),
-                       _ga_t1->getXnormalized(), _ga_t1->getYnormalized() );
+    // rotate camera
+    if( getVerticalAxisFixed() )
+        rotateWithFixedVertical( dx, dy );
+    else
+        rotateTrackball( _ga_t0->getXnormalized(), _ga_t0->getYnormalized(),
+                        _ga_t1->getXnormalized(), _ga_t1->getYnormalized() );
    return true;
 }
 
@@ -204,52 +206,52 @@ bool OrbitManipulator::performMovementLeftMouseButton( const double dt, const do
 // doc in parent
 bool OrbitManipulator::performMovementMiddleMouseButton( const double dt, const double dx, const double dy )
 {
-   // pan model
-   float scale = -0.3f * _distance;
-   panModel( dx*scale, dy*scale );
-   return true;
+    // pan model
+    float scale = -0.3f * _distance;
+    panModel( dx*scale, dy*scale );
+    return true;
 }
 
 
 // doc in parent
 bool OrbitManipulator::performMovementRightMouseButton( const double dt, const double dx, const double dy )
 {
-   // zoom model
-   zoomModel( dy, true );
-   return true;
+    // zoom model
+    zoomModel( dy, true );
+    return true;
 }
 
 
 bool OrbitManipulator::performMouseDeltaMovement( const float dx, const float dy )
 {
-   // rotate camera
-   if( getVerticalAxisFixed() )
-      rotateWithFixedVertical( dx, dy );
-   else
-      rotateTrackball( 0.f, 0.f, dx, dy );
+    // rotate camera
+    if( getVerticalAxisFixed() )
+        rotateWithFixedVertical( dx, dy );
+    else
+        rotateTrackball( 0.f, 0.f, dx, dy );
 
-   return true;
+    return true;
 }
 
 
 void OrbitManipulator::applyAnimationStep( const double currentProgress, const double prevProgress )
 {
-   OrbitAnimationData *ad = dynamic_cast< OrbitAnimationData* >( _animationData.get() );
-   assert( ad );
+    OrbitAnimationData *ad = dynamic_cast< OrbitAnimationData* >( _animationData.get() );
+    assert( ad );
 
-   // compute new center
-   osg::Vec3d prevCenter, prevEye, prevUp;
-   getTransformation( prevCenter, prevEye, prevUp );
-   osg::Vec3d newCenter = osg::Vec3d(prevCenter) + (ad->_movement * (currentProgress - prevProgress));
+    // compute new center
+    osg::Vec3d prevCenter, prevEye, prevUp;
+    getTransformation( prevCenter, prevEye, prevUp );
+    osg::Vec3d newCenter = osg::Vec3d(prevCenter) + (ad->_movement * (currentProgress - prevProgress));
 
-   // fix vertical axis
-   if( getVerticalAxisFixed() ) {
+    // fix vertical axis
+    if( getVerticalAxisFixed() )
+    {
 
-      CoordinateFrame coordinateFrame = getCoordinateFrame( newCenter );
-      Vec3d localUp = getUpVector( coordinateFrame );
+        CoordinateFrame coordinateFrame = getCoordinateFrame( newCenter );
+        Vec3d localUp = getUpVector( coordinateFrame );
 
-      fixVerticalAxis( newCenter - prevEye, prevUp, prevUp, localUp, false );
-
+        fixVerticalAxis( newCenter - prevEye, prevUp, prevUp, localUp, false );
    }
 
    // apply new transformation
@@ -260,30 +262,30 @@ void OrbitManipulator::applyAnimationStep( const double currentProgress, const d
 bool OrbitManipulator::startAnimationByMousePointerIntersection(
       const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us )
 {
-   // get current transformation
-   osg::Vec3d prevCenter, prevEye, prevUp;
-   getTransformation( prevCenter, prevEye, prevUp );
+    // get current transformation
+    osg::Vec3d prevCenter, prevEye, prevUp;
+    getTransformation( prevCenter, prevEye, prevUp );
 
-   // center by mouse intersection
-   if( !setCenterByMousePointerIntersection( ea, us ) )
-      return false;
+    // center by mouse intersection
+    if( !setCenterByMousePointerIntersection( ea, us ) )
+        return false;
 
-   OrbitAnimationData *ad = dynamic_cast< OrbitAnimationData*>( _animationData.get() );
-   assert( ad );
+    OrbitAnimationData *ad = dynamic_cast< OrbitAnimationData*>( _animationData.get() );
+    assert( ad );
 
-   // setup animation data and restore original transformation
-   ad->start( osg::Vec3d(_center) - prevCenter, ea.getTime() );
-   setTransformation( prevCenter, prevEye, prevUp );
+    // setup animation data and restore original transformation
+    ad->start( osg::Vec3d(_center) - prevCenter, ea.getTime() );
+    setTransformation( prevCenter, prevEye, prevUp );
 
-   return true;
+    return true;
 }
 
 
 void OrbitManipulator::OrbitAnimationData::start( const osg::Vec3d& movement, const double startTime )
 {
-   AnimationData::start( startTime );
+    AnimationData::start( startTime );
 
-   _movement = movement;
+    _movement = movement;
 }
 
 
@@ -291,15 +293,15 @@ void OrbitManipulator::OrbitAnimationData::start( const osg::Vec3d& movement, co
     by mouse pointer on the screen.*/
 void OrbitManipulator::rotateTrackball( const float px0, const float py0, const float px1, const float py1 )
 {
-   osg::Vec3d axis;
-   float angle;
+    osg::Vec3d axis;
+    float angle;
 
-   trackball( axis, angle, px1, py1, px0, py0 );
+    trackball( axis, angle, px1, py1, px0, py0 );
 
-   Quat new_rotate;
-   new_rotate.makeRotate( angle, axis );
+    Quat new_rotate;
+    new_rotate.makeRotate( angle, axis );
 
-   _rotation = _rotation * new_rotate;
+    _rotation = _rotation * new_rotate;
 }
 
 
@@ -307,10 +309,10 @@ void OrbitManipulator::rotateTrackball( const float px0, const float py0, const 
     while keeping UP vector.*/
 void OrbitManipulator::rotateWithFixedVertical( const float dx, const float dy )
 {
-   CoordinateFrame coordinateFrame = getCoordinateFrame( _center );
-   Vec3d localUp = getUpVector( coordinateFrame );
+    CoordinateFrame coordinateFrame = getCoordinateFrame( _center );
+    Vec3d localUp = getUpVector( coordinateFrame );
 
-   rotateYawPitch( _rotation, dx, dy, localUp );
+    rotateYawPitch( _rotation, dx, dy, localUp );
 }
 
 
@@ -318,19 +320,19 @@ void OrbitManipulator::rotateWithFixedVertical( const float dx, const float dy )
     while keeping UP vector given by up parameter.*/
 void OrbitManipulator::rotateWithFixedVertical( const float dx, const float dy, const Vec3f& up )
 {
-   rotateYawPitch( _rotation, dx, dy, up );
+    rotateYawPitch( _rotation, dx, dy, up );
 }
 
 
 /** Moves camera in x,y,z directions given in camera local coordinates.*/
 void OrbitManipulator::panModel( const float dx, const float dy, const float dz )
 {
-   Matrix rotation_matrix;
-   rotation_matrix.makeRotate( _rotation );
+    Matrix rotation_matrix;
+    rotation_matrix.makeRotate( _rotation );
 
-   Vec3d dv( dx, dy, dz );
+    Vec3d dv( dx, dy, dz );
 
-   _center += dv * rotation_matrix;
+    _center += dv * rotation_matrix;
 }
 
 
@@ -342,42 +344,35 @@ void OrbitManipulator::panModel( const float dx, const float dy, const float dz 
  */
 void OrbitManipulator::zoomModel( const float dy, bool pushForwardIfNeeded )
 {
-   // scale
-   float scale = 1.0f + dy;
+    // scale
+    float scale = 1.0f + dy;
 
-   // minimum distance
-   float minDist = _minimumDistance;
-   if( getRelativeFlag( _minimumDistanceFlagIndex ) )
-      minDist *= _modelSize;
+    // minimum distance
+    float minDist = _minimumDistance;
+    if( getRelativeFlag( _minimumDistanceFlagIndex ) )
+        minDist *= _modelSize;
 
-   if( _distance*scale > minDist )
-   {
-
-      // regular zoom
-      _distance *= scale;
-
-   }
-   else
-   {
-
-      if( pushForwardIfNeeded )
-      {
-
-         // push the camera forward
-         float scale = -_distance;
-         Matrixd rotation_matrix( _rotation );
-         Vec3d dv = (Vec3d( 0.0f, 0.0f, -1.0f ) * rotation_matrix) * (dy * scale);
-         _center += dv;
-
-      }
-      else
-      {
-
-         // set distance on its minimum value
-         _distance = minDist;
-
-      }
-   }
+    if( _distance*scale > minDist )
+    {
+        // regular zoom
+        _distance *= scale;
+    }
+    else
+    {
+        if( pushForwardIfNeeded )
+        {
+            // push the camera forward
+            float scale = -_distance;
+            Matrixd rotation_matrix( _rotation );
+            Vec3d dv = (Vec3d( 0.0f, 0.0f, -1.0f ) * rotation_matrix) * (dy * scale);
+            _center += dv;
+        }
+        else
+        {
+            // set distance on its minimum value
+            _distance = minDist;
+        }
+    }
 }
 
 
@@ -396,9 +391,9 @@ void OrbitManipulator::zoomModel( const float dy, bool pushForwardIfNeeded )
 void OrbitManipulator::trackball( osg::Vec3d& axis, float& angle, float p1x, float p1y, float p2x, float p2y )
 {
     /*
-     * First, figure out z-coordinates for projection of P1 and P2 to
-     * deformed sphere
-     */
+        * First, figure out z-coordinates for projection of P1 and P2 to
+        * deformed sphere
+        */
 
     osg::Matrixd rotation_matrix(_rotation);
 
@@ -410,23 +405,22 @@ void OrbitManipulator::trackball( osg::Vec3d& axis, float& angle, float p1x, flo
     osg::Vec3d p2 = sv * p2x + uv * p2y - lv * tb_project_to_sphere(_trackballSize, p2x, p2y);
 
     /*
-     *  Now, we want the cross product of P1 and P2
-     */
+        *  Now, we want the cross product of P1 and P2
+        */
     axis = p2^p1;
     axis.normalize();
 
     /*
-     *  Figure out how much to rotate around that axis.
-     */
+        *  Figure out how much to rotate around that axis.
+        */
     float t = (p2 - p1).length() / (2.0 * _trackballSize);
 
     /*
-     * Avoid problems with out-of-control values...
-     */
+        * Avoid problems with out-of-control values...
+        */
     if (t > 1.0) t = 1.0;
     if (t < -1.0) t = -1.0;
     angle = inRadians(asin(t));
-
 }
 
 
@@ -456,70 +450,70 @@ float OrbitManipulator::tb_project_to_sphere( float r, float x, float y )
 /** Get the FusionDistanceMode. Used by SceneView for setting up stereo convergence.*/
 osgUtil::SceneView::FusionDistanceMode OrbitManipulator::getFusionDistanceMode() const
 {
-   return osgUtil::SceneView::USE_FUSION_DISTANCE_VALUE;
+    return osgUtil::SceneView::USE_FUSION_DISTANCE_VALUE;
 }
 
 /** Get the FusionDistanceValue. Used by SceneView for setting up stereo convergence.*/
 float OrbitManipulator::getFusionDistanceValue() const
 {
-   return _distance;
+    return _distance;
 }
 
 
 /** Set the center of the manipulator. */
 void OrbitManipulator::setCenter( const Vec3d& center )
 {
-   _center = center;
+    _center = center;
 }
 
 
 /** Get the center of the manipulator. */
 const Vec3d& OrbitManipulator::getCenter() const
 {
-   return _center;
+    return _center;
 }
 
 
 /** Set the rotation of the manipulator. */
 void OrbitManipulator::setRotation( const Quat& rotation )
 {
-   _rotation = rotation;
+    _rotation = rotation;
 }
 
 
 /** Get the rotation of the manipulator. */
 const Quat& OrbitManipulator::getRotation() const
 {
-   return _rotation;
+    return _rotation;
 }
 
 
 /** Set the distance of camera to the center. */
 void OrbitManipulator::setDistance( double distance )
 {
-   _distance = distance;
+    _distance = distance;
 }
 
 
 /** Get the distance of the camera to the center. */
 double OrbitManipulator::getDistance() const
 {
-   return _distance;
+    return _distance;
 }
 
 
 /** Set the size of the trackball. Value is relative to the model size. */
 void OrbitManipulator::setTrackballSize( const double& size )
 {
-   /*
+    /*
     * This size should really be based on the distance from the center of
     * rotation to the point on the object underneath the mouse.  That
     * point would then track the mouse as closely as possible.  This is a
     * simple example, though, so that is left as an Exercise for the
     * Programmer.
     */
-   _trackballSize = size;
-   clampBetweenRange( _trackballSize, 0.1, 1.0, "TrackballManipulator::setTrackballSize(float)" );
+    _trackballSize = size;
+    clampBetweenRange( _trackballSize, 0.1, 1.0, "TrackballManipulator::setTrackballSize(float)" );
 }
 
 
@@ -529,7 +523,7 @@ void OrbitManipulator::setTrackballSize( const double& size )
     For example, value of 0.1 will short distance to center by 10% on each wheel up event.*/
 void OrbitManipulator::setWheelZoomFactor( double wheelZoomFactor )
 {
-   _wheelZoomFactor = wheelZoomFactor;
+    _wheelZoomFactor = wheelZoomFactor;
 }
 
 
@@ -537,8 +531,8 @@ void OrbitManipulator::setWheelZoomFactor( double wheelZoomFactor )
     before the center is pushed forward.*/
 void OrbitManipulator::setMinimumDistance( const double& minimumDistance, bool relativeToModelSize )
 {
-   _minimumDistance = minimumDistance;
-   setRelativeFlag( _minimumDistanceFlagIndex, relativeToModelSize );
+    _minimumDistance = minimumDistance;
+    setRelativeFlag( _minimumDistanceFlagIndex, relativeToModelSize );
 }
 
 
@@ -546,8 +540,8 @@ void OrbitManipulator::setMinimumDistance( const double& minimumDistance, bool r
     before the center is pushed forward.*/
 double OrbitManipulator::getMinimumDistance( bool *relativeToModelSize ) const
 {
-   if( relativeToModelSize )
-      *relativeToModelSize = getRelativeFlag( _minimumDistanceFlagIndex );
+    if( relativeToModelSize )
+        *relativeToModelSize = getRelativeFlag( _minimumDistanceFlagIndex );
 
-   return _minimumDistance;
+    return _minimumDistance;
 }

@@ -20,93 +20,94 @@ using namespace osgGA;
 
 /// Constructor.
 FlightManipulator::FlightManipulator( int flags )
-   : inherited( flags ),
-     _yawMode( YAW_AUTOMATICALLY_WHEN_BANKED )
+    : inherited( flags ),
+      _yawMode( YAW_AUTOMATICALLY_WHEN_BANKED )
 {
 }
 
 
 /// Constructor.
 FlightManipulator::FlightManipulator( const FlightManipulator& fm, const CopyOp& copyOp )
-   : inherited( fm, copyOp ),
-     _yawMode( fm._yawMode )
+    : inherited( fm, copyOp ),
+      _yawMode( fm._yawMode )
 {
 }
 
 
 void FlightManipulator::init( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   inherited::init( ea, us );
+    inherited::init( ea, us );
 
-   // center mouse pointer
-   centerMousePointer( ea, us );
+    // center mouse pointer
+    centerMousePointer( ea, us );
 }
 
 
 void FlightManipulator::home( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   inherited::home( ea, us );
+    inherited::home( ea, us );
 
-   // center mouse pointer
-   centerMousePointer( ea, us );
+    // center mouse pointer
+    centerMousePointer( ea, us );
 }
 
 
 // doc in parent
 bool FlightManipulator::handleFrame( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   addMouseEvent( ea );
-   if( performMovement() )
-      us.requestRedraw();
+    addMouseEvent( ea );
+    if( performMovement() )
+        us.requestRedraw();
 
-   return false;
+    return false;
 }
 
 
 // doc in parent
 bool FlightManipulator::handleMouseMove( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   return flightHandleEvent( ea, us );
+    return flightHandleEvent( ea, us );
 }
 
 
 // doc in parent
 bool FlightManipulator::handleMouseDrag( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   return flightHandleEvent( ea, us );
+    return flightHandleEvent( ea, us );
 }
 
 
 // doc in parent
 bool FlightManipulator::handleMousePush( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   return flightHandleEvent( ea, us );
+    return flightHandleEvent( ea, us );
 }
 
 
 // doc in parent
 bool FlightManipulator::handleMouseRelease( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   return flightHandleEvent( ea, us );
+    return flightHandleEvent( ea, us );
 }
 
 
 bool FlightManipulator::handleKeyDown( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   if( inherited::handleKeyDown( ea, us ) )
-      return true;
+    if( inherited::handleKeyDown( ea, us ) )
+        return true;
 
-   if( ea.getKey() == 'q' ) {
+    if( ea.getKey() == 'q' )
+    {
 
-      _yawMode = YAW_AUTOMATICALLY_WHEN_BANKED;
-      return true;
+        _yawMode = YAW_AUTOMATICALLY_WHEN_BANKED;
+        return true;
 
-   }
-   else if (ea.getKey()=='a') {
+    }
+    else if (ea.getKey()=='a')
+    {
 
-      _yawMode = NO_AUTOMATIC_YAW;
-      return true;
-
+        _yawMode = NO_AUTOMATIC_YAW;
+        return true;
    }
 
    return false;
@@ -115,27 +116,27 @@ bool FlightManipulator::handleKeyDown( const GUIEventAdapter& ea, GUIActionAdapt
 
 bool FlightManipulator::flightHandleEvent( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   addMouseEvent( ea );
-   us.requestContinuousUpdate( true );
-   if( performMovement() )
-      us.requestRedraw();
+    addMouseEvent( ea );
+    us.requestContinuousUpdate( true );
+    if( performMovement() )
+        us.requestRedraw();
 
-   return true;
+    return true;
 }
 
 
 void FlightManipulator::getUsage( ApplicationUsage& usage ) const
 {
-   inherited::getUsage( usage );
-   usage.addKeyboardMouseBinding( getManipulatorName() + ": q", "Automatically yaw when banked (default)" );
-   usage.addKeyboardMouseBinding( getManipulatorName() + ": a", "No yaw when banked" );
+    inherited::getUsage( usage );
+    usage.addKeyboardMouseBinding( getManipulatorName() + ": q", "Automatically yaw when banked (default)" );
+    usage.addKeyboardMouseBinding( getManipulatorName() + ": a", "No yaw when banked" );
 }
 
 
 /** Configure the Yaw control for the flight model. */
 void FlightManipulator::setYawControlMode( YawControlMode ycm )
 {
-   _yawMode = ycm;
+    _yawMode = ycm;
 }
 
 
@@ -221,21 +222,21 @@ bool FlightManipulator::performMovement()
 
 bool FlightManipulator::performMovementLeftMouseButton( const double dt, const double dx, const double dy )
 {
-   // pan model
-   _velocity += dt * (_acceleration + _velocity);
-   return true;
+    // pan model
+    _velocity += dt * (_acceleration + _velocity);
+    return true;
 }
 
 
 bool FlightManipulator::performMovementMiddleMouseButton( const double dt, const double dx, const double dy )
 {
-   _velocity = 0.0f;
-   return true;
+    _velocity = 0.0f;
+    return true;
 }
 
 
 bool FlightManipulator::performMovementRightMouseButton( const double dt, const double dx, const double dy )
 {
-   _velocity -= dt * (_acceleration + _velocity);
-   return true;
+    _velocity -= dt * (_acceleration + _velocity);
+    return true;
 }

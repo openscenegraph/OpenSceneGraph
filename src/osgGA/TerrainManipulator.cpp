@@ -22,42 +22,45 @@ using namespace osgGA;
 
 /// Constructor.
 TerrainManipulator::TerrainManipulator( int flags )
-   : inherited( flags )
+    : inherited( flags )
 {
 }
 
 
 /// Constructor.
 TerrainManipulator::TerrainManipulator( const TerrainManipulator& tm, const CopyOp& copyOp )
-   : inherited( tm, copyOp ),
-     _previousUp( tm._previousUp )
+    : inherited( tm, copyOp ),
+      _previousUp( tm._previousUp )
 {
 }
 
 
 void TerrainManipulator::setRotationMode( TerrainManipulator::RotationMode mode )
 {
-   setVerticalAxisFixed( mode == ELEVATION_AZIM );
+    setVerticalAxisFixed( mode == ELEVATION_AZIM );
 }
 
 
 TerrainManipulator::RotationMode TerrainManipulator::getRotationMode() const
 {
-   return getVerticalAxisFixed() ? ELEVATION_AZIM : ELEVATION_AZIM_ROLL;
+    return getVerticalAxisFixed() ? ELEVATION_AZIM : ELEVATION_AZIM_ROLL;
 }
 
 
 void TerrainManipulator::setNode( Node* node )
 {
-   inherited::setNode( node );
+    inherited::setNode( node );
 
-   // update model size
-   if( _flags & UPDATE_MODEL_SIZE )
-      if( _node.get() ) {
-         setMinimumDistance( clampBetween( _modelSize * 0.001, 0.00001, 1.0 ) );
-         notify( INFO ) << "TerrainManipulator: setting _minimumDistance to "
+    // update model size
+    if( _flags & UPDATE_MODEL_SIZE )
+    {
+        if( _node.get() )
+        {
+            setMinimumDistance( clampBetween( _modelSize * 0.001, 0.00001, 1.0 ) );
+            notify( INFO ) << "TerrainManipulator: setting _minimumDistance to "
                         << _minimumDistance << std::endl;
-      }
+        }
+    }
 }
 
 
@@ -199,107 +202,106 @@ bool TerrainManipulator::intersect( const Vec3d& start, const Vec3d& end, Vec3d&
 
 bool TerrainManipulator::performMovementMiddleMouseButton( const double dt, const double dx, const double dy )
 {
-   // pan model.
-   double scale = -0.3f*_distance;
+    // pan model.
+    double scale = -0.3f*_distance;
 
-   Matrixd rotation_matrix;
-   rotation_matrix.makeRotate(_rotation);
+    Matrixd rotation_matrix;
+    rotation_matrix.makeRotate(_rotation);
 
 
-   // compute look vector.
-   Vec3d lookVector = -getUpVector(rotation_matrix);
-   Vec3d sideVector = getSideVector(rotation_matrix);
-   Vec3d upVector = getFrontVector(rotation_matrix);
+    // compute look vector.
+    Vec3d lookVector = -getUpVector(rotation_matrix);
+    Vec3d sideVector = getSideVector(rotation_matrix);
+    Vec3d upVector = getFrontVector(rotation_matrix);
 
-   // CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
-   // Vec3d localUp = getUpVector(coordinateFrame);
-   Vec3d localUp = _previousUp;
+    // CoordinateFrame coordinateFrame = getCoordinateFrame(_center);
+    // Vec3d localUp = getUpVector(coordinateFrame);
+    Vec3d localUp = _previousUp;
 
-   Vec3d forwardVector =localUp^sideVector;
-   sideVector = forwardVector^localUp;
+    Vec3d forwardVector =localUp^sideVector;
+    sideVector = forwardVector^localUp;
 
-   forwardVector.normalize();
-   sideVector.normalize();
+    forwardVector.normalize();
+    sideVector.normalize();
 
-   Vec3d dv = forwardVector * (dy*scale) + sideVector * (dx*scale);
+    Vec3d dv = forwardVector * (dy*scale) + sideVector * (dx*scale);
 
-   _center += dv;
+    _center += dv;
 
-   // need to recompute the intersection point along the look vector.
+    // need to recompute the intersection point along the look vector.
 
-   bool hitFound = false;
+    bool hitFound = false;
 
-   if (_node.valid())
-   {
+    if (_node.valid())
+    {
+        // now reorientate the coordinate frame to the frame coords.
+        CoordinateFrame coordinateFrame =  getCoordinateFrame(_center);
 
-      // now reorientate the coordinate frame to the frame coords.
-      CoordinateFrame coordinateFrame =  getCoordinateFrame(_center);
+        // need to reintersect with the terrain
+        double distance = _node->getBound().radius()*0.25f;
 
-      // need to reintersect with the terrain
-      double distance = _node->getBound().radius()*0.25f;
+        Vec3d ip1;
+        Vec3d ip2;
+        bool hit_ip1 = intersect(_center, _center + getUpVector(coordinateFrame) * distance, ip1);
+        bool hit_ip2 = intersect(_center, _center - getUpVector(coordinateFrame) * distance, ip2);
+        if (hit_ip1)
+        {
+            if (hit_ip2)
+            {
+                _center = (_center-ip1).length2() < (_center-ip2).length2() ?
+                            ip1 :
+                            ip2;
 
-      Vec3d ip1;
-      Vec3d ip2;
-      bool hit_ip1 = intersect(_center, _center + getUpVector(coordinateFrame) * distance, ip1);
-      bool hit_ip2 = intersect(_center, _center - getUpVector(coordinateFrame) * distance, ip2);
-      if (hit_ip1)
-      {
-         if (hit_ip2)
-         {
-            _center = (_center-ip1).length2() < (_center-ip2).length2() ?
-                       ip1 :
-                       ip2;
-
+                hitFound = true;
+            }
+            else
+            {
+                _center = ip1;
+                hitFound = true;
+            }
+        }
+        else if (hit_ip2)
+        {
+            _center = ip2;
             hitFound = true;
-         }
-         else
-         {
-            _center = ip1;
-            hitFound = true;
-         }
-      }
-      else if (hit_ip2)
-      {
-         _center = ip2;
-         hitFound = true;
-      }
+        }
 
-      if (!hitFound)
-      {
-         // ??
-         notify(INFO)<<"TerrainManipulator unable to intersect with terrain."<<std::endl;
-      }
+        if (!hitFound)
+        {
+            // ??
+            notify(INFO)<<"TerrainManipulator unable to intersect with terrain."<<std::endl;
+        }
 
-      coordinateFrame = getCoordinateFrame(_center);
-      Vec3d new_localUp = getUpVector(coordinateFrame);
+        coordinateFrame = getCoordinateFrame(_center);
+        Vec3d new_localUp = getUpVector(coordinateFrame);
 
 
-      Quat pan_rotation;
-      pan_rotation.makeRotate(localUp,new_localUp);
+        Quat pan_rotation;
+        pan_rotation.makeRotate(localUp,new_localUp);
 
-      if (!pan_rotation.zeroRotation())
-      {
-         _rotation = _rotation * pan_rotation;
-         _previousUp = new_localUp;
-         //notify(NOTICE)<<"Rotating from "<<localUp<<" to "<<new_localUp<<"  angle = "<<acos(localUp*new_localUp/(localUp.length()*new_localUp.length()))<<std::endl;
+        if (!pan_rotation.zeroRotation())
+        {
+            _rotation = _rotation * pan_rotation;
+            _previousUp = new_localUp;
+            //notify(NOTICE)<<"Rotating from "<<localUp<<" to "<<new_localUp<<"  angle = "<<acos(localUp*new_localUp/(localUp.length()*new_localUp.length()))<<std::endl;
 
-         //clampOrientation();
-      }
-      else
-      {
-         notify(INFO)<<"New up orientation nearly inline - no need to rotate"<<std::endl;
-      }
-   }
+            //clampOrientation();
+        }
+        else
+        {
+            notify(INFO)<<"New up orientation nearly inline - no need to rotate"<<std::endl;
+        }
+    }
 
-   return true;
+    return true;
 }
 
 
 bool TerrainManipulator::performMovementRightMouseButton( const double dt, const double dx, const double dy )
 {
-   // zoom model
-   zoomModel( dy, false );
-   return true;
+    // zoom model
+    zoomModel( dy, false );
+    return true;
 }
 
 
@@ -325,7 +327,6 @@ void TerrainManipulator::clampOrientation()
 
             sideVector = upVector^localUp;
             sideVector.normalize();
-
         }
 
         Vec3d newUpVector = sideVector^lookVector;

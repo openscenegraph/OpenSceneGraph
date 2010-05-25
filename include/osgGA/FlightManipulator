@@ -1,119 +1,82 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGGA_FLIGHTMANIPULATOR
-#define OSGGA_FLIGHTMANIPULATOR 1
+#ifndef OSGGA_FLIGHT_MANIPULATOR
+#define OSGGA_FLIGHT_MANIPULATOR 1
 
-#include <osgGA/MatrixManipulator>
-#include <osg/Quat>
+#include <osgGA/FirstPersonManipulator>
 
-namespace osgGA{
 
-/**
-FlightManipulator is a MatrixManipulator which provides flight simulator-like
-updating of the camera position & orientation. By default, the left mouse
-button accelerates, the right mouse button decelerates, and the middle mouse
-button (or left and right simultaneously) stops dead.
-*/
+namespace osgGA {
 
-class OSGGA_EXPORT FlightManipulator : public MatrixManipulator
+
+/** FlightManipulator is a MatrixManipulator which provides flight simulator-like
+ *  updating of the camera position & orientation. By default, the left mouse
+ *  button accelerates, the right mouse button decelerates, and the middle mouse
+ *  button (or left and right simultaneously) stops dead.
+ */
+class OSGGA_EXPORT FlightManipulator : public FirstPersonManipulator
 {
-    public:
+   typedef FirstPersonManipulator inherited;
 
-        FlightManipulator();
+public:
 
-        virtual const char* className() const { return "Flight"; }
+   enum YawControlMode {
+      YAW_AUTOMATICALLY_WHEN_BANKED,
+      NO_AUTOMATIC_YAW
+   };
 
-        /** set the position of the matrix manipulator using a 4x4 Matrix.*/
-        virtual void setByMatrix(const osg::Matrixd& matrix);
+   FlightManipulator( int flags = UPDATE_MODEL_SIZE | COMPUTE_HOME_USING_BBOX );
+   FlightManipulator( const FlightManipulator& fpm,
+                      const osg::CopyOp& copyOp = osg::CopyOp::SHALLOW_COPY );
 
-        /** set the position of the matrix manipulator using a 4x4 Matrix.*/
-        virtual void setByInverseMatrix(const osg::Matrixd& matrix) { setByMatrix(osg::Matrixd::inverse(matrix)); }
+   META_Object( osgGA, FlightManipulator );
 
-        /** get the position of the manipulator as 4x4 Matrix.*/
-        virtual osg::Matrixd getMatrix() const;
+   virtual void setYawControlMode( YawControlMode ycm );
+   inline YawControlMode getYawControlMode() const;
 
-        /** get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix.*/
-        virtual osg::Matrixd getInverseMatrix() const;
+   virtual void home( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
+   virtual void init( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
+   virtual void getUsage( osg::ApplicationUsage& usage ) const;
 
+protected:
 
-        virtual void setNode(osg::Node*);
+   virtual bool handleFrame( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
+   virtual bool handleMouseMove( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
+   virtual bool handleMouseDrag( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
+   virtual bool handleMousePush( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
+   virtual bool handleMouseRelease( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
+   virtual bool handleKeyDown( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
+   virtual bool flightHandleEvent( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
 
-        virtual const osg::Node* getNode() const;
+   virtual bool performMovement();
+   virtual bool performMovementLeftMouseButton( const double dt, const double dx, const double dy );
+   virtual bool performMovementMiddleMouseButton( const double dt, const double dx, const double dy );
+   virtual bool performMovementRightMouseButton( const double dt, const double dx, const double dy );
 
-        virtual osg::Node* getNode();
-
-        virtual void home(const GUIEventAdapter& ea,GUIActionAdapter& us);
-
-        virtual void init(const GUIEventAdapter& ea,GUIActionAdapter& us);
-
-        virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
-
-        /** Get the keyboard and mouse usage of this manipulator.*/
-        virtual void getUsage(osg::ApplicationUsage& usage) const;
-
-        enum YawControlMode {
-                YAW_AUTOMATICALLY_WHEN_BANKED,
-                NO_AUTOMATIC_YAW
-        };
-
-        /** Configure the Yaw control for the flight model. */
-        void setYawControlMode(YawControlMode ycm) { _yawMode = ycm; }
-
-        void setModelScale(double in_ms) { _modelScale = in_ms; }
-        double getModelScale() const { return _modelScale; }
-
-        void setAcceleration(double in_acc) { _acceleration = in_acc; }
-        double getAcceleration() const { return _acceleration; }
-
-        void setVelocity(double in_vel) { _velocity = in_vel; }
-        double getVelocity() const { return _velocity; }
-
-    protected:
-
-        virtual ~FlightManipulator();
-
-        /** Reset the internal GUIEvent stack.*/
-        void flushMouseEventStack();
-        /** Add the current mouse GUIEvent to internal stack.*/
-        void addMouseEvent(const GUIEventAdapter& ea);
-
-        void computePosition(const osg::Vec3& eye,const osg::Vec3& lv,const osg::Vec3& up);
-
-        /** For the give mouse movement calculate the movement of the camera.
-            Return true is camera has moved and a redraw is required.*/
-        bool calcMovement();
-
-
-        // Internal event stack comprising last two mouse events.
-        osg::ref_ptr<const GUIEventAdapter> _ga_t1;
-        osg::ref_ptr<const GUIEventAdapter> _ga_t0;
-
-        osg::observer_ptr<osg::Node>       _node;
-
-        double _modelScale;
-        double _acceleration;
-        double _velocity;
-
-        YawControlMode _yawMode;
-        
-        osg::Vec3d  _eye;
-        osg::Quat   _rotation;
-        double      _distance;
+   YawControlMode _yawMode;
 
 };
 
+
+//
+//  inline methods
+//
+
+/// Returns the Yaw control for the flight model.
+inline FlightManipulator::YawControlMode FlightManipulator::getYawControlMode() const  { return _yawMode; }
+
+
 }
 
-#endif
-
+#endif /* OSGGA_FLIGHT_MANIPULATOR */

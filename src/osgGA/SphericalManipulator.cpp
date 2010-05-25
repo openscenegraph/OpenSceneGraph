@@ -247,7 +247,7 @@ void SphericalManipulator::addMouseEvent(const GUIEventAdapter& ea)
 //--------------------------------------------------------------------------------------------------
 void SphericalManipulator::setByMatrix(const osg::Matrixd& matrix)
 {
-    _center=osg::Vec3(0,0,-_distance)*matrix;
+    _center=osg::Vec3d(0,0,-_distance)*matrix;
 
     _heading=atan2(-matrix(0,0),matrix(0,1));
 
@@ -373,7 +373,7 @@ bool SphericalManipulator::calcMovement()
         osg::Matrix rotation_matrix;
         rotation_matrix=osg::Matrixd::rotate(_elevation,-1,0,0)*osg::Matrixd::rotate(PI_2+_heading,0,0,1);
 
-        osg::Vec3 dv(throwScale*dx*scale,0,throwScale*dy*scale);
+        osg::Vec3d dv(throwScale*dx*scale,0,throwScale*dy*scale);
         _center += dv*rotation_matrix;
 
         return true;

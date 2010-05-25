@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -36,13 +36,16 @@ amount of default functionality, for classes which wish to control OSG cameras
 in response to GUI events.
 
 */
-class OSGGA_EXPORT MatrixManipulator : public GUIEventHandler
-{
+class OSGGA_EXPORT MatrixManipulator : public GUIEventHandler {
+
+    typedef GUIEventHandler inherited;
+
 public:
 
-
+        // We are not using META_Object as this is abstract class.
+        // Use META_Object(osgGA,YourManipulator); in your descendant non-abstract classes.
         virtual const char* className() const { return "MatrixManipulator"; }
-        
+
         /** callback class to use to allow matrix manipulators to query the application for the local coordinate frame.*/
         class CoordinateFrameCallback : public osg::Referenced
         {
@@ -51,16 +54,6 @@ public:
         protected:
             virtual ~CoordinateFrameCallback() {}
         };
-        
-        
-
-        /** set the minimum distance (as ratio) the eye point can be zoomed in towards the
-            center before the center is pushed forward.*/        
-        virtual void setMinimumDistance(float minimumDistance) { _minimumDistance=minimumDistance; }
-
-        /** get the minimum distance (as ratio) the eye point can be zoomed in */
-        float getMinimumDistance() const { return _minimumDistance; }
-
 
         /** set the coordinate frame which callback tells the manipulator which way is up, east and north.*/
         virtual void setCoordinateFrameCallback(CoordinateFrameCallback* cb) { _coordinateFrameCallback = cb; }
@@ -70,14 +63,14 @@ public:
 
         /** get the coordinate frame callback which tells the manipulator which way is up, east and north.*/
         const CoordinateFrameCallback* getCoordinateFrameCallback() const { return _coordinateFrameCallback.get(); }
-        
+
         /** get the coordinate frame.*/
         osg::CoordinateFrame getCoordinateFrame(const osg::Vec3d& position) const
         {
             if (_coordinateFrameCallback.valid()) return  _coordinateFrameCallback->getCoordinateFrame(position);
             return osg::CoordinateFrame();
         }
-        
+
         osg::Vec3d getSideVector(const osg::CoordinateFrame& cf) const { return osg::Vec3d(cf(0,0),cf(0,1),cf(0,2)); }
         osg::Vec3d getFrontVector(const osg::CoordinateFrame& cf) const { return osg::Vec3d(cf(1,0),cf(1,1),cf(1,2)); }
         osg::Vec3d getUpVector(const osg::CoordinateFrame& cf) const { return osg::Vec3d(cf(2,0),cf(2,1),cf(2,2)); }
@@ -99,12 +92,6 @@ public:
 
         /** Get the FusionDistanceValue. Used by SceneView for setting up stereo convergence.*/
         virtual float getFusionDistanceValue() const { return 1.0f; }
-
-        /** Set the distance parameter (used by TrackballManipulator etc.) */
-        void setDistance(double /*distance*/) {}
-
-        /** Get the distance parameter. */
-        virtual double getDistance() const { return 1.0; }
 
         /** Set the mask to use when set up intersection traversal such as used in manipulators that follow terrain or have collision detection.
           * The intersection traversal mask is useful for controlling what parts of the scene graph should be used for intersection purposes.*/
@@ -134,7 +121,7 @@ public:
             _homeCenter = center;
             _homeUp = up;
         }
-        
+
         /** Get the manually set home position. */
         virtual void getHomePosition(osg::Vec3d& eye, osg::Vec3d& center, osg::Vec3d& up) const
         {
@@ -143,36 +130,23 @@ public:
             up = _homeUp;
         }
 
-        /** Set whether the automatic compute of the home position is enabled.*/        
+        /** Set whether the automatic compute of the home position is enabled.*/
         virtual void setAutoComputeHomePosition(bool flag) { _autoComputeHomePosition = flag; }
-        
-        /** Get whether the automatic compute of the home position is enabled.*/        
+
+        /** Get whether the automatic compute of the home position is enabled.*/
         bool getAutoComputeHomePosition() const { return _autoComputeHomePosition; }
 
-        /** Compute the home position.*/        
-        virtual void computeHomePosition()
-        {
-            if(getNode())
-            {
-                const osg::BoundingSphere& boundingSphere=getNode()->getBound();
-
-                setHomePosition(boundingSphere._center+osg::Vec3( 0.0,-3.5f * boundingSphere._radius,0.0f),
-                                boundingSphere._center,                                
-                                //osg::Vec3(0.0f,0.0f,1.0f),                                
-                                _homeUp,
-                                _autoComputeHomePosition);
-            }
-        }
-
+        /** Compute the home position.*/
+        virtual void computeHomePosition(const osg::Camera *camera = NULL, bool useBoundingBox = false);
 
         /**
-        Move the camera to the default position. 
+        Move the camera to the default position.
         May be ignored by manipulators if home functionality is not appropriate.
         */
         virtual void home(const GUIEventAdapter& ,GUIActionAdapter&) {}
 
         /**
-        Move the camera to the default position. 
+        Move the camera to the default position.
         This version does not require GUIEventAdapter and GUIActionAdapter so may be
         called from somewhere other than a handle() method in GUIEventHandler.  Application
         must be aware of implications.
@@ -191,14 +165,16 @@ public:
 protected:
 
         MatrixManipulator();
+        MatrixManipulator(const MatrixManipulator& mm, const osg::CopyOp& copyOp = osg::CopyOp::SHALLOW_COPY);
+
         virtual ~MatrixManipulator();
 
-        double                  _minimumDistance;
-        
+        std::string getManipulatorName() const;
+
         unsigned int            _intersectTraversalMask;
 
         bool                    _autoComputeHomePosition;
-        
+
         osg::Vec3d              _homeEye;
         osg::Vec3d              _homeCenter;
         osg::Vec3d              _homeUp;

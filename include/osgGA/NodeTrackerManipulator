@@ -1,44 +1,51 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGGA_NODETRACKERMANIPULATOR
-#define OSGGA_NODETRACKERMANIPULATOR 1
+#ifndef OSGGA_NODE_TRACKER_MANIPULATOR
+#define OSGGA_NODE_TRACKER_MANIPULATOR 1
 
-#include <osgGA/MatrixManipulator>
-#include <osg/ObserverNodePath>
-#include <osg/Quat>
+#include <osgGA/OrbitManipulator>
 
-namespace osgGA{
 
-class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
+namespace osgGA {
+
+
+class OSGGA_EXPORT NodeTrackerManipulator : public OrbitManipulator
 {
+        typedef OrbitManipulator inherited;
+
     public:
 
-        NodeTrackerManipulator(); 
+        NodeTrackerManipulator( int flags = DEFAULT_SETTINGS );
 
-        virtual const char* className() const { return "NodeTrackerManipulator"; }
+        NodeTrackerManipulator( const NodeTrackerManipulator& om,
+                                const osg::CopyOp& copyOp = osg::CopyOp::SHALLOW_COPY );
 
-        void setTrackNodePath(const osg::NodePath& nodePath) { _trackNodePath.setNodePath(nodePath); }
-        void setTrackNodePath(const osg::ObserverNodePath& nodePath) { _trackNodePath = nodePath; }
-        osg::ObserverNodePath& getTrackNodePath() { return _trackNodePath; }
+        META_Object( osgGA, NodeTrackerManipulator );
+
+        typedef std::vector< osg::observer_ptr<osg::Node> >   ObserverNodePath;
+
+        void setTrackNodePath(const osg::NodePath& nodePath);
+        void setTrackNodePath(const ObserverNodePath& nodePath) { _trackNodePath = nodePath; }
+        ObserverNodePath& getTrackNodePath() { return _trackNodePath; }
 
         void setTrackNode(osg::Node* node);
-        osg::Node* getTrackNode();
-        const osg::Node* getTrackNode() const;
+        osg::Node* getTrackNode() { return _trackNodePath.empty() ? 0 : _trackNodePath.back().get(); }
+        const osg::Node* getTrackNode() const { return _trackNodePath.empty() ? 0 : _trackNodePath.back().get(); }
 
-        enum TrackerMode 
+        enum TrackerMode
         {
-            /** Track the center of the node's bounding sphere, but not rotations of the node.  
+            /** Track the center of the node's bounding sphere, but not rotations of the node.
               * For databases which have a CoordinateSystemNode, the orientation is kept relative the coordinate frame if the center of the node.
               */
             NODE_CENTER,
@@ -50,12 +57,12 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
               */
             NODE_CENTER_AND_ROTATION
         };
-        
+
         void setTrackerMode(TrackerMode mode);
         TrackerMode getTrackerMode() const { return _trackerMode; }
 
 
-        enum RotationMode 
+        enum RotationMode
         {
             /** Use a trackball style manipulation of the view direction w.r.t the tracked orientation.
               */
@@ -64,106 +71,43 @@ class OSGGA_EXPORT NodeTrackerManipulator : public MatrixManipulator
               */
             ELEVATION_AZIM
         };
-        
+
         void setRotationMode(RotationMode mode);
-        RotationMode getRotationMode() const { return _rotationMode; }
+        RotationMode getRotationMode() const;
 
 
-        /** set the position of the matrix manipulator using a 4x4 Matrix.*/
         virtual void setByMatrix(const osg::Matrixd& matrix);
-
-        /** set the position of the matrix manipulator using a 4x4 Matrix.*/
-        virtual void setByInverseMatrix(const osg::Matrixd& matrix) { setByMatrix(osg::Matrixd::inverse(matrix)); }
-
-        /** get the position of the manipulator as 4x4 Matrix.*/
         virtual osg::Matrixd getMatrix() const;
-
-        /** get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix.*/
         virtual osg::Matrixd getInverseMatrix() const;
 
-        /** Get the FusionDistanceMode. Used by SceneView for setting up stereo convergence.*/
-        virtual osgUtil::SceneView::FusionDistanceMode getFusionDistanceMode() const { return osgUtil::SceneView::USE_FUSION_DISTANCE_VALUE; }
-
-        /** Get the FusionDistanceValue. Used by SceneView for setting up stereo convergence.*/
-        virtual float getFusionDistanceValue() const { return _distance; }
-
-        /** Attach a node to the manipulator. 
-            Automatically detaches previously attached node.
-            setNode(NULL) detaches previously nodes.
-            Is ignored by manipulators which do not require a reference model.*/
         virtual void setNode(osg::Node*);
-
-        /** Return node if attached.*/
-        virtual const osg::Node* getNode() const;
-
-        /** Return node if attached.*/
-        virtual osg::Node* getNode();
 
         virtual void computeHomePosition();
 
-        /** Move the camera to the default position. 
-            May be ignored by manipulators if home functionality is not appropriate.*/
-        virtual void home(const GUIEventAdapter& ea,GUIActionAdapter& us);
-        
-        /** Start/restart the manipulator.*/
-        virtual void init(const GUIEventAdapter& ea,GUIActionAdapter& us);
-
-        /** handle events, return true if handled, false otherwise.*/
-        virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
-
-        /** Get the keyboard and mouse usage of this manipulator.*/
-        virtual void getUsage(osg::ApplicationUsage& usage) const;
-
     protected:
 
-        virtual ~NodeTrackerManipulator();
+        virtual bool performMovementLeftMouseButton(const double dt, const double dx, const double dy);
+        virtual bool performMovementMiddleMouseButton(const double dt, const double dx, const double dy);
+        virtual bool performMovementRightMouseButton(const double dt, const double dx, const double dy);
 
-        /** Reset the internal GUIEvent stack.*/
-        void flushMouseEventStack();
+        osg::NodePath getNodePath() const;
 
-        /** Add the current mouse GUIEvent to internal stack.*/
-        void addMouseEvent(const GUIEventAdapter& ea);
+        bool validateNodePath() const;
+
+        void computeNodeWorldToLocal(osg::Matrixd& worldToLocal) const;
+        void computeNodeLocalToWorld(osg::Matrixd& localToWorld) const;
 
         void computeNodeCenterAndRotation(osg::Vec3d& center, osg::Quat& rotation) const;
 
         void computePosition(const osg::Vec3d& eye,const osg::Vec3d& lv,const osg::Vec3d& up);
 
-        /** For the give mouse movement calculate the movement of the camera.
-            Return true is camera has moved and a redraw is required.*/
-        bool calcMovement();
-        
-        void trackball(osg::Vec3& axis,double& angle, double p1x, double p1y, double p2x, double p2y);
-        double tb_project_to_sphere(double r, double x, double y);
 
-
-        /** Check the speed at which the mouse is moving.
-            If speed is below a threshold then return false, otherwise return true.*/
-        bool isMouseMoving();
-
-
-        void clampOrientation();
-
-
-        // Internal event stack comprising last two mouse events.
-        osg::ref_ptr<const GUIEventAdapter> _ga_t1;
-        osg::ref_ptr<const GUIEventAdapter> _ga_t0;
-
-        osg::observer_ptr<osg::Node> _node;
-
-        osg::ObserverNodePath   _trackNodePath;
+        ObserverNodePath        _trackNodePath;
 
         TrackerMode             _trackerMode;
-        RotationMode            _rotationMode;
-
-        bool                    _thrown;
-
-        osg::Quat               _nodeRotation;
-        osg::Quat               _rotation;
-        float                   _distance;
 
 };
 
 }
 
-#endif
-
+#endif /* OSGGA_NODE_TRACKER_MANIPULATOR */

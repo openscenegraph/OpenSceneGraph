@@ -137,7 +137,7 @@ void DriveManipulator::computeHomePosition()
 
             ep = ip;
             ep += getUpVector(cf)*_height;
-            osg::Vec3 lv = uv^osg::Vec3d(1.0,0.0,0.0);
+            osg::Vec3d lv = uv^osg::Vec3d(1.0,0.0,0.0);
 
             setHomePosition(ep,ep+lv,uv);
 
@@ -160,7 +160,7 @@ void DriveManipulator::computeHomePosition()
 
                 ep = ip;
                 ep += getUpVector(cf)*_height;
-                osg::Vec3 lv = uv^osg::Vec3d(1.0,0.0,0.0);
+                osg::Vec3d lv = uv^osg::Vec3d(1.0,0.0,0.0);
                 setHomePosition(ep,ep+lv,uv);
 
                 positionSet = true;
@@ -245,7 +245,7 @@ void DriveManipulator::init(const GUIEventAdapter& ea,GUIActionAdapter& us)
             else uv = -np;
 
             ep = ip+uv*_height;
-            osg::Vec3 lv = uv^sv;
+            osg::Vec3d lv = uv^sv;
 
             computePosition(ep,ep+lv,uv);
 

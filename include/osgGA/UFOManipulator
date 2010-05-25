@@ -109,7 +109,7 @@ class OSGGA_EXPORT UFOManipulator : public osgGA::MatrixManipulator
         void getUsage(osg::ApplicationUsage& usage) const;
 
         /** Report the current position as LookAt vectors */
-        void getCurrentPositionAsLookAt( osg::Vec3 &eye, osg::Vec3 &center, osg::Vec3 &up );
+        void getCurrentPositionAsLookAt( osg::Vec3d& eye, osg::Vec3d& center, osg::Vec3d& up );
 
 
         void setMinHeight( double in_min_height ) { _minHeightAboveGround = in_min_height; }

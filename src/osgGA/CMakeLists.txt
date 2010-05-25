@@ -1,9 +1,9 @@
 
-IF(DYNAMIC_OPENSCENEGRAPH)
+IF   (DYNAMIC_OPENSCENEGRAPH)
     ADD_DEFINITIONS(-DOSGGA_LIBRARY)
-ELSE()
+ELSE (DYNAMIC_OPENSCENEGRAPH)
     ADD_DEFINITIONS(-DOSG_LIBRARY_STATIC)
-ENDIF()
+ENDIF(DYNAMIC_OPENSCENEGRAPH)
 
 SET(LIB_NAME osgGA)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
@@ -13,6 +13,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/EventQueue
     ${HEADER_PATH}/EventVisitor
     ${HEADER_PATH}/Export
+    ${HEADER_PATH}/FirstPersonManipulator
     ${HEADER_PATH}/FlightManipulator
     ${HEADER_PATH}/GUIActionAdapter
     ${HEADER_PATH}/GUIEventAdapter
@@ -20,10 +21,12 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/KeySwitchMatrixManipulator
     ${HEADER_PATH}/MatrixManipulator
     ${HEADER_PATH}/NodeTrackerManipulator
+    ${HEADER_PATH}/OrbitManipulator
+    ${HEADER_PATH}/StandardManipulator
+    ${HEADER_PATH}/SphericalManipulator
     ${HEADER_PATH}/StateSetManipulator
     ${HEADER_PATH}/TerrainManipulator
     ${HEADER_PATH}/TrackballManipulator
-    ${HEADER_PATH}/SphericalManipulator
     ${HEADER_PATH}/UFOManipulator
     ${HEADER_PATH}/Version
     ${HEADER_PATH}/CameraViewSwitchManipulator
@@ -37,23 +40,25 @@ ADD_LIBRARY(${LIB_NAME}
     DriveManipulator.cpp
     EventQueue.cpp
     EventVisitor.cpp
+    FirstPersonManipulator.cpp
     FlightManipulator.cpp
     GUIEventAdapter.cpp
     GUIEventHandler.cpp
     KeySwitchMatrixManipulator.cpp
     MatrixManipulator.cpp
     NodeTrackerManipulator.cpp
+    OrbitManipulator.cpp
+    StandardManipulator.cpp
+    SphericalManipulator.cpp
     StateSetManipulator.cpp
     TerrainManipulator.cpp
     TrackballManipulator.cpp
-    SphericalManipulator.cpp
     UFOManipulator.cpp
     Version.cpp
     CameraViewSwitchManipulator.cpp
-    ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
-LINK_INTERNAL(${LIB_NAME}     
+LINK_INTERNAL(${LIB_NAME}
     osgDB
     osgUtil
     osg

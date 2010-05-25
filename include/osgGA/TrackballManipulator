@@ -22,15 +22,15 @@ namespace osgGA {
 
 class OSGGA_EXPORT TrackballManipulator : public OrbitManipulator
 {
-   typedef OrbitManipulator inherited;
+        typedef OrbitManipulator inherited;
 
-public:
+    public:
 
-   TrackballManipulator( int flags = DEFAULT_SETTINGS );
-   TrackballManipulator( const TrackballManipulator& tm,
-                         const osg::CopyOp& copyOp = osg::CopyOp::SHALLOW_COPY );
+        TrackballManipulator( int flags = DEFAULT_SETTINGS );
+        TrackballManipulator( const TrackballManipulator& tm,
+                                const osg::CopyOp& copyOp = osg::CopyOp::SHALLOW_COPY );
 
-   META_Object( osgGA, TrackballManipulator );
+        META_Object( osgGA, TrackballManipulator );
 
 };
 

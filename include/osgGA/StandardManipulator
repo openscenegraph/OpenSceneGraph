@@ -45,7 +45,7 @@ class OSGGA_EXPORT StandardManipulator : public MatrixManipulator
 
         StandardManipulator( int flags = DEFAULT_SETTINGS );
         StandardManipulator( const StandardManipulator& m,
-                            const osg::CopyOp& copyOp = osg::CopyOp::SHALLOW_COPY );
+                             const osg::CopyOp& copyOp = osg::CopyOp::SHALLOW_COPY );
 
         // We are not using META_Object as this is abstract class.
         // Use META_Object(osgGA,YourManipulator); in your descendant non-abstract classes.
@@ -165,7 +165,7 @@ class OSGGA_EXPORT StandardManipulator : public MatrixManipulator
 
 inline bool StandardManipulator::getRelativeFlag( int index ) const
 {
-   return ( _relativeFlags & (0x01 << index) ) != 0;
+    return ( _relativeFlags & (0x01 << index) ) != 0;
 }
 
 inline void StandardManipulator::setRelativeFlag( int index, bool value )
@@ -177,7 +177,7 @@ inline void StandardManipulator::setRelativeFlag( int index, bool value )
 /// Returns whether manipulator preserves camera's "UP" vector.
 inline bool StandardManipulator::getVerticalAxisFixed() const
 {
-   return _verticalAxisFixed;
+    return _verticalAxisFixed;
 }
 
 

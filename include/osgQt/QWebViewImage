@@ -23,7 +23,7 @@
 namespace osgQt
 {
 
-class OSGQT_EXPORT QWebViewImage : public osgWidget::BrowserImage
+class QWebViewImage : public osgWidget::BrowserImage
 {
     public:
 

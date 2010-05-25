@@ -137,15 +137,15 @@ BEGIN_OBJECT_REFLECTOR(osgGA::SphericalManipulator)
 	          __C5_osg_Vec3d_R1__getCenter,
 	          "",
 	          "");
-	I_Method1(bool, setDistance, IN, double, x,
+	I_Method1(bool, setDistance, IN, double, distance,
 	          Properties::NON_VIRTUAL,
 	          __bool__setDistance__double,
-	          "Set the distance parameter (used by TrackballManipulator etc. ",
-	          ") ");
+	          "",
+	          "");
 	I_Method0(double, getDistance,
-	          Properties::VIRTUAL,
+	          Properties::NON_VIRTUAL,
 	          __double__getDistance,
-	          "Get the distance parameter. ",
+	          "",
 	          "");
 	I_Method0(double, getHomeDistance,
 	          Properties::NON_VIRTUAL,

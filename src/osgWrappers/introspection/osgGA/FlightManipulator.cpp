@@ -11,8 +11,8 @@
 #include <osgIntrospection/Attributes>
 
 #include <osg/ApplicationUsage>
-#include <osg/Matrixd>
-#include <osg/Node>
+#include <osg/CopyOp>
+#include <osg/Object>
 #include <osgGA/FlightManipulator>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
@@ -33,155 +33,134 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgGA::FlightManipulator)
 	I_DeclaringFile("osgGA/FlightManipulator");
-	I_BaseType(osgGA::MatrixManipulator);
-	I_Constructor0(____FlightManipulator,
-	               "",
-	               "");
+	I_BaseType(osgGA::FirstPersonManipulator);
+	I_ConstructorWithDefaults1(IN, int, flags, osgGA::StandardManipulator::UPDATE_MODEL_SIZE|osgGA::StandardManipulator::COMPUTE_HOME_USING_BBOX,
+	                           Properties::NON_EXPLICIT,
+	                           ____FlightManipulator__int,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults2(IN, const osgGA::FlightManipulator &, fpm, , IN, const osg::CopyOp &, copyOp, osg::CopyOp::SHALLOW_COPY,
+	                           ____FlightManipulator__C5_FlightManipulator_R1__C5_osg_CopyOp_R1,
+	                           "",
+	                           "");
+	I_Method0(osg::Object *, cloneType,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__cloneType,
+	          "Clone the type of an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(osg::Object *, clone, IN, const osg::CopyOp &, x,
+	          Properties::VIRTUAL,
+	          __osg_Object_P1__clone__C5_osg_CopyOp_R1,
+	          "Clone an object, with Object* return type. ",
+	          "Must be defined by derived classes. ");
+	I_Method1(bool, isSameKindAs, IN, const osg::Object *, obj,
+	          Properties::VIRTUAL,
+	          __bool__isSameKindAs__C5_osg_Object_P1,
+	          "",
+	          "");
+	I_Method0(const char *, libraryName,
+	          Properties::VIRTUAL,
+	          __C5_char_P1__libraryName,
+	          "return the name of the object's library. ",
+	          "Must be defined by derived classes. The OpenSceneGraph convention is that the namespace of a library is the same as the library name. ");
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(void, setByMatrix, IN, const osg::Matrixd &, matrix,
+	I_Method1(void, setYawControlMode, IN, osgGA::FlightManipulator::YawControlMode, ycm,
 	          Properties::VIRTUAL,
-	          __void__setByMatrix__C5_osg_Matrixd_R1,
-	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
+	          __void__setYawControlMode__YawControlMode,
+	          "",
 	          "");
-	I_Method1(void, setByInverseMatrix, IN, const osg::Matrixd &, matrix,
-	          Properties::VIRTUAL,
-	          __void__setByInverseMatrix__C5_osg_Matrixd_R1,
-	          "set the position of the matrix manipulator using a 4x4 Matrix. ",
-	          "");
-	I_Method0(osg::Matrixd, getMatrix,
-	          Properties::VIRTUAL,
-	          __osg_Matrixd__getMatrix,
-	          "get the position of the manipulator as 4x4 Matrix. ",
-	          "");
-	I_Method0(osg::Matrixd, getInverseMatrix,
-	          Properties::VIRTUAL,
-	          __osg_Matrixd__getInverseMatrix,
-	          "get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix. ",
-	          "");
-	I_Method1(void, setNode, IN, osg::Node *, x,
-	          Properties::VIRTUAL,
-	          __void__setNode__osg_Node_P1,
-	          "Attach a node to the manipulator, automatically detaching any previously attached node. ",
-	          "setNode(NULL) detaches previous nodes. May be ignored by manipulators which do not require a reference model. ");
-	I_Method0(const osg::Node *, getNode,
-	          Properties::VIRTUAL,
-	          __C5_osg_Node_P1__getNode,
-	          "Return const node if attached. ",
-	          "");
-	I_Method0(osg::Node *, getNode,
-	          Properties::VIRTUAL,
-	          __osg_Node_P1__getNode,
-	          "Return node if attached. ",
+	I_Method0(osgGA::FlightManipulator::YawControlMode, getYawControlMode,
+	          Properties::NON_VIRTUAL,
+	          __YawControlMode__getYawControlMode,
+	          "Returns the Yaw control for the flight model. ",
 	          "");
 	I_Method2(void, home, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
 	          Properties::VIRTUAL,
-	          __void__home__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          __void__home__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
 	          "Move the camera to the default position. ",
 	          "May be ignored by manipulators if home functionality is not appropriate. ");
 	I_Method2(void, init, IN, const osgGA::GUIEventAdapter &, x, IN, osgGA::GUIActionAdapter &, x,
 	          Properties::VIRTUAL,
-	          __void__init__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
+	          __void__init__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
 	          "Start/restart the manipulator. ",
 	          "FIXME: what does this actually mean? Provide examples. ");
-	I_Method2(bool, handle, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
-	          Properties::VIRTUAL,
-	          __bool__handle__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
-	          "Handle events, return true if handled, false otherwise. ",
-	          "");
-	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, usage,
+	I_Method1(void, getUsage, IN, osg::ApplicationUsage &, x,
 	          Properties::VIRTUAL,
 	          __void__getUsage__osg_ApplicationUsage_R1,
 	          "Get the keyboard and mouse usage of this manipulator. ",
 	          "");
-	I_Method1(void, setYawControlMode, IN, osgGA::FlightManipulator::YawControlMode, ycm,
-	          Properties::NON_VIRTUAL,
-	          __void__setYawControlMode__YawControlMode,
-	          "Configure the Yaw control for the flight model. ",
-	          "");
-	I_Method1(void, setModelScale, IN, double, in_ms,
-	          Properties::NON_VIRTUAL,
-	          __void__setModelScale__double,
-	          "",
-	          "");
-	I_Method0(double, getModelScale,
-	          Properties::NON_VIRTUAL,
-	          __double__getModelScale,
-	          "",
-	          "");
-	I_Method1(void, setAcceleration, IN, double, in_acc,
-	          Properties::NON_VIRTUAL,
-	          __void__setAcceleration__double,
-	          "",
-	          "");
-	I_Method0(double, getAcceleration,
-	          Properties::NON_VIRTUAL,
-	          __double__getAcceleration,
-	          "",
-	          "");
-	I_Method1(void, setVelocity, IN, double, in_vel,
-	          Properties::NON_VIRTUAL,
-	          __void__setVelocity__double,
-	          "",
-	          "");
-	I_Method0(double, getVelocity,
-	          Properties::NON_VIRTUAL,
-	          __double__getVelocity,
-	          "",
-	          "");
-	I_ProtectedMethod0(void, flushMouseEventStack,
-	                   Properties::NON_VIRTUAL,
+	I_ProtectedMethod2(bool, handleFrame, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __void__flushMouseEventStack,
-	                   "Reset the internal GUIEvent stack. ",
-	                   "");
-	I_ProtectedMethod1(void, addMouseEvent, IN, const osgGA::GUIEventAdapter &, ea,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__addMouseEvent__C5_GUIEventAdapter_R1,
-	                   "Add the current mouse GUIEvent to internal stack. ",
-	                   "");
-	I_ProtectedMethod3(void, computePosition, IN, const osg::Vec3 &, eye, IN, const osg::Vec3 &, lv, IN, const osg::Vec3 &, up,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__computePosition__C5_osg_Vec3_R1__C5_osg_Vec3_R1__C5_osg_Vec3_R1,
+	                   __bool__handleFrame__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
 	                   "",
 	                   "");
-	I_ProtectedMethod0(bool, calcMovement,
-	                   Properties::NON_VIRTUAL,
+	I_ProtectedMethod2(bool, handleMouseMove, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,
-	                   __bool__calcMovement,
-	                   "For the give mouse movement calculate the movement of the camera. ",
-	                   "Return true is camera has moved and a redraw is required. ");
-	I_SimpleProperty(double, Acceleration, 
-	                 __double__getAcceleration, 
-	                 __void__setAcceleration__double);
-	I_SimpleProperty(const osg::Matrixd &, ByInverseMatrix, 
-	                 0, 
-	                 __void__setByInverseMatrix__C5_osg_Matrixd_R1);
-	I_SimpleProperty(const osg::Matrixd &, ByMatrix, 
-	                 0, 
-	                 __void__setByMatrix__C5_osg_Matrixd_R1);
-	I_SimpleProperty(osg::Matrixd, InverseMatrix, 
-	                 __osg_Matrixd__getInverseMatrix, 
-	                 0);
-	I_SimpleProperty(osg::Matrixd, Matrix, 
-	                 __osg_Matrixd__getMatrix, 
-	                 0);
-	I_SimpleProperty(double, ModelScale, 
-	                 __double__getModelScale, 
-	                 __void__setModelScale__double);
-	I_SimpleProperty(osg::Node *, Node, 
-	                 __osg_Node_P1__getNode, 
-	                 __void__setNode__osg_Node_P1);
-	I_SimpleProperty(double, Velocity, 
-	                 __double__getVelocity, 
-	                 __void__setVelocity__double);
+	                   __bool__handleMouseMove__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(bool, handleMouseDrag, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__handleMouseDrag__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(bool, handleMousePush, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__handleMousePush__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(bool, handleMouseRelease, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__handleMouseRelease__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(bool, handleKeyDown, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__handleKeyDown__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod2(bool, flightHandleEvent, IN, const osgGA::GUIEventAdapter &, ea, IN, osgGA::GUIActionAdapter &, us,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__flightHandleEvent__C5_osgGA_GUIEventAdapter_R1__osgGA_GUIActionAdapter_R1,
+	                   "",
+	                   "");
+	I_ProtectedMethod0(bool, performMovement,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__performMovement,
+	                   "",
+	                   "");
+	I_ProtectedMethod3(bool, performMovementLeftMouseButton, IN, const double, dt, IN, const double, dx, IN, const double, dy,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__performMovementLeftMouseButton__C5_double__C5_double__C5_double,
+	                   "",
+	                   "");
+	I_ProtectedMethod3(bool, performMovementMiddleMouseButton, IN, const double, dt, IN, const double, dx, IN, const double, dy,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__performMovementMiddleMouseButton__C5_double__C5_double__C5_double,
+	                   "",
+	                   "");
+	I_ProtectedMethod3(bool, performMovementRightMouseButton, IN, const double, dt, IN, const double, dx, IN, const double, dy,
+	                   Properties::VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __bool__performMovementRightMouseButton__C5_double__C5_double__C5_double,
+	                   "",
+	                   "");
 	I_SimpleProperty(osgGA::FlightManipulator::YawControlMode, YawControlMode, 
-	                 0, 
+	                 __YawControlMode__getYawControlMode, 
 	                 __void__setYawControlMode__YawControlMode);
 END_REFLECTOR
 

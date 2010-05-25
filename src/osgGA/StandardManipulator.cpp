@@ -39,20 +39,20 @@ int StandardManipulator::numRelativeFlagsAllocated = 0;
 
 int StandardManipulator::allocateRelativeFlag()
 {
-   return numRelativeFlagsAllocated++;
+    return numRelativeFlagsAllocated++;
 }
 
 
 /// Constructor.
 StandardManipulator::StandardManipulator( int flags )
-   : inherited(),
-     _thrown( false ),
-     _mouseCenterX(0.0f), _mouseCenterY(0.0f),
-     _delta_frame_time(0.01), _last_frame_time(0.0),
-     _modelSize( 0. ),
-     _verticalAxisFixed( true ),
-     _flags( flags ),
-     _relativeFlags( 0 )
+    : inherited(),
+      _thrown( false ),
+      _mouseCenterX(0.0f), _mouseCenterY(0.0f),
+      _delta_frame_time(0.01), _last_frame_time(0.0),
+      _modelSize( 0. ),
+      _verticalAxisFixed( true ),
+      _flags( flags ),
+      _relativeFlags( 0 )
 {
 }
 
@@ -79,32 +79,36 @@ StandardManipulator::StandardManipulator( const StandardManipulator& uim, const 
     Is ignored by manipulators which do not require a reference model.*/
 void StandardManipulator::setNode( Node* node )
 {
-   _node = node;
+    _node = node;
 
-   // update model size
-   if( _node.get() ) {
-      const BoundingSphere& boundingSphere = _node->getBound();
-      _modelSize = boundingSphere.radius();
-   } else
-      _modelSize = 0.;
+    // update model size
+    if( _node.get() )
+    {
+        const BoundingSphere& boundingSphere = _node->getBound();
+        _modelSize = boundingSphere.radius();
+    }
+    else
+    {
+        _modelSize = 0.;
+    }
 
-   // compute home position
-   if( getAutoComputeHomePosition() )
-      computeHomePosition( NULL, ( _flags & COMPUTE_HOME_USING_BBOX ) != 0 );
+    // compute home position
+    if( getAutoComputeHomePosition() )
+        computeHomePosition( NULL, ( _flags & COMPUTE_HOME_USING_BBOX ) != 0 );
 }
 
 
 /** Return node if attached.*/
 const Node* StandardManipulator::getNode() const
 {
-   return _node.get();
+    return _node.get();
 }
 
 
 /** Return node if attached.*/
 Node* StandardManipulator::getNode()
 {
-   return _node.get();
+    return _node.get();
 }
 
 
@@ -115,52 +119,53 @@ Node* StandardManipulator::getNode()
  *  To change up vector, use MatrixManipulator::setCoordinateFrameCallback.*/
 void StandardManipulator::setVerticalAxisFixed( bool value )
 {
-   _verticalAxisFixed = value;
+    _verticalAxisFixed = value;
 }
 
 
 /// Sets manipulator animation time when centering on mouse wheel up is enabled.
 void StandardManipulator::setAnimationTime( const double t )
 {
-   if( t <= 0. ) {
-      finishAnimation();
-      _animationData = NULL;
-      return;
-   }
+    if( t <= 0. )
+    {
+        finishAnimation();
+        _animationData = NULL;
+        return;
+    }
 
-   if( !_animationData )
-      allocAnimationData();
+    if( !_animationData )
+        allocAnimationData();
 
-   _animationData->_animationTime = t;
+    _animationData->_animationTime = t;
 }
 
 
 /// Returns manipulator animation time when centering on mouse wheel up is enabled.
 double StandardManipulator::getAnimationTime() const
 {
-   if( _animationData )
-      return _animationData->_animationTime;
-   else
-      return 0.;
+    if( _animationData )
+        return _animationData->_animationTime;
+    else
+        return 0.;
 }
 
 
 /// Returns whether manipulator is performing animation at the moment.
 bool StandardManipulator::isAnimating() const
 {
-   if( _animationData )
-      return _animationData->_isAnimating;
-   else
-      return false;
+    if( _animationData )
+        return _animationData->_isAnimating;
+    else
+        return false;
 }
 
 
 void StandardManipulator::finishAnimation()
 {
-   if( !isAnimating() )
-      return;
+    if( !isAnimating() )
+        return;
 
-   applyAnimationStep( 1., _animationData->_phase );
+    applyAnimationStep( 1., _animationData->_phase );
 }
 
 
@@ -175,12 +180,12 @@ void StandardManipulator::finishAnimation()
     Descendant classes are expected to update camera position.*/
 void StandardManipulator::home( double /*currentTime*/ )
 {
-   if( getAutoComputeHomePosition() )
-      computeHomePosition( NULL, ( _flags & COMPUTE_HOME_USING_BBOX ) != 0 );
+    if( getAutoComputeHomePosition() )
+        computeHomePosition( NULL, ( _flags & COMPUTE_HOME_USING_BBOX ) != 0 );
 
-   _thrown = false;
-   setTransformation( _homeCenter, _homeEye, _homeUp );
-   flushMouseEventStack();
+    _thrown = false;
+    setTransformation( _homeCenter, _homeEye, _homeUp );
+    flushMouseEventStack();
 }
 
 
@@ -195,78 +200,80 @@ void StandardManipulator::home( double /*currentTime*/ )
     it has to reimplement the method to update manipulator transformation.*/
 void StandardManipulator::home( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   if( getAutoComputeHomePosition() ) {
-      const Camera *camera = us.asView() ? us.asView()->getCamera() : NULL;
-      computeHomePosition( camera, ( _flags & COMPUTE_HOME_USING_BBOX ) != 0 );
-   }
+    if( getAutoComputeHomePosition() )
+    {
+        const Camera *camera = us.asView() ? us.asView()->getCamera() : NULL;
+        computeHomePosition( camera, ( _flags & COMPUTE_HOME_USING_BBOX ) != 0 );
+    }
 
-   _thrown = false;
-   setTransformation( _homeCenter, _homeEye, _homeUp );
+    _thrown = false;
+    setTransformation( _homeCenter, _homeEye, _homeUp );
 
-   us.requestRedraw();
-   us.requestContinuousUpdate( false );
-   flushMouseEventStack();
+    us.requestRedraw();
+    us.requestContinuousUpdate( false );
+    flushMouseEventStack();
 }
 
 
 /** Start/restart the manipulator.*/
 void StandardManipulator::init( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   flushMouseEventStack();
+    flushMouseEventStack();
 
-   // stop animation
-   _thrown = false;
-   us.requestContinuousUpdate(false);
+    // stop animation
+    _thrown = false;
+    us.requestContinuousUpdate(false);
 }
 
 
 /** Handles events. Returns true if handled, false otherwise.*/
 bool StandardManipulator::handle( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   switch( ea.getEventType() ) {
+    switch( ea.getEventType() )
+    {
 
-      case GUIEventAdapter::FRAME:
-         return handleFrame( ea, us );
+        case GUIEventAdapter::FRAME:
+            return handleFrame( ea, us );
 
-      case GUIEventAdapter::RESIZE:
-         return handleResize( ea, us );
+        case GUIEventAdapter::RESIZE:
+            return handleResize( ea, us );
 
-      default:
-         break;
+        default:
+            break;
    }
 
-   if( ea.getHandled() )
-      return false;
+    if( ea.getHandled() )
+        return false;
 
-   switch( ea.getEventType() ) {
+    switch( ea.getEventType() )
+    {
+        case GUIEventAdapter::MOVE:
+            return handleMouseMove( ea, us );
 
-      case GUIEventAdapter::MOVE:
-         return handleMouseMove( ea, us );
+        case GUIEventAdapter::DRAG:
+            return handleMouseDrag( ea, us );
 
-      case GUIEventAdapter::DRAG:
-         return handleMouseDrag( ea, us );
+        case GUIEventAdapter::PUSH:
+            return handleMousePush( ea, us );
 
-      case GUIEventAdapter::PUSH:
-         return handleMousePush( ea, us );
+        case GUIEventAdapter::RELEASE:
+            return handleMouseRelease( ea, us );
 
-      case GUIEventAdapter::RELEASE:
-         return handleMouseRelease( ea, us );
+        case GUIEventAdapter::KEYDOWN:
+            return handleKeyDown( ea, us );
 
-      case GUIEventAdapter::KEYDOWN:
-         return handleKeyDown( ea, us );
+        case GUIEventAdapter::KEYUP:
+            return handleKeyUp( ea, us );
 
-      case GUIEventAdapter::KEYUP:
-         return handleKeyUp( ea, us );
-
-      case GUIEventAdapter::SCROLL:
-         if( _flags & PROCESS_MOUSE_WHEEL )
+        case GUIEventAdapter::SCROLL:
+            if( _flags & PROCESS_MOUSE_WHEEL )
             return handleMouseWheel( ea, us );
-         else
+            else
             return false;
 
-      default:
-         return false;
-   }
+        default:
+            return false;
+    }
 }
 
 
@@ -294,161 +301,163 @@ bool StandardManipulator::handleFrame( const GUIEventAdapter& ea, GUIActionAdapt
 /// Handles GUIEventAdapter::RESIZE event.
 bool StandardManipulator::handleResize( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   init( ea, us );
-   us.requestRedraw();
+    init( ea, us );
+    us.requestRedraw();
 
-   return true;
+    return true;
 }
 
 
 /// Handles GUIEventAdapter::MOVE event.
 bool StandardManipulator::handleMouseMove( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   return false;
+    return false;
 }
 
 
 /// Handles GUIEventAdapter::DRAG event.
 bool StandardManipulator::handleMouseDrag( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   addMouseEvent( ea );
+    addMouseEvent( ea );
 
-   if( performMovement() )
-      us.requestRedraw();
+    if( performMovement() )
+        us.requestRedraw();
 
-   us.requestContinuousUpdate( false );
-   _thrown = false;
+    us.requestContinuousUpdate( false );
+    _thrown = false;
 
-   return true;
+    return true;
 }
 
 
 /// Handles GUIEventAdapter::PUSH event.
 bool StandardManipulator::handleMousePush( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   flushMouseEventStack();
-   addMouseEvent( ea );
+    flushMouseEventStack();
+    addMouseEvent( ea );
 
-   if( performMovement() )
-      us.requestRedraw();
+    if( performMovement() )
+        us.requestRedraw();
 
-   us.requestContinuousUpdate( false );
-   _thrown = false;
+    us.requestContinuousUpdate( false );
+    _thrown = false;
 
-   return true;
+    return true;
 }
 
 
 /// Handles GUIEventAdapter::RELEASE event.
 bool StandardManipulator::handleMouseRelease( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   if( ea.getButtonMask() == 0 ) {
+    if( ea.getButtonMask() == 0 )
+    {
 
-      double timeSinceLastRecordEvent = _ga_t0.valid() ? (ea.getTime() - _ga_t0->getTime()) : DBL_MAX;
-      if( timeSinceLastRecordEvent > 0.02 )
-         flushMouseEventStack();
+        double timeSinceLastRecordEvent = _ga_t0.valid() ? (ea.getTime() - _ga_t0->getTime()) : DBL_MAX;
+        if( timeSinceLastRecordEvent > 0.02 )
+            flushMouseEventStack();
 
-      if( isMouseMoving() ) {
+        if( isMouseMoving() )
+        {
 
-         if( performMovement() ) {
+            if( performMovement() )
+            {
+                us.requestRedraw();
+                us.requestContinuousUpdate( true );
+                _thrown = true;
+            }
 
-            us.requestRedraw();
-            us.requestContinuousUpdate( true );
-            _thrown = true;
+            return true;
+        }
+    }
 
-         }
+    flushMouseEventStack();
+    addMouseEvent( ea );
+    if( performMovement() )
+        us.requestRedraw();
+    us.requestContinuousUpdate( false );
+    _thrown = false;
 
-         return true;
-      }
-   }
-
-   flushMouseEventStack();
-   addMouseEvent( ea );
-   if( performMovement() )
-      us.requestRedraw();
-   us.requestContinuousUpdate( false );
-   _thrown = false;
-
-   return true;
+    return true;
 }
 
 
 /// Handles GUIEventAdapter::KEYDOWN event.
 bool StandardManipulator::handleKeyDown( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   if( ea.getKey() == GUIEventAdapter::KEY_Space ) {
+    if( ea.getKey() == GUIEventAdapter::KEY_Space )
+    {
+        flushMouseEventStack();
+        _thrown = false;
+        home(ea,us);
+        return true;
+    }
 
-      flushMouseEventStack();
-      _thrown = false;
-      home(ea,us);
-      return true;
-   }
-
-   return false;
+    return false;
 }
 
 
 /// Handles GUIEventAdapter::KEYUP event.
 bool StandardManipulator::handleKeyUp( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   return false;
+    return false;
 }
 
 
 /// Handles GUIEventAdapter::SCROLL event.
 bool StandardManipulator::handleMouseWheel( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   return false;
+    return false;
 }
 
 
 /** Get the keyboard and mouse usage of the manipulator.*/
 void StandardManipulator::getUsage( ApplicationUsage& usage ) const
 {
-   usage.addKeyboardMouseBinding( getManipulatorName() + ": Space", "Reset the viewing position to home" );
+    usage.addKeyboardMouseBinding( getManipulatorName() + ": Space", "Reset the viewing position to home" );
 }
 
 
 /// Make movement step of manipulator. Returns true if any movement was made.
 bool StandardManipulator::performMovement()
 {
-   // return if less then two events have been added
-   if( _ga_t0.get() == NULL || _ga_t1.get() == NULL )
-      return false;
+    // return if less then two events have been added
+    if( _ga_t0.get() == NULL || _ga_t1.get() == NULL )
+        return false;
 
-   // get delta time
-   double dt = _ga_t0->getTime() - _ga_t1->getTime();
-   if( dt < 0. ) {
-      notify( INFO ) << "Manipulator warning: dt = " << dt << std::endl;
-      dt = 0.;
-   }
+    // get delta time
+    double dt = _ga_t0->getTime() - _ga_t1->getTime();
+    if( dt < 0. )
+    {
+        notify( INFO ) << "Manipulator warning: dt = " << dt << std::endl;
+        dt = 0.;
+    }
 
-   // get deltaX and deltaY
-   float dx = _ga_t0->getXnormalized() - _ga_t1->getXnormalized();
-   float dy = _ga_t0->getYnormalized() - _ga_t1->getYnormalized();
+    // get deltaX and deltaY
+    float dx = _ga_t0->getXnormalized() - _ga_t1->getXnormalized();
+    float dy = _ga_t0->getYnormalized() - _ga_t1->getYnormalized();
 
-   // return if there is no movement.
-   if( dx == 0. && dy == 0. )
-      return false;
+    // return if there is no movement.
+    if( dx == 0. && dy == 0. )
+        return false;
 
 
-   // call appropriate methods
-   unsigned int buttonMask = _ga_t1->getButtonMask();
-   if( buttonMask == GUIEventAdapter::LEFT_MOUSE_BUTTON )
-
-      return performMovementLeftMouseButton( dt, dx, dy );
-
-   else if( buttonMask == GUIEventAdapter::MIDDLE_MOUSE_BUTTON ||
+    // call appropriate methods
+    unsigned int buttonMask = _ga_t1->getButtonMask();
+    if( buttonMask == GUIEventAdapter::LEFT_MOUSE_BUTTON )
+    {
+        return performMovementLeftMouseButton( dt, dx, dy );
+    }
+    else if( buttonMask == GUIEventAdapter::MIDDLE_MOUSE_BUTTON ||
             buttonMask == (GUIEventAdapter::LEFT_MOUSE_BUTTON | GUIEventAdapter::RIGHT_MOUSE_BUTTON) )
+    {
+        return performMovementMiddleMouseButton( dt, dx, dy );
+    }
+    else if( buttonMask == GUIEventAdapter::RIGHT_MOUSE_BUTTON )
+    {
+        return performMovementRightMouseButton( dt, dx, dy );
+    }
 
-      return performMovementMiddleMouseButton( dt, dx, dy );
-
-   else if( buttonMask == GUIEventAdapter::RIGHT_MOUSE_BUTTON )
-
-      return performMovementRightMouseButton( dt, dx, dy );
-
-
-   return false;
+    return false;
 }
 
 
@@ -456,7 +465,7 @@ bool StandardManipulator::performMovement()
     This method implements movement for left mouse button.*/
 bool StandardManipulator::performMovementLeftMouseButton( const double dt, const double dx, const double dy )
 {
-   return false;
+    return false;
 }
 
 
@@ -465,7 +474,7 @@ bool StandardManipulator::performMovementLeftMouseButton( const double dt, const
     or combination of left and right mouse button pressed together.*/
 bool StandardManipulator::performMovementMiddleMouseButton( const double dt, const double dx, const double dy )
 {
-   return false;
+    return false;
 }
 
 
@@ -473,22 +482,22 @@ bool StandardManipulator::performMovementMiddleMouseButton( const double dt, con
     This method implements movement for right mouse button.*/
 bool StandardManipulator::performMovementRightMouseButton( const double dt, const double dx, const double dy )
 {
-   return false;
+    return false;
 }
 
 
 bool StandardManipulator::handleMouseDeltaMovement( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   float dx = ea.getX() - _mouseCenterX;
-   float dy = ea.getY() - _mouseCenterY;
+    float dx = ea.getX() - _mouseCenterX;
+    float dy = ea.getY() - _mouseCenterY;
 
-   if( dx == 0.f && dy == 0.f )
-      return false;
+    if( dx == 0.f && dy == 0.f )
+        return false;
 
-   addMouseEvent( ea );
-   centerMousePointer( ea, us );
+    addMouseEvent( ea );
+    centerMousePointer( ea, us );
 
-   return performMouseDeltaMovement( dx, dy );
+    return performMouseDeltaMovement( dx, dy );
 }
 
 
@@ -500,20 +509,21 @@ bool StandardManipulator::performMouseDeltaMovement( const float dx, const float
 
 bool StandardManipulator::performAnimationMovement( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   double f = (ea.getTime() - _animationData->_startTime) / _animationData->_animationTime;
-   if( f >= 1. ) {
-      f = 1.;
-      _animationData->_isAnimating = false;
-      if( !_thrown )
-         us.requestContinuousUpdate( false );
-   }
+    double f = (ea.getTime() - _animationData->_startTime) / _animationData->_animationTime;
+    if( f >= 1. )
+    {
+        f = 1.;
+        _animationData->_isAnimating = false;
+        if( !_thrown )
+            us.requestContinuousUpdate( false );
+    }
 
-   applyAnimationStep( f, _animationData->_phase );
+    applyAnimationStep( f, _animationData->_phase );
 
-   _animationData->_phase = f;
-   us.requestRedraw();
+    _animationData->_phase = f;
+    us.requestRedraw();
 
-   return _animationData->_isAnimating;
+    return _animationData->_isAnimating;
 }
 
 
@@ -524,25 +534,25 @@ void StandardManipulator::applyAnimationStep( const double currentProgress, cons
 
 void StandardManipulator::centerMousePointer( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   _mouseCenterX = (ea.getXmin() + ea.getXmax()) / 2.0f;
-   _mouseCenterY = (ea.getYmin() + ea.getYmax()) / 2.0f;
-   us.requestWarpPointer( _mouseCenterX, _mouseCenterY );
+    _mouseCenterX = (ea.getXmin() + ea.getXmax()) / 2.0f;
+    _mouseCenterY = (ea.getYmin() + ea.getYmax()) / 2.0f;
+    us.requestWarpPointer( _mouseCenterX, _mouseCenterY );
 }
 
 
 /** Add the current mouse GUIEvent to internal stack.*/
 void StandardManipulator::addMouseEvent( const GUIEventAdapter& ea )
 {
-   _ga_t1 = _ga_t0;
-   _ga_t0 = &ea;
+    _ga_t1 = _ga_t0;
+    _ga_t0 = &ea;
 }
 
 
 /** Reset the internal GUIEvent stack.*/
 void StandardManipulator::flushMouseEventStack()
 {
-   _ga_t1 = NULL;
-   _ga_t0 = NULL;
+    _ga_t1 = NULL;
+    _ga_t0 = NULL;
 }
 
 
@@ -550,16 +560,16 @@ void StandardManipulator::flushMouseEventStack()
     If speed is below a threshold then return false, otherwise return true.*/
 bool StandardManipulator::isMouseMoving() const
 {
-   if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
+    if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 
-   static const float velocity = 0.1f;
+    static const float velocity = 0.1f;
 
-   float dx = _ga_t0->getXnormalized()-_ga_t1->getXnormalized();
-   float dy = _ga_t0->getYnormalized()-_ga_t1->getYnormalized();
-   float len = sqrtf(dx*dx+dy*dy);
-   float dt = _ga_t0->getTime()-_ga_t1->getTime();
+    float dx = _ga_t0->getXnormalized()-_ga_t1->getXnormalized();
+    float dy = _ga_t0->getYnormalized()-_ga_t1->getYnormalized();
+    float len = sqrtf(dx*dx+dy*dy);
+    float dt = _ga_t0->getTime()-_ga_t1->getTime();
 
-   return (len>dt*velocity);
+    return (len>dt*velocity);
 }
 
 
@@ -571,48 +581,50 @@ bool StandardManipulator::isMouseMoving() const
 void StandardManipulator::rotateYawPitch( Quat& rotation, const double yaw, const double pitch,
                                            const Vec3d& localUp )
 {
-   bool verticalAxisFixed = (localUp != Vec3d( 0.,0.,0. ));
+    bool verticalAxisFixed = (localUp != Vec3d( 0.,0.,0. ));
 
-   // fix current rotation
-   if( verticalAxisFixed )
-      fixVerticalAxis( rotation, localUp, true );
+    // fix current rotation
+    if( verticalAxisFixed )
+        fixVerticalAxis( rotation, localUp, true );
 
-   // rotations
-   Quat rotateYaw( -yaw, verticalAxisFixed ? localUp : rotation * Vec3d( 0.,1.,0. ) );
-   Quat rotatePitch;
-   Quat newRotation;
-   Vec3d cameraRight( rotation * Vec3d( 1.,0.,0. ) );
+    // rotations
+    Quat rotateYaw( -yaw, verticalAxisFixed ? localUp : rotation * Vec3d( 0.,1.,0. ) );
+    Quat rotatePitch;
+    Quat newRotation;
+    Vec3d cameraRight( rotation * Vec3d( 1.,0.,0. ) );
 
-   double my_dy = pitch;
-   int i = 0;
+    double my_dy = pitch;
+    int i = 0;
 
-   do {
+    do {
 
-      // rotations
-      rotatePitch.makeRotate( my_dy, cameraRight );
-      newRotation = rotation * rotateYaw * rotatePitch;
+        // rotations
+        rotatePitch.makeRotate( my_dy, cameraRight );
+        newRotation = rotation * rotateYaw * rotatePitch;
 
-      // update vertical axis
-      if( verticalAxisFixed )
-         fixVerticalAxis( newRotation, localUp, false );
+        // update vertical axis
+        if( verticalAxisFixed )
+            fixVerticalAxis( newRotation, localUp, false );
 
-      // check for viewer's up vector to be more than 90 degrees from "up" axis
-      Vec3d newCameraUp = newRotation * Vec3d( 0.,1.,0. );
-      if( newCameraUp * localUp > 0. ) {
+        // check for viewer's up vector to be more than 90 degrees from "up" axis
+        Vec3d newCameraUp = newRotation * Vec3d( 0.,1.,0. );
+        if( newCameraUp * localUp > 0. )
+        {
 
-         // apply new rotation
-         rotation = newRotation;
-         return;
+            // apply new rotation
+            rotation = newRotation;
+            return;
 
-      }
+        }
 
-      my_dy /= 2.;
-      if( ++i == 20 ) {
-         rotation = rotation * rotateYaw;
-         return;
-      }
+        my_dy /= 2.;
+        if( ++i == 20 )
+        {
+            rotation = rotation * rotateYaw;
+            return;
+        }
 
-   } while( true );
+    } while( true );
 }
 
 
@@ -635,36 +647,37 @@ void StandardManipulator::fixVerticalAxis( Vec3d& eye, Quat& rotation, bool disa
  *  making pitch once again between -90..+90 degrees limits.*/
 void StandardManipulator::fixVerticalAxis( Quat& rotation, const Vec3d& localUp, bool disallowFlipOver )
 {
-   // camera direction vectors
-   Vec3d cameraUp = rotation * Vec3d( 0.,1.,0. );
-   Vec3d cameraRight = rotation * Vec3d( 1.,0.,0. );
-   Vec3d cameraForward = rotation * Vec3d( 0.,0.,-1. );
+    // camera direction vectors
+    Vec3d cameraUp = rotation * Vec3d( 0.,1.,0. );
+    Vec3d cameraRight = rotation * Vec3d( 1.,0.,0. );
+    Vec3d cameraForward = rotation * Vec3d( 0.,0.,-1. );
 
-   // computed directions
-   Vec3d newCameraRight1 = cameraForward ^ localUp;
-   Vec3d newCameraRight2 = cameraUp ^ localUp;
-   Vec3d newCameraRight = (newCameraRight1.length2() > newCameraRight2.length2()) ?
-                           newCameraRight1 : newCameraRight2;
-   if( newCameraRight * cameraRight < 0. )
-      newCameraRight = -newCameraRight;
+    // computed directions
+    Vec3d newCameraRight1 = cameraForward ^ localUp;
+    Vec3d newCameraRight2 = cameraUp ^ localUp;
+    Vec3d newCameraRight = (newCameraRight1.length2() > newCameraRight2.length2()) ?
+                            newCameraRight1 : newCameraRight2;
+    if( newCameraRight * cameraRight < 0. )
+        newCameraRight = -newCameraRight;
 
-   assert( newCameraRight.length2() > 0. );
+    assert( newCameraRight.length2() > 0. );
 
-   // vertical axis correction
-   Quat rotationVerticalAxisCorrection;
-   rotationVerticalAxisCorrection.makeRotate( cameraRight, newCameraRight );
+    // vertical axis correction
+    Quat rotationVerticalAxisCorrection;
+    rotationVerticalAxisCorrection.makeRotate( cameraRight, newCameraRight );
 
-   // rotate camera
-   rotation *= rotationVerticalAxisCorrection;
+    // rotate camera
+    rotation *= rotationVerticalAxisCorrection;
 
-   if( disallowFlipOver ) {
+    if( disallowFlipOver )
+    {
 
-      // make viewer's up vector to be always less than 90 degrees from "up" axis
-      Vec3d newCameraUp = newCameraRight ^ cameraForward;
-      if( newCameraUp * localUp < 0. )
-         rotation = Quat( PI, Vec3d( 0.,0.,1. ) ) * rotation;
+        // make viewer's up vector to be always less than 90 degrees from "up" axis
+        Vec3d newCameraUp = newCameraRight ^ cameraForward;
+        if( newCameraUp * localUp < 0. )
+            rotation = Quat( PI, Vec3d( 0.,0.,1. ) ) * rotation;
 
-   }
+    }
 }
 
 
@@ -681,88 +694,89 @@ void StandardManipulator::fixVerticalAxis( Quat& rotation, const Vec3d& localUp,
 void StandardManipulator::fixVerticalAxis( const osg::Vec3d& forward, const osg::Vec3d& up, osg::Vec3d& newUp,
                                            const osg::Vec3d& localUp, bool disallowFlipOver )
 {
-   // right direction
-   osg::Vec3d right1 = forward ^ localUp;
-   osg::Vec3d right2 = up ^ localUp;
-   osg::Vec3d right = (right1.length2() > right2.length2()) ? right1 : right2;
+    // right direction
+    osg::Vec3d right1 = forward ^ localUp;
+    osg::Vec3d right2 = up ^ localUp;
+    osg::Vec3d right = (right1.length2() > right2.length2()) ? right1 : right2;
 
-   // newUp
-   // note: do not use up and other parameters from now as they may point
-   //       to the same variable as newUp parameter
-   newUp = right ^ forward;
-   assert( newUp.length2() > 0. );
-   newUp.normalize();
+    // newUp
+    // note: do not use up and other parameters from now as they may point
+    //       to the same variable as newUp parameter
+    newUp = right ^ forward;
+    assert( newUp.length2() > 0. );
+    newUp.normalize();
 }
 
 bool StandardManipulator::setCenterByMousePointerIntersection( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   osg::View* view = us.asView();
-   if( !view )
-      return false;
+    osg::View* view = us.asView();
+    if( !view )
+        return false;
 
-   Camera *camera = view->getCamera();
-   if( !camera )
-      return false;
+    Camera *camera = view->getCamera();
+    if( !camera )
+        return false;
 
-   // prepare variables
-   float x = ( ea.getX() - ea.getXmin() ) / ( ea.getXmax() - ea.getXmin() );
-   float y = ( ea.getY() - ea.getYmin() ) / ( ea.getYmax() - ea.getYmin() );
-   LineSegmentIntersector::CoordinateFrame cf;
-   Viewport *vp = camera->getViewport();
-   if( vp ) {
-      cf = Intersector::WINDOW;
-      x *= vp->width();
-      y *= vp->height();
-   } else
-      cf = Intersector::PROJECTION;
+    // prepare variables
+    float x = ( ea.getX() - ea.getXmin() ) / ( ea.getXmax() - ea.getXmin() );
+    float y = ( ea.getY() - ea.getYmin() ) / ( ea.getYmax() - ea.getYmin() );
+    LineSegmentIntersector::CoordinateFrame cf;
+    Viewport *vp = camera->getViewport();
+    if( vp ) {
+        cf = Intersector::WINDOW;
+        x *= vp->width();
+        y *= vp->height();
+    } else
+        cf = Intersector::PROJECTION;
 
-   // perform intersection computation
-   ref_ptr< LineSegmentIntersector > picker = new LineSegmentIntersector( cf, x, y );
-   IntersectionVisitor iv( picker.get() );
-   camera->accept( iv );
+    // perform intersection computation
+    ref_ptr< LineSegmentIntersector > picker = new LineSegmentIntersector( cf, x, y );
+    IntersectionVisitor iv( picker.get() );
+    camera->accept( iv );
 
-   // return on no intersections
-   if( !picker->containsIntersections() )
-      return false;
+    // return on no intersections
+    if( !picker->containsIntersections() )
+        return false;
 
-   // get all intersections
-   LineSegmentIntersector::Intersections& intersections = picker->getIntersections();
+    // get all intersections
+    LineSegmentIntersector::Intersections& intersections = picker->getIntersections();
 
-   // get current transformation
-   osg::Vec3d eye, oldCenter, up;
-   getTransformation( oldCenter, eye, up );
+    // get current transformation
+    osg::Vec3d eye, oldCenter, up;
+    getTransformation( oldCenter, eye, up );
 
-   // new center
-   osg::Vec3d newCenter = (*intersections.begin()).getWorldIntersectPoint();
+    // new center
+    osg::Vec3d newCenter = (*intersections.begin()).getWorldIntersectPoint();
 
-   // make vertical axis correction
-   if( getVerticalAxisFixed() ) {
+    // make vertical axis correction
+    if( getVerticalAxisFixed() )
+    {
 
-      CoordinateFrame coordinateFrame = getCoordinateFrame( newCenter );
-      Vec3d localUp = getUpVector( coordinateFrame );
+        CoordinateFrame coordinateFrame = getCoordinateFrame( newCenter );
+        Vec3d localUp = getUpVector( coordinateFrame );
 
-      fixVerticalAxis( newCenter - eye, up, up, localUp, true );
+        fixVerticalAxis( newCenter - eye, up, up, localUp, true );
 
-   }
+    }
 
-   // set the new center
-   setTransformation( newCenter, eye, up );
+    // set the new center
+    setTransformation( newCenter, eye, up );
 
 
-   // warp pointer
-   // note: this works for me on standard camera on GraphicsWindowEmbedded and Qt,
-   //       while it was necessary to implement requestWarpPointer like follows:
-   //
-   // void QOSGWidget::requestWarpPointer( float x, float y )
-   // {
-   //    osgViewer::Viewer::requestWarpPointer( x, y );
-   //    QCursor::setPos( this->mapToGlobal( QPoint( int( x+.5f ), int( y+.5f ) ) ) );
-   // }
-   //
-   // Additions of .5f are just for the purpose of rounding.
-   centerMousePointer( ea, us );
+    // warp pointer
+    // note: this works for me on standard camera on GraphicsWindowEmbedded and Qt,
+    //       while it was necessary to implement requestWarpPointer like follows:
+    //
+    // void QOSGWidget::requestWarpPointer( float x, float y )
+    // {
+    //    osgViewer::Viewer::requestWarpPointer( x, y );
+    //    QCursor::setPos( this->mapToGlobal( QPoint( int( x+.5f ), int( y+.5f ) ) ) );
+    // }
+    //
+    // Additions of .5f are just for the purpose of rounding.
+    centerMousePointer( ea, us );
 
-   return true;
+    return true;
 }
 
 
@@ -774,19 +788,19 @@ bool StandardManipulator::setCenterByMousePointerIntersection( const GUIEventAda
 bool StandardManipulator::startAnimationByMousePointerIntersection(
       const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us )
 {
-   return false;
+    return false;
 }
 
 
 StandardManipulator::AnimationData::AnimationData()
-   :_isAnimating( false )
+    :_isAnimating( false )
 {
 }
 
 
 void StandardManipulator::AnimationData::start( const double startTime )
 {
-   _isAnimating = true;
-   _startTime = startTime;
-   _phase = 0.;
+    _isAnimating = true;
+    _startTime = startTime;
+    _phase = 0.;
 }

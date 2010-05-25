@@ -9,12 +9,12 @@ using namespace osgGA;
 TrackballManipulator::TrackballManipulator( int flags )
    : inherited( flags )
 {
-   setVerticalAxisFixed( false );
+    setVerticalAxisFixed( false );
 }
 
 
 /// Constructor.
 TrackballManipulator::TrackballManipulator( const TrackballManipulator& tm, const CopyOp& copyOp )
-   : inherited( tm, copyOp )
+    : inherited( tm, copyOp )
 {
 }

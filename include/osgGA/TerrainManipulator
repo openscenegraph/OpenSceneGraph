@@ -1,140 +1,64 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGGA_TERRAINMANIPULATOR
-#define OSGGA_TERRAINMANIPULATOR 1
+#ifndef OSGGA_TERRAIN_MANIPULATOR
+#define OSGGA_TERRAIN_MANIPULATOR 1
 
-#include <osgGA/MatrixManipulator>
-#include <osg/Quat>
+#include <osgGA/OrbitManipulator>
 
-namespace osgGA{
 
-class OSGGA_EXPORT TerrainManipulator : public MatrixManipulator
+namespace osgGA {
+
+
+class OSGGA_EXPORT TerrainManipulator : public OrbitManipulator
 {
-    public:
+   typedef OrbitManipulator inherited;
 
-        TerrainManipulator();
+public:
 
-        virtual const char* className() const { return "Terrain"; }
+   TerrainManipulator( int flags = DEFAULT_SETTINGS );
+   TerrainManipulator( const TerrainManipulator& tm,
+                       const osg::CopyOp& copyOp = osg::CopyOp::SHALLOW_COPY );
 
+   META_Object( osgGA, TerrainManipulator );
 
-        enum RotationMode 
-        {
-            ELEVATION_HEADING_ROLL,
-            ELEVATION_HEADING
-        };
+   enum RotationMode
+   {
+      ELEVATION_AZIM_ROLL,
+      ELEVATION_AZIM
+   };
 
-        void setRotationMode(RotationMode mode);
-        RotationMode getRotationMode() const { return _rotationMode; }
+   virtual void setRotationMode(RotationMode mode);
+   RotationMode getRotationMode() const;
 
+   virtual void setByMatrix( const osg::Matrixd& matrix );
 
-        /** set the position of the matrix manipulator using a 4x4 Matrix.*/
-        virtual void setByMatrix(const osg::Matrixd& matrix);
+   virtual void setTransformation( const osg::Vec3d& eye, const osg::Vec3d& center, const osg::Vec3d& up );
 
-        /** set the position of the matrix manipulator using a 4x4 Matrix.*/
-        virtual void setByInverseMatrix(const osg::Matrixd& matrix) { setByMatrix(osg::Matrixd::inverse(matrix)); }
+   virtual void setNode( osg::Node* node );
 
-        /** get the position of the manipulator as 4x4 Matrix.*/
-        virtual osg::Matrixd getMatrix() const;
+protected:
 
-        /** get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix.*/
-        virtual osg::Matrixd getInverseMatrix() const;
+   virtual bool performMovementMiddleMouseButton( const double dt, const double dx, const double dy );
+   virtual bool performMovementRightMouseButton( const double dt, const double dx, const double dy );
 
-        /** Get the FusionDistanceMode. Used by SceneView for setting up stereo convergence.*/
-        virtual osgUtil::SceneView::FusionDistanceMode getFusionDistanceMode() const { return osgUtil::SceneView::USE_FUSION_DISTANCE_VALUE; }
+   bool intersect( const osg::Vec3d& start, const osg::Vec3d& end, osg::Vec3d& intersection ) const;
+   void clampOrientation();
 
-        /** Get the FusionDistanceValue. Used by SceneView for setting up stereo convergence.*/
-        virtual float getFusionDistanceValue() const { return _distance; }
-
-        /** Set the distance of the trackball. */
-        void setDistance(double distance) { _distance = distance; }
-
-        /** Get the distance of the trackball. */
-        double getDistance() const { return _distance; }
-
-
-        /** Attach a node to the manipulator. 
-            Automatically detaches previously attached node.
-            setNode(NULL) detaches previously nodes.
-            Is ignored by manipulators which do not require a reference model.*/
-        virtual void setNode(osg::Node*);
-
-        /** Return node if attached.*/
-        virtual const osg::Node* getNode() const;
-
-        /** Return node if attached.*/
-        virtual osg::Node* getNode();
-
-        /** Move the camera to the default position. 
-            May be ignored by manipulators if home functionality is not appropriate.*/
-        virtual void home(const GUIEventAdapter& ea,GUIActionAdapter& us);
-        
-        /** Start/restart the manipulator.*/
-        virtual void init(const GUIEventAdapter& ea,GUIActionAdapter& us);
-
-        /** handle events, return true if handled, false otherwise.*/
-        virtual bool handle(const GUIEventAdapter& ea,GUIActionAdapter& us);
-
-        /** Get the keyboard and mouse usage of this manipulator.*/
-        virtual void getUsage(osg::ApplicationUsage& usage) const;
-
-    protected:
-
-        virtual ~TerrainManipulator();
-        
-        bool intersect(const osg::Vec3d& start, const osg::Vec3d& end, osg::Vec3d& intersection) const;
-
-        /** Reset the internal GUIEvent stack.*/
-        void flushMouseEventStack();
-        /** Add the current mouse GUIEvent to internal stack.*/
-        void addMouseEvent(const GUIEventAdapter& ea);
-
-        void computePosition(const osg::Vec3d& eye,const osg::Vec3d& lv,const osg::Vec3d& up);
-
-        /** For the give mouse movement calculate the movement of the camera.
-            Return true is camera has moved and a redraw is required.*/
-        bool calcMovement();
-        
-        void trackball(osg::Vec3& axis,double& angle, double p1x, double p1y, double p2x, double p2y);
-        double tb_project_to_sphere(double r, double x, double y);
-
-
-        /** Check the speed at which the mouse is moving.
-            If speed is below a threshold then return false, otherwise return true.*/
-        bool isMouseMoving();
-
-
-        void clampOrientation();
-
-
-        // Internal event stack comprising last two mouse events.
-        osg::ref_ptr<const GUIEventAdapter> _ga_t1;
-        osg::ref_ptr<const GUIEventAdapter> _ga_t0;
-
-        osg::observer_ptr<osg::Node> _node;
-
-        RotationMode            _rotationMode;
-
-        bool                    _thrown;
-        
-        osg::Vec3d              _center;
-        osg::Quat               _rotation;
-        double                  _distance;
-        osg::Vec3d              _previousUp;
-
+   osg::Vec3d _previousUp;
 };
+
 
 }
 
-#endif
-
+#endif /* OSGGA_TERRAIN_MANIPULATOR */

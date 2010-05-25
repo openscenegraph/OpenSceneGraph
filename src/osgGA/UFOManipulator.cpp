@@ -112,7 +112,7 @@ void UFOManipulator::setByMatrix( const osg::Matrixd &mat )
     _position.set( _inverseMatrix(3,0), _inverseMatrix(3,1), _inverseMatrix(3,2 ));
     osg::Matrix R(_inverseMatrix);
     R(3,0) = R(3,1) = R(3,2) = 0.0;
-    _direction = osg::Vec3(0,0,-1) * R; // camera up is +Z, regardless of CoordinateFrame
+    _direction = osg::Vec3d(0,0,-1) * R; // camera up is +Z, regardless of CoordinateFrame
 
     _stop();
 }
@@ -125,7 +125,7 @@ void UFOManipulator::setByInverseMatrix( const osg::Matrixd &invmat)
     _position.set( _inverseMatrix(3,0), _inverseMatrix(3,1), _inverseMatrix(3,2 ));
     osg::Matrix R(_inverseMatrix);
     R(3,0) = R(3,1) = R(3,2) = 0.0;
-    _direction = osg::Vec3(0,0,-1) * R; // camera up is +Z, regardless of CoordinateFrame
+    _direction = osg::Vec3d(0,0,-1) * R; // camera up is +Z, regardless of CoordinateFrame
 
     _stop();
 }
@@ -155,8 +155,8 @@ void UFOManipulator::computeHomePosition()
     osg::CoordinateFrame cf( getCoordinateFrame(bs.center()) ); // not sure what position to use here
     osg::Vec3d upVec( getUpVector(cf) );
 
-    osg::Vec3 A = bs.center() + (upVec*(bs.radius()*2));
-    osg::Vec3 B = bs.center() + (-upVec*(bs.radius()*2));
+    osg::Vec3d A = bs.center() + (upVec*(bs.radius()*2));
+    osg::Vec3d B = bs.center() + (-upVec*(bs.radius()*2));
 
     if( (B-A).length() == 0.0)
     {
@@ -180,7 +180,7 @@ void UFOManipulator::computeHomePosition()
     }
 
 
-    osg::Vec3 p(bs.center() + upVec*( ground + _minHeightAboveGround*1.25 ) );
+    osg::Vec3d p(bs.center() + upVec*( ground + _minHeightAboveGround*1.25 ) );
     setHomePosition( p, p + getFrontVector(cf), upVec );
 }
 
@@ -462,7 +462,7 @@ void UFOManipulator::_frame( const osgGA::GUIEventAdapter &ea, osgGA::GUIActionA
     }
 
     {
-      osg::Vec3 _sideVec = _direction * osg::Matrix::rotate( -M_PI*0.5, upVec);
+      osg::Vec3d _sideVec = _direction * osg::Matrix::rotate( -M_PI*0.5, upVec);
 
         _position += ((_direction       * _forwardSpeed) + 
                       (_sideVec         * _sideSpeed) +
@@ -577,7 +577,7 @@ void UFOManipulator::_stop()
     _directionRotationRate = 0.0;
 }
 
-void UFOManipulator::getCurrentPositionAsLookAt( osg::Vec3 &eye, osg::Vec3 &center, osg::Vec3 &up )
+void UFOManipulator::getCurrentPositionAsLookAt( osg::Vec3d& eye, osg::Vec3d& center, osg::Vec3d& up )
 {
     eye = _position;
     center = _position + _direction;

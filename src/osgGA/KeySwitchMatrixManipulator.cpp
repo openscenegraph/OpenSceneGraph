@@ -8,7 +8,7 @@ void KeySwitchMatrixManipulator::addMatrixManipulator(int key, std::string name,
     if(!cm) return;
 
     _manips[key]=std::make_pair(name,osg::ref_ptr<MatrixManipulator>(cm));
-    
+
     if(!_current)
     {
         _current=cm;
@@ -34,7 +34,7 @@ void KeySwitchMatrixManipulator::selectMatrixManipulator(unsigned int num)
         ++itr,++manipNo)
     {
     }
-    
+
     if (itr!=_manips.end())
     {
         itr->second.second->setHomePosition(_homeEye,_homeCenter,_homeUp,_autoComputeHomePosition);
@@ -45,7 +45,7 @@ void KeySwitchMatrixManipulator::selectMatrixManipulator(unsigned int num)
             {
                 itr->second.second->setCoordinateFrameCallback(_current->getCoordinateFrameCallback());
             }
-        
+
             if ( !itr->second.second->getNode() )
             {
                 itr->second.second->setNode(_current->getNode());
@@ -54,26 +54,6 @@ void KeySwitchMatrixManipulator::selectMatrixManipulator(unsigned int num)
         }
         _current = itr->second.second;
     }
-}
-
-/** Set the distance parameter (used by TrackballManipulator etc.) */
-void KeySwitchMatrixManipulator::setDistance(double distance)
-{
-    for(KeyManipMap::iterator itr=_manips.begin();
-        itr!=_manips.end();
-        ++itr)
-    {
-        itr->second.second->setDistance(distance);
-    }
-}
-
-double KeySwitchMatrixManipulator::getDistance() const
-{
-    if(_current)
-    {
-        return _current->getDistance();
-    }
-    else return 1.0;
 }
 
 void KeySwitchMatrixManipulator::setNode(osg::Node* node)
@@ -108,17 +88,6 @@ void KeySwitchMatrixManipulator::setAutoComputeHomePosition(bool flag)
     }
 }
 
-void KeySwitchMatrixManipulator::setMinimumDistance(float minimumDistance)
-{
-    _minimumDistance = minimumDistance;
-    for(KeyManipMap::iterator itr=_manips.begin();
-        itr!=_manips.end();
-        ++itr)
-    {
-        itr->second.second->setMinimumDistance(minimumDistance);
-    }
-}
-
 void KeySwitchMatrixManipulator::computeHomePosition()
 {
     for(KeyManipMap::iterator itr=_manips.begin();
@@ -126,6 +95,23 @@ void KeySwitchMatrixManipulator::computeHomePosition()
         ++itr)
     {
         itr->second.second->computeHomePosition();
+    }
+}
+
+void KeySwitchMatrixManipulator::home(const GUIEventAdapter& ee,GUIActionAdapter& aa)
+{
+    // call home for all child manipulators
+    // (this can not be done just for current manipulator,
+    // because it is not possible to transfer some manipulator
+    // settings across manipulators using just MatrixManipulator interface
+    // (one problematic variable is for example OrbitManipulator::distance
+    // that can not be passed by setByMatrix method),
+    // thus we have to call home on all of them)
+    for(KeyManipMap::iterator itr=_manips.begin();
+        itr!=_manips.end();
+        ++itr)
+    {
+        itr->second.second->home(ee,aa);
     }
 }
 
@@ -147,7 +133,7 @@ MatrixManipulator* KeySwitchMatrixManipulator::getMatrixManipulatorWithIndex(uns
          itr != _manips.end();
          ++itr, ++i)
     {
-        if (i==index) return itr->second.second.get(); 
+        if (i==index) return itr->second.second.get();
     }
     return 0;
 }
@@ -159,22 +145,22 @@ const MatrixManipulator* KeySwitchMatrixManipulator::getMatrixManipulatorWithInd
          itr != _manips.end();
          ++itr, ++i)
     {
-        if (i==index) return itr->second.second.get(); 
+        if (i==index) return itr->second.second.get();
     }
     return 0;
 }
 
 MatrixManipulator* KeySwitchMatrixManipulator::getMatrixManipulatorWithKey(unsigned int key)
 {
-    KeyManipMap::iterator itr = _manips.find(key); 
-    if (itr!=_manips.end()) return itr->second.second.get(); 
+    KeyManipMap::iterator itr = _manips.find(key);
+    if (itr!=_manips.end()) return itr->second.second.get();
     else return 0;
 }
 
 const MatrixManipulator* KeySwitchMatrixManipulator::getMatrixManipulatorWithKey(unsigned int key) const
 {
-    KeyManipMap::const_iterator itr = _manips.find(key); 
-    if (itr!=_manips.end()) return itr->second.second.get(); 
+    KeyManipMap::const_iterator itr = _manips.find(key);
+    if (itr!=_manips.end()) return itr->second.second.get();
     else return 0;
 }
 
@@ -200,7 +186,7 @@ bool KeySwitchMatrixManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapt
             _current = it->second.second;
 
             //_cameraManipChangeCallbacks.notify(this);
-            
+
             handled = true;
         }
     }

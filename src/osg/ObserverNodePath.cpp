@@ -103,7 +103,7 @@ bool ObserverNodePath::getRefNodePath(RefNodePath& refNodePath) const
         refNodePath[i] = _nodePath[i].lock();
         if (!refNodePath[i].valid())
         {
-            OSG_NOTICE<<"ObserverNodePath::getRefNodePath() node has been invalidated"<<std::endl;
+            OSG_INFO<<"ObserverNodePath::getRefNodePath() node has been invalidated"<<std::endl;
             refNodePath.clear();
             return false;
         }

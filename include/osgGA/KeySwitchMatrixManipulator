@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -57,7 +57,7 @@ public:
 
         /** Get the const complete list of manipulators attached to this keyswitch manipulator.*/
         const KeyManipMap& getKeyManipMap() const { return _manips; }
- 
+
 
         /** Get the current active manipulators.*/
         MatrixManipulator* getCurrentMatrixManipulator() { return _current.get(); }
@@ -81,10 +81,6 @@ public:
 
         // Overrides from MatrixManipulator...
 
-        /** set the minimum distance (as ratio) the eye point can be zoomed in towards the
-            center before the center is pushed forward.*/        
-        virtual void setMinimumDistance(float minimumDistance);
-
         /** set the coordinate frame which callback tells the manipulator which way is up, east and north.*/
         virtual void setCoordinateFrameCallback(CoordinateFrameCallback* cb);
 
@@ -106,12 +102,6 @@ public:
         /** Get the FusionDistanceValue. Used by SceneView for setting up stereo convergence.*/
         virtual float getFusionDistanceValue() const { return _current->getFusionDistanceValue(); }
 
-        /** Set the distance property. */
-        void setDistance(double distance);
-
-        /** Get the distance property. */
-        double getDistance() const;
-
 
         virtual void setNode(osg::Node* n);
 
@@ -125,7 +115,7 @@ public:
 
         virtual void computeHomePosition();
 
-        virtual void home(const GUIEventAdapter& ee,GUIActionAdapter& aa) { if (_current.valid()) _current->home(ee,aa); }
+        virtual void home(const GUIEventAdapter& ee,GUIActionAdapter& aa);
 
         virtual void init(const GUIEventAdapter& ee,GUIActionAdapter& aa) { if (_current.valid()) _current->init(ee,aa); }
 

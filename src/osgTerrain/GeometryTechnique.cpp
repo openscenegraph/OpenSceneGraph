@@ -433,7 +433,7 @@ VertexNormalGenerator::VertexNormalGenerator(Locator* masterLocator, const osg::
     int numVerticesInSkirt = createSkirt ? numColumns*2 + numRows*2 - 4 : 0;
     int numVertices = numVerticesInBody+numVerticesInSkirt;
 
-    _indices.resize((_numRows+2)*(_numRows+2),0);
+    _indices.resize((_numRows+2)*(_numColumns+2),0);
 
     _vertices = new osg::Vec3Array;
     _vertices->reserve(numVertices);
@@ -880,7 +880,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
     //
     VNG.populateCenter(elevationLayer, layerToTexCoordMap);
 
-#if 0
+#if 1
     if (terrain)
     {
         TileID tileID = _terrainTile->getTileID();
@@ -903,7 +903,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
 
         _neighbours.clear();
 
-         bool updateNeighboursImmediately = true;
+        bool updateNeighboursImmediately = true;
 
         if (left_tile.valid())   addNeighbour(left_tile.get());
         if (right_tile.valid())  addNeighbour(right_tile.get());

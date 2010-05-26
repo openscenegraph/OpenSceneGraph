@@ -21,17 +21,17 @@ using namespace osgGA;
 
 
 NodeTrackerManipulator::NodeTrackerManipulator( int flags )
-   : inherited( flags ),
-    _trackerMode(NODE_CENTER_AND_ROTATION)
+    : inherited( flags ),
+      _trackerMode(NODE_CENTER_AND_ROTATION)
 {
     setVerticalAxisFixed(false);
 }
 
 
 NodeTrackerManipulator::NodeTrackerManipulator( const NodeTrackerManipulator& m, const CopyOp& copyOp )
-   : inherited( m, copyOp ),
-     _trackNodePath( m._trackNodePath ),
-     _trackerMode( m._trackerMode )
+    : inherited( m, copyOp ),
+      _trackNodePath( m._trackNodePath ),
+      _trackerMode( m._trackerMode )
 {
 }
 
@@ -94,15 +94,18 @@ NodeTrackerManipulator::RotationMode NodeTrackerManipulator::getRotationMode() c
 
 void NodeTrackerManipulator::setNode(Node* node)
 {
-   inherited::setNode( node );
+    inherited::setNode( node );
 
-   // update model size
-   if (_flags & UPDATE_MODEL_SIZE)
-      if (_node.get()) {
-         setMinimumDistance(clampBetween(_modelSize*0.001, 0.00001, 1.0));
-         notify(INFO) << "NodeTrackerManipulator: setting minimum distance to "
-                      << _minimumDistance << std::endl;
-      }
+    // update model size
+    if (_flags & UPDATE_MODEL_SIZE)
+    {
+        if (_node.valid())
+        {
+            setMinimumDistance(clampBetween(_modelSize*0.001, 0.00001, 1.0));
+            notify(INFO) << "NodeTrackerManipulator: setting minimum distance to "
+                         << _minimumDistance << std::endl;
+        }
+    }
 }
 
 void NodeTrackerManipulator::setTrackNode(osg::Node* node)

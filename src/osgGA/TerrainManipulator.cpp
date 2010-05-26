@@ -54,11 +54,11 @@ void TerrainManipulator::setNode( Node* node )
     // update model size
     if( _flags & UPDATE_MODEL_SIZE )
     {
-        if( _node.get() )
+        if( _node.valid() )
         {
             setMinimumDistance( clampBetween( _modelSize * 0.001, 0.00001, 1.0 ) );
             notify( INFO ) << "TerrainManipulator: setting _minimumDistance to "
-                        << _minimumDistance << std::endl;
+                           << _minimumDistance << std::endl;
         }
     }
 }

@@ -16,7 +16,7 @@
 
 #include <iostream>
 
-#include <osgGA/MatrixManipulator>
+#include <osgGA/CameraManipulator>
 #include <osg/Node>
 #include <osg/Matrix>
 
@@ -53,7 +53,7 @@ When the Shift key is released, up, down, linear left and/or linear right moveme
 
 namespace osgGA {
 
-class OSGGA_EXPORT UFOManipulator : public osgGA::MatrixManipulator
+class OSGGA_EXPORT UFOManipulator : public osgGA::CameraManipulator
 {
 
     public:

@@ -15,9 +15,9 @@
 #include <osg/Matrixd>
 #include <osg/Node>
 #include <osg/Vec3d>
+#include <osgGA/CameraManipulator>
 #include <osgGA/GUIActionAdapter>
 #include <osgGA/GUIEventAdapter>
-#include <osgGA/MatrixManipulator>
 #include <osgUtil/SceneView>
 
 // Must undefine IN and OUT macros defined in Windows headers
@@ -28,25 +28,25 @@
 #undef OUT
 #endif
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
-	I_DeclaringFile("osgGA/MatrixManipulator");
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::CameraManipulator)
+	I_DeclaringFile("osgGA/CameraManipulator");
 	I_BaseType(osgGA::GUIEventHandler);
 	I_Method0(const char *, className,
 	          Properties::VIRTUAL,
 	          __C5_char_P1__className,
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
-	I_Method1(void, setCoordinateFrameCallback, IN, osgGA::MatrixManipulator::CoordinateFrameCallback *, cb,
+	I_Method1(void, setCoordinateFrameCallback, IN, osgGA::CameraManipulator::CoordinateFrameCallback *, cb,
 	          Properties::VIRTUAL,
 	          __void__setCoordinateFrameCallback__CoordinateFrameCallback_P1,
 	          "set the coordinate frame which callback tells the manipulator which way is up, east and north. ",
 	          "");
-	I_Method0(osgGA::MatrixManipulator::CoordinateFrameCallback *, getCoordinateFrameCallback,
+	I_Method0(osgGA::CameraManipulator::CoordinateFrameCallback *, getCoordinateFrameCallback,
 	          Properties::NON_VIRTUAL,
 	          __CoordinateFrameCallback_P1__getCoordinateFrameCallback,
 	          "get the coordinate frame callback which tells the manipulator which way is up, east and north. ",
 	          "");
-	I_Method0(const osgGA::MatrixManipulator::CoordinateFrameCallback *, getCoordinateFrameCallback,
+	I_Method0(const osgGA::CameraManipulator::CoordinateFrameCallback *, getCoordinateFrameCallback,
 	          Properties::NON_VIRTUAL,
 	          __C5_CoordinateFrameCallback_P1__getCoordinateFrameCallback,
 	          "get the coordinate frame callback which tells the manipulator which way is up, east and north. ",
@@ -171,11 +171,11 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
 	          __bool__handle__C5_GUIEventAdapter_R1__GUIActionAdapter_R1,
 	          "Handle events, return true if handled, false otherwise. ",
 	          "");
-	I_ProtectedConstructor0(____MatrixManipulator,
+	I_ProtectedConstructor0(____CameraManipulator,
 	                        "",
 	                        "");
-	I_ProtectedConstructorWithDefaults2(IN, const osgGA::MatrixManipulator &, mm, , IN, const osg::CopyOp &, copyOp, osg::CopyOp::SHALLOW_COPY,
-	                                    ____MatrixManipulator__C5_MatrixManipulator_R1__C5_osg_CopyOp_R1,
+	I_ProtectedConstructorWithDefaults2(IN, const osgGA::CameraManipulator &, mm, , IN, const osg::CopyOp &, copyOp, osg::CopyOp::SHALLOW_COPY,
+	                                    ____CameraManipulator__C5_CameraManipulator_R1__C5_osg_CopyOp_R1,
 	                                    "",
 	                                    "");
 	I_ProtectedMethod0(std::string, getManipulatorName,
@@ -193,7 +193,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
 	I_SimpleProperty(const osg::Matrixd &, ByMatrix, 
 	                 0, 
 	                 __void__setByMatrix__C5_osg_Matrixd_R1);
-	I_SimpleProperty(osgGA::MatrixManipulator::CoordinateFrameCallback *, CoordinateFrameCallback, 
+	I_SimpleProperty(osgGA::CameraManipulator::CoordinateFrameCallback *, CoordinateFrameCallback, 
 	                 __CoordinateFrameCallback_P1__getCoordinateFrameCallback, 
 	                 __void__setCoordinateFrameCallback__CoordinateFrameCallback_P1);
 	I_SimpleProperty(osgUtil::SceneView::FusionDistanceMode, FusionDistanceMode, 
@@ -216,8 +216,8 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator)
 	                 __void__setNode__osg_Node_P1);
 END_REFLECTOR
 
-BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::MatrixManipulator::CoordinateFrameCallback)
-	I_DeclaringFile("osgGA/MatrixManipulator");
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::CameraManipulator::CoordinateFrameCallback)
+	I_DeclaringFile("osgGA/CameraManipulator");
 	I_BaseType(osg::Referenced);
 	I_Constructor0(____CoordinateFrameCallback,
 	               "",

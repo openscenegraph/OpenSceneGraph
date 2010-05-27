@@ -30,7 +30,7 @@ TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::CameraView > >, osgGA::CameraVie
 
 BEGIN_OBJECT_REFLECTOR(osgGA::CameraViewSwitchManipulator)
 	I_DeclaringFile("osgGA/CameraViewSwitchManipulator");
-	I_BaseType(osgGA::MatrixManipulator);
+	I_BaseType(osgGA::CameraManipulator);
 	I_Constructor0(____CameraViewSwitchManipulator,
 	               "",
 	               "");

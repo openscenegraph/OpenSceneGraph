@@ -19,7 +19,6 @@
 #include <osgUtil/UpdateVisitor>
 #include <osgUtil/IncrementalCompileOperation>
 
-#include <osgGA/MatrixManipulator>
 #include <osgGA/EventVisitor>
 #include <osgGA/EventQueue>
 

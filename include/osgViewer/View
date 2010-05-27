@@ -21,7 +21,7 @@
 #include <osgUtil/UpdateVisitor>
 #include <osgUtil/SceneView>
 
-#include <osgGA/MatrixManipulator>
+#include <osgGA/CameraManipulator>
 #include <osgGA/EventVisitor>
 #include <osgGA/EventQueue>
 
@@ -100,13 +100,13 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
         /** Set the CameraManipulator that moves the View's master Camera position in response to events.
           * The parameter resetPosition determines whether manipulator is set to its home position.*/
-        void setCameraManipulator(osgGA::MatrixManipulator* manipulator, bool resetPosition = true);
+        void setCameraManipulator(osgGA::CameraManipulator* manipulator, bool resetPosition = true);
 
         /** Get the View's CameraManipulator.*/
-        osgGA::MatrixManipulator* getCameraManipulator() { return _cameraManipulator.get(); }
+        osgGA::CameraManipulator* getCameraManipulator() { return _cameraManipulator.get(); }
 
         /** Get the const View's CameraManipulator.*/
-        const osgGA::MatrixManipulator* getCameraManipulator() const { return _cameraManipulator.get(); }
+        const osgGA::CameraManipulator* getCameraManipulator() const { return _cameraManipulator.get(); }
 
         /** Set the view to the CameraManipulator's home position, if non is attached home() is does nothing.
           * Note, to set the home position use getCamaraManipulator()->setHomePosition(...). */
@@ -225,7 +225,7 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
         osg::ref_ptr<osgViewer::Scene>          _scene;
         osg::ref_ptr<osgGA::EventQueue>         _eventQueue;
-        osg::ref_ptr<osgGA::MatrixManipulator>  _cameraManipulator;
+        osg::ref_ptr<osgGA::CameraManipulator>  _cameraManipulator;
         EventHandlers                           _eventHandlers;
 
         osg::ObserverNodePath                   _coordinateSystemNodePath;

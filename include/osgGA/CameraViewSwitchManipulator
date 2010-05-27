@@ -14,13 +14,13 @@
 #ifndef OSGGA_VIEWLISTMANIPULATOR
 #define OSGGA_VIEWLISTMANIPULATOR 1
 
-#include <osgGA/MatrixManipulator>
+#include <osgGA/CameraManipulator>
 #include <osg/Quat>
 #include <osg/CameraView>
 
 namespace osgGA{
 
-class OSGGA_EXPORT CameraViewSwitchManipulator : public MatrixManipulator
+class OSGGA_EXPORT CameraViewSwitchManipulator : public CameraManipulator
 {
     public:
         CameraViewSwitchManipulator() {}

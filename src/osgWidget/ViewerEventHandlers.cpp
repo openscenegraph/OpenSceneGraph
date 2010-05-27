@@ -236,7 +236,7 @@ bool CameraSwitchHandler::handle(
             osg::StateAttribute::OVERRIDE | osg::StateAttribute::OFF
         );
 
-        osgGA::MatrixManipulator* mm = view->getCameraManipulator();
+        osgGA::CameraManipulator* mm = view->getCameraManipulator();
 
         // mm->setDistance(3000.0f);
         // mm->setMinimumZoomScale(10.0f);

@@ -27,7 +27,7 @@
 
 BEGIN_OBJECT_REFLECTOR(osgGA::AnimationPathManipulator)
 	I_DeclaringFile("osgGA/AnimationPathManipulator");
-	I_BaseType(osgGA::MatrixManipulator);
+	I_BaseType(osgGA::CameraManipulator);
 	I_ConstructorWithDefaults1(IN, osg::AnimationPath *, animationPath, 0,
 	                           Properties::NON_EXPLICIT,
 	                           ____AnimationPathManipulator__osg_AnimationPath_P1,

@@ -151,19 +151,19 @@ BEGIN_OBJECT_REFLECTOR(osgGA::NodeTrackerManipulator)
 	          __void__computeHomePosition,
 	          "",
 	          "");
-	I_ProtectedMethod3(bool, performMovementLeftMouseButton, IN, const double, dt, IN, const double, dx, IN, const double, dy,
+	I_ProtectedMethod3(bool, performMovementLeftMouseButton, IN, const double, eventTimeDelta, IN, const double, dx, IN, const double, dy,
 	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __bool__performMovementLeftMouseButton__C5_double__C5_double__C5_double,
 	                   "",
 	                   "");
-	I_ProtectedMethod3(bool, performMovementMiddleMouseButton, IN, const double, dt, IN, const double, dx, IN, const double, dy,
+	I_ProtectedMethod3(bool, performMovementMiddleMouseButton, IN, const double, eventTimeDelta, IN, const double, dx, IN, const double, dy,
 	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __bool__performMovementMiddleMouseButton__C5_double__C5_double__C5_double,
 	                   "",
 	                   "");
-	I_ProtectedMethod3(bool, performMovementRightMouseButton, IN, const double, dt, IN, const double, dx, IN, const double, dy,
+	I_ProtectedMethod3(bool, performMovementRightMouseButton, IN, const double, eventTimeDelta, IN, const double, dx, IN, const double, dy,
 	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __bool__performMovementRightMouseButton__C5_double__C5_double__C5_double,

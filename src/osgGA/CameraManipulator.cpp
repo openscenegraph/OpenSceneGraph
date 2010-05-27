@@ -1,13 +1,13 @@
 #include <osg/GL>
 #include <osg/Matrix>
 #include <osg/ComputeBoundsVisitor>
-#include <osgGA/MatrixManipulator>
+#include <osgGA/CameraManipulator>
 #include <string.h>
 
 using namespace osg;
 using namespace osgGA;
 
-MatrixManipulator::MatrixManipulator()
+CameraManipulator::CameraManipulator()
 {
     _intersectTraversalMask = 0xffffffff;
 
@@ -19,7 +19,7 @@ MatrixManipulator::MatrixManipulator()
 }
 
 
-MatrixManipulator::MatrixManipulator(const MatrixManipulator& mm, const CopyOp& copyOp)
+CameraManipulator::CameraManipulator(const CameraManipulator& mm, const CopyOp& copyOp)
    : inherited(mm, copyOp),
      _intersectTraversalMask(mm._intersectTraversalMask),
      _autoComputeHomePosition(mm._autoComputeHomePosition),
@@ -31,12 +31,12 @@ MatrixManipulator::MatrixManipulator(const MatrixManipulator& mm, const CopyOp& 
 }
 
 
-MatrixManipulator::~MatrixManipulator()
+CameraManipulator::~CameraManipulator()
 {
 }
 
 
-std::string MatrixManipulator::getManipulatorName() const
+std::string CameraManipulator::getManipulatorName() const
 {
     const char* className = this->className();
     const char* manipString = strstr(className, "Manipulator");
@@ -47,7 +47,7 @@ std::string MatrixManipulator::getManipulatorName() const
 }
 
 
-bool MatrixManipulator::handle(const GUIEventAdapter&,GUIActionAdapter&)
+bool CameraManipulator::handle(const GUIEventAdapter&,GUIActionAdapter&)
 {
     return false;
 }
@@ -65,7 +65,7 @@ bool MatrixManipulator::handle(const GUIEventAdapter&,GUIActionAdapter&)
  *  useBoundingBox parameter enables to use bounding box instead of bounding sphere
  *  for scene bounds. Bounding box provide more precise scene center that may be
  *  important for many applications.*/
-void MatrixManipulator::computeHomePosition(const osg::Camera *camera, bool useBoundingBox)
+void CameraManipulator::computeHomePosition(const osg::Camera *camera, bool useBoundingBox)
 {
     if (getNode())
     {

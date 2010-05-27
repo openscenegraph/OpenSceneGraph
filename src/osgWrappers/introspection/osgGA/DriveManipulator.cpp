@@ -27,7 +27,7 @@
 
 BEGIN_OBJECT_REFLECTOR(osgGA::DriveManipulator)
 	I_DeclaringFile("osgGA/DriveManipulator");
-	I_BaseType(osgGA::MatrixManipulator);
+	I_BaseType(osgGA::CameraManipulator);
 	I_Constructor0(____DriveManipulator,
 	               "",
 	               "");

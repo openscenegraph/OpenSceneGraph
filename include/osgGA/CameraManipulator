@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGGA_MatrixManipulator
-#define OSGGA_MatrixManipulator 1
+#ifndef OSGGA_CameraManipulator
+#define OSGGA_CameraManipulator 1
 
 #include <osg/Node>
 #include <osg/Matrixd>
@@ -31,12 +31,12 @@ namespace osgGA{
 
 /**
 
-MatrixManipulator is an abstract base class defining the interface, and a certain
+CameraManipulator is an abstract base class defining the interface, and a certain
 amount of default functionality, for classes which wish to control OSG cameras
 in response to GUI events.
 
 */
-class OSGGA_EXPORT MatrixManipulator : public GUIEventHandler
+class OSGGA_EXPORT CameraManipulator : public GUIEventHandler
 {
         typedef GUIEventHandler inherited;
 
@@ -44,7 +44,7 @@ class OSGGA_EXPORT MatrixManipulator : public GUIEventHandler
 
         // We are not using META_Object as this is abstract class.
         // Use META_Object(osgGA,YourManipulator); in your descendant non-abstract classes.
-        virtual const char* className() const { return "MatrixManipulator"; }
+        virtual const char* className() const { return "CameraManipulator"; }
 
         /** callback class to use to allow matrix manipulators to query the application for the local coordinate frame.*/
         class CoordinateFrameCallback : public osg::Referenced
@@ -164,10 +164,10 @@ class OSGGA_EXPORT MatrixManipulator : public GUIEventHandler
 
     protected:
 
-        MatrixManipulator();
-        MatrixManipulator(const MatrixManipulator& mm, const osg::CopyOp& copyOp = osg::CopyOp::SHALLOW_COPY);
+        CameraManipulator();
+        CameraManipulator(const CameraManipulator& mm, const osg::CopyOp& copyOp = osg::CopyOp::SHALLOW_COPY);
 
-        virtual ~MatrixManipulator();
+        virtual ~CameraManipulator();
 
         std::string getManipulatorName() const;
 

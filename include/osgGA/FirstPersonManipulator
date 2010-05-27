@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -11,7 +11,7 @@
  * OpenSceneGraph Public License for more details.
  *
  * FirstPersonManipulator code Copyright (C) 2010 PCJohn (Jan Peciva)
- * while some pieces of code were reused from OSG.
+ * while some pieces of code were taken from OSG.
  * Thanks to company Cadwork (www.cadwork.ch) and
  * Brno University of Technology (www.fit.vutbr.cz) for open-sourcing this work.
 */
@@ -68,7 +68,7 @@ class OSGGA_EXPORT FirstPersonManipulator : public StandardManipulator
 
         virtual bool handleMouseWheel( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
 
-        virtual bool performMovementLeftMouseButton( const double dt, const double dx, const double dy );
+        virtual bool performMovementLeftMouseButton( const double eventTimeDelta, const double dx, const double dy );
         virtual bool performMouseDeltaMovement( const float dx, const float dy );
         virtual void applyAnimationStep( const double currentProgress, const double prevProgress );
         virtual bool startAnimationByMousePointerIntersection( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );

@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -11,7 +11,7 @@
  * OpenSceneGraph Public License for more details.
  *
  * FirstPersonManipulator code Copyright (C) 2010 PCJohn (Jan Peciva)
- * while some pieces of code were reused from OSG.
+ * while some pieces of code were taken from OSG.
  * Thanks to company Cadwork (www.cadwork.ch) and
  * Brno University of Technology (www.fit.vutbr.cz) for open-sourcing this work.
 */
@@ -281,7 +281,7 @@ bool FirstPersonManipulator::handleMouseWheel( const GUIEventAdapter& ea, GUIAct
 
 
 // doc in parent
-bool FirstPersonManipulator::performMovementLeftMouseButton( const double dt, const double dx, const double dy )
+bool FirstPersonManipulator::performMovementLeftMouseButton( const double eventTimeDelta, const double dx, const double dy )
 {
    // world up vector
    CoordinateFrame coordinateFrame = getCoordinateFrame( _eye );

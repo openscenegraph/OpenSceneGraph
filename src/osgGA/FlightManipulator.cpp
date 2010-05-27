@@ -146,27 +146,27 @@ bool FlightManipulator::performMovement()
     if (_ga_t0.get()==NULL || _ga_t1.get()==NULL) return false;
 
 
-    double dt = _ga_t0->getTime()-_ga_t1->getTime();
+    double eventTimeDelta = _ga_t0->getTime()-_ga_t1->getTime();
 
-    if (dt<0.0f)
+    if (eventTimeDelta<0.0f)
     {
-        notify(WARN) << "Manipulator warning dt = " << dt << std::endl;
-        dt = 0.0f;
+        notify(WARN) << "Manipulator warning: eventTimeDelta = " << eventTimeDelta << std::endl;
+        eventTimeDelta = 0.0f;
     }
 
     unsigned int buttonMask = _ga_t1->getButtonMask();
     if (buttonMask==GUIEventAdapter::LEFT_MOUSE_BUTTON)
     {
-        return performMovementLeftMouseButton(dt, 0., 0.);
+        performMovementLeftMouseButton(eventTimeDelta, 0., 0.);
     }
     else if (buttonMask==GUIEventAdapter::MIDDLE_MOUSE_BUTTON ||
         buttonMask==(GUIEventAdapter::LEFT_MOUSE_BUTTON|GUIEventAdapter::RIGHT_MOUSE_BUTTON))
     {
-        return performMovementMiddleMouseButton(dt, 0., 0.);
+        performMovementMiddleMouseButton(eventTimeDelta, 0., 0.);
     }
     else if (buttonMask==GUIEventAdapter::RIGHT_MOUSE_BUTTON)
     {
-        return performMovementRightMouseButton(dt, 0., 0.);
+        performMovementRightMouseButton(eventTimeDelta, 0., 0.);
     }
 
     float dx = _ga_t0->getXnormalized();
@@ -183,8 +183,8 @@ bool FlightManipulator::performMovement()
     Vec3d sv = lv^up;
     sv.normalize();
 
-    double pitch = -inDegrees(dy*50.0f*dt);
-    double roll = inDegrees(dx*50.0f*dt);
+    double pitch = -inDegrees(dy*50.0f*eventTimeDelta);
+    double roll = inDegrees(dx*50.0f*eventTimeDelta);
 
     Quat delta_rotate;
 
@@ -200,7 +200,7 @@ bool FlightManipulator::performMovement()
     {
         //float bank = asinf(sv.z());
         double bank = asinf(sv *getUpVector(cf));
-        double yaw = inRadians(bank)*dt;
+        double yaw = inRadians(bank)*eventTimeDelta;
 
         Quat yaw_rotate;
         //yaw_rotate.makeRotate(yaw,0.0f,0.0f,1.0f);
@@ -211,7 +211,7 @@ bool FlightManipulator::performMovement()
         delta_rotate = delta_rotate*yaw_rotate;
     }
 
-    lv *= (_velocity*dt);
+    lv *= (_velocity*eventTimeDelta);
 
     _eye += lv;
     _rotation = _rotation*delta_rotate;
@@ -220,23 +220,23 @@ bool FlightManipulator::performMovement()
 }
 
 
-bool FlightManipulator::performMovementLeftMouseButton( const double dt, const double dx, const double dy )
+bool FlightManipulator::performMovementLeftMouseButton( const double eventTimeDelta, const double dx, const double dy )
 {
     // pan model
-    _velocity += dt * (_acceleration + _velocity);
+    _velocity += eventTimeDelta * (_acceleration + _velocity);
     return true;
 }
 
 
-bool FlightManipulator::performMovementMiddleMouseButton( const double dt, const double dx, const double dy )
+bool FlightManipulator::performMovementMiddleMouseButton( const double eventTimeDelta, const double dx, const double dy )
 {
     _velocity = 0.0f;
     return true;
 }
 
 
-bool FlightManipulator::performMovementRightMouseButton( const double dt, const double dx, const double dy )
+bool FlightManipulator::performMovementRightMouseButton( const double eventTimeDelta, const double dx, const double dy )
 {
-    _velocity -= dt * (_acceleration + _velocity);
+    _velocity -= eventTimeDelta * (_acceleration + _velocity);
     return true;
 }

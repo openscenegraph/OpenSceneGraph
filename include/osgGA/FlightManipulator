@@ -61,9 +61,9 @@ class OSGGA_EXPORT FlightManipulator : public FirstPersonManipulator
         virtual bool flightHandleEvent( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
 
         virtual bool performMovement();
-        virtual bool performMovementLeftMouseButton( const double dt, const double dx, const double dy );
-        virtual bool performMovementMiddleMouseButton( const double dt, const double dx, const double dy );
-        virtual bool performMovementRightMouseButton( const double dt, const double dx, const double dy );
+        virtual bool performMovementLeftMouseButton( const double eventTimeDelta, const double dx, const double dy );
+        virtual bool performMovementMiddleMouseButton( const double eventTimeDelta, const double dx, const double dy );
+        virtual bool performMovementRightMouseButton( const double eventTimeDelta, const double dx, const double dy );
 
         YawControlMode _yawMode;
 

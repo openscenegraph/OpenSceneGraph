@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -11,7 +11,7 @@
  * OpenSceneGraph Public License for more details.
  *
  * StandardManipulator code Copyright (C) 2010 PCJohn (Jan Peciva)
- * while some pieces of code were reused from OSG.
+ * while some pieces of code were taken from OSG.
  * Thanks to company Cadwork (www.cadwork.ch) and
  * Brno University of Technology (www.fit.vutbr.cz) for open-sourcing this work.
 */
@@ -89,9 +89,9 @@ class OSGGA_EXPORT StandardManipulator : public MatrixManipulator
         virtual bool handleMouseDeltaMovement( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
 
         virtual bool performMovement();
-        virtual bool performMovementLeftMouseButton( const double dt, const double dx, const double dy );
-        virtual bool performMovementMiddleMouseButton( const double dt, const double dx, const double dy );
-        virtual bool performMovementRightMouseButton( const double dt, const double dx, const double dy );
+        virtual bool performMovementLeftMouseButton( const double eventTimeDelta, const double dx, const double dy );
+        virtual bool performMovementMiddleMouseButton( const double eventTimeDelta, const double dx, const double dy );
+        virtual bool performMovementRightMouseButton( const double eventTimeDelta, const double dx, const double dy );
         virtual bool performMouseDeltaMovement( const float dx, const float dy );
         virtual bool performAnimationMovement( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
         virtual void applyAnimationStep( const double currentProgress, const double prevProgress );
@@ -99,6 +99,7 @@ class OSGGA_EXPORT StandardManipulator : public MatrixManipulator
         void addMouseEvent( const osgGA::GUIEventAdapter& ea );
         void flushMouseEventStack();
         virtual bool isMouseMoving() const;
+        float getThrowScale( const double eventTimeDelta ) const;
         virtual void centerMousePointer( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
 
         static void rotateYawPitch( osg::Quat& rotation, const double yaw, const double pitch,
@@ -106,7 +107,7 @@ class OSGGA_EXPORT StandardManipulator : public MatrixManipulator
         static void fixVerticalAxis( osg::Quat& rotation, const osg::Vec3d& localUp, bool disallowFlipOver );
         void fixVerticalAxis( osg::Vec3d& eye, osg::Quat& rotation, bool disallowFlipOver );
         static void fixVerticalAxis( const osg::Vec3d& forward, const osg::Vec3d& up, osg::Vec3d& newUp,
-                                    const osg::Vec3d& localUp, bool disallowFlipOver );
+                                     const osg::Vec3d& localUp, bool disallowFlipOver );
         virtual bool setCenterByMousePointerIntersection( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
         virtual bool startAnimationByMousePointerIntersection( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
 

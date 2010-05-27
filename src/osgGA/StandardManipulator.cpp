@@ -120,7 +120,7 @@ Node* StandardManipulator::getNode()
  *
  *  In general, fixed up vector makes camera control more user friendly.
  *
- *  To change up vector, use MatrixManipulator::setCoordinateFrameCallback.*/
+ *  To change up vector, use CameraManipulator::setCoordinateFrameCallback.*/
 void StandardManipulator::setVerticalAxisFixed( bool value )
 {
     _verticalAxisFixed = value;
@@ -654,7 +654,7 @@ void StandardManipulator::rotateYawPitch( Quat& rotation, const double yaw, cons
  *  Technically said, it makes the roll component of the rotation equal to zero.
  *
  *  Up vector is given by CoordinateFrame and it is +z by default.
- *  It can be changed by osgGA::MatrixManipulator::setCoordinateFrameCallback().
+ *  It can be changed by osgGA::CameraManipulator::setCoordinateFrameCallback().
  *
  *  Eye parameter is user position, rotation is the rotation to be fixed, and
  *  disallowFlipOver, when set on true, avoids pitch rotation component to grow

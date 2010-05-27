@@ -14,7 +14,7 @@
 #ifndef OSGGA_DRIVEMANIPULATOR
 #define OSGGA_DRIVEMANIPULATOR 1 
 
-#include <osgGA/MatrixManipulator>
+#include <osgGA/CameraManipulator>
 #include <osg/Quat>
 
 namespace osgGA{
@@ -26,7 +26,7 @@ mouse button decelerates, and the middle mouse button (or left and
 right simultaneously) stops dead.
 */
 
-class OSGGA_EXPORT DriveManipulator : public MatrixManipulator
+class OSGGA_EXPORT DriveManipulator : public CameraManipulator
 {
     public:
 

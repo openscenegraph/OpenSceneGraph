@@ -275,7 +275,7 @@ protected:
         osg::Timer_t                                    _lastFrameTime;
         osg::ref_ptr<osg::AnimationPath>                _animPath;
         osg::ref_ptr<osgGA::AnimationPathManipulator>   _animPathManipulator;
-        osg::ref_ptr<osgGA::MatrixManipulator>          _oldManipulator;
+        osg::ref_ptr<osgGA::CameraManipulator>          _oldManipulator;
 };
 
 /** Event handler for increase/decreasing LODScale.*/

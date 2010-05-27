@@ -16,7 +16,7 @@
 
 #include <osg/AnimationPath>
 #include <osg/Notify>
-#include <osgGA/MatrixManipulator>
+#include <osgGA/CameraManipulator>
 
 namespace osgGA{
 
@@ -31,7 +31,7 @@ namespace osgGA{
 //    px py pz = World position in cartesian coordinates
 //    ax ay az aw = Orientation (attitude) defined as a quaternion
 
-class OSGGA_EXPORT AnimationPathManipulator : public MatrixManipulator
+class OSGGA_EXPORT AnimationPathManipulator : public CameraManipulator
 {
     public:
     

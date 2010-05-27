@@ -21,10 +21,10 @@
 #ifndef OSGGA_TESTMANIPULATOR
 #define OSGGA_TESTMANIPULATOR 1
 
-#include <osgGA/MatrixManipulator>
+#include <osgGA/CameraManipulator>
 #include <osg/Quat>
 
-class TestManipulator : public osgGA::MatrixManipulator
+class TestManipulator : public osgGA::CameraManipulator
 {
     public:
 

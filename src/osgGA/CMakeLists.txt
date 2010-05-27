@@ -19,7 +19,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/GUIEventAdapter
     ${HEADER_PATH}/GUIEventHandler
     ${HEADER_PATH}/KeySwitchMatrixManipulator
-    ${HEADER_PATH}/MatrixManipulator
+    ${HEADER_PATH}/CameraManipulator
     ${HEADER_PATH}/NodeTrackerManipulator
     ${HEADER_PATH}/OrbitManipulator
     ${HEADER_PATH}/StandardManipulator
@@ -45,7 +45,7 @@ ADD_LIBRARY(${LIB_NAME}
     GUIEventAdapter.cpp
     GUIEventHandler.cpp
     KeySwitchMatrixManipulator.cpp
-    MatrixManipulator.cpp
+    CameraManipulator.cpp
     NodeTrackerManipulator.cpp
     OrbitManipulator.cpp
     StandardManipulator.cpp

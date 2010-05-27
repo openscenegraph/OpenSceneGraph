@@ -19,7 +19,7 @@
 #ifndef OSGGA_CAMERA_MANIPULATOR
 #define OSGGA_CAMERA_MANIPULATOR 1
 
-#include <osgGA/MatrixManipulator>
+#include <osgGA/CameraManipulator>
 
 
 namespace osgGA {
@@ -27,9 +27,9 @@ namespace osgGA {
 
 /** StandardManipulator class provides basic functionality
     for user controlled manipulation.*/
-class OSGGA_EXPORT StandardManipulator : public MatrixManipulator
+class OSGGA_EXPORT StandardManipulator : public CameraManipulator
 {
-        typedef MatrixManipulator inherited;
+        typedef CameraManipulator inherited;
 
     public:
 

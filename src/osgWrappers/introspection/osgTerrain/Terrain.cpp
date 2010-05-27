@@ -130,12 +130,12 @@ BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	          __void__updateTerrainTileOnNextFrame__TerrainTile_P1,
 	          "Tell the Terrain node to call the terrainTile's TerrainTechnique on the next update traversal. ",
 	          "");
-	I_ProtectedMethod0(void, dirtyRegisteredTiles,
-	                   Properties::NON_VIRTUAL,
-	                   Properties::NON_CONST,
-	                   __void__dirtyRegisteredTiles,
-	                   "",
-	                   "");
+	I_ProtectedMethodWithDefaults1(void, dirtyRegisteredTiles, IN, int, dirtyMask, osgTerrain::TerrainTile::ALL_DIRTY,
+	                               Properties::NON_VIRTUAL,
+	                               Properties::NON_CONST,
+	                               __void__dirtyRegisteredTiles__int,
+	                               "",
+	                               "");
 	I_ProtectedMethod1(void, registerTerrainTile, IN, osgTerrain::TerrainTile *, tile,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::NON_CONST,

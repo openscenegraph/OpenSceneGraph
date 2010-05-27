@@ -38,7 +38,7 @@ END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgGA::SphericalManipulator)
 	I_DeclaringFile("osgGA/SphericalManipulator");
-	I_BaseType(osgGA::MatrixManipulator);
+	I_BaseType(osgGA::CameraManipulator);
 	I_Constructor0(____SphericalManipulator,
 	               "",
 	               "");

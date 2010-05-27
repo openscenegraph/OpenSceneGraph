@@ -3,11 +3,11 @@
 
 using namespace osgGA;
 
-void KeySwitchMatrixManipulator::addMatrixManipulator(int key, std::string name, MatrixManipulator *cm)
+void KeySwitchMatrixManipulator::addMatrixManipulator(int key, std::string name, CameraManipulator *cm)
 {
     if(!cm) return;
 
-    _manips[key]=std::make_pair(name,osg::ref_ptr<MatrixManipulator>(cm));
+    _manips[key]=std::make_pair(name,osg::ref_ptr<CameraManipulator>(cm));
 
     if(!_current)
     {
@@ -19,7 +19,7 @@ void KeySwitchMatrixManipulator::addMatrixManipulator(int key, std::string name,
     }
 }
 
-void KeySwitchMatrixManipulator::addNumberedMatrixManipulator(MatrixManipulator *cm)
+void KeySwitchMatrixManipulator::addNumberedMatrixManipulator(CameraManipulator *cm)
 {
     if(!cm) return;
     addMatrixManipulator('1'+_manips.size(),cm->className(),cm);
@@ -68,7 +68,7 @@ void KeySwitchMatrixManipulator::setNode(osg::Node* node)
 
 void KeySwitchMatrixManipulator::setHomePosition(const osg::Vec3d& eye, const osg::Vec3d& center, const osg::Vec3d& up, bool autoComputeHomePosition)
 {
-    MatrixManipulator::setHomePosition(eye, center, up, autoComputeHomePosition);
+    CameraManipulator::setHomePosition(eye, center, up, autoComputeHomePosition);
     for(KeyManipMap::iterator itr=_manips.begin();
         itr!=_manips.end();
         ++itr)
@@ -126,7 +126,7 @@ void KeySwitchMatrixManipulator::setCoordinateFrameCallback(CoordinateFrameCallb
     }
 }
 
-MatrixManipulator* KeySwitchMatrixManipulator::getMatrixManipulatorWithIndex(unsigned int index)
+CameraManipulator* KeySwitchMatrixManipulator::getMatrixManipulatorWithIndex(unsigned int index)
 {
     unsigned i=0;
     for(KeyManipMap::iterator itr = _manips.begin();
@@ -138,7 +138,7 @@ MatrixManipulator* KeySwitchMatrixManipulator::getMatrixManipulatorWithIndex(uns
     return 0;
 }
 
-const MatrixManipulator* KeySwitchMatrixManipulator::getMatrixManipulatorWithIndex(unsigned int index) const
+const CameraManipulator* KeySwitchMatrixManipulator::getMatrixManipulatorWithIndex(unsigned int index) const
 {
     unsigned i=0;
     for(KeyManipMap::const_iterator itr = _manips.begin();
@@ -150,14 +150,14 @@ const MatrixManipulator* KeySwitchMatrixManipulator::getMatrixManipulatorWithInd
     return 0;
 }
 
-MatrixManipulator* KeySwitchMatrixManipulator::getMatrixManipulatorWithKey(unsigned int key)
+CameraManipulator* KeySwitchMatrixManipulator::getMatrixManipulatorWithKey(unsigned int key)
 {
     KeyManipMap::iterator itr = _manips.find(key);
     if (itr!=_manips.end()) return itr->second.second.get();
     else return 0;
 }
 
-const MatrixManipulator* KeySwitchMatrixManipulator::getMatrixManipulatorWithKey(unsigned int key) const
+const CameraManipulator* KeySwitchMatrixManipulator::getMatrixManipulatorWithKey(unsigned int key) const
 {
     KeyManipMap::const_iterator itr = _manips.find(key);
     if (itr!=_manips.end()) return itr->second.second.get();

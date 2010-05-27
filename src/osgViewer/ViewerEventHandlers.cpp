@@ -534,7 +534,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
 
 
                     // If we successfully found our _filename file, set it and keep a copy
-                    // around of the original MatrixManipulator to restore later.
+                    // around of the original CameraManipulator to restore later.
                     if (_animPathManipulator.valid() && _animPathManipulator->valid())
                     {
                         _oldManipulator = view->getCameraManipulator();

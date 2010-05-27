@@ -14,14 +14,14 @@
 #ifndef __SphericalManipulator_h__
 #define __SphericalManipulator_h__
 
-#include <osgGA/MatrixManipulator>
+#include <osgGA/CameraManipulator>
 #include <osg/Math>
 #include <osg/Quat>
 
 namespace osgGA
 {
 
-class OSGGA_EXPORT SphericalManipulator : public MatrixManipulator
+class OSGGA_EXPORT SphericalManipulator : public CameraManipulator
 {
     public:
         SphericalManipulator();

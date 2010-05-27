@@ -93,13 +93,13 @@ BEGIN_OBJECT_REFLECTOR(osgGA::TerrainManipulator)
 	          __void__setNode__osg_Node_P1,
 	          "Attach a node to the manipulator, automatically detaching any previously attached node. ",
 	          "setNode(NULL) detaches previous nodes. May be ignored by manipulators which do not require a reference model. ");
-	I_ProtectedMethod3(bool, performMovementMiddleMouseButton, IN, const double, dt, IN, const double, dx, IN, const double, dy,
+	I_ProtectedMethod3(bool, performMovementMiddleMouseButton, IN, const double, eventTimeDelta, IN, const double, dx, IN, const double, dy,
 	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __bool__performMovementMiddleMouseButton__C5_double__C5_double__C5_double,
 	                   "",
 	                   "");
-	I_ProtectedMethod3(bool, performMovementRightMouseButton, IN, const double, dt, IN, const double, dx, IN, const double, dy,
+	I_ProtectedMethod3(bool, performMovementRightMouseButton, IN, const double, eventTimeDelta, IN, const double, dx, IN, const double, dy,
 	                   Properties::VIRTUAL,
 	                   Properties::NON_CONST,
 	                   __bool__performMovementRightMouseButton__C5_double__C5_double__C5_double,

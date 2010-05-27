@@ -65,7 +65,7 @@ public:
 
 
 /** callback class to use to allow matrix manipulators to query the application for the local coordinate frame.*/
-class ViewerCoordinateFrameCallback : public osgGA::MatrixManipulator::CoordinateFrameCallback
+class ViewerCoordinateFrameCallback : public osgGA::CameraManipulator::CoordinateFrameCallback
 {
 public:
 
@@ -338,7 +338,7 @@ const osgDB::ImagePager* View::getImagePager() const
 }
 
 
-void View::setCameraManipulator(osgGA::MatrixManipulator* manipulator, bool resetPosition)
+void View::setCameraManipulator(osgGA::CameraManipulator* manipulator, bool resetPosition)
 {
     _cameraManipulator = manipulator;
 

@@ -21,9 +21,9 @@
 #include <osg/View>
 #include <osgDB/DatabasePager>
 #include <osgDB/ImagePager>
+#include <osgGA/CameraManipulator>
 #include <osgGA/EventQueue>
 #include <osgGA/GUIEventHandler>
-#include <osgGA/MatrixManipulator>
 #include <osgUtil/LineSegmentIntersector>
 #include <osgUtil/SceneView>
 #include <osgViewer/Scene>
@@ -171,19 +171,19 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	          __C5_osgGA_EventQueue_P1__getEventQueue,
 	          "",
 	          "");
-	I_MethodWithDefaults2(void, setCameraManipulator, IN, osgGA::MatrixManipulator *, manipulator, , IN, bool, resetPosition, true,
+	I_MethodWithDefaults2(void, setCameraManipulator, IN, osgGA::CameraManipulator *, manipulator, , IN, bool, resetPosition, true,
 	                      Properties::NON_VIRTUAL,
-	                      __void__setCameraManipulator__osgGA_MatrixManipulator_P1__bool,
+	                      __void__setCameraManipulator__osgGA_CameraManipulator_P1__bool,
 	                      "Set the CameraManipulator that moves the View's master Camera position in response to events. ",
 	                      "The parameter resetPosition determines whether manipulator is set to its home position. ");
-	I_Method0(osgGA::MatrixManipulator *, getCameraManipulator,
+	I_Method0(osgGA::CameraManipulator *, getCameraManipulator,
 	          Properties::NON_VIRTUAL,
-	          __osgGA_MatrixManipulator_P1__getCameraManipulator,
+	          __osgGA_CameraManipulator_P1__getCameraManipulator,
 	          "Get the View's CameraManipulator. ",
 	          "");
-	I_Method0(const osgGA::MatrixManipulator *, getCameraManipulator,
+	I_Method0(const osgGA::CameraManipulator *, getCameraManipulator,
 	          Properties::NON_VIRTUAL,
-	          __C5_osgGA_MatrixManipulator_P1__getCameraManipulator,
+	          __C5_osgGA_CameraManipulator_P1__getCameraManipulator,
 	          "Get the const View's CameraManipulator. ",
 	          "");
 	I_Method0(void, home,
@@ -337,8 +337,8 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::View)
 	                   __osg_GraphicsOperation_P1__createRenderer__osg_Camera_P1,
 	                   "",
 	                   "");
-	I_SimpleProperty(osgGA::MatrixManipulator *, CameraManipulator, 
-	                 __osgGA_MatrixManipulator_P1__getCameraManipulator, 
+	I_SimpleProperty(osgGA::CameraManipulator *, CameraManipulator, 
+	                 __osgGA_CameraManipulator_P1__getCameraManipulator, 
 	                 0);
 	I_SimpleProperty(osg::NodePath, CoordinateSystemNodePath, 
 	                 __osg_NodePath__getCoordinateSystemNodePath, 

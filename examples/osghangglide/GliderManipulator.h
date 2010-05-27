@@ -21,17 +21,17 @@
 #ifndef OSGGA_GliderMANIPULATOR
 #define OSGGA_GliderMANIPULATOR 1
 
-#include <osgGA/MatrixManipulator>
+#include <osgGA/CameraManipulator>
 #include <osg/Quat>
 
 /**
-GliderManipulator is a MatrixManipulator which provides Glider simulator-like
+GliderManipulator is a CameraManipulator which provides Glider simulator-like
 updating of the camera position & orientation. By default, the left mouse
 button accelerates, the right mouse button decelerates, and the middle mouse
 button (or left and right simultaneously) stops dead.
 */
 
-class GliderManipulator : public osgGA::MatrixManipulator
+class GliderManipulator : public osgGA::CameraManipulator
 {
     public:
 

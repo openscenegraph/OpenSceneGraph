@@ -1573,6 +1573,17 @@ public:
         traverse(plod);
     }
 
+    bool removeExpiredChildrenAndCountPagedLODs(osg::PagedLOD* plod, double expiryTime, int expiryFrame, osg::NodeList& removedChildren)
+    {
+        size_t sizeBefore = removedChildren.size();
+        plod->removeExpiredChildren(expiryTime, expiryFrame, removedChildren);
+        for(size_t i = sizeBefore; i<removedChildren.size(); ++i)
+        {
+            removedChildren[i]->accept(*this);
+        }
+        return sizeBefore!=removedChildren.size();
+    }
+
 
     typedef std::set<osg::PagedLOD*> PagedLODset;
     PagedLODset         _pagedLODs;
@@ -1680,6 +1691,7 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
 
 
     osg::NodeList childrenRemoved;
+    childrenRemoved.reserve(numToPrune);
     
     double expiryTime = frameStamp.getReferenceTime() - 0.1;
     int expiryFrame = frameStamp.getFrameNumber() - 1;
@@ -1693,20 +1705,7 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
         osg::ref_ptr<osg::PagedLOD> plod = itr->lock();
         if (plod.valid() && countPagedLODsVisitor._pagedLODs.count(plod.get())==0)
         {
-            osg::NodeList localChildrenRemoved;
-            plod->removeExpiredChildren(expiryTime, expiryFrame, localChildrenRemoved);
-            if (!localChildrenRemoved.empty())
-            {
-
-                for(osg::NodeList::iterator critr = localChildrenRemoved.begin();
-                    critr!=localChildrenRemoved.end();
-                    ++critr)
-                {
-                    (*critr)->accept(countPagedLODsVisitor);
-                }
-
-                std::copy(localChildrenRemoved.begin(),localChildrenRemoved.end(),std::back_inserter(childrenRemoved));
-            }
+            countPagedLODsVisitor.removeExpiredChildrenAndCountPagedLODs(plod.get(), expiryTime, expiryFrame, childrenRemoved);
 
             // advance the iterator to the next element
             ++itr;
@@ -1725,19 +1724,7 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
         osg::ref_ptr<osg::PagedLOD> plod = itr->lock();
         if (plod.valid() && countPagedLODsVisitor._pagedLODs.count(plod.get())==0)
         {
-            osg::NodeList localChildrenRemoved;
-            plod->removeExpiredChildren(expiryTime, expiryFrame, localChildrenRemoved);
-            if (!localChildrenRemoved.empty())
-            {
-                for(osg::NodeList::iterator critr = localChildrenRemoved.begin();
-                    critr!=localChildrenRemoved.end();
-                    ++critr)
-                {
-                    (*critr)->accept(countPagedLODsVisitor);
-                }
-
-                std::copy(localChildrenRemoved.begin(),localChildrenRemoved.end(),std::back_inserter(childrenRemoved));
-            }
+            countPagedLODsVisitor.removeExpiredChildrenAndCountPagedLODs(plod.get(), expiryTime, expiryFrame, childrenRemoved);
 
             // advance the iterator to the next element
             ++itr;

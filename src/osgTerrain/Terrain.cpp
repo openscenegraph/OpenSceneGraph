@@ -50,9 +50,30 @@ Terrain::~Terrain()
     {
         const_cast<TerrainTile*>(*itr)->_terrain = 0;
     }
-    
+
     _terrainTileSet.clear();
     _terrainTileMap.clear();
+}
+
+void Terrain::setSampleRatio(float ratio)
+{
+    if (_sampleRatio == ratio) return;
+    _sampleRatio  = ratio;
+    dirtyRegisteredTiles();
+}
+
+void Terrain::setVerticalScale(float scale)
+{
+    if (_verticalScale == scale) return;
+    _verticalScale = scale;
+    dirtyRegisteredTiles();
+}
+
+void Terrain::setBlendingPolicy(TerrainTile::BlendingPolicy policy)
+{
+    if (_blendingPolicy == policy) return;
+    _blendingPolicy = policy;
+    dirtyRegisteredTiles();
 }
 
 void Terrain::traverse(osg::NodeVisitor& nv)
@@ -107,7 +128,7 @@ const TerrainTile* Terrain::getTile(const TileID& tileID) const
     return itr->second;
 }
 
-void Terrain::dirtyRegisteredTiles()
+void Terrain::dirtyRegisteredTiles(int dirtyMask)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
@@ -115,7 +136,7 @@ void Terrain::dirtyRegisteredTiles()
         itr != _terrainTileSet.end();
         ++itr)
     {
-        (const_cast<TerrainTile*>(*itr))->setDirty(true);
+        (const_cast<TerrainTile*>(*itr))->setDirtyMask(dirtyMask);
     }
 }
 

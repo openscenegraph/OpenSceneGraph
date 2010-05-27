@@ -37,24 +37,14 @@ class OSGTERRAIN_EXPORT Terrain : public osg::CoordinateSystemNode
         
         /** Set the sample ratio hint that TerrainTile should use when building geometry.
           * Defaults to 1.0, which means use all original sample points.*/
-        void setSampleRatio(float ratio) 
-        {
-            if (_sampleRatio == ratio) return;
-            _sampleRatio  = ratio;
-            dirtyRegisteredTiles();
-        }
+        void setSampleRatio(float ratio);
 
         /** Get the sample ratio hint.*/
         float getSampleRatio() const { return _sampleRatio; }
 
 
         /** Set the vertical scale hint.*/
-        void setVerticalScale(float scale) 
-        {
-            if (_verticalScale == scale) return;
-            _verticalScale = scale;
-            dirtyRegisteredTiles();
-        }
+        void setVerticalScale(float scale);
 
         /** Get the vertical scale hint.*/
         float getVerticalScale() const { return _verticalScale; }
@@ -64,12 +54,7 @@ class OSGTERRAIN_EXPORT Terrain : public osg::CoordinateSystemNode
           * Note, the Terrain::BlendingPolicy value only sets the value for the TerrainTiles it encloses for the
           * TerrainTile's that have their policy set to INHERIT.   INHERIT is the default BlendingPolicy for both
           * Terrain and TerrainTile, and if both are left to INERHIT then the policy used is ENABLE_BLENDING_WHEN_ALPHA_PRESENT. */
-        void setBlendingPolicy(TerrainTile::BlendingPolicy policy)
-        {
-            if (_blendingPolicy == policy) return;
-            _blendingPolicy = policy;
-            dirtyRegisteredTiles();
-        }
+        void setBlendingPolicy(TerrainTile::BlendingPolicy policy);
 
         /** Get the default policy to use when deciding whether to enable/disable blending and use of transparent bin.*/
         TerrainTile::BlendingPolicy getBlendingPolicy() const { return _blendingPolicy; }
@@ -99,7 +84,7 @@ class OSGTERRAIN_EXPORT Terrain : public osg::CoordinateSystemNode
         
         friend class TerrainTile;
         
-        void dirtyRegisteredTiles();
+        void dirtyRegisteredTiles(int dirtyMask = TerrainTile::ALL_DIRTY);
 
         void registerTerrainTile(TerrainTile* tile);
         void unregisterTerrainTile(TerrainTile* tile);

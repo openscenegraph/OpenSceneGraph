@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -9,11 +9,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
+ *
+ * StandardManipulator code Copyright (C) 2010 PCJohn (Jan Peciva)
+ * while some pieces of code were taken from OSG.
+ * Thanks to company Cadwork (www.cadwork.ch) and
+ * Brno University of Technology (www.fit.vutbr.cz) for open-sourcing this work.
 */
 
 #include <osgGA/StandardManipulator>
 #include <osgViewer/View>
-#include <cassert>
 
 using namespace osg;
 using namespace osgGA;
@@ -160,6 +164,7 @@ bool StandardManipulator::isAnimating() const
 }
 
 
+/// Finishes the animation by performing a step that moves it to its final position.
 void StandardManipulator::finishAnimation()
 {
     if( !isAnimating() )
@@ -425,11 +430,11 @@ bool StandardManipulator::performMovement()
         return false;
 
     // get delta time
-    double dt = _ga_t0->getTime() - _ga_t1->getTime();
-    if( dt < 0. )
+    double eventTimeDelta = _ga_t0->getTime() - _ga_t1->getTime();
+    if( eventTimeDelta < 0. )
     {
-        notify( INFO ) << "Manipulator warning: dt = " << dt << std::endl;
-        dt = 0.;
+        notify( WARN ) << "Manipulator warning: eventTimeDelta = " << eventTimeDelta << std::endl;
+        eventTimeDelta = 0.;
     }
 
     // get deltaX and deltaY
@@ -445,16 +450,16 @@ bool StandardManipulator::performMovement()
     unsigned int buttonMask = _ga_t1->getButtonMask();
     if( buttonMask == GUIEventAdapter::LEFT_MOUSE_BUTTON )
     {
-        return performMovementLeftMouseButton( dt, dx, dy );
+        return performMovementLeftMouseButton( eventTimeDelta, dx, dy );
     }
     else if( buttonMask == GUIEventAdapter::MIDDLE_MOUSE_BUTTON ||
             buttonMask == (GUIEventAdapter::LEFT_MOUSE_BUTTON | GUIEventAdapter::RIGHT_MOUSE_BUTTON) )
     {
-        return performMovementMiddleMouseButton( dt, dx, dy );
+        return performMovementMiddleMouseButton( eventTimeDelta, dx, dy );
     }
     else if( buttonMask == GUIEventAdapter::RIGHT_MOUSE_BUTTON )
     {
-        return performMovementRightMouseButton( dt, dx, dy );
+        return performMovementRightMouseButton( eventTimeDelta, dx, dy );
     }
 
     return false;
@@ -463,7 +468,7 @@ bool StandardManipulator::performMovement()
 
 /** Make movement step of manipulator.
     This method implements movement for left mouse button.*/
-bool StandardManipulator::performMovementLeftMouseButton( const double dt, const double dx, const double dy )
+bool StandardManipulator::performMovementLeftMouseButton( const double eventTimeDelta, const double dx, const double dy )
 {
     return false;
 }
@@ -472,7 +477,7 @@ bool StandardManipulator::performMovementLeftMouseButton( const double dt, const
 /** Make movement step of manipulator.
     This method implements movement for middle mouse button
     or combination of left and right mouse button pressed together.*/
-bool StandardManipulator::performMovementMiddleMouseButton( const double dt, const double dx, const double dy )
+bool StandardManipulator::performMovementMiddleMouseButton( const double eventTimeDelta, const double dx, const double dy )
 {
     return false;
 }
@@ -480,12 +485,13 @@ bool StandardManipulator::performMovementMiddleMouseButton( const double dt, con
 
 /** Make movement step of manipulator.
     This method implements movement for right mouse button.*/
-bool StandardManipulator::performMovementRightMouseButton( const double dt, const double dx, const double dy )
+bool StandardManipulator::performMovementRightMouseButton( const double eventTimeDelta, const double dx, const double dy )
 {
     return false;
 }
 
 
+/// The method processes events for manipulation based on relative mouse movement (mouse delta).
 bool StandardManipulator::handleMouseDeltaMovement( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
     float dx = ea.getX() - _mouseCenterX;
@@ -501,12 +507,14 @@ bool StandardManipulator::handleMouseDeltaMovement( const GUIEventAdapter& ea, G
 }
 
 
+/// The method performs manipulator update based on relative mouse movement (mouse delta).
 bool StandardManipulator::performMouseDeltaMovement( const float dx, const float dy )
 {
    return false;
 }
 
 
+/// Makes the manipulator progress in its current animation.
 bool StandardManipulator::performAnimationMovement( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
     double f = (ea.getTime() - _animationData->_startTime) / _animationData->_animationTime;
@@ -527,11 +535,13 @@ bool StandardManipulator::performAnimationMovement( const GUIEventAdapter& ea, G
 }
 
 
+/// Updates manipulator by a single animation step
 void StandardManipulator::applyAnimationStep( const double currentProgress, const double prevProgress )
 {
 }
 
 
+/// Centers mouse pointer
 void StandardManipulator::centerMousePointer( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
     _mouseCenterX = (ea.getXmin() + ea.getXmax()) / 2.0f;
@@ -570,6 +580,18 @@ bool StandardManipulator::isMouseMoving() const
     float dt = _ga_t0->getTime()-_ga_t1->getTime();
 
     return (len>dt*velocity);
+}
+
+
+/** Returns the scale that should be applied on animation of "thrown" manipulator state
+    to avoid its dependency on varying frame rate.
+
+    eventTimeDelta parameter gives the time difference between last two
+    events that started the animation.*/
+float StandardManipulator::getThrowScale( const double eventTimeDelta ) const
+{
+    if( _thrown )  return float( _delta_frame_time / eventTimeDelta );
+    else  return 1.f;
 }
 
 
@@ -628,6 +650,17 @@ void StandardManipulator::rotateYawPitch( Quat& rotation, const double yaw, cons
 }
 
 
+/** The method corrects the rotation to make impression of fixed up direction.
+ *  Technically said, it makes the roll component of the rotation equal to zero.
+ *
+ *  Up vector is given by CoordinateFrame and it is +z by default.
+ *  It can be changed by osgGA::MatrixManipulator::setCoordinateFrameCallback().
+ *
+ *  Eye parameter is user position, rotation is the rotation to be fixed, and
+ *  disallowFlipOver, when set on true, avoids pitch rotation component to grow
+ *  over +/- 90 degrees. If this happens and disallowFlipOver is true,
+ *  manipulator is rotated by 180 degrees. More precisely, roll rotation component is changed by 180 degrees,
+ *  making pitch once again between -90..+90 degrees limits.*/
 void StandardManipulator::fixVerticalAxis( Vec3d& eye, Quat& rotation, bool disallowFlipOver )
 {
    CoordinateFrame coordinateFrame = getCoordinateFrame( eye );
@@ -640,10 +673,11 @@ void StandardManipulator::fixVerticalAxis( Vec3d& eye, Quat& rotation, bool disa
 /** The method corrects the rotation to make impression of fixed up direction.
  *  Technically said, it makes the roll component of the rotation equal to zero.
  *
- *  Rotation parameter is the rotation to be fixed, localUp is UP vector, and
- *  disallowFlipOver when set on true avoids pitch rotation component to grow
+ *  rotation parameter is the rotation to be fixed.
+ *  localUp is UP vector and must not be zero length.
+ *  disallowFlipOver, when set on true, avoids pitch rotation component to grow
  *  over +/- 90 degrees. If this happens and disallowFlipOver is true,
- *  right and up camera vectors are negated (changing roll by 180 degrees),
+ *  manipulator is rotated by 180 degrees. More precisely, roll rotation component is changed by 180 degrees,
  *  making pitch once again between -90..+90 degrees limits.*/
 void StandardManipulator::fixVerticalAxis( Quat& rotation, const Vec3d& localUp, bool disallowFlipOver )
 {
@@ -659,8 +693,6 @@ void StandardManipulator::fixVerticalAxis( Quat& rotation, const Vec3d& localUp,
                             newCameraRight1 : newCameraRight2;
     if( newCameraRight * cameraRight < 0. )
         newCameraRight = -newCameraRight;
-
-    assert( newCameraRight.length2() > 0. );
 
     // vertical axis correction
     Quat rotationVerticalAxisCorrection;
@@ -684,8 +716,8 @@ void StandardManipulator::fixVerticalAxis( Quat& rotation, const Vec3d& localUp,
 /** The method corrects the rotation to make impression of fixed up direction.
  *  Technically said, it makes the roll component of the rotation equal to zero.
  *
- *  forward and up parameter is the forward and up vector of the camera.
- *  newUp will receive corrected UP camera vector. localUp is UP vector
+ *  forward and up parameters are the forward and up vectors of the manipulator.
+ *  newUp will receive corrected UP manipulator vector. localUp is UP vector
  *  that is used for vertical correction.
  *  disallowFlipOver when set on true avoids pitch rotation component to grow
  *  over +/- 90 degrees. If this happens and disallowFlipOver is true,
@@ -699,14 +731,27 @@ void StandardManipulator::fixVerticalAxis( const osg::Vec3d& forward, const osg:
     osg::Vec3d right2 = up ^ localUp;
     osg::Vec3d right = (right1.length2() > right2.length2()) ? right1 : right2;
 
-    // newUp
-    // note: do not use up and other parameters from now as they may point
-    //       to the same variable as newUp parameter
-    newUp = right ^ forward;
-    assert( newUp.length2() > 0. );
-    newUp.normalize();
+    // updatedUp
+    osg::Vec3d updatedUp = right ^ forward;
+    if( updatedUp.normalize() >= 0. )
+
+        // return updatedUp
+        newUp = updatedUp;
+
+    else {
+
+       // return original up
+       notify( WARN ) << "StandardManipulator::fixVerticalAxis warning: Can not update vertical axis." << std::endl;
+       newUp = up;
+
+    }
 }
 
+
+/** The method sends a ray into the scene and the point of the closest intersection
+    is used to set a new center for the manipulator. For Orbit-style manipulators,
+    the orbiting center is set. For FirstPerson-style manipulators, view is pointed 
+    towards the center.*/
 bool StandardManipulator::setCenterByMousePointerIntersection( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
     osg::View* view = us.asView();

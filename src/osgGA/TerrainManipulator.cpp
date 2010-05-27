@@ -200,10 +200,10 @@ bool TerrainManipulator::intersect( const Vec3d& start, const Vec3d& end, Vec3d&
 }
 
 
-bool TerrainManipulator::performMovementMiddleMouseButton( const double dt, const double dx, const double dy )
+bool TerrainManipulator::performMovementMiddleMouseButton( const double eventTimeDelta, const double dx, const double dy )
 {
     // pan model.
-    double scale = -0.3f*_distance;
+    double scale = -0.3f * _distance * getThrowScale( eventTimeDelta );
 
     Matrixd rotation_matrix;
     rotation_matrix.makeRotate(_rotation);
@@ -297,10 +297,10 @@ bool TerrainManipulator::performMovementMiddleMouseButton( const double dt, cons
 }
 
 
-bool TerrainManipulator::performMovementRightMouseButton( const double dt, const double dx, const double dy )
+bool TerrainManipulator::performMovementRightMouseButton( const double eventTimeDelta, const double dx, const double dy )
 {
     // zoom model
-    zoomModel( dy, false );
+    zoomModel( dy * getThrowScale( eventTimeDelta ), false );
     return true;
 }
 

@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -263,7 +263,7 @@ void NodeTrackerManipulator::computePosition(const osg::Vec3d& eye,const osg::Ve
 
 
 // doc in parent
-bool NodeTrackerManipulator::performMovementLeftMouseButton( const double dt, const double dx, const double dy )
+bool NodeTrackerManipulator::performMovementLeftMouseButton( const double eventTimeDelta, const double dx, const double dy )
 {
     osg::Vec3d nodeCenter;
     osg::Quat nodeRotation;
@@ -297,14 +297,15 @@ bool NodeTrackerManipulator::performMovementLeftMouseButton( const double dt, co
 
     } else
         rotateTrackball( _ga_t0->getXnormalized(), _ga_t0->getYnormalized(),
-                         _ga_t1->getXnormalized(), _ga_t1->getYnormalized() );
+                         _ga_t1->getXnormalized(), _ga_t1->getYnormalized(),
+                         _thrown ? float( _delta_frame_time / eventTimeDelta ) : 1.f );
 
     return true;
 }
 
 
 // doc in parent
-bool NodeTrackerManipulator::performMovementMiddleMouseButton( const double dt, const double dx, const double dy )
+bool NodeTrackerManipulator::performMovementMiddleMouseButton( const double eventTimeDelta, const double dx, const double dy )
 {
     osg::Vec3d nodeCenter;
     osg::Quat nodeRotation;
@@ -315,11 +316,11 @@ bool NodeTrackerManipulator::performMovementMiddleMouseButton( const double dt, 
 
 
 // doc in parent
-bool NodeTrackerManipulator::performMovementRightMouseButton( const double dt, const double dx, const double dy )
+bool NodeTrackerManipulator::performMovementRightMouseButton( const double eventTimeDelta, const double dx, const double dy )
 {
     osg::Vec3d nodeCenter;
     osg::Quat nodeRotation;
     computeNodeCenterAndRotation(nodeCenter, nodeRotation);
 
-    return inherited::performMovementRightMouseButton(dt, dx, dy);
+    return inherited::performMovementRightMouseButton(eventTimeDelta, dx, dy);
 }

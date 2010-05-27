@@ -1,9 +1,9 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield
  *
- * This application is open source and may be redistributed and/or modified   
+ * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commericial and non commericial applications,
  * as long as this copyright notice is maintained.
- * 
+ *
  * This application is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -85,14 +85,16 @@ int main(int argc, char** argv)
         keyswitchManipulator->addMatrixManipulator( '2', "Flight", new osgGA::FlightManipulator() );
         keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
         keyswitchManipulator->addMatrixManipulator( '4', "Terrain", new osgGA::TerrainManipulator() );
-        keyswitchManipulator->addMatrixManipulator( '5', "Spherical", new osgGA::SphericalManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '5', "Orbit", new osgGA::OrbitManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '6', "FirstPerson", new osgGA::FirstPersonManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '7', "Spherical", new osgGA::SphericalManipulator() );
 
         std::string pathfile;
-        char keyForAnimationPath = '6';
+        char keyForAnimationPath = '8';
         while (arguments.read("-p",pathfile))
         {
             osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
-            if (apm || !apm->valid()) 
+            if (apm || !apm->valid())
             {
                 unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
                 keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
@@ -130,7 +132,7 @@ int main(int argc, char** argv)
 
     // load the data
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
-    if (!loadedModel) 
+    if (!loadedModel)
     {
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         return 1;

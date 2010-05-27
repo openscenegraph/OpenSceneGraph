@@ -86,9 +86,9 @@ class OSGGA_EXPORT NodeTrackerManipulator : public OrbitManipulator
 
     protected:
 
-        virtual bool performMovementLeftMouseButton(const double dt, const double dx, const double dy);
-        virtual bool performMovementMiddleMouseButton(const double dt, const double dx, const double dy);
-        virtual bool performMovementRightMouseButton(const double dt, const double dx, const double dy);
+        virtual bool performMovementLeftMouseButton(const double eventTimeDelta, const double dx, const double dy);
+        virtual bool performMovementMiddleMouseButton(const double eventTimeDelta, const double dx, const double dy);
+        virtual bool performMovementRightMouseButton(const double eventTimeDelta, const double dx, const double dy);
 
         osg::NodePath getNodePath() const;
 

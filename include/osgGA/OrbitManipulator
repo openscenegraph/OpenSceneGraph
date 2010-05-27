@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -9,6 +9,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
+ *
+ * OrbitManipulator code Copyright (C) 2010 PCJohn (Jan Peciva)
+ * while some pieces of code were taken from OSG.
+ * Thanks to company Cadwork (www.cadwork.ch) and
+ * Brno University of Technology (www.fit.vutbr.cz) for open-sourcing this work.
 */
 
 #ifndef OSGGA_ORBIT_MANIPULATOR
@@ -31,7 +36,7 @@ class OSGGA_EXPORT OrbitManipulator : public StandardManipulator
 
         OrbitManipulator( int flags = DEFAULT_SETTINGS );
         OrbitManipulator( const OrbitManipulator& om,
-                            const osg::CopyOp& copyOp = osg::CopyOp::SHALLOW_COPY );
+                          const osg::CopyOp& copyOp = osg::CopyOp::SHALLOW_COPY );
 
         META_Object( osgGA, OrbitManipulator );
 
@@ -67,13 +72,14 @@ class OSGGA_EXPORT OrbitManipulator : public StandardManipulator
 
         virtual bool handleMouseWheel( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& us );
 
-        virtual bool performMovementLeftMouseButton( const double dt, const double dx, const double dy );
-        virtual bool performMovementMiddleMouseButton( const double dt, const double dx, const double dy );
-        virtual bool performMovementRightMouseButton( const double dt, const double dx, const double dy );
+        virtual bool performMovementLeftMouseButton( const double eventTimeDelta, const double dx, const double dy );
+        virtual bool performMovementMiddleMouseButton( const double eventTimeDelta, const double dx, const double dy );
+        virtual bool performMovementRightMouseButton( const double eventTimeDelta, const double dx, const double dy );
         virtual bool performMouseDeltaMovement( const float dx, const float dy );
         virtual void applyAnimationStep( const double currentProgress, const double prevProgress );
 
-        virtual void rotateTrackball( const float px0, const float py0, const float px1, const float py1 );
+        virtual void rotateTrackball( const float px0, const float py0,
+                                      const float px1, const float py1, const float scale );
         virtual void rotateWithFixedVertical( const float dx, const float dy );
         virtual void rotateWithFixedVertical( const float dx, const float dy, const osg::Vec3f& up );
         virtual void panModel( const float dx, const float dy, const float dz = 0.f );

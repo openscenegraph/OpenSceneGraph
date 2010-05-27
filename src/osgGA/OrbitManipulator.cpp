@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -9,6 +9,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
+ *
+ * OrbitManipulator code Copyright (C) 2010 PCJohn (Jan Peciva)
+ * while some pieces of code were taken from OSG.
+ * Thanks to company Cadwork (www.cadwork.ch) and
+ * Brno University of Technology (www.fit.vutbr.cz) for open-sourcing this work.
 */
 
 #include <osgGA/OrbitManipulator>
@@ -191,33 +196,34 @@ bool OrbitManipulator::handleMouseWheel( const GUIEventAdapter& ea, GUIActionAda
 
 
 // doc in parent
-bool OrbitManipulator::performMovementLeftMouseButton( const double dt, const double dx, const double dy )
+bool OrbitManipulator::performMovementLeftMouseButton( const double eventTimeDelta, const double dx, const double dy )
 {
     // rotate camera
     if( getVerticalAxisFixed() )
         rotateWithFixedVertical( dx, dy );
     else
         rotateTrackball( _ga_t0->getXnormalized(), _ga_t0->getYnormalized(),
-                        _ga_t1->getXnormalized(), _ga_t1->getYnormalized() );
-   return true;
+                         _ga_t1->getXnormalized(), _ga_t1->getYnormalized(),
+                         getThrowScale( eventTimeDelta ) );
+    return true;
 }
 
 
 // doc in parent
-bool OrbitManipulator::performMovementMiddleMouseButton( const double dt, const double dx, const double dy )
+bool OrbitManipulator::performMovementMiddleMouseButton( const double eventTimeDelta, const double dx, const double dy )
 {
     // pan model
-    float scale = -0.3f * _distance;
+    float scale = -0.3f * _distance * getThrowScale( eventTimeDelta );
     panModel( dx*scale, dy*scale );
     return true;
 }
 
 
 // doc in parent
-bool OrbitManipulator::performMovementRightMouseButton( const double dt, const double dx, const double dy )
+bool OrbitManipulator::performMovementRightMouseButton( const double eventTimeDelta, const double dx, const double dy )
 {
     // zoom model
-    zoomModel( dy, true );
+    zoomModel( dy * getThrowScale( eventTimeDelta ), true );
     return true;
 }
 
@@ -228,7 +234,7 @@ bool OrbitManipulator::performMouseDeltaMovement( const float dx, const float dy
     if( getVerticalAxisFixed() )
         rotateWithFixedVertical( dx, dy );
     else
-        rotateTrackball( 0.f, 0.f, dx, dy );
+        rotateTrackball( 0.f, 0.f, dx, dy, 1.f );
 
     return true;
 }
@@ -290,8 +296,12 @@ void OrbitManipulator::OrbitAnimationData::start( const osg::Vec3d& movement, co
 
 
 /** Performs trackball rotation based on two points given, for example,
-    by mouse pointer on the screen.*/
-void OrbitManipulator::rotateTrackball( const float px0, const float py0, const float px1, const float py1 )
+    by mouse pointer on the screen.
+
+    Scale parameter is useful, for example, when manipulator is thrown.
+    It scales the amount of rotation based, for example, on the current frame time.*/
+void OrbitManipulator::rotateTrackball( const float px0, const float py0,
+                                        const float px1, const float py1, const float scale )
 {
     osg::Vec3d axis;
     float angle;

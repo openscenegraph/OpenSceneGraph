@@ -85,7 +85,7 @@ class ReaderWriterAC : public osgDB::ReaderWriter
 
             // GWM added Dec 2003 - get full path name (change in osgDB handling of files).
             std::string fileName = osgDB::findDataFile( file, options );
-            osg::notify(osg::INFO) << "osgDB ac3d reader: starting reading \"" << fileName << "\"" << std::endl;
+            OSG_INFO << "osgDB ac3d reader: starting reading \"" << fileName << "\"" << std::endl;
             
             // Anders Backmann - correct return if path not found
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
@@ -176,7 +176,7 @@ class ReaderWriterAC : public osgDB::ReaderWriter
                 }
             }
             else
-                osg::notify(osg::WARN)<<"File must start with a geode "<<std::endl;
+                OSG_WARN<<"File must start with a geode "<<std::endl;
             
             fout.flush();
             return WriteResult::FILE_SAVED;
@@ -342,13 +342,13 @@ class TextureData
         std::string absFileName = osgDB::findDataFile(name, options);
         if (absFileName.empty())
         {
-            osg::notify(osg::FATAL) << "osgDB ac3d reader: could not find texture \"" << name << "\"" << std::endl;
+            OSG_FATAL << "osgDB ac3d reader: could not find texture \"" << name << "\"" << std::endl;
             return false;
         }
         mImage = osgDB::readRefImageFile(absFileName, options);
         if (!mImage.valid())
         {
-            osg::notify(osg::FATAL) << "osgDB ac3d reader: could not read texture \"" << name << "\"" << std::endl;
+            OSG_FATAL << "osgDB ac3d reader: could not read texture \"" << name << "\"" << std::endl;
             return false;
         }
         mTexture2DRepeat->setImage(mImage.get());
@@ -630,7 +630,7 @@ public:
     {
          if (_vertices.size() <= i)
          {
-             osg::notify(osg::FATAL) << "osgDB ac3d reader: internal error, got invalid vertex index!" << std::endl;
+             OSG_FATAL << "osgDB ac3d reader: internal error, got invalid vertex index!" << std::endl;
              return VertexIndex(0, 0);
          }
         _dirty = true;
@@ -728,7 +728,7 @@ class LineBin : public PrimitiveBin
     {
         // Check if we have enough for a line or someting broken ...
         if (nRefs < 2) {
-            osg::notify(osg::WARN) << "osgDB ac3d reader: detected line with less than 2 vertices!" << std::endl;
+            OSG_WARN << "osgDB ac3d reader: detected line with less than 2 vertices!" << std::endl;
             return false;
         }
 
@@ -752,7 +752,7 @@ class LineBin : public PrimitiveBin
         else if (isLineStrip())
             type = osg::PrimitiveSet::LINE_STRIP;
         else {
-            osg::notify(osg::FATAL) << "osgDB ac3d reader: non surface flags in surface bin!" << std::endl;
+            OSG_FATAL << "osgDB ac3d reader: non surface flags in surface bin!" << std::endl;
             return false;
         }
         unsigned nRefs = _refs.size();
@@ -816,7 +816,7 @@ class SurfaceBin : public PrimitiveBin {
 
         // Check if we have enough for a line or someting broken ...
         if (nRefs < 3) {
-            osg::notify(osg::WARN) << "osgDB ac3d reader: detected surface with less than 3 vertices!" << std::endl;
+            OSG_WARN << "osgDB ac3d reader: detected surface with less than 3 vertices!" << std::endl;
             return false;
         }
         return true;
@@ -1229,7 +1229,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                     stream >> token;
                     
                     if (token != "SURF") {
-                        osg::notify(osg::FATAL) << "osgDB ac3d reader: expected SURF line while reading object \""
+                        OSG_FATAL << "osgDB ac3d reader: expected SURF line while reading object \""
                                                 << group->getName() << "\"!" << std::endl;
                         return group.release();
                     }
@@ -1239,7 +1239,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                     
                     stream >> token;
                     if (token != "mat") {
-                        osg::notify(osg::FATAL) << "osgDB ac3d reader: expected mat line while reading object \""
+                        OSG_FATAL << "osgDB ac3d reader: expected mat line while reading object \""
                                                 << group->getName() << "\"!" << std::endl;
                         return group.release();
                     }
@@ -1248,7 +1248,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                     unsigned matIdx;
                     stream >> matIdx;
                     if (primitiveBins.size() <= matIdx) {
-                        osg::notify(osg::FATAL) << "osgDB ac3d reader: invalid material number while reading object \""
+                        OSG_FATAL << "osgDB ac3d reader: invalid material number while reading object \""
                                                 << group->getName() << "\"" << std::endl;
                         return group.release();
                     }
@@ -1257,7 +1257,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                     PrimitiveBin* primitiveBin = 0;
                     primitiveBin = primitiveBins[matIdx].getOrCreatePrimitiveBin(flags, vertexSet.get());
                     if (!primitiveBin) {
-                        osg::notify(osg::FATAL) << "osgDB ac3d reader: unexpected primitive flags while reading object \""
+                        OSG_FATAL << "osgDB ac3d reader: unexpected primitive flags while reading object \""
                                                 << group->getName() << "\"" << std::endl;
                         return group.release();
                     }
@@ -1265,7 +1265,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                     // read the refs
                     stream >> token;
                     if (token != "refs") {
-                        osg::notify(osg::FATAL) << "osgDB ac3d reader: expected refs line while reading object \""
+                        OSG_FATAL << "osgDB ac3d reader: expected refs line while reading object \""
                                                 << group->getName() << "\"" << std::endl;
                         return group.release();
                     }
@@ -1273,7 +1273,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                     unsigned nRefs = 0;
                     stream >> nRefs;
                     if (!stream) {
-                        osg::notify(osg::FATAL) << "osgDB ac3d reader: could not read number of refs while reading object \""
+                        OSG_FATAL << "osgDB ac3d reader: could not read number of refs while reading object \""
                                                 << group->getName() << "\"" << std::endl;
                         return group.release();
                     }
@@ -1287,7 +1287,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                         stream >> index;
                         if (vertexSet->size() <= index)
                         {
-                            osg::notify(osg::FATAL) << "osgDB ac3d reader: invalid ref vertex index while reading object \""
+                            OSG_FATAL << "osgDB ac3d reader: invalid ref vertex index while reading object \""
                                                     << group->getName() << "\"" << std::endl;
                             return group.release();
                         }
@@ -1296,7 +1296,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                         osg::Vec2 texCoord;
                         stream >> texCoord[0] >> texCoord[1];
                         if (!stream) {
-                            osg::notify(osg::WARN) << "osgDB ac3d reader: could not parse texture coords while reading object \""
+                            OSG_WARN << "osgDB ac3d reader: could not parse texture coords while reading object \""
                                                    << group->getName() << "\" setting to (0,0)" << std::endl;
                             stream.clear();
                             std::string dummy;
@@ -1334,7 +1334,7 @@ readObject(std::istream& stream, FileData& fileData, const osg::Matrix& parentTr
                 for (unsigned n = 0; n < num; n++) {
                     osg::Node *k = readObject(stream, fileData, transform*parentTransform, textureData);
                     if (k == 0) {
-                        osg::notify(osg::FATAL) << "osgDB ac3d reader: error reading child object" << std::endl;
+                        OSG_FATAL << "osgDB ac3d reader: error reading child object" << std::endl;
                         return group.release();
                     }
                     else {

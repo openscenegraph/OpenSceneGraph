@@ -22,13 +22,12 @@
 #ifdef NDEBUG
 #   define MESHASSERT( x )
 #else
-#    define MESHASSERT(x) { if( !(x) )                                      \
-              osg::notify(osg::WARN) << "Ply Loader ##### Assert: " << #x << " #####" << std::endl; }
+#    define MESHASSERT(x) { if( !(x) ) { OSG_WARN << "Ply Loader ##### Assert: " << #x << " #####" << std::endl; } }
 #endif
 
-#   define MESHERROR   osg::notify(osg::WARN)
-#   define MESHWARN    osg::notify(osg::WARN)
-#   define MESHINFO    osg::notify(osg::INFO)
+#   define MESHERROR   OSG_WARN
+#   define MESHWARN    OSG_WARN
+#   define MESHINFO    OSG_INFO
 
 #if defined(_MSC_VER)
 typedef int        socklen_t;

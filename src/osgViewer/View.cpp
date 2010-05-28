@@ -48,14 +48,14 @@ public:
     {
         if (_pathToCoordinateSystemNode.empty())
         {
-            OSG_NOTIFY(osg::INFO)<<"Found CoordianteSystemNode node"<<std::endl;
-            OSG_NOTIFY(osg::INFO)<<"     CoordinateSystem = "<<node.getCoordinateSystem()<<std::endl;
+            OSG_NOTIFY(osg::DEBUG_INFO)<<"Found CoordianteSystemNode node"<<std::endl;
+            OSG_NOTIFY(osg::DEBUG_INFO)<<"     CoordinateSystem = "<<node.getCoordinateSystem()<<std::endl;
             _pathToCoordinateSystemNode = getNodePath();
         }
         else
         {
-            OSG_NOTIFY(osg::INFO)<<"Found additional CoordianteSystemNode node, but ignoring"<<std::endl;
-            OSG_NOTIFY(osg::INFO)<<"     CoordinateSystem = "<<node.getCoordinateSystem()<<std::endl;
+            OSG_NOTIFY(osg::DEBUG_INFO)<<"Found additional CoordianteSystemNode node, but ignoring"<<std::endl;
+            OSG_NOTIFY(osg::DEBUG_INFO)<<"     CoordinateSystem = "<<node.getCoordinateSystem()<<std::endl;
         }
         traverse(node);
     }
@@ -74,7 +74,7 @@ public:
 
     virtual osg::CoordinateFrame getCoordinateFrame(const osg::Vec3d& position) const
     {
-        OSG_NOTIFY(osg::INFO)<<"getCoordinateFrame("<<position<<")"<<std::endl;
+        OSG_NOTIFY(osg::DEBUG_INFO)<<"getCoordinateFrame("<<position<<")"<<std::endl;
 
         osg::NodePath tmpPath = _view->getCoordinateSystemNodePath();
 
@@ -105,19 +105,19 @@ public:
                 // reapply the position.
                 coordinateFrame.setTrans(pos);
 
-                OSG_NOTIFY(osg::INFO)<<"csn->computeLocalCoordinateFrame(position)* osg::computeLocalToWorld(tmpPath)"<<coordinateFrame<<std::endl;
+                OSG_NOTIFY(osg::DEBUG_INFO)<<"csn->computeLocalCoordinateFrame(position)* osg::computeLocalToWorld(tmpPath)"<<coordinateFrame<<std::endl;
 
             }
             else
             {
-                OSG_NOTIFY(osg::INFO)<<"osg::computeLocalToWorld(tmpPath)"<<std::endl;
+                OSG_NOTIFY(osg::DEBUG_INFO)<<"osg::computeLocalToWorld(tmpPath)"<<std::endl;
                 coordinateFrame =  osg::computeLocalToWorld(tmpPath);
             }
             return coordinateFrame;
         }
         else
         {
-            OSG_NOTIFY(osg::INFO)<<"   no coordinate system found, using default orientation"<<std::endl;
+            OSG_NOTIFY(osg::DEBUG_INFO)<<"   no coordinate system found, using default orientation"<<std::endl;
             return osg::Matrixd::translate(position);
         }
     }

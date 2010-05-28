@@ -78,7 +78,7 @@ DatabaseRevision::~DatabaseRevision()
 
 bool DatabaseRevision::isFileBlackListed(const std::string& filename) const
 {
-    osg::notify(osg::INFO)<<"DatabaseRevision("<<getName()<<")::isFileBlackListed("<<filename<<")"<<std::endl;
+    OSG_INFO<<"DatabaseRevision("<<getName()<<")::isFileBlackListed("<<filename<<")"<<std::endl;
 
     if (_databasePath.length()>=filename.length()) return false;
     if (filename.compare(0,_databasePath.length(), _databasePath)!=0) return false;
@@ -160,7 +160,7 @@ bool DatabaseRevisions::isFileBlackListed(const std::string& filename) const
     {
         if ((*itr)->isFileBlackListed(filename))
         {
-            osg::notify(osg::INFO)<<"File is black listed "<<filename<<std::endl;
+            OSG_INFO<<"File is black listed "<<filename<<std::endl;
             return true;
         }
     }
@@ -169,7 +169,7 @@ bool DatabaseRevisions::isFileBlackListed(const std::string& filename) const
 
 bool DatabaseRevisions::removeFile(const std::string& filename)
 {
-    osg::notify(osg::INFO)<<"Remove file "<<filename<<std::endl;
+    OSG_INFO<<"Remove file "<<filename<<std::endl;
 
     bool removed = false;
     for(DatabaseRevisionList::iterator itr = _revisionList.begin();

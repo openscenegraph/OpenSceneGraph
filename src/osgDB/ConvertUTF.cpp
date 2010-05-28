@@ -48,7 +48,7 @@ std::string convertUTF16toUTF8(const wchar_t* source, unsigned sourceLength)
     int destLen = WideCharToMultiByte(CP_UTF8, 0, source, sourceLength, 0, 0, 0, 0);
     if (destLen <= 0)
     {
-        osg::notify(osg::WARN) << "Cannot convert UTF-16 string to UTF-8." << std::endl;
+        OSG_WARN << "Cannot convert UTF-16 string to UTF-8." << std::endl;
         return std::string();
     }
 
@@ -57,14 +57,14 @@ std::string convertUTF16toUTF8(const wchar_t* source, unsigned sourceLength)
 
     if (destLen <= 0)
     {
-        osg::notify(osg::WARN) << "Cannot convert UTF-16 string to UTF-8." << std::endl;
+        OSG_WARN << "Cannot convert UTF-16 string to UTF-8." << std::endl;
         return std::string();
     }
 
     return sDest;
 #else
     //TODO: Implement for other platforms
-    osg::notify(osg::WARN) << "ConvertUTF16toUTF8 not implemented." << std::endl;
+    OSG_WARN << "ConvertUTF16toUTF8 not implemented." << std::endl;
     return std::string();
 #endif
 }
@@ -80,7 +80,7 @@ std::wstring convertUTF8toUTF16(const char* source, unsigned sourceLength)
     int destLen = MultiByteToWideChar(CP_UTF8, 0, source, sourceLength, 0, 0);
     if (destLen <= 0)
     {
-        osg::notify(osg::WARN) << "Cannot convert UTF-8 string to UTF-16." << std::endl;
+        OSG_WARN << "Cannot convert UTF-8 string to UTF-16." << std::endl;
         return std::wstring();
     }
 
@@ -89,14 +89,14 @@ std::wstring convertUTF8toUTF16(const char* source, unsigned sourceLength)
 
     if (destLen <= 0)
     {
-        osg::notify(osg::WARN) << "Cannot convert UTF-8 string to UTF-16." << std::endl;
+        OSG_WARN << "Cannot convert UTF-8 string to UTF-16." << std::endl;
         return std::wstring();
     }
 
     return sDest;
 #else
     //TODO: Implement for other platforms
-    osg::notify(osg::WARN) << "ConvertUTF8toUTF16 not implemented." << std::endl;
+    OSG_WARN << "ConvertUTF8toUTF16 not implemented." << std::endl;
     return std::wstring();
 #endif
 }
@@ -112,7 +112,7 @@ std::string convertStringFromCurrentCodePageToUTF8(const char* source, unsigned 
     int utf16Length = MultiByteToWideChar(CP_ACP, 0, source, sourceLength, 0, 0);
     if (utf16Length <= 0)
     {
-        osg::notify(osg::WARN) << "Cannot convert multi-byte string to UTF-8." << std::endl;
+        OSG_WARN << "Cannot convert multi-byte string to UTF-8." << std::endl;
         return std::string();
     }
 
@@ -120,7 +120,7 @@ std::string convertStringFromCurrentCodePageToUTF8(const char* source, unsigned 
     utf16Length = MultiByteToWideChar(CP_ACP, 0, source, sourceLength, &sUTF16[0], utf16Length);
     if (utf16Length <= 0)
     {
-        osg::notify(osg::WARN) << "Cannot convert multi-byte string to UTF-8." << std::endl;
+        OSG_WARN << "Cannot convert multi-byte string to UTF-8." << std::endl;
         return std::string();
     }
 
@@ -144,7 +144,7 @@ std::string convertStringFromUTF8toCurrentCodePage(const char* source, unsigned 
     int destLen = WideCharToMultiByte(CP_ACP, 0, utf16.c_str(), sourceLength, 0, 0, 0, 0);
     if (destLen <= 0)
     {
-        osg::notify(osg::WARN) << "Cannot convert multi-byte string to UTF-8." << std::endl;
+        OSG_WARN << "Cannot convert multi-byte string to UTF-8." << std::endl;
         return std::string();
     }
 
@@ -152,7 +152,7 @@ std::string convertStringFromUTF8toCurrentCodePage(const char* source, unsigned 
     destLen = WideCharToMultiByte(CP_ACP, 0, utf16.c_str(), sourceLength, &sDest[0], destLen, 0, 0);
     if (destLen <= 0)
     {
-        osg::notify(osg::WARN) << "Cannot convert multi-byte string to UTF-8." << std::endl;
+        OSG_WARN << "Cannot convert multi-byte string to UTF-8." << std::endl;
         return std::string();
     }
 

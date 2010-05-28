@@ -33,7 +33,7 @@ Object* osgDB::readObjectFile(const std::string& filename,const Options* options
 {
     ReaderWriter::ReadResult rr = Registry::instance()->readObject(filename,options);
     if (rr.validObject()) return rr.takeObject();
-    if (rr.error()) notify(WARN) << rr.message() << std::endl;
+    if (rr.error()) OSG_WARN << rr.message() << std::endl;
     return NULL;
 }
 
@@ -42,7 +42,7 @@ Image* osgDB::readImageFile(const std::string& filename,const Options* options)
 {
     ReaderWriter::ReadResult rr = Registry::instance()->readImage(filename,options);
     if (rr.validImage()) return rr.takeImage();
-    if (rr.error()) notify(WARN) << rr.message() << std::endl;
+    if (rr.error()) OSG_WARN << rr.message() << std::endl;
     return NULL;
 }
 
@@ -50,7 +50,7 @@ Shader* osgDB::readShaderFile(const std::string& filename,const Options* options
 {
     ReaderWriter::ReadResult rr = Registry::instance()->readShader(filename,options);
     if (rr.validShader()) return rr.takeShader();
-    if (rr.error()) notify(WARN) << rr.message() << std::endl;
+    if (rr.error()) OSG_WARN << rr.message() << std::endl;
     return NULL;
 }
 
@@ -59,7 +59,7 @@ HeightField* osgDB::readHeightFieldFile(const std::string& filename,const Option
 {
     ReaderWriter::ReadResult rr = Registry::instance()->readHeightField(filename,options);
     if (rr.validHeightField()) return rr.takeHeightField();
-    if (rr.error()) notify(WARN) << rr.message() << std::endl;
+    if (rr.error()) OSG_WARN << rr.message() << std::endl;
     return NULL;
 }
 
@@ -138,7 +138,7 @@ Node* osgDB::readNodeFiles(osg::ArgumentParser& arguments,const Options* options
            
             if (image->isImageTranslucent())
             {
-                osg::notify()<<"Image "<<image->getFileName()<<" is translucent; setting up blending."<<std::endl;
+                OSG_INFO<<"Image "<<image->getFileName()<<" is translucent; setting up blending."<<std::endl;
                 geode->getOrCreateStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
                 geode->getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
             }
@@ -254,7 +254,7 @@ osg::ref_ptr<osg::Object> osgDB::readRefObjectFile(const std::string& filename,c
 {
     ReaderWriter::ReadResult rr = Registry::instance()->readObject(filename,options);
     if (rr.validObject()) return osg::ref_ptr<osg::Object>(rr.getObject());
-    if (rr.error()) notify(WARN) << rr.message() << std::endl;
+    if (rr.error()) OSG_WARN << rr.message() << std::endl;
     return NULL;
 }
 
@@ -262,7 +262,7 @@ osg::ref_ptr<osg::Image> osgDB::readRefImageFile(const std::string& filename,con
 {
     ReaderWriter::ReadResult rr = Registry::instance()->readImage(filename,options);
     if (rr.validImage()) return osg::ref_ptr<osg::Image>(rr.getImage());
-    if (rr.error()) notify(WARN) << rr.message() << std::endl;
+    if (rr.error()) OSG_WARN << rr.message() << std::endl;
     return NULL;
 }
 
@@ -270,7 +270,7 @@ osg::ref_ptr<osg::Shader> osgDB::readRefShaderFile(const std::string& filename,c
 {
     ReaderWriter::ReadResult rr = Registry::instance()->readShader(filename,options);
     if (rr.validShader()) return osg::ref_ptr<osg::Shader>(rr.getShader());
-    if (rr.error()) notify(WARN) << rr.message() << std::endl;
+    if (rr.error()) OSG_WARN << rr.message() << std::endl;
     return NULL;
 }
 
@@ -278,7 +278,7 @@ osg::ref_ptr<osg::HeightField> osgDB::readRefHeightFieldFile(const std::string& 
 {
     ReaderWriter::ReadResult rr = Registry::instance()->readHeightField(filename,options);
     if (rr.validHeightField()) return osg::ref_ptr<osg::HeightField>(rr.getHeightField());
-    if (rr.error()) notify(WARN) << rr.message() << std::endl;
+    if (rr.error()) OSG_WARN << rr.message() << std::endl;
     return NULL;
 }
 
@@ -286,6 +286,6 @@ osg::ref_ptr<osg::Node> osgDB::readRefNodeFile(const std::string& filename,const
 {
     ReaderWriter::ReadResult rr = Registry::instance()->readNode(filename,options);
     if (rr.validNode()) return osg::ref_ptr<osg::Node>(rr.getNode());
-    if (rr.error()) notify(WARN) << rr.message() << std::endl;
+    if (rr.error()) OSG_WARN << rr.message() << std::endl;
     return NULL;
 }

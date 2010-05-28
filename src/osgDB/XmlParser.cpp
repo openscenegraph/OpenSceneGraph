@@ -29,7 +29,7 @@ XmlNode* osgDB::readXmlFile(const std::string& filename,const Options* options)
 
         if (!input)
         {
-            osg::notify(osg::NOTICE)<<"Could not open XML file: "<<filename<<std::endl;
+            OSG_NOTICE<<"Could not open XML file: "<<filename<<std::endl;
             return 0;
         }
 
@@ -40,7 +40,7 @@ XmlNode* osgDB::readXmlFile(const std::string& filename,const Options* options)
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"Could not find XML file: "<<filename<<std::endl;
+        OSG_NOTICE<<"Could not find XML file: "<<filename<<std::endl;
         return 0;
     }
 }
@@ -67,7 +67,7 @@ XmlNode* osgDB::readXmlStream(std::istream& fin)
 
     if (!input)
     {
-        osg::notify(osg::NOTICE)<<"Could not attach to XML stream."<<std::endl;
+        OSG_NOTICE<<"Could not attach to XML stream."<<std::endl;
         return 0;
     }
 
@@ -138,10 +138,10 @@ void XmlNode::Input::skipWhiteSpace()
 {
     while(_currentPos<_buffer.size() && (_buffer[_currentPos]==' ' || _buffer[_currentPos]=='\t'))
     {
-        // osg::notify(osg::NOTICE)<<"_currentPos="<<_currentPos<<"_buffer.size()="<<_buffer.size()<<" v="<<_buffer[_currentPos]<<std::endl;
+        // OSG_NOTICE<<"_currentPos="<<_currentPos<<"_buffer.size()="<<_buffer.size()<<" v="<<_buffer[_currentPos]<<std::endl;
         ++_currentPos;
     }
-    //osg::notify(osg::NOTICE)<<"done"<<std::endl;
+    //OSG_NOTICE<<"done"<<std::endl;
 }
 
 XmlNode::XmlNode()
@@ -167,12 +167,12 @@ bool XmlNode::read(Input& input)
             commentNode->contents = input.substr(0, end);
             if (end!=std::string::npos)
             {
-                osg::notify(osg::INFO)<<"Valid Comment record ["<<commentNode->contents<<"]"<<std::endl;
+                OSG_INFO<<"Valid Comment record ["<<commentNode->contents<<"]"<<std::endl;
                 input += (end+3);
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"Error: Unclosed Comment record ["<<commentNode->contents<<"]"<<std::endl;
+                OSG_NOTICE<<"Error: Unclosed Comment record ["<<commentNode->contents<<"]"<<std::endl;
                 input += end;
             }
         }
@@ -183,17 +183,17 @@ bool XmlNode::read(Input& input)
             std::string comment = input.substr(0, end);
             if (end!=std::string::npos)
             {
-                osg::notify(osg::INFO)<<"Valid end tag ["<<comment<<"]"<<std::endl;
+                OSG_INFO<<"Valid end tag ["<<comment<<"]"<<std::endl;
                 input += (end+1);
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"Error: Unclosed end tag ["<<comment<<"]"<<std::endl;
+                OSG_NOTICE<<"Error: Unclosed end tag ["<<comment<<"]"<<std::endl;
                 input += end;
             }
 
-            if (comment==name) osg::notify(osg::INFO)<<"end tag is matched correctly"<<std::endl;
-            else osg::notify(osg::NOTICE)<<"Error: end tag is not matched correctly"<<std::endl;
+            if (comment==name) { OSG_INFO<<"end tag is matched correctly"<<std::endl; }
+            else { OSG_NOTICE<<"Error: end tag is not matched correctly"<<std::endl; }
 
             return true;
         }
@@ -208,12 +208,12 @@ bool XmlNode::read(Input& input)
             commentNode->contents = input.substr(0, end);
             if (end!=std::string::npos)
             {
-                osg::notify(osg::INFO)<<"Valid infomation record ["<<commentNode->contents<<"]"<<std::endl;
+                OSG_INFO<<"Valid infomation record ["<<commentNode->contents<<"]"<<std::endl;
                 input += (end+2);
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"Error: Unclosed infomation record ["<<commentNode->contents<<"]"<<std::endl;
+                OSG_NOTICE<<"Error: Unclosed infomation record ["<<commentNode->contents<<"]"<<std::endl;
                 input += end;
             }
         }
@@ -286,13 +286,13 @@ bool XmlNode::read(Input& input)
 
                 if (prev_pos == input.currentPosition())
                 {
-                    osg::notify(osg::NOTICE)<<"Error, parser iterator note advanced, position: "<<input.substr(0,50)<<std::endl;
+                    OSG_NOTICE<<"Error, parser iterator note advanced, position: "<<input.substr(0,50)<<std::endl;
                     ++input;
                 }
 
                 if (!option.empty())
                 {
-                    osg::notify(osg::INFO)<<"Assigning option "<<option<<" with value "<<value<<std::endl;
+                    OSG_INFO<<"Assigning option "<<option<<" with value "<<value<<std::endl;
                     childNode->properties[option] = value;
                 }
             }
@@ -301,18 +301,18 @@ bool XmlNode::read(Input& input)
             {
                 ++input;
 
-                osg::notify(osg::INFO)<<"Valid tag ["<<childNode->name<<"]"<<std::endl;
+                OSG_INFO<<"Valid tag ["<<childNode->name<<"]"<<std::endl;
 
                 if (c=='/')
                 {
                     if ((c=input[0])>=0 && c=='>')
                     {
                         ++input;
-                        osg::notify(osg::INFO)<<"tag is closed correctly"<<std::endl;
+                        OSG_INFO<<"tag is closed correctly"<<std::endl;
                         childNode->type = ATOM;
                     }
                     else 
-                        osg::notify(osg::NOTICE)<<"Error: tag is not closed correctly"<<std::endl;
+                        OSG_NOTICE<<"Error: tag is not closed correctly"<<std::endl;
                 }
                 else
                 {
@@ -324,7 +324,7 @@ bool XmlNode::read(Input& input)
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"Unclosed tag ["<<childNode->name<<"]"<<std::endl;
+                OSG_NOTICE<<"Unclosed tag ["<<childNode->name<<"]"<<std::endl;
                 return false;
             }
 
@@ -342,12 +342,12 @@ bool XmlNode::read(Input& input)
                 if (input._controlToCharacterMap.count(value)!=0)
                 {
                     c = input._controlToCharacterMap[value];
-                    osg::notify(osg::INFO)<<"Read control character "<<value<<" converted to "<<char(c)<<std::endl;
+                    OSG_INFO<<"Read control character "<<value<<" converted to "<<char(c)<<std::endl;
                     contents.push_back(c);
                 }
                 else
                 {
-                    osg::notify(osg::NOTICE)<<"Warning: read control character "<<value<<", but have no mapping to convert it to."<<std::endl;
+                    OSG_NOTICE<<"Warning: read control character "<<value<<", but have no mapping to convert it to."<<std::endl;
                 }
             }
             else

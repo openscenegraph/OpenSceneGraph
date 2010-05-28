@@ -98,7 +98,7 @@ bool ObjectWrapper::read( InputStream& is, osg::Object& obj )
           itr!=_serializers.end(); ++itr )
     {
         if ( (*itr)->read(is, obj) ) continue;
-        osg::notify(osg::WARN) << "ObjectWrapper::read(): Error reading property "
+        OSG_WARN << "ObjectWrapper::read(): Error reading property "
                                << _name << "::" << (*itr)->getName() << std::endl;
         readOK = false;
     }
@@ -112,7 +112,7 @@ bool ObjectWrapper::write( OutputStream& os, const osg::Object& obj )
           itr!=_serializers.end(); ++itr )
     {
         if ( (*itr)->write(os, obj) ) continue;
-        osg::notify(osg::WARN) << "ObjectWrapper::write(): Error writing property "
+        OSG_WARN << "ObjectWrapper::write(): Error writing property "
                                << _name << "::" << (*itr)->getName() << std::endl;
         writeOK = false;
     }
@@ -131,7 +131,7 @@ bool ObjectWrapper::readSchema( const StringList& properties )
     {
         if ( serializersSize<i )
         {
-            osg::notify(osg::WARN) << "ObjectWrapper::readSchema(): Wrapper " << _name
+            OSG_WARN << "ObjectWrapper::readSchema(): Wrapper " << _name
                                    << ": Incompatible serializers size" << std::endl;
             break;
         }
@@ -153,7 +153,7 @@ bool ObjectWrapper::readSchema( const StringList& properties )
             }
             if ( !hasSerializer )
             {
-                osg::notify(osg::WARN) << "ObjectWrapper::readSchema(): Wrapper " << _name
+                OSG_WARN << "ObjectWrapper::readSchema(): Wrapper " << _name
                                        << ": Unknown property " << prop << std::endl;
             }
         }
@@ -433,7 +433,7 @@ void ObjectWrapperManager::addWrapper( ObjectWrapper* wrapper )
     WrapperMap::iterator itr = _wrappers.find( wrapper->getName() );
     if ( itr!=_wrappers.end() )
     {
-        osg::notify(osg::WARN) << "ObjectWrapperManager::addWrapper(): '" << wrapper->getName()
+        OSG_WARN << "ObjectWrapperManager::addWrapper(): '" << wrapper->getName()
                                << "' already exists." << std::endl;
     }
     _wrappers[wrapper->getName()] = wrapper;
@@ -480,7 +480,7 @@ void ObjectWrapperManager::addCompressor( BaseCompressor* compressor )
     CompressorMap::iterator itr = _compressors.find( compressor->getName() );
     if ( itr!=_compressors.end() )
     {
-        osg::notify(osg::WARN) << "ObjectWrapperManager::addCompressor(): '" << compressor->getName()
+        OSG_WARN << "ObjectWrapperManager::addCompressor(): '" << compressor->getName()
                                << "' already exists." << std::endl;
     }
     _compressors[compressor->getName()] = compressor;

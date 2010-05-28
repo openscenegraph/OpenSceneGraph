@@ -174,7 +174,7 @@ Registry* Registry::instance(bool erase)
 Registry::Registry()
 {
     // comment out because it was causing problems under OSX - causing it to crash osgconv when constructing ostream in osg::notify().
-    // notify(INFO) << "Constructing osg::Registry"<<std::endl;
+    // OSG_INFO << "Constructing osg::Registry"<<std::endl;
 
     _buildKdTreesHint = Options::NO_PREFERENCE;
     _kdTreeBuilder = new osg::KdTreeBuilder;
@@ -193,7 +193,7 @@ Registry::Registry()
     if( (ptr = getenv("OSG_EXPIRY_DELAY")) != 0)
     {
         _expiryDelay = osg::asciiToDouble(ptr);
-        OSG_NOTIFY(osg::INFO)<<"Registry : Expiry delay = "<<_expiryDelay<<std::endl;
+        OSG_INFO<<"Registry : Expiry delay = "<<_expiryDelay<<std::endl;
     }
 
     const char* fileCachePath = getenv("OSG_FILE_CACHE");
@@ -382,7 +382,7 @@ Registry::~Registry()
 
 void Registry::destruct()
 {
-    // OSG_NOTIFY(osg::NOTICE)<<"Registry::destruct()"<<std::endl;
+    // OSG_NOTICE<<"Registry::destruct()"<<std::endl;
 
     // clean up the SharedStateManager 
     _sharedStateManager = 0;
@@ -672,7 +672,7 @@ bool Registry::closeLibrary(const std::string& fileName)
 
 void Registry::closeAllLibraries()
 {
-    // OSG_NOTIFY(osg::NOTICE)<<"Registry::closeAllLibraries()"<<std::endl;
+    // OSG_NOTICE<<"Registry::closeAllLibraries()"<<std::endl;
     OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
     _dlList.clear();
 }
@@ -837,7 +837,7 @@ std::string Registry::findDataFileImplementation(const std::string& filename, co
 
     if(fileExists(filename))
     {
-        OSG_NOTIFY(osg::DEBUG_INFO) << "FindFileInPath(" << filename << "): returning " << filename << std::endl;
+        OSG_DEBUG << "FindFileInPath(" << filename << "): returning " << filename << std::endl;
         return filename;
     }
 
@@ -864,7 +864,7 @@ std::string Registry::findDataFileImplementation(const std::string& filename, co
 
         if(fileExists(simpleFileName))
         {
-            OSG_NOTIFY(osg::DEBUG_INFO) << "FindFileInPath(" << filename << "): returning " << filename << std::endl;
+            OSG_DEBUG << "FindFileInPath(" << filename << "): returning " << filename << std::endl;
             return simpleFileName;
         }
 
@@ -899,7 +899,7 @@ std::string Registry::findLibraryFileImplementation(const std::string& filename,
 
     if(fileExists(filename))
     {
-        OSG_NOTIFY(osg::DEBUG_INFO) << "FindFileInPath(" << filename << "): returning " << filename << std::endl;
+        OSG_DEBUG << "FindFileInPath(" << filename << "): returning " << filename << std::endl;
         return filename;
     }
 
@@ -932,9 +932,9 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
             std::string::size_type endArchive = positionArchive + archiveExtension.length();
             std::string archiveName( readFunctor._filename.substr(0,endArchive));
             std::string fileName(readFunctor._filename.substr(endArchive+1,std::string::npos));
-            OSG_NOTIFY(osg::INFO)<<"Contains archive : "<<readFunctor._filename<<std::endl;
-            OSG_NOTIFY(osg::INFO)<<"         archive : "<<archiveName<<std::endl;
-            OSG_NOTIFY(osg::INFO)<<"         filename : "<<fileName<<std::endl;
+            OSG_INFO<<"Contains archive : "<<readFunctor._filename<<std::endl;
+            OSG_INFO<<"         archive : "<<archiveName<<std::endl;
+            OSG_INFO<<"         filename : "<<fileName<<std::endl;
         
             ReaderWriter::ReadResult result = openArchiveImplementation(archiveName,ReaderWriter::READ, 4096, readFunctor._options);
         
@@ -984,7 +984,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
             {
                 if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE)
                 {
-                    // OSG_NOTIFY(osg::NOTICE)<<"Warning: error reading file \""<<readFunctor._filename<<"\""<<std::endl;
+                    // OSG_NOTICE<<"Warning: error reading file \""<<readFunctor._filename<<"\""<<std::endl;
                     return *ritr;
                 }
             }
@@ -996,7 +996,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
                 {
                     if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND)
                     {
-                        //OSG_NOTIFY(osg::NOTICE)<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
+                        //OSG_NOTICE<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
                         return *ritr;
                     }
                 }
@@ -1055,7 +1055,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
             {
                 if (ritr->status()==ReaderWriter::ReadResult::ERROR_IN_READING_FILE)
                 {
-                    // OSG_NOTIFY(osg::NOTICE)<<"Warning: error reading file \""<<readFunctor._filename<<"\""<<std::endl;
+                    // OSG_NOTICE<<"Warning: error reading file \""<<readFunctor._filename<<"\""<<std::endl;
                     return *ritr;
                 }
             }
@@ -1064,7 +1064,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
             {
                 if (ritr->status()==ReaderWriter::ReadResult::FILE_NOT_FOUND)
                 {
-                    // OSG_NOTIFY(osg::NOTICE)<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
+                    // OSG_NOTICE<<"Warning: could not find file \""<<readFunctor._filename<<"\""<<std::endl;
                     return *ritr;
                 }
             }
@@ -1309,7 +1309,7 @@ ReaderWriter::ReadResult Registry::readNodeImplementation(const std::string& fil
     osg::Timer_t startTick = osg::Timer::instance()->tick();
     ReaderWriter::ReadResult result = readImplementation(ReadNodeFunctor(fileName, options),Options::CACHE_NODES);
     osg::Timer_t endTick = osg::Timer::instance()->tick();
-    OSG_NOTIFY(osg::NOTICE)<<"time to load "<<fileName<<" "<<osg::Timer::instance()->delta_m(startTick, endTick)<<"ms"<<std::endl;
+    OSG_NOTICE<<"time to load "<<fileName<<" "<<osg::Timer::instance()->delta_m(startTick, endTick)<<"ms"<<std::endl;
     return result;
 
 #else

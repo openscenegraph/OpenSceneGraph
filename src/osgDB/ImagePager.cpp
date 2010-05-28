@@ -150,7 +150,7 @@ int ImagePager::ImageThread::cancel()
         {
             // commenting out debug info as it was cashing crash on exit, presumable
             // due to osg::notify or std::cout destructing earlier than this destructor.
-            // osg::notify(osg::DEBUG_INFO)<<"Waiting for DatabasePager to cancel"<<std::endl;
+            // OSG_DEBUG<<"Waiting for DatabasePager to cancel"<<std::endl;
             OpenThreads::Thread::YieldCurrentThread();
         }
         
@@ -162,7 +162,7 @@ int ImagePager::ImageThread::cancel()
 
 void ImagePager::ImageThread::run()
 {
-    osg::notify(osg::INFO)<<"ImagePager::ImageThread::run() "<<this<<std::endl;
+    OSG_INFO<<"ImagePager::ImageThread::run() "<<this<<std::endl;
     bool firstTime = true;
 
     osg::ref_ptr<ImagePager::ReadQueue> read_queue;
@@ -232,7 +232,7 @@ void ImagePager::ImageThread::run()
 
     } while (!testCancel() && !_done);
 
-    osg::notify(osg::INFO)<<"ImagePager::ImageThread::done()"<<std::endl;
+    OSG_INFO<<"ImagePager::ImageThread::done()"<<std::endl;
 
 }
 
@@ -296,7 +296,7 @@ osg::Image* ImagePager::readImageFile(const std::string& fileName)
 
 void ImagePager::requestImageFile(const std::string& fileName,osg::Object* attachmentPoint, int attachmentIndex, double timeToMergeBy, const osg::FrameStamp*)
 {
-    osg::notify(osg::INFO)<<"ImagePager::requestNodeFile("<<fileName<<")"<<std::endl;
+    OSG_INFO<<"ImagePager::requestNodeFile("<<fileName<<")"<<std::endl;
 
     osg::ref_ptr<ImageRequest> request = new ImageRequest;
     request->_timeToMergeBy = timeToMergeBy;
@@ -329,7 +329,7 @@ void ImagePager::requestImageFile(const std::string& fileName,osg::Object* attac
 
 bool ImagePager::requiresUpdateSceneGraph() const
 {
-    //osg::notify(osg::NOTICE)<<"ImagePager::requiresUpdateSceneGraph()"<<std::endl;
+    //OSG_NOTICE<<"ImagePager::requiresUpdateSceneGraph()"<<std::endl;
     return !(_completedQueue->_requestList.empty());
 }
 
@@ -350,7 +350,7 @@ void ImagePager::updateSceneGraph(const osg::FrameStamp&)
         }
         else
         {
-            osg::notify(osg::NOTICE)<<"ImagePager::updateSceneGraph() : error, image request attachment type not handled yet."<<std::endl;
+            OSG_NOTICE<<"ImagePager::updateSceneGraph() : error, image request attachment type not handled yet."<<std::endl;
         }
     }
     

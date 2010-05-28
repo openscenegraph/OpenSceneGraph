@@ -58,7 +58,7 @@ OutputStream::OutputStream( const osgDB::Options* options )
                 else if ( keyAndValues[1]=="WriteOut" ) _writeImageHint = WRITE_EXTERNAL_FILE;
             }
             else
-                osg::notify(osg::WARN) << "OutputStream: Unknown option " << option << std::endl;
+                OSG_WARN << "OutputStream: Unknown option " << option << std::endl;
         }
     }
 }
@@ -321,11 +321,11 @@ void OutputStream::writeImage( const osg::Image* img )
     if ( decision==IMAGE_WRITE_OUT || _writeImageHint==WRITE_EXTERNAL_FILE )
     {
         bool result = osgDB::writeImageFile( *img, img->getFileName() );
-        osg::notify(osg::NOTICE) << "OutputStream::writeImage(): Write image data to external file "
+        OSG_NOTICE << "OutputStream::writeImage(): Write image data to external file "
                                  << img->getFileName() << std::endl;
         if ( !result )
         {
-            osg::notify(osg::WARN) << "OutputStream::writeImage(): Failed to write "
+            OSG_WARN << "OutputStream::writeImage(): Failed to write "
                                    << img->getFileName() << std::endl;
         }
     }
@@ -384,7 +384,7 @@ void OutputStream::writeImage( const osg::Image* img )
             }
             else
             {
-                osg::notify(osg::WARN) << "OutputStream::writeImage(): Failed to open image file "
+                OSG_WARN << "OutputStream::writeImage(): Failed to open image file "
                                        << img->getFileName() << std::endl;
                 *this << (unsigned int)0;
             }
@@ -416,7 +416,7 @@ void OutputStream::writeObject( const osg::Object* obj )
         ObjectWrapper* wrapper = Registry::instance()->getObjectWrapperManager()->findWrapper( name );
         if ( !wrapper )
         {
-            osg::notify(osg::WARN) << "OutputStream::writeObject(): Unsupported wrapper class "
+            OSG_WARN << "OutputStream::writeObject(): Unsupported wrapper class "
                                    << name << std::endl;
             *this << END_BRACKET << std::endl;
             return;
@@ -430,7 +430,7 @@ void OutputStream::writeObject( const osg::Object* obj )
             ObjectWrapper* assocWrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(assocName);
             if ( !assocWrapper )
             {
-                osg::notify(osg::WARN) << "OutputStream::writeObject(): Unsupported associated class "
+                OSG_WARN << "OutputStream::writeObject(): Unsupported associated class "
                                        << assocName << std::endl;
                 continue;
             }
@@ -494,7 +494,7 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
             BaseCompressor* compressor = Registry::instance()->getObjectWrapperManager()->findCompressor(_compressorName);
             if ( !compressor )
             {
-                osg::notify(osg::WARN) << "OutputStream::start(): No such compressor "
+                OSG_WARN << "OutputStream::start(): No such compressor "
                                        << _compressorName << std::endl;
                 _compressorName.clear();
             }

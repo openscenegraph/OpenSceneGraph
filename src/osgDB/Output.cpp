@@ -194,13 +194,13 @@ std::string Output::getFileNameForOutput(const std::string& filename) const
     case(FULL_PATH):
         {
             // need to think about how best to implement this first...
-            osg::notify(osg::WARN)<<"Warning: Output::getFileNameForOutput() does not support FULL_PATH yet."<< std::endl;        
+            OSG_WARN<<"Warning: Output::getFileNameForOutput() does not support FULL_PATH yet."<< std::endl;        
             return filename;
         }
     case(RELATIVE_PATH):
         {
             // need to think about how best to implement this as well...
-            osg::notify(osg::WARN)<<"Warning: Output::getFileNameForOutput() does not support RELATIVE_PATH yet."<< std::endl;        
+            OSG_WARN<<"Warning: Output::getFileNameForOutput() does not support RELATIVE_PATH yet."<< std::endl;        
             return filename;
         }
     case(FILENAME_ONLY):

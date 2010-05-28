@@ -93,7 +93,7 @@ public:
             
             if ( ret == Z_STREAM_ERROR )
             {
-                osg::notify(osg::NOTICE) << "Z_STREAM_ERROR" << std::endl;
+                OSG_NOTICE << "Z_STREAM_ERROR" << std::endl;
                 return false;
             }
             
@@ -131,7 +131,7 @@ public:
         
         if ( ret!=Z_OK )
         {
-            osg::notify(osg::INFO) << "failed to init" << std::endl;
+            OSG_INFO << "failed to init" << std::endl;
             return ret!=0;
         }
         

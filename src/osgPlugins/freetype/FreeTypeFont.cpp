@@ -72,12 +72,12 @@ void FreeTypeFont::setFontResolution(const osgText::FontResolution& fontSize)
     if ((unsigned int)(width+2*margin) > _facade->getTextureWidthHint() ||
         (unsigned int)(width+2*margin) > _facade->getTextureHeightHint())
     {
-        osg::notify(osg::WARN)<<"Warning: FreeTypeFont::setSize("<<width<<","<<height<<") sizes too large,"<<std::endl;
+        OSG_WARN<<"Warning: FreeTypeFont::setSize("<<width<<","<<height<<") sizes too large,"<<std::endl;
     
         width = _facade->getTextureWidthHint()-2*margin;
         height = _facade->getTextureHeightHint()-2*margin;
 
-        osg::notify(osg::WARN)<<"         sizes capped ("<<width<<","<<height<<") to fit int current glyph texture size."<<std::endl;
+        OSG_WARN<<"         sizes capped ("<<width<<","<<height<<") to fit int current glyph texture size."<<std::endl;
     }
 
     FT_Error error = FT_Set_Pixel_Sizes( _face,      /* handle to face object  */
@@ -86,7 +86,7 @@ void FreeTypeFont::setFontResolution(const osgText::FontResolution& fontSize)
 
     if (error)
     {
-        osg::notify(osg::WARN)<<"FT_Set_Pixel_Sizes() - error 0x"<<std::hex<<error<<std::dec<<std::endl;
+        OSG_WARN<<"FT_Set_Pixel_Sizes() - error 0x"<<std::hex<<error<<std::dec<<std::endl;
     }
     else
     {
@@ -119,7 +119,7 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& font
     FT_Error error = FT_Load_Char( _face, charindex, FT_LOAD_RENDER|FT_LOAD_NO_BITMAP|_flags );
     if (error)
     {
-        osg::notify(osg::WARN) << "FT_Load_Char(...) error 0x"<<std::hex<<error<<std::dec<<std::endl;
+        OSG_WARN << "FT_Load_Char(...) error 0x"<<std::hex<<error<<std::dec<<std::endl;
         return 0;
     }
 
@@ -180,7 +180,7 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& font
             break;
             
         default:
-            osg::notify(osg::WARN) << "FT_Load_Char(...) returned bitmap with unknown pixel_mode " << glyphslot->bitmap.pixel_mode << std::endl;
+            OSG_WARN << "FT_Load_Char(...) returned bitmap with unknown pixel_mode " << glyphslot->bitmap.pixel_mode << std::endl;
     }
 
 
@@ -224,7 +224,7 @@ osg::Vec2 FreeTypeFont::getKerning(const osgText::FontResolution& fontRes, unsig
 
     if (error)
     {
-        osg::notify(osg::WARN) << "FT_Get_Kerning(...) returned error code " <<std::hex<<error<<std::dec<< std::endl;
+        OSG_WARN << "FT_Get_Kerning(...) returned error code " <<std::hex<<error<<std::dec<< std::endl;
         return osg::Vec2(0.0f,0.0f);
     }
 

@@ -216,7 +216,7 @@ void FreeTypeFont3D::init()
     FT_Error _error = FT_Set_Pixel_Sizes(_face, 32, 32);
     if (_error)
     {
-        osg::notify(osg::NOTICE) << "FreeTypeFont3D: set pixel sizes failed ..." << std::endl;
+        OSG_NOTICE << "FreeTypeFont3D: set pixel sizes failed ..." << std::endl;
         return;
     }
 
@@ -226,13 +226,13 @@ void FreeTypeFont3D::init()
     _error = FT_Load_Glyph( _face, glyphIndex, FT_LOAD_DEFAULT );
     if (_error)
     {
-        osg::notify(osg::NOTICE) << "FreeTypeFont3D: initial glyph load failed ..." << std::endl;
+        OSG_NOTICE << "FreeTypeFont3D: initial glyph load failed ..." << std::endl;
         return;
     }
 
     if (_face->glyph->format != FT_GLYPH_FORMAT_OUTLINE)
     {
-        osg::notify(osg::NOTICE) << "FreeTypeFont3D: not a vector font" << std::endl;
+        OSG_NOTICE << "FreeTypeFont3D: not a vector font" << std::endl;
         return;
     }
 
@@ -250,7 +250,7 @@ void FreeTypeFont3D::init()
         _error = FT_Outline_Decompose(&outline,&funcs,&char3d);
         if (_error)
         {
-            osg::notify(osg::NOTICE) << "FreeTypeFont3D: - outline decompose failed ..." << std::endl;
+            OSG_NOTICE << "FreeTypeFont3D: - outline decompose failed ..." << std::endl;
             return;
         }
 
@@ -328,12 +328,12 @@ osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
     FT_Error error = FT_Load_Char( _face, charindex, FT_LOAD_DEFAULT|_flags );
     if (error)
     {
-        osg::notify(osg::WARN) << "FT_Load_Char(...) error 0x"<<std::hex<<error<<std::dec<<std::endl;
+        OSG_WARN << "FT_Load_Char(...) error 0x"<<std::hex<<error<<std::dec<<std::endl;
         return 0;
     }
     if (_face->glyph->format != FT_GLYPH_FORMAT_OUTLINE)
     {
-        osg::notify(osg::WARN) << "FreeTypeFont3D::getGlyph : not a vector font" << std::endl;
+        OSG_WARN << "FreeTypeFont3D::getGlyph : not a vector font" << std::endl;
         return 0;
     }
 
@@ -353,7 +353,7 @@ osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
     FT_Error _error = FT_Outline_Decompose(&outline, &funcs, &char3d);
     if (_error)
     {
-        osg::notify(osg::WARN) << "FreeTypeFont3D::getGlyph : - outline decompose failed ..." << std::endl;
+        OSG_WARN << "FreeTypeFont3D::getGlyph : - outline decompose failed ..." << std::endl;
         return 0;
     }
 
@@ -513,7 +513,7 @@ osg::Vec2 FreeTypeFont3D::getKerning(unsigned int leftcharcode,unsigned int righ
 
     if (error)
     {
-        osg::notify(osg::WARN) << "FT_Get_Kerning(...) returned error code " <<std::hex<<error<<std::dec<< std::endl;
+        OSG_WARN << "FT_Get_Kerning(...) returned error code " <<std::hex<<error<<std::dec<< std::endl;
         return osg::Vec2(0.0f,0.0f);
     }
 

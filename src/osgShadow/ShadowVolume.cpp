@@ -39,7 +39,7 @@ ShadowVolume::ShadowVolume():
 {
     // _drawMode = osgShadow::ShadowVolumeGeometry::GEOMETRY;
     
-    osg::notify(osg::INFO)<<"Warning: osgShadow::ShadowVolume technique is still in development, with current limitations that make it unsuitable for deployment. Please contact the osg-users for an update of developements."<<std::endl;
+    OSG_INFO<<"Warning: osgShadow::ShadowVolume technique is still in development, with current limitations that make it unsuitable for deployment. Please contact the osg-users for an update of developements."<<std::endl;
 }
 
 ShadowVolume::ShadowVolume(const ShadowVolume& sv, const osg::CopyOp& copyop):
@@ -103,7 +103,7 @@ void ShadowVolume::init()
 
     if (_drawMode == osgShadow::ShadowVolumeGeometry::STENCIL_TWO_SIDED)
     {
-        osg::notify(osg::NOTICE)<<"STENCIL_TWO_SIDED selected"<<std::endl;
+        OSG_NOTICE<<"STENCIL_TWO_SIDED selected"<<std::endl;
 
         osg::StateSet* ss_sv1 = geode->getOrCreateStateSet();
         ss_sv1->setRenderBinDetails(shadowVolumeBin, "RenderBin");
@@ -111,7 +111,7 @@ void ShadowVolume::init()
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"STENCIL_TWO_PASSES selecteted"<<std::endl;
+        OSG_NOTICE<<"STENCIL_TWO_PASSES selecteted"<<std::endl;
 
         osg::StateSet* ss_sv1 = geode->getOrCreateStateSet();
         ss_sv1->setRenderBinDetails(shadowVolumeBin, "RenderBin");
@@ -257,7 +257,7 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
 
         if (shadowVolumeBin.valid())
         {
-            //osg::notify(osg::NOTICE)<<"Found shadow volume bin, now removing it"<<std::endl;
+            //OSG_NOTICE<<"Found shadow volume bin, now removing it"<<std::endl;
             new_bin->getRenderBinList().erase(itr);
         }
     }
@@ -351,6 +351,6 @@ void ShadowVolume::cull(osgUtil::CullVisitor& cv)
 
 void ShadowVolume::cleanSceneGraph()
 {
-    osg::notify(osg::NOTICE)<<className()<<"::cleanSceneGraph()) not implemened yet, but almost."<<std::endl;
+    OSG_NOTICE<<className()<<"::cleanSceneGraph()) not implemened yet, but almost."<<std::endl;
 }
 

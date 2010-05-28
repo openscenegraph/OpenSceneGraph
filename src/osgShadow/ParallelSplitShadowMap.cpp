@@ -216,7 +216,7 @@ std::string ParallelSplitShadowMap::FragmentShaderGenerator::generateGLSL_Fragme
         sstr << "}"<< std::endl;
 
         //std::cout << sstr.str() << std::endl;
-        if ( splitCount == nbrSplits-1 )    osg::notify(osg::INFO) << std::endl << "ParallelSplitShadowMap: GLSL shader code:" << std::endl << "-------------------------------------------------------------------"  << std::endl << sstr.str() << std::endl;
+        if ( splitCount == nbrSplits-1 ) { OSG_INFO << std::endl << "ParallelSplitShadowMap: GLSL shader code:" << std::endl << "-------------------------------------------------------------------"  << std::endl << sstr.str() << std::endl; }
 
         return sstr.str();
 }
@@ -296,7 +296,7 @@ void ParallelSplitShadowMap::init(){
 
         pssmShadowSplitTexture._resolution = _resolution;
 
-        osg::notify(osg::DEBUG_INFO) << "ParallelSplitShadowMap : Texture ID=" << iCameras << " Resolution=" << pssmShadowSplitTexture._resolution << std::endl;
+        OSG_DEBUG << "ParallelSplitShadowMap : Texture ID=" << iCameras << " Resolution=" << pssmShadowSplitTexture._resolution << std::endl;
         // set up the texture to render into
         {
             pssmShadowSplitTexture._texture = new osg::Texture2D;

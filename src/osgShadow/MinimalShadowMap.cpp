@@ -438,9 +438,7 @@ void MinimalShadowMap::ViewData::clampProjection
     if( !perspective && !projection.getOrtho( l, r, b, t, n, f ) )
     {
         // What to do here ?
-        osg::notify( osg::WARN ) 
-            << "MinimalShadowMap::clampProjectionFarPlane failed - non standard matrix"
-            << std::endl;
+        OSG_WARN << "MinimalShadowMap::clampProjectionFarPlane failed - non standard matrix" << std::endl;
 
     } else if( n < new_near || new_far < f ) {
 
@@ -482,9 +480,7 @@ void MinimalShadowMap::ViewData::extendProjection
   bool frustum = projection.getFrustum( l,r,b,t,n,f );
 
   if( !frustum && !projection.getOrtho( l,r,b,t,n,f ) ) {
-    osg::notify( osg::WARN )
-        << " Awkward projection matrix. ComputeExtendedProjection failed"
-        << std::endl;
+    OSG_WARN << " Awkward projection matrix. ComputeExtendedProjection failed" << std::endl;
     return;
   }
 

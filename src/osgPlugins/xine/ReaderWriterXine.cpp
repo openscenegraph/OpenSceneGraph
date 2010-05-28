@@ -48,7 +48,7 @@ class XineImageStream : public osg::ImageStream
             if (_stream) 
             {
                 xine_set_param(_stream, XINE_PARAM_AUDIO_VOLUME, static_cast<int>(_volume*100.0f));
-                osg::notify(osg::NOTICE)<<"Setting volume "<<_volume<<std::endl;
+                OSG_NOTICE<<"Setting volume "<<_volume<<std::endl;
             }
         }
         
@@ -79,7 +79,7 @@ class XineImageStream : public osg::ImageStream
 
             if (!_vo)
             {
-                osg::notify(osg::NOTICE)<<"XineImageStream::open() : Failed to create video driver"<<std::endl;
+                OSG_NOTICE<<"XineImageStream::open() : Failed to create video driver"<<std::endl;
                 return false;
             }
             
@@ -106,7 +106,7 @@ class XineImageStream : public osg::ImageStream
             
             if (result==0)
             {
-                osg::notify(osg::INFO)<<"XineImageStream::open() : Could not ready movie file."<<std::endl;
+                OSG_INFO<<"XineImageStream::open() : Could not ready movie file."<<std::endl;
                 close();
                 return false;
             }
@@ -118,7 +118,7 @@ class XineImageStream : public osg::ImageStream
             int height = xine_get_stream_info(_stream,XINE_STREAM_INFO_VIDEO_HEIGHT);
             allocateImage(width,height,1,GL_RGB,GL_UNSIGNED_BYTE,1);
 
-            osg::notify(osg::INFO)<<"XineImageStream::open() size "<<width<<" "<<height<<std::endl;
+            OSG_INFO<<"XineImageStream::open() size "<<width<<" "<<height<<std::endl;
 
             // play();
             
@@ -137,12 +137,12 @@ class XineImageStream : public osg::ImageStream
                 }
                 else
                 {
-                    osg::notify(osg::INFO)<<"XineImageStream::play()"<<std::endl;
+                    OSG_INFO<<"XineImageStream::play()"<<std::endl;
                     if (xine_play(_stream, 0, 0))
                     {
                         while (!_ready)
                         {
-                            osg::notify(osg::INFO)<<"   waiting..."<<std::endl;
+                            OSG_INFO<<"   waiting..."<<std::endl;
                             OpenThreads::Thread::microSleep(10000);
                         }
 
@@ -151,7 +151,7 @@ class XineImageStream : public osg::ImageStream
                     }
                     else
                     {
-                        osg::notify(osg::NOTICE)<<"Error!!!"<<std::endl;
+                        OSG_NOTICE<<"Error!!!"<<std::endl;
                     }
                 }
             }
@@ -176,7 +176,7 @@ class XineImageStream : public osg::ImageStream
             _status=REWINDING;
             if (_stream)
             {
-                osg::notify(osg::INFO)<<"Warning::XineImageStream::rewind() - rewind disabled at present."<<std::endl;
+                OSG_INFO<<"Warning::XineImageStream::rewind() - rewind disabled at present."<<std::endl;
                 //xine_trick_mode(_stream,XINE_TRICK_MODE_FAST_REWIND,0);
             }
         }
@@ -203,7 +203,7 @@ class XineImageStream : public osg::ImageStream
 
             memcpy(imageStream->data(),data,imageStream->getTotalSizeInBytes());
 
-            osg::notify(osg::INFO)<<"image memcpy size="<<imageStream->getTotalSizeInBytes()<<" time="<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
+            OSG_INFO<<"image memcpy size="<<imageStream->getTotalSizeInBytes()<<" time="<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 
 
             imageStream->dirty();
@@ -235,23 +235,23 @@ class XineImageStream : public osg::ImageStream
 
         virtual ~XineImageStream()
         {
-            osg::notify(osg::INFO)<<"Killing XineImageStream"<<std::endl;
+            OSG_INFO<<"Killing XineImageStream"<<std::endl;
             close();
-            osg::notify(osg::INFO)<<"Closed XineImageStream"<<std::endl;
+            OSG_INFO<<"Closed XineImageStream"<<std::endl;
         }
 
         void close()
         {
 
-            osg::notify(osg::INFO)<<"XineImageStream::close()"<<std::endl;
+            OSG_INFO<<"XineImageStream::close()"<<std::endl;
 
             if (_stream)
             {
-                  osg::notify(osg::INFO)<<"  Closing stream"<<std::endl;
+                  OSG_INFO<<"  Closing stream"<<std::endl;
                 
                   xine_close(_stream);
 
-                  osg::notify(osg::INFO)<<"  Disposing stream"<<std::endl;
+                  OSG_INFO<<"  Disposing stream"<<std::endl;
 
                   xine_dispose(_stream);
                   _stream = 0;
@@ -265,7 +265,7 @@ class XineImageStream : public osg::ImageStream
 
             if (_ao)
             {
-               osg::notify(osg::INFO)<<"  Closing audio driver"<<std::endl;
+               OSG_INFO<<"  Closing audio driver"<<std::endl;
 
                 xine_close_audio_driver(_xine, _ao);  
                 
@@ -274,14 +274,14 @@ class XineImageStream : public osg::ImageStream
             
             if (_vo)
             {
-               osg::notify(osg::INFO)<<"  Closing video driver"<<std::endl;
+               OSG_INFO<<"  Closing video driver"<<std::endl;
 
                 xine_close_video_driver(_xine, _vo);  
                 
                 _vo = 0;
             }
 
-           osg::notify(osg::INFO)<<"closed XineImageStream "<<std::endl;
+           OSG_INFO<<"closed XineImageStream "<<std::endl;
 
         }
 
@@ -337,7 +337,7 @@ class ReaderWriterXine : public osgDB::ReaderWriter
      
         virtual ~ReaderWriterXine()
         {
-            osg::notify(osg::INFO)<<"~ReaderWriterXine()"<<std::endl;
+            OSG_INFO<<"~ReaderWriterXine()"<<std::endl;
         
             if (_xine) xine_exit(_xine);
             _xine = NULL;
@@ -354,7 +354,7 @@ class ReaderWriterXine : public osgDB::ReaderWriter
             if (ext=="xine")
             {
                 fileName = osgDB::findDataFile( osgDB::getNameLessExtension(file), options);
-                osg::notify(osg::INFO)<<"Xine stipped filename = "<<fileName<<std::endl;
+                OSG_INFO<<"Xine stipped filename = "<<fileName<<std::endl;
             }
             else
             {
@@ -362,7 +362,7 @@ class ReaderWriterXine : public osgDB::ReaderWriter
                 if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
             }
 
-            osg::notify(osg::INFO)<<"ReaderWriterXine::readImage "<< file<< std::endl;
+            OSG_INFO<<"ReaderWriterXine::readImage "<< file<< std::endl;
 
             osg::ref_ptr<osgXine::XineImageStream> imageStream = new osgXine::XineImageStream();
 

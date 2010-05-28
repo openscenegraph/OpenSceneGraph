@@ -96,23 +96,23 @@ enum ShadingModel
 
 void RayTracedTechnique::init()
 {
-    osg::notify(osg::INFO)<<"RayTracedTechnique::init()"<<std::endl;
+    OSG_INFO<<"RayTracedTechnique::init()"<<std::endl;
 
     if (!_volumeTile)
     {
-        osg::notify(osg::NOTICE)<<"RayTracedTechnique::init(), error no volume tile assigned."<<std::endl;
+        OSG_NOTICE<<"RayTracedTechnique::init(), error no volume tile assigned."<<std::endl;
         return;
     }
 
     if (_volumeTile->getLayer()==0)
     {
-        osg::notify(osg::NOTICE)<<"RayTracedTechnique::init(), error no layer assigend to volume tile."<<std::endl;
+        OSG_NOTICE<<"RayTracedTechnique::init(), error no layer assigend to volume tile."<<std::endl;
         return;
     }
 
     if (_volumeTile->getLayer()->getImage()==0)
     {
-        osg::notify(osg::NOTICE)<<"RayTracedTechnique::init(), error no image assigned to layer."<<std::endl;
+        OSG_NOTICE<<"RayTracedTechnique::init(), error no image assigned to layer."<<std::endl;
         return;
     }
 
@@ -186,8 +186,8 @@ void RayTracedTechnique::init()
         imageMatrix = layerLocator->getTransform();
     }
 
-    osg::notify(osg::INFO)<<"RayTracedTechnique::init() : geometryMatrix = "<<geometryMatrix<<std::endl;
-    osg::notify(osg::INFO)<<"RayTracedTechnique::init() : imageMatrix = "<<imageMatrix<<std::endl;
+    OSG_INFO<<"RayTracedTechnique::init() : geometryMatrix = "<<geometryMatrix<<std::endl;
+    OSG_INFO<<"RayTracedTechnique::init() : imageMatrix = "<<imageMatrix<<std::endl;
 
     osg::Texture::InternalFormatMode internalFormatMode = osg::Texture::USE_IMAGE_DATA_FORMAT;
 
@@ -271,12 +271,12 @@ void RayTracedTechnique::init()
 
 #if 1
             osgDB::writeImageFile(*(tf->getImage()),"tf.png");
-            osg::notify(osg::NOTICE)<<"imageLayer->getTexelOffset()[3]="<<imageLayer->getTexelOffset()[3]<<std::endl;
-            osg::notify(osg::NOTICE)<<"imageLayer->getTexelScale()[3]="<<imageLayer->getTexelScale()[3]<<std::endl;
-            osg::notify(osg::NOTICE)<<"tfOffset="<<tfOffset<<std::endl;
-            osg::notify(osg::NOTICE)<<"tfScale="<<tfScale<<std::endl;
-            osg::notify(osg::NOTICE)<<"tf->getMinimum()="<<tf->getMinimum()<<std::endl;
-            osg::notify(osg::NOTICE)<<"tf->getMaximum()="<<tf->getMaximum()<<std::endl;
+            OSG_NOTICE<<"imageLayer->getTexelOffset()[3]="<<imageLayer->getTexelOffset()[3]<<std::endl;
+            OSG_NOTICE<<"imageLayer->getTexelScale()[3]="<<imageLayer->getTexelScale()[3]<<std::endl;
+            OSG_NOTICE<<"tfOffset="<<tfOffset<<std::endl;
+            OSG_NOTICE<<"tfScale="<<tfScale<<std::endl;
+            OSG_NOTICE<<"tf->getMinimum()="<<tf->getMinimum()<<std::endl;
+            OSG_NOTICE<<"tf->getMaximum()="<<tf->getMaximum()<<std::endl;
 #endif
 
             tf_texture->setResizeNonPowerOfTwoHint(false);
@@ -349,13 +349,13 @@ void RayTracedTechnique::init()
                 osg::Shader* fragmentShader = osgDB::readShaderFile(osg::Shader::FRAGMENT, "shaders/volume_iso.frag");
                 if (fragmentShader)
                 {
-                    osg::notify(osg::INFO)<<"Shader found"<<std::endl;
+                    OSG_INFO<<"Shader found"<<std::endl;
                 
                     program->addShader(fragmentShader);
                 }
                 else
                 {
-                    osg::notify(osg::INFO)<<"No Shader found"<<std::endl;
+                    OSG_INFO<<"No Shader found"<<std::endl;
 
                     #include "Shaders/volume_iso_frag.cpp"
                     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, volume_iso_frag));
@@ -538,12 +538,12 @@ void RayTracedTechnique::init()
 
 void RayTracedTechnique::update(osgUtil::UpdateVisitor* uv)
 {
-//    osg::notify(osg::NOTICE)<<"RayTracedTechnique:update(osgUtil::UpdateVisitor* nv):"<<std::endl;
+//    OSG_NOTICE<<"RayTracedTechnique:update(osgUtil::UpdateVisitor* nv):"<<std::endl;
 }
 
 void RayTracedTechnique::cull(osgUtil::CullVisitor* cv)
 {
-    //osg::notify(osg::NOTICE)<<"RayTracedTechnique::cull(osgUtil::CullVisitor* nv)"<<std::endl;    
+    //OSG_NOTICE<<"RayTracedTechnique::cull(osgUtil::CullVisitor* nv)"<<std::endl;    
     if (_transform.valid())
     {
         _transform->accept(*cv);
@@ -552,12 +552,12 @@ void RayTracedTechnique::cull(osgUtil::CullVisitor* cv)
 
 void RayTracedTechnique::cleanSceneGraph()
 {
-    osg::notify(osg::NOTICE)<<"RayTracedTechnique::cleanSceneGraph()"<<std::endl;
+    OSG_NOTICE<<"RayTracedTechnique::cleanSceneGraph()"<<std::endl;
 }
 
 void RayTracedTechnique::traverse(osg::NodeVisitor& nv)
 {
-    // osg::notify(osg::NOTICE)<<"RayTracedTechnique::traverse(osg::NodeVisitor& nv)"<<std::endl;
+    // OSG_NOTICE<<"RayTracedTechnique::traverse(osg::NodeVisitor& nv)"<<std::endl;
     if (!_volumeTile) return;
 
     // if app traversal update the frame count.
@@ -586,7 +586,7 @@ void RayTracedTechnique::traverse(osg::NodeVisitor& nv)
 
     if (_volumeTile->getDirty()) 
     {
-        osg::notify(osg::INFO)<<"******* Doing init ***********"<<std::endl;
+        OSG_INFO<<"******* Doing init ***********"<<std::endl;
         _volumeTile->init();
     }
 }

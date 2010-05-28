@@ -112,7 +112,7 @@ void VolumeTile::traverse(osg::NodeVisitor& nv)
                     osgVolume::Volume* volume = dynamic_cast<Volume*>(*itr);
                     if (volume) 
                     {
-                        osg::notify(osg::INFO)<<"Assigning volume system "<<volume<<std::endl;                        
+                        OSG_INFO<<"Assigning volume system "<<volume<<std::endl;                        
                         setVolume(volume);
                     }
                 }

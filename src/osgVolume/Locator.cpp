@@ -109,7 +109,7 @@ bool Locator::computeLocalBounds(Locator& source, osg::Vec3d& bottomLeft, osg::V
 
 bool Locator::computeLocalBounds(osg::Vec3d& bottomLeft, osg::Vec3d& topRight) const
 {
-    osg::notify(osg::NOTICE)<<"Locator::computeLocalBounds"<<std::endl;
+    OSG_NOTICE<<"Locator::computeLocalBounds"<<std::endl;
 
     typedef std::list<osg::Vec3d> Corners;
     Corners corners;

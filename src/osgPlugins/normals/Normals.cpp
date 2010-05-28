@@ -166,7 +166,7 @@ void Normals::MakeNormalsVisitor::apply( Geode &geode )
                                 if (dal) {
                                     for (unsigned int j = 0; j < dal->size(); ++j) {
                                         unsigned int num_prim = (*dal)[j];
-                                        //notify(WARN) << "j=" << j << " num_prim=" << num_prim << std::endl;
+                                        //OSG_WARN << "j=" << j << " num_prim=" << num_prim << std::endl;
                                         _processPrimitive(num_prim, coord_index, normals_index, binding);
                                         coord_index += num_prim;
                                         if (binding == Geometry::BIND_PER_PRIMITIVE) {

@@ -99,7 +99,7 @@ class NormalsReader: public osgDB::ReaderWriter
 
     private:
         void usage() const {
-            osg::notify( osg::INFO ) << 
+            OSG_INFO << 
                 "Normals Plugin usage:  <application> [-O options] <model.ext>.normals\n"
                 "     options: \"scale=<scale>\"                        (default = 1.0)\n"
                 "              \"mode=<VertexNormals|SurfaceNormals>\"  (default = VertexNormals)" << std::endl;

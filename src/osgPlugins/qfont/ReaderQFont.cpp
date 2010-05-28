@@ -40,13 +40,13 @@ class ReaderQFont : public osgDB::ReaderWriter
 
             if (!QApplication::instance())
             {
-                osg::notify(osg::WARN) << "Trying to load qfont \"" << file << "\" from within a non qt application!" << std::endl;
+                OSG_WARN << "Trying to load qfont \"" << file << "\" from within a non qt application!" << std::endl;
                 return ReadResult::FILE_NOT_FOUND;
             }
 
             if (!QFontDatabase::supportsThreadedFontRendering() && QApplication::instance()->thread() != QThread::currentThread())
             {
-                osg::notify(osg::WARN) << "Trying to load qfont \"" << file << "\" from a non gui thread "
+                OSG_WARN << "Trying to load qfont \"" << file << "\" from a non gui thread "
                     "within qt application without threaded font rendering!" << std::endl;
                 return ReadResult::FILE_NOT_FOUND;
             }

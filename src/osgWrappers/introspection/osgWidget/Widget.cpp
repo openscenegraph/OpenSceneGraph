@@ -969,10 +969,10 @@ BEGIN_OBJECT_REFLECTOR(osg::observer_ptr< osgWidget::Widget >)
 	               ____observer_ptr__C5_observer_ptr_R1,
 	               "",
 	               "");
-	I_Method0(osg::ref_ptr< osgWidget::Widget >, lock,
+	I_Method1(bool, lock, IN, osg::ref_ptr< osgWidget::Widget > &, rptr,
 	          Properties::NON_VIRTUAL,
-	          __ref_ptrT1_T___lock,
-	          "Create a ref_ptr from a observer_ptr. ",
+	          __bool__lock__ref_ptrT1_T__R1,
+	          "Assign the observer_ptr to a ref_ptr. ",
 	          "The ref_ptr will be valid if the referenced object hasn't been deleted and has a ref count > 0. ");
 	I_Method0(osgWidget::Widget *, get,
 	          Properties::NON_VIRTUAL,

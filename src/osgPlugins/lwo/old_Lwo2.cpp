@@ -67,12 +67,12 @@ Lwo2::~Lwo2()
 bool 
 Lwo2::ReadFile( const string& filename )
 {
-    notify(INFO)  << "Opening file: " << filename << std::endl;
+    OSG_INFO  << "Opening file: " << filename << std::endl;
 
     _fin.open(filename.c_str(), ios::in | ios::binary );
     if (!_fin.is_open())
     {
-        notify(INFO) << "Can't open file '" << filename << "'" << std::endl;
+        OSG_INFO << "Can't open file '" << filename << "'" << std::endl;
         return false;
     }
 
@@ -80,30 +80,30 @@ Lwo2::ReadFile( const string& filename )
     // http://www.lightwave3d.com/developer/75lwsdk/docs/filefmts/eaiff85.html
     if (_read_uint() != tag_FORM) 
     {
-        notify(INFO) << "File '" << filename << "' is not IFF format file." << std::endl;
+        OSG_INFO << "File '" << filename << "' is not IFF format file." << std::endl;
         _fin.close();
         return false;
     }
     else 
     {
-        notify(INFO) << "Detected EA-IFF85 format" << std::endl;
+        OSG_INFO << "Detected EA-IFF85 format" << std::endl;
     }
 
     unsigned int form_size = _read_uint();
-    notify(INFO) << "Form size: " << form_size << std::endl;
+    OSG_INFO << "Form size: " << form_size << std::endl;
 
     // checking LWO2 format 
     // http://www.lightwave3d.com/developer/75lwsdk/docs/filefmts/lwo2.html
     if (_read_uint() != tag_LWO2) 
     {
         unsigned long make_id(const char*);
-        notify(INFO) << "File '" << filename << "' is not LWO2 format file." << std::endl;
+        OSG_INFO << "File '" << filename << "' is not LWO2 format file." << std::endl;
         _fin.close();
         return false;
     }
     else 
     {
-        notify(INFO) << "Detected LWO2 format" << std::endl;
+        OSG_INFO << "Detected LWO2 format" << std::endl;
     }
 
     unsigned long read_bytes = 4;
@@ -224,7 +224,7 @@ Lwo2::_read_string(string& str)
 
 void 
 Lwo2::_print_tag(unsigned int tag, unsigned int size) {
-  notify(DEBUG_INFO) << "Found tag " 
+  OSG_DEBUG << "Found tag " 
                      << char(tag >> 24) 
                      << char(tag >> 16) 
                      << char(tag >>  8) 
@@ -236,7 +236,7 @@ Lwo2::_print_tag(unsigned int tag, unsigned int size) {
 // print 4-char type
 void 
 Lwo2::_print_type(unsigned int type) {
-  notify(DEBUG_INFO) << "  type   \t" 
+  OSG_DEBUG << "  type   \t" 
                      << char(type >> 24) 
                      << char(type >> 16) 
                      << char(type >>  8) 
@@ -256,7 +256,7 @@ Lwo2::_read_tag_strings(unsigned long size)
         size -= name.length() + name.length() % 2; 
         _tags.push_back(name);
 
-        notify(DEBUG_INFO) << "  name   \t'" << name.c_str() << "'" << std::endl;
+        OSG_DEBUG << "  name   \t'" << name.c_str() << "'" << std::endl;
     }
 }
 
@@ -298,7 +298,7 @@ void Lwo2::_read_layer(unsigned long size)
 void Lwo2::_read_points(unsigned long size) 
 {
     int count = size / 12;
-    notify(DEBUG_INFO) << "  count \t" << count << std::endl;
+    OSG_DEBUG << "  count \t" << count << std::endl;
 
     while (count--)
     {
@@ -324,12 +324,12 @@ void Lwo2::_read_vertex_mapping(unsigned long size)
     short dimension = _read_short();
     size -= 2;
 
-    notify(DEBUG_INFO) << "  dimension \t" << dimension << std::endl;
+    OSG_DEBUG << "  dimension \t" << dimension << std::endl;
 
     string name;
     _read_string(name);
     size -= name.length() + name.length() % 2; 
-    notify(DEBUG_INFO) << "  name   \t'" << name.c_str() << "'" << std::endl;
+    OSG_DEBUG << "  name   \t'" << name.c_str() << "'" << std::endl;
 
     if (type == tag_TXUV && dimension == 2) 
     {
@@ -354,7 +354,7 @@ void Lwo2::_read_vertex_mapping(unsigned long size)
     {
 
         // not recognized yet
-        notify(DEBUG_INFO) << "  skipping..." << std::endl;
+        OSG_DEBUG << "  skipping..." << std::endl;
         _fin.seekg(size + size % 2, ios::cur);
     }
 }
@@ -399,7 +399,7 @@ Lwo2::_read_polygons(unsigned long size)
     {
 
         // not recognized yet
-        notify(DEBUG_INFO) << "  skipping..." << std::endl;
+        OSG_DEBUG << "  skipping..." << std::endl;
         _fin.seekg(size + size % 2, ios::cur);
     }
 }
@@ -432,7 +432,7 @@ void Lwo2::_read_polygon_tag_mapping(unsigned long size)
     {
 
         // not recognized yet
-        notify(DEBUG_INFO) << "  skipping..." << std::endl;
+        OSG_DEBUG << "  skipping..." << std::endl;
         _fin.seekg(size + size % 2, ios::cur);
     }
 }
@@ -449,18 +449,18 @@ void Lwo2::_read_polygons_mapping(unsigned long size)
     short dimension = _read_short();
     size -= 2;
 
-    notify(DEBUG_INFO) << "  dimension \t" << dimension << std::endl;
+    OSG_DEBUG << "  dimension \t" << dimension << std::endl;
 
     string name;
     _read_string(name);
     size -= name.length() + name.length() % 2; 
-    notify(DEBUG_INFO) << "  name   \t'" << name.c_str() << "'" << std::endl;
+    OSG_DEBUG << "  name   \t'" << name.c_str() << "'" << std::endl;
 
     if (type == tag_TXUV && dimension == 2) 
     {
-        notify(DEBUG_INFO) << "  polygons mappings:" << endl;
-        notify(DEBUG_INFO) << "\tpoint\tpolygon\ttexcoord" <<  endl;
-        notify(DEBUG_INFO) << "\t=====\t=======\t========" <<  endl;
+        OSG_DEBUG << "  polygons mappings:" << endl;
+        OSG_DEBUG << "\tpoint\tpolygon\ttexcoord" <<  endl;
+        OSG_DEBUG << "\t=====\t=======\t========" <<  endl;
 
         int count = size / 12;
 
@@ -475,7 +475,7 @@ void Lwo2::_read_polygons_mapping(unsigned long size)
             u = _read_float();
             v = _read_float();
 
-            notify(DEBUG_INFO) << "    \t" << point_index << "\t" << polygon_index << "\t" << Vec2(u, v) << endl;
+            OSG_DEBUG << "    \t" << point_index << "\t" << polygon_index << "\t" << Vec2(u, v) << endl;
 
             // apply texture coordinates 
             PointsList& points_list = _current_layer->_polygons[polygon_index];
@@ -492,7 +492,7 @@ void Lwo2::_read_polygons_mapping(unsigned long size)
     {
 
         // not recognized yet
-        notify(DEBUG_INFO) << "  skipping..." << std::endl;
+        OSG_DEBUG << "  skipping..." << std::endl;
         _fin.seekg(size + size % 2, ios::cur);
     }
 
@@ -505,7 +505,7 @@ Lwo2::_read_image_definition(unsigned long size)
 {
     unsigned int index = _read_uint();
     size -= 4;
-    notify(DEBUG_INFO) << "  index  \t" << index << std::endl;
+    OSG_DEBUG << "  index  \t" << index << std::endl;
 
     unsigned int type;
     while (size > 0)
@@ -531,7 +531,7 @@ Lwo2::_read_image_definition(unsigned long size)
         
         _images[index] = name.c_str();
 
-        notify(DEBUG_INFO) << "  name   \t'" << name.c_str() << "'" << std::endl;
+        OSG_DEBUG << "  name   \t'" << name.c_str() << "'" << std::endl;
     }
 }
 
@@ -545,12 +545,12 @@ void Lwo2::_read_surface(unsigned long size)
 
     _read_string(surface->name);
     size -= surface->name.length() + surface->name.length() % 2; 
-    notify(DEBUG_INFO) << "  name   \t'" << surface->name.c_str() << "'" << std::endl;
+    OSG_DEBUG << "  name   \t'" << surface->name.c_str() << "'" << std::endl;
 
     string source;
     _read_string(source);
     size -= source.length() + source.length() % 2; 
-    notify(DEBUG_INFO) << "  source   \t'" << source.c_str() << "'" << std::endl;
+    OSG_DEBUG << "  source   \t'" << source.c_str() << "'" << std::endl;
 
     unsigned long current_tag_name;
     unsigned short current_tag_size;
@@ -576,13 +576,13 @@ void Lwo2::_read_surface(unsigned long size)
                 blok_size -= 4;
                 current_tag_size = _read_short();
                 blok_size -= 2;
-                notify(DEBUG_INFO) << "  ";
+                OSG_DEBUG << "  ";
                 _print_tag(current_tag_name, current_tag_size);
 
                 if (current_tag_name == tag_IMAG)
                 {
                     surface->image_index = _read_short();
-                    notify(DEBUG_INFO) << "    image index\t" << surface->image_index << std::endl;
+                    OSG_DEBUG << "    image index\t" << surface->image_index << std::endl;
                     blok_size -= 2;
                 }
                 else if (current_tag_name == tag_IMAP) 
@@ -595,7 +595,7 @@ void Lwo2::_read_surface(unsigned long size)
                     string ordinal;
                     _read_string(ordinal);
                     imap_size -= ordinal.length() + ordinal.length() % 2; 
-                    notify(DEBUG_INFO) << "    ordinal   \t'" << ordinal.c_str() << "'" << std::endl;
+                    OSG_DEBUG << "    ordinal   \t'" << ordinal.c_str() << "'" << std::endl;
 
                     while(imap_size > 0)
                     {
@@ -603,7 +603,7 @@ void Lwo2::_read_surface(unsigned long size)
                         imap_size -= 4;
                         current_tag_size = _read_short();
                         imap_size -= 2;
-                        notify(DEBUG_INFO) << "    ";
+                        OSG_DEBUG << "    ";
                         _print_tag(current_tag_name, current_tag_size);
 
                         _fin.seekg(current_tag_size + current_tag_size % 2, ios::cur);
@@ -623,7 +623,7 @@ void Lwo2::_read_surface(unsigned long size)
             float g = _read_float();
             float b = _read_float();
             surface->color.set(r,g,b);
-            notify(DEBUG_INFO) << "  color   \t" << surface->color << std::endl;
+            OSG_DEBUG << "  color   \t" << surface->color << std::endl;
             current_tag_size -= 12;
             size -= 12;
 
@@ -656,14 +656,14 @@ Lwo2::GenerateGroup( Group& group )
     {
       osg::Geode* geode = new osg::Geode();
 
-      notify(DEBUG_INFO) << "Generate geode for layer " << (*itr).first << std::endl;
+      OSG_DEBUG << "Generate geode for layer " << (*itr).first << std::endl;
       DrawableToTagMapping tag_mapping;
       (*itr).second->GenerateGeode(*geode, _tags.size(), tag_mapping);
 
       // assign StateSet for each PTAG group
       for (unsigned int i = 0; i < geode->getNumDrawables(); i++)
         {
-          notify(DEBUG_INFO) << "  Assigning surface " << _tags[tag_mapping[i]] << " to drawable " << i << std::endl;
+          OSG_DEBUG << "  Assigning surface " << _tags[tag_mapping[i]] << " to drawable " << i << std::endl;
           geode->getDrawable(i)->setStateSet(_surfaces[_tags[tag_mapping[i]]]->state_set);
 
           // copy material color to color array of geometry
@@ -702,14 +702,14 @@ Lwo2::_generate_statesets_from_surfaces()
         StateSet* state_set = new osg::StateSet;
         bool use_blending = false;
 
-        notify(DEBUG_INFO) << "\tcreating surface " << (*itr_surf).first << std::endl;
+        OSG_DEBUG << "\tcreating surface " << (*itr_surf).first << std::endl;
 
         // check if exist texture image for this surface
         if (surface->image_index >= 0) 
         {
             osg::ref_ptr<Image> image = osgDB::readRefImageFile(_images[surface->image_index]);
-            notify(DEBUG_INFO) << "\tloaded image '" << _images[surface->image_index] << "'" << std::endl;
-            notify(DEBUG_INFO) << "\tresult - " << image << std::endl;
+            OSG_DEBUG << "\tloaded image '" << _images[surface->image_index] << "'" << std::endl;
+            OSG_DEBUG << "\tresult - " << image << std::endl;
             if (image.valid())
             {
                 // create texture

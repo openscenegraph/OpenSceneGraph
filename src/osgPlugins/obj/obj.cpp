@@ -92,7 +92,7 @@ static Material::Map parseTextureMap( const std::string& ss, Material::Map::Text
         }
         else if (s.compare(1,5,"clamp")==0)
         {
-            osg::notify(osg::NOTICE)<<"Got Clamp\n";
+            OSG_NOTICE<<"Got Clamp\n";
             char c[4];
             if (sscanf(s.c_str(), "%*s %3s%n", c, &n) != 1)
             {
@@ -133,7 +133,7 @@ bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
             {
                 // we have a windows line endings.
                 fin.get();
-                // osg::notify(osg::NOTICE)<<"We have dos line ending"<<std::endl;
+                // OSG_NOTICE<<"We have dos line ending"<<std::endl;
                 if (skipNewline)
                 {
                     skipNewline = false; 
@@ -143,7 +143,7 @@ bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
                 else break;
             }
             // we have Mac line ending
-            // osg::notify(osg::NOTICE)<<"We have mac line ending"<<std::endl;
+            // OSG_NOTICE<<"We have mac line ending"<<std::endl;
             if (skipNewline)
             {
                 skipNewline = false; 
@@ -155,7 +155,7 @@ bool Model::readline(std::istream& fin, char* line, const int LINE_SIZE)
         else if (c=='\n')
         {
             // we have unix line ending.
-            // osg::notify(osg::NOTICE)<<"We have unix line ending"<<std::endl;
+            // OSG_NOTICE<<"We have unix line ending"<<std::endl;
             if (skipNewline)
             {
                 *ptr++ = ' ';
@@ -215,7 +215,7 @@ std::string Model::lastComponent(const char* linep)
 
 bool Model::readMTL(std::istream& fin)
 {
-    osg::notify(osg::INFO)<<"Reading MTL file"<<std::endl;
+    OSG_INFO<<"Reading MTL file"<<std::endl;
 
     const int LINE_SIZE = 4096;
     char line[LINE_SIZE];
@@ -230,7 +230,7 @@ bool Model::readMTL(std::istream& fin)
         if (line[0]=='#' || line[0]=='$')
         {
             // comment line
-            // osg::notify(osg::NOTICE) <<"Comment: "<<line<<std::endl;
+            // OSG_NOTICE <<"Comment: "<<line<<std::endl;
         }
         else if (strlen(line)>0)
         {
@@ -488,12 +488,12 @@ bool Model::readMTL(std::istream& fin)
                 }
                 else
                 {
-                    osg::notify(osg::NOTICE) <<"*** line not handled *** :"<<line<<std::endl;
+                    OSG_NOTICE <<"*** line not handled *** :"<<line<<std::endl;
                 }
             }
             else
             {
-                osg::notify(osg::NOTICE) <<"*** line not handled *** :"<<line<<std::endl;
+                OSG_NOTICE <<"*** line not handled *** :"<<line<<std::endl;
             }
         
         }
@@ -516,7 +516,7 @@ std::string trim(const std::string& s)
 
 bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* options)
 {
-    osg::notify(osg::INFO)<<"Reading OBJ file"<<std::endl;
+    OSG_INFO<<"Reading OBJ file"<<std::endl;
 
     const int LINE_SIZE = 4096;
     char line[LINE_SIZE];
@@ -528,7 +528,7 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
         if (line[0]=='#' || line[0]=='$')
         {
             // comment line
-            // osg::notify(osg::NOTICE) <<"Comment: "<<line<<std::endl;
+            // OSG_NOTICE <<"Comment: "<<line<<std::endl;
         }
         else if (strlen(line)>0)
         {
@@ -567,7 +567,7 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
                                                 (line[0]=='l') ? Element::POLYLINE :
                                                 Element::POLYGON );
 
-                // osg::notify(osg::NOTICE)<<"face"<<ptr<<std::endl;
+                // OSG_NOTICE<<"face"<<ptr<<std::endl;
 
                 int vi=0, ti=0, ni=0;
                 while(*ptr!=0)
@@ -577,26 +577,26 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
                     
                     if (sscanf(ptr, "%d/%d/%d", &vi, &ti, &ni) == 3)
                     {
-                        // osg::notify(osg::NOTICE)<<"   vi="<<vi<<"/ti="<<ti<<"/ni="<<ni<<std::endl;
+                        // OSG_NOTICE<<"   vi="<<vi<<"/ti="<<ti<<"/ni="<<ni<<std::endl;
                         element->vertexIndices.push_back(remapVertexIndex(vi));
                         element->normalIndices.push_back(remapNormalIndex(ni));
                         element->texCoordIndices.push_back(remapTexCoordIndex(ti));
                     }
                     else if (sscanf(ptr, "%d//%d", &vi, &ni) == 2)
                     {
-                        // osg::notify(osg::NOTICE)<<"   vi="<<vi<<"//ni="<<ni<<std::endl;
+                        // OSG_NOTICE<<"   vi="<<vi<<"//ni="<<ni<<std::endl;
                         element->vertexIndices.push_back(remapVertexIndex(vi));
                         element->normalIndices.push_back(remapNormalIndex(ni));
                     }
                     else if (sscanf(ptr, "%d/%d", &vi, &ti) == 2)
                     {
-                        // osg::notify(osg::NOTICE)<<"   vi="<<vi<<"/ti="<<ti<<std::endl;
+                        // OSG_NOTICE<<"   vi="<<vi<<"/ti="<<ti<<std::endl;
                         element->vertexIndices.push_back(remapVertexIndex(vi));
                         element->texCoordIndices.push_back(remapTexCoordIndex(ti));
                     }
                     else if (sscanf(ptr, "%d", &vi) == 1)
                     {
-                        // osg::notify(osg::NOTICE)<<"   vi="<<vi<<std::endl;
+                        // OSG_NOTICE<<"   vi="<<vi<<std::endl;
                         element->vertexIndices.push_back(remapVertexIndex(vi));
                     }
 
@@ -650,17 +650,17 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
                     osgDB::ifstream mfin( fullPathFileName.c_str() );
                     if (mfin)
                     {
-                        osg::notify(osg::INFO) << "Obj reading mtllib '" << fullPathFileName << "'\n";
+                        OSG_INFO << "Obj reading mtllib '" << fullPathFileName << "'\n";
                         readMTL(mfin);
                     }
                     else
                     {
-                        osg::notify(osg::WARN) << "Obj unable to load mtllib '" << fullPathFileName << "'\n";
+                        OSG_WARN << "Obj unable to load mtllib '" << fullPathFileName << "'\n";
                     }
                 }
                 else
                 {
-                    osg::notify(osg::WARN) << "Obj unable to find mtllib '" << materialFileName << "'\n";
+                    OSG_WARN << "Obj unable to find mtllib '" << materialFileName << "'\n";
                 }
             }
             else if (strncmp(line,"o ",2)==0)
@@ -713,18 +713,18 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
             }
             else
             {
-                osg::notify(osg::NOTICE) <<"*** line not handled *** :"<<line<<std::endl;
+                OSG_NOTICE <<"*** line not handled *** :"<<line<<std::endl;
             }
         
         }
 
     }
 #if 0
-    osg::notify(osg::NOTICE) <<"vertices :"<<vertices.size()<<std::endl;
-    osg::notify(osg::NOTICE) <<"normals :"<<normals.size()<<std::endl;
-    osg::notify(osg::NOTICE) <<"texcoords :"<<texcoords.size()<<std::endl;
-    osg::notify(osg::NOTICE) <<"materials :"<<materialMap.size()<<std::endl;
-    osg::notify(osg::NOTICE) <<"elementStates :"<<elementStateMap.size()<<std::endl;
+    OSG_NOTICE <<"vertices :"<<vertices.size()<<std::endl;
+    OSG_NOTICE <<"normals :"<<normals.size()<<std::endl;
+    OSG_NOTICE <<"texcoords :"<<texcoords.size()<<std::endl;
+    OSG_NOTICE <<"materials :"<<materialMap.size()<<std::endl;
+    OSG_NOTICE <<"elementStates :"<<elementStateMap.size()<<std::endl;
     
     unsigned int pos=0;
     for(ElementStateMap::iterator itr=elementStateMap.begin();
@@ -733,12 +733,12 @@ bool Model::readOBJ(std::istream& fin, const osgDB::ReaderWriter::Options* optio
     {
         const ElementState& es = itr->first;
         ElementList& el = itr->second;
-        osg::notify(osg::NOTICE)<<"ElementState "<<pos<<std::endl;
-        osg::notify(osg::NOTICE)<<"    es.objectName="<<es.objectName<<std::endl;
-        osg::notify(osg::NOTICE)<<"    es.groupName="<<es.groupName<<std::endl;
-        osg::notify(osg::NOTICE)<<"    es.materialName="<<es.materialName<<std::endl;
-        osg::notify(osg::NOTICE)<<"    es.smoothGroup="<<es.smoothingGroup<<std::endl;
-        osg::notify(osg::NOTICE)<<"    ElementList ="<<el.size()<<std::endl;
+        OSG_NOTICE<<"ElementState "<<pos<<std::endl;
+        OSG_NOTICE<<"    es.objectName="<<es.objectName<<std::endl;
+        OSG_NOTICE<<"    es.groupName="<<es.groupName<<std::endl;
+        OSG_NOTICE<<"    es.materialName="<<es.materialName<<std::endl;
+        OSG_NOTICE<<"    es.smoothGroup="<<es.smoothingGroup<<std::endl;
+        OSG_NOTICE<<"    ElementList ="<<el.size()<<std::endl;
         
     }
 #endif

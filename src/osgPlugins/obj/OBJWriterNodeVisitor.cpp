@@ -407,7 +407,7 @@ void ObjPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
             break;
         }
         default:
-            osg::notify(osg::WARN) << "OBJWriterNodeVisitor :: can't handle mode " << mode << std::endl; 
+            OSG_WARN << "OBJWriterNodeVisitor :: can't handle mode " << mode << std::endl; 
             break;
     }
 }

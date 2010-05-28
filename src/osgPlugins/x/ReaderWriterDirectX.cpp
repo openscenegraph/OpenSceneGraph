@@ -85,11 +85,11 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(const std::string&
     std::string fileName = osgDB::findDataFile( file, options );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-    osg::notify(osg::INFO) << "ReaderWriterDirectX::readNode(" << fileName << ")\n";
+    OSG_INFO << "ReaderWriterDirectX::readNode(" << fileName << ")\n";
 
     osgDB::ifstream fin(fileName.c_str());
     if (fin.bad()) {
-        osg::notify(osg::WARN) << "ReaderWriterDirectX failed to read '" << fileName.c_str() << "'\n";
+        OSG_WARN << "ReaderWriterDirectX failed to read '" << fileName.c_str() << "'\n";
         return ReadResult::ERROR_IN_READING_FILE;
     }
 
@@ -104,7 +104,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(std::istream& fin,
 {
     DX::Object obj;
     if (obj.load(fin) == false) {
-        osg::notify(osg::WARN) << "ReaderWriterDirectX failed to read stream" << std::endl;
+        OSG_WARN << "ReaderWriterDirectX failed to read stream" << std::endl;
         return ReadResult::ERROR_IN_READING_FILE;
     }
 
@@ -131,7 +131,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterDirectX::readNode(std::istream& fin,
     // Convert to osg::Group
     osg::Group* group = convertFromDX(obj, switchToLeftHanded, flipTexture, creaseAngle, options);
     if (!group) {
-        osg::notify(osg::WARN) << "ReaderWriterDirectX failed to convert\n";
+        OSG_WARN << "ReaderWriterDirectX failed to convert\n";
         return ReadResult::ERROR_IN_READING_FILE;
     }
 
@@ -291,8 +291,8 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Mesh & mesh, bool switchToLef
     const std::vector<DX::MeshFace> & faces = mesh.getFaces();
     if (faces.size() != meshMaterial->faceIndices.size())
     {
-        osg::notify(osg::FATAL)<<"Error: internal error in DirectX .x loader,"<<std::endl;
-        osg::notify(osg::FATAL)<<"       mesh->faces.size() == meshMaterial->faceIndices.size()"<<std::endl;
+        OSG_FATAL<<"Error: internal error in DirectX .x loader,"<<std::endl;
+        OSG_FATAL<<"       mesh->faces.size() == meshMaterial->faceIndices.size()"<<std::endl;
         return NULL;
     }
 
@@ -309,7 +309,7 @@ osg::Geode* ReaderWriterDirectX::convertFromDX(DX::Mesh & mesh, bool switchToLef
 
         if (np != meshNormals->faceNormals[i].size())
         {
-            osg::notify(osg::WARN)<<"DirectX loader: Error, error in normal list."<<std::endl;
+            OSG_WARN<<"DirectX loader: Error, error in normal list."<<std::endl;
         }
 
         osg::Vec3Array* vertexArray = (osg::Vec3Array*) geom->getVertexArray();

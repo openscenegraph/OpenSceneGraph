@@ -618,8 +618,8 @@ ref_ptr<Texture> VBSPReader::readTextureFile(std::string textureName)
         else
         {
             // We were unable to find the texture file
-            notify(WARN) << "Couldn't find texture " << textureName;
-            notify(WARN) << std::endl;
+            OSG_WARN << "Couldn't find texture " << textureName;
+            OSG_WARN << std::endl;
 
             // No texture
             texture = NULL;
@@ -628,8 +628,8 @@ ref_ptr<Texture> VBSPReader::readTextureFile(std::string textureName)
     else
     {
         // We were unable to find the texture file
-        notify(WARN) << "Couldn't find texture " << textureName;
-        notify(WARN) << std::endl;
+        OSG_WARN << "Couldn't find texture " << textureName;
+        OSG_WARN << std::endl;
 
         // No texture
         texture = NULL;
@@ -692,7 +692,7 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
     else
     {
         // Didn't find the material file, so return NULL
-        notify(WARN) << "Can't find material " << materialName << std::endl;
+        OSG_WARN << "Can't find material " << materialName << std::endl;
         return NULL;
     }
 
@@ -719,8 +719,8 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
     if (!found)
     {
         mtlFile->close();
-        notify(WARN) << "Material " << materialName << " isn't valid.";
-        notify(WARN) << std::endl;
+        OSG_WARN << "Material " << materialName << " isn't valid.";
+        OSG_WARN << std::endl;
         return NULL;
     }
 
@@ -904,8 +904,8 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
         }
         else
         {
-            notify(WARN) << "No base texture for material " << materialName;
-            notify(WARN) << std::endl;
+            OSG_WARN << "No base texture for material " << materialName;
+            OSG_WARN << std::endl;
             stateSet->setTextureMode(0, GL_TEXTURE_2D, StateAttribute::OFF);
         }
     }
@@ -955,8 +955,8 @@ ref_ptr<StateSet> VBSPReader::readMaterialFile(std::string materialName)
         }
         else
         {
-            notify(WARN) << "No base texture for material " << materialName;
-            notify(WARN) << std::endl;
+            OSG_WARN << "No base texture for material " << materialName;
+            OSG_WARN << std::endl;
             stateSet->setTextureMode(0, GL_TEXTURE_2D, StateAttribute::OFF);
         }
     }
@@ -1109,8 +1109,8 @@ void VBSPReader::createScene()
         }
         else
         {
-            notify(WARN) << "Couldn't find static prop \"" << propModel;
-            notify(WARN) << "\"." << std::endl;
+            OSG_WARN << "Couldn't find static prop \"" << propModel;
+            OSG_WARN << "\"." << std::endl;
 
             // Couldn't find the prop, so get rid of the transform node
             propXform = NULL;

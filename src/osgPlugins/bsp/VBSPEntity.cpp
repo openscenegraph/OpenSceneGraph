@@ -560,8 +560,8 @@ ref_ptr<Group> VBSPEntity::createModelGeometry()
     }
     else
     {
-        notify(WARN) << "Couldn't find prop \"" << entity_model << "\".";
-        notify(WARN) << std::endl;
+        OSG_WARN << "Couldn't find prop \"" << entity_model << "\".";
+        OSG_WARN << std::endl;
 
         // Leave the group empty (no model to show)
         entityGroup = NULL;

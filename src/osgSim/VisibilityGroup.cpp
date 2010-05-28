@@ -70,7 +70,7 @@ void VisibilityGroup::traverse(osg::NodeVisitor& nv)
             osgUtil::IntersectVisitor::HitList& hitList = iv.getHitList(lineseg.get());
             if(!hitList.empty()) // we actually hit something
             {
-                //                notify(INFO) << "Hit obstruction"<< std::endl;
+                //                OSG_INFO << "Hit obstruction"<< std::endl;
                 osg::Vec3 normal = hitList.front().getWorldIntersectNormal();
                 if((normal*seg) > 0.f ) // we are inside
                     Group::traverse(nv);

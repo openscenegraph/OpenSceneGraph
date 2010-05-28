@@ -61,7 +61,7 @@ void HeightAboveTerrain::computeIntersections(osg::Node* scene, osg::Node::NodeM
             
             itr->_hat = height;
 
-            osg::notify(osg::NOTICE)<<"lat = "<<latitude<<" longitude = "<<longitude<<" height = "<<height<<std::endl;
+            OSG_NOTICE<<"lat = "<<latitude<<" longitude = "<<longitude<<" height = "<<height<<std::endl;
 
             osg::ref_ptr<osgUtil::LineSegmentIntersector> intersector = new osgUtil::LineSegmentIntersector(start, end);
             intersectorGroup->addIntersector( intersector.get() );

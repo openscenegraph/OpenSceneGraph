@@ -114,7 +114,7 @@ osg::BoundingBox ImpostorSprite::computeBound() const
 
     if (!bbox.valid())
     {
-        osg::notify(osg::WARN) << "******* ImpostorSprite::computeBound() problem"<<std::endl;
+        OSG_WARN << "******* ImpostorSprite::computeBound() problem"<<std::endl;
     }
 
     return bbox;

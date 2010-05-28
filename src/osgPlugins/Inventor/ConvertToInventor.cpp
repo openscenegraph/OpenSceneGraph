@@ -202,7 +202,7 @@ SoNode* ConvertToInventor::getIvSceneGraph() const
 void ConvertToInventor::apply(osg::Node &node)
 {
 #ifdef DEBUG_IV_WRITER
-  osg::notify(osg::INFO) << "IvWriter: node traversed" << std::endl;
+  OSG_INFO << "IvWriter: node traversed" << std::endl;
 #endif
 
   traverse(node);
@@ -415,7 +415,7 @@ static void osgArray2ivMField(const osg::Array *array, SoMField &field, int star
     }
   };
 
-  osg::notify(osg::WARN) << "IvWriter: No direct conversion for array. "
+  OSG_WARN << "IvWriter: No direct conversion for array. "
     << "The file may be broken." << std::endl;
 }
 
@@ -484,13 +484,13 @@ bool ivProcessArray(const osg::Array *indices, const osg::Array *drawElemIndices
                                  srcField->getValues(startIndex),
                                  srcField->getNum(), drawElemIndices, numToProcess);
     else {
-      osg::notify(osg::WARN) << "IvWriter: NOT IMPLEMENTED" << std::endl;
+      OSG_WARN << "IvWriter: NOT IMPLEMENTED" << std::endl;
       assert(0); // FIXME:
     }
 
     destField->finishEditing();
     if (!ok)
-      osg::notify(osg::WARN) << "IvWriter: Can not deindex - bug in model: index out of range." << std::endl;
+      OSG_WARN << "IvWriter: Can not deindex - bug in model: index out of range." << std::endl;
 
   } else {
 
@@ -517,7 +517,7 @@ static void processIndices(const osg::Array *indices, const osg::Array *drawElem
     if (!indices && drawElemIndices)
       osgArray2ivMField(drawElemIndices, ivIndices, startIndex, stopIndex, numItemsUntilMinusOne);
     else {
-      osg::notify(osg::WARN) << "IvWriter: NOT IMPLEMENTED" << std::endl;
+      OSG_WARN << "IvWriter: NOT IMPLEMENTED" << std::endl;
       assert(0); // FIXME:
     }
 
@@ -829,7 +829,7 @@ ConvertToInventor::InventorState* ConvertToInventor::createInventorState(const o
       if (ivState->osgTwoSided) {
         // warn if face culling is on
         if (ivState->osgCullFaceEnabled)
-          osg::notify(osg::WARN) << "IvWriter: Using face culling and two-sided lighting together! "
+          OSG_WARN << "IvWriter: Using face culling and two-sided lighting together! "
                                     "Ignoring face culling." << std::endl;
 
         // set two-sided lighting and backface culling off
@@ -848,7 +848,7 @@ ConvertToInventor::InventorState* ConvertToInventor::createInventorState(const o
           if (ccw)
             // Warn if culling the lit faces while rendering unlit faces.
             // Inventor does not support this setup and it lits the unculled faces only.
-            osg::notify(osg::WARN) << "IvWriter: Culling was set in a way that one-sided lighting will lit the culled sides of faces. "
+            OSG_WARN << "IvWriter: Culling was set in a way that one-sided lighting will lit the culled sides of faces. "
                                       "Using lighting on correct faces." << std::endl; 
 
           // face culling on
@@ -946,9 +946,10 @@ ConvertToInventor::InventorState* ConvertToInventor::createInventorState(const o
           ivState->osgMaterial->getSpecularFrontAndBack() == false ||
           ivState->osgMaterial->getEmissionFrontAndBack() == false ||
           ivState->osgMaterial->getShininessFrontAndBack() == false)
-        osg::notify(osg::WARN) << "IvWriter: Model contains different materials for front and "
+      {
+        OSG_WARN << "IvWriter: Model contains different materials for front and "
                                   "back faces. This is not handled properly. Using front material only." << std::endl;
-
+      }
     
       // Convert colors
       // OSG represents colors by: Vec3, Vec4,Vec4ub
@@ -957,16 +958,21 @@ ConvertToInventor::InventorState* ConvertToInventor::createInventorState(const o
       // Although SoMaterial is used only, SoPackedColor may bring some possibilities on per-vertex
       // alpha and SoBaseColor may be useful on pre-lit scene.
       if (ivState->osgMaterial->getColorMode() != osg::Material::DIFFUSE &&
-          ivState->osgMaterial->getColorMode() != osg::Material::OFF) {
+          ivState->osgMaterial->getColorMode() != osg::Material::OFF)
+      {
 
-      if (ivState->osgMaterial->getColorMode() == osg::Material::AMBIENT_AND_DIFFUSE)
-        osg::notify(osg::WARN) << "IvWriter: The model is using AMBIENT_AND_DIFFUSE material "
-                                  "mode while Inventor supports DIFFUSE mode only. "
-                                  "The model colors may not much exactly." << std::endl;
-      else
-        osg::notify(osg::WARN) << "IvWriter: The model is not using DIFFUSE material mode and "
-                                  "Inventor supports DIFFUSE mode only. "
-                                  "The model colors may not be correct." << std::endl;
+        if (ivState->osgMaterial->getColorMode() == osg::Material::AMBIENT_AND_DIFFUSE)
+        {
+            OSG_WARN << "IvWriter: The model is using AMBIENT_AND_DIFFUSE material "
+                                    "mode while Inventor supports DIFFUSE mode only. "
+                                    "The model colors may not much exactly." << std::endl;
+        }
+        else
+        {
+            OSG_WARN << "IvWriter: The model is not using DIFFUSE material mode and "
+                                    "Inventor supports DIFFUSE mode only. "
+                                    "The model colors may not be correct." << std::endl;
+        }
       }
 
       // Convert material components
@@ -1318,7 +1324,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
           }
           break;
       default:
-          osg::notify(osg::WARN) << "IvWriter: NOT IMPLEMENTED" << std::endl;
+          OSG_WARN << "IvWriter: NOT IMPLEMENTED" << std::endl;
           assert(0);
       }
     } else
@@ -1346,7 +1352,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
           }
           break;
       case GL_TRIANGLE_FAN:
-          osg::notify(osg::WARN) << "IvWriter: GL_TRIANGLE_FAN NOT IMPLEMENTED" << std::endl;
+          OSG_WARN << "IvWriter: GL_TRIANGLE_FAN NOT IMPLEMENTED" << std::endl;
           ((SoTriangleStripSet*)shape)->numVertices.setNum(1);
           ((SoTriangleStripSet*)shape)->numVertices.set1Value(0, elementsCount);
           break;
@@ -1365,7 +1371,7 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
           }
           break;
       default:
-          osg::notify(osg::WARN) << "IvWriter: NOT IMPLEMENTED" << std::endl;
+          OSG_WARN << "IvWriter: NOT IMPLEMENTED" << std::endl;
           assert(0);
       }
     } else
@@ -1393,11 +1399,11 @@ static bool processPrimitiveSet(const osg::Geometry *g, const osg::PrimitiveSet 
           }
           break;
       default:
-          osg::notify(osg::WARN) << "IvWriter: NOT IMPLEMENTED" << std::endl;
+          OSG_WARN << "IvWriter: NOT IMPLEMENTED" << std::endl;
           assert(0);
       }
     } else {
-      osg::notify(osg::WARN) << "IvWriter: NOT IMPLEMENTED" << std::endl;
+      OSG_WARN << "IvWriter: NOT IMPLEMENTED" << std::endl;
       assert(0 && "Unknown non-indexed shape type.");
     }
   }
@@ -1714,7 +1720,7 @@ void ConvertToInventor::processGeometry(const osg::Geometry *g, InventorState *i
       }
 
       default:
-        osg::notify(osg::WARN) << "IvWriter: NOT IMPLEMENTED" << std::endl;
+        OSG_WARN << "IvWriter: NOT IMPLEMENTED" << std::endl;
     }
   }
 
@@ -1790,7 +1796,7 @@ void ConvertToInventor::processShapeDrawable(const osg::ShapeDrawable *d, Invent
     }
     
     void warnNonSupported() {
-      osg::notify(osg::WARN) << "IvWriter: Not supported ShapeDrawable found. Skipping it." << std::endl;
+      OSG_WARN << "IvWriter: Not supported ShapeDrawable found. Skipping it." << std::endl;
     }
     virtual void apply(const osg::Capsule&)        { warnNonSupported(); }
     virtual void apply(const osg::InfinitePlane&)  { warnNonSupported(); }
@@ -1826,7 +1832,7 @@ void ConvertToInventor::processDrawable(osg::Drawable *d)
     processShapeDrawable(sd, ivDrawableState);
   }
   else
-    osg::notify(osg::WARN) << "IvWriter: Unsupported drawable found: \"" << d->className() <<
+    OSG_WARN << "IvWriter: Unsupported drawable found: \"" << d->className() <<
                               "\". Skipping it." << std::endl;
 
   // Restore state
@@ -1837,7 +1843,7 @@ void ConvertToInventor::processDrawable(osg::Drawable *d)
 void ConvertToInventor::apply(osg::Geode &node)
 {
 #ifdef DEBUG_IV_WRITER
-  osg::notify(osg::INFO) << "IvWriter: Geode traversed" << std::endl;
+  OSG_INFO << "IvWriter: Geode traversed" << std::endl;
 #endif
 
   // Create SoSeparator and convert StateSet for Geode
@@ -1858,7 +1864,7 @@ void ConvertToInventor::apply(osg::Geode &node)
 void ConvertToInventor::apply(osg::Group &node)
 {
 #ifdef DEBUG_IV_WRITER
-  osg::notify(osg::INFO) << "IvWriter: Group traversed" << std::endl;
+  OSG_INFO << "IvWriter: Group traversed" << std::endl;
 #endif
 
   // Create SoSeparator and convert StateSet
@@ -1873,7 +1879,7 @@ void ConvertToInventor::apply(osg::Group &node)
 void ConvertToInventor::apply(osg::Billboard& node)
 {
 #ifdef DEBUG_IV_WRITER
-  osg::notify(osg::INFO) << "IvWriter: Billboard traversed" << std::endl;
+  OSG_INFO << "IvWriter: Billboard traversed" << std::endl;
 #endif
 
 #ifdef __COIN__
@@ -1951,7 +1957,7 @@ void ConvertToInventor::apply(osg::Billboard& node)
 void ConvertToInventor::apply(osg::MatrixTransform& node)
 {
 #ifdef DEBUG_IV_WRITER
-  osg::notify(osg::INFO) << "IvWriter: MatrixTransform traversed" << std::endl;
+  OSG_INFO << "IvWriter: MatrixTransform traversed" << std::endl;
 #endif
 
   // Convert matrix
@@ -1976,7 +1982,7 @@ void ConvertToInventor::apply(osg::MatrixTransform& node)
 void ConvertToInventor::apply(osg::PositionAttitudeTransform& node)
 {
 #ifdef DEBUG_IV_WRITER
-  osg::notify(osg::INFO) << "IvWriter: PositionAttitudeTransform traversed" << std::endl;
+  OSG_INFO << "IvWriter: PositionAttitudeTransform traversed" << std::endl;
 #endif
 
   // Convert matrix
@@ -1996,7 +2002,7 @@ void ConvertToInventor::apply(osg::PositionAttitudeTransform& node)
 void ConvertToInventor::apply(osg::LOD& node)
 {
 #ifdef DEBUG_IV_WRITER
-  osg::notify(osg::INFO) << "IvWriter: LOD traversed" << std::endl;
+  OSG_INFO << "IvWriter: LOD traversed" << std::endl;
 #endif
 
   // Convert LOD
@@ -2034,7 +2040,7 @@ void ConvertToInventor::apply(osg::LOD& node)
   } else {
     
     // undefined mode -> put warning
-    osg::notify(osg::WARN) << "IvWriter: Undefined LOD::RangeMode value." << std::endl;
+    OSG_WARN << "IvWriter: Undefined LOD::RangeMode value." << std::endl;
     ivLOD = new SoGroup;
   }
 

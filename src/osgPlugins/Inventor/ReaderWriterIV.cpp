@@ -98,20 +98,28 @@ ReaderWriterIV::readNodeFromSoInput(SoInput &input,
     // Notify
     if (result.success()) {
         if (fileName.length())
-            osg::notify(osg::NOTICE) << "osgDB::ReaderWriterIV::readNode() "
+        {
+            OSG_NOTICE << "osgDB::ReaderWriterIV::readNode() "
                       << "File " << fileName.data()
                       << " loaded successfully." << std::endl;
+        }
         else
-            osg::notify(osg::NOTICE) << "osgDB::ReaderWriterIV::readNode() "
+        {
+            OSG_NOTICE << "osgDB::ReaderWriterIV::readNode() "
                       << "Stream loaded successfully." << std::endl;
+        }
     } else {
         if (fileName.length())
-            osg::notify(osg::WARN) << "osgDB::ReaderWriterIV::readNode() "
+        {
+            OSG_WARN << "osgDB::ReaderWriterIV::readNode() "
                       << "Failed to load file " << fileName.data()
                       << "." << std::endl;
+        }
         else
-            osg::notify(osg::WARN) << "osgDB::ReaderWriterIV::readNode() "
+        {
+            OSG_WARN << "osgDB::ReaderWriterIV::readNode() "
                   << "Failed to load stream." << std::endl;
+        }
     }
 
     return result;
@@ -132,16 +140,16 @@ ReaderWriterIV::readNode(const std::string& file,
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
     // Notify
-    osg::notify(osg::NOTICE) << "osgDB::ReaderWriterIV::readNode() Reading file "
+    OSG_NOTICE << "osgDB::ReaderWriterIV::readNode() Reading file "
                              << fileName.data() << std::endl;
-    osg::notify(osg::INFO) << "osgDB::ReaderWriterIV::readNode() Inventor version: "
+    OSG_INFO << "osgDB::ReaderWriterIV::readNode() Inventor version: "
                            << SoDB::getVersion() << std::endl;
 
     // Open the file
     SoInput input;
     if (!input.openFile(fileName.data()))
     {
-        osg::notify(osg::WARN) << "osgDB::ReaderWriterIV::readIVFile() "
+        OSG_WARN << "osgDB::ReaderWriterIV::readIVFile() "
                                << "Cannot open file " << fileName << std::endl;
         return ReadResult::ERROR_IN_READING_FILE;
     }
@@ -156,9 +164,9 @@ ReaderWriterIV::readNode(std::istream& fin,
                          const osgDB::ReaderWriter::Options* options) const
 {
     // Notify
-    osg::notify(osg::NOTICE) << "osgDB::ReaderWriterIV::readNode() "
+    OSG_NOTICE << "osgDB::ReaderWriterIV::readNode() "
               "Reading from stream." << std::endl;
-    osg::notify(osg::INFO) << "osgDB::ReaderWriterIV::readNode() "
+    OSG_INFO << "osgDB::ReaderWriterIV::readNode() "
               "Inventor version: " << SoDB::getVersion() << std::endl;
 
     // Open the file
@@ -188,7 +196,7 @@ ReaderWriterIV::readNode(std::istream& fin,
         }
     }
     input.setBuffer(buf, dataSize);
-    osg::notify(osg::INFO) << "osgDB::ReaderWriterIV::readNode() "
+    OSG_INFO << "osgDB::ReaderWriterIV::readNode() "
               "Stream size: " << dataSize << std::endl;
 
     // Perform reading from SoInput
@@ -211,7 +219,7 @@ ReaderWriterIV::writeNode(const osg::Node& node, const std::string& fileName,
     if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
     bool useVRML1 = !isInventorExtension(osgDB::getFileExtension(fileName));
 
-    osg::notify(osg::NOTICE) << "osgDB::ReaderWriterIV::writeNode() Writing file "
+    OSG_NOTICE << "osgDB::ReaderWriterIV::writeNode() Writing file "
                              << fileName.data() << std::endl;
 
     // Convert OSG graph to Inventor graph

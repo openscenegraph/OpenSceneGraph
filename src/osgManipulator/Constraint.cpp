@@ -44,7 +44,7 @@ void Constraint::computeLocalToWorldAndWorldToLocal() const
 {
     if (!_refNode)
     {
-        osg::notify(osg::INFO)<<"osgManipulator::Constraint::computeLocalToWorldAndWorldToLocal() error, _refNode is null"<<std::endl;
+        OSG_INFO<<"osgManipulator::Constraint::computeLocalToWorldAndWorldToLocal() error, _refNode is null"<<std::endl;
         return;
     }
 

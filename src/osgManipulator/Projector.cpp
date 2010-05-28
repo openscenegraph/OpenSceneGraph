@@ -243,7 +243,7 @@ bool LineProjector::project(const PointerInfo& pi, osg::Vec3d& projectedPoint) c
 {
     if (!_line->valid())
     {
-        osg::notify(osg::WARN) << "Warning: Invalid line set. LineProjector::project() failed."<<std::endl;
+        OSG_WARN << "Warning: Invalid line set. LineProjector::project() failed."<<std::endl;
         return false;
     }
 
@@ -285,7 +285,7 @@ bool PlaneProjector::project(const PointerInfo& pi, osg::Vec3d& projectedPoint) 
 {
     if (!_plane.valid())
     {
-        osg::notify(osg::WARN) << "Warning: Invalid plane set. PlaneProjector::project() failed."<< std::endl;
+        OSG_WARN << "Warning: Invalid plane set. PlaneProjector::project() failed."<< std::endl;
         return false;
     }
 
@@ -320,7 +320,7 @@ bool SphereProjector::project(const PointerInfo& pi, osg::Vec3d& projectedPoint)
 {
     if (!_sphere->valid())
     {
-        osg::notify(osg::WARN) << "Warning: Invalid sphere. SphereProjector::project() failed." << std::endl;
+        OSG_WARN << "Warning: Invalid sphere. SphereProjector::project() failed." << std::endl;
         return false;
     }
 
@@ -429,7 +429,7 @@ bool SpherePlaneProjector::project(const PointerInfo& pi, osg::Vec3d& projectedP
 {
     if (!_sphere->valid())
     {
-        osg::notify(osg::WARN) << "Warning: Invalid sphere. SpherePlaneProjector::project() failed." << std::endl;
+        OSG_WARN << "Warning: Invalid sphere. SpherePlaneProjector::project() failed." << std::endl;
         return false;
     }
 
@@ -502,7 +502,7 @@ bool CylinderProjector::project(const PointerInfo& pi, osg::Vec3d& projectedPoin
 {
     if (!_cylinder.valid())
     {
-        osg::notify(osg::WARN) << "Warning: Invalid cylinder. CylinderProjector::project() failed." 
+        OSG_WARN << "Warning: Invalid cylinder. CylinderProjector::project() failed."
                                << std::endl;
         return false;
     }
@@ -549,7 +549,7 @@ bool CylinderPlaneProjector::project(const PointerInfo& pi, osg::Vec3d& projecte
 {
     if (!_cylinder.valid())
     {
-        osg::notify(osg::WARN) << "Warning: Invalid cylinder. CylinderProjector::project() failed." 
+        OSG_WARN << "Warning: Invalid cylinder. CylinderProjector::project() failed."
                                << std::endl;
         return false;
     }

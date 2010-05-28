@@ -58,7 +58,7 @@ void NodeTrackerCallback::setTrackNode(osg::Node* node)
 {
     if (!node)
     {
-        osg::notify(osg::NOTICE)<<"NodeTrackerCallback::setTrackNode(Node*):  Unable to set tracked node due to null Node*"<<std::endl;
+        OSG_NOTICE<<"NodeTrackerCallback::setTrackNode(Node*):  Unable to set tracked node due to null Node*"<<std::endl;
         return;
     }
 
@@ -66,12 +66,12 @@ void NodeTrackerCallback::setTrackNode(osg::Node* node)
 
     if (!parentNodePaths.empty())
     {
-        osg::notify(osg::INFO)<<"NodeTrackerCallback::setTrackNode(Node*): Path set"<<std::endl;
+        OSG_INFO<<"NodeTrackerCallback::setTrackNode(Node*): Path set"<<std::endl;
         setTrackNodePath(parentNodePaths[0]);
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"NodeTrackerCallback::setTrackNode(Node*): Unable to set tracked node due to empty parental path."<<std::endl;
+        OSG_NOTICE<<"NodeTrackerCallback::setTrackNode(Node*): Unable to set tracked node due to empty parental path."<<std::endl;
     }
 }
 

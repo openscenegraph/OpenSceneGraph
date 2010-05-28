@@ -77,7 +77,7 @@ void LightModel::apply(State&) const
 
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,_twoSided);
 #else
-    osg::notify(osg::NOTICE)<<"Warning: LightModel::apply(State&) - not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: LightModel::apply(State&) - not supported."<<std::endl;
 #endif
 }
 

@@ -351,7 +351,7 @@ void Sequence::traverse(NodeVisitor& nv)
             {
                 _nrepsRemain = 0;
                 _mode = STOP;
-                osg::notify(osg::WARN) << "stopping because elapsed time greater or equal to time remaining to repeat the sequence\n";
+                OSG_WARN << "stopping because elapsed time greater or equal to time remaining to repeat the sequence\n";
             }
             }
             
@@ -371,7 +371,7 @@ void Sequence::traverse(NodeVisitor& nv)
             }
         }
         else
-            osg::notify(osg::WARN) << "osg::Sequence::traverse(NodeVisitor&) requires a valid FrameStamp to function, sequence not updated.\n";
+            OSG_WARN << "osg::Sequence::traverse(NodeVisitor&) requires a valid FrameStamp to function, sequence not updated.\n";
 
     }
 

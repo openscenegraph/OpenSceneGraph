@@ -182,7 +182,7 @@ void DisplaySettings::setMaxNumberOfGraphicsContexts(unsigned int num)
 
 unsigned int DisplaySettings::getMaxNumberOfGraphicsContexts() const
 {
-    // osg::notify(osg::NOTICE)<<"getMaxNumberOfGraphicsContexts()="<<_maxNumOfGraphicsContexts<<std::endl;
+    // OSG_NOTICE<<"getMaxNumberOfGraphicsContexts()="<<_maxNumOfGraphicsContexts<<std::endl;
     return _maxNumOfGraphicsContexts;
 }
 

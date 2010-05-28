@@ -158,7 +158,7 @@ State::~State()
 
     //_vertexAttribArrayList.clear();
 
-    // OSG_NOTIFY(osg::NOTICE)<<"State::~State()"<<this<<std::endl;
+    // OSG_NOTICE<<"State::~State()"<<this<<std::endl;
     for(AppliedProgramObjectSet::iterator itr = _appliedProgramObjectSet.begin();
         itr != _appliedProgramObjectSet.end();
         ++itr)
@@ -173,7 +173,7 @@ void State::objectDeleted(void* object)
     AppliedProgramObjectSet::iterator itr = _appliedProgramObjectSet.find(ppcp);
     if (itr != _appliedProgramObjectSet.end()) 
     {
-        // OSG_NOTIFY(osg::NOTICE)<<"Removing _appliedProgramObjectSet entry "<<ppcp<<std::endl;
+        // OSG_NOTICE<<"Removing _appliedProgramObjectSet entry "<<ppcp<<std::endl;
         _appliedProgramObjectSet.erase(itr);
     }
 }
@@ -293,14 +293,14 @@ void State::setMaxTexturePoolSize(unsigned int size)
 {
     _maxTexturePoolSize = size;
     osg::Texture::getTextureObjectManager(getContextID())->setMaxTexturePoolSize(size);
-    OSG_NOTIFY(osg::INFO)<<"osg::State::_maxTexturePoolSize="<<_maxTexturePoolSize<<std::endl;
+    OSG_INFO<<"osg::State::_maxTexturePoolSize="<<_maxTexturePoolSize<<std::endl;
 }
 
 void State::setMaxBufferObjectPoolSize(unsigned int size)
 {
     _maxBufferObjectPoolSize = size;
     osg::GLBufferObjectManager::getGLBufferObjectManager(getContextID())->setMaxGLBufferObjectPoolSize(_maxBufferObjectPoolSize);
-    OSG_NOTIFY(osg::INFO)<<"osg::State::_maxBufferObjectPoolSize="<<_maxBufferObjectPoolSize<<std::endl;
+    OSG_INFO<<"osg::State::_maxBufferObjectPoolSize="<<_maxBufferObjectPoolSize<<std::endl;
 }
 
 void State::pushStateSet(const StateSet* dstate)
@@ -332,12 +332,12 @@ void State::pushStateSet(const StateSet* dstate)
         pushUniformList(_uniformMap,dstate->getUniformList());
     }
 
-    // OSG_NOTIFY(osg::NOTICE)<<"State::pushStateSet()"<<_stateStateStack.size()<<std::endl;
+    // OSG_NOTICE<<"State::pushStateSet()"<<_stateStateStack.size()<<std::endl;
 }
 
 void State::popAllStateSets()
 {
-    // OSG_NOTIFY(osg::NOTICE)<<"State::popAllStateSets()"<<_stateStateStack.size()<<std::endl;
+    // OSG_NOTICE<<"State::popAllStateSets()"<<_stateStateStack.size()<<std::endl;
 
     while (!_stateStateStack.empty()) popStateSet();
     
@@ -349,7 +349,7 @@ void State::popAllStateSets()
 
 void State::popStateSet()
 {
-    // OSG_NOTIFY(osg::NOTICE)<<"State::popStateSet()"<<_stateStateStack.size()<<std::endl;
+    // OSG_NOTICE<<"State::popStateSet()"<<_stateStateStack.size()<<std::endl;
 
     if (_stateStateStack.empty()) return;
     
@@ -414,7 +414,7 @@ void State::removeStateSet(unsigned int pos)
 {
     if (pos >= _stateStateStack.size())
     {
-        OSG_NOTIFY(osg::NOTICE)<<"Warning: State::removeStateSet("<<pos<<") out of range"<<std::endl;
+        OSG_NOTICE<<"Warning: State::removeStateSet("<<pos<<") out of range"<<std::endl;
         return;
     }
     
@@ -784,7 +784,7 @@ void State::setInterleavedArrays( GLenum format, GLsizei stride, const GLvoid* p
 #if defined(OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE) && !defined(OSG_GLES1_AVAILABLE)
     glInterleavedArrays( format, stride, pointer);
 #else
-    OSG_NOTIFY(osg::NOTICE)<<"Warning: State::setInterleavedArrays(..) not implemented."<<std::endl;
+    OSG_NOTICE<<"Warning: State::setInterleavedArrays(..) not implemented."<<std::endl;
 #endif
 
     // the crude way, assume that all arrays have been effected so dirty them and
@@ -921,7 +921,7 @@ void State::setVertexAttribPointer( unsigned int index,
 {
     if (_glVertexAttribPointer)
     {
-        // OSG_NOTIFY(osg::NOTICE)<<"State::setVertexAttribPointer("<<index<<",...)"<<std::endl;
+        // OSG_NOTICE<<"State::setVertexAttribPointer("<<index<<",...)"<<std::endl;
 
         if ( index >= _vertexAttribArrayList.size()) _vertexAttribArrayList.resize(index+1);
         EnabledArrayPair& eap = _vertexAttribArrayList[index];
@@ -929,12 +929,12 @@ void State::setVertexAttribPointer( unsigned int index,
         if (!eap._enabled || eap._dirty)
         {
             eap._enabled = true;
-            // OSG_NOTIFY(osg::NOTICE)<<"    _glEnableVertexAttribArray( "<<index<<" )"<<std::endl;
+            // OSG_NOTICE<<"    _glEnableVertexAttribArray( "<<index<<" )"<<std::endl;
             _glEnableVertexAttribArray( index );
         }
         //if (eap._pointer != ptr || eap._normalized!=normalized || eap._dirty)
         {
-            // OSG_NOTIFY(osg::NOTICE)<<"    _glVertexAttribPointer( "<<index<<" )"<<std::endl;
+            // OSG_NOTICE<<"    _glVertexAttribPointer( "<<index<<" )"<<std::endl;
             _glVertexAttribPointer( index, size, type, normalized, stride, ptr );
             eap._pointer = ptr;
             eap._normalized = normalized;
@@ -957,7 +957,7 @@ void State::disableVertexAttribPointer( unsigned int index )
         {
             eap._enabled = false;
             eap._dirty = false;
-            // OSG_NOTIFY(osg::NOTICE)<<"    _glDisableVertexAttribArray( "<<index<<" )"<<std::endl;
+            // OSG_NOTICE<<"    _glDisableVertexAttribArray( "<<index<<" )"<<std::endl;
             _glDisableVertexAttribArray( index );
         }
     }
@@ -974,7 +974,7 @@ void State::disableVertexAttribPointersAboveAndIncluding( unsigned int index )
             {
                 eap._enabled = false;
                 eap._dirty = false;
-                // OSG_NOTIFY(osg::NOTICE)<<"    State::disableVertexAttribPointersAboveAndIncluding(): _glDisableVertexAttribArray( "<<index<<" )"<<std::endl;
+                // OSG_NOTICE<<"    State::disableVertexAttribPointersAboveAndIncluding(): _glDisableVertexAttribArray( "<<index<<" )"<<std::endl;
                 _glDisableVertexAttribArray( index );
             }
             ++index;
@@ -984,7 +984,7 @@ void State::disableVertexAttribPointersAboveAndIncluding( unsigned int index )
 
 void State::lazyDisablingOfVertexAttributes()
 {
-    // OSG_NOTIFY(osg::NOTICE)<<"lazyDisablingOfVertexAttributes()"<<std::endl;
+    // OSG_NOTICE<<"lazyDisablingOfVertexAttributes()"<<std::endl;
     if (!_useVertexAttributeAliasing)
     {
         _vertexArray._lazy_disable = true;
@@ -1010,7 +1010,7 @@ void State::lazyDisablingOfVertexAttributes()
 
 void State::applyDisablingOfVertexAttributes()
 {
-    //OSG_NOTIFY(osg::NOTICE)<<"start of applyDisablingOfVertexAttributes()"<<std::endl;
+    //OSG_NOTICE<<"start of applyDisablingOfVertexAttributes()"<<std::endl;
     if (!_useVertexAttributeAliasing)
     {
         if (_vertexArray._lazy_disable) disableVertexPointer();
@@ -1027,7 +1027,7 @@ void State::applyDisablingOfVertexAttributes()
     {
         if (_vertexAttribArrayList[i]._lazy_disable) disableVertexAttribPointer(i);
     }
-    // OSG_NOTIFY(osg::NOTICE)<<"end of applyDisablingOfVertexAttributes()"<<std::endl;
+    // OSG_NOTICE<<"end of applyDisablingOfVertexAttributes()"<<std::endl;
 }
 
 
@@ -1231,9 +1231,9 @@ namespace State_Utils
 
 bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
 {
-    OSG_NOTIFY(osg::NOTICE)<<"State::convertShaderSourceToOsgBuiltIns()"<<std::endl;
+    OSG_NOTICE<<"State::convertShaderSourceToOsgBuiltIns()"<<std::endl;
 
-    OSG_NOTIFY(osg::NOTICE)<<"++Before Converted source "<<std::endl<<source<<std::endl<<"++++++++"<<std::endl;
+    OSG_NOTICE<<"++Before Converted source "<<std::endl<<source<<std::endl<<"++++++++"<<std::endl;
 
     // replace ftransform as it only works with built-ins
     State_Utils::replace(source, "ftransform()", "gl_ModelViewProjectionMatrix * gl_Vertex");
@@ -1259,7 +1259,7 @@ bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
     State_Utils::replaceAndInsertDeclaration(source, "gl_ProjectionMatrix", "osg_ProjectionMatrix", "uniform mat4 ");
     State_Utils::replaceAndInsertDeclaration(source, "gl_NormalMatrix", "osg_NormalMatrix", "uniform mat3 ");
 
-    OSG_NOTIFY(osg::NOTICE)<<"-------- Converted source "<<std::endl<<source<<std::endl<<"----------------"<<std::endl;
+    OSG_NOTICE<<"-------- Converted source "<<std::endl<<source<<std::endl<<"----------------"<<std::endl;
 
     return true;
 }
@@ -1344,7 +1344,7 @@ void State::updateModelViewAndProjectionMatrixUniforms()
 
 void State::drawQuads(GLint first, GLsizei count, GLsizei primCount)
 {
-    // OSG_NOTIFY(osg::NOTICE)<<"State::drawQuads("<<first<<", "<<count<<")"<<std::endl;
+    // OSG_NOTICE<<"State::drawQuads("<<first<<", "<<count<<")"<<std::endl;
     
     unsigned int array = first % 4;
     unsigned int offsetFirst = ((first-array) / 4) * 6;
@@ -1354,7 +1354,7 @@ void State::drawQuads(GLint first, GLsizei count, GLsizei primCount)
     Indices& indices = _quadIndices[array];
     if (endOfIndices>65536)
     {
-        OSG_NOTIFY(osg::NOTICE)<<"Warning: State::drawQuads("<<first<<", "<<count<<") too large handle in remapping to ushort glDrawElements."<<std::endl;
+        OSG_NOTICE<<"Warning: State::drawQuads("<<first<<", "<<count<<") too large handle in remapping to ushort glDrawElements."<<std::endl;
         endOfIndices = 65536;
     }
     
@@ -1375,13 +1375,13 @@ void State::drawQuads(GLint first, GLsizei count, GLsizei primCount)
             indices.push_back(base+2);
             indices.push_back(base+3);
             
-            // OSG_NOTIFY(osg::NOTICE)<<"   adding quad indices ("<<base<<")"<<std::endl;
+            // OSG_NOTICE<<"   adding quad indices ("<<base<<")"<<std::endl;
         }
     }
 
     // if (array!=0) return;
 
-    // OSG_NOTIFY(osg::NOTICE)<<"  glDrawElements(GL_TRIANGLES, "<<numIndices<<", GL_UNSIGNED_SHORT, "<<&(indices[base])<<")"<<std::endl;
+    // OSG_NOTICE<<"  glDrawElements(GL_TRIANGLES, "<<numIndices<<", GL_UNSIGNED_SHORT, "<<&(indices[base])<<")"<<std::endl;
     glDrawElementsInstanced(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, &(indices[offsetFirst]), primCount);
 }
 

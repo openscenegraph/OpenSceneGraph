@@ -66,12 +66,12 @@ GLBufferObject::GLBufferObject(unsigned int contextID, BufferObject* bufferObjec
         _extensions->glGenBuffers(1, &_glObjectID);
     }
 
-    // OSG_NOTIFY(osg::NOTICE)<<"Constucting BufferObject "<<this<<std::endl;
+    // OSG_NOTICE<<"Constucting BufferObject "<<this<<std::endl;
 }
 
 GLBufferObject::~GLBufferObject()
 {
-    //OSG_NOTIFY(osg::NOTICE)<<"Destucting BufferObject "<<this<<std::endl;
+    //OSG_NOTICE<<"Destucting BufferObject "<<this<<std::endl;
 }
 
 void GLBufferObject::setBufferObject(BufferObject* bufferObject)
@@ -129,7 +129,7 @@ void GLBufferObject::compileBuffer()
             {
                 unsigned int previousEndOfBufferDataMarker = entry.offset + entry.dataSize;
 
-                // OSG_NOTIFY(osg::NOTICE)<<"GLBufferObject::compileBuffer(..) updating BufferEntry"<<std::endl;
+                // OSG_NOTICE<<"GLBufferObject::compileBuffer(..) updating BufferEntry"<<std::endl;
 
 
                 entry.offset = newTotalSize;
@@ -152,11 +152,11 @@ void GLBufferObject::compileBuffer()
             entry.dataSize = bd->getTotalDataSize();
             entry.dataSource = bd;
 #if 0
-            OSG_NOTIFY(osg::NOTICE)<<"entry"<<std::endl;
-            OSG_NOTIFY(osg::NOTICE)<<"   offset "<<entry.offset<<std::endl;
-            OSG_NOTIFY(osg::NOTICE)<<"   dataSize "<<entry.dataSize<<std::endl;
-            OSG_NOTIFY(osg::NOTICE)<<"   dataSource "<<entry.dataSource<<std::endl;
-            OSG_NOTIFY(osg::NOTICE)<<"   modifiedCount "<<entry.modifiedCount<<std::endl;
+            OSG_NOTICE<<"entry"<<std::endl;
+            OSG_NOTICE<<"   offset "<<entry.offset<<std::endl;
+            OSG_NOTICE<<"   dataSize "<<entry.dataSize<<std::endl;
+            OSG_NOTICE<<"   dataSource "<<entry.dataSource<<std::endl;
+            OSG_NOTICE<<"   modifiedCount "<<entry.modifiedCount<<std::endl;
 #endif
             newTotalSize += entry.dataSize;
 
@@ -175,7 +175,7 @@ void GLBufferObject::compileBuffer()
 
     if (newTotalSize > _profile._size)
     {
-        OSG_NOTIFY(osg::INFO)<<"newTotalSize="<<newTotalSize<<", _profile._size="<<_profile._size<<std::endl;
+        OSG_INFO<<"newTotalSize="<<newTotalSize<<", _profile._size="<<_profile._size<<std::endl;
 
         _profile._size = newTotalSize;
 
@@ -205,7 +205,7 @@ void GLBufferObject::compileBuffer()
         BufferEntry& entry = *itr;
         if (compileAll || entry.modifiedCount != entry.dataSource->getModifiedCount())
         {
-            // OSG_NOTIFY(osg::NOTICE)<<"GLBufferObject::compileBuffer(..) downloading BufferEntry "<<&entry<<std::endl;
+            // OSG_NOTICE<<"GLBufferObject::compileBuffer(..) downloading BufferEntry "<<&entry<<std::endl;
             entry.modifiedCount = entry.dataSource->getModifiedCount();
 
             if (vboMemory)
@@ -224,7 +224,7 @@ void GLBufferObject::compileBuffer()
 
 void GLBufferObject::deleteGLObject()
 {
-    OSG_NOTIFY(osg::INFO)<<"GLBufferObject::deleteGLObject() "<<_glObjectID<<std::endl;
+    OSG_INFO<<"GLBufferObject::deleteGLObject() "<<_glObjectID<<std::endl;
     if (_glObjectID!=0)
     {
         _extensions->glDeleteBuffers(1, &_glObjectID);
@@ -310,31 +310,31 @@ void GLBufferObject::Extensions::setupGLExtensions(unsigned int contextID)
 void GLBufferObject::Extensions::glGenBuffers(GLsizei n, GLuint *buffers) const
 {
     if (_glGenBuffers) _glGenBuffers(n, buffers);
-    else notify(WARN)<<"Error: glGenBuffers not supported by OpenGL driver"<<std::endl;
+    else OSG_WARN<<"Error: glGenBuffers not supported by OpenGL driver"<<std::endl;
 }
 
 void GLBufferObject::Extensions::glBindBuffer(GLenum target, GLuint buffer) const
 {
     if (_glBindBuffer) _glBindBuffer(target, buffer);
-    else notify(WARN)<<"Error: glBindBuffer not supported by OpenGL driver"<<std::endl;
+    else OSG_WARN<<"Error: glBindBuffer not supported by OpenGL driver"<<std::endl;
 }
 
 void GLBufferObject::Extensions::glBufferData(GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage) const
 {
     if (_glBufferData) _glBufferData(target, size, data, usage);
-    else notify(WARN)<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
+    else OSG_WARN<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
 }
 
 void GLBufferObject::Extensions::glBufferSubData(GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data) const
 {
     if (_glBufferSubData) _glBufferSubData(target, offset, size, data);
-    else notify(WARN)<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
+    else OSG_WARN<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
 }
 
 void GLBufferObject::Extensions::glDeleteBuffers(GLsizei n, const GLuint *buffers) const
 {
     if (_glDeleteBuffers) _glDeleteBuffers(n, buffers);
-    else notify(WARN)<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
+    else OSG_WARN<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
 }
 
 GLboolean GLBufferObject::Extensions::glIsBuffer (GLuint buffer) const
@@ -342,7 +342,7 @@ GLboolean GLBufferObject::Extensions::glIsBuffer (GLuint buffer) const
     if (_glIsBuffer) return _glIsBuffer(buffer);
     else
     {
-        notify(WARN)<<"Error: glIsBuffer not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glIsBuffer not supported by OpenGL driver"<<std::endl;
         return GL_FALSE;
     }
 }
@@ -350,7 +350,7 @@ GLboolean GLBufferObject::Extensions::glIsBuffer (GLuint buffer) const
 void GLBufferObject::Extensions::glGetBufferSubData (GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data) const
 {
     if (_glGetBufferSubData) _glGetBufferSubData(target,offset,size,data);
-    else notify(WARN)<<"Error: glGetBufferSubData not supported by OpenGL driver"<<std::endl;
+    else OSG_WARN<<"Error: glGetBufferSubData not supported by OpenGL driver"<<std::endl;
 }
 
 GLvoid* GLBufferObject::Extensions::glMapBuffer (GLenum target, GLenum access) const
@@ -358,7 +358,7 @@ GLvoid* GLBufferObject::Extensions::glMapBuffer (GLenum target, GLenum access) c
     if (_glMapBuffer) return _glMapBuffer(target,access);
     else
     {
-        notify(WARN)<<"Error: glMapBuffer not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glMapBuffer not supported by OpenGL driver"<<std::endl;
         return 0;
     }
 }
@@ -368,7 +368,7 @@ GLboolean GLBufferObject::Extensions::glUnmapBuffer (GLenum target) const
     if (_glUnmapBuffer) return _glUnmapBuffer(target);
     else
     {
-        notify(WARN)<<"Error: glUnmapBuffer not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glUnmapBuffer not supported by OpenGL driver"<<std::endl;
         return GL_FALSE;
     }
 }
@@ -376,13 +376,13 @@ GLboolean GLBufferObject::Extensions::glUnmapBuffer (GLenum target) const
 void GLBufferObject::Extensions::glGetBufferParameteriv (GLenum target, GLenum pname, GLint *params) const
 {
     if (_glGetBufferParameteriv) _glGetBufferParameteriv(target,pname,params);
-    else notify(WARN)<<"Error: glGetBufferParameteriv not supported by OpenGL driver"<<std::endl;
+    else OSG_WARN<<"Error: glGetBufferParameteriv not supported by OpenGL driver"<<std::endl;
 }
 
 void GLBufferObject::Extensions::glGetBufferPointerv (GLenum target, GLenum pname, GLvoid* *params) const
 {
     if (_glGetBufferPointerv) _glGetBufferPointerv(target,pname,params);
-    else notify(WARN)<<"Error: glGetBufferPointerv not supported by OpenGL driver"<<std::endl;
+    else OSG_WARN<<"Error: glGetBufferPointerv not supported by OpenGL driver"<<std::endl;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -397,16 +397,16 @@ GLBufferObjectSet::GLBufferObjectSet(GLBufferObjectManager* parent, const Buffer
     _head(0),
     _tail(0)
 {
-    OSG_NOTIFY(osg::INFO)<<"GLBufferObjectSet::GLBufferObjectSet _profile._size="<<_profile._size<<std::endl;
+    OSG_INFO<<"GLBufferObjectSet::GLBufferObjectSet _profile._size="<<_profile._size<<std::endl;
 }
 
 GLBufferObjectSet::~GLBufferObjectSet()
 {
 #if 0
-    OSG_NOTIFY(osg::NOTICE)<<"GLBufferObjectSet::~GLBufferObjectSet(), _numOfGLBufferObjects="<<_numOfGLBufferObjects<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"     _orphanedGLBufferObjects = "<<_orphanedGLBufferObjects.size()<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"     _head = "<<_head<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"     _tail = "<<_tail<<std::endl;
+    OSG_NOTICE<<"GLBufferObjectSet::~GLBufferObjectSet(), _numOfGLBufferObjects="<<_numOfGLBufferObjects<<std::endl;
+    OSG_NOTICE<<"     _orphanedGLBufferObjects = "<<_orphanedGLBufferObjects.size()<<std::endl;
+    OSG_NOTICE<<"     _head = "<<_head<<std::endl;
+    OSG_NOTICE<<"     _tail = "<<_tail<<std::endl;
 #endif
 }
 
@@ -415,7 +415,7 @@ bool GLBufferObjectSet::checkConsistency() const
 #ifndef CHECK_CONSISTENCY
     return true;
 #else
-    // OSG_NOTIFY(osg::NOTICE)<<"GLBufferObjectSet::checkConsistency()"<<std::endl;
+    // OSG_NOTICE<<"GLBufferObjectSet::checkConsistency()"<<std::endl;
     // check consistency of linked list.
     unsigned int numInList = 0;
     GLBufferObject* to = _head;
@@ -427,7 +427,7 @@ bool GLBufferObjectSet::checkConsistency() const
         {
             if ((to->_next)->_previous != to)
             {
-                OSG_NOTIFY(osg::NOTICE)<<"GLBufferObjectSet::checkConsistency() : Error (to->_next)->_previous != to "<<std::endl;
+                OSG_NOTICE<<"GLBufferObjectSet::checkConsistency() : Error (to->_next)->_previous != to "<<std::endl;
                 return false;
             }
         }
@@ -435,7 +435,7 @@ bool GLBufferObjectSet::checkConsistency() const
         {
             if (_tail != to)
             {
-                OSG_NOTIFY(osg::NOTICE)<<"GLBufferObjectSet::checkConsistency() : Error _trail != to"<<std::endl;
+                OSG_NOTICE<<"GLBufferObjectSet::checkConsistency() : Error _trail != to"<<std::endl;
                 return false;
             }
         }
@@ -446,11 +446,11 @@ bool GLBufferObjectSet::checkConsistency() const
     unsigned int totalNumber = numInList + _orphanedGLBufferObjects.size();
     if (totalNumber != _numOfGLBufferObjects)
     {
-        OSG_NOTIFY(osg::NOTICE)<<"Error numInList + _orphanedGLBufferObjects.size() != _numOfGLBufferObjects"<<std::endl;
-        OSG_NOTIFY(osg::NOTICE)<<"    numInList = "<<numInList<<std::endl;
-        OSG_NOTIFY(osg::NOTICE)<<"    _orphanedGLBufferObjects.size() = "<<_orphanedGLBufferObjects.size()<<std::endl;
-        OSG_NOTIFY(osg::NOTICE)<<"    _pendingOrphanedGLBufferObjects.size() = "<<_pendingOrphanedGLBufferObjects.size()<<std::endl;
-        OSG_NOTIFY(osg::NOTICE)<<"    _numOfGLBufferObjects = "<<_numOfGLBufferObjects<<std::endl;
+        OSG_NOTICE<<"Error numInList + _orphanedGLBufferObjects.size() != _numOfGLBufferObjects"<<std::endl;
+        OSG_NOTICE<<"    numInList = "<<numInList<<std::endl;
+        OSG_NOTICE<<"    _orphanedGLBufferObjects.size() = "<<_orphanedGLBufferObjects.size()<<std::endl;
+        OSG_NOTICE<<"    _pendingOrphanedGLBufferObjects.size() = "<<_pendingOrphanedGLBufferObjects.size()<<std::endl;
+        OSG_NOTICE<<"    _numOfGLBufferObjects = "<<_numOfGLBufferObjects<<std::endl;
         return false;
     }
 
@@ -460,7 +460,7 @@ bool GLBufferObjectSet::checkConsistency() const
 
 void GLBufferObjectSet::handlePendingOrphandedGLBufferObjects()
 {
-//    OSG_NOTIFY(osg::NOTICE)<<"handlePendingOrphandedGLBufferObjects()"<<_pendingOrphanedGLBufferObjects.size()<<std::endl;
+//    OSG_NOTICE<<"handlePendingOrphandedGLBufferObjects()"<<_pendingOrphanedGLBufferObjects.size()<<std::endl;
 
     if (_pendingOrphanedGLBufferObjects.empty()) return;
 
@@ -477,10 +477,10 @@ void GLBufferObjectSet::handlePendingOrphandedGLBufferObjects()
         remove(to);
 
 #if 0
-        OSG_NOTIFY(osg::NOTICE)<<"  HPOTO  after  _head = "<<_head<<std::endl;
-        OSG_NOTIFY(osg::NOTICE)<<"  HPOTO  after _tail = "<<_tail<<std::endl;
-        OSG_NOTIFY(osg::NOTICE)<<"  HPOTO  after to->_previous = "<<to->_previous<<std::endl;
-        OSG_NOTIFY(osg::NOTICE)<<"  HPOTO  after to->_next = "<<to->_next<<std::endl;
+        OSG_NOTICE<<"  HPOTO  after  _head = "<<_head<<std::endl;
+        OSG_NOTICE<<"  HPOTO  after _tail = "<<_tail<<std::endl;
+        OSG_NOTICE<<"  HPOTO  after to->_previous = "<<to->_previous<<std::endl;
+        OSG_NOTICE<<"  HPOTO  after to->_next = "<<to->_next<<std::endl;
 #endif
 
     }
@@ -497,7 +497,7 @@ void GLBufferObjectSet::handlePendingOrphandedGLBufferObjects()
 
 void GLBufferObjectSet::deleteAllGLBufferObjects()
 {
-    // OSG_NOTIFY(osg::NOTICE)<<"GLBufferObjectSet::deleteAllGLBufferObjects()"<<std::endl;
+    // OSG_NOTICE<<"GLBufferObjectSet::deleteAllGLBufferObjects()"<<std::endl;
 
     // clean up the pending orphans.
     handlePendingOrphandedGLBufferObjects();
@@ -529,12 +529,12 @@ void GLBufferObjectSet::deleteAllGLBufferObjects()
     // do the actual delete.
     flushAllDeletedGLBufferObjects();
 
-    // OSG_NOTIFY(osg::NOTICE)<<"done GLBufferObjectSet::deleteAllGLBufferObjects()"<<std::endl;
+    // OSG_NOTICE<<"done GLBufferObjectSet::deleteAllGLBufferObjects()"<<std::endl;
 }
 
 void GLBufferObjectSet::discardAllGLBufferObjects()
 {
-    // OSG_NOTIFY(osg::NOTICE)<<"GLBufferObjectSet::discardAllGLBufferObjects()"<<std::endl;
+    // OSG_NOTICE<<"GLBufferObjectSet::discardAllGLBufferObjects()"<<std::endl;
 
     GLBufferObject* to = _head;
     while(to!=0)
@@ -589,7 +589,7 @@ void GLBufferObjectSet::flushAllDeletedGLBufferObjects()
 
 void GLBufferObjectSet::discardAllDeletedGLBufferObjects()
 {
-    // OSG_NOTIFY(osg::NOTICE)<<"GLBufferObjectSet::discardAllDeletedGLBufferObjects()"<<std::endl;
+    // OSG_NOTICE<<"GLBufferObjectSet::discardAllDeletedGLBufferObjects()"<<std::endl;
 
     // clean up the pending orphans.
     handlePendingOrphandedGLBufferObjects();
@@ -639,9 +639,9 @@ void GLBufferObjectSet::flushDeletedGLBufferObjects(double currentTime, double& 
         ++numDeleted;
     }
 
-    // OSG_NOTIFY(osg::NOTICE)<<"Size before = "<<_orphanedGLBufferObjects.size();
+    // OSG_NOTICE<<"Size before = "<<_orphanedGLBufferObjects.size();
     _orphanedGLBufferObjects.erase(_orphanedGLBufferObjects.begin(), itr);
-    //OSG_NOTIFY(osg::NOTICE)<<", after = "<<_orphanedGLBufferObjects.size()<<" numDeleted = "<<numDeleted<<std::endl;
+    //OSG_NOTICE<<", after = "<<_orphanedGLBufferObjects.size()<<" numDeleted = "<<numDeleted<<std::endl;
 
     // update the number of TO's in this GLBufferObjectSet
     _numOfGLBufferObjects -= numDeleted;
@@ -689,7 +689,7 @@ GLBufferObject* GLBufferObjectSet::takeFromOrphans(BufferObject* bufferObject)
     // place at back of active list
     addToBack(glbo.get());
 
-    // OSG_NOTIFY(osg::NOTICE)<<"Reusing orhpahned GLBufferObject, _numOfGLBufferObjects="<<_numOfGLBufferObjects<<std::endl;
+    // OSG_NOTICE<<"Reusing orhpahned GLBufferObject, _numOfGLBufferObjects="<<_numOfGLBufferObjects<<std::endl;
 
     return glbo.release();
 }
@@ -728,11 +728,11 @@ GLBufferObject* GLBufferObjectSet::takeOrGenerate(BufferObject* bufferObject)
         if (original_BufferObject.valid())
         {
             original_BufferObject->setGLBufferObject(_contextID,0);
-            // OSG_NOTIFY(osg::NOTICE)<<"GLBufferObjectSet="<<this<<": Reusing an active GLBufferObject "<<glbo.get()<<" _numOfGLBufferObjects="<<_numOfGLBufferObjects<<" size="<<_profile._size<<std::endl;
+            // OSG_NOTICE<<"GLBufferObjectSet="<<this<<": Reusing an active GLBufferObject "<<glbo.get()<<" _numOfGLBufferObjects="<<_numOfGLBufferObjects<<" size="<<_profile._size<<std::endl;
         }
         else
         {
-            // OSG_NOTIFY(osg::NOTICE)<<"Reusing a recently orphaned active GLBufferObject "<<glbo.get()<<std::endl;
+            // OSG_NOTICE<<"Reusing a recently orphaned active GLBufferObject "<<glbo.get()<<std::endl;
         }
 
         moveToBack(glbo.get());
@@ -756,7 +756,7 @@ GLBufferObject* GLBufferObjectSet::takeOrGenerate(BufferObject* bufferObject)
 
     addToBack(glbo);
 
-    // OSG_NOTIFY(osg::NOTICE)<<"Created new GLBufferObject, _numOfGLBufferObjects "<<_numOfGLBufferObjects<<std::endl;
+    // OSG_NOTICE<<"Created new GLBufferObject, _numOfGLBufferObjects "<<_numOfGLBufferObjects<<std::endl;
 
     return glbo;
 }
@@ -764,11 +764,11 @@ GLBufferObject* GLBufferObjectSet::takeOrGenerate(BufferObject* bufferObject)
 void GLBufferObjectSet::moveToBack(GLBufferObject* to)
 {
 #if 0
-    OSG_NOTIFY(osg::NOTICE)<<"GLBufferObjectSet::moveToBack("<<to<<")"<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"    before _head = "<<_head<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"    before _tail = "<<_tail<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"    before to->_previous = "<<to->_previous<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"    before to->_next = "<<to->_next<<std::endl;
+    OSG_NOTICE<<"GLBufferObjectSet::moveToBack("<<to<<")"<<std::endl;
+    OSG_NOTICE<<"    before _head = "<<_head<<std::endl;
+    OSG_NOTICE<<"    before _tail = "<<_tail<<std::endl;
+    OSG_NOTICE<<"    before to->_previous = "<<to->_previous<<std::endl;
+    OSG_NOTICE<<"    before to->_next = "<<to->_next<<std::endl;
 #endif
 
     to->_frameLastUsed = _parent->getFrameNumber();
@@ -779,7 +779,7 @@ void GLBufferObjectSet::moveToBack(GLBufferObject* to)
     // if no tail exists then assign 'to' as tail and head
     if (_tail==0)
     {
-        OSG_NOTIFY(osg::NOTICE)<<"Error ***************** Should not get here !!!!!!!!!"<<std::endl;
+        OSG_NOTICE<<"Error ***************** Should not get here !!!!!!!!!"<<std::endl;
         _head = to;
         _tail = to;
         return;
@@ -787,7 +787,7 @@ void GLBufferObjectSet::moveToBack(GLBufferObject* to)
 
     if (to->_next==0)
     {
-        OSG_NOTIFY(osg::NOTICE)<<"Error ***************** Should not get here either !!!!!!!!!"<<std::endl;
+        OSG_NOTICE<<"Error ***************** Should not get here either !!!!!!!!!"<<std::endl;
         return;
     }
 
@@ -815,10 +815,10 @@ void GLBufferObjectSet::moveToBack(GLBufferObject* to)
     _tail = to;
 
 #if 0
-    OSG_NOTIFY(osg::NOTICE)<<"  m2B   after  _head = "<<_head<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  m2B   after _tail = "<<_tail<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  m2B   after to->_previous = "<<to->_previous<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  m2B   after to->_next = "<<to->_next<<std::endl;
+    OSG_NOTICE<<"  m2B   after  _head = "<<_head<<std::endl;
+    OSG_NOTICE<<"  m2B   after _tail = "<<_tail<<std::endl;
+    OSG_NOTICE<<"  m2B   after to->_previous = "<<to->_previous<<std::endl;
+    OSG_NOTICE<<"  m2B   after to->_next = "<<to->_next<<std::endl;
 #endif
     checkConsistency();
 }
@@ -826,11 +826,11 @@ void GLBufferObjectSet::moveToBack(GLBufferObject* to)
 void GLBufferObjectSet::addToBack(GLBufferObject* to)
 {
 #if 0
-    OSG_NOTIFY(osg::NOTICE)<<"GLBufferObjectSet::addToBack("<<to<<")"<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"    before _head = "<<_head<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"    before _tail = "<<_tail<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"    before to->_previous = "<<to->_previous<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"    before to->_next = "<<to->_next<<std::endl;
+    OSG_NOTICE<<"GLBufferObjectSet::addToBack("<<to<<")"<<std::endl;
+    OSG_NOTICE<<"    before _head = "<<_head<<std::endl;
+    OSG_NOTICE<<"    before _tail = "<<_tail<<std::endl;
+    OSG_NOTICE<<"    before to->_previous = "<<to->_previous<<std::endl;
+    OSG_NOTICE<<"    before to->_next = "<<to->_next<<std::endl;
 #endif
 
     if (to->_previous !=0 || to->_next !=0)
@@ -848,10 +848,10 @@ void GLBufferObjectSet::addToBack(GLBufferObject* to)
         _tail = to;
     }
 #if 0
-    OSG_NOTIFY(osg::NOTICE)<<"  a2B  after  _head = "<<_head<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  a2B   after _tail = "<<_tail<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  a2B   after to->_previous = "<<to->_previous<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  a2B   after to->_next = "<<to->_next<<std::endl;
+    OSG_NOTICE<<"  a2B  after  _head = "<<_head<<std::endl;
+    OSG_NOTICE<<"  a2B   after _tail = "<<_tail<<std::endl;
+    OSG_NOTICE<<"  a2B   after to->_previous = "<<to->_previous<<std::endl;
+    OSG_NOTICE<<"  a2B   after to->_next = "<<to->_next<<std::endl;
 #endif
     checkConsistency();
 }
@@ -939,7 +939,7 @@ void GLBufferObjectManager::setMaxGLBufferObjectPoolSize(unsigned int size)
 
     if (size<_currGLBufferObjectPoolSize)
     {
-        OSG_NOTIFY(osg::NOTICE)<<"Warning: new MaxGLBufferObjectPoolSize="<<size<<" is smaller than current GLBufferObjectPoolSize="<<_currGLBufferObjectPoolSize<<std::endl;
+        OSG_NOTICE<<"Warning: new MaxGLBufferObjectPoolSize="<<size<<" is smaller than current GLBufferObjectPoolSize="<<_currGLBufferObjectPoolSize<<std::endl;
     }
 
     _maxGLBufferObjectPoolSize = size;
@@ -965,7 +965,7 @@ GLBufferObject* GLBufferObjectManager::generateGLBufferObject(const BufferObject
 
     BufferObjectProfile profile(bufferObject->getTarget(), bufferObject->getUsage(), bufferObject->computeRequiredBufferSize());
 
-    // OSG_NOTIFY(osg::NOTICE)<<"GLBufferObjectManager::generateGLBufferObject size="<<bufferObject->computeRequiredBufferSize()<<std::endl;
+    // OSG_NOTICE<<"GLBufferObjectManager::generateGLBufferObject size="<<bufferObject->computeRequiredBufferSize()<<std::endl;
 
     GLBufferObjectSet* glbos = getGLBufferObjectSet(profile);
     return glbos->takeOrGenerate(const_cast<BufferObject*>(bufferObject));
@@ -1049,7 +1049,7 @@ void GLBufferObjectManager::releaseGLBufferObject(GLBufferObject* to)
     if (to->_set) to->_set->orphan(to);
     else
     {
-        OSG_NOTIFY(osg::NOTICE)<<"GLBufferObjectManager::releaseGLBufferObject(GLBufferObject* to) Not implemented yet"<<std::endl;
+        OSG_NOTICE<<"GLBufferObjectManager::releaseGLBufferObject(GLBufferObject* to) Not implemented yet"<<std::endl;
     }
 }
 
@@ -1065,11 +1065,11 @@ void GLBufferObjectManager::newFrame(osg::FrameStamp* fs)
 void GLBufferObjectManager::reportStats()
 {
     double numFrames(_numFrames==0 ? 1.0 : _numFrames);
-    OSG_NOTIFY(osg::NOTICE)<<"GLBufferObjectMananger::reportStats()"<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"   total _numOfGLBufferObjects="<<_numActiveGLBufferObjects<<", _numOrphanedGLBufferObjects="<<_numOrphanedGLBufferObjects<<" _currGLBufferObjectPoolSize="<<_currGLBufferObjectPoolSize<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"   total _numGenerated="<<_numGenerated<<", _generateTime="<<_generateTime<<", averagePerFrame="<<_generateTime/numFrames*1000.0<<"ms"<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"   total _numDeleted="<<_numDeleted<<", _deleteTime="<<_deleteTime<<", averagePerFrame="<<_deleteTime/numFrames*1000.0<<"ms"<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"   total _numApplied="<<_numApplied<<", _applyTime="<<_applyTime<<", averagePerFrame="<<_applyTime/numFrames*1000.0<<"ms"<<std::endl;
+    OSG_NOTICE<<"GLBufferObjectMananger::reportStats()"<<std::endl;
+    OSG_NOTICE<<"   total _numOfGLBufferObjects="<<_numActiveGLBufferObjects<<", _numOrphanedGLBufferObjects="<<_numOrphanedGLBufferObjects<<" _currGLBufferObjectPoolSize="<<_currGLBufferObjectPoolSize<<std::endl;
+    OSG_NOTICE<<"   total _numGenerated="<<_numGenerated<<", _generateTime="<<_generateTime<<", averagePerFrame="<<_generateTime/numFrames*1000.0<<"ms"<<std::endl;
+    OSG_NOTICE<<"   total _numDeleted="<<_numDeleted<<", _deleteTime="<<_deleteTime<<", averagePerFrame="<<_deleteTime/numFrames*1000.0<<"ms"<<std::endl;
+    OSG_NOTICE<<"   total _numApplied="<<_numApplied<<", _applyTime="<<_applyTime<<", averagePerFrame="<<_applyTime/numFrames*1000.0<<"ms"<<std::endl;
 }
 
 void GLBufferObjectManager::resetStats()
@@ -1172,7 +1172,7 @@ void BufferObject::resizeGLObjectBuffers(unsigned int maxSize)
 
 void BufferObject::releaseGLObjects(State* state) const
 {
-    // OSG_NOTIFY(osg::NOTICE)<<"BufferObject::releaseGLObjects("<<state<<")"<<std::endl;
+    // OSG_NOTICE<<"BufferObject::releaseGLObjects("<<state<<")"<<std::endl;
     if (state)
     {
         unsigned int contextID = state->getContextID();
@@ -1188,7 +1188,7 @@ void BufferObject::releaseGLObjects(State* state) const
         {
             if (_glBufferObjects[i].valid())
             {
-                // OSG_NOTIFY(osg::NOTICE)<<"  GLBufferObject::releaseGLBufferObject("<<i<<", _glBufferObjects["<<i<<"]="<<_glBufferObjects[i].get()<<")"<<std::endl;
+                // OSG_NOTICE<<"  GLBufferObject::releaseGLBufferObject("<<i<<", _glBufferObjects["<<i<<"]="<<_glBufferObjects[i].get()<<")"<<std::endl;
                 GLBufferObject::releaseGLBufferObject(i, _glBufferObjects[i].get());
                 _glBufferObjects[i] = 0;
             }
@@ -1212,7 +1212,7 @@ unsigned int BufferObject::addBufferData(BufferData* bd)
 
     _bufferDataList.push_back(bd);
 
-    // OSG_NOTIFY(osg::NOTICE)<<"BufferObject "<<this<<":"<<className()<<"::addBufferData("<<bd<<"), bufferIndex= "<<_bufferDataList.size()-1<<std::endl;
+    // OSG_NOTICE<<"BufferObject "<<this<<":"<<className()<<"::addBufferData("<<bd<<"), bufferIndex= "<<_bufferDataList.size()-1<<std::endl;
 
     return _bufferDataList.size()-1;
 }
@@ -1221,11 +1221,11 @@ void BufferObject::removeBufferData(unsigned int index)
 {
     if (index>=_bufferDataList.size())
     {
-        OSG_NOTIFY(osg::WARN)<<"Error "<<className()<<"::removeBufferData("<<index<<") out of range."<<std::endl;
+        OSG_WARN<<"Error "<<className()<<"::removeBufferData("<<index<<") out of range."<<std::endl;
         return;
     }
 
-    // OSG_NOTIFY(osg::NOTICE)<<"BufferObject::"<<this<<":"<<className()<<"::removeBufferData("<<index<<"), size= "<<_bufferDataList.size()<<std::endl;
+    // OSG_NOTICE<<"BufferObject::"<<this<<":"<<className()<<"::removeBufferData("<<index<<"), size= "<<_bufferDataList.size()<<std::endl;
 
     // alter the indices of the BufferData after the entry to be removed so their indices are correctly placed.
     for(unsigned int i=index+1; i<_bufferDataList.size(); ++i)
@@ -1245,7 +1245,7 @@ void BufferObject::removeBufferData(unsigned int index)
 
 void BufferObject::removeBufferData(BufferData* bd)
 {
-    // OSG_NOTIFY(osg::NOTICE)<<"BufferObject::"<<this<<":"<<className()<<"::removeBufferData("<<bd<<"), index="<<bd->getBufferIndex()<<" size= "<<_bufferDataList.size()<<std::endl;
+    // OSG_NOTICE<<"BufferObject::"<<this<<":"<<className()<<"::removeBufferData("<<bd<<"), index="<<bd->getBufferIndex()<<" size= "<<_bufferDataList.size()<<std::endl;
 
     if (!bd || bd->getBufferObject()!=this) return;
 
@@ -1273,7 +1273,7 @@ void BufferObject::deleteBufferObject(unsigned int contextID,GLuint globj)
     osg::ref_ptr<GLBufferObjectManager>& bufferObjectManager = GLBufferObjectManager::getGLBufferObjectManager(contextID);
     if (!bufferObjectManager)
     {
-        OSG_NOTIFY(osg::NOTICE)<<"Warning::BufferObject::deleteBufferObject("<<contextID<<", "<<globj<<") unable to get GLBufferObjectManager for context."<<std::endl;
+        OSG_NOTICE<<"Warning::BufferObject::deleteBufferObject("<<contextID<<", "<<globj<<") unable to get GLBufferObjectManager for context."<<std::endl;
         return;
     }
     osg::ref_ptr<GLBufferObject> glBufferObject = new GLBufferObject(contextID, 0, globj);
@@ -1281,7 +1281,7 @@ void BufferObject::deleteBufferObject(unsigned int contextID,GLuint globj)
     GLBufferObjectSet* bufferObjectSet = bufferObjectManager->getGLBufferObjectSet(glBufferObject->getProfile());
     if (!bufferObjectSet)
     {
-        OSG_NOTIFY(osg::NOTICE)<<"Warning::BufferObject::deleteBufferObject("<<contextID<<", "<<globj<<") unable to get GLBufferObjectSet for context."<<std::endl;
+        OSG_NOTICE<<"Warning::BufferObject::deleteBufferObject("<<contextID<<", "<<globj<<") unable to get GLBufferObjectSet for context."<<std::endl;
         return;
     }
 
@@ -1412,7 +1412,7 @@ PixelBufferObject::PixelBufferObject(osg::Image* image):
     setTarget(GL_PIXEL_UNPACK_BUFFER_ARB);
     setUsage(GL_STREAM_DRAW_ARB);
 
-    OSG_NOTIFY(osg::INFO)<<"Constructing PixelBufferObject for image="<<image<<std::endl;
+    OSG_INFO<<"Constructing PixelBufferObject for image="<<image<<std::endl;
 
     setBufferData(0, image);
 }

@@ -248,7 +248,7 @@ void Texture1D::apply(State& state) const
         generateMipmap(state);
     }
 #else
-    osg::notify(osg::NOTICE)<<"Warning: Texture1D::apply(State& state) not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: Texture1D::apply(State& state) not supported."<<std::endl;
 #endif
 }
 
@@ -327,7 +327,7 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
                 (GLenum)image->getPixelFormat(), (GLenum)image->getDataType(),
                 image->data() );
 #else
-            osg::notify(osg::NOTICE)<<"Warning: gluBuild1DMipmaps(..) not supported."<<std::endl;
+            OSG_NOTICE<<"Warning: gluBuild1DMipmaps(..) not supported."<<std::endl;
 #endif
 
         }
@@ -371,7 +371,7 @@ void Texture1D::applyTexImage1D(GLenum target, Image* image, State& state, GLsiz
 
     inwidth = image->s();
 #else
-    osg::notify(osg::NOTICE)<<"Warning: Texture1D::applyTexImage1D(State& state) not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: Texture1D::applyTexImage1D(State& state) not supported."<<std::endl;
 #endif
 }
 
@@ -428,7 +428,7 @@ void Texture1D::copyTexImage1D(State& state, int x, int y, int width)
     // inform state that this texture is the current one bound.
     state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);
 #else
-    osg::notify(osg::NOTICE)<<"Warning: Texture1D::copyTexImage1D(..) not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: Texture1D::copyTexImage1D(..) not supported."<<std::endl;
 #endif
 }
 
@@ -460,7 +460,7 @@ void Texture1D::copyTexSubImage1D(State& state, int xoffset, int x, int y, int w
         copyTexImage1D(state,x,y,width);
     }
 #else
-    osg::notify(osg::NOTICE)<<"Warning: Texture1D::copyTexSubImage1D(..) not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: Texture1D::copyTexSubImage1D(..) not supported."<<std::endl;
 #endif
 }
 
@@ -501,6 +501,6 @@ void Texture1D::allocateMipmap(State& state) const
         state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);        
     }
 #else
-    osg::notify(osg::NOTICE)<<"Warning: Texture1D::allocateMipmap(..) not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: Texture1D::allocateMipmap(..) not supported."<<std::endl;
 #endif
 }

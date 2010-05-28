@@ -154,15 +154,15 @@ void FragmentProgram::apply(State& state) const
         glGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &errorposition);
         if (errorposition != -1)
         {
-            notify(osg::FATAL) << "FragmentProgram: " << glGetString(GL_PROGRAM_ERROR_STRING_ARB) << std::endl;
+            OSG_FATAL << "FragmentProgram: " << glGetString(GL_PROGRAM_ERROR_STRING_ARB) << std::endl;
 
             std::string::size_type start = _fragmentProgram.rfind('\n', errorposition);
             std::string::size_type stop  = _fragmentProgram.find('\n', errorposition);
             if (start!=std::string::npos && stop!=std::string::npos)
             {
-                notify(osg::FATAL) << "             : " << _fragmentProgram.substr(start+1, stop-start-2) << std::endl;
+                OSG_FATAL << "             : " << _fragmentProgram.substr(start+1, stop-start-2) << std::endl;
                 std::string pointAtproblem(errorposition-(start+1), ' ');
-                notify(osg::FATAL) << "             : " << pointAtproblem << '^' << std::endl;
+                OSG_FATAL << "             : " << pointAtproblem << '^' << std::endl;
             }
             return;
         }
@@ -191,7 +191,7 @@ void FragmentProgram::apply(State& state) const
         glMatrixMode(GL_MODELVIEW); // restore matrix mode
     }
 #else
-    osg::notify(osg::NOTICE)<<"Warning: FragmentProgram::apply(State&) - not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: FragmentProgram::apply(State&) - not supported."<<std::endl;
 #endif
 }
 
@@ -277,7 +277,7 @@ void FragmentProgram::Extensions::glBindProgram(GLenum target, GLuint id) const
     }
     else
     {
-        notify(WARN)<<"Error: glBindProgram not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glBindProgram not supported by OpenGL driver"<<std::endl;
     }    
 }
 
@@ -289,7 +289,7 @@ void FragmentProgram::Extensions::glGenPrograms(GLsizei n, GLuint *programs) con
     }
     else
     {
-        notify(WARN)<<"Error: glGenPrograms not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glGenPrograms not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -301,7 +301,7 @@ void FragmentProgram::Extensions::glDeletePrograms(GLsizei n, GLuint *programs) 
     }
     else
     {
-        notify(WARN)<<"Error: glDeletePrograms not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glDeletePrograms not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -313,7 +313,7 @@ void FragmentProgram::Extensions::glProgramString(GLenum target, GLenum format, 
     }
     else
     {
-        notify(WARN)<<"Error: glProgramString not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glProgramString not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -325,6 +325,6 @@ void FragmentProgram::Extensions::glProgramLocalParameter4fv(GLenum target, GLui
     }
     else
     {
-        notify(WARN)<<"Error: glProgramLocalParameter4fv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glProgramLocalParameter4fv not supported by OpenGL driver"<<std::endl;
     }
 }

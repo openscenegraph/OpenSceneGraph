@@ -87,8 +87,8 @@ bool Geode::removeDrawables(unsigned int pos,unsigned int numDrawablesToRemove)
         unsigned int endOfRemoveRange = pos+numDrawablesToRemove;
         if (endOfRemoveRange>_drawables.size())
         {
-            notify(DEBUG_INFO)<<"Warning: Geode::removeDrawable(i,numDrawablesToRemove) has been passed an excessive number"<<std::endl;
-            notify(DEBUG_INFO)<<"         of drawables to remove, trimming just to end of drawable list."<<std::endl;
+            OSG_DEBUG<<"Warning: Geode::removeDrawable(i,numDrawablesToRemove) has been passed an excessive number"<<std::endl;
+            OSG_DEBUG<<"         of drawables to remove, trimming just to end of drawable list."<<std::endl;
             endOfRemoveRange=_drawables.size();
         }
 

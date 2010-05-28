@@ -32,7 +32,7 @@ void AlphaFunc::apply(State&) const
 #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
     glAlphaFunc((GLenum)_comparisonFunc,_referenceValue);
 #else
-    osg::notify(osg::NOTICE)<<"Warning: AlphaFunc::apply(State&) - not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: AlphaFunc::apply(State&) - not supported."<<std::endl;
 #endif
 }
 

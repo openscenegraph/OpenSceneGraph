@@ -154,7 +154,7 @@ void TextureRectangle::apply(State& state) const
 
     if (!s_rectangleSupported)
     {
-        notify(WARN)<<"Warning: TextureRectangle::apply(..) failed, texture rectangle is not support by your OpenGL drivers."<<std::endl;
+        OSG_WARN<<"Warning: TextureRectangle::apply(..) failed, texture rectangle is not support by your OpenGL drivers."<<std::endl;
         return;
     }
 
@@ -395,7 +395,7 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
 
 #ifdef DO_TIMING
     osg::Timer_t start_tick = osg::Timer::instance()->tick();
-    osg::notify(osg::NOTICE)<<"TextureRectangle::apply pixelFormat = "<<std::hex<<image->getPixelFormat()<<std::dec<<std::endl;
+    OSG_NOTICE<<"TextureRectangle::apply pixelFormat = "<<std::hex<<image->getPixelFormat()<<std::dec<<std::endl;
 #endif
     const unsigned char* dataPtr = image->data();
     GLBufferObject* pbo = image->getOrCreateGLBufferObject(contextID);
@@ -404,12 +404,12 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
         state.bindPixelBufferObject(pbo);
         dataPtr = reinterpret_cast<unsigned char*>(pbo->getOffset(image->getBufferIndex()));
 #ifdef DO_TIMING
-        osg::notify(osg::NOTICE)<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
+        OSG_NOTICE<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 #endif
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"    no PixelBufferObject "<<image->getBufferObject()<<", "<<image->getPixelBufferObject()<<" pbo="<<pbo<<std::endl;
+        OSG_NOTICE<<"    no PixelBufferObject "<<image->getBufferObject()<<", "<<image->getPixelBufferObject()<<" pbo="<<pbo<<std::endl;
     }
     
 
@@ -438,7 +438,7 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
     }
 
 #ifdef DO_TIMING
-    osg::notify(osg::NOTICE)<<"glTexSubImage2D "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
+    OSG_NOTICE<<"glTexSubImage2D "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 #endif
 }
 
@@ -503,7 +503,7 @@ void TextureRectangle::copyTexImage2D(State& state, int x, int y, int width, int
         if (!hardwareMipMapOn)
         {
             // have to swtich off mip mapping
-            notify(NOTICE)<<"Warning: Texture2D::copyTexImage2D(,,,,) switch of mip mapping as hardware support not available."<<std::endl;
+            OSG_NOTICE<<"Warning: Texture2D::copyTexImage2D(,,,,) switch of mip mapping as hardware support not available."<<std::endl;
             _min_filter = LINEAR;
         }
     }
@@ -554,7 +554,7 @@ void TextureRectangle::copyTexSubImage2D(State& state, int xoffset, int yoffset,
             if (!hardwareMipMapOn)
             {
                 // have to swtich off mip mapping
-                notify(NOTICE)<<"Warning: Texture2D::copyTexImage2D(,,,,) switch of mip mapping as hardware support not available."<<std::endl;
+                OSG_NOTICE<<"Warning: Texture2D::copyTexImage2D(,,,,) switch of mip mapping as hardware support not available."<<std::endl;
                 _min_filter = LINEAR;
             }
         }
@@ -579,6 +579,6 @@ void TextureRectangle::copyTexSubImage2D(State& state, int xoffset, int yoffset,
 
 void TextureRectangle::allocateMipmap(State&) const
 {
-    osg::notify(osg::NOTICE)<<"Warning: TextureRectangle::allocateMipmap(State&) called eroneously, GL_TEXTURE_RECTANGLE does not support mipmapping."<<std::endl;
+    OSG_NOTICE<<"Warning: TextureRectangle::allocateMipmap(State&) called eroneously, GL_TEXTURE_RECTANGLE does not support mipmapping."<<std::endl;
 }
 

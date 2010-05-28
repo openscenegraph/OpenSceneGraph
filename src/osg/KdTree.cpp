@@ -73,7 +73,7 @@ struct TriangleIndicesCollector
         // discard degenerate points
         if (v0==v1 || v1==v2 || v1==v2)
         {
-            //osg::notify(osg::NOTICE)<<"Disgarding degenerate triangle"<<std::endl;
+            //OSG_NOTICE<<"Disgarding degenerate triangle"<<std::endl;
             return;
         }
 
@@ -102,7 +102,7 @@ bool BuildKdTree::build(KdTree::BuildOptions& options, osg::Geometry* geometry)
 {
     
 #ifdef VERBOSE_OUTPUT    
-    osg::notify(osg::NOTICE)<<"osg::KDTreeBuilder::createKDTree()"<<std::endl;146
+    OSG_NOTICE<<"osg::KDTreeBuilder::createKDTree()"<<std::endl;146
 #endif
 
     osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
@@ -116,7 +116,7 @@ bool BuildKdTree::build(KdTree::BuildOptions& options, osg::Geometry* geometry)
     unsigned int estimatedSize = (unsigned int)(2.0*float(vertices->size())/float(options._targetNumTrianglesPerLeaf));
 
 #ifdef VERBOSE_OUTPUT    
-    osg::notify(osg::NOTICE)<<"kdTree->_kdNodes.reserve()="<<estimatedSize<<std::endl<<std::endl;
+    OSG_NOTICE<<"kdTree->_kdNodes.reserve()="<<estimatedSize<<std::endl<<std::endl;
 #endif
 
     _kdTree.getNodes().reserve(estimatedSize*5);
@@ -156,12 +156,12 @@ bool BuildKdTree::build(KdTree::BuildOptions& options, osg::Geometry* geometry)
     
     
 #ifdef VERBOSE_OUTPUT    
-    osg::notify(osg::NOTICE)<<"Root nodeNum="<<nodeNum<<std::endl;
+    OSG_NOTICE<<"Root nodeNum="<<nodeNum<<std::endl;
 #endif
     
     
-//    osg::notify(osg::NOTICE)<<"_kdNodes.size()="<<k_kdNodes.size()<<"  estimated size = "<<estimatedSize<<std::endl;
-//    osg::notify(osg::NOTICE)<<"_kdLeaves.size()="<<_kdLeaves.size()<<"  estimated size = "<<estimatedSize<<std::endl<<std::endl;
+//    OSG_NOTICE<<"_kdNodes.size()="<<k_kdNodes.size()<<"  estimated size = "<<estimatedSize<<std::endl;
+//    OSG_NOTICE<<"_kdLeaves.size()="<<_kdLeaves.size()<<"  estimated size = "<<estimatedSize<<std::endl<<std::endl;
 
 
     return !_kdTree.getNodes().empty();
@@ -174,7 +174,7 @@ void BuildKdTree::computeDivisions(KdTree::BuildOptions& options)
                          _bb.zMax()-_bb.zMin());
 
 #ifdef VERBOSE_OUTPUT    
-    osg::notify(osg::NOTICE)<<"computeDivisions("<<options._maxNumLevels<<") "<<dimensions<< " { "<<std::endl;
+    OSG_NOTICE<<"computeDivisions("<<options._maxNumLevels<<") "<<dimensions<< " { "<<std::endl;
 #endif
 
     _axisStack.reserve(options._maxNumLevels);
@@ -194,12 +194,12 @@ void BuildKdTree::computeDivisions(KdTree::BuildOptions& options)
         dimensions[axis] /= 2.0f;
 
 #ifdef VERBOSE_OUTPUT    
-        osg::notify(osg::NOTICE)<<"  "<<level<<", "<<dimensions<<", "<<axis<<std::endl;
+        OSG_NOTICE<<"  "<<level<<", "<<dimensions<<", "<<axis<<std::endl;
 #endif
     }
 
 #ifdef VERBOSE_OUTPUT    
-    osg::notify(osg::NOTICE)<<"}"<<std::endl;
+    OSG_NOTICE<<"}"<<std::endl;
 #endif
 }
 
@@ -245,13 +245,13 @@ int BuildKdTree::divide(KdTree::BuildOptions& options, osg::BoundingBox& bb, int
 #ifdef VERBOSE_OUTPUT    
             if (!node.bb.valid())
             {
-                osg::notify(osg::NOTICE)<<"After reset "<<node.first<<","<<node.second<<std::endl;
-                osg::notify(osg::NOTICE)<<"  bb._min ("<<node.bb._min<<")"<<std::endl;
-                osg::notify(osg::NOTICE)<<"  bb._max ("<<node.bb._max<<")"<<std::endl;
+                OSG_NOTICE<<"After reset "<<node.first<<","<<node.second<<std::endl;
+                OSG_NOTICE<<"  bb._min ("<<node.bb._min<<")"<<std::endl;
+                OSG_NOTICE<<"  bb._max ("<<node.bb._max<<")"<<std::endl;
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"Set bb for nodeIndex = "<<nodeIndex<<std::endl;
+                OSG_NOTICE<<"Set bb for nodeIndex = "<<nodeIndex<<std::endl;
             }
 #endif
         }
@@ -263,7 +263,7 @@ int BuildKdTree::divide(KdTree::BuildOptions& options, osg::BoundingBox& bb, int
     int axis = _axisStack[level];
 
 #ifdef VERBOSE_OUTPUT    
-    osg::notify(osg::NOTICE)<<"divide("<<nodeIndex<<", "<<level<< "), axis="<<axis<<std::endl;
+    OSG_NOTICE<<"divide("<<nodeIndex<<", "<<level<< "), axis="<<axis<<std::endl;
 #endif
 
     if (node.first<0)
@@ -273,7 +273,7 @@ int BuildKdTree::divide(KdTree::BuildOptions& options, osg::BoundingBox& bb, int
         int istart = -node.first-1;
         int iend = istart+node.second-1;
 
-        //osg::notify(osg::NOTICE)<<"  divide leaf"<<std::endl;
+        //OSG_NOTICE<<"  divide leaf"<<std::endl;
         
         float original_min = bb._min[axis];
         float original_max = bb._max[axis];
@@ -315,20 +315,20 @@ int BuildKdTree::divide(KdTree::BuildOptions& options, osg::BoundingBox& bb, int
             KdTree::KdNode rightLeaf(-left-1, (iend-left)+1);
 
 #if 0
-            osg::notify(osg::NOTICE)<<"In  node.first     ="<<node.first     <<" node.second     ="<<node.second<<std::endl;
-            osg::notify(osg::NOTICE)<<"    leftLeaf.first ="<<leftLeaf.first <<" leftLeaf.second ="<<leftLeaf.second<<std::endl;
-            osg::notify(osg::NOTICE)<<"    rightLeaf.first="<<rightLeaf.first<<" rightLeaf.second="<<rightLeaf.second<<std::endl;
-            osg::notify(osg::NOTICE)<<"    left="<<left<<" right="<<right<<std::endl;
+            OSG_NOTICE<<"In  node.first     ="<<node.first     <<" node.second     ="<<node.second<<std::endl;
+            OSG_NOTICE<<"    leftLeaf.first ="<<leftLeaf.first <<" leftLeaf.second ="<<leftLeaf.second<<std::endl;
+            OSG_NOTICE<<"    rightLeaf.first="<<rightLeaf.first<<" rightLeaf.second="<<rightLeaf.second<<std::endl;
+            OSG_NOTICE<<"    left="<<left<<" right="<<right<<std::endl;
 
             if (node.second != (leftLeaf.second +rightLeaf.second))
             {
-                osg::notify(osg::NOTICE)<<"*** Error in size, leaf.second="<<node.second
+                OSG_NOTICE<<"*** Error in size, leaf.second="<<node.second
                                         <<", leftLeaf.second="<<leftLeaf.second
                                         <<", rightLeaf.second="<<rightLeaf.second<<std::endl;
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"Size OK, leaf.second="<<node.second
+                OSG_NOTICE<<"Size OK, leaf.second="<<node.second
                                         <<", leftLeaf.second="<<leftLeaf.second
                                         <<", rightLeaf.second="<<rightLeaf.second<<std::endl;
             }
@@ -336,7 +336,7 @@ int BuildKdTree::divide(KdTree::BuildOptions& options, osg::BoundingBox& bb, int
 
             if (leftLeaf.second<=0)
             {
-                //osg::notify(osg::NOTICE)<<"LeftLeaf empty"<<std::endl;
+                //OSG_NOTICE<<"LeftLeaf empty"<<std::endl;
                 originalLeftChildIndex = 0;
                 //originalRightChildIndex = addNode(rightLeaf);
                 originalRightChildIndex = nodeIndex;
@@ -344,7 +344,7 @@ int BuildKdTree::divide(KdTree::BuildOptions& options, osg::BoundingBox& bb, int
             }
             else if (rightLeaf.second<=0)
             {
-                //osg::notify(osg::NOTICE)<<"RightLeaf empty"<<std::endl;
+                //OSG_NOTICE<<"RightLeaf empty"<<std::endl;
                 // originalLeftChildIndex = addNode(leftLeaf);
                 originalLeftChildIndex = nodeIndex;
                 originalRightChildIndex = 0;
@@ -361,7 +361,7 @@ int BuildKdTree::divide(KdTree::BuildOptions& options, osg::BoundingBox& bb, int
         float restore = bb._max[axis];
         bb._max[axis] = mid;
 
-        //osg::notify(osg::NOTICE)<<"  divide leftLeaf "<<kdTree.getNode(nodeNum).first<<std::endl;
+        //OSG_NOTICE<<"  divide leftLeaf "<<kdTree.getNode(nodeNum).first<<std::endl;
         int leftChildIndex = originalLeftChildIndex!=0 ? divide(options, bb, originalLeftChildIndex, level+1) : 0;
 
         bb._max[axis] = restore;
@@ -369,7 +369,7 @@ int BuildKdTree::divide(KdTree::BuildOptions& options, osg::BoundingBox& bb, int
         restore = bb._min[axis];
         bb._min[axis] = mid;
 
-        //osg::notify(osg::NOTICE)<<"  divide rightLeaf "<<kdTree.getNode(nodeNum).second<<std::endl;
+        //OSG_NOTICE<<"  divide rightLeaf "<<kdTree.getNode(nodeNum).second<<std::endl;
         int rightChildIndex = originalRightChildIndex!=0 ? divide(options, bb, originalRightChildIndex, level+1) : 0;
         
         bb._min[axis] = restore;
@@ -392,29 +392,29 @@ int BuildKdTree::divide(KdTree::BuildOptions& options, osg::BoundingBox& bb, int
 
             if (!newNodeRef.bb.valid())
             {
-                osg::notify(osg::NOTICE)<<"leftChildIndex="<<leftChildIndex<<" && originalLeftChildIndex="<<originalLeftChildIndex<<std::endl;
-                osg::notify(osg::NOTICE)<<"rightChildIndex="<<rightChildIndex<<" && originalRightChildIndex="<<originalRightChildIndex<<std::endl;
+                OSG_NOTICE<<"leftChildIndex="<<leftChildIndex<<" && originalLeftChildIndex="<<originalLeftChildIndex<<std::endl;
+                OSG_NOTICE<<"rightChildIndex="<<rightChildIndex<<" && originalRightChildIndex="<<originalRightChildIndex<<std::endl;
 
-                osg::notify(osg::NOTICE)<<"Invalid BB leftChildIndex="<<leftChildIndex<<", "<<rightChildIndex<<std::endl;
-                osg::notify(osg::NOTICE)<<"  bb._min ("<<newNodeRef.bb._min<<")"<<std::endl;
-                osg::notify(osg::NOTICE)<<"  bb._max ("<<newNodeRef.bb._max<<")"<<std::endl;
+                OSG_NOTICE<<"Invalid BB leftChildIndex="<<leftChildIndex<<", "<<rightChildIndex<<std::endl;
+                OSG_NOTICE<<"  bb._min ("<<newNodeRef.bb._min<<")"<<std::endl;
+                OSG_NOTICE<<"  bb._max ("<<newNodeRef.bb._max<<")"<<std::endl;
 
                 if (leftChildIndex!=0)
                 {
-                    osg::notify(osg::NOTICE)<<"  getNode(leftChildIndex).bb min = "<<_kdTree.getNode(leftChildIndex).bb._min<<std::endl;
-                    osg::notify(osg::NOTICE)<<"                                 max = "<<_kdTree.getNode(leftChildIndex).bb._max<<std::endl;
+                    OSG_NOTICE<<"  getNode(leftChildIndex).bb min = "<<_kdTree.getNode(leftChildIndex).bb._min<<std::endl;
+                    OSG_NOTICE<<"                                 max = "<<_kdTree.getNode(leftChildIndex).bb._max<<std::endl;
                 }
                 if (rightChildIndex!=0)
                 {
-                    osg::notify(osg::NOTICE)<<"  getNode(rightChildIndex).bb min = "<<_kdTree.getNode(rightChildIndex).bb._min<<std::endl;
-                    osg::notify(osg::NOTICE)<<"                              max = "<<_kdTree.getNode(rightChildIndex).bb._max<<std::endl;
+                    OSG_NOTICE<<"  getNode(rightChildIndex).bb min = "<<_kdTree.getNode(rightChildIndex).bb._min<<std::endl;
+                    OSG_NOTICE<<"                              max = "<<_kdTree.getNode(rightChildIndex).bb._max<<std::endl;
                 }
             }
         }
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"NOT expecting to get here"<<std::endl;
+        OSG_NOTICE<<"NOT expecting to get here"<<std::endl;
     }
     
     return nodeIndex;
@@ -481,7 +481,7 @@ void IntersectKdTree::intersect(const KdTree::KdNode& node, const osg::Vec3& ls,
     {
         // treat as a leaf
         
-        //osg::notify(osg::NOTICE)<<"KdTree::intersect("<<&leaf<<")"<<std::endl;
+        //OSG_NOTICE<<"KdTree::intersect("<<&leaf<<")"<<std::endl;
         int istart = -node.first-1;
         int iend = istart + node.second;
         
@@ -489,7 +489,7 @@ void IntersectKdTree::intersect(const KdTree::KdNode& node, const osg::Vec3& ls,
         {
             //const Triangle& tri = _triangles[_primitiveIndices[i]];
             const KdTree::Triangle& tri = _triangles[i];
-            // osg::notify(osg::NOTICE)<<"   tri("<<tri.p1<<","<<tri.p2<<","<<tri.p3<<")"<<std::endl;
+            // OSG_NOTICE<<"   tri("<<tri.p1<<","<<tri.p2<<","<<tri.p3<<")"<<std::endl;
 
             const osg::Vec3& v0 = _vertices[tri.p0];
             const osg::Vec3& v1 = _vertices[tri.p1];
@@ -579,7 +579,7 @@ void IntersectKdTree::intersect(const KdTree::KdNode& node, const osg::Vec3& ls,
             intersection.r2 = r2;
 
 #endif
-            // osg::notify(osg::NOTICE)<<"  got intersection ("<<in<<") ratio="<<r<<std::endl;
+            // OSG_NOTICE<<"  got intersection ("<<in<<") ratio="<<r<<std::endl;
         }
     }
     else
@@ -723,7 +723,7 @@ bool IntersectKdTree::intersectAndClip(osg::Vec3& s, osg::Vec3& e, const osg::Bo
         }
     }
     
-    // osg::notify(osg::NOTICE)<<"clampped segment "<<s<<" "<<e<<std::endl;
+    // OSG_NOTICE<<"clampped segment "<<s<<" "<<e<<std::endl;
     
     // if (s==e) return false;
 
@@ -768,7 +768,7 @@ bool KdTree::intersect(const osg::Vec3d& start, const osg::Vec3d& end, LineSegme
 {
     if (_kdNodes.empty()) 
     {
-        osg::notify(osg::NOTICE)<<"Warning: _kdTree is empty"<<std::endl;
+        OSG_NOTICE<<"Warning: _kdTree is empty"<<std::endl;
         return false;
     }
 

@@ -86,9 +86,9 @@ void TransferFunction1D::assignToImage(float lower_v, const osg::Vec4& lower_c, 
     if (end_iPos < 0) return;
     if (end_iPos > endPos) end_iPos = endPos;
 
-    //osg::notify(osg::NOTICE)<<"TransferFunction1D::assignToImage[lower_v="<<lower_v<<", lower_c="<<lower_c<<", upper_v="<<upper_v<<" upper_c="<<upper_c<<std::endl;
-    //osg::notify(osg::NOTICE)<<"  lower_iPos="<<lower_iPos<<"  start_iPpos="<<start_iPos<<std::endl;
-    //osg::notify(osg::NOTICE)<<"  upper_iPos="<<upper_iPos<<"  end_iPpos="<<end_iPos<<std::endl;
+    //OSG_NOTICE<<"TransferFunction1D::assignToImage[lower_v="<<lower_v<<", lower_c="<<lower_c<<", upper_v="<<upper_v<<" upper_c="<<upper_c<<std::endl;
+    //OSG_NOTICE<<"  lower_iPos="<<lower_iPos<<"  start_iPpos="<<start_iPos<<std::endl;
+    //OSG_NOTICE<<"  upper_iPos="<<upper_iPos<<"  end_iPpos="<<end_iPos<<std::endl;
 
     // upper_iPos can be identical to lower_iPos in case an underflow occurred while calculation the values;
     // if both values are identical delta_c is identical to the null vector otherwise it is calculated like follows:
@@ -100,7 +100,7 @@ void TransferFunction1D::assignToImage(float lower_v, const osg::Vec4& lower_c, 
     for(int i=start_iPos; i<=end_iPos; ++i, ++iPos)
     {
         imageData[i] = lower_c + delta_c*(iPos-lower_iPos);
-        //osg::notify(osg::NOTICE)<<"    imageData["<<i<<"] = "<<imageData[i]<<std::endl;
+        //OSG_NOTICE<<"    imageData["<<i<<"] = "<<imageData[i]<<std::endl;
     }
 
     _image->dirty();

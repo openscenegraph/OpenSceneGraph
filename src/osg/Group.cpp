@@ -76,7 +76,7 @@ bool Group::insertChild( unsigned int index, Node *child )
 #if ENSURE_CHILD_IS_UNIQUE    
     if (containsNode(child))
     {
-        notify(WARN)<<"Adding non unique child to osg::Group, ignoring call"<<std::endl;
+        OSG_WARN<<"Adding non unique child to osg::Group, ignoring call"<<std::endl;
         return false;
     }
 #endif
@@ -151,8 +151,8 @@ bool Group::removeChildren(unsigned int pos,unsigned int numChildrenToRemove)
         unsigned int endOfRemoveRange = pos+numChildrenToRemove;
         if (endOfRemoveRange>_children.size())
         {
-            notify(DEBUG_INFO)<<"Warning: Group::removeChild(i,numChildrenToRemove) has been passed an excessive number"<<std::endl;
-            notify(DEBUG_INFO)<<"         of chilren to remove, trimming just to end of child list."<<std::endl;
+            OSG_DEBUG<<"Warning: Group::removeChild(i,numChildrenToRemove) has been passed an excessive number"<<std::endl;
+            OSG_DEBUG<<"         of chilren to remove, trimming just to end of child list."<<std::endl;
             endOfRemoveRange=_children.size();
         }
 

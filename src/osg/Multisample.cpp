@@ -39,7 +39,7 @@ void Multisample::apply(State& state) const
                                         
     if (!extensions->isMultisampleSupported())
     {
-        notify(WARN)<<"Warning: Multisample::apply(..) failed, Multisample is not support by OpenGL driver."<<std::endl;
+        OSG_WARN<<"Warning: Multisample::apply(..) failed, Multisample is not support by OpenGL driver."<<std::endl;
         return;
     }
 
@@ -102,7 +102,7 @@ void Multisample::Extensions::glSampleCoverage(GLclampf value, GLboolean invert)
     }
     else
     {
-        notify(WARN)<<"Error: glSampleCoverage not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glSampleCoverage not supported by OpenGL driver"<<std::endl;
     }
 }
 

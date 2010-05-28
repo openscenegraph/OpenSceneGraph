@@ -95,7 +95,7 @@ void Point::apply(State& state) const
     extensions->glPointParameterf(GL_POINT_SIZE_MIN, _minSize);
     extensions->glPointParameterf(GL_POINT_SIZE_MAX, _maxSize);
 #else
-    osg::notify(osg::NOTICE)<<"Warning: Point::apply(State&) - not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: Point::apply(State&) - not supported."<<std::endl;
 #endif
 }
 
@@ -166,7 +166,7 @@ void Point::Extensions::glPointParameteri(GLenum pname, GLint param) const
     }
     else
     {
-        notify(WARN)<<"Error: glPointParameteri not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glPointParameteri not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -178,7 +178,7 @@ void Point::Extensions::glPointParameterf(GLenum pname, GLfloat param) const
     }
     else
     {
-        notify(WARN)<<"Error: glPointParameterf not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glPointParameterf not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -190,6 +190,6 @@ void Point::Extensions::glPointParameterfv(GLenum pname, const GLfloat *params) 
     }
     else
     {
-        notify(WARN)<<"Error: glPointParameterfv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glPointParameterfv not supported by OpenGL driver"<<std::endl;
     }
 }

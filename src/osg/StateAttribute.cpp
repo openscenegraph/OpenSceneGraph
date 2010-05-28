@@ -27,7 +27,7 @@ StateAttribute::StateAttribute()
 
 void StateAttribute::addParent(osg::StateSet* object)
 {
-    osg::notify(osg::DEBUG_FP)<<"Adding parent"<<getRefMutex()<<std::endl;
+    OSG_DEBUG_FP<<"Adding parent"<<getRefMutex()<<std::endl;
     OpenThreads::ScopedPointerLock<OpenThreads::Mutex> lock(getRefMutex());
     
     _parents.push_back(object);
@@ -44,7 +44,7 @@ void StateAttribute::removeParent(osg::StateSet* object)
 
 void StateAttribute::setUpdateCallback(StateAttributeCallback* uc)
 {
-    osg::notify(osg::INFO)<<"StateAttribute::Setting Update callbacks"<<std::endl;
+    OSG_INFO<<"StateAttribute::Setting Update callbacks"<<std::endl;
 
     if (_updateCallback==uc) return;
     
@@ -56,13 +56,13 @@ void StateAttribute::setUpdateCallback(StateAttributeCallback* uc)
     
     if (delta!=0)
     {
-        osg::notify(osg::INFO)<<"Going to set StateAttribute parents"<<std::endl;
+        OSG_INFO<<"Going to set StateAttribute parents"<<std::endl;
 
         for(ParentList::iterator itr=_parents.begin();
             itr!=_parents.end();
             ++itr)
         {
-            osg::notify(osg::INFO)<<"   Setting StateAttribute parent"<<std::endl;
+            OSG_INFO<<"   Setting StateAttribute parent"<<std::endl;
 
             (*itr)->setNumChildrenRequiringUpdateTraversal((*itr)->getNumChildrenRequiringUpdateTraversal()+delta);
         }
@@ -71,7 +71,7 @@ void StateAttribute::setUpdateCallback(StateAttributeCallback* uc)
 
 void StateAttribute::setEventCallback(StateAttributeCallback* ec)
 {
-    osg::notify(osg::INFO)<<"StateAttribute::Setting Event callbacks"<<std::endl;
+    OSG_INFO<<"StateAttribute::Setting Event callbacks"<<std::endl;
 
     if (_eventCallback==ec) return;
     

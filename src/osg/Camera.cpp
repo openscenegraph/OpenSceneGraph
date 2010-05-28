@@ -88,7 +88,7 @@ void Camera::DrawCallback::operator () (osg::RenderInfo& renderInfo) const
     }
     else
     {
-        OSG_NOTIFY(osg::WARN)<<"Error: Camera::DrawCallback called without valid camera."<<std::endl;
+        OSG_WARN<<"Error: Camera::DrawCallback called without valid camera."<<std::endl;
     }
 }
 
@@ -126,7 +126,7 @@ void Camera::setRenderTargetImplementation(RenderTargetImplementation impl, Rend
     }
     else
     {
-        OSG_NOTIFY(osg::NOTICE)<<"Warning: Camera::setRenderTargetImplementation(impl,fallback) must have a lower rated fallback than the main target implementation."<<std::endl;
+        OSG_NOTICE<<"Warning: Camera::setRenderTargetImplementation(impl,fallback) must have a lower rated fallback than the main target implementation."<<std::endl;
         setRenderTargetImplementation(impl);
     }
 }
@@ -264,29 +264,25 @@ void Camera::attach(BufferComponent buffer, GLenum internalFormat)
     case DEPTH_BUFFER:
         if(_bufferAttachmentMap.find(PACKED_DEPTH_STENCIL_BUFFER) != _bufferAttachmentMap.end())
         {
-            notify(WARN)
-                << "Camera: DEPTH_BUFFER already attached as PACKED_DEPTH_STENCIL_BUFFER !"
-                << std::endl;
+            OSG_WARN << "Camera: DEPTH_BUFFER already attached as PACKED_DEPTH_STENCIL_BUFFER !" << std::endl;
         }
         break;
 
     case STENCIL_BUFFER:
         if(_bufferAttachmentMap.find(PACKED_DEPTH_STENCIL_BUFFER) != _bufferAttachmentMap.end())
         {
-            notify(WARN)
-                << "Camera: STENCIL_BUFFER already attached as PACKED_DEPTH_STENCIL_BUFFER !"
-                << std::endl;
+            OSG_WARN << "Camera: STENCIL_BUFFER already attached as PACKED_DEPTH_STENCIL_BUFFER !" << std::endl;
         }
         break;
 
     case PACKED_DEPTH_STENCIL_BUFFER:
         if(_bufferAttachmentMap.find(DEPTH_BUFFER) != _bufferAttachmentMap.end())
         {
-            notify(WARN) << "Camera: DEPTH_BUFFER already attached !" << std::endl;
+            OSG_WARN << "Camera: DEPTH_BUFFER already attached !" << std::endl;
         }
         if(_bufferAttachmentMap.find(STENCIL_BUFFER) != _bufferAttachmentMap.end())
         {
-            notify(WARN) << "Camera: STENCIL_BUFFER already attached !" << std::endl;
+            OSG_WARN << "Camera: STENCIL_BUFFER already attached !" << std::endl;
         }
         break;
     default:
@@ -393,7 +389,7 @@ void Camera::inheritCullSettings(const CullSettings& settings, unsigned int inhe
     const Camera* camera = dynamic_cast<const Camera*>(&settings);
     if (camera)
     {
-        //OSG_NOTIFY(osg::NOTICE)<<"Inheriting slave Camera"<<std::endl;
+        //OSG_NOTICE<<"Inheriting slave Camera"<<std::endl;
         if (inheritanceMask & CLEAR_COLOR)
             _clearColor = camera->_clearColor;
 

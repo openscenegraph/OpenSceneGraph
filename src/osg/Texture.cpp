@@ -72,7 +72,7 @@ unsigned int Texture::getMinimumNumberOfTextureObjectsToRetainInCache()
 
 Texture::TextureObject::~TextureObject()
 {
-    // osg::notify(osg::NOTICE)<<"Texture::TextureObject::~TextureObject() "<<this<<std::endl;
+    // OSG_NOTICE<<"Texture::TextureObject::~TextureObject() "<<this<<std::endl;
 }
 
 void Texture::TextureObject::bind()
@@ -144,7 +144,7 @@ void Texture::TextureProfile::computeSize()
         }
     }
 
-    // osg::notify(osg::NOTICE)<<"TO ("<<_width<<", "<<_height<<", "<<_depth<<") size="<<_size<<" numBitsPerTexel="<<numBitsPerTexel<<std::endl;
+    // OSG_NOTICE<<"TO ("<<_width<<", "<<_height<<", "<<_depth<<") size="<<_size<<" numBitsPerTexel="<<numBitsPerTexel<<std::endl;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,10 +164,10 @@ Texture::TextureObjectSet::TextureObjectSet(TextureObjectManager* parent, const 
 Texture::TextureObjectSet::~TextureObjectSet()
 {
 #if 0
-    osg::notify(osg::NOTICE)<<"TextureObjectSet::~TextureObjectSet(), _numOfTextureObjects="<<_numOfTextureObjects<<std::endl;
-    osg::notify(osg::NOTICE)<<"     _orphanedTextureObjects = "<<_orphanedTextureObjects.size()<<std::endl;
-    osg::notify(osg::NOTICE)<<"     _head = "<<_head<<std::endl;
-    osg::notify(osg::NOTICE)<<"     _tail = "<<_tail<<std::endl;
+    OSG_NOTICE<<"TextureObjectSet::~TextureObjectSet(), _numOfTextureObjects="<<_numOfTextureObjects<<std::endl;
+    OSG_NOTICE<<"     _orphanedTextureObjects = "<<_orphanedTextureObjects.size()<<std::endl;
+    OSG_NOTICE<<"     _head = "<<_head<<std::endl;
+    OSG_NOTICE<<"     _tail = "<<_tail<<std::endl;
 #endif
 }
 
@@ -176,7 +176,7 @@ bool Texture::TextureObjectSet::checkConsistency() const
 #ifndef CHECK_CONSISTENCY
     return true;
 #else
-    // osg::notify(osg::NOTICE)<<"TextureObjectSet::checkConsistency()"<<std::endl;
+    // OSG_NOTICE<<"TextureObjectSet::checkConsistency()"<<std::endl;
     // check consistency of linked list.
     unsigned int numInList = 0;
     Texture::TextureObject* to = _head;
@@ -188,7 +188,7 @@ bool Texture::TextureObjectSet::checkConsistency() const
         {
             if ((to->_next)->_previous != to)
             {
-                osg::notify(osg::NOTICE)<<"Texture::TextureObjectSet::checkConsistency() : Error (to->_next)->_previous != to "<<std::endl;
+                OSG_NOTICE<<"Texture::TextureObjectSet::checkConsistency() : Error (to->_next)->_previous != to "<<std::endl;
                 return false;
             }
         }
@@ -196,7 +196,7 @@ bool Texture::TextureObjectSet::checkConsistency() const
         {
             if (_tail != to)
             {
-                osg::notify(osg::NOTICE)<<"Texture::TextureObjectSet::checkConsistency() : Error _tail != to"<<std::endl;
+                OSG_NOTICE<<"Texture::TextureObjectSet::checkConsistency() : Error _tail != to"<<std::endl;
                 return false;
             }
         }
@@ -207,11 +207,11 @@ bool Texture::TextureObjectSet::checkConsistency() const
     unsigned int totalNumber = numInList + _orphanedTextureObjects.size();
     if (totalNumber != _numOfTextureObjects)
     {
-        osg::notify(osg::NOTICE)<<"Error numInList + _orphanedTextureObjects.size() != _numOfTextureObjects"<<std::endl;
-        osg::notify(osg::NOTICE)<<"    numInList = "<<numInList<<std::endl;
-        osg::notify(osg::NOTICE)<<"    _orphanedTextureObjects.size() = "<<_orphanedTextureObjects.size()<<std::endl;
-        osg::notify(osg::NOTICE)<<"    _pendingOrphanedTextureObjects.size() = "<<_pendingOrphanedTextureObjects.size()<<std::endl;
-        osg::notify(osg::NOTICE)<<"    _numOfTextureObjects = "<<_numOfTextureObjects<<std::endl;
+        OSG_NOTICE<<"Error numInList + _orphanedTextureObjects.size() != _numOfTextureObjects"<<std::endl;
+        OSG_NOTICE<<"    numInList = "<<numInList<<std::endl;
+        OSG_NOTICE<<"    _orphanedTextureObjects.size() = "<<_orphanedTextureObjects.size()<<std::endl;
+        OSG_NOTICE<<"    _pendingOrphanedTextureObjects.size() = "<<_pendingOrphanedTextureObjects.size()<<std::endl;
+        OSG_NOTICE<<"    _numOfTextureObjects = "<<_numOfTextureObjects<<std::endl;
         return false;
     }
 
@@ -221,7 +221,7 @@ bool Texture::TextureObjectSet::checkConsistency() const
 
 void Texture::TextureObjectSet::handlePendingOrphandedTextureObjects()
 {
-    // osg::notify(osg::NOTICE)<<"handlePendingOrphandedTextureObjects()"<<_pendingOrphanedTextureObjects.size()<<std::endl;
+    // OSG_NOTICE<<"handlePendingOrphandedTextureObjects()"<<_pendingOrphanedTextureObjects.size()<<std::endl;
 
     if (_pendingOrphanedTextureObjects.empty()) return;
 
@@ -238,10 +238,10 @@ void Texture::TextureObjectSet::handlePendingOrphandedTextureObjects()
         remove(to);
 
 #if 0
-        osg::notify(osg::NOTICE)<<"  HPOTO  after  _head = "<<_head<<std::endl;
-        osg::notify(osg::NOTICE)<<"  HPOTO  after _tail = "<<_tail<<std::endl;
-        osg::notify(osg::NOTICE)<<"  HPOTO  after to->_previous = "<<to->_previous<<std::endl;
-        osg::notify(osg::NOTICE)<<"  HPOTO  after to->_next = "<<to->_next<<std::endl;
+        OSG_NOTICE<<"  HPOTO  after  _head = "<<_head<<std::endl;
+        OSG_NOTICE<<"  HPOTO  after _tail = "<<_tail<<std::endl;
+        OSG_NOTICE<<"  HPOTO  after to->_previous = "<<to->_previous<<std::endl;
+        OSG_NOTICE<<"  HPOTO  after to->_next = "<<to->_next<<std::endl;
 #endif
 
     }
@@ -259,7 +259,7 @@ void Texture::TextureObjectSet::handlePendingOrphandedTextureObjects()
 
 void Texture::TextureObjectSet::deleteAllTextureObjects()
 {
-    // osg::notify(osg::NOTICE)<<"Texture::TextureObjectSet::deleteAllTextureObjects()"<<std::endl;
+    // OSG_NOTICE<<"Texture::TextureObjectSet::deleteAllTextureObjects()"<<std::endl;
 
     // move the pending orhpans into the orhans list
     handlePendingOrphandedTextureObjects();
@@ -285,12 +285,12 @@ void Texture::TextureObjectSet::deleteAllTextureObjects()
     // now do the actual delete.
     flushAllDeletedTextureObjects();
 
-    // osg::notify(osg::NOTICE)<<"done GLBufferObjectSet::deleteAllGLBufferObjects()"<<std::endl;
+    // OSG_NOTICE<<"done GLBufferObjectSet::deleteAllGLBufferObjects()"<<std::endl;
 }
 
 void Texture::TextureObjectSet::discardAllTextureObjects()
 {
-    // osg::notify(osg::NOTICE)<<"Texture::TextureObjectSet::discardAllTextureObjects()."<<std::endl;
+    // OSG_NOTICE<<"Texture::TextureObjectSet::discardAllTextureObjects()."<<std::endl;
 
     TextureObject* to = _head;
     while(to!=0)
@@ -325,7 +325,7 @@ void Texture::TextureObjectSet::discardAllTextureObjects()
 
 void Texture::TextureObjectSet::flushAllDeletedTextureObjects()
 {
-    // osg::notify(osg::NOTICE)<<"Texture::TextureObjectSet::flushAllDeletedTextureObjects()"<<std::endl;
+    // OSG_NOTICE<<"Texture::TextureObjectSet::flushAllDeletedTextureObjects()"<<std::endl;
 
     for(TextureObjectList::iterator itr = _orphanedTextureObjects.begin();
         itr != _orphanedTextureObjects.end();
@@ -334,7 +334,7 @@ void Texture::TextureObjectSet::flushAllDeletedTextureObjects()
 
         GLuint id = (*itr)->id();
 
-        // osg::notify(osg::NOTICE)<<"    Deleting textureobject ptr="<<itr->get()<<" id="<<id<<std::endl;
+        // OSG_NOTICE<<"    Deleting textureobject ptr="<<itr->get()<<" id="<<id<<std::endl;
         glDeleteTextures( 1L, &id);
     }
 
@@ -351,7 +351,7 @@ void Texture::TextureObjectSet::flushAllDeletedTextureObjects()
 
 void Texture::TextureObjectSet::discardAllDeletedTextureObjects()
 {
-    // osg::notify(osg::NOTICE)<<"Texture::TextureObjectSet::discardAllDeletedTextureObjects()"<<std::endl;
+    // OSG_NOTICE<<"Texture::TextureObjectSet::discardAllDeletedTextureObjects()"<<std::endl;
 
     // clean up the pending orphans.
     handlePendingOrphandedTextureObjects();
@@ -374,7 +374,7 @@ void Texture::TextureObjectSet::discardAllDeletedTextureObjects()
 
 void Texture::TextureObjectSet::flushDeletedTextureObjects(double currentTime, double& availableTime)
 {
-    // osg::notify(osg::NOTICE)<<"Texture::TextureObjectSet::flushDeletedTextureObjects(..)"<<std::endl;
+    // OSG_NOTICE<<"Texture::TextureObjectSet::flushDeletedTextureObjects(..)"<<std::endl;
 
     // if nothing to delete return
     if (_orphanedTextureObjects.empty()) return;
@@ -399,15 +399,15 @@ void Texture::TextureObjectSet::flushDeletedTextureObjects(double currentTime, d
 
         GLuint id = (*itr)->id();
 
-        // osg::notify(osg::NOTICE)<<"    Deleting textureobject ptr="<<itr->get()<<" id="<<id<<std::endl;
+        // OSG_NOTICE<<"    Deleting textureobject ptr="<<itr->get()<<" id="<<id<<std::endl;
         glDeleteTextures( 1L, &id);
 
         ++numDeleted;
     }
 
-    // osg::notify(osg::NOTICE)<<"Size before = "<<_orphanedTextureObjects.size();
+    // OSG_NOTICE<<"Size before = "<<_orphanedTextureObjects.size();
     _orphanedTextureObjects.erase(_orphanedTextureObjects.begin(), itr);
-    // osg::notify(osg::NOTICE)<<", after = "<<_orphanedTextureObjects.size()<<" numDeleted = "<<numDeleted<<std::endl;
+    // OSG_NOTICE<<", after = "<<_orphanedTextureObjects.size()<<" numDeleted = "<<numDeleted<<std::endl;
 
     // update the number of TO's in this TextureObjectSet
     _numOfTextureObjects -= numDeleted;
@@ -454,7 +454,7 @@ Texture::TextureObject* Texture::TextureObjectSet::takeFromOrphans(Texture* text
     // place at back of active list
     addToBack(to.get());
 
-    // osg::notify(osg::INFO)<<"Reusing orhpahned TextureObject, _numOfTextureObjects="<<_numOfTextureObjects<<std::endl;
+    // OSG_INFO<<"Reusing orhpahned TextureObject, _numOfTextureObjects="<<_numOfTextureObjects<<std::endl;
 
     return to.release();
 }
@@ -493,11 +493,11 @@ Texture::TextureObject* Texture::TextureObjectSet::takeOrGenerate(Texture* textu
         if (original_texture.valid())
         {
             original_texture->setTextureObject(_contextID,0);
-            osg::notify(osg::INFO)<<"TextureObjectSet="<<this<<": Reusing an active TextureObject "<<to.get()<<" _numOfTextureObjects="<<_numOfTextureObjects<<" width="<<_profile._width<<" height="<<_profile._height<<std::endl;
+            OSG_INFO<<"TextureObjectSet="<<this<<": Reusing an active TextureObject "<<to.get()<<" _numOfTextureObjects="<<_numOfTextureObjects<<" width="<<_profile._width<<" height="<<_profile._height<<std::endl;
         }
         else
         {
-            osg::notify(osg::INFO)<<"Reusing a recently orphaned active TextureObject "<<to.get()<<std::endl;
+            OSG_INFO<<"Reusing a recently orphaned active TextureObject "<<to.get()<<std::endl;
         }
 
         moveToBack(to.get());
@@ -524,7 +524,7 @@ Texture::TextureObject* Texture::TextureObjectSet::takeOrGenerate(Texture* textu
 
     addToBack(to);
 
-    osg::notify(osg::INFO)<<"Created new TextureObject, _numOfTextureObjects "<<_numOfTextureObjects<<std::endl;
+    OSG_INFO<<"Created new TextureObject, _numOfTextureObjects "<<_numOfTextureObjects<<std::endl;
 
     return to;
 }
@@ -532,11 +532,11 @@ Texture::TextureObject* Texture::TextureObjectSet::takeOrGenerate(Texture* textu
 void Texture::TextureObjectSet::moveToBack(Texture::TextureObject* to)
 {
 #if 0
-    osg::notify(osg::NOTICE)<<"TextureObjectSet::moveToBack("<<to<<")"<<std::endl;
-    osg::notify(osg::NOTICE)<<"    before _head = "<<_head<<std::endl;
-    osg::notify(osg::NOTICE)<<"    before _tail = "<<_tail<<std::endl;
-    osg::notify(osg::NOTICE)<<"    before to->_previous = "<<to->_previous<<std::endl;
-    osg::notify(osg::NOTICE)<<"    before to->_next = "<<to->_next<<std::endl;
+    OSG_NOTICE<<"TextureObjectSet::moveToBack("<<to<<")"<<std::endl;
+    OSG_NOTICE<<"    before _head = "<<_head<<std::endl;
+    OSG_NOTICE<<"    before _tail = "<<_tail<<std::endl;
+    OSG_NOTICE<<"    before to->_previous = "<<to->_previous<<std::endl;
+    OSG_NOTICE<<"    before to->_next = "<<to->_next<<std::endl;
 #endif
 
     to->_frameLastUsed = _parent->getFrameNumber();
@@ -547,7 +547,7 @@ void Texture::TextureObjectSet::moveToBack(Texture::TextureObject* to)
     // if no tail exists then assign 'to' as tail and head
     if (_tail==0)
     {
-        osg::notify(osg::NOTICE)<<"Error ***************** Should not get here !!!!!!!!!"<<std::endl;
+        OSG_NOTICE<<"Error ***************** Should not get here !!!!!!!!!"<<std::endl;
         _head = to;
         _tail = to;
         return;
@@ -555,7 +555,7 @@ void Texture::TextureObjectSet::moveToBack(Texture::TextureObject* to)
 
     if (to->_next==0)
     {
-        osg::notify(osg::NOTICE)<<"Error ***************** Should not get here either !!!!!!!!!"<<std::endl;
+        OSG_NOTICE<<"Error ***************** Should not get here either !!!!!!!!!"<<std::endl;
         return;
     }
 
@@ -583,10 +583,10 @@ void Texture::TextureObjectSet::moveToBack(Texture::TextureObject* to)
     _tail = to;
 
 #if 0
-    osg::notify(osg::NOTICE)<<"  m2B   after  _head = "<<_head<<std::endl;
-    osg::notify(osg::NOTICE)<<"  m2B   after _tail = "<<_tail<<std::endl;
-    osg::notify(osg::NOTICE)<<"  m2B   after to->_previous = "<<to->_previous<<std::endl;
-    osg::notify(osg::NOTICE)<<"  m2B   after to->_next = "<<to->_next<<std::endl;
+    OSG_NOTICE<<"  m2B   after  _head = "<<_head<<std::endl;
+    OSG_NOTICE<<"  m2B   after _tail = "<<_tail<<std::endl;
+    OSG_NOTICE<<"  m2B   after to->_previous = "<<to->_previous<<std::endl;
+    OSG_NOTICE<<"  m2B   after to->_next = "<<to->_next<<std::endl;
 #endif
     checkConsistency();
 }
@@ -594,11 +594,11 @@ void Texture::TextureObjectSet::moveToBack(Texture::TextureObject* to)
 void Texture::TextureObjectSet::addToBack(Texture::TextureObject* to)
 {
 #if 0
-    osg::notify(osg::NOTICE)<<"TextureObjectSet::addToBack("<<to<<")"<<std::endl;
-    osg::notify(osg::NOTICE)<<"    before _head = "<<_head<<std::endl;
-    osg::notify(osg::NOTICE)<<"    before _tail = "<<_tail<<std::endl;
-    osg::notify(osg::NOTICE)<<"    before to->_previous = "<<to->_previous<<std::endl;
-    osg::notify(osg::NOTICE)<<"    before to->_next = "<<to->_next<<std::endl;
+    OSG_NOTICE<<"TextureObjectSet::addToBack("<<to<<")"<<std::endl;
+    OSG_NOTICE<<"    before _head = "<<_head<<std::endl;
+    OSG_NOTICE<<"    before _tail = "<<_tail<<std::endl;
+    OSG_NOTICE<<"    before to->_previous = "<<to->_previous<<std::endl;
+    OSG_NOTICE<<"    before to->_next = "<<to->_next<<std::endl;
 #endif
 
     if (to->_previous !=0 || to->_next !=0)
@@ -616,17 +616,17 @@ void Texture::TextureObjectSet::addToBack(Texture::TextureObject* to)
         _tail = to;
     }
 #if 0
-    osg::notify(osg::NOTICE)<<"  a2B  after  _head = "<<_head<<std::endl;
-    osg::notify(osg::NOTICE)<<"  a2B   after _tail = "<<_tail<<std::endl;
-    osg::notify(osg::NOTICE)<<"  a2B   after to->_previous = "<<to->_previous<<std::endl;
-    osg::notify(osg::NOTICE)<<"  a2B   after to->_next = "<<to->_next<<std::endl;
+    OSG_NOTICE<<"  a2B  after  _head = "<<_head<<std::endl;
+    OSG_NOTICE<<"  a2B   after _tail = "<<_tail<<std::endl;
+    OSG_NOTICE<<"  a2B   after to->_previous = "<<to->_previous<<std::endl;
+    OSG_NOTICE<<"  a2B   after to->_next = "<<to->_next<<std::endl;
 #endif
     checkConsistency();
 }
 
 void Texture::TextureObjectSet::orphan(Texture::TextureObject* to)
 {
-    // osg::notify(osg::NOTICE)<<"TextureObjectSet::orphan("<<to<<")"<<std::endl;
+    // OSG_NOTICE<<"TextureObjectSet::orphan("<<to<<")"<<std::endl;
 
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
@@ -641,8 +641,8 @@ void Texture::TextureObjectSet::orphan(Texture::TextureObject* to)
     _pendingOrphanedTextureObjects.push_back(to);
 
 #if 0
-    osg::notify(osg::NOTICE)<<"TextureObjectSet::orphan("<<to<<")  _pendingOrphanedTextureObjects.size()="<<_pendingOrphanedTextureObjects.size()<<std::endl;
-    osg::notify(osg::NOTICE)<<"                                    _orphanedTextureObjects.size()="<<_orphanedTextureObjects.size()<<std::endl;
+    OSG_NOTICE<<"TextureObjectSet::orphan("<<to<<")  _pendingOrphanedTextureObjects.size()="<<_pendingOrphanedTextureObjects.size()<<std::endl;
+    OSG_NOTICE<<"                                    _orphanedTextureObjects.size()="<<_orphanedTextureObjects.size()<<std::endl;
 #endif
 }
 
@@ -712,7 +712,7 @@ void Texture::TextureObjectManager::setMaxTexturePoolSize(unsigned int size)
 
     if (size<_currTexturePoolSize)
     {
-        osg::notify(osg::NOTICE)<<"Warning: new MaxTexturePoolSize="<<size<<" is smaller than current TexturePoolSize="<<_currTexturePoolSize<<std::endl;
+        OSG_NOTICE<<"Warning: new MaxTexturePoolSize="<<size<<" is smaller than current TexturePoolSize="<<_currTexturePoolSize<<std::endl;
     }
 
     _maxTexturePoolSize = size;
@@ -772,7 +772,7 @@ void Texture::TextureObjectManager::handlePendingOrphandedTextureObjects()
 
 void Texture::TextureObjectManager::deleteAllTextureObjects()
 {
-    // osg::notify(osg::NOTICE)<<"Texture::TextureObjectManager::deleteAllTextureObjects() _contextID="<<_contextID<<std::endl;
+    // OSG_NOTICE<<"Texture::TextureObjectManager::deleteAllTextureObjects() _contextID="<<_contextID<<std::endl;
 
     ElapsedTime elapsedTime(&(getDeleteTime()));
 
@@ -786,7 +786,7 @@ void Texture::TextureObjectManager::deleteAllTextureObjects()
 
 void Texture::TextureObjectManager::discardAllTextureObjects()
 {
-    // osg::notify(osg::NOTICE)<<"Texture::TextureObjectManager::discardAllTextureObjects() _contextID="<<_contextID<<" _numActiveTextureObjects="<<_numActiveTextureObjects<<std::endl;
+    // OSG_NOTICE<<"Texture::TextureObjectManager::discardAllTextureObjects() _contextID="<<_contextID<<" _numActiveTextureObjects="<<_numActiveTextureObjects<<std::endl;
 
     for(TextureSetMap::iterator itr = _textureSetMap.begin();
         itr != _textureSetMap.end();
@@ -798,7 +798,7 @@ void Texture::TextureObjectManager::discardAllTextureObjects()
 
 void Texture::TextureObjectManager::flushAllDeletedTextureObjects()
 {
-    // osg::notify(osg::NOTICE)<<"Texture::TextureObjectManager::flushAllDeletedTextureObjects() _contextID="<<_contextID<<std::endl;
+    // OSG_NOTICE<<"Texture::TextureObjectManager::flushAllDeletedTextureObjects() _contextID="<<_contextID<<std::endl;
 
     ElapsedTime elapsedTime(&(getDeleteTime()));
 
@@ -812,7 +812,7 @@ void Texture::TextureObjectManager::flushAllDeletedTextureObjects()
 
 void Texture::TextureObjectManager::discardAllDeletedTextureObjects()
 {
-    // osg::notify(osg::NOTICE)<<"Texture::TextureObjectManager::discardAllDeletedTextureObjects() _contextID="<<_contextID<<" _numActiveTextureObjects="<<_numActiveTextureObjects<<std::endl;
+    // OSG_NOTICE<<"Texture::TextureObjectManager::discardAllDeletedTextureObjects() _contextID="<<_contextID<<" _numActiveTextureObjects="<<_numActiveTextureObjects<<std::endl;
 
     for(TextureSetMap::iterator itr = _textureSetMap.begin();
         itr != _textureSetMap.end();
@@ -837,7 +837,7 @@ void Texture::TextureObjectManager::flushDeletedTextureObjects(double currentTim
 void Texture::TextureObjectManager::releaseTextureObject(Texture::TextureObject* to)
 {
     if (to->_set) to->_set->orphan(to);
-    else osg::notify(osg::NOTICE)<<"TextureObjectManager::releaseTextureObject(Texture::TextureObject* to) Not implemented yet"<<std::endl;
+    else OSG_NOTICE<<"TextureObjectManager::releaseTextureObject(Texture::TextureObject* to) Not implemented yet"<<std::endl;
 }
 
 
@@ -852,11 +852,11 @@ void Texture::TextureObjectManager::newFrame(osg::FrameStamp* fs)
 void Texture::TextureObjectManager::reportStats()
 {
     double numFrames(_numFrames==0 ? 1.0 : _numFrames);
-    osg::notify(osg::NOTICE)<<"TextureObjectMananger::reportStats()"<<std::endl;
-    osg::notify(osg::NOTICE)<<"   total _numOfTextureObjects="<<_numActiveTextureObjects<<", _numOrphanedTextureObjects="<<_numOrphanedTextureObjects<<" _currTexturePoolSize="<<_currTexturePoolSize<<std::endl;
-    osg::notify(osg::NOTICE)<<"   total _numGenerated="<<_numGenerated<<", _generateTime="<<_generateTime<<", averagePerFrame="<<_generateTime/numFrames*1000.0<<"ms"<<std::endl;
-    osg::notify(osg::NOTICE)<<"   total _numDeleted="<<_numDeleted<<", _deleteTime="<<_deleteTime<<", averagePerFrame="<<_deleteTime/numFrames*1000.0<<"ms"<<std::endl;
-    osg::notify(osg::NOTICE)<<"   total _numApplied="<<_numApplied<<", _applyTime="<<_applyTime<<", averagePerFrame="<<_applyTime/numFrames*1000.0<<"ms"<<std::endl;
+    OSG_NOTICE<<"TextureObjectMananger::reportStats()"<<std::endl;
+    OSG_NOTICE<<"   total _numOfTextureObjects="<<_numActiveTextureObjects<<", _numOrphanedTextureObjects="<<_numOrphanedTextureObjects<<" _currTexturePoolSize="<<_currTexturePoolSize<<std::endl;
+    OSG_NOTICE<<"   total _numGenerated="<<_numGenerated<<", _generateTime="<<_generateTime<<", averagePerFrame="<<_generateTime/numFrames*1000.0<<"ms"<<std::endl;
+    OSG_NOTICE<<"   total _numDeleted="<<_numDeleted<<", _deleteTime="<<_deleteTime<<", averagePerFrame="<<_deleteTime/numFrames*1000.0<<"ms"<<std::endl;
+    OSG_NOTICE<<"   total _numApplied="<<_numApplied<<", _applyTime="<<_applyTime<<", averagePerFrame="<<_applyTime/numFrames*1000.0<<"ms"<<std::endl;
 }
 
 void Texture::TextureObjectManager::resetStats()
@@ -1044,7 +1044,7 @@ void Texture::setWrap(WrapParameter which, WrapMode wrap)
         case WRAP_S : _wrap_s = wrap; dirtyTextureParameters(); break;
         case WRAP_T : _wrap_t = wrap; dirtyTextureParameters(); break;
         case WRAP_R : _wrap_r = wrap; dirtyTextureParameters(); break;
-        default : notify(WARN)<<"Error: invalid 'which' passed Texture::setWrap("<<(unsigned int)which<<","<<(unsigned int)wrap<<")"<<std::endl; break;
+        default : OSG_WARN<<"Error: invalid 'which' passed Texture::setWrap("<<(unsigned int)which<<","<<(unsigned int)wrap<<")"<<std::endl; break;
     }
     
 }
@@ -1057,7 +1057,7 @@ Texture::WrapMode Texture::getWrap(WrapParameter which) const
         case WRAP_S : return _wrap_s;
         case WRAP_T : return _wrap_t;
         case WRAP_R : return _wrap_r;
-        default : notify(WARN)<<"Error: invalid 'which' passed Texture::getWrap(which)"<<std::endl; return _wrap_s;
+        default : OSG_WARN<<"Error: invalid 'which' passed Texture::getWrap(which)"<<std::endl; return _wrap_s;
     }
 }
 
@@ -1068,7 +1068,7 @@ void Texture::setFilter(FilterParameter which, FilterMode filter)
     {
         case MIN_FILTER : _min_filter = filter; dirtyTextureParameters(); break;
         case MAG_FILTER : _mag_filter = filter; dirtyTextureParameters(); break;
-        default : notify(WARN)<<"Error: invalid 'which' passed Texture::setFilter("<<(unsigned int)which<<","<<(unsigned int)filter<<")"<<std::endl; break;
+        default : OSG_WARN<<"Error: invalid 'which' passed Texture::setFilter("<<(unsigned int)which<<","<<(unsigned int)filter<<")"<<std::endl; break;
     }
 }
 
@@ -1079,7 +1079,7 @@ Texture::FilterMode Texture::getFilter(FilterParameter which) const
     {
         case MIN_FILTER : return _min_filter;
         case MAG_FILTER : return _mag_filter;
-        default : notify(WARN)<<"Error: invalid 'which' passed Texture::getFilter(which)"<< std::endl; return _min_filter;
+        default : OSG_WARN<<"Error: invalid 'which' passed Texture::getFilter(which)"<< std::endl; return _min_filter;
     }
 }
 
@@ -1215,7 +1215,7 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
 
     computeInternalFormatType();
     
-    //osg::notify(osg::NOTICE)<<"Internal format="<<std::hex<<internalFormat<<std::dec<<std::endl;
+    //OSG_NOTICE<<"Internal format="<<std::hex<<internalFormat<<std::dec<<std::endl;
 }
 
 void Texture::computeInternalFormatType() const
@@ -1328,7 +1328,7 @@ void Texture::getCompressedSize(GLenum internalFormat, GLint width, GLint height
         blockSize = 16;
     else
     {
-        notify(WARN)<<"Texture::getCompressedSize(...) : cannot compute correct size of compressed format ("<<internalFormat<<") returning 0."<<std::endl;
+        OSG_WARN<<"Texture::getCompressedSize(...) : cannot compute correct size of compressed format ("<<internalFormat<<") returning 0."<<std::endl;
         blockSize = 0;
     }
          
@@ -1500,8 +1500,8 @@ void Texture::computeRequiredTextureDimensions(State& state, const osg::Image& i
         for(int s=1; s<width || s<height; s <<= 1, ++numMipmapLevels) {}
     }
 
-    // osg::notify(osg::NOTICE)<<"Texture::computeRequiredTextureDimensions() image.s() "<<image.s()<<" image.t()="<<image.t()<<" width="<<width<<" height="<<height<<" numMipmapLevels="<<numMipmapLevels<<std::endl; 
-    // osg::notify(osg::NOTICE)<<"  _resizeNonPowerOfTwoHint="<<_resizeNonPowerOfTwoHint<<" extensions->isNonPowerOfTwoTextureSupported(_min_filter)="<<extensions->isNonPowerOfTwoTextureSupported(_min_filter) <<std::endl; 
+    // OSG_NOTICE<<"Texture::computeRequiredTextureDimensions() image.s() "<<image.s()<<" image.t()="<<image.t()<<" width="<<width<<" height="<<height<<" numMipmapLevels="<<numMipmapLevels<<std::endl; 
+    // OSG_NOTICE<<"  _resizeNonPowerOfTwoHint="<<_resizeNonPowerOfTwoHint<<" extensions->isNonPowerOfTwoTextureSupported(_min_filter)="<<extensions->isNonPowerOfTwoTextureSupported(_min_filter) <<std::endl; 
 }
 
 bool Texture::areAllTextureObjectsLoaded() const
@@ -1522,7 +1522,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
 
 #ifdef DO_TIMING
     osg::Timer_t start_tick = osg::Timer::instance()->tick();
-    osg::notify(osg::NOTICE)<<"glTexImage2D pixelFormat = "<<std::hex<<image->getPixelFormat()<<std::dec<<std::endl;
+    OSG_NOTICE<<"glTexImage2D pixelFormat = "<<std::hex<<image->getPixelFormat()<<std::dec<<std::endl;
 #endif
 
     // get the contextID (user defined ID of 0 upwards) for the 
@@ -1542,7 +1542,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         (((inwidth >> 2) << 2) != inwidth ||
          ((inheight >> 2) << 2) != inheight))
     {
-        osg::notify(osg::NOTICE)<<"Received a request to compress an image, but image size is not a multiple of four ("<<inwidth<<"x"<<inheight<<"). Reverting to uncompressed.\n";
+        OSG_NOTICE<<"Received a request to compress an image, but image size is not a multiple of four ("<<inwidth<<"x"<<inheight<<"). Reverting to uncompressed.\n";
         switch(_internalFormat)
         {
             case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
@@ -1576,7 +1576,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
 
     unsigned char* dataPtr = (unsigned char*)image->data();
 
-    // osg::notify(osg::NOTICE)<<"inwidth="<<inwidth<<" inheight="<<inheight<<" image->getFileName()"<<image->getFileName()<<std::endl;
+    // OSG_NOTICE<<"inwidth="<<inwidth<<" inheight="<<inheight<<" image->getFileName()"<<image->getFileName()<<std::endl;
 
     bool needImageRescale = inwidth!=image->s() || inheight!=image->t();
     if (needImageRescale)
@@ -1586,12 +1586,12 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         
         if (image->isMipmap())
         {
-            notify(WARN)<<"Warning:: Mipmapped osg::Image not a power of two, cannot apply to texture."<<std::endl;
+            OSG_WARN<<"Warning:: Mipmapped osg::Image not a power of two, cannot apply to texture."<<std::endl;
             return;
         }
         else if (compressed_image)
         {
-            notify(WARN)<<"Warning:: Compressed osg::Image not a power of two, cannot apply to texture."<<std::endl;
+            OSG_WARN<<"Warning:: Compressed osg::Image not a power of two, cannot apply to texture."<<std::endl;
             return;
         }
         
@@ -1600,12 +1600,12 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         
         if (!dataPtr)
         {
-            notify(WARN)<<"Warning:: Not enough memory to resize image, cannot apply to texture."<<std::endl;
+            OSG_WARN<<"Warning:: Not enough memory to resize image, cannot apply to texture."<<std::endl;
             return;
         }
 
-        if (!image->getFileName().empty()) notify(NOTICE) << "Scaling image '"<<image->getFileName()<<"' from ("<<image->s()<<","<<image->t()<<") to ("<<inwidth<<","<<inheight<<")"<<std::endl;
-        else notify(NOTICE) << "Scaling image from ("<<image->s()<<","<<image->t()<<") to ("<<inwidth<<","<<inheight<<")"<<std::endl;
+        if (!image->getFileName().empty()) { OSG_NOTICE << "Scaling image '"<<image->getFileName()<<"' from ("<<image->s()<<","<<image->t()<<") to ("<<inwidth<<","<<inheight<<")"<<std::endl; }
+        else { OSG_NOTICE << "Scaling image from ("<<image->s()<<","<<image->t()<<") to ("<<inwidth<<","<<inheight<<")"<<std::endl; }
 
         // rescale the image to the correct size.
         glPixelStorei(GL_PACK_ALIGNMENT,image->getPacking());
@@ -1613,7 +1613,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                       image->s(),image->t(),image->getDataType(),image->data(),
                       inwidth,inheight,image->getDataType(),dataPtr);
 #else
-        osg::notify(osg::NOTICE)<<"Warning: gluScaleImage(..) not supported, cannot subload image."<<std::endl;
+        OSG_NOTICE<<"Warning: gluScaleImage(..) not supported, cannot subload image."<<std::endl;
         return;
 #endif
     }    
@@ -1628,7 +1628,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         state.bindPixelBufferObject(pbo);
         dataPtr = reinterpret_cast<unsigned char*>(pbo->getOffset(image->getBufferIndex()));
 #ifdef DO_TIMING
-        osg::notify(osg::NOTICE)<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
+        OSG_NOTICE<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 #endif
     }
     else
@@ -1742,12 +1742,12 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                     height >>= 1;
                 }
 #else
-                osg::notify(osg::NOTICE)<<"Warning:: gluBuild2DMipMaps(..) not supported."<<std::endl;
+                OSG_NOTICE<<"Warning:: gluBuild2DMipMaps(..) not supported."<<std::endl;
 #endif
             }
             else 
             {
-                notify(WARN)<<"Warning:: Compressed image cannot be mip mapped"<<std::endl;
+                OSG_WARN<<"Warning:: Compressed image cannot be mip mapped"<<std::endl;
             }
 
         }
@@ -1763,7 +1763,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     static double s_total_time = 0.0;
     double delta_time = osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick());
     s_total_time += delta_time;
-    osg::notify(osg::NOTICE)<<"glTexImage2D "<<delta_time<<"ms  total "<<s_total_time<<"ms"<<std::endl;
+    OSG_NOTICE<<"glTexImage2D "<<delta_time<<"ms  total "<<s_total_time<<"ms"<<std::endl;
 #endif
 
     if (needImageRescale)
@@ -1809,7 +1809,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
 
 #ifdef DO_TIMING
     osg::Timer_t start_tick = osg::Timer::instance()->tick();
-    osg::notify(osg::NOTICE)<<"glTexSubImage2D pixelFormat = "<<std::hex<<image->getPixelFormat()<<std::dec<<std::endl;
+    OSG_NOTICE<<"glTexSubImage2D pixelFormat = "<<std::hex<<image->getPixelFormat()<<std::dec<<std::endl;
 #endif
    
 
@@ -1833,12 +1833,12 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
         // resize the image to power of two.
         if (image->isMipmap())
         {
-            notify(WARN)<<"Warning:: Mipmapped osg::Image not a power of two, cannot apply to texture."<<std::endl;
+            OSG_WARN<<"Warning:: Mipmapped osg::Image not a power of two, cannot apply to texture."<<std::endl;
             return;
         }
         else if (compressed_image)
         {
-            notify(WARN)<<"Warning:: Compressed osg::Image not a power of two, cannot apply to texture."<<std::endl;
+            OSG_WARN<<"Warning:: Compressed osg::Image not a power of two, cannot apply to texture."<<std::endl;
             return;
         }
 
@@ -1847,12 +1847,12 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
 
         if (!data)
         {
-            notify(WARN)<<"Warning:: Not enough memory to resize image, cannot apply to texture."<<std::endl;
+            OSG_WARN<<"Warning:: Not enough memory to resize image, cannot apply to texture."<<std::endl;
             return;
         }
 
-        if (!image->getFileName().empty()) notify(NOTICE) << "Scaling image '"<<image->getFileName()<<"' from ("<<image->s()<<","<<image->t()<<") to ("<<inwidth<<","<<inheight<<")"<<std::endl;
-        else notify(NOTICE) << "Scaling image from ("<<image->s()<<","<<image->t()<<") to ("<<inwidth<<","<<inheight<<")"<<std::endl;
+        if (!image->getFileName().empty()) { OSG_NOTICE << "Scaling image '"<<image->getFileName()<<"' from ("<<image->s()<<","<<image->t()<<") to ("<<inwidth<<","<<inheight<<")"<<std::endl; }
+        else { OSG_NOTICE << "Scaling image from ("<<image->s()<<","<<image->t()<<") to ("<<inwidth<<","<<inheight<<")"<<std::endl; }
 
         // rescale the image to the correct size.
         glPixelStorei(GL_PACK_ALIGNMENT,image->getPacking());
@@ -1860,7 +1860,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                       image->s(),image->t(),image->getDataType(),image->data(),
                       inwidth,inheight,image->getDataType(),data);
 #else
-        osg::notify(osg::NOTICE)<<"Warning: gluScaleImage(..) not supported, cannot subload image."<<std::endl;
+        OSG_NOTICE<<"Warning: gluScaleImage(..) not supported, cannot subload image."<<std::endl;
         return;
 #endif
     }
@@ -1877,7 +1877,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
         state.bindPixelBufferObject(pbo);
         dataPtr = reinterpret_cast<unsigned char*>(pbo->getOffset(image->getBufferIndex()));
 #ifdef DO_TIMING
-        osg::notify(osg::NOTICE)<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
+        OSG_NOTICE<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 #endif
     }
     else
@@ -1975,7 +1975,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
         }
         else
         {
-            //notify(WARN)<<"Warning:: cannot subload mip mapped texture from non mipmapped image."<<std::endl;
+            //OSG_WARN<<"Warning:: cannot subload mip mapped texture from non mipmapped image."<<std::endl;
             applyTexImage2D_load(state, target, image, inwidth, inheight,numMipmapLevels); 
             return;
         }
@@ -1986,7 +1986,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
         state.unbindPixelBufferObject();
     }
 #ifdef DO_TIMING
-    osg::notify(osg::NOTICE)<<"glTexSubImage2D "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
+    OSG_NOTICE<<"glTexSubImage2D "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 #endif
 
     if (needImageRescale)
@@ -2125,8 +2125,8 @@ void Texture::resizeGLObjectBuffers(unsigned int maxSize)
 
 void Texture::releaseGLObjects(State* state) const
 {
-//    if (state) osg::notify(osg::NOTICE)<<"Texture::releaseGLObjects contextID="<<state->getContextID()<<std::endl;
-//    else osg::notify(osg::NOTICE)<<"Texture::releaseGLObjects no State "<<std::endl;
+//    if (state) OSG_NOTICE<<"Texture::releaseGLObjects contextID="<<state->getContextID()<<std::endl;
+//    else OSG_NOTICE<<"Texture::releaseGLObjects no State "<<std::endl;
 
     if (!state) const_cast<Texture*>(this)->dirtyTextureObject();
     else
@@ -2157,7 +2157,7 @@ Texture::Extensions::Extensions(unsigned int contextID)
     const char* version = (const char*) glGetString( GL_VERSION );
     if (!version)
     {
-        osg::notify(osg::FATAL)<<"Error: In Texture::Extensions::setupGLExtensions(..) OpenGL version test failed, requires valid graphics context."<<std::endl;
+        OSG_FATAL<<"Error: In Texture::Extensions::setupGLExtensions(..) OpenGL version test failed, requires valid graphics context."<<std::endl;
         return;
     }
     
@@ -2206,14 +2206,14 @@ Texture::Extensions::Extensions(unsigned int contextID)
     if (rendererString.find("Radeon")!=std::string::npos || rendererString.find("RADEON")!=std::string::npos)
     {
         _isNonPowerOfTwoTextureMipMappedSupported = false;
-        osg::notify(osg::INFO)<<"Disabling _isNonPowerOfTwoTextureMipMappedSupported for ATI hardware."<<std::endl;
+        OSG_INFO<<"Disabling _isNonPowerOfTwoTextureMipMappedSupported for ATI hardware."<<std::endl;
     }
     #endif
     
     if (rendererString.find("GeForce FX")!=std::string::npos)
     {
         _isNonPowerOfTwoTextureMipMappedSupported = false;
-        osg::notify(osg::INFO)<<"Disabling _isNonPowerOfTwoTextureMipMappedSupported for GeForce FX hardware."<<std::endl;
+        OSG_INFO<<"Disabling _isNonPowerOfTwoTextureMipMappedSupported for GeForce FX hardware."<<std::endl;
     }
 
     glGetIntegerv(GL_MAX_TEXTURE_SIZE,&_maxTextureSize);

@@ -203,7 +203,7 @@ void Texture3D::apply(State& state) const
                                         
     if (!extensions->isTexture3DSupported())
     {
-        notify(WARN)<<"Warning: Texture3D::apply(..) failed, 3D texturing is not support by OpenGL driver."<<std::endl;
+        OSG_WARN<<"Warning: Texture3D::apply(..) failed, 3D texturing is not support by OpenGL driver."<<std::endl;
         return;
     }
 
@@ -367,7 +367,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
 
     if (compressed)
     {
-        //notify(WARN)<<"Warning::cannot currently use compressed format with 3D textures."<<std::endl;
+        //OSG_WARN<<"Warning::cannot currently use compressed format with 3D textures."<<std::endl;
         //return;
     }    
     
@@ -404,7 +404,7 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
         }
         else if (extensions->isCompressedTexImage3DSupported())
         {
-            // notify(WARN)<<"glCompressedTexImage3D "<<inwidth<<", "<<inheight<<", "<<indepth<<std::endl;
+            // OSG_WARN<<"glCompressedTexImage3D "<<inwidth<<", "<<inheight<<", "<<indepth<<std::endl;
             numMipmapLevels = 1;
 
             GLint blockSize, size;
@@ -494,7 +494,7 @@ void Texture3D::copyTexSubImage3D(State& state, int xoffset, int yoffset, int zo
     }
     else
     {
-        notify(WARN)<<"Warning: Texture3D::copyTexSubImage3D(..) failed, cannot not copy to a non existant texture."<<std::endl;
+        OSG_WARN<<"Warning: Texture3D::copyTexSubImage3D(..) failed, cannot not copy to a non existant texture."<<std::endl;
     }
 }
 
@@ -624,7 +624,7 @@ void Texture3D::Extensions::glTexImage3D( GLenum target, GLint level, GLenum int
     }
     else
     {
-        notify(WARN)<<"Error: glTexImage3D not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glTexImage3D not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -637,7 +637,7 @@ void Texture3D::Extensions::glTexSubImage3D( GLenum target, GLint level, GLint x
     }
     else
     {
-        notify(WARN)<<"Error: glTexSubImage3D not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glTexSubImage3D not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -649,7 +649,7 @@ void Texture3D::Extensions::glCompressedTexImage3D(GLenum target, GLint level, G
     }
     else
     {
-        notify(WARN)<<"Error: glCompressedTexImage3D not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glCompressedTexImage3D not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -661,7 +661,7 @@ void Texture3D::Extensions::glCompressedTexSubImage3D( GLenum target, GLint leve
     }
     else
     {
-        notify(WARN)<<"Error: glCompressedTexImage2D not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glCompressedTexImage2D not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -674,7 +674,7 @@ void Texture3D::Extensions::glCopyTexSubImage3D( GLenum target, GLint level, GLi
     }
     else
     {
-        notify(WARN)<<"Error: glCopyTexSubImage3D not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glCopyTexSubImage3D not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -687,6 +687,6 @@ void Texture3D::Extensions::gluBuild3DMipmaps( GLenum target, GLint internalForm
     }
     else
     {
-        notify(WARN)<<"Error: gluBuild3DMipmaps not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: gluBuild3DMipmaps not supported by OpenGL driver"<<std::endl;
     }
 }

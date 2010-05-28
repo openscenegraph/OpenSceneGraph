@@ -169,7 +169,7 @@ void AnimationMaterialCallback::operator()(osg::Node* node, osg::NodeVisitor* nv
             // Only update _firstTime the first time, when its value is still DBL_MAX
             if (_firstTime==DBL_MAX)
             {
-                osg::notify(osg::INFO)<<"AnimationMaterialCallback::operator() resetting _firstTime to "<<time<<std::endl;
+                OSG_INFO<<"AnimationMaterialCallback::operator() resetting _firstTime to "<<time<<std::endl;
                 _firstTime = time;
             }
             update(*node);

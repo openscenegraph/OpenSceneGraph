@@ -37,7 +37,7 @@ SlideEventHandler* SlideEventHandler::instance() { return s_seh.get(); }
 
 void LayerAttributes::callEnterCallbacks(osg::Node* node)
 {
-    osg::notify(osg::INFO)<<"LayerAttributes::callEnterCallbacks("<<node<<")"<<std::endl;
+    OSG_INFO<<"LayerAttributes::callEnterCallbacks("<<node<<")"<<std::endl;
     for(LayerCallbacks::iterator itr = _enterLayerCallbacks.begin();
         itr != _enterLayerCallbacks.end();
         ++itr)
@@ -48,7 +48,7 @@ void LayerAttributes::callEnterCallbacks(osg::Node* node)
 
 void LayerAttributes::callLeaveCallbacks(osg::Node* node)
 {
-    osg::notify(osg::INFO)<<"LayerAttributes::callLeaveCallbacks("<<node<<")"<<std::endl;
+    OSG_INFO<<"LayerAttributes::callLeaveCallbacks("<<node<<")"<<std::endl;
     for(LayerCallbacks::iterator itr = _leaveLayerCallbacks.begin();
         itr != _leaveLayerCallbacks.end();
         ++itr)
@@ -67,7 +67,7 @@ struct ImageStreamOperator : public ObjectOperator
 
     virtual void enter()
     {
-        osg::notify(osg::INFO)<<"enter() : _imageStream->rewind() + play"<<std::endl;
+        OSG_INFO<<"enter() : _imageStream->rewind() + play"<<std::endl;
 
         reset();
     }
@@ -78,14 +78,14 @@ struct ImageStreamOperator : public ObjectOperator
     
     virtual void leave()
     {
-       osg::notify(osg::INFO)<<"leave() : _imageStream->pause()"<<std::endl;
+       OSG_INFO<<"leave() : _imageStream->pause()"<<std::endl;
 
         _imageStream->pause();
     }
 
     virtual void setPause(bool pause)
     {
-       osg::notify(osg::INFO)<<"_imageStream->setPause("<<pause<<")"<<std::endl;
+       OSG_INFO<<"_imageStream->setPause("<<pause<<")"<<std::endl;
 
         if (pause) _imageStream->pause();
         else _imageStream->play();
@@ -141,17 +141,17 @@ struct CallbackOperator : public ObjectOperator
         AnimationMaterialCallback* amc = dynamic_cast<AnimationMaterialCallback*>(_callback.get());
         if (apc)
         {
-            osg::notify(osg::INFO)<<"apc->setPause("<<pause<<")"<<std::endl;
+            OSG_INFO<<"apc->setPause("<<pause<<")"<<std::endl;
             apc->setPause(pause);
         }
         if (tc)
         {
-            osg::notify(osg::INFO)<<"tc->setPause("<<pause<<")"<<std::endl;
+            OSG_INFO<<"tc->setPause("<<pause<<")"<<std::endl;
             tc->setPause(pause);
         }
         if (amc)
         {
-            osg::notify(osg::INFO)<<"amc->setPause("<<pause<<")"<<std::endl;
+            OSG_INFO<<"amc->setPause("<<pause<<")"<<std::endl;
             amc->setPause(pause);
         }
     }
@@ -197,7 +197,7 @@ struct LayerAttributesOperator : public ObjectOperator
 
         if (!_layerAttribute->_keys.empty())
         {
-            osg::notify(osg::INFO)<<"applyKeys {"<<std::endl;
+            OSG_INFO<<"applyKeys {"<<std::endl;
 
             for(LayerAttributes::Keys::iterator itr = _layerAttribute->_keys.begin();
                 itr != _layerAttribute->_keys.end();
@@ -206,7 +206,7 @@ struct LayerAttributesOperator : public ObjectOperator
                 SlideEventHandler::instance()->dispatchEvent(*itr);
             }
 
-            osg::notify(osg::INFO)<<"}"<<std::endl;
+            OSG_INFO<<"}"<<std::endl;
         }   
         if (!_layerAttribute->_runStrings.empty())
         {
@@ -215,12 +215,12 @@ struct LayerAttributesOperator : public ObjectOperator
                 ++itr)
             {
 
-                osg::notify(osg::NOTICE)<<"Run "<<itr->c_str()<<std::endl;
+                OSG_NOTICE<<"Run "<<itr->c_str()<<std::endl;
                 osg::Timer_t startTick = osg::Timer::instance()->tick();
 
                 int result = system(itr->c_str());
 
-                osg::notify(osg::INFO)<<"system("<<*itr<<") result "<<result<<std::endl;
+                OSG_INFO<<"system("<<*itr<<") result "<<result<<std::endl;
 
                 double timeForRun = osg::Timer::instance()->delta_s(startTick, osg::Timer::instance()->tick());
 
@@ -241,7 +241,7 @@ struct LayerAttributesOperator : public ObjectOperator
     
     virtual void leave()
     {
-        osg::notify(osg::INFO)<<"LayerAttribute leave"<<std::endl;
+        OSG_INFO<<"LayerAttribute leave"<<std::endl;
 
          _layerAttribute->callLeaveCallbacks(_node.get());
     }
@@ -331,9 +331,9 @@ void ActiveOperators::collect(osg::Node* incommingNode, osg::NodeVisitor::Traver
     FindOperatorsVisitor fov(_current, tm);
     incommingNode->accept(fov);
     
-    osg::notify(osg::INFO)<<"ActiveOperators::collect("<<incommingNode<<")"<<std::endl;
-    osg::notify(osg::INFO)<<"  _previous.size()="<<_previous.size()<<std::endl;
-    osg::notify(osg::INFO)<<"  _current.size()="<<_current.size()<<std::endl;
+    OSG_INFO<<"ActiveOperators::collect("<<incommingNode<<")"<<std::endl;
+    OSG_INFO<<"  _previous.size()="<<_previous.size()<<std::endl;
+    OSG_INFO<<"  _current.size()="<<_current.size()<<std::endl;
     
     _outgoing.clear();
     _incomming.clear();
@@ -388,7 +388,7 @@ void ActiveOperators::process()
 
 void ActiveOperators::processOutgoing()
 {
-    osg::notify(osg::INFO)<<"  outgoing.size()="<<_outgoing.size()<<std::endl;    
+    OSG_INFO<<"  outgoing.size()="<<_outgoing.size()<<std::endl;    
     for(OperatorList::iterator itr = _outgoing.begin();
         itr != _outgoing.end();
         ++itr)
@@ -399,7 +399,7 @@ void ActiveOperators::processOutgoing()
 
 void ActiveOperators::processMaintained()
 {
-    osg::notify(osg::INFO)<<"  maintained.size()="<<_maintained.size()<<std::endl;
+    OSG_INFO<<"  maintained.size()="<<_maintained.size()<<std::endl;
     for(OperatorList::iterator itr = _maintained.begin();
         itr != _maintained.end();
         ++itr)
@@ -410,7 +410,7 @@ void ActiveOperators::processMaintained()
 
 void ActiveOperators::processIncomming()
 {
-    osg::notify(osg::INFO)<<"  incomming.size()="<<_incomming.size()<<std::endl;
+    OSG_INFO<<"  incomming.size()="<<_incomming.size()<<std::endl;
     for(OperatorList::iterator itr = _incomming.begin();
         itr != _incomming.end();
         ++itr)
@@ -483,7 +483,7 @@ public:
         FilePathData* fdd = dynamic_cast<FilePathData*>(node.getUserData());
         if (fdd) 
         {
-            osg::notify(osg::INFO)<<"Recorded FilePathData"<<std::endl;
+            OSG_INFO<<"Recorded FilePathData"<<std::endl;
             osgDB::setDataFilePathList(fdd->filePathList);
         }
         
@@ -520,7 +520,7 @@ public:
     
         if (lightsource.getLight())
         {
-            osg::notify(osg::INFO)<<"Adjusting light"<<std::endl;
+            OSG_INFO<<"Adjusting light"<<std::endl;
 
             osg::Light* light = lightsource.getLight();
 
@@ -530,12 +530,12 @@ public:
             
             if (lightsource.getReferenceFrame()==osg::LightSource::RELATIVE_RF)
             {
-                osg::notify(osg::INFO)<<"Relative to absolute"<<std::endl;
+                OSG_INFO<<"Relative to absolute"<<std::endl;
             }
             else
             {
                 osg::Matrix matrix(osg::computeEyeToLocal(_viewMatrix,_nodePath));
-                osg::notify(osg::INFO)<<"ModelView"<<matrix<<std::endl;
+                OSG_INFO<<"ModelView"<<matrix<<std::endl;
 
                 //direction = osg::Matrixd::transform3x3(matrix,direction);
                 //direction.normalize();
@@ -563,11 +563,11 @@ public:
        
     void apply(osg::TexEnvCombine& texenv)
     {
-        osg::notify(osg::INFO)<<"Adjusting tex env combine"<<std::endl;
+        OSG_INFO<<"Adjusting tex env combine"<<std::endl;
         
         osg::Matrix matrix(osg::computeEyeToLocal(_viewMatrix,_nodePath));
         
-        osg::notify(osg::INFO)<<"ModelView"<<matrix<<std::endl;
+        OSG_INFO<<"ModelView"<<matrix<<std::endl;
 
         float azim = _currentX*osg::PI;
         float elevation = _currentY*osg::PI_2;
@@ -607,7 +607,7 @@ public:
             osg::AlphaFunc* alphaFunc = dynamic_cast<osg::AlphaFunc*>(stateset.getAttribute(osg::StateAttribute::ALPHAFUNC));
             if (alphaFunc)
             {
-                osg::notify(osg::INFO)<<"Adjusting alpha func"<<std::endl;
+                OSG_INFO<<"Adjusting alpha func"<<std::endl;
 
                 float alpha = alphaFunc->getReferenceValue();
                 alpha = osg::clampBetween((1.0f-_currentY)*0.5f,0.0f,1.0f);
@@ -621,7 +621,7 @@ public:
             osg::Material* material = dynamic_cast<osg::Material*>(stateset.getAttribute(osg::StateAttribute::MATERIAL));
             if (material)
             {
-                osg::notify(osg::INFO)<<"Adjusting material func"<<std::endl;
+                OSG_INFO<<"Adjusting material func"<<std::endl;
                 float alpha = osg::clampBetween((_currentY+1.0f)*0.5f,0.0f,1.0f);
                 material->setAlpha(osg::Material::FRONT_AND_BACK,alpha);
             }
@@ -690,13 +690,13 @@ void SlideEventHandler::set(osg::Node* model)
     
     if (findPresentation._switch)
     {
-        osg::notify(osg::INFO)<<"Presentation '"<<model->getName()<<"'"<<std::endl;
+        OSG_INFO<<"Presentation '"<<model->getName()<<"'"<<std::endl;
         _presentationSwitch = findPresentation._switch;
         
         double duration = getDuration(_presentationSwitch.get());
         if (duration>=0.0)
         {
-            osg::notify(osg::INFO)<<"Presentation time set to "<<duration<<std::endl;
+            OSG_INFO<<"Presentation time set to "<<duration<<std::endl;
             _timePerSlide = duration;
         }
         
@@ -704,7 +704,7 @@ void SlideEventHandler::set(osg::Node* model)
     }
     else
     {
-        osg::notify(osg::INFO)<<"No presentation present in scene."<<std::endl;
+        OSG_INFO<<"No presentation present in scene."<<std::endl;
 
         _presentationSwitch = 0;
         _activeSlide = 0;
@@ -714,14 +714,14 @@ void SlideEventHandler::set(osg::Node* model)
         
         if (findSlide._switch)
         {
-            osg::notify(osg::INFO)<<"Found presentation slide"<<findSlide._switch->getName()<<std::endl;
+            OSG_INFO<<"Found presentation slide"<<findSlide._switch->getName()<<std::endl;
 
             _slideSwitch = findSlide._switch;
             //selectLayer(0);
         }
         else
         {
-            osg::notify(osg::INFO)<<"No slides present in scene, unable to operate as a slideshow."<<std::endl;
+            OSG_INFO<<"No slides present in scene, unable to operate as a slideshow."<<std::endl;
         }
     
     }
@@ -779,9 +779,9 @@ bool SlideEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIAction
         _viewer = dynamic_cast<osgViewer::Viewer*>(&aa);
         selectSlide(0);
         home();
-        osg::notify(osg::NOTICE)<<"Assigned viewer. to SlideEventHandler"<<std::endl;
+        OSG_NOTICE<<"Assigned viewer. to SlideEventHandler"<<std::endl;
     }
-    // else  osg::notify(osg::NOTICE)<<"SlideEventHandler::handle()"<<std::endl;
+    // else  OSG_NOTICE<<"SlideEventHandler::handle()"<<std::endl;
 
 
     if (ea.getHandled()) return false;
@@ -1024,7 +1024,7 @@ bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
 {
     if (!_presentationSwitch) return false;
 
-    osg::notify(osg::INFO)<<"selectSlide("<<slideNum<<","<<layerNum<<")"<<std::endl;
+    OSG_INFO<<"selectSlide("<<slideNum<<","<<layerNum<<")"<<std::endl;
     
     if (slideNum==LAST_POSITION && _presentationSwitch->getNumChildren()>0)
     {
@@ -1043,7 +1043,7 @@ bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
         _tickAtLastSlideOrLayerChange = tick;
     }
 
-    osg::notify(osg::INFO)<<"selectSlide("<<slideNum<<","<<layerNum<<") at time "<<osg::Timer::instance()->delta_s(_tickAtFirstSlideOrLayerChange, tick)<<" seconds, length ="<<osg::Timer::instance()->delta_s(_tickAtLastSlideOrLayerChange, tick)<<" seconds"<<std::endl;
+    OSG_INFO<<"selectSlide("<<slideNum<<","<<layerNum<<") at time "<<osg::Timer::instance()->delta_s(_tickAtFirstSlideOrLayerChange, tick)<<" seconds, length ="<<osg::Timer::instance()->delta_s(_tickAtLastSlideOrLayerChange, tick)<<" seconds"<<std::endl;
     
     _tickAtLastSlideOrLayerChange = tick;
     
@@ -1060,7 +1060,7 @@ bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
     _activeSlide = slideNum;
     _presentationSwitch->setSingleChildOn(_activeSlide);
 
-    //osg::notify(osg::INFO)<<"Selected slide '"<<_presentationSwitch->getChild(_activeSlide)->getName()<<"'"<<std::endl;
+    //OSG_INFO<<"Selected slide '"<<_presentationSwitch->getChild(_activeSlide)->getName()<<"'"<<std::endl;
 
     
     FindNamedSwitchVisitor findSlide("Slide");
@@ -1069,7 +1069,7 @@ bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
     bool result = false;
     if (findSlide._switch)
     {
-        //osg::notify(osg::INFO)<<"Found slide '"<<findSlide._switch->getName()<<"'"<<std::endl;
+        //OSG_INFO<<"Found slide '"<<findSlide._switch->getName()<<"'"<<std::endl;
         _slideSwitch = findSlide._switch;
 
         result = selectLayer(layerNum);
@@ -1078,7 +1078,7 @@ bool SlideEventHandler::selectSlide(int slideNum,int layerNum)
     }
     else
     {
-        //osg::notify(osg::INFO)<<"Not found slide"<<std::endl;
+        //OSG_INFO<<"Not found slide"<<std::endl;
         updateOperators();
     }
     
@@ -1125,7 +1125,7 @@ bool SlideEventHandler::selectLayer(int layerNum)
 
     updateOperators();
 
-    osg::notify(osg::INFO)<<"Selected layer '"<<_slideSwitch->getChild(_activeLayer)->getName()<<"' num="<<_activeLayer<< std::endl;
+    OSG_INFO<<"Selected layer '"<<_slideSwitch->getChild(_activeLayer)->getName()<<"' num="<<_activeLayer<< std::endl;
 
     return true;
 }
@@ -1245,7 +1245,7 @@ bool SlideEventHandler::home(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAd
 
     if (fhpv._homePosition.valid())
     {
-        osg::notify(osg::INFO)<<"Doing home for stored home position."<<std::endl;
+        OSG_INFO<<"Doing home for stored home position."<<std::endl;
 
         _viewer->getCameraManipulator()->setAutoComputeHomePosition(false);
         _viewer->getCameraManipulator()->setHomePosition(
@@ -1274,7 +1274,7 @@ bool SlideEventHandler::home()
 
 void SlideEventHandler::updateAlpha(bool modAlphaFunc, bool modMaterial, float x, float y)
 {
-    osg::notify(osg::INFO)<<"updateAlpha("<<x<<","<<y<<")"<<std::endl;
+    OSG_INFO<<"updateAlpha("<<x<<","<<y<<")"<<std::endl;
     
     UpdateAlphaVisitor uav(modAlphaFunc, modMaterial, x,y);
     if (_presentationSwitch.valid()) _presentationSwitch->accept(uav);
@@ -1284,7 +1284,7 @@ void SlideEventHandler::updateAlpha(bool modAlphaFunc, bool modMaterial, float x
 
 void SlideEventHandler::updateLight(float x, float y)
 {
-    osg::notify(osg::INFO)<<"updateLight("<<x<<", "<<y<<")"<<std::endl;
+    OSG_INFO<<"updateLight("<<x<<", "<<y<<")"<<std::endl;
 
     UpdateLightVisitor uav(_viewer->getCamera()->getViewMatrix(),x,y);
     _viewer->getSceneData()->accept(uav);
@@ -1323,7 +1323,7 @@ void SlideEventHandler::releaseSlide(unsigned int slideNum)
 
 void SlideEventHandler::dispatchEvent(const KeyPosition& keyPosition)
 {
-    osg::notify(osg::INFO)<<" keyPosition._key "<<keyPosition._key<<" "<<keyPosition._x<<" "<<keyPosition._y<<std::endl;
+    OSG_INFO<<" keyPosition._key "<<keyPosition._key<<" "<<keyPosition._x<<" "<<keyPosition._y<<std::endl;
 
     osgGA::EventQueue* eq = _viewer->getEventQueue();
 

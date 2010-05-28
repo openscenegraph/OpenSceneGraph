@@ -41,7 +41,7 @@ class sgReaderWriterOSGTGZ : public osgDB::ReaderWriter
             std::string fileName = osgDB::findDataFile( file,options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            osg::notify(osg::INFO)<<"sgReaderWriterOSGTGZ::readNode( "<<fileName.c_str()<<" )\n";
+            OSG_INFO<<"sgReaderWriterOSGTGZ::readNode( "<<fileName.c_str()<<" )\n";
 
             char dirname[128];
             char command[1024];

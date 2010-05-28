@@ -124,7 +124,7 @@ void PixelBufferX11::init()
 
     if (!_display)
     {
-        osg::notify(osg::NOTICE)<<"Error: Unable to open display \"" << XDisplayName(_traits->displayName().c_str()) << "\"."<<std::endl;
+        OSG_NOTICE<<"Error: Unable to open display \"" << XDisplayName(_traits->displayName().c_str()) << "\"."<<std::endl;
         _valid = false;
         return;
     }
@@ -133,7 +133,7 @@ void PixelBufferX11::init()
     int errorBase, eventBase;
     if( glXQueryExtension( _display, &errorBase, &eventBase)  == False )
     {
-        osg::notify(osg::NOTICE)<<"Error: " << XDisplayName(_traits->displayName().c_str()) <<" has no GLX extension." << std::endl;
+        OSG_NOTICE<<"Error: " << XDisplayName(_traits->displayName().c_str()) <<" has no GLX extension." << std::endl;
 
         XCloseDisplay( _display );
         _display = 0;
@@ -141,12 +141,12 @@ void PixelBufferX11::init()
         return;
     }
 
-    // osg::notify(osg::NOTICE)<<"GLX extension, errorBase="<<errorBase<<" eventBase="<<eventBase<<std::endl;
+    // OSG_NOTICE<<"GLX extension, errorBase="<<errorBase<<" eventBase="<<eventBase<<std::endl;
 
     int major, minor;
     if (glXQueryVersion(_display, &major, &minor) == False)
     {
-        osg::notify(osg::NOTICE) << "Error: " << XDisplayName(_traits->displayName().c_str())
+        OSG_NOTICE << "Error: " << XDisplayName(_traits->displayName().c_str())
                                  << " can not query GLX version." << std::endl;
         XCloseDisplay( _display );
         _display = 0;
@@ -157,7 +157,7 @@ void PixelBufferX11::init()
     // Just be paranoid, if we are older than 1.1, we cannot even call glxQueryExtensionString
     if (major < 1 || (1 == major && minor < 1))
     {
-        osg::notify(osg::NOTICE) << "Error: " << XDisplayName(_traits->displayName().c_str())
+        OSG_NOTICE << "Error: " << XDisplayName(_traits->displayName().c_str())
                                  << " GLX version " << major << "." << minor << " is too old." << std::endl;
         XCloseDisplay( _display );
         _display = 0;
@@ -186,7 +186,7 @@ void PixelBufferX11::init()
 
     if (!haveGLX1_3 && !haveSGIX_pbuffer)
     {
-        osg::notify(osg::NOTICE) << "Error: " << XDisplayName(_traits->displayName().c_str())
+        OSG_NOTICE << "Error: " << XDisplayName(_traits->displayName().c_str())
                                  << " no Pbuffer support in GLX available." << std::endl;
         XCloseDisplay( _display );
         _display = 0;
@@ -203,11 +203,11 @@ void PixelBufferX11::init()
         _traits->alpha /= 2; 
         _traits->depth /= 2; 
         
-        osg::notify(osg::INFO)<<"Relaxing traits"<<std::endl;
+        OSG_INFO<<"Relaxing traits"<<std::endl;
 
         if (!createVisualInfo())
         {
-            osg::notify(osg::NOTICE)<<"Error: Not able to create requested visual." << std::endl;
+            OSG_NOTICE<<"Error: Not able to create requested visual." << std::endl;
             XCloseDisplay( _display );
             _display = 0;
             _valid = false;
@@ -223,7 +223,7 @@ void PixelBufferX11::init()
 
     if (!_context)
     {
-        osg::notify(osg::NOTICE)<<"Error: Unable to create OpenGL graphics context."<<std::endl;
+        OSG_NOTICE<<"Error: Unable to create OpenGL graphics context."<<std::endl;
         XCloseDisplay( _display );
         _display = 0;
         _valid = false;
@@ -268,9 +268,9 @@ void PixelBufferX11::init()
 
             if (_traits->width != iWidth || _traits->height != iHeight)
             {
-                osg::notify(osg::NOTICE) << "PixelBufferX11::init(), pbuffer created with different size then requsted" << std::endl;
-                osg::notify(osg::NOTICE) << "\tRequested size (" << _traits->width << "," << _traits->height << ")" << std::endl;
-                osg::notify(osg::NOTICE) << "\tPbuffer size (" << iWidth << "," << iHeight << ")" << std::endl;
+                OSG_NOTICE << "PixelBufferX11::init(), pbuffer created with different size then requsted" << std::endl;
+                OSG_NOTICE << "\tRequested size (" << _traits->width << "," << _traits->height << ")" << std::endl;
+                OSG_NOTICE << "\tPbuffer size (" << iWidth << "," << iHeight << ")" << std::endl;
                 _traits->width  = iWidth;
                 _traits->height = iHeight;
             }
@@ -301,9 +301,9 @@ void PixelBufferX11::init()
                                                                                         
             if (_traits->width != iWidth || _traits->height != iHeight)
             {
-                osg::notify(osg::NOTICE) << "PixelBufferX11::init(), SGIX_pbuffer created with different size then requsted" << std::endl;
-                osg::notify(osg::NOTICE) << "\tRequested size (" << _traits->width << "," << _traits->height << ")" << std::endl;
-                osg::notify(osg::NOTICE) << "\tPbuffer size (" << iWidth << "," << iHeight << ")" << std::endl;
+                OSG_NOTICE << "PixelBufferX11::init(), SGIX_pbuffer created with different size then requsted" << std::endl;
+                OSG_NOTICE << "\tRequested size (" << _traits->width << "," << _traits->height << ")" << std::endl;
+                OSG_NOTICE << "\tPbuffer size (" << iWidth << "," << iHeight << ")" << std::endl;
                 _traits->width =  iWidth;
                 _traits->height = iHeight;
             }
@@ -314,7 +314,7 @@ void PixelBufferX11::init()
 
     if (!_pbuffer)
     {
-        osg::notify(osg::NOTICE)<<"Error: Unable to create pbuffer."<<std::endl;
+        OSG_NOTICE<<"Error: Unable to create pbuffer."<<std::endl;
         XCloseDisplay( _display );
         _display = 0;
         _context = 0;
@@ -332,7 +332,7 @@ void PixelBufferX11::init()
 
 void PixelBufferX11::closeImplementation()
 {
-    // osg::notify(osg::NOTICE)<<"Closing PixelBufferX11"<<std::endl;
+    // OSG_NOTICE<<"Closing PixelBufferX11"<<std::endl;
     if (_display)
     {
         if (_context)
@@ -395,7 +395,7 @@ void PixelBufferX11::init()
 
 void PixelBufferX11::closeImplementation()
 {
-    // osg::notify(osg::NOTICE)<<"Closing PixelBufferX11"<<std::endl;
+    // OSG_NOTICE<<"Closing PixelBufferX11"<<std::endl;
     _pbuffer = 0;
     _context = 0;
     _initialized = false;
@@ -409,7 +409,7 @@ bool PixelBufferX11::realizeImplementation()
 {
     if (_realized)
     {
-        osg::notify(osg::NOTICE)<<"PixelBufferX11::realizeImplementation() Already realized"<<std::endl;
+        OSG_NOTICE<<"PixelBufferX11::realizeImplementation() Already realized"<<std::endl;
         return true;
     }
 
@@ -426,11 +426,11 @@ bool PixelBufferX11::makeCurrentImplementation()
 {
     if (!_realized)
     {
-        osg::notify(osg::NOTICE)<<"Warning: GraphicsWindow not realized, cannot do makeCurrent."<<std::endl;
+        OSG_NOTICE<<"Warning: GraphicsWindow not realized, cannot do makeCurrent."<<std::endl;
         return false;
     }
 
-    // osg::notify(osg::NOTICE)<<"PixelBufferX11::makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
+    // OSG_NOTICE<<"PixelBufferX11::makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
     #ifdef OSG_USE_EGL
         return eglMakeCurrent(_display, _pbuffer, _pbuffer, _context)==EGL_TRUE;
@@ -441,7 +441,7 @@ bool PixelBufferX11::makeCurrentImplementation()
 
 bool PixelBufferX11::makeContextCurrentImplementation(osg::GraphicsContext* readContext)
 {
-    // osg::notify(osg::NOTICE)<<"PixelBufferX11::makeContextCurrentImplementation() not implementation yet."<<std::endl;
+    // OSG_NOTICE<<"PixelBufferX11::makeContextCurrentImplementation() not implementation yet."<<std::endl;
     return makeCurrentImplementation();
 }
 
@@ -450,11 +450,11 @@ bool PixelBufferX11::releaseContextImplementation()
 {
     if (!_realized)
     {
-        osg::notify(osg::NOTICE)<<"Warning: GraphicsWindow not realized, cannot do makeCurrent."<<std::endl;
+        OSG_NOTICE<<"Warning: GraphicsWindow not realized, cannot do makeCurrent."<<std::endl;
         return false;
     }
 
-    // osg::notify(osg::NOTICE)<<"PixelBufferX11::releaseContextImplementation() "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
+    // OSG_NOTICE<<"PixelBufferX11::releaseContextImplementation() "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
     #ifdef OSG_USE_EGL
         return eglMakeCurrent( _display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT )==EGL_TRUE;
@@ -466,14 +466,14 @@ bool PixelBufferX11::releaseContextImplementation()
 
 void PixelBufferX11::bindPBufferToTextureImplementation(GLenum buffer)
 {
-    osg::notify(osg::NOTICE)<<"PixelBufferX11::bindPBufferToTextureImplementation() not implementation yet."<<std::endl;
+    OSG_NOTICE<<"PixelBufferX11::bindPBufferToTextureImplementation() not implementation yet."<<std::endl;
 }
 
 void PixelBufferX11::swapBuffersImplementation()
 {
     if (!_realized) return;
 
-    // osg::notify(osg::NOTICE)<<"PixelBufferX11::swapBuffersImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
+    // OSG_NOTICE<<"PixelBufferX11::swapBuffersImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
 
     #ifdef OSG_USE_EGL
         eglSwapBuffers( _display, _pbuffer );

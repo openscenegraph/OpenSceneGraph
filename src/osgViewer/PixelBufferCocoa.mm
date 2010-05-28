@@ -97,7 +97,7 @@ void PixelBufferCocoa::closeImplementation()
 /** Make this graphics context current.*/
 bool PixelBufferCocoa::makeCurrentImplementation()
 {
-    // osg::notify(osg::INFO) << "PixelBufferCocoa::makeCurrentImplementation" << std::endl;
+    // OSG_INFO << "PixelBufferCocoa::makeCurrentImplementation" << std::endl;
     
     [_context makeCurrentContext];
     return true;
@@ -113,7 +113,7 @@ bool PixelBufferCocoa::makeContextCurrentImplementation(osg::GraphicsContext* re
 /** Release the graphics context.*/
 bool PixelBufferCocoa::releaseContextImplementation()
 {
-    // osg::notify(osg::INFO) << "PixelBufferCocoa::releaseContextImplementation" << std::endl;
+    // OSG_INFO << "PixelBufferCocoa::releaseContextImplementation" << std::endl;
     
     [NSOpenGLContext clearCurrentContext];
     return true;
@@ -128,7 +128,7 @@ void PixelBufferCocoa::bindPBufferToTextureImplementation( GLenum buffer )
 /** Swap the front and back buffers.*/
 void PixelBufferCocoa::swapBuffersImplementation()
 {
-    osg::notify(osg::INFO) << "PixelBufferCocoa::swapBuffersImplementation" << std::endl;
+    OSG_INFO << "PixelBufferCocoa::swapBuffersImplementation" << std::endl;
     [_context flushBuffer];
 }
 

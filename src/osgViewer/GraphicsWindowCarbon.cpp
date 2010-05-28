@@ -39,7 +39,7 @@ static pascal OSStatus GraphicsWindowEventHandler(EventHandlerCallRef nextHandle
     Rect                bounds;
     OSStatus            result = eventNotHandledErr; /* report failure by default */
     
-    OSG_NOTIFY(osg::INFO) << "GraphicsWindowEventHandler" << std::endl;
+    OSG_INFO << "GraphicsWindowEventHandler" << std::endl;
 
     GraphicsWindowCarbon* w = (GraphicsWindowCarbon*)userData;
     if (!w)
@@ -247,7 +247,7 @@ void GraphicsWindowCarbon::init()
     _pixelFormat = PixelBufferCarbon::createPixelFormat(_traits.get());
     if (!_pixelFormat)
     {
-        OSG_NOTIFY(osg::WARN) << "GraphicsWindowCarbon::init could not create a valid pixelformat" << std::endl;
+        OSG_WARN << "GraphicsWindowCarbon::init could not create a valid pixelformat" << std::endl;
     }
     _valid = (_pixelFormat != NULL);
     _initialized = true;
@@ -276,7 +276,7 @@ bool GraphicsWindowCarbon::setWindowDecorationImplementation(bool flag)
 
         if (err != noErr)
         {
-            OSG_NOTIFY(osg::WARN) << "GraphicsWindowCarbon::setWindowDecoration failed with " << err << std::endl;
+            OSG_WARN << "GraphicsWindowCarbon::setWindowDecoration failed with " << err << std::endl;
             return false;
         }
         
@@ -349,7 +349,7 @@ bool GraphicsWindowCarbon::realizeImplementation()
     if (!_initialized) return false;
     if (!_traits) return false;
  
-    osg::notify(osg::INFO) << "GraphicsWindowCarbon::realizeImplementation" << std::endl;
+    OSG_INFO << "GraphicsWindowCarbon::realizeImplementation" << std::endl;
     
     setWindowDecoration(_traits->windowDecoration);
     useCursor(_traits->useCursor);
@@ -376,10 +376,10 @@ bool GraphicsWindowCarbon::realizeImplementation()
         err = CreateNewWindow(kDocumentWindowClass, attr, &bounds, &_window);
 
         if (err) {
-            OSG_NOTIFY(osg::WARN) << "GraphicsWindowCarbon::realizeImplementation: failed to create window: " << err << std::endl;
+            OSG_WARN << "GraphicsWindowCarbon::realizeImplementation: failed to create window: " << err << std::endl;
             return false;
         } else {
-            OSG_NOTIFY(osg::INFO) << "GraphicsWindowCarbon::realizeImplementation: window created with bounds(" << bounds.top << ", " << bounds.left << ", " << bounds.bottom << ", " << bounds.right << ")" << std::endl;
+            OSG_INFO << "GraphicsWindowCarbon::realizeImplementation: window created with bounds(" << bounds.top << ", " << bounds.left << ", " << bounds.bottom << ", " << bounds.right << ")" << std::endl;
         }
     }
     else {
@@ -407,7 +407,7 @@ bool GraphicsWindowCarbon::realizeImplementation()
 
     _context = aglCreateContext (_pixelFormat, sharedContextCarbon);
     if (!_context) {
-        OSG_NOTIFY(osg::WARN) << "GraphicsWindowCarbon::realizeImplementation: failed to create context: " << aglGetError() << std::endl;
+        OSG_WARN << "GraphicsWindowCarbon::realizeImplementation: failed to create context: " << aglGetError() << std::endl;
         return false;
     }
 
@@ -438,7 +438,7 @@ bool GraphicsWindowCarbon::realizeImplementation()
 #endif    
         if (cgerr != kCGLNoError )
         {
-            OSG_NOTIFY(osg::INFO) << "GraphicsWindowCarbon::realizeImplementation: multi-threaded OpenGL Execution not available" << std::endl;
+            OSG_INFO << "GraphicsWindowCarbon::realizeImplementation: multi-threaded OpenGL Execution not available" << std::endl;
         } 
     }
 
@@ -467,12 +467,12 @@ bool GraphicsWindowCarbon::releaseContextImplementation()
 {
     if (!_realized)
     {
-        OSG_NOTIFY(osg::NOTICE)<<"Warning: GraphicsWindow not realized, cannot do makeCurrent."<<std::endl;
+        OSG_NOTICE<<"Warning: GraphicsWindow not realized, cannot do makeCurrent."<<std::endl;
         return false;
     }
 
-    // OSG_NOTIFY(osg::NOTICE)<<"makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
-    // OSG_NOTIFY(osg::NOTICE)<<"   glXMakeCurrent ("<<_display<<","<<_window<<","<<_glxContext<<std::endl;
+    // OSG_NOTICE<<"makeCurrentImplementation "<<this<<" "<<OpenThreads::Thread::CurrentThread()<<std::endl;
+    // OSG_NOTICE<<"   glXMakeCurrent ("<<_display<<","<<_window<<","<<_glxContext<<std::endl;
     return (aglSetCurrentContext(NULL) == GL_TRUE);
 }
 
@@ -480,7 +480,7 @@ bool GraphicsWindowCarbon::releaseContextImplementation()
 
 void GraphicsWindowCarbon::closeImplementation()
 {
-    // OSG_NOTIFY(osg::INFO) << "GraphicsWindowCarbon::closeImplementation" << std::endl;
+    // OSG_INFO << "GraphicsWindowCarbon::closeImplementation" << std::endl;
     _valid = false;
     _realized = false;
 
@@ -516,7 +516,7 @@ void GraphicsWindowCarbon::swapBuffersImplementation()
         const bool on = _traits->vsync;
         GLint swap = (on ? 1 : 0);
         aglSetInteger (_context, AGL_SWAP_INTERVAL, &swap);
-        osg::notify(osg::NOTICE) << "GraphicsWindowCarbon: VSync=" << (on ? "on" : "off") << std::endl;
+        OSG_NOTICE << "GraphicsWindowCarbon: VSync=" << (on ? "on" : "off") << std::endl;
         _currentVSync = on;
     }
 
@@ -748,7 +748,7 @@ bool GraphicsWindowCarbon::handleKeyboardEvent(EventRef theEvent)
     UInt32 rawkey;
     GetEventParameter (theEvent,kEventParamKeyCode,typeUInt32, NULL,sizeof(rawkey), NULL,&rawkey);
     
-    // OSG_NOTIFY(osg::INFO) << "key code: " << rawkey << " modifiers: " << modifierKeys << std::endl;
+    // OSG_INFO << "key code: " << rawkey << " modifiers: " << modifierKeys << std::endl;
             
     UInt32 dataSize;
     /* jbw check return status so that we don't allocate a huge array */
@@ -766,16 +766,16 @@ bool GraphicsWindowCarbon::handleKeyboardEvent(EventRef theEvent)
         case kEventRawKeyDown:
         case kEventRawKeyRepeat:
         {
-            //osg::notify(osg::INFO) << "GraphicsWindowCarbon::keyPress Up" << std::endl;
+            //OSG_INFO << "GraphicsWindowCarbon::keyPress Up" << std::endl;
             //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
-            //OSG_NOTIFY(osg::INFO) << "GraphicsWindowCarbon::keyPress" << std::endl;
+            //OSG_INFO << "GraphicsWindowCarbon::keyPress" << std::endl;
             getEventQueue()->keyPress(keychar);
             break;
         }
         
         case kEventRawKeyUp:
         {                 
-            //OSG_NOTIFY(osg::INFO) << "GraphicsWindowCarbon::keyPress" << std::endl;
+            //OSG_INFO << "GraphicsWindowCarbon::keyPress" << std::endl;
             //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
             getEventQueue()->keyRelease(keychar);
             break;
@@ -958,14 +958,14 @@ void GraphicsWindowCarbon::useCursor(bool cursorOn)
         _traits->useCursor = cursorOn;
     DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     if (wsi == NULL) {
-        OSG_NOTIFY(osg::WARN) << "GraphicsWindowCarbon::useCursor: could not get OSXCarbonWindowingSystemInterface" << std::endl;
+        OSG_WARN << "GraphicsWindowCarbon::useCursor: could not get OSXCarbonWindowingSystemInterface" << std::endl;
         return;
     }
     
     CGDirectDisplayID displayId = wsi->getDisplayID((*_traits));
     CGDisplayErr err = (cursorOn ? CGDisplayShowCursor(displayId) : CGDisplayHideCursor(displayId));
     if (err != kCGErrorSuccess) {
-        OSG_NOTIFY(osg::WARN) << "GraphicsWindowCarbon::useCursor: failed with " << err << std::endl;
+        OSG_WARN << "GraphicsWindowCarbon::useCursor: failed with " << err << std::endl;
     }
 }
 
@@ -1000,7 +1000,7 @@ void GraphicsWindowCarbon::setCursor(MouseCursor mouseCursor)
             break;
         default:
             cursor = kThemeArrowCursor;
-            OSG_NOTIFY(osg::WARN) << "GraphicsWindowCarbon::setCursor doesn't implement cursor: type = " << mouseCursor << std::endl;
+            OSG_WARN << "GraphicsWindowCarbon::setCursor doesn't implement cursor: type = " << mouseCursor << std::endl;
     }
     
     _currentCursor = mouseCursor;
@@ -1031,7 +1031,7 @@ void GraphicsWindowCarbon::requestWarpPointer(float x,float y)
 
     DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     if (wsi == NULL) {
-        OSG_NOTIFY(osg::WARN) << "GraphicsWindowCarbon::useCursor: could not get OSXCarbonWindowingSystemInterface" << std::endl;
+        OSG_WARN << "GraphicsWindowCarbon::useCursor: could not get OSXCarbonWindowingSystemInterface" << std::endl;
         return;
     }
 

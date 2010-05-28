@@ -29,7 +29,7 @@
 {
     OSErr error = SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
     if (error) {
-        osg::notify(osg::DEBUG_INFO) << "MenubarToggler::hide failed with " << error << std::endl;
+        OSG_DEBUG << "MenubarToggler::hide failed with " << error << std::endl;
     }
 }
 
@@ -38,7 +38,7 @@
 {
     OSErr error = SetSystemUIMode(kUIModeNormal, 0);
     if (error) {
-        osg::notify(osg::DEBUG_INFO) << "MenubarToggler::show failed with " << error << std::endl;
+        OSG_DEBUG << "MenubarToggler::show failed with " << error << std::endl;
     }
 }
 
@@ -130,8 +130,8 @@ void MenubarController::update()
             if (CGRectIntersectsRect(_mainScreenBounds, windowBounds))
             {
                 ++windowsIntersectingMainScreen;
-                // osg::notify(osg::ALWAYS) << "testing rect " << windowBounds.origin.x << "/" << windowBounds.origin.y << " " << windowBounds.size.width << "x" << windowBounds.size.height << std::endl;
-                // osg::notify(osg::ALWAYS) << "against      " << _availRect.origin.x << "/" << _availRect.origin.y << " " << _availRect.size.width << "x" << _availRect.size.height << std::endl;
+                // OSG_ALWAYS << "testing rect " << windowBounds.origin.x << "/" << windowBounds.origin.y << " " << windowBounds.size.width << "x" << windowBounds.size.height << std::endl;
+                // OSG_ALWAYS << "against      " << _availRect.origin.x << "/" << _availRect.origin.y << " " << _availRect.size.width << "x" << _availRect.size.height << std::endl;
                 // the window intersects the main-screen, does it intersect with the menubar/dock?
                 if (((_availRect.origin.y > _mainScreenBounds.origin.y) && (_availRect.origin.y > windowBounds.origin.y)) ||
                     ((_availRect.origin.x > _mainScreenBounds.origin.x) && (_availRect.origin.x > windowBounds.origin.x)) || 
@@ -250,7 +250,7 @@ void DarwinWindowingSystemInterface::_init()
 
     if( CGGetActiveDisplayList( 0, NULL, &_displayCount ) != CGDisplayNoErr )
     {
-        osg::notify(osg::WARN) << "DarwinWindowingSystemInterface: could not get # of screens" << std::endl;
+        OSG_WARN << "DarwinWindowingSystemInterface: could not get # of screens" << std::endl;
         _displayCount = 0;
 
         _initialized = true;
@@ -261,7 +261,7 @@ void DarwinWindowingSystemInterface::_init()
 
     if( CGGetActiveDisplayList( _displayCount, _displayIds, &_displayCount ) != CGDisplayNoErr )
     {
-        osg::notify(osg::WARN) << "DarwinWindowingSystemInterface: CGGetActiveDisplayList failed" << std::endl;
+        OSG_WARN << "DarwinWindowingSystemInterface: CGGetActiveDisplayList failed" << std::endl;
     }
 
     _initialized = true;
@@ -274,7 +274,7 @@ CGDirectDisplayID DarwinWindowingSystemInterface::getDisplayID(const osg::Graphi
 
     if (_displayCount==0)
     {
-        osg::notify(osg::WARN) << "DarwinWindowingSystemInterface::getDisplayID(..) no valid screens available returning 0 instead." << std::endl;
+        OSG_WARN << "DarwinWindowingSystemInterface::getDisplayID(..) no valid screens available returning 0 instead." << std::endl;
         return 0;
     }
 
@@ -284,7 +284,7 @@ CGDirectDisplayID DarwinWindowingSystemInterface::getDisplayID(const osg::Graphi
     }
     else
     {
-        osg::notify(osg::WARN) << "DarwinWindowingSystemInterface::getDisplayID(..) invalid screen # " << si.screenNum << ", returning main-screen instead." << std::endl;
+        OSG_WARN << "DarwinWindowingSystemInterface::getDisplayID(..) invalid screen # " << si.screenNum << ", returning main-screen instead." << std::endl;
         return _displayIds[0];
     }
 }
@@ -368,7 +368,7 @@ void DarwinWindowingSystemInterface::getScreenTopLeft(const osg::GraphicsContext
     x = static_cast<int>(bounds.origin.x);
     y = static_cast<int>(bounds.origin.y);
     
-    // osg::notify(osg::DEBUG_INFO) << "topleft of screen " << si.screenNum <<" " << bounds.origin.x << "/" << bounds.origin.y << std::endl;
+    // OSG_DEBUG << "topleft of screen " << si.screenNum <<" " << bounds.origin.x << "/" << bounds.origin.y << std::endl;
 }
 
 

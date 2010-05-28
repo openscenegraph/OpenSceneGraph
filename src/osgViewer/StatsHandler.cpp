@@ -191,7 +191,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
             {
                 if (viewer->getViewerStats())
                 {
-                    osg::notify(osg::NOTICE)<<std::endl<<"Stats report:"<<std::endl;
+                    OSG_NOTICE<<std::endl<<"Stats report:"<<std::endl;
                     typedef std::vector<osg::Stats*> StatsList;
                     StatsList statsList;
                     statsList.push_back(viewer->getViewerStats());
@@ -223,7 +223,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                             if (itr==statsList.begin()) (*itr)->report(osg::notify(osg::NOTICE), i);
                             else (*itr)->report(osg::notify(osg::NOTICE), i, "    ");
                         }
-                        osg::notify(osg::NOTICE)<<std::endl;
+                        OSG_NOTICE<<std::endl;
                     }
 
                 }
@@ -517,7 +517,7 @@ struct ViewSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCallba
             }
             else
             {
-                OSG_NOTIFY(osg::WARN)<<std::endl<<"No valid view to collect scene stats from"<<std::endl;
+                OSG_WARN<<std::endl<<"No valid view to collect scene stats from"<<std::endl;
 
                 text->setText("");
             }

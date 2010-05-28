@@ -923,14 +923,14 @@ bool GraphicsWindowCocoa::realizeImplementation()
     } 
     
 
-    osg::notify(osg::DEBUG_INFO) << "GraphicsWindowCocoa::realizeImplementation / ownsWindow: " << _ownsWindow << " checkForEvents: " << _checkForEvents << std::endl;
+    OSG_DEBUG << "GraphicsWindowCocoa::realizeImplementation / ownsWindow: " << _ownsWindow << " checkForEvents: " << _checkForEvents << std::endl;
 
     if (_ownsWindow) 
     {
         _window = [[GraphicsWindowCocoaWindow alloc] initWithContentRect: rect styleMask: style backing: NSBackingStoreBuffered defer: NO];
         
         if (!_window) {
-            osg::notify(osg::WARN) << "GraphicsWindowCocoa::realizeImplementation :: could not create window" << std::endl;
+            OSG_WARN << "GraphicsWindowCocoa::realizeImplementation :: could not create window" << std::endl;
             return false;
         }
 
@@ -983,7 +983,7 @@ bool GraphicsWindowCocoa::realizeImplementation()
     _context = [[NSOpenGLContext alloc] initWithFormat: _pixelformat shareContext: sharedContext];
     
     if (!_context) {
-        osg::notify(osg::WARN) << "GraphicsWindowCocoa::realizeImplementation :: could not create context" << std::endl;
+        OSG_WARN << "GraphicsWindowCocoa::realizeImplementation :: could not create context" << std::endl;
         return false;
     }
     GraphicsWindowCocoaGLView* theView = [[ GraphicsWindowCocoaGLView alloc ] initWithFrame:[ _window frame ] ];
@@ -991,7 +991,7 @@ bool GraphicsWindowCocoa::realizeImplementation()
     [theView setGraphicsWindowCocoa: this];
     [theView setOpenGLContext:_context];
     _view = theView;
-    osg::notify(osg::DEBUG_INFO) << "GraphicsWindowCocoa::realizeImplementation / view: " << theView << std::endl;
+    OSG_DEBUG << "GraphicsWindowCocoa::realizeImplementation / view: " << theView << std::endl;
 
     if (_ownsWindow) {
         [_window setContentView: theView];
@@ -1194,7 +1194,7 @@ void GraphicsWindowCocoa::grabFocus()
 // ----------------------------------------------------------------------------------------------------------
 void GraphicsWindowCocoa::grabFocusIfPointerInWindow()
 {
-    osg::notify(osg::INFO) << "GraphicsWindowCocoa :: grabFocusIfPointerInWindow not implemented yet " << std::endl;
+    OSG_INFO << "GraphicsWindowCocoa :: grabFocusIfPointerInWindow not implemented yet " << std::endl;
 }
 
 
@@ -1300,7 +1300,7 @@ void GraphicsWindowCocoa::useCursor(bool cursorOn)
         _traits->useCursor = cursorOn;
     DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
     if (wsi == NULL) {
-        osg::notify(osg::WARN) << "GraphicsWindowCarbon::useCursor :: could not get OSXCarbonWindowingSystemInterface" << std::endl;
+        OSG_WARN << "GraphicsWindowCarbon::useCursor :: could not get OSXCarbonWindowingSystemInterface" << std::endl;
         return;
     }
     
@@ -1316,7 +1316,7 @@ void GraphicsWindowCocoa::useCursor(bool cursorOn)
             break;
     }
     if (err != kCGErrorSuccess) {
-        osg::notify(osg::WARN) << "GraphicsWindowCocoa::useCursor failed with " << err << std::endl;
+        OSG_WARN << "GraphicsWindowCocoa::useCursor failed with " << err << std::endl;
     }
 }
 
@@ -1349,7 +1349,7 @@ void GraphicsWindowCocoa::setCursor(MouseCursor mouseCursor)
             break;
         
         default:
-            osg::notify(osg::INFO) << "GraphicsWindowCocoa::setCursor :: unsupported MouseCursor: " << mouseCursor << std::endl;    
+            OSG_INFO << "GraphicsWindowCocoa::setCursor :: unsupported MouseCursor: " << mouseCursor << std::endl;    
     }
     
     [localPool release];
@@ -1399,7 +1399,7 @@ struct CocoaWindowingSystemInterface : public DarwinWindowingSystemInterface
         if (s_inited) return;
         s_inited = true;
         
-        osg::notify(osg::INFO) << "CocoaWindowingSystemInterface::initAsStandaloneApplication " << std::endl;
+        OSG_INFO << "CocoaWindowingSystemInterface::initAsStandaloneApplication " << std::endl;
         
         ProcessSerialNumber psn;
         if (!GetCurrentProcess(&psn)) {

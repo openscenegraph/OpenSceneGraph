@@ -150,7 +150,7 @@ void WindowSizeHandler::toggleFullscreen(osgViewer::GraphicsWindow *window)
 
     if (wsi == NULL) 
     {
-        OSG_NOTIFY(osg::NOTICE) << "Error, no WindowSystemInterface available, cannot toggle window fullscreen." << std::endl;
+        OSG_NOTICE << "Error, no WindowSystemInterface available, cannot toggle window fullscreen." << std::endl;
         return;
     }
 
@@ -179,7 +179,7 @@ void WindowSizeHandler::toggleFullscreen(osgViewer::GraphicsWindow *window)
         resolution = _resolutionList[_currentResolutionIndex];
         window->setWindowDecoration(true);
         window->setWindowRectangle((screenWidth - (int)resolution.x()) / 2, (screenHeight - (int)resolution.y()) / 2, (int)resolution.x(), (int)resolution.y());
-        OSG_NOTIFY(osg::INFO) << "Screen resolution = " << (int)resolution.x() << "x" << (int)resolution.y() << std::endl;
+        OSG_INFO << "Screen resolution = " << (int)resolution.x() << "x" << (int)resolution.y() << std::endl;
     }
     else
     {
@@ -196,7 +196,7 @@ void WindowSizeHandler::changeWindowedResolution(osgViewer::GraphicsWindow *wind
 
     if (wsi == NULL) 
     {
-        OSG_NOTIFY(osg::NOTICE) << "Error, no WindowSystemInterface available, cannot toggle window fullscreen." << std::endl;
+        OSG_NOTICE << "Error, no WindowSystemInterface available, cannot toggle window fullscreen." << std::endl;
         return;
     }
 
@@ -251,7 +251,7 @@ void WindowSizeHandler::changeWindowedResolution(osgViewer::GraphicsWindow *wind
         resolution = _resolutionList[_currentResolutionIndex];
         window->setWindowDecoration(true);
         window->setWindowRectangle((screenWidth - (int)resolution.x()) / 2, (screenHeight - (int)resolution.y()) / 2, (int)resolution.x(), (int)resolution.y());
-        OSG_NOTIFY(osg::INFO) << "Screen resolution = " << (int)resolution.x() << "x" << (int)resolution.y() << std::endl;
+        OSG_INFO << "Screen resolution = " << (int)resolution.x() << "x" << (int)resolution.y() << std::endl;
 
         window->grabFocusIfPointerInWindow();
     }
@@ -330,28 +330,28 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
                 {
                 case(osgViewer::ViewerBase::SingleThreaded):
                     viewerBase->setThreadingModel(osgViewer::ViewerBase::CullDrawThreadPerContext);
-                    OSG_NOTIFY(osg::NOTICE)<<"Threading model 'CullDrawThreadPerContext' selected."<<std::endl;
+                    OSG_NOTICE<<"Threading model 'CullDrawThreadPerContext' selected."<<std::endl;
                     break;
                 case(osgViewer::ViewerBase::CullDrawThreadPerContext):
                     viewerBase->setThreadingModel(osgViewer::ViewerBase::DrawThreadPerContext);
-                    OSG_NOTIFY(osg::NOTICE)<<"Threading model 'DrawThreadPerContext' selected."<<std::endl;
+                    OSG_NOTICE<<"Threading model 'DrawThreadPerContext' selected."<<std::endl;
                     break;
                 case(osgViewer::ViewerBase::DrawThreadPerContext):
                     viewerBase->setThreadingModel(osgViewer::ViewerBase::CullThreadPerCameraDrawThreadPerContext);
-                    OSG_NOTIFY(osg::NOTICE)<<"Threading model 'CullThreadPerCameraDrawThreadPerContext' selected."<<std::endl;
+                    OSG_NOTICE<<"Threading model 'CullThreadPerCameraDrawThreadPerContext' selected."<<std::endl;
                     break;
                 case(osgViewer::ViewerBase::CullThreadPerCameraDrawThreadPerContext):
                     viewerBase->setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
-                    OSG_NOTIFY(osg::NOTICE)<<"Threading model 'SingleThreaded' selected."<<std::endl;
+                    OSG_NOTICE<<"Threading model 'SingleThreaded' selected."<<std::endl;
                     break;
 #if 1                    
                 case(osgViewer::ViewerBase::AutomaticSelection):
                     viewerBase->setThreadingModel(osgViewer::ViewerBase::SingleThreaded);
-                    OSG_NOTIFY(osg::NOTICE)<<"Threading model 'SingleThreaded' selected."<<std::endl;
+                    OSG_NOTICE<<"Threading model 'SingleThreaded' selected."<<std::endl;
 #else                    
                 case(osgViewer::ViewerBase::AutomaticSelection):
                     viewerBase->setThreadingModel(viewer->suggestBestThreadingModel());
-                    OSG_NOTIFY(osg::NOTICE)<<"Threading model 'AutomaticSelection' selected."<<std::endl;
+                    OSG_NOTICE<<"Threading model 'AutomaticSelection' selected."<<std::endl;
 #endif
                     break;
                 }
@@ -365,11 +365,11 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
                 {
                 case(osgViewer::Viewer::BeforeSwapBuffers):
                     viewer->setEndBarrierPosition(osgViewer::Viewer::AfterSwapBuffers);
-                    OSG_NOTIFY(osg::NOTICE)<<"Threading model 'AfterSwapBuffers' selected."<<std::endl;
+                    OSG_NOTICE<<"Threading model 'AfterSwapBuffers' selected."<<std::endl;
                     break;
                 case(osgViewer::Viewer::AfterSwapBuffers):
                     viewer->setEndBarrierPosition(osgViewer::Viewer::BeforeSwapBuffers);
-                    OSG_NOTIFY(osg::NOTICE)<<"Threading model 'BeforeSwapBuffers' selected."<<std::endl;
+                    OSG_NOTICE<<"Threading model 'BeforeSwapBuffers' selected."<<std::endl;
                     break;
                 }
 
@@ -480,7 +480,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                         }
                         ss << "."<<osgDB::getFileExtension(_filename);
                         
-                        OSG_NOTIFY(osg::NOTICE) << "Recording camera path to file " << ss.str() << std::endl;
+                        OSG_NOTICE << "Recording camera path to file " << ss.str() << std::endl;
                         _fout.open( ss.str().c_str() );
 
                         // make sure doubles are not trucated by default stream precision = 6
@@ -488,7 +488,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                     }
                     else
                     {
-                        OSG_NOTIFY(osg::NOTICE)<<"Recording camera path."<<std::endl;
+                        OSG_NOTICE<<"Recording camera path."<<std::endl;
                     }
                 }
 
@@ -521,7 +521,7 @@ bool RecordCameraPathHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GU
                     // In the future this will need to be written continuously, rather
                     // than all at once.
                     osgDB::ofstream out(_filename.c_str());
-                    OSG_NOTIFY(osg::NOTICE)<<"Writing camera file: "<<_filename<<std::endl;
+                    OSG_NOTICE<<"Writing camera file: "<<_filename<<std::endl;
                     _animPath->write(out);
                     out.close();
                 }
@@ -585,7 +585,7 @@ bool LODScaleHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
             if (ea.getKey() == _keyEventIncreaseLODScale)
             {
                 camera->setLODScale(camera->getLODScale()*1.1);
-                OSG_NOTIFY(osg::NOTICE)<<"LODScale = "<<camera->getLODScale()<<std::endl;
+                OSG_NOTICE<<"LODScale = "<<camera->getLODScale()<<std::endl;
 
                 aa.requestRedraw();
                 return true;
@@ -594,7 +594,7 @@ bool LODScaleHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionA
             else if (ea.getKey() == _keyEventDecreaseLODScale)
             {
                 camera->setLODScale(camera->getLODScale()/1.1);
-                OSG_NOTIFY(osg::NOTICE)<<"LODScale = "<<camera->getLODScale()<<std::endl;
+                OSG_NOTICE<<"LODScale = "<<camera->getLODScale()<<std::endl;
 
                 aa.requestRedraw();
                 return true;

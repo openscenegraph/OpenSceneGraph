@@ -40,7 +40,7 @@ osg::Group* daeReader::processOsgMultiSwitch(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'ActiveSwitchSet' not found" << std::endl;
+        OSG_WARN << "Expected element 'ActiveSwitchSet' not found" << std::endl;
     }
     
     any = daeSafeCast<domAny>(teq->getChild("ValueLists"));
@@ -70,18 +70,18 @@ osg::Group* daeReader::processOsgMultiSwitch(domTechnique* teq)
                 }
                 else
                 {
-                    osg::notify(osg::WARN) << "Child of element 'ValueLists' is not of type 'ValueList'" << std::endl;
+                    OSG_WARN << "Child of element 'ValueLists' is not of type 'ValueList'" << std::endl;
                 }
             }
             else
             {
-                osg::notify(osg::WARN) << "Element 'ValueLists' does not contain expected elements." << std::endl;
+                OSG_WARN << "Element 'ValueLists' does not contain expected elements." << std::endl;
             }
         }
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'ValueLists' not found" << std::endl;
+        OSG_WARN << "Expected element 'ValueLists' not found" << std::endl;
     }
     return msw;
 }
@@ -107,7 +107,7 @@ osg::Group* daeReader::processOsgSwitch(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'ValueList' not found" << std::endl;
+        OSG_WARN << "Expected element 'ValueList' not found" << std::endl;
     }
     return sw;
 }
@@ -133,7 +133,7 @@ osg::Group* daeReader::processOsgSequence(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'FrameTime' not found" << std::endl;
+        OSG_WARN << "Expected element 'FrameTime' not found" << std::endl;
     }
 
     any = daeSafeCast< domAny >(teq->getChild("LastFrameTime"));
@@ -143,7 +143,7 @@ osg::Group* daeReader::processOsgSequence(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'LastFrameTime' not found" << std::endl;
+        OSG_WARN << "Expected element 'LastFrameTime' not found" << std::endl;
     }
 
     osg::Sequence::LoopMode loopmode = osg::Sequence::LOOP;
@@ -154,7 +154,7 @@ osg::Group* daeReader::processOsgSequence(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'LoopMode' not found" << std::endl;
+        OSG_WARN << "Expected element 'LoopMode' not found" << std::endl;
     }
     
     int begin=0;
@@ -165,7 +165,7 @@ osg::Group* daeReader::processOsgSequence(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'IntervalBegin' not found" << std::endl;
+        OSG_WARN << "Expected element 'IntervalBegin' not found" << std::endl;
     }
     
     int end=-1;
@@ -176,7 +176,7 @@ osg::Group* daeReader::processOsgSequence(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'IntervalEnd' not found" << std::endl;
+        OSG_WARN << "Expected element 'IntervalEnd' not found" << std::endl;
     }
 
     sq->setInterval(loopmode, begin, end);
@@ -189,7 +189,7 @@ osg::Group* daeReader::processOsgSequence(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'DurationSpeed' not found" << std::endl;
+        OSG_WARN << "Expected element 'DurationSpeed' not found" << std::endl;
     }
     
     int nreps = -1;
@@ -200,7 +200,7 @@ osg::Group* daeReader::processOsgSequence(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'DurationNReps' not found" << std::endl;
+        OSG_WARN << "Expected element 'DurationNReps' not found" << std::endl;
     }
 
     sq->setDuration(speed, nreps);
@@ -212,7 +212,7 @@ osg::Group* daeReader::processOsgSequence(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'SequenceMode' not found" << std::endl;
+        OSG_WARN << "Expected element 'SequenceMode' not found" << std::endl;
     }
 
     return sq;
@@ -237,7 +237,7 @@ osg::Group* daeReader::processOsgLOD(domTechnique* teq)
         }
         else
         {
-            osg::notify(osg::WARN) << "Expected element 'Radius' not found" << std::endl;
+            OSG_WARN << "Expected element 'Radius' not found" << std::endl;
         }
     }
 
@@ -248,7 +248,7 @@ osg::Group* daeReader::processOsgLOD(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'RangeMode' not found" << std::endl;
+        OSG_WARN << "Expected element 'RangeMode' not found" << std::endl;
     }
 
     any = daeSafeCast< domAny >(teq->getChild("RangeList"));
@@ -277,7 +277,7 @@ osg::Group* daeReader::processOsgLOD(domTechnique* teq)
                     }
                     else
                     {
-                        osg::notify(osg::WARN) << "'MinMax' does not contain a valid minimum value" << std::endl;
+                        OSG_WARN << "'MinMax' does not contain a valid minimum value" << std::endl;
                     }
 
                     if (iter != stringValues.end())
@@ -286,19 +286,19 @@ osg::Group* daeReader::processOsgLOD(domTechnique* teq)
                     }
                     else
                     {
-                        osg::notify(osg::WARN) << "'MinMax' does not contain a valid maximum value" << std::endl;
+                        OSG_WARN << "'MinMax' does not contain a valid maximum value" << std::endl;
                     }
 
                     rangelist.push_back(minMaxPair);
                 }
                 else
                 {
-                    osg::notify(osg::WARN) << "Child of element 'RangeList' is not of type 'MinMax'" << std::endl;
+                    OSG_WARN << "Child of element 'RangeList' is not of type 'MinMax'" << std::endl;
                 }
             }
             else
             {
-                osg::notify(osg::WARN) << "Element 'RangeList' does not contain expected elements." << std::endl;
+                OSG_WARN << "Element 'RangeList' does not contain expected elements." << std::endl;
             }
         }
 
@@ -306,7 +306,7 @@ osg::Group* daeReader::processOsgLOD(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'RangeList' not found" << std::endl;
+        OSG_WARN << "Expected element 'RangeList' not found" << std::endl;
     }
 
     return lod;
@@ -325,7 +325,7 @@ osg::Node* daeReader::processLight( domLight *dlight )
 {
     if (_numlights >= 7)
     {
-        osg::notify( osg::WARN ) << "More than 8 lights may not be supported by OpenGL driver." << std::endl;
+        OSG_WARN << "More than 8 lights may not be supported by OpenGL driver." << std::endl;
     }
 
     //do light processing here.
@@ -337,7 +337,7 @@ osg::Node* daeReader::processLight( domLight *dlight )
     if ( dlight->getTechnique_common() == NULL || 
          dlight->getTechnique_common()->getContents().getCount() == 0 )
     {
-        osg::notify( osg::WARN ) << "Invalid content for light" << std::endl;
+        OSG_WARN << "Invalid content for light" << std::endl;
         return NULL;
     }
 
@@ -369,7 +369,7 @@ osg::Node* daeReader::processLight( domLight *dlight )
     {
         if ( ambient->getColor() == NULL ) 
         {
-            osg::notify( osg::WARN ) << "Invalid content for ambient light" << std::endl;
+            OSG_WARN << "Invalid content for ambient light" << std::endl;
             return NULL;
         }
 
@@ -386,7 +386,7 @@ osg::Node* daeReader::processLight( domLight *dlight )
     {
         if ( directional->getColor() == NULL ) 
         {
-            osg::notify( osg::WARN ) << "Invalid content for directional light" << std::endl;
+            OSG_WARN << "Invalid content for directional light" << std::endl;
             return NULL;
         }
         light->setAmbient(    osg::Vec4(    0, 0, 0, 0));
@@ -406,7 +406,7 @@ osg::Node* daeReader::processLight( domLight *dlight )
     {
         if ( point->getColor() == NULL ) 
         {
-            osg::notify( osg::WARN ) << "Invalid content for point light" << std::endl;
+            OSG_WARN << "Invalid content for point light" << std::endl;
             return NULL;
         }
         light->setAmbient(    osg::Vec4(    0, 0, 0, 0));
@@ -449,7 +449,7 @@ osg::Node* daeReader::processLight( domLight *dlight )
     {
         if ( spot->getColor() == NULL ) 
         {
-            osg::notify( osg::WARN ) << "Invalid content for spot light" << std::endl;
+            OSG_WARN << "Invalid content for spot light" << std::endl;
             return NULL;
         }
         light->setAmbient(    osg::Vec4(    0, 0, 0, 0));
@@ -557,7 +557,7 @@ osg::Node* daeReader::processCamera( domCamera * dcamera )
                 
                 if (pAspectRatio)
                 {
-                    osg::notify(osg::WARN) << "Unexpected <aspectratio> in <camera> '" << dcamera->getId() << "'" << std::endl;
+                    OSG_WARN << "Unexpected <aspectratio> in <camera> '" << dcamera->getId() << "'" << std::endl;
                 }
             }
             else if (pAspectRatio)
@@ -591,7 +591,7 @@ osg::Node* daeReader::processCamera( domCamera * dcamera )
         else
         {
             // xfov or yfov expected
-            osg::notify(osg::WARN) << "Expected <xfov> or <yfov> in <camera> '" << dcamera->getId() << "'" << std::endl;
+            OSG_WARN << "Expected <xfov> or <yfov> in <camera> '" << dcamera->getId() << "'" << std::endl;
         }
 
         //domTargetableFloat *pZnear = daeSafeCast< domTargetableFloat >(pDomPerspective->getZnear());
@@ -611,7 +611,7 @@ osg::Node* daeReader::processCamera( domCamera * dcamera )
         //domTargetableFloat *pAspectRatio = daeSafeCast< domTargetableFloat >(pDomOrthographic->getAspect_ratio());
 
         // TODO The current osg::CameraView does not support an orthographic view
-        osg::notify(osg::WARN) << "Orthographic in <camera> '" << dcamera->getId() << "' not supported" << std::endl;
+        OSG_WARN << "Orthographic in <camera> '" << dcamera->getId() << "' not supported" << std::endl;
 
         //domTargetableFloat *pZnear = daeSafeCast< domTargetableFloat >(pDomOrthographic->getZnear());
         //domTargetableFloat *pZfar = daeSafeCast< domTargetableFloat >(pDomOrthographic->getZfar());    

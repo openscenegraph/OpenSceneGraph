@@ -58,14 +58,14 @@ bool daeReader::convert( const std::string &fileURI )
     
     if (!_document) 
     {
-        osg::notify( osg::WARN ) << "Load failed in COLLADA DOM" << std::endl;
+        OSG_WARN << "Load failed in COLLADA DOM" << std::endl;
         return false;
     }
-    osg::notify( osg::INFO ) << "URI loaded: " << fileURI << std::endl;
+    OSG_INFO << "URI loaded: " << fileURI << std::endl;
 
     if ( !_document->getScene() || !_document->getScene()->getInstance_visual_scene() ) 
     {
-        osg::notify( osg::WARN ) << "No scene found!" << std::endl;
+        OSG_WARN << "No scene found!" << std::endl;
         return false;
     }
 
@@ -113,7 +113,7 @@ bool daeReader::convert( const std::string &fileURI )
     _visualScene = daeSafeCast< domVisual_scene >( getElementFromURI( ivs->getUrl() ) );
     if ( _visualScene == NULL ) 
     {
-        osg::notify( osg::WARN ) << "Unable to locate visual scene!" << std::endl;
+        OSG_WARN << "Unable to locate visual scene!" << std::endl;
         return false;
     }
 
@@ -165,7 +165,7 @@ bool daeReader::convert( const std::string &fileURI )
                     }
                     else
                     {
-                        osg::notify( osg::WARN ) << "Could not locate <channel> target "  << pDomChannel->getTarget()<< std::endl;
+                        OSG_WARN << "Could not locate <channel> target "  << pDomChannel->getTarget()<< std::endl;
                     }
                 }
             }
@@ -183,7 +183,7 @@ bool daeReader::convert( const std::string &fileURI )
             domController *pDomController = daeSafeCast<domController>(getElementFromURI(pInstanceController->getUrl()));
             if (!pDomController)
             {
-                osg::notify( osg::WARN ) << "Failed to locate controller " << pInstanceController->getUrl().getURI() << std::endl;
+                OSG_WARN << "Failed to locate controller " << pInstanceController->getUrl().getURI() << std::endl;
                 continue;
             }
 
@@ -221,7 +221,7 @@ bool daeReader::convert( const std::string &fileURI )
                     pDomJointsSource = daeSafeCast<domSource>(getElementFromURI(inputURIs[i]->getSource()));
                     if (!pDomJointsSource)
                     {
-                        osg::notify( osg::WARN ) << "Could not find skin joints source '" << inputURIs[i]->getSource().getURI() << "'" <<std::endl;
+                        OSG_WARN << "Could not find skin joints source '" << inputURIs[i]->getSource().getURI() << "'" <<std::endl;
                     }
                 }
             }
@@ -317,7 +317,7 @@ osg::Group* daeReader::processVisualScene( domVisual_scene *scene )
     unsigned int nbVisualSceneGroup=scene->getNode_array().getCount();
     if (nbVisualSceneGroup==0)
     {
-        osg::notify( osg::WARN ) << "No visual scene group found !" << std::endl;
+        OSG_WARN << "No visual scene group found !" << std::endl;
         retVal = new osg::Group();
         retVal->setName("Empty Collada scene");
     }
@@ -451,19 +451,19 @@ void daeReader::processNodeExtra(osg::Node* osgNode, domNode *node)
                             }
                             else
                             {
-                                osg::notify(osg::WARN) << "Child of element 'Descriptions' is not of type 'Description'" << std::endl;
+                                OSG_WARN << "Child of element 'Descriptions' is not of type 'Description'" << std::endl;
                             }
                         }
                         else
                         {
-                            osg::notify(osg::WARN) << "Element 'Descriptions' does not contain expected elements." << std::endl;
+                            OSG_WARN << "Element 'Descriptions' does not contain expected elements." << std::endl;
                         }
                     }
                     osgNode->setDescriptions(descriptions);
                 }
                 else
                 {
-                    osg::notify(osg::WARN) << "Expected element 'Descriptions' not found" << std::endl;
+                    OSG_WARN << "Expected element 'Descriptions' not found" << std::endl;
                 }
             }
         }
@@ -567,7 +567,7 @@ osg::Node* daeReader::processNode( domNode *node, bool skeleton)
         if (c)
             addChild(attachTo, processCamera( c ));
         else
-            osg::notify( osg::WARN ) << "Failed to locate camera " << cameraInstanceArray[i]->getUrl().getURI() << std::endl;
+            OSG_WARN << "Failed to locate camera " << cameraInstanceArray[i]->getUrl().getURI() << std::endl;
     }
 
     // 0..* <instance_controller>
@@ -601,7 +601,7 @@ osg::Node* daeReader::processNode( domNode *node, bool skeleton)
         if (pDomLight)
             addChild(attachTo, processLight(pDomLight));
         else
-            osg::notify( osg::WARN ) << "Failed to locate light " << lightInstanceArray[i]->getUrl().getURI() << std::endl;
+            OSG_WARN << "Failed to locate light " << lightInstanceArray[i]->getUrl().getURI() << std::endl;
     }
 
     // 0..* <instance_node>
@@ -615,7 +615,7 @@ osg::Node* daeReader::processNode( domNode *node, bool skeleton)
             // Recursive call
             addChild(attachTo, processNode( n, skeleton ));
         else
-            osg::notify( osg::WARN ) << "Failed to locate node " << nodeInstanceArray[i]->getUrl().getURI() << std::endl;
+            OSG_WARN << "Failed to locate node " << nodeInstanceArray[i]->getUrl().getURI() << std::endl;
     }
 
     // 0..* <node>

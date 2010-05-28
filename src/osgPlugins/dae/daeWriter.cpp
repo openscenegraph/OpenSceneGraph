@@ -108,7 +108,7 @@ void daeWriter::debugPrint( osg::Node &node )
     {
         indent += "  ";
     }
-    osg::notify( osg::INFO ) << indent << node.className() << std::endl;
+    OSG_INFO << indent << node.className() << std::endl;
 #endif
 }
 

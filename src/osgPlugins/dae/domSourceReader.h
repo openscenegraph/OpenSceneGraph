@@ -49,7 +49,7 @@ public:
     
     int getCount() const { return m_count; };
 
-#define ASSERT_TYPE(type)       if (type!=m_array_type) { osg::notify(osg::WARN)<<"Wrong array type requested ("#type" != "<<m_array_type<<")"<<std::endl; }
+#define ASSERT_TYPE(type)       if (type!=m_array_type) { OSG_WARN<<"Wrong array type requested ("#type" != "<<m_array_type<<")"<<std::endl; }
 
     float getFloat( int index ) { ASSERT_TYPE( Float ); return (*m_float_array)[index]; };
 

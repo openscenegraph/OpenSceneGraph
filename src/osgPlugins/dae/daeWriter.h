@@ -104,7 +104,7 @@ public:
                 else
                 {
                     // TODO store in a multimap and let the exporter create multiple <channel>s for each connected node
-                    osg::notify( osg::WARN ) << "Multiple nodes using the same update callback not supported" << std::endl;
+                    OSG_WARN << "Multiple nodes using the same update callback not supported" << std::endl;
                 }
             }
         }
@@ -278,7 +278,7 @@ protected: //inner classes
                     vec4 = (osg::Vec4Array*)array;
                     break;
                 default:
-                    osg::notify( osg::WARN ) << "Array is unsupported vector type" << std::endl;
+                    OSG_WARN << "Array is unsupported vector type" << std::endl;
                     break;
                 }
             }

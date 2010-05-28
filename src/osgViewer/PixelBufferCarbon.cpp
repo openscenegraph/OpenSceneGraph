@@ -63,7 +63,7 @@ void PixelBufferCarbon::init()
     _context = NULL;
     _pixelformat = PixelBufferCarbon::createPixelFormat(_traits.get());
     if (!_pixelformat)
-        osg::notify(osg::WARN) << "PixelBufferCarbon::init could not create a valid pixelformat" << std::endl;
+        OSG_WARN << "PixelBufferCarbon::init could not create a valid pixelformat" << std::endl;
     _valid = (_pixelformat != NULL);
 }
 
@@ -74,7 +74,7 @@ void PixelBufferCarbon::init()
 bool PixelBufferCarbon::realizeImplementation() 
 {
     if (!_valid) {
-        osg::notify(osg::WARN) << "PixelBufferCarbon::realizeImplementation() aglChoosePixelFormat failed! " << aglErrorString(aglGetError()) << std::endl;
+        OSG_WARN << "PixelBufferCarbon::realizeImplementation() aglChoosePixelFormat failed! " << aglErrorString(aglGetError()) << std::endl;
         return false;
     }
     
@@ -90,7 +90,7 @@ bool PixelBufferCarbon::realizeImplementation()
     _context = aglCreateContext (_pixelformat, sharedContext);
     
     if (!_context) {
-        osg::notify(osg::WARN) << "PixelBufferCarbon::realizeImplementation() aglCreateContext failed! " << aglErrorString(aglGetError()) << std::endl;
+        OSG_WARN << "PixelBufferCarbon::realizeImplementation() aglCreateContext failed! " << aglErrorString(aglGetError()) << std::endl;
         return false;
     }
     
@@ -98,14 +98,14 @@ bool PixelBufferCarbon::realizeImplementation()
     
     _realized = aglCreatePBuffer (_traits->width, _traits->height, _traits->target, GL_RGBA, _traits->level, &(_pbuffer));
     if (!_realized) {
-        osg::notify(osg::WARN) << "PixelBufferCarbon::realizeImplementation() aglCreatePBuffer failed! " << aglErrorString(aglGetError()) << std::endl;
+        OSG_WARN << "PixelBufferCarbon::realizeImplementation() aglCreatePBuffer failed! " << aglErrorString(aglGetError()) << std::endl;
     }
     
     makeCurrentImplementation();
     
     _realized = aglSetPBuffer(_context, _pbuffer, _traits->face, _traits->level, 0);
     if (!_realized) {
-        osg::notify(osg::WARN) << "PixelBufferCarbon::realizeImplementation() aglSetPBuffer failed! " << aglErrorString(aglGetError()) << std::endl;
+        OSG_WARN << "PixelBufferCarbon::realizeImplementation() aglSetPBuffer failed! " << aglErrorString(aglGetError()) << std::endl;
     }
     return _realized;
 }
@@ -147,7 +147,7 @@ bool PixelBufferCarbon::releaseContextImplementation()
   * Pure virtual - must be implemented by concrate implementations of GraphicsContext. */
 void PixelBufferCarbon::bindPBufferToTextureImplementation( GLenum buffer ){ 
 
-    osg::notify(osg::NOTICE)<<"GraphicsWindow::void bindPBufferToTextureImplementation(..) not implemented."<<std::endl; 
+    OSG_NOTICE<<"GraphicsWindow::void bindPBufferToTextureImplementation(..) not implemented."<<std::endl; 
 }
 
 /** Swap the front and back buffers implementation.

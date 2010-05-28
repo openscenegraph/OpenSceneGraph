@@ -183,7 +183,7 @@ void ViewerBase::stopThreading()
 {
     if (!_threadsRunning) return;
 
-    OSG_NOTIFY(osg::INFO)<<"ViewerBase::stopThreading() - stopping threading"<<std::endl;
+    OSG_INFO<<"ViewerBase::stopThreading() - stopping threading"<<std::endl;
 
     Contexts contexts;
     getContexts(contexts);
@@ -238,14 +238,14 @@ void ViewerBase::stopThreading()
     _endRenderingDispatchBarrier = 0;
     _endDynamicDrawBlock = 0;
 
-    OSG_NOTIFY(osg::INFO)<<"Viewer::stopThreading() - stopped threading."<<std::endl;
+    OSG_INFO<<"Viewer::stopThreading() - stopped threading."<<std::endl;
 }
 
 void ViewerBase::startThreading()
 {
     if (_threadsRunning) return;
     
-    OSG_NOTIFY(osg::INFO)<<"Viewer::startThreading() - starting threading"<<std::endl;
+    OSG_INFO<<"Viewer::startThreading() - starting threading"<<std::endl;
     
     // release any context held by the main thread.
     releaseContext();
@@ -255,7 +255,7 @@ void ViewerBase::startThreading()
     Contexts contexts;
     getContexts(contexts);
     
-    OSG_NOTIFY(osg::INFO)<<"Viewer::startThreading() - contexts.size()="<<contexts.size()<<std::endl;
+    OSG_INFO<<"Viewer::startThreading() - contexts.size()="<<contexts.size()<<std::endl;
 
     Cameras cameras;
     getCameras(cameras);
@@ -281,7 +281,7 @@ void ViewerBase::startThreading()
             numThreadsOnEndBarrier = 1; 
             break;
         default:
-            OSG_NOTIFY(osg::NOTICE)<<"Error: Threading model not selected"<<std::endl;
+            OSG_NOTICE<<"Error: Threading model not selected"<<std::endl;
             return;
     }
 
@@ -296,7 +296,7 @@ void ViewerBase::startThreading()
     {
         if ((*scitr)->getSceneData())
         {
-            OSG_NOTIFY(osg::INFO)<<"Making scene thread safe"<<std::endl;
+            OSG_INFO<<"Making scene thread safe"<<std::endl;
 
             // make sure that existing scene graph objects are allocated with thread safe ref/unref
             (*scitr)->getSceneData()->setThreadSafeRefUnref(true);
@@ -375,7 +375,7 @@ void ViewerBase::startThreading()
         
         if (!gc->isRealized())
         {
-            OSG_NOTIFY(osg::INFO)<<"ViewerBase::startThreading() : Realizng window "<<gc<<std::endl;
+            OSG_INFO<<"ViewerBase::startThreading() : Realizng window "<<gc<<std::endl;
             gc->realize();
         }
         
@@ -450,7 +450,7 @@ void ViewerBase::startThreading()
             osg::Camera* camera = *camItr;
             if (camera->getCameraThread() && !camera->getCameraThread()->isRunning())
             {
-                OSG_NOTIFY(osg::INFO)<<"  camera->getCameraThread()-> "<<camera->getCameraThread()<<std::endl;
+                OSG_INFO<<"  camera->getCameraThread()-> "<<camera->getCameraThread()<<std::endl;
                 camera->getCameraThread()->startThread();
             }
         }
@@ -491,7 +491,7 @@ void ViewerBase::startThreading()
         osg::GraphicsContext* gc = (*citr);
         if (gc->getGraphicsThread() && !gc->getGraphicsThread()->isRunning())
         {
-            OSG_NOTIFY(osg::INFO)<<"  gc->getGraphicsThread()->startThread() "<<gc->getGraphicsThread()<<std::endl;
+            OSG_INFO<<"  gc->getGraphicsThread()->startThread() "<<gc->getGraphicsThread()<<std::endl;
             gc->getGraphicsThread()->startThread();
             // OpenThreads::Thread::YieldCurrentThread();
         }
@@ -499,7 +499,7 @@ void ViewerBase::startThreading()
 
     _threadsRunning = true;
 
-    OSG_NOTIFY(osg::INFO)<<"Set up threading"<<std::endl;
+    OSG_INFO<<"Set up threading"<<std::endl;
 }
 
 void ViewerBase::getWindows(Windows& windows, bool onlyValid)
@@ -523,7 +523,7 @@ void ViewerBase::checkWindowStatus()
     Contexts contexts;
     getContexts(contexts);
     
-    // OSG_NOTIFY(osg::NOTICE)<<"Viewer::checkWindowStatus() - "<<contexts.size()<<std::endl;
+    // OSG_NOTICE<<"Viewer::checkWindowStatus() - "<<contexts.size()<<std::endl;
     
     if (contexts.size()==0)
     {
@@ -612,7 +612,7 @@ void ViewerBase::frame(double simulationTime)
 {
     if (_done) return;
 
-    // OSG_NOTIFY(osg::NOTICE)<<std::endl<<"CompositeViewer::frame()"<<std::endl<<std::endl;
+    // OSG_NOTICE<<std::endl<<"CompositeViewer::frame()"<<std::endl<<std::endl;
 
     if (_firstFrame)
     {
@@ -649,7 +649,7 @@ void ViewerBase::renderingTraversals()
             if (view)
             {
                 const osg::Matrixd& m = view->getCamera()->getInverseViewMatrix();
-                OSG_NOTIFY(osg::NOTICE)<<"View "<<view<<", Master Camera position("<<m.getTrans()<<"), rotation("<<m.getRotate()<<")"<<std::endl;
+                OSG_NOTICE<<"View "<<view<<", Master Camera position("<<m.getTrans()<<"), rotation("<<m.getRotate()<<")"<<std::endl;
             }
         }
     }
@@ -746,7 +746,7 @@ void ViewerBase::renderingTraversals()
         }
     }
 
-    // OSG_NOTIFY(osg::NOTICE)<<std::endl<<"Start frame"<<std::endl;
+    // OSG_NOTICE<<std::endl<<"Start frame"<<std::endl;
     
 
     Contexts contexts;
@@ -796,7 +796,7 @@ void ViewerBase::renderingTraversals()
         }
     }
 
-    // OSG_NOTIFY(osg::NOTICE)<<"Joing _endRenderingDispatchBarrier block "<<_endRenderingDispatchBarrier.get()<<std::endl;
+    // OSG_NOTICE<<"Joing _endRenderingDispatchBarrier block "<<_endRenderingDispatchBarrier.get()<<std::endl;
 
     // wait till the rendering dispatch is done.
     if (_endRenderingDispatchBarrier.valid()) _endRenderingDispatchBarrier->block();
@@ -832,12 +832,12 @@ void ViewerBase::renderingTraversals()
     {
         // osg::Timer_t startTick = osg::Timer::instance()->tick();
         _endDynamicDrawBlock->block();
-        // OSG_NOTIFY(osg::NOTICE)<<"Time waiting "<<osg::Timer::instance()->delta_m(startTick, osg::Timer::instance()->tick())<<std::endl;;
+        // OSG_NOTICE<<"Time waiting "<<osg::Timer::instance()->delta_m(startTick, osg::Timer::instance()->tick())<<std::endl;;
     }
     
     if (_releaseContextAtEndOfFrameHint && doneMakeCurrentInThisThread)
     {
-        //OSG_NOTIFY(osg::NOTICE)<<"Doing release context"<<std::endl;
+        //OSG_NOTICE<<"Doing release context"<<std::endl;
         releaseContext();
     }
 

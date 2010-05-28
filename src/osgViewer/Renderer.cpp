@@ -31,8 +31,8 @@
 
 using namespace osgViewer;
 
-//#define DEBUG_MESSAGE if (isNotifyEnabled(NOTICE)) osg::notify(osg::NOTICE)
-#define DEBUG_MESSAGE if (isNotifyEnabled(osg::DEBUG_FP)) osg::notify(osg::DEBUG_FP)
+//#define DEBUG_MESSAGE OSG_NOTICE
+#define DEBUG_MESSAGE OSG_DEBUG
 
 
 OpenGLQuerySupport::OpenGLQuerySupport():
@@ -335,7 +335,7 @@ void Renderer::cull()
     {
         updateSceneView(sceneView);
 
-        // osg::notify(osg::NOTICE)<<"Culling buffer "<<_currentCull<<std::endl;
+        // OSG_NOTICE<<"Culling buffer "<<_currentCull<<std::endl;
 
         // pass on the fusion distance settings from the View to the SceneView
         osgViewer::View* view = dynamic_cast<osgViewer::View*>(sceneView->getCamera()->getView());
@@ -357,7 +357,7 @@ void Renderer::cull()
 #if 0
         if (sceneView->getDynamicObjectCount()==0 && state->getDynamicObjectRenderingCompletedCallback())
         {
-            // osg::notify(osg::NOTICE)<<"Completed in cull"<<std::endl;
+            // OSG_NOTICE<<"Completed in cull"<<std::endl;
             state->getDynamicObjectRenderingCompletedCallback()->completed(state);
         }
 #endif
@@ -433,21 +433,21 @@ void Renderer::draw()
         osgViewer::View* view = dynamic_cast<osgViewer::View*>(_camera->getView());
         osgDB::DatabasePager* databasePager = view ? view->getDatabasePager() : 0;
 
-        // OSG_NOTIFY(osg::NOTICE)<<"Drawing buffer "<<_currentDraw<<std::endl;
+        // OSG_NOTICE<<"Drawing buffer "<<_currentDraw<<std::endl;
 
         if (_done)
         {
-            OSG_NOTIFY(osg::INFO)<<"Renderer::release() causing draw to exit"<<std::endl;
+            OSG_INFO<<"Renderer::release() causing draw to exit"<<std::endl;
             return;
         }
 
         if (_graphicsThreadDoesCull)
         {
-            OSG_NOTIFY(osg::INFO)<<"Renderer::draw() completing early due to change in _graphicsThreadDoesCull flag."<<std::endl;
+            OSG_INFO<<"Renderer::draw() completing early due to change in _graphicsThreadDoesCull flag."<<std::endl;
             return;
         }
 
-        // OSG_NOTIFY(osg::NOTICE)<<"RenderingOperation"<<std::endl;
+        // OSG_NOTICE<<"RenderingOperation"<<std::endl;
 
         osg::Stats* stats = sceneView->getCamera()->getStats();
         osg::State* state = sceneView->getState();
@@ -462,7 +462,7 @@ void Renderer::draw()
 
         if (sceneView->getDynamicObjectCount()==0 && state->getDynamicObjectRenderingCompletedCallback())
         {
-            // OSG_NOTIFY(osg::NOTICE)<<"Completed in cull"<<std::endl;
+            // OSG_NOTICE<<"Completed in cull"<<std::endl;
             state->getDynamicObjectRenderingCompletedCallback()->completed(state);
         }
 
@@ -516,8 +516,8 @@ void Renderer::draw()
 
         osg::Timer_t afterDrawTick = osg::Timer::instance()->tick();
 
-//        OSG_NOTIFY(osg::NOTICE)<<"Time wait for draw = "<<osg::Timer::instance()->delta_m(startDrawTick, beforeDrawTick)<<std::endl;
-//        OSG_NOTIFY(osg::NOTICE)<<"     time for draw = "<<osg::Timer::instance()->delta_m(beforeDrawTick, afterDrawTick)<<std::endl;
+//        OSG_NOTICE<<"Time wait for draw = "<<osg::Timer::instance()->delta_m(startDrawTick, beforeDrawTick)<<std::endl;
+//        OSG_NOTICE<<"     time for draw = "<<osg::Timer::instance()->delta_m(beforeDrawTick, afterDrawTick)<<std::endl;
 
         if (stats && stats->collectStats("rendering"))
         {
@@ -541,7 +541,7 @@ void Renderer::cull_draw()
 
     if (_done)
     {
-        osg::notify(osg::INFO)<<"Render::release() causing cull_draw to exit"<<std::endl;
+        OSG_INFO<<"Render::release() causing cull_draw to exit"<<std::endl;
         return;
     }
 
@@ -559,7 +559,7 @@ void Renderer::cull_draw()
     osg::GraphicsThread* compileThread = compileContext ? compileContext->getGraphicsThread() : 0;
 
 
-    // osg::notify(osg::NOTICE)<<"RenderingOperation"<<std::endl;
+    // OSG_NOTICE<<"RenderingOperation"<<std::endl;
 
     // pass on the fusion distance settings from the View to the SceneView
     if (view) sceneView->setFusionDistance(view->getFusionDistanceMode(), view->getFusionDistanceValue());
@@ -689,9 +689,9 @@ void Renderer::flushAndCompile(double currentElapsedFrameTime, osgUtil::SceneVie
     double compileTime = availableTime - flushTime;
 
 #if 0
-    OSG_NOTIFY(osg::NOTICE)<<"total availableTime = "<<availableTime*1000.0<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"      flushTime     = "<<flushTime*1000.0<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"      compileTime   = "<<compileTime*1000.0<<std::endl;
+    OSG_NOTICE<<"total availableTime = "<<availableTime*1000.0<<std::endl;
+    OSG_NOTICE<<"      flushTime     = "<<flushTime*1000.0<<std::endl;
+    OSG_NOTICE<<"      compileTime   = "<<compileTime*1000.0<<std::endl;
 #endif
 
     if (compileThread)
@@ -707,7 +707,7 @@ void Renderer::flushAndCompile(double currentElapsedFrameTime, osgUtil::SceneVie
     if (flushTime>0.0) compileTime += flushTime;
 
 #if 0
-    OSG_NOTIFY(osg::NOTICE)<<"      revised compileTime   = "<<compileTime*1000.0<<std::endl;
+    OSG_NOTICE<<"      revised compileTime   = "<<compileTime*1000.0<<std::endl;
 #endif
 
     if (databasePager && databasePager->requiresExternalCompileGLObjects(sceneView->getState()->getContextID()))
@@ -739,7 +739,7 @@ void Renderer::operator () (osg::GraphicsContext* context)
 
 void Renderer::release()
 {
-    OSG_NOTIFY(osg::INFO)<<"Renderer::release()"<<std::endl;
+    OSG_INFO<<"Renderer::release()"<<std::endl;
     _done = true;
 
     _availableQueue.release();

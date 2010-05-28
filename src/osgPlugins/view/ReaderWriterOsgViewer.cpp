@@ -106,7 +106,7 @@ public:
         }
         else
         {
-            osg::notify(osg::NOTICE)<<"Found multiple view's, just taking first"<<std::endl;
+            OSG_NOTICE<<"Found multiple view's, just taking first"<<std::endl;
             return viewList.front().get();
         }
 

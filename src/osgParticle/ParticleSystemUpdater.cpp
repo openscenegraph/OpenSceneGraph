@@ -54,7 +54,7 @@ void osgParticle::ParticleSystemUpdater::traverse(osg::NodeVisitor& nv)
         }
         else
         {
-            osg::notify(osg::WARN) << "osgParticle::ParticleSystemUpdater::traverse(NodeVisitor&) requires a valid FrameStamp to function, particles not updated.\n";
+            OSG_WARN << "osgParticle::ParticleSystemUpdater::traverse(NodeVisitor&) requires a valid FrameStamp to function, particles not updated.\n";
         }
 
     }
@@ -88,8 +88,8 @@ bool osgParticle::ParticleSystemUpdater::removeParticleSystem(unsigned int pos, 
       unsigned int endOfRemoveRange = pos + numParticleSystemsToRemove;
       if( endOfRemoveRange > _psv.size() )
       {
-         osg::notify(osg::DEBUG_INFO)<<"Warning: ParticleSystem::removeParticleSystem(i,numParticleSystemsToRemove) has been passed an excessive number"<<std::endl;
-         osg::notify(osg::DEBUG_INFO)<<"         of ParticleSystems to remove, trimming just to end of ParticleSystem list."<<std::endl;
+         OSG_DEBUG<<"Warning: ParticleSystem::removeParticleSystem(i,numParticleSystemsToRemove) has been passed an excessive number"<<std::endl;
+         OSG_DEBUG<<"         of ParticleSystems to remove, trimming just to end of ParticleSystem list."<<std::endl;
          endOfRemoveRange = _psv.size();
       }
       _psv.erase(_psv.begin()+pos, _psv.begin()+endOfRemoveRange);

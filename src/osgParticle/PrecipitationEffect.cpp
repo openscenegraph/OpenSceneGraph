@@ -324,7 +324,7 @@ void PrecipitationEffect::update()
 {
     _dirty = false;
 
-    osg::notify(osg::INFO)<<"PrecipitationEffect::update()"<<std::endl;
+    OSG_INFO<<"PrecipitationEffect::update()"<<std::endl;
 
     float length_u = _cellSize.x();
     float length_v = _cellSize.y();
@@ -341,9 +341,9 @@ void PrecipitationEffect::update()
     _inverse_dv.set(0.0f, 1.0f/length_v, 0.0f);
     _inverse_dw.set(0.0f, 0.0f, 1.0f/length_w);
     
-    osg::notify(osg::INFO)<<"Cell size X="<<length_u<<std::endl;
-    osg::notify(osg::INFO)<<"Cell size Y="<<length_v<<std::endl;
-    osg::notify(osg::INFO)<<"Cell size Z="<<length_w<<std::endl;
+    OSG_INFO<<"Cell size X="<<length_u<<std::endl;
+    OSG_INFO<<"Cell size Y="<<length_v<<std::endl;
+    OSG_INFO<<"Cell size Z="<<length_w<<std::endl;
     
 
     {
@@ -492,7 +492,7 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
     unsigned int pointRenderBin = 11;
     
     
-    osg::notify(osg::INFO)<<"PrecipitationEffect::setUpGeometries("<<numParticles<<")"<<std::endl;
+    OSG_INFO<<"PrecipitationEffect::setUpGeometries("<<numParticles<<")"<<std::endl;
 
     bool needGeometryRebuild = false;
 
@@ -732,7 +732,7 @@ void PrecipitationEffect::setUpGeometries(unsigned int numParticles)
         #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
             _pointStateSet->setMode(GL_VERTEX_PROGRAM_POINT_SIZE, osg::StateAttribute::ON);
         #else
-            osg::notify(osg::NOTICE)<<"Warning: ParticleEffect::setUpGeometries(..) not fully implemented."<<std::endl;
+            OSG_NOTICE<<"Warning: ParticleEffect::setUpGeometries(..) not fully implemented."<<std::endl;
         #endif
         
         _pointStateSet->setRenderBinDetails(pointRenderBin,"DepthSortedBin");
@@ -764,12 +764,12 @@ void PrecipitationEffect::cull(PrecipitationDrawableSet& pds, osgUtil::CullVisit
     inverse_modelview.invert(*(cv->getModelViewMatrix()));
     
     osg::Vec3 eyeLocal = osg::Vec3(0.0f,0.0f,0.0f) * inverse_modelview;
-    //osg::notify(osg::NOTICE)<<"  eyeLocal "<<eyeLocal<<std::endl;
+    //OSG_NOTICE<<"  eyeLocal "<<eyeLocal<<std::endl;
     
     float eye_k = (eyeLocal-_origin)*_inverse_dw;
     osg::Vec3 eye_kPlane = eyeLocal-_dw*eye_k-_origin;
     
-    // osg::notify(osg::NOTICE)<<"  eye_kPlane "<<eye_kPlane<<std::endl;
+    // OSG_NOTICE<<"  eye_kPlane "<<eye_kPlane<<std::endl;
     
     float eye_i = eye_kPlane*_inverse_du;
     float eye_j = eye_kPlane*_inverse_dv;
@@ -791,7 +791,7 @@ void PrecipitationEffect::cull(PrecipitationDrawableSet& pds, osgUtil::CullVisit
     int j_max = (int)ceil(eye_j + j_delta);
     int k_max = (int)ceil(eye_k + k_delta);
     
-    //osg::notify(osg::NOTICE)<<"i_delta="<<i_delta<<" j_delta="<<j_delta<<" k_delta="<<k_delta<<std::endl;
+    //OSG_NOTICE<<"i_delta="<<i_delta<<" j_delta="<<j_delta<<" k_delta="<<k_delta<<std::endl;
 
     unsigned int numTested=0;
     unsigned int numInFrustum=0;
@@ -818,8 +818,8 @@ void PrecipitationEffect::cull(PrecipitationDrawableSet& pds, osgUtil::CullVisit
 #ifdef DO_TIMING
     osg::Timer_t endTick = osg::Timer::instance()->tick();
 
-    osg::notify(osg::NOTICE)<<"time for cull "<<osg::Timer::instance()->delta_m(startTick,endTick)<<"ms  numTested="<<numTested<<" numInFrustum"<<numInFrustum<<std::endl;
-    osg::notify(osg::NOTICE)<<"     quads "<<pds._quadPrecipitationDrawable->getCurrentCellMatrixMap().size()<<"   lines "<<pds._linePrecipitationDrawable->getCurrentCellMatrixMap().size()<<"   points "<<pds._pointPrecipitationDrawable->getCurrentCellMatrixMap().size()<<std::endl;
+    OSG_NOTICE<<"time for cull "<<osg::Timer::instance()->delta_m(startTick,endTick)<<"ms  numTested="<<numTested<<" numInFrustum"<<numInFrustum<<std::endl;
+    OSG_NOTICE<<"     quads "<<pds._quadPrecipitationDrawable->getCurrentCellMatrixMap().size()<<"   lines "<<pds._linePrecipitationDrawable->getCurrentCellMatrixMap().size()<<"   points "<<pds._pointPrecipitationDrawable->getCurrentCellMatrixMap().size()<<std::endl;
 #endif
 }
 
@@ -979,6 +979,6 @@ if (!_geometry) return;
     
     glPopMatrix();
 #else
-    osg::notify(osg::NOTICE)<<"Warning: ParticleEffect::drawImplementation(..) not fully implemented."<<std::endl;
+    OSG_NOTICE<<"Warning: ParticleEffect::drawImplementation(..) not fully implemented."<<std::endl;
 #endif
 }

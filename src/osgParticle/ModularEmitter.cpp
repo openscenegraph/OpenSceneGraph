@@ -80,7 +80,7 @@ void osgParticle::ModularEmitter::emit(double dt)
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"run out of particle"<<std::endl;
+                OSG_NOTICE<<"run out of particle"<<std::endl;
             }
         }
     }

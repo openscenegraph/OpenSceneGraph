@@ -138,7 +138,7 @@ void osgParticle::ParticleSystem::drawImplementation(osg::RenderInfo& renderInfo
     }
 
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
-    osg::notify(osg::NOTICE)<<"Warning: ParticleSystem::drawImplementation(..) not fully implemented."<<std::endl;
+    OSG_NOTICE<<"Warning: ParticleSystem::drawImplementation(..) not fully implemented."<<std::endl;
 #endif
 
 }

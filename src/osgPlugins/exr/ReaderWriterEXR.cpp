@@ -100,7 +100,7 @@ unsigned char *exr_load(std::istream& fin,
         RgbaInputFile rgbafile(inStream);
 
         Box2i dw = rgbafile.dataWindow();
-        RgbaChannels channels = rgbafile.channels();
+        /*RgbaChannels channels =*/ rgbafile.channels();
         (*width_ret) = width = dw.max.x - dw.min.x + 1;
         (*height_ret)=height = dw.max.y - dw.min.y + 1;
         (*dataType_ret) = GL_HALF_FLOAT_ARB;
@@ -246,11 +246,10 @@ protected:
     {
         bool writeOK = true;
 
-         //Obtain data from texture
-         int width = img.s();
-         int height = img.t();
-         unsigned int intenalTextureFormat = img.getInternalTextureFormat();
-         unsigned int pixelFormat = img.getPixelFormat();
+        //Obtain data from texture
+        int width = img.s();
+        int height = img.t();
+        unsigned int pixelFormat = img.getPixelFormat();
         int numComponents = img.computeNumComponents(pixelFormat);
         unsigned int dataType = img.getDataType();
 
@@ -361,8 +360,6 @@ protected:
         int s = width_ret;
         int t = height_ret;
         int r = 1;
-
-        int internalFormat = numComponents_ret;
 
         if (dataType_ret == GL_HALF_FLOAT_ARB)
         {

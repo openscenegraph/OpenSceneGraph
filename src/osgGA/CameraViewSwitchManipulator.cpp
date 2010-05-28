@@ -83,7 +83,7 @@ osg::Matrixd CameraViewSwitchManipulator::getMatrix() const
         }
         else
         {
-            osg::notify(osg::NOTICE)<<"CameraViewSwitchManipulator::getMatrix(): Unable to calculate matrix due to empty parental path."<<std::endl;
+            OSG_NOTICE<<"CameraViewSwitchManipulator::getMatrix(): Unable to calculate matrix due to empty parental path."<<std::endl;
         }
     }
     return mat;    
@@ -103,7 +103,7 @@ osg::Matrixd CameraViewSwitchManipulator::getInverseMatrix() const
         }
         else
         {
-            osg::notify(osg::NOTICE)<<"CameraViewSwitchManipulator::getInverseMatrix(): Unable to calculate matrix due to empty parental path."<<std::endl;
+            OSG_NOTICE<<"CameraViewSwitchManipulator::getInverseMatrix(): Unable to calculate matrix due to empty parental path."<<std::endl;
         }
     }
     return mat;

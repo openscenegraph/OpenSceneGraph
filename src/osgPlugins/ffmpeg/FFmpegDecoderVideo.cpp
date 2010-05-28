@@ -55,7 +55,7 @@ FFmpegDecoderVideo::FFmpegDecoderVideo(PacketQueue & packets, FFmpegClocks & clo
 
 FFmpegDecoderVideo::~FFmpegDecoderVideo()
 {
-    osg::notify(osg::INFO)<<"Destructing FFmpegDecoderVideo..."<<std::endl;
+    OSG_INFO<<"Destructing FFmpegDecoderVideo..."<<std::endl;
 
 
     if (isRunning())
@@ -76,7 +76,7 @@ FFmpegDecoderVideo::~FFmpegDecoderVideo()
     }
 #endif
 
-    osg::notify(osg::INFO)<<"Destructed FFmpegDecoderVideo"<<std::endl;
+    OSG_INFO<<"Destructed FFmpegDecoderVideo"<<std::endl;
 }
 
 
@@ -157,12 +157,12 @@ void FFmpegDecoderVideo::run()
 
     catch (const std::exception & error)
     {
-        osg::notify(osg::WARN) << "FFmpegDecoderVideo::run : " << error.what() << std::endl;
+        OSG_WARN << "FFmpegDecoderVideo::run : " << error.what() << std::endl;
     }
 
     catch (...)
     {
-        osg::notify(osg::WARN) << "FFmpegDecoderVideo::run : unhandled exception" << std::endl;
+        OSG_WARN << "FFmpegDecoderVideo::run : unhandled exception" << std::endl;
     }
 }
 
@@ -282,21 +282,21 @@ int FFmpegDecoderVideo::convert(AVPicture *dst, int dst_pix_fmt, AVPicture *src,
     }
     
 
-    osg::notify(osg::INFO)<<"Using sws_scale ";
+    OSG_INFO<<"Using sws_scale ";
     
     int result =  sws_scale(m_swscale_ctx,
                             (src->data), (src->linesize), 0, src_height,
                             (dst->data), (dst->linesize));
 #else
 
-    osg::notify(osg::INFO)<<"Using img_convert ";
+    OSG_INFO<<"Using img_convert ";
 
     int result = img_convert(dst, dst_pix_fmt, src,
                              src_pix_fmt, src_width, src_height);
 
 #endif
     osg::Timer_t endTick = osg::Timer::instance()->tick();
-    osg::notify(osg::INFO)<<" time = "<<osg::Timer::instance()->delta_m(startTick,endTick)<<"ms"<<std::endl;
+    OSG_INFO<<" time = "<<osg::Timer::instance()->delta_m(startTick,endTick)<<"ms"<<std::endl;
 
     return result;
 }

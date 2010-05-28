@@ -47,7 +47,7 @@ bool FFmpegDecoder::open(const std::string & filename)
         {
             avdevice_register_all();
         
-            osg::notify(osg::NOTICE)<<"Attempting to stream "<<filename<<std::endl;
+            OSG_NOTICE<<"Attempting to stream "<<filename<<std::endl;
 
             AVFormatParameters formatParams;
             memset(&formatParams, 0, sizeof(AVFormatParameters));
@@ -70,11 +70,11 @@ bool FFmpegDecoder::open(const std::string & filename)
             
             if (iformat)
             {
-                osg::notify(osg::NOTICE)<<"Found input format: "<<format<<std::endl;
+                OSG_NOTICE<<"Found input format: "<<format<<std::endl;
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"Failed to find input format: "<<format<<std::endl;
+                OSG_NOTICE<<"Failed to find input format: "<<format<<std::endl;
             }
 
             int error = av_open_input_file(&p_format_context, filename.c_str(), iformat, 0, &formatParams);
@@ -133,13 +133,13 @@ bool FFmpegDecoder::open(const std::string & filename)
 
         catch (const std::runtime_error & error)
         {
-            osg::notify(osg::WARN) << "FFmpegImageStream::open audio failed, audio stream will be disabled: " << error.what() << std::endl;
+            OSG_WARN << "FFmpegImageStream::open audio failed, audio stream will be disabled: " << error.what() << std::endl;
         }
     }
 
     catch (const std::runtime_error & error)
     {
-        osg::notify(osg::WARN) << "FFmpegImageStream::open : " << error.what() << std::endl;
+        OSG_WARN << "FFmpegImageStream::open : " << error.what() << std::endl;
         return false;
     }
     

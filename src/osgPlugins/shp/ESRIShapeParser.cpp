@@ -217,7 +217,7 @@ void ESRIShapeParser::_combinePointToMultipoint()
 {
     if( !_valid ) return;
     
-    osg::notify(osg::NOTICE)<<"_combinePointToMultipoint()"<<std::endl;
+    OSG_NOTICE<<"_combinePointToMultipoint()"<<std::endl;
 
     ArrayHelper coords(_useDouble);
 
@@ -587,7 +587,7 @@ void ESRIShapeParser::_process( const std::vector<ESRIShape::MultiPatch> &mpatch
                 p->partTypes[i] == InnerRing || 
                 p->partTypes[i] == FirstRing || p->partTypes[i] == Ring )
             {
-                osg::notify(osg::WARN) << "ESRIShapeParser - MultiPatch type " << 
+                OSG_WARN << "ESRIShapeParser - MultiPatch type " << 
                     (p->partTypes[i] == TriangleStrip ? "TriangleStrip":
                      p->partTypes[i] == TriangleFan   ? "TriangleFan":
                      p->partTypes[i] == OuterRing     ? "OuterRing":

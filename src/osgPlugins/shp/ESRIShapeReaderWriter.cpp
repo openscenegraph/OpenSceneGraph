@@ -59,7 +59,7 @@ class ESRIShapeReaderWriter : public osgDB::ReaderWriter
             {
                 if (sp.getGeode()->getNumDrawables() != xbp.getAttributeList().size())
                 {
-                    osg::notify(osg::WARN) << "ESRIShape loader : .dbf file containe different record number that .shp file." << std::endl
+                    OSG_WARN << "ESRIShape loader : .dbf file containe different record number that .shp file." << std::endl
                                            << "                   .dbf record skipped." << std::endl;
                 }
                 else

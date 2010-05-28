@@ -47,7 +47,7 @@ void Image::write(DataOutputStream* out)
     out->writeInt(r());
     
     
-    OSG_NOTIFY(osg::DEBUG_INFO) << "image written '" << getFileName()<<"'\t"<<s()<<"\t"<<t()<<std::endl;
+    OSG_DEBUG << "image written '" << getFileName()<<"'\t"<<s()<<"\t"<<t()<<std::endl;
 
     // Write formats, type and packing
     out->writeInt(getInternalTextureFormat());

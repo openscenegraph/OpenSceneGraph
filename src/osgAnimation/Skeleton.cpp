@@ -52,7 +52,7 @@ public:
             {
                 if (foundNonBone)
                 {
-                    osg::notify(osg::WARN) <<
+                    OSG_WARN <<
                         "Warning: a Bone was found after a non-Bone child "
                         "within a Skeleton. Children of a Bone must be ordered "
                         "with all child Bones first for correct update order." << std::endl;

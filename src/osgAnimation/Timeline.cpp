@@ -164,14 +164,14 @@ void Timeline::addActionAt(unsigned int frame, Action* action, int priority)
     {
         Command& command = *it;
         if (command._action.second.get() == action) {
-            osg::notify(osg::INFO) << "Timeline::addActionAt command " << action->getName() << " already added this frame, declined" << std::endl;
+            OSG_INFO << "Timeline::addActionAt command " << action->getName() << " already added this frame, declined" << std::endl;
             return;
         }
     }
 
     if (isActive(action))
     {
-        osg::notify(osg::INFO) << "Timeline::addActionAt command " << action->getName() << " already active, remove the old" << std::endl;
+        OSG_INFO << "Timeline::addActionAt command " << action->getName() << " already active, remove the old" << std::endl;
         removeAction(action);
     }
 

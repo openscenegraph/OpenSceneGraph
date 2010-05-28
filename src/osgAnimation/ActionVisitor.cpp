@@ -98,16 +98,16 @@ void UpdateActionVisitor::apply(Action& action)
         bool result = action.evaluateFrame(frame, frameInAction, loopDone);
         if (!result)
         {
-            osg::notify(osg::DEBUG_INFO) << action.getName() << " Action frame " << frameInAction  << " finished" << std::endl;
+            OSG_DEBUG << action.getName() << " Action frame " << frameInAction  << " finished" << std::endl;
             return;
         }
-        osg::notify(osg::DEBUG_INFO) << action.getName() << " Action frame " << frame  << " relative to loop " << frameInAction  << " no loop " << loopDone<< std::endl;
+        OSG_DEBUG << action.getName() << " Action frame " << frame  << " relative to loop " << frameInAction  << " no loop " << loopDone<< std::endl;
 
         frame = frameInAction;
         Action::Callback* cb = action.getFrameCallback(frame);
         while (cb)
         {
-            osg::notify(osg::DEBUG_INFO) << action.getName() << " evaluate callback " << cb->getName() << " at " << frame << std::endl;
+            OSG_DEBUG << action.getName() << " evaluate callback " << cb->getName() << " at " << frame << std::endl;
             (*cb)(&action, this);
             cb = cb->getNestedCallback();
         }

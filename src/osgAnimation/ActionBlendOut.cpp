@@ -36,6 +36,6 @@ void ActionBlendOut::computeWeight(unsigned int frame)
 {
     double ratio = ( (frame+1) * 1.0 / (getNumFrames()) );
     double w = _weight * (1.0-ratio);
-    osg::notify(osg::DEBUG_INFO) << getName() << " BlendOut frame " << frame  << " weight " << w << std::endl;
+    OSG_DEBUG << getName() << " BlendOut frame " << frame  << " weight " << w << std::endl;
     _animation->setWeight(w);
 }

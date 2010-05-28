@@ -57,7 +57,7 @@ bool UpdateMaterial::link(osgAnimation::Channel* channel)
     }
     else 
     {
-        osg::notify(osg::WARN) << "Channel " << channel->getName() << " does not contain a valid symbolic name for this class " << className() << std::endl;
+        OSG_WARN << "Channel " << channel->getName() << " does not contain a valid symbolic name for this class " << className() << std::endl;
     }
     return false;
 }

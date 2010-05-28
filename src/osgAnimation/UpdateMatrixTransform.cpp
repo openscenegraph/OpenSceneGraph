@@ -61,7 +61,7 @@ bool UpdateMatrixTransform::link(osgAnimation::Channel* channel)
         }
     }
 
-    osg::notify(osg::INFO) << "UpdateMatrixTransform::link Channel " << channel->getName() << " does not contain a symbolic name that can be linked to a StackedTransformElement." << std::endl;
+    OSG_INFO << "UpdateMatrixTransform::link Channel " << channel->getName() << " does not contain a symbolic name that can be linked to a StackedTransformElement." << std::endl;
 
     return false;
 }

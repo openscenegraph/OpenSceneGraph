@@ -50,7 +50,7 @@ public:
         _boundingBox.expandBy(center + vec);
         _boundingBox.expandBy(center - vec);
         _computed = true;
-//        osg::notify(osg::NOTICE) << "build the bounding box for RigGeometry " << rig.getName() << " " << _boundingBox._min << " " << _boundingBox._max << std::endl;
+//        OSG_NOTICE << "build the bounding box for RigGeometry " << rig.getName() << " " << _boundingBox._min << " " << _boundingBox._max << std::endl;
         return _boundingBox;
     }
 protected:
@@ -98,7 +98,7 @@ void RigGeometry::buildVertexInfluenceSet()
 {
     if (!_vertexInfluenceMap.valid())
     {
-        osg::notify(osg::WARN) << "buildVertexInfluenceSet can't be called without VertexInfluence already set to the RigGeometry ( " << getName() << " ) " << std::endl;
+        OSG_WARN << "buildVertexInfluenceSet can't be called without VertexInfluence already set to the RigGeometry ( " << getName() << " ) " << std::endl;
         return;
     }
     _vertexInfluenceSet.clear();
@@ -109,14 +109,14 @@ void RigGeometry::buildVertexInfluenceSet()
 
     _vertexInfluenceSet.buildVertex2BoneList();
     _vertexInfluenceSet.buildUniqVertexSetToBoneSetList();
-    osg::notify(osg::NOTICE) << "uniq groups " << _vertexInfluenceSet.getUniqVertexSetToBoneSetList().size() << " for " << getName() << std::endl;
+    OSG_NOTICE << "uniq groups " << _vertexInfluenceSet.getUniqVertexSetToBoneSetList().size() << " for " << getName() << std::endl;
 }
 
 void RigGeometry::computeMatrixFromRootSkeleton()
 {
     if (!_root.valid())
     {
-        osg::notify(osg::WARN) << "Warning " << className() <<"::computeMatrixFromRootSkeleton if you have this message it means you miss to call buildTransformer(Skeleton* root), or your RigGeometry (" << getName() <<") is not attached to a Skeleton subgraph" << std::endl;
+        OSG_WARN << "Warning " << className() <<"::computeMatrixFromRootSkeleton if you have this message it means you miss to call buildTransformer(Skeleton* root), or your RigGeometry (" << getName() <<") is not attached to a Skeleton subgraph" << std::endl;
         return;
     }
     osg::MatrixList mtxList = getParent(0)->getWorldMatrices(_root.get());

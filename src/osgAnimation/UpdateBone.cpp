@@ -35,7 +35,7 @@ void UpdateBone::operator()(osg::Node* node, osg::NodeVisitor* nv)
         Bone* b = dynamic_cast<Bone*>(node);
         if (!b)
         {
-            osg::notify(osg::WARN) << "Warning: UpdateBone set on non-Bone object." << std::endl;
+            OSG_WARN << "Warning: UpdateBone set on non-Bone object." << std::endl;
             return;
         }
 

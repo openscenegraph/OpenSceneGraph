@@ -271,7 +271,7 @@ void PrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
     case GL_LINE_STRIP:
     case GL_LINE_LOOP:
     default:
-        osg::notify(osg::WARN) << "WriterNodeVisitor :: can't handle mode " << mode << std::endl;
+        OSG_WARN << "WriterNodeVisitor :: can't handle mode " << mode << std::endl;
         break;
     }
     if (_normalBinding == osg::Geometry::BIND_PER_PRIMITIVE_SET) ++_curNormalIndex;
@@ -366,12 +366,12 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor& writerNodeVisitor,
             osg::CullFace::Mode mode = static_cast<const osg::CullFace*>(attribute)->getMode();
             if (mode == osg::CullFace::FRONT)
             {
-                osg::notify(osg::WARN) << "FBX Writer: Reversed face (culled FRONT) not supported yet." << std::endl;
+                OSG_WARN << "FBX Writer: Reversed face (culled FRONT) not supported yet." << std::endl;
             }
             else if (mode != osg::CullFace::BACK)
             {
                 assert(mode == osg::CullFace::FRONT_AND_BACK);
-                osg::notify(osg::WARN) << "FBX Writer: Invisible face (culled FRONT_AND_BACK) not supported yet." << std::endl;
+                OSG_WARN << "FBX Writer: Invisible face (culled FRONT_AND_BACK) not supported yet." << std::endl;
             }
         }
 
@@ -438,7 +438,7 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor& writerNodeVisitor,
                 {
                     if (!osgDB::makeDirectoryForFile(destPath))
                     {
-                        osg::notify(osg::NOTICE) << "Can't create directory for file '" << destPath << "'. May fail creating the image file." << std::endl;
+                        OSG_NOTICE << "Can't create directory for file '" << destPath << "'. May fail creating the image file." << std::endl;
                     }
                     osgDB::writeImageFile(*_osgImage, destPath);
                 }
@@ -457,7 +457,7 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor& writerNodeVisitor,
 
 int WriterNodeVisitor::processStateSet(const osg::StateSet* ss)
 {
-    //osg::notify(osg::ALWAYS) << "Trying Adding " << ss->getAttribute(osg::StateAttribute::MATERIAL)->getName() << std::endl;
+    //OSG_ALWAYS << "Trying Adding " << ss->getAttribute(osg::StateAttribute::MATERIAL)->getName() << std::endl;
     MaterialMap::iterator itr = _materialMap.find(MaterialMap::key_type(ss));
     if (itr != _materialMap.end())
     {
@@ -710,7 +710,7 @@ void WriterNodeVisitor::createListTriangle(const osg::Geometry* geo,
                 if (nb == nbVertices) texcoords = true;
                 else
                 {
-                    OSG_NOTIFY(osg::WARN) << "There are more/less texture coords than vertices! Ignoring texture coords.";
+                    OSG_WARN << "There are more/less texture coords than vertices! Ignoring texture coords.";
                 }
             }
         }

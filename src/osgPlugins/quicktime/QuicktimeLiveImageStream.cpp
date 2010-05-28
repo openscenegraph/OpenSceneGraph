@@ -59,24 +59,24 @@ QuicktimeLiveImageStream::~QuicktimeLiveImageStream()
 /// Start or continue stream.
 void QuicktimeLiveImageStream::play()
 {
-   osg::notify(osg::DEBUG_INFO)<<"Sending play"<<this<<std::endl;
+   OSG_DEBUG<<"Sending play"<<this<<std::endl;
   /* if (g_s_use_sg)
    {
        ComponentResult result = noErr;
        result = SGStartPreview(m_gSeqGrabber);
        if (result != noErr)
-           osg::notify(osg::FATAL) << "SGStartPreview : error" << std::endl;
+           OSG_FATAL << "SGStartPreview : error" << std::endl;
    }*/
 }
 /// Pause stream at current position.
 void QuicktimeLiveImageStream::pause()
 {
-   osg::notify(osg::DEBUG_INFO)<<"Sending pause"<<this<<std::endl;
+   OSG_DEBUG<<"Sending pause"<<this<<std::endl;
 }
 /// stop playing 
 void QuicktimeLiveImageStream::quit(bool wiatForThreadToExit)
 {
-   osg::notify(osg::DEBUG_INFO)<<"Sending quit"<<this<<std::endl;
+   OSG_DEBUG<<"Sending quit"<<this<<std::endl;
 }
 
 //
@@ -92,7 +92,7 @@ static bool g_s_use_sg_record = false; // 1b
 // load
 void QuicktimeLiveImageStream::load(std::string fileName)
 {
-   osg::notify(osg::DEBUG_INFO)<<"QuicktimeLive Loading..."<<this<<std::endl;
+   OSG_DEBUG<<"QuicktimeLive Loading..."<<this<<std::endl;
    // CreateAndRunWithSequenceGrabber
    if (g_s_use_sg)
        createAndRunWithSequenceGrabber(fileName);
@@ -133,7 +133,7 @@ void QuicktimeLiveImageStream::createGWorld()
                              NULL, NULL, 0, (Ptr)data(), 4*m_videoRectWidth);
     if (err !=0 )
     {
-        osg::notify(osg::DEBUG_INFO) << "Could not create gWorld" << std::endl;
+        OSG_DEBUG << "Could not create gWorld" << std::endl;
     }
     else
     {
@@ -145,7 +145,7 @@ void QuicktimeLiveImageStream::createGWorld()
          {
              if (!LockPixels (m_pixmap)) // lock offscreen pixel map
              {
-                 osg::notify(osg::FATAL) << "Could not lock PixMap" << std::endl;
+                 OSG_FATAL << "Could not lock PixMap" << std::endl;
              }
          }
         // Set back
@@ -160,7 +160,7 @@ void QuicktimeLiveImageStream::createAndRunWithSequenceGrabber(std::string fileN
    std::string::size_type idx = fileName.find(':');
    if (idx == std::string::npos)
    {
-       osg::notify(osg::FATAL) << "Error while parsing deviceID:deviceInputID.live path : " << fileName << std::endl;        
+       OSG_FATAL << "Error while parsing deviceID:deviceInputID.live path : " << fileName << std::endl;        
    }
    // Better c++ code is to use istrstream
    std::string deviceIDStr      = fileName.substr(0,idx);
@@ -194,18 +194,25 @@ void QuicktimeLiveImageStream::createAndRunWithSequenceGrabber(std::string fileN
    ComponentResult result = noErr;
    result = SGPrepare( m_gSeqGrabber, TRUE, FALSE);
    if (result != noErr)
-       osg::notify(osg::FATAL) << "SGPrepare : error" << std::endl;
+   {
+       OSG_FATAL << "SGPrepare : error" << std::endl;
+   }
+
    if (g_s_use_sg_record)
    {
        result = SGStartRecord(m_gSeqGrabber);
        if (result != noErr)
-           osg::notify(osg::FATAL) << "SGStartRecord : error" << std::endl;
+       {
+           OSG_FATAL << "SGStartRecord : error" << std::endl;
+       }
    }
    else
    {
        result = SGStartPreview(m_gSeqGrabber);
        if (result != noErr)
-           osg::notify(osg::FATAL) << "SGStartPreview : error" << std::endl;
+       {
+           OSG_FATAL << "SGStartPreview : error" << std::endl;
+       }
    }
  
    _status = ImageStream::PLAYING;
@@ -251,7 +258,7 @@ void QuicktimeLiveImageStream::createSequenceGrabber()
                     result = SGSetGWorld(m_gSeqGrabber, (CGrafPtr)m_gw, 0);
                     if (result != noErr)
                     {
-                        osg::notify(osg::FATAL) << "Could not set GWorld on SG" << std::endl;
+                        OSG_FATAL << "Could not set GWorld on SG" << std::endl;
                     }
                 }
                 // Set GWorld back
@@ -286,7 +293,7 @@ void QuicktimeLiveImageStream::createSequenceGrabberVideoChannel()
         }
         //  result = SGSetUseScreenBuffer(m_gVideoChannel, FALSE);
         // Set
-        osg::notify(osg::DEBUG_INFO) << "Setting up vdig from input prefs" << std::endl;
+        OSG_DEBUG << "Setting up vdig from input prefs" << std::endl;
         result = SGSetChannelDevice     ( m_gVideoChannel, m_videoDeviceIDStr);
         result = SGSetChannelDeviceInput( m_gVideoChannel, m_videoDeviceInputID);
         // result = SGSetChannelPlayFlags  ( m_gVideoChannel, channelPlayFast | channelPlayHighQuality | channelPlayAllData);
@@ -295,7 +302,7 @@ void QuicktimeLiveImageStream::createSequenceGrabberVideoChannel()
         VideoDigitizerComponent vdig = SGGetVideoDigitizerComponent(m_gVideoChannel);
         VideoDigitizerError vid_err;
         vid_err = VDSetInputStandard (vdig, palIn);
-        osg::notify(osg::DEBUG_INFO) << "Setup vdig from input prefs:" << std::endl;
+        OSG_DEBUG << "Setup vdig from input prefs:" << std::endl;
         print_video_component_capability(vdig);
 
         result = SGVideoDigitizerChanged( m_gVideoChannel);
@@ -317,13 +324,13 @@ void QuicktimeLiveImageStream::createSequenceGrabberVideoChannel()
         vid_err = VDGetSoundInputSource(vdig, (long)m_videoDeviceInputID, &sound_id);
         vid_err = VDGetSoundInputDriver(vdig, sound_driver_name);
         sound_driver_name_cstr = pstr_printable(sound_driver_name);
-        osg::notify(osg::DEBUG_INFO) << "vdig sound driver name :" << sound_driver_name_cstr << std::endl;
-        osg::notify(osg::DEBUG_INFO) << "vdig sound driver id   :" << sound_id << std::endl;
+        OSG_DEBUG << "vdig sound driver name :" << sound_driver_name_cstr << std::endl;
+        OSG_DEBUG << "vdig sound driver id   :" << sound_id << std::endl;
         */
     }
     else
     {
-        osg::notify(osg::FATAL) << "Could not create SGNewChannel for Video Channel" << std::endl;
+        OSG_FATAL << "Could not create SGNewChannel for Video Channel" << std::endl;
     }
     // Set GWorld back
     SetGWorld(origPort, origDevice);
@@ -340,7 +347,7 @@ OSErr QuicktimeLiveImageStream::dataProcCallback( SGChannel c,Ptr p,long len,lon
 {
     OSErr err = noErr;
     //
-    osg::notify(osg::INFO) << " Video " << refCon << std::endl;
+    OSG_INFO << " Video " << refCon << std::endl;
     dirty();
     //
     return err;
@@ -352,11 +359,16 @@ void QuicktimeLiveImageStream::createSequenceGrabberDataProc()
     OSErr err;
     err = SGSetDataRef(m_gSeqGrabber, 0, 0, seqGrabToMemory | seqGrabDontMakeMovie);
     if (err != noErr)
-       osg::notify(osg::FATAL) << "SGSetDataRef : error" << std::endl;
+    {
+       OSG_FATAL << "SGSetDataRef : error" << std::endl;
+    }
+
     // specify a sequence grabber data function
     err = SGSetDataProc(m_gSeqGrabber, NewSGDataUPP(MySGDataProc), (long)this);
     if (err != noErr)
-       osg::notify(osg::FATAL) << "SGSetDataProc : error" << std::endl;
+    {
+       OSG_FATAL << "SGSetDataProc : error" << std::endl;
+    }
 }
 
 
@@ -391,7 +403,7 @@ void QuicktimeLiveImageStream::createSequenceGrabberAudioChannel()
         result = SGGetChannelDeviceAndInputNames( m_gSoundChannel, deviceName, inputName, &inputNumber);
 
         // Set
-        // osg::notify(osg::DEBUG_INFO) << "Setting up audio component from input prefs" << std::endl;
+        // OSG_DEBUG << "Setting up audio component from input prefs" << std::endl;
         result = SGSetChannelDevice     ( m_gSoundChannel, m_soundDeviceIDStr);
         result = SGSetChannelDeviceInput( m_gSoundChannel, m_soundDeviceInputID);
         // Set the volume low to prevent feedback when we start the preview,
@@ -404,7 +416,7 @@ void QuicktimeLiveImageStream::createSequenceGrabberAudioChannel()
     }
     else
     {
-        osg::notify(osg::FATAL) << "Could not create SGNewChannel for Sound Channel" << std::endl;
+        OSG_FATAL << "Could not create SGNewChannel for Sound Channel" << std::endl;
     }
     // Set GWorld back
     SetGWorld(origPort, origDevice);
@@ -442,7 +454,7 @@ ComponentResult QuicktimeLiveImageStream::grabFrameCompleteProc(SGChannel sgChan
             finish = osg::Timer::instance()->tick();
             double dur = osg::Timer::instance()->delta_s(start, finish);
             double fps = 100.0 / dur;
-            osg::notify(osg::NOTICE) << "Executed 100 frames in " << dur << " seconds : ~" << fps << " fps" << std::endl;
+            OSG_NOTICE << "Executed 100 frames in " << dur << " seconds : ~" << fps << " fps" << std::endl;
             fps_counter = 0;
         }
    }
@@ -480,7 +492,7 @@ void QuicktimeLiveImageStream::createAndRunWithVideoDigitizer(std::string fileNa
    std::string::size_type idx = fileName.find(':');
    if (idx == std::string::npos)
    {
-       osg::notify(osg::FATAL) << "Error while parsing deviceID:deviceInputID.live path : " << fileName << std::endl;        
+       OSG_FATAL << "Error while parsing deviceID:deviceInputID.live path : " << fileName << std::endl;        
    }
    // Better c++ code is to use istrstream
    std::string deviceIDStr      = fileName.substr(0,idx);
@@ -500,7 +512,9 @@ void QuicktimeLiveImageStream::createAndRunWithVideoDigitizer(std::string fileNa
 
    VideoDigitizerError error = VDSetPlayThruOnOff(m_vdig, vdPlayThruOn);
    if (error != noErr)
-       osg::notify(osg::FATAL) << "VDSetPlayThruOnOff : error" << std::endl;
+   {
+       OSG_FATAL << "VDSetPlayThruOnOff : error" << std::endl;
+   }
    // Ticker
    start();
 }
@@ -517,7 +531,7 @@ void QuicktimeLiveImageStream::createVideoDigitizer()
     video_component_description.componentFlags        = 0;      /* 8 each for Component,Type,SubType,Manuf/revision */
     video_component_description.componentFlagsMask    = 0;      /* Mask for specifying which flags to consider in search, zero during registration */
     long num_video_components = CountComponents (&video_component_description);
-    osg::notify(osg::DEBUG_INFO) << " available Video DigitizerComponents : " << num_video_components << std::endl;
+    OSG_DEBUG << " available Video DigitizerComponents : " << num_video_components << std::endl;
     if (num_video_components)
     {
         Component aComponent = 0;
@@ -528,13 +542,13 @@ void QuicktimeLiveImageStream::createVideoDigitizer()
             aComponent = FindNextComponent(aComponent, &full_video_component_description);
             if (aComponent && (aDeviceID == m_videoDeviceID))
             {
-                osg::notify(osg::DEBUG_INFO) << "Component" << std::endl;
+                OSG_DEBUG << "Component" << std::endl;
                 OSErr                err;
                 Handle compName = NewHandle(256);
                 Handle compInfo = NewHandle(256);
                 err = GetComponentInfo( aComponent, &full_video_component_description, compName,compInfo,0);
-                osg::notify(osg::DEBUG_INFO) << "    Name: " << pstr_printable((StringPtr)*compName) << std::endl;
-                osg::notify(osg::DEBUG_INFO) << "    Desc: " << pstr_printable((StringPtr)*compInfo) << std::endl;
+                OSG_DEBUG << "    Name: " << pstr_printable((StringPtr)*compName) << std::endl;
+                OSG_DEBUG << "    Desc: " << pstr_printable((StringPtr)*compInfo) << std::endl;
                 //Capabilities
                 VideoDigitizerComponent component_instance = OpenComponent(aComponent);
                 m_vdig = component_instance;
@@ -553,7 +567,9 @@ void QuicktimeLiveImageStream::createVideoDigitizer()
                 error = VDSetPlayThruDestination(m_vdig, m_pixmap, &destinationBounds, 0, 0);
                 //error = VDSetPlayThruGlobalRect(m_vdig, (GrafPtr)origPort, &destinationBounds);
                 if (error != noErr)
-                    osg::notify(osg::FATAL) << "VDSetPlayThruDestination : error" << std::endl;
+                {
+                    OSG_FATAL << "VDSetPlayThruDestination : error" << std::endl;
+                }
                 print_video_component_capability(component_instance);
                 break;
             }
@@ -582,7 +598,9 @@ void QuicktimeLiveImageStream::run()
        {
            result = SGIdle(m_gSeqGrabber);
            if (result != noErr)
-               osg::notify(osg::FATAL) << "SGIdle : error" << std::endl;
+           {
+               OSG_FATAL << "SGIdle : error" << std::endl;
+           }
        }
        //OpenThreads::Thread::microSleep(250000); // 25fps (1,000,000 = 1 fps)
        //OpenThreads::Thread::microSleep(50000); // 200fps (1,000,000 = 1 fps)

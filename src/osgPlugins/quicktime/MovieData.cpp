@@ -88,7 +88,7 @@ void MovieData::load(osg::Image* image, std::string afilename, float startTime)
     
     if (status !=0) {
         _fError = true;
-        osg::notify(osg::FATAL) << " MovieData :: NewMovieFromProperties failed with err " << status<< std::endl;
+        OSG_FATAL << " MovieData :: NewMovieFromProperties failed with err " << status<< std::endl;
         return;
     }
     
@@ -152,7 +152,7 @@ void MovieData::_initImage(osg::Image* image)
     _pointer = (char*)malloc(4 * _textureWidth * _textureHeight + 32);
 
     if (_pointer == NULL) {
-        osg::notify(osg::FATAL) << "MovieData: " << "Can't allocate texture buffer" << std::endl;
+        OSG_FATAL << "MovieData: " << "Can't allocate texture buffer" << std::endl;
         _fError= true;
     }
 
@@ -190,8 +190,10 @@ void MovieData::_initGWorldStuff(osg::Image * image)  {
     err = QTNewGWorldFromPtr(&_gw, k32ARGBPixelFormat, &textureBounds, NULL, NULL, 0, image->data(), 4 * image->s());
     
     if (err !=0 )
-        osg::notify(osg::FATAL) << "MovieData : Could not create gWorld" << std::endl;
-        
+    {
+        OSG_FATAL << "MovieData : Could not create gWorld" << std::endl;
+    }
+
     GetGWorld (&origPort, &origDevice);
     SetGWorld(_gw, NULL);                                         // set current graphics port to offscreen
     SetMovieGWorld(_movie, (CGrafPtr)_gw, NULL);
@@ -203,13 +205,13 @@ void MovieData::_initGWorldStuff(osg::Image * image)  {
     {
         if (!LockPixels (pixmap))                                        // lock offscreen pixel map
         {
-            osg::notify(osg::FATAL) << "Could not lock PixMap" << std::endl;
+            OSG_FATAL << "Could not lock PixMap" << std::endl;
             ExitToShell ();
         }
     }
     else
     {
-        osg::notify(osg::FATAL) << "Could not GetGWorldPixMap" << std::endl;
+        OSG_FATAL << "Could not GetGWorldPixMap" << std::endl;
         ExitToShell ();
     }
 
@@ -230,7 +232,7 @@ void MovieData::setMovieTime(float atime) {
 }
 
 void MovieData::setMovieRate(float rate) { 
-    // osg::notify(osg::ALWAYS) << "new movierate: " << rate << " current: " << getMovieRate() << std::endl;
+    // OSG_ALWAYS << "new movierate: " << rate << " current: " << getMovieRate() << std::endl;
     _movieRate = rate;
     if ((rate != 0) && (_preRolled == false)) {
         PrerollMovie(_movie, GetMovieTime(_movie,NULL), X2Fix(rate));

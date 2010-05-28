@@ -91,11 +91,15 @@ public:
 
                 OSErr err = EnterMovies();
                 if (err!=0)
-                   osg::notify(osg::FATAL) << "Error while initializing quicktime: " << err << std::endl; 
+                {
+                   OSG_FATAL << "Error while initializing quicktime: " << err << std::endl;
+                }
                 else
-                   osg::notify(osg::DEBUG_INFO) << "Quicktime initialized successfully"  << std::endl;            
+                {
+                   OSG_DEBUG << "Quicktime initialized successfully"  << std::endl;
+                }
 
-                _setup = true;            
+                _setup = true;
              }
           }
 
@@ -234,7 +238,7 @@ public:
           }
           if (osgDB::getNameLessExtension(file) == "devices")
           {
-              osg::notify(osg::ALWAYS) << " available Video DigitizerComponents : " << num_video_components << std::endl;
+              OSG_ALWAYS << " available Video DigitizerComponents : " << num_video_components << std::endl;
               if (num_video_components)
               {
                   // Probe Video Dig
@@ -246,13 +250,13 @@ public:
                       // Video
                       OSG_SGDeviceList& video_device_list = devices_list[0];
                       // Print
-                      osg::notify(osg::ALWAYS) << std::endl;
-                      osg::notify(osg::ALWAYS) << "Video Component/Input IDs follow: " << std::endl;
-                      osg::notify(osg::ALWAYS) << std::endl;
+                      OSG_ALWAYS << std::endl;
+                      OSG_ALWAYS << "Video Component/Input IDs follow: " << std::endl;
+                      OSG_ALWAYS << std::endl;
                       for (unsigned int device_input = 0; device_input < video_device_list.size(); ++device_input)
                       {
                           OSG_SGDevicePair device_pair = video_device_list[device_input];
-                          osg::notify(osg::ALWAYS) << device_pair.first.c_str() << "    " << device_pair.second.c_str() << std::endl;
+                          OSG_ALWAYS << device_pair.first.c_str() << "    " << device_pair.second.c_str() << std::endl;
                       }
                   }
                   if (devices_list.size() > 1)
@@ -260,13 +264,13 @@ public:
                       // Audio
                       OSG_SGDeviceList& audio_device_list = devices_list[1];
                       // Print
-                      osg::notify(osg::ALWAYS) << std::endl;
-                      osg::notify(osg::ALWAYS) << "Audio Component/Input IDs follow: " << std::endl;
-                      osg::notify(osg::ALWAYS) << std::endl;
+                      OSG_ALWAYS << std::endl;
+                      OSG_ALWAYS << "Audio Component/Input IDs follow: " << std::endl;
+                      OSG_ALWAYS << std::endl;
                       for (unsigned int device_input = 0; device_input < audio_device_list.size(); ++device_input)
                       {
                           OSG_SGDevicePair device_pair = audio_device_list[device_input];
-                          osg::notify(osg::ALWAYS) << device_pair.first.c_str() << "    " << device_pair.second.c_str() << std::endl;
+                          OSG_ALWAYS << device_pair.first.c_str() << "    " << device_pair.second.c_str() << std::endl;
                       }
                   }
               }
@@ -274,7 +278,7 @@ public:
           }
           else
           {
-              osg::notify(osg::DEBUG_INFO) << " available Video DigitizerComponents : " << num_video_components << std::endl;
+              OSG_DEBUG << " available Video DigitizerComponents : " << num_video_components << std::endl;
               if (num_video_components)
               {
                   // Note from Riccardo Corsi 
@@ -292,7 +296,7 @@ public:
               }
               else
               {
-                  osg::notify(osg::DEBUG_INFO) << "No available Video DigitizerComponents : " <<  std::endl;
+                  OSG_DEBUG << "No available Video DigitizerComponents : " <<  std::endl;
                   return ReadResult::FILE_NOT_HANDLED;
               }
           }
@@ -351,7 +355,7 @@ public:
         osg::ref_ptr<osg::Image> image = importer.readFromStream(is, fileName, length);
         is.close();
         if (!importer.success() || (image == NULL)) {
-            osg::notify(osg::WARN) << "Error reading file " << file << " : " << importer.getLastErrorString() << std::endl;
+            OSG_WARN << "Error reading file " << file << " : " << importer.getLastErrorString() << std::endl;
             return ReadResult::ERROR_IN_READING_FILE;
         }
 
@@ -390,7 +394,7 @@ public:
         osg::ref_ptr<osg::Image> image = importer.readFromStream(is, filename, sizeHint);
         
         if (!importer.success() || (image == NULL)) {
-            osg::notify(osg::WARN) << "Error reading from stream "  << importer.getLastErrorString() << std::endl;
+            OSG_WARN << "Error reading from stream "  << importer.getLastErrorString() << std::endl;
             return ReadResult::ERROR_IN_READING_FILE;
         }
         _qtExitObserver.addMedia(image.get());

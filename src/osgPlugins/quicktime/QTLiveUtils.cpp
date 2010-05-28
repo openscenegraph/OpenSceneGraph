@@ -58,65 +58,77 @@ char* pstr_printable(StringPtr src_pstr)
 
 void initialize_quicktime_qtml()
 {
-    osg::notify(osg::NOTICE) << "QT QTML: Starting up... " << std::endl;
+    OSG_NOTICE << "QT QTML: Starting up... " << std::endl;
     OSErr err;
 #ifndef __APPLE__
     err = InitializeQTML(0);
     if (err!=0)
-        osg::notify(osg::FATAL) << "Error while initializing quicktime QTML: " << err << std::endl; 
+    {
+        OSG_FATAL << "Error while initializing quicktime QTML: " << err << std::endl;
+    }
     else
-        osg::notify(osg::NOTICE) << "QT QTML: initialized successfully"  << std::endl;
+    {
+        OSG_NOTICE << "QT QTML: initialized successfully"  << std::endl;
+    }
 #endif
 }
 
 void terminite_quicktime_qtml()
 {
-    osg::notify(osg::NOTICE) << "QT QTML: Closing down... " << std::endl;
+    OSG_NOTICE << "QT QTML: Closing down... " << std::endl;
 #ifndef __APPLE__
     TerminateQTML();
 #endif
-    osg::notify(osg::NOTICE) << "QT QTML: Closed successfully"  << std::endl;    
+    OSG_NOTICE << "QT QTML: Closed successfully"  << std::endl;    
 }
 
 void enter_quicktime_movies()
 {
-    osg::notify(osg::NOTICE) << "QT Movies: Starting up... " << std::endl;
+    OSG_NOTICE << "QT Movies: Starting up... " << std::endl;
     OSErr err;
     err = EnterMovies();
     if (err!=0)
-        osg::notify(osg::FATAL) << "Error while initializing Movies: " << err << std::endl; 
+    {
+        OSG_FATAL << "Error while initializing Movies: " << err << std::endl;
+    }
     else
-        osg::notify(osg::NOTICE) << "QT Movies: initialized successfully"  << std::endl;
+    {
+        OSG_NOTICE << "QT Movies: initialized successfully"  << std::endl;
+    }
 }
 
 void leave_quicktime_movies()
 {
-    osg::notify(osg::NOTICE) << "QT Movies: Closing down... " << std::endl;
+    OSG_NOTICE << "QT Movies: Closing down... " << std::endl;
 #ifndef __APPLE__
     ExitMovies();
 #endif
-    osg::notify(osg::NOTICE) << "QT Movies: closed successfully"  << std::endl;    
+    OSG_NOTICE << "QT Movies: closed successfully"  << std::endl;    
 }
 
 #if TARGET_OS_MAC
 void enter_quicktime_movies_mt()
 {
-    osg::notify(osg::NOTICE) << "QT Movies MT: Starting up... " << std::endl;
+    OSG_NOTICE << "QT Movies MT: Starting up... " << std::endl;
     OSErr err;
     err = EnterMoviesOnThread(0);
     if (err!=0)
-        osg::notify(osg::FATAL) << "Error while initializing Movies MT: " << err << std::endl; 
+    {
+        OSG_FATAL << "Error while initializing Movies MT: " << err << std::endl;
+    }
     else
-        osg::notify(osg::NOTICE) << "QT Movies MT: initialized successfully"  << std::endl;
+    {
+        OSG_NOTICE << "QT Movies MT: initialized successfully"  << std::endl;
+    }
 }
 
 void leave_quicktime_movies_mt()
 {
-    osg::notify(osg::NOTICE) << "QT Movies MT: Closing down... " << std::endl;
+    OSG_NOTICE << "QT Movies MT: Closing down... " << std::endl;
 #ifndef __APPLE__
     ExitMoviesOnThread();
 #endif
-    osg::notify(osg::NOTICE) << "QT Movies MT: closed successfully"  << std::endl;    
+    OSG_NOTICE << "QT Movies MT: closed successfully"  << std::endl;    
 }
 #endif
 
@@ -168,89 +180,94 @@ void print_video_component_capability(VideoDigitizerComponent aComponent)
     VideoDigitizerError vid_err;
     DigitizerInfo       vid_info;
     // Capability flags
-    osg::notify(osg::NOTICE) << std::endl;
+    OSG_NOTICE << std::endl;
     vid_err = VDGetDigitizerInfo(aComponent, &vid_info);
-    if (vid_err) osg::notify(osg::NOTICE) << "VDGetDigitizerInfo(aComponent, &vid_info) - ERROR" << std::endl;
+    if (vid_err)
+    {
+        OSG_NOTICE << "VDGetDigitizerInfo(aComponent, &vid_info) - ERROR" << std::endl;
+    }
     else
     {
-        osg::notify(osg::NOTICE) << "DigitizerInfo:" << std::endl;
+        OSG_NOTICE << "DigitizerInfo:" << std::endl;
         short vdigType = vid_info.vdigType;
-        if (vdigType == vdTypeBasic) osg::notify(osg::NOTICE) << "Digitizer Type : Basic (no clipping)" << std::endl;
-        if (vdigType == vdTypeAlpha) osg::notify(osg::NOTICE) << "Digitizer Type : Alpha clipping" << std::endl;
-        if (vdigType == vdTypeMask)  osg::notify(osg::NOTICE) << "Digitizer Type : Mask Plane clipping" << std::endl;
-        if (vdigType == vdTypeKey)   osg::notify(osg::NOTICE) << "Digitizer Type : Key Color(s) clipping" << std::endl;
+        if (vdigType == vdTypeBasic) { OSG_NOTICE << "Digitizer Type : Basic (no clipping)" << std::endl; }
+        if (vdigType == vdTypeAlpha) { OSG_NOTICE << "Digitizer Type : Alpha clipping" << std::endl; }
+        if (vdigType == vdTypeMask)  { OSG_NOTICE << "Digitizer Type : Mask Plane clipping" << std::endl; }
+        if (vdigType == vdTypeKey)   { OSG_NOTICE << "Digitizer Type : Key Color(s) clipping" << std::endl; }
         short vdigSlot = vid_info.slot;
-        osg::notify(osg::NOTICE) << "Hardwre Slot : " << vdigSlot << std::endl;
-        osg::notify(osg::NOTICE) << "Input Capability:" << std::endl << std::boolalpha;
+        OSG_NOTICE << "Hardwre Slot : " << vdigSlot << std::endl;
+        OSG_NOTICE << "Input Capability:" << std::endl << std::boolalpha;
         long inputCapabilityFlags = vid_info.inputCapabilityFlags;
-        osg::notify(osg::NOTICE) << "    NTSC      : " << supports_capability(inputCapabilityFlags, digiInDoesNTSC) << std::endl;
-        osg::notify(osg::NOTICE) << "    PAL       : " << supports_capability(inputCapabilityFlags, digiInDoesPAL)  << std::endl;
-        osg::notify(osg::NOTICE) << "    Composite : " << supports_capability(inputCapabilityFlags, digiInDoesComposite) << std::endl;
-        osg::notify(osg::NOTICE) << "    Component : " << supports_capability(inputCapabilityFlags, digiInDoesComponent) << std::endl;
-        osg::notify(osg::NOTICE) << "    SVideo    : " << supports_capability(inputCapabilityFlags, digiInDoesSVideo) << std::endl;
-        osg::notify(osg::NOTICE) << "Input Current:" << std::endl;
+        OSG_NOTICE << "    NTSC      : " << supports_capability(inputCapabilityFlags, digiInDoesNTSC) << std::endl;
+        OSG_NOTICE << "    PAL       : " << supports_capability(inputCapabilityFlags, digiInDoesPAL)  << std::endl;
+        OSG_NOTICE << "    Composite : " << supports_capability(inputCapabilityFlags, digiInDoesComposite) << std::endl;
+        OSG_NOTICE << "    Component : " << supports_capability(inputCapabilityFlags, digiInDoesComponent) << std::endl;
+        OSG_NOTICE << "    SVideo    : " << supports_capability(inputCapabilityFlags, digiInDoesSVideo) << std::endl;
+        OSG_NOTICE << "Input Current:" << std::endl;
         long inputCurrentFlags = vid_info.inputCurrentFlags;
-        osg::notify(osg::NOTICE) << "    NTSC      : " << supports_capability(inputCurrentFlags, digiInDoesNTSC) << std::endl;
-        osg::notify(osg::NOTICE) << "    PAL       : " << supports_capability(inputCurrentFlags, digiInDoesPAL)  << std::endl;
-        osg::notify(osg::NOTICE) << "    Composite : " << supports_capability(inputCurrentFlags, digiInDoesComposite) << std::endl;
-        osg::notify(osg::NOTICE) << "    Component : " << supports_capability(inputCurrentFlags, digiInDoesComponent) << std::endl;
-        osg::notify(osg::NOTICE) << "    SVideo    : " << supports_capability(inputCurrentFlags, digiInDoesSVideo) << std::endl;
+        OSG_NOTICE << "    NTSC      : " << supports_capability(inputCurrentFlags, digiInDoesNTSC) << std::endl;
+        OSG_NOTICE << "    PAL       : " << supports_capability(inputCurrentFlags, digiInDoesPAL)  << std::endl;
+        OSG_NOTICE << "    Composite : " << supports_capability(inputCurrentFlags, digiInDoesComposite) << std::endl;
+        OSG_NOTICE << "    Component : " << supports_capability(inputCurrentFlags, digiInDoesComponent) << std::endl;
+        OSG_NOTICE << "    SVideo    : " << supports_capability(inputCurrentFlags, digiInDoesSVideo) << std::endl;
         // Heights
         short minDestHeight = vid_info.minDestHeight;
         short minDestWidth  = vid_info.minDestWidth;
         short maxDestWidth  = vid_info.maxDestWidth;
         short maxDestHeight = vid_info.maxDestHeight;
-        osg::notify(osg::NOTICE) << "Min destination width,height :  " << minDestWidth << "  " << minDestHeight << std::endl;
-        osg::notify(osg::NOTICE) << "Max destination width,height :  " << maxDestWidth << "  " << maxDestHeight << std::endl;
+        OSG_NOTICE << "Min destination width,height :  " << minDestWidth << "  " << minDestHeight << std::endl;
+        OSG_NOTICE << "Max destination width,height :  " << maxDestWidth << "  " << maxDestHeight << std::endl;
         // Current Status
         long inputFlags, outputFlags;
         vid_err = VDGetCurrentFlags(aComponent, &inputFlags, &outputFlags);
-        osg::notify(osg::NOTICE) << "    NTSC          : " << supports_capability(inputFlags, digiInDoesNTSC) << std::endl;
-        osg::notify(osg::NOTICE) << "    PAL           : " << supports_capability(inputFlags, digiInDoesPAL)  << std::endl;
-        osg::notify(osg::NOTICE) << "    Composite     : " << supports_capability(inputFlags, digiInDoesComposite) << std::endl;
-        osg::notify(osg::NOTICE) << "    Component     : " << supports_capability(inputFlags, digiInDoesComponent) << std::endl;
-        osg::notify(osg::NOTICE) << "    SVideo        : " << supports_capability(inputFlags, digiInDoesSVideo) << std::endl;
-        osg::notify(osg::NOTICE) << "    GenLock       : " << supports_capability(inputFlags, digiInDoesGenLock) << std::endl;
-        osg::notify(osg::NOTICE) << "    SECAM         : " << supports_capability(inputFlags, digiInDoesSECAM) << std::endl;
-        osg::notify(osg::NOTICE) << "    VTR_Broadcast : " << supports_capability(inputFlags, digiInVTR_Broadcast) << std::endl;
-        osg::notify(osg::NOTICE) << "    Color         : " << supports_capability(inputFlags, digiInDoesColor) << std::endl;
-        osg::notify(osg::NOTICE) << "    BW            : " << supports_capability(inputFlags, digiInDoesBW) << std::endl;
-        osg::notify(osg::NOTICE) << "   *SignalLock*   : " << supports_capability(inputFlags, digiInSignalLock) << std::endl;
+        OSG_NOTICE << "    NTSC          : " << supports_capability(inputFlags, digiInDoesNTSC) << std::endl;
+        OSG_NOTICE << "    PAL           : " << supports_capability(inputFlags, digiInDoesPAL)  << std::endl;
+        OSG_NOTICE << "    Composite     : " << supports_capability(inputFlags, digiInDoesComposite) << std::endl;
+        OSG_NOTICE << "    Component     : " << supports_capability(inputFlags, digiInDoesComponent) << std::endl;
+        OSG_NOTICE << "    SVideo        : " << supports_capability(inputFlags, digiInDoesSVideo) << std::endl;
+        OSG_NOTICE << "    GenLock       : " << supports_capability(inputFlags, digiInDoesGenLock) << std::endl;
+        OSG_NOTICE << "    SECAM         : " << supports_capability(inputFlags, digiInDoesSECAM) << std::endl;
+        OSG_NOTICE << "    VTR_Broadcast : " << supports_capability(inputFlags, digiInVTR_Broadcast) << std::endl;
+        OSG_NOTICE << "    Color         : " << supports_capability(inputFlags, digiInDoesColor) << std::endl;
+        OSG_NOTICE << "    BW            : " << supports_capability(inputFlags, digiInDoesBW) << std::endl;
+        OSG_NOTICE << "   *SignalLock*   : " << supports_capability(inputFlags, digiInSignalLock) << std::endl;
         // Preferrd Width Height
         long pref_width, pref_height;
         vid_err = VDGetPreferredImageDimensions(aComponent, &pref_width, &pref_height);
-        if (vid_err) osg::notify(osg::NOTICE) << "VDGetPreferredImageDimensions(aComponent, &pref_width, &pref_height) - ERROR" << std::endl;
-        else         osg::notify(osg::NOTICE) << "Preferrred width,height :  " << pref_width << "  " << pref_height << std::endl;
+        if (vid_err) { OSG_NOTICE << "VDGetPreferredImageDimensions(aComponent, &pref_width, &pref_height) - ERROR" << std::endl; }
+        else         { OSG_NOTICE << "Preferrred width,height :  " << pref_width << "  " << pref_height << std::endl; }
+
         // Inputs
         short inputs;
         vid_err = VDGetNumberOfInputs(aComponent, &inputs);
-        if (vid_err) osg::notify(osg::NOTICE) << "VDGetNumberOfInputs(aComponent, &inputs) - ERROR" << std::endl;
-        else         osg::notify(osg::NOTICE) << "Number of inputs        :  " << inputs << std::endl;
+        if (vid_err) { OSG_NOTICE << "VDGetNumberOfInputs(aComponent, &inputs) - ERROR" << std::endl; }
+        else         { OSG_NOTICE << "Number of inputs        :  " << inputs << std::endl; }
+
         for (short i=0; i <= inputs; ++i)
         {
             Str255 name;
             vid_err = VDGetInputName(aComponent,(long)i, name);
-            if (vid_err) osg::notify(osg::NOTICE) << "VDGetInputName(aComponent,(long)i, name) - ERROR" << std::endl;
-            else         osg::notify(osg::NOTICE) << "Name of input   " << i << " :  " << pstr_printable(name) << std::endl;
+            if (vid_err) { OSG_NOTICE << "VDGetInputName(aComponent,(long)i, name) - ERROR" << std::endl; }
+            else         { OSG_NOTICE << "Name of input   " << i << " :  " << pstr_printable(name) << std::endl; }
             short input_format;
             vid_err = VDGetInputFormat(aComponent,(long)i, &input_format);
-            if (vid_err) osg::notify(osg::NOTICE) << "VDGetInputFormat(aComponent,(long)i, &input_format) - ERROR" << std::endl;
+            if (vid_err) { OSG_NOTICE << "VDGetInputFormat(aComponent,(long)i, &input_format) - ERROR" << std::endl; }
             else
             {
-                if (input_format == compositeIn)        osg::notify(osg::NOTICE) << "Format of input :  compositeIn" << std::endl;
-                if (input_format == sVideoIn)           osg::notify(osg::NOTICE) << "Format of input :  sVideoIn" << std::endl;
-                if (input_format == rgbComponentIn)     osg::notify(osg::NOTICE) << "Format of input :  rgbComponentIn" << std::endl;
-                if (input_format == rgbComponentSyncIn) osg::notify(osg::NOTICE) << "Format of input :  rgbComponentSyncIn" << std::endl;
-                if (input_format == yuvComponentIn)     osg::notify(osg::NOTICE) << "Format of input :  yuvComponentIn" << std::endl;
-                if (input_format == yuvComponentSyncIn) osg::notify(osg::NOTICE) << "Format of input :  yuvComponentSyncIn" << std::endl;
-                if (input_format == sdiIn)              osg::notify(osg::NOTICE) << "Format of input :  sdiIn" << std::endl;
+                if (input_format == compositeIn)        { OSG_NOTICE << "Format of input :  compositeIn" << std::endl; }
+                if (input_format == sVideoIn)           { OSG_NOTICE << "Format of input :  sVideoIn" << std::endl; }
+                if (input_format == rgbComponentIn)     { OSG_NOTICE << "Format of input :  rgbComponentIn" << std::endl; }
+                if (input_format == rgbComponentSyncIn) { OSG_NOTICE << "Format of input :  rgbComponentSyncIn" << std::endl; }
+                if (input_format == yuvComponentIn)     { OSG_NOTICE << "Format of input :  yuvComponentIn" << std::endl; }
+                if (input_format == yuvComponentSyncIn) { OSG_NOTICE << "Format of input :  yuvComponentSyncIn" << std::endl; }
+                if (input_format == sdiIn)              { OSG_NOTICE << "Format of input :  sdiIn" << std::endl; }
             }
         }
         // CURRENT Input
         short active_input;
         vid_err = VDGetInput(aComponent, &active_input);
-        if (vid_err) osg::notify(osg::NOTICE) << "VDGetInput(aComponent, &active_input) - ERROR" << std::endl;
-        else         osg::notify(osg::NOTICE) << "Currently active input :  " << active_input << std::endl;
+        if (vid_err) { OSG_NOTICE << "VDGetInput(aComponent, &active_input) - ERROR" << std::endl; }
+        else         { OSG_NOTICE << "Currently active input :  " << active_input << std::endl; }
     }
 }
 
@@ -270,7 +287,7 @@ void probe_video_digitizer_components()
           video_component_description.componentFlags        = 0;      /* 8 each for Component,Type,SubType,Manuf/revision */
           video_component_description.componentFlagsMask    = 0;      /* Mask for specifying which flags to consider in search, zero during registration */
           long num_video_components = CountComponents (&video_component_description);
-          osg::notify(osg::NOTICE) << " available Video DigitizerComponents : " << num_video_components << std::endl;
+          OSG_NOTICE << " available Video DigitizerComponents : " << num_video_components << std::endl;
           if (num_video_components)
           {
               Component aComponent = 0;
@@ -280,13 +297,13 @@ void probe_video_digitizer_components()
                   aComponent = FindNextComponent(aComponent, &full_video_component_description);
                   if (aComponent)
                   {
-                      osg::notify(osg::NOTICE) << "Component" << std::endl;
+                      OSG_NOTICE << "Component" << std::endl;
                       OSErr                err;
                       Handle compName = NewHandle(256);
                       Handle compInfo = NewHandle(256);
                       err = GetComponentInfo( aComponent, &full_video_component_description, compName,compInfo,0);
-                      osg::notify(osg::NOTICE) << "    Name: " << pstr_printable((StringPtr)*compName) << std::endl;
-                      osg::notify(osg::NOTICE) << "    Desc: " << pstr_printable((StringPtr)*compInfo) << std::endl;
+                      OSG_NOTICE << "    Name: " << pstr_printable((StringPtr)*compName) << std::endl;
+                      OSG_NOTICE << "    Desc: " << pstr_printable((StringPtr)*compInfo) << std::endl;
                       //Capabilities
                       VideoDigitizerComponent component_instance = OpenComponent(aComponent);
                       print_video_component_capability(component_instance);
@@ -310,8 +327,8 @@ OSG_SGDeviceList print_sequence_grabber_device_list(SGDeviceList deviceList)
                                             
     short count         = (*deviceList)->count;
     short selectedIndex = (*deviceList)->selectedIndex;
-    osg::notify(osg::NOTICE) << "DeviceList : " << count << " devices in total" << std::endl;                                              
-    osg::notify(osg::NOTICE) << "DeviceList : " << selectedIndex << " is current device" << std::endl;              
+    OSG_NOTICE << "DeviceList : " << count << " devices in total" << std::endl;                                              
+    OSG_NOTICE << "DeviceList : " << selectedIndex << " is current device" << std::endl;              
 
     // Create List
     OSG_SGDeviceList device_list;
@@ -319,25 +336,25 @@ OSG_SGDeviceList print_sequence_grabber_device_list(SGDeviceList deviceList)
     for (short i=0; i<count; ++i)
     {
         // Devices
-        osg::notify(osg::NOTICE) << std::endl;    
+        OSG_NOTICE << std::endl;    
         SGDeviceName deviceNameRec = (*deviceList)->entry[i];
         Str63        deviceNameStr;
         memcpy(deviceNameStr, deviceNameRec.name, sizeof(Str63));
-        osg::notify(osg::NOTICE) << "    " << "Device ID : " << i << "  : DeviceNameStr : " << pstr_printable(deviceNameStr) << std::endl;    
+        OSG_NOTICE << "    " << "Device ID : " << i << "  : DeviceNameStr : " << pstr_printable(deviceNameStr) << std::endl;    
         SGDeviceInputList deviceInputList = deviceNameRec.inputs;
         if (deviceInputList)
         {
             // Inputs
             short inputCount         = (*deviceInputList)->count;
             short inputSelectedIndex = (*deviceInputList)->selectedIndex;
-            osg::notify(osg::NOTICE) << "    " << "InputList : " << inputCount << " inputs in total" << std::endl;
-            osg::notify(osg::NOTICE) << "    " << "InputList : " << inputSelectedIndex << " is current input" << std::endl;
+            OSG_NOTICE << "    " << "InputList : " << inputCount << " inputs in total" << std::endl;
+            OSG_NOTICE << "    " << "InputList : " << inputSelectedIndex << " is current input" << std::endl;
             for (short inp=0; inp<inputCount; ++inp)
             {
                 SGDeviceInputName inputNameRec = (*deviceInputList)->entry[inp];
                 Str63             inputNameStr;
                 memcpy(inputNameStr, inputNameRec.name, sizeof(Str63));
-                osg::notify(osg::NOTICE) << "        " << "InputNameStr : " << inp << " " << pstr_printable(inputNameStr) << std::endl;
+                OSG_NOTICE << "        " << "InputNameStr : " << inp << " " << pstr_printable(inputNameStr) << std::endl;
                 // Build up device list
                 std::ostringstream os;
                 os << i << ":" << inp << ".live";
@@ -349,7 +366,7 @@ OSG_SGDeviceList print_sequence_grabber_device_list(SGDeviceList deviceList)
         }
         else
         {
-            osg::notify(osg::NOTICE) << "    InputList is empty!" << std::endl;                                                      
+            OSG_NOTICE << "    InputList is empty!" << std::endl;                                                      
         }
     }
     return device_list;
@@ -374,7 +391,7 @@ std::vector<OSG_SGDeviceList> probe_sequence_grabber_components()
           sg_component_description.componentFlags        = 0L;      /* 8 each for Component,Type,SubType,Manuf/revision */
           sg_component_description.componentFlagsMask    = 0L;      /* Mask for specifying which flags to consider in search, zero during registration */
           long num_sg_components = CountComponents (&sg_component_description);
-          osg::notify(osg::NOTICE) << " available SequenceGrabber Components : " << num_sg_components << std::endl;
+          OSG_NOTICE << " available SequenceGrabber Components : " << num_sg_components << std::endl;
           if (num_sg_components)
           {
               Component aComponent = 0;
@@ -384,13 +401,13 @@ std::vector<OSG_SGDeviceList> probe_sequence_grabber_components()
                   aComponent = FindNextComponent(aComponent, &full_sg_component_description);
                   if (aComponent)
                   {
-                      osg::notify(osg::NOTICE) << "Component" << std::endl;
+                      OSG_NOTICE << "Component" << std::endl;
                       OSErr                err;
                       Handle compName = NewHandle(256);
                       Handle compInfo = NewHandle(256);
                       err = GetComponentInfo( aComponent, &full_sg_component_description, compName,compInfo,0);
-                      osg::notify(osg::NOTICE) << "    Name: " << pstr_printable((StringPtr)*compName) << std::endl;
-                      osg::notify(osg::NOTICE) << "    Desc: " << pstr_printable((StringPtr)*compInfo) << std::endl;
+                      OSG_NOTICE << "    Name: " << pstr_printable((StringPtr)*compName) << std::endl;
+                      OSG_NOTICE << "    Desc: " << pstr_printable((StringPtr)*compInfo) << std::endl;
                       SeqGrabComponent gSeqGrabber;
                       SGChannel           gVideoChannel;
                       SGChannel           gSoundChannel;
@@ -419,7 +436,9 @@ std::vector<OSG_SGDeviceList> probe_sequence_grabber_components()
                               err = QTNewGWorldFromPtr(&gw, k32ARGBPixelFormat, &destinationBounds,
                                                        NULL, NULL, 0, (Ptr)destinationData, 4*1024);
                               if (err !=0 )
-                                  osg::notify(osg::FATAL) << "Could not create gWorld" << std::endl;
+                              {
+                                  OSG_FATAL << "Could not create gWorld" << std::endl;
+                              }
                               else
                               {
                                   // Create GWorld
@@ -430,7 +449,7 @@ std::vector<OSG_SGDeviceList> probe_sequence_grabber_components()
                                   {
                                       if (!LockPixels (pixmap)) // lock offscreen pixel map
                                       {
-                                          osg::notify(osg::FATAL) << "Could not lock PixMap" << std::endl;
+                                          OSG_FATAL << "Could not lock PixMap" << std::endl;
                                       }
                                   }
                                   // Set GWorld
@@ -439,7 +458,7 @@ std::vector<OSG_SGDeviceList> probe_sequence_grabber_components()
                                   // SetGWorld(origPort, origDevice);
                                   if (result != noErr)
                                   {
-                                      osg::notify(osg::FATAL) << "Could not set GWorld on SG" << std::endl;
+                                      OSG_FATAL << "Could not set GWorld on SG" << std::endl;
                                   }
                                   else
                                   {
@@ -451,7 +470,7 @@ std::vector<OSG_SGDeviceList> probe_sequence_grabber_components()
                                           // result = SGInitChannel(gVideoChannel, gSeqGrabber);
 //                                           if (result != noErr)
 //                                           {
-//                                               osg::notify(osg::NOTICE) << "SGInitChannel - failed!" << std::endl;                                              
+//                                               OSG_NOTICE << "SGInitChannel - failed!" << std::endl;                                              
 //                                           }
                                           // Usage
                                           result = SGSetChannelUsage (gVideoChannel, seqGrabPreview);
@@ -460,25 +479,25 @@ std::vector<OSG_SGDeviceList> probe_sequence_grabber_components()
                                           // result = SGSettingsDialog(gSeqGrabber, gVideoChannel, 0, 0, seqGrabSettingsPreviewOnly, &MyModalFilter, 0);
                                           // Bounds
                                           result = SGGetSrcVideoBounds (gVideoChannel, &gActiveVideoRect);
-                                          osg::notify(osg::NOTICE) << "SrcVideoBounds: " << gActiveVideoRect.right << " " << gActiveVideoRect.bottom << std::endl;
+                                          OSG_NOTICE << "SrcVideoBounds: " << gActiveVideoRect.right << " " << gActiveVideoRect.bottom << std::endl;
                                           Str255 deviceName;
                                           Str255 inputName;
                                           short  inputNumber;
                                           result = SGGetChannelDeviceAndInputNames( gVideoChannel, deviceName, inputName, &inputNumber);
                                           if (result != noErr)
                                           {
-                                              osg::notify(osg::NOTICE) << "Could not get DeviceAndInput names from Video SG" << std::endl;                                              
+                                              OSG_NOTICE << "Could not get DeviceAndInput names from Video SG" << std::endl;                                              
                                           }
-                                          osg::notify(osg::NOTICE) << "ChannelDeviceAndInputNamesNumber: " << pstr_printable(deviceName) << " : " << pstr_printable(inputName) << " : " << inputNumber << std::endl;
+                                          OSG_NOTICE << "ChannelDeviceAndInputNamesNumber: " << pstr_printable(deviceName) << " : " << pstr_printable(inputName) << " : " << inputNumber << std::endl;
                                           SGDeviceList deviceList;
                                           result = SGGetChannelDeviceList( gVideoChannel, sgDeviceListIncludeInputs, &deviceList);
                                           if (result != noErr)
                                           {
-                                              osg::notify(osg::NOTICE) << "Could not get DeviceList from Video SG" << std::endl;                                              
+                                              OSG_NOTICE << "Could not get DeviceList from Video SG" << std::endl;                                              
                                           }
                                           else
                                           {
-                                              osg::notify(osg::NOTICE) << "DeviceList from Video SG ok" << std::endl;               
+                                              OSG_NOTICE << "DeviceList from Video SG ok" << std::endl;               
                                               device_list = print_sequence_grabber_device_list(deviceList);
                                               devices_list.push_back(device_list);
                                           }
@@ -495,18 +514,18 @@ std::vector<OSG_SGDeviceList> probe_sequence_grabber_components()
                                           result = SGGetChannelDeviceAndInputNames( gVideoChannel, deviceName, inputName, &inputNumber);
                                           if (result != noErr)
                                           {
-                                              osg::notify(osg::NOTICE) << "Could not get DeviceAndInput names from Sound SG" << std::endl;                                              
+                                              OSG_NOTICE << "Could not get DeviceAndInput names from Sound SG" << std::endl;                                              
                                           }
-                                          osg::notify(osg::NOTICE) << "ChannelDeviceAndInputNamesNumber: " << pstr_printable(deviceName) << " : " << pstr_printable(inputName) << " : " << inputNumber << std::endl;
+                                          OSG_NOTICE << "ChannelDeviceAndInputNamesNumber: " << pstr_printable(deviceName) << " : " << pstr_printable(inputName) << " : " << inputNumber << std::endl;
                                           SGDeviceList deviceList;
                                           result = SGGetChannelDeviceList( gSoundChannel, sgDeviceListIncludeInputs, &deviceList);
                                           if (result != noErr)
                                           {
-                                              osg::notify(osg::NOTICE) << "Could not get DeviceList from Sound SG" << std::endl;                                              
+                                              OSG_NOTICE << "Could not get DeviceList from Sound SG" << std::endl;                                              
                                           }
                                           else
                                           {
-                                              osg::notify(osg::NOTICE) << "DeviceList from Sound SG ok" << std::endl;               
+                                              OSG_NOTICE << "DeviceList from Sound SG ok" << std::endl;               
                                               device_list = print_sequence_grabber_device_list(deviceList);
                                               devices_list.push_back(device_list);
                                           }
@@ -580,7 +599,7 @@ void get_video_device_bounds_idstr(short deviceID, short deviceInputID, short& o
                               err = QTNewGWorldFromPtr(&gw, k32ARGBPixelFormat, &destinationBounds,
                                                        NULL, NULL, 0, (Ptr)destinationData, 4*256);
                               if (err !=0 )
-                                  osg::notify(osg::NOTICE) << "Could not create gWorld" << std::endl;
+                                  OSG_NOTICE << "Could not create gWorld" << std::endl;
                               else
                               {
                                   // Create GWorld
@@ -589,8 +608,11 @@ void get_video_device_bounds_idstr(short deviceID, short deviceInputID, short& o
                                   pixmap = GetGWorldPixMap (gw);
                                   if (pixmap)
                                   {
-                                      if (!LockPixels (pixmap)) // lock offscreen pixel map
-                                          osg::notify(osg::FATAL) << "Could not lock PixMap" << std::endl;
+                                      if (!LockPixels (pixmap))
+                                      {
+                                          // lock offscreen pixel map
+                                          OSG_FATAL << "Could not lock PixMap" << std::endl;
+                                      }
                                   }
                                   // Set GWorld
                                   result = SGSetGWorld(gSeqGrabber, (CGrafPtr)gw, 0);
@@ -598,7 +620,7 @@ void get_video_device_bounds_idstr(short deviceID, short deviceInputID, short& o
                                   // SetGWorld(origPort, origDevice);
                                   if (result != noErr)
                                   {
-                                      osg::notify(osg::FATAL) << "Could not set GWorld on SG" << std::endl;
+                                      OSG_FATAL << "Could not set GWorld on SG" << std::endl;
                                   }
                                   else
                                   {
@@ -615,16 +637,22 @@ void get_video_device_bounds_idstr(short deviceID, short deviceInputID, short& o
                                           result = SGGetChannelDeviceList( gVideoChannel, sgDeviceListIncludeInputs, &deviceList);
                                           short count = (*deviceList)->count;
                                           if (deviceID >= count)
-                                              osg::notify(osg::FATAL) << "DeviceID : " << deviceID << " too large - we only have " << count << " devices" << std::endl;
+                                          {
+                                              OSG_FATAL << "DeviceID : " << deviceID << " too large - we only have " << count << " devices" << std::endl;
+                                          }
                                           SGDeviceName deviceNameRec = (*deviceList)->entry[deviceID];
                                           SGDeviceInputList deviceInputList = deviceNameRec.inputs;
                                           if (deviceInputList == 0)
-                                              osg::notify(osg::FATAL) << "DeviceInputList is empty!" << std::endl;
+                                          {
+                                              OSG_FATAL << "DeviceInputList is empty!" << std::endl;
+                                          }
                                           else
                                           {
                                               short inputCount = (*deviceInputList)->count;
                                               if (deviceInputID >= inputCount)
-                                                  osg::notify(osg::FATAL) << "DeviceInputID : " << deviceInputID << " too large - we only have " << inputCount << " inputs for device" << std::endl;
+                                              {
+                                                  OSG_FATAL << "DeviceInputID : " << deviceInputID << " too large - we only have " << inputCount << " inputs for device" << std::endl;
+                                              }
                                           }
                                           // Ok
                                           Str63 deviceNameStr;
@@ -639,7 +667,7 @@ void get_video_device_bounds_idstr(short deviceID, short deviceInputID, short& o
                                           result = SGVideoDigitizerChanged( gVideoChannel);
 
                                           result = SGGetSrcVideoBounds    ( gVideoChannel, &gActiveVideoRect);
-                                          osg::notify(osg::NOTICE) << "SrcVideoBounds: " << gActiveVideoRect.right << " " << gActiveVideoRect.bottom << std::endl;
+                                          OSG_NOTICE << "SrcVideoBounds: " << gActiveVideoRect.right << " " << gActiveVideoRect.bottom << std::endl;
                                           // Out
                                           out_width  = gActiveVideoRect.right;
                                           out_height = gActiveVideoRect.bottom;
@@ -711,12 +739,16 @@ void get_sound_device_idstr(short soundDeviceID, short soundDeviceInputID, Str63
                                   result = SGGetChannelDeviceList( gSoundChannel, sgDeviceListIncludeInputs, &deviceList);
                                   short count = (*deviceList)->count;
                                   if (soundDeviceID >= count)
-                                      osg::notify(osg::FATAL) << "DeviceID : " << soundDeviceID << " too large - we only have " << count << " devices" << std::endl;
+                                  {
+                                      OSG_FATAL << "DeviceID : " << soundDeviceID << " too large - we only have " << count << " devices" << std::endl;
+                                  }
                                   SGDeviceName deviceNameRec = (*deviceList)->entry[soundDeviceID];
                                   SGDeviceInputList deviceInputList = deviceNameRec.inputs;
                                   short inputCount = (*deviceInputList)->count;
                                   if (soundDeviceInputID >= inputCount)
-                                      osg::notify(osg::FATAL) << "DeviceInputID : " << soundDeviceInputID << " too large - we only have " << inputCount << " inputs for device" << std::endl;
+                                  {
+                                      OSG_FATAL << "DeviceInputID : " << soundDeviceInputID << " too large - we only have " << inputCount << " inputs for device" << std::endl;
+                                  }
                                   // Ok
                                   Str63 deviceNameStr;
                                   memcpy(deviceNameStr, deviceNameRec.name, sizeof(Str63));
@@ -813,35 +845,35 @@ VDUseSafeBuffers
 //{
 //if ((i == count-1) && (inp == inputCount-1))
 //{
-//    osg::notify(osg::NOTICE) << "    * TEST SGSetChannelDevice(..) : " << pstr_printable(deviceNameRec.name) << std::endl;                           
+//    OSG_NOTICE << "    * TEST SGSetChannelDevice(..) : " << pstr_printable(deviceNameRec.name) << std::endl;                           
 //    result = SGSetChannelDevice (gVideoChannel, deviceNameStr);
 //    if (result == noErr)
 //    {
 //        result = SGSetChannelDeviceInput( gVideoChannel, 0 );
 //        result = SGGetSrcVideoBounds (gVideoChannel, &gActiveVideoRect);
-//        osg::notify(osg::NOTICE) << "SrcVideoBounds: " << gActiveVideoRect.right << " " << gActiveVideoRect.bottom << std::endl;
+//        OSG_NOTICE << "SrcVideoBounds: " << gActiveVideoRect.right << " " << gActiveVideoRect.bottom << std::endl;
 //        Str255 deviceName2;
 //        Str255 inputName2;
 //        short  inputNumber2;
 //        result = SGGetChannelDeviceAndInputNames( gVideoChannel, deviceName2, inputName2, &inputNumber2);
-//        osg::notify(osg::NOTICE) << "ChannelDeviceAndInputNamesNumber: " << pstr_printable(deviceName2) << " : " << pstr_printable(inputName2) << " : " << inputNumber2 << std::endl;
+//        OSG_NOTICE << "ChannelDeviceAndInputNamesNumber: " << pstr_printable(deviceName2) << " : " << pstr_printable(inputName2) << " : " << inputNumber2 << std::endl;
 //        result = SGGetChannelDeviceList( gVideoChannel, sgDeviceListIncludeInputs, &deviceList);
 //        if (result != noErr)
 //        {
-//            osg::notify(osg::NOTICE) << "Could not get DeviceList from Video SG" << std::endl;                                              
+//            OSG_NOTICE << "Could not get DeviceList from Video SG" << std::endl;                                              
 //        }
 //        else
 //        {
-//            osg::notify(osg::NOTICE) << "DeviceList from Video SG ok" << std::endl;                                              
+//            OSG_NOTICE << "DeviceList from Video SG ok" << std::endl;                                              
 //            short count         = (*deviceList)->count;
 //            short selectedIndex = (*deviceList)->selectedIndex;
-//            osg::notify(osg::NOTICE) << "DeviceList : " << count << " devices in total" << std::endl;                                              
-//            osg::notify(osg::NOTICE) << "DeviceList : " << selectedIndex << " is current device" << std::endl;   
+//            OSG_NOTICE << "DeviceList : " << count << " devices in total" << std::endl;                                              
+//            OSG_NOTICE << "DeviceList : " << selectedIndex << " is current device" << std::endl;   
 //        }
 //    }
 //    else
 //    {
-//        osg::notify(osg::NOTICE) << "SGSetChannelDevice - failed!" << std::endl;                                                      
+//        OSG_NOTICE << "SGSetChannelDevice - failed!" << std::endl;                                                      
 //    }
-//    osg::notify(osg::NOTICE) << "    * TEST SGSetChannelDevice(..) end" << std::endl;
+//    OSG_NOTICE << "    * TEST SGSetChannelDevice(..) end" << std::endl;
 //}

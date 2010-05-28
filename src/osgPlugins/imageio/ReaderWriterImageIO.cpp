@@ -194,7 +194,7 @@ CGImageRef CreateCGImageFromFile(const char* the_path)
     );
     if(!cf_string)
     {
-        osg::notify(osg::WARN) << "CreateCGImageFromFile :: could not create CCFSTring" << std::endl;
+        OSG_WARN << "CreateCGImageFromFile :: could not create CCFSTring" << std::endl;
         return NULL;
     }
  
@@ -211,7 +211,7 @@ CGImageRef CreateCGImageFromFile(const char* the_path)
     
     if(!the_url)
     {
-        osg::notify(osg::WARN) << "CreateCGImageFromFile :: could not create CFUrl" << std::endl;
+        OSG_WARN << "CreateCGImageFromFile :: could not create CFUrl" << std::endl;
         return NULL;
     }
 
@@ -222,7 +222,7 @@ CGImageRef CreateCGImageFromFile(const char* the_path)
 
     if(!source_ref)
     {
-        osg::notify(osg::WARN) << "CreateCGImageFromFile :: could not create ImageSource" << std::endl;
+        OSG_WARN << "CreateCGImageFromFile :: could not create ImageSource" << std::endl;
         return NULL;
     }
 
@@ -230,7 +230,7 @@ CGImageRef CreateCGImageFromFile(const char* the_path)
     // contain multiple items).
     image_ref = CGImageSourceCreateImageAtIndex(source_ref, 0, NULL);
     if (!image_ref) {
-        osg::notify(osg::WARN) << "CreateCGImageFromFile :: could not get Image" << std::endl;
+        OSG_WARN << "CreateCGImageFromFile :: could not get Image" << std::endl;
     }
     
     /* Don't need the SourceRef any more (error or not) */
@@ -356,7 +356,7 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef image_ref)
         }
         default:
         {
-            // osg::notify(osg::WARN) << "Unknown file type in " << fileName.c_str() << " with " << origDepth << std::endl;
+            // OSG_WARN << "Unknown file type in " << fileName.c_str() << " with " << origDepth << std::endl;
             return NULL;
             break;
         }
@@ -509,7 +509,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             out_image_data = malloc(target_bytes_per_row * image_height);            
             if(NULL == out_image_data)
             {
-                osg::notify(osg::WARN) << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
+                OSG_WARN << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
                 CGColorSpaceRelease(color_space);
                 return NULL;
             }
@@ -525,7 +525,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             );
             if(vimage_error_flag != kvImageNoError)
             {
-                osg::notify(osg::WARN) << "In CreateCGImageFromOSGData for GL_LUMINANCE, vImageVerticalReflect_Planar8 failed with vImage Error Code: " << vimage_error_flag << std::endl;
+                OSG_WARN << "In CreateCGImageFromOSGData for GL_LUMINANCE, vImageVerticalReflect_Planar8 failed with vImage Error Code: " << vimage_error_flag << std::endl;
                 free(out_image_data);
                 CGColorSpaceRelease(color_space);
                 return NULL;
@@ -547,7 +547,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             out_image_data = malloc(target_bytes_per_row * image_height);            
             if(NULL == out_image_data)
             {
-                osg::notify(osg::WARN) << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
+                OSG_WARN << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
                 return NULL;
             }
 
@@ -562,7 +562,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             );
             if(vimage_error_flag != kvImageNoError)
             {
-                osg::notify(osg::WARN) << "In CreateCGImageFromOSGData for GL_ALPHA, vImageVerticalReflect_Planar8 failed with vImage Error Code: " << vimage_error_flag << std::endl;
+                OSG_WARN << "In CreateCGImageFromOSGData for GL_ALPHA, vImageVerticalReflect_Planar8 failed with vImage Error Code: " << vimage_error_flag << std::endl;
                 free(out_image_data);
                 return NULL;
             }            
@@ -585,7 +585,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
             if(NULL == color_space)
             {
-                osg::notify(osg::WARN) << "In CreateCGImageFromOSGData, CGColorSpaceCreateWithName failed" << std::endl;
+                OSG_WARN << "In CreateCGImageFromOSGData, CGColorSpaceCreateWithName failed" << std::endl;
                 return NULL;
             }
             
@@ -593,7 +593,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             out_image_data = malloc(target_bytes_per_row * image_height);            
             if(NULL == out_image_data)
             {
-                osg::notify(osg::WARN) << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
+                OSG_WARN << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
                 CGColorSpaceRelease(color_space);
                 return NULL;
             }
@@ -611,7 +611,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             );
             if(vimage_error_flag != kvImageNoError)
             {
-                osg::notify(osg::WARN) << "In CreateCGImageFromOSGData, vImageConvert_RGB888toARGB8888 failed with vImage Error Code: " << vimage_error_flag << std::endl;
+                OSG_WARN << "In CreateCGImageFromOSGData, vImageConvert_RGB888toARGB8888 failed with vImage Error Code: " << vimage_error_flag << std::endl;
                 free(out_image_data);
                 CGColorSpaceRelease(color_space);
                 return NULL;
@@ -624,7 +624,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             );
             if(vimage_error_flag != kvImageNoError)
             {
-                osg::notify(osg::WARN) << "In CreateCGImageFromOSGData, vImageAffineWarp_ARGB8888 failed with vImage Error Code: " << vimage_error_flag << std::endl;
+                OSG_WARN << "In CreateCGImageFromOSGData, vImageAffineWarp_ARGB8888 failed with vImage Error Code: " << vimage_error_flag << std::endl;
                 free(out_image_data);
                 CGColorSpaceRelease(color_space);
                 return NULL;
@@ -639,14 +639,14 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
             if(NULL == color_space)
             {
-                osg::notify(osg::WARN) << "In CreateCGImageFromOSGData, CGColorSpaceCreateWithName failed" << std::endl;
+                OSG_WARN << "In CreateCGImageFromOSGData, CGColorSpaceCreateWithName failed" << std::endl;
                 return NULL;
             }
             //    out_image_data = calloc(target_bytes_per_row, image_height);
             out_image_data = malloc(target_bytes_per_row * image_height);            
             if(NULL == out_image_data)
             {
-                osg::notify(osg::WARN) << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
+                OSG_WARN << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
                 CGColorSpaceRelease(color_space);
                 return NULL;
             }
@@ -660,7 +660,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             );
             if(vimage_error_flag != kvImageNoError)
             {
-                osg::notify(osg::WARN) << "In CreateCGImageFromOSGData, vImageAffineWarp_ARGB8888 failed with vImage Error Code: " << vimage_error_flag << std::endl;
+                OSG_WARN << "In CreateCGImageFromOSGData, vImageAffineWarp_ARGB8888 failed with vImage Error Code: " << vimage_error_flag << std::endl;
                 free(out_image_data);
                 CGColorSpaceRelease(color_space);
                 return NULL;
@@ -687,14 +687,14 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
             color_space = CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
             if(NULL == color_space)
             {
-                osg::notify(osg::WARN) << "In CreateCGImageFromOSGData, CGColorSpaceCreateWithName failed" << std::endl;
+                OSG_WARN << "In CreateCGImageFromOSGData, CGColorSpaceCreateWithName failed" << std::endl;
                 return NULL;
             }
             //    out_image_data = calloc(target_bytes_per_row, image_height);
             out_image_data = malloc(target_bytes_per_row * image_height);            
             if(NULL == out_image_data)
             {
-                osg::notify(osg::WARN) << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
+                OSG_WARN << "In CreateCGImageFromOSGData, malloc failed" << std::endl;
                 CGColorSpaceRelease(color_space);
                 return NULL;
             }
@@ -708,7 +708,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
                                                                );
             if(vimage_error_flag != kvImageNoError)
             {
-                osg::notify(osg::WARN) << "In CreateCGImageFromOSGData, vImageAffineWarp_ARGB8888 failed with vImage Error Code: " << vimage_error_flag << std::endl;
+                OSG_WARN << "In CreateCGImageFromOSGData, vImageAffineWarp_ARGB8888 failed with vImage Error Code: " << vimage_error_flag << std::endl;
                 free(out_image_data);
                 CGColorSpaceRelease(color_space);
                 return NULL;
@@ -719,7 +719,7 @@ CGImageRef CreateCGImageFromOSGData(const osg::Image& osg_image)
         // Use vImagePermuteChannels_ARGB8888 to swizzle bytes
         default:
         {
-            osg::notify(osg::WARN) << "In CreateCGImageFromOSGData: Sorry support for this format is not implemented." << std::endl;
+            OSG_WARN << "In CreateCGImageFromOSGData: Sorry support for this format is not implemented." << std::endl;
             return NULL;
             break;
         }
@@ -1155,7 +1155,7 @@ public:
     
     ReadResult readImageFile(const std::string& file_name) const
     {
-        osg::notify(osg::INFO) << "imageio readImageFile: " << file_name << std::endl;
+        OSG_INFO << "imageio readImageFile: " << file_name << std::endl;
         
         // Call ImageIO to load the image.
         CGImageRef cg_image_ref = CreateCGImageFromFile(file_name.c_str());

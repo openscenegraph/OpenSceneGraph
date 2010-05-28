@@ -155,8 +155,8 @@ ref_ptr<Texture> MDLReader::readTextureFile(std::string textureName)
         else
         {
             // We were unable to find the texture file
-            notify(WARN) << "Couldn't find texture " << textureName;
-            notify(WARN) << std::endl;
+            OSG_WARN << "Couldn't find texture " << textureName;
+            OSG_WARN << std::endl;
 
             // No texture
             texture = NULL;
@@ -165,8 +165,8 @@ ref_ptr<Texture> MDLReader::readTextureFile(std::string textureName)
     else
     {
         // We were unable to find the texture file
-        notify(WARN) << "Couldn't find texture " << textureName;
-        notify(WARN) << std::endl;
+        OSG_WARN << "Couldn't find texture " << textureName;
+        OSG_WARN << std::endl;
 
         // No texture
         texture = NULL;
@@ -262,7 +262,7 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
     else
     {
         // Didn't find the material file, so return NULL
-        notify(WARN) << "Can't find material " << materialName << std::endl;
+        OSG_WARN << "Can't find material " << materialName << std::endl;
         return NULL;
     }
 
@@ -289,8 +289,8 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
     if (!found)
     {
         mtlFile->close();
-        notify(WARN) << "Material " << materialName << " isn't valid.";
-        notify(WARN) << std::endl;
+        OSG_WARN << "Material " << materialName << " isn't valid.";
+        OSG_WARN << std::endl;
         return NULL;
     }
 
@@ -384,8 +384,8 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
         }
         else
         {
-            notify(WARN) << "No base texture for material " << materialName;
-            notify(WARN) << std::endl;
+            OSG_WARN << "No base texture for material " << materialName;
+            OSG_WARN << std::endl;
             stateSet->setTextureMode(0, GL_TEXTURE_2D, StateAttribute::OFF);
         }
 
@@ -445,8 +445,8 @@ ref_ptr<StateSet> MDLReader::readMaterialFile(std::string materialName)
         }
         else
         {
-            notify(WARN) << "No base texture for material " << materialName;
-            notify(WARN) << std::endl;
+            OSG_WARN << "No base texture for material " << materialName;
+            OSG_WARN << std::endl;
             stateSet->setTextureMode(0, GL_TEXTURE_2D, StateAttribute::OFF);
         }
     }
@@ -572,7 +572,7 @@ bool MDLReader::readFile(const std::string & file)
     mdlFile = new osgDB::ifstream(fileName.c_str(), std::ios::binary);
     if (!mdlFile)
     {
-        osg::notify(osg::NOTICE) << "MDL file not found" << std::endl;
+        OSG_NOTICE << "MDL file not found" << std::endl;
         return false;
     }
 
@@ -582,8 +582,8 @@ bool MDLReader::readFile(const std::string & file)
     // Make sure the file is a valid Valve MDL file
     if (header.magic_number != MDL_MAGIC_NUMBER)
     {
-        osg::notify(osg::NOTICE) << "This is not a valid .mdl file";
-        osg::notify(osg::NOTICE) << std::endl;
+        OSG_NOTICE << "This is not a valid .mdl file";
+        OSG_NOTICE << std::endl;
 
         // Close the file before we quit
         mdlFile->close();

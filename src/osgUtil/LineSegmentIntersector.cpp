@@ -166,9 +166,9 @@ namespace LineSegmentIntersectorUtils
             osg::Vec3 in = v1*r1+v2*r2+v3*r3;
             if (!in.valid())
             {
-                osg::notify(osg::WARN)<<"Warning:: Picked up error in TriangleIntersect"<<std::endl;
-                osg::notify(osg::WARN)<<"   ("<<v1<<",\t"<<v2<<",\t"<<v3<<")"<<std::endl;
-                osg::notify(osg::WARN)<<"   ("<<r1<<",\t"<<r2<<",\t"<<r3<<")"<<std::endl;
+                OSG_WARN<<"Warning:: Picked up error in TriangleIntersect"<<std::endl;
+                OSG_WARN<<"   ("<<v1<<",\t"<<v2<<",\t"<<v3<<")"<<std::endl;
+                OSG_WARN<<"   ("<<r1<<",\t"<<r2<<",\t"<<r3<<")"<<std::endl;
                 return;
             }
 
@@ -298,7 +298,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
         intersections.reserve(4);
         if (kdTree->intersect(s,e,intersections))
         {
-            // osg::notify(osg::NOTICE)<<"Got KdTree intersections"<<std::endl;
+            // OSG_NOTICE<<"Got KdTree intersections"<<std::endl;
             for(osg::KdTree::LineSegmentIntersections::iterator itr = intersections.begin();
                 itr != intersections.end();
                 ++itr)
@@ -321,7 +321,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
 
                 hit.localIntersectionPoint = _start*(1.0-remap_ratio) + _end*remap_ratio;
                 
-                // osg::notify(osg::NOTICE)<<"KdTree: ratio="<<hit.ratio<<" ("<<hit.localIntersectionPoint<<")"<<std::endl;
+                // OSG_NOTICE<<"KdTree: ratio="<<hit.ratio<<" ("<<hit.localIntersectionPoint<<")"<<std::endl;
                 
                 hit.localIntersectionNormal = lsi.intersectionNormal;
                 
@@ -382,7 +382,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
 
             hit.localIntersectionPoint = _start*(1.0-remap_ratio) + _end*remap_ratio;
 
-            // osg::notify(osg::NOTICE)<<"Conventional: ratio="<<hit.ratio<<" ("<<hit.localIntersectionPoint<<")"<<std::endl;
+            // OSG_NOTICE<<"Conventional: ratio="<<hit.ratio<<" ("<<hit.localIntersectionPoint<<")"<<std::endl;
 
             hit.localIntersectionNormal = triHit._normal;
 
@@ -583,7 +583,7 @@ bool LineSegmentIntersector::intersectAndClip(osg::Vec3d& s, osg::Vec3d& e,const
         }
     }
     
-    // osg::notify(osg::NOTICE)<<"clampped segment "<<s<<" "<<e<<std::endl;
+    // OSG_NOTICE<<"clampped segment "<<s<<" "<<e<<std::endl;
     
     // if (s==e) return false;
 

@@ -345,7 +345,7 @@ void SceneGraphBuilder::Cylinder(GLfloat        aBase,
                              GLint          aSlices,
                              GLint          aStacks)
 {
-    osg::notify(osg::NOTICE)<<"SceneGraphBuilder::Cylinder("<<aBase<<", "<<aTop<<", "<<aHeight<<", "<<aSlices<<", "<<aStacks<<") not implemented yet"<<std::endl;
+    OSG_NOTICE<<"SceneGraphBuilder::Cylinder("<<aBase<<", "<<aTop<<", "<<aHeight<<", "<<aSlices<<", "<<aStacks<<") not implemented yet"<<std::endl;
 }
 
 void SceneGraphBuilder::Disk(GLfloat        inner,
@@ -418,8 +418,8 @@ void SceneGraphBuilder::PartialDisk(GLfloat        inner,
                                     GLfloat        start,
                                     GLfloat        sweep)
 {
-    osg::notify(osg::NOTICE)<<"SceneGraphBuilder::PartialDisk("<<inner<<", "<<outer<<", "<<slices<<", "<<loops<<", "<<start<<", "<<sweep<<") not implemented yet."<<std::endl;
-    osg::notify(osg::NOTICE)<<"   quadric("<<_quadricState._drawStyle<<", "<<_quadricState._normals<<", "<<_quadricState._orientation<<", "<<_quadricState._texture<<std::endl;
+    OSG_NOTICE<<"SceneGraphBuilder::PartialDisk("<<inner<<", "<<outer<<", "<<slices<<", "<<loops<<", "<<start<<", "<<sweep<<") not implemented yet."<<std::endl;
+    OSG_NOTICE<<"   quadric("<<_quadricState._drawStyle<<", "<<_quadricState._normals<<", "<<_quadricState._orientation<<", "<<_quadricState._texture<<std::endl;
 }
 
 void SceneGraphBuilder::Sphere(GLfloat        radius,

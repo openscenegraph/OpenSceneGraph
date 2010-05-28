@@ -182,7 +182,7 @@ void GLObjectsOperation::operator () (osg::GraphicsContext* context)
 
     glObjectsVisitor.setState(context->getState());
     
-    // osg::notify(osg::NOTICE)<<"GLObjectsOperation::before <<<<<<<<<<<"<<std::endl;
+    // OSG_NOTICE<<"GLObjectsOperation::before <<<<<<<<<<<"<<std::endl;
     if (_subgraph.valid())
     {
         _subgraph->accept(glObjectsVisitor);
@@ -196,7 +196,7 @@ void GLObjectsOperation::operator () (osg::GraphicsContext* context)
             (*itr)->accept(glObjectsVisitor);
         }
     }
-    // osg::notify(osg::NOTICE)<<"GLObjectsOperation::after >>>>>>>>>>> "<<std::endl;
+    // OSG_NOTICE<<"GLObjectsOperation::after >>>>>>>>>>> "<<std::endl;
 }
 
 

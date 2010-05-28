@@ -267,7 +267,7 @@ void IndexMeshVisitor::makeMesh(Geometry& geom)
     if (geom.suitableForOptimization())
     {
         // removing coord indices
-        osg::notify(osg::INFO)<<"TriStripVisitor::stripify(Geometry&): Removing attribute indices"<<std::endl;
+        OSG_INFO<<"TriStripVisitor::stripify(Geometry&): Removing attribute indices"<<std::endl;
         geom.copyToAndOptimize(geom);
     }
 
@@ -814,7 +814,7 @@ void VertexCacheVisitor::doVertexOptimization(Geometry& geom,
         {
             // The cache was empty, or all the triangles that use
             // vertices in the cache have already been added.
-            OSG_NOTIFY(osg::DEBUG_INFO) << "VertexCacheVisitor searching all triangles" << std::endl;
+            OSG_DEBUG << "VertexCacheVisitor searching all triangles" << std::endl;
             TriangleList::iterator maxItr
                 = max_element(triangles.begin(), triangles.end(),
                               CompareTriangle());

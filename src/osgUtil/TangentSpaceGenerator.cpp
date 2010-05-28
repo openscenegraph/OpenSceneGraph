@@ -27,7 +27,7 @@ void TangentSpaceGenerator::generate(osg::Geometry *geo, int normal_map_tex_unit
     if (geo->suitableForOptimization())
     {
         // removing coord indices so we don't have to deal with them in the binormal code.
-        osg::notify(osg::INFO)<<"TangentSpaceGenerator::generate(Geometry*,int): Removing attribute indices"<<std::endl;
+        OSG_INFO<<"TangentSpaceGenerator::generate(Geometry*,int): Removing attribute indices"<<std::endl;
         geo->copyToAndOptimize(*geo);
     }
 
@@ -127,7 +127,7 @@ void TangentSpaceGenerator::generate(osg::Geometry *geo, int normal_map_tex_unit
             case osg::PrimitiveSet::LINE_LOOP:
                 break;
 
-            default: osg::notify(osg::WARN) << "Warning: TangentSpaceGenerator: unknown primitive mode " << pset->getMode() << "\n";
+            default: OSG_WARN << "Warning: TangentSpaceGenerator: unknown primitive mode " << pset->getMode() << "\n";
         }
     }
 
@@ -199,7 +199,7 @@ void TangentSpaceGenerator::compute(osg::PrimitiveSet *pset,
         break;
 
     default:
-        osg::notify(osg::WARN) << "Warning: TangentSpaceGenerator: vertex array must be Vec2Array, Vec3Array or Vec4Array" << std::endl;
+        OSG_WARN << "Warning: TangentSpaceGenerator: vertex array must be Vec2Array, Vec3Array or Vec4Array" << std::endl;
     }
 
     osg::Vec3 N1;
@@ -233,7 +233,7 @@ void TangentSpaceGenerator::compute(osg::PrimitiveSet *pset,
             break;
 
         default:
-            osg::notify(osg::WARN) << "Warning: TangentSpaceGenerator: normal array must be Vec2Array, Vec3Array or Vec4Array" << std::endl;
+            OSG_WARN << "Warning: TangentSpaceGenerator: normal array must be Vec2Array, Vec3Array or Vec4Array" << std::endl;
         }
     }
 
@@ -266,7 +266,7 @@ void TangentSpaceGenerator::compute(osg::PrimitiveSet *pset,
         break;
 
     default:
-        osg::notify(osg::WARN) << "Warning: TangentSpaceGenerator: texture coord array must be Vec2Array, Vec3Array or Vec4Array" << std::endl;
+        OSG_WARN << "Warning: TangentSpaceGenerator: texture coord array must be Vec2Array, Vec3Array or Vec4Array" << std::endl;
     }
 
     if(nx){

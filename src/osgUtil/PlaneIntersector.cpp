@@ -97,13 +97,13 @@ namespace PlaneIntersectorUtils
                     }
                     else
                     {
-                        osg::notify(osg::NOTICE)<<"Error: should not get here!"<<std::endl;
+                        OSG_NOTICE<<"Error: should not get here!"<<std::endl;
                     }
                 }
                 else // if (v2_connections==2)
                 {
                     // v2 connects to a start and an end - must have a loop in the list!
-                    osg::notify(osg::NOTICE)<<"v2="<<v2<<" must connect to a start and an end - must have a loop!!!!!."<<std::endl;
+                    OSG_NOTICE<<"v2="<<v2<<" must connect to a start and an end - must have a loop!!!!!."<<std::endl;
                 }
             }
             else if (v2_connections==0) // v1 is no connected to anything.
@@ -121,13 +121,13 @@ namespace PlaneIntersectorUtils
                     }
                     else
                     {
-                        osg::notify(osg::NOTICE)<<"Error: should not get here!"<<std::endl;
+                        OSG_NOTICE<<"Error: should not get here!"<<std::endl;
                     }
                 }
                 else // if (v1_connections==2)
                 {
                     // v1 connects to a start and an end - must have a loop in the list!
-                    osg::notify(osg::NOTICE)<<"v1="<<v1<<" must connect to a start and an end - must have a loop!!!!!."<<std::endl;
+                    OSG_NOTICE<<"v1="<<v1<<" must connect to a start and an end - must have a loop!!!!!."<<std::endl;
                 }
             }
             else 
@@ -151,7 +151,7 @@ namespace PlaneIntersectorUtils
                     }
                     else
                     {
-                        osg::notify(osg::NOTICE)<<"Error: should not get here!"<<std::endl;
+                        OSG_NOTICE<<"Error: should not get here!"<<std::endl;
                     }
                 }
                 else if (v1_connected_to_end)
@@ -166,12 +166,12 @@ namespace PlaneIntersectorUtils
                     }
                     else
                     {
-                        osg::notify(osg::NOTICE)<<"Error: should not get here!"<<std::endl;
+                        OSG_NOTICE<<"Error: should not get here!"<<std::endl;
                     }
                 }
                 else
                 {
-                    osg::notify(osg::NOTICE)<<"Error: should not get here!"<<std::endl;
+                    OSG_NOTICE<<"Error: should not get here!"<<std::endl;
                 }
             }
         }
@@ -307,35 +307,35 @@ namespace PlaneIntersectorUtils
 
         void report()
         {
-            osg::notify(osg::NOTICE)<<"report()"<<std::endl;
+            OSG_NOTICE<<"report()"<<std::endl;
 
-            osg::notify(osg::NOTICE)<<"start:"<<std::endl;
+            OSG_NOTICE<<"start:"<<std::endl;
             for(PolylineMap::iterator sitr = _startPolylineMap.begin();
                 sitr != _startPolylineMap.end();
                 ++sitr)
             {
-                osg::notify(osg::NOTICE)<<"  line - start = "<<sitr->first<<" polyline size = "<<sitr->second->_polyline.size()<<std::endl;
+                OSG_NOTICE<<"  line - start = "<<sitr->first<<" polyline size = "<<sitr->second->_polyline.size()<<std::endl;
             }
 
-            osg::notify(osg::NOTICE)<<"ends:"<<std::endl;
+            OSG_NOTICE<<"ends:"<<std::endl;
             for(PolylineMap::iterator eitr = _endPolylineMap.begin();
                 eitr != _endPolylineMap.end();
                 ++eitr)
             {
-                osg::notify(osg::NOTICE)<<"  line - end = "<<eitr->first<<" polyline size = "<<eitr->second->_polyline.size()<<std::endl;
+                OSG_NOTICE<<"  line - end = "<<eitr->first<<" polyline size = "<<eitr->second->_polyline.size()<<std::endl;
             }
 
             for(PolylineList::iterator pitr = _polylines.begin();
                 pitr != _polylines.end();
                 ++pitr)
             {
-                osg::notify(osg::NOTICE)<<"polyline:"<<std::endl;
+                OSG_NOTICE<<"polyline:"<<std::endl;
                 RefPolyline::Polyline& polyline = (*pitr)->_polyline;
                 for(RefPolyline::Polyline::iterator vitr = polyline.begin();
                     vitr != polyline.end();
                     ++vitr)
                 {
-                    osg::notify(osg::NOTICE)<<"  "<<*vitr<<std::endl;
+                    OSG_NOTICE<<"  "<<*vitr<<std::endl;
                 }
             }
 
@@ -344,7 +344,7 @@ namespace PlaneIntersectorUtils
 
         void fuse()
         {
-             osg::notify(osg::NOTICE)<<"supposed to be doing a fuse..."<<std::endl;
+             OSG_NOTICE<<"supposed to be doing a fuse..."<<std::endl;
         }
 
         
@@ -406,31 +406,31 @@ namespace PlaneIntersectorUtils
                     {
                         if (de<0.0)
                         {
-                            // osg::notify(osg::NOTICE)<<"Discard segment "<<std::endl;
+                            // OSG_NOTICE<<"Discard segment "<<std::endl;
                             return;
                         }
                         
-                        // osg::notify(osg::NOTICE)<<"Trim start vs="<<vs;
+                        // OSG_NOTICE<<"Trim start vs="<<vs;
 
                         double div = 1.0/(de-ds);
                         vs = vs*(de*div) - ve*(ds*div);
 
-                        // osg::notify(osg::NOTICE)<<" after vs="<<vs<<std::endl;
+                        // OSG_NOTICE<<" after vs="<<vs<<std::endl;
                         
                     }
                     else if (de<0.0)
                     {
-                        // osg::notify(osg::NOTICE)<<"Trim end ve="<<ve;
+                        // OSG_NOTICE<<"Trim end ve="<<ve;
 
                         double div = 1.0/(ds-de);
                         ve = ve*(ds*div) - vs*(de*div);
 
-                        // osg::notify(osg::NOTICE)<<" after ve="<<ve<<std::endl;
+                        // OSG_NOTICE<<" after ve="<<ve<<std::endl;
                         
                     }
                     
                 } 
-                // osg::notify(osg::NOTICE)<<"Segment fine"<<std::endl;
+                // OSG_NOTICE<<"Segment fine"<<std::endl;
 
                 _polylineConnector.add(vs,ve);
                 
@@ -467,21 +467,21 @@ namespace PlaneIntersectorUtils
             if (numOnPlane==3)
             {
                 // triangle lives wholy in the plane
-                osg::notify(osg::NOTICE)<<"3"<<std::endl;
+                OSG_NOTICE<<"3"<<std::endl;
                 return;
             }
 
             if (numOnPlane==2)
             {
                 // one edge lives wholy in the plane
-                osg::notify(osg::NOTICE)<<"2"<<std::endl;
+                OSG_NOTICE<<"2"<<std::endl;
                 return;
             }
 
             if (numOnPlane==1)
             {
                 // one point lives wholy in the plane
-                osg::notify(osg::NOTICE)<<"1"<<std::endl;
+                OSG_NOTICE<<"1"<<std::endl;
                 return;
             }
 
@@ -548,7 +548,7 @@ namespace PlaneIntersectorUtils
                 }
                 else
                 {
-                    osg::notify(osg::NOTICE)<<"!!! too many intersecting edges found !!!"<<std::endl;
+                    OSG_NOTICE<<"!!! too many intersecting edges found !!!"<<std::endl;
                 }
                  
             }
@@ -648,12 +648,12 @@ void PlaneIntersector::leave()
 
 void PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)
 {
-    // osg::notify(osg::NOTICE)<<"PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)"<<std::endl;
+    // OSG_NOTICE<<"PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)"<<std::endl;
 
     if ( _plane.intersect( drawable->getBound() )!=0 ) return;
     if ( !_polytope.contains( drawable->getBound() ) ) return;
 
-    // osg::notify(osg::NOTICE)<<"Succed PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)"<<std::endl;
+    // OSG_NOTICE<<"Succed PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)"<<std::endl;
 
     osg::TriangleFunctor<PlaneIntersectorUtils::TriangleIntersector> ti;
     ti.set(_plane, _polytope, iv.getModelMatrix(), _recordHeightsAsAttributes, _em.get());

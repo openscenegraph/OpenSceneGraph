@@ -290,7 +290,7 @@ void SceneView::setCamera(osg::Camera* camera, bool assumeOwnershipOfCamera)
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"Warning: attempt to assign a NULL camera to SceneView not permitted."<<std::endl;
+        OSG_NOTICE<<"Warning: attempt to assign a NULL camera to SceneView not permitted."<<std::endl;
     }
     
     if (assumeOwnershipOfCamera)
@@ -731,7 +731,7 @@ void SceneView::cull()
 
     if (!_renderInfo.getState())
     {
-        osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView::_state attached, creating a default state automatically."<< std::endl;
+        OSG_INFO << "Warning: no valid osgUtil::SceneView::_state attached, creating a default state automatically."<< std::endl;
 
         // note the constructor for osg::State will set ContextID to 0 which will be fine to single context graphics
         // applications which is ok for most apps, but not multiple context/pipe applications.
@@ -754,17 +754,17 @@ void SceneView::cull()
 
     if (!_cullVisitor)
     {
-        osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView:: attached, creating a default CullVisitor automatically."<< std::endl;
+        OSG_INFO << "Warning: no valid osgUtil::SceneView:: attached, creating a default CullVisitor automatically."<< std::endl;
         _cullVisitor = CullVisitor::create();
     }
     if (!_stateGraph)
     {
-        osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView:: attached, creating a global default StateGraph automatically."<< std::endl;
+        OSG_INFO << "Warning: no valid osgUtil::SceneView:: attached, creating a global default StateGraph automatically."<< std::endl;
         _stateGraph = new StateGraph;
     }
     if (!_renderStage)
     {
-        osg::notify(osg::INFO) << "Warning: no valid osgUtil::SceneView::_renderStage attached, creating a default RenderStage automatically."<< std::endl;
+        OSG_INFO << "Warning: no valid osgUtil::SceneView::_renderStage attached, creating a default RenderStage automatically."<< std::endl;
         _renderStage = new RenderStage;
     }
 
@@ -897,7 +897,7 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
         _collectOccludersVisitor->removeOccludedOccluders();
         
         
-        osg::notify(osg::DEBUG_INFO) << "finished searching for occluder - found "<<_collectOccludersVisitor->getCollectedOccluderSet().size()<<std::endl;
+        OSG_DEBUG << "finished searching for occluder - found "<<_collectOccludersVisitor->getCollectedOccluderSet().size()<<std::endl;
            
         cullVisitor->getOccluderList().clear();
         std::copy(_collectOccludersVisitor->getCollectedOccluderSet().begin(),_collectOccludersVisitor->getCollectedOccluderSet().end(), std::back_insert_iterator<CullStack::OccluderList>(cullVisitor->getOccluderList()));
@@ -949,11 +949,11 @@ bool SceneView::cullStage(const osg::Matrixd& projection,const osg::Matrixd& mod
         {
         case(HEADLIGHT):
             if (_light.valid()) renderStage->addPositionedAttribute(NULL,_light.get());
-            else osg::notify(osg::WARN)<<"Warning: no osg::Light attached to ogUtil::SceneView to provide head light.*/"<<std::endl;
+            else OSG_WARN<<"Warning: no osg::Light attached to ogUtil::SceneView to provide head light.*/"<<std::endl;
             break;
         case(SKY_LIGHT):
             if (_light.valid()) renderStage->addPositionedAttribute(mv.get(),_light.get());
-            else osg::notify(osg::WARN)<<"Warning: no osg::Light attached to ogUtil::SceneView to provide sky light.*/"<<std::endl;
+            else OSG_WARN<<"Warning: no osg::Light attached to ogUtil::SceneView to provide sky light.*/"<<std::endl;
             break;
         default:
             break;
@@ -1392,13 +1392,13 @@ void SceneView::draw()
                 _renderStageRight->draw(_renderInfo,previous);
                 glDisable(GL_STENCIL_TEST);
             #else
-                osg::notify(osg::NOTICE)<<"Warning: SceneView::draw() - VERTICAL_INTERLACE, HORIZONTAL_INTERLACE, and CHECKERBOARD stereo not supported."<<std::endl;
+                OSG_NOTICE<<"Warning: SceneView::draw() - VERTICAL_INTERLACE, HORIZONTAL_INTERLACE, and CHECKERBOARD stereo not supported."<<std::endl;
             #endif
             }
             break;
         default:
             {
-                osg::notify(osg::NOTICE)<<"Warning: stereo mode not implemented yet."<< std::endl;
+                OSG_NOTICE<<"Warning: stereo mode not implemented yet."<< std::endl;
             }
             break;
         }
@@ -1466,7 +1466,7 @@ void SceneView::draw()
     bom->reportStats();
 #endif
 
-    // osg::notify(osg::NOTICE)<<"SceneView  draw() DynamicObjectCount"<<getState()->getDynamicObjectCount()<<std::endl;
+    // OSG_NOTICE<<"SceneView  draw() DynamicObjectCount"<<getState()->getDynamicObjectCount()<<std::endl;
 
 }
 
@@ -1519,7 +1519,7 @@ const osg::Matrix SceneView::computeMVPW() const
     if (getViewport())
         matrix.postMult(getViewport()->computeWindowMatrix());
     else
-        osg::notify(osg::WARN)<<"osg::Matrix SceneView::computeMVPW() - error no viewport attached to SceneView, coords will be computed inccorectly."<<std::endl;
+        OSG_WARN<<"osg::Matrix SceneView::computeMVPW() - error no viewport attached to SceneView, coords will be computed inccorectly."<<std::endl;
 
     return matrix;
 }

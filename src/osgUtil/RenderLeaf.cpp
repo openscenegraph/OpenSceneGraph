@@ -86,5 +86,5 @@ void RenderLeaf::render(osg::RenderInfo& renderInfo,RenderLeaf* previous)
         state.decrementDynamicObjectCount();
     }
     
-    // osg::notify(osg::NOTICE)<<"RenderLeaf "<<_drawable->getName()<<" "<<_depth<<std::endl;
+    // OSG_NOTICE<<"RenderLeaf "<<_drawable->getName()<<" "<<_depth<<std::endl;
 }

@@ -93,13 +93,13 @@ void IncrementalCompileOperation::removeGraphicsContext(osg::GraphicsContext* gc
 
 void IncrementalCompileOperation::add(osg::Node* subgraphToCompile)
 {
-    osg::notify(osg::INFO)<<"IncrementalCompileOperation::add("<<subgraphToCompile<<")"<<std::endl;
+    OSG_INFO<<"IncrementalCompileOperation::add("<<subgraphToCompile<<")"<<std::endl;
     add(new CompileSet(subgraphToCompile));
 }
 
 void IncrementalCompileOperation::add(osg::Group* attachmentPoint, osg::Node* subgraphToCompile)
 {
-    osg::notify(osg::INFO)<<"IncrementalCompileOperation::add("<<attachmentPoint<<", "<<subgraphToCompile<<")"<<std::endl;
+    OSG_INFO<<"IncrementalCompileOperation::add("<<attachmentPoint<<", "<<subgraphToCompile<<")"<<std::endl;
     add(new CompileSet(attachmentPoint, subgraphToCompile));
 }
 
@@ -117,7 +117,7 @@ void IncrementalCompileOperation::add(CompileSet* compileSet, bool callBuildComp
     
     if (callBuildCompileMap) compileSet->buildCompileMap(_contexts);
 
-    osg::notify(osg::INFO)<<"IncrementalCompileOperation::add(CompileSet = "<<compileSet<<", "<<", "<<callBuildCompileMap<<")"<<std::endl;
+    OSG_INFO<<"IncrementalCompileOperation::add(CompileSet = "<<compileSet<<", "<<", "<<callBuildCompileMap<<")"<<std::endl;
 
     OpenThreads::ScopedLock<OpenThreads::Mutex>  lock(_toCompileMutex);
     _toCompile.push_back(compileSet);
@@ -125,7 +125,7 @@ void IncrementalCompileOperation::add(CompileSet* compileSet, bool callBuildComp
 
 void IncrementalCompileOperation::mergeCompiledSubgraphs()
 {
-    // osg::notify(osg::INFO)<<"IncrementalCompileOperation::mergeCompiledSubgraphs()"<<std::endl;
+    // OSG_INFO<<"IncrementalCompileOperation::mergeCompiledSubgraphs()"<<std::endl;
 
     OpenThreads::ScopedLock<OpenThreads::Mutex>  compilded_lock(_compiledMutex);
     
@@ -286,7 +286,7 @@ void IncrementalCompileOperation::CompileSet::buildCompileMap(ContextSet& contex
 
 void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
 {
-    // osg::notify(osg::NOTICE)<<"IncrementalCompileOperation::operator () ("<<context<<")"<<std::endl;
+    // OSG_NOTICE<<"IncrementalCompileOperation::operator () ("<<context<<")"<<std::endl;
 
     osg::NotifySeverity level = osg::INFO;
 
@@ -300,8 +300,8 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
 
     double currentElapsedFrameTime = context->getTimeSinceLastClear();
     
-    osg::notify(level)<<"currentTime = "<<currentTime<<std::endl;
-    osg::notify(level)<<"currentElapsedFrameTime = "<<currentElapsedFrameTime<<std::endl;
+    OSG_NOTIFY(level)<<"currentTime = "<<currentTime<<std::endl;
+    OSG_NOTIFY(level)<<"currentElapsedFrameTime = "<<currentElapsedFrameTime<<std::endl;
     
     double _flushTimeRatio(0.5);
     double _conservativeTimeRatio(0.5);
@@ -313,9 +313,9 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
     double compileTime = availableTime - flushTime;
 
 #if 1
-    osg::notify(level)<<"total availableTime = "<<availableTime*1000.0<<std::endl;
-    osg::notify(level)<<"      flushTime     = "<<flushTime*1000.0<<std::endl;
-    osg::notify(level)<<"      compileTime   = "<<compileTime*1000.0<<std::endl;
+    OSG_NOTIFY(level)<<"total availableTime = "<<availableTime*1000.0<<std::endl;
+    OSG_NOTIFY(level)<<"      flushTime     = "<<flushTime*1000.0<<std::endl;
+    OSG_NOTIFY(level)<<"      compileTime   = "<<compileTime*1000.0<<std::endl;
 #endif
 
     osg::flushDeletedGLObjects(context->getState()->getContextID(), currentTime, flushTime);
@@ -324,7 +324,7 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
     if (flushTime>0.0) compileTime += flushTime;
 
 #if 1
-    osg::notify(level)<<"      revised compileTime   = "<<compileTime*1000.0<<std::endl;
+    OSG_NOTIFY(level)<<"      revised compileTime   = "<<compileTime*1000.0<<std::endl;
 #endif
 
 
@@ -350,9 +350,9 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
         
         if (!cd.empty())
         {
-            osg::notify(level)<<"cd._drawables.size()="<<cd._drawables.size()<<std::endl;
-            osg::notify(level)<<"cd._textures.size()="<<cd._textures.size()<<std::endl;
-            osg::notify(level)<<"cd._programs.size()="<<cd._programs.size()<<std::endl;
+            OSG_NOTIFY(level)<<"cd._drawables.size()="<<cd._drawables.size()<<std::endl;
+            OSG_NOTIFY(level)<<"cd._textures.size()="<<cd._textures.size()<<std::endl;
+            OSG_NOTIFY(level)<<"cd._programs.size()="<<cd._programs.size()<<std::endl;
     
             
             while(!cd._drawables.empty() && 
@@ -398,7 +398,7 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
                     CompileSets::iterator cs_itr = std::find(_toCompile.begin(), _toCompile.end(), *itr);
                     if (cs_itr != _toCompile.end())
                     {
-                        osg::notify(level)<<"Erasing from list"<<std::endl;
+                        OSG_NOTIFY(level)<<"Erasing from list"<<std::endl;
                         
                         // remove from the _toCompile list, note cs won't be deleted here as the tempoary
                         // toCompile_Copy list will retain a reference.

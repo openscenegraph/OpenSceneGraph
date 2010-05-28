@@ -38,7 +38,7 @@ class CairoImage : public osg::Referenced
                 return;
             }
 
-            osg::notify(osg::NOTICE)<<"Create cario surface/context "<<width<<", "<<height<<std::endl;
+            OSG_NOTICE<<"Create cario surface/context "<<width<<", "<<height<<std::endl;
 
             // allocate the image data
             _image->allocateImage(width, height, 1, GL_RGBA, GL_UNSIGNED_BYTE);
@@ -108,18 +108,18 @@ class PopplerPdfImage : public osgWidget::PdfImage
 
         bool open(const std::string& filename)
         {
-            osg::notify(osg::NOTICE)<<"open("<<filename<<")"<<std::endl;
+            OSG_NOTICE<<"open("<<filename<<")"<<std::endl;
 
             std::string foundFile = osgDB::findDataFile(filename);
             if (foundFile.empty())
             {
-                osg::notify(osg::NOTICE)<<"could not find filename="<<filename<<std::endl;
+                OSG_NOTICE<<"could not find filename="<<filename<<std::endl;
                 return false;
             }
 
-            osg::notify(osg::NOTICE)<<"foundFile = "<<foundFile<<std::endl;
+            OSG_NOTICE<<"foundFile = "<<foundFile<<std::endl;
             foundFile = osgDB::getRealPath(foundFile);
-            osg::notify(osg::NOTICE)<<"foundFile = "<<foundFile<<std::endl;
+            OSG_NOTICE<<"foundFile = "<<foundFile<<std::endl;
 
             static bool gTypeInit = false;
 
@@ -139,7 +139,7 @@ class PopplerPdfImage : public osgWidget::PdfImage
             PopplerDocument* doc = poppler_document_new_from_file(uri.c_str(), NULL, NULL);
             if (!doc) 
             {
-                osg::notify(osg::NOTICE)<<" could not open("<<filename<<"), uri="<<uri<<std::endl;
+                OSG_NOTICE<<" could not open("<<filename<<"), uri="<<uri<<std::endl;
 
                 return false;
             }
@@ -154,7 +154,7 @@ class PopplerPdfImage : public osgWidget::PdfImage
 
             setFileName(filename);
 
-            osg::notify(osg::NOTICE)<<"getNumOfPages()=="<<getNumOfPages()<<std::endl;
+            OSG_NOTICE<<"getNumOfPages()=="<<getNumOfPages()<<std::endl;
 
             if (getNumOfPages()==0)
             {

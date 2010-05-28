@@ -56,7 +56,7 @@ bool VVDReader::readFile(const std::string & file)
     vvdFile = new osgDB::ifstream(file.c_str(), std::ios::binary);
     if (!vvdFile)
     {
-        notify(NOTICE) << "Vertex data file not found" << std::endl;
+        OSG_NOTICE << "Vertex data file not found" << std::endl;
         return false;
     }
 
@@ -67,7 +67,7 @@ bool VVDReader::readFile(const std::string & file)
     // Make sure the file is a valid Valve VVD file
     if (header.magic_number != VVD_MAGIC_NUMBER)
     {
-        notify(NOTICE) << "Vertex data file not valid" << std::endl;
+        OSG_NOTICE << "Vertex data file not valid" << std::endl;
         return false;
     }
 

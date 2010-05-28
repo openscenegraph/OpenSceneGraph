@@ -379,7 +379,7 @@ bool VTXReader::readFile(const std::string & file)
     vtxFile = new osgDB::ifstream(file.c_str(), std::ios::binary);
     if (!vtxFile || vtxFile->fail())
     {
-        notify(NOTICE) << "Vertex index file not found" << std::endl;
+        OSG_NOTICE << "Vertex index file not found" << std::endl;
         return false;
     }
 

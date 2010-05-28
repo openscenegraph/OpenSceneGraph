@@ -168,7 +168,7 @@ class Logos: public osg::Drawable
             glPopMatrix();
             glMatrixMode( GL_MODELVIEW );            
         #else
-            osg::notify(osg::NOTICE)<<"Warning: Logos::drawImplementation(..) not supported."<<std::endl;
+            OSG_NOTICE<<"Warning: Logos::drawImplementation(..) not supported."<<std::endl;
         #endif
         }
 
@@ -176,9 +176,13 @@ class Logos: public osg::Drawable
         {
             osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile( name.c_str() );
             if( image.valid())
-                _logos[pos].push_back( image ); 
+            {
+                _logos[pos].push_back( image );
+            }
             else
-                osg::notify(osg::WARN)<< "Logos::addLogo image file not found : " << name << ".\n";
+            {
+                OSG_WARN<< "Logos::addLogo image file not found : " << name << ".\n";
+            }
         }
 
         osg::Viewport *getViewport() { return _viewport.get(); }
@@ -231,11 +235,11 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
             if (fileName.empty()) 
                 return ReadResult::FILE_NOT_FOUND;
 
-            osg::notify(osg::INFO)<< "ReaderWriterLOGO::readNode( "<<fileName.c_str()<<" )\n";
+            OSG_INFO<< "ReaderWriterLOGO::readNode( "<<fileName.c_str()<<" )\n";
 
             std::string filePath = osgDB::getFilePath(fileName);
             if (!filePath.empty()) {
-                osg::notify(osg::DEBUG_INFO)<< "Adding : " << filePath << " to the file data path\n";
+                OSG_DEBUG<< "Adding : " << filePath << " to the file data path\n";
                 osgDB::getDataFilePathList().push_back(filePath);
             }
 
@@ -280,13 +284,13 @@ class LOGOReaderWriter : public osgDB::ReaderWriter
                     int tn;
                     if( (fscanf( fp, "%d", &tn )) != 1 )
                     {
-                        osg::notify(osg::WARN) << "Error... Camera requires an integer argument\n";
+                        OSG_WARN << "Error... Camera requires an integer argument\n";
                         break;
                     }
                     
                     if (tn < 0)
                     {
-                        osg::notify(osg::WARN) << "Error... Camera requires an positive or null value argument\n";
+                        OSG_WARN << "Error... Camera requires an positive or null value argument\n";
                         break;
                     }
                     

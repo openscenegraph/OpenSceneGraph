@@ -42,11 +42,17 @@ void CPL_STDCALL CPLOSGErrorHandler( CPLErr eErrClass, int nError,
                              const char * pszErrorMsg )
 {
     if( eErrClass == CE_Debug )
-        osg::notify(osg::DEBUG_INFO) << pszErrorMsg << std::endl;
+    {
+        OSG_DEBUG << pszErrorMsg << std::endl;
+    }
     else if( eErrClass == CE_Warning )
-        osg::notify(osg::WARN) << nError << " " << pszErrorMsg << std::endl;
+    {
+        OSG_WARN << nError << " " << pszErrorMsg << std::endl;
+    }
     else
-        osg::notify(osg::FATAL) << nError << " " << pszErrorMsg << std::endl;
+    {
+        OSG_FATAL << nError << " " << pszErrorMsg << std::endl;
+    }
 }
 
 static osg::Material* createDefaultMaterial()
@@ -109,7 +115,7 @@ public:
 
     virtual ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
     {
-        osg::notify(osg::INFO)<<"OGR::readNode("<<file<<")"<<std::endl;
+        OSG_INFO<<"OGR::readNode("<<file<<")"<<std::endl;
         
         if (file.empty()) return ReadResult::FILE_NOT_FOUND;
     
@@ -273,11 +279,15 @@ public:
                 }
             } 
             else
-                osg::notify(osg::WARN) << "Warning something wrong with a polygon in a multi polygon" << std::endl;
+            {
+                OSG_WARN << "Warning something wrong with a polygon in a multi polygon" << std::endl;
+            }
         }
 
         if (geom->getVertexArray())
-            osg::notify() << "osgOgrFeature::multiPolygonToGeode " << geom->getVertexArray()->getNumElements() << " vertexes"<< std::endl;
+        {
+            OSG_INFO << "osgOgrFeature::multiPolygonToGeode " << geom->getVertexArray()->getNumElements() << " vertexes"<< std::endl;
+        }
 
         return geom;
     }
@@ -412,16 +422,16 @@ public:
 
         case wkbGeometryCollection:
         case wkbGeometryCollection25D:
-            osg::notify(osg::WARN) << "This geometry is not yet implemented " << OGRGeometryTypeToName(ogrFeature->GetGeometryRef()->getGeometryType()) << std::endl;
+            OSG_WARN << "This geometry is not yet implemented " << OGRGeometryTypeToName(ogrFeature->GetGeometryRef()->getGeometryType()) << std::endl;
             break;
 
         case wkbNone:
-            osg::notify(osg::WARN) << "No WKB Geometry " << OGRGeometryTypeToName(ogrFeature->GetGeometryRef()->getGeometryType()) << std::endl;
+            OSG_WARN << "No WKB Geometry " << OGRGeometryTypeToName(ogrFeature->GetGeometryRef()->getGeometryType()) << std::endl;
             break;
 
         case wkbUnknown:
         default:
-            osg::notify(osg::WARN) << "Unknown WKB Geometry " << OGRGeometryTypeToName(ogrFeature->GetGeometryRef()->getGeometryType()) << std::endl;
+            OSG_WARN << "Unknown WKB Geometry " << OGRGeometryTypeToName(ogrFeature->GetGeometryRef()->getGeometryType()) << std::endl;
             break;
         }
 

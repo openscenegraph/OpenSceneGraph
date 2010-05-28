@@ -153,20 +153,20 @@ ExportOptions::parseOptionsString()
         // See if it's a Boolen/toggle
         if ( token == _validateOption )
         {
-            osg::notify( osg::INFO ) << "fltexp: Found: " << token << std::endl;
+            OSG_INFO << "fltexp: Found: " << token << std::endl;
             setValidateOnly( true );
             continue;
         }
         if ( token == _stripTextureFilePathOption )
         {
-            osg::notify( osg::INFO ) << "fltexp: Found: " << token << std::endl;
+            OSG_INFO << "fltexp: Found: " << token << std::endl;
             setStripTextureFilePath( true );
             continue;
         }
         // Protect against unrecognized options without values
         if ( pos == str.npos )
         {
-            osg::notify( osg::WARN ) << "fltexp: Bogus OptionString: " << token << std::endl;
+            OSG_WARN << "fltexp: Bogus OptionString: " << token << std::endl;
             continue;
         }
 
@@ -187,19 +187,19 @@ ExportOptions::parseOptionsString()
 
         if (token == _versionOption)
         {
-            osg::notify( osg::INFO ) << "fltexp: Token: " << token << ", Value: " << value << std::endl;
+            OSG_INFO << "fltexp: Token: " << token << ", Value: " << value << std::endl;
             int version( VERSION_16_1 );
             if( value == std::string( "15.7" ) )
                 version = VERSION_15_7;
             else if( value == std::string( "15.8" ) )
                 version = VERSION_15_8;
             else if( value != std::string( "16.1" ) )
-                osg::notify( osg::WARN ) << "fltexp: Unsupported version: " << value << ". Defaulting to 16.1." << std::endl;
+                OSG_WARN << "fltexp: Unsupported version: " << value << ". Defaulting to 16.1." << std::endl;
             setFlightFileVersionNumber( version );
         }
         else if (token == _unitsOption)
         {
-            osg::notify( osg::INFO ) << "fltexp: Token: " << token << ", Value: " << value << std::endl;
+            OSG_INFO << "fltexp: Token: " << token << ", Value: " << value << std::endl;
             FlightUnits units( METERS );
             if( value == std::string( "KILOMETERS" ) )
                 units = KILOMETERS;
@@ -210,26 +210,26 @@ ExportOptions::parseOptionsString()
             else if( value == std::string( "NAUTICAL_MILES" ) )
                 units = NAUTICAL_MILES;
             else if( value != std::string( "METERS" ) )
-                osg::notify( osg::WARN ) << "fltexp: Unsupported units: " << value << ". Defaulting to METERS." << std::endl;
+                OSG_WARN << "fltexp: Unsupported units: " << value << ". Defaulting to METERS." << std::endl;
             setFlightUnits( units );
         }
         else if (token == _tempDirOption)
         {
-            osg::notify( osg::INFO ) << "fltexp: Token: " << token << ", Value: " << value << std::endl;
+            OSG_INFO << "fltexp: Token: " << token << ", Value: " << value << std::endl;
             setTempDir( value );
         }
         else if (token == _lightingOption)
         {
-            osg::notify( osg::INFO ) << "fltexp: Token: " << token << ", Value: " << value << std::endl;
+            OSG_INFO << "fltexp: Token: " << token << ", Value: " << value << std::endl;
             bool lighting( true );
             if (value == std::string( "OFF" ) )
                 lighting = false;
             else if (value != std::string( "ON" ) )
-                osg::notify( osg::WARN ) << "fltexp: Unsupported lighting value: " << value << ". Defaulting to ON." << std::endl;
+                OSG_WARN << "fltexp: Unsupported lighting value: " << value << ". Defaulting to ON." << std::endl;
             setLightingDefault( lighting );
         }
         else
-            osg::notify( osg::WARN ) << "fltexp: Bogus OptionString: " << token << std::endl;
+            OSG_WARN << "fltexp: Bogus OptionString: " << token << std::endl;
     }
 }
 

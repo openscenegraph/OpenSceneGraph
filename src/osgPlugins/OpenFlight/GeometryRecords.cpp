@@ -1072,7 +1072,7 @@ protected:
 
                 if (!coord.valid())
                 {
-                    osg::notify(osg::NOTICE)<<"Warning: data error detected in LocalVertexPool::readRecord coord="<<coord.x()<<" "<<coord.y()<<" "<<coord.z()<<std::endl;
+                    OSG_NOTICE<<"Warning: data error detected in LocalVertexPool::readRecord coord="<<coord.x()<<" "<<coord.y()<<" "<<coord.z()<<std::endl;
                 }
             }
 
@@ -1087,7 +1087,7 @@ protected:
 
                 if (!color.valid())
                 {
-                    osg::notify(osg::NOTICE)<<"Warning: data error detected in LocalVertexPool::readRecord color="<<color.r()<<" "<<color.g()<<" "<<color.b()<<" "<<color.a()<<std::endl;
+                    OSG_NOTICE<<"Warning: data error detected in LocalVertexPool::readRecord color="<<color.r()<<" "<<color.g()<<" "<<color.b()<<" "<<color.a()<<std::endl;
                 }
             }
 
@@ -1098,7 +1098,7 @@ protected:
 
                 if (!color.valid())
                 {
-                    osg::notify(osg::NOTICE)<<"Warning: data error detected in LocalVertexPool::readRecord color="<<color.r()<<" "<<color.g()<<" "<<color.b()<<" "<<color.a()<<std::endl;
+                    OSG_NOTICE<<"Warning: data error detected in LocalVertexPool::readRecord color="<<color.r()<<" "<<color.g()<<" "<<color.b()<<" "<<color.a()<<std::endl;
                 }
             }
 
@@ -1109,7 +1109,7 @@ protected:
 
                 if (!normal.valid())
                 {
-                    osg::notify(osg::NOTICE)<<"Warning: data error detected in LocalVertexPool::readRecord normal="<<normal.x()<<" "<<normal.y()<<" "<<normal.z()<<std::endl;
+                    OSG_NOTICE<<"Warning: data error detected in LocalVertexPool::readRecord normal="<<normal.x()<<" "<<normal.y()<<" "<<normal.z()<<std::endl;
                 }
             }
 
@@ -1122,7 +1122,7 @@ protected:
                     
                     if (!uv.valid())
                     {
-                        osg::notify(osg::NOTICE)<<"Warning: data error detected in LocalVertexPool::readRecord uv="<<uv.x()<<" "<<uv.y()<<std::endl;
+                        OSG_NOTICE<<"Warning: data error detected in LocalVertexPool::readRecord uv="<<uv.x()<<" "<<uv.y()<<std::endl;
                     }
 
                 }

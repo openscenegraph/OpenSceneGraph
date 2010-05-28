@@ -283,7 +283,7 @@ FltExportVisitor::writeObject( const osg::Group& group, osgSim::ObjectRecordData
     if (!ord)
     {
         std::string warning( "fltexp: writeObject has invalid ObjectRecordData." );
-        osg::notify( osg::WARN ) << warning << std::endl;
+        OSG_WARN << warning << std::endl;
         _fltOpt->getWriteResult().warn( warning );
         return;
     }

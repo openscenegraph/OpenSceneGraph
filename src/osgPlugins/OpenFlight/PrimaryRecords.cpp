@@ -69,16 +69,16 @@ protected:
     virtual void readRecord(RecordInputStream& in, Document& document)
     {
         std::string id = in.readString(8);
-        osg::notify(osg::DEBUG_INFO) << "ID: " << id << std::endl;
+        OSG_DEBUG << "ID: " << id << std::endl;
 
         uint32 format = in.readUInt32();
-        osg::notify(osg::DEBUG_INFO) << "Format: " << format << std::endl;
+        OSG_DEBUG << "Format: " << format << std::endl;
         document._version = format;
 
         /*uint32 revision =*/ in.readUInt32();
 
         std::string revisionTime = in.readString(32);
-        osg::notify(osg::INFO) << "Last revision: " << revisionTime << std::endl;
+        OSG_INFO << "Last revision: " << revisionTime << std::endl;
 
         in.forward(4*2);
 
@@ -131,7 +131,7 @@ protected:
         osgSim::GeographicLocation* loc = new osgSim::GeographicLocation;
         loc->set( originLat, originLong );
         _header->setUserData( loc );
-        osg::notify(osg::INFO) << "DB lat=" << originLat << " lon=" << originLong << std::endl;
+        OSG_INFO << "DB lat=" << originLat << " lon=" << originLong << std::endl;
 
         document.setHeaderNode(_header.get());
     }
@@ -200,7 +200,7 @@ protected:
     void readRecord(RecordInputStream& in, Document& document)
     {
         std::string id = in.readString(8);
-        osg::notify(osg::DEBUG_INFO) << "ID: " << id << std::endl;
+        OSG_DEBUG << "ID: " << id << std::endl;
 
         /*int16 relativePriority =*/ in.readInt16();
         in.forward(2);
@@ -396,10 +396,10 @@ protected:
         
         if ((length_x*length_y*length_z)==0.0f)
         {
-            osg::notify(osg::NOTICE)<<"Warning: OpenFlight DegreeOfFreedom::readRecord() found erroneous axis definition:"<<std::endl;
-            osg::notify(osg::NOTICE)<<"    localOrigin="<<localOrigin<<std::endl;
-            osg::notify(osg::NOTICE)<<"    pointOnXAxis="<<pointOnXAxis<<std::endl;
-            osg::notify(osg::NOTICE)<<"    pointInXYPlane="<<pointInXYPlane<<std::endl;
+            OSG_NOTICE<<"Warning: OpenFlight DegreeOfFreedom::readRecord() found erroneous axis definition:"<<std::endl;
+            OSG_NOTICE<<"    localOrigin="<<localOrigin<<std::endl;
+            OSG_NOTICE<<"    pointOnXAxis="<<pointOnXAxis<<std::endl;
+            OSG_NOTICE<<"    pointInXYPlane="<<pointInXYPlane<<std::endl;
             
             xAxis.set(1.0f,0.0f,0.0f);
             yAxis.set(0.0f,1.0f,0.0f);

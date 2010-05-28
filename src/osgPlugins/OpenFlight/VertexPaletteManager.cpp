@@ -42,12 +42,12 @@ VertexPaletteManager::~VertexPaletteManager()
         // Delete our temp file.
         if (_verticesStr.is_open())
         {
-            osg::notify( osg::WARN ) << "fltexp: VertexPaletteManager destructor has an open temp file." << std::endl;
+            OSG_WARN << "fltexp: VertexPaletteManager destructor has an open temp file." << std::endl;
             // This should not happen. FltExportVisitor::complete should close
             // this file before we get to this destructor.
             return;
         }
-        osg::notify( osg::INFO ) << "fltexp: Deleting temp file " << _verticesTempName << std::endl;    
+        OSG_INFO << "fltexp: Deleting temp file " << _verticesTempName << std::endl;    
         FLTEXP_DELETEFILE( _verticesTempName.c_str() );
     }
 }
@@ -58,7 +58,7 @@ VertexPaletteManager::add( const osg::Geometry& geom )
     const osg::Array* v = geom.getVertexArray();
     if (!v)
     {
-        osg::notify( osg::WARN ) << "fltexp: Attempting to add NULL vertex array in VertexPaletteManager." << std::endl;
+        OSG_WARN << "fltexp: Attempting to add NULL vertex array in VertexPaletteManager." << std::endl;
         return;
     }
     const osg::Array* c = geom.getColorArray();
@@ -129,12 +129,12 @@ VertexPaletteManager::byteOffset( unsigned int idx ) const
 {
     if (!_current)
     {
-        osg::notify( osg::WARN ) << "fltexp: No current vertex array in VertexPaletteManager." << std::endl;
+        OSG_WARN << "fltexp: No current vertex array in VertexPaletteManager." << std::endl;
         return 4;
     }
     if (idx >= _current->_idxCount)
     {
-        osg::notify( osg::WARN ) << "fltexp: Index out of range in VertexPaletteManager." << std::endl;
+        OSG_WARN << "fltexp: Index out of range in VertexPaletteManager." << std::endl;
         return 4;
     }
 
@@ -232,19 +232,19 @@ VertexPaletteManager::writeRecords( const osg::Vec3dArray* v, const osg::Vec4Arr
     case VERTEX_CN:
         opcode = VERTEX_CN_OP;
         if (!n)
-            osg::notify( osg::WARN ) << "fltexp: VPM::writeRecords: no normal array." << std::endl;
+            OSG_WARN << "fltexp: VPM::writeRecords: no normal array." << std::endl;
         break;
     case VERTEX_CNT:
         opcode = VERTEX_CNT_OP;
         if (!n)
-            osg::notify( osg::WARN ) << "fltexp: VPM::writeRecords: no normal array." << std::endl;
+            OSG_WARN << "fltexp: VPM::writeRecords: no normal array." << std::endl;
         if (!t)
-            osg::notify( osg::WARN ) << "fltexp: VPM::writeRecords: no tex coord array." << std::endl;
+            OSG_WARN << "fltexp: VPM::writeRecords: no tex coord array." << std::endl;
         break;
     case VERTEX_CT:
         opcode = VERTEX_CT_OP;
         if (!t)
-            osg::notify( osg::WARN ) << "fltexp: VPM::writeRecords: no tex coord array." << std::endl;
+            OSG_WARN << "fltexp: VPM::writeRecords: no tex coord array." << std::endl;
         break;
     }
 
@@ -368,7 +368,7 @@ VertexPaletteManager::asVec2Array( const osg::Array* in, const unsigned int n )
     }
     default:
     {
-        osg::notify( osg::WARN ) << "fltexp: Unsupported array type in conversion to Vec2Array: " << arrayType << std::endl;
+        OSG_WARN << "fltexp: Unsupported array type in conversion to Vec2Array: " << arrayType << std::endl;
         return NULL;
     }
     }
@@ -416,7 +416,7 @@ VertexPaletteManager::asVec3Array( const osg::Array* in, const unsigned int n )
     }
     default:
     {
-        osg::notify( osg::WARN ) << "fltexp: Unsupported array type in conversion to Vec3Array: " << arrayType << std::endl;
+        OSG_WARN << "fltexp: Unsupported array type in conversion to Vec3Array: " << arrayType << std::endl;
         return NULL;
     }
     }
@@ -464,7 +464,7 @@ VertexPaletteManager::asVec3dArray( const osg::Array* in, const unsigned int n )
     }
     default:
     {
-        osg::notify( osg::WARN ) << "fltexp: Unsupported array type in conversion to Vec3dArray: " << arrayType << std::endl;
+        OSG_WARN << "fltexp: Unsupported array type in conversion to Vec3dArray: " << arrayType << std::endl;
         return NULL;
     }
     }
@@ -520,7 +520,7 @@ VertexPaletteManager::asVec4Array( const osg::Array* in, const unsigned int n )
     }
     default:
     {
-        osg::notify( osg::WARN ) << "fltexp: Unsupported array type in conversion to Vec4Array: " << arrayType << std::endl;
+        OSG_WARN << "fltexp: Unsupported array type in conversion to Vec4Array: " << arrayType << std::endl;
         return NULL;
     }
     }

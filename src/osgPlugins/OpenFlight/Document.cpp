@@ -83,7 +83,7 @@ void Document::pushExtension()
 {
     if (!_currentPrimaryRecord.valid())
     {
-        osg::notify(osg::WARN) << "No current primary in Document::pushExtension()." << std::endl;
+        OSG_WARN << "No current primary in Document::pushExtension()." << std::endl;
         return;
     }
 
@@ -95,7 +95,7 @@ void Document::popExtension()
     _currentPrimaryRecord=_extensionStack.back().get();
     if (!_currentPrimaryRecord.valid())
     {
-        osg::notify(osg::WARN) << "Can't decide primary in Document::popExtension()." << std::endl;
+        OSG_WARN << "Can't decide primary in Document::popExtension()." << std::endl;
         return;
     }
 
@@ -118,7 +118,7 @@ void Document::setSubSurfacePolygonOffset(int level, osg::PolygonOffset* po)
 
 osg::PolygonOffset* Document::getSubSurfacePolygonOffset(int level)
 {
-    osg::notify(osg::DEBUG_INFO)<<"Document::getSubSurfacePolygonOffset("<<level<<")"<<std::endl;
+    OSG_DEBUG<<"Document::getSubSurfacePolygonOffset("<<level<<")"<<std::endl;
     osg::ref_ptr<osg::PolygonOffset>& po = _subsurfacePolygonOffsets[level];
     if (!po)
     {

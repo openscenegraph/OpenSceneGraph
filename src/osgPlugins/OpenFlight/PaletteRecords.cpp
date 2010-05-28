@@ -466,7 +466,7 @@ protected:
         std::string pathname = osgDB::findDataFile(filename,document.getOptions());
         if (pathname.empty())
         {
-            osg::notify(osg::WARN) << "Can't find texture (" << index << ") " << filename << std::endl;
+            OSG_WARN << "Can't find texture (" << index << ") " << filename << std::endl;
             return;
         }
 

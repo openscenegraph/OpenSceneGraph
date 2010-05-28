@@ -157,12 +157,12 @@ void FFmpegDecoderAudio::run()
 
     catch (const std::exception & error)
     {
-        osg::notify(osg::WARN) << "FFmpegDecoderAudio::run : " << error.what() << std::endl;
+        OSG_WARN << "FFmpegDecoderAudio::run : " << error.what() << std::endl;
     }
 
     catch (...)
     {
-        osg::notify(osg::WARN) << "FFmpegDecoderAudio::run : unhandled exception" << std::endl;
+        OSG_WARN << "FFmpegDecoderAudio::run : unhandled exception" << std::endl;
     }
 }
 
@@ -170,7 +170,7 @@ void FFmpegDecoderAudio::run()
 void FFmpegDecoderAudio::setAudioSink(osg::ref_ptr<osg::AudioSink> audio_sink)
 {
     // The FFmpegDecoderAudio object takes the responsability of destroying the audio_sink.
-    osg::notify(osg::NOTICE)<<"Assigning "<<audio_sink<<std::endl;
+    OSG_NOTICE<<"Assigning "<<audio_sink<<std::endl;
     m_audio_sink = audio_sink;
 }
 

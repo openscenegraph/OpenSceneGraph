@@ -42,7 +42,7 @@ class FormatContextPtr
         {
             if (_ptr) 
             {
-                osg::notify(osg::NOTICE)<<"Calling av_close_input_file("<<_ptr<<")"<<std::endl;
+                OSG_NOTICE<<"Calling av_close_input_file("<<_ptr<<")"<<std::endl;
                 av_close_input_file(_ptr);
             }
             _ptr = 0;

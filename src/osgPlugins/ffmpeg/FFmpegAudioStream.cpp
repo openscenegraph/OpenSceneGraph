@@ -35,7 +35,7 @@ FFmpegAudioStream::~FFmpegAudioStream()
 
 void FFmpegAudioStream::setAudioSink(osg::AudioSink* audio_sink)
 { 
-    osg::notify(osg::NOTICE)<<"FFmpegAudioStream::setAudioSink( "<<audio_sink<<")"<<std::endl;
+    OSG_NOTICE<<"FFmpegAudioStream::setAudioSink( "<<audio_sink<<")"<<std::endl;
     m_decoder->audio_decoder().setAudioSink(audio_sink); 
 }
 

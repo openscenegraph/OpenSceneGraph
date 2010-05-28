@@ -85,7 +85,7 @@ public:
     
     ReadResult readImageStream(const std::string& filename, const osgDB::ReaderWriter::Options * options) const
     {
-        osg::notify(osg::INFO) << "ReaderWriterFFmpeg::readImage " << filename << std::endl;
+        OSG_INFO << "ReaderWriterFFmpeg::readImage " << filename << std::endl;
 
         osg::ref_ptr<osgFFmpeg::FFmpegImageStream> image_stream(new osgFFmpeg::FFmpegImageStream);
 

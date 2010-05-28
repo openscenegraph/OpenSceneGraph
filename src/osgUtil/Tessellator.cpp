@@ -30,7 +30,7 @@ Tessellator::Tessellator() :
     _index=0;
 
 #ifndef OSG_GLU_AVAILABLE
-    osg::notify(osg::NOTICE)<<"Warning: gluTesselation not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: gluTesselation not supported."<<std::endl;
 #endif
 }
 
@@ -55,7 +55,7 @@ void Tessellator::beginTessellation()
 
     gluTessBeginPolygon(_tobj,this);
 #else
-    osg::notify(osg::NOTICE)<<"Warning: gluTesselation not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: gluTesselation not supported."<<std::endl;
 #endif
 }    
     
@@ -106,7 +106,7 @@ void Tessellator::endTessellation()
         if (_errorCode!=0)
         {
            const GLubyte *estring = gluErrorString((GLenum)_errorCode);
-           osg::notify(osg::WARN)<<"Tessellation Error: "<<estring<< std::endl;
+           OSG_WARN<<"Tessellation Error: "<<estring<< std::endl;
         }
     }
 #endif
@@ -445,7 +445,7 @@ void Tessellator::addContour(osg::PrimitiveSet* primitive, osg::Vec3Array* verti
             break;
         }
     default:
-        osg::notify(osg::NOTICE)<<"Tessellator::addContour(primitive, vertices) : Primitive type "<<primitive->getType()<<" not handled"<<std::endl;
+        OSG_NOTICE<<"Tessellator::addContour(primitive, vertices) : Primitive type "<<primitive->getType()<<" not handled"<<std::endl;
         break;
     }
     
@@ -789,7 +789,7 @@ void Tessellator::collectTessellation(osg::Geometry &geom, unsigned int original
                           }
                       }
                   }
-                  //        osg::notify(osg::WARN)<<"Add: "<< iprim << std::endl; 
+                  //        OSG_WARN<<"Add: "<< iprim << std::endl; 
               }
               iprim++; // GWM Sep 2002 count which normal we should use
         }

@@ -93,7 +93,7 @@ public:
         
         if (p1==0 || p2==0)
         {
-            osg::notify(osg::NOTICE)<<"Error computeInterpolatedPoint("<<edge<<",r) p1 and/or p2==0"<<std::endl;
+            OSG_NOTICE<<"Error computeInterpolatedPoint("<<edge<<",r) p1 and/or p2==0"<<std::endl;
             return 0;
         } 
         
@@ -154,7 +154,7 @@ public:
     {
         if (!edge->_p1 || !edge->_p2)
         {
-            osg::notify(osg::NOTICE)<<"Error updateErrorMetricForEdge("<<edge<<") p1 and/or p2==0"<<std::endl;
+            OSG_NOTICE<<"Error updateErrorMetricForEdge("<<edge<<") p1 and/or p2==0"<<std::endl;
             return;
         }
 
@@ -226,14 +226,14 @@ public:
 
             if (edge->getErrorMetric()==FLT_MAX)
             {
-                osg::notify(osg::INFO)<<"collapseMinimumErrorEdge() return false due to edge->getErrorMetric()==FLT_MAX"<<std::endl;
+                OSG_INFO<<"collapseMinimumErrorEdge() return false due to edge->getErrorMetric()==FLT_MAX"<<std::endl;
                 return false;
             }
 
             osg::ref_ptr<Point> pNew = edge->_proposedPoint.valid()? edge->_proposedPoint.get() : computeInterpolatedPoint(edge,0.5f);
             return (collapseEdge(edge,pNew.get()));
         }
-        osg::notify(osg::INFO)<<"collapseMinimumErrorEdge() return false due to _edgeSet.empty()"<<std::endl;
+        OSG_INFO<<"collapseMinimumErrorEdge() return false due to _edgeSet.empty()"<<std::endl;
         return false;
     }
 
@@ -246,14 +246,14 @@ public:
 
             if (edge->getErrorMetric()==FLT_MAX)
             {
-                osg::notify(osg::INFO)<<"divideLongestEdge() return false due to edge->getErrorMetric()==FLT_MAX"<<std::endl;
+                OSG_INFO<<"divideLongestEdge() return false due to edge->getErrorMetric()==FLT_MAX"<<std::endl;
                 return false;
             }
 
             osg::ref_ptr<Point> pNew = edge->_proposedPoint.valid()? edge->_proposedPoint.get() : computeInterpolatedPoint(edge,0.5f);
             return (divideEdge(edge,pNew.get()));
         }
-        osg::notify(osg::INFO)<<"divideLongestEdge() return false due to _edgeSet.empty()"<<std::endl;
+        OSG_INFO<<"divideLongestEdge() return false due to _edgeSet.empty()"<<std::endl;
         return false;
     }
 
@@ -368,7 +368,7 @@ public:
         void addTriangle(Triangle* triangle)
         {
             _triangles.insert(triangle);
-            // if (_triangles.size()>2) osg::notify(osg::NOTICE)<<"Warning too many triangles ("<<_triangles.size()<<") sharing edge "<<std::endl;
+            // if (_triangles.size()>2) OSG_NOTICE<<"Warning too many triangles ("<<_triangles.size()<<") sharing edge "<<std::endl;
         }
         
         bool isBoundaryEdge() const
@@ -384,7 +384,7 @@ public:
 
         void updateMaxNormalDeviationOnEdgeCollapse()
         {
-            //osg::notify(osg::NOTICE)<<"updateMaxNormalDeviationOnEdgeCollapse()"<<std::endl;
+            //OSG_NOTICE<<"updateMaxNormalDeviationOnEdgeCollapse()"<<std::endl;
             _maximumDeviation = 0.0f;
             for(TriangleSet::iterator itr1=_p1->_triangles.begin();
                 itr1!=_p1->_triangles.end();
@@ -519,7 +519,7 @@ public:
 
     Triangle* addTriangle(unsigned int p1, unsigned int p2, unsigned int p3)
     {
-        //osg::notify(osg::NOTICE)<<"addTriangle("<<p1<<","<<p2<<","<<p3<<")"<<std::endl;
+        //OSG_NOTICE<<"addTriangle("<<p1<<","<<p2<<","<<p3<<")"<<std::endl;
 
         // detect if triangle is degenerate.
         if (p1==p2 || p2==p3 || p1==p3) return 0;
@@ -553,12 +553,12 @@ public:
     
     Triangle* addTriangle(Point* p1, Point* p2, Point* p3)
     {
-        // osg::notify(osg::NOTICE)<<"      addTriangle("<<p1<<","<<p2<<","<<p3<<")"<<std::endl;
+        // OSG_NOTICE<<"      addTriangle("<<p1<<","<<p2<<","<<p3<<")"<<std::endl;
 
         // detect if triangle is degenerate.
         if (p1==p2 || p2==p3 || p1==p3) 
         {
-            // osg::notify(osg::NOTICE)<<"    **** addTriangle failed - p1==p2 || p2==p3 || p1==p3"<<std::endl;
+            // OSG_NOTICE<<"    **** addTriangle failed - p1==p2 || p2==p3 || p1==p3"<<std::endl;
             return 0;
         }
         
@@ -630,52 +630,52 @@ public:
         unsigned int result = 0;
         if (!(triangle->_p1))
         {
-            osg::notify(osg::NOTICE)<<"testTriangle("<<triangle<<") _p1==NULL"<<std::endl;
+            OSG_NOTICE<<"testTriangle("<<triangle<<") _p1==NULL"<<std::endl;
             ++result;
         }
         else if (triangle->_p1->_triangles.count(triangle)==0) 
         {
-            osg::notify(osg::NOTICE)<<"testTriangle("<<triangle<<") _p1->_triangles does not contain triangle"<<std::endl;
+            OSG_NOTICE<<"testTriangle("<<triangle<<") _p1->_triangles does not contain triangle"<<std::endl;
             ++result;
         }
 
         if (!(triangle->_p2))
         {
-            osg::notify(osg::NOTICE)<<"testTriangle("<<triangle<<") _p2==NULL"<<std::endl;
+            OSG_NOTICE<<"testTriangle("<<triangle<<") _p2==NULL"<<std::endl;
             ++result;
         }
         else if (triangle->_p2->_triangles.count(triangle)==0) 
         {
-            osg::notify(osg::NOTICE)<<"testTriangle("<<triangle<<") _p2->_triangles does not contain triangle"<<std::endl;
+            OSG_NOTICE<<"testTriangle("<<triangle<<") _p2->_triangles does not contain triangle"<<std::endl;
             ++result;
         }
 
         if (!(triangle->_p3))
         {
-            osg::notify(osg::NOTICE)<<"testTriangle("<<triangle<<") _p3==NULL"<<std::endl;
+            OSG_NOTICE<<"testTriangle("<<triangle<<") _p3==NULL"<<std::endl;
             ++result;
         }
         else if (triangle->_p3->_triangles.count(triangle)==0) 
         {
-            osg::notify(osg::NOTICE)<<"testTriangle("<<triangle<<") _p3->_triangles does not contain triangle"<<std::endl;
+            OSG_NOTICE<<"testTriangle("<<triangle<<") _p3->_triangles does not contain triangle"<<std::endl;
             ++result;
         }
         
         if (testEdge(triangle->_e1.get()))
         {
             ++result;
-            osg::notify(osg::NOTICE)<<"testTriangle("<<triangle<<") _e1 test failed"<<std::endl;
+            OSG_NOTICE<<"testTriangle("<<triangle<<") _e1 test failed"<<std::endl;
         }
         
         if (testEdge(triangle->_e2.get()))
         {
             ++result;
-            osg::notify(osg::NOTICE)<<"testTriangle("<<triangle<<") _e2 test failed"<<std::endl;
+            OSG_NOTICE<<"testTriangle("<<triangle<<") _e2 test failed"<<std::endl;
         }
 
         if (testEdge(triangle->_e3.get()))
         {
-            osg::notify(osg::NOTICE)<<"testTriangle("<<triangle<<") _e3 test failed"<<std::endl;
+            OSG_NOTICE<<"testTriangle("<<triangle<<") _e3 test failed"<<std::endl;
             ++result;
         }
 
@@ -696,7 +696,7 @@ public:
 
     Edge* addEdge(Triangle* triangle, Point* p1, Point* p2)
     {
-        // osg::notify(osg::NOTICE)<<"        addEdge("<<p1<<","<<p2<<")"<<std::endl;
+        // OSG_NOTICE<<"        addEdge("<<p1<<","<<p2<<")"<<std::endl;
         osg::ref_ptr<Edge> edge = new Edge;
         if (dereference_check_less(p1, p2))
         {
@@ -714,12 +714,12 @@ public:
         EdgeSet::iterator itr = _edgeSet.find(edge);
         if (itr==_edgeSet.end())
         {
-            // osg::notify(osg::NOTICE)<<"          addEdge("<<edge.get()<<") edge->_p1="<<edge->_p1.get()<<" _p2="<<edge->_p2.get()<<std::endl;
+            // OSG_NOTICE<<"          addEdge("<<edge.get()<<") edge->_p1="<<edge->_p1.get()<<" _p2="<<edge->_p2.get()<<std::endl;
             _edgeSet.insert(edge);
         }
         else
         {
-            // osg::notify(osg::NOTICE)<<"          reuseEdge("<<edge.get()<<") edge->_p1="<<edge->_p1.get()<<" _p2="<<edge->_p2.get()<<std::endl;
+            // OSG_NOTICE<<"          reuseEdge("<<edge.get()<<") edge->_p1="<<edge->_p1.get()<<" _p2="<<edge->_p2.get()<<std::endl;
             edge = *itr;
         }
         
@@ -795,12 +795,12 @@ public:
 #ifdef ORIGIANAL_CODE
         if (edge->getMaxNormalDeviationOnEdgeCollapse()>1.0)
         {
-            osg::notify(osg::NOTICE)<<"collapseEdge("<<edge<<") refused due to edge->getMaxNormalDeviationOnEdgeCollapse() = "<<edge->getMaxNormalDeviationOnEdgeCollapse()<<std::endl;
+            OSG_NOTICE<<"collapseEdge("<<edge<<") refused due to edge->getMaxNormalDeviationOnEdgeCollapse() = "<<edge->getMaxNormalDeviationOnEdgeCollapse()<<std::endl;
            return false;
         }
         else
         {
-            //osg::notify(osg::NOTICE)<<"collapseEdge("<<edge<<") edge->getMaxNormalDeviationOnEdgeCollapse() = "<<edge->getMaxNormalDeviationOnEdgeCollapse()<<std::endl;
+            //OSG_NOTICE<<"collapseEdge("<<edge<<") edge->getMaxNormalDeviationOnEdgeCollapse() = "<<edge->getMaxNormalDeviationOnEdgeCollapse()<<std::endl;
         }
 #endif
 
@@ -881,7 +881,7 @@ public:
             removeTriangle(const_cast<Triangle*>(titr_p2->get()));
         }
 
-        //osg::notify(osg::NOTICE)<<"  pNew="<<pNew<<"\tedge_p1"<<edge_p1.get()<<"\tedge_p2"<<edge_p2.get()<<std::endl;
+        //OSG_NOTICE<<"  pNew="<<pNew<<"\tedge_p1"<<edge_p1.get()<<"\tedge_p2"<<edge_p2.get()<<std::endl;
         
         // we copy the edge's _triangles and interate the copy of the triangle set to avoid invalidating iterators.
         TriangleSet trianglesToRemove = edge->_triangles;
@@ -967,13 +967,13 @@ public:
 
         edges2UpdateErrorMetric.insert(newEdges.begin(), newEdges.end());
 
-        // osg::notify(osg::NOTICE)<<"Edges to recalibarate "<<edges2UpdateErrorMetric.size()<<std::endl;
+        // OSG_NOTICE<<"Edges to recalibarate "<<edges2UpdateErrorMetric.size()<<std::endl;
 
         for(LocalEdgeList::iterator itr=edges2UpdateErrorMetric.begin();
             itr!=edges2UpdateErrorMetric.end();
             ++itr)
         {
-            //osg::notify(osg::NOTICE)<<"updateErrorMetricForEdge("<<itr->get()<<")"<<std::endl;
+            //OSG_NOTICE<<"updateErrorMetricForEdge("<<itr->get()<<")"<<std::endl;
             updateErrorMetricForEdge(const_cast<Edge*>(itr->get()));
         }
 
@@ -983,13 +983,13 @@ public:
 
     bool divideEdge(Edge* edge, Point* pNew)
     {
-         // osg::notify(osg::NOTICE)<<"divideEdge("<<edge<<") before _edgeSet.size()="<<_edgeSet.size()<<" _triangleSet.size()="<<_triangleSet.size()<<std::endl;
+         // OSG_NOTICE<<"divideEdge("<<edge<<") before _edgeSet.size()="<<_edgeSet.size()<<" _triangleSet.size()="<<_triangleSet.size()<<std::endl;
 
         // first collect the triangles associaged with edges that need deleting
         osg::ref_ptr<Edge> keep_edge_locally_referenced_to_prevent_premature_deletion = edge;
         TriangleSet triangles = edge->_triangles;
 
-        // osg::notify(osg::NOTICE)<<"   numTriangles on edges "<<triangles.size()<<std::endl;
+        // OSG_NOTICE<<"   numTriangles on edges "<<triangles.size()<<std::endl;
 
         // unsigned int numTriangles1 = _triangleSet.size();
         // unsigned int numBoundaryEdges1 = computeNumBoundaryEdges();
@@ -1028,27 +1028,27 @@ public:
             switch(edgeToReplace)
             {
                 case(0): // error, shouldn't get here.
-                    osg::notify(osg::NOTICE)<<"Error EdgeCollapse::divideEdge(Edge*,Point*) passed invalid edge."<<std::endl;
+                    OSG_NOTICE<<"Error EdgeCollapse::divideEdge(Edge*,Point*) passed invalid edge."<<std::endl;
                     return false;
                 case(1): // p1, p2
-                    // osg::notify(osg::NOTICE)<<"   // p1, p2 "<<std::endl;
-                    // osg::notify(osg::NOTICE)<<"   newTri1 = addTriangle(tri->_p1.get(), pNew, tri->_p3.get());"<<std::endl;
+                    // OSG_NOTICE<<"   // p1, p2 "<<std::endl;
+                    // OSG_NOTICE<<"   newTri1 = addTriangle(tri->_p1.get(), pNew, tri->_p3.get());"<<std::endl;
                     newTri1 = addTriangle(tri->_p1.get(), pNew, tri->_p3.get());
-                    // osg::notify(osg::NOTICE)<<"   newTri2 = addTriangle(pNew, tri->_p2.get(), tri->_p3.get());"<<std::endl;
+                    // OSG_NOTICE<<"   newTri2 = addTriangle(pNew, tri->_p2.get(), tri->_p3.get());"<<std::endl;
                     newTri2 = addTriangle(pNew, tri->_p2.get(), tri->_p3.get());
                     break;
                 case(2): // p2, p3
-                    // osg::notify(osg::NOTICE)<<"   // p2, p3"<<std::endl;
-                    // osg::notify(osg::NOTICE)<<"   newTri1 = addTriangle(tri->_p1.get(), tri->_p2.get(), pNew);"<<std::endl;
+                    // OSG_NOTICE<<"   // p2, p3"<<std::endl;
+                    // OSG_NOTICE<<"   newTri1 = addTriangle(tri->_p1.get(), tri->_p2.get(), pNew);"<<std::endl;
                     newTri1 = addTriangle(tri->_p1.get(), tri->_p2.get(), pNew);
-                    //osg::notify(osg::NOTICE)<<"   newTri2 = addTriangle(tri->_p1.get(), pNew, tri->_p3.get());"<<std::endl;
+                    //OSG_NOTICE<<"   newTri2 = addTriangle(tri->_p1.get(), pNew, tri->_p3.get());"<<std::endl;
                     newTri2 = addTriangle(tri->_p1.get(), pNew, tri->_p3.get());
                     break;
                 case(3): // p3, p1
-                    // osg::notify(osg::NOTICE)<<"   // p3, p1"<<std::endl;
-                    // osg::notify(osg::NOTICE)<<"   newTri1 = addTriangle(tri->_p1.get(), tri->_p2.get(), pNew);"<<std::endl;
+                    // OSG_NOTICE<<"   // p3, p1"<<std::endl;
+                    // OSG_NOTICE<<"   newTri1 = addTriangle(tri->_p1.get(), tri->_p2.get(), pNew);"<<std::endl;
                     newTri1 = addTriangle(tri->_p1.get(), tri->_p2.get(), pNew);
-                    // osg::notify(osg::NOTICE)<<"   newTri2 = addTriangle(pNew, tri->_p2.get(), tri->_p3.get());"<<std::endl;
+                    // OSG_NOTICE<<"   newTri2 = addTriangle(pNew, tri->_p2.get(), tri->_p3.get());"<<std::endl;
                     newTri2 = addTriangle(pNew, tri->_p2.get(), tri->_p3.get());
                     break;
             }
@@ -1083,7 +1083,7 @@ public:
             itr!=edges2UpdateErrorMetric.end();
             ++itr)
         {
-            //osg::notify(osg::NOTICE)<<"updateErrorMetricForEdge("<<itr->get()<<")"<<std::endl;
+            //OSG_NOTICE<<"updateErrorMetricForEdge("<<itr->get()<<")"<<std::endl;
             if (itr->valid()) updateErrorMetricForEdge(const_cast<Edge*>(itr->get()));
         }
 
@@ -1091,10 +1091,10 @@ public:
         // unsigned int numEdges3 = _edgeSet.size();
         // unsigned int numTriangles3 = _triangleSet.size();
 
-        // osg::notify(osg::NOTICE)<<"   numTriangles1="<<numTriangles1<<"   numTriangles2="<<numTriangles2<<"   numTriangles3="<<numTriangles3<<std::endl;
-        // osg::notify(osg::NOTICE)<<"   numEdges1="<<numEdges1<<"   numEdges2="<<numEdges2<<"   numEdges3="<<numEdges3<<std::endl;
-        // osg::notify(osg::NOTICE)<<"   numBoundaryEdges1="<<numBoundaryEdges1<<"   numBoundaryEdges2="<<numBoundaryEdges2<<"   numBoundaryEdges3="<<numBoundaryEdges3<<std::endl;
-        // osg::notify(osg::NOTICE)<<"divideEdge("<<edge<<") after _edgeSet.size()="<<_edgeSet.size()<<" _triangleSet.size()="<<_triangleSet.size()<<std::endl;
+        // OSG_NOTICE<<"   numTriangles1="<<numTriangles1<<"   numTriangles2="<<numTriangles2<<"   numTriangles3="<<numTriangles3<<std::endl;
+        // OSG_NOTICE<<"   numEdges1="<<numEdges1<<"   numEdges2="<<numEdges2<<"   numEdges3="<<numEdges3<<std::endl;
+        // OSG_NOTICE<<"   numBoundaryEdges1="<<numBoundaryEdges1<<"   numBoundaryEdges2="<<numBoundaryEdges2<<"   numBoundaryEdges3="<<numBoundaryEdges3<<std::endl;
+        // OSG_NOTICE<<"divideEdge("<<edge<<") after _edgeSet.size()="<<_edgeSet.size()<<" _triangleSet.size()="<<_triangleSet.size()<<std::endl;
 
         return true;
     }
@@ -1109,17 +1109,17 @@ public:
             Triangle* triangle = const_cast<Triangle*>(teitr->get());
             if (!(triangle->_e1 == edge || triangle->_e2 == edge || triangle->_e3 == edge))
             {
-                osg::notify(osg::NOTICE)<<"testEdge("<<edge<<"). triangle != point back to this edge"<<std::endl;
-                osg::notify(osg::NOTICE)<<"                     triangle->_e1=="<<triangle->_e1.get()<<std::endl;
-                osg::notify(osg::NOTICE)<<"                     triangle->_e2=="<<triangle->_e2.get()<<std::endl;
-                osg::notify(osg::NOTICE)<<"                     triangle->_e3=="<<triangle->_e3.get()<<std::endl;
+                OSG_NOTICE<<"testEdge("<<edge<<"). triangle != point back to this edge"<<std::endl;
+                OSG_NOTICE<<"                     triangle->_e1=="<<triangle->_e1.get()<<std::endl;
+                OSG_NOTICE<<"                     triangle->_e2=="<<triangle->_e2.get()<<std::endl;
+                OSG_NOTICE<<"                     triangle->_e3=="<<triangle->_e3.get()<<std::endl;
                 ++numErrors;
             }
         }
         
         if (edge->_triangles.empty())
         {
-            osg::notify(osg::NOTICE)<<"testEdge("<<edge<<")._triangles is empty"<<std::endl;
+            OSG_NOTICE<<"testEdge("<<edge<<")._triangles is empty"<<std::endl;
             ++numErrors;
         }
         return numErrors;
@@ -1161,13 +1161,13 @@ public:
         PointSet::iterator itr = _pointSet.find(point);
         if (itr==_pointSet.end())
         {
-            //osg::notify(osg::NOTICE)<<"  addPoint("<<point.get()<<")"<<std::endl;
+            //OSG_NOTICE<<"  addPoint("<<point.get()<<")"<<std::endl;
             _pointSet.insert(point);
         }
         else
         {
             point = const_cast<Point*>(itr->get());
-            //osg::notify(osg::NOTICE)<<"  reusePoint("<<point.get()<<")"<<std::endl;
+            //OSG_NOTICE<<"  reusePoint("<<point.get()<<")"<<std::endl;
         }
 
         point->_triangles.insert(triangle);
@@ -1202,10 +1202,10 @@ public:
             Triangle* triangle = const_cast<Triangle*>(itr->get());
             if (!(triangle->_p1 == point || triangle->_p2 == point || triangle->_p3 == point))
             {
-                osg::notify(osg::NOTICE)<<"testPoint("<<point<<") error, triangle "<<triangle<<" does not point back to this point"<<std::endl;
-                osg::notify(osg::NOTICE)<<"             triangle->_p1 "<<triangle->_p1.get()<<std::endl;
-                osg::notify(osg::NOTICE)<<"             triangle->_p2 "<<triangle->_p2.get()<<std::endl;
-                osg::notify(osg::NOTICE)<<"             triangle->_p3 "<<triangle->_p3.get()<<std::endl;
+                OSG_NOTICE<<"testPoint("<<point<<") error, triangle "<<triangle<<" does not point back to this point"<<std::endl;
+                OSG_NOTICE<<"             triangle->_p1 "<<triangle->_p1.get()<<std::endl;
+                OSG_NOTICE<<"             triangle->_p2 "<<triangle->_p2.get()<<std::endl;
+                OSG_NOTICE<<"             triangle->_p3 "<<triangle->_p3.get()<<std::endl;
                 ++numErrors;
             }
         }
@@ -1422,7 +1422,7 @@ void EdgeCollapse::setGeometry(osg::Geometry* geometry, const Simplifier::IndexL
     if (_geometry->suitableForOptimization())
     {
         // removing coord indices
-        osg::notify(osg::INFO)<<"EdgeCollapse::setGeometry(..): Removing attribute indices"<<std::endl;
+        OSG_INFO<<"EdgeCollapse::setGeometry(..): Removing attribute indices"<<std::endl;
         _geometry->copyToAndOptimize(*_geometry);
     }
     
@@ -1430,7 +1430,7 @@ void EdgeCollapse::setGeometry(osg::Geometry* geometry, const Simplifier::IndexL
     if (_geometry->containsSharedArrays())
     {
         // removing coord indices
-        osg::notify(osg::INFO)<<"EdgeCollapse::setGeometry(..): Duplicate shared arrays"<<std::endl;
+        OSG_INFO<<"EdgeCollapse::setGeometry(..): Duplicate shared arrays"<<std::endl;
         _geometry->duplicateSharedArrays();
     }
 
@@ -1749,7 +1749,7 @@ void Simplifier::simplify(osg::Geometry& geometry)
 
 void Simplifier::simplify(osg::Geometry& geometry, const IndexList& protectedPoints)
 {
-    osg::notify(osg::INFO)<<"++++++++++++++simplifier************"<<std::endl;
+    OSG_INFO<<"++++++++++++++simplifier************"<<std::endl;
 
     EdgeCollapse ec;
     ec.setComputeErrorMetricUsingLength(getSampleRatio()>=1.0);
@@ -1764,10 +1764,10 @@ void Simplifier::simplify(osg::Geometry& geometry, const IndexList& protectedPoi
                continueSimplification((*ec._edgeSet.begin())->getErrorMetric() , numOriginalPrimitives, ec._triangleSet.size()) && 
                ec.collapseMinimumErrorEdge())
         {
-           //osg::notify(osg::INFO)<<"   Collapsed edge ec._triangleSet.size()="<<ec._triangleSet.size()<<" error="<<(*ec._edgeSet.begin())->getErrorMetric()<<" vs "<<getMaximumError()<<std::endl;
+           //OSG_INFO<<"   Collapsed edge ec._triangleSet.size()="<<ec._triangleSet.size()<<" error="<<(*ec._edgeSet.begin())->getErrorMetric()<<" vs "<<getMaximumError()<<std::endl;
         }
 
-        osg::notify(osg::INFO)<<"******* AFTER EDGE COLLAPSE *********"<<ec._triangleSet.size()<<std::endl;
+        OSG_INFO<<"******* AFTER EDGE COLLAPSE *********"<<ec._triangleSet.size()<<std::endl;
     }
     else
     {
@@ -1778,24 +1778,24 @@ void Simplifier::simplify(osg::Geometry& geometry, const IndexList& protectedPoi
 //               ec._triangleSet.size() < targetNumTriangles  &&
                ec.divideLongestEdge())
         {
-           //osg::notify(osg::INFO)<<"   Edge divided ec._triangleSet.size()="<<ec._triangleSet.size()<<" error="<<(*ec._edgeSet.rbegin())->getErrorMetric()<<" vs "<<getMaximumError()<<std::endl;
+           //OSG_INFO<<"   Edge divided ec._triangleSet.size()="<<ec._triangleSet.size()<<" error="<<(*ec._edgeSet.rbegin())->getErrorMetric()<<" vs "<<getMaximumError()<<std::endl;
         }
-        osg::notify(osg::INFO)<<"******* AFTER EDGE DIVIDE *********"<<ec._triangleSet.size()<<std::endl;
+        OSG_INFO<<"******* AFTER EDGE DIVIDE *********"<<ec._triangleSet.size()<<std::endl;
     }
 
-    osg::notify(osg::INFO)<<"Number of triangle errors after edge collapse= "<<ec.testAllTriangles()<<std::endl;
-    osg::notify(osg::INFO)<<"Number of edge errors before edge collapse= "<<ec.testAllEdges()<<std::endl;
-    osg::notify(osg::INFO)<<"Number of point errors after edge collapse= "<<ec.testAllPoints()<<std::endl;
-    osg::notify(osg::INFO)<<"Number of triangles= "<<ec._triangleSet.size()<<std::endl;
-    osg::notify(osg::INFO)<<"Number of points= "<<ec._pointSet.size()<<std::endl;
-    osg::notify(osg::INFO)<<"Number of edges= "<<ec._edgeSet.size()<<std::endl;
-    osg::notify(osg::INFO)<<"Number of boundary edges= "<<ec.computeNumBoundaryEdges()<<std::endl;
+    OSG_INFO<<"Number of triangle errors after edge collapse= "<<ec.testAllTriangles()<<std::endl;
+    OSG_INFO<<"Number of edge errors before edge collapse= "<<ec.testAllEdges()<<std::endl;
+    OSG_INFO<<"Number of point errors after edge collapse= "<<ec.testAllPoints()<<std::endl;
+    OSG_INFO<<"Number of triangles= "<<ec._triangleSet.size()<<std::endl;
+    OSG_INFO<<"Number of points= "<<ec._pointSet.size()<<std::endl;
+    OSG_INFO<<"Number of edges= "<<ec._edgeSet.size()<<std::endl;
+    OSG_INFO<<"Number of boundary edges= "<<ec.computeNumBoundaryEdges()<<std::endl;
 
     if (!ec._edgeSet.empty())
     {
-        osg::notify(osg::INFO)<<std::endl<<"Simplifier, in = "<<numOriginalPrimitives<<"\tout = "<<ec._triangleSet.size()<<"\terror="<<(*ec._edgeSet.begin())->getErrorMetric()<<"\tvs "<<getMaximumError()<<std::endl<<std::endl;
-        osg::notify(osg::INFO)<<           "        !ec._edgeSet.empty()  = "<<!ec._edgeSet.empty()<<std::endl;
-        osg::notify(osg::INFO)<<           "        continueSimplification(,,)  = "<<continueSimplification((*ec._edgeSet.begin())->getErrorMetric() , numOriginalPrimitives, ec._triangleSet.size())<<std::endl;
+        OSG_INFO<<std::endl<<"Simplifier, in = "<<numOriginalPrimitives<<"\tout = "<<ec._triangleSet.size()<<"\terror="<<(*ec._edgeSet.begin())->getErrorMetric()<<"\tvs "<<getMaximumError()<<std::endl<<std::endl;
+        OSG_INFO<<           "        !ec._edgeSet.empty()  = "<<!ec._edgeSet.empty()<<std::endl;
+        OSG_INFO<<           "        continueSimplification(,,)  = "<<continueSimplification((*ec._edgeSet.begin())->getErrorMetric() , numOriginalPrimitives, ec._triangleSet.size())<<std::endl;
     }
     
     ec.copyBackToGeometry();

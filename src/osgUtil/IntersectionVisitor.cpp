@@ -118,7 +118,7 @@ void IntersectorGroup::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable
         }
     }
     
-    // osg::notify(osg::NOTICE)<<"Number testing "<<numTested<<std::endl;
+    // OSG_NOTICE<<"Number testing "<<numTested<<std::endl;
 
 }
 
@@ -203,11 +203,11 @@ void IntersectionVisitor::reset()
 
 void IntersectionVisitor::apply(osg::Node& node)
 {
-    // osg::notify(osg::NOTICE)<<"apply(Node&)"<<std::endl;
+    // OSG_NOTICE<<"apply(Node&)"<<std::endl;
 
     if (!enter(node)) return;
 
-    // osg::notify(osg::NOTICE)<<"inside apply(Node&)"<<std::endl;
+    // OSG_NOTICE<<"inside apply(Node&)"<<std::endl;
 
     traverse(node);
 
@@ -225,11 +225,11 @@ void IntersectionVisitor::apply(osg::Group& group)
 
 void IntersectionVisitor::apply(osg::Geode& geode)
 {
-    // osg::notify(osg::NOTICE)<<"apply(Geode&)"<<std::endl;
+    // OSG_NOTICE<<"apply(Geode&)"<<std::endl;
 
     if (!enter(geode)) return;
 
-    // osg::notify(osg::NOTICE)<<"inside apply(Geode&)"<<std::endl;
+    // OSG_NOTICE<<"inside apply(Geode&)"<<std::endl;
 
     for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
     {
@@ -431,12 +431,12 @@ void IntersectionVisitor::apply(osg::Projection& projection)
 
 void IntersectionVisitor::apply(osg::Camera& camera)
 {
-    // osg::notify(osg::NOTICE)<<"apply(Camera&)"<<std::endl;
+    // OSG_NOTICE<<"apply(Camera&)"<<std::endl;
 
     // note, commenting out right now because default Camera setup is with the culling active.  Should this be changed?
     // if (!enter(camera)) return;
     
-    // osg::notify(osg::NOTICE)<<"inside apply(Camera&)"<<std::endl;
+    // OSG_NOTICE<<"inside apply(Camera&)"<<std::endl;
 
     osg::RefMatrix* projection = NULL;
     osg::RefMatrix* view = NULL;

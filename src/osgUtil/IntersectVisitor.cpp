@@ -213,7 +213,7 @@ float IntersectVisitor::getDistanceToEyePoint(const Vec3& pos, bool /*withLODSca
 {
     if (_lodSelectionMode==USE_SEGMENT_START_POINT_AS_EYE_POINT_FOR_LOD_LEVEL_SELECTION)
     {
-        // osg::notify(osg::NOTICE)<<"IntersectVisitor::getDistanceToEyePoint)"<<(pos-getEyePoint()).length()<<std::endl;
+        // OSG_NOTICE<<"IntersectVisitor::getDistanceToEyePoint)"<<(pos-getEyePoint()).length()<<std::endl;
         // LODScale is not available to IntersectVisitor, so we ignore the withLODScale argument
         //if (withLODScale) return (pos-getEyePoint()).length()*getLODScale();
         //else return (pos-getEyePoint()).length();
@@ -247,7 +247,7 @@ osg::Vec3 IntersectVisitor::getEyePoint() const
         if (cis->_view_inverse.valid()) eyePoint = eyePoint * (*(cis->_view_inverse));
         if (cis->_model_inverse.valid()) eyePoint = eyePoint * (*(cis->_model_inverse));
         
-        //osg::notify(osg::NOTICE)<<"IntersectVisitor::getEyePoint()"<<eyePoint<<std::endl;
+        //OSG_NOTICE<<"IntersectVisitor::getEyePoint()"<<eyePoint<<std::endl;
 
         return eyePoint;
     }
@@ -263,8 +263,8 @@ void IntersectVisitor::addLineSegment(LineSegment* seg)
     
     if (!seg->valid())
     {
-        notify(WARN)<<"Warning: invalid line segment passed to IntersectVisitor::addLineSegment(..)"<<std::endl;
-        notify(WARN)<<"         "<<seg->start()<<" "<<seg->end()<<" segment ignored.."<< std::endl;
+        OSG_WARN<<"Warning: invalid line segment passed to IntersectVisitor::addLineSegment(..)"<<std::endl;
+        OSG_WARN<<"         "<<seg->start()<<" "<<seg->end()<<" segment ignored.."<< std::endl;
         return;
     }
     
@@ -272,8 +272,8 @@ void IntersectVisitor::addLineSegment(LineSegment* seg)
     
     if (cis->_segList.size()>=32)
     {
-        notify(WARN)<<"Warning: excessive number of line segmenets passed to IntersectVisitor::addLineSegment(..), maximum permitted is 32 line segments."<<std::endl;
-        notify(WARN)<<"         "<<seg->start()<<" "<<seg->end()<<" segment ignored.."<< std::endl;
+        OSG_WARN<<"Warning: excessive number of line segmenets passed to IntersectVisitor::addLineSegment(..), maximum permitted is 32 line segments."<<std::endl;
+        OSG_WARN<<"         "<<seg->start()<<" "<<seg->end()<<" segment ignored.."<< std::endl;
         return;
     }
 
@@ -547,9 +547,9 @@ struct TriangleIntersect
         Vec3 in = v1*r1+v2*r2+v3*r3;
         if (!in.valid())
         {
-            osg::notify(WARN)<<"Warning:: Picked up error in TriangleIntersect"<<std::endl;
-            osg::notify(WARN)<<"   ("<<v1<<",\t"<<v2<<",\t"<<v3<<")"<<std::endl;
-            osg::notify(WARN)<<"   ("<<r1<<",\t"<<r2<<",\t"<<r3<<")"<<std::endl;
+            OSG_WARN<<"Warning:: Picked up error in TriangleIntersect"<<std::endl;
+            OSG_WARN<<"   ("<<v1<<",\t"<<v2<<",\t"<<v3<<")"<<std::endl;
+            OSG_WARN<<"   ("<<r1<<",\t"<<r2<<",\t"<<r3<<")"<<std::endl;
             return;
         }
 
@@ -769,7 +769,7 @@ PickVisitor::PickVisitor(const osg::Viewport* viewport, const osg::Matrixd& proj
         }
         else
         {
-            osg::notify(osg::NOTICE)<<"Warning: PickVisitor not set up correctly, picking errors likely"<<std::endl;
+            OSG_NOTICE<<"Warning: PickVisitor not set up correctly, picking errors likely"<<std::endl;
         }
         
 

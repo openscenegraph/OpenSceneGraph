@@ -225,7 +225,7 @@ void TriStripVisitor::stripify(Geometry& geom)
     if (geom.suitableForOptimization())
     {
         // removing coord indices
-        osg::notify(osg::INFO)<<"TriStripVisitor::stripify(Geometry&): Removing attribute indices"<<std::endl;
+        OSG_INFO<<"TriStripVisitor::stripify(Geometry&): Removing attribute indices"<<std::endl;
         geom.copyToAndOptimize(geom);
     }
 
@@ -381,13 +381,13 @@ void TriStripVisitor::stripify(Geometry& geom)
     float minimum_ratio_of_indices_to_unique_vertices = 1;
     float ratio_of_indices_to_unique_vertices = ((float)taf._in_indices.size()/(float)numUnique);
 
-    osg::notify(osg::INFO)<<"TriStripVisitor::stripify(Geometry&): Number of indices"<<taf._in_indices.size()<<" numUnique"<< numUnique << std::endl;
-    osg::notify(osg::INFO)<<"TriStripVisitor::stripify(Geometry&):     ratio indices/numUnique"<< ratio_of_indices_to_unique_vertices << std::endl;
+    OSG_INFO<<"TriStripVisitor::stripify(Geometry&): Number of indices"<<taf._in_indices.size()<<" numUnique"<< numUnique << std::endl;
+    OSG_INFO<<"TriStripVisitor::stripify(Geometry&):     ratio indices/numUnique"<< ratio_of_indices_to_unique_vertices << std::endl;
     
     // only tri strip if there is point in doing so.
     if (!taf._in_indices.empty() && ratio_of_indices_to_unique_vertices>=minimum_ratio_of_indices_to_unique_vertices)
     {
-        osg::notify(osg::INFO)<<"TriStripVisitor::stripify(Geometry&):     doing tri strip"<< std::endl;
+        OSG_INFO<<"TriStripVisitor::stripify(Geometry&):     doing tri strip"<< std::endl;
 
         unsigned int in_numVertices = 0;
         for(triangle_stripper::indices::iterator itr=taf._in_indices.begin();
@@ -412,14 +412,14 @@ void TriStripVisitor::stripify(Geometry& geom)
         stripifier.Strip(&outPrimitives);
         if (outPrimitives.empty())
         {
-            osg::notify(osg::WARN)<<"Error: TriStripVisitor::stripify(Geometry& geom) failed."<<std::endl;
+            OSG_WARN<<"Error: TriStripVisitor::stripify(Geometry& geom) failed."<<std::endl;
             return;
         }
 
         triangle_stripper::primitive_vector::iterator pitr;
         if (_generateFourPointPrimitivesQuads)
         {
-            osg::notify(osg::INFO)<<"Collecting all quads"<<std::endl;
+            OSG_INFO<<"Collecting all quads"<<std::endl;
 
             typedef triangle_stripper::primitive_vector::iterator prim_iterator;
             typedef std::multimap<unsigned int,prim_iterator> QuadMap;
@@ -560,7 +560,7 @@ void TriStripVisitor::stripify(Geometry& geom)
     }
     else
     {
-        osg::notify(osg::INFO)<<"TriStripVisitor::stripify(Geometry&):     not doing tri strip *****************"<< std::endl;
+        OSG_INFO<<"TriStripVisitor::stripify(Geometry&):     not doing tri strip *****************"<< std::endl;
     }
 
 }

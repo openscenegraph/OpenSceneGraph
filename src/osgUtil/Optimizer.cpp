@@ -153,7 +153,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     {
         node->accept(stats);
         stats.totalUpStats();
-        osg::notify(osg::NOTICE)<<std::endl<<"Stats before:"<<std::endl;
+        OSG_NOTICE<<std::endl<<"Stats before:"<<std::endl;
         stats.print(osg::notify(osg::NOTICE));
     }
 
@@ -165,7 +165,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & TESSELLATE_GEOMETRY)
     {
-        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing TESSELLATE_GEOMETRY"<<std::endl;
+        OSG_INFO<<"Optimizer::optimize() doing TESSELLATE_GEOMETRY"<<std::endl;
 
         TessellateVisitor tsv;
         node->accept(tsv);        
@@ -173,7 +173,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     
     if (options & REMOVE_LOADED_PROXY_NODES)
     {
-        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing REMOVE_LOADED_PROXY_NODES"<<std::endl;
+        OSG_INFO<<"Optimizer::optimize() doing REMOVE_LOADED_PROXY_NODES"<<std::endl;
 
         RemoveLoadedProxyNodesVisitor rlpnv(this);
         node->accept(rlpnv);
@@ -183,7 +183,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & COMBINE_ADJACENT_LODS)
     {
-        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing COMBINE_ADJACENT_LODS"<<std::endl;
+        OSG_INFO<<"Optimizer::optimize() doing COMBINE_ADJACENT_LODS"<<std::endl;
 
         CombineLODsVisitor clv(this);
         node->accept(clv);        
@@ -192,7 +192,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     
     if (options & OPTIMIZE_TEXTURE_SETTINGS)
     {
-        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing OPTIMIZE_TEXTURE_SETTINGS"<<std::endl;
+        OSG_INFO<<"Optimizer::optimize() doing OPTIMIZE_TEXTURE_SETTINGS"<<std::endl;
 
         TextureVisitor tv(true,true, // unref image 
                           false,false, // client storage
@@ -203,7 +203,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & SHARE_DUPLICATE_STATE)
     {
-        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing SHARE_DUPLICATE_STATE"<<std::endl;
+        OSG_INFO<<"Optimizer::optimize() doing SHARE_DUPLICATE_STATE"<<std::endl;
 
         bool combineDynamicState = false;
         bool combineStaticState = true;
@@ -216,7 +216,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     
     if (options & TEXTURE_ATLAS_BUILDER)
     {
-        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing TEXTURE_ATLAS_BUILDER"<<std::endl;
+        OSG_INFO<<"Optimizer::optimize() doing TEXTURE_ATLAS_BUILDER"<<std::endl;
         
         // traverse the scene collecting textures into texture atlas.
         TextureAtlasVisitor tav(this);
@@ -235,7 +235,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     
     if (options & COPY_SHARED_NODES)
     {
-        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing COPY_SHARED_NODES"<<std::endl;
+        OSG_INFO<<"Optimizer::optimize() doing COPY_SHARED_NODES"<<std::endl;
 
         CopySharedSubgraphsVisitor cssv(this);
         node->accept(cssv);
@@ -244,13 +244,13 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
     
     if (options & FLATTEN_STATIC_TRANSFORMS)
     {
-        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing FLATTEN_STATIC_TRANSFORMS"<<std::endl;
+        OSG_INFO<<"Optimizer::optimize() doing FLATTEN_STATIC_TRANSFORMS"<<std::endl;
 
         int i=0;
         bool result = false;
         do
         {
-            OSG_NOTIFY(osg::DEBUG_INFO) << "** RemoveStaticTransformsVisitor *** Pass "<<i<<std::endl;
+            OSG_DEBUG << "** RemoveStaticTransformsVisitor *** Pass "<<i<<std::endl;
             FlattenStaticTransformsVisitor fstv(this);
             node->accept(fstv);
             result = fstv.removeTransforms(node);
@@ -265,7 +265,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS)
     {
-        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS"<<std::endl;
+        OSG_INFO<<"Optimizer::optimize() doing FLATTEN_STATIC_TRANSFORMS_DUPLICATING_SHARED_SUBGRAPHS"<<std::endl;
 
         // no combine any adjacent static transforms.
         FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor fstdssv(this);
@@ -275,7 +275,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & MERGE_GEODES)
     {
-        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing MERGE_GEODES"<<std::endl;
+        OSG_INFO<<"Optimizer::optimize() doing MERGE_GEODES"<<std::endl;
 
         osg::Timer_t startTick = osg::Timer::instance()->tick();
 
@@ -284,12 +284,12 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
         osg::Timer_t endTick = osg::Timer::instance()->tick();
         
-        OSG_NOTIFY(osg::INFO)<<"MERGE_GEODES took "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
+        OSG_INFO<<"MERGE_GEODES took "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
     }
 
     if (options & CHECK_GEOMETRY)
     {
-        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing CHECK_GEOMETRY"<<std::endl;
+        OSG_INFO<<"Optimizer::optimize() doing CHECK_GEOMETRY"<<std::endl;
 
         CheckGeometryVisitor mgv(this);
         node->accept(mgv);
@@ -297,7 +297,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & MAKE_FAST_GEOMETRY)
     {
-        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing MAKE_FAST_GEOMETRY"<<std::endl;
+        OSG_INFO<<"Optimizer::optimize() doing MAKE_FAST_GEOMETRY"<<std::endl;
 
         MakeFastGeometryVisitor mgv(this);
         node->accept(mgv);
@@ -305,7 +305,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & MERGE_GEOMETRY)
     {
-        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing MERGE_GEOMETRY"<<std::endl;
+        OSG_INFO<<"Optimizer::optimize() doing MERGE_GEOMETRY"<<std::endl;
 
         osg::Timer_t startTick = osg::Timer::instance()->tick();
 
@@ -315,12 +315,12 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
         osg::Timer_t endTick = osg::Timer::instance()->tick();
 
-        OSG_NOTIFY(osg::INFO)<<"MERGE_GEOMETRY took "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
+        OSG_INFO<<"MERGE_GEOMETRY took "<<osg::Timer::instance()->delta_s(startTick,endTick)<<std::endl;
     }
     
     if (options & TRISTRIP_GEOMETRY)
     {
-        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing TRISTRIP_GEOMETRY"<<std::endl;
+        OSG_INFO<<"Optimizer::optimize() doing TRISTRIP_GEOMETRY"<<std::endl;
 
         TriStripVisitor tsv(this);
         node->accept(tsv);
@@ -329,7 +329,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & REMOVE_REDUNDANT_NODES)
     {
-        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing REMOVE_REDUNDANT_NODES"<<std::endl;
+        OSG_INFO<<"Optimizer::optimize() doing REMOVE_REDUNDANT_NODES"<<std::endl;
 
         RemoveEmptyNodesVisitor renv(this);
         node->accept(renv);
@@ -350,7 +350,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & SPATIALIZE_GROUPS)
     {
-        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing SPATIALIZE_GROUPS"<<std::endl;
+        OSG_INFO<<"Optimizer::optimize() doing SPATIALIZE_GROUPS"<<std::endl;
 
         SpatializeGroupsVisitor sv(this);
         node->accept(sv);
@@ -359,7 +359,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & INDEX_MESH)
     {
-        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing INDEX_MESH"<<std::endl;
+        OSG_INFO<<"Optimizer::optimize() doing INDEX_MESH"<<std::endl;
         IndexMeshVisitor imv(this);
         node->accept(imv);
         imv.makeMesh();
@@ -367,7 +367,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & VERTEX_POSTTRANSFORM)
     {
-        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing VERTEX_POSTTRANSFORM"<<std::endl;
+        OSG_INFO<<"Optimizer::optimize() doing VERTEX_POSTTRANSFORM"<<std::endl;
         VertexCacheVisitor vcv;
         node->accept(vcv);
         vcv.optimizeVertices();
@@ -375,7 +375,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
 
     if (options & VERTEX_PRETRANSFORM)
     {
-        OSG_NOTIFY(osg::INFO)<<"Optimizer::optimize() doing VERTEX_PRETRANSFORM"<<std::endl;
+        OSG_INFO<<"Optimizer::optimize() doing VERTEX_PRETRANSFORM"<<std::endl;
         VertexAccessOrderVisitor vaov;
         node->accept(vaov);
         vaov.optimizeOrder();
@@ -386,7 +386,7 @@ void Optimizer::optimize(osg::Node* node, unsigned int options)
         stats.reset();
         node->accept(stats);
         stats.totalUpStats();
-        osg::notify(osg::NOTICE)<<std::endl<<"Stats after:"<<std::endl;
+        OSG_NOTICE<<std::endl<<"Stats after:"<<std::endl;
         stats.print(osg::notify(osg::NOTICE));
     }
 }
@@ -492,7 +492,7 @@ void Optimizer::StateVisitor::apply(osg::Geode& geode)
 
 void Optimizer::StateVisitor::optimize()
 {
-    OSG_NOTIFY(osg::INFO) << "Num of StateSet="<<_statesets.size()<< std::endl;
+    OSG_INFO << "Num of StateSet="<<_statesets.size()<< std::endl;
 
     {
         // create map from state attributes to stateset which contain them.
@@ -573,15 +573,15 @@ void Optimizer::StateVisitor::optimize()
             // other.
             std::sort(attributeList.begin(),attributeList.end(),LessDerefFunctor<osg::StateAttribute>());
 
-            OSG_NOTIFY(osg::INFO) << "state attribute list"<< std::endl;
+            OSG_INFO << "state attribute list"<< std::endl;
             for(AttributeList::iterator aaitr = attributeList.begin();
                 aaitr!=attributeList.end();
                 ++aaitr)
             {
-                OSG_NOTIFY(osg::INFO) << "    "<<*aaitr << "  "<<(*aaitr)->className()<< std::endl;
+                OSG_INFO << "    "<<*aaitr << "  "<<(*aaitr)->className()<< std::endl;
             }
 
-            OSG_NOTIFY(osg::INFO) << "searching for duplicate attributes"<< std::endl;
+            OSG_INFO << "searching for duplicate attributes"<< std::endl;
             // find the duplicates.
             AttributeList::iterator first_unique = attributeList.begin();
             AttributeList::iterator current = first_unique;
@@ -590,13 +590,13 @@ void Optimizer::StateVisitor::optimize()
             {
                 if (**current==**first_unique)
                 {
-                    OSG_NOTIFY(osg::INFO) << "    found duplicate "<<(*current)->className()<<"  first="<<*first_unique<<"  current="<<*current<< std::endl;
+                    OSG_INFO << "    found duplicate "<<(*current)->className()<<"  first="<<*first_unique<<"  current="<<*current<< std::endl;
                     StateSetList& statesetlist = attributeToStateSetMap[*current];
                     for(StateSetList::iterator sitr=statesetlist.begin();
                         sitr!=statesetlist.end();
                         ++sitr)
                     {
-                        OSG_NOTIFY(osg::INFO) << "       replace duplicate "<<*current<<" with "<<*first_unique<< std::endl;
+                        OSG_INFO << "       replace duplicate "<<*current<<" with "<<*first_unique<< std::endl;
                         osg::StateSet* stateset = sitr->first;
                         unsigned int unit = sitr->second;
                         if (unit==NON_TEXTURE_ATTRIBUTE) stateset->setAttribute(*first_unique);
@@ -625,15 +625,15 @@ void Optimizer::StateVisitor::optimize()
             // other.
             std::sort(uniformList.begin(),uniformList.end(),LessDerefFunctor<osg::Uniform>());
 
-            OSG_NOTIFY(osg::INFO) << "state uniform list"<< std::endl;
+            OSG_INFO << "state uniform list"<< std::endl;
             for(UniformList::iterator uuitr = uniformList.begin();
                 uuitr!=uniformList.end();
                 ++uuitr)
             {
-                OSG_NOTIFY(osg::INFO) << "    "<<*uuitr << "  "<<(*uuitr)->getName()<< std::endl;
+                OSG_INFO << "    "<<*uuitr << "  "<<(*uuitr)->getName()<< std::endl;
             }
 
-            OSG_NOTIFY(osg::INFO) << "searching for duplicate uniforms"<< std::endl;
+            OSG_INFO << "searching for duplicate uniforms"<< std::endl;
             // find the duplicates.
             UniformList::iterator first_unique_uniform = uniformList.begin();
             UniformList::iterator current_uniform = first_unique_uniform; 
@@ -642,13 +642,13 @@ void Optimizer::StateVisitor::optimize()
             {
                 if ((**current_uniform)==(**first_unique_uniform))
                 {
-                    OSG_NOTIFY(osg::INFO) << "    found duplicate uniform "<<(*current_uniform)->getName()<<"  first_unique_uniform="<<*first_unique_uniform<<"  current_uniform="<<*current_uniform<< std::endl;
+                    OSG_INFO << "    found duplicate uniform "<<(*current_uniform)->getName()<<"  first_unique_uniform="<<*first_unique_uniform<<"  current_uniform="<<*current_uniform<< std::endl;
                     StateSetSet& statesetset = uniformToStateSetMap[*current_uniform];
                     for(StateSetSet::iterator sitr=statesetset.begin();
                         sitr!=statesetset.end();
                         ++sitr)
                     {
-                        OSG_NOTIFY(osg::INFO) << "       replace duplicate "<<*current_uniform<<" with "<<*first_unique_uniform<< std::endl;
+                        OSG_INFO << "       replace duplicate "<<*current_uniform<<" with "<<*first_unique_uniform<< std::endl;
                         osg::StateSet* stateset = *sitr;
                         stateset->addUniform(*first_unique_uniform);
                     }
@@ -678,7 +678,7 @@ void Optimizer::StateVisitor::optimize()
         // other.
         std::sort(statesetSortList.begin(),statesetSortList.end(),LessDerefFunctor<osg::StateSet>());
 
-        OSG_NOTIFY(osg::INFO) << "searching for duplicate attributes"<< std::endl;
+        OSG_INFO << "searching for duplicate attributes"<< std::endl;
         // find the duplicates.
         StateSetSortList::iterator first_unique = statesetSortList.begin();
         StateSetSortList::iterator current = first_unique; ++current;
@@ -686,13 +686,13 @@ void Optimizer::StateVisitor::optimize()
         {
             if (**current==**first_unique)
             {
-                OSG_NOTIFY(osg::INFO) << "    found duplicate "<<(*current)->className()<<"  first="<<*first_unique<<"  current="<<*current<< std::endl;
+                OSG_INFO << "    found duplicate "<<(*current)->className()<<"  first="<<*first_unique<<"  current="<<*current<< std::endl;
                 ObjectSet& objSet = _statesets[*current];
                 for(ObjectSet::iterator sitr=objSet.begin();
                     sitr!=objSet.end();
                     ++sitr)
                 {
-                    OSG_NOTIFY(osg::INFO) << "       replace duplicate "<<*current<<" with "<<*first_unique<< std::endl;
+                    OSG_INFO << "       replace duplicate "<<*current<<" with "<<*first_unique<< std::endl;
                     osg::Object* obj = *sitr;
                     osg::Drawable* drawable = dynamic_cast<osg::Drawable*>(obj);
                     if (drawable)
@@ -1137,9 +1137,9 @@ bool CollectLowestTransformsVisitor::removeTransforms(osg::Node* nodeWeCannotRem
                     }
                     else
                     {
-                        OSG_NOTIFY(osg::WARN)<<"Warning:: during Optimize::CollectLowestTransformsVisitor::removeTransforms(Node*)"<<std::endl;
-                        OSG_NOTIFY(osg::WARN)<<"          unhandled of setting of indentity matrix on "<< titr->first->className()<<std::endl;
-                        OSG_NOTIFY(osg::WARN)<<"          model will appear in the incorrect position."<<std::endl;
+                        OSG_WARN<<"Warning:: during Optimize::CollectLowestTransformsVisitor::removeTransforms(Node*)"<<std::endl;
+                        OSG_WARN<<"          unhandled of setting of indentity matrix on "<< titr->first->className()<<std::endl;
+                        OSG_WARN<<"          model will appear in the incorrect position."<<std::endl;
                     }
                 }
                 
@@ -1476,7 +1476,7 @@ void Optimizer::RemoveRedundantNodesVisitor::removeRedundantNodes()
         }
         else
         {
-            OSG_NOTIFY(osg::WARN)<<"Optimizer::RemoveRedundantNodesVisitor::removeRedundantNodes() - failed dynamic_cast"<<std::endl;
+            OSG_WARN<<"Optimizer::RemoveRedundantNodesVisitor::removeRedundantNodes() - failed dynamic_cast"<<std::endl;
         }                                
     }
     _redundantNodeList.clear();
@@ -1557,7 +1557,7 @@ void Optimizer::RemoveLoadedProxyNodesVisitor::removeRedundantNodes()
         }
         else
         {
-            OSG_NOTIFY(osg::WARN)<<"Optimizer::RemoveLoadedProxyNodesVisitor::removeRedundantNodes() - failed dynamic_cast"<<std::endl;
+            OSG_WARN<<"Optimizer::RemoveLoadedProxyNodesVisitor::removeRedundantNodes() - failed dynamic_cast"<<std::endl;
         }                                
     }
     _redundantNodeList.clear();
@@ -1858,7 +1858,7 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
     if (geode.getNumDrawables()>=2)
     {
     
-        // OSG_NOTIFY(osg::NOTICE)<<"Before "<<geode.getNumDrawables()<<std::endl;
+        // OSG_NOTICE<<"Before "<<geode.getNumDrawables()<<std::endl;
     
         typedef std::vector<osg::Geometry*>                         DuplicateList;
         typedef std::map<osg::Geometry*,DuplicateList,LessGeometry> GeometryDuplicateMap;
@@ -2027,14 +2027,14 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
                         geode.removeDrawable(rhs);
 
                         static int co = 0;
-                        OSG_NOTIFY(osg::INFO)<<"merged and removed Geometry "<<++co<<std::endl;
+                        OSG_INFO<<"merged and removed Geometry "<<++co<<std::endl;
                     }
                 }
             }
         }
 #endif
 
-        // OSG_NOTIFY(osg::NOTICE)<<"After "<<geode.getNumDrawables()<<std::endl;
+        // OSG_NOTICE<<"After "<<geode.getNumDrawables()<<std::endl;
 
     }
 
@@ -2314,7 +2314,7 @@ class MergeArrayVisitor : public osg::ArrayVisitor
             }
         }
             
-        virtual void apply(osg::Array&) { OSG_NOTIFY(osg::WARN) << "Warning: Optimizer's MergeArrayVisitor cannot merge Array type." << std::endl; }
+        virtual void apply(osg::Array&) { OSG_WARN << "Warning: Optimizer's MergeArrayVisitor cannot merge Array type." << std::endl; }
 
         virtual void apply(osg::ByteArray& rhs) { if (_offset) _mergeAndOffset(rhs); else  _merge(rhs); }
         virtual void apply(osg::ShortArray& rhs) { if (_offset) _mergeAndOffset(rhs); else  _merge(rhs); }
@@ -2675,11 +2675,11 @@ bool Optimizer::SpatializeGroupsVisitor::divide(osg::Group* group, unsigned int 
     bool yAxis = (bb.yMax()-bb.yMin())>divide_distance;
     bool zAxis = (bb.zMax()-bb.zMin())>divide_distance;
 
-    OSG_NOTIFY(osg::INFO)<<"Dividing "<<group->className()<<"  num children = "<<group->getNumChildren()<<"  xAxis="<<xAxis<<"  yAxis="<<yAxis<<"   zAxis="<<zAxis<<std::endl;
+    OSG_INFO<<"Dividing "<<group->className()<<"  num children = "<<group->getNumChildren()<<"  xAxis="<<xAxis<<"  yAxis="<<yAxis<<"   zAxis="<<zAxis<<std::endl;
     
     if (!xAxis && !yAxis && !zAxis)
     {
-        OSG_NOTIFY(osg::INFO)<<"  No axis to divide, stopping division."<<std::endl;
+        OSG_INFO<<"  No axis to divide, stopping division."<<std::endl;
         return false;
     }
     
@@ -2843,18 +2843,18 @@ bool Optimizer::SpatializeGroupsVisitor::divide(osg::Geode* geode, unsigned int 
     bool yAxis = (bb.yMax()-bb.yMin())>divide_distance;
     bool zAxis = (bb.zMax()-bb.zMin())>divide_distance;
 
-    OSG_NOTIFY(osg::INFO)<<"INFO "<<geode->className()<<"  num drawables = "<<geode->getNumDrawables()<<"  xAxis="<<xAxis<<"  yAxis="<<yAxis<<"   zAxis="<<zAxis<<std::endl;
+    OSG_INFO<<"INFO "<<geode->className()<<"  num drawables = "<<geode->getNumDrawables()<<"  xAxis="<<xAxis<<"  yAxis="<<yAxis<<"   zAxis="<<zAxis<<std::endl;
     
     if (!xAxis && !yAxis && !zAxis)
     {
-        OSG_NOTIFY(osg::INFO)<<"  No axis to divide, stopping division."<<std::endl;
+        OSG_INFO<<"  No axis to divide, stopping division."<<std::endl;
         return false;
     }
     
     osg::Node::ParentList parents = geode->getParents();
     if (parents.empty()) 
     {
-        OSG_NOTIFY(osg::INFO)<<"  Cannot perform spatialize on root Geode, add a Group above it to allow subdivision."<<std::endl;
+        OSG_INFO<<"  Cannot perform spatialize on root Geode, add a Group above it to allow subdivision."<<std::endl;
         return false;
     }
 
@@ -2899,12 +2899,12 @@ void Optimizer::CopySharedSubgraphsVisitor::apply(osg::Node& node)
 
 void Optimizer::CopySharedSubgraphsVisitor::copySharedNodes()
 {
-    OSG_NOTIFY(osg::INFO)<<"Shared node "<<_sharedNodeList.size()<<std::endl;
+    OSG_INFO<<"Shared node "<<_sharedNodeList.size()<<std::endl;
     for(SharedNodeList::iterator itr=_sharedNodeList.begin();
         itr!=_sharedNodeList.end();
         ++itr)
     {
-        OSG_NOTIFY(osg::INFO)<<"   No parents "<<(*itr)->getNumParents()<<std::endl;
+        OSG_INFO<<"   No parents "<<(*itr)->getNumParents()<<std::endl;
         osg::Node* node = *itr;
         for(unsigned int i=node->getNumParents()-1;i>0;--i)
         {
@@ -3071,7 +3071,7 @@ bool Optimizer::MergeGeodesVisitor::mergeGeodes(osg::Group& group)
     // if no geodes then just return.
     if (geodeDuplicateMap.empty()) return false;
     
-    OSG_NOTIFY(osg::INFO)<<"mergeGeodes in group '"<<group.getName()<<"' "<<geodeDuplicateMap.size()<<std::endl;
+    OSG_INFO<<"mergeGeodes in group '"<<group.getName()<<"' "<<geodeDuplicateMap.size()<<std::endl;
     
     // merge
     for(GeodeDuplicateMap::iterator itr=geodeDuplicateMap.begin();
@@ -3278,7 +3278,7 @@ void Optimizer::TextureAtlasBuilder::buildAtlas()
                 aitr != _atlasList.end() && !addedSourceToAtlas;
                 ++aitr)
             {
-                OSG_NOTIFY(osg::INFO)<<"checking source "<<source->_image->getFileName()<<" to see it it'll fit in atlas "<<aitr->get()<<std::endl;
+                OSG_INFO<<"checking source "<<source->_image->getFileName()<<" to see it it'll fit in atlas "<<aitr->get()<<std::endl;
                 if ((*aitr)->doesSourceFit(source))
                 {
                     addedSourceToAtlas = true;
@@ -3286,13 +3286,13 @@ void Optimizer::TextureAtlasBuilder::buildAtlas()
                 }
                 else
                 {
-                    OSG_NOTIFY(osg::INFO)<<"source "<<source->_image->getFileName()<<" does not fit in atlas "<<aitr->get()<<std::endl;
+                    OSG_INFO<<"source "<<source->_image->getFileName()<<" does not fit in atlas "<<aitr->get()<<std::endl;
                 }
             }
 
             if (!addedSourceToAtlas)
             {
-                OSG_NOTIFY(osg::INFO)<<"creating new Atlas for "<<source->_image->getFileName()<<std::endl;
+                OSG_INFO<<"creating new Atlas for "<<source->_image->getFileName()<<std::endl;
 
                 osg::ref_ptr<Atlas> atlas = new Atlas(_maximumAtlasWidth,_maximumAtlasHeight,_margin);
                 _atlasList.push_back(atlas.get());
@@ -3611,7 +3611,7 @@ bool Optimizer::TextureAtlasBuilder::Atlas::doesSourceFit(Source* source)
     if ((_x + sourceImage->s() + 2*_margin) <= _maximumAtlasWidth)
     {
         // yes it fits :-)
-        OSG_NOTIFY(osg::INFO)<<"Fits in current row"<<std::endl;
+        OSG_INFO<<"Fits in current row"<<std::endl;
         return true;
     }
 
@@ -3619,7 +3619,7 @@ bool Optimizer::TextureAtlasBuilder::Atlas::doesSourceFit(Source* source)
     if ((_height + sourceImage->t() + 2*_margin) <= _maximumAtlasHeight)
     {
         // yes it fits :-)
-        OSG_NOTIFY(osg::INFO)<<"Fits in next row"<<std::endl;
+        OSG_INFO<<"Fits in next row"<<std::endl;
         return true;
     }
     
@@ -3632,7 +3632,7 @@ bool Optimizer::TextureAtlasBuilder::Atlas::addSource(Source* source)
     // double check source is compatible
     if (!doesSourceFit(source))
     {
-        OSG_NOTIFY(osg::INFO)<<"source "<<source->_image->getFileName()<<" does not fit in atlas "<<this<<std::endl;
+        OSG_INFO<<"source "<<source->_image->getFileName()<<" does not fit in atlas "<<this<<std::endl;
         return false;
     }
     
@@ -3676,7 +3676,7 @@ bool Optimizer::TextureAtlasBuilder::Atlas::addSource(Source* source)
         // yes it fits, so add the source to the atlas's list of sources it contains
         _sourceList.push_back(source);
 
-        OSG_NOTIFY(osg::INFO)<<"current row insertion, source "<<source->_image->getFileName()<<" "<<_x<<","<<_y<<" fits in row of atlas "<<this<<std::endl;
+        OSG_INFO<<"current row insertion, source "<<source->_image->getFileName()<<" "<<_x<<","<<_y<<" fits in row of atlas "<<this<<std::endl;
 
         // set up the source so it knows where it is in the atlas
         source->_x = _x + _margin;
@@ -3704,7 +3704,7 @@ bool Optimizer::TextureAtlasBuilder::Atlas::addSource(Source* source)
         // yes it fits, so add the source to the atlas' list of sources it contains
         _sourceList.push_back(source);
 
-        OSG_NOTIFY(osg::INFO)<<"next row insertion, source "<<source->_image->getFileName()<<" "<<_x<<","<<_y<<" fits in row of atlas "<<this<<std::endl;
+        OSG_INFO<<"next row insertion, source "<<source->_image->getFileName()<<" "<<_x<<","<<_y<<" fits in row of atlas "<<this<<std::endl;
 
         // set up the source so it knows where it is in the atlas
         source->_x = _x + _margin;
@@ -3718,12 +3718,12 @@ bool Optimizer::TextureAtlasBuilder::Atlas::addSource(Source* source)
 
         _height = _y + sourceImage->t() + 2*_margin;
 
-        OSG_NOTIFY(osg::INFO)<<"source "<<source->_image->getFileName()<<" "<<_x<<","<<_y<<" fits in row of atlas "<<this<<std::endl;
+        OSG_INFO<<"source "<<source->_image->getFileName()<<" "<<_x<<","<<_y<<" fits in row of atlas "<<this<<std::endl;
 
         return true;
     }
 
-    OSG_NOTIFY(osg::INFO)<<"source "<<source->_image->getFileName()<<" does not fit in atlas "<<this<<std::endl;
+    OSG_INFO<<"source "<<source->_image->getFileName()<<" does not fit in atlas "<<this<<std::endl;
 
     // shouldn't get here, unless doesSourceFit isn't working...
     return false;
@@ -3737,7 +3737,7 @@ void Optimizer::TextureAtlasBuilder::Atlas::clampToNearestPowerOfTwoSize()
     unsigned int h = 1;
     while (h<_height) h *= 2;
     
-    OSG_NOTIFY(osg::INFO)<<"Clamping "<<_width<<", "<<_height<<" to "<<w<<","<<h<<std::endl;
+    OSG_INFO<<"Clamping "<<_width<<", "<<_height<<" to "<<w<<","<<h<<std::endl;
     
     _width = w;
     _height = h;
@@ -3746,7 +3746,7 @@ void Optimizer::TextureAtlasBuilder::Atlas::clampToNearestPowerOfTwoSize()
 
 void Optimizer::TextureAtlasBuilder::Atlas::copySources()
 {
-    OSG_NOTIFY(osg::INFO)<<"Allocated to "<<_width<<","<<_height<<std::endl;
+    OSG_INFO<<"Allocated to "<<_width<<","<<_height<<std::endl;
     _image->allocateImage(_width,_height,1,
                           _image->getPixelFormat(),_image->getDataType(),
                           _image->getPacking());
@@ -3758,7 +3758,7 @@ void Optimizer::TextureAtlasBuilder::Atlas::copySources()
         for(unsigned int i=0; i<size; ++i) *(str++) = 0;
     }        
 
-    OSG_NOTIFY(osg::INFO)<<"Atlas::copySources() "<<std::endl;
+    OSG_INFO<<"Atlas::copySources() "<<std::endl;
     for(SourceList::iterator itr = _sourceList.begin();
         itr !=_sourceList.end();
         ++itr)
@@ -3768,8 +3768,8 @@ void Optimizer::TextureAtlasBuilder::Atlas::copySources()
 
         if (atlas)
         {
-            OSG_NOTIFY(osg::INFO)<<"Copying image "<<source->_image->getFileName()<<" to "<<source->_x<<" ,"<<source->_y<<std::endl;
-            OSG_NOTIFY(osg::INFO)<<"        image size "<<source->_image->s()<<","<<source->_image->t()<<std::endl;
+            OSG_INFO<<"Copying image "<<source->_image->getFileName()<<" to "<<source->_x<<" ,"<<source->_y<<std::endl;
+            OSG_INFO<<"        image size "<<source->_image->s()<<","<<source->_image->t()<<std::endl;
 
             const osg::Image* sourceImage = source->_image.get();
             osg::Image* atlasImage = atlas->_image.get();
@@ -4130,7 +4130,7 @@ void Optimizer::TextureAtlasVisitor::optimize()
         if (texturesThatRepeatAndAreOutOfRange.count(texture)==0)
         {
             // safe to convert into CLAMP wrap mode.
-            OSG_NOTIFY(osg::INFO)<<"Changing wrap mode to CLAMP"<<std::endl;
+            OSG_INFO<<"Changing wrap mode to CLAMP"<<std::endl;
             texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture::CLAMP);
             texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture::CLAMP);
         }
@@ -4239,7 +4239,7 @@ void Optimizer::TextureAtlasVisitor::optimize()
                 {
                     if (s_repeat || t_repeat)
                     {
-                        OSG_NOTIFY(osg::NOTICE)<<"Warning!!! shouldn't get here"<<std::endl;
+                        OSG_NOTICE<<"Warning!!! shouldn't get here"<<std::endl;
                     }
 
                     stateset->setTextureAttribute(unit, newTexture);
@@ -4270,7 +4270,7 @@ void Optimizer::TextureAtlasVisitor::optimize()
 
                     if (canTexMatBeFlattenedToAllDrawables)
                     {
-                        // OSG_NOTIFY(osg::NOTICE)<<"All drawables can be flattened "<<drawables.size()<<std::endl;
+                        // OSG_NOTICE<<"All drawables can be flattened "<<drawables.size()<<std::endl;
                         for(Drawables::iterator ditr = drawables.begin();
                             ditr != drawables.end();
                             ++ditr)
@@ -4290,13 +4290,13 @@ void Optimizer::TextureAtlasVisitor::optimize()
                             }
                             else
                             {
-                                OSG_NOTIFY(osg::NOTICE)<<"Error, Optimizer::TextureAtlasVisitor::optimize() shouldn't ever get here..."<<std::endl;
+                                OSG_NOTICE<<"Error, Optimizer::TextureAtlasVisitor::optimize() shouldn't ever get here..."<<std::endl;
                             }                        
                         }
                     }
                     else
                     {
-                        // OSG_NOTIFY(osg::NOTICE)<<"Applying TexMat "<<drawables.size()<<std::endl;
+                        // OSG_NOTICE<<"Applying TexMat "<<drawables.size()<<std::endl;
                         stateset->setTextureAttribute(unit, new osg::TexMat(matrix));
                     }
                 }
@@ -4376,7 +4376,7 @@ void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::apply(
         }
         else
         {
-            OSG_NOTIFY(osg::NOTICE) << "No parent for this Group" << std::endl;
+            OSG_NOTICE << "No parent for this Group" << std::endl;
         }
     }
     else
@@ -4417,7 +4417,7 @@ void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::apply(
         }
         else
         {
-            OSG_NOTIFY(osg::NOTICE) << "No parent for this Group" << std::endl;
+            OSG_NOTICE << "No parent for this Group" << std::endl;
         }
     }
     else
@@ -4455,7 +4455,7 @@ void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::apply(
             traverse(*(new_lod.get()));
         }
         else
-            OSG_NOTIFY(osg::NOTICE) << "No parent for this LOD" << std::endl;
+            OSG_NOTICE << "No parent for this LOD" << std::endl;
     }
     else
     {
@@ -4493,7 +4493,7 @@ void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::apply(
                 if(parent_group)
                     parent_group->replaceChild(&geode, new_geode.get());
                 else
-                    OSG_NOTIFY(osg::NOTICE) << "No parent for this Geode" << std::endl;
+                    OSG_NOTICE << "No parent for this Geode" << std::endl;
 
                 transformGeode(*(new_geode.get()));
             }
@@ -4527,7 +4527,7 @@ void Optimizer::FlattenStaticTransformsDuplicatingSharedSubgraphsVisitor::apply(
                 if(parent_group)
                     parent_group->replaceChild(&billboard, new_billboard.get());
                 else
-                    OSG_NOTIFY(osg::NOTICE) << "No parent for this Billboard" << std::endl;
+                    OSG_NOTICE << "No parent for this Billboard" << std::endl;
 
                 transformBillboard(*(new_billboard.get()));
             }

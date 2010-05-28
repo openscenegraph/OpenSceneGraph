@@ -157,7 +157,7 @@ osg::UIntArray * EdgeCollector::Edgeloop::toIndexArray() const
     
 EdgeCollector::Triangle* EdgeCollector::addTriangle(unsigned int p1, unsigned int p2, unsigned int p3)
 {
-    //osg::notify(osg::NOTICE)<<"addTriangle("<<p1<<","<<p2<<","<<p3<<")"<<std::endl;
+    //OSG_NOTICE<<"addTriangle("<<p1<<","<<p2<<","<<p3<<")"<<std::endl;
 
     // detect if triangle is degenerate.
     if (p1==p2 || p2==p3 || p1==p3) return 0;
@@ -180,7 +180,7 @@ EdgeCollector::Triangle* EdgeCollector::addTriangle(unsigned int p1, unsigned in
 
 EdgeCollector::Triangle* EdgeCollector::addTriangle(Point* p1, Point* p2, Point* p3)
 {
-    // osg::notify(osg::NOTICE)<<"      addTriangle("<<p1<<","<<p2<<","<<p3<<")"<<std::endl;
+    // OSG_NOTICE<<"      addTriangle("<<p1<<","<<p2<<","<<p3<<")"<<std::endl;
 
     // detect if triangle is degenerate.
     if (p1==p2 || p2==p3 || p1==p3) return 0;
@@ -204,19 +204,19 @@ EdgeCollector::Triangle* EdgeCollector::addTriangle(Point* p1, Point* p2, Point*
    
 EdgeCollector::Edge* EdgeCollector::addEdge(Triangle* triangle, Point* p1, Point* p2)
 {
-        // osg::notify(osg::NOTICE)<<"        addEdge("<<p1<<","<<p2<<")"<<std::endl;
+        // OSG_NOTICE<<"        addEdge("<<p1<<","<<p2<<")"<<std::endl;
     osg::ref_ptr<Edge> edge = new Edge;
     edge->setOrderedPoints(p1,p2);
     
     EdgeSet::iterator itr = _edgeSet.find(edge);
     if (itr==_edgeSet.end())
     {
-        // osg::notify(osg::NOTICE)<<"          addEdge("<<edge.get()<<") edge->_p1="<<edge->_p1.get()<<" _p2="<<edge->_p2.get()<<std::endl;
+        // OSG_NOTICE<<"          addEdge("<<edge.get()<<") edge->_p1="<<edge->_p1.get()<<" _p2="<<edge->_p2.get()<<std::endl;
         _edgeSet.insert(edge);
     }
     else
     {
-        // osg::notify(osg::NOTICE)<<"          reuseEdge("<<edge.get()<<") edge->_p1="<<edge->_p1.get()<<" _p2="<<edge->_p2.get()<<std::endl;
+        // OSG_NOTICE<<"          reuseEdge("<<edge.get()<<") edge->_p1="<<edge->_p1.get()<<" _p2="<<edge->_p2.get()<<std::endl;
         edge = *itr;
     }
     
@@ -234,13 +234,13 @@ EdgeCollector::Point* EdgeCollector::addPoint(Triangle* triangle, Point* point)
     PointSet::iterator itr = _pointSet.find(point);
     if (itr==_pointSet.end())
     {
-        //osg::notify(osg::NOTICE)<<"  addPoint("<<point.get()<<")"<<std::endl;
+        //OSG_NOTICE<<"  addPoint("<<point.get()<<")"<<std::endl;
         _pointSet.insert(point);
     }
     else
     {
         point = const_cast<Point*>(itr->get());
-        //osg::notify(osg::NOTICE)<<"  reusePoint("<<point.get()<<")"<<std::endl;
+        //OSG_NOTICE<<"  reusePoint("<<point.get()<<")"<<std::endl;
     }
 
     point->_triangles.insert(triangle);
@@ -288,7 +288,7 @@ bool EdgeCollector::extractBoundaryEdgeloop(EdgeList & el, Edgeloop & edgeloop)
         
         if (!found)
         {
-            osg::notify(osg::WARN) << "extractBoundaryEdgeloop : unable to close edge loop" << std::endl;
+            OSG_WARN << "extractBoundaryEdgeloop : unable to close edge loop" << std::endl;
             return false;
         }
         else
@@ -452,7 +452,7 @@ void EdgeCollector::setGeometry(osg::Geometry* geometry)
     if (_geometry->suitableForOptimization())
     {
         // removing coord indices
-        osg::notify(osg::INFO)<<"EdgeCollector::setGeometry(..): Removing attribute indices"<<std::endl;
+        OSG_INFO<<"EdgeCollector::setGeometry(..): Removing attribute indices"<<std::endl;
         _geometry->copyToAndOptimize(*_geometry);
     }
 
@@ -482,7 +482,7 @@ void EdgeCollector::getEdgeloopIndexList(IndexArrayList & ial)
     EdgeloopList edgeloopList;
     if (extractBoundaryEdgeloopList(edgeList, edgeloopList) == false)
     {
-        osg::notify(osg::WARN) << "EdgeCollector: fail to collect Edgeloop.\n\n\n" << std::endl;
+        OSG_WARN << "EdgeCollector: fail to collect Edgeloop.\n\n\n" << std::endl;
         return;
     }
     

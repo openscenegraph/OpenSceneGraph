@@ -183,7 +183,9 @@ void ReversePrimitiveFunctor::drawElements(GLenum mode,GLsizei count,const GLuin
 void ReversePrimitiveFunctor::begin(GLenum mode)
 {
     if (_running)
-        osg::notify(osg::WARN) << "ReversePrimitiveFunctor : call \"begin\" without call \"end\"." << std::endl;
+    {
+        OSG_WARN << "ReversePrimitiveFunctor : call \"begin\" without call \"end\"." << std::endl;
+    }
     else
     {
         _running = true;
@@ -195,7 +197,9 @@ void ReversePrimitiveFunctor::begin(GLenum mode)
 void ReversePrimitiveFunctor::vertex(unsigned int pos)
 {
     if (_running == false)
-        osg::notify(osg::WARN) << "ReversePrimitiveFunctor : call \"vertex(" << pos << ")\" without call \"begin\"." << std::endl;
+    {
+        OSG_WARN << "ReversePrimitiveFunctor : call \"vertex(" << pos << ")\" without call \"begin\"." << std::endl;
+    }
     else
     {
         static_cast<osg::DrawElementsUInt*>(_reversedPrimitiveSet.get())->push_back(pos);
@@ -205,7 +209,9 @@ void ReversePrimitiveFunctor::vertex(unsigned int pos)
 void ReversePrimitiveFunctor::end()
 { 
     if (_running == false)
-        osg::notify(osg::WARN) << "ReversePrimitiveFunctor : call \"end\" without call \"begin\"." << std::endl;
+    {
+        OSG_WARN << "ReversePrimitiveFunctor : call \"end\" without call \"begin\"." << std::endl;
+    }
     else
     {
         _running = false;

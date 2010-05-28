@@ -270,8 +270,8 @@ osg::StateSet *ShaderGenCache::createStateSet(int stateMask) const
     std::string vertstr = vert.str();
     std::string fragstr = frag.str();
 
-    osg::notify(osg::DEBUG_INFO) << "ShaderGenCache Vertex shader:\n" << vertstr << std::endl;
-    osg::notify(osg::DEBUG_INFO) << "ShaderGenCache Fragment shader:\n" << fragstr << std::endl;
+    OSG_DEBUG << "ShaderGenCache Vertex shader:\n" << vertstr << std::endl;
+    OSG_DEBUG << "ShaderGenCache Fragment shader:\n" << fragstr << std::endl;
 
     program->addShader(new osg::Shader(osg::Shader::VERTEX, vertstr));
     program->addShader(new osg::Shader(osg::Shader::FRAGMENT, fragstr));

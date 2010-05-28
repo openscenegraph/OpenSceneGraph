@@ -72,7 +72,7 @@ RenderBin* RenderBin::createRenderBin(const std::string& binName)
         if (prototype) return dynamic_cast<RenderBin*>(prototype->clone(osg::CopyOp::DEEP_COPY_ALL));
     }
     
-    osg::notify(osg::WARN) <<"Warning: RenderBin \""<<binName<<"\" implementation not found, using default RenderBin as a fallback."<<std::endl;
+    OSG_WARN <<"Warning: RenderBin \""<<binName<<"\" implementation not found, using default RenderBin as a fallback."<<std::endl;
     return new RenderBin;
 }
 
@@ -96,13 +96,13 @@ void RenderBin::removeRenderBinPrototype(RenderBin* proto)
         {
             if (itr->second == proto)
             {
-                // osg::notify(osg::NOTICE)<<"Found protype, now erasing "<<itr->first<<std::endl;
+                // OSG_NOTICE<<"Found protype, now erasing "<<itr->first<<std::endl;
                 list->erase(itr);
                 return;
             }
         }
     }
-    // osg::notify(osg::NOTICE)<<"Not found protype"<<std::endl;
+    // OSG_NOTICE<<"Not found protype"<<std::endl;
 }
 
 static bool s_defaultBinSortModeInitialized = false;
@@ -257,7 +257,7 @@ struct SortByStateFunctor
 
 void RenderBin::sortByState()
 {
-    //osg::notify(osg::NOTICE)<<"sortByState()"<<std::endl;
+    //OSG_NOTICE<<"sortByState()"<<std::endl;
     // actually we'll do nothing right now, as fine grained sorting by state
     // appears to cost more to do than it saves in draw.  The contents of
     // the StateGraph leaves is already coarse grained sorted, this
@@ -377,7 +377,7 @@ void RenderBin::copyLeavesFromStateGraphListToRenderLeafList()
         }
     }
     
-    if (detectedNaN) osg::notify(osg::NOTICE)<<"Warning: RenderBin::copyLeavesFromStateGraphListToRenderLeafList() detected NaN depth values, database may be corrupted."<<std::endl;
+    if (detectedNaN) OSG_NOTICE<<"Warning: RenderBin::copyLeavesFromStateGraphListToRenderLeafList() detected NaN depth values, database may be corrupted."<<std::endl;
     
     // empty the render graph list to prevent it being drawn along side the render leaf list (see drawImplementation.)
     _stateGraphList.clear();
@@ -426,7 +426,7 @@ void RenderBin::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& prev
 {
     osg::State& state = *renderInfo.getState();
 
-    // osg::notify(osg::NOTICE)<<"begin RenderBin::drawImplementation "<<className()<<" sortMode "<<getSortMode()<<std::endl;
+    // OSG_NOTICE<<"begin RenderBin::drawImplementation "<<className()<<" sortMode "<<getSortMode()<<std::endl;
 
 
     unsigned int numToPop = (previous ? StateGraph::numToPop(previous->_parent) : 0);
@@ -514,7 +514,7 @@ void RenderBin::drawImplementation(osg::RenderInfo& renderInfo,RenderLeaf*& prev
     }
 
 
-    // osg::notify(osg::NOTICE)<<"end RenderBin::drawImplementation "<<className()<<std::endl;
+    // OSG_NOTICE<<"end RenderBin::drawImplementation "<<className()<<std::endl;
 }
 
 // stats

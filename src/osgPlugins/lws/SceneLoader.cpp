@@ -140,7 +140,7 @@ osg::Group *SceneLoader::load(const std::string &filename, const osgDB::ReaderWr
                 osg::Vec3 pos(options_.csf->fix_point(j->second.position));
                 //const osg::Vec3 &ypr = j->second.ypr;
                 osg::AnimationPath::ControlPoint cp(pos, osg::Quat(osg::PI_2, osg::Vec3(1, 0, 0)) * rotate_ypr(j->second.ypr), j->second.scale);
-                osg::notify(osg::NOTICE)<<"scale = "<<j->second.scale<<std::endl;
+                OSG_NOTICE<<"scale = "<<j->second.scale<<std::endl;
                 ap->insert(j->first, cp);
             }
             camera_animations_.push_back(ap.get());
@@ -192,7 +192,7 @@ osg::Group *SceneLoader::load(const std::string &filename, const osgDB::ReaderWr
                 }
                 parent->addChild(pat.get());
             } else {
-                osg::notify(osg::WARN) << "Warning: lwosg::SceneLoader: invalid parent" << std::endl;
+                OSG_WARN << "Warning: lwosg::SceneLoader: invalid parent" << std::endl;
             }
         }
     }
@@ -237,7 +237,7 @@ bool SceneLoader::parse_block(const std::string &name, const std::string &data)
 
             if (i == objects_.end()) {
 
-                osg::notify(osg::NOTICE) << "Loading object \"" << filename << "\"" << std::endl;
+                OSG_NOTICE << "Loading object \"" << filename << "\"" << std::endl;
 
                 objnode = dynamic_cast<osg::Group *>(osgDB::readNodeFile(filename));
                 if (!objnode.valid()) return false;
@@ -249,7 +249,7 @@ bool SceneLoader::parse_block(const std::string &name, const std::string &data)
             }
 
             if (layer > objnode->getNumChildren()) {
-                osg::notify(osg::WARN) << "Warning: lwosg::SceneLoader: layer " << layer << " does not exist in object " << filename << std::endl;
+                OSG_WARN << "Warning: lwosg::SceneLoader: layer " << layer << " does not exist in object " << filename << std::endl;
                 return 0;
             }
 

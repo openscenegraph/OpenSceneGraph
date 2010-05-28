@@ -165,7 +165,7 @@ class ReaderWriterIVE : public ReaderWriter
             if (fout.fail()) return WriteResult::ERROR_IN_WRITING_FILE;
             if (out.getException()) 
             {
-                osg::notify(osg::WARN)<<"Error writing IVE image: "<< out.getException()->getError() << std::endl;
+                OSG_WARN<<"Error writing IVE image: "<< out.getException()->getError() << std::endl;
                 return WriteResult::FILE_NOT_HANDLED;
             }
             return WriteResult::FILE_SAVED;
@@ -180,7 +180,7 @@ class ReaderWriterIVE : public ReaderWriter
             if ( fout.fail() ) return WriteResult::ERROR_IN_WRITING_FILE;
             if (out.getException()) 
             {
-                osg::notify(osg::WARN)<<"Error writing IVE image: "<< out.getException()->getError() << std::endl;
+                OSG_WARN<<"Error writing IVE image: "<< out.getException()->getError() << std::endl;
                 return WriteResult::FILE_NOT_HANDLED;
             }
 

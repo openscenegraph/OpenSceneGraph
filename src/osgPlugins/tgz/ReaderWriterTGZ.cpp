@@ -37,15 +37,15 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
              std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            osg::notify(osg::NOTICE)<<"file="<<file<<std::endl;
+            OSG_NOTICE<<"file="<<file<<std::endl;
 
             std::string fileName = osgDB::findDataFile( file, options );
 
-            osg::notify(osg::NOTICE)<<"fileName="<<fileName<<std::endl;
+            OSG_NOTICE<<"fileName="<<fileName<<std::endl;
 
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            osg::notify(osg::INFO)<<   "ReaderWriterTGZ::readNode( "<<fileName.c_str()<<" )\n";
+            OSG_INFO<<   "ReaderWriterTGZ::readNode( "<<fileName.c_str()<<" )\n";
 
             char dirname[128];
             char command[1024];
@@ -83,7 +83,7 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
                 fileName.c_str());
         #endif
  
-            osg::notify(osg::NOTICE)<<"Running command '"<<command<<"'"<<std::endl;
+            OSG_NOTICE<<"Running command '"<<command<<"'"<<std::endl;
 
             int result = system( command );
             if (result!=0) return ReadResult::ERROR_IN_READING_FILE;
@@ -91,13 +91,13 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
 
             osg::ref_ptr<osg::Group> grp = new osg::Group;
  
-            osg::notify(osg::NOTICE)<<"Done"<<std::endl;
+            OSG_NOTICE<<"Done"<<std::endl;
  
             osg::ref_ptr<osgDB::ReaderWriter::Options> local_options = options ? static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new osgDB::ReaderWriter::Options;
             local_options->getDatabasePathList().push_front(dirname);
 
-            osg::notify(osg::NOTICE)<<"local_options->getDatabasePathList().="<<local_options->getDatabasePathList().front()<<std::endl;
-            osg::notify(osg::NOTICE)<<"dirname="<<dirname<<std::endl;
+            OSG_NOTICE<<"local_options->getDatabasePathList().="<<local_options->getDatabasePathList().front()<<std::endl;
+            OSG_NOTICE<<"dirname="<<dirname<<std::endl;
 
             // deactivate the automatic generation of images to geode's.
             bool prevCreateNodeFromImage = osgDB::Registry::instance()->getCreateNodeFromImage();
@@ -126,7 +126,7 @@ class ReaderWriterTGZ : public osgDB::ReaderWriter
         #else
             sprintf( command, "rm -rf %s", dirname );
         #endif
-            osg::notify(osg::NOTICE)<<"Running command '"<<command<<"'"<<std::endl;
+            OSG_NOTICE<<"Running command '"<<command<<"'"<<std::endl;
 
             result = system( command );
             if (result!=0) return ReadResult::ERROR_IN_READING_FILE;

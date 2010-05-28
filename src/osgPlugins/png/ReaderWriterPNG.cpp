@@ -54,13 +54,13 @@ void user_error_fn(png_structp png_ptr, png_const_charp error_msg)
 #ifdef OSG_CPP_EXCEPTIONS_AVAILABLE
     throw PNGError(error_msg);
 #else
-    osg::notify(osg::WARN) << "PNG lib warning : " << error_msg << std::endl;
+    OSG_WARN << "PNG lib warning : " << error_msg << std::endl;
 #endif
 }
 
 void user_warning_fn(png_structp png_ptr, png_const_charp warning_msg)
 {
-    osg::notify(osg::WARN) << "PNG lib warning : " << warning_msg << std::endl;
+    OSG_WARN << "PNG lib warning : " << warning_msg << std::endl;
 }
 
 void png_read_istream(png_structp png_ptr, png_bytep data, png_size_t length)
@@ -197,10 +197,10 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
                     pinfo->Depth  = depth;
                 }
 
-                osg::notify(osg::INFO)<<"width="<<width<<" height="<<height<<" depth="<<depth<<std::endl;
-                if ( color == PNG_COLOR_TYPE_RGB) osg::notify(osg::INFO) << "color == PNG_COLOR_TYPE_RGB "<<std::endl;
-                if ( color == PNG_COLOR_TYPE_GRAY) osg::notify(osg::INFO) << "color == PNG_COLOR_TYPE_GRAY "<<std::endl;
-                if ( color == PNG_COLOR_TYPE_GRAY_ALPHA) osg::notify(osg::INFO) << "color ==  PNG_COLOR_TYPE_GRAY_ALPHA"<<std::endl;
+                OSG_INFO<<"width="<<width<<" height="<<height<<" depth="<<depth<<std::endl;
+                if ( color == PNG_COLOR_TYPE_RGB) { OSG_INFO << "color == PNG_COLOR_TYPE_RGB "<<std::endl; }
+                if ( color == PNG_COLOR_TYPE_GRAY) { OSG_INFO << "color == PNG_COLOR_TYPE_GRAY "<<std::endl; }
+                if ( color == PNG_COLOR_TYPE_GRAY_ALPHA) { OSG_INFO << "color ==  PNG_COLOR_TYPE_GRAY_ALPHA"<<std::endl; }
 
                 // png default to big endian, so we'll need to swap bytes if on a little endian machine.
                 if (depth>8 && getCpuByteOrder()==osg::LittleEndian)
@@ -317,7 +317,7 @@ class ReaderWriterPNG : public osgDB::ReaderWriter
             #ifdef OSG_CPP_EXCEPTIONS_AVAILABLE
             catch (PNGError& err)
             {
-                osg::notify(osg::WARN) << err << std::endl;
+                OSG_WARN << err << std::endl;
                 png_destroy_read_struct(&png, &info, &endinfo);
                 return ReadResult::ERROR_IN_READING_FILE;
             }

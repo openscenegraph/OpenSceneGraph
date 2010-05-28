@@ -113,8 +113,8 @@ template <class T>
     T* dst = data;
     T* end = data + 3*width*height;
 
-    osg::notify(osg::NOTICE)<<"Width = "<<width<<std::endl;
-    osg::notify(osg::NOTICE)<<"Height = "<<height<<std::endl;
+    OSG_NOTICE<<"Width = "<<width<<std::endl;
+    OSG_NOTICE<<"Height = "<<height<<std::endl;
     
     unsigned int numRead = 0;
 
@@ -130,7 +130,7 @@ template <class T>
             ch = fgetc(fp);
             if (feof(fp) || ferror(fp))
             {
-                osg::notify(osg::NOTICE)<<"Error 1 "<<numRead<<std::endl;
+                OSG_NOTICE<<"Error 1 "<<numRead<<std::endl;
 
                 delete [] data;
                 return NULL;
@@ -146,7 +146,7 @@ template <class T>
             ch = fgetc(fp);
             if (feof(fp) || ferror(fp))
             {
-                osg::notify(osg::NOTICE)<<"Error 2"<<std::endl;
+                OSG_NOTICE<<"Error 2"<<std::endl;
 
                 delete [] data;
                 return NULL;
@@ -160,7 +160,7 @@ template <class T>
         *(dst++) = value;
     }
 
-    osg::notify(osg::NOTICE)<<"Completed"<<std::endl;
+    OSG_NOTICE<<"Completed"<<std::endl;
 
     return reinterpret_cast<unsigned char*>(data);
 }

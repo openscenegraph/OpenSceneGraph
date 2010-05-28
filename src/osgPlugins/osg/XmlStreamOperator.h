@@ -417,7 +417,7 @@ public:
                     enumString = '#' + enumString;
                 if ( prop._name!=enumString )
                 {
-                    OSG_NOTIFY(osg::WARN) << "XmlInputIterator::readProperty(): Unmatched property "
+                    OSG_WARN << "XmlInputIterator::readProperty(): Unmatched property "
                                            << enumString << ", expecting " << prop._name << std::endl;
                 }
             }

@@ -41,51 +41,51 @@ Lwo2Layer::~Lwo2Layer()
 void
 Lwo2Layer::notify(NotifySeverity severity)
 {
-  osg::notify(severity) << "Current layer: " << _number << endl;
-  osg::notify(severity) << "  flags  \t" << _flags << endl;
-  osg::notify(severity) << "  pivot  \t" << _pivot << endl;
-  osg::notify(severity) << "  name:  \t'" << _name.c_str() << "'" << endl;
-  osg::notify(severity) << "  parent:\t" << _parent << endl;
+  OSG_NOTIFY(severity) << "Current layer: " << _number << endl;
+  OSG_NOTIFY(severity) << "  flags  \t" << _flags << endl;
+  OSG_NOTIFY(severity) << "  pivot  \t" << _pivot << endl;
+  OSG_NOTIFY(severity) << "  name:  \t'" << _name.c_str() << "'" << endl;
+  OSG_NOTIFY(severity) << "  parent:\t" << _parent << endl;
 
   // points
-  osg::notify(severity) << "  points:\t" << _points.size() << endl;
-  osg::notify(severity) << "\tcoord\t\t\t\ttexcoord" <<  endl;
-  osg::notify(severity) << "\t=====\t\t\t\t========" <<  endl;
+  OSG_NOTIFY(severity) << "  points:\t" << _points.size() << endl;
+  OSG_NOTIFY(severity) << "\tcoord\t\t\t\ttexcoord" <<  endl;
+  OSG_NOTIFY(severity) << "\t=====\t\t\t\t========" <<  endl;
   IteratorPoint itr;
   for (itr = _points.begin(); itr != _points.end(); itr++)
     {
-      osg::notify(severity) << "    \t" << (*itr).coord << "\t\t" << (*itr).texcoord << endl;
+      OSG_NOTIFY(severity) << "    \t" << (*itr).coord << "\t\t" << (*itr).texcoord << endl;
     }
   
   // polygons
-  osg::notify(severity) << "  polygons:\t" << _polygons.size() << endl;
-  osg::notify(severity) << "\tcoord\t\t\t\ttexcoord" <<  endl;
-  osg::notify(severity) << "\t=====\t\t\t\t========" <<  endl;
+  OSG_NOTIFY(severity) << "  polygons:\t" << _polygons.size() << endl;
+  OSG_NOTIFY(severity) << "\tcoord\t\t\t\ttexcoord" <<  endl;
+  OSG_NOTIFY(severity) << "\t=====\t\t\t\t========" <<  endl;
   IteratorPolygonsList polygon_iterator;
   int polygon_index = 0;
   for (polygon_iterator = _polygons.begin(); polygon_iterator != _polygons.end(); polygon_iterator++, polygon_index++)
     {
-      osg::notify(severity) << "    \t" << polygon_index << " ("<< (*polygon_iterator).size() << " vertexes" << "):" << endl;
+      OSG_NOTIFY(severity) << "    \t" << polygon_index << " ("<< (*polygon_iterator).size() << " vertexes" << "):" << endl;
       for (itr = (*polygon_iterator).begin(); itr != (*polygon_iterator).end(); itr++)
         {
-          osg::notify(severity) << "    \t" << (*itr).coord << "\t\t" << (*itr).texcoord << endl;
+          OSG_NOTIFY(severity) << "    \t" << (*itr).coord << "\t\t" << (*itr).texcoord << endl;
         }
-      osg::notify(severity) << endl;
+      OSG_NOTIFY(severity) << endl;
     }
 
   // polygons tags
-  osg::notify(severity) << "  polygons tags:\t" << _polygons_tag.size() << endl;
+  OSG_NOTIFY(severity) << "  polygons tags:\t" << _polygons_tag.size() << endl;
   IteratorShort short_itr;
   for (short_itr = _polygons_tag.begin(); short_itr != _polygons_tag.end(); short_itr++)
     {
-      osg::notify(severity) << "\t" << (*short_itr) << endl;
+      OSG_NOTIFY(severity) << "\t" << (*short_itr) << endl;
     }
 }
 
 void
 Lwo2Layer::GenerateGeode( Geode& geode, short tags_count, DrawableToTagMapping& tag_mapping)
 {
-  notify(DEBUG_INFO);
+  OSG_DEBUG;
 
   // variable used to track using textures
   bool have_texture_coords;
@@ -240,7 +240,7 @@ Lwo2Layer::GenerateGeode( Geode& geode, short tags_count, DrawableToTagMapping& 
 
           geode.addDrawable(geometry.get());
 
-          osg::notify(DEBUG_INFO) << "  inserting tag " << geode.getNumDrawables() - 1 << ":" << current_tag << std::endl;
+          OSG_DEBUG << "  inserting tag " << geode.getNumDrawables() - 1 << ":" << current_tag << std::endl;
           tag_mapping.insert(PairDrawableToTag(geode.getNumDrawables() - 1, current_tag));
         }
     }
@@ -258,7 +258,7 @@ Lwo2Layer::_find_triangle_fans(PolygonsList& polygons, PolygonsList& triangle_fa
 
   if (triangle_fans.size() > 0)
     {
-      osg::notify(INFO) << "LWO2 loader, optimizing: found " << triangle_fans.size() << " triangle fans" << endl;
+      OSG_INFO << "LWO2 loader, optimizing: found " << triangle_fans.size() << " triangle fans" << endl;
     }
 
   return found;
@@ -276,7 +276,7 @@ Lwo2Layer::_find_triangle_strips(PolygonsList& polygons, PolygonsList& triangle_
 
   if (triangle_strips.size() > 0)
     {
-      osg::notify(INFO) << "LWO2 loader, optimizing: found " << triangle_strips.size() << " triangle strips" << endl;
+      OSG_INFO << "LWO2 loader, optimizing: found " << triangle_strips.size() << " triangle strips" << endl;
     }
 
   return found;

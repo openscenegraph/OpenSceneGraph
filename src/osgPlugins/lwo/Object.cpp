@@ -65,15 +65,15 @@ void Object::build(const iff::Chunk_list &data)
     comment_ = "";
     description_ = "";
 
-    osg::notify(osg::INFO) << "INFO: lwosg::Object: scanning clips\n";
+    OSG_INFO << "INFO: lwosg::Object: scanning clips\n";
     scan_clips(data);
-    osg::notify(osg::INFO) << "INFO: lwosg::Object: scanning surfaces\n";
+    OSG_INFO << "INFO: lwosg::Object: scanning surfaces\n";
     scan_surfaces(data);
-    osg::notify(osg::INFO) << "INFO: lwosg::Object: parsing LWO2 chunks and building object\n";
+    OSG_INFO << "INFO: lwosg::Object: parsing LWO2 chunks and building object\n";
     parse(data);
-    osg::notify(osg::INFO) << "INFO: lwosg::Object: generating normals\n";
+    OSG_INFO << "INFO: lwosg::Object: generating normals\n";
     generate_normals();
-    osg::notify(osg::INFO) << "INFO: lwosg::Object: generating automatic texture maps\n";
+    OSG_INFO << "INFO: lwosg::Object: generating automatic texture maps\n";
     generate_auto_texture_maps();
 }
 
@@ -130,7 +130,7 @@ void Object::parse(const iff::Chunk_list &data)
             std::string type(vmap->type.id, 4);
             if (type == "WGHT") {
                 if (vmap->dimension != 1) {
-                    osg::notify(osg::WARN) << "Warning: Lwo2Object: invalid " << type << " vertex map dimension: " << vmap->dimension << std::endl;
+                    OSG_WARN << "Warning: Lwo2Object: invalid " << type << " vertex map dimension: " << vmap->dimension << std::endl;
                     continue;
                 }
                 VertexMap *new_map = current_layer.units().back().weight_maps()->getOrCreate(vmap->name);
@@ -140,7 +140,7 @@ void Object::parse(const iff::Chunk_list &data)
             }
             if (type == "MNVW") {
                 if (vmap->dimension != 1) {
-                    osg::notify(osg::WARN) << "Warning: Lwo2Object: invalid " << type << " vertex map dimension: " << vmap->dimension << std::endl;
+                    OSG_WARN << "Warning: Lwo2Object: invalid " << type << " vertex map dimension: " << vmap->dimension << std::endl;
                     continue;
                 }
                 VertexMap *new_map = current_layer.units().back().subpatch_weight_maps()->getOrCreate(vmap->name);
@@ -150,7 +150,7 @@ void Object::parse(const iff::Chunk_list &data)
             }
             if (type == "TXUV") {
                 if (vmap->dimension != 2) {
-                    osg::notify(osg::WARN) << "Warning: Lwo2Object: invalid " << type << " vertex map dimension: " << vmap->dimension << std::endl;
+                    OSG_WARN << "Warning: Lwo2Object: invalid " << type << " vertex map dimension: " << vmap->dimension << std::endl;
                     continue;
                 }
                 VertexMap *new_map = current_layer.units().back().texture_maps()->getOrCreate(vmap->name);
@@ -160,7 +160,7 @@ void Object::parse(const iff::Chunk_list &data)
             }
             if (type == "RGB ") {
                 if (vmap->dimension != 3) {
-                    osg::notify(osg::WARN) << "Warning: Lwo2Object: invalid " << type << " vertex map dimension: " << vmap->dimension << std::endl;
+                    OSG_WARN << "Warning: Lwo2Object: invalid " << type << " vertex map dimension: " << vmap->dimension << std::endl;
                     continue;
                 }
                 VertexMap *new_map = current_layer.units().back().rgb_maps()->getOrCreate(vmap->name);
@@ -170,7 +170,7 @@ void Object::parse(const iff::Chunk_list &data)
             }
             if (type == "RGBA") {
                 if (vmap->dimension != 4) {
-                    osg::notify(osg::WARN) << "Warning: Lwo2Object: invalid " << type << " vertex map dimension: " << vmap->dimension << std::endl;
+                    OSG_WARN << "Warning: Lwo2Object: invalid " << type << " vertex map dimension: " << vmap->dimension << std::endl;
                     continue;
                 }
                 VertexMap *new_map = current_layer.units().back().rgba_maps()->getOrCreate(vmap->name);
@@ -180,7 +180,7 @@ void Object::parse(const iff::Chunk_list &data)
             }
             if (type == "MORF") {
                 if (vmap->dimension != 3) {
-                    osg::notify(osg::WARN) << "Warning: Lwo2Object: invalid " << type << " vertex map dimension: " << vmap->dimension << std::endl;
+                    OSG_WARN << "Warning: Lwo2Object: invalid " << type << " vertex map dimension: " << vmap->dimension << std::endl;
                     continue;
                 }
                 VertexMap *new_map = current_layer.units().back().displacement_maps()->getOrCreate(vmap->name);
@@ -190,7 +190,7 @@ void Object::parse(const iff::Chunk_list &data)
             }
             if (type == "SPOT") {
                 if (vmap->dimension != 3) {
-                    osg::notify(osg::WARN) << "Warning: Lwo2Object: invalid " << type << " vertex map dimension: " << vmap->dimension << std::endl;
+                    OSG_WARN << "Warning: Lwo2Object: invalid " << type << " vertex map dimension: " << vmap->dimension << std::endl;
                     continue;
                 }
                 VertexMap *new_map = current_layer.units().back().spot_maps()->getOrCreate(vmap->name);
@@ -204,7 +204,7 @@ void Object::parse(const iff::Chunk_list &data)
         if (pols && !current_layer.units().empty()) {
             std::string type(pols->type.id, 4);
             if (type != "FACE") {
-                osg::notify(osg::INFO) << "INFO: Lwo2Object: polygon list of type " << type << " not supported, rendering may be inaccurate" << std::endl;
+                OSG_INFO << "INFO: Lwo2Object: polygon list of type " << type << " not supported, rendering may be inaccurate" << std::endl;
             }
             for (lwo2::FORM::POLS::Polygon_list::const_iterator i=pols->polygons.begin(); i!=pols->polygons.end(); ++i) {
                 Polygon polygon;
@@ -268,7 +268,7 @@ void Object::parse(const iff::Chunk_list &data)
             std::string type(vmad->type.id, 4);
             if (type == "WGHT") {
                 if (vmad->dimension != 1) {
-                    osg::notify(osg::WARN) << "Warning: Lwo2Object: invalid " << type << " discontinuous vertex map dimension: " << vmad->dimension << std::endl;
+                    OSG_WARN << "Warning: Lwo2Object: invalid " << type << " discontinuous vertex map dimension: " << vmad->dimension << std::endl;
                     continue;
                 }
                 for (lwo2::FORM::VMAD::Mapping_list::const_iterator i=vmad->mapping.begin(); i!=vmad->mapping.end(); ++i) {
@@ -278,7 +278,7 @@ void Object::parse(const iff::Chunk_list &data)
             }
             if (type == "TXUV") {
                 if (vmad->dimension != 2) {
-                    osg::notify(osg::WARN) << "Warning: Lwo2Object: invalid " << type << " discontinuous vertex map dimension: " << vmad->dimension << std::endl;
+                    OSG_WARN << "Warning: Lwo2Object: invalid " << type << " discontinuous vertex map dimension: " << vmad->dimension << std::endl;
                     continue;
                 }
                 for (lwo2::FORM::VMAD::Mapping_list::const_iterator i=vmad->mapping.begin(); i!=vmad->mapping.end(); ++i) {
@@ -288,7 +288,7 @@ void Object::parse(const iff::Chunk_list &data)
             }
             if (type == "RGB ") {
                 if (vmad->dimension != 3) {
-                    osg::notify(osg::WARN) << "Warning: Lwo2Object: invalid " << type << " discontinuous vertex map dimension: " << vmad->dimension << std::endl;
+                    OSG_WARN << "Warning: Lwo2Object: invalid " << type << " discontinuous vertex map dimension: " << vmad->dimension << std::endl;
                     continue;
                 }
                 for (lwo2::FORM::VMAD::Mapping_list::const_iterator i=vmad->mapping.begin(); i!=vmad->mapping.end(); ++i) {
@@ -298,7 +298,7 @@ void Object::parse(const iff::Chunk_list &data)
             }
             if (type == "RGBA") {
                 if (vmad->dimension != 4) {
-                    osg::notify(osg::WARN) << "Warning: Lwo2Object: invalid " << type << " discontinuous vertex map dimension: " << vmad->dimension << std::endl;
+                    OSG_WARN << "Warning: Lwo2Object: invalid " << type << " discontinuous vertex map dimension: " << vmad->dimension << std::endl;
                     continue;
                 }
                 for (lwo2::FORM::VMAD::Mapping_list::const_iterator i=vmad->mapping.begin(); i!=vmad->mapping.end(); ++i) {
@@ -348,7 +348,7 @@ void Object::generate_auto_texture_maps()
                 oss << "Auto_map_" << &block;
                 std::string map_name = oss.str();
 
-                osg::notify(osg::DEBUG_INFO) << "DEBUG INFO: lwosg::Object: creating automatic texture map '" << map_name << "'\n";
+                OSG_DEBUG << "DEBUG INFO: lwosg::Object: creating automatic texture map '" << map_name << "'\n";
 
                 for (Layer_map::iterator k=layers_.begin(); k!=layers_.end(); ++k) {
                     for (Layer::Unit_list::iterator h=k->second.units().begin(); h!=k->second.units().end(); ++h) {
@@ -357,7 +357,7 @@ void Object::generate_auto_texture_maps()
                         (*h->texture_maps())[map_name] = new_map.get();
 
                         if (block.get_image_map().projection == Image_map::FRONT_PROJECTION) {
-                            osg::notify(osg::WARN) << "Warning: lwosg::Object: front projection is not supported" << std::endl;
+                            OSG_WARN << "Warning: lwosg::Object: front projection is not supported" << std::endl;
                         }
 
                         if (block.get_image_map().projection == Image_map::CUBIC) {

@@ -124,7 +124,7 @@ void Block::compile(const lwo2::FORM::SURF::BLOK *blok)
         }
         
     } else {
-        osg::notify(osg::WARN) << "Warning: lwosg::Block: only IMAP (image map) block types are supported, this block will be ignored" << std::endl;
+        OSG_WARN << "Warning: lwosg::Block: only IMAP (image map) block types are supported, this block will be ignored" << std::endl;
     }
 }
 

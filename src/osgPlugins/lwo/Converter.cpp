@@ -56,14 +56,14 @@ osg::Group *Converter::convert(Object &obj)
         root_->removeChildren(0, root_->getNumChildren());
     }
 
-    osg::notify(osg::INFO) << "INFO: lwosg::Converter: flattening per-polygon vertex maps\n";
+    OSG_INFO << "INFO: lwosg::Converter: flattening per-polygon vertex maps\n";
     for (Object::Layer_map::iterator i=obj.layers().begin(); i!=obj.layers().end(); ++i) {
         for (Layer::Unit_list::iterator j=i->second.units().begin(); j!=i->second.units().end(); ++j) {
             j->flatten_maps();
         }
     }
 
-    osg::notify(osg::INFO) << "INFO: lwosg::Converter: creating scene graph\n";
+    OSG_INFO << "INFO: lwosg::Converter: creating scene graph\n";
     build_scene_graph(obj);
 
     return root_.get();
@@ -75,7 +75,7 @@ void Converter::build_scene_graph(Object &obj)
     typedef std::map<int, osg::ref_ptr<osg::Group> > Layer_group_map;
     Layer_group_map lymap;
 
-    osg::notify(osg::DEBUG_INFO) << "DEBUG INFO: lwosg::Converter: creating layer structure\n";
+    OSG_DEBUG << "DEBUG INFO: lwosg::Converter: creating layer structure\n";
 
     // create a flat layer structure, no parenting since it's handled in scene files
     for (Object::Layer_map::const_iterator i=obj.layers().begin(); i!=obj.layers().end(); ++i) {
@@ -98,11 +98,11 @@ void Converter::build_scene_graph(Object &obj)
 
         osg::Group *layer_group = lymap[layer.number()].get();
 
-        osg::notify(osg::DEBUG_INFO) << "DEBUG INFO: lwosg::Converter: processing layer '" << layer_group->getName() << "'\n";
+        OSG_DEBUG << "DEBUG INFO: lwosg::Converter: processing layer '" << layer_group->getName() << "'\n";
 
         for (Layer::Unit_list::iterator j=layer.units().begin(); j!=layer.units().end(); ++j) {
 
-            osg::notify(osg::DEBUG_INFO) << "DEBUG INFO: lwosg::Converter: \tcreating primitives\n";
+            OSG_DEBUG << "DEBUG INFO: lwosg::Converter: \tcreating primitives\n";
 
             int tess_success = 0;
             int tess_fail = 0;
@@ -150,11 +150,11 @@ void Converter::build_scene_graph(Object &obj)
             }
 
             if (tess_success > 0) {
-                osg::notify(osg::DEBUG_INFO) << "DEBUG INFO: lwosg::Converter:   " << tess_success << " polygons have been tessellated correctly\n";
+                OSG_DEBUG << "DEBUG INFO: lwosg::Converter:   " << tess_success << " polygons have been tessellated correctly\n";
             }
 
             if (tess_fail > 0) {
-                osg::notify(osg::WARN) << "Warning: lwosg::Converter:   could not tessellate " << tess_fail << " polygons correctly. This is probably due to self-intersecting polygons being used, try to Triple them in Lightwave and restart the conversion" << std::endl;
+                OSG_WARN << "Warning: lwosg::Converter:   could not tessellate " << tess_fail << " polygons correctly. This is probably due to self-intersecting polygons being used, try to Triple them in Lightwave and restart the conversion" << std::endl;
             }
 
             // create normal array
@@ -170,7 +170,7 @@ void Converter::build_scene_graph(Object &obj)
                 const Unit::Index_list &remapping = remappings[surface];
 
                 // clean up points and normals according to remapping map
-                osg::notify(osg::DEBUG_INFO) << "DEBUG INFO: lwosg::Converter: \tcleaning up redundant vertices and vertex attributes for surface '" << (surface ? surface->get_name() : std::string("anonymous")) << "'\n";                
+                OSG_DEBUG << "DEBUG INFO: lwosg::Converter: \tcleaning up redundant vertices and vertex attributes for surface '" << (surface ? surface->get_name() : std::string("anonymous")) << "'\n";                
                 osg::ref_ptr<osg::Vec3Array> new_points = new osg::Vec3Array;
                 osg::ref_ptr<osg::Vec3Array> new_normals = new osg::Vec3Array;
                 for (unsigned pi=0; pi<j->points()->size(); ++pi) {
@@ -180,7 +180,7 @@ void Converter::build_scene_graph(Object &obj)
                     }
                 }
                 
-                osg::notify(osg::DEBUG_INFO) << "DEBUG INFO: lwosg::Converter: \tcreating geometry for surface '" << (surface ? surface->get_name() : std::string("anonymous")) << "'\n";
+                OSG_DEBUG << "DEBUG INFO: lwosg::Converter: \tcreating geometry for surface '" << (surface ? surface->get_name() : std::string("anonymous")) << "'\n";
 
                 osg::ref_ptr<osg::Geometry> geo = new osg::Geometry;
                 geo->setVertexArray(new_points.get());

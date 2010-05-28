@@ -120,7 +120,7 @@ void Surface::compile(const lwo2::FORM::SURF *surf, const Clip_map &clips)
                 if (i != clips.end()) {
                     new_block.get_image_map().clip = &i->second;
                 } else {
-                    osg::notify(osg::WARN) << "Warning: lwosg::Surface: cannot find clip number " << new_block.get_image_map().image_map << std::endl;
+                    OSG_WARN << "Warning: lwosg::Surface: cannot find clip number " << new_block.get_image_map().image_map << std::endl;
                 }                
             }
             blocks_.insert(Block_map::value_type(new_block.get_ordinal(), new_block));
@@ -192,7 +192,7 @@ void Surface::generate_stateset(unsigned int max_tex_units, bool force_arb_compr
 
                             if (unit >= max_tex_units && max_tex_units > 0)
                             {
-                                osg::notify(osg::WARN) << "Warning: lwosg::Surface: maximum number of texture units (" << max_tex_units << ") has been reached, skipping incoming blocks" << std::endl;
+                                OSG_WARN << "Warning: lwosg::Surface: maximum number of texture units (" << max_tex_units << ") has been reached, skipping incoming blocks" << std::endl;
                                 break;
                             }
                 
@@ -237,7 +237,7 @@ void Surface::generate_stateset(unsigned int max_tex_units, bool force_arb_compr
                                     break;
 
                                 case Block::SUBTRACTIVE:
-                                    osg::notify(osg::WARN) << "Warning: lwosg::Surface: 'Subtractive' blending mode is not supported, falling back to 'Difference' mode" << std::endl;
+                                    OSG_WARN << "Warning: lwosg::Surface: 'Subtractive' blending mode is not supported, falling back to 'Difference' mode" << std::endl;
                                 case Block::DIFFERENCE:
                                     tec->setCombine_RGB(osg::TexEnvCombine::SUBTRACT);
                                     break;
@@ -247,15 +247,15 @@ void Surface::generate_stateset(unsigned int max_tex_units, bool force_arb_compr
                                     break;
 
                                 case Block::DIVIDE:
-                                    osg::notify(osg::WARN) << "Warning: lwosg::Surface: 'Divide' blending mode is not supported" << std::endl;
+                                    OSG_WARN << "Warning: lwosg::Surface: 'Divide' blending mode is not supported" << std::endl;
                                     break;
 
                                 case Block::ALPHA:
-                                    osg::notify(osg::WARN) << "Warning: lwosg::Surface: 'Alpha' blending mode is not supported" << std::endl;
+                                    OSG_WARN << "Warning: lwosg::Surface: 'Alpha' blending mode is not supported" << std::endl;
                                     break;
 
                                 case Block::TEXTURE_DISPLACEMENT:
-                                    osg::notify(osg::WARN) << "Warning: lwosg::Surface: 'Texture Displacement' blending mode is not supported" << std::endl;
+                                    OSG_WARN << "Warning: lwosg::Surface: 'Texture Displacement' blending mode is not supported" << std::endl;
                                     break;
 
                                 default:
@@ -269,7 +269,7 @@ void Surface::generate_stateset(unsigned int max_tex_units, bool force_arb_compr
                 }
                 else
                 {
-                    osg::notify(osg::WARN) << "Warning: lwosg::Surface: texture channels of type '" << block.get_channel() << "' are not supported, this block will be ignored" << std::endl;
+                    OSG_WARN << "Warning: lwosg::Surface: texture channels of type '" << block.get_channel() << "' are not supported, this block will be ignored" << std::endl;
                 }
             }
         }
@@ -298,7 +298,7 @@ osg::Group *Surface::apply(osg::Geometry *geo, const VertexMap_map *texture_maps
                     if (i != texture_maps->end()) {
                         geo->setTexCoordArray(unit, i->second->asVec2Array(num_points));
                     } else {
-                        osg::notify(osg::WARN) << "Warning: lwosg::Surface: surface '" << name_ << "' needs texture map named '" << block.get_image_map().uv_map << "' but I can't find it" << std::endl;
+                        OSG_WARN << "Warning: lwosg::Surface: surface '" << name_ << "' needs texture map named '" << block.get_image_map().uv_map << "' but I can't find it" << std::endl;
                     }
                 }
                 ++unit;
@@ -314,13 +314,13 @@ osg::Group *Surface::apply(osg::Geometry *geo, const VertexMap_map *texture_maps
             {
                 if (geo->getTexCoordArray(vi->second) != 0)
                 {
-                    osg::notify(osg::WARN) << "Warning: lwosg::Surface: explicing binding of texture map '" << vi->first << "' to texunit " << vi->second << " will replace existing texture map" << std::endl;
+                    OSG_WARN << "Warning: lwosg::Surface: explicing binding of texture map '" << vi->first << "' to texunit " << vi->second << " will replace existing texture map" << std::endl;
                 }
                 geo->setTexCoordArray(vi->second, j->second->asVec2Array(num_points));
             }
             else
             {
-                osg::notify(osg::WARN) << "Warning: lwosg::Surface: explicit binding of texture map '" << vi->first << "' to texunit " << vi->second << " was requested but there is no such map in this LWO file" << std::endl;
+                OSG_WARN << "Warning: lwosg::Surface: explicit binding of texture map '" << vi->first << "' to texunit " << vi->second << " was requested but there is no such map in this LWO file" << std::endl;
             }
         }
     }
@@ -343,14 +343,14 @@ osg::Group *Surface::apply(osg::Geometry *geo, const VertexMap_map *texture_maps
             geo->setColorArray(i->second->asVec4Array(num_points, color * color_map_intensity_, color * color_map_intensity_));
             geo->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
         } else {
-            osg::notify(osg::WARN) << "Warning: lwosg::Surface: surface '" << name_ << "' needs color map named '" << color_map_name_ << "' but I can't find it" << std::endl;
+            OSG_WARN << "Warning: lwosg::Surface: surface '" << name_ << "' needs color map named '" << color_map_name_ << "' but I can't find it" << std::endl;
         }
     }
 
     // create osgFX specularity if needed
     if (use_osgfx && glossiness_ > 0 && specularity_ > 0) {
         if (unit >= max_tex_units && max_tex_units > 0) {
-            osg::notify(osg::WARN) << "Warning: lwosg::Surface: can't apply osgFX specular lighting: maximum number of texture units (" << max_tex_units << ") has been reached" << std::endl;
+            OSG_WARN << "Warning: lwosg::Surface: can't apply osgFX specular lighting: maximum number of texture units (" << max_tex_units << ") has been reached" << std::endl;
         } else {
             osg::ref_ptr<osgFX::SpecularHighlights> sh = new osgFX::SpecularHighlights;
             sh->setTextureUnit(unit);

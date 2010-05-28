@@ -190,9 +190,9 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
     if (!lw)
         return ReadResult::FILE_NOT_HANDLED;
 
-    osg::notify(osg::INFO) << "faces " << lw->face_cnt << std::endl;
-    osg::notify(osg::INFO) << "materials " << lw->material_cnt << std::endl;
-    osg::notify(osg::INFO) << "vertices " << lw->vertex_cnt << std::endl;
+    OSG_INFO << "faces " << lw->face_cnt << std::endl;
+    OSG_INFO << "materials " << lw->material_cnt << std::endl;
+    OSG_INFO << "vertices " << lw->vertex_cnt << std::endl;
 
     typedef std::map<int,GeometryCollection> MaterialToGeometryCollectionMap;
     MaterialToGeometryCollectionMap mtgcm;
@@ -241,7 +241,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterLWO::readNode_LWO1(const std::string
             {
                 if (lw_material.ctex.flags && strlen(lw_material.ctex.name)!=0)
                 {
-                    osg::notify(osg::INFO) << "ctex " << lw_material.ctex.name << std::endl;
+                    OSG_INFO << "ctex " << lw_material.ctex.name << std::endl;
                     osg::ref_ptr<osg::Image> image = osgDB::readRefImageFile(lw_material.ctex.name);
                     if (image.valid())
                     {

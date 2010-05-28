@@ -59,7 +59,7 @@ VertexMap *VertexMap::remap(const std::vector<int> &remapping) const
 
     for (VertexMap::const_iterator i=begin(); i!=end(); ++i) {
         if (i->first >= static_cast<int>(remapping.size())) {
-            osg::notify(osg::WARN) << "Warning: lwosg::remap(): remapping index not found for vertex " << i->first << " (map size " << remapping.size() << ")" << std::endl;
+            OSG_WARN << "Warning: lwosg::remap(): remapping index not found for vertex " << i->first << " (map size " << remapping.size() << ")" << std::endl;
         } else {
             int new_index = remapping[i->first];
             if (new_index != -1) {

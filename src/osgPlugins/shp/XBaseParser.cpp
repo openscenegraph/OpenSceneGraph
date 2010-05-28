@@ -21,7 +21,7 @@ namespace ESRIShape
 
 void XBaseHeader::print()
 {
-    osg::notify(osg::INFO) << "VersionNumber = " << (int) _versionNumber << std::endl
+    OSG_INFO << "VersionNumber = " << (int) _versionNumber << std::endl
                            << "LastUpdate    = " << 1900 + (int) _lastUpdate[0] << "/" << (int) _lastUpdate[1] << "/" << (int) _lastUpdate[2] << std::endl
                            << "NumRecord     = " << _numRecord << std::endl
                            << "HeaderLength  = " << _headerLength << std::endl
@@ -51,7 +51,7 @@ bool XBaseHeader::read(int fd)
     
 void XBaseFieldDescriptor::print()
 {
-    osg::notify(osg::INFO) << "name           = " << _name << std::endl
+    OSG_INFO << "name           = " << _name << std::endl
                            << "type           = " << _fieldType << std::endl
                            << "length         = " << (int) _fieldLength << std::endl
                            << "decimalCount   = " << (int) _decimalCount << std::endl
@@ -191,7 +191,7 @@ bool XBaseParser::parse(int fd)
             }
             default:
             {
-                osg::notify(osg::WARN) << "ESRIShape::XBaseParser : record type "
+                OSG_WARN << "ESRIShape::XBaseParser : record type "
                                        << it->_fieldType << "not supported, skipped" << std::endl;
                 shapeAttributeList->push_back(osgSim::ShapeAttribute((const char *) it->_name, (double) 0));
                 break;

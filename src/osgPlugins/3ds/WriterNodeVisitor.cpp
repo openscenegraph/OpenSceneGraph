@@ -362,7 +362,7 @@ void PrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
     case(GL_LINE_LOOP):
         //break;
     default:
-        OSG_NOTIFY(osg::WARN) << "3DS WriterNodeVisitor: can't handle mode " << mode << std::endl;
+        OSG_WARN << "3DS WriterNodeVisitor: can't handle mode " << mode << std::endl;
         break;
     }
 }
@@ -409,13 +409,13 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor & writerNodeVisitor, osg
             if (mode == osg::CullFace::BACK) double_sided = false;
             else if (mode == osg::CullFace::FRONT)
             {
-                OSG_NOTIFY(osg::WARN) << "3DS Writer: Reversed face (culled FRONT) not supported yet." << std::endl;
+                OSG_WARN << "3DS Writer: Reversed face (culled FRONT) not supported yet." << std::endl;
                 double_sided = false;
             }
             else
             {
                 assert(mode == osg::CullFace::FRONT_AND_BACK);
-                OSG_NOTIFY(osg::WARN) << "3DS Writer: Invisible face (culled FRONT_AND_BACK) not supported yet." << std::endl;
+                OSG_WARN << "3DS Writer: Invisible face (culled FRONT_AND_BACK) not supported yet." << std::endl;
                 double_sided = false;
             }
         }
@@ -742,7 +742,7 @@ WriterNodeVisitor::buildMesh(osg::Geode        & geo,
                              bool                texcoords,
                              Lib3dsMesh        * mesh)
 {
-    OSG_NOTIFY(osg::DEBUG_INFO) << "Building Mesh" << std::endl;
+    OSG_DEBUG << "Building Mesh" << std::endl;
     assert(mesh);
 
     // Write points
@@ -763,7 +763,7 @@ WriterNodeVisitor::buildMesh(osg::Geode        & geo,
         else if (basevecs->getType() == osg::Array::Vec3dArrayType)
         {
             // Handle double presision vertices by converting them to float with a warning
-            OSG_NOTIFY(osg::NOTICE) << "3DS format only supports single precision vertices. Converting double precision to single." << std::endl;
+            OSG_NOTICE << "3DS format only supports single precision vertices. Converting double precision to single." << std::endl;
             const osg::Vec3dArray & vecs= *static_cast<const osg::Vec3dArray *>(basevecs);
             copyOsgVectorToLib3dsVector(mesh->vertices[it->second], vecs[it->first.first]*mat);
         }
@@ -842,7 +842,7 @@ WriterNodeVisitor::buildFaces(osg::Geode        & geo,
     // Test if the mesh will be split and needs sorting
     if (nbVerticesRemaining >= MAX_VERTICES || nbTrianglesRemaining >= MAX_FACES)
     {
-        OSG_NOTIFY(osg::INFO) << "Sorting elements..." << std::endl;
+        OSG_INFO << "Sorting elements..." << std::endl;
         WriterCompareTriangle cmp(geo, nbVerticesRemaining);
         std::sort(listTriangles.begin(), listTriangles.end(), cmp);
     }
@@ -972,7 +972,7 @@ void WriterNodeVisitor::apply( osg::Billboard &node )
     unsigned int count = node.getNumDrawables();
     ListTriangle listTriangles;
     bool texcoords = false;
-    OSG_NOTIFY(osg::NOTICE) << "Warning: 3DS writer is incomplete for Billboards (rotation not implemented)." << std::endl;
+    OSG_NOTICE << "Warning: 3DS writer is incomplete for Billboards (rotation not implemented)." << std::endl;
 #if DISABLE_3DS_ANIMATION
     osg::Matrix m( osg::computeLocalToWorld(getNodePath()) );
 #endif

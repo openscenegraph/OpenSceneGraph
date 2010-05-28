@@ -227,22 +227,22 @@ ReaderWriter3DS::ReaderWriter3DS()
     supportsOption("restoreMatrixTransformsNoMeshes", "(Read option) Makes an exception to the behaviour when 'noMatrixTransforms' is not set for mesh instances. When a mesh instance has a transform on it, the reader creates a MatrixTransform above the Geode. If you don't want the hierarchy to be modified, then you can use this option to merge the transform into vertices.");
 
 #if 0
-    OSG_NOTIFY(osg::NOTICE)<<"3DS reader sizes:"<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsBool)="<<sizeof(Lib3dsBool)<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsByte)="<<sizeof(Lib3dsByte)<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsWord)="<<sizeof(Lib3dsWord)<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsDword)="<<sizeof(Lib3dsDword)<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsIntb)="<<sizeof(Lib3dsIntb)<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsIntw)="<<sizeof(Lib3dsIntw)<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsIntd)="<<sizeof(Lib3dsIntd)<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsFloat)="<<sizeof(Lib3dsFloat)<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsDouble)="<<sizeof(Lib3dsDouble)<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsVector)="<<sizeof(Lib3dsVector)<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsTexel)="<<sizeof(Lib3dsTexel)<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsQuat)="<<sizeof(Lib3dsQuat)<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsMatrix)="<<sizeof(Lib3dsMatrix)<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsRgb)="<<sizeof(Lib3dsRgb)<<std::endl;
-    OSG_NOTIFY(osg::NOTICE)<<"  sizeof(Lib3dsRgba)="<<sizeof(Lib3dsRgba)<<std::endl;
+    OSG_NOTICE<<"3DS reader sizes:"<<std::endl;
+    OSG_NOTICE<<"  sizeof(Lib3dsBool)="<<sizeof(Lib3dsBool)<<std::endl;
+    OSG_NOTICE<<"  sizeof(Lib3dsByte)="<<sizeof(Lib3dsByte)<<std::endl;
+    OSG_NOTICE<<"  sizeof(Lib3dsWord)="<<sizeof(Lib3dsWord)<<std::endl;
+    OSG_NOTICE<<"  sizeof(Lib3dsDword)="<<sizeof(Lib3dsDword)<<std::endl;
+    OSG_NOTICE<<"  sizeof(Lib3dsIntb)="<<sizeof(Lib3dsIntb)<<std::endl;
+    OSG_NOTICE<<"  sizeof(Lib3dsIntw)="<<sizeof(Lib3dsIntw)<<std::endl;
+    OSG_NOTICE<<"  sizeof(Lib3dsIntd)="<<sizeof(Lib3dsIntd)<<std::endl;
+    OSG_NOTICE<<"  sizeof(Lib3dsFloat)="<<sizeof(Lib3dsFloat)<<std::endl;
+    OSG_NOTICE<<"  sizeof(Lib3dsDouble)="<<sizeof(Lib3dsDouble)<<std::endl;
+    OSG_NOTICE<<"  sizeof(Lib3dsVector)="<<sizeof(Lib3dsVector)<<std::endl;
+    OSG_NOTICE<<"  sizeof(Lib3dsTexel)="<<sizeof(Lib3dsTexel)<<std::endl;
+    OSG_NOTICE<<"  sizeof(Lib3dsQuat)="<<sizeof(Lib3dsQuat)<<std::endl;
+    OSG_NOTICE<<"  sizeof(Lib3dsMatrix)="<<sizeof(Lib3dsMatrix)<<std::endl;
+    OSG_NOTICE<<"  sizeof(Lib3dsRgb)="<<sizeof(Lib3dsRgb)<<std::endl;
+    OSG_NOTICE<<"  sizeof(Lib3dsRgba)="<<sizeof(Lib3dsRgba)<<std::endl;
 #endif
 
 }
@@ -428,8 +428,8 @@ osg::Node* ReaderWriter3DS::ReaderObject::processMesh(StateSetMap& drawStateMap,
     }
     if (materialFaceMap.empty() && defaultMaterialFaceList.empty())
     {
-        OSG_NOTIFY(osg::NOTICE)<<"Warning : no triangles assigned to mesh '"<<mesh->name<<"'"<< std::endl;
-        //OSG_NOTIFY(osg::INFO) << "No material assigned to mesh '" << mesh->name << "'" << std::endl;
+        OSG_NOTICE<<"Warning : no triangles assigned to mesh '"<<mesh->name<<"'"<< std::endl;
+        //OSG_INFO << "No material assigned to mesh '" << mesh->name << "'" << std::endl;
         return NULL;
     }
     else
@@ -768,7 +768,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::constructFrom3dsFile(Lib3dsFile
     // Loading and re-exporting these files from 3DS produces a file with correct node structure, so perhaps these are not 100% conformant?
     if (f->nodes == NULL)
     {
-        OSG_NOTIFY(osg::WARN)<<"Warning: in 3ds loader: file has no nodes, traversing by meshes instead"<< std::endl;
+        OSG_WARN<<"Warning: in 3ds loader: file has no nodes, traversing by meshes instead"<< std::endl;
         traverse_nodes=true;
     }
 
@@ -802,7 +802,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::constructFrom3dsFile(Lib3dsFile
 
     if (osg::getNotifyLevel()>=osg::INFO)
     {
-        OSG_NOTIFY(osg::NOTICE) << "Final OSG node structure looks like this:"<< endl;
+        OSG_NOTICE << "Final OSG node structure looks like this:"<< endl;
         PrintVisitor pv(osg::notify(osg::NOTICE));
         group->accept(pv);
     }
@@ -961,14 +961,14 @@ osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *
 {
     if (texture && *(texture->name))
     {
-        OSG_NOTIFY(osg::INFO)<<"texture->name="<<texture->name<<", _directory="<<_directory<<std::endl;
+        OSG_INFO<<"texture->name="<<texture->name<<", _directory="<<_directory<<std::endl;
 
         std::string fileName = osgDB::findFileInDirectory(texture->name,_directory,osgDB::CASE_INSENSITIVE);
         if (fileName.empty())
         {
             // file not found in .3ds file's directory, so we'll look in the datafile path list.
             fileName = osgDB::findDataFile(texture->name,options, osgDB::CASE_INSENSITIVE);
-            OSG_NOTIFY(osg::INFO)<<"texture->name="<<texture->name<<", _directory="<<_directory<<std::endl;
+            OSG_INFO<<"texture->name="<<texture->name<<", _directory="<<_directory<<std::endl;
         }
 
         if (fileName.empty())
@@ -980,30 +980,30 @@ osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *
             }
             else
             {
-                OSG_NOTIFY(osg::WARN) << "texture '"<<texture->name<<"' not found"<< std::endl;
+                OSG_WARN << "texture '"<<texture->name<<"' not found"<< std::endl;
                 return NULL;
             }
         }
 
-        if (label) { OSG_NOTIFY(osg::DEBUG_INFO) << label; }
-        else { OSG_NOTIFY(osg::DEBUG_INFO) << "texture name"; }
+        if (label) { OSG_DEBUG << label; }
+        else { OSG_DEBUG << "texture name"; }
 
-        OSG_NOTIFY(osg::DEBUG_INFO) << " '"<<texture->name<<"'"<< std::endl;
-        OSG_NOTIFY(osg::DEBUG_INFO) << "    texture flag        "<<texture->flags<< std::endl;
-        OSG_NOTIFY(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_DECALE       "<<((texture->flags)&LIB3DS_TEXTURE_DECALE)<< std::endl;
-        OSG_NOTIFY(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_MIRROR       "<<((texture->flags)&LIB3DS_TEXTURE_MIRROR)<< std::endl;
-        OSG_NOTIFY(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_NEGATE       "<<((texture->flags)&LIB3DS_TEXTURE_NEGATE)<< std::endl;
-        OSG_NOTIFY(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_NO_TILE      "<<((texture->flags)&LIB3DS_TEXTURE_NO_TILE)<< std::endl;
-        OSG_NOTIFY(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_SUMMED_AREA  "<<((texture->flags)&LIB3DS_TEXTURE_SUMMED_AREA)<< std::endl;
-        OSG_NOTIFY(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_ALPHA_SOURCE "<<((texture->flags)&LIB3DS_TEXTURE_ALPHA_SOURCE)<< std::endl;
-        OSG_NOTIFY(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_TINT         "<<((texture->flags)&LIB3DS_TEXTURE_TINT)<< std::endl;
-        OSG_NOTIFY(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_IGNORE_ALPHA "<<((texture->flags)&LIB3DS_TEXTURE_IGNORE_ALPHA)<< std::endl;
-        OSG_NOTIFY(osg::DEBUG_INFO) << "    LIB3DS_TEXTURE_RGB_TINT     "<<((texture->flags)&LIB3DS_TEXTURE_RGB_TINT)<< std::endl;
+        OSG_DEBUG << " '"<<texture->name<<"'"<< std::endl;
+        OSG_DEBUG << "    texture flag        "<<texture->flags<< std::endl;
+        OSG_DEBUG << "    LIB3DS_TEXTURE_DECALE       "<<((texture->flags)&LIB3DS_TEXTURE_DECALE)<< std::endl;
+        OSG_DEBUG << "    LIB3DS_TEXTURE_MIRROR       "<<((texture->flags)&LIB3DS_TEXTURE_MIRROR)<< std::endl;
+        OSG_DEBUG << "    LIB3DS_TEXTURE_NEGATE       "<<((texture->flags)&LIB3DS_TEXTURE_NEGATE)<< std::endl;
+        OSG_DEBUG << "    LIB3DS_TEXTURE_NO_TILE      "<<((texture->flags)&LIB3DS_TEXTURE_NO_TILE)<< std::endl;
+        OSG_DEBUG << "    LIB3DS_TEXTURE_SUMMED_AREA  "<<((texture->flags)&LIB3DS_TEXTURE_SUMMED_AREA)<< std::endl;
+        OSG_DEBUG << "    LIB3DS_TEXTURE_ALPHA_SOURCE "<<((texture->flags)&LIB3DS_TEXTURE_ALPHA_SOURCE)<< std::endl;
+        OSG_DEBUG << "    LIB3DS_TEXTURE_TINT         "<<((texture->flags)&LIB3DS_TEXTURE_TINT)<< std::endl;
+        OSG_DEBUG << "    LIB3DS_TEXTURE_IGNORE_ALPHA "<<((texture->flags)&LIB3DS_TEXTURE_IGNORE_ALPHA)<< std::endl;
+        OSG_DEBUG << "    LIB3DS_TEXTURE_RGB_TINT     "<<((texture->flags)&LIB3DS_TEXTURE_RGB_TINT)<< std::endl;
 
         osg::ref_ptr<osg::Image> osg_image = osgDB::readRefImageFile(fileName.c_str(), options); //Absolute Path
         if (!osg_image.valid())
         {
-            OSG_NOTIFY(osg::NOTICE) << "Warning: Cannot create texture "<<texture->name<< std::endl;
+            OSG_NOTICE << "Warning: Cannot create texture "<<texture->name<< std::endl;
             return NULL;
         }
         if (osg_image->getFileName().empty()) // it should be done in OSG with osgDB::readRefImageFile(fileName.c_str());
@@ -1160,7 +1160,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriter3DS::writeNode(const osg::Node& nod
 
 osgDB::ReaderWriter::WriteResult ReaderWriter3DS::writeNode(const osg::Node& node,std::ostream& fout,const Options* options) const
 {
-    //OSG_NOTIFY(osg::WARN) << "!!WARNING!! 3DS write support is incomplete" << std::endl;
+    //OSG_WARN << "!!WARNING!! 3DS write support is incomplete" << std::endl;
     std::string optFileName;
     if (options)
     {

@@ -51,7 +51,7 @@ void WriterCompareTriangle::cutscene(int nbVertices, const osg::BoundingBox & sc
 
     setMaxMin (nbVerticesX, nbVerticesY, nbVerticesZ); // This function prevent from cutting the scene in too many blocs
 
-    OSG_NOTIFY(osg::INFO)
+    OSG_INFO
         << "Cutting x by " << nbVerticesX << std::endl
         << "Cutting y by " << nbVerticesY << std::endl
         << "Cutting z by " << nbVerticesZ << std::endl;

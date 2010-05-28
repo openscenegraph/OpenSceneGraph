@@ -81,12 +81,12 @@ osgDB::ReaderWriter::ReadResult ReaderWriterPaths::readObject(const std::string&
     std::string ext = osgDB::getLowerCaseFileExtension(file);
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-    osg::notify(osg::INFO)<<"ReaderWriterPaths::readObject("<<file<<")"<<std::endl;
+    OSG_INFO<<"ReaderWriterPaths::readObject("<<file<<")"<<std::endl;
 
     std::string fileName = osgDB::findDataFile( file, options );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-    osg::notify(osg::INFO)<<"  Found path file :"<<fileName<<std::endl;
+    OSG_INFO<<"  Found path file :"<<fileName<<std::endl;
 
     // code for setting up the database path so that internally referenced file are searched for on relative paths.
     osg::ref_ptr<osgDB::ReaderWriter::Options> local_opt = options ? static_cast<osgDB::ReaderWriter::Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
@@ -99,7 +99,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterPaths::readObject(const std::string&
 
 osgDB::ReaderWriter::ReadResult ReaderWriterPaths::readObject(std::istream& fin, const osgDB::Options* options) const
 {
-    osg::notify(osg::INFO)<<"ReaderWriterPaths::readObject(std::istream& fin"<<std::endl;
+    OSG_INFO<<"ReaderWriterPaths::readObject(std::istream& fin"<<std::endl;
 
     if (!options) return ReadResult::FILE_NOT_HANDLED;
     if (!fin) return ReadResult::ERROR_IN_READING_FILE;
@@ -109,7 +109,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterPaths::readObject(std::istream& fin,
 
     std::string ext = osgDB::getLowerCaseFileExtension(filename);
 
-    osg::notify(osg::INFO)<<"   filename found in options: "<<filename<<"  extension="<<ext<<std::endl;
+    OSG_INFO<<"   filename found in options: "<<filename<<"  extension="<<ext<<std::endl;
 
 
     if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
@@ -247,7 +247,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterPaths::read_rotation_path(std::istre
         }
 
     }
-    osg::notify(osg::NOTICE)<<"finished"<<std::endl;
+    OSG_NOTICE<<"finished"<<std::endl;
 
     return animation.get();
 }

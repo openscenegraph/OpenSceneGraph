@@ -129,7 +129,7 @@ public:
         osg::StateAttribute::GLModeValue blendModeValue = _blendModeStack.empty() ? osg::StateAttribute::GLModeValue(osg::StateAttribute::INHERIT) : _blendModeStack.back();
         if (blendModeValue & osg::StateAttribute::ON)
         {
-            // osg::notify(osg::NOTICE)<<"Ignoring transparent drawable."<<std::endl;
+            // OSG_NOTICE<<"Ignoring transparent drawable."<<std::endl;
             return;
         }
         
@@ -152,7 +152,7 @@ protected:
 
 void OccluderGeometry::computeOccluderGeometry(osg::Node* subgraph, osg::Matrix* matrix, float sampleRatio)
 {
-    osg::notify(osg::NOTICE)<<"computeOccluderGeometry(osg::Node* subgraph, float sampleRatio)"<<std::endl;
+    OSG_NOTICE<<"computeOccluderGeometry(osg::Node* subgraph, float sampleRatio)"<<std::endl;
 
     osg::Timer_t startTick = osg::Timer::instance()->tick();
     
@@ -163,7 +163,7 @@ void OccluderGeometry::computeOccluderGeometry(osg::Node* subgraph, osg::Matrix*
 
     osg::Timer_t endTick = osg::Timer::instance()->tick();
 
-    osg::notify(osg::NOTICE)<<"done in "<<osg::Timer::instance()->delta_m(startTick, endTick)<<" ms"<<std::endl;
+    OSG_NOTICE<<"done in "<<osg::Timer::instance()->delta_m(startTick, endTick)<<" ms"<<std::endl;
 }
 
 void OccluderGeometry::computeOccluderGeometry(osg::Drawable* drawable, osg::Matrix* matrix, float sampleRatio)
@@ -199,7 +199,7 @@ struct TriangleCollector
     {
         if (treatVertexDataAsTemporary)
         {
-            // osg::notify(osg::NOTICE)<<"Triangle temp ("<<v1<<") ("<<v2<<") ("<<v3<<")"<<std::endl;
+            // OSG_NOTICE<<"Triangle temp ("<<v1<<") ("<<v2<<") ("<<v3<<")"<<std::endl;
             _tempoaryTriangleVertices.push_back(v1);
             _tempoaryTriangleVertices.push_back(v2);
             _tempoaryTriangleVertices.push_back(v3);
@@ -207,7 +207,7 @@ struct TriangleCollector
         }
         else
         {
-            // osg::notify(osg::NOTICE)<<"Triangle ("<<v1<<") ("<<v2<<") ("<<v3<<")"<<std::endl;
+            // OSG_NOTICE<<"Triangle ("<<v1<<") ("<<v2<<") ("<<v3<<")"<<std::endl;
             _vertexPointers.push_back(&v1);
             _vertexPointers.push_back(&v2);
             _vertexPointers.push_back(&v3);
@@ -235,7 +235,7 @@ struct TriangleCollector
         unsigned int base = _vertices->size();
         unsigned int numberNewVertices = _vertexPointers.empty() ? 0 : (maxVertex - minVertex) + 1;
         
-        // osg::notify(osg::NOTICE)<<"base = "<<base<<" numberNewVertices="<<numberNewVertices<<std::endl;
+        // OSG_NOTICE<<"base = "<<base<<" numberNewVertices="<<numberNewVertices<<std::endl;
 
         _vertices->resize(base + numberNewVertices + _tempoaryTriangleVertices.size());
         
@@ -275,7 +275,7 @@ typedef osg::TriangleFunctor<TriangleCollector> TriangleCollectorFunctor;
 
 void OccluderGeometry::processGeometry(osg::Drawable* drawable, osg::Matrix* matrix, float /*sampleRatio*/)
 {
-    // osg::notify(osg::NOTICE)<<"computeOccluderGeometry(osg::Node* subgraph, float sampleRatio)"<<std::endl;
+    // OSG_NOTICE<<"computeOccluderGeometry(osg::Node* subgraph, float sampleRatio)"<<std::endl;
 
     TriangleCollectorFunctor tc;
     tc.set(&_vertices, &_triangleIndices, matrix);
@@ -289,14 +289,14 @@ void OccluderGeometry::processGeometry(osg::Drawable* drawable, osg::Matrix* mat
         vitr != _vertices.end();
         ++vitr)
     {
-        osg::notify(osg::NOTICE)<<"v "<<*vitr<<std::endl;
+        OSG_NOTICE<<"v "<<*vitr<<std::endl;
     }
 
     for(UIntList::iterator titr = _triangleIndices.begin();
         titr != _triangleIndices.end();
         )
     {
-        osg::notify(osg::NOTICE)<<"t "<<*titr++<<" "<<*titr++<<" "<<*titr++<<std::endl;
+        OSG_NOTICE<<"t "<<*titr++<<" "<<*titr++<<" "<<*titr++<<std::endl;
     }
 #endif
 }
@@ -323,11 +323,11 @@ void OccluderGeometry::setUpInternalStructures()
     osg::Timer_t t4 = osg::Timer::instance()->tick();
 
 
-    osg::notify(osg::NOTICE)<<"removeDuplicateVertices "<<osg::Timer::instance()->delta_m(t0,t1)<<" ms"<<std::endl;
-    osg::notify(osg::NOTICE)<<"removeNullTriangles "<<osg::Timer::instance()->delta_m(t1,t2)<<" ms"<<std::endl;
-    osg::notify(osg::NOTICE)<<"computeNormals "<<osg::Timer::instance()->delta_m(t2,t3)<<" ms"<<std::endl;
-    osg::notify(osg::NOTICE)<<"buildEdgeMaps "<<osg::Timer::instance()->delta_m(t3,t4)<<" ms"<<std::endl;
-    osg::notify(osg::NOTICE)<<"setUpInternalStructures "<<osg::Timer::instance()->delta_m(t0,t4)<<" ms"<<std::endl;
+    OSG_NOTICE<<"removeDuplicateVertices "<<osg::Timer::instance()->delta_m(t0,t1)<<" ms"<<std::endl;
+    OSG_NOTICE<<"removeNullTriangles "<<osg::Timer::instance()->delta_m(t1,t2)<<" ms"<<std::endl;
+    OSG_NOTICE<<"computeNormals "<<osg::Timer::instance()->delta_m(t2,t3)<<" ms"<<std::endl;
+    OSG_NOTICE<<"buildEdgeMaps "<<osg::Timer::instance()->delta_m(t3,t4)<<" ms"<<std::endl;
+    OSG_NOTICE<<"setUpInternalStructures "<<osg::Timer::instance()->delta_m(t0,t4)<<" ms"<<std::endl;
 
 
     dirtyBound();
@@ -367,7 +367,7 @@ void OccluderGeometry::removeDuplicateVertices()
 {
     if (_vertices.empty()) return;
     
-    osg::notify(osg::NOTICE)<<"OccluderGeometry::removeDuplicates() before = "<<_vertices.size()<<std::endl;
+    OSG_NOTICE<<"OccluderGeometry::removeDuplicates() before = "<<_vertices.size()<<std::endl;
 
     typedef std::vector<IndexVec3PtrPair> IndexVec3PtrPairs;
     IndexVec3PtrPairs indexVec3PtrPairs;
@@ -404,8 +404,8 @@ void OccluderGeometry::removeDuplicateVertices()
         }
     }
     
-    osg::notify(osg::NOTICE)<<"Num diplicates = "<<numDuplicates<<std::endl;
-    osg::notify(osg::NOTICE)<<"Num unique = "<<numUnique<<std::endl;
+    OSG_NOTICE<<"Num diplicates = "<<numDuplicates<<std::endl;
+    OSG_NOTICE<<"Num unique = "<<numUnique<<std::endl;
 
     if (numDuplicates==0) return;
 
@@ -454,12 +454,12 @@ void OccluderGeometry::removeDuplicateVertices()
         *titr = indexMap[*titr];
     }
 
-    // osg::notify(osg::NOTICE)<<"OccluderGeometry::removeDuplicates() after = "<<_vertices.size()<<std::endl;
+    // OSG_NOTICE<<"OccluderGeometry::removeDuplicates() after = "<<_vertices.size()<<std::endl;
 }
 
 void OccluderGeometry::removeNullTriangles()
 {
-    // osg::notify(osg::NOTICE)<<"OccluderGeometry::removeNullTriangles()"<<std::endl;
+    // OSG_NOTICE<<"OccluderGeometry::removeNullTriangles()"<<std::endl;
 
     
     UIntList::iterator lastValidItr = _triangleIndices.begin();
@@ -486,26 +486,26 @@ void OccluderGeometry::removeNullTriangles()
         }
         else
         {
-            // osg::notify(osg::NOTICE)<<"Null triangle"<<std::endl;
+            // OSG_NOTICE<<"Null triangle"<<std::endl;
         }
     }
     if (lastValidItr != _triangleIndices.end())
     {
-        // osg::notify(osg::NOTICE)<<"Pruning end - before "<<_triangleIndices.size()<<std::endl;
+        // OSG_NOTICE<<"Pruning end - before "<<_triangleIndices.size()<<std::endl;
         _triangleIndices.erase(lastValidItr,_triangleIndices.end());
-        // osg::notify(osg::NOTICE)<<"Pruning end - after "<<_triangleIndices.size()<<std::endl;
+        // OSG_NOTICE<<"Pruning end - after "<<_triangleIndices.size()<<std::endl;
     }
 }
 
 void OccluderGeometry::computeNormals()
 {
-    // osg::notify(osg::NOTICE)<<"OccluderGeometry::computeNormals()"<<std::endl;
+    // OSG_NOTICE<<"OccluderGeometry::computeNormals()"<<std::endl;
     
     unsigned int numTriangles = _triangleIndices.size() / 3;
     unsigned int redundentIndices = _triangleIndices.size() - numTriangles * 3;
     if (redundentIndices)
     {
-        osg::notify(osg::NOTICE)<<"Warning OccluderGeometry::computeNormals() has found redundent trailing indices"<<std::endl;
+        OSG_NOTICE<<"Warning OccluderGeometry::computeNormals() has found redundent trailing indices"<<std::endl;
         _triangleIndices.erase(_triangleIndices.begin() + numTriangles * 3, _triangleIndices.end());
     }
     
@@ -547,7 +547,7 @@ void OccluderGeometry::computeNormals()
 
 void OccluderGeometry::buildEdgeMaps()
 {
-    // osg::notify(osg::NOTICE)<<"OccluderGeometry::buildEdgeMaps()"<<std::endl;
+    // OSG_NOTICE<<"OccluderGeometry::buildEdgeMaps()"<<std::endl;
     
     typedef std::set<Edge> EdgeSet;
     EdgeSet edgeSet;
@@ -654,7 +654,7 @@ void OccluderGeometry::buildEdgeMaps()
             case(0):
                 ++numEdgesWithNoTriangles;
                 edge._normal.set(0.0,0.0,0.0);
-                osg::notify(osg::NOTICE)<<"Warning no triangles on edge."<<std::endl;
+                OSG_NOTICE<<"Warning no triangles on edge."<<std::endl;
                 break; 
             case(1):
                 ++numEdgesWithOneTriangles;
@@ -672,13 +672,13 @@ void OccluderGeometry::buildEdgeMaps()
     }
 
 #if 0
-    osg::notify(osg::NOTICE)<<"Num of indices "<<_triangleIndices.size()<<std::endl;
-    osg::notify(osg::NOTICE)<<"Num of triangles "<<triNo<<std::endl;
-    osg::notify(osg::NOTICE)<<"Num of numTriangleErrors "<<numTriangleErrors<<std::endl;
-    osg::notify(osg::NOTICE)<<"Num of edges "<<edgeSet.size()<<std::endl;
-    osg::notify(osg::NOTICE)<<"Num of numEdgesWithNoTriangles "<<numEdgesWithNoTriangles<<std::endl;
-    osg::notify(osg::NOTICE)<<"Num of numEdgesWithOneTriangles "<<numEdgesWithOneTriangles<<std::endl;
-    osg::notify(osg::NOTICE)<<"Num of numEdgesWithTwoTriangles "<<numEdgesWithTwoTriangles<<std::endl;
+    OSG_NOTICE<<"Num of indices "<<_triangleIndices.size()<<std::endl;
+    OSG_NOTICE<<"Num of triangles "<<triNo<<std::endl;
+    OSG_NOTICE<<"Num of numTriangleErrors "<<numTriangleErrors<<std::endl;
+    OSG_NOTICE<<"Num of edges "<<edgeSet.size()<<std::endl;
+    OSG_NOTICE<<"Num of numEdgesWithNoTriangles "<<numEdgesWithNoTriangles<<std::endl;
+    OSG_NOTICE<<"Num of numEdgesWithOneTriangles "<<numEdgesWithOneTriangles<<std::endl;
+    OSG_NOTICE<<"Num of numEdgesWithTwoTriangles "<<numEdgesWithTwoTriangles<<std::endl;
 #endif
 }
 
@@ -755,7 +755,7 @@ void OccluderGeometry::computeShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
     // need to have some kind of handling of case when no planes exist.
     if (_boundingPolytope.getPlaneList().empty())
     {
-        osg::notify(osg::NOTICE)<<"Warning: no bounding polytope registered with OccluderGeometry."<<std::endl;
+        OSG_NOTICE<<"Warning: no bounding polytope registered with OccluderGeometry."<<std::endl;
         return;
     }
 
@@ -765,7 +765,7 @@ void OccluderGeometry::computeShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
         // directional light.
         osg::Vec3 lightdirection( -lightpos.x(), -lightpos.y(), -lightpos.z());
         
-        // osg::notify(osg::NOTICE)<<"Directional light"<<std::endl;
+        // OSG_NOTICE<<"Directional light"<<std::endl;
         
         // choose the base plane
         const osg::Polytope::PlaneList& planes = _boundingPolytope.getPlaneList();
@@ -825,12 +825,12 @@ void OccluderGeometry::computeShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
 
         osg::Plane basePlane(0.0, 0.0, 1.0, 0.0);
 
-        // osg::notify(osg::NOTICE)<<"Positional light"<<std::endl;
+        // OSG_NOTICE<<"Positional light"<<std::endl;
         UIntList silhouetteIndices;
         computeLightPositionSilhouetteEdges(lightposition, silhouetteIndices);
         
-        // osg::notify(osg::NOTICE)<<"basePlane "<<basePlane[0]<<" "<<basePlane[1]<<" "<<basePlane[2]<<" "<<basePlane[3]<<std::endl;
-        // osg::notify(osg::NOTICE)<<"lightpos  = "<<std::endl;
+        // OSG_NOTICE<<"basePlane "<<basePlane[0]<<" "<<basePlane[1]<<" "<<basePlane[2]<<" "<<basePlane[3]<<std::endl;
+        // OSG_NOTICE<<"lightpos  = "<<std::endl;
         const osg::Polytope::PlaneList& planes = _boundingPolytope.getPlaneList();
 
         for(UIntList::iterator itr = silhouetteIndices.begin();
@@ -884,7 +884,7 @@ void OccluderGeometry::computeShadowVolumeGeometry(const osg::Vec4& lightpos, Sh
     svg.dirtyBound();
 
     // osg::Timer_t t1 = osg::Timer::instance()->tick();
-    // osg::notify(osg::NOTICE)<<"computeShadowVolumeGeometry "<<osg::Timer::instance()->delta_m(t0,t1)<<" ms"<<std::endl;
+    // OSG_NOTICE<<"computeShadowVolumeGeometry "<<osg::Timer::instance()->delta_m(t0,t1)<<" ms"<<std::endl;
 }
 
 void OccluderGeometry::drawImplementation(osg::RenderInfo& renderInfo) const

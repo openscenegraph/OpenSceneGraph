@@ -50,26 +50,26 @@ ShadowTechnique::~ShadowTechnique()
 
 void ShadowTechnique::init()
 {
-    osg::notify(osg::NOTICE)<<className()<<"::init() not implemened yet"<<std::endl;
+    OSG_NOTICE<<className()<<"::init() not implemened yet"<<std::endl;
     
     _dirty = false;
 }
 
 void ShadowTechnique::update(osg::NodeVisitor& nv)
 {
-    osg::notify(osg::NOTICE)<<className()<<"::update(osg::NodeVisitor&) not implemened yet."<<std::endl;
+    OSG_NOTICE<<className()<<"::update(osg::NodeVisitor&) not implemened yet."<<std::endl;
      _shadowedScene->osg::Group::traverse(nv);
 }
 
 void ShadowTechnique::cull(osgUtil::CullVisitor& cv)
 {
-    osg::notify(osg::NOTICE)<<className()<<"::cull(osgUtl::CullVisitor&) not implemened yet."<<std::endl;
+    OSG_NOTICE<<className()<<"::cull(osgUtl::CullVisitor&) not implemened yet."<<std::endl;
     _shadowedScene->osg::Group::traverse(cv);
 }
 
 void ShadowTechnique::cleanSceneGraph()
 {
-    osg::notify(osg::NOTICE)<<className()<<"::cleanSceneGraph()) not implemened yet."<<std::endl;
+    OSG_NOTICE<<className()<<"::cleanSceneGraph()) not implemened yet."<<std::endl;
 }
 
 void ShadowTechnique::traverse(osg::NodeVisitor& nv)

@@ -31,18 +31,12 @@ using namespace osgShadow;
 
 
 #if defined( DEBUG ) || defined( _DEBUG ) || defined( _DEBUG_ )
-
-// #define MAKE_CHECKS 0
-
+    #define MAKE_CHECKS 1
 #endif
 
 #if MAKE_CHECKS
 
-inline std::ostream & DEBUG_NOTIFY( void )
-{
-    return osg::notify( osg::WARN );
-}
-#define WARN  DEBUG_NOTIFY()
+#define WARN  OSG_WARN
 
 #define CONVEX_POLYHEDRON_CHECK_COHERENCY             1
 #define CONVEX_POLYHEDRON_WARN_ON_INCOHERENT_DATA     2
@@ -57,7 +51,7 @@ inline std::ostream & DEBUG_NOTIFY( void )
 
 #else
 
-#define WARN osg::notify( osg::WARN )
+#define WARN OSG_WARN
 
 #define CONVEX_POLYHEDRON_CHECK_COHERENCY             0
 #define CONVEX_POLYHEDRON_WARN_ON_INCOHERENT_DATA     0

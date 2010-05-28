@@ -422,7 +422,7 @@ void daeWriter::apply( osg::Geode &node )
         }
         else
         {
-            osg::notify( osg::WARN ) << "Non-geometry drawables are not supported" << std::endl;
+            OSG_WARN << "Non-geometry drawables are not supported" << std::endl;
         }
     }
 
@@ -546,7 +546,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
         }
         break;
     default:
-        osg::notify( osg::WARN ) << "Invalid array type for vertices" << std::endl;
+        OSG_WARN << "Invalid array type for vertices" << std::endl;
         break;
     }
 
@@ -602,9 +602,9 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
 
         //no normals
         case ArrayNIndices::NONE:
-          osg::notify( osg::WARN ) << "No array type for normals"<<std::endl;
+          OSG_WARN << "No array type for normals"<<std::endl;
         default:
-          osg::notify( osg::WARN ) << "Invalid array type for normals"<<std::endl;
+          OSG_WARN << "Invalid array type for normals"<<std::endl;
           break;
         }
 
@@ -656,7 +656,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
             }
             break;
         default:
-            osg::notify( osg::WARN ) << "Invalid array type for colors" << std::endl;
+            OSG_WARN << "Invalid array type for colors" << std::endl;
             break;
         }
         //if COLOR shares same indices as POSITION put it in the vertices
@@ -711,7 +711,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
             break;
         default:
           //##ti and not i
-            osg::notify( osg::WARN ) << "Invalid array type for texcoord" << ti << std::endl;
+            OSG_WARN << "Invalid array type for texcoord" << ti << std::endl;
             break;
         }
         texcoord.push_back( t );
@@ -763,14 +763,14 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                 break;
             default:
               //##ti and not i
-                osg::notify( osg::WARN ) << "Invalid array type for vertex attribute" << ti << std::endl;
+                OSG_WARN << "Invalid array type for vertex attribute" << ti << std::endl;
                 break;
             }
             vertexAttribute.push_back( t );
         }
         else
         {
-            osg::notify( osg::WARN ) << "Invalid array type for vertex attribute" << ti << std::endl;
+            OSG_WARN << "Invalid array type for vertex attribute" << ti << std::endl;
         }
     }
 
@@ -779,7 +779,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
     unsigned int ccount = 0; //Color index counter
     if ( geom->getNumPrimitiveSets() == 0 )
     {
-        osg::notify( osg::WARN ) << "NO PRIMITIVE SET!!" << std::endl;
+        OSG_WARN << "NO PRIMITIVE SET!!" << std::endl;
         return false;
     }
     bool valid = false;
@@ -797,7 +797,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
         {
             case GL_POINTS:    
             {
-                osg::notify( osg::WARN ) << "Geometry contains points rendering. COLLADA does not" << std::endl; 
+                OSG_WARN << "Geometry contains points rendering. COLLADA does not" << std::endl; 
                 continue;
             }
             case GL_LINES:     
@@ -924,7 +924,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                        //(primitive type+begin+end),(primitive type+begin+end)...
             case osg::PrimitiveSet::DrawArraysPrimitiveType:
             {
-                //osg::notify( osg::WARN ) << "DrawArrays" << std::endl;
+                //OSG_WARN << "DrawArrays" << std::endl;
 
                 if ( primLength == 0 ) 
                 {
@@ -1022,7 +1022,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
             //(primitive type) + (end1),(end2),(end3)...
             case osg::PrimitiveSet::DrawArrayLengthsPrimitiveType:
             {
-                //osg::notify( osg::WARN ) << "DrawArrayLengths" << std::endl;
+                //OSG_WARN << "DrawArrayLengths" << std::endl;
 
                 osg::DrawArrayLengths* drawArrayLengths = static_cast<osg::DrawArrayLengths*>( ps );
 
@@ -1123,7 +1123,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
             //draw elements (array of shared vertices + array of indices)
            case osg::PrimitiveSet::DrawElementsUBytePrimitiveType:
                      {
-                //osg::notify( osg::WARN ) << "DrawElementsUByte" << std::endl;
+                //OSG_WARN << "DrawElementsUByte" << std::endl;
 
                 if ( primLength == 0 ) primLength = ps->getNumIndices();
 
@@ -1223,7 +1223,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
             }
             case osg::PrimitiveSet::DrawElementsUShortPrimitiveType:
             {
-                //osg::notify( osg::WARN ) << "DrawElementsUShort" << std::endl;
+                //OSG_WARN << "DrawElementsUShort" << std::endl;
                 if ( primLength == 0 ) primLength = ps->getNumIndices();
 
                 osg::DrawElementsUShort* drawElements = static_cast<osg::DrawElementsUShort*>( ps );
@@ -1323,7 +1323,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
             }
             case osg::PrimitiveSet::DrawElementsUIntPrimitiveType:
             {
-                //osg::notify( osg::WARN ) << "DrawElementsUInt" << std::endl;
+                //OSG_WARN << "DrawElementsUInt" << std::endl;
 
                 if ( primLength == 0 ) primLength = ps->getNumIndices();
 
@@ -1422,7 +1422,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                 break;
             }
             default:
-                osg::notify( osg::WARN ) << "Unsupported primitiveSet" << std::endl;
+                OSG_WARN << "Unsupported primitiveSet" << std::endl;
                 break;
         }
 

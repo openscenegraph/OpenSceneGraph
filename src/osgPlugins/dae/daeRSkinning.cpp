@@ -57,7 +57,7 @@ domNode* daeReader::findJointNode(daeElement* searchFrom, domInstance_controller
             pDomJointsSource = daeSafeCast<domSource>(getElementFromURI(domInputs[i]->getSource()));
             if (!pDomJointsSource)
             {
-                osg::notify( osg::WARN ) << "Could not find skin joints source '" << domInputs[i]->getSource().getURI() << "'" <<std::endl;
+                OSG_WARN << "Could not find skin joints source '" << domInputs[i]->getSource().getURI() << "'" <<std::endl;
                 return NULL;
             }
         }
@@ -80,7 +80,7 @@ domNode* daeReader::findJointNode(daeElement* searchFrom, domInstance_controller
         }
     }
 
-    osg::notify( osg::WARN ) << "No valid names or IDREFS array in <skin>" <<std::endl;
+    OSG_WARN << "No valid names or IDREFS array in <skin>" <<std::endl;
     return NULL;
 }
 
@@ -153,7 +153,7 @@ void getJointsAndInverseObjectspaceBindMatrices(domInstance_controller* pDomInst
 
     if (domInputs.getCount() > 2)
     {
-        osg::notify( osg::WARN ) << "Only a single pair of skin joints inputs is supported." << std::endl;
+        OSG_WARN << "Only a single pair of skin joints inputs is supported." << std::endl;
     }
 
     domSource* pDomJointsSource = NULL;
@@ -165,7 +165,7 @@ void getJointsAndInverseObjectspaceBindMatrices(domInstance_controller* pDomInst
             pDomJointsSource = daeSafeCast<domSource>(getElementFromURI(domInputs[i]->getSource()));
             if (!pDomJointsSource)
             {
-                osg::notify( osg::WARN ) << "Could not find skin joints source '" << domInputs[i]->getSource().getURI() << "'" <<std::endl;
+                OSG_WARN << "Could not find skin joints source '" << domInputs[i]->getSource().getURI() << "'" <<std::endl;
                 return;
             }
         }
@@ -174,7 +174,7 @@ void getJointsAndInverseObjectspaceBindMatrices(domInstance_controller* pDomInst
             pDomInvBindMatricesSource = daeSafeCast<domSource>(getElementFromURI(domInputs[i]->getSource()));
             if (!pDomInvBindMatricesSource)
             {
-                osg::notify( osg::WARN ) << "Could not find skin inverse bind matrices source '" << domInputs[i]->getSource().getURI() << "'" <<std::endl;
+                OSG_WARN << "Could not find skin inverse bind matrices source '" << domInputs[i]->getSource().getURI() << "'" <<std::endl;
                 return;
             }
         }
@@ -199,7 +199,7 @@ void getJointsAndInverseObjectspaceBindMatrices(domInstance_controller* pDomInst
             }
             else
             {
-                osg::notify( osg::WARN ) << "Failed to locate joint '" << pIDREFS->get(i).getID() << "'" << std::endl;
+                OSG_WARN << "Failed to locate joint '" << pIDREFS->get(i).getID() << "'" << std::endl;
             }
         }
     }
@@ -219,13 +219,13 @@ void getJointsAndInverseObjectspaceBindMatrices(domInstance_controller* pDomInst
             }
             else
             {
-                osg::notify( osg::WARN ) << "Failed to locate joint '" << pNames->get(i) << "'" << std::endl;
+                OSG_WARN << "Failed to locate joint '" << pNames->get(i) << "'" << std::endl;
             }
         }
     }
     else
     {
-        osg::notify( osg::WARN ) << "No valid names or IDREFS array in <skin>" <<std::endl;
+        OSG_WARN << "No valid names or IDREFS array in <skin>" <<std::endl;
     }
 
     for (size_t i = 0; i < jointsAndBindMatrices.size(); ++i)
@@ -296,7 +296,7 @@ void daeReader::processSkin(domSkin* pDomSkin, domNode* skeletonRoot, osgAnimati
 
     if (!pDaeSkinSource)
     {
-        osg::notify( osg::WARN ) << "Failed to locate geometry " << pDomSkin->getSource().getURI() << std::endl;
+        OSG_WARN << "Failed to locate geometry " << pDomSkin->getSource().getURI() << std::endl;
         return;
     }
 
@@ -304,7 +304,7 @@ void daeReader::processSkin(domSkin* pDomSkin, domNode* skeletonRoot, osgAnimati
 
     if (!pDomGeometry)
     {
-        osg::notify( osg::WARN ) << "Skin source is of type " << pDaeSkinSource->getTypeName() << " which is not supported." << std::endl;
+        OSG_WARN << "Skin source is of type " << pDaeSkinSource->getTypeName() << " which is not supported." << std::endl;
         return;
     }
 
@@ -385,7 +385,7 @@ void daeReader::processSkin(domSkin* pDomSkin, domNode* skeletonRoot, osgAnimati
 
     if (domInputs.getCount() > 2)
     {
-        osg::notify( osg::WARN ) << "Only a single pair of skin vertex weights inputs is supported." << std::endl;
+        OSG_WARN << "Only a single pair of skin vertex weights inputs is supported." << std::endl;
     }
 
     domSource* pDomJointsSource = NULL;
@@ -397,7 +397,7 @@ void daeReader::processSkin(domSkin* pDomSkin, domNode* skeletonRoot, osgAnimati
             pDomJointsSource = daeSafeCast<domSource>(getElementFromURI(domInputs[i]->getSource()));
             if (!pDomJointsSource)
             {
-                osg::notify( osg::WARN ) << "Could not find skin joints source '" << domInputs[i]->getSource().getURI() << "'" <<std::endl;
+                OSG_WARN << "Could not find skin joints source '" << domInputs[i]->getSource().getURI() << "'" <<std::endl;
                 return;
             }
         }
@@ -406,7 +406,7 @@ void daeReader::processSkin(domSkin* pDomSkin, domNode* skeletonRoot, osgAnimati
             pDomWeightsSource = daeSafeCast<domSource>(getElementFromURI(domInputs[i]->getSource()));
             if (!pDomWeightsSource)
             {
-                osg::notify( osg::WARN ) << "Could not find skin weights source '" << domInputs[i]->getSource().getURI() << "'" <<std::endl;
+                OSG_WARN << "Could not find skin weights source '" << domInputs[i]->getSource().getURI() << "'" <<std::endl;
                 return;
             }
         }
@@ -441,7 +441,7 @@ void daeReader::processSkin(domSkin* pDomSkin, domNode* skeletonRoot, osgAnimati
             else
             {
                 jointNames.push_back(szName);
-                osg::notify(osg::WARN) << "Cannot find bone " << szName << std::endl;
+                OSG_WARN << "Cannot find bone " << szName << std::endl;
             }
         }
     }
@@ -461,13 +461,13 @@ void daeReader::processSkin(domSkin* pDomSkin, domNode* skeletonRoot, osgAnimati
             else
             {
                 jointNames.push_back(pIDREFs->get(i).getID());
-                osg::notify(osg::WARN) << "Cannot find bone " << pIDREFs->get(i).getID() << std::endl;
+                OSG_WARN << "Cannot find bone " << pIDREFs->get(i).getID() << std::endl;
             }
         }
     }
     else
     {
-        osg::notify( osg::WARN ) << "No valid names or IDREFS array in <skin>" <<std::endl;
+        OSG_WARN << "No valid names or IDREFS array in <skin>" <<std::endl;
         return;
     }
 
@@ -491,7 +491,7 @@ void daeReader::processSkin(domSkin* pDomSkin, domNode* skeletonRoot, osgAnimati
         {
             if (vIndex + 2 > jointWeightIndices.getCount())
             {
-                osg::notify( osg::WARN ) << "vIndex is larger than number of v values" <<std::endl;
+                OSG_WARN << "vIndex is larger than number of v values" <<std::endl;
                 break;
             }
 
@@ -500,12 +500,12 @@ void daeReader::processSkin(domSkin* pDomSkin, domNode* skeletonRoot, osgAnimati
 
             if (jointIndex >= jointNames.size())
             {
-                osg::notify( osg::WARN ) << "Joint index is larger the number of joints" <<std::endl;
+                OSG_WARN << "Joint index is larger the number of joints" <<std::endl;
                 break;
             }
             if (weightIndex >= weights.getCount())
             {
-                osg::notify( osg::WARN ) << "Weight index is larger the number of weights" <<std::endl;
+                OSG_WARN << "Weight index is larger the number of weights" <<std::endl;
                 break;
             }
 

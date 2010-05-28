@@ -58,7 +58,7 @@ osg::Geode* daeReader::getOrCreateGeometry(domGeometry *pDomGeometry, domBind_ma
     osg::Geode *pCopiedOsgGeode = static_cast<osg::Geode*>(pOsgGeode->clone(osg::CopyOp::DEEP_COPY_DRAWABLES));
     if ( pCopiedOsgGeode == NULL )
     {
-        osg::notify( osg::WARN ) << "Failed to load geometry " << pDomGeometry->getName() << std::endl;
+        OSG_WARN << "Failed to load geometry " << pDomGeometry->getName() << std::endl;
         return NULL;
     }
 
@@ -134,7 +134,7 @@ osg::Geode* daeReader::processInstanceGeometry( domInstance_geometry *pDomInstan
     domGeometry *pDomGeometry = daeSafeCast< domGeometry >(getElementFromURI(pDomInstanceGeometry->getUrl()));
     if (!pDomGeometry)
     {
-        osg::notify( osg::WARN ) << "Failed to locate geometry " << pDomInstanceGeometry->getUrl().getURI() << std::endl;
+        OSG_WARN << "Failed to locate geometry " << pDomInstanceGeometry->getUrl().getURI() << std::endl;
         return NULL;
     }
 
@@ -153,7 +153,7 @@ osg::Node* daeReader::processMorph(domMorph* pDomMorph, domBind_material* pDomBi
 
     if (!pDomGeometry)
     {
-        osg::notify( osg::WARN ) << "Failed to locate geometry " << pDomMorph->getSource().getURI() << std::endl;
+        OSG_WARN << "Failed to locate geometry " << pDomMorph->getSource().getURI() << std::endl;
         return NULL;
     }
 
@@ -189,7 +189,7 @@ osg::Node* daeReader::processMorph(domMorph* pDomMorph, domBind_material* pDomBi
         pOsgMorphGeometry->setMethod(osgAnimation::MorphGeometry::NORMALIZED);
         break;
     default:
-        osg::notify( osg::WARN ) << "Unknown morph method method type " << std::endl;
+        OSG_WARN << "Unknown morph method method type " << std::endl;
     }
 
     // 1    <targets>
@@ -199,7 +199,7 @@ osg::Node* daeReader::processMorph(domMorph* pDomMorph, domBind_material* pDomBi
     // TODO how to handle multiple pairs of morph inputs?
     if (domInputs.getCount() > 2)
     {
-        osg::notify( osg::WARN ) << "Only a single pair of morph inputs is supported." << std::endl;
+        OSG_WARN << "Only a single pair of morph inputs is supported." << std::endl;
     }
 
     for (size_t i=0; i < 2; i++)
@@ -230,7 +230,7 @@ osg::Node* daeReader::processMorph(domMorph* pDomMorph, domBind_material* pDomBi
                         }
                         else
                         {
-                            osg::notify( osg::WARN ) << "Failed to locate morph geometry '" << names.get(j) << "'" << std::endl;
+                            OSG_WARN << "Failed to locate morph geometry '" << names.get(j) << "'" << std::endl;
                         }
                     }
                 }
@@ -254,14 +254,14 @@ osg::Node* daeReader::processMorph(domMorph* pDomMorph, domBind_material* pDomBi
                         }
                         else
                         {
-                            osg::notify( osg::WARN ) << "Failed to locate morph geometry '" << pIDREFS->get(j).getID() << "'" << std::endl;
+                            OSG_WARN << "Failed to locate morph geometry '" << pIDREFS->get(j).getID() << "'" << std::endl;
                         }
                     }
                 }
             }
             else
             {
-                osg::notify( osg::WARN ) << "Could not find morph source '" << domInputs[i]->getSource().getURI() << "'" <<std::endl;
+                OSG_WARN << "Could not find morph source '" << domInputs[i]->getSource().getURI() << "'" <<std::endl;
                 return NULL;
             }
         }
@@ -297,7 +297,7 @@ osg::Node* daeReader::processMorph(domMorph* pDomMorph, domBind_material* pDomBi
             }
             else
             {
-                osg::notify( osg::WARN ) << "Could not find morph source '" << domInputs[i]->getSource().getURI() << "'" <<std::endl;
+                OSG_WARN << "Could not find morph source '" << domInputs[i]->getSource().getURI() << "'" <<std::endl;
                 return NULL;
             }
         }
@@ -315,7 +315,7 @@ osg::Node* daeReader::processInstanceController( domInstance_controller *pDomIns
     domController *pDomController = daeSafeCast< domController >(getElementFromURI(pDomInstanceController->getUrl()));
     if (!pDomController)
     {
-        osg::notify( osg::WARN ) << "Failed to locate controller " << pDomInstanceController->getUrl().getURI() << std::endl;
+        OSG_WARN << "Failed to locate controller " << pDomInstanceController->getUrl().getURI() << std::endl;
         return NULL;
     }
 
@@ -329,7 +329,7 @@ osg::Node* daeReader::processInstanceController( domInstance_controller *pDomIns
         return processMorph(pDomController->getMorph(), pDomInstanceController->getBind_material());
     }
 
-    osg::notify( osg::WARN ) << "Expected skin or morph element in controller '" << pDomController->getName() << "'" << std::endl;
+    OSG_WARN << "Expected skin or morph element in controller '" << pDomController->getName() << "'" << std::endl;
 
     return NULL;
 }
@@ -412,14 +412,14 @@ osg::Geode *daeReader::processMesh(domMesh* pDomMesh)
 // <convexmesh>
 osg::Geode *daeReader::processConvexMesh(domConvex_mesh* pDomConvexMesh)
 {
-//    osg::notify( osg::WARN ) << "Unsupported geometry convex mesh '" << pDomConvexMesh->getId() << "'" << std::endl;
+//    OSG_WARN << "Unsupported geometry convex mesh '" << pDomConvexMesh->getId() << "'" << std::endl;
     return NULL;
 }
 
 // <spline>
 osg::Geode *daeReader::processSpline(domSpline* pDomSpline)
 {
-//    osg::notify( osg::WARN ) << "Unsupported geometry type spline '" << pDomSpline->getId() << "'" << std::endl;
+//    OSG_WARN << "Unsupported geometry type spline '" << pDomSpline->getId() << "'" << std::endl;
     return NULL;
 }
 
@@ -448,7 +448,7 @@ osg::Geode *daeReader::processGeometry(domGeometry *pDomGeometry)
     }
 #endif
 
-    osg::notify( osg::WARN ) << "Unexpected geometry type in geometry '" << pDomGeometry->getId() << "'" << std::endl;
+    OSG_WARN << "Unexpected geometry type in geometry '" << pDomGeometry->getId() << "'" << std::endl;
     return NULL;
 }
 
@@ -499,7 +499,7 @@ void daeReader::processPolylist(osg::Geode* geode, const domMesh* pDomMesh, cons
     const domPolylist::domVcount* pDomVcount = group->getVcount();
     if (!pDomVcount)
     {
-        osg::notify(osg::WARN) << "Index counts not found." << std::endl;
+        OSG_WARN << "Index counts not found." << std::endl;
         return;
     }
 
@@ -524,7 +524,7 @@ void daeReader::processPolylist(osg::Geode* geode, const domMesh* pDomMesh, cons
         size_t primitiveLength = vCount[i];
         if (j + primitiveLength > vertexList.size())
         {
-            osg::notify(osg::WARN) << "Error: vertex counts are greater than the number of indices." << std::endl;
+            OSG_WARN << "Error: vertex counts are greater than the number of indices." << std::endl;
             return;
         }
         for (size_t k = 2; k < primitiveLength; ++k)
@@ -653,14 +653,14 @@ void resolveMeshInputs(
         if (strcmp(COMMON_PROFILE_INPUT_COLOR, semantic) == 0)
         {
             if (color_source != NULL)
-                osg::notify( osg::WARN )<<"Overwriting vertices input(COLOR) with input from primitive"<<std::endl;
+                OSG_WARN<<"Overwriting vertices input(COLOR) with input from primitive"<<std::endl;
             color_source = pDaeElement;
             color_offset = offset;
         }
         else if (strcmp(COMMON_PROFILE_INPUT_NORMAL, semantic) == 0)
         {
             if (normal_source != NULL)
-                osg::notify( osg::WARN )<<"Overwriting vertices input(NORMAL) with input from primitive"<<std::endl;
+                OSG_WARN<<"Overwriting vertices input(NORMAL) with input from primitive"<<std::endl;
             normal_source = pDaeElement;
             normal_offset = offset;
         }
@@ -669,12 +669,12 @@ void resolveMeshInputs(
             unsigned set = inputs[i]->getSet();
             if (set >= MAX_TEXTURE_COORDINATE_SETS)
             {
-                osg::notify( osg::WARN )<<"Texture coordinate set "<< set <<
+                OSG_WARN<<"Texture coordinate set "<< set <<
                     "was requested, the maximum allowed is " << MAX_TEXTURE_COORDINATE_SETS - 1 << "." << std::endl;
                 continue;
             }
             if (texcoord_sources[set])
-                osg::notify( osg::WARN )<<"Overwriting vertices input(TEXCOORD) with input from primitive"<<std::endl;
+                OSG_WARN<<"Overwriting vertices input(TEXCOORD) with input from primitive"<<std::endl;
 
             texcoord_sources[set] = pDaeElement;
             texcoord_offsets[set] = offset;

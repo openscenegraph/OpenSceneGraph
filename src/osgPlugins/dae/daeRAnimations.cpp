@@ -107,7 +107,7 @@ void daeReader::processAnimationClip(osgAnimation::BasicAnimationManager* pOsgAn
         }
         else
         {
-            osg::notify( osg::WARN ) << "Failed to locate animation " << domInstanceArray[i]->getUrl().getURI() << std::endl;
+            OSG_WARN << "Failed to locate animation " << domInstanceArray[i]->getUrl().getURI() << std::endl;
         }
     }
 
@@ -243,7 +243,7 @@ void mergeKeyframeContainers(osgAnimation::Vec3CubicBezierKeyframeContainer* to,
                     }
                     break;
                 default:
-                    osg::notify(osg::WARN) << "Unsupported interpolation type." << std::endl;
+                    OSG_WARN << "Unsupported interpolation type." << std::endl;
                     break;
                 }
 
@@ -391,12 +391,12 @@ void daeReader::processAnimationMap(const TargetChannelPartMap& tcm, osgAnimatio
                     }
                     else
                     {
-                        osg::notify(osg::WARN) << "Unrecognised vector component \"" << componentName << "\"" << std::endl;
+                        OSG_WARN << "Unrecognised vector component \"" << componentName << "\"" << std::endl;
                     }
                 }
                 else
                 {
-                    osg::notify(osg::WARN) << "Unrecognised keyframe container \"" << channelPart->name << "\"" << std::endl;
+                    OSG_WARN << "Unrecognised keyframe container \"" << channelPart->name << "\"" << std::endl;
                 }
             }
 
@@ -437,7 +437,7 @@ void daeReader::processAnimationMap(const TargetChannelPartMap& tcm, osgAnimatio
                 }
                 else
                 {
-                    osg::notify(osg::WARN) << "Unsupported interpolation type" << std::endl;
+                    OSG_WARN << "Unsupported interpolation type" << std::endl;
                 }
             }
         }
@@ -454,7 +454,7 @@ void daeReader::processAnimationMap(const TargetChannelPartMap& tcm, osgAnimatio
             {
                 if (dynamic_cast<osgAnimation::MatrixTarget*>(lb->first))
                 {
-                    osg::notify(osg::WARN) << "Animating elements of matrices not supported." << std::endl;
+                    OSG_WARN << "Animating elements of matrices not supported." << std::endl;
                 }
                 else
                 {
@@ -581,25 +581,25 @@ daeReader::ChannelPart* daeReader::processSampler(domChannel* pDomChannel, Sourc
                     }
                     else
                     {
-                        osg::notify(osg::WARN) << "Only TIME based animations are supported" <<std::endl;
+                        OSG_WARN << "Only TIME based animations are supported" <<std::endl;
                         return NULL;
                     }
                 }
                 else
                 {
-                    osg::notify(osg::WARN) << "No params in accessor" <<std::endl;
+                    OSG_WARN << "No params in accessor" <<std::endl;
                     return NULL;
                 }
             }
             else
             {
-                osg::notify(osg::WARN) << "Unable to find <technique_common> in <source> " << pDomSource->getName() <<std::endl;
+                OSG_WARN << "Unable to find <technique_common> in <source> " << pDomSource->getName() <<std::endl;
                 return NULL;
             }
         }
         else
         {
-            osg::notify( osg::WARN ) << "Could not get animation 'INPUT' source"<<std::endl;
+            OSG_WARN << "Could not get animation 'INPUT' source"<<std::endl;
             return NULL;
         }
     }
@@ -655,19 +655,19 @@ daeReader::ChannelPart* daeReader::processSampler(domChannel* pDomChannel, Sourc
                 }
                 else
                 {
-                    osg::notify(osg::WARN) << "No names in <Name_array>" <<std::endl;
+                    OSG_WARN << "No names in <Name_array>" <<std::endl;
                     return NULL;
                 }
             }
             else
             {
-                osg::notify(osg::WARN) << "Unable to find <Name_array> in <source> " << pDomSource->getName() <<std::endl;
+                OSG_WARN << "Unable to find <Name_array> in <source> " << pDomSource->getName() <<std::endl;
                 return NULL;
             }
         }
         else
         {
-            osg::notify( osg::WARN ) << "Could not get animation 'INPUT' source"<<std::endl;
+            OSG_WARN << "Could not get animation 'INPUT' source"<<std::endl;
             return NULL;
         }
     }
@@ -751,7 +751,7 @@ osgAnimation::Target* findChannelTarget(osg::NodeCallback* nc, const std::string
     }
     else if (!dynamic_cast<osgAnimation::UpdateMorph*>(nc))
     {
-        osg::notify(osg::WARN) << "Unrecognised AnimationUpdateCallback" << std::endl;
+        OSG_WARN << "Unrecognised AnimationUpdateCallback" << std::endl;
     }
 
     return NULL;
@@ -783,7 +783,7 @@ void convertDegreesToRadians(osgAnimation::KeyframeContainer* pKeyframeContainer
     }
     else
     {
-        osg::notify(osg::WARN) << "Warning: rotation keyframes not converted to radians." << std::endl;
+        OSG_WARN << "Warning: rotation keyframes not converted to radians." << std::endl;
     }
 }
 
@@ -819,22 +819,22 @@ void daeReader::processChannel(domChannel* pDomChannel, SourceMap& sources, Targ
                 }
                 else
                 {
-                    osg::notify(osg::WARN) << "Target \"" << channelName << "\" not found." << std::endl;
+                    OSG_WARN << "Target \"" << channelName << "\" not found." << std::endl;
                 }
             }
             else
             {
-                osg::notify(osg::WARN) << "Could not locate UpdateCallback for <channel> target "  << pDomChannel->getTarget()<< std::endl;
+                OSG_WARN << "Could not locate UpdateCallback for <channel> target "  << pDomChannel->getTarget()<< std::endl;
             }
         }
         else
         {
-            osg::notify( osg::WARN ) << "<channel> source "  << pDomChannel->getSource().getURI() << " has no corresponding osgAnimation::Channel" << std::endl;
+            OSG_WARN << "<channel> source "  << pDomChannel->getSource().getURI() << " has no corresponding osgAnimation::Channel" << std::endl;
         }
     }
     else
     {
-        osg::notify( osg::WARN ) << "Could not locate <channel> source "  << pDomChannel->getSource().getURI() << std::endl;
+        OSG_WARN << "Could not locate <channel> source "  << pDomChannel->getSource().getURI() << std::endl;
     }
 }
 
@@ -859,7 +859,7 @@ void daeReader::extractTargetName(const std::string& daeTarget, std::string& cha
         }
         else
         {
-            osg::notify(osg::WARN) << "Couldn't extract a proper name for <channel> target " << daeTarget << std::endl;
+            OSG_WARN << "Couldn't extract a proper name for <channel> target " << daeTarget << std::endl;
         }
     }
 

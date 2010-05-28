@@ -348,7 +348,7 @@ void daeWriter::apply( osg::LOD &node )
 
 void daeWriter::apply( osg::ProxyNode &node ) 
 {
-    osg::notify( osg::WARN ) << "ProxyNode. Missing " << node.getNumChildren() << " children" << std::endl;
+    OSG_WARN << "ProxyNode. Missing " << node.getNumChildren() << " children" << std::endl;
 }
 
 void daeWriter::apply( osg::LightSource &node )

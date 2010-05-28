@@ -370,7 +370,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
                     pTransparency->setValue(1.0);
                 }
                 else
-                    osg::notify( osg::WARN ) << "Unsupported BlendFunction parameters in transparency processing." << std::endl;
+                    OSG_WARN << "Unsupported BlendFunction parameters in transparency processing." << std::endl;
             }
             else if (tex != NULL && tex->getImage( 0 ) != NULL)
             {
@@ -392,12 +392,12 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
             }
             else
             {
-                osg::notify( osg::WARN ) << "Transparency processing - No texture or BlendColor." << std::endl;
+                OSG_WARN << "Transparency processing - No texture or BlendColor." << std::endl;
             }
         }
         else
         {
-            osg::notify( osg::WARN ) << "Transparency processing - BlendFunction not found." << std::endl;
+            OSG_WARN << "Transparency processing - BlendFunction not found." << std::endl;
         }
     }
 

@@ -49,7 +49,7 @@ ReaderWriterDAE::readNode(const std::string& fname,
     std::string fileName( osgDB::findDataFile( fname, options ) );
     if( fileName.empty() ) return ReadResult::FILE_NOT_FOUND;
 
-    osg::notify(osg::INFO) << "ReaderWriterDAE( \"" << fileName << "\" )" << std::endl;
+    OSG_INFO << "ReaderWriterDAE( \"" << fileName << "\" )" << std::endl;
 
     if (NULL == pDAE)
     {
@@ -64,7 +64,7 @@ ReaderWriterDAE::readNode(const std::string& fname,
 
     if ( ! daeReader.convert( fileURI ) )
     {
-        osg::notify( osg::WARN ) << "Load failed in COLLADA DOM conversion" << std::endl;
+        OSG_WARN << "Load failed in COLLADA DOM conversion" << std::endl;
         return ReadResult::ERROR_IN_READING_FILE;
     }
 
@@ -133,14 +133,14 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
             else if (opt == "ForceTexture") forceTexture = true;
             else
             {
-                osg::notify(osg::NOTICE)
+                OSG_NOTICE
                     << std::endl << "COLLADA dae plugin: unrecognized option \"" << opt <<  std::endl;
                 unrecognizedOption = true;
             }
         }
         if (unrecognizedOption) {
             // TODO Remove this or make use of supportedOptions()
-            osg::notify(osg::NOTICE)
+            OSG_NOTICE
                 << "comma-delimited options:" <<  std::endl <<  std::endl 
                 << "\tpolygon = use polygons instead of polylists for element" <<  std::endl 
                 << "\tGoogleMode = write files suitable for use by Google products" <<  std::endl 

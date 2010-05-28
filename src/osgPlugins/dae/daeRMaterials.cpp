@@ -117,7 +117,7 @@ void daeReader::processBindMaterial( domBind_material *bm, domGeometry *geom, os
 {
     if (bm->getTechnique_common() == NULL )
     {
-        osg::notify( osg::WARN ) << "No COMMON technique for bind_material" << std::endl;
+        OSG_WARN << "No COMMON technique for bind_material" << std::endl;
         return;
     }
 
@@ -161,7 +161,7 @@ void daeReader::processBindMaterial( domBind_material *bm, domGeometry *geom, os
                     osg::Geometry *clonedGeometry = drawable->asGeometry();
                     if (NULL == clonedGeometry)
                     {
-                        osg::notify( osg::WARN ) << "Failed to convert drawable to geometry object" << std::endl;
+                        OSG_WARN << "Failed to convert drawable to geometry object" << std::endl;
                         break;
                     }
                     clonedGeometry->getTexCoordArrayList().clear();
@@ -175,7 +175,7 @@ void daeReader::processBindMaterial( domBind_material *bm, domGeometry *geom, os
                 }
                 else
                 {
-                    osg::notify( osg::WARN ) << "Failed to locate <material> with id " << ima[i]->getTarget().getURI() << std::endl;
+                    OSG_WARN << "Failed to locate <material> with id " << ima[i]->getTarget().getURI() << std::endl;
                 }
 
                 break;
@@ -183,7 +183,7 @@ void daeReader::processBindMaterial( domBind_material *bm, domGeometry *geom, os
         }
         if (!found)
         {
-            osg::notify( osg::WARN ) << "Failed to locate <instance_material> with symbol " << materialName << std::endl;
+            OSG_WARN << "Failed to locate <instance_material> with symbol " << materialName << std::endl;
         }
     }
 }
@@ -208,7 +208,7 @@ void    daeReader::processMaterial(osg::StateSet *ss, domMaterial *mat )
     }
     else
     {
-        osg::notify( osg::WARN ) << "Failed to locate effect " << mat->getInstance_effect()->getUrl().getURI() << std::endl;
+        OSG_WARN << "Failed to locate effect " << mat->getInstance_effect()->getUrl().getURI() << std::endl;
     }
 }
 
@@ -234,7 +234,7 @@ void daeReader::processEffect(osg::StateSet *ss, domEffect *effect )
         {
             if (hasCOMMON )
             {
-                osg::notify( osg::WARN ) << "Effect already has a profile_COMMON. Skipping this one" << std::endl;
+                OSG_WARN << "Effect already has a profile_COMMON. Skipping this one" << std::endl;
                 continue;
             }
             _currentEffect = effect;
@@ -243,7 +243,7 @@ void daeReader::processEffect(osg::StateSet *ss, domEffect *effect )
             continue;
         }
 
-        osg::notify( osg::WARN ) << "unsupported effect profile " << effect->getFx_profile_abstract_array()[i]->getTypeName() << std::endl;
+        OSG_WARN << "unsupported effect profile " << effect->getFx_profile_abstract_array()[i]->getTypeName() << std::endl;
     }
 }
 
@@ -323,7 +323,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         osg::Texture2D *DiffuseStateAttribute = NULL;
         processColorOrTextureType(ss, b->getEmission(), osg::Material::EMISSION, mat.get(), NULL, &EmissionStateAttribute );
         if (NULL != EmissionStateAttribute)
-            osg::notify( osg::WARN ) << "Currently no support for <texture> in Emission channel " << std::endl;
+            OSG_WARN << "Currently no support for <texture> in Emission channel " << std::endl;
 
         processColorOrTextureType(ss, b->getAmbient(), osg::Material::AMBIENT, mat.get(), NULL,  &AmbientStateAttribute );
         
@@ -363,7 +363,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         else
         {
             if (NULL != AmbientStateAttribute  ) 
-                osg::notify( osg::WARN ) << "Ambient occlusion map only supported when diffuse texture also specified" << std::endl;
+                OSG_WARN << "Ambient occlusion map only supported when diffuse texture also specified" << std::endl;
         }
 
         if (processColorOrTextureType(ss, b->getSpecular(), osg::Material::SPECULAR, mat.get(), b->getShininess() ) && (NULL != DiffuseStateAttribute) )
@@ -397,7 +397,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         osg::Texture2D *DiffuseStateAttribute = NULL;
         processColorOrTextureType(ss, p->getEmission(), osg::Material::EMISSION, mat.get(), NULL, &EmissionStateAttribute );
         if (NULL != EmissionStateAttribute)
-            osg::notify( osg::WARN ) << "Currently no support for <texture> in Emission channel " << std::endl;
+            OSG_WARN << "Currently no support for <texture> in Emission channel " << std::endl;
         
         processColorOrTextureType(ss, p->getAmbient(), osg::Material::AMBIENT, mat.get(), NULL,  &AmbientStateAttribute );
         
@@ -437,7 +437,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         else
         {
             if (NULL != AmbientStateAttribute  ) 
-                osg::notify( osg::WARN ) << "Ambient occlusion map only supported when diffuse texture also specified" << std::endl;
+                OSG_WARN << "Ambient occlusion map only supported when diffuse texture also specified" << std::endl;
         }
         
         if (processColorOrTextureType(ss, p->getSpecular(), osg::Material::SPECULAR, mat.get(), p->getShininess() ) && (NULL != DiffuseStateAttribute) )
@@ -469,7 +469,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         osg::Texture2D *DiffuseStateAttribute = NULL;
         processColorOrTextureType(ss, l->getEmission(), osg::Material::EMISSION, mat.get(), NULL, &EmissionStateAttribute );
         if (NULL != EmissionStateAttribute)
-            osg::notify( osg::WARN ) << "Currently no support for <texture> in Emission channel " << std::endl;
+            OSG_WARN << "Currently no support for <texture> in Emission channel " << std::endl;
         
         processColorOrTextureType(ss, l->getAmbient(), osg::Material::AMBIENT, mat.get(), NULL,  &AmbientStateAttribute);
 
@@ -509,7 +509,7 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         else
         {
             if (NULL != AmbientStateAttribute  ) 
-                osg::notify( osg::WARN ) << "Ambient occlusion map only supported when diffuse texture also specified" << std::endl;
+                OSG_WARN << "Ambient occlusion map only supported when diffuse texture also specified" << std::endl;
         }
 
         processTransparencySettings(l->getTransparent(), l->getTransparency(), ss, mat.get(), DiffuseTextureName );
@@ -599,11 +599,11 @@ bool daeReader::processColorOrTextureType(const osg::StateSet* ss,
                 retVal = true;
             }
             else
-                osg::notify( osg::WARN ) << "Currently no support for <texture> in Emission channel " << std::endl;
+                OSG_WARN << "Currently no support for <texture> in Emission channel " << std::endl;
         }       
         else
         {
-            osg::notify( osg::WARN ) << "Missing <color>, <param> or <texture> in Emission channel " << std::endl;
+            OSG_WARN << "Missing <color>, <param> or <texture> in Emission channel " << std::endl;
         }
     }
     else if (channel == osg::Material::AMBIENT )
@@ -629,14 +629,14 @@ bool daeReader::processColorOrTextureType(const osg::StateSet* ss,
                 *sa = processTexture( cot->getTexture(), ss, AMBIENT_OCCLUSION_UNIT);
             else
             {
-                osg::notify( osg::WARN ) << "Currently no support for <texture> in Ambient channel " << std::endl;
+                OSG_WARN << "Currently no support for <texture> in Ambient channel " << std::endl;
                 mat->setAmbient( osg::Material::FRONT_AND_BACK, osg::Vec4( 0.2f, 0.2f, 0.2f, 1.0f ) );
             }
             retVal = true;
        }
         else
         {
-            osg::notify( osg::WARN ) << "Missing <color>, <param> or <texture> in Ambient channel " << std::endl;
+            OSG_WARN << "Missing <color>, <param> or <texture> in Ambient channel " << std::endl;
         }
     }
     else if (channel == osg::Material::DIFFUSE )
@@ -653,7 +653,7 @@ bool daeReader::processColorOrTextureType(const osg::StateSet* ss,
                 *sa = processTexture( cot->getTexture(), ss, MAIN_TEXTURE_UNIT);
             else
             {
-                osg::notify( osg::WARN ) << "Currently no support for <texture> in Diffuse channel " << std::endl;
+                OSG_WARN << "Currently no support for <texture> in Diffuse channel " << std::endl;
                 mat->setDiffuse( osg::Material::FRONT_AND_BACK, osg::Vec4( 0.8f, 0.8f, 0.8f, 1.0f ) );
             }
             domExtra *extra = cot->getTexture()->getExtra();
@@ -687,7 +687,7 @@ bool daeReader::processColorOrTextureType(const osg::StateSet* ss,
         }
         else
         {
-            osg::notify( osg::WARN ) << "Missing <color>, <param> or <texture> in Diffuse channel " << std::endl;
+            OSG_WARN << "Missing <color>, <param> or <texture> in Diffuse channel " << std::endl;
         }
     }
     else if (channel == osg::Material::SPECULAR )
@@ -709,11 +709,11 @@ bool daeReader::processColorOrTextureType(const osg::StateSet* ss,
         }
         else if (cot->getTexture() != NULL)
         {
-            osg::notify( osg::WARN ) << "Currently no support for <texture> in Specular channel " << std::endl;
+            OSG_WARN << "Currently no support for <texture> in Specular channel " << std::endl;
         }
         else
         {
-            osg::notify( osg::WARN ) << "Missing <color>, <param> or <texture> in Specular channel " << std::endl;
+            OSG_WARN << "Missing <color>, <param> or <texture> in Specular channel " << std::endl;
         }
 
         if (fop != NULL && fop->getFloat() != NULL )
@@ -840,7 +840,7 @@ osg::Texture::WrapMode getWrapMode(domFx_sampler_wrap_common domWrap)
     case FX_SAMPLER_WRAP_COMMON_BORDER:
         return osg::Texture::CLAMP_TO_BORDER;
     default:
-        osg::notify(osg::WARN) << "Unrecognised domFx_sampler_wrap_common." << std::endl;
+        OSG_WARN << "Unrecognised domFx_sampler_wrap_common." << std::endl;
     }
     return osg::Texture::CLAMP;
 }
@@ -863,7 +863,7 @@ osg::Texture::FilterMode getFilterMode(domFx_sampler_filter_common domFilter, bo
     case FX_SAMPLER_FILTER_COMMON_LINEAR_MIPMAP_LINEAR:
         return allowMipMap ? osg::Texture::LINEAR_MIPMAP_LINEAR : osg::Texture::LINEAR;
     default:
-        osg::notify(osg::WARN) << "Unrecognised domFx_sampler_filter_common." << std::endl;
+        OSG_WARN << "Unrecognised domFx_sampler_filter_common." << std::endl;
     }
     return osg::Texture::LINEAR;
 }
@@ -872,7 +872,7 @@ std::string daeReader::processImagePath(const domImage* pDomImage) const
 {
     if (pDomImage == NULL)
     {
-        osg::notify( osg::WARN ) << "Could not locate image for texture" << std::endl;
+        OSG_WARN << "Could not locate image for texture" << std::endl;
         return std::string();
     }
 
@@ -887,7 +887,7 @@ std::string daeReader::processImagePath(const domImage* pDomImage) const
             path = cdom::uriToNativePath(path);
             if (path.empty())
             {
-                osg::notify( osg::WARN ) << "Unable to get path from URI." << std::endl;
+                OSG_WARN << "Unable to get path from URI." << std::endl;
                 return std::string();
             }
 #ifdef WIN32
@@ -900,12 +900,12 @@ std::string daeReader::processImagePath(const domImage* pDomImage) const
         }
         else
         {
-            osg::notify( osg::WARN ) << "Only images with a \"file\" scheme URI are supported in this version." << std::endl;
+            OSG_WARN << "Only images with a \"file\" scheme URI are supported in this version." << std::endl;
         }
     }
     else
     {
-        osg::notify( osg::WARN ) << "Embedded image data is not supported in this version." << std::endl;
+        OSG_WARN << "Embedded image data is not supported in this version." << std::endl;
     }
     return std::string();
 }
@@ -1000,19 +1000,19 @@ osg::Texture2D* daeReader::processTexture(
     domImage *dImg = NULL;
 
     std::string target = std::string("./") + std::string(tex->getTexture());
-    osg::notify(osg::NOTICE)<<"processTexture("<<target<<")"<<std::endl;
+    OSG_NOTICE<<"processTexture("<<target<<")"<<std::endl;
     
     daeSIDResolver res1( _currentEffect, target.c_str() );
     daeElement *el = res1.getElement();
 
     if (el == NULL )
     {
-        osg::notify( osg::WARN ) << "Could not locate newparam for texture sampler2D \"" << tex->getTexture() <<
+        OSG_WARN << "Could not locate newparam for texture sampler2D \"" << tex->getTexture() <<
             "\". Checking if data does incorrect linking straight to the image" << std::endl;
         _dae->getDatabase()->getElement( (daeElement**)&dImg, 0, tex->getTexture(), "image" );
         if (dImg != NULL )
         {
-            osg::notify( osg::WARN ) << "Direct image link found. Data is incorrect but will continue to load texture" << std::endl;
+            OSG_WARN << "Direct image link found. Data is incorrect but will continue to load texture" << std::endl;
         }
     }
     else
@@ -1031,7 +1031,7 @@ osg::Texture2D* daeReader::processTexture(
 
         if (sampler == NULL )
         {
-            osg::notify( osg::WARN ) << "Wrong newparam type. Expected sampler2D" << std::endl;
+            OSG_WARN << "Wrong newparam type. Expected sampler2D" << std::endl;
             return NULL;
         }
 
@@ -1041,7 +1041,7 @@ osg::Texture2D* daeReader::processTexture(
         el = res2.getElement();
         if (el == NULL )
         {
-            osg::notify( osg::WARN ) << "Could not locate newparam for source " << sampler->getSource()->getValue() << std::endl;
+            OSG_WARN << "Could not locate newparam for source " << sampler->getSource()->getValue() << std::endl;
             return NULL;
         }
         cnp = daeSafeCast< domCommon_newparam_type >( el ); 
@@ -1058,7 +1058,7 @@ osg::Texture2D* daeReader::processTexture(
 
         if (surface == NULL )
         {
-            osg::notify( osg::WARN ) << "Wrong newparam type. Expected surface" << std::endl;
+            OSG_WARN << "Wrong newparam type. Expected surface" << std::endl;
             return NULL;
         }
 
@@ -1117,7 +1117,7 @@ osg::Texture2D* daeReader::processTexture(
             return NULL;
         }
 
-        osg::notify(osg::INFO)<<"  processTexture(..) - readImage("<<parameters.filename<<")"<<std::endl;
+        OSG_INFO<<"  processTexture(..) - readImage("<<parameters.filename<<")"<<std::endl;
 
         if (tuu == TRANSPARENCY_MAP_UNIT)
         {
@@ -1292,14 +1292,14 @@ void daeReader::copyTextureCoordinateSet(const osg::StateSet* ss, const osg::Geo
                 }
                 else
                 {
-                    osg::notify(osg::WARN) << "Texture coordinate set " << set << " not found." << std::endl;
+                    OSG_WARN << "Texture coordinate set " << set << " not found." << std::endl;
                 }
                 break;
             }
         }
         if (k == bvia.getCount())
         {
-            osg::notify( osg::WARN ) << "Failed to find matching <bind_vertex_input> for " << texCoordSetName << std::endl;
+            OSG_WARN << "Failed to find matching <bind_vertex_input> for " << texCoordSetName << std::endl;
             if (cachedGeometry->getNumTexCoordArrays())
             {
                 clonedGeometry->setTexCoordData(tuu, cachedGeometry->getTexCoordData(0));

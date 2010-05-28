@@ -24,7 +24,7 @@ domSourceReader::domSourceReader( domSource *src ) : m_array_type( None ), m_cou
 {
     domSource::domTechnique_common* technique = src->getTechnique_common();
     if ( technique == NULL ) {
-        osg::notify(osg::WARN)<<"Warning: IntDaeSource::createFrom: Unable to find COMMON technique"<<std::endl;
+        OSG_WARN<<"Warning: IntDaeSource::createFrom: Unable to find COMMON technique"<<std::endl;
         return;
     }
 
@@ -67,7 +67,7 @@ domSourceReader::domSourceReader( domSource *src ) : m_array_type( None ), m_cou
             m_matrix_array = new osg::MatrixfArray();
             break;
         default:
-            osg::notify(osg::WARN)<<"Unsupported stride: "<<stride<<std::endl;
+            OSG_WARN<<"Unsupported stride: "<<stride<<std::endl;
             return;
     }
 
@@ -97,13 +97,13 @@ domSourceReader::domSourceReader( domSource *src ) : m_array_type( None ), m_cou
                                                             va[i*16+3],    va[i*16+7],    va[i*16+11],    va[i*16+15]));
                     break;
                 default:
-                    osg::notify(osg::WARN) << "Unsupported stride in Source: " << accessor->getStride() << std::endl;
+                    OSG_WARN << "Unsupported stride in Source: " << accessor->getStride() << std::endl;
                     return;
             }
         }
     }
     else
     {
-        osg::notify(osg::WARN) << "No float array found" << std::endl;
+        OSG_WARN << "No float array found" << std::endl;
     }
 }

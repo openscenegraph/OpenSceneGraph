@@ -300,7 +300,7 @@ void daeWriter::apply( osg::Transform &node )
         else
         {
             currentNode->setId(getNodeName(node, "transform").c_str());
-            osg::notify( osg::WARN ) << "some other transform type. Missing " << node.getNumChildren() << " children" << std::endl;
+            OSG_WARN << "some other transform type. Missing " << node.getNumChildren() << " children" << std::endl;
         }
     }
 
@@ -313,7 +313,7 @@ void daeWriter::apply( osg::Transform &node )
 
 void daeWriter::apply( osg::CoordinateSystemNode &node )
 {
-    osg::notify( osg::WARN ) << "CoordinateSystemNode. Missing " << node.getNumChildren() << " children" << std::endl;
+    OSG_WARN << "CoordinateSystemNode. Missing " << node.getNumChildren() << " children" << std::endl;
 }
 
 

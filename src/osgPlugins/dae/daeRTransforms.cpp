@@ -60,7 +60,7 @@ osg::Transform* daeReader::processOsgMatrixTransform(domNode *node, bool isBone)
             const domFloat4& r = pDomRotate->getValue();
             if (r.getCount() != 4 )
             {
-                osg::notify(osg::WARN) << "Data is wrong size for rotate" << std::endl;
+                OSG_WARN << "Data is wrong size for rotate" << std::endl;
                 continue;
             }
 
@@ -71,7 +71,7 @@ osg::Transform* daeReader::processOsgMatrixTransform(domNode *node, bool isBone)
             const domFloat3& t = pDomTranslate->getValue();
             if (t.getCount() != 3 )
             {
-                osg::notify(osg::WARN)<<"Data is wrong size for translate"<<std::endl;
+                OSG_WARN<<"Data is wrong size for translate"<<std::endl;
                 continue;
             }
 
@@ -82,7 +82,7 @@ osg::Transform* daeReader::processOsgMatrixTransform(domNode *node, bool isBone)
             const domFloat3& s = pDomScale->getValue();
             if (s.getCount() != 3 )
             {
-                osg::notify(osg::WARN)<<"Data is wrong size for scale"<<std::endl;
+                OSG_WARN<<"Data is wrong size for scale"<<std::endl;
                 continue;
             }
 
@@ -92,7 +92,7 @@ osg::Transform* daeReader::processOsgMatrixTransform(domNode *node, bool isBone)
         {
             if (pDomMatrix->getValue().getCount() != 16 )
             {
-                osg::notify(osg::WARN)<<"Data is wrong size for matrix"<<std::endl;
+                OSG_WARN<<"Data is wrong size for matrix"<<std::endl;
                 continue;
             }
 
@@ -106,7 +106,7 @@ osg::Transform* daeReader::processOsgMatrixTransform(domNode *node, bool isBone)
         {
             if (pDomLookat->getValue().getCount() != 9 )
             {
-                osg::notify(osg::WARN)<<"Data is wrong size for lookat"<<std::endl;
+                OSG_WARN<<"Data is wrong size for lookat"<<std::endl;
                 continue;
             }
 
@@ -120,7 +120,7 @@ osg::Transform* daeReader::processOsgMatrixTransform(domNode *node, bool isBone)
         {
             if (pDomSkew->getValue().getCount() != 7 )
             {
-                osg::notify(osg::WARN)<<"Data is wrong size for skew"<<std::endl;
+                OSG_WARN<<"Data is wrong size for skew"<<std::endl;
                 continue;
             }
 
@@ -240,7 +240,7 @@ osg::Group* daeReader::processOsgDOFTransform(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'MinHPR' not found" << std::endl;
+        OSG_WARN << "Expected element 'MinHPR' not found" << std::endl;
     }
 
     any = daeSafeCast< domAny >(teq->getChild("MaxHPR"));
@@ -250,7 +250,7 @@ osg::Group* daeReader::processOsgDOFTransform(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'MaxHPR' not found" << std::endl;
+        OSG_WARN << "Expected element 'MaxHPR' not found" << std::endl;
     }
 
     any = daeSafeCast< domAny >(teq->getChild("IncrementHPR"));
@@ -260,7 +260,7 @@ osg::Group* daeReader::processOsgDOFTransform(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'IncrementHPR' not found" << std::endl;
+        OSG_WARN << "Expected element 'IncrementHPR' not found" << std::endl;
     }
 
     any = daeSafeCast< domAny >(teq->getChild("CurrentHPR"));
@@ -270,7 +270,7 @@ osg::Group* daeReader::processOsgDOFTransform(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'CurrentHPR' not found" << std::endl;
+        OSG_WARN << "Expected element 'CurrentHPR' not found" << std::endl;
     }
 
     any = daeSafeCast< domAny >(teq->getChild("MinTranslate"));
@@ -280,7 +280,7 @@ osg::Group* daeReader::processOsgDOFTransform(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'MinTranslate' not found" << std::endl;
+        OSG_WARN << "Expected element 'MinTranslate' not found" << std::endl;
     }
 
     any = daeSafeCast< domAny >(teq->getChild("MaxTranslate"));
@@ -290,7 +290,7 @@ osg::Group* daeReader::processOsgDOFTransform(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'MaxTranslate' not found" << std::endl;
+        OSG_WARN << "Expected element 'MaxTranslate' not found" << std::endl;
     }
 
     any = daeSafeCast< domAny >(teq->getChild("IncrementTranslate"));
@@ -300,7 +300,7 @@ osg::Group* daeReader::processOsgDOFTransform(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'IncrementTranslate' not found" << std::endl;
+        OSG_WARN << "Expected element 'IncrementTranslate' not found" << std::endl;
     }
 
     any = daeSafeCast< domAny >(teq->getChild("CurrentTranslate"));
@@ -310,7 +310,7 @@ osg::Group* daeReader::processOsgDOFTransform(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'CurrentTranslate' not found" << std::endl;
+        OSG_WARN << "Expected element 'CurrentTranslate' not found" << std::endl;
     }
 
     any = daeSafeCast< domAny >(teq->getChild("MinScale"));
@@ -320,7 +320,7 @@ osg::Group* daeReader::processOsgDOFTransform(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'MinScale' not found" << std::endl;
+        OSG_WARN << "Expected element 'MinScale' not found" << std::endl;
     }
 
     any = daeSafeCast< domAny >(teq->getChild("MaxScale"));
@@ -330,7 +330,7 @@ osg::Group* daeReader::processOsgDOFTransform(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'MaxScale' not found" << std::endl;
+        OSG_WARN << "Expected element 'MaxScale' not found" << std::endl;
     }
 
     any = daeSafeCast< domAny >(teq->getChild("IncrementScale"));
@@ -340,7 +340,7 @@ osg::Group* daeReader::processOsgDOFTransform(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'IncrementScale' not found" << std::endl;
+        OSG_WARN << "Expected element 'IncrementScale' not found" << std::endl;
     }
 
     any = daeSafeCast< domAny >(teq->getChild("CurrentScale"));
@@ -350,7 +350,7 @@ osg::Group* daeReader::processOsgDOFTransform(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'CurrentScale' not found" << std::endl;
+        OSG_WARN << "Expected element 'CurrentScale' not found" << std::endl;
     }
 
     any = daeSafeCast< domAny >(teq->getChild("MultOrder"));
@@ -360,7 +360,7 @@ osg::Group* daeReader::processOsgDOFTransform(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'MultOrder' not found" << std::endl;
+        OSG_WARN << "Expected element 'MultOrder' not found" << std::endl;
     }
 
     any = daeSafeCast< domAny >(teq->getChild("LimitationFlags"));
@@ -370,7 +370,7 @@ osg::Group* daeReader::processOsgDOFTransform(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'LimitationFlags' not found" << std::endl;
+        OSG_WARN << "Expected element 'LimitationFlags' not found" << std::endl;
     }
 
     any = daeSafeCast< domAny >(teq->getChild("AnimationOn"));
@@ -380,7 +380,7 @@ osg::Group* daeReader::processOsgDOFTransform(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'AnimationOn' not found" << std::endl;
+        OSG_WARN << "Expected element 'AnimationOn' not found" << std::endl;
     }
 
     any = daeSafeCast< domAny >(teq->getChild("PutMatrix"));
@@ -392,7 +392,7 @@ osg::Group* daeReader::processOsgDOFTransform(domTechnique* teq)
     }
     else
     {
-        osg::notify(osg::WARN) << "Expected element 'PutMatrix' not found" << std::endl;
+        OSG_WARN << "Expected element 'PutMatrix' not found" << std::endl;
     }
 
     return dof;

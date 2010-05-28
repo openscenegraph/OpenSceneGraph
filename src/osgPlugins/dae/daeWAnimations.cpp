@@ -288,7 +288,7 @@ void daeWriter::writeAnimations( osg::Node &node )
                             }
                             else
                             {
-                                osg::notify( osg::WARN ) << "Could not find animation target '" << targetName << "'" << std::endl;
+                                OSG_WARN << "Could not find animation target '" << targetName << "'" << std::endl;
                             }
                         }
 
@@ -332,7 +332,7 @@ void daeWriter::writeAnimations( osg::Node &node )
                             }
                             else
                             {
-                                osg::notify( osg::WARN ) << "Could not find animation target '" << targetName << "'" << std::endl;
+                                OSG_WARN << "Could not find animation target '" << targetName << "'" << std::endl;
                             }
                         }
 
@@ -376,7 +376,7 @@ void daeWriter::writeAnimations( osg::Node &node )
                             }
                             else
                             {
-                                osg::notify( osg::WARN ) << "Could not find animation target '" << targetName << "'" << std::endl;
+                                OSG_WARN << "Could not find animation target '" << targetName << "'" << std::endl;
                             }
                         }
                     }
@@ -472,7 +472,7 @@ void daeWriter::writeAnimations( osg::Node &node )
                         }
                         else
                         {
-                            osg::notify( osg::WARN ) << "Could not find animation target '" << targetName << "'" << std::endl;
+                            OSG_WARN << "Could not find animation target '" << targetName << "'" << std::endl;
                         }
                     }
                 }

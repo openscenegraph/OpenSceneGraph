@@ -94,7 +94,7 @@ void Volume::registerVolumeTile(VolumeTile* volumeTile)
 
     if (_volumeTileSet.size() > s_maxNumVolumeTiles) s_maxNumVolumeTiles = _volumeTileSet.size();
 
-    // osg::notify(osg::NOTICE)<<"Volume::registerVolumeTile "<<volumeTile<<" total number of VolumeTile "<<_volumeTileSet.size()<<" max = "<<s_maxNumVolumeTiles<<std::endl;
+    // OSG_NOTICE<<"Volume::registerVolumeTile "<<volumeTile<<" total number of VolumeTile "<<_volumeTileSet.size()<<" max = "<<s_maxNumVolumeTiles<<std::endl;
 }
 
 void Volume::unregisterVolumeTile(VolumeTile* volumeTile)
@@ -110,5 +110,5 @@ void Volume::unregisterVolumeTile(VolumeTile* volumeTile)
     
     _volumeTileSet.erase(volumeTile);
 
-    // osg::notify(osg::NOTICE)<<"Volume::unregisterVolumeTile "<<volumeTile<<" total number of VolumeTile "<<_volumeTileSet.size()<<" max = "<<s_maxNumVolumeTiles<<std::endl;
+    // OSG_NOTICE<<"Volume::unregisterVolumeTile "<<volumeTile<<" total number of VolumeTile "<<_volumeTileSet.size()<<" max = "<<s_maxNumVolumeTiles<<std::endl;
 }

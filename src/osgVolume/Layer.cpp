@@ -59,8 +59,8 @@ osg::BoundingSphere Layer::computeBound() const
     osg::Vec3d left, right;
     getLocator()->computeLocalBounds(left, right);
 
-    //osg::notify(osg::NOTICE)<<"left = "<<left<<std::endl;
-    //osg::notify(osg::NOTICE)<<"right = "<<right<<std::endl;
+    //OSG_NOTICE<<"left = "<<left<<std::endl;
+    //OSG_NOTICE<<"right = "<<right<<std::endl;
 
     return osg::BoundingSphere((left+right)*0.5, (right-left).length()*0.5);
 }
@@ -145,13 +145,13 @@ void ImageLayer::offsetAndScaleImage(const osg::Vec4& offset, const osg::Vec4& s
     osg::Vec4 minValue, maxValue;
     if (computeMinMax(minValue, maxValue))
     {
-        osg::notify(osg::NOTICE)<<"ImageLayer::offsetAndScaleImage("<<offset<<" and "<<scale<<")"<<std::endl;
-        osg::notify(osg::NOTICE)<<"     before    _texelOffset "<<_texelOffset<<std::endl;
-        osg::notify(osg::NOTICE)<<"     before    _texelScale "<<_texelScale<<std::endl;
-        osg::notify(osg::NOTICE)<<"     before    minValue "<<minValue<<std::endl;
-        osg::notify(osg::NOTICE)<<"     before    maxValue "<<maxValue<<std::endl;
-        osg::notify(osg::NOTICE)<<"     before    minValue transformed "<<minValue[0]*_texelScale[0]+_texelOffset[0]<<std::endl;
-        osg::notify(osg::NOTICE)<<"     before    maxValue transformed "<<maxValue[0]*_texelScale[0]+_texelOffset[0]<<std::endl;
+        OSG_NOTICE<<"ImageLayer::offsetAndScaleImage("<<offset<<" and "<<scale<<")"<<std::endl;
+        OSG_NOTICE<<"     before    _texelOffset "<<_texelOffset<<std::endl;
+        OSG_NOTICE<<"     before    _texelScale "<<_texelScale<<std::endl;
+        OSG_NOTICE<<"     before    minValue "<<minValue<<std::endl;
+        OSG_NOTICE<<"     before    maxValue "<<maxValue<<std::endl;
+        OSG_NOTICE<<"     before    minValue transformed "<<minValue[0]*_texelScale[0]+_texelOffset[0]<<std::endl;
+        OSG_NOTICE<<"     before    maxValue transformed "<<maxValue[0]*_texelScale[0]+_texelOffset[0]<<std::endl;
     }
 #endif
 
@@ -177,19 +177,19 @@ void ImageLayer::offsetAndScaleImage(const osg::Vec4& offset, const osg::Vec4& s
 #if 0
     if (computeMinMax(minValue, maxValue))
     {
-        osg::notify(osg::NOTICE)<<"     after     _texelOffset "<<_texelOffset<<std::endl;
-        osg::notify(osg::NOTICE)<<"     after     _texelScale "<<_texelScale<<std::endl;
-        osg::notify(osg::NOTICE)<<"     after     minValue "<<minValue<<std::endl;
-        osg::notify(osg::NOTICE)<<"     after     maxValue "<<maxValue<<std::endl;
-        osg::notify(osg::NOTICE)<<"     after     minValue transformed "<<minValue[0]*_texelScale[0]+_texelOffset[0]<<std::endl;
-        osg::notify(osg::NOTICE)<<"     after     maxValue transformed "<<maxValue[0]*_texelScale[0]+_texelOffset[0]<<std::endl;
+        OSG_NOTICE<<"     after     _texelOffset "<<_texelOffset<<std::endl;
+        OSG_NOTICE<<"     after     _texelScale "<<_texelScale<<std::endl;
+        OSG_NOTICE<<"     after     minValue "<<minValue<<std::endl;
+        OSG_NOTICE<<"     after     maxValue "<<maxValue<<std::endl;
+        OSG_NOTICE<<"     after     minValue transformed "<<minValue[0]*_texelScale[0]+_texelOffset[0]<<std::endl;
+        OSG_NOTICE<<"     after     maxValue transformed "<<maxValue[0]*_texelScale[0]+_texelOffset[0]<<std::endl;
     }
 #endif
 }
 
 void ImageLayer::rescaleToZeroToOneRange()
 {
-    osg::notify(osg::INFO)<<"ImageLayer::rescaleToZeroToOneRange()"<<std::endl;
+    OSG_INFO<<"ImageLayer::rescaleToZeroToOneRange()"<<std::endl;
 
     osg::Vec4 minValue, maxValue;
     if (computeMinMax(minValue, maxValue))
@@ -207,8 +207,8 @@ void ImageLayer::rescaleToZeroToOneRange()
         float scale = 0.99f/(maxComponent-minComponent);
         float offset = -minComponent * scale;
 
-        osg::notify(osg::INFO)<<"         scale "<<scale<<std::endl;
-        osg::notify(osg::INFO)<<"         offset "<<offset<<std::endl;
+        OSG_INFO<<"         scale "<<scale<<std::endl;
+        OSG_INFO<<"         offset "<<offset<<std::endl;
 
         offsetAndScaleImage(osg::Vec4(offset, offset, offset, offset),
                             osg::Vec4(scale, scale, scale, scale));
@@ -291,7 +291,7 @@ void CompositeLayer::update(osg::NodeVisitor& nv)
 //
 osg::Image* osgVolume::createNormalMapTexture(osg::Image* image_3d)
 {
-    osg::notify(osg::INFO)<<"Computing NormalMapTexture"<<std::endl;
+    OSG_INFO<<"Computing NormalMapTexture"<<std::endl;
 
     GLenum dataType = image_3d->getDataType();
 
@@ -317,7 +317,7 @@ osg::Image* osgVolume::createNormalMapTexture(osg::Image* image_3d)
         alphaOffset = 3;
         break;
     default:
-        osg::notify(osg::NOTICE)<<"Source pixel format not support for normal map generation."<<std::endl;
+        OSG_NOTICE<<"Source pixel format not support for normal map generation."<<std::endl;
         return 0;
     }
 
@@ -401,7 +401,7 @@ osg::Image* osgVolume::createNormalMapTexture(osg::Image* image_3d)
 
                     grad.normalize();
 
-                    //osg::notify(osg::NOTICE)<<"normal "<<grad<<std::endl;
+                    //OSG_NOTICE<<"normal "<<grad<<std::endl;
 
                     if (grad.x()==0.0f && grad.y()==0.0f && grad.z()==0.0f)
                     {
@@ -481,7 +481,7 @@ osg::Image* osgVolume::createNormalMapTexture(osg::Image* image_3d)
     }
 
 
-    osg::notify(osg::INFO)<<"Created NormalMapTexture"<<std::endl;
+    OSG_INFO<<"Created NormalMapTexture"<<std::endl;
 
     return normalmap_3d.release();
 }
@@ -532,7 +532,7 @@ struct ApplyTransferFunctionOperator
 
 osg::Image* osgVolume::applyTransferFunction(osg::Image* image, osg::TransferFunction1D* transferFunction)
 {
-    osg::notify(osg::INFO)<<"Applying transfer function"<<std::endl;
+    OSG_INFO<<"Applying transfer function"<<std::endl;
 
     osg::Image* output_image = new osg::Image;
     output_image->allocateImage(image->s(),image->t(), image->r(), GL_RGBA, GL_UNSIGNED_BYTE);

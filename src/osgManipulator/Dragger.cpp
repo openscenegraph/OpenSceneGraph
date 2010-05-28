@@ -35,7 +35,7 @@ void osgManipulator::computeNodePathToRoot(osg::Node& node, osg::NodePath& np)
         np = nodePaths.front();
         if (nodePaths.size()>1)
         {
-            osg::notify(osg::NOTICE)<<"osgManipulator::computeNodePathToRoot(,) taking first parent path, ignoring others."<<std::endl;
+            OSG_NOTICE<<"osgManipulator::computeNodePathToRoot(,) taking first parent path, ignoring others."<<std::endl;
         }
     }
 }
@@ -147,7 +147,7 @@ Dragger::Dragger(const Dragger& rhs, const osg::CopyOp& copyop):
     _activationPermittedByModKeyMask(false),
     _activationPermittedByKeyEvent(false)
 {
-    osg::notify(osg::NOTICE)<<"CompositeDragger::CompositeDragger(const CompositeDragger& rhs, const osg::CopyOp& copyop) not Implemented yet."<<std::endl;
+    OSG_NOTICE<<"CompositeDragger::CompositeDragger(const CompositeDragger& rhs, const osg::CopyOp& copyop) not Implemented yet."<<std::endl;
 }
 
 Dragger::~Dragger()
@@ -400,7 +400,7 @@ void Dragger::dispatch(MotionCommand& command)
 CompositeDragger::CompositeDragger(const CompositeDragger& rhs, const osg::CopyOp& copyop):
     Dragger(rhs, copyop)
 {
-    osg::notify(osg::NOTICE)<<"CompositeDragger::CompositeDragger(const CompositeDragger& rhs, const osg::CopyOp& copyop) not Implemented yet."<<std::endl;
+    OSG_NOTICE<<"CompositeDragger::CompositeDragger(const CompositeDragger& rhs, const osg::CopyOp& copyop) not Implemented yet."<<std::endl;
 }
 
 bool CompositeDragger::handle(const PointerInfo& pi, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)

@@ -123,7 +123,7 @@ public:
 
         if ( !isRecognized )
         {
-            osg::notify(osg::WARN) << "BVH Reader: Unrecognized symbol " << fr[0].getStr()
+            OSG_WARN << "BVH Reader: Unrecognized symbol " << fr[0].getStr()
                 << ". Ignore current field or block." << std::endl;
             fr.advanceOverCurrentFieldOrBlock();
         }
@@ -136,14 +136,14 @@ public:
 
         if ( !fr.readSequence("Frames:", frames) )
         {
-            osg::notify(osg::WARN) << "BVH Reader: Frame number setting not found, but an unexpected "
+            OSG_WARN << "BVH Reader: Frame number setting not found, but an unexpected "
                 << fr[0].getStr() << ". Set to 1." << std::endl;
         }
 
         ++fr;
         if ( !fr.readSequence("Time:", frameTime) )
         {
-            osg::notify(osg::WARN) << "BVH Reader: Frame time setting not found, but an unexpected "
+            OSG_WARN << "BVH Reader: Frame time setting not found, but an unexpected "
                 << fr[0].getStr() << ". Set to 0.033 (30FPS)." << std::endl;
         }
 
@@ -234,7 +234,7 @@ public:
             {
                 if ( fr[0].getStr()==NULL ) continue;
 
-                osg::notify(osg::WARN) << "BVH Reader: Unexpected beginning " << fr[0].getStr()
+                OSG_WARN << "BVH Reader: Unexpected beginning " << fr[0].getStr()
                     <<  ", neither HIERARCHY nor MOTION. Stopped." << std::endl;
                 break;
             }

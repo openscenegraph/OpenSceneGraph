@@ -88,7 +88,7 @@ private:
     {
       if (options && (options->getOptionString() == "separateFiles"))
       {
-        osg::notify(osg::INFO) << "ReaderWriterSTL::writeNode: Files are seperated written" << std::endl;
+        OSG_INFO << "ReaderWriterSTL::writeNode: Files are seperated written" << std::endl;
       } else {
         m_f = new osgDB::ofstream(m_fout.c_str());        
         *m_f << "solid " << counter << std::endl;
@@ -130,7 +130,7 @@ private:
     //        nHandle->SetLocation( Frame( mat ) );
     ~CreateStlVisitor() {
       if (m_options && (m_options->getOptionString() == "separateFiles")) {
-        osg::notify(osg::INFO) << "ReaderWriterSTL::writeNode: " << counter-1 << "Files were written" << std::endl;
+        OSG_INFO << "ReaderWriterSTL::writeNode: " << counter-1 << "Files were written" << std::endl;
       } else {
         *m_f << "endsolid " << std::endl;
         m_f->close();
@@ -214,7 +214,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     std::string fileName = osgDB::findDataFile( file, options );
     if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-    osg::notify(osg::INFO) << "ReaderWriterSTL::readNode(" << fileName.c_str() << ")\n";
+    OSG_INFO << "ReaderWriterSTL::readNode(" << fileName.c_str() << ")\n";
 
     // determine ASCII vs. binary mode
     FILE* fp = osgDB::fopen(fileName.c_str(), "rb");
@@ -242,7 +242,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     struct stat stb;
     if (fstat(fileno(fp), &stb) < 0)
     {
-        osg::notify(osg::FATAL) << "ReaderWriterSTL::readNode: Unable to stat '" << fileName << "'" << std::endl;
+        OSG_FATAL << "ReaderWriterSTL::readNode: Unable to stat '" << fileName << "'" << std::endl;
         fclose(fp);
         return ReadResult::ERROR_IN_READING_FILE;
     }
@@ -259,7 +259,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
         isBinary = false;
     }
     else {
-        osg::notify(osg::FATAL) << "ReaderWriterSTL::readNode(" << fileName.c_str() << ") unable to determine file format" << std::endl;
+        OSG_FATAL << "ReaderWriterSTL::readNode(" << fileName.c_str() << ") unable to determine file format" << std::endl;
         fclose(fp);
         return ReadResult::ERROR_IN_READING_FILE;
     }
@@ -280,7 +280,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
         return ReadResult::FILE_NOT_HANDLED;
     }
     
-    osg::notify(osg::INFO) << "STL loader found " << readerObject._numFacets << " facets" << std::endl;
+    OSG_INFO << "STL loader found " << readerObject._numFacets << " facets" << std::endl;
 
     /*
      * setup geometry
@@ -292,7 +292,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterSTL::readNode(const std::string& fil
     geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
 
     if (readerObject._color.valid()) {
-        osg::notify(osg::INFO) << "STL file with color" << std::endl;
+        OSG_INFO << "STL file with color" << std::endl;
         geom->setColorArray(readerObject._color.get());
         geom->setColorBinding(osg::Geometry::BIND_PER_PRIMITIVE);
     }
@@ -402,7 +402,7 @@ bool ReaderWriterSTL::ReaderObject::readStlAscii(FILE* fp)
             }
         }
         else if (strncmp(bp, "solid", 5) == 0) {
-            osg::notify(osg::INFO) << "STL loader parsing '" << bp + 6 << "'" << std::endl;
+            OSG_INFO << "STL loader parsing '" << bp + 6 << "'" << std::endl;
         }
     }
 
@@ -418,7 +418,7 @@ bool ReaderWriterSTL::ReaderObject::readStlBinary(FILE* fp)
     for (unsigned int i = 0; i < _numFacets; ++i) {
 
         if (::fread((void*) &facet, sizeof_StlFacet, 1, fp) != 1) {
-            osg::notify(osg::FATAL) << "ReaderWriterSTL::readStlBinary: Failed to read facet " << i << std::endl;
+            OSG_FATAL << "ReaderWriterSTL::readStlBinary: Failed to read facet " << i << std::endl;
             return false;
         }
 
@@ -473,7 +473,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriterSTL::writeNode(const osg::Node& nod
     if (ext != "stl" )
     {
         // sta - extension implies STL-Binary...
-        osg::notify(osg::INFO) << "ReaderWriterSTL::writeNode: Only STL-ASCII-files supported'" << std::endl;
+        OSG_INFO << "ReaderWriterSTL::writeNode: Only STL-ASCII-files supported'" << std::endl;
         return WriteResult::FILE_NOT_HANDLED;
     }
   
@@ -486,7 +486,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriterSTL::writeNode(const osg::Node& nod
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"Error: "<<createStlVisitor.getErrorString()<<std::endl;
+        OSG_NOTICE<<"Error: "<<createStlVisitor.getErrorString()<<std::endl;
         return WriteResult::ERROR_IN_WRITING_FILE;
     }
 }

@@ -78,7 +78,7 @@ osg::Quat makeQuat(const fbxDouble3& degrees, ERotationOrder fbxRotOrder)
             return quat;
         }
     default:
-        osg::notify(osg::WARN) << "Invalid FBX rotation mode." << std::endl;
+        OSG_WARN << "Invalid FBX rotation mode." << std::endl;
         return osg::Quat();
     }
 }

@@ -69,7 +69,7 @@ WriterCompareTriangle::cutscene(int                     nbVertices,
 
     setMaxMin (nbVerticesX, nbVerticesY, nbVerticesZ);
 
-    osg::notify(osg::DEBUG_INFO) << "Cutting x by " << nbVerticesX << std::endl
+    OSG_DEBUG << "Cutting x by " << nbVerticesX << std::endl
         << "Cutting y by " << nbVerticesY << std::endl
         << "Cutting z by " << nbVerticesZ << std::endl;
 

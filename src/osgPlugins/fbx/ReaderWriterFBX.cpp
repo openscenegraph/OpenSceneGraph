@@ -179,14 +179,14 @@ void resolveBindMatrices(
                     }
                     else
                     {
-                        osg::notify(osg::WARN) << "No vertex influences found for \"" << osgBone.getName() << "\"" << std::endl;
+                        OSG_WARN << "No vertex influences found for \"" << osgBone.getName() << "\"" << std::endl;
                     }
                 }
             }
         }
         else
         {
-            osg::notify(osg::WARN) << "No bone found for \"" << fbxBone->GetName() << "\"" << std::endl;
+            OSG_WARN << "No bone found for \"" << fbxBone->GetName() << "\"" << std::endl;
             ++it;
         }
     }
@@ -374,7 +374,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
     }
     catch (...)
     {
-        osg::notify(osg::WARN) << "Exception thrown while importing \"" << filenameInit << '\"' << std::endl;
+        OSG_WARN << "Exception thrown while importing \"" << filenameInit << '\"' << std::endl;
     }
 
     return ReadResult::ERROR_IN_READING_FILE;
@@ -444,7 +444,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriterFBX::writeNode(
 
         // Ensure the directory exists or else the FBX SDK will fail
         if (!osgDB::makeDirectoryForFile(filename)) {
-            osg::notify(osg::NOTICE) << "Can't create directory for file '" << filename << "'. FBX SDK may fail creating the file." << std::endl;
+            OSG_NOTICE << "Can't create directory for file '" << filename << "'. FBX SDK may fail creating the file." << std::endl;
         }
 
         // The FBX SDK interprets the filename as UTF-8

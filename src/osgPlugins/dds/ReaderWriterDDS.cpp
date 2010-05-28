@@ -315,7 +315,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     // Handle some esoteric formats
     if(ddsd.ddpfPixelFormat.dwFlags & DDPF_BUMPDUDV) 
     {
-        osg::notify(osg::WARN) << "ReadDDSFile warning: DDPF_BUMPDUDV format is not supported" << std::endl;
+        OSG_WARN << "ReadDDSFile warning: DDPF_BUMPDUDV format is not supported" << std::endl;
         return NULL;
 //         ddsd.ddpfPixelFormat.dwFlags =
 //             DDPF_LUMINANCE + DDPF_ALPHAPIXELS;
@@ -326,7 +326,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     }
     if(ddsd.ddpfPixelFormat.dwFlags & DDPF_BUMPLUMINANCE) 
     {
-        osg::notify(osg::WARN) << "ReadDDSFile warning: DDPF_BUMPLUMINANCE format is not supported" << std::endl;
+        OSG_WARN << "ReadDDSFile warning: DDPF_BUMPLUMINANCE format is not supported" << std::endl;
         return NULL;
 //         ddsd.ddpfPixelFormat.dwFlags = DDPF_RGB;
 //         // handle as RGB
@@ -413,7 +413,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
                      f.pixelFormat    != UNSUPPORTED &&
                      f.dataType       != UNSUPPORTED )
                 {
-                    osg::notify(osg::INFO) << "ReadDDSFile info : format = " << f.name << std::endl;
+                    OSG_INFO << "ReadDDSFile info : format = " << f.name << std::endl;
                     internalFormat = f.internalFormat;
                     pixelFormat    = f.pixelFormat;
                     dataType       = f.dataType;
@@ -422,7 +422,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
                 }
                 else
                 {
-                    osg::notify(osg::INFO) << "ReadDDSFile info : " << f.name
+                    OSG_INFO << "ReadDDSFile info : " << f.name
                                            << " format is not supported" << std::endl;
                     return NULL;                   
                 }
@@ -431,19 +431,19 @@ osg::Image* ReadDDSFile(std::istream& _istream)
 
         if ( !found )
         {
-            osg::notify(osg::WARN) << "ReadDDSFile warning: unhandled RGB pixel format in dds file, image not loaded" << std::endl;
-            osg::notify(osg::INFO) << "ReadDDSFile info : ddsd.ddpfPixelFormat.dwRGBBitCount     = "
+            OSG_WARN << "ReadDDSFile warning: unhandled RGB pixel format in dds file, image not loaded" << std::endl;
+            OSG_INFO << "ReadDDSFile info : ddsd.ddpfPixelFormat.dwRGBBitCount     = "
                                    << ddsd.ddpfPixelFormat.dwRGBBitCount << std::endl;
-            osg::notify(osg::INFO) << "ReadDDSFile info : ddsd.ddpfPixelFormat.dwRBitMask        = 0x"
+            OSG_INFO << "ReadDDSFile info : ddsd.ddpfPixelFormat.dwRBitMask        = 0x"
                                    << std::hex << std::setw(8) << std::setfill('0') 
                                    << ddsd.ddpfPixelFormat.dwRBitMask << std::endl;
-            osg::notify(osg::INFO) << "ReadDDSFile info : ddsd.ddpfPixelFormat.dwGBitMask        = 0x"
+            OSG_INFO << "ReadDDSFile info : ddsd.ddpfPixelFormat.dwGBitMask        = 0x"
                                    << std::hex << std::setw(8) << std::setfill('0') 
                                    << ddsd.ddpfPixelFormat.dwGBitMask << std::endl;
-            osg::notify(osg::INFO) << "ReadDDSFile info : ddsd.ddpfPixelFormat.dwBBitMask        = 0x"
+            OSG_INFO << "ReadDDSFile info : ddsd.ddpfPixelFormat.dwBBitMask        = 0x"
                                    << std::hex << std::setw(8) << std::setfill('0') 
                                    << ddsd.ddpfPixelFormat.dwBBitMask << std::endl;
-            osg::notify(osg::INFO) << "ReadDDSFile info : ddsd.ddpfPixelFormat.dwRGBAlphaBitMask = 0x"
+            OSG_INFO << "ReadDDSFile info : ddsd.ddpfPixelFormat.dwRGBAlphaBitMask = 0x"
                                    << std::hex << std::setw(8) << std::setfill('0') 
                                    << ddsd.ddpfPixelFormat.dwRGBAlphaBitMask << std::dec << std::endl;
             return NULL;
@@ -455,26 +455,26 @@ osg::Image* ReadDDSFile(std::istream& _istream)
             pixelFormat    = usingAlpha ? GL_LUMINANCE_ALPHA : GL_LUMINANCE;
             if ( usingAlpha && ddsd.ddpfPixelFormat.dwLuminanceBitDepth == 8 )
             {
-                osg::notify(osg::INFO) << "ReadDDSFile info : format = L4A4" << std::endl;
+                OSG_INFO << "ReadDDSFile info : format = L4A4" << std::endl;
                 pixelFormat = GL_LUMINANCE4_ALPHA4; // invalid enumerant?
             }
             else if ( usingAlpha && ddsd.ddpfPixelFormat.dwLuminanceBitDepth == 32 )
             {
-                osg::notify(osg::INFO) << "ReadDDSFile info : format = L16A16" << std::endl;
+                OSG_INFO << "ReadDDSFile info : format = L16A16" << std::endl;
                 dataType = GL_UNSIGNED_SHORT;
             }
             else if ( !usingAlpha && ddsd.ddpfPixelFormat.dwLuminanceBitDepth == 16 )
             {
-                osg::notify(osg::INFO) << "ReadDDSFile info : format = L16" << std::endl;
+                OSG_INFO << "ReadDDSFile info : format = L16" << std::endl;
                 dataType = GL_UNSIGNED_SHORT;
             }
             else if ( usingAlpha )
             {
-                osg::notify(osg::INFO) << "ReadDDSFile info : format = L8A8" << std::endl;
+                OSG_INFO << "ReadDDSFile info : format = L8A8" << std::endl;
             }
             else
             {
-                osg::notify(osg::INFO) << "ReadDDSFile info : format = L8" << std::endl;
+                OSG_INFO << "ReadDDSFile info : format = L8" << std::endl;
             }
 //             else if ( ddsd.ddpfPixelFormat.dwLuminanceBitDepth == (usingAlpha ? 64 : 32) )
 //             {
@@ -483,7 +483,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     }
     else if(ddsd.ddpfPixelFormat.dwFlags & DDPF_ALPHA)
     {
-            osg::notify(osg::INFO) << "ReadDDSFile info : format = ALPHA" << std::endl;
+            OSG_INFO << "ReadDDSFile info : format = ALPHA" << std::endl;
             internalFormat = GL_ALPHA;
             pixelFormat    = GL_ALPHA;              
     }
@@ -494,7 +494,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
         switch(ddsd.ddpfPixelFormat.dwFourCC)
         {
         case FOURCC_DXT1:
-            osg::notify(osg::INFO) << "ReadDDSFile info : format = DXT1" << std::endl;
+            OSG_INFO << "ReadDDSFile info : format = DXT1" << std::endl;
             if (usingAlpha)
             {
                 internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
@@ -508,35 +508,35 @@ osg::Image* ReadDDSFile(std::istream& _istream)
             }
             break;
         case FOURCC_DXT3:
-            osg::notify(osg::INFO) << "ReadDDSFile info : format = DXT3" << std::endl;
+            OSG_INFO << "ReadDDSFile info : format = DXT3" << std::endl;
             internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
             pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT3_EXT;
             break;
         case FOURCC_DXT5:
-            osg::notify(osg::INFO) << "ReadDDSFile info : format = DXT5" << std::endl;
+            OSG_INFO << "ReadDDSFile info : format = DXT5" << std::endl;
             internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
             pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
             break;
         case 0x00000024: // A16B16G16R16
-            osg::notify(osg::INFO) << "ReadDDSFile info : format = A16B16G16R16" << std::endl;
+            OSG_INFO << "ReadDDSFile info : format = A16B16G16R16" << std::endl;
             internalFormat = GL_RGBA;
             pixelFormat    = GL_RGBA;
             dataType       = GL_UNSIGNED_SHORT;
             break;
         case 0x00000071: // A16B16G16R16F
-            osg::notify(osg::INFO) << "ReadDDSFile info : format = A16B16G16R16F" << std::endl;
+            OSG_INFO << "ReadDDSFile info : format = A16B16G16R16F" << std::endl;
             internalFormat = GL_RGBA; // why no transparency?
             pixelFormat    = GL_RGBA;
             dataType       = GL_HALF_FLOAT_NV; 
             break;
         case 0x0000006E: // Q16W16V16U16
-            osg::notify(osg::INFO) << "ReadDDSFile info : format = Q16W16V16U16" << std::endl;
+            OSG_INFO << "ReadDDSFile info : format = Q16W16V16U16" << std::endl;
             internalFormat = GL_RGBA;
             pixelFormat    = GL_RGBA;
             dataType       = GL_UNSIGNED_SHORT;
             break;
         case 0x00000070: // G16R16F
-            osg::notify(osg::INFO) << "ReadDDSFile info : G16R16F format is not supported"
+            OSG_INFO << "ReadDDSFile info : G16R16F format is not supported"
                                    << std::endl;
             return NULL;
 //             internalFormat = GL_RGB;
@@ -544,7 +544,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
 //             dataType       = GL_HALF_FLOAT_NV;
             break;
         case 0x00000073: // G32R32F
-            osg::notify(osg::INFO) << "ReadDDSFile info : G32R32F format is not supported"
+            OSG_INFO << "ReadDDSFile info : G32R32F format is not supported"
                                    << std::endl;
             return NULL;
 //             internalFormat = GL_RGB;
@@ -552,25 +552,25 @@ osg::Image* ReadDDSFile(std::istream& _istream)
 //             dataType       = GL_FLOAT;
             break;
         case 0x00000072: // R32F
-            osg::notify(osg::INFO) << "ReadDDSFile info : format = R32F" << std::endl;
+            OSG_INFO << "ReadDDSFile info : format = R32F" << std::endl;
             internalFormat = GL_RGB;
             pixelFormat    = GL_RED;
             dataType       = GL_FLOAT;
             break;
         case 0x0000006F: // R16F
-            osg::notify(osg::INFO) << "ReadDDSFile info : format = R16F" << std::endl;
+            OSG_INFO << "ReadDDSFile info : format = R16F" << std::endl;
             internalFormat = GL_RGB;
             pixelFormat    = GL_RED;
             dataType       = GL_HALF_FLOAT_NV;
             break;
         case 0x00000074: // A32B32G32R32F
-            osg::notify(osg::INFO) << "ReadDDSFile info : format = A32B32G32R32F" << std::endl;
+            OSG_INFO << "ReadDDSFile info : format = A32B32G32R32F" << std::endl;
             internalFormat = GL_RGBA;
             pixelFormat    = GL_RGBA;
             dataType       = GL_FLOAT;
             break;
         case 0x00000075: // CxV8U8
-            osg::notify(osg::INFO) << "ReadDDSFile info : CxV8U8 format is not supported" << std::endl;
+            OSG_INFO << "ReadDDSFile info : CxV8U8 format is not supported" << std::endl;
             return NULL;
 
         case MAKEFOURCC( 'U', 'Y', 'V', 'Y' ): // not supported in OSG
@@ -580,7 +580,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
             //break;
 
         default:
-            osg::notify(osg::WARN) << "ReadDDSFile warning: unhandled FOURCC pixel format ("
+            OSG_WARN << "ReadDDSFile warning: unhandled FOURCC pixel format ("
                                    << (char)((ddsd.ddpfPixelFormat.dwFourCC & 0x000000ff))
                                    << (char)((ddsd.ddpfPixelFormat.dwFourCC & 0x0000ff00) >> 8)
                                    << (char)((ddsd.ddpfPixelFormat.dwFourCC & 0x00ff0000) >> 16)
@@ -593,7 +593,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     }
     else 
     {
-        osg::notify(osg::WARN) << "ReadDDSFile warning: unhandled pixel format (ddsd.ddpfPixelFormat.dwFlags"
+        OSG_WARN << "ReadDDSFile warning: unhandled pixel format (ddsd.ddpfPixelFormat.dwFlags"
                                << " = 0x" << std::hex << std::setw(8) << std::setfill('0')
                                << ddsd.ddpfPixelFormat.dwFlags << std::dec
                                << ") in dds file, image not loaded."<<std::endl;
@@ -632,7 +632,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     unsigned char* imageData = new unsigned char [sizeWithMipmaps];
     if(!imageData)
     {
-        osg::notify(osg::WARN) << "ReadDDSFile warning: imageData == NULL" << std::endl;
+        OSG_WARN << "ReadDDSFile warning: imageData == NULL" << std::endl;
         return NULL;
     }
     
@@ -640,7 +640,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     if ( !_istream.read( (char*)imageData, size ) )
     {
         delete [] imageData;
-        osg::notify(osg::WARN) << "ReadDDSFile warning: couldn't read imageData" << std::endl;
+        OSG_WARN << "ReadDDSFile warning: couldn't read imageData" << std::endl;
         return NULL;
     }
 
@@ -649,7 +649,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     {
         sizeWithMipmaps = size;
         mipmap_offsets.resize( 0 );
-        osg::notify(osg::WARN) << "ReadDDSFile warning: couldn't read mipmapData" << std::endl;
+        OSG_WARN << "ReadDDSFile warning: couldn't read mipmapData" << std::endl;
 
         // if mipmaps read failed we leave some not used overhead memory allocated past main image
         // this memory will not be used but it will not cause leak in worst meaning of this word.
@@ -851,7 +851,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
         }
         break;
     default:
-        osg::notify(osg::WARN)<<"Warning:: unhandled pixel format in image, file cannot be written."<<std::endl;
+        OSG_WARN<<"Warning:: unhandled pixel format in image, file cannot be written."<<std::endl;
         return false;
     }
 
@@ -860,11 +860,11 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
     // set even more flags
     if( !img->isMipmap() ) {
 
-       osg::notify(osg::INFO)<<"no mipmaps to write out."<<std::endl;
+       OSG_INFO<<"no mipmaps to write out."<<std::endl;
 
     } else if( img->getPacking() > 1 ) {
 
-       osg::notify(osg::WARN)<<"Warning: mipmaps not written. DDS requires packing == 1."<<std::endl;
+       OSG_WARN<<"Warning: mipmaps not written. DDS requires packing == 1."<<std::endl;
 
     } else { // image contains mipmaps and has 1 byte alignment
 
@@ -875,7 +875,7 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
 
         size = img->getTotalSizeInBytesIncludingMipmaps();
 
-        osg::notify(osg::INFO)<<"writing out with mipmaps ddsd.dwMipMapCount"<<ddsd.dwMipMapCount<<std::endl;
+        OSG_INFO<<"writing out with mipmaps ddsd.dwMipMapCount"<<ddsd.dwMipMapCount<<std::endl;
     }
 
     // Assign flags and structure members of ddsd

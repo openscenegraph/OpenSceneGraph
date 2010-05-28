@@ -39,7 +39,7 @@ class ReaderWriterTerrain : public osgDB::ReaderWriter
                     itr != keywordValueMap.end();
                     ++itr)
                 {
-                    osg::notify(osg::NOTICE)<<"["<<itr->first<<"] = "<<"["<<itr->second<<"]"<<std::endl;
+                    OSG_NOTICE<<"["<<itr->first<<"] = "<<"["<<itr->second<<"]"<<std::endl;
                 }
 #else
                 std::istringstream fin(osgDB::getNameLessExtension(file));
@@ -100,7 +100,7 @@ class ReaderWriterTerrain : public osgDB::ReaderWriter
 
                 if (!itrAdvanced)
                 {
-                    if (fr[0].getStr()) osg::notify(osg::NOTICE)<<"Terrain file - unreconised token : "<<fr[0].getStr() <<""<< std::endl;
+                    if (fr[0].getStr()) { OSG_NOTICE<<"Terrain file - unreconised token : "<<fr[0].getStr() <<""<< std::endl; }
                     ++fr;
                 }
             }
@@ -138,7 +138,7 @@ class ReaderWriterTerrain : public osgDB::ReaderWriter
 
                 if (startstatement<=endstatement)
                 {
-                    // osg::notify(osg::NOTICE)<<"statement = ["<<str.substr(startstatement, endstatement-startstatement+1)<<"]"<<std::endl;
+                    // OSG_NOTICE<<"statement = ["<<str.substr(startstatement, endstatement-startstatement+1)<<"]"<<std::endl;
                     std::string::size_type assignment = str.find_first_of('=', startstatement);
                     if (assignment!=std::string::npos && assignment>endstatement)
                     {

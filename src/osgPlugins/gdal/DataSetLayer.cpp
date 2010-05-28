@@ -54,7 +54,7 @@ void DataSetLayer::open()
     if (getFileName().empty()) return;
 
 
-    osg::notify(osg::NOTICE)<<"DataSetLayer::open()"<<getFileName()<<std::endl;
+    OSG_NOTICE<<"DataSetLayer::open()"<<getFileName()<<std::endl;
 
     _dataset = static_cast<GDALDataset*>(GDALOpen(getFileName().c_str(),GA_ReadOnly));
 
@@ -63,7 +63,7 @@ void DataSetLayer::open()
 
 void DataSetLayer::close()
 {
-    osg::notify(osg::NOTICE)<<"DataSetLayer::close()"<<getFileName()<<std::endl;
+    OSG_NOTICE<<"DataSetLayer::close()"<<getFileName()<<std::endl;
 
     if (_dataset)
     {
@@ -166,7 +166,7 @@ void DataSetLayer::setUpLocator()
     }
     else if (_dataset->GetGCPCount()>0 && _dataset->GetGCPProjection())
     {
-        osg::notify(osg::NOTICE) << "    Using GCP's"<< std::endl;
+        OSG_NOTICE << "    Using GCP's"<< std::endl;
 
 
         /* -------------------------------------------------------------------- */
@@ -180,7 +180,7 @@ void DataSetLayer::setUpLocator()
 
         if ( hTransformArg == NULL )
         {
-            osg::notify(osg::NOTICE)<<" failed to create transformer"<<std::endl;
+            OSG_NOTICE<<" failed to create transformer"<<std::endl;
             return;
         }
 
@@ -194,7 +194,7 @@ void DataSetLayer::setUpLocator()
                                      adfDstGeoTransform, &nPixels, &nLines )
             != CE_None )
         {
-            osg::notify(osg::NOTICE)<<" failed to create warp"<<std::endl;
+            OSG_NOTICE<<" failed to create warp"<<std::endl;
             return;
         }
 
@@ -216,7 +216,7 @@ void DataSetLayer::setUpLocator()
     }
     else
     {
-        osg::notify(osg::INFO) << "DataSetLayer::setUpLocator(), No GeoTransform or GCP's - unable to compute position in space"<< std::endl;
+        OSG_INFO << "DataSetLayer::setUpLocator(), No GeoTransform or GCP's - unable to compute position in space"<< std::endl;
     }
 
 }

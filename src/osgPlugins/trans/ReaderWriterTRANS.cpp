@@ -51,7 +51,7 @@ static bool getFilenameAndParams(const std::string& input, std::string& filename
     params = input.substr(pos+1, std::string::npos );
     if( params.empty() )
     {
-        osg::notify(osg::WARN) << "Missing parameters for " EXTENSION_NAME " pseudo-loader" << std::endl;
+        OSG_WARN << "Missing parameters for " EXTENSION_NAME " pseudo-loader" << std::endl;
         return false;
     }
 
@@ -107,7 +107,7 @@ public:
         if( !acceptsExtension(ext) )
             return ReadResult::FILE_NOT_HANDLED;
 
-        osg::notify(osg::INFO) << "ReaderWriterTRANS( \"" << fileName << "\" )" << std::endl;
+        OSG_INFO << "ReaderWriterTRANS( \"" << fileName << "\" )" << std::endl;
 
         // strip the pseudo-loader extension
         std::string tmpName = osgDB::getNameLessExtension( fileName );
@@ -123,18 +123,18 @@ public:
 
         if( subFileName.empty())
         {
-            osg::notify(osg::WARN) << "Missing subfilename for " EXTENSION_NAME " pseudo-loader" << std::endl;
+            OSG_WARN << "Missing subfilename for " EXTENSION_NAME " pseudo-loader" << std::endl;
             return ReadResult::FILE_NOT_HANDLED;
         }
 
-        osg::notify(osg::INFO) << " params = \"" << params << "\"" << std::endl;
-        osg::notify(osg::INFO) << " subFileName = \"" << subFileName << "\"" << std::endl;
+        OSG_INFO << " params = \"" << params << "\"" << std::endl;
+        OSG_INFO << " subFileName = \"" << subFileName << "\"" << std::endl;
 
         float tx, ty, tz;
         int count = sscanf( params.c_str(), "%f,%f,%f", &tx, &ty, &tz );
         if( count != 3 )
         {
-            osg::notify(osg::WARN) << "Bad parameters for " EXTENSION_NAME " pseudo-loader: \"" << params << "\"" << std::endl;
+            OSG_WARN << "Bad parameters for " EXTENSION_NAME " pseudo-loader: \"" << params << "\"" << std::endl;
             return ReadResult::FILE_NOT_HANDLED;
         }
 
@@ -143,7 +143,7 @@ public:
         if( !node )
         {
             // propagate the read failure upwards
-            osg::notify(osg::WARN) << "Subfile \"" << subFileName << "\" could not be loaded" << std::endl;
+            OSG_WARN << "Subfile \"" << subFileName << "\" could not be loaded" << std::endl;
             return ReadResult::FILE_NOT_HANDLED;
         }
 

@@ -42,11 +42,11 @@ osgDB::Archive* osgDB::openArchive(const std::string& filename, ReaderWriter::Ar
 
 Archive::Archive()
 {
-    osg::notify(osg::INFO)<<"Archive::Archive() open"<<std::endl;
+    OSG_INFO<<"Archive::Archive() open"<<std::endl;
 }
 
 Archive::~Archive()
 {
-    osg::notify(osg::INFO)<<"Archive::~Archive() closed"<<std::endl;
+    OSG_INFO<<"Archive::~Archive() closed"<<std::endl;
 }
 

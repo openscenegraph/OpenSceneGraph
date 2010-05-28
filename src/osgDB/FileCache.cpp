@@ -27,12 +27,12 @@ FileCache::FileCache(const std::string& path):
     osg::Referenced(true),
     _fileCachePath(path)
 {
-    OSG_NOTIFY(osg::INFO)<<"Constructed FileCache : "<<path<<std::endl;
+    OSG_INFO<<"Constructed FileCache : "<<path<<std::endl;
 }
 
 FileCache::~FileCache()
 {
-    OSG_NOTIFY(osg::INFO)<<"Destructed FileCache "<<std::endl;
+    OSG_INFO<<"Destructed FileCache "<<std::endl;
 }
 
 bool FileCache::isFileAppropriateForFileCache(const std::string& originalFileName) const
@@ -46,7 +46,7 @@ std::string FileCache::createCacheFileName(const std::string& originalFileName) 
                                 osgDB::getServerAddress(originalFileName) + "/" + 
                                 osgDB::getServerFileName(originalFileName);
 
-    OSG_NOTIFY(osg::INFO)<<"FileCache::createCacheFileName("<<originalFileName<<") = "<<cacheFileName<<std::endl;
+    OSG_INFO<<"FileCache::createCacheFileName("<<originalFileName<<") = "<<cacheFileName<<std::endl;
 
     return cacheFileName;
 }
@@ -65,7 +65,7 @@ ReaderWriter::ReadResult FileCache::readObject(const std::string& originalFileNa
     std::string cacheFileName = createCacheFileName(originalFileName);
     if (!cacheFileName.empty() && osgDB::fileExists(cacheFileName))
     {
-        OSG_NOTIFY(osg::INFO)<<"FileCache::readObjectFromCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        OSG_INFO<<"FileCache::readObjectFromCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
         return osgDB::Registry::instance()->readObject(cacheFileName, options);
     }
     else
@@ -83,11 +83,11 @@ ReaderWriter::WriteResult FileCache::writeObject(const osg::Object& object, cons
 
         if (!osgDB::fileExists(path) && !osgDB::makeDirectory(path))
         {
-            OSG_NOTIFY(osg::NOTICE)<<"Could not create cache directory: "<<path<<std::endl;
+            OSG_NOTICE<<"Could not create cache directory: "<<path<<std::endl;
             return ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE;
         }
 
-        OSG_NOTIFY(osg::INFO)<<"FileCache::writeObjectToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        OSG_INFO<<"FileCache::writeObjectToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
         ReaderWriter::WriteResult result = osgDB::Registry::instance()->writeObject(object, cacheFileName, options);
         if (result.success())
         {
@@ -103,7 +103,7 @@ ReaderWriter::ReadResult FileCache::readImage(const std::string& originalFileNam
     std::string cacheFileName = createCacheFileName(originalFileName);
     if (!cacheFileName.empty() && osgDB::fileExists(cacheFileName))
     {
-        OSG_NOTIFY(osg::INFO)<<"FileCache::readImageFromCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        OSG_INFO<<"FileCache::readImageFromCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
         return osgDB::Registry::instance()->readImage(cacheFileName, options);
     }
     else
@@ -121,11 +121,11 @@ ReaderWriter::WriteResult FileCache::writeImage(const osg::Image& image, const s
 
         if (!osgDB::fileExists(path) && !osgDB::makeDirectory(path))
         {
-            OSG_NOTIFY(osg::NOTICE)<<"Could not create cache directory: "<<path<<std::endl;
+            OSG_NOTICE<<"Could not create cache directory: "<<path<<std::endl;
             return ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE;
         }
 
-        OSG_NOTIFY(osg::INFO)<<"FileCache::writeImageToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        OSG_INFO<<"FileCache::writeImageToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
         ReaderWriter::WriteResult result = osgDB::Registry::instance()->writeImage(image, cacheFileName, options);
         if (result.success())
         {
@@ -141,7 +141,7 @@ ReaderWriter::ReadResult FileCache::readHeightField(const std::string& originalF
     std::string cacheFileName = createCacheFileName(originalFileName);
     if (!cacheFileName.empty() && osgDB::fileExists(cacheFileName))
     {
-        OSG_NOTIFY(osg::INFO)<<"FileCache::readHeightFieldFromCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        OSG_INFO<<"FileCache::readHeightFieldFromCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
         return osgDB::Registry::instance()->readHeightField(cacheFileName, options);
     }
     else
@@ -159,11 +159,11 @@ ReaderWriter::WriteResult FileCache::writeHeightField(const osg::HeightField& hf
 
         if (!osgDB::fileExists(path) && !osgDB::makeDirectory(path))
         {
-            OSG_NOTIFY(osg::NOTICE)<<"Could not create cache directory: "<<path<<std::endl;
+            OSG_NOTICE<<"Could not create cache directory: "<<path<<std::endl;
             return ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE;
         }
 
-        OSG_NOTIFY(osg::INFO)<<"FileCache::writeHeightFieldToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        OSG_INFO<<"FileCache::writeHeightFieldToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
         ReaderWriter::WriteResult result = osgDB::Registry::instance()->writeHeightField(hf, cacheFileName, options);
         if (result.success())
         {
@@ -179,7 +179,7 @@ ReaderWriter::ReadResult FileCache::readNode(const std::string& originalFileName
     std::string cacheFileName = createCacheFileName(originalFileName);
     if (!cacheFileName.empty() && osgDB::fileExists(cacheFileName))
     {
-        OSG_NOTIFY(osg::INFO)<<"FileCache::readNodeFromCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        OSG_INFO<<"FileCache::readNodeFromCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
         return osgDB::Registry::instance()->readNode(cacheFileName, options, buildKdTreeIfRequired);
     }
     else
@@ -197,11 +197,11 @@ ReaderWriter::WriteResult FileCache::writeNode(const osg::Node& node, const std:
 
         if (!osgDB::fileExists(path) && !osgDB::makeDirectory(path))
         {
-            OSG_NOTIFY(osg::NOTICE)<<"Could not create cache directory: "<<path<<std::endl;
+            OSG_NOTICE<<"Could not create cache directory: "<<path<<std::endl;
             return ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE;
         }
 
-        OSG_NOTIFY(osg::INFO)<<"FileCache::writeNodeToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        OSG_INFO<<"FileCache::writeNodeToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
         ReaderWriter::WriteResult result = osgDB::Registry::instance()->writeNode(node, cacheFileName, options);
         if (result.success())
         {
@@ -218,7 +218,7 @@ ReaderWriter::ReadResult FileCache::readShader(const std::string& originalFileNa
     std::string cacheFileName = createCacheFileName(originalFileName);
     if (!cacheFileName.empty() && osgDB::fileExists(cacheFileName))
     {
-        OSG_NOTIFY(osg::INFO)<<"FileCache::readShaderFromCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        OSG_INFO<<"FileCache::readShaderFromCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
         return osgDB::Registry::instance()->readShader(cacheFileName, options);
     }
     else
@@ -236,11 +236,11 @@ ReaderWriter::WriteResult FileCache::writeShader(const osg::Shader& shader, cons
 
         if (!osgDB::fileExists(path) && !osgDB::makeDirectory(path))
         {
-            OSG_NOTIFY(osg::NOTICE)<<"Could not create cache directory: "<<path<<std::endl;
+            OSG_NOTICE<<"Could not create cache directory: "<<path<<std::endl;
             return ReaderWriter::WriteResult::ERROR_IN_WRITING_FILE;
         }
 
-        OSG_NOTIFY(osg::INFO)<<"FileCache::writeShaderToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
+        OSG_INFO<<"FileCache::writeShaderToCache("<<originalFileName<<") as "<<cacheFileName<<std::endl;
         ReaderWriter::WriteResult result = osgDB::Registry::instance()->writeShader(shader, cacheFileName, options);
         if (result.success())
         {
@@ -311,12 +311,12 @@ bool FileCache::removeFileFromBlackListed(const std::string& originalFileName) c
 
 bool FileCache::loadDatabaseRevisionsForFile(const std::string& originalFileName)
 {
-    OSG_NOTIFY(osg::INFO)<<"FileCache::loadDatabaseRevisionsForFile("<<originalFileName<<")"<<std::endl;
+    OSG_INFO<<"FileCache::loadDatabaseRevisionsForFile("<<originalFileName<<")"<<std::endl;
 
     std::string revisionsFileName = originalFileName;
     if (getLowerCaseFileExtension(revisionsFileName)!="revisions") revisionsFileName += ".revisions";
 
-    OSG_NOTIFY(osg::INFO)<<"   revisionsFileName("<<revisionsFileName<<")"<<std::endl;
+    OSG_INFO<<"   revisionsFileName("<<revisionsFileName<<")"<<std::endl;
 
     osg::ref_ptr<DatabaseRevisions> dr_local;
 
@@ -328,11 +328,11 @@ bool FileCache::loadDatabaseRevisionsForFile(const std::string& originalFileName
         ritr != _databaseRevisionsList.end() && !dr_local;
         ++ritr)
     {
-        OSG_NOTIFY(osg::INFO)<<"   comparing "<<(*ritr)->getName()<<" to "<<revisionsFileName<<std::endl;
+        OSG_INFO<<"   comparing "<<(*ritr)->getName()<<" to "<<revisionsFileName<<std::endl;
 
         if ((*ritr)->getName()==revisionsFileName)
         {
-            OSG_NOTIFY(osg::INFO)<<"Already loaded"<<std::endl;
+            OSG_INFO<<"Already loaded"<<std::endl;
             dr_local = *ritr;
         }
     }
@@ -341,17 +341,17 @@ bool FileCache::loadDatabaseRevisionsForFile(const std::string& originalFileName
     {
         if (!cacheFileName.empty() && osgDB::fileExists(cacheFileName))
         {
-            OSG_NOTIFY(osg::INFO)<<"   found revisions file in local cache, now loading it"<<std::endl;
+            OSG_INFO<<"   found revisions file in local cache, now loading it"<<std::endl;
             osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(cacheFileName);
             dr_local = dynamic_cast<DatabaseRevisions*>(object.get());
             if (dr_local)
             {
-                OSG_NOTIFY(osg::INFO)<<"   loaded local revisions File("<<cacheFileName<<")"<<std::endl;
+                OSG_INFO<<"   loaded local revisions File("<<cacheFileName<<")"<<std::endl;
             }
         }
         else
         {
-            OSG_NOTIFY(osg::INFO)<<"   could not load found revisions file from local cache."<<std::endl;
+            OSG_INFO<<"   could not load found revisions file from local cache."<<std::endl;
         }
     }
 
@@ -371,22 +371,22 @@ bool FileCache::loadDatabaseRevisionsForFile(const std::string& originalFileName
                 {
                     DatabaseRevision* revision_local = dr_local->getDatabaseRevision(i);
                     DatabaseRevision* revision_remote = dr_remote->getDatabaseRevision(i);
-                    OSG_NOTIFY(osg::INFO)<<"   Comparing local "<<revision_local->getName()<<" to remote "<<revision_remote->getName()<<std::endl;
+                    OSG_INFO<<"   Comparing local "<<revision_local->getName()<<" to remote "<<revision_remote->getName()<<std::endl;
                     if (revision_local->getName()!=revision_remote->getName()) break;
                 }
                 needToWriteRevisionsFileToDisk = (i!=dr_local->getDatabaseRevisionList().size());
-                OSG_NOTIFY(osg::INFO)<<"Local and remote revisions are different "<<needToWriteRevisionsFileToDisk<<std::endl;
+                OSG_INFO<<"Local and remote revisions are different "<<needToWriteRevisionsFileToDisk<<std::endl;
             }
         }
 
         if (needToWriteRevisionsFileToDisk)
         {
-            OSG_NOTIFY(osg::INFO)<<"Need to write DatabaseRevions "<<revisionsFileName<<" to local FileCache"<<std::endl;
+            OSG_INFO<<"Need to write DatabaseRevions "<<revisionsFileName<<" to local FileCache"<<std::endl;
             if (!cacheFileName.empty()) writeObjectFile(*dr_remote, cacheFileName);
         }
         else
         {
-            OSG_NOTIFY(osg::INFO)<<"No need to write DatabaseRevions "<<revisionsFileName<<" to local FileCache"<<std::endl;
+            OSG_INFO<<"No need to write DatabaseRevions "<<revisionsFileName<<" to local FileCache"<<std::endl;
         }
 
     }
@@ -396,17 +396,17 @@ bool FileCache::loadDatabaseRevisionsForFile(const std::string& originalFileName
 
     if (dr.valid())
     {
-        OSG_NOTIFY(osg::INFO)<<"   loaded remote revisions File("<<revisionsFileName<<")"<<std::endl;
+        OSG_INFO<<"   loaded remote revisions File("<<revisionsFileName<<")"<<std::endl;
 
         if (ritr != _databaseRevisionsList.end())
         {
             // replace already loaded DatabaseRevisions object
-            OSG_NOTIFY(osg::INFO)<<"Replacing already loaded DatabaseRevisions object"<<std::endl;
+            OSG_INFO<<"Replacing already loaded DatabaseRevisions object"<<std::endl;
             *ritr = dr;
         }
         else
         {
-            OSG_NOTIFY(osg::INFO)<<"Added newly loaded DatabaseRevisions object "<<dr->getName()<<std::endl;
+            OSG_INFO<<"Added newly loaded DatabaseRevisions object "<<dr->getName()<<std::endl;
             _databaseRevisionsList.push_back(dr);
         }
 
@@ -417,7 +417,7 @@ bool FileCache::loadDatabaseRevisionsForFile(const std::string& originalFileName
         {
             DatabaseRevision* revision = itr->get();
 
-            OSG_NOTIFY(osg::INFO)<<"     now loaded DatabaseRevisions "<<revision->getName()<<" FileList contents"<<std::endl;
+            OSG_INFO<<"     now loaded DatabaseRevisions "<<revision->getName()<<" FileList contents"<<std::endl;
             if (revision->getFilesAdded())
             {
                 FileList* fileList = readFileList(osgDB::concatPaths(revision->getDatabasePath(), revision->getFilesAdded()->getName()));
@@ -450,7 +450,7 @@ bool FileCache::loadDatabaseRevisionsForFile(const std::string& originalFileName
     }
     else
     {
-        OSG_NOTIFY(osg::NOTICE)<<"   failed to read revisions File, object.get()="<<object.get()<<std::endl;
+        OSG_NOTICE<<"   failed to read revisions File, object.get()="<<object.get()<<std::endl;
         return false;
     }
 }
@@ -464,18 +464,18 @@ FileList* FileCache::readFileList(const std::string& originalFileName) const
     {
         osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(cacheFileListName);
         fileList = dynamic_cast<osgDB::FileList*>(object.get());
-        if (fileList) OSG_NOTIFY(osg::INFO)<<"     loadeded FileList from local cache "<<fileList->getName()<<std::endl;
+        if (fileList) OSG_INFO<<"     loadeded FileList from local cache "<<fileList->getName()<<std::endl;
     }
 
     if (!fileList)
     {
-        OSG_NOTIFY(osg::INFO)<<"       complete_path="<<originalFileName<<std::endl;
+        OSG_INFO<<"       complete_path="<<originalFileName<<std::endl;
         osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(originalFileName+".curl");
         fileList = dynamic_cast<osgDB::FileList*>(object.get());
         if (fileList)
         {
-            OSG_NOTIFY(osg::INFO)<<"     loadeded FileList from remote system "<<fileList->getName()<<std::endl;
-            OSG_NOTIFY(osg::INFO)<<"     Need to write to local file cache "<<fileList->getName()<<std::endl;
+            OSG_INFO<<"     loadeded FileList from remote system "<<fileList->getName()<<std::endl;
+            OSG_INFO<<"     Need to write to local file cache "<<fileList->getName()<<std::endl;
             if (!cacheFileListName.empty()) writeObjectFile(*fileList, cacheFileListName);
         }
     }

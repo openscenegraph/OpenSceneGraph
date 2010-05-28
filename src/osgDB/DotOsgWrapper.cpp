@@ -81,14 +81,14 @@ void DeprecatedDotOsgWrapperManager::addDotOsgWrapper(DotOsgWrapper* wrapper)
 {
     if (wrapper==0L) return;
 
-    //notify(INFO) << "osg::Registry::addDotOsgWrapper("<<wrapper->getName()<<")"<< std::endl;
+    //OSG_INFO << "osg::Registry::addDotOsgWrapper("<<wrapper->getName()<<")"<< std::endl;
     const DotOsgWrapper::Associates& assoc = wrapper->getAssociates();
 
     for(DotOsgWrapper::Associates::const_iterator itr=assoc.begin();
                                                   itr!=assoc.end();
                                                   ++itr)
     {
-        //notify(INFO) << "    ("<<*itr<<")"<< std::endl;
+        //OSG_INFO << "    ("<<*itr<<")"<< std::endl;
     }
 
     const std::string& name = wrapper->getName();
@@ -260,7 +260,7 @@ osg::Object* DeprecatedDotOsgWrapperManager::readObjectOfType(const basic_type_w
         const osg::Object* proto = wrapper->getPrototype();
         if (proto==NULL)
         {
-            osg::notify(osg::WARN)<<"Token "<<fr[0].getStr()<<" read, but has no prototype, cannot load."<< std::endl;
+            OSG_WARN<<"Token "<<fr[0].getStr()<<" read, but has no prototype, cannot load."<< std::endl;
             return NULL;
         }
 
@@ -384,7 +384,7 @@ osg::Object* DeprecatedDotOsgWrapperManager::readObject(DotOsgWrapperMap& dowMap
         const osg::Object* proto = wrapper->getPrototype();
         if (proto==NULL)
         {
-            osg::notify(osg::WARN)<<"Token "<<fr[0].getStr()<<" read, but has no prototype, cannot load."<< std::endl;
+            OSG_WARN<<"Token "<<fr[0].getStr()<<" read, but has no prototype, cannot load."<< std::endl;
             return NULL;
         }
 

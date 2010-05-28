@@ -61,7 +61,7 @@ InputStream::InputStream( const osgDB::Options* options )
                 }
             }
             else
-                osg::notify(osg::WARN) << "InputStream: Unknown option " << option << std::endl;
+                OSG_WARN << "InputStream: Unknown option " << option << std::endl;
         }
     }
     if ( schema.empty() )
@@ -501,13 +501,13 @@ osg::Image* InputStream::readImage()
                         image = rr.takeImage();
                     else
                     {
-                        osg::notify(osg::WARN) << "InputStream::readImage(): "
+                        OSG_WARN << "InputStream::readImage(): "
                                                << rr.message() << std::endl;
                     }
                 }
                 else
                 {
-                    osg::notify(osg::WARN) << "InputStream::readImage(): Unable to find a plugin for "
+                    OSG_WARN << "InputStream::readImage(): Unable to find a plugin for "
                                            << ext << std::endl;
                 }
                 delete[] data;
@@ -553,7 +553,7 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
     ObjectWrapper* wrapper = Registry::instance()->getObjectWrapperManager()->findWrapper( className );
     if ( !wrapper )
     {
-        osg::notify(osg::WARN) << "InputStream::readObject(): Unsupported wrapper class "
+        OSG_WARN << "InputStream::readObject(): Unsupported wrapper class "
                                << className << std::endl;
         advanceToCurrentEndBracket();
         return NULL;
@@ -571,7 +571,7 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
             ObjectWrapper* assocWrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(*itr);
             if ( !assocWrapper )
             {
-                osg::notify(osg::WARN) << "InputStream::readObject(): Unsupported associated class "
+                OSG_WARN << "InputStream::readObject(): Unsupported associated class "
                                        << *itr << std::endl;
                 continue;
             }
@@ -643,7 +643,7 @@ InputStream::ReadType InputStream::start( InputIterator* inIterator )
     // Check file version
     if ( version!=PLUGIN_VERSION )
     {
-        osg::notify(osg::WARN) << "InputStream: Input data version " << version
+        OSG_WARN << "InputStream: Input data version " << version
                                << " may be incompatible with current reader version "
                                << PLUGIN_VERSION << std::endl;
     }
@@ -665,7 +665,7 @@ void InputStream::decompress()
         BaseCompressor* compressor = Registry::instance()->getObjectWrapperManager()->findCompressor(compressorName);
         if ( !compressor )
         {
-            osg::notify(osg::WARN) << "InputStream::decompress(): No such compressor "
+            OSG_WARN << "InputStream::decompress(): No such compressor "
                                    << compressorName << std::endl;
         }
         
@@ -694,7 +694,7 @@ void InputStream::setWrapperSchema( const std::string& name, const std::string& 
     ObjectWrapper* wrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(name);
     if ( !wrapper )
     {
-        osg::notify(osg::WARN) << "InputStream::setSchema(): Unsupported wrapper class "
+        OSG_WARN << "InputStream::setSchema(): Unsupported wrapper class "
                                << name << std::endl;
         return;
     }

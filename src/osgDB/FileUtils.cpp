@@ -123,7 +123,7 @@ bool osgDB::makeDirectory( const std::string &path )
 {
     if (path.empty())
     {
-        OSG_NOTIFY(osg::DEBUG_INFO) << "osgDB::makeDirectory(): cannot create an empty directory" << std::endl;
+        OSG_DEBUG << "osgDB::makeDirectory(): cannot create an empty directory" << std::endl;
         return false;
     }
     
@@ -138,7 +138,7 @@ bool osgDB::makeDirectory( const std::string &path )
             return true;
         else
         {
-            OSG_NOTIFY(osg::DEBUG_INFO) << "osgDB::makeDirectory(): "  <<
+            OSG_DEBUG << "osgDB::makeDirectory(): "  <<
                     path << " already exists and is not a directory!" << std::endl;
             return false;
         }
@@ -165,7 +165,7 @@ bool osgDB::makeDirectory( const std::string &path )
                     break;
  
                 default:
-                    OSG_NOTIFY(osg::DEBUG_INFO) << "osgDB::makeDirectory(): "  << strerror(errno) << std::endl;
+                    OSG_DEBUG << "osgDB::makeDirectory(): "  << strerror(errno) << std::endl;
                     return false;
             }
         }
@@ -190,7 +190,7 @@ bool osgDB::makeDirectory( const std::string &path )
         if( mkdir( dir.c_str(), 0755 )< 0 )
 #endif
         {
-            OSG_NOTIFY(osg::DEBUG_INFO) << "osgDB::makeDirectory(): "  << strerror(errno) << std::endl;
+            OSG_DEBUG << "osgDB::makeDirectory(): "  << strerror(errno) << std::endl;
             return false;
         } 
         paths.pop();
@@ -224,7 +224,7 @@ bool osgDB::setCurrentWorkingDirectory( const std::string &newCurrentWorkingDire
 {
     if (newCurrentWorkingDirectory.empty())
     {
-        OSG_NOTIFY(osg::DEBUG_INFO) << "osgDB::setCurrentWorkingDirectory(): called with empty string." << std::endl;
+        OSG_DEBUG << "osgDB::setCurrentWorkingDirectory(): called with empty string." << std::endl;
         return false;
     }
     
@@ -306,15 +306,15 @@ std::string osgDB::findFileInPath(const std::string& filename, const FilePathLis
         itr!=filepath.end();
         ++itr)
     {
-        OSG_NOTIFY(osg::DEBUG_INFO) << "itr='" <<*itr<< "'\n";
+        OSG_DEBUG << "itr='" <<*itr<< "'\n";
         std::string path = itr->empty() ? filename : concatPaths(*itr, filename);
         
         path = getRealPath(path);
 
-        OSG_NOTIFY(osg::DEBUG_INFO) << "FindFileInPath() : trying " << path << " ...\n";
+        OSG_DEBUG << "FindFileInPath() : trying " << path << " ...\n";
         if(fileExists(path)) 
         {
-            OSG_NOTIFY(osg::DEBUG_INFO) << "FindFileInPath() : USING " << path << "\n";
+            OSG_DEBUG << "FindFileInPath() : USING " << path << "\n";
             return path;
         }
 #ifndef WIN32 
@@ -389,7 +389,7 @@ std::string osgDB::findFileInDirectory(const std::string& fileName,const std::st
         realFileName = getSimpleFileName(fileName);
     }
 
-    OSG_NOTIFY(osg::DEBUG_INFO) << "findFileInDirectory() : looking for " << realFileName << " in " << realDirName << "...\n";
+    OSG_DEBUG << "findFileInDirectory() : looking for " << realFileName << " in " << realDirName << "...\n";
 
     if (realDirName.empty())
     {
@@ -534,21 +534,21 @@ osgDB::FileOpResult::Value osgDB::copyFile(const std::string & source, const std
 {
     if (source.empty() || destination.empty())
     {
-        OSG_NOTIFY(osg::INFO) << "copyFile(): Empty file name." << std::endl;
+        OSG_INFO << "copyFile(): Empty file name." << std::endl;
         return FileOpResult::BAD_ARGUMENT;
     }
 
     // Check if source and destination are the same
     if (source == destination || osgDB::getRealPath(source) == osgDB::getRealPath(destination))
     {
-        OSG_NOTIFY(osg::INFO) << "copyFile(): Source and destination point to the same file: source=" << source << ", destination=" << destination << std::endl;
+        OSG_INFO << "copyFile(): Source and destination point to the same file: source=" << source << ", destination=" << destination << std::endl;
         return FileOpResult::SOURCE_EQUALS_DESTINATION;
     }
 
     // Check if source file exists
     if (!osgDB::fileExists(source))
     {
-        OSG_NOTIFY(osg::INFO) << "copyFile(): Source file does not exist: " << source << std::endl;
+        OSG_INFO << "copyFile(): Source file does not exist: " << source << std::endl;
         return FileOpResult::SOURCE_MISSING;
     }
 
@@ -556,21 +556,21 @@ osgDB::FileOpResult::Value osgDB::copyFile(const std::string & source, const std
     osgDB::ifstream fin(source.c_str(), std::ios::in | std::ios::binary);
     if (!fin)
     {
-        OSG_NOTIFY(osg::NOTICE) << "copyFile(): Can't read source file: " << source << std::endl;
+        OSG_NOTICE << "copyFile(): Can't read source file: " << source << std::endl;
         return FileOpResult::SOURCE_NOT_OPENED;        // Return success since it's not an output error.
     }
 
     // Ensure the directory exists or else the FBX SDK will fail
     if (!osgDB::makeDirectoryForFile(destination))
     {
-        OSG_NOTIFY(osg::INFO) << "Can't create directory for file '" << destination << "'. Copy may fail creating the file." << std::endl;
+        OSG_INFO << "Can't create directory for file '" << destination << "'. Copy may fail creating the file." << std::endl;
     }
 
     // Open destination file
     osgDB::ofstream fout(destination.c_str(), std::ios::out | std::ios::binary | std::ios::trunc);
     if (!fout)
     {
-        OSG_NOTIFY(osg::NOTICE) << "copyFile(): Can't write destination file: " << destination << std::endl;
+        OSG_NOTICE << "copyFile(): Can't write destination file: " << destination << std::endl;
         return FileOpResult::DESTINATION_NOT_OPENED;
     }
 
@@ -585,13 +585,13 @@ osgDB::FileOpResult::Value osgDB::copyFile(const std::string & source, const std
 
     if (!fout.good())
     {
-        OSG_NOTIFY(osg::NOTICE) << "copyFile(): Error writing destination file: " << destination << std::endl;
+        OSG_NOTICE << "copyFile(): Error writing destination file: " << destination << std::endl;
         return FileOpResult::WRITE_ERROR;
     }
 
     if (!fin.eof())
     {
-        OSG_NOTIFY(osg::NOTICE) << "copyFile(): Error reading source file: " << source << std::endl;
+        OSG_NOTICE << "copyFile(): Error reading source file: " << source << std::endl;
         return FileOpResult::READ_ERROR;
     }
 
@@ -687,7 +687,7 @@ osgDB::FileOpResult::Value osgDB::copyFile(const std::string & source, const std
         }
         else
         {
-            OSG_NOTIFY(osg::WARN) << "Could not get application directory "
+            OSG_WARN << "Could not get application directory "
                 "using Win32 API. It will not be searched." << std::endl;
         }
 
@@ -717,14 +717,14 @@ osgDB::FileOpResult::Value osgDB::copyFile(const std::string & source, const std
                     }
                     else
                     {
-                        OSG_NOTIFY(osg::WARN) << "Could not get dll directory "
+                        OSG_WARN << "Could not get dll directory "
                             "using Win32 API. It will not be searched." << std::endl;
                     }
                     FreeLibrary(thisModule);
                 }
                 else
                 {
-                    OSG_NOTIFY(osg::WARN) << "Could not get dll module handle "
+                    OSG_WARN << "Could not get dll module handle "
                         "using Win32 API. Dll directory will not be searched." << std::endl;
                 }
             }
@@ -742,7 +742,7 @@ osgDB::FileOpResult::Value osgDB::copyFile(const std::string & source, const std
         }
         else
         {
-            OSG_NOTIFY(osg::WARN) << "Could not get system directory using "
+            OSG_WARN << "Could not get system directory using "
                 "Win32 API, using default directory." << std::endl;
             convertStringPathIntoFilePathList("C:\\Windows\\System32", 
                                               filepath);
@@ -763,7 +763,7 @@ osgDB::FileOpResult::Value osgDB::copyFile(const std::string & source, const std
         }
         else
         {
-            OSG_NOTIFY(osg::WARN) << "Could not get Windows directory using "
+            OSG_WARN << "Could not get Windows directory using "
                 "Win32 API, using default directory." << std::endl;
             convertStringPathIntoFilePathList("C:\\Windows", filepath);
             convertStringPathIntoFilePathList("C:\\Windows\\System", filepath);

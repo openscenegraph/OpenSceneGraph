@@ -46,7 +46,7 @@ UBrowserManager::UBrowserManager():
     _nativeWindowHandle(0),
     _previousButtonMask(0)
 {
-    osg::notify(osg::INFO)<<"UBrowserManager::UBrowserManager()"<<std::endl;
+    OSG_INFO<<"UBrowserManager::UBrowserManager()"<<std::endl;
 }
 
 UBrowserManager::~UBrowserManager()
@@ -142,11 +142,11 @@ struct InitOperation : public osg::Operation
       * on success call operation()(GraphicsContext*).*/
     virtual void operator () (osg::Object* object)
     {
-        osg::notify(osg::NOTICE)<<"InitOperation begin"<<std::endl;
+        OSG_NOTICE<<"InitOperation begin"<<std::endl;
 
         UBrowserManager* ubrowserManager = dynamic_cast<UBrowserManager*>(object);
     
-        osg::notify(osg::NOTICE)<<"InitOperation ubrowserManager="<<ubrowserManager<<std::endl;
+        OSG_NOTICE<<"InitOperation ubrowserManager="<<ubrowserManager<<std::endl;
 
         // create a single browser window and set things up.
         std::string applicationDir = osgDB::getFilePath(ubrowserManager->getApplication());
@@ -156,21 +156,21 @@ struct InitOperation : public osg::Operation
         std::string componentDir = ADDQUOTES(XUL_DIR);
         std::string profileDir = applicationDir + "/" + ".profile";
 
-        osg::notify(osg::NOTICE)<<"applicationDir="<<applicationDir<<std::endl;
-        osg::notify(osg::NOTICE)<<"componentDir="<<componentDir<<std::endl;
-        osg::notify(osg::NOTICE)<<"profileDir="<<profileDir<<std::endl;
-        osg::notify(osg::NOTICE)<<"ubrowserManager->getNativeWindowHandle()="<<ubrowserManager->getNativeWindowHandle()<<std::endl;
+        OSG_NOTICE<<"applicationDir="<<applicationDir<<std::endl;
+        OSG_NOTICE<<"componentDir="<<componentDir<<std::endl;
+        OSG_NOTICE<<"profileDir="<<profileDir<<std::endl;
+        OSG_NOTICE<<"ubrowserManager->getNativeWindowHandle()="<<ubrowserManager->getNativeWindowHandle()<<std::endl;
 
-        osg::notify(osg::NOTICE)<<"before LLMozLib init() "<<std::endl;
+        OSG_NOTICE<<"before LLMozLib init() "<<std::endl;
 
         LLMozLib::getInstance()->init( applicationDir, componentDir, profileDir, ubrowserManager->getNativeWindowHandle() );
 
-        osg::notify(osg::NOTICE)<<"done LLMozLib init() "<<std::endl;
+        OSG_NOTICE<<"done LLMozLib init() "<<std::endl;
 
         // append details to agent string
         LLMozLib::getInstance()->setBrowserAgentId( ubrowserManager->getApplication() );
 
-        osg::notify(osg::NOTICE)<<"InitOperation end"<<std::endl;
+        OSG_NOTICE<<"InitOperation end"<<std::endl;
     }
 
 };
@@ -184,11 +184,11 @@ struct UpdateOperation : public osg::Operation
     {
         UBrowserManager* ubrowserManager = dynamic_cast<UBrowserManager*>(object);
 
-        // osg::notify(osg::NOTICE)<<"Update"<<std::endl;
+        // OSG_NOTICE<<"Update"<<std::endl;
 
         if (ubrowserManager->_ubrowserImageList.empty())
         {
-            // osg::notify(osg::NOTICE)<<"Nothing to do"<<std::endl;
+            // OSG_NOTICE<<"Nothing to do"<<std::endl;
 
             OpenThreads::Thread::YieldCurrentThread();
             return;
@@ -228,12 +228,12 @@ struct UpdateOperation : public osg::Operation
         
         if (numUpdated==0)
         {
-            //osg::notify(osg::NOTICE)<<"completed Update but no images updated"<<std::endl;
+            //OSG_NOTICE<<"completed Update but no images updated"<<std::endl;
             OpenThreads::Thread::YieldCurrentThread();
         }
         else
         {
-            //osg::notify(osg::NOTICE)<<"completed Updated "<<numUpdated<<std::endl;
+            //OSG_NOTICE<<"completed Updated "<<numUpdated<<std::endl;
         }
 
     }
@@ -244,9 +244,9 @@ struct UpdateOperation : public osg::Operation
     
         double deltaTime = image->getTimeOfLastRender() - image->getTimeOfLastUpdate();
 
-//        osg::notify(osg::NOTICE)<<"deltaTime = "<<deltaTime<<std::endl;
-//        osg::notify(osg::NOTICE)<<"    image->getTimeOfLastRender() = "<<image->getTimeOfLastRender()<<std::endl;
-//        osg::notify(osg::NOTICE)<<"    image->getTimeOfLastUpdate() = "<<image->getTimeOfLastUpdate()<<std::endl;
+//        OSG_NOTICE<<"deltaTime = "<<deltaTime<<std::endl;
+//        OSG_NOTICE<<"    image->getTimeOfLastRender() = "<<image->getTimeOfLastRender()<<std::endl;
+//        OSG_NOTICE<<"    image->getTimeOfLastUpdate() = "<<image->getTimeOfLastUpdate()<<std::endl;
 
         if (deltaTime<0.0)
         {
@@ -260,7 +260,7 @@ struct UpdateOperation : public osg::Operation
             int width = image->s();
             int height = image->t();
 
-            osg::notify(osg::INFO)<<"Constructing browser window for first time, width = "<<width<<" height = "<<height<<std::endl;
+            OSG_INFO<<"Constructing browser window for first time, width = "<<width<<" height = "<<height<<std::endl;
 
             id = LLMozLib::getInstance()->createBrowserWindow( width, height );
             
@@ -291,7 +291,7 @@ struct UpdateOperation : public osg::Operation
             GLint internalFormat = LLMozLib::getInstance()->getBrowserDepth( id ) == 3 ? GL_RGB : GL_RGBA;
             GLenum pixelFormat = LLMozLib::getInstance()->getBrowserDepth( id ) == 3 ? GL_BGR_EXT : GL_BGRA_EXT;
 
-            // osg::notify(osg::NOTICE)<<"  doing image update "<<std::endl;
+            // OSG_NOTICE<<"  doing image update "<<std::endl;
 
             image->setImage(width,height,1, internalFormat, pixelFormat, GL_UNSIGNED_BYTE, 
                      (unsigned char*)LLMozLib::getInstance()->getBrowserWindowPixels( id ),

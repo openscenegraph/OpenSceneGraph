@@ -123,7 +123,7 @@ class UBrowserImage : public osgWidget::BrowserImage, public LLEmbeddedBrowserWi
         void onPageChanged( const EventType& eventIn )
         {
             // flag that an update is required - page grab happens in idle() so we don't stall
-            osg::notify(osg::NOTICE) << "Event: onPageChanged " << eventIn.getEventUri() << std::endl;
+            OSG_NOTICE << "Event: onPageChanged " << eventIn.getEventUri() << std::endl;
             _needsUpdate = true;
         };
 
@@ -131,42 +131,42 @@ class UBrowserImage : public osgWidget::BrowserImage, public LLEmbeddedBrowserWi
         // virtual
         void onNavigateBegin( const EventType& eventIn )
         {
-            osg::notify(osg::NOTICE) << "Event: begin navigation to " << eventIn.getEventUri() << std::endl;
+            OSG_NOTICE << "Event: begin navigation to " << eventIn.getEventUri() << std::endl;
         };
 
         ////////////////////////////////////////////////////////////////////////////////
         // virtual
         void onNavigateComplete( const EventType& eventIn )
         {
-            osg::notify(osg::NOTICE) << "Event: end navigation to " << eventIn.getEventUri() << " with response status of " << eventIn.getIntValue() << std::endl;
+            OSG_NOTICE << "Event: end navigation to " << eventIn.getEventUri() << " with response status of " << eventIn.getIntValue() << std::endl;
         };
 
         ////////////////////////////////////////////////////////////////////////////////
         // virtual
         void onUpdateProgress( const EventType& eventIn )
         {
-            osg::notify(osg::NOTICE) << "Event: progress value updated to " << eventIn.getIntValue() << std::endl;
+            OSG_NOTICE << "Event: progress value updated to " << eventIn.getIntValue() << std::endl;
         };
 
         ////////////////////////////////////////////////////////////////////////////////
         // virtual
         void onStatusTextChange( const EventType& eventIn )
         {
-            osg::notify(osg::INFO) << "Event: status updated to " << eventIn.getStringValue() << std::endl;
+            OSG_INFO << "Event: status updated to " << eventIn.getStringValue() << std::endl;
         };
 
         ////////////////////////////////////////////////////////////////////////////////
         // virtual
         void onLocationChange( const EventType& eventIn )
         {
-            osg::notify(osg::NOTICE) << "Event: location changed to " << eventIn.getStringValue() << std::endl;
+            OSG_NOTICE << "Event: location changed to " << eventIn.getStringValue() << std::endl;
         };
 
         ////////////////////////////////////////////////////////////////////////////////
         // virtual
         void onClickLinkHref( const EventType& eventIn )
         {
-            osg::notify(osg::NOTICE) << "Event: clicked on link to " << eventIn.getStringValue() << std::endl;
+            OSG_NOTICE << "Event: clicked on link to " << eventIn.getStringValue() << std::endl;
         };
 
         void setBrowserWindowId(int id) { _browserWindowId = id; }

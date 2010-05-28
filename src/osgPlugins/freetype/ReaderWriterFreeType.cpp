@@ -62,7 +62,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
             FreeTypeLibrary* freeTypeLibrary = FreeTypeLibrary::instance();
             if (!freeTypeLibrary)
             {
-                osg::notify(osg::WARN)<<"Warning:: cannot create freetype font after freetype library has been deleted."<<std::endl;
+                OSG_WARN<<"Warning:: cannot create freetype font after freetype library has been deleted."<<std::endl;
                 return ReadResult::ERROR_IN_READING_FILE;
             }
 
@@ -77,7 +77,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
             FreeTypeLibrary* freeTypeLibrary = FreeTypeLibrary::instance();
             if (!freeTypeLibrary)
             {
-                osg::notify(osg::WARN)<<"Warning:: cannot create freetype font after freetype library has been deleted."<<std::endl;
+                OSG_WARN<<"Warning:: cannot create freetype font after freetype library has been deleted."<<std::endl;
                 return ReadResult::ERROR_IN_READING_FILE;
             }
 

@@ -24,11 +24,11 @@
 
 FreeTypeLibrary::FreeTypeLibrary()
 {
-    osg::notify(osg::INFO) << "FreeTypeLibrary::FreeTypeLibrary()" << std::endl; 
+    OSG_INFO << "FreeTypeLibrary::FreeTypeLibrary()" << std::endl; 
     FT_Error error = FT_Init_FreeType( &_ftlibrary );
     if (error)
     {
-        osg::notify(osg::WARN)<<"Warning: an error occurred during FT_Init_FreeType(..) initialisation, error code = "<<std::hex<<error<<std::dec<<std::endl;
+        OSG_WARN<<"Warning: an error occurred during FT_Init_FreeType(..) initialisation, error code = "<<std::hex<<error<<std::dec<<std::endl;
     }
 
 }
@@ -74,20 +74,20 @@ bool FreeTypeLibrary::getFace(const std::string& fontfile,unsigned int index, FT
     FT_Error error = FT_New_Face( _ftlibrary, fontfile.c_str(), index, &face );
     if (error == FT_Err_Unknown_File_Format)
     {
-        osg::notify(osg::WARN)<<" .... the font file could be opened and read, but it appears"<<std::endl;
-        osg::notify(osg::WARN)<<" .... that its font format is unsupported"<<std::endl;
+        OSG_WARN<<" .... the font file could be opened and read, but it appears"<<std::endl;
+        OSG_WARN<<" .... that its font format is unsupported"<<std::endl;
         return false;
     }
     else if (error)
     {
-        osg::notify(osg::WARN)<<" .... another error code means that the font file could not"<<std::endl;
-        osg::notify(osg::WARN)<<" .... be opened, read or simply that it is broken.."<<std::endl;
+        OSG_WARN<<" .... another error code means that the font file could not"<<std::endl;
+        OSG_WARN<<" .... be opened, read or simply that it is broken.."<<std::endl;
         return false;
     }
     
 #ifdef PRINT_OUT_FONT_DETAILS
 
-    osg::notify(osg::NOTICE)<<"Face"<<face<<std::endl;
+    OSG_NOTICE<<"Face"<<face<<std::endl;
     unsigned int count = FT_Get_Sfnt_Name_Count(face);
     for(unsigned int i=0; i<count; ++i)
     {
@@ -96,10 +96,10 @@ bool FreeTypeLibrary::getFace(const std::string& fontfile,unsigned int index, FT
         
         std::string name((char*)names.string, (char*)names.string + names.string_len);
         
-        osg::notify(osg::NOTICE)<<"names "<<name<<std::endl;
+        OSG_NOTICE<<"names "<<name<<std::endl;
     }
 
-    osg::notify(osg::NOTICE)<<std::endl;
+    OSG_NOTICE<<std::endl;
 #endif
 
     //
@@ -127,7 +127,7 @@ FT_Byte* FreeTypeLibrary::getFace(std::istream& fontstream, unsigned int index, 
     fontstream.read(reinterpret_cast<char*>(buffer), length);
     if (!fontstream || (static_cast<std::streampos>(fontstream.gcount()) != length))
     {
-        osg::notify(osg::WARN)<<" .... the font file could not be read from its stream"<<std::endl;
+        OSG_WARN<<" .... the font file could not be read from its stream"<<std::endl;
         return 0;
     }
     args.flags = FT_OPEN_MEMORY;
@@ -138,14 +138,14 @@ FT_Byte* FreeTypeLibrary::getFace(std::istream& fontstream, unsigned int index, 
 
     if (error == FT_Err_Unknown_File_Format)
     {
-        osg::notify(osg::WARN)<<" .... the font file could be opened and read, but it appears"<<std::endl;
-        osg::notify(osg::WARN)<<" .... that its font format is unsupported"<<std::endl;
+        OSG_WARN<<" .... the font file could be opened and read, but it appears"<<std::endl;
+        OSG_WARN<<" .... that its font format is unsupported"<<std::endl;
         return 0;
     }
     else if (error)
     {
-        osg::notify(osg::WARN)<<" .... another error code means that the font file could not"<<std::endl;
-        osg::notify(osg::WARN)<<" .... be opened, read or simply that it is broken..."<<std::endl;
+        OSG_WARN<<" .... another error code means that the font file could not"<<std::endl;
+        OSG_WARN<<" .... be opened, read or simply that it is broken..."<<std::endl;
         return 0;
     }
 

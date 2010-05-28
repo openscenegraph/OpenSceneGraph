@@ -105,7 +105,7 @@ QGraphicsViewAdapter::QGraphicsViewAdapter(osg::Image* image, QWidget* widget):
 
 void QGraphicsViewAdapter::repaintRequestedSlot(const QList<QRectF>&)
 {
-    // osg::notify(osg::NOTICE)<<"QGraphicsViewAdapter::repaintRequestedSlot"<<std::endl;
+    // OSG_NOTICE<<"QGraphicsViewAdapter::repaintRequestedSlot"<<std::endl;
     render();
 }
 
@@ -265,7 +265,7 @@ bool QGraphicsViewAdapter::sendPointerEvent(int x, int y, int buttonMask)
 
 bool QGraphicsViewAdapter::handlePointerEvent(int x, int y, int buttonMask)
 {
-    osg::notify(osg::INFO)<<"dispatchPointerEvent("<<x<<", "<<y<<", "<<buttonMask<<")"<<std::endl;
+    OSG_INFO<<"dispatchPointerEvent("<<x<<", "<<y<<", "<<buttonMask<<")"<<std::endl;
 
     y = _graphicsScene->height()-y;
 
@@ -277,9 +277,9 @@ bool QGraphicsViewAdapter::handlePointerEvent(int x, int y, int buttonMask)
     bool prev_middleButtonPressed = (_previousButtonMask & osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON)!=0;
     bool prev_rightButtonPressed = (_previousButtonMask & osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON)!=0;
 
-    osg::notify(osg::INFO)<<"leftButtonPressed "<<leftButtonPressed<<std::endl;
-    osg::notify(osg::INFO)<<"middleButtonPressed "<<middleButtonPressed<<std::endl;
-    osg::notify(osg::INFO)<<"rightButtonPressed "<<rightButtonPressed<<std::endl;
+    OSG_INFO<<"leftButtonPressed "<<leftButtonPressed<<std::endl;
+    OSG_INFO<<"middleButtonPressed "<<middleButtonPressed<<std::endl;
+    OSG_INFO<<"rightButtonPressed "<<rightButtonPressed<<std::endl;
 
     Qt::MouseButtons qtMouseButtons =
         (leftButtonPressed ? Qt::LeftButton : Qt::NoButton) |
@@ -340,7 +340,7 @@ bool QGraphicsViewAdapter::handleKeyEvent(int key, bool keyDown)
 {
     QEvent::Type eventType = keyDown ? QEvent::KeyPress : QEvent::KeyRelease;
 
-    osg::notify(osg::INFO)<<"sendKeyEvent("<<key<<", "<<keyDown<<")"<<std::endl;
+    OSG_INFO<<"sendKeyEvent("<<key<<", "<<keyDown<<")"<<std::endl;
 
     if (key==osgGA::GUIEventAdapter::KEY_Shift_L || key==osgGA::GUIEventAdapter::KEY_Shift_R)
     {
@@ -383,7 +383,7 @@ bool QGraphicsViewAdapter::handleKeyEvent(int key, bool keyDown)
 
 void QGraphicsViewAdapter::setFrameLastRendered(const osg::FrameStamp* frameStamp)
 {
-    osg::notify(osg::INFO)<<"setFrameLastRendered("<<frameStamp->getFrameNumber()<<")"<<std::endl;
+    OSG_INFO<<"setFrameLastRendered("<<frameStamp->getFrameNumber()<<")"<<std::endl;
 
     if (_newImageAvailable && _previousFrameNumber!=frameStamp->getFrameNumber())
     {
@@ -416,7 +416,7 @@ void QGraphicsViewAdapter::clearWriteBuffer()
 
 void QGraphicsViewAdapter::render()
 {
-    osg::notify(osg::INFO)<<"Current write = "<<_currentWrite<<std::endl;
+    OSG_INFO<<"Current write = "<<_currentWrite<<std::endl;
     QImage& image = _qimages[_currentWrite];
 
 #if 1
@@ -452,7 +452,7 @@ void QGraphicsViewAdapter::assignImage(unsigned int i)
     QImage& image = _qimages[i];
     unsigned char* data = image.bits();
 
-    osg::notify(osg::INFO)<<"assigImage("<<i<<") image = "<<&image<<" data = "<<(void*)data<<std::endl;
+    OSG_INFO<<"assigImage("<<i<<") image = "<<&image<<" data = "<<(void*)data<<std::endl;
 
     _image->setImage(image.width(),image.height(),1,
                 4,

@@ -64,11 +64,11 @@ bool Object::load(std::istream& fin)
     // read header
     char buf[256];
     if (fin.getline(buf, sizeof(buf)) == 0) {
-        osg::notify(osg::WARN) << "Failed to read DirectX header\n";
+        OSG_WARN << "Failed to read DirectX header\n";
         return false;
     }
     if (strstr(buf, "xof") == 0) {
-        osg::notify(osg::WARN) << "No 'xof' found in DirectX header\n";
+        OSG_WARN << "No 'xof' found in DirectX header\n";
         return false;
     }
 
@@ -132,7 +132,7 @@ void Object::parseSection(std::istream& fin)
                 Mesh * mesh = new Mesh(this);
                 _meshes.push_back(mesh);
                 mesh->parseMesh(fin);
-                osg::notify(osg::INFO) << "Mesh " << (token.size()>1?token[1]:"") << endl;
+                OSG_INFO << "Mesh " << (token.size()>1?token[1]:"") << endl;
             }
             else if (token[0] == "Material") {
                 //
@@ -146,14 +146,14 @@ void Object::parseSection(std::istream& fin)
                 }
                 parseMaterial(fin, mm);
                 _globalMaterials.push_back(mm);
-                osg::notify(osg::INFO) << "Material " << (token.size()>1?token[1]:"") << endl;
+                OSG_INFO << "Material " << (token.size()>1?token[1]:"") << endl;
             }
             else if (token[0] == "Frame") {
                 //parseFrame(fin);
                 parseSection(fin);
             }
             else {
-                osg::notify(osg::DEBUG_INFO) << "!!! Begin section " << token[0] << endl;
+                OSG_DEBUG << "!!! Begin section " << token[0] << endl;
                 parseSection(fin);
             }
         }

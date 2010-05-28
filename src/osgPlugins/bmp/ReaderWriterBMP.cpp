@@ -142,21 +142,21 @@ static unsigned char* bmp_load(std::istream& fin,
 
         if (bmp.magic != BMP_MAGIC_BM && bmp.magic != BMP_MAGIC_MB)
         {
-            osg::notify(osg::WARN) << "Invalid BMP magic\n";
+            OSG_WARN << "Invalid BMP magic\n";
             return 0;
         }
 
         swap = (bmp.magic == BMP_MAGIC_BM); // means machine is big-endian and must swap
         if (swap)
         {
-            osg::notify(osg::DEBUG_INFO) << "swap=" << swap << std::endl;
+            OSG_DEBUG << "swap=" << swap << std::endl;
             osg::swapBytes4((char*) &bmp.fileSize);
             osg::swapBytes4((char*) &bmp.imageOffset);
         }
 
         if (bmp.fileSize != actFileSize)
         {
-            osg::notify(osg::DEBUG_INFO) << "Stored BMP fileSize=" << bmp.fileSize << " != actual=" << actFileSize << std::endl;
+            OSG_DEBUG << "Stored BMP fileSize=" << bmp.fileSize << " != actual=" << actFileSize << std::endl;
             bmp.fileSize = actFileSize;
         }
     }
@@ -181,7 +181,7 @@ static unsigned char* bmp_load(std::istream& fin,
         unsigned int expectHdrSize = sizeof(hdr) + sizeof(dibHdrSize);
         if (expectHdrSize != dibHdrSize)
         {
-            osg::notify(osg::WARN) << "Invalid BMP OS/2 v1 header size " << expectHdrSize << " != " << dibHdrSize << std::endl;
+            OSG_WARN << "Invalid BMP OS/2 v1 header size " << expectHdrSize << " != " << dibHdrSize << std::endl;
             return 0;
         }
 
@@ -222,29 +222,29 @@ static unsigned char* bmp_load(std::istream& fin,
     }
     else
     {
-        osg::notify(osg::WARN) << "Unsupported BMP/DIB header size=" << dibHdrSize << std::endl;
+        OSG_WARN << "Unsupported BMP/DIB header size=" << dibHdrSize << std::endl;
         return 0;
     }
 
     // sanity checks
     if (dib.height < 0)
     {
-        osg::notify(osg::DEBUG_INFO) << "BMP Image is upside-down\n";
+        OSG_DEBUG << "BMP Image is upside-down\n";
         dib.height *= -1;
     }
     if (dib.colorPlanes != 1)
     {
-        osg::notify(osg::WARN) << "Invalid BMP number of color planes=" << dib.colorPlanes << std::endl;
+        OSG_WARN << "Invalid BMP number of color planes=" << dib.colorPlanes << std::endl;
         return 0;
     }
     if (dib.bitsPerPixel == 0)
     {
-        osg::notify(osg::WARN) << "Invalid BMP bits/pixel=" << dib.bitsPerPixel << std::endl;
+        OSG_WARN << "Invalid BMP bits/pixel=" << dib.bitsPerPixel << std::endl;
         return 0;
     }
     if (dib.compression != BI_RGB && dib.compression != BI_BITFIELDS)
     {
-        osg::notify(osg::WARN) << "Unsupported BMP compression=" << dib.compression << std::endl;
+        OSG_WARN << "Unsupported BMP compression=" << dib.compression << std::endl;
         return 0;
     }
 
@@ -313,7 +313,7 @@ static unsigned char* bmp_load(std::istream& fin,
             imageBytesPerPixel = dib.bitsPerPixel / 8;
         else
         {
-            osg::notify(osg::WARN) << "Unsupported BMP bit depth " << dib.bitsPerPixel << std::endl;
+            OSG_WARN << "Unsupported BMP bit depth " << dib.bitsPerPixel << std::endl;
             return 0;
         }
     }
@@ -322,7 +322,7 @@ static unsigned char* bmp_load(std::istream& fin,
     if (where != bmp.imageOffset)
     {
         // this can happen because we don't fully parse v4/v5 headers
-        osg::notify(osg::DEBUG_INFO) << "BMP streampos out-of-sync where=" << where << " imageOffset=" << bmp.imageOffset << std::endl;
+        OSG_DEBUG << "BMP streampos out-of-sync where=" << where << " imageOffset=" << bmp.imageOffset << std::endl;
         fin.seekg(bmp.imageOffset, std::ios::beg); // seek to imageOffset and hope for the best
     }
 

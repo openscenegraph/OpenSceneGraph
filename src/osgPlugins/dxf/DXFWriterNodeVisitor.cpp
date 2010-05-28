@@ -414,7 +414,7 @@ void DxfPrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
             break;
         }
         default:
-            osg::notify(osg::WARN) << "DXFWriterNodeVisitor :: can't handle mode " << mode << std::endl; 
+            OSG_WARN << "DXFWriterNodeVisitor :: can't handle mode " << mode << std::endl; 
             break;
     }
 }
@@ -459,8 +459,8 @@ std::string DXFWriterNodeVisitor::getLayerName(const std::string& defaultvalue)
 //        array->accept(i, vv);        
 //    }
 //    
-//    osg::notify(osg::DEBUG_INFO) << "processArray "<<layer._name<<"\n";
-//    osg::notify(osg::DEBUG_INFO) << "# " << array->getNumElements() << " elements written" << std::endl;
+//    OSG_DEBUG << "processArray "<<layer._name<<"\n";
+//    OSG_DEBUG << "# " << array->getNumElements() << " elements written" << std::endl;
 //    
 //}
 
@@ -482,7 +482,7 @@ void DXFWriterNodeVisitor::processGeometry(osg::Geometry* geo, osg::Matrix& m)
         if ( _firstPass ) {
             // Must have unique layer names
             _layer._name = getLayerName( geo->getName().empty() ? geo->getParent(0)->getName() : geo->getName() );
-            osg::notify(osg::DEBUG_INFO) << "adding Layer " << _layer._name  << std::endl;
+            OSG_DEBUG << "adding Layer " << _layer._name  << std::endl;
 
             // if single colour include in header
             if ( osg::Geometry::BIND_OVERALL == geo->getColorBinding() ) {                
@@ -496,7 +496,7 @@ void DXFWriterNodeVisitor::processGeometry(osg::Geometry* geo, osg::Matrix& m)
 
         } else {
             _layer = _layers[_count++];
-            osg::notify(osg::DEBUG_INFO) << "writing Layer " << _layer._name  << std::endl;
+            OSG_DEBUG << "writing Layer " << _layer._name  << std::endl;
             if ( geo->getNumPrimitiveSets() ) {                
                 for(unsigned int i = 0; i < geo->getNumPrimitiveSets(); ++i) 
                 {        

@@ -266,7 +266,7 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
 //                osg::Image::USE_NEW_DELETE);
                 osg::Image::NO_DELETE);
 
-            notify(INFO) << "image read ok "<<s<<"  "<<t<< std::endl;
+            OSG_INFO << "image read ok "<<s<<"  "<<t<< std::endl;
             return image;
 
         }
@@ -336,7 +336,7 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
 //                osg::Image::USE_NEW_DELETE);
                 osg::Image::NO_DELETE);
 
-            notify(INFO) << "image read ok "<<s<<"  "<<t<< std::endl;
+            OSG_INFO << "image read ok "<<s<<"  "<<t<< std::endl;
             return image;
         }
 

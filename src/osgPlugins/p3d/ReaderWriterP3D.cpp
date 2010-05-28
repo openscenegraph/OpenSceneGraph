@@ -1,4 +1,4 @@
-/* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield 
+    /* -*-c++-*- Present3D - Copyright (C) 1999-2006 Robert Osfield 
  *
  * This software is open source and may be redistributed and/or modified under  
  * the terms of the GNU General Public License (GPL) version 2.0.
@@ -478,9 +478,9 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
 
         if (str=="model") value.frame = osgPresentation::SlideShowConstructor::MODEL;
         else if (str=="slide") value.frame = osgPresentation::SlideShowConstructor::SLIDE;
-        else osg::notify(_notifyLevel)<<"Parser error - coordinate_frame=\""<<str<<"\" unrecongonized value"<<std::endl;
+        else OSG_NOTIFY(_notifyLevel)<<"Parser error - coordinate_frame=\""<<str<<"\" unrecongonized value"<<std::endl;
         
-        osg::notify(_notifyLevel)<<"read coordinate_frame "<< ((value.frame==osgPresentation::SlideShowConstructor::MODEL) ? "osgPresentation::SlideShowConstructor::MODEL" : "osgPresentation::SlideShowConstructor::SLIDE")<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read coordinate_frame "<< ((value.frame==osgPresentation::SlideShowConstructor::MODEL) ? "osgPresentation::SlideShowConstructor::MODEL" : "osgPresentation::SlideShowConstructor::SLIDE")<<std::endl;
     }
 
     if (value.frame==osgPresentation::SlideShowConstructor::SLIDE)
@@ -502,8 +502,8 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
             else if (read(str,vec2)) value.position.set(vec3.x(),vec3.y(),0.0f);
             else fail = true;
 
-            if (fail) osg::notify(_notifyLevel)<<"Parser error - position=\""<<str<<"\" unrecongonized value"<<std::endl;
-            else osg::notify(_notifyLevel)<<"Read position="<<value.position<<std::endl;
+            if (fail) { OSG_NOTIFY(_notifyLevel)<<"Parser error - position=\""<<str<<"\" unrecongonized value"<<std::endl; }
+            else { OSG_NOTIFY(_notifyLevel)<<"Read position="<<value.position<<std::endl; }
         }
     }
     else // value.frame==osgPresentation::SlideShowConstructor::MODEL
@@ -520,8 +520,8 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
             else if (str=="eye") value.position.set(0.0f,0.0f,0.0f);
             else if (!read(str,value.position)) fail = true;
 
-            if (fail) osg::notify(_notifyLevel)<<"Parser error - position=\""<<str<<"\" unrecongonized value"<<std::endl;
-            else osg::notify(_notifyLevel)<<"Read position="<<value.position<<std::endl;
+            if (fail) { OSG_NOTIFY(_notifyLevel)<<"Parser error - position=\""<<str<<"\" unrecongonized value"<<std::endl; }
+            else { OSG_NOTIFY(_notifyLevel)<<"Read position="<<value.position<<std::endl; }
         }
     }
 
@@ -530,35 +530,35 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
     {
         value.scale.set(scale,scale,scale);
         propertiesRead = true;
-        osg::notify(_notifyLevel)<<"scale read "<<scale<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"scale read "<<scale<<std::endl;
     }
 
     if (getProperty(cur, "scale_x", scale) || getProperty(cur, "width", scale))
     {
         value.scale.x() = scale;
         propertiesRead = true;
-        osg::notify(_notifyLevel)<<"scale read_x "<<scale<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"scale read_x "<<scale<<std::endl;
     }
 
     if (getProperty(cur, "scale_y", scale) || getProperty(cur, "height", scale))
     {
         value.scale.y() = scale;
         propertiesRead = true;
-        osg::notify(_notifyLevel)<<"scale read_y "<<scale<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"scale read_y "<<scale<<std::endl;
     }
 
     if (getProperty(cur, "scale_z", scale))
     {
         value.scale.z() = scale;
         propertiesRead = true;
-        osg::notify(_notifyLevel)<<"scale read_z "<<scale<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"scale read_z "<<scale<<std::endl;
     }
 
     if (getProperty(cur, "rotate", rotate))
     {
         value.rotate = rotate;
         propertiesRead = true;
-        osg::notify(_notifyLevel)<<"rotate read "<<rotate<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"rotate read "<<rotate<<std::endl;
     }
 
     if (getProperty(cur, "rotate1", rotate))
@@ -566,7 +566,7 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         // note may need to reverse once Quat * order is sorted out.
         value.rotate = accumulateRotation(rotate,value.rotate);
         propertiesRead = true;
-        osg::notify(_notifyLevel)<<"rotate1 read "<<rotate<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"rotate1 read "<<rotate<<std::endl;
     }
 
     if (getProperty(cur, "rotate2", rotate))
@@ -574,7 +574,7 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         // note may need to reverse once Quat * order is sorted out.
         value.rotate = accumulateRotation(rotate,value.rotate);
         propertiesRead = true;
-        osg::notify(_notifyLevel)<<"rotate1 read "<<rotate<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"rotate1 read "<<rotate<<std::endl;
     }
 
     if (getProperty(cur, "rotate3", rotate))
@@ -582,34 +582,34 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         // note may need to reverse once Quat * order is sorted out.
         value.rotate = accumulateRotation(rotate,value.rotate);
         propertiesRead = true;
-        osg::notify(_notifyLevel)<<"rotate1 read "<<rotate<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"rotate1 read "<<rotate<<std::endl;
     }
 
     if (getProperty(cur, "rotation", rotation))
     {
         value.rotation = rotation;
-        osg::notify(_notifyLevel)<<"rotation read "<<rotation<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"rotation read "<<rotation<<std::endl;
         propertiesRead = true;
     }
 
     if (getProperty(cur, "rotation1", rotation))
     {
         value.rotation = accumulateRotation(rotation,value.rotation);
-        osg::notify(_notifyLevel)<<"rotation1 read "<<rotation<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"rotation1 read "<<rotation<<std::endl;
         propertiesRead = true;
     }
 
     if (getProperty(cur, "rotation2", rotation))
     {
         value.rotation = accumulateRotation(rotation,value.rotation);
-        osg::notify(_notifyLevel)<<"rotation2 read "<<rotation<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"rotation2 read "<<rotation<<std::endl;
         propertiesRead = true;
     }
 
     if (getProperty(cur, "rotation3", rotation))
     {
         value.rotation = accumulateRotation(rotation,value.rotation);
-        osg::notify(_notifyLevel)<<"rotation3 read "<<rotation<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"rotation3 read "<<rotation<<std::endl;
         propertiesRead = true;
     }
 
@@ -620,7 +620,7 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         value.inverse_path = false;
         value.path = expandEnvVarsInFileName(str);
 
-        osg::notify(_notifyLevel)<<"path read "<<str<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"path read "<<str<<std::endl;
         propertiesRead = true;
     }
 
@@ -630,31 +630,31 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         value.inverse_path = true;
         value.path = expandEnvVarsInFileName(str);
 
-        osg::notify(_notifyLevel)<<"camera path read "<<str<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"camera path read "<<str<<std::endl;
         propertiesRead = true;
     }
 
     if (getProperty(cur, "path_time_offset", value.path_time_offset))
     {
-        osg::notify(_notifyLevel)<<"read path_time_offset"<<value.path_time_offset<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read path_time_offset"<<value.path_time_offset<<std::endl;
         propertiesRead = true;
     }
 
     if (getProperty(cur, "path_time_multiplier", value.path_time_multiplier))
     {
-        osg::notify(_notifyLevel)<<"read path_time_multiplier"<<value.path_time_multiplier<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read path_time_multiplier"<<value.path_time_multiplier<<std::endl;
         propertiesRead = true;
     }
 
     if (getProperty(cur, "animation_material_time_offset", value.animation_material_time_offset))
     {
-        osg::notify(_notifyLevel)<<"read animation_material_time_offset"<<value.animation_material_time_offset<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read animation_material_time_offset"<<value.animation_material_time_offset<<std::endl;
         propertiesRead = true;
     }
 
     if (getProperty(cur, "animation_material_time_multiplier", value.animation_material_time_multiplier))
     {
-        osg::notify(_notifyLevel)<<"read animation_material_time_multiplier"<<value.animation_material_time_multiplier<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read animation_material_time_multiplier"<<value.animation_material_time_multiplier<<std::endl;
         propertiesRead = true;
     }
 
@@ -662,7 +662,7 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
     {
         value.animation_material_filename = str;
 
-        osg::notify(_notifyLevel)<<"animation_material read "<<str<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"animation_material read "<<str<<std::endl;
         propertiesRead = true;
     }
 
@@ -670,19 +670,19 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
     {
         value.animation_name = str;
 
-        osg::notify(_notifyLevel)<<"animation_name "<<str<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"animation_name "<<str<<std::endl;
         propertiesRead = true;
     }
 
     if (getProperty(cur, "fade", value.fade))
     {
-        osg::notify(_notifyLevel)<<"fade "<<value.fade<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"fade "<<value.fade<<std::endl;
         propertiesRead = true;
     }
 
     if (getProperty(cur, "path_loop_mode", str))
     {
-        osg::notify(_notifyLevel)<<"path_loop_mode "<<str<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"path_loop_mode "<<str<<std::endl;
         if (str=="LOOP") value.path_loop_mode=osg::AnimationPath::LOOP;
         else if (str=="SWING") value.path_loop_mode=osg::AnimationPath::SWING;
         else if (str=="NO_LOOPING") value.path_loop_mode=osg::AnimationPath::NO_LOOPING;
@@ -691,7 +691,7 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
 
     if (getProperty(cur, "animation_material_loop_mode", str))
     {
-        osg::notify(_notifyLevel)<<"animation_material_loop_mode "<<str<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"animation_material_loop_mode "<<str<<std::endl;
         if (str=="LOOP") value.animation_material_loop_mode=osgPresentation::AnimationMaterial::LOOP;
         else if (str=="SWING") value.animation_material_loop_mode=osgPresentation::AnimationMaterial::SWING;
         else if (str=="NO_LOOPING") value.animation_material_loop_mode=osgPresentation::AnimationMaterial::NO_LOOPING;
@@ -705,32 +705,32 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
 {
     bool propertiesRead=false;    
     
-    osg::notify(_notifyLevel)<<"in getProperties(FontData)"<<std::endl;
+    OSG_NOTIFY(_notifyLevel)<<"in getProperties(FontData)"<<std::endl;
 
     if (getProperty(cur, "font", value.font))
     {
         propertiesRead = true;
-        osg::notify(_notifyLevel)<<"read font \""<<value.font<<"\""<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read font \""<<value.font<<"\""<<std::endl;
     }
 
     if (getProperty(cur, "character_size", value.characterSize))
     {
         propertiesRead = true;
-        osg::notify(_notifyLevel)<<"read height \""<<value.characterSize<<"\""<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read height \""<<value.characterSize<<"\""<<std::endl;
     }
 
     if (getProperty(cur, "layout", value.layout))
     {
         propertiesRead = true;
         
-        osg::notify(_notifyLevel)<<"read layout \""<<value.layout<<"\""<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read layout \""<<value.layout<<"\""<<std::endl;
     }
 
     if (getProperty(cur, "alignment", value.alignment))
     {
         propertiesRead = true;
         
-        osg::notify(_notifyLevel)<<"read alignment \""<<value.alignment<<"\""<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read alignment \""<<value.alignment<<"\""<<std::endl;
     }
 
     return propertiesRead;
@@ -740,12 +740,12 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
 {
     bool propertiesRead=false;    
     
-    osg::notify(_notifyLevel)<<"in getProperties(ModelData)"<<std::endl;
+    OSG_NOTIFY(_notifyLevel)<<"in getProperties(ModelData)"<<std::endl;
 
     if (getProperty(cur, "effect", value.effect))
     {
         propertiesRead = true;
-        osg::notify(_notifyLevel)<<"read effect \""<<value.effect<<"\""<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read effect \""<<value.effect<<"\""<<std::endl;
     }
 
     return propertiesRead;
@@ -755,45 +755,45 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
 {
     bool propertiesRead=false;    
     
-    osg::notify(_notifyLevel)<<"in getProperties(ImageData)"<<std::endl;
+    OSG_NOTIFY(_notifyLevel)<<"in getProperties(ImageData)"<<std::endl;
 
     if (getProperty(cur, "page", value.page))
     {
         propertiesRead = true;
-        osg::notify(_notifyLevel)<<"read page \""<<value.page<<"\""<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read page \""<<value.page<<"\""<<std::endl;
     }
 
     osg::Vec4 bgColour;
     if (getProperty(cur, "background", value.backgroundColor))
     {
         propertiesRead = true;
-        osg::notify(_notifyLevel)<<"read background colour \""<<value.backgroundColor<<"\""<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read background colour \""<<value.backgroundColor<<"\""<<std::endl;
     }
 
     if (getProperty(cur, "width", value.width))
     {
         propertiesRead = true;
-        osg::notify(_notifyLevel)<<"read width \""<<value.width<<"\""<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read width \""<<value.width<<"\""<<std::endl;
     }
 
     if (getProperty(cur, "height", value.height))
     {
         propertiesRead = true;
-        osg::notify(_notifyLevel)<<"read height \""<<value.height<<"\""<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read height \""<<value.height<<"\""<<std::endl;
     }
 
     if (getProperty(cur, "region", value.region))
     {
         propertiesRead = true;
         value.region_in_pixel_coords = false;
-        osg::notify(_notifyLevel)<<"read region \""<<value.region<<"\""<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read region \""<<value.region<<"\""<<std::endl;
     }
 
     if (getProperty(cur, "pixel_region", value.region))
     {
         propertiesRead = true;
         value.region_in_pixel_coords = true;
-        osg::notify(_notifyLevel)<<"read pixel_region \""<<value.region<<"\""<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read pixel_region \""<<value.region<<"\""<<std::endl;
     }
 
     std::string str;
@@ -802,26 +802,26 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         propertiesRead = true;
         if (str=="ON") value.loopingMode = osg::ImageStream::LOOPING;
         else value.loopingMode = osg::ImageStream::NO_LOOPING;
-        osg::notify(_notifyLevel)<<"looping \""<<str<<"\""<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"looping \""<<str<<"\""<<std::endl;
     }
 
 /*
     if (getProperty(cur, "texcoord_offset", value.texcoord_offset))
     {
         propertiesRead = true;
-        osg::notify(_notifyLevel)<<"read offset \""<<value.texcoord_offset<<"\""<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read offset \""<<value.texcoord_offset<<"\""<<std::endl;
     }
 
     if (getProperty(cur, "texcoord_scale", value.texcoord_scale))
     {
         propertiesRead = true;
-        osg::notify(_notifyLevel)<<"read texcoord_scale \""<<value.texcoord_scale<<"\""<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read texcoord_scale \""<<value.texcoord_scale<<"\""<<std::endl;
     }
     
     if (getProperty(cur, "texcoord_rotate", value.texcoord_rotate))
     {
         propertiesRead = true;
-        osg::notify(_notifyLevel)<<"read texcoord_rotate \""<<value.texcoord_rotate<<"\""<<std::endl;
+        OSG_NOTIFY(_notifyLevel)<<"read texcoord_rotate \""<<value.texcoord_rotate<<"\""<<std::endl;
     }
 */
     return propertiesRead;
@@ -1077,7 +1077,7 @@ bool ReaderWriterP3DXML::getKeyPositionInner(osgDB::XmlNode*cur, osgPresentation
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"Warning: unreconginized key sequence '"<<key<<"'"<<std::endl;
+        OSG_NOTICE<<"Warning: unreconginized key sequence '"<<key<<"'"<<std::endl;
     }
 
     keyPosition.set(keyValue,x,y);

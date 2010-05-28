@@ -49,7 +49,7 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
                 std::string fileName = osgDB::findDataFile( file, options );
                 if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-                osg::notify(osg::INFO)<<"ReaderWriterZIP::readNode( "<<fileName.c_str()<<" )\n";
+                OSG_INFO<<"ReaderWriterZIP::readNode( "<<fileName.c_str()<<" )\n";
 
                 // First open file as stream
                 osgDB::ifstream srcFileStrm(fileName.c_str(),std::ios::in|std::ios::binary);
@@ -169,7 +169,7 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
             std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            osg::notify(osg::INFO)<<"ReaderWriterZIP::readNode( "<<fileName.c_str()<<" )\n";
+            OSG_INFO<<"ReaderWriterZIP::readNode( "<<fileName.c_str()<<" )\n";
 
             char dirname[128];
             char command[1024];
@@ -211,7 +211,7 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
 
         #endif
 
-            osg::notify(osg::INFO)<<"Running command '"<<command<<"'"<<std::endl;
+            OSG_INFO<<"Running command '"<<command<<"'"<<std::endl;
             if ( system( command ) ) {
                 return ReadResult::FILE_NOT_HANDLED;
             }

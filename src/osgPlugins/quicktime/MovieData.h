@@ -122,7 +122,7 @@
             inline void _checkMovieError(std::string msg) {
                 if (GetMoviesError()) {
                     _fError = true;
-                    osg::notify(osg::ALWAYS) << "MovieData: GetMoviesError fails at " << msg << std::endl;
+                    OSG_ALWAYS << "MovieData: GetMoviesError fails at " << msg << std::endl;
                 }
             }
             

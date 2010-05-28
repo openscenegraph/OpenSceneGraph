@@ -107,7 +107,7 @@ QuicktimeImageStream::ThreadCommand QuicktimeImageStream::getCmd()
 
 void QuicktimeImageStream::load(std::string fileName)
 {
-   osg::notify(osg::DEBUG_INFO) << "QT-ImageStream: loading quicktime movie from " << fileName << std::endl;
+   OSG_DEBUG << "QT-ImageStream: loading quicktime movie from " << fileName << std::endl;
 
    _movieData->load(this, fileName);
 
@@ -117,17 +117,17 @@ void QuicktimeImageStream::load(std::string fileName)
 
 void QuicktimeImageStream::quit(bool wiatForThreadToExit)
 {
-   osg::notify(osg::DEBUG_INFO)<<"Sending quit"<<this<<std::endl;
+   OSG_DEBUG<<"Sending quit"<<this<<std::endl;
    setCmd(THREAD_QUIT);
 
    if (wiatForThreadToExit)
    {
       while(isRunning())
       {
-         osg::notify(osg::DEBUG_INFO)<<"Waiting for QuicktimeImageStream to quit"<<this<<std::endl;
+         OSG_DEBUG<<"Waiting for QuicktimeImageStream to quit"<<this<<std::endl;
          OpenThreads::Thread::YieldCurrentThread();
       }
-      osg::notify(osg::DEBUG_INFO)<<"QuicktimeImageStream has quit"<<this<<std::endl;
+      OSG_DEBUG<<"QuicktimeImageStream has quit"<<this<<std::endl;
    }
 }
 
@@ -152,11 +152,11 @@ void QuicktimeImageStream::run()
 
 
       ThreadCommand cmd = getCmd();
-      osg::notify(osg::DEBUG_INFO) << "movietime: " << _movieData->getMovieTime() << " rate: " << _movieData->getMovieRate() << " state " << cmd << " playing: " << playing << " done " << done << "  " << _wrIndex << "/" << _rdIndex << std::endl;        
+      OSG_DEBUG << "movietime: " << _movieData->getMovieTime() << " rate: " << _movieData->getMovieRate() << " state " << cmd << " playing: " << playing << " done " << done << "  " << _wrIndex << "/" << _rdIndex << std::endl;        
       // Handle commands               
       {
          if (cmd != THREAD_IDLE) {
-            osg::notify(osg::DEBUG_INFO) << "new cmd: " << cmd << std::endl;
+            OSG_DEBUG << "new cmd: " << cmd << std::endl;
             switch (cmd) {
                     case THREAD_START: // Start or continue stream
                        applyLoopingMode();    
@@ -167,7 +167,7 @@ void QuicktimeImageStream::run()
 
                     case THREAD_STOP:
                        _movieData->setMovieRate(0);
-                       osg::notify(osg::INFO) << "QT-ImageStream: stop at "<< std::endl;
+                       OSG_INFO << "QT-ImageStream: stop at "<< std::endl;
                        playing = false;
                        break;
 
@@ -197,12 +197,12 @@ void QuicktimeImageStream::run()
 
                     case THREAD_QUIT: // TODO
                        _movieData->setMovieRate(0);
-                       osg::notify(osg::INFO) << "QT-ImageStream: quit" << std::endl;
+                       OSG_INFO << "QT-ImageStream: quit" << std::endl;
                        //playing = false;
                        done = true;
                        break;
                     default:
-                       osg::notify(osg::WARN) << "QT-ImageStream: Unknown command " << cmd << std::endl;
+                       OSG_WARN << "QT-ImageStream: Unknown command " << cmd << std::endl;
                        break;
             }
          }
@@ -236,6 +236,6 @@ void QuicktimeImageStream::run()
 
 void QuicktimeImageStream::applyLoopingMode()
 {
-    osg::notify(osg::INFO) << "applying loop mode " << getLoopingMode() << std::endl;
+    OSG_INFO << "applying loop mode " << getLoopingMode() << std::endl;
     _movieData->setLooping(getLoopingMode() == osg::ImageStream::LOOPING);
 }

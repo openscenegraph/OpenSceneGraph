@@ -631,7 +631,7 @@ public:
             }
             nverts++;
         }
-//    osg::notify(osg::NOTICE) << nverts<<" inp "<<verts[nverts-1].x()<<
+//    OSG_NOTICE << nverts<<" inp "<<verts[nverts-1].x()<<
 //        " "<<verts[nverts-1].y()<<" "<<verts[nverts-1].z()<<" "<<verts.size()<< std::endl;
 
         return nverts;
@@ -821,9 +821,9 @@ class ReaderWriterDW : public osgDB::ReaderWriter
 
             char buff[256];
 
-            notify(INFO)<<   "ReaderWriterDW::readNode( "<<fileName.c_str()<<" )\n";
+            OSG_INFO<<   "ReaderWriterDW::readNode( "<<fileName.c_str()<<" )\n";
 #ifdef _MSC_VER
-            notify(osg::NOTICE)<<   "MS Visual C++ version "<<_MSC_VER<<"\n";
+            OSG_INFO<<   "MS Visual C++ version "<<_MSC_VER<<"\n";
 #endif
 
             FILE *fp;

@@ -264,7 +264,7 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
 
         // couldn't find the referenced texture skin for this model
         skin_textures.push_back (NULL);
-        osg::notify(osg::WARN) << "MD2 Loader: Couldn't load skin " << imgname << " referenced by model " << filename << std::endl;
+        OSG_WARN << "MD2 Loader: Couldn't load skin " << imgname << " referenced by model " << filename << std::endl;
     }
 #else
     // load the single skin
@@ -299,7 +299,7 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
             skin_texture->setFilter (osg::Texture2D::MAG_FILTER, osg::Texture2D::NEAREST);
         } else {
             // couldn't find the referenced texture skin for this model
-            osg::notify(osg::WARN) << "MD2 Loader: Couldn't load skin " << imgname << " referenced by model " << filename << std::endl;
+            OSG_WARN << "MD2 Loader: Couldn't load skin " << imgname << " referenced by model " << filename << std::endl;
         }
     }
 

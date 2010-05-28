@@ -42,6 +42,6 @@ void Validator::apply(osg::State& state) const
                 return;
             }
         }
-        osg::notify(osg::WARN) << "Warning: osgFX::Validator: could not find any techniques compatible with the current OpenGL context" << std::endl;
+        OSG_WARN << "Warning: osgFX::Validator: could not find any techniques compatible with the current OpenGL context" << std::endl;
     }
 }

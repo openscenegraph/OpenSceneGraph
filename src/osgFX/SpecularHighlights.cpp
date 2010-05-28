@@ -77,7 +77,7 @@ namespace
 
             glMatrixMode(GL_MODELVIEW);
         #else
-            osg::notify(osg::NOTICE)<<"Warning: osgFX::SpecualHighlights unable to set texture matrix."<<std::endl;
+            OSG_NOTICE<<"Warning: osgFX::SpecualHighlights unable to set texture matrix."<<std::endl;
         #endif
         }
 

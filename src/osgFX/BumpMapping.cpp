@@ -440,7 +440,7 @@ namespace
         void define_passes()
         {
             if (_diffuse_unit != (_normal_unit + 1)) {
-                osg::notify(osg::WARN) << "Warning: osgFX::BumpMapping: this technique (ArbVpTechnique) requires that _diffuse_unit == (_normal_unit + 1). Effect may not show up properly.\n";
+                OSG_WARN << "Warning: osgFX::BumpMapping: this technique (ArbVpTechnique) requires that _diffuse_unit == (_normal_unit + 1). Effect may not show up properly.\n";
             }
 
             // first pass, diffuse bump

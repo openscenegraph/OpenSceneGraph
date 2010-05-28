@@ -68,13 +68,13 @@ void Effect::traverse(osg::NodeVisitor& nv)
 
         // check for errors, return on failure
         if (!_techs_defined) {
-            osg::notify(osg::WARN) << "Warning: osgFX::Effect: could not define techniques for effect " << className() << std::endl;
+            OSG_WARN << "Warning: osgFX::Effect: could not define techniques for effect " << className() << std::endl;
             return;
         }
 
         // ensure that at least one technique has been defined
         if (_techs.empty()) {
-            osg::notify(osg::WARN) << "Warning: osgFX::Effect: no techniques defined for effect " << className() << std::endl;
+            OSG_WARN << "Warning: osgFX::Effect: no techniques defined for effect " << className() << std::endl;
             return;
         }
     }

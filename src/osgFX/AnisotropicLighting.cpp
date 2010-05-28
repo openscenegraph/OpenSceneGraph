@@ -219,7 +219,7 @@ namespace
             #if !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
                 ss->setMode( GL_ALPHA_TEST, osg::StateAttribute::OFF );
             #else
-                osg::notify(osg::NOTICE)<<"Warning: osgFX::AnisotropicLighting unable to disable GL_ALPHA_TEST."<<std::endl;
+                OSG_NOTICE<<"Warning: osgFX::AnisotropicLighting unable to disable GL_ALPHA_TEST."<<std::endl;
             #endif
 
             addPass(ss.get());

@@ -169,7 +169,7 @@ void LightPointDrawable::drawImplementation(osg::RenderInfo& renderInfo) const
     // restore the state afterwards.
     state.apply();
 #else
-    osg::notify(osg::NOTICE)<<"Warning: LightPointDrawable not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: LightPointDrawable not supported."<<std::endl;
 #endif
 }
 

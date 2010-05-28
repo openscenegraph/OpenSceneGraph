@@ -41,13 +41,13 @@ public:
 
     Surface():_ss(0)
     {
-        osg::notify(osg::WARN)<<
+        OSG_WARN<<
             "Warning: unexpected call to osgSim::SphereSegment::Surface() default constructor"<<std::endl;
     }
 
     Surface(const Surface& rhs, const osg::CopyOp& co=osg::CopyOp::SHALLOW_COPY):osg::Drawable(rhs,co), _ss(0)
     {
-        osg::notify(osg::WARN)<<
+        OSG_WARN<<
             "Warning: unexpected call to osgSim::SphereSegment::Surface() copy constructor"<<std::endl;
     }
 
@@ -89,13 +89,13 @@ public:
     EdgeLine():_ss(0)
     {
         init();
-        osg::notify(osg::WARN)<<
+        OSG_WARN<<
             "Warning: unexpected call to osgSim::SphereSegment::EdgeLine() default constructor"<<std::endl;
     }
 
     EdgeLine(const EdgeLine& rhs, const osg::CopyOp& co=osg::CopyOp::SHALLOW_COPY):osg::Drawable(rhs,co), _ss(0)
     {
-        osg::notify(osg::WARN)<<
+        OSG_WARN<<
             "Warning: unexpected call to osgSim::SphereSegment::EdgeLine() copy constructor"<<std::endl;
     }
 
@@ -147,13 +147,13 @@ public:
 
     Side():_ss(0)
     {
-        osg::notify(osg::WARN)<<
+        OSG_WARN<<
             "Warning: unexpected call to osgSim::SphereSegment::Side() default constructor"<<std::endl;
     }
 
     Side(const Side& rhs, const osg::CopyOp& co=osg:: CopyOp::SHALLOW_COPY): osg::Drawable(rhs,co), _ss(0)
     {
-        osg::notify(osg::WARN)<<
+        OSG_WARN<<
             "Warning: unexpected call to osgSim::SphereSegment::Side() copy constructor"<<std::endl;
     }
 
@@ -198,13 +198,13 @@ public:
     Spoke():_ss(0)
     {
         init();
-        osg::notify(osg::WARN)<<
+        OSG_WARN<<
             "Warning: unexpected call to osgSim::SphereSegment::Spoke() default constructor"<<std::endl;
     }
 
     Spoke(const Spoke& rhs, const osg::CopyOp& co=osg:: CopyOp::SHALLOW_COPY): osg::Drawable(rhs,co), _ss(0)
     {
-        osg::notify(osg::WARN)<<
+        OSG_WARN<<
             "Warning: unexpected call to osgSim::SphereSegment::Spoke() copy constructor"<<std::endl;
     }
 
@@ -1067,7 +1067,7 @@ class PolytopeVisitor : public osg::NodeVisitor
 
 SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& transform, osg::Node* subgraph)
 {
-    osg::notify(osg::INFO)<<"Creating line intersection between sphere segment and subgraph."<<std::endl;
+    OSG_INFO<<"Creating line intersection between sphere segment and subgraph."<<std::endl;
     
     osg::BoundingBox bb = getBoundingBox();
 
@@ -1087,7 +1087,7 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& t
 
     if (polytopeVisitor.getHits().empty())
     {
-        osg::notify(osg::INFO)<<"No hits found."<<std::endl;
+        OSG_INFO<<"No hits found."<<std::endl;
         return LineList();
     }
 
@@ -1095,7 +1095,7 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& t
     LineList all_lines;
 
     // compute the line intersections with each of the hit drawables
-    osg::notify(osg::INFO)<<"Hits found. "<<polytopeVisitor.getHits().size()<<std::endl;
+    OSG_INFO<<"Hits found. "<<polytopeVisitor.getHits().size()<<std::endl;
     PolytopeVisitor::HitList& hits = polytopeVisitor.getHits();
     for(PolytopeVisitor::HitList::iterator itr = hits.begin();
         itr != hits.end();
@@ -1112,7 +1112,7 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& t
 
 osg::Node* SphereSegment::computeIntersectionSubgraph(const osg::Matrixd& transform, osg::Node* subgraph)
 {
-    osg::notify(osg::INFO)<<"Creating line intersection between sphere segment and subgraph."<<std::endl;
+    OSG_INFO<<"Creating line intersection between sphere segment and subgraph."<<std::endl;
     
     osg::BoundingBox bb = getBoundingBox();
 
@@ -1132,7 +1132,7 @@ osg::Node* SphereSegment::computeIntersectionSubgraph(const osg::Matrixd& transf
 
     if (polytopeVisitor.getHits().empty())
     {
-        osg::notify(osg::INFO)<<"No hits found."<<std::endl;
+        OSG_INFO<<"No hits found."<<std::endl;
         return 0;
     }
 
@@ -1140,7 +1140,7 @@ osg::Node* SphereSegment::computeIntersectionSubgraph(const osg::Matrixd& transf
     osg::Group* group = new osg::Group;
 
     // compute the line intersections with each of the hit drawables
-    osg::notify(osg::INFO)<<"Hits found. "<<polytopeVisitor.getHits().size()<<std::endl;
+    OSG_INFO<<"Hits found. "<<polytopeVisitor.getHits().size()<<std::endl;
     PolytopeVisitor::HitList& hits = polytopeVisitor.getHits();
     for(PolytopeVisitor::HitList::iterator itr = hits.begin();
         itr != hits.end();
@@ -1322,7 +1322,7 @@ namespace SphereSegmentIntersector
             {
                 if (edge!=_e1 &&  edge!=_e2 &&  edge!=_e3)
                 {
-                    osg::notify(osg::INFO)<<"Edge problem"<<std::endl;
+                    OSG_INFO<<"Edge problem"<<std::endl;
                     return 0;
                 }
 
@@ -1641,7 +1641,7 @@ namespace SphereSegmentIntersector
 
         void removeDuplicateVertices()
         {
-            osg::notify(osg::INFO)<<"Removing duplicates : num vertices in "<<_candidateVertexIndices.size()<<std::endl;
+            OSG_INFO<<"Removing duplicates : num vertices in "<<_candidateVertexIndices.size()<<std::endl;
 
             if (_candidateVertexIndices.size()<2) return;
 
@@ -1659,10 +1659,10 @@ namespace SphereSegmentIntersector
             for(; itr != _candidateVertexIndices.end(); ++itr)
             {
                 //unsigned int i = *itr;
-                // osg::notify(osg::INFO)<<"  i="<<i<<" lastUniqueIndex="<<lastUniqueIndex<<std::endl;
+                // OSG_INFO<<"  i="<<i<<" lastUniqueIndex="<<lastUniqueIndex<<std::endl;
                 if (_originalVertices[*itr]==_originalVertices[lastUniqueIndex])
                 {
-                    osg::notify(osg::INFO)<<"Combining vertex "<<*itr<<" with "<<lastUniqueIndex<<std::endl;
+                    OSG_INFO<<"Combining vertex "<<*itr<<" with "<<lastUniqueIndex<<std::endl;
                     _remapIndices[*itr] = lastUniqueIndex;
                     verticesRemapped = true;
                 }
@@ -1674,7 +1674,7 @@ namespace SphereSegmentIntersector
 
             if (verticesRemapped)
             {
-                osg::notify(osg::INFO)<<"Remapping triangle vertices "<<std::endl;
+                OSG_INFO<<"Remapping triangle vertices "<<std::endl;
                 for(TriangleArray::iterator titr = _triangles.begin();
                     titr != _triangles.end();
                     ++titr)
@@ -1689,7 +1689,7 @@ namespace SphereSegmentIntersector
 
         void removeDuplicateTriangles()
         {
-            osg::notify(osg::INFO)<<"Removing duplicate triangles : num triangles in "<<_triangles.size()<<std::endl;
+            OSG_INFO<<"Removing duplicate triangles : num triangles in "<<_triangles.size()<<std::endl;
 
             if (_triangles.size()<2) return;
 
@@ -1717,8 +1717,8 @@ namespace SphereSegmentIntersector
                 _triangles.erase(_triangles.begin()+lastUniqueTriangle+1, _triangles.end());
             }
 
-            osg::notify(osg::INFO)<<"Removed duplicate triangles : num duplicates found "<<numDuplicates<<std::endl;
-            osg::notify(osg::INFO)<<"Removed duplicate triangles : num triangles out "<<_triangles.size()<<std::endl;
+            OSG_INFO<<"Removed duplicate triangles : num duplicates found "<<numDuplicates<<std::endl;
+            OSG_INFO<<"Removed duplicate triangles : num triangles out "<<_triangles.size()<<std::endl;
         }
 
         void buildEdges(Triangle* tri)
@@ -1749,13 +1749,13 @@ namespace SphereSegmentIntersector
                 }
 
             }
-            osg::notify(osg::INFO)<<"Number of edges "<<_edges.size()<<std::endl;
+            OSG_INFO<<"Number of edges "<<_edges.size()<<std::endl;
 
             unsigned int numZeroConnections = 0;
             unsigned int numSingleConnections = 0;
             unsigned int numDoubleConnections = 0;
             unsigned int numMultiConnections = 0;
-            osg::notify(osg::INFO)<<"Number of edges "<<_edges.size()<<std::endl;
+            OSG_INFO<<"Number of edges "<<_edges.size()<<std::endl;
             for(EdgeSet::iterator eitr = _edges.begin();
                 eitr != _edges.end();
                 ++eitr)
@@ -1768,10 +1768,10 @@ namespace SphereSegmentIntersector
                 else ++numMultiConnections;
             }
 
-            osg::notify(osg::INFO)<<"Number of numZeroConnections "<<numZeroConnections<<std::endl;
-            osg::notify(osg::INFO)<<"Number of numSingleConnections "<<numSingleConnections<<std::endl;
-            osg::notify(osg::INFO)<<"Number of numDoubleConnections "<<numDoubleConnections<<std::endl;
-            osg::notify(osg::INFO)<<"Number of numMultiConnections "<<numMultiConnections<<std::endl;
+            OSG_INFO<<"Number of numZeroConnections "<<numZeroConnections<<std::endl;
+            OSG_INFO<<"Number of numSingleConnections "<<numSingleConnections<<std::endl;
+            OSG_INFO<<"Number of numDoubleConnections "<<numDoubleConnections<<std::endl;
+            OSG_INFO<<"Number of numMultiConnections "<<numMultiConnections<<std::endl;
         }
 
         Edge* addEdge(unsigned int p1, unsigned int p2, Triangle* tri)
@@ -1797,7 +1797,7 @@ namespace SphereSegmentIntersector
         {
             SphereSegment::LineList lineList;
 
-            osg::notify(osg::INFO)<<"Number of edge intersections "<<hitEdges.size()<<std::endl;
+            OSG_INFO<<"Number of edge intersections "<<hitEdges.size()<<std::endl;
 
             if (hitEdges.empty()) return lineList;
 
@@ -1810,7 +1810,7 @@ namespace SphereSegmentIntersector
             {
                 Edge* edge = hitr->get();
                 edge->_toTraverse.clear();
-                //osg::notify(osg::INFO)<<"edge= "<<edge<<std::endl;
+                //OSG_INFO<<"edge= "<<edge<<std::endl;
                 for(Edge::TriangleList::iterator titr = edge->_triangles.begin();
                     titr != edge->_triangles.end();
                     ++titr)
@@ -1831,11 +1831,11 @@ namespace SphereSegmentIntersector
                     // if we have one or more then add it into the edges to traverse list
                     if (numActiveEdges>1)
                     {
-                        //osg::notify(osg::INFO)<<"   adding tri="<<tri<<std::endl;
+                        //OSG_INFO<<"   adding tri="<<tri<<std::endl;
                         edge->_toTraverse.push_back(tri);
                     }
 
-                    // osg::notify(osg::INFO)<<"Number active edges "<<numActiveEdges<<" num original edges "<<numEdges<<std::endl;
+                    // OSG_INFO<<"Number active edges "<<numActiveEdges<<" num original edges "<<numEdges<<std::endl;
                 }
             }
 
@@ -1855,7 +1855,7 @@ namespace SphereSegmentIntersector
                     hitr = hitEdges.begin();
                 }
 
-                // osg::notify(osg::INFO)<<"New line "<<std::endl;
+                // OSG_INFO<<"New line "<<std::endl;
 
 
                 osg::Vec3Array* newLine = new osg::Vec3Array;
@@ -1864,7 +1864,7 @@ namespace SphereSegmentIntersector
                 Edge* edge = hitr->get();
                 while (edge)
                 {
-                    // osg::notify(osg::INFO)<<"   vertex "<<edge->_intersectionVertex<<std::endl;
+                    // OSG_INFO<<"   vertex "<<edge->_intersectionVertex<<std::endl;
                     newLine->push_back(edge->_intersectionVertex+_centre/*+osg::Vec3(0.0f,0.0f,200.0f)*/);
 
                     Edge* newEdge = 0;
@@ -1878,11 +1878,11 @@ namespace SphereSegmentIntersector
                         edge->removeFromToTraverseList(tri);
                         newEdge->removeFromToTraverseList(tri);
 
-                        // osg::notify(osg::INFO)<<"   tri="<<tri<<" edge="<<edge<<" newEdge="<<newEdge<<std::endl;
+                        // OSG_INFO<<"   tri="<<tri<<" edge="<<edge<<" newEdge="<<newEdge<<std::endl;
 
                         if (edge==newEdge)
                         {
-                            osg::notify(osg::INFO)<<"   edge returned to itself problem "<<std::endl;
+                            OSG_INFO<<"   edge returned to itself problem "<<std::endl;
                         }
                     }
                     else
@@ -1931,7 +1931,7 @@ namespace SphereSegmentIntersector
         {
             if (sourceLine->empty()) return;
 
-            // osg::notify(osg::INFO)<<"Testing line of "<<sourceLine->size()<<std::endl;
+            // OSG_INFO<<"Testing line of "<<sourceLine->size()<<std::endl;
 
             unsigned int first=0;
             while (first<sourceLine->size())
@@ -1944,7 +1944,7 @@ namespace SphereSegmentIntersector
 
                 if (first==sourceLine->size())
                 {
-                    // osg::notify(osg::INFO)<<"No valid points found"<<std::endl;
+                    // OSG_INFO<<"No valid points found"<<std::endl;
                     return;
                 }
 
@@ -1957,12 +1957,12 @@ namespace SphereSegmentIntersector
 
                 if (first==0 && last==sourceLine->size())
                 {
-                    // osg::notify(osg::INFO)<<"Copying complete line"<<std::endl;
+                    // OSG_INFO<<"Copying complete line"<<std::endl;
                     lineList.push_back(sourceLine);
                 }
                 else
                 {
-                    // osg::notify(osg::INFO)<<"Copying partial line line"<<first<<" "<<last<<std::endl;
+                    // OSG_INFO<<"Copying partial line line"<<first<<" "<<last<<std::endl;
 
                     osg::Vec3Array* newLine = new osg::Vec3Array;
 
@@ -1995,7 +1995,7 @@ namespace SphereSegmentIntersector
         {
             if (sourceLine->empty()) return;
 
-            // osg::notify(osg::INFO)<<"Testing line of "<<sourceLine->size()<<std::endl;
+            // OSG_INFO<<"Testing line of "<<sourceLine->size()<<std::endl;
 
             unsigned int first=0;
             while (first<sourceLine->size())
@@ -2009,7 +2009,7 @@ namespace SphereSegmentIntersector
 
                 if (first==sourceLine->size())
                 {
-                    // osg::notify(osg::INFO)<<"No valid points found"<<std::endl;
+                    // OSG_INFO<<"No valid points found"<<std::endl;
                     return;
                 }
 
@@ -2023,12 +2023,12 @@ namespace SphereSegmentIntersector
 
                 if (first==0 && last==sourceLine->size())
                 {
-                    // osg::notify(osg::INFO)<<"Copying complete line"<<std::endl;
+                    // OSG_INFO<<"Copying complete line"<<std::endl;
                     lineList.push_back(sourceLine);
                 }
                 else
                 {
-                    osg::notify(osg::INFO)<<"Copying partial line line"<<first<<" "<<last<<std::endl;
+                    OSG_INFO<<"Copying partial line line"<<first<<" "<<last<<std::endl;
 
                     osg::Vec3Array* newLine = new osg::Vec3Array;
 
@@ -2064,13 +2064,13 @@ namespace SphereSegmentIntersector
                             // choose intersection which is nearest the end point.
                             if (r1<r2)
                             {
-                                osg::notify(osg::INFO)<<"start point, 1 near to end than 2"<<r1<<" "<<r2<<std::endl;
+                                OSG_INFO<<"start point, 1 near to end than 2"<<r1<<" "<<r2<<std::endl;
                                 possible1 = true;
                                 possible2 = false;
                             }
                             else 
                             {
-                                osg::notify(osg::INFO)<<"start point, 2 near to end than 1"<<std::endl;
+                                OSG_INFO<<"start point, 2 near to end than 1"<<std::endl;
                                 possible1 = false;
                                 possible2 = true;
                             }
@@ -2127,13 +2127,13 @@ namespace SphereSegmentIntersector
                                 // choose intersection which is nearest the end point.
                                 if (r1>r2)
                                 {
-                                    osg::notify(osg::INFO)<<"end point, 1 near to end than 2"<<r1<<" "<<r2<<std::endl;
+                                    OSG_INFO<<"end point, 1 near to end than 2"<<r1<<" "<<r2<<std::endl;
                                     possible1 = true;
                                     possible2 = false;
                                 }
                                 else 
                                 {
-                                    osg::notify(osg::INFO)<<"end point, 2 near to end than 1"<<std::endl;
+                                    OSG_INFO<<"end point, 2 near to end than 1"<<std::endl;
                                     possible1 = false;
                                     possible2 = true;
                                 }
@@ -2346,7 +2346,7 @@ namespace SphereSegmentIntersector
                 
                 if (linePairs.empty())
                 {
-                    osg::notify(osg::INFO)<<"Line Pairs empty"<<std::endl;
+                    OSG_INFO<<"Line Pairs empty"<<std::endl;
                     break;
                 }
 
@@ -2354,19 +2354,19 @@ namespace SphereSegmentIntersector
                     itr != linePairs.end();
                     ++itr)
                 {
-                    osg::notify(osg::INFO)<<"Line "<<itr->_line.get()<<" "<<itr->_lineEnd<<"  neighbour "<<itr->_neighbourLine.get()<<" "<<itr->_neighbourLineEnd<<" distance="<<itr->_distance<<std::endl;
+                    OSG_INFO<<"Line "<<itr->_line.get()<<" "<<itr->_lineEnd<<"  neighbour "<<itr->_neighbourLine.get()<<" "<<itr->_neighbourLineEnd<<" distance="<<itr->_distance<<std::endl;
                 }
 
                 LinePair linePair = *linePairs.begin();
                 if (linePair._distance > fuseDistance)
                 {
-                    osg::notify(osg::INFO)<<"Completed work, shortest distance left is "<<linePair._distance<<std::endl;
+                    OSG_INFO<<"Completed work, shortest distance left is "<<linePair._distance<<std::endl;
                     break;
                 }
 
                 if (linePair._line == linePair._neighbourLine)
                 {
-                    osg::notify(osg::INFO)<<"Fusing line to itself"<<std::endl;
+                    OSG_INFO<<"Fusing line to itself"<<std::endl;
                     osg::Vec3Array* line = linePair._line.get();
                     osg::Vec3 average = ((*line)[0]+(*line)[line->size()-1])*0.5f;
 
@@ -2390,7 +2390,7 @@ namespace SphereSegmentIntersector
                     }
                     else
                     {
-                        osg::notify(osg::INFO)<<"Error couldn't find line in unfused list, exiting fusing loop."<<std::endl;
+                        OSG_INFO<<"Error couldn't find line in unfused list, exiting fusing loop."<<std::endl;
                         break;
                     }
                 }
@@ -2455,7 +2455,7 @@ namespace SphereSegmentIntersector
                     // add the newline into the unfused for further processing.
                     unfusedLines.push_back(newline);
 
-                    osg::notify(osg::INFO)<<"Fusing two separate lines "<<newline<<std::endl;
+                    OSG_INFO<<"Fusing two separate lines "<<newline<<std::endl;
                 }
 
                 _generatedLines = fusedLines;
@@ -2559,7 +2559,7 @@ namespace SphereSegmentIntersector
                     return false;
                 }
 
-                // osg::notify(osg::INFO)<<"r = "<<r<<std::endl;
+                // OSG_INFO<<"r = "<<r<<std::endl;
 
                 double one_minus_r = 1.0-r;
 
@@ -2675,7 +2675,7 @@ namespace SphereSegmentIntersector
                 }
                 else
                 {
-                    osg::notify(osg::INFO)<<"neither segment intersects s1="<<s1<<" s2="<<s2<<std::endl;
+                    OSG_INFO<<"neither segment intersects s1="<<s1<<" s2="<<s2<<std::endl;
 
                     edge->_intersectionType = TriangleIntersectOperator::Edge::NO_INTERSECTION;
                     return false;
@@ -2704,7 +2704,7 @@ namespace SphereSegmentIntersector
             double s1, s2;
             if (!computeQuadraticSolution(a,b,c,s1,s2))
             {
-                osg::notify(osg::INFO)<<"Warning::neither segment intersects s1="<<s1<<" s2="<<s2<<std::endl;
+                OSG_INFO<<"Warning::neither segment intersects s1="<<s1<<" s2="<<s2<<std::endl;
                 return v1;
             }
             double r = 0.0;
@@ -2718,7 +2718,7 @@ namespace SphereSegmentIntersector
             }
             else
             {
-                osg::notify(osg::INFO)<<"Warning::neither segment intersects s1="<<s1<<" s2="<<s2<<std::endl;
+                OSG_INFO<<"Warning::neither segment intersects s1="<<s1<<" s2="<<s2<<std::endl;
                 return v1;
             }
 
@@ -2807,7 +2807,7 @@ namespace SphereSegmentIntersector
                 }
                 else
                 {
-                    osg::notify(osg::INFO)<<"neither segment intersects s1="<<s1<<" s2="<<s2<<std::endl;
+                    OSG_INFO<<"neither segment intersects s1="<<s1<<" s2="<<s2<<std::endl;
 
                     edge->_intersectionType = TriangleIntersectOperator::Edge::NO_INTERSECTION;
                     return false;
@@ -2835,7 +2835,7 @@ namespace SphereSegmentIntersector
             double s1, s2;
             if (!computeQuadraticSolution(a,b,c,s1,s2))
             {
-                osg::notify(osg::INFO)<<"Warning: neither segment intersects s1="<<s1<<" s2="<<s2<<std::endl;
+                OSG_INFO<<"Warning: neither segment intersects s1="<<s1<<" s2="<<s2<<std::endl;
                 return v1;
             }
             double r = 0.0;
@@ -2849,7 +2849,7 @@ namespace SphereSegmentIntersector
             }
             else
             {
-                osg::notify(osg::INFO)<<"Warning: neither segment intersects s1="<<s1<<" s2="<<s2<<std::endl;
+                OSG_INFO<<"Warning: neither segment intersects s1="<<s1<<" s2="<<s2<<std::endl;
                 return v1;
             }
 
@@ -2899,9 +2899,9 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& m
     // traverse the triangles in the Geometry dedicating intersections
     geometry->accept(tif);
     
-    osg::notify(osg::INFO)<<"_numOutside = "<<tif._numOutside<<std::endl;
-    osg::notify(osg::INFO)<<"_numInside = "<<tif._numInside<<std::endl;
-    osg::notify(osg::INFO)<<"_numIntersecting = "<<tif._numIntersecting<<std::endl;
+    OSG_INFO<<"_numOutside = "<<tif._numOutside<<std::endl;
+    OSG_INFO<<"_numInside = "<<tif._numInside<<std::endl;
+    OSG_INFO<<"_numIntersecting = "<<tif._numIntersecting<<std::endl;
 
     tif.removeDuplicateVertices();
     tif.removeDuplicateTriangles();
@@ -2984,19 +2984,19 @@ SphereSegment::LineList SphereSegment::computeIntersection(const osg::Matrixd& m
     tif._generatedLines.insert(tif._generatedLines.end(), elevMinLines.begin(), elevMinLines.end());
     tif._generatedLines.insert(tif._generatedLines.end(), elevMaxLines.begin(), elevMaxLines.end());
  
-    osg::notify(osg::INFO)<<"number of separate lines = "<<tif._generatedLines.size()<<std::endl;
+    OSG_INFO<<"number of separate lines = "<<tif._generatedLines.size()<<std::endl;
 
     float fuseDistance = 1.0;
     tif.joinEnds(fuseDistance, true, true);
 
-    osg::notify(osg::INFO)<<"number of separate lines after fuse = "<<tif._generatedLines.size()<<std::endl;
+    OSG_INFO<<"number of separate lines after fuse = "<<tif._generatedLines.size()<<std::endl;
 
     float joinDistance = 1e8;
     tif.joinEnds(joinDistance, false, false);
-    osg::notify(osg::INFO)<<"number of separate lines after join = "<<tif._generatedLines.size()<<std::endl;
+    OSG_INFO<<"number of separate lines after join = "<<tif._generatedLines.size()<<std::endl;
 
     tif.joinEnds(joinDistance, false, true);
-    osg::notify(osg::INFO)<<"number of separate lines after second join = "<<tif._generatedLines.size()<<std::endl;
+    OSG_INFO<<"number of separate lines after second join = "<<tif._generatedLines.size()<<std::endl;
  
     return tif._generatedLines;
 }

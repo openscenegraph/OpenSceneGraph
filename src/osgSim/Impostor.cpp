@@ -226,7 +226,7 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
 
     if (!bs.valid())
     {
-        osg::notify(osg::WARN) << "bb invalid"<<std::endl;
+        OSG_WARN << "bb invalid"<<std::endl;
         return NULL;
     }
 
@@ -306,7 +306,7 @@ ImpostorSprite* Impostor::createImpostorSprite(osgUtil::CullVisitor* cv)
 
     if (impostorSprite==NULL)
     {
-        osg::notify(osg::WARN)<<"Warning: unable to create required impostor sprite."<<std::endl;
+        OSG_WARN<<"Warning: unable to create required impostor sprite."<<std::endl;
         return NULL;
     }
 

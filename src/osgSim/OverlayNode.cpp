@@ -135,9 +135,9 @@ public:
     void setToBoundingBox(const osg::BoundingBox& bb)
     {
 #if 0    
-        osg::notify(osg::NOTICE)<<"setToBoundingBox xrange "<<bb.xMin()<<" "<<bb.xMax()<<std::endl;
-        osg::notify(osg::NOTICE)<<"                        "<<bb.yMin()<<" "<<bb.yMax()<<std::endl;
-        osg::notify(osg::NOTICE)<<"                        "<<bb.zMin()<<" "<<bb.zMax()<<std::endl;
+        OSG_NOTICE<<"setToBoundingBox xrange "<<bb.xMin()<<" "<<bb.xMax()<<std::endl;
+        OSG_NOTICE<<"                        "<<bb.yMin()<<" "<<bb.yMax()<<std::endl;
+        OSG_NOTICE<<"                        "<<bb.zMin()<<" "<<bb.zMax()<<std::endl;
 #endif    
         const osg::Vec3d v000(bb.xMin(),bb.yMin(), bb.zMin());
         const osg::Vec3d v010(bb.xMin(),bb.yMax(), bb.zMin());
@@ -237,7 +237,7 @@ public:
 
     void insertVertex(const osg::Vec3d& vertex, osg::EllipsoidModel* em=0, double minHeight=0.0)
     {
-        // osg::notify(osg::NOTICE)<<"Inserting vertex "<<vertex<<std::endl;
+        // OSG_NOTICE<<"Inserting vertex "<<vertex<<std::endl;
     
         Faces removedFaces;
     
@@ -296,7 +296,7 @@ public:
         {
             if (eitr->second==1) 
             {
-                // osg::notify(osg::NOTICE)<<"     edge Ok"<<std::endl;
+                // OSG_NOTICE<<"     edge Ok"<<std::endl;
                 const Edge& edge = eitr->first;
                 Face face;
                 face.name = "baseSide";
@@ -352,13 +352,13 @@ public:
         }
     
 
-        // osg::notify(osg::NOTICE)<<"  Removed faces "<<removedFaces.size()<<std::endl;
+        // OSG_NOTICE<<"  Removed faces "<<removedFaces.size()<<std::endl;
     }
 
 
     void projectDowntoBase(const osg::Vec3d& control, const osg::Vec3d& normal)
     {
-        // osg::notify(osg::NOTICE)<<"CustomPolytope::projectDowntoBase not implementated yet."<<std::endl;
+        // OSG_NOTICE<<"CustomPolytope::projectDowntoBase not implementated yet."<<std::endl;
 
         Faces removedFaces;
     
@@ -417,7 +417,7 @@ public:
         {
             if (eitr->second==1) 
             {
-                // osg::notify(osg::NOTICE)<<"     edge Ok"<<std::endl;
+                // OSG_NOTICE<<"     edge Ok"<<std::endl;
                 const Edge& edge = eitr->first;
                 
                 double h_first = (edge.first-control) * normal;
@@ -515,7 +515,7 @@ public:
             const EdgeFaces& edgeFaces = eitr->second;
             if (edgeFaces.size()==1)
             {
-                // osg::notify(osg::NOTICE)<<"Open edge found "<<edgeFaces.front()->name<<std::endl;
+                // OSG_NOTICE<<"Open edge found "<<edgeFaces.front()->name<<std::endl;
             }
             else if (edgeFaces.size()==2)
             {
@@ -524,19 +524,19 @@ public:
                 double dotProduct1 = edgeFaces[1]->plane.getNormal() * normal;
                 if (dotProduct0 * dotProduct1 <0.0)
                 {
-                    // osg::notify(osg::NOTICE)<<"  Silhoette edge found "<<edgeFaces[0]->name<<" "<<edgeFaces[1]->name<<std::endl;
+                    // OSG_NOTICE<<"  Silhoette edge found "<<edgeFaces[0]->name<<" "<<edgeFaces[1]->name<<std::endl;
                     uniqueVertices.insert(edge.first);
                     uniqueVertices.insert(edge.second);
                 }
                 else
                 {
-                    // osg::notify(osg::NOTICE)<<"  Non silhoette edge found "<<edgeFaces[0]->name<<" "<<edgeFaces[1]->name<<std::endl;
+                    // OSG_NOTICE<<"  Non silhoette edge found "<<edgeFaces[0]->name<<" "<<edgeFaces[1]->name<<std::endl;
                 }
                 
             }
             else
             {
-                // osg::notify(osg::NOTICE)<<"Confused edge found "<<edgeFaces.size()<<std::endl;
+                // OSG_NOTICE<<"Confused edge found "<<edgeFaces.size()<<std::endl;
             }
         }
 
@@ -590,7 +590,7 @@ public:
 
     void cut(const osg::Polytope& polytope)
     {
-        // osg::notify(osg::NOTICE)<<"Cutting with polytope "<<std::endl;
+        // OSG_NOTICE<<"Cutting with polytope "<<std::endl;
         for(osg::Polytope::PlaneList::const_iterator itr = polytope.getPlaneList().begin();
             itr != polytope.getPlaneList().end();
             ++itr)
@@ -601,7 +601,7 @@ public:
 
     void cut(const CustomPolytope& polytope)
     {
-        // osg::notify(osg::NOTICE)<<"Cutting with polytope "<<std::endl;
+        // OSG_NOTICE<<"Cutting with polytope "<<std::endl;
         for(Faces::const_iterator itr = polytope._faces.begin();
             itr != polytope._faces.end();
             ++itr)
@@ -612,7 +612,7 @@ public:
 
     void cut(const osg::Plane& plane, const std::string& name=std::string())
     {
-        // osg::notify(osg::NOTICE)<<"  Cutting plane "<<plane<<std::endl;
+        // OSG_NOTICE<<"  Cutting plane "<<plane<<std::endl;
         Face newFace;
         typedef std::vector<double> Distances;
         Distances distances;
@@ -626,12 +626,12 @@ public:
             int intersect = plane.intersect(face.vertices);
             if (intersect==1)
             {
-                // osg::notify(osg::NOTICE)<<"    Face inside"<<std::endl; 
+                // OSG_NOTICE<<"    Face inside"<<std::endl; 
                 ++itr;
             }
             else if (intersect==0)
             {
-                // osg::notify(osg::NOTICE)<<"    Face intersecting - before "<<face.vertices.size()<<std::endl;
+                // OSG_NOTICE<<"    Face intersecting - before "<<face.vertices.size()<<std::endl;
                 
                 Vertices& vertices = face.vertices;
                 newVertices.clear();
@@ -666,26 +666,26 @@ public:
                         newVertices.push_back(intersection);
                         newFace.vertices.push_back(intersection);
                         
-                        // osg::notify(osg::NOTICE)<<"  intersection distance "<<plane.distance(intersection)<<std::endl;                        
+                        // OSG_NOTICE<<"  intersection distance "<<plane.distance(intersection)<<std::endl;                        
                     }
                 }
                 
                 vertices.swap(newVertices);
                 
-                // osg::notify(osg::NOTICE)<<"        intersecting - after "<<face.vertices.size()<<std::endl;
+                // OSG_NOTICE<<"        intersecting - after "<<face.vertices.size()<<std::endl;
 
                 ++itr;
             }
             else if (intersect==-1)
             {
-                // osg::notify(osg::NOTICE)<<"    Face outside"<<_faces.size()<<std::endl; 
+                // OSG_NOTICE<<"    Face outside"<<_faces.size()<<std::endl; 
                 itr = _faces.erase(itr);
             }
         }
         
         if (!newFace.vertices.empty())
         {
-            // osg::notify(osg::NOTICE)<<"    inserting newFace intersecting "<<newFace.vertices.size()<<std::endl;
+            // OSG_NOTICE<<"    inserting newFace intersecting "<<newFace.vertices.size()<<std::endl;
             newFace.name = name;
             newFace.plane = plane;
 
@@ -735,7 +735,7 @@ public:
             
             newVertices.swap(vertices);
             
-            // osg::notify(osg::NOTICE)<<"     after angle sort  "<<newFace.vertices.size()<<std::endl;
+            // OSG_NOTICE<<"     after angle sort  "<<newFace.vertices.size()<<std::endl;
 
             _faces.push_back(newFace);
         }
@@ -961,7 +961,7 @@ OverlayNode::OverlayData* OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
     
     if (!overlayData->_texture) 
     { 
-        // osg::notify(osg::NOTICE)<<"   setting up texture"<<std::endl;
+        // OSG_NOTICE<<"   setting up texture"<<std::endl;
 
         osg::Texture2D* texture = new osg::Texture2D;
         texture->setTextureSize(tex_width, tex_height);
@@ -981,7 +981,7 @@ OverlayNode::OverlayData* OverlayNode::getOverlayData(osgUtil::CullVisitor* cv)
     // set up the render to texture camera.
     if (!overlayData->_camera || overlayData->_camera->getRenderTargetImplementation() != _renderTargetImpl)
     {
-        // osg::notify(osg::NOTICE)<<"   setting up camera"<<std::endl;
+        // OSG_NOTICE<<"   setting up camera"<<std::endl;
 
         // create the camera
         overlayData->_camera = new osg::Camera;
@@ -1198,7 +1198,7 @@ void OverlayNode::init()
 
 void OverlayNode::init_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY()
 {
-    osg::notify(osg::INFO)<<"OverlayNode::init() - OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY"<<std::endl;
+    OSG_INFO<<"OverlayNode::init() - OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY"<<std::endl;
     
     // force initialization of _overlayDataMap for the key 0 (or NULL)
     getOverlayData(0);
@@ -1206,12 +1206,12 @@ void OverlayNode::init_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY()
 
 void OverlayNode::init_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY()
 {
-    osg::notify(osg::INFO)<<"OverlayNode::init() - VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY"<<std::endl;
+    OSG_INFO<<"OverlayNode::init() - VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY"<<std::endl;
 }
 
 void OverlayNode::init_VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY()
 {
-    osg::notify(osg::INFO)<<"OverlayNode::init() - VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY"<<std::endl;
+    OSG_INFO<<"OverlayNode::init() - VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY"<<std::endl;
 }
 
 void OverlayNode::traverse(osg::NodeVisitor& nv)
@@ -1375,7 +1375,7 @@ void OverlayNode::traverse_OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeV
 
 void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVisitor& nv)
 {
-    // osg::notify(osg::NOTICE)<<"OverlayNode::traverse() - VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY"<<std::endl;
+    // OSG_NOTICE<<"OverlayNode::traverse() - VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY"<<std::endl;
 
 
     if (nv.getVisitorType() != osg::NodeVisitor::CULL_VISITOR)
@@ -1429,20 +1429,20 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         double znear = cv->getCalculatedNearPlane();
         double zfar = cv->getCalculatedFarPlane();
         
-        // osg::notify(osg::NOTICE)<<" before znear ="<<znear<<"\t zfar ="<<zfar<<std::endl;
+        // OSG_NOTICE<<" before znear ="<<znear<<"\t zfar ="<<zfar<<std::endl;
         
         cv->computeNearPlane();
         
         znear = cv->getCalculatedNearPlane();
         zfar = cv->getCalculatedFarPlane();
 
-        // osg::notify(osg::NOTICE)<<" after znear ="<<znear<<"\t zfar ="<<zfar<<std::endl;
+        // OSG_NOTICE<<" after znear ="<<znear<<"\t zfar ="<<zfar<<std::endl;
 
-        // osg::notify(osg::NOTICE)<<" before clamp pm="<<pm<<std::endl;
+        // OSG_NOTICE<<" before clamp pm="<<pm<<std::endl;
 
         cv->clampProjectionMatrixImplementation(pm, znear,zfar);
         
-        // osg::notify(osg::NOTICE)<<" after clamp pm="<<pm<<std::endl;
+        // OSG_NOTICE<<" after clamp pm="<<pm<<std::endl;
         
         osg::Matrix MVP = *(cv->getModelViewMatrix()) * pm;
         osg::Matrix inverseMVP;
@@ -1491,7 +1491,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
 
 
 
-        // osg::notify(osg::NOTICE)<<"AFTER CUT corners = "<<corners.size()<<std::endl;
+        // OSG_NOTICE<<"AFTER CUT corners = "<<corners.size()<<std::endl;
 
  
         osg::Vec3d center = _overlaySubgraph->getBound().center();
@@ -1541,7 +1541,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         }
         
 
-        // osg::notify(osg::NOTICE)<<"    lookVector ="<<lookVector<<std::endl;
+        // OSG_NOTICE<<"    lookVector ="<<lookVector<<std::endl;
         
         double min_side = DBL_MAX;
         double max_side = -DBL_MAX;
@@ -1590,7 +1590,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
 
         if (usePerspectiveShaders)
         {
-//            osg::notify(osg::NOTICE)<<"ratio = "<<ratio<<std::endl;
+//            OSG_NOTICE<<"ratio = "<<ratio<<std::endl;
 //            double original_width = max_side-min_side;
 
             double minRatio = 0.02;
@@ -1629,8 +1629,8 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
             double frustumDiagonal = osg::RadiansToDegrees(acos(edgeBottomLeft * edgeBottomRight));
             
             
-            //osg::notify(osg::NOTICE)<<"  width ratio  = "<<new_width/original_width<<std::endl;
-            //osg::notify(osg::NOTICE)<<"  near ratio  = "<<ratio * new_width/original_width<<std::endl;
+            //OSG_NOTICE<<"  width ratio  = "<<new_width/original_width<<std::endl;
+            //OSG_NOTICE<<"  near ratio  = "<<ratio * new_width/original_width<<std::endl;
             double angle = 2.0*osg::RadiansToDegrees(atan(max_side_over_up));
 
 
@@ -1656,7 +1656,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
                 
                 double new_ratio = (min_up-lowest_up)/(max_up-lowest_up);
                 
-                //osg::notify(osg::NOTICE)<<"  originalRatio  = "<<ratio<<" new_ratio="<<new_ratio<<std::endl;
+                //OSG_NOTICE<<"  originalRatio  = "<<ratio<<" new_ratio="<<new_ratio<<std::endl;
                 
                 if (new_ratio > ratio) ratio = new_ratio;
                 
@@ -1675,7 +1675,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
             overlayData._y0->set(static_cast<float>(y0));
             
 
-            // osg::notify(osg::NOTICE)<<"y0 = "<<y0<<std::endl;
+            // OSG_NOTICE<<"y0 = "<<y0<<std::endl;
         
             overlayData._mainSubgraphStateSet->setAttribute(overlayData._mainSubgraphProgram.get());
             
@@ -1697,12 +1697,12 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         double height = max_up-min_up;
         double area = width*height;        
 
-        osg::notify(osg::NOTICE)<<"width = "<<width<<"\t height = "<<height<<"\t area = "<<area<<std::endl;
+        OSG_NOTICE<<"width = "<<width<<"\t height = "<<height<<"\t area = "<<area<<std::endl;
 
-        osg::notify(osg::NOTICE)<<"a  min_side    = "<<min_side<<std::endl;
-        osg::notify(osg::NOTICE)<<"a  max_side  = "<<max_side<<std::endl;
-        osg::notify(osg::NOTICE)<<"a  min_up    = "<<min_up<<std::endl;
-        osg::notify(osg::NOTICE)<<"a  max_up  = "<<max_up<<std::endl;
+        OSG_NOTICE<<"a  min_side    = "<<min_side<<std::endl;
+        OSG_NOTICE<<"a  max_side  = "<<max_side<<std::endl;
+        OSG_NOTICE<<"a  min_up    = "<<min_up<<std::endl;
+        OSG_NOTICE<<"a  max_up  = "<<max_up<<std::endl;
 #endif
             
         if (em)
@@ -1730,7 +1730,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         overlayData._textureFrustum.setToUnitFrustum(false,false);
         overlayData._textureFrustum.transformProvidingInverse(MVP);
 
-        // osg::notify(osg::NOTICE)<<std::endl;
+        // OSG_NOTICE<<std::endl;
 
         unsigned int contextID = cv->getState()!=0 ? cv->getState()->getContextID() : 0;
 
@@ -1793,7 +1793,7 @@ void OverlayNode::traverse_VIEW_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY(osg::NodeVis
         Group::traverse(nv);    
     }
     
-    // osg::notify(osg::NOTICE)<<"   "<<&overlayData<<std::endl;
+    // OSG_NOTICE<<"   "<<&overlayData<<std::endl;
 }
 
 void OverlayNode::traverse_VIEW_DEPENDENT_WITH_PERSPECTIVE_OVERLAY(osg::NodeVisitor& nv)
@@ -1865,7 +1865,7 @@ void OverlayNode::setOverlayTextureSizeHint(unsigned int size)
 
 void OverlayNode::updateMainSubgraphStateSet()
 {
-   osg::notify(osg::INFO)<<"OverlayNode::updateMainSubgraphStateSet()"<<std::endl;
+   OSG_INFO<<"OverlayNode::updateMainSubgraphStateSet()"<<std::endl;
 
    for(OverlayDataMap::iterator itr = _overlayDataMap.begin();
         itr != _overlayDataMap.end();

@@ -43,7 +43,7 @@ osg::Node* DatabaseCacheReadCallback::readNodeFile(const std::string& filename)
         FileNameSceneMap::iterator itr = _filenameSceneMap.find(filename);
         if (itr != _filenameSceneMap.end())
         {
-            osg::notify(osg::INFO)<<"Getting from cache "<<filename<<std::endl;
+            OSG_INFO<<"Getting from cache "<<filename<<std::endl;
         
             return itr->second.get();
         }
@@ -59,7 +59,7 @@ osg::Node* DatabaseCacheReadCallback::readNodeFile(const std::string& filename)
         
         if (_filenameSceneMap.size() < _maxNumFilesToCache)
         {
-            osg::notify(osg::INFO)<<"Inserting into cache "<<filename<<std::endl;
+            OSG_INFO<<"Inserting into cache "<<filename<<std::endl;
 
             _filenameSceneMap[filename] = node;
         }
@@ -72,14 +72,14 @@ osg::Node* DatabaseCacheReadCallback::readNodeFile(const std::string& filename)
             {
                 if (itr->second->referenceCount()==1)
                 {
-                    osg::notify(osg::NOTICE)<<"Erasing "<<itr->first<<std::endl;
+                    OSG_NOTICE<<"Erasing "<<itr->first<<std::endl;
                     // found a node which is only referenced in the cache so we can discard it
                     // and know that the actual memory will be released.
                     _filenameSceneMap.erase(itr);
                     break;
                 }
             }
-            osg::notify(osg::INFO)<<"And the replacing with "<<filename<<std::endl;
+            OSG_INFO<<"And the replacing with "<<filename<<std::endl;
             _filenameSceneMap[filename] = node;
         }
     }

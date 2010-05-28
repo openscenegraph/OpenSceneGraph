@@ -185,7 +185,7 @@ void LightPointNode::traverse(osg::NodeVisitor& nv)
             else
             {
                 // will need to replace UserData.
-                osg::notify(osg::WARN) << "Warning: Replacing osgUtil::StateGraph::_userData to support osgSim::LightPointNode, may have undefined results."<<std::endl;
+                OSG_WARN << "Warning: Replacing osgUtil::StateGraph::_userData to support osgSim::LightPointNode, may have undefined results."<<std::endl;
             }
         }
 

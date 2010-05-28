@@ -145,9 +145,9 @@ OSGA_Archive::IndexBlock* OSGA_Archive::IndexBlock::read(std::istream& in, bool 
         osg::swapBytes(reinterpret_cast<char*>(&indexBlock->_offsetOfNextAvailableSpace), sizeof(indexBlock-> _offsetOfNextAvailableSpace));
     }
 
-//    osg::notify(osg::INFO)<<"indexBlock->_blockSize="<<indexBlock->_blockSize<<std::endl;
-//    osg::notify(osg::INFO)<<"indexBlock->_filePositionNextIndexBlock="<<indexBlock->_filePositionNextIndexBlock<<std::endl;
-//    osg::notify(osg::INFO)<<"indexBlock->_offsetOfNextAvailableSpace="<<indexBlock->_offsetOfNextAvailableSpace<<std::endl;
+//    OSG_INFO<<"indexBlock->_blockSize="<<indexBlock->_blockSize<<std::endl;
+//    OSG_INFO<<"indexBlock->_filePositionNextIndexBlock="<<indexBlock->_filePositionNextIndexBlock<<std::endl;
+//    OSG_INFO<<"indexBlock->_offsetOfNextAvailableSpace="<<indexBlock->_offsetOfNextAvailableSpace<<std::endl;
 
     indexBlock->allocateData(indexBlock->_blockSize);
     if (indexBlock->_data)
@@ -172,18 +172,18 @@ OSGA_Archive::IndexBlock* OSGA_Archive::IndexBlock::read(std::istream& in, bool 
                 ptr += sizeof(unsigned int);
                 ptr += filename_size;
 
-                osg::notify(osg::INFO)<<"filename size="<<filename_size<<std::endl;
+                OSG_INFO<<"filename size="<<filename_size<<std::endl;
 
             }
         }
     }
     else
     {
-        osg::notify(osg::INFO)<<"Allocation Problem in OSGA_Archive::IndexBlock::read(std::istream& in)"<<std::endl;
+        OSG_INFO<<"Allocation Problem in OSGA_Archive::IndexBlock::read(std::istream& in)"<<std::endl;
         return 0;
     }
 
-    osg::notify(osg::INFO)<<"Read index block"<<std::endl;
+    OSG_INFO<<"Read index block"<<std::endl;
     
     return indexBlock.release();
     
@@ -251,14 +251,14 @@ void OSGA_Archive::IndexBlock::write(std::ostream& out)
 
     if (_filePosition==pos_type(0))
     {
-        osg::notify(osg::INFO)<<"OSGA_Archive::IndexBlock::write() setting _filePosition"<<std::endl;
+        OSG_INFO<<"OSGA_Archive::IndexBlock::write() setting _filePosition"<<std::endl;
         _filePosition = currentPos;
     }
     else
     {
          out.seekp( STREAM_POS( _filePosition ) );
     }
-    osg::notify(osg::INFO)<<"OSGA_Archive::IndexBlock::write() to _filePosition"<< ARCHIVE_POS( out.tellp() )<<std::endl;
+    OSG_INFO<<"OSGA_Archive::IndexBlock::write() to _filePosition"<< ARCHIVE_POS( out.tellp() )<<std::endl;
 
     out.write(reinterpret_cast<char*>(&_blockSize), sizeof(_blockSize));
     out.write(reinterpret_cast<char*>(&_filePositionNextIndexBlock), sizeof(_filePositionNextIndexBlock));
@@ -269,7 +269,7 @@ void OSGA_Archive::IndexBlock::write(std::ostream& out)
     if( _filePosition < currentPos ) // move file ptr to the end of file 
         out.seekp( STREAM_POS( currentPos ) );
     
-    osg::notify(osg::INFO)<<"OSGA_Archive::IndexBlock::write() end"<<std::endl;
+    OSG_INFO<<"OSGA_Archive::IndexBlock::write() end"<<std::endl;
 }
 
 
@@ -300,7 +300,7 @@ bool OSGA_Archive::IndexBlock::addFileReference(pos_type position, size_type siz
         
         _requiresWrite = true;
 
-        osg::notify(osg::INFO)<<"OSGA_Archive::IndexBlock::addFileReference("<<(unsigned int)position<<", "<<filename<<")"<<std::endl;
+        OSG_INFO<<"OSGA_Archive::IndexBlock::addFileReference("<<(unsigned int)position<<", "<<filename<<")"<<std::endl;
         
         return true;
     }
@@ -373,20 +373,20 @@ bool OSGA_Archive::open(const std::string& filename, ArchiveStatus status, unsig
 
             _output.open(filename.c_str(), std::ios_base::binary | std::ios_base::in | std::ios_base::out);
 
-            osg::notify(osg::INFO)<<"File position after open = "<<ARCHIVE_POS( _output.tellp() )<<" is_open "<<_output.is_open()<<std::endl;
+            OSG_INFO<<"File position after open = "<<ARCHIVE_POS( _output.tellp() )<<" is_open "<<_output.is_open()<<std::endl;
 
             // place write position at end of file. 
             _output.seekp( STREAM_POS( file_size ) );
 
-            osg::notify(osg::INFO)<<"File position after seekp = "<<ARCHIVE_POS( _output.tellp() )<<std::endl;
+            OSG_INFO<<"File position after seekp = "<<ARCHIVE_POS( _output.tellp() )<<std::endl;
 
-            osg::notify(osg::INFO)<<"OSGA_Archive::open("<<filename<<") open for writing"<<std::endl;
+            OSG_INFO<<"OSGA_Archive::open("<<filename<<") open for writing"<<std::endl;
 
             return true;
         }
         else // no file opened or using create so resort to creating the archive.
         {
-            osg::notify(osg::INFO)<<"OSGA_Archive::open("<<filename<<"), archive being created."<<std::endl;
+            OSG_INFO<<"OSGA_Archive::open("<<filename<<"), archive being created."<<std::endl;
 
             _status = WRITE;
             _output.open(filename.c_str(), std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
@@ -401,7 +401,7 @@ bool OSGA_Archive::open(const std::string& filename, ArchiveStatus status, unsig
                 _indexBlockList.push_back(indexBlock);
             }
 
-            osg::notify(osg::INFO)<<"File position after write = "<<ARCHIVE_POS( _output.tellp() )<<std::endl;
+            OSG_INFO<<"File position after write = "<<ARCHIVE_POS( _output.tellp() )<<std::endl;
 
             return true;
         }
@@ -413,7 +413,7 @@ bool OSGA_Archive::open(std::istream& fin)
 {
     SERIALIZER();
 
-    osg::notify(osg::NOTICE)<<"OSGA_Archive::open"<<std::endl;
+    OSG_NOTICE<<"OSGA_Archive::open"<<std::endl;
     static_cast<std::istream&>(_input).rdbuf(fin.rdbuf());
     return _open(_input);
 }
@@ -439,8 +439,8 @@ bool OSGA_Archive::_open(std::istream& input)
                 osg::swapBytes(reinterpret_cast<char*>(&_version),sizeof(_version));
             }
 
-            osg::notify(osg::INFO)<<"OSGA_Archive::open() doEndianSwap="<<doEndianSwap<<std::endl;
-            osg::notify(osg::INFO)<<"OSGA_Archive::open() Version="<<_version<<std::endl;
+            OSG_INFO<<"OSGA_Archive::open() doEndianSwap="<<doEndianSwap<<std::endl;
+            OSG_INFO<<"OSGA_Archive::open() Version="<<_version<<std::endl;
 
             IndexBlock *indexBlock = 0;
 
@@ -471,7 +471,7 @@ bool OSGA_Archive::_open(std::istream& input)
                 mitr!=_indexMap.end();
                 ++mitr)
             {
-                osg::notify(osg::INFO)<<"    filename "<<(mitr->first)<<" pos="<<(int)((mitr->second).first)<<" size="<<(int)((mitr->second).second)<<std::endl;
+                OSG_INFO<<"    filename "<<(mitr->first)<<" pos="<<(int)((mitr->second).first)<<" size="<<(int)((mitr->second).second)<<std::endl;
             }
 
 
@@ -544,13 +544,13 @@ bool OSGA_Archive::addFileReference(pos_type position, size_type size, const std
 
     if (_status==READ)
     {
-        osg::notify(osg::INFO)<<"OSGA_Archive::getPositionForNewEntry("<<fileName<<") failed, archive opened as read only."<<std::endl;
+        OSG_INFO<<"OSGA_Archive::getPositionForNewEntry("<<fileName<<") failed, archive opened as read only."<<std::endl;
         return false;
     }
     
     if (!_output)
     {
-        osg::notify(osg::INFO)<<"OSGA_Archive::getPositionForNewEntry("<<fileName<<") failed, _output set up."<<std::endl;
+        OSG_INFO<<"OSGA_Archive::getPositionForNewEntry("<<fileName<<") failed, _output set up."<<std::endl;
         return false;
     }
     
@@ -661,25 +661,25 @@ ReaderWriter::ReadResult OSGA_Archive::read(const ReadFunctor& readFunctor)
 
     if (_status!=READ) 
     {
-        osg::notify(osg::INFO)<<"OSGA_Archive::readObject(obj, "<<readFunctor._filename<<") failed, archive opened as write only."<<std::endl;
+        OSG_INFO<<"OSGA_Archive::readObject(obj, "<<readFunctor._filename<<") failed, archive opened as write only."<<std::endl;
         return ReadResult(ReadResult::FILE_NOT_HANDLED);
     }
     
     FileNamePositionMap::const_iterator itr = _indexMap.find(readFunctor._filename);
     if (itr==_indexMap.end())
     {
-        osg::notify(osg::INFO)<<"OSGA_Archive::readObject(obj, "<<readFunctor._filename<<") failed, file not found in archive"<<std::endl;
+        OSG_INFO<<"OSGA_Archive::readObject(obj, "<<readFunctor._filename<<") failed, file not found in archive"<<std::endl;
         return ReadResult(ReadResult::FILE_NOT_FOUND);
     }
     
     ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension(getLowerCaseFileExtension(readFunctor._filename));
     if (!rw)
     {
-        osg::notify(osg::INFO)<<"OSGA_Archive::readObject(obj, "<<readFunctor._filename<<") failed to find appropriate plugin to read file."<<std::endl;
+        OSG_INFO<<"OSGA_Archive::readObject(obj, "<<readFunctor._filename<<") failed to find appropriate plugin to read file."<<std::endl;
         return ReadResult(ReadResult::FILE_NOT_HANDLED);
     }
     
-    osg::notify(osg::INFO)<<"OSGA_Archive::readObject(obj, "<<readFunctor._filename<<")"<<std::endl;
+    OSG_INFO<<"OSGA_Archive::readObject(obj, "<<readFunctor._filename<<")"<<std::endl;
     
     _input.seekg( STREAM_POS( itr->second.first ) );
 
@@ -762,18 +762,18 @@ ReaderWriter::WriteResult OSGA_Archive::write(const WriteFunctor& writeFunctor)
 
     if (_status!=WRITE) 
     {
-        osg::notify(osg::INFO)<<"OSGA_Archive::write(obj, "<<writeFunctor._filename<<") failed, archive opened as read only."<<std::endl;
+        OSG_INFO<<"OSGA_Archive::write(obj, "<<writeFunctor._filename<<") failed, archive opened as read only."<<std::endl;
         return WriteResult(WriteResult::FILE_NOT_HANDLED);
     }
 
     ReaderWriter* rw = osgDB::Registry::instance()->getReaderWriterForExtension(getLowerCaseFileExtension(writeFunctor._filename));
     if (!rw)
     {
-        osg::notify(osg::INFO)<<"OSGA_Archive::write(obj, "<<writeFunctor._filename<<") failed to find appropriate plugin to write file."<<std::endl;
+        OSG_INFO<<"OSGA_Archive::write(obj, "<<writeFunctor._filename<<") failed to find appropriate plugin to write file."<<std::endl;
         return WriteResult(WriteResult::FILE_NOT_HANDLED);
     }
     
-    osg::notify(osg::INFO)<<"OSGA_Archive::write(obj, "<<writeFunctor._filename<<")"<<std::endl;
+    OSG_INFO<<"OSGA_Archive::write(obj, "<<writeFunctor._filename<<")"<<std::endl;
     
     pos_type position = ARCHIVE_POS( _output.tellp() );
     
@@ -790,25 +790,25 @@ ReaderWriter::WriteResult OSGA_Archive::write(const WriteFunctor& writeFunctor)
 
 ReaderWriter::WriteResult OSGA_Archive::writeObject(const osg::Object& obj,const std::string& fileName,const Options* options) const
 {
-    osg::notify(osg::INFO)<<"OSGA_Archive::writeObject(obj, "<<fileName<<")"<<std::endl;
+    OSG_INFO<<"OSGA_Archive::writeObject(obj, "<<fileName<<")"<<std::endl;
     return const_cast<OSGA_Archive*>(this)->write(WriteObjectFunctor(obj, fileName, options));
 }
 
 ReaderWriter::WriteResult OSGA_Archive::writeImage(const osg::Image& image,const std::string& fileName,const Options* options) const
 {
-    osg::notify(osg::INFO)<<"OSGA_Archive::writeImage(obj, "<<fileName<<")"<<std::endl;
+    OSG_INFO<<"OSGA_Archive::writeImage(obj, "<<fileName<<")"<<std::endl;
     return const_cast<OSGA_Archive*>(this)->write(WriteImageFunctor(image, fileName, options));
 }
 
 ReaderWriter::WriteResult OSGA_Archive::writeHeightField(const osg::HeightField& heightField,const std::string& fileName,const Options* options) const
 {
-    osg::notify(osg::INFO)<<"OSGA_Archive::writeHeightField(obj, "<<fileName<<")"<<std::endl;
+    OSG_INFO<<"OSGA_Archive::writeHeightField(obj, "<<fileName<<")"<<std::endl;
     return const_cast<OSGA_Archive*>(this)->write(WriteHeightFieldFunctor(heightField, fileName, options));
 }
 
 ReaderWriter::WriteResult OSGA_Archive::writeNode(const osg::Node& node,const std::string& fileName,const Options* options) const
 {
-    osg::notify(osg::INFO)<<"OSGA_Archive::writeNode(obj, "<<fileName<<")"<<std::endl;
+    OSG_INFO<<"OSGA_Archive::writeNode(obj, "<<fileName<<")"<<std::endl;
     return const_cast<OSGA_Archive*>(this)->write(WriteNodeFunctor(node, fileName, options));
 }
 

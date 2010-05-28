@@ -117,7 +117,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 
                 if ((*itr)[0]=='.')
                 {
-                    osg::notify(osg::INFO)<<"Ignoring tempory file "<<*itr<<std::endl;
+                    info()<<"Ignoring tempory file "<<*itr<<std::endl;
                     continue;
                 }
 

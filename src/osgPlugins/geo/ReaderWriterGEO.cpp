@@ -213,7 +213,7 @@ public:
                         normindices->push_back(idx);
                         norms->push_back((*npool)[idx]);
                     } else {
-                        osg::notify(osg::WARN) << "No valid vertex index" << std::endl;
+                        OSG_WARN << "No valid vertex index" << std::endl;
                     }
                 } else if (gfd->getType()==DB_VEC3F) {
                     float *p=gfd->getVec3Arr();
@@ -231,7 +231,7 @@ public:
                     coords->push_back((*cpool)[idx]); //osg::Vec3(cpool[3*idx],cpool[3*idx+1],cpool[3*idx+2]));
                     coordindices->push_back(coords->size());
                 } else {
-                    osg::notify(osg::WARN) << "No valid vertex index" << std::endl;
+                    OSG_WARN << "No valid vertex index" << std::endl;
                 }
             } else if (gfd->getType()==DB_VEC3F) {
                 float *p=gfd->getVec3Arr();
@@ -418,7 +418,7 @@ class ReaderGEO
                 {
                     georecord gr;
                     gr.readfile(fin);
-//            osg::notify(osg::WARN) << "end of record " << (int)gr.getType() << std::endl;
+//            OSG_WARN << "end of record " << (int)gr.getType() << std::endl;
                     if (gr.getType() == DB_DSK_NORMAL_POOL) {
                         geoField *gfff=gr.getModField(GEO_DB_NORMAL_POOL_VALUES);
                         gfff->uncompress();// uncompress the normals
@@ -485,14 +485,14 @@ class ReaderGEO
             itr!=recs.end();
             ++itr) {
                 const geoField *gfd;
-                // osg::notify(osg::WARN) << *itr << std::endl;
+                // OSG_WARN << *itr << std::endl;
                 // now parse for push/pops and add to lists
                 
                 switch ((*itr).getType()) {
                 case 101: // old header - not appropriate!
                     curparent= &(*itr);
                     sorted.push_back(&(*itr));
-                    osg::notify(osg::WARN) << "Old version 2 header block found - possible error!" << std::endl;
+                    OSG_WARN << "Old version 2 header block found - possible error!" << std::endl;
                     break;
                 case DB_DSK_PUSH:
                     if (!(curparent->getchildren().empty())) {
@@ -905,7 +905,7 @@ class ReaderGEO
                                                         int idx=gfd->getInt();
                             pos=coord_pool[idx];
                         } else {
-                            osg::notify(osg::WARN) << "No valid vertex index" << std::endl;
+                            OSG_WARN << "No valid vertex index" << std::endl;
                         }
                     } else if (gfd->getType()==DB_VEC3F) {
                         float *p=gfd->getVec3Arr();
@@ -1182,7 +1182,7 @@ class ReaderGEO
                         if (text) nug->addChild(text);
                     }
                 }
-                // osg::notify(osg::WARN) << vinf;
+                // OSG_WARN << vinf;
             }
             return;
         }
@@ -1329,10 +1329,10 @@ class ReaderGEO
                     sw->setValue(pos,((imask&selector_mask)!=0)); 
                     selector_mask <<= 1;
                 }
-                osg::notify(osg::WARN) << gr << " imask " << imask << std::endl;
+                OSG_WARN << gr << " imask " << imask << std::endl;
             } else {
                 sw->setSingleChildOn(0);
-                osg::notify(osg::WARN) << gr << " Switch has No mask- only 1 child " << std::endl;
+                OSG_WARN << gr << " Switch has No mask- only 1 child " << std::endl;
             }
             gfd=gr->getField(GEO_DB_NODE_NAME);
             if (gfd) {
@@ -1900,7 +1900,7 @@ class ReaderGEO
                         case DB_DSK_STRING_CONTENT_ACTION:
                         default: {
                             osg::Group *gp=new Group;
-                            osg::notify(osg::WARN) << "Unhandled item " << gr->getType() <<
+                            OSG_WARN << "Unhandled item " << gr->getType() <<
                                "address " << (*itr) << std::endl;
                             holder=gp;
                             }
@@ -2160,7 +2160,7 @@ void geoField::readfile(std::ifstream &fin, const uint id) { // is part of a rec
     if (!fin.eof()) {
         fin.read((char *)&tokid,1);fin.read((char *)&type,1);
         fin.read((char *)&nits,sizeof(unsigned short));
-    //    osg::notify(osg::WARN) << "geoField " << (int)tokid << " type " << (int)type << " nit " << (int)nits << std::endl;
+    //    OSG_WARN << "geoField " << (int)tokid << " type " << (int)type << " nit " << (int)nits << std::endl;
         if (type == DB_EXTENDED_FIELD_STRUCT) { // change for true extended type
             fin.read((char *)&tokenId,sizeof(tokenId));fin.read((char *)&TypeId,sizeof(TypeId));
             fin.read((char *)&numItems,sizeof(unsigned int));
@@ -2182,7 +2182,7 @@ void geoField::readfile(std::ifstream &fin, const uint id) { // is part of a rec
             }
         }
         if (id== DB_DSK_HEADER && tokenId == GEO_DB_HDR_EXT_TEMPLATE) { // Feb 2003 parse extension records
-        //    osg::notify(osg::WARN) << "header extension template " << (int)getType() << std::endl;
+        //    OSG_WARN << "header extension template " << (int)getType() << std::endl;
             parseExt(fin); // multiple structs occur here
         } else {
             if (numItems>0) {

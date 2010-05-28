@@ -30,12 +30,12 @@ osg::ref_ptr<BrowserManager>& BrowserManager::instance()
 
 BrowserManager::BrowserManager()
 {
-    osg::notify(osg::INFO)<<"Constructing base BrowserManager"<<std::endl;
+    OSG_INFO<<"Constructing base BrowserManager"<<std::endl;
 }
 
 BrowserManager::~BrowserManager()
 {
-    osg::notify(osg::INFO)<<"Destructing base BrowserManager"<<std::endl;
+    OSG_INFO<<"Destructing base BrowserManager"<<std::endl;
 }
 
 void BrowserManager::init(const std::string& application)
@@ -45,7 +45,7 @@ void BrowserManager::init(const std::string& application)
 
 BrowserImage* BrowserManager::createBrowserImage(const std::string& url, int width, int height)
 {
-    osg::notify(osg::NOTICE)<<"Cannot create browser"<<std::endl;
+    OSG_NOTICE<<"Cannot create browser"<<std::endl;
     return 0;
 }
 

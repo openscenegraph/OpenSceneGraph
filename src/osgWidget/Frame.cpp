@@ -321,7 +321,7 @@ Frame* Frame::createSimpleFrameWithSingleTexture(
     }
     else 
     {
-        osg::notify(osg::WARN) << "createSimpleFrameWithSingleTexture with a null image, the frame " << name << " will be use texture" << std::endl;
+        OSG_WARN << "createSimpleFrameWithSingleTexture with a null image, the frame " << name << " will be use texture" << std::endl;
     }
 
     return frame;
@@ -524,7 +524,7 @@ osg::Image* rotateImage(osg::Image* image)
 osg::Image* createNatifEdgeImageFromTheme(osg::Image* theme)
 {
     if (!theme) {
-        osg::notify(osg::WARN) << "can't create a natif edge image from null image theme as argument" << std::endl;
+        OSG_WARN << "can't create a natif edge image from null image theme as argument" << std::endl;
         return 0;
     }
     osg::ref_ptr<osg::Image> final = new osg::Image;
@@ -537,7 +537,7 @@ osg::Image* createNatifEdgeImageFromTheme(osg::Image* theme)
 
     if (s != t)
     {
-        osg::notify(osg::WARN) << "width and height are different, bad format theme image " << theme->getFileName() << std::endl;
+        OSG_WARN << "width and height are different, bad format theme image " << theme->getFileName() << std::endl;
         return 0;
     }
     
@@ -546,7 +546,7 @@ osg::Image* createNatifEdgeImageFromTheme(osg::Image* theme)
     int intvalue = s/3;
     if (intvalue != ceilvalue)
     {
-        osg::notify(osg::WARN) << "the size of theme file " << theme->getFileName() << " can not be divided by 3, check the documentation about theme format" << std::endl;
+        OSG_WARN << "the size of theme file " << theme->getFileName() << " can not be divided by 3, check the documentation about theme format" << std::endl;
         return 0;
     }
 

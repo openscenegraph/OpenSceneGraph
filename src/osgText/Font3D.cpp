@@ -86,7 +86,7 @@ std::string findFont3DFile(const std::string& str)
     }
 
     // Not found, return empty string
-    osg::notify(osg::WARN)<<"Warning: font file \""<<str<<"\" not found."<<std::endl;
+    OSG_WARN<<"Warning: font file \""<<str<<"\" not found."<<std::endl;
     return std::string();
 }
 
@@ -153,7 +153,7 @@ osgText::Font3D* readFont3DStream(std::istream& stream, const osgDB::ReaderWrite
     osgDB::ReaderWriter::ReadResult rr = reader->readObject(stream, userOptions ? userOptions : localOptions.get());
     if (rr.error())
     {
-        osg::notify(osg::WARN) << rr.message() << std::endl;
+        OSG_WARN << rr.message() << std::endl;
         return 0;
     }
     if (!rr.validObject()) return 0;
@@ -227,7 +227,7 @@ osg::ref_ptr<Font3D> readRefFont3DStream(std::istream& stream, const osgDB::Read
     osgDB::ReaderWriter::ReadResult rr = reader->readObject(stream, userOptions ? userOptions : localOptions.get());
     if (rr.error())
     {
-        osg::notify(osg::WARN) << rr.message() << std::endl;
+        OSG_WARN << rr.message() << std::endl;
         return 0;
     }
     if (!rr.validObject()) return 0;

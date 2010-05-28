@@ -228,7 +228,7 @@ unsigned int getNextCharacter(look_ahead_iterator& charString,String::Encoding e
         {
             // Should not reach this point unless the encoding is unhandled
             // ENCODING_UTF16, ENCODING_UTF32 and ENCODING_SIGNATURE should never enter this method
-            osg::notify(osg::FATAL)<<"Error: Invalid string encoding"<<std::endl;    
+            OSG_FATAL<<"Error: Invalid string encoding"<<std::endl;
             break;
         }
     }

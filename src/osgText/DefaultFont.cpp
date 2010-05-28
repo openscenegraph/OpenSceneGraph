@@ -44,7 +44,7 @@ DefaultFont* DefaultFont::instance()
 
 void DefaultFont::setSize(unsigned int, unsigned int)
 {
-    osg::notify(osg::INFO)<<"DefaultFont::setSize(,) call is ignored."<<std::endl;
+    OSG_INFO<<"DefaultFont::setSize(,) call is ignored."<<std::endl;
 }
 
 

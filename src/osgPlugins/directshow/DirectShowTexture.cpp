@@ -15,7 +15,7 @@
 */
 
 #include "DirectShowTexture"
-#include <osg/notify>
+#include <osg/Notify>
 #include <osgDB/WriteFile>
 #include <sstream>
 #include <windows.h>
@@ -759,7 +759,9 @@ static std::string getErrorMessage(HRESULT hr)
 static bool checkError(const std::string& prefix, HRESULT hr)
 {
     if (FAILED(hr))
-        osg::notify(osg::WARN) << prefix << " " << getErrorMessage(hr) << std::endl;
+    {
+        OSG_WARN << prefix << " " << getErrorMessage(hr) << std::endl;
+    }
 
     if (hr == E_ABORT)
         return false;
@@ -833,7 +835,9 @@ struct ListDeviceAvailable
     void displayDevicesFound(const std::string& prefixForMessage, osg::NotifySeverity serverity = osg::NOTICE) const
     {
         for (int i = 0; i < (int)_listDevice.size(); i++)
-            osg::notify(serverity) << prefixForMessage << " device \"" << _listDevice[i]._name << "\" clsid " << _listDevice[i]._clsid << std::endl;
+        {
+            OSG_NOTIFY(serverity) << prefixForMessage << " device \"" << _listDevice[i]._name << "\" clsid " << _listDevice[i]._clsid << std::endl;
+        }
     }
 
     DeviceEntry getDevice(const std::string& name)
@@ -916,7 +920,7 @@ struct ListDeviceAvailable
                 {
                     // Convert result to ANSI
                     WideCharToMultiByte(CP_ACP, 0, pwszClsid, -1, szCLSID, 60, NULL, NULL);
-                    //osg::notify(osg::NOTICE) << "device \"" << truename << "\" id " << szCLSID << std::endl;
+                    //OSG_NOTICE << "device \"" << truename << "\" id " << szCLSID << std::endl;
                     deviceGUID = std::string(szCLSID);
                 }
                 CoTaskMemFree(pwszClsid);
@@ -968,7 +972,7 @@ struct ListCapDeviceAvailable
         double fps = 1.0/ (video->AvgTimePerFrame * 100.0 * 1e-9);
         FOURCCMap fccMap(video->bmiHeader.biCompression);
         GUID g1 = (GUID)fccMap;
-        osg::notify(osg::NOTICE) << prefix << " cap " << video->bmiHeader.biWidth << " x " << video->bmiHeader.biHeight << " bit per pixel " << video->bmiHeader.biBitCount << " (" << getStringFromGUID(&g1) << ") at " << fps << " fps" << std::endl;
+        OSG_NOTICE << prefix << " cap " << video->bmiHeader.biWidth << " x " << video->bmiHeader.biHeight << " bit per pixel " << video->bmiHeader.biBitCount << " (" << getStringFromGUID(&g1) << ") at " << fps << " fps" << std::endl;
     }
 
     std::pair<AM_MEDIA_TYPE*, VIDEOINFOHEADER *> getCaps(int width, int height, double fps)
@@ -1080,7 +1084,7 @@ bool CTextureRenderer::setupOutputSoundDevice(ICreateDevEnum* devs)
     ListDeviceAvailable::DeviceEntry device = deviceFinder.getDevice(outputdevice);
     if (!device._device)
     {
-        osg::notify(osg::WARN) << prefixForMessage << " no output sound device \"" << outputdevice << "\" found" << std::endl;
+        OSG_WARN << prefixForMessage << " no output sound device \"" << outputdevice << "\" found" << std::endl;
         return false;
     }
 
@@ -1129,11 +1133,11 @@ bool CTextureRenderer::openVideoCaptureDevice(const std::string& capture, int wa
 
     if (!device._device) 
     {
-        osg::notify(osg::WARN) << _imageStream.get() << " no capture device \"" << capture << "\" found" << std::endl;
+        OSG_WARN << _imageStream.get() << " no capture device \"" << capture << "\" found" << std::endl;
         return false;
     }
     _videoCaptureDeviceName = device._name;
-    osg::notify(osg::NOTICE) << _imageStream.get() << " use capture device \"" << getVideoCaptureDeviceName() << "\"" << std::endl;
+    OSG_NOTICE << _imageStream.get() << " use capture device \"" << getVideoCaptureDeviceName() << "\"" << std::endl;
 
     {
     std::stringstream ss;
@@ -1219,11 +1223,11 @@ bool CTextureRenderer::openSoundCaptureDevice(const std::string& capture, int nb
 
     if (!device._device) 
     {
-        osg::notify(osg::WARN) << _imageStream.get() << " no sound capture device \"" << capture << "\" found" << std::endl;
+        OSG_WARN << _imageStream.get() << " no sound capture device \"" << capture << "\" found" << std::endl;
         return false;
     }
     _soundCaptureDeviceName = device._name;
-    osg::notify(osg::NOTICE) << _imageStream.get() << " use sound capture device \"" << getSoundCaptureDeviceName() << "\"" << std::endl;
+    OSG_NOTICE << _imageStream.get() << " use sound capture device \"" << getSoundCaptureDeviceName() << "\"" << std::endl;
 
     {
     std::stringstream ss;
@@ -1284,17 +1288,20 @@ bool CTextureRenderer::openSoundCaptureDevice(const std::string& capture, int nb
                     if (pwfex->nChannels == nbChannels)
                     {
                         pISC->SetFormat(pmt);
-                        osg::notify(osg::NOTICE) << prefixForMessage << " use format " << buffer << std::endl;
+                        OSG_NOTICE << prefixForMessage << " use format " << buffer << std::endl;
                         break;
-                    } else
-                        osg::notify(osg::NOTICE) << prefixForMessage << buffer << std::endl;
+                    }
+                    else
+                    {
+                        OSG_NOTICE << prefixForMessage << buffer << std::endl;
+                    }
 
                 }
             }
         }
         else
         {
-            osg::notify(osg::WARN) << prefixForMessage << " can t retrieve informations pins" << std::endl;
+            OSG_WARN << prefixForMessage << " can t retrieve informations pins" << std::endl;
         }
     }    
     if (pISC) pISC->Release(); pISC = 0;
@@ -1364,15 +1371,20 @@ bool CTextureRenderer::openCaptureDevices(const DirectShowImageStream::Options& 
     syncStreams(false);
 
     for (DirectShowImageStream::Options::iterator it = options.begin(); it != options.end(); it++)
-        osg::notify(osg::NOTICE) << prefixForMessage << " option " << it->first << " = " << it->second << std::endl;
+    {
+        OSG_NOTICE << prefixForMessage << " option " << it->first << " = " << it->second << std::endl;
+    }
 
     std::string soundCaptureDevice = options["captureSoundDevice"];
     std::string videoCaptureDevice = options["captureVideoDevice"];
 
-    osg::notify(osg::NOTICE) << prefixForMessage << " try to open video capture device " << videoCaptureDevice;
+    OSG_NOTICE << prefixForMessage << " try to open video capture device " << videoCaptureDevice;
     if (!soundCaptureDevice .empty())
-        osg::notify(osg::NOTICE) << " and sound capture device " << soundCaptureDevice ;
-    osg::notify(osg::NOTICE) << std::endl;
+    {
+        OSG_NOTICE << " and sound capture device " << soundCaptureDevice ;
+    }
+
+    OSG_NOTICE << std::endl;
 
     if (!initBuildGraph())
         return false;
@@ -1384,8 +1396,9 @@ bool CTextureRenderer::openCaptureDevices(const DirectShowImageStream::Options& 
         return false;
 
     if (!soundCaptureDevice.empty() && !openSoundCaptureDevice(soundCaptureDevice ))
-        osg::notify(osg::WARN) << prefixForMessage << " failed to setup sound capture device " << soundCaptureDevice  << std::endl;
-
+    {
+        OSG_WARN << prefixForMessage << " failed to setup sound capture device " << soundCaptureDevice  << std::endl;
+    }
     return true;
 }
 
@@ -1473,8 +1486,9 @@ bool CTextureRenderer::openFile(const std::string& file)
     IBaseFilter* AVISpliterFilter = 0;
     hr = _graphBuilder->FindFilterByName(L"AVI Splitter", &AVISpliterFilter);
     if (FAILED(hr))
-        osg::notify(osg::WARN) << prefixForMessage << " did not find AVI SPlitter to connect sound, " << getErrorMessage(hr) << std::endl;
-
+    {
+        OSG_WARN << prefixForMessage << " did not find AVI SPlitter to connect sound, " << getErrorMessage(hr) << std::endl;
+    }
     if (AVISpliterFilter)
     {
         IPin* soundStreamPinOut = 0;
@@ -1482,7 +1496,9 @@ bool CTextureRenderer::openFile(const std::string& file)
         AVISpliterFilter->Release(); AVISpliterFilter = 0;
 
         if (FAILED(hr))
-            osg::notify(osg::WARN) << prefixForMessage << " can't find Stream 01 pin on AVIS Splitter, maybe the flux does have sound, " << getErrorMessage(hr) << std::endl;
+        {
+            OSG_WARN << prefixForMessage << " can't find Stream 01 pin on AVIS Splitter, maybe the flux does have sound, " << getErrorMessage(hr) << std::endl;
+        }
 
         if (soundStreamPinOut)
         {
@@ -1598,17 +1614,18 @@ HRESULT CTextureRenderer::CheckMediaType(const CMediaType *pmt)
     pvi = (VIDEOINFO *)pmt->Format();
 
     if (!IsEqualGUID( *pmt->Type(),    MEDIATYPE_Video))
-        osg::notify(osg::WARN) << _imageStream.get() << " media type not a video format" << std::endl;
-
+    {
+        OSG_WARN << _imageStream.get() << " media type not a video format" << std::endl;
+    }
 
     if( IsEqualGUID( *pmt->Subtype(), MEDIASUBTYPE_RGB24))
     {
-        osg::notify(osg::NOTICE) << _imageStream.get() << " Texture Renderer use media " << getStringFromGUID(pmt->Subtype()) << std::endl;
+        OSG_NOTICE << _imageStream.get() << " Texture Renderer use media " << getStringFromGUID(pmt->Subtype()) << std::endl;
         hr = S_OK;
     }
     else
     {
-        osg::notify(osg::INFO) << _imageStream.get() << " Texture Renderer check media " << getStringFromGUID(pmt->Subtype()) << std::endl;
+        OSG_INFO << _imageStream.get() << " Texture Renderer check media " << getStringFromGUID(pmt->Subtype()) << std::endl;
     }
 
     return hr;
@@ -1664,7 +1681,7 @@ bool CTextureRenderer::StopFilters()
         hr = _mediaControl->Stop();
         if (FAILED(hr))
         {
-            osg::notify(osg::WARN) << _imageStream.get() << " " << getErrorMessage(hr) << std::endl;
+            OSG_WARN << _imageStream.get() << " " << getErrorMessage(hr) << std::endl;
             return false;
         }
     }
@@ -1680,7 +1697,7 @@ DirectShowImageStream::DirectShowImageStream()
     HRESULT hr = CoInitialize (NULL);
     if (FAILED(hr))
     {
-        osg::notify(osg::WARN) << this << " error in constructor " << getErrorMessage(hr) << std::endl;
+        OSG_WARN << this << " error in constructor " << getErrorMessage(hr) << std::endl;
     }
 
 }
@@ -1741,7 +1758,7 @@ void DirectShowImageStream::play()
         // Start the graph running;
         if (FAILED(hr))
         {
-            osg::notify(osg::WARN) << this << " can't run the graph " <<  getErrorMessage(hr) <<  std::endl;
+            OSG_WARN << this << " can't run the graph " <<  getErrorMessage(hr) <<  std::endl;
         }
         else
         {
@@ -1762,7 +1779,7 @@ void DirectShowImageStream::pause()
         hr = _renderer->_mediaControl->Pause();
         if (FAILED(hr))
         {
-            osg::notify(osg::NOTICE) << this << " " << getErrorMessage(hr) << std::endl;
+            OSG_NOTICE << this << " " << getErrorMessage(hr) << std::endl;
         }
         else
         {
@@ -1792,7 +1809,7 @@ void DirectShowImageStream::seek(double time)
         HRESULT hr = _renderer->_mediaSeeking->SetPositions(&start2,AM_SEEKING_AbsolutePositioning, NULL, AM_SEEKING_NoPositioning);
         if (FAILED(hr))
         {
-            osg::notify(osg::NOTICE) << this << " " << getErrorMessage(hr) << std::endl;
+            OSG_NOTICE << this << " " << getErrorMessage(hr) << std::endl;
         }
     }
 
@@ -1852,8 +1869,11 @@ void DirectShowImageStream::stop()
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
     if (!_renderer.valid())
         return;
+
     if (!_renderer->StopFilters())
-        osg::notify(osg::WARN) << this << " cant stop filters" << std::endl;
+    {
+        OSG_WARN << this << " cant stop filters" << std::endl;
+    }
 
     _renderer->releaseRessources();
     // Enumerate the filters in the graph.

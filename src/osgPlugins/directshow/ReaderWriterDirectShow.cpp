@@ -55,7 +55,7 @@ public:
     
     ReadResult readImageStream(const std::string& filename, const osgDB::ReaderWriter::Options * options) const
     {
-        osg::notify(osg::INFO) << "ReaderWriterDirectShow::readImage " << filename << std::endl;
+        OSG_INFO << "ReaderWriterDirectShow::readImage " << filename << std::endl;
         const std::string path = osgDB::containsServerAddress(filename) ?
             filename :
             osgDB::findDataFile(filename, options);

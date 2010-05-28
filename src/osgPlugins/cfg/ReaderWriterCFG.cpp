@@ -69,7 +69,7 @@ static osg::GraphicsContext::Traits* buildTrait(RenderSurface& rs)
         }
     }
 
-    osg::notify(osg::INFO)<<"Set up Traits ( rs.getScreenNum() = "<<rs.getScreenNum()<<" )"<<std::endl;
+    OSG_INFO<<"Set up Traits ( rs.getScreenNum() = "<<rs.getScreenNum()<<" )"<<std::endl;
 
     
     traits->hostName = rs.getHostName();
@@ -136,7 +136,7 @@ static osgViewer::View* load(const std::string& file, const osgDB::ReaderWriter:
 
         if (gc.valid())
         {
-            osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<std::endl;
+            OSG_INFO<<"  GraphicsWindow has been created successfully."<<std::endl;
 
             osg::ref_ptr<osg::Camera> camera = new osg::Camera;
             camera->setGraphicsContext(gc.get());
@@ -172,7 +172,7 @@ static osgViewer::View* load(const std::string& file, const osgDB::ReaderWriter:
         }
         else
         {
-            osg::notify(osg::INFO)<<"  GraphicsWindow has not been created successfully."<<std::endl;
+            OSG_INFO<<"  GraphicsWindow has not been created successfully."<<std::endl;
             return 0;
         }
         

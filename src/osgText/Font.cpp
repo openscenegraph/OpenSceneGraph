@@ -83,7 +83,7 @@ std::string osgText::findFontFile(const std::string& str)
     }
 
     // Not found, return empty string
-    osg::notify(osg::INFO)<<"Warning: font file \""<<str<<"\" not found."<<std::endl;    
+    OSG_INFO<<"Warning: font file \""<<str<<"\" not found."<<std::endl;    
     return std::string();
 }
 
@@ -132,7 +132,7 @@ osgText::Font* osgText::readFontStream(std::istream& stream, const osgDB::Reader
     osgDB::ReaderWriter::ReadResult rr = reader->readObject(stream, userOptions ? userOptions : localOptions.get());
     if (rr.error())
     {
-        osg::notify(osg::WARN) << rr.message() << std::endl;
+        OSG_WARN << rr.message() << std::endl;
         return 0;
     }
     if (!rr.validObject()) return 0;
@@ -191,7 +191,7 @@ osg::ref_ptr<Font> osgText::readRefFontStream(std::istream& stream, const osgDB:
     osgDB::ReaderWriter::ReadResult rr = reader->readObject(stream, userOptions ? userOptions : localOptions.get());
     if (rr.error())
     {
-        osg::notify(osg::WARN) << rr.message() << std::endl;
+        OSG_WARN << rr.message() << std::endl;
         return 0;
     }
     if (!rr.validObject()) return 0;
@@ -428,7 +428,7 @@ void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph*
         static int numberOfTexturesAllocated = 0;
         ++numberOfTexturesAllocated;
 
-        osg::notify(osg::INFO)<< "   Font " << this<< ", numberOfTexturesAllocated "<<numberOfTexturesAllocated<<std::endl;
+        OSG_INFO<< "   Font " << this<< ", numberOfTexturesAllocated "<<numberOfTexturesAllocated<<std::endl;
 
         // reserve enough space for the glyphs.
         glyphTexture->setGlyphImageMargin(_margin);
@@ -442,7 +442,7 @@ void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph*
         
         if (!glyphTexture->getSpaceForGlyph(glyph,posX,posY))
         {
-            osg::notify(osg::WARN)<<"Warning: unable to allocate texture big enough for glyph"<<std::endl;
+            OSG_WARN<<"Warning: unable to allocate texture big enough for glyph"<<std::endl;
             return;
         }
 
@@ -587,9 +587,9 @@ void Font::GlyphTexture::apply(osg::State& state) const
         glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxTextureSize);
         if (maxTextureSize < getTextureWidth() || maxTextureSize < getTextureHeight())
         {
-            osg::notify(osg::WARN)<<"Warning: osgText::Font texture size of ("<<getTextureWidth()<<", "<<getTextureHeight()<<") too large, unable to create font texture."<<std::endl;
-            osg::notify(osg::WARN)<<"         Maximum supported by hardward by native OpenGL implementation is ("<<maxTextureSize<<","<<maxTextureSize<<")."<<std::endl;
-            osg::notify(osg::WARN)<<"         Please set OSG_MAX_TEXTURE_SIZE lenvironment variable to "<<maxTextureSize<<" and re-run application."<<std::endl;
+            OSG_WARN<<"Warning: osgText::Font texture size of ("<<getTextureWidth()<<", "<<getTextureHeight()<<") too large, unable to create font texture."<<std::endl;
+            OSG_WARN<<"         Maximum supported by hardward by native OpenGL implementation is ("<<maxTextureSize<<","<<maxTextureSize<<")."<<std::endl;
+            OSG_WARN<<"         Please set OSG_MAX_TEXTURE_SIZE lenvironment variable to "<<maxTextureSize<<" and re-run application."<<std::endl;
             return;
         }
         
@@ -630,8 +630,8 @@ void Font::GlyphTexture::apply(osg::State& state) const
         }
         
 
-//        osg::notify(osg::NOTICE)<<"Texture width = "<<getTextureWidth()<<std::endl;
-//        osg::notify(osg::NOTICE)<<"Texture height = "<<getTextureHeight()<<std::endl;
+//        OSG_NOTICE<<"Texture width = "<<getTextureWidth()<<std::endl;
+//        OSG_NOTICE<<"Texture height = "<<getTextureHeight()<<std::endl;
                
         // allocate the texture memory.
         glTexImage2D( GL_TEXTURE_2D, 0, GL_ALPHA,
@@ -663,7 +663,7 @@ void Font::GlyphTexture::apply(osg::State& state) const
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
         s_renderer = glGetString(GL_RENDERER);
-        osg::notify(osg::INFO)<<"glGetString(GL_RENDERER)=="<<s_renderer<<std::endl;
+        OSG_INFO<<"glGetString(GL_RENDERER)=="<<s_renderer<<std::endl;
         if (s_renderer && strstr((const char*)s_renderer,"IMPACT")!=0)
         {
             // we're running on an Octane, so need to work around its
@@ -732,7 +732,7 @@ void Font::GlyphTexture::apply(osg::State& state) const
         }
         else
         {
-            osg::notify(osg::INFO)<<"osgText::Font loading all glyphs as a single subload."<<std::endl;
+            OSG_INFO<<"osgText::Font loading all glyphs as a single subload."<<std::endl;
 
             // Octane has bugs in OGL driver which mean that subloads smaller
             // than 32x32 produce errors, and also cannot handle general alignment,
@@ -784,7 +784,7 @@ void Font::GlyphTexture::apply(osg::State& state) const
     }
     else
     {
-//        osg::notify(osg::INFO) << "no need to subload "<<std::endl;
+//        OSG_INFO << "no need to subload "<<std::endl;
     }
 
 
@@ -863,16 +863,16 @@ void Font::Glyph::subload() const
     {
 #ifdef OSG_GLU_AVAILABLE
         const GLubyte* msg = gluErrorString(errorNo);
-        if (msg) osg::notify(osg::WARN)<<"before Font::Glyph::subload(): detected OpenGL error: "<<msg<<std::endl;
-        else  osg::notify(osg::WARN)<<"before Font::Glyph::subload(): detected OpenGL error number: "<<errorNo<<std::endl;
+        if (msg) { OSG_WARN<<"before Font::Glyph::subload(): detected OpenGL error: "<<msg<<std::endl; }
+        else  { OSG_WARN<<"before Font::Glyph::subload(): detected OpenGL error number: "<<errorNo<<std::endl; }
 #else
-        osg::notify(osg::WARN)<<"before Font::Glyph::subload(): detected OpenGL error number: "<<errorNo<<std::endl;
+        OSG_WARN<<"before Font::Glyph::subload(): detected OpenGL error number: "<<errorNo<<std::endl;
 #endif
     }
 
     if(s() <= 0 || t() <= 0)
     {
-        osg::notify(osg::INFO)<<"Font::Glyph::subload(): texture sub-image width and/or height of 0, ignoring operation."<<std::endl;      
+        OSG_INFO<<"Font::Glyph::subload(): texture sub-image width and/or height of 0, ignoring operation."<<std::endl;      
         return;
     }
 
@@ -892,13 +892,13 @@ void Font::Glyph::subload() const
 
 #ifdef OSG_GLU_AVAILABLE
         const GLubyte* msg = gluErrorString(errorNo);
-        if (msg) osg::notify(osg::WARN)<<"after Font::Glyph::subload() : detected OpenGL error: "<<msg<<std::endl;
-        else osg::notify(osg::WARN)<<"after Font::Glyph::subload() : detected OpenGL error number: "<<errorNo<<std::endl;
+        if (msg) { OSG_WARN<<"after Font::Glyph::subload() : detected OpenGL error: "<<msg<<std::endl; }
+        else { OSG_WARN<<"after Font::Glyph::subload() : detected OpenGL error number: "<<errorNo<<std::endl; }
 #else
-        osg::notify(osg::WARN)<<"after Font::Glyph::subload() : detected OpenGL error number: "<<errorNo<<std::endl;
+        OSG_WARN<<"after Font::Glyph::subload() : detected OpenGL error number: "<<errorNo<<std::endl;
 #endif
 
-        osg::notify(osg::WARN)<< "\tglTexSubImage2D(0x"<<hex<<GL_TEXTURE_2D<<dec<<" ,"<<0<<"\t"<<std::endl<<
+        OSG_WARN<< "\tglTexSubImage2D(0x"<<hex<<GL_TEXTURE_2D<<dec<<" ,"<<0<<"\t"<<std::endl<<
                                  "\t                "<<_texturePosX<<" ,"<<_texturePosY<<std::endl<<
                                  "\t                "<<s()<<" ,"<<t()<<std::endl<<hex<<
                                  "\t                0x"<<(GLenum)getPixelFormat()<<std::endl<<

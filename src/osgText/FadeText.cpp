@@ -38,7 +38,7 @@ struct FadeTextData : public osg::Referenced
         if (nearestZ < _vertices[2].z()) nearestZ = _vertices[2].z();
         if (nearestZ < _vertices[3].z()) nearestZ = _vertices[3].z();
 
-        // osg::notify(osg::NOTICE)<<"getNearestZ()="<<_fadeText->getText().createUTF8EncodedString()<<" "<<nearestZ<<std::endl;
+        // OSG_NOTICE<<"getNearestZ()="<<_fadeText->getText().createUTF8EncodedString()<<" "<<nearestZ<<std::endl;
 
         return nearestZ;
     }
@@ -86,24 +86,24 @@ struct FadeTextPolytopeData : public FadeTextData, public osg::Polytope
         add(osg::Plane( osg::Vec3d(0.0f,0.0f,0.0f), _vertices[3], _vertices[0]));
         
 #if 0
-        osg::notify(osg::NOTICE)<<" normalFrontFace = "<<normalFrontFace<<std::endl;
-        osg::notify(osg::NOTICE)<<" edge01 = "<<edge01<<std::endl;
-        osg::notify(osg::NOTICE)<<" edge12 = "<<edge12<<std::endl;
-        osg::notify(osg::NOTICE)<<" edge23 = "<<edge23<<std::endl;
-        osg::notify(osg::NOTICE)<<" _vertices[0]= "<<_vertices[0]<<std::endl;
-        osg::notify(osg::NOTICE)<<" _vertices[1]= "<<_vertices[1]<<std::endl;
-        osg::notify(osg::NOTICE)<<" _vertices[2]= "<<_vertices[2]<<std::endl;
-        osg::notify(osg::NOTICE)<<" _vertices[3]= "<<_vertices[3]<<std::endl;
+        OSG_NOTICE<<" normalFrontFace = "<<normalFrontFace<<std::endl;
+        OSG_NOTICE<<" edge01 = "<<edge01<<std::endl;
+        OSG_NOTICE<<" edge12 = "<<edge12<<std::endl;
+        OSG_NOTICE<<" edge23 = "<<edge23<<std::endl;
+        OSG_NOTICE<<" _vertices[0]= "<<_vertices[0]<<std::endl;
+        OSG_NOTICE<<" _vertices[1]= "<<_vertices[1]<<std::endl;
+        OSG_NOTICE<<" _vertices[2]= "<<_vertices[2]<<std::endl;
+        OSG_NOTICE<<" _vertices[3]= "<<_vertices[3]<<std::endl;
 #endif
 
         if (needToFlip) flip();
 
 #if 0        
-        osg::notify(osg::NOTICE)<<"   plane 0 "<< _planeList[0]<<std::endl;
-        osg::notify(osg::NOTICE)<<"   plane 1 "<< _planeList[1]<<std::endl;
-        osg::notify(osg::NOTICE)<<"   plane 2 "<< _planeList[2]<<std::endl;
-        osg::notify(osg::NOTICE)<<"   plane 3 "<< _planeList[3]<<std::endl;
-        osg::notify(osg::NOTICE)<<"   plane 4 "<< _planeList[4]<<std::endl;
+        OSG_NOTICE<<"   plane 0 "<< _planeList[0]<<std::endl;
+        OSG_NOTICE<<"   plane 1 "<< _planeList[1]<<std::endl;
+        OSG_NOTICE<<"   plane 2 "<< _planeList[2]<<std::endl;
+        OSG_NOTICE<<"   plane 3 "<< _planeList[3]<<std::endl;
+        OSG_NOTICE<<"   plane 4 "<< _planeList[4]<<std::endl;
 #endif
         
     }
@@ -156,7 +156,7 @@ struct GlobalFadeText : public osg::Referenced
 
         if (!userData)
         {
-            osg::notify(osg::NOTICE)<<"Memory error, unable to create FadeTextUserData."<<std::endl;
+            OSG_NOTICE<<"Memory error, unable to create FadeTextUserData."<<std::endl;
             return 0;
         }
 
@@ -223,13 +223,13 @@ struct GlobalFadeText : public osg::Referenced
                 FadeTextPolytopeData& outer_ftpm = *(outer_itr->second);
                 outer_ftpm.buildPolytope();
 
-                // osg::notify(osg::NOTICE)<<"Outer z "<<outer_ftpm.getNearestZ()<<std::endl;
+                // OSG_NOTICE<<"Outer z "<<outer_ftpm.getNearestZ()<<std::endl;
 
                 while(inner_itr != fadeTextPolytopeMap.end())
                 {
                     FadeTextPolytopeData& inner_ftpm = *(inner_itr->second);
                     
-                    // osg::notify(osg::NOTICE)<<"Inner z "<<inner_ftpm.getNearestZ()<<std::endl;
+                    // OSG_NOTICE<<"Inner z "<<inner_ftpm.getNearestZ()<<std::endl;
 
                     if (outer_ftpm.contains(inner_ftpm.getReferenceVertexList()))
                     {
@@ -373,7 +373,7 @@ void FadeText::drawImplementation(osg::RenderInfo& renderInfo) const
     {
         if (renderInfo.getUserData())
         {
-            osg::notify(osg::NOTICE)<<"Warning user data not of supported type."<<std::endl;
+            OSG_NOTICE<<"Warning user data not of supported type."<<std::endl;
             return;
         }
 
@@ -381,7 +381,7 @@ void FadeText::drawImplementation(osg::RenderInfo& renderInfo) const
 
         if (!userData)
         {
-            osg::notify(osg::NOTICE)<<"Memory error, unable to create FadeTextUserData."<<std::endl;
+            OSG_NOTICE<<"Memory error, unable to create FadeTextUserData."<<std::endl;
             return;
         }
 

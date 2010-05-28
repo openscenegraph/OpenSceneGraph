@@ -1356,7 +1356,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
                     glPopAttrib();
             }
         #else
-            osg::notify(osg::NOTICE)<<"Warning: Text::drawImplementation() fillMode FILLEDBOUNDINGBOX not supported"<<std::endl;
+            OSG_NOTICE<<"Warning: Text::drawImplementation() fillMode FILLEDBOUNDINGBOX not supported"<<std::endl;
         #endif
         }
     }    
@@ -1670,7 +1670,7 @@ void Text::renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMult
 
     glPopAttrib();
 #else
-    osg::notify(osg::NOTICE)<<"Warning: Text::renderWithPolygonOffset(..) not implemented."<<std::endl;
+    OSG_NOTICE<<"Warning: Text::renderWithPolygonOffset(..) not implemented."<<std::endl;
 #endif
 }
     
@@ -1724,7 +1724,7 @@ void Text::renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMult
 
     glPopAttrib();
 #else
-    osg::notify(osg::NOTICE)<<"Warning: Text::renderWithNoDepthBuffer(..) not implemented."<<std::endl;
+    OSG_NOTICE<<"Warning: Text::renderWithNoDepthBuffer(..) not implemented."<<std::endl;
 #endif
 }
 
@@ -1785,7 +1785,7 @@ void Text::renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultipl
 
     glPopAttrib();
 #else
-    osg::notify(osg::NOTICE)<<"Warning: Text::renderWithDepthRange(..) not implemented."<<std::endl;
+    OSG_NOTICE<<"Warning: Text::renderWithDepthRange(..) not implemented."<<std::endl;
 #endif
 }
 
@@ -1946,6 +1946,6 @@ void Text::renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMult
 
     glPopAttrib();
 #else
-    osg::notify(osg::NOTICE)<<"Warning: Text::renderWithStencilBuffer(..) not implemented."<<std::endl;
+    OSG_NOTICE<<"Warning: Text::renderWithStencilBuffer(..) not implemented."<<std::endl;
 #endif
 }

@@ -185,7 +185,7 @@ FltExportVisitor::writeFace( const osg::Geode& geode, const osg::Geometry& geom,
     case GL_POINTS:
     {
         std::string warning( "fltexp: GL_POINTS not supported in FLT export." );
-        osg::notify( osg::WARN ) << warning << std::endl;
+        OSG_WARN << warning << std::endl;
         _fltOpt->getWriteResult().warn( warning );
         return;
         break;
@@ -195,7 +195,7 @@ FltExportVisitor::writeFace( const osg::Geode& geode, const osg::Geometry& geom,
     case GL_QUAD_STRIP:
     {
         std::string warning( "fltexp: Wrong mode in Face record." );
-        osg::notify( osg::WARN ) << warning << std::endl;
+        OSG_WARN << warning << std::endl;
         _fltOpt->getWriteResult().warn( warning );
         return;
         break;
@@ -248,7 +248,7 @@ FltExportVisitor::writeFace( const osg::Geode& geode, const osg::Geometry& geom,
         else
         {
             std::string warning( "fltexp: Face is textured, but Texture2D StateAttribute is NULL." );
-            osg::notify( osg::WARN ) << warning << std::endl;
+            OSG_WARN << warning << std::endl;
             _fltOpt->getWriteResult().warn( warning );
         }
     }
@@ -423,7 +423,7 @@ FltExportVisitor::writeMesh( const osg::Geode& geode, const osg::Geometry& geom 
         else
         {
             std::string warning( "fltexp: Mesh is textured, but Texture2D StateAttribute is NULL." );
-            osg::notify( osg::WARN ) << warning << std::endl;
+            OSG_WARN << warning << std::endl;
             _fltOpt->getWriteResult().warn( warning );
         }
     }
@@ -579,7 +579,7 @@ FltExportVisitor::writeLocalVertexPool( const osg::Geometry& geom )
     if (!v3)
     {
         std::string warning( "fltexp: writeLocalVertexPool: VertexArray is not Vec3Array." );
-        osg::notify( osg::WARN ) << warning << std::endl;
+        OSG_WARN << warning << std::endl;
         _fltOpt->getWriteResult().warn( warning );
         return;
     }
@@ -755,7 +755,7 @@ FltExportVisitor::writeMultitexture( const osg::Geometry& geom )
             {
                 std::ostringstream warning;
                 warning << "fltexp: No Texture2D for unit " << idx;
-                osg::notify( osg::WARN ) << warning.str() << std::endl;
+                OSG_WARN << warning.str() << std::endl;
                 _fltOpt->getWriteResult().warn( warning.str() );
             }
 
@@ -804,7 +804,7 @@ FltExportVisitor::writeUVList( int numVerts, const osg::Geometry& geom )
             {
                 std::ostringstream warning;
                 warning << "fltexp: No Texture2D for unit " << idx;
-                osg::notify( osg::WARN ) << warning.str() << std::endl;
+                OSG_WARN << warning.str() << std::endl;
                 _fltOpt->getWriteResult().warn( warning.str() );
                 t2 = new osg::Vec2Array;
             }
@@ -812,7 +812,7 @@ FltExportVisitor::writeUVList( int numVerts, const osg::Geometry& geom )
             {
                 std::ostringstream warning;
                 warning << "fltexp: Invalid number of texture coordinates for unit " << idx;
-                osg::notify( osg::WARN ) << warning.str() << std::endl;
+                OSG_WARN << warning.str() << std::endl;
                 _fltOpt->getWriteResult().warn( warning.str() );
             }
 

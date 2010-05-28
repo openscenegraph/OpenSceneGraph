@@ -195,7 +195,7 @@ ReaderWriterATTR::writeObject(const osg::Object& object, const std::string& file
     const AttrData* attr = dynamic_cast< const AttrData* >( &object );
     if (attr == NULL)
     {
-        osg::notify( osg::FATAL ) << "AttrWriter: Invalid Object." << std::endl;
+        OSG_FATAL << "AttrWriter: Invalid Object." << std::endl;
         return WriteResult::FILE_NOT_HANDLED;
     }
 

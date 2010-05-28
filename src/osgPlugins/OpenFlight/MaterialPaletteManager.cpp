@@ -103,7 +103,7 @@ MaterialPaletteManager::write( DataOutputStream& dos ) const
 
         {
             std::string warning( "fltexp: No support for different front and back material properties." );
-            osg::notify( osg::WARN ) << warning << std::endl;
+            OSG_WARN << warning << std::endl;
            _fltOpt.getWriteResult().warn( warning );
         }
 

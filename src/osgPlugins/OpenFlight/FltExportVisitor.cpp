@@ -117,12 +117,12 @@ FltExportVisitor::~FltExportVisitor()
     // Delete our temp file.
     if (_recordsStr.is_open())
     {
-        osg::notify( osg::WARN ) << "fltexp: FltExportVisitor destructor has an open temp file." << std::endl;
+        OSG_WARN << "fltexp: FltExportVisitor destructor has an open temp file." << std::endl;
         // This should not happen. FltExportVisitor::complete should close
         // this file before we get to this destructor.
         return;
     }
-    osg::notify( osg::INFO ) << "fltexp: Deleting temp file " << _recordsTempName << std::endl;
+    OSG_INFO << "fltexp: Deleting temp file " << _recordsTempName << std::endl;
     FLTEXP_DELETEFILE( _recordsTempName.c_str() );
 }
 
@@ -356,7 +356,7 @@ FltExportVisitor::apply( osg::Geode& node )
         if (!geom)
         {
             std::string warning( "fltexp: Non-Geometry Drawable encountered. Ignoring." );
-            osg::notify( osg::WARN ) << warning << std::endl;
+            OSG_WARN << warning << std::endl;
             _fltOpt->getWriteResult().warn( warning );
             continue;
         }
@@ -391,7 +391,7 @@ FltExportVisitor::apply( osg::Geode& node )
                 else
                 {
                     std::string warning( "fltexp: Unknown PrimitiveSet type." );
-                    osg::notify( osg::WARN ) << warning << std::endl;
+                    OSG_WARN << warning << std::endl;
                     _fltOpt->getWriteResult().warn( warning );
                     return;
                 }
@@ -429,7 +429,7 @@ FltExportVisitor::apply( osg::Geode& node )
                 else
                 {
                     std::string warning( "fltexp: Unknown PrimitiveSet type." );
-                    osg::notify( osg::WARN ) << warning << std::endl;
+                    OSG_WARN << warning << std::endl;
                     _fltOpt->getWriteResult().warn( warning );
                     return;
                 }
@@ -461,7 +461,7 @@ FltExportVisitor::apply( osg::Node& node )
         //   would export a Group record then continue traversal. Because we are
         //   a Node, there's no way to continue traversal, so just return.)
         std::string warning( "fltexp: Unknown Node in OpenFlight export." );
-        osg::notify( osg::WARN ) << warning << std::endl;
+        OSG_WARN << warning << std::endl;
         _fltOpt->getWriteResult().warn( warning );
         return;
     }

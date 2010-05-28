@@ -46,7 +46,7 @@ FltExportVisitor::writeComment( const osg::Node& node, DataOutputStream* dos )
             // short overrun
             std::string warning( "fltexp: writeComment: Descriptions too long, resorts in short overrun. Skipping." );
             _fltOpt->getWriteResult().warn( warning );
-            osg::notify( osg::WARN ) << warning << std::endl;
+            OSG_WARN << warning << std::endl;
             continue;
         }
         uint16 length( (uint16)iLen );
@@ -100,7 +100,7 @@ FltExportVisitor::writeMatrix( const osg::Referenced* ref )
 void
 FltExportVisitor::writeContinuationRecord( const unsigned short length )
 {
-    osg::notify( osg::DEBUG_INFO ) << "fltexp: Continuation record length: " << length+4 << std::endl;
+    OSG_DEBUG << "fltexp: Continuation record length: " << length+4 << std::endl;
     _records->writeInt16( (int16) CONTINUATION_OP );
     _records->writeUInt16( length+4 );
 }

@@ -47,7 +47,7 @@ bool RecordInputStream::readRecordBody(opcode_type opcode, size_type size, Docum
     const uint16 LITTLE_ENDIAN_POP_LEVEL_OP = 0x0B00;
     if (opcode==LITTLE_ENDIAN_POP_LEVEL_OP)
     {
-        osg::notify(osg::INFO) << "Little endian pop-level record" << std::endl;
+        OSG_INFO << "Little endian pop-level record" << std::endl;
         opcode=POP_LEVEL_OP;
         size=4;
     }
@@ -76,7 +76,7 @@ bool RecordInputStream::readRecordBody(opcode_type opcode, size_type size, Docum
     }
     else // prototype not found
     {
-        osg::notify(osg::WARN) << "Unknown record, opcode=" << opcode << " size=" << size << std::endl;
+        OSG_WARN << "Unknown record, opcode=" << opcode << " size=" << size << std::endl;
 
         // Add to registry so we only have to see this error message once.
         Registry::instance()->addPrototype(opcode,new DummyRecord);

@@ -310,7 +310,7 @@ class FLTReaderWriter : public ReaderWriter
 
                 if ( !keepExternalReferences )
                 {
-                    osg::notify(osg::DEBUG_INFO) << "keepExternalReferences not found, so externals will be re-readed"<<std::endl;
+                    OSG_DEBUG << "keepExternalReferences not found, so externals will be re-readed"<<std::endl;
                     // read externals.
                     if (rr.getNode())
                     {
@@ -322,7 +322,7 @@ class FLTReaderWriter : public ReaderWriter
                 }
                 else
                 {
-                    osg::notify(osg::DEBUG_INFO) << "keepExternalReferences found, so externals will be left as ProxyNodes"<<std::endl;    
+                    OSG_DEBUG << "keepExternalReferences found, so externals will be left as ProxyNodes"<<std::endl;    
                 }
             }
 
@@ -349,31 +349,31 @@ class FLTReaderWriter : public ReaderWriter
                 const char readerMsg[] = "flt reader option: ";
                 
                 document.setReplaceClampWithClampToEdge((options->getOptionString().find("clampToEdge")!=std::string::npos));
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "clampToEdge=" << document.getReplaceClampWithClampToEdge() << std::endl;
+                OSG_DEBUG << readerMsg << "clampToEdge=" << document.getReplaceClampWithClampToEdge() << std::endl;
 
                 document.setKeepExternalReferences((options->getOptionString().find("keepExternalReferences")!=std::string::npos));
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "keepExternalReferences=" << document.getKeepExternalReferences() << std::endl;
+                OSG_DEBUG << readerMsg << "keepExternalReferences=" << document.getKeepExternalReferences() << std::endl;
 
                 document.setPreserveFace((options->getOptionString().find("preserveFace")!=std::string::npos));
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "preserveFace=" << document.getPreserveFace() << std::endl;
+                OSG_DEBUG << readerMsg << "preserveFace=" << document.getPreserveFace() << std::endl;
 
                 document.setPreserveObject((options->getOptionString().find("preserveObject")!=std::string::npos));
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "preserveObject=" << document.getPreserveObject() << std::endl;
+                OSG_DEBUG << readerMsg << "preserveObject=" << document.getPreserveObject() << std::endl;
 
                 document.setDefaultDOFAnimationState((options->getOptionString().find("dofAnimation")!=std::string::npos));
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "dofAnimation=" << document.getDefaultDOFAnimationState() << std::endl;
+                OSG_DEBUG << readerMsg << "dofAnimation=" << document.getDefaultDOFAnimationState() << std::endl;
 
                 document.setUseBillboardCenter((options->getOptionString().find("billboardCenter")!=std::string::npos));
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "billboardCenter=" << document.getUseBillboardCenter() << std::endl;
+                OSG_DEBUG << readerMsg << "billboardCenter=" << document.getUseBillboardCenter() << std::endl;
 
                 document.setUseTextureAlphaForTransparancyBinning(options->getOptionString().find("noTextureAlphaForTransparancyBinning")==std::string::npos);
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "noTextureAlphaForTransparancyBinning=" << !document.getUseTextureAlphaForTransparancyBinning() << std::endl;
+                OSG_DEBUG << readerMsg << "noTextureAlphaForTransparancyBinning=" << !document.getUseTextureAlphaForTransparancyBinning() << std::endl;
 
                 document.setReadObjectRecordData(options->getOptionString().find("readObjectRecordData")==std::string::npos);
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "readObjectRecordData=" << !document.getReadObjectRecordData() << std::endl;
+                OSG_DEBUG << readerMsg << "readObjectRecordData=" << !document.getReadObjectRecordData() << std::endl;
 
                 document.setDoUnitsConversion((options->getOptionString().find("noUnitsConversion")==std::string::npos)); // default to true, unless noUnitsConversion is specified.
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "noUnitsConversion=" << !document.getDoUnitsConversion() << std::endl;
+                OSG_DEBUG << readerMsg << "noUnitsConversion=" << !document.getDoUnitsConversion() << std::endl;
 
                 if (document.getDoUnitsConversion())
                 {
@@ -549,7 +549,7 @@ class FLTReaderWriter : public ReaderWriter
             fOut.open( fileName.c_str(), std::ios::out | std::ios::binary );
             if ( fOut.fail())
             {
-                osg::notify( osg::FATAL ) << "fltexp: Failed to open output stream." << std::endl;
+                OSG_FATAL << "fltexp: Failed to open output stream." << std::endl;
                 return WriteResult::ERROR_IN_WRITING_FILE;
             }
 
@@ -583,7 +583,7 @@ class FLTReaderWriter : public ReaderWriter
                 // If the temp directory doesn't already exist, make it.
                 if ( !osgDB::makeDirectory( fltOpt->getTempDir() ) )
                 {
-                    osg::notify( osg::FATAL ) << "fltexp: Error creating temp dir: " << fltOpt->getTempDir() << std::endl;
+                    OSG_FATAL << "fltexp: Error creating temp dir: " << fltOpt->getTempDir() << std::endl;
                     return WriteResult::ERROR_IN_WRITING_FILE;
                 }
             }

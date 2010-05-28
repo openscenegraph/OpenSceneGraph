@@ -37,7 +37,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
             std::string fileName = options->getPluginStringData("filename");
             if (fileName.empty())
             {
-                osg::notify(osg::NOTICE)<<"Error: ReaderWriterRevision unable to determine stream type, cannot not read file."<<std::endl;
+                OSG_NOTICE<<"Error: ReaderWriterRevision unable to determine stream type, cannot not read file."<<std::endl;
                 return ReadResult::FILE_NOT_HANDLED;
             }
 
@@ -50,7 +50,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
 
         ReadResult readFileList(std::istream& fin, const std::string& name, const osgDB::ReaderWriter::Options* options) const
         {
-            osg::notify(osg::INFO)<<"    readFileList="<<name<<std::endl;
+            OSG_INFO<<"    readFileList="<<name<<std::endl;
 
             osg::ref_ptr<osgDB::FileList> fileList = new osgDB::FileList;
             fileList->setName(name);
@@ -59,7 +59,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
             {
                 std::string filename;
                 fin >> filename;
-                osg::notify(osg::INFO)<<"        ="<<filename<<std::endl;
+                OSG_INFO<<"        ="<<filename<<std::endl;
 
                 if (!filename.empty()) fileList->getFileNames().insert(filename);
             }
@@ -81,8 +81,8 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
 
             revisions->setDatabasePath(revisions_path);
 
-            osg::notify(osg::INFO)<<"readRevisions="<<name<<std::endl;
-            osg::notify(osg::INFO)<<"  revisions_path="<<revisions_path<<std::endl;
+            OSG_INFO<<"readRevisions="<<name<<std::endl;
+            OSG_INFO<<"  revisions_path="<<revisions_path<<std::endl;
 
             bool loadFileLists = false;
 
@@ -91,7 +91,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
                 std::string filename;
                 fin >> filename;
 
-                osg::notify(osg::INFO)<<"    filename="<<filename<<std::endl;
+                OSG_INFO<<"    filename="<<filename<<std::endl;
 
                 if (!filename.empty())
                 {
@@ -113,7 +113,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
                         if (loadFileLists)
                         {
                             std::string complete_path = osgDB::concatPaths(revisions_path, filename);
-                            osg::notify(osg::INFO)<<"    complete_path="<<complete_path<<std::endl;
+                            OSG_INFO<<"    complete_path="<<complete_path<<std::endl;
                             osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(complete_path, options);
                             fileList = dynamic_cast<osgDB::FileList*>(object.get());
                         }

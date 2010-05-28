@@ -36,7 +36,7 @@ void VertexInfluenceSet::buildVertex2BoneList()
             int index = viw.first;
             float weight = viw.second;
             if (vi.getName().empty())
-                osg::notify(osg::WARN) << "VertexInfluenceSet::buildVertex2BoneList warning vertex " << index << " is not assigned to a bone" << std::endl;
+                OSG_WARN << "VertexInfluenceSet::buildVertex2BoneList warning vertex " << index << " is not assigned to a bone" << std::endl;
             _vertex2Bones[index].push_back(BoneWeight(vi.getName(), weight));
         }
     }
@@ -51,7 +51,7 @@ void VertexInfluenceSet::buildVertex2BoneList()
             sum += bones[i].getWeight();
         if (sum < 1e-4) 
         {
-            osg::notify(osg::WARN) << "VertexInfluenceSet::buildVertex2BoneList warning the vertex " << it->first << " seems to have 0 weight, skip normalize for this vertex" << std::endl;
+            OSG_WARN << "VertexInfluenceSet::buildVertex2BoneList warning the vertex " << it->first << " seems to have 0 weight, skip normalize for this vertex" << std::endl;
         }
         else 
         {

@@ -40,6 +40,6 @@ void ActionBlendIn::computeWeight(unsigned int frame)
     double ratio = ( (frame+1) * 1.0 / (getNumFrames()) );
     double w = _weight * ratio;
 
-    osg::notify(osg::DEBUG_INFO) << getName() << " BlendIn frame " << frame  << " weight " << w << std::endl;
+    OSG_DEBUG << getName() << " BlendIn frame " << frame  << " weight " << w << std::endl;
     _animation->setWeight(w);
 }

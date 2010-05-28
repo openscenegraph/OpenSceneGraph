@@ -55,7 +55,7 @@ void RigTransformHardware::computeMatrixPaletteUniform(const osg::Matrix& transf
         osg::Matrix resultBoneMatrix = invBindMatrix * boneMatrix;
         osg::Matrix result =  transformFromSkeletonToGeometry * resultBoneMatrix * invTransformFromSkeletonToGeometry;
         if (!_uniformMatrixPalette->setElement(i, result))
-            osg::notify(osg::WARN) << "RigTransformHardware::computeUniformMatrixPalette can't set uniform at " << i << " elements" << std::endl;
+            OSG_WARN << "RigTransformHardware::computeUniformMatrixPalette can't set uniform at " << i << " elements" << std::endl;
     }
 }
         
@@ -94,7 +94,7 @@ bool RigTransformHardware::createPalette(int nbVertexes, BoneMap boneMap, const 
             {
                 if (boneMap.find(bw.getBoneName()) == boneMap.end())
                 {
-                    osg::notify(osg::INFO) << "RigTransformHardware::createPalette can't find bone " << bw.getBoneName() << " skip this influence" << std::endl;
+                    OSG_INFO << "RigTransformHardware::createPalette can't find bone " << bw.getBoneName() << " skip this influence" << std::endl;
                     continue;
                 }
                 boneNameCountMap[bw.getBoneName()] = 1; // for stats
@@ -105,20 +105,20 @@ bool RigTransformHardware::createPalette(int nbVertexes, BoneMap boneMap, const 
             }
             else
             {
-                osg::notify(osg::WARN) << "RigTransformHardware::createPalette Bone " << bw.getBoneName() << " has a weight " << bw.getWeight() << " for vertex " << vertexIndex << " this bone will not be in the palette" << std::endl;
+                OSG_WARN << "RigTransformHardware::createPalette Bone " << bw.getBoneName() << " has a weight " << bw.getWeight() << " for vertex " << vertexIndex << " this bone will not be in the palette" << std::endl;
             }
         }
         maxBonePerVertex = osg::maximum(maxBonePerVertex, bonesForThisVertex);
     }
-    osg::notify(osg::INFO) << "RigTransformHardware::createPalette maximum number of bone per vertex is " << maxBonePerVertex << std::endl;
-    osg::notify(osg::INFO) << "RigTransformHardware::createPalette matrix palette has " << boneNameCountMap.size() << " entries" << std::endl;
+    OSG_INFO << "RigTransformHardware::createPalette maximum number of bone per vertex is " << maxBonePerVertex << std::endl;
+    OSG_INFO << "RigTransformHardware::createPalette matrix palette has " << boneNameCountMap.size() << " entries" << std::endl;
 
     for (BoneNameCountMap::iterator it = boneNameCountMap.begin(); it != boneNameCountMap.end(); ++it)
     {
-        osg::notify(osg::INFO) << "RigTransformHardware::createPalette Bone " << it->first << " is used " << it->second << " times" << std::endl;
+        OSG_INFO << "RigTransformHardware::createPalette Bone " << it->first << " is used " << it->second << " times" << std::endl;
     }
 
-    osg::notify(osg::INFO) << "RigTransformHardware::createPalette will use " << boneNameCountMap.size() * 4 << " uniforms" << std::endl;
+    OSG_INFO << "RigTransformHardware::createPalette will use " << boneNameCountMap.size() * 4 << " uniforms" << std::endl;
 
 
     for (int i = 0 ; i < (int)vertexIndexWeight.size(); i++)
@@ -199,13 +199,13 @@ bool RigTransformHardware::init(RigGeometry& geom)
     osg::Vec3Array* positionSrc = dynamic_cast<osg::Vec3Array*>(source.getVertexArray());
     if (!positionSrc) 
     {
-        osg::notify(osg::WARN) << "RigTransformHardware no vertex array in the geometry " << geom.getName() << std::endl;
+        OSG_WARN << "RigTransformHardware no vertex array in the geometry " << geom.getName() << std::endl;
         return false;
     }
 
     if (!geom.getSkeleton()) 
     {
-        osg::notify(osg::WARN) << "RigTransformHardware no skeleton set in geometry " << geom.getName() << std::endl;
+        OSG_WARN << "RigTransformHardware no skeleton set in geometry " << geom.getName() << std::endl;
         return false;
     }
 
@@ -227,7 +227,7 @@ bool RigTransformHardware::init(RigGeometry& geom)
         _shader = osg::Shader::readShaderFile(osg::Shader::VERTEX,"skinning.vert");
 
     if (!_shader.valid()) {
-        osg::notify(osg::WARN) << "RigTransformHardware can't load VertexShader" << std::endl;
+        OSG_WARN << "RigTransformHardware can't load VertexShader" << std::endl;
         return false;
     }
 
@@ -240,7 +240,7 @@ bool RigTransformHardware::init(RigGeometry& geom)
     ss << getMatrixPaletteUniform()->getNumElements();
     str.replace(start, toreplace.size(), ss.str());
     _shader->setShaderSource(str);
-    osg::notify(osg::INFO) << "Shader " << str << std::endl;
+    OSG_INFO << "Shader " << str << std::endl;
     }
 
     int attribIndex = 11;
@@ -251,7 +251,7 @@ bool RigTransformHardware::init(RigGeometry& geom)
         ss << "boneWeight" << i;
         program->addBindAttribLocation(ss.str(), attribIndex + i);
         geom.setVertexAttribData(attribIndex + i, osg::Geometry::ArrayData(getVertexAttrib(i),osg::Geometry::BIND_PER_VERTEX));
-        osg::notify(osg::INFO) << "set vertex attrib " << ss.str() << std::endl;
+        OSG_INFO << "set vertex attrib " << ss.str() << std::endl;
     }
     program->addShader(_shader.get());
 

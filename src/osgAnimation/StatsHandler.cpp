@@ -558,7 +558,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                 FindTimelineStats finder;
                 viewer->getSceneData()->accept(finder);
                 if (!finder._timelines.empty()) {
-                    osg::notify(osg::NOTICE)<<std::endl<<"Stats report:"<<std::endl;
+                    OSG_NOTICE<<std::endl<<"Stats report:"<<std::endl;
                     typedef std::vector<osg::Stats*> StatsList;
                     StatsList statsList;
 
@@ -574,7 +574,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                             if (itr==statsList.begin()) (*itr)->report(osg::notify(osg::NOTICE), i);
                             else (*itr)->report(osg::notify(osg::NOTICE), i, "    ");
                         }
-                        osg::notify(osg::NOTICE)<<std::endl;
+                        OSG_NOTICE<<std::endl;
                     }
 
                 }

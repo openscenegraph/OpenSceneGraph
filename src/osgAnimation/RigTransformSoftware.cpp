@@ -51,7 +51,7 @@ void RigTransformSoftware::operator()(RigGeometry& geom)
             return;
 
     if (!geom.getSourceGeometry()) {
-        osg::notify(osg::WARN) << this << " RigTransformSoftware no source geometry found on RigGeometry" << std::endl;
+        OSG_WARN << this << " RigTransformSoftware no source geometry found on RigGeometry" << std::endl;
         return;
     }
     osg::Geometry& source = *geom.getSourceGeometry();
@@ -123,7 +123,7 @@ void RigTransformSoftware::initVertexSetFromBones(const BoneMap& map, const Vert
             BoneMap::const_iterator it = map.find(bname);
             if (it == map.end()) 
             {
-                osg::notify(osg::WARN) << "RigTransformSoftware Bone " << bname << " not found, skip the influence group " <<bname  << std::endl;
+                OSG_WARN << "RigTransformSoftware Bone " << bname << " not found, skip the influence group " <<bname  << std::endl;
                 continue;
             }
             Bone* bone = it->second.get();

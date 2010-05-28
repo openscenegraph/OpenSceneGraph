@@ -240,7 +240,7 @@ GLuint RenderBuffer::getObjectID(unsigned int contextID, const FBOExtensions *ex
         // samples must be >= color samples.
         if (_samples < _colorSamples)
         {
-            notify(WARN) << "Coverage samples must be greater than or equal to color samples."
+            OSG_WARN << "Coverage samples must be greater than or equal to color samples."
                 " Setting coverage samples equal to color samples." << std::endl;
             const_cast<RenderBuffer*>(this)->setSamples(_colorSamples);
         }
@@ -458,12 +458,12 @@ FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment& attachment)
         }
         else
         {
-            osg::notify(osg::WARN)<<"Error: FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment&) passed an empty osg::Image, image must be allocated first."<<std::endl;
+            OSG_WARN<<"Error: FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment&) passed an empty osg::Image, image must be allocated first."<<std::endl;
         }
         return;
     }
 
-    osg::notify(osg::WARN)<<"Error: FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment&) passed an unrecognised Texture type."<<std::endl;
+    OSG_WARN<<"Error: FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment&) passed an unrecognised Texture type."<<std::endl;
 }
 
 
@@ -760,7 +760,7 @@ void FrameBufferObject::apply(State &state, BindTarget target) const
     if (!ext->isSupported())
     {
         _unsupported[contextID] = 1;
-        notify(WARN) << "Warning: EXT_framebuffer_object is not supported" << std::endl;
+        OSG_WARN << "Warning: EXT_framebuffer_object is not supported" << std::endl;
         return;
     }
 
@@ -778,7 +778,7 @@ void FrameBufferObject::apply(State &state, BindTarget target) const
         ext->glGenFramebuffers(1, &fboID);
         if (fboID == 0)
         {
-            notify(WARN) << "Warning: FrameBufferObject: could not create the FBO" << std::endl;
+            OSG_WARN << "Warning: FrameBufferObject: could not create the FBO" << std::endl;
             return;
         }
 
@@ -832,7 +832,7 @@ void FrameBufferObject::apply(State &state, BindTarget target) const
                     }
                     else
                     {
-                        notify(WARN) << 
+                        OSG_WARN << 
                             "Warning: FrameBufferObject: could not attach PACKED_DEPTH_STENCIL_BUFFER, "
                             "EXT_packed_depth_stencil is not supported !" << std::endl;
                     }

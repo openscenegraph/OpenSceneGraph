@@ -95,7 +95,7 @@ static ApplicationUsageProxy ApplicationUsageProxyCullSettings_e1(ApplicationUsa
 
 void CullSettings::readEnvironmentalVariables()
 {
-    OSG_NOTIFY(osg::INFO)<<"CullSettings::readEnvironmentalVariables()"<<std::endl;
+    OSG_INFO<<"CullSettings::readEnvironmentalVariables()"<<std::endl;
 
     char *ptr;
     
@@ -105,7 +105,7 @@ void CullSettings::readEnvironmentalVariables()
         else if (strcmp(ptr,"COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES")==0) _computeNearFar = COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES;
         else if (strcmp(ptr,"COMPUTE_NEAR_FAR_USING_PRIMITIVES")==0) _computeNearFar = COMPUTE_NEAR_FAR_USING_PRIMITIVES;
 
-        OSG_NOTIFY(osg::INFO)<<"Set compute near far mode to "<<_computeNearFar<<std::endl;
+        OSG_INFO<<"Set compute near far mode to "<<_computeNearFar<<std::endl;
         
     }
     
@@ -113,7 +113,7 @@ void CullSettings::readEnvironmentalVariables()
     {
         _nearFarRatio = osg::asciiToDouble(ptr);
 
-        OSG_NOTIFY(osg::INFO)<<"Set near/far ratio to "<<_nearFarRatio<<std::endl;
+        OSG_INFO<<"Set near/far ratio to "<<_nearFarRatio<<std::endl;
     }
     
 }
@@ -134,7 +134,7 @@ void CullSettings::readCommandLine(ArgumentParser& arguments)
         else if (str=="COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES") _computeNearFar = COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES;
         else if (str=="COMPUTE_NEAR_FAR_USING_PRIMITIVES") _computeNearFar = COMPUTE_NEAR_FAR_USING_PRIMITIVES;
 
-        OSG_NOTIFY(osg::INFO)<<"Set compute near far mode to "<<_computeNearFar<<std::endl;
+        OSG_INFO<<"Set compute near far mode to "<<_computeNearFar<<std::endl;
     }
 
     double value;
@@ -142,7 +142,7 @@ void CullSettings::readCommandLine(ArgumentParser& arguments)
     {
         _nearFarRatio = value;
 
-        OSG_NOTIFY(osg::INFO)<<"Set near/far ratio to "<<_nearFarRatio<<std::endl;
+        OSG_INFO<<"Set near/far ratio to "<<_nearFarRatio<<std::endl;
     }
 
 }

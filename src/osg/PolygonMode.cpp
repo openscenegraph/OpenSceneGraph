@@ -62,7 +62,7 @@ PolygonMode::Mode PolygonMode::getMode(Face face) const
         case(FRONT_AND_BACK):
             return _modeFront;
     }    
-    notify(WARN)<<"Warning : invalid Face passed to PolygonMode::getMode(Face face)"<<std::endl;
+    OSG_WARN<<"Warning : invalid Face passed to PolygonMode::getMode(Face face)"<<std::endl;
     return _modeFront;
 }
 
@@ -79,7 +79,7 @@ void PolygonMode::apply(State&) const
         glPolygonMode(GL_BACK,(GLenum)_modeBack);
     }
 #else
-    osg::notify(osg::NOTICE)<<"Warning: PolygonMode::apply(State&) - not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: PolygonMode::apply(State&) - not supported."<<std::endl;
 #endif
 }
 

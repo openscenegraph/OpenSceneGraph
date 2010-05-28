@@ -41,7 +41,7 @@ double osg::asciiToDouble(const char* str)
             ++ptr;
         }
         
-        // osg::notify(osg::NOTICE)<<"Read "<<str<<" result = "<<value<<std::endl;
+        // OSG_NOTICE<<"Read "<<str<<" result = "<<value<<std::endl;
         return value;
     }
     
@@ -100,14 +100,14 @@ double osg::asciiToDouble(const char* str)
 
     if (pos==0)
     {
-        // osg::notify(osg::NOTICE)<<"Read "<<str<<" result = "<<value[0]*sign[0]<<std::endl;
+        // OSG_NOTICE<<"Read "<<str<<" result = "<<value[0]*sign[0]<<std::endl;
         return value[0]*sign[0];
     }
     else
     {
         double mantissa = value[0]*sign[0];
         double exponent = value[1]*sign[1];
-        //osg::notify(osg::NOTICE)<<"Read "<<str<<" mantissa = "<<mantissa<<" exponent="<<exponent<<" result = "<<mantissa*pow(10.0,exponent)<<std::endl;
+        //OSG_NOTICE<<"Read "<<str<<" mantissa = "<<mantissa<<" exponent="<<exponent<<" result = "<<mantissa*pow(10.0,exponent)<<std::endl;
         return mantissa*pow(10.0,exponent);
     }
 }

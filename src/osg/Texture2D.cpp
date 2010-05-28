@@ -232,13 +232,13 @@ void Texture2D::apply(State& state) const
 
         if (textureObject->isAllocated())
         {
-            //notify(NOTICE)<<"Reusing texture object"<<std::endl;
+            //OSG_NOTICE<<"Reusing texture object"<<std::endl;
             applyTexImage2D_subload(state,GL_TEXTURE_2D,image.get(),
                                  _textureWidth, _textureHeight, _internalFormat, _numMipmapLevels);
         }
         else
         {
-            //notify(NOTICE)<<"Creating new texture object"<<std::endl;
+            //OSG_NOTICE<<"Creating new texture object"<<std::endl;
             applyTexImage2D_load(state,GL_TEXTURE_2D,image.get(),
                                  _textureWidth, _textureHeight, _numMipmapLevels);
 
@@ -356,7 +356,7 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
         if (!hardwareMipMapOn)
         {
             // have to switch off mip mapping
-            notify(NOTICE)<<"Warning: Texture2D::copyTexImage2D(,,,,) switch off mip mapping as hardware support not available."<<std::endl;
+            OSG_NOTICE<<"Warning: Texture2D::copyTexImage2D(,,,,) switch off mip mapping as hardware support not available."<<std::endl;
             _min_filter = LINEAR;
         }
     }
@@ -407,7 +407,7 @@ void Texture2D::copyTexSubImage2D(State& state, int xoffset, int yoffset, int x,
             if (!hardwareMipMapOn)
             {
                 // have to switch off mip mapping
-                notify(NOTICE)<<"Warning: Texture2D::copyTexImage2D(,,,,) switch off mip mapping as hardware support not available."<<std::endl;
+                OSG_NOTICE<<"Warning: Texture2D::copyTexImage2D(,,,,) switch off mip mapping as hardware support not available."<<std::endl;
                 _min_filter = LINEAR;
             }
         }

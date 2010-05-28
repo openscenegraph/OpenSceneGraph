@@ -153,7 +153,7 @@ void StencilTwoSided::Extensions::glActiveStencilFace(GLenum face) const
     }
     else
     {
-        notify(WARN)<<"Error: glActiveStencilFace not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glActiveStencilFace not supported by OpenGL driver"<<std::endl;
     }    
 }
 

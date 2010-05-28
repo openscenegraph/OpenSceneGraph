@@ -454,7 +454,7 @@ bool Geometry::addPrimitiveSet(PrimitiveSet* primitiveset)
         dirtyBound();
         return true;
     }
-    notify(WARN)<<"Warning: invalid index i or primitiveset passed to osg::Geometry::addPrimitiveSet(i,primitiveset), ignoring call."<<std::endl;
+    OSG_WARN<<"Warning: invalid index i or primitiveset passed to osg::Geometry::addPrimitiveSet(i,primitiveset), ignoring call."<<std::endl;
     return false;
 }
 
@@ -469,7 +469,7 @@ bool Geometry::setPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset)
         dirtyBound();
         return true;
     }
-    notify(WARN)<<"Warning: invalid index i or primitiveset passed to osg::Geometry::setPrimitiveSet(i,primitiveset), ignoring call."<<std::endl;
+    OSG_WARN<<"Warning: invalid index i or primitiveset passed to osg::Geometry::setPrimitiveSet(i,primitiveset), ignoring call."<<std::endl;
     return false;
 }
 
@@ -493,7 +493,7 @@ bool Geometry::insertPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset)
         }
         
     }
-    notify(WARN)<<"Warning: invalid index i or primitiveset passed to osg::Geometry::insertPrimitiveSet(i,primitiveset), ignoring call."<<std::endl;
+    OSG_WARN<<"Warning: invalid index i or primitiveset passed to osg::Geometry::insertPrimitiveSet(i,primitiveset), ignoring call."<<std::endl;
     return false;
 }
 
@@ -511,8 +511,8 @@ bool Geometry::removePrimitiveSet(unsigned int i, unsigned int numElementsToRemo
         {
             // asking to delete too many elements, report a warning, and delete to
             // the end of the primitive list.
-            notify(WARN)<<"Warning: osg::Geometry::removePrimitiveSet(i,numElementsToRemove) has been asked to remove more elements than are available,"<<std::endl;
-            notify(WARN)<<"         removing on from i to the end of the list of primitive sets."<<std::endl;
+            OSG_WARN<<"Warning: osg::Geometry::removePrimitiveSet(i,numElementsToRemove) has been asked to remove more elements than are available,"<<std::endl;
+            OSG_WARN<<"         removing on from i to the end of the list of primitive sets."<<std::endl;
             _primitives.erase(_primitives.begin()+i,_primitives.end());
         }
     
@@ -520,7 +520,7 @@ bool Geometry::removePrimitiveSet(unsigned int i, unsigned int numElementsToRemo
         dirtyBound();
         return true;
     }
-    notify(WARN)<<"Warning: invalid index i passed to osg::Geometry::removePrimitiveSet(i,numElementsToRemove), ignoring call."<<std::endl;
+    OSG_WARN<<"Warning: invalid index i passed to osg::Geometry::removePrimitiveSet(i,numElementsToRemove), ignoring call."<<std::endl;
     return false;
 }
 
@@ -746,7 +746,7 @@ void Geometry::setUseVertexBufferObjects(bool flag)
 {
     // flag = true;
     
-    // osg::notify(osg::NOTICE)<<"Geometry::setUseVertexBufferObjects("<<flag<<")"<<std::endl;
+    // OSG_NOTICE<<"Geometry::setUseVertexBufferObjects("<<flag<<")"<<std::endl;
 
     if (_useVertexBufferObjects==flag) return;
 
@@ -904,7 +904,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
                            areFastPathsUsed();
     if (useVertexArrays)
     {
-        // osg::notify(osg::NOTICE)<<"Geometry::compileGLObjects() use VBO's "<<this<<std::endl;
+        // OSG_NOTICE<<"Geometry::compileGLObjects() use VBO's "<<this<<std::endl;
         State& state = *renderInfo.getState();
         unsigned int contextID = state.getContextID();
         GLBufferObject::Extensions* extensions = GLBufferObject::getExtensions(contextID, true);
@@ -950,7 +950,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
             GLBufferObject* glBufferObject = (*itr)->getOrCreateGLBufferObject(contextID);
             if (glBufferObject && glBufferObject->isDirty())
             {
-                // osg::notify(osg::NOTICE)<<"Compile buffer "<<glBufferObject<<std::endl;
+                // OSG_NOTICE<<"Compile buffer "<<glBufferObject<<std::endl;
                 glBufferObject->compileBuffer();
             }
         }
@@ -1294,7 +1294,7 @@ void Geometry::accept(AttributeFunctor& af)
     }
     else if (_vertexAttribList.size()>0)
     {
-        osg::notify(osg::INFO)<<"Geometry::accept(AttributeFunctor& af): Using vertex attribute instead"<<std::endl;
+        OSG_INFO<<"Geometry::accept(AttributeFunctor& af): Using vertex attribute instead"<<std::endl;
         afav.applyArray(VERTICES,_vertexAttribList[0].array.get());
     }
 
@@ -1367,7 +1367,7 @@ void Geometry::accept(ConstAttributeFunctor& af) const
     }
     else if (_vertexAttribList.size()>0)
     {
-        osg::notify(osg::INFO)<<"Geometry::accept(ConstAttributeFunctor& af): Using vertex attribute instead"<<std::endl;
+        OSG_INFO<<"Geometry::accept(ConstAttributeFunctor& af): Using vertex attribute instead"<<std::endl;
         afav.applyArray(VERTICES,_vertexAttribList[0].array.get());
     }
 
@@ -1394,7 +1394,7 @@ void Geometry::accept(PrimitiveFunctor& functor) const
 
     if (!vertices && _vertexAttribList.size()>0)
     {
-        osg::notify(osg::INFO)<<"Using vertex attribute instead"<<std::endl;
+        OSG_INFO<<"Using vertex attribute instead"<<std::endl;
         vertices = _vertexAttribList[0].array.get();
         indices = _vertexAttribList[0].indices.get();
     }
@@ -1424,7 +1424,7 @@ void Geometry::accept(PrimitiveFunctor& functor) const
             functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec4d*>(vertices->getDataPointer()));
             break;
         default:
-            notify(WARN)<<"Warning: Geometry::accept(PrimitiveFunctor&) cannot handle Vertex Array type"<<vertices->getType()<<std::endl;
+            OSG_WARN<<"Warning: Geometry::accept(PrimitiveFunctor&) cannot handle Vertex Array type"<<vertices->getType()<<std::endl;
             return;
         }
         
@@ -1465,7 +1465,7 @@ void Geometry::accept(PrimitiveFunctor& functor) const
             vec4dArray = static_cast<const Vec4d*>(vertices->getDataPointer());
             break;
         default:
-            notify(WARN)<<"Warning: Geometry::accept(PrimitiveFunctor&) cannot handle Vertex Array type"<<vertices->getType()<<std::endl;
+            OSG_WARN<<"Warning: Geometry::accept(PrimitiveFunctor&) cannot handle Vertex Array type"<<vertices->getType()<<std::endl;
             return;
         }
 
@@ -1693,7 +1693,7 @@ void Geometry::accept(PrimitiveIndexFunctor& functor) const
 
     if (!vertices && _vertexAttribList.size()>0)
     {
-        osg::notify(osg::INFO)<<"Geometry::accept(PrimitiveIndexFunctor& functor): Using vertex attribute instead"<<std::endl;
+        OSG_INFO<<"Geometry::accept(PrimitiveIndexFunctor& functor): Using vertex attribute instead"<<std::endl;
         vertices = _vertexAttribList[0].array.get();
         indices = _vertexAttribList[0].indices.get();
     }
@@ -1721,7 +1721,7 @@ void Geometry::accept(PrimitiveIndexFunctor& functor) const
         functor.setVertexArray(vertices->getNumElements(),static_cast<const Vec4d*>(vertices->getDataPointer()));
         break;
     default:
-        notify(WARN)<<"Warning: Geometry::accept(PrimitiveIndexFunctor&) cannot handle Vertex Array type"<<vertices->getType()<<std::endl;
+        OSG_WARN<<"Warning: Geometry::accept(PrimitiveIndexFunctor&) cannot handle Vertex Array type"<<vertices->getType()<<std::endl;
         return;
     }
 
@@ -1857,11 +1857,11 @@ unsigned int _computeNumberOfPrimitives(const osg::Geometry& geom)
         unsigned int primLength;
         switch(mode)
         {
-            case(GL_POINTS):    primLength=1; osg::notify(osg::INFO)<<"prim=GL_POINTS"<<std::endl; break;
-            case(GL_LINES):     primLength=2; osg::notify(osg::INFO)<<"prim=GL_LINES"<<std::endl; break;
-            case(GL_TRIANGLES): primLength=3; osg::notify(osg::INFO)<<"prim=GL_TRIANGLES"<<std::endl; break;
-            case(GL_QUADS):     primLength=4; osg::notify(osg::INFO)<<"prim=GL_QUADS"<<std::endl; break;
-            default:            primLength=0; osg::notify(osg::INFO)<<"prim="<<std::hex<<mode<<std::dec<<std::endl; break; // compute later when =0.
+            case(GL_POINTS):    primLength=1; OSG_INFO<<"prim=GL_POINTS"<<std::endl; break;
+            case(GL_LINES):     primLength=2; OSG_INFO<<"prim=GL_LINES"<<std::endl; break;
+            case(GL_TRIANGLES): primLength=3; OSG_INFO<<"prim=GL_TRIANGLES"<<std::endl; break;
+            case(GL_QUADS):     primLength=4; OSG_INFO<<"prim=GL_QUADS"<<std::endl; break;
+            default:            primLength=0; OSG_INFO<<"prim="<<std::hex<<mode<<std::dec<<std::endl; break; // compute later when =0.
         }
 
         // draw primitives by the more flexible "slow" path,
@@ -1883,8 +1883,8 @@ unsigned int _computeNumberOfPrimitives(const osg::Geometry& geom)
             }
             default:
             {
-                if (primLength==0) { totalNumberOfPrimitives += 1; osg::notify(osg::INFO)<<"   totalNumberOfPrimitives="<<totalNumberOfPrimitives<<std::endl;}
-                else { totalNumberOfPrimitives += primitiveset->getNumIndices()/primLength; osg::notify(osg::INFO)<<"   primitiveset->getNumIndices()="<<primitiveset->getNumIndices()<<" totalNumberOfPrimitives="<<totalNumberOfPrimitives<<std::endl; }
+                if (primLength==0) { totalNumberOfPrimitives += 1; OSG_INFO<<"   totalNumberOfPrimitives="<<totalNumberOfPrimitives<<std::endl;}
+                else { totalNumberOfPrimitives += primitiveset->getNumIndices()/primLength; OSG_INFO<<"   primitiveset->getNumIndices()="<<primitiveset->getNumIndices()<<" totalNumberOfPrimitives="<<totalNumberOfPrimitives<<std::endl; }
 
             }
         }

@@ -140,7 +140,7 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
                 }
                 else
                 {
-                    osg::notify( osg::WARN ) << "isGLExtensionOrVersionSupported: Can't obtain glGetStringi function pointer." << std::endl;
+                    OSG_WARN << "isGLExtensionOrVersionSupported: Can't obtain glGetStringi function pointer." << std::endl;
                 }
             }
             else
@@ -376,7 +376,7 @@ std::string& osg::getGLExtensionDisableString()
 
     void* osg::getGLExtensionFuncPtr(const char *funcName)
     {
-        // OSG_NOTIFY(osg::NOTICE)<<"osg::getGLExtensionFuncPtr("<<funcName<<")"<<std::endl;
+        // OSG_NOTICE<<"osg::getGLExtensionFuncPtr("<<funcName<<")"<<std::endl;
 
     #if defined(WIN32)
 

@@ -201,25 +201,25 @@ bool copyImage(const osg::Image* srcImage, int src_s, int src_t, int src_r, int 
 {
     if ((src_s+width) > (dest_s + destImage->s()))
     {
-        osg::notify(osg::NOTICE)<<"copyImage("<<srcImage<<", "<<src_s<<", "<< src_t<<", "<<src_r<<", "<<width<<", "<<height<<", "<<depth<<std::endl;
-        osg::notify(osg::NOTICE)<<"          "<<destImage<<", "<<dest_s<<", "<< dest_t<<", "<<dest_r<<", "<<doRescale<<")"<<std::endl;
-        osg::notify(osg::NOTICE)<<"   input width too large."<<std::endl;
+        OSG_NOTICE<<"copyImage("<<srcImage<<", "<<src_s<<", "<< src_t<<", "<<src_r<<", "<<width<<", "<<height<<", "<<depth<<std::endl;
+        OSG_NOTICE<<"          "<<destImage<<", "<<dest_s<<", "<< dest_t<<", "<<dest_r<<", "<<doRescale<<")"<<std::endl;
+        OSG_NOTICE<<"   input width too large."<<std::endl;
         return false;
     }
 
     if ((src_t+height) > (dest_t + destImage->t()))
     {
-        osg::notify(osg::NOTICE)<<"copyImage("<<srcImage<<", "<<src_s<<", "<< src_t<<", "<<src_r<<", "<<width<<", "<<height<<", "<<depth<<std::endl;
-        osg::notify(osg::NOTICE)<<"          "<<destImage<<", "<<dest_s<<", "<< dest_t<<", "<<dest_r<<", "<<doRescale<<")"<<std::endl;
-        osg::notify(osg::NOTICE)<<"   input height too large."<<std::endl;
+        OSG_NOTICE<<"copyImage("<<srcImage<<", "<<src_s<<", "<< src_t<<", "<<src_r<<", "<<width<<", "<<height<<", "<<depth<<std::endl;
+        OSG_NOTICE<<"          "<<destImage<<", "<<dest_s<<", "<< dest_t<<", "<<dest_r<<", "<<doRescale<<")"<<std::endl;
+        OSG_NOTICE<<"   input height too large."<<std::endl;
         return false;
     }
 
     if ((src_r+depth) > (dest_r + destImage->r()))
     {
-        osg::notify(osg::NOTICE)<<"copyImage("<<srcImage<<", "<<src_s<<", "<< src_t<<", "<<src_r<<", "<<width<<", "<<height<<", "<<depth<<std::endl;
-        osg::notify(osg::NOTICE)<<"          "<<destImage<<", "<<dest_s<<", "<< dest_t<<", "<<dest_r<<", "<<doRescale<<")"<<std::endl;
-        osg::notify(osg::NOTICE)<<"   input depth too large."<<std::endl;
+        OSG_NOTICE<<"copyImage("<<srcImage<<", "<<src_s<<", "<< src_t<<", "<<src_r<<", "<<width<<", "<<height<<", "<<depth<<std::endl;
+        OSG_NOTICE<<"          "<<destImage<<", "<<dest_s<<", "<< dest_t<<", "<<dest_r<<", "<<doRescale<<")"<<std::endl;
+        OSG_NOTICE<<"   input depth too large."<<std::endl;
         return false;
     }
 
@@ -250,12 +250,12 @@ bool copyImage(const osg::Image* srcImage, int src_s, int src_t, int src_r, int 
 
     if (srcImage->getPixelFormat() == destImage->getPixelFormat())
     {
-        //osg::notify(osg::NOTICE)<<"copyImage("<<srcImage<<", "<<src_s<<", "<< src_t<<", "<<src_r<<", "<<width<<", "<<height<<", "<<depth<<std::endl;
-        //osg::notify(osg::NOTICE)<<"          "<<destImage<<", "<<dest_s<<", "<< dest_t<<", "<<dest_r<<", "<<doRescale<<")"<<std::endl;
+        //OSG_NOTICE<<"copyImage("<<srcImage<<", "<<src_s<<", "<< src_t<<", "<<src_r<<", "<<width<<", "<<height<<", "<<depth<<std::endl;
+        //OSG_NOTICE<<"          "<<destImage<<", "<<dest_s<<", "<< dest_t<<", "<<dest_r<<", "<<doRescale<<")"<<std::endl;
 
         if (srcImage->getDataType() == destImage->getDataType() && !doRescale)
         {
-            //osg::notify(osg::NOTICE)<<"   Compatible pixelFormat and dataType."<<std::endl;
+            //OSG_NOTICE<<"   Compatible pixelFormat and dataType."<<std::endl;
             for(int slice = 0; slice<depth; ++slice)
             {
                 for(int row = 0; row<height; ++row)
@@ -269,7 +269,7 @@ bool copyImage(const osg::Image* srcImage, int src_s, int src_t, int src_r, int 
         }
         else
         {
-            //osg::notify(osg::NOTICE)<<"   Compatible pixelFormat and incompatible dataType."<<std::endl;
+            //OSG_NOTICE<<"   Compatible pixelFormat and incompatible dataType."<<std::endl;
             for(int slice = 0; slice<depth; ++slice)
             {
                 for(int row = 0; row<height; ++row)
@@ -287,8 +287,8 @@ bool copyImage(const osg::Image* srcImage, int src_s, int src_t, int src_r, int 
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"copyImage("<<srcImage<<", "<<src_s<<", "<< src_t<<", "<<src_r<<", "<<width<<", "<<height<<", "<<depth<<std::endl;
-        osg::notify(osg::NOTICE)<<"          "<<destImage<<", "<<dest_s<<", "<< dest_t<<", "<<dest_r<<", "<<doRescale<<")"<<std::endl;
+        OSG_NOTICE<<"copyImage("<<srcImage<<", "<<src_s<<", "<< src_t<<", "<<src_r<<", "<<width<<", "<<height<<", "<<depth<<std::endl;
+        OSG_NOTICE<<"          "<<destImage<<", "<<dest_s<<", "<< dest_t<<", "<<dest_r<<", "<<doRescale<<")"<<std::endl;
                 
         RecordRowOperator readOp(width);
         WriteRowOperator writeOp;

@@ -307,18 +307,18 @@ public:
 
     AttributeDispatch* dispatcher(bool useGLBeginEndAdapter, const Array* array, const IndexArray* indices)
     {
-        // osg::notify(osg::NOTICE)<<"dispatcher("<<useGLBeginEndAdapter<<", "<<array<<", "<<indices<<")"<<std::endl;
+        // OSG_NOTICE<<"dispatcher("<<useGLBeginEndAdapter<<", "<<array<<", "<<indices<<")"<<std::endl;
 
         if (!array) return 0;
 
         Array::Type type = array->getType();
         AttributeDispatch* dispatcher = 0;
 
-        // osg::notify(osg::NOTICE)<<"    array->getType()="<<type<<std::endl;
-        // osg::notify(osg::NOTICE)<<"    _glBeginEndAttributeDispatchList.size()="<<_glBeginEndAttributeDispatchList.size()<<std::endl;
-        // osg::notify(osg::NOTICE)<<"    _glBeginEndAttributeDispatchWithIndicesList.size()="<<_glBeginEndAttributeDispatchWithIndicesList.size()<<std::endl;
-        // osg::notify(osg::NOTICE)<<"    _attributeDispatchIndicesList.size()="<<_attributeDispatchList.size()<<std::endl;
-        // osg::notify(osg::NOTICE)<<"    _attributeDispatchWithIndicesList.size()="<<_attributeDispatchWithIndicesList.size()<<std::endl;
+        // OSG_NOTICE<<"    array->getType()="<<type<<std::endl;
+        // OSG_NOTICE<<"    _glBeginEndAttributeDispatchList.size()="<<_glBeginEndAttributeDispatchList.size()<<std::endl;
+        // OSG_NOTICE<<"    _glBeginEndAttributeDispatchWithIndicesList.size()="<<_glBeginEndAttributeDispatchWithIndicesList.size()<<std::endl;
+        // OSG_NOTICE<<"    _attributeDispatchIndicesList.size()="<<_attributeDispatchList.size()<<std::endl;
+        // OSG_NOTICE<<"    _attributeDispatchWithIndicesList.size()="<<_attributeDispatchWithIndicesList.size()<<std::endl;
 
         if (useGLBeginEndAdapter)
         {
@@ -351,13 +351,13 @@ public:
 
         if (dispatcher)
         {
-            // osg::notify(osg::NOTICE)<<"   returning dispatcher="<<dispatcher<<std::endl;
+            // OSG_NOTICE<<"   returning dispatcher="<<dispatcher<<std::endl;
             dispatcher->assign(array->getDataPointer(), indices);
             return dispatcher;
         }
         else
         {
-            // osg::notify(osg::NOTICE)<<"   no dispatcher found"<<std::endl;
+            // OSG_NOTICE<<"   no dispatcher found"<<std::endl;
             return 0;
         }
     }

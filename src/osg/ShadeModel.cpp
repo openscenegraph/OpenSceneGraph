@@ -31,6 +31,6 @@ void ShadeModel::apply(State&) const
 #ifdef OSG_GL_FIXED_FUNCTION_AVAILABLE
     glShadeModel((GLenum)_mode);
 #else
-    osg::notify(osg::NOTICE)<<"Warning: ShadeModel::apply(State&) - not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: ShadeModel::apply(State&) - not supported."<<std::endl;
 #endif
 }

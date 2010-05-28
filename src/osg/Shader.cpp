@@ -181,7 +181,7 @@ bool Shader::setType(Type t)
 
     if (_type != UNDEFINED)
     {
-        osg::notify(osg::WARN) << "cannot change type of Shader" << std::endl;
+        OSG_WARN << "cannot change type of Shader" << std::endl;
         return false;
     }
 
@@ -228,11 +228,11 @@ bool Shader::loadShaderSourceFromFile( const std::string& fileName )
     sourceFile.open(fileName.c_str(), std::ios::binary);
     if(!sourceFile)
     {
-        osg::notify(osg::WARN)<<"Error: can't open file \""<<fileName<<"\""<<std::endl;
+        OSG_WARN<<"Error: can't open file \""<<fileName<<"\""<<std::endl;
         return false;
     }
 
-    osg::notify(osg::INFO)<<"Loading shader source file \""<<fileName<<"\""<<std::endl;
+    OSG_INFO<<"Loading shader source file \""<<fileName<<"\""<<std::endl;
     _shaderFileName = fileName;
 
     sourceFile.seekg(0, std::ios::end);
@@ -295,7 +295,7 @@ Shader::PerContextShader* Shader::getPCS(unsigned int contextID) const
 {
     if( getType() == UNDEFINED )
     {
-        osg::notify(osg::WARN) << "Shader type is UNDEFINED" << std::endl;
+        OSG_WARN << "Shader type is UNDEFINED" << std::endl;
         return 0;
     }
 
@@ -446,7 +446,7 @@ void Shader::PerContextShader::compileShader(osg::State& state)
 
             for(GLint i=0; i<numFormats; ++i)
             {
-                osg::notify(osg::NOTICE)<<"  format="<<formats[i]<<std::endl;
+                OSG_NOTICE<<"  format="<<formats[i]<<std::endl;
                 GLenum shaderBinaryFormat = formats[i];
                 glShaderBinary(1, &_glShaderHandle, shaderBinaryFormat, _shader->getShaderBinary()->getData(), _shader->getShaderBinary()->getSize());
                 if (glGetError() == GL_NO_ERROR)
@@ -459,26 +459,26 @@ void Shader::PerContextShader::compileShader(osg::State& state)
             
             if (_shader->getShaderSource().empty())
             {
-                osg::notify(osg::WARN)<<"Warning: No suitable shader of supported format by GLES driver found in shader binary, unable to compile shader."<<std::endl;
+                OSG_WARN<<"Warning: No suitable shader of supported format by GLES driver found in shader binary, unable to compile shader."<<std::endl;
                 _isCompiled = false;
                 return;
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"osg::Shader::compileShader(): No suitable shader of supported format by GLES driver found in shader binary, falling back to shader source."<<std::endl;
+                OSG_NOTICE<<"osg::Shader::compileShader(): No suitable shader of supported format by GLES driver found in shader binary, falling back to shader source."<<std::endl;
             }
         }
         else
         {
             if (_shader->getShaderSource().empty())
             {
-                osg::notify(osg::WARN)<<"Warning: No shader binary formats supported by GLES driver, unable to compile shader."<<std::endl;
+                OSG_WARN<<"Warning: No shader binary formats supported by GLES driver, unable to compile shader."<<std::endl;
                 _isCompiled = false;
                 return;
             }
             else
             {
-                osg::notify(osg::NOTICE)<<"osg::Shader::compileShader(): No shader binary formats supported by GLES driver, falling back to shader source."<<std::endl;
+                OSG_NOTICE<<"osg::Shader::compileShader(): No shader binary formats supported by GLES driver, falling back to shader source."<<std::endl;
             }
         }
     }
@@ -494,9 +494,8 @@ void Shader::PerContextShader::compileShader(osg::State& state)
 
     if (osg::getNotifyLevel()>=osg::INFO)
     {
-        osg::notify(osg::INFO)
-            << "\nCompiling " << _shader->getTypename()
-            << " source:\n" << sourceWithLineNumbers << std::endl;
+        OSG_INFO << "\nCompiling " << _shader->getTypename()
+                 << " source:\n" << sourceWithLineNumbers << std::endl;
     }
 
     GLint compiled = GL_FALSE;
@@ -508,13 +507,13 @@ void Shader::PerContextShader::compileShader(osg::State& state)
     _isCompiled = (compiled == GL_TRUE);
     if( ! _isCompiled )
     {
-        osg::notify(osg::WARN) << _shader->getTypename() << " glCompileShader \""
+        OSG_WARN << _shader->getTypename() << " glCompileShader \""
             << _shader->getName() << "\" FAILED" << std::endl;
 
         std::string infoLog;
         if( getInfoLog(infoLog) )
         {
-            osg::notify(osg::WARN) << _shader->getTypename() << " Shader \""
+            OSG_WARN << _shader->getTypename() << " Shader \""
                 << _shader->getName() << "\" infolog:\n" << infoLog << std::endl;
         }
     }
@@ -523,7 +522,7 @@ void Shader::PerContextShader::compileShader(osg::State& state)
         std::string infoLog;
         if( getInfoLog(infoLog) )
         {
-            osg::notify(osg::INFO) << _shader->getTypename() << " Shader \""
+            OSG_INFO << _shader->getTypename() << " Shader \""
                 << _shader->getName() << "\" infolog:\n" << infoLog << std::endl;
         }
     }

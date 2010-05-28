@@ -61,7 +61,7 @@ GLuint Drawable::generateDisplayList(unsigned int contextID, unsigned int sizeHi
         DisplayListMap::iterator itr = dll.lower_bound(sizeHint);
         if (itr!=dll.end())
         {
-            // osg::notify(osg::NOTICE)<<"Reusing a display list of size = "<<itr->first<<" for requested size = "<<sizeHint<<std::endl;
+            // OSG_NOTICE<<"Reusing a display list of size = "<<itr->first<<" for requested size = "<<sizeHint<<std::endl;
 
             ++s_numberDrawablesReusedLastInLastFrame;
             
@@ -72,13 +72,13 @@ GLuint Drawable::generateDisplayList(unsigned int contextID, unsigned int sizeHi
         } 
         else
         {
-            // osg::notify(osg::NOTICE)<<"Creating a new display list of size = "<<sizeHint<<" although "<<dll.size()<<" are available"<<std::endl;
+            // OSG_NOTICE<<"Creating a new display list of size = "<<sizeHint<<" although "<<dll.size()<<" are available"<<std::endl;
             ++s_numberNewDrawablesInLastFrame;
             return  glGenLists( 1 );
         }
     }
 #else
-    osg::notify(osg::NOTICE)<<"Warning: Drawable::generateDisplayList(..) - not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: Drawable::generateDisplayList(..) - not supported."<<std::endl;
     return 0;
 #endif
 }
@@ -105,7 +105,7 @@ void Drawable::deleteDisplayList(unsigned int contextID,GLuint globj, unsigned i
         s_deletedDisplayListCache[contextID].insert(DisplayListMap::value_type(sizeHint,globj));
     }
 #else
-    osg::notify(osg::NOTICE)<<"Warning: Drawable::deleteDisplayList(..) - not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: Drawable::deleteDisplayList(..) - not supported."<<std::endl;
 #endif
 }
 
@@ -125,7 +125,7 @@ void Drawable::flushAllDeletedDisplayLists(unsigned int contextID)
 
     dll.clear();         
 #else
-    osg::notify(osg::NOTICE)<<"Warning: Drawable::deleteDisplayList(..) - not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: Drawable::deleteDisplayList(..) - not supported."<<std::endl;
 #endif
 }
 
@@ -177,7 +177,7 @@ void Drawable::flushDeletedDisplayLists(unsigned int contextID, double& availabl
 
              if (noDeleted+dll.size() != prev_size)
              {
-                osg::notify(osg::WARN)<<"Error in delete"<<std::endl;
+                OSG_WARN<<"Error in delete"<<std::endl;
              }    
         }
         else
@@ -202,17 +202,17 @@ void Drawable::flushDeletedDisplayLists(unsigned int contextID, double& availabl
 
              if (noDeleted+dll.size() != prev_size)
              {
-                osg::notify(osg::WARN)<<"Error in delete"<<std::endl;
+                OSG_WARN<<"Error in delete"<<std::endl;
              }    
         }
     }
     elapsedTime = timer.delta_s(start_tick,timer.tick());
     
-    if (noDeleted!=0) notify(INFO)<<"Number display lists deleted = "<<noDeleted<<" elapsed time"<<elapsedTime<<std::endl;
+    if (noDeleted!=0) OSG_INFO<<"Number display lists deleted = "<<noDeleted<<" elapsed time"<<elapsedTime<<std::endl;
 
     availableTime -= elapsedTime;
 #else
-    osg::notify(osg::NOTICE)<<"Warning: Drawable::flushDeletedDisplayLists(..) - not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: Drawable::flushDeletedDisplayLists(..) - not supported."<<std::endl;
 #endif
 }
 
@@ -491,7 +491,7 @@ void Drawable::compileGLObjects(RenderInfo& renderInfo) const
 
     glEndList();
 #else
-    osg::notify(osg::NOTICE)<<"Warning: Drawable::compileGLObjects(RenderInfo&) - not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: Drawable::compileGLObjects(RenderInfo&) - not supported."<<std::endl;
 #endif
 }
 
@@ -595,7 +595,7 @@ void Drawable::setUseDisplayList(bool flag)
     {
         if (flag)
         {
-            notify(WARN)<<"Warning: attempt to setUseDisplayList(true) on a drawable with does not support display lists."<<std::endl;
+            OSG_WARN<<"Warning: attempt to setUseDisplayList(true) on a drawable with does not support display lists."<<std::endl;
         }
         else 
         {
@@ -613,7 +613,7 @@ void Drawable::setUseVertexBufferObjects(bool flag)
 {
     // _useVertexBufferObjects = true;
 
-    // osg::notify(osg::NOTICE)<<"Drawable::setUseVertexBufferObjects("<<flag<<")"<<std::endl;
+    // OSG_NOTICE<<"Drawable::setUseVertexBufferObjects("<<flag<<")"<<std::endl;
 
     // if value unchanged simply return.
     if (_useVertexBufferObjects==flag) return;
@@ -796,9 +796,9 @@ BoundingBox Drawable::computeBound() const
     non_const_this->accept(cb);
 
 #if 0    
-    osg::notify(osg::NOTICE)<<"computeBound() "<<cb._bb.xMin()<<", "<<cb._bb.xMax()<<", "<<std::endl;
-    osg::notify(osg::NOTICE)<<"               "<<cb._bb.yMin()<<", "<<cb._bb.yMax()<<", "<<std::endl;
-    osg::notify(osg::NOTICE)<<"               "<<cb._bb.zMin()<<", "<<cb._bb.zMax()<<", "<<std::endl;
+    OSG_NOTICE<<"computeBound() "<<cb._bb.xMin()<<", "<<cb._bb.xMax()<<", "<<std::endl;
+    OSG_NOTICE<<"               "<<cb._bb.yMin()<<", "<<cb._bb.yMax()<<", "<<std::endl;
+    OSG_NOTICE<<"               "<<cb._bb.zMin()<<", "<<cb._bb.zMax()<<", "<<std::endl;
 #endif
     
     return cb._bb;
@@ -1018,7 +1018,7 @@ void Drawable::Extensions::glFogCoordfv(const GLfloat* coord) const
     }
     else
     {
-        notify(WARN)<<"Error: glFogCoordfv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glFogCoordfv not supported by OpenGL driver"<<std::endl;
     }    
 }
 
@@ -1030,7 +1030,7 @@ void Drawable::Extensions::glSecondaryColor3ubv(const GLubyte* coord) const
     }
     else
     {
-        notify(WARN)<<"Error: glSecondaryColor3ubv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glSecondaryColor3ubv not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1042,7 +1042,7 @@ void Drawable::Extensions::glSecondaryColor3fv(const GLfloat* coord) const
     }
     else
     {
-        notify(WARN)<<"Error: glSecondaryColor3fv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glSecondaryColor3fv not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1054,7 +1054,7 @@ void Drawable::Extensions::glMultiTexCoord1f(GLenum target,GLfloat coord) const
     }
     else
     {
-        notify(WARN)<<"Error: glMultiTexCoord1f not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glMultiTexCoord1f not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1066,7 +1066,7 @@ void Drawable::Extensions::glMultiTexCoord2fv(GLenum target,const GLfloat* coord
     }
     else
     {
-        notify(WARN)<<"Error: glMultiTexCoord2fv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glMultiTexCoord2fv not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1078,7 +1078,7 @@ void Drawable::Extensions::glMultiTexCoord3fv(GLenum target,const GLfloat* coord
     }
     else
     {
-        notify(WARN)<<"Error: _glMultiTexCoord3fv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: _glMultiTexCoord3fv not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1090,7 +1090,7 @@ void Drawable::Extensions::glMultiTexCoord4fv(GLenum target,const GLfloat* coord
     }
     else
     {
-        notify(WARN)<<"Error: glMultiTexCoord4fv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glMultiTexCoord4fv not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1102,7 +1102,7 @@ void Drawable::Extensions::glMultiTexCoord1d(GLenum target,GLdouble coord) const
     }
     else
     {
-        notify(WARN)<<"Error: glMultiTexCoord1d not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glMultiTexCoord1d not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1114,7 +1114,7 @@ void Drawable::Extensions::glMultiTexCoord2dv(GLenum target,const GLdouble* coor
     }
     else
     {
-        notify(WARN)<<"Error: glMultiTexCoord2dv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glMultiTexCoord2dv not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1126,7 +1126,7 @@ void Drawable::Extensions::glMultiTexCoord3dv(GLenum target,const GLdouble* coor
     }
     else
     {
-        notify(WARN)<<"Error: _glMultiTexCoord3dv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: _glMultiTexCoord3dv not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1138,7 +1138,7 @@ void Drawable::Extensions::glMultiTexCoord4dv(GLenum target,const GLdouble* coor
     }
     else
     {
-        notify(WARN)<<"Error: glMultiTexCoord4dv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glMultiTexCoord4dv not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1150,7 +1150,7 @@ void Drawable::Extensions::glVertexAttrib1s(unsigned int index, GLshort s) const
     }
     else
     {
-        notify(WARN)<<"Error: glVertexAttrib1s not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glVertexAttrib1s not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1162,7 +1162,7 @@ void Drawable::Extensions::glVertexAttrib1f(unsigned int index, GLfloat f) const
     }
     else
     {
-        notify(WARN)<<"Error: glVertexAttrib1f not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glVertexAttrib1f not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1174,7 +1174,7 @@ void Drawable::Extensions::glVertexAttrib1d(unsigned int index, GLdouble f) cons
     }
     else
     {
-        notify(WARN)<<"Error: glVertexAttrib1d not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glVertexAttrib1d not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1186,7 +1186,7 @@ void Drawable::Extensions::glVertexAttrib2fv(unsigned int index, const GLfloat *
     }
     else
     {
-        notify(WARN)<<"Error: glVertexAttrib2fv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glVertexAttrib2fv not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1198,7 +1198,7 @@ void Drawable::Extensions::glVertexAttrib3fv(unsigned int index, const GLfloat *
     }
     else
     {
-        notify(WARN)<<"Error: glVertexAttrib3fv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glVertexAttrib3fv not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1210,7 +1210,7 @@ void Drawable::Extensions::glVertexAttrib4fv(unsigned int index, const GLfloat *
     }
     else
     {
-        notify(WARN)<<"Error: glVertexAttrib4fv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glVertexAttrib4fv not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1222,7 +1222,7 @@ void Drawable::Extensions::glVertexAttrib2dv(unsigned int index, const GLdouble 
     }
     else
     {
-        notify(WARN)<<"Error: glVertexAttrib2dv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glVertexAttrib2dv not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1234,7 +1234,7 @@ void Drawable::Extensions::glVertexAttrib3dv(unsigned int index, const GLdouble 
     }
     else
     {
-        notify(WARN)<<"Error: glVertexAttrib3dv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glVertexAttrib3dv not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1246,7 +1246,7 @@ void Drawable::Extensions::glVertexAttrib4dv(unsigned int index, const GLdouble 
     }
     else
     {
-        notify(WARN)<<"Error: glVertexAttrib4dv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glVertexAttrib4dv not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1258,7 +1258,7 @@ void Drawable::Extensions::glVertexAttrib4ubv(unsigned int index, const GLubyte 
     }
     else
     {
-        notify(WARN)<<"Error: glVertexAttrib4ubv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glVertexAttrib4ubv not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -1270,38 +1270,38 @@ void Drawable::Extensions::glVertexAttrib4Nubv(unsigned int index, const GLubyte
     }
     else
     {
-        notify(WARN)<<"Error: glVertexAttrib4Nubv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glVertexAttrib4Nubv not supported by OpenGL driver"<<std::endl;
     }
 }
 
 void Drawable::Extensions::glGenBuffers(GLsizei n, GLuint *buffers) const
 {
     if (_glGenBuffers) _glGenBuffers(n, buffers); 
-    else notify(WARN)<<"Error: glGenBuffers not supported by OpenGL driver"<<std::endl;
+    else OSG_WARN<<"Error: glGenBuffers not supported by OpenGL driver"<<std::endl;
 }
 
 void Drawable::Extensions::glBindBuffer(GLenum target, GLuint buffer) const
 {
     if (_glBindBuffer) _glBindBuffer(target, buffer); 
-    else notify(WARN)<<"Error: glBindBuffer not supported by OpenGL driver"<<std::endl;
+    else OSG_WARN<<"Error: glBindBuffer not supported by OpenGL driver"<<std::endl;
 }
 
 void Drawable::Extensions::glBufferData(GLenum target, GLsizeiptrARB size, const GLvoid *data, GLenum usage) const
 {
     if (_glBufferData) _glBufferData(target, size, data, usage); 
-    else notify(WARN)<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
+    else OSG_WARN<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
 }
 
 void Drawable::Extensions::glBufferSubData(GLenum target, GLintptrARB offset, GLsizeiptrARB size, const GLvoid *data) const
 {
     if (_glBufferSubData) _glBufferSubData(target, offset, size, data); 
-    else notify(WARN)<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
+    else OSG_WARN<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
 }
 
 void Drawable::Extensions::glDeleteBuffers(GLsizei n, const GLuint *buffers) const
 {
     if (_glDeleteBuffers) _glDeleteBuffers(n, buffers); 
-    else notify(WARN)<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
+    else OSG_WARN<<"Error: glBufferData not supported by OpenGL driver"<<std::endl;
 }
 
 GLboolean Drawable::Extensions::glIsBuffer (GLuint buffer) const
@@ -1309,7 +1309,7 @@ GLboolean Drawable::Extensions::glIsBuffer (GLuint buffer) const
     if (_glIsBuffer) return _glIsBuffer(buffer);
     else 
     {
-        notify(WARN)<<"Error: glIsBuffer not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glIsBuffer not supported by OpenGL driver"<<std::endl;
         return GL_FALSE;
     }
 }
@@ -1317,7 +1317,7 @@ GLboolean Drawable::Extensions::glIsBuffer (GLuint buffer) const
 void Drawable::Extensions::glGetBufferSubData (GLenum target, GLintptrARB offset, GLsizeiptrARB size, GLvoid *data) const
 {
     if (_glGetBufferSubData) _glGetBufferSubData(target,offset,size,data);
-    else notify(WARN)<<"Error: glGetBufferSubData not supported by OpenGL driver"<<std::endl;
+    else OSG_WARN<<"Error: glGetBufferSubData not supported by OpenGL driver"<<std::endl;
 }
 
 GLvoid* Drawable::Extensions::glMapBuffer (GLenum target, GLenum access) const
@@ -1325,7 +1325,7 @@ GLvoid* Drawable::Extensions::glMapBuffer (GLenum target, GLenum access) const
     if (_glMapBuffer) return _glMapBuffer(target,access);
     else 
     {
-        notify(WARN)<<"Error: glMapBuffer not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glMapBuffer not supported by OpenGL driver"<<std::endl;
         return 0;
     }
 }
@@ -1335,7 +1335,7 @@ GLboolean Drawable::Extensions::glUnmapBuffer (GLenum target) const
     if (_glUnmapBuffer) return _glUnmapBuffer(target);
     else 
     {
-        notify(WARN)<<"Error: glUnmapBuffer not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glUnmapBuffer not supported by OpenGL driver"<<std::endl;
         return GL_FALSE;
     }
 }
@@ -1343,13 +1343,13 @@ GLboolean Drawable::Extensions::glUnmapBuffer (GLenum target) const
 void Drawable::Extensions::glGetBufferParameteriv (GLenum target, GLenum pname, GLint *params) const
 {
     if (_glGetBufferParameteriv) _glGetBufferParameteriv(target,pname,params);
-    else notify(WARN)<<"Error: glGetBufferParameteriv not supported by OpenGL driver"<<std::endl;
+    else OSG_WARN<<"Error: glGetBufferParameteriv not supported by OpenGL driver"<<std::endl;
 }
 
 void Drawable::Extensions::glGetBufferPointerv (GLenum target, GLenum pname, GLvoid* *params) const
 {
     if (_glGetBufferPointerv) _glGetBufferPointerv(target,pname,params);
-    else notify(WARN)<<"Error: glGetBufferPointerv not supported by OpenGL driver"<<std::endl;
+    else OSG_WARN<<"Error: glGetBufferPointerv not supported by OpenGL driver"<<std::endl;
 }
 
 
@@ -1361,7 +1361,7 @@ void Drawable::Extensions::glGenOcclusionQueries( GLsizei n, GLuint *ids ) const
     }
     else
     {
-        osg::notify(osg::WARN)<<"Error: glGenOcclusionQueries not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glGenOcclusionQueries not supported by OpenGL driver"<<std::endl;
     }    
 }
 
@@ -1373,7 +1373,7 @@ void Drawable::Extensions::glDeleteOcclusionQueries( GLsizei n, const GLuint *id
     }
     else
     {
-        osg::notify(osg::WARN)<<"Error: glDeleteOcclusionQueries not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glDeleteOcclusionQueries not supported by OpenGL driver"<<std::endl;
     }    
 }
 
@@ -1385,7 +1385,7 @@ GLboolean Drawable::Extensions::glIsOcclusionQuery( GLuint id ) const
     }
     else
     {
-        osg::notify(osg::WARN)<<"Error: glIsOcclusionQuery not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glIsOcclusionQuery not supported by OpenGL driver"<<std::endl;
     }    
 
     return GLboolean( 0 );
@@ -1399,7 +1399,7 @@ void Drawable::Extensions::glBeginOcclusionQuery( GLuint id ) const
     }
     else
     {
-        osg::notify(osg::WARN)<<"Error: glBeginOcclusionQuery not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glBeginOcclusionQuery not supported by OpenGL driver"<<std::endl;
     }    
 }
 
@@ -1411,7 +1411,7 @@ void Drawable::Extensions::glEndOcclusionQuery() const
     }
     else
     {
-        osg::notify(osg::WARN)<<"Error: glEndOcclusionQuery not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glEndOcclusionQuery not supported by OpenGL driver"<<std::endl;
     }    
 }
 
@@ -1423,7 +1423,7 @@ void Drawable::Extensions::glGetOcclusionQueryiv( GLuint id, GLenum pname, GLint
     }
     else
     {
-        osg::notify(osg::WARN)<<"Error: glGetOcclusionQueryiv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glGetOcclusionQueryiv not supported by OpenGL driver"<<std::endl;
     }    
 }
 
@@ -1435,7 +1435,7 @@ void Drawable::Extensions::glGetOcclusionQueryuiv( GLuint id, GLenum pname, GLui
     }
     else
     {
-        osg::notify(osg::WARN)<<"Error: glGetOcclusionQueryuiv not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glGetOcclusionQueryuiv not supported by OpenGL driver"<<std::endl;
     }    
 }
 
@@ -1444,7 +1444,7 @@ void Drawable::Extensions::glGetQueryiv(GLenum target, GLenum pname, GLint *para
   if (_gl_get_queryiv_arb)
     _gl_get_queryiv_arb(target, pname, params);
   else
-    osg::notify(osg::WARN) << "Error: glGetQueryiv not supported by OpenGL driver" << std::endl;
+    OSG_WARN << "Error: glGetQueryiv not supported by OpenGL driver" << std::endl;
 }
 
 void Drawable::Extensions::glGenQueries(GLsizei n, GLuint *ids) const
@@ -1452,7 +1452,7 @@ void Drawable::Extensions::glGenQueries(GLsizei n, GLuint *ids) const
   if (_gl_gen_queries_arb)
     _gl_gen_queries_arb(n, ids);
   else
-    osg::notify(osg::WARN) << "Error: glGenQueries not supported by OpenGL driver" << std::endl;
+    OSG_WARN << "Error: glGenQueries not supported by OpenGL driver" << std::endl;
 }
 
 void Drawable::Extensions::glBeginQuery(GLenum target, GLuint id) const
@@ -1460,7 +1460,7 @@ void Drawable::Extensions::glBeginQuery(GLenum target, GLuint id) const
   if (_gl_begin_query_arb)
     _gl_begin_query_arb(target, id);
   else
-    osg::notify(osg::WARN) << "Error: glBeginQuery not supported by OpenGL driver" << std::endl;
+    OSG_WARN << "Error: glBeginQuery not supported by OpenGL driver" << std::endl;
 }
 
 void Drawable::Extensions::glEndQuery(GLenum target) const
@@ -1468,14 +1468,14 @@ void Drawable::Extensions::glEndQuery(GLenum target) const
   if (_gl_end_query_arb)
     _gl_end_query_arb(target);
   else
-    osg::notify(osg::WARN) << "Error: glEndQuery not supported by OpenGL driver" << std::endl;
+    OSG_WARN << "Error: glEndQuery not supported by OpenGL driver" << std::endl;
 }
 
 GLboolean Drawable::Extensions::glIsQuery(GLuint id) const
 {
   if (_gl_is_query_arb) return _gl_is_query_arb(id);
 
-  osg::notify(osg::WARN) << "Error: glIsQuery not supported by OpenGL driver" << std::endl;
+  OSG_WARN << "Error: glIsQuery not supported by OpenGL driver" << std::endl;
   return false;
 }
 
@@ -1484,7 +1484,7 @@ void Drawable::Extensions::glDeleteQueries(GLsizei n, const GLuint *ids) const
     if (_gl_delete_queries_arb) 
         _gl_delete_queries_arb(n, ids);
     else
-        osg::notify(osg::WARN) << "Error: glIsQuery not supported by OpenGL driver" << std::endl;
+        OSG_WARN << "Error: glIsQuery not supported by OpenGL driver" << std::endl;
 }
 
 void Drawable::Extensions::glGetQueryObjectiv(GLuint id, GLenum pname, GLint *params) const
@@ -1492,7 +1492,7 @@ void Drawable::Extensions::glGetQueryObjectiv(GLuint id, GLenum pname, GLint *pa
   if (_gl_get_query_objectiv_arb)
     _gl_get_query_objectiv_arb(id, pname, params);
   else
-    osg::notify(osg::WARN) << "Error: glGetQueryObjectiv not supported by OpenGL driver" << std::endl;
+    OSG_WARN << "Error: glGetQueryObjectiv not supported by OpenGL driver" << std::endl;
 }
 
 void Drawable::Extensions::glGetQueryObjectuiv(GLuint id, GLenum pname, GLuint *params) const
@@ -1500,7 +1500,7 @@ void Drawable::Extensions::glGetQueryObjectuiv(GLuint id, GLenum pname, GLuint *
   if (_gl_get_query_objectuiv_arb)
     _gl_get_query_objectuiv_arb(id, pname, params);
   else
-    osg::notify(osg::WARN) << "Error: glGetQueryObjectuiv not supported by OpenGL driver" << std::endl;
+    OSG_WARN << "Error: glGetQueryObjectuiv not supported by OpenGL driver" << std::endl;
 }
 
 void Drawable::Extensions::glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64EXT *params) const
@@ -1508,5 +1508,5 @@ void Drawable::Extensions::glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint
   if (_gl_get_query_objectui64v)
     _gl_get_query_objectui64v(id, pname, params);
   else
-    osg::notify(osg::WARN) << "Error: glGetQueryObjectui64v not supported by OpenGL driver" << std::endl;
+    OSG_WARN << "Error: glGetQueryObjectui64v not supported by OpenGL driver" << std::endl;
 }

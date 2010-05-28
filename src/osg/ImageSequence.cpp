@@ -86,7 +86,7 @@ void ImageSequence::setLength(double length)
 {
     if (length<=0.0)
     {
-        osg::notify(osg::NOTICE)<<"ImageSequence::setLength("<<length<<") invalid length value, must be greater than 0."<<std::endl;
+        OSG_NOTICE<<"ImageSequence::setLength("<<length<<") invalid length value, must be greater than 0."<<std::endl;
         return;
     }
     
@@ -126,7 +126,7 @@ void ImageSequence::setImage(unsigned int pos, osg::Image* image)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-    osg::notify(osg::INFO)<<"ImageSequence::setImage("<<pos<<","<<image->getFileName()<<")"<<std::endl;
+    OSG_INFO<<"ImageSequence::setImage("<<pos<<","<<image->getFileName()<<")"<<std::endl;
 
     if (pos>=_images.size()) _images.resize(pos+1);
     
@@ -155,7 +155,7 @@ void ImageSequence::addImage(osg::Image* image)
 
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
-    // osg::notify(osg::NOTICE)<<"merging image in order expected : "<<image->getFileName()<<std::endl;
+    // OSG_NOTICE<<"merging image in order expected : "<<image->getFileName()<<std::endl;
     _images.push_back(image);
 
     computeTimePerImage();
@@ -168,7 +168,7 @@ void ImageSequence::addImage(osg::Image* image)
 
 void ImageSequence::setImageToChild(const osg::Image* image)
 {
-    // osg::notify(osg::NOTICE)<<"setImageToChild("<<image<<")"<<std::endl;
+    // OSG_NOTICE<<"setImageToChild("<<image<<")"<<std::endl;
 
     if (image==0) return;
 
@@ -208,7 +208,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
     osg::NodeVisitor::ImageRequestHandler* irh = nv->getImageRequestHandler();
     const osg::FrameStamp* fs = nv->getFrameStamp();
 
-    // osg::notify(osg::NOTICE)<<"ImageSequence::update("<<fs<<", "<<irh<<")"<<std::endl;
+    // OSG_NOTICE<<"ImageSequence::update("<<fs<<", "<<irh<<")"<<std::endl;
 
     if (_referenceTime == DBL_MAX)
     {
@@ -280,7 +280,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
     }
 
     int index = int(time/_timePerImage);
-    // osg::notify(osg::NOTICE)<<"time= "<<time<<" _timePerImage="<<_timePerImage<<" index="<<index<<" _length="<<_length<<std::endl;
+    // OSG_NOTICE<<"time= "<<time<<" _timePerImage="<<_timePerImage<<" index="<<index<<" _length="<<_length<<std::endl;
 
     if (index>=int(_images.size())) index = int(_images.size())-1;
 
@@ -297,7 +297,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
                 
         if (index>=0)
         {
-            // osg::notify(osg::NOTICE)<<"at time "<<time<<" setting child = "<<index<<std::endl;
+            // OSG_NOTICE<<"at time "<<time<<" setting child = "<<index<<std::endl;
 
             if (_previousAppliedImageIndex!=index)
             {
@@ -315,7 +315,7 @@ void ImageSequence::update(osg::NodeVisitor* nv)
         }
     }
 
-    // osg::notify(osg::NOTICE)<<"time = "<<time<<std::endl;
+    // OSG_NOTICE<<"time = "<<time<<std::endl;
 
     if (irh)
     {

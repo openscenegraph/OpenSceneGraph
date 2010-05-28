@@ -111,7 +111,7 @@ void DrawPixels::drawImplementation(RenderInfo&) const
                      _image->data() );
     }
 #else
-    osg::notify(osg::NOTICE)<<"Warning: DrawPixels::drawImplementation(RenderInfo&) - not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: DrawPixels::drawImplementation(RenderInfo&) - not supported."<<std::endl;
 #endif
 }
 

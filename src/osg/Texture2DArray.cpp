@@ -106,7 +106,7 @@ void Texture2DArray::setImage(unsigned int layer, Image* image)
     if (static_cast<int>(layer) >= _textureDepth)
     {
         // print warning and do nothing
-        notify(WARN)<<"Warning: Texture2DArray::setImage(..) failed, the given layer number is bigger then the size of the texture array."<<std::endl;
+        OSG_WARN<<"Warning: Texture2DArray::setImage(..) failed, the given layer number is bigger then the size of the texture array."<<std::endl;
         return;
     }
     
@@ -215,7 +215,7 @@ void Texture2DArray::apply(State& state) const
     // if not supported, then return
     if (!extensions->isTexture2DArraySupported() || !extensions->isTexture3DSupported())
     {
-        notify(WARN)<<"Warning: Texture2DArray::apply(..) failed, 2D texture arrays are not support by OpenGL driver."<<std::endl;
+        OSG_WARN<<"Warning: Texture2DArray::apply(..) failed, 2D texture arrays are not support by OpenGL driver."<<std::endl;
         return;
     }
     
@@ -435,7 +435,7 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
     if (indepth > extensions->maxLayerCount())
     {
         // we give a warning and do nothing
-        notify(WARN)<<"Warning: Texture2DArray::applyTexImage2DArray_subload(..) the given layer number exceeds the maximum number of supported layers."<<std::endl;
+        OSG_WARN<<"Warning: Texture2DArray::applyTexImage2DArray_subload(..) the given layer number exceeds the maximum number of supported layers."<<std::endl;
         return;        
     }
 
@@ -450,7 +450,7 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
         image->t()!=inheight || 
         image->getInternalTextureFormat()!=inInternalFormat ) 
     {
-        notify(WARN)<<"Warning: Texture2DArray::applyTexImage2DArray_subload(..) given image do have wrong dimension or internal format."<<std::endl;
+        OSG_WARN<<"Warning: Texture2DArray::applyTexImage2DArray_subload(..) given image do have wrong dimension or internal format."<<std::endl;
         return;        
     }    
     
@@ -481,7 +481,7 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
         // if we support compression and image is compressed, then
         else if (extensions->isCompressedTexImage3DSupported())
         {
-            // notify(WARN)<<"glCompressedTexImage3D "<<inwidth<<", "<<inheight<<", "<<indepth<<std::endl;
+            // OSG_WARN<<"glCompressedTexImage3D "<<inwidth<<", "<<inheight<<", "<<indepth<<std::endl;
 
             GLint blockSize, size;
             getCompressedSize(_internalFormat, inwidth, inheight, 1, blockSize,size);
@@ -501,7 +501,7 @@ void Texture2DArray::applyTexImage2DArray_subload(State& state, Image* image, GL
         if( !image->isMipmap() )
         {
             numMipmapLevels = 1;
-            notify(WARN)<<"Warning: Texture2DArray::applyTexImage2DArray_subload(..) mipmap layer not passed, and auto mipmap generation turned off or not available. Check texture's min/mag filters & hardware mipmap generation."<<std::endl;
+            OSG_WARN<<"Warning: Texture2DArray::applyTexImage2DArray_subload(..) mipmap layer not passed, and auto mipmap generation turned off or not available. Check texture's min/mag filters & hardware mipmap generation."<<std::endl;
 
             // the image object does provide mipmaps, so upload the in the certain levels of a layer
         }else
@@ -585,7 +585,7 @@ void Texture2DArray::copyTexSubImage2DArray(State& state, int xoffset, int yoffs
     }
     else
     {
-        notify(WARN)<<"Warning: Texture2DArray::copyTexSubImage2DArray(..) failed, cannot not copy to a non existant texture."<<std::endl;
+        OSG_WARN<<"Warning: Texture2DArray::copyTexSubImage2DArray(..) failed, cannot not copy to a non existant texture."<<std::endl;
     }
 }
 
@@ -729,7 +729,7 @@ void Texture2DArray::Extensions::glTexImage3D( GLenum target, GLint level, GLenu
     }
     else
     {
-        notify(WARN)<<"Error: glTexImage3D not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glTexImage3D not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -741,7 +741,7 @@ void Texture2DArray::Extensions::glTexSubImage3D( GLenum target, GLint level, GL
     }
     else
     {
-        notify(WARN)<<"Error: glTexSubImage3D not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glTexSubImage3D not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -753,7 +753,7 @@ void Texture2DArray::Extensions::glCompressedTexImage3D(GLenum target, GLint lev
     }
     else
     {
-        notify(WARN)<<"Error: glCompressedTexImage3D not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glCompressedTexImage3D not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -765,7 +765,7 @@ void Texture2DArray::Extensions::glCompressedTexSubImage3D( GLenum target, GLint
     }
     else
     {
-        notify(WARN)<<"Error: glCompressedTexImage2D not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glCompressedTexImage2D not supported by OpenGL driver"<<std::endl;
     }
 }
 
@@ -777,7 +777,7 @@ void Texture2DArray::Extensions::glCopyTexSubImage3D( GLenum target, GLint level
     }
     else
     {
-        notify(WARN)<<"Error: glCopyTexSubImage3D not supported by OpenGL driver"<<std::endl;
+        OSG_WARN<<"Error: glCopyTexSubImage3D not supported by OpenGL driver"<<std::endl;
     }
 }
 

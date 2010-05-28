@@ -69,7 +69,7 @@ bool Stats::setAttribute(int frameNumber, const std::string& attributeName, doub
     int index = getIndex(frameNumber);
     if (index<0) 
     {
-        osg::notify(osg::NOTICE)<<"Failed to assing valid index for Stats::setAttribute("<<frameNumber<<","<<attributeName<<","<<value<<")"<<std::endl;
+        OSG_NOTICE<<"Failed to assing valid index for Stats::setAttribute("<<frameNumber<<","<<attributeName<<","<<value<<")"<<std::endl;
         return false;
     }
     

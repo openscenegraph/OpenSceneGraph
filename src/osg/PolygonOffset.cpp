@@ -53,7 +53,7 @@ bool PolygonOffset::areFactorAndUnitsMultipliersSet()
 void PolygonOffset::setFactorAndUnitsMultipliersUsingBestGuessForDriver()
 {
     s_MultiplerSet = true;
-    // osg::notify(osg::NOTICE)<<"PolygonOffset::setFactorAndUnitMultipliersUsingBestGuessForDriver()"<<std::endl;
+    // OSG_NOTICE<<"PolygonOffset::setFactorAndUnitMultipliersUsingBestGuessForDriver()"<<std::endl;
 
 #if 0
     const GLubyte* renderer = glGetString(GL_RENDERER);
@@ -65,7 +65,7 @@ void PolygonOffset::setFactorAndUnitsMultipliersUsingBestGuessForDriver()
         {
             setFactorMultiplier(1.0f);
             setUnitsMultiplier(128.0f);
-            osg::notify(osg::INFO)<<"PolygonOffset::setFactorAndUnitsMultipliersUsingBestGuessForDriver() apply ATI workaround."<<std::endl;
+            OSG_INFO<<"PolygonOffset::setFactorAndUnitsMultipliersUsingBestGuessForDriver() apply ATI workaround."<<std::endl;
         }
     }
 #endif

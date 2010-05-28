@@ -302,7 +302,7 @@ void Program::setParameter( GLenum pname, GLint value )
             dirtyProgram();    // needed?
             break;
         default:
-            osg::notify(osg::WARN) << "setParameter invalid param " << pname << std::endl;
+            OSG_WARN << "setParameter invalid param " << pname << std::endl;
             break;
     }
 }
@@ -315,7 +315,7 @@ GLint Program::getParameter( GLenum pname ) const
         case GL_GEOMETRY_INPUT_TYPE_EXT:   return _geometryInputType;
         case GL_GEOMETRY_OUTPUT_TYPE_EXT:  return _geometryOutputType;
     }
-    osg::notify(osg::WARN) << "getParameter invalid param " << pname << std::endl;
+    OSG_WARN << "getParameter invalid param " << pname << std::endl;
     return 0;
 }
 
@@ -453,11 +453,10 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
     if( ! _needsLink ) return;
     _needsLink = false;
 
-    osg::notify(osg::INFO)
-        << "Linking osg::Program \"" << _program->getName() << "\""
-        << " id=" << _glProgramHandle
-        << " contextID=" << _contextID
-        <<  std::endl;
+    OSG_INFO << "Linking osg::Program \"" << _program->getName() << "\""
+             << " id=" << _glProgramHandle
+             << " contextID=" << _contextID
+             <<  std::endl;
 
     if (_extensions->isGeometryShader4Supported())
     {
@@ -489,7 +488,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
     for( AttribBindingList::const_iterator itr = programBindlist.begin();
         itr != programBindlist.end(); ++itr )
     {
-        osg::notify(osg::NOTICE)<<"Program's vertex attrib binding "<<itr->second<<", "<<itr->first<<std::endl;
+        OSG_NOTICE<<"Program's vertex attrib binding "<<itr->second<<", "<<itr->first<<std::endl;
         _extensions->glBindAttribLocation( _glProgramHandle, itr->second, reinterpret_cast<const GLchar*>(itr->first.c_str()) );
     }
 
@@ -501,7 +500,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
         for( AttribBindingList::const_iterator itr = stateBindlist.begin();
             itr != stateBindlist.end(); ++itr )
         {
-            osg::notify(osg::NOTICE)<<"State's vertex attrib binding "<<itr->second<<", "<<itr->first<<std::endl;
+            OSG_NOTICE<<"State's vertex attrib binding "<<itr->second<<", "<<itr->first<<std::endl;
             _extensions->glBindAttribLocation( _glProgramHandle, itr->second, reinterpret_cast<const GLchar*>(itr->first.c_str()) );
         }
     }
@@ -521,12 +520,12 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
     _isLinked = (linked == GL_TRUE);
     if( ! _isLinked )
     {
-        osg::notify(osg::WARN) << "glLinkProgram \""<< _program->getName() << "\" FAILED" << std::endl;
+        OSG_WARN << "glLinkProgram \""<< _program->getName() << "\" FAILED" << std::endl;
 
         std::string infoLog;
         if( getInfoLog(infoLog) )
         {
-            osg::notify(osg::WARN) << "Program \""<< _program->getName() << "\" " 
+            OSG_WARN << "Program \""<< _program->getName() << "\" " 
                                       "infolog:\n" << infoLog << std::endl;
         }
         
@@ -537,7 +536,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
         std::string infoLog;
         if( getInfoLog(infoLog) )
         {
-            osg::notify(osg::INFO) << "Program \""<< _program->getName() << "\" "<<
+            OSG_INFO << "Program \""<< _program->getName() << "\" "<<
                                       "link succeded, infolog:\n" << infoLog << std::endl;
         }
     }
@@ -564,12 +563,11 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
             {
                 _uniformInfoMap[reinterpret_cast<char*>(name)] = ActiveVarInfo(loc,type,size);
 
-                osg::notify(osg::INFO)
-                    << "\tUniform \"" << name << "\""
-                    << " loc="<< loc
-                    << " size="<< size
-                    << " type=" << Uniform::getTypename((Uniform::Type)type)
-                    << std::endl;
+                OSG_INFO << "\tUniform \"" << name << "\""
+                         << " loc="<< loc
+                         << " size="<< size
+                         << " type=" << Uniform::getTypename((Uniform::Type)type)
+                         << std::endl;
             }
         }
         delete [] name;
@@ -596,16 +594,15 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
             {
                 _attribInfoMap[reinterpret_cast<char*>(name)] = ActiveVarInfo(loc,type,size);
 
-                osg::notify(osg::INFO)
-                    << "\tAttrib \"" << name << "\""
-                    << " loc=" << loc
-                    << " size=" << size
-                    << std::endl;
+                OSG_INFO << "\tAttrib \"" << name << "\""
+                         << " loc=" << loc
+                         << " size=" << size
+                         << std::endl;
             }
         }
         delete [] name;
     }
-    osg::notify(osg::INFO) << std::endl;
+    OSG_INFO << std::endl;
 }
 
 bool Program::PerContextProgram::validateProgram()
@@ -616,17 +613,16 @@ bool Program::PerContextProgram::validateProgram()
     if( validated == GL_TRUE)
         return true;
 
-    osg::notify(osg::INFO)
-        << "glValidateProgram FAILED \"" << _program->getName() << "\""
-        << " id=" << _glProgramHandle
-        << " contextID=" << _contextID
-        <<  std::endl;
+    OSG_INFO << "glValidateProgram FAILED \"" << _program->getName() << "\""
+             << " id=" << _glProgramHandle
+             << " contextID=" << _contextID
+             <<  std::endl;
 
     std::string infoLog;
     if( getInfoLog(infoLog) )
-        osg::notify(osg::INFO) << "infolog:\n" << infoLog << std::endl;
+        OSG_INFO << "infolog:\n" << infoLog << std::endl;
 
-    osg::notify(osg::INFO) << std::endl;
+    OSG_INFO << std::endl;
     
     return false;
 }

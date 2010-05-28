@@ -46,16 +46,16 @@ void Light::init( void )
     _linear_attenuation = 0.0f;
     _quadratic_attenuation = 0.0f;
 
-    //     notify(DEBUG) << "_ambient "<<_ambient<<std::endl;
-    //     notify(DEBUG) << "_diffuse "<<_diffuse<<std::endl;
-    //     notify(DEBUG) << "_specular "<<_specular<<std::endl;
-    //     notify(DEBUG) << "_position "<<_position<<std::endl;
-    //     notify(DEBUG) << "_direction "<<_direction<<std::endl;
-    //     notify(DEBUG) << "_spot_exponent "<<_spot_exponent<<std::endl;
-    //     notify(DEBUG) << "_spot_cutoff "<<_spot_cutoff<<std::endl;
-    //     notify(DEBUG) << "_constant_attenuation "<<_constant_attenuation<<std::endl;
-    //     notify(DEBUG) << "_linear_attenuation "<<_linear_attenuation<<std::endl;
-    //     notify(DEBUG) << "_quadratic_attenuation "<<_quadratic_attenuation<<std::endl;
+    //     OSG_DEBUG << "_ambient "<<_ambient<<std::endl;
+    //     OSG_DEBUG << "_diffuse "<<_diffuse<<std::endl;
+    //     OSG_DEBUG << "_specular "<<_specular<<std::endl;
+    //     OSG_DEBUG << "_position "<<_position<<std::endl;
+    //     OSG_DEBUG << "_direction "<<_direction<<std::endl;
+    //     OSG_DEBUG << "_spot_exponent "<<_spot_exponent<<std::endl;
+    //     OSG_DEBUG << "_spot_cutoff "<<_spot_cutoff<<std::endl;
+    //     OSG_DEBUG << "_constant_attenuation "<<_constant_attenuation<<std::endl;
+    //     OSG_DEBUG << "_linear_attenuation "<<_linear_attenuation<<std::endl;
+    //     OSG_DEBUG << "_quadratic_attenuation "<<_quadratic_attenuation<<std::endl;
 }
 
 void Light::setLightNum(int num) 
@@ -113,7 +113,7 @@ void Light::captureLightState()
     glGetLightfv( (GLenum)((int)GL_LIGHT0 + _lightnum), GL_LINEAR_ATTENUATION,   &_linear_attenuation );
     glGetLightfv( (GLenum)((int)GL_LIGHT0 + _lightnum), GL_QUADRATIC_ATTENUATION,   &_quadratic_attenuation );
 #else
-    osg::notify(osg::NOTICE)<<"Warning: Light::captureLightState() - not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: Light::captureLightState() - not supported."<<std::endl;
 #endif
 }
 
@@ -131,6 +131,6 @@ void Light::apply(State&) const
     glLightf ( (GLenum)((int)GL_LIGHT0 + _lightnum), GL_LINEAR_ATTENUATION,    _linear_attenuation );
     glLightf ( (GLenum)((int)GL_LIGHT0 + _lightnum), GL_QUADRATIC_ATTENUATION, _quadratic_attenuation );
 #else
-    osg::notify(osg::NOTICE)<<"Warning: Light::apply(State&) - not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: Light::apply(State&) - not supported."<<std::endl;
 #endif
 }

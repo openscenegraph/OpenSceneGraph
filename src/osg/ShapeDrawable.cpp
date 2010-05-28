@@ -37,7 +37,7 @@ class DrawShapeVisitor : public ConstShapeVisitor
 #if 0
             if (hints)
             {
-                notify(NOTICE)<<"Warning: TessellationHints ignored in present osg::ShapeDrawable implementation."<<std::endl;
+                OSG_NOTICE<<"Warning: TessellationHints ignored in present osg::ShapeDrawable implementation."<<std::endl;
             }
 #endif   
         }
@@ -846,7 +846,7 @@ void DrawShapeVisitor::apply(const Capsule& capsule)
 
 void DrawShapeVisitor::apply(const InfinitePlane&)
 {
-    notify(NOTICE)<<"Warning: DrawShapeVisitor::apply(const InfinitePlane& plane) not yet implemented. "<<std::endl;
+    OSG_NOTICE<<"Warning: DrawShapeVisitor::apply(const InfinitePlane& plane) not yet implemented. "<<std::endl;
 }
 
 void DrawShapeVisitor::apply(const TriangleMesh& mesh)
@@ -1843,7 +1843,7 @@ void PrimitiveShapeVisitor::apply(const Capsule& capsule)
 
 void PrimitiveShapeVisitor::apply(const InfinitePlane&)
 {
-    notify(NOTICE)<<"Warning: PrimitiveShapeVisitor::apply(const InfinitePlane& plane) not yet implemented. "<<std::endl;
+    OSG_NOTICE<<"Warning: PrimitiveShapeVisitor::apply(const InfinitePlane& plane) not yet implemented. "<<std::endl;
 }
 
 void PrimitiveShapeVisitor::apply(const TriangleMesh& mesh)

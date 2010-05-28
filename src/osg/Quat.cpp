@@ -217,7 +217,7 @@ void Quat::makeRotate_original( const Vec3d& from, const Vec3d& to )
 
     if ( fabs(cosangle - 1) < epsilon )
     {
-        osg::notify(osg::INFO)<<"*** Quat::makeRotate(from,to) with near co-linear vectors, epsilon= "<<fabs(cosangle-1)<<std::endl;
+        OSG_INFO<<"*** Quat::makeRotate(from,to) with near co-linear vectors, epsilon= "<<fabs(cosangle-1)<<std::endl;
     
         // cosangle is close to 1, so the vectors are close to being coincident
         // Need to generate an angle of zero with any vector we like

@@ -48,8 +48,8 @@ Timer* Timer::instance()
         else
         {
             _secsPerTick = 1.0;
-            notify(NOTICE)<<"Error: Timer::Timer() unable to use QueryPerformanceFrequency, "<<std::endl;
-            notify(NOTICE)<<"timing code will be wrong, Windows error code: "<<GetLastError()<<std::endl;
+            OSG_NOTICE<<"Error: Timer::Timer() unable to use QueryPerformanceFrequency, "<<std::endl;
+            OSG_NOTICE<<"timing code will be wrong, Windows error code: "<<GetLastError()<<std::endl;
         }
         
         setStartTick();        
@@ -64,8 +64,8 @@ Timer* Timer::instance()
         }
         else
         {
-            notify(NOTICE)<<"Error: Timer::Timer() unable to use QueryPerformanceCounter, "<<std::endl;
-            notify(NOTICE)<<"timing code will be wrong, Windows error code: "<<GetLastError()<<std::endl;
+            OSG_NOTICE<<"Error: Timer::Timer() unable to use QueryPerformanceCounter, "<<std::endl;
+            OSG_NOTICE<<"timing code will be wrong, Windows error code: "<<GetLastError()<<std::endl;
             return 0;
         }
     }

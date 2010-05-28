@@ -384,7 +384,7 @@ void TextureCubeMap::copyTexSubImageCubeMap(State& state, int face, int xoffset,
         if (!textureObject)
         {
             // failed to create texture object
-            osg::notify(osg::NOTICE)<<"Warning : failed to create TextureCubeMap texture obeject, copyTexSubImageCubeMap abondoned."<<std::endl;
+            OSG_NOTICE<<"Warning : failed to create TextureCubeMap texture obeject, copyTexSubImageCubeMap abondoned."<<std::endl;
             return;
         }
         
@@ -408,7 +408,7 @@ void TextureCubeMap::copyTexSubImageCubeMap(State& state, int face, int xoffset,
             if (!hardwareMipMapOn)
             {
                 // have to switch off mip mapping
-                notify(NOTICE)<<"Warning: TextureCubeMap::copyTexImage2D(,,,,) switch off mip mapping as hardware support not available."<<std::endl;
+                OSG_NOTICE<<"Warning: TextureCubeMap::copyTexImage2D(,,,,) switch off mip mapping as hardware support not available."<<std::endl;
                 _min_filter = LINEAR;
             }
         }

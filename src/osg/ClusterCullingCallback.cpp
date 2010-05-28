@@ -125,9 +125,9 @@ void ClusterCullingCallback::computeFrom(const osg::Drawable* drawable)
     cdf.set(_controlPoint,_normal);
     drawable->accept(cdf);
     
-//    osg::notify(osg::NOTICE)<<"ClusterCullingCallback::computeFrom() _controlPoint="<<_controlPoint<<std::endl;
-//    osg::notify(osg::NOTICE)<<"                                      _normal="<<_normal<<std::endl;
-//    osg::notify(osg::NOTICE)<<"                                      cdf._deviation="<<cdf._deviation<<std::endl;
+//    OSG_NOTICE<<"ClusterCullingCallback::computeFrom() _controlPoint="<<_controlPoint<<std::endl;
+//    OSG_NOTICE<<"                                      _normal="<<_normal<<std::endl;
+//    OSG_NOTICE<<"                                      cdf._deviation="<<cdf._deviation<<std::endl;
     
 
     if (_normal.length2()==0.0) _deviation = -1.0f;
@@ -183,8 +183,8 @@ bool ClusterCullingCallback::cull(osg::NodeVisitor* nv, osg::Drawable* , osg::St
     
     float deviation = (eye_cp * _normal)/radius;
 
-//    osg::notify(osg::NOTICE)<<"ClusterCullingCallback::cull() _normal="<<_normal<<" _controlPointtest="<<_controlPoint<<" eye_cp="<<eye_cp<<std::endl;
-//    osg::notify(osg::NOTICE)<<"                             deviation="<<deviation<<" _deviation="<<_deviation<<" test="<<(deviation < _deviation)<<std::endl;
+//    OSG_NOTICE<<"ClusterCullingCallback::cull() _normal="<<_normal<<" _controlPointtest="<<_controlPoint<<" eye_cp="<<eye_cp<<std::endl;
+//    OSG_NOTICE<<"                             deviation="<<deviation<<" _deviation="<<_deviation<<" test="<<(deviation < _deviation)<<std::endl;
 
     return deviation < _deviation;
 }

@@ -55,7 +55,7 @@ Uniform::~Uniform()
 
 void Uniform::addParent(osg::StateSet* object)
 {
-    osg::notify(osg::DEBUG_FP)<<"Uniform Adding parent"<<std::endl;
+    OSG_DEBUG_FP<<"Uniform Adding parent"<<std::endl;
 
     _parents.push_back(object);
 }
@@ -72,7 +72,7 @@ bool Uniform::setType( Type t )
 
     if( _type != UNDEFINED )
     {
-        osg::notify(osg::WARN) << "cannot change Uniform type" << std::endl;
+        OSG_WARN << "cannot change Uniform type" << std::endl;
         return false;
     }
     _type = t;
@@ -84,7 +84,7 @@ void Uniform::setName( const std::string& name )
 {
     if( _name != "" )
     {
-        osg::notify(osg::WARN) << "cannot change Uniform name" << std::endl;
+        OSG_WARN << "cannot change Uniform name" << std::endl;
         return;
     }
     _name = name;
@@ -94,7 +94,7 @@ void Uniform::setNumElements( unsigned int numElements )
 {
     if( numElements < 1 )
     {
-        osg::notify(osg::WARN) << "Uniform numElements < 1 is invalid" << std::endl;
+        OSG_WARN << "Uniform numElements < 1 is invalid" << std::endl;
         return;
     }
 
@@ -102,7 +102,7 @@ void Uniform::setNumElements( unsigned int numElements )
 
     if( _numElements>0 )
     {
-        osg::notify(osg::WARN) << "Warning: Uniform::setNumElements() cannot change Uniform numElements, size already fixed." << std::endl;
+        OSG_WARN << "Warning: Uniform::setNumElements() cannot change Uniform numElements, size already fixed." << std::endl;
         return;
     }
 
@@ -155,7 +155,7 @@ bool Uniform::setArray( FloatArray* array )
     // incoming array must match configuration of the Uniform
     if( getInternalArrayType(getType())!=GL_FLOAT || getInternalArrayNumElements()!=array->getNumElements() )
     {
-        osg::notify(osg::WARN) << "Uniform::setArray : incompatible array" << std::endl;
+        OSG_WARN << "Uniform::setArray : incompatible array" << std::endl;
         return false;
     }
 
@@ -173,7 +173,7 @@ bool Uniform::setArray( IntArray* array )
     // incoming array must match configuration of the Uniform
     if( getInternalArrayType(getType())!=GL_INT || getInternalArrayNumElements()!=array->getNumElements() )
     {
-        osg::notify(osg::WARN) << "Uniform::setArray : incompatible array" << std::endl;
+        OSG_WARN << "Uniform::setArray : incompatible array" << std::endl;
         return false;
     }
 
@@ -191,7 +191,7 @@ bool Uniform::setArray( UIntArray* array )
     // incoming array must match configuration of the Uniform
     if( getInternalArrayType(getType())!=GL_UNSIGNED_INT || getInternalArrayNumElements()!=array->getNumElements() )
     {
-        osg::notify(osg::WARN) << "Uniform::setArray : incompatible array" << std::endl;
+        OSG_WARN << "Uniform::setArray : incompatible array" << std::endl;
         return false;
     }
 
@@ -268,9 +268,8 @@ bool Uniform::isCompatibleType( Type t ) const
     if( t == getType() ) return true;
     if( getGlApiType(t) == getGlApiType(getType()) ) return true;
 
-    osg::notify(osg::WARN)
-        << "Cannot assign between Uniform types " << getTypename(t)
-        << " and " << getTypename(getType()) << std::endl;
+    OSG_WARN << "Cannot assign between Uniform types " << getTypename(t)
+             << " and " << getTypename(getType()) << std::endl;
     return false;
 }
 
@@ -1393,7 +1392,7 @@ bool Uniform::getElement( unsigned int index, bool& b0, bool& b1, bool& b2, bool
 
 void Uniform::apply(const GL2Extensions* ext, GLint location) const
 {
-    // osg::notify(osg::NOTICE) << "uniform at "<<location<<" "<<_name<< std::endl;
+    // OSG_NOTICE << "uniform at "<<location<<" "<<_name<< std::endl;
 
     GLsizei num = getNumElements();
     if( num < 1 ) return;
@@ -1461,14 +1460,14 @@ void Uniform::apply(const GL2Extensions* ext, GLint location) const
         break;
 
     default:
-        osg::notify(osg::FATAL) << "how got here? " __FILE__ ":" << __LINE__ << std::endl;
+        OSG_FATAL << "how got here? " __FILE__ ":" << __LINE__ << std::endl;
         break;
     }
 }
 
 void Uniform::setUpdateCallback(Callback* uc)
 {
-    osg::notify(osg::INFO)<<"Uniform::Setting Update callbacks"<<std::endl;
+    OSG_INFO<<"Uniform::Setting Update callbacks"<<std::endl;
 
     if (_updateCallback==uc) return;
     
@@ -1480,13 +1479,13 @@ void Uniform::setUpdateCallback(Callback* uc)
     
     if (delta!=0)
     {
-        osg::notify(osg::INFO)<<"Going to set Uniform parents"<<std::endl;
+        OSG_INFO<<"Going to set Uniform parents"<<std::endl;
 
         for(ParentList::iterator itr=_parents.begin();
             itr!=_parents.end();
             ++itr)
         {
-            osg::notify(osg::INFO)<<"   setting Uniform parent"<<std::endl;
+            OSG_INFO<<"   setting Uniform parent"<<std::endl;
             (*itr)->setNumChildrenRequiringUpdateTraversal((*itr)->getNumChildrenRequiringUpdateTraversal()+delta);
         }
     }
@@ -1494,7 +1493,7 @@ void Uniform::setUpdateCallback(Callback* uc)
 
 void Uniform::setEventCallback(Callback* ec)
 {
-    osg::notify(osg::INFO)<<"Uniform::Setting Event callbacks"<<std::endl;
+    OSG_INFO<<"Uniform::Setting Event callbacks"<<std::endl;
 
     if (_eventCallback==ec) return;
     

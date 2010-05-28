@@ -105,7 +105,7 @@ void TexEnvCombine::apply(State& state) const
         glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
     }
 #else
-    osg::notify(osg::NOTICE)<<"Warning: TexEnvCombine::apply(State&) - not supported."<<std::endl;
+    OSG_NOTICE<<"Warning: TexEnvCombine::apply(State&) - not supported."<<std::endl;
 #endif
 }
 void TexEnvCombine::setCombine_RGB(GLint cm) { _combine_RGB = cm; }
@@ -127,7 +127,7 @@ static GLint Valid_Operand_Alpha(GLint op, const char* functionName)
 {
     if (op==TexEnvCombine::SRC_ALPHA || op==TexEnvCombine::ONE_MINUS_SRC_ALPHA) return op;
 
-    notify(WARN)<<"Warning:: TexEnvCombine::"<<functionName<<"("<<op<<") invalid parameter value,"<<std::endl<<
+    OSG_WARN<<"Warning:: TexEnvCombine::"<<functionName<<"("<<op<<") invalid parameter value,"<<std::endl<<
                   "          must be SRC_ALPHA or ONE_MINUS_SRC_ALPHA, resetting to SRC_ALPHA."<<std::endl;
     return TexEnvCombine::SRC_ALPHA;
 }

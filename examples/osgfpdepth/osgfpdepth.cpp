@@ -538,9 +538,10 @@ public:
                         Object*, NodeVisitor* /*nv*/)
     {
         if (ea.getHandled()) return false;
-        ref_ptr<Depth> depth = _depth.lock();
-        if (!depth.valid())
-            return false;
+
+        ref_ptr<Depth> depth;
+        if (!_depth.lock(depth)) return false;
+
         switch(ea.getEventType())
         {
         case(osgGA::GUIEventAdapter::KEYUP):

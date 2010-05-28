@@ -99,7 +99,7 @@ public:
         {
             while( isRunning() )
                 OpenThreads::Thread::YieldCurrentThread();
-            osg::notify(osg::DEBUG_INFO)<<"GifImageStream thread quitted"<<std::endl;
+            OSG_DEBUG<<"GifImageStream thread quitted"<<std::endl;
         }
     }
 
@@ -183,7 +183,7 @@ public:
     {
         if ( isRunning() )
         {
-            osg::notify(osg::WARN)<<"GifImageStream::addToImageStream: thread is running!"<<std::endl;
+            OSG_WARN<<"GifImageStream::addToImageStream: thread is running!"<<std::endl;
             return;
         }
 
@@ -588,7 +588,7 @@ class ReaderWriterGIF : public osgDB::ReaderWriter
             // Use GifImageStream to display animate GIFs 
             if ( gifStream )
             {
-                osg::notify(osg::DEBUG_INFO)<<"Using GifImageStream ..."<<std::endl;
+                OSG_DEBUG<<"Using GifImageStream ..."<<std::endl;
                 return gifStream;
             }
 

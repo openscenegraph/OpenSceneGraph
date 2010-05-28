@@ -240,7 +240,7 @@ static void load_material_texture(    obj::Model &model,
             
             if  ( image->isImageTranslucent())
             {
-                osg::notify(osg::INFO)<<"Found transparent image"<<std::endl;
+                OSG_INFO<<"Found transparent image"<<std::endl;
                 stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
                 stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
             }
@@ -253,12 +253,12 @@ static void load_material_texture(    obj::Model &model,
         osg::Matrix mat;
         if (map.uScale != 1.0f || map.vScale != 1.0f)
         {
-            osg::notify(osg::DEBUG_INFO) << "Obj TexMat scale=" << map.uScale << "," << map.vScale << std::endl;
+            OSG_DEBUG << "Obj TexMat scale=" << map.uScale << "," << map.vScale << std::endl;
             mat *= osg::Matrix::scale(map.uScale, map.vScale, 1.0);
         }
         if (map.uOffset != 0.0f || map.vOffset != 0.0f)
         {
-            osg::notify(osg::DEBUG_INFO) << "Obj TexMat offset=" << map.uOffset << "," << map.uOffset << std::endl;
+            OSG_DEBUG << "Obj TexMat offset=" << map.uOffset << "," << map.uOffset << std::endl;
             mat *= osg::Matrix::translate(map.uOffset, map.vOffset, 0.0);
         }
 
@@ -343,7 +343,7 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
                 material.specular[3]!=1.0||
                 material.emissive[3]!=1.0)
             {
-                osg::notify(osg::INFO)<<"Found transparent material"<<std::endl;
+                OSG_INFO<<"Found transparent material"<<std::endl;
                 isTransparent = true;
             }
         }
@@ -473,13 +473,13 @@ osg::Geometry* ReaderWriterOBJ::convertElementListToGeometry(obj::Model& model, 
     
     if (numNormalIndices!=0 && numNormalIndices!=numVertexIndices)
     {
-        osg::notify(osg::NOTICE)<<"Incorrect number of normals, ignore them"<<std::endl;
+        OSG_NOTICE<<"Incorrect number of normals, ignore them"<<std::endl;
         numNormalIndices = 0;
     }
     
     if (numTexCoordIndices!=0 && numTexCoordIndices!=numVertexIndices)
     {
-        osg::notify(osg::NOTICE)<<"Incorrect number of normals, ignore them"<<std::endl;
+        OSG_NOTICE<<"Incorrect number of normals, ignore them"<<std::endl;
         numTexCoordIndices = 0;
     }
     
@@ -728,7 +728,7 @@ osg::Node* ReaderWriterOBJ::convertModelToSceneGraph(obj::Model& model, ObjOptio
             MaterialToStateSetMap::const_iterator it = materialToStateSetMap.find(es.materialName);
             if (it == materialToStateSetMap.end())
             {
-                osg::notify(osg::WARN) << "Obj unable to find material '" << es.materialName << "'" << std::endl;
+                OSG_WARN << "Obj unable to find material '" << es.materialName << "'" << std::endl;
             }
 
             osg::StateSet* stateset = materialToStateSetMap[es.materialName].get();
@@ -843,7 +843,7 @@ ReaderWriterOBJ::ObjOptionsStruct ReaderWriterOBJ::parseOptions(const osgDB::Rea
                 {
                     int unit = atoi(post_equals.c_str());    // (probably should use istringstream rather than atoi)
                     localOptions.textureUnitAllocation.push_back(std::make_pair(unit,(obj::Material::Map::TextureMapType) type));
-                    osg::notify(osg::NOTICE)<<"Obj Found map in options, ["<<pre_equals<<"]="<<unit<<std::endl;
+                    OSG_NOTICE<<"Obj Found map in options, ["<<pre_equals<<"]="<<unit<<std::endl;
                 }
             }
         }

@@ -142,8 +142,8 @@ void SlideShowConstructor::setPresentationAspectRatio(const std::string& str)
         if (ratio!=0.0) setPresentationAspectRatio(1280.0f/1024.0f);
         else
         {
-            osg::notify(osg::WARN)<<"Error: presentation aspect ratio incorrect type"<<std::endl;
-            osg::notify(osg::WARN)<<"       valid types are \"Reality Theatre\", \"Desktop\" or a numerical value."<<std::endl;
+            OSG_WARN<<"Error: presentation aspect ratio incorrect type"<<std::endl;
+            OSG_WARN<<"       valid types are \"Reality Theatre\", \"Desktop\" or a numerical value."<<std::endl;
         }
     }
 }
@@ -160,7 +160,7 @@ void SlideShowConstructor::createPresentation()
     _textFontDataDefault.maximumWidth = 0.8f;
 #endif
     
-    osg::notify(osg::INFO)<<"_titlePositionDataDefault.position="<<_titlePositionDataDefault.position<<std::endl;
+    OSG_INFO<<"_titlePositionDataDefault.position="<<_titlePositionDataDefault.position<<std::endl;
 
     _textPositionDataDefault.position.set(0.1f,_titlePositionDataDefault.position.y()-_titleFontDataDefault.characterSize,0.0f);
     _imagePositionDataDefault.position.set(0.5f,0.5f,0.0f);
@@ -180,7 +180,7 @@ void SlideShowConstructor::createPresentation()
     hp->center = slideCenter;
     hp->up.set(0.0f,0.0f,1.0f);
     
-    osg::notify(osg::INFO)<<" slideCenter "<<slideCenter<<std::endl;
+    OSG_INFO<<" slideCenter "<<slideCenter<<std::endl;
     
     if (_presentationDuration>=0.0)
     {
@@ -200,7 +200,7 @@ LayerAttributes* SlideShowConstructor::getOrCreateLayerAttributes(osg::Node* nod
     {
         if (node->getUserData())
         {
-            osg::notify(osg::NOTICE)<<"UserData already assigned, overriding to set LayerAttributes."<<std::endl;
+            OSG_NOTICE<<"UserData already assigned, overriding to set LayerAttributes."<<std::endl;
         }
 
         la = new LayerAttributes;
@@ -315,7 +315,7 @@ void SlideShowConstructor::addLayer(bool inheritPreviousLayers, bool defineAsBas
 
     _currentLayer = new osg::Group;
 
-    // osg::notify(osg::NOTICE)<<"addLayer"<<std::endl;
+    // OSG_NOTICE<<"addLayer"<<std::endl;
     
     if (!_previousLayer || !inheritPreviousLayers)
     {
@@ -323,7 +323,7 @@ void SlideShowConstructor::addLayer(bool inheritPreviousLayers, bool defineAsBas
         _imagePositionData =  _imagePositionDataDefault;
         _modelPositionData =  _modelPositionDataDefault;    
 
-        // osg::notify(osg::NOTICE)<<"   new layer background = "<<_slideBackgroundImageFileName<<std::endl;
+        // OSG_NOTICE<<"   new layer background = "<<_slideBackgroundImageFileName<<std::endl;
 
         osg::ref_ptr<osg::Image> image = !_slideBackgroundImageFileName.empty() ?
             osgDB::readImageFile(_slideBackgroundImageFileName, _options.get()) :
@@ -347,7 +347,7 @@ void SlideShowConstructor::addLayer(bool inheritPreviousLayers, bool defineAsBas
                                                             osg::Vec3(_slideWidth,0.0f,0.0f),
                                                             osg::Vec3(0.0f,0.0f,_slideHeight),
                                                             s, t);
-            // osg::notify(osg::NOTICE)<<"Image loaded "<<image.get()<<"  "<<_slideBackgroundImageFileName<<std::endl;
+            // OSG_NOTICE<<"Image loaded "<<image.get()<<"  "<<_slideBackgroundImageFileName<<std::endl;
 
             if (useTextureRectangle)
             {
@@ -453,7 +453,7 @@ void SlideShowConstructor::layerClickToDoOperation(Operation operation, bool rel
         {
             if (_currentLayer->getNumChildren()>0)
             {
-                osg::notify(osg::INFO)<<"creating new group within layer"<<std::endl;
+                OSG_INFO<<"creating new group within layer"<<std::endl;
                 osg::Group* group = new osg::Group;
                 _currentLayer->addChild(group);
                 _currentLayer = group;
@@ -461,7 +461,7 @@ void SlideShowConstructor::layerClickToDoOperation(Operation operation, bool rel
         }
         else
         {
-            osg::notify(osg::INFO)<<"creating secondary group within layer"<<std::endl;
+            OSG_INFO<<"creating secondary group within layer"<<std::endl;
             osg::Group* group = new osg::Group;
             _previousLayer->addChild(group);
             _currentLayer = group;
@@ -482,7 +482,7 @@ void SlideShowConstructor::layerClickToDoOperation(const std::string& command, O
         {
             if (_currentLayer->getNumChildren()>0)
             {
-                osg::notify(osg::INFO)<<"creating new group within layer"<<std::endl;
+                OSG_INFO<<"creating new group within layer"<<std::endl;
                 osg::Group* group = new osg::Group;
                 _currentLayer->addChild(group);
                 _currentLayer = group;
@@ -490,7 +490,7 @@ void SlideShowConstructor::layerClickToDoOperation(const std::string& command, O
         }
         else
         {
-            osg::notify(osg::INFO)<<"creating secondary group within layer"<<std::endl;
+            OSG_INFO<<"creating secondary group within layer"<<std::endl;
             osg::Group* group = new osg::Group;
             _previousLayer->addChild(group);
             _currentLayer = group;
@@ -511,7 +511,7 @@ void SlideShowConstructor::layerClickEventOperation(const KeyPosition& keyPos, b
         {
             if (_currentLayer->getNumChildren()>0)
             {
-                osg::notify(osg::INFO)<<"creating new group within layer"<<std::endl;
+                OSG_INFO<<"creating new group within layer"<<std::endl;
                 osg::Group* group = new osg::Group;
                 _currentLayer->addChild(group);
                 _currentLayer = group;
@@ -519,7 +519,7 @@ void SlideShowConstructor::layerClickEventOperation(const KeyPosition& keyPos, b
         }
         else
         {
-            osg::notify(osg::INFO)<<"creating secondary group within layer"<<std::endl;
+            OSG_INFO<<"creating secondary group within layer"<<std::endl;
             osg::Group* group = new osg::Group;
             _previousLayer->addChild(group);
             _currentLayer = group;
@@ -764,7 +764,7 @@ osg::Geometry* SlideShowConstructor::createTexturedQuadGeometry(const osg::Vec3&
     {
         imageStream->pause();
     
-        osg::notify(osg::INFO)<<"Reading video "<<imageStream->getFileName()<<std::endl; 
+        OSG_INFO<<"Reading video "<<imageStream->getFileName()<<std::endl; 
         
         // make sure that OSX uses the client storage extension to accelerate peformance where possible.
         texture->setClientStorageHint(true);
@@ -867,7 +867,7 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
     osg::AnimationPathCallback* animation = getAnimationPathCallback(positionData);
     if (animation)
     {
-        osg::notify(osg::INFO)<<"Have animation path for image"<<std::endl;
+        OSG_INFO<<"Have animation path for image"<<std::endl;
 
         osg::BoundingSphere::vec_type pivot = positionData.absolute_path ?
                 osg::BoundingSphere::vec_type(0.0f,0.0f,0.0f) :
@@ -1030,7 +1030,7 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
     osg::AnimationPathCallback* animation = getAnimationPathCallback(positionData);
     if (animation)
     {
-        osg::notify(osg::INFO)<<"Have animation path for image"<<std::endl;
+        OSG_INFO<<"Have animation path for image"<<std::endl;
         
         osg::BoundingSphere::vec_type pivot = positionData.absolute_path ?
                 osg::BoundingSphere::vec_type(0.0f,0.0f,0.0f) :
@@ -1148,7 +1148,7 @@ public:
 
     virtual void operator() (osg::Node*) const
     {
-        osg::notify(osg::INFO)<<"PDF Page to be updated "<<_pageNum<<std::endl;
+        OSG_INFO<<"PDF Page to be updated "<<_pageNum<<std::endl;
     
         if (_pdfImage.valid() && _pdfImage->getPageNum()!=_pageNum)
         {
@@ -1167,7 +1167,7 @@ osg::Image* SlideShowConstructor::addInteractiveImage(const std::string& filenam
 
     osg::Image* image = osgDB::readImageFile(filename, _options.get());
     
-    osg::notify(osg::INFO)<<"addInteractiveImage("<<filename<<") "<<image<<std::endl;
+    OSG_INFO<<"addInteractiveImage("<<filename<<") "<<image<<std::endl;
     
     
     if (!image) return 0;
@@ -1238,7 +1238,7 @@ osg::Image* SlideShowConstructor::addInteractiveImage(const std::string& filenam
     osg::AnimationPathCallback* animation = getAnimationPathCallback(positionData);
     if (animation)
     {
-        osg::notify(osg::INFO)<<"Have animation path for image"<<std::endl;
+        OSG_INFO<<"Have animation path for image"<<std::endl;
         
         osg::BoundingSphere::vec_type pivot = positionData.absolute_path ?
                 osg::BoundingSphere::vec_type(0.0f,0.0f,0.0f) :
@@ -1267,7 +1267,7 @@ osg::Image* SlideShowConstructor::addInteractiveImage(const std::string& filenam
     {
         getOrCreateLayerAttributes(_currentLayer.get())->addEnterCallback(new SetPageCallback(pdfImage, imageData.page));
 
-        osg::notify(osg::INFO)<<"Setting pdf page num "<<imageData.page<<std::endl;
+        OSG_INFO<<"Setting pdf page num "<<imageData.page<<std::endl;
         pdfImage->setBackgroundColor(imageData.backgroundColor);
         pdfImage->page(imageData.page);
 
@@ -1289,7 +1289,7 @@ std::string SlideShowConstructor::findFileAndRecordPath(const std::string& filen
     std::string foundFile = osgDB::findDataFile(filename, _options.get());
     if (foundFile.empty()) return foundFile;
 
-    osg::notify(osg::INFO)<<"foundFile "<<foundFile<<std::endl;
+    OSG_INFO<<"foundFile "<<foundFile<<std::endl;
 
     std::string path = osgDB::getFilePath(foundFile);
     if (!path.empty() && _filePathData.valid())
@@ -1297,7 +1297,7 @@ std::string SlideShowConstructor::findFileAndRecordPath(const std::string& filen
         osgDB::FilePathList::iterator itr = std::find(_filePathData->filePathList.begin(),_filePathData->filePathList.end(),path);
         if (itr==_filePathData->filePathList.end())
         {
-            osg::notify(osg::INFO)<<"New path to record "<<path<<std::endl;
+            OSG_INFO<<"New path to record "<<path<<std::endl;
             _filePathData->filePathList.push_front(path);
         }
     }
@@ -1308,7 +1308,7 @@ std::string SlideShowConstructor::findFileAndRecordPath(const std::string& filen
 
 void SlideShowConstructor::addModel(const std::string& filename, const PositionData& positionData, const ModelData& modelData)
 {
-    osg::notify(osg::INFO)<<"SlideShowConstructor::addModel("<<filename<<")"<<std::endl;
+    OSG_INFO<<"SlideShowConstructor::addModel("<<filename<<")"<<std::endl;
 
     osg::Node* subgraph = 0;
 
@@ -1337,7 +1337,7 @@ void SlideShowConstructor::addModel(const std::string& filename, const PositionD
         addModel(subgraph, positionData, modelData);
     }
 
-    osg::notify(osg::INFO)<<"end of SlideShowConstructor::addModel("<<filename<<")"<<std::endl<<std::endl;
+    OSG_INFO<<"end of SlideShowConstructor::addModel("<<filename<<")"<<std::endl<<std::endl;
 
 }
 
@@ -1387,7 +1387,7 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
         transform->setDataVariance(defaultMatrixDataVariance);
         transform->setMatrix(osg::Matrix::inverse(matrix));
         
-        osg::notify(osg::INFO)<<"Position Matrix "<<transform->getMatrix()<<std::endl;
+        OSG_INFO<<"Position Matrix "<<transform->getMatrix()<<std::endl;
 
         transform->addChild(subgraph);
 
@@ -1414,7 +1414,7 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
 
         animation_transform->addChild(subgraph);
 
-        osg::notify(osg::INFO)<<"Rotation Matrix "<<animation_transform->getMatrix()<<std::endl;
+        OSG_INFO<<"Rotation Matrix "<<animation_transform->getMatrix()<<std::endl;
 
         subgraph = animation_transform;
     }
@@ -1424,7 +1424,7 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
     osg::AnimationPathCallback* animation = getAnimationPathCallback(positionData);
     if (animation)
     {
-        osg::notify(osg::INFO)<<"Have animation path for model"<<std::endl;
+        OSG_INFO<<"Have animation path for model"<<std::endl;
 
         osg::BoundingSphere::vec_type pivot = positionData.absolute_path ?
             osg::BoundingSphere::vec_type(0.0f,0.0f,0.0f) :
@@ -1433,7 +1433,7 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
         osg::AnimationPath* path = animation->getAnimationPath();
         if (positionData.animation_name=="wheel" && (path->getTimeControlPointMap()).size()>=2)
         {
-            osg::notify(osg::INFO)<<"****  Need to handle special wheel animation"<<std::endl;
+            OSG_INFO<<"****  Need to handle special wheel animation"<<std::endl;
 
             osg::AnimationPath::TimeControlPointMap& controlPoints = path->getTimeControlPointMap();
             
@@ -1475,7 +1475,7 @@ void SlideShowConstructor::addModel(osg::Node* subgraph, const PositionData& pos
                 // direction - rotation about the z axis. 
                 rotation_z_axis = atan2f(delta_position.y(),delta_position.x());
 
-                osg::notify(osg::INFO)<<" rotation_y_axis="<<rotation_y_axis<<" rotation_z_axis="<<rotation_z_axis<<std::endl;
+                OSG_INFO<<" rotation_y_axis="<<rotation_y_axis<<" rotation_z_axis="<<rotation_z_axis<<std::endl;
                 
                 quat_y_axis.makeRotate(rotation_y_axis,0.0f,1.0f,0.0f);
                 quat_z_axis.makeRotate(rotation_z_axis,0.0f,0.0f,1.0f);
@@ -1561,7 +1561,7 @@ bool DraggerVolumeTileCallback::receive(const osgManipulator::MotionCommand& com
             // Transform by the localMotionMatrix
             _locator->setTransform(localMotionMatrix * _startMotionMatrix);
 
-            // osg::notify(osg::NOTICE)<<"New locator matrix "<<_locator->getTransform()<<std::endl;
+            // OSG_NOTICE<<"New locator matrix "<<_locator->getTransform()<<std::endl;
 
             return true;
         }
@@ -1863,7 +1863,7 @@ osg::AnimationPathCallback* SlideShowConstructor::getAnimationPathCallback(const
             apc->setTimeMultiplier(positionData.path_time_multiplier);
             apc->setUseInverseMatrix(positionData.inverse_path);
 
-            osg::notify(osg::INFO)<<"UseInverseMatrix "<<positionData.inverse_path<<std::endl;
+            OSG_INFO<<"UseInverseMatrix "<<positionData.inverse_path<<std::endl;
 
             return apc;
 
@@ -1877,12 +1877,12 @@ osg::Vec3 SlideShowConstructor::computePositionInModelCoords(const PositionData&
 {
     if (positionData.frame==SLIDE)
     {
-        osg::notify(osg::INFO)<<"********* Scaling from slide coords to model coords"<<std::endl;
+        OSG_INFO<<"********* Scaling from slide coords to model coords"<<std::endl;
         return convertSlideToModel(positionData.position);
     }
     else
     {
-        osg::notify(osg::INFO)<<"keeping original model coords"<<std::endl;
+        OSG_INFO<<"keeping original model coords"<<std::endl;
         return positionData.position;
     }
 }
@@ -1922,7 +1922,7 @@ void SlideShowConstructor::recordOptionsFilePath(const osgDB::Options* options)
             osgDB::FilePathList::iterator itr = std::find(_filePathData->filePathList.begin(),_filePathData->filePathList.end(),path);
             if (itr==_filePathData->filePathList.end())
             {
-                osg::notify(osg::INFO)<<"SlideShowConstructor::recordOptionsFilePath(..) - new path to record path="<<path<<" filename_used="<<filename_used<<std::endl;
+                OSG_INFO<<"SlideShowConstructor::recordOptionsFilePath(..) - new path to record path="<<path<<" filename_used="<<filename_used<<std::endl;
                 _filePathData->filePathList.push_front(path);
             }
         }

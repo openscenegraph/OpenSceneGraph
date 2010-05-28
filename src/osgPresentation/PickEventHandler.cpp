@@ -66,7 +66,7 @@ bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
                 {
                     if (ea.getEventType()==osgGA::GUIEventAdapter::MOVE)
                     {
-                        osg::notify(osg::INFO)<<"Tooltip..."<<std::endl;
+                        OSG_INFO<<"Tooltip..."<<std::endl;
                     }
                     else if (ea.getEventType()==osgGA::GUIEventAdapter::RELEASE)
                     {
@@ -79,8 +79,8 @@ bool PickEventHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionA
         }
         case(osgGA::GUIEventAdapter::KEYDOWN):
         {
-            //osg::notify(osg::NOTICE)<<"PickEventHandler KEYDOWN "<<(char)ea.getKey()<<std::endl;
-            //if (object) osg::notify(osg::NOTICE)<<"    "<<object->className()<<std::endl;
+            //OSG_NOTICE<<"PickEventHandler KEYDOWN "<<(char)ea.getKey()<<std::endl;
+            //if (object) OSG_NOTICE<<"    "<<object->className()<<std::endl;
             break;
         }
         default:
@@ -120,7 +120,7 @@ void PickEventHandler::doOperation()
     {
         case(osgPresentation::RUN):
         {
-            osg::notify(osg::NOTICE)<<"Run "<<_command<<std::endl;
+            OSG_NOTICE<<"Run "<<_command<<std::endl;
 
 #if 0
             osgDB::FilePathList& paths = osgDB::getDataFilePathList();
@@ -163,31 +163,31 @@ void PickEventHandler::doOperation()
 #endif
             int result = system(_command.c_str());
 
-            osg::notify(osg::INFO)<<"system("<<_command<<") result "<<result<<std::endl;
+            OSG_INFO<<"system("<<_command<<") result "<<result<<std::endl;
 
             break;
         }
         case(osgPresentation::LOAD):
         {
-            osg::notify(osg::NOTICE)<<"Load "<<_command<<std::endl;
+            OSG_NOTICE<<"Load "<<_command<<std::endl;
             break;
         }
         case(osgPresentation::EVENT):
         {
-            osg::notify(osg::INFO)<<"Event "<<_keyPos._key<<" "<<_keyPos._x<<" "<<_keyPos._y<<std::endl;
+            OSG_INFO<<"Event "<<_keyPos._key<<" "<<_keyPos._x<<" "<<_keyPos._y<<std::endl;
             if (SlideEventHandler::instance()) SlideEventHandler::instance()->dispatchEvent(_keyPos);
             break;
         }
         case(osgPresentation::JUMP):
         {
-            osg::notify(osg::NOTICE)<<"Requires jump "<<std::endl;
+            OSG_NOTICE<<"Requires jump "<<std::endl;
             break;
         }
     }
     
     if (requiresJump())
     {
-        osg::notify(osg::NOTICE)<<"Requires jump "<<_relativeJump<<", "<<_slideNum<<", "<<_layerNum<<std::endl;
+        OSG_NOTICE<<"Requires jump "<<_relativeJump<<", "<<_slideNum<<", "<<_layerNum<<std::endl;
 
         if (_relativeJump)
         {
@@ -200,7 +200,7 @@ void PickEventHandler::doOperation()
                 newLayer = 0;
             }
 
-            osg::notify(osg::NOTICE)<<"   jump to "<<newSlide<<", "<<newLayer<<std::endl;
+            OSG_NOTICE<<"   jump to "<<newSlide<<", "<<newLayer<<std::endl;
 
             SlideEventHandler::instance()->selectSlide(newSlide, newLayer);
         }
@@ -211,7 +211,7 @@ void PickEventHandler::doOperation()
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"No jump required."<<std::endl;
+        OSG_NOTICE<<"No jump required."<<std::endl;
     }
 }
 

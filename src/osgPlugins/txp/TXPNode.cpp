@@ -59,7 +59,7 @@ protected:
 
 
 
-#define TXPNodeERROR(s) osg::notify(osg::NOTICE) << "txp::TXPNode::" << (s) << " error: "
+#define TXPNodeERROR(s) OSG_NOTICE << "txp::TXPNode::" << (s) << " error: "
 
 TXPNode::TXPNode():
 osg::Group(),
@@ -248,7 +248,7 @@ void TXPNode::updateEye(osg::NodeVisitor& nv)
 {
     if (!_pageManager)
     {
-        osg::notify(osg::NOTICE)<<"TXPNode::updateEye() no pageManager created"<<std::endl;
+        OSG_NOTICE<<"TXPNode::updateEye() no pageManager created"<<std::endl;
         return;
     }
 
@@ -269,7 +269,7 @@ void TXPNode::updateEye(osg::NodeVisitor& nv)
                 osg::Node* node = (osg::Node*)(tile->GetLocalData());
                 _nodesToRemove.push_back(node);
 
-                //osg::notify(osg::NOTICE) << "Tile unload: " << x << " " << y << " " << lod << std::endl;
+                //OSG_NOTICE << "Tile unload: " << x << " " << y << " " << lod << std::endl;
             }
             _pageManager->AckUnload();
         }
@@ -282,7 +282,7 @@ void TXPNode::updateEye(osg::NodeVisitor& nv)
             {
                 osg::Node* node = addPagedLODTile(x,y);
                 tile->SetLocalData(node);
-                //osg::notify(osg::NOTICE) << "Tile load: " << x << " " << y << " " << lod << std::endl;
+                //OSG_NOTICE << "Tile load: " << x << " " << y << " " << lod << std::endl;
             }
             _pageManager->AckLoad();
             

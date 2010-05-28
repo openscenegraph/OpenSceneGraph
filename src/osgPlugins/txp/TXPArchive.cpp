@@ -38,7 +38,7 @@
 
 using namespace txp;
 
-#define TXPArchiveERROR(s) osg::notify(osg::NOTICE) << "txp::TXPArchive::" << (s) << " error: "
+#define TXPArchiveERROR(s) OSG_NOTICE << "txp::TXPArchive::" << (s) << " error: "
 
 
 void TXPArchive::SetTexMap(int key,osg::ref_ptr<osg::Texture2D> ref)
@@ -398,7 +398,7 @@ bool TXPArchive::loadTexture(int i)
         }
         else
         {
-            osg::notify(osg::WARN) << "TrPageArchive::LoadMaterials() error: "
+            OSG_WARN << "TrPageArchive::LoadMaterials() error: "
                    << "couldn't open image: " << filename << std::endl;
         }
     SetTexMap(i,osg_texture);
@@ -437,7 +437,7 @@ bool TXPArchive::loadModel(int ix)
     osg::Node *osg_model = osgDB::readNodeFile( name );
     if ( !osg_model )
         {
-            osg::notify(osg::WARN) << "TrPageArchive::LoadModels() error: "
+            OSG_WARN << "TrPageArchive::LoadModels() error: "
                    << "failed to load model: "
                    << name << std::endl;
         }
@@ -458,7 +458,7 @@ bool TXPArchive::loadModel(int ix)
 
 bool TXPArchive::loadModels()
 {
-    osg::notify(osg::INFO) << "txp:: Loading models ..." << std::endl;
+    OSG_INFO << "txp:: Loading models ..." << std::endl;
 
     int numModel;
     modelTable.GetNumModels(numModel);
@@ -470,13 +470,13 @@ bool TXPArchive::loadModels()
     {
     loadModel(itr->first);
     }
-    osg::notify(osg::INFO) << "txp:: ... done." << std::endl;
+    OSG_INFO << "txp:: ... done." << std::endl;
     return true;
 }
 
 bool TXPArchive::loadLightAttributes()
 {
-    osg::notify(osg::INFO) << "txp:: Loading light attributes ..." << std::endl;
+    OSG_INFO << "txp:: Loading light attributes ..." << std::endl;
 
     trpgLightTable::LightMapType *lm  = lightTable.getLightMap();
     trpgLightTable::LightMapType::iterator itr = lm->begin();
@@ -576,7 +576,7 @@ bool TXPArchive::loadLightAttributes()
     addLightAttribute(osgLight, stateSet, osg::Vec3(normal.x,normal.y,normal.z),itr->first);
     }
 
-    osg::notify(osg::INFO) << "txp:: ... done." << std::endl;
+    OSG_INFO << "txp:: ... done." << std::endl;
     return true;
 }
 
@@ -604,7 +604,7 @@ bool TXPArchive::loadTextStyles()
 
     if (fmapfile.is_open())
     {
-    osg::notify(osg::INFO) << "txp:: Font map file found: " << fmapfname << std::endl;
+    OSG_INFO << "txp:: Font map file found: " << fmapfname << std::endl;
     std::string line;
     while (std::getline(fmapfile,line))
     {
@@ -625,8 +625,8 @@ bool TXPArchive::loadTextStyles()
     }
     else
     {
-    osg::notify(osg::NOTICE) << "txp:: No font map file found: " << fmapfname << std::endl;        
-    osg::notify(osg::NOTICE) << "txp:: All fonts defaulted to arial.ttf" << std::endl;        
+    OSG_NOTICE << "txp:: No font map file found: " << fmapfname << std::endl;        
+    OSG_NOTICE << "txp:: All fonts defaulted to arial.ttf" << std::endl;        
     }
 
     const trpgTextStyleTable::StyleMapType *smap = textStyleTable->getStyleMap();

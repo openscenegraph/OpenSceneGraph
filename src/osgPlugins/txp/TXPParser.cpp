@@ -142,7 +142,7 @@ osg::Group *TXPParser::parseScene(
 
     if (!Parse(buf))
     {
-        osg::notify(osg::NOTICE) << "txp::TXPParser::parseScene(): failed to parse the given tile" << std::endl;
+        OSG_NOTICE << "txp::TXPParser::parseScene(): failed to parse the given tile" << std::endl;
         return NULL;
     }
 
@@ -165,7 +165,7 @@ osg::Group *TXPParser::parseScene(
     }
     catch (...)
     {
-       osg::notify(osg::NOTICE) << "txp::TXPParser::parseScene(): exception thrown in the osg::Optimizer" << std::endl;
+       OSG_NOTICE << "txp::TXPParser::parseScene(): exception thrown in the osg::Optimizer" << std::endl;
     }
 
 
@@ -467,7 +467,7 @@ void TXPParser::loadLocalMaterials()
                     }
                     else
                     {
-                        osg::notify(osg::WARN) << "No image\n";
+                        OSG_WARN << "No image\n";
                     }
                     osg_state_set->setTextureAttributeAndModes(texNo,osg_texture, osg::StateAttribute::ON);
 
@@ -481,7 +481,7 @@ void TXPParser::loadLocalMaterials()
                 }
                 else
                 {
-                    osg::notify(osg::WARN) << "No texture\n";
+                    OSG_WARN << "No texture\n";
                 }
             }
 
@@ -693,7 +693,7 @@ void* billboardRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     if (_parse->underBillboardSubgraph())
     {
         // we don't allow anything under a billboard except geometry
-        osg::notify(osg::WARN) << "TerraPage loader: can only have geometry nodes beneath a billboard.\n";
+        OSG_WARN << "TerraPage loader: can only have geometry nodes beneath a billboard.\n";
     }
     else
     {
@@ -788,7 +788,7 @@ void* lightRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     trpgLightAttr *ref = const_cast<trpgLightAttr*>(lt->GetLightAttrRef(attr_index));
     if (!ref)
     {
-        osg::notify(osg::NOTICE) << "NULL LightAttr " << attr_index << std::endl;
+        OSG_NOTICE << "NULL LightAttr " << attr_index << std::endl;
         return (void*)1;
     }
 
@@ -1554,7 +1554,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
             break;
             default:
                 billboard->addDrawable(geometry.get());
-                osg::notify(osg::WARN) << "TerraPage loader: fell through case: " <<  __FILE__ << " " << __LINE__  << ".\n";
+                OSG_WARN << "TerraPage loader: fell through case: " <<  __FILE__ << " " << __LINE__  << ".\n";
                 break;
             }
 
@@ -1609,7 +1609,7 @@ void* geomRead::Parse(trpgToken /*tok*/,trpgReadBuffer &buf)
     }
     else
     {
-        osg::notify(osg::WARN)<<"Detected potential memory leak in TXPParser.cpp"<<std::endl;
+        OSG_WARN<<"Detected potential memory leak in TXPParser.cpp"<<std::endl;
     }
     
     return (void *) 1;

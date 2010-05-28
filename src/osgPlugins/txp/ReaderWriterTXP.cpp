@@ -20,7 +20,7 @@
 #include "TXPSeamLOD.h"
 #include "TileMapper.h"
 
-#define ReaderWriterTXPERROR(s) osg::notify(osg::NOTICE) << "txp::ReaderWriterTXP::" << (s) << " error: "
+#define ReaderWriterTXPERROR(s) OSG_NOTICE << "txp::ReaderWriterTXP::" << (s) << " error: "
 
 
 
@@ -435,7 +435,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
             }
         }
 
-        //osg::notify(osg::NOTICE) << "Subtiles for " << x << " " << y << " " << lod << " lodaded" << std::endl;
+        //OSG_NOTICE << "Subtiles for " << x << " " << y << " " << lod << " lodaded" << std::endl;
         return subtiles.get();
     }
     
@@ -626,7 +626,7 @@ osg::ref_ptr< TXPArchive > ReaderWriterTXP::getArchive(int id, const std::string
 
 bool ReaderWriterTXP::removeArchive( int id )
 {
-    osg::notify(osg::INFO)<<"ReaderWriterTXP::removeArchive(id="<<id<<")"<<std::endl;
+    OSG_INFO<<"ReaderWriterTXP::removeArchive(id="<<id<<")"<<std::endl;
     return (_archives.erase(id) >= 1);
 }
 

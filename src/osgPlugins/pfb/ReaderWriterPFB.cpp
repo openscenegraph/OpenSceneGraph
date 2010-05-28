@@ -37,7 +37,7 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
             std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) fileName = file; // let Peformer see if it can file the filep
 
-            osg::notify(osg::INFO)<<"ReaderWriterPFB::readImage( "<<fileName.c_str()<<" )\n";
+            OSG_INFO<<"ReaderWriterPFB::readImage( "<<fileName.c_str()<<" )\n";
             //initPerformer();
 
             pfTexture* tex = new pfTexture;
@@ -95,7 +95,7 @@ class ReaderWriterPFB : public osgDB::ReaderWriter
             std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
-            osg::notify(osg::INFO)<<"ReaderWriterPFB::readNode( "<<fileName.c_str()<<" )\n";
+            OSG_INFO<<"ReaderWriterPFB::readNode( "<<fileName.c_str()<<" )\n";
             //initPerformer();
 
             pfNode* root = pfdLoadFile(fileName.c_str());

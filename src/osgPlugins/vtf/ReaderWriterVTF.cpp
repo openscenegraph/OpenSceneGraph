@@ -371,7 +371,7 @@ osg::Image* ReadVTFFile(std::istream& _istream)
         (vtf_header.magic_number[3] != 0))
     {
         // Not a VTF file, so bail
-        osg::notify(osg::WARN) << "VTF file is invalid" << std::endl;
+        OSG_WARN << "VTF file is invalid" << std::endl;
         return NULL;
     }
 
@@ -414,49 +414,49 @@ osg::Image* ReadVTFFile(std::istream& _istream)
     // Environment maps not supported
     if (vtf_header.image_flags & VTF_FLAGS_ENVMAP)
     {
-        osg::notify(osg::WARN) << "VTF Environment maps not supported";
-        osg::notify(osg::WARN) << std::endl;
+        OSG_WARN << "VTF Environment maps not supported";
+        OSG_WARN << std::endl;
         return NULL;
     }
 
-    osg::notify(osg::INFO) << "VTF Header: (" << sizeof(VTFFileHeader);
-    osg::notify(osg::INFO) << " bytes)" << std::endl;
-    osg::notify(osg::INFO) << "   magic_number = ";
-    osg::notify(osg::INFO) << vtf_header.magic_number[0];
-    osg::notify(osg::INFO) << vtf_header.magic_number[1];
-    osg::notify(osg::INFO) << vtf_header.magic_number[2];
-    osg::notify(osg::INFO) << vtf_header.magic_number[3] << std:: endl;
-    osg::notify(osg::INFO) << "   file_version = ";
-    osg::notify(osg::INFO) << vtf_header.file_version[0] << ".";
-    osg::notify(osg::INFO) << vtf_header.file_version[1] << std:: endl;
-    osg::notify(osg::INFO) << "   header_size  = ";
-    osg::notify(osg::INFO) << vtf_header.header_size << std::endl;
-    osg::notify(osg::INFO) << "   image_width  = ";
-    osg::notify(osg::INFO) << vtf_header.image_width << std::endl;
-    osg::notify(osg::INFO) << "   image_height = ";
-    osg::notify(osg::INFO) << vtf_header.image_height << std::endl;
-    osg::notify(osg::INFO) << "   num_frames   = ";
-    osg::notify(osg::INFO) << vtf_header.num_frames << std::endl;
-    osg::notify(osg::INFO) << "   start_frame  = ";
-    osg::notify(osg::INFO) << vtf_header.start_frame << std::endl;
-    osg::notify(osg::INFO) << "   reflectivity = ";
-    osg::notify(osg::INFO) << vtf_header.reflectivity_value.x() << ", ";
-    osg::notify(osg::INFO) << vtf_header.reflectivity_value.y() << ", ";
-    osg::notify(osg::INFO) << vtf_header.reflectivity_value.z() << std::endl;
-    osg::notify(osg::INFO) << "   bump_scale   = ";
-    osg::notify(osg::INFO) << vtf_header.bump_scale << std::endl;
-    osg::notify(osg::INFO) << "   image_format = ";
-    osg::notify(osg::INFO) << vtf_header.image_format << std::endl;
-    osg::notify(osg::INFO) << "   num_mip_lvls = ";
-    osg::notify(osg::INFO) << (int)vtf_header.num_mip_levels << std::endl;
-    osg::notify(osg::INFO) << "   lr_image_fmt = ";
-    osg::notify(osg::INFO) << (int)vtf_header.low_res_image_format << std::endl;
-    osg::notify(osg::INFO) << "   lr_width     = ";
-    osg::notify(osg::INFO) << (int)vtf_header.low_res_image_width << std::endl;
-    osg::notify(osg::INFO) << "   lr_height    = ";
-    osg::notify(osg::INFO) << (int)vtf_header.low_res_image_height << std::endl;
-    osg::notify(osg::INFO) << "   image_depth  = ";
-    osg::notify(osg::INFO) << (int)vtf_header.image_depth << std::endl;
+    OSG_INFO << "VTF Header: (" << sizeof(VTFFileHeader);
+    OSG_INFO << " bytes)" << std::endl;
+    OSG_INFO << "   magic_number = ";
+    OSG_INFO << vtf_header.magic_number[0];
+    OSG_INFO << vtf_header.magic_number[1];
+    OSG_INFO << vtf_header.magic_number[2];
+    OSG_INFO << vtf_header.magic_number[3] << std:: endl;
+    OSG_INFO << "   file_version = ";
+    OSG_INFO << vtf_header.file_version[0] << ".";
+    OSG_INFO << vtf_header.file_version[1] << std:: endl;
+    OSG_INFO << "   header_size  = ";
+    OSG_INFO << vtf_header.header_size << std::endl;
+    OSG_INFO << "   image_width  = ";
+    OSG_INFO << vtf_header.image_width << std::endl;
+    OSG_INFO << "   image_height = ";
+    OSG_INFO << vtf_header.image_height << std::endl;
+    OSG_INFO << "   num_frames   = ";
+    OSG_INFO << vtf_header.num_frames << std::endl;
+    OSG_INFO << "   start_frame  = ";
+    OSG_INFO << vtf_header.start_frame << std::endl;
+    OSG_INFO << "   reflectivity = ";
+    OSG_INFO << vtf_header.reflectivity_value.x() << ", ";
+    OSG_INFO << vtf_header.reflectivity_value.y() << ", ";
+    OSG_INFO << vtf_header.reflectivity_value.z() << std::endl;
+    OSG_INFO << "   bump_scale   = ";
+    OSG_INFO << vtf_header.bump_scale << std::endl;
+    OSG_INFO << "   image_format = ";
+    OSG_INFO << vtf_header.image_format << std::endl;
+    OSG_INFO << "   num_mip_lvls = ";
+    OSG_INFO << (int)vtf_header.num_mip_levels << std::endl;
+    OSG_INFO << "   lr_image_fmt = ";
+    OSG_INFO << (int)vtf_header.low_res_image_format << std::endl;
+    OSG_INFO << "   lr_width     = ";
+    OSG_INFO << (int)vtf_header.low_res_image_width << std::endl;
+    OSG_INFO << "   lr_height    = ";
+    OSG_INFO << (int)vtf_header.low_res_image_height << std::endl;
+    OSG_INFO << "   image_depth  = ";
+    OSG_INFO << (int)vtf_header.image_depth << std::endl;
 
     // Before we get to the real image, we need to skip over the "low res"
     // image that's often stored along with VTF textures, so get the
@@ -464,8 +464,8 @@ osg::Image* ReadVTFFile(std::istream& _istream)
     s = vtf_header.low_res_image_width;
     t = vtf_header.low_res_image_height;
     r = 1;
-    osg::notify(osg::INFO) << "Low-res s = " << s << std::endl;
-    osg::notify(osg::INFO) << "Low-res t = " << t << std::endl;
+    OSG_INFO << "Low-res s = " << s << std::endl;
+    OSG_INFO << "Low-res t = " << t << std::endl;
 
     // See if the low-res image is there
     lrSize = 0;
@@ -478,9 +478,9 @@ osg::Image* ReadVTFFile(std::istream& _istream)
         // in the file, so we have to bail
         if (!supported)
         {
-            osg::notify(osg::WARN) << "Low-res image format is not supported";
-            osg::notify(osg::WARN) << " (" << vtf_header.low_res_image_format;
-            osg::notify(osg::WARN) << ")" << std::endl;
+            OSG_WARN << "Low-res image format is not supported";
+            OSG_WARN << " (" << vtf_header.low_res_image_format;
+            OSG_WARN << ")" << std::endl;
             return NULL;
         }
 
@@ -493,7 +493,7 @@ osg::Image* ReadVTFFile(std::istream& _istream)
         lrSize = loResImage->getTotalSizeInBytes();
 
         // Skip over the low-res image data
-        osg::notify(osg::INFO) << "Low-res size = " << lrSize << std::endl;
+        OSG_INFO << "Low-res size = " << lrSize << std::endl;
         _istream.ignore(lrSize);
     }
 
@@ -508,9 +508,9 @@ osg::Image* ReadVTFFile(std::istream& _istream)
     // Bail if the format isn't supported
     if (!supported)
     {
-        osg::notify(osg::WARN) << "Image format is not supported (";
-        osg::notify(osg::WARN) << vtf_header.image_format << ")";
-        osg::notify(osg::WARN) << std::endl;
+        OSG_WARN << "Image format is not supported (";
+        OSG_WARN << vtf_header.image_format << ")";
+        OSG_WARN << std::endl;
         return NULL;
     }
 
@@ -621,10 +621,10 @@ osg::Image* ReadVTFFile(std::istream& _istream)
 
     // Compute the total image size
     size = osgImage->getTotalSizeInBytesIncludingMipmaps();
-    osg::notify(osg::INFO) << "ReadVTFFile info : size = " << size << std::endl;
+    OSG_INFO << "ReadVTFFile info : size = " << size << std::endl;
     if(size <= 0)
     {
-        osg::notify(osg::WARN) << "ReadVTFFile warning: size <= 0" << std::endl;
+        OSG_WARN << "ReadVTFFile warning: size <= 0" << std::endl;
         return NULL;
     }
 
@@ -632,8 +632,8 @@ osg::Image* ReadVTFFile(std::istream& _istream)
     imageData = new unsigned char [size];
     if(!imageData)
     {
-        osg::notify(osg::WARN) << "ReadVTFFile warning: imageData == NULL";
-        osg::notify(osg::WARN) << std::endl;
+        OSG_WARN << "ReadVTFFile warning: imageData == NULL";
+        OSG_WARN << std::endl;
         return NULL;
     }
 

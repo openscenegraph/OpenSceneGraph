@@ -50,7 +50,7 @@ void osgParticle::MultiSegmentPlacer::place(Particle* P) const
     }
     else
     {
-        osg::notify(osg::WARN) << "this MultiSegmentPlacer has less than 2 vertices\n";
+        OSG_WARN << "this MultiSegmentPlacer has less than 2 vertices\n";
     }
 }
 

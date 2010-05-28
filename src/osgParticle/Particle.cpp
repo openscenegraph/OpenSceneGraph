@@ -90,7 +90,7 @@ bool osgParticle::Particle::update(double dt)
         _s_coord = _s_tile * fmod(_cur_tile , 1.0 / _s_tile);
         _t_coord = 1.0 - _t_tile * (static_cast<int>(_cur_tile * _t_tile) + 1);
 
-        // osg::notify(osg::NOTICE)<<this<<" setting tex coords "<<_s_coord<<" "<<_t_coord<<std::endl;
+        // OSG_NOTICE<<this<<" setting tex coords "<<_s_coord<<" "<<_t_coord<<std::endl;
     }
     
     // compute the current values for size, alpha and color.
@@ -209,7 +209,7 @@ void osgParticle::Particle::render(osg::GLBeginEndAdapter* gl, const osg::Vec3& 
         break;
 
     default:
-        osg::notify(osg::WARN) << "Invalid shape for particles\n";
+        OSG_WARN << "Invalid shape for particles\n";
     }
 }
 

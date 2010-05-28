@@ -43,7 +43,7 @@ void osgParticle::FluidProgram::execute(double dt)
             double compenstated_dt = dt;
             if (relative_wind.length2() < dt*dt*wind_accel.length2())
             {
-                // osg::notify(osg::NOTICE)<<"** Could be critical: dt="<<dt<<" critical_dt="<<sqrtf(critical_dt2)<<std::endl;
+                // OSG_NOTICE<<"** Could be critical: dt="<<dt<<" critical_dt="<<sqrtf(critical_dt2)<<std::endl;
                 double critical_dt2 = relative_wind.length2()/wind_accel.length2();
                 compenstated_dt = sqrtf(critical_dt2)*0.8f;
             }

@@ -39,7 +39,7 @@ ConnectedParticleSystem::~ConnectedParticleSystem()
 
 Particle* ConnectedParticleSystem::createParticle(const Particle* ptemplate)
 {
-    // osg::notify(osg::NOTICE)<<this<< " Creating particle "<<std::endl;
+    // OSG_NOTICE<<this<< " Creating particle "<<std::endl;
 
     Particle* particle = ParticleSystem::createParticle(ptemplate);
     int particleIndex = (int)(particle - &_particles[0]);
@@ -55,7 +55,7 @@ Particle* ConnectedParticleSystem::createParticle(const Particle* ptemplate)
 
         if (_lastParticleCreated != Particle::INVALID_INDEX)
         {
-            // osg::notify(osg::NOTICE)<<this<< " Connecting "<<_lastParticleCreated<<" to "<<particleIndex<<std::endl;
+            // OSG_NOTICE<<this<< " Connecting "<<_lastParticleCreated<<" to "<<particleIndex<<std::endl;
 
             // write up the last created particle to this new particle
             _particles[_lastParticleCreated].setNextParticle(particleIndex);
@@ -72,7 +72,7 @@ Particle* ConnectedParticleSystem::createParticle(const Particle* ptemplate)
         
 void ConnectedParticleSystem::reuseParticle(int particleIndex)
 {
-    // osg::notify(osg::NOTICE)<<this<< " Reusing particle "<<particleIndex<<std::endl;
+    // OSG_NOTICE<<this<< " Reusing particle "<<particleIndex<<std::endl;
 
     if (particleIndex<0 || particleIndex>=(int)_particles.size()) return;
     

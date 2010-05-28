@@ -128,12 +128,12 @@ void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor& nv)
             }
             else
             {
-                osg::notify(osg::WARN) << "osgParticle::ParticleProcessor::traverse(NodeVisitor&) requires a valid FrameStamp to function, particles not updated.\n";
+                OSG_WARN << "osgParticle::ParticleProcessor::traverse(NodeVisitor&) requires a valid FrameStamp to function, particles not updated.\n";
             }
 
         } else 
         {
-            osg::notify(osg::WARN) << "ParticleProcessor \"" << getName() << "\": invalid particle system\n";
+            OSG_WARN << "ParticleProcessor \"" << getName() << "\": invalid particle system\n";
         }
     }
 

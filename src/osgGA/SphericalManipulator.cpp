@@ -392,7 +392,7 @@ bool SphericalManipulator::calcMovement()
         }
         else
         {
-            notify(osg::DEBUG_INFO) << "Pushing forward"<<std::endl;
+            OSG_DEBUG << "Pushing forward"<<std::endl;
             // push the camera forward.
             scale = -fd;
 

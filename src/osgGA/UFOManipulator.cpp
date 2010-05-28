@@ -175,7 +175,7 @@ void UFOManipulator::computeHomePosition()
     }
     else
     {
-        //osg::notify(osg::WARN)<<"UFOManipulator : I can't find the ground!"<<std::endl;
+        //OSG_WARN<<"UFOManipulator : I can't find the ground!"<<std::endl;
         ground = 0.0;
     }
 

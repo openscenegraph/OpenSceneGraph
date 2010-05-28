@@ -33,7 +33,7 @@ AnimationPathManipulator::AnimationPathManipulator( const std::string& filename 
 
     if (!in)
     {
-        osg::notify(osg::WARN) << "AnimationPathManipulator: Cannot open animation path file \"" << filename << "\".\n";
+        OSG_WARN << "AnimationPathManipulator: Cannot open animation path file \"" << filename << "\".\n";
         _valid = false;
         return;
     }
@@ -100,7 +100,7 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
 
                 _timeScale *= 1.1;
 
-                osg::notify(osg::NOTICE)<<"Animation speed = "<<_timeScale*100<<"%"<<std::endl;
+                OSG_NOTICE<<"Animation speed = "<<_timeScale*100<<"%"<<std::endl;
 
                 // adjust timeOffset so the current animationTime does change.
                 _timeOffset = animationTime/_timeScale - time;
@@ -114,7 +114,7 @@ bool AnimationPathManipulator::handle(const osgGA::GUIEventAdapter& ea,osgGA::GU
 
                 _timeScale /= 1.1;
                 
-                osg::notify(osg::NOTICE)<<"Animation speed = "<<_timeScale*100<<"%"<<std::endl;
+                OSG_NOTICE<<"Animation speed = "<<_timeScale*100<<"%"<<std::endl;
 
                 // adjust timeOffset so the current animationTime does change.
                 _timeOffset = animationTime/_timeScale - time;
@@ -178,8 +178,8 @@ void AnimationPathManipulator::handleFrame( double time )
             double delta = time-_realStartOfTimedPeriod;
 
             double frameRate = (double)_numOfFramesSinceStartOfTimedPeriod/delta;
-            osg::notify(osg::NOTICE) <<"AnimatonPath completed in "<<delta<<" seconds, completing "<<_numOfFramesSinceStartOfTimedPeriod<<" frames,"<<std::endl;
-            osg::notify(osg::NOTICE) <<"             average frame rate = "<<frameRate<<std::endl;
+            OSG_NOTICE <<"AnimatonPath completed in "<<delta<<" seconds, completing "<<_numOfFramesSinceStartOfTimedPeriod<<" frames,"<<std::endl;
+            OSG_NOTICE <<"             average frame rate = "<<frameRate<<std::endl;
 
             // reset counters for next loop.
             _realStartOfTimedPeriod = time;

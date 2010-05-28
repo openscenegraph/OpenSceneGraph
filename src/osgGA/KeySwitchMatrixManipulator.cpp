@@ -176,7 +176,7 @@ bool KeySwitchMatrixManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapt
         KeyManipMap::iterator it=_manips.find(ea.getKey());
         if(it != _manips.end())
         {
-            osg::notify(osg::INFO)<<"Switching to manipulator: "<<(*it).second.first<<std::endl;
+            OSG_INFO<<"Switching to manipulator: "<<(*it).second.first<<std::endl;
             if ( !it->second.second->getNode() )
             {
                 it->second.second->setNode(_current->getNode());
@@ -184,8 +184,6 @@ bool KeySwitchMatrixManipulator::handle(const GUIEventAdapter& ea,GUIActionAdapt
             it->second.second->setByMatrix(_current->getMatrix());
             it->second.second->init(ea,aa);
             _current = it->second.second;
-
-            //_cameraManipChangeCallbacks.notify(this);
 
             handled = true;
         }

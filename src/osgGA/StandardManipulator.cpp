@@ -433,7 +433,7 @@ bool StandardManipulator::performMovement()
     double eventTimeDelta = _ga_t0->getTime() - _ga_t1->getTime();
     if( eventTimeDelta < 0. )
     {
-        notify( WARN ) << "Manipulator warning: eventTimeDelta = " << eventTimeDelta << std::endl;
+        OSG_WARN << "Manipulator warning: eventTimeDelta = " << eventTimeDelta << std::endl;
         eventTimeDelta = 0.;
     }
 
@@ -741,7 +741,7 @@ void StandardManipulator::fixVerticalAxis( const osg::Vec3d& forward, const osg:
     else {
 
        // return original up
-       notify( WARN ) << "StandardManipulator::fixVerticalAxis warning: Can not update vertical axis." << std::endl;
+       OSG_WARN << "StandardManipulator::fixVerticalAxis warning: Can not update vertical axis." << std::endl;
        newUp = up;
 
     }

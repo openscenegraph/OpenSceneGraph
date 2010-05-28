@@ -150,7 +150,7 @@ bool FlightManipulator::performMovement()
 
     if (eventTimeDelta<0.0f)
     {
-        notify(WARN) << "Manipulator warning: eventTimeDelta = " << eventTimeDelta << std::endl;
+        OSG_WARN << "Manipulator warning: eventTimeDelta = " << eventTimeDelta << std::endl;
         eventTimeDelta = 0.0f;
     }
 

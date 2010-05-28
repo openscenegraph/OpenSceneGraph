@@ -64,7 +64,7 @@ bool NodeTrackerManipulator::validateNodePath() const
     {
         if (*itr==0)
         {
-            osg::notify(osg::NOTICE)<<"Warning: tracked node path has been invalidated by changes in the scene graph."<<std::endl;
+            OSG_NOTICE<<"Warning: tracked node path has been invalidated by changes in the scene graph."<<std::endl;
             const_cast<ObserverNodePath&>(_trackNodePath).clear();
             return false;
         }
@@ -102,7 +102,7 @@ void NodeTrackerManipulator::setNode(Node* node)
         if (_node.valid())
         {
             setMinimumDistance(clampBetween(_modelSize*0.001, 0.00001, 1.0));
-            notify(INFO) << "NodeTrackerManipulator: setting minimum distance to "
+            OSG_INFO << "NodeTrackerManipulator: setting minimum distance to "
                          << _minimumDistance << std::endl;
         }
     }
@@ -112,7 +112,7 @@ void NodeTrackerManipulator::setTrackNode(osg::Node* node)
 {
     if (!node)
     {
-        osg::notify(osg::NOTICE)<<"NodeTrackerManipulator::setTrackNode(Node*):  Unable to set tracked node due to null Node*"<<std::endl;
+        OSG_NOTICE<<"NodeTrackerManipulator::setTrackNode(Node*):  Unable to set tracked node due to null Node*"<<std::endl;
         return;
     }
 
@@ -121,22 +121,22 @@ void NodeTrackerManipulator::setTrackNode(osg::Node* node)
     {
         if (nodePaths.size()>1)
         {
-            osg::notify(osg::NOTICE)<<"osgGA::NodeTrackerManipualtor::setTrackNode(..) taking first parent path, ignoring others."<<std::endl;
+            OSG_NOTICE<<"osgGA::NodeTrackerManipualtor::setTrackNode(..) taking first parent path, ignoring others."<<std::endl;
         }
 
-        osg::notify(osg::INFO)<<"NodeTrackerManipulator::setTrackNode(Node*"<<node<<" "<<node->getName()<<"): Path set"<<std::endl;
+        OSG_INFO<<"NodeTrackerManipulator::setTrackNode(Node*"<<node<<" "<<node->getName()<<"): Path set"<<std::endl;
         _trackNodePath.clear();
         setTrackNodePath( nodePaths.front() );
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"NodeTrackerManipulator::setTrackNode(Node*): Unable to set tracked node due to empty parental path."<<std::endl;
+        OSG_NOTICE<<"NodeTrackerManipulator::setTrackNode(Node*): Unable to set tracked node due to empty parental path."<<std::endl;
     }
 
-    osg::notify(osg::INFO)<<"setTrackNode("<<node->getName()<<")"<<std::endl;
+    OSG_INFO<<"setTrackNode("<<node->getName()<<")"<<std::endl;
     for(unsigned int i=0; i<_trackNodePath.size(); ++i)
     {
-        osg::notify(osg::INFO)<<"  "<<_trackNodePath[i]->className()<<" '"<<_trackNodePath[i]->getName()<<"'"<<std::endl;
+        OSG_INFO<<"  "<<_trackNodePath[i]->className()<<" '"<<_trackNodePath[i]->getName()<<"'"<<std::endl;
     }
 
 }

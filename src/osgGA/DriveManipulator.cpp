@@ -38,7 +38,7 @@ static double getHeightOfDriver()
     {
         height = osg::asciiToDouble(getenv("OSG_DRIVE_MANIPULATOR_HEIGHT"));
     }
-    OSG_NOTIFY(osg::INFO)<<"DriveManipulator::_height set to =="<<height<<std::endl;
+    OSG_INFO<<"DriveManipulator::_height set to =="<<height<<std::endl;
     return height;
 }
 
@@ -449,7 +449,7 @@ bool DriveManipulator::calcMovement()
 
     if (dt<0.0f)
     {
-        notify(INFO) << "warning dt = "<<dt<< std::endl;
+        OSG_INFO << "warning dt = "<<dt<< std::endl;
         dt = 0.0;
     }
     

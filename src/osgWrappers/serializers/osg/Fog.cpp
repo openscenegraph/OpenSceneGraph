@@ -19,4 +19,5 @@ REGISTER_OBJECT_WRAPPER( Fog,
     ADD_FLOAT_SERIALIZER( Density, 1.0f );  // _density
     ADD_VEC4_SERIALIZER( Color, osg::Vec4() );  // _color
     ADD_GLENUM_SERIALIZER( FogCoordinateSource, GLint, GL_NONE );  // _fogCoordinateSource
+    ADD_BOOL_SERIALIZER( UseRadialFog, false );    // _useRadialFog
 }

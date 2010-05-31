@@ -138,6 +138,16 @@ BEGIN_OBJECT_REFLECTOR(osg::Fog)
 	          __C5_Vec4_R1__getColor,
 	          "",
 	          "");
+	I_Method1(void, setUseRadialFog, IN, bool, useRadialFog,
+	          Properties::NON_VIRTUAL,
+	          __void__setUseRadialFog__bool,
+	          "",
+	          "");
+	I_Method0(bool, getUseRadialFog,
+	          Properties::NON_VIRTUAL,
+	          __bool__getUseRadialFog,
+	          "",
+	          "");
 	I_Method1(void, setFogCoordinateSource, IN, GLint, source,
 	          Properties::NON_VIRTUAL,
 	          __void__setFogCoordinateSource__GLint,
@@ -174,5 +184,8 @@ BEGIN_OBJECT_REFLECTOR(osg::Fog)
 	I_SimpleProperty(osg::StateAttribute::Type, Type, 
 	                 __Type__getType, 
 	                 0);
+	I_SimpleProperty(bool, UseRadialFog, 
+	                 __bool__getUseRadialFog, 
+	                 __void__setUseRadialFog__bool);
 END_REFLECTOR
 

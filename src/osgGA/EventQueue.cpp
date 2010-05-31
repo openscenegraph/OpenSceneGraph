@@ -53,8 +53,7 @@ bool EventQueue::takeEvents(Events& events)
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_eventQueueMutex);
     if (!_eventQueue.empty())
     {
-        events.insert(events.end(),_eventQueue.begin(),_eventQueue.end());
-        _eventQueue.clear();
+        events.splice(events.end(), _eventQueue);
         return true;
     }
     else

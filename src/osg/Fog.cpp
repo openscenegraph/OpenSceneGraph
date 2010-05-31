@@ -29,6 +29,7 @@ Fog::Fog()
     _end     = 1.0f;
     _color.set( 0.0f, 0.0f, 0.0f, 0.0f);
     _fogCoordinateSource = FRAGMENT_DEPTH;
+    _useRadialFog = false;
 }
 
 
@@ -51,11 +52,21 @@ void Fog::apply(State& state) const
     glFogf( GL_FOG_END,      _end );
     glFogfv( GL_FOG_COLOR,    (GLfloat*)_color.ptr() );
     
-    static bool fogCoordExtensionSuppoted = osg::isGLExtensionSupported(state.getContextID(),"GL_EXT_fog_coord");
-    if (fogCoordExtensionSuppoted)
+    static bool fogCoordExtensionSupported = osg::isGLExtensionSupported(state.getContextID(),"GL_EXT_fog_coord");
+    if (fogCoordExtensionSupported)
     {
         glFogi(GL_FOG_COORDINATE_SOURCE,_fogCoordinateSource);
     }
+
+    static bool fogDistanceExtensionSupported = osg::isGLExtensionSupported(state.getContextID(),"GL_NV_fog_distance");
+    if (fogDistanceExtensionSupported)
+    {
+        if(_useRadialFog)
+            glFogf(GL_FOG_DISTANCE_MODE_NV, GL_EYE_RADIAL_NV);
+        else
+            glFogf(GL_FOG_DISTANCE_MODE_NV, GL_EYE_PLANE_ABSOLUTE_NV);
+    }
+
 #else
     OSG_NOTICE<<"Warning: Fog::apply(State&) - not supported."<<std::endl;
 #endif

@@ -134,7 +134,57 @@ Track* readTrack(const std::string& filename)
         itr != root->children.end();
         ++itr)
     {
-        if ((*itr)->name=="trk")
+        if ((*itr)->name=="rte")
+        {
+            osg::ref_ptr<Track> track = new Track;
+            track->setName(filename);
+
+            osg::ref_ptr<TrackSegment> trackSegment = new TrackSegment;
+            for(osgDB::XmlNode::Children::iterator sitr = (*itr)->children.begin();
+                sitr != (*itr)->children.end();
+                ++sitr)
+            {
+                if ((*sitr)->name=="rtept" )
+                {
+                    osgDB::XmlNode* trkpt = sitr->get();
+                    TrackSegment::TrackPoint point;
+                    bool valid = false;
+                    if (trkpt->properties.count(latitude)!=0)
+                    {
+                        valid = true;
+                        point.latitude = osg::asciiToDouble(trkpt->properties[latitude].c_str());
+                    }
+                    if (trkpt->properties.count(longitude)!=0)
+                    {
+                        valid = true;
+                        point.longitude = osg::asciiToDouble(trkpt->properties[longitude].c_str());
+                    }
+
+                    for(osgDB::XmlNode::Children::iterator pitr = trkpt->children.begin();
+                        pitr != trkpt->children.end();
+                        ++pitr)
+                    {
+                        if ((*pitr)->name=="ele") point.elevation = osg::asciiToDouble((*pitr)->contents.c_str());
+                        else if ((*pitr)->name=="time") point.time = convertTime((*pitr)->contents);
+                    }
+
+                    if (valid)
+                    {
+                        osg::notify(osg::NOTICE)<<"  point.latitude="<<point.latitude<<", longitude="<<point.longitude<<", elev="<<point.elevation<<", time="<<point.time<<std::endl;
+                        trackSegment->addTrackPoint(point);
+                    }
+                }
+
+            }
+
+            if (!trackSegment->getTrackPoints().empty())
+            {
+                track->addTrackSegment(trackSegment.get());
+            }
+
+            return track.release();
+        }
+        else  if ((*itr)->name=="trk")
         {
             osg::ref_ptr<Track> track = new Track;
             track->setName(filename);
@@ -150,7 +200,7 @@ Track* readTrack(const std::string& filename)
                         sitr != (*citr)->children.end();
                         ++sitr)
                     {
-                        if ((*sitr)->name=="trkpt")
+                        if ((*sitr)->name=="trkpt" || (*sitr)->name=="rtept" )
                         {
                             osgDB::XmlNode* trkpt = sitr->get();
                             TrackSegment::TrackPoint point;
@@ -187,8 +237,6 @@ Track* readTrack(const std::string& filename)
                     }
                 }
             }
-
-
             return track.release();
         }
     }

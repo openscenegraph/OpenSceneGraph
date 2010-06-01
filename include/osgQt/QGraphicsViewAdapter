@@ -18,8 +18,7 @@
 #include <osg/observer_ptr>
 #include <osgQt/Export>
 
-#include <QtWebKit/QWebSettings>
-#include <QtWebKit/QtWebKit>
+#include <QtCore/QPointer>
 #include <QtGui/QGraphicsScene>
 #include <QtGui/QGraphicsView>
 #include <QtGui/QApplication>

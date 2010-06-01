@@ -191,6 +191,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         inline const osg::Matrix& getProjectionMatrix() const { return *_projection; }
 
         void applyModelViewMatrix(const osg::RefMatrix* matrix);
+        void applyModelViewMatrix(const osg::Matrix&);
 
         const osg::Matrix& getModelViewMatrix() const { return *_modelView; }
 
@@ -1344,6 +1345,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         ref_ptr<const RefMatrix>    _initialViewMatrix;
         ref_ptr<const RefMatrix>    _projection;
         ref_ptr<const RefMatrix>    _modelView;
+        ref_ptr<RefMatrix>          _modelViewCache;
 
         bool                        _useModelViewAndProjectionUniforms;
         ref_ptr<Uniform>            _modelViewMatrixUniform;
@@ -1646,6 +1648,8 @@ class OSG_EXPORT State : public Referenced, public Observer
         void haveAppliedAttribute(AttributeMap& attributeMap,StateAttribute::Type type, unsigned int member);
         bool getLastAppliedMode(const ModeMap& modeMap,StateAttribute::GLMode mode) const;
         const StateAttribute* getLastAppliedAttribute(const AttributeMap& attributeMap,StateAttribute::Type type, unsigned int member) const;
+
+        void loadModelViewMatrix();
 
 
         mutable bool _isSecondaryColorSupportResolved;

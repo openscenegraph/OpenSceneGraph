@@ -34,7 +34,7 @@ class OSG_EXPORT Observer
 
 };
 
-/** Class used by osg::Referenced to track the observers assoicated with it.*/
+/** Class used by osg::Referenced to track the observers associated with it.*/
 class OSG_EXPORT ObserverSet : public osg::Referenced
 {
     public:

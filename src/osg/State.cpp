@@ -45,6 +45,7 @@ State::State():
     _initialViewMatrix = _identity;
     _projection = _identity;
     _modelView = _identity;
+    _modelViewCache = new osg::RefMatrix;
 
     #if !defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
         _useModelViewAndProjectionUniforms = true;
@@ -1296,6 +1297,19 @@ void State::applyProjectionMatrix(const osg::RefMatrix* matrix)
     }
 }
 
+void State::loadModelViewMatrix()
+{
+    if (_useModelViewAndProjectionUniforms)
+    {
+        if (_modelViewMatrixUniform.valid()) _modelViewMatrixUniform->set(*_modelView);
+        updateModelViewAndProjectionMatrixUniforms();
+    }
+
+#ifdef OSG_GL_MATRICES_AVAILABLE
+    glLoadMatrix(_modelView->ptr());
+#endif
+}
+
 void State::applyModelViewMatrix(const osg::RefMatrix* matrix)
 {
     if (_modelView!=matrix)
@@ -1309,16 +1323,16 @@ void State::applyModelViewMatrix(const osg::RefMatrix* matrix)
             _modelView=_identity;
         }
 
-        if (_useModelViewAndProjectionUniforms)
-        {
-            if (_modelViewMatrixUniform.valid()) _modelViewMatrixUniform->set(*_modelView);
-            updateModelViewAndProjectionMatrixUniforms();
-        }
-
-#ifdef OSG_GL_MATRICES_AVAILABLE
-        glLoadMatrix(_modelView->ptr());
-#endif
+        loadModelViewMatrix();
     }
+}
+
+void State::applyModelViewMatrix(const osg::Matrix& matrix)
+{
+    _modelViewCache->set(matrix);
+    _modelView = _modelViewCache;
+
+    loadModelViewMatrix();
 }
 
 #include <osg/io_utils>

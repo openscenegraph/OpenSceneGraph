@@ -505,16 +505,16 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
 
 
     // ** save the previous modelview matrix
-    osg::ref_ptr<osg::RefMatrix> previous(new osg::RefMatrix(state.getModelViewMatrix()));
+    osg::Matrix previous(state.getModelViewMatrix());
 
     // ** get the modelview for this context
-    osg::ref_ptr<osg::RefMatrix> modelview(new osg::RefMatrix(_autoTransformCache[contextID]._matrix));
+    osg::Matrix modelview(_autoTransformCache[contextID]._matrix);
 
     // ** mult previous by the modelview for this context
-    modelview->postMult(*previous.get());
+    modelview.postMult(previous);
 
     // ** apply this new modelview matrix
-    state.applyModelViewMatrix(modelview.get());
+    state.applyModelViewMatrix(modelview);
 
     osg::GLBeginEndAdapter& gl = (state.getGLBeginEndAdapter());
 
@@ -603,7 +603,7 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
 
 
     // restore the previous modelview matrix
-    state.applyModelViewMatrix(previous.get());
+    state.applyModelViewMatrix(previous);
 }
 
 void Text3D::renderPerGlyph(osg::State & state) const
@@ -619,9 +619,9 @@ void Text3D::renderPerGlyph(osg::State & state) const
         for (it = itLine->begin(); it!=end; ++it)
         {
 
-            osg::ref_ptr<osg::RefMatrix> matrix = new osg::RefMatrix(original_modelview);
-            matrix->preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
-            state.applyModelViewMatrix(matrix.get());
+            osg::Matrix matrix(original_modelview);
+            matrix.preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
+            state.applyModelViewMatrix(matrix);
 
             // ** apply the vertex array
             state.setVertexPointer(it->_glyph->getVertexArray());
@@ -670,9 +670,9 @@ void Text3D::renderPerFace(osg::State & state) const
         LineRenderInfo::const_iterator it, end = itLine->end();
         for (it = itLine->begin(); it!=end; ++it)
         {
-            osg::ref_ptr<osg::RefMatrix> matrix = new osg::RefMatrix(original_modelview);
-            matrix->preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
-            state.applyModelViewMatrix(matrix.get());
+            osg::Matrix matrix(original_modelview);
+            matrix.preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
+            state.applyModelViewMatrix(matrix);
 
             state.setVertexPointer(it->_glyph->getVertexArray());
 
@@ -693,9 +693,9 @@ void Text3D::renderPerFace(osg::State & state) const
         LineRenderInfo::const_iterator it, end = itLine->end();
         for (it = itLine->begin(); it!=end; ++it)
         {
-            osg::ref_ptr<osg::RefMatrix> matrix = new osg::RefMatrix(original_modelview);
-            matrix->preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
-            state.applyModelViewMatrix(matrix.get());
+            osg::Matrix matrix(original_modelview);
+            matrix.preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
+            state.applyModelViewMatrix(matrix);
 
             state.setVertexPointer(it->_glyph->getVertexArray());
             state.setNormalPointer(it->_glyph->getNormalArray());
@@ -707,7 +707,7 @@ void Text3D::renderPerFace(osg::State & state) const
             }
         }
     }
-
+    state.disableNormalPointer();
 
     // ** render all back face of the text
     state.Normal(0.0f,0.0f,-1.0f);
@@ -718,9 +718,9 @@ void Text3D::renderPerFace(osg::State & state) const
         LineRenderInfo::const_iterator it, end = itLine->end();
         for (it = itLine->begin(); it!=end; ++it)
         {
-            osg::ref_ptr<osg::RefMatrix> matrix = new osg::RefMatrix(state.getModelViewMatrix());
-            matrix->preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
-            state.applyModelViewMatrix(matrix.get());
+            osg::Matrix matrix(original_modelview);
+            matrix.preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
+            state.applyModelViewMatrix(matrix);
 
             state.setVertexPointer(it->_glyph->getVertexArray());
 

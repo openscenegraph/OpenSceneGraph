@@ -302,9 +302,9 @@ static void RawImageGetRow(rawImageRec *raw, unsigned char *buf, int y, int z)
             count = (int)(pixel & 0x7F);
             
             // limit the count value to the remiaing row size
-            if (oPtr + count*raw->bpc > buf + raw->sizeX*raw->bpc)
+            if (raw->sizeX*raw->bpc <= (oPtr - buf))
             {
-                count = ( (buf + raw->sizeX*raw->bpc) - oPtr ) / raw->bpc;
+                count = raw->sizeX - (oPtr - buf) / raw->bpc;
             }
                 
             if (count<=0)

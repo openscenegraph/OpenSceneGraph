@@ -55,6 +55,7 @@ FBOExtensions::FBOExtensions(unsigned int contextID)
     glFramebufferTexture1D(0),
     glFramebufferTexture2D(0),
     glFramebufferTexture3D(0),
+    glFramebufferTexture(0),
     glFramebufferTextureLayer(0),
     glFramebufferRenderbuffer(0),
     glGenerateMipmap(0),
@@ -73,6 +74,7 @@ FBOExtensions::FBOExtensions(unsigned int contextID)
     LOAD_FBO_EXT(glFramebufferTexture1D);
     LOAD_FBO_EXT(glFramebufferTexture2D);
     LOAD_FBO_EXT(glFramebufferTexture3D);
+    LOAD_FBO_EXT(glFramebufferTexture);
     LOAD_FBO_EXT(glFramebufferTextureLayer);
     LOAD_FBO_EXT(glFramebufferRenderbuffer);
     LOAD_FBO_EXT(glGenerateMipmap);
@@ -90,6 +92,7 @@ FBOExtensions::FBOExtensions(unsigned int contextID)
         glFramebufferTexture1D != 0 &&
         glFramebufferTexture2D != 0 &&
         glFramebufferTexture3D != 0 &&
+        glFramebufferTexture != 0 &&
         glFramebufferRenderbuffer != 0 &&
         glGenerateMipmap != 0 &&
         glGetRenderbufferParameteriv != 0;
@@ -554,16 +557,25 @@ void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachmen
         ext->glFramebufferTexture2D(target, attachment_point, GL_TEXTURE_2D_MULTISAMPLE, tobj->id(), _ximpl->level);
         break;
     case Pimpl::TEXTURE3D:
-        ext->glFramebufferTexture3D(target, attachment_point, GL_TEXTURE_3D, tobj->id(), _ximpl->level, _ximpl->zoffset);
+        if (_ximpl->zoffset == Camera::FACE_CONTROLLED_BY_GEOMETRY_SHADER)
+            ext->glFramebufferTexture(target, attachment_point, tobj->id(), _ximpl->level);
+        else
+            ext->glFramebufferTexture3D(target, attachment_point, GL_TEXTURE_3D, tobj->id(), _ximpl->level, _ximpl->zoffset);
         break;
     case Pimpl::TEXTURE2DARRAY:
-        ext->glFramebufferTextureLayer(target, attachment_point, tobj->id(), _ximpl->level, _ximpl->zoffset);
+        if (_ximpl->zoffset == Camera::FACE_CONTROLLED_BY_GEOMETRY_SHADER)
+            ext->glFramebufferTexture(target, attachment_point, tobj->id(), _ximpl->level);
+        else
+            ext->glFramebufferTextureLayer(target, attachment_point, tobj->id(), _ximpl->level, _ximpl->zoffset);
         break;
     case Pimpl::TEXTURERECT:
         ext->glFramebufferTexture2D(target, attachment_point, GL_TEXTURE_RECTANGLE, tobj->id(), 0);
         break;
     case Pimpl::TEXTURECUBE:
-        ext->glFramebufferTexture2D(target, attachment_point, GL_TEXTURE_CUBE_MAP_POSITIVE_X + _ximpl->cubeMapFace, tobj->id(), _ximpl->level);
+        if (_ximpl->cubeMapFace == Camera::FACE_CONTROLLED_BY_GEOMETRY_SHADER)
+            ext->glFramebufferTexture(target, attachment_point, tobj->id(), _ximpl->level);
+        else
+            ext->glFramebufferTexture2D(target, attachment_point, GL_TEXTURE_CUBE_MAP_POSITIVE_X + _ximpl->cubeMapFace, tobj->id(), _ximpl->level);
         break;
     }
 }

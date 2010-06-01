@@ -360,12 +360,12 @@ namespace osg
         FrameBufferAttachment(const FrameBufferAttachment& copy);
 
         explicit FrameBufferAttachment(RenderBuffer* target);
-        explicit FrameBufferAttachment(Texture1D* target, int level = 0);
-        explicit FrameBufferAttachment(Texture2D* target, int level = 0);
-        explicit FrameBufferAttachment(Texture2DMultisample* target, int level = 0);
-        explicit FrameBufferAttachment(Texture3D* target, int zoffset, int level = 0);
-        explicit FrameBufferAttachment(Texture2DArray* target, int layer, int level = 0);
-        explicit FrameBufferAttachment(TextureCubeMap* target, int face, int level = 0);
+        explicit FrameBufferAttachment(Texture1D* target, unsigned int level = 0);
+        explicit FrameBufferAttachment(Texture2D* target, unsigned int level = 0);
+        explicit FrameBufferAttachment(Texture2DMultisample* target, unsigned int level = 0);
+        explicit FrameBufferAttachment(Texture3D* target, unsigned int zoffset, unsigned int level = 0);
+        explicit FrameBufferAttachment(Texture2DArray* target, unsigned int layer, unsigned int level = 0);
+        explicit FrameBufferAttachment(TextureCubeMap* target, unsigned int face, unsigned int level = 0);
         explicit FrameBufferAttachment(TextureRectangle* target);
         explicit FrameBufferAttachment(Camera::Attachment& attachment);
         
@@ -384,10 +384,10 @@ namespace osg
         Texture* getTexture();
         const Texture* getTexture() const;
 
-        int getCubeMapFace() const;
-        int getTextureLevel() const;
-        int getTexture3DZOffset() const;
-        int getTextureArrayLayer() const;
+        unsigned int getCubeMapFace() const;
+        unsigned int getTextureLevel() const;
+        unsigned int getTexture3DZOffset() const;
+        unsigned int getTextureArrayLayer() const;
 
     private:
         // use the Pimpl idiom to avoid dependency from

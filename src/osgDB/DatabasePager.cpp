@@ -1612,8 +1612,8 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
         itr != _activePagedLODList.end();
         )
     {
-        osg::ref_ptr<osg::PagedLOD> plod;
-        if (itr->lock(plod))
+        osg::ref_ptr<osg::PagedLOD> plod(*itr);
+        if (plod.valid())
         {
             int delta = frameStamp.getFrameNumber() - plod->getFrameNumberOfLastTraversal();
             if (delta>1)
@@ -1643,8 +1643,8 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
         itr != _inactivePagedLODList.end();
         )
     {
-        osg::ref_ptr<osg::PagedLOD> plod;
-        if (itr->lock(plod))
+        osg::ref_ptr<osg::PagedLOD> plod(*itr);
+        if (plod.valid())
         {
             int delta = frameStamp.getFrameNumber() - plod->getFrameNumberOfLastTraversal();
             if (delta>1)
@@ -1702,8 +1702,8 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
         itr!=_inactivePagedLODList.end() && countPagedLODsVisitor._numPagedLODs<numToPrune;
         )
     {
-        osg::ref_ptr<osg::PagedLOD> plod;
-        if (itr->lock(plod) && countPagedLODsVisitor._pagedLODs.count(plod.get())==0)
+        osg::ref_ptr<osg::PagedLOD> plod(*itr);
+        if (plod.valid() && countPagedLODsVisitor._pagedLODs.count(plod.get())==0)
         {
             countPagedLODsVisitor.removeExpiredChildrenAndCountPagedLODs(plod.get(), expiryTime, expiryFrame, childrenRemoved);
 
@@ -1721,8 +1721,8 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
         itr!=_activePagedLODList.end() && countPagedLODsVisitor._numPagedLODs<numToPrune;
         )
     {
-        osg::ref_ptr<osg::PagedLOD> plod;
-        if (itr->lock(plod) && countPagedLODsVisitor._pagedLODs.count(plod.get())==0)
+        osg::ref_ptr<osg::PagedLOD> plod(*itr);
+        if (plod.valid() && countPagedLODsVisitor._pagedLODs.count(plod.get())==0)
         {
             countPagedLODsVisitor.removeExpiredChildrenAndCountPagedLODs(plod.get(), expiryTime, expiryFrame, childrenRemoved);
 

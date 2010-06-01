@@ -16,6 +16,8 @@
 
 using namespace osg;
 
+const unsigned int Camera::FACE_CONTROLLED_BY_GEOMETRY_SHADER = 0xffffffff;
+
 Camera::Camera():
     _view(0),
     _allowEventFocus(true),

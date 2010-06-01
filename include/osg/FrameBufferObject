@@ -157,6 +157,7 @@ namespace osg
         typedef void GL_APIENTRY TglFramebufferTexture1D(GLenum, GLenum, GLenum, GLuint, GLint);
         typedef void GL_APIENTRY TglFramebufferTexture2D(GLenum, GLenum, GLenum, GLuint, GLint);
         typedef void GL_APIENTRY TglFramebufferTexture3D(GLenum, GLenum, GLenum, GLuint, GLint, GLint);
+        typedef void GL_APIENTRY TglFramebufferTexture(GLenum, GLenum, GLint, GLint);
         typedef void GL_APIENTRY TglFramebufferTextureLayer(GLenum, GLenum, GLuint, GLint, GLint);
         typedef void GL_APIENTRY TglFramebufferRenderbuffer(GLenum, GLenum, GLenum, GLuint);
         typedef void GL_APIENTRY TglGenerateMipmap(GLenum);
@@ -176,6 +177,7 @@ namespace osg
         TglFramebufferTexture1D* glFramebufferTexture1D;
         TglFramebufferTexture2D* glFramebufferTexture2D;
         TglFramebufferTexture3D* glFramebufferTexture3D;
+        TglFramebufferTexture* glFramebufferTexture;
         TglFramebufferTextureLayer* glFramebufferTextureLayer;
         TglFramebufferRenderbuffer* glFramebufferRenderbuffer;
         TglGenerateMipmap* glGenerateMipmap;

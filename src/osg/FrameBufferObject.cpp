@@ -89,13 +89,17 @@ FBOExtensions::FBOExtensions(unsigned int contextID)
         glDeleteFramebuffers != 0 &&
         glGenFramebuffers != 0 &&
         glCheckFramebufferStatus != 0 &&
-        glFramebufferTexture1D != 0 &&
         glFramebufferTexture2D != 0 &&
-        glFramebufferTexture3D != 0 &&
-        glFramebufferTexture != 0 &&
         glFramebufferRenderbuffer != 0 &&
         glGenerateMipmap != 0 &&
         glGetRenderbufferParameteriv != 0;
+
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+    _supported = _supported &&
+        glFramebufferTexture1D != 0 &&
+        glFramebufferTexture3D != 0 &&
+        glFramebufferTexture != 0;
+#endif
 
     LOAD_FBO_EXT(glBlitFramebuffer);
     LOAD_FBO_EXT(glRenderbufferStorageMultisample);
@@ -298,11 +302,11 @@ struct FrameBufferAttachment::Pimpl
     TargetType targetType;
     ref_ptr<RenderBuffer> renderbufferTarget;
     ref_ptr<Texture> textureTarget;
-    int cubeMapFace;
-    int level;
-    int zoffset;
+    unsigned int cubeMapFace;
+    unsigned int level;
+    unsigned int zoffset;
 
-    explicit Pimpl(TargetType ttype = RENDERBUFFER, int lev = 0)
+    explicit Pimpl(TargetType ttype = RENDERBUFFER, unsigned int lev = 0)
     :    targetType(ttype),
         cubeMapFace(0),
         level(lev),
@@ -337,39 +341,39 @@ FrameBufferAttachment::FrameBufferAttachment(RenderBuffer* target)
     _ximpl->renderbufferTarget = target;
 }
 
-FrameBufferAttachment::FrameBufferAttachment(Texture1D* target, int level)
+FrameBufferAttachment::FrameBufferAttachment(Texture1D* target, unsigned int level)
 {
     _ximpl = new Pimpl(Pimpl::TEXTURE1D, level);
     _ximpl->textureTarget = target;
 }
 
-FrameBufferAttachment::FrameBufferAttachment(Texture2D* target, int level)
+FrameBufferAttachment::FrameBufferAttachment(Texture2D* target, unsigned int level)
 {
     _ximpl = new Pimpl(Pimpl::TEXTURE2D, level);
     _ximpl->textureTarget = target;
 }
 
-FrameBufferAttachment::FrameBufferAttachment(Texture2DMultisample* target, int level)
+FrameBufferAttachment::FrameBufferAttachment(Texture2DMultisample* target, unsigned int level)
 {
     _ximpl = new Pimpl(Pimpl::TEXTURE2DMULTISAMPLE, level);
     _ximpl->textureTarget = target;
 }
 
-FrameBufferAttachment::FrameBufferAttachment(Texture3D* target, int zoffset, int level)
+FrameBufferAttachment::FrameBufferAttachment(Texture3D* target, unsigned int zoffset, unsigned int level)
 {
     _ximpl = new Pimpl(Pimpl::TEXTURE3D, level);
     _ximpl->textureTarget = target;
     _ximpl->zoffset = zoffset;
 }
 
-FrameBufferAttachment::FrameBufferAttachment(Texture2DArray* target, int layer, int level)
+FrameBufferAttachment::FrameBufferAttachment(Texture2DArray* target, unsigned int layer, unsigned int level)
 {
     _ximpl = new Pimpl(Pimpl::TEXTURE2DARRAY, level);
     _ximpl->textureTarget = target;
     _ximpl->zoffset = layer;
 }
 
-FrameBufferAttachment::FrameBufferAttachment(TextureCubeMap* target, int face, int level)
+FrameBufferAttachment::FrameBufferAttachment(TextureCubeMap* target, unsigned int face, unsigned int level)
 {
     _ximpl = new Pimpl(Pimpl::TEXTURECUBE, level);
     _ximpl->textureTarget = target;
@@ -618,22 +622,22 @@ const Texture* FrameBufferAttachment::getTexture() const
     return _ximpl->textureTarget.get();
 }
 
-int FrameBufferAttachment::getCubeMapFace() const
+unsigned int FrameBufferAttachment::getCubeMapFace() const
 {
     return _ximpl->cubeMapFace;
 }
 
-int FrameBufferAttachment::getTextureLevel() const
+unsigned int FrameBufferAttachment::getTextureLevel() const
 {
     return _ximpl->level;
 }
 
-int FrameBufferAttachment::getTexture3DZOffset() const
+unsigned int FrameBufferAttachment::getTexture3DZOffset() const
 {
     return _ximpl->zoffset;
 }
 
-int FrameBufferAttachment::getTextureArrayLayer() const
+unsigned int FrameBufferAttachment::getTextureArrayLayer() const
 {
     return _ximpl->zoffset;
 }

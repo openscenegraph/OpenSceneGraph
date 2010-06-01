@@ -24,7 +24,7 @@
 #include <osg/Geode>
 #include <osgAnimation/MorphGeometry>
 
-#include <stdlib.h>
+#include <sstream>
 
 using namespace osgAnimation;
 
@@ -255,9 +255,15 @@ bool UpdateMorph::link(osgAnimation::Channel* channel)
 {
     // Typically morph geometries only have the weights for morph targets animated
 
-    // Expect a weight value
-    // TODO Should we make this more generic to handle other things than single values?
-    int weightIndex = atoi(channel->getName().c_str());
+    std::istringstream iss(channel->getName());
+
+    int weightIndex;
+    iss >> weightIndex;
+
+    if (iss.fail())
+    {
+        return false;
+    }
 
     if (weightIndex >= 0)
     {

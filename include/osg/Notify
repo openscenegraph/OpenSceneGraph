@@ -80,6 +80,7 @@ extern OSG_EXPORT std::ostream& notify(const NotifySeverity severity);
 inline std::ostream& notify(void) { return notify(osg::INFO); }
 
 #define OSG_NOTIFY(level) if (osg::isNotifyEnabled(level)) osg::notify(level)
+#define OSG_ALWAYS OSG_NOTIFY(osg::ALWAYS)
 #define OSG_FATAL OSG_NOTIFY(osg::FATAL)
 #define OSG_WARN OSG_NOTIFY(osg::WARN)
 #define OSG_NOTICE OSG_NOTIFY(osg::NOTICE)

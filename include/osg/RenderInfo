@@ -16,7 +16,6 @@
 
 #include <osg/State>
 #include <osg/View>
-#include <osg/observer_ptr>
 
 namespace osg {
 

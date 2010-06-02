@@ -97,8 +97,7 @@ FBOExtensions::FBOExtensions(unsigned int contextID)
 #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     _supported = _supported &&
         glFramebufferTexture1D != 0 &&
-        glFramebufferTexture3D != 0 &&
-        glFramebufferTexture != 0;
+        glFramebufferTexture3D != 0;
 #endif
 
     LOAD_FBO_EXT(glBlitFramebuffer);

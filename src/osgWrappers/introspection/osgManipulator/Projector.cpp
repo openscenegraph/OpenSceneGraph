@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgManipulator::CylinderPlaneProjector)
 	I_DeclaringFile("osgManipulator/Projector");
 	I_BaseType(osgManipulator::CylinderProjector);

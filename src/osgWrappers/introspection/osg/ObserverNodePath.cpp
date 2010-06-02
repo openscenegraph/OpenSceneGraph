@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_VALUE_REFLECTOR(osg::ObserverNodePath)
 	I_DeclaringFile("osg/ObserverNodePath");
 	I_Constructor0(____ObserverNodePath,

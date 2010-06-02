@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::ImageSequence::Mode)
 	I_DeclaringFile("osg/ImageSequence");
 	I_EnumLabel(osg::ImageSequence::PRE_LOAD_ALL_IMAGES);
@@ -286,6 +288,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Image >)
 	I_Constructor1(IN, const osg::ref_ptr< osg::Image > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osg::Image > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osg::Image *, get,

@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgGA::StateSetManipulator)
 	I_DeclaringFile("osgGA/StateSetManipulator");
 	I_BaseType(osgGA::GUIEventHandler);

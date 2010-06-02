@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgManipulator::RotateCylinderDragger)
 	I_DeclaringFile("osgManipulator/RotateCylinderDragger");
 	I_BaseType(osgManipulator::Dragger);

@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Operation)
 	I_DeclaringFile("osg/OperationThread");
 	I_VirtualBaseType(osg::Referenced);

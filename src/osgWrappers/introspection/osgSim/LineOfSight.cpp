@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgSim::DatabaseCacheReadCallback)
 	I_DeclaringFile("osgSim/LineOfSight");
 	I_BaseType(osgUtil::IntersectionVisitor::ReadCallback);

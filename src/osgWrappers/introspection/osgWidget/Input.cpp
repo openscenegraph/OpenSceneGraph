@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgWidget::Input)
 	I_DeclaringFile("osgWidget/Input");
 	I_BaseType(osgWidget::Label);

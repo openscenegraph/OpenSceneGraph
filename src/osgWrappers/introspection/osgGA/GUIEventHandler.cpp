@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgGA::GUIEventHandler)
 	I_DeclaringFile("osgGA/GUIEventHandler");
 	I_BaseType(osg::NodeCallback);

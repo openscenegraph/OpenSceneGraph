@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgShadow::MinimalShadowMap::ShadowReceivingCoarseBoundAccuracy)
 	I_DeclaringFile("osgShadow/MinimalShadowMap");
 	I_EnumLabel(osgShadow::MinimalShadowMap::EMPTY_BOX);

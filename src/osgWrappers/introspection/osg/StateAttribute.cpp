@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::StateAttribute::Values)
 	I_DeclaringFile("osg/StateAttribute");
 	I_EnumLabel(osg::StateAttribute::OFF);

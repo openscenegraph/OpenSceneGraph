@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::FrameStamp)
 	I_DeclaringFile("osg/FrameStamp");
 	I_BaseType(osg::Referenced);

@@ -29,6 +29,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::vector< osg::Vec3 >, osgShadow::OccluderGeometry::Vec3List)
 
 TYPE_NAME_ALIAS(std::vector< GLuint >, osgShadow::OccluderGeometry::UIntList)

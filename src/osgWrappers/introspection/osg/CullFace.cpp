@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::CullFace::Mode)
 	I_DeclaringFile("osg/CullFace");
 	I_EnumLabel(osg::CullFace::FRONT);

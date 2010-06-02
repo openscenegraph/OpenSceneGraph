@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::vector< osgWidget::point_type >, osgWidget::Table::CellSizes)
 
 BEGIN_OBJECT_REFLECTOR(osgWidget::Table)

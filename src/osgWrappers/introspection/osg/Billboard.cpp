@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::Billboard::Mode)
 	I_DeclaringFile("osg/Billboard");
 	I_EnumLabel(osg::Billboard::POINT_ROT_EYE);

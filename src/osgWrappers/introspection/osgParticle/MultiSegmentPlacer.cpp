@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgParticle::MultiSegmentPlacer)
 	I_DeclaringFile("osgParticle/MultiSegmentPlacer");
 	I_BaseType(osgParticle::Placer);

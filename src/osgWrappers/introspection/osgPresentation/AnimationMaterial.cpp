@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgPresentation::AnimationMaterial::LoopMode)
 	I_DeclaringFile("osgPresentation/AnimationMaterial");
 	I_EnumLabel(osgPresentation::AnimationMaterial::SWING);
@@ -284,6 +286,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Material >)
 	I_Constructor1(IN, const osg::ref_ptr< osg::Material > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osg::Material > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osg::Material *, get,

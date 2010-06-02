@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgManipulator::AntiSquish)
 	I_DeclaringFile("osgManipulator/AntiSquish");
 	I_BaseType(osg::MatrixTransform);

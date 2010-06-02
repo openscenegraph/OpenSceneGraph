@@ -31,6 +31,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgWidget::WindowManager::WmFlags)
 	I_DeclaringFile("osgWidget/WindowManager");
 	I_EnumLabel(osgWidget::WindowManager::WM_USE_LUA);

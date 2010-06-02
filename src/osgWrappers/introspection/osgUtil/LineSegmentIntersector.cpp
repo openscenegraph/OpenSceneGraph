@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::multiset< osgUtil::LineSegmentIntersector::Intersection >, osgUtil::LineSegmentIntersector::Intersections)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::LineSegmentIntersector)

@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::LogicOp::Opcode)
 	I_DeclaringFile("osg/LogicOp");
 	I_EnumLabel(osg::LogicOp::CLEAR);

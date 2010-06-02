@@ -589,6 +589,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Operation >)
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
+	I_Constructor1(IN, osg::observer_ptr< osg::Operation > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
+	               "",
+	               "");
 	I_Method0(osg::Operation *, get,
 	          Properties::NON_VIRTUAL,
 	          __T_P1__get,

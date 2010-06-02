@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgVolume::Volume)
 	I_DeclaringFile("osgVolume/Volume");
 	I_BaseType(osg::Group);

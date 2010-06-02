@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::vector< osgUtil::PlaneIntersector::Intersection >, osgUtil::PlaneIntersector::Intersections)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::PlaneIntersector)

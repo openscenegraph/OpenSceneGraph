@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgFX::Validator)
 	I_DeclaringFile("osgFX/Validator");
 	I_BaseType(osg::StateAttribute);

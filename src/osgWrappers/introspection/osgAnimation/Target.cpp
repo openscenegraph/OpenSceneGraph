@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgAnimation::Target)
 	I_DeclaringFile("osgAnimation/Target");
 	I_BaseType(osg::Referenced);

@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgManipulator::TrackballDragger)
 	I_DeclaringFile("osgManipulator/TrackballDragger");
 	I_BaseType(osgManipulator::CompositeDragger);

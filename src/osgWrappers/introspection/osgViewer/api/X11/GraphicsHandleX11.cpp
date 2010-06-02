@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(GLXContext, osgViewer::GraphicsHandleX11::Context)
 
 TYPE_NAME_ALIAS(GLXPbuffer, osgViewer::GraphicsHandleX11::Pbuffer)

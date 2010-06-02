@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgParticle::ModularProgram)
 	I_DeclaringFile("osgParticle/ModularProgram");
 	I_BaseType(osgParticle::Program);

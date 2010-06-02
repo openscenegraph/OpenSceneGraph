@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_VALUE_REFLECTOR(osgWidget::StyleInterface)
 	I_DeclaringFile("osgWidget/StyleInterface");
 	I_Constructor0(____StyleInterface,

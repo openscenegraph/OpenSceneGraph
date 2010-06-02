@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgUtil::Tessellator::WindingType)
 	I_DeclaringFile("osgUtil/Tessellator");
 	I_EnumLabel(osgUtil::Tessellator::TESS_WINDING_ODD);
@@ -230,6 +232,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::Tessellator::Prim >)
 	I_Constructor1(IN, const osg::ref_ptr< osgUtil::Tessellator::Prim > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgUtil::Tessellator::Prim > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgUtil::Tessellator::Prim *, get,

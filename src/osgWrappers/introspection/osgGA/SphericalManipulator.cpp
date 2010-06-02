@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgGA::SphericalManipulator::RotationMode)
 	I_DeclaringFile("osgGA/SphericalManipulator");
 	I_EnumLabel(osgGA::SphericalManipulator::ELEVATION_HEADING);

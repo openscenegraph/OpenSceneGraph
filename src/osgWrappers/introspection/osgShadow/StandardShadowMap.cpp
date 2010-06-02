@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(osgShadow::StandardShadowMap, osgShadow::StandardShadowMap::ThisClass)
 
 TYPE_NAME_ALIAS(osgShadow::DebugShadowMap, osgShadow::StandardShadowMap::BaseClass)

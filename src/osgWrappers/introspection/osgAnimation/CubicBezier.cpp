@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(osgAnimation::TemplateCubicBezier< float >, osgAnimation::FloatCubicBezier)
 
 TYPE_NAME_ALIAS(osgAnimation::TemplateCubicBezier< double >, osgAnimation::DoubleCubicBezier)

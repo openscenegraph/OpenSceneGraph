@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgViewer::Scene)
 	I_DeclaringFile("osgViewer/Scene");
 	I_BaseType(osg::Referenced);

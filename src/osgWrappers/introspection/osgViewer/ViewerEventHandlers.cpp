@@ -31,6 +31,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgViewer::HelpHandler)
 	I_DeclaringFile("osgViewer/ViewerEventHandlers");
 	I_BaseType(osgGA::GUIEventHandler);

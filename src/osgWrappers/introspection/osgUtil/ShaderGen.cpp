@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgUtil::ShaderGenCache::StateMask)
 	I_DeclaringFile("osgUtil/ShaderGen");
 	I_EnumLabel(osgUtil::ShaderGenCache::BLEND);

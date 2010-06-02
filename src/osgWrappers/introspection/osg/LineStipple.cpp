@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::LineStipple)
 	I_DeclaringFile("osg/LineStipple");
 	I_BaseType(osg::StateAttribute);

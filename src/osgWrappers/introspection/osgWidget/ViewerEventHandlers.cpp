@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgWidget::CameraSwitchHandler)
 	I_DeclaringFile("osgWidget/ViewerEventHandlers");
 	I_BaseType(osgGA::GUIEventHandler);

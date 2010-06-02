@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::AutoTransform::AutoRotateMode)
 	I_DeclaringFile("osg/AutoTransform");
 	I_EnumLabel(osg::AutoTransform::NO_ROTATION);

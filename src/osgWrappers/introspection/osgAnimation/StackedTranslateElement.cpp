@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgAnimation::StackedTranslateElement)
 	I_DeclaringFile("osgAnimation/StackedTranslateElement");
 	I_BaseType(osgAnimation::StackedTransformElement);

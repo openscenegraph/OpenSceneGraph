@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgSim::VisibilityGroup)
 	I_DeclaringFile("osgSim/VisibilityGroup");
 	I_BaseType(osg::Group);

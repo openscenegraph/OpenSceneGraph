@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgSim::ObjectRecordData)
 	I_DeclaringFile("osgSim/ObjectRecordData");
 	I_BaseType(osg::Object);

@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgAnimation::Timeline::TimelineStatus)
 	I_DeclaringFile("osgAnimation/Timeline");
 	I_EnumLabel(osgAnimation::Timeline::Play);

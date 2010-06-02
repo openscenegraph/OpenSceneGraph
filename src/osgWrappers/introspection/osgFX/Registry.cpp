@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::ref_ptr< const osgFX::Effect > >, osgFX::Registry::EffectMap)
 
 BEGIN_OBJECT_REFLECTOR(osgFX::Registry)

@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::PolygonMode::Mode)
 	I_DeclaringFile("osg/PolygonMode");
 	I_EnumLabel(osg::PolygonMode::POINT);

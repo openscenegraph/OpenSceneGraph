@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::Geometry::AttributeBinding)
 	I_DeclaringFile("osg/Geometry");
 	I_EnumLabel(osg::Geometry::BIND_OFF);
@@ -973,6 +975,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::PrimitiveSet >)
 	I_Constructor1(IN, const osg::ref_ptr< osg::PrimitiveSet > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osg::PrimitiveSet > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osg::PrimitiveSet *, get,

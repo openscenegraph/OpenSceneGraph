@@ -30,6 +30,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::CullingSet::MaskValues)
 	I_DeclaringFile("osg/CullingSet");
 	I_EnumLabel(osg::CullingSet::NO_CULLING);
@@ -240,6 +242,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::StateSet >)
 	I_Constructor1(IN, const osg::ref_ptr< osg::StateSet > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osg::StateSet > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osg::StateSet *, get,

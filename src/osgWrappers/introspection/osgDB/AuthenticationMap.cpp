@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgDB::AuthenticationDetails::HttpAuthentication)
 	I_DeclaringFile("osgDB/AuthenticationMap");
 	I_EnumLabel(osgDB::AuthenticationDetails::BASIC);

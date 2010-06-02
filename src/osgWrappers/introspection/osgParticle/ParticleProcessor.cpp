@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgParticle::ParticleProcessor::ReferenceFrame)
 	I_DeclaringFile("osgParticle/ParticleProcessor");
 	I_EnumLabel(osgParticle::ParticleProcessor::RELATIVE_RF);

@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgGA::DriveManipulator)
 	I_DeclaringFile("osgGA/DriveManipulator");
 	I_BaseType(osgGA::CameraManipulator);

@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgWidget::Frame::CornerType)
 	I_DeclaringFile("osgWidget/Frame");
 	I_EnumLabel(osgWidget::Frame::CORNER_LOWER_LEFT);

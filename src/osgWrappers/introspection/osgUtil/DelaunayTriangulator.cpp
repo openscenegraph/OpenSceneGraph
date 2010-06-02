@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgUtil::DelaunayConstraint)
 	I_DeclaringFile("osgUtil/DelaunayTriangulator");
 	I_BaseType(osg::Geometry);
@@ -191,6 +193,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::DelaunayConstraint >)
 	I_Constructor1(IN, const osg::ref_ptr< osgUtil::DelaunayConstraint > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgUtil::DelaunayConstraint > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgUtil::DelaunayConstraint *, get,

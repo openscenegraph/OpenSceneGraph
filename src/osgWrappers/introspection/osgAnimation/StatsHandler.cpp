@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgAnimation::StatsHandler::StatsType)
 	I_DeclaringFile("osgAnimation/StatsHandler");
 	I_EnumLabel(osgAnimation::StatsHandler::NO_STATS);

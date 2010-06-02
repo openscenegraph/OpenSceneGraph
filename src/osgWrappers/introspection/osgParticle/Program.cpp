@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Program)
 	I_DeclaringFile("osgParticle/Program");
 	I_BaseType(osgParticle::ParticleProcessor);

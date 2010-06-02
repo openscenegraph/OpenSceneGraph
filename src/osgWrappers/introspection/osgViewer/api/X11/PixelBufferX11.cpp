@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgViewer::PixelBufferX11)
 	I_DeclaringFile("osgViewer/api/X11/PixelBufferX11");
 	I_BaseType(osg::GraphicsContext);

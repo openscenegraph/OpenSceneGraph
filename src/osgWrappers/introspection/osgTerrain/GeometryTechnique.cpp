@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgTerrain::GeometryTechnique::FilterType)
 	I_DeclaringFile("osgTerrain/GeometryTechnique");
 	I_EnumLabel(osgTerrain::GeometryTechnique::GAUSSIAN);

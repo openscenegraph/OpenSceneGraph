@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::LightSource::ReferenceFrame)
 	I_DeclaringFile("osg/LightSource");
 	I_EnumLabel(osg::LightSource::RELATIVE_RF);

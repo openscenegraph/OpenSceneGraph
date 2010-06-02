@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(OpenThreads::Mutex::MutexType)
 	I_DeclaringFile("OpenThreads/Mutex");
 	I_EnumLabel(OpenThreads::Mutex::MUTEX_NORMAL);

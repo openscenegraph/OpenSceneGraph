@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::BlendEquation::Equation)
 	I_DeclaringFile("osg/BlendEquation");
 	I_EnumLabel(osg::BlendEquation::RGBA_MIN);

@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_VALUE_REFLECTOR(osgUtil::dereference_clear)
 	I_DeclaringFile("osgUtil/EdgeCollector");
 	I_Constructor0(____dereference_clear,
@@ -274,6 +276,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::UIntArray >)
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
+	I_Constructor1(IN, osg::observer_ptr< osg::UIntArray > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
+	               "",
+	               "");
 	I_Method0(osg::UIntArray *, get,
 	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
@@ -312,6 +319,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::EdgeCollector::Edge >)
 	I_Constructor1(IN, const osg::ref_ptr< osgUtil::EdgeCollector::Edge > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgUtil::EdgeCollector::Edge > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgUtil::EdgeCollector::Edge *, get,
@@ -354,6 +366,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::EdgeCollector::Edgeloop >)
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgUtil::EdgeCollector::Edgeloop > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
+	               "",
+	               "");
 	I_Method0(osgUtil::EdgeCollector::Edgeloop *, get,
 	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
@@ -394,6 +411,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::EdgeCollector::Point >)
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgUtil::EdgeCollector::Point > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
+	               "",
+	               "");
 	I_Method0(osgUtil::EdgeCollector::Point *, get,
 	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
@@ -432,6 +454,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::EdgeCollector::Triangle >)
 	I_Constructor1(IN, const osg::ref_ptr< osgUtil::EdgeCollector::Triangle > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgUtil::EdgeCollector::Triangle > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgUtil::EdgeCollector::Triangle *, get,

@@ -29,6 +29,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgText::TextBase::CharacterSizeMode)
 	I_DeclaringFile("osgText/TextBase");
 	I_EnumLabel(osgText::TextBase::OBJECT_COORDS);

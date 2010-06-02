@@ -32,6 +32,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgTerrain::CompositeLayer)
 	I_DeclaringFile("osgTerrain/Layer");
 	I_BaseType(osgTerrain::Layer);

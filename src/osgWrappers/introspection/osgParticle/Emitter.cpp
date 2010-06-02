@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Emitter)
 	I_DeclaringFile("osgParticle/Emitter");
 	I_BaseType(osgParticle::ParticleProcessor);

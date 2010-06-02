@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::DisplaySettings::DisplayType)
 	I_DeclaringFile("osg/DisplaySettings");
 	I_EnumLabel(osg::DisplaySettings::MONITOR);
@@ -604,6 +606,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::DisplaySettings >)
 	I_Constructor1(IN, const osg::ref_ptr< osg::DisplaySettings > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osg::DisplaySettings > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osg::DisplaySettings *, get,

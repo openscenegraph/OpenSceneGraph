@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgPresentation::SlideShowConstructor::CoordinateFrame)
 	I_DeclaringFile("osgPresentation/SlideShowConstructor");
 	I_EnumLabel(osgPresentation::SlideShowConstructor::SLIDE);

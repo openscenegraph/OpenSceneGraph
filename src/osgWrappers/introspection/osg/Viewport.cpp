@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(double, osg::Viewport::value_type)
 
 BEGIN_OBJECT_REFLECTOR(osg::Viewport)

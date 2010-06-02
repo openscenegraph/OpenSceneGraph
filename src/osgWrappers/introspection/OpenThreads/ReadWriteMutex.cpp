@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(OpenThreads::ReadWriteMutex)
 	I_DeclaringFile("OpenThreads/ReadWriteMutex");
 	I_Constructor0(____ReadWriteMutex,

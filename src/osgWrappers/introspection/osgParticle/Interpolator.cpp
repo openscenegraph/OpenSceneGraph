@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Interpolator)
 	I_DeclaringFile("osgParticle/Interpolator");
 	I_BaseType(osg::Object);

@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::vector< unsigned int >, osgUtil::Simplifier::IndexList)
 
 BEGIN_OBJECT_REFLECTOR(osgUtil::Simplifier)

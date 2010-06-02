@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgGA::FlightManipulator::YawControlMode)
 	I_DeclaringFile("osgGA/FlightManipulator");
 	I_EnumLabel(osgGA::FlightManipulator::YAW_AUTOMATICALLY_WHEN_BANKED);

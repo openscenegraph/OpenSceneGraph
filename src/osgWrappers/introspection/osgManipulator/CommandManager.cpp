@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgManipulator::Selection > >, osgManipulator::CommandManager::Selections)
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::CommandManager)
@@ -66,6 +68,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgManipulator::Selection >)
 	I_Constructor1(IN, const osg::ref_ptr< osgManipulator::Selection > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgManipulator::Selection > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgManipulator::Selection *, get,

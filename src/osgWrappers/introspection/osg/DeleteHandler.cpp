@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::pair< int COMMA  const osg::Referenced * >, osg::DeleteHandler::FrameNumberObjectPair)
 
 TYPE_NAME_ALIAS(std::list< osg::DeleteHandler::FrameNumberObjectPair >, osg::DeleteHandler::ObjectsToDeleteList)

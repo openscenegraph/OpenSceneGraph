@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgManipulator::RotateSphereDragger)
 	I_DeclaringFile("osgManipulator/RotateSphereDragger");
 	I_BaseType(osgManipulator::Dragger);

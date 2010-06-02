@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::TexGenNode::ReferenceFrame)
 	I_DeclaringFile("osg/TexGenNode");
 	I_EnumLabel(osg::TexGenNode::RELATIVE_RF);

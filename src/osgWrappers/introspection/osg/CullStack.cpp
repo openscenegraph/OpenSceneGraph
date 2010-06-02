@@ -29,6 +29,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::vector< osg::ShadowVolumeOccluder >, osg::CullStack::OccluderList)
 
 TYPE_NAME_ALIAS(std::vector< osg::CullingSet >, osg::CullStack::CullingStack)

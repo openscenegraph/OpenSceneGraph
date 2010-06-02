@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_VALUE_REFLECTOR(osg::ElapsedTime)
 	I_DeclaringFile("osg/Timer");
 	I_ConstructorWithDefaults2(IN, double *, elapsedTime, , IN, osg::Timer *, timer, 0,

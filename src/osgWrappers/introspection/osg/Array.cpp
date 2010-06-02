@@ -37,6 +37,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::Array::Type)
 	I_DeclaringFile("osg/Array");
 	I_EnumLabel(osg::Array::ArrayType);

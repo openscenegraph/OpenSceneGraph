@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgParticle::ExplosionDebrisEffect)
 	I_DeclaringFile("osgParticle/ExplosionDebrisEffect");
 	I_BaseType(osgParticle::ParticleEffect);

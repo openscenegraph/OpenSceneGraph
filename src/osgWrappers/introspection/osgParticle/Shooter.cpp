@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Shooter)
 	I_DeclaringFile("osgParticle/Shooter");
 	I_BaseType(osg::Object);

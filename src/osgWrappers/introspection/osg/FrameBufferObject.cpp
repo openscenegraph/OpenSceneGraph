@@ -33,6 +33,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_VALUE_REFLECTOR(osg::FrameBufferAttachment)
 	I_DeclaringFile("osg/FrameBufferObject");
 	I_Constructor0(____FrameBufferAttachment,
@@ -48,28 +50,28 @@ BEGIN_VALUE_REFLECTOR(osg::FrameBufferAttachment)
 	               ____FrameBufferAttachment__RenderBuffer_P1,
 	               "",
 	               "");
-	I_ConstructorWithDefaults2(IN, osg::Texture1D *, target, , IN, int, level, 0,
-	                           ____FrameBufferAttachment__Texture1D_P1__int,
+	I_ConstructorWithDefaults2(IN, osg::Texture1D *, target, , IN, unsigned int, level, 0,
+	                           ____FrameBufferAttachment__Texture1D_P1__unsigned_int,
 	                           "",
 	                           "");
-	I_ConstructorWithDefaults2(IN, osg::Texture2D *, target, , IN, int, level, 0,
-	                           ____FrameBufferAttachment__Texture2D_P1__int,
+	I_ConstructorWithDefaults2(IN, osg::Texture2D *, target, , IN, unsigned int, level, 0,
+	                           ____FrameBufferAttachment__Texture2D_P1__unsigned_int,
 	                           "",
 	                           "");
-	I_ConstructorWithDefaults2(IN, osg::Texture2DMultisample *, target, , IN, int, level, 0,
-	                           ____FrameBufferAttachment__Texture2DMultisample_P1__int,
+	I_ConstructorWithDefaults2(IN, osg::Texture2DMultisample *, target, , IN, unsigned int, level, 0,
+	                           ____FrameBufferAttachment__Texture2DMultisample_P1__unsigned_int,
 	                           "",
 	                           "");
-	I_ConstructorWithDefaults3(IN, osg::Texture3D *, target, , IN, int, zoffset, , IN, int, level, 0,
-	                           ____FrameBufferAttachment__Texture3D_P1__int__int,
+	I_ConstructorWithDefaults3(IN, osg::Texture3D *, target, , IN, unsigned int, zoffset, , IN, unsigned int, level, 0,
+	                           ____FrameBufferAttachment__Texture3D_P1__unsigned_int__unsigned_int,
 	                           "",
 	                           "");
-	I_ConstructorWithDefaults3(IN, osg::Texture2DArray *, target, , IN, int, layer, , IN, int, level, 0,
-	                           ____FrameBufferAttachment__Texture2DArray_P1__int__int,
+	I_ConstructorWithDefaults3(IN, osg::Texture2DArray *, target, , IN, unsigned int, layer, , IN, unsigned int, level, 0,
+	                           ____FrameBufferAttachment__Texture2DArray_P1__unsigned_int__unsigned_int,
 	                           "",
 	                           "");
-	I_ConstructorWithDefaults3(IN, osg::TextureCubeMap *, target, , IN, int, face, , IN, int, level, 0,
-	                           ____FrameBufferAttachment__TextureCubeMap_P1__int__int,
+	I_ConstructorWithDefaults3(IN, osg::TextureCubeMap *, target, , IN, unsigned int, face, , IN, unsigned int, level, 0,
+	                           ____FrameBufferAttachment__TextureCubeMap_P1__unsigned_int__unsigned_int,
 	                           "",
 	                           "");
 	I_Constructor1(IN, osg::TextureRectangle *, target,
@@ -122,28 +124,28 @@ BEGIN_VALUE_REFLECTOR(osg::FrameBufferAttachment)
 	          __C5_Texture_P1__getTexture,
 	          "",
 	          "");
-	I_Method0(int, getCubeMapFace,
+	I_Method0(unsigned int, getCubeMapFace,
 	          Properties::NON_VIRTUAL,
-	          __int__getCubeMapFace,
+	          __unsigned_int__getCubeMapFace,
 	          "",
 	          "");
-	I_Method0(int, getTextureLevel,
+	I_Method0(unsigned int, getTextureLevel,
 	          Properties::NON_VIRTUAL,
-	          __int__getTextureLevel,
+	          __unsigned_int__getTextureLevel,
 	          "",
 	          "");
-	I_Method0(int, getTexture3DZOffset,
+	I_Method0(unsigned int, getTexture3DZOffset,
 	          Properties::NON_VIRTUAL,
-	          __int__getTexture3DZOffset,
+	          __unsigned_int__getTexture3DZOffset,
 	          "",
 	          "");
-	I_Method0(int, getTextureArrayLayer,
+	I_Method0(unsigned int, getTextureArrayLayer,
 	          Properties::NON_VIRTUAL,
-	          __int__getTextureArrayLayer,
+	          __unsigned_int__getTextureArrayLayer,
 	          "",
 	          "");
-	I_SimpleProperty(int, CubeMapFace, 
-	                 __int__getCubeMapFace, 
+	I_SimpleProperty(unsigned int, CubeMapFace, 
+	                 __unsigned_int__getCubeMapFace, 
 	                 0);
 	I_SimpleProperty(osg::RenderBuffer *, RenderBuffer, 
 	                 __RenderBuffer_P1__getRenderBuffer, 
@@ -151,14 +153,14 @@ BEGIN_VALUE_REFLECTOR(osg::FrameBufferAttachment)
 	I_SimpleProperty(osg::Texture *, Texture, 
 	                 __Texture_P1__getTexture, 
 	                 0);
-	I_SimpleProperty(int, Texture3DZOffset, 
-	                 __int__getTexture3DZOffset, 
+	I_SimpleProperty(unsigned int, Texture3DZOffset, 
+	                 __unsigned_int__getTexture3DZOffset, 
 	                 0);
-	I_SimpleProperty(int, TextureArrayLayer, 
-	                 __int__getTextureArrayLayer, 
+	I_SimpleProperty(unsigned int, TextureArrayLayer, 
+	                 __unsigned_int__getTextureArrayLayer, 
 	                 0);
-	I_SimpleProperty(int, TextureLevel, 
-	                 __int__getTextureLevel, 
+	I_SimpleProperty(unsigned int, TextureLevel, 
+	                 __unsigned_int__getTextureLevel, 
 	                 0);
 END_REFLECTOR
 

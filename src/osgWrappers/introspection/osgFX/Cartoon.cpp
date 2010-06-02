@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgFX::Cartoon)
 	I_DeclaringFile("osgFX/Cartoon");
 	I_BaseType(osgFX::Effect);

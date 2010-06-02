@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_VALUE_REFLECTOR(osgVolume::TileID)
 	I_DeclaringFile("osgVolume/VolumeTile");
 	I_Constructor0(____TileID,

@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_VALUE_REFLECTOR(osgUtil::SceneGraphBuilder)
 	I_DeclaringFile("osgUtil/SceneGraphBuilder");
 	I_Constructor0(____SceneGraphBuilder,

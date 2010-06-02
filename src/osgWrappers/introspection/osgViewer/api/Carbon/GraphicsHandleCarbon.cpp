@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_VALUE_REFLECTOR(osgViewer::GraphicsHandleCarbon)
 	I_DeclaringFile("osgViewer/api/Carbon/GraphicsHandleCarbon");
 	I_Constructor0(____GraphicsHandleCarbon,

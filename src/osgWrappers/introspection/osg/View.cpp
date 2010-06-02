@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::View::LightingMode)
 	I_DeclaringFile("osg/View");
 	I_EnumLabel(osg::View::NO_LIGHT);

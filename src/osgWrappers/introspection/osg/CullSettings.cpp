@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::CullSettings::VariablesMask)
 	I_DeclaringFile("osg/CullSettings");
 	I_EnumLabel(osg::CullSettings::COMPUTE_NEAR_FAR_MODE);

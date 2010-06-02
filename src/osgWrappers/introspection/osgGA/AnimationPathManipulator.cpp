@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgGA::AnimationPathManipulator)
 	I_DeclaringFile("osgGA/AnimationPathManipulator");
 	I_BaseType(osgGA::CameraManipulator);

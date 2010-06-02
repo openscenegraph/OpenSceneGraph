@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::Material::Face)
 	I_DeclaringFile("osg/Material");
 	I_EnumLabel(osg::Material::FRONT);

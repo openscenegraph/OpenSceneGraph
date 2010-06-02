@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgParticle::RandomRateCounter)
 	I_DeclaringFile("osgParticle/RandomRateCounter");
 	I_BaseType(osgParticle::VariableRateCounter);

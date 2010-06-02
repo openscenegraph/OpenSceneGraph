@@ -34,6 +34,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::CopyOp::Options)
 	I_DeclaringFile("osg/CopyOp");
 	I_EnumLabel(osg::CopyOp::SHALLOW_COPY);

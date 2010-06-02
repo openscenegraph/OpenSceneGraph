@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::ImageStream::StreamStatus)
 	I_DeclaringFile("osg/ImageStream");
 	I_EnumLabel(osg::ImageStream::INVALID);
@@ -220,6 +222,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::AudioStream >)
 	I_Constructor1(IN, const osg::ref_ptr< osg::AudioStream > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osg::AudioStream > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osg::AudioStream *, get,

@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgParticle::ConnectedParticleSystem)
 	I_DeclaringFile("osgParticle/ConnectedParticleSystem");
 	I_BaseType(osgParticle::ParticleSystem);

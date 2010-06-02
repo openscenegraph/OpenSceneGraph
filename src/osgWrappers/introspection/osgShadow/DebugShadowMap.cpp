@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(osgShadow::DebugShadowMap, osgShadow::DebugShadowMap::ThisClass)
 
 TYPE_NAME_ALIAS(osgShadow::ViewDependentShadowTechnique, osgShadow::DebugShadowMap::BaseClass)

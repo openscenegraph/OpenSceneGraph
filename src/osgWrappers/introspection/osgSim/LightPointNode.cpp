@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::vector< osgSim::LightPoint >, osgSim::LightPointNode::LightPointList)
 
 BEGIN_OBJECT_REFLECTOR(osgSim::LightPointNode)

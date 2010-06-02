@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::Scissor)
 	I_DeclaringFile("osg/Scissor");
 	I_BaseType(osg::StateAttribute);

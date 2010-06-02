@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::TexEnvFilter)
 	I_DeclaringFile("osg/TexEnvFilter");
 	I_BaseType(osg::StateAttribute);

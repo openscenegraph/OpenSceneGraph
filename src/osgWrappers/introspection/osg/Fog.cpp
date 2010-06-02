@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::Fog::Mode)
 	I_DeclaringFile("osg/Fog");
 	I_EnumLabel(osg::Fog::LINEAR);

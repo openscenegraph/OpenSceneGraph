@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Operator)
 	I_DeclaringFile("osgParticle/Operator");
 	I_BaseType(osg::Object);

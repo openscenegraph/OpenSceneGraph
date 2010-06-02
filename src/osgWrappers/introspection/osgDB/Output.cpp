@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgDB::Output::PathNameHint)
 	I_DeclaringFile("osgDB/Output");
 	I_EnumLabel(osgDB::Output::AS_IS);

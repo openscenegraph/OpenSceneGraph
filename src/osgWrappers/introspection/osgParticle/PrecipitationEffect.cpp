@@ -30,6 +30,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgParticle::PrecipitationEffect)
 	I_DeclaringFile("osgParticle/PrecipitationEffect");
 	I_BaseType(osg::Node);

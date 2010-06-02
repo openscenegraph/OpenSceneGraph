@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgUtil::TransformAttributeFunctor)
 	I_DeclaringFile("osgUtil/TransformAttributeFunctor");
 	I_BaseType(osg::Drawable::AttributeFunctor);

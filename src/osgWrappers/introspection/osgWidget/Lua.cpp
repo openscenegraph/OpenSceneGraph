@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgWidget::LuaEngine)
 	I_DeclaringFile("osgWidget/Lua");
 	I_BaseType(osgWidget::ScriptEngine);

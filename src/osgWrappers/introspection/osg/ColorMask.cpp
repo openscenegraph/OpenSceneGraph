@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::ColorMask)
 	I_DeclaringFile("osg/ColorMask");
 	I_BaseType(osg::StateAttribute);

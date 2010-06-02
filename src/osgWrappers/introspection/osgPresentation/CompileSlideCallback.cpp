@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgPresentation::CompileSlideCallback)
 	I_DeclaringFile("osgPresentation/CompileSlideCallback");
 	I_BaseType(osg::Camera::DrawCallback);

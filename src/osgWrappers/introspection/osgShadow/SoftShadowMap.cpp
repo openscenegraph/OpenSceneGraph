@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgShadow::SoftShadowMap)
 	I_DeclaringFile("osgShadow/SoftShadowMap");
 	I_BaseType(osgShadow::ShadowMap);

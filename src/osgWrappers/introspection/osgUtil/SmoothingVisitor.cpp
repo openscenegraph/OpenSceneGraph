@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgUtil::SmoothingVisitor)
 	I_DeclaringFile("osgUtil/SmoothingVisitor");
 	I_BaseType(osg::NodeVisitor);

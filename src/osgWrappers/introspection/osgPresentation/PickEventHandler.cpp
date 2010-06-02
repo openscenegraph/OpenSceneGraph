@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgPresentation::PickEventHandler)
 	I_DeclaringFile("osgPresentation/PickEventHandler");
 	I_BaseType(osgGA::GUIEventHandler);

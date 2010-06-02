@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::vector< osg::Vec3d >, osgShadow::ConvexPolyhedron::Vertices)
 
 TYPE_NAME_ALIAS(std::list< osgShadow::ConvexPolyhedron::Face >, osgShadow::ConvexPolyhedron::Faces)

@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgViewer::PixelBufferWin32)
 	I_DeclaringFile("osgViewer/api/Win32/PixelBufferWin32");
 	I_BaseType(osg::GraphicsContext);

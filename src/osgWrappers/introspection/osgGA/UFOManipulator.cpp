@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgGA::UFOManipulator)
 	I_DeclaringFile("osgGA/UFOManipulator");
 	I_BaseType(osgGA::CameraManipulator);

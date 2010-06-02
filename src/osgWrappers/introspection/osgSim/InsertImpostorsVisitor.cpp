@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgSim::InsertImpostorsVisitor)
 	I_DeclaringFile("osgSim/InsertImpostorsVisitor");
 	I_BaseType(osg::NodeVisitor);

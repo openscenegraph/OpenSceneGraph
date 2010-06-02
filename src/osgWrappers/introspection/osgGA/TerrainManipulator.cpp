@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgGA::TerrainManipulator::RotationMode)
 	I_DeclaringFile("osgGA/TerrainManipulator");
 	I_EnumLabel(osgGA::TerrainManipulator::ELEVATION_AZIM_ROLL);

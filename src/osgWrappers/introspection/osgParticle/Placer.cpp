@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Placer)
 	I_DeclaringFile("osgParticle/Placer");
 	I_BaseType(osg::Object);

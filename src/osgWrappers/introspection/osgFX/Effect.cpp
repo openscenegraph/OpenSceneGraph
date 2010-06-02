@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgFX::Effect::TechniqueSelection)
 	I_DeclaringFile("osgFX/Effect");
 	I_EnumLabel(osgFX::Effect::AUTO_DETECT);

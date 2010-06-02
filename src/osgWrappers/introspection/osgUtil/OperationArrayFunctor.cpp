@@ -20,3 +20,5 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        

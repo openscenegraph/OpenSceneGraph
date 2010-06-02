@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgText::String::Encoding)
 	I_DeclaringFile("osgText/String");
 	I_EnumLabel(osgText::String::ENCODING_UNDEFINED);

@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::CameraView::FieldOfViewMode)
 	I_DeclaringFile("osg/CameraView");
 	I_EnumLabel(osg::CameraView::UNCONSTRAINED);

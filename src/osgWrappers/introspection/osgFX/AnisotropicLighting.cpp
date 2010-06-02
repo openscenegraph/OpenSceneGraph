@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgFX::AnisotropicLighting)
 	I_DeclaringFile("osgFX/AnisotropicLighting");
 	I_BaseType(osgFX::Effect);

@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_VALUE_REFLECTOR(osgAnimation::Vec3ArrayPacked)
 	I_DeclaringFile("osgAnimation/Vec3Packed");
 	I_Constructor0(____Vec3ArrayPacked,

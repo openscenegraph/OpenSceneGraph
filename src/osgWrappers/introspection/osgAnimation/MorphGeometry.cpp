@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgAnimation::MorphGeometry::Method)
 	I_DeclaringFile("osgAnimation/MorphGeometry");
 	I_EnumLabel(osgAnimation::MorphGeometry::NORMALIZED);

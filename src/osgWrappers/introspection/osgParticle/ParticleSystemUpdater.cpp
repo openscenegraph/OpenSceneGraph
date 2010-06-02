@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgParticle::ParticleSystemUpdater)
 	I_DeclaringFile("osgParticle/ParticleSystemUpdater");
 	I_BaseType(osg::Node);

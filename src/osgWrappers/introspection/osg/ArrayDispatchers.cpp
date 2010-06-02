@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::ArrayDispatchers)
 	I_DeclaringFile("osg/ArrayDispatchers");
 	I_BaseType(osg::Referenced);

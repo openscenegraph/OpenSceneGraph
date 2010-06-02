@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgSim::ShapeAttribute::Type)
 	I_DeclaringFile("osgSim/ShapeAttribute");
 	I_EnumLabel(osgSim::ShapeAttribute::UNKNOW);

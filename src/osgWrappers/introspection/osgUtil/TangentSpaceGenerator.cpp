@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgUtil::TangentSpaceGenerator)
 	I_DeclaringFile("osgUtil/TangentSpaceGenerator");
 	I_BaseType(osg::Referenced);

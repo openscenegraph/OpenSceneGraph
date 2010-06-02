@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::ClipPlane)
 	I_DeclaringFile("osg/ClipPlane");
 	I_BaseType(osg::StateAttribute);

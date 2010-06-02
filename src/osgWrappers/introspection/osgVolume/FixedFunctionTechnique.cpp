@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgVolume::FixedFunctionTechnique)
 	I_DeclaringFile("osgVolume/FixedFunctionTechnique");
 	I_BaseType(osgVolume::VolumeTechnique);

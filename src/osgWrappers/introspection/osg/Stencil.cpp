@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::Stencil::Function)
 	I_DeclaringFile("osg/Stencil");
 	I_EnumLabel(osg::Stencil::NEVER);

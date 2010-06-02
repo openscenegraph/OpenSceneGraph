@@ -31,6 +31,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgManipulator::Dragger > >, osgManipulator::CompositeDragger::DraggerList)
 
 BEGIN_OBJECT_REFLECTOR(osgManipulator::CompositeDragger)
@@ -560,6 +562,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgManipulator::Constraint >)
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgManipulator::Constraint > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
+	               "",
+	               "");
 	I_Method0(osgManipulator::Constraint *, get,
 	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
@@ -600,6 +607,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgManipulator::Dragger >)
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgManipulator::Dragger > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
+	               "",
+	               "");
 	I_Method0(osgManipulator::Dragger *, get,
 	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
@@ -638,6 +650,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgManipulator::DraggerCallback >)
 	I_Constructor1(IN, const osg::ref_ptr< osgManipulator::DraggerCallback > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgManipulator::DraggerCallback > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgManipulator::DraggerCallback *, get,

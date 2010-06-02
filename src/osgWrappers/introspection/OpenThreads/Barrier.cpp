@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(OpenThreads::Barrier)
 	I_DeclaringFile("OpenThreads/Barrier");
 	I_ConstructorWithDefaults1(IN, int, numThreads, 0,

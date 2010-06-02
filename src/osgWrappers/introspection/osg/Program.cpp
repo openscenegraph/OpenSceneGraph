@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::map< std::string COMMA  GLuint >, osg::Program::AttribBindingList)
 
 TYPE_NAME_ALIAS(std::map< std::string COMMA  GLuint >, osg::Program::FragDataBindingList)

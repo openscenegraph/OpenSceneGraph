@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_VALUE_REFLECTOR(osgUtil::DrawElementTypeSimplifier)
 	I_DeclaringFile("osgUtil/DrawElementTypeSimplifier");
 	I_Constructor0(____DrawElementTypeSimplifier,

@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::BlendColor)
 	I_DeclaringFile("osg/BlendColor");
 	I_BaseType(osg::StateAttribute);

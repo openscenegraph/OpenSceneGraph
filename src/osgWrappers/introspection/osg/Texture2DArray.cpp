@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::Texture2DArray)
 	I_DeclaringFile("osg/Texture2DArray");
 	I_BaseType(osg::Texture);

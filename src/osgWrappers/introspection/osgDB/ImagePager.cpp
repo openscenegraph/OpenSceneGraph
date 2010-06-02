@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgDB::ImagePager)
 	I_DeclaringFile("osgDB/ImagePager");
 	I_BaseType(osg::NodeVisitor::ImageRequestHandler);

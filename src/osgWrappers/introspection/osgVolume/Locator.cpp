@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osgVolume::Locator::LocatorCallback > >, osgVolume::Locator::LocatorCallbacks)
 
 BEGIN_OBJECT_REFLECTOR(osgVolume::Locator)
@@ -194,6 +196,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgVolume::Locator::LocatorCallback >)
 	I_Constructor1(IN, const osg::ref_ptr< osgVolume::Locator::LocatorCallback > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgVolume::Locator::LocatorCallback > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgVolume::Locator::LocatorCallback *, get,

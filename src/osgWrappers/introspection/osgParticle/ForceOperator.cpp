@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgParticle::ForceOperator)
 	I_DeclaringFile("osgParticle/ForceOperator");
 	I_BaseType(osgParticle::Operator);

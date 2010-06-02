@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgWidget::VncClient)
 	I_DeclaringFile("osgWidget/VncClient");
 	I_BaseType(osg::Geode);

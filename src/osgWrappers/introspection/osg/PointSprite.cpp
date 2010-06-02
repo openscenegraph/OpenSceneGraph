@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::PointSprite::CoordOriginMode)
 	I_DeclaringFile("osg/PointSprite");
 	I_EnumLabel(osg::PointSprite::UPPER_LEFT);

@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowedScene)
 	I_DeclaringFile("osgShadow/ShadowedScene");
 	I_BaseType(osg::Group);

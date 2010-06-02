@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgWidget::GeometryHints::AspectRatioPolicy)
 	I_DeclaringFile("osgWidget/PdfReader");
 	I_EnumLabel(osgWidget::GeometryHints::RESIZE_HEIGHT_TO_MAINTAINCE_ASPECT_RATIO);

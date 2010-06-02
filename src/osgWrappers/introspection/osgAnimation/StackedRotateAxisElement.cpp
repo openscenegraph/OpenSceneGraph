@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgAnimation::StackedRotateAxisElement)
 	I_DeclaringFile("osgAnimation/StackedRotateAxisElement");
 	I_BaseType(osgAnimation::StackedTransformElement);

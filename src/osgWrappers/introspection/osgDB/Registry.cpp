@@ -38,6 +38,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::basic_type_wrapper)
 	I_DeclaringFile("osgDB/Registry");
 	I_Constructor0(____basic_type_wrapper,
@@ -693,6 +695,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgDB::ReaderWriter >)
 	I_Constructor1(IN, const osg::ref_ptr< osgDB::ReaderWriter > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgDB::ReaderWriter > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgDB::ReaderWriter *, get,

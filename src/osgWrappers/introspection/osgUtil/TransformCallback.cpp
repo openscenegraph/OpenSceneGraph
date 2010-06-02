@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgUtil::TransformCallback)
 	I_DeclaringFile("osgUtil/TransformCallback");
 	I_BaseType(osg::NodeCallback);

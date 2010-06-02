@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgFX::Scribe)
 	I_DeclaringFile("osgFX/Scribe");
 	I_BaseType(osgFX::Effect);

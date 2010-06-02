@@ -30,6 +30,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgVolume::CompositeLayer)
 	I_DeclaringFile("osgVolume/Layer");
 	I_BaseType(osgVolume::Layer);

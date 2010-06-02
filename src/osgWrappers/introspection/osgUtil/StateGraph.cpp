@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_VALUE_REFLECTOR(osgUtil::LessDepthSortFunctor)
 	I_DeclaringFile("osgUtil/StateGraph");
 	I_Constructor0(____LessDepthSortFunctor,
@@ -169,6 +171,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::RenderLeaf >)
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgUtil::RenderLeaf > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
+	               "",
+	               "");
 	I_Method0(osgUtil::RenderLeaf *, get,
 	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
@@ -207,6 +214,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::StateGraph >)
 	I_Constructor1(IN, const osg::ref_ptr< osgUtil::StateGraph > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgUtil::StateGraph > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgUtil::StateGraph *, get,

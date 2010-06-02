@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::TexEnvCombine::CombineParam)
 	I_DeclaringFile("osg/TexEnvCombine");
 	I_EnumLabel(osg::TexEnvCombine::REPLACE);

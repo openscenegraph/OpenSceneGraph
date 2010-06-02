@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgWidget::NotifyWidget)
 	I_DeclaringFile("osgWidget/Widget");
 	I_BaseType(osgWidget::Widget);

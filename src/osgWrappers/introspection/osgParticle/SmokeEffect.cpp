@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgParticle::SmokeEffect)
 	I_DeclaringFile("osgParticle/SmokeEffect");
 	I_BaseType(osgParticle::ParticleEffect);

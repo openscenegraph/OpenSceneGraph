@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::ReversePrimitiveFunctor)
 	I_DeclaringFile("osgUtil/ReversePrimitiveFunctor");
 	I_BaseType(osg::PrimitiveIndexFunctor);

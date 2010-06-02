@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgFX::MultiTextureControl)
 	I_DeclaringFile("osgFX/MultiTextureControl");
 	I_BaseType(osg::Group);

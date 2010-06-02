@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::StackedTransformElement)
 	I_DeclaringFile("osgAnimation/StackedTransformElement");
 	I_BaseType(osg::Object);

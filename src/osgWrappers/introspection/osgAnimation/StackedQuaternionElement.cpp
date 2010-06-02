@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgAnimation::StackedQuaternionElement)
 	I_DeclaringFile("osgAnimation/StackedQuaternionElement");
 	I_BaseType(osgAnimation::StackedTransformElement);

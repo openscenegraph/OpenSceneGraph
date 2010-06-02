@@ -30,6 +30,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(osg::VectorGLsizei, osg::DrawArrayLengths::vector_type)
 
 BEGIN_OBJECT_REFLECTOR(osg::DrawArrays)

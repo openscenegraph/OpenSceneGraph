@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgSim::OverlayNode::OverlayTechnique)
 	I_DeclaringFile("osgSim/OverlayNode");
 	I_EnumLabel(osgSim::OverlayNode::OBJECT_DEPENDENT_WITH_ORTHOGRAPHIC_OVERLAY);

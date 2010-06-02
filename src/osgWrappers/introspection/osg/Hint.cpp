@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::Hint)
 	I_DeclaringFile("osg/Hint");
 	I_BaseType(osg::StateAttribute);

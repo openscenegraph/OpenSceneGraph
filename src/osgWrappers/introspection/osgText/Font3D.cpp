@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(OpenThreads::Mutex, osgText::Font3D::Font3DMutex)
 
 BEGIN_OBJECT_REFLECTOR(osgText::Font3D)

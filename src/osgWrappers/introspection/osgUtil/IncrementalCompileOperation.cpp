@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::vector< osg::GraphicsContext * >, osgUtil::IncrementalCompileOperation::Contexts)
 
 TYPE_NAME_ALIAS(std::set< osg::GraphicsContext * >, osgUtil::IncrementalCompileOperation::ContextSet)
@@ -261,6 +263,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Program >)
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
+	I_Constructor1(IN, osg::observer_ptr< osg::Program > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
+	               "",
+	               "");
 	I_Method0(osg::Program *, get,
 	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
@@ -301,6 +308,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Texture >)
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
+	I_Constructor1(IN, osg::observer_ptr< osg::Texture > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
+	               "",
+	               "");
 	I_Method0(osg::Texture *, get,
 	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
@@ -339,6 +351,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::IncrementalCompileOperation::Compil
 	I_Constructor1(IN, const osg::ref_ptr< osgUtil::IncrementalCompileOperation::CompileSet > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgUtil::IncrementalCompileOperation::CompileSet > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgUtil::IncrementalCompileOperation::CompileSet *, get,

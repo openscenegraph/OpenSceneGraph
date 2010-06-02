@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgUtil::CubeMapGenerator)
 	I_DeclaringFile("osgUtil/CubeMapGenerator");
 	I_BaseType(osg::Referenced);

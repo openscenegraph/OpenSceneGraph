@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgAnimation::StackedMatrixElement)
 	I_DeclaringFile("osgAnimation/StackedMatrixElement");
 	I_BaseType(osgAnimation::StackedTransformElement);

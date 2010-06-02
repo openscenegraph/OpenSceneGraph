@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::Shader::Type)
 	I_DeclaringFile("osg/Shader");
 	I_EnumLabel(osg::Shader::VERTEX);

@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::ClusterCullingCallback)
 	I_DeclaringFile("osg/ClusterCullingCallback");
 	I_BaseType(osg::Drawable::CullCallback);

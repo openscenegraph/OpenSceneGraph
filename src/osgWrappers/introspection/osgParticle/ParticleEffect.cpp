@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::ParticleEffect)
 	I_DeclaringFile("osgParticle/ParticleEffect");
 	I_BaseType(osg::Group);

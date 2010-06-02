@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgAnimation::RigTransform)
 	I_DeclaringFile("osgAnimation/RigTransform");
 	I_BaseType(osg::Referenced);

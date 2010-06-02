@@ -20,5 +20,7 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(osg::Camera, osg::CameraNode)
 

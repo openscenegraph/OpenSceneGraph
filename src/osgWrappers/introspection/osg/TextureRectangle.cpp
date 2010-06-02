@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::TextureRectangle)
 	I_DeclaringFile("osg/TextureRectangle");
 	I_BaseType(osg::Texture);

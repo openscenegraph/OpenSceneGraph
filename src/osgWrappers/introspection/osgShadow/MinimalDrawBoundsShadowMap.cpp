@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(osgShadow::MinimalDrawBoundsShadowMap, osgShadow::MinimalDrawBoundsShadowMap::ThisClass)
 
 TYPE_NAME_ALIAS(osgShadow::MinimalShadowMap, osgShadow::MinimalDrawBoundsShadowMap::BaseClass)

@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgAnimation::RunAction)
 	I_DeclaringFile("osgAnimation/ActionCallback");
 	I_BaseType(osgAnimation::Action::Callback);

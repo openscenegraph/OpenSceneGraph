@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgDB::ReaderWriterInfo)
 	I_DeclaringFile("osgDB/PluginQuery");
 	I_BaseType(osg::Referenced);
@@ -51,6 +53,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgDB::ReaderWriterInfo >)
 	I_Constructor1(IN, const osg::ref_ptr< osgDB::ReaderWriterInfo > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgDB::ReaderWriterInfo > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgDB::ReaderWriterInfo *, get,

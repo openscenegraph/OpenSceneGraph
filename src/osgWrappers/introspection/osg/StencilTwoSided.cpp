@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::StencilTwoSided::Face)
 	I_DeclaringFile("osg/StencilTwoSided");
 	I_EnumLabel(osg::StencilTwoSided::FRONT);

@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgWidget::Callback)
 	I_DeclaringFile("osgWidget/EventInterface");
 	I_BaseType(osg::Referenced);

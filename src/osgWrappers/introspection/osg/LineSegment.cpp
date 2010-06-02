@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(osg::Vec3d, osg::LineSegment::vec_type)
 
 TYPE_NAME_ALIAS(osg::LineSegment::vec_type::value_type, osg::LineSegment::value_type)

@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::MatrixTransform)
 	I_DeclaringFile("osg/MatrixTransform");
 	I_BaseType(osg::Transform);

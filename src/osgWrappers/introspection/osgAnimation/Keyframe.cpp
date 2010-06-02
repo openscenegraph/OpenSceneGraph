@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_VALUE_REFLECTOR(osgAnimation::Keyframe)
 	I_DeclaringFile("osgAnimation/Keyframe");
 	I_Constructor0(____Keyframe,

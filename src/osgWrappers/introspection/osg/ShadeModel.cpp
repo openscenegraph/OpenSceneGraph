@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::ShadeModel::Mode)
 	I_DeclaringFile("osg/ShadeModel");
 	I_EnumLabel(osg::ShadeModel::FLAT);

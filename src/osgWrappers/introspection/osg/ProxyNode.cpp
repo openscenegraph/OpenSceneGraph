@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::ProxyNode::CenterMode)
 	I_DeclaringFile("osg/ProxyNode");
 	I_EnumLabel(osg::ProxyNode::USE_BOUNDING_SPHERE_CENTER);

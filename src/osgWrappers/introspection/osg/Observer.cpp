@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::set< osg::Observer * >, osg::ObserverSet::Observers)
 
 STD_SET_REFLECTOR(std::set< osg::Observer * >)

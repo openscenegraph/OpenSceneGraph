@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgShadow::ParallelSplitShadowMap::SplitCalcMode)
 	I_DeclaringFile("osgShadow/ParallelSplitShadowMap");
 	I_EnumLabel(osgShadow::ParallelSplitShadowMap::SPLIT_LINEAR);

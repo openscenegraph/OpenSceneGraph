@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgAnimation::Animation::PlayMode)
 	I_DeclaringFile("osgAnimation/Animation");
 	I_EnumLabel(osgAnimation::Animation::ONCE);
@@ -176,6 +178,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgAnimation::Animation >)
 	I_Constructor1(IN, const osg::ref_ptr< osgAnimation::Animation > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgAnimation::Animation > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgAnimation::Animation *, get,

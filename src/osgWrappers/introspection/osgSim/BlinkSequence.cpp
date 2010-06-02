@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgSim::BlinkSequence)
 	I_DeclaringFile("osgSim/BlinkSequence");
 	I_BaseType(osg::Object);

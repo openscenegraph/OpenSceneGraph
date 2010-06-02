@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::Object::DataVariance)
 	I_DeclaringFile("osg/Object");
 	I_EnumLabel(osg::Object::DYNAMIC);

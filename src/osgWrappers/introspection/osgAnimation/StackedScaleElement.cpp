@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgAnimation::StackedScaleElement)
 	I_DeclaringFile("osgAnimation/StackedScaleElement");
 	I_BaseType(osgAnimation::StackedTransformElement);

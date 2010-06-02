@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgSim::ColorRange)
 	I_DeclaringFile("osgSim/ColorRange");
 	I_BaseType(osgSim::ScalarsToColors);

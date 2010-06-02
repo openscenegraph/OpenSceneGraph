@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgText::Text::BackdropType)
 	I_DeclaringFile("osgText/Text");
 	I_EnumLabel(osgText::Text::DROP_SHADOW_BOTTOM_RIGHT);
@@ -533,6 +535,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgText::Font >)
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgText::Font > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
+	               "",
+	               "");
 	I_Method0(osgText::Font *, get,
 	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
@@ -571,6 +578,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgText::Font::GlyphTexture >)
 	I_Constructor1(IN, const osg::ref_ptr< osgText::Font::GlyphTexture > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgText::Font::GlyphTexture > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgText::Font::GlyphTexture *, get,

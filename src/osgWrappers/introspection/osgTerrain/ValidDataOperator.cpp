@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgTerrain::NoDataValue)
 	I_DeclaringFile("osgTerrain/ValidDataOperator");
 	I_BaseType(osgTerrain::ValidDataOperator);

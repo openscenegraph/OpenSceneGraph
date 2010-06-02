@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgWidget::Box::BoxType)
 	I_DeclaringFile("osgWidget/Box");
 	I_EnumLabel(osgWidget::Box::VERTICAL);

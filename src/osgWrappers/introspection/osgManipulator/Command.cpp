@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgManipulator::MotionCommand::Stage)
 	I_DeclaringFile("osgManipulator/Command");
 	I_EnumLabel(osgManipulator::MotionCommand::NONE);

@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::BarrierOperation::PreBlockOp)
 	I_DeclaringFile("osg/GraphicsThread");
 	I_EnumLabel(osg::BarrierOperation::NO_OPERATION);

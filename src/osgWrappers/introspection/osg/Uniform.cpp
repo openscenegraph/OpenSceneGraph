@@ -31,6 +31,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_VALUE_REFLECTOR(osg::Matrix2)
 	I_DeclaringFile("osg/Uniform");
 	I_Constructor0(____Matrix2,

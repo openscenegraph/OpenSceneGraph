@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgSim::ScalarsToColors)
 	I_DeclaringFile("osgSim/ScalarsToColors");
 	I_BaseType(osg::Referenced);

@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgVolume::VolumeTechnique)
 	I_DeclaringFile("osgVolume/VolumeTechnique");
 	I_BaseType(osg::Object);

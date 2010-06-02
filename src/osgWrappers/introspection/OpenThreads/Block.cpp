@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(OpenThreads::Block)
 	I_DeclaringFile("OpenThreads/Block");
 	I_Constructor0(____Block,

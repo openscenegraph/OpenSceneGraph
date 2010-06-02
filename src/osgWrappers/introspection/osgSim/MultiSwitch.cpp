@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::vector< bool >, osgSim::MultiSwitch::ValueList)
 
 TYPE_NAME_ALIAS(std::vector< osgSim::MultiSwitch::ValueList >, osgSim::MultiSwitch::SwitchSetList)

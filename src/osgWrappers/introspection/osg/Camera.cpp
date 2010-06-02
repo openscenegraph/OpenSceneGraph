@@ -43,6 +43,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::Camera::TransformOrder)
 	I_DeclaringFile("osg/Camera");
 	I_EnumLabel(osg::Camera::PRE_MULTIPLY);

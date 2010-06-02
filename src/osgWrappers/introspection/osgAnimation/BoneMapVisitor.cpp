@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgAnimation::BoneMapVisitor)
 	I_DeclaringFile("osgAnimation/BoneMapVisitor");
 	I_BaseType(osg::NodeVisitor);

@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::TransferFunction)
 	I_DeclaringFile("osg/TransferFunction");
 	I_BaseType(osg::Object);

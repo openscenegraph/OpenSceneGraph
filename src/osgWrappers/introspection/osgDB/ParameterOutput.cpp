@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_VALUE_REFLECTOR(osgDB::ParameterOutput)
 	I_DeclaringFile("osgDB/ParameterOutput");
 	I_Constructor1(IN, osgDB::Output &, fw,

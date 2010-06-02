@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::TexMat)
 	I_DeclaringFile("osg/TexMat");
 	I_BaseType(osg::StateAttribute);

@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::vector< osg::Polytope >, osg::ShadowVolumeOccluder::HoleList)
 
 BEGIN_VALUE_REFLECTOR(osg::ShadowVolumeOccluder)

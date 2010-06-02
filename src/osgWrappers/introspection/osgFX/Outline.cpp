@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgFX::Outline)
 	I_DeclaringFile("osgFX/Outline");
 	I_BaseType(osgFX::Effect);

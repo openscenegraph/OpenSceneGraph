@@ -32,6 +32,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgViewer::Viewer)
 	I_DeclaringFile("osgViewer/Viewer");
 	I_BaseType(osgViewer::ViewerBase);

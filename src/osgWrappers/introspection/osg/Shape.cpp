@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::Box)
 	I_DeclaringFile("osg/Shape");
 	I_BaseType(osg::Shape);
@@ -1293,6 +1295,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Shape >)
 	I_Constructor1(IN, const osg::ref_ptr< osg::Shape > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osg::Shape > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osg::Shape *, get,

@@ -37,6 +37,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgUtil::RenderStage)
 	I_DeclaringFile("osgUtil/RenderStage");
 	I_BaseType(osgUtil::RenderBin);

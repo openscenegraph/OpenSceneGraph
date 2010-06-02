@@ -35,6 +35,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgDB::Field::FieldType)
 	I_DeclaringFile("osgDB/Input");
 	I_EnumLabel(osgDB::Field::OPEN_BRACKET);

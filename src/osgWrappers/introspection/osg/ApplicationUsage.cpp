@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::ApplicationUsage::Type)
 	I_DeclaringFile("osg/ApplicationUsage");
 	I_EnumLabel(osg::ApplicationUsage::NO_HELP);

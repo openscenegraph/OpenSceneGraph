@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::pair< unsigned int COMMA  osg::ref_ptr< osgAnimation::Action > >, osgAnimation::FrameAction)
 
 BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgAnimation::Action >)
@@ -36,6 +38,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgAnimation::Action >)
 	I_Constructor1(IN, const osg::ref_ptr< osgAnimation::Action > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgAnimation::Action > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgAnimation::Action *, get,

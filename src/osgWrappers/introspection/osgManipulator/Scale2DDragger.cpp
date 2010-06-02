@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgManipulator::Scale2DDragger::ScaleMode)
 	I_DeclaringFile("osgManipulator/Scale2DDragger");
 	I_EnumLabel(osgManipulator::Scale2DDragger::SCALE_WITH_ORIGIN_AS_PIVOT);

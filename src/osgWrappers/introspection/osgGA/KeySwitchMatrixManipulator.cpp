@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::pair< std::string COMMA  osg::ref_ptr< osgGA::CameraManipulator > >, osgGA::KeySwitchMatrixManipulator::NamedManipulator)
 
 TYPE_NAME_ALIAS(std::map< int COMMA  osgGA::KeySwitchMatrixManipulator::NamedManipulator >, osgGA::KeySwitchMatrixManipulator::KeyManipMap)
@@ -236,6 +238,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgGA::CameraManipulator >)
 	I_Constructor1(IN, const osg::ref_ptr< osgGA::CameraManipulator > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgGA::CameraManipulator > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgGA::CameraManipulator *, get,

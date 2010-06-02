@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgParticle::PointPlacer)
 	I_DeclaringFile("osgParticle/PointPlacer");
 	I_BaseType(osgParticle::CenteredPlacer);

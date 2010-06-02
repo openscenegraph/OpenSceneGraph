@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::AnimationUpdateCallbackBase)
 	I_DeclaringFile("osgAnimation/AnimationUpdateCallback");
 	I_VirtualBaseType(osg::Object);

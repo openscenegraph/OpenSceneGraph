@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::LightModel::ColorControl)
 	I_DeclaringFile("osg/LightModel");
 	I_EnumLabel(osg::LightModel::SEPARATE_SPECULAR_COLOR);

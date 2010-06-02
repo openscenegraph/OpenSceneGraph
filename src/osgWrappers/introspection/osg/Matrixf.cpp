@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(float, osg::Matrixf::value_type)
 
 BEGIN_VALUE_REFLECTOR(osg::Matrixf)

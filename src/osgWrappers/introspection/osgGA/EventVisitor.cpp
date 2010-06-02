@@ -33,6 +33,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventAdapter > >, osgGA::EventVisitor::EventList)
 
 BEGIN_OBJECT_REFLECTOR(osgGA::EventVisitor)

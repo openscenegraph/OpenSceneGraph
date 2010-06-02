@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_VALUE_REFLECTOR(osgAnimation::VertexInfluence)
 	I_DeclaringFile("osgAnimation/VertexInfluence");
 	I_Constructor0(____VertexInfluence,

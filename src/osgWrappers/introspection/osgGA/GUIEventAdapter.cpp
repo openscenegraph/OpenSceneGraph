@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgGA::GUIEventAdapter::MouseButtonMask)
 	I_DeclaringFile("osgGA/GUIEventAdapter");
 	I_EnumLabel(osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON);

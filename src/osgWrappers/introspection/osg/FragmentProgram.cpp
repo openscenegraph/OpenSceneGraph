@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::map< GLuint COMMA  osg::Vec4 >, osg::FragmentProgram::LocalParamList)
 
 TYPE_NAME_ALIAS(std::map< GLenum COMMA  osg::Matrix >, osg::FragmentProgram::MatrixList)

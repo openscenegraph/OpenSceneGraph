@@ -34,6 +34,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::State::CheckForGLErrors)
 	I_DeclaringFile("osg/State");
 	I_EnumLabel(osg::State::NEVER_CHECK_GL_ERRORS);
@@ -165,6 +167,11 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 	I_Method1(void, applyModelViewMatrix, IN, const osg::RefMatrix *, matrix,
 	          Properties::NON_VIRTUAL,
 	          __void__applyModelViewMatrix__C5_osg_RefMatrix_P1,
+	          "",
+	          "");
+	I_Method1(void, applyModelViewMatrix, IN, const osg::Matrix &, x,
+	          Properties::NON_VIRTUAL,
+	          __void__applyModelViewMatrix__C5_osg_Matrix_R1,
 	          "",
 	          "");
 	I_Method0(const osg::Matrix &, getModelViewMatrix,
@@ -928,6 +935,12 @@ BEGIN_OBJECT_REFLECTOR(osg::State)
 
 
 
+	I_ProtectedMethod0(void, loadModelViewMatrix,
+	                   Properties::NON_VIRTUAL,
+	                   Properties::NON_CONST,
+	                   __void__loadModelViewMatrix,
+	                   "",
+	                   "");
 	I_ProtectedMethod0(bool, computeSecondaryColorSupported,
 	                   Properties::NON_VIRTUAL,
 	                   Properties::CONST,

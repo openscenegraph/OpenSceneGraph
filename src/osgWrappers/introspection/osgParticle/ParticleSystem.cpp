@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgParticle::ParticleSystem::Alignment)
 	I_DeclaringFile("osgParticle/ParticleSystem");
 	I_EnumLabel(osgParticle::ParticleSystem::BILLBOARD);

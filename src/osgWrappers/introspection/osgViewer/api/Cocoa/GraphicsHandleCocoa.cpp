@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_VALUE_REFLECTOR(osgViewer::GraphicsHandleCocoa)
 	I_DeclaringFile("osgViewer/api/Cocoa/GraphicsHandleCocoa");
 	I_Constructor0(____GraphicsHandleCocoa,

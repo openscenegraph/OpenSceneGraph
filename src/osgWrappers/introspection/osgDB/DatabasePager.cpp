@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgDB::DatabasePager::DrawablePolicy)
 	I_DeclaringFile("osgDB/DatabasePager");
 	I_EnumLabel(osgDB::DatabasePager::DO_NOT_MODIFY_DRAWABLE_SETTINGS);
@@ -594,6 +596,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgDB::DatabasePager >)
 	I_Constructor1(IN, const osg::ref_ptr< osgDB::DatabasePager > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgDB::DatabasePager > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgDB::DatabasePager *, get,

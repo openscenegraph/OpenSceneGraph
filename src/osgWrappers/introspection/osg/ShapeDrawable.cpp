@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::ShapeDrawable)
 	I_DeclaringFile("osg/ShapeDrawable");
 	I_BaseType(osg::Drawable);

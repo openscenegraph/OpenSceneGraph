@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::vector< osg::PagedLOD::PerRangeData >, osg::PagedLOD::PerRangeDataList)
 
 BEGIN_OBJECT_REFLECTOR(osg::PagedLOD)

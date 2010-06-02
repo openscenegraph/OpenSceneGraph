@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::AudioSink)
 	I_DeclaringFile("osg/AudioStream");
 	I_BaseType(osg::Object);

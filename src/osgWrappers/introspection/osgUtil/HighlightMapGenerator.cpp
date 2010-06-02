@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgUtil::HighlightMapGenerator)
 	I_DeclaringFile("osgUtil/HighlightMapGenerator");
 	I_BaseType(osgUtil::CubeMapGenerator);

@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgDB::ImageOptions::ImageWindowMode)
 	I_DeclaringFile("osgDB/ImageOptions");
 	I_EnumLabel(osgDB::ImageOptions::ALL_IMAGE);

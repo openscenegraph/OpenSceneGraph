@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::Counter)
 	I_DeclaringFile("osgParticle/Counter");
 	I_BaseType(osg::Object);

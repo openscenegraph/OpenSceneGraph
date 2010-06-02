@@ -31,6 +31,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::set< osg::ref_ptr< osgPresentation::ObjectOperator > COMMA  osgPresentation::dereference_less >, osgPresentation::ActiveOperators::OperatorList)
 
 BEGIN_VALUE_REFLECTOR(osgPresentation::ActiveOperators)
@@ -597,6 +599,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgPresentation::LayerCallback >)
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgPresentation::LayerCallback > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
+	               "",
+	               "");
 	I_Method0(osgPresentation::LayerCallback *, get,
 	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
@@ -635,6 +642,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgPresentation::ObjectOperator >)
 	I_Constructor1(IN, const osg::ref_ptr< osgPresentation::ObjectOperator > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgPresentation::ObjectOperator > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgPresentation::ObjectOperator *, get,

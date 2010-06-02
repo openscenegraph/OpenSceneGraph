@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgAnimation::ActionBlendIn)
 	I_DeclaringFile("osgAnimation/ActionBlendIn");
 	I_BaseType(osgAnimation::Action);

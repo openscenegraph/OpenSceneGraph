@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgTerrain::Terrain)
 	I_DeclaringFile("osgTerrain/Terrain");
 	I_BaseType(osg::CoordinateSystemNode);

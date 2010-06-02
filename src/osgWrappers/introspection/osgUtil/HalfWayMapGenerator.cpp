@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgUtil::HalfWayMapGenerator)
 	I_DeclaringFile("osgUtil/HalfWayMapGenerator");
 	I_BaseType(osgUtil::CubeMapGenerator);

@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(osgParticle::range< float >, osgParticle::rangef)
 
 TYPE_NAME_ALIAS(osgParticle::range< osg::Vec2 >, osgParticle::rangev2)

@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_VALUE_REFLECTOR(osgShadow::LightSpacePerspectiveShadowMapAlgorithm)
 	I_DeclaringFile("osgShadow/LightSpacePerspectiveShadowMap");
 	I_Constructor0(____LightSpacePerspectiveShadowMapAlgorithm,

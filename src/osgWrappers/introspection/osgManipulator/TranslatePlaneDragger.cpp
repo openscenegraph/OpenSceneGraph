@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgManipulator::TranslatePlaneDragger)
 	I_DeclaringFile("osgManipulator/TranslatePlaneDragger");
 	I_BaseType(osgManipulator::CompositeDragger);

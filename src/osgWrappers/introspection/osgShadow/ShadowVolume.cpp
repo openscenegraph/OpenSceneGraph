@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowVolume)
 	I_DeclaringFile("osgShadow/ShadowVolume");
 	I_BaseType(osgShadow::ShadowTechnique);

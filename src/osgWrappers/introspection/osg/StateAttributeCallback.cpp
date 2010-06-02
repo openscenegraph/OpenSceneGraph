@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::StateAttributeCallback)
 	I_DeclaringFile("osg/StateAttributeCallback");
 	I_VirtualBaseType(osg::Object);

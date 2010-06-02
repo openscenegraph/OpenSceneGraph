@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgSim::LightPoint::BlendingMode)
 	I_DeclaringFile("osgSim/LightPoint");
 	I_EnumLabel(osgSim::LightPoint::ADDITIVE);

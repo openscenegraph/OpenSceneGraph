@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::AnimationPath::LoopMode)
 	I_DeclaringFile("osg/AnimationPath");
 	I_EnumLabel(osg::AnimationPath::SWING);

@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgSim::DOFTransform::MultOrder)
 	I_DeclaringFile("osgSim/DOFTransform");
 	I_EnumLabel(osgSim::DOFTransform::PRH);

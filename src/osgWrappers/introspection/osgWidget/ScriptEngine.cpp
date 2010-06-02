@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgWidget::ScriptEngine)
 	I_DeclaringFile("osgWidget/ScriptEngine");
 	I_BaseType(osg::Referenced);

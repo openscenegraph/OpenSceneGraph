@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::Transform::ReferenceFrame)
 	I_DeclaringFile("osg/Transform");
 	I_EnumLabel(osg::Transform::RELATIVE_RF);

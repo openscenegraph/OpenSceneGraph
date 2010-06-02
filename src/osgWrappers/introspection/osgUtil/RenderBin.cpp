@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgUtil::RenderBin::SortMode)
 	I_DeclaringFile("osgUtil/RenderBin");
 	I_EnumLabel(osgUtil::RenderBin::SORT_BY_STATE);
@@ -363,6 +365,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::RenderBin >)
 	I_Constructor1(IN, const osg::ref_ptr< osgUtil::RenderBin > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgUtil::RenderBin > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgUtil::RenderBin *, get,

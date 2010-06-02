@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgShadow::ShadowTechnique)
 	I_DeclaringFile("osgShadow/ShadowTechnique");
 	I_BaseType(osg::Object);

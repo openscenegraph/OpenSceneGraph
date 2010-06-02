@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgTerrain::TerrainTechnique)
 	I_DeclaringFile("osgTerrain/TerrainTechnique");
 	I_BaseType(osg::Object);

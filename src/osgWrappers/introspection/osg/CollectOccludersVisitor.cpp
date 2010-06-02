@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::set< osg::ShadowVolumeOccluder >, osg::CollectOccludersVisitor::ShadowVolumeOccluderSet)
 
 BEGIN_OBJECT_REFLECTOR(osg::CollectOccludersVisitor)

@@ -30,6 +30,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgUtil::UpdateVisitor)
 	I_DeclaringFile("osgUtil/UpdateVisitor");
 	I_BaseType(osg::NodeVisitor);

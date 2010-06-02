@@ -39,6 +39,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgUtil::BaseOptimizerVisitor)
 	I_DeclaringFile("osgUtil/Optimizer");
 	I_BaseType(osg::NodeVisitor);

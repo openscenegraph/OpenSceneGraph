@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgGA::TrackballManipulator)
 	I_DeclaringFile("osgGA/TrackballManipulator");
 	I_BaseType(osgGA::OrbitManipulator);

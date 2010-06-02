@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgManipulator::Translate2DDragger)
 	I_DeclaringFile("osgManipulator/Translate2DDragger");
 	I_BaseType(osgManipulator::Dragger);

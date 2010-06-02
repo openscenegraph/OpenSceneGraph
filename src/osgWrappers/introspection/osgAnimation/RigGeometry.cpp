@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgAnimation::RigGeometry)
 	I_DeclaringFile("osgAnimation/RigGeometry");
 	I_BaseType(osg::Geometry);

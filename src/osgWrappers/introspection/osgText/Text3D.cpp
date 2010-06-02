@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgText::Text3D::RenderMode)
 	I_DeclaringFile("osgText/Text3D");
 	I_EnumLabel(osgText::Text3D::PER_FACE);
@@ -216,6 +218,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgText::Font3D >)
 	I_Constructor1(IN, const osg::ref_ptr< osgText::Font3D > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgText::Font3D > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgText::Font3D *, get,

@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::vector< osg::Vec3d >, osgSim::ElevationSlice::Vec3dList)
 
 TYPE_NAME_ALIAS(std::pair< double COMMA  double >, osgSim::ElevationSlice::DistanceHeight)

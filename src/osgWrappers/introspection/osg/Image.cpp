@@ -29,6 +29,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::Image::WriteHint)
 	I_DeclaringFile("osg/Image");
 	I_EnumLabel(osg::Image::NO_PREFERENCE);

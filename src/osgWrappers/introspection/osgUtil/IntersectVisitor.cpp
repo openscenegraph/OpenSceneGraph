@@ -35,6 +35,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::vector< int >, osgUtil::Hit::VecIndexList)
 
 BEGIN_VALUE_REFLECTOR(osgUtil::Hit)

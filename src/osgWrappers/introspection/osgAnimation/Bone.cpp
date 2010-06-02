@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(osg::Matrix, osgAnimation::Bone::MatrixType)
 
 BEGIN_OBJECT_REFLECTOR(osgAnimation::Bone)
@@ -140,6 +142,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgAnimation::Bone >)
 	I_Constructor1(IN, const osg::ref_ptr< osgAnimation::Bone > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgAnimation::Bone > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgAnimation::Bone *, get,

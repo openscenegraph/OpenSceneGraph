@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::CameraManipulator)
 	I_DeclaringFile("osgGA/CameraManipulator");
 	I_BaseType(osgGA::GUIEventHandler);

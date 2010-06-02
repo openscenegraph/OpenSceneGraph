@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::GLBeginEndAdapter::MatrixMode)
 	I_DeclaringFile("osg/GLBeginEndAdapter");
 	I_EnumLabel(osg::GLBeginEndAdapter::APPLY_LOCAL_MATRICES_TO_VERTICES);

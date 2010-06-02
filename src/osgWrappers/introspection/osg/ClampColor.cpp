@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::ClampColor)
 	I_DeclaringFile("osg/ClampColor");
 	I_BaseType(osg::StateAttribute);

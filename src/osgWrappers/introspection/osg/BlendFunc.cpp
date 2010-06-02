@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::BlendFunc::BlendFuncMode)
 	I_DeclaringFile("osg/BlendFunc");
 	I_EnumLabel(osg::BlendFunc::DST_ALPHA);

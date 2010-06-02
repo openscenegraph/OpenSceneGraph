@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::Light)
 	I_DeclaringFile("osg/Light");
 	I_BaseType(osg::StateAttribute);

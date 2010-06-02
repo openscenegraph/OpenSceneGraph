@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Channel)
 	I_DeclaringFile("osgAnimation/Channel");
 	I_BaseType(osg::Referenced);
@@ -174,6 +176,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgAnimation::Channel >)
 	I_Constructor1(IN, const osg::ref_ptr< osgAnimation::Channel > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgAnimation::Channel > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgAnimation::Channel *, get,

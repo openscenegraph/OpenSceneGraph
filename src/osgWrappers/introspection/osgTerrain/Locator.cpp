@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgTerrain::Locator::CoordinateSystemType)
 	I_DeclaringFile("osgTerrain/Locator");
 	I_EnumLabel(osgTerrain::Locator::GEOCENTRIC);

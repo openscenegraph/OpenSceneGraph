@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgSim::AzimElevationSector)
 	I_DeclaringFile("osgSim/Sector");
 	I_BaseType(osgSim::Sector);

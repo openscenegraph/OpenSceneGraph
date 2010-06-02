@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgDB::SharedStateManager::ShareMode)
 	I_DeclaringFile("osgDB/SharedStateManager");
 	I_EnumLabel(osgDB::SharedStateManager::SHARE_NONE);

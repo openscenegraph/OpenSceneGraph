@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgFX::Technique)
 	I_DeclaringFile("osgFX/Technique");
 	I_BaseType(osg::Referenced);

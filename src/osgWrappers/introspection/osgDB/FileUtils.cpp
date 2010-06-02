@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgDB::FileType)
 	I_DeclaringFile("osgDB/FileUtils");
 	I_EnumLabel(osgDB::FILE_NOT_FOUND);

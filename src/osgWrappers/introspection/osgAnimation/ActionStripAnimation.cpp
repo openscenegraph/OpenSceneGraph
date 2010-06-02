@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgAnimation::ActionStripAnimation)
 	I_DeclaringFile("osgAnimation/ActionStripAnimation");
 	I_BaseType(osgAnimation::Action);

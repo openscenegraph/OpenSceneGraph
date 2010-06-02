@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::LOD::CenterMode)
 	I_DeclaringFile("osg/LOD");
 	I_EnumLabel(osg::LOD::USE_BOUNDING_SPHERE_CENTER);

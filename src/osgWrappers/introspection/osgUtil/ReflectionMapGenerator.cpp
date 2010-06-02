@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgUtil::ReflectionMapGenerator)
 	I_DeclaringFile("osgUtil/ReflectionMapGenerator");
 	I_BaseType(osgUtil::CubeMapGenerator);

@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::ClearNode)
 	I_DeclaringFile("osg/ClearNode");
 	I_BaseType(osg::Group);

@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgAnimation::UpdateBone)
 	I_DeclaringFile("osgAnimation/UpdateBone");
 	I_BaseType(osgAnimation::UpdateMatrixTransform);

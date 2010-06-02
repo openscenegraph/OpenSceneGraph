@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgManipulator::Constraint)
 	I_DeclaringFile("osgManipulator/Constraint");
 	I_BaseType(osg::Referenced);

@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(OpenThreads::ReentrantMutex)
 	I_DeclaringFile("OpenThreads/ReentrantMutex");
 	I_BaseType(OpenThreads::Mutex);

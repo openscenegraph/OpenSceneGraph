@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_VALUE_REFLECTOR(osgSim::HeightAboveTerrain)
 	I_DeclaringFile("osgSim/HeightAboveTerrain");
 	I_Constructor0(____HeightAboveTerrain,

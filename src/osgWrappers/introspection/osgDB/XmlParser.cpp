@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgDB::XmlNode::NodeType)
 	I_DeclaringFile("osgDB/XmlParser");
 	I_EnumLabel(osgDB::XmlNode::UNASSIGNED);
@@ -182,6 +184,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgDB::XmlNode >)
 	I_Constructor1(IN, const osg::ref_ptr< osgDB::XmlNode > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgDB::XmlNode > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgDB::XmlNode *, get,

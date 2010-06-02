@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::list< osg::ref_ptr< osgGA::GUIEventAdapter > >, osgGA::EventQueue::Events)
 
 BEGIN_OBJECT_REFLECTOR(osgGA::EventQueue)
@@ -307,6 +309,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgGA::GUIEventAdapter >)
 	I_Constructor1(IN, const osg::ref_ptr< osgGA::GUIEventAdapter > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgGA::GUIEventAdapter > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgGA::GUIEventAdapter *, get,

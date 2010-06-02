@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(osgAnimation::TemplateStepInterpolator< double COMMA  double >, osgAnimation::DoubleStepInterpolator)
 
 TYPE_NAME_ALIAS(osgAnimation::TemplateStepInterpolator< float COMMA  float >, osgAnimation::FloatStepInterpolator)

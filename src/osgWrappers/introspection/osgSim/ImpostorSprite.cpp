@@ -33,6 +33,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgSim::ImpostorSprite)
 	I_DeclaringFile("osgSim/ImpostorSprite");
 	I_BaseType(osg::Drawable);

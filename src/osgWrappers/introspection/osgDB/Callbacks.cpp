@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgDB::FileLocationCallback::Location)
 	I_DeclaringFile("osgDB/Callbacks");
 	I_EnumLabel(osgDB::FileLocationCallback::LOCAL_FILE);

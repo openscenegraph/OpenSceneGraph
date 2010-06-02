@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgParticle::AccelOperator)
 	I_DeclaringFile("osgParticle/AccelOperator");
 	I_BaseType(osgParticle::Operator);

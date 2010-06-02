@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgGA::GUIActionAdapter)
 	I_DeclaringFile("osgGA/GUIActionAdapter");
 	I_Constructor0(____GUIActionAdapter,

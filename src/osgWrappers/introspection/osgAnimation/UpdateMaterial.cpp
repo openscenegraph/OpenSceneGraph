@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgAnimation::UpdateMaterial)
 	I_DeclaringFile("osgAnimation/UpdateMaterial");
 	I_Method0(osg::Object *, cloneType,

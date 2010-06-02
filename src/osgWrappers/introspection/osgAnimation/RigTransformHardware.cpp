@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(osg::Matrix, osgAnimation::RigTransformHardware::MatrixType)
 
 TYPE_NAME_ALIAS(osgAnimation::Bone, osgAnimation::RigTransformHardware::BoneType)
@@ -162,6 +164,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Vec4Array >)
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
+	I_Constructor1(IN, osg::observer_ptr< osg::Vec4Array > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
+	               "",
+	               "");
 	I_Method0(osg::Vec4Array *, get,
 	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
@@ -200,6 +207,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgAnimation::RigTransformHardware::BoneType
 	I_Constructor1(IN, const osg::ref_ptr< osgAnimation::RigTransformHardware::BoneType > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgAnimation::RigTransformHardware::BoneType > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgAnimation::RigTransformHardware::BoneType *, get,

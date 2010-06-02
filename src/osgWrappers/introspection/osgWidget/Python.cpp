@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgWidget::PythonEngine)
 	I_DeclaringFile("osgWidget/Python");
 	I_BaseType(osgWidget::ScriptEngine);

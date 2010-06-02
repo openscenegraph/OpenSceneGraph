@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::NotifyHandler)
 	I_DeclaringFile("osg/Notify");
 	I_BaseType(osg::Referenced);

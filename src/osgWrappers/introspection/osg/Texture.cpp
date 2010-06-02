@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::Texture::WrapParameter)
 	I_DeclaringFile("osg/Texture");
 	I_EnumLabel(osg::Texture::WRAP_S);
@@ -1157,6 +1159,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Texture::TextureObject >)
 	               ____ref_ptr__C5_ref_ptr_R1,
 	               "",
 	               "");
+	I_Constructor1(IN, osg::observer_ptr< osg::Texture::TextureObject > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
+	               "",
+	               "");
 	I_Method0(osg::Texture::TextureObject *, get,
 	          Properties::NON_VIRTUAL,
 	          __T_P1__get,
@@ -1195,6 +1202,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Texture::TextureObjectManager >)
 	I_Constructor1(IN, const osg::ref_ptr< osg::Texture::TextureObjectManager > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osg::Texture::TextureObjectManager > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osg::Texture::TextureObjectManager *, get,

@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgManipulator::TabPlaneTrackballDragger)
 	I_DeclaringFile("osgManipulator/TabPlaneTrackballDragger");
 	I_BaseType(osgManipulator::CompositeDragger);

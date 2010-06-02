@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::TextureCubeMap::Face)
 	I_DeclaringFile("osg/TextureCubeMap");
 	I_EnumLabel(osg::TextureCubeMap::POSITIVE_X);

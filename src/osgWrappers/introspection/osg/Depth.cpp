@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::Depth::Function)
 	I_DeclaringFile("osg/Depth");
 	I_EnumLabel(osg::Depth::NEVER);

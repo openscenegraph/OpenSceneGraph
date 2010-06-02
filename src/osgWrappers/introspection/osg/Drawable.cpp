@@ -38,6 +38,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::Drawable::AttributeTypes)
 	I_DeclaringFile("osg/Drawable");
 	I_EnumLabel(osg::Drawable::VERTICES);

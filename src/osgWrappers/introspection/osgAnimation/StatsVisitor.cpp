@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgAnimation::StatsActionVisitor)
 	I_DeclaringFile("osgAnimation/StatsVisitor");
 	I_BaseType(osgAnimation::UpdateActionVisitor);

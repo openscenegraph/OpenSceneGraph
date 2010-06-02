@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_VALUE_REFLECTOR(osgViewer::GraphicsHandleWin32)
 	I_DeclaringFile("osgViewer/api/Win32/GraphicsHandleWin32");
 	I_Constructor0(____GraphicsHandleWin32,

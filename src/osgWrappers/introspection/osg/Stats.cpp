@@ -20,6 +20,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::map< std::string COMMA  double >, osg::Stats::AttributeMap)
 
 TYPE_NAME_ALIAS(std::vector< osg::Stats::AttributeMap >, osg::Stats::AttributeMapList)

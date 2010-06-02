@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgFX::SpecularHighlights)
 	I_DeclaringFile("osgFX/SpecularHighlights");
 	I_BaseType(osgFX::Effect);

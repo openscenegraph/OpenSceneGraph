@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(unsigned int, osg::Polytope::ClippingMask)
 
 TYPE_NAME_ALIAS(std::vector< osg::Plane >, osg::Polytope::PlaneList)

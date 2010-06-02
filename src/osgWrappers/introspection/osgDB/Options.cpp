@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgDB::Options::CacheHintOptions)
 	I_DeclaringFile("osgDB/Options");
 	I_EnumLabel(osgDB::Options::CACHE_NONE);

@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgManipulator::ScaleAxisDragger)
 	I_DeclaringFile("osgManipulator/ScaleAxisDragger");
 	I_BaseType(osgManipulator::CompositeDragger);

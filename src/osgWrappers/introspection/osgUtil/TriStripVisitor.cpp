@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgUtil::TriStripVisitor)
 	I_DeclaringFile("osgUtil/TriStripVisitor");
 	I_BaseType(osgUtil::BaseOptimizerVisitor);

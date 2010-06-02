@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgAnimation::LinkVisitor)
 	I_DeclaringFile("osgAnimation/LinkVisitor");
 	I_BaseType(osg::NodeVisitor);

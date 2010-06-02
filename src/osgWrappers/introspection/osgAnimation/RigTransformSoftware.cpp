@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::vector< osgAnimation::RigTransformSoftware::BoneWeight >, osgAnimation::RigTransformSoftware::BoneWeightList)
 
 TYPE_NAME_ALIAS(std::vector< int >, osgAnimation::RigTransformSoftware::VertexList)

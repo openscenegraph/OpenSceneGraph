@@ -26,6 +26,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::pair< osg::ref_ptr< const osg::StateAttribute > COMMA  osg::ref_ptr< osg::RefMatrix > >, osgUtil::PositionalStateContainer::AttrMatrixPair)
 
 TYPE_NAME_ALIAS(std::vector< osgUtil::PositionalStateContainer::AttrMatrixPair >, osgUtil::PositionalStateContainer::AttrMatrixList)
@@ -116,6 +118,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::RefMatrix >)
 	I_Constructor1(IN, const osg::ref_ptr< osg::RefMatrix > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osg::RefMatrix > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osg::RefMatrix *, get,

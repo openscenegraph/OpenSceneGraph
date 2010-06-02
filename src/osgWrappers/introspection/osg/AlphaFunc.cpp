@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::AlphaFunc::ComparisonFunction)
 	I_DeclaringFile("osg/AlphaFunc");
 	I_EnumLabel(osg::AlphaFunc::NEVER);

@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgGA::NodeTrackerManipulator::TrackerMode)
 	I_DeclaringFile("osgGA/NodeTrackerManipulator");
 	I_EnumLabel(osgGA::NodeTrackerManipulator::NODE_CENTER);

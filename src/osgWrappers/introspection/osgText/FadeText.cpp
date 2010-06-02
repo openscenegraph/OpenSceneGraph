@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgText::FadeText)
 	I_DeclaringFile("osgText/FadeText");
 	I_BaseType(osgText::Text);

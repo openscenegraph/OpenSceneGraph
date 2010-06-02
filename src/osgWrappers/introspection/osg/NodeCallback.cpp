@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::NodeCallback)
 	I_DeclaringFile("osg/NodeCallback");
 	I_VirtualBaseType(osg::Object);

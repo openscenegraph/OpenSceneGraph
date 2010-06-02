@@ -23,6 +23,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgParticle::VariableRateCounter)
 	I_DeclaringFile("osgParticle/VariableRateCounter");
 	I_BaseType(osgParticle::Counter);

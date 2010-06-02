@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osgWidget::Browser)
 	I_DeclaringFile("osgWidget/Browser");
 	I_BaseType(osg::Geode);
@@ -143,6 +145,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgWidget::BrowserManager >)
 	I_Constructor1(IN, const osg::ref_ptr< osgWidget::BrowserManager > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgWidget::BrowserManager > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgWidget::BrowserManager *, get,

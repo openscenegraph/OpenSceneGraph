@@ -33,6 +33,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgUtil::Statistics::StatsType)
 	I_DeclaringFile("osgUtil/Statistics");
 	I_EnumLabel(osgUtil::Statistics::STAT_NONE);

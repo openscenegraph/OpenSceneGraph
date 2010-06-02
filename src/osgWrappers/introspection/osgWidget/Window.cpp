@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgWidget::Window::Strata)
 	I_DeclaringFile("osgWidget/Window");
 	I_EnumLabel(osgWidget::Window::STRATA_NONE);

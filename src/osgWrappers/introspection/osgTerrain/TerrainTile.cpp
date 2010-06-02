@@ -30,6 +30,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgTerrain::TerrainTile::BlendingPolicy)
 	I_DeclaringFile("osgTerrain/TerrainTile");
 	I_EnumLabel(osgTerrain::TerrainTile::INHERIT);
@@ -424,6 +426,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgTerrain::TerrainTile::TileLoadedCallback 
 	I_Constructor1(IN, const osg::ref_ptr< osgTerrain::TerrainTile::TileLoadedCallback > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgTerrain::TerrainTile::TileLoadedCallback > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgTerrain::TerrainTile::TileLoadedCallback *, get,

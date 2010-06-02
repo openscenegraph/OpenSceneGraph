@@ -33,6 +33,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osgUtil::IntersectionVisitor::LODSelectionMode)
 	I_DeclaringFile("osgUtil/IntersectionVisitor");
 	I_EnumLabel(osgUtil::IntersectionVisitor::USE_HIGHEST_LEVEL_OF_DETAIL);
@@ -509,6 +511,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osgUtil::Intersector >)
 	I_Constructor1(IN, const osg::ref_ptr< osgUtil::Intersector > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osgUtil::Intersector > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osgUtil::Intersector *, get,

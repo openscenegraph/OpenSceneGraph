@@ -25,6 +25,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::OccluderNode)
 	I_DeclaringFile("osg/OccluderNode");
 	I_BaseType(osg::Group);

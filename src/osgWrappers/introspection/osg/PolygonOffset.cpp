@@ -24,6 +24,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_OBJECT_REFLECTOR(osg::PolygonOffset)
 	I_DeclaringFile("osg/PolygonOffset");
 	I_BaseType(osg::StateAttribute);

@@ -28,6 +28,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::vector< osg::ref_ptr< osg::Drawable > >, osg::Geode::DrawableList)
 
 BEGIN_OBJECT_REFLECTOR(osg::Geode)
@@ -196,6 +198,11 @@ BEGIN_VALUE_REFLECTOR(osg::ref_ptr< osg::Drawable >)
 	I_Constructor1(IN, const osg::ref_ptr< osg::Drawable > &, rp,
 	               Properties::NON_EXPLICIT,
 	               ____ref_ptr__C5_ref_ptr_R1,
+	               "",
+	               "");
+	I_Constructor1(IN, osg::observer_ptr< osg::Drawable > &, optr,
+	               Properties::NON_EXPLICIT,
+	               ____ref_ptr__observer_ptrT1_T__R1,
 	               "",
 	               "");
 	I_Method0(osg::Drawable *, get,

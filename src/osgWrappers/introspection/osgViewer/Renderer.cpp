@@ -27,6 +27,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 TYPE_NAME_ALIAS(std::pair< GLuint COMMA  int >, osgViewer::OpenGLQuerySupport::QueryFrameNumberPair)
 
 TYPE_NAME_ALIAS(std::list< osgViewer::OpenGLQuerySupport::QueryFrameNumberPair >, osgViewer::OpenGLQuerySupport::QueryFrameNumberList)

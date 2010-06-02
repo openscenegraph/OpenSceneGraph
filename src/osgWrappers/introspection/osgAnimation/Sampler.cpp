@@ -22,6 +22,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgAnimation::Sampler)
 	I_DeclaringFile("osgAnimation/Sampler");
 	I_BaseType(osg::Referenced);

@@ -21,6 +21,8 @@
 #undef OUT
 #endif
 
+#include <osg/observer_ptr>
+        
 BEGIN_ENUM_REFLECTOR(osg::ArgumentParser::ErrorSeverity)
 	I_DeclaringFile("osg/ArgumentParser");
 	I_EnumLabel(osg::ArgumentParser::BENIGN);

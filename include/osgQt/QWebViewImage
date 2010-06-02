@@ -17,6 +17,8 @@
 // make sure this header isn't built as par of osgQt, leaving it to applications to build
 #if !defined(OSGQT_LIBRARY) && !defined(OSG_LIBRARY_STATIC)
 
+#include <QtWebKit/QtWebKit>
+
 #include <osgWidget/Browser>
 #include <osgQt/QGraphicsViewAdapter>
 

@@ -266,6 +266,12 @@ public:
 
         _pagedLODs.insert(plod);
     }
+
+    virtual bool containsPagedLOD(osg::PagedLOD* plod)
+    {
+        return (_pagedLODs.count(plod)!=0);
+    }
+
 };
 
 
@@ -1862,11 +1868,27 @@ protected:
     FindPagedLODsVisitor& operator = (const FindPagedLODsVisitor&) { return *this; }
 };
 
+
 void DatabasePager::registerPagedLODs(osg::Node* subgraph, int frameNumber)
 {
     if (!subgraph) return;
+
+    static std::set<osg::Node*> s_registedSet;
+
+    OSG_NOTICE<<"DatabasePager::registerPagedLODs("<<subgraph<<") "<<frameNumber<<std::endl;
+
+    if (s_registedSet.count(subgraph)!=0)
+    {
+        OSG_NOTICE<<"DatabasePager::registerPagedLODs("<<subgraph<<") subgraph already registered"<<std::endl;
+    }
+    else
+    {
+        s_registedSet.insert(subgraph);
+    }
+
     FindPagedLODsVisitor fplv(*_activePagedLODList, frameNumber);
     subgraph->accept(fplv);
+
 }
 
 bool DatabasePager::requiresCompileGLObjects() const

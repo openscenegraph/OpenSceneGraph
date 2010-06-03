@@ -264,6 +264,8 @@ public:
             return;
         }
 
+        // OSG_NOTICE<<"OK: SetBasedPagedLODList::insertPagedLOD("<<plod<<") inserting"<<std::endl;
+
         _pagedLODs.insert(plod);
     }
 
@@ -1677,9 +1679,10 @@ void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
             // OSG_NOTICE<<"Merging "<<_frameNumber-(*itr)->_frameNumberLastRequest<<std::endl;
             osg::Group* group = databaseRequest->_groupForAddingLoadedSubgraph;
 
+#if 0
             if (osgDB::Registry::instance()->getSharedStateManager())
                 osgDB::Registry::instance()->getSharedStateManager()->share(databaseRequest->_loadedModel.get());
-
+#endif
 
             osg::PagedLOD* plod = dynamic_cast<osg::PagedLOD*>(group);
             if (plod)
@@ -1699,7 +1702,7 @@ void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
 
             group->addChild(databaseRequest->_loadedModel.get());
 
-            registerPagedLODs(group, frameStamp.getFrameNumber());
+            registerPagedLODs(databaseRequest->_loadedModel.get(), frameStamp.getFrameNumber());
 
             // OSG_NOTICE<<"merged subgraph"<<databaseRequest->_fileName<<" after "<<databaseRequest->_numOfRequests<<" requests and time="<<(timeStamp-databaseRequest->_timestampFirstRequest)*1000.0<<std::endl;
 
@@ -1873,22 +1876,8 @@ void DatabasePager::registerPagedLODs(osg::Node* subgraph, int frameNumber)
 {
     if (!subgraph) return;
 
-    static std::set<osg::Node*> s_registedSet;
-
-    OSG_NOTICE<<"DatabasePager::registerPagedLODs("<<subgraph<<") "<<frameNumber<<std::endl;
-
-    if (s_registedSet.count(subgraph)!=0)
-    {
-        OSG_NOTICE<<"DatabasePager::registerPagedLODs("<<subgraph<<") subgraph already registered"<<std::endl;
-    }
-    else
-    {
-        s_registedSet.insert(subgraph);
-    }
-
     FindPagedLODsVisitor fplv(*_activePagedLODList, frameNumber);
     subgraph->accept(fplv);
-
 }
 
 bool DatabasePager::requiresCompileGLObjects() const

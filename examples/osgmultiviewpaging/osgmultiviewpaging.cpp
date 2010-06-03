@@ -54,7 +54,7 @@ public:
      osg::Timer_t start = osg::Timer::instance()->tick();
      osgDB::DatabasePager::updateSceneGraph(frameStamp);
      double d = osg::Timer::instance()->delta_m(start, osg::Timer::instance()->tick());
-     std::cout << "DatabasePager update took " << d << " ms. Length of active nodes = " << _activePagedLODList.size() << std::endl;
+     std::cout << "DatabasePager update took " << d << " ms. Length of active nodes = " << _activePagedLODList->size() << std::endl;
    }
  }
 };

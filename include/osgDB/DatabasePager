@@ -336,6 +336,19 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         typedef std::set<unsigned int>                                  ActiveGraphicsContexts;
         typedef std::vector< osg::observer_ptr<osg::GraphicsContext> >  CompileGraphicsContexts;
 
+        class CountPagedLODsVisitor;
+
+        struct PagedLODList : public osg::Referenced
+        {
+            virtual PagedLODList* clone() = 0;
+            virtual void clear() = 0;
+            virtual unsigned int size() = 0;
+            virtual void moveInactivePagedLODTo(PagedLODList& inactivePagedLODList, const osg::FrameStamp& framestamp) = 0;
+            virtual void moveActivePagedLODTo(PagedLODList& activePagedLODList, const osg::FrameStamp& framestamp) = 0;
+            virtual void removeExpiredChildren(int& numberChildrenToRemove, double expiryTime, int expiryFrame, osg::NodeList& childrenRemoved) = 0;
+            virtual void insertPagedLOD(osg::PagedLOD* plod) = 0;
+        };
+
     protected:
 
         virtual ~DatabasePager();
@@ -344,9 +357,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         friend struct DatabaseRequest;
 
         struct RequestQueue;
-
-        typedef osg::observer_ptr<osg::PagedLOD> PagedLODObserver;
-        typedef std::list< PagedLODObserver >                PagedLODList;
 
         struct DatabaseRequest : public osg::Referenced
         {
@@ -444,7 +454,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         class FindCompileableGLObjectsVisitor;
         friend class FindCompileableGLObjectsVisitor;
         
-        class CountPagedLODsVisitor;
         class FindPagedLODsVisitor;
         friend class FindPagedLODsVisitor;
 
@@ -579,8 +588,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         osg::ref_ptr<RequestQueue>      _dataToMergeList;
         
-        PagedLODList                    _activePagedLODList;
-        PagedLODList                    _inactivePagedLODList;
+        osg::ref_ptr<PagedLODList>      _activePagedLODList;
+        osg::ref_ptr<PagedLODList>      _inactivePagedLODList;
         
         unsigned int                    _targetMaximumNumberOfPageLOD;
 

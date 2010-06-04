@@ -8,9 +8,9 @@
 #endif
 #include <fbxsdk.h>
 
-#include "fbxRCamera.h"
+#include "fbxReader.h"
 
-osgDB::ReaderWriter::ReadResult readFbxCamera(KFbxNode* pNode)
+osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxCamera(KFbxNode* pNode)
 {
     const KFbxCamera* fbxCamera = dynamic_cast<const KFbxCamera*>(pNode->GetNodeAttribute());
 

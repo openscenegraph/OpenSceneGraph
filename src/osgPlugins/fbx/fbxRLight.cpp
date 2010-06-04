@@ -7,9 +7,9 @@
 #endif
 #include <fbxsdk.h>
 
-#include "fbxRLight.h"
+#include "fbxReader.h"
 
-osgDB::ReaderWriter::ReadResult readFbxLight(KFbxNode* pNode, int& nLightCount)
+osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxLight(KFbxNode* pNode, int& nLightCount)
 {
     const KFbxLight* fbxLight = dynamic_cast<const KFbxLight*>(pNode->GetNodeAttribute());
 

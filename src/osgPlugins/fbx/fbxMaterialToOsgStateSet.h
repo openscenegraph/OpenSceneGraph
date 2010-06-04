@@ -15,9 +15,52 @@
 
 //The only things we need to create a new StateSet are texture and materials. So we store that in a pair.
 //We Don't store directly in stateSet because getOrCreateStateSet function set some parameters.
-typedef std::pair<osg::Material *, osg::Texture2D *> StateSetContent;
 
-//We use the pointers setted by the importer to not duplicate materials and textures.
+struct StateSetContent
+{
+	StateSetContent()
+		: diffuseFactor(1.0),
+		opacityFactor(1.0),
+		reflectionFactor(1.0),
+		emissiveFactor(1.0)
+	{
+	}
+
+	osg::ref_ptr<osg::Material> material;
+
+	// textures objects...
+	osg::ref_ptr<osg::Texture2D> diffuseTexture;
+    osg::ref_ptr<osg::Texture2D> opacityTexture;
+	osg::ref_ptr<osg::Texture2D> reflectionTexture;
+    osg::ref_ptr<osg::Texture2D> emissiveTexture;
+    // more textures types here...
+
+    // textures maps channels names...
+    std::string diffuseChannel;
+    std::string opacityChannel;
+    std::string reflectionChannel;
+    std::string emissiveChannel;
+    // more channels names here...
+
+    // combining factors...
+    double diffuseFactor;
+    double opacityFactor;
+	double reflectionFactor;
+    double emissiveFactor;
+    // more combining factors here...
+
+    // texture units (eventually used for each texture map)...
+	enum TextureUnit
+	{
+		DIFFUSE_TEXTURE_UNIT = 0,
+		OPACITY_TEXTURE_UNIT,
+		REFLECTION_TEXTURE_UNIT,
+		EMISSIVE_TEXTURE_UNIT,
+		// more texture units here...
+	};
+};
+
+//We use the pointers set by the importer to not duplicate materials and textures.
 typedef std::map<const KFbxSurfaceMaterial *, StateSetContent> KFbxMaterialMap;
 
 //This map is used to not load the same image more than 1 time.
@@ -30,9 +73,10 @@ public:
     StateSetContent convert(const KFbxSurfaceMaterial* pFbxMat);
 
     //dir is the directory where fbx is stored (for relative path).
-    FbxMaterialToOsgStateSet(const std::string& dir, const osgDB::Options* options) :
+    FbxMaterialToOsgStateSet(const std::string& dir, const osgDB::Options* options, bool lightmapTextures) :
         _options(options),
-        _dir(dir) {}
+        _dir(dir),
+		_lightmapTextures(lightmapTextures){}
 
     void checkInvertTransparency();
 private:
@@ -43,6 +87,7 @@ private:
     ImageMap              _imageMap;
     const osgDB::Options* _options;
     const std::string     _dir;
+	bool                  _lightmapTextures;
 };
 
 

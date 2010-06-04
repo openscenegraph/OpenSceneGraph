@@ -11,6 +11,8 @@
 #include <fbxsdk.h>
 #include <fbxfilesdk/fbxfilesdk_nsuse.h>
 
+#include "fbxReader.h"
+
 osg::Quat makeQuat(const fbxDouble3&, ERotationOrder);
 
 osg::Quat makeQuat(const osg::Vec3& radians, ERotationOrder fbxRotOrder)
@@ -219,10 +221,7 @@ osgAnimation::Animation* readFbxAnimation(KFbxNode* pNode,
     return addChannels(pTranslationChannel, pRotationChannel, pScaleChannel, pAnimManager, pTakeName);
 }
 
-std::string readFbxAnimation(KFbxNode* pNode,
-    KFbxScene& fbxScene,
-    osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimManager,
-    const char* targetName)
+std::string OsgFbxReader::readFbxAnimation(KFbxNode* pNode, const char* targetName)
 {
     std::string result;
     for (int i = 0; i < fbxScene.GetSrcObjectCount(FBX_TYPE(KFbxAnimStack)); ++i)
@@ -240,8 +239,8 @@ std::string readFbxAnimation(KFbxNode* pNode,
         {
             KFbxAnimLayer* pAnimLayer = pAnimStack->GetMember(FBX_TYPE(KFbxAnimLayer), j);
 
-            if (osgAnimation::Animation* pAnimation = readFbxAnimation(
-                pNode, pAnimLayer, pTakeName, targetName, pAnimManager))
+			if (osgAnimation::Animation* pAnimation = ::readFbxAnimation(
+                pNode, pAnimLayer, pTakeName, targetName, pAnimationManager))
             {
                 result = targetName;
             }

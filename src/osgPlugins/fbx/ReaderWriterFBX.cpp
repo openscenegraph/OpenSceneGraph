@@ -6,6 +6,7 @@
 #include <osg/Material>
 #include <osg/PositionAttitudeTransform>
 #include <osg/Texture2D>
+#include <osg/Version>
 #include <osgDB/ConvertUTF>
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
@@ -23,8 +24,7 @@
 #include <fbxsdk.h>
 
 #include "ReaderWriterFBX.h"
-#include "fbxRNode.h"
-#include "fbxMaterialToOsgStateSet.h"
+#include "fbxReader.h"
 #include "WriterNodeVisitor.h"
 
 /// Returns true if the given node is a basic root group with no special information.
@@ -255,6 +255,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
             pScene->SetCurrentTake(pScene->GetCurrentTakeName());
 
             bool useFbxRoot = false;
+			bool lightmapTextures = false;
             if (options)
             {
                 std::istringstream iss(options->getOptionString());
@@ -265,10 +266,13 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
                     {
                         useFbxRoot = true;
                     }
+                    if (opt == "LightmapTextures")
+                    {
+                        lightmapTextures = true;
+                    }
                 }
             }
 
-            osg::ref_ptr<osgAnimation::AnimationManagerBase> pAnimationManager;
             bool bIsBone = false;
             int nLightCount = 0;
             osg::ref_ptr<Options> localOptions = NULL;
@@ -279,29 +283,59 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
             localOptions->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_IMAGES);
 
             std::string filePath = osgDB::getFilePath(filename);
-            FbxMaterialToOsgStateSet fbxMaterialToOsgStateSet(filePath, localOptions.get());
+            FbxMaterialToOsgStateSet fbxMaterialToOsgStateSet(filePath, localOptions.get(), lightmapTextures);
 
             std::set<const KFbxNode*> fbxSkeletons;
             findLinkedFbxSkeletonNodes(pNode, fbxSkeletons);
 
-            std::map<KFbxNode*, osg::Node*> nodeMap;
-            BindMatrixMap boneBindMatrices;
-            std::map<KFbxNode*, osgAnimation::Skeleton*> skeletonMap;
-            ReadResult res = readFbxNode(*pSdkManager, *pScene, pNode, pAnimationManager,
-                bIsBone, nLightCount, fbxMaterialToOsgStateSet, nodeMap,
-                boneBindMatrices, fbxSkeletons, skeletonMap, *localOptions);
+			OsgFbxReader::AuthoringTool authoringTool = OsgFbxReader::UNKNOWN;
+			if (KFbxDocumentInfo* pDocInfo = pScene->GetDocumentInfo())
+			{
+				struct ToolName
+				{
+					const char* name;
+					OsgFbxReader::AuthoringTool tool;
+				};
+
+				ToolName authoringTools[] = {
+					{"OpenSceneGraph", OsgFbxReader::OPENSCENEGRAPH},
+					{"3ds Max", OsgFbxReader::AUTODESK_3DSTUDIO_MAX}
+				};
+
+				fbxString appName = pDocInfo->LastSaved_ApplicationName.Get();
+
+				for (int i = 0; i < sizeof(authoringTools) / sizeof(authoringTools[0]); ++i)
+				{
+					if (0 == _strnicmp(appName, authoringTools[i].name, strlen(authoringTools[i].name)))
+					{
+						authoringTool = authoringTools[i].tool;
+						break;
+					}
+				}
+			}
+
+
+			OsgFbxReader reader(*pSdkManager,
+				*pScene,
+				fbxMaterialToOsgStateSet,
+				fbxSkeletons,
+				*localOptions,
+				authoringTool,
+				lightmapTextures);
+
+            ReadResult res = reader.readFbxNode(pNode, bIsBone, nLightCount);
 
             if (res.success())
             {
                 fbxMaterialToOsgStateSet.checkInvertTransparency();
 
-                resolveBindMatrices(*res.getNode(), boneBindMatrices, nodeMap);
+                resolveBindMatrices(*res.getNode(), reader.boneBindMatrices, reader.nodeMap);
 
                 osg::Node* osgNode = res.getNode();
                 osgNode->getOrCreateStateSet()->setMode(GL_RESCALE_NORMAL,osg::StateAttribute::ON);
                 osgNode->getOrCreateStateSet()->setMode(GL_NORMALIZE,osg::StateAttribute::ON);
 
-                if (pAnimationManager.valid())
+                if (reader.pAnimationManager.valid())
                 {
                     if (osgNode->getUpdateCallback())
                     {
@@ -311,8 +345,8 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
                     }
 
                     //because the animations may be altered after registering
-                    pAnimationManager->buildTargetReference();
-                    osgNode->setUpdateCallback(pAnimationManager.get());
+                    reader.pAnimationManager->buildTargetReference();
+                    osgNode->setUpdateCallback(reader.pAnimationManager.get());
                 }
 
                 KFbxAxisSystem fbxAxis = pScene->GetGlobalSettings().GetAxisSystem();
@@ -438,6 +472,19 @@ osgDB::ReaderWriter::WriteResult ReaderWriterFBX::writeNode(
             // Normal scene
             const_cast<osg::Node&>(node).accept(writerNodeVisitor);
         }
+
+		KFbxDocumentInfo* pDocInfo = pScene->GetDocumentInfo();
+		bool needNewDocInfo = pDocInfo != NULL;
+		if (needNewDocInfo)
+		{
+			pDocInfo = KFbxDocumentInfo::Create(pSdkManager, "");
+		}
+		pDocInfo->LastSaved_ApplicationName.Set(fbxString("OpenSceneGraph"));
+		pDocInfo->LastSaved_ApplicationVersion.Set(fbxString(osgGetVersion()));
+		if (needNewDocInfo)
+		{
+			pScene->SetDocumentInfo(pDocInfo);
+		}
 
         KFbxExporter* lExporter = KFbxExporter::Create(pSdkManager, "");
         pScene->GetGlobalSettings().SetAxisSystem(KFbxAxisSystem::eOpenGL);

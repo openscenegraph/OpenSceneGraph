@@ -13,15 +13,11 @@ SET(TARGET_SRC
 )
 
 SET(TARGET_H 
-    fbxRAnimation.h
-    fbxRCamera.h
-    fbxRLight.h
-    fbxRMesh.h
-    fbxRNode.h
+    fbxMaterialToOsgStateSet.h
+    fbxReader.h
     ReaderWriterFBX.h
     WriterCompareTriangle.h
     WriterNodeVisitor.h
-    fbxMaterialToOsgStateSet.h
 )
 
 ADD_DEFINITIONS(-DKFBX_PLUGIN -DKFBX_FBXSDK -DKFBX_NODLL)

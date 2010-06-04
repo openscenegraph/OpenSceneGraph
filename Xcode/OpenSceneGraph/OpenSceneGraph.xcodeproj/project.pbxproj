@@ -1913,6 +1913,14 @@
 		6320CD7307845D6D00FE3D2C /* osgFX.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0055835B0624D1E5000A808A /* osgFX.framework */; };
 		7A0C133A11859CED009EE053 /* Texture2DMultisample in Headers */ = {isa = PBXBuildFile; fileRef = 7A0C133911859CEC009EE053 /* Texture2DMultisample */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A0C133C11859D09009EE053 /* Texture2DMultisample.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A0C133B11859D08009EE053 /* Texture2DMultisample.cpp */; };
+		7A1A8BA711B913AF003EC346 /* FirstPersonManipulator in Headers */ = {isa = PBXBuildFile; fileRef = 7A1A8BA411B913AF003EC346 /* FirstPersonManipulator */; settings = {ATTRIBUTES = (Public, ); }; };
+		7A1A8BA811B913AF003EC346 /* OrbitManipulator in Headers */ = {isa = PBXBuildFile; fileRef = 7A1A8BA511B913AF003EC346 /* OrbitManipulator */; settings = {ATTRIBUTES = (Public, ); }; };
+		7A1A8BA911B913AF003EC346 /* StandardManipulator in Headers */ = {isa = PBXBuildFile; fileRef = 7A1A8BA611B913AF003EC346 /* StandardManipulator */; settings = {ATTRIBUTES = (Public, ); }; };
+		7A1A8BAD11B913D0003EC346 /* FirstPersonManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A1A8BAA11B913CF003EC346 /* FirstPersonManipulator.cpp */; };
+		7A1A8BAE11B913D0003EC346 /* OrbitManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A1A8BAB11B913CF003EC346 /* OrbitManipulator.cpp */; };
+		7A1A8BAF11B913D0003EC346 /* StandardManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A1A8BAC11B913D0003EC346 /* StandardManipulator.cpp */; };
+		7A1A8BB411B9148E003EC346 /* Texture2DArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A1A8BB211B9148D003EC346 /* Texture2DArray.cpp */; };
+		7A1A8BB511B9148E003EC346 /* Texture2DArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A1A8BB311B9148D003EC346 /* Texture2DArray.h */; };
 		7A299121112EE3F4009973F4 /* Observer in Headers */ = {isa = PBXBuildFile; fileRef = 7A29911F112EE3EF009973F4 /* Observer */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A299122112EE3F4009973F4 /* ObserverNodePath in Headers */ = {isa = PBXBuildFile; fileRef = 7A299120112EE3F3009973F4 /* ObserverNodePath */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A299125112EE6C2009973F4 /* Observer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A299123112EE6C1009973F4 /* Observer.cpp */; };
@@ -7929,6 +7937,14 @@
 		6320CD4307845BC300FE3D2C /* osgTerrain.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = osgTerrain.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A0C133911859CEC009EE053 /* Texture2DMultisample */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Texture2DMultisample; sourceTree = "<group>"; };
 		7A0C133B11859D08009EE053 /* Texture2DMultisample.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Texture2DMultisample.cpp; sourceTree = "<group>"; };
+		7A1A8BA411B913AF003EC346 /* FirstPersonManipulator */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = FirstPersonManipulator; sourceTree = "<group>"; };
+		7A1A8BA511B913AF003EC346 /* OrbitManipulator */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = OrbitManipulator; sourceTree = "<group>"; };
+		7A1A8BA611B913AF003EC346 /* StandardManipulator */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = StandardManipulator; sourceTree = "<group>"; };
+		7A1A8BAA11B913CF003EC346 /* FirstPersonManipulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FirstPersonManipulator.cpp; sourceTree = "<group>"; };
+		7A1A8BAB11B913CF003EC346 /* OrbitManipulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OrbitManipulator.cpp; sourceTree = "<group>"; };
+		7A1A8BAC11B913D0003EC346 /* StandardManipulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StandardManipulator.cpp; sourceTree = "<group>"; };
+		7A1A8BB211B9148D003EC346 /* Texture2DArray.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Texture2DArray.cpp; sourceTree = "<group>"; };
+		7A1A8BB311B9148D003EC346 /* Texture2DArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Texture2DArray.h; sourceTree = "<group>"; };
 		7A29911F112EE3EF009973F4 /* Observer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Observer; sourceTree = "<group>"; };
 		7A299120112EE3F3009973F4 /* ObserverNodePath */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ObserverNodePath; sourceTree = "<group>"; };
 		7A299123112EE6C1009973F4 /* Observer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Observer.cpp; sourceTree = "<group>"; };
@@ -11796,6 +11812,9 @@
 		00557D170624A9F8000A808A /* osgGA */ = {
 			isa = PBXGroup;
 			children = (
+				7A1A8BAA11B913CF003EC346 /* FirstPersonManipulator.cpp */,
+				7A1A8BAB11B913CF003EC346 /* OrbitManipulator.cpp */,
+				7A1A8BAC11B913D0003EC346 /* StandardManipulator.cpp */,
 				D46351F40FC310D9007674B3 /* SphericalManipulator.cpp */,
 				D4163D1E0F2A6A900062226D /* CameraViewSwitchManipulator.cpp */,
 				00557D180624A9F8000A808A /* AnimationPathManipulator.cpp */,
@@ -11821,6 +11840,9 @@
 		00557D530624AB42000A808A /* osgGA */ = {
 			isa = PBXGroup;
 			children = (
+				7A1A8BA411B913AF003EC346 /* FirstPersonManipulator */,
+				7A1A8BA511B913AF003EC346 /* OrbitManipulator */,
+				7A1A8BA611B913AF003EC346 /* StandardManipulator */,
 				D46351F60FC310E9007674B3 /* SphericalManipulator */,
 				D4163D200F2A6AA40062226D /* CameraViewSwitchManipulator */,
 				00557D540624AB42000A808A /* AnimationPathManipulator */,
@@ -13121,6 +13143,8 @@
 		5BC2F6820C44C99800671A68 /* ive */ = {
 			isa = PBXGroup;
 			children = (
+				7A1A8BB211B9148D003EC346 /* Texture2DArray.cpp */,
+				7A1A8BB311B9148D003EC346 /* Texture2DArray.h */,
 				7A2993DF117C4E13009973F4 /* Terrain.cpp */,
 				7A2993E0117C4E13009973F4 /* Terrain.h */,
 				D4BE536E0FB2CC71002E442A /* VolumeCompositeProperty.cpp */,
@@ -15011,6 +15035,7 @@
 				D4BE53810FB2CC72002E442A /* VolumeSwitchProperty.h in Headers */,
 				D4BE53830FB2CC72002E442A /* VolumeTransferFunctionProperty.h in Headers */,
 				7A2993E2117C4E13009973F4 /* Terrain.h in Headers */,
+				7A1A8BB511B9148E003EC346 /* Texture2DArray.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15172,6 +15197,9 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A1A8BA811B913AF003EC346 /* OrbitManipulator in Headers */,
+				7A1A8BA711B913AF003EC346 /* FirstPersonManipulator in Headers */,
+				7A1A8BA911B913AF003EC346 /* StandardManipulator in Headers */,
 				D46351F70FC310E9007674B3 /* SphericalManipulator in Headers */,
 				D4163D210F2A6AA40062226D /* CameraViewSwitchManipulator in Headers */,
 				005581DA0624BD3D000A808A /* AnimationPathManipulator in Headers */,
@@ -21378,6 +21406,7 @@
 				D4BE53800FB2CC72002E442A /* VolumeSwitchProperty.cpp in Sources */,
 				D4BE53820FB2CC72002E442A /* VolumeTransferFunctionProperty.cpp in Sources */,
 				7A2993E1117C4E13009973F4 /* Terrain.cpp in Sources */,
+				7A1A8BB411B9148E003EC346 /* Texture2DArray.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -21569,6 +21598,9 @@
 				00794FD409D35373003FC8A1 /* EventQueue.cpp in Sources */,
 				D4163D1F0F2A6A910062226D /* CameraViewSwitchManipulator.cpp in Sources */,
 				D46351F50FC310D9007674B3 /* SphericalManipulator.cpp in Sources */,
+				7A1A8BAD11B913D0003EC346 /* FirstPersonManipulator.cpp in Sources */,
+				7A1A8BAE11B913D0003EC346 /* OrbitManipulator.cpp in Sources */,
+				7A1A8BAF11B913D0003EC346 /* StandardManipulator.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

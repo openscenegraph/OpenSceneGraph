@@ -131,6 +131,14 @@ public:
         {
             removedChildren[i]->accept(*this);
         }
+
+        for(PagedLODset::iterator itr = _pagedLODs.begin();
+            itr != _pagedLODs.end();
+            ++itr)
+        {
+            removedChildren.push_back(*itr);
+        }
+
         return sizeBefore!=removedChildren.size();
     }
 
@@ -266,7 +274,7 @@ public:
             PagedLODs::iterator plod_itr = _pagedLODs.find(obs_ptr);
             if (plod_itr != _pagedLODs.end())
             {
-                OSG_NOTICE<<"Removing node from PagedLOD list"<<std::endl;
+                OSG_INFO<<"Removing node from PagedLOD list"<<std::endl;
                 _pagedLODs.erase(plod_itr);
             }
         }

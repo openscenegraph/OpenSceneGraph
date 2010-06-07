@@ -460,12 +460,28 @@ struct DatabasePager::SortFileRequestFunctor
 };
 
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  DatabaseRequest
+//
+void DatabasePager::DatabaseRequest::invalidate()
+{
+    OSG_INFO<<"   DatabasePager::DatabaseRequest::invalidate()."<<std::endl;
+    _valid = false;
+    _groupForAddingLoadedSubgraph = 0;
+    _loadedModel = 0;
+    _dataToCompileMap.clear();
+    _requestQueue = 0;
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //  RequestQueue
 //
 DatabasePager::RequestQueue::RequestQueue(DatabasePager* pager):
     _pager(pager),
+    _size(0),
     _frameNumberLastPruned(-1)
 {
 }
@@ -479,16 +495,6 @@ DatabasePager::RequestQueue::~RequestQueue()
     {
         (*itr)->invalidate();
     }
-}
-
-void DatabasePager::DatabaseRequest::invalidate()
-{
-    OSG_INFO<<"   DatabasePager::DatabaseRequest::invalidate()."<<std::endl;
-    _valid = false;
-    _groupForAddingLoadedSubgraph = 0;
-    _loadedModel = 0;
-    _dataToCompileMap.clear();
-    _requestQueue = 0;
 }
 
 bool DatabasePager::RequestQueue::pruneOldRequestsAndCheckIfEmpty()
@@ -511,7 +517,13 @@ bool DatabasePager::RequestQueue::pruneOldRequestsAndCheckIfEmpty()
 
                 OSG_INFO<<"DatabasePager::RequestQueue::pruneOldRequestsAndCheckIfEmpty(): Pruning "<<(*citr)<<std::endl;
                 citr = _requestList.erase(citr);
+                --_size;
             }
+        }
+
+        if (_requestList.size()!=_size)
+        {
+            OSG_NOTICE<<"DatabasePager::pruneOldRequestsAndCheckIfEmpty(): Error, _size = "<<_size<<"  _requestList.size()="<<_requestList.size()<<std::endl;
         }
 
         _frameNumberLastPruned = _pager->_frameNumber;
@@ -536,6 +548,13 @@ void DatabasePager::RequestQueue::clear()
 
     _requestList.clear();
 
+    _size  = 0;
+
+    if (_requestList.size()!=_size)
+    {
+        OSG_NOTICE<<"DatabasePager::clear(): Error, _size = "<<_size<<"  _requestList.size()="<<_requestList.size()<<std::endl;
+    }
+
     _frameNumberLastPruned = _pager->_frameNumber;
 
     updateBlock();
@@ -546,10 +565,28 @@ void DatabasePager::RequestQueue::add(DatabasePager::DatabaseRequest* databaseRe
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_requestMutex);
 
+    addNoLock(databaseRequest);
+}
+
+void DatabasePager::RequestQueue::addNoLock(DatabasePager::DatabaseRequest* databaseRequest)
+{
     _requestList.push_back(databaseRequest);
+    ++_size;
     databaseRequest->_requestQueue = this;
 
+    if (_requestList.size()!=_size)
+    {
+        OSG_NOTICE<<"DatabasePager::add(): Error, _size = "<<_size<<"  _requestList.size()="<<_requestList.size()<<std::endl;
+    }
+
     updateBlock();
+}
+
+void DatabasePager::RequestQueue::swap(RequestList& requestList)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_requestMutex);
+    _requestList.swap(requestList);
+    _size = _requestList.size();
 }
 
 void DatabasePager::RequestQueue::takeFirst(osg::ref_ptr<DatabaseRequest>& databaseRequest)
@@ -581,6 +618,7 @@ void DatabasePager::RequestQueue::takeFirst(osg::ref_ptr<DatabaseRequest>& datab
                 
                 OSG_INFO<<"DatabasePager::RequestQueue::takeFirst(): Pruning "<<(*citr)<<std::endl;
                 citr = _requestList.erase(citr);
+                --_size;
             }
 
         }
@@ -592,11 +630,17 @@ void DatabasePager::RequestQueue::takeFirst(osg::ref_ptr<DatabaseRequest>& datab
             databaseRequest = *selected_itr;
             databaseRequest->_requestQueue = 0;
             _requestList.erase(selected_itr);
+            --_size;
             OSG_INFO<<" DatabasePager::RequestQueue::takeFirst() Found DatabaseRequest size()="<<_requestList.size()<<std::endl;
         }
         else
         {
             OSG_INFO<<" DatabasePager::RequestQueue::takeFirst() No suitable DatabaseRequest found size()="<<_requestList.size()<<std::endl;
+        }
+
+        if (_requestList.size()!=_size)
+        {
+            OSG_NOTICE<<"DatabasePager::takeFirst(): Error, _size = "<<_size<<"  _requestList.size()="<<_requestList.size()<<std::endl;
         }
 
         updateBlock();
@@ -616,7 +660,7 @@ DatabasePager::ReadQueue::ReadQueue(DatabasePager* pager, const std::string& nam
 
 void DatabasePager::ReadQueue::updateBlock()
 {
-    _block->set((!_requestList.empty() || !_childrenToDeleteList.empty()) &&
+    _block->set((!empty() || !_childrenToDeleteList.empty()) &&
                 !_pager->_databasePagerThreadPaused);
 }
 
@@ -735,7 +779,7 @@ void DatabasePager::DatabaseThread::run()
 
         _active = true;
 
-        OSG_INFO<<_name<<": _pager->_requestList.size()= "<<read_queue->_requestList.size()<<" to delete = "<<read_queue->_childrenToDeleteList.size()<<std::endl;
+        OSG_INFO<<_name<<": _pager->size()= "<<read_queue->size()<<" to delete = "<<read_queue->_childrenToDeleteList.size()<<std::endl;
 
 
         //
@@ -1552,9 +1596,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
             databaseRequest->_loadOptions = loadOptions;
             databaseRequest->_requestQueue = _fileRequestQueue.get();
 
-            _fileRequestQueue->_requestList.push_back(databaseRequest.get());
-
-            _fileRequestQueue->updateBlock();
+            _fileRequestQueue->addNoLock(databaseRequest.get());
         }
         
     }
@@ -1617,10 +1659,7 @@ void DatabasePager::setDatabasePagerThreadPause(bool pause)
 
 bool DatabasePager::requiresUpdateSceneGraph() const
 {
-#if 0
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToMergeList->_requestMutex);
-#endif
-    return !(_dataToMergeList->_requestList.empty());
+    return !(_dataToMergeList->empty());
 }
 
 #define UPDATE_TIMING 0
@@ -1671,10 +1710,7 @@ void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
     RequestQueue::RequestList localFileLoadedList;
 
     // get the data for the _dataToCompileList, leaving it empty via a std::vector<>.swap.
-    {
-        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToMergeList->_requestMutex);
-        localFileLoadedList.swap(_dataToMergeList->_requestList);
-    }
+    _dataToMergeList->swap(localFileLoadedList);
         
     mid = osg::Timer::instance()->tick();
 
@@ -1900,10 +1936,7 @@ void DatabasePager::registerPagedLODs(osg::Node* subgraph, int frameNumber)
 
 bool DatabasePager::requiresCompileGLObjects() const
 {
-#if 0
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_dataToCompileList->_requestMutex);
-#endif
-    return !_dataToCompileList->_requestList.empty();
+    return !_dataToCompileList->empty();
 }
 
 void DatabasePager::setCompileGLObjectsForContextID(unsigned int contextID, bool on)

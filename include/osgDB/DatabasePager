@@ -306,13 +306,13 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         virtual void compileAllGLObjects(osg::State& state);
 
         /** Report how many items are in the _fileRequestList queue */
-        unsigned int getFileRequestListSize() const { return _fileRequestQueue->_requestList.size() + _httpRequestQueue->_requestList.size(); }
+        unsigned int getFileRequestListSize() const { return _fileRequestQueue->size() + _httpRequestQueue->size(); }
 
         /** Report how many items are in the _dataToCompileList queue */
-        unsigned int getDataToCompileListSize() const { return _dataToCompileList->_requestList.size(); }
+        unsigned int getDataToCompileListSize() const { return _dataToCompileList->size(); }
         
         /** Report how many items are in the _dataToCompileList queue */
-        unsigned int getDataToMergeListSize() const { return _dataToMergeList->_requestList.size(); }
+        unsigned int getDataToMergeListSize() const { return _dataToMergeList->size(); }
 
         /** Report whether any requests are in the pager.*/
         bool getRequestsInProgress() const;
@@ -407,6 +407,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             RequestQueue(DatabasePager* pager);
 
             void add(DatabaseRequest* databaseRequest);
+            void addNoLock(DatabaseRequest* databaseRequest);
 
             void takeFirst(osg::ref_ptr<DatabaseRequest>& databaseRequest);
 
@@ -415,11 +416,18 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
             virtual void updateBlock() {}
 
+            bool empty() const { return size()==0; }
+
+            unsigned int size() const { return _size; }
+
             void clear();
 
+
             typedef std::list< osg::ref_ptr<DatabaseRequest> > RequestList;
+            void swap(RequestList& requestList);
 
             DatabasePager*              _pager;
+            unsigned int                _size;
             RequestList                 _requestList;
             OpenThreads::Mutex          _requestMutex;
             int                         _frameNumberLastPruned;

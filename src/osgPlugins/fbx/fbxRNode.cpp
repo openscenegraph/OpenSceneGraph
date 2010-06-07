@@ -318,11 +318,23 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxNode(
 {
     if (KFbxNodeAttribute* lNodeAttribute = pNode->GetNodeAttribute())
     {
-        if (lNodeAttribute->GetAttributeType() == KFbxNodeAttribute::eNURB ||
-            lNodeAttribute->GetAttributeType() == KFbxNodeAttribute::ePATCH)
+        KFbxNodeAttribute::EAttributeType attrType = lNodeAttribute->GetAttributeType();
+        switch (attrType)
         {
-            KFbxGeometryConverter lConverter(&pSdkManager);
-            lConverter.TriangulateInPlace(pNode);
+        case KFbxNodeAttribute::eNURB:
+        case KFbxNodeAttribute::ePATCH:
+        case KFbxNodeAttribute::eNURBS_CURVE:
+        case KFbxNodeAttribute::eNURBS_SURFACE:
+            {
+                KFbxGeometryConverter lConverter(&pSdkManager);
+                if (!lConverter.TriangulateInPlace(pNode))
+                {
+                    OSG_WARN << "Unable to triangulate FBX NURBS " << pNode->GetName() << std::endl;
+                }
+            }
+            break;
+        default:
+            break;
         }
     }
 
@@ -467,7 +479,7 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxNode(
 
     osg::Group* pAddChildrenTo = osgGroup.get();
     if (bCreateSkeleton)
-	{
+    {
         osgAnimation::Skeleton* osgSkeleton = getSkeleton(pNode, fbxSkeletons, skeletonMap);
         osgSkeleton->setDefaultUpdateCallback();
         pAddChildrenTo->addChild(osgSkeleton);

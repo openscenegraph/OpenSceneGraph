@@ -893,7 +893,6 @@
 		00557D260624A9F8000A808A /* FlightManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00557D1A0624A9F8000A808A /* FlightManipulator.cpp */; };
 		00557D280624A9F8000A808A /* GUIEventHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00557D1C0624A9F8000A808A /* GUIEventHandler.cpp */; };
 		00557D2A0624A9F8000A808A /* KeySwitchMatrixManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00557D1E0624A9F8000A808A /* KeySwitchMatrixManipulator.cpp */; };
-		00557D2B0624A9F8000A808A /* MatrixManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00557D1F0624A9F8000A808A /* MatrixManipulator.cpp */; };
 		00557D2D0624A9F8000A808A /* StateSetManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00557D210624A9F8000A808A /* StateSetManipulator.cpp */; };
 		00557D2E0624A9F8000A808A /* TrackballManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00557D220624A9F8000A808A /* TrackballManipulator.cpp */; };
 		00557D2F0624A9F8000A808A /* Version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00557D230624A9F8000A808A /* Version.cpp */; };
@@ -972,7 +971,6 @@
 		005581DF0624BD3D000A808A /* GUIEventAdapter in Headers */ = {isa = PBXBuildFile; fileRef = 00557D590624AB42000A808A /* GUIEventAdapter */; settings = {ATTRIBUTES = (Public, ); }; };
 		005581E00624BD3D000A808A /* GUIEventHandler in Headers */ = {isa = PBXBuildFile; fileRef = 00557D5A0624AB42000A808A /* GUIEventHandler */; settings = {ATTRIBUTES = (Public, ); }; };
 		005581E20624BD3D000A808A /* KeySwitchMatrixManipulator in Headers */ = {isa = PBXBuildFile; fileRef = 00557D5C0624AB42000A808A /* KeySwitchMatrixManipulator */; settings = {ATTRIBUTES = (Public, ); }; };
-		005581E30624BD3D000A808A /* MatrixManipulator in Headers */ = {isa = PBXBuildFile; fileRef = 00557D5D0624AB42000A808A /* MatrixManipulator */; settings = {ATTRIBUTES = (Public, ); }; };
 		005581E50624BD3D000A808A /* StateSetManipulator in Headers */ = {isa = PBXBuildFile; fileRef = 00557D5F0624AB42000A808A /* StateSetManipulator */; settings = {ATTRIBUTES = (Public, ); }; };
 		005581E60624BD3D000A808A /* TrackballManipulator in Headers */ = {isa = PBXBuildFile; fileRef = 00557D600624AB42000A808A /* TrackballManipulator */; settings = {ATTRIBUTES = (Public, ); }; };
 		005581E70624BD3D000A808A /* Version in Headers */ = {isa = PBXBuildFile; fileRef = 00557D610624AB42000A808A /* Version */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1921,6 +1919,8 @@
 		7A1A8BAF11B913D0003EC346 /* StandardManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A1A8BAC11B913D0003EC346 /* StandardManipulator.cpp */; };
 		7A1A8BB411B9148E003EC346 /* Texture2DArray.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A1A8BB211B9148D003EC346 /* Texture2DArray.cpp */; };
 		7A1A8BB511B9148E003EC346 /* Texture2DArray.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A1A8BB311B9148D003EC346 /* Texture2DArray.h */; };
+		7A1A8C7111BCE024003EC346 /* CameraManipulator in Headers */ = {isa = PBXBuildFile; fileRef = 7A1A8C7011BCE024003EC346 /* CameraManipulator */; settings = {ATTRIBUTES = (Public, ); }; };
+		7A1A8C7311BCE039003EC346 /* CameraManipulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A1A8C7211BCE039003EC346 /* CameraManipulator.cpp */; };
 		7A299121112EE3F4009973F4 /* Observer in Headers */ = {isa = PBXBuildFile; fileRef = 7A29911F112EE3EF009973F4 /* Observer */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A299122112EE3F4009973F4 /* ObserverNodePath in Headers */ = {isa = PBXBuildFile; fileRef = 7A299120112EE3F3009973F4 /* ObserverNodePath */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A299125112EE6C2009973F4 /* Observer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7A299123112EE6C1009973F4 /* Observer.cpp */; };
@@ -7151,7 +7151,6 @@
 		00557D1A0624A9F8000A808A /* FlightManipulator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = FlightManipulator.cpp; path = ../../src/osgGA/FlightManipulator.cpp; sourceTree = SOURCE_ROOT; };
 		00557D1C0624A9F8000A808A /* GUIEventHandler.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = GUIEventHandler.cpp; path = ../../src/osgGA/GUIEventHandler.cpp; sourceTree = SOURCE_ROOT; };
 		00557D1E0624A9F8000A808A /* KeySwitchMatrixManipulator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = KeySwitchMatrixManipulator.cpp; path = ../../src/osgGA/KeySwitchMatrixManipulator.cpp; sourceTree = SOURCE_ROOT; };
-		00557D1F0624A9F8000A808A /* MatrixManipulator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = MatrixManipulator.cpp; path = ../../src/osgGA/MatrixManipulator.cpp; sourceTree = SOURCE_ROOT; };
 		00557D210624A9F8000A808A /* StateSetManipulator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = StateSetManipulator.cpp; path = ../../src/osgGA/StateSetManipulator.cpp; sourceTree = SOURCE_ROOT; };
 		00557D220624A9F8000A808A /* TrackballManipulator.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = TrackballManipulator.cpp; path = ../../src/osgGA/TrackballManipulator.cpp; sourceTree = SOURCE_ROOT; };
 		00557D230624A9F8000A808A /* Version.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = Version.cpp; path = ../../src/osgGA/Version.cpp; sourceTree = SOURCE_ROOT; };
@@ -7163,7 +7162,6 @@
 		00557D590624AB42000A808A /* GUIEventAdapter */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = GUIEventAdapter; sourceTree = "<group>"; };
 		00557D5A0624AB42000A808A /* GUIEventHandler */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = GUIEventHandler; sourceTree = "<group>"; };
 		00557D5C0624AB42000A808A /* KeySwitchMatrixManipulator */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = KeySwitchMatrixManipulator; sourceTree = "<group>"; };
-		00557D5D0624AB42000A808A /* MatrixManipulator */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = MatrixManipulator; sourceTree = "<group>"; };
 		00557D5F0624AB42000A808A /* StateSetManipulator */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = StateSetManipulator; sourceTree = "<group>"; };
 		00557D600624AB42000A808A /* TrackballManipulator */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = TrackballManipulator; sourceTree = "<group>"; };
 		00557D610624AB42000A808A /* Version */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp; fileEncoding = 30; path = Version; sourceTree = "<group>"; };
@@ -7945,6 +7943,8 @@
 		7A1A8BAC11B913D0003EC346 /* StandardManipulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StandardManipulator.cpp; sourceTree = "<group>"; };
 		7A1A8BB211B9148D003EC346 /* Texture2DArray.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Texture2DArray.cpp; sourceTree = "<group>"; };
 		7A1A8BB311B9148D003EC346 /* Texture2DArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Texture2DArray.h; sourceTree = "<group>"; };
+		7A1A8C7011BCE024003EC346 /* CameraManipulator */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CameraManipulator; sourceTree = "<group>"; };
+		7A1A8C7211BCE039003EC346 /* CameraManipulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CameraManipulator.cpp; sourceTree = "<group>"; };
 		7A29911F112EE3EF009973F4 /* Observer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Observer; sourceTree = "<group>"; };
 		7A299120112EE3F3009973F4 /* ObserverNodePath */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ObserverNodePath; sourceTree = "<group>"; };
 		7A299123112EE6C1009973F4 /* Observer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Observer.cpp; sourceTree = "<group>"; };
@@ -11812,6 +11812,7 @@
 		00557D170624A9F8000A808A /* osgGA */ = {
 			isa = PBXGroup;
 			children = (
+				7A1A8C7211BCE039003EC346 /* CameraManipulator.cpp */,
 				7A1A8BAA11B913CF003EC346 /* FirstPersonManipulator.cpp */,
 				7A1A8BAB11B913CF003EC346 /* OrbitManipulator.cpp */,
 				7A1A8BAC11B913D0003EC346 /* StandardManipulator.cpp */,
@@ -11825,7 +11826,6 @@
 				008F447706CBFA4200F4220C /* GUIEventAdapter.cpp */,
 				00557D1C0624A9F8000A808A /* GUIEventHandler.cpp */,
 				00557D1E0624A9F8000A808A /* KeySwitchMatrixManipulator.cpp */,
-				00557D1F0624A9F8000A808A /* MatrixManipulator.cpp */,
 				00E2814907676852005AEE61 /* NodeTrackerManipulator.cpp */,
 				00557D210624A9F8000A808A /* StateSetManipulator.cpp */,
 				00CE2E8E065BD0FD003C8656 /* TerrainManipulator.cpp */,
@@ -11840,6 +11840,7 @@
 		00557D530624AB42000A808A /* osgGA */ = {
 			isa = PBXGroup;
 			children = (
+				7A1A8C7011BCE024003EC346 /* CameraManipulator */,
 				7A1A8BA411B913AF003EC346 /* FirstPersonManipulator */,
 				7A1A8BA511B913AF003EC346 /* OrbitManipulator */,
 				7A1A8BA611B913AF003EC346 /* StandardManipulator */,
@@ -11855,7 +11856,6 @@
 				00557D590624AB42000A808A /* GUIEventAdapter */,
 				00557D5A0624AB42000A808A /* GUIEventHandler */,
 				00557D5C0624AB42000A808A /* KeySwitchMatrixManipulator */,
-				00557D5D0624AB42000A808A /* MatrixManipulator */,
 				00E28147076767D1005AEE61 /* NodeTrackerManipulator */,
 				00557D5F0624AB42000A808A /* StateSetManipulator */,
 				00CE2E0C065BCFEC003C8656 /* TerrainManipulator */,
@@ -15197,6 +15197,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A1A8C7111BCE024003EC346 /* CameraManipulator in Headers */,
 				7A1A8BA811B913AF003EC346 /* OrbitManipulator in Headers */,
 				7A1A8BA711B913AF003EC346 /* FirstPersonManipulator in Headers */,
 				7A1A8BA911B913AF003EC346 /* StandardManipulator in Headers */,
@@ -15212,7 +15213,6 @@
 				005581DF0624BD3D000A808A /* GUIEventAdapter in Headers */,
 				005581E00624BD3D000A808A /* GUIEventHandler in Headers */,
 				005581E20624BD3D000A808A /* KeySwitchMatrixManipulator in Headers */,
-				005581E30624BD3D000A808A /* MatrixManipulator in Headers */,
 				00E28148076767D2005AEE61 /* NodeTrackerManipulator in Headers */,
 				005581E50624BD3D000A808A /* StateSetManipulator in Headers */,
 				00CE2E1C065BD011003C8656 /* TerrainManipulator in Headers */,
@@ -21586,7 +21586,6 @@
 				00557D260624A9F8000A808A /* FlightManipulator.cpp in Sources */,
 				00557D280624A9F8000A808A /* GUIEventHandler.cpp in Sources */,
 				00557D2A0624A9F8000A808A /* KeySwitchMatrixManipulator.cpp in Sources */,
-				00557D2B0624A9F8000A808A /* MatrixManipulator.cpp in Sources */,
 				00557D2D0624A9F8000A808A /* StateSetManipulator.cpp in Sources */,
 				00557D2E0624A9F8000A808A /* TrackballManipulator.cpp in Sources */,
 				00557D2F0624A9F8000A808A /* Version.cpp in Sources */,
@@ -21601,6 +21600,7 @@
 				7A1A8BAD11B913D0003EC346 /* FirstPersonManipulator.cpp in Sources */,
 				7A1A8BAE11B913D0003EC346 /* OrbitManipulator.cpp in Sources */,
 				7A1A8BAF11B913D0003EC346 /* StandardManipulator.cpp in Sources */,
+				7A1A8C7311BCE039003EC346 /* CameraManipulator.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

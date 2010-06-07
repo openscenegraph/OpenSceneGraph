@@ -174,7 +174,7 @@ public:
                         plod->releaseGLObjects();
                     }
 #endif
-                    inactivePagedLODList.insertPagedLOD(plod);
+                    inactivePagedLODList.insertPagedLOD(*itr);
 
                     PagedLODs::iterator pitr = itr;
                     ++itr;
@@ -211,7 +211,7 @@ public:
                 }
                 else
                 {
-                    activePagedLODList.insertPagedLOD(plod);
+                    activePagedLODList.insertPagedLOD(*itr);
 
                     PagedLODs::iterator pitr = itr;
                     ++itr;
@@ -255,11 +255,28 @@ public:
         numberChildrenToRemove -= countPagedLODsVisitor._numPagedLODs;
     }
 
-    virtual void insertPagedLOD(osg::PagedLOD* plod)
+    virtual void removeNodes(osg::NodeList& nodesToRemove)
+    {
+        for(osg::NodeList::iterator itr = nodesToRemove.begin();
+            itr != nodesToRemove.end();
+            ++itr)
+        {
+            osg::PagedLOD* plod = dynamic_cast<osg::PagedLOD*>(itr->get());
+            osg::observer_ptr<osg::PagedLOD> obs_ptr(plod);
+            PagedLODs::iterator plod_itr = _pagedLODs.find(obs_ptr);
+            if (plod_itr != _pagedLODs.end())
+            {
+                OSG_NOTICE<<"Removing node from PagedLOD list"<<std::endl;
+                _pagedLODs.erase(plod_itr);
+            }
+        }
+    }
+
+    virtual void insertPagedLOD(const osg::observer_ptr<osg::PagedLOD>& plod)
     {
         if (_pagedLODs.count(plod)!=0)
         {
-            OSG_NOTICE<<"Warning: SetBasedPagedLODList::insertPagedLOD("<<plod<<") already inserted"<<std::endl;
+            OSG_NOTICE<<"Warning: SetBasedPagedLODList::insertPagedLOD("<<plod.get()<<") already inserted"<<std::endl;
             // abort();
             return;
         }
@@ -267,11 +284,6 @@ public:
         // OSG_NOTICE<<"OK: SetBasedPagedLODList::insertPagedLOD("<<plod<<") inserting"<<std::endl;
 
         _pagedLODs.insert(plod);
-    }
-
-    virtual bool containsPagedLOD(osg::PagedLOD* plod)
-    {
-        return (_pagedLODs.count(plod)!=0);
     }
 
 };
@@ -1807,6 +1819,10 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
     { 
         bool updateBlock = false;
 
+        // remove any entries in the active/inactivePagedLODLists.
+        _activePagedLODList->removeNodes(childrenRemoved);
+        _inactivePagedLODList->removeNodes(childrenRemoved);
+
         // pass the objects across to the database pager delete list
         if (_deleteRemovedSubgraphsInDatabaseThread)
         {
@@ -1858,7 +1874,9 @@ public:
     virtual void apply(osg::PagedLOD& plod)
     {
         plod.setFrameNumberOfLastTraversal(_frameNumber);
-        _activePagedLODList.insertPagedLOD(&plod);
+
+        osg::observer_ptr<osg::PagedLOD> obs_ptr(&plod);
+        _activePagedLODList.insertPagedLOD(obs_ptr);
 
         traverse(plod);
     }

@@ -239,13 +239,13 @@ public:
     virtual WriteResult writeObject( const osg::Object& object, const std::string& fileName, const Options* options ) const
     {
         WriteResult result = WriteResult::FILE_SAVED;
-        Options* local_opt = prepareWriting( result, fileName, options );
+        osg::ref_ptr<Options> local_opt = prepareWriting( result, fileName, options );
         if ( !result.success() ) return result;
         
         osgDB::ofstream fout( fileName.c_str(), std::ios::out|std::ios::binary );
         if ( !fout ) return WriteResult::ERROR_IN_WRITING_FILE;
         
-        result = writeObject( object, fout, local_opt );
+        result = writeObject( object, fout, local_opt.get() );
         fout.close();
         return result;
     }
@@ -274,7 +274,7 @@ public:
     virtual WriteResult writeImage( const osg::Image& image, const std::string& fileName, const Options* options ) const
     {
         WriteResult result = WriteResult::FILE_SAVED;
-        Options* local_opt = prepareWriting( result, fileName, options );
+        osg::ref_ptr<Options> local_opt = prepareWriting( result, fileName, options );
         if ( !result.success() ) return result;
         
         osgDB::ofstream fout( fileName.c_str(), std::ios::out|std::ios::binary );
@@ -309,13 +309,13 @@ public:
     virtual WriteResult writeNode( const osg::Node& node, const std::string& fileName, const Options* options ) const
     {
         WriteResult result = WriteResult::FILE_SAVED;
-        Options* local_opt = prepareWriting( result, fileName, options );
+        osg::ref_ptr<Options> local_opt = prepareWriting( result, fileName, options );
         if ( !result.success() ) return result;
         
         osgDB::ofstream fout( fileName.c_str(), std::ios::out|std::ios::binary );
         if ( !fout ) return WriteResult::ERROR_IN_WRITING_FILE;
         
-        result = writeNode( node, fout, local_opt );
+        result = writeNode( node, fout, local_opt.get() );
         fout.close();
         return result;
     }

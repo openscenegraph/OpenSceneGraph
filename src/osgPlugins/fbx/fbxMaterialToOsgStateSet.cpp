@@ -14,8 +14,8 @@ static osg::Texture::WrapMode convertWrap(KFbxTexture::EWrapMode wrap)
 StateSetContent
 FbxMaterialToOsgStateSet::convert(const KFbxSurfaceMaterial* pFbxMat)
 {
-    KFbxMaterialMap::const_iterator it = _kFbxMaterialMap.find(pFbxMat);
-    if (it != _kFbxMaterialMap.end())
+    FbxMaterialMap::const_iterator it = _fbxMaterialMap.find(pFbxMat);
+    if (it != _fbxMaterialMap.end())
         return it->second;
     static int nbMat = 0;
 
@@ -31,9 +31,9 @@ FbxMaterialToOsgStateSet::convert(const KFbxSurfaceMaterial* pFbxMat)
 
     StateSetContent result;
 
-	result.material = pOsgMat;
+    result.material = pOsgMat;
 
-	fbxString shadingModel = pFbxMat->GetShadingModel().Get();
+    fbxString shadingModel = pFbxMat->GetShadingModel().Get();
 
     const KFbxSurfaceLambert* pFbxLambert = dynamic_cast<const KFbxSurfaceLambert*>(pFbxMat);
 
@@ -67,8 +67,6 @@ FbxMaterialToOsgStateSet::convert(const KFbxSurfaceMaterial* pFbxMat)
             KFbxTexture* lTexture = KFbxCast<KFbxTexture>(lOpacityProperty.GetSrcObject(KFbxTexture::ClassId, lTextureIndex));
             if (lTexture)
             {
-                // TODO: if texture image does NOT have an alpha channel, should it be added?
-
                 pOsgOpacityTex = fbxTextureToOsgTexture(lTexture);
                 result.opacityTexture = pOsgOpacityTex.release();
                 result.opacityChannel = lTexture->UVSet.Get();
@@ -120,7 +118,7 @@ FbxMaterialToOsgStateSet::convert(const KFbxSurfaceMaterial* pFbxMat)
 
             //For now only allow 1 texture
             break;
-	    }
+        }
     }
 
     if (pFbxLambert)
@@ -170,19 +168,19 @@ FbxMaterialToOsgStateSet::convert(const KFbxSurfaceMaterial* pFbxMat)
         }
     }
 
-	if (_lightmapTextures)
-	{
-		// if using an emission map then adjust material properties accordingly...
-		if (result.emissiveTexture)
-		{
-			osg::Vec4 diffuse = pOsgMat->getDiffuse(osg::Material::FRONT_AND_BACK);
-			pOsgMat->setEmission(osg::Material::FRONT_AND_BACK, diffuse);
-			pOsgMat->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(0,0,0,diffuse.a()));
-			pOsgMat->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(0,0,0,diffuse.a()));
-		}
-	}
+    if (_lightmapTextures)
+    {
+        // if using an emission map then adjust material properties accordingly...
+        if (result.emissiveTexture)
+        {
+            osg::Vec4 diffuse = pOsgMat->getDiffuse(osg::Material::FRONT_AND_BACK);
+            pOsgMat->setEmission(osg::Material::FRONT_AND_BACK, diffuse);
+            pOsgMat->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(0,0,0,diffuse.a()));
+            pOsgMat->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(0,0,0,diffuse.a()));
+        }
+    }
 
-	_kFbxMaterialMap.insert(KFbxMaterialMap::value_type(pFbxMat, result));
+    _fbxMaterialMap.insert(FbxMaterialMap::value_type(pFbxMat, result));
     return result;
 }
 
@@ -216,7 +214,7 @@ FbxMaterialToOsgStateSet::fbxTextureToOsgTexture(const KFbxTexture* fbx)
 void FbxMaterialToOsgStateSet::checkInvertTransparency()
 {
     int zeroAlpha = 0, oneAlpha = 0;
-    for (KFbxMaterialMap::const_iterator it = _kFbxMaterialMap.begin(); it != _kFbxMaterialMap.end(); ++it)
+    for (FbxMaterialMap::const_iterator it = _fbxMaterialMap.begin(); it != _fbxMaterialMap.end(); ++it)
     {
         const osg::Material* pMaterial = it->second.material.get();
         float alpha = pMaterial->getDiffuse(osg::Material::FRONT).a();
@@ -234,7 +232,7 @@ void FbxMaterialToOsgStateSet::checkInvertTransparency()
     {
         //Transparency values seem to be back to front so invert them.
 
-        for (KFbxMaterialMap::const_iterator it = _kFbxMaterialMap.begin(); it != _kFbxMaterialMap.end(); ++it)
+        for (FbxMaterialMap::const_iterator it = _fbxMaterialMap.begin(); it != _fbxMaterialMap.end(); ++it)
         {
             osg::Material* pMaterial = it->second.material.get();
             osg::Vec4 diffuse = pMaterial->getDiffuse(osg::Material::FRONT);

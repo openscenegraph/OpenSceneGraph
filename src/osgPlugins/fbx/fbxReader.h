@@ -8,9 +8,9 @@
 
 namespace osgAnimation
 {
-	class AnimationManagerBase;
-	class RigGeometry;
-	class Skeleton;
+    class AnimationManagerBase;
+    class RigGeometry;
+    class Skeleton;
 }
 
 typedef std::map<std::pair<KFbxNode*, osgAnimation::RigGeometry*>, osg::Matrix> BindMatrixMap;
@@ -18,61 +18,61 @@ typedef std::map<std::pair<KFbxNode*, osgAnimation::RigGeometry*>, osg::Matrix> 
 class OsgFbxReader
 {
 public:
-	KFbxSdkManager& pSdkManager;
-	KFbxScene& fbxScene;
-	osg::ref_ptr<osgAnimation::AnimationManagerBase> pAnimationManager;
-	FbxMaterialToOsgStateSet& fbxMaterialToOsgStateSet;
-	std::map<KFbxNode*, osg::Node*> nodeMap;
-	BindMatrixMap boneBindMatrices;
-	const std::set<const KFbxNode*>& fbxSkeletons;
-	std::map<KFbxNode*, osgAnimation::Skeleton*> skeletonMap;
-	const osgDB::Options& options;
-	bool lightmapTextures;
+    KFbxSdkManager& pSdkManager;
+    KFbxScene& fbxScene;
+    osg::ref_ptr<osgAnimation::AnimationManagerBase> pAnimationManager;
+    FbxMaterialToOsgStateSet& fbxMaterialToOsgStateSet;
+    std::map<KFbxNode*, osg::Node*> nodeMap;
+    BindMatrixMap boneBindMatrices;
+    const std::set<const KFbxNode*>& fbxSkeletons;
+    std::map<KFbxNode*, osgAnimation::Skeleton*> skeletonMap;
+    const osgDB::Options& options;
+    bool lightmapTextures;
 
-	enum AuthoringTool
-	{
-		UNKNOWN,
-		OPENSCENEGRAPH,
-		AUTODESK_3DSTUDIO_MAX
-	} authoringTool;
+    enum AuthoringTool
+    {
+        UNKNOWN,
+        OPENSCENEGRAPH,
+        AUTODESK_3DSTUDIO_MAX
+    } authoringTool;
 
-	OsgFbxReader(
-		KFbxSdkManager& pSdkManager1,
-		KFbxScene& fbxScene1,
-		FbxMaterialToOsgStateSet& fbxMaterialToOsgStateSet1,
-		const std::set<const KFbxNode*>& fbxSkeletons1,
-		const osgDB::Options& options1,
-		AuthoringTool authoringTool1,
-		bool lightmapTextures1)
-		: pSdkManager(pSdkManager1),
-		fbxScene(fbxScene1),
-		fbxMaterialToOsgStateSet(fbxMaterialToOsgStateSet1),
-		fbxSkeletons(fbxSkeletons1),
-		options(options1),
-		authoringTool(authoringTool1),
-		lightmapTextures(lightmapTextures1)
-	{}
+    OsgFbxReader(
+        KFbxSdkManager& pSdkManager1,
+        KFbxScene& fbxScene1,
+        FbxMaterialToOsgStateSet& fbxMaterialToOsgStateSet1,
+        const std::set<const KFbxNode*>& fbxSkeletons1,
+        const osgDB::Options& options1,
+        AuthoringTool authoringTool1,
+        bool lightmapTextures1)
+        : pSdkManager(pSdkManager1),
+        fbxScene(fbxScene1),
+        fbxMaterialToOsgStateSet(fbxMaterialToOsgStateSet1),
+        fbxSkeletons(fbxSkeletons1),
+        options(options1),
+        authoringTool(authoringTool1),
+        lightmapTextures(lightmapTextures1)
+    {}
 
-	osgDB::ReaderWriter::ReadResult readFbxNode(
-		KFbxNode*, bool& bIsBone, int& nLightCount);
+    osgDB::ReaderWriter::ReadResult readFbxNode(
+        KFbxNode*, bool& bIsBone, int& nLightCount);
 
-	std::string readFbxAnimation(
-		KFbxNode*, const char* targetName);
+    std::string readFbxAnimation(
+        KFbxNode*, const char* targetName);
 
-	osgDB::ReaderWriter::ReadResult readFbxCamera(
-		KFbxNode* pNode);
+    osgDB::ReaderWriter::ReadResult readFbxCamera(
+        KFbxNode* pNode);
 
-	osgDB::ReaderWriter::ReadResult readFbxLight(
-		KFbxNode* pNode, int& nLightCount);
+    osgDB::ReaderWriter::ReadResult readFbxLight(
+        KFbxNode* pNode, int& nLightCount);
 
-	osgDB::ReaderWriter::ReadResult readMesh(
-		KFbxNode* pNode, KFbxMesh* fbxMesh,
-		std::vector<StateSetContent>& stateSetList,
-		const char* szName);
+    osgDB::ReaderWriter::ReadResult readMesh(
+        KFbxNode* pNode, KFbxMesh* fbxMesh,
+        std::vector<StateSetContent>& stateSetList,
+        const char* szName);
 
-	osgDB::ReaderWriter::ReadResult readFbxMesh(
-		KFbxNode* pNode,
-		std::vector<StateSetContent>&);
+    osgDB::ReaderWriter::ReadResult readFbxMesh(
+        KFbxNode* pNode,
+        std::vector<StateSetContent>&);
 };
 
 osgAnimation::Skeleton* getSkeleton(KFbxNode*,

@@ -255,7 +255,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
             pScene->SetCurrentTake(pScene->GetCurrentTakeName());
 
             bool useFbxRoot = false;
-			bool lightmapTextures = false;
+            bool lightmapTextures = false;
             if (options)
             {
                 std::istringstream iss(options->getOptionString());
@@ -288,40 +288,40 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
             std::set<const KFbxNode*> fbxSkeletons;
             findLinkedFbxSkeletonNodes(pNode, fbxSkeletons);
 
-			OsgFbxReader::AuthoringTool authoringTool = OsgFbxReader::UNKNOWN;
-			if (KFbxDocumentInfo* pDocInfo = pScene->GetDocumentInfo())
-			{
-				struct ToolName
-				{
-					const char* name;
-					OsgFbxReader::AuthoringTool tool;
-				};
+            OsgFbxReader::AuthoringTool authoringTool = OsgFbxReader::UNKNOWN;
+            if (KFbxDocumentInfo* pDocInfo = pScene->GetDocumentInfo())
+            {
+                struct ToolName
+                {
+                    const char* name;
+                    OsgFbxReader::AuthoringTool tool;
+                };
 
-				ToolName authoringTools[] = {
-					{"OpenSceneGraph", OsgFbxReader::OPENSCENEGRAPH},
-					{"3ds Max", OsgFbxReader::AUTODESK_3DSTUDIO_MAX}
-				};
+                ToolName authoringTools[] = {
+                    {"OpenSceneGraph", OsgFbxReader::OPENSCENEGRAPH},
+                    {"3ds Max", OsgFbxReader::AUTODESK_3DSTUDIO_MAX}
+                };
 
-				fbxString appName = pDocInfo->LastSaved_ApplicationName.Get();
+                fbxString appName = pDocInfo->LastSaved_ApplicationName.Get();
 
-				for (int i = 0; i < sizeof(authoringTools) / sizeof(authoringTools[0]); ++i)
-				{
-					if (0 == _strnicmp(appName, authoringTools[i].name, strlen(authoringTools[i].name)))
-					{
-						authoringTool = authoringTools[i].tool;
-						break;
-					}
-				}
-			}
+                for (int i = 0; i < sizeof(authoringTools) / sizeof(authoringTools[0]); ++i)
+                {
+                    if (0 == _strnicmp(appName, authoringTools[i].name, strlen(authoringTools[i].name)))
+                    {
+                        authoringTool = authoringTools[i].tool;
+                        break;
+                    }
+                }
+            }
 
 
-			OsgFbxReader reader(*pSdkManager,
-				*pScene,
-				fbxMaterialToOsgStateSet,
-				fbxSkeletons,
-				*localOptions,
-				authoringTool,
-				lightmapTextures);
+            OsgFbxReader reader(*pSdkManager,
+                *pScene,
+                fbxMaterialToOsgStateSet,
+                fbxSkeletons,
+                *localOptions,
+                authoringTool,
+                lightmapTextures);
 
             ReadResult res = reader.readFbxNode(pNode, bIsBone, nLightCount);
 
@@ -473,18 +473,18 @@ osgDB::ReaderWriter::WriteResult ReaderWriterFBX::writeNode(
             const_cast<osg::Node&>(node).accept(writerNodeVisitor);
         }
 
-		KFbxDocumentInfo* pDocInfo = pScene->GetDocumentInfo();
-		bool needNewDocInfo = pDocInfo != NULL;
-		if (needNewDocInfo)
-		{
-			pDocInfo = KFbxDocumentInfo::Create(pSdkManager, "");
-		}
-		pDocInfo->LastSaved_ApplicationName.Set(fbxString("OpenSceneGraph"));
-		pDocInfo->LastSaved_ApplicationVersion.Set(fbxString(osgGetVersion()));
-		if (needNewDocInfo)
-		{
-			pScene->SetDocumentInfo(pDocInfo);
-		}
+        KFbxDocumentInfo* pDocInfo = pScene->GetDocumentInfo();
+        bool needNewDocInfo = pDocInfo != NULL;
+        if (needNewDocInfo)
+        {
+            pDocInfo = KFbxDocumentInfo::Create(pSdkManager, "");
+        }
+        pDocInfo->LastSaved_ApplicationName.Set(fbxString("OpenSceneGraph"));
+        pDocInfo->LastSaved_ApplicationVersion.Set(fbxString(osgGetVersion()));
+        if (needNewDocInfo)
+        {
+            pScene->SetDocumentInfo(pDocInfo);
+        }
 
         KFbxExporter* lExporter = KFbxExporter::Create(pSdkManager, "");
         pScene->GetGlobalSettings().SetAxisSystem(KFbxAxisSystem::eOpenGL);

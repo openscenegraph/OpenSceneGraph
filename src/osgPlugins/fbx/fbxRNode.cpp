@@ -16,6 +16,7 @@
 #include <osgAnimation/Skeleton>
 #include <osgAnimation/StackedMatrixElement>
 #include <osgAnimation/StackedQuaternionElement>
+#include <osgAnimation/StackedRotateAxisElement>
 #include <osgAnimation/StackedScaleElement>
 #include <osgAnimation/StackedTranslateElement>
 #include <osgAnimation/UpdateBone>
@@ -168,27 +169,88 @@ void readTranslationElement(KFbxTypedProperty<fbxDouble3>& prop,
     }
 }
 
+void getRotationOrder(ERotationOrder fbxRotOrder, int order[/*3*/])
+{
+    switch (fbxRotOrder)
+    {
+    case eEULER_XZY:
+        order[0] = 0; order[1] = 2; order[2] = 1;
+        break;
+    case eEULER_YZX:
+        order[0] = 1; order[1] = 2; order[2] = 0;
+        break;
+    case eEULER_YXZ:
+        order[0] = 1; order[1] = 0; order[2] = 2;
+        break;
+    case eEULER_ZXY:
+        order[0] = 2; order[1] = 0; order[2] = 1;
+        break;
+    case eEULER_ZYX:
+        order[0] = 2; order[1] = 1; order[2] = 0;
+        break;
+    default:
+        order[0] = 0; order[1] = 1; order[2] = 2;
+    }
+}
+
 void readRotationElement(KFbxTypedProperty<fbxDouble3>& prop,
                          ERotationOrder fbxRotOrder,
+                         bool quatInterpolate,
                          osgAnimation::UpdateMatrixTransform* pUpdate,
                          osg::Matrix& staticTransform)
 {
-    osg::Quat quat = makeQuat(prop.Get(), fbxRotOrder);
-
     if (prop.GetKFCurve(KFCURVENODE_R_X) ||
         prop.GetKFCurve(KFCURVENODE_R_Y) ||
         prop.GetKFCurve(KFCURVENODE_R_Z))
     {
-        if (!staticTransform.isIdentity())
+        if (quatInterpolate)
         {
-            pUpdate->getStackedTransforms().push_back(new osgAnimation::StackedMatrixElement(staticTransform));
-            staticTransform.makeIdentity();
+            if (!staticTransform.isIdentity())
+            {
+                pUpdate->getStackedTransforms().push_back(
+                    new osgAnimation::StackedMatrixElement(staticTransform));
+                staticTransform.makeIdentity();
+            }
+            pUpdate->getStackedTransforms().push_back(new osgAnimation::StackedQuaternionElement(
+                "quaternion", makeQuat(prop.Get(), fbxRotOrder)));
         }
-        pUpdate->getStackedTransforms().push_back(new osgAnimation::StackedQuaternionElement("quaternion", quat));
+        else
+        {
+            char* curveNames[3] = {KFCURVENODE_R_X, KFCURVENODE_R_Y, KFCURVENODE_R_Z};
+            osg::Vec3 axes[3] = {osg::Vec3(1,0,0), osg::Vec3(0,1,0), osg::Vec3(0,0,1)};
+
+            fbxDouble3 fbxPropValue = prop.Get();
+            fbxPropValue[0] = osg::DegreesToRadians(fbxPropValue[0]);
+            fbxPropValue[1] = osg::DegreesToRadians(fbxPropValue[1]);
+            fbxPropValue[2] = osg::DegreesToRadians(fbxPropValue[2]);
+
+            int order[3] = {0, 1, 2};
+            getRotationOrder(fbxRotOrder, order);
+
+            for (int i = 0; i < 3; ++i)
+            {
+                int j = order[2-i];
+                if (prop.GetKFCurve(curveNames[j]))
+                {
+                    if (!staticTransform.isIdentity())
+                    {
+                        pUpdate->getStackedTransforms().push_back(new osgAnimation::StackedMatrixElement(staticTransform));
+                        staticTransform.makeIdentity();
+                    }
+
+                    pUpdate->getStackedTransforms().push_back(new osgAnimation::StackedRotateAxisElement(
+                        std::string("rotate") + curveNames[j], axes[j], fbxPropValue[j]));
+                }
+                else
+                {
+                    staticTransform.preMultRotate(osg::Quat(fbxPropValue[j], axes[j]));
+                }
+            }
+        }
     }
     else
     {
-        staticTransform.preMultRotate(quat);
+        staticTransform.preMultRotate(makeQuat(prop.Get(), fbxRotOrder));
     }
 }
 
@@ -244,7 +306,9 @@ void readUpdateMatrixTransform(osgAnimation::UpdateMatrixTransform* pUpdate, KFb
         staticTransform.preMultRotate(makeQuat(pNode->PreRotation.Get(), fbxRotOrder));
     }
 
-    readRotationElement(pNode->LclRotation, fbxRotOrder, pUpdate, staticTransform);
+    readRotationElement(pNode->LclRotation, fbxRotOrder,
+        pNode->QuaternionInterpolate.IsValid() && pNode->QuaternionInterpolate.Get(),
+        pUpdate, staticTransform);
 
     if (rotationActive)
     {

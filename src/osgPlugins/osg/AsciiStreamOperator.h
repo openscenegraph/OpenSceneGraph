@@ -102,6 +102,8 @@ public:
     
     virtual void writeWrappedString( const std::string& str )
     {
+        OSG_NOTICE<<"writeWrappedString( "<<str<<" )"<<std::endl;
+
         std::string wrappedStr;
         unsigned int size = str.size();
         for ( unsigned int i=0; i<size; ++i )
@@ -114,6 +116,9 @@ public:
         
         wrappedStr.insert( 0, 1, '\"' );
         wrappedStr += '\"';
+
+        OSG_NOTICE<<"   wrappedStr = "<<wrappedStr<<std::endl;
+
         writeString( wrappedStr );
     }
     
@@ -232,39 +237,42 @@ public:
     
     virtual void readWrappedString( std::string& str )
     {
-        readString( str );
-        if ( str[0]=='\"' )
+        char ch;
+        _in->get( ch ); checkStream();
+
+        // skip white space
+        while ( ch==' ' )
         {
-            if ( str.size()==1 || (*str.rbegin())!='\"' )
+            _in->get( ch ); checkStream();
+        }
+
+        if (ch=='"')
+        {
+            // we have an "wrapped string"
+            _in->get( ch ); checkStream();
+            while ( ch!='"' )
             {
-                char ch;
-                do
+                if (ch=='\\')
                 {
                     _in->get( ch ); checkStream();
-                    if ( ch=='\\' )
-                    {
-                        _in->get( ch ); checkStream();
-                        if ( ch=='\"' )
-                        {
-                            str += ch; ch = 0;
-                        }
-                        else if ( ch=='\\' )
-                        {
-                            str += ch;
-                        }
-                        else
-                        {
-                            str += '\\'; str += ch;
-                        }
-                    }
-                    else
-                        str += ch;
-                } while ( ch!='\"' );
+                    str += ch;
+                }
+                else str += ch;
+
+                _in->get( ch ); checkStream();
             }
-            str = str.substr(1, str.size()-2);
+        }
+        else
+        {
+            // we have an unwrapped string, read to first space or end of line
+            while ( (ch!=' ') && (ch!=0) && (ch!='\n') )
+            {
+                str += ch;
+                _in->get( ch ); checkStream();
+            }
         }
     }
-    
+
     virtual bool matchString( const std::string& str )
     {
         std::string s; readString(s);

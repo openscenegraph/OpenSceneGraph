@@ -38,7 +38,7 @@ namespace osgAnimation
         TemplateInterpolatorBase() : _lastKeyAccess(-1) {}
 
         void reset() { _lastKeyAccess = -1; }
-        int getKeyIndexFromTime(const TemplateKeyframeContainer<KEY>& keys, float time) const 
+        int getKeyIndexFromTime(const TemplateKeyframeContainer<KEY>& keys, double time) const 
         {
             // todo use a cache
             int key_size = keys.size();
@@ -49,8 +49,8 @@ namespace osgAnimation
             const TemplateKeyframe<KeyframeType>* keysVector = &keys.front();
             for (int i = 0; i < key_size-1; i++)
             {
-                float time0 = keysVector[i].getTime();
-                float time1 = keysVector[i+1].getTime();
+                double time0 = keysVector[i].getTime();
+                double time1 = keysVector[i+1].getTime();
 
                 if ( time >= time0 && time < time1 ) 
                 {
@@ -70,7 +70,7 @@ namespace osgAnimation
     public:
 
         TemplateStepInterpolator() {}
-        void getValue(const TemplateKeyframeContainer<KEY>& keyframes, float time, TYPE& result) const 
+        void getValue(const TemplateKeyframeContainer<KEY>& keyframes, double time, TYPE& result) const 
         {
       
             if (time >= keyframes.back().getTime()) 
@@ -96,7 +96,7 @@ namespace osgAnimation
     public:
 
         TemplateLinearInterpolator() {}
-        void getValue(const TemplateKeyframeContainer<KEY>& keyframes, float time, TYPE& result) const 
+        void getValue(const TemplateKeyframeContainer<KEY>& keyframes, double time, TYPE& result) const 
         {
       
             if (time >= keyframes.back().getTime()) 
@@ -124,7 +124,7 @@ namespace osgAnimation
     {
     public:
         TemplateSphericalLinearInterpolator() {}
-        void getValue(const TemplateKeyframeContainer<KEY>& keyframes, float time, TYPE& result) const 
+        void getValue(const TemplateKeyframeContainer<KEY>& keyframes, double time, TYPE& result) const 
         {
             if (time >= keyframes.back().getTime()) 
             {
@@ -152,7 +152,7 @@ namespace osgAnimation
     public:
 
         TemplateLinearPackedInterpolator() {}
-        void getValue(const TemplateKeyframeContainer<KEY>& keyframes, float time, TYPE& result) const 
+        void getValue(const TemplateKeyframeContainer<KEY>& keyframes, double time, TYPE& result) const 
         {
             if (time >= keyframes.back().getTime()) 
             {
@@ -182,7 +182,7 @@ namespace osgAnimation
     public:
 
         TemplateCubicBezierInterpolator() {}
-        void getValue(const TemplateKeyframeContainer<KEY>& keyframes, float time, TYPE& result) const 
+        void getValue(const TemplateKeyframeContainer<KEY>& keyframes, double time, TYPE& result) const 
         {
       
             if (time >= keyframes.back().getTime()) 

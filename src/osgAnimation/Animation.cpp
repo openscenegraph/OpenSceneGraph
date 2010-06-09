@@ -106,29 +106,29 @@ bool Animation::update (double time, int priority)
     switch (_playmode) 
     {
     case ONCE:
-        if (t > _duration)
+        if (t > _originalDuration)
             return false;
         break;
     case STAY:
-        if (t > _duration)
-            t = _duration;
+        if (t > _originalDuration)
+            t = _originalDuration;
         break;
     case LOOP:
-        if (!_duration)
+        if (!_originalDuration)
             t = _startTime;
-        else if (t > _duration)
-            t = fmod(t, _duration);
+        else if (t > _originalDuration)
+            t = fmod(t, _originalDuration);
         //      std::cout << "t " << t << " duration " << _duration << std::endl;
         break;
     case PPONG: 
-        if (!_duration)
+        if (!_originalDuration)
             t = _startTime;
         else 
         {
-            int tt = (int) (t / _duration);
-            t = fmod(t, _duration);
+            int tt = (int) (t / _originalDuration);
+            t = fmod(t, _originalDuration);
             if (tt%2)
-                t = _duration - t;
+                t = _originalDuration - t;
         }
         break;
     }

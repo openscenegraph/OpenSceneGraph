@@ -318,6 +318,8 @@ class OSGReaderWriter : public ReaderWriter
             Output fout(fileName.c_str());
             if (fout)
             {
+                loadWrappers();
+
                 fout.setOptions(options);
 
                 setPrecision(fout,options);

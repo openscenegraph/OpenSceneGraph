@@ -464,7 +464,8 @@ osgDB::ReaderWriter::WriteResult ReaderWriterFBX::writeNode(
         {
             // If root node is a simple group, put all elements under the FBX root
             const osg::Group * osgGroup = node.asGroup();
-            for(unsigned int child=0; child<osgGroup->getNumChildren(); ++child) {
+            for (unsigned int child = 0; child < osgGroup->getNumChildren(); ++child)
+            {
                 const_cast<osg::Node *>(osgGroup->getChild(child))->accept(writerNodeVisitor);
             }
         }

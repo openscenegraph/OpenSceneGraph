@@ -49,6 +49,13 @@ struct StateSetContent
     double emissiveFactor;
     // more combining factors here...
 
+    double diffuseScaleU;
+    double diffuseScaleV;
+    double opacityScaleU;
+    double opacityScaleV;
+    double emissiveScaleU;
+    double emissiveScaleV;
+
     // texture units (eventually used for each texture map)...
     enum TextureUnit
     {

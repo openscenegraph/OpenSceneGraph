@@ -22,13 +22,6 @@ FbxMaterialToOsgStateSet::convert(const KFbxSurfaceMaterial* pFbxMat)
     osg::ref_ptr<osg::Material> pOsgMat = new osg::Material;
     pOsgMat->setName(pFbxMat->GetName());
     
-    // texture maps...
-    osg::ref_ptr<osg::Texture2D> pOsgDiffuseTex = NULL;
-    osg::ref_ptr<osg::Texture2D> pOsgReflectionTex = NULL;
-    osg::ref_ptr<osg::Texture2D> pOsgOpacityTex = NULL;
-    osg::ref_ptr<osg::Texture2D> pOsgEmissiveTex = NULL;
-    // add more maps here...
-
     StateSetContent result;
 
     result.material = pOsgMat;
@@ -47,9 +40,10 @@ FbxMaterialToOsgStateSet::convert(const KFbxSurfaceMaterial* pFbxMat)
             KFbxTexture* lTexture = KFbxCast<KFbxTexture>(lProperty.GetSrcObject(KFbxTexture::ClassId, lTextureIndex));
             if (lTexture)
             {
-                pOsgDiffuseTex = fbxTextureToOsgTexture(lTexture);
-                result.diffuseTexture = pOsgDiffuseTex.release();
+                result.diffuseTexture = fbxTextureToOsgTexture(lTexture);
                 result.diffuseChannel = lTexture->UVSet.Get();
+                result.diffuseScaleU = lTexture->GetScaleU();
+                result.diffuseScaleV = lTexture->GetScaleV();
             }
 
             //For now only allow 1 texture
@@ -67,9 +61,12 @@ FbxMaterialToOsgStateSet::convert(const KFbxSurfaceMaterial* pFbxMat)
             KFbxTexture* lTexture = KFbxCast<KFbxTexture>(lOpacityProperty.GetSrcObject(KFbxTexture::ClassId, lTextureIndex));
             if (lTexture)
             {
-                pOsgOpacityTex = fbxTextureToOsgTexture(lTexture);
-                result.opacityTexture = pOsgOpacityTex.release();
+                // TODO: if texture image does NOT have an alpha channel, should it be added?
+
+                result.opacityTexture = fbxTextureToOsgTexture(lTexture);
                 result.opacityChannel = lTexture->UVSet.Get();
+                result.opacityScaleU = lTexture->GetScaleU();
+                result.opacityScaleV = lTexture->GetScaleV();
             }
 
             //For now only allow 1 texture
@@ -90,8 +87,7 @@ FbxMaterialToOsgStateSet::convert(const KFbxSurfaceMaterial* pFbxMat)
                 // support only spherical reflection maps...
                 if (KFbxTexture::eUMT_ENVIRONMENT == lTexture->GetMappingType())
                 {
-                    pOsgReflectionTex = fbxTextureToOsgTexture(lTexture);
-                    result.reflectionTexture = pOsgReflectionTex.release();
+                    result.reflectionTexture = fbxTextureToOsgTexture(lTexture);
                     result.reflectionChannel = lTexture->UVSet.Get();
                 }
             }
@@ -111,9 +107,10 @@ FbxMaterialToOsgStateSet::convert(const KFbxSurfaceMaterial* pFbxMat)
             KFbxTexture* lTexture = KFbxCast<KFbxTexture>(lEmissiveProperty.GetSrcObject(KFbxTexture::ClassId, lTextureIndex));
             if (lTexture)
             {
-                pOsgEmissiveTex = fbxTextureToOsgTexture(lTexture);
-                result.emissiveTexture = pOsgEmissiveTex.release();
+                result.emissiveTexture = fbxTextureToOsgTexture(lTexture);
                 result.emissiveChannel = lTexture->UVSet.Get();
+                result.emissiveScaleU = lTexture->GetScaleU();
+                result.emissiveScaleV = lTexture->GetScaleV();
             }
 
             //For now only allow 1 texture
@@ -203,7 +200,7 @@ FbxMaterialToOsgStateSet::fbxTextureToOsgTexture(const KFbxTexture* fbx)
         pOsgTex->setWrap(osg::Texture2D::WRAP_S, convertWrap(fbx->GetWrapModeU()));
         pOsgTex->setWrap(osg::Texture2D::WRAP_T, convertWrap(fbx->GetWrapModeV()));
         _imageMap.insert(std::make_pair(fbx->GetFileName(), pOsgTex.get()));
-        return pOsgTex.release();
+        return pOsgTex;
     }
     else
     {

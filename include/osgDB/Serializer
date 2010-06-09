@@ -735,6 +735,7 @@ public:
             {
                 os << (*itr);
             }
+            os << std::endl;
             os << END_BRACKET << std::endl;
         }
         return true;

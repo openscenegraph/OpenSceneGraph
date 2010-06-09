@@ -102,8 +102,6 @@ public:
     
     virtual void writeWrappedString( const std::string& str )
     {
-        OSG_NOTICE<<"writeWrappedString( "<<str<<" )"<<std::endl;
-
         std::string wrappedStr;
         unsigned int size = str.size();
         for ( unsigned int i=0; i<size; ++i )
@@ -116,8 +114,6 @@ public:
         
         wrappedStr.insert( 0, 1, '\"' );
         wrappedStr += '\"';
-
-        OSG_NOTICE<<"   wrappedStr = "<<wrappedStr<<std::endl;
 
         writeString( wrappedStr );
     }

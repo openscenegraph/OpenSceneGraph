@@ -5,6 +5,7 @@
 #include <osg/Geode>
 #include <osg/Image>
 #include <osg/MatrixTransform>
+#include <osg/TexMat>
 #include <osg/TexGen>
 #include <osg/TexEnvCombine>
 
@@ -202,6 +203,16 @@ osg::Geometry* getGeometry(osg::Geode* pGeode, GeometryMap& geometryMap,
         {
             stateSet->setTextureAttributeAndModes(StateSetContent::DIFFUSE_TEXTURE_UNIT, ssc.diffuseTexture.get());
 
+            if (ssc.diffuseScaleU != 1.0 || ssc.diffuseScaleV != 1.0)
+            {
+                // set UV scaling...
+                osg::ref_ptr<osg::TexMat> texmat = new osg::TexMat();
+                osg::Matrix uvScaling;
+                uvScaling.makeScale(osg::Vec3(ssc.diffuseScaleU, ssc.diffuseScaleV, 1.0));
+                texmat->setMatrix(uvScaling);
+                stateSet->setTextureAttributeAndModes(StateSetContent::DIFFUSE_TEXTURE_UNIT, texmat.get(), osg::StateAttribute::ON);
+            }
+
             if (lightmapTextures)
             {
                 double factor = ssc.diffuseFactor;
@@ -223,6 +234,16 @@ osg::Geometry* getGeometry(osg::Geode* pGeode, GeometryMap& geometryMap,
         if (ssc.opacityTexture)
         {
             stateSet->setTextureAttributeAndModes(StateSetContent::OPACITY_TEXTURE_UNIT, ssc.opacityTexture.get());
+
+            if (ssc.opacityScaleU != 1.0 || ssc.opacityScaleV != 1.0)
+            {
+                // set UV scaling...
+                osg::ref_ptr<osg::TexMat> texmat = new osg::TexMat();
+                osg::Matrix uvScaling;
+                uvScaling.makeScale(osg::Vec3(ssc.opacityScaleU, ssc.opacityScaleV, 1.0));
+                texmat->setMatrix(uvScaling);
+                stateSet->setTextureAttributeAndModes(StateSetContent::OPACITY_TEXTURE_UNIT, texmat.get(), osg::StateAttribute::ON);
+            }
 
             // setup combiner for factor...
             //In practice factor will always be zero, hence the RGB of the
@@ -265,6 +286,16 @@ osg::Geometry* getGeometry(osg::Geode* pGeode, GeometryMap& geometryMap,
         // emissive texture map
         if (ssc.emissiveTexture)
         {
+            if (ssc.emissiveScaleU != 1.0 || ssc.emissiveScaleV != 1.0)
+            {
+                // set UV scaling...
+                osg::ref_ptr<osg::TexMat> texmat = new osg::TexMat();
+                osg::Matrix uvScaling;
+                uvScaling.makeScale(osg::Vec3(ssc.emissiveScaleU, ssc.emissiveScaleV, 1.0));
+                texmat->setMatrix(uvScaling);
+                stateSet->setTextureAttributeAndModes(StateSetContent::EMISSIVE_TEXTURE_UNIT, texmat.get(), osg::StateAttribute::ON);
+            }
+
             stateSet->setTextureAttributeAndModes(StateSetContent::EMISSIVE_TEXTURE_UNIT, ssc.emissiveTexture.get());
         }
 
@@ -442,7 +473,7 @@ std::string getUVChannelForTextureMap(std::vector<StateSetContent>& stateSetList
 {
     // will return the first occurrence in the state set list...
     // TODO: what if more than one channel for the same map type?
-    for (unsigned int i=0; i < stateSetList.size(); i++)
+    for (unsigned int i = 0; i < stateSetList.size(); i++)
     {
         if (0 == strcmp(pName, KFbxSurfaceMaterial::sDiffuse))
             return stateSetList[i].diffuseChannel;
@@ -458,26 +489,35 @@ std::string getUVChannelForTextureMap(std::vector<StateSetContent>& stateSetList
     return "";
 }
 
-// scans mesh layers looking for the UV element corrensponding to the specified channel name...
-const KFbxLayerElementUV* getUVElementForChannel(std::string pUVChannel, KFbxMesh* pFbxMesh)
+// scans mesh layers looking for the UV element corresponding to the specified channel name...
+const KFbxLayerElementUV* getUVElementForChannel(std::string uvChannelName,
+    KFbxLayerElement::ELayerElementType elementType, KFbxMesh* pFbxMesh)
 {
-    const KFbxLayer* pFbxLayer = 0;
-    const KFbxLayerElementUV* uv = 0;
-
     // scan layers for specified UV channel...
-    for (int cLayerIndex=0; cLayerIndex < pFbxMesh->GetLayerCount(); cLayerIndex++)
+    for (int cLayerIndex = 0; cLayerIndex < pFbxMesh->GetLayerCount(); cLayerIndex++)
     {
-        pFbxLayer = pFbxMesh->GetLayer(cLayerIndex);
+        const KFbxLayer* pFbxLayer = pFbxMesh->GetLayer(cLayerIndex);
         if (!pFbxLayer)
             continue;
 
-        uv = pFbxLayer->GetUVs();
-        if (uv)
+        if (const KFbxLayerElementUV* uv = pFbxLayer->GetUVs())
         {
-            if (0 == pUVChannel.compare(uv->GetName()))
+            if (0 == uvChannelName.compare(uv->GetName()))
                 return uv;
         }
     }
+
+    for (int cLayerIndex = 0; cLayerIndex < pFbxMesh->GetLayerCount(); cLayerIndex++)
+    {
+        const KFbxLayer* pFbxLayer = pFbxMesh->GetLayer(cLayerIndex);
+        if (!pFbxLayer)
+            continue;
+
+        if (const KFbxLayerElementUV* uv = pFbxLayer->GetUVs(elementType))
+        {
+            return uv;
+        }
+    }    
 
     return 0;
 }
@@ -493,8 +533,6 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
     osg::Geode* pGeode = new osg::Geode;
     pGeode->setName(szName);
 
-    const KFbxLayer* pFbxLayer = 0;
-
     const KFbxLayerElementNormal* pFbxNormals = 0;
     const KFbxLayerElementVertexColor* pFbxColors = 0;
     const KFbxLayerElementMaterial* pFbxMaterials = 0;
@@ -502,9 +540,9 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
     const KFbxVector4* pFbxVertices = fbxMesh->GetControlPoints();
 
     // scan layers for Normals, Colors and Materials elements (this will get the first available elements)...
-    for (int cLayerIndex=0; cLayerIndex < fbxMesh->GetLayerCount(); cLayerIndex++)
+    for (int cLayerIndex = 0; cLayerIndex < fbxMesh->GetLayerCount(); cLayerIndex++)
     {
-        pFbxLayer = fbxMesh->GetLayer(cLayerIndex);
+        const KFbxLayer* pFbxLayer = fbxMesh->GetLayer(cLayerIndex);
         if (!pFbxLayer)
             continue;
 
@@ -520,13 +558,13 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
     // look for UV elements (diffuse, opacity, reflection, emissive, ...) and get their channels names...
     std::string diffuseChannel = getUVChannelForTextureMap(stateSetList, KFbxSurfaceMaterial::sDiffuse);
     std::string opacityChannel = getUVChannelForTextureMap(stateSetList, KFbxSurfaceMaterial::sTransparentColor);
-    std::string emissiveChannel = getUVChannelForTextureMap(stateSetList, KFbxSurfaceMaterial::sEmissive);;
+    std::string emissiveChannel = getUVChannelForTextureMap(stateSetList, KFbxSurfaceMaterial::sEmissive);
     // look for more UV elements here...
 
     // UV elements...
-    const KFbxLayerElementUV* pFbxUVs_diffuse = getUVElementForChannel(diffuseChannel, fbxMesh);
-    const KFbxLayerElementUV* pFbxUVs_opacity = getUVElementForChannel(opacityChannel, fbxMesh);
-    const KFbxLayerElementUV* pFbxUVs_emissive = getUVElementForChannel(emissiveChannel, fbxMesh);
+    const KFbxLayerElementUV* pFbxUVs_diffuse = getUVElementForChannel(diffuseChannel, KFbxLayerElement::eDIFFUSE_TEXTURES, fbxMesh);
+    const KFbxLayerElementUV* pFbxUVs_opacity = getUVElementForChannel(opacityChannel, KFbxLayerElement::eTRANSPARENT_TEXTURES, fbxMesh);
+    const KFbxLayerElementUV* pFbxUVs_emissive = getUVElementForChannel(emissiveChannel, KFbxLayerElement::eEMISSIVE_TEXTURES, fbxMesh);
     // more UV elements here...
 
     // check elements validity...

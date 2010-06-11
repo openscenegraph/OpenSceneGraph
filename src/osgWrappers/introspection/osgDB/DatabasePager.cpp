@@ -15,6 +15,7 @@
 #include <osg/GraphicsContext>
 #include <osg/Group>
 #include <osg/Node>
+#include <osg/PagedLOD>
 #include <osg/Referenced>
 #include <osg/State>
 #include <osgDB/DatabasePager>
@@ -543,6 +544,54 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager::DatabaseThread)
 	                 __void__setDone__bool);
 END_REFLECTOR
 
+BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::DatabasePager::PagedLODList)
+	I_DeclaringFile("osgDB/DatabasePager");
+	I_BaseType(osg::Referenced);
+	I_Constructor0(____PagedLODList,
+	               "",
+	               "");
+	I_Method0(osgDB::DatabasePager::PagedLODList *, clone,
+	          Properties::PURE_VIRTUAL,
+	          __PagedLODList_P1__clone,
+	          "",
+	          "");
+	I_Method0(void, clear,
+	          Properties::PURE_VIRTUAL,
+	          __void__clear,
+	          "",
+	          "");
+	I_Method0(unsigned int, size,
+	          Properties::PURE_VIRTUAL,
+	          __unsigned_int__size,
+	          "",
+	          "");
+	I_Method2(void, moveInactivePagedLODTo, IN, osgDB::DatabasePager::PagedLODList &, inactivePagedLODList, IN, const osg::FrameStamp &, framestamp,
+	          Properties::PURE_VIRTUAL,
+	          __void__moveInactivePagedLODTo__PagedLODList_R1__C5_osg_FrameStamp_R1,
+	          "",
+	          "");
+	I_Method2(void, moveActivePagedLODTo, IN, osgDB::DatabasePager::PagedLODList &, activePagedLODList, IN, const osg::FrameStamp &, framestamp,
+	          Properties::PURE_VIRTUAL,
+	          __void__moveActivePagedLODTo__PagedLODList_R1__C5_osg_FrameStamp_R1,
+	          "",
+	          "");
+	I_Method4(void, removeExpiredChildren, IN, int &, numberChildrenToRemove, IN, double, expiryTime, IN, int, expiryFrame, IN, osg::NodeList &, childrenRemoved,
+	          Properties::PURE_VIRTUAL,
+	          __void__removeExpiredChildren__int_R1__double__int__osg_NodeList_R1,
+	          "",
+	          "");
+	I_Method1(void, removeNodes, IN, osg::NodeList &, nodesToRemove,
+	          Properties::PURE_VIRTUAL,
+	          __void__removeNodes__osg_NodeList_R1,
+	          "",
+	          "");
+	I_Method1(void, insertPagedLOD, IN, const osg::observer_ptr< osg::PagedLOD > &, plod,
+	          Properties::PURE_VIRTUAL,
+	          __void__insertPagedLOD__C5_osg_observer_ptrT1_osg_PagedLOD__R1,
+	          "",
+	          "");
+END_REFLECTOR
+
 BEGIN_OBJECT_REFLECTOR(osg::observer_ptr< osg::GraphicsContext >)
 	I_DeclaringFile("osg/observer_ptr");
 	I_Constructor0(____observer_ptr,
@@ -579,6 +628,46 @@ BEGIN_OBJECT_REFLECTOR(osg::observer_ptr< osg::GraphicsContext >)
 	          "",
 	          "");
 	I_SimpleProperty(osg::GraphicsContext *, , 
+	                 __T_P1__get, 
+	                 0);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::observer_ptr< osg::PagedLOD >)
+	I_DeclaringFile("osg/observer_ptr");
+	I_Constructor0(____observer_ptr,
+	               "",
+	               "");
+	I_Constructor1(IN, const osg::ref_ptr< osg::PagedLOD > &, rp,
+	               Properties::NON_EXPLICIT,
+	               ____observer_ptr__C5_ref_ptrT1_T__R1,
+	               "Create a observer_ptr from a ref_ptr. ",
+	               "");
+	I_Constructor1(IN, osg::PagedLOD *, rp,
+	               Properties::NON_EXPLICIT,
+	               ____observer_ptr__T_P1,
+	               "Create a observer_ptr from a raw pointer. ",
+	               "For compatibility; the result might not be lockable. ");
+	I_Constructor1(IN, const osg::observer_ptr< osg::PagedLOD > &, wp,
+	               Properties::NON_EXPLICIT,
+	               ____observer_ptr__C5_observer_ptr_R1,
+	               "",
+	               "");
+	I_Method1(bool, lock, IN, osg::ref_ptr< osg::PagedLOD > &, rptr,
+	          Properties::NON_VIRTUAL,
+	          __bool__lock__ref_ptrT1_T__R1,
+	          "Assign the observer_ptr to a ref_ptr. ",
+	          "The ref_ptr will be valid if the referenced object hasn't been deleted and has a ref count > 0. ");
+	I_Method0(osg::PagedLOD *, get,
+	          Properties::NON_VIRTUAL,
+	          __T_P1__get,
+	          "",
+	          "");
+	I_Method0(bool, valid,
+	          Properties::NON_VIRTUAL,
+	          __bool__valid,
+	          "",
+	          "");
+	I_SimpleProperty(osg::PagedLOD *, , 
 	                 __T_P1__get, 
 	                 0);
 END_REFLECTOR

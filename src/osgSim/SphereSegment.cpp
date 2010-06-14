@@ -289,16 +289,15 @@ void SphereSegment::setArea(const osg::Vec3& v, float azRange, float elevRange)
     vec.normalize();    // Make sure we're unit length
 
     // Calculate the elevation range
-    float elev = asin(vec.z());   // Elevation angle
+    float xyLen = sqrtf(vec.x()*vec.x() + vec.y()*vec.y());
+    float elev = atan2(vec.z(), xyLen);   // Elevation angle
+
     elevRange /= 2.0f;
     _elevMin = elev - elevRange;
     _elevMax = elev + elevRange;
 
-    // Calculate the azimuth range, cater for trig ambiguities
-    float xyLen = cos(elev);
-    float az;
-    if(vec.x() != 0.0f) az = asin(vec.x()/xyLen);
-    else az = acos(vec.y()/xyLen);
+    // Calculate the azimuth range, cater for trig ambiguities    
+    float az = atan2(vec.x(), vec.y());
 
     azRange /= 2.0f;
     _azMin = az - azRange;

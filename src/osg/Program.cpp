@@ -613,16 +613,16 @@ bool Program::PerContextProgram::validateProgram()
     if( validated == GL_TRUE)
         return true;
 
-    OSG_INFO << "glValidateProgram FAILED \"" << _program->getName() << "\""
+    OSG_WARN << "glValidateProgram FAILED \"" << _program->getName() << "\""
              << " id=" << _glProgramHandle
              << " contextID=" << _contextID
              <<  std::endl;
 
     std::string infoLog;
     if( getInfoLog(infoLog) )
-        OSG_INFO << "infolog:\n" << infoLog << std::endl;
+        OSG_WARN << "infolog:\n" << infoLog << std::endl;
 
-    OSG_INFO << std::endl;
+    OSG_WARN << std::endl;
     
     return false;
 }

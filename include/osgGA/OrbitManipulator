@@ -50,6 +50,11 @@ class OSGGA_EXPORT OrbitManipulator : public StandardManipulator
         virtual void getTransformation( osg::Vec3d& eye, osg::Quat& rotation ) const;
         virtual void getTransformation( osg::Vec3d& center, osg::Vec3d& eye, osg::Vec3d& up ) const;
 
+        void setHeading( double azimuth );
+        double getHeading() const;
+        void setElevation( double elevation );
+        double getElevation() const;
+
         virtual void setCenter( const osg::Vec3d& center );
         const osg::Vec3d& getCenter() const;
         virtual void setRotation( const osg::Quat& rotation );

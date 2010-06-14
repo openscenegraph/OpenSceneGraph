@@ -36,7 +36,7 @@ OrbitManipulator::OrbitManipulator( int flags )
 {
     setMinimumDistance( 0.05, true );
     setWheelZoomFactor( 0.1 );
-    if( _flags & SET_CENTER_ON_WHEEL_UP )
+    if( _flags & SET_CENTER_ON_WHEEL_FORWARD_MOVEMENT )
         setAnimationTime( 0.2 );
 }
 
@@ -148,34 +148,108 @@ void OrbitManipulator::getTransformation( osg::Vec3d& center, osg::Vec3d& eye, o
 }
 
 
+/** Sets the transformation by heading. Heading is given as an angle in radians giving a azimuth in xy plane.
+    Its meaning is similar to longitude used in cartography and navigation.
+    Positive number is going to the east direction.*/
+void OrbitManipulator::setHeading( double azimuth ) 
+{
+    CoordinateFrame coordinateFrame = getCoordinateFrame( _center );
+    Vec3d localUp = getUpVector( coordinateFrame );
+    Vec3d localRight = getSideVector( coordinateFrame );
+
+    Vec3d dir = Quat( getElevation(), localRight ) * Quat( azimuth, localUp ) * Vec3d( 0., -_distance, 0. );
+
+    setTransformation( _center, _center + dir, localUp );
+}
+
+
+/// Returns the heading in radians. \sa setHeading
+double OrbitManipulator::getHeading() const
+{
+    CoordinateFrame coordinateFrame = getCoordinateFrame( _center );
+    Vec3d localFront = getFrontVector( coordinateFrame );
+    Vec3d localRight = getSideVector( coordinateFrame );
+
+    Vec3d center, eye, tmp;
+    getTransformation( center, eye, tmp );
+
+    Plane frontPlane( localFront, center );
+    double frontDist = frontPlane.distance( eye );
+    Plane rightPlane( localRight, center );
+    double rightDist = rightPlane.distance( eye );
+
+    return atan2( rightDist, -frontDist );
+}
+
+
+/** Sets the transformation by elevation. Elevation is given as an angle in radians from xy plane.
+    Its meaning is similar to latitude used in cartography and navigation.
+    Positive number is going to the north direction, negative to the south.*/
+void OrbitManipulator::setElevation( double elevation )
+{
+    CoordinateFrame coordinateFrame = getCoordinateFrame( _center );
+    Vec3d localUp = getUpVector( coordinateFrame );
+    Vec3d localRight = getSideVector( coordinateFrame );
+
+    Vec3d dir = Quat( -elevation, localRight ) * Quat( getHeading(), localUp ) * Vec3d( 0., -_distance, 0. );
+
+    setTransformation( _center, _center + dir, localUp );
+}
+
+
+/// Returns the elevation in radians. \sa setElevation
+double OrbitManipulator::getElevation() const
+{
+    CoordinateFrame coordinateFrame = getCoordinateFrame( _center );
+    Vec3d localUp = getUpVector( coordinateFrame );
+    localUp.normalize();
+
+    Vec3d center, eye, tmp;
+    getTransformation( center, eye, tmp );
+
+    Plane plane( localUp, center );
+    double dist = plane.distance( eye );
+
+    return asin( -dist / (eye-center).length() );
+}
+
+
 // doc in parent
 bool OrbitManipulator::handleMouseWheel( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-    switch( ea.getScrollingMotion() )
+    osgGA::GUIEventAdapter::ScrollingMotion sm = ea.getScrollingMotion();
+
+    // handle centering
+    if( _flags & SET_CENTER_ON_WHEEL_FORWARD_MOVEMENT )
+    {
+
+        if( sm == GUIEventAdapter::SCROLL_DOWN && _wheelZoomFactor > 0. ||
+            sm == GUIEventAdapter::SCROLL_UP   && _wheelZoomFactor < 0. )
+        {
+
+            if( getAnimationTime() <= 0. )
+            {
+                // center by mouse intersection (no animation)
+                setCenterByMousePointerIntersection( ea, us );
+            }
+            else
+            {
+                // start new animation only if there is no animation in progress
+                if( !isAnimating() )
+                    startAnimationByMousePointerIntersection( ea, us );
+
+            }
+
+        }
+    }
+
+    switch( sm )
     {
         // mouse scroll up event
         case GUIEventAdapter::SCROLL_UP:
         {
-
-            if( _flags & SET_CENTER_ON_WHEEL_UP )
-            {
-
-                if( getAnimationTime() <= 0. )
-                {
-                    // center by mouse intersection (no animation)
-                    setCenterByMousePointerIntersection( ea, us );
-                }
-                else
-                {
-                    // start new animation only if there is no animation in progress
-                    if( !isAnimating() )
-                        startAnimationByMousePointerIntersection( ea, us );
-
-                }
-            }
-
             // perform zoom
-            zoomModel( -_wheelZoomFactor, true );
+            zoomModel( _wheelZoomFactor, true );
             us.requestRedraw();
             us.requestContinuousUpdate( isAnimating() || _thrown );
             return true;
@@ -183,10 +257,13 @@ bool OrbitManipulator::handleMouseWheel( const GUIEventAdapter& ea, GUIActionAda
 
         // mouse scroll down event
         case GUIEventAdapter::SCROLL_DOWN:
-            zoomModel( _wheelZoomFactor, true );
+        {
+            // perform zoom
+            zoomModel( -_wheelZoomFactor, true );
             us.requestRedraw();
             us.requestContinuousUpdate( false );
             return true;
+        }
 
         // unhandled mouse scrolling motion
         default:
@@ -530,7 +607,8 @@ void OrbitManipulator::setTrackballSize( const double& size )
 /** Set the mouse wheel zoom factor.
     The amount of camera movement on each mouse wheel event
     is computed as the current distance to the center multiplied by this factor.
-    For example, value of 0.1 will short distance to center by 10% on each wheel up event.*/
+    For example, value of 0.1 will short distance to center by 10% on each wheel up event.
+    Use negative value for reverse mouse wheel direction.*/
 void OrbitManipulator::setWheelZoomFactor( double wheelZoomFactor )
 {
     _wheelZoomFactor = wheelZoomFactor;

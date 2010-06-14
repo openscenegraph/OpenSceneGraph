@@ -35,12 +35,16 @@ TerrainManipulator::TerrainManipulator( const TerrainManipulator& tm, const Copy
 }
 
 
+/** Sets the manipulator rotation mode. RotationMode is now deprecated by
+    osgGA::StandardManipulator::setVerticalAxisFixed() functionality,
+    that is used across StandardManipulator derived classes.*/
 void TerrainManipulator::setRotationMode( TerrainManipulator::RotationMode mode )
 {
     setVerticalAxisFixed( mode == ELEVATION_AZIM );
 }
 
 
+/** Returns the manipulator rotation mode.*/
 TerrainManipulator::RotationMode TerrainManipulator::getRotationMode() const
 {
     return getVerticalAxisFixed() ? ELEVATION_AZIM : ELEVATION_AZIM_ROLL;

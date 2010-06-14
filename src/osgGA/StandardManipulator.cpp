@@ -25,16 +25,16 @@ using namespace osgUtil;
 
 
 
-/** \fn void StandardManipulator::setTransformation( const osg::Vec3d& eye, const osg::Quat& rotation );
+/** \fn void StandardManipulator::setTransformation( const osg::Vec3d& eye, const osg::Quat& rotation )
     Sets manipulator by eye position and eye orientation.*/
 
-/** \fn void StandardManipulator::setTransformation( const osg::Vec3d& center, const osg::Vec3d& eye, const osg::Vec3d& up );
+/** \fn void StandardManipulator::setTransformation( const osg::Vec3d& center, const osg::Vec3d& eye, const osg::Vec3d& up )
     Sets manipulator by focal center, eye position, and up vector.*/
 
-/** \fn void StandardManipulator::getTransformation( osg::Vec3d& eye, osg::Quat& rotation );
+/** \fn void StandardManipulator::getTransformation( osg::Vec3d& eye, osg::Quat& rotation )
     Gets manipulator's eye position and eye orientation.*/
 
-/** \fn void StandardManipulator::getTransformation( osg::Vec3d& center, osg::Vec3d& eye, osg::Vec3d& up );
+/** \fn void StandardManipulator::getTransformation( osg::Vec3d& center, osg::Vec3d& eye, osg::Vec3d& up )
     Gets manipulator's focal center, eye position, and up vector.*/
 
 
@@ -51,6 +51,7 @@ int StandardManipulator::allocateRelativeFlag()
 StandardManipulator::StandardManipulator( int flags )
     : inherited(),
       _thrown( false ),
+      _allowThrow( true ),
       _mouseCenterX(0.0f), _mouseCenterY(0.0f),
       _delta_frame_time(0.01), _last_frame_time(0.0),
       _modelSize( 0. ),
@@ -65,6 +66,7 @@ StandardManipulator::StandardManipulator( int flags )
 StandardManipulator::StandardManipulator( const StandardManipulator& uim, const CopyOp& copyOp )
    : inherited( uim, copyOp ),
      _thrown( uim._thrown ),
+     _allowThrow( uim._allowThrow ),
      _mouseCenterX(0.0f), _mouseCenterY(0.0f),
      _ga_t1( dynamic_cast< GUIEventAdapter* >( copyOp( uim._ga_t1.get() ) ) ),
      _ga_t0( dynamic_cast< GUIEventAdapter* >( copyOp( uim._ga_t0.get() ) ) ),
@@ -364,7 +366,7 @@ bool StandardManipulator::handleMouseRelease( const GUIEventAdapter& ea, GUIActi
         if( isMouseMoving() )
         {
 
-            if( performMovement() )
+            if( performMovement() && _allowThrow )
             {
                 us.requestRedraw();
                 us.requestContinuousUpdate( true );
@@ -580,6 +582,15 @@ bool StandardManipulator::isMouseMoving() const
     float dt = _ga_t0->getTime()-_ga_t1->getTime();
 
     return (len>dt*velocity);
+}
+
+
+/** Set the 'allow throw' flag. If it is set to true (default), releasing the mouse button
+    while moving the mouse results in a throw. If manipulator was thrown, it continues spinning
+    although no mouse button is down at the moment.*/
+void StandardManipulator::setAllowThrow( bool allowThrow )
+{
+    _allowThrow = allowThrow;
 }
 
 

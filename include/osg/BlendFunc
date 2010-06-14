@@ -35,7 +35,34 @@
 
 namespace osg {
 
-/** Encapsulates OpenGL blend/transparency state. */
+/** Encapsulates OpenGL blend/transparency state.
+ *
+ *  Blending combines incoming fragment with a fragment
+ *  already present in the target buffer.
+ *
+ *  OpenGL 1.1 supports following source and destination blending factors:
+ *  GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,
+ *  GL_DST_ALPHA, GL_ONE_MINUS_DST_ALPHA,
+ *  GL_ZERO, GL_ONE.
+ *
+ *  Moreover, there are three source-only blending factors:
+ *  GL_DST_COLOR, GL_ONE_MINUS_DST_COLOR, GL_SRC_ALPHA_SATURATE
+ *  and two destination-only blending factors:
+ *  GL_SRC_COLOR, GL_ONE_MINUS_SRC_COLOR.
+ *  OpenGL 1.4 allowed to use these five blending factors
+ *  as both - source and destination blending factors.
+ *
+ *  Following four source and destination blending factors
+ *  were added by Imaging subset of OpenGL 1.2
+ *  and made mandatory by OpenGL 1.4:
+ *  GL_CONSTANT_COLOR, GL_ONE_MINUS_CONSTANT_COLOR,
+ *  GL_CONSTANT_ALPHA, GL_ONE_MINUS_CONSTANT_ALPHA
+ *
+ *  OpenGL 1.4 further provides glBlendFuncSeparate
+ *  (promoted from GL_EXT_blend_func_separate).
+ *  It makes possible to set blending functions for RGB and Alpha separately.
+ *  Before, it was possible to set just one blending function for RGBA.
+ */
 class OSG_EXPORT BlendFunc : public StateAttribute
 {
     public :

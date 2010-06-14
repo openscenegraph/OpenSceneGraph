@@ -114,6 +114,7 @@ bool FlightManipulator::handleKeyDown( const GUIEventAdapter& ea, GUIActionAdapt
 }
 
 
+/// General flight-style event handler
 bool FlightManipulator::flightHandleEvent( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
     addMouseEvent( ea );

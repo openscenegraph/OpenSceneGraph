@@ -37,7 +37,7 @@ FirstPersonManipulator::FirstPersonManipulator( int flags )
    setAcceleration( 0.25, true );
    setMaxVelocity( 0.25, true );
    setWheelMovement( 0.05, true );
-   if( _flags & SET_CENTER_ON_WHEEL_UP )
+   if( _flags & SET_CENTER_ON_WHEEL_FORWARD_MOVEMENT )
       setAnimationTime( 0.2 );
 }
 
@@ -233,50 +233,62 @@ void FirstPersonManipulator::init( const GUIEventAdapter& ea, GUIActionAdapter& 
 // doc in parent
 bool FirstPersonManipulator::handleMouseWheel( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-   switch( ea.getScrollingMotion() ) {
+    osgGA::GUIEventAdapter::ScrollingMotion sm = ea.getScrollingMotion();
 
-      // mouse scroll up event
-      case GUIEventAdapter::SCROLL_UP: {
+    // handle centering
+    if( _flags & SET_CENTER_ON_WHEEL_FORWARD_MOVEMENT )
+    {
 
-         if( _flags & SET_CENTER_ON_WHEEL_UP ) {
+        if( sm == GUIEventAdapter::SCROLL_DOWN && _wheelMovement > 0. ||
+            sm == GUIEventAdapter::SCROLL_UP   && _wheelMovement < 0. )
+        {
 
             // stop thrown animation
             _thrown = false;
 
             if( getAnimationTime() <= 0. )
 
-               // center by mouse intersection (no animation)
-               setCenterByMousePointerIntersection( ea, us );
+                // center by mouse intersection (no animation)
+                setCenterByMousePointerIntersection( ea, us );
 
             else {
 
-               // start new animation only if there is no animation in progress
-               if( !isAnimating() )
-                  startAnimationByMousePointerIntersection( ea, us );
+                // start new animation only if there is no animation in progress
+                if( !isAnimating() )
+                    startAnimationByMousePointerIntersection( ea, us );
 
             }
-         }
+        }
+    }
 
-         // move forward
-         moveForward( isAnimating() ? dynamic_cast< FirstPersonAnimationData* >( _animationData.get() )->_targetRot : _rotation,
-                      _wheelMovement * (getRelativeFlag( _wheelMovementFlagIndex ) ? _modelSize : 1. ));
-         us.requestRedraw();
-         us.requestContinuousUpdate( isAnimating() || _thrown );
-         return true;
-      }
+    switch( sm ) {
 
-      // mouse scroll down event
-      case GUIEventAdapter::SCROLL_DOWN:
-         moveForward( -_wheelMovement * (getRelativeFlag( _wheelMovementFlagIndex ) ? _modelSize : 1. ));
-         _thrown = false;
-         us.requestRedraw();
-         us.requestContinuousUpdate( isAnimating() || _thrown );
-         return true;
+        // mouse scroll up event
+        case GUIEventAdapter::SCROLL_UP:
+        {
+            // move forward
+            moveForward( isAnimating() ? dynamic_cast< FirstPersonAnimationData* >( _animationData.get() )->_targetRot : _rotation,
+                         -_wheelMovement * (getRelativeFlag( _wheelMovementFlagIndex ) ? _modelSize : 1. ));
+            us.requestRedraw();
+            us.requestContinuousUpdate( isAnimating() || _thrown );
+            return true;
+        }
 
-      // unhandled mouse scrolling motion
-      default:
-         return false;
-   }
+        // mouse scroll down event
+        case GUIEventAdapter::SCROLL_DOWN:
+        {
+            // move backward
+            moveForward( _wheelMovement * (getRelativeFlag( _wheelMovementFlagIndex ) ? _modelSize : 1. ));
+            _thrown = false;
+            us.requestRedraw();
+            us.requestContinuousUpdate( isAnimating() || _thrown );
+            return true;
+        }
+
+        // unhandled mouse scrolling motion
+        default:
+            return false;
+    }
 }
 
 

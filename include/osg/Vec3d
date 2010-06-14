@@ -188,6 +188,7 @@ class Vec3d
 
         /** Normalize the vector so that it has length unity.
           * Returns the previous length of the vector.
+          * If the vector is zero length, it is left unchanged and zero is returned.
         */
         inline value_type normalize()
         {

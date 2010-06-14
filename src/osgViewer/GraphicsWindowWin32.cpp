@@ -1053,6 +1053,7 @@ GraphicsWindowWin32::GraphicsWindowWin32( osg::GraphicsContext::Traits* traits )
 {
     _traits = traits;
     if (_traits->useCursor) setCursor(LeftArrowCursor);
+    else setCursor(NoCursor);
 
     init();
     

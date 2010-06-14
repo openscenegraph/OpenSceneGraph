@@ -105,8 +105,15 @@ void cOSG::InitCameraConfig(void)
     // Set the viewport for the Camera
     camera->setViewport(new osg::Viewport(traits->x, traits->y, traits->width, traits->height));
 
+    // Set projection matrix and camera attribtues
+    camera->setClearMask(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    camera->setClearColor(osg::Vec4f(0.2f, 0.2f, 0.4f, 1.0f));
+    camera->setProjectionMatrixAsPerspective(
+        30.0f, static_cast<double>(traits->width)/static_cast<double>(traits->height), 1.0, 1000.0);
+
     // Add the Camera to the Viewer
-    mViewer->addSlave(camera.get());
+    //mViewer->addSlave(camera.get());
+    mViewer->setCamera(camera.get());
 
     // Add the Camera Manipulator to the Viewer
     mViewer->setCameraManipulator(keyswitchManipulator.get());
@@ -118,10 +125,10 @@ void cOSG::InitCameraConfig(void)
     mViewer->realize();
 
     // Correct aspect ratio
-    double fovy,aspectRatio,z1,z2;
+    /*double fovy,aspectRatio,z1,z2;
     mViewer->getCamera()->getProjectionMatrixAsPerspective(fovy,aspectRatio,z1,z2);
     aspectRatio=double(traits->width)/double(traits->height);
-    mViewer->getCamera()->setProjectionMatrixAsPerspective(fovy,aspectRatio,z1,z2);
+    mViewer->getCamera()->setProjectionMatrixAsPerspective(fovy,aspectRatio,z1,z2);*/
 }
 
 void cOSG::PreFrameUpdate()

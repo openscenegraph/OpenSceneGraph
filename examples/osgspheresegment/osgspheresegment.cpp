@@ -156,6 +156,24 @@ class IntersectionUpdateCallback : public osg::NodeCallback
     unsigned frameCount_;
 };
 
+class RotateUpdateCallback : public osg::NodeCallback
+{
+public:
+    RotateUpdateCallback() { i=0;}
+        virtual void operator()(osg::Node* node, osg::NodeVisitor* nv)
+        {
+            osgSim::SphereSegment * ss = dynamic_cast<osgSim::SphereSegment *>(node);
+            if (ss)
+            {
+                ss->setArea(osg::Vec3(cos(i/(2*osg::PI)),sin(i/(2*osg::PI)),0), osg::PI_2, osg::PI_2);
+                
+                i += 0.1f;
+            }
+
+        }
+protected:
+    float i;
+};
 
 osg::Node* createMovingModel(const osg::Vec3& center, float radius, osg::Geode * terrainGeode, osg::Group * root, bool createMovingRadar = false)
 {
@@ -560,6 +578,20 @@ void build_world(osg::Group *root, unsigned int testCase, bool useOverlay, osgSi
                 terrainToSS.invert(mt->getMatrix());
                                                
                 root->addChild(mt.get());
+                break;
+            }
+            case(7):        
+            {
+                ss = new osgSim::SphereSegment(
+                                computeTerrainIntersection(terrainGeode.get(),550.0f,780.0f), // center
+                                510.0f, // radius
+                                osg::DegreesToRadians(-240.0f),
+                                osg::DegreesToRadians(-135.0f),
+                                osg::DegreesToRadians(-10.0f),
+                                osg::DegreesToRadians(30.0f),
+                                60);
+                ss->setUpdateCallback(new RotateUpdateCallback());
+                root->addChild(ss.get());
                 break;
             }
         };

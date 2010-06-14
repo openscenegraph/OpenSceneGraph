@@ -410,9 +410,9 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
                 }
             }
         
-            if (csCompleted && cs->_compileCompletedCallback.valid())
+            if (csCompleted)
             {
-                if (cs->_compileCompletedCallback->compileCompleted(cs))
+                if (cs->_compileCompletedCallback.valid() && cs->_compileCompletedCallback->compileCompleted(cs))
                 {
                     // callback will handle merging of subgraph so no need to place CompileSet in merge.
                 }

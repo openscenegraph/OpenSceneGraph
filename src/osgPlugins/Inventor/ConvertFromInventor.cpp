@@ -84,8 +84,6 @@
 ConvertFromInventor::ConvertFromInventor()
 {
     numPrimitives = 0;
-    transformInfoName = "";
-    appearanceName = "";
 }
 ///////////////////////////////////////////
 ConvertFromInventor::~ConvertFromInventor()
@@ -280,6 +278,9 @@ ConvertFromInventor::convert(SoNode* ivRootNode)
 
     // Root of the scene
     osg::ref_ptr<osg::Group> osgRootNode = new osg::MatrixTransform(ivToOSGMat);
+
+    // Propagate node name
+    osgRootNode->setName(ivRootNode->getName().getString());
 
     // Initialize Inventor state stack
     // (ivStateStack is used to track the state that is not accessible by
@@ -488,6 +489,9 @@ ConvertFromInventor::ivPushState(const SoCallbackAction *action,
 {
     assert(ivStateStack.size() >= 1 && "There must be at least one "
            "value in the ivStateStack to use ivPushState function.");
+
+    // Propagate node name
+    root->setName(initiator->getName().getString());
 
     // APPEND_AT_PUSH
     if (flags & IvStateItem::APPEND_AT_PUSH)
@@ -969,11 +973,10 @@ ConvertFromInventor::postShape(void* data, SoCallbackAction* action,
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
     geode->addDrawable(geometry.get());
 
-    // copy name
-    std::string name = stateSet->getName();
-    if (name != "") {
-        geode->setName(name);
-    }
+    // Set object names
+    const char* name = node->getName().getString();
+    geometry->setName(name);
+    geode->setName(strlen(name)>0 ? name : stateSet->getName());
 
     // Transformation and scene graph building
     thisPtr->appendNode(geode.get(), action);
@@ -1082,10 +1085,6 @@ ConvertFromInventor::preLight(void* data, SoCallbackAction* action,
     IvStateItem &ivState = thisPtr->ivStateStack.top();
     osg::ref_ptr<osg::Light> osgLight = new osg::Light;
 
-    // Light name
-    const char* name = ivLight->getName().getString();
-    osgLight->setName(name);
-
     // Get color and intensity
     SbVec3f lightColor = ivLight->color.getValue();
     float intensity = ivLight->intensity.getValue();
@@ -1170,9 +1169,15 @@ ConvertFromInventor::preLight(void* data, SoCallbackAction* action,
     osgLight->setLightNum(ivState.currentLights.size());
     ivState.currentLights.push_back(osgLight);
 
+    // Create LightSource
     osg::ref_ptr<osg::LightSource> ls = new osg::LightSource();
     ls->setLight(osgLight.get());
-    ls->setName(ivLight->getName().getString());
+
+    // Set object names
+    const char* name = ivLight->getName().getString();
+    osgLight->setName(name);
+    //ls->setName(name); -> this will be handled bellow in ivPushState
+
 #if 1 // Let's place the light to its place in scene graph instead of
       // old approach of global light group.
     thisPtr->ivPushState(action, node,
@@ -1228,6 +1233,9 @@ convertShader(osg::Shader::Type osgShaderType,
         return false;
     }
 
+    // Set shader name
+    osgShader->setName(ivShader->getName().getString());
+
     return osgProgram->addShader(osgShader.get());
 }
 #endif // INVENTOR_SHADERS_AVAILABLE
@@ -1270,7 +1278,7 @@ ConvertFromInventor::preShaderProgram(void* data, SoCallbackAction* action,
             ivFragmentShader = (const SoFragmentShader*)shader;
     }
 
-    // Create OSG shader
+    // Create OSG shader program
     osg::Program *osgProgram = new osg::Program();
     if (!convertShader(osg::Shader::VERTEX, ivVertexShader, osgProgram))
         OSG_WARN << NOTIFY_HEADER
@@ -1281,6 +1289,9 @@ ConvertFromInventor::preShaderProgram(void* data, SoCallbackAction* action,
     if (!convertShader(osg::Shader::FRAGMENT, ivFragmentShader, osgProgram))
         OSG_WARN << NOTIFY_HEADER
                   << "Failed to add fragment shader." << std::endl;
+
+    // Set program name
+    osgProgram->setName(ivProgram->getName().getString());
 
     // Put shader to the state stack
     ivState.currentGLProgram = osgProgram;
@@ -1485,7 +1496,6 @@ ConvertFromInventor::getStateSet(SoCallbackAction* action)
         material->setColorMode(osg::Material::DIFFUSE);
 
         stateSet->setAttributeAndModes(material.get(), osg::StateAttribute::ON);
-        stateSet->setName(appearanceName.getString());
         stateSet->setMode(GL_LIGHTING, osg::StateAttribute::ON);
 
         // Set global ambient light
@@ -1559,9 +1569,6 @@ ConvertFromInventor::convertIVTexToOSGTex(const SoNode* soNode,
     // Copy the texture image data from the inventor texture
     memcpy(osgImageData, soImageData, soSize[0] * soSize[1] * soNC);
 
-    // Copy the name
-    std::string name = soNode->getName().getString();
-
     // File name
     std::string fileName;
     if (soNode->isOfType(SoTexture2::getClassTypeId()))
@@ -1598,9 +1605,9 @@ ConvertFromInventor::convertIVTexToOSGTex(const SoNode* soNode,
     // Create the osg::Texture2D
     osg::Texture2D *osgTex = new osg::Texture2D;
     osgTex->setImage(osgImage.get());
-    if (name != "") {
-        osgTex->setName(name);
-    }
+
+    // Set name
+    osgTex->setName(soNode->getName().getString());
 
     static std::map<SoTexture2::Wrap, osg::Texture2D::WrapMode> texWrapMap;
     static bool firstTime = true;
@@ -1644,9 +1651,12 @@ ConvertFromInventor::preInfo(void* data, SoCallbackAction* action,
     OSG_DEBUG << NOTIFY_HEADER << "preInfo()    "
               << node->getTypeId().getName().getString() << std::endl;
 #endif
+
+#if 0 // FIXME: Not handled properly yet. There is no Info node in OSG.
+      // Append probably empty Node and set its name to info->string.getValue();
     ConvertFromInventor* thisPtr = (ConvertFromInventor *) (data);
     SoInfo* info = (SoInfo*)node;
-    thisPtr->transformInfoName = info->string.getValue();
+#endif
 
     return SoCallbackAction::CONTINUE;
 }

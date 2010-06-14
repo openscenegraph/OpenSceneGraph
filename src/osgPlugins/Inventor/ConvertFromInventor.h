@@ -87,8 +87,6 @@ class ConvertFromInventor
                                  SoCallbackAction* action, const SoNode* node);
 
     private:
-        SbString transformInfoName;
-        SbName appearanceName;
 
         void addVertex(SoCallbackAction* action, const SoPrimitiveVertex* v,
                        int index);

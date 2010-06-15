@@ -1,5 +1,8 @@
 #include <sstream>
 #include <memory>
+#ifndef WIN32
+#include <strings.h>//for strncasecmp
+#endif
 
 #include <osg/Notify>
 #include <osg/MatrixTransform>
@@ -306,7 +309,13 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
 
                 for (int i = 0; i < sizeof(authoringTools) / sizeof(authoringTools[0]); ++i)
                 {
-                    if (0 == _strnicmp(appName, authoringTools[i].name, strlen(authoringTools[i].name)))
+                    if (0 ==
+#ifdef WIN32
+                        _strnicmp
+#else
+                        strncasecmp
+#endif
+                        (appName, authoringTools[i].name, strlen(authoringTools[i].name)))
                     {
                         authoringTool = authoringTools[i].tool;
                         break;

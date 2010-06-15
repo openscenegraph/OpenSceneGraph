@@ -34,6 +34,10 @@ class OSGQT_EXPORT QWidgetImage : public osg::Image
 
         void render();
 
+        /// Overridden scaleImage used to catch cases where the image is 
+        /// fullscreen and the window is resized.
+        virtual void scaleImage(int s,int t,int r, GLenum newDataType);
+
         virtual bool sendFocusHint(bool focus);
 
         virtual bool sendPointerEvent(int x, int y, int buttonMask);

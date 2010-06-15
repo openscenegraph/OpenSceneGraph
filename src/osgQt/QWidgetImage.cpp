@@ -22,12 +22,7 @@ QWidgetImage::QWidgetImage( QWidget* widget )
     // make sure we have a valid QApplication before we start creating widgets.
     getOrCreateQApplication();
 
-    QVBoxLayout* layout = new QVBoxLayout;
-    if (widget) layout->addWidget(widget);
-
-    _widget = new QWidget;
-    _widget->setLayout(layout);
-    _widget->setGeometry(0, 0, 800, 600);  // FIXME: a different size leads to unexpected result
+    _widget = widget;
     _adapter = new QGraphicsViewAdapter(this, _widget.data());
 }
 
@@ -46,6 +41,11 @@ void QWidgetImage::clearWriteBuffer()
 void QWidgetImage::render()
 {
     _adapter->render();
+}
+
+void QWidgetImage::scaleImage(int s,int t,int r, GLenum newDataType)
+{
+    _adapter->resize(s, t);
 }
 
 void QWidgetImage::setFrameLastRendered(const osg::FrameStamp* frameStamp)

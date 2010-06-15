@@ -54,6 +54,14 @@ class OSGQT_EXPORT QGraphicsViewAdapter : public QObject
 
         void assignImage(unsigned int i);
 
+        void resize(int width, int height);
+
+        void setBackgroundColor(QColor color) { _backgroundColor = color; }
+        QColor getBackgroundColor() const     { return _backgroundColor; }
+
+        QGraphicsView* getQGraphicsView() { return _graphicsView; }
+        QGraphicsScene* getQGraphicsScene() { return _graphicsScene; }
+
     protected:
 
         bool handlePointerEvent(int x, int y, int buttonMask);
@@ -64,6 +72,12 @@ class OSGQT_EXPORT QGraphicsViewAdapter : public QObject
         int                             _previousButtonMask;
         int                             _previousMouseX;
         int                             _previousMouseY;
+        int                             _previousQtMouseX;
+        int                             _previousQtMouseY;
+        bool                            _previousSentEvent;
+
+        int _width;
+        int _height;
 
         typedef std::map<int, Qt::Key> KeyMap;
         KeyMap                          _keyMap;
@@ -86,6 +100,7 @@ class OSGQT_EXPORT QGraphicsViewAdapter : public QObject
     private slots:
 
         void repaintRequestedSlot(const QList<QRectF> &regions);
+        void repaintRequestedSlot(const QRectF &region);
 
 };
 

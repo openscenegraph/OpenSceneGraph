@@ -58,10 +58,16 @@ struct MyQPointerEvent : public QEvent
     unsigned int _buttonMask;
 };
 
+
+const QImage::Format s_imageFormat = QImage::Format_ARGB32_Premultiplied;
+
 QGraphicsViewAdapter::QGraphicsViewAdapter(osg::Image* image, QWidget* widget):
     _image(image),
+    _previousQtMouseX(-1),
+    _previousQtMouseY(-1),
+    _previousSentEvent(false),
     _qtKeyModifiers(Qt::NoModifier),
-    _backgroundColor(255,255,255)
+    _backgroundColor(255, 255, 255)
 {
     // make sure we have a valid QApplication before we start creating widgets.
     getOrCreateQApplication();
@@ -69,27 +75,23 @@ QGraphicsViewAdapter::QGraphicsViewAdapter(osg::Image* image, QWidget* widget):
 
     setUpKeyMap();
 
-    _graphicsScene = new QGraphicsScene();
-    _graphicsView = new QGraphicsView;
+    _graphicsScene = new QGraphicsScene;
     _graphicsScene->addWidget(widget);
+
+    _graphicsView = new QGraphicsView;
     _graphicsView->setScene(_graphicsScene);
+    _graphicsView->viewport()->setParent(0);
+
 #if (QT_VERSION_CHECK(4, 5, 0) <= QT_VERSION)
     _graphicsScene->setStickyFocus(true);
 #endif
-    _graphicsView->viewport()->setParent(0);
 
-    int width = _graphicsScene->width();
-    int height = _graphicsScene->height();
+    _width = _graphicsScene->width();
+    _height = _graphicsScene->height();
 
-    _qimages[0] = QImage(QSize(width, height), QImage::Format_ARGB32);
-    _qimages[0].fill(_backgroundColor.rgba());
-    _qimages[0] = QGLWidget::convertToGLFormat(_qimages[0]);
-
-    _qimages[1] = QImage(QSize(width, height), QImage::Format_ARGB32);
-    _qimages[1].fill(_backgroundColor.rgba());
-
-    _qimages[2] = QImage(QSize(width, height), QImage::Format_ARGB32);
-    _qimages[2].fill(_backgroundColor.rgba());
+    _qimages[0] = QImage(QSize(_width, _height), s_imageFormat);
+    _qimages[1] = QImage(QSize(_width, _height), s_imageFormat);
+    _qimages[2] = QImage(QSize(_width, _height), s_imageFormat);
 
     _currentRead = 0;
     _currentWrite = 1;
@@ -99,11 +101,19 @@ QGraphicsViewAdapter::QGraphicsViewAdapter(osg::Image* image, QWidget* widget):
 
     connect(_graphicsScene, SIGNAL(changed(const QList<QRectF> &)),
             this, SLOT(repaintRequestedSlot(const QList<QRectF> &)));
+    connect(_graphicsScene, SIGNAL(sceneRectChanged(const QRectF &)),
+            this, SLOT(repaintRequestedSlot(const QRectF &)));
 
     assignImage(0);
 }
 
 void QGraphicsViewAdapter::repaintRequestedSlot(const QList<QRectF>&)
+{
+    // OSG_NOTICE<<"QGraphicsViewAdapter::repaintRequestedSlot"<<std::endl;
+    render();
+}
+
+void QGraphicsViewAdapter::repaintRequestedSlot(const QRectF&)
 {
     // OSG_NOTICE<<"QGraphicsViewAdapter::repaintRequestedSlot"<<std::endl;
     render();
@@ -259,15 +269,30 @@ void QGraphicsViewAdapter::setUpKeyMap()
 
 bool QGraphicsViewAdapter::sendPointerEvent(int x, int y, int buttonMask)
 {
-    QCoreApplication::postEvent(this, new MyQPointerEvent(x,y,buttonMask));
-    return true;
+    _previousQtMouseX = x;
+    _previousQtMouseY = _graphicsView->size().height() - y;
+
+    QPoint pos(_previousQtMouseX, _previousQtMouseY);
+    if (_graphicsView->itemAt(pos) ||
+        _graphicsView->childAt(pos) ||
+        (_previousSentEvent && buttonMask != 0))
+    {
+        QCoreApplication::postEvent(this, new MyQPointerEvent(x,y,buttonMask));
+        OSG_INFO<<"sendPointerEvent("<<x<<", "<<y<<") sent"<<std::endl;
+        _previousSentEvent = true;
+        return true;
+    }
+    
+    OSG_INFO<<"sendPointerEvent("<<x<<", "<<y<<") not sent"<<std::endl;
+    _previousSentEvent = false;
+    return false;
 }
 
 bool QGraphicsViewAdapter::handlePointerEvent(int x, int y, int buttonMask)
 {
     OSG_INFO<<"dispatchPointerEvent("<<x<<", "<<y<<", "<<buttonMask<<")"<<std::endl;
 
-    y = _graphicsScene->height()-y;
+    y = _graphicsView->size().height()-y;
 
     bool leftButtonPressed = (buttonMask & osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON)!=0;
     bool middleButtonPressed = (buttonMask & osgGA::GUIEventAdapter::MIDDLE_MOUSE_BUTTON)!=0;
@@ -286,9 +311,11 @@ bool QGraphicsViewAdapter::handlePointerEvent(int x, int y, int buttonMask)
         (middleButtonPressed ? Qt::MidButton : Qt::NoButton) |
         (rightButtonPressed ? Qt::RightButton : Qt::NoButton);
 
+    const QRect viewportGeometry = _graphicsView->viewport()->geometry();
+    const QPoint pos(x, y);
+
     if (buttonMask != _previousButtonMask)
     {
-
         Qt::MouseButton qtButton = Qt::NoButton;
         QEvent::Type eventType = QEvent::None;
         if (leftButtonPressed != prev_leftButtonPressed)
@@ -312,15 +339,14 @@ bool QGraphicsViewAdapter::handlePointerEvent(int x, int y, int buttonMask)
             _image->sendFocusHint(true);
         }
 
-        QMouseEvent event(eventType, QPoint(x, y), qtButton, qtMouseButtons, 0);
+        QMouseEvent event(eventType, pos, qtButton, qtMouseButtons, 0);
         QCoreApplication::sendEvent(_graphicsView->viewport(), &event );
 
         _previousButtonMask = buttonMask;
     }
     else if (x != _previousMouseX || y != _previousMouseY)
     {
-
-        QMouseEvent event(QEvent::MouseMove, QPoint(x, y), Qt::NoButton, qtMouseButtons, 0);
+        QMouseEvent event(QEvent::MouseMove, pos, Qt::NoButton, qtMouseButtons, 0);
         QCoreApplication::sendEvent(_graphicsView->viewport(), &event);
 
         _previousMouseX = x;
@@ -332,8 +358,15 @@ bool QGraphicsViewAdapter::handlePointerEvent(int x, int y, int buttonMask)
 
 bool QGraphicsViewAdapter::sendKeyEvent(int key, bool keyDown)
 {
-    QCoreApplication::postEvent(this, new MyQKeyEvent(key,keyDown));
-    return true;
+    QPoint pos(_previousQtMouseX, _previousQtMouseY);
+    if (_graphicsView->itemAt(pos) ||
+        _graphicsView->childAt(pos))
+    {
+        QCoreApplication::postEvent(this, new MyQKeyEvent(key,keyDown));
+        return true;
+    }
+
+    return false;
 }
 
 bool QGraphicsViewAdapter::handleKeyEvent(int key, bool keyDown)
@@ -419,20 +452,47 @@ void QGraphicsViewAdapter::render()
     OSG_INFO<<"Current write = "<<_currentWrite<<std::endl;
     QImage& image = _qimages[_currentWrite];
 
+    // If we got a resize, act on it, first by resizing the view, then the current image
+    if (_graphicsView->size().width() != _width || _graphicsView->size().height() != _height)
+    {
+        _graphicsView->setGeometry(0, 0, _width, _height);
+        _graphicsView->viewport()->setGeometry(0, 0, _width, _height);
+    }
+
+    if (image.width() != _width || image.height() != _height)
+    {
+        _qimages[_currentWrite] = QImage(_width, _height, s_imageFormat);
+        image = _qimages[_currentWrite];
+    }
+
+    OSG_INFO << "render image " << _currentWrite << " with size (" << _width << "," << _height << ")" <<std::endl;
+
 #if 1
     // paint the image with the graphics view
     QPainter painter(&image);
-    QRectF destinationRect(0, 0, image.width(), image.height());
-    QRect sourceRect(0, 0, _graphicsScene->width(), _graphicsScene->height());
-    _graphicsView->render(&painter, destinationRect, sourceRect);
+
+    // Clear the image otherwise there are artifacts for some widgets that overpaint.
+    painter.setCompositionMode(QPainter::CompositionMode_Source);
+    painter.fillRect(0, 0, _width, _height, _backgroundColor);
+    painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
+
+    QRectF destinationRect(0, 0, _width, _height);
+    QRect sourceRect(0, 0, _width, _height);
+    _graphicsView->render(&painter, destinationRect, sourceRect, Qt::IgnoreAspectRatio);
     painter.end();
+#elif 0
+    QPixmap pixmap(QPixmap::grabWidget(_graphicsView.data(), QRect(0, 0, _width, _height)));
+    image = pixmap.toImage();
 #else
     // paint the image with the graphics view
-    QPixmap pixmap(image.width(), image.height());
+    QPixmap pixmap(_width, _height);
+    // Clear the image otherwise there are artifacts for some widgets that overpaint.
+    pixmap.fill(Qt::transparent);
     QPainter painter(&pixmap);
-    QRectF destinationRect(0, 0, image.width(), image.height());
-    QRect sourceRect(0, 0, _graphicsScene->width(), _graphicsScene->height());
-    _graphicsView->render(&painter, destinationRect, sourceRect);
+
+    QRectF destinationRect(0, 0, _width, _height);
+    QRect sourceRect(0, 0, _width, _height);
+    _graphicsView->render(&painter, destinationRect, _graphicsView->viewport()->rect());
     painter.end();
 
     image = pixmap.toImage();
@@ -452,13 +512,23 @@ void QGraphicsViewAdapter::assignImage(unsigned int i)
     QImage& image = _qimages[i];
     unsigned char* data = image.bits();
 
-    OSG_INFO<<"assigImage("<<i<<") image = "<<&image<<" data = "<<(void*)data<<std::endl;
+    OSG_INFO<<"assignImage("<<i<<") image = "<<&image<<" size = ("<<image.width()<<","<<image.height()<<") data = "<<(void*)data<<std::endl;
 
-    _image->setImage(image.width(),image.height(),1,
-                4,
-                GL_RGBA,GL_UNSIGNED_BYTE,
-                data,
-                osg::Image::NO_DELETE, 1);
+    _image->setImage(image.width(), image.height(), 1,
+                     4, GL_RGBA, GL_UNSIGNED_BYTE,
+                     data, osg::Image::NO_DELETE, 1);
+}
+
+void QGraphicsViewAdapter::resize(int width, int height)
+{
+    OSG_INFO << "resize to (" << width << "," << height << ")" <<std::endl;
+
+    // Save the new width and height which will take effect on the next render() (in the Qt thread).
+    _width = width;
+    _height = height;
+
+    // Force an update so render() will be called.
+    _graphicsScene->update(_graphicsScene->sceneRect());
 }
 
 }

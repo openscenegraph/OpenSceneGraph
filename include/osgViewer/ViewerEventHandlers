@@ -407,8 +407,8 @@ class OSGVIEWER_EXPORT InteractiveImageHandler : public osgGA::GUIEventHandler, 
 {
 public:
 
-    InteractiveImageHandler(osg::Image* image):
-        _image(image) {}
+    InteractiveImageHandler(osg::Image* image, osg::Camera* camera = 0):
+        _image(image), _fullscreen(camera != 0), _camera(camera) {}
 
     META_Object(osgViewer, InteractiveImageHandler);
 
@@ -426,12 +426,12 @@ protected:
         osg::Object(), osgGA::GUIEventHandler(), osg::Drawable::CullCallback() {}
 
     bool mousePosition(osgViewer::View* view, osg::NodeVisitor* nv, const osgGA::GUIEventAdapter& ea, int& x, int &y) const;
+    bool computeIntersections(osgViewer::View* view, float x,float y, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff) const;
 
-    osg::observer_ptr<osg::Image>  _image;
-    bool    _handleKeyboardEvents;
-    bool    _handledOnKeyboardEvents;
-    bool    _handleMouseEvents;
-    bool    _handledOnMouseEvents;
+    osg::observer_ptr<osg::Image>   _image;
+
+    bool                            _fullscreen;
+    osg::observer_ptr<osg::Camera>  _camera;
 
 };
 

@@ -24,7 +24,7 @@ using namespace osgDB;
 static std::string s_lastSchema;
 
 InputStream::InputStream( const osgDB::Options* options )
-:   _byteSwap(0), _useFloatMatrix(true), _useSchemaData(false), _forceReadingImage(false)
+    :   _byteSwap(0), _useFloatMatrix(true), _useSchemaData(false), _forceReadingImage(false), _dataDecompress(0)
 {
     if ( !options ) return;
     _options = options;
@@ -73,6 +73,8 @@ InputStream::InputStream( const osgDB::Options* options )
 
 InputStream::~InputStream()
 {
+    if (_dataDecompress)
+        delete _dataDecompress;
 }
 
 InputStream& InputStream::operator>>( osg::Vec2b& v )
@@ -672,8 +674,9 @@ void InputStream::decompress()
         if ( !compressor->decompress(*(_in->getStream()), data) )
             throwException( "InputStream: Failed to decompress stream." );
         if ( getException() ) return;
-        
-        _in->setStream( new std::stringstream(data) );
+
+        _dataDecompress = new std::stringstream(data);
+        _in->setStream( _dataDecompress );
         _fields.pop_back();
     }
     

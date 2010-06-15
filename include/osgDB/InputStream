@@ -167,6 +167,9 @@ protected:
     osg::ref_ptr<InputIterator> _in;
     osg::ref_ptr<InputException> _exception;
     osg::ref_ptr<const osgDB::Options> _options;
+
+    // store here to avoid a new and a leak in InputStream::decompress
+    std::stringstream* _dataDecompress;
 };
 
 void InputStream::throwException( const std::string& msg )

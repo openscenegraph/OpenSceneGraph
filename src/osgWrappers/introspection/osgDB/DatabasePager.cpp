@@ -506,6 +506,16 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager::DatabaseThread)
 	               ____DatabaseThread__C5_DatabaseThread_R1__DatabasePager_P1,
 	               "",
 	               "");
+	I_Method1(void, setName, IN, const std::string &, name,
+	          Properties::NON_VIRTUAL,
+	          __void__setName__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method0(const std::string &, getName,
+	          Properties::NON_VIRTUAL,
+	          __C5_std_string_R1__getName,
+	          "",
+	          "");
 	I_Method1(void, setDone, IN, bool, done,
 	          Properties::NON_VIRTUAL,
 	          __void__setDone__bool,
@@ -526,6 +536,11 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager::DatabaseThread)
 	          __bool__getActive,
 	          "",
 	          "");
+	I_Method0(double, getTimeSinceStartOfIteration,
+	          Properties::NON_VIRTUAL,
+	          __double__getTimeSinceStartOfIteration,
+	          "",
+	          "");
 	I_Method0(int, cancel,
 	          Properties::VIRTUAL,
 	          __int__cancel,
@@ -542,6 +557,12 @@ BEGIN_OBJECT_REFLECTOR(osgDB::DatabasePager::DatabaseThread)
 	I_SimpleProperty(bool, Done, 
 	                 __bool__getDone, 
 	                 __void__setDone__bool);
+	I_SimpleProperty(const std::string &, Name, 
+	                 __C5_std_string_R1__getName, 
+	                 __void__setName__C5_std_string_R1);
+	I_SimpleProperty(double, TimeSinceStartOfIteration, 
+	                 __double__getTimeSinceStartOfIteration, 
+	                 0);
 END_REFLECTOR
 
 BEGIN_ABSTRACT_OBJECT_REFLECTOR(osgDB::DatabasePager::PagedLODList)

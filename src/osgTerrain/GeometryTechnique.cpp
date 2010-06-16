@@ -903,7 +903,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
 
         _neighbours.clear();
 
-        bool updateNeighboursImmediately = true;
+        bool updateNeighboursImmediately = false;
 
         if (left_tile.valid())   addNeighbour(left_tile.get());
         if (right_tile.valid())  addNeighbour(right_tile.get());

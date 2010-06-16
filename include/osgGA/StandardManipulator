@@ -40,7 +40,7 @@ class OSGGA_EXPORT StandardManipulator : public CameraManipulator
             COMPUTE_HOME_USING_BBOX = 0x02,
             PROCESS_MOUSE_WHEEL = 0x04,
             SET_CENTER_ON_WHEEL_FORWARD_MOVEMENT = 0x08,
-            DEFAULT_SETTINGS = UPDATE_MODEL_SIZE | COMPUTE_HOME_USING_BBOX | PROCESS_MOUSE_WHEEL
+            DEFAULT_SETTINGS = UPDATE_MODEL_SIZE /*| COMPUTE_HOME_USING_BBOX*/ | PROCESS_MOUSE_WHEEL
         };
 
         StandardManipulator( int flags = DEFAULT_SETTINGS );

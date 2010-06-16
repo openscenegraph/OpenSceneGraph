@@ -681,7 +681,8 @@ DatabasePager::DatabaseThread::DatabaseThread(DatabasePager* pager, Mode mode, c
     _active(false),
     _pager(pager),
     _mode(mode),
-    _name(name)
+    _name(name),
+    _tickSinceStartOfIteration(0)
 {
 }
 
@@ -690,9 +691,9 @@ DatabasePager::DatabaseThread::DatabaseThread(const DatabaseThread& dt, Database
     _active(false),
     _pager(pager),
     _mode(dt._mode),
-    _name(dt._name)
+    _name(dt._name),
+    _tickSinceStartOfIteration(0)
 {
-    
 }
 
 DatabasePager::DatabaseThread::~DatabaseThread()
@@ -741,6 +742,11 @@ int DatabasePager::DatabaseThread::cancel()
 
 }
 
+double DatabasePager::DatabaseThread::getTimeSinceStartOfIteration() const
+{
+    return osg::Timer::instance()->delta_s(_tickSinceStartOfIteration, osg::Timer::instance()->tick());
+}
+
 void DatabasePager::DatabaseThread::run()
 {
     OSG_INFO<<_name<<": DatabasePager::DatabaseThread::run"<<std::endl;
@@ -783,7 +789,11 @@ void DatabasePager::DatabaseThread::run()
     {
         _active = false;
 
+        _tickSinceStartOfIteration = osg::Timer::instance()->tick();
+
         read_queue->block();
+
+        _tickSinceStartOfIteration = osg::Timer::instance()->tick();
 
         _active = true;
 
@@ -1673,6 +1683,41 @@ bool DatabasePager::requiresUpdateSceneGraph() const
 #define UPDATE_TIMING 0
 void DatabasePager::updateSceneGraph(const osg::FrameStamp& frameStamp)
 {
+
+    {
+        // check threads to see which are active and how long the active ones have been working in their current iteration.
+
+        unsigned int numThreadsActive = 0;
+        for(DatabaseThreadList::iterator itr = _databaseThreads.begin(); itr != _databaseThreads.end(); ++itr)
+        {
+            DatabaseThread* thread = itr->get();
+            if (thread->getActive())
+            {
+                ++numThreadsActive;
+            }
+        }
+
+        if (numThreadsActive>0)
+        {
+            OSG_NOTICE<<"DatabasePager::updateSceneGraph()"<<std::endl;
+            for(DatabaseThreadList::iterator itr = _databaseThreads.begin(); itr != _databaseThreads.end(); ++itr)
+            {
+                DatabaseThread* thread = itr->get();
+
+                double t = thread->getTimeSinceStartOfIteration();
+                if (thread->getActive())
+                {
+                    OSG_NOTICE<<"  "<<thread->getName()<<" active for "<<t*1000<<"ms"<<std::endl;
+                }
+                else
+                {
+                    OSG_NOTICE<<"  "<<thread->getName()<<" inactive for "<<t*1000<<"ms"<<std::endl;
+                }
+            }
+        }
+    }
+
+
 #if UPDATE_TIMING
     osg::ElapsedTime timer;
     double timeFor_removeExpiredSubgraphs, timeFor_addLoadedDataToSceneGraph;
@@ -1735,10 +1780,8 @@ void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
             // OSG_NOTICE<<"Merging "<<_frameNumber-(*itr)->_frameNumberLastRequest<<std::endl;
             osg::Group* group = databaseRequest->_groupForAddingLoadedSubgraph;
 
-#if 0
             if (osgDB::Registry::instance()->getSharedStateManager())
                 osgDB::Registry::instance()->getSharedStateManager()->share(databaseRequest->_loadedModel.get());
-#endif
 
             osg::PagedLOD* plod = dynamic_cast<osg::PagedLOD*>(group);
             if (plod)

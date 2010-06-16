@@ -41,7 +41,10 @@ public:
         osgVolume::VolumeTile* volumeTile = dynamic_cast<osgVolume::VolumeTile*>(&group);
         if (volumeTile)
         {
-            volumeTile->addEventCallback(new osgVolume::PropertyAdjustmentCallback());
+            if (dynamic_cast<osgVolume::PropertyAdjustmentCallback*>(volumeTile->getEventCallback())==0)
+            {
+                volumeTile->addEventCallback(new osgVolume::PropertyAdjustmentCallback());
+            }
         }
         else
         {

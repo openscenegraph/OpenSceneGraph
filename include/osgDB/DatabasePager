@@ -97,12 +97,17 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             DatabaseThread(DatabasePager* pager, Mode mode, const std::string& name);
             
             DatabaseThread(const DatabaseThread& dt, DatabasePager* pager);
-            
+
+            void setName(const std::string& name) { _name = name; }
+            const std::string& getName() const { return _name; }
+
             void setDone(bool done) { _done = done; }
             bool getDone() const { return _done; }
             
             void setActive(bool active) { _active = active; }
             bool getActive() const { return _active; }
+
+            double getTimeSinceStartOfIteration() const;
 
             virtual int cancel();
             
@@ -117,6 +122,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             DatabasePager*  _pager;
             Mode            _mode;
             std::string     _name;
+            osg::Timer_t    _tickSinceStartOfIteration;
+
         };
         
         void setUpThreads(unsigned int totalNumThreads=2, unsigned int numHttpThreads=1);

@@ -1687,6 +1687,9 @@ void DatabasePager::updateSceneGraph(const osg::FrameStamp& frameStamp)
     {
         // check threads to see which are active and how long the active ones have been working in their current iteration.
 
+        double timeToSuspectADeadlock = 1.0;
+        bool possibleDeadLock = false;
+
         unsigned int numThreadsActive = 0;
         for(DatabaseThreadList::iterator itr = _databaseThreads.begin(); itr != _databaseThreads.end(); ++itr)
         {
@@ -1694,12 +1697,16 @@ void DatabasePager::updateSceneGraph(const osg::FrameStamp& frameStamp)
             if (thread->getActive())
             {
                 ++numThreadsActive;
+                if (thread->getTimeSinceStartOfIteration()>timeToSuspectADeadlock)
+                {
+                    possibleDeadLock = true;
+                }
             }
         }
 
-        if (numThreadsActive>0)
+        if (possibleDeadLock && numThreadsActive>0)
         {
-            OSG_NOTICE<<"DatabasePager::updateSceneGraph()"<<std::endl;
+            OSG_NOTICE<<"DatabasePager::updateSceneGraph() possibleDeadLock="<<possibleDeadLock<<std::endl;
             for(DatabaseThreadList::iterator itr = _databaseThreads.begin(); itr != _databaseThreads.end(); ++itr)
             {
                 DatabaseThread* thread = itr->get();

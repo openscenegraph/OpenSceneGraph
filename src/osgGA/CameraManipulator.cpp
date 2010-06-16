@@ -1,5 +1,6 @@
 #include <osg/GL>
 #include <osg/Matrix>
+#include <osg/io_utils>
 #include <osg/ComputeBoundsVisitor>
 #include <osgGA/CameraManipulator>
 #include <string.h>
@@ -71,15 +72,18 @@ void CameraManipulator::computeHomePosition(const osg::Camera *camera, bool useB
     {
         osg::BoundingSphere boundingSphere;
 
-        if (useBoundingBox) {
+        OSG_INFO<<" CameraManipulator::computeHomePosition("<<camera<<", "<<useBoundingBox<<")"<<std::endl;
 
+        if (useBoundingBox)
+        {
             // compute bounding box
             // (bounding box computes model center more precisely than bounding sphere)
             osg::ComputeBoundsVisitor cbVisitor;
             getNode()->accept(cbVisitor);
             osg::BoundingBox &bb = cbVisitor.getBoundingBox();
-            boundingSphere.expandBy(bb);
 
+            if (bb.valid()) boundingSphere.expandBy(bb);
+            else boundingSphere = getNode()->getBound();
         }
         else
         {
@@ -87,10 +91,14 @@ void CameraManipulator::computeHomePosition(const osg::Camera *camera, bool useB
             boundingSphere = getNode()->getBound();
         }
 
+        OSG_INFO<<"    boundingSphere.center() = ("<<boundingSphere.center()<<")"<<std::endl;
+        OSG_INFO<<"    boundingSphere.radius() = "<<boundingSphere.radius()<<std::endl;
+
         // set dist to default
         double dist = 3.5f * boundingSphere.radius();
 
-        if (camera) {
+        if (camera)
+        {
 
             // try to compute dist from frustrum
             double left,right,bottom,top,zNear,zFar;
@@ -103,11 +111,13 @@ void CameraManipulator::computeHomePosition(const osg::Camera *camera, bool useB
                 dist = boundingSphere.radius() / sin(viewAngle);
             }
             else
+            {
                 // try to compute dist from ortho
                 if (camera->getProjectionMatrixAsOrtho(left,right,bottom,top,zNear,zFar))
                 {
                     dist = fabs(zFar - zNear) / 2.;
                 }
+            }
         }
 
         // set home position

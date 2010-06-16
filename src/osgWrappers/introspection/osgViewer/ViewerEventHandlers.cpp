@@ -118,11 +118,10 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::InteractiveImageHandler)
 	I_DeclaringFile("osgViewer/ViewerEventHandlers");
 	I_BaseType(osgGA::GUIEventHandler);
 	I_BaseType(osg::Drawable::CullCallback);
-	I_Constructor1(IN, osg::Image *, image,
-	               Properties::NON_EXPLICIT,
-	               ____InteractiveImageHandler__osg_Image_P1,
-	               "",
-	               "");
+	I_ConstructorWithDefaults2(IN, osg::Image *, image, , IN, osg::Camera *, camera, 0,
+	                           ____InteractiveImageHandler__osg_Image_P1__osg_Camera_P1,
+	                           "",
+	                           "");
 	I_Method0(osg::Object *, cloneType,
 	          Properties::VIRTUAL,
 	          __osg_Object_P1__cloneType,
@@ -171,6 +170,12 @@ BEGIN_OBJECT_REFLECTOR(osgViewer::InteractiveImageHandler)
 	                   __bool__mousePosition__osgViewer_View_P1__osg_NodeVisitor_P1__C5_osgGA_GUIEventAdapter_R1__int_R1__int_R1,
 	                   "",
 	                   "");
+	I_ProtectedMethodWithDefaults6(bool, computeIntersections, IN, osgViewer::View *, view, , IN, float, x, , IN, float, y, , IN, const osg::NodePath &, nodePath, , IN, osgUtil::LineSegmentIntersector::Intersections &, intersections, , IN, osg::Node::NodeMask, traversalMask, 0xffffffff,
+	                               Properties::NON_VIRTUAL,
+	                               Properties::CONST,
+	                               __bool__computeIntersections__osgViewer_View_P1__float__float__C5_osg_NodePath_R1__osgUtil_LineSegmentIntersector_Intersections_R1__osg_Node_NodeMask,
+	                               "",
+	                               "");
 END_REFLECTOR
 
 BEGIN_OBJECT_REFLECTOR(osgViewer::LODScaleHandler)

@@ -84,15 +84,21 @@ void Terrain::traverse(osg::NodeVisitor& nv)
         osgUtil::UpdateVisitor* uv = dynamic_cast<osgUtil::UpdateVisitor*>(&nv);
         if (uv)
         {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-            for(TerrainTileSet::iterator itr = _updateTerrainTileSet.begin();
-                itr != _updateTerrainTileSet.end();
+            typedef std::list< osg::ref_ptr<TerrainTile> >  TerrainTileList;
+            TerrainTileList tiles;
+            {
+                OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+                std::copy(_updateTerrainTileSet.begin(), _updateTerrainTileSet.end(), std::back_inserter(tiles));
+                _updateTerrainTileSet.clear();
+            }
+
+            for(TerrainTileList::iterator itr = tiles.begin();
+                itr != tiles.end();
                 ++itr)
             {
                 TerrainTile* tile = *itr;
                 tile->traverse(nv);
             }
-            _updateTerrainTileSet.clear();
         }
     }
 

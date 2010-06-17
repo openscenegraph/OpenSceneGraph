@@ -15,6 +15,7 @@
 #include <osg/Quat>
 #include <osg/Notify>
 #include <osg/Transform>
+#include <iterator>
 
 using namespace osg;
 using namespace osgGA;

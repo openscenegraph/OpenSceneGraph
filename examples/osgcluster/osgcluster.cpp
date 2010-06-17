@@ -27,7 +27,9 @@
 #include <osgDB/ReadFile>
 
 #include <osgGA/TrackballManipulator>
+#include <osgGA/StateSetManipulator>
 #include <osgViewer/Viewer>
+#include <osgViewer/ViewerEventHandlers>
 
 #include <osg/Quat>
 #include <osg/io_utils>
@@ -509,6 +511,12 @@ int main( int argc, char **argv )
     }
 
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
+
+    // add the stats handler
+    viewer.addEventHandler(new osgViewer::StatsHandler);
+
+    // add the state manipulator
+    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
 
 
     // create the windows and run the threads.

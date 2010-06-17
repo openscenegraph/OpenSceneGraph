@@ -223,8 +223,8 @@ bool OrbitManipulator::handleMouseWheel( const GUIEventAdapter& ea, GUIActionAda
     if( _flags & SET_CENTER_ON_WHEEL_FORWARD_MOVEMENT )
     {
 
-        if( sm == GUIEventAdapter::SCROLL_DOWN && _wheelZoomFactor > 0. ||
-            sm == GUIEventAdapter::SCROLL_UP   && _wheelZoomFactor < 0. )
+        if( ((sm == GUIEventAdapter::SCROLL_DOWN && _wheelZoomFactor > 0.)) ||
+            ((sm == GUIEventAdapter::SCROLL_UP   && _wheelZoomFactor < 0.)) )
         {
 
             if( getAnimationTime() <= 0. )

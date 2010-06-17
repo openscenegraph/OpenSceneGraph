@@ -239,8 +239,8 @@ bool FirstPersonManipulator::handleMouseWheel( const GUIEventAdapter& ea, GUIAct
     if( _flags & SET_CENTER_ON_WHEEL_FORWARD_MOVEMENT )
     {
 
-        if( sm == GUIEventAdapter::SCROLL_DOWN && _wheelMovement > 0. ||
-            sm == GUIEventAdapter::SCROLL_UP   && _wheelMovement < 0. )
+        if( ((sm == GUIEventAdapter::SCROLL_DOWN) && (_wheelMovement > 0.)) ||
+            ((sm == GUIEventAdapter::SCROLL_UP)   && (_wheelMovement < 0.)) )
         {
 
             // stop thrown animation
@@ -261,7 +261,8 @@ bool FirstPersonManipulator::handleMouseWheel( const GUIEventAdapter& ea, GUIAct
         }
     }
 
-    switch( sm ) {
+    switch( sm )
+    {
 
         // mouse scroll up event
         case GUIEventAdapter::SCROLL_UP:

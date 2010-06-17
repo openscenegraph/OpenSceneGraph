@@ -1599,7 +1599,7 @@ ConvertFromInventor::convertIVTexToOSGTex(const SoNode* soNode,
     osg::ref_ptr<osg::Image> osgImage = new osg::Image;
     osgImage->setFileName(fileName);
     GLenum formats[] = {GL_LUMINANCE, GL_LUMINANCE_ALPHA, GL_RGB, GL_RGBA};
-    osgImage->setImage(soSize[0], soSize[1], 0, soNC, formats[soNC-1],
+    osgImage->setImage(soSize[0], soSize[1], 1, soNC, formats[soNC-1],
                        GL_UNSIGNED_BYTE, osgImageData, osg::Image::USE_NEW_DELETE);
 
     // Create the osg::Texture2D

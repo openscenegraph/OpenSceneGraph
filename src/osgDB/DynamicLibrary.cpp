@@ -43,6 +43,7 @@
 #include <osgDB/DynamicLibrary>
 #include <osgDB/FileUtils>
 #include <osgDB/FileNameUtils>
+#include <osgDB/ConvertUTF>
 
 using namespace osgDB;
 
@@ -93,7 +94,11 @@ DynamicLibrary::HANDLE DynamicLibrary::getLibraryHandle( const std::string& libr
     HANDLE handle = NULL;
 
 #if defined(WIN32) && !defined(__CYGWIN__)
+#ifdef OSG_USE_UTF8_FILENAME
+    handle = LoadLibraryW(  convertUTF8toUTF16(libraryName).c_str() );
+#else
     handle = LoadLibrary( libraryName.c_str() );
+#endif
 #elif defined(__APPLE__) && defined(APPLE_PRE_10_3)
     NSObjectFileImage image;
     // NSModule os_handle = NULL;

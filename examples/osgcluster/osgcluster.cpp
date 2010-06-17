@@ -638,9 +638,12 @@ int main( int argc, char **argv )
     {
         // need to broadcast my death.
         cp->setPacket(osg::Matrix::identity(),viewer.getFrameStamp());
-        cp->setMasterKilled(true);
+        cp->setMasterKilled(true); 
 
-        bc.setBuffer(cp, sizeof( CameraPacket ));
+        scratchPad.reset();
+        scratchPad.write(*cp);
+
+        bc.setBuffer(scratchPad._startPtr, scratchPad._numBytes);
         bc.sync();
 
         std::cout << "Broadcasting death."<<std::endl;

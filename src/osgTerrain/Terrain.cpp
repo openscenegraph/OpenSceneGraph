@@ -96,7 +96,7 @@ void Terrain::traverse(osg::NodeVisitor& nv)
                 itr != tiles.end();
                 ++itr)
             {
-                TerrainTile* tile = *itr;
+                TerrainTile* tile = itr->get();
                 tile->traverse(nv);
             }
         }

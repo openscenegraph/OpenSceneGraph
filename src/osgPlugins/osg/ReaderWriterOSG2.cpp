@@ -280,7 +280,7 @@ public:
         osgDB::ofstream fout( fileName.c_str(), std::ios::out|std::ios::binary );
         if ( !fout ) return WriteResult::ERROR_IN_WRITING_FILE;
         
-        result = writeImage( image, fout, local_opt );
+        result = writeImage( image, fout, local_opt.get() );
         fout.close();
         return result;
     }

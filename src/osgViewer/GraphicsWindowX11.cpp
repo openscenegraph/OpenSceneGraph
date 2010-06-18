@@ -1640,6 +1640,12 @@ int GraphicsWindowX11::getModifierMask() const
 
 void GraphicsWindowX11::requestWarpPointer(float x,float y)
 {
+    if (!_realized)
+    {
+        OSG_INFO<<"GraphicsWindowX11::requestWarpPointer() - Window not realized; cannot warp pointer, screenNum="<< _traits->screenNum<<std::endl;
+        return;
+    }
+
     Display* display = _eventDisplay; // getDisplayToUse();
 
     XWarpPointer( display, 

@@ -1028,9 +1028,15 @@ void GraphicsWindowCarbon::setWindowName (const std::string& name)
 
 void GraphicsWindowCarbon::requestWarpPointer(float x,float y)
 {
+    if (!_realized)
+    {
+        OSG_INFO<<"GraphicsWindowCarbon::requestWarpPointer() - Window not realized; cannot warp pointer, screenNum="<< _traits->screenNum<<std::endl;
+        return;
+    }
 
     DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
-    if (wsi == NULL) {
+    if (wsi == NULL)
+    {
         OSG_WARN << "GraphicsWindowCarbon::useCursor: could not get OSXCarbonWindowingSystemInterface" << std::endl;
         return;
     }

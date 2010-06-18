@@ -1981,7 +1981,7 @@ void GraphicsWindowWin32::requestWarpPointer( float x, float y )
 {
     if (!_realized)
     {
-        reportErrorForScreen("GraphicsWindowWin32::requestWarpPointer() - Window not realized; cannot warp pointer", _traits->screenNum, 0);
+        OSG_INFO<<"GraphicsWindowWin32::requestWarpPointer() - Window not realized; cannot warp pointer, screenNum="<< _traits->screenNum<<std::endl;
         return;
     }
 

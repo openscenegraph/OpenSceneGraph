@@ -1,6 +1,6 @@
 OpenSceneGraph Library 2.9.8
 
-412 Contributors:
+421 Contributors:
 
 Firstname Surname
 -----------------
@@ -9,32 +9,33 @@ Don Burns
 Stephan Huber
 Paul Martz
 Marco Jez
-Mike Weiblen
 Mathias Fröhlich
+Mike Weiblen
 Eric Wing
-Brede Johansen
 Farshid Lashkari
 Cedric Pinson
+Brede Johansen
 Jean-Sebastien Guay
 Ulrich Hertlein
 Bob Kuehne
 Geoff Michel
 Eric Sokolowsky
-Wojciech Lewandowski
 Michael Platings
+Wojciech Lewandowski
 David Callu
 Martin Lavery
+Wang Rui
 Trajce Nikolov
 Colin McDonald
 Tree 
 Luigi Calori
 Mike Wittman
 Roger James
-Chris Hanson
-Wang Rui
 Sukender 
 Roland Smeenk
+Chris Hanson
 Jeremy Moles
+Tim Moore
 Paul Melis
 Jason Beverage
 Mattias Helsing
@@ -52,15 +53,15 @@ Alberto Farre
 David Fries
 André Garneau
 Adrian Egli
+Terry Welsh
 Ruben Lopez
 Randall Hopper
 Mathieu Marache
-Tim Moore
-Terry Welsh
+Laurens Voerman
+Jan Peciva
 Sherman Wilcox
 Robert Milharcic
 Olaf Flebbe
-Laurens Voerman
 Gideon May
 Don Tidrow
 Chris Denham
@@ -74,7 +75,6 @@ Daniel Sjölie
 Bryan Thrall
 Melchior Franz
 Lionel Lagarde
-Jan Peciva
 Jan Ciger
 Glenn Waldron
 Neil Hughes
@@ -89,8 +89,11 @@ Yefei He
 Sondra Iverson
 Rune Schmidt Jensen
 Rainer Oder
+Mourad Boufarguine
+Martin Naylor
 Martin Aumueller
 Mario Valle
+Luc Frauciel
 Gordon Tomlinson
 Fabien Lavignotte
 Cory Riddell
@@ -102,15 +105,13 @@ Sasa Bistrovic
 Ravi Mathur
 Ralf Habacker
 Neil Groves
-Mourad Boufarguine
-Martin Naylor
 Markus Trenkwalder
-Luc Frauciel
 Loic Dachary
 Joseph Steel
 John Shue
 David Guthrie
 Brad Colbert
+Brad Christiansen
 Vivek Rajan
 Thom DeCarlo
 Tatsuhiro Nishioka
@@ -122,9 +123,10 @@ Nikolaus Hanekamp
 Neil Salter
 Mihai Radu
 Michael Hartman
+Martins Innus
 Maciej Krol
+Frederic Bouvier
 Corbin Holtz
-Brad Christiansen
 Blasius Czink
 Toshiyuki Takahei
 Tony Horrobin
@@ -140,7 +142,6 @@ Leandro Motta Barros
 John Vidar Larring
 John Kelso
 Gustav Haapalahti
-Frederic Bouvier
 Emmanuel Roche
 Donn Mielcarek
 Daniel Larimer
@@ -148,6 +149,7 @@ Colin Dunlop
 Chuck Seberino
 Bruce Clay
 Andreas Goebel
+Alok Priyadarshi
 Alberto Barbati
 Vladimir Shabanov
 Uwe Woessner
@@ -165,10 +167,13 @@ Lee Butler
 Konstantin Sinitsyn
 Ken Sewell
 Julian Ortiz
+John Ivar
 Johan Nouvel
+Jim Vaughan
 Jeremy Bell
 Jaromir Vitek
 James French
+Hartwig Wiesmann
 Gary Quinn
 Garrett Potts
 Gabor Dorka
@@ -187,6 +192,7 @@ Ali Botorabi
 Zach Deedler
 Yuzhong Shen
 Vincent Bourdier
+Torben Dannhauer
 Tim Daoust
 Terrex 
 Sylvain Marie
@@ -202,6 +208,7 @@ Ralf Kern
 Pierre Haritchabalet
 Perry Miller
 Paul Obermeier
+Nguyen Van Truong
 Nathan Monteleone
 Morné Pistorius
 Michael Henheffer
@@ -209,7 +216,6 @@ Michael Guerrero
 Maya Leonard
 Max Bandazian
 Mathew May
-Martins Innus
 Martin Spott
 Martijn Kragtwijk
 Mark Sciabica
@@ -222,7 +228,6 @@ Katharina Plugge
 Julen Garcia
 Joseph Winston
 John Aughey
-Jim Vaughan
 James Moliere
 Igor Kravtchenko
 Himar Carmona
@@ -242,8 +247,10 @@ Aric Aumann
 Andrew Sampson
 Andrew Lorino
 Alexandre Amalric
+Alessandro Terenzi
 Zbigniew Sroczynski
 Yuri Vilmanis
+Xin Li
 Warren Macchi
 Wang Lam
 Walter J. Altice
@@ -255,13 +262,13 @@ Vincent Gadoury
 Vasily Radostev
 Valery Bickov
 Vaclav Bilek
-Tyge 
+Tyge Løvset
 Troy Yee
-Torben Dannhauer
 Tomas Hnilica
 Tino Schwarze
 Thomas Weidner
 Thomas Halgarth
+Tan Dunning
 Stewart Andreason
 Steven Thomas
 Simon Hammett
@@ -327,6 +334,7 @@ Mario Guimaraes
 Marin Lavery
 Marco Lehmann
 Marcin Prus
+Marcin Hajder
 Maik Keller
 Lukas Diduch
 Louis Hamilton
@@ -342,7 +350,6 @@ Julian Scheid
 Juan Hernando
 Josh Portway
 John Tan
-John Ivar
 John Grant
 John Donovan
 John Davis
@@ -358,6 +365,7 @@ James Killian
 J.E. Hoffmann
 Henrique Bucher
 Hautio Jari
+Gunter Huber
 Guillaume Millet
 Gregory Jaegy
 Graeme Harkness
@@ -400,6 +408,7 @@ Brandon Hamm
 Bora Utka
 Björn Hein
 Bill Prendergast
+Bernardt Duvenhage
 Benoit Laniel
 Ben van Basten
 Bart Gallet

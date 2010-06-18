@@ -301,6 +301,7 @@ TypoCorrection typoCorrections[] =
     {"Hertleinm",      "Hertlein"},
     {"Happalahti",     "Haapalahti"},
     {"Hertlien",       "Hertlein"},
+    {"Hatwig",         "Hartwig"},
     {"Hi",             "He"},
     {"Hooper",         "Hopper"},
     {"Inverson",       "Iverson"},
@@ -366,6 +367,9 @@ TypoCorrection typoCorrections[] =
     {"Osfeld",         "Osfield"},
     {"Osfied",         "Osfield"},
     {"Pail",           "Paul"},
+    {"Perciva",        "Peciva"},
+    {"Pecvia",         "Peciva"},
+    {"Priyadashi",     "Priyadarshi"},
     {"Rajce",          "Trajce"},
     {"Raymon",         "Raymond"},
     {"Randal",         "Randall"},
@@ -426,6 +430,8 @@ struct NameCorrection
 
 NameCorrection nameCorrections[] =
 {
+    {"Nguyen",         "Van",
+     "Nguyen",         "Van Truong"},
     {"Thom",           "Carlo",
      "Thom",           "DeCarlo"},
     {"Stephan",        "Lamoliatte",
@@ -530,6 +536,8 @@ NameCorrection nameCorrections[] =
      "Luc",            "Frauciel"},
     {"Alberto",        "Lucas",
      "Alberto",        "Luaces"},
+    {"Tyge",           "",
+     "Tyge",           "Løvset"}
 };
 
 

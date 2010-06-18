@@ -938,7 +938,6 @@ void View::setUpViewFor3DSphericalDisplay(double radius, double collar, unsigned
         camera->setName("Top face camera");
         camera->setGraphicsContext(gc.get());
         camera->setViewport(new osg::Viewport(0,0,camera_width, camera_height));
-        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
         camera->setDrawBuffer(buffer);
         camera->setReadBuffer(buffer);
         camera->setAllowEventFocus(false);

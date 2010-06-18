@@ -1684,6 +1684,7 @@ bool DatabasePager::requiresUpdateSceneGraph() const
 void DatabasePager::updateSceneGraph(const osg::FrameStamp& frameStamp)
 {
 
+#if 0
     {
         // check threads to see which are active and how long the active ones have been working in their current iteration.
 
@@ -1723,7 +1724,7 @@ void DatabasePager::updateSceneGraph(const osg::FrameStamp& frameStamp)
             }
         }
     }
-
+#endif
 
 #if UPDATE_TIMING
     osg::ElapsedTime timer;

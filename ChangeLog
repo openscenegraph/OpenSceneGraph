@@ -1,3 +1,29 @@
+2010-06-18 15:48  robert
+
+	* src/osgViewer/View.cpp: From Laurens Voerman, "While reading the
+	  code for setUpViewFor3DSphericalDisplay I noticed that the top
+	  face of the cube map uses Draw/Read buffer GL_BACK, while all
+	  other faces are using the GL_FRONT buffer. This because the
+	  buffer variable is hidden by a new buffer at lower scope.
+	  Removing the local variable tested (win32 and linux64) and works
+	  fine."
+
+2010-06-18 15:46  robert
+
+	* AUTHORS.txt, applications/osgversion/Contributors.cpp: Updated
+	  AUTHORS
+
+2010-06-18 15:16  robert
+
+	* ChangeLog: Updated ChangeLog
+
+2010-06-18 14:53  robert
+
+	* src/osgViewer/GraphicsWindowCarbon.cpp,
+	  src/osgViewer/GraphicsWindowWin32.cpp,
+	  src/osgViewer/GraphicsWindowX11.cpp: Added checks against windows
+	  being realized before doing warp pointer
+
 2010-06-18 09:48  robert
 
 	* src/osgDB/DatabasePager.cpp: #if 0'd out debugging timing code

@@ -50,6 +50,7 @@ Art Tevs
 Serge Lages
 Alberto Luaces
 Alberto Farre
+Laurens Voerman
 David Fries
 André Garneau
 Adrian Egli
@@ -57,7 +58,6 @@ Terry Welsh
 Ruben Lopez
 Randall Hopper
 Mathieu Marache
-Laurens Voerman
 Jan Peciva
 Sherman Wilcox
 Robert Milharcic

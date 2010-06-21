@@ -13,8 +13,19 @@ static bool readLayers( osgDB::InputStream& is, osgTerrain::CompositeLayer& laye
     unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
-        osgTerrain::Layer* child = dynamic_cast<osgTerrain::Layer*>( is.readObject() );
-        if ( child ) layer.addLayer( child );
+        std::string type;
+        is >> type;
+        if ( type=="Object" )
+        {
+            osgTerrain::Layer* child = dynamic_cast<osgTerrain::Layer*>( is.readObject() );
+            if ( child ) layer.addLayer( child );
+        }
+        else if ( type=="File" )
+        {
+            std::string compoundname;
+            is.readWrappedString( compoundname );
+            layer.addLayer( compoundname );
+        }
     }
     is >> osgDB::END_BRACKET;
     return true;
@@ -26,7 +37,18 @@ static bool writeLayers( osgDB::OutputStream& os, const osgTerrain::CompositeLay
     os << size << osgDB::BEGIN_BRACKET << std::endl;
     for ( unsigned int i=0; i<size; ++i )
     {
-        os << layer.getLayer(i);
+        const osgTerrain::Layer* child = layer.getLayer(i);
+        std::string type = child ? std::string("Object") : std::string("File");
+        os << type;
+        if ( child )
+        {
+            os << child;
+        }
+        else
+        {
+            os.writeWrappedString( layer.getCompoundName(i) );
+            os << std::endl;
+        }
     }
     os << osgDB::END_BRACKET << std::endl;
     return true;

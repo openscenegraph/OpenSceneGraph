@@ -1,5 +1,0 @@
-//
-// Prefix header for all source files of the 'OpenSceneGraph' target in the 'OpenSceneGraph' project.
-//
-
-#include <Carbon/Carbon.h>

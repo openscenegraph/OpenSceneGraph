@@ -875,8 +875,15 @@ SET(PKGCONFIG_FILES
   openscenegraph-osgShadow
   openscenegraph-osgAnimation
   openscenegraph-osgVolume
-  openscenegraph-osgIntrospection
 )
+
+IF(BUILD_OSG_WRAPPERS)
+  SET(PKGCONFIG_FILES ${PKGCONFIG_FILES} openscenegraph-osgIntrospection)
+ENDIF(BUILD_OSG_WRAPPERS)
+
+IF(QT4_FOUND)
+  SET(PKGCONFIG_FILES ${PKGCONFIG_FILES} openscenegraph-osgQt)
+ENDIF(QT4_FOUND)
 
 FOREACH(PKGCONFIG_FILE ${PKGCONFIG_FILES})
   CONFIGURE_FILE(${PROJECT_SOURCE_DIR}/packaging/pkgconfig/${PKGCONFIG_FILE}.pc.in

@@ -11,12 +11,12 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#include "FFmpegHeaders.hpp"
+#include "FFmpegImageStream.hpp"
+
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
-
-#include "FFmpegHeaders.hpp"
-#include "FFmpegImageStream.hpp"
 
 
 

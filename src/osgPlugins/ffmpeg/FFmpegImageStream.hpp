@@ -2,13 +2,13 @@
 #ifndef HEADER_GUARD_OSGFFMPEG_FFMPEG_IMAGE_STREAM_H
 #define HEADER_GUARD_OSGFFMPEG_FFMPEG_IMAGE_STREAM_H
 
+#include "FFmpegDecoder.hpp"
+#include "MessageQueue.hpp"
+
 #include <osg/ImageStream>
 
 #include <OpenThreads/Condition>
 #include <OpenThreads/Thread>
-
-#include "FFmpegDecoder.hpp"
-#include "MessageQueue.hpp"
 
 namespace osgFFmpeg
 {

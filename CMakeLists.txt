@@ -741,16 +741,6 @@ IF(APPLE)
 ENDIF(APPLE)
 
 
-#
-# Provide target for generating wrappers
-#
-SET(GENWRAPPER genwrapper)
-
-ADD_CUSTOM_TARGET(wrappers
-    COMMAND ${GENWRAPPER} -c ${OpenSceneGraph_SOURCE_DIR}/src/osgWrappers/introspection/genwrapper.conf -t ${OpenSceneGraph_SOURCE_DIR}/src/osgWrappers/introspection/Doxyfile.template -d ${OpenSceneGraph_SOURCE_DIR} | doxygen -
-    COMMAND ${GENWRAPPER} -c ${OpenSceneGraph_SOURCE_DIR}/src/osgWrappers/introspection/genwrapper.conf -l ${OpenSceneGraph_SOURCE_DIR}
-)
-
 # For Doxygen
 INCLUDE(${CMAKE_ROOT}/Modules/Documentation.cmake OPTIONAL)
 OPTION(BUILD_DOCUMENTATION "Build OpenSceneGraph reference documentation using doxygen (use: make DoxygenDoc)" OFF)
@@ -876,10 +866,6 @@ SET(PKGCONFIG_FILES
   openscenegraph-osgAnimation
   openscenegraph-osgVolume
 )
-
-IF(BUILD_OSG_WRAPPERS)
-  SET(PKGCONFIG_FILES ${PKGCONFIG_FILES} openscenegraph-osgIntrospection)
-ENDIF(BUILD_OSG_WRAPPERS)
 
 IF(QT4_FOUND)
   SET(PKGCONFIG_FILES ${PKGCONFIG_FILES} openscenegraph-osgQt)

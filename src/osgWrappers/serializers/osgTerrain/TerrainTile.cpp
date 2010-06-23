@@ -32,11 +32,12 @@ static bool checkColorLayers( const osgTerrain::TerrainTile& tile )
 
 static bool readColorLayers( osgDB::InputStream& is, osgTerrain::TerrainTile& tile )
 {
-    unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
-    for ( unsigned int i=0; i<size; ++i )
+    unsigned int numValidLayers = 0; is >> numValidLayers >> osgDB::BEGIN_BRACKET;
+    for ( unsigned int i=0; i<numValidLayers; ++i )
     {
+        unsigned int layerNum=0; is >> osgDB::PROPERTY("Layer") >> layerNum;
         osgTerrain::Layer* layer = dynamic_cast<osgTerrain::Layer*>( is.readObject() );
-        if ( layer ) tile.setColorLayer( i, layer );
+        if ( layer ) tile.setColorLayer( layerNum, layer );
     }
     is >> osgDB::END_BRACKET;
     return true;
@@ -44,11 +45,16 @@ static bool readColorLayers( osgDB::InputStream& is, osgTerrain::TerrainTile& ti
 
 static bool writeColorLayers( osgDB::OutputStream& os, const osgTerrain::TerrainTile& tile )
 {
-    unsigned int size = tile.getNumColorLayers();
-    os << size << osgDB::BEGIN_BRACKET << std::endl;
-    for ( unsigned int i=0; i<size; ++i )
+    unsigned int numValidLayers = 0;
+    for ( unsigned int i=0; i<tile.getNumColorLayers(); ++i )
     {
-        os << tile.getColorLayer(i);
+        if (tile.getColorLayer(i)) ++numValidLayers;
+    }
+
+    os << numValidLayers << osgDB::BEGIN_BRACKET << std::endl;
+    for ( unsigned int i=0; i<tile.getNumColorLayers(); ++i )
+    {
+        if (tile.getColorLayer(i)) os << osgDB::PROPERTY("Layer") << i << tile.getColorLayer(i);
     }
     os << osgDB::END_BRACKET << std::endl;
     return true;

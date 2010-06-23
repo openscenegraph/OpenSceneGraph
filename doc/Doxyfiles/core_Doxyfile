@@ -88,7 +88,6 @@ INPUT                  = ${OpenSceneGraph_SOURCE_DIR}/include/osg \
                          ${OpenSceneGraph_SOURCE_DIR}/include/osgDB \
                          ${OpenSceneGraph_SOURCE_DIR}/include/osgFX \
                          ${OpenSceneGraph_SOURCE_DIR}/include/osgGA \
-                         ${OpenSceneGraph_SOURCE_DIR}/include/osgIntrospection \
                          ${OpenSceneGraph_SOURCE_DIR}/include/osgManipulator \
                          ${OpenSceneGraph_SOURCE_DIR}/include/osgParticle \
                          ${OpenSceneGraph_SOURCE_DIR}/include/osgShadow \
@@ -99,6 +98,7 @@ INPUT                  = ${OpenSceneGraph_SOURCE_DIR}/include/osg \
                          ${OpenSceneGraph_SOURCE_DIR}/include/osgViewer \
                          ${OpenSceneGraph_SOURCE_DIR}/include/osgVolume \
                          ${OpenSceneGraph_SOURCE_DIR}/include/osgWidget \
+                         ${OpenSceneGraph_SOURCE_DIR}/include/osgQt \
                          ${OpenSceneGraph_SOURCE_DIR}/doc/Doxyfiles/auto_Mainpage
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *include* \

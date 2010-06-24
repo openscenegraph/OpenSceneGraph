@@ -41,6 +41,9 @@ State::State():
 {
     _graphicsContext = 0;
     _contextID = 0;
+
+    _shaderComposer = new ShaderComposer;
+
     _identity = new osg::RefMatrix(); // default RefMatrix constructs to identity.
     _initialViewMatrix = _identity;
     _projection = _identity;

@@ -137,6 +137,8 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Sequence
     ${HEADER_PATH}/ShadeModel
     ${HEADER_PATH}/Shader
+    ${HEADER_PATH}/ShaderAttribute
+    ${HEADER_PATH}/ShaderComposer
     ${HEADER_PATH}/ShadowVolumeOccluder
     ${HEADER_PATH}/Shape
     ${HEADER_PATH}/ShapeDrawable
@@ -301,6 +303,8 @@ ADD_LIBRARY(${LIB_NAME}
     Sequence.cpp
     ShadeModel.cpp
     Shader.cpp
+    ShaderAttribute.cpp
+    ShaderComposer.cpp
     ShadowVolumeOccluder.cpp
     Shape.cpp
     ShapeDrawable.cpp

@@ -21,6 +21,7 @@
 #include <osg/BufferObject>
 #include <osg/Observer>
 
+#include <osg/ShaderComposer>
 #include <osg/FrameStamp>
 #include <osg/DisplaySettings>
 #include <osg/Polytope>
@@ -139,6 +140,17 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         /** Get the current OpenGL context unique ID.*/
         inline unsigned int getContextID() const { return _contextID; }
+
+
+        /** Set the ShaderComposor object that implements shader composition.*/
+        void setShaderComposer(ShaderComposer* sc) { _shaderComposer = sc; }
+
+        /** Get the ShaderComposor object.*/
+        ShaderComposer* getShaderComposer() { return _shaderComposer.get(); }
+
+        /** Get the const ShaderComposor object.*/
+        const ShaderComposer* getShaderComposer() const { return _shaderComposer.get(); }
+
 
         /** Push stateset onto state stack.*/
         void pushStateSet(const StateSet* dstate);
@@ -1339,6 +1351,8 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         GraphicsContext*            _graphicsContext;
         unsigned int                _contextID;
+        osg::ref_ptr<ShaderComposer> _shaderComposer;
+
         ref_ptr<FrameStamp>         _frameStamp;
 
         ref_ptr<const RefMatrix>    _identity;

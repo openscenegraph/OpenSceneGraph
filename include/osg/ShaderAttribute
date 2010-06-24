@@ -1,0 +1,82 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2004 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_SHADERATTRIBUTE
+#define OSG_SHADERATTRIBUTE 1
+
+#include <osg/StateAttribute>
+#include <osg/Shader>
+#include <osg/Uniform>
+
+namespace osg {
+
+class OSG_EXPORT ShaderAttribute : public StateAttribute
+{
+    public :
+
+        ShaderAttribute();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy. */
+        ShaderAttribute(const ShaderAttribute& sa,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_Object(osg, ShaderAttribute);
+
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs. */
+        virtual int compare(const StateAttribute& sa) const;
+
+
+        void setType(Type type);
+        virtual Type getType() const { return _type; }
+
+        unsigned int addShader(Shader* shader);
+        void removeShader(unsigned int i);
+        unsigned int getNumShaders() const { return _shaders.size(); }
+        Shader* getShader(unsigned int i) { return _shaders[i].get(); }
+        Shader* getShader(unsigned int i) const { return _shaders[i].get(); }
+
+
+        unsigned int addUniform(Uniform* uniform);
+        void removeUniform(unsigned int i);
+        unsigned int getNumUniforms() const { return _uniforms.size(); }
+        Uniform* getUniform(unsigned int i) { return _uniforms[i].get(); }
+        const Uniform* getUniform(unsigned int i) const { return _uniforms[i].get(); }
+
+
+        virtual bool getModeUsage(StateAttribute::ModeUsage& usage) const;
+
+        virtual void apply(State& state) const;
+
+        virtual void compose(ShaderComposer& composer) const;
+
+        virtual void compileGLObjects(State& state) const;
+
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
+        virtual void releaseGLObjects(State* state=0) const;
+
+    protected :
+
+        virtual ~ShaderAttribute();
+
+        typedef std::vector< osg::ref_ptr<osg::Shader> > Shaders;
+        typedef std::vector< osg::ref_ptr<osg::Uniform> > Uniforms;
+
+        Type _type;
+        Shaders _shaders;
+        Uniforms _uniforms;
+
+};
+
+}
+
+#endif

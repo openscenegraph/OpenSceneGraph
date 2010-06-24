@@ -35,6 +35,7 @@ namespace osg {
 // forward declare NodeVisitor, State & StateSet
 class NodeVisitor;
 class State;
+class ShaderComposer;
 class StateSet;
 class Texture;
 
@@ -314,6 +315,9 @@ class OSG_EXPORT StateAttribute : public Object
           * the current context and state.
           */
         virtual void apply(State&) const {}
+
+        /* compose associated shaders via the ShaderComposer. */
+        virtual void compose(ShaderComposer& composer) const {}
 
         /** Default to nothing to compile - all state is applied immediately. */
         virtual void compileGLObjects(State&) const {}

@@ -237,7 +237,7 @@ public:
         _in->get( ch ); checkStream();
 
         // skip white space
-        while ( ch==' ' )
+        while ( ch==' ' || (ch=='\n') || (ch=='\r'))
         {
             _in->get( ch ); checkStream();
         }

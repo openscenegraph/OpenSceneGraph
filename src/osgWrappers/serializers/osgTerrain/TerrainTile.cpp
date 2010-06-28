@@ -67,7 +67,7 @@ static bool checkTileLoadedCallback( const osgTerrain::TerrainTile& tile )
 static bool readTileLoadedCallback( osgDB::InputStream& is, osgTerrain::TerrainTile& tile )
 {
     if ( osgTerrain::TerrainTile::getTileLoadedCallback().valid() ) 
-        osgTerrain::TerrainTile::getTileLoadedCallback()->loaded( &terrainTile, is.getOptions() );
+        osgTerrain::TerrainTile::getTileLoadedCallback()->loaded( &tile, is.getOptions() );
     return true;
 }
 

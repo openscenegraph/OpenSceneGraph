@@ -60,6 +60,20 @@ static bool writeColorLayers( osgDB::OutputStream& os, const osgTerrain::Terrain
     return true;
 }
 
+// TileLoadedCallback
+static bool checkTileLoadedCallback( const osgTerrain::TerrainTile& tile )
+{ return true; }
+
+static bool readTileLoadedCallback( osgDB::InputStream& is, osgTerrain::TerrainTile& tile )
+{
+    if ( osgTerrain::TerrainTile::getTileLoadedCallback().valid() ) 
+        osgTerrain::TerrainTile::getTileLoadedCallback()->loaded( &terrainTile, is.getOptions() );
+    return true;
+}
+
+static bool writeTileLoadedCallback( osgDB::OutputStream& os, const osgTerrain::TerrainTile& tile )
+{ return true; }
+
 REGISTER_OBJECT_WRAPPER( osgTerrain_TerrainTile,
                          new osgTerrain::TerrainTile,
                          osgTerrain::TerrainTile,
@@ -78,4 +92,6 @@ REGISTER_OBJECT_WRAPPER( osgTerrain_TerrainTile,
         ADD_ENUM_VALUE( ENABLE_BLENDING );
         ADD_ENUM_VALUE( ENABLE_BLENDING_WHEN_ALPHA_PRESENT );
     END_ENUM_SERIALIZER();  // BlendingPolicy
+    
+    ADD_USER_SERIALIZER( TileLoadedCallback );
 }

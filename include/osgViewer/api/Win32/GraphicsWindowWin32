@@ -106,6 +106,9 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow, p
     protected:
     
         void init();
+
+        void registerWindow();
+        void unregisterWindow();
         
         bool registerWindowProcedure();
         bool unregisterWindowProcedure();

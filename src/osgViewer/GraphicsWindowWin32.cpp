@@ -1334,6 +1334,16 @@ void GraphicsWindowWin32::destroyWindow( bool deleteNativeWindow )
     _destroying  = false;
 }
 
+void GraphicsWindowWin32::registerWindow()
+{
+  Win32WindowingSystem::getInterface()->registerWindow(_hwnd, this);
+}
+
+void GraphicsWindowWin32::unregisterWindow()
+{
+  Win32WindowingSystem::getInterface()->unregisterWindow(_hwnd);
+}
+
 bool GraphicsWindowWin32::registerWindowProcedure()
 {
     ::SetLastError(0);

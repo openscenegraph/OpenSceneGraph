@@ -42,7 +42,7 @@ State::State():
     _graphicsContext = 0;
     _contextID = 0;
 
-    _shaderCompositionEnabled = true;
+    _shaderCompositionEnabled = false; // true;
     _shaderCompositionDirty = true;
     _shaderComposer = new ShaderComposer;
     _currentShaderCompositionProgram = 0L;
@@ -519,8 +519,9 @@ void State::apply(const StateSet* dstate)
         {
             if (_shaderCompositionDirty)
             {
-                // built lits of current ShaderComponents
-                _currentShaderCompositionProgram = _shaderComposer->getOrCreateProgram();
+                // build lits of current ShaderComponents
+                ShaderComponents shaderComponents;
+                _currentShaderCompositionProgram = _shaderComposer->getOrCreateProgram(shaderComponents);
             }
 
             if (_currentShaderCompositionProgram)

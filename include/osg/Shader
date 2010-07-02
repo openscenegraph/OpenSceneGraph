@@ -252,6 +252,31 @@ class OSG_EXPORT Shader : public osg::Object
         Shader& operator=(const Shader&);        // disallowed
 };
 
+
+class OSG_EXPORT ShaderComponent : public osg::Object
+{
+    public:
+
+        ShaderComponent();
+        ShaderComponent(const ShaderComponent& sc,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+        META_Object(osg, ShaderComponent)
+
+        unsigned int addShader(osg::Shader* shader);
+        void removeShader(unsigned int i);
+
+        osg::Shader* getShader(unsigned int i) { return _shaders[i].get(); }
+        const osg::Shader* getShader(unsigned int i) const { return _shaders[i].get(); }
+
+        unsigned int getNumShaders() const { return _shaders.size(); }
+
+    protected:
+
+       typedef std::vector< osg::ref_ptr<osg::Shader> >  Shaders;
+       Shaders _shaders;
+};
+
+
 }
 
 #endif

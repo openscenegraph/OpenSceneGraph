@@ -1351,7 +1351,11 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         GraphicsContext*            _graphicsContext;
         unsigned int                _contextID;
-        osg::ref_ptr<ShaderComposer> _shaderComposer;
+
+        bool                            _shaderCompositionEnabled;
+        bool                            _shaderCompositionDirty;
+        osg::ref_ptr<ShaderComposer>    _shaderComposer;
+        osg::Program*                   _currentShaderCompositionProgram;
 
         ref_ptr<FrameStamp>         _frameStamp;
 
@@ -1413,12 +1417,15 @@ class OSG_EXPORT State : public Referenced, public Observer
             {
                 changed = false;
                 last_applied_attribute = 0L;
+                last_applied_shadercomponent = 0L;
                 global_default_attribute = 0L;
+                
             }
 
             /** apply an attribute if required, passing in attribute and appropriate attribute stack */
             bool                    changed;
             const StateAttribute*   last_applied_attribute;
+            const ShaderComponent*  last_applied_shadercomponent;
             ref_ptr<const StateAttribute> global_default_attribute;
             AttributeVec            attributeVec;
         };
@@ -1492,6 +1499,13 @@ class OSG_EXPORT State : public Referenced, public Observer
 
                 as.last_applied_attribute = attribute;
                 attribute->apply(*this);
+
+                const ShaderComponent* sc = attribute->getShaderComponent();
+                if (as.last_applied_shadercomponent != sc)
+                {
+                    as.last_applied_shadercomponent = sc;
+                    _shaderCompositionDirty = true;
+                }
 
                 if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors(attribute);
 

@@ -19,11 +19,13 @@ using namespace osg;
 
 ShaderAttribute::ShaderAttribute()
 {
+    _shaderComponent = new osg::ShaderComponent;
 }
 
 ShaderAttribute::ShaderAttribute(const ShaderAttribute& sa,const CopyOp& copyop):
     StateAttribute(sa,copyop),
-    _type(sa._type)
+    _type(sa._type),
+    _uniforms(sa._uniforms)
 {
 }
 
@@ -48,24 +50,6 @@ int ShaderAttribute::compare(const StateAttribute& sa) const
 void ShaderAttribute::setType(Type type)
 {
     _type = type;
-}
-
-unsigned int ShaderAttribute::addShader(Shader* shader)
-{
-    // check to see if shader already add, if so return the index of it
-    for(unsigned int i=0; i<_shaders.size(); ++i)
-    {
-        if (_shaders[i] == shader) return i;
-    }
-
-    // add shader and return it's position
-    _shaders.push_back(shader);
-    return _shaders.size()-1;
-}
-
-void ShaderAttribute::removeShader(unsigned int i)
-{
-    _shaders.erase(_shaders.begin()+i);
 }
 
 unsigned int ShaderAttribute::addUniform(Uniform* uniform)

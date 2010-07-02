@@ -42,7 +42,10 @@ State::State():
     _graphicsContext = 0;
     _contextID = 0;
 
+    _shaderCompositionEnabled = true;
+    _shaderCompositionDirty = true;
     _shaderComposer = new ShaderComposer;
+    _currentShaderCompositionProgram = 0L;
 
     _identity = new osg::RefMatrix(); // default RefMatrix constructs to identity.
     _initialViewMatrix = _identity;
@@ -510,6 +513,21 @@ void State::apply(const StateSet* dstate)
 
             if (unit<ds_textureAttributeList.size()) applyAttributeListOnTexUnit(unit,getOrCreateTextureAttributeMap(unit),ds_textureAttributeList[unit]);
             else if (unit<_textureAttributeMapList.size()) applyAttributeMapOnTexUnit(unit,_textureAttributeMapList[unit]);
+        }
+
+        if (_shaderCompositionEnabled)
+        {
+            if (_shaderCompositionDirty)
+            {
+                // built lits of current ShaderComponents
+                _currentShaderCompositionProgram = _shaderComposer->getOrCreateProgram();
+            }
+
+            if (_currentShaderCompositionProgram)
+            {
+                Program::PerContextProgram* pcp = _currentShaderCompositionProgram->getPCP(_contextID);
+                if (_lastAppliedProgramObject != pcp) applyAttribute(_currentShaderCompositionProgram);
+            }
         }
 
         applyUniformList(_uniformMap,dstate->getUniformList());

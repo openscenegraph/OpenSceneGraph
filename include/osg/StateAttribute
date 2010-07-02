@@ -17,6 +17,7 @@
 #include <osg/Export>
 #include <osg/Object>
 #include <osg/StateAttributeCallback>
+#include <osg/Shader>
 #include <osg/GL>
 
 #include <typeinfo>
@@ -193,7 +194,9 @@ class OSG_EXPORT StateAttribute : public Object
         
         StateAttribute(const StateAttribute& sa,const CopyOp& copyop=CopyOp::SHALLOW_COPY): 
             Object(sa,copyop),
-            _updateCallback(copyop(sa._updateCallback.get()))
+            _shaderComponent(sa._shaderComponent),
+            _updateCallback(copyop(sa._updateCallback.get())),
+            _eventCallback(copyop(sa._eventCallback.get()))
             {}
         
 
@@ -262,6 +265,9 @@ class OSG_EXPORT StateAttribute : public Object
          */
         inline unsigned int getNumParents() const { return static_cast<unsigned int>(_parents.size()); }
 
+        void setShaderComponent(ShaderComponent* sc) { _shaderComponent = sc; }
+        ShaderComponent* getShaderComponent() { return _shaderComponent.get(); }
+        const ShaderComponent* getShaderComponent() const { return _shaderComponent.get(); }
 
         struct ModeUsage
         {
@@ -340,6 +346,8 @@ class OSG_EXPORT StateAttribute : public Object
 
         ParentList _parents;
         friend class osg::StateSet;
+
+        ref_ptr<ShaderComponent>          _shaderComponent;
 
         ref_ptr<StateAttributeCallback>   _updateCallback;
         ref_ptr<StateAttributeCallback>   _eventCallback;

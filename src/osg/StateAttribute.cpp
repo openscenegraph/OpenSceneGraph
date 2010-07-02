@@ -18,7 +18,6 @@
 
 using namespace osg;
 
-
 StateAttribute::StateAttribute()
     :Object(true)
 {

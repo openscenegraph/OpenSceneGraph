@@ -36,6 +36,40 @@
 
 using namespace osg;
 
+
+///////////////////////////////////////////////////////////////////////////////////
+//
+//  ShaderComponent
+//
+ShaderComponent::ShaderComponent()
+{
+}
+
+ShaderComponent::ShaderComponent(const ShaderComponent& sc,const CopyOp& copyop):
+    osg::Object(sc, copyop),
+    _shaders(sc._shaders)
+{
+}
+
+unsigned int ShaderComponent::addShader(osg::Shader* shader)
+{
+    for(unsigned int i=0; i<_shaders.size();++i)
+    {
+        if (_shaders[i]==shader) return i;
+    }
+    _shaders.push_back(shader);
+    return _shaders.size()-1;
+}
+
+void ShaderComponent::removeShader(unsigned int i)
+{
+    _shaders.erase(_shaders.begin()+i);
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+//
+//  ShaderBinary
+//
 ShaderBinary::ShaderBinary()
 {
 }

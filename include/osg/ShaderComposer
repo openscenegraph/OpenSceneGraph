@@ -31,6 +31,7 @@ class OSG_EXPORT ShaderComposer : public osg::Object
         ShaderComposer(const ShaderComposer& sa,const CopyOp& copyop=CopyOp::SHALLOW_COPY);
         META_Object(osg, ShaderComposer)
 
+        osg::Program* getOrCreateProgram() { return 0; }
 
     protected:
 

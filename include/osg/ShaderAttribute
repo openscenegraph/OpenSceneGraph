@@ -38,19 +38,17 @@ class OSG_EXPORT ShaderAttribute : public StateAttribute
         void setType(Type type);
         virtual Type getType() const { return _type; }
 
-        unsigned int addShader(Shader* shader);
-        void removeShader(unsigned int i);
-        unsigned int getNumShaders() const { return _shaders.size(); }
-        Shader* getShader(unsigned int i) { return _shaders[i].get(); }
-        Shader* getShader(unsigned int i) const { return _shaders[i].get(); }
-
+        unsigned int addShader(Shader* shader) { return _shaderComponent->addShader(shader); }
+        void removeShader(unsigned int i) { _shaderComponent->removeShader(i); }
+        unsigned int getNumShaders() const { return _shaderComponent->getNumShaders(); }
+        Shader* getShader(unsigned int i) { return _shaderComponent->getShader(i); }
+        const Shader* getShader(unsigned int i) const { return _shaderComponent->getShader(i); }
 
         unsigned int addUniform(Uniform* uniform);
         void removeUniform(unsigned int i);
         unsigned int getNumUniforms() const { return _uniforms.size(); }
         Uniform* getUniform(unsigned int i) { return _uniforms[i].get(); }
         const Uniform* getUniform(unsigned int i) const { return _uniforms[i].get(); }
-
 
         virtual bool getModeUsage(StateAttribute::ModeUsage& usage) const;
 
@@ -68,13 +66,10 @@ class OSG_EXPORT ShaderAttribute : public StateAttribute
 
         virtual ~ShaderAttribute();
 
-        typedef std::vector< osg::ref_ptr<osg::Shader> > Shaders;
         typedef std::vector< osg::ref_ptr<osg::Uniform> > Uniforms;
 
         Type _type;
-        Shaders _shaders;
         Uniforms _uniforms;
-
 };
 
 }

@@ -42,7 +42,7 @@ State::State():
     _graphicsContext = 0;
     _contextID = 0;
 
-    _shaderCompositionEnabled = false; // true;
+    _shaderCompositionEnabled = false;
     _shaderCompositionDirty = true;
     _shaderComposer = new ShaderComposer;
     _currentShaderCompositionProgram = 0L;
@@ -515,21 +515,7 @@ void State::apply(const StateSet* dstate)
             else if (unit<_textureAttributeMapList.size()) applyAttributeMapOnTexUnit(unit,_textureAttributeMapList[unit]);
         }
 
-        if (_shaderCompositionEnabled)
-        {
-            if (_shaderCompositionDirty)
-            {
-                // build lits of current ShaderComponents
-                ShaderComponents shaderComponents;
-                _currentShaderCompositionProgram = _shaderComposer->getOrCreateProgram(shaderComponents);
-            }
-
-            if (_currentShaderCompositionProgram)
-            {
-                Program::PerContextProgram* pcp = _currentShaderCompositionProgram->getPCP(_contextID);
-                if (_lastAppliedProgramObject != pcp) applyAttribute(_currentShaderCompositionProgram);
-            }
-        }
+        applyShaderComposition();
 
         applyUniformList(_uniformMap,dstate->getUniformList());
     }
@@ -562,10 +548,44 @@ void State::apply()
         if (unit<_textureAttributeMapList.size()) applyAttributeMapOnTexUnit(unit,_textureAttributeMapList[unit]);
     }
 
+    applyShaderComposition();
+
     applyUniformMap(_uniformMap);
 
     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("end of State::apply()");
 }
+
+void State::applyShaderComposition()
+{
+    if (_shaderCompositionEnabled)
+    {
+        if (_shaderCompositionDirty)
+        {
+            // build lits of current ShaderComponents
+            ShaderComponents shaderComponents;
+
+            for(AttributeMap::iterator itr = _attributeMap.begin();
+                itr != _attributeMap.end();
+                ++itr)
+            {
+                AttributeStack& as = itr->second;
+                if (as.last_applied_shadercomponent)
+                {
+                    shaderComponents.push_back(const_cast<ShaderComponent*>(as.last_applied_shadercomponent));
+                }
+            }
+
+            _currentShaderCompositionProgram = _shaderComposer->getOrCreateProgram(shaderComponents);
+        }
+
+        if (_currentShaderCompositionProgram)
+        {
+            Program::PerContextProgram* pcp = _currentShaderCompositionProgram->getPCP(_contextID);
+            if (_lastAppliedProgramObject != pcp) applyAttribute(_currentShaderCompositionProgram);
+        }
+    }
+}
+
 
 void State::haveAppliedMode(StateAttribute::GLMode mode,StateAttribute::GLModeValue value)
 {

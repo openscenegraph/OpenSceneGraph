@@ -77,53 +77,18 @@ osg::Program* ShaderComposer::getOrCreateProgram(const ShaderComponents& shaderC
 
     if (!vertexShaders.empty())
     {
-        ShaderMainMap::iterator itr = _shaderMainMap.find(vertexShaders);
-        if (itr == _shaderMainMap.end())
-        {
-            // no vertex shader in map yet, need to compose a new main shader
-            osg::Shader* mainShader = composeMain(vertexShaders);
-            _shaderMainMap[vertexShaders] = mainShader;
-            program->addShader(mainShader);
-        }
-        else
-        {
-            program->addShader(itr->second.get());
-        }
+        addShaderToProgram(program.get(), vertexShaders);
     }
 
     if (!geometryShaders.empty())
     {
-        ShaderMainMap::iterator itr = _shaderMainMap.find(geometryShaders);
-        if (itr == _shaderMainMap.end())
-        {
-            // no vertex shader in map yet, need to compose a new main shader
-            osg::Shader* mainShader = composeMain(geometryShaders);
-            _shaderMainMap[geometryShaders] = mainShader;
-            program->addShader(mainShader);
-        }
-        else
-        {
-            program->addShader(itr->second.get());
-        }
+        addShaderToProgram(program.get(), geometryShaders);
     }
-
 
     if (!fragmentShaders.empty())
     {
-        ShaderMainMap::iterator itr = _shaderMainMap.find(fragmentShaders);
-        if (itr == _shaderMainMap.end())
-        {
-            // no vertex shader in map yet, need to compose a new main shader
-            osg::Shader* mainShader = composeMain(fragmentShaders);
-            _shaderMainMap[fragmentShaders] = mainShader;
-            program->addShader(mainShader);
-        }
-        else
-        {
-            program->addShader(itr->second.get());
-        }
+        addShaderToProgram(program.get(), fragmentShaders);
     }
-
 
     // assign newly created program to map.
     _programMap[shaderComponents] = program;
@@ -133,8 +98,93 @@ osg::Program* ShaderComposer::getOrCreateProgram(const ShaderComponents& shaderC
     return program.get();
 }
 
+void ShaderComposer::addShaderToProgram(Program* program, const Shaders& shaders)
+{
+    ShaderMainMap::iterator itr = _shaderMainMap.find(shaders);
+    if (itr == _shaderMainMap.end())
+    {
+        // no vertex shader in map yet, need to compose a new main shader
+        osg::Shader* mainShader = composeMain(shaders);
+        _shaderMainMap[shaders] = mainShader;
+        program->addShader(mainShader);
+    }
+    else
+    {
+        program->addShader(itr->second.get());
+    }
+
+    for(Shaders::const_iterator itr = shaders.begin();
+        itr != shaders.end();
+        ++itr)
+    {
+        Shader* shader = const_cast<Shader*>(*itr);
+        if (!(shader->getShaderSource().empty()) || shader->getShaderBinary())
+        {
+            program->addShader(shader);
+        }
+    }
+}
+
 osg::Shader* ShaderComposer::composeMain(const Shaders& shaders)
 {
     OSG_NOTICE<<"ShaderComposer::composeMain(Shaders) shaders.size()=="<<shaders.size()<<std::endl;
-    return 0;
+
+
+    // collect the shader type and the code injection from each of the contributing shaders
+    Shader::Type type = Shader::UNDEFINED;
+    Shader::CodeInjectionMap codeInjectionMap;
+    for(Shaders::const_iterator itr = shaders.begin();
+        itr != shaders.end();
+        ++itr)
+    {
+        const Shader* shader = *itr;
+        if (type == Shader::UNDEFINED)
+        {
+            type = shader->getType();
+        }
+        else if (type != shader->getType())
+        {
+            OSG_NOTICE<<"Warning:ShaderComposer::composeMain() mixing different types of Shaders prohibited."<<std::endl;
+            continue;
+        }
+
+        const Shader::CodeInjectionMap& cim = shader->getCodeInjectionMap();
+        for(Shader::CodeInjectionMap::const_iterator citr = cim.begin();
+            citr != cim.end();
+            ++citr)
+        {
+            codeInjectionMap.insert(*citr);
+        }
+    }
+
+    // collect together the different parts of the main shader
+    std::string before_main;
+    std::string in_main;
+    std::string after_main;
+
+    for(Shader::CodeInjectionMap::iterator citr = codeInjectionMap.begin();
+        citr != codeInjectionMap.end();
+        ++citr)
+    {
+        float position = citr->first;
+        if (position<0.0) before_main += citr->second;
+        else if (position<=1.0) in_main += citr->second;
+        else after_main += citr->second;
+    }
+
+    // assembly the final main shader source
+    std::string full_source;
+    full_source += before_main;
+    full_source += std::string("void main(void)\n");
+    full_source += std::string("{\n");
+    full_source += in_main;
+    full_source += std::string("}\n");
+    full_source += after_main;
+
+
+    ref_ptr<Shader> mainShader = new Shader(type, full_source);
+
+    _shaderMainMap[shaders] = mainShader;
+
+    return mainShader.get();
 }

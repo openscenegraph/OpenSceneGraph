@@ -201,7 +201,8 @@ Shader::Shader(const Shader& rhs, const osg::CopyOp& copyop):
     _type(rhs._type),
     _shaderFileName(rhs._shaderFileName),
     _shaderSource(rhs._shaderSource),
-    _shaderBinary(rhs._shaderBinary)
+    _shaderBinary(rhs._shaderBinary),
+    _codeInjectionMap(rhs._codeInjectionMap)
 {
 }
 

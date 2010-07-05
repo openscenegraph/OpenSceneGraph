@@ -25,6 +25,7 @@
 #include <osg/buffered_value>
 
 #include <set>
+#include <map>
 
 namespace osg {
 
@@ -143,6 +144,24 @@ class OSG_EXPORT Shader : public osg::Object
         bool loadShaderSourceFromFile( const std::string& fileName );
 
 
+        /** The code injection map used when generating the main shader during main shader composition.*/
+        typedef std::multimap<float, std::string> CodeInjectionMap;
+
+        /** Add code injection that will be placed in the main shader to enable support for this shader.
+          * The position is set up so that code to be inserted before the main() will have a negative value,
+          * a position between 0 and 1.0 will be inserted in main() and a position greater than 1.0 will
+          * be placed after the main().
+          * During shader composition all the code injections are sorted in ascending order and then
+          * placed in the appropriate section of the main shader. */
+        void addCodeInjection(float position, const std::string& code) { _codeInjectionMap.insert(CodeInjectionMap::value_type(position, code)); }
+
+        /** Get the code injection map.*/
+        CodeInjectionMap& getCodeInjectionMap() { return _codeInjectionMap; }
+
+        /** Get the const code injection map.*/
+        const CodeInjectionMap& getCodeInjectionMap() const { return _codeInjectionMap; }
+
+
 
         /** Resize any per context GLObject buffers to specified size. */
         virtual void resizeGLObjectBuffers(unsigned int maxSize);
@@ -242,6 +261,8 @@ class OSG_EXPORT Shader : public osg::Object
         std::string                     _shaderFileName;
         std::string                     _shaderSource;
         osg::ref_ptr<ShaderBinary>      _shaderBinary;
+
+        CodeInjectionMap                _codeInjectionMap;
         
         /** osg::Programs that this osg::Shader is attached to */
         typedef std::set< osg::Program* > ProgramSet;

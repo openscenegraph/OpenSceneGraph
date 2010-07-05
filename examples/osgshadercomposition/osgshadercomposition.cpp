@@ -29,6 +29,30 @@ osg::Node* createSceneGraph(osg::ArgumentParser& arguments)
     osg::ShaderAttribute* sa = new osg::ShaderAttribute;
     stateset->setAttribute(sa);
 
+    {
+        const char shader_str[] =
+            "vec4 colour()\n"
+            "{\n"
+            "    return vec4(1.0,0.5,1.0,1.0);\n"
+           "}\n";
+
+        osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, shader_str);
+        vertex_shader->addCodeInjection(-1,"varying vec4 c;\n");
+        vertex_shader->addCodeInjection(-1,"vec4 colour();\n");
+        vertex_shader->addCodeInjection(0,"gl_Position = ftransform();\n");
+        vertex_shader->addCodeInjection(0,"c = colour();\n");
+
+        sa->addShader(vertex_shader);
+     }
+
+     {
+        osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT);
+        fragment_shader->addCodeInjection(-1,"varying vec4 c;\n");
+        fragment_shader->addCodeInjection(0,"gl_FragColor = c;\n");
+
+        sa->addShader(fragment_shader);
+     }
+
     return node;
 }
 
@@ -42,6 +66,18 @@ int main( int argc, char **argv )
     if (!scenegraph) return 1;
 
     viewer.setSceneData(scenegraph.get());
+
+    viewer.realize();
+
+    // enable shader composition
+    osgViewer::Viewer::Windows windows;
+    viewer.getWindows(windows);
+    for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
+        itr != windows.end();
+        ++itr)
+    {
+        (*itr)->getState()->setShaderCompositionEnabled(true);
+    }
 
     return viewer.run();
 }

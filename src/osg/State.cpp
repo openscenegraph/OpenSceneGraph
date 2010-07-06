@@ -495,6 +495,7 @@ void State::apply(const StateSet* dstate)
 
     if (dstate)
     {
+        _currentShaderCompositionUniformList.clear();
 
         applyModeList(_modeMap,dstate->getModeList());
         applyAttributeList(_attributeMap,dstate->getAttributeList());
@@ -515,9 +516,32 @@ void State::apply(const StateSet* dstate)
             else if (unit<_textureAttributeMapList.size()) applyAttributeMapOnTexUnit(unit,_textureAttributeMapList[unit]);
         }
 
-        applyShaderComposition();
+        if (_shaderCompositionEnabled)
+        {
+            applyShaderComposition();
 
-        applyUniformList(_uniformMap,dstate->getUniformList());
+            if (dstate->getUniformList().empty())
+            {
+                if (_currentShaderCompositionUniformList.empty()) applyUniformMap(_uniformMap);
+                else applyUniformList(_uniformMap, _currentShaderCompositionUniformList);
+            }
+            else
+            {
+                if (_currentShaderCompositionUniformList.empty()) applyUniformList(_uniformMap, dstate->getUniformList());
+                else
+                {
+                    // need top merge uniforms lists, but cheat for now by just applying both.
+                    _currentShaderCompositionUniformList.insert(dstate->getUniformList().begin(), dstate->getUniformList().end());
+                    applyUniformList(_uniformMap, _currentShaderCompositionUniformList);
+                }
+            }
+
+        }
+        else
+        {
+            applyUniformList(_uniformMap,dstate->getUniformList());
+        }
+
     }
     else
     {
@@ -532,6 +556,8 @@ void State::apply()
 {
 
     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("start of State::apply()");
+
+    if (_shaderCompositionEnabled) _currentShaderCompositionUniformList.clear();
 
     // go through all active OpenGL modes, enabling/disable where
     // appropriate.
@@ -548,9 +574,15 @@ void State::apply()
         if (unit<_textureAttributeMapList.size()) applyAttributeMapOnTexUnit(unit,_textureAttributeMapList[unit]);
     }
 
-    applyShaderComposition();
-
-    applyUniformMap(_uniformMap);
+    if (_shaderCompositionEnabled)
+    {
+        applyShaderComposition();
+        applyUniformList(_uniformMap, _currentShaderCompositionUniformList);
+    }
+    else
+    {
+        applyUniformMap(_uniformMap);
+    }
 
     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("end of State::apply()");
 }

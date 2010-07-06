@@ -291,6 +291,10 @@ class OSG_EXPORT ShaderComponent : public osg::Object
 
         unsigned int getNumShaders() const { return _shaders.size(); }
 
+        virtual void compileGLObjects(State& state) const;
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+        virtual void releaseGLObjects(State* state=0) const;
+
     protected:
 
        typedef std::vector< osg::ref_ptr<osg::Shader> >  Shaders;

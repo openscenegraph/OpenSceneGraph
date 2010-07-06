@@ -66,6 +66,38 @@ void ShaderComponent::removeShader(unsigned int i)
     _shaders.erase(_shaders.begin()+i);
 }
 
+void ShaderComponent::compileGLObjects(State& state) const
+{
+    for(Shaders::const_iterator itr = _shaders.begin();
+        itr != _shaders.end();
+        ++itr)
+    {
+        (*itr)->compileShader(state);
+    }
+}
+
+void ShaderComponent::resizeGLObjectBuffers(unsigned int maxSize)
+{
+    for(Shaders::const_iterator itr = _shaders.begin();
+        itr != _shaders.end();
+        ++itr)
+    {
+        (*itr)->resizeGLObjectBuffers(maxSize);
+    }
+}
+
+void ShaderComponent::releaseGLObjects(State* state) const
+{
+    for(Shaders::const_iterator itr = _shaders.begin();
+        itr != _shaders.end();
+        ++itr)
+    {
+        (*itr)->releaseGLObjects(state);
+    }
+}
+
+
+
 ///////////////////////////////////////////////////////////////////////////////////
 //
 //  ShaderBinary

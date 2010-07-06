@@ -322,9 +322,6 @@ class OSG_EXPORT StateAttribute : public Object
           */
         virtual void apply(State&) const {}
 
-        /* compose associated shaders via the ShaderComposer. */
-        virtual void compose(ShaderComposer& composer) const {}
-
         /** Default to nothing to compile - all state is applied immediately. */
         virtual void compileGLObjects(State&) const {}
 

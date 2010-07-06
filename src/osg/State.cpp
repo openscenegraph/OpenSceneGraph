@@ -214,6 +214,7 @@ void State::reset()
         AttributeStack& as = aitr->second;
         as.attributeVec.clear();
         as.last_applied_attribute = NULL;
+        as.last_applied_shadercomponent = NULL;
         as.changed = true;
     }
     
@@ -239,6 +240,7 @@ void State::reset()
             AttributeStack& as = aitr->second;
             as.attributeVec.clear();
             as.last_applied_attribute = NULL;
+            as.last_applied_shadercomponent = NULL;
             as.changed = true;
         }
     }
@@ -261,7 +263,10 @@ void State::reset()
     _currentActiveTextureUnit = 0;
     _currentClientActiveTextureUnit = 0;
 #endif
-    
+
+    _shaderCompositionDirty = true;
+    _currentShaderCompositionUniformList.clear();
+
     _lastAppliedProgramObject = 0;
 
     for(AppliedProgramObjectSet::iterator apitr=_appliedProgramObjectSet.begin();
@@ -596,10 +601,14 @@ void State::applyShaderComposition()
             // build lits of current ShaderComponents
             ShaderComponents shaderComponents;
 
+            // OSG_NOTICE<<"State::applyShaderComposition() : _attributeMap.size()=="<<_attributeMap.size()<<std::endl;
+
             for(AttributeMap::iterator itr = _attributeMap.begin();
                 itr != _attributeMap.end();
                 ++itr)
             {
+                // OSG_NOTICE<<"  itr->first="<<itr->first.first<<", "<<itr->first.second<<std::endl;
+
                 AttributeStack& as = itr->second;
                 if (as.last_applied_shadercomponent)
                 {

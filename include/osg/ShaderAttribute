@@ -54,8 +54,6 @@ class OSG_EXPORT ShaderAttribute : public StateAttribute
 
         virtual void apply(State& state) const;
 
-        virtual void compose(ShaderComposer& composer) const;
-
         virtual void compileGLObjects(State& state) const;
 
         virtual void resizeGLObjectBuffers(unsigned int maxSize);

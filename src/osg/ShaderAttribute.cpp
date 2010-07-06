@@ -19,7 +19,8 @@
 using namespace osg;
 
 
-ShaderAttribute::ShaderAttribute()
+ShaderAttribute::ShaderAttribute():
+    _type(osg::StateAttribute::Type(-1))
 {
     _shaderComponent = new osg::ShaderComponent;
 }
@@ -88,22 +89,17 @@ void ShaderAttribute::apply(State& state) const
     }
 }
 
-void ShaderAttribute::compose(ShaderComposer& composer) const
+void ShaderAttribute::compileGLObjects(State& state) const
 {
-    OSG_NOTICE<<"ShaderAttribute::compose(..)"<<std::endl;
-}
-
-void ShaderAttribute::compileGLObjects(State&) const
-{
-    OSG_NOTICE<<"ShaderAttribute::compileGLObjects(..)"<<std::endl;
+    if (_shaderComponent.valid()) _shaderComponent->compileGLObjects(state);
 }
 
 void ShaderAttribute::resizeGLObjectBuffers(unsigned int maxSize)
 {
-    OSG_NOTICE<<"ShaderAttribute::resizeGLObjectBuffers(..)"<<std::endl;
+    if (_shaderComponent.valid()) _shaderComponent->resizeGLObjectBuffers(maxSize);
 }
 
 void ShaderAttribute::releaseGLObjects(State* state) const
 {
-    OSG_NOTICE<<"ShaderAttribute::releaseGLObjects(..)"<<std::endl;
+    if (_shaderComponent.valid()) _shaderComponent->releaseGLObjects(state);
 }

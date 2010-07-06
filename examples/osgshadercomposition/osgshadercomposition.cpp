@@ -31,6 +31,8 @@ osg::Node* createSceneGraph(osg::ArgumentParser& arguments)
 
     osg::Vec3d position(0.0,0.0,0.0);
 
+    osg::ShaderAttribute* sa1 = NULL;
+
     {
         osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform;
         pat->setPosition(position);
@@ -40,6 +42,8 @@ osg::Node* createSceneGraph(osg::ArgumentParser& arguments)
 
         osg::StateSet* stateset = pat->getOrCreateStateSet();
         osg::ShaderAttribute* sa = new osg::ShaderAttribute;
+        //sa->setType(osg::StateAttribute::Type(10000));
+        sa1 = sa;
         stateset->setAttribute(sa);
 
         {
@@ -72,7 +76,27 @@ osg::Node* createSceneGraph(osg::ArgumentParser& arguments)
         group->addChild(pat);
 
     }
+#if 1
+    {
+        osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform;
+        pat->setPosition(position);
+        pat->addChild(node);
 
+        position.x() += spacing;
+
+        osg::StateSet* stateset = pat->getOrCreateStateSet();
+        osg::ShaderAttribute* sa = new osg::ShaderAttribute;
+        //sa->setType(osg::StateAttribute::Type(10000));
+        stateset->setAttribute(sa);
+
+        // reuse the same ShaderComponent as the first branch
+        sa->setShaderComponent(sa1->getShaderComponent());
+        sa->addUniform(new osg::Uniform("myColour",osg::Vec4(1.0f,1.0f,0.0f,1.0f)));
+
+        group->addChild(pat);
+
+    }
+#endif
     return group;
 }
 

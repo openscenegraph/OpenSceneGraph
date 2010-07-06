@@ -19,41 +19,61 @@
 #include <osgViewer/Viewer>
 #include <osgDB/ReadFile>
 #include <osg/ShaderAttribute>
+#include <osg/PositionAttitudeTransform>
 
 osg::Node* createSceneGraph(osg::ArgumentParser& arguments)
 {
     osg::Node* node = osgDB::readNodeFiles(arguments);
     if (!node) return 0;
 
-    osg::StateSet* stateset = node->getOrCreateStateSet();
-    osg::ShaderAttribute* sa = new osg::ShaderAttribute;
-    stateset->setAttribute(sa);
+    osg::Group* group = new osg::Group;
+    double spacing = node->getBound().radius() * 2.0;
+
+    osg::Vec3d position(0.0,0.0,0.0);
 
     {
-        const char shader_str[] =
-            "vec4 colour()\n"
-            "{\n"
-            "    return vec4(1.0,0.5,1.0,1.0);\n"
-           "}\n";
+        osg::PositionAttitudeTransform* pat = new osg::PositionAttitudeTransform;
+        pat->setPosition(position);
+        pat->addChild(node);
 
-        osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, shader_str);
-        vertex_shader->addCodeInjection(-1,"varying vec4 c;\n");
-        vertex_shader->addCodeInjection(-1,"vec4 colour();\n");
-        vertex_shader->addCodeInjection(0,"gl_Position = ftransform();\n");
-        vertex_shader->addCodeInjection(0,"c = colour();\n");
+        position.x() += spacing;
 
-        sa->addShader(vertex_shader);
-     }
+        osg::StateSet* stateset = pat->getOrCreateStateSet();
+        osg::ShaderAttribute* sa = new osg::ShaderAttribute;
+        stateset->setAttribute(sa);
 
-     {
-        osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT);
-        fragment_shader->addCodeInjection(-1,"varying vec4 c;\n");
-        fragment_shader->addCodeInjection(0,"gl_FragColor = c;\n");
+        {
+            const char shader_str[] =
+                "uniform vec4 myColour;\n"
+                "vec4 colour()\n"
+                "{\n"
+                "    return myColour;\n"
+            "}\n";
 
-        sa->addShader(fragment_shader);
-     }
+            osg::Shader* vertex_shader = new osg::Shader(osg::Shader::VERTEX, shader_str);
+            vertex_shader->addCodeInjection(-1,"varying vec4 c;\n");
+            vertex_shader->addCodeInjection(-1,"vec4 colour();\n");
+            vertex_shader->addCodeInjection(0,"gl_Position = ftransform();\n");
+            vertex_shader->addCodeInjection(0,"c = colour();\n");
 
-    return node;
+            sa->addUniform(new osg::Uniform("myColour",osg::Vec4(1.0f,0.5f,0.0f,1.0f)));
+
+            sa->addShader(vertex_shader);
+        }
+
+        {
+            osg::Shader* fragment_shader = new osg::Shader(osg::Shader::FRAGMENT);
+            fragment_shader->addCodeInjection(-1,"varying vec4 c;\n");
+            fragment_shader->addCodeInjection(0,"gl_FragColor = c;\n");
+
+            sa->addShader(fragment_shader);
+        }
+
+        group->addChild(pat);
+
+    }
+
+    return group;
 }
 
 int main( int argc, char **argv )

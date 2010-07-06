@@ -37,7 +37,7 @@ osg::Program* ShaderComposer::getOrCreateProgram(const ShaderComponents& shaderC
     ProgramMap::iterator itr = _programMap.find(shaderComponents);
     if (itr != _programMap.end())
     {
-        OSG_NOTICE<<"ShaderComposer::getOrCreateProgram(..) using cached Program"<<std::endl;
+        // OSG_NOTICE<<"ShaderComposer::getOrCreateProgram(..) using cached Program"<<std::endl;
         return itr->second.get();
     }
 

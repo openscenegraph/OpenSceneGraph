@@ -13,6 +13,8 @@
 
 #include <osg/ShaderAttribute>
 #include <osg/Notify>
+#include <osg/StateSet>
+#include <osg/State>
 
 using namespace osg;
 
@@ -78,7 +80,12 @@ bool ShaderAttribute::getModeUsage(StateAttribute::ModeUsage& usage) const
 
 void ShaderAttribute::apply(State& state) const
 {
-    OSG_NOTICE<<"ShaderAttribute::apply(..)"<<std::endl;
+    for(Uniforms::const_iterator itr = _uniforms.begin();
+        itr != _uniforms.end();
+        ++itr)
+    {
+        state.applyShaderCompositionUniform(itr->get());
+    }
 }
 
 void ShaderAttribute::compose(ShaderComposer& composer) const

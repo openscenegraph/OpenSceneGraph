@@ -157,6 +157,17 @@ class OSG_EXPORT State : public Referenced, public Observer
         /** Get the const ShaderComposor object.*/
         const ShaderComposer* getShaderComposer() const { return _shaderComposer.get(); }
 
+        /** Get the unform list in which to inject any uniforms that StateAttribute::apply(State&) methods provide.*/
+        StateSet::UniformList& getCurrentShaderCompositionUniformList() { return _currentShaderCompositionUniformList; }
+
+        /** Convinience method for StateAttribute:::apply(State&) methods to pass on their uniforms to osg::State so it can apply them at the appropriate point.*/
+        void applyShaderCompositionUniform(const osg::Uniform* uniform, StateAttribute::OverrideValue value=StateAttribute::ON)
+        {
+            StateSet::RefUniformPair& up = _currentShaderCompositionUniformList[uniform->getName()];
+            up.first = const_cast<Uniform*>(uniform);
+            up.second = value;
+        }
+
 
         /** Push stateset onto state stack.*/
         void pushStateSet(const StateSet* dstate);
@@ -1364,6 +1375,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         bool                            _shaderCompositionDirty;
         osg::ref_ptr<ShaderComposer>    _shaderComposer;
         osg::Program*                   _currentShaderCompositionProgram;
+        StateSet::UniformList           _currentShaderCompositionUniformList;
 
         ref_ptr<FrameStamp>         _frameStamp;
 

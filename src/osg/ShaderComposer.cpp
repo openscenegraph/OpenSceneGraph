@@ -184,6 +184,11 @@ osg::Shader* ShaderComposer::composeMain(const Shaders& shaders)
 
     ref_ptr<Shader> mainShader = new Shader(type, full_source);
 
+    OSG_NOTICE<<"type =="<<type<<std::endl;
+    OSG_NOTICE<<"full_source == "<<std::endl<<full_source<<std::endl;
+
+    OSG_NOTICE<<"end of ShaderComposer::composeMain(Shaders)"<<std::endl<<std::endl;
+
     _shaderMainMap[shaders] = mainShader;
 
     return mainShader.get();

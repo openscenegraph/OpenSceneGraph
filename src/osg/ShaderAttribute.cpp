@@ -23,6 +23,7 @@ ShaderAttribute::ShaderAttribute():
     _type(osg::StateAttribute::Type(-1))
 {
     _shaderComponent = new osg::ShaderComponent;
+    OSG_NOTICE<<"Creating default constructed ShaderAttribute() "<<this<<std::endl;
 }
 
 ShaderAttribute::ShaderAttribute(const ShaderAttribute& sa,const CopyOp& copyop):
@@ -30,6 +31,7 @@ ShaderAttribute::ShaderAttribute(const ShaderAttribute& sa,const CopyOp& copyop)
     _type(sa._type),
     _uniforms(sa._uniforms)
 {
+    OSG_NOTICE<<"Creating copy constructed ShaderAttribute("<<&sa<<") "<<this<<std::endl;
 }
 
 ShaderAttribute::~ShaderAttribute()

@@ -16,9 +16,12 @@
 
 #include <QtOpenGL/QGLWidget>
 
+#include <osg/Version>
 #include <osgGA/GUIEventAdapter>
 
 #include <osg/io_utils>
+#include <QtGui/QGraphicsItem>
+#include <QtGui/QGraphicsProxyWidget>
 
 #define MYQKEYEVENT 2000
 #define MYQPOINTEREVENT 2001
@@ -67,7 +70,8 @@ QGraphicsViewAdapter::QGraphicsViewAdapter(osg::Image* image, QWidget* widget):
     _previousQtMouseY(-1),
     _previousSentEvent(false),
     _qtKeyModifiers(Qt::NoModifier),
-    _backgroundColor(255, 255, 255)
+    _backgroundColor(255, 255, 255),
+    _widget(widget)
 {
     // make sure we have a valid QApplication before we start creating widgets.
     getOrCreateQApplication();
@@ -267,15 +271,40 @@ void QGraphicsViewAdapter::setUpKeyMap()
 
 }
 
+QWidget* QGraphicsViewAdapter::getWidgetAt(const QPoint& pos)
+{
+   QWidget* childAt = _graphicsView->childAt(pos);
+   if(childAt) 
+   {
+       return childAt;
+   }
+  
+   QGraphicsItem* item = _graphicsView->itemAt(pos);
+   if(item && item->contains(item->mapFromScene(pos)))
+   {
+      QGraphicsProxyWidget* p = dynamic_cast<QGraphicsProxyWidget*>(item);
+      if(p)
+      {  
+         childAt = p->widget();
+         QWidget* c;
+         while( (c = childAt->childAt(childAt->mapFromGlobal(pos)))!=0 )
+         {
+            childAt = c;
+         }
+         return childAt;
+      }
+   }
+   return NULL;
+}
+
 bool QGraphicsViewAdapter::sendPointerEvent(int x, int y, int buttonMask)
 {
     _previousQtMouseX = x;
     _previousQtMouseY = _graphicsView->size().height() - y;
-
+   
     QPoint pos(_previousQtMouseX, _previousQtMouseY);
-    if (_graphicsView->itemAt(pos) ||
-        _graphicsView->childAt(pos) ||
-        (_previousSentEvent && buttonMask != 0))
+   
+    if (getWidgetAt(pos) != NULL || (_previousSentEvent && buttonMask != 0))
     {
         QCoreApplication::postEvent(this, new MyQPointerEvent(x,y,buttonMask));
         OSG_INFO<<"sendPointerEvent("<<x<<", "<<y<<") sent"<<std::endl;
@@ -312,8 +341,10 @@ bool QGraphicsViewAdapter::handlePointerEvent(int x, int y, int buttonMask)
         (rightButtonPressed ? Qt::RightButton : Qt::NoButton);
 
     const QRect viewportGeometry = _graphicsView->viewport()->geometry();
-    const QPoint pos(x, y);
+    const QPoint globalPos(x, y);
+     
 
+      
     if (buttonMask != _previousButtonMask)
     {
         Qt::MouseButton qtButton = Qt::NoButton;
@@ -332,21 +363,31 @@ bool QGraphicsViewAdapter::handlePointerEvent(int x, int y, int buttonMask)
         {
             qtButton = Qt::RightButton;
             eventType = rightButtonPressed ? QEvent::MouseButtonPress : QEvent::MouseButtonRelease ;
+            if(!rightButtonPressed)
+            {
+               QWidget* targetWidget = getWidgetAt(globalPos);
+               if(targetWidget) 
+               {
+                  QPoint localPos = targetWidget->mapFromGlobal(globalPos);
+                  QContextMenuEvent* cme = new QContextMenuEvent(QContextMenuEvent::Mouse, localPos, globalPos);
+                  QCoreApplication::postEvent(targetWidget, cme);
+               }               
+            }
         }
-
+      
         if (eventType==QEvent::MouseButtonPress)
         {
             _image->sendFocusHint(true);
         }
 
-        QMouseEvent event(eventType, pos, qtButton, qtMouseButtons, 0);
+        QMouseEvent event(eventType, globalPos, qtButton, qtMouseButtons, 0);
         QCoreApplication::sendEvent(_graphicsView->viewport(), &event );
 
         _previousButtonMask = buttonMask;
     }
     else if (x != _previousMouseX || y != _previousMouseY)
     {
-        QMouseEvent event(QEvent::MouseMove, pos, Qt::NoButton, qtMouseButtons, 0);
+        QMouseEvent event(QEvent::MouseMove, globalPos, Qt::NoButton, qtMouseButtons, 0);
         QCoreApplication::sendEvent(_graphicsView->viewport(), &event);
 
         _previousMouseX = x;
@@ -359,8 +400,7 @@ bool QGraphicsViewAdapter::handlePointerEvent(int x, int y, int buttonMask)
 bool QGraphicsViewAdapter::sendKeyEvent(int key, bool keyDown)
 {
     QPoint pos(_previousQtMouseX, _previousQtMouseY);
-    if (_graphicsView->itemAt(pos) ||
-        _graphicsView->childAt(pos))
+    if (getWidgetAt(pos) != NULL)
     {
         QCoreApplication::postEvent(this, new MyQKeyEvent(key,keyDown));
         return true;
@@ -453,45 +493,50 @@ void QGraphicsViewAdapter::render()
     QImage& image = _qimages[_currentWrite];
 
     // If we got a resize, act on it, first by resizing the view, then the current image
-    if (_graphicsView->size().width() != _width || _graphicsView->size().height() != _height)
+
     {
-        _graphicsView->setGeometry(0, 0, _width, _height);
-        _graphicsView->viewport()->setGeometry(0, 0, _width, _height);
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_qresizeMutex);
+        if (_graphicsView->size().width() != _width || _graphicsView->size().height() != _height)
+        {
+            _graphicsView->setGeometry(0, 0, _width, _height);
+            _graphicsView->viewport()->setGeometry(0, 0, _width, _height);
+
+            _widget->setGeometry(0, 0, _width, _height);
+        }
+
+        if (image.width() != _width || image.height() != _height)
+        {
+            _qimages[_currentWrite] = QImage(_width, _height, s_imageFormat);
+            image = _qimages[_currentWrite];
+        }
+        OSG_INFO << "render image " << _currentWrite << " with size (" << _width << "," << _height << ")" <<std::endl;
     }
-
-    if (image.width() != _width || image.height() != _height)
-    {
-        _qimages[_currentWrite] = QImage(_width, _height, s_imageFormat);
-        image = _qimages[_currentWrite];
-    }
-
-    OSG_INFO << "render image " << _currentWrite << " with size (" << _width << "," << _height << ")" <<std::endl;
-
+    
 #if 1
     // paint the image with the graphics view
     QPainter painter(&image);
 
     // Clear the image otherwise there are artifacts for some widgets that overpaint.
     painter.setCompositionMode(QPainter::CompositionMode_Source);
-    painter.fillRect(0, 0, _width, _height, _backgroundColor);
+    painter.fillRect(0, 0, image.width(), image.height(), _backgroundColor);
     painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
 
-    QRectF destinationRect(0, 0, _width, _height);
-    QRect sourceRect(0, 0, _width, _height);
+    QRectF destinationRect(0, 0, image.width(), image.height());
+    QRect sourceRect(0, 0, image.width(), image.height());
     _graphicsView->render(&painter, destinationRect, sourceRect, Qt::IgnoreAspectRatio);
     painter.end();
 #elif 0
-    QPixmap pixmap(QPixmap::grabWidget(_graphicsView.data(), QRect(0, 0, _width, _height)));
+    QPixmap pixmap(QPixmap::grabWidget(_graphicsView.data(), QRect(0, 0, image.width(), image.height())));
     image = pixmap.toImage();
 #else
     // paint the image with the graphics view
-    QPixmap pixmap(_width, _height);
+    QPixmap pixmap(image.width(), image.height());
     // Clear the image otherwise there are artifacts for some widgets that overpaint.
     pixmap.fill(Qt::transparent);
     QPainter painter(&pixmap);
 
-    QRectF destinationRect(0, 0, _width, _height);
-    QRect sourceRect(0, 0, _width, _height);
+    QRectF destinationRect(0, 0, image.width(), image.height());
+    QRect sourceRect(0, 0, image.width(), image.height());
     _graphicsView->render(&painter, destinationRect, _graphicsView->viewport()->rect());
     painter.end();
 
@@ -524,8 +569,12 @@ void QGraphicsViewAdapter::resize(int width, int height)
     OSG_INFO << "resize to (" << width << "," << height << ")" <<std::endl;
 
     // Save the new width and height which will take effect on the next render() (in the Qt thread).
-    _width = width;
-    _height = height;
+    
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_qresizeMutex);
+        _width = width;
+        _height = height;
+    }
 
     // Force an update so render() will be called.
     _graphicsScene->update(_graphicsScene->sceneRect());

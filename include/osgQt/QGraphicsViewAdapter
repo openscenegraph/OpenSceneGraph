@@ -66,6 +66,7 @@ class OSGQT_EXPORT QGraphicsViewAdapter : public QObject
 
         bool handlePointerEvent(int x, int y, int buttonMask);
         bool handleKeyEvent(int key, bool keyDown);
+        QWidget* getWidgetAt(const QPoint& pos);
 
         osg::observer_ptr<osg::Image>   _image;
 
@@ -86,8 +87,10 @@ class OSGQT_EXPORT QGraphicsViewAdapter : public QObject
         QColor                          _backgroundColor;
         QPointer<QGraphicsView>         _graphicsView;
         QPointer<QGraphicsScene>        _graphicsScene;
+        QPointer<QWidget>               _widget;
 
         OpenThreads::Mutex              _qimagesMutex;
+        OpenThreads::Mutex              _qresizeMutex;
         int                             _previousFrameNumber;
         bool                            _newImageAvailable;
         unsigned int                    _currentRead;

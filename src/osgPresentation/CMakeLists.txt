@@ -8,6 +8,7 @@ ENDIF()
 SET(LIB_NAME osgPresentation)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
 SET(LIB_PUBLIC_HEADERS
+    ${HEADER_PATH}/Export
     ${HEADER_PATH}/AnimationMaterial
     ${HEADER_PATH}/CompileSlideCallback
     ${HEADER_PATH}/PickEventHandler

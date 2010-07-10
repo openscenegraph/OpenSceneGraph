@@ -18,8 +18,10 @@ ELSEIF(MSVC71)
     SET(FBX_LIBNAME "fbxsdk_md2003")
 ELSEIF(MSVC80)
     SET(FBX_LIBNAME "fbxsdk_md2005")
-ELSEIF(MSVC90 OR MSVC_VER>1500)
+ELSEIF(MSVC90)
     SET(FBX_LIBNAME "fbxsdk_md2008")
+ELSEIF(MSVC100 OR MSVC_VER>1600)
+    SET(FBX_LIBNAME "fbxsdk_md2010")
 ENDIF()
 
 IF(CMAKE_CL_64)
@@ -33,8 +35,11 @@ ELSE()
 ENDIF()
 
 # SET final path
+#osg_fbx code is compatible with 2011.2 and 2011.3 so find either directory
 SET( FBX_SEARCH_PATHS 
     $ENV{FBX_DIR}
+    $ENV{PROGRAMFILES}/Autodesk/FBX/FbxSdk/2011.3
+    /Applications/Autodesk/FBXSDK20113
     $ENV{PROGRAMFILES}/Autodesk/FBX/FbxSdk/2011.2
     /Applications/Autodesk/FBXSDK20112
 )

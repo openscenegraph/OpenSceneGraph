@@ -38,6 +38,14 @@ ShaderAttribute::~ShaderAttribute()
 {
 }
 
+osg::Object* ShaderAttribute::cloneType() const
+{
+    ShaderAttribute* sa = new ShaderAttribute;
+    sa->setType(getType());
+    OSG_NOTICE<<"  cloneType ="<<getType()<<" sa = "<<sa<<std::endl;
+    return sa;
+}
+
 int ShaderAttribute::compare(const StateAttribute& sa) const
 {
     // check the types are equal and then create the rhs variable
@@ -83,6 +91,8 @@ bool ShaderAttribute::getModeUsage(StateAttribute::ModeUsage& usage) const
 
 void ShaderAttribute::apply(State& state) const
 {
+    OSG_INFO<<"ShaderAttribute::apply(State&) this="<<this<<" type = "<<getType()<<std::endl;
+
     for(Uniforms::const_iterator itr = _uniforms.begin();
         itr != _uniforms.end();
         ++itr)

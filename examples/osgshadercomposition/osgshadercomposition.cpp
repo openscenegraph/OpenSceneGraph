@@ -62,12 +62,6 @@ osg::Node* createSceneGraph(osg::ArgumentParser& arguments)
 
         sa->addUniform(new osg::Uniform("baseTexture",0));
 
-#if 1
-        osg::ShaderAttribute* sa_dummy = new osg::ShaderAttribute;
-        sa_dummy->setType(osg::StateAttribute::Type(10001));
-        stateset->setAttribute(sa_dummy);
-#endif
-
     }
 
     // inherit the ShaderComponents entirely from above
@@ -92,7 +86,6 @@ osg::Node* createSceneGraph(osg::ArgumentParser& arguments)
         osg::StateSet* stateset = pat->getOrCreateStateSet();
         stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
 
-#if 1
         osg::ShaderAttribute* sa = new osg::ShaderAttribute;
         sa->setType(osg::StateAttribute::Type(10001));
         stateset->setAttribute(sa);
@@ -103,7 +96,6 @@ osg::Node* createSceneGraph(osg::ArgumentParser& arguments)
 
             sa->addShader(fragment_shader);
         }
-#endif
 
         group->addChild(pat);
     }
@@ -162,8 +154,6 @@ osg::Node* createSceneGraph(osg::ArgumentParser& arguments)
 
         group->addChild(pat);
 
-        group->addChild(pat);
-
     }
 
     return group;
@@ -175,14 +165,10 @@ int main( int argc, char **argv )
 
     osgViewer::Viewer viewer(arguments);
 
-    OSG_NOTICE<<"********** Constructing scene graph ************ "<<std::endl<<std::endl;
-
     osg::ref_ptr<osg::Node> scenegraph = createSceneGraph(arguments);
     if (!scenegraph) return 1;
 
     viewer.setSceneData(scenegraph.get());
-
-    OSG_NOTICE<<std::endl<<"********** Finished constructing scene graph ************ "<<std::endl<<std::endl;
 
     viewer.realize();
 

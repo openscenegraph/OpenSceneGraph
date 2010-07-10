@@ -48,13 +48,13 @@ public:
     {
         if (_pathToCoordinateSystemNode.empty())
         {
-            OSG_DEBUG<<"Found CoordianteSystemNode node"<<std::endl;
+            OSG_DEBUG<<"Found CoordinateSystemNode node"<<std::endl;
             OSG_DEBUG<<"     CoordinateSystem = "<<node.getCoordinateSystem()<<std::endl;
             _pathToCoordinateSystemNode = getNodePath();
         }
         else
         {
-            OSG_DEBUG<<"Found additional CoordianteSystemNode node, but ignoring"<<std::endl;
+            OSG_DEBUG<<"Found additional CoordinateSystemNode node, but ignoring"<<std::endl;
             OSG_DEBUG<<"     CoordinateSystem = "<<node.getCoordinateSystem()<<std::endl;
         }
         traverse(node);

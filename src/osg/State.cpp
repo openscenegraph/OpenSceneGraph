@@ -480,14 +480,6 @@ void State::captureCurrentState(StateSet& stateset) const
 
 }
 
-// revert to using maximum for consistency, maximum should be defined by STLport on VS.
-// // visual studio 6.0 doesn't appear to define maximum?!? So do our own here.. 
-// template<class T>
-// T mymax(const T& a,const T& b)
-// {
-//     return (((a) > (b)) ? (a) : (b));
-// }
-
 void State::apply(const StateSet* dstate)
 {
     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors("start of State::apply(StateSet*)");
@@ -598,6 +590,8 @@ void State::applyShaderComposition()
     {
         if (_shaderCompositionDirty)
         {
+            print(notify(osg::INFO));
+
             // build lits of current ShaderComponents
             ShaderComponents shaderComponents;
 
@@ -1483,3 +1477,213 @@ void State::drawQuads(GLint first, GLsizei count, GLsizei primCount)
     glDrawElementsInstanced(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, &(indices[offsetFirst]), primCount);
 }
 
+void State::ModeStack::print(std::ostream& fout) const
+{
+    fout<<"    valid = "<<valid<<std::endl;
+    fout<<"    changed = "<<changed<<std::endl;
+    fout<<"    last_applied_value = "<<last_applied_value<<std::endl;
+    fout<<"    global_default_value = "<<global_default_value<<std::endl;
+    fout<<"    valueVec { "<<std::endl;
+    for(ModeStack::ValueVec::const_iterator itr = valueVec.begin();
+        itr != valueVec.end();
+        ++itr)
+    {
+        if (itr!=valueVec.begin()) fout<<", ";
+        fout<<*itr;
+    }
+    fout<<" }"<<std::endl;
+}
+
+void State::AttributeStack::print(std::ostream& fout) const
+{
+    fout<<"    changed = "<<changed<<std::endl;
+    fout<<"    last_applied_attribute = "<<last_applied_attribute;
+    if (last_applied_attribute) fout<<", "<<last_applied_attribute->className()<<", "<<last_applied_attribute->getName()<<std::endl;
+    fout<<"    last_applied_shadercomponent = "<<last_applied_shadercomponent<<std::endl;
+    if (last_applied_shadercomponent)  fout<<", "<<last_applied_shadercomponent->className()<<", "<<last_applied_shadercomponent->getName()<<std::endl;
+    fout<<"    global_default_attribute = "<<global_default_attribute.get()<<std::endl;
+    fout<<"    attributeVec { ";
+    for(AttributeVec::const_iterator itr = attributeVec.begin();
+        itr != attributeVec.end();
+        ++itr)
+    {
+        if (itr!=attributeVec.begin()) fout<<", ";
+        fout<<"("<<itr->first<<", "<<itr->second<<")";
+    }
+    fout<<" }"<<std::endl;
+}
+
+
+void State::UniformStack::print(std::ostream& fout) const
+{
+    fout<<"    UniformVec { ";
+    for(UniformVec::const_iterator itr = uniformVec.begin();
+        itr != uniformVec.end();
+        ++itr)
+    {
+        if (itr!=uniformVec.begin()) fout<<", ";
+        fout<<"("<<itr->first<<", "<<itr->second<<")";
+    }
+    fout<<" }"<<std::endl;
+}
+
+
+
+
+
+void State::print(std::ostream& fout) const
+{
+#if 0
+        GraphicsContext*            _graphicsContext;
+        unsigned int                _contextID;
+
+        bool                            _shaderCompositionEnabled;
+        bool                            _shaderCompositionDirty;
+        osg::ref_ptr<ShaderComposer>    _shaderComposer;
+#endif
+
+#if 0
+        osg::Program*                   _currentShaderCompositionProgram;
+        StateSet::UniformList           _currentShaderCompositionUniformList;
+#endif
+
+#if 0
+        ref_ptr<FrameStamp>         _frameStamp;
+
+        ref_ptr<const RefMatrix>    _identity;
+        ref_ptr<const RefMatrix>    _initialViewMatrix;
+        ref_ptr<const RefMatrix>    _projection;
+        ref_ptr<const RefMatrix>    _modelView;
+        ref_ptr<RefMatrix>          _modelViewCache;
+
+        bool                        _useModelViewAndProjectionUniforms;
+        ref_ptr<Uniform>            _modelViewMatrixUniform;
+        ref_ptr<Uniform>            _projectionMatrixUniform;
+        ref_ptr<Uniform>            _modelViewProjectionMatrixUniform;
+        ref_ptr<Uniform>            _normalMatrixUniform;
+
+        Matrix                      _initialInverseViewMatrix;
+
+        ref_ptr<DisplaySettings>    _displaySettings;
+
+        bool*                       _abortRenderingPtr;
+        CheckForGLErrors            _checkGLErrors;
+
+
+        bool                        _useVertexAttributeAliasing;
+        VertexAttribAlias           _vertexAlias;
+        VertexAttribAlias           _normalAlias;
+        VertexAttribAlias           _colorAlias;
+        VertexAttribAlias           _secondaryColorAlias;
+        VertexAttribAlias           _fogCoordAlias;
+        VertexAttribAliasList       _texCoordAliasList;
+
+        Program::AttribBindingList  _attributeBindingList;
+#endif
+        fout<<"ModeMap _modeMap {"<<std::endl;
+        for(ModeMap::const_iterator itr = _modeMap.begin();
+            itr != _modeMap.end();
+            ++itr)
+        {
+            fout<<"  GLMode="<<itr->first<<", ModeStack {"<<std::endl;
+            itr->second.print(fout);
+            fout<<"  }"<<std::endl;
+        }
+        fout<<"}"<<std::endl;
+
+        fout<<"AttributeMap _attributeMap {"<<std::endl;
+        for(AttributeMap::const_iterator itr = _attributeMap.begin();
+            itr != _attributeMap.end();
+            ++itr)
+        {
+            fout<<"  TypeMemberPaid=("<<itr->first.first<<", "<<itr->first.second<<") AttributeStack {"<<std::endl;
+            itr->second.print(fout);
+            fout<<"  }"<<std::endl;
+        }
+        fout<<"}"<<std::endl;
+
+        fout<<"UniformMap _uniformMap {"<<std::endl;
+        for(UniformMap::const_iterator itr = _uniformMap.begin();
+            itr != _uniformMap.end();
+            ++itr)
+        {
+            fout<<"  name="<<itr->first<<", UniformStack {"<<std::endl;
+            itr->second.print(fout);
+            fout<<"  }"<<std::endl;
+        }
+        fout<<"}"<<std::endl;
+
+#if 0
+        TextureModeMapList                                              _textureModeMapList;
+        TextureAttributeMapList                                         _textureAttributeMapList;
+
+        AppliedProgramObjectSet                                         _appliedProgramObjectSet;
+        const Program::PerContextProgram*                               _lastAppliedProgramObject;
+#endif
+
+
+        fout<<"StateSetStack _stateSetStack {"<<std::endl;
+        for(StateSetStack::const_iterator itr = _stateStateStack.begin();
+            itr != _stateStateStack.end();
+            ++itr)
+        {
+            fout<<(*itr)->getName()<<"  "<<*itr<<std::endl;
+        }
+        fout<<"}"<<std::endl;
+
+
+#if 0
+        unsigned int                                                    _maxTexturePoolSize;
+        unsigned int                                                    _maxBufferObjectPoolSize;
+
+        struct EnabledArrayPair
+        {
+            EnabledArrayPair():_lazy_disable(false),_dirty(true),_enabled(false),_normalized(0),_pointer(0) {}
+            EnabledArrayPair(const EnabledArrayPair& eap):_lazy_disable(eap._lazy_disable),_dirty(eap._dirty), _enabled(eap._enabled),_normalized(eap._normalized),_pointer(eap._pointer) {}
+            EnabledArrayPair& operator = (const EnabledArrayPair& eap) { _lazy_disable = eap._lazy_disable;_dirty=eap._dirty; _enabled=eap._enabled; _normalized=eap._normalized;_pointer=eap._pointer; return *this; }
+
+            bool            _lazy_disable;
+            bool            _dirty;
+            bool            _enabled;
+            GLboolean       _normalized;
+            const GLvoid*   _pointer;
+        };
+
+        typedef std::vector<EnabledArrayPair>                   EnabledTexCoordArrayList;
+        typedef std::vector<EnabledArrayPair>                   EnabledVertexAttribArrayList;
+
+        EnabledArrayPair                _vertexArray;
+        EnabledArrayPair                _normalArray;
+        EnabledArrayPair                _colorArray;
+        EnabledArrayPair                _secondaryColorArray;
+        EnabledArrayPair                _fogArray;
+        EnabledTexCoordArrayList        _texCoordArrayList;
+        EnabledVertexAttribArrayList    _vertexAttribArrayList;
+
+        unsigned int                    _currentActiveTextureUnit;
+        unsigned int                    _currentClientActiveTextureUnit;
+        GLBufferObject*                 _currentVBO;
+        GLBufferObject*                 _currentEBO;
+        GLBufferObject*                 _currentPBO;
+
+        mutable bool _isSecondaryColorSupportResolved;
+        mutable bool _isSecondaryColorSupported;
+        bool computeSecondaryColorSupported() const;
+
+        mutable bool _isFogCoordSupportResolved;
+        mutable bool _isFogCoordSupported;
+        bool computeFogCoordSupported() const;
+
+        mutable bool _isVertexBufferObjectSupportResolved;
+        mutable bool _isVertexBufferObjectSupported;
+        bool computeVertexBufferObjectSupported() const;
+#endif
+
+#if 0
+        unsigned int                                            _dynamicObjectCount;
+        osg::ref_ptr<DynamicObjectRenderingCompletedCallback>   _completeDynamicObjectRenderingCallback;
+
+        GLBeginEndAdapter           _glBeginEndAdapter;
+        ArrayDispatchers            _arrayDispatchers;
+#endif
+}

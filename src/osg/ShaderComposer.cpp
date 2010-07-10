@@ -46,6 +46,8 @@ osg::Program* ShaderComposer::getOrCreateProgram(const ShaderComponents& shaderC
     Shaders geometryShaders;
     Shaders fragmentShaders;
 
+    OSG_NOTICE<<"ShaderComposer::getOrCreateProgram(shaderComponents.size()=="<<shaderComponents.size()<<std::endl;
+
     for(ShaderComponents::const_iterator itr = shaderComponents.begin();
         itr != shaderComponents.end();
         ++itr)

@@ -1352,6 +1352,8 @@ class OSG_EXPORT State : public Referenced, public Observer
         bool checkGLErrors(StateAttribute::GLMode mode) const;
         bool checkGLErrors(const StateAttribute* attribute) const;
 
+        /** print out the internal details of osg::State - useful for debugging.*/
+        void print(std::ostream& fout) const;
 
         /** Initialize extension used by osg:::State.*/
         void initializeExtensionProcs();
@@ -1424,6 +1426,8 @@ class OSG_EXPORT State : public Referenced, public Observer
                 global_default_value = false;
             }
 
+            void print(std::ostream& fout) const;
+
             bool        valid;
             bool        changed;
             bool        last_applied_value;
@@ -1442,6 +1446,8 @@ class OSG_EXPORT State : public Referenced, public Observer
                 
             }
 
+            void print(std::ostream& fout) const;
+
             /** apply an attribute if required, passing in attribute and appropriate attribute stack */
             bool                    changed;
             const StateAttribute*   last_applied_attribute;
@@ -1457,6 +1463,8 @@ class OSG_EXPORT State : public Referenced, public Observer
             typedef std::vector<UniformPair>                                        UniformVec;
 
             UniformStack() {}
+
+            void print(std::ostream& fout) const;
 
             UniformVec              uniformVec;
         };
@@ -1546,6 +1554,13 @@ class OSG_EXPORT State : public Referenced, public Observer
                     as.last_applied_attribute = attribute;
                     attribute->apply(*this);
 
+                    const ShaderComponent* sc = attribute->getShaderComponent();
+                    if (as.last_applied_shadercomponent != sc)
+                    {
+                        as.last_applied_shadercomponent = sc;
+                        _shaderCompositionDirty = true;
+                    }
+
                     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors(attribute);
 
                     return true;
@@ -1566,6 +1581,13 @@ class OSG_EXPORT State : public Referenced, public Observer
                 if (as.global_default_attribute.valid())
                 {
                     as.global_default_attribute->apply(*this);
+                    const ShaderComponent* sc = as.global_default_attribute->getShaderComponent();
+                    if (as.last_applied_shadercomponent != sc)
+                    {
+                        as.last_applied_shadercomponent = sc;
+                        _shaderCompositionDirty = true;
+                    }
+
                     if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors(as.global_default_attribute.get());
                 }
                 return true;
@@ -1584,6 +1606,12 @@ class OSG_EXPORT State : public Referenced, public Observer
                     if (as.global_default_attribute.valid())
                     {
                         as.global_default_attribute->apply(*this);
+                        const ShaderComponent* sc = as.global_default_attribute->getShaderComponent();
+                        if (as.last_applied_shadercomponent != sc)
+                        {
+                            as.last_applied_shadercomponent = sc;
+                            _shaderCompositionDirty = true;
+                        }
                         if (_checkGLErrors==ONCE_PER_ATTRIBUTE) checkGLErrors(as.global_default_attribute.get());
                     }
                     return true;

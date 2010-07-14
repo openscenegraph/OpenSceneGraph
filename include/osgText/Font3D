@@ -218,6 +218,12 @@ public:
         virtual void setThreadSafeRefUnref(bool threadSafe);
 
 
+        void setRawVertexArray(osg::Vec3Array* vertices) { _rawVertexArray = vertices; }
+        osg::Vec3Array* getRawVertexArray() { return _rawVertexArray.get(); }
+
+        /** Get the PrimitiveSetList for the raw face which hasn't been tessellated. */
+        osg::Geometry::PrimitiveSetList & getRawFacePrimitiveSetList() { return _rawFacePrimitiveSetList; }
+
         /** Get the PrimitiveSetList for the front face. */
         osg::Geometry::PrimitiveSetList & getFrontPrimitiveSetList() { return _frontPrimitiveSetList; }
         /** Get the PrimitiveSetList for the wall face. */
@@ -267,10 +273,13 @@ public:
         osg::ref_ptr<osg::Vec3Array> _vertexArray;
         osg::ref_ptr<osg::Vec3Array> _normalArray;
 
+
         osg::Geometry::PrimitiveSetList _frontPrimitiveSetList;
         osg::Geometry::PrimitiveSetList _wallPrimitiveSetList;
         osg::Geometry::PrimitiveSetList _backPrimitiveSetList;
 
+        osg::ref_ptr<osg::Vec3Array>    _rawVertexArray;
+        osg::Geometry::PrimitiveSetList _rawFacePrimitiveSetList;
 
     };
 

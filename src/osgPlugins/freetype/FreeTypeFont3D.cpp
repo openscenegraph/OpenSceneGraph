@@ -308,7 +308,7 @@ FreeTypeFont3D::~FreeTypeFont3D()
 
 osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
 {
-
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
 
     //
     // GT: fix for symbol fonts (i.e. the Webdings font) as the wrong character are being
@@ -359,6 +359,16 @@ osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
 
     // ** create geometry for each part of the glyph
     osg::ref_ptr<osg::Geometry> frontGeo(new osg::Geometry);
+
+    osg::ref_ptr<osg::Vec3Array> rawVertices = new osg::Vec3Array(*(char3d._verts));
+    osg::Geometry::PrimitiveSetList rawPrimitives;
+    for(osg::Geometry::PrimitiveSetList::iterator itr = char3d.get()->getPrimitiveSetList().begin();
+        itr != char3d.get()->getPrimitiveSetList().end();
+        ++itr)
+    {
+        rawPrimitives.push_back(dynamic_cast<osg::PrimitiveSet*>((*itr)->clone(osg::CopyOp::DEEP_COPY_ALL)));
+    }
+
     frontGeo->setVertexArray(char3d.get()->getVertexArray());
     frontGeo->setPrimitiveSetList(char3d.get()->getPrimitiveSetList());
 
@@ -458,6 +468,10 @@ osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
     // ** save vertices and PrimitiveSetList of each face in the Glyph3D PrimitiveSet face list
     osgText::Font3D::Glyph3D * glyph3D = new osgText::Font3D::Glyph3D(charcode);
 
+    // copy the raw primitive set list before we tessellate it.
+    glyph3D->getRawFacePrimitiveSetList() = rawPrimitives;
+    glyph3D->setRawVertexArray(rawVertices.get());
+
     glyph3D->setVertexArray(dynamic_cast<osg::Vec3Array*>(frontGeo->getVertexArray()));
     glyph3D->setNormalArray(dynamic_cast<osg::Vec3Array*>(wallGeo->getNormalArray()));
 
@@ -494,6 +508,8 @@ osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
 
 osg::Vec2 FreeTypeFont3D::getKerning(unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType kerningType)
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
+
     if (!FT_HAS_KERNING(_face) || (kerningType == osgText::KERNING_NONE)) return osg::Vec2(0.0f,0.0f);
 
     FT_Kerning_Mode mode = (kerningType==osgText::KERNING_DEFAULT) ? ft_kerning_default : ft_kerning_unfitted;

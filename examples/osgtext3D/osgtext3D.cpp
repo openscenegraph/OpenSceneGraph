@@ -87,12 +87,28 @@ osg::Vec3 computeNewVertexPosition(osg::Vec3& v1, osg::Vec3& v2, osg::Vec3& v3)
     double angle = computeAngle(v1,v2,v3);
     osg::Vec3 v21(v2-v1);
     osg::Vec3 v32(v3-v2);
-    v21.normalize();
-    v32.normalize();
-    osg::Vec3 cross = v21^v32;
+    float length_21 = v21.normalize();
+    float length_32 = v32.normalize();
 
     float t = 5.0;
+    if (length_21==0.0)
+    {
+        OSG_NOTICE<<"length_21=="<<length_21<<", length_32="<<length_32<<std::endl;
+        osg::Vec3 bisector = v32 ^ osg::Vec3(0.0f,0.0f,1.0f);
+        bisector.normalize();
+        osg::Vec3 new_vertex = v2 + bisector * t;
+        return new_vertex;
+    }
+    else if (length_32==0.0)
+    {
+        OSG_NOTICE<<"length_21=="<<length_21<<", length_32="<<length_32<<std::endl;
+        osg::Vec3 bisector = v21 ^ osg::Vec3(0.0f,0.0f,1.0f);
+        bisector.normalize();
+        osg::Vec3 new_vertex = v2 + bisector * t;
+        return new_vertex;
+    }
 
+    osg::Vec3 cross = v21^v32;
     osg::Vec3 bisector(v32-v21);
 
     if (bisector.length()<0.5)

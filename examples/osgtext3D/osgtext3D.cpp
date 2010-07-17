@@ -31,6 +31,68 @@
 extern int main_orig(int, char**);
 extern int main_test(int, char**);
 
+osg::Vec3 computeIntersectionPoint(const osg::Vec3& a, const osg::Vec3& b, const osg::Vec3& c, const osg::Vec3& d)
+{
+    float ba_x = b.x()-a.x();
+    float ba_y = b.y()-a.y();
+
+    float dc_x = d.x()-c.x();
+    float dc_y = d.y()-c.y();
+
+    float denominator = (dc_x * ba_y - dc_y * ba_x);
+    if (denominator==0.0)
+    {
+        // line segments must be parallel.
+        return (b+c)*0.5;
+    }
+
+    float t = ((a.x()-c.x())*ba_y + (a.y()-c.y())*ba_x) / denominator;
+
+    return c + (d-c)*t;
+}
+
+osg::Vec3 computeBisectorNormal(const osg::Vec3& a, const osg::Vec3& b, const osg::Vec3& c, const osg::Vec3& d)
+{
+    osg::Vec2 ab(a.x()-b.x(), a.y()-b.y());
+    osg::Vec2 dc(d.x()-c.x(), d.y()-c.y());
+    float length_ab = ab.normalize();
+    float length_dc = dc.normalize();
+    float denominator = (ab.x()-dc.x());
+    if (denominator==0.0)
+    {
+        // ab and cd parallel
+        return osg::Vec3(ab.y(), -ab.x(), 0.0f);
+    }
+    float r = (dc.x()-ab.y())/ denominator;
+    float ny = 1.0f / sqrtf(r*r + 1.0f);
+    float nx = r * ny;
+
+    return osg::Vec3(nx,ny,0.0f);
+}
+
+class Boundary
+{
+    typedef std::vector<unsigned int>   Points;
+    typedef std::vector<float>          Distances;
+    typedef std::vector<osg::Vec3>      Bisectors;
+
+    struct Segment : public osg::Referenced
+    {
+        unsigned int            _p1;
+        unsigned int            _p2;
+        Segment*                _left;
+        osg::ref_ptr<Segment>   _right;
+        float                   _distance;
+    };
+
+    osg::ref_ptr<Segment>  _head;
+
+    osg::ref_ptr<osg::Vec3Array> _vertices;
+    Bisectors                   _bisectors;
+    Points                      _boundary;
+    Distances                   _distances;
+};
+
 
 float computeAngle(osg::Vec3& v1, osg::Vec3& v2, osg::Vec3& v3)
 {
@@ -40,7 +102,6 @@ float computeAngle(osg::Vec3& v1, osg::Vec3& v2, osg::Vec3& v3)
     v32.normalize();
     float dot = v12*v32;
     float angle = acosf(dot);
-    OSG_NOTICE<<"    v1="<<v1<<", v2="<<v2<<", v3="<<v3<<", dot_angle="<<osg::RadiansToDegrees(angle)<<std::endl;
     return angle;
 }
 
@@ -111,6 +172,11 @@ osg::Vec3 computeNewVertexPosition(osg::Vec3& v1, osg::Vec3& v2, osg::Vec3& v3)
     osg::Vec3 cross = v21^v32;
     osg::Vec3 bisector(v32-v21);
 
+
+    OSG_NOTICE<<"v1="<<v1<<", v2="<<v2<<", v3="<<v3<<", dot_angle="<<osg::RadiansToDegrees(angle)<<std::endl;
+    OSG_NOTICE<<"     computeIntersectionPoint() point "<<computeIntersectionPoint(v1,v2,v2,v3)<<std::endl;
+    OSG_NOTICE<<"     computeBisectorNormal() normal "<<computeBisectorNormal(v1,v2,v2,v3)<<std::endl;
+    
     if (bisector.length()<0.5)
     {
         // angle wider than 90 degrees so use side vectors as guide for angle to project along.
@@ -122,6 +188,8 @@ osg::Vec3 computeNewVertexPosition(osg::Vec3& v1, osg::Vec3& v2, osg::Vec3& v3)
 
         osg::Vec3 bisector(s21+s32);
         bisector.normalize();
+
+        OSG_NOTICE<<"     bisector normal "<<computeBisectorNormal(v1,v2,v2,v3)<<std::endl;
 
         float l = t / sin(angle*0.5);
 
@@ -137,13 +205,15 @@ osg::Vec3 computeNewVertexPosition(osg::Vec3& v1, osg::Vec3& v2, osg::Vec3& v3)
         bisector.normalize();
         if (cross.z()>0.0) bisector = -bisector;
 
+        OSG_NOTICE<<"     bisector normal "<<computeBisectorNormal(v1,v2,v2,v3)<<std::endl;
+
         osg::Vec3 new_vertex = v2 + bisector * l;
         new_vertex.z() += 0.5f;
         return new_vertex;
     }
 }
 
-osg::PrimitiveSet* computeBevelEdge(osg::Vec3Array& orig_vertices, unsigned int start, unsigned int count, osg::Vec3Array& new_vertices)
+osg::DrawArrays* computeBevelEdge(osg::Vec3Array& orig_vertices, unsigned int start, unsigned int count, osg::Vec3Array& new_vertices)
 {
     OSG_NOTICE<<"computeBoundaryAngles("<<orig_vertices.size()<<", "<<start<<", "<<count<<")"<<std::endl;
     if (orig_vertices[start+count-1]==orig_vertices[start])
@@ -164,6 +234,10 @@ osg::PrimitiveSet* computeBevelEdge(osg::Vec3Array& orig_vertices, unsigned int 
     new_vertices[start+count-1] = computeNewVertexPosition(orig_vertices[start+count-2],orig_vertices[start],orig_vertices[start+1]);
 
     return new osg::DrawArrays(GL_POLYGON, start, count);
+}
+
+void removeLoops(osg::Vec3Array& orig_vertices, unsigned int start, unsigned int count)
+{
 }
 
 osg::Geometry* computeBevelEdge(osg::Geometry* orig_geometry)
@@ -188,7 +262,9 @@ osg::Geometry* computeBevelEdge(osg::Geometry* orig_geometry)
         osg::DrawArrays* drawArray = dynamic_cast<osg::DrawArrays*>(itr->get());
         if (drawArray && drawArray->getMode()==GL_POLYGON)
         {
-            new_primitives.push_back(computeBevelEdge(*orig_vertices, drawArray->getFirst(), drawArray->getCount(), *new_vertices));
+            osg::DrawArrays* new_drawArray = computeBevelEdge(*orig_vertices, drawArray->getFirst(), drawArray->getCount(), *new_vertices);
+            removeLoops(*new_vertices, new_drawArray->getFirst(), new_drawArray->getCount());
+            new_primitives.push_back(new_drawArray);
         }
     }
     return new_geometry;

@@ -59,7 +59,24 @@ void Text3D::accept(osg::PrimitiveFunctor& pf) const
         LineRenderInfo::const_iterator it, end = itLine->end();
         for (it = itLine->begin(); it!=end; ++it)
         {
-            pf.setVertexArray(it->_glyph->getVertexArray()->size(),&(it->_glyph->getVertexArray()->front()));
+            osg::ref_ptr<osg::Vec3Array> vertices = it->_glyph->getVertexArray();
+
+            if (vertices->empty())
+              continue; //skip over spaces
+          
+            //pf.setVertexArray(it->_glyph->getVertexArray()->size(),&(it->_glyph->getVertexArray()->front()));
+            //////////////////////////////////////////////////////////////////////////
+            // now apply matrix to the glyphs.
+            osg::ref_ptr<osg::Vec3Array> transformedVertices = new osg::Vec3Array;
+            osg::Matrix matrix = _autoTransformCache[0]._matrix;//osg::Matrix();
+            matrix.postMultTranslate(matrix*it->_position);
+            transformedVertices->reserve(vertices->size());
+            for (osg::Vec3Array::iterator itr=vertices->begin(); itr!=vertices->end(); itr++)
+            {
+              transformedVertices->push_back((*itr)*matrix);
+            }
+            //////////////////////////////////////////////////////////////////////////
+            pf.setVertexArray(transformedVertices->size(),&(transformedVertices->front()));
 
             // ** render the front face of the glyph
             osg::Geometry::PrimitiveSetList & pslFront = it->_glyph->getFrontPrimitiveSetList();

@@ -32,7 +32,7 @@
 #include <freetype/ftoutln.h>
 #include <freetype/ftbbox.h>
 
-
+#include <osg/io_utils>
 
 namespace
 {
@@ -67,7 +67,19 @@ struct Char3DInfo
         return _geometry.get();
     }
 
-    void moveTo(osg::Vec2 pos)
+    void addVertex(const osg::Vec3& pos)
+    {
+        if (!_verts->empty() && _verts->back()==pos)
+        {
+            // OSG_NOTICE<<"addVertex("<<pos<<") duplicate, ignoring"<<std::endl;
+            return;
+        }
+
+        _verts->push_back( pos );
+        setMinMax(pos);
+    }
+
+    void moveTo(const osg::Vec2& pos)
     {
         if (_verts->size())
         {
@@ -75,16 +87,14 @@ struct Char3DInfo
             _geometry->addPrimitiveSet( new osg::DrawArrays( osg::PrimitiveSet::POLYGON, _idx, len ) );
         }
         _idx = _verts->size();
-        _verts->push_back( osg::Vec3(pos.x(),pos.y(),0) );
+        addVertex( osg::Vec3(pos.x(),pos.y(),0) );
 
-        setMinMax(pos);
     }
-    void lineTo(osg::Vec2 pos)
+    void lineTo(const osg::Vec2& pos)
     {
-        _verts->push_back( osg::Vec3(pos.x(),pos.y(),0) );
-        setMinMax(pos);
+        addVertex( osg::Vec3(pos.x(),pos.y(),0) );
     }
-    void conicTo(osg::Vec2 control, osg::Vec2 pos)
+    void conicTo(const osg::Vec2& control, const osg::Vec2& pos)
     {
         osg::Vec3 p0 = _verts->back();
         osg::Vec3 p1 = osg::Vec3(control.x(),control.y(),0);
@@ -97,15 +107,13 @@ struct Char3DInfo
             double w = 1;
             double bs = 1.0/( (1-u)*(1-u)+2*(1-u)*u*w +u*u );
             osg::Vec3 p = (p0*((1-u)*(1-u)) + p1*(2*(1-u)*u*w) + p2*(u*u))*bs;
-            _verts->push_back( p );
+            addVertex( p );
 
             u += dt;
         }
-
-        setMinMax(pos);
     }
 
-    void cubicTo(osg::Vec2 control1, osg::Vec2 control2, osg::Vec2 pos)
+    void cubicTo(const osg::Vec2& control1, const osg::Vec2& control2, const osg::Vec2& pos)
     {
         osg::Vec3 p0 = _verts->back();
         osg::Vec3 p1 = osg::Vec3(control1.x(),control1.y(),0);
@@ -124,15 +132,13 @@ struct Char3DInfo
         for (int i=0; i<=_numSteps; ++i)
         {
             osg::Vec3 p = osg::Vec3( ax*u*u*u + bx*u*u  + cx*u + p0.x(),ay*u*u*u + by*u*u  + cy*u + p0.y(),0 );
-            _verts->push_back( p );
+            addVertex( p );
 
             u += dt;
         }
-
-        setMinMax(pos);
     }
 
-    void setMinMax(osg::Vec2 pos)
+    void setMinMax(const osg::Vec3& pos)
     {
         _maxY = std::max(_maxY, (double) pos.y());
         _minY = std::min(_minY, (double) pos.y());
@@ -308,7 +314,7 @@ FreeTypeFont3D::~FreeTypeFont3D()
 
 osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
 {
-
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
 
     //
     // GT: fix for symbol fonts (i.e. the Webdings font) as the wrong character are being
@@ -359,6 +365,16 @@ osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
 
     // ** create geometry for each part of the glyph
     osg::ref_ptr<osg::Geometry> frontGeo(new osg::Geometry);
+
+    osg::ref_ptr<osg::Vec3Array> rawVertices = new osg::Vec3Array(*(char3d._verts));
+    osg::Geometry::PrimitiveSetList rawPrimitives;
+    for(osg::Geometry::PrimitiveSetList::iterator itr = char3d.get()->getPrimitiveSetList().begin();
+        itr != char3d.get()->getPrimitiveSetList().end();
+        ++itr)
+    {
+        rawPrimitives.push_back(dynamic_cast<osg::PrimitiveSet*>((*itr)->clone(osg::CopyOp::DEEP_COPY_ALL)));
+    }
+
     frontGeo->setVertexArray(char3d.get()->getVertexArray());
     frontGeo->setPrimitiveSetList(char3d.get()->getPrimitiveSetList());
 
@@ -458,6 +474,10 @@ osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
     // ** save vertices and PrimitiveSetList of each face in the Glyph3D PrimitiveSet face list
     osgText::Font3D::Glyph3D * glyph3D = new osgText::Font3D::Glyph3D(charcode);
 
+    // copy the raw primitive set list before we tessellate it.
+    glyph3D->getRawFacePrimitiveSetList() = rawPrimitives;
+    glyph3D->setRawVertexArray(rawVertices.get());
+
     glyph3D->setVertexArray(dynamic_cast<osg::Vec3Array*>(frontGeo->getVertexArray()));
     glyph3D->setNormalArray(dynamic_cast<osg::Vec3Array*>(wallGeo->getNormalArray()));
 
@@ -494,6 +514,8 @@ osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
 
 osg::Vec2 FreeTypeFont3D::getKerning(unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType kerningType)
 {
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
+
     if (!FT_HAS_KERNING(_face) || (kerningType == osgText::KERNING_NONE)) return osg::Vec2(0.0f,0.0f);
 
     FT_Kerning_Mode mode = (kerningType==osgText::KERNING_DEFAULT) ? ft_kerning_default : ft_kerning_unfitted;

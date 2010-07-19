@@ -31,8 +31,24 @@
 extern int main_orig(int, char**);
 extern int main_test(int, char**);
 
+
+osg::Vec3 computeRayIntersectionPoint(const osg::Vec3& a, const osg::Vec3& an, const osg::Vec3& c, const osg::Vec3& cn)
+{
+    float denominator = ( cn.x() * an.y() - cn.y() * an.x());
+    if (denominator==0.0)
+    {
+        OSG_NOTICE<<"computeRayIntersectionPoint()<<denominator==0.0"<<std::endl;
+        // line segments must be parallel.
+        return (a+c)*0.5;
+    }
+
+    float t = ((a.x()-c.x())*an.y() - (a.y()-c.y())*an.x()) / denominator;
+    return c + cn*t;
+}
+
 osg::Vec3 computeIntersectionPoint(const osg::Vec3& a, const osg::Vec3& b, const osg::Vec3& c, const osg::Vec3& d)
 {
+#if 0
     float ba_x = b.x()-a.x();
     float ba_y = b.y()-a.y();
 
@@ -49,6 +65,9 @@ osg::Vec3 computeIntersectionPoint(const osg::Vec3& a, const osg::Vec3& b, const
     float t = ((a.x()-c.x())*ba_y + (a.y()-c.y())*ba_x) / denominator;
 
     return c + (d-c)*t;
+#endif
+    return computeRayIntersectionPoint(a, b-a, c, d-c);
+
 }
 
 osg::Vec3 computeBisectorNormal(const osg::Vec3& a, const osg::Vec3& b, const osg::Vec3& c, const osg::Vec3& d)
@@ -57,40 +76,136 @@ osg::Vec3 computeBisectorNormal(const osg::Vec3& a, const osg::Vec3& b, const os
     osg::Vec2 dc(d.x()-c.x(), d.y()-c.y());
     float length_ab = ab.normalize();
     float length_dc = dc.normalize();
-    float denominator = (ab.x()-dc.x());
-    if (denominator==0.0)
-    {
-        // ab and cd parallel
-        return osg::Vec3(ab.y(), -ab.x(), 0.0f);
-    }
-    float r = (dc.x()-ab.y())/ denominator;
-    float ny = 1.0f / sqrtf(r*r + 1.0f);
-    float nx = r * ny;
 
-    return osg::Vec3(nx,ny,0.0f);
+    float e = dc.y() - ab.y();
+    float f = ab.x() - dc.x();
+    float denominator = sqrtf(e*e + f*f);
+    float nx = e / denominator;
+    float ny = f / denominator;
+    if (( ab.x()*ny - ab.y()*nx) > 0.0f)
+    {
+        // OSG_NOTICE<<"   computeBisectorNormal(a=["<<a<<"], b=["<<b<<"], c=["<<c<<"], d=["<<d<<"]), nx="<<nx<<", ny="<<ny<<", denominator="<<denominator<<" no need to swap"<<std::endl;
+        return osg::Vec3(nx,ny,0.0f);
+    }
+    else
+    {
+        OSG_NOTICE<<"   computeBisectorNormal(a=["<<a<<"], b=["<<b<<"], c=["<<c<<"], d=["<<d<<"]), nx="<<nx<<", ny="<<ny<<", denominator="<<denominator<<" need to swap!!!"<<std::endl;
+        return osg::Vec3(-nx,-ny,0.0f);
+    }
+}
+
+float computeBisectorIntersectorThickness(const osg::Vec3& a, const osg::Vec3& b, const osg::Vec3& c, const osg::Vec3& d, const osg::Vec3& e, const osg::Vec3& f)
+{
+    osg::Vec3 intersection_abcd = computeIntersectionPoint(a,b,c,d);
+    osg::Vec3 bisector_abcd = computeBisectorNormal(a,b,c,d);
+    osg::Vec3 intersection_cdef = computeIntersectionPoint(c,d,e,f);
+    osg::Vec3 bisector_cdef = computeBisectorNormal(c,d,e,f);
+    if (bisector_abcd==bisector_cdef)
+    {
+        OSG_NOTICE<<"computeBisectorIntersector(["<<a<<"], ["<<b<<"], ["<<c<<"], ["<<d<<"], ["<<e<<"], ["<<f<<"[)"<<std::endl;
+        OSG_NOTICE<<"   bisectors parallel, thickness = "<<FLT_MAX<<std::endl;
+        return FLT_MAX;
+    }
+
+    osg::Vec3 bisector_intersection = computeRayIntersectionPoint(intersection_abcd,bisector_abcd, intersection_cdef, bisector_cdef);
+    osg::Vec3 normal(d.y()-c.y(), c.x()-d.x(), 0.0);
+    float cd_length = normal.normalize();
+    if (cd_length==0)
+    {
+        OSG_NOTICE<<"computeBisectorIntersector(["<<a<<"], ["<<b<<"], ["<<c<<"], ["<<d<<"], ["<<e<<"], ["<<f<<"[)"<<std::endl;
+        OSG_NOTICE<<"   segment length==0, thickness = "<<FLT_MAX<<std::endl;
+        return FLT_MAX;
+    }
+
+    float thickness = (bisector_intersection - c) * normal;
+#if 0
+    OSG_NOTICE<<"computeBisectorIntersector(["<<a<<"], ["<<b<<"], ["<<c<<"], ["<<d<<"], ["<<e<<"], ["<<f<<"[)"<<std::endl;
+    OSG_NOTICE<<"   bisector_abcd = "<<bisector_abcd<<", bisector_cdef="<<bisector_cdef<<std::endl;
+    OSG_NOTICE<<"   bisector_intersection = "<<bisector_intersection<<", thickness = "<<thickness<<std::endl;
+#endif
+    return thickness;
 }
 
 class Boundary
 {
-    typedef std::vector<unsigned int>   Points;
-    typedef std::vector<float>          Distances;
-    typedef std::vector<osg::Vec3>      Bisectors;
+public:
 
-    struct Segment : public osg::Referenced
-    {
-        unsigned int            _p1;
-        unsigned int            _p2;
-        Segment*                _left;
-        osg::ref_ptr<Segment>   _right;
-        float                   _distance;
-    };
-
-    osg::ref_ptr<Segment>  _head;
-
+    typedef std::pair<unsigned int, unsigned int> Segment;
+    typedef std::vector<Segment>  Segments;
     osg::ref_ptr<osg::Vec3Array> _vertices;
-    Bisectors                   _bisectors;
-    Points                      _boundary;
-    Distances                   _distances;
+    Segments _segments;
+
+    Boundary(osg::Vec3Array* vertices, unsigned int start, unsigned int count)
+    {
+        _vertices = vertices;
+
+        if ((*_vertices)[start]==(*_vertices)[start+count-1])
+        {
+            OSG_NOTICE<<"Boundary is a line loop"<<std::endl;
+        }
+        else
+        {
+            OSG_NOTICE<<"Boundary is not a line loop"<<std::endl;
+        }
+
+        _segments.reserve(count-1);
+        for(unsigned int i=start; i<start+count-1; ++i)
+        {
+            _segments.push_back(Segment(i,i+1));
+        }
+
+    }
+
+    float computeThickness(unsigned int i)
+    {
+        Segment& seg_before = _segments[ (i+_segments.size()-1) % _segments.size() ];
+        Segment& seg_target = _segments[ (i) % _segments.size() ];
+        Segment& seg_after =  _segments[ (i+1) % _segments.size() ];
+        return computeBisectorIntersectorThickness(
+            (*_vertices)[seg_before.first], (*_vertices)[seg_before.second],
+            (*_vertices)[seg_target.first], (*_vertices)[seg_target.second],
+            (*_vertices)[seg_after.first], (*_vertices)[seg_after.second]);
+    }
+
+    void computeAllThickness()
+    {
+        for(unsigned int i=0; i<_segments.size(); ++i)
+        {
+            computeThickness(i);
+        }
+    }
+
+
+    bool findMinThickness(unsigned int& minThickness_i, float& minThickness)
+    {
+        minThickness_i = _segments.size();
+        for(unsigned int i=0; i<_segments.size(); ++i)
+        {
+            float thickness = computeThickness(i);
+            if (thickness>0.0 && thickness <  minThickness)
+            {
+                minThickness = thickness;
+                minThickness_i = i;
+            }
+        }
+
+        return minThickness_i != _segments.size();
+    }
+
+    void removeAllSegmentsBelowThickness(float targetThickness)
+    {
+        OSG_NOTICE<<"removeAllSegmentsBelowThickness("<<targetThickness<<")"<<std::endl;
+        for(;;)
+        {
+            unsigned int minThickness_i = _segments.size();
+            float minThickness = targetThickness;
+            if (!findMinThickness(minThickness_i,minThickness)) break;
+
+            OSG_NOTICE<<"  removing segment _segments["<<minThickness_i<<"] ("<<_segments[minThickness_i].first<<", "<<_segments[minThickness_i].second<<" with thickness="<<minThickness<<" "<<std::endl;
+            _segments.erase(_segments.begin()+minThickness_i);
+        }
+    }
+
 };
 
 
@@ -172,10 +287,11 @@ osg::Vec3 computeNewVertexPosition(osg::Vec3& v1, osg::Vec3& v2, osg::Vec3& v3)
     osg::Vec3 cross = v21^v32;
     osg::Vec3 bisector(v32-v21);
 
-
-    OSG_NOTICE<<"v1="<<v1<<", v2="<<v2<<", v3="<<v3<<", dot_angle="<<osg::RadiansToDegrees(angle)<<std::endl;
+#if 0
+    OSG_NOTICE<<"v1=["<<v1<<"], v2=["<<v2<<"], v3=["<<v3<<"], dot_angle="<<osg::RadiansToDegrees(angle)<<std::endl;
     OSG_NOTICE<<"     computeIntersectionPoint() point "<<computeIntersectionPoint(v1,v2,v2,v3)<<std::endl;
-    OSG_NOTICE<<"     computeBisectorNormal() normal "<<computeBisectorNormal(v1,v2,v2,v3)<<std::endl;
+#endif
+    // OSG_NOTICE<<"     computeBisectorNormal() normal "<<computeBisectorNormal(v1,v2,v2,v3)<<std::endl;
     
     if (bisector.length()<0.5)
     {
@@ -189,7 +305,17 @@ osg::Vec3 computeNewVertexPosition(osg::Vec3& v1, osg::Vec3& v2, osg::Vec3& v3)
         osg::Vec3 bisector(s21+s32);
         bisector.normalize();
 
-        OSG_NOTICE<<"     bisector normal "<<computeBisectorNormal(v1,v2,v2,v3)<<std::endl;
+        
+        if ((computeBisectorNormal(v1,v2,v2,v3)-bisector).length2()>0.001)
+        {
+            OSG_NOTICE<<"     WARNING 1 bisector disagree "<<bisector<<", s21=["<<s21<<"], s32=["<<s32<<"]"<<std::endl;
+        }
+        else
+        {
+#if 0
+            OSG_NOTICE<<"     bisector normal "<<bisector<<std::endl;
+#endif
+        }
 
         float l = t / sin(angle*0.5);
 
@@ -205,7 +331,16 @@ osg::Vec3 computeNewVertexPosition(osg::Vec3& v1, osg::Vec3& v2, osg::Vec3& v3)
         bisector.normalize();
         if (cross.z()>0.0) bisector = -bisector;
 
-        OSG_NOTICE<<"     bisector normal "<<computeBisectorNormal(v1,v2,v2,v3)<<std::endl;
+        if ((computeBisectorNormal(v1,v2,v2,v3)-bisector).length2()>0.001)
+        {
+            OSG_NOTICE<<"     WARNING 2 bisector disagree "<<bisector<<std::endl;
+        }
+        else
+        {
+#if 0
+            OSG_NOTICE<<"     bisector normal "<<bisector<<std::endl;
+#endif
+        }
 
         osg::Vec3 new_vertex = v2 + bisector * l;
         new_vertex.z() += 0.5f;
@@ -215,7 +350,8 @@ osg::Vec3 computeNewVertexPosition(osg::Vec3& v1, osg::Vec3& v2, osg::Vec3& v3)
 
 osg::DrawArrays* computeBevelEdge(osg::Vec3Array& orig_vertices, unsigned int start, unsigned int count, osg::Vec3Array& new_vertices)
 {
-    OSG_NOTICE<<"computeBoundaryAngles("<<orig_vertices.size()<<", "<<start<<", "<<count<<")"<<std::endl;
+
+    OSG_NOTICE<<"computeBevelEdge("<<orig_vertices.size()<<", "<<start<<", "<<count<<")"<<std::endl;
     if (orig_vertices[start+count-1]==orig_vertices[start])
     {
         OSG_NOTICE<<"is a line loop"<<std::endl;
@@ -270,6 +406,29 @@ osg::Geometry* computeBevelEdge(osg::Geometry* orig_geometry)
     return new_geometry;
 }
 
+osg::Geometry* computeThickness(osg::Geometry* orig_geometry, float thickness)
+{
+    OSG_NOTICE<<"computeThickness("<<orig_geometry<<")"<<std::endl;
+    osg::Vec3Array* orig_vertices = dynamic_cast<osg::Vec3Array*>(orig_geometry->getVertexArray());
+    osg::Geometry::PrimitiveSetList& orig_primitives = orig_geometry->getPrimitiveSetList();
+
+    for(osg::Geometry::PrimitiveSetList::iterator itr = orig_primitives.begin();
+        itr != orig_primitives.end();
+        ++itr)
+    {
+        osg::DrawArrays* drawArray = dynamic_cast<osg::DrawArrays*>(itr->get());
+        if (drawArray && drawArray->getMode()==GL_POLYGON)
+        {
+            Boundary boundary(orig_vertices, drawArray->getFirst(), drawArray->getCount());
+            boundary.computeAllThickness();
+
+            boundary.removeAllSegmentsBelowThickness(thickness);
+        }
+    }
+    return 0;
+}
+
+
 int main(int argc, char** argv)
 {
     osg::ArgumentParser arguments(&argc, argv);
@@ -296,6 +455,9 @@ int main(int argc, char** argv)
 
     bool useTessellator = false;
     while(arguments.read("-t") || arguments.read("--tessellate")) { useTessellator = true; }
+
+    float thickness = 5.0;
+    while(arguments.read("--thickness",thickness)) {}
 
     osg::ref_ptr<osg::Group> group = new osg::Group;
     osg::Vec3 position;
@@ -324,10 +486,12 @@ int main(int argc, char** argv)
         geometry->setColorArray(colours);
         geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-        computeBoundaryAngles(geometry);
+        // computeBoundaryAngles(geometry);
 
         osg::Geometry* bevel = computeBevelEdge(geometry);
         geode->addDrawable(bevel);
+
+        computeThickness(geometry, thickness);
 
         if (useTessellator)
         {

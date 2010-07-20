@@ -37,7 +37,7 @@ osg::Vec3 computeRayIntersectionPoint(const osg::Vec3& a, const osg::Vec3& an, c
     float denominator = ( cn.x() * an.y() - cn.y() * an.x());
     if (denominator==0.0)
     {
-        OSG_NOTICE<<"computeRayIntersectionPoint()<<denominator==0.0"<<std::endl;
+        //OSG_NOTICE<<"computeRayIntersectionPoint()<<denominator==0.0"<<std::endl;
         // line segments must be parallel.
         return (a+c)*0.5;
     }
@@ -74,8 +74,8 @@ osg::Vec3 computeBisectorNormal(const osg::Vec3& a, const osg::Vec3& b, const os
 {
     osg::Vec2 ab(a.x()-b.x(), a.y()-b.y());
     osg::Vec2 dc(d.x()-c.x(), d.y()-c.y());
-    float length_ab = ab.normalize();
-    float length_dc = dc.normalize();
+    /*float length_ab =*/ ab.normalize();
+    /*float length_dc =*/ dc.normalize();
 
     float e = dc.y() - ab.y();
     float f = ab.x() - dc.x();
@@ -102,8 +102,8 @@ float computeBisectorIntersectorThickness(const osg::Vec3& a, const osg::Vec3& b
     osg::Vec3 bisector_cdef = computeBisectorNormal(c,d,e,f);
     if (bisector_abcd==bisector_cdef)
     {
-        OSG_NOTICE<<"computeBisectorIntersector(["<<a<<"], ["<<b<<"], ["<<c<<"], ["<<d<<"], ["<<e<<"], ["<<f<<"[)"<<std::endl;
-        OSG_NOTICE<<"   bisectors parallel, thickness = "<<FLT_MAX<<std::endl;
+        //OSG_NOTICE<<"computeBisectorIntersector(["<<a<<"], ["<<b<<"], ["<<c<<"], ["<<d<<"], ["<<e<<"], ["<<f<<"[)"<<std::endl;
+        //OSG_NOTICE<<"   bisectors parallel, thickness = "<<FLT_MAX<<std::endl;
         return FLT_MAX;
     }
 
@@ -112,8 +112,8 @@ float computeBisectorIntersectorThickness(const osg::Vec3& a, const osg::Vec3& b
     float cd_length = normal.normalize();
     if (cd_length==0)
     {
-        OSG_NOTICE<<"computeBisectorIntersector(["<<a<<"], ["<<b<<"], ["<<c<<"], ["<<d<<"], ["<<e<<"], ["<<f<<"[)"<<std::endl;
-        OSG_NOTICE<<"   segment length==0, thickness = "<<FLT_MAX<<std::endl;
+        //OSG_NOTICE<<"computeBisectorIntersector(["<<a<<"], ["<<b<<"], ["<<c<<"], ["<<d<<"], ["<<e<<"], ["<<f<<"[)"<<std::endl;
+        //OSG_NOTICE<<"   segment length==0, thickness = "<<FLT_MAX<<std::endl;
         return FLT_MAX;
     }
 
@@ -141,7 +141,7 @@ public:
 
         if ((*_vertices)[start]==(*_vertices)[start+count-1])
         {
-            OSG_NOTICE<<"Boundary is a line loop"<<std::endl;
+            // OSG_NOTICE<<"Boundary is a line loop"<<std::endl;
         }
         else
         {
@@ -194,16 +194,72 @@ public:
 
     void removeAllSegmentsBelowThickness(float targetThickness)
     {
-        OSG_NOTICE<<"removeAllSegmentsBelowThickness("<<targetThickness<<")"<<std::endl;
+        // OSG_NOTICE<<"removeAllSegmentsBelowThickness("<<targetThickness<<")"<<std::endl;
         for(;;)
         {
             unsigned int minThickness_i = _segments.size();
             float minThickness = targetThickness;
             if (!findMinThickness(minThickness_i,minThickness)) break;
 
-            OSG_NOTICE<<"  removing segment _segments["<<minThickness_i<<"] ("<<_segments[minThickness_i].first<<", "<<_segments[minThickness_i].second<<" with thickness="<<minThickness<<" "<<std::endl;
+            // OSG_NOTICE<<"  removing segment _segments["<<minThickness_i<<"] ("<<_segments[minThickness_i].first<<", "<<_segments[minThickness_i].second<<" with thickness="<<minThickness<<" "<<std::endl;
             _segments.erase(_segments.begin()+minThickness_i);
         }
+    }
+
+    osg::Vec3 computeBisectorPoint(unsigned int i, float targetThickness)
+    {
+        Segment& seg_before = _segments[ (i+_segments.size()-1) % _segments.size() ];
+        Segment& seg_target = _segments[ (i) % _segments.size() ];
+        osg::Vec3& a = (*_vertices)[seg_before.first];
+        osg::Vec3& b = (*_vertices)[seg_before.second];
+        osg::Vec3& c = (*_vertices)[seg_target.first];
+        osg::Vec3& d = (*_vertices)[seg_target.second];
+        osg::Vec3 intersection_abcd = computeIntersectionPoint(a,b,c,d);
+        osg::Vec3 bisector_abcd = computeBisectorNormal(a,b,c,d);
+        osg::Vec3 ab_sidevector(b.y()-a.y(), a.x()-b.x(), 0.0);
+        ab_sidevector.normalize();
+        float scale_factor = 1.0/ (bisector_abcd*ab_sidevector);
+        osg::Vec3 new_vertex = intersection_abcd + bisector_abcd*(scale_factor*targetThickness);
+
+        // OSG_NOTICE<<"bisector_abcd = "<<bisector_abcd<<", ab_sidevector="<<ab_sidevector<<", b-a="<<b-a<<", scale_factor="<<scale_factor<<std::endl;
+
+        new_vertex.z() += 0.5f;
+        return new_vertex;
+    }
+
+    void addBoundaryToGeometry(osg::Geometry* geometry, float targetThickness)
+    {
+        if (_segments.empty()) return;
+
+        if (geometry->getVertexArray()==0) geometry->setVertexArray(new osg::Vec3Array);
+        osg::Vec3Array* new_vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+
+        unsigned int first = new_vertices->size();
+        unsigned int count = 0;
+
+        // reserve enough space in the vertex array to accomodate the vertices associated with the segments
+        // new_vertices->reserve(new_vertices->size()+_segments.size()+1);
+
+        // create vertices
+        unsigned int previous_second = _segments[0].second;
+        osg::Vec3 newPoint = computeBisectorPoint(0, targetThickness);
+        new_vertices->push_back(newPoint);
+        ++count;
+
+        for(unsigned int i=1; i<_segments.size(); ++i)
+        {
+            previous_second = _segments[i].second;
+            newPoint = computeBisectorPoint(i, targetThickness);
+            new_vertices->push_back(newPoint);
+            ++count;
+        }
+
+        // repeat the first point to make it a full closed loop
+        new_vertices->push_back((*new_vertices)[first]);
+        ++count;
+
+        // add DrawArrays primitive set for polygon
+        if (count!=0) geometry->addPrimitiveSet(new osg::DrawArrays(GL_POLYGON, first, count));
     }
 
 };
@@ -222,10 +278,10 @@ float computeAngle(osg::Vec3& v1, osg::Vec3& v2, osg::Vec3& v3)
 
 void computeBoundaryAngles(osg::Vec3Array& vertices, unsigned int start, unsigned int count)
 {
-    OSG_NOTICE<<"computeBoundaryAngles("<<vertices.size()<<", "<<start<<", "<<count<<")"<<std::endl;
+    //OSG_NOTICE<<"computeBoundaryAngles("<<vertices.size()<<", "<<start<<", "<<count<<")"<<std::endl;
     if (vertices[start+count-1]==vertices[start])
     {
-        OSG_NOTICE<<"is a line loop"<<std::endl;
+        // OSG_NOTICE<<"is a line loop"<<std::endl;
     }
     else
     {
@@ -351,10 +407,10 @@ osg::Vec3 computeNewVertexPosition(osg::Vec3& v1, osg::Vec3& v2, osg::Vec3& v3)
 osg::DrawArrays* computeBevelEdge(osg::Vec3Array& orig_vertices, unsigned int start, unsigned int count, osg::Vec3Array& new_vertices)
 {
 
-    OSG_NOTICE<<"computeBevelEdge("<<orig_vertices.size()<<", "<<start<<", "<<count<<")"<<std::endl;
+    // OSG_NOTICE<<"computeBevelEdge("<<orig_vertices.size()<<", "<<start<<", "<<count<<")"<<std::endl;
     if (orig_vertices[start+count-1]==orig_vertices[start])
     {
-        OSG_NOTICE<<"is a line loop"<<std::endl;
+        // OSG_NOTICE<<"is a line loop"<<std::endl;
     }
     else
     {
@@ -378,7 +434,7 @@ void removeLoops(osg::Vec3Array& orig_vertices, unsigned int start, unsigned int
 
 osg::Geometry* computeBevelEdge(osg::Geometry* orig_geometry)
 {
-    OSG_NOTICE<<"computeBoundaryAngles("<<orig_geometry<<")"<<std::endl;
+    // OSG_NOTICE<<"computeBoundaryAngles("<<orig_geometry<<")"<<std::endl;
     osg::Vec3Array* orig_vertices = dynamic_cast<osg::Vec3Array*>(orig_geometry->getVertexArray());
     osg::Geometry::PrimitiveSetList& orig_primitives = orig_geometry->getPrimitiveSetList();
 
@@ -408,9 +464,16 @@ osg::Geometry* computeBevelEdge(osg::Geometry* orig_geometry)
 
 osg::Geometry* computeThickness(osg::Geometry* orig_geometry, float thickness)
 {
-    OSG_NOTICE<<"computeThickness("<<orig_geometry<<")"<<std::endl;
+    // OSG_NOTICE<<"computeThickness("<<orig_geometry<<")"<<std::endl;
     osg::Vec3Array* orig_vertices = dynamic_cast<osg::Vec3Array*>(orig_geometry->getVertexArray());
     osg::Geometry::PrimitiveSetList& orig_primitives = orig_geometry->getPrimitiveSetList();
+
+    osg::Geometry* new_geometry = new osg::Geometry;
+
+    osg::Vec4Array* new_colours = new osg::Vec4Array;
+    new_colours->push_back(osg::Vec4(1.0,1.0,0.0,1.0));
+    new_geometry->setColorArray(new_colours);
+    new_geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
 
     for(osg::Geometry::PrimitiveSetList::iterator itr = orig_primitives.begin();
         itr != orig_primitives.end();
@@ -423,11 +486,11 @@ osg::Geometry* computeThickness(osg::Geometry* orig_geometry, float thickness)
             boundary.computeAllThickness();
 
             boundary.removeAllSegmentsBelowThickness(thickness);
+            boundary.addBoundaryToGeometry(new_geometry, thickness);
         }
     }
-    return 0;
+    return new_geometry;
 }
-
 
 int main(int argc, char** argv)
 {
@@ -446,12 +509,24 @@ int main(int argc, char** argv)
     while(arguments.read("-f",fontFile)) {}
 
     std::string word("This is a simple test");
+
+    while(arguments.read("--ascii"))
+    {
+        word.clear();
+        for(unsigned int c=' '; c<=127;++c)
+        {
+            word.push_back(c);
+        }
+    }
+
     while(arguments.read("-w",word)) {}
 
     osg::ref_ptr<osgText::Font3D> font = osgText::readFont3DFile(fontFile);
     if (!font) return 1;
     OSG_NOTICE<<"Read font "<<fontFile<<" font="<<font.get()<<std::endl;
 
+    bool useOldBoundaryCalc = false;
+    while(arguments.read("--old")) useOldBoundaryCalc = true;
 
     bool useTessellator = false;
     while(arguments.read("-t") || arguments.read("--tessellate")) { useTessellator = true; }
@@ -486,21 +561,35 @@ int main(int argc, char** argv)
         geometry->setColorArray(colours);
         geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-        // computeBoundaryAngles(geometry);
+        osg::Geometry* bevel = 0;
+        if (useOldBoundaryCalc)
+        {
+            bevel = computeBevelEdge(geometry);
+       }
+        else
+        {
+            bevel = computeThickness(geometry, thickness);
+        }
 
-        osg::Geometry* bevel = computeBevelEdge(geometry);
-        geode->addDrawable(bevel);
-
-        computeThickness(geometry, thickness);
+        if (bevel) geode->addDrawable(bevel);
 
         if (useTessellator)
         {
-            osgUtil::Tessellator ts;
-            ts.setWindingType(osgUtil::Tessellator::TESS_WINDING_POSITIVE);
-            ts.setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
-            ts.retessellatePolygons(*geometry);
+            if (geometry)
+            {
+                osgUtil::Tessellator ts;
+                ts.setWindingType(osgUtil::Tessellator::TESS_WINDING_POSITIVE);
+                ts.setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
+                ts.retessellatePolygons(*geometry);
+            }
 
-            ts.retessellatePolygons(*bevel);
+            if (bevel)
+            {
+                osgUtil::Tessellator ts;
+                ts.setWindingType(osgUtil::Tessellator::TESS_WINDING_POSITIVE);
+                ts.setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
+                ts.retessellatePolygons(*bevel);
+            }
 
         }
 

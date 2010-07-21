@@ -27,7 +27,7 @@ public:
     const std::set<const KFbxNode*>& fbxSkeletons;
     std::map<KFbxNode*, osgAnimation::Skeleton*> skeletonMap;
     const osgDB::Options& options;
-    bool lightmapTextures;
+    bool lightmapTextures, tessellatePolygons;
 
     enum AuthoringTool
     {
@@ -43,14 +43,16 @@ public:
         const std::set<const KFbxNode*>& fbxSkeletons1,
         const osgDB::Options& options1,
         AuthoringTool authoringTool1,
-        bool lightmapTextures1)
+        bool lightmapTextures1,
+		bool tessellatePolygons1)
         : pSdkManager(pSdkManager1),
         fbxScene(fbxScene1),
         fbxMaterialToOsgStateSet(fbxMaterialToOsgStateSet1),
         fbxSkeletons(fbxSkeletons1),
         options(options1),
         authoringTool(authoringTool1),
-        lightmapTextures(lightmapTextures1)
+		lightmapTextures(lightmapTextures1),
+		tessellatePolygons(tessellatePolygons1)
     {}
 
     osgDB::ReaderWriter::ReadResult readFbxNode(

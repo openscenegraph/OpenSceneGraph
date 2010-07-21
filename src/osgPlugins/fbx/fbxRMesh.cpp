@@ -10,6 +10,7 @@
 #include <osg/TexEnvCombine>
 
 #include <osgUtil/TriStripVisitor>
+#include <osgUtil/Tessellator>
 
 #include <osgDB/ReadFile>
 
@@ -67,7 +68,7 @@ bool layerElementValid(const KFbxLayerElementTemplate<T>* pLayerElement)
 
 template <typename T>
 int getVertexIndex(const KFbxLayerElementTemplate<T>* pLayerElement,
-    KFbxMesh* fbxMesh,
+    const KFbxMesh* fbxMesh,
     int nPolygon, int nPolyVertex, int nMeshVertex)
 {
     int index = 0;
@@ -113,7 +114,7 @@ int getPolygonIndex(const KFbxLayerElementTemplate<T>* pLayerElement, int nPolyg
 
 template <typename FbxT>
 FbxT getElement(const KFbxLayerElementTemplate<FbxT>* pLayerElement,
-    KFbxMesh* fbxMesh,
+    const KFbxMesh* fbxMesh,
     int nPolygon, int nPolyVertex, int nMeshVertex)
 {
     return pLayerElement->GetDirectArray().GetAt(getVertexIndex(
@@ -522,6 +523,131 @@ const KFbxLayerElementUV* getUVElementForChannel(std::string uvChannelName,
     return 0;
 }
 
+typedef std::pair<osg::Geometry*, int> GIPair;
+typedef std::multimap<int, GIPair> FbxToOsgVertexMap;
+typedef std::map<GIPair, int> OsgToFbxNormalMap;
+
+void readMeshTriangle(const KFbxMesh * fbxMesh, int i /*polygonIndex*/,
+                      int posInPoly0, int posInPoly1, int posInPoly2,
+                      int meshVertex0, int meshVertex1, int meshVertex2,
+                      FbxToOsgVertexMap& fbxToOsgVertMap,
+                      OsgToFbxNormalMap& osgToFbxNormMap,
+                      const KFbxVector4* pFbxVertices,
+                      const KFbxLayerElementNormal* pFbxNormals,
+                      const KFbxLayerElementUV* pFbxUVs_diffuse,
+                      const KFbxLayerElementUV* pFbxUVs_opacity,
+                      const KFbxLayerElementUV* pFbxUVs_emissive,
+                      const KFbxLayerElementVertexColor* pFbxColors,
+                      osg::Geometry* pGeometry,
+                      osg::Array* pVertices,
+                      osg::Array* pNormals,
+                      osg::Array* pTexCoords_diffuse,
+                      osg::Array* pTexCoords_opacity,
+                      osg::Array* pTexCoords_emissive,
+                      osg::Array* pColors)
+{
+    int v0 = fbxMesh->GetPolygonVertex(i, posInPoly0),
+        v1 = fbxMesh->GetPolygonVertex(i, posInPoly1),
+        v2 = fbxMesh->GetPolygonVertex(i, posInPoly2);
+
+    fbxToOsgVertMap.insert(FbxToOsgVertexMap::value_type(v0, GIPair(pGeometry, pVertices->getNumElements())));
+    fbxToOsgVertMap.insert(FbxToOsgVertexMap::value_type(v1, GIPair(pGeometry, pVertices->getNumElements() + 1)));
+    fbxToOsgVertMap.insert(FbxToOsgVertexMap::value_type(v2, GIPair(pGeometry, pVertices->getNumElements() + 2)));
+
+    addVec3ArrayElement(*pVertices, pFbxVertices[v0]);
+    addVec3ArrayElement(*pVertices, pFbxVertices[v1]);
+    addVec3ArrayElement(*pVertices, pFbxVertices[v2]);
+
+    if (pNormals)
+    {
+        int n0 = getVertexIndex(pFbxNormals, fbxMesh, i, posInPoly0, meshVertex0);
+        int n1 = getVertexIndex(pFbxNormals, fbxMesh, i, posInPoly1, meshVertex1);
+        int n2 = getVertexIndex(pFbxNormals, fbxMesh, i, posInPoly2, meshVertex2);
+
+        osgToFbxNormMap.insert(OsgToFbxNormalMap::value_type(GIPair(pGeometry, pNormals->getNumElements()), n0));
+        osgToFbxNormMap.insert(OsgToFbxNormalMap::value_type(GIPair(pGeometry, pNormals->getNumElements() + 1), n1));
+        osgToFbxNormMap.insert(OsgToFbxNormalMap::value_type(GIPair(pGeometry, pNormals->getNumElements() + 2), n2));
+
+        addVec3ArrayElement(*pNormals, pFbxNormals->GetDirectArray().GetAt(n0));
+        addVec3ArrayElement(*pNormals, pFbxNormals->GetDirectArray().GetAt(n1));
+        addVec3ArrayElement(*pNormals, pFbxNormals->GetDirectArray().GetAt(n2));
+    }
+
+    // add texture maps data (avoid duplicates)...
+    if (pTexCoords_diffuse)
+    {
+        addVec2ArrayElement(*pTexCoords_diffuse, getElement(pFbxUVs_diffuse, fbxMesh, i, posInPoly0, meshVertex0));
+        addVec2ArrayElement(*pTexCoords_diffuse, getElement(pFbxUVs_diffuse, fbxMesh, i, posInPoly1, meshVertex1));
+        addVec2ArrayElement(*pTexCoords_diffuse, getElement(pFbxUVs_diffuse, fbxMesh, i, posInPoly2, meshVertex2));
+    }
+    if (pTexCoords_opacity && (pTexCoords_opacity != pTexCoords_diffuse))
+    {
+        addVec2ArrayElement(*pTexCoords_opacity, getElement(pFbxUVs_opacity, fbxMesh, i, posInPoly0, meshVertex0));
+        addVec2ArrayElement(*pTexCoords_opacity, getElement(pFbxUVs_opacity, fbxMesh, i, posInPoly1, meshVertex1));
+        addVec2ArrayElement(*pTexCoords_opacity, getElement(pFbxUVs_opacity, fbxMesh, i, posInPoly2, meshVertex2));
+    }
+
+    // Only spherical reflection maps are supported (so do not add coordinates for the reflection map)
+
+    if (pTexCoords_emissive && (pTexCoords_emissive != pTexCoords_opacity) && (pTexCoords_emissive != pTexCoords_diffuse))
+    {
+        addVec2ArrayElement(*pTexCoords_emissive, getElement(pFbxUVs_emissive, fbxMesh, i, posInPoly0, meshVertex0));
+        addVec2ArrayElement(*pTexCoords_emissive, getElement(pFbxUVs_emissive, fbxMesh, i, posInPoly1, meshVertex1));
+        addVec2ArrayElement(*pTexCoords_emissive, getElement(pFbxUVs_emissive, fbxMesh, i, posInPoly2, meshVertex2));
+    }
+    // add more texture maps here...
+
+    if (pColors)
+    {
+        addColorArrayElement(*pColors, getElement(pFbxColors, fbxMesh, i, posInPoly0, meshVertex0));
+        addColorArrayElement(*pColors, getElement(pFbxColors, fbxMesh, i, posInPoly1, meshVertex1));
+        addColorArrayElement(*pColors, getElement(pFbxColors, fbxMesh, i, posInPoly2, meshVertex2));
+    }
+}
+
+/// Says if a quad should be split using vertices 02 (or else 13)
+bool quadSplit02(const KFbxMesh * fbxMesh, int i /*polygonIndex*/,
+                 int posInPoly0, int posInPoly1, int posInPoly2, int posInPoly3,
+                 const KFbxVector4* pFbxVertices)
+{
+    // Algorithm may be a bit dumb. If you got a faster one, feel free to change.
+    // Here we test each of the 4 triangles and see if there is one in the opposite direction.
+    //        Triangles: 012, 023, 013, 123
+    // For this, we do a cross product to get normals. We say here the first triangle is the reference, and do a dot product to see the direction.
+    //        Normals: na (= (p1-p0)^(p2-p1)), nb, na, nd
+    //        Dot products: rb (na.nb), rc, rd
+    // Results:
+    //        if r*>0 => convex (02 and 13 are ok, so choose 02)
+    //        if rb only <0, or r*<0 => concave, split on 13
+    //        if rc only <0, or rd<0 => concave, split on 02
+    //        else unhandled (crossed polygon?) => choose 02
+    //    In short:
+    //        if rb only <0, or r*<0 => return false
+    //        else return true
+
+    int v0 = fbxMesh->GetPolygonVertex(i, posInPoly0);
+    int v1 = fbxMesh->GetPolygonVertex(i, posInPoly1);
+    int v2 = fbxMesh->GetPolygonVertex(i, posInPoly2);
+    int v3 = fbxMesh->GetPolygonVertex(i, posInPoly3);
+
+    osg::Vec3d p0(pFbxVertices[v0][0], pFbxVertices[v0][1], pFbxVertices[v0][2]);
+    osg::Vec3d p1(pFbxVertices[v1][0], pFbxVertices[v1][1], pFbxVertices[v1][2]);
+    osg::Vec3d p2(pFbxVertices[v2][0], pFbxVertices[v2][1], pFbxVertices[v2][2]);
+    osg::Vec3d p3(pFbxVertices[v3][0], pFbxVertices[v3][1], pFbxVertices[v3][2]);
+
+    osg::Vec3d na((p1 - p0) ^ (p2 - p1));
+    osg::Vec3d nb((p2 - p0) ^ (p3 - p2));
+
+    double rb(na * nb);
+    if (rb >= 0) return true;        // Split at 02
+
+    osg::Vec3d nc((p1 - p0) ^ (p3 - p1));
+    osg::Vec3d nd((p2 - p1) ^ (p3 - p2));
+    double rc(na * nc);
+    double rd(na * nd);
+    return (rc >= 0 || rd >= 0);
+}
+
 osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
     KFbxNode* pNode,
     KFbxMesh* fbxMesh,
@@ -593,11 +719,23 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
         geomType = GEOMETRY_MORPH;
     }
 
-    typedef std::pair<osg::Geometry*, int> GIPair;
-    typedef std::multimap<int, GIPair> FbxToOsgVertexMap;
-    typedef std::map<GIPair, int> OsgToFbxNormalMap;
     FbxToOsgVertexMap fbxToOsgVertMap;
     OsgToFbxNormalMap osgToFbxNormMap;
+
+    // First add only triangles and quads (easy to split into triangles without
+    // more processing)
+    // This is the reason we store polygons references:
+    struct PolygonRef
+    {
+        PolygonRef(osg::Geometry* pGeometry, int numPoly, int nVertex)
+            : pGeometry(pGeometry), numPoly(numPoly), nVertex(nVertex)
+        {}
+        osg::Geometry* pGeometry;
+        int numPoly;
+        int nVertex;
+    };
+    typedef std::vector<PolygonRef> PolygonRefList;
+    PolygonRefList polygonRefList;
 
     for (int i = 0, nVertex = 0; i < nPolys; ++i)
     {
@@ -627,68 +765,62 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
 
         osg::Array* pColors = pGeometry->getColorArray();
 
-        int nVertex0 = nVertex;
-        nVertex += (std::min)(2, lPolygonSize);
-
-        //convert polygon to triangles
-        for (int j = 2; j < lPolygonSize; ++j, ++nVertex)
+        if (lPolygonSize == 3)
         {
-            int v0 = fbxMesh->GetPolygonVertex(i, 0),
-                v1 = fbxMesh->GetPolygonVertex(i, j - 1),
-                v2 = fbxMesh->GetPolygonVertex(i, j);
+            // Triangle
+            readMeshTriangle(fbxMesh, i,
+                0, 1, 2,
+                nVertex, nVertex+1, nVertex+2,
+                fbxToOsgVertMap, osgToFbxNormMap,
+                pFbxVertices, pFbxNormals, pFbxUVs_diffuse, pFbxUVs_opacity, pFbxUVs_emissive, pFbxColors,
+                pGeometry,
+                pVertices, pNormals, pTexCoords_diffuse, pTexCoords_opacity, pTexCoords_emissive, pColors);
+            nVertex += 3;
+        }
+        else if (lPolygonSize == 4)
+        {
+            // Quad - Convert to triangles
+            // Use some fast specialized code to see how the should be decomposed
+            // Two cases : Split at '02' (012 and 023), or split at '13 (013 and 123)
+            bool split02 = quadSplit02(fbxMesh, i, 0, 1, 2, 3, pFbxVertices);
+            int p02 = split02 ? 2 : 3; // Triangle 0, point 2
+            int p10 = split02 ? 0 : 1; // Triangle 1, point 0
+            readMeshTriangle(fbxMesh, i,
+                0, 1, p02,
+                nVertex, nVertex+1, nVertex+p02,
+                fbxToOsgVertMap, osgToFbxNormMap,
+                pFbxVertices, pFbxNormals, pFbxUVs_diffuse, pFbxUVs_opacity, pFbxUVs_emissive, pFbxColors,
+                pGeometry,
+                pVertices, pNormals, pTexCoords_diffuse, pTexCoords_opacity, pTexCoords_emissive, pColors);
+            readMeshTriangle(fbxMesh, i,
+                p10, 2, 3,
+                nVertex+p10, nVertex+2, nVertex+3,
+                fbxToOsgVertMap, osgToFbxNormMap,
+                pFbxVertices, pFbxNormals, pFbxUVs_diffuse, pFbxUVs_opacity, pFbxUVs_emissive, pFbxColors,
+                pGeometry,
+                pVertices, pNormals, pTexCoords_diffuse, pTexCoords_opacity, pTexCoords_emissive, pColors);
+            nVertex += 4;
+        }
+        else if (tessellatePolygons)
+        {
+            // Polygons - Store to add after triangles
+            polygonRefList.push_back(PolygonRef(pGeometry, i, nVertex));
+            nVertex += lPolygonSize;
+		}
+		else
+		{
+            int nVertex0 = nVertex;
+            nVertex += (std::min)(2, lPolygonSize);
 
-            fbxToOsgVertMap.insert(FbxToOsgVertexMap::value_type(v0, GIPair(pGeometry, pVertices->getNumElements())));
-            fbxToOsgVertMap.insert(FbxToOsgVertexMap::value_type(v1, GIPair(pGeometry, pVertices->getNumElements() + 1)));
-            fbxToOsgVertMap.insert(FbxToOsgVertexMap::value_type(v2, GIPair(pGeometry, pVertices->getNumElements() + 2)));
-
-            addVec3ArrayElement(*pVertices, pFbxVertices[v0]);
-            addVec3ArrayElement(*pVertices, pFbxVertices[v1]);
-            addVec3ArrayElement(*pVertices, pFbxVertices[v2]);
-
-            if (pNormals)
+            for (int j = 2; j < lPolygonSize; ++j, ++nVertex)
             {
-                int n0 = getVertexIndex(pFbxNormals, fbxMesh, i, 0, nVertex0);
-                int n1 = getVertexIndex(pFbxNormals, fbxMesh, i, j - 1, nVertex - 1);
-                int n2 = getVertexIndex(pFbxNormals, fbxMesh, i, j, nVertex);
-
-                osgToFbxNormMap.insert(OsgToFbxNormalMap::value_type(GIPair(pGeometry, pNormals->getNumElements()), n0));
-                osgToFbxNormMap.insert(OsgToFbxNormalMap::value_type(GIPair(pGeometry, pNormals->getNumElements() + 1), n1));
-                osgToFbxNormMap.insert(OsgToFbxNormalMap::value_type(GIPair(pGeometry, pNormals->getNumElements() + 2), n2));
-
-                addVec3ArrayElement(*pNormals, pFbxNormals->GetDirectArray().GetAt(n0));
-                addVec3ArrayElement(*pNormals, pFbxNormals->GetDirectArray().GetAt(n1));
-                addVec3ArrayElement(*pNormals, pFbxNormals->GetDirectArray().GetAt(n2));
-            }
-
-            // add texture maps data (avoid duplicates)...
-            if (pTexCoords_diffuse)
-            {
-                addVec2ArrayElement(*pTexCoords_diffuse, getElement(pFbxUVs_diffuse, fbxMesh, i, 0, nVertex0));
-                addVec2ArrayElement(*pTexCoords_diffuse, getElement(pFbxUVs_diffuse, fbxMesh, i, j - 1, nVertex - 1));
-                addVec2ArrayElement(*pTexCoords_diffuse, getElement(pFbxUVs_diffuse, fbxMesh, i, j, nVertex));
-            }
-            if (pTexCoords_opacity && (pTexCoords_opacity != pTexCoords_diffuse))
-            {
-                addVec2ArrayElement(*pTexCoords_opacity, getElement(pFbxUVs_opacity, fbxMesh, i, 0, nVertex0));
-                addVec2ArrayElement(*pTexCoords_opacity, getElement(pFbxUVs_opacity, fbxMesh, i, j - 1, nVertex - 1));
-                addVec2ArrayElement(*pTexCoords_opacity, getElement(pFbxUVs_opacity, fbxMesh, i, j, nVertex));
-            }
-
-            // Only spherical reflection maps are supported (so do not add coordinates for the reflection map)
-
-            if (pTexCoords_emissive && (pTexCoords_emissive != pTexCoords_opacity) && (pTexCoords_emissive != pTexCoords_diffuse))
-            {
-                addVec2ArrayElement(*pTexCoords_emissive, getElement(pFbxUVs_emissive, fbxMesh, i, 0, nVertex0));
-                addVec2ArrayElement(*pTexCoords_emissive, getElement(pFbxUVs_emissive, fbxMesh, i, j - 1, nVertex - 1));
-                addVec2ArrayElement(*pTexCoords_emissive, getElement(pFbxUVs_emissive, fbxMesh, i, j, nVertex));
-            }
-            // add more texture maps here...
-
-            if (pColors)
-            {
-                addColorArrayElement(*pColors, getElement(pFbxColors, fbxMesh, i, 0, nVertex0));
-                addColorArrayElement(*pColors, getElement(pFbxColors, fbxMesh, i, j - 1, nVertex - 1));
-                addColorArrayElement(*pColors, getElement(pFbxColors, fbxMesh, i, j, nVertex));
+                readMeshTriangle(fbxMesh, i,
+                    0, j - 1, j,
+                    nVertex0, nVertex - 1, nVertex,
+                    fbxToOsgVertMap, osgToFbxNormMap,
+                    pFbxVertices, pFbxNormals, pFbxUVs_diffuse, pFbxUVs_opacity, pFbxUVs_emissive, pFbxColors,
+                    pGeometry,
+                    pVertices, pNormals, pTexCoords_diffuse, pTexCoords_opacity, pTexCoords_emissive, pColors);
             }
         }
     }
@@ -696,6 +828,81 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
     for (unsigned i = 0; i < pGeode->getNumDrawables(); ++i)
     {
         osg::Geometry* pGeometry = pGeode->getDrawable(i)->asGeometry();
+        osg::DrawArrays* pDrawArrays = new osg::DrawArrays(
+            GL_TRIANGLES, 0, pGeometry->getVertexArray()->getNumElements());
+        pGeometry->addPrimitiveSet(pDrawArrays);
+    }
+
+    // Now add polygons - Convert to triangles
+    // We put vertices in their own PrimitiveSet with Mode=POLYGON; then run the
+    // Tessellator on the Geometry which should tessellate the polygons
+    // automagically.
+    for (PolygonRefList::iterator it = polygonRefList.begin(), itEnd=polygonRefList.end();
+        it != itEnd; ++it)
+    {
+        int i = it->numPoly;
+        int lPolygonSize = fbxMesh->GetPolygonSize(i);
+        //int materialIndex = getPolygonIndex(pFbxMaterials, i);
+        osg::Geometry* pGeometry = it->pGeometry;
+
+        osg::Array* pVertices = pGeometry->getVertexArray();
+        osg::Array* pNormals = pGeometry->getNormalArray();
+        osg::Array* pTexCoords_diffuse = pGeometry->getTexCoordArray(StateSetContent::DIFFUSE_TEXTURE_UNIT);
+        osg::Array* pTexCoords_opacity = pGeometry->getTexCoordArray(StateSetContent::OPACITY_TEXTURE_UNIT);
+        osg::Array* pTexCoords_emissive = pGeometry->getTexCoordArray(StateSetContent::EMISSIVE_TEXTURE_UNIT);
+        osg::Array* pColors = pGeometry->getColorArray();
+        // Index of the 1st vertex of the polygon in the geometry
+        int osgVertex0 = pVertices->getNumElements();
+
+        for (int j = 0, nVertex = it->nVertex; j<lPolygonSize; ++j, ++nVertex)
+        {
+            int v0 = fbxMesh->GetPolygonVertex(i, j);
+            fbxToOsgVertMap.insert(FbxToOsgVertexMap::value_type(v0, GIPair(pGeometry, pVertices->getNumElements())));
+            addVec3ArrayElement(*pVertices, pFbxVertices[v0]);
+            if (pNormals)
+            {
+                int n0 = getVertexIndex(pFbxNormals, fbxMesh, i, j, nVertex);
+                osgToFbxNormMap.insert(OsgToFbxNormalMap::value_type(GIPair(pGeometry, pNormals->getNumElements()), n0));
+                addVec3ArrayElement(*pNormals, pFbxNormals->GetDirectArray().GetAt(n0));
+            }
+
+            // add texture maps data (avoid duplicates)...
+            if (pTexCoords_diffuse)
+            {
+                addVec2ArrayElement(*pTexCoords_diffuse, getElement(pFbxUVs_diffuse, fbxMesh, i, j, nVertex));
+            }
+            if (pTexCoords_opacity && (pTexCoords_opacity != pTexCoords_diffuse))
+            {
+                addVec2ArrayElement(*pTexCoords_opacity, getElement(pFbxUVs_opacity, fbxMesh, i, j, nVertex));
+            }
+
+            // Only spherical reflection maps are supported (so do not add coordinates for the reflection map)
+
+            if (pTexCoords_emissive && (pTexCoords_emissive != pTexCoords_opacity) && (pTexCoords_emissive != pTexCoords_diffuse))
+            {
+                addVec2ArrayElement(*pTexCoords_emissive, getElement(pFbxUVs_emissive, fbxMesh, i, j, nVertex));
+            }
+            // add more texture maps here...
+
+            if (pColors)
+            {
+                addColorArrayElement(*pColors, getElement(pFbxColors, fbxMesh, i, j, nVertex));
+            }
+        }
+
+        osg::DrawArrays* pDrawArrays = new osg::DrawArrays(
+            GL_POLYGON, osgVertex0, pGeometry->getVertexArray()->getNumElements() - osgVertex0);
+        pGeometry->addPrimitiveSet(pDrawArrays);
+    }
+
+    for (unsigned i = 0; i < pGeode->getNumDrawables(); ++i)
+    {
+        osg::Geometry* pGeometry = pGeode->getDrawable(i)->asGeometry();
+
+        // Now split polygons if necessary
+        osgUtil::Tessellator tessellator;
+        tessellator.retessellatePolygons(*pGeometry);
+
         if (pGeode->getNumDrawables() > 1)
         {
             std::stringstream ss;
@@ -706,10 +913,6 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
         {
             pGeometry->setName(pGeode->getName());
         }
-
-        osg::DrawArrays* pDrawArrays = new osg::DrawArrays(
-            GL_TRIANGLES, 0, pGeometry->getVertexArray()->getNumElements());
-        pGeometry->addPrimitiveSet(pDrawArrays);
     }
 
     if (geomType == GEOMETRY_RIG)

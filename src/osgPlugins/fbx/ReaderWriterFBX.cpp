@@ -259,6 +259,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
 
             bool useFbxRoot = false;
             bool lightmapTextures = false;
+            bool tessellatePolygons = false;
             if (options)
             {
                 std::istringstream iss(options->getOptionString());
@@ -273,6 +274,10 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
                     {
                         lightmapTextures = true;
                     }
+					if (opt == "TessellatePolygons")
+					{
+						tessellatePolygons = true;
+					}
                 }
             }
 
@@ -330,7 +335,8 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
                 fbxSkeletons,
                 *localOptions,
                 authoringTool,
-                lightmapTextures);
+                lightmapTextures,
+				tessellatePolygons);
 
             ReadResult res = reader.readFbxNode(pNode, bIsBone, nLightCount);
 

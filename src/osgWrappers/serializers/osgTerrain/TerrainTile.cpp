@@ -72,7 +72,10 @@ static bool readTileLoadedCallback( osgDB::InputStream& is, osgTerrain::TerrainT
 }
 
 static bool writeTileLoadedCallback( osgDB::OutputStream& os, const osgTerrain::TerrainTile& tile )
-{ return true; }
+{
+    os<<std::endl;
+    return true;
+}
 
 REGISTER_OBJECT_WRAPPER( osgTerrain_TerrainTile,
                          new osgTerrain::TerrainTile,

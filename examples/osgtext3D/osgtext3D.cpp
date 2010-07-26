@@ -20,6 +20,7 @@
 #include <osg/Geode>
 #include <osg/Geometry>
 #include <osg/PositionAttitudeTransform>
+#include <osgUtil/SmoothingVisitor>
 #include <osgText/Font3D>
 #include <osgDB/WriteFile>
 #include <osgGA/StateSetManipulator>
@@ -32,7 +33,6 @@ extern int main_orig(int, char**);
 extern int main_test(int, char**);
 
 
-
 class Boundary
 {
 public:
@@ -40,11 +40,15 @@ public:
     typedef std::pair<unsigned int, unsigned int> Segment;
     typedef std::vector<Segment>  Segments;
     osg::ref_ptr<osg::Vec3Array> _vertices;
+    unsigned int _start;
+    unsigned int _count;
     Segments _segments;
 
     Boundary(osg::Vec3Array* vertices, unsigned int start, unsigned int count)
     {
         _vertices = vertices;
+        _start = start;
+        _count = count;
 
         if ((*_vertices)[start]==(*_vertices)[start+count-1])
         {
@@ -56,21 +60,22 @@ public:
         }
 
         _segments.reserve(count-1);
-        for(unsigned int i=start; i<start+count-1; ++i)
+        for(unsigned int i=start; i<start+count-2; ++i)
         {
             _segments.push_back(Segment(i,i+1));
         }
+        _segments.push_back(Segment(start+count-2,start));
 
     }
 
     osg::Vec3 computeRayIntersectionPoint(const osg::Vec3& a, const osg::Vec3& an, const osg::Vec3& c, const osg::Vec3& cn)
     {
         float denominator = ( cn.x() * an.y() - cn.y() * an.x());
-        if (denominator==0.0)
+        if (denominator==0.0f)
         {
             //OSG_NOTICE<<"computeRayIntersectionPoint()<<denominator==0.0"<<std::endl;
             // line segments must be parallel.
-            return (a+c)*0.5;
+            return (a+c)*0.5f;
         }
 
         float t = ((a.x()-c.x())*an.y() - (a.y()-c.y())*an.x()) / denominator;
@@ -137,6 +142,7 @@ public:
     #endif
         return thickness;
     }
+
 
     float computeThickness(unsigned int i)
     {
@@ -205,7 +211,7 @@ public:
 
         // OSG_NOTICE<<"bisector_abcd = "<<bisector_abcd<<", ab_sidevector="<<ab_sidevector<<", b-a="<<b-a<<", scale_factor="<<scale_factor<<std::endl;
 
-        new_vertex.z() += 0.5f;
+        new_vertex.z() += 5.0f;
         return new_vertex;
     }
 
@@ -216,35 +222,118 @@ public:
         if (geometry->getVertexArray()==0) geometry->setVertexArray(new osg::Vec3Array);
         osg::Vec3Array* new_vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
 
-        unsigned int first = new_vertices->size();
-        unsigned int count = 0;
+        // allocate the primitive set to store the face geometry
+        osg::DrawElementsUShort* face = new osg::DrawElementsUShort(GL_POLYGON);
+        face->setName("face");
 
         // reserve enough space in the vertex array to accomodate the vertices associated with the segments
-        // new_vertices->reserve(new_vertices->size()+_segments.size()+1);
+        new_vertices->reserve(new_vertices->size() + _segments.size()+1 + _count);
 
         // create vertices
         unsigned int previous_second = _segments[0].second;
         osg::Vec3 newPoint = computeBisectorPoint(0, targetThickness);
+        unsigned int first = new_vertices->size();
         new_vertices->push_back(newPoint);
-        ++count;
+
+        if (_segments[0].first != _start)
+        {
+            //OSG_NOTICE<<"We have pruned from the start"<<std::endl;
+            for(unsigned int j=_start; j<=_segments[0].first;++j)
+            {
+                face->push_back(first);
+            }
+        }
+        else
+        {
+            face->push_back(first);
+        }
+
 
         for(unsigned int i=1; i<_segments.size(); ++i)
         {
-            previous_second = _segments[i].second;
             newPoint = computeBisectorPoint(i, targetThickness);
+            unsigned int vi = new_vertices->size();
             new_vertices->push_back(newPoint);
-            ++count;
+
+            if (previous_second != _segments[i].first)
+            {
+                //OSG_NOTICE<<"Gap in boundary"<<previous_second<<" to "<<_segments[i].first<<std::endl;
+                for(unsigned int j=previous_second; j<=_segments[i].first;++j)
+                {
+                    face->push_back(vi);
+                }
+            }
+            else
+            {
+                face->push_back(vi);
+            }
+
+            previous_second = _segments[i].second;
         }
 
-        // repeat the first point to make it a full closed loop
-        new_vertices->push_back((*new_vertices)[first]);
-        ++count;
+        // fill the end of the polygon with repititions of the first index in the polygon to ensure
+        // that the orignal and new boundary polygons have the same number and pairing of indices.
+        // This ensures that the bevel can be created coherently.
+        while(face->size() < _count)
+        {
+            face->push_back(first);
+        }
 
-        // add DrawArrays primitive set for polygon
-        if (count!=0) geometry->addPrimitiveSet(new osg::DrawArrays(GL_POLYGON, first, count));
+        // add face primitive set for polygon
+        geometry->addPrimitiveSet(face);
+
+        osg::DrawElementsUShort* bevel = new osg::DrawElementsUShort(GL_QUAD_STRIP);
+        bevel->setName("bevel");
+        bevel->reserve(_count*2);
+        for(unsigned int i=0; i<_count; ++i)
+        {
+            unsigned int vi = new_vertices->size();
+            new_vertices->push_back((*_vertices)[_start+i]);
+            bevel->push_back(vi);
+            bevel->push_back((*face)[i]);
+        }
+        geometry->addPrimitiveSet(bevel);
     }
 
 };
+
+osg::Geometry* getGeometryComponent(osg::Geometry* geometry, bool bevel)
+{
+    osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+    if (!vertices) return 0;
+
+    osg::Geometry* new_geometry = new osg::Geometry;
+    osg::Vec3Array* new_vertices = new osg::Vec3Array(*vertices);
+    new_geometry->setVertexArray(new_vertices);
+
+    for(unsigned int i=0; i<geometry->getNumPrimitiveSets(); ++i)
+    {
+        osg::PrimitiveSet* primitiveSet = geometry->getPrimitiveSet(i);
+        if (primitiveSet->getName()=="bevel")
+        {
+            if (bevel) new_geometry->addPrimitiveSet(primitiveSet);
+        }
+        else
+        {
+            if (!bevel) new_geometry->addPrimitiveSet(primitiveSet);
+        }
+    }
+
+    osg::Vec4Array* new_colours = new osg::Vec4Array;
+    new_colours->push_back(bevel ? osg::Vec4(1.0,1.0,0.0,1.0) : osg::Vec4(1.0,0.0,0.0,1.0));
+    new_geometry->setColorArray(new_colours);
+    new_geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+
+    if (!bevel)
+    {
+        osg::Vec3Array* normals = new osg::Vec3Array;
+        normals->push_back(osg::Vec3(0.0,0.0,1.0));
+        new_geometry->setNormalArray(normals);
+        new_geometry->setNormalBinding(osg::Geometry::BIND_OVERALL);
+    }
+
+    return new_geometry;
+}
 
 
 osg::Geometry* computeThickness(osg::Geometry* orig_geometry, float thickness)
@@ -255,11 +344,6 @@ osg::Geometry* computeThickness(osg::Geometry* orig_geometry, float thickness)
 
     osg::Geometry* new_geometry = new osg::Geometry;
 
-    osg::Vec4Array* new_colours = new osg::Vec4Array;
-    new_colours->push_back(osg::Vec4(1.0,1.0,0.0,1.0));
-    new_geometry->setColorArray(new_colours);
-    new_geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
-
     for(osg::Geometry::PrimitiveSetList::iterator itr = orig_primitives.begin();
         itr != orig_primitives.end();
         ++itr)
@@ -268,8 +352,6 @@ osg::Geometry* computeThickness(osg::Geometry* orig_geometry, float thickness)
         if (drawArray && drawArray->getMode()==GL_POLYGON)
         {
             Boundary boundary(orig_vertices, drawArray->getFirst(), drawArray->getCount());
-            boundary.computeAllThickness();
-
             boundary.removeAllSegmentsBelowThickness(thickness);
             boundary.addBoundaryToGeometry(new_geometry, thickness);
         }
@@ -343,10 +425,20 @@ int main(int argc, char** argv)
         geometry->setColorArray(colours);
         geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
 
-        osg::Geometry* bevel = computeThickness(geometry, thickness);
+        osg::ref_ptr<osg::Geometry> face_and_bevel = computeThickness(geometry, thickness);
 
-        if (bevel) geode->addDrawable(bevel);
+        osg::Geometry* bevel = getGeometryComponent(face_and_bevel, true);
+        if (bevel)
+        {
+            geode->addDrawable(bevel);
+            osgUtil::SmoothingVisitor smoother;
+            smoother.smooth(*bevel);
+        }
 
+        osg::Geometry* face = getGeometryComponent(face_and_bevel, false);
+        if (face) geode->addDrawable(face);
+
+    
         if (useTessellator)
         {
             if (geometry)
@@ -357,12 +449,12 @@ int main(int argc, char** argv)
                 ts.retessellatePolygons(*geometry);
             }
 
-            if (bevel)
+            if (face)
             {
                 osgUtil::Tessellator ts;
                 ts.setWindingType(osgUtil::Tessellator::TESS_WINDING_POSITIVE);
                 ts.setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
-                ts.retessellatePolygons(*bevel);
+                ts.retessellatePolygons(*face);
             }
 
         }
@@ -373,6 +465,8 @@ int main(int argc, char** argv)
 
         group->addChild(transform.get());
     }
+
+
 
     std::string filename;
     if (arguments.read("-o", filename)) osgDB::writeNodeFile(*group, filename);

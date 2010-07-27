@@ -29,7 +29,6 @@
 				D4D20A4A117222620026B2AB /* PBXTargetDependency */,
 				D4D20A48117222620026B2AB /* PBXTargetDependency */,
 				D4D20A46117222620026B2AB /* PBXTargetDependency */,
-				D4D20A44117222620026B2AB /* PBXTargetDependency */,
 				D4D20A42117222620026B2AB /* PBXTargetDependency */,
 			);
 			name = "osg core";
@@ -244,46 +243,6 @@
 		9014C54A10C36A1600947117 /* PickEventHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9014C54510C36A1600947117 /* PickEventHandler.cpp */; };
 		9014C54B10C36A1600947117 /* SlideEventHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9014C54610C36A1600947117 /* SlideEventHandler.cpp */; };
 		9014C54C10C36A1600947117 /* SlideShowConstructor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9014C54710C36A1600947117 /* SlideShowConstructor.cpp */; };
-		9014C57510C36D4100947117 /* Attributes in Headers */ = {isa = PBXBuildFile; fileRef = 9014C55810C36D2700947117 /* Attributes */; };
-		9014C57610C36D4100947117 /* Comparator in Headers */ = {isa = PBXBuildFile; fileRef = 9014C55910C36D2700947117 /* Comparator */; };
-		9014C57710C36D4100947117 /* ConstructorInfo in Headers */ = {isa = PBXBuildFile; fileRef = 9014C55A10C36D2700947117 /* ConstructorInfo */; };
-		9014C57810C36D4100947117 /* Converter in Headers */ = {isa = PBXBuildFile; fileRef = 9014C55B10C36D2700947117 /* Converter */; };
-		9014C57910C36D4100947117 /* ConverterProxy in Headers */ = {isa = PBXBuildFile; fileRef = 9014C55C10C36D2700947117 /* ConverterProxy */; };
-		9014C57A10C36D4100947117 /* CustomAttribute in Headers */ = {isa = PBXBuildFile; fileRef = 9014C55D10C36D2700947117 /* CustomAttribute */; };
-		9014C57B10C36D4100947117 /* CustomAttributeProvider in Headers */ = {isa = PBXBuildFile; fileRef = 9014C55E10C36D2700947117 /* CustomAttributeProvider */; };
-		9014C57C10C36D4100947117 /* Exceptions in Headers */ = {isa = PBXBuildFile; fileRef = 9014C55F10C36D2700947117 /* Exceptions */; };
-		9014C57D10C36D4100947117 /* Export in Headers */ = {isa = PBXBuildFile; fileRef = 9014C56010C36D2700947117 /* Export */; };
-		9014C57E10C36D4100947117 /* ExtendedTypeInfo in Headers */ = {isa = PBXBuildFile; fileRef = 9014C56110C36D2700947117 /* ExtendedTypeInfo */; };
-		9014C57F10C36D4100947117 /* InstanceCreator in Headers */ = {isa = PBXBuildFile; fileRef = 9014C56210C36D2700947117 /* InstanceCreator */; };
-		9014C58010C36D4100947117 /* MethodInfo in Headers */ = {isa = PBXBuildFile; fileRef = 9014C56310C36D2700947117 /* MethodInfo */; };
-		9014C58110C36D4100947117 /* ParameterInfo in Headers */ = {isa = PBXBuildFile; fileRef = 9014C56410C36D2700947117 /* ParameterInfo */; };
-		9014C58210C36D4100947117 /* PropertyInfo in Headers */ = {isa = PBXBuildFile; fileRef = 9014C56510C36D2700947117 /* PropertyInfo */; };
-		9014C58310C36D4100947117 /* PublicMemberAccessor in Headers */ = {isa = PBXBuildFile; fileRef = 9014C56610C36D2700947117 /* PublicMemberAccessor */; };
-		9014C58410C36D4100947117 /* ReaderWriter in Headers */ = {isa = PBXBuildFile; fileRef = 9014C56710C36D2700947117 /* ReaderWriter */; };
-		9014C58510C36D4100947117 /* Reflection in Headers */ = {isa = PBXBuildFile; fileRef = 9014C56810C36D2700947117 /* Reflection */; };
-		9014C58610C36D4100947117 /* ReflectionMacros in Headers */ = {isa = PBXBuildFile; fileRef = 9014C56910C36D2700947117 /* ReflectionMacros */; };
-		9014C58710C36D4100947117 /* Reflector in Headers */ = {isa = PBXBuildFile; fileRef = 9014C56A10C36D2700947117 /* Reflector */; };
-		9014C58810C36D4100947117 /* StaticMethodInfo in Headers */ = {isa = PBXBuildFile; fileRef = 9014C56B10C36D2700947117 /* StaticMethodInfo */; };
-		9014C58910C36D4100947117 /* Type in Headers */ = {isa = PBXBuildFile; fileRef = 9014C56C10C36D2700947117 /* Type */; };
-		9014C58A10C36D4100947117 /* type_traits in Headers */ = {isa = PBXBuildFile; fileRef = 9014C56D10C36D2700947117 /* type_traits */; };
-		9014C58B10C36D4100947117 /* TypedConstructorInfo in Headers */ = {isa = PBXBuildFile; fileRef = 9014C56E10C36D2700947117 /* TypedConstructorInfo */; };
-		9014C58C10C36D4100947117 /* TypedMethodInfo in Headers */ = {isa = PBXBuildFile; fileRef = 9014C56F10C36D2700947117 /* TypedMethodInfo */; };
-		9014C58D10C36D4100947117 /* TypeNameAliasProxy in Headers */ = {isa = PBXBuildFile; fileRef = 9014C57010C36D2700947117 /* TypeNameAliasProxy */; };
-		9014C58E10C36D4100947117 /* Utility in Headers */ = {isa = PBXBuildFile; fileRef = 9014C57110C36D2700947117 /* Utility */; };
-		9014C58F10C36D4100947117 /* Value in Headers */ = {isa = PBXBuildFile; fileRef = 9014C57210C36D2700947117 /* Value */; };
-		9014C59010C36D4100947117 /* variant_cast in Headers */ = {isa = PBXBuildFile; fileRef = 9014C57310C36D2700947117 /* variant_cast */; };
-		9014C59110C36D4100947117 /* Version in Headers */ = {isa = PBXBuildFile; fileRef = 9014C57410C36D2700947117 /* Version */; };
-		9014C59D10C36D5B00947117 /* ConstructorInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9014C59210C36D5B00947117 /* ConstructorInfo.cpp */; };
-		9014C59E10C36D5B00947117 /* CustomAttributeProvider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9014C59310C36D5B00947117 /* CustomAttributeProvider.cpp */; };
-		9014C59F10C36D5B00947117 /* DefaultReflectors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9014C59410C36D5B00947117 /* DefaultReflectors.cpp */; };
-		9014C5A010C36D5B00947117 /* MethodInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9014C59510C36D5B00947117 /* MethodInfo.cpp */; };
-		9014C5A110C36D5B00947117 /* PropertyInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9014C59610C36D5B00947117 /* PropertyInfo.cpp */; };
-		9014C5A210C36D5B00947117 /* Reflection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9014C59710C36D5B00947117 /* Reflection.cpp */; };
-		9014C5A310C36D5B00947117 /* Reflector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9014C59810C36D5B00947117 /* Reflector.cpp */; };
-		9014C5A410C36D5B00947117 /* Type.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9014C59910C36D5B00947117 /* Type.cpp */; };
-		9014C5A510C36D5B00947117 /* Utility.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9014C59A10C36D5B00947117 /* Utility.cpp */; };
-		9014C5A610C36D5B00947117 /* Value.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9014C59B10C36D5B00947117 /* Value.cpp */; };
-		9014C5A710C36D5B00947117 /* Version.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9014C59C10C36D5B00947117 /* Version.cpp */; };
 		9014C5BB10C3701F00947117 /* FreeTypeFont.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9014C5B410C3701F00947117 /* FreeTypeFont.cpp */; };
 		9014C5BC10C3701F00947117 /* FreeTypeFont.h in Headers */ = {isa = PBXBuildFile; fileRef = 9014C5B510C3701F00947117 /* FreeTypeFont.h */; };
 		9014C5BD10C3701F00947117 /* FreeTypeFont3D.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9014C5B610C3701F00947117 /* FreeTypeFont3D.cpp */; };
@@ -1816,13 +1775,6 @@
 			remoteGlobalIDString = 9014C53010C3694300947117;
 			remoteInfo = osgPresentation;
 		};
-		D4D20A43117222620026B2AB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 9014C55110C36CC900947117;
-			remoteInfo = osgIntrospection;
-		};
 		D4D20A45117222620026B2AB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -2169,47 +2121,6 @@
 		9014C54510C36A1600947117 /* PickEventHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PickEventHandler.cpp; path = ../src/osgPresentation/PickEventHandler.cpp; sourceTree = SOURCE_ROOT; };
 		9014C54610C36A1600947117 /* SlideEventHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SlideEventHandler.cpp; path = ../src/osgPresentation/SlideEventHandler.cpp; sourceTree = SOURCE_ROOT; };
 		9014C54710C36A1600947117 /* SlideShowConstructor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SlideShowConstructor.cpp; path = ../src/osgPresentation/SlideShowConstructor.cpp; sourceTree = SOURCE_ROOT; };
-		9014C55210C36CC900947117 /* libosgIntrospection.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libosgIntrospection.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		9014C55810C36D2700947117 /* Attributes */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Attributes; path = ../include/osgIntrospection/Attributes; sourceTree = SOURCE_ROOT; };
-		9014C55910C36D2700947117 /* Comparator */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Comparator; path = ../include/osgIntrospection/Comparator; sourceTree = SOURCE_ROOT; };
-		9014C55A10C36D2700947117 /* ConstructorInfo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ConstructorInfo; path = ../include/osgIntrospection/ConstructorInfo; sourceTree = SOURCE_ROOT; };
-		9014C55B10C36D2700947117 /* Converter */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Converter; path = ../include/osgIntrospection/Converter; sourceTree = SOURCE_ROOT; };
-		9014C55C10C36D2700947117 /* ConverterProxy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ConverterProxy; path = ../include/osgIntrospection/ConverterProxy; sourceTree = SOURCE_ROOT; };
-		9014C55D10C36D2700947117 /* CustomAttribute */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CustomAttribute; path = ../include/osgIntrospection/CustomAttribute; sourceTree = SOURCE_ROOT; };
-		9014C55E10C36D2700947117 /* CustomAttributeProvider */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CustomAttributeProvider; path = ../include/osgIntrospection/CustomAttributeProvider; sourceTree = SOURCE_ROOT; };
-		9014C55F10C36D2700947117 /* Exceptions */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Exceptions; path = ../include/osgIntrospection/Exceptions; sourceTree = SOURCE_ROOT; };
-		9014C56010C36D2700947117 /* Export */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Export; path = ../include/osgIntrospection/Export; sourceTree = SOURCE_ROOT; };
-		9014C56110C36D2700947117 /* ExtendedTypeInfo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ExtendedTypeInfo; path = ../include/osgIntrospection/ExtendedTypeInfo; sourceTree = SOURCE_ROOT; };
-		9014C56210C36D2700947117 /* InstanceCreator */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = InstanceCreator; path = ../include/osgIntrospection/InstanceCreator; sourceTree = SOURCE_ROOT; };
-		9014C56310C36D2700947117 /* MethodInfo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = MethodInfo; path = ../include/osgIntrospection/MethodInfo; sourceTree = SOURCE_ROOT; };
-		9014C56410C36D2700947117 /* ParameterInfo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ParameterInfo; path = ../include/osgIntrospection/ParameterInfo; sourceTree = SOURCE_ROOT; };
-		9014C56510C36D2700947117 /* PropertyInfo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = PropertyInfo; path = ../include/osgIntrospection/PropertyInfo; sourceTree = SOURCE_ROOT; };
-		9014C56610C36D2700947117 /* PublicMemberAccessor */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = PublicMemberAccessor; path = ../include/osgIntrospection/PublicMemberAccessor; sourceTree = SOURCE_ROOT; };
-		9014C56710C36D2700947117 /* ReaderWriter */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ReaderWriter; path = ../include/osgIntrospection/ReaderWriter; sourceTree = SOURCE_ROOT; };
-		9014C56810C36D2700947117 /* Reflection */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Reflection; path = ../include/osgIntrospection/Reflection; sourceTree = SOURCE_ROOT; };
-		9014C56910C36D2700947117 /* ReflectionMacros */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ReflectionMacros; path = ../include/osgIntrospection/ReflectionMacros; sourceTree = SOURCE_ROOT; };
-		9014C56A10C36D2700947117 /* Reflector */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Reflector; path = ../include/osgIntrospection/Reflector; sourceTree = SOURCE_ROOT; };
-		9014C56B10C36D2700947117 /* StaticMethodInfo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = StaticMethodInfo; path = ../include/osgIntrospection/StaticMethodInfo; sourceTree = SOURCE_ROOT; };
-		9014C56C10C36D2700947117 /* Type */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Type; path = ../include/osgIntrospection/Type; sourceTree = SOURCE_ROOT; };
-		9014C56D10C36D2700947117 /* type_traits */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = type_traits; path = ../include/osgIntrospection/type_traits; sourceTree = SOURCE_ROOT; };
-		9014C56E10C36D2700947117 /* TypedConstructorInfo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TypedConstructorInfo; path = ../include/osgIntrospection/TypedConstructorInfo; sourceTree = SOURCE_ROOT; };
-		9014C56F10C36D2700947117 /* TypedMethodInfo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TypedMethodInfo; path = ../include/osgIntrospection/TypedMethodInfo; sourceTree = SOURCE_ROOT; };
-		9014C57010C36D2700947117 /* TypeNameAliasProxy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TypeNameAliasProxy; path = ../include/osgIntrospection/TypeNameAliasProxy; sourceTree = SOURCE_ROOT; };
-		9014C57110C36D2700947117 /* Utility */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Utility; path = ../include/osgIntrospection/Utility; sourceTree = SOURCE_ROOT; };
-		9014C57210C36D2700947117 /* Value */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Value; path = ../include/osgIntrospection/Value; sourceTree = SOURCE_ROOT; };
-		9014C57310C36D2700947117 /* variant_cast */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = variant_cast; path = ../include/osgIntrospection/variant_cast; sourceTree = SOURCE_ROOT; };
-		9014C57410C36D2700947117 /* Version */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Version; path = ../include/osgIntrospection/Version; sourceTree = SOURCE_ROOT; };
-		9014C59210C36D5B00947117 /* ConstructorInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ConstructorInfo.cpp; path = ../src/osgIntrospection/ConstructorInfo.cpp; sourceTree = SOURCE_ROOT; };
-		9014C59310C36D5B00947117 /* CustomAttributeProvider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CustomAttributeProvider.cpp; path = ../src/osgIntrospection/CustomAttributeProvider.cpp; sourceTree = SOURCE_ROOT; };
-		9014C59410C36D5B00947117 /* DefaultReflectors.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DefaultReflectors.cpp; path = ../src/osgIntrospection/DefaultReflectors.cpp; sourceTree = SOURCE_ROOT; };
-		9014C59510C36D5B00947117 /* MethodInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MethodInfo.cpp; path = ../src/osgIntrospection/MethodInfo.cpp; sourceTree = SOURCE_ROOT; };
-		9014C59610C36D5B00947117 /* PropertyInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PropertyInfo.cpp; path = ../src/osgIntrospection/PropertyInfo.cpp; sourceTree = SOURCE_ROOT; };
-		9014C59710C36D5B00947117 /* Reflection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Reflection.cpp; path = ../src/osgIntrospection/Reflection.cpp; sourceTree = SOURCE_ROOT; };
-		9014C59810C36D5B00947117 /* Reflector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Reflector.cpp; path = ../src/osgIntrospection/Reflector.cpp; sourceTree = SOURCE_ROOT; };
-		9014C59910C36D5B00947117 /* Type.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Type.cpp; path = ../src/osgIntrospection/Type.cpp; sourceTree = SOURCE_ROOT; };
-		9014C59A10C36D5B00947117 /* Utility.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Utility.cpp; path = ../src/osgIntrospection/Utility.cpp; sourceTree = SOURCE_ROOT; };
-		9014C59B10C36D5B00947117 /* Value.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Value.cpp; path = ../src/osgIntrospection/Value.cpp; sourceTree = SOURCE_ROOT; };
-		9014C59C10C36D5B00947117 /* Version.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Version.cpp; path = ../src/osgIntrospection/Version.cpp; sourceTree = SOURCE_ROOT; };
 		9014C5AF10C36FD100947117 /* libosgdb_freetype.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libosgdb_freetype.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		9014C5B410C3701F00947117 /* FreeTypeFont.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FreeTypeFont.cpp; path = ../src/osgPlugins/freetype/FreeTypeFont.cpp; sourceTree = SOURCE_ROOT; };
 		9014C5B510C3701F00947117 /* FreeTypeFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FreeTypeFont.h; path = ../src/osgPlugins/freetype/FreeTypeFont.h; sourceTree = SOURCE_ROOT; };
@@ -3414,13 +3325,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9014C55010C36CC900947117 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		9014C5AD10C36FD100947117 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -3619,7 +3523,6 @@
 				9014C45810C3663900947117 /* libosgWidget.a */,
 				9014C4CF10C3680F00947117 /* libosgManipulator.a */,
 				9014C53110C3694300947117 /* libosgPresentation.a */,
-				9014C55210C36CC900947117 /* libosgIntrospection.a */,
 				9014C5AF10C36FD100947117 /* libosgdb_freetype.a */,
 			);
 			name = Products;
@@ -3934,61 +3837,6 @@
 				9014C53A10C369CB00947117 /* PickEventHandler */,
 				9014C53B10C369CB00947117 /* SlideEventHandler */,
 				9014C53C10C369CB00947117 /* SlideShowConstructor */,
-			);
-			name = headers;
-			sourceTree = "<group>";
-		};
-		9014C55510C36CE600947117 /* osgIntrospection */ = {
-			isa = PBXGroup;
-			children = (
-				9014C55710C36CF400947117 /* headers */,
-				9014C59210C36D5B00947117 /* ConstructorInfo.cpp */,
-				9014C59310C36D5B00947117 /* CustomAttributeProvider.cpp */,
-				9014C59410C36D5B00947117 /* DefaultReflectors.cpp */,
-				9014C59510C36D5B00947117 /* MethodInfo.cpp */,
-				9014C59610C36D5B00947117 /* PropertyInfo.cpp */,
-				9014C59710C36D5B00947117 /* Reflection.cpp */,
-				9014C59810C36D5B00947117 /* Reflector.cpp */,
-				9014C59910C36D5B00947117 /* Type.cpp */,
-				9014C59A10C36D5B00947117 /* Utility.cpp */,
-				9014C59B10C36D5B00947117 /* Value.cpp */,
-				9014C59C10C36D5B00947117 /* Version.cpp */,
-			);
-			name = osgIntrospection;
-			sourceTree = "<group>";
-		};
-		9014C55710C36CF400947117 /* headers */ = {
-			isa = PBXGroup;
-			children = (
-				9014C55810C36D2700947117 /* Attributes */,
-				9014C55910C36D2700947117 /* Comparator */,
-				9014C55A10C36D2700947117 /* ConstructorInfo */,
-				9014C55B10C36D2700947117 /* Converter */,
-				9014C55C10C36D2700947117 /* ConverterProxy */,
-				9014C55D10C36D2700947117 /* CustomAttribute */,
-				9014C55E10C36D2700947117 /* CustomAttributeProvider */,
-				9014C55F10C36D2700947117 /* Exceptions */,
-				9014C56010C36D2700947117 /* Export */,
-				9014C56110C36D2700947117 /* ExtendedTypeInfo */,
-				9014C56210C36D2700947117 /* InstanceCreator */,
-				9014C56310C36D2700947117 /* MethodInfo */,
-				9014C56410C36D2700947117 /* ParameterInfo */,
-				9014C56510C36D2700947117 /* PropertyInfo */,
-				9014C56610C36D2700947117 /* PublicMemberAccessor */,
-				9014C56710C36D2700947117 /* ReaderWriter */,
-				9014C56810C36D2700947117 /* Reflection */,
-				9014C56910C36D2700947117 /* ReflectionMacros */,
-				9014C56A10C36D2700947117 /* Reflector */,
-				9014C56B10C36D2700947117 /* StaticMethodInfo */,
-				9014C56C10C36D2700947117 /* Type */,
-				9014C56D10C36D2700947117 /* type_traits */,
-				9014C56E10C36D2700947117 /* TypedConstructorInfo */,
-				9014C56F10C36D2700947117 /* TypedMethodInfo */,
-				9014C57010C36D2700947117 /* TypeNameAliasProxy */,
-				9014C57110C36D2700947117 /* Utility */,
-				9014C57210C36D2700947117 /* Value */,
-				9014C57310C36D2700947117 /* variant_cast */,
-				9014C57410C36D2700947117 /* Version */,
 			);
 			name = headers;
 			sourceTree = "<group>";
@@ -4970,7 +4818,6 @@
 				9014B44E10C3624900947117 /* osgAnimation */,
 				9014C45B10C3664E00947117 /* osgWidget */,
 				9014C4D210C3682800947117 /* osgManipulator */,
-				9014C55510C36CE600947117 /* osgIntrospection */,
 				9014C53510C3698B00947117 /* osgPresenation */,
 			);
 			name = Libraries;
@@ -5577,42 +5424,6 @@
 				9014C54010C369F500947117 /* PickEventHandler in Headers */,
 				9014C54110C369F500947117 /* SlideEventHandler in Headers */,
 				9014C54210C369F500947117 /* SlideShowConstructor in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9014C54E10C36CC900947117 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9014C57510C36D4100947117 /* Attributes in Headers */,
-				9014C57610C36D4100947117 /* Comparator in Headers */,
-				9014C57710C36D4100947117 /* ConstructorInfo in Headers */,
-				9014C57810C36D4100947117 /* Converter in Headers */,
-				9014C57910C36D4100947117 /* ConverterProxy in Headers */,
-				9014C57A10C36D4100947117 /* CustomAttribute in Headers */,
-				9014C57B10C36D4100947117 /* CustomAttributeProvider in Headers */,
-				9014C57C10C36D4100947117 /* Exceptions in Headers */,
-				9014C57D10C36D4100947117 /* Export in Headers */,
-				9014C57E10C36D4100947117 /* ExtendedTypeInfo in Headers */,
-				9014C57F10C36D4100947117 /* InstanceCreator in Headers */,
-				9014C58010C36D4100947117 /* MethodInfo in Headers */,
-				9014C58110C36D4100947117 /* ParameterInfo in Headers */,
-				9014C58210C36D4100947117 /* PropertyInfo in Headers */,
-				9014C58310C36D4100947117 /* PublicMemberAccessor in Headers */,
-				9014C58410C36D4100947117 /* ReaderWriter in Headers */,
-				9014C58510C36D4100947117 /* Reflection in Headers */,
-				9014C58610C36D4100947117 /* ReflectionMacros in Headers */,
-				9014C58710C36D4100947117 /* Reflector in Headers */,
-				9014C58810C36D4100947117 /* StaticMethodInfo in Headers */,
-				9014C58910C36D4100947117 /* Type in Headers */,
-				9014C58A10C36D4100947117 /* type_traits in Headers */,
-				9014C58B10C36D4100947117 /* TypedConstructorInfo in Headers */,
-				9014C58C10C36D4100947117 /* TypedMethodInfo in Headers */,
-				9014C58D10C36D4100947117 /* TypeNameAliasProxy in Headers */,
-				9014C58E10C36D4100947117 /* Utility in Headers */,
-				9014C58F10C36D4100947117 /* Value in Headers */,
-				9014C59010C36D4100947117 /* variant_cast in Headers */,
-				9014C59110C36D4100947117 /* Version in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6378,23 +6189,6 @@
 			productReference = 9014C53110C3694300947117 /* libosgPresentation.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		9014C55110C36CC900947117 /* osgIntrospection */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 9014C55610C36CE600947117 /* Build configuration list for PBXNativeTarget "osgIntrospection" */;
-			buildPhases = (
-				9014C54E10C36CC900947117 /* Headers */,
-				9014C54F10C36CC900947117 /* Sources */,
-				9014C55010C36CC900947117 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = osgIntrospection;
-			productName = osgIntrospection;
-			productReference = 9014C55210C36CC900947117 /* libosgIntrospection.a */;
-			productType = "com.apple.product-type.library.static";
-		};
 		9014C5AE10C36FD100947117 /* osgdb_freetype */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 9014C5B310C36FE100947117 /* Build configuration list for PBXNativeTarget "osgdb_freetype" */;
@@ -6799,7 +6593,6 @@
 				906D909D10B914270089D3C3 /* osgVolume */,
 				9014C4CE10C3680F00947117 /* osgManipulator */,
 				9014C45710C3663900947117 /* osgWidget */,
-				9014C55110C36CC900947117 /* osgIntrospection */,
 				9014C53010C3694300947117 /* osgPresentation */,
 				90B90C5B10B383F800E10618 /* simpleExample */,
 				90AF63D710C33FA20041F6A7 /* osgIPhoneViewer */,
@@ -6975,24 +6768,6 @@
 				9014C54A10C36A1600947117 /* PickEventHandler.cpp in Sources */,
 				9014C54B10C36A1600947117 /* SlideEventHandler.cpp in Sources */,
 				9014C54C10C36A1600947117 /* SlideShowConstructor.cpp in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9014C54F10C36CC900947117 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9014C59D10C36D5B00947117 /* ConstructorInfo.cpp in Sources */,
-				9014C59E10C36D5B00947117 /* CustomAttributeProvider.cpp in Sources */,
-				9014C59F10C36D5B00947117 /* DefaultReflectors.cpp in Sources */,
-				9014C5A010C36D5B00947117 /* MethodInfo.cpp in Sources */,
-				9014C5A110C36D5B00947117 /* PropertyInfo.cpp in Sources */,
-				9014C5A210C36D5B00947117 /* Reflection.cpp in Sources */,
-				9014C5A310C36D5B00947117 /* Reflector.cpp in Sources */,
-				9014C5A410C36D5B00947117 /* Type.cpp in Sources */,
-				9014C5A510C36D5B00947117 /* Utility.cpp in Sources */,
-				9014C5A610C36D5B00947117 /* Value.cpp in Sources */,
-				9014C5A710C36D5B00947117 /* Version.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7958,11 +7733,6 @@
 			target = 9014C53010C3694300947117 /* osgPresentation */;
 			targetProxy = D4D20A41117222620026B2AB /* PBXContainerItemProxy */;
 		};
-		D4D20A44117222620026B2AB /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 9014C55110C36CC900947117 /* osgIntrospection */;
-			targetProxy = D4D20A43117222620026B2AB /* PBXContainerItemProxy */;
-		};
 		D4D20A46117222620026B2AB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 9014C45710C3663900947117 /* osgWidget */;
@@ -8326,43 +8096,6 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = osgPresentation;
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
-		9014C55310C36CCA00947117 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_THUMB_SUPPORT = NO;
-				HEADER_SEARCH_PATHS = (
-					./config,
-					../include,
-					../config/openthreads,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = osgIntrospection;
-			};
-			name = Debug;
-		};
-		9014C55410C36CCA00947117 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_THUMB_SUPPORT = NO;
-				HEADER_SEARCH_PATHS = (
-					./config,
-					../include,
-					../config/openthreads,
-				);
-				PREBINDING = NO;
-				PRODUCT_NAME = osgIntrospection;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -9254,15 +8987,6 @@
 			buildConfigurations = (
 				9014C53210C3694400947117 /* Debug */,
 				9014C53310C3694400947117 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		9014C55610C36CE600947117 /* Build configuration list for PBXNativeTarget "osgIntrospection" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				9014C55310C36CCA00947117 /* Debug */,
-				9014C55410C36CCA00947117 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

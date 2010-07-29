@@ -7,7 +7,7 @@ class AsciiOutputIterator : public osgDB::OutputIterator
 {
 public:
     AsciiOutputIterator( std::ostream* ostream )
-    : _readyForEndBracket(false), _indent(0) { _out = ostream; }
+    : _readyForIndent(false), _indent(0) { _out = ostream; }
     
     virtual ~AsciiOutputIterator() {}
     
@@ -15,64 +15,63 @@ public:
     
     virtual void writeBool( bool b )
     {
+        indentIfRequired();
         if ( b ) *_out << "TRUE ";
         else *_out << "FALSE ";
     }
     
     virtual void writeChar( char c )
-    { *_out << (short)c << ' '; }
+    { indentIfRequired(); *_out << (short)c << ' '; }
     
     virtual void writeUChar( unsigned char c )
-    { *_out << (unsigned short)c << ' '; }
+    { indentIfRequired(); *_out << (unsigned short)c << ' '; }
     
     virtual void writeShort( short s )
-    { *_out << s << ' '; }
+    { indentIfRequired(); *_out << s << ' '; }
     
     virtual void writeUShort( unsigned short s )
-    { *_out << s << ' '; }
+    { indentIfRequired(); *_out << s << ' '; }
     
     virtual void writeInt( int i )
-    { *_out << i << ' '; }
+    { indentIfRequired(); *_out << i << ' '; }
     
     virtual void writeUInt( unsigned int i )
-    { *_out << i << ' '; }
+    { indentIfRequired(); *_out << i << ' '; }
     
     virtual void writeLong( long l )
-    { *_out << l << ' '; }
+    { indentIfRequired(); *_out << l << ' '; }
     
     virtual void writeULong( unsigned long l )
-    { *_out << l << ' '; }
+    { indentIfRequired(); *_out << l << ' '; }
     
     virtual void writeFloat( float f )
-    { *_out << f << ' '; }
+    { indentIfRequired(); *_out << f << ' '; }
     
     virtual void writeDouble( double d )
-    { *_out << d << ' '; }
+    { indentIfRequired(); *_out << d << ' '; }
     
     virtual void writeString( const std::string& s )
-    { *_out << s << ' '; }
+    { indentIfRequired(); *_out << s << ' '; }
     
     virtual void writeStream( std::ostream& (*fn)(std::ostream&) )
     {
-        *_out << fn;
+        indentIfRequired(); *_out << fn;
         if ( fn==static_cast<std::ostream& (*)(std::ostream&)>(std::endl) )
         {
-            _readyForEndBracket = true;
-            for (int i=0; i<_indent; ++i)
-                *_out << ' ';
+            _readyForIndent = true;
         }
     }
     
     virtual void writeBase( std::ios_base& (*fn)(std::ios_base&) )
     {
-        *_out << fn;
+        indentIfRequired(); *_out << fn;
     }
     
     virtual void writeGLenum( const osgDB::ObjectGLenum& value )
     {
         GLenum e = value.get(); 
         const std::string& enumString = osgDB::Registry::instance()->getObjectWrapperManager()->getString("GL", e);
-        *_out << enumString << ' ';
+        indentIfRequired(); *_out << enumString << ' ';
     }
     
     virtual void writeProperty( const osgDB::ObjectProperty& prop )
@@ -82,20 +81,13 @@ public:
         {
             enumString = osgDB::Registry::instance()->getObjectWrapperManager()->getString(prop._name, prop._value);
         }
-        *_out << enumString << ' ';
+        indentIfRequired(); *_out << enumString << ' ';
     }
     
     virtual void writeMark( const osgDB::ObjectMark& mark )
     {
-        int delta = mark._indentDelta;
-        if ( delta<0 && _readyForEndBracket )
-        {
-            if ( _indent<-delta ) delta = -_indent;
-            _readyForEndBracket = false;
-            _out->seekp( delta, std::ios::cur );
-        }
-        _indent += delta;
-        *_out << mark._name << ' ';
+        _indent += mark._indentDelta;
+        indentIfRequired(); *_out << mark._name;
     }
     
     virtual void writeCharArray( const char* s, unsigned int size ) {}
@@ -115,11 +107,23 @@ public:
         wrappedStr.insert( 0, 1, '\"' );
         wrappedStr += '\"';
 
+        indentIfRequired();
         writeString( wrappedStr );
     }
     
 protected:
-    bool _readyForEndBracket;
+
+    inline void indentIfRequired()
+    {
+        if ( _readyForIndent )
+        {
+            for (int i=0; i<_indent; ++i)
+                *_out << ' ';
+            _readyForIndent = false;
+        }
+    }
+    
+    bool _readyForIndent;
     int _indent;
 };
 

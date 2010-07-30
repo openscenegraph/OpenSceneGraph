@@ -392,11 +392,17 @@ int main(int argc, char** argv)
     if (!font) return 1;
     OSG_NOTICE<<"Read font "<<fontFile<<" font="<<font.get()<<std::endl;
 
-    bool useTessellator = false;
+    bool useTessellator = true;
     while(arguments.read("-t") || arguments.read("--tessellate")) { useTessellator = true; }
+    while(arguments.read("--no-tessellate")) { useTessellator = false; }
 
     float thickness = 5.0;
     while(arguments.read("--thickness",thickness)) {}
+
+    float creaseAngle = 10.0f;
+    while(arguments.read("--crease-angle",creaseAngle)) {}
+
+    OSG_NOTICE<<"creaseAngle="<<creaseAngle<<std::endl;
 
     osg::ref_ptr<osg::Group> group = new osg::Group;
     osg::Vec3 position;
@@ -432,7 +438,8 @@ int main(int argc, char** argv)
         {
             geode->addDrawable(bevel);
             osgUtil::SmoothingVisitor smoother;
-            smoother.smooth(*bevel);
+            smoother.setCreaseAngle(osg::DegreesToRadians(creaseAngle));
+            geode->accept(smoother);
         }
 
         osg::Geometry* face = getGeometryComponent(face_and_bevel, false);

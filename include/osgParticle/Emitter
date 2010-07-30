@@ -27,8 +27,8 @@
 namespace osgParticle
 {
 
-    /**    An abstract base class for particle emitters.
-        Descendant classes must override the <CODE>emit()</CODE> method to generate new particles by
+    /** An abstract base class for particle emitters.
+        Descendant classes must override the <CODE>emitParticles()</CODE> method to generate new particles by
         calling the <CODE>ParticleSystem::createParticle()</CODE> method on the particle system associated
         to the emitter.
     */
@@ -63,7 +63,7 @@ namespace osgParticle
         
         inline void process(double dt);
         
-        virtual void emit(double dt) = 0;
+        virtual void emitParticles(double dt) = 0;
         
         bool _usedeftemp;
         Particle _ptemp;
@@ -94,7 +94,7 @@ namespace osgParticle
 
     inline void Emitter::process(double dt)
     {
-        emit(dt);
+        emitParticles(dt);
     }
 
 

@@ -120,7 +120,7 @@ public:
     // Gets the archive
     inline TXPArchive* getArchive()
     {
-        return _archive.get();
+        return _archive;
     }
 
     // Scene parser

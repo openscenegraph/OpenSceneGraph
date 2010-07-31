@@ -1091,7 +1091,7 @@ osg::Texture2D* daeReader::processTexture(
         }
         if (sampler->getMagfilter())
         {
-            parameters.filter_min = getFilterMode(sampler->getMagfilter()->getValue(), false);
+            parameters.filter_mag = getFilterMode(sampler->getMagfilter()->getValue(), false);
         }
 
         if (sampler->getBorder_color() != NULL )

@@ -1,17 +1,17 @@
-/*************************************************************************** 
+/***************************************************************************
  * December 2003
  *
- * This TerraPage loader was re-written in a fashion to use PagedLOD 
- * to manage paging entirely, also includes a version of Terrex's smart mesh 
- * adapted to work with PagedLOD. The essential code by Boris Bralo is still present, 
+ * This TerraPage loader was re-written in a fashion to use PagedLOD
+ * to manage paging entirely, also includes a version of Terrex's smart mesh
+ * adapted to work with PagedLOD. The essential code by Boris Bralo is still present,
  * slight modified.
  * nick at terrex dot com
- * 
+ *
  * Ported to PagedLOD technology by Trajce Nikolov (Nick) & Robert Osfield
  *****************************************************************************/
 
 /***************************************************************************
- * OpenSceneGraph loader for Terrapage format database 
+ * OpenSceneGraph loader for Terrapage format database
  * by Boris Bralo 2002
  *
  * based on/modifed  sgl (Scene Graph Library) loader by Bryan Walsh
@@ -80,21 +80,21 @@ public:
 
     GeodeGroup() : osg::Group(), _geode(NULL)
     {}
-    
+
     GeodeGroup(const GeodeGroup& gg,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
     osg::Group(gg, copyop), _geode(gg._geode)
     {}
-    
+
     META_Node(txp, GeodeGroup);
-    
+
     osg::Geode* getGeode()
     {
         if (_geode == 0)
-        {   
-            _geode = new osg::Geode();   
+        {
+            _geode = new osg::Geode();
             addChild(_geode);
         }
-        
+
         return _geode;
     }
 protected:
@@ -110,7 +110,7 @@ class TXPParser : public trpgSceneParser, public osg::Referenced
 {
 public:
     TXPParser();
-    
+
     // Sets the archive to be parsed
     inline void setArchive(TXPArchive* archive)
     {
@@ -135,13 +135,13 @@ public:
     {
         return _currentTop ? _currentTop : _root.get();
     }
-    
+
     // Sets the group as potentional tile group
     inline void setPotentionalTileGroup(osg::Group* grp)
     {
         _tileGroups[grp] = 1;
     }
-    
+
     // Return the current material list (passed in to ParseScene())
     inline std::map<int,osg::ref_ptr<osg::StateSet> >* getMaterials()
     {
@@ -153,44 +153,44 @@ public:
     {
         _archive->loadMaterial( ix );
     }
-    
+
     // New to TerraPage 2.0 - local materials
     std::vector<osg::ref_ptr<osg::StateSet> >* getLocalMaterials()
     {
         return &_localMaterials;
     }
-    
+
     // Load local materials
     void loadLocalMaterials();
-    
+
     // Return the current model list
     std::map<int,osg::ref_ptr<osg::Node> >* getModels()
     {
         return _models;
     }
-    
+
     // Request a model to be load
     bool requestModel(int ix);
-    
+
     // Return a reference to the tile header (after a tile has been read)
     inline trpgTileHeader *getTileHeaderRef()
     {
         return &_tileHeader;
     }
-    
-    
+
+
     // Returns true if we are under billboard subgraph
     inline const bool underBillboardSubgraph() const
     {
         return _underBillboardSubgraph;
     }
-    
+
     // Sets if we are under billboard subgraph
     inline void setUnderBillboardSubgraph(bool b)
     {
         _underBillboardSubgraph = b;
     }
-    
+
     // TXP Billboard info
     struct TXPBillboardInfo
     {
@@ -199,48 +199,48 @@ public:
         trpg3dPoint center;
         trpg3dPoint axis;
     };
-    
+
     // Sets info for the last billboard parsed
     inline void setLastBillboardInfo(TXPBillboardInfo& info)
     {
         _lastBillboardInfo = info;
     }
-    
+
     // Gets info for the last billboard parsed
     inline void getLastBillboardInfo(TXPBillboardInfo& info)
     {
         info = _lastBillboardInfo;
     }
-    
+
     // Gets light attrib
     DeferredLightAttribute& getLightAttribute(int ix);
-    
+
     // Returns if we are under layer subgraph
     inline const bool underLayerSubgraph() const
     {
         return _underLayerSubgraph;
     }
-    
+
     // Sets if we are under layer subgraph
     inline void setUnderLayerSubgraph(bool b)
     {
         _underLayerSubgraph = b;
     }
-    
+
     // Set the current layer geode
     inline void setLayerGeode(osg::Geode* layer)
     {
         _layerGeode = layer;
     }
-    
+
     // Returns the current layer geode
     inline osg::Geode* getLayerGeode() const
     {
         return _layerGeode;
     }
-    
+
     inline unsigned int getNumLayerLavels() const { return _numLayerLevels; }
-    
+
     // default value to use when setting up textures.
     void setMaxAnisotropy(float anisotropy)
     {
@@ -281,26 +281,26 @@ public:
 
    // After parsing this will return the number of trpgChildRef node found.
    unsigned int GetNbChildrenRef() const;
- 
+
    // This will return the trpgChildRef node pointer associated with the index.
    // Will return 0 if index is out of bound
    const trpgChildRef* GetChildRef(unsigned int idx) const;
- 
 
-    
+
+
 protected:
 
     virtual ~TXPParser();
-    
+
     // Removes any empty groups and LODs
     void removeEmptyGroups();
-    
+
     // Called on start children
     bool StartChildren(void *);
-    
+
     // Called on end children
     bool EndChildren(void *);
-    
+
     // THE archive
     osg::ref_ptr< TXPArchive > _archive;
     
@@ -309,54 +309,54 @@ protected:
 
     // Current node
     osg::Node* _currentNode;
-    
+
     // The root of the tile
     osg::ref_ptr<osg::Group> _root;
-    
+
     // Parents list
     std::stack<osg::Group*>    _parents;
-    
+
     // Potentional Tile groups
     std::map<osg::Group*,int>    _tileGroups;
-    
+
     // Replace the tile lod to regular group
     void replaceTileLod(osg::Group*);
-    
+
     // Materials
     typedef std::map<int,osg::ref_ptr<osg::StateSet> >* MaterialMapType;
     MaterialMapType _materialMap;
-    
+
     // Local materials
     std::vector<osg::ref_ptr<osg::StateSet> >    _localMaterials;
-    
+
     // Model list
     typedef std::map<int,osg::ref_ptr<osg::Node> > OSGModelsMapType;
     OSGModelsMapType*      _models;
 
     // Tile header
     trpgTileHeader    _tileHeader;
-    
+
     // true if we are under billboard subgraph
     bool _underBillboardSubgraph;
-    
+
     // Number of levels below the billboard node
     int _numBillboardLevels;
-    
+
     // Last billboard we parsed
     TXPBillboardInfo _lastBillboardInfo;
-    
+
     // true if we are under layer subgraph
     bool _underLayerSubgraph;
-    
+
     // Numbers of levels below layer subgraph
     int _numLayerLevels;
-    
+
     // Our Layer Geode
     osg::Geode*    _layerGeode;
-    
+
     // default value to use when setting up textures.
     float _defaultMaxAnisotropy;
-    
+
     // LOD ranges to be used when parsing tiles
     double _realMinRange;
     double _realMaxRange;
@@ -372,7 +372,7 @@ protected:
 
        childRefRead *_childRefCB;
 
-    
+
 };
 
 
@@ -441,7 +441,7 @@ public:
 protected:
     TXPParser *_parse;
 
- 
+
 
 private:
 

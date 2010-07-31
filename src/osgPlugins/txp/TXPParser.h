@@ -302,8 +302,8 @@ protected:
     bool EndChildren(void *);
 
     // THE archive
-    osg::ref_ptr< TXPArchive > _archive;
-    
+    TXPArchive * _archive;
+
     // Current parent
     osg::Group* _currentTop;
 

@@ -407,10 +407,6 @@ void TextureRectangle::applyTexImage_subload(GLenum target, Image* image, State&
         OSG_NOTICE<<"after PBO "<<osg::Timer::instance()->delta_m(start_tick,osg::Timer::instance()->tick())<<"ms"<<std::endl;
 #endif
     }
-    else
-    {
-        OSG_NOTICE<<"    no PixelBufferObject "<<image->getBufferObject()<<", "<<image->getPixelBufferObject()<<" pbo="<<pbo<<std::endl;
-    }
     
 
     if(isCompressedInternalFormat(_internalFormat) && extensions->isCompressedTexSubImage2DSupported())

@@ -254,11 +254,7 @@ struct FindSharpEdgesFunctor
 
     void operator() (unsigned int p1, unsigned int p2, unsigned int p3)
     {
-        const osg::Vec3& v1 = (*_vertices)[p1];
-        const osg::Vec3& v2 = (*_vertices)[p2];
-        const osg::Vec3& v3 = (*_vertices)[p3];
-        osg::Vec3 normal( (v2-v1)^(v3-v1) );
-        normal.normalize();
+        osg::Vec3 normal( computeNormal(p1, p2, p3) );
 
         if (checkDeviation(p1, normal)) insertTriangle(p1, p1, p2, p3);
         if (checkDeviation(p2, normal)) insertTriangle(p2, p1, p2, p3);
@@ -283,6 +279,16 @@ struct FindSharpEdgesFunctor
         return (deviation < _maxDeviationDotProduct);
     }
 
+    osg::Vec3 computeNormal(unsigned int p1, unsigned int p2, unsigned int p3)
+    {
+        const osg::Vec3& v1 = (*_vertices)[p1];
+        const osg::Vec3& v2 = (*_vertices)[p2];
+        const osg::Vec3& v3 = (*_vertices)[p3];
+        osg::Vec3 normal( (v2-v1)^(v3-v1) );
+        normal.normalize();
+        return normal;
+    }
+
     void listProblemVertices()
     {
         OSG_NOTICE<<"listProblemVertices() "<<_problemVertexList.size()<<std::endl;
@@ -292,6 +298,16 @@ struct FindSharpEdgesFunctor
         {
             ProblemVertex* pv = itr->get();
             OSG_NOTICE<<"  pv._point = "<<pv->_point<<" triangles "<<pv->_triangles.size()<<std::endl;
+            for(ProblemVertex::Triangles::iterator titr = pv->_triangles.begin();
+                titr != pv->_triangles.end();
+                ++titr)
+            {
+                OSG_NOTICE<<"    triangle("<<titr->_p1<<", "<<titr->_p2<<", "<<titr->_p3<<")"<<std::endl;
+                osg::Vec3 normal( computeNormal(titr->_p1, titr->_p2, titr->_p3) );
+                float deviation = normal * (*_normals)[pv->_point];
+                OSG_NOTICE<<"    deviation "<<deviation<<std::endl;
+            }
+
         }
     }
 

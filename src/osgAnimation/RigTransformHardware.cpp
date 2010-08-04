@@ -255,11 +255,11 @@ bool RigTransformHardware::init(RigGeometry& geom)
     }
     program->addShader(_shader.get());
 
-    osg::ref_ptr<osg::StateSet> ss = new osg::StateSet;
+    osg::ref_ptr<osg::StateSet> ss = geom.getOrCreateStateSet();
     ss->addUniform(getMatrixPaletteUniform());
     ss->addUniform(new osg::Uniform("nbBonesPerVertex", getNumBonesPerVertex()));
     ss->setAttributeAndModes(program.get());
-    geom.setStateSet(ss.get());
+
     _needInit = false;
     return true;
 }

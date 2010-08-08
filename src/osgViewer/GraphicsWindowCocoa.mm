@@ -206,7 +206,7 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 {
     s_quit_requested = true;
     DEBUG_OUT("quit requested ");
-    return NSTerminateCancel;
+    return NSTerminateNow;
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification

@@ -488,7 +488,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
     for( AttribBindingList::const_iterator itr = programBindlist.begin();
         itr != programBindlist.end(); ++itr )
     {
-        OSG_NOTICE<<"Program's vertex attrib binding "<<itr->second<<", "<<itr->first<<std::endl;
+        OSG_INFO<<"Program's vertex attrib binding "<<itr->second<<", "<<itr->first<<std::endl;
         _extensions->glBindAttribLocation( _glProgramHandle, itr->second, reinterpret_cast<const GLchar*>(itr->first.c_str()) );
     }
 
@@ -500,7 +500,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
         for( AttribBindingList::const_iterator itr = stateBindlist.begin();
             itr != stateBindlist.end(); ++itr )
         {
-            OSG_NOTICE<<"State's vertex attrib binding "<<itr->second<<", "<<itr->first<<std::endl;
+            OSG_INFO<<"State's vertex attrib binding "<<itr->second<<", "<<itr->first<<std::endl;
             _extensions->glBindAttribLocation( _glProgramHandle, itr->second, reinterpret_cast<const GLchar*>(itr->first.c_str()) );
         }
     }

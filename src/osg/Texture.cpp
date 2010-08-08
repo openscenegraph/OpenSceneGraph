@@ -416,7 +416,6 @@ void Texture::TextureObjectSet::flushDeletedTextureObjects(double currentTime, d
 
     // update the number of active and orphaned TextureOjects
     _parent->getNumberOrphanedTextureObjects() -= numDeleted;
-    _parent->getNumberActiveTextureObjects() += numDeleted;
     _parent->getNumberDeleted() += numDeleted;
 
     availableTime -= timer.elapsedTime();
@@ -524,7 +523,7 @@ Texture::TextureObject* Texture::TextureObjectSet::takeOrGenerate(Texture* textu
 
     addToBack(to);
 
-    OSG_INFO<<"Created new TextureObject, _numOfTextureObjects "<<_numOfTextureObjects<<std::endl;
+    OSG_INFO<<"Created new " << this << " TextureObject, _numOfTextureObjects "<<_numOfTextureObjects<<std::endl;
 
     return to;
 }

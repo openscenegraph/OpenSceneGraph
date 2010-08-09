@@ -60,8 +60,9 @@ public:
      * DelaunayTriangulator::removeInternalTriangles is called.
      * These return the triangles removed from the delaunay triangulation by 
      * DelaunayTriangulator::removeInternalTriangles. */
-    inline const osg::DrawElementsUInt *getTriangles() const;
-    inline osg::DrawElementsUInt *getTriangles();
+    inline const osg::DrawElementsUInt *getTriangles() const { return prim_tris_.get(); }
+
+    inline osg::DrawElementsUInt *getTriangles() { return prim_tris_.get(); }
 
     /** Call BEFORE makeDrawable to reorder points to make optimised set
      */
@@ -113,47 +114,47 @@ public:
 
     typedef std::vector< osg::ref_ptr<DelaunayConstraint> > linelist;
 
+    /** Set the input point array. */
+    inline void setInputPointArray(osg::Vec3Array* points) { points_ = points; }
+
     /** Get the const input point array. */
-    inline const osg::Vec3Array *getInputPointArray() const;
+    inline const osg::Vec3Array* getInputPointArray() const {  return points_.get(); }
 
     /** Get the input point array. */
-    inline osg::Vec3Array *getInputPointArray();
+    inline osg::Vec3Array* getInputPointArray() {  return points_.get(); }
 
-    /** Set the input point array. */
-    inline void setInputPointArray(osg::Vec3Array *points);
+
+    /** Set the output normal array (optional). */
+    inline void setOutputNormalArray(osg::Vec3Array* normals) { normals_ = normals; }
+
+    /** Get the const output normal array (optional). */
+    inline const osg::Vec3Array *getOutputNormalArray() const { return normals_.get(); }
+
+    /** Get the output normal array (optional). */
+    inline osg::Vec3Array *getOutputNormalArray() { return normals_.get(); }
+
 
     /** Add an input constraint loop.
      ** the edges of the loop will constrain the triangulation.
      ** if remove!=0, the internal triangles of the constraint will be removed;
      ** the user may the replace the constraint line with an equivalent geometry.
      ** GWM July 2005 */
-    void addInputConstraint(DelaunayConstraint *dc) {
-        constraint_lines.push_back(dc);
-        return;
-    }
+    void addInputConstraint(DelaunayConstraint *dc) { constraint_lines.push_back(dc); }
 
-
-    /** Get the const output normal array (optional). */
-    inline const osg::Vec3Array *getOutputNormalArray() const;
-
-    /** Get the output normal array (optional). */
-    inline osg::Vec3Array *getOutputNormalArray();
-
-    /** Set the output normal array (optional). */
-    inline void setOutputNormalArray(osg::Vec3Array *normals);
 
     /** Start triangulation. */
     bool triangulate();
 
     /** Get the generated primitive (call triangulate() first). */
-    inline const osg::DrawElementsUInt *getTriangles() const;
+    inline const osg::DrawElementsUInt *getTriangles() const { return prim_tris_.get(); }
 
     /** Get the generated primitive (call triangulate() first). */
-    inline osg::DrawElementsUInt *getTriangles();
+    inline osg::DrawElementsUInt *getTriangles() { return prim_tris_.get(); }
     
     /** remove the triangles internal to the constraint loops.
      * (Line strips cannot remove any internal triangles). */
     void removeInternalTriangles(DelaunayConstraint *constraint);
+
 
 protected:
     virtual ~DelaunayTriangulator();
@@ -169,60 +170,10 @@ private:
     linelist constraint_lines;
 
     void _uniqueifyPoints();
-    
 };
 
 // INLINE METHODS
 
-inline const osg::Vec3Array *DelaunayTriangulator::getInputPointArray() const
-{
-    return points_.get();
-}
-
-inline osg::Vec3Array *DelaunayTriangulator::getInputPointArray()
-{
-    return points_.get();
-}
-
-inline void DelaunayTriangulator::setInputPointArray(osg::Vec3Array *points)
-{
-    points_ = points;
-}
-
-inline const osg::Vec3Array *DelaunayTriangulator::getOutputNormalArray() const
-{
-    return normals_.get();
-}
-
-inline osg::Vec3Array *DelaunayTriangulator::getOutputNormalArray()
-{
-    return normals_.get();
-}
-
-inline void DelaunayTriangulator::setOutputNormalArray(osg::Vec3Array *normals)
-{
-    normals_ = normals;
-}
-
-inline const osg::DrawElementsUInt *DelaunayTriangulator::getTriangles() const
-{
-    return prim_tris_.get();
-}
-
-inline osg::DrawElementsUInt *DelaunayTriangulator::getTriangles()
-{
-    return prim_tris_.get();
-}
-
-inline const osg::DrawElementsUInt *DelaunayConstraint::getTriangles() const
-{
-    return prim_tris_.get();
-}
-
-inline osg::DrawElementsUInt *DelaunayConstraint::getTriangles()
-{
-    return prim_tris_.get();
-}
 
 
 }

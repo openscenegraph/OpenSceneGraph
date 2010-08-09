@@ -305,12 +305,12 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** Compile the rendering objects (display lists,texture objects, VBO's) on loaded subgraph.
           * note, should only be called from the draw thread.
           * Note, must only be called from a valid graphics context. */
-        virtual void compileGLObjects(osg::State& state,double& availableTime);
+        virtual void compileGLObjects(osg::State& state,double& availableTime, bool doFlush = false);
         
         /** Compile the rendering objects (display lists,texture objects, VBO's) on loaded subgraph.
           * note, should only be called from the draw thread.
           * Note, must only be called from a valid graphics context. */
-        virtual void compileAllGLObjects(osg::State& state);
+        virtual void compileAllGLObjects(osg::State& state, bool doFlush = false);
 
         /** Report how many items are in the _fileRequestList queue */
         unsigned int getFileRequestListSize() const { return _fileRequestQueue->size() + _httpRequestQueue->size(); }

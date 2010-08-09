@@ -36,6 +36,7 @@ namespace osgFFmpeg
         virtual void setVolume(float volume);
         virtual float getVolume() const;
 
+        virtual double getCreationTime() const;
         virtual double getLength() const;
         virtual double getReferenceTime () const; 
         virtual double getFrameRate() const;

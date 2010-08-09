@@ -57,17 +57,8 @@ FFmpegDecoderVideo::~FFmpegDecoderVideo()
 {
     OSG_INFO<<"Destructing FFmpegDecoderVideo..."<<std::endl;
 
+    this->close(true);
 
-    if (isRunning())
-    {
-        m_exit = true;
-#if 0        
-        while(isRunning()) { OpenThreads::YieldCurrentThread(); }
-#else        
-        join();
-#endif
-    }
-    
 #ifdef USE_SWSCALE
     if (m_swscale_ctx)
     {
@@ -132,11 +123,11 @@ void FFmpegDecoderVideo::open(AVStream * const stream)
 
 void FFmpegDecoderVideo::close(bool waitForThreadToExit)
 {
-    m_exit = true;
-    
-    if (isRunning() && waitForThreadToExit)
+    if (isRunning())
     {
-        while(isRunning()) { OpenThreads::Thread::YieldCurrentThread(); }
+        m_exit = true;
+        if (waitForThreadToExit)
+            join();
     }
 }
 

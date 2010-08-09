@@ -162,6 +162,11 @@ float FFmpegImageStream::getVolume() const
     return m_decoder->audio_decoder().getVolume();
 }
 
+double FFmpegImageStream::getCreationTime() const
+{
+    return m_decoder->creation_time();
+}
+
 double FFmpegImageStream::getLength() const
 { 
     return m_decoder->duration(); 

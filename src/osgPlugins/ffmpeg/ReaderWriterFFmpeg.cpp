@@ -45,6 +45,9 @@ public:
         supportsExtension("sav",    "MPEG-4");
         supportsExtension("3gp",    "MPEG-4");
         supportsExtension("sdp",    "MPEG-4");
+        
+        // enable thread locking
+        av_lockmgr_register(&lockMgr);
 
         // Register all FFmpeg formats/codecs
         av_register_all();
@@ -96,6 +99,36 @@ public:
     }
 
 private:
+
+    static int lockMgr(void **mutex, enum AVLockOp op)
+    {
+        // returns are 0 success
+        OpenThreads::Mutex **m=(OpenThreads::Mutex**)mutex;
+        if (op==AV_LOCK_CREATE)
+        {
+            *m=new OpenThreads::Mutex;
+            return !*m;
+        }
+        else if (op==AV_LOCK_DESTROY)
+        {
+            delete *m;
+            return 0;
+        }
+        else if (op==AV_LOCK_OBTAIN)
+        {
+            (*m)->lock();
+            return 0;
+        }
+        else if (op==AV_LOCK_RELEASE)
+        {
+            (*m)->unlock();
+            return 0;
+        }
+        else
+        {
+            return -1;
+        }
+    }
 
 };
 

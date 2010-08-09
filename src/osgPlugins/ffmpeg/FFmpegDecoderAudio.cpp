@@ -54,15 +54,7 @@ FFmpegDecoderAudio::FFmpegDecoderAudio(PacketQueue & packets, FFmpegClocks & clo
 
 FFmpegDecoderAudio::~FFmpegDecoderAudio()
 {
-    if (isRunning())
-    {
-        m_exit = true;
-#if 0        
-        while(isRunning()) { OpenThreads::YieldCurrentThread(); }
-#else        
-        join();
-#endif
-    }
+    this->close(true);
 }
 
 
@@ -123,11 +115,11 @@ void FFmpegDecoderAudio::pause(bool pause)
 
 void FFmpegDecoderAudio::close(bool waitForThreadToExit)
 {
-    m_exit = true;
-    
-    if (isRunning() && waitForThreadToExit)
+    if (isRunning())
     {
-        while(isRunning()) { OpenThreads::Thread::YieldCurrentThread(); }
+        m_exit = true;
+        if (waitForThreadToExit)
+            join();
     }
 }
 
@@ -238,7 +230,7 @@ void FFmpegDecoderAudio::decodeLoop()
             m_clocks.pause(true);
             m_pause_timer.setStartTick();
 
-            while(m_paused)
+            while(m_paused && !m_exit)
             {
                 microSleep(10000);
             }

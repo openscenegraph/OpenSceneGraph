@@ -76,7 +76,7 @@ class OSG_EXPORT ImageStream : public Image
         
         LoopingMode getLoopingMode() const { return _loopingMode; }
 
-
+        virtual double getCreationTime() const { return HUGE_VAL; }
         virtual double getLength() const { return 0.0; }
         virtual double getFrameRate() const { return 0.0; } 
 

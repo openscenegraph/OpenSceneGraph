@@ -26,6 +26,8 @@ class FormatContextPtr
         
         T* get() { return _ptr; }
 
+        operator bool() const { return _ptr != 0; }
+
         T * operator-> () const // never throws
         {
             return _ptr;
@@ -74,6 +76,7 @@ public:
     void loop(bool loop);
     bool loop() const;
 
+    double creation_time() const;
     double duration() const;
     double reference();
 
@@ -144,6 +147,11 @@ inline bool FFmpegDecoder::loop() const
     return m_loop;
 }
 
+inline double FFmpegDecoder::creation_time() const
+{
+   if(m_format_context) return m_format_context->timestamp;
+   else return HUGE_VAL;
+}
 
 inline double FFmpegDecoder::duration() const
 {

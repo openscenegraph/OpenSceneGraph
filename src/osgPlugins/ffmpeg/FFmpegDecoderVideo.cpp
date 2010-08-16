@@ -67,6 +67,11 @@ FFmpegDecoderVideo::~FFmpegDecoderVideo()
     }
 #endif
 
+    if (m_context)
+    {
+        avcodec_close(m_context);
+    }
+
     OSG_INFO<<"Destructed FFmpegDecoderVideo"<<std::endl;
 }
 

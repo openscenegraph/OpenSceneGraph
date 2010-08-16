@@ -487,13 +487,9 @@ void Text::computeGlyphRepresentation()
                 }
             }
 
-            if (itr!=_text.end())
-            {
-                // skip over spaces and return.
-                while (*itr==' ') ++itr;
-                if (*itr=='\n') ++itr;
-            }
-
+            // skip over spaces and return.
+            while (itr != _text.end() && *itr==' ') ++itr;
+            if (itr != _text.end() && *itr=='\n') ++itr;
         }
         else
         {

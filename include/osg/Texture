@@ -57,6 +57,13 @@
     #define GL_COMPRESSED_RGBA_S3TC_DXT5_EXT        0x83F3
 #endif
 
+#ifndef GL_EXT_texture_compression_rgtc
+  #define GL_COMPRESSED_RED_RGTC1_EXT                0x8DBB
+  #define GL_COMPRESSED_SIGNED_RED_RGTC1_EXT         0x8DBC
+  #define GL_COMPRESSED_RED_GREEN_RGTC2_EXT          0x8DBD
+  #define GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT   0x8DBE
+#endif
+
 #ifndef GL_ARB_INTERNAL_TEXTURE_FORMAT
     #define GL_RGBA32F_ARB                           0x8814
     #define GL_RGB32F_ARB                            0x8815
@@ -435,7 +442,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             USE_ARB_COMPRESSION,
             USE_S3TC_DXT1_COMPRESSION,
             USE_S3TC_DXT3_COMPRESSION,
-            USE_S3TC_DXT5_COMPRESSION
+            USE_S3TC_DXT5_COMPRESSION,
+            USE_RGTC1_COMPRESSION,
+            USE_RGTC2_COMPRESSION
         };
 
         /** Sets the internal texture format mode. Note: If the texture format is
@@ -630,6 +639,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 void setTextureCompressionS3TCSupported(bool flag) { _isTextureCompressionS3TCSupported=flag; }
                 bool isTextureCompressionS3TCSupported() const { return _isTextureCompressionS3TCSupported; }
 
+                void setTextureCompressionRGTCSupported(bool flag) { _isTextureCompressionRGTCSupported=flag; }
+                bool isTextureCompressionRGTCSupported() const { return _isTextureCompressionRGTCSupported; }
+
                 void setTextureMirroredRepeatSupported(bool flag) { _isTextureMirroredRepeatSupported=flag; }
                 bool isTextureMirroredRepeatSupported() const { return _isTextureMirroredRepeatSupported; }
 
@@ -728,6 +740,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 bool    _isTextureFilterAnisotropicSupported;
                 bool    _isTextureCompressionARBSupported;
                 bool    _isTextureCompressionS3TCSupported;
+                bool    _isTextureCompressionRGTCSupported;
                 bool    _isTextureMirroredRepeatSupported;
                 bool    _isTextureEdgeClampSupported;
                 bool    _isTextureBorderClampSupported;

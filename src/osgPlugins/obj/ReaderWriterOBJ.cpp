@@ -326,7 +326,7 @@ void ReaderWriterOBJ::buildMaterialToStateSetMap(obj::Model& model, MaterialToSt
         {
             osg::Material* osg_material = new osg::Material;
             stateset->setAttribute(osg_material);
-
+            osg_material->setName(material.name);
             osg_material->setAmbient(osg::Material::FRONT_AND_BACK,material.ambient);
             osg_material->setDiffuse(osg::Material::FRONT_AND_BACK,material.diffuse);
             osg_material->setEmission(osg::Material::FRONT_AND_BACK,material.emissive);

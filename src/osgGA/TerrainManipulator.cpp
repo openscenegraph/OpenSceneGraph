@@ -136,7 +136,7 @@ void TerrainManipulator::setByMatrix(const Matrixd& matrix)
 }
 
 
-void TerrainManipulator::setTransformation( const osg::Vec3d& center, const osg::Vec3d& eye, const osg::Vec3d& up )
+void TerrainManipulator::setTransformation( const osg::Vec3d& eye, const osg::Vec3d& center, const osg::Vec3d& up )
 {
     if (!_node) return;
 

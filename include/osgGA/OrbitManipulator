@@ -46,9 +46,9 @@ class OSGGA_EXPORT OrbitManipulator : public StandardManipulator
         virtual osg::Matrixd getInverseMatrix() const;
 
         virtual void setTransformation( const osg::Vec3d& eye, const osg::Quat& rotation );
-        virtual void setTransformation( const osg::Vec3d& center, const osg::Vec3d& eye, const osg::Vec3d& up );
+        virtual void setTransformation( const osg::Vec3d& eye, const osg::Vec3d& center, const osg::Vec3d& up );
         virtual void getTransformation( osg::Vec3d& eye, osg::Quat& rotation ) const;
-        virtual void getTransformation( osg::Vec3d& center, osg::Vec3d& eye, osg::Vec3d& up ) const;
+        virtual void getTransformation( osg::Vec3d& eye, osg::Vec3d& center, osg::Vec3d& up ) const;
 
         void setHeading( double azimuth );
         double getHeading() const;

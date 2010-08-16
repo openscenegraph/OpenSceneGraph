@@ -8,6 +8,8 @@
 #include <osg/TexEnv>
 #include <osg/ref_ptr>
 #include <osg/MatrixTransform>
+#include <osg/BlendFunc>
+#include <osg/TexEnvCombine>
 
 #include <osgDB/Registry>
 #include <osgDB/FileUtils>
@@ -957,7 +959,7 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
 }
 
 
-osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *texture,const char* label,bool& transparancy)
+osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *texture,const char* label,bool& transparency)
 {
     if (texture && *(texture->name))
     {
@@ -1012,7 +1014,7 @@ osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *
         osg_texture->setImage(osg_image.get());
         osg_texture->setName(texture->name);
         // does the texture support transparancy?
-        transparancy = ((texture->flags)&LIB3DS_TEXTURE_ALPHA_SOURCE)!=0;
+        //transparency = ((texture->flags)&LIB3DS_TEXTURE_ALPHA_SOURCE)!=0;
 
         // what is the wrap mode of the texture.
         osg::Texture2D::WrapMode wm = ((texture->flags)&LIB3DS_TEXTURE_NO_TILE) ?
@@ -1035,35 +1037,38 @@ osg::StateSet* ReaderWriter3DS::ReaderObject::createStateSet(Lib3dsMaterial *mat
 {
     if (mat==NULL) return NULL;
 
-    osg::StateSet* stateset = new osg::StateSet;
+    bool textureTransparency=false;
+    bool transparency = false;
+    float alpha = 1.0f - mat->transparency;
+    int unit = 0;
 
+    osg::StateSet* stateset = new osg::StateSet;
     osg::Material* material = new osg::Material;
 
-    float transparency = mat->transparency;
-    float alpha = 1.0f-transparency;
-
-    osg::Vec4 ambient(mat->ambient[0],mat->ambient[1],mat->ambient[2],alpha);
-    osg::Vec4 diffuse(mat->diffuse[0],mat->diffuse[1],mat->diffuse[2],alpha);
-    osg::Vec4 specular(mat->specular[0],mat->specular[1],mat->specular[2],alpha);
+    osg::Vec3 ambient(mat->ambient[0],mat->ambient[1],mat->ambient[2]);
+    osg::Vec3 diffuse(mat->diffuse[0],mat->diffuse[1],mat->diffuse[2]);
+    osg::Vec3 specular(mat->specular[0],mat->specular[1],mat->specular[2]);
     specular *= mat->shin_strength;
-
     float shininess = mat->shininess*128.0f;
-    //float shininess = pow(2, 10.0*mat->shininess);        // As in lib3ds example
-    material->setName(mat->name);
-    material->setAmbient(osg::Material::FRONT_AND_BACK,ambient);
-    material->setDiffuse(osg::Material::FRONT_AND_BACK,diffuse);
-    material->setSpecular(osg::Material::FRONT_AND_BACK,specular);
-    material->setShininess(osg::Material::FRONT_AND_BACK,shininess);
 
-    stateset->setAttribute(material);
-
-    bool textureTransparancy=false;
-    osg::Texture2D* texture1_map = createTexture(&(mat->texture1_map),"texture1_map",textureTransparancy);
+    // diffuse
+    osg::Texture2D* texture1_map = createTexture(&(mat->texture1_map),"texture1_map",textureTransparency);
     if (texture1_map)
     {
-        stateset->setTextureAttributeAndModes(0,texture1_map,osg::StateAttribute::ON);
+        stateset->setTextureAttributeAndModes(unit, texture1_map, osg::StateAttribute::ON);
 
-        if (!textureTransparancy)
+        double factor = mat->texture1_map.percent;
+        if(factor < 1.0)
+        {
+            osg::TexEnvCombine* texenv = new osg::TexEnvCombine();
+            texenv->setCombine_RGB(osg::TexEnvCombine::MODULATE);
+            texenv->setSource0_RGB(osg::TexEnvCombine::TEXTURE);
+            texenv->setSource1_RGB(osg::TexEnvCombine::PREVIOUS);
+            texenv->setSource2_RGB(osg::TexEnvCombine::CONSTANT);
+            texenv->setConstantColor(osg::Vec4(factor, factor, factor, factor));
+            stateset->setTextureAttributeAndModes(unit, texenv, osg::StateAttribute::ON);
+        } 
+        else 
         {
             // from an email from Eric Hamil, September 30, 2003.
             // According to the 3DS spec, and other
@@ -1082,31 +1087,53 @@ osg::StateSet* ReaderWriter3DS::ReaderObject::createStateSet(Lib3dsMaterial *mat
 #else
             // try alternative to avoid saturating with white
             // setting white as per OpenGL defaults.
-            material->setAmbient(osg::Material::FRONT_AND_BACK,osg::Vec4(0.2f,0.2f,0.2f,alpha));
-            material->setDiffuse(osg::Material::FRONT_AND_BACK,osg::Vec4(0.8f,0.8f,0.8f,alpha));
-            material->setSpecular(osg::Material::FRONT_AND_BACK,osg::Vec4(0.0f,0.0f,0.0f,alpha));
+            ambient.set(0.2f,0.2f,0.2f);
+            diffuse.set(0.8f,0.8f,0.8f);
+            specular.set(0.0f,0.0f,0.0f);
 #endif
-        }
+        }        
 
-// no longer required...
-//         bool decal = false;
-//
-//         // not sure exactly how to interpret what is best for .3ds
-//         // but the default text env MODULATE doesn't work well, and
-//         // DECAL seems to work better.
-//         osg::TexEnv* texenv = new osg::TexEnv;
-//         if (decal)
-//         {
-//             texenv->setMode(osg::TexEnv::DECAL);
-//         }
-//         else
-//         {
-//             texenv->setMode(osg::TexEnv::MODULATE);
-//         }
-//        stateset->setTextureAttribute(0,texenv);
+        unit++;
     }
 
-    if (transparency>0.0f || textureTransparancy)
+    // opacity
+    osg::Texture* opacity_map = createTexture(&(mat->opacity_map),"opacity_map", textureTransparency);
+    if (opacity_map)
+    {
+        if(texture1_map->getImage()->isImageTranslucent())
+        {
+            transparency = true; 
+
+            stateset->setTextureAttributeAndModes(unit, opacity_map, osg::StateAttribute::ON);
+
+            double factor = mat->opacity_map.percent;
+            
+                osg::TexEnvCombine* texenv = new osg::TexEnvCombine();
+                texenv->setCombine_Alpha(osg::TexEnvCombine::INTERPOLATE);
+                texenv->setSource0_Alpha(osg::TexEnvCombine::TEXTURE);
+                texenv->setSource1_Alpha(osg::TexEnvCombine::PREVIOUS);
+                texenv->setSource2_Alpha(osg::TexEnvCombine::CONSTANT);
+                texenv->setConstantColor(osg::Vec4(factor, factor, factor, 1.0 - factor));
+                stateset->setTextureAttributeAndModes(unit, texenv, osg::StateAttribute::ON);
+            
+            unit++;
+        } 
+        else
+        {
+            osg::notify(WARN)<<"The plugin does not support images without alpha channel for opacity"<<std::endl;
+        }
+    }
+
+    // material
+    material->setName(mat->name);
+    material->setAmbient(osg::Material::FRONT_AND_BACK, osg::Vec4(ambient, alpha));
+    material->setDiffuse(osg::Material::FRONT_AND_BACK, osg::Vec4(diffuse, alpha));
+    material->setSpecular(osg::Material::FRONT_AND_BACK, osg::Vec4(specular, alpha));
+    material->setShininess(osg::Material::FRONT_AND_BACK, shininess);
+
+    stateset->setAttribute(material);
+
+    if ((alpha < 1.0f) || transparency)
     {
         stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
         stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);

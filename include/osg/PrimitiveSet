@@ -395,10 +395,16 @@ class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte
             DrawElements(array,copyop),
             vector_type(array) {}
 
+        /**
+         * \param no Number of intended elements. This will be the size of the underlying vector.
+         */
         DrawElementsUByte(GLenum mode, unsigned int no, const GLubyte* ptr, int numInstances=0) : 
             DrawElements(DrawElementsUBytePrimitiveType,mode,numInstances),
             vector_type(ptr,ptr+no) {}
 
+        /**
+         * \param no Number of intended elements. This will be the size of the underlying vector.
+         */
         DrawElementsUByte(GLenum mode, unsigned int no) : 
             DrawElements(DrawElementsUBytePrimitiveType,mode),
             vector_type(no) {}
@@ -470,10 +476,16 @@ class OSG_EXPORT DrawElementsUShort : public DrawElements, public VectorGLushort
             DrawElements(array,copyop),
             vector_type(array) {}
 
+        /**
+         * \param no Number of intended elements. This will be the size of the underlying vector.
+         */
         DrawElementsUShort(GLenum mode, unsigned int no, const GLushort* ptr, int numInstances=0) : 
             DrawElements(DrawElementsUShortPrimitiveType,mode,numInstances),
             vector_type(ptr,ptr+no) {}
 
+        /**
+         * \param no Number of intended elements. This will be the size of the underlying vector.
+         */
         DrawElementsUShort(GLenum mode, unsigned int no) : 
             DrawElements(DrawElementsUShortPrimitiveType,mode),
             vector_type(no) {}
@@ -549,10 +561,17 @@ class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
             DrawElements(array,copyop),
             vector_type(array) {}
 
+        /**
+         * \param mode One of osg::PrimitiveSet::Mode. Determines the type of primitives used.
+         * \param no Number of intended elements. This will be the size of the underlying vector.
+         */
         DrawElementsUInt(GLenum mode, unsigned int no, const GLuint* ptr, int numInstances=0) : 
             DrawElements(DrawElementsUIntPrimitiveType,mode,numInstances),
             vector_type(ptr,ptr+no) {}
 
+        /**
+         * \param no Number of intended elements. This will be the size of the underlying vector.
+         */
         DrawElementsUInt(GLenum mode, unsigned int no) : 
             DrawElements(DrawElementsUIntPrimitiveType,mode),
             vector_type(no) {}

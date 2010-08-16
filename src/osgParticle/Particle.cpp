@@ -190,6 +190,7 @@ void osgParticle::Particle::render(osg::GLBeginEndAdapter* gl, const osg::Vec3& 
         gl->TexCoord2f(_s_coord + _s_tile * hex_texcoord_x1, _t_coord + _t_tile * hex_texcoord_y1);
         gl->Vertex3fv((p1*cosPI3+p2*sinPI3).ptr());
         gl->End();
+        gl->PopMatrix();
         break;
 
     case LINE:

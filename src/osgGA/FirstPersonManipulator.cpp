@@ -112,7 +112,7 @@ void FirstPersonManipulator::getTransformation( osg::Vec3d& eye, osg::Quat& rota
 
 
 // doc in parent
-void FirstPersonManipulator::setTransformation( const osg::Vec3d& center, const osg::Vec3d& eye, const osg::Vec3d& up )
+void FirstPersonManipulator::setTransformation( const osg::Vec3d& eye, const osg::Vec3d& center, const osg::Vec3d& up )
 {
    // set variables
    osg::Matrixd m( osg::Matrixd::lookAt( eye, center, up ) );
@@ -126,7 +126,7 @@ void FirstPersonManipulator::setTransformation( const osg::Vec3d& center, const 
 
 
 // doc in parent
-void FirstPersonManipulator::getTransformation( osg::Vec3d& center, osg::Vec3d& eye, osg::Vec3d& up ) const
+void FirstPersonManipulator::getTransformation( osg::Vec3d& eye, osg::Vec3d& center, osg::Vec3d& up ) const
 {
    center = _eye + _rotation * osg::Vec3d( 0.,0.,-1. );
    eye = _eye;

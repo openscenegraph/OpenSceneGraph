@@ -51,10 +51,17 @@ class OSGGA_EXPORT StandardManipulator : public CameraManipulator
         // Use META_Object(osgGA,YourManipulator); in your descendant non-abstract classes.
         virtual const char* className() const { return "StandardManipulator"; }
 
+        /** Sets manipulator by eye position and eye orientation.*/
         virtual void setTransformation( const osg::Vec3d& eye, const osg::Quat& rotation ) = 0;
-        virtual void setTransformation( const osg::Vec3d& center, const osg::Vec3d& eye, const osg::Vec3d& up ) = 0;
+
+        /** Sets manipulator by eye position, center of rotation, and up vector.*/
+        virtual void setTransformation( const osg::Vec3d& eye, const osg::Vec3d& center, const osg::Vec3d& up ) = 0;
+
+        /** Gets manipulator's eye position and eye orientation.*/
         virtual void getTransformation( osg::Vec3d& eye, osg::Quat& rotation ) const = 0;
-        virtual void getTransformation( osg::Vec3d& center, osg::Vec3d& eye, osg::Vec3d& up ) const = 0;
+
+        /** Gets manipulator's focal center, eye position, and up vector.*/
+        virtual void getTransformation( osg::Vec3d& eye, osg::Vec3d& center, osg::Vec3d& up ) const = 0;
 
         virtual void setNode( osg::Node* );
         virtual const osg::Node* getNode() const;

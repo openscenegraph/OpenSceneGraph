@@ -648,6 +648,17 @@ bool quadSplit02(const KFbxMesh * fbxMesh, int i /*polygonIndex*/,
     return (rc >= 0 || rd >= 0);
 }
 
+struct PolygonRef
+{
+    PolygonRef(osg::Geometry* pGeometry, int numPoly, int nVertex)
+        : pGeometry(pGeometry), numPoly(numPoly), nVertex(nVertex)
+    {}
+    osg::Geometry* pGeometry;
+    int numPoly;
+    int nVertex;
+};
+typedef std::vector<PolygonRef> PolygonRefList;
+
 osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
     KFbxNode* pNode,
     KFbxMesh* fbxMesh,
@@ -725,16 +736,7 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
     // First add only triangles and quads (easy to split into triangles without
     // more processing)
     // This is the reason we store polygons references:
-    struct PolygonRef
-    {
-        PolygonRef(osg::Geometry* pGeometry, int numPoly, int nVertex)
-            : pGeometry(pGeometry), numPoly(numPoly), nVertex(nVertex)
-        {}
-        osg::Geometry* pGeometry;
-        int numPoly;
-        int nVertex;
-    };
-    typedef std::vector<PolygonRef> PolygonRefList;
+
     PolygonRefList polygonRefList;
 
     for (int i = 0, nVertex = 0; i < nPolys; ++i)

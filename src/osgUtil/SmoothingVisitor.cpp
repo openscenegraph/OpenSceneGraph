@@ -200,6 +200,11 @@ struct SmoothTriangleIndexFunctor
 
     void operator() (unsigned int p1, unsigned int p2, unsigned int p3)
     {
+        if (p1==p2 || p2==p3 || p1==p3)
+        {
+            return;
+        }
+
         const osg::Vec3& v1 = (*_vertices)[p1];
         const osg::Vec3& v2 = (*_vertices)[p2];
         const osg::Vec3& v3 = (*_vertices)[p3];
@@ -318,23 +323,45 @@ struct FindSharpEdgesFunctor
     {
         osg::Vec3 normal( computeNormal(p1, p2, p3) );
 
+        if (p1==p2 || p2==p3 || p1==p3)
+        {
+            // OSG_NOTICE<<"NULL triangle ("<<p1<<", "<<p2<<", "<<p3<<")"<<std::endl;
+            return;
+        }
+
         Triangle* tri = new Triangle(p1,p2,p3);
         _triangles.push_back(tri);
 
-        if (checkDeviation(p1, normal)) insertTriangle(p1, tri);
-        if (checkDeviation(p2, normal)) insertTriangle(p2, tri);
-        if (checkDeviation(p3, normal)) insertTriangle(p3, tri);
+        if (checkDeviation(p1, normal)) markProblemVertex(p1);
+        if (checkDeviation(p2, normal)) markProblemVertex(p2);
+        if (checkDeviation(p3, normal)) markProblemVertex(p3);
     }
 
-    void insertTriangle(unsigned int p, Triangle* tri)
+    void markProblemVertex(unsigned int p)
     {
         if (!_problemVertexVector[p])
         {
             _problemVertexVector[p] = new ProblemVertex(p);
             _problemVertexList.push_back(_problemVertexVector[p]);
         }
+    }
 
-        _problemVertexVector[p]->_triangles.push_back(tri);
+    void checkTrianglesForProblemVertices()
+    {
+        for(Triangles::iterator itr = _triangles.begin();
+            itr != _triangles.end();
+            ++itr)
+        {
+            Triangle* tri = itr->get();
+            insertTriangleIfProblemVertex(tri->_p1, tri);
+            insertTriangleIfProblemVertex(tri->_p2, tri);
+            insertTriangleIfProblemVertex(tri->_p3, tri);
+        }
+    }
+
+    void insertTriangleIfProblemVertex(unsigned int p, Triangle* tri)
+    {
+        if (_problemVertexVector[p]) _problemVertexVector[p]->_triangles.push_back(tri);
     }
 
     bool checkDeviation(unsigned int p, osg::Vec3& normal)
@@ -422,6 +449,8 @@ struct FindSharpEdgesFunctor
 
     void duplicateProblemVertices()
     {
+        checkTrianglesForProblemVertices();
+
         for(ProblemVertexList::iterator itr = _problemVertexList.begin();
             itr != _problemVertexList.end();
             ++itr)

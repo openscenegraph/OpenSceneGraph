@@ -19,6 +19,7 @@
 #include <osg/ArgumentParser>
 #include <osg/Geode>
 #include <osg/Geometry>
+#include <osg/TriangleIndexFunctor>
 #include <osg/PositionAttitudeTransform>
 #include <osgUtil/SmoothingVisitor>
 #include <osgText/Font3D>
@@ -32,6 +33,72 @@
 extern int main_orig(int, char**);
 extern int main_test(int, char**);
 
+
+class BevelProfile
+{
+    public:
+
+        typedef std::vector<osg::Vec2> Vertices;
+
+        BevelProfile()
+        {
+            flatBevel();
+        }
+
+        void flatBevel(float width=0.25f)
+        {
+            _vertices.clear();
+
+            if (width>0.5f) width = 0.5f;
+
+            _vertices.push_back(osg::Vec2(0.0f,0.0f));
+
+            _vertices.push_back(osg::Vec2(width,1.0f));
+
+            if (width<0.5f) _vertices.push_back(osg::Vec2(1-width,1.0f));
+
+            _vertices.push_back(osg::Vec2(1.0f,0.0f));
+        }
+
+        void roundedBevel(float width=0.5f, unsigned int numSteps=10)
+        {
+            _vertices.clear();
+
+            if (width>0.5f) width = 0.5f;
+
+            unsigned int i = 0;
+            for(; i<=numSteps; ++i)
+            {
+                float angle = float(osg::PI)*0.5f*(float(i)/float(numSteps));
+                _vertices.push_back( osg::Vec2((1.0f-cosf(angle))*width, sinf(angle)) );
+            }
+
+            // start the second half one into the curve if the width is half way across
+            i = width<0.5f ? 0 : 1;
+            for(; i<=numSteps; ++i)
+            {
+                float angle = float(osg::PI)*0.5f*(float(numSteps-i)/float(numSteps));
+                _vertices.push_back( osg::Vec2(1.0-(1.0f-cosf(angle))*width, sin(angle)) );
+            }
+        }
+
+        void print(std::ostream& fout)
+        {
+            OSG_NOTICE<<"print bevel"<<std::endl;
+            for(Vertices::iterator itr = _vertices.begin();
+                itr != _vertices.end();
+                ++itr)
+            {
+                OSG_NOTICE<<"  "<<*itr<<std::endl;
+            }
+        }
+
+        Vertices& getVertices() { return _vertices; }
+
+    protected:
+
+        Vertices _vertices;
+};
 
 class Boundary
 {
@@ -210,8 +277,6 @@ public:
         osg::Vec3 new_vertex = intersection_abcd + bisector_abcd*(scale_factor*targetThickness);
 
         // OSG_NOTICE<<"bisector_abcd = "<<bisector_abcd<<", ab_sidevector="<<ab_sidevector<<", b-a="<<b-a<<", scale_factor="<<scale_factor<<std::endl;
-
-        new_vertex.z() += 5.0f;
         return new_vertex;
     }
 
@@ -335,6 +400,135 @@ osg::Geometry* getGeometryComponent(osg::Geometry* geometry, bool bevel)
     return new_geometry;
 }
 
+osg::Geometry* computeBevelGeometry(osg::Geometry* geometry, BevelProfile& profile, float width)
+{
+    if (!geometry) return 0;
+
+    osg::Vec3Array* orig_vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+    if (!orig_vertices) return 0;
+
+    if (geometry->getNumPrimitiveSets()==0) return 0;
+
+    osg::Geometry* new_geometry = new osg::Geometry;
+
+    osg::Vec3Array* new_vertices = new osg::Vec3Array;
+    new_geometry->setVertexArray(new_vertices);
+
+    osg::Vec3 forward(0.0f, 0.0f, -width);
+
+    for(unsigned int prim_i=0; prim_i<geometry->getNumPrimitiveSets(); ++prim_i)
+    {
+        osg::DrawElementsUShort* bevel = dynamic_cast<osg::DrawElementsUShort*>(geometry->getPrimitiveSet(prim_i));
+        if (!bevel) continue;
+
+        unsigned int no_vertices_on_boundary = bevel->size()/2;
+
+        BevelProfile::Vertices& profileVertices = profile.getVertices();
+        unsigned int no_vertices_on_bevel = profileVertices.size();
+
+        unsigned int start = new_vertices->size();
+
+        // populate vertices
+        for(unsigned int i=0; i<bevel->size()-1;)
+        {
+            osg::Vec3& top_vertex = (*orig_vertices)[ (*bevel)[i++] ];
+            osg::Vec3& base_vertex = (*orig_vertices)[ (*bevel)[i++] ];
+            osg::Vec3 up = top_vertex-base_vertex;
+            for(unsigned int j=0; j<no_vertices_on_bevel; ++j)
+            {
+                osg::Vec2& pv = profileVertices[j];
+                osg::Vec3 pos( base_vertex + (forward * pv.x()) + (up * pv.y()) );
+                new_vertices->push_back(pos);
+            }
+        }
+
+        osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(GL_TRIANGLES);
+        for(unsigned int i = 0; i< no_vertices_on_boundary-1; ++i)
+        {
+            for(unsigned int j=0; j<no_vertices_on_bevel-1; ++j)
+            {
+                unsigned int base = start + i*no_vertices_on_bevel + j;
+                unsigned int next = base + no_vertices_on_bevel;
+
+                elements->push_back(base);
+                elements->push_back(next);
+                elements->push_back(base+1);
+
+                elements->push_back(base+1);
+                elements->push_back(next);
+                elements->push_back(next+1);
+            }
+        }
+
+        new_geometry->addPrimitiveSet(elements);
+    }
+
+    return new_geometry;
+}
+
+struct CollectTriangleIndicesFunctor
+{
+    CollectTriangleIndicesFunctor() {}
+
+    typedef std::vector<unsigned int> Indices;
+    Indices _indices;
+
+    void operator() (unsigned int p1, unsigned int p2, unsigned int p3)
+    {
+        if (p1==p2 || p2==p3 || p1==p3)
+        {
+            return;
+        }
+
+        _indices.push_back(p1);
+        _indices.push_back(p3);
+        _indices.push_back(p2);
+
+    }
+};
+
+osg::Geometry* computeFrontAndBackGeometry(osg::Geometry* geometry, float width)
+{
+    if (!geometry) return 0;
+
+    osg::Vec3Array* orig_vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+    if (!orig_vertices) return 0;
+
+    if (geometry->getNumPrimitiveSets()==0) return 0;
+
+    osg::TriangleIndexFunctor<CollectTriangleIndicesFunctor> ctif;
+    geometry->accept(ctif);
+    CollectTriangleIndicesFunctor::Indices& face = ctif._indices;
+
+    osg::Geometry* new_geometry = new osg::Geometry;
+
+    osg::Vec3Array* new_vertices = new osg::Vec3Array;
+    new_geometry->setVertexArray(new_vertices);
+
+    osg::Vec3 forward(0.0f, 0.0f, -width);
+
+    // front face
+    osg::DrawElementsUShort* front_face = new osg::DrawElementsUShort(GL_TRIANGLES);
+    new_geometry->addPrimitiveSet(front_face);
+    for(unsigned int i=0; i<face.size();++i)
+    {
+        osg::Vec3& vertex = (*orig_vertices)[ face[i] ];
+        front_face->push_back(new_vertices->size());
+        new_vertices->push_back(vertex);
+    }
+
+    // back face
+    osg::DrawElementsUShort* back_face = new osg::DrawElementsUShort(GL_TRIANGLES);
+    new_geometry->addPrimitiveSet(back_face);
+    for(unsigned int i=0; i<face.size();++i)
+    {
+        osg::Vec3 vertex = (*orig_vertices)[ face[face.size()-i-1] ] + forward;
+        back_face->push_back(new_vertices->size());
+        new_vertices->push_back(vertex);
+    }
+
+    return new_geometry;
+}
 
 osg::Geometry* computeThickness(osg::Geometry* orig_geometry, float thickness)
 {
@@ -399,13 +593,26 @@ int main(int argc, char** argv)
     float thickness = 5.0;
     while(arguments.read("--thickness",thickness)) {}
 
+    float width = 20.0;
+    while(arguments.read("--width",width)) {}
+
     float creaseAngle = 10.0f;
     while(arguments.read("--crease-angle",creaseAngle)) {}
 
     OSG_NOTICE<<"creaseAngle="<<creaseAngle<<std::endl;
 
+    BevelProfile profile;
+    float ratio = 0.5;
+    while(arguments.read("--rounded",ratio)) { profile.roundedBevel(ratio); }
+    while(arguments.read("--flat",ratio)) { profile.flatBevel(ratio); }
+
+    profile.print(std::cout);
+
+
     osg::ref_ptr<osg::Group> group = new osg::Group;
     osg::Vec3 position;
+
+
 
     for(unsigned int i=0; i<word.size(); ++i)
     {
@@ -433,47 +640,35 @@ int main(int argc, char** argv)
 
         osg::ref_ptr<osg::Geometry> face_and_bevel = computeThickness(geometry, thickness);
 
-        osg::Geometry* bevel = getGeometryComponent(face_and_bevel, true);
-        if (bevel)
+        osg::ref_ptr<osg::Geometry> face = getGeometryComponent(face_and_bevel, false);
+
+        if (face.valid())
         {
-            geode->addDrawable(bevel);
-            osgUtil::SmoothingVisitor smoother;
-            smoother.setCreaseAngle(osg::DegreesToRadians(creaseAngle));
-            geode->accept(smoother);
+            osgUtil::Tessellator ts;
+            ts.setWindingType(osgUtil::Tessellator::TESS_WINDING_POSITIVE);
+            ts.setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
+            ts.retessellatePolygons(*face);
+
+            osg::ref_ptr<osg::Geometry> faces = computeFrontAndBackGeometry(face.get(), width);
+            if (faces.valid()) geode->addDrawable(faces.get());
         }
 
-        osg::Geometry* face = getGeometryComponent(face_and_bevel, false);
-        if (face) geode->addDrawable(face);
+        osg::ref_ptr<osg::Geometry> bevel_strip = getGeometryComponent(face_and_bevel, true);
+        osg::ref_ptr<osg::Geometry> bevel = computeBevelGeometry(bevel_strip, profile, width);
 
-    
-        if (useTessellator)
+        if (bevel.valid())
         {
-            if (geometry)
-            {
-                osgUtil::Tessellator ts;
-                ts.setWindingType(osgUtil::Tessellator::TESS_WINDING_POSITIVE);
-                ts.setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
-                ts.retessellatePolygons(*geometry);
-            }
-
-            if (face)
-            {
-                osgUtil::Tessellator ts;
-                ts.setWindingType(osgUtil::Tessellator::TESS_WINDING_POSITIVE);
-                ts.setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
-                ts.retessellatePolygons(*face);
-            }
-
+            geode->addDrawable(bevel.get());
         }
 
-        geode->addDrawable(geometry.get());
+        osgUtil::SmoothingVisitor smoother;
+        smoother.setCreaseAngle(osg::DegreesToRadians(creaseAngle));
+        geode->accept(smoother);
 
         transform->addChild(geode.get());
 
         group->addChild(transform.get());
     }
-
-
 
     std::string filename;
     if (arguments.read("-o", filename)) osgDB::writeNodeFile(*group, filename);

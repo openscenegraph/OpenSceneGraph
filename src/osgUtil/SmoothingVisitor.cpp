@@ -478,18 +478,23 @@ struct FindSharpEdgesFunctor
 
     osg::PrimitiveSet* createPrimitiveSet()
     {
-        osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(GL_TRIANGLES);
-        elements->reserve(_triangles.size()*3);
+        osg::ref_ptr<osg::DrawElements> elements = (_vertices->size()<16384) ?
+            static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_TRIANGLES)) :
+            static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_TRIANGLES));
+
+        elements->reserveElements(_triangles.size()*3);
+
         for(Triangles::iterator itr = _triangles.begin();
             itr != _triangles.end();
             ++itr)
         {
             Triangle* tri = itr->get();
-            elements->push_back(tri->_p1);
-            elements->push_back(tri->_p2);
-            elements->push_back(tri->_p3);
+            elements->addElement(tri->_p1);
+            elements->addElement(tri->_p2);
+            elements->addElement(tri->_p3);
         }
-        return elements;
+
+        return elements.release();
     }
 
     void updateGeometry()

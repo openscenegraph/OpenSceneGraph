@@ -17,6 +17,7 @@
 #include <osg/TriangleIndexFunctor>
 #include <osg/LineWidth>
 #include <osgUtil/Tessellator>
+#include <osg/CullFace>
 
 #include <limits.h>
 
@@ -782,7 +783,225 @@ osg::Geometry* computeTextGeometry(osg::Geometry* glyphGeometry, BevelProfile& p
 //
 osg::Geometry* computeShellGeometry(osg::Geometry* glyphGeometry, BevelProfile& profile, float width)
 {
-    return 0;
+    osg::Vec3Array* orig_vertices = dynamic_cast<osg::Vec3Array*>(glyphGeometry->getVertexArray());
+    if (!orig_vertices)
+    {
+        OSG_NOTICE<<"computeTextGeometry(..): No vertices on glyphGeometry."<<std::endl;
+        return 0;
+    }
+
+    osg::ref_ptr<osg::Geometry> text_geometry = new osg::Geometry;
+    osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
+    text_geometry->setVertexArray(vertices.get());
+
+    typedef std::vector<unsigned int> Indices;
+    const unsigned int NULL_VALUE = UINT_MAX;
+    Indices front_indices, back_indices;
+    front_indices.resize(orig_vertices->size(), NULL_VALUE);
+    back_indices.resize(orig_vertices->size(), NULL_VALUE);
+
+    osg::DrawElementsUShort* face = 0;
+    osg::Geometry::PrimitiveSetList bevelPrimitiveSets;
+    osg::Geometry::PrimitiveSetList shellPrimitiveSets;
+    osg::Vec3 frontOffset(0,0,width);
+    osg::Vec3 backOffset(0,0,-2.0*width);
+    osg::Vec3 forward(backOffset-frontOffset);
+
+    // collect bevels and face primitive sets
+    for(osg::Geometry::PrimitiveSetList::iterator itr = glyphGeometry->getPrimitiveSetList().begin();
+        itr != glyphGeometry->getPrimitiveSetList().end();
+        ++itr)
+    {
+        osg::PrimitiveSet* prim = itr->get();
+        if (prim->getName()=="face") face = dynamic_cast<osg::DrawElementsUShort*>(prim);
+        else if (prim->getName()=="bevel") bevelPrimitiveSets.push_back(prim);
+        else if (prim->getName()=="shell") shellPrimitiveSets.push_back(prim);
+    }
+
+    // if we don't have a face we can't create any 3d text
+    if (!face) return 0;
+
+    // build up the vertices primitives for the front face, and record the indices
+    // for later use, and to ensure sharing of vertices in the face primitive set
+    // the order of the triangle indices are flipped to make sure that the triangles are back face
+    osg::DrawElementsUShort* frontFace = new osg::DrawElementsUShort(GL_TRIANGLES);
+    text_geometry->addPrimitiveSet(frontFace);
+    for(unsigned int i=0; i<face->size()-2;)
+    {
+        unsigned int p1 = (*face)[i++];
+        unsigned int p2 = (*face)[i++];
+        unsigned int p3 = (*face)[i++];
+        if (front_indices[p1]==NULL_VALUE)
+        {
+            front_indices[p1] = vertices->size();
+            vertices->push_back((*orig_vertices)[p1]+frontOffset);
+        }
+
+        if (front_indices[p2]==NULL_VALUE)
+        {
+            front_indices[p2] = vertices->size();
+            vertices->push_back((*orig_vertices)[p2]+frontOffset);
+        }
+
+        if (front_indices[p3]==NULL_VALUE)
+        {
+            front_indices[p3] = vertices->size();
+            vertices->push_back((*orig_vertices)[p3]+frontOffset);
+        }
+
+        frontFace->push_back(front_indices[p1]);
+        frontFace->push_back(front_indices[p3]);
+        frontFace->push_back(front_indices[p2]);
+    }
+
+
+    // build up the vertices primitives for the back face, and record the indices
+    // for later use, and to ensure sharing of vertices in the face primitive set
+    osg::DrawElementsUShort* backFace = new osg::DrawElementsUShort(GL_TRIANGLES);
+    text_geometry->addPrimitiveSet(backFace);
+    for(unsigned int i=0; i<face->size();)
+    {
+        unsigned int pi = (*face)[i++];
+        if (back_indices[pi]==NULL_VALUE)
+        {
+            back_indices[pi] = vertices->size();
+            vertices->push_back((*orig_vertices)[pi]+backOffset);
+        }
+        backFace->push_back(back_indices[pi]);
+    }
+
+    for(osg::Geometry::PrimitiveSetList::iterator itr = bevelPrimitiveSets.begin();
+        itr != bevelPrimitiveSets.end();
+        ++itr)
+    {
+        osg::DrawElementsUShort* strip = dynamic_cast<osg::DrawElementsUShort*>(itr->get());
+        if (!strip) continue;
+
+        osg::CopyOp copyop(osg::CopyOp::DEEP_COPY_ALL);
+
+        osg::DrawElementsUShort* front_strip = dynamic_cast<osg::DrawElementsUShort*>(copyop(strip));
+        text_geometry->addPrimitiveSet(front_strip);
+        for(unsigned int i=0; i<front_strip->size(); ++i)
+        {
+            unsigned short& pi  = (*front_strip)[i];
+            if (front_indices[pi]==NULL_VALUE)
+            {
+                front_indices[pi] = vertices->size();
+                vertices->push_back((*orig_vertices)[pi]+frontOffset);
+            }
+            pi = front_indices[pi]; 
+        }
+
+        for(unsigned int i=0; i<front_strip->size()-1;)
+        {
+            unsigned short& p1  = (*front_strip)[i++];
+            unsigned short& p2  = (*front_strip)[i++];
+            std::swap(p1,p2);
+        }
+
+        osg::DrawElementsUShort* back_strip = dynamic_cast<osg::DrawElementsUShort*>(copyop(strip));
+        text_geometry->addPrimitiveSet(back_strip);
+        for(unsigned int i=0; i<back_strip->size(); ++i)
+        {
+            unsigned short& pi  = (*back_strip)[i];
+            if (back_indices[pi]==NULL_VALUE)
+            {
+                back_indices[pi] = vertices->size();
+                vertices->push_back((*orig_vertices)[pi]+backOffset);
+            }
+            pi = back_indices[pi];
+        }
+    }
+
+
+    // now build up the shell
+    for(osg::Geometry::PrimitiveSetList::iterator itr = shellPrimitiveSets.begin();
+        itr != shellPrimitiveSets.end();
+        ++itr)
+    {
+        osg::DrawElementsUShort* bevel = dynamic_cast<osg::DrawElementsUShort*>(itr->get());
+        if (!bevel) continue;
+
+        unsigned int no_vertices_on_boundary = bevel->size()/2;
+
+        osgText::BevelProfile::Vertices& profileVertices = profile.getVertices();
+        unsigned int no_vertices_on_bevel = profileVertices.size();
+
+        Indices bevelIndices;
+        bevelIndices.resize(no_vertices_on_boundary*no_vertices_on_bevel, NULL_VALUE);
+
+        // populate vertices
+        for(unsigned int i=0; i<no_vertices_on_boundary; ++i)
+        {
+            unsigned int topi = (*bevel)[i*2+1];
+            unsigned int basei = (*bevel)[i*2];
+
+            osg::Vec3 top_vertex = (*orig_vertices)[ topi ] + frontOffset;
+            osg::Vec3 base_vertex = (*orig_vertices)[ basei ] + frontOffset;
+            osg::Vec3 up = top_vertex-base_vertex;
+
+            if (front_indices[basei]==NULL_VALUE)
+            {
+                front_indices[basei] = vertices->size();
+                vertices->push_back(base_vertex);
+            }
+
+            bevelIndices[i*no_vertices_on_bevel + 0] = front_indices[basei];
+
+            for(unsigned int j=1; j<no_vertices_on_bevel-1; ++j)
+            {
+                const osg::Vec2& pv = profileVertices[j];
+                osg::Vec3 pos( base_vertex + (forward * pv.x()) + (up * pv.y()) );
+                bevelIndices[i*no_vertices_on_bevel + j] = vertices->size();
+                vertices->push_back(pos);
+            }
+
+            if (back_indices[basei]==NULL_VALUE)
+            {
+                back_indices[basei] = vertices->size();
+                vertices->push_back(base_vertex + forward);
+            }
+
+            bevelIndices[i*no_vertices_on_bevel + no_vertices_on_bevel-1] = back_indices[basei];
+        }
+
+        osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(GL_TRIANGLES);
+        unsigned int base, next;
+        for(unsigned int i = 0; i< no_vertices_on_boundary-1; ++i)
+        {
+            for(unsigned int j=0; j<no_vertices_on_bevel-1; ++j)
+            {
+                base = i*no_vertices_on_bevel + j;
+                next = base + no_vertices_on_bevel;
+
+                elements->push_back(bevelIndices[base]);
+                elements->push_back(bevelIndices[base+1]);
+                elements->push_back(bevelIndices[next]);
+
+                elements->push_back(bevelIndices[base+1]);
+                elements->push_back(bevelIndices[next+1]);
+                elements->push_back(bevelIndices[next]);
+            }
+        }
+
+        text_geometry->addPrimitiveSet(elements);
+    }
+
+#if 1
+    osg::Vec4Array* new_colours = new osg::Vec4Array;
+    new_colours->push_back(osg::Vec4(1.0,1.0,1.0,0.2));
+    text_geometry->setColorArray(new_colours);
+    text_geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+
+
+    osg::StateSet* stateset = text_geometry->getOrCreateStateSet();
+    stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
+    stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    stateset->setAttributeAndModes(new osg::CullFace, osg::StateAttribute::ON);
+    //stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+    stateset->setRenderBinDetails(11, "SORT_FRONT_TO_BACK");
+#endif
+    return text_geometry.release();
 }
 
 }

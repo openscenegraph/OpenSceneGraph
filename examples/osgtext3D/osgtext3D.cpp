@@ -614,7 +614,7 @@ int main(int argc, char** argv)
     float width = 20.0;
     while(arguments.read("--width",width)) {}
 
-    float creaseAngle = 10.0f;
+    float creaseAngle = 30.0f;
     while(arguments.read("--crease-angle",creaseAngle)) {}
 
     OSG_NOTICE<<"creaseAngle="<<creaseAngle<<std::endl;
@@ -650,19 +650,16 @@ int main(int argc, char** argv)
         osg::ref_ptr<osg::Geometry> glyphGeometry = osgText::computeGlyphGeometry(glyph.get(), thickness, width);
         osg::ref_ptr<osg::Geometry> textGeometry = osgText::computeTextGeometry(glyphGeometry.get(), profile, width);
         osg::ref_ptr<osg::Geometry> shellGeometry = osgText::computeShellGeometry(glyphGeometry.get(), profile, width);
-        if (textGeometry.valid())
-        {
-            geode->addDrawable(textGeometry.get());
-            // create the normals
-            if (true)
-            {
-                osgUtil::SmoothingVisitor smoother;
-                smoother.setCreaseAngle(osg::DegreesToRadians(creaseAngle));
-                geode->accept(smoother);
-            }
-        }
-
+        if (textGeometry.valid()) geode->addDrawable(textGeometry.get());
         if (shellGeometry.valid()) geode->addDrawable(shellGeometry.get());
+
+        // create the normals
+        if (true)
+        {
+            osgUtil::SmoothingVisitor smoother;
+            smoother.setCreaseAngle(osg::DegreesToRadians(creaseAngle));
+            geode->accept(smoother);
+        }
 #else
         osg::Vec3Array* vertices = glyph->getRawVertexArray();
         osg::Geometry::PrimitiveSetList& primitives = glyph->getRawFacePrimitiveSetList();

@@ -19,6 +19,7 @@
 #include <osg/ArgumentParser>
 #include <osg/Geode>
 #include <osg/Geometry>
+#include <osg/CullFace>
 #include <osg/TriangleIndexFunctor>
 #include <osg/PositionAttitudeTransform>
 #include <osgUtil/SmoothingVisitor>
@@ -30,75 +31,12 @@
 #include <osgViewer/ViewerEventHandlers>
 #include <osg/io_utils>
 
+#include "GlyphGeometry.h"
+
 extern int main_orig(int, char**);
 extern int main_test(int, char**);
 
 
-class BevelProfile
-{
-    public:
-
-        typedef std::vector<osg::Vec2> Vertices;
-
-        BevelProfile()
-        {
-            flatBevel();
-        }
-
-        void flatBevel(float width=0.25f)
-        {
-            _vertices.clear();
-
-            if (width>0.5f) width = 0.5f;
-
-            _vertices.push_back(osg::Vec2(0.0f,0.0f));
-
-            _vertices.push_back(osg::Vec2(width,1.0f));
-
-            if (width<0.5f) _vertices.push_back(osg::Vec2(1-width,1.0f));
-
-            _vertices.push_back(osg::Vec2(1.0f,0.0f));
-        }
-
-        void roundedBevel(float width=0.5f, unsigned int numSteps=10)
-        {
-            _vertices.clear();
-
-            if (width>0.5f) width = 0.5f;
-
-            unsigned int i = 0;
-            for(; i<=numSteps; ++i)
-            {
-                float angle = float(osg::PI)*0.5f*(float(i)/float(numSteps));
-                _vertices.push_back( osg::Vec2((1.0f-cosf(angle))*width, sinf(angle)) );
-            }
-
-            // start the second half one into the curve if the width is half way across
-            i = width<0.5f ? 0 : 1;
-            for(; i<=numSteps; ++i)
-            {
-                float angle = float(osg::PI)*0.5f*(float(numSteps-i)/float(numSteps));
-                _vertices.push_back( osg::Vec2(1.0-(1.0f-cosf(angle))*width, sin(angle)) );
-            }
-        }
-
-        void print(std::ostream& fout)
-        {
-            OSG_NOTICE<<"print bevel"<<std::endl;
-            for(Vertices::iterator itr = _vertices.begin();
-                itr != _vertices.end();
-                ++itr)
-            {
-                OSG_NOTICE<<"  "<<*itr<<std::endl;
-            }
-        }
-
-        Vertices& getVertices() { return _vertices; }
-
-    protected:
-
-        Vertices _vertices;
-};
 
 class Boundary
 {
@@ -261,6 +199,37 @@ public:
         }
     }
 
+    bool findMaxThickness(unsigned int& maxThickness_i, float& maxThickness)
+    {
+        maxThickness_i = _segments.size();
+        for(unsigned int i=0; i<_segments.size(); ++i)
+        {
+            float thickness = computeThickness(i);
+            if (thickness<0.0 && thickness >  maxThickness)
+            {
+                maxThickness = thickness;
+                maxThickness_i = i;
+            }
+        }
+
+        return maxThickness_i != _segments.size();
+    }
+
+
+    void removeAllSegmentsAboveThickness(float targetThickness)
+    {
+        // OSG_NOTICE<<"removeAllSegmentsBelowThickness("<<targetThickness<<")"<<std::endl;
+        for(;;)
+        {
+            unsigned int maxThickness_i = _segments.size();
+            float maxThickness = targetThickness;
+            if (!findMaxThickness(maxThickness_i,maxThickness)) break;
+
+            // OSG_NOTICE<<"  removing segment _segments["<<minThickness_i<<"] ("<<_segments[minThickness_i].first<<", "<<_segments[minThickness_i].second<<" with thickness="<<minThickness<<" "<<std::endl;
+            _segments.erase(_segments.begin()+maxThickness_i);
+        }
+    }
+
     osg::Vec3 computeBisectorPoint(unsigned int i, float targetThickness)
     {
         Segment& seg_before = _segments[ (i+_segments.size()-1) % _segments.size() ];
@@ -400,7 +369,7 @@ osg::Geometry* getGeometryComponent(osg::Geometry* geometry, bool bevel)
     return new_geometry;
 }
 
-osg::Geometry* computeBevelGeometry(osg::Geometry* geometry, BevelProfile& profile, float width)
+osg::Geometry* computeBevelGeometry(osg::Geometry* geometry, osgText::BevelProfile& profile, float width)
 {
     if (!geometry) return 0;
 
@@ -423,7 +392,7 @@ osg::Geometry* computeBevelGeometry(osg::Geometry* geometry, BevelProfile& profi
 
         unsigned int no_vertices_on_boundary = bevel->size()/2;
 
-        BevelProfile::Vertices& profileVertices = profile.getVertices();
+        osgText::BevelProfile::Vertices& profileVertices = profile.getVertices();
         unsigned int no_vertices_on_bevel = profileVertices.size();
 
         unsigned int start = new_vertices->size();
@@ -530,6 +499,54 @@ osg::Geometry* computeFrontAndBackGeometry(osg::Geometry* geometry, float width)
     return new_geometry;
 }
 
+
+osg::Geometry* createShell(osg::Geometry* geometry, float distance)
+{
+    if (!geometry) return 0;
+
+    osg::Vec3Array* orig_vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
+    if (!orig_vertices) return 0;
+
+    osg::Vec3Array* orig_normals = dynamic_cast<osg::Vec3Array*>(geometry->getNormalArray());
+    if (!orig_normals) return 0;
+
+    if (orig_vertices->size() != orig_normals->size()) return 0;
+
+    osg::Geometry* new_geometry = new osg::Geometry;
+    osg::Vec3Array* new_vertices = new osg::Vec3Array(orig_vertices->size());
+    for(unsigned int i=0; i<orig_vertices->size(); ++i)
+    {
+        (*new_vertices)[i] = (*orig_vertices)[i] + (*orig_normals)[i]*distance;
+    }
+
+    new_geometry->setVertexArray(new_vertices);
+
+    osg::Vec4Array* new_colours = new osg::Vec4Array;
+    new_colours->push_back(osg::Vec4(1.0,1.0,1.0,0.2));
+    new_geometry->setColorArray(new_colours);
+    new_geometry->setColorBinding(osg::Geometry::BIND_OVERALL);
+
+    osg::TriangleIndexFunctor<CollectTriangleIndicesFunctor> ctif;
+    geometry->accept(ctif);
+
+    // front face
+    osg::DrawElementsUInt* shell = new osg::DrawElementsUInt(GL_TRIANGLES);
+    new_geometry->addPrimitiveSet(shell);
+    CollectTriangleIndicesFunctor::Indices& face = ctif._indices;
+    for(unsigned int i=0; i<face.size();++i)
+    {
+        shell->push_back(face[i]);
+    }
+
+    osg::StateSet* stateset = new_geometry->getOrCreateStateSet();
+    stateset->setMode(GL_BLEND, osg::StateAttribute::ON);
+    stateset->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
+    stateset->setAttributeAndModes(new osg::CullFace, osg::StateAttribute::ON);
+    stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+    return new_geometry;
+}
+
+
 osg::Geometry* computeThickness(osg::Geometry* orig_geometry, float thickness)
 {
     // OSG_NOTICE<<"computeThickness("<<orig_geometry<<")"<<std::endl;
@@ -546,7 +563,8 @@ osg::Geometry* computeThickness(osg::Geometry* orig_geometry, float thickness)
         if (drawArray && drawArray->getMode()==GL_POLYGON)
         {
             Boundary boundary(orig_vertices, drawArray->getFirst(), drawArray->getCount());
-            boundary.removeAllSegmentsBelowThickness(thickness);
+            if (thickness>0.0f) boundary.removeAllSegmentsBelowThickness(thickness);
+            else if (thickness<0.0f) boundary.removeAllSegmentsAboveThickness(thickness);
             boundary.addBoundaryToGeometry(new_geometry, thickness);
         }
     }
@@ -601,9 +619,10 @@ int main(int argc, char** argv)
 
     OSG_NOTICE<<"creaseAngle="<<creaseAngle<<std::endl;
 
-    BevelProfile profile;
+    osgText::BevelProfile profile;
     float ratio = 0.5;
     while(arguments.read("--rounded",ratio)) { profile.roundedBevel(ratio); }
+    while(arguments.read("--rounded2",ratio)) { profile.roundedBevel2(ratio); }
     while(arguments.read("--flat",ratio)) { profile.flatBevel(ratio); }
 
     profile.print(std::cout);
@@ -627,6 +646,24 @@ int main(int argc, char** argv)
 
         osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 
+#if 1
+        osg::ref_ptr<osg::Geometry> glyphGeometry = osgText::computeGlyphGeometry(glyph.get(), thickness, width);
+        osg::ref_ptr<osg::Geometry> textGeometry = osgText::computeTextGeometry(glyphGeometry.get(), profile, width);
+        osg::ref_ptr<osg::Geometry> shellGeometry = osgText::computeShellGeometry(glyphGeometry.get(), profile, width);
+        if (textGeometry.valid())
+        {
+            geode->addDrawable(textGeometry.get());
+            // create the normals
+            if (true)
+            {
+                osgUtil::SmoothingVisitor smoother;
+                smoother.setCreaseAngle(osg::DegreesToRadians(creaseAngle));
+                geode->accept(smoother);
+            }
+        }
+
+        if (shellGeometry.valid()) geode->addDrawable(shellGeometry.get());
+#else
         osg::Vec3Array* vertices = glyph->getRawVertexArray();
         osg::Geometry::PrimitiveSetList& primitives = glyph->getRawFacePrimitiveSetList();
 
@@ -661,9 +698,25 @@ int main(int argc, char** argv)
             geode->addDrawable(bevel.get());
         }
 
-        osgUtil::SmoothingVisitor smoother;
-        smoother.setCreaseAngle(osg::DegreesToRadians(creaseAngle));
-        geode->accept(smoother);
+        // create the normals
+        {
+            osgUtil::SmoothingVisitor smoother;
+            geode->accept(smoother);
+        }
+
+        osg::ref_ptr<osg::Geometry> shell = createShell(bevel.get(), width);
+
+        {
+            osgUtil::SmoothingVisitor smoother;
+            smoother.setCreaseAngle(osg::DegreesToRadians(creaseAngle));
+            geode->accept(smoother);
+        }
+
+        if (shell.valid())
+        {
+            geode->addDrawable(shell.get());
+        }
+#endif
 
         transform->addChild(geode.get());
 

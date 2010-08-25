@@ -447,6 +447,91 @@ struct FindSharpEdgesFunctor
         return duplicate._end;
     }
 
+    void duplicateProblemVertexAll(ProblemVertex* pv)
+    {
+        unsigned int p = pv->_point;
+        Triangles::iterator titr = pv->_triangles.begin();
+        ++titr;
+        for(;
+            titr != pv->_triangles.end();
+            ++titr)
+        {
+            Triangle* tri = titr->get();
+            unsigned int duplicated_p = duplicateVertex(p);
+            if (tri->_p1==p) tri->_p1 = duplicated_p;
+            if (tri->_p2==p) tri->_p2 = duplicated_p;
+            if (tri->_p3==p) tri->_p3 = duplicated_p;
+        }
+    }
+
+    void duplicateProblemVertex(ProblemVertex* pv)
+    {
+        if (pv->_triangles.size()<=2)
+        {
+            duplicateProblemVertexAll(pv);
+        }
+        else
+        {
+            // implement a form of greedy association based on similar orientation
+            // rather than iterating through all the various permutation of triangles that might
+            // provide the best fit.
+            unsigned int p = pv->_point;
+            Triangles::iterator titr = pv->_triangles.begin();
+            while(titr != pv->_triangles.end())
+            {
+                Triangle* tri = titr->get();
+                osg::Vec3 normal = computeNormal(tri->_p1, tri->_p2, tri->_p3);
+
+                Triangles associatedTriangles;
+                associatedTriangles.push_back(tri);
+
+                // remove triangle for list
+                pv->_triangles.erase(titr);
+
+                // reset iterator
+                titr = pv->_triangles.begin();
+                while(titr != pv->_triangles.end())
+                {
+                    Triangle* tri2 = titr->get();
+                    osg::Vec3 normal2 = computeNormal(tri2->_p1, tri2->_p2, tri2->_p3);
+                    float deviation = normal * normal2;
+                    if (deviation >= _maxDeviationDotProduct)
+                    {
+                        // Tri and tri2 are close enough together to associate.
+                        associatedTriangles.push_back(tri2);
+
+                        Triangles::iterator titr_to_erase = titr;
+
+                        ++titr;
+                        pv->_triangles.erase(titr_to_erase);
+                    }
+                    else
+                    {
+                        ++titr;
+                    }
+                }
+
+                // create duplicate vertex to set of associated triangles
+                unsigned int duplicated_p = duplicateVertex(p);
+
+                // now rest the index on th triangles of the point that was duplicated
+                for(Triangles::iterator aitr = associatedTriangles.begin();
+                    aitr != associatedTriangles.end();
+                    ++aitr)
+                {
+                    Triangle* tri = aitr->get();
+                    if (tri->_p1==p) tri->_p1 = duplicated_p;
+                    if (tri->_p2==p) tri->_p2 = duplicated_p;
+                    if (tri->_p3==p) tri->_p3 = duplicated_p;
+                }
+
+                // reset iterator to beginning
+                titr = pv->_triangles.begin();
+            }
+
+        }
+    }
+
     void duplicateProblemVertices()
     {
         checkTrianglesForProblemVertices();
@@ -456,22 +541,9 @@ struct FindSharpEdgesFunctor
             ++itr)
         {
             ProblemVertex* pv = itr->get();
-            
             if (pv->_triangles.size()>1)
             {
-                unsigned int p = pv->_point;
-                Triangles::iterator titr = pv->_triangles.begin();
-                ++titr;
-                for(;
-                    titr != pv->_triangles.end();
-                    ++titr)
-                {
-                    Triangle* tri = titr->get();
-                    unsigned int duplicated_p = duplicateVertex(p);
-                    if (tri->_p1==p) tri->_p1 = duplicated_p;
-                    if (tri->_p2==p) tri->_p2 = duplicated_p;
-                    if (tri->_p3==p) tri->_p3 = duplicated_p;
-                }
+                duplicateProblemVertex(itr->get());
             }
         }
     }

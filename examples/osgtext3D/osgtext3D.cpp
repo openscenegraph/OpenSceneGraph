@@ -95,7 +95,7 @@ int main(int argc, char** argv)
     while(arguments.read("--no-outline")) { outline = false; }
 
     bool smooth = true;
-    while(arguments.read("--flat")) { smooth = false; }
+    while(arguments.read("--flat-shaded")) { smooth = false; }
     while(arguments.read("--smooth")) { smooth = false; }
 
     unsigned int numSamples = 10;

@@ -39,7 +39,7 @@ namespace
 
 struct Char3DInfo
 {
-    Char3DInfo(int numSteps=50):
+    Char3DInfo(int numSteps):
         _verts( new osg::Vec3Array ),
         _geometry( new osg::Geometry ),
         _idx(0),
@@ -243,7 +243,7 @@ void FreeTypeFont3D::init()
     }
 
     {
-        Char3DInfo char3d;
+        Char3DInfo char3d(10);
 
         FT_Outline outline = _face->glyph->outline;
         FT_Outline_Funcs funcs;
@@ -344,7 +344,7 @@ osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
     }
 
     // ** init FreeType to describe the glyph
-    Char3DInfo char3d;
+    Char3DInfo char3d(_facade->getNumberCurveSamples());
 
     FT_Outline outline = _face->glyph->outline;
     FT_Outline_Funcs funcs;

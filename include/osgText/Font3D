@@ -87,6 +87,9 @@ public:
     unsigned int getFontHeight() const { return _height; }
     unsigned int getFontDepth() const { return _depth; }
 
+    void setNumberCurveSamples(unsigned int numSamples) { _numCurveSamples = numSamples; }
+    unsigned int getNumberCurveSamples() const { return _numCurveSamples; }
+
     /** Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, w.r.t the current font size hint.*/
     virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType);
 
@@ -123,6 +126,9 @@ protected:
     unsigned int                        _depth;
     unsigned int                        _width;
     unsigned int                        _height;
+
+    unsigned int                        _numCurveSamples;
+
 //    unsigned int                    _margin;
 //    float                           _marginRatio;
 

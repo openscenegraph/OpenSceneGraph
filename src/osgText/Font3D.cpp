@@ -243,7 +243,8 @@ Font3D::Font3D(Font3DImplementation* implementation):
     osg::Object(true),
     _depth(1),
     _width(64),
-    _height(64)
+    _height(64),
+    _numCurveSamples(10)
 {
     setImplementation(implementation);
 }

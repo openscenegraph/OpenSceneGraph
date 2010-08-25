@@ -29,8 +29,6 @@ public:
 
     virtual std::string getFileName() const { return _filename; }
 
-//    virtual void setFontResolution(unsigned int width, unsigned int height, unsigned int depth);
-
     virtual osgText::Font3D::Glyph3D * getGlyph(unsigned int charcode);
         
     virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType _kerningType);

@@ -1583,7 +1583,12 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         (((inwidth >> 2) << 2) != inwidth ||
          ((inheight >> 2) << 2) != inheight))
     {
-        OSG_NOTICE<<"Received a request to compress an image, but image size is not a multiple of four ("<<inwidth<<"x"<<inheight<<"). Reverting to uncompressed.\n";
+		#ifndef GL_RED
+			#define GL_RED 0x1903
+		#endif
+
+		
+		OSG_NOTICE<<"Received a request to compress an image, but image size is not a multiple of four ("<<inwidth<<"x"<<inheight<<"). Reverting to uncompressed.\n";
         switch(_internalFormat)
         {
             case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:

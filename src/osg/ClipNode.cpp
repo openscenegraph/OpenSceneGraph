@@ -25,7 +25,8 @@ ClipNode::ClipNode():
 
 ClipNode::ClipNode(const ClipNode& cn, const CopyOp& copyop):
     Group(cn,copyop),
-    _value(cn._value)
+    _value(cn._value),
+    _referenceFrame(cn._referenceFrame)
 {
     setStateSet(new StateSet);
     for(ClipPlaneList::const_iterator itr=cn._planes.begin();

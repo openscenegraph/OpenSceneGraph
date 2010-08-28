@@ -234,6 +234,12 @@ struct DXT1TexelsBlock
 #define FOURCC_DXT4  (MAKEFOURCC('D','X','T','4'))
 #define FOURCC_DXT5  (MAKEFOURCC('D','X','T','5'))
 
+/*
+* FOURCC codes for 3dc compressed-texture pixel formats
+*/
+#define FOURCC_ATI1  (MAKEFOURCC('A','T','I','1'))
+#define FOURCC_ATI2  (MAKEFOURCC('A','T','I','2'))
+
 static unsigned int ComputeImageSizeInBytes
     ( int width, int height, int depth,
       unsigned int pixelFormat, unsigned int pixelType,
@@ -255,7 +261,17 @@ static unsigned int ComputeImageSizeInBytes
         width = (width + 3) & ~3;
         height = (height + 3) & ~3;
     }
-
+    // 3dc ATI formats
+    // GL_COMPRESSED_RED_RGTC1_EXT                     0x8DBB
+    // GL_COMPRESSED_SIGNED_RED_RGTC1_EXT              0x8DBC
+    // GL_COMPRESSED_RED_GREEN_RGTC2_EXT               0x8DBD
+    // GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT        0x8DBE
+    if( pixelFormat >= GL_COMPRESSED_RED_RGTC1_EXT &&
+        pixelFormat <= GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT )
+    {
+        width = (width + 3) & ~3;
+        height = (height + 3) & ~3;
+    }
     // compute size of one row
     unsigned int size = osg::Image::computeRowWidthInBytes
                             ( width, pixelFormat, pixelType, packing );
@@ -517,6 +533,16 @@ osg::Image* ReadDDSFile(std::istream& _istream)
             internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
             pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
             break;
+        case FOURCC_ATI1:
+            OSG_INFO << "ReadDDSFile info : format = ATI1" << std::endl;
+            internalFormat = GL_COMPRESSED_RED_RGTC1_EXT;
+            pixelFormat    = GL_COMPRESSED_RED_RGTC1_EXT;
+            break;
+        case FOURCC_ATI2:
+            OSG_INFO << "ReadDDSFile info : format = ATI2" << std::endl;
+            internalFormat = GL_COMPRESSED_RED_GREEN_RGTC2_EXT;
+            pixelFormat    = GL_COMPRESSED_RED_GREEN_RGTC2_EXT;
+            break;        
         case 0x00000024: // A16B16G16R16
             OSG_INFO << "ReadDDSFile info : format = A16B16G16R16" << std::endl;
             internalFormat = GL_RGBA;
@@ -850,6 +876,38 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
             SD_flags |= DDSD_LINEARSIZE;
         }
         break;
+    case GL_COMPRESSED_SIGNED_RED_RGTC1_EXT:
+        {
+            ddpf.dwFourCC = FOURCC_ATI1;
+            PF_flags |= DDPF_FOURCC;  /* No alpha here */
+            ddsd.dwLinearSize = imageSize;
+            SD_flags |= DDSD_LINEARSIZE;
+        }
+        break;
+    case GL_COMPRESSED_RED_RGTC1_EXT:
+        {
+            ddpf.dwFourCC = FOURCC_ATI1;
+            PF_flags |= DDPF_FOURCC;  /* No alpha here */
+            ddsd.dwLinearSize = imageSize;
+            SD_flags |= DDSD_LINEARSIZE;
+        }
+        break;    
+    case GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT:
+        {
+            ddpf.dwFourCC = FOURCC_ATI2;
+            PF_flags |= DDPF_FOURCC;  /* No alpha here */
+            ddsd.dwLinearSize = imageSize;
+            SD_flags |= DDSD_LINEARSIZE;
+        }
+        break;    
+    case GL_COMPRESSED_RED_GREEN_RGTC2_EXT:
+        {
+            ddpf.dwFourCC = FOURCC_ATI2;
+            PF_flags |= DDPF_FOURCC;  /* No alpha here */
+            ddsd.dwLinearSize = imageSize;
+            SD_flags |= DDSD_LINEARSIZE;
+        }
+        break;    
     default:
         OSG_WARN<<"Warning:: unhandled pixel format in image, file cannot be written."<<std::endl;
         return false;

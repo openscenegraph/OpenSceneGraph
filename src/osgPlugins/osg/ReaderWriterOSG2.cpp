@@ -116,7 +116,7 @@ public:
     virtual const char* className() const { return "OpenSceneGraph Native Format Reader/Writer"; }
 
 
-    Options* prepareReading( ReadResult& result, std::string& fileName, const Options* options ) const
+    Options* prepareReading( ReadResult& result, std::string& fileName, std::ios::openmode& mode, const Options* options ) const
     {
         std::string ext = osgDB::getLowerCaseFileExtension( fileName );
         if ( !acceptsExtension(ext) )
@@ -135,7 +135,8 @@ public:
             static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
         local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
         if ( ext=="osgt" ) local_opt->setOptionString( local_opt->getOptionString() + " Ascii" );
-        if ( ext=="osgx" ) local_opt->setOptionString( local_opt->getOptionString() + " XML" );
+        else if ( ext=="osgx" ) local_opt->setOptionString( local_opt->getOptionString() + " XML" );
+        else mode |= std::ios::binary;
         
         return local_opt.release();
     }
@@ -144,10 +145,11 @@ public:
     {
         ReadResult result = ReadResult::FILE_LOADED;
         std::string fileName = file;
-        Options* local_opt = prepareReading( result, fileName, options );
+        std::ios::openmode mode = std::ios::in;
+        Options* local_opt = prepareReading( result, fileName, mode, options );
         if ( !result.success() ) return result;
         
-        osgDB::ifstream istream( fileName.c_str(), std::ios::out|std::ios::binary );
+        osgDB::ifstream istream( fileName.c_str(), mode );
         return readObject( istream, local_opt );
     }
     
@@ -171,10 +173,11 @@ public:
     {
         ReadResult result = ReadResult::FILE_LOADED;
         std::string fileName = file;
-        Options* local_opt = prepareReading( result, fileName, options );
+        std::ios::openmode mode = std::ios::in;
+        Options* local_opt = prepareReading( result, fileName, mode, options );
         if ( !result.success() ) return result;
         
-        osgDB::ifstream istream( fileName.c_str(), std::ios::out|std::ios::binary );
+        osgDB::ifstream istream( fileName.c_str(), mode );
         return readImage( istream, local_opt );
     }
     
@@ -198,10 +201,11 @@ public:
     {
         ReadResult result = ReadResult::FILE_LOADED;
         std::string fileName = file;
-        Options* local_opt = prepareReading( result, fileName, options );
+        std::ios::openmode mode = std::ios::in;
+        Options* local_opt = prepareReading( result, fileName, mode, options );
         if ( !result.success() ) return result;
         
-        osgDB::ifstream istream( fileName.c_str(), std::ios::out|std::ios::binary );
+        osgDB::ifstream istream( fileName.c_str(), mode );
         return readNode( istream, local_opt );
     }
     
@@ -222,7 +226,7 @@ public:
         return node;
     }
     
-    Options* prepareWriting( WriteResult& result, const std::string& fileName, const Options* options ) const
+    Options* prepareWriting( WriteResult& result, const std::string& fileName, std::ios::openmode& mode, const Options* options ) const
     {
         std::string ext = osgDB::getFileExtension( fileName );
         if ( !acceptsExtension(ext) ) result = WriteResult::FILE_NOT_HANDLED;
@@ -231,7 +235,8 @@ public:
             static_cast<Options*>(options->clone(osg::CopyOp::SHALLOW_COPY)) : new Options;
         local_opt->getDatabasePathList().push_front(osgDB::getFilePath(fileName));
         if ( ext=="osgt" ) local_opt->setOptionString( local_opt->getOptionString() + " Ascii" );
-        if ( ext=="osgx" ) local_opt->setOptionString( local_opt->getOptionString() + " XML" );
+        else if ( ext=="osgx" ) local_opt->setOptionString( local_opt->getOptionString() + " XML" );
+        else mode |= std::ios::binary;
         
         return local_opt.release();
     }
@@ -239,10 +244,11 @@ public:
     virtual WriteResult writeObject( const osg::Object& object, const std::string& fileName, const Options* options ) const
     {
         WriteResult result = WriteResult::FILE_SAVED;
-        osg::ref_ptr<Options> local_opt = prepareWriting( result, fileName, options );
+        std::ios::openmode mode = std::ios::out;
+        osg::ref_ptr<Options> local_opt = prepareWriting( result, fileName, mode, options );
         if ( !result.success() ) return result;
         
-        osgDB::ofstream fout( fileName.c_str(), std::ios::out|std::ios::binary );
+        osgDB::ofstream fout( fileName.c_str(), mode );
         if ( !fout ) return WriteResult::ERROR_IN_WRITING_FILE;
         
         result = writeObject( object, fout, local_opt.get() );
@@ -274,10 +280,11 @@ public:
     virtual WriteResult writeImage( const osg::Image& image, const std::string& fileName, const Options* options ) const
     {
         WriteResult result = WriteResult::FILE_SAVED;
-        osg::ref_ptr<Options> local_opt = prepareWriting( result, fileName, options );
+        std::ios::openmode mode = std::ios::out;
+        osg::ref_ptr<Options> local_opt = prepareWriting( result, fileName, mode, options );
         if ( !result.success() ) return result;
         
-        osgDB::ofstream fout( fileName.c_str(), std::ios::out|std::ios::binary );
+        osgDB::ofstream fout( fileName.c_str(), mode );
         if ( !fout ) return WriteResult::ERROR_IN_WRITING_FILE;
         
         result = writeImage( image, fout, local_opt.get() );
@@ -309,10 +316,11 @@ public:
     virtual WriteResult writeNode( const osg::Node& node, const std::string& fileName, const Options* options ) const
     {
         WriteResult result = WriteResult::FILE_SAVED;
-        osg::ref_ptr<Options> local_opt = prepareWriting( result, fileName, options );
+        std::ios::openmode mode = std::ios::out;
+        osg::ref_ptr<Options> local_opt = prepareWriting( result, fileName, mode, options );
         if ( !result.success() ) return result;
         
-        osgDB::ofstream fout( fileName.c_str(), std::ios::out|std::ios::binary );
+        osgDB::ofstream fout( fileName.c_str(), mode );
         if ( !fout ) return WriteResult::ERROR_IN_WRITING_FILE;
         
         result = writeNode( node, fout, local_opt.get() );

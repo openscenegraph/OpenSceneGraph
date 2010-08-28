@@ -63,7 +63,7 @@ class OSG_EXPORT ObserverSet : public osg::Referenced
 
     protected:
 
-        ObserverSet(const ObserverSet& rhs) {}
+        ObserverSet(const ObserverSet& rhs): osg::Referenced(rhs) {}
         ObserverSet& operator = (const ObserverSet& rhs) { return *this; }
         virtual ~ObserverSet();
 

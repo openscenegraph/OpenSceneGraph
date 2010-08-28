@@ -113,7 +113,7 @@ void OrbitManipulator::getTransformation( osg::Vec3d& eye, osg::Quat& rotation )
 
 
 // doc in parent
-void OrbitManipulator::setTransformation( const osg::Vec3d& center, const osg::Vec3d& eye, const osg::Vec3d& up )
+void OrbitManipulator::setTransformation( const osg::Vec3d& eye, const osg::Vec3d& center, const osg::Vec3d& up )
 {
     Vec3d lv( center - eye );
 
@@ -140,7 +140,7 @@ void OrbitManipulator::setTransformation( const osg::Vec3d& center, const osg::V
 
 
 // doc in parent
-void OrbitManipulator::getTransformation( osg::Vec3d& center, osg::Vec3d& eye, osg::Vec3d& up ) const
+void OrbitManipulator::getTransformation( osg::Vec3d& eye, osg::Vec3d& center, osg::Vec3d& up ) const
 {
     center = _center;
     eye = _center + _rotation * osg::Vec3d( 0., 0., _distance );
@@ -159,7 +159,7 @@ void OrbitManipulator::setHeading( double azimuth )
 
     Vec3d dir = Quat( getElevation(), localRight ) * Quat( azimuth, localUp ) * Vec3d( 0., -_distance, 0. );
 
-    setTransformation( _center, _center + dir, localUp );
+    setTransformation( _center + dir, _center, localUp );
 }
 
 
@@ -171,7 +171,7 @@ double OrbitManipulator::getHeading() const
     Vec3d localRight = getSideVector( coordinateFrame );
 
     Vec3d center, eye, tmp;
-    getTransformation( center, eye, tmp );
+    getTransformation( eye, center, tmp );
 
     Plane frontPlane( localFront, center );
     double frontDist = frontPlane.distance( eye );
@@ -193,7 +193,7 @@ void OrbitManipulator::setElevation( double elevation )
 
     Vec3d dir = Quat( -elevation, localRight ) * Quat( getHeading(), localUp ) * Vec3d( 0., -_distance, 0. );
 
-    setTransformation( _center, _center + dir, localUp );
+    setTransformation( _center + dir, _center, localUp );
 }
 
 
@@ -205,7 +205,7 @@ double OrbitManipulator::getElevation() const
     localUp.normalize();
 
     Vec3d center, eye, tmp;
-    getTransformation( center, eye, tmp );
+    getTransformation( eye, center, tmp );
 
     Plane plane( localUp, center );
     double dist = plane.distance( eye );
@@ -324,7 +324,7 @@ void OrbitManipulator::applyAnimationStep( const double currentProgress, const d
 
     // compute new center
     osg::Vec3d prevCenter, prevEye, prevUp;
-    getTransformation( prevCenter, prevEye, prevUp );
+    getTransformation( prevEye, prevCenter, prevUp );
     osg::Vec3d newCenter = osg::Vec3d(prevCenter) + (ad->_movement * (currentProgress - prevProgress));
 
     // fix vertical axis
@@ -338,7 +338,7 @@ void OrbitManipulator::applyAnimationStep( const double currentProgress, const d
    }
 
    // apply new transformation
-   setTransformation( newCenter, prevEye, prevUp );
+   setTransformation( prevEye, newCenter, prevUp );
 }
 
 
@@ -347,7 +347,7 @@ bool OrbitManipulator::startAnimationByMousePointerIntersection(
 {
     // get current transformation
     osg::Vec3d prevCenter, prevEye, prevUp;
-    getTransformation( prevCenter, prevEye, prevUp );
+    getTransformation( prevEye, prevCenter, prevUp );
 
     // center by mouse intersection
     if( !setCenterByMousePointerIntersection( ea, us ) )
@@ -358,7 +358,7 @@ bool OrbitManipulator::startAnimationByMousePointerIntersection(
 
     // setup animation data and restore original transformation
     ad->start( osg::Vec3d(_center) - prevCenter, ea.getTime() );
-    setTransformation( prevCenter, prevEye, prevUp );
+    setTransformation( prevEye, prevCenter, prevUp );
 
     return true;
 }

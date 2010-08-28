@@ -2026,7 +2026,7 @@ void DatabasePager::CompileOperation::operator () (osg::GraphicsContext* context
 {
     // OSG_NOTICE<<"Background thread compiling"<<std::endl;
 
-    if (_databasePager.valid()) _databasePager->compileAllGLObjects(*(context->getState()));
+    if (_databasePager.valid()) _databasePager->compileAllGLObjects(*(context->getState()), true);
     
 }
 
@@ -2037,13 +2037,13 @@ bool DatabasePager::requiresExternalCompileGLObjects(unsigned int contextID) con
     return osg::GraphicsContext::getCompileContext(contextID)==0;
 }
 
-void DatabasePager::compileAllGLObjects(osg::State& state)
+void DatabasePager::compileAllGLObjects(osg::State& state, bool doFlush)
 {
     double availableTime = DBL_MAX;
-    compileGLObjects(state, availableTime);
+    compileGLObjects(state, availableTime, doFlush);
 }
 
-void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
+void DatabasePager::compileGLObjects(osg::State& state, double& availableTime, bool doFlush)
 {
     // OSG_NOTICE<<"DatabasePager::compileGLObjects "<<_frameNumber<<std::endl;
 
@@ -2180,6 +2180,11 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime)
             
             if (allCompiled)
             {
+                if (doFlush)
+                {
+                    glFlush();
+                }
+
                 // we've compiled all of the current databaseRequest so we can now pop it off the
                 // to compile list and place it on the merge list.
                 OSG_INFO<<"All compiled"<<std::endl;

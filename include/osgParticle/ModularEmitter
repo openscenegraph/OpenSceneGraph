@@ -86,7 +86,7 @@ namespace osgParticle
         virtual ~ModularEmitter() {}
         ModularEmitter &operator=(const ModularEmitter &) { return *this; }
         
-        virtual void emit(double dt);
+        virtual void emitParticles(double dt);
         
     private:
     

@@ -15,6 +15,8 @@
 #include <osgTerrain/GeometryTechnique>
 #include <osgUtil/UpdateVisitor>
 
+#include <iterator>
+
 #include <OpenThreads/ScopedLock>
 
 using namespace osg;

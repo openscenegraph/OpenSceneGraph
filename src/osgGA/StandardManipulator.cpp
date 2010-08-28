@@ -23,23 +23,7 @@ using namespace osg;
 using namespace osgGA;
 using namespace osgUtil;
 
-
-
-/** \fn void StandardManipulator::setTransformation( const osg::Vec3d& eye, const osg::Quat& rotation )
-    Sets manipulator by eye position and eye orientation.*/
-
-/** \fn void StandardManipulator::setTransformation( const osg::Vec3d& center, const osg::Vec3d& eye, const osg::Vec3d& up )
-    Sets manipulator by focal center, eye position, and up vector.*/
-
-/** \fn void StandardManipulator::getTransformation( osg::Vec3d& eye, osg::Quat& rotation )
-    Gets manipulator's eye position and eye orientation.*/
-
-/** \fn void StandardManipulator::getTransformation( osg::Vec3d& center, osg::Vec3d& eye, osg::Vec3d& up )
-    Gets manipulator's focal center, eye position, and up vector.*/
-
-
 int StandardManipulator::numRelativeFlagsAllocated = 0;
-
 
 int StandardManipulator::allocateRelativeFlag()
 {
@@ -191,7 +175,7 @@ void StandardManipulator::home( double /*currentTime*/ )
         computeHomePosition( NULL, ( _flags & COMPUTE_HOME_USING_BBOX ) != 0 );
 
     _thrown = false;
-    setTransformation( _homeCenter, _homeEye, _homeUp );
+    setTransformation( _homeEye, _homeCenter, _homeUp );
     flushMouseEventStack();
 }
 
@@ -214,7 +198,7 @@ void StandardManipulator::home( const GUIEventAdapter& ea, GUIActionAdapter& us 
     }
 
     _thrown = false;
-    setTransformation( _homeCenter, _homeEye, _homeUp );
+    setTransformation( _homeEye, _homeCenter, _homeUp );
 
     us.requestRedraw();
     us.requestContinuousUpdate( false );
@@ -799,7 +783,7 @@ bool StandardManipulator::setCenterByMousePointerIntersection( const GUIEventAda
 
     // get current transformation
     osg::Vec3d eye, oldCenter, up;
-    getTransformation( oldCenter, eye, up );
+    getTransformation( eye, oldCenter, up );
 
     // new center
     osg::Vec3d newCenter = (*intersections.begin()).getWorldIntersectPoint();
@@ -816,7 +800,7 @@ bool StandardManipulator::setCenterByMousePointerIntersection( const GUIEventAda
     }
 
     // set the new center
-    setTransformation( newCenter, eye, up );
+    setTransformation( eye, newCenter, up );
 
 
     // warp pointer

@@ -35,7 +35,7 @@ namespace osg {
   * If you are in any doubt about whether it is safe to access the object safe then use
   * ref_ptr<> observer_ptr<>.lock() combination. */
 template<class T>
-class observer_ptr : public Observer
+class observer_ptr
 {
 public:
     typedef T element_type;

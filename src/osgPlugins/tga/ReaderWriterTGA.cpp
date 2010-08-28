@@ -542,6 +542,75 @@ class ReaderWriterTGA : public osgDB::ReaderWriter
             if(rr.validImage()) rr.getImage()->setFileName(file);
             return rr;
         }
+        
+        bool saveTGAStream(const osg::Image& image, std::ostream& fout) const
+        {
+            // At present, I will only save the image to unmapped RGB format
+            // Other data types can be added soon with different options
+            // The format description can be found at:
+            // http://local.wasp.uwa.edu.au/~pbourke/dataformats/tga/
+            int width = image.s(), height = image.t();
+            int numPerPixel = image.computeNumComponents(image.getPixelFormat());
+            int pixelMultiplier = (image.getDataType()==GL_FLOAT ? 255 : 1);
+            const unsigned char* data = image.data();
+            if ( !data ) return false;
+            
+            // Headers
+            fout.put(0);  // Identification field size
+            fout.put(0);  // Color map type
+            fout.put(2);  // Image type
+            fout.put(0); fout.put(0);  // Color map origin
+            fout.put(0); fout.put(0);  // Color map length
+            fout.put(0);  // Color map entry size
+            fout.put(0); fout.put(0);  // X origin of image
+            fout.put(0); fout.put(0);  // Y origin of image
+            fout.put(width&0xff); fout.put((width&0xff00)>>8);  // Width of image
+            fout.put(height&0xff); fout.put((height&0xff00)>>8);  // Height of image
+            fout.put(numPerPixel * 8);  // Image pixel size
+            fout.put(0);  // Image descriptor
+            
+            // Data
+            for (int y=0; y<height; ++y)
+            {
+                const unsigned char* ptr = data + y * width * numPerPixel;
+                for (int x=0; x<width; ++x)
+                {
+                    int off = x * numPerPixel;
+                    switch ( numPerPixel )
+                    {
+                    case 3:  // BGR
+                        fout.put(ptr[off+2] * pixelMultiplier); fout.put(ptr[off+1] * pixelMultiplier);
+                        fout.put(ptr[off+0] * pixelMultiplier);
+                        break;
+                    case 4:  // BGRA
+                        fout.put(ptr[off+2] * pixelMultiplier); fout.put(ptr[off+1] * pixelMultiplier);
+                        fout.put(ptr[off+0] * pixelMultiplier); fout.put(ptr[off+3] * pixelMultiplier);
+                        break;
+                    default:
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        
+        virtual WriteResult writeImage(const osg::Image& image, std::ostream& fout, const Options*) const
+        {
+            if (saveTGAStream(image, fout))
+                return WriteResult::FILE_SAVED;
+            else
+                return WriteResult::ERROR_IN_WRITING_FILE;
+        }
+        
+        virtual WriteResult writeImage(const osg::Image& image, const std::string& fileName, const Options* options) const
+        {
+            std::string ext = osgDB::getFileExtension(fileName);
+            if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
+            
+            osgDB::ofstream fout(fileName.c_str(), std::ios::out | std::ios::binary);
+            if (!fout) return WriteResult::ERROR_IN_WRITING_FILE;
+            return writeImage(image, fout, options);
+        }
 };
 
 // now register with Registry to instantiate the above

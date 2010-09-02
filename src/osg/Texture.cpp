@@ -2166,6 +2166,8 @@ void Texture::compileGLObjects(State& state) const
 void Texture::resizeGLObjectBuffers(unsigned int maxSize)
 {
     _textureObjectBuffer.resize(maxSize);
+    _texParametersDirtyList.resize(maxSize);
+    _texMipmapGenerationDirtyList.resize(maxSize);
 }
 
 void Texture::releaseGLObjects(State* state) const

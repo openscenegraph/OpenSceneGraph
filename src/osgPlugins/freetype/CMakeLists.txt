@@ -11,10 +11,14 @@ ENDIF()
 SET(TARGET_SRC
     FreeTypeFont.cpp
     FreeTypeLibrary.cpp
-    ReaderWriterFreeType.cpp )
+    ReaderWriterFreeType.cpp
+)
+
 SET(TARGET_H
     FreeTypeFont.h
-    FreeTypeLibrary.h )
+    FreeTypeLibrary.h
+)
+
 SET(TARGET_ADDED_LIBRARIES osgText )
 SET(TARGET_LIBRARIES_VARS FREETYPE_LIBRARY )
 #### end var setup  ###

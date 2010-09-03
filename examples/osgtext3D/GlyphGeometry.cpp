@@ -520,7 +520,7 @@ struct CollectTriangleIndicesFunctor
 };
 
 
-osg::Geometry* computeGlyphGeometry(osgText::Font3D::Glyph3D* glyph, float bevelThickness, float shellThickness)
+osg::Geometry* computeGlyphGeometry(osgText::Glyph3D* glyph, float bevelThickness, float shellThickness)
 {
     osg::Vec3Array* orig_vertices = glyph->getRawVertexArray();
     osg::Geometry::PrimitiveSetList& orig_primitives = glyph->getRawFacePrimitiveSetList();

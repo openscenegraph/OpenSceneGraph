@@ -24,8 +24,6 @@
 
 #include <osgDB/ReadFile>
 
-#include "DefaultFont.h"
-
 using namespace osg;
 using namespace osgText;
 
@@ -71,8 +69,8 @@ void Text::setFont(osg::ref_ptr<Font> font)
 {
     if (_font==font) return;
     
-    osg::StateSet* previousFontStateSet = _font.valid() ? _font->getStateSet() : DefaultFont::instance()->getStateSet();
-    osg::StateSet* newFontStateSet = font.valid() ? font->getStateSet() : DefaultFont::instance()->getStateSet();
+    osg::StateSet* previousFontStateSet = _font.valid() ? _font->getStateSet() : Font::getDefaultFont()->getStateSet();
+    osg::StateSet* newFontStateSet = font.valid() ? font->getStateSet() : Font::getDefaultFont()->getStateSet();
     
     if (getStateSet() == previousFontStateSet)
     {
@@ -98,12 +96,12 @@ void Text::setColor(const osg::Vec4& color)
 
 Font* Text::getActiveFont()
 {
-    return _font.valid() ? _font.get() : DefaultFont::instance();
+    return _font.valid() ? _font.get() : Font::getDefaultFont().get();
 }
 
 const Font* Text::getActiveFont() const
 {
-    return _font.valid() ? _font.get() : DefaultFont::instance();
+    return _font.valid() ? _font.get() : Font::getDefaultFont().get();
 }
 
 String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::iterator first,String::iterator last)
@@ -128,7 +126,7 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
             return lastChar;
         }
 
-        Font::Glyph* glyph = activefont->getGlyph(_fontSize, charcode);
+        Glyph* glyph = activefont->getGlyph(_fontSize, charcode);
         if (glyph)
         {
 
@@ -223,7 +221,7 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
             // Subtract off glyphs from the cursor position (to correctly center text)
                 if(*prevChar != '-')
             {
-                Font::Glyph* glyph = activefont->getGlyph(_fontSize, *prevChar);
+                Glyph* glyph = activefont->getGlyph(_fontSize, *prevChar);
                 if (glyph)
                 {
                     switch(_layout)
@@ -397,7 +395,7 @@ void Text::computeGlyphRepresentation()
             {
                 unsigned int charcode = *itr;
 
-                Font::Glyph* glyph = activefont->getGlyph(_fontSize, charcode);
+                Glyph* glyph = activefont->getGlyph(_fontSize, charcode);
                 if (glyph)
                 {
                     float width = (float)(glyph->s()) * wr;

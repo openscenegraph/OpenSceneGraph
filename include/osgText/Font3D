@@ -22,6 +22,7 @@
 #include <osgDB/ReaderWriter>
 #include <osgText/Export>
 #include <osgText/KerningType>
+#include <osgText/Font>
 
 #include <OpenThreads/Mutex>
 
@@ -29,6 +30,7 @@ namespace osgText {
 
 class Font3D;
 class Text3D;
+
 
 /** Read a font from specified file. The filename may contain a path.
   * It will search for the font file in the following places in this order:
@@ -69,7 +71,6 @@ class OSGTEXT_EXPORT Font3D : public osg::Object
 public:
 
     // forward declare nested classes.
-    class Glyph3D;
     class Font3DImplementation;
 
 public:
@@ -168,126 +169,9 @@ public:
 
         void setFontDepth(unsigned int depth) { _facade->_depth = depth; }
 
-//        void addGlyph(unsigned int width, unsigned int height, unsigned int charcode, Glyph3D* glyph)
-//        {
-//            _facade->addGlyph(width, height, charcode, glyph);
-//        }
-//
-//        void addGlyph(unsigned int charcode, Glyph3D* glyph)
-//        {
-//            _facade->addGlyph(charcode, glyph);
-//        }
-
         Font3D* _facade;
     };
 
-    class OSGTEXT_EXPORT Glyph3D : public osg::Referenced
-    {
-    public:
-
-        Glyph3D(unsigned int glyphCode):
-            osg::Referenced(true),
-            _glyphCode(glyphCode),
-            _horizontalBearing(0,0),
-            _horizontalAdvance(0),
-            _verticalBearing(0,0),
-            _verticalAdvance(0)
-            {}
-
-
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
-//        virtual int compare(const osg::StateAttribute& rhs) const;
-//
-//        virtual void apply(osg::State& state) const;
-
-
-
-        unsigned int getGlyphCode() const { return _glyphCode; }
-
-        void setHorizontalBearing(const osg::Vec2& bearing) { _horizontalBearing=bearing; }
-        const osg::Vec2 & getHorizontalBearing() const { return _horizontalBearing; }
-
-        void setHorizontalAdvance(float advance) { _horizontalAdvance=advance; }
-        float getHorizontalAdvance() const { return _horizontalAdvance; }
-
-        void setVerticalBearing(const osg::Vec2& bearing) {  _verticalBearing=bearing; }
-        const osg::Vec2& getVerticalBearing() const { return _verticalBearing; }
-
-        void setVerticalAdvance(float advance) { _verticalAdvance=advance; }
-        float getVerticalAdvance() const { return _verticalAdvance; }
-
-        void setBoundingBox(osg::BoundingBox & bb) { _bb=bb; }
-        const osg::BoundingBox & getBoundingBox() const { return _bb; }
-
-
-        /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
-        virtual void setThreadSafeRefUnref(bool threadSafe);
-
-
-        void setRawVertexArray(osg::Vec3Array* vertices) { _rawVertexArray = vertices; }
-        osg::Vec3Array* getRawVertexArray() { return _rawVertexArray.get(); }
-
-        /** Get the PrimitiveSetList for the raw face which hasn't been tessellated. */
-        osg::Geometry::PrimitiveSetList & getRawFacePrimitiveSetList() { return _rawFacePrimitiveSetList; }
-
-        /** Get the PrimitiveSetList for the front face. */
-        osg::Geometry::PrimitiveSetList & getFrontPrimitiveSetList() { return _frontPrimitiveSetList; }
-        /** Get the PrimitiveSetList for the wall face. */
-        osg::Geometry::PrimitiveSetList & getWallPrimitiveSetList() { return _wallPrimitiveSetList; }
-        /** Get et the PrimitiveSetList for the back face. */
-        osg::Geometry::PrimitiveSetList & getBackPrimitiveSetList() { return _backPrimitiveSetList; }
-
-        /** Set the VertexArray of the glyph. */
-        void setVertexArray(osg::Vec3Array * va) { _vertexArray = va; }
-        /** Get the VertexArray of the glyph. */
-        osg::Vec3Array * getVertexArray() { return _vertexArray.get(); }
-        /** Set the VertexArray of the glyph. */
-        void setNormalArray(osg::Vec3Array * na) { _normalArray = na; }
-        /** Get the NormalArray for the wall face. */
-        osg::Vec3Array * getNormalArray() { return _normalArray.get(); }
-
-        float getHorizontalWidth() { return (-_horizontalBearing.x() + _horizontalAdvance); }
-        float getHorizontalHeight() { return (-_horizontalBearing.y() + _bb.yMax()); }
-        float getVerticalWidth() { return (-_verticalBearing.x() + _bb.xMax()); }
-        float getVerticalHeight() { return (-_verticalBearing.y() + _verticalAdvance); }
-
-        void setWidth(float width) { _width = width; }
-        float getWidth() { return _width; }
-
-        void setHeight(float height) { _height = height; }
-        float getHeight() { return _height; }
-
-    protected:
-
-        virtual ~Glyph3D() {}
-
-        unsigned int                _glyphCode;
-
-        osg::Vec2                   _horizontalBearing;
-        float                       _horizontalAdvance;
-
-        osg::Vec2                   _verticalBearing;
-        float                       _verticalAdvance;
-
-        osg::BoundingBox            _bb;
-//        osg::Vec2                   _advance;
-
-        float _width;
-        float _height;
-
-
-        osg::ref_ptr<osg::Vec3Array> _vertexArray;
-        osg::ref_ptr<osg::Vec3Array> _normalArray;
-
-
-        osg::Geometry::PrimitiveSetList _frontPrimitiveSetList;
-        osg::Geometry::PrimitiveSetList _wallPrimitiveSetList;
-        osg::Geometry::PrimitiveSetList _backPrimitiveSetList;
-
-        osg::ref_ptr<osg::Vec3Array>    _rawVertexArray;
-        osg::Geometry::PrimitiveSetList _rawFacePrimitiveSetList;
-
-    };
 
 
 };

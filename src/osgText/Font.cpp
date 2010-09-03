@@ -27,10 +27,22 @@
 
 #include <OpenThreads/ReentrantMutex>
 
+#include "DefaultFont.h"
+
 using namespace osgText;
 using namespace std;
 
 static osg::ApplicationUsageProxy Font_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_TEXT_INCREMENTAL_SUBLOADING <type>","ON | OFF");
+
+
+osg::ref_ptr<Font>& Font::getDefaultFont()
+{
+    static OpenThreads::Mutex s_DefaultFontMutex;
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_DefaultFontMutex);
+
+    static osg::ref_ptr<Font> s_defaultFont = new DefaultFont;
+    return s_defaultFont;
+}
 
 static OpenThreads::ReentrantMutex s_FontFileMutex;
 
@@ -210,7 +222,9 @@ Font::Font(FontImplementation* implementation):
     _textureWidthHint(1024),
     _textureHeightHint(1024),
     _minFilterHint(osg::Texture::LINEAR_MIPMAP_LINEAR),
-    _magFilterHint(osg::Texture::LINEAR)
+    _magFilterHint(osg::Texture::LINEAR),
+    _depth(1),
+    _numCurveSamples(10)
 {
     setImplementation(implementation);
 
@@ -326,21 +340,44 @@ osg::Texture::FilterMode Font::getMagFilterHint() const
 }
 
 
-Font::Glyph* Font::getGlyph(const FontResolution& fontRes, unsigned int charcode)
+Glyph* Font::getGlyph(const FontResolution& fontRes, unsigned int charcode)
 {
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_glyphMapMutex);
         FontSizeGlyphMap::iterator itr = _sizeGlyphMap.find(fontRes);
         if (itr!=_sizeGlyphMap.end())
         {
-            GlyphMap& glyphmap = itr->second;    
+            GlyphMap& glyphmap = itr->second;
             GlyphMap::iterator gitr = glyphmap.find(charcode);
             if (gitr!=glyphmap.end()) return gitr->second.get();
         }
     }
-    
-    if (_implementation.valid()) return _implementation->getGlyph(fontRes, charcode);
+
+    Glyph* glyph = _implementation.valid() ? _implementation->getGlyph(fontRes, charcode) : 0;
+    if (glyph)
+    {
+        addGlyph(fontRes, charcode, glyph);
+        return glyph;
+    }
     else return 0;
+}
+
+Glyph3D* Font::getGlyph3D(unsigned int charcode)
+{
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_glyphMapMutex);
+        Glyph3DMap::iterator itr = _glyph3DMap.find(charcode);
+        if (itr!=_glyph3DMap.end()) return itr->second.get();
+    }
+
+    Glyph3D* glyph = _implementation.valid() ? _implementation->getGlyph3D(charcode) : 0;
+    if (glyph)
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_glyphMapMutex);
+        _glyph3DMap[charcode] = glyph;
+        return glyph;
+    }
+    return 0;
 }
 
 void Font::setThreadSafeRefUnref(bool threadSafe)
@@ -454,7 +491,7 @@ void Font::addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph*
 }
 
 
-Font::GlyphTexture::GlyphTexture():
+GlyphTexture::GlyphTexture():
     _margin(1),
     _marginRatio(0.02f),
     _usedY(0),
@@ -465,12 +502,12 @@ Font::GlyphTexture::GlyphTexture():
     setWrap(WRAP_T, CLAMP_TO_EDGE);
 }
 
-Font::GlyphTexture::~GlyphTexture() 
+GlyphTexture::~GlyphTexture() 
 {
 }
 
 // return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.
-int Font::GlyphTexture::compare(const osg::StateAttribute& rhs) const
+int GlyphTexture::compare(const osg::StateAttribute& rhs) const
 {
     if (this<&rhs) return -1;
     else if (this>&rhs) return 1;
@@ -478,7 +515,7 @@ int Font::GlyphTexture::compare(const osg::StateAttribute& rhs) const
 }
 
 
-bool Font::GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
+bool GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
 {
     int maxAxis = std::max(glyph->s(), glyph->t());
     int margin = _margin + (int)((float)maxAxis * _marginRatio);
@@ -525,7 +562,7 @@ bool Font::GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
     return false;
 }
 
-void Font::GlyphTexture::addGlyph(Glyph* glyph, int posX, int posY)
+void GlyphTexture::addGlyph(Glyph* glyph, int posX, int posY)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
 
@@ -545,7 +582,7 @@ void Font::GlyphTexture::addGlyph(Glyph* glyph, int posX, int posY)
                                       static_cast<float>(posY+glyph->t())/static_cast<float>(getTextureHeight()) ) );
 }
 
-void Font::GlyphTexture::apply(osg::State& state) const
+void GlyphTexture::apply(osg::State& state) const
 {
     // get the contextID (user defined ID of 0 upwards) for the 
     // current OpenGL context.
@@ -797,12 +834,12 @@ void Font::GlyphTexture::apply(osg::State& state) const
 
 }
 
-void Font::GlyphTexture::setThreadSafeRefUnref(bool threadSafe)
+void GlyphTexture::setThreadSafeRefUnref(bool threadSafe)
 {
     osg::Texture2D::setThreadSafeRefUnref(threadSafe);
 }
 
-void Font::GlyphTexture::resizeGLObjectBuffers(unsigned int maxSize)
+void GlyphTexture::resizeGLObjectBuffers(unsigned int maxSize)
 {
     osg::Texture2D::resizeGLObjectBuffers(maxSize);
     _glyphsToSubload.resize(maxSize);
@@ -810,7 +847,7 @@ void Font::GlyphTexture::resizeGLObjectBuffers(unsigned int maxSize)
 
 
 // all the methods in Font::Glyph have been made non inline because VisualStudio6.0 is STUPID, STUPID, STUPID PILE OF JUNK.
-Font::Glyph::Glyph(unsigned int glyphCode):
+Glyph::Glyph(unsigned int glyphCode):
     _font(0),
     _glyphCode(glyphCode),
     _horizontalBearing(0.0f,0.f),
@@ -826,53 +863,53 @@ Font::Glyph::Glyph(unsigned int glyphCode):
     setThreadSafeRefUnref(true);
 }
 
-Font::Glyph::~Glyph()
+Glyph::~Glyph()
 {
 }
 
-void Font::Glyph::setHorizontalBearing(const osg::Vec2& bearing) {  _horizontalBearing=bearing; }
-const osg::Vec2& Font::Glyph::getHorizontalBearing() const { return _horizontalBearing; }
+void Glyph::setHorizontalBearing(const osg::Vec2& bearing) {  _horizontalBearing=bearing; }
+const osg::Vec2& Glyph::getHorizontalBearing() const { return _horizontalBearing; }
 
-void Font::Glyph::setHorizontalAdvance(float advance) { _horizontalAdvance=advance; }
-float Font::Glyph::getHorizontalAdvance() const { return _horizontalAdvance; }
+void Glyph::setHorizontalAdvance(float advance) { _horizontalAdvance=advance; }
+float Glyph::getHorizontalAdvance() const { return _horizontalAdvance; }
 
-void Font::Glyph::setVerticalBearing(const osg::Vec2& bearing) {  _verticalBearing=bearing; }
-const osg::Vec2& Font::Glyph::getVerticalBearing() const { return _verticalBearing; }
+void Glyph::setVerticalBearing(const osg::Vec2& bearing) {  _verticalBearing=bearing; }
+const osg::Vec2& Glyph::getVerticalBearing() const { return _verticalBearing; }
 
-void Font::Glyph::setVerticalAdvance(float advance) {  _verticalAdvance=advance; }
-float Font::Glyph::getVerticalAdvance() const { return _verticalAdvance; }
+void Glyph::setVerticalAdvance(float advance) {  _verticalAdvance=advance; }
+float Glyph::getVerticalAdvance() const { return _verticalAdvance; }
 
-void Font::Glyph::setTexture(GlyphTexture* texture) { _texture = texture; }
-Font::GlyphTexture* Font::Glyph::getTexture() { return _texture; }
-const Font::GlyphTexture* Font::Glyph::getTexture() const { return _texture; }
+void Glyph::setTexture(GlyphTexture* texture) { _texture = texture; }
+GlyphTexture* Glyph::getTexture() { return _texture; }
+const GlyphTexture* Glyph::getTexture() const { return _texture; }
 
-void Font::Glyph::setTexturePosition(int posX,int posY) { _texturePosX = posX; _texturePosY = posY; }
-int Font::Glyph::getTexturePositionX() const { return _texturePosX; }
-int Font::Glyph::getTexturePositionY() const { return _texturePosY; }
+void Glyph::setTexturePosition(int posX,int posY) { _texturePosX = posX; _texturePosY = posY; }
+int Glyph::getTexturePositionX() const { return _texturePosX; }
+int Glyph::getTexturePositionY() const { return _texturePosY; }
 
-void Font::Glyph::setMinTexCoord(const osg::Vec2& coord) { _minTexCoord=coord; }
-const osg::Vec2& Font::Glyph::getMinTexCoord() const { return _minTexCoord; }
+void Glyph::setMinTexCoord(const osg::Vec2& coord) { _minTexCoord=coord; }
+const osg::Vec2& Glyph::getMinTexCoord() const { return _minTexCoord; }
 
-void Font::Glyph::setMaxTexCoord(const osg::Vec2& coord) { _maxTexCoord=coord; }
-const osg::Vec2& Font::Glyph::getMaxTexCoord() const { return _maxTexCoord; }
+void Glyph::setMaxTexCoord(const osg::Vec2& coord) { _maxTexCoord=coord; }
+const osg::Vec2& Glyph::getMaxTexCoord() const { return _maxTexCoord; }
 
-void Font::Glyph::subload() const
+void Glyph::subload() const
 {
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
     {
 #ifdef OSG_GLU_AVAILABLE
         const GLubyte* msg = gluErrorString(errorNo);
-        if (msg) { OSG_WARN<<"before Font::Glyph::subload(): detected OpenGL error: "<<msg<<std::endl; }
-        else  { OSG_WARN<<"before Font::Glyph::subload(): detected OpenGL error number: "<<errorNo<<std::endl; }
+        if (msg) { OSG_WARN<<"before Glyph::subload(): detected OpenGL error: "<<msg<<std::endl; }
+        else  { OSG_WARN<<"before Glyph::subload(): detected OpenGL error number: "<<errorNo<<std::endl; }
 #else
-        OSG_WARN<<"before Font::Glyph::subload(): detected OpenGL error number: "<<errorNo<<std::endl;
+        OSG_WARN<<"before Glyph::subload(): detected OpenGL error number: "<<errorNo<<std::endl;
 #endif
     }
 
     if(s() <= 0 || t() <= 0)
     {
-        OSG_INFO<<"Font::Glyph::subload(): texture sub-image width and/or height of 0, ignoring operation."<<std::endl;      
+        OSG_INFO<<"Glyph::subload(): texture sub-image width and/or height of 0, ignoring operation."<<std::endl;
         return;
     }
 
@@ -892,10 +929,10 @@ void Font::Glyph::subload() const
 
 #ifdef OSG_GLU_AVAILABLE
         const GLubyte* msg = gluErrorString(errorNo);
-        if (msg) { OSG_WARN<<"after Font::Glyph::subload() : detected OpenGL error: "<<msg<<std::endl; }
-        else { OSG_WARN<<"after Font::Glyph::subload() : detected OpenGL error number: "<<errorNo<<std::endl; }
+        if (msg) { OSG_WARN<<"after Glyph::subload() : detected OpenGL error: "<<msg<<std::endl; }
+        else { OSG_WARN<<"after Glyph::subload() : detected OpenGL error number: "<<errorNo<<std::endl; }
 #else
-        OSG_WARN<<"after Font::Glyph::subload() : detected OpenGL error number: "<<errorNo<<std::endl;
+        OSG_WARN<<"after Glyph::subload() : detected OpenGL error number: "<<errorNo<<std::endl;
 #endif
 
         OSG_WARN<< "\tglTexSubImage2D(0x"<<hex<<GL_TEXTURE_2D<<dec<<" ,"<<0<<"\t"<<std::endl<<

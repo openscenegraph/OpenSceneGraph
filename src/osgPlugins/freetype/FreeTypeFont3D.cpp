@@ -14,6 +14,9 @@
 #include "FreeTypeFont3D.h"
 #include "FreeTypeLibrary.h"
 
+#include <freetype/ftoutln.h>
+#include <freetype/ftbbox.h>
+
 
 #include <limits.h>
 #include <fstream>
@@ -25,12 +28,6 @@
 #include <osgUtil/SmoothingVisitor>
 #include <osgUtil/Tessellator>
 
-
-#include <ft2build.h>
-#include FT_FREETYPE_H
-
-#include <freetype/ftoutln.h>
-#include <freetype/ftbbox.h>
 
 #include <osg/io_utils>
 
@@ -195,10 +192,7 @@ FreeTypeFont3D::FreeTypeFont3D(const std::string& filename, FT_Face face, unsign
     _buffer(0),
     _face(face),
     _flags(flags),
-    _scale(1.0),
-    _shiftY(0.0),
-    _shiftX(0.0),
-    _charScale(1.0)
+    _scale(1.0)
 {
     init();
 }
@@ -208,10 +202,7 @@ FreeTypeFont3D::FreeTypeFont3D(FT_Byte* buffer, FT_Face face, unsigned int flags
     _buffer(buffer),
     _face(face),
     _flags(flags),
-    _scale(1.0),
-    _shiftY(0.0),
-    _shiftX(0.0),
-    _charScale(1.0)
+    _scale(1.0)
 {
     init();
 }
@@ -263,26 +254,15 @@ void FreeTypeFont3D::init()
         FT_BBox bb;
         FT_Outline_Get_BBox(&outline,&bb);
 
-        long xmin = ft_floor( bb.xMin );
-        long xmax = ft_ceiling( bb.xMax );
         long ymin = ft_floor( bb.yMin );
         long ymax = ft_ceiling( bb.yMax );
+        double height = double(ymax - ymin)/64.0;
 
-        double width = (xmax - xmin)/64.0;
-        double height = (ymax - ymin)/64.0;
+        // long xmin = ft_floor( bb.xMin );
+        // long xmax = ft_ceiling( bb.xMax );
+        // double width = (xmax - xmin)/64.0;
 
         _scale = 1.0/height;
-
-        double charHeight = char3d._maxY-char3d._minY;
-        double charWidth = char3d._maxX-char3d._minX;
-
-        double dh = fabs(bb.yMin/64.0)/height;
-        double dw = fabs(bb.xMin/64.0)/width;
-
-        _shiftY = char3d._minY + dh*charHeight;
-        _shiftX = char3d._minX + dw*charWidth;
-
-        _charScale = 1/charHeight;
     }
 }
 
@@ -312,7 +292,7 @@ FreeTypeFont3D::~FreeTypeFont3D()
 }
 
 
-osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
+osgText::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
 
@@ -472,7 +452,7 @@ osgText::Font3D::Glyph3D * FreeTypeFont3D::getGlyph(unsigned int charcode)
     }
 
     // ** save vertices and PrimitiveSetList of each face in the Glyph3D PrimitiveSet face list
-    osgText::Font3D::Glyph3D * glyph3D = new osgText::Font3D::Glyph3D(charcode);
+    osgText::Glyph3D * glyph3D = new osgText::Glyph3D(charcode);
 
     // copy the raw primitive set list before we tessellate it.
     glyph3D->getRawFacePrimitiveSetList() = rawPrimitives;

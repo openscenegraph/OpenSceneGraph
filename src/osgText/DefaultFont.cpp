@@ -33,23 +33,12 @@ DefaultFont::~DefaultFont()
 {
 }
 
-DefaultFont* DefaultFont::instance()
-{
-    static OpenThreads::Mutex s_DefaultFontMutex;    
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_DefaultFontMutex);
-
-    static osg::ref_ptr<DefaultFont> s_defaultFont = new DefaultFont;
-    return s_defaultFont.get();
-}
-
 void DefaultFont::setSize(unsigned int, unsigned int)
 {
     OSG_INFO<<"DefaultFont::setSize(,) call is ignored."<<std::endl;
 }
 
-
-
-Font::Glyph* DefaultFont::getGlyph(const FontResolution& fontRes, unsigned int charcode)
+osgText::Glyph* DefaultFont::getGlyph(const FontResolution& fontRes, unsigned int charcode)
 {
     if (_sizeGlyphMap.empty()) return 0;
 

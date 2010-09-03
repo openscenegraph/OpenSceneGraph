@@ -42,7 +42,7 @@ class BevelProfile
         Vertices _vertices;
 };
 
-extern osg::Geometry* computeGlyphGeometry(osgText::Font3D::Glyph3D* glyph, float bevelThickness, float shellThickness);
+extern osg::Geometry* computeGlyphGeometry(osgText::Glyph3D* glyph, float bevelThickness, float shellThickness);
 
 extern osg::Geometry* computeTextGeometry(osg::Geometry* glyphGeometry, BevelProfile& profile, float width);
 

@@ -2,10 +2,12 @@
 
 SET(TARGET_H
     GlyphGeometry.h
+    TextNode.h
 )
 
 SET(TARGET_SRC
     GlyphGeometry.cpp
+    TextNode.cpp
     osgtext3D_orig.cpp
     osgtext3D_test.cpp
     osgtext3D.cpp

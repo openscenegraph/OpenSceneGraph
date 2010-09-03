@@ -81,8 +81,7 @@ TXFFont::getFileName() const
     return _filename;
 }
 
-osgText::Font::Glyph*
-TXFFont::getGlyph(const osgText::FontResolution&, unsigned int charcode)
+osgText::Glyph* TXFFont::getGlyph(const osgText::FontResolution&, unsigned int charcode)
 {
     GlyphMap::iterator i = _chars.find(charcode);
     if (i != _chars.end())
@@ -96,7 +95,6 @@ TXFFont::getGlyph(const osgText::FontResolution&, unsigned int charcode)
         if (i != _chars.end())
         {
             _chars[charcode] = i->second;
-            addGlyph(osgText::FontResolution(i->second->s(), i->second->t()), charcode, i->second.get());
             return i->second.get();
         }
     }
@@ -106,7 +104,6 @@ TXFFont::getGlyph(const osgText::FontResolution&, unsigned int charcode)
         if (i != _chars.end())
         {
             _chars[charcode] = i->second;
-            addGlyph(osgText::FontResolution(i->second->s(), i->second->t()), charcode, i->second.get());
             return i->second.get();
         }
     }
@@ -230,7 +227,7 @@ TXFFont::loadFont(std::istream& stream)
             continue;
 
         // add the characters ...
-        osgText::Font::Glyph* glyph = new osgText::Font::Glyph(glyphs[i].ch);
+        osgText::Glyph* glyph = new osgText::Glyph(glyphs[i].ch);
 
         unsigned sourceWidth = glyphs[i].width;
         unsigned sourceHeight = glyphs[i].height;
@@ -267,11 +264,12 @@ TXFFont::loadFont(std::istream& stream)
                                             - glyphs[i].height*texToVertY));
 
         _chars[glyphs[i].ch] = glyph;
+
         addGlyph(fontResolution, glyphs[i].ch, glyph);
     }
 
     // insert a trivial blank character
-    osgText::Font::Glyph* glyph = new osgText::Font::Glyph(' ');
+    osgText::Glyph* glyph = new osgText::Glyph(' ');
 
     unsigned width = 1;
     unsigned height = 1;

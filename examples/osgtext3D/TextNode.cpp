@@ -12,6 +12,12 @@
 */
 
 #include "TextNode.h"
+#include "GlyphGeometry.h"
+
+#include <osg/PositionAttitudeTransform>
+#include <osg/Geode>
+#include <osgUtil/SmoothingVisitor>
+
 #include <osg/io_utils>
 
 using namespace osgText;
@@ -172,6 +178,7 @@ void Layout::layout(TextNode& text) const
     Font* font = text.getActiveFont();
     Style* style = text.getActiveStyle();
     TextTechnique* technique = text.getTextTechnique();
+    const String& str = text.getText();
 
     if (!text.getTextTechnique())
     {
@@ -179,7 +186,78 @@ void Layout::layout(TextNode& text) const
         return;
     }
 
+    osg::Vec3 pos(0.0f,0.0f,0.0f);
+    float characterSize = text.getCharacterSize();
+    osg::Vec3 size(characterSize, characterSize, 0.0);
+    if (style)
+    {
+        size.y() = characterSize * style->getWidthRatio();
+        size.z() = characterSize * style->getThicknessRatio();
+    }
+
+
+    osgText::FontResolution resolution(32,32);
+    if (style)
+    {
+        resolution.first = static_cast<unsigned int>(static_cast<float>(resolution.first)*style->getSampleDensity());
+        resolution.second = static_cast<unsigned int>(static_cast<float>(resolution.second)*style->getSampleDensity());
+    }
+
+    float characterWidthScale = 1.0f;
+    float characterHeightScale = 1.0f;
+
+    bool textIs3D = (style && style->getThicknessRatio()!=0.0);
+    if (textIs3D)
+    {
+        characterWidthScale = font->getScale();
+        characterHeightScale = font->getScale();
+    }
+    else
+    {
+        characterWidthScale = 1.0f/static_cast<float>(resolution.first);
+        characterHeightScale = 1.0f/static_cast<float>(resolution.second);
+    }
+
+    osgText::KerningType kerningType = osgText::KERNING_DEFAULT;
+
     technique->start();
+
+    unsigned int previousCharcode = 0;
+    for(unsigned int i=0; i<str.size(); ++i)
+    {
+        unsigned int charcode = str[i];
+
+        if (size.z()==0.0f)
+        {
+            osgText::Glyph* glyph = font->getGlyph(resolution, charcode);
+            if (glyph)
+            {
+                technique->addCharacter(pos, size, glyph, style);
+                pos += osg::Vec3(size.x()*(glyph->getHorizontalAdvance()*characterWidthScale), 0.0f ,0.0f);
+            }
+        }
+        else
+        {
+            osgText::Glyph3D* glyph = font->getGlyph3D(charcode);
+            OSG_NOTICE<<"pos = "<<pos<<", charcode="<<charcode<<", glyph="<<glyph<< std::endl;
+            if (glyph)
+            {
+                technique->addCharacter(pos, size, glyph, style);
+                pos += osg::Vec3(size.x()*(glyph->getHorizontalAdvance()*characterWidthScale), 0.0f ,0.0f);
+            }
+        }
+
+        if (previousCharcode!=0 && charcode!=0)
+        {
+            osg::Vec2 offset = font->getKerning(previousCharcode, charcode, kerningType);
+            OSG_NOTICE<<"  offset = "<<offset<< std::endl;
+            pos.x() += offset.x();
+            pos.y() += offset.y();
+        }
+
+        previousCharcode = charcode;
+    }
+
     technique->finish();
 }
 
@@ -216,7 +294,47 @@ void TextTechnique::start()
 
 void TextTechnique::addCharacter(const osg::Vec3& position, const osg::Vec3& size, Glyph* glyph, Style* style)
 {
-    OSG_NOTICE<<"TextTechnique::addCharacter("<<position<<", "<<size<<", "<<glyph<<", "<<style<<")"<<std::endl;
+    OSG_NOTICE<<"TextTechnique::addCharacter 2D("<<position<<", "<<size<<", "<<glyph<<", "<<style<<")"<<std::endl;
+}
+
+void TextTechnique::addCharacter(const osg::Vec3& position, const osg::Vec3& size, Glyph3D* glyph, Style* style)
+{
+    OSG_NOTICE<<"TextTechnique::addCharacter 3D("<<position<<", "<<size<<", "<<glyph<<", "<<style<<")"<<std::endl;
+
+    double scale = size.x() / glyph->getVerticalHeight();
+
+    osg::ref_ptr<osg::PositionAttitudeTransform> transform = new osg::PositionAttitudeTransform;
+    transform->setPosition(position);
+    transform->setAttitude(osg::Quat(osg::inDegrees(90.0),osg::Vec3d(1.0,0.0,0.0)));
+    transform->setScale(osg::Vec3d(scale, scale, scale));
+
+    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+
+    bool outline = false;
+    float thickness = 5;
+    float width = 10;
+    BevelProfile profile;
+    float creaseAngle = 30.0f;
+    bool smooth = true;
+
+    osg::ref_ptr<osg::Geometry> glyphGeometry = osgText::computeGlyphGeometry(glyph, thickness, width);
+    osg::ref_ptr<osg::Geometry> textGeometry = osgText::computeTextGeometry(glyphGeometry.get(), profile, width);
+    osg::ref_ptr<osg::Geometry> shellGeometry = outline ? osgText::computeShellGeometry(glyphGeometry.get(), profile, width) : 0;
+    if (textGeometry.valid()) geode->addDrawable(textGeometry.get());
+    if (shellGeometry.valid()) geode->addDrawable(shellGeometry.get());
+
+    // create the normals
+    if (smooth && textGeometry.valid())
+    {
+        osgUtil::SmoothingVisitor::smooth(*textGeometry, osg::DegreesToRadians(creaseAngle));
+    }
+
+    transform->addChild(geode.get());
+
+    _textNode->addChild(transform.get());
+
+    transform->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
+
 }
 
 void TextTechnique::finish()
@@ -226,14 +344,16 @@ void TextTechnique::finish()
 
 void TextTechnique::traverse(osg::NodeVisitor& nv)
 {
-    OSG_NOTICE<<"TextTechnique::traverse()"<<std::endl;
+    // OSG_NOTICE<<"TextTechnique::traverse()"<<std::endl;
+    if (_textNode) _textNode->Group::traverse(nv);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
 //
 // TextNode
 //
-TextNode::TextNode()
+TextNode::TextNode():
+        _characterSize(1.0f)
 {
 }
 
@@ -264,13 +384,13 @@ void TextNode::setTextTechnique(TextTechnique* technique)
 {
     if (_technique==technique) return;
 
+    if (_technique.valid()) _technique->setTextNode(0);
+
     if (TextTechnique::getDefaultTextTechinque()==technique)
     {
         OSG_NOTICE<<"Warning: Attempt to assign DefaultTextTechnique() prototype to TextNode::setTextTechnique(..), assigning a clone() of it instead."<<std::endl;
         technique = new TextTechnique(*TextTechnique::getDefaultTextTechinque());
     }
-
-    if (_technique.valid()) _technique->setTextNode(0);
 
     _technique = technique;
 

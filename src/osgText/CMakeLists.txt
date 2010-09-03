@@ -27,7 +27,6 @@ ADD_LIBRARY(${LIB_NAME}
     DefaultFont.cpp
     DefaultFont.h
     Font.cpp
-    Font3D.cpp
     String.cpp
     FadeText.cpp
     TextBase.cpp

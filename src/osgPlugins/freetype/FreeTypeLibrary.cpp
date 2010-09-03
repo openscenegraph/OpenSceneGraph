@@ -49,15 +49,6 @@ FreeTypeLibrary::~FreeTypeLibrary()
         else fontImplementation->_facade = 0;
     }
     
-    while(!_font3DImplementationSet.empty())
-    {
-        FreeTypeFont3D* font3DImplementation = *_font3DImplementationSet.begin();
-        _font3DImplementationSet.erase(_font3DImplementationSet.begin());
-        osgText::Font3D* font3D = font3DImplementation->_facade;
-        if (font3D) font3D->setImplementation(0);
-        else font3DImplementation->_facade = 0;
-    }
-    
     FT_Done_FreeType( _ftlibrary);
 }
 
@@ -187,37 +178,6 @@ osgText::Font* FreeTypeLibrary::getFont(std::istream& fontstream, unsigned int i
     _fontImplementationSet.insert(fontImp);
 
     return font;
-}
-
-osgText::Font3D* FreeTypeLibrary::getFont3D(const std::string& fontfile, unsigned int index, unsigned int flags)
-{
-    FT_Face face;
-    if (getFace(fontfile, index, face) == false) return (0);
-
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getMutex());
-    
-    FreeTypeFont3D* font3DImp = new FreeTypeFont3D(fontfile,face,flags);
-    osgText::Font3D* font3D = new osgText::Font3D(font3DImp);
-
-    _font3DImplementationSet.insert(font3DImp);
-    
-    return font3D;
-}
-osgText::Font3D* FreeTypeLibrary::getFont3D(std::istream& fontstream, unsigned int index, unsigned int flags)
-{
-
-    FT_Face face = 0;
-    FT_Byte * buffer = getFace(fontstream, index, face);
-    if (face == 0) return (0);
-    
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getMutex());
-
-    FreeTypeFont3D* font3DImp = new FreeTypeFont3D(buffer,face,flags);
-    osgText::Font3D* font3D = new osgText::Font3D(font3DImp);
-    
-    _font3DImplementationSet.insert(font3DImp);
-
-    return font3D;
 }
 
 void FreeTypeLibrary::verifyCharacterMap(FT_Face face)

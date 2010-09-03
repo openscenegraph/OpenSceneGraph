@@ -124,7 +124,7 @@ public:
 
 //    // make Font a friend to allow it set the _font to 0 if the font is
 //    // forcefully unloaded.
-    friend class Font3D;
+    friend class Font;
 
     virtual osg::BoundingBox computeBound() const;
 

@@ -135,7 +135,7 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
             return lastChar;
         }
 
-        Glyph3D* glyph = _font->getGlyph(charcode);
+        Glyph3D* glyph = _font->getGlyph3D(charcode);
         if (glyph)
         {
             const osg::BoundingBox & bb = glyph->getBoundingBox();
@@ -245,7 +245,7 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
             // Subtract off glyphs from the cursor position (to correctly center text)
                 if(*prevChar != '-')
             {
-                Glyph3D* glyph = _font->getGlyph(*prevChar);
+                Glyph3D* glyph = _font->getGlyph3D(*prevChar);
                 if (glyph)
                 {
                     switch(_layout)
@@ -316,7 +316,7 @@ void Text3D::computeGlyphRepresentation()
             {
                 unsigned int charcode = *itr;
 
-                Glyph3D* glyph = _font->getGlyph(charcode);
+                Glyph3D* glyph = _font->getGlyph3D(charcode);
                 if (glyph)
                 {
                     const osg::BoundingBox & bb = glyph->getBoundingBox();

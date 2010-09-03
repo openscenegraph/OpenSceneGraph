@@ -312,9 +312,4 @@ bool Font3D::hasVertical() const
     else return false;
 }
 
-void Glyph3D::setThreadSafeRefUnref(bool threadSafe)
-{
-    if (_vertexArray.valid()) _vertexArray->setThreadSafeRefUnref(threadSafe);
-    if (_normalArray.valid()) _normalArray->setThreadSafeRefUnref(threadSafe);
-}
 }

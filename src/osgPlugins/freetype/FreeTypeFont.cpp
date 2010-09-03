@@ -620,13 +620,11 @@ osgText::Glyph3D * FreeTypeFont::getGlyph3D(unsigned int charcode)
     return glyph3D.release();
 }
 
-osg::Vec2 FreeTypeFont::getKerning(const osgText::FontResolution& fontRes, unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType kerningType)
+osg::Vec2 FreeTypeFont::getKerning(unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType kerningType)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
 
     if (!FT_HAS_KERNING(_face) || (kerningType == osgText::KERNING_NONE)) return osg::Vec2(0.0f,0.0f);
-
-    setFontResolution(fontRes);
 
     FT_Kerning_Mode mode = (kerningType==osgText::KERNING_DEFAULT) ? ft_kerning_default : ft_kerning_unfitted;
 

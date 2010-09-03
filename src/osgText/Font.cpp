@@ -422,9 +422,9 @@ void Font::releaseGLObjects(osg::State* state) const
     // const_cast<Font*>(this)->_sizeGlyphMap.clear();
 }
 
-osg::Vec2 Font::getKerning(const FontResolution& fontRes, unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType)
+osg::Vec2 Font::getKerning(unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType)
 {
-    if (_implementation.valid()) return _implementation->getKerning(fontRes, leftcharcode,rightcharcode,kerningType);
+    if (_implementation.valid()) return _implementation->getKerning(leftcharcode,rightcharcode,kerningType);
     else return osg::Vec2(0.0f,0.0f);
 }
 
@@ -942,4 +942,10 @@ void Glyph::subload() const
                                  "\t                0x"<<(GLenum)getDataType()<<std::endl<<
                                  "\t                0x"<<(unsigned long)data()<<");"<<dec<<std::endl;
     }                    
+}
+
+void Glyph3D::setThreadSafeRefUnref(bool threadSafe)
+{
+    if (_vertexArray.valid()) _vertexArray->setThreadSafeRefUnref(threadSafe);
+    if (_normalArray.valid()) _normalArray->setThreadSafeRefUnref(threadSafe);
 }

@@ -317,10 +317,11 @@ public:
 
     
     /** Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, w.r.t the current font size hint.*/
-    virtual osg::Vec2 getKerning(const FontResolution& fontSize, unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType);
+    virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType);
 
     /** Get a Glyph for specified charcode, and the font size nearest to the current font size hint.*/
     virtual Glyph* getGlyph(const FontResolution& fontSize, unsigned int charcode);
+
 
     /** Get a Glyph3D for specified charcode.*/
     virtual Glyph3D* getGlyph3D(unsigned int charcode);
@@ -448,7 +449,7 @@ public:
         virtual Glyph3D* getGlyph3D(unsigned int charcode) = 0;
 
         /** Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, w.r.t the current font size hint.*/
-        virtual osg::Vec2 getKerning(const FontResolution& fontRes, unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType) = 0;
+        virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType) = 0;
 
         /** Return true if this font provides vertical alignments and spacing or glyphs.*/
         virtual bool hasVertical() const = 0;

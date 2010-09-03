@@ -15,7 +15,6 @@
 #define FREETYPE_LIBRARY
 
 #include "FreeTypeFont.h"
-#include "FreeTypeFont3D.h"
 
 #include <set>
 #include <istream>
@@ -40,11 +39,7 @@ public:
     osgText::Font* getFont(const std::string& fontfile,unsigned int index=0, unsigned int flags=0);
     osgText::Font* getFont(std::istream& fontstream, unsigned int index=0, unsigned int flags=0);
     
-    osgText::Font3D* getFont3D(const std::string& fontfile, unsigned int index=0, unsigned int flags=0);
-    osgText::Font3D* getFont3D(std::istream& fontstream, unsigned int index=0, unsigned int flags=0);
-    
     void removeFontImplmentation(FreeTypeFont* fontImpl) { _fontImplementationSet.erase(fontImpl); }
-    void removeFont3DImplmentation(FreeTypeFont3D* font3DImpl) { _font3DImplementationSet.erase(font3DImpl); }
 
 protected:
 
@@ -61,12 +56,10 @@ protected:
     FreeTypeLibrary();
 
     typedef std::set< FreeTypeFont* > FontImplementationSet;
-    typedef std::set< FreeTypeFont3D* > Font3DImplementationSet;
 
     mutable OpenThreads::Mutex  _mutex;
     FT_Library                  _ftlibrary;
     FontImplementationSet       _fontImplementationSet;
-    Font3DImplementationSet     _font3DImplementationSet;
 
 };
 

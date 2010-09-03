@@ -14,169 +14,37 @@
 #ifndef OSGTEXT_FONT3D
 #define OSGTEXT_FONT3D 1
 
-#include <string>
-#include <istream>
-
-#include <osg/Vec2>
-#include <osg/Geometry>
-#include <osgDB/ReaderWriter>
-#include <osgText/Export>
-#include <osgText/KerningType>
 #include <osgText/Font>
-
-#include <OpenThreads/Mutex>
 
 namespace osgText {
 
-class Font3D;
-class Text3D;
+typedef Font Font3D;
 
-
-/** Read a font from specified file. The filename may contain a path.
-  * It will search for the font file in the following places in this order:
-  * - In the current directory
-  * - All paths defined in OSG_FILE_PATH or OSGFILEPATH environment variable
-  * - Filename with path stripped: In the current directory
-  * - Filename with path stripped: All paths defined in OSG_FILE_PATH or OSGFILEPATH
-  *
-  * Then the file will be searched in OS specific directories in the following order:
-  * - Again in the current directory
-  * - Windows: In C:/winnt/fonts
-  * - Windows: In C:/windows/fonts
-  * - Windows: In the fonts directory of the windows install directory
-  * - Other OS: In /usr/share/fonts/ttf
-  * - Other OS: In /usr/share/fonts/ttf/western
-  * - Other OS: In /usr/share/fonts/ttf/decoratives
-  *
-  * If the given file could not be found, the path part will be stripped and
-  * the file will be searched again in the OS specific directories.
-  */
-extern OSGTEXT_EXPORT Font3D* readFont3DFile(const std::string& filename, const osgDB::ReaderWriter::Options* userOptions = 0);
-
-/** read a font from specified stream.*/
-extern OSGTEXT_EXPORT Font3D* readFont3DStream(std::istream& stream, const osgDB::ReaderWriter::Options* userOptions = 0);
-
-extern OSGTEXT_EXPORT osg::ref_ptr<Font3D> readRefFont3DFile(const std::string& filename, const osgDB::ReaderWriter::Options* userOptions = 0);
-
-extern OSGTEXT_EXPORT osg::ref_ptr<Font3D> readRefFont3DStream(std::istream& stream, const osgDB::ReaderWriter::Options* userOptions = 0);
-
-extern OSGTEXT_EXPORT std::string findFont3DFile(const std::string& str);
-
-/** Pure virtual base class for fonts.
-  * Concrete implementation are the DefaultFont found in src/osgText/DefaultFont.cpp
-  * and FreeTypeFont found in src/osgPlugins/freetype/FreeTypeFont.cpp*/
-class OSGTEXT_EXPORT Font3D : public osg::Object
+inline Font* readFont3DFile(const std::string& filename, const osgDB::ReaderWriter::Options* userOptions = 0)
 {
-// declare the interface to a font.
-public:
-
-    // forward declare nested classes.
-    class Font3DImplementation;
-
-public:
-    Font3D(Font3DImplementation* implementation=0);
-
-    virtual osg::Object* cloneType() const { return 0; } // cloneType() not appropriate
-    virtual osg::Object* clone(const osg::CopyOp&) const { return 0; } // clone() not appropriate
-    virtual bool isSameKindAs(const osg::Object* obj) const { return dynamic_cast<const Font3D*>(obj)!=NULL; }
-    virtual const char* className() const { return "Font3D"; }
-    virtual const char* libraryName() const { return "osgText"; }
-
-    virtual std::string getFileName() const;
-
-    unsigned int getFontWidth() const { return _width; }
-    unsigned int getFontHeight() const { return _height; }
-    unsigned int getFontDepth() const { return _depth; }
-
-    void setNumberCurveSamples(unsigned int numSamples) { _numCurveSamples = numSamples; }
-    unsigned int getNumberCurveSamples() const { return _numCurveSamples; }
-
-    /** Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, w.r.t the current font size hint.*/
-    virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType);
-
-    /** Get a Glyph for specified charcode, and the font size nearest to the current font size hint.*/
-    virtual Glyph3D* getGlyph(unsigned int charcode);
-
-    /** Return true if this font provides vertical alignments and spacing or glyphs.*/
-    virtual bool hasVertical() const;
-
-    /** Return the scale to apply on the glyph to have a charactere size equal to 1 */
-    virtual float getScale() const { return _implementation->getScale(); };
-
-    // make Text a friend to allow it add and remove its entry in the Font's _textList.
-    friend class Font3DImplementation;
-
-    void setImplementation(Font3DImplementation* implementation);
-
-    Font3DImplementation* getImplementation();
-    const Font3DImplementation* getImplementation() const;
-
-    /** Set whether to use a mutex to ensure ref() and unref() */
-    virtual void setThreadSafeRefUnref(bool threadSafe);
-
-    typedef OpenThreads::Mutex Font3DMutex;
-
-protected:
-
-    virtual ~Font3D();
-
-//    void addGlyph(unsigned int width, unsigned int height, unsigned int charcode, Glyph* glyph);
-    void addGlyph(unsigned int charcode, Glyph3D* glyph);
-
-    // current active size of font
-    unsigned int                        _depth;
-    unsigned int                        _width;
-    unsigned int                        _height;
-
-    unsigned int                        _numCurveSamples;
-
-//    unsigned int                    _margin;
-//    float                           _marginRatio;
-
-    typedef std::map<char, osg::ref_ptr<Glyph3D> > Glyph3DMap;
-    Glyph3DMap _glyph3DMap;
-
-    osg::ref_ptr<Font3DImplementation> _implementation;
-
-
-// declare the nested classes.
-public:
-
-    class Font3DImplementation : public osg::Referenced
-    {
-    public:
-
-        Font3DImplementation():
-            osg::Referenced(true),
-            _facade(0) {}
-
-        virtual std::string getFileName() const = 0;
-
-        /** Get a Glyph for specified charcode, and the font size nearest to the current font size hint.*/
-        virtual Glyph3D* getGlyph(unsigned int charcode) = 0;
-
-        /** Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, w.r.t the current font size hint.*/
-        virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType) = 0;
-
-        /** Return true if this font provides vertical alignments and spacing or glyphs.*/
-        virtual bool hasVertical() const = 0;
-
-        virtual float getScale() const = 0;
-
-        void setFontWidth(unsigned int width) { _facade->_width = width; }
-
-        void setFontHeight(unsigned int height) { _facade->_height = height; }
-
-        void setFontDepth(unsigned int depth) { _facade->_depth = depth; }
-
-        Font3D* _facade;
-    };
-
-
-
-};
-
+    return readFontFile(filename,userOptions);
 }
 
+inline Font* readFont3DStream(std::istream& stream, const osgDB::ReaderWriter::Options* userOptions = 0)
+{
+    return readFontStream(stream, userOptions);
+}
+
+inline osg::ref_ptr<Font> readRefFont3DFile(const std::string& filename, const osgDB::ReaderWriter::Options* userOptions = 0)
+{
+    return readRefFontFile(filename, userOptions);
+}
+
+inline osg::ref_ptr<Font> readRefFont3DStream(std::istream& stream, const osgDB::ReaderWriter::Options* userOptions = 0)
+{
+    return readRefFontStream(stream, userOptions);
+}
+
+inline std::string findFont3DFile(const std::string& str)
+{
+    return findFontFile(str);
+}
+
+}
 
 #endif

@@ -35,7 +35,7 @@ public:
 
     virtual osgText::Glyph3D* getGlyph3D(unsigned int charcode);
 
-    virtual osg::Vec2 getKerning(const osgText::FontResolution& fontRes, unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType _kerningType);
+    virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType _kerningType);
 
     virtual bool hasVertical() const;
 

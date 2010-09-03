@@ -39,24 +39,10 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
 
         virtual ReadResult readObject(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
-            std::string tmpFile = file;
-            bool needFont3D = false;
-
-            std::string ext = osgDB::getLowerCaseFileExtension(tmpFile);
-            if (ext == "text3d")
-            {
-                needFont3D = true;
-                tmpFile.erase(tmpFile.size()-7, 7);
-                ext = osgDB::getLowerCaseFileExtension(tmpFile);
-            }
-            else if ((options != NULL) && (options->getPluginData("3D")))
-            {
-                needFont3D = true;
-            }
-
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
             if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
 
-            std::string fileName = osgDB::findDataFile( tmpFile, options );
+            std::string fileName = osgDB::findDataFile( file, options );
             if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
 
             FreeTypeLibrary* freeTypeLibrary = FreeTypeLibrary::instance();
@@ -66,10 +52,7 @@ class ReaderWriterFreeType : public osgDB::ReaderWriter
                 return ReadResult::ERROR_IN_READING_FILE;
             }
 
-            if (needFont3D)
-                return freeTypeLibrary->getFont3D(fileName,0,getFlags(options));
-            else
-                return freeTypeLibrary->getFont(fileName,0,getFlags(options));
+            return freeTypeLibrary->getFont(fileName,0,getFlags(options));
         }
 
         virtual ReadResult readObject(std::istream& stream, const osgDB::ReaderWriter::Options* options) const

@@ -32,23 +32,13 @@
 #include <osg/io_utils>
 
 #include "GlyphGeometry.h"
+#include "TextNode.h"
 
 extern int main_orig(int, char**);
 extern int main_test(int, char**);
 
-int main(int argc, char** argv)
+int main_experimental(osg::ArgumentParser& arguments)
 {
-    osg::ArgumentParser arguments(&argc, argv);
-
-    if (arguments.read("--test"))
-    {
-        return main_test(argc,argv);
-    }
-    else if (arguments.read("--original") || arguments.read("--orig"))
-    {
-        return main_orig(argc,argv);
-    }
-
     std::string fontFile("arial.ttf");
     while(arguments.read("-f",fontFile)) {}
 
@@ -65,7 +55,7 @@ int main(int argc, char** argv)
 
     while(arguments.read("-w",word)) {}
 
-    osg::ref_ptr<osgText::Font3D> font = osgText::readFont3DFile(fontFile);
+    osg::ref_ptr<osgText::Font> font = osgText::readFontFile(fontFile);
     if (!font) return 1;
     OSG_NOTICE<<"Read font "<<fontFile<<" font="<<font.get()<<std::endl;
 
@@ -110,7 +100,7 @@ int main(int argc, char** argv)
 
     for(unsigned int i=0; i<word.size(); ++i)
     {
-        osg::ref_ptr<osgText::Font3D::Glyph3D> glyph = font->getGlyph(word[i]);
+        osg::ref_ptr<osgText::Glyph3D> glyph = font->getGlyph3D(word[i]);
         if (!glyph) return 1;
 
         osg::ref_ptr<osg::PositionAttitudeTransform> transform = new osg::PositionAttitudeTransform;
@@ -145,5 +135,44 @@ int main(int argc, char** argv)
     viewer.setSceneData(group.get());
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
     viewer.addEventHandler(new osgViewer::StatsHandler);
+    return viewer.run();
+}
+
+int main(int argc, char** argv)
+{
+    osg::ArgumentParser arguments(&argc, argv);
+
+    if (arguments.read("--test"))
+    {
+        return main_test(argc,argv);
+    }
+    else if (arguments.read("--original") || arguments.read("--orig"))
+    {
+        return main_orig(argc,argv);
+    }
+    else if (arguments.read("--exp"))
+    {
+        return main_experimental(arguments);
+    }
+
+    osgViewer::Viewer viewer(arguments);
+
+    std::string fontFile("arial.ttf");
+    while(arguments.read("-f",fontFile)) {}
+
+    osg::ref_ptr<osgText::Font> font = osgText::readFontFile(fontFile);
+    if (!font) return 1;
+    OSG_NOTICE<<"Read font "<<fontFile<<" font="<<font.get()<<std::endl;
+
+    std::string word("This is a new test.");
+    while (arguments.read("-w",word)) {}
+
+    osgText::TextNode* text = new osgText::TextNode;
+    text->setText(word);
+    text->setTextTechnique(new osgText::TextTechnique);
+    text->update();
+
+    viewer.setSceneData(text);
+
     return viewer.run();
 }

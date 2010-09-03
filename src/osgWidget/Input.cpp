@@ -114,7 +114,7 @@ void Input::_calculateCursorOffsets() {
     osgText::Text::TextureGlyphQuadMap::iterator tgqmi = tgqm.begin();
 
     std::vector<osg::Vec2>                coords;
-    std::vector<osgText::Font::Glyph*>    glyphs;
+    std::vector<osgText::Glyph*>    glyphs;
     for ( ; tgqmi != tgqm.end(); tgqmi++ )
     {
         const osgText::Text::GlyphQuads& gq = tgqmi->second;
@@ -140,9 +140,9 @@ void Input::_calculateCursorOffsets() {
         unsigned int key = keys.front();
         for (unsigned int i=0; i<glyphs.size(); ++i)
         {
-            static osgText::Font::Glyph* previous_g = 0;
+            static osgText::Glyph* previous_g = 0;
 
-            osgText::Font::Glyph* g = glyphs.at(i);
+            osgText::Glyph* g = glyphs.at(i);
             if (g->getGlyphCode()==key)
             {
                 lr = coords[2 + (i * 4)];
@@ -653,7 +653,7 @@ unsigned int Input::calculateBestYOffset(const std::string& s)
 
    for(osgText::String::iterator i = utf.begin(); i != utf.end(); i++) {
        osgText::Font*        font  = const_cast<osgText::Font*>(_text->getFont());
-       osgText::Font::Glyph* glyph = font->getGlyph(fr, *i);
+       osgText::Glyph* glyph = font->getGlyph(fr, *i);
        unsigned int          d     = abs((int)glyph->getHorizontalBearing().y());
 
        if(d > descent) descent = d;

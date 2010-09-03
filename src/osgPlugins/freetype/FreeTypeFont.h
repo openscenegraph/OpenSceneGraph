@@ -31,22 +31,33 @@ public:
 
     virtual std::string getFileName() const { return _filename; }
 
-    virtual osgText::Font::Glyph* getGlyph(const osgText::FontResolution& fontRes,unsigned int charcode);
-        
+    virtual osgText::Glyph* getGlyph(const osgText::FontResolution& fontRes,unsigned int charcode);
+
+    virtual osgText::Glyph3D* getGlyph3D(unsigned int charcode);
+
     virtual osg::Vec2 getKerning(const osgText::FontResolution& fontRes, unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType _kerningType);
-    
+
     virtual bool hasVertical() const;
 
+    virtual float getScale() const { return _scale; }
+
 protected:
+
+    void init();
 
     void setFontResolution(const osgText::FontResolution& fontSize);
 
     osgText::FontResolution _currentRes;
 
+    long ft_round( long x ) { return (( x + 32 ) & -64); }
+    long ft_floor( long x ) { return (x & -64); }
+    long ft_ceiling( long x ){ return (( x + 63 ) & -64); }
+
     std::string             _filename;
     FT_Byte*                _buffer;
     FT_Face                 _face;
     unsigned int            _flags;
+    float                   _scale;
 };
 
 #endif

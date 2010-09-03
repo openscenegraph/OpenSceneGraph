@@ -28,16 +28,20 @@ public:
 
     virtual std::string getFileName() const;
 
-    virtual osgText::Font::Glyph* getGlyph(const osgText::FontResolution& fontRes, unsigned int charcode);
+    virtual osgText::Glyph* getGlyph(const osgText::FontResolution& fontRes, unsigned int charcode);
+
+    virtual osgText::Glyph3D* getGlyph3D(unsigned int) { return 0; }
 
     virtual bool hasVertical() const;
 
     virtual osg::Vec2 getKerning(const osgText::FontResolution& fontRes, unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType kerningType);
 
+    virtual float getScale() const { return 1.0; }
+
     bool loadFont(std::istream& stream);
 
 protected:
-    typedef std::map<unsigned int, osg::ref_ptr<osgText::Font::Glyph> > GlyphMap;
+    typedef std::map<unsigned int, osg::ref_ptr<osgText::Glyph> > GlyphMap;
 
     std::string _filename;
     GlyphMap _chars;

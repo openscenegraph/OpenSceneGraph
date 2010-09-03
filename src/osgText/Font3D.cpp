@@ -277,7 +277,7 @@ std::string Font3D::getFileName() const
     return "";
 }
 
-Font3D::Glyph3D* Font3D::getGlyph(unsigned int charcode)
+Glyph3D* Font3D::getGlyph(unsigned int charcode)
 {
     Glyph3D * glyph3D = NULL;
 
@@ -312,7 +312,7 @@ bool Font3D::hasVertical() const
     else return false;
 }
 
-void Font3D::Glyph3D::setThreadSafeRefUnref(bool threadSafe)
+void Glyph3D::setThreadSafeRefUnref(bool threadSafe)
 {
     if (_vertexArray.valid()) _vertexArray->setThreadSafeRefUnref(threadSafe);
     if (_normalArray.valid()) _normalArray->setThreadSafeRefUnref(threadSafe);

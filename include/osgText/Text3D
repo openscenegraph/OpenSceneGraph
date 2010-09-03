@@ -144,10 +144,10 @@ protected:
     // ** glyph and other information to render the glyph
     struct GlyphRenderInfo
     {
-        GlyphRenderInfo(Font3D::Glyph3D * glyph, osg::Vec3 & pos) :
+        GlyphRenderInfo(Glyph3D * glyph, osg::Vec3 & pos) :
             _glyph(glyph), _position(pos) {}
 
-        osg::ref_ptr<Font3D::Glyph3D> _glyph;
+        osg::ref_ptr<Glyph3D> _glyph;
         osg::Vec3 _position;
     };
 

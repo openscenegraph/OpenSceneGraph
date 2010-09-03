@@ -29,7 +29,7 @@ public:
 
     virtual std::string getFileName() const { return _filename; }
 
-    virtual osgText::Font3D::Glyph3D * getGlyph(unsigned int charcode);
+    virtual osgText::Glyph3D * getGlyph(unsigned int charcode);
         
     virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType _kerningType);
     
@@ -52,11 +52,7 @@ protected:
     FT_Face         _face;
     unsigned int    _flags;
     
-    
     double  _scale;
-    double  _shiftY;
-    double  _shiftX;
-    double  _charScale;
 };
 
 #endif

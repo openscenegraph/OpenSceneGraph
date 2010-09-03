@@ -23,6 +23,7 @@
 #include <osg/StateSet>
 #include <osg/buffered_value>
 #include <osg/TexEnv>
+#include <osg/Geometry>
 #include <osgDB/ReaderWriter>
 
 #include <osgText/Export>
@@ -34,6 +35,223 @@ namespace osgText {
 
 class Font;
 class Text;
+class Glyph3D;
+class GlyphTexture;
+
+class OSGTEXT_EXPORT Glyph : public osg::Image
+{
+public:
+
+    Glyph(unsigned int glyphCode);
+
+    unsigned int getGlyphCode() const { return _glyphCode; }
+
+    void setHorizontalBearing(const osg::Vec2& bearing);
+    const osg::Vec2& getHorizontalBearing() const;
+
+    void setHorizontalAdvance(float advance);
+    float getHorizontalAdvance() const;
+
+    void setVerticalBearing(const osg::Vec2& bearing);
+    const osg::Vec2& getVerticalBearing() const;
+
+    void setVerticalAdvance(float advance);
+    float getVerticalAdvance() const;
+
+    void setTexture(GlyphTexture* texture);
+    GlyphTexture* getTexture();
+    const GlyphTexture* getTexture() const;
+
+    void setTexturePosition(int posX,int posY);
+    int getTexturePositionX() const;
+    int getTexturePositionY() const;
+
+    void setMinTexCoord(const osg::Vec2& coord);
+    const osg::Vec2& getMinTexCoord() const;
+
+    void setMaxTexCoord(const osg::Vec2& coord);
+    const osg::Vec2& getMaxTexCoord() const;
+
+    void subload() const;
+
+protected:
+
+    virtual ~Glyph();
+
+    Font*                       _font;
+    unsigned int                _glyphCode;
+
+    osg::Vec2                   _horizontalBearing;
+    float                       _horizontalAdvance;
+
+    osg::Vec2                   _verticalBearing;
+    float                       _verticalAdvance;
+
+    GlyphTexture*               _texture;
+    int                         _texturePosX;
+    int                         _texturePosY;
+    osg::Vec2                   _minTexCoord;
+    osg::Vec2                   _maxTexCoord;
+
+    typedef osg::buffered_value<GLuint> GLObjectList;
+    mutable GLObjectList _globjList;
+
+};
+
+class OSGTEXT_EXPORT Glyph3D : public osg::Referenced
+{
+public:
+
+    Glyph3D(unsigned int glyphCode):
+        osg::Referenced(true),
+        _glyphCode(glyphCode),
+        _horizontalBearing(0,0),
+        _horizontalAdvance(0),
+        _verticalBearing(0,0),
+        _verticalAdvance(0)
+        {}
+
+    unsigned int getGlyphCode() const { return _glyphCode; }
+
+    void setHorizontalBearing(const osg::Vec2& bearing) { _horizontalBearing=bearing; }
+    const osg::Vec2 & getHorizontalBearing() const { return _horizontalBearing; }
+
+    void setHorizontalAdvance(float advance) { _horizontalAdvance=advance; }
+    float getHorizontalAdvance() const { return _horizontalAdvance; }
+
+    void setVerticalBearing(const osg::Vec2& bearing) {  _verticalBearing=bearing; }
+    const osg::Vec2& getVerticalBearing() const { return _verticalBearing; }
+
+    void setVerticalAdvance(float advance) { _verticalAdvance=advance; }
+    float getVerticalAdvance() const { return _verticalAdvance; }
+
+    void setBoundingBox(osg::BoundingBox & bb) { _bb=bb; }
+    const osg::BoundingBox & getBoundingBox() const { return _bb; }
+
+
+    /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
+    virtual void setThreadSafeRefUnref(bool threadSafe);
+
+
+    void setRawVertexArray(osg::Vec3Array* vertices) { _rawVertexArray = vertices; }
+    osg::Vec3Array* getRawVertexArray() { return _rawVertexArray.get(); }
+
+    /** Get the PrimitiveSetList for the raw face which hasn't been tessellated. */
+    osg::Geometry::PrimitiveSetList & getRawFacePrimitiveSetList() { return _rawFacePrimitiveSetList; }
+
+    /** Get the PrimitiveSetList for the front face. */
+    osg::Geometry::PrimitiveSetList & getFrontPrimitiveSetList() { return _frontPrimitiveSetList; }
+    /** Get the PrimitiveSetList for the wall face. */
+    osg::Geometry::PrimitiveSetList & getWallPrimitiveSetList() { return _wallPrimitiveSetList; }
+    /** Get et the PrimitiveSetList for the back face. */
+    osg::Geometry::PrimitiveSetList & getBackPrimitiveSetList() { return _backPrimitiveSetList; }
+
+    /** Set the VertexArray of the glyph. */
+    void setVertexArray(osg::Vec3Array * va) { _vertexArray = va; }
+    /** Get the VertexArray of the glyph. */
+    osg::Vec3Array * getVertexArray() { return _vertexArray.get(); }
+    /** Set the VertexArray of the glyph. */
+    void setNormalArray(osg::Vec3Array * na) { _normalArray = na; }
+    /** Get the NormalArray for the wall face. */
+    osg::Vec3Array * getNormalArray() { return _normalArray.get(); }
+
+    float getHorizontalWidth() { return (-_horizontalBearing.x() + _horizontalAdvance); }
+    float getHorizontalHeight() { return (-_horizontalBearing.y() + _bb.yMax()); }
+    float getVerticalWidth() { return (-_verticalBearing.x() + _bb.xMax()); }
+    float getVerticalHeight() { return (-_verticalBearing.y() + _verticalAdvance); }
+
+    void setWidth(float width) { _width = width; }
+    float getWidth() { return _width; }
+
+    void setHeight(float height) { _height = height; }
+    float getHeight() { return _height; }
+
+protected:
+
+    virtual ~Glyph3D() {}
+
+    unsigned int                _glyphCode;
+
+    osg::Vec2                   _horizontalBearing;
+    float                       _horizontalAdvance;
+
+    osg::Vec2                   _verticalBearing;
+    float                       _verticalAdvance;
+
+    osg::BoundingBox            _bb;
+//        osg::Vec2                   _advance;
+
+    float _width;
+    float _height;
+
+
+    osg::ref_ptr<osg::Vec3Array> _vertexArray;
+    osg::ref_ptr<osg::Vec3Array> _normalArray;
+
+
+    osg::Geometry::PrimitiveSetList _frontPrimitiveSetList;
+    osg::Geometry::PrimitiveSetList _wallPrimitiveSetList;
+    osg::Geometry::PrimitiveSetList _backPrimitiveSetList;
+
+    osg::ref_ptr<osg::Vec3Array>    _rawVertexArray;
+    osg::Geometry::PrimitiveSetList _rawFacePrimitiveSetList;
+
+};
+
+
+class OSGTEXT_EXPORT GlyphTexture : public osg::Texture2D
+{
+public:
+
+    GlyphTexture();
+
+    const char* className() const { return "GlyphTexture"; }
+
+    /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+    virtual int compare(const osg::StateAttribute& rhs) const;
+
+    /** Set the margin around each glyph, to ensure that texture filtering doesn't bleed adjacent glyph's into each other.*/
+    void setGlyphImageMargin(unsigned int margin) { _margin = margin; }
+    unsigned int getGlyphImageMargin() const { return _margin; }
+
+    void setGlyphImageMarginRatio(float margin) { _marginRatio = margin; }
+    float getGlyphImageMarginRatio() const { return _marginRatio; }
+
+    bool getSpaceForGlyph(Glyph* glyph, int& posX, int& posY);
+
+    void addGlyph(Glyph* glyph,int posX, int posY);
+
+    virtual void apply(osg::State& state) const;
+
+    /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
+    virtual void setThreadSafeRefUnref(bool threadSafe);
+
+    /** Resize any per context GLObject buffers to specified size. */
+    virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
+protected:
+
+    virtual ~GlyphTexture();
+
+
+    // parameter used to compute the size and position of empty space
+    // in the texture which could accommodate new glyphs.
+    int _margin;
+    float _marginRatio;
+    int _usedY;
+    int _partUsedX;
+    int _partUsedY;
+
+    typedef std::vector< osg::ref_ptr<Glyph> > GlyphRefList;
+    typedef std::vector< const Glyph* > GlyphPtrList;
+    typedef osg::buffered_object< GlyphPtrList > GlyphBuffer;
+
+    GlyphRefList                _glyphs;
+    mutable GlyphBuffer         _glyphsToSubload;
+
+    mutable OpenThreads::Mutex  _mutex;
+
+};
 
 /** Read a font from specified file. The filename may contain a path.
   * It will search for the font file in the following places in this order: 
@@ -74,8 +292,6 @@ class OSGTEXT_EXPORT Font : public osg::Object
 public:
 
     // forward declare nested classes.
-    class Glyph;
-    class GlyphTexture;
     class FontImplementation;
 
 public:
@@ -88,6 +304,8 @@ public:
     virtual const char* libraryName() const { return "osgText"; }
 
     virtual std::string getFileName() const;
+
+    static osg::ref_ptr<Font>& getDefaultFont();
 
     void setTexEnv(osg::TexEnv* texenv) { if (texenv) _texenv = texenv; }
     inline osg::TexEnv* getTexEnv() {  return _texenv.get(); }
@@ -103,9 +321,15 @@ public:
 
     /** Get a Glyph for specified charcode, and the font size nearest to the current font size hint.*/
     virtual Glyph* getGlyph(const FontResolution& fontSize, unsigned int charcode);
-    
+
+    /** Get a Glyph3D for specified charcode.*/
+    virtual Glyph3D* getGlyph3D(unsigned int charcode);
+
     /** Return true if this font provides vertical alignments and spacing or glyphs.*/
     virtual bool hasVertical() const;
+
+    /** Return the scale to apply on the glyph to have a charactere size equal to 1 */
+    virtual float getScale() const { return _implementation->getScale(); };
 
     /** Set the margin around each glyph, 
       * to ensure that texture filtering doesn't bleed adjacent glyph's into each other.
@@ -137,6 +361,12 @@ public:
     void setMagFilterHint(osg::Texture::FilterMode mode);
     osg::Texture::FilterMode getMagFilterHint() const;
 
+    unsigned int getFontDepth() const { return _depth; }
+
+    void setNumberCurveSamples(unsigned int numSamples) { _numCurveSamples = numSamples; }
+    unsigned int getNumberCurveSamples() const { return _numCurveSamples; }
+
+
     // make Text a friend to allow it add and remove its entry in the Font's _textList.
     friend class FontImplementation;
 
@@ -161,22 +391,26 @@ public:
 protected:
 
     virtual ~Font();
-    
+
     void addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph* glyph);
-    
+
     typedef std::vector< osg::ref_ptr<GlyphTexture> >       GlyphTextureList;
     typedef std::vector< osg::ref_ptr<osg::StateSet> >      StateSetList;
     typedef std::map< unsigned int, osg::ref_ptr<Glyph> >   GlyphMap;
-    
-    typedef std::map< FontResolution, GlyphMap >              FontSizeGlyphMap;
-    
+    typedef std::map< unsigned int, osg::ref_ptr<Glyph3D> >  Glyph3DMap;
+
+    typedef std::map< FontResolution, GlyphMap >            FontSizeGlyphMap;
+
     mutable OpenThreads::Mutex      _glyphMapMutex;
-    
+
     osg::ref_ptr<osg::TexEnv>       _texenv;
     osg::ref_ptr<osg::StateSet>     _stateset;
     FontSizeGlyphMap                _sizeGlyphMap;
     GlyphTextureList                _glyphTextureList;
-    
+
+
+    Glyph3DMap                      _glyph3DMap;
+
     // current active size of font
     FontResolution                  _fontSize;
     unsigned int                    _margin;
@@ -186,6 +420,10 @@ protected:
     unsigned int                    _textureHeightHint;   
     osg::Texture::FilterMode        _minFilterHint;
     osg::Texture::FilterMode        _magFilterHint;
+
+    unsigned int                    _depth;
+    unsigned int                    _numCurveSamples;
+
     
     osg::ref_ptr<FontImplementation> _implementation;
 
@@ -206,12 +444,18 @@ public:
         /** Get a Glyph for specified charcode, and the font size nearest to the current font size hint.*/
         virtual Glyph* getGlyph(const FontResolution& fontRes, unsigned int charcode) = 0;
 
+        /** Get a Glyph3D for specified charcode.*/
+        virtual Glyph3D* getGlyph3D(unsigned int charcode) = 0;
+
         /** Get a kerning (adjustment of spacing of two adjacent character) for specified charcodes, w.r.t the current font size hint.*/
         virtual osg::Vec2 getKerning(const FontResolution& fontRes, unsigned int leftcharcode,unsigned int rightcharcode, KerningType kerningType) = 0;
 
         /** Return true if this font provides vertical alignments and spacing or glyphs.*/
         virtual bool hasVertical() const = 0;
-        
+
+        /** Return scale of font, used by 3D text.*/
+        virtual float getScale() const = 0;
+
         void addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph* glyph)
         {
             _facade->addGlyph(fontRes, charcode, glyph);
@@ -220,120 +464,6 @@ public:
         Font* _facade;
     };
 
-    class OSGTEXT_EXPORT GlyphTexture : public osg::Texture2D
-    {
-    public:
-
-        GlyphTexture();
-        
-        const char* className() const { return "GlyphTexture"; }
-
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
-        virtual int compare(const osg::StateAttribute& rhs) const;
-
-        /** Set the margin around each glyph, to ensure that texture filtering doesn't bleed adjacent glyph's into each other.*/    
-        void setGlyphImageMargin(unsigned int margin) { _margin = margin; }
-        unsigned int getGlyphImageMargin() const { return _margin; }
-
-        void setGlyphImageMarginRatio(float margin) { _marginRatio = margin; }
-        float getGlyphImageMarginRatio() const { return _marginRatio; }
-
-        bool getSpaceForGlyph(Glyph* glyph, int& posX, int& posY);
-        
-        void addGlyph(Glyph* glyph,int posX, int posY);
-        
-        virtual void apply(osg::State& state) const;
-
-        /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
-        virtual void setThreadSafeRefUnref(bool threadSafe);
-
-        /** Resize any per context GLObject buffers to specified size. */
-        virtual void resizeGLObjectBuffers(unsigned int maxSize);
-
-    protected:
-    
-        virtual ~GlyphTexture();
-
-
-        // parameter used to compute the size and position of empty space
-        // in the texture which could accommodate new glyphs.
-        int _margin;
-        float _marginRatio;
-        int _usedY;
-        int _partUsedX;
-        int _partUsedY;
-
-        typedef std::vector< osg::ref_ptr<Glyph> > GlyphRefList;
-        typedef std::vector< const Glyph* > GlyphPtrList;
-        typedef osg::buffered_object< GlyphPtrList > GlyphBuffer;
-        
-        GlyphRefList                _glyphs;
-        mutable GlyphBuffer         _glyphsToSubload;
-        
-        mutable OpenThreads::Mutex  _mutex;
-
-    };
-
-    class OSGTEXT_EXPORT Glyph : public osg::Image
-    {
-    public:
-
-        Glyph(unsigned int glyphCode);
-
-        unsigned int getGlyphCode() const { return _glyphCode; }
-
-        void setHorizontalBearing(const osg::Vec2& bearing);
-        const osg::Vec2& getHorizontalBearing() const;
-
-        void setHorizontalAdvance(float advance);
-        float getHorizontalAdvance() const;
-
-        void setVerticalBearing(const osg::Vec2& bearing);
-        const osg::Vec2& getVerticalBearing() const;
-
-        void setVerticalAdvance(float advance);
-        float getVerticalAdvance() const;
-
-
-        void setTexture(GlyphTexture* texture);
-        GlyphTexture* getTexture();
-        const GlyphTexture* getTexture() const;
-
-        void setTexturePosition(int posX,int posY);
-        int getTexturePositionX() const;
-        int getTexturePositionY() const;
-
-        void setMinTexCoord(const osg::Vec2& coord);
-        const osg::Vec2& getMinTexCoord() const;
-
-        void setMaxTexCoord(const osg::Vec2& coord);
-        const osg::Vec2& getMaxTexCoord() const;
-        
-        void subload() const;
-        
-    protected:
-
-        virtual ~Glyph();
-
-        Font*                       _font;
-        unsigned int                _glyphCode;
-
-        osg::Vec2                   _horizontalBearing;
-        float                       _horizontalAdvance;
-
-        osg::Vec2                   _verticalBearing;
-        float                       _verticalAdvance;
-
-        GlyphTexture*               _texture;
-        int                         _texturePosX;
-        int                         _texturePosY;
-        osg::Vec2                   _minTexCoord;
-        osg::Vec2                   _maxTexCoord;
-        
-        typedef osg::buffered_value<GLuint> GLObjectList;
-        mutable GLObjectList _globjList;
-
-    };
 
 
 };

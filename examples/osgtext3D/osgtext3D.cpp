@@ -167,8 +167,16 @@ int main(int argc, char** argv)
     std::string word("This is a new test.");
     while (arguments.read("-w",word)) {}
 
+    osg::ref_ptr<osgText::Style> style = new osgText::Style;
+
+    float thickness = 0.0f;
+    while(arguments.read("--thickness",thickness)) {}
+    style->setThicknessRatio(thickness);
+
     osgText::TextNode* text = new osgText::TextNode;
     text->setText(word);
+    text->setFont(font.get());
+    text->setStyle(style.get());
     text->setTextTechnique(new osgText::TextTechnique);
     text->update();
 

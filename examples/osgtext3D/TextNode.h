@@ -142,6 +142,9 @@ class TextTechnique : public osg::Object
         /// called by Layout engine to place individual characters
         virtual void addCharacter(const osg::Vec3& position, const osg::Vec3& size, Glyph* glyph, Style* style);
 
+        /// called by Layout engine to place individual characters
+        virtual void addCharacter(const osg::Vec3& position, const osg::Vec3& size, Glyph3D* glyph, Style* style);
+
         /// finish building new charater layout
         virtual void finish();
 

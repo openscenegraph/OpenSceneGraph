@@ -102,7 +102,7 @@ void Text3D::accept(osg::PrimitiveFunctor& pf) const
     }
 }
 
-void Text3D::setFont(osg::ref_ptr<Font3D> font)
+void Text3D::setFont(Font* font)
 {
     _font = font;
 
@@ -111,7 +111,7 @@ void Text3D::setFont(osg::ref_ptr<Font3D> font)
 
 void Text3D::setFont(const std::string & fontfile)
 {
-    setFont(readRefFont3DFile(fontfile));
+    setFont(readRefFontFile(fontfile));
 }
 
 String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::iterator first,String::iterator last)

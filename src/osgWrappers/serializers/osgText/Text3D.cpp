@@ -11,7 +11,7 @@ static bool checkFont( const osgText::Text3D& text )
 static bool readFont( osgDB::InputStream& is, osgText::Text3D& text )
 {
     std::string fontName; is.readWrappedString( fontName );
-    text.setFont( osgText::readFont3DFile(fontName) );
+    text.setFont( osgText::readFontFile(fontName) );
     return true;
 }
 

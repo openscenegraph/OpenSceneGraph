@@ -28,7 +28,7 @@ using namespace osgText;
 //
 Bevel::Bevel()
 {
-    _thickness = 0.1f;
+    _thickness = 0.02f;
     flatBevel();
 }
 
@@ -191,8 +191,8 @@ void Layout::layout(TextNode& text) const
     osg::Vec3 size(characterSize, characterSize, 0.0);
     if (style)
     {
-        size.y() = characterSize * style->getWidthRatio();
-        size.z() = characterSize * style->getThicknessRatio();
+        size.y() = characterSize;
+        size.z() = characterSize;
     }
 
 
@@ -242,8 +242,11 @@ void Layout::layout(TextNode& text) const
             OSG_NOTICE<<"pos = "<<pos<<", charcode="<<charcode<<", glyph="<<glyph<< std::endl;
             if (glyph)
             {
-                technique->addCharacter(pos, size, glyph, style);
-                pos += osg::Vec3(size.x()*(glyph->getHorizontalAdvance()*characterWidthScale), 0.0f ,0.0f);
+                osg::Vec3 local_scale( size );
+                local_scale *= (1.0f/font->getScale());
+
+                technique->addCharacter(pos, local_scale, glyph, style);
+                pos += osg::Vec3(size.x()*(glyph->getHorizontalWidth()/font->getScale()), 0.0f ,0.0f);
             }
         }
 
@@ -301,32 +304,37 @@ void TextTechnique::addCharacter(const osg::Vec3& position, const osg::Vec3& siz
 {
     OSG_NOTICE<<"TextTechnique::addCharacter 3D("<<position<<", "<<size<<", "<<glyph<<", "<<style<<")"<<std::endl;
 
-    double scale = size.x() / glyph->getVerticalHeight();
-
     osg::ref_ptr<osg::PositionAttitudeTransform> transform = new osg::PositionAttitudeTransform;
     transform->setPosition(position);
     transform->setAttitude(osg::Quat(osg::inDegrees(90.0),osg::Vec3d(1.0,0.0,0.0)));
-    transform->setScale(osg::Vec3d(scale, scale, scale));
+    transform->setScale(size);
 
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 
-    bool outline = false;
-    float thickness = 5;
-    float width = 10;
-    BevelProfile profile;
+    const Bevel* bevel = style ? style->getBevel() : 0;
+    bool outline = style ? style->getOutlineRatio()>0.0f : false;
+    float width = style->getThicknessRatio();
     float creaseAngle = 30.0f;
     bool smooth = true;
 
-    osg::ref_ptr<osg::Geometry> glyphGeometry = osgText::computeGlyphGeometry(glyph, thickness, width);
-    osg::ref_ptr<osg::Geometry> textGeometry = osgText::computeTextGeometry(glyphGeometry.get(), profile, width);
-    osg::ref_ptr<osg::Geometry> shellGeometry = outline ? osgText::computeShellGeometry(glyphGeometry.get(), profile, width) : 0;
-    if (textGeometry.valid()) geode->addDrawable(textGeometry.get());
-    if (shellGeometry.valid()) geode->addDrawable(shellGeometry.get());
-
-    // create the normals
-    if (smooth && textGeometry.valid())
+    if (bevel)
     {
-        osgUtil::SmoothingVisitor::smooth(*textGeometry, osg::DegreesToRadians(creaseAngle));
+        float thickness = bevel->getBevelThickness();
+
+        osg::ref_ptr<osg::Geometry> glyphGeometry = osgText::computeGlyphGeometry(glyph, thickness, width);
+        osg::ref_ptr<osg::Geometry> textGeometry = osgText::computeTextGeometry(glyphGeometry.get(), *bevel, width);
+        osg::ref_ptr<osg::Geometry> shellGeometry = outline ? osgText::computeShellGeometry(glyphGeometry.get(), *bevel, width) : 0;
+        if (textGeometry.valid()) geode->addDrawable(textGeometry.get());
+        if (shellGeometry.valid()) geode->addDrawable(shellGeometry.get());
+
+        // create the normals
+        if (smooth && textGeometry.valid())
+        {
+            osgUtil::SmoothingVisitor::smooth(*textGeometry, osg::DegreesToRadians(creaseAngle));
+        }
+    }
+    else
+    {
     }
 
     transform->addChild(geode.get());

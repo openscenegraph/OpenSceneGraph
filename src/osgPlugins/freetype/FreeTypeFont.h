@@ -58,6 +58,7 @@ protected:
     FT_Face                 _face;
     unsigned int            _flags;
     float                   _scale;
+    float                   _freetype_scale;
 };
 
 #endif

@@ -342,6 +342,8 @@ osg::Texture::FilterMode Font::getMagFilterHint() const
 
 Glyph* Font::getGlyph(const FontResolution& fontRes, unsigned int charcode)
 {
+    OSG_NOTICE<<"Font::getGlyph("<<charcode<<")"<<std::endl;
+
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_glyphMapMutex);
         FontSizeGlyphMap::iterator itr = _sizeGlyphMap.find(fontRes);
@@ -364,6 +366,8 @@ Glyph* Font::getGlyph(const FontResolution& fontRes, unsigned int charcode)
 
 Glyph3D* Font::getGlyph3D(unsigned int charcode)
 {
+    OSG_NOTICE<<"Font::getGlyph3D("<<charcode<<")"<<std::endl;
+
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_glyphMapMutex);
         Glyph3DMap::iterator itr = _glyph3DMap.find(charcode);

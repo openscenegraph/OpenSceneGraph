@@ -74,7 +74,7 @@ int main_experimental(osg::ArgumentParser& arguments)
 
     OSG_NOTICE<<"creaseAngle="<<creaseAngle<<std::endl;
 
-    osgText::BevelProfile profile;
+    osgText::Bevel profile;
     float ratio = 0.5;
     while(arguments.read("--rounded",ratio)) { profile.roundedBevel(ratio); }
     while(arguments.read("--rounded2",ratio)) { profile.roundedBevel2(ratio); }
@@ -169,9 +169,20 @@ int main(int argc, char** argv)
 
     osg::ref_ptr<osgText::Style> style = new osgText::Style;
 
-    float thickness = 0.0f;
+    float thickness = 0.1f;
     while(arguments.read("--thickness",thickness)) {}
     style->setThicknessRatio(thickness);
+
+    // set up any bevel if required
+    float r;
+    osg::ref_ptr<osgText::Bevel> bevel;
+    while(arguments.read("--rounded",r)) { bevel = new osgText::Bevel; bevel->roundedBevel2(r); }
+    while(arguments.read("--rounded")) { bevel = new osgText::Bevel; bevel->roundedBevel2(0.25); }
+    while(arguments.read("--flat",r)) { bevel = new osgText::Bevel; bevel->flatBevel(r); }
+    while(arguments.read("--flat")) { bevel = new osgText::Bevel; bevel->flatBevel(0.25); }
+    while(arguments.read("--bevel-thickness",r)) { if (bevel.valid()) bevel->setBevelThickness(r); }
+
+    style->setBevel(bevel);
 
     osgText::TextNode* text = new osgText::TextNode;
     text->setText(word);
@@ -180,6 +191,8 @@ int main(int argc, char** argv)
     text->setTextTechnique(new osgText::TextTechnique);
     text->update();
 
+    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
+    viewer.addEventHandler(new osgViewer::StatsHandler);
     viewer.setSceneData(text);
 
     return viewer.run();

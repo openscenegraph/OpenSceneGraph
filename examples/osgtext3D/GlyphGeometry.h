@@ -15,38 +15,16 @@
 #define OSGTEXT_GLYPHGEOMETRY 1
 
 #include <osgText/Font3D>
+#include "TextNode.h"
 
 namespace osgText
 {
 
-class BevelProfile
-{
-    public:
-
-        typedef std::vector<osg::Vec2> Vertices;
-
-        BevelProfile();
-
-        void flatBevel(float width=0.25f);
-
-        void roundedBevel(float width=0.5f, unsigned int numSteps=10);
-
-        void roundedBevel2(float width=0.5f, unsigned int numSteps=10);
-
-        void print(std::ostream& fout);
-
-        Vertices& getVertices() { return _vertices; }
-
-    protected:
-
-        Vertices _vertices;
-};
-
 extern osg::Geometry* computeGlyphGeometry(osgText::Glyph3D* glyph, float bevelThickness, float shellThickness);
 
-extern osg::Geometry* computeTextGeometry(osg::Geometry* glyphGeometry, BevelProfile& profile, float width);
+extern osg::Geometry* computeTextGeometry(osg::Geometry* glyphGeometry, const Bevel& profile, float width);
 
-extern osg::Geometry* computeShellGeometry(osg::Geometry* glyphGeometry, BevelProfile& profile, float width);
+extern osg::Geometry* computeShellGeometry(osg::Geometry* glyphGeometry, const Bevel& profile, float width);
 
 }
 

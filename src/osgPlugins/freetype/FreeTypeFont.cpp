@@ -35,7 +35,8 @@ struct Char3DInfo
         _maxY(-FLT_MAX),
         _maxX(-FLT_MAX),
         _minX(FLT_MAX),
-        _minY(FLT_MAX)
+        _minY(FLT_MAX),
+        _coord_scale(1.0/64.0)
     {
     }
     ~Char3DInfo()
@@ -55,8 +56,12 @@ struct Char3DInfo
         return _geometry.get();
     }
 
-    void addVertex(const osg::Vec3& pos)
+    void addVertex(osg::Vec3 pos)
     {
+        _previous = pos;
+
+        pos *= _coord_scale;
+
         if (!_verts->empty() && _verts->back()==pos)
         {
             // OSG_NOTICE<<"addVertex("<<pos<<") duplicate, ignoring"<<std::endl;
@@ -84,7 +89,7 @@ struct Char3DInfo
     }
     void conicTo(const osg::Vec2& control, const osg::Vec2& pos)
     {
-        osg::Vec3 p0 = _verts->back();
+        osg::Vec3 p0 = _previous;
         osg::Vec3 p1 = osg::Vec3(control.x(),control.y(),0);
         osg::Vec3 p2 = osg::Vec3(pos.x(),pos.y(),0);
 
@@ -103,7 +108,7 @@ struct Char3DInfo
 
     void cubicTo(const osg::Vec2& control1, const osg::Vec2& control2, const osg::Vec2& pos)
     {
-        osg::Vec3 p0 = _verts->back();
+        osg::Vec3 p0 = _previous;
         osg::Vec3 p1 = osg::Vec3(control1.x(),control1.y(),0);
         osg::Vec3 p2 = osg::Vec3(control2.x(),control2.y(),0);
         osg::Vec3 p3 = osg::Vec3(pos.x(),pos.y(),0);
@@ -136,44 +141,45 @@ struct Char3DInfo
 
     osg::ref_ptr<osg::Vec3Array>    _verts;
     osg::ref_ptr<osg::Geometry>     _geometry;
+    osg::Vec3                       _previous;
     int                             _idx;
     int                             _numSteps;
     double                          _maxY;
     double                          _maxX;
     double                          _minX;
     double                          _minY;
+    double                          _coord_scale;
+
 };
 
 
-#define FT_NUM(x) (x/64.0)
 int moveTo( const FT_Vector* to, void* user )
 {
     Char3DInfo* char3d = (Char3DInfo*)user;
-    char3d->moveTo( osg::Vec2(FT_NUM(to->x),FT_NUM(to->y)) );
+    char3d->moveTo( osg::Vec2(to->x,to->y) );
     return 0;
 }
 int lineTo( const FT_Vector* to, void* user )
 {
     Char3DInfo* char3d = (Char3DInfo*)user;
-    char3d->lineTo( osg::Vec2(FT_NUM(to->x),FT_NUM(to->y)) );
+    char3d->lineTo( osg::Vec2(to->x,to->y) );
     return 0;
 }
 int conicTo( const FT_Vector* control,const FT_Vector* to, void* user )
 {
     Char3DInfo* char3d = (Char3DInfo*)user;
-    char3d->conicTo( osg::Vec2(FT_NUM(control->x),FT_NUM(control->y)), osg::Vec2(FT_NUM(to->x),FT_NUM(to->y)) );
+    char3d->conicTo( osg::Vec2(control->x,control->y), osg::Vec2(to->x,to->y) );
     return 0;
 }
 int cubicTo( const FT_Vector* control1,const FT_Vector* control2,const FT_Vector* to, void* user )
 {
     Char3DInfo* char3d = (Char3DInfo*)user;
     char3d->cubicTo(
-        osg::Vec2(FT_NUM(control1->x),FT_NUM(control1->y)),
-        osg::Vec2(FT_NUM(control2->x),FT_NUM(control2->y)),
-        osg::Vec2(FT_NUM(to->x),FT_NUM(to->y)) );
+        osg::Vec2(control1->x,control1->y),
+        osg::Vec2(control2->x,control2->y),
+        osg::Vec2(to->x,to->y) );
     return 0;
 }
-#undef FT_NUM
 
 }
 
@@ -183,7 +189,8 @@ FreeTypeFont::FreeTypeFont(const std::string& filename, FT_Face face, unsigned i
     _buffer(0),
     _face(face),
     _flags(flags),
-    _scale(1.0f)
+    _scale(1.0f),
+    _freetype_scale(1.0f)
 {
     init();
 }
@@ -194,7 +201,8 @@ FreeTypeFont::FreeTypeFont(FT_Byte* buffer, FT_Face face, unsigned int flags):
     _buffer(buffer),
     _face(face),
     _flags(flags),
-    _scale(1.0f)
+    _scale(1.0f),
+    _freetype_scale(1.0f)
 {
     init();
 }
@@ -279,7 +287,13 @@ void FreeTypeFont::init()
         // long xmax = ft_ceiling( bb.xMax );
         // double width = (xmax - xmin)/64.0;
 
-        _scale = 1.0/height;
+#if 1
+        _freetype_scale = 1.0f/height;
+        _scale = 1.0f;
+#else
+        _freetype_scale = 1.0f;
+        _scale = 1.0f/height;
+#endif
     }
 }
 
@@ -407,12 +421,14 @@ osgText::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, u
     }
 
 
-    FT_Glyph_Metrics* metrics = &(glyphslot->metrics);
+    FT_Glyph_Metrics* metrics = &(_face->glyph->metrics);
 
-    glyph->setHorizontalBearing(osg::Vec2((float)metrics->horiBearingX/64.0f,(float)(metrics->horiBearingY-metrics->height)/64.0f)); // bottom left.
-    glyph->setHorizontalAdvance((float)metrics->horiAdvance/64.0f);
-    glyph->setVerticalBearing(osg::Vec2((float)metrics->vertBearingX/64.0f,(float)(metrics->vertBearingY-metrics->height)/64.0f)); // top middle.
-    glyph->setVerticalAdvance((float)metrics->vertAdvance/64.0f);
+    float coord_scale = _freetype_scale/64.0f;
+
+    glyph->setHorizontalBearing(osg::Vec2((float)metrics->horiBearingX * coord_scale,(float)(metrics->horiBearingY-metrics->height) * coord_scale)); // bottom left.
+    glyph->setHorizontalAdvance((float)metrics->horiAdvance * coord_scale);
+    glyph->setVerticalBearing(osg::Vec2((float)metrics->vertBearingX * coord_scale,(float)(metrics->vertBearingY-metrics->height) * coord_scale)); // top middle.
+    glyph->setVerticalAdvance((float)metrics->vertAdvance * coord_scale);
 
 //    cout << "      in getGlyph() implementation="<<this<<"  "<<_filename<<"  facade="<<_facade<<endl;
 
@@ -451,8 +467,11 @@ osgText::Glyph3D * FreeTypeFont::getGlyph3D(unsigned int charcode)
         return 0;
     }
 
+    float coord_scale = _freetype_scale/64.0f;
+
     // ** init FreeType to describe the glyph
     FreeType::Char3DInfo char3d(_facade->getNumberCurveSamples());
+    char3d._coord_scale = coord_scale;
 
     FT_Outline outline = _face->glyph->outline;
     FT_Outline_Funcs funcs;
@@ -596,14 +615,13 @@ osgText::Glyph3D * FreeTypeFont::getGlyph3D(unsigned int charcode)
 
     FT_Glyph_Metrics* metrics = &(_face->glyph->metrics);
 
-    glyph3D->setHorizontalBearing(osg::Vec2((float)metrics->horiBearingX/64.0f,(float)(metrics->horiBearingY-metrics->height)/64.0f)); // bottom left.
-    glyph3D->setHorizontalAdvance((float)metrics->horiAdvance/64.0f);
-    glyph3D->setVerticalBearing(osg::Vec2((float)metrics->vertBearingX/64.0f,(float)(metrics->vertBearingY-metrics->height)/64.0f)); // top middle.
-    glyph3D->setVerticalAdvance((float)metrics->vertAdvance/64.0f);
+    glyph3D->setHorizontalBearing(osg::Vec2((float)metrics->horiBearingX * coord_scale,(float)(metrics->horiBearingY-metrics->height) * coord_scale)); // bottom left.
+    glyph3D->setHorizontalAdvance((float)metrics->horiAdvance * coord_scale);
+    glyph3D->setVerticalBearing(osg::Vec2((float)metrics->vertBearingX * coord_scale,(float)(metrics->vertBearingY-metrics->height) * coord_scale)); // top middle.
+    glyph3D->setVerticalAdvance((float)metrics->vertAdvance * coord_scale);
 
-    glyph3D->setWidth((float)metrics->width / 64.0f);
-    glyph3D->setHeight((float)metrics->height / 64.0f);
-
+    glyph3D->setWidth((float)metrics->width * coord_scale);
+    glyph3D->setHeight((float)metrics->height * coord_scale);
 
     FT_BBox ftbb;
     FT_Outline_Get_BBox(&outline, &ftbb);
@@ -613,7 +631,7 @@ osgText::Glyph3D * FreeTypeFont::getGlyph3D(unsigned int charcode)
     long ymin = ft_floor( ftbb.yMin );
     long ymax = ft_ceiling( ftbb.yMax );
 
-    osg::BoundingBox bb(xmin / 64.0f, ymin / 64.0f, 0.0f, xmax / 64.0f, ymax / 64.0f, 0.0f);
+    osg::BoundingBox bb(xmin * coord_scale, ymin * coord_scale, 0.0f, xmax * coord_scale, ymax * coord_scale, 0.0f);
 
     glyph3D->setBoundingBox(bb);
 

@@ -83,7 +83,7 @@ QFontImplementation::getGlyph(const osgText::FontResolution& fontRes, unsigned i
     painter.end();
 
     // Transfer the rendered image to osg
-    osg::ref_ptr<osgText::Glyph> glyph = new osgText::Glyph(charcode);
+    osg::ref_ptr<osgText::Glyph> glyph = new osgText::Glyph(_facade, charcode);
 
     unsigned int dataSize = imageWidth*imageHeight;
     unsigned char* data = new unsigned char[dataSize];

@@ -564,7 +564,7 @@ osg::Geometry* computeTextGeometry(osgText::Glyph3D* glyph, float width)
 
     // create a front face using triangle indices
     osg::DrawElementsUShort* frontFace = new osg::DrawElementsUShort(GL_TRIANGLES);
-    frontFace->setName("face");
+    frontFace->setName("front");
     text_geometry->addPrimitiveSet(frontFace);
     for(unsigned int i=0; i<indices.size();++i)
     {
@@ -581,6 +581,7 @@ osg::Geometry* computeTextGeometry(osgText::Glyph3D* glyph, float width)
     // for later use, and to ensure sharing of vertices in the face primitive set
     // the order of the triangle indices are flipped to make sure that the triangles are back face
     osg::DrawElementsUShort* backFace = new osg::DrawElementsUShort(GL_TRIANGLES);
+    backFace->setName("back");
     text_geometry->addPrimitiveSet(backFace);
     for(unsigned int i=0; i<indices.size()-2;)
     {
@@ -621,6 +622,7 @@ osg::Geometry* computeTextGeometry(osgText::Glyph3D* glyph, float width)
         ++itr)
     {
         osg::DrawElementsUShort* edging = new osg::DrawElementsUShort(osg::PrimitiveSet::QUAD_STRIP);
+        edging->setName("wall");
         text_geometry->addPrimitiveSet(edging);
 
         osg::DrawElementsUShort* elements = dynamic_cast<osg::DrawElementsUShort*>(itr->get());

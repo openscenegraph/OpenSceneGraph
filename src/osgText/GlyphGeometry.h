@@ -14,8 +14,7 @@
 #ifndef OSGTEXT_GLYPHGEOMETRY
 #define OSGTEXT_GLYPHGEOMETRY 1
 
-#include <osgText/Font3D>
-#include "TextNode.h"
+#include <osgText/TextNode>
 
 namespace osgText
 {

@@ -11,12 +11,14 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/Font
     ${HEADER_PATH}/Font3D
+    ${HEADER_PATH}/FadeText
+    ${HEADER_PATH}/Glyph
     ${HEADER_PATH}/KerningType
     ${HEADER_PATH}/String
     ${HEADER_PATH}/TextBase
     ${HEADER_PATH}/Text
+    ${HEADER_PATH}/TextNode
     ${HEADER_PATH}/Text3D
-    ${HEADER_PATH}/FadeText
     ${HEADER_PATH}/Version
 )
 
@@ -26,11 +28,15 @@ ADD_LIBRARY(${LIB_NAME}
     ${LIB_PUBLIC_HEADERS}
     DefaultFont.cpp
     DefaultFont.h
+    GlyphGeometry.h
+    GlyphGeometry.cpp
     Font.cpp
-    String.cpp
     FadeText.cpp
+    Glyph.cpp
+    String.cpp
     TextBase.cpp
     Text.cpp
+    TextNode.cpp
     Text3D.cpp
     Version.cpp
     ${OPENSCENEGRAPH_VERSIONINFO_RC}

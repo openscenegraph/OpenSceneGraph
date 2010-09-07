@@ -17,10 +17,9 @@
 #include <freetype/ftoutln.h>
 #include <freetype/ftbbox.h>
 
-#include <osg/Notify>  
+#include <osg/Notify>
+#include <osg/io_utils>
 #include <osgDB/WriteFile>
-#include <osgUtil/SmoothingVisitor>
-#include <osgUtil/Tessellator>
 
 namespace FreeType
 {
@@ -30,7 +29,6 @@ struct Char3DInfo
     Char3DInfo(int numSteps):
         _verts( new osg::Vec3Array ),
         _geometry( new osg::Geometry ),
-        _idx(0),
         _numSteps(numSteps),
         _maxY(-FLT_MAX),
         _maxX(-FLT_MAX),
@@ -38,21 +36,26 @@ struct Char3DInfo
         _minY(FLT_MAX),
         _coord_scale(1.0/64.0)
     {
+        _geometry->setVertexArray(_verts.get());
     }
+
     ~Char3DInfo()
     {
     }
 
+    void completeCurrentPrimitiveSet()
+    {
+        if (_currentPrimitiveSet.valid() && _currentPrimitiveSet->size()>1)
+        {
+            _geometry->addPrimitiveSet( _currentPrimitiveSet.get() );
+        }
+        _currentPrimitiveSet = 0;
+    }
+
     osg::Geometry* get()
     {
-        int len = _verts->size()-_idx;
-        if (len)
-        {
-            _geometry->addPrimitiveSet( new osg::DrawArrays( osg::PrimitiveSet::POLYGON, _idx, len ) );
-            _idx = _verts->size();
-        }
+        completeCurrentPrimitiveSet();
 
-        _geometry->setVertexArray(_verts.get());
         return _geometry.get();
     }
 
@@ -68,18 +71,32 @@ struct Char3DInfo
             return;
         }
 
-        _verts->push_back( pos );
-        setMinMax(pos);
+        if (!_currentPrimitiveSet)
+        {
+            _currentPrimitiveSet = new osg::DrawElementsUShort( osg::PrimitiveSet::POLYGON);
+            _currentPrimitiveSet->setName("boundary");
+        }
+
+        if (!(_currentPrimitiveSet->empty()) &&
+            (*_verts)[(*_currentPrimitiveSet)[0]] == pos)
+        {
+            OSG_NOTICE<<"Repeating first index "<<(*_currentPrimitiveSet)[0]<<", "<<(*_verts)[(*_currentPrimitiveSet)[0]]<<", pos="<<pos<<std::endl;
+            _currentPrimitiveSet->push_back( (*_currentPrimitiveSet)[0] );
+        }
+        else
+        {
+            _currentPrimitiveSet->push_back( _verts->size() );
+
+            _verts->push_back( pos );
+
+            setMinMax(pos);
+        }
     }
 
     void moveTo(const osg::Vec2& pos)
     {
-        if (_verts->size())
-        {
-            int len = _verts->size()-_idx;
-            _geometry->addPrimitiveSet( new osg::DrawArrays( osg::PrimitiveSet::POLYGON, _idx, len ) );
-        }
-        _idx = _verts->size();
+        completeCurrentPrimitiveSet();
+
         addVertex( osg::Vec3(pos.x(),pos.y(),0) );
 
     }
@@ -87,6 +104,7 @@ struct Char3DInfo
     {
         addVertex( osg::Vec3(pos.x(),pos.y(),0) );
     }
+
     void conicTo(const osg::Vec2& control, const osg::Vec2& pos)
     {
         osg::Vec3 p0 = _previous;
@@ -140,9 +158,9 @@ struct Char3DInfo
     }
 
     osg::ref_ptr<osg::Vec3Array>    _verts;
+    osg::ref_ptr<osg::DrawElementsUShort> _currentPrimitiveSet;
     osg::ref_ptr<osg::Geometry>     _geometry;
     osg::Vec3                       _previous;
-    int                             _idx;
     int                             _numSteps;
     double                          _maxY;
     double                          _maxX;
@@ -372,7 +390,7 @@ osgText::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, u
     unsigned int width = sourceWidth;
     unsigned int height = sourceHeight;
 
-    osg::ref_ptr<osgText::Glyph> glyph = new osgText::Glyph(charcode);
+    osg::ref_ptr<osgText::Glyph> glyph = new osgText::Glyph(_facade, charcode);
     
     unsigned int dataSize = width*height;
     unsigned char* data = new unsigned char[dataSize];
@@ -423,7 +441,11 @@ osgText::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, u
 
     FT_Glyph_Metrics* metrics = &(_face->glyph->metrics);
 
+#if 0
     float coord_scale = _freetype_scale/64.0f;
+#else
+    float coord_scale = 1.0f/64.0f;
+#endif
 
     glyph->setHorizontalBearing(osg::Vec2((float)metrics->horiBearingX * coord_scale,(float)(metrics->horiBearingY-metrics->height) * coord_scale)); // bottom left.
     glyph->setHorizontalAdvance((float)metrics->horiAdvance * coord_scale);
@@ -502,115 +524,12 @@ osgText::Glyph3D * FreeTypeFont::getGlyph3D(unsigned int charcode)
         rawPrimitives.push_back(dynamic_cast<osg::PrimitiveSet*>((*itr)->clone(osg::CopyOp::DEEP_COPY_ALL)));
     }
 
-    frontGeo->setVertexArray(char3d.get()->getVertexArray());
-    frontGeo->setPrimitiveSetList(char3d.get()->getPrimitiveSetList());
-
-    osg::ref_ptr<osg::Geometry> wallGeo(new osg::Geometry);
-    wallGeo->setVertexArray(frontGeo->getVertexArray());
-
-    osg::ref_ptr<osg::Geometry> backGeo(new osg::Geometry);
-    backGeo->setVertexArray(frontGeo->getVertexArray());
-
-
-
-    // ** for convenience.
-    osg::Vec3Array * vertices = char3d._verts.get();
-
-
-
-    // ** duplicate the vertex for the back face
-    // ** with a depth equal to the font depth
-    std::size_t len = vertices->size();
-    std::size_t dlen = len * 2;
-
-    vertices->reserve(dlen);
-
-    osg::Vec3Array::iterator begin = vertices->begin();
-    osg::Vec3Array::iterator it = vertices->begin();
-
-    for (std::size_t i = 0; i != len; ++i, ++it)
-        vertices->push_back(*it);
-//    std::copy(begin, begin + len, begin + len + 1); TOCHECK
-
-
-    // ** and decal new vertices
-    unsigned int depth = _facade->getFontDepth();
-    for (std::size_t i = len; i != dlen; ++i)
-    {
-        (*vertices)[i].z() -= depth;
-    }
-
-    osg::Vec3Array::iterator end;
-
-    // ** create wall and back face from the front polygon
-    // **  then accumulate them in the appropriate geometry wallGeo and backGeo
-    for (std::size_t i=0; i < frontGeo->getNumPrimitiveSets(); ++i)
-    {
-        // ** get the front polygon
-        osg::ref_ptr<osg::DrawArrays> daFront(dynamic_cast<osg::DrawArrays*>(frontGeo->getPrimitiveSet(i)));
-        unsigned int idx = daFront->getFirst();
-        unsigned int cnt = daFront->getCount();
-
-        // ** reverse vertices to draw the front face in the CCW
-        std::reverse(begin + idx, begin + idx + cnt);
-
-        // ** create the back polygon
-        osg::ref_ptr<osg::DrawArrays> daBack(new osg::DrawArrays(osg::PrimitiveSet::POLYGON, idx + len, cnt));
-        backGeo->addPrimitiveSet(daBack.get());
-
-
-        // ** create the wall triangle strip
-        osg::ref_ptr<osg::DrawElementsUInt> deWall(new osg::DrawElementsUInt(osg::PrimitiveSet::TRIANGLE_STRIP));
-        wallGeo->addPrimitiveSet(deWall.get());
-
-        // **  link triangle strip
-        deWall->push_back(idx + len);
-        for (unsigned int j = 1; j < cnt; ++j)
-        {
-            deWall->push_back(idx + cnt - j);
-            deWall->push_back(idx + len + j);
-        }
-        deWall->push_back(idx);
-        deWall->push_back(idx + len);
-        deWall->push_back(idx + cnt - 1);
-    }
-
-    // ** tesselate front and back face
-    {
-        osgUtil::Tessellator ts;
-        ts.setWindingType(osgUtil::Tessellator::TESS_WINDING_POSITIVE);
-        ts.setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
-        ts.retessellatePolygons(*frontGeo);
-    }
-
-    {
-        osgUtil::Tessellator ts;
-        ts.setWindingType(osgUtil::Tessellator::TESS_WINDING_POSITIVE);
-        ts.setTessellationType(osgUtil::Tessellator::TESS_TYPE_GEOMETRY);
-        ts.retessellatePolygons(*backGeo);
-    }
-
-    // ** generate normal
-    {
-        osgUtil::SmoothingVisitor sm;
-        osg::ref_ptr<osg::Geode> geode(new osg::Geode);
-        geode->addDrawable(wallGeo.get());
-        geode->accept(sm);
-    }
-
     // ** save vertices and PrimitiveSetList of each face in the Glyph3D PrimitiveSet face list
-    osg::ref_ptr<osgText::Glyph3D> glyph3D = new osgText::Glyph3D(charcode);
+    osg::ref_ptr<osgText::Glyph3D> glyph3D = new osgText::Glyph3D(_facade, charcode);
 
     // copy the raw primitive set list before we tessellate it.
     glyph3D->getRawFacePrimitiveSetList() = rawPrimitives;
     glyph3D->setRawVertexArray(rawVertices.get());
-
-    glyph3D->setVertexArray(dynamic_cast<osg::Vec3Array*>(frontGeo->getVertexArray()));
-    glyph3D->setNormalArray(dynamic_cast<osg::Vec3Array*>(wallGeo->getNormalArray()));
-
-    glyph3D->getFrontPrimitiveSetList() = frontGeo->getPrimitiveSetList();
-    glyph3D->getWallPrimitiveSetList() = wallGeo->getPrimitiveSetList();
-    glyph3D->getBackPrimitiveSetList() = backGeo->getPrimitiveSetList();
 
 
     FT_Glyph_Metrics* metrics = &(_face->glyph->metrics);
@@ -634,6 +553,9 @@ osgText::Glyph3D * FreeTypeFont::getGlyph3D(unsigned int charcode)
     osg::BoundingBox bb(xmin * coord_scale, ymin * coord_scale, 0.0f, xmax * coord_scale, ymax * coord_scale, 0.0f);
 
     glyph3D->setBoundingBox(bb);
+
+    glyph3D->computeText3DGeometryData();
+
 
     return glyph3D.release();
 }

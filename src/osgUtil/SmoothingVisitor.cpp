@@ -614,7 +614,7 @@ struct FindSharpEdgesFunctor
 
 static void smooth_new(osg::Geometry& geom, double creaseAngle)
 {
-    OSG_NOTICE<<"smooth_new("<<&geom<<", "<<osg::RadiansToDegrees(creaseAngle)<<")"<<std::endl;
+    OSG_INFO<<"smooth_new("<<&geom<<", "<<osg::RadiansToDegrees(creaseAngle)<<")"<<std::endl;
 
     osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
     if (!vertices) return;

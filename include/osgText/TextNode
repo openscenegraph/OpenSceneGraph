@@ -28,7 +28,7 @@ namespace osgText {
 class TextNode;
 class Glyph;
 
-class Bevel : public osg::Object
+class OSGTEXT_EXPORT Bevel : public osg::Object
 {
     public:
 
@@ -61,7 +61,7 @@ class Bevel : public osg::Object
 };
 
 
-class Style : public osg::Object
+class OSGTEXT_EXPORT Style : public osg::Object
 {
     public:
 
@@ -104,7 +104,7 @@ class Style : public osg::Object
         float                   _sampleDensity;
 };
 
-class Layout : public osg::Object
+class OSGTEXT_EXPORT Layout : public osg::Object
 {
     public:
 
@@ -121,7 +121,7 @@ class Layout : public osg::Object
     protected:
 };
 
-class TextTechnique : public osg::Object
+class OSGTEXT_EXPORT TextTechnique : public osg::Object
 {
     public:
 
@@ -160,7 +160,7 @@ class TextTechnique : public osg::Object
         TextNode* _textNode;
 };
 
-class TextNode : public osg::Group
+class OSGTEXT_EXPORT TextNode : public osg::Group
 {
     public:
 

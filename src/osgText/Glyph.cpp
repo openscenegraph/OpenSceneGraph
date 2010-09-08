@@ -498,8 +498,6 @@ void Glyph3D::setThreadSafeRefUnref(bool threadSafe)
 
 void Glyph3D::computeText3DGeometryData()
 {
-    OSG_NOTICE<<"Glyph3D::computeText3DGeometryData()"<<std::endl;
-
     float creaseAngle = 30.0f;
     float width = _font->getFontDepth();
     bool smooth = true;
@@ -510,7 +508,7 @@ void Glyph3D::computeText3DGeometryData()
     // create the normals
     if (smooth && textGeometry.valid())
     {
-        osgUtil::SmoothingVisitor::smooth(*textGeometry);
+        osgUtil::SmoothingVisitor::smooth(*textGeometry, osg::DegreesToRadians(creaseAngle));
     }
 
     _vertexArray = dynamic_cast<osg::Vec3Array*>(textGeometry->getVertexArray());
@@ -525,10 +523,4 @@ void Glyph3D::computeText3DGeometryData()
         else if (prim->getName()=="back") _backPrimitiveSetList.push_back(prim);
         else if (prim->getName()=="wall") _wallPrimitiveSetList.push_back(prim);
     }
-
-    OSG_NOTICE<<"   _frontPrimitiveSetList.size()=="<<_frontPrimitiveSetList.size()<<std::endl;
-    OSG_NOTICE<<"   _backPrimitiveSetList.size()=="<<_backPrimitiveSetList.size()<<std::endl;
-    OSG_NOTICE<<"   _wallPrimitiveSetList.size()=="<<_wallPrimitiveSetList.size()<<std::endl;
-
-
 }

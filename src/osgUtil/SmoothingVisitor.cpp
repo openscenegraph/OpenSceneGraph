@@ -228,26 +228,29 @@ struct FindSharpEdgesFunctor
     FindSharpEdgesFunctor():
         _vertices(0),
         _normals(0),
-        _maxDeviationDotProduct(0.0f)
+        _maxDeviationDotProduct(0.0f),
+        _currentPrimitiveSetIndex(0)
     {
     }
 
     struct Triangle : public osg::Referenced
     {
-        Triangle(unsigned int p1, unsigned int p2, unsigned int p3):
-            _p1(p1), _p2(p2), _p3(p3) {}
+        Triangle(unsigned int primitiveSetIndex, unsigned int p1, unsigned int p2, unsigned int p3):
+            _primitiveSetIndex(primitiveSetIndex), _p1(p1), _p2(p2), _p3(p3) {}
 
         Triangle(const Triangle& tri):
-            _p1(tri._p1), _p2(tri._p2), _p3(tri._p3) {}
+            _primitiveSetIndex(tri._primitiveSetIndex), _p1(tri._p1), _p2(tri._p2), _p3(tri._p3) {}
 
         Triangle& operator = (const Triangle& tri)
         {
+            _primitiveSetIndex = tri._primitiveSetIndex;
             _p1 = tri._p1;
             _p2 = tri._p2;
             _p3 = tri._p3;
             return *this;
         }
 
+        unsigned int _primitiveSetIndex;
         unsigned int _p1;
         unsigned int _p2;
         unsigned int _p3;
@@ -329,7 +332,7 @@ struct FindSharpEdgesFunctor
             return;
         }
 
-        Triangle* tri = new Triangle(p1,p2,p3);
+        Triangle* tri = new Triangle(_currentPrimitiveSetIndex, p1, p2, p3);
         _triangles.push_back(tri);
 
         if (checkDeviation(p1, normal)) markProblemVertex(p1);
@@ -548,16 +551,16 @@ struct FindSharpEdgesFunctor
         }
     }
 
-    osg::PrimitiveSet* createPrimitiveSet()
+    osg::PrimitiveSet* createPrimitiveSet(Triangles& triangles)
     {
         osg::ref_ptr<osg::DrawElements> elements = (_vertices->size()<16384) ?
             static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_TRIANGLES)) :
             static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_TRIANGLES));
 
-        elements->reserveElements(_triangles.size()*3);
+        elements->reserveElements(triangles.size()*3);
 
-        for(Triangles::iterator itr = _triangles.begin();
-            itr != _triangles.end();
+        for(Triangles::iterator itr = triangles.begin();
+            itr != triangles.end();
             ++itr)
         {
             Triangle* tri = itr->get();
@@ -573,23 +576,26 @@ struct FindSharpEdgesFunctor
     {
         duplicateProblemVertices();
 
-        for(unsigned int i=0; i<_geometry->getNumPrimitiveSets(); )
+
+        typedef std::map<unsigned int, Triangles> TriangleMap;
+        TriangleMap triangleMap;
+        for(Triangles::iterator itr = _triangles.begin();
+            itr != _triangles.end();
+            ++itr)
         {
-            osg::PrimitiveSet* ps = _geometry->getPrimitiveSet(i);
-            if (ps->getMode()==osg::PrimitiveSet::POINTS ||
-                ps->getMode()==osg::PrimitiveSet::LINES ||
-                ps->getMode()==osg::PrimitiveSet::LINE_STRIP ||
-                ps->getMode()==osg::PrimitiveSet::LINE_LOOP)
-            {
-                ++i;
-            }
-            else
-            {
-                _geometry->removePrimitiveSet(i);
-            }
+            Triangle* tri = itr->get();
+            triangleMap[tri->_primitiveSetIndex].push_back(tri);
         }
 
-        _geometry->addPrimitiveSet(createPrimitiveSet());
+        for(TriangleMap::iterator itr = triangleMap.begin();
+            itr != triangleMap.end();
+            ++itr)
+        {
+            osg::PrimitiveSet* originalPrimitiveSet = _geometry->getPrimitiveSet(itr->first);
+            osg::PrimitiveSet* newPrimitiveSet = createPrimitiveSet(itr->second);
+            newPrimitiveSet->setName(originalPrimitiveSet->getName());
+            _geometry->setPrimitiveSet(itr->first, newPrimitiveSet);
+        }
     }
 
 
@@ -602,6 +608,7 @@ struct FindSharpEdgesFunctor
     ProblemVertexVector _problemVertexVector;
     ProblemVertexList   _problemVertexList;
     Triangles           _triangles;
+    unsigned int        _currentPrimitiveSetIndex;
 };
 
 
@@ -634,7 +641,14 @@ static void smooth_new(osg::Geometry& geom, double creaseAngle)
     if (fsef.set(&geom, creaseAngle))
     {
         // look for normals that deviate too far
-        geom.accept(fsef);
+
+        fsef.setVertexArray(vertices->getNumElements(), static_cast<const Vec3*>(vertices->getDataPointer()));
+        for(unsigned int i = 0; i < geom.getNumPrimitiveSets(); ++i)
+        {
+            fsef._currentPrimitiveSetIndex = i;
+            geom.getPrimitiveSet(i)->accept(fsef);
+        }
+
         // fsef.listProblemVertices();
         fsef.updateGeometry();
 

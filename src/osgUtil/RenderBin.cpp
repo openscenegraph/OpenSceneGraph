@@ -535,6 +535,14 @@ bool RenderBin::getStats(Statistics& stats) const
         const RenderLeaf* rl = *dw_itr;
         const Drawable* dw= rl->getDrawable();
         stats.addDrawable(); // number of geosets
+        
+        const Geometry* geom = dw->asGeometry();
+        if (geom)
+        {
+            if (geom->areFastPathsUsed())
+                stats.addFastDrawable();
+        }
+
         if (rl->_modelview.get())
         {
             stats.addMatrix(); // number of matrices
@@ -560,6 +568,14 @@ bool RenderBin::getStats(Statistics& stats) const
             const RenderLeaf* rl = dw_itr->get();
             const Drawable* dw= rl->getDrawable();
             stats.addDrawable(); // number of geosets
+
+            const Geometry* geom = dw->asGeometry();
+            if (geom)
+            {
+                if (geom->areFastPathsUsed())
+                    stats.addFastDrawable();
+            }
+
             if (rl->_modelview.get()) stats.addMatrix(); // number of matrices
             if (dw)
             {

@@ -418,7 +418,7 @@ int main(int argc, char **argv)
 
             root->addChild(overlay);
 
-            osgViewer::InteractiveImageHandler* handler = new osgViewer::InteractiveImageHandler(widgetImage.get(), camera);
+            osgViewer::InteractiveImageHandler* handler = new osgViewer::InteractiveImageHandler(widgetImage.get(), texture, camera);
             quad->setEventCallback(handler);
             quad->setCullCallback(handler);
         }

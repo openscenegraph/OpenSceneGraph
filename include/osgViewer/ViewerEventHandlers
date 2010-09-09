@@ -407,8 +407,10 @@ class OSGVIEWER_EXPORT InteractiveImageHandler : public osgGA::GUIEventHandler, 
 {
 public:
 
-    InteractiveImageHandler(osg::Image* image, osg::Camera* camera = 0):
-        _image(image), _fullscreen(camera != 0), _camera(camera) {}
+    /// Constructor to use when the InteractiveImage is in the 3D scene (i.e. not in a fullscreen HUD overlay).
+    InteractiveImageHandler(osg::Image* image);
+    /// Constructor to use when the InteractiveImage is in a fullscreen HUD overlay.
+    InteractiveImageHandler(osg::Image* image, osg::Texture2D* texture, osg::Camera* camera);
 
     META_Object(osgViewer, InteractiveImageHandler);
 
@@ -428,7 +430,10 @@ protected:
     bool mousePosition(osgViewer::View* view, osg::NodeVisitor* nv, const osgGA::GUIEventAdapter& ea, int& x, int &y) const;
     bool computeIntersections(osgViewer::View* view, float x,float y, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff) const;
 
+    void resize(int width, int height);
+
     osg::observer_ptr<osg::Image>   _image;
+    osg::observer_ptr<osg::Texture2D> _texture;
 
     bool                            _fullscreen;
     osg::observer_ptr<osg::Camera>  _camera;

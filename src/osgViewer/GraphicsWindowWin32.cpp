@@ -2212,7 +2212,7 @@ void GraphicsWindowWin32::setSyncToVBlank( bool on )
 #endif
 }
 
-void GraphicsWindowWin32::adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol, unsigned int& modifierMask )
+bool GraphicsWindowWin32::adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol, unsigned int& modifierMask )
 {
     modifierMask = 0;
 
@@ -2224,7 +2224,7 @@ void GraphicsWindowWin32::adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol
     if (virtualKey==0 || !::GetKeyboardState(keyState))
     {
         keySymbol = 0;
-        return;
+        return true;
     }
 
     switch (virtualKey)
@@ -2280,10 +2280,15 @@ void GraphicsWindowWin32::adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol
     }
     else if ((keySymbol & 0xff00)==0) 
     {
-        char asciiKey[2];
-        int numChars = ::ToAscii(wParam, (lParam>>16)&0xff, keyState, reinterpret_cast<WORD*>(asciiKey), 0);
-        if (numChars>0) keySymbol = asciiKey[0];
+        // store the raw key so to be used later in WM_CHAR event
+        keySymbol = ::MapVirtualKeyEx(HIWORD(lParam), 2, ::GetKeyboardLayout(0));
+
+        // might be an unicode key or dead key so need to be handled by WM_CHAR
+        return false;
     }
+
+    // it was a special key so event is handled
+    return true;
 }
 
 void GraphicsWindowWin32::transformMouseXY( float& x, float& y )
@@ -2434,6 +2439,36 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                 }
             }
             break;
+        /////////////////
+        case WM_CHAR :
+        /////////////////
+            {    
+                // if event was not handled by WM_KEYDOWN then we take care of it here
+                // this method gives directly the utf16 char back so just need to add it as it is
+                if(!_keypresshandled)
+                {
+                    // first check if key is already registered on the map
+                    std::map<int, int>::iterator it = _scancode_unicode_Map.find(_lastkeysymbol);
+                    if(it != _scancode_unicode_Map.end())
+                    {
+                        // map already exist -> key already pressed and not yet released
+                        if((it->second != -1) && (it->second != wParam))
+                        {
+                            // was a different char stored - probably a dead key combinaison
+                            // -> we need to release it first
+                            _keyMap[it->second] = false;
+                            getEventQueue()->keyRelease(it->second, eventTime);
+                        }
+                    }
+
+                    // store the raw key in map so that we know what to release later in WM_KEYUP event
+                    _scancode_unicode_Map[_lastkeysymbol] = wParam;
+                    
+                    _keyMap[wParam] = true;
+                    getEventQueue()->keyPress(wParam, eventTime);
+                }
+            }
+            break;
 
         ////////////////////
         case WM_KEYDOWN    :
@@ -2443,10 +2478,19 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
             {
                 int keySymbol = 0;
                 unsigned int modifierMask = 0;
-                adaptKey(wParam, lParam, keySymbol, modifierMask);
-                _keyMap[keySymbol] = true;
-                //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
-                getEventQueue()->keyPress(keySymbol, eventTime);
+                if(adaptKey(wParam, lParam, keySymbol, modifierMask))
+                {
+                    // was a special key, we handled it
+                    _keypresshandled = true;
+                    _keyMap[keySymbol] = true;
+                    getEventQueue()->keyPress(keySymbol, eventTime);
+                }
+                else
+                {
+                    // was no special key, let WM_CHAR handle it
+                    _keypresshandled = false;
+                    _lastkeysymbol = keySymbol;
+                }
             }
             break;
 
@@ -2458,10 +2502,23 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
             {
                 int keySymbol = 0;
                 unsigned int modifierMask = 0;
-                adaptKey(wParam, lParam, keySymbol, modifierMask);
-                _keyMap[keySymbol] = false;
-                //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
-                getEventQueue()->keyRelease(keySymbol, eventTime);
+                if(!adaptKey(wParam, lParam, keySymbol, modifierMask))
+                {
+                    // was not a special key - this mean we need to release the unicode key
+                    // -> fetch it from the map
+                    std::map<int, int>::iterator it = _scancode_unicode_Map.find(keySymbol);
+                    if(it != _scancode_unicode_Map.end())
+                    {
+                        keySymbol = it->second;
+                        it->second = -1; // clean the release key from the map
+                    }
+                }
+
+                if(keySymbol >= 0)
+                {
+                    _keyMap[keySymbol] = false;
+                    getEventQueue()->keyRelease(keySymbol, eventTime);
+                }
             }
             break;
 

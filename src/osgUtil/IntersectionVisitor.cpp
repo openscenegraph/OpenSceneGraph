@@ -250,12 +250,17 @@ void IntersectionVisitor::apply(osg::Billboard& billboard)
     for(unsigned int i = 0; i < billboard.getNumDrawables(); i++ )
     {
         const osg::Vec3& pos = billboard.getPosition(i);
-        osg::ref_ptr<osg::RefMatrix> billboard_matrix = _modelStack.empty() ? 
-            new osg::RefMatrix :
-            new osg::RefMatrix(*_modelStack.back());
+        osg::ref_ptr<osg::RefMatrix> billboard_matrix = new osg::RefMatrix;
+        if (getViewMatrix())
+        {
+            if (getModelMatrix()) billboard_matrix->mult( *getModelMatrix(), *getViewMatrix() );
+            else billboard_matrix->set( *getViewMatrix() );
+        }
+        else if (getModelMatrix()) billboard_matrix->set( *getModelMatrix() );
 
         billboard.computeMatrix(*billboard_matrix,eye_local,pos);
-        
+
+        if (getViewMatrix()) billboard_matrix->postMult( osg::Matrix::inverse(*getViewMatrix()) );
         pushModelMatrix(billboard_matrix.get());
 
         // now push an new intersector clone transform to the new local coordinates

@@ -178,7 +178,6 @@ public:
         OGRFeature* ogrFeature = NULL;
         while ((ogrFeature = ogrLayer->GetNextFeature()) != NULL) 
         {
-
             osg::Geode* feature = readFeature(ogrFeature, useRandomColorByFeature);
             if (feature)
             {
@@ -207,6 +206,7 @@ public:
         pointGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POINTS, 0, 1));
         return pointGeom;
     }
+
     osg::Geometry* linearRingToDrawable(OGRLinearRing* ring) const
     {
         osg::Geometry* contourGeom = new osg::Geometry();
@@ -236,6 +236,38 @@ public:
         contourGeom->setVertexArray(vertices);
         contourGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::LINE_STRIP, 0, vertices->size()));
         return contourGeom;
+    }
+
+    osg::Geometry* multiPointToDrawable(OGRMultiPoint* mpoint) const
+    {
+        osg::Geometry* geom = new osg::Geometry;
+
+        osg::Geometry* pointGeom = new osg::Geometry();
+        osg::Vec3Array* vertices = new osg::Vec3Array();
+        
+        vertices->reserve(mpoint->getNumGeometries());
+        for (int i = 0; i < mpoint->getNumGeometries(); i++ ) 
+        {
+            OGRGeometry* ogrGeom = mpoint->getGeometryRef(i);
+            OGRwkbGeometryType ogrGeomType = ogrGeom->getGeometryType();
+
+            if (wkbPoint != ogrGeomType && wkbPoint25D != ogrGeomType)
+                continue; // skip
+
+            OGRPoint* points = static_cast<OGRPoint*>(ogrGeom);
+        
+            vertices->push_back(osg::Vec3(points->getX(), points->getY(), points->getZ()));
+        }
+        
+        pointGeom->setVertexArray(vertices);
+        pointGeom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::POINTS, 0, vertices->size()));
+        
+        if (pointGeom->getVertexArray())
+        {
+            OSG_INFO << "osgOgrFeature::multiPointToDrawable " << geom->getVertexArray()->getNumElements() << " vertexes"<< std::endl;
+        }
+
+        return pointGeom;
     }
 
     osg::Geometry* multiPolygonToDrawable(OGRMultiPolygon* mpolygon) const
@@ -286,7 +318,7 @@ public:
 
         if (geom->getVertexArray())
         {
-            OSG_INFO << "osgOgrFeature::multiPolygonToGeode " << geom->getVertexArray()->getNumElements() << " vertexes"<< std::endl;
+            OSG_INFO << "osgOgrFeature::multiPolygonToDrawable " << geom->getVertexArray()->getNumElements() << " vertexes"<< std::endl;
         }
 
         return geom;
@@ -383,6 +415,7 @@ public:
           
         osg::Geometry* drawable = 0;
         bool disableCulling = false;
+
         // Read the geometry
         switch(ogrFeature->GetGeometryRef()->getGeometryType()) {
         case wkbPoint:
@@ -403,11 +436,13 @@ public:
 
         case wkbPolygon:
         case wkbPolygon25D:
-                drawable = polygonToDrawable(static_cast<OGRPolygon*>(ogrFeature->GetGeometryRef()));
+            drawable = polygonToDrawable(static_cast<OGRPolygon*>(ogrFeature->GetGeometryRef()));
             break;
 
         case wkbMultiPoint:
         case wkbMultiPoint25D:
+            drawable = multiPointToDrawable(static_cast<OGRMultiPoint*>(ogrFeature->GetGeometryRef()));
+            disableCulling = true;
             break;
 
         case wkbMultiLineString:

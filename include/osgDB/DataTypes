@@ -25,53 +25,53 @@ namespace osgDB
 #define OSG_HEADER_HIGH 0x1AFB4545
 
 // Reader/writer plugin version
-#define PLUGIN_VERSION 2
+const unsigned int PLUGIN_VERSION = 2;
 
-#define BOOL_SIZE   1
-#define CHAR_SIZE   1
-#define SHORT_SIZE  2
-#define INT_SIZE    4
-#define LONG_SIZE   4
-#define FLOAT_SIZE  4
-#define DOUBLE_SIZE 8
-#define GLENUM_SIZE 4
+const int BOOL_SIZE =   1;
+const int CHAR_SIZE =   1;
+const int SHORT_SIZE =  2;
+const int INT_SIZE =    4;
+const int LONG_SIZE =   4;
+const int FLOAT_SIZE =  4;
+const int DOUBLE_SIZE = 8;
+const int GLENUM_SIZE = 4;
 
-#define ID_BYTE_ARRAY 0
-#define ID_UBYTE_ARRAY 1
-#define ID_SHORT_ARRAY 2
-#define ID_USHORT_ARRAY 3
-#define ID_INT_ARRAY 4
-#define ID_UINT_ARRAY 5
-#define ID_FLOAT_ARRAY 6
-#define ID_DOUBLE_ARRAY 7
-#define ID_VEC2B_ARRAY 8
-#define ID_VEC3B_ARRAY 9
-#define ID_VEC4B_ARRAY 10
-#define ID_VEC4UB_ARRAY 11
-#define ID_VEC2S_ARRAY 12
-#define ID_VEC3S_ARRAY 13
-#define ID_VEC4S_ARRAY 14
-#define ID_VEC2_ARRAY 15
-#define ID_VEC3_ARRAY 16
-#define ID_VEC4_ARRAY 17
-#define ID_VEC2D_ARRAY 18
-#define ID_VEC3D_ARRAY 19
-#define ID_VEC4D_ARRAY 20
+const int ID_BYTE_ARRAY = 0;
+const int ID_UBYTE_ARRAY = 1;
+const int ID_SHORT_ARRAY = 2;
+const int ID_USHORT_ARRAY = 3;
+const int ID_INT_ARRAY = 4;
+const int ID_UINT_ARRAY = 5;
+const int ID_FLOAT_ARRAY = 6;
+const int ID_DOUBLE_ARRAY = 7;
+const int ID_VEC2B_ARRAY = 8;
+const int ID_VEC3B_ARRAY = 9;
+const int ID_VEC4B_ARRAY = 10;
+const int ID_VEC4UB_ARRAY = 11;
+const int ID_VEC2S_ARRAY = 12;
+const int ID_VEC3S_ARRAY = 13;
+const int ID_VEC4S_ARRAY = 14;
+const int ID_VEC2_ARRAY = 15;
+const int ID_VEC3_ARRAY = 16;
+const int ID_VEC4_ARRAY = 17;
+const int ID_VEC2D_ARRAY = 18;
+const int ID_VEC3D_ARRAY = 19;
+const int ID_VEC4D_ARRAY = 20;
 
-#define ID_DRAWARRAYS 50
-#define ID_DRAWARRAY_LENGTH 51
-#define ID_DRAWELEMENTS_UBYTE 52
-#define ID_DRAWELEMENTS_USHORT 53
-#define ID_DRAWELEMENTS_UINT 54
+const int ID_DRAWARRAYS = 50;
+const int ID_DRAWARRAY_LENGTH = 51;
+const int ID_DRAWELEMENTS_UBYTE = 52;
+const int ID_DRAWELEMENTS_USHORT = 53;
+const int ID_DRAWELEMENTS_UINT = 54;
 
 // Used by BEGIN_BRACKET and END_BRACKET
-#define INDENT_VALUE 2
+const int INDENT_VALUE = 2;
 
 // Used by the writeImage/readImage parameter
-#define IMAGE_INLINE_DATA 0
-#define IMAGE_INLINE_FILE 1
-#define IMAGE_EXTERNAL 2
-#define IMAGE_WRITE_OUT 3
+const int IMAGE_INLINE_DATA = 0;
+const int IMAGE_INLINE_FILE = 1;
+const int IMAGE_EXTERNAL = 2;
+const int IMAGE_WRITE_OUT = 3;
 
 struct ObjectGLenum
 {

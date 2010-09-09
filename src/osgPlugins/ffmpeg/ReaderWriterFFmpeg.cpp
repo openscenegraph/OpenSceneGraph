@@ -18,6 +18,10 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 
+#if LIBAVCODEC_VERSION_MAJOR >= 53 || (LIBAVCODEC_VERSION_MAJOR==52 && LIBAVCODEC_VERSION_MINOR>=30)
+    #define USE_AV_LOCK_MANAGER
+#endif
+
 
 
 /** Implementation heavily inspired by http://www.dranger.com/ffmpeg/ */
@@ -45,10 +49,11 @@ public:
         supportsExtension("sav",    "MPEG-4");
         supportsExtension("3gp",    "MPEG-4");
         supportsExtension("sdp",    "MPEG-4");
-        
+
+#ifdef USE_AV_LOCK_MANAGER
         // enable thread locking
         av_lockmgr_register(&lockMgr);
-
+#endif
         // Register all FFmpeg formats/codecs
         av_register_all();
     }
@@ -100,6 +105,7 @@ public:
 
 private:
 
+#ifdef USE_AV_LOCK_MANAGER
     static int lockMgr(void **mutex, enum AVLockOp op)
     {
         // returns are 0 success
@@ -129,6 +135,7 @@ private:
             return -1;
         }
     }
+#endif
 
 };
 

@@ -20,8 +20,10 @@
 
 #include <osgDB/FileNameUtils>
 
+#include <osg/Version>
 #include <osg/Geometry>
 #include <osg/TexMat>
+#include <osg/Texture2D>
 #include <osg/TextureRectangle>
 #include <osg/io_utils>
 
@@ -624,6 +626,30 @@ void LODScaleHandler::getUsage(osg::ApplicationUsage& usage) const
     }
 }
 
+InteractiveImageHandler::InteractiveImageHandler(osg::Image* image) :
+    _image(image),
+    _texture(0),
+    _fullscreen(false),
+    _camera(0)
+{
+}
+
+InteractiveImageHandler::InteractiveImageHandler(osg::Image* image, osg::Texture2D* texture, osg::Camera* camera) :
+    _image(image),
+    _texture(texture),
+    _fullscreen(true),
+    _camera(camera)
+{
+    if (_camera.valid() && _camera->getViewport())
+    {
+        // Send an initial resize event (with the same size) so the image can
+        // resize itself initially.
+        double width = _camera->getViewport()->width();
+        double height = _camera->getViewport()->height();
+
+        resize(width, height);
+    }
+}
 
 bool InteractiveImageHandler::computeIntersections(osgViewer::View* view, float x,float y, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask) const 
 {
@@ -822,10 +848,11 @@ bool InteractiveImageHandler::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUI
         }
         case (osgGA::GUIEventAdapter::RESIZE):
         {
-            if (_fullscreen)
+            if (_fullscreen && _camera.valid())
             {
                 _camera->setViewport(0, 0, ea.getWindowWidth(), ea.getWindowHeight());
-                _image->scaleImage(ea.getWindowWidth(), ea.getWindowHeight(), 1);
+
+                resize(ea.getWindowWidth(), ea.getWindowHeight());
                 return true;
             }
         }
@@ -844,6 +871,19 @@ bool InteractiveImageHandler::cull(osg::NodeVisitor* nv, osg::Drawable*, osg::Re
     }
 
     return false;
+}
+
+void InteractiveImageHandler::resize(int width, int height)
+{
+    if (_image.valid())
+    {
+        _image->scaleImage(width, height, 1);
+    }
+
+    // Make sure the texture does not rescale the image because 
+    // it thinks it should still be the previous size...
+    if (_texture.valid())
+        _texture->setTextureSize(width, height);
 }
 
 }

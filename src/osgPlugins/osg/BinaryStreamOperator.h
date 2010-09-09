@@ -12,42 +12,42 @@ public:
     virtual bool isBinary() const { return true; }
     
     virtual void writeBool( bool b )
-    { char c = b?1:0; _out->write( &c, CHAR_SIZE ); }
+    { char c = b?1:0; _out->write( &c, osgDB::CHAR_SIZE ); }
     
     virtual void writeChar( char c )
-    { _out->write( &c, CHAR_SIZE ); }
+    { _out->write( &c, osgDB::CHAR_SIZE ); }
     
     virtual void writeUChar( unsigned char c )
-    { _out->write( (char*)&c, CHAR_SIZE ); }
+    { _out->write( (char*)&c, osgDB::CHAR_SIZE ); }
     
     virtual void writeShort( short s )
-    { _out->write( (char*)&s, SHORT_SIZE ); }
+    { _out->write( (char*)&s, osgDB::SHORT_SIZE ); }
     
     virtual void writeUShort( unsigned short s )
-    { _out->write( (char*)&s, SHORT_SIZE ); }
+    { _out->write( (char*)&s, osgDB::SHORT_SIZE ); }
     
     virtual void writeInt( int i )
-    { _out->write( (char*)&i, INT_SIZE ); }
+    { _out->write( (char*)&i, osgDB::INT_SIZE ); }
     
     virtual void writeUInt( unsigned int i )
-    { _out->write( (char*)&i, INT_SIZE ); }
+    { _out->write( (char*)&i, osgDB::INT_SIZE ); }
     
     virtual void writeLong( long l )
-    { _out->write( (char*)&l, LONG_SIZE ); }
+    { _out->write( (char*)&l, osgDB::LONG_SIZE ); }
     
     virtual void writeULong( unsigned long l )
-    { _out->write( (char*)&l, LONG_SIZE ); }
+    { _out->write( (char*)&l, osgDB::LONG_SIZE ); }
     
     virtual void writeFloat( float f )
-    { _out->write( (char*)&f, FLOAT_SIZE ); }
+    { _out->write( (char*)&f, osgDB::FLOAT_SIZE ); }
     
     virtual void writeDouble( double d )
-    { _out->write((char*)&d, DOUBLE_SIZE); }
+    { _out->write((char*)&d, osgDB::DOUBLE_SIZE); }
     
     virtual void writeString( const std::string& s )
     {
         int size = s.size();
-        _out->write( (char*)&size, INT_SIZE );
+        _out->write( (char*)&size, osgDB::INT_SIZE );
         _out->write( s.c_str(), s.size() );
     }
     
@@ -56,10 +56,10 @@ public:
     virtual void writeBase( std::ios_base& (*fn)(std::ios_base&) ) {}
     
     virtual void writeGLenum( const osgDB::ObjectGLenum& value )
-    { GLenum e = value.get(); _out->write((char*)&e, GLENUM_SIZE); }
+    { GLenum e = value.get(); _out->write((char*)&e, osgDB::GLENUM_SIZE); }
     
     virtual void writeProperty( const osgDB::ObjectProperty& prop )
-    { if (prop._mapProperty) _out->write((char*)&(prop._value), INT_SIZE); }
+    { if (prop._mapProperty) _out->write((char*)&(prop._value), osgDB::INT_SIZE); }
     
     virtual void writeMark( const osgDB::ObjectMark& mark ) {}
     
@@ -81,65 +81,65 @@ public:
     virtual void readBool( bool& b )
     {
         char c = 0;
-        _in->read( &c, CHAR_SIZE );
+        _in->read( &c, osgDB::CHAR_SIZE );
         b = (c!=0);
     }
     
     virtual void readChar( char& c )
-    { _in->read( &c, CHAR_SIZE ); }
+    { _in->read( &c, osgDB::CHAR_SIZE ); }
     
     virtual void readSChar( signed char& c )
-    { _in->read( (char*)&c, CHAR_SIZE ); }
+    { _in->read( (char*)&c, osgDB::CHAR_SIZE ); }
     
     virtual void readUChar( unsigned char& c )
-    { _in->read( (char*)&c, CHAR_SIZE ); }
+    { _in->read( (char*)&c, osgDB::CHAR_SIZE ); }
     
     virtual void readShort( short& s )
     {
-        _in->read( (char*)&s, SHORT_SIZE );
-        if ( _byteSwap ) osg::swapBytes( (char*)&s, SHORT_SIZE );
+        _in->read( (char*)&s, osgDB::SHORT_SIZE );
+        if ( _byteSwap ) osg::swapBytes( (char*)&s, osgDB::SHORT_SIZE );
     }
     
     virtual void readUShort( unsigned short& s )
     {
-        _in->read( (char*)&s, SHORT_SIZE );
-        if ( _byteSwap ) osg::swapBytes( (char*)&s, SHORT_SIZE );
+        _in->read( (char*)&s, osgDB::SHORT_SIZE );
+        if ( _byteSwap ) osg::swapBytes( (char*)&s, osgDB::SHORT_SIZE );
     }
     
     virtual void readInt( int& i )
     {
-        _in->read( (char*)&i, INT_SIZE );
-        if ( _byteSwap ) osg::swapBytes( (char*)&i, INT_SIZE );
+        _in->read( (char*)&i, osgDB::INT_SIZE );
+        if ( _byteSwap ) osg::swapBytes( (char*)&i, osgDB::INT_SIZE );
     }
     
     virtual void readUInt( unsigned int& i )
     {
-        _in->read( (char*)&i, INT_SIZE );
-        if ( _byteSwap ) osg::swapBytes( (char*)&i, INT_SIZE );
+        _in->read( (char*)&i, osgDB::INT_SIZE );
+        if ( _byteSwap ) osg::swapBytes( (char*)&i, osgDB::INT_SIZE );
     }
     
     virtual void readLong( long& l )
     {
-        _in->read( (char*)&l, LONG_SIZE );
-        if ( _byteSwap ) osg::swapBytes( (char*)&l, LONG_SIZE );
+        _in->read( (char*)&l, osgDB::LONG_SIZE );
+        if ( _byteSwap ) osg::swapBytes( (char*)&l, osgDB::LONG_SIZE );
     }
     
     virtual void readULong( unsigned long& l )
     {
-        _in->read( (char*)&l, LONG_SIZE );
-        if ( _byteSwap ) osg::swapBytes( (char*)&l, LONG_SIZE );
+        _in->read( (char*)&l, osgDB::LONG_SIZE );
+        if ( _byteSwap ) osg::swapBytes( (char*)&l, osgDB::LONG_SIZE );
     }
     
     virtual void readFloat( float& f )
     {
-        _in->read( (char*)&f, FLOAT_SIZE );
-        if ( _byteSwap ) osg::swapBytes( (char*)&f, FLOAT_SIZE );
+        _in->read( (char*)&f, osgDB::FLOAT_SIZE );
+        if ( _byteSwap ) osg::swapBytes( (char*)&f, osgDB::FLOAT_SIZE );
     }
     
     virtual void readDouble( double& d )
     {
-        _in->read( (char*)&d, DOUBLE_SIZE );
-        if ( _byteSwap ) osg::swapBytes( (char*)&d, DOUBLE_SIZE );
+        _in->read( (char*)&d, osgDB::DOUBLE_SIZE );
+        if ( _byteSwap ) osg::swapBytes( (char*)&d, osgDB::DOUBLE_SIZE );
     }
     
     virtual void readString( std::string& s )
@@ -159,8 +159,8 @@ public:
     virtual void readGLenum( osgDB::ObjectGLenum& value )
     {
         GLenum e = 0;
-        _in->read( (char*)&e, GLENUM_SIZE );
-        if ( _byteSwap ) osg::swapBytes( (char*)&e, GLENUM_SIZE );
+        _in->read( (char*)&e, osgDB::GLENUM_SIZE );
+        if ( _byteSwap ) osg::swapBytes( (char*)&e, osgDB::GLENUM_SIZE );
         value.set( e );
     }
     
@@ -169,8 +169,8 @@ public:
         int value = 0;
         if ( prop._mapProperty )
         {
-            _in->read( (char*)&value, INT_SIZE );
-            if ( _byteSwap ) osg::swapBytes( (char*)&value, INT_SIZE );
+            _in->read( (char*)&value, osgDB::INT_SIZE );
+            if ( _byteSwap ) osg::swapBytes( (char*)&value, osgDB::INT_SIZE );
         }
         prop.set( value );
     }

@@ -44,7 +44,6 @@ Input::Input(const std::string& name, const std::string& label, unsigned int siz
     _size(0),
     _cursorIndex(0),
     _maxSize(size),
-    _textLength(0),
     _cursor(new Widget("cursor")),
     _insertMode(false),
     _selection(new Widget("selection")),
@@ -74,10 +73,9 @@ Input::Input(const std::string& name, const std::string& label, unsigned int siz
        EVENT_MASK_MOUSE_DRAG
    );
 
-   _offsets.resize(size+1, 0.0f);
-   _widths.resize(size+1, 1.0f);
+   _offsets.resize(_text->getText().size()+1, 0.0f);
+   _widths.resize(_text->getText().size()+1, 1.0f);
 
-   _text->getText().resize(size, ' ');
    _text->update();
 
    _cursor->setDrawCallback( new BlinkCursorCallback(_insertMode) );
@@ -101,10 +99,13 @@ void Input::_calculateSize(const XYCoord& size) {
 void Input::_calculateCursorOffsets() {
    // Determine the "offset"
 
+   _offsets.resize(_text->getText().size()+1, 0.0f);
+   _widths.resize(_text->getText().size()+1, 1.0f);
+
     if (_text->getText().size()==0) 
     {
         _offsets[0] = 0;
-        _widths[0] = 0;
+        _widths[0] = 1.f;
         return;
     }
 
@@ -182,7 +183,7 @@ void Input::_calculateCursorOffsets() {
     }
 
     _offsets[idx] = lr.x() + pos.x();
-    _widths[idx]= 1.f;
+    _widths[idx] = 1.f;
 
     _wordsOffsets.clear();
     for ( unsigned int i=0; i<_text->getText().size(); ++i )
@@ -221,43 +222,62 @@ void Input::parented(Window* parent) {
    else _selectionIndex = parent->addDrawableAndGetIndex(_selection.get());
 }
 
-void Input::positioned() {
-   point_type ln = static_cast<point_type>(_text->getLineCount());
+void Input::positioned()
+{
+    point_type ln = static_cast<point_type>(_text->getLineCount());
 
-   ln = ln == 0.0f ? 1.0f : ln;
+    ln = ln == 0.0f ? 1.0f : ln;
 
-   // point_type th = (_text->getCharacterHeight() * ln) + (_text->getLineSpacing() * (ln - 1.0f));
+    // point_type th = (_text->getCharacterHeight() * ln) + (_text->getLineSpacing() * (ln - 1.0f));
 
-   point_type x = getX() + _xoff;
-   point_type y = getY() + _yoff;
+    point_type x = getX() + _xoff;
+    point_type y = getY() + _yoff;
 
-   // XYCoord size = getTextSize();
+    // XYCoord size = getTextSize();
 
-   _text->setPosition(osg::Vec3(x, y, _calculateZ(LAYER_MIDDLE)));
+    _text->setPosition(osg::Vec3(x, y, _calculateZ(LAYER_MIDDLE)));
 
-   point_type xoffset = _index > 0 ? _offsets[_index - 1] : 0.0f;
+    point_type xoffset = _index > 0 ? _offsets[_index - 1] : 0.0f;
 
-   _cursor->setSize(_widths[_index], getHeight());
-   _cursor->setOrigin(getX() + xoffset, getY() );
-   _cursor->setZ(_calculateZ(LAYER_MIDDLE-1));
+    if (_insertMode)
+    {
+        if (_index < _text->getText().size())
+        {
+            _cursor->setSize(_widths[_index], getHeight());
+        }
+        else
+        {
+            // We're at the end of the string, perhaps the string is empty, 
+            // so get the advance for any character, perhaps a large one, I chose 'A'.
+            osgText::Glyph* glyph = const_cast<osgText::Font*>(_text->getFont())->getGlyph(osgText::FontResolution(_text->getFontWidth(), _text->getFontHeight()), 'A');
+            _cursor->setSize(glyph->getHorizontalAdvance(), getHeight());
+        }
+    }
+    else
+    {
+        _cursor->setSize(1.f, getHeight());
+    }
+
+    _cursor->setOrigin(getX() + xoffset, getY() );
+    _cursor->setZ(_calculateZ(LAYER_MIDDLE-1));
 
 
-    unsigned int _selectionMin = osg::minimum(_selectionStartIndex,_selectionEndIndex);
-    unsigned int _selectionMax = osg::maximum(_selectionStartIndex,_selectionEndIndex);
+    unsigned int selectionMin = osg::minimum(_selectionStartIndex,_selectionEndIndex);
+    unsigned int selectionMax = osg::maximum(_selectionStartIndex,_selectionEndIndex);
 
-   if (_selectionMax-_selectionMin>0)
-   {
-       point_type xstart = _selectionMin > 0 ? _offsets[_selectionMin - 1] : 0.0f;
-       point_type xend = (_selectionMax > 0 ? _offsets[_selectionMax - 1] : 0.0f) + _widths[_selectionMax];
+    if (selectionMax - selectionMin > 0)
+    {
+        point_type xstart = selectionMin > 0 ? _offsets[selectionMin - 1] : 0.0f;
+        point_type xend   = selectionMax > 0 ? _offsets[selectionMax - 1] : 0.0f;
 
-       _selection->setSize(xend-xstart, getHeight());
-       _selection->setOrigin(getX() + xstart, getY());
-       _selection->setZ(_calculateZ(LAYER_MIDDLE-2));
-   }
-   else
-   {
-       _selection->setSize(0, getHeight());
-   }
+        _selection->setSize(xend-xstart, getHeight());
+        _selection->setOrigin(getX() + xstart, getY());
+        _selection->setZ(_calculateZ(LAYER_MIDDLE-2));
+    }
+    else
+    {
+        _selection->setSize(0, getHeight());
+    }
 }
 
 bool Input::keyUp(int key, int mask, const WindowManager*) {
@@ -269,11 +289,12 @@ bool Input::mouseDrag (double x, double y, const WindowManager*)
     _mouseClickX += x;
     x = _mouseClickX;
 
-    for ( unsigned int i=0; i< _offsets.size()-1; ++i )
+    for ( unsigned int i = 0; i < _offsets.size(); ++i )
     {
         point_type offset1 = i > 0 ? _offsets.at(i-1) : 0;
         point_type offset2 = _offsets.at(i);
-        if (x >= offset1 && x <= offset2)
+        if ((x >= offset1 && x <= offset2) ||
+            i == _offsets.size() - 1)  // If we're at the last one, obviously it will be there.
         {
             _selectionEndIndex = _index = i; 
             positioned();
@@ -281,7 +302,7 @@ bool Input::mouseDrag (double x, double y, const WindowManager*)
         }
     }
 
-    return false;
+    return true;
 }
 
 bool Input::mousePush (double x, double y, const WindowManager* wm)
@@ -296,21 +317,28 @@ bool Input::mousePush (double x, double y, const WindowManager* wm)
     x -= offset;
     _mouseClickX = x;
 
-    for ( unsigned int i=0; i< _offsets.size()-1; ++i )
+    for ( unsigned int i = 0; i < _offsets.size(); ++i )
     {
         point_type offset1 = i > 0 ? _offsets.at(i-1) : 0;
-        point_type offset2 = i == 0 ? _offsets.at(1) : _offsets.at(i);
-        if (x >= offset1 && x <= offset2)
+        point_type offset2 = _offsets.at(i);
+        if ((x >= offset1 && x <= offset2) ||
+            i == _offsets.size() - 1)  // If we're at the last one, obviously it will be there.
         {
             _selectionStartIndex = _selectionEndIndex = _index = i; 
             positioned();
             break;
         }
     }
-    return false;
+    return true;
 }
 
-bool Input::keyDown(int key, int mask, const WindowManager*) {
+bool Input::mouseRelease(double, double, const WindowManager*)
+{
+    return true;
+}
+
+bool Input::keyDown(int key, int mask, const WindowManager*)
+{
    osgText::String& s = _text->getText();
 
    switch (key)
@@ -319,7 +347,7 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
         if (mask & osgGA::GUIEventAdapter::MODKEY_CTRL)
         {
             bool found = false;
-            for (unsigned int i=0; i<_wordsOffsets.size()-1; ++i)
+            for (unsigned int i = 0; i < _wordsOffsets.size() - 1; ++i)
             {
                 if (_wordsOffsets.at(i) < _index && _index <= _wordsOffsets.at(i+1))
                 {
@@ -334,7 +362,7 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
             }
         }
         else
-        if (_index>0)
+        if (_index > 0)
         {
             --_index;
         }
@@ -351,7 +379,7 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
         if (mask & osgGA::GUIEventAdapter::MODKEY_CTRL)
         {
             bool found = false;
-            for (unsigned int i=0; i<_wordsOffsets.size()-1; ++i)
+            for (unsigned int i = 0; i < _wordsOffsets.size() - 1; ++i)
             {
                 if (_wordsOffsets.at(i) <= _index && _index < _wordsOffsets.at(i+1))
                 {
@@ -366,7 +394,7 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
             }
         }
         else
-        if (_index<_textLength)
+        if (_index < s.size())
         {
             ++_index;
         }
@@ -392,7 +420,7 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
         }
         break;
     case osgGA::GUIEventAdapter::KEY_End:
-        _index = _textLength;
+        _index = s.size();
         if (mask & osgGA::GUIEventAdapter::MODKEY_SHIFT)
         {
             _selectionEndIndex = _index;
@@ -407,108 +435,66 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
         break;
     case osgGA::GUIEventAdapter::KEY_Delete:
         {
-            unsigned int _selectionMin = osg::minimum(_selectionStartIndex,_selectionEndIndex);
-            unsigned int _selectionMax = osg::maximum(_selectionStartIndex,_selectionEndIndex);
+            unsigned int deleteMin = osg::minimum(_selectionStartIndex,_selectionEndIndex);
+            unsigned int deleteMax = osg::maximum(_selectionStartIndex,_selectionEndIndex);
 
-            if (_selectionMax-_selectionMin>0)
+            if (deleteMax - deleteMin > 0)
             {
-                unsigned int    deleteToIdx = _selectionMax;
-                for (unsigned int i=0; i < s.size()-_selectionMin; ++i)
-                {
-                    s[_selectionMin+i] = deleteToIdx+i+1 < s.size() ? s[deleteToIdx+i+1] : ' ';
-                }
-
-                _text->update();
-
-                _calculateCursorOffsets();
-
-                _textLength -= deleteToIdx-_selectionMin;
-                _index = _selectionMin;
-                _selectionStartIndex = _selectionEndIndex = _index;
             }
-            else
-            if (mask & osgGA::GUIEventAdapter::MODKEY_CTRL)
+            else if (mask & osgGA::GUIEventAdapter::MODKEY_CTRL)
             {
-                unsigned int    deleteToIdx = _textLength;
-                for (unsigned int i=0; i<_wordsOffsets.size()-1; ++i)
+                deleteMin = 0;
+                deleteMax = 0;
+                for (unsigned int i  =0; i < _wordsOffsets.size() - 1; ++i)
                 {
                     if (_wordsOffsets.at(i) <= _index && _index < _wordsOffsets.at(i+1))
                     {
-                        deleteToIdx = _wordsOffsets.at(i+1);
+                        deleteMin = _wordsOffsets.at(i);
+                        deleteMax = _wordsOffsets.at(i+1);
                         break;
                     }
                 }
-                for (unsigned int i=0; i < s.size()-_index; ++i)
-                {
-                    s[_index+i] = deleteToIdx+i < s.size() ? s[deleteToIdx+i] : ' ';
-                }
-
-                _text->update();
-
-                _calculateCursorOffsets();
-
-                _textLength -= deleteToIdx-_index;
             }
-            else
-            if (_index < s.size()-1)
+            else if (_index < s.size())
             {
-                for (unsigned int i=_index; i < s.size()-1; ++i)
-                {
-                    s[i] = s[i+1];
-                }
-
-                _text->update();
-
-                _calculateCursorOffsets();
-
-                --_textLength;
+                deleteMin = _index;
+                deleteMax = _index + 1;
             }
+
+            if (deleteMin != deleteMax)
+                s.erase(s.begin() + deleteMin, s.begin() + deleteMax);
+
+            _text->update();
+
+            _calculateCursorOffsets();
+
+            _index = deleteMin;
+            _selectionStartIndex = _selectionEndIndex = _index;
         }
         break;
     case osgGA::GUIEventAdapter::KEY_BackSpace:
         {
-            unsigned int _selectionMin = osg::minimum(_selectionStartIndex,_selectionEndIndex);
-            unsigned int _selectionMax = osg::maximum(_selectionStartIndex,_selectionEndIndex);
+            unsigned int deleteMin = osg::minimum(_selectionStartIndex,_selectionEndIndex);
+            unsigned int deleteMax = osg::maximum(_selectionStartIndex,_selectionEndIndex);
 
-            if (_selectionMax-_selectionMin>0)
+            if (deleteMax - deleteMin > 0)
             {
-                unsigned int    deleteToIdx = _selectionMax;
-                for (unsigned int i=0; i < s.size()-_selectionMin; ++i)
-                {
-                    s[_selectionMin+i] = deleteToIdx+i+1 < s.size() ? s[deleteToIdx+i+1] : ' ';
-                }
-
-                _text->update();
-
-                _calculateCursorOffsets();
-
-                _textLength -= deleteToIdx-_selectionMin;
-                _index = _selectionMin;
-                _selectionStartIndex = _selectionEndIndex = _index;
             }
-            else
-           if(_index >= 1) {
+            else if(_index >= 1)
+            {
+                deleteMin = _index - 1;
+                deleteMax = _index;
+            }
 
-               _index--;
-                if (_index< s.size()-1)
-                {
-                    for (unsigned int i=_index; i < s.size()-1; ++i)
-                    {
-                        s[i] = s[i+1];
-                        s[i+1] = ' ';
-                    }
-                }
-                else
-                {
-                    s[s.size()-1] = ' ';
-                }
+            if (deleteMin != deleteMax)
+                s.erase(s.begin() + deleteMin, s.begin() + deleteMax);
 
-               _text->update();
+            _text->update();
 
-               _calculateCursorOffsets();
+            _calculateCursorOffsets();
 
-               --_textLength;
-           }
+            _index = deleteMin;
+            _selectionStartIndex = _selectionEndIndex = _index;
         }
        break;
    default:
@@ -516,7 +502,6 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
 
         if (((key=='v' || key=='V') && (mask & osgGA::GUIEventAdapter::MODKEY_CTRL)) || (key==22))
         {
-            _selectionStartIndex = _selectionEndIndex = _index;
             std::string data;
 // Data from clipboard
 #ifdef WIN32
@@ -531,15 +516,27 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
 #endif
             if (!data.empty())
             {
-                data = data.substr(0,_maxSize-_index);
-                _textLength += data.size();
-                _selectionEndIndex = _textLength;
+                unsigned int deleteMin = osg::minimum(_selectionStartIndex,_selectionEndIndex);
+                unsigned int deleteMax = osg::maximum(_selectionStartIndex,_selectionEndIndex);
 
-                std::string::iterator itr = data.begin();
-                for ( ; itr != data.end(); ++itr )
+                if (deleteMax - deleteMin > 0)
                 {
-                    s[_index++] = *itr;
+                    data = data.substr(0, _maxSize-s.size()-(deleteMax - deleteMin));
+
+                    s.erase(s.begin() + deleteMin, s.begin() + deleteMax);
+                    s.insert(s.begin() + deleteMin, data.begin(), data.end());
+
+                    _index = deleteMin + data.size();
                 }
+                else
+                {
+                    data = data.substr(0, _maxSize-s.size());
+
+                    s.insert(s.begin() + _index, data.begin(), data.end());
+                    _index += data.length();
+                }
+
+                _selectionStartIndex = _selectionEndIndex = _index;
 
                 _text->update();
 
@@ -550,23 +547,19 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
                 getParent()->resize();
 
                 return false;
-
             }
-
         }
         else
-        if (((key=='c' || key=='C') && (mask & osgGA::GUIEventAdapter::MODKEY_CTRL)) || (key==3))
+        if (((key=='c' || key=='C' || key=='x' || key=='X') && (mask & osgGA::GUIEventAdapter::MODKEY_CTRL)) || (key==3) || (key==24))
         {
-            unsigned int _selectionMin = osg::minimum(_selectionStartIndex,_selectionEndIndex);
-            unsigned int _selectionMax = osg::maximum(_selectionStartIndex,_selectionEndIndex);
+            unsigned int selectionMin = osg::minimum(_selectionStartIndex,_selectionEndIndex);
+            unsigned int selectionMax = osg::maximum(_selectionStartIndex,_selectionEndIndex);
 
-            if (_selectionMax-_selectionMin>0)
+            if (selectionMax - selectionMin > 0)
             {
                 std::string data;
-                for (unsigned int i=_selectionMin; i<=_selectionMax; ++i)
-                {
-                    data.push_back(s[i]);
-                }
+                data.insert(data.begin(), s.begin() + selectionMin, s.begin() + selectionMax);
+
 // Data to clipboard
 #ifdef WIN32
                 if(::OpenClipboard(NULL))
@@ -580,61 +573,69 @@ bool Input::keyDown(int key, int mask, const WindowManager*) {
                     ::CloseClipboard();
                 }
 #endif
-                
+
+                if (key=='x' || key=='X' || key == 24)
+                {
+                    s.erase(s.begin() + selectionMin, s.begin() + selectionMax);
+
+                    _index = selectionMin;
+
+                    _selectionStartIndex = _selectionEndIndex = _index;
+
+                    _text->update();
+
+                    _calculateCursorOffsets();
+
+                    _calculateSize(getTextSize());
+
+                    getParent()->resize();
+                }
             }
             return false;
         }
-        {
-            unsigned int _selectionMin = osg::minimum(_selectionStartIndex,_selectionEndIndex);
-            unsigned int _selectionMax = osg::maximum(_selectionStartIndex,_selectionEndIndex);
 
-            if (_selectionMax-_selectionMin>0)
+        {
+            // If something is selected, we need to delete it and insert the character there.
+            unsigned int deleteMin = osg::minimum(_selectionStartIndex,_selectionEndIndex);
+            unsigned int deleteMax = osg::maximum(_selectionStartIndex,_selectionEndIndex);
+
+            if (deleteMax - deleteMin > 0)
             {
-                unsigned int deleteToIdx = _selectionMax;
-                for (unsigned int i=0; i < s.size()-_selectionMin; ++i)
-                {
-                    s[_selectionMin+i] = (deleteToIdx+i+1 < s.size()) ? s[deleteToIdx+i+1] : ' ';
-                }
+                s.erase(s.begin() + deleteMin, s.begin() + deleteMax);
 
                 _text->update();
 
                 _calculateCursorOffsets();
 
-                _textLength -= deleteToIdx-_selectionMin;
-                _index = _selectionMin;
+                _index = deleteMin;
                 _selectionStartIndex = _selectionEndIndex = _index;
             }
         }
-        
-        
-        if (!_insertMode)
+
+        if (_insertMode && _index < s.size())
         {
-            for (unsigned int i=s.size()-1; i>_index; --i)
-            {
-                s[i] = s[i-1];
-            }
+            s[_index] = key;
+        }
+        else
+        {
+            if (_index < _maxSize)
+                s.insert(s.begin() + _index, key);
         }
 
-       s[_index] = key;
+        _text->update();
 
-       _text->update();
+        _calculateCursorOffsets();
 
-       _calculateCursorOffsets();
+        _index++;
 
-       _index++;
+        _selectionStartIndex = _selectionEndIndex = _index;
+    }
 
-       if (!_insertMode) ++_textLength;
+    _calculateSize(getTextSize());
 
-       _selectionStartIndex = _selectionEndIndex = _index;
-   }
+    getParent()->resize();
 
-   // _text->update();
-
-   _calculateSize(getTextSize());
-
-   getParent()->resize();
-
-   return false;
+    return true;
 }
 
 void Input::setCursor(Widget*) {
@@ -661,5 +662,22 @@ unsigned int Input::calculateBestYOffset(const std::string& s)
 
    return descent;
 }
+
+void Input::clear()
+{
+    setLabel("");
+    _text->update();
+    _calculateCursorOffsets();
+
+    _index = 0;
+    _selectionStartIndex = _selectionEndIndex = _index;
+    _selectionIndex = _index;
+    _cursorIndex = _index;
+
+    _calculateSize(getTextSize());
+
+    getParent()->resize();
+}
+
 
 }

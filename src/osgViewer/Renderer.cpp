@@ -377,6 +377,7 @@ void Renderer::cull()
 
             stats->setAttribute(frameNumber, "Visible vertex count", static_cast<double>(sceneStats._vertexCount));
             stats->setAttribute(frameNumber, "Visible number of drawables", static_cast<double>(sceneStats.numDrawables));
+            stats->setAttribute(frameNumber, "Visible number of fast drawables", static_cast<double>(sceneStats.numFastDrawables));
             stats->setAttribute(frameNumber, "Visible number of lights", static_cast<double>(sceneStats.nlights));
             stats->setAttribute(frameNumber, "Visible number of render bins", static_cast<double>(sceneStats.nbins));
             stats->setAttribute(frameNumber, "Visible depth", static_cast<double>(sceneStats.depth));

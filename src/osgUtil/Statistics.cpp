@@ -37,6 +37,7 @@ Statistics::Statistics()
 void Statistics::reset()
 {
     numDrawables=0;
+    numFastDrawables=0;
     nummat=0;
     depth=0;
     stattype=STAT_NONE;
@@ -108,6 +109,7 @@ void Statistics::end()
 void Statistics::add(const Statistics& stats)
 {
     numDrawables += stats.numDrawables;
+    numFastDrawables += stats.numFastDrawables;
     nummat += stats.nummat;
     depth += stats.depth;
     nlights += stats.nlights;

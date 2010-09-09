@@ -244,7 +244,20 @@ void Mesh::parseMeshMaterialList(std::istream& fin)
 
         // check for "{ <material name> }" for a
         // material which was declared globally 
-        Material * material = _obj->findMaterial(token[0]);
+        string materialName = token[0];
+        // could be given as "{ someName }" which more than 1 tokens
+        if (materialName == "{" && token.size()>1)
+        {
+            materialName = token[1];
+        }
+        // or could be given as "{someName}" which would be in token[0]
+        else if (materialName.size() > 2 && materialName[0] == '{' && materialName[materialName.size()-1] == '}')
+        {
+            // remove curly brackets
+            materialName = materialName.substr(1, materialName.size()-2);
+        }
+        Material * material = _obj->findMaterial(materialName);
+
         if (material)
         {
             _materialList->material.push_back(*material);

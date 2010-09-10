@@ -33,23 +33,12 @@ DefaultFont::~DefaultFont()
 {
 }
 
-DefaultFont* DefaultFont::instance()
-{
-    static OpenThreads::Mutex s_DefaultFontMutex;    
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_DefaultFontMutex);
-
-    static osg::ref_ptr<DefaultFont> s_defaultFont = new DefaultFont;
-    return s_defaultFont.get();
-}
-
 void DefaultFont::setSize(unsigned int, unsigned int)
 {
     OSG_INFO<<"DefaultFont::setSize(,) call is ignored."<<std::endl;
 }
 
-
-
-Font::Glyph* DefaultFont::getGlyph(const FontResolution& fontRes, unsigned int charcode)
+osgText::Glyph* DefaultFont::getGlyph(const FontResolution& fontRes, unsigned int charcode)
 {
     if (_sizeGlyphMap.empty()) return 0;
 
@@ -85,7 +74,7 @@ Font::Glyph* DefaultFont::getGlyph(const FontResolution& fontRes, unsigned int c
 }
 
 
-osg::Vec2 DefaultFont::getKerning(const FontResolution&, unsigned int,unsigned int, KerningType)
+osg::Vec2 DefaultFont::getKerning(unsigned int,unsigned int, KerningType)
 {
     // no kerning on default font.
     return osg::Vec2(0.0f,0.0f);
@@ -205,7 +194,7 @@ void DefaultFont::constructGlyphs()
     // populate the glyph mp
     for(unsigned int i=32;i<127;i++)
     {
-        osg::ref_ptr<Glyph> glyph = new Glyph(i);
+        osg::ref_ptr<Glyph> glyph = new Glyph(this, i);
         
         unsigned int dataSize = sourceWidth*sourceHeight;
         unsigned char* data = new unsigned char[dataSize];

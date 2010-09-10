@@ -12,6 +12,7 @@
  * The OSG homepage is http://www.openscenegraph.org/
  */
 
+#include <climits>                     // required for UINT_MAX
 #include <cassert>
 #include <osg/CullFace>
 #include <osg/MatrixTransform>

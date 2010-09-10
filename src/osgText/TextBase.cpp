@@ -13,6 +13,7 @@
 
 
 #include <osgText/TextBase>
+#include <osgText/Font>
 
 #include <osg/Math>
 #include <osg/GL>
@@ -23,8 +24,6 @@
 #include <osgUtil/CullVisitor>
 
 #include <osgDB/ReadFile>
-
-#include "DefaultFont.h"
 
 using namespace osg;
 using namespace osgText;
@@ -49,7 +48,7 @@ TextBase::TextBase():
     _kerningType(KERNING_DEFAULT),
     _lineCount(0)
 {
-    setStateSet(DefaultFont::instance()->getStateSet());
+    setStateSet(Font::getDefaultFont()->getStateSet());
     setUseDisplayList(false);
     setSupportsDisplayList(false);
 }

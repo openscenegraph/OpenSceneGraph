@@ -594,8 +594,7 @@ dxfPolyline::drawScene(scene* sc)
         double bad_c = 0;
         double good_c = 0;
         long bad=0,good=0;
-        for (; itr != nlist.end(); ) {
-            ++itr;
+        for (; itr != nlist.end(); ++itr) {
             if ((*itr)== lastn) continue;
             Vec3d diff = ((*itr)-lastn);
             diff.normalize();

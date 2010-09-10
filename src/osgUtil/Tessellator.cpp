@@ -525,8 +525,8 @@ void Tessellator::handleNewVertices(osg::Geometry& geom,VertexPtrToIndexMap &ver
                 
                 // assign the rest of the attributes.
                 for(ArrayList::iterator aItr=arrays.begin();
-                aItr!=arrays.end();
-                ++aItr)
+                    aItr!=arrays.end();
+                    ++aItr)
                 {
                     (*aItr)->accept(inv);
                 }

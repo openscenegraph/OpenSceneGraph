@@ -368,6 +368,8 @@ bool Texture_matchInternalFormatModeStr(const char* str,Texture::InternalFormatM
     else if (strcmp(str,"USE_S3TC_DXT1_COMPRESSION")==0) mode = Texture::USE_S3TC_DXT1_COMPRESSION;
     else if (strcmp(str,"USE_S3TC_DXT3_COMPRESSION")==0) mode = Texture::USE_S3TC_DXT3_COMPRESSION;
     else if (strcmp(str,"USE_S3TC_DXT5_COMPRESSION")==0) mode = Texture::USE_S3TC_DXT5_COMPRESSION;
+    else if (strcmp(str,"USE_RGTC1_COMPRESSION")==0)    mode = Texture::USE_RGTC1_COMPRESSION;
+    else if (strcmp(str,"USE_RGTC2_COMPRESSION")==0)    mode = Texture::USE_RGTC2_COMPRESSION;
     else return false;
     return true;
 }
@@ -383,6 +385,8 @@ const char* Texture_getInternalFormatModeStr(Texture::InternalFormatMode mode)
         case(Texture::USE_S3TC_DXT1_COMPRESSION):    return "USE_S3TC_DXT1_COMPRESSION";
         case(Texture::USE_S3TC_DXT3_COMPRESSION):    return "USE_S3TC_DXT3_COMPRESSION";
         case(Texture::USE_S3TC_DXT5_COMPRESSION):    return "USE_S3TC_DXT5_COMPRESSION";
+        case(Texture::USE_RGTC1_COMPRESSION):        return "USE_RGTC1_COMPRESSION";
+        case(Texture::USE_RGTC2_COMPRESSION):        return "USE_RGTC2_COMPRESSION";
     }
     return "";
 }

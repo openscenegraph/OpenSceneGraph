@@ -200,6 +200,11 @@ struct SmoothTriangleIndexFunctor
 
     void operator() (unsigned int p1, unsigned int p2, unsigned int p3)
     {
+        if (p1==p2 || p2==p3 || p1==p3)
+        {
+            return;
+        }
+
         const osg::Vec3& v1 = (*_vertices)[p1];
         const osg::Vec3& v2 = (*_vertices)[p2];
         const osg::Vec3& v3 = (*_vertices)[p3];
@@ -223,15 +228,63 @@ struct FindSharpEdgesFunctor
     FindSharpEdgesFunctor():
         _vertices(0),
         _normals(0),
-        _maxDeviationDotProduct(0.0f)
+        _maxDeviationDotProduct(0.0f),
+        _currentPrimitiveSetIndex(0)
     {
     }
 
-    bool set(osg::Vec3Array* vertices, osg::Vec3Array* normals, float maxDeviationDotProduct)
+    struct Triangle : public osg::Referenced
     {
-        _vertices = vertices;
-        _normals = normals;
-        _maxDeviationDotProduct = maxDeviationDotProduct;
+        Triangle(unsigned int primitiveSetIndex, unsigned int p1, unsigned int p2, unsigned int p3):
+            _primitiveSetIndex(primitiveSetIndex), _p1(p1), _p2(p2), _p3(p3) {}
+
+        Triangle(const Triangle& tri):
+            _primitiveSetIndex(tri._primitiveSetIndex), _p1(tri._p1), _p2(tri._p2), _p3(tri._p3) {}
+
+        Triangle& operator = (const Triangle& tri)
+        {
+            _primitiveSetIndex = tri._primitiveSetIndex;
+            _p1 = tri._p1;
+            _p2 = tri._p2;
+            _p3 = tri._p3;
+            return *this;
+        }
+
+        unsigned int _primitiveSetIndex;
+        unsigned int _p1;
+        unsigned int _p2;
+        unsigned int _p3;
+    };
+
+    typedef std::list< osg::ref_ptr<Triangle> > Triangles;
+
+    struct ProblemVertex : public osg::Referenced
+    {
+        ProblemVertex(unsigned int p):
+            _point(p) {}
+
+        unsigned int _point;
+        Triangles _triangles;
+    };
+
+    typedef std::vector< osg::ref_ptr<ProblemVertex> > ProblemVertexVector;
+    typedef std::list< osg::ref_ptr<ProblemVertex> > ProblemVertexList;
+    typedef std::list< osg::ref_ptr<osg::Array> > ArrayList;
+
+    bool set(osg::Geometry* geom, float creaseAngle)
+    {
+        _geometry = geom;
+        _creaseAngle = creaseAngle;
+
+        if (!_geometry)
+        {
+            OSG_NOTICE<<"Warning: SmoothTriangleIndexFunctor::set(..) requires a geometry."<<std::endl;
+            return false;
+        }
+
+        _vertices = dynamic_cast<osg::Vec3Array*>(_geometry->getVertexArray());
+        _normals = dynamic_cast<osg::Vec3Array*>(_geometry->getNormalArray());
+        _maxDeviationDotProduct = cos(_creaseAngle*0.5);
 
         if (!_vertices)
         {
@@ -245,32 +298,73 @@ struct FindSharpEdgesFunctor
             return false;
         }
 
-        OSG_NOTICE<<" _maxDeviationDotProduct = "<<_maxDeviationDotProduct<<std::endl;
-
         _problemVertexVector.resize(_vertices->size());
 
+        addArray(geom->getVertexArray(), osg::Geometry::BIND_PER_VERTEX);
+        addArray(geom->getNormalArray(), geom->getNormalBinding());
+        addArray(geom->getColorArray(), geom->getColorBinding());
+        addArray(geom->getSecondaryColorArray(), geom->getSecondaryColorBinding());
+        addArray(geom->getFogCoordArray(), geom->getFogCoordBinding());
+
+        for(unsigned int i=0; i<geom->getNumTexCoordArrays(); ++i)
+        {
+            addArray(geom->getTexCoordArray(i), osg::Geometry::BIND_PER_VERTEX);
+        }
+
         return true;
+    }
+
+    void addArray(osg::Array* array, osg::Geometry::AttributeBinding binding)
+    {
+        if (array && binding==osg::Geometry::BIND_PER_VERTEX)
+        {
+            _arrays.push_back(array);
+        }
     }
 
     void operator() (unsigned int p1, unsigned int p2, unsigned int p3)
     {
         osg::Vec3 normal( computeNormal(p1, p2, p3) );
 
-        if (checkDeviation(p1, normal)) insertTriangle(p1, p1, p2, p3);
-        if (checkDeviation(p2, normal)) insertTriangle(p2, p1, p2, p3);
-        if (checkDeviation(p3, normal)) insertTriangle(p3, p1, p2, p3);
+        if (p1==p2 || p2==p3 || p1==p3)
+        {
+            // OSG_NOTICE<<"NULL triangle ("<<p1<<", "<<p2<<", "<<p3<<")"<<std::endl;
+            return;
+        }
+
+        Triangle* tri = new Triangle(_currentPrimitiveSetIndex, p1, p2, p3);
+        _triangles.push_back(tri);
+
+        if (checkDeviation(p1, normal)) markProblemVertex(p1);
+        if (checkDeviation(p2, normal)) markProblemVertex(p2);
+        if (checkDeviation(p3, normal)) markProblemVertex(p3);
     }
 
-    void insertTriangle(unsigned int p, unsigned int p1, unsigned int p2, unsigned int p3)
+    void markProblemVertex(unsigned int p)
     {
-        Triangle tri(p1,p2,p3);
         if (!_problemVertexVector[p])
         {
             _problemVertexVector[p] = new ProblemVertex(p);
             _problemVertexList.push_back(_problemVertexVector[p]);
         }
+    }
 
-        _problemVertexVector[p]->_triangles.push_back(tri);
+    void checkTrianglesForProblemVertices()
+    {
+        for(Triangles::iterator itr = _triangles.begin();
+            itr != _triangles.end();
+            ++itr)
+        {
+            Triangle* tri = itr->get();
+            insertTriangleIfProblemVertex(tri->_p1, tri);
+            insertTriangleIfProblemVertex(tri->_p2, tri);
+            insertTriangleIfProblemVertex(tri->_p3, tri);
+        }
+    }
+
+    void insertTriangleIfProblemVertex(unsigned int p, Triangle* tri)
+    {
+        if (_problemVertexVector[p]) _problemVertexVector[p]->_triangles.push_back(tri);
     }
 
     bool checkDeviation(unsigned int p, osg::Vec3& normal)
@@ -298,12 +392,13 @@ struct FindSharpEdgesFunctor
         {
             ProblemVertex* pv = itr->get();
             OSG_NOTICE<<"  pv._point = "<<pv->_point<<" triangles "<<pv->_triangles.size()<<std::endl;
-            for(ProblemVertex::Triangles::iterator titr = pv->_triangles.begin();
+            for(Triangles::iterator titr = pv->_triangles.begin();
                 titr != pv->_triangles.end();
                 ++titr)
             {
-                OSG_NOTICE<<"    triangle("<<titr->_p1<<", "<<titr->_p2<<", "<<titr->_p3<<")"<<std::endl;
-                osg::Vec3 normal( computeNormal(titr->_p1, titr->_p2, titr->_p3) );
+                Triangle* tri = titr->get();
+                OSG_NOTICE<<"    triangle("<<tri->_p1<<", "<<tri->_p2<<", "<<tri->_p3<<")"<<std::endl;
+                osg::Vec3 normal( computeNormal(tri->_p1, tri->_p2, tri->_p3) );
                 float deviation = normal * (*_normals)[pv->_point];
                 OSG_NOTICE<<"    deviation "<<deviation<<std::endl;
             }
@@ -311,51 +406,215 @@ struct FindSharpEdgesFunctor
         }
     }
 
-    struct Triangle
+    class DuplicateVertex : public osg::ArrayVisitor
     {
-        Triangle(unsigned int p1, unsigned int p2, unsigned int p3):
-            _p1(p1), _p2(p2), _p3(p3) {}
+        public:
 
-        Triangle(const Triangle& tri):
-            _p1(tri._p1), _p2(tri._p2), _p3(tri._p3) {}
+            unsigned int _i;
+            unsigned int _end;
 
-        Triangle& operator = (const Triangle& tri)
+            DuplicateVertex(unsigned int i):
+                                _i(i),
+                                _end(i) {}
+
+            template <class ARRAY>
+            void apply_imp(ARRAY& array)
+            {
+                _end = array.size();
+                array.push_back(array[_i]);
+            }
+
+            virtual void apply(osg::ByteArray& ba) { apply_imp(ba); }
+            virtual void apply(osg::ShortArray& ba) { apply_imp(ba); }
+            virtual void apply(osg::IntArray& ba) { apply_imp(ba); }
+            virtual void apply(osg::UByteArray& ba) { apply_imp(ba); }
+            virtual void apply(osg::UShortArray& ba) { apply_imp(ba); }
+            virtual void apply(osg::UIntArray& ba) { apply_imp(ba); }
+            virtual void apply(osg::Vec4ubArray& ba) { apply_imp(ba); }
+            virtual void apply(osg::FloatArray& ba) { apply_imp(ba); }
+            virtual void apply(osg::Vec2Array& ba) { apply_imp(ba); }
+            virtual void apply(osg::Vec3Array& ba) { apply_imp(ba); }
+            virtual void apply(osg::Vec4Array& ba) { apply_imp(ba); }
+
+    };
+
+    unsigned int duplicateVertex(unsigned int i)
+    {
+        DuplicateVertex duplicate(i);
+        for(ArrayList::iterator aItr = _arrays.begin();
+            aItr != _arrays.end();
+            ++aItr)
         {
-            _p1 = tri._p1;
-            _p2 = tri._p2;
-            _p3 = tri._p3;
-            return *this;
+            (*aItr)->accept(duplicate);
+        }
+        return duplicate._end;
+    }
+
+    void duplicateProblemVertexAll(ProblemVertex* pv)
+    {
+        unsigned int p = pv->_point;
+        Triangles::iterator titr = pv->_triangles.begin();
+        ++titr;
+        for(;
+            titr != pv->_triangles.end();
+            ++titr)
+        {
+            Triangle* tri = titr->get();
+            unsigned int duplicated_p = duplicateVertex(p);
+            if (tri->_p1==p) tri->_p1 = duplicated_p;
+            if (tri->_p2==p) tri->_p2 = duplicated_p;
+            if (tri->_p3==p) tri->_p3 = duplicated_p;
+        }
+    }
+
+    void duplicateProblemVertex(ProblemVertex* pv)
+    {
+        if (pv->_triangles.size()<=2)
+        {
+            duplicateProblemVertexAll(pv);
+        }
+        else
+        {
+            // implement a form of greedy association based on similar orientation
+            // rather than iterating through all the various permutation of triangles that might
+            // provide the best fit.
+            unsigned int p = pv->_point;
+            Triangles::iterator titr = pv->_triangles.begin();
+            while(titr != pv->_triangles.end())
+            {
+                Triangle* tri = titr->get();
+                osg::Vec3 normal = computeNormal(tri->_p1, tri->_p2, tri->_p3);
+
+                Triangles associatedTriangles;
+                associatedTriangles.push_back(tri);
+
+                // remove triangle for list
+                pv->_triangles.erase(titr);
+
+                // reset iterator
+                titr = pv->_triangles.begin();
+                while(titr != pv->_triangles.end())
+                {
+                    Triangle* tri2 = titr->get();
+                    osg::Vec3 normal2 = computeNormal(tri2->_p1, tri2->_p2, tri2->_p3);
+                    float deviation = normal * normal2;
+                    if (deviation >= _maxDeviationDotProduct)
+                    {
+                        // Tri and tri2 are close enough together to associate.
+                        associatedTriangles.push_back(tri2);
+
+                        Triangles::iterator titr_to_erase = titr;
+
+                        ++titr;
+                        pv->_triangles.erase(titr_to_erase);
+                    }
+                    else
+                    {
+                        ++titr;
+                    }
+                }
+
+                // create duplicate vertex to set of associated triangles
+                unsigned int duplicated_p = duplicateVertex(p);
+
+                // now rest the index on th triangles of the point that was duplicated
+                for(Triangles::iterator aitr = associatedTriangles.begin();
+                    aitr != associatedTriangles.end();
+                    ++aitr)
+                {
+                    Triangle* tri = aitr->get();
+                    if (tri->_p1==p) tri->_p1 = duplicated_p;
+                    if (tri->_p2==p) tri->_p2 = duplicated_p;
+                    if (tri->_p3==p) tri->_p3 = duplicated_p;
+                }
+
+                // reset iterator to beginning
+                titr = pv->_triangles.begin();
+            }
+
+        }
+    }
+
+    void duplicateProblemVertices()
+    {
+        checkTrianglesForProblemVertices();
+
+        for(ProblemVertexList::iterator itr = _problemVertexList.begin();
+            itr != _problemVertexList.end();
+            ++itr)
+        {
+            ProblemVertex* pv = itr->get();
+            if (pv->_triangles.size()>1)
+            {
+                duplicateProblemVertex(itr->get());
+            }
+        }
+    }
+
+    osg::PrimitiveSet* createPrimitiveSet(Triangles& triangles)
+    {
+        osg::ref_ptr<osg::DrawElements> elements = (_vertices->size()<16384) ?
+            static_cast<osg::DrawElements*>(new osg::DrawElementsUShort(GL_TRIANGLES)) :
+            static_cast<osg::DrawElements*>(new osg::DrawElementsUInt(GL_TRIANGLES));
+
+        elements->reserveElements(triangles.size()*3);
+
+        for(Triangles::iterator itr = triangles.begin();
+            itr != triangles.end();
+            ++itr)
+        {
+            Triangle* tri = itr->get();
+            elements->addElement(tri->_p1);
+            elements->addElement(tri->_p2);
+            elements->addElement(tri->_p3);
         }
 
-        unsigned int _p1;
-        unsigned int _p2;
-        unsigned int _p3;
-    };
+        return elements.release();
+    }
 
-    struct ProblemVertex : public osg::Referenced
+    void updateGeometry()
     {
-        ProblemVertex(unsigned int p):
-            _point(p) {}
+        duplicateProblemVertices();
 
-        typedef std::list<Triangle> Triangles;
-        unsigned int _point;
-        Triangles _triangles;
-    };
 
-    typedef std::vector< osg::ref_ptr<ProblemVertex> > ProblemVertexVector;
-    typedef std::list< osg::ref_ptr<ProblemVertex> > ProblemVertexList;
+        typedef std::map<unsigned int, Triangles> TriangleMap;
+        TriangleMap triangleMap;
+        for(Triangles::iterator itr = _triangles.begin();
+            itr != _triangles.end();
+            ++itr)
+        {
+            Triangle* tri = itr->get();
+            triangleMap[tri->_primitiveSetIndex].push_back(tri);
+        }
 
+        for(TriangleMap::iterator itr = triangleMap.begin();
+            itr != triangleMap.end();
+            ++itr)
+        {
+            osg::PrimitiveSet* originalPrimitiveSet = _geometry->getPrimitiveSet(itr->first);
+            osg::PrimitiveSet* newPrimitiveSet = createPrimitiveSet(itr->second);
+            newPrimitiveSet->setName(originalPrimitiveSet->getName());
+            _geometry->setPrimitiveSet(itr->first, newPrimitiveSet);
+        }
+    }
+
+
+    osg::Geometry*      _geometry;
     osg::Vec3Array*     _vertices;
     osg::Vec3Array*     _normals;
+    ArrayList           _arrays;
+    float               _creaseAngle;
     float               _maxDeviationDotProduct;
     ProblemVertexVector _problemVertexVector;
     ProblemVertexList   _problemVertexList;
+    Triangles           _triangles;
+    unsigned int        _currentPrimitiveSetIndex;
 };
 
 
 static void smooth_new(osg::Geometry& geom, double creaseAngle)
 {
-    OSG_NOTICE<<"smooth_new("<<&geom<<", "<<osg::RadiansToDegrees(creaseAngle)<<")"<<std::endl;
+    OSG_INFO<<"smooth_new("<<&geom<<", "<<osg::RadiansToDegrees(creaseAngle)<<")"<<std::endl;
 
     osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
     if (!vertices) return;
@@ -379,11 +638,30 @@ static void smooth_new(osg::Geometry& geom, double creaseAngle)
     }
 
     osg::TriangleIndexFunctor<FindSharpEdgesFunctor> fsef;
-    if (fsef.set(vertices, normals, cos(creaseAngle*0.5)))
+    if (fsef.set(&geom, creaseAngle))
     {
-        // look normals that deviate too far
-        geom.accept(fsef);
-        fsef.listProblemVertices();
+        // look for normals that deviate too far
+
+        fsef.setVertexArray(vertices->getNumElements(), static_cast<const Vec3*>(vertices->getDataPointer()));
+        for(unsigned int i = 0; i < geom.getNumPrimitiveSets(); ++i)
+        {
+            fsef._currentPrimitiveSetIndex = i;
+            geom.getPrimitiveSet(i)->accept(fsef);
+        }
+
+        // fsef.listProblemVertices();
+        fsef.updateGeometry();
+
+        osg::TriangleIndexFunctor<SmoothTriangleIndexFunctor> stif2;
+        if (stif2.set(vertices, normals))
+        {
+            // accumulate all the normals
+            geom.accept(stif);
+
+            // normalize the normals
+            stif.normalize();
+        }
+
     }
 }
 

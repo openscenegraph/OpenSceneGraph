@@ -615,7 +615,26 @@ bool WindowManager::keyDown(int key, int mask) {
 }
 
 bool WindowManager::keyUp(int key, int mask) {
-    return true;
+    if(_focused.valid()) {
+        Event ev(this, EVENT_KEY_UP);
+
+        ev.makeKey(key, mask);
+
+        Widget* focusedWidget = _focused->getFocused();
+
+        ev._window = _focused.get();
+        ev._widget = focusedWidget;
+
+        bool handled = false;
+
+        if(focusedWidget) handled = focusedWidget->callMethodAndCallbacks(ev);
+
+        if(!handled) return _focused->callMethodAndCallbacks(ev);
+
+        else return true;
+    }
+
+    return false;
 }
 
 // A convenience wrapper for creating a proper orthographic camera using the current

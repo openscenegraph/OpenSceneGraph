@@ -51,7 +51,7 @@ QFontImplementation::setFontResolution(const osgText::FontResolution& fontSize)
     _font.setPixelSize(fontSize.second);
 }
 
-osgText::Font::Glyph*
+osgText::Glyph*
 QFontImplementation::getGlyph(const osgText::FontResolution& fontRes, unsigned int charcode)
 {
     setFontResolution(fontRes);
@@ -83,7 +83,7 @@ QFontImplementation::getGlyph(const osgText::FontResolution& fontRes, unsigned i
     painter.end();
 
     // Transfer the rendered image to osg
-    osg::ref_ptr<osgText::Font::Glyph> glyph = new osgText::Font::Glyph(charcode);
+    osg::ref_ptr<osgText::Glyph> glyph = new osgText::Glyph(_facade, charcode);
 
     unsigned int dataSize = imageWidth*imageHeight;
     unsigned char* data = new unsigned char[dataSize];
@@ -128,8 +128,7 @@ QFontImplementation::getGlyph(const osgText::FontResolution& fontRes, unsigned i
 }
 
 osg::Vec2
-QFontImplementation::getKerning(const osgText::FontResolution& fontRes, unsigned int leftcharcode,
-                                unsigned int rightcharcode, osgText::KerningType kerningType)
+QFontImplementation::getKerning(unsigned int leftcharcode, unsigned int rightcharcode, osgText::KerningType kerningType)
 {
     return osg::Vec2(0, 0);
 }

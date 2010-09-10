@@ -14,16 +14,202 @@
 #include "FreeTypeFont.h"
 #include "FreeTypeLibrary.h"
 
-#include <osg/Notify>  
+#include <freetype/ftoutln.h>
+#include <freetype/ftbbox.h>
+
+#include <osg/Notify>
+#include <osg/io_utils>
 #include <osgDB/WriteFile>
+
+namespace FreeType
+{
+
+struct Char3DInfo
+{
+    Char3DInfo(int numSteps):
+        _verts( new osg::Vec3Array ),
+        _geometry( new osg::Geometry ),
+        _numSteps(numSteps),
+        _maxY(-FLT_MAX),
+        _maxX(-FLT_MAX),
+        _minX(FLT_MAX),
+        _minY(FLT_MAX),
+        _coord_scale(1.0/64.0)
+    {
+        _geometry->setVertexArray(_verts.get());
+    }
+
+    ~Char3DInfo()
+    {
+    }
+
+    void completeCurrentPrimitiveSet()
+    {
+        if (_currentPrimitiveSet.valid() && _currentPrimitiveSet->size()>1)
+        {
+            _geometry->addPrimitiveSet( _currentPrimitiveSet.get() );
+        }
+        _currentPrimitiveSet = 0;
+    }
+
+    osg::Geometry* get()
+    {
+        completeCurrentPrimitiveSet();
+
+        return _geometry.get();
+    }
+
+    void addVertex(osg::Vec3 pos)
+    {
+        _previous = pos;
+
+        pos *= _coord_scale;
+
+        if (!_verts->empty() && _verts->back()==pos)
+        {
+            // OSG_NOTICE<<"addVertex("<<pos<<") duplicate, ignoring"<<std::endl;
+            return;
+        }
+
+        if (!_currentPrimitiveSet)
+        {
+            _currentPrimitiveSet = new osg::DrawElementsUShort( osg::PrimitiveSet::POLYGON);
+            _currentPrimitiveSet->setName("boundary");
+        }
+
+        if (!(_currentPrimitiveSet->empty()) &&
+            (*_verts)[(*_currentPrimitiveSet)[0]] == pos)
+        {
+            _currentPrimitiveSet->push_back( (*_currentPrimitiveSet)[0] );
+        }
+        else
+        {
+            _currentPrimitiveSet->push_back( _verts->size() );
+
+            _verts->push_back( pos );
+
+            setMinMax(pos);
+        }
+    }
+
+    void moveTo(const osg::Vec2& pos)
+    {
+        completeCurrentPrimitiveSet();
+
+        addVertex( osg::Vec3(pos.x(),pos.y(),0) );
+
+    }
+    void lineTo(const osg::Vec2& pos)
+    {
+        addVertex( osg::Vec3(pos.x(),pos.y(),0) );
+    }
+
+    void conicTo(const osg::Vec2& control, const osg::Vec2& pos)
+    {
+        osg::Vec3 p0 = _previous;
+        osg::Vec3 p1 = osg::Vec3(control.x(),control.y(),0);
+        osg::Vec3 p2 = osg::Vec3(pos.x(),pos.y(),0);
+
+        double dt = 1.0/_numSteps;
+        double u=0;
+        for (int i=0; i<=_numSteps; ++i)
+        {
+            double w = 1;
+            double bs = 1.0/( (1-u)*(1-u)+2*(1-u)*u*w +u*u );
+            osg::Vec3 p = (p0*((1-u)*(1-u)) + p1*(2*(1-u)*u*w) + p2*(u*u))*bs;
+            addVertex( p );
+
+            u += dt;
+        }
+    }
+
+    void cubicTo(const osg::Vec2& control1, const osg::Vec2& control2, const osg::Vec2& pos)
+    {
+        osg::Vec3 p0 = _previous;
+        osg::Vec3 p1 = osg::Vec3(control1.x(),control1.y(),0);
+        osg::Vec3 p2 = osg::Vec3(control2.x(),control2.y(),0);
+        osg::Vec3 p3 = osg::Vec3(pos.x(),pos.y(),0);
+
+        double cx = 3*(p1.x() - p0.x());
+        double bx = 3*(p2.x() - p1.x()) - cx;
+        double ax = p3.x() - p0.x() - cx - bx;
+        double cy = 3*(p1.y() - p0.y());
+        double by = 3*(p2.y() - p1.y()) - cy;
+        double ay = p3.y() - p0.y() - cy - by;
+
+        double dt = 1.0/_numSteps;
+        double u=0;
+        for (int i=0; i<=_numSteps; ++i)
+        {
+            osg::Vec3 p = osg::Vec3( ax*u*u*u + bx*u*u  + cx*u + p0.x(),ay*u*u*u + by*u*u  + cy*u + p0.y(),0 );
+            addVertex( p );
+
+            u += dt;
+        }
+    }
+
+    void setMinMax(const osg::Vec3& pos)
+    {
+        _maxY = std::max(_maxY, (double) pos.y());
+        _minY = std::min(_minY, (double) pos.y());
+        _maxX = std::max(_maxX, (double) pos.x());
+        _minX = std::min(_minX, (double) pos.x());
+    }
+
+    osg::ref_ptr<osg::Vec3Array>    _verts;
+    osg::ref_ptr<osg::DrawElementsUShort> _currentPrimitiveSet;
+    osg::ref_ptr<osg::Geometry>     _geometry;
+    osg::Vec3                       _previous;
+    int                             _numSteps;
+    double                          _maxY;
+    double                          _maxX;
+    double                          _minX;
+    double                          _minY;
+    double                          _coord_scale;
+
+};
+
+
+int moveTo( const FT_Vector* to, void* user )
+{
+    Char3DInfo* char3d = (Char3DInfo*)user;
+    char3d->moveTo( osg::Vec2(to->x,to->y) );
+    return 0;
+}
+int lineTo( const FT_Vector* to, void* user )
+{
+    Char3DInfo* char3d = (Char3DInfo*)user;
+    char3d->lineTo( osg::Vec2(to->x,to->y) );
+    return 0;
+}
+int conicTo( const FT_Vector* control,const FT_Vector* to, void* user )
+{
+    Char3DInfo* char3d = (Char3DInfo*)user;
+    char3d->conicTo( osg::Vec2(control->x,control->y), osg::Vec2(to->x,to->y) );
+    return 0;
+}
+int cubicTo( const FT_Vector* control1,const FT_Vector* control2,const FT_Vector* to, void* user )
+{
+    Char3DInfo* char3d = (Char3DInfo*)user;
+    char3d->cubicTo(
+        osg::Vec2(control1->x,control1->y),
+        osg::Vec2(control2->x,control2->y),
+        osg::Vec2(to->x,to->y) );
+    return 0;
+}
+
+}
 
 FreeTypeFont::FreeTypeFont(const std::string& filename, FT_Face face, unsigned int flags):
     _currentRes(osgText::FontResolution(0,0)),
     _filename(filename),
     _buffer(0),
     _face(face),
-    _flags(flags)
+    _flags(flags),
+    _scale(1.0f),
+    _freetype_scale(1.0f)
 {
+    init();
 }
 
 FreeTypeFont::FreeTypeFont(FT_Byte* buffer, FT_Face face, unsigned int flags):
@@ -31,8 +217,11 @@ FreeTypeFont::FreeTypeFont(FT_Byte* buffer, FT_Face face, unsigned int flags):
     _filename(""),
     _buffer(buffer),
     _face(face),
-    _flags(flags)
+    _flags(flags),
+    _scale(1.0f),
+    _freetype_scale(1.0f)
 {
+    init();
 }
 
 FreeTypeFont::~FreeTypeFont()
@@ -57,6 +246,71 @@ FreeTypeFont::~FreeTypeFont()
                 _buffer = 0;
             }
         }
+    }
+}
+
+void FreeTypeFont::init()
+{
+
+    FT_Error _error = FT_Set_Pixel_Sizes(_face, 32, 32);
+    if (_error)
+    {
+        OSG_NOTICE << "FreeTypeFont3D: set pixel sizes failed ..." << std::endl;
+        return;
+    }
+
+    FT_Set_Char_Size( _face, 64*64, 64*64, 600, 600);
+
+    int glyphIndex = FT_Get_Char_Index( _face, 'M' );
+    _error = FT_Load_Glyph( _face, glyphIndex, FT_LOAD_DEFAULT );
+    if (_error)
+    {
+        OSG_NOTICE << "FreeTypeFont3D: initial glyph load failed ..." << std::endl;
+        return;
+    }
+
+    if (_face->glyph->format != FT_GLYPH_FORMAT_OUTLINE)
+    {
+        OSG_NOTICE << "FreeTypeFont3D: not a vector font" << std::endl;
+        return;
+    }
+
+    {
+        FreeType::Char3DInfo char3d(10);
+
+        FT_Outline outline = _face->glyph->outline;
+        FT_Outline_Funcs funcs;
+        funcs.conic_to = (FT_Outline_ConicToFunc)&FreeType::conicTo;
+        funcs.line_to = (FT_Outline_LineToFunc)&FreeType::lineTo;
+        funcs.cubic_to = (FT_Outline_CubicToFunc)&FreeType::cubicTo;
+        funcs.move_to = (FT_Outline_MoveToFunc)&FreeType::moveTo;
+        funcs.shift = 0;
+        funcs.delta = 0;
+        _error = FT_Outline_Decompose(&outline,&funcs,&char3d);
+        if (_error)
+        {
+            OSG_NOTICE << "FreeTypeFont3D: - outline decompose failed ..." << std::endl;
+            return;
+        }
+
+        FT_BBox bb;
+        FT_Outline_Get_BBox(&outline,&bb);
+
+        long ymin = ft_floor( bb.yMin );
+        long ymax = ft_ceiling( bb.yMax );
+        double height = double(ymax - ymin)/64.0;
+
+        // long xmin = ft_floor( bb.xMin );
+        // long xmax = ft_ceiling( bb.xMax );
+        // double width = (xmax - xmin)/64.0;
+
+#if 1
+        _freetype_scale = 1.0f/height;
+        _scale = 1.0f;
+#else
+        _freetype_scale = 1.0f;
+        _scale = 1.0f/height;
+#endif
     }
 }
 
@@ -95,7 +349,7 @@ void FreeTypeFont::setFontResolution(const osgText::FontResolution& fontSize)
 
 }
 
-osgText::Font::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, unsigned int charcode)
+osgText::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, unsigned int charcode)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
 
@@ -135,7 +389,7 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& font
     unsigned int width = sourceWidth;
     unsigned int height = sourceHeight;
 
-    osg::ref_ptr<osgText::Font::Glyph> glyph = new osgText::Font::Glyph(charcode);
+    osg::ref_ptr<osgText::Glyph> glyph = new osgText::Glyph(_facade, charcode);
     
     unsigned int dataSize = width*height;
     unsigned char* data = new unsigned char[dataSize];
@@ -184,28 +438,132 @@ osgText::Font::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& font
     }
 
 
-    FT_Glyph_Metrics* metrics = &(glyphslot->metrics);
+    FT_Glyph_Metrics* metrics = &(_face->glyph->metrics);
 
-    glyph->setHorizontalBearing(osg::Vec2((float)metrics->horiBearingX/64.0f,(float)(metrics->horiBearingY-metrics->height)/64.0f)); // bottom left.
-    glyph->setHorizontalAdvance((float)metrics->horiAdvance/64.0f);
-    glyph->setVerticalBearing(osg::Vec2((float)metrics->vertBearingX/64.0f,(float)(metrics->vertBearingY-metrics->height)/64.0f)); // top middle.
-    glyph->setVerticalAdvance((float)metrics->vertAdvance/64.0f);
+#if 0
+    float coord_scale = _freetype_scale/64.0f;
+#else
+    float coord_scale = 1.0f/64.0f;
+#endif
 
-    addGlyph(fontRes,charcode,glyph.get());
-    
+    glyph->setHorizontalBearing(osg::Vec2((float)metrics->horiBearingX * coord_scale,(float)(metrics->horiBearingY-metrics->height) * coord_scale)); // bottom left.
+    glyph->setHorizontalAdvance((float)metrics->horiAdvance * coord_scale);
+    glyph->setVerticalBearing(osg::Vec2((float)metrics->vertBearingX * coord_scale,(float)(metrics->vertBearingY-metrics->height) * coord_scale)); // top middle.
+    glyph->setVerticalAdvance((float)metrics->vertAdvance * coord_scale);
+
 //    cout << "      in getGlyph() implementation="<<this<<"  "<<_filename<<"  facade="<<_facade<<endl;
 
-    return glyph.get();
+    return glyph.release();
 
 }
 
-osg::Vec2 FreeTypeFont::getKerning(const osgText::FontResolution& fontRes, unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType kerningType)
+osgText::Glyph3D * FreeTypeFont::getGlyph3D(unsigned int charcode)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
+
+    //
+    // GT: fix for symbol fonts (i.e. the Webdings font) as the wrong character are being
+    // returned, for symbol fonts in windows (FT_ENCONDING_MS_SYMBOL in freetype) the correct
+    // values are from 0xF000 to 0xF0FF not from 0x000 to 0x00FF (0 to 255) as you would expect.
+    // Microsoft uses a private field for its symbol fonts
+    //
+    unsigned int charindex = charcode;
+    if (_face->charmap != NULL)
+    {
+        if (_face->charmap->encoding == FT_ENCODING_MS_SYMBOL)
+        {
+            charindex |= 0xF000;
+        }
+    }
+
+    FT_Error error = FT_Load_Char( _face, charindex, FT_LOAD_DEFAULT|_flags );
+    if (error)
+    {
+        OSG_WARN << "FT_Load_Char(...) error 0x"<<std::hex<<error<<std::dec<<std::endl;
+        return 0;
+    }
+    if (_face->glyph->format != FT_GLYPH_FORMAT_OUTLINE)
+    {
+        OSG_WARN << "FreeTypeFont3D::getGlyph : not a vector font" << std::endl;
+        return 0;
+    }
+
+    float coord_scale = _freetype_scale/64.0f;
+
+    // ** init FreeType to describe the glyph
+    FreeType::Char3DInfo char3d(_facade->getNumberCurveSamples());
+    char3d._coord_scale = coord_scale;
+
+    FT_Outline outline = _face->glyph->outline;
+    FT_Outline_Funcs funcs;
+    funcs.conic_to = (FT_Outline_ConicToFunc)&FreeType::conicTo;
+    funcs.line_to = (FT_Outline_LineToFunc)&FreeType::lineTo;
+    funcs.cubic_to = (FT_Outline_CubicToFunc)&FreeType::cubicTo;
+    funcs.move_to = (FT_Outline_MoveToFunc)&FreeType::moveTo;
+    funcs.shift = 0;
+    funcs.delta = 0;
+
+    // ** record description
+    FT_Error _error = FT_Outline_Decompose(&outline, &funcs, &char3d);
+    if (_error)
+    {
+        OSG_WARN << "FreeTypeFont3D::getGlyph : - outline decompose failed ..." << std::endl;
+        return 0;
+    }
+
+    // ** create geometry for each part of the glyph
+    osg::ref_ptr<osg::Geometry> frontGeo(new osg::Geometry);
+
+    osg::ref_ptr<osg::Vec3Array> rawVertices = new osg::Vec3Array(*(char3d._verts));
+    osg::Geometry::PrimitiveSetList rawPrimitives;
+    for(osg::Geometry::PrimitiveSetList::iterator itr = char3d.get()->getPrimitiveSetList().begin();
+        itr != char3d.get()->getPrimitiveSetList().end();
+        ++itr)
+    {
+        rawPrimitives.push_back(dynamic_cast<osg::PrimitiveSet*>((*itr)->clone(osg::CopyOp::DEEP_COPY_ALL)));
+    }
+
+    // ** save vertices and PrimitiveSetList of each face in the Glyph3D PrimitiveSet face list
+    osg::ref_ptr<osgText::Glyph3D> glyph3D = new osgText::Glyph3D(_facade, charcode);
+
+    // copy the raw primitive set list before we tessellate it.
+    glyph3D->getRawFacePrimitiveSetList() = rawPrimitives;
+    glyph3D->setRawVertexArray(rawVertices.get());
+
+
+    FT_Glyph_Metrics* metrics = &(_face->glyph->metrics);
+
+    glyph3D->setHorizontalBearing(osg::Vec2((float)metrics->horiBearingX * coord_scale,(float)(metrics->horiBearingY-metrics->height) * coord_scale)); // bottom left.
+    glyph3D->setHorizontalAdvance((float)metrics->horiAdvance * coord_scale);
+    glyph3D->setVerticalBearing(osg::Vec2((float)metrics->vertBearingX * coord_scale,(float)(metrics->vertBearingY-metrics->height) * coord_scale)); // top middle.
+    glyph3D->setVerticalAdvance((float)metrics->vertAdvance * coord_scale);
+
+    glyph3D->setWidth((float)metrics->width * coord_scale);
+    glyph3D->setHeight((float)metrics->height * coord_scale);
+
+    FT_BBox ftbb;
+    FT_Outline_Get_BBox(&outline, &ftbb);
+
+    long xmin = ft_floor( ftbb.xMin );
+    long xmax = ft_ceiling( ftbb.xMax );
+    long ymin = ft_floor( ftbb.yMin );
+    long ymax = ft_ceiling( ftbb.yMax );
+
+    osg::BoundingBox bb(xmin * coord_scale, ymin * coord_scale, 0.0f, xmax * coord_scale, ymax * coord_scale, 0.0f);
+
+    glyph3D->setBoundingBox(bb);
+
+    glyph3D->computeText3DGeometryData();
+
+
+    return glyph3D.release();
+}
+
+osg::Vec2 FreeTypeFont::getKerning(unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType kerningType)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
 
     if (!FT_HAS_KERNING(_face) || (kerningType == osgText::KERNING_NONE)) return osg::Vec2(0.0f,0.0f);
-
-    setFontResolution(fontRes);
 
     FT_Kerning_Mode mode = (kerningType==osgText::KERNING_DEFAULT) ? ft_kerning_default : ft_kerning_unfitted;
 

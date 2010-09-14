@@ -60,6 +60,9 @@ namespace osgParticle {
         /// Place a particle. This method is called by <CODE>ModularEmitter</CODE>, do not call it manually.
         inline void place(Particle* P) const;
 
+        /// return the length of the segment
+        inline float size() const;
+        
         /// return the control position
         inline osg::Vec3 getControlPosition() const;
 
@@ -103,6 +106,11 @@ namespace osgParticle {
     inline void SegmentPlacer::place(Particle* P) const
     {
         P->setPosition(rangev3(_vertexA, _vertexB).get_random());
+    }
+    
+    inline float SegmentPlacer::size() const
+    {
+        return (_vertexB - _vertexA).length();
     }
     
     inline void SegmentPlacer::setVertexA(const osg::Vec3& v)

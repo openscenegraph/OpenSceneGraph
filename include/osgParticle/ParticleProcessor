@@ -151,7 +151,6 @@ namespace osgParticle
     private:
         ReferenceFrame _rf;
         bool _enabled;
-        double _t0;
         osg::ref_ptr<ParticleSystem> _ps;
         bool _first_ltw_compute;
         bool _need_ltw_matrix;
@@ -197,7 +196,6 @@ namespace osgParticle
         _enabled = v;
         if (_enabled)
         {
-            _t0 = -1;
             _currentTime = 0;
         }
     }

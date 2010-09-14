@@ -312,14 +312,15 @@ void TextureCubeMap::apply(State& state) const
 
         _textureObjectBuffer[contextID] = textureObject;
 
-        if (state.getMaxTexturePoolSize()==0 && _unrefImageDataAfterApply && areAllTextureObjectsLoaded())
+        // unref image data?
+        if (isSafeToUnrefImageData(state))
         {
             TextureCubeMap* non_const_this = const_cast<TextureCubeMap*>(this);
             for (int n=0; n<6; n++)
             {                
                 if (_images[n].valid() && _images[n]->getDataVariance()==STATIC)
                 {
-                    non_const_this->_images[n] = 0;
+                    non_const_this->_images[n] = NULL;
                 }
             }
         }

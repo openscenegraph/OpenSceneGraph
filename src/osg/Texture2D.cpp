@@ -248,13 +248,11 @@ void Texture2D::apply(State& state) const
         // update the modified tag to show that it is upto date.
         getModifiedCount(contextID) = image->getModifiedCount();
 
-        if (state.getMaxTexturePoolSize()==0 &&
-            _unrefImageDataAfterApply &&
-            areAllTextureObjectsLoaded() &&
-            image->getDataVariance()==STATIC)
+        // unref image data?
+        if (isSafeToUnrefImageData(state) && image->getDataVariance()==STATIC)
         {
             Texture2D* non_const_this = const_cast<Texture2D*>(this);
-            non_const_this->_image = 0;
+            non_const_this->_image = NULL;
         }
 
         // in theory the following line is redundent, but in practice

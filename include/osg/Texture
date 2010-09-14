@@ -805,10 +805,13 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
         virtual void computeInternalFormat() const = 0;
         
+        /** Computes the internal format from Image parameters. */
         void computeInternalFormatWithImage(const osg::Image& image) const;
 
+        /** Computes the texture dimension for the given Image. */
         void computeRequiredTextureDimensions(State& state, const osg::Image& image,GLsizei& width, GLsizei& height,GLsizei& numMipmapLevels) const;
         
+        /** Computes the internal format type. */
         void computeInternalFormatType() const;
 
         /** Helper method. Sets texture parameters. */
@@ -817,6 +820,11 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         /** Returns true if _useHardwareMipMapGeneration is true and either
           * glGenerateMipmapEXT() or GL_GENERATE_MIPMAP_SGIS are supported. */
         bool isHardwareMipmapGenerationEnabled(const State& state) const;
+
+        /** Returns true if the associated Image should be released and it's safe to do so. */
+        bool isSafeToUnrefImageData(const State& state) const {
+            return (_unrefImageDataAfterApply && state.getMaxTexturePoolSize()==0 && areAllTextureObjectsLoaded());
+        }
 
         /** Helper methods to be called before and after calling
           * gl[Compressed][Copy]Tex[Sub]Image2D to handle generating mipmaps. */

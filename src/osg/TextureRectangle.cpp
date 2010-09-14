@@ -259,12 +259,12 @@ void TextureRectangle::apply(State& state) const
             textureObject->setAllocated(true);
         }
 
-        if (state.getMaxTexturePoolSize()==0 && _unrefImageDataAfterApply && areAllTextureObjectsLoaded() && _image->getDataVariance()==STATIC)
+        // unref image data?
+        if (isSafeToUnrefImageData(state) && _image->getDataVariance()==STATIC)
         {
             TextureRectangle* non_const_this = const_cast<TextureRectangle*>(this);
-            non_const_this->_image = 0;
+            non_const_this->_image = NULL;
         }
-
     }
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_internalFormat!=0) )
     {

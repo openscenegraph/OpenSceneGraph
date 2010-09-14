@@ -61,6 +61,9 @@ namespace osgParticle
         /// Place a particle. Do not call it manually.
         inline void place(Particle* P) const;
 
+        /// return the area of the sector
+        inline float size() const;
+        
         /// return the control position
         inline osg::Vec3 getControlPosition() const;
 
@@ -128,6 +131,12 @@ namespace osgParticle
             getCenter().z());
         
         P->setPosition(pos);
+    }
+    
+    inline float SectorPlacer::size() const
+    {
+        return 0.5f * (_phi_range.maximum - _phi_range.minimum) *
+               (_rad_range.maximum*_rad_range.maximum - _rad_range.minimum*_rad_range.minimum);
     }
 
     inline osg::Vec3 SectorPlacer::getControlPosition() const

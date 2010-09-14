@@ -23,6 +23,7 @@
 #include <osg/Vec3>
 #include <osg/Vec4>
 #include <osg/Matrix>
+#include <osg/Drawable>
 #include <osg/GL>
 #include <osg/GLBeginEndAdapter>
 
@@ -47,6 +48,7 @@ namespace osgParticle
         minimum values are used.
     */
     class OSGPARTICLE_EXPORT Particle {
+        friend class ParticleSystem;
     public:
         
         enum
@@ -63,7 +65,8 @@ namespace osgParticle
             QUAD,            // uses GL_QUADS as primitive
             QUAD_TRIANGLESTRIP,    // uses GL_TRI_angleSTRIP as primitive, but each particle needs a glBegin/glEnd pair
             HEXAGON,            // may save some filling time, but uses more triangles
-            LINE                // uses GL_LINES to draw line segments that point to the direction of motion            
+            LINE,               // uses GL_LINES to draw line segments that point to the direction of motion   
+            USER               // uses a user-defined drawable as primitive
         };
         
         Particle();
@@ -139,7 +142,7 @@ namespace osgParticle
         inline const osg::Vec4& getCurrentColor() const { return _current_color; }
 
         /// Get the current alpha
-        inline float getCurrentAlpha() const { return _current_alpha; }
+        inline float getCurrentAlpha() const { return _base_prop.z(); }
         
         /// Get the s texture coordinate of the bottom left of the particle
         inline float getSTexCoord() const { return _s_coord; }
@@ -226,19 +229,22 @@ namespace osgParticle
         /// Transform angle and angularVelocity vectors by a matrix.
         inline void transformAngleVelocity(const osg::Matrix& xform);
         
-        /**    Update the particle (don't call this method manually).
+        /** Update the particle (don't call this method manually).
             This method is called automatically by <CODE>ParticleSystem::update()</CODE>; it
             updates the graphical properties of the particle for the current time,
             checks whether the particle is still alive, and then updates its position
             by computing <I>P = P + V * dt</I> (where <I>P</I> is the position and <I>V</I> is the velocity).
         */
-        bool update(double dt);
+        bool update(double dt, bool onlyTimeStamp);
 
         /// Perform some pre-rendering tasks. Called automatically by particle systems.
         inline void beginRender(osg::GLBeginEndAdapter* gl) const;
         
         /// Render the particle. Called automatically by particle systems.
         void render(osg::GLBeginEndAdapter* gl, const osg::Vec3& xpos, const osg::Vec3& px, const osg::Vec3& py, float scale = 1.0f) const;
+        
+        /// Render the particle with user-defined drawable
+        void render(osg::RenderInfo& renderInfo, const osg::Vec3& xpos, const osg::Vec3& xrot) const;
         
         /// Perform some post-rendering tasks. Called automatically by particle systems.
         inline void endRender(osg::GLBeginEndAdapter* gl) const;
@@ -265,6 +271,21 @@ namespace osgParticle
 
         /// Get the const next particle
         inline int getNextParticle() const { return _nextParticle; }
+        
+        /// Set the depth of the particle
+        inline void setDepth(double d) { _depth = d; }
+        
+        /// Get the depth of the particle
+        inline double getDepth() const { return _depth; }
+        
+        /// Set the user-defined particle drawable
+        inline void setDrawable(osg::Drawable* d) { _drawable = d; }
+        
+        /// Get the user-defined particle drawable
+        inline osg::Drawable* getDrawable() const { return _drawable.get(); }
+        
+        /// Sorting operator
+        bool operator<(const Particle &P) const { return _depth < P._depth; }
 
         /// Method for initializing a particles texture coords as part of a connected particle system.
         void setUpTexCoordsAsPartOfConnectedParticleSystem(ParticleSystem* ps);
@@ -281,7 +302,7 @@ namespace osgParticle
         osg::ref_ptr<Interpolator> _ai;
         osg::ref_ptr<Interpolator> _ci;
 
-        bool _alive;
+        //bool _alive;
         bool _mustdie;
         double _lifeTime;
 
@@ -298,8 +319,9 @@ namespace osgParticle
 
         double _t0;        
 
-        float _current_size;
-        float _current_alpha;
+        //float _current_size;
+        //float _current_alpha;
+        osg::Vec3 _base_prop;  // [0] _alive [1] _current_size [2] _current_alpha
         osg::Vec4 _current_color;
         
         float _s_tile;
@@ -313,6 +335,12 @@ namespace osgParticle
         // previous and next Particles are only used in ConnectedParticleSystems
         int _previousParticle;
         int _nextParticle;
+        
+        // the depth of the particle is used only when sorting is enabled
+        double _depth;
+        
+        // the particle drawable is used only when USER shape is enabled
+        osg::ref_ptr<osg::Drawable> _drawable;
     };
 
     // INLINE FUNCTIONS
@@ -329,7 +357,7 @@ namespace osgParticle
 
     inline bool Particle::isAlive() const
     {
-        return _alive;
+        return _base_prop.x()>0.0;
     }
 
     inline double Particle::getLifeTime() const
@@ -569,7 +597,7 @@ namespace osgParticle
 
     inline float Particle::getCurrentSize() const
     {
-        return _current_size;
+        return _base_prop.y();
     }
 
 

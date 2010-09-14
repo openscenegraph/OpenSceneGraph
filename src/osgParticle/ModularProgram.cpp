@@ -25,13 +25,7 @@ void osgParticle::ModularProgram::execute(double dt)
     ParticleSystem* ps = getParticleSystem();
     for (ci=_operators.begin(); ci!=ci_end; ++ci) {        
         (*ci)->beginOperate(this);
-        int n = ps->numParticles();
-        for (int i=0; i<n; ++i) {
-            Particle* P = ps->getParticle(i);
-            if (P->isAlive() && (*ci)->isEnabled()) {
-                (*ci)->operate(P, dt);
-            }
-        }
+        (*ci)->operateParticles(ps, dt);
         (*ci)->endOperate();
     }
 }

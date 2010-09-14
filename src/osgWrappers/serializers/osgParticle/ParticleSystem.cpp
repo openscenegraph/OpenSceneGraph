@@ -75,8 +75,18 @@ REGISTER_OBJECT_WRAPPER( osgParticleParticleSystem,
         ADD_ENUM_VALUE( WORLD_COORDINATES );
     END_ENUM_SERIALIZER();  // _particleScaleReferenceFrame
     
+    ADD_BOOL_SERIALIZER( UseVertexArray, false );  // _useVertexArray
+    ADD_BOOL_SERIALIZER( UseShaders, false );  // _useShaders
     ADD_BOOL_SERIALIZER( DoublePassRendering, false );  // _doublepass
     ADD_BOOL_SERIALIZER( Frozen, false );  // _frozen
     ADD_USER_SERIALIZER( DefaultParticleTemplate );  // _def_ptemp
     ADD_BOOL_SERIALIZER( FreezeOnCull, false );  // _freeze_on_cull
+    
+    BEGIN_ENUM_SERIALIZER( SortMode, NO_SORT );
+        ADD_ENUM_VALUE( NO_SORT );
+        ADD_ENUM_VALUE( SORT_FRONT_TO_BACK );
+        ADD_ENUM_VALUE( SORT_BACK_TO_FRONT );
+    END_ENUM_SERIALIZER();  // _sortMode
+    
+    ADD_DOUBLE_SERIALIZER( VisibilityDistance, -1.0 );  // _visibilityDistance
 }

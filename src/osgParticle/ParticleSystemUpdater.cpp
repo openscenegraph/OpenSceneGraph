@@ -1,18 +1,18 @@
 #include <osgParticle/ParticleSystemUpdater>
 
 #include <osg/CopyOp>
-#include <osg/Node>
+#include <osg/Geode>
 
 using namespace osg;
 
 osgParticle::ParticleSystemUpdater::ParticleSystemUpdater()
-: osg::Node(), _t0(-1), _frameNumber(0)
+: osg::Geode(), _frameNumber(0)
 {
     setCullingActive(false);
 }
 
 osgParticle::ParticleSystemUpdater::ParticleSystemUpdater(const ParticleSystemUpdater& copy, const osg::CopyOp& copyop)
-: osg::Node(copy, copyop), _t0(copy._t0), _frameNumber(0)
+: osg::Geode(copy, copyop), _frameNumber(0)
 {
     ParticleSystem_Vector::const_iterator i;
     for (i=copy._psv.begin(); i!=copy._psv.end(); ++i) {
@@ -33,22 +33,18 @@ void osgParticle::ParticleSystemUpdater::traverse(osg::NodeVisitor& nv)
                 _frameNumber = nv.getFrameStamp()->getFrameNumber();
 
                 double t = nv.getFrameStamp()->getSimulationTime();
-                if (_t0 != -1.0)
+                ParticleSystem_Vector::iterator i;
+                for (i=_psv.begin(); i!=_psv.end(); ++i)
                 {
-                    ParticleSystem_Vector::iterator i;
-                    for (i=_psv.begin(); i!=_psv.end(); ++i)
-                    {
-                        ParticleSystem* ps = i->get();
-                        
-                        ParticleSystem::ScopedWriteLock lock(*(ps->getReadWriteMutex()));
+                    ParticleSystem* ps = i->get();
+                    
+                    ParticleSystem::ScopedWriteLock lock(*(ps->getReadWriteMutex()));
 
-                        if (!ps->isFrozen() && (ps->getLastFrameNumber() >= (nv.getFrameStamp()->getFrameNumber() - 1) || !ps->getFreezeOnCull()))
-                        {
-                            ps->update(t - _t0);
-                        }
+                    if (!ps->isFrozen() && (ps->getLastFrameNumber() >= (nv.getFrameStamp()->getFrameNumber() - 1) || !ps->getFreezeOnCull()))
+                    {
+                        ps->update(ps->getDeltaTime(t), nv);
                     }
                 }
-                _t0 = t;
             }
 
         }
@@ -58,17 +54,32 @@ void osgParticle::ParticleSystemUpdater::traverse(osg::NodeVisitor& nv)
         }
 
     }
-    Node::traverse(nv);
+    Geode::traverse(nv);
 }
 
 osg::BoundingSphere osgParticle::ParticleSystemUpdater::computeBound() const
 {
-    return osg::BoundingSphere();
+    return Geode::computeBound();
+}
+
+bool osgParticle::ParticleSystemUpdater::addDrawable(Drawable* drawable)
+{
+    ParticleSystem* ps = dynamic_cast<ParticleSystem*>(drawable);
+    if (ps) addParticleSystem(ps);
+    return Geode::addDrawable(drawable);
+}
+
+bool osgParticle::ParticleSystemUpdater::removeDrawable(Drawable* drawable)
+{
+    ParticleSystem* ps = dynamic_cast<ParticleSystem*>(drawable);
+    if (ps) removeParticleSystem(ps);
+    return Geode::removeDrawable(drawable);
 }
 
 bool osgParticle::ParticleSystemUpdater::addParticleSystem(ParticleSystem* ps)
 {
-    _psv.push_back(ps);
+    unsigned int i = getParticleSystemIndex( ps );
+    if( i >= _psv.size() ) _psv.push_back(ps);
     return true;
 }
 

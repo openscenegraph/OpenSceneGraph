@@ -201,7 +201,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
         bool                                _succeeded;
         std::string                         _directory;
         std::string                         _srcDirectory;
-        Lib3dsFile *                        file3ds;
+        Lib3dsFile *                        _file3ds;
         StateSetStack                       _stateSetStack;
         osg::ref_ptr<osg::StateSet>         _currentStateSet;
         std::map<std::string, unsigned int> _mapPrefix;            ///< List of next number to use in unique name generation, for each prefix
@@ -210,7 +210,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
         unsigned int                        _lastMaterialIndex;
         unsigned int                        _lastMeshIndex;
         Lib3dsMeshInstanceNode *            _cur3dsNode;
-        const osgDB::ReaderWriter::Options* options;
+        const osgDB::ReaderWriter::Options* _options;
         unsigned int                        _imageCount;
         bool                                _extendedFilePaths;
         std::set<osg::Image *>              _imageSet;

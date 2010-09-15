@@ -48,8 +48,8 @@ class OSGWIDGET_EXPORT BrowserManager : public osg::Object
 };
 
 
-/** Pure virtual base class for that provides the browser inteface for integration with 3rd party implementations.
-  * Implementation of BrowserImage are provide via the gecko plugin.*/
+/** Pure virtual base class that provides the browser interface for integration with 3rd party implementations.
+  * Implementations of BrowserImage are provided via the gecko plugin.*/
 class BrowserImage : public osg::Image
 {
     public:
@@ -65,7 +65,7 @@ class BrowserImage : public osg::Image
 };
 
 
-/** Convinience class that provides a interactive quad that can be placed directly in the scene.*/
+/** Convenience class that provides an interactive quad that can be placed directly into the scene.*/
 class OSGWIDGET_EXPORT Browser : public osg::Geode
 {
     public:

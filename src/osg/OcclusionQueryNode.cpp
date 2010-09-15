@@ -48,6 +48,8 @@ static OcclusionQueryBufferedExtensions s_OQ_bufferedExtensions;
 //   of these classes existed in their own separate header and
 //   source files.)
 
+namespace osg
+{
 
 // Create and return a StateSet appropriate for performing an occlusion
 //   query test (disable lighting, texture mapping, etc). Probably some
@@ -109,68 +111,11 @@ initOQDebugState()
     return debugState;
 }
 
-
-// TestResult -- stores (per context) results of an occlusion query
-//   test performed by QueryGeometry. An OcclusionQueryNode has a
-//   Geode owning a single QueryGeometry that
-//   draws the occlusion query geometry. QueryGeometry keeps a
-//   TestResult per context to store the result/status of each query.
-// Accessed during the cull and draw traversals.
-class TestResult : public osg::Referenced
-{
-public:
-    TestResult() : _init( false ), _id( 0 ), _contextID( 0 ), _active( false ), _numPixels( 0 ) {}
-    ~TestResult() {}
-
-    bool _init;
-
-    // Query ID for this context.
-    GLuint _id;
-    // Context ID owning this query ID.
-    unsigned int _contextID;
-
-    // Set to true when a query gets issued and set to
-    //   false when the result is retrieved.
-    mutable bool _active;
-
-    // Result of last query.
-    GLint _numPixels;
-};
-
-// QueryGeometry -- A Drawable that performs an occlusion query,
-//   using its geometric data as the query geometry.
-class QueryGeometry : public osg::Geometry
-{
-public:
-    QueryGeometry( const std::string& oqnName=std::string("") );
-    ~QueryGeometry();
-
-    void reset();
-
-    // TBD implement copy constructor
-
-    virtual void drawImplementation( osg::RenderInfo& renderInfo ) const;
-
-    unsigned int getNumPixels( const osg::Camera* cam );
-
-
-    void releaseGLObjects( osg::State* state = 0 );
-    static void deleteQueryObject( unsigned int contextID, GLuint handle );
-    static void flushDeletedQueryObjects( unsigned int contextID, double currentTime, double& availableTime );
-    static void discardDeletedQueryObjects( unsigned int contextID );
-    
-protected:
-    typedef std::map< const osg::Camera*, TestResult > ResultMap;
-    mutable ResultMap _results;
-    mutable OpenThreads::Mutex _mapMutex;
-
-    // Needed for debug only
-    std::string _oqnName;
-};
+}
 
 struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
 {
-    typedef std::vector<TestResult*> ResultsVector;
+    typedef std::vector<osg::TestResult*> ResultsVector;
     ResultsVector _results;
 
     RetrieveQueriesCallback( osg::Drawable::Extensions* ext=NULL )
@@ -218,7 +163,7 @@ struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
         ResultsVector::const_iterator it = _results.begin();
         while (it != _results.end())
         {
-            TestResult* tr = const_cast<TestResult*>( *it );
+            osg::TestResult* tr = const_cast<osg::TestResult*>( *it );
 
             if (!tr->_active || !tr->_init)
             {
@@ -274,7 +219,7 @@ struct RetrieveQueriesCallback : public osg::Camera::DrawCallback
         _results.clear();
     }
 
-    void add( TestResult* tr )
+    void add( osg::TestResult* tr )
     {
         _results.push_back( tr );
     }
@@ -321,6 +266,10 @@ typedef osg::buffered_object< QueryObjectList > DeletedQueryObjectCache;
 
 static OpenThreads::Mutex s_mutex_deletedQueryObjectCache;
 static DeletedQueryObjectCache s_deletedQueryObjectCache;
+
+namespace osg
+{
+
 
 QueryGeometry::QueryGeometry( const std::string& oqnName )
   : _oqnName( oqnName )
@@ -517,9 +466,6 @@ QueryGeometry::discardDeletedQueryObjects( unsigned int contextID )
 //
 
 
-
-namespace osg
-{
 
 
 OcclusionQueryNode::OcclusionQueryNode()

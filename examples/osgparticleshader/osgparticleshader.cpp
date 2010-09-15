@@ -100,7 +100,6 @@ int main( int argc, char** argv )
     ***/
     osg::ref_ptr<osgParticle::ParticleSystem> ps = new osgParticle::ParticleSystem;
     
-    osgParticle::Particle& ptemp = ps->getDefaultParticleTemplate();
     ps->getDefaultParticleTemplate().setLifeTime( 5.0f );
     
     if ( customShape )

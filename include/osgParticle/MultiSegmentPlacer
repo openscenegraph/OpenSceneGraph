@@ -65,7 +65,7 @@ namespace osgParticle {
         void place(Particle* P) const;
 
         /// return the length of the multi-segment
-        inline float size() const;
+        inline float volume() const;
         
         /// return the control position
         inline osg::Vec3 getControlPosition() const;
@@ -130,7 +130,7 @@ namespace osgParticle {
         recompute_length();
     }
     
-    inline float MultiSegmentPlacer::size() const
+    inline float MultiSegmentPlacer::volume() const
     {
         return _total_length;
     }

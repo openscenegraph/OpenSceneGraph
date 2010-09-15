@@ -495,7 +495,7 @@ void osgParticle::ParticleSystem::render_vertex_array(osg::RenderInfo& renderInf
     GLsizei posOffset = (float*)(&(itr->_position)) - ptr;         // Position
     GLsizei colorOffset = (float*)(&(itr->_current_color)) - ptr;  // Color
     GLsizei velOffset = (float*)(&(itr->_velocity)) - ptr;         // Velocity
-    GLsizei propOffset = (float*)(&(itr->_base_prop)) - ptr;       // Alive, size & alpha
+    GLsizei propOffset = (float*)(&(itr->_alive)) - ptr;       // Alive, size & alpha
     
     // Draw particles as arrays
     osg::State& state = *renderInfo.getState();

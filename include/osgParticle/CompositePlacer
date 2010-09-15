@@ -58,7 +58,7 @@ public:
     inline void place( Particle* P ) const;
     
     /// return the volume of the box
-    inline float size() const;
+    inline float volume() const;
     
     /// return the control position
     inline osg::Vec3 getControlPosition() const;
@@ -75,20 +75,20 @@ protected:
 
 inline void CompositePlacer::place( Particle* P ) const
 {
-    rangef sizeRange( 0.0f, size() );
+    rangef sizeRange( 0.0f, volume() );
     float current = 0.0f, selected = sizeRange.get_random();
     for ( PlacerList::const_iterator itr=_placers.begin(); itr!=_placers.end(); ++itr )
     {
-        current += (*itr)->size();
+        current += (*itr)->volume();
         if ( selected<=current ) (*itr)->place( P );
     }
 }
 
-inline float CompositePlacer::size() const
+inline float CompositePlacer::volume() const
 {
     float total_size = 0.0f;
     for ( PlacerList::const_iterator itr=_placers.begin(); itr!=_placers.end(); ++itr )
-        total_size += (*itr)->size();
+        total_size += (*itr)->volume();
     return total_size;
 }
 

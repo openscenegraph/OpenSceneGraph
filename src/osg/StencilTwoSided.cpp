@@ -18,6 +18,7 @@
 
 using namespace osg;
 
+
 StencilTwoSided::StencilTwoSided()
 {
     // set up same defaults as glStencilFunc.
@@ -85,21 +86,46 @@ int StencilTwoSided::compare(const StateAttribute& sa) const
 
 void StencilTwoSided::apply(State& state) const
 {
+    // get "per-context" extensions
     const unsigned int contextID = state.getContextID();
     const Extensions* extensions = getExtensions(contextID,true);
 
-    if (!extensions->isStencilTwoSidedSupported())
-        return;
-        
-    extensions->glActiveStencilFace(GL_BACK);
-    glStencilOp((GLenum)_sfail[BACK],(GLenum)_zfail[BACK],(GLenum)_zpass[BACK]);
-    glStencilMask(_writeMask[BACK]);
-    glStencilFunc((GLenum)_func[BACK],_funcRef[BACK],_funcMask[BACK]);
+    // use OpenGL 2.0 functions if available
+    if (extensions->isOpenGL20Supported())
+    {
+        // front face
+        extensions->glStencilOpSeparate(GL_FRONT, (GLenum)_sfail[FRONT],(GLenum)_zfail[FRONT],(GLenum)_zpass[FRONT]);
+        extensions->glStencilMaskSeparate(GL_FRONT, _writeMask[FRONT]);
+        extensions->glStencilFuncSeparate(GL_FRONT, (GLenum)_func[FRONT],_funcRef[FRONT],_funcMask[FRONT]);
 
-    extensions->glActiveStencilFace(GL_FRONT);
-    glStencilOp((GLenum)_sfail[FRONT],(GLenum)_zfail[FRONT],(GLenum)_zpass[FRONT]);
-    glStencilMask(_writeMask[FRONT]);
-    glStencilFunc((GLenum)_func[FRONT],_funcRef[FRONT],_funcMask[FRONT]);
+        // back face
+        extensions->glStencilOpSeparate(GL_BACK, (GLenum)_sfail[BACK],(GLenum)_zfail[BACK],(GLenum)_zpass[BACK]);
+        extensions->glStencilMaskSeparate(GL_BACK, _writeMask[BACK]);
+        extensions->glStencilFuncSeparate(GL_BACK, (GLenum)_func[BACK],_funcRef[BACK],_funcMask[BACK]);
+
+        return;
+    }
+
+    // try to use two sided stencil extension
+    if (extensions->isStencilTwoSidedSupported())
+    {
+        // enable two sided stenciling
+        glEnable(GL_STENCIL_TEST_TWO_SIDE);
+
+        // back face        
+        extensions->glActiveStencilFace(GL_BACK);
+        glStencilOp((GLenum)_sfail[BACK],(GLenum)_zfail[BACK],(GLenum)_zpass[BACK]);
+        glStencilMask(_writeMask[BACK]);
+        glStencilFunc((GLenum)_func[BACK],_funcRef[BACK],_funcMask[BACK]);
+
+        // front face
+        extensions->glActiveStencilFace(GL_FRONT);
+        glStencilOp((GLenum)_sfail[FRONT],(GLenum)_zfail[FRONT],(GLenum)_zpass[FRONT]);
+        glStencilMask(_writeMask[FRONT]);
+        glStencilFunc((GLenum)_func[FRONT],_funcRef[FRONT],_funcMask[FRONT]);
+
+        return;
+    }
 }
 
 
@@ -126,34 +152,87 @@ StencilTwoSided::Extensions::Extensions(const Extensions& rhs):
     Referenced()
 {
     _isStencilTwoSidedSupported = rhs._isStencilTwoSidedSupported;
+    _isOpenGL20Supported = rhs._isOpenGL20Supported;
+    _isSeparateStencilSupported = rhs._isSeparateStencilSupported;
     _glActiveStencilFace = rhs._glActiveStencilFace;
+    _glStencilOpSeparate = rhs._glStencilOpSeparate;
+    _glStencilMaskSeparate = rhs._glStencilMaskSeparate;
+    _glStencilFuncSeparate = rhs._glStencilFuncSeparate;
+    _glStencilFuncSeparateATI = rhs._glStencilFuncSeparateATI;
 }
 
 
 void StencilTwoSided::Extensions::lowestCommonDenominator(const Extensions& rhs)
 {
     if (!rhs._isStencilTwoSidedSupported) _isStencilTwoSidedSupported = false;
+    if (!rhs._isOpenGL20Supported) _isOpenGL20Supported = false;
+    if (!rhs._isSeparateStencilSupported) _isSeparateStencilSupported = false;
 
-    if (!rhs._glActiveStencilFace) _glActiveStencilFace = 0;
-
+    if (!rhs._glActiveStencilFace) _glActiveStencilFace = NULL;
+    if (!rhs._glStencilOpSeparate) _glStencilOpSeparate = NULL;
+    if (!rhs._glStencilMaskSeparate) _glStencilMaskSeparate = NULL;
+    if (!rhs._glStencilFuncSeparate) _glStencilFuncSeparate = NULL;
+    if (!rhs._glStencilFuncSeparateATI) _glStencilFuncSeparateATI = NULL;
 }
 
 void StencilTwoSided::Extensions::setupGLExtensions(unsigned int contextID)
 {
-    _isStencilTwoSidedSupported = isGLExtensionSupported(contextID,"GL_EXT_stencil_two_side");
+    // extension support
+    _isStencilTwoSidedSupported = isGLExtensionSupported(contextID, "GL_EXT_stencil_two_side");
+    _isOpenGL20Supported = getGLVersionNumber() >= 2.0;
+    _isSeparateStencilSupported = isGLExtensionSupported(contextID, "GL_ATI_separate_stencil");
 
-    setGLExtensionFuncPtr(_glActiveStencilFace, "glActiveStencilFace","glActiveStencilFaceEXT");
+    // function pointers
+    setGLExtensionFuncPtr(_glActiveStencilFace, "glActiveStencilFaceEXT");
+    setGLExtensionFuncPtr(_glStencilOpSeparate, "glStencilOpSeparate", "glStencilOpSeparateATI");
+    setGLExtensionFuncPtr(_glStencilMaskSeparate, "glStencilMaskSeparate");
+    setGLExtensionFuncPtr(_glStencilFuncSeparate, "glStencilFuncSeparate");
+    setGLExtensionFuncPtr(_glStencilFuncSeparateATI, "glStencilFuncSeparateATI");
+
+    // protect against buggy drivers (maybe not necessary)
+    if (!_glActiveStencilFace) _isStencilTwoSidedSupported = false;
+    if (!_glStencilOpSeparate) { _isOpenGL20Supported = false; _isSeparateStencilSupported = false; }
+    if (!_glStencilMaskSeparate) _isOpenGL20Supported = false;
+    if (!_glStencilFuncSeparate) _isOpenGL20Supported = false;
+    if (!_glStencilFuncSeparateATI) _isSeparateStencilSupported = false;
 }
 
 void StencilTwoSided::Extensions::glActiveStencilFace(GLenum face) const
 {
-    if (_glActiveStencilFace)
+    if (_isStencilTwoSidedSupported)
     {
         _glActiveStencilFace(face);
     }
-    else
-    {
-        OSG_WARN<<"Error: glActiveStencilFace not supported by OpenGL driver"<<std::endl;
-    }    
 }
 
+void StencilTwoSided::Extensions::glStencilOpSeparate(GLenum face, GLenum sfail, GLenum dpfail, GLenum dppass) const
+{
+    if (_isOpenGL20Supported || _isSeparateStencilSupported)
+    {
+        _glStencilOpSeparate(face, sfail, dpfail, dppass);
+    }
+}
+
+void StencilTwoSided::Extensions::glStencilMaskSeparate(GLenum face, GLuint mask) const
+{
+    if (_isOpenGL20Supported)
+    {
+        _glStencilMaskSeparate(face, mask);
+    }
+}
+
+void StencilTwoSided::Extensions::glStencilFuncSeparate(GLenum face, GLenum func, GLint ref, GLuint mask) const
+{
+    if (_isOpenGL20Supported)
+    {
+        _glStencilFuncSeparate(face, func, ref, mask);
+    }
+}
+
+void StencilTwoSided::Extensions::glStencilFuncSeparateATI(GLenum frontfunc, GLenum backfunc, GLint ref, GLuint mask) const
+{
+    if (_isSeparateStencilSupported)
+    {
+        _glStencilFuncSeparateATI(frontfunc, backfunc, ref, mask);
+    }
+}

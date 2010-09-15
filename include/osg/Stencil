@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -25,12 +25,24 @@ namespace osg {
 
 
 /** Encapsulate OpenGL glStencilFunc/Op/Mask functions.
-*/     
+*
+*   All functionality except INCR_WRAP and DECR_WRAP is supported by OpenGL 1.1.
+*   INCR_WRAP an DECR_WRAP are available since OpenGL 1.4 or when
+*   GL_EXT_stencil_wrap extension is present.
+*
+*   If INCR_WRAP or DECR_WRAP values are used while they are detected to be not supported,
+*   the INCR or DECR values are sent to OpenGL instead. Note: do not use Stencil::getFunction()
+*   to detect whether WRAP operations is used as the object's value is kept intact.
+*   Use osg::Stencil::getExtensions() method instead.
+*
+*   OpenGL 2.0 introduced two side stenciling that is available through
+*   osg::StencilTwoSided class.
+*/
 class OSG_EXPORT Stencil : public StateAttribute
 {
     public :
-    
-    
+
+
         Stencil();
 
         /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
@@ -46,7 +58,7 @@ class OSG_EXPORT Stencil : public StateAttribute
 
 
         META_StateAttribute(osg, Stencil, STENCIL);
-        
+
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
         virtual int compare(const StateAttribute& sa) const
         {
@@ -90,18 +102,18 @@ class OSG_EXPORT Stencil : public StateAttribute
             _funcRef = ref;
             _funcMask = mask;
         }
-        
+
         inline void setFunction(Function func) { _func = func; }
         inline Function getFunction() const { return _func; }
-        
+
         inline void setFunctionRef(int ref) { _funcRef=ref; }
         inline int getFunctionRef() const { return _funcRef; }
 
         inline void setFunctionMask(unsigned int mask) { _funcMask=mask; }
         inline unsigned int getFunctionMask() const { return _funcMask; }
-        
-        
-        enum Operation 
+
+
+        enum Operation
         {
             KEEP = GL_KEEP,
             ZERO = GL_ZERO,
@@ -112,8 +124,8 @@ class OSG_EXPORT Stencil : public StateAttribute
             INCR_WRAP = GL_INCR_WRAP,
             DECR_WRAP = GL_DECR_WRAP
         };
-        
-        /** set the operations to apply when the various stencil and depth 
+
+        /** set the operations to apply when the various stencil and depth
           * tests fail or pass.  First parameter is to control the operation
           * when the stencil test fails.  The second parameter is to control the
           * operation when the stencil test passes, but depth test fails. The
@@ -126,16 +138,16 @@ class OSG_EXPORT Stencil : public StateAttribute
             _zfail = zfail;
             _zpass = zpass;
         }
-        
+
         /** set the operation when the stencil test fails.*/
         inline void setStencilFailOperation(Operation sfail) { _sfail = sfail; }
 
         /** get the operation when the stencil test fails.*/
         inline Operation getStencilFailOperation() const { return _sfail; }
-        
+
         /** set the operation when the stencil test passes but the depth test fails.*/
         inline void setStencilPassAndDepthFailOperation(Operation zfail) { _zfail=zfail; }
-        
+
         /** get the operation when the stencil test passes but the depth test fails.*/
         inline Operation getStencilPassAndDepthFailOperation() const { return _zfail; }
 
@@ -144,27 +156,69 @@ class OSG_EXPORT Stencil : public StateAttribute
 
         /** get the operation when both the stencil test and the depth test pass.*/
         inline Operation getStencilPassAndDepthPassOperation() const { return _zpass; }
-        
+
 
         inline void setWriteMask(unsigned int mask) { _writeMask = mask; }
-        
+
         inline unsigned int getWriteMask() const { return _writeMask; }
 
 
         virtual void apply(State& state) const;
 
+
+
+        /** Extensions class which encapsulates the querying of extensions and
+          * associated function pointers, and provide convenience wrappers to
+          * check for the extensions or use the associated functions.
+        */
+        class OSG_EXPORT Extensions : public osg::Referenced
+        {
+            public:
+                Extensions(unsigned int contextID);
+
+                Extensions(const Extensions& rhs);
+
+                void lowestCommonDenominator(const Extensions& rhs);
+
+                void setupGLExtensions(unsigned int contextID);
+
+                void setStencilWrapSupported(bool flag) { _isStencilWrapSupported = flag; }
+                bool isStencilWrapSupported() const { return _isStencilWrapSupported; }
+
+            protected:
+
+                ~Extensions() {}
+
+                bool _isStencilWrapSupported;
+        };
+
+        /** Function to call to get the extension of a specified context.
+          * If the Extension object for that context has not yet been created
+          * and the 'createIfNotInitalized' flag been set to false then returns NULL.
+          * If 'createIfNotInitalized' is true then the Extensions object is
+          * automatically created. However, in this case the extension object
+          * will only be created with the graphics context associated with ContextID.
+        */
+        static Extensions* getExtensions(unsigned int contextID, bool createIfNotInitalized);
+
+        /** The setExtensions method allows users to override the extensions across graphics contexts.
+          * Typically used when you have different extensions supported across graphics pipes
+          * but need to ensure that they all use the same low common denominator extensions.
+        */
+        static void setExtensions(unsigned int contextID, Extensions* extensions);
+
     protected:
-    
+
         virtual ~Stencil();
 
         Function            _func;
         int                 _funcRef;
         unsigned int        _funcMask;
-        
+
         Operation           _sfail;
         Operation           _zfail;
         Operation           _zpass;
-        
+
         unsigned int        _writeMask;
 
 };

@@ -375,7 +375,7 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("-d <float>","Time duration in seconds between layers/slides");
     arguments.getApplicationUsage()->addCommandLineOption("-s <float> <float> <float>","width, height, distance and of the screen away from the viewer");
     arguments.getApplicationUsage()->addCommandLineOption("--viewer","Start Present3D as the viewer version.");
-    arguments.getApplicationUsage()->addCommandLineOption("--authoring","Start Presen3D as the authoring version, license required.");
+    arguments.getApplicationUsage()->addCommandLineOption("--authoring","Start Present3D as the authoring version, license required.");
     arguments.getApplicationUsage()->addCommandLineOption("--master","Start Present3D as the master version, license required.");
     arguments.getApplicationUsage()->addCommandLineOption("--slave","Start Present3D as the slave version, license required.");
     arguments.getApplicationUsage()->addCommandLineOption("--publishing","Start Present3D as the publishing version, license required.");

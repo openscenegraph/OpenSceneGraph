@@ -23,7 +23,7 @@
 
 namespace osg {
 
-/** Smart pointer for observed objects, that automatically set pointers to them to null when they deleted.
+/** Smart pointer for observed objects, that automatically set pointers to them to null when they are deleted.
   * To use the observer_ptr<> robustly in multi-threaded applications it is recommend to access the pointer via
   * the lock() method that passes back a ref_ptr<> that safely takes a reference to the object to prevent deletion
   * during usage of the object.  In certain conditions it may be safe to use the pointer directly without using lock(),
@@ -32,7 +32,7 @@ namespace osg {
   *   2) The data strucutre is guarenteed by high level management of data strucutures and threads which avoid
   *      possible situations where the observer_ptr<>'s object may be deleted by one thread whilst being accessed
   *      by another.
-  * If you are in any doubt about whether it is safe to access the object safe then use
+  * If you are in any doubt about whether it is safe to access the object safe then use the
   * ref_ptr<> observer_ptr<>.lock() combination. */
 template<class T>
 class observer_ptr

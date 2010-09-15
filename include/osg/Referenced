@@ -38,7 +38,7 @@ struct depends_on
     depends_on() { M(); }
 };
 
-/** Base class from providing referencing counted objects.*/
+/** Base class for providing reference counted objects.*/
 class OSG_EXPORT Referenced
 {
 
@@ -89,10 +89,10 @@ class OSG_EXPORT Referenced
             not delete it, even if ref count goes to 0.  Warning, unref_nodelete() 
             should only be called if the user knows exactly who will
             be responsible for, one should prefer unref() over unref_nodelete() 
-            as the later can lead to memory leaks.*/
+            as the latter can lead to memory leaks.*/
         int unref_nodelete() const;
         
-        /** Return the number pointers currently referencing this object. */
+        /** Return the number of pointers currently referencing this object. */
         inline int referenceCount() const { return _refCount; }
 
 
@@ -112,12 +112,12 @@ class OSG_EXPORT Referenced
         /** Add a Observer that is observing this object, notify the Observer when this object gets deleted.*/
         void addObserver(Observer* observer) const;
 
-        /** remove Observer that is observing this object.*/
+        /** Remove Observer that is observing this object.*/
         void removeObserver(Observer* observer) const;
 
     public:
 
-        /** Set whether reference counting should be use a mutex to create thread reference counting.*/
+        /** Set whether reference counting should use a mutex for thread safe reference counting.*/
         static void setThreadSafeReferenceCounting(bool enableThreadSafeReferenceCounting);
         
         /** Get whether reference counting is active.*/
@@ -126,7 +126,7 @@ class OSG_EXPORT Referenced
         friend class DeleteHandler;
 
         /** Set a DeleteHandler to which deletion of all referenced counted objects
-          * will be delegated to.*/
+          * will be delegated.*/
         static void setDeleteHandler(DeleteHandler* handler);
 
         /** Get a DeleteHandler.*/

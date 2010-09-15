@@ -409,14 +409,14 @@ class OSG_EXPORT GraphicsContext : public Object
             virtual void resizedImplementation(GraphicsContext* gc, int x, int y, int width, int height) = 0;
         };
 
-        /** Set the resized callback which overrides the GraphicsConext::realizedImplementation(), allow developers to provide custom behavior
+        /** Set the resized callback which overrides the GraphicsContext::resizedImplementation(), allow developers to provide custom behavior
           * in response to a window being resized.*/
         void setResizedCallback(ResizedCallback* rc) { _resizedCallback = rc; }
 
-        /** Get the resized callback which overrides the GraphicsConext::realizedImplementation().*/
+        /** Get the resized callback which overrides the GraphicsContext::resizedImplementation().*/
         ResizedCallback* getResizedCallback() { return _resizedCallback.get(); }
 
-        /** Get the const resized callback which overrides the GraphicsConext::realizedImplementation().*/
+        /** Get the const resized callback which overrides the GraphicsContext::resizedImplementation().*/
         const ResizedCallback* getResizedCallback() const { return _resizedCallback.get(); }
 
         /** resized implementation, by default resizes the viewports and aspect ratios the cameras associated with the graphics Window. */

@@ -28,7 +28,6 @@ osgParticle::Particle::Particle()
     _si(new LinearInterpolator), 
     _ai(new LinearInterpolator), 
     _ci(new LinearInterpolator),
-    //_alive(true),
     _mustdie(false),
     _lifeTime(2),
     _radius(0.2f),
@@ -41,8 +40,9 @@ osgParticle::Particle::Particle()
     _angle(0, 0, 0),
     _angul_arvel(0, 0, 0),
     _t0(0),
-    //_current_size(0),
-    //_current_alpha(0),
+    _alive(1.0f),
+    _current_size(0.0f),
+    _current_alpha(0.0f),
     _s_tile(1.0f),
     _t_tile(1.0f),
     _start_tile(0),
@@ -54,7 +54,6 @@ osgParticle::Particle::Particle()
     _nextParticle(INVALID_INDEX),
     _depth(0.0)
 {
-    _base_prop.set(1.0f, 0.0f, 0.0f);
 }
 
 bool osgParticle::Particle::update(double dt, bool onlyTimeStamp)
@@ -62,7 +61,7 @@ bool osgParticle::Particle::update(double dt, bool onlyTimeStamp)
     // this method should return false when the particle dies;
     // so, if we were instructed to die, do it now and return.
     if (_mustdie) {
-        _base_prop.x() = -1.0;
+        _alive = -1.0;
         return false;
     }
 
@@ -77,20 +76,20 @@ bool osgParticle::Particle::update(double dt, bool onlyTimeStamp)
 
     // if our age is over the lifetime limit, then die and return.
     if (x > 1) {
-        _base_prop.x() = -1.0;
+        _alive = -1.0;
         return false;
     }
     
     // compute the current values for size, alpha and color.
     if (_lifeTime <= 0) {
        if (dt == _t0) {
-          _base_prop.y() = _sr.get_random();
-          _base_prop.z() = _ar.get_random();
+          _current_size = _sr.get_random();
+          _current_alpha = _ar.get_random();
           _current_color = _cr.get_random();
        }
     } else {
-       _base_prop.y() = _si.get()->interpolate(x, _sr);
-       _base_prop.z() = _ai.get()->interpolate(x, _ar);
+       _current_size = _si.get()->interpolate(x, _sr);
+       _current_alpha = _ai.get()->interpolate(x, _ar);
        _current_color = _ci.get()->interpolate(x, _cr);
     }
     
@@ -135,10 +134,10 @@ void osgParticle::Particle::render(osg::GLBeginEndAdapter* gl, const osg::Vec3& 
     gl->Color4f( _current_color.x(),
                 _current_color.y(),
                 _current_color.z(),
-                _current_color.w() * _base_prop.z());
+                _current_color.w() * _current_alpha);
 
-    osg::Vec3 p1(px * _base_prop.y() * scale);
-    osg::Vec3 p2(py * _base_prop.y() * scale);
+    osg::Vec3 p1(px * _current_size * scale);
+    osg::Vec3 p2(py * _current_size * scale);
 
     switch (_shape)
     {
@@ -205,7 +204,7 @@ void osgParticle::Particle::render(osg::GLBeginEndAdapter* gl, const osg::Vec3& 
             // calculation of one of the linesegment endpoints.
             float vl = _velocity.length();
             if (vl != 0) {
-                osg::Vec3 v = _velocity * _base_prop.y() * scale / vl;
+                osg::Vec3 v = _velocity * _current_size * scale / vl;
 
                 gl->TexCoord1f(0);
                 gl->Vertex3f(xpos.x(), xpos.y(), xpos.z());
@@ -229,7 +228,7 @@ void osgParticle::Particle::render(osg::RenderInfo& renderInfo, const osg::Vec3&
         glColor4f(_current_color.x(),
                   _current_color.y(),
                   _current_color.z(),
-                  _current_color.w() * _base_prop.z());
+                  _current_color.w() * _current_alpha);
         glPushMatrix();
         glTranslatef(xpos.x(), xpos.y(), xpos.z());
         if (requiresRotation)

@@ -142,7 +142,7 @@ namespace osgParticle
         inline const osg::Vec4& getCurrentColor() const { return _current_color; }
 
         /// Get the current alpha
-        inline float getCurrentAlpha() const { return _base_prop.z(); }
+        inline float getCurrentAlpha() const { return _current_alpha; }
         
         /// Get the s texture coordinate of the bottom left of the particle
         inline float getSTexCoord() const { return _s_coord; }
@@ -302,7 +302,6 @@ namespace osgParticle
         osg::ref_ptr<Interpolator> _ai;
         osg::ref_ptr<Interpolator> _ci;
 
-        //bool _alive;
         bool _mustdie;
         double _lifeTime;
 
@@ -319,8 +318,9 @@ namespace osgParticle
 
         double _t0;        
 
-        //float _current_size;
-        //float _current_alpha;
+        float _alive;
+        float _current_size;
+        float _current_alpha;
         osg::Vec3 _base_prop;  // [0] _alive [1] _current_size [2] _current_alpha
         osg::Vec4 _current_color;
         
@@ -357,7 +357,7 @@ namespace osgParticle
 
     inline bool Particle::isAlive() const
     {
-        return _base_prop.x()>0.0;
+        return _alive>0.0f;
     }
 
     inline double Particle::getLifeTime() const
@@ -597,7 +597,7 @@ namespace osgParticle
 
     inline float Particle::getCurrentSize() const
     {
-        return _base_prop.y();
+        return _current_size;
     }
 
 

@@ -71,7 +71,7 @@ namespace osgParticle
         inline void place(Particle* P) const;
         
         /// return the volume of the box
-        inline float size() const;
+        inline float volume() const;
 
         /// return the control position
         inline osg::Vec3 getControlPosition() const;
@@ -157,7 +157,7 @@ namespace osgParticle
         P->setPosition(pos);
     }
     
-    inline float BoxPlacer::size() const
+    inline float BoxPlacer::volume() const
     {
         return (_x_range.maximum - _x_range.minimum) *
                (_y_range.maximum - _y_range.minimum) *

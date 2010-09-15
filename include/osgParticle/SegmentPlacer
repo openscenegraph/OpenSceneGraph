@@ -61,7 +61,7 @@ namespace osgParticle {
         inline void place(Particle* P) const;
 
         /// return the length of the segment
-        inline float size() const;
+        inline float volume() const;
         
         /// return the control position
         inline osg::Vec3 getControlPosition() const;
@@ -108,7 +108,7 @@ namespace osgParticle {
         P->setPosition(rangev3(_vertexA, _vertexB).get_random());
     }
     
-    inline float SegmentPlacer::size() const
+    inline float SegmentPlacer::volume() const
     {
         return (_vertexB - _vertexA).length();
     }

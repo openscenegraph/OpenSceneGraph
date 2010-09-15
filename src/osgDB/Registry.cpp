@@ -367,8 +367,11 @@ Registry::Registry()
         addMimeTypeExtensionMapping( mimeType, builtinMimeTypeExtMappings[i+1] );
     }
     
-    // register http-protocol, so the curl can handle it, if necessary
+    // register server protocols, so the curl can handle it, if necessary
     registerProtocol("http");
+    registerProtocol("https");
+    registerProtocol("ftp");
+    registerProtocol("ftps");
 
     _objectWrapperManager = new ObjectWrapperManager;
     _deprecatedDotOsgWrapperManager = new DeprecatedDotOsgWrapperManager;

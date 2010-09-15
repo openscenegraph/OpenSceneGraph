@@ -588,6 +588,7 @@ dxfPolyline::drawScene(scene* sc)
             }
         }
 
+/*
         // a naive attempt to determine vertex ordering
         VList::iterator itr = nlist.begin();
         Vec3d lastn = (*itr++);
@@ -610,6 +611,7 @@ dxfPolyline::drawScene(scene* sc)
         if (bad > good) {
             invert_order = true;
         }
+*/
 
         if (qlist.size())
             sc->addQuads(getLayer(), _color, qlist, invert_order);

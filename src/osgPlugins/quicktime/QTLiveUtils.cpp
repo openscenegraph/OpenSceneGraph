@@ -316,15 +316,8 @@ void probe_video_digitizer_components()
       }
 }
 
-static Boolean MyModalFilter(DialogPtr theDialog, const EventRecord *theEvent, short *itemHit, long refCon)
-{
-    return false;
-}
-
 OSG_SGDeviceList print_sequence_grabber_device_list(SGDeviceList deviceList)
 {
-    ComponentResult result = noErr;
-                                            
     short count         = (*deviceList)->count;
     short selectedIndex = (*deviceList)->selectedIndex;
     OSG_NOTICE << "DeviceList : " << count << " devices in total" << std::endl;                                              
@@ -474,9 +467,6 @@ std::vector<OSG_SGDeviceList> probe_sequence_grabber_components()
 //                                           }
                                           // Usage
                                           result = SGSetChannelUsage (gVideoChannel, seqGrabPreview);
-                                          // Panel
-                                          // Crashes every time
-                                          // result = SGSettingsDialog(gSeqGrabber, gVideoChannel, 0, 0, seqGrabSettingsPreviewOnly, &MyModalFilter, 0);
                                           // Bounds
                                           result = SGGetSrcVideoBounds (gVideoChannel, &gActiveVideoRect);
                                           OSG_NOTICE << "SrcVideoBounds: " << gActiveVideoRect.right << " " << gActiveVideoRect.bottom << std::endl;

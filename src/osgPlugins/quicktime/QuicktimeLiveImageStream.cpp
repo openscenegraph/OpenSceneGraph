@@ -313,7 +313,6 @@ void QuicktimeLiveImageStream::createSequenceGrabberVideoChannel()
 
         Fixed frame_rate;
         result = SGGetFrameRate (m_gVideoChannel, &frame_rate);
-        int zx = 0;
         result = SGSetFrameRate (m_gVideoChannel, 100);
         //
         // Sound

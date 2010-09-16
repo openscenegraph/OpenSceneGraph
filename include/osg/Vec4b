@@ -26,7 +26,7 @@ class Vec4b
 {
     public:
 
-        /** Type of Vec class.*/
+        /** Data type of vector components.*/
         typedef signed char value_type;
 
         /** Number of vector components. */
@@ -34,6 +34,7 @@ class Vec4b
         
         value_type _v[4];
 
+        /** Constructor that sets all components of the vector to zero */
         Vec4b() { _v[0]=0; _v[1]=0; _v[2]=0; _v[3]=0; }
 
         Vec4b(value_type x, value_type y, value_type z, value_type w)

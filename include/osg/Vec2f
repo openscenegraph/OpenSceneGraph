@@ -29,7 +29,7 @@ class Vec2f
 {
     public:
 
-        /** Type of Vec class.*/
+        /** Data type of vector components.*/
         typedef float value_type;
 
         /** Number of vector components. */
@@ -39,6 +39,7 @@ class Vec2f
         value_type _v[2];
         
 
+        /** Constructor that sets all components of the vector to zero */
         Vec2f() {_v[0]=0.0; _v[1]=0.0;}
         Vec2f(value_type x,value_type y) { _v[0]=x; _v[1]=y; }
 
@@ -68,7 +69,9 @@ class Vec2f
         inline value_type x() const { return _v[0]; }
         inline value_type y() const { return _v[1]; }
 
+        /** Returns true if all components have values that are not NaN. */
         inline bool valid() const { return !isNaN(); }
+        /** Returns true if at least one component has value NaN. */
         inline bool isNaN() const { return osg::isNaN(_v[0]) || osg::isNaN(_v[1]); }
 
         /** Dot product. */

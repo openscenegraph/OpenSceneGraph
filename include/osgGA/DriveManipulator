@@ -1,18 +1,18 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
 #ifndef OSGGA_DRIVEMANIPULATOR
-#define OSGGA_DRIVEMANIPULATOR 1 
+#define OSGGA_DRIVEMANIPULATOR 1
 
 #include <osgGA/CameraManipulator>
 #include <osg/Quat>
@@ -34,16 +34,16 @@ class OSGGA_EXPORT DriveManipulator : public CameraManipulator
 
         virtual const char* className() const { return "Drive"; }
 
-        /** set the position of the matrix manipulator using a 4x4 Matrix.*/
+        /** Get the position of the matrix manipulator using a 4x4 Matrix.*/
         virtual void setByMatrix(const osg::Matrixd& matrix);
 
-        /** set the position of the matrix manipulator using a 4x4 Matrix.*/
+        /** Set the position of the matrix manipulator using a 4x4 Matrix.*/
         virtual void setByInverseMatrix(const osg::Matrixd& matrix) { setByMatrix(osg::Matrixd::inverse(matrix)); }
 
-        /** get the position of the manipulator as 4x4 Matrix.*/
+        /** Get the position of the manipulator as 4x4 Matrix.*/
         virtual osg::Matrixd getMatrix() const;
 
-        /** get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix.*/
+        /** Get the position of the manipulator as a inverse matrix of the manipulator, typically used as a model view matrix.*/
         virtual osg::Matrixd getInverseMatrix() const;
 
         virtual void setNode(osg::Node*);
@@ -86,8 +86,9 @@ class OSGGA_EXPORT DriveManipulator : public CameraManipulator
 
         void computePosition(const osg::Vec3d& eye,const osg::Vec3d& lv,const osg::Vec3d& up);
 
-        /** For the give mouse movement calculate the movement of the camera.
-        Return true is camera has moved and a redraw is required.*/
+        /** For the given mouse movement calculate the movement of the camera.
+          * Return true if camera has moved and a redraw is required.
+          */
         bool calcMovement();
 
         // Internal event stack comprising last two mouse events.
@@ -112,7 +113,7 @@ class OSGGA_EXPORT DriveManipulator : public CameraManipulator
         osg::Quat    _rotation;
         double       _pitch;
         double       _distance;
-        
+
         bool        _pitchUpKeyPressed;
         bool        _pitchDownKeyPressed;
 };

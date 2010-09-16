@@ -28,7 +28,7 @@ class Vec4f
 {
     public:
 
-        /** Type of Vec class.*/
+        /** Data type of vector components.*/
         typedef float value_type;
 
         /** Number of vector components. */
@@ -39,6 +39,7 @@ class Vec4f
 
         // Methods are defined here so that they are implicitly inlined
 
+        /** Constructor that sets all components of the vector to zero */
         Vec4f() { _v[0]=0.0f; _v[1]=0.0f; _v[2]=0.0f; _v[3]=0.0f;}
         
         Vec4f(value_type x, value_type y, value_type z, value_type w)
@@ -119,7 +120,9 @@ class Vec4f
                    (unsigned int)clampTo((_v[0]*255.0f),0.0f,255.0f);
         }
 
+        /** Returns true if all components have values that are not NaN. */
         inline bool valid() const { return !isNaN(); }
+        /** Returns true if at least one component has value NaN. */
         inline bool isNaN() const { return osg::isNaN(_v[0]) || osg::isNaN(_v[1]) || osg::isNaN(_v[2]) || osg::isNaN(_v[3]); }
 
         /** Dot product. */

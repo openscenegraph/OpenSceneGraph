@@ -28,7 +28,7 @@ class Vec2b
 
         // Methods are defined here so that they are implicitly inlined
 
-        /** Type of Vec class.*/
+        /** Data type of vector components.*/
         typedef signed char value_type;
 
         /** Number of vector components. */
@@ -37,6 +37,7 @@ class Vec2b
         /** Vec member variable. */
         value_type _v[2];
 
+        /** Constructor that sets all components of the vector to zero */
         Vec2b() { _v[0]=0; _v[1]=0; }
         
         Vec2b(value_type r, value_type g)

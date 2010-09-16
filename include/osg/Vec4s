@@ -26,7 +26,7 @@ class Vec4s
 {
     public:
 
-        /** Type of Vec class.*/
+        /** Data type of vector components.*/
         typedef short value_type;
 
         /** Number of vector components. */
@@ -35,6 +35,7 @@ class Vec4s
         /** Vec member variable. */
         value_type _v[4];
 
+        /** Constructor that sets all components of the vector to zero */
         Vec4s() { _v[0]=0; _v[1]=0; _v[2]=0; _v[3]=0; }
 
         Vec4s(value_type x, value_type y, value_type z, value_type w)

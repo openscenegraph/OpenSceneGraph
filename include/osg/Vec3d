@@ -30,7 +30,7 @@ class Vec3d
 {
     public:
 
-        /** Type of Vec class.*/
+        /** Data type of vector components.*/
         typedef double value_type;
 
         /** Number of vector components. */
@@ -38,6 +38,7 @@ class Vec3d
         
         value_type _v[3];
 
+        /** Constructor that sets all components of the vector to zero */
         Vec3d() { _v[0]=0.0; _v[1]=0.0; _v[2]=0.0;}
 
         inline Vec3d(const Vec3f& vec) { _v[0]=vec._v[0]; _v[1]=vec._v[1]; _v[2]=vec._v[2];}
@@ -89,7 +90,9 @@ class Vec3d
         inline value_type y() const { return _v[1]; }
         inline value_type z() const { return _v[2]; }
 
+        /** Returns true if all components have values that are not NaN. */
         inline bool valid() const { return !isNaN(); }
+        /** Returns true if at least one component has value NaN. */
         inline bool isNaN() const { return osg::isNaN(_v[0]) || osg::isNaN(_v[1]) || osg::isNaN(_v[2]); }
 
         /** Dot product. */

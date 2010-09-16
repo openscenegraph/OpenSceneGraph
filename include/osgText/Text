@@ -62,6 +62,16 @@ public:
 
     
     
+    /**
+     * Turns off writing to the depth buffer when rendering text. This only affects text
+     * with no backdrop or text using the DELAYED_DEPTH_WRITES implementation, since
+     * the other backdrop implementations are really only useful for backwards
+     * compatibility and are not worth updating to utilize this flag.
+     */
+    bool setEnableDepthWrites() { return _enableDepthWrites; }
+
+    void setEnableDepthWrites(bool enable) { _enableDepthWrites = enable; }
+
     enum BackdropType
     {
         DROP_SHADOW_BOTTOM_RIGHT = 0,  // usually the type of shadow you see
@@ -146,7 +156,17 @@ public:
          * are significant on your particular hardware.) This mode is best for 
          * when quality is important and stencil buffer hardware acceleration 
          * is available.*/
-        STENCIL_BUFFER
+        STENCIL_BUFFER,
+
+        /* DELAYED_DEPTH_WRITES
+         * This mode renders all text with depth writes turned off, then
+         * again with depth writes on, but with the color buffer disabled.
+         * This should render text accurately for all graphics cards. The
+         * only downside is the additional pass to render to the depth
+         * buffer. But if you don't need the depth buffer updated for
+         * your, this extra pass can be disabled by calling
+         * enableDepthWrites(false).*/
+        DELAYED_DEPTH_WRITES
     };
 
     /**
@@ -378,12 +398,16 @@ protected:
 
     void drawImplementation(osg::State& state, const osg::Vec4& colorMultiplier) const;
     void drawForegroundText(osg::State& state, const GlyphQuads& glyphquad, const osg::Vec4& colorMultiplier) const;
+    void drawTextWithBackdrop(osg::State& state, const osg::Vec4& colorMultiplier) const;
     void renderOnlyForegroundText(osg::State& state, const osg::Vec4& colorMultiplier) const;
     void renderWithPolygonOffset(osg::State& state, const osg::Vec4& colorMultiplier) const;
     void renderWithNoDepthBuffer(osg::State& state, const osg::Vec4& colorMultiplier) const;
     void renderWithDepthRange(osg::State& state, const osg::Vec4& colorMultiplier) const;
     void renderWithStencilBuffer(osg::State& state, const osg::Vec4& colorMultiplier) const;
+    void renderWithDelayedDepthWrites(osg::State& state, const osg::Vec4& colorMultiplier) const;
     
+    bool _enableDepthWrites;
+
     BackdropType _backdropType;
     BackdropImplementation _backdropImplementation;
 

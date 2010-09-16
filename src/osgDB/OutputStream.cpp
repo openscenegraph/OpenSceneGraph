@@ -140,9 +140,10 @@ void OutputStream::writeArray( const osg::Array* a )
 {
     if ( !a ) return;
     
+    size_t oldSize = _arrayMap.size();
     unsigned int id = findOrCreateArrayID( a );
     *this << PROPERTY("ArrayID") << id;
-    if ( id<_arrayMap.size() )  // Shared array
+    if ( id<=oldSize )  // Shared array
     {
         *this << std::endl;
         return;
@@ -404,6 +405,7 @@ void OutputStream::writeObject( const osg::Object* obj )
     
     std::string name = obj->libraryName();
     name += std::string("::") + obj->className();
+    size_t oldSize = _objectMap.size();
     unsigned int id = findOrCreateObjectID( obj );
     
     *this << name << BEGIN_BRACKET << std::endl;       // Write object name
@@ -411,7 +413,7 @@ void OutputStream::writeObject( const osg::Object* obj )
     if ( getException() ) return;
     
     // Check whether this is a shared object or not
-    if ( id>=_objectMap.size() )
+    if ( id>oldSize )
     {
         ObjectWrapper* wrapper = Registry::instance()->getObjectWrapperManager()->findWrapper( name );
         if ( !wrapper )

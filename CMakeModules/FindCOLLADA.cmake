@@ -41,6 +41,7 @@ FIND_PATH(COLLADA_INCLUDE_DIR dae.h
     $ENV{COLLADA_DIR}
     ~/Library/Frameworks
     /Library/Frameworks
+    /opt/local/Library/Frameworks #macports
     /usr/local/include
     /usr/local/include/colladadom
     /usr/include/
@@ -62,7 +63,8 @@ FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY
     $ENV{COLLADA_DIR}/lib-dbg
     $ENV{COLLADA_DIR}
     ~/Library/Frameworks
-    /Library/Frameworks
+    /Library/Frameworks    
+    /opt/local/Library/Frameworks #macports
     /usr/local/lib
     /usr/local/lib64
     /usr/lib
@@ -85,6 +87,7 @@ FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY_DEBUG
     $ENV{COLLADA_DIR}
     ~/Library/Frameworks
     /Library/Frameworks
+    /opt/local/Library/Frameworks #macports
     /usr/local/lib
     /usr/local/lib64
     /usr/lib
@@ -107,6 +110,7 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY
     $ENV{COLLADA_DIR}
     ~/Library/Frameworks
     /Library/Frameworks
+    /opt/local/Library/Frameworks #macports
     /usr/local/lib
     /usr/local/lib64
     /usr/lib
@@ -129,6 +133,7 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY_DEBUG
     $ENV{COLLADA_DIR}
     ~/Library/Frameworks
     /Library/Frameworks
+    /opt/local/Library/Frameworks #macports
     /usr/local/lib
     /usr/local/lib64
     /usr/lib

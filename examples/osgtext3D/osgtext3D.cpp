@@ -75,7 +75,7 @@ int main(int argc, char** argv)
     while(arguments.read("--flat")) { bevel = new osgText::Bevel; bevel->flatBevel(0.25); }
     while(arguments.read("--bevel-thickness",r)) { if (bevel.valid()) bevel->setBevelThickness(r); }
 
-    style->setBevel(bevel);
+    style->setBevel(bevel.get());
 
     // set up outline.
     while(arguments.read("--outline",r)) { style->setOutlineRatio(r); }

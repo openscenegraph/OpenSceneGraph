@@ -53,11 +53,22 @@ namespace osgParticle
     
     inline int RandomRateCounter::numParticlesToCreate(double dt) const
     {
-        _np += dt * getRateRange().get_random();
+        // compute the number of new particles, clamping it to 1 second of particles at the maximum rate
+        float numNewParticles = std::min(static_cast<float>(dt * getRateRange().get_random()), getRateRange().maximum);
+
+        // add the number of new particles to value carried over from the previous call
+       _np += numNewParticles;
+
+        // round down the number of particles.
         int n = static_cast<int>(_np);
+
+        // take away the number of rounded number of particles leaving the decimal place
+        // this is done so that two frames of 0.5's will results in first frame 0 new particles, second frame 1
         _np -= n;
+
+        // return the rounded number of particles to be created
         return n;
-    }    
+    }
 
 }
 

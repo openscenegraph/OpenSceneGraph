@@ -470,11 +470,11 @@ osg::Geometry* computeGlyphGeometry(osgText::Glyph3D* glyph, float bevelThicknes
         {
             Boundary boundaryInner(orig_vertices, itr->get());
             boundaryInner.removeAllSegmentsBelowThickness(bevelThickness);
-            boundaryInner.newAddBoundaryToGeometry(new_geometry, bevelThickness, "face", "bevel");
+            boundaryInner.newAddBoundaryToGeometry(new_geometry.get(), bevelThickness, "face", "bevel");
 
             Boundary boundaryOuter(orig_vertices, itr->get());
             boundaryOuter.removeAllSegmentsAboveThickness(-shellThickness);
-            boundaryOuter.newAddBoundaryToGeometry(new_geometry, -shellThickness, "", "shell");
+            boundaryOuter.newAddBoundaryToGeometry(new_geometry.get(), -shellThickness, "", "shell");
         }
         
     }
@@ -495,7 +495,7 @@ osg::Geometry* computeGlyphGeometry(osgText::Glyph3D* glyph, float bevelThicknes
             ++itr)
         {
             osg::PrimitiveSet* prim = itr->get();
-            if (prim->getName()=="face")  face_geometry->addPrimitiveSet(copyop(*itr));
+            if (prim->getName()=="face")  face_geometry->addPrimitiveSet(copyop(itr->get()));
             else primitiveSets.push_back(prim);
         }
 

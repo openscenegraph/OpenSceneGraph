@@ -93,7 +93,7 @@ void POVWriterNodeVisitor::apply( Geode& node )
         itr != dl.end(); ++itr)
    {
       // get drawable
-      const Drawable *d = *itr;
+      const Drawable *d = itr->get();
 
       // push state set
       const StateSet *ss = d->getStateSet();
@@ -103,12 +103,12 @@ void POVWriterNodeVisitor::apply( Geode& node )
       Matrix m = _transformationStack.top();
 
       // process lights
-      processLights( _stateSetStack.top(), m );
+      processLights( _stateSetStack.top().get(), m );
 
       // process geometry
       const Geometry *g = d->asGeometry();
       if( g )
-         processGeometry( g, _stateSetStack.top(), m );
+         processGeometry( g, _stateSetStack.top().get(), m );
 
       // pop state set
       if( ss )  popStateSet( ss );

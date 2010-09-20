@@ -166,11 +166,18 @@ int main( int argc, char** argv )
     // The updater can receive particle systems as child drawables now. The addParticleSystem() method
     // is still usable, with which we should define another geode to contain a particle system.
     osg::ref_ptr<osgParticle::ParticleSystemUpdater> updater = new osgParticle::ParticleSystemUpdater;
-    updater->addDrawable( ps.get() );
+    //updater->addDrawable( ps.get() );
     
     osg::ref_ptr<osg::Group> root = new osg::Group;
     root->addChild( parent.get() );
     root->addChild( updater.get() );
+    
+    // FIXME 2010.9.19: the updater can't be a drawable; otehrwise the ParticleEffect will not work properly. why?
+    updater->addParticleSystem( ps.get() );
+    
+    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
+    geode->addDrawable( ps.get() );
+    root->addChild( geode.get() );
     
     /***
     Start the viewer
@@ -190,4 +197,8 @@ int main( int argc, char** argv )
     // Now we make use of the getDeltaTime() of ParticleSystem to maintain and dispatch the delta time. But..
     // it is not the best solution so far, since there are still very few particles acting unexpectedly.
     return viewer.run();
+    
+    // FIXME 2010.9.19: At present, getDeltaTime() is not used and the implementations in the updater and processors still
+    // use a (t - _t0) as the delta time, which is of course causing floating errors. ParticleEffect will not work if we
+    // replace the delta time with getDeltaTime()... Need to find a solution.
 }

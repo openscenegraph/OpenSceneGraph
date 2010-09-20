@@ -13,7 +13,7 @@ REGISTER_DOTOSGWRAPPER(PSU_Proxy)
 (
     new osgParticle::ParticleSystemUpdater,
     "ParticleSystemUpdater",
-    "Object Node Geode ParticleSystemUpdater",
+    "Object Node ParticleSystemUpdater",
     PSU_readLocalData,
     PSU_writeLocalData
 );

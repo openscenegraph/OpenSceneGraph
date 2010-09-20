@@ -35,7 +35,7 @@ static bool writeParticleSystems( osgDB::OutputStream& os, const osgParticle::Pa
 REGISTER_OBJECT_WRAPPER( osgParticleParticleSystemUpdater,
                          new osgParticle::ParticleSystemUpdater,
                          osgParticle::ParticleSystemUpdater,
-                         "osg::Object osg::Node osg::Geode osgParticle::ParticleSystemUpdater" )
+                         "osg::Object osg::Node osgParticle::ParticleSystemUpdater" )
 {
     ADD_USER_SERIALIZER( ParticleSystems );  // _psv
 }

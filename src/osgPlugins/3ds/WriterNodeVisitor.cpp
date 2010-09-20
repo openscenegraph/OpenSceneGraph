@@ -84,7 +84,7 @@ inline void copyOsgQuatToLib3dsQuat(float lib3ds_vector[4], const osg::Quat& osg
 
 std::string getFileName(const std::string & path)
 {
-    unsigned int slashPos = path.find_last_of("/\\");
+    size_t slashPos = path.find_last_of("/\\");
     if (slashPos == std::string::npos) return path;
     return path.substr(slashPos+1);
 }
@@ -98,7 +98,7 @@ bool is83(const std::string & s)
     if (s.find_first_of("/\\") != std::string::npos) return false;            // It should not be a path, but a filename
     unsigned int len = s.length();
     if (len > 12 || len == 0) return false;
-    unsigned int pointPos = s.rfind('.');
+    size_t pointPos = s.rfind('.');
     if (pointPos == std::string::npos) return len <= 8;        // Without point
     // With point
     if (pointPos > 8) return false;
@@ -114,8 +114,8 @@ bool is3DSpath(const std::string & s, bool extendedFilePaths)
     if (extendedFilePaths) return true;        // Extended paths are simply those that fits the 64 bytes buffer!
 
     // For each subdirectory
-    unsigned int tokenLen;
-    for (unsigned int tokenBegin=0, tokenEnd=0; tokenEnd == std::string::npos; tokenBegin = tokenEnd+1)
+    size_t tokenLen;
+    for (size_t tokenBegin=0, tokenEnd=0; tokenEnd == std::string::npos; tokenBegin = tokenEnd+1)
     {
         tokenEnd = s.find_first_of("/\\", tokenBegin);
         if (tokenEnd != std::string::npos) tokenLen = tokenEnd-tokenBegin-1;        // -1 to avoid reading the separator

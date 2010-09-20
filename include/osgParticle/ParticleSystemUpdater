@@ -36,18 +36,12 @@ namespace osgParticle
         update() method on the specified particle systems. You should place this updater
         AFTER other nodes like emitters and programs.
     */
-    class OSGPARTICLE_EXPORT ParticleSystemUpdater: public osg::Geode {
+    class OSGPARTICLE_EXPORT ParticleSystemUpdater: public osg::Node {
     public:
         ParticleSystemUpdater();
         ParticleSystemUpdater(const ParticleSystemUpdater& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
         
         META_Node(osgParticle,ParticleSystemUpdater);
-        
-        /// Add a Drawable and call addParticleSystem() if it is a particle system
-        virtual bool addDrawable(osg::Drawable* drawable);
-        
-        /// Remove a Drawable and call removeParticleSystem() if it is a particle system
-        virtual bool removeDrawable(osg::Drawable* drawable);
         
         /// Add a particle system to the list.
         virtual bool addParticleSystem(ParticleSystem* ps);
@@ -87,11 +81,11 @@ namespace osgParticle
         virtual ~ParticleSystemUpdater() {}
         ParticleSystemUpdater &operator=(const ParticleSystemUpdater &) { return *this; }
         
-        
     private:
         typedef std::vector<osg::ref_ptr<ParticleSystem> > ParticleSystem_Vector;
         
         ParticleSystem_Vector _psv;
+        double _t0;
         
         //added 1/17/06- bgandere@nps.edu
         //a var to keep from doing multiple updates per frame

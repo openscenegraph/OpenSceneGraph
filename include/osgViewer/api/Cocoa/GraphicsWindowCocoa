@@ -126,6 +126,7 @@ class GraphicsWindowCocoa : public osgViewer::GraphicsWindow, public osgViewer::
         virtual bool setWindowRectangleImplementation(int x, int y, int width, int height);
         
         virtual void setWindowName (const std::string & name);
+        virtual void requestWarpPointer(float x,float y);
         virtual void useCursor(bool cursorOn);
         virtual void setCursor(MouseCursor mouseCursor);
                

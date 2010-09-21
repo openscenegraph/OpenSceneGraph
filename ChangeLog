@@ -1,3 +1,88 @@
+2010-09-21 10:28  robert
+
+	* include/osgViewer/api/Cocoa/GraphicsWindowCocoa,
+	  src/osgViewer/GraphicsWindowCocoa.mm: From David Guthrie, "The
+	  cocoa version of the window for Mac OS X doesn't implement the
+	  requestWarpPointer function, but it turns out that the code from
+	  the Carbon version of the window is the same because it uses the
+	  windowing interface, so it this version, based on 2.8.3
+	  GraphicsWindowCocoa, I copied the function over. The trunk
+	  version it also missing the function and the code looks to be
+	  very similar, so I assume it will transfer simply enough.
+	  "
+
+2010-09-20 16:04  robert
+
+	* src/osgPlugins/imageio/ReaderWriterImageIO.cpp: From Per
+	  Fahlberg, "imageio was not spelled correctly when registering the
+	  plugin, attached is a fixed version of ReaderWriterImageIO.cpp."
+
+2010-09-20 11:50  robert
+
+	* examples/osgparticleshader/osgparticleshader.cpp,
+	  include/osgParticle/ParticleProcessor,
+	  include/osgParticle/ParticleSystemUpdater,
+	  src/osgParticle/ParticleProcessor.cpp,
+	  src/osgParticle/ParticleSystemUpdater.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgParticle/IO_ParticleSystemUpdater.cpp,
+	  src/osgWrappers/serializers/osgParticle/ParticleSystemUpdater.cpp:
+	  From Wang Rui, reverted changes to osgPartcile that caused
+	  problems with osgparticleeffects.
+
+2010-09-20 11:02  robert
+
+	* src/osgPlugins/3ds/WriterNodeVisitor.cpp: From Ulrich Hertlein,
+	  "attached is a fix that addresses these compiler warnings from
+	  the 64-bit OS X build:
+	  
+	  /Users/uli/Projects/osg/OpenSceneGraph/src/osgPlugins/3ds/WriterNodeVisitor.cpp:
+	  In
+	  function ?std::string getFileName(const std::string&)?:
+	  /Users/uli/Projects/osg/OpenSceneGraph/src/osgPlugins/3ds/WriterNodeVisitor.cpp:88:
+	  warning: comparison is always false due to limited range of data
+	  type
+	  
+	  /Users/uli/Projects/osg/OpenSceneGraph/src/osgPlugins/3ds/WriterNodeVisitor.cpp:
+	  In
+	  function ?bool is83(const std::string&)?:
+	  /Users/uli/Projects/osg/OpenSceneGraph/src/osgPlugins/3ds/WriterNodeVisitor.cpp:102:
+	  warning: comparison is always false due to limited range of data
+	  type
+	  
+	  /Users/uli/Projects/osg/OpenSceneGraph/src/osgPlugins/3ds/WriterNodeVisitor.cpp:
+	  In
+	  function ?bool is3DSpath(const std::string&, bool)?:
+	  /Users/uli/Projects/osg/OpenSceneGraph/src/osgPlugins/3ds/WriterNodeVisitor.cpp:118:
+	  warning: comparison is always false due to limited range of data
+	  type
+	  /Users/uli/Projects/osg/OpenSceneGraph/src/osgPlugins/3ds/WriterNodeVisitor.cpp:121:
+	  warning: comparison is always true due to limited range of data
+	  type
+	  
+	  The code was using 'unsigned int' in places where it should've
+	  used 'size_t' for correct
+	  comparison with 'std::string::npos' (which is size_t).
+	  "
+
+2010-09-17 15:41  robert
+
+	* CMakeModules/FindCOLLADA.cmake: From Mathieu Marache, "This
+	  modified version of FindCOLLADA finds it correctly when installed
+	  with macports
+	  as in 'port install collada-dom'"
+
+2010-09-17 15:39  robert
+
+	* include/osgParticle/RandomRateCounter: Add clamping of the
+	  maximum number of particles per frame to avoid too many particles
+	  being introduced at once when the particle system comes back on
+	  screen.
+
+2010-09-17 14:26  robert
+
+	* AUTHORS.txt, ChangeLog, applications/osgversion/Contributors.cpp:
+	  Updated ChangeLog, AUTHORS for 2.9.9 dev release
+
 2010-09-17 13:33  robert
 
 	* examples/osgtext3D/osgtext3D.cpp,

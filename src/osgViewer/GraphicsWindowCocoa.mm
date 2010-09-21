@@ -1289,6 +1289,29 @@ void GraphicsWindowCocoa::setWindowName (const std::string & name)
     [pool release];
 }
 
+// ----------------------------------------------------------------------------------------------------------
+// requestWarpPointer
+// ----------------------------------------------------------------------------------------------------------
+void GraphicsWindowCocoa::requestWarpPointer(float x,float y)
+{
+
+    DarwinWindowingSystemInterface* wsi = dynamic_cast<DarwinWindowingSystemInterface*>(osg::GraphicsContext::getWindowingSystemInterface());
+    if (wsi == NULL) {
+        osg::notify(osg::WARN) << "GraphicsWindowCarbon::useCursor :: could not get OSXCarbonWindowingSystemInterface" << std::endl;
+        return;
+    }
+
+    CGDirectDisplayID displayId = wsi->getDisplayID((*_traits));
+
+    CGPoint point;
+    point.x = x + _traits->x;
+    point.y = y + _traits->y;
+    CGDisplayMoveCursorToPoint(displayId, point);
+
+    getEventQueue()->mouseWarped(x,y);
+}
+
+
 
 // ----------------------------------------------------------------------------------------------------------
 // useCursor

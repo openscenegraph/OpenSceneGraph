@@ -20,26 +20,31 @@ namespace osgText {
 
 typedef Font Font3D;
 
+/** deprecated, use readFontFile() instead.*/
 inline Font* readFont3DFile(const std::string& filename, const osgDB::ReaderWriter::Options* userOptions = 0)
 {
     return readFontFile(filename,userOptions);
 }
 
+/** deprecated, use readFontStream() instead.*/
 inline Font* readFont3DStream(std::istream& stream, const osgDB::ReaderWriter::Options* userOptions = 0)
 {
     return readFontStream(stream, userOptions);
 }
 
+/** deprecated, use readRefFontFile() instead.*/
 inline osg::ref_ptr<Font> readRefFont3DFile(const std::string& filename, const osgDB::ReaderWriter::Options* userOptions = 0)
 {
     return readRefFontFile(filename, userOptions);
 }
 
+/** deprecated, use readRefFontStream() instead.*/
 inline osg::ref_ptr<Font> readRefFont3DStream(std::istream& stream, const osgDB::ReaderWriter::Options* userOptions = 0)
 {
     return readRefFontStream(stream, userOptions);
 }
 
+/** deprecated, use findFontFile() instead.*/
 inline std::string findFont3DFile(const std::string& str)
 {
     return findFontFile(str);

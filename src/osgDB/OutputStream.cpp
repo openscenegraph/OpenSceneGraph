@@ -139,11 +139,11 @@ OutputStream& OutputStream::operator<<( const osg::Matrixd& mat )
 void OutputStream::writeArray( const osg::Array* a )
 {
     if ( !a ) return;
-    
-    size_t oldSize = _arrayMap.size();
-    unsigned int id = findOrCreateArrayID( a );
+
+    bool newID = false;
+    unsigned int id = findOrCreateArrayID( a, newID );
     *this << PROPERTY("ArrayID") << id;
-    if ( id<=oldSize )  // Shared array
+    if ( !newID )  // Shared array
     {
         *this << std::endl;
         return;
@@ -294,176 +294,197 @@ void OutputStream::writePrimitiveSet( const osg::PrimitiveSet* p )
 void OutputStream::writeImage( const osg::Image* img )
 {
     if ( !img ) return;
-    
-    unsigned int id = findOrCreateObjectID( img );
-    *this << PROPERTY("ImageID") << id << std::endl;  // Write image ID
+
+    // std::string name = img->libraryName();
+    // name += std::string("::") + img->className();
+
+    bool newID = false;
+    unsigned int id = findOrCreateObjectID( img, newID );
+
+    // *this << name << BEGIN_BRACKET << std::endl;       // Write object name
+    *this << PROPERTY("UniqueID") << id << std::endl;  // Write image ID
     if ( getException() ) return;
-    
-    *this << PROPERTY("FileName"); writeWrappedString(img->getFileName()); *this << std::endl;
-    *this << PROPERTY("WriteHint") << (int)img->getWriteHint();
-    if ( getException() ) return;
-    
-    int decision = IMAGE_EXTERNAL;
-    switch ( _writeImageHint )
+
+    if (newID)
     {
-    case OutputStream::WRITE_INLINE_DATA: decision = IMAGE_INLINE_DATA; break;
-    case OutputStream::WRITE_INLINE_FILE: decision = IMAGE_INLINE_FILE; break;
-    case OutputStream::WRITE_EXTERNAL_FILE: decision = IMAGE_EXTERNAL; break;
-    case OutputStream::WRITE_USE_EXTERNAL: decision = IMAGE_WRITE_OUT; break;
-    default:
-        if ( img->getWriteHint()==osg::Image::EXTERNAL_FILE )
-            decision = IMAGE_EXTERNAL;
-        else if ( isBinary() )
-            decision = IMAGE_INLINE_DATA;
-        break;
-    }
-    
-    *this << decision << std::endl;
-    if ( decision==IMAGE_WRITE_OUT || _writeImageHint==WRITE_EXTERNAL_FILE )
-    {
-        bool result = osgDB::writeImageFile( *img, img->getFileName() );
-        OSG_NOTICE << "OutputStream::writeImage(): Write image data to external file "
-                                 << img->getFileName() << std::endl;
-        if ( !result )
+        *this << PROPERTY("FileName"); writeWrappedString(img->getFileName()); *this << std::endl;
+        *this << PROPERTY("WriteHint") << (int)img->getWriteHint();
+        if ( getException() ) return;
+
+        int decision = IMAGE_EXTERNAL;
+        switch ( _writeImageHint )
         {
-            OSG_WARN << "OutputStream::writeImage(): Failed to write "
-                                   << img->getFileName() << std::endl;
+        case OutputStream::WRITE_INLINE_DATA: decision = IMAGE_INLINE_DATA; break;
+        case OutputStream::WRITE_INLINE_FILE: decision = IMAGE_INLINE_FILE; break;
+        case OutputStream::WRITE_EXTERNAL_FILE: decision = IMAGE_EXTERNAL; break;
+        case OutputStream::WRITE_USE_EXTERNAL: decision = IMAGE_WRITE_OUT; break;
+        default:
+            if ( img->getWriteHint()==osg::Image::EXTERNAL_FILE )
+                decision = IMAGE_EXTERNAL;
+            else if ( isBinary() )
+                decision = IMAGE_INLINE_DATA;
+            break;
         }
-    }
-    
-    switch ( decision )
-    {
-    case IMAGE_INLINE_DATA:
-        if ( isBinary() )
+
+        *this << decision << std::endl;
+        if ( decision==IMAGE_WRITE_OUT || _writeImageHint==WRITE_EXTERNAL_FILE )
         {
-            *this << img->getOrigin();  // _origin
-            *this << img->s() << img->t() << img->r(); // _s & _t & _r
-            *this << img->getInternalTextureFormat();  // _internalTextureFormat
-            *this << img->getPixelFormat();  // _pixelFormat
-            *this << img->getDataType();  // _dataType
-            *this << img->getPacking();  // _packing
-            *this << img->getAllocationMode();  // _allocationMode
-
-            // _data
-            unsigned int size = img->getTotalSizeInBytesIncludingMipmaps();
-            writeSize(size); writeCharArray( (char*)img->data(), size );
-
-            // _mipmapData
-            const osg::Image::MipmapDataType& levels = img->getMipmapLevels();
-            writeSize(levels.size());
-            for ( osg::Image::MipmapDataType::const_iterator itr=levels.begin();
-                  itr!=levels.end(); ++itr )
+            bool result = osgDB::writeImageFile( *img, img->getFileName() );
+            OSG_NOTICE << "OutputStream::writeImage(): Write image data to external file "
+                                    << img->getFileName() << std::endl;
+            if ( !result )
             {
-                *this << *itr;
+                OSG_WARN << "OutputStream::writeImage(): Failed to write "
+                                    << img->getFileName() << std::endl;
             }
         }
-        break;
-    case IMAGE_INLINE_FILE:
-        if ( isBinary() )
+
+        switch ( decision )
         {
-            std::string fullPath = osgDB::findDataFile( img->getFileName() );
-            std::ifstream infile( fullPath.c_str(), std::ios::in|std::ios::binary );
-            if ( infile )
+        case IMAGE_INLINE_DATA:
+            if ( isBinary() )
             {
-                infile.seekg( 0, std::ios::end );
-                unsigned int size = infile.tellg();
-                writeSize(size);
-                
-                if ( size>0 )
+                *this << img->getOrigin();  // _origin
+                *this << img->s() << img->t() << img->r(); // _s & _t & _r
+                *this << img->getInternalTextureFormat();  // _internalTextureFormat
+                *this << img->getPixelFormat();  // _pixelFormat
+                *this << img->getDataType();  // _dataType
+                *this << img->getPacking();  // _packing
+                *this << img->getAllocationMode();  // _allocationMode
+
+                // _data
+                unsigned int size = img->getTotalSizeInBytesIncludingMipmaps();
+                writeSize(size); writeCharArray( (char*)img->data(), size );
+
+                // _mipmapData
+                const osg::Image::MipmapDataType& levels = img->getMipmapLevels();
+                writeSize(levels.size());
+                for ( osg::Image::MipmapDataType::const_iterator itr=levels.begin();
+                    itr!=levels.end(); ++itr )
                 {
-                    char* data = new char[size];
-                    if ( !data )
-                        throwException( "OutputStream::writeImage(): Out of memory." );
-                    if ( getException() ) return;
-                    
-                    infile.seekg( 0, std::ios::beg );
-                    infile.read( data, size );
-                    writeCharArray( data, size );
-                    delete[] data;
+                    *this << *itr;
                 }
-                infile.close();
             }
-            else
+            break;
+        case IMAGE_INLINE_FILE:
+            if ( isBinary() )
             {
-                OSG_WARN << "OutputStream::writeImage(): Failed to open image file "
-                                       << img->getFileName() << std::endl;
-                *this << (unsigned int)0;
+                std::string fullPath = osgDB::findDataFile( img->getFileName() );
+                std::ifstream infile( fullPath.c_str(), std::ios::in|std::ios::binary );
+                if ( infile )
+                {
+                    infile.seekg( 0, std::ios::end );
+                    unsigned int size = infile.tellg();
+                    writeSize(size);
+
+                    if ( size>0 )
+                    {
+                        char* data = new char[size];
+                        if ( !data )
+                            throwException( "OutputStream::writeImage(): Out of memory." );
+                        if ( getException() ) return;
+
+                        infile.seekg( 0, std::ios::beg );
+                        infile.read( data, size );
+                        writeCharArray( data, size );
+                        delete[] data;
+                    }
+                    infile.close();
+                }
+                else
+                {
+                    OSG_WARN << "OutputStream::writeImage(): Failed to open image file "
+                                        << img->getFileName() << std::endl;
+                    *this << (unsigned int)0;
+                }
             }
+            break;
+        case IMAGE_EXTERNAL:
+            break;
+        default:
+            break;
         }
-        break;
-    case IMAGE_EXTERNAL:
-        break;
-    default:
-        break;
+
+        writeObjectFields( img );
     }
-    writeObject( img );
+
+    // *this << END_BRACKET << std::endl;
 }
 
 void OutputStream::writeObject( const osg::Object* obj )
 {
     if ( !obj ) return;
-    
+
     std::string name = obj->libraryName();
     name += std::string("::") + obj->className();
-    size_t oldSize = _objectMap.size();
-    unsigned int id = findOrCreateObjectID( obj );
-    
+
+    bool newID = false;
+    unsigned int id = findOrCreateObjectID( obj, newID );
+
     *this << name << BEGIN_BRACKET << std::endl;       // Write object name
     *this << PROPERTY("UniqueID") << id << std::endl;  // Write object ID
     if ( getException() ) return;
-    
-    // Check whether this is a shared object or not
-    if ( id>oldSize )
+
+    if (newID)
     {
-        ObjectWrapper* wrapper = Registry::instance()->getObjectWrapperManager()->findWrapper( name );
-        if ( !wrapper )
+        writeObjectFields(obj);
+    }
+
+    *this << END_BRACKET << std::endl;
+}
+
+void OutputStream::writeObjectFields( const osg::Object* obj )
+{
+    std::string name = obj->libraryName();
+    name += std::string("::") + obj->className();
+
+    ObjectWrapper* wrapper = Registry::instance()->getObjectWrapperManager()->findWrapper( name );
+    if ( !wrapper )
+    {
+        OSG_WARN << "OutputStream::writeObject(): Unsupported wrapper class "
+                                << name << std::endl;
+        return;
+    }
+    _fields.push_back( name );
+
+    const StringList& associates = wrapper->getAssociates();
+    for ( StringList::const_iterator itr=associates.begin(); itr!=associates.end(); ++itr )
+    {
+        const std::string& assocName = *itr;
+        ObjectWrapper* assocWrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(assocName);
+        if ( !assocWrapper )
         {
-            OSG_WARN << "OutputStream::writeObject(): Unsupported wrapper class "
-                                   << name << std::endl;
-            *this << END_BRACKET << std::endl;
-            return;
+            OSG_WARN << "OutputStream::writeObject(): Unsupported associated class "
+                                    << assocName << std::endl;
+            continue;
         }
-        _fields.push_back( name );
-        
-        const StringList& associates = wrapper->getAssociates();
-        for ( StringList::const_iterator itr=associates.begin(); itr!=associates.end(); ++itr )
+        else if ( _useSchemaData )
         {
-            const std::string& assocName = *itr;
-            ObjectWrapper* assocWrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(assocName);
-            if ( !assocWrapper )
+            if ( _inbuiltSchemaMap.find(assocName)==_inbuiltSchemaMap.end() )
             {
-                OSG_WARN << "OutputStream::writeObject(): Unsupported associated class "
-                                       << assocName << std::endl;
-                continue;
-            }
-            else if ( _useSchemaData )
-            {
-                if ( _inbuiltSchemaMap.find(assocName)==_inbuiltSchemaMap.end() )
+                StringList properties;
+                assocWrapper->writeSchema( properties );
+                if ( properties.size()>0 )
                 {
-                    StringList properties;
-                    assocWrapper->writeSchema( properties );
-                    if ( properties.size()>0 )
+                    std::string propertiesString;
+                    for ( StringList::iterator sitr=properties.begin(); sitr!=properties.end(); ++sitr )
                     {
-                        std::string propertiesString;
-                        for ( StringList::iterator sitr=properties.begin(); sitr!=properties.end(); ++sitr )
-                        {
-                            propertiesString += *sitr;
-                            propertiesString += ' ';
-                        }
-                        _inbuiltSchemaMap[assocName] = propertiesString;
+                        propertiesString += *sitr;
+                        propertiesString += ' ';
                     }
+                    _inbuiltSchemaMap[assocName] = propertiesString;
                 }
             }
-            _fields.push_back( assocWrapper->getName() );
-            
-            assocWrapper->write( *this, *obj );
-            if ( getException() ) return;
-            
-            _fields.pop_back();
         }
+        _fields.push_back( assocWrapper->getName() );
+
+        assocWrapper->write( *this, *obj );
+        if ( getException() ) return;
+
         _fields.pop_back();
     }
-    *this << END_BRACKET << std::endl;
+    _fields.pop_back();
+
 }
 
 void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType type )
@@ -635,26 +656,30 @@ void OutputStream::writeArrayImplementation( const T* a, int write_size, unsigne
     *this << END_BRACKET << std::endl;
 }
 
-unsigned int OutputStream::findOrCreateArrayID( const osg::Array* array )
+unsigned int OutputStream::findOrCreateArrayID( const osg::Array* array, bool& newID )
 {
     ArrayMap::iterator itr = _arrayMap.find( array );
     if ( itr==_arrayMap.end() )
     {
         unsigned int id = _arrayMap.size()+1;
         _arrayMap[array] = id;
+        newID = true;
         return id;
     }
+    newID = false;
     return itr->second;
 }
 
-unsigned int OutputStream::findOrCreateObjectID( const osg::Object* obj )
+unsigned int OutputStream::findOrCreateObjectID( const osg::Object* obj, bool& newID )
 {
     ObjectMap::iterator itr = _objectMap.find( obj );
     if ( itr==_objectMap.end() )
     {
         unsigned int id = _objectMap.size()+1;
         _objectMap[obj] = id;
+        newID = true;
         return id;
     }
+    newID = false;
     return itr->second;
 }

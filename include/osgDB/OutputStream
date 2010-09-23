@@ -146,6 +146,7 @@ public:
     void writePrimitiveSet( const osg::PrimitiveSet* p );
     void writeImage( const osg::Image* img );
     void writeObject( const osg::Object* obj );
+    void writeObjectFields( const osg::Object* obj );
     
     void start( OutputIterator* outIterator, WriteType type );
     void compress( std::ostream* ostream );
@@ -161,8 +162,8 @@ protected:
     template<typename T>
     void writeArrayImplementation( const T*, int write_size, unsigned int numInRow=1 );
     
-    unsigned int findOrCreateArrayID( const osg::Array* array );
-    unsigned int findOrCreateObjectID( const osg::Object* obj );
+    unsigned int findOrCreateArrayID( const osg::Array* array, bool& newID );
+    unsigned int findOrCreateObjectID( const osg::Object* obj, bool& newID );
     
     ArrayMap _arrayMap;
     ObjectMap _objectMap;

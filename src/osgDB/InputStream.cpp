@@ -171,7 +171,10 @@ osg::Array* InputStream::readArray()
     *this >> PROPERTY("ArrayID") >> id;
     
     ArrayMap::iterator itr = _arrayMap.find( id );
-    if ( itr!=_arrayMap.end() ) return itr->second.get();
+    if ( itr!=_arrayMap.end() )
+    {
+        return itr->second.get();
+    }
     
     DEF_MAPPEE(ArrayType, type);
     *this >> type;
@@ -330,6 +333,7 @@ osg::Array* InputStream::readArray()
     
     if ( getException() ) return NULL;
     _arrayMap[id] = array;
+
     return array.release();
 }
 
@@ -417,23 +421,24 @@ osg::PrimitiveSet* InputStream::readPrimitiveSet()
 
 osg::Image* InputStream::readImage()
 {
+    std::string className="osg::Image";
     unsigned int id = 0;
-    *this >> PROPERTY("ImageID") >> id;
+
+    *this >> PROPERTY("UniqueID") >> id;
     if ( getException() ) return NULL;
-    
+
     IdentifierMap::iterator itr = _identifierMap.find( id );
     if ( itr!=_identifierMap.end() )
     {
-        advanceToCurrentEndBracket();
         return static_cast<osg::Image*>( itr->second.get() );
     }
-    
+
     std::string name;
     int writeHint, decision = IMAGE_EXTERNAL;
     *this >> PROPERTY("FileName"); readWrappedString(name);
     *this >> PROPERTY("WriteHint") >> writeHint >> decision;
     if ( getException() ) return NULL;
-    
+
     osg::ref_ptr<osg::Image> image = NULL;
     bool readFromExternal = true;
     switch ( decision )
@@ -533,9 +538,12 @@ osg::Image* InputStream::readImage()
         image->setFileName( name );
         image->setWriteHint( (osg::Image::WriteHint)writeHint );
     }
-    
-    image = static_cast<osg::Image*>( readObject(image.get()) );
-    return image.release();
+
+    image = static_cast<osg::Image*>( readObjectFields(className, image.get()) );
+
+   _identifierMap[id] = image;
+
+   return image.release();
 }
 
 osg::Object* InputStream::readObject( osg::Object* existingObj )
@@ -551,13 +559,23 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
         advanceToCurrentEndBracket();
         return itr->second.get();
     }
-    
+
+    osg::ref_ptr<osg::Object> obj = readObjectFields( className );
+
+    _identifierMap[id] = obj;
+
+    advanceToCurrentEndBracket();
+
+    return obj.release();
+}
+
+osg::Object* InputStream::readObjectFields( const std::string& className, osg::Object* existingObj )
+{
     ObjectWrapper* wrapper = Registry::instance()->getObjectWrapperManager()->findWrapper( className );
     if ( !wrapper )
     {
         OSG_WARN << "InputStream::readObject(): Unsupported wrapper class "
                                << className << std::endl;
-        advanceToCurrentEndBracket();
         return NULL;
     }
     _fields.push_back( className );
@@ -565,8 +583,6 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
     osg::ref_ptr<osg::Object> obj = existingObj ? existingObj : wrapper->getProto()->cloneType();
     if ( obj.valid() )
     {
-        _identifierMap[id] = obj;
-        
         const StringList& associates = wrapper->getAssociates();
         for ( StringList::const_iterator itr=associates.begin(); itr!=associates.end(); ++itr )
         {
@@ -585,7 +601,6 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
             _fields.pop_back();
         }
     }
-    advanceToCurrentEndBracket();
     _fields.pop_back();
     return obj.release();
 }

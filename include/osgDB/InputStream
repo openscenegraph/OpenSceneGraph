@@ -137,6 +137,7 @@ public:
     osg::PrimitiveSet* readPrimitiveSet();
     osg::Image* readImage();
     osg::Object* readObject( osg::Object* existingObj=0 );
+    osg::Object* readObjectFields( const std::string& className, osg::Object* existingObj=0);
     
     ReadType start( InputIterator* );
     void decompress();

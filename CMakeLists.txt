@@ -512,6 +512,8 @@ IF(NOT APPLE)
 
 ELSE()
     FIND_PACKAGE(QuickTime)
+    FIND_PACKAGE(QTKit)
+    FIND_PACKAGE(CoreVideo)
 ENDIF()
 
 ################################################################################

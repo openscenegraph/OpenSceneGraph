@@ -42,7 +42,7 @@ inline std::ostream& operator << (std::ostream& output, const Vec2f& vec)
 
 inline std::istream& operator >> (std::istream& input, Vec2f& vec)
 {
-    input >> vec._v[0] >> vec._v[1];
+    input >> vec._v[0] >> std::ws >> vec._v[1];
     return input;
 }
 
@@ -56,7 +56,7 @@ inline std::ostream& operator << (std::ostream& output, const Vec2d& vec)
 
 inline std::istream& operator >> (std::istream& input, Vec2d& vec)
 {
-    input >> vec._v[0] >> vec._v[1];
+    input >> vec._v[0] >> std::ws >> vec._v[1];
     return input;
 }
 
@@ -72,7 +72,7 @@ inline std::ostream& operator << (std::ostream& output, const Vec3f& vec)
 
 inline std::istream& operator >> (std::istream& input, Vec3f& vec)
 {
-    input >> vec._v[0] >> vec._v[1] >> vec._v[2];
+    input >> vec._v[0] >> std::ws >> vec._v[1] >> std::ws >> vec._v[2];
     return input;
 }
 
@@ -89,7 +89,7 @@ inline std::ostream& operator << (std::ostream& output, const Vec3d& vec)
 
 inline std::istream& operator >> (std::istream& input, Vec3d& vec)
 {
-    input >> vec._v[0] >> vec._v[1] >> vec._v[2];
+    input >> vec._v[0] >> std::ws >> vec._v[1] >> std::ws >> vec._v[2];
     return input;
 }
 
@@ -107,7 +107,10 @@ inline std::ostream& operator << (std::ostream& output, const Vec4f& vec)
 
 inline std::istream& operator >> (std::istream& input, Vec4f& vec)
 {
-    input >> vec._v[0] >> vec._v[1] >> vec._v[2] >> vec._v[3];
+    input >> vec._v[0] >> std::ws
+          >> vec._v[1] >> std::ws
+          >> vec._v[2] >> std::ws
+          >> vec._v[3];
     return input;
 }
 
@@ -125,7 +128,10 @@ inline std::ostream& operator << (std::ostream& output, const Vec4d& vec)
 }
 inline std::istream& operator >> (std::istream& input, Vec4d& vec)
 {
-    input >> vec._v[0] >> vec._v[1] >> vec._v[2] >> vec._v[3];
+    input >> vec._v[0] >> std::ws
+          >> vec._v[1] >> std::ws
+          >> vec._v[2] >> std::ws
+          >> vec._v[3];
     return input;
 }
 
@@ -141,7 +147,7 @@ inline std::ostream& operator << (std::ostream& output, const Vec2b& vec)
 
 inline std::istream& operator >> (std::istream& input, Vec2b& vec)
 {
-    input >> vec._v[0] >> vec._v[1];
+    input >> vec._v[0] >> std::ws >> vec._v[1];
     return input;
 }
 
@@ -157,7 +163,7 @@ inline std::ostream& operator << (std::ostream& output, const Vec3b& vec)
 
 inline std::istream& operator >> (std::istream& input, Vec3b& vec)
 {
-    input >> vec._v[0] >> vec._v[1]  >> vec._v[2];
+    input >> vec._v[0] >> std::ws >> vec._v[1] >> std::ws >> vec._v[2];
     return input;
 }
 
@@ -174,7 +180,10 @@ inline std::ostream& operator << (std::ostream& output, const Vec4b& vec)
 
 inline std::istream& operator >> (std::istream& input, Vec4b& vec)
 {
-    input >> vec._v[0] >> vec._v[1] >> vec._v[2] >> vec._v[3];
+    input >> vec._v[0] >> std::ws
+          >> vec._v[1] >> std::ws
+          >> vec._v[2] >> std::ws 
+          >> vec._v[3];
     return input;
 }
 
@@ -190,7 +199,7 @@ inline std::ostream& operator << (std::ostream& output, const Vec2s& vec)
 
 inline std::istream& operator >> (std::istream& input, Vec2s& vec)
 {
-    input >> vec._v[0] >> vec._v[1];
+    input >> vec._v[0] >> std::ws >> vec._v[1];
     return input;
 }
 
@@ -206,7 +215,7 @@ inline std::ostream& operator << (std::ostream& output, const Vec3s& vec)
 
 inline std::istream& operator >> (std::istream& input, Vec3s& vec)
 {
-    input >> vec._v[0] >> vec._v[1]  >> vec._v[2];
+    input >> vec._v[0] >> std::ws >> vec._v[1] >> std::ws >> vec._v[2];
     return input;
 }
 
@@ -223,7 +232,10 @@ inline std::ostream& operator << (std::ostream& output, const Vec4s& vec)
 
 inline std::istream& operator >> (std::istream& input, Vec4s& vec)
 {
-    input >> vec._v[0] >> vec._v[1] >> vec._v[2] >> vec._v[3];
+    input >> vec._v[0] >> std::ws
+          >> vec._v[1] >> std::ws
+          >> vec._v[2] >> std::ws
+          >> vec._v[3];
     return input;
 }
 
@@ -272,7 +284,10 @@ inline std::ostream& operator << (std::ostream& output, const Vec4ub& vec)
 
 inline std::istream& operator >> (std::istream& input, Vec4ub& vec)
 {
-    input >> vec._v[0] >> vec._v[1] >> vec._v[2] >> vec._v[3];
+    input >> vec._v[0] >> std::ws
+          >> vec._v[1] >> std::ws
+          >> vec._v[2] >> std::ws
+          >> vec._v[3];
     return input;
 }
 
@@ -290,7 +305,10 @@ inline std::ostream& operator << (std::ostream& output, const Quat& vec)
 
 inline std::istream& operator >> (std::istream& input, Quat& vec)
 {
-    input >> vec._v[0] >> vec._v[1] >> vec._v[2] >> vec._v[3];
+    input >> vec._v[0] >> std::ws
+          >> vec._v[1] >> std::ws
+          >> vec._v[2] >> std::ws
+          >> vec._v[3];
     return input;
 }
 
@@ -309,7 +327,10 @@ inline std::ostream& operator << (std::ostream& output, const Plane& pl)
 
 inline std::istream& operator >> (std::istream& input, Plane& vec)
 {
-    input >> vec[0] >> vec[1] >> vec[2] >> vec[3];
+    input >> vec[0] >> std::ws
+          >> vec[1] >> std::ws
+          >> vec[2] >> std::ws
+          >> vec[3];
     return input;
 }
 

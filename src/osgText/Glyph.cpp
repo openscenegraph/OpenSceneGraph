@@ -524,3 +524,26 @@ void Glyph3D::computeText3DGeometryData()
         else if (prim->getName()=="wall") _wallPrimitiveSetList.push_back(prim);
     }
 }
+
+GlyphGeometry* Glyph3D::getGlyphGeometry(Style* style)
+{
+    OSG_NOTICE<<"Glyph3D::getGlyphGeometry(Style* style) not implementated."<<std::endl;
+    return 0;
+}
+
+
+GlyphGeometry::GlyphGeometry()
+{
+    OSG_NOTICE<<"GlyphGeometry::GlyphGeometry() not implementated."<<std::endl;
+}
+
+void GlyphGeometry::setup(const Glyph* glyph, const Style* style)
+{
+    OSG_NOTICE<<"GlyphGeometry::setup(const Glyph* glyph, const Style* style) not implementated."<<std::endl;
+}
+
+bool GlyphGeometry::match(const Style* style) const
+{
+    OSG_NOTICE<<"GlyphGeometry::match(const Style*) not implementated."<<std::endl;
+    return false;
+}

@@ -15,6 +15,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Glyph
     ${HEADER_PATH}/KerningType
     ${HEADER_PATH}/String
+    ${HEADER_PATH}/Style
     ${HEADER_PATH}/TextBase
     ${HEADER_PATH}/Text
     ${HEADER_PATH}/TextNode
@@ -34,6 +35,7 @@ ADD_LIBRARY(${LIB_NAME}
     FadeText.cpp
     Glyph.cpp
     String.cpp
+    Style.cpp
     TextBase.cpp
     Text.cpp
     TextNode.cpp

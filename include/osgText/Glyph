@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -25,6 +25,7 @@
 
 #include <osgText/Export>
 #include <osgText/KerningType>
+#include <osgText/Style>
 
 #include <OpenThreads/Mutex>
 
@@ -33,6 +34,7 @@ namespace osgText {
 class Font;
 class Text;
 class Glyph3D;
+class GlyphGeometry;
 class GlyphTexture;
 
 class OSGTEXT_EXPORT Glyph : public osg::Image
@@ -95,6 +97,50 @@ protected:
 
 };
 
+class OSGTEXT_EXPORT GlyphGeometry : public osg::Referenced
+{
+    public:
+
+        GlyphGeometry();
+
+        void setup(const Glyph* glyph, const Style* style);
+
+        bool match(const Style* style) const;
+
+        osg::Geode* getGeode() const { return _geode.get(); }
+        osg::Geometry* getGeometry() const { return _geometry.get(); }
+
+        /** Set the VertexArray of the glyph. */
+        void setVertexArray(osg::Vec3Array * va) { _vertices = va; }
+        /** Get the VertexArray of the glyph. */
+        osg::Vec3Array * getVertexArray() const { return _vertices.get(); }
+
+        /** Set the VertexArray of the glyph. */
+        void setNormalArray(osg::Vec3Array* na) { _normals = na; }
+        /** Get the NormalArray for the wall face. */
+        osg::Vec3Array* getNormalArray() const { return _normals.get(); }
+
+        /** Get the PrimitiveSetList for the front face. */
+        osg::Geometry::PrimitiveSetList& getFrontPrimitiveSetList() { return _frontPrimitiveSetList; }
+        /** Get the PrimitiveSetList for the wall face. */
+        osg::Geometry::PrimitiveSetList& getWallPrimitiveSetList() { return _wallPrimitiveSetList; }
+        /** Get et the PrimitiveSetList for the back face. */
+        osg::Geometry::PrimitiveSetList& getBackPrimitiveSetList() { return _backPrimitiveSetList; }
+
+    protected:
+
+        osg::ref_ptr<Style>             _style;
+        osg::ref_ptr<osg::Geode>        _geode;
+        osg::ref_ptr<osg::Geometry>     _geometry;
+        osg::ref_ptr<osg::Vec3Array>    _vertices;
+        osg::ref_ptr<osg::Vec3Array>    _normals;
+
+        osg::Geometry::PrimitiveSetList _frontPrimitiveSetList;
+        osg::Geometry::PrimitiveSetList _wallPrimitiveSetList;
+        osg::Geometry::PrimitiveSetList _backPrimitiveSetList;
+};
+
+
 class OSGTEXT_EXPORT Glyph3D : public osg::Referenced
 {
 public:
@@ -150,17 +196,18 @@ public:
     osg::Vec3Array * getNormalArray() { return _normalArray.get(); }
 
 
-    float getHorizontalWidth() { return (-_horizontalBearing.x() + _horizontalAdvance); }
-    float getHorizontalHeight() { return (-_horizontalBearing.y() + _bb.yMax()); }
-    float getVerticalWidth() { return (-_verticalBearing.x() + _bb.xMax()); }
-    float getVerticalHeight() { return (-_verticalBearing.y() + _verticalAdvance); }
+    float getHorizontalWidth() const { return (-_horizontalBearing.x() + _horizontalAdvance); }
+    float getHorizontalHeight() const { return (-_horizontalBearing.y() + _bb.yMax()); }
+    float getVerticalWidth() const { return (-_verticalBearing.x() + _bb.xMax()); }
+    float getVerticalHeight() const { return (-_verticalBearing.y() + _verticalAdvance); }
 
     void setWidth(float width) { _width = width; }
-    float getWidth() { return _width; }
+    float getWidth() const { return _width; }
 
     void setHeight(float height) { _height = height; }
-    float getHeight() { return _height; }
+    float getHeight() const { return _height; }
 
+    GlyphGeometry* getGlyphGeometry(Style* style);
 
 protected:
 
@@ -192,6 +239,9 @@ protected:
 
     osg::ref_ptr<osg::Vec3Array>    _rawVertexArray;
     osg::Geometry::PrimitiveSetList _rawFacePrimitiveSetList;
+
+    typedef std::list< osg::ref_ptr<GlyphGeometry> >  GlyphGeometries;
+    GlyphGeometries _glyphGeometries;
 
 };
 

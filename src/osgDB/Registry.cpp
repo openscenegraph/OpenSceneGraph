@@ -268,9 +268,28 @@ Registry::Registry()
     addFileExtensionAlias("png",  "imageio");
     addFileExtensionAlias("psd",  "imageio");
     addFileExtensionAlias("tga",  "imageio");
+
+#endif
+
+#if defined(DARWIN_QTKIT)
+    addFileExtensionAlias("mov",  "QTKit");
+    addFileExtensionAlias("mp4",  "QTKit");
+    addFileExtensionAlias("mov",  "QTKit");
+    addFileExtensionAlias("mpg",  "QTKit");
+    addFileExtensionAlias("mpeg",  "QTKit");
+    addFileExtensionAlias("mpv",  "QTKit");
+    addFileExtensionAlias("m4v",  "QTKit");
+    addFileExtensionAlias("3gp",  "QTKit");
+    addFileExtensionAlias("live", "QTKit");
+    // Requires Perian
+    addFileExtensionAlias("avi",  "QTKit");
+    addFileExtensionAlias("xvid",  "QTKit");
+    // Requires Flip4Mac
+    addFileExtensionAlias("wmv",  "QTKit");
 #endif
 
 #if defined(DARWIN_QUICKTIME)
+
     addFileExtensionAlias("jpg",  "qt");
     addFileExtensionAlias("jpe",  "qt");
     addFileExtensionAlias("jpeg", "qt");
@@ -280,17 +299,20 @@ Registry::Registry()
     addFileExtensionAlias("png",  "qt");
     addFileExtensionAlias("psd",  "qt");
     addFileExtensionAlias("tga",  "qt");
-    addFileExtensionAlias("mov",  "qt");
-    addFileExtensionAlias("avi",  "qt");
-    addFileExtensionAlias("mpg",  "qt");
     addFileExtensionAlias("flv",  "qt");
-    addFileExtensionAlias("mpv",  "qt");
     addFileExtensionAlias("dv",   "qt");
-    addFileExtensionAlias("mp4",  "qt");
-    addFileExtensionAlias("m4v",  "qt");
-    addFileExtensionAlias("3gp",  "qt");
-    // Add QuickTime live support for OSX
-    addFileExtensionAlias("live", "qt");
+    #if !defined(DARWIN_QTKIT)
+
+        addFileExtensionAlias("mov",  "qt");
+        addFileExtensionAlias("avi",  "qt");
+        addFileExtensionAlias("mpg",  "qt");
+        addFileExtensionAlias("mpv",  "qt");
+        addFileExtensionAlias("mp4",  "qt");
+        addFileExtensionAlias("m4v",  "qt");
+        addFileExtensionAlias("3gp",  "qt");
+        // Add QuickTime live support for OSX
+        addFileExtensionAlias("live", "qt");
+    #endif
 #else
     addFileExtensionAlias("jpg",  "jpeg");
     addFileExtensionAlias("jpe",  "jpeg");
@@ -298,6 +320,7 @@ Registry::Registry()
 
     // really need to decide this at runtime...
     #if defined(USE_XINE)
+
         addFileExtensionAlias("mov",  "xine");
         addFileExtensionAlias("mpg",  "xine");
         addFileExtensionAlias("ogv",  "xine");
@@ -309,7 +332,10 @@ Registry::Registry()
     #endif
 
     // support QuickTime for Windows
-    #if defined(USE_QUICKTIME)
+    // Logic error here. It is possible for Apple to not define Quicktime and end up in
+    // this Quicktime for Windows block. So add an extra check to avoid QTKit clashes.
+    #if defined(USE_QUICKTIME) && !defined(DARWIN_QTKIT)
+
         addFileExtensionAlias("mov",  "qt");
         addFileExtensionAlias("live", "qt");
         addFileExtensionAlias("mpg",  "qt");

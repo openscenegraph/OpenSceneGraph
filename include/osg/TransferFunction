@@ -63,7 +63,7 @@ class OSG_EXPORT TransferFunction1D : public osg::TransferFunction
 
         META_Object(osg, TransferFunction1D)
         
-        /** Get the mnimum transfer function value.*/
+        /** Get the minimum transfer function value.*/
         float getMinimum() const { return _colorMap.empty() ? 0.0f : _colorMap.begin()->first; }
         
         /** Get the maximum transfer function value.*/
@@ -73,7 +73,7 @@ class OSG_EXPORT TransferFunction1D : public osg::TransferFunction
           * transfer function when download to GPU.*/
         void allocate(unsigned int numImageCells);
 
-        /** Clear the whole range to just represet a single color.*/
+        /** Clear the whole range to just represent a single color.*/
         void clear(const osg::Vec4& color = osg::Vec4(1.0f,1.0f,1.0f,1.0f));
         
         /** Get pixel value from the image. */
@@ -95,7 +95,7 @@ class OSG_EXPORT TransferFunction1D : public osg::TransferFunction
         /** Set the color for a specified transfer function value.
           * updateImage defaults to true, and tells the setColor function to update the associate osg::Image that
           * tracks the color map.  Pass in false as the updateImage parameter if you are setting up many values
-          * at once to avoid recomputating og the image data, then once all setColor calls are made explictly call
+          * at once to avoid recomputation of the image data, then once all setColor calls are made explictly call
           * updateImage() to bring the osg::Image back into sync with the color map. */ 
         void setColor(float v, const osg::Vec4& color, bool updateImage=true);
         
@@ -104,10 +104,10 @@ class OSG_EXPORT TransferFunction1D : public osg::TransferFunction
         
         typedef std::map<float, osg::Vec4> ColorMap;
         
-        /** Get the color map that stores the mapping between the the tranfser function value and the colour it maps to.*/
+        /** Get the color map that stores the mapping between the the transfer function value and the colour it maps to.*/
         ColorMap& getColorMap() { return _colorMap; }
         
-        /** Get the const color map that stores the mapping between the the tranfser function value and the colour it maps to.*/
+        /** Get the const color map that stores the mapping between the the transfer function value and the colour it maps to.*/
         const ColorMap& getColorMap() const { return _colorMap; }
 
         /** Assign a color map and automatically update the image to make sure they are in sync.*/

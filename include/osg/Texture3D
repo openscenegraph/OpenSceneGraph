@@ -22,7 +22,7 @@
 
 namespace osg {
 
-/** Encapsulates OpenGl 2D texture functionality. Doesn't support cube maps,
+/** Encapsulates OpenGL 2D texture functionality. Doesn't support cube maps,
   * so ignore \a face parameters.
 */
 class OSG_EXPORT Texture3D : public Texture

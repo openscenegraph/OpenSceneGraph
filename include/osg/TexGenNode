@@ -43,7 +43,7 @@ class OSG_EXPORT TexGenNode : public Group
           * parent reference frame. */
         void setReferenceFrame(ReferenceFrame rf);
         
-        /** Ge thte TexGenNode's ReferenceFrame.*/
+        /** Get the TexGenNode's ReferenceFrame.*/
         ReferenceFrame getReferenceFrame() const { return _referenceFrame; }
 
         /** Set the texture unit that this TexGenNode is associated with.*/

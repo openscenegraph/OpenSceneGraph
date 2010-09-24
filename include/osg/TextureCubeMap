@@ -77,7 +77,7 @@ class OSG_EXPORT TextureCubeMap : public Texture
         }
 
         /** Set the texture width and height. If width or height are zero then
-          * the repsective size value is calculated from the source image sizes.
+          * the respective size value is calculated from the source image sizes.
         */
         inline void setTextureSize(int width, int height) const
         {
@@ -131,7 +131,7 @@ class OSG_EXPORT TextureCubeMap : public Texture
         
 
         /** Extensions class which encapsulates the querying of extensions and
-          * associated function pointers, and provides convinience wrappers to 
+          * associated function pointers, and provides convenience wrappers to 
           * check for the extensions or use the associated functions.
         */
         class OSG_EXPORT Extensions : public osg::Referenced
@@ -157,7 +157,7 @@ class OSG_EXPORT TextureCubeMap : public Texture
         };
         
         /** Function to call to get the extension of a specified context.
-          * If the Exentsion object for that context has not yet been created
+          * If the Extensions object for that context has not yet been created
           * and the 'createIfNotInitalized' flag been set to false then returns NULL.
           * If 'createIfNotInitalized' is true then the Extensions object is 
           * automatically created. However, in this case the extension object will

@@ -233,7 +233,7 @@
     #define GL_TEXTURE_2D_MULTISAMPLE         0x9100
 #endif
 
-// Integer teture extension as in http://www.opengl.org/registry/specs/EXT/texture_integer.txt
+// Integer texture extension as in http://www.opengl.org/registry/specs/EXT/texture_integer.txt
 #ifndef GL_EXT_texture_integer
     #define GL_RGBA32UI_EXT                                    0x8D70
     #define GL_RGB32UI_EXT                                     0x8D71
@@ -294,7 +294,7 @@
 namespace osg {
 
 
-/** Texture pure virtual base class that encapsulates OpenGl texture
+/** Texture pure virtual base class that encapsulates OpenGL texture
   * functionality common to the various types of OSG textures.
 */
 class OSG_EXPORT Texture : public osg::StateAttribute
@@ -506,7 +506,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         
         class TextureObject;
 
-        /** Returns a pointer to the TextureBbject for the current context. */
+        /** Returns a pointer to the TextureObject for the current context. */
         inline TextureObject* getTextureObject(unsigned int contextID) const
         {
             return _textureObjectBuffer[contextID].get();

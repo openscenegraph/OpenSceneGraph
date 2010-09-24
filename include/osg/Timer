@@ -49,7 +49,7 @@ class OSG_EXPORT Timer {
         /** Get elapsed time in milliseconds.*/
         inline double time_m() const { return delta_m(_startTick, tick()); }
 
-        /** Get elapsed time in micoseconds.*/
+        /** Get elapsed time in microseconds.*/
         inline double time_u() const { return delta_u(_startTick, tick()); }
 
         /** Get elapsed time in nanoseconds.*/

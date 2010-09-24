@@ -35,7 +35,7 @@ class Vec2f
         /** Number of vector components. */
         enum { num_components = 2 };
         
-        /** Vec member varaible. */
+        /** Vec member variable. */
         value_type _v[2];
         
 

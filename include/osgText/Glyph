@@ -22,6 +22,7 @@
 #include <osg/Texture2D>
 #include <osg/StateSet>
 #include <osg/Geometry>
+#include <osg/Geode>
 
 #include <osgText/Export>
 #include <osgText/KerningType>

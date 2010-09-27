@@ -117,7 +117,7 @@ public:
         }
         else
         {
-            OSG_NOTICE<<"   computeBisectorNormal(a=["<<a<<"], b=["<<b<<"], c=["<<c<<"], d=["<<d<<"]), nx="<<nx<<", ny="<<ny<<", denominator="<<denominator<<" need to swap!!!"<<std::endl;
+            OSG_INFO<<"   computeBisectorNormal(a=["<<a<<"], b=["<<b<<"], c=["<<c<<"], d=["<<d<<"]), nx="<<nx<<", ny="<<ny<<", denominator="<<denominator<<" need to swap!!!"<<std::endl;
             return osg::Vec3(-nx,-ny,0.0f);
         }
     }
@@ -660,7 +660,7 @@ osg::Geometry* computeTextGeometry(osg::Geometry* glyphGeometry, const osgText::
     osg::Vec3Array* orig_vertices = dynamic_cast<osg::Vec3Array*>(glyphGeometry->getVertexArray());
     if (!orig_vertices)
     {
-        OSG_NOTICE<<"computeTextGeometry(..): No vertices on glyphGeometry."<<std::endl;
+        OSG_INFO<<"computeTextGeometry(..): No vertices on glyphGeometry."<<std::endl;
         return 0;
     }
 

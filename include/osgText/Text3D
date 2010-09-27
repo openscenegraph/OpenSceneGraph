@@ -165,8 +165,6 @@ protected:
     osg::ref_ptr<Font>  _font;
     osg::ref_ptr<Style> _style;
 
-    float _characterDepth;
-
     RenderMode _renderMode;
 
     osg::ref_ptr<osg::StateSet> _wallStateSet;

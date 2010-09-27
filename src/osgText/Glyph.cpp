@@ -511,12 +511,12 @@ GlyphGeometry* Glyph3D::getGlyphGeometry(const Style* style)
         GlyphGeometry* glyphGeometry = itr->get();
         if (glyphGeometry->match(style))
         {
-            OSG_NOTICE<<"Glyph3D::getGlyphGeometry(Style* style) found matching GlyphGeometry."<<std::endl;
+            OSG_INFO<<"Glyph3D::getGlyphGeometry(Style* style) found matching GlyphGeometry."<<std::endl;
             return glyphGeometry;
         }
     }
 
-    OSG_NOTICE<<"Glyph3D::getGlyphGeometry(Style* style) could not find matching GlyphGeometry, creating a new one."<<std::endl;
+    OSG_INFO<<"Glyph3D::getGlyphGeometry(Style* style) could not find matching GlyphGeometry, creating a new one."<<std::endl;
 
     osg::ref_ptr<GlyphGeometry> glyphGeometry = new GlyphGeometry();
     glyphGeometry->setup(this, style);
@@ -543,22 +543,22 @@ void GlyphGeometry::setup(const Glyph3D* glyph, const Style* style)
 
     if (!style)
     {
-        OSG_NOTICE<<"GlyphGeometry::setup(const Glyph* glyph, NULL) creating default glyph geometry."<<std::endl;
+        OSG_INFO<<"GlyphGeometry::setup(const Glyph* glyph, NULL) creating default glyph geometry."<<std::endl;
 
-        float width = glyph->getFont()->getFontDepth();
+        float width = 0.1f;
 
         _geometry = osgText::computeTextGeometry(glyph, width);
     }
     else
     {
-        OSG_NOTICE<<"GlyphGeometry::setup(const Glyph* glyph, NULL) create glyph geometry with custom Style."<<std::endl;
+        OSG_INFO<<"GlyphGeometry::setup(const Glyph* glyph, NULL) create glyph geometry with custom Style."<<std::endl;
 
         // record the style
         _style = dynamic_cast<Style*>(style->clone(osg::CopyOp::DEEP_COPY_ALL));
 
         const Bevel* bevel = style ? style->getBevel() : 0;
         bool outline = style ? style->getOutlineRatio()>0.0f : false;
-        float width = glyph->getFont()->getFontDepth();//style->getThicknessRatio();
+        float width = style->getThicknessRatio();
 
         if (bevel)
         {
@@ -577,7 +577,7 @@ void GlyphGeometry::setup(const Glyph3D* glyph, const Style* style)
 
     if (!_geometry)
     {
-        OSG_NOTICE<<"Warning: GlyphGeometry::setup(const Glyph* glyph, const Style* style) failed."<<std::endl;
+        OSG_INFO<<"Warning: GlyphGeometry::setup(const Glyph* glyph, const Style* style) failed."<<std::endl;
         return;
     }
 

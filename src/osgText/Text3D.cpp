@@ -20,6 +20,7 @@ namespace osgText
 
 Text3D::Text3D():
     _font(0),
+    _style(0),
     _characterDepth(1),
     _renderMode(PER_GLYPH)
 {
@@ -28,9 +29,21 @@ Text3D::Text3D():
 Text3D::Text3D(const Text3D & text3D, const osg::CopyOp & copyop):
     osgText::TextBase(text3D, copyop),
     _font(text3D._font),
+    _style(text3D._style),
     _characterDepth(text3D._characterDepth),
     _renderMode(text3D._renderMode)
 {
+    computeGlyphRepresentation();
+}
+
+float Text3D::getCharacterDepth() const
+{
+    return _characterDepth;
+}
+
+void Text3D::setCharacterDepth(float characterDepth)
+{
+    _characterDepth = characterDepth;
     computeGlyphRepresentation();
 }
 
@@ -45,7 +58,7 @@ void Text3D::accept(osg::Drawable::ConstAttributeFunctor& af) const
         for (it = itLine->begin(); it!=end; ++it)
         {
             // ** apply the vertex array
-            af.apply(osg::Drawable::VERTICES, it->_glyph->getVertexArray()->size(), &(it->_glyph->getVertexArray()->front()));
+            af.apply(osg::Drawable::VERTICES, it->_glyphGeometry->getVertexArray()->size(), &(it->_glyphGeometry->getVertexArray()->front()));
         }
     }
 }
@@ -59,7 +72,7 @@ void Text3D::accept(osg::PrimitiveFunctor& pf) const
         LineRenderInfo::const_iterator it, end = itLine->end();
         for (it = itLine->begin(); it!=end; ++it)
         {
-            osg::Vec3Array* vertices = it->_glyph->getVertexArray();
+            osg::Vec3Array* vertices = it->_glyphGeometry->getVertexArray();
 
             if (!vertices || vertices->empty())
               continue; //skip over spaces
@@ -79,21 +92,21 @@ void Text3D::accept(osg::PrimitiveFunctor& pf) const
             pf.setVertexArray(transformedVertices->size(),&(transformedVertices->front()));
 
             // ** render the front face of the glyph
-            osg::Geometry::PrimitiveSetList & pslFront = it->_glyph->getFrontPrimitiveSetList();
+            osg::Geometry::PrimitiveSetList & pslFront = it->_glyphGeometry->getFrontPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslFront.begin(), end = pslFront.end(); itr!=end; ++itr)
             {
                 (*itr)->accept(pf);
             }
 
             // ** render the wall face of the glyph
-            osg::Geometry::PrimitiveSetList & pslWall = it->_glyph->getWallPrimitiveSetList();
+            osg::Geometry::PrimitiveSetList & pslWall = it->_glyphGeometry->getWallPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslWall.begin(), end=pslWall.end(); itr!=end; ++itr)
             {
                 (*itr)->accept(pf);
             }
 
             // ** render the back face of the glyph
-            osg::Geometry::PrimitiveSetList & pslBack = it->_glyph->getBackPrimitiveSetList();
+            osg::Geometry::PrimitiveSetList & pslBack = it->_glyphGeometry->getBackPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslBack.begin(), end=pslBack.end(); itr!=end; ++itr)
             {
                 (*itr)->accept(pf);
@@ -404,8 +417,8 @@ void Text3D::computeGlyphRepresentation()
                     }
 
                     osg::Vec3 pos = osg::Vec3(local.x(), local.y(), 0.0f);
-                    currentLineRenderInfo.push_back(Text3D::GlyphRenderInfo(glyph, pos));
-
+                    GlyphGeometry* glyphGeometry = glyph->getGlyphGeometry(_style.get());
+                    currentLineRenderInfo.push_back(Text3D::GlyphRenderInfo(glyphGeometry, pos));
 
                     previous_charcode = charcode;
                 }
@@ -639,39 +652,26 @@ void Text3D::renderPerGlyph(osg::State & state) const
             state.lazyDisablingOfVertexAttributes();
 
             // ** apply the vertex array
-            state.setVertexPointer(it->_glyph->getVertexArray());
+            state.setVertexPointer(it->_glyphGeometry->getVertexArray());
+            state.setNormalPointer(it->_glyphGeometry->getNormalArray());
 
-#if 1
-            state.setNormalPointer(it->_glyph->getNormalArray());
-#else
-            // ** render the front face of the glyph
-            state.Normal(0.0f,0.0f,1.0f);
-#endif
             state.applyDisablingOfVertexAttributes();
 
 
-            osg::Geometry::PrimitiveSetList & pslFront = it->_glyph->getFrontPrimitiveSetList();
+            osg::Geometry::PrimitiveSetList & pslFront = it->_glyphGeometry->getFrontPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslFront.begin(), end = pslFront.end(); itr!=end; ++itr)
             {
                 (*itr)->draw(state, false);
             }
 
             // ** render the wall face of the glyph
-#if 0
-            state.setNormalPointer(it->_glyph->getNormalArray());
-#endif
-            osg::Geometry::PrimitiveSetList & pslWall = it->_glyph->getWallPrimitiveSetList();
+            osg::Geometry::PrimitiveSetList & pslWall = it->_glyphGeometry->getWallPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslWall.begin(), end=pslWall.end(); itr!=end; ++itr)
             {
                 (*itr)->draw(state, false);
             }
-#if 0
-            state.disableNormalPointer();
 
-            // ** render the back face of the glyph
-            state.Normal(0.0f,0.0f,-1.0f);
-#endif
-            osg::Geometry::PrimitiveSetList & pslBack = it->_glyph->getBackPrimitiveSetList();
+            osg::Geometry::PrimitiveSetList & pslBack = it->_glyphGeometry->getBackPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslBack.begin(), end=pslBack.end(); itr!=end; ++itr)
             {
                 (*itr)->draw(state, false);
@@ -699,11 +699,11 @@ void Text3D::renderPerFace(osg::State & state) const
             matrix.preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
             state.applyModelViewMatrix(matrix);
 
-            state.setVertexPointer(it->_glyph->getVertexArray());
-            state.setNormalPointer(it->_glyph->getNormalArray());
+            state.setVertexPointer(it->_glyphGeometry->getVertexArray());
+            state.setNormalPointer(it->_glyphGeometry->getNormalArray());
 
             // ** render the front face of the glyph
-            osg::Geometry::PrimitiveSetList & psl = it->_glyph->getFrontPrimitiveSetList();
+            osg::Geometry::PrimitiveSetList & psl = it->_glyphGeometry->getFrontPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=psl.begin(), end=psl.end(); itr!=end; ++itr)
             {
                 (*itr)->draw(state, false);
@@ -723,10 +723,10 @@ void Text3D::renderPerFace(osg::State & state) const
             matrix.preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
             state.applyModelViewMatrix(matrix);
 
-            state.setVertexPointer(it->_glyph->getVertexArray());
-            state.setNormalPointer(it->_glyph->getNormalArray());
+            state.setVertexPointer(it->_glyphGeometry->getVertexArray());
+            state.setNormalPointer(it->_glyphGeometry->getNormalArray());
 
-            osg::Geometry::PrimitiveSetList & psl = it->_glyph->getWallPrimitiveSetList();
+            const osg::Geometry::PrimitiveSetList & psl = it->_glyphGeometry->getWallPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=psl.begin(), end=psl.end(); itr!=end; ++itr)
             {
                 (*itr)->draw(state, false);
@@ -749,11 +749,11 @@ void Text3D::renderPerFace(osg::State & state) const
             matrix.preMultTranslate(osg::Vec3d(it->_position.x(), it->_position.y(), it->_position.z()));
             state.applyModelViewMatrix(matrix);
 
-            state.setVertexPointer(it->_glyph->getVertexArray());
-            state.setNormalPointer(it->_glyph->getNormalArray());
+            state.setVertexPointer(it->_glyphGeometry->getVertexArray());
+            state.setNormalPointer(it->_glyphGeometry->getNormalArray());
 
             // ** render the back face of the glyph
-            osg::Geometry::PrimitiveSetList & psl = it->_glyph->getBackPrimitiveSetList();
+            const osg::Geometry::PrimitiveSetList & psl = it->_glyphGeometry->getBackPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=psl.begin(), end=psl.end(); itr!=end; ++itr)
             {
                 (*itr)->draw(state, false);

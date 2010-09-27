@@ -82,8 +82,14 @@ osg::Group* create3DText(const osg::Vec3& center,float radius)
     text3->setText("XZ_PLANE");
     geode->addDrawable(text3);
 
+    osg::ref_ptr<osgText::Style> style = new osgText::Style;
+    osg::ref_ptr<osgText::Bevel> bevel = new osgText::Bevel;
+    bevel->roundedBevel2(0.25);
+    style->setBevel(bevel.get());
+
     osgText::Text3D* text7 = new osgText::Text3D;
     text7->setFont("fonts/times.ttf");
+    text7->setStyle(style.get());
     text7->setCharacterSize(characterSize);
     text7->setCharacterDepth(characterSize*0.2f);
     text7->setPosition(center - osg::Vec3(0.0, 0.0, 0.6));

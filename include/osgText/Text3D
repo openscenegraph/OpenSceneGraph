@@ -17,6 +17,7 @@
 
 #include <osgText/TextBase>
 #include <osgText/Font>
+#include <osgText/Style>
 
 namespace osgText {
 
@@ -43,10 +44,19 @@ public:
 
     META_Object(osgText,Text3D)
 
+
+    /** Set the text style.*/
+    void setStyle(Style* style) { _style = style; }
+    /** Get the text style.*/
+    Style* getStyle() { return _style.get(); }
+    /** Get the const text style.*/
+    const Style* getStyle() const { return _style.get(); }
+
     /** Get the Charactere Depth of text. */
-    float getCharacterDepth() const { return _characterDepth; }
+    float getCharacterDepth() const;
+
     /** Set the Charactere Depth of text. */
-    void setCharacterDepth(float characterDepth) { _characterDepth = characterDepth; computeGlyphRepresentation(); }
+    void setCharacterDepth(float characterDepth);
 
     /** Get the render mode used to render the text. */
     RenderMode getRenderMode() const { return _renderMode; }
@@ -139,10 +149,11 @@ protected:
     // ** glyph and other information to render the glyph
     struct GlyphRenderInfo
     {
-        GlyphRenderInfo(Glyph3D * glyph, osg::Vec3 & pos) :
-            _glyph(glyph), _position(pos) {}
+        GlyphRenderInfo(GlyphGeometry* glyphGeometry, osg::Vec3 & pos):
+            _glyphGeometry(glyphGeometry),
+            _position(pos) {}
 
-        osg::ref_ptr<Glyph3D> _glyph;
+        osg::ref_ptr<GlyphGeometry> _glyphGeometry;
         osg::Vec3 _position;
     };
 
@@ -151,7 +162,8 @@ protected:
 
     TextRenderInfo _textRenderInfo;
 
-    osg::ref_ptr<Font> _font;
+    osg::ref_ptr<Font>  _font;
+    osg::ref_ptr<Style> _style;
 
     float _characterDepth;
 

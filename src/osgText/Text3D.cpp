@@ -21,7 +21,6 @@ namespace osgText
 Text3D::Text3D():
     _font(0),
     _style(0),
-    _characterDepth(1),
     _renderMode(PER_GLYPH)
 {
 }
@@ -30,7 +29,6 @@ Text3D::Text3D(const Text3D & text3D, const osg::CopyOp & copyop):
     osgText::TextBase(text3D, copyop),
     _font(text3D._font),
     _style(text3D._style),
-    _characterDepth(text3D._characterDepth),
     _renderMode(text3D._renderMode)
 {
     computeGlyphRepresentation();
@@ -38,12 +36,15 @@ Text3D::Text3D(const Text3D & text3D, const osg::CopyOp & copyop):
 
 float Text3D::getCharacterDepth() const
 {
-    return _characterDepth;
+    if (!_style) return _characterHeight*0.1f;
+    else return _characterHeight * _style->getThicknessRatio();
 }
 
 void Text3D::setCharacterDepth(float characterDepth)
 {
-    _characterDepth = characterDepth;
+    if (!_style) _style = new Style;
+    _style->setThicknessRatio(characterDepth / _characterHeight);
+
     computeGlyphRepresentation();
 }
 
@@ -462,7 +463,9 @@ void Text3D::computeGlyphRepresentation()
 
         ++lineNumber;
     }
-    _textBB.expandBy(0.0f,0.0f,-1);
+
+    float thickness = _style.valid() ? _style->getThicknessRatio() : 0.1f;
+    _textBB.zMin() = -thickness;
 
     TextBase::computePositions();
 }
@@ -516,7 +519,8 @@ void Text3D::computePositions(unsigned int contextID) const
 
 
     float scale = _font->getScale();
-    osg::Vec3 scaleVec(scale * _characterHeight, scale * _characterHeight / _characterAspectRatio, _characterDepth);
+    osg::Vec3 scaleVec(scale * _characterHeight, scale * _characterHeight / _characterAspectRatio, scale * _characterHeight);
+
     matrix.makeTranslate(-_offset);
     matrix.postMultScale(scaleVec);
     matrix.postMultRotate(_rotation);

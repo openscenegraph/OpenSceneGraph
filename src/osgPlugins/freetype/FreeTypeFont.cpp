@@ -553,9 +553,6 @@ osgText::Glyph3D * FreeTypeFont::getGlyph3D(unsigned int charcode)
 
     glyph3D->setBoundingBox(bb);
 
-    glyph3D->computeText3DGeometryData();
-
-
     return glyph3D.release();
 }
 

@@ -44,6 +44,9 @@ public:
 
     Glyph(Font* font, unsigned int glyphCode);
 
+    Font* getFont() { return _font; }
+    const Font* getFont() const { return _font; }
+
     unsigned int getGlyphCode() const { return _glyphCode; }
 
     void setHorizontalBearing(const osg::Vec2& bearing);
@@ -104,7 +107,7 @@ class OSGTEXT_EXPORT GlyphGeometry : public osg::Referenced
 
         GlyphGeometry();
 
-        void setup(const Glyph* glyph, const Style* style);
+        void setup(const Glyph3D* glyph, const Style* style);
 
         bool match(const Style* style) const;
 
@@ -128,6 +131,9 @@ class OSGTEXT_EXPORT GlyphGeometry : public osg::Referenced
         /** Get et the PrimitiveSetList for the back face. */
         osg::Geometry::PrimitiveSetList& getBackPrimitiveSetList() { return _backPrimitiveSetList; }
 
+        /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
+        virtual void setThreadSafeRefUnref(bool threadSafe);
+
     protected:
 
         osg::ref_ptr<Style>             _style;
@@ -147,6 +153,9 @@ class OSGTEXT_EXPORT Glyph3D : public osg::Referenced
 public:
 
     Glyph3D(Font* font, unsigned int glyphCode);
+
+    Font* getFont() { return _font; }
+    const Font* getFont() const { return _font; }
 
     unsigned int getGlyphCode() const { return _glyphCode; }
 
@@ -172,29 +181,11 @@ public:
 
     void setRawVertexArray(osg::Vec3Array* vertices) { _rawVertexArray = vertices; }
     osg::Vec3Array* getRawVertexArray() { return _rawVertexArray.get(); }
+    const osg::Vec3Array* getRawVertexArray() const { return _rawVertexArray.get(); }
 
     /** Get the PrimitiveSetList for the raw face which hasn't been tessellated. */
     osg::Geometry::PrimitiveSetList & getRawFacePrimitiveSetList() { return _rawFacePrimitiveSetList; }
-
-
-    /** deprecated feature.*/
-    void computeText3DGeometryData();
-
-    /** Get the PrimitiveSetList for the front face. */
-    osg::Geometry::PrimitiveSetList & getFrontPrimitiveSetList() { return _frontPrimitiveSetList; }
-    /** Get the PrimitiveSetList for the wall face. */
-    osg::Geometry::PrimitiveSetList & getWallPrimitiveSetList() { return _wallPrimitiveSetList; }
-    /** Get et the PrimitiveSetList for the back face. */
-    osg::Geometry::PrimitiveSetList & getBackPrimitiveSetList() { return _backPrimitiveSetList; }
-
-    /** Set the VertexArray of the glyph. */
-    void setVertexArray(osg::Vec3Array * va) { _vertexArray = va; }
-    /** Get the VertexArray of the glyph. */
-    osg::Vec3Array * getVertexArray() { return _vertexArray.get(); }
-    /** Set the VertexArray of the glyph. */
-    void setNormalArray(osg::Vec3Array * na) { _normalArray = na; }
-    /** Get the NormalArray for the wall face. */
-    osg::Vec3Array * getNormalArray() { return _normalArray.get(); }
+    const osg::Geometry::PrimitiveSetList & getRawFacePrimitiveSetList() const { return _rawFacePrimitiveSetList; }
 
 
     float getHorizontalWidth() const { return (-_horizontalBearing.x() + _horizontalAdvance); }
@@ -208,7 +199,7 @@ public:
     void setHeight(float height) { _height = height; }
     float getHeight() const { return _height; }
 
-    GlyphGeometry* getGlyphGeometry(Style* style);
+    GlyphGeometry* getGlyphGeometry(const Style* style);
 
 protected:
 
@@ -228,15 +219,6 @@ protected:
 
     float _width;
     float _height;
-
-
-    osg::ref_ptr<osg::Vec3Array> _vertexArray;
-    osg::ref_ptr<osg::Vec3Array> _normalArray;
-
-
-    osg::Geometry::PrimitiveSetList _frontPrimitiveSetList;
-    osg::Geometry::PrimitiveSetList _wallPrimitiveSetList;
-    osg::Geometry::PrimitiveSetList _backPrimitiveSetList;
 
     osg::ref_ptr<osg::Vec3Array>    _rawVertexArray;
     osg::Geometry::PrimitiveSetList _rawFacePrimitiveSetList;

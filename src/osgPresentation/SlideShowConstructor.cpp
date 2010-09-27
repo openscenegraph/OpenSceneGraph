@@ -1840,7 +1840,11 @@ osg::AnimationPathCallback* SlideShowConstructor::getAnimationPathCallback(const
 {
     if (!positionData.path.empty()) 
     {
-        osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(positionData.path, _options.get());
+        // need to create an Options object with cache off to prevent sharing of animation paths
+        osg::ref_ptr<osgDB::Options> options = _options.valid() ? _options->cloneOptions() : new osgDB::Options;
+        options->setObjectCacheHint(osgDB::Options::CACHE_NONE);
+
+        osg::ref_ptr<osg::Object> object = osgDB::readObjectFile(positionData.path, options.get());
         osg::AnimationPath* animation = dynamic_cast<osg::AnimationPath*>(object.get());
         if (animation)
         {

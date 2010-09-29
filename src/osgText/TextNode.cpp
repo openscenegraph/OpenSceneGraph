@@ -80,12 +80,7 @@ void Layout::layout(TextNode& text) const
     float characterHeightScale = 1.0f;
 
     bool textIs3D = (style && style->getThicknessRatio()!=0.0);
-    if (textIs3D)
-    {
-        characterWidthScale = font->getScale();
-        characterHeightScale = font->getScale();
-    }
-    else
+    if (!textIs3D)
     {
         characterWidthScale = 1.0f/static_cast<float>(resolution.first);
         characterHeightScale = 1.0f/static_cast<float>(resolution.second);
@@ -116,10 +111,8 @@ void Layout::layout(TextNode& text) const
             if (glyph)
             {
                 osg::Vec3 local_scale( size );
-                local_scale *= (1.0f/font->getScale());
-
                 technique->addCharacter(pos, local_scale, glyph, style);
-                pos += osg::Vec3(size.x()*(glyph->getHorizontalWidth()/font->getScale()), 0.0f ,0.0f);
+                pos += osg::Vec3(size.x()*glyph->getHorizontalWidth(), 0.0f ,0.0f);
             }
         }
 

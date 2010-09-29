@@ -39,8 +39,6 @@ public:
 
     virtual bool hasVertical() const;
 
-    virtual float getScale() const { return _scale; }
-
 protected:
 
     void init();
@@ -57,7 +55,6 @@ protected:
     FT_Byte*                _buffer;
     FT_Face                 _face;
     unsigned int            _flags;
-    float                   _scale;
     float                   _freetype_scale;
 };
 

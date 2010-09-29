@@ -138,8 +138,8 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
 
     String::iterator lastChar = first;
 
-    float maximumHeight = _maximumHeight / _font->getScale();
-    float maximumWidth = _maximumWidth / _font->getScale();
+    float maximumHeight = _maximumHeight;
+    float maximumWidth = _maximumWidth;
 
     for(bool outOfSpace=false;lastChar!=last;++lastChar)
     {
@@ -443,13 +443,13 @@ void Text3D::computeGlyphRepresentation()
             case LEFT_TO_RIGHT:
             case RIGHT_TO_LEFT:
             {
-                startOfLine_coords.y() -= (1.0 + _lineSpacing) / _font->getScale();
+                startOfLine_coords.y() -= (1.0 + _lineSpacing);
                 ++_lineCount;
                 break;
             }
             case VERTICAL:
             {
-                startOfLine_coords.x() += _characterHeight / _font->getScale() / _characterAspectRatio * (1.0 + _lineSpacing);
+                startOfLine_coords.x() += _characterHeight / _characterAspectRatio * (1.0 + _lineSpacing);
                 // because _lineCount is the max vertical no. of characters....
                 _lineCount = (_lineCount >linelength)?_lineCount:linelength;
                 break;
@@ -518,8 +518,7 @@ void Text3D::computePositions(unsigned int contextID) const
     osg::Matrix& matrix = atc._matrix;
 
 
-    float scale = _font->getScale();
-    osg::Vec3 scaleVec(scale * _characterHeight, scale * _characterHeight / _characterAspectRatio, scale * _characterHeight);
+    osg::Vec3 scaleVec(_characterHeight, _characterHeight / _characterAspectRatio, _characterHeight);
 
     matrix.makeTranslate(-_offset);
     matrix.postMultScale(scaleVec);

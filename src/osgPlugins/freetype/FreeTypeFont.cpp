@@ -206,7 +206,6 @@ FreeTypeFont::FreeTypeFont(const std::string& filename, FT_Face face, unsigned i
     _buffer(0),
     _face(face),
     _flags(flags),
-    _scale(1.0f),
     _freetype_scale(1.0f)
 {
     init();
@@ -218,7 +217,6 @@ FreeTypeFont::FreeTypeFont(FT_Byte* buffer, FT_Face face, unsigned int flags):
     _buffer(buffer),
     _face(face),
     _flags(flags),
-    _scale(1.0f),
     _freetype_scale(1.0f)
 {
     init();
@@ -303,14 +301,7 @@ void FreeTypeFont::init()
         // long xmin = ft_floor( bb.xMin );
         // long xmax = ft_ceiling( bb.xMax );
         // double width = (xmax - xmin)/64.0;
-
-#if 1
         _freetype_scale = 1.0f/height;
-        _scale = 1.0f;
-#else
-        _freetype_scale = 1.0f;
-        _scale = 1.0f/height;
-#endif
     }
 }
 

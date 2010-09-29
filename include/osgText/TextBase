@@ -36,6 +36,8 @@ public:
     virtual const char* className() const { return "TextBase"; }
     virtual const char* libraryName() const { return "osgText"; }
 
+
+
     /** Set the Font to use to render the text.
       * setFont(0) sets the use of the default font.*/
     inline void setFont(Font* font=0) { setFont(osg::ref_ptr<Font>(font)); };
@@ -50,6 +52,17 @@ public:
 
     /** Get the font. Return 0 if default is being used.*/
     const Font* getFont() const { return _font.get(); }
+
+
+    /** Set the text style.*/
+    void setStyle(Style* style) { _style = style; }
+    /** Get the text style.*/
+    Style* getStyle() { return _style.get(); }
+    /** Get the const text style.*/
+    const Style* getStyle() const { return _style.get(); }
+
+    /** Get or create the text style.*/
+    Style* getOrCreateStyle() { if (!_style) _style = new Style; return _style.get(); }
 
     /** Set the Font reference width and height resolution in texels.
       * Note, the size may not be supported by current font, 
@@ -89,10 +102,13 @@ public:
 
 
     /** Set the rendered character size in object coordinates.*/
-    void setCharacterSize(float height,float aspectRatio=1.0f);
-    
+    void setCharacterSize(float height);
+
+    /** Set the rendered character size in object coordinates.*/
+    void setCharacterSize(float height, float aspectRatio);
+
     float getCharacterHeight() const { return _characterHeight; }
-    float getCharacterAspectRatio() const { return _characterAspectRatio; }
+    float getCharacterAspectRatio() const { return _style.valid()? _style->getWidthRatio() : 1.0f; }
 
     enum CharacterSizeMode
     {
@@ -264,9 +280,9 @@ protected:
     
     // members which have public access.
     osg::ref_ptr<Font>                      _font;
+    osg::ref_ptr<Style>                     _style;
     FontResolution                          _fontSize;
     float                                   _characterHeight;
-    float                                   _characterAspectRatio;
     CharacterSizeMode                       _characterSizeMode;
     float                                   _maximumWidth;
     float                                   _maximumHeight;

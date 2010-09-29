@@ -89,7 +89,7 @@ String::iterator Text::computeLastCharacterOnLine(osg::Vec2& cursor, String::ite
     if (!activefont) return last;
 
     float hr = _characterHeight/getFontHeight();
-    float wr = hr/_characterAspectRatio;
+    float wr = hr/getCharacterAspectRatio();
 
     bool kerning = true;
     unsigned int previous_charcode = 0;
@@ -252,7 +252,7 @@ void Text::computeGlyphRepresentation()
     unsigned int lineNumber = 0;
 
     float hr = _characterHeight/getFontHeight();
-    float wr = hr/_characterAspectRatio;
+    float wr = hr/getCharacterAspectRatio();
 
     for(String::iterator itr=_text.begin();
         itr!=_text.end();
@@ -509,7 +509,7 @@ void Text::computeGlyphRepresentation()
           }
           case VERTICAL:
           {
-            startOfLine_coords.x() += _characterHeight/_characterAspectRatio * (1.0 + _lineSpacing);
+            startOfLine_coords.x() += _characterHeight/getCharacterAspectRatio() * (1.0 + _lineSpacing);
             cursor = startOfLine_coords;
             previous_charcode = 0;
             // because _lineCount is the max vertical no. of characters....
@@ -662,7 +662,7 @@ void Text::computePositions(unsigned int contextID) const
             float pixelSizeVector_w = M(3,2)*P23 + M(3,3)*P33;
 
             float pixelSizeVert=(_characterHeight*sqrtf(scale_10.length2()))/(pixelSizeVector_w*0.701f);
-            float pixelSizeHori=(_characterHeight/_characterAspectRatio*sqrtf(scale_00.length2()))/(pixelSizeVector_w*0.701f);
+            float pixelSizeHori=(_characterHeight/getCharacterAspectRatio()*sqrtf(scale_00.length2()))/(pixelSizeVector_w*0.701f);
 
             // avoid nasty math by preventing a divide by zero
             if (pixelSizeVert == 0.0f)
@@ -673,7 +673,7 @@ void Text::computePositions(unsigned int contextID) const
             if (_characterSizeMode==SCREEN_COORDS)
             {
                 float scale_font_vert=_characterHeight/pixelSizeVert;
-                float scale_font_hori=_characterHeight/_characterAspectRatio/pixelSizeHori;
+                float scale_font_hori=_characterHeight/getCharacterAspectRatio()/pixelSizeHori;
 
                 if (P10<0)
                    scale_font_vert=-scale_font_vert;

@@ -43,14 +43,6 @@ public:
 
     META_Object(osgText,Text3D)
 
-
-    /** Set the text style.*/
-    void setStyle(Style* style) { _style = style; }
-    /** Get the text style.*/
-    Style* getStyle() { return _style.get(); }
-    /** Get the const text style.*/
-    const Style* getStyle() const { return _style.get(); }
-
     /** Get the Charactere Depth of text. */
     float getCharacterDepth() const;
 
@@ -148,7 +140,6 @@ protected:
 
     TextRenderInfo _textRenderInfo;
 
-    osg::ref_ptr<Style> _style;
 
     RenderMode _renderMode;
 

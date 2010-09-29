@@ -33,7 +33,6 @@ using namespace osgText;
 TextBase::TextBase():
     _fontSize(32,32),
     _characterHeight(32),
-    _characterAspectRatio(1.0f),
     _characterSizeMode(OBJECT_COORDS),
     _maximumWidth(0.0f),
     _maximumHeight(0.0f),
@@ -56,9 +55,9 @@ TextBase::TextBase():
 TextBase::TextBase(const TextBase& textBase,const osg::CopyOp& copyop):
     osg::Drawable(textBase,copyop),
     _font(textBase._font),
+    _style(textBase._style),
     _fontSize(textBase._fontSize),
     _characterHeight(textBase._characterHeight),
-    _characterAspectRatio(textBase._characterAspectRatio),
     _characterSizeMode(textBase._characterSizeMode),
     _maximumWidth(textBase._maximumWidth),
     _maximumHeight(textBase._maximumHeight),
@@ -104,18 +103,25 @@ void TextBase::setFont(const std::string& fontfile)
     setFont(readRefFontFile(fontfile));
 }
 
-
 void TextBase::setFontResolution(unsigned int width, unsigned int height)
 {
     _fontSize = FontResolution(width,height);
     computeGlyphRepresentation();
 }
 
-void TextBase::setCharacterSize(float height,float aspectRatio)
+void TextBase::setCharacterSize(float height)
 {
     _characterHeight = height;
-    _characterAspectRatio = aspectRatio;
     computeGlyphRepresentation();
+}
+
+void TextBase::setCharacterSize(float height, float aspectRatio)
+{
+    if (getCharacterAspectRatio()!=aspectRatio)
+    {
+        getOrCreateStyle()->setWidthRatio(aspectRatio);
+    }
+    setCharacterSize(height);
 }
 
 void TextBase::setMaximumWidth(float maximumWidth)

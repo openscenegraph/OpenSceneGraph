@@ -19,14 +19,12 @@ namespace osgText
 {
 
 Text3D::Text3D():
-    _style(0),
     _renderMode(PER_GLYPH)
 {
 }
 
 Text3D::Text3D(const Text3D & text3D, const osg::CopyOp & copyop):
     osgText::TextBase(text3D, copyop),
-    _style(text3D._style),
     _renderMode(text3D._renderMode)
 {
     computeGlyphRepresentation();
@@ -40,8 +38,7 @@ float Text3D::getCharacterDepth() const
 
 void Text3D::setCharacterDepth(float characterDepth)
 {
-    if (!_style) _style = new Style;
-    _style->setThicknessRatio(characterDepth / _characterHeight);
+    getOrCreateStyle()->setThicknessRatio(characterDepth / _characterHeight);
 
     computeGlyphRepresentation();
 }
@@ -434,7 +431,7 @@ void Text3D::computeGlyphRepresentation()
             }
             case VERTICAL:
             {
-                startOfLine_coords.x() += _characterHeight / _characterAspectRatio * (1.0 + _lineSpacing);
+                startOfLine_coords.x() += _characterHeight / getCharacterAspectRatio() * (1.0 + _lineSpacing);
                 // because _lineCount is the max vertical no. of characters....
                 _lineCount = (_lineCount >linelength)?_lineCount:linelength;
                 break;
@@ -503,7 +500,7 @@ void Text3D::computePositions(unsigned int contextID) const
     osg::Matrix& matrix = atc._matrix;
 
 
-    osg::Vec3 scaleVec(_characterHeight, _characterHeight / _characterAspectRatio, _characterHeight);
+    osg::Vec3 scaleVec(_characterHeight, _characterHeight / getCharacterAspectRatio(), _characterHeight);
 
     matrix.makeTranslate(-_offset);
     matrix.postMultScale(scaleVec);

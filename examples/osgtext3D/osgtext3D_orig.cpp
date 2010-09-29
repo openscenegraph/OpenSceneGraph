@@ -86,6 +86,7 @@ osg::Group* create3DText(const osg::Vec3& center,float radius)
     osg::ref_ptr<osgText::Bevel> bevel = new osgText::Bevel;
     bevel->roundedBevel2(0.25);
     style->setBevel(bevel.get());
+    style->setWidthRatio(0.4f);
 
     osgText::Text3D* text7 = new osgText::Text3D;
     text7->setFont("fonts/times.ttf");

@@ -104,9 +104,6 @@ public:
     /** Return true if this font provides vertical alignments and spacing or glyphs.*/
     virtual bool hasVertical() const;
 
-    /** Return the scale to apply on the glyph to have a charactere size equal to 1 */
-    virtual float getScale() const { return _implementation->getScale(); };
-
     /** Set the margin around each glyph, 
       * to ensure that texture filtering doesn't bleed adjacent glyph's into each other.
       * Default margin is 1 texels.*/    
@@ -228,9 +225,6 @@ public:
 
         /** Return true if this font provides vertical alignments and spacing or glyphs.*/
         virtual bool hasVertical() const = 0;
-
-        /** Return scale of font, used by 3D text.*/
-        virtual float getScale() const = 0;
 
         void addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph* glyph)
         {

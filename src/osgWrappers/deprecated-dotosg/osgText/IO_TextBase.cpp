@@ -30,6 +30,13 @@ bool TextBase_readLocalData(osg::Object &obj, osgDB::Input &fr)
     osgText::Text &text = static_cast<osgText::Text &>(obj);
     bool itAdvanced = false;
 
+    if (fr.matchSequence("font %w"))
+    {
+        text.setFont(fr[1].getStr());
+        fr += 2;
+        itAdvanced = true;
+    }
+
     if (fr[0].matchWord("fontResolution") || fr[0].matchWord("fontSize"))
     {
         unsigned int width;
@@ -280,6 +287,11 @@ bool TextBase_readLocalData(osg::Object &obj, osgDB::Input &fr)
 bool TextBase_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 {
     const osgText::Text &text = static_cast<const osgText::Text &>(obj);
+
+    if (text.getFont())
+    {
+        fw.indent() << "font " << text.getFont()->getFileName() << std::endl;
+    }
 
     // font resolution
     fw.indent() << "fontResolution " << text.getFontWidth() << " " << text.getFontHeight() << std::endl;

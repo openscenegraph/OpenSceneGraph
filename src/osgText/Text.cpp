@@ -46,7 +46,6 @@ Text::Text():
 
 Text::Text(const Text& text,const osg::CopyOp& copyop):
     osgText::TextBase(text,copyop),
-    _font(text._font),
     _color(text._color),
     _enableDepthWrites(text._enableDepthWrites),
     _backdropType(text._backdropType),
@@ -65,28 +64,6 @@ Text::Text(const Text& text,const osg::CopyOp& copyop):
 
 Text::~Text()
 {
-}
-
-void Text::setFont(osg::ref_ptr<Font> font)
-{
-    if (_font==font) return;
-    
-    osg::StateSet* previousFontStateSet = _font.valid() ? _font->getStateSet() : Font::getDefaultFont()->getStateSet();
-    osg::StateSet* newFontStateSet = font.valid() ? font->getStateSet() : Font::getDefaultFont()->getStateSet();
-    
-    if (getStateSet() == previousFontStateSet)
-    {
-        setStateSet( newFontStateSet );
-    }
-    
-    _font = font;
-    
-    computeGlyphRepresentation();
-}
-
-void Text::setFont(const std::string& fontfile)
-{
-    setFont(readRefFontFile(fontfile));
 }
 
 

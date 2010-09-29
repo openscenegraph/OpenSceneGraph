@@ -19,7 +19,6 @@ namespace osgText
 {
 
 Text3D::Text3D():
-    _font(0),
     _style(0),
     _renderMode(PER_GLYPH)
 {
@@ -27,7 +26,6 @@ Text3D::Text3D():
 
 Text3D::Text3D(const Text3D & text3D, const osg::CopyOp & copyop):
     osgText::TextBase(text3D, copyop),
-    _font(text3D._font),
     _style(text3D._style),
     _renderMode(text3D._renderMode)
 {
@@ -114,19 +112,6 @@ void Text3D::accept(osg::PrimitiveFunctor& pf) const
             }
         }
     }
-}
-
-void Text3D::setFont(Font* font)
-{
-    _font = font;
-
-    computeGlyphRepresentation();
-}
-
-void Text3D::setFont(const std::string & fontfile)
-{
-    osg::ref_ptr<Font> font = readRefFontFile(fontfile);
-    setFont(font.get());
 }
 
 String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::iterator first,String::iterator last)

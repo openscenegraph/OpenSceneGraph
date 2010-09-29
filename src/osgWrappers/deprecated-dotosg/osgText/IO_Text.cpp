@@ -1,5 +1,4 @@
 #include <osgText/Text>
-#include <osgText/Font>
 
 #include <iostream>
 #include <string>
@@ -103,14 +102,6 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
     osgText::Text &text = static_cast<osgText::Text &>(obj);
     bool itAdvanced = false;
 
-
-    if (fr.matchSequence("font %w"))
-    { 
-        text.setFont(fr[1].getStr());
-        fr += 2;
-        itAdvanced = true;
-        
-    }
 
     // color
     if (fr[0].matchWord("color"))
@@ -261,11 +252,6 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
 bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 {
     const osgText::Text &text = static_cast<const osgText::Text &>(obj);
-
-    if (text.getFont())
-    {
-        fw.indent() << "font " << text.getFont()->getFileName() << std::endl;
-    }
 
     // color
     osg::Vec4 c = text.getColor();

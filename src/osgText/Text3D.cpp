@@ -123,6 +123,9 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
     float maximumHeight = _maximumHeight;
     float maximumWidth = _maximumWidth;
 
+    float hr = 1.0f;
+    float wr = 1.0f/getCharacterAspectRatio();
+
     for(bool outOfSpace=false;lastChar!=last;++lastChar)
     {
         unsigned int charcode = *lastChar;
@@ -143,7 +146,7 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
 
                 if (_layout == RIGHT_TO_LEFT)
                 {
-                    cursor.x() -= glyph->getHorizontalAdvance();
+                    cursor.x() -= glyph->getHorizontalAdvance() * wr;
                 }
 
                 if (kerning)
@@ -152,12 +155,16 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
                     {
                         case LEFT_TO_RIGHT:
                         {
-                            cursor += _font->getKerning(previous_charcode, charcode, _kerningType);
+                            osg::Vec2 delta(_font->getKerning(previous_charcode,charcode,_kerningType));
+                            cursor.x() += delta.x() * wr;
+                            cursor.y() += delta.y() * hr;
                             break;
                         }
                         case RIGHT_TO_LEFT:
                         {
-                            cursor -= _font->getKerning(charcode, previous_charcode, _kerningType);
+                            osg::Vec2 delta(_font->getKerning(charcode,previous_charcode,_kerningType));
+                            cursor.x() -= delta.x() * wr;
+                            cursor.y() -= delta.y() * hr;
                             break;
                         }
                         case VERTICAL:
@@ -171,12 +178,12 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
                 {
                     case LEFT_TO_RIGHT:
                     {
-                        cursor.x() -= glyph->getHorizontalBearing().x();
+                        cursor.x() -= glyph->getHorizontalBearing().x() * wr;
                         break;
                     }
                     case RIGHT_TO_LEFT:
                     {
-                        cursor.x() -= bb.xMax();
+                        cursor.x() -= bb.xMax() * wr;
                         break;
                     }
                     case VERTICAL:
@@ -212,9 +219,9 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
             // move the cursor onto the next character.
             switch(_layout)
             {
-              case LEFT_TO_RIGHT: cursor.x() += glyph->getHorizontalAdvance(); break;
+              case LEFT_TO_RIGHT: cursor.x() += glyph->getHorizontalAdvance() * wr; break;
               case RIGHT_TO_LEFT: break;
-              case VERTICAL:      cursor.y() -= glyph->getVerticalAdvance(); break;
+              case VERTICAL:      cursor.y() -= glyph->getVerticalAdvance() * hr; break;
             }
 
             previous_charcode = charcode;
@@ -247,9 +254,9 @@ String::iterator Text3D::computeLastCharacterOnLine(osg::Vec2& cursor, String::i
                 {
                     switch(_layout)
                     {
-                    case LEFT_TO_RIGHT: cursor.x() -= glyph->getHorizontalAdvance(); break;
-                    case RIGHT_TO_LEFT: cursor.x() += glyph->getHorizontalAdvance(); break;
-                    case VERTICAL:      cursor.y() += glyph->getVerticalAdvance(); break;
+                    case LEFT_TO_RIGHT: cursor.x() -= glyph->getHorizontalAdvance() * wr; break;
+                    case RIGHT_TO_LEFT: cursor.x() += glyph->getHorizontalAdvance() * wr; break;
+                    case VERTICAL:      cursor.y() += glyph->getVerticalAdvance() * wr; break;
                     }
                 }
             }
@@ -277,6 +284,10 @@ void Text3D::computeGlyphRepresentation()
 
     // initialize bounding box, it will be expanded during glyph position calculation
     _textBB.init();
+
+
+    float hr = 1.0f;
+    float wr = 1.0f/getCharacterAspectRatio();
 
     osg::Vec2 startOfLine_coords(0.0f,0.0f);
     osg::Vec2 cursor(startOfLine_coords);
@@ -323,7 +334,7 @@ void Text3D::computeGlyphRepresentation()
                     {
                         if (_layout == RIGHT_TO_LEFT)
                         {
-                            cursor.x() -= glyph->getHorizontalAdvance();
+                            cursor.x() -= glyph->getHorizontalAdvance() * wr;
                         }
 
                         if (kerning)
@@ -332,12 +343,16 @@ void Text3D::computeGlyphRepresentation()
                             {
                                 case LEFT_TO_RIGHT:
                                 {
-                                    cursor += _font->getKerning(previous_charcode, charcode, _kerningType);
+                                    osg::Vec2 delta(_font->getKerning(previous_charcode,charcode,_kerningType));
+                                    cursor.x() += delta.x() * wr;
+                                    cursor.y() += delta.y() * hr;
                                     break;
                                 }
                                 case RIGHT_TO_LEFT:
                                 {
-                                    cursor -= _font->getKerning(charcode, previous_charcode, _kerningType);
+                                    osg::Vec2 delta(_font->getKerning(charcode,previous_charcode,_kerningType));
+                                    cursor.x() -= delta.x() * wr;
+                                    cursor.y() -= delta.y() * hr;
                                     break;
                                 }
                                 case VERTICAL:
@@ -351,12 +366,12 @@ void Text3D::computeGlyphRepresentation()
                         {
                             case LEFT_TO_RIGHT:
                             {
-                                cursor.x() -= glyph->getHorizontalBearing().x();
+                                cursor.x() -= glyph->getHorizontalBearing().x() * wr;
                                 break;
                             }
                             case RIGHT_TO_LEFT:
                             {
-                                cursor.x() -= bb.xMax();
+                                cursor.x() -= bb.xMax() * wr;
                                 break;
                             }
                             case VERTICAL:
@@ -372,8 +387,8 @@ void Text3D::computeGlyphRepresentation()
 
                     if (_layout==VERTICAL)
                     {
-                        local.x() += -glyph->getVerticalBearing().x();
-                        local.y() += -glyph->getVerticalBearing().y();
+                        local.x() += -glyph->getVerticalBearing().x() * wr;
+                        local.y() += -glyph->getVerticalBearing().y() * hr;
                     }
 
 
@@ -383,18 +398,18 @@ void Text3D::computeGlyphRepresentation()
                     switch (_layout)
                     {
                         case LEFT_TO_RIGHT:
-                            _textBB.expandBy(osg::Vec3(cursor.x() + bb.xMin(), cursor.y() + bb.yMin(), 0.0f)); //lower left corner
-                            _textBB.expandBy(osg::Vec3(cursor.x() + bb.xMax(), cursor.y() + bb.yMax(), 0.0f)); //upper right corner
+                            _textBB.expandBy(osg::Vec3(cursor.x() + bb.xMin()*wr, cursor.y() + bb.yMin()*hr, 0.0f)); //lower left corner
+                            _textBB.expandBy(osg::Vec3(cursor.x() + bb.xMax()*wr, cursor.y() + bb.yMax()*hr, 0.0f)); //upper right corner
                             cursor.x() += glyph->getHorizontalAdvance();
                             break;
                         case VERTICAL:
                             _textBB.expandBy(osg::Vec3(cursor.x(), cursor.y(), 0.0f)); //upper left corner
-                            _textBB.expandBy(osg::Vec3(cursor.x() + glyph->getWidth(), cursor.y() - glyph->getHeight(), 0.0f)); //lower right corner
+                            _textBB.expandBy(osg::Vec3(cursor.x() + glyph->getWidth()*wr, cursor.y() - glyph->getHeight()*hr, 0.0f)); //lower right corner
                             cursor.y() -= glyph->getVerticalAdvance();
                             break;
                         case RIGHT_TO_LEFT:
-                            _textBB.expandBy(osg::Vec3(cursor.x()+bb.xMax(), cursor.y() + bb.yMax(), 0.0f)); //upper right corner
-                            _textBB.expandBy(osg::Vec3(cursor.x()+bb.xMin(), cursor.y()+bb.yMin(), 0.0f)); //lower left corner
+                            _textBB.expandBy(osg::Vec3(cursor.x()+bb.xMax()*wr, cursor.y() + bb.yMax()*hr, 0.0f)); //upper right corner
+                            _textBB.expandBy(osg::Vec3(cursor.x()+bb.xMin()*wr, cursor.y()+bb.yMin()*hr, 0.0f)); //lower left corner
 
                             break;
                     }
@@ -425,13 +440,13 @@ void Text3D::computeGlyphRepresentation()
             case LEFT_TO_RIGHT:
             case RIGHT_TO_LEFT:
             {
-                startOfLine_coords.y() -= (1.0 + _lineSpacing);
+                startOfLine_coords.y() -= (1.0 + _lineSpacing) * hr;
                 ++_lineCount;
                 break;
             }
             case VERTICAL:
             {
-                startOfLine_coords.x() += _characterHeight / getCharacterAspectRatio() * (1.0 + _lineSpacing);
+                startOfLine_coords.x() += _characterHeight * (1.0 + _lineSpacing) * wr;
                 // because _lineCount is the max vertical no. of characters....
                 _lineCount = (_lineCount >linelength)?_lineCount:linelength;
                 break;
@@ -500,7 +515,7 @@ void Text3D::computePositions(unsigned int contextID) const
     osg::Matrix& matrix = atc._matrix;
 
 
-    osg::Vec3 scaleVec(_characterHeight, _characterHeight / getCharacterAspectRatio(), _characterHeight);
+    osg::Vec3 scaleVec(_characterHeight / getCharacterAspectRatio(), _characterHeight , _characterHeight);
 
     matrix.makeTranslate(-_offset);
     matrix.postMultScale(scaleVec);

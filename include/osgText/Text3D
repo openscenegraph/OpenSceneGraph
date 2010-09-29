@@ -16,7 +16,6 @@
 
 
 #include <osgText/TextBase>
-#include <osgText/Font>
 #include <osgText/Style>
 
 namespace osgText {
@@ -81,19 +80,6 @@ public:
 //    /** Set the back StateSet */
 //    void setBackStateSet(osg::StateSet * backStateSet)  { _backStateSet = backStateSet; }
 //
-
-    /** Set the Font to use to render the text.
-      * setFont(0) sets the use of the default font.*/
-    void setFont(Font* font);
-
-    /** Set the font, loaded from the specified front file, to use to render the text,
-      * setFont("") sets the use of the default font.
-      * See the osgText::readFontFile function for how the font file will be located. */
-    void setFont(const std::string& fontfile);
-
-    /** Get the font. Return 0 if default is being used.*/
-    const Font* getFont() const { return _font.get(); }
-
 
 
 
@@ -162,7 +148,6 @@ protected:
 
     TextRenderInfo _textRenderInfo;
 
-    osg::ref_ptr<Font>  _font;
     osg::ref_ptr<Style> _style;
 
     RenderMode _renderMode;

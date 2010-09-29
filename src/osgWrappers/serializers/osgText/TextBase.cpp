@@ -3,6 +3,26 @@
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
 
+// _font
+static bool checkFont( const osgText::TextBase& text )
+{
+    return text.getFont()!=NULL;
+}
+
+static bool readFont( osgDB::InputStream& is, osgText::TextBase& text )
+{
+    std::string fontName; is.readWrappedString( fontName );
+    text.setFont( osgText::readFontFile(fontName) );
+    return true;
+}
+
+static bool writeFont( osgDB::OutputStream& os, const osgText::TextBase& text )
+{
+    os.writeWrappedString( text.getFont()->getFileName() );
+    os << std::endl;
+    return true;
+}
+
 // _fontSize
 static bool checkFontSize( const osgText::TextBase& text )
 {
@@ -154,6 +174,7 @@ REGISTER_OBJECT_WRAPPER( osgText_TextBase,
                          osgText::TextBase,
                          "osg::Object osg::Drawable osgText::TextBase" )
 {
+    ADD_USER_SERIALIZER( Font );  // _font
     ADD_USER_SERIALIZER( FontSize );  // _fontSize
     ADD_USER_SERIALIZER( CharacterSize );  // _characterHeight, _characterAspectRatio
     

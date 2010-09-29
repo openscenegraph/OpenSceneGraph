@@ -55,6 +55,7 @@ TextBase::TextBase():
 
 TextBase::TextBase(const TextBase& textBase,const osg::CopyOp& copyop):
     osg::Drawable(textBase,copyop),
+    _font(textBase._font),
     _fontSize(textBase._fontSize),
     _characterHeight(textBase._characterHeight),
     _characterAspectRatio(textBase._characterAspectRatio),
@@ -80,6 +81,29 @@ TextBase::TextBase(const TextBase& textBase,const osg::CopyOp& copyop):
 TextBase::~TextBase()
 {
 }
+
+void TextBase::setFont(osg::ref_ptr<Font> font)
+{
+    if (_font==font) return;
+
+    osg::StateSet* previousFontStateSet = _font.valid() ? _font->getStateSet() : Font::getDefaultFont()->getStateSet();
+    osg::StateSet* newFontStateSet = font.valid() ? font->getStateSet() : Font::getDefaultFont()->getStateSet();
+
+    if (getStateSet() == previousFontStateSet)
+    {
+        setStateSet( newFontStateSet );
+    }
+
+    _font = font;
+
+    computeGlyphRepresentation();
+}
+
+void TextBase::setFont(const std::string& fontfile)
+{
+    setFont(readRefFontFile(fontfile));
+}
+
 
 void TextBase::setFontResolution(unsigned int width, unsigned int height)
 {

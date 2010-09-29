@@ -38,30 +38,12 @@ public:
     virtual const char* libraryName() const { return "osgText"; }
 
 
-    /** Set the Font to use to render the text.  
-      * setFont(0) sets the use of the default font.*/
-    inline void setFont(Font* font=0) { setFont(osg::ref_ptr<Font>(font)); };
-
-    /** Set the Font to use to render the text.*/
-    void setFont(osg::ref_ptr<Font> font);
-
-    /** Set the font, loaded from the specified front file, to use to render the text,
-      * setFont("") sets the use of the default font.
-      * See the osgText::readFontFile function for how the font file will be located. */
-    void setFont(const std::string& fontfile);
-
-    /** Get the font. Return 0 if default is being used.*/    
-    const Font* getFont() const { return _font.get(); }
-
-    
-
     void setColor(const osg::Vec4& color);
-    
+
     const osg::Vec4& getColor() const { return _color; }
 
 
-    
-    
+
     /**
      * Turns off writing to the depth buffer when rendering text. This only affects text
      * with no backdrop or text using the DELAYED_DEPTH_WRITES implementation, since
@@ -307,9 +289,6 @@ public:
       * for all graphics contexts. */
     virtual void releaseGLObjects(osg::State* state=0) const;
 
-//    // make Font a friend to allow it set the _font to 0 if the font is 
-//    // forcefully unloaded.
-//    friend class Font;
 public:
 
     // internal structures, variable and methods used for rendering of characters.
@@ -374,7 +353,6 @@ protected:
     String::iterator computeLastCharacterOnLine(osg::Vec2& cursor, String::iterator first,String::iterator last);
     
     // members which have public access.
-    osg::ref_ptr<Font>                      _font;
     osg::Vec4                               _color;
 
     // iternal map used for rendering. Set up by the computeGlyphRepresentation() method.

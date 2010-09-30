@@ -36,7 +36,7 @@ void Image::write(DataOutputStream* out)
     // Write name
     out->writeString(getFileName());
 
-    if ( out->getVersion() >= VERSION_0031)
+    if ( out->getVersion() >= VERSION_0032)
     {
         out->writeInt((int)getWriteHint());
     }        
@@ -96,7 +96,7 @@ void Image::read(DataInputStream* in)
         // Read name
         setFileName(in->readString());
         
-        if ( in->getVersion() >= VERSION_0031)
+        if ( in->getVersion() >= VERSION_0032)
         {
             setWriteHint((osg::Image::WriteHint)in->readInt());
         }        

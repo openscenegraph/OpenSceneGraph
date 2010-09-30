@@ -189,7 +189,11 @@ class QTKitImageStream : public osg::ImageStream
     
             [[NSNotificationCenter defaultCenter] addObserver:movieNotificationHandler
                 selector:@selector(movieNaturalSizeDidChange:)
+#if defined(MAC_OS_X_VERSION_10_6) && (MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6)
                 name:QTMovieNaturalSizeDidChangeNotification
+#else
+                name:QTMovieSizeDidChangeNotification
+#endif    
                 object:qtMovie];
 
             [[NSNotificationCenter defaultCenter] addObserver:movieNotificationHandler
@@ -427,9 +431,12 @@ class QTKitImageStream : public osg::ImageStream
 //                                        NSLog(@"CVPixelBuffer w=%d, h=%d", buffer_width, buffer_height);
                     //                    buffer_width = 480;
                     //                    buffer_height = 320;
-    
+
+#if defined(MAC_OS_X_VERSION_10_6) && (MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6)
                     CVPixelBufferLockBaseAddress( swapFrame[currentSwapFrameIndex], kCVPixelBufferLock_ReadOnly );
-    
+#else
+                    CVPixelBufferLockBaseAddress( swapFrame[currentSwapFrameIndex], 0 );
+#endif  
                     void* raw_pixel_data = CVPixelBufferGetBaseAddress(swapFrame[currentSwapFrameIndex]);
     
                     setImage(buffer_width,buffer_height,1,
@@ -573,8 +580,16 @@ class QTKitImageStream : public osg::ImageStream
         {
             [[NSNotificationCenter defaultCenter] removeObserver:movieNotificationHandler
                 name:QTMovieLoadStateDidChangeNotification object:qtMovie];
+            
             [[NSNotificationCenter defaultCenter] removeObserver:movieNotificationHandler
-                name:QTMovieNaturalSizeDidChangeNotification object:qtMovie];
+#if defined(MAC_OS_X_VERSION_10_6) && (MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_6)
+                name:QTMovieNaturalSizeDidChangeNotification
+#else
+                name:QTMovieSizeDidChangeNotification
+#endif    
+            
+                object:qtMovie];
+            
             [[NSNotificationCenter defaultCenter] removeObserver:movieNotificationHandler
                 name:QTMovieDidEndNotification object:qtMovie];
 

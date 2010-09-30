@@ -258,8 +258,13 @@ bool XmlNode::read(Input& input)
                         ++input;
                         while((c=input[0])>=0 && c!='"')
                         {
-                            value.push_back(c);
-                            ++input;
+                            if (c=='&')
+                                readAndReplaceControl(value, input);
+                            else
+                            {
+                                value.push_back(c);
+                                ++input;
+                            }
                         }
                         ++input;
                     }
@@ -268,8 +273,13 @@ bool XmlNode::read(Input& input)
                         ++input;
                         while((c=input[0])>=0 && c!='\'')
                         {
-                            value.push_back(c);
-                            ++input;
+                            if (c=='&')
+                                readAndReplaceControl(value, input);
+                            else
+                            {
+                                value.push_back(c);
+                                ++input;
+                            }
                         }
                         ++input;
                     }
@@ -335,20 +345,7 @@ bool XmlNode::read(Input& input)
 
             if (c=='&')
             {
-                std::string value;
-                while(input && (c=input.get())!=';') { value.push_back(c); }
-                value.push_back(c);
-
-                if (input._controlToCharacterMap.count(value)!=0)
-                {
-                    c = input._controlToCharacterMap[value];
-                    OSG_INFO<<"Read control character "<<value<<" converted to "<<char(c)<<std::endl;
-                    contents.push_back(c);
-                }
-                else
-                {
-                    OSG_NOTICE<<"Warning: read control character "<<value<<", but have no mapping to convert it to."<<std::endl;
-                }
+                readAndReplaceControl(contents, input);
             }
             else
             {
@@ -458,4 +455,25 @@ bool XmlNode::writeProperties(const ControlMap& controlMap, std::ostream& fout) 
     }
 
     return true;
+}
+
+bool XmlNode::readAndReplaceControl(std::string& contents, XmlNode::Input& input)
+{
+    int c = 0;
+    std::string value;
+    while(input && (c=input.get())!=';') { value.push_back(c); }
+    value.push_back(c);
+
+    if (input._controlToCharacterMap.count(value)!=0)
+    {
+        c = input._controlToCharacterMap[value];
+        OSG_INFO<<"Read control character "<<value<<" converted to "<<char(c)<<std::endl;
+        contents.push_back(c);
+        return true;
+    }
+    else
+    {
+        OSG_NOTICE<<"Warning: read control character "<<value<<", but have no mapping to convert it to."<<std::endl;
+        return false;
+    }
 }

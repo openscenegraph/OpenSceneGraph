@@ -229,15 +229,16 @@ public:
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
+        const P value = (object.*_getter)();
         if ( os.isBinary() )
         {
-            os << (object.*_getter)();
+            os << value;
         }
-        else if ( ParentType::_defaultValue!=(object.*_getter)() )
+        else if ( ParentType::_defaultValue!=value )
         {
             os << PROPERTY((ParentType::_name).c_str());
             if ( _useHex ) os << std::hex;
-            os << (object.*_getter)();
+            os << value;
             if ( _useHex ) os << std::dec;
             os << std::endl;
         }
@@ -286,13 +287,14 @@ public:
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
+        const CP value = (object.*_getter)();
         if ( os.isBinary() )
         {
-            os << (object.*_getter)();
+            os << value;
         }
-        else if ( ParentType::_defaultValue!=(object.*_getter)() )
+        else if ( ParentType::_defaultValue!=value )
         {
-            os << PROPERTY((ParentType::_name).c_str()) << (object.*_getter)() << std::endl;
+            os << PROPERTY((ParentType::_name).c_str()) << value << std::endl;
         }
         return true;
     }
@@ -335,13 +337,14 @@ public:
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
+        const osg::Matrix& value = (object.*_getter)();
         if ( os.isBinary() )
         {
-            os << (object.*_getter)();
+            os << value;
         }
-        else if ( ParentType::_defaultValue!=(object.*_getter)() )
+        else if ( ParentType::_defaultValue!=value )
         {
-            os << PROPERTY((ParentType::_name).c_str()) << (object.*_getter)() << std::endl;
+            os << PROPERTY((ParentType::_name).c_str()) << value << std::endl;
         }
         return true;
     }
@@ -398,13 +401,14 @@ public:
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
+        const P value = (object.*_getter)();
         if ( os.isBinary() )
         {
-            os << static_cast<GLenum>((object.*_getter)());
+            os << static_cast<GLenum>(value);
         }
-        else if ( ParentType::_defaultValue!=(object.*_getter)() )
+        else if ( ParentType::_defaultValue!=value )
         {
-            os << PROPERTY((ParentType::_name).c_str()) << GLENUM((object.*_getter)()) << std::endl;
+            os << PROPERTY((ParentType::_name).c_str()) << GLENUM(value) << std::endl;
         }
         return true;
     }
@@ -448,14 +452,15 @@ public:
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
+        const std::string& value = (object.*_getter)();
         if ( os.isBinary() )
         {
-            os << (object.*_getter)();
+            os << value;
         }
-        else if ( ParentType::_defaultValue!=(object.*_getter)() )
+        else if ( ParentType::_defaultValue!=value )
         {
             os << PROPERTY((ParentType::_name).c_str());
-            os.writeWrappedString( (object.*_getter)() );
+            os.writeWrappedString( value );
             os << std::endl;
         }
         return true;
@@ -510,19 +515,20 @@ public:
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
-        bool hasObject = ((object.*_getter)()!=NULL);
+        const P* value = (object.*_getter)();
+        bool hasObject = (value!=NULL);
         if ( os.isBinary() )
         {
             os << hasObject;
-            os.writeObject( (object.*_getter)() );
+            os.writeObject( value );
         }
-        else if ( ParentType::_defaultValue!=(object.*_getter)() )
+        else if ( ParentType::_defaultValue!=value )
         {
             os << PROPERTY((ParentType::_name).c_str()) << hasObject;
             if ( hasObject )
             {
                 os << BEGIN_BRACKET << std::endl;
-                os.writeObject( (object.*_getter)() );
+                os.writeObject( value );
                 os << END_BRACKET;
             }
             os << std::endl;
@@ -579,19 +585,20 @@ public:
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
-        bool hasObject = ((object.*_getter)()!=NULL);
+        const P* value = (object.*_getter)();
+        bool hasObject = (value!=NULL);
         if ( os.isBinary() )
         {
             os << hasObject;
-            os.writeImage( (object.*_getter)() );
+            os.writeImage( value );
         }
-        else if ( ParentType::_defaultValue!=(object.*_getter)() )
+        else if ( ParentType::_defaultValue!=value )
         {
             os << PROPERTY((ParentType::_name).c_str()) << hasObject;
             if ( hasObject )
             {
                 os << BEGIN_BRACKET << std::endl;
-                os.writeImage( (object.*_getter)() );
+                os.writeImage( value );
                 os << END_BRACKET;
             }
             os << std::endl;
@@ -617,13 +624,13 @@ public:
      { ParentType::_defaultValue = def; }
     
     void add( const char* str, P value )
-    { _lookup.add(str, static_cast<osgDB::IntLookup::Value>(value)); }
+    { _lookup.add(str, static_cast<IntLookup::Value>(value)); }
     
     P getValue( const char* str )
     { return static_cast<P>(_lookup.getValue(str)); }
     
     const std::string& getString( P value )
-    { return _lookup.getString(static_cast<osgDB::IntLookup::Value>(value)); }
+    { return _lookup.getString(static_cast<IntLookup::Value>(value)); }
     
     virtual bool read( InputStream& is, osg::Object& obj )
     {
@@ -646,13 +653,14 @@ public:
     virtual bool write( osgDB::OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
+        const P value = (object.*_getter)();
         if ( os.isBinary() )
         {
-            os << (osgDB::IntLookup::Value)(object.*_getter)();
+            os << (IntLookup::Value)value;
         }
-        else if ( ParentType::_defaultValue!=(object.*_getter)() )
+        else if ( ParentType::_defaultValue!=value )
         {
-            os << PROPERTY((ParentType::_name).c_str()) << getString((object.*_getter)()) << std::endl;
+            os << PROPERTY((ParentType::_name).c_str()) << getString(value) << std::endl;
         }
         return true;
     }
@@ -672,7 +680,7 @@ public:
     typedef TemplateSerializer<P> ParentType;
     typedef typename P::value_type ValueType;
     typedef typename P::const_iterator ConstIterator;
-     typedef const P& (C::*Getter)() const;
+    typedef const P& (C::*Getter)() const;
     typedef void (C::*Setter)( const P& );
     
     ListSerializer( const char* name, Getter gf, Setter sf )
@@ -893,7 +901,6 @@ public:
 
 #define END_ENUM_SERIALIZER() \
     wrapper->addSerializer(serializer.get()); }
-
 
 }
 

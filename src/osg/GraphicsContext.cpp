@@ -185,7 +185,8 @@ GraphicsContext::Traits::Traits(DisplaySettings* ds):
             glContextProfileMask(0),
             sharedContext(0),
             setInheritedWindowPixelFormat(false),
-            overrideRedirect(false)
+            overrideRedirect(false),
+            swapMethod( DisplaySettings::SWAP_DEFAULT )
 {
     if (ds)
     {
@@ -208,6 +209,8 @@ GraphicsContext::Traits::Traits(DisplaySettings* ds):
         glContextVersion = ds->getGLContextVersion();
         glContextFlags = ds->getGLContextFlags();
         glContextProfileMask = ds->getGLContextProfileMask();
+
+        swapMethod = ds->getSwapMethod();
     }
 }
 

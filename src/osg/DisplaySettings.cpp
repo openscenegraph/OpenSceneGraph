@@ -90,6 +90,7 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
     _glContextVersion = vs._glContextVersion;
     _glContextFlags = vs._glContextFlags;
     _glContextProfileMask = vs._glContextProfileMask;
+    _swapMethod = vs._swapMethod;
 }
 
 void DisplaySettings::merge(const DisplaySettings& vs)
@@ -120,6 +121,10 @@ void DisplaySettings::merge(const DisplaySettings& vs)
     // these are bit masks so merging them is like logical or 
     _implicitBufferAttachmentRenderMask |= vs._implicitBufferAttachmentRenderMask;
     _implicitBufferAttachmentResolveMask |= vs._implicitBufferAttachmentResolveMask;
+
+    // merge swap method to higher value
+    if( vs._swapMethod > _swapMethod )
+        _swapMethod = vs._swapMethod;
 }
 
 void DisplaySettings::setDefaults()
@@ -173,6 +178,8 @@ void DisplaySettings::setDefaults()
     _glContextVersion = "1.0";
     _glContextFlags = 0;
     _glContextProfileMask = 0;
+
+    _swapMethod = SWAP_DEFAULT;
 }
 
 void DisplaySettings::setMaxNumberOfGraphicsContexts(unsigned int num)
@@ -475,6 +482,30 @@ void DisplaySettings::readEnvironmentalVariables()
     {
         _glContextProfileMask = atoi(ptr);
     }
+
+    if ((ptr = getenv("OSG_SWAP_METHOD")) != 0)
+    {
+        if (strcmp(ptr,"DEFAULT")==0)
+        {
+            _swapMethod = SWAP_DEFAULT;
+        }
+        else
+        if (strcmp(ptr,"EXCHANGE")==0)
+        {
+            _swapMethod = SWAP_EXCHANGE;
+        }
+        else
+        if (strcmp(ptr,"COPY")==0)
+        {
+            _swapMethod = SWAP_COPY;
+        }
+        else
+        if (strcmp(ptr,"UNDEFINED")==0)
+        {
+            _swapMethod = SWAP_UNDEFINED;
+        }
+
+    }
 }
 
 void DisplaySettings::readCommandLine(ArgumentParser& arguments)
@@ -605,5 +636,14 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
     while (arguments.read("--gl-version", _glContextVersion)) {}
     while (arguments.read("--gl-flags", _glContextFlags)) {}
     while (arguments.read("--gl-profile-mask", _glContextProfileMask)) {}
+
+    while(arguments.read("--swap-method",str))
+    {
+        if (str=="DEFAULT") _swapMethod = SWAP_DEFAULT;
+        else if (str=="EXCHANGE") _swapMethod = SWAP_EXCHANGE;
+        else if (str=="COPY") _swapMethod = SWAP_COPY;
+        else if (str=="UNDEFINED") _swapMethod = SWAP_UNDEFINED;
+    }
+
 
 }

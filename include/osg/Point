@@ -61,7 +61,7 @@ class OSG_EXPORT Point : public StateAttribute
             COMPARE_StateAttribute_Parameter(_minSize)
             COMPARE_StateAttribute_Parameter(_maxSize)
 
-            return 0; // passed all the above comparison macro's, must be equal.
+            return 0; // passed all the above comparison macros, must be equal.
         }
 
         virtual bool getModeUsage(StateAttribute::ModeUsage& usage) const

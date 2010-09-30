@@ -593,7 +593,7 @@ VisualInfo *VisualChooser::choose( Display *dpy, int screen, bool strict_adheren
                 {
                     if (*k == WGL_SWAP_METHOD_ARB)
                     {   
-                        // attribute come in sequential attribute,paramter pairs
+                        // attribute come in sequential attribute,parameter pairs
                         // as WGL specifications so we need to delete two entries
                         attribs.erase(k,k+2);
                         break;

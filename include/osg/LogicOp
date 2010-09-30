@@ -76,7 +76,7 @@ class OSG_EXPORT LogicOp : public StateAttribute
         virtual int compare(const StateAttribute& sa) const
         {
             // Check for equal types, then create the rhs variable
-            // used by the COMPARE_StateAttribute_Paramter macros below.
+            // used by the COMPARE_StateAttribute_Parameter macros below.
             COMPARE_StateAttribute_Types(LogicOp,sa)
 
             // Compare each parameter in turn against the rhs.

@@ -25,13 +25,13 @@ public:
     virtual int compare(const StateAttribute& sa) const
     {
        // check the types are equal and then create the rhs variable
-       // used by the COMPARE_StateAttribute_Paramter macro's below.
+       // used by the COMPARE_StateAttribute_Parameter macros below.
        COMPARE_StateAttribute_Types(VirtualProgram,sa)
 
-       // compare each paramter in turn against the rhs.
+       // compare each parameter in turn against the rhs.
        COMPARE_StateAttribute_Parameter(_mask)
        COMPARE_StateAttribute_Parameter(_shaderMap)
-       return 0; // passed all the above comparison macro's, must be equal.
+       return 0; // passed all the above comparison macros, must be equal.
     }
 
     /** If enabled, activate our program in the GL pipeline,

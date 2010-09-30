@@ -61,7 +61,7 @@ StencilTwoSided::~StencilTwoSided()
 int StencilTwoSided::compare(const StateAttribute& sa) const
 {
     // check the types are equal and then create the rhs variable
-    // used by the COMPARE_StateAttribute_Parameter macro's below.
+    // used by the COMPARE_StateAttribute_Parameter macros below.
     COMPARE_StateAttribute_Types(StencilTwoSided,sa)
 
     // compare each parameter in turn against the rhs.
@@ -81,7 +81,7 @@ int StencilTwoSided::compare(const StateAttribute& sa) const
     COMPARE_StateAttribute_Parameter(_zpass[BACK])
     COMPARE_StateAttribute_Parameter(_writeMask[BACK])
 
-    return 0; // passed all the above comparison macro's, must be equal.
+    return 0; // passed all the above comparison macros, must be equal.
 }
 
 void StencilTwoSided::apply(State& state) const

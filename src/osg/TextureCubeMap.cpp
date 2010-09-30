@@ -73,7 +73,7 @@ TextureCubeMap::~TextureCubeMap()
 int TextureCubeMap::compare(const StateAttribute& sa) const
 {
     // check the types are equal and then create the rhs variable
-    // used by the COMPARE_StateAttribute_Paramter macro's below.
+    // used by the COMPARE_StateAttribute_Parameter macros below.
     COMPARE_StateAttribute_Types(TextureCubeMap,sa)
 
     bool noImages = true;
@@ -117,12 +117,12 @@ int TextureCubeMap::compare(const StateAttribute& sa) const
     int result = compareTexture(rhs);
     if (result!=0) return result;
 
-    // compare each paramter in turn against the rhs.
+    // compare each parameter in turn against the rhs.
     COMPARE_StateAttribute_Parameter(_textureWidth)
     COMPARE_StateAttribute_Parameter(_textureHeight)
     COMPARE_StateAttribute_Parameter(_subloadCallback)
 
-    return 0; // passed all the above comparison macro's, must be equal.
+    return 0; // passed all the above comparison macros, must be equal.
 }
 
 

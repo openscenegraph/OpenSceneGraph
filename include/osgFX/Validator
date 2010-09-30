@@ -61,7 +61,7 @@ namespace osgFX
     inline int Validator::compare(const osg::StateAttribute& sa) const
     {
         // check the types are equal and then create the rhs variable
-        //used by the COMPARE_StateAttribute_Paramter macro's below.
+        //used by the COMPARE_StateAttribute_Parameter macros below.
         COMPARE_StateAttribute_Types(Validator,sa)
         
         // compare parameters

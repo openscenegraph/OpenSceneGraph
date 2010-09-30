@@ -48,7 +48,7 @@ Texture1D::~Texture1D()
 int Texture1D::compare(const StateAttribute& sa) const
 {
     // check the types are equal and then create the rhs variable
-    // used by the COMPARE_StateAttribute_Parameter macro's below.
+    // used by the COMPARE_StateAttribute_Parameter macros below.
     COMPARE_StateAttribute_Types(Texture1D,sa)
 
     if (_image!=rhs._image) // smart pointer comparison.
@@ -89,7 +89,7 @@ int Texture1D::compare(const StateAttribute& sa) const
     COMPARE_StateAttribute_Parameter(_textureWidth)
     COMPARE_StateAttribute_Parameter(_subloadCallback)
 
-    return 0; // passed all the above comparison macro's, must be equal.
+    return 0; // passed all the above comparison macros, must be equal.
 }
 
 void Texture1D::setImage(Image* image)

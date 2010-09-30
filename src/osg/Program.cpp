@@ -4,7 +4,7 @@
  * Copyright (C) 2008 Zebra Imaging
  *
  * This application is open source and may be redistributed and/or modified   
- * freely and without restriction, both in commericial and non commericial
+ * freely and without restriction, both in commercial and non commercial
  * applications, as long as this copyright notice is maintained.
  * 
  * This application is distributed in the hope that it will be useful,
@@ -141,7 +141,7 @@ Program::~Program()
 int Program::compare(const osg::StateAttribute& sa) const
 {
     // check the types are equal and then create the rhs variable
-    // used by the COMPARE_StateAttribute_Parameter macro's below.
+    // used by the COMPARE_StateAttribute_Parameter macros below.
     COMPARE_StateAttribute_Types(Program,sa)
     
     if( _shaderList.size() < rhs._shaderList.size() ) return -1;
@@ -169,7 +169,7 @@ int Program::compare(const osg::StateAttribute& sa) const
         if (result!=0) return result;
     }
 
-    return 0; // passed all the above comparison macro's, must be equal.
+    return 0; // passed all the above comparison macros, must be equal.
 }
 
 

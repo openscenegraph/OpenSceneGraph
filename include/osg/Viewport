@@ -52,7 +52,7 @@ class OSG_EXPORT Viewport : public StateAttribute
         virtual int compare(const StateAttribute& sa) const
         {
             // check the types are equal and then create the rhs variable
-            // used by the COMPARE_StateAttribute_Parameter macro's below.
+            // used by the COMPARE_StateAttribute_Parameter macros below.
             COMPARE_StateAttribute_Types(Viewport,sa)
 
             // compare each parameter in turn against the rhs.
@@ -61,7 +61,7 @@ class OSG_EXPORT Viewport : public StateAttribute
             COMPARE_StateAttribute_Parameter(_width)
             COMPARE_StateAttribute_Parameter(_height)
             
-            return 0; // passed all the above comparison macro's, must be equal.
+            return 0; // passed all the above comparison macros, must be equal.
         }
 
         inline void setViewport(value_type x,value_type y,value_type width,value_type height)

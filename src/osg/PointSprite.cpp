@@ -36,7 +36,7 @@ int PointSprite::compare(const StateAttribute& sa) const
 
     COMPARE_StateAttribute_Parameter(_coordOriginMode)
 
-    return 0; // passed all the above comparison macro's, must be equal.
+    return 0; // passed all the above comparison macros, must be equal.
 }
 
 

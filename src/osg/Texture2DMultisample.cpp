@@ -53,7 +53,7 @@ Texture2DMultisample::~Texture2DMultisample()
 int Texture2DMultisample::compare(const StateAttribute& sa) const
 {
     // check the types are equal and then create the rhs variable
-    // used by the COMPARE_StateAttribute_Parameter macro's below.
+    // used by the COMPARE_StateAttribute_Parameter macros below.
     COMPARE_StateAttribute_Types(Texture2DMultisample,sa)
 
 
@@ -79,7 +79,7 @@ int Texture2DMultisample::compare(const StateAttribute& sa) const
     }
 
 
-    return 0; // passed all the above comparison macro's, must be equal.
+    return 0; // passed all the above comparison macros, must be equal.
 }
 
 void Texture2DMultisample::apply(State& state) const

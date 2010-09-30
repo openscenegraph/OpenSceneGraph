@@ -130,6 +130,8 @@ class OSG_EXPORT GraphicsContext : public Object
             
             // X11 hint whether to override the window managers window size/position redirection
             bool overrideRedirect;
+
+            DisplaySettings::SwapMethod swapMethod;
         };
 
         /** Simple resolution structure used by WindowingSystemInterface to get and set screen resolution.

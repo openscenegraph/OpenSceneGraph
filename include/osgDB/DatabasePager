@@ -355,6 +355,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             virtual void removeExpiredChildren(int& numberChildrenToRemove, double expiryTime, int expiryFrame, osg::NodeList& childrenRemoved) = 0;
             virtual void removeNodes(osg::NodeList& nodesToRemove) = 0;
             virtual void insertPagedLOD(const osg::observer_ptr<osg::PagedLOD>& plod) = 0;
+            virtual bool containsPagedLOD(const osg::observer_ptr<osg::PagedLOD>& plod) const = 0;
         };
 
     protected:

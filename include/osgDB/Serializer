@@ -229,7 +229,7 @@ public:
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
-        const P value = (object.*_getter)();
+        P value = (object.*_getter)();
         if ( os.isBinary() )
         {
             os << value;
@@ -287,7 +287,7 @@ public:
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
         const C& object = OBJECT_CAST<const C&>(obj);
-        const CP value = (object.*_getter)();
+        CP value = (object.*_getter)();
         if ( os.isBinary() )
         {
             os << value;

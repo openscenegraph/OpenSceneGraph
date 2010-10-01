@@ -1474,7 +1474,30 @@ static void PreparePixelFormatSpecifications( const osg::GraphicsContext::Traits
     if (traits.doubleBuffer)
     {
         attributes.enable(WGL_DOUBLE_BUFFER_ARB);
-        if (allowSwapExchangeARB) attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_EXCHANGE_ARB);
+
+        switch ( traits.swapMethod )
+        {
+            case osg::DisplaySettings::SWAP_COPY:
+                attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_COPY_ARB);
+                break;
+            case osg::DisplaySettings::SWAP_EXCHANGE:
+                attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_EXCHANGE_ARB);
+                break;
+            case osg::DisplaySettings::SWAP_UNDEFINED:
+                attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_UNDEFINED_ARB);
+                break;
+            case osg::DisplaySettings::SWAP_DEFAULT:
+                // Wojtek Lewandowski 2010-09-28:
+                // Keep backward compatibility if no method is selected via traits
+                // and let wglSwapExchangeARB flag select swap method. 
+                // However, I would rather remove this flag because its 
+                // now redundant to Traits::swapMethod and it looks like 
+                // WGL_SWAP_EXCHANGE_ARB is the GL default when no WGL_SWAP attrib is given.
+                // To be precise: At least on Windows 7 and Nvidia it seems to be a default.
+                if ( allowSwapExchangeARB )
+                    attributes.set(WGL_SWAP_METHOD_ARB, WGL_SWAP_EXCHANGE_ARB);
+                break;
+        }
     }
 
     if (traits.alpha)         attributes.set(WGL_ALPHA_BITS_ARB,     traits.alpha);
@@ -1503,7 +1526,9 @@ static int ChooseMatchingPixelFormat( HDC hdc, int screenNum, const WGLIntegerAt
             1,                     // version number 
             PFD_DRAW_TO_WINDOW |   // support window 
             PFD_SUPPORT_OPENGL |   // support OpenGL 
-            (_traits->doubleBuffer ? PFD_DOUBLEBUFFER : NULL),      // double buffered ?
+            (_traits->doubleBuffer ? PFD_DOUBLEBUFFER : NULL) |      // double buffered ?            
+            (_traits->swapMethod ==  osg::DisplaySettings::SWAP_COPY ? PFD_SWAP_COPY : NULL) |
+            (_traits->swapMethod ==  osg::DisplaySettings::SWAP_EXCHANGE ? PFD_SWAP_EXCHANGE : NULL),
             PFD_TYPE_RGBA,         // RGBA type 
             _traits->red + _traits->green + _traits->blue,                // color depth
             _traits->red ,0, _traits->green ,0, _traits->blue, 0,          // shift bits ignored 
@@ -2306,6 +2331,18 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
 
     switch(uMsg)
     {
+        // Wojtek Lewandowski 2010-09-28: 
+        // All web docs on Windows Aero and OpenGL compatibiltiy 
+        // suggest WM_ERASEBKGND should be handled with non NULL value return.
+        // This sugesstion may be irrelevant for our window class 
+        // as default brush pattern is not set so erase flag is forwarded to WM_PAINT 
+        // and gets ignored when WM_PAINT is handled.
+        // But it will certainly be safer and not make things worse 
+        // if we handle this message to be sure everything is done as suggested.
+        case WM_ERASEBKGND :
+            return TRUE;
+            break;
+
         /////////////////
         case WM_PAINT   :
         /////////////////

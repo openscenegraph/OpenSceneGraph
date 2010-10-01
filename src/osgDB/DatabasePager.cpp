@@ -294,6 +294,11 @@ public:
         _pagedLODs.insert(plod);
     }
 
+    virtual bool containsPagedLOD(const osg::observer_ptr<osg::PagedLOD>& plod) const
+    {
+        return (_pagedLODs.count(plod)!=0);
+    }
+
 };
 
 
@@ -1809,7 +1814,17 @@ void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
 
             group->addChild(databaseRequest->_loadedModel.get());
 
-            registerPagedLODs(databaseRequest->_loadedModel.get(), frameStamp.getFrameNumber());
+            // Check if parent plod was already registered if not start visitor from parent
+            if( plod && 
+                !_activePagedLODList->containsPagedLOD( plod ) &&
+                !_inactivePagedLODList->containsPagedLOD( plod ) )
+            {
+                registerPagedLODs(plod, frameNumber);
+            } 
+            else 
+            {
+                registerPagedLODs(databaseRequest->_loadedModel.get(), frameNumber);
+            }
 
             // OSG_NOTICE<<"merged subgraph"<<databaseRequest->_fileName<<" after "<<databaseRequest->_numOfRequests<<" requests and time="<<(timeStamp-databaseRequest->_timestampFirstRequest)*1000.0<<std::endl;
 

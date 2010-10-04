@@ -69,7 +69,6 @@ public:
     virtual ~InputStream();
     
     bool isBinary() const { return _in->isBinary(); }
-    bool getUseFloatMatrix() const { return _useFloatMatrix; }
     const osgDB::Options* getOptions() const { return _options.get(); }
     
     // Serialization related functions
@@ -161,7 +160,6 @@ protected:
     IdentifierMap _identifierMap;
     
     int _byteSwap;
-    bool _useFloatMatrix;
     bool _useSchemaData;
     bool _forceReadingImage;
     std::vector<std::string> _fields;

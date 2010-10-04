@@ -336,14 +336,17 @@ public:
     
     virtual bool write( OutputStream& os, const osg::Object& obj )
     {
+
         const C& object = OBJECT_CAST<const C&>(obj);
         const osg::Matrix& value = (object.*_getter)();
         if ( os.isBinary() )
         {
+            OSG_NOTICE<<"MatrixSerializer::write() binary"<<std::endl;
             os << value;
         }
         else if ( ParentType::_defaultValue!=value )
         {
+            OSG_NOTICE<<"MatrixSerializer::write() ascii, ParentType::_name="<<ParentType::_name<<std::endl;
             os << PROPERTY((ParentType::_name).c_str()) << value << std::endl;
         }
         return true;
@@ -352,6 +355,9 @@ public:
 protected:
     void readMatrixImplementation( InputStream& is, osg::Matrix& matrix )
     {
+#if 1
+        is >> matrix;
+#else
         if ( is.getUseFloatMatrix() )
         {
             osg::Matrixf realValue; is >> realValue;
@@ -362,6 +368,7 @@ protected:
             osg::Matrixd realValue; is >> realValue;
             matrix = realValue;
         }
+#endif
     }
     
 public:

@@ -112,9 +112,11 @@ OutputStream& OutputStream::operator<<( const osg::Quat& q )
 OutputStream& OutputStream::operator<<( const osg::Plane& p )
 { *this << (double)p[0] << (double)p[1] << (double)p[2] << (double)p[3]; return *this; }
 
+
+#if 0
 OutputStream& OutputStream::operator<<( const osg::Matrixf& mat )
 {
-    *this << PROPERTY("Matrixf") << BEGIN_BRACKET << std::endl;
+    *this << PROPERTY("Matrixf")<<BEGIN_BRACKET << std::endl;
     for ( int r=0; r<4; ++r )
     {
         *this << mat(r, 0) << mat(r, 1)
@@ -126,7 +128,7 @@ OutputStream& OutputStream::operator<<( const osg::Matrixf& mat )
 
 OutputStream& OutputStream::operator<<( const osg::Matrixd& mat )
 {
-    *this << PROPERTY("Matrixd") << BEGIN_BRACKET << std::endl;
+    *this << PROPERTY("Matrixd")<<BEGIN_BRACKET << std::endl;
     for ( int r=0; r<4; ++r )
     {
         *this << mat(r, 0) << mat(r, 1)
@@ -135,6 +137,31 @@ OutputStream& OutputStream::operator<<( const osg::Matrixd& mat )
     *this << END_BRACKET << std::endl;
     return *this;
 }
+#else
+OutputStream& OutputStream::operator<<( const osg::Matrixf& mat )
+{
+    *this << BEGIN_BRACKET << std::endl;
+    for ( int r=0; r<4; ++r )
+    {
+        *this << (double)mat(r, 0) << (double)mat(r, 1)
+              << (double)mat(r, 2) << (double)mat(r, 3) << std::endl;
+    }
+    *this << END_BRACKET << std::endl;
+    return *this;
+}
+
+OutputStream& OutputStream::operator<<( const osg::Matrixd& mat )
+{
+    *this << BEGIN_BRACKET << std::endl;
+    for ( int r=0; r<4; ++r )
+    {
+        *this << mat(r, 0) << mat(r, 1)
+              << mat(r, 2) << mat(r, 3) << std::endl;
+    }
+    *this << END_BRACKET << std::endl;
+    return *this;
+}
+#endif
 
 void OutputStream::writeArray( const osg::Array* a )
 {
@@ -503,8 +530,7 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
         
         bool useCompressSource = false;
         unsigned int attributes = 0;
-        if ( sizeof(osg::Matrix::value_type)!=FLOAT_SIZE )
-            attributes |= 0x1;  // Record matrix value type of current built OSG
+
         if ( _useSchemaData )
         {
             attributes |= 0x2;  // Record if we use inbuilt schema data or not

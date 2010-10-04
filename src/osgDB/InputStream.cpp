@@ -24,7 +24,7 @@ using namespace osgDB;
 static std::string s_lastSchema;
 
 InputStream::InputStream( const osgDB::Options* options )
-    :   _byteSwap(0), _useFloatMatrix(true), _useSchemaData(false), _forceReadingImage(false), _dataDecompress(0)
+    :   _byteSwap(0), _useSchemaData(false), _forceReadingImage(false), _dataDecompress(0)
 {
     if ( !options ) return;
     _options = options;
@@ -141,27 +141,104 @@ InputStream& InputStream::operator>>( osg::Plane& p )
     p.set( p0, p1, p2, p3 ); return *this;
 }
 
+#if 0
 InputStream& InputStream::operator>>( osg::Matrixf& mat )
 {
-    *this >> PROPERTY("Matrixf") >> BEGIN_BRACKET;
+   ObjectProperty property("");
+   *this >> property  >> BEGIN_BRACKET;
+
+   if (property._name == "Matrixf")
+   {
+        // stream has same type as what we want to read so read directly
+        for ( int r=0; r<4; ++r )
+        {
+            *this >> mat(r, 0) >> mat(r, 1) >> mat(r, 2) >> mat(r, 3);
+        }
+   }
+   else if (property._name == "Matrixd")
+   {
+        // stream has different type than what we want to read so read stream into
+        // a temporary and then copy across to the final matrix
+        double value;
+        for ( int r=0; r<4; ++r )
+        {
+            for ( int c=0; c<4; ++c)
+            {
+                *this >> value;
+                mat(r,c) = static_cast<float>(value);
+            }
+        }
+   }
+
+   *this >> END_BRACKET;
+   return *this;
+}
+
+InputStream& InputStream::operator>>( osg::Matrixd& mat )
+{
+   ObjectProperty property("");
+   *this >> property  >> BEGIN_BRACKET;
+
+   if (property._name == "Matrixf")
+   {
+        // stream has different type than what we want to read so read stream into
+        // a temporary and then copy across to the final matrix
+        float value;
+        for ( int r=0; r<4; ++r )
+        {
+            for ( int c=0; c<4; ++c)
+            {
+                *this >> value;
+                mat(r,c) = static_cast<float>(value);
+            }
+        }
+   }
+   else if (property._name == "Matrixd")
+   {
+        // stream has same type as what we want to read so read directly
+        for ( int r=0; r<4; ++r )
+        {
+            *this >> mat(r, 0) >> mat(r, 1) >> mat(r, 2) >> mat(r, 3);
+        }
+   }
+
+   *this >> END_BRACKET;
+   return *this;
+}
+#else
+InputStream& InputStream::operator>>( osg::Matrixf& mat )
+{
+    *this >> BEGIN_BRACKET;
+
+    // stream has different type than what we want to read so read stream into
+    // a temporary and then copy across to the final matrix
+    double value;
     for ( int r=0; r<4; ++r )
     {
-        *this >> mat(r, 0) >> mat(r, 1) >> mat(r, 2) >> mat(r, 3);
+        for ( int c=0; c<4; ++c)
+        {
+            *this >> value;
+            mat(r,c) = static_cast<float>(value);
+        }
     }
+
     *this >> END_BRACKET;
     return *this;
 }
 
 InputStream& InputStream::operator>>( osg::Matrixd& mat )
 {
-    *this >> PROPERTY("Matrixd") >> BEGIN_BRACKET;
+    *this >> BEGIN_BRACKET;
+
     for ( int r=0; r<4; ++r )
     {
         *this >> mat(r, 0) >> mat(r, 1) >> mat(r, 2) >> mat(r, 3);
     }
+
     *this >> END_BRACKET;
     return *this;
 }
+#endif
 
 osg::Array* InputStream::readArray()
 {
@@ -642,7 +719,6 @@ InputStream::ReadType InputStream::start( InputIterator* inIterator )
         type = static_cast<ReadType>(typeValue);
         
         unsigned int attributes; *this >> attributes;
-        if ( attributes&0x1 ) _useFloatMatrix = false;
         if ( attributes&0x2 ) _useSchemaData = true;
     }
     if ( !isBinary() )

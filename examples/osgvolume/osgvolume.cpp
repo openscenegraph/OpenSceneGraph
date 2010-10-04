@@ -1109,7 +1109,6 @@ int main( int argc, char **argv )
         {
             // not an option so assume string is a filename.
             osg::Image *image = osgDB::readImageFile( arguments[pos]);
-
             if(image)
             {
                 imageList.push_back(image);
@@ -1120,7 +1119,8 @@ int main( int argc, char **argv )
 
         // pack the textures into a single texture.
         ProcessRow processRow;
-        images.push_back(createTexture3D(imageList, processRow, numComponentsDesired, s_maximumTextureSize, t_maximumTextureSize, r_maximumTextureSize, resizeToPowerOfTwo));
+        osg::Image* image = createTexture3D(imageList, processRow, numComponentsDesired, s_maximumTextureSize, t_maximumTextureSize, r_maximumTextureSize, resizeToPowerOfTwo);
+        if (image) images.push_back(image);
     }
 
 
@@ -1144,8 +1144,8 @@ int main( int argc, char **argv )
             if (osgDB::getLowerCaseFileExtension(filename)=="dicom")
             {
                 // not an option so assume string is a filename.
-                osg::Image *image = osgDB::readImageFile(filename);
-                if(image)
+                osg::Image* image = osgDB::readImageFile(filename);
+                if (image)
                 {
                     images.push_back(image);
                 }
@@ -1161,16 +1161,14 @@ int main( int argc, char **argv )
 
                 if (fileType == osgDB::DIRECTORY)
                 {
-                osg::Image *image = osgDB::readImageFile(filename+".dicom");
-                    if(image)
-                    {
-                        images.push_back(image);
-                    }
+                    osg::Image* image = osgDB::readImageFile(filename+".dicom");
+                    if (image) images.push_back(image);
                 }
                 else if (fileType == osgDB::REGULAR_FILE)
                 {
                     // not an option so assume string is a filename.
-                    images.push_back(osgDB::readImageFile( filename ));
+                    osg::Image* image = osgDB::readImageFile( filename );
+                    if (image) images.push_back(image);
                 }
                 else
                 {

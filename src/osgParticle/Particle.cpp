@@ -234,7 +234,11 @@ void osgParticle::Particle::render(osg::RenderInfo& renderInfo, const osg::Vec3&
         if (requiresRotation)
         {
             osg::Quat rotation(xrot.x(), osg::X_AXIS, xrot.y(), osg::Y_AXIS, xrot.z(), osg::Z_AXIS);
+#if defined(OSG_GLES1_AVAILABLE)
+            glMultMatrixf(osg::Matrixf(rotation).ptr());
+#else
             glMultMatrixd(osg::Matrixd(rotation).ptr());
+#endif
         }
         _drawable->draw(renderInfo);
         glPopMatrix();

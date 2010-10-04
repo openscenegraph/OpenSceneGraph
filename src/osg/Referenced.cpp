@@ -282,7 +282,11 @@ ObserverSet* Referenced::getOrCreateObserverSet() const
     }
     else
     {
-        if (!_observerSet) _observerSet = new ObserverSet(this);
+        if (!_observerSet)
+        {
+            _observerSet = new ObserverSet(this);
+            static_cast<ObserverSet*>(_observerSet)->ref();
+        }
         return static_cast<ObserverSet*>(_observerSet);
     }
 #endif

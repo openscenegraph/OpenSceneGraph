@@ -35,6 +35,10 @@
 // simply define GLAPIENTRY as nothing so that we can keep function signatures the same as declaration.
 #define GLAPIENTRY
 
+#ifndef GL_PROXY_TEXTURE_3D
+    #define GL_PROXY_TEXTURE_3D 0x8070
+#endif
+
 // #include "gluos.h"
 // #include <GL/glu.h>
 

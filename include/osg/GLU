@@ -107,7 +107,7 @@ extern OSG_EXPORT GLint gluBuild3DMipmaps (GLenum target, GLint internalFormat, 
 #define GLU_TESS_WINDING_NEGATIVE          100133
 #define GLU_TESS_WINDING_ABS_GEQ_TWO       100134
 
-class GLUtesselator;
+struct GLUtesselator;
 typedef GLUtesselator GLUtesselatorObj;
 typedef GLUtesselator GLUtriangulatorObj;
 

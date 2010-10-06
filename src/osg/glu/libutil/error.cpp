@@ -32,6 +32,10 @@
 
 // #include "gluos.h"
 
+#ifndef GL_TABLE_TOO_LARGE
+    #define GL_TABLE_TOO_LARGE  0x8031
+#endif
+
 static unsigned char *__gluNurbsErrors[] = {
     (unsigned char*) " ",
     (unsigned char*) "spline order un-supported",

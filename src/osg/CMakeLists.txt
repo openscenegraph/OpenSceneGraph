@@ -341,7 +341,6 @@ ADD_LIBRARY(${LIB_NAME}
     glu/libutil/error.cpp
     glu/libutil/mipmap.cpp
 
-    glu/libtess/gluos.h
     glu/libtess/normal.cpp
     glu/libtess/memalloc.cpp
     glu/libtess/dict-list.h

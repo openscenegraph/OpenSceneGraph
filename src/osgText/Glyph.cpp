@@ -434,13 +434,9 @@ void Glyph::subload() const
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
     {
-#ifdef OSG_GLU_AVAILABLE
         const GLubyte* msg = gluErrorString(errorNo);
         if (msg) { OSG_WARN<<"before Glyph::subload(): detected OpenGL error: "<<msg<<std::endl; }
         else  { OSG_WARN<<"before Glyph::subload(): detected OpenGL error number: "<<errorNo<<std::endl; }
-#else
-        OSG_WARN<<"before Glyph::subload(): detected OpenGL error number: "<<errorNo<<std::endl;
-#endif
     }
 
     if(s() <= 0 || t() <= 0)
@@ -463,13 +459,9 @@ void Glyph::subload() const
     {
 
 
-#ifdef OSG_GLU_AVAILABLE
         const GLubyte* msg = gluErrorString(errorNo);
         if (msg) { OSG_WARN<<"after Glyph::subload() : detected OpenGL error: "<<msg<<std::endl; }
         else { OSG_WARN<<"after Glyph::subload() : detected OpenGL error number: "<<errorNo<<std::endl; }
-#else
-        OSG_WARN<<"after Glyph::subload() : detected OpenGL error number: "<<errorNo<<std::endl;
-#endif
 
         OSG_WARN<< "\tglTexSubImage2D(0x"<<hex<<GL_TEXTURE_2D<<dec<<" ,"<<0<<"\t"<<std::endl<<
                                  "\t                "<<_texturePosX<<" ,"<<_texturePosY<<std::endl<<

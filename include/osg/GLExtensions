@@ -150,14 +150,6 @@ bool setGLExtensionFuncPtr(T& t, const char* str1, const char* str2, const char*
     }
 }
 
-
-/** Return true if OpenGL "extension" is supported.
-  * Note: Must only be called within a valid OpenGL context,
-  * undefined behavior may occur otherwise.
-*/
-extern OSG_EXPORT bool isGLUExtensionSupported(unsigned int contextID, const char *extension);
-
-
 }
 
 #endif

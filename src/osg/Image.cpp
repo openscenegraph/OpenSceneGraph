@@ -911,7 +911,6 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
 
 void Image::scaleImage(int s,int t,int r, GLenum newDataType)
 {
-#ifdef OSG_GLU_AVAILABLE
     if (_s==s && _t==t && _r==r) return;
 
     if (_data==NULL)
@@ -925,8 +924,6 @@ void Image::scaleImage(int s,int t,int r, GLenum newDataType)
         OSG_WARN << "Error Image::scaleImage() do not succeed : scaling of volumes not implemented."<<std::endl;
         return;
     }
-
-
 
     unsigned int newTotalSize = computeRowWidthInBytes(s,_pixelFormat,newDataType,_packing)*t;
 
@@ -969,14 +966,10 @@ void Image::scaleImage(int s,int t,int r, GLenum newDataType)
     }
 
     dirty();
-#else
-    OSG_NOTICE<<"Warning: Image::scaleImage(int s,int t,int r, GLenum newDataType) not supported."<<std::endl;
-#endif
 }
 
 void Image::copySubImage(int s_offset, int t_offset, int r_offset, const osg::Image* source)
 {
-#ifdef OSG_GLU_AVAILABLE
     if (!source) return;
     if (s_offset<0 || t_offset<0 || r_offset<0)
     {
@@ -1028,9 +1021,6 @@ void Image::copySubImage(int s_offset, int t_offset, int r_offset, const osg::Im
     {
         OSG_WARN << "Error Image::scaleImage() did not succeed : errorString = "<< gluErrorString((GLenum)status) << ". The rendering context may be invalid." << std::endl;
     }
-#else
-    OSG_NOTICE<<"Warning: Image::copySubImage(int, int, int, const osg::Image*)) not supported."<<std::endl;
-#endif
 }
 
 void Image::flipHorizontal()

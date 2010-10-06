@@ -157,10 +157,8 @@ IF(DYNAMIC_OPENSCENEGRAPH)
         ADD_SUBDIRECTORY(osgteapot)
     ENDIF()
 
-    IF(OSG_GLU_AVAILABLE)
-        ADD_SUBDIRECTORY(osgphotoalbum)
-        ADD_SUBDIRECTORY(osgtessellate)
-    ENDIF()
+    ADD_SUBDIRECTORY(osgphotoalbum)
+    ADD_SUBDIRECTORY(osgtessellate)
 
     ADD_SUBDIRECTORY(osgpdf)
 

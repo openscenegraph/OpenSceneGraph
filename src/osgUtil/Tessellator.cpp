@@ -28,10 +28,6 @@ Tessellator::Tessellator() :
     _tobj = 0;
     _errorCode = 0;
     _index=0;
-
-#ifndef OSG_GLU_AVAILABLE
-    OSG_NOTICE<<"Warning: gluTesselation not supported."<<std::endl;
-#endif
 }
 
 Tessellator::~Tessellator()
@@ -43,7 +39,6 @@ void Tessellator::beginTessellation()
 {
     reset();
 
-#ifdef OSG_GLU_AVAILABLE
     if (!_tobj) _tobj = gluNewTess();
     
     gluTessCallback(_tobj, GLU_TESS_VERTEX_DATA, (GLU_TESS_CALLBACK) vertexCallback);
@@ -54,24 +49,18 @@ void Tessellator::beginTessellation()
     if (tessNormal.length()>0.0) gluTessNormal(_tobj, tessNormal.x(), tessNormal.y(), tessNormal.z());
 
     gluTessBeginPolygon(_tobj,this);
-#else
-    OSG_NOTICE<<"Warning: gluTesselation not supported."<<std::endl;
-#endif
 }    
     
 void Tessellator::beginContour()
 {
-#ifdef OSG_GLU_AVAILABLE
     if (_tobj)
     {
         gluTessBeginContour(_tobj);
     }
-#endif
 }
       
 void Tessellator::addVertex(osg::Vec3* vertex)
 {
-#ifdef OSG_GLU_AVAILABLE
     if (_tobj)
     {
         Vec3d* data = new Vec3d;
@@ -81,22 +70,18 @@ void Tessellator::addVertex(osg::Vec3* vertex)
         (*data)._v[2]=(*vertex)[2];
         gluTessVertex(_tobj,data->_v,vertex);
     }
-#endif
 }
 
 void Tessellator::endContour()
 {
-#ifdef OSG_GLU_AVAILABLE
     if (_tobj)
     {
         gluTessEndContour(_tobj);
     }
-#endif
 }
 
 void Tessellator::endTessellation()
 {
-#ifdef OSG_GLU_AVAILABLE
     if (_tobj)
     {
         gluTessEndPolygon(_tobj);
@@ -109,18 +94,15 @@ void Tessellator::endTessellation()
            OSG_WARN<<"Tessellation Error: "<<estring<< std::endl;
         }
     }
-#endif
 }
 
 void Tessellator::reset()
 {
-#ifdef OSG_GLU_AVAILABLE
     if (_tobj)
     {
         gluDeleteTess(_tobj);
         _tobj = 0;
     }
-#endif
 
     for (Vec3dList::iterator i = _coordData.begin(); i != _coordData.end(); ++i)
     {
@@ -184,7 +166,6 @@ class InsertNewVertices : public osg::ArrayVisitor
 
 void Tessellator::retessellatePolygons(osg::Geometry &geom)
 {
-#ifdef OSG_GLU_AVAILABLE
     // turn the contour list into primitives, a little like Tessellator does but more generally
     osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom.getVertexArray());
     
@@ -303,7 +284,6 @@ void Tessellator::retessellatePolygons(osg::Geometry &geom)
     
         collectTessellation(geom, 0);    
     }
-#endif
 }
 
 void Tessellator::addContour(GLenum mode, unsigned int first, unsigned int last, osg::Vec3Array* vertices)

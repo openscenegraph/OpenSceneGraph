@@ -85,6 +85,13 @@
     #define GL_PACK_ROW_LENGTH      0x0D02
 #endif
 
+#ifndef GL_PACK_SKIP_IMAGES
+    #define GL_PACK_SKIP_IMAGES     0x806B
+    #define GL_PACK_IMAGE_HEIGHT    0x806C
+    #define GL_UNPACK_SKIP_IMAGES   0x806D
+    #define GL_UNPACK_IMAGE_HEIGHT  0x806E
+#endif
+
 namespace osg {
 
 // forward declare

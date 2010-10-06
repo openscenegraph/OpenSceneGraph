@@ -29,6 +29,7 @@
  */
 
 #include <osg/GLU>
+#include <osg/Image>
 
 // #include "gluos.h"
 // #include <GL/glu.h>

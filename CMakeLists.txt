@@ -303,7 +303,6 @@ MARK_AS_ADVANCED(OSG_DISABLE_MSVC_WARNINGS)
 
 OPTION(OSG_USE_REF_PTR_IMPLICIT_OUTPUT_CONVERSION "Set to ON to use the ref_ptr<> T* operator() output conversion. " ON)
 
-OPTION(OSG_GLU_AVAILABLE "Set to OFF to disable use of OpenGL GLU library." ${OPENGL_GLU_FOUND})
 OPTION(OSG_GL1_AVAILABLE "Set to OFF to disable use of OpenGL 1.x functions library." ON)
 OPTION(OSG_GL2_AVAILABLE "Set to OFF to disable use of OpenGL 2.x functions library." ON)
 OPTION(OSG_GL3_AVAILABLE "Set to OFF to disable use of OpenGL 3.x functions library." OFF)
@@ -442,48 +441,6 @@ IF   (BUILD_OSG_EXAMPLES)
 
 ENDIF(BUILD_OSG_EXAMPLES)
 
-
-
-
-
-
-#
-# Test to determine if we want the "tripledot" form of the GLU tesselator callback.
-#
-IF(NOT DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT)
-    IF(WIN32 OR CMAKE_SYSTEM_NAME MATCHES "Linux")
-
-        # Skip the compile check for platforms that never need the variable
-        # form.
-        SET(DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT false)
-
-    ELSE()
-
-        # For other platforms perform the check
-        INCLUDE(CheckCXXSourceCompiles)
-        SET(CMAKE_REQUIRED_DEFINITIONS -DGLU_TESS_CALLBACK_TRIPLEDOT)
-        SET(CMAKE_REQUIRED_INCLUDES ${CMAKE_CURRENT_SOURCE_DIR}/include ${GLUT_INCLUDE_DIR} ${GL_INCLUDE_DIR})
-        SET(CMAKE_REQUIRED_LIBRARIES ${GLUT_LIBRARY} ${GL_LIBRARY})
-        CHECK_CXX_SOURCE_COMPILES(
-            "#include <osg/GL>
-            #include <osg/GLU>
-            static void testcb(GLvoid *, void*) { }
-            int main() {
-               GLUtesselator *t = gluNewTess();
-               gluTessCallback(t, GLU_TESS_VERTEX_DATA, (GLU_TESS_CALLBACK) testcb);
-               return 0;
-            }"
-            GLU_Tesselator_Needs_Variable_Parameter_Callback_Convention_Failure_Means_No)
-        SET(DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT
-            ${GLU_Tesselator_Needs_Variable_Parameter_Callback_Convention_Failure_Means_No})
-
-    ENDIF()
-ENDIF()
-
-OPTION(OSG_GLU_TESS_CALLBACK_TRIPLEDOT "Set to ON to build with variable parameter (...) version of GLU tesselator callback" ${DEFAULT_GLU_TESS_CALLBACK_TRIPLEDOT})
-IF(OSG_GLU_TESS_CALLBACK_TRIPLEDOT)
-    ADD_DEFINITIONS(-DGLU_TESS_CALLBACK_TRIPLEDOT)
-ENDIF(OSG_GLU_TESS_CALLBACK_TRIPLEDOT)
 
 # Platform specific:
 # (We can approach this one of two ways. We can try to FIND everything

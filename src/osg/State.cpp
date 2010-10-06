@@ -1136,7 +1136,6 @@ bool State::checkGLErrors(const char* str) const
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
     {
-#ifdef OSG_GLU_AVAILABLE
         const char* error = (char*)gluErrorString(errorNo);
         if (error)
         {
@@ -1146,26 +1145,7 @@ bool State::checkGLErrors(const char* str) const
         {
             OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x" << std::hex << errorNo << std::dec;
         }
-#else
-            switch(errorNo)
-            {
-                case(GL_INVALID_ENUM):
-                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_ENUM";
-                    break;
-                case(GL_INVALID_VALUE):
-                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_VALUE";
-                    break;
-                case(GL_INVALID_OPERATION):
-                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_OPERATION";
-                    break;
-                case(GL_OUT_OF_MEMORY):
-                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_OUT_OF_MEMORY";
-                    break;
-                default:
-                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x" << std::hex << errorNo << std::dec;
-                    break;
-            }
-#endif
+
         if (str)
         {
             OSG_NOTIFY(WARN)<<" at "<<str<< std::endl;
@@ -1185,36 +1165,15 @@ bool State::checkGLErrors(StateAttribute::GLMode mode) const
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
     {
-        #ifdef OSG_GLU_AVAILABLE
-            const char* error = (char*)gluErrorString(errorNo);
-            if (error)
-            {
-                OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error '"<< error <<"' after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
-            }
-            else
-            {
-                OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x"<< std::hex << errorNo <<" after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
-            }
-        #else
-            switch(errorNo)
-            {
-                case(GL_INVALID_ENUM):
-                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_ENUM after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
-                    break;
-                case(GL_INVALID_VALUE):
-                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_VALUE after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
-                    break;
-                case(GL_INVALID_OPERATION):
-                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_OPERATION after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
-                    break;
-                case(GL_OUT_OF_MEMORY):
-                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_OUT_OF_MEMORY after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
-                    break;
-                default:
-                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x"<< std::hex << errorNo <<" after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
-                    break;
-            }
-        #endif
+        const char* error = (char*)gluErrorString(errorNo);
+        if (error)
+        {
+            OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error '"<< error <<"' after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
+        }
+        else
+        {
+            OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x"<< std::hex << errorNo <<" after applying GLMode 0x"<<hex<<mode<<dec<< std::endl;
+        }
         return true;
     }
     return false;
@@ -1225,36 +1184,15 @@ bool State::checkGLErrors(const StateAttribute* attribute) const
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
     {
-        #ifdef OSG_GLU_AVAILABLE
-            const char* error = (char*)gluErrorString(errorNo);
-            if (error)
-            {
-                OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error '"<< error <<"' after applying attribute "<<attribute->className()<<" "<<attribute<< std::endl;
-            }
-            else
-            {
-                OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x"<< std::hex << errorNo <<" after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
-            }
-        #else
-            switch(errorNo)
-            {
-                case(GL_INVALID_ENUM):
-                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_ENUM after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
-                    break;
-                case(GL_INVALID_VALUE):
-                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_VALUE after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
-                    break;
-                case(GL_INVALID_OPERATION):
-                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_INVALID_OPERATION after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
-                    break;
-                case(GL_OUT_OF_MEMORY):
-                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error GL_OUT_OF_MEMORY after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
-                    break;
-                default:
-                    OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x"<< std::hex << errorNo <<" after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
-                    break;
-            }
-        #endif
+        const char* error = (char*)gluErrorString(errorNo);
+        if (error)
+        {
+            OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error '"<< error <<"' after applying attribute "<<attribute->className()<<" "<<attribute<< std::endl;
+        }
+        else
+        {
+            OSG_NOTIFY(WARN)<<"Warning: detected OpenGL error number 0x"<< std::hex << errorNo <<" after applying attribute "<<attribute->className()<<" "<<attribute<< std::dec << std::endl;
+        }
 
         return true;
     }

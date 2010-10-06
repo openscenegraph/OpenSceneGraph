@@ -1626,7 +1626,6 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     bool needImageRescale = inwidth!=image->s() || inheight!=image->t();
     if (needImageRescale)
     {
-#ifdef OSG_GLU_AVAILABLE
         // resize the image to power of two.
         
         if (image->isMipmap())
@@ -1658,11 +1657,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                       image->s(),image->t(),image->getDataType(),image->data(),
                       inwidth,inheight,image->getDataType(),
                       dataPtr);
-#else
-        OSG_NOTICE<<"Warning: gluScaleImage(..) not supported, cannot subload image."<<std::endl;
-        return;
-#endif
-    }    
+    }
 
     bool mipmappingRequired = _min_filter != LINEAR && _min_filter != NEAREST;
     bool useHardwareMipMapGeneration = mipmappingRequired && (!image->isMipmap() && isHardwareMipmapGenerationEnabled(state));
@@ -1770,11 +1765,10 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         }
         else
         {
-        
             if ( !compressed_image)
             {
                 numMipmapLevels = 0;
-#ifdef OSG_GLU_AVAILABLE
+
                 gluBuild2DMipmaps( target, _internalFormat,
                     inwidth,inheight,
                     (GLenum)image->getPixelFormat(), (GLenum)image->getDataType(),
@@ -1787,9 +1781,6 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                     width >>= 1;
                     height >>= 1;
                 }
-#else
-                OSG_NOTICE<<"Warning:: gluBuild2DMipMaps(..) not supported."<<std::endl;
-#endif
             }
             else 
             {
@@ -1874,7 +1865,6 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     bool needImageRescale = inwidth!=image->s() || inheight!=image->t();
     if (needImageRescale)
     {
-#ifdef OSG_GLU_AVAILABLE
         // resize the image to power of two.
         if (image->isMipmap())
         {
@@ -1905,10 +1895,6 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
                       image->s(),image->t(),image->getDataType(),image->data(),
                       inwidth,inheight,image->getDataType(),
                       dataPtr);
-#else
-        OSG_NOTICE<<"Warning: gluScaleImage(..) not supported, cannot subload image."<<std::endl;
-        return;
-#endif
     }
 
 

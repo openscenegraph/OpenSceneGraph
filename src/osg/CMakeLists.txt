@@ -337,6 +337,38 @@ ADD_LIBRARY(${LIB_NAME}
     VertexProgram.cpp
     View.cpp
     Viewport.cpp
+
+    glu/libutil/gluos.h
+    glu/libutil/error.cpp
+    glu/libutil/mipmap.cpp
+
+    glu/libtess/gluos.h
+    glu/libtess/normal.cpp
+    glu/libtess/memalloc.cpp
+    glu/libtess/dict-list.h
+    glu/libtess/alg-outline
+    glu/libtess/priorityq.cpp
+    glu/libtess/normal.h
+    glu/libtess/dict.h
+    glu/libtess/render.cpp
+    glu/libtess/tessmono.h
+    glu/libtess/mesh.cpp
+    glu/libtess/render.h
+    glu/libtess/tessmono.cpp
+    glu/libtess/priorityq.h
+    glu/libtess/sweep.h
+    glu/libtess/priorityq-sort.h
+    glu/libtess/sweep.cpp
+    glu/libtess/tess.h
+    glu/libtess/geom.h
+    glu/libtess/memalloc.h
+    glu/libtess/dict.cpp
+    glu/libtess/priorityq-heap.h
+    glu/libtess/geom.cpp
+    glu/libtess/tess.cpp
+    glu/libtess/mesh.h
+
+
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 

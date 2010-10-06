@@ -12,7 +12,6 @@
 */
 #include <osg/GLExtensions>
 #include <osg/GL>
-#include <osg/GLU>
 #include <osg/Notify>
 #include <osg/Math>
 #include <osg/buffered_value>
@@ -303,65 +302,6 @@ std::string& osg::getGLExtensionDisableString()
     return s_GLExtensionDisableString;
 }
 
-#ifdef OSG_GLU_AVAILABLE
-    bool osg::isGLUExtensionSupported(unsigned int contextID, const char *extension)
-    {
-        ExtensionSet& extensionSet = s_gluExtensionSetList[contextID];
-        std::string& rendererString = s_gluRendererList[contextID];
-
-        // if not already set up, initialize all the per graphic context values.
-        if (!s_gluInitializedList[contextID])
-        {
-            s_gluInitializedList[contextID] = 1;
-
-            // set up the renderer
-            const GLubyte* renderer = glGetString(GL_RENDERER);
-            rendererString = renderer ? (const char*)renderer : "";
-
-            // get the extension list from OpenGL.
-            const char* extensions = (const char*)gluGetString(GLU_EXTENSIONS);
-            if (extensions==NULL) return false;
-
-            // insert the ' ' delimiated extensions words into the extensionSet.
-            const char *startOfWord = extensions;
-            const char *endOfWord;
-            while ((endOfWord = strchr(startOfWord,' '))!=NULL)
-            {
-                extensionSet.insert(std::string(startOfWord,endOfWord));
-                startOfWord = endOfWord+1;
-            }
-            if (*startOfWord!=0) extensionSet.insert(std::string(startOfWord));
-
-            OSG_NOTIFY(INFO)<<"OpenGL extensions supported by installed OpenGL drivers are:"<<std::endl;
-            for(ExtensionSet::iterator itr=extensionSet.begin();
-                itr!=extensionSet.end();
-                ++itr)
-            {
-                OSG_NOTIFY(INFO)<<"    "<<*itr<<std::endl;
-            }
-
-        }
-
-        // true if extension found in extensionSet.
-        bool result = extensionSet.find(extension)!=extensionSet.end();
-
-        if (result)
-        {
-            OSG_NOTIFY(INFO)<<"OpenGL utility library extension '"<<extension<<"' is supported."<<std::endl;
-        }
-        else
-        {
-            OSG_NOTIFY(INFO)<<"OpenGL utility library extension '"<<extension<<"' is not supported."<<std::endl;
-        }
-
-        return result;
-    }
-#else
-    bool osg::isGLUExtensionSupported(unsigned int, const char *)
-    {
-        return false;
-    }
-#endif
 
 #ifdef OSG_GL_LIBRARY_STATIC
 

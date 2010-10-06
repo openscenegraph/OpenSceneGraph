@@ -30,6 +30,10 @@
 
 #include <osg/GLU>
 #include <osg/Image>
+#include <osg/Texture3D>
+
+// simply define GLAPIENTRY as nothing so that we can keep function signatures the same as declaration.
+#define GLAPIENTRY
 
 // #include "gluos.h"
 // #include <GL/glu.h>

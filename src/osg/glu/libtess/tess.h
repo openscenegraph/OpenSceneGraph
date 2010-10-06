@@ -38,10 +38,14 @@
 // #include <GL/glu.h>
 #include <osg/GLU>
 
+// simply define GLAPIENTRY as nothing so that we can keep function signatures the same as declaration.
+#define GLAPIENTRY
+
 #include <setjmp.h>
 #include "mesh.h"
 #include "dict.h"
 #include "priorityq.h"
+
 
 /* The begin/end calls must be properly nested.  We keep track of
  * the current state to enforce the ordering.

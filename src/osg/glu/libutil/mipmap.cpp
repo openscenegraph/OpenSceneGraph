@@ -30,9 +30,10 @@
 
 #include <osg/GLU>
 
-#include "gluos.h"
-#include <assert.h>
+// #include "gluos.h"
 // #include <GL/glu.h>
+
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

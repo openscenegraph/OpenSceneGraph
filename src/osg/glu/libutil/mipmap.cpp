@@ -6617,6 +6617,12 @@ static void halve1DimagePackedPixel(int components,
 
 /*===========================================================================*/
 
+// Note from Robert Osfield, follows is a quick hack to windows compiling, will need to
+// reactor code to properly manage extension checking platforms/GL targets.
+#if defined(_WIN32) || defined(__WIN32__)
+    #define RESOLVE_3D_TEXTURE_SUPPORT
+#endif
+
 #ifdef RESOLVE_3D_TEXTURE_SUPPORT
 /*
  * This section ensures that GLU 1.3 will load and run on
@@ -6639,6 +6645,7 @@ static TexImage3Dproc pTexImage3D = 0;
 #  include <dlfcn.h>
 #  include <sys/types.h>
 #else
+  #include <windows.h>
   WINGDIAPI PROC  WINAPI wglGetProcAddress(LPCSTR);
 #endif
 

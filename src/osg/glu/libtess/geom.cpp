@@ -32,7 +32,7 @@
 **
 */
 
-#include "gluos.h"
+// #include "gluos.h"
 #include <assert.h>
 #include "mesh.h"
 #include "geom.h"

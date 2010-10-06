@@ -30,7 +30,7 @@
 
 #include <osg/GLU>
 
-#include "gluos.h"
+// #include "gluos.h"
 
 static unsigned char *__gluNurbsErrors[] = {
     (unsigned char*) " ",

@@ -338,7 +338,6 @@ ADD_LIBRARY(${LIB_NAME}
     View.cpp
     Viewport.cpp
 
-    glu/libutil/gluos.h
     glu/libutil/error.cpp
     glu/libutil/mipmap.cpp
 

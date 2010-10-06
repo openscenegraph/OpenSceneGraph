@@ -3529,9 +3529,9 @@ gluScaleImage(GLenum format, GLsizei widthin, GLsizei heightin,
        return GLU_INVALID_OPERATION;
     }
     beforeImage =
-        malloc(image_size(widthin, heightin, format, GL_UNSIGNED_SHORT));
+        (GLushort*) malloc(image_size(widthin, heightin, format, GL_UNSIGNED_SHORT));
     afterImage =
-        malloc(image_size(widthout, heightout, format, GL_UNSIGNED_SHORT));
+        (GLushort*) malloc(image_size(widthout, heightout, format, GL_UNSIGNED_SHORT));
     if (beforeImage == NULL || afterImage == NULL) {
         free(beforeImage);
         free(afterImage);
@@ -7397,10 +7397,10 @@ int gluScaleImage3D(GLenum format,
       return GLU_INVALID_OPERATION;
    }
 
-   beforeImage = malloc(imageSize3D(widthIn, heightIn, depthIn, format,
-                                    GL_UNSIGNED_SHORT));
-   afterImage = malloc(imageSize3D(widthOut, heightOut, depthOut, format,
-                                   GL_UNSIGNED_SHORT));
+   beforeImage = (GLushort *) malloc(imageSize3D(widthIn, heightIn, depthIn, format,
+                                                 GL_UNSIGNED_SHORT));
+   afterImage = (GLushort *) malloc(imageSize3D(widthOut, heightOut, depthOut, format,
+                                                GL_UNSIGNED_SHORT));
    if (beforeImage == NULL || afterImage == NULL) {
        free(beforeImage);
        free(afterImage);
@@ -7908,7 +7908,7 @@ static int gluBuild3DMipmapLevelsCore(GLenum target, GLint internalFormat,
                           imageSize,myswapBytes);
            }
            else {
-             halveImage_ubyte(cmpts,width,height,usersImage,dstImage,
+             halveImage_ubyte(cmpts,width,height,(const GLubyte*)usersImage,(GLubyte*)dstImage,
                               elementSize,rowSize,groupSize);
            }
            break;
@@ -7920,7 +7920,7 @@ static int gluBuild3DMipmapLevelsCore(GLenum target, GLint internalFormat,
                         imageSize,myswapBytes);
            }
            else {
-             halveImage_byte(cmpts,width,height,usersImage,dstImage,
+             halveImage_byte(cmpts,width,height,(const GLbyte*)usersImage,(GLbyte*)dstImage,
                              elementSize,rowSize,groupSize);
            }
            break;
@@ -7932,7 +7932,7 @@ static int gluBuild3DMipmapLevelsCore(GLenum target, GLint internalFormat,
                         imageSize,myswapBytes);
            }
            else {
-             halveImage_ushort(cmpts,width,height,usersImage,dstImage,
+             halveImage_ushort(cmpts,width,height,(const GLushort*)usersImage,(GLushort*)dstImage,
                                elementSize,rowSize,groupSize,myswapBytes);
            }
            break;
@@ -7944,7 +7944,7 @@ static int gluBuild3DMipmapLevelsCore(GLenum target, GLint internalFormat,
                         imageSize,myswapBytes);
            }
            else {
-             halveImage_short(cmpts,width,height,usersImage,dstImage,
+             halveImage_short(cmpts,width,height,(const GLshort*)usersImage,(GLshort*)dstImage,
                               elementSize,rowSize,groupSize,myswapBytes);
            }
            break;
@@ -7956,7 +7956,7 @@ static int gluBuild3DMipmapLevelsCore(GLenum target, GLint internalFormat,
                         imageSize,myswapBytes);
            }
            else {
-             halveImage_uint(cmpts,width,height,usersImage,dstImage,
+             halveImage_uint(cmpts,width,height,(const GLuint*)usersImage,(GLuint*)dstImage,
                              elementSize,rowSize,groupSize,myswapBytes);
            }
            break;
@@ -7968,7 +7968,7 @@ static int gluBuild3DMipmapLevelsCore(GLenum target, GLint internalFormat,
                         imageSize,myswapBytes);
            }
            else {
-             halveImage_int(cmpts,width,height,usersImage,dstImage,
+             halveImage_int(cmpts,width,height,(const GLint*)usersImage,(GLint*)dstImage,
                             elementSize,rowSize,groupSize,myswapBytes);
            }
            break;
@@ -7980,7 +7980,7 @@ static int gluBuild3DMipmapLevelsCore(GLenum target, GLint internalFormat,
                         imageSize,myswapBytes);
            }
            else {
-             halveImage_float(cmpts,width,height,usersImage,dstImage,
+             halveImage_float(cmpts,width,height,(const GLfloat*)usersImage,(GLfloat*)dstImage,
                               elementSize,rowSize,groupSize,myswapBytes);
            }
            break;
@@ -8274,7 +8274,7 @@ static int gluBuild3DMipmapLevelsCore(GLenum target, GLint internalFormat,
                             imageSize,myswapBytes);
                }
                else {
-                 halveImage_ubyte(cmpts,newWidth,newHeight,srcImage,dstImage,
+                 halveImage_ubyte(cmpts,newWidth,newHeight,(const GLubyte*)srcImage,(GLubyte*)dstImage,
                                   elementSize,rowSize,groupSize);
                }
                break;
@@ -8286,7 +8286,7 @@ static int gluBuild3DMipmapLevelsCore(GLenum target, GLint internalFormat,
                             imageSize,myswapBytes);
                }
                else {
-                 halveImage_byte(cmpts,newWidth,newHeight,srcImage,dstImage,
+                 halveImage_byte(cmpts,newWidth,newHeight,(const GLbyte*)srcImage,(GLbyte*)dstImage,
                                   elementSize,rowSize,groupSize);
                }
                break;
@@ -8298,7 +8298,7 @@ static int gluBuild3DMipmapLevelsCore(GLenum target, GLint internalFormat,
                             imageSize,myswapBytes);
                }
                else {
-                 halveImage_ushort(cmpts,newWidth,newHeight,srcImage,dstImage,
+                 halveImage_ushort(cmpts,newWidth,newHeight,(const GLushort*)srcImage,(GLushort*)dstImage,
                                    elementSize,rowSize,groupSize,myswapBytes);
                }
                break;
@@ -8310,7 +8310,7 @@ static int gluBuild3DMipmapLevelsCore(GLenum target, GLint internalFormat,
                             imageSize,myswapBytes);
                }
                else {
-                 halveImage_short(cmpts,newWidth,newHeight,srcImage,dstImage,
+                 halveImage_short(cmpts,newWidth,newHeight,(const GLshort*)srcImage,(GLshort*)dstImage,
                                   elementSize,rowSize,groupSize,myswapBytes);
                }
                break;
@@ -8322,7 +8322,7 @@ static int gluBuild3DMipmapLevelsCore(GLenum target, GLint internalFormat,
                             imageSize,myswapBytes);
                }
                else {
-                 halveImage_uint(cmpts,newWidth,newHeight,srcImage,dstImage,
+                 halveImage_uint(cmpts,newWidth,newHeight,(const GLuint*)srcImage,(GLuint*)dstImage,
                                  elementSize,rowSize,groupSize,myswapBytes);
                }
                break;
@@ -8334,7 +8334,7 @@ static int gluBuild3DMipmapLevelsCore(GLenum target, GLint internalFormat,
                             imageSize,myswapBytes);
                }
                else {
-                 halveImage_int(cmpts,newWidth,newHeight,srcImage,dstImage,
+                 halveImage_int(cmpts,newWidth,newHeight,(const GLint*)srcImage,(GLint*)dstImage,
                                 elementSize,rowSize,groupSize,myswapBytes);
                }
                break;
@@ -8346,7 +8346,7 @@ static int gluBuild3DMipmapLevelsCore(GLenum target, GLint internalFormat,
                             imageSize,myswapBytes);
                }
                else {
-                 halveImage_float(cmpts,newWidth,newHeight,srcImage,dstImage,
+                 halveImage_float(cmpts,newWidth,newHeight,(const GLfloat*)srcImage,(GLfloat*)dstImage,
                                   elementSize,rowSize,groupSize,myswapBytes);
                }
                break;

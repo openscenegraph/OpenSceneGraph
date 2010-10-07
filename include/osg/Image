@@ -172,14 +172,10 @@ class OSG_EXPORT Image : public BufferData
         virtual void readImageFromCurrentTexture(unsigned int contextID, bool copyMipMapsIfAvailable, GLenum type = GL_UNSIGNED_BYTE);
 
 
-        /** Scale image to specified size.
-          * \warning The method uses gluScaleImage() and thus needs a valid rendering context.
-        */
+        /** Scale image to specified size. */
         void scaleImage(int s,int t,int r) { scaleImage(s,t,r, getDataType()); }
 
-        /** Scale image to specified size and with specified data type.
-          * \warning The method uses gluScaleImage() and thus needs a valid rendering context.
-        */
+        /** Scale image to specified size and with specified data type. */
         virtual void scaleImage(int s,int t,int r, GLenum newDataType);
 
         /** Copy a source Image into a subpart of this Image at specified position.

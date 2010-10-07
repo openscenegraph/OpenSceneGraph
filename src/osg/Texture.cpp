@@ -1651,12 +1651,16 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         if (!image->getFileName().empty()) { OSG_NOTICE << "Scaling image '"<<image->getFileName()<<"' from ("<<image->s()<<","<<image->t()<<") to ("<<inwidth<<","<<inheight<<")"<<std::endl; }
         else { OSG_NOTICE << "Scaling image from ("<<image->s()<<","<<image->t()<<") to ("<<inwidth<<","<<inheight<<")"<<std::endl; }
 
+        PixelStorageModes psm;
+        psm.pack_alignment = image->getPacking();
+        psm.unpack_alignment = image->getPacking();
+
         // rescale the image to the correct size.
-        glPixelStorei(GL_PACK_ALIGNMENT,image->getPacking());
-        gluScaleImage(image->getPixelFormat(),
-                      image->s(),image->t(),image->getDataType(),image->data(),
-                      inwidth,inheight,image->getDataType(),
-                      dataPtr);
+        gluScaleImage(&psm, image->getPixelFormat(),
+                        image->s(),image->t(),image->getDataType(),image->data(),
+                        inwidth,inheight,image->getDataType(),
+                        dataPtr);
+
     }
 
     bool mipmappingRequired = _min_filter != LINEAR && _min_filter != NEAREST;
@@ -1890,8 +1894,11 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
         else { OSG_NOTICE << "Scaling image from ("<<image->s()<<","<<image->t()<<") to ("<<inwidth<<","<<inheight<<")"<<std::endl; }
 
         // rescale the image to the correct size.
-        glPixelStorei(GL_PACK_ALIGNMENT,image->getPacking());
-        gluScaleImage(image->getPixelFormat(),
+        PixelStorageModes psm;
+        psm.pack_alignment = image->getPacking();
+        psm.unpack_alignment = image->getPacking();
+
+        gluScaleImage(&psm, image->getPixelFormat(),
                       image->s(),image->t(),image->getDataType(),image->data(),
                       inwidth,inheight,image->getDataType(),
                       dataPtr);

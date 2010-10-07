@@ -936,10 +936,11 @@ void Image::scaleImage(int s,int t,int r, GLenum newDataType)
         return;
     }
 
-    glPixelStorei(GL_PACK_ALIGNMENT,_packing);
-    glPixelStorei(GL_UNPACK_ALIGNMENT,_packing);
+    PixelStorageModes psm;
+    psm.pack_alignment = _packing;
+    psm.unpack_alignment = _packing;
 
-    GLint status = gluScaleImage(_pixelFormat,
+    GLint status = gluScaleImage(&psm, _pixelFormat,
         _s,
         _t,
         _dataType,
@@ -1000,12 +1001,12 @@ void Image::copySubImage(int s_offset, int t_offset, int r_offset, const osg::Im
 
     void* data_destination = data(s_offset,t_offset,r_offset);
 
-    glPixelStorei(GL_PACK_ALIGNMENT,source->getPacking());
-    glPixelStorei(GL_PACK_ROW_LENGTH,_s);
+    PixelStorageModes psm;
+    psm.pack_alignment = _packing;
+    psm.pack_row_length = _packing;
+    psm.unpack_alignment = _packing;
 
-    glPixelStorei(GL_UNPACK_ALIGNMENT,_packing);
-
-    GLint status = gluScaleImage(_pixelFormat,
+    GLint status = gluScaleImage(&psm, _pixelFormat,
         source->s(),
         source->t(),
         source->getDataType(),

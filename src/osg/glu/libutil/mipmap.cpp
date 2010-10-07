@@ -48,6 +48,7 @@
 #include <string.h>
 #include <limits.h>                /* UINT_MAX */
 #include <math.h>
+#include <osg/Notify>
 
 typedef union {
     unsigned char ub[4];
@@ -58,27 +59,6 @@ typedef union {
     int i;
     float f;
 } Type_Widget;
-
-/* Pixel storage modes */
-typedef struct {
-   GLint pack_alignment;
-   GLint pack_row_length;
-   GLint pack_skip_rows;
-   GLint pack_skip_pixels;
-   GLint pack_lsb_first;
-   GLint pack_swap_bytes;
-   GLint pack_skip_images;
-   GLint pack_image_height;
-
-   GLint unpack_alignment;
-   GLint unpack_row_length;
-   GLint unpack_skip_rows;
-   GLint unpack_skip_pixels;
-   GLint unpack_lsb_first;
-   GLint unpack_swap_bytes;
-   GLint unpack_skip_images;
-   GLint unpack_image_height;
-} PixelStorageModes;
 
 static int gluBuild1DMipmapLevelsCore(GLenum, GLint,
                                       GLsizei,
@@ -258,42 +238,64 @@ static void emptyImage3D(const PixelStorageModes *,
 static void scaleInternal3D(GLint, GLint, GLint, GLint, const GLushort *,
                             GLint, GLint, GLint, GLushort *);
 
-static void retrieveStoreModes(PixelStorageModes *psm)
+PixelStorageModes::PixelStorageModes()
 {
-    glGetIntegerv(GL_UNPACK_ALIGNMENT, &psm->unpack_alignment);
-    glGetIntegerv(GL_UNPACK_ROW_LENGTH, &psm->unpack_row_length);
-    glGetIntegerv(GL_UNPACK_SKIP_ROWS, &psm->unpack_skip_rows);
-    glGetIntegerv(GL_UNPACK_SKIP_PIXELS, &psm->unpack_skip_pixels);
-    glGetIntegerv(GL_UNPACK_LSB_FIRST, &psm->unpack_lsb_first);
-    glGetIntegerv(GL_UNPACK_SWAP_BYTES, &psm->unpack_swap_bytes);
+    // Default Settings set from values specified in glGet docs in the OpenGL red book.
+    pack_alignment = 4;
+    pack_row_length = 0;
+    pack_skip_rows  = 0;
+    pack_skip_pixels = 0;
+    pack_lsb_first = GL_FALSE;
+    pack_swap_bytes = GL_FALSE;
+    pack_skip_images = 0;
+    pack_image_height = 0;
 
-    glGetIntegerv(GL_PACK_ALIGNMENT, &psm->pack_alignment);
-    glGetIntegerv(GL_PACK_ROW_LENGTH, &psm->pack_row_length);
-    glGetIntegerv(GL_PACK_SKIP_ROWS, &psm->pack_skip_rows);
-    glGetIntegerv(GL_PACK_SKIP_PIXELS, &psm->pack_skip_pixels);
-    glGetIntegerv(GL_PACK_LSB_FIRST, &psm->pack_lsb_first);
-    glGetIntegerv(GL_PACK_SWAP_BYTES, &psm->pack_swap_bytes);
+    unpack_alignment = 4;
+    unpack_row_length = 0;
+    unpack_skip_rows  = 0;
+    unpack_skip_pixels = 0;
+    unpack_lsb_first = GL_FALSE;
+    unpack_swap_bytes = GL_FALSE;
+    unpack_skip_images = 0;
+    unpack_image_height = 0;
 }
 
-static void retrieveStoreModes3D(PixelStorageModes *psm)
+void PixelStorageModes::retrieveStoreModes()
 {
-    glGetIntegerv(GL_UNPACK_ALIGNMENT, &psm->unpack_alignment);
-    glGetIntegerv(GL_UNPACK_ROW_LENGTH, &psm->unpack_row_length);
-    glGetIntegerv(GL_UNPACK_SKIP_ROWS, &psm->unpack_skip_rows);
-    glGetIntegerv(GL_UNPACK_SKIP_PIXELS, &psm->unpack_skip_pixels);
-    glGetIntegerv(GL_UNPACK_LSB_FIRST, &psm->unpack_lsb_first);
-    glGetIntegerv(GL_UNPACK_SWAP_BYTES, &psm->unpack_swap_bytes);
-    glGetIntegerv(GL_UNPACK_SKIP_IMAGES, &psm->unpack_skip_images);
-    glGetIntegerv(GL_UNPACK_IMAGE_HEIGHT, &psm->unpack_image_height);
+    glGetIntegerv(GL_UNPACK_ALIGNMENT, &unpack_alignment);
+    glGetIntegerv(GL_UNPACK_ROW_LENGTH, &unpack_row_length);
+    glGetIntegerv(GL_UNPACK_SKIP_ROWS, &unpack_skip_rows);
+    glGetIntegerv(GL_UNPACK_SKIP_PIXELS, &unpack_skip_pixels);
+    glGetIntegerv(GL_UNPACK_LSB_FIRST, &unpack_lsb_first);
+    glGetIntegerv(GL_UNPACK_SWAP_BYTES, &unpack_swap_bytes);
 
-    glGetIntegerv(GL_PACK_ALIGNMENT, &psm->pack_alignment);
-    glGetIntegerv(GL_PACK_ROW_LENGTH, &psm->pack_row_length);
-    glGetIntegerv(GL_PACK_SKIP_ROWS, &psm->pack_skip_rows);
-    glGetIntegerv(GL_PACK_SKIP_PIXELS, &psm->pack_skip_pixels);
-    glGetIntegerv(GL_PACK_LSB_FIRST, &psm->pack_lsb_first);
-    glGetIntegerv(GL_PACK_SWAP_BYTES, &psm->pack_swap_bytes);
-    glGetIntegerv(GL_PACK_SKIP_IMAGES, &psm->pack_skip_images);
-    glGetIntegerv(GL_PACK_IMAGE_HEIGHT, &psm->pack_image_height);
+    glGetIntegerv(GL_PACK_ALIGNMENT, &pack_alignment);
+    glGetIntegerv(GL_PACK_ROW_LENGTH, &pack_row_length);
+    glGetIntegerv(GL_PACK_SKIP_ROWS, &pack_skip_rows);
+    glGetIntegerv(GL_PACK_SKIP_PIXELS, &pack_skip_pixels);
+    glGetIntegerv(GL_PACK_LSB_FIRST, &pack_lsb_first);
+    glGetIntegerv(GL_PACK_SWAP_BYTES, &pack_swap_bytes);
+}
+
+void PixelStorageModes::retrieveStoreModes3D()
+{
+    glGetIntegerv(GL_UNPACK_ALIGNMENT, &unpack_alignment);
+    glGetIntegerv(GL_UNPACK_ROW_LENGTH, &unpack_row_length);
+    glGetIntegerv(GL_UNPACK_SKIP_ROWS, &unpack_skip_rows);
+    glGetIntegerv(GL_UNPACK_SKIP_PIXELS, &unpack_skip_pixels);
+    glGetIntegerv(GL_UNPACK_LSB_FIRST, &unpack_lsb_first);
+    glGetIntegerv(GL_UNPACK_SWAP_BYTES, &unpack_swap_bytes);
+    glGetIntegerv(GL_UNPACK_SKIP_IMAGES, &unpack_skip_images);
+    glGetIntegerv(GL_UNPACK_IMAGE_HEIGHT, &unpack_image_height);
+
+    glGetIntegerv(GL_PACK_ALIGNMENT, &pack_alignment);
+    glGetIntegerv(GL_PACK_ROW_LENGTH, &pack_row_length);
+    glGetIntegerv(GL_PACK_SKIP_ROWS, &pack_skip_rows);
+    glGetIntegerv(GL_PACK_SKIP_PIXELS, &pack_skip_pixels);
+    glGetIntegerv(GL_PACK_LSB_FIRST, &pack_lsb_first);
+    glGetIntegerv(GL_PACK_SWAP_BYTES, &pack_swap_bytes);
+    glGetIntegerv(GL_PACK_SKIP_IMAGES, &pack_skip_images);
+    glGetIntegerv(GL_PACK_IMAGE_HEIGHT, &pack_image_height);
 }
 
 static int computeLog(GLuint value)
@@ -3507,7 +3509,7 @@ noProxyTextures:
 } /* closestFit() */
 
 GLint GLAPIENTRY
-gluScaleImage(GLenum format, GLsizei widthin, GLsizei heightin,
+gluScaleImage(PixelStorageModes* psm, GLenum format, GLsizei widthin, GLsizei heightin,
                     GLenum typein, const void *datain,
                     GLsizei widthout, GLsizei heightout, GLenum typeout,
                     void *dataout)
@@ -3515,8 +3517,6 @@ gluScaleImage(GLenum format, GLsizei widthin, GLsizei heightin,
     int components;
     GLushort *beforeImage;
     GLushort *afterImage;
-    PixelStorageModes psm;
-
     if (widthin == 0 || heightin == 0 || widthout == 0 || heightout == 0) {
         return 0;
     }
@@ -3542,18 +3542,31 @@ gluScaleImage(GLenum format, GLsizei widthin, GLsizei heightin,
         return GLU_OUT_OF_MEMORY;
     }
 
-    retrieveStoreModes(&psm);
-    fill_image(&psm,widthin, heightin, format, typein, is_index(format),
+    fill_image(psm,widthin, heightin, format, typein, is_index(format),
             datain, beforeImage);
     components = elements_per_group(format, 0);
     scale_internal(components, widthin, heightin, beforeImage,
             widthout, heightout, afterImage);
-    empty_image(&psm,widthout, heightout, format, typeout,
+    empty_image(psm,widthout, heightout, format, typeout,
             is_index(format), afterImage, dataout);
     free((GLbyte *) beforeImage);
     free((GLbyte *) afterImage);
 
     return 0;
+}
+
+GLint GLAPIENTRY
+gluScaleImage(GLenum format, GLsizei widthin, GLsizei heightin,
+                    GLenum typein, const void *datain,
+                    GLsizei widthout, GLsizei heightout, GLenum typeout,
+                    void *dataout)
+{
+    PixelStorageModes psm;
+    psm.retrieveStoreModes();
+    return gluScaleImage(&psm, format, widthin, heightin,
+                    typein, datain,
+                    widthout, heightout, typeout,
+                    dataout);
 }
 
 int gluBuild1DMipmapLevelsCore(GLenum target, GLint internalFormat,
@@ -3583,7 +3596,7 @@ int gluBuild1DMipmapLevelsCore(GLenum target, GLint internalFormat,
 
     levels+= userLevel;
 
-    retrieveStoreModes(&psm);
+    psm.retrieveStoreModes();
     newImage = (GLushort *)
         malloc(image_size(width, 1, format, GL_UNSIGNED_SHORT));
     newImage_width = width;
@@ -3720,7 +3733,7 @@ static int bitmapBuild2DMipmaps(GLenum target, GLint internalFormat,
     GLint cmpts;
     PixelStorageModes psm;
 
-    retrieveStoreModes(&psm);
+    psm.retrieveStoreModes();
 
 #if 0
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxsize);
@@ -3850,7 +3863,7 @@ static int gluBuild2DMipmapLevelsCore(GLenum target, GLint internalFormat,
 
     levels+= userLevel;
 
-    retrieveStoreModes(&psm);
+    psm.retrieveStoreModes();
     myswap_bytes = psm.unpack_swap_bytes;
     cmpts = elements_per_group(format,type);
     if (psm.unpack_row_length > 0) {
@@ -7410,7 +7423,7 @@ int gluScaleImage3D(GLenum format,
        free(afterImage);
        return GLU_OUT_OF_MEMORY;
    }
-   retrieveStoreModes3D(&psm);
+   psm.retrieveStoreModes3D();
 
    fillImage3D(&psm,widthIn,heightIn,depthIn,format,typeIn, is_index(format),
                dataIn, beforeImage);
@@ -7778,7 +7791,7 @@ static int gluBuild3DMipmapLevelsCore(GLenum target, GLint internalFormat,
 
    levels+= userLevel;
 
-   retrieveStoreModes3D(&psm);
+   psm.retrieveStoreModes3D();
    myswapBytes = psm.unpack_swap_bytes;
    cmpts = elements_per_group(format,type);
    if (psm.unpack_row_length > 0) {

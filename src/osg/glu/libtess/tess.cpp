@@ -54,6 +54,7 @@
 #define FALSE 0
 #endif
 
+
 /*ARGSUSED*/ static void GLAPIENTRY noBegin( GLenum type ) {}
 /*ARGSUSED*/ static void GLAPIENTRY noEdgeFlag( GLboolean boundaryEdge ) {}
 /*ARGSUSED*/ static void GLAPIENTRY noVertex( void *data ) {}
@@ -89,7 +90,7 @@ typedef struct { GLUhalfEdge e, eSym; } EdgePair;
 
 
 GLUtesselator * GLAPIENTRY
-gluNewTess( void )
+osg::gluNewTess( void )
 {
   GLUtesselator *tess;
 
@@ -190,7 +191,7 @@ static void GotoState( GLUtesselator *tess, enum TessState newState )
 
 
 void GLAPIENTRY
-gluDeleteTess( GLUtesselator *tess )
+osg::gluDeleteTess( GLUtesselator *tess )
 {
   RequireState( tess, T_DORMANT );
   memFree( tess );
@@ -198,7 +199,7 @@ gluDeleteTess( GLUtesselator *tess )
 
 
 void GLAPIENTRY
-gluTessProperty( GLUtesselator *tess, GLenum which, GLdouble value )
+osg::gluTessProperty( GLUtesselator *tess, GLenum which, GLdouble value )
 {
   GLenum windingRule;
 
@@ -237,7 +238,7 @@ gluTessProperty( GLUtesselator *tess, GLenum which, GLdouble value )
 
 /* Returns tessellator property */
 void GLAPIENTRY
-gluGetTessProperty( GLUtesselator *tess, GLenum which, GLdouble *value )
+osg::gluGetTessProperty( GLUtesselator *tess, GLenum which, GLdouble *value )
 {
    switch (which) {
    case GLU_TESS_TOLERANCE:
@@ -265,7 +266,7 @@ gluGetTessProperty( GLUtesselator *tess, GLenum which, GLdouble *value )
 } /* gluGetTessProperty() */
 
 void GLAPIENTRY
-gluTessNormal( GLUtesselator *tess, GLdouble x, GLdouble y, GLdouble z )
+osg::gluTessNormal( GLUtesselator *tess, GLdouble x, GLdouble y, GLdouble z )
 {
   tess->normal[0] = x;
   tess->normal[1] = y;
@@ -273,7 +274,7 @@ gluTessNormal( GLUtesselator *tess, GLdouble x, GLdouble y, GLdouble z )
 }
 
 void GLAPIENTRY
-gluTessCallback( GLUtesselator *tess, GLenum which, _GLUfuncptr fn)
+osg::gluTessCallback( GLUtesselator *tess, GLenum which, _GLUfuncptr fn)
 {
   switch( which ) {
   case GLU_TESS_BEGIN:
@@ -412,7 +413,7 @@ static int EmptyCache( GLUtesselator *tess )
 
 
 void GLAPIENTRY
-gluTessVertex( GLUtesselator *tess, GLdouble coords[3], void *data )
+osg::gluTessVertex( GLUtesselator *tess, GLdouble coords[3], void *data )
 {
   int i, tooLarge = FALSE;
   GLdouble x, clamped[3];
@@ -459,7 +460,7 @@ gluTessVertex( GLUtesselator *tess, GLdouble coords[3], void *data )
 
 
 void GLAPIENTRY
-gluTessBeginPolygon( GLUtesselator *tess, void *data )
+osg::gluTessBeginPolygon( GLUtesselator *tess, void *data )
 {
   RequireState( tess, T_DORMANT );
 
@@ -473,7 +474,7 @@ gluTessBeginPolygon( GLUtesselator *tess, void *data )
 
 
 void GLAPIENTRY
-gluTessBeginContour( GLUtesselator *tess )
+osg::gluTessBeginContour( GLUtesselator *tess )
 {
   RequireState( tess, T_IN_POLYGON );
 
@@ -490,14 +491,14 @@ gluTessBeginContour( GLUtesselator *tess )
 
 
 void GLAPIENTRY
-gluTessEndContour( GLUtesselator *tess )
+osg::gluTessEndContour( GLUtesselator *tess )
 {
   RequireState( tess, T_IN_CONTOUR );
   tess->state = T_IN_POLYGON;
 }
 
 void GLAPIENTRY
-gluTessEndPolygon( GLUtesselator *tess )
+osg::gluTessEndPolygon( GLUtesselator *tess )
 {
   GLUmesh *mesh;
 
@@ -589,44 +590,4 @@ gluTessEndPolygon( GLUtesselator *tess )
   __gl_meshDeleteMesh( mesh );
   tess->polygonData= NULL;
   tess->mesh = NULL;
-}
-
-
-/*XXXblythe unused function*/
-#if 0
-void GLAPIENTRY
-gluDeleteMesh( GLUmesh *mesh )
-{
-  __gl_meshDeleteMesh( mesh );
-}
-#endif
-
-
-
-/*******************************************************/
-
-/* Obsolete calls -- for backward compatibility */
-
-void GLAPIENTRY
-gluBeginPolygon( GLUtesselator *tess )
-{
-  gluTessBeginPolygon( tess, NULL );
-  gluTessBeginContour( tess );
-}
-
-
-/*ARGSUSED*/
-void GLAPIENTRY
-gluNextContour( GLUtesselator *tess, GLenum type )
-{
-  gluTessEndContour( tess );
-  gluTessBeginContour( tess );
-}
-
-
-void GLAPIENTRY
-gluEndPolygon( GLUtesselator *tess )
-{
-  gluTessEndContour( tess );
-  gluTessEndPolygon( tess );
 }

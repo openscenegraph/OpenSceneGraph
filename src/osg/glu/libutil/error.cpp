@@ -36,6 +36,9 @@
     #define GL_TABLE_TOO_LARGE  0x8031
 #endif
 
+namespace osg
+{
+
 static unsigned char *__gluNurbsErrors[] = {
     (unsigned char*) " ",
     (unsigned char*) "spline order un-supported",
@@ -140,3 +143,4 @@ const GLubyte* gluErrorString(GLenum errorCode)
     return (const GLubyte *) 0;
 }
 
+} // end of namespace osg

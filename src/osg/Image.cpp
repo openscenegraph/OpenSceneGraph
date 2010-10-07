@@ -1003,7 +1003,7 @@ void Image::copySubImage(int s_offset, int t_offset, int r_offset, const osg::Im
 
     PixelStorageModes psm;
     psm.pack_alignment = _packing;
-    psm.pack_row_length = _packing;
+    psm.pack_row_length = _s;
     psm.unpack_alignment = _packing;
 
     GLint status = gluScaleImage(&psm, _pixelFormat,

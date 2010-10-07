@@ -210,7 +210,7 @@ class OSGUTIL_EXPORT Tessellator : public osg::Referenced
         typedef std::vector<NewVertex> NewVertexList;
         typedef std::vector<Vec3d*> Vec3dList;
 
-        GLUtesselator*  _tobj;
+        osg::GLUtesselator*  _tobj;
 
         PrimList        _primList;
         Vec3dList       _coordData;

@@ -46,7 +46,6 @@
 #include "dict.h"
 #include "priorityq.h"
 
-
 /* The begin/end calls must be properly nested.  We keep track of
  * the current state to enforce the ordering.
  */
@@ -62,7 +61,7 @@ typedef struct CachedVertex {
   void		*data;
 } CachedVertex;
 
-struct GLUtesselator {
+struct osg::GLUtesselator {
 
   /*** state needed for collecting the input data ***/
 
@@ -167,5 +166,10 @@ void GLAPIENTRY __gl_noCombineData( GLdouble coords[3], void *data[4],
    if (tess->callErrorData != &__gl_noErrorData) \
       (*tess->callErrorData)((a),tess->polygonData); \
    else (*tess->callError)((a));
+
+// make it easy to introduce the namespace osg for the public functions and typedefs
+using osg::GLUtesselator;
+using osg::_GLUfuncptr;
+
 
 #endif

@@ -434,7 +434,7 @@ void Glyph::subload() const
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
     {
-        const GLubyte* msg = gluErrorString(errorNo);
+        const GLubyte* msg = osg::gluErrorString(errorNo);
         if (msg) { OSG_WARN<<"before Glyph::subload(): detected OpenGL error: "<<msg<<std::endl; }
         else  { OSG_WARN<<"before Glyph::subload(): detected OpenGL error number: "<<errorNo<<std::endl; }
     }
@@ -459,7 +459,7 @@ void Glyph::subload() const
     {
 
 
-        const GLubyte* msg = gluErrorString(errorNo);
+        const GLubyte* msg = osg::gluErrorString(errorNo);
         if (msg) { OSG_WARN<<"after Glyph::subload() : detected OpenGL error: "<<msg<<std::endl; }
         else { OSG_WARN<<"after Glyph::subload() : detected OpenGL error number: "<<errorNo<<std::endl; }
 

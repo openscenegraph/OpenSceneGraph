@@ -50,6 +50,9 @@
 #include <math.h>
 #include <osg/Notify>
 
+namespace osg
+{
+
 typedef union {
     unsigned char ub[4];
     unsigned short us[2];
@@ -8970,3 +8973,4 @@ static void halveImage3D(int components,
 
 /*** mipmap.c ***/
 
+} // end of namespace osg

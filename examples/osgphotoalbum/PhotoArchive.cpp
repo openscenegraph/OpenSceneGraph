@@ -215,11 +215,11 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
                 return;
             }
 
-            PixelStorageModes psm;
+            osg::PixelStorageModes psm;
             psm.pack_alignment = image->getPacking();
             psm.unpack_alignment = image->getPacking();
 
-            GLint status = gluScaleImage(&psm, image->getPixelFormat(),
+            GLint status = osg::gluScaleImage(&psm, image->getPixelFormat(),
                 image->s(),
                 image->t(),
                 image->getDataType(),
@@ -233,7 +233,7 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
             {
                delete [] newData;
 
-                osg::notify(osg::WARN) << "Error scaleImage() did not succeed : errorString = "<<gluErrorString((GLenum)status)<<std::endl;
+                osg::notify(osg::WARN) << "Error scaleImage() did not succeed : errorString = "<<osg::gluErrorString((GLenum)status)<<std::endl;
             }
     
             // now set up the photo header.
@@ -282,11 +282,11 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
                 return;
             }
 
-            PixelStorageModes psm;
+            osg::PixelStorageModes psm;
             psm.pack_alignment = image->getPacking();
             psm.unpack_alignment = image->getPacking();
 
-            GLint status = gluScaleImage(&psm, image->getPixelFormat(),
+            GLint status = osg::gluScaleImage(&psm, image->getPixelFormat(),
                 image->s(),
                 image->t(),
                 image->getDataType(),
@@ -300,7 +300,7 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
             {
                delete [] newData;
 
-                osg::notify(osg::WARN) << "Error scaleImage() did not succeed : errorString = "<<gluErrorString((GLenum)status)<<std::endl;
+                osg::notify(osg::WARN) << "Error scaleImage() did not succeed : errorString = "<<osg::gluErrorString((GLenum)status)<<std::endl;
             }
 
             ImageHeader imageHeader;

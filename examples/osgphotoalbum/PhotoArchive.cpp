@@ -30,46 +30,6 @@
 
 const std::string FILE_IDENTIFER("osgphotoalbum photo archive");
 
-class MyGraphicsContext {
-    public:
-        MyGraphicsContext()
-        {
-            osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-            traits->x = 0;
-            traits->y = 0;
-            traits->width = 1;
-            traits->height = 1;
-            traits->windowDecoration = false;
-            traits->doubleBuffer = false;
-            traits->sharedContext = 0;
-            traits->pbuffer = true;
-
-            _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-
-            if (!_gc)
-            {
-                osg::notify(osg::NOTICE)<<"Failed to create pbuffer, failing back to normal graphics window."<<std::endl;
-                
-                traits->pbuffer = false;
-                _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-            }
-
-            if (_gc.valid()) 
-            
-            
-            {
-                _gc->realize();
-                _gc->makeCurrent();
-                std::cout<<"Realized window"<<std::endl;
-            }
-        }
-        
-        bool valid() const { return _gc.valid() && _gc->isRealized(); }
-        
-    private:
-        osg::ref_ptr<osg::GraphicsContext> _gc;
-};
-
 PhotoArchive::PhotoArchive(const std::string& filename)
 {
     readPhotoIndex(filename);
@@ -206,10 +166,7 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
 
     std::cout<<"Building photo archive containing "<<photoIndex.size()<<" pictures"<<std::endl;
 
-    // create a graphics context so we can do data operations
-    MyGraphicsContext context;
-
-    // open up the archive for writing to    
+    // open up the archive for writing to
     osgDB::ofstream out(filename.c_str(), std::ios::out | std::ios::binary);
 
     // write out file indentifier.
@@ -258,10 +215,11 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
                 return;
             }
 
-            glPixelStorei(GL_PACK_ALIGNMENT,image->getPacking());
-            glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
+            PixelStorageModes psm;
+            psm.pack_alignment = image->getPacking();
+            psm.unpack_alignment = image->getPacking();
 
-            GLint status = gluScaleImage(image->getPixelFormat(),
+            GLint status = gluScaleImage(&psm, image->getPixelFormat(),
                 image->s(),
                 image->t(),
                 image->getDataType(),
@@ -324,10 +282,11 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
                 return;
             }
 
-            glPixelStorei(GL_PACK_ALIGNMENT,image->getPacking());
-            glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
+            PixelStorageModes psm;
+            psm.pack_alignment = image->getPacking();
+            psm.unpack_alignment = image->getPacking();
 
-            GLint status = gluScaleImage(image->getPixelFormat(),
+            GLint status = gluScaleImage(&psm, image->getPixelFormat(),
                 image->s(),
                 image->t(),
                 image->getDataType(),

@@ -16,8 +16,50 @@
 
 #include <osg/GL>
 
-extern OSG_EXPORT GLint gluScaleImage (GLenum format, GLsizei wIn, GLsizei hIn, GLenum typeIn, const void *dataIn, GLsizei wOut, GLsizei hOut, GLenum typeOut, GLvoid* dataOut);
+/* Pixel storage modes, used by gluScaleImage */
+struct OSG_EXPORT PixelStorageModes
+{
+    // sets defaults as per glGet docs in OpenGL red book
+    PixelStorageModes();
+
+    // use glGet's to retrieve all the current settings
+    void retrieveStoreModes();
+
+    // use glGet's to retrieve all the current 3D settings
+    void retrieveStoreModes3D();
+
+    GLint pack_alignment;
+    GLint pack_row_length;
+    GLint pack_skip_rows;
+    GLint pack_skip_pixels;
+    GLint pack_lsb_first;
+    GLint pack_swap_bytes;
+    GLint pack_skip_images;
+    GLint pack_image_height;
+
+    GLint unpack_alignment;
+    GLint unpack_row_length;
+    GLint unpack_skip_rows;
+    GLint unpack_skip_pixels;
+    GLint unpack_lsb_first;
+    GLint unpack_swap_bytes;
+    GLint unpack_skip_images;
+    GLint unpack_image_height;
+} ;
+
 extern OSG_EXPORT const GLubyte * gluErrorString (GLenum error);
+
+/** OSG specific gluScaleImage function that allows you to pass in the PixelStoreModes, which
+  * enables the code to avoid glGet's that are associated with the conventional gluScaleImage function.
+  * Avoiding glGet's allows this gluScaleImage function to be called at any time, from any thread, there
+  * is no need to have a graphics context current.*/
+extern OSG_EXPORT GLint gluScaleImage (PixelStorageModes* psm, GLenum format, GLsizei wIn, GLsizei hIn, GLenum typeIn, const void *dataIn, GLsizei wOut, GLsizei hOut, GLenum typeOut, GLvoid* dataOut);
+
+/** Traditional GLU gluScaleImage function that sets up the PixelStoreModes automatically by doing glGets.;
+  * The use of glGet's means that you can only call this function from a thread with a valid graphics context.
+  * The use of glGet's will also result in lower performance due to the round trip to the OpenGL driver.*/
+extern OSG_EXPORT GLint gluScaleImage (GLenum format, GLsizei wIn, GLsizei hIn, GLenum typeIn, const void *dataIn, GLsizei wOut, GLsizei hOut, GLenum typeOut, GLvoid* dataOut);
+
 extern OSG_EXPORT GLint gluBuild1DMipmapLevels (GLenum target, GLint internalFormat, GLsizei width, GLenum format, GLenum type, GLint level, GLint base, GLint max, const void *data);
 extern OSG_EXPORT GLint gluBuild1DMipmaps (GLenum target, GLint internalFormat, GLsizei width, GLenum format, GLenum type, const void *data);
 extern OSG_EXPORT GLint gluBuild2DMipmapLevels (GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLenum format, GLenum type, GLint level, GLint base, GLint max, const void *data);

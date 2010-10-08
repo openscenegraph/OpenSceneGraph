@@ -29,11 +29,20 @@
  */
 
 #include <osg/GLU>
+#include <osg/FrameBufferObject>
 
-// #include "gluos.h"
 
+// define GL values not provided by some GL headers.
 #ifndef GL_TABLE_TOO_LARGE
     #define GL_TABLE_TOO_LARGE  0x8031
+#endif
+
+#ifndef GL_STACK_OVERFLOW
+    #define GL_STACK_OVERFLOW   0x0503
+#endif
+
+#ifndef GL_STACK_UNDERFLOW
+    #define GL_STACK_UNDERFLOW  0x0504
 #endif
 
 namespace osg
@@ -116,9 +125,7 @@ static const struct token_string Errors[] = {
    { GL_STACK_UNDERFLOW, "stack underflow" },
    { GL_OUT_OF_MEMORY, "out of memory" },
    { GL_TABLE_TOO_LARGE, "table too large" },
-#ifdef GL_EXT_framebuffer_object
    { GL_INVALID_FRAMEBUFFER_OPERATION_EXT, "invalid framebuffer operation" },
-#endif
    /* GLU */
    { GLU_INVALID_ENUM, "invalid enumerant" },
    { GLU_INVALID_VALUE, "invalid value" },

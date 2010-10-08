@@ -1,4 +1,5 @@
 #include <osgSim/OverlayNode>
+#include <osg/TexEnv>
 #include <osgDB/ObjectWrapper>
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>

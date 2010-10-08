@@ -266,23 +266,29 @@ PixelStorageModes::PixelStorageModes()
 void PixelStorageModes::retrieveStoreModes()
 {
     glGetIntegerv(GL_UNPACK_ALIGNMENT, &unpack_alignment);
+
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glGetIntegerv(GL_UNPACK_ROW_LENGTH, &unpack_row_length);
     glGetIntegerv(GL_UNPACK_SKIP_ROWS, &unpack_skip_rows);
     glGetIntegerv(GL_UNPACK_SKIP_PIXELS, &unpack_skip_pixels);
     glGetIntegerv(GL_UNPACK_LSB_FIRST, &unpack_lsb_first);
     glGetIntegerv(GL_UNPACK_SWAP_BYTES, &unpack_swap_bytes);
+#endif
 
     glGetIntegerv(GL_PACK_ALIGNMENT, &pack_alignment);
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glGetIntegerv(GL_PACK_ROW_LENGTH, &pack_row_length);
     glGetIntegerv(GL_PACK_SKIP_ROWS, &pack_skip_rows);
     glGetIntegerv(GL_PACK_SKIP_PIXELS, &pack_skip_pixels);
     glGetIntegerv(GL_PACK_LSB_FIRST, &pack_lsb_first);
     glGetIntegerv(GL_PACK_SWAP_BYTES, &pack_swap_bytes);
+#endif
 }
 
 void PixelStorageModes::retrieveStoreModes3D()
 {
     glGetIntegerv(GL_UNPACK_ALIGNMENT, &unpack_alignment);
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glGetIntegerv(GL_UNPACK_ROW_LENGTH, &unpack_row_length);
     glGetIntegerv(GL_UNPACK_SKIP_ROWS, &unpack_skip_rows);
     glGetIntegerv(GL_UNPACK_SKIP_PIXELS, &unpack_skip_pixels);
@@ -290,8 +296,10 @@ void PixelStorageModes::retrieveStoreModes3D()
     glGetIntegerv(GL_UNPACK_SWAP_BYTES, &unpack_swap_bytes);
     glGetIntegerv(GL_UNPACK_SKIP_IMAGES, &unpack_skip_images);
     glGetIntegerv(GL_UNPACK_IMAGE_HEIGHT, &unpack_image_height);
+#endif
 
     glGetIntegerv(GL_PACK_ALIGNMENT, &pack_alignment);
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glGetIntegerv(GL_PACK_ROW_LENGTH, &pack_row_length);
     glGetIntegerv(GL_PACK_SKIP_ROWS, &pack_skip_rows);
     glGetIntegerv(GL_PACK_SKIP_PIXELS, &pack_skip_pixels);
@@ -299,6 +307,7 @@ void PixelStorageModes::retrieveStoreModes3D()
     glGetIntegerv(GL_PACK_SWAP_BYTES, &pack_swap_bytes);
     glGetIntegerv(GL_PACK_SKIP_IMAGES, &pack_skip_images);
     glGetIntegerv(GL_PACK_IMAGE_HEIGHT, &pack_image_height);
+#endif
 }
 
 static int computeLog(GLuint value)
@@ -3428,6 +3437,7 @@ static void closestFit(GLenum target, GLint width, GLint height,
                        GLint internalFormat, GLenum format, GLenum type,
                        GLint *newWidth, GLint *newHeight)
 {
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
    /* Use proxy textures if OpenGL version is >= 1.1 */
    if ( (strtod((const char *)glGetString(GL_VERSION),NULL) >= 1.1)
         ) {
@@ -3482,7 +3492,9 @@ static void closestFit(GLenum target, GLint width, GLint height,
                 * that we will never be aware of when this happens
                 * since it will silently branch out.
                 */
-               goto noProxyTextures;
+              *newWidth= 0;
+              *newHeight= 0;
+              return;
             }
             widthPowerOf2= widthAtLevelOne;
             heightPowerOf2= heightAtLevelOne;
@@ -3496,10 +3508,10 @@ static void closestFit(GLenum target, GLint width, GLint height,
       *newHeight= heightPowerOf2;
 /*printf("Proxy Textures\n");*/
    } /* if gluCheckExtension() */
-   else {                        /* no texture extension, so do this instead */
+   else
+#endif // end of #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
+   {                        /* no texture extension, so do this instead */
       GLint maxsize;
-
-noProxyTextures:
 
       glGetIntegerv(GL_MAX_TEXTURE_SIZE, &maxsize);
       /* clamp user's texture sizes to maximum sizes, if necessary */
@@ -3579,6 +3591,7 @@ int gluBuild1DMipmapLevelsCore(GLenum target, GLint internalFormat,
                                GLint userLevel, GLint baseLevel,GLint maxLevel,
                                const void *data)
 {
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     GLint newwidth;
     GLint level, levels;
     GLushort *newImage;
@@ -3610,6 +3623,7 @@ int gluBuild1DMipmapLevelsCore(GLenum target, GLint internalFormat,
             data, newImage);
     cmpts = elements_per_group(format,type);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
+
     glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
     glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
     glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
@@ -3655,6 +3669,7 @@ int gluBuild1DMipmapLevelsCore(GLenum target, GLint internalFormat,
         if (newwidth > 1) newwidth /= 2;
     }
     glPixelStorei(GL_UNPACK_ALIGNMENT, psm.unpack_alignment);
+
     glPixelStorei(GL_UNPACK_SKIP_ROWS, psm.unpack_skip_rows);
     glPixelStorei(GL_UNPACK_SKIP_PIXELS, psm.unpack_skip_pixels);
     glPixelStorei(GL_UNPACK_ROW_LENGTH, psm.unpack_row_length);
@@ -3665,6 +3680,10 @@ int gluBuild1DMipmapLevelsCore(GLenum target, GLint internalFormat,
         free((GLbyte *) otherImage);
     }
     return 0;
+#else
+    OSG_NOTICE<<"gluBuild1DMipmapLevelsCore() not implemented for GLES."<<std::endl;
+    return 0;
+#endif
 }
 
 GLint GLAPIENTRY
@@ -3766,6 +3785,7 @@ static int bitmapBuild2DMipmaps(GLenum target, GLint internalFormat,
 
     cmpts = elements_per_group(format,type);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 2);
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
     glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
     glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
@@ -3773,6 +3793,7 @@ static int bitmapBuild2DMipmaps(GLenum target, GLint internalFormat,
     ** If swap_bytes was set, swapping occurred in fill_image.
     */
     glPixelStorei(GL_UNPACK_SWAP_BYTES, GL_FALSE);
+#endif
 
     for (level = 0; level <= levels; level++) {
         if (newImage_width == newwidth && newImage_height == newheight) {             /* Use newImage for this level */
@@ -3786,10 +3807,12 @@ static int bitmapBuild2DMipmaps(GLenum target, GLint internalFormat,
                 otherImage = (GLushort *) malloc(memreq);
                 if (otherImage == NULL) {
                     glPixelStorei(GL_UNPACK_ALIGNMENT, psm.unpack_alignment);
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
                     glPixelStorei(GL_UNPACK_SKIP_ROWS, psm.unpack_skip_rows);
                     glPixelStorei(GL_UNPACK_SKIP_PIXELS,psm.unpack_skip_pixels);
                     glPixelStorei(GL_UNPACK_ROW_LENGTH, psm.unpack_row_length);
                     glPixelStorei(GL_UNPACK_SWAP_BYTES, psm.unpack_swap_bytes);
+#endif
                     free(newImage);
                     return GLU_OUT_OF_MEMORY;
                 }
@@ -3811,10 +3834,13 @@ static int bitmapBuild2DMipmaps(GLenum target, GLint internalFormat,
         if (newheight > 1) newheight /= 2;
     }
     glPixelStorei(GL_UNPACK_ALIGNMENT, psm.unpack_alignment);
+
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glPixelStorei(GL_UNPACK_SKIP_ROWS, psm.unpack_skip_rows);
     glPixelStorei(GL_UNPACK_SKIP_PIXELS, psm.unpack_skip_pixels);
     glPixelStorei(GL_UNPACK_ROW_LENGTH, psm.unpack_row_length);
     glPixelStorei(GL_UNPACK_SWAP_BYTES, psm.unpack_swap_bytes);
+#endif
 
     free((GLbyte *) newImage);
     if (otherImage) {
@@ -3887,9 +3913,11 @@ static int gluBuild2DMipmapLevelsCore(GLenum target, GLint internalFormat,
     usersImage = (const GLubyte *) data + psm.unpack_skip_rows * rowsize +
         psm.unpack_skip_pixels * group_size;
 
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
     glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
     glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+#endif
 
     level = userLevel;
 
@@ -3897,18 +3925,25 @@ static int gluBuild2DMipmapLevelsCore(GLenum target, GLint internalFormat,
     if (width == newwidth && height == newheight) {
         /* Use usersImage for level userLevel */
         if (baseLevel <= level && level <= maxLevel) {
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
         glPixelStorei(GL_UNPACK_ROW_LENGTH, psm.unpack_row_length);
+#endif
         glTexImage2D(target, level, internalFormat, width,
                 height, 0, format, type,
                 usersImage);
         }
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
         glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+#endif
+
         if(levels == 0) { /* we're done. clean up and return */
           glPixelStorei(GL_UNPACK_ALIGNMENT, psm.unpack_alignment);
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
           glPixelStorei(GL_UNPACK_SKIP_ROWS, psm.unpack_skip_rows);
           glPixelStorei(GL_UNPACK_SKIP_PIXELS, psm.unpack_skip_pixels);
           glPixelStorei(GL_UNPACK_ROW_LENGTH, psm.unpack_row_length);
           glPixelStorei(GL_UNPACK_SWAP_BYTES, psm.unpack_swap_bytes);
+#endif
           return 0;
         }
         {
@@ -3966,10 +4001,12 @@ static int gluBuild2DMipmapLevelsCore(GLenum target, GLint internalFormat,
         }
         if (dstImage == NULL) {
           glPixelStorei(GL_UNPACK_ALIGNMENT, psm.unpack_alignment);
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
           glPixelStorei(GL_UNPACK_SKIP_ROWS, psm.unpack_skip_rows);
           glPixelStorei(GL_UNPACK_SKIP_PIXELS, psm.unpack_skip_pixels);
           glPixelStorei(GL_UNPACK_ROW_LENGTH, psm.unpack_row_length);
           glPixelStorei(GL_UNPACK_SWAP_BYTES, psm.unpack_swap_bytes);
+#endif
           return GLU_OUT_OF_MEMORY;
         }
         else
@@ -4131,10 +4168,12 @@ static int gluBuild2DMipmapLevelsCore(GLenum target, GLint internalFormat,
         }
         if (dstImage == NULL) {
           glPixelStorei(GL_UNPACK_ALIGNMENT, psm.unpack_alignment);
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
           glPixelStorei(GL_UNPACK_SKIP_ROWS, psm.unpack_skip_rows);
           glPixelStorei(GL_UNPACK_SKIP_PIXELS, psm.unpack_skip_pixels);
           glPixelStorei(GL_UNPACK_ROW_LENGTH, psm.unpack_row_length);
           glPixelStorei(GL_UNPACK_SWAP_BYTES, psm.unpack_swap_bytes);
+#endif
           free(srcImage);
           return GLU_OUT_OF_MEMORY;
         }
@@ -4188,10 +4227,12 @@ static int gluBuild2DMipmapLevelsCore(GLenum target, GLint internalFormat,
 
         if (dstImage == NULL) {
             glPixelStorei(GL_UNPACK_ALIGNMENT, psm.unpack_alignment);
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
             glPixelStorei(GL_UNPACK_SKIP_ROWS, psm.unpack_skip_rows);
             glPixelStorei(GL_UNPACK_SKIP_PIXELS, psm.unpack_skip_pixels);
             glPixelStorei(GL_UNPACK_ROW_LENGTH, psm.unpack_row_length);
             glPixelStorei(GL_UNPACK_SWAP_BYTES, psm.unpack_swap_bytes);
+#endif
             return GLU_OUT_OF_MEMORY;
         }
 
@@ -4374,10 +4415,12 @@ static int gluBuild2DMipmapLevelsCore(GLenum target, GLint internalFormat,
           }
           if (dstImage == NULL) {
             glPixelStorei(GL_UNPACK_ALIGNMENT, psm.unpack_alignment);
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
             glPixelStorei(GL_UNPACK_SKIP_ROWS, psm.unpack_skip_rows);
             glPixelStorei(GL_UNPACK_SKIP_PIXELS, psm.unpack_skip_pixels);
             glPixelStorei(GL_UNPACK_ROW_LENGTH, psm.unpack_row_length);
             glPixelStorei(GL_UNPACK_SWAP_BYTES, psm.unpack_swap_bytes);
+#endif
             free(srcImage);
             return GLU_OUT_OF_MEMORY;
           }
@@ -4386,7 +4429,10 @@ static int gluBuild2DMipmapLevelsCore(GLenum target, GLint internalFormat,
         level = userLevel;
     }
 
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glPixelStorei(GL_UNPACK_SWAP_BYTES, GL_FALSE);
+#endif
+
     if (baseLevel <= level && level <= maxLevel) {
     glTexImage2D(target, level, internalFormat, newwidth, newheight, 0,
                  format, type, (void *)srcImage);
@@ -4533,10 +4579,12 @@ static int gluBuild2DMipmapLevelsCore(GLenum target, GLint internalFormat,
           if (newMipmapImage == NULL) {
              /* out of memory so return */
              glPixelStorei(GL_UNPACK_ALIGNMENT, psm.unpack_alignment);
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
              glPixelStorei(GL_UNPACK_SKIP_ROWS, psm.unpack_skip_rows);
              glPixelStorei(GL_UNPACK_SKIP_PIXELS, psm.unpack_skip_pixels);
              glPixelStorei(GL_UNPACK_ROW_LENGTH, psm.unpack_row_length);
              glPixelStorei(GL_UNPACK_SWAP_BYTES, psm.unpack_swap_bytes);
+#endif
              return GLU_OUT_OF_MEMORY;
           }
 
@@ -4564,10 +4612,13 @@ static int gluBuild2DMipmapLevelsCore(GLenum target, GLint internalFormat,
       }
     } /* for level */
     glPixelStorei(GL_UNPACK_ALIGNMENT, psm.unpack_alignment);
+    
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
     glPixelStorei(GL_UNPACK_SKIP_ROWS, psm.unpack_skip_rows);
     glPixelStorei(GL_UNPACK_SKIP_PIXELS, psm.unpack_skip_pixels);
     glPixelStorei(GL_UNPACK_ROW_LENGTH, psm.unpack_row_length);
     glPixelStorei(GL_UNPACK_SWAP_BYTES, psm.unpack_swap_bytes);
+#endif
 
     free(srcImage); /*if you get to here, a srcImage has always been malloc'ed*/
     if (dstImage) { /* if it's non-rectangular and only 1 level */
@@ -7379,6 +7430,7 @@ static void closestFit3D(GLTexImage3DProc gluTexImage3D,
                          GLint internalFormat, GLenum format, GLenum type,
                          GLint *newWidth, GLint *newHeight, GLint *newDepth)
 {
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
    GLint widthPowerOf2= nearestPower(width);
    GLint heightPowerOf2= nearestPower(height);        
    GLint depthPowerOf2= nearestPower(depth);
@@ -7427,6 +7479,12 @@ static void closestFit3D(GLTexImage3DProc gluTexImage3D,
    *newHeight= heightPowerOf2;
    *newDepth= depthPowerOf2;
 /*printf("Proxy Textures\n");*/
+#else
+   // GLES1 & GLES2
+   *newWidth= nearestPower(width);
+   *newHeight= nearestPower(height);
+   *newDepth= nearestPower(depth);
+#endif
 } /* closestFit3D() */
 
 static void halveImagePackedPixelSlice(int components,
@@ -7763,11 +7821,13 @@ static int gluBuild3DMipmapLevelsCore(GLTexImage3DProc gluTexImage3D,
                                   /* 3dstuff */
                                   psm.unpack_skip_images * imageSize;
 
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
    glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
    glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
    glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
    glPixelStorei(GL_UNPACK_SKIP_IMAGES, 0);
    glPixelStorei(GL_UNPACK_IMAGE_HEIGHT, 0);
+#endif
 
    level = userLevel;
 
@@ -7780,12 +7840,14 @@ static int gluBuild3DMipmapLevelsCore(GLTexImage3DProc gluTexImage3D,
        }
        if(levels == 0) { /* we're done. clean up and return */
          glPixelStorei(GL_UNPACK_ALIGNMENT, psm.unpack_alignment);
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
          glPixelStorei(GL_UNPACK_SKIP_ROWS, psm.unpack_skip_rows);
          glPixelStorei(GL_UNPACK_SKIP_PIXELS, psm.unpack_skip_pixels);
          glPixelStorei(GL_UNPACK_ROW_LENGTH, psm.unpack_row_length);
          glPixelStorei(GL_UNPACK_SWAP_BYTES, psm.unpack_swap_bytes);
          glPixelStorei(GL_UNPACK_SKIP_IMAGES, psm.unpack_skip_images);
          glPixelStorei(GL_UNPACK_IMAGE_HEIGHT, psm.unpack_image_height);
+#endif
          return 0;
        }
        {
@@ -7844,12 +7906,14 @@ static int gluBuild3DMipmapLevelsCore(GLTexImage3DProc gluTexImage3D,
        }
        if (dstImage == NULL) {
          glPixelStorei(GL_UNPACK_ALIGNMENT, psm.unpack_alignment);
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
          glPixelStorei(GL_UNPACK_SKIP_ROWS, psm.unpack_skip_rows);
          glPixelStorei(GL_UNPACK_SKIP_PIXELS, psm.unpack_skip_pixels);
          glPixelStorei(GL_UNPACK_ROW_LENGTH, psm.unpack_row_length);
          glPixelStorei(GL_UNPACK_SWAP_BYTES, psm.unpack_swap_bytes);
          glPixelStorei(GL_UNPACK_SKIP_IMAGES, psm.unpack_skip_images);
          glPixelStorei(GL_UNPACK_IMAGE_HEIGHT, psm.unpack_image_height);
+#endif
          return GLU_OUT_OF_MEMORY;
        }
        else
@@ -8063,12 +8127,14 @@ static int gluBuild3DMipmapLevelsCore(GLTexImage3DProc gluTexImage3D,
        }
        if (dstImage == NULL) {
          glPixelStorei(GL_UNPACK_ALIGNMENT, psm.unpack_alignment);
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
          glPixelStorei(GL_UNPACK_SKIP_ROWS, psm.unpack_skip_rows);
          glPixelStorei(GL_UNPACK_SKIP_PIXELS, psm.unpack_skip_pixels);
          glPixelStorei(GL_UNPACK_ROW_LENGTH, psm.unpack_row_length);
          glPixelStorei(GL_UNPACK_SWAP_BYTES, psm.unpack_swap_bytes);
          glPixelStorei(GL_UNPACK_SKIP_IMAGES, psm.unpack_skip_images);
          glPixelStorei(GL_UNPACK_IMAGE_HEIGHT, psm.unpack_image_height);
+#endif
          free(srcImage);
          return GLU_OUT_OF_MEMORY;
        }
@@ -8122,12 +8188,14 @@ static int gluBuild3DMipmapLevelsCore(GLTexImage3DProc gluTexImage3D,
 
        if (dstImage == NULL) {
            glPixelStorei(GL_UNPACK_ALIGNMENT, psm.unpack_alignment);
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
            glPixelStorei(GL_UNPACK_SKIP_ROWS, psm.unpack_skip_rows);
            glPixelStorei(GL_UNPACK_SKIP_PIXELS, psm.unpack_skip_pixels);
            glPixelStorei(GL_UNPACK_ROW_LENGTH, psm.unpack_row_length);
            glPixelStorei(GL_UNPACK_SWAP_BYTES, psm.unpack_swap_bytes);
            glPixelStorei(GL_UNPACK_SKIP_IMAGES, psm.unpack_skip_images);
            glPixelStorei(GL_UNPACK_IMAGE_HEIGHT, psm.unpack_image_height);
+#endif
            return GLU_OUT_OF_MEMORY;
        }
        /*printf("Build3DMipmaps(): ScaleImage3D %d %d %d->%d %d %d\n",
@@ -8198,12 +8266,14 @@ static int gluBuild3DMipmapLevelsCore(GLTexImage3DProc gluTexImage3D,
          }
          if (dstImage == NULL) {
            glPixelStorei(GL_UNPACK_ALIGNMENT, psm.unpack_alignment);
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
            glPixelStorei(GL_UNPACK_SKIP_ROWS, psm.unpack_skip_rows);
            glPixelStorei(GL_UNPACK_SKIP_PIXELS, psm.unpack_skip_pixels);
            glPixelStorei(GL_UNPACK_ROW_LENGTH, psm.unpack_row_length);
            glPixelStorei(GL_UNPACK_SWAP_BYTES, psm.unpack_swap_bytes);
            glPixelStorei(GL_UNPACK_SKIP_IMAGES, psm.unpack_skip_images);
            glPixelStorei(GL_UNPACK_IMAGE_HEIGHT, psm.unpack_image_height);
+#endif
            free(srcImage);
            return GLU_OUT_OF_MEMORY;
          }
@@ -8212,7 +8282,10 @@ static int gluBuild3DMipmapLevelsCore(GLTexImage3DProc gluTexImage3D,
        level = userLevel;       
    }
 
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
    glPixelStorei(GL_UNPACK_SWAP_BYTES, GL_FALSE);
+#endif
+
    if (baseLevel <= level && level <= maxLevel) {
      gluTexImage3D(target, level, internalFormat, newWidth, newHeight, newDepth,
                   0,format, type, (void *)srcImage);
@@ -8395,12 +8468,15 @@ static int gluBuild3DMipmapLevelsCore(GLTexImage3DProc gluTexImage3D,
        }
    } /* for level */
    glPixelStorei(GL_UNPACK_ALIGNMENT, psm.unpack_alignment);
+
+   #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
    glPixelStorei(GL_UNPACK_SKIP_ROWS, psm.unpack_skip_rows);
    glPixelStorei(GL_UNPACK_SKIP_PIXELS, psm.unpack_skip_pixels);
    glPixelStorei(GL_UNPACK_ROW_LENGTH, psm.unpack_row_length);
    glPixelStorei(GL_UNPACK_SWAP_BYTES, psm.unpack_swap_bytes);
    glPixelStorei(GL_UNPACK_SKIP_IMAGES, psm.unpack_skip_images);
    glPixelStorei(GL_UNPACK_IMAGE_HEIGHT, psm.unpack_image_height);
+#endif
 
    free(srcImage); /*if you get to here, a srcImage has always been malloc'ed*/
    if (dstImage) { /* if it's non-rectangular and only 1 level */

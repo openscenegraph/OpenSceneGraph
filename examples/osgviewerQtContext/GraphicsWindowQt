@@ -14,10 +14,11 @@
 #ifndef OSGVIEWER_GRAPHICSWINDOWQT
 #define OSGVIEWER_GRAPHICSWINDOWQT
 
+#include <osgViewer/GraphicsWindow>
+
 #include <QtGui/QWidget>
 #include <QtGui/QInputEvent>
 #include <QtOpenGL/QGLWidget>
-#include <osgViewer/GraphicsWindow>
 
 class GraphWidget : public QGLWidget
 {

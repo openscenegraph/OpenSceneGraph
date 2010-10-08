@@ -73,7 +73,7 @@ static int gluBuild2DMipmapLevelsCore(GLenum, GLint,
                                       GLsizei, GLsizei,
                                       GLenum, GLenum, GLint, GLint, GLint,
                                       const void *);
-static int gluBuild3DMipmapLevelsCore(GLenum, GLint,
+static int gluBuild3DMipmapLevelsCore(GLTexImage3DProc gluTexImage3D, GLenum, GLint,
                                       GLsizei, GLsizei, GLsizei,
                                       GLsizei, GLsizei, GLsizei,
                                       GLenum, GLenum, GLint, GLint, GLint,
@@ -6635,74 +6635,6 @@ static void halve1DimagePackedPixel(int components,
    }
 } /* halve1DimagePackedPixel() */
 
-/*===========================================================================*/
-
-// Note from Robert Osfield, follows is a quick hack to windows compiling, will need to
-// reactor code to properly manage extension checking platforms/GL targets.
-#if defined(_WIN32) || defined(__WIN32__)
-    #define RESOLVE_3D_TEXTURE_SUPPORT
-#endif
-
-#ifdef RESOLVE_3D_TEXTURE_SUPPORT
-/*
- * This section ensures that GLU 1.3 will load and run on
- * a GL 1.1 implementation. It dynamically resolves the
- * call to glTexImage3D() which might not be available.
- * Or is it might be supported as an extension.
- * Contributed by Gerk Huisma <gerk@five-d.demon.nl>.
- */
-
-typedef void (GLAPIENTRY *TexImage3Dproc)( GLenum target, GLint level,
-                                                 GLenum internalFormat,
-                                                 GLsizei width, GLsizei height,
-                                                 GLsizei depth, GLint border,
-                                                 GLenum format, GLenum type,
-                                                 const GLvoid *pixels );
-
-static TexImage3Dproc pTexImage3D = 0;
-
-#if !defined(_WIN32) && !defined(__WIN32__)
-#  include <dlfcn.h>
-#  include <sys/types.h>
-#else
-  #include <windows.h>
-  WINGDIAPI PROC  WINAPI wglGetProcAddress(LPCSTR);
-#endif
-
-static void gluTexImage3D( GLenum target, GLint level,
-                           GLenum internalFormat,
-                           GLsizei width, GLsizei height,
-                           GLsizei depth, GLint border,
-                           GLenum format, GLenum type,
-                           const GLvoid *pixels )
-{
-   if (!pTexImage3D) {
-#if defined(_WIN32) || defined(__WIN32__)
-      pTexImage3D = (TexImage3Dproc) wglGetProcAddress("glTexImage3D");
-      if (!pTexImage3D)
-         pTexImage3D = (TexImage3Dproc) wglGetProcAddress("glTexImage3DEXT");
-#else
-      void *libHandle = dlopen("libgl.so", RTLD_LAZY);
-      pTexImage3D = TexImage3Dproc) dlsym(libHandle, "glTexImage3D" );
-      if (!pTexImage3D)
-         pTexImage3D = (TexImage3Dproc) dlsym(libHandle,"glTexImage3DEXT");
-      dlclose(libHandle);
-#endif
-   }
-
-   /* Now call glTexImage3D */
-   if (pTexImage3D)
-      pTexImage3D(target, level, internalFormat, width, height,
-                  depth, border, format, type, pixels);
-}
-
-#else
-
-/* Only bind to a GL 1.2 implementation: */
-#define gluTexImage3D glTexImage3D
-
-#endif
-
 static GLint imageSize3D(GLint width, GLint height, GLint depth,
                          GLenum format, GLenum type)
 {
@@ -7442,7 +7374,8 @@ int gluScaleImage3D(GLenum format,
 } /* gluScaleImage3D() */
 
 
-static void closestFit3D(GLenum target, GLint width, GLint height, GLint depth,
+static void closestFit3D(GLTexImage3DProc gluTexImage3D,
+                         GLenum target, GLint width, GLint height, GLint depth,
                          GLint internalFormat, GLenum format, GLenum type,
                          GLint *newWidth, GLint *newHeight, GLint *newDepth)
 {
@@ -7752,7 +7685,8 @@ static void halveImagePackedPixel3D(int components,
 
 } /* halveImagePackedPixel3D() */
 
-static int gluBuild3DMipmapLevelsCore(GLenum target, GLint internalFormat,
+static int gluBuild3DMipmapLevelsCore(GLTexImage3DProc gluTexImage3D,
+                                      GLenum target, GLint internalFormat,
                                       GLsizei width,
                                       GLsizei height,
                                       GLsizei depth,
@@ -8475,12 +8409,12 @@ static int gluBuild3DMipmapLevelsCore(GLenum target, GLint internalFormat,
    return 0;
 } /* gluBuild3DMipmapLevelsCore() */
 
-GLint GLAPIENTRY
-gluBuild3DMipmapLevels(GLenum target, GLint internalFormat,
-                             GLsizei width, GLsizei height, GLsizei depth,
-                             GLenum format, GLenum type,
-                             GLint userLevel, GLint baseLevel, GLint maxLevel,
-                             const void *data)
+GLint GLAPIENTRY gluBuild3DMipmapLevels(GLTexImage3DProc gluTexImage3D,
+                                        GLenum target, GLint internalFormat,
+                                        GLsizei width, GLsizei height, GLsizei depth,
+                                        GLenum format, GLenum type,
+                                        GLint userLevel, GLint baseLevel, GLint maxLevel,
+                                        const void *data)
 {
    int level, levels;
 
@@ -8505,7 +8439,7 @@ gluBuild3DMipmapLevels(GLenum target, GLint internalFormat,
    if (!isLegalLevels(userLevel,baseLevel,maxLevel,levels))
       return GLU_INVALID_VALUE;
 
-   return gluBuild3DMipmapLevelsCore(target, internalFormat,
+   return gluBuild3DMipmapLevelsCore(gluTexImage3D, target, internalFormat,
                                      width, height, depth,
                                      width, height, depth,
                                      format, type,
@@ -8513,10 +8447,10 @@ gluBuild3DMipmapLevels(GLenum target, GLint internalFormat,
                                      data);
 } /* gluBuild3DMipmapLevels() */
 
-GLint GLAPIENTRY
-gluBuild3DMipmaps(GLenum target, GLint internalFormat,
-                        GLsizei width, GLsizei height, GLsizei depth,
-                        GLenum format, GLenum type, const void *data)
+GLint GLAPIENTRY gluBuild3DMipmaps(GLTexImage3DProc gluTexImage3D,
+                                   GLenum target, GLint internalFormat,
+                                   GLsizei width, GLsizei height, GLsizei depth,
+                                   GLenum format, GLenum type, const void *data)
 {
    GLint widthPowerOf2, heightPowerOf2, depthPowerOf2;
    int level, levels;
@@ -8532,7 +8466,7 @@ gluBuild3DMipmaps(GLenum target, GLint internalFormat,
       return GLU_INVALID_ENUM;
    }
 
-   closestFit3D(target,width,height,depth,internalFormat,format,type,
+   closestFit3D(gluTexImage3D, target,width,height,depth,internalFormat,format,type,
                 &widthPowerOf2,&heightPowerOf2,&depthPowerOf2);
 
    levels = computeLog(widthPowerOf2);
@@ -8541,7 +8475,7 @@ gluBuild3DMipmaps(GLenum target, GLint internalFormat,
    level = computeLog(depthPowerOf2);
    if (level > levels) levels=level;
 
-   return gluBuild3DMipmapLevelsCore(target, internalFormat,
+   return gluBuild3DMipmapLevelsCore(gluTexImage3D, target, internalFormat,
                                      width, height, depth,
                                      widthPowerOf2, heightPowerOf2,
                                      depthPowerOf2,

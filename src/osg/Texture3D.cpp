@@ -427,10 +427,11 @@ void Texture3D::applyTexImage3D(GLenum target, Image* image, State& state, GLsiz
 
             numMipmapLevels = 1;
 
-            extensions->gluBuild3DMipmaps( target, _internalFormat,
-                                           image->s(),image->t(),image->r(),
-                                           (GLenum)image->getPixelFormat(), (GLenum)image->getDataType(),
-                                           image->data() );
+            gluBuild3DMipmaps( extensions->glTexImage3D,
+                               target, _internalFormat,
+                               image->s(),image->t(),image->r(),
+                               (GLenum)image->getPixelFormat(), (GLenum)image->getDataType(),
+                               image->data() );
 
         }
         else
@@ -578,10 +579,11 @@ Texture3D::Extensions::Extensions(const Extensions& rhs):
     _isTexture3DFast = rhs._isTexture3DFast;
     _maxTexture3DSize = rhs._maxTexture3DSize;
 
-    _glTexImage3D = rhs._glTexImage3D;
-    _glTexSubImage3D = rhs._glTexSubImage3D;
-    _glCopyTexSubImage3D = rhs._glCopyTexSubImage3D;
-    _gluBuild3DMipmaps = rhs._gluBuild3DMipmaps;
+    glTexImage3D = rhs.glTexImage3D;
+    glTexSubImage3D = rhs.glTexSubImage3D;
+    glCompressedTexImage3D = rhs.glCompressedTexImage3D;
+    glCompressedTexSubImage3D = rhs.glCompressedTexSubImage3D;
+    glCopyTexSubImage3D = rhs.glCopyTexSubImage3D;
 }
 
 void Texture3D::Extensions::lowestCommonDenominator(const Extensions& rhs)
@@ -590,12 +592,11 @@ void Texture3D::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._isTexture3DFast)                      _isTexture3DFast = false;
     if (rhs._maxTexture3DSize<_maxTexture3DSize)    _maxTexture3DSize = rhs._maxTexture3DSize;
 
-    if (!rhs._glTexImage3D)                         _glTexImage3D = 0;
-    if (!rhs._glTexSubImage3D)                      _glTexSubImage3D = 0;
-    if (!rhs._glCompressedTexImage3D)               _glTexImage3D = 0;
-    if (!rhs._glCompressedTexSubImage3D)            _glTexSubImage3D = 0;
-    if (!rhs._glCopyTexSubImage3D)                  _glCopyTexSubImage3D = 0;
-    if (!rhs._gluBuild3DMipmaps)                    _gluBuild3DMipmaps = 0;
+    if (!rhs.glTexImage3D)                         glTexImage3D = 0;
+    if (!rhs.glTexSubImage3D)                      glTexSubImage3D = 0;
+    if (!rhs.glCompressedTexImage3D)               glCompressedTexImage3D = 0;
+    if (!rhs.glCompressedTexSubImage3D)            glCompressedTexSubImage3D = 0;
+    if (!rhs.glCopyTexSubImage3D)                  glCopyTexSubImage3D = 0;
 }
 
 void Texture3D::Extensions::setupGLExtensions(unsigned int contextID)
@@ -607,87 +608,10 @@ void Texture3D::Extensions::setupGLExtensions(unsigned int contextID)
     
     glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &_maxTexture3DSize);
 
-    setGLExtensionFuncPtr(_glTexImage3D,"glTexImage3D","glTexImage3DEXT");
-    setGLExtensionFuncPtr(_glTexSubImage3D,"glTexSubImage3D","glTexSubImage3DEXT");
-    setGLExtensionFuncPtr(_glCompressedTexImage3D,"glCompressedTexImage3D","glCompressedTexImage3DARB");
-    setGLExtensionFuncPtr(_glCompressedTexSubImage3D,"glCompressedTexSubImage3D","glCompressedTexSubImage3DARB");
-    setGLExtensionFuncPtr(_glCopyTexSubImage3D,"glCopyTexSubImage3D","glCopyTexSubImage3DEXT");
-    setGLExtensionFuncPtr(_gluBuild3DMipmaps,"gluBuild3DMipmaps");
+    setGLExtensionFuncPtr(glTexImage3D,"glTexImage3D","glTexImage3DEXT");
+    setGLExtensionFuncPtr(glTexSubImage3D,"glTexSubImage3D","glTexSubImage3DEXT");
+    setGLExtensionFuncPtr(glCompressedTexImage3D,"glCompressedTexImage3D","glCompressedTexImage3DARB");
+    setGLExtensionFuncPtr(glCompressedTexSubImage3D,"glCompressedTexSubImage3D","glCompressedTexSubImage3DARB");
+    setGLExtensionFuncPtr(glCopyTexSubImage3D,"glCopyTexSubImage3D","glCopyTexSubImage3DEXT");
 
-}
-
-void Texture3D::Extensions::glTexImage3D( GLenum target, GLint level, GLenum internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, const GLvoid *pixels) const
-{
-//    ::glTexImage3D( target, level, internalFormat, width, height, depth, border, format, type, pixels);
-    if (_glTexImage3D)
-    {
-        _glTexImage3D( target, level, internalFormat, width, height, depth, border, format, type, pixels);
-    }
-    else
-    {
-        OSG_WARN<<"Error: glTexImage3D not supported by OpenGL driver"<<std::endl;
-    }
-}
-
-void Texture3D::Extensions::glTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *pixels) const
-{
-//    ::glTexSubImage3D( target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
-    if (_glTexSubImage3D)
-    {
-        _glTexSubImage3D( target, level, xoffset, yoffset, zoffset, width, height, depth, format, type, pixels);
-    }
-    else
-    {
-        OSG_WARN<<"Error: glTexSubImage3D not supported by OpenGL driver"<<std::endl;
-    }
-}
-
-void Texture3D::Extensions::glCompressedTexImage3D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLsizei imageSize, const GLvoid *data) const
-{
-    if (_glCompressedTexImage3D)
-    {
-        _glCompressedTexImage3D(target, level, internalformat, width, height, depth, border, imageSize, data);
-    }
-    else
-    {
-        OSG_WARN<<"Error: glCompressedTexImage3D not supported by OpenGL driver"<<std::endl;
-    }
-}
-
-void Texture3D::Extensions::glCompressedTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLsizei imageSize, const GLvoid *data ) const
-{
-    if (_glCompressedTexSubImage3D)
-    {
-        _glCompressedTexSubImage3D(target, level, xoffset, yoffset, zoffset, width, height, depth, format, imageSize, data);
-    }
-    else
-    {
-        OSG_WARN<<"Error: glCompressedTexImage2D not supported by OpenGL driver"<<std::endl;
-    }
-}
-
-void Texture3D::Extensions::glCopyTexSubImage3D( GLenum target, GLint level, GLint xoffset, GLint yoffset, GLint zoffset, GLint x, GLint y, GLsizei width, GLsizei height ) const
-{
-//    ::glCopyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height);
-    if (_glCopyTexSubImage3D)
-    {
-        _glCopyTexSubImage3D(target, level, xoffset, yoffset, zoffset, x, y, width, height);
-    }
-    else
-    {
-        OSG_WARN<<"Error: glCopyTexSubImage3D not supported by OpenGL driver"<<std::endl;
-    }
-}
-
-void Texture3D::Extensions::gluBuild3DMipmaps( GLenum target, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLenum format, GLenum type, const GLvoid *data) const
-{
-//    ::gluBuild3DMipmaps(target, internalFormat, width, height, depth, format, type, data);
-    if (_gluBuild3DMipmaps)
-    {
-        _gluBuild3DMipmaps(target, internalFormat, width, height, depth, format, type, data);
-    }
-    else
-    {
-        OSG_WARN<<"Error: gluBuild3DMipmaps not supported by OpenGL driver"<<std::endl;
-    }
 }

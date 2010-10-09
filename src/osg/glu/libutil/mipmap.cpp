@@ -3462,20 +3462,20 @@ static void closestFit(GLenum target, GLint width, GLint height,
             glTexImage2D(proxyTarget, 1, /* must be non-zero */
                          internalFormat,
                          widthAtLevelOne,heightAtLevelOne,0,format,type,NULL);
-         } else
-#if defined(GL_ARB_texture_cube_map)
-         if ((target == GL_TEXTURE_CUBE_MAP_POSITIVE_X_ARB) ||
-             (target == GL_TEXTURE_CUBE_MAP_NEGATIVE_X_ARB) ||
-             (target == GL_TEXTURE_CUBE_MAP_POSITIVE_Y_ARB) ||
-             (target == GL_TEXTURE_CUBE_MAP_NEGATIVE_Y_ARB) ||
-             (target == GL_TEXTURE_CUBE_MAP_POSITIVE_Z_ARB) ||
-             (target == GL_TEXTURE_CUBE_MAP_NEGATIVE_Z_ARB)) {
-             proxyTarget = GL_PROXY_TEXTURE_CUBE_MAP_ARB;
+         }
+         else if ((target == GL_TEXTURE_CUBE_MAP_POSITIVE_X) ||
+             (target == GL_TEXTURE_CUBE_MAP_NEGATIVE_X) ||
+             (target == GL_TEXTURE_CUBE_MAP_POSITIVE_Y) ||
+             (target == GL_TEXTURE_CUBE_MAP_NEGATIVE_Y) ||
+             (target == GL_TEXTURE_CUBE_MAP_POSITIVE_Z) ||
+             (target == GL_TEXTURE_CUBE_MAP_NEGATIVE_Z))
+         {
+             proxyTarget = GL_PROXY_TEXTURE_CUBE_MAP;
              glTexImage2D(proxyTarget, 1, /* must be non-zero */
                           internalFormat,
                           widthAtLevelOne,heightAtLevelOne,0,format,type,NULL);
-         } else
-#endif /* GL_ARB_texture_cube_map */
+         }
+         else
          {
             assert(target == GL_TEXTURE_1D || target == GL_PROXY_TEXTURE_1D);
             proxyTarget = GL_PROXY_TEXTURE_1D;

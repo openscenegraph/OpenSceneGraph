@@ -15,6 +15,7 @@
 #define OSGUTIL_INCREMENTALCOMPILEOPERATOR
 
 #include <osgUtil/GLObjectsVisitor>
+#include <osg/Geometry>
 
 namespace osgUtil {
 
@@ -167,6 +168,16 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
         OpenThreads::Mutex* getCompiledMutex() { return &_compiledMutex; }
         CompileSets& getCompiled() { return _compiled; }
 
+        /** Assign a geometry and associated StateSet than is applied after each texture compile to atttempt to force the OpenGL
+          * drive to download the texture object to OpenGL graphics card.*/
+        void assignForceTextureDownloadGeometry();
+
+        /** Set the osg::Geometry to apply after each texture compile to atttempt to force the OpenGL
+          * drive to download the texture object to OpenGL graphics card.*/
+        void setForceTextureDownloadGeometry(osg::Geometry* geom) { _forceTextureDownloadGeometry = geom; }
+        osg::Geometry* getForceTextureDownloadGeometry() { return _forceTextureDownloadGeometry.get(); }
+        const osg::Geometry* getForceTextureDownloadGeometry() const { return _forceTextureDownloadGeometry.get(); }
+
     protected:
 
         virtual ~IncrementalCompileOperation();
@@ -174,22 +185,23 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
         // forward declare to keep within class namespace
         class CollectStateToCompile;
     
-        double              _targetFrameRate;
-        double              _minimumTimeAvailableForGLCompileAndDeletePerFrame;
-        unsigned int        _maximumNumOfObjectsToCompilePerFrame;
-        double              _flushTimeRatio;
-        double              _conservativeTimeRatio;
+        double                          _targetFrameRate;
+        double                          _minimumTimeAvailableForGLCompileAndDeletePerFrame;
+        unsigned int                    _maximumNumOfObjectsToCompilePerFrame;
+        double                          _flushTimeRatio;
+        double                          _conservativeTimeRatio;
 
-        OpenThreads::Mutex  _toCompileMutex;
-        CompileSets         _toCompile;
+        osg::ref_ptr<osg::Geometry>     _forceTextureDownloadGeometry;
+
+        OpenThreads::Mutex              _toCompileMutex;
+        CompileSets                     _toCompile;
         
-        OpenThreads::Mutex  _compiledMutex;
-        CompileSets         _compiled;
+        OpenThreads::Mutex              _compiledMutex;
+        CompileSets                     _compiled;
         
-        ContextSet          _contexts;
+        ContextSet                      _contexts;
 
 };
-
 
 }
 

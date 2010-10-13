@@ -16,6 +16,8 @@
 #include <osg/Notify>
 #include <osg/Timer>
 #include <osg/GLObjects>
+#include <osg/Depth>
+#include <osg/ColorMask>
 
 #include <OpenThreads/ScopedLock>
 
@@ -48,6 +50,33 @@ IncrementalCompileOperation::IncrementalCompileOperation():
 
 IncrementalCompileOperation::~IncrementalCompileOperation()
 {
+}
+
+void IncrementalCompileOperation::assignForceTextureDownloadGeometry()
+{
+    osg::Geometry* geometry = new osg::Geometry;
+
+    osg::Vec3Array* vertices = new osg::Vec3Array;
+    vertices->push_back(osg::Vec3(0.0f,0.0f,0.0f));
+    geometry->setVertexArray(vertices);
+
+    osg::Vec2Array* texcoords = new osg::Vec2Array;
+    texcoords->push_back(osg::Vec2(0.0f,0.0f));
+    geometry->setTexCoordArray(0, texcoords);
+
+    geometry->addPrimitiveSet(new osg::DrawArrays(GL_POINTS,0,1));
+
+    osg::StateSet* stateset = geometry->getOrCreateStateSet();
+    stateset->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::ON);
+
+    osg::Depth* depth = new osg::Depth;
+    depth->setWriteMask(false);
+    stateset->setAttribute(depth);
+
+    osg::ColorMask* colorMask = new osg::ColorMask(false,false,false,false);
+    stateset->setAttribute(colorMask);
+
+    _forceTextureDownloadGeometry = geometry;
 }
 
 void IncrementalCompileOperation::assignContexts(Contexts& contexts)
@@ -365,7 +394,22 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
             while(!cd._textures.empty() && 
                   osg::Timer::instance()->delta_s(startTick, osg::Timer::instance()->tick()) < compileTime)
             {
-                cd._textures.back()->apply(*renderInfo.getState());
+                if (_forceTextureDownloadGeometry.get())
+                {
+                    if (_forceTextureDownloadGeometry->getStateSet())
+                    {
+                        renderInfo.getState()->apply(_forceTextureDownloadGeometry->getStateSet());
+                    }
+
+                    renderInfo.getState()->applyTextureAttribute(0, cd._textures.back().get());
+
+                    _forceTextureDownloadGeometry->draw(renderInfo);
+                }
+                else
+                {
+                    cd._textures.back()->apply(*renderInfo.getState());
+                }
+
                 cd._textures.pop_back();
             }
 

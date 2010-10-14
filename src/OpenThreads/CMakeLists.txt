@@ -77,8 +77,15 @@ IF(CMAKE_SYSTEM MATCHES IRIX)
     ENDIF()
 ENDIF(CMAKE_SYSTEM MATCHES IRIX)
 
+# Add support for using Qt threads
+IF(QT4_FOUND)
+    OPTION(BUILD_OPENTHREADS_WITH_QT "Build OpenThreads with Qt threading support." OFF)
+ENDIF()
+
 # Maybe we should be using the FindThreads.cmake module?
-IF(WIN32)
+IF(QT4_FOUND AND BUILD_OPENTHREADS_WITH_QT)
+    SUBDIRS(qt)
+ELSEIF(WIN32)
     # So I think Cygwin wants to use pthreads
     IF(CYGWIN)
         SUBDIRS(pthreads)

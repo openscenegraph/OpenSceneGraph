@@ -69,6 +69,8 @@ public:
         case OpenThreads::Thread::THREAD_PRIORITY_MIN:
             prio = IdlePriority;
             break;
+        default:
+            break;
         }
         setPriority( prio );
     }

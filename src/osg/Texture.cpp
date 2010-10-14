@@ -1631,7 +1631,6 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     bool needImageRescale = inwidth!=image->s() || inheight!=image->t();
     if (needImageRescale)
     {
-#ifdef OSG_GLU_AVAILABLE
         // resize the image to power of two.
         
         if (image->isMipmap())
@@ -1657,16 +1656,17 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         if (!image->getFileName().empty()) { OSG_NOTICE << "Scaling image '"<<image->getFileName()<<"' from ("<<image->s()<<","<<image->t()<<") to ("<<inwidth<<","<<inheight<<")"<<std::endl; }
         else { OSG_NOTICE << "Scaling image from ("<<image->s()<<","<<image->t()<<") to ("<<inwidth<<","<<inheight<<")"<<std::endl; }
 
+        PixelStorageModes psm;
+        psm.pack_alignment = image->getPacking();
+        psm.unpack_alignment = image->getPacking();
+
         // rescale the image to the correct size.
-        glPixelStorei(GL_PACK_ALIGNMENT,image->getPacking());
-        gluScaleImage(image->getPixelFormat(),
-                      image->s(),image->t(),image->getDataType(),image->data(),
-                      inwidth,inheight,image->getDataType(),dataPtr);
-#else
-        OSG_NOTICE<<"Warning: gluScaleImage(..) not supported, cannot subload image."<<std::endl;
-        return;
-#endif
-    }    
+        gluScaleImage(&psm, image->getPixelFormat(),
+                        image->s(),image->t(),image->getDataType(),image->data(),
+                        inwidth,inheight,image->getDataType(),
+                        dataPtr);
+
+    }
 
     bool mipmappingRequired = _min_filter != LINEAR && _min_filter != NEAREST;
     bool useHardwareMipMapGeneration = mipmappingRequired && (!image->isMipmap() && isHardwareMipmapGenerationEnabled(state));
@@ -1774,11 +1774,10 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
         }
         else
         {
-        
             if ( !compressed_image)
             {
                 numMipmapLevels = 0;
-#ifdef OSG_GLU_AVAILABLE
+
                 gluBuild2DMipmaps( target, _internalFormat,
                     inwidth,inheight,
                     (GLenum)image->getPixelFormat(), (GLenum)image->getDataType(),
@@ -1791,9 +1790,6 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
                     width >>= 1;
                     height >>= 1;
                 }
-#else
-                OSG_NOTICE<<"Warning:: gluBuild2DMipMaps(..) not supported."<<std::endl;
-#endif
             }
             else 
             {
@@ -1873,13 +1869,11 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     
     glPixelStorei(GL_UNPACK_ALIGNMENT,image->getPacking());
     
-    unsigned char* data = (unsigned char*)image->data();
- 
+    unsigned char* dataPtr = (unsigned char*)image->data();
 
     bool needImageRescale = inwidth!=image->s() || inheight!=image->t();
     if (needImageRescale)
     {
-#ifdef OSG_GLU_AVAILABLE
         // resize the image to power of two.
         if (image->isMipmap())
         {
@@ -1893,9 +1887,9 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
         }
 
         unsigned int newTotalSize = osg::Image::computeRowWidthInBytes(inwidth,image->getPixelFormat(),image->getDataType(),image->getPacking())*inheight;
-        data = new unsigned char [newTotalSize];
+        dataPtr = new unsigned char [newTotalSize];
 
-        if (!data)
+        if (!dataPtr)
         {
             OSG_WARN<<"Warning:: Not enough memory to resize image, cannot apply to texture."<<std::endl;
             return;
@@ -1905,14 +1899,14 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
         else { OSG_NOTICE << "Scaling image from ("<<image->s()<<","<<image->t()<<") to ("<<inwidth<<","<<inheight<<")"<<std::endl; }
 
         // rescale the image to the correct size.
-        glPixelStorei(GL_PACK_ALIGNMENT,image->getPacking());
-        gluScaleImage(image->getPixelFormat(),
+        PixelStorageModes psm;
+        psm.pack_alignment = image->getPacking();
+        psm.unpack_alignment = image->getPacking();
+
+        gluScaleImage(&psm, image->getPixelFormat(),
                       image->s(),image->t(),image->getDataType(),image->data(),
-                      inwidth,inheight,image->getDataType(),data);
-#else
-        OSG_NOTICE<<"Warning: gluScaleImage(..) not supported, cannot subload image."<<std::endl;
-        return;
-#endif
+                      inwidth,inheight,image->getDataType(),
+                      dataPtr);
     }
 
 
@@ -1920,7 +1914,6 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     bool useHardwareMipMapGeneration = mipmappingRequired && (!image->isMipmap() && isHardwareMipmapGenerationEnabled(state));
     bool useGluBuildMipMaps = mipmappingRequired && (!useHardwareMipMapGeneration && !image->isMipmap());
 
-    const unsigned char* dataPtr = image->data();
     GLBufferObject* pbo = image->getOrCreateGLBufferObject(contextID);
     if (pbo && !needImageRescale && !useGluBuildMipMaps)
     {
@@ -2042,7 +2035,7 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
     if (needImageRescale)
     {
         // clean up the resized image.
-        delete [] data;
+        delete [] dataPtr;
     }
 }
 

@@ -3,26 +3,6 @@
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
 
-// _font
-static bool checkFont( const osgText::Text& text )
-{
-    return text.getFont()!=NULL;
-}
-
-static bool readFont( osgDB::InputStream& is, osgText::Text& text )
-{
-    std::string fontName; is.readWrappedString( fontName );
-    text.setFont( osgText::readFontFile(fontName) );
-    return true;
-}
-
-static bool writeFont( osgDB::OutputStream& os, const osgText::Text& text )
-{
-    os.writeWrappedString( text.getFont()->getFileName() );
-    os << std::endl;
-    return true;
-}
-
 // _backdropHorizontalOffset, _backdropVerticalOffset
 static bool checkBackdropOffset( const osgText::Text& text )
 {
@@ -78,9 +58,8 @@ REGISTER_OBJECT_WRAPPER( osgText_Text,
                          osgText::Text,
                          "osg::Object osg::Drawable osgText::TextBase osgText::Text" )
 {
-    ADD_USER_SERIALIZER( Font );  // _font
     ADD_VEC4_SERIALIZER( Color, osg::Vec4() );  // _color
-    
+
     BEGIN_ENUM_SERIALIZER( BackdropType, NONE );
         ADD_ENUM_VALUE( DROP_SHADOW_BOTTOM_RIGHT );
         ADD_ENUM_VALUE( DROP_SHADOW_CENTER_RIGHT );

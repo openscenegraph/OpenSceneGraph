@@ -277,21 +277,32 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
 
 osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType, const std::string& fullFileName, const osgDB::ReaderWriter::Options *options) const
 {
+    std::string fileName(fullFileName);
+    std::string ext = osgDB::getFileExtension(fullFileName);
+    bool curl_ext = ext=="curl";
+    if (curl_ext)
+    {
+        fileName = osgDB::getNameLessExtension(fullFileName);
+        ext = osgDB::getFileExtension(fileName);
+    }
 
-
-    if (!osgDB::containsServerAddress(fullFileName)) 
+    if (!osgDB::containsServerAddress(fileName))
     {
         if (options && !options->getDatabasePathList().empty())
-        {        
+        {
             if (osgDB::containsServerAddress(options->getDatabasePathList().front()))
             {
-                std::string newFileName = options->getDatabasePathList().front() + "/" + fullFileName;
+                std::string newFileName = options->getDatabasePathList().front() + "/" + fileName;
 
                 return readFile(objectType, newFileName,options);
             }
         }
 
-        return ReadResult::FILE_NOT_HANDLED;
+        // if user has explictly specified curl then we don't about at this point,
+        // instead assume the curl can read it any way, if it doesn't explictly
+        // specify curl then we assume that the file is a local file and not appropriate
+        // for the curl plugin to load.
+        if (!curl_ext) return ReadResult::FILE_NOT_HANDLED;
     }
 
     OSG_INFO<<"ReaderWriterCURL::readFile("<<fullFileName<<")"<<std::endl;
@@ -327,17 +338,6 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
         }
     }
 
-    std::string fileName;
-    std::string ext = osgDB::getFileExtension(fullFileName);
-    if (ext=="curl")
-    {
-        fileName = osgDB::getNameLessExtension(fullFileName);
-        ext = osgDB::getFileExtension(fileName);
-    }
-    else
-    {
-        fileName = fullFileName;
-    }
     
     bool uncompress = false;
     

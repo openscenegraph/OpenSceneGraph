@@ -255,7 +255,7 @@ class OSG_EXPORT AnimationPathCallback : public NodeCallback
             _pause(false),
             _pauseTime(0.0) {}
 
-        /** Construct an AnimationPathCallback and automatical create an animation path to produce a rotation about a point.*/
+        /** Construct an AnimationPathCallback and automatically create an animation path to produce a rotation about a point.*/
         AnimationPathCallback(const osg::Vec3d& pivot,const osg::Vec3d& axis,float angularVelocity);
  
             

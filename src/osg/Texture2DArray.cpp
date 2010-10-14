@@ -51,7 +51,7 @@ Texture2DArray::~Texture2DArray()
 int Texture2DArray::compare(const StateAttribute& sa) const
 {
     // check the types are equal and then create the rhs variable
-    // used by the COMPARE_StateAttribute_Parameter macro's below.
+    // used by the COMPARE_StateAttribute_Parameter macros below.
     COMPARE_StateAttribute_Types(Texture2DArray,sa)
 
     bool noImages = true;
@@ -97,7 +97,7 @@ int Texture2DArray::compare(const StateAttribute& sa) const
     COMPARE_StateAttribute_Parameter(_textureDepth)
     COMPARE_StateAttribute_Parameter(_subloadCallback)
 
-    return 0; // passed all the above comparison macro's, must be equal.
+    return 0; // passed all the above comparison macros, must be equal.
 }
 
 void Texture2DArray::setImage(unsigned int layer, Image* image)
@@ -363,15 +363,15 @@ void Texture2DArray::apply(State& state) const
 
         textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,_textureDepth,0);
         
-        // no idea what this for ;-)
-        if (state.getMaxTexturePoolSize()==0 && _unrefImageDataAfterApply && areAllTextureObjectsLoaded())
+        // unref image data?
+        if (isSafeToUnrefImageData(state))
         {
             Texture2DArray* non_const_this = const_cast<Texture2DArray*>(this);
             for (int n=0; n<_textureDepth; n++)
             {                
                 if (_images[n].valid() && _images[n]->getDataVariance()==STATIC)
                 {
-                    non_const_this->_images[n] = 0;
+                    non_const_this->_images[n] = NULL;
                 }
             }
         }

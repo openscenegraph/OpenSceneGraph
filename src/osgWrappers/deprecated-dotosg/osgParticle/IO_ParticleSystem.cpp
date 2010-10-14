@@ -74,6 +74,30 @@ bool ParticleSystem_readLocalData(osg::Object &obj, osgDB::Input &fr)
         }
     }
 
+    if (fr[0].matchWord("useVertexArray")) {
+        if (fr[1].matchWord("TRUE")) {
+            myobj.setUseVertexArray(true);
+            fr += 2;
+            itAdvanced = true;
+        } else if (fr[1].matchWord("FALSE")) {
+            myobj.setUseVertexArray(false);
+            fr += 2;
+            itAdvanced = true;
+        }
+    }
+    
+    if (fr[0].matchWord("useShaders")) {
+        if (fr[1].matchWord("TRUE")) {
+            myobj.setUseShaders(true);
+            fr += 2;
+            itAdvanced = true;
+        } else if (fr[1].matchWord("FALSE")) {
+            myobj.setUseShaders(false);
+            fr += 2;
+            itAdvanced = true;
+        }
+    }
+
     if (fr[0].matchWord("doublePassRendering")) {
         if (fr[1].matchWord("TRUE")) {
             myobj.setDoublePassRendering(true);
@@ -124,6 +148,33 @@ bool ParticleSystem_readLocalData(osg::Object &obj, osgDB::Input &fr)
         }
     }
     
+    if (fr[0].matchWord("sortMode")) {
+        if (fr[1].matchWord("NO_SORT")) {
+            myobj.setSortMode(osgParticle::ParticleSystem::NO_SORT);
+            fr += 2;
+            itAdvanced = true;
+        }
+        if (fr[1].matchWord("SORT_FRONT_TO_BACK")) {
+            myobj.setSortMode(osgParticle::ParticleSystem::SORT_FRONT_TO_BACK);
+            fr += 2;
+            itAdvanced = true;
+        }
+        if (fr[1].matchWord("SORT_BACK_TO_FRONT")) {
+            myobj.setSortMode(osgParticle::ParticleSystem::SORT_BACK_TO_FRONT);
+            fr += 2;
+            itAdvanced = true;
+        }
+    }
+    
+    if (fr[0].matchWord("visibilityDistance")) {
+        double distance;
+        if (fr[1].getFloat(distance)) {
+            myobj.setVisibilityDistance(distance);
+            fr += 2;
+            itAdvanced = true;
+        }
+    }
+    
     if (fr[0].matchWord("particleTemplate")) {        
         ++fr;
         itAdvanced = true;
@@ -167,6 +218,18 @@ bool ParticleSystem_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     v = myobj.getAlignVectorY();
     fw.indent() << "alignVectorY " << v.x() << " " << v.y() << " " << v.z() << std::endl;
 
+    fw.indent() << "useVertexArray ";
+    if (myobj.getUseVertexArray())
+        fw << "TRUE" << std::endl;
+    else
+        fw << "FALSE" << std::endl;
+
+    fw.indent() << "useShaders ";
+    if (myobj.getUseShaders())
+        fw << "TRUE" << std::endl;
+    else
+        fw << "FALSE" << std::endl;
+    
     fw.indent() << "doublePassRendering ";
     if (myobj.getDoublePassRendering())
         fw << "TRUE" << std::endl;
@@ -190,8 +253,23 @@ bool ParticleSystem_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     fw << bbox.xMin() << " " << bbox.yMin() << " " << bbox.zMin() << " ";
     fw << bbox.xMax() << " " << bbox.yMax() << " " << bbox.zMax() << std::endl;
 
+    fw.indent() << "sortMode ";
+    switch (myobj.getSortMode()) {
+        default:
+        case osgParticle::ParticleSystem::NO_SORT:
+            fw << "NO_SORT" << std::endl;
+            break;
+        case osgParticle::ParticleSystem::SORT_FRONT_TO_BACK:
+            fw << "SORT_FRONT_TO_BACK" << std::endl;
+            break;
+        case osgParticle::ParticleSystem::SORT_BACK_TO_FRONT:
+            fw << "SORT_BACK_TO_FRONT" << std::endl;
+            break;
+    }
+    
+    fw.indent() << "visibilityDistance " << myobj.getVisibilityDistance() << std::endl;
+
     fw.indent() << "particleTemplate ";
     write_particle(myobj.getDefaultParticleTemplate(), fw);
-
     return true;
 }

@@ -1,5 +1,4 @@
 #include <osgText/Text3D>
-#include <osgText/Font>
 
 #include <iostream>
 #include <string>
@@ -46,14 +45,6 @@ bool Text3D_readLocalData(osg::Object &obj, osgDB::Input &fr)
     osgText::Text3D &text = static_cast<osgText::Text3D &>(obj);
     bool itAdvanced = false;
 
-    // font
-    if (fr.matchSequence("font %w"))
-    { 
-        text.setFont(fr[1].getStr());
-        fr += 2;
-        itAdvanced = true;
-        
-    }
     
     // characterDepth
     if (fr[0].matchWord("characterDepth"))
@@ -85,11 +76,6 @@ bool Text3D_readLocalData(osg::Object &obj, osgDB::Input &fr)
 bool Text3D_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 {
     const osgText::Text3D &text = static_cast<const osgText::Text3D &>(obj);
-
-    if (text.getFont())
-    {
-        fw.indent() << "font " << text.getFont()->getFileName() << std::endl;
-    }
 
     fw.indent() << "characterDepth " << text.getCharacterDepth() << std::endl;
     

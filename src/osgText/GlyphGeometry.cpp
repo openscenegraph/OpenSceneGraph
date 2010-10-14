@@ -34,25 +34,25 @@ public:
 
     typedef std::pair<unsigned int, unsigned int> Segment;
     typedef std::vector<Segment>  Segments;
-    osg::ref_ptr<osg::Vec3Array> _vertices;
-    osg::ref_ptr<osg::DrawElementsUShort> _elements;
+    osg::ref_ptr<const osg::Vec3Array> _vertices;
+    osg::ref_ptr<const osg::DrawElementsUShort> _elements;
     Segments _segments;
 
-    Boundary(osg::Vec3Array* vertices, osg::PrimitiveSet* primitiveSet)
+    Boundary(const osg::Vec3Array* vertices, const osg::PrimitiveSet* primitiveSet)
     {
-        osg::DrawArrays* drawArrays = dynamic_cast<osg::DrawArrays*>(primitiveSet);
+        const osg::DrawArrays* drawArrays = dynamic_cast<const osg::DrawArrays*>(primitiveSet);
         if (drawArrays)
         {
             set(vertices, drawArrays->getFirst(), drawArrays->getCount());
         }
         else
         {
-            osg::DrawElementsUShort* elements = dynamic_cast<osg::DrawElementsUShort*>(primitiveSet);
+            const osg::DrawElementsUShort* elements = dynamic_cast<const osg::DrawElementsUShort*>(primitiveSet);
             if (elements) set(vertices, elements);
         }
     }
 
-    void set(osg::Vec3Array* vertices, unsigned int start, unsigned int count)
+    void set(const osg::Vec3Array* vertices, unsigned int start, unsigned int count)
     {
         osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(osg::PrimitiveSet::POLYGON);
         for(unsigned int i=start; i<start+count; ++i)
@@ -63,7 +63,7 @@ public:
         set(vertices, elements);
     }
 
-    void set(osg::Vec3Array* vertices, osg::DrawElementsUShort* elements)
+    void set(const osg::Vec3Array* vertices, const osg::DrawElementsUShort* elements)
     {
         _vertices = vertices;
         _elements = elements;
@@ -117,7 +117,7 @@ public:
         }
         else
         {
-            OSG_NOTICE<<"   computeBisectorNormal(a=["<<a<<"], b=["<<b<<"], c=["<<c<<"], d=["<<d<<"]), nx="<<nx<<", ny="<<ny<<", denominator="<<denominator<<" need to swap!!!"<<std::endl;
+            OSG_INFO<<"   computeBisectorNormal(a=["<<a<<"], b=["<<b<<"], c=["<<c<<"], d=["<<d<<"]), nx="<<nx<<", ny="<<ny<<", denominator="<<denominator<<" need to swap!!!"<<std::endl;
             return osg::Vec3(-nx,-ny,0.0f);
         }
     }
@@ -240,10 +240,10 @@ public:
     {
         Segment& seg_before = _segments[ (i+_segments.size()-1) % _segments.size() ];
         Segment& seg_target = _segments[ (i) % _segments.size() ];
-        osg::Vec3& a = (*_vertices)[seg_before.first];
-        osg::Vec3& b = (*_vertices)[seg_before.second];
-        osg::Vec3& c = (*_vertices)[seg_target.first];
-        osg::Vec3& d = (*_vertices)[seg_target.second];
+        const osg::Vec3& a = (*_vertices)[seg_before.first];
+        const osg::Vec3& b = (*_vertices)[seg_before.second];
+        const osg::Vec3& c = (*_vertices)[seg_target.first];
+        const osg::Vec3& d = (*_vertices)[seg_target.second];
         osg::Vec3 intersection_abcd = computeIntersectionPoint(a,b,c,d);
         osg::Vec3 bisector_abcd = computeBisectorNormal(a,b,c,d);
         osg::Vec3 ab_sidevector(b.y()-a.y(), a.x()-b.x(), 0.0);
@@ -455,14 +455,14 @@ struct CollectTriangleIndicesFunctor
 };
 
 
-osg::Geometry* computeGlyphGeometry(osgText::Glyph3D* glyph, float bevelThickness, float shellThickness)
+osg::Geometry* computeGlyphGeometry(const osgText::Glyph3D* glyph, float bevelThickness, float shellThickness)
 {
-    osg::Vec3Array* orig_vertices = glyph->getRawVertexArray();
-    osg::Geometry::PrimitiveSetList& orig_primitives = glyph->getRawFacePrimitiveSetList();
+    const osg::Vec3Array* orig_vertices = glyph->getRawVertexArray();
+    const osg::Geometry::PrimitiveSetList& orig_primitives = glyph->getRawFacePrimitiveSetList();
 
     osg::ref_ptr<osg::Geometry> new_geometry = new osg::Geometry;
 
-    for(osg::Geometry::PrimitiveSetList::iterator itr = orig_primitives.begin();
+    for(osg::Geometry::PrimitiveSetList::const_iterator itr = orig_primitives.begin();
         itr != orig_primitives.end();
         ++itr)
     {
@@ -470,11 +470,11 @@ osg::Geometry* computeGlyphGeometry(osgText::Glyph3D* glyph, float bevelThicknes
         {
             Boundary boundaryInner(orig_vertices, itr->get());
             boundaryInner.removeAllSegmentsBelowThickness(bevelThickness);
-            boundaryInner.newAddBoundaryToGeometry(new_geometry, bevelThickness, "face", "bevel");
+            boundaryInner.newAddBoundaryToGeometry(new_geometry.get(), bevelThickness, "face", "bevel");
 
             Boundary boundaryOuter(orig_vertices, itr->get());
             boundaryOuter.removeAllSegmentsAboveThickness(-shellThickness);
-            boundaryOuter.newAddBoundaryToGeometry(new_geometry, -shellThickness, "", "shell");
+            boundaryOuter.newAddBoundaryToGeometry(new_geometry.get(), -shellThickness, "", "shell");
         }
         
     }
@@ -495,7 +495,7 @@ osg::Geometry* computeGlyphGeometry(osgText::Glyph3D* glyph, float bevelThicknes
             ++itr)
         {
             osg::PrimitiveSet* prim = itr->get();
-            if (prim->getName()=="face")  face_geometry->addPrimitiveSet(copyop(*itr));
+            if (prim->getName()=="face")  face_geometry->addPrimitiveSet(copyop(itr->get()));
             else primitiveSets.push_back(prim);
         }
 
@@ -536,10 +536,10 @@ osg::Geometry* computeGlyphGeometry(osgText::Glyph3D* glyph, float bevelThicknes
 //
 // computeTextGeometry
 //
-osg::Geometry* computeTextGeometry(osgText::Glyph3D* glyph, float width)
+osg::Geometry* computeTextGeometry(const osgText::Glyph3D* glyph, float width)
 {
-    osg::Vec3Array* orig_vertices = glyph->getRawVertexArray();
-    osg::Geometry::PrimitiveSetList& orig_primitives = glyph->getRawFacePrimitiveSetList();
+    const osg::Vec3Array* orig_vertices = glyph->getRawVertexArray();
+    const osg::Geometry::PrimitiveSetList& orig_primitives = glyph->getRawFacePrimitiveSetList();
 
     osg::ref_ptr<osg::Geometry> text_geometry = new osg::Geometry;
     osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array((*orig_vertices));
@@ -617,7 +617,7 @@ osg::Geometry* computeTextGeometry(osgText::Glyph3D* glyph, float width)
     backedge_indices.resize(orig_size, NULL_VALUE);
 
 
-    for(osg::Geometry::PrimitiveSetList::iterator itr = orig_primitives.begin();
+    for(osg::Geometry::PrimitiveSetList::const_iterator itr = orig_primitives.begin();
         itr != orig_primitives.end();
         ++itr)
     {
@@ -660,7 +660,7 @@ osg::Geometry* computeTextGeometry(osg::Geometry* glyphGeometry, const osgText::
     osg::Vec3Array* orig_vertices = dynamic_cast<osg::Vec3Array*>(glyphGeometry->getVertexArray());
     if (!orig_vertices)
     {
-        OSG_NOTICE<<"computeTextGeometry(..): No vertices on glyphGeometry."<<std::endl;
+        OSG_INFO<<"computeTextGeometry(..): No vertices on glyphGeometry."<<std::endl;
         return 0;
     }
 
@@ -694,6 +694,7 @@ osg::Geometry* computeTextGeometry(osg::Geometry* glyphGeometry, const osgText::
     // build up the vertices primitives for the front face, and record the indices
     // for later use, and to ensure sharing of vertices in the face primitive set
     osg::DrawElementsUShort* frontFace = new osg::DrawElementsUShort(GL_TRIANGLES);
+    frontFace->setName("front");
     text_geometry->addPrimitiveSet(frontFace);
     for(unsigned int i=0; i<face->size();)
     {
@@ -711,6 +712,7 @@ osg::Geometry* computeTextGeometry(osg::Geometry* glyphGeometry, const osgText::
     // for later use, and to ensure sharing of vertices in the face primitive set
     // the order of the triangle indices are flipped to make sure that the triangles are back face
     osg::DrawElementsUShort* backFace = new osg::DrawElementsUShort(GL_TRIANGLES);
+    backFace->setName("back");
     text_geometry->addPrimitiveSet(backFace);
     for(unsigned int i=0; i<face->size()-2;)
     {
@@ -807,6 +809,7 @@ osg::Geometry* computeTextGeometry(osg::Geometry* glyphGeometry, const osgText::
         }
 
         osg::DrawElementsUShort* elements = new osg::DrawElementsUShort(GL_TRIANGLES);
+        elements->setName("wall");
         unsigned int base, next;
         for(unsigned int i = 0; i< no_vertices_on_boundary-1; ++i)
         {

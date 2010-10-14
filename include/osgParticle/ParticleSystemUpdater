@@ -23,7 +23,7 @@
 #include <osg/ref_ptr>
 #include <osg/CopyOp>
 #include <osg/Object>
-#include <osg/Node>
+#include <osg/Geode>
 #include <osg/NodeVisitor>
 
 #include <osgUtil/CullVisitor>
@@ -80,7 +80,6 @@ namespace osgParticle
     protected:
         virtual ~ParticleSystemUpdater() {}
         ParticleSystemUpdater &operator=(const ParticleSystemUpdater &) { return *this; }
-        
         
     private:
         typedef std::vector<osg::ref_ptr<ParticleSystem> > ParticleSystem_Vector;

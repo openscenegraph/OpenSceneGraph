@@ -28,13 +28,13 @@ namespace osgDB {
 
 class Archive;
 
-/** list of directories to search through which searching for files. */
+/** List of directories to search through which searching for files. */
 typedef std::deque<std::string> FilePathList;
 
 // forward declare
 class Options;
 
-/** pure virtual base class for reading and writing of non native formats. */
+/** Pure virtual base class for reading and writing of non native formats. */
 class OSGDB_EXPORT ReaderWriter : public osg::Object
 {
     public:
@@ -53,19 +53,19 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
         typedef std::map<std::string, std::string> FormatDescriptionMap;
         typedef std::list<std::string> FeatureList;
 
-        /** return which protocols are supported by ReaderWriter. */
+        /** Return which protocols are supported by ReaderWriter. */
         virtual const FormatDescriptionMap& supportedProtocols() const { return _supportedProtocols; }
 
-        /** return which list of file extensions supported by ReaderWriter. */
+        /** Return which list of file extensions supported by ReaderWriter. */
         virtual const FormatDescriptionMap& supportedExtensions() const { return _supportedExtensions; }
 
-        /** return which list of file extensions supported by ReaderWriter. */
+        /** Return which list of file extensions supported by ReaderWriter. */
         virtual const FormatDescriptionMap& supportedOptions() const { return _supportedOptions; }
 
-        /** return true if ReaderWriter accepts specified file extension.*/
+        /** Return true if ReaderWriter accepts specified file extension.*/
         virtual bool acceptsExtension(const std::string& /*extension*/) const;
 
-        /// bit mask for setting up which feature types are available for read and/or write
+        /// Bit mask for setting up which feature types are available for read and/or write
         enum Features
         {
             FEATURE_NONE               = 0,
@@ -90,10 +90,10 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
                                          FEATURE_WRITE_NODE         |
                                          FEATURE_WRITE_SHADER       
         };    
-        /** return available features*/
+        /** Return available features*/
         virtual Features supportedFeatures() const;
 
-        /** return feature as string */
+        /** Return feature as string */
         static FeatureList featureAsString(Features feature);
 
 
@@ -104,14 +104,14 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
 
                 enum ReadStatus
                 {
-                    NOT_IMPLEMENTED, //!< raad*() method not implemented in concreate ReaderWriter.
+                    NOT_IMPLEMENTED, //!< read*() method not implemented in concrete ReaderWriter.
                     FILE_NOT_HANDLED, //!< File is not appropriate for this file reader, due to some incompatibility, but *not* a read error.
                     FILE_NOT_FOUND, //!< File could not be found or could not be read.
                     FILE_LOADED, //!< File successfully found, loaded, and converted into osg.
                     FILE_LOADED_FROM_CACHE, //!< File found in cache and returned.
                     ERROR_IN_READING_FILE, //!< File found, loaded, but an error was encountered during processing.
-                    FILE_REQUESTED, //!< Asyncronous file read has been requested, but returning immediatiely, keep polling plugin till file read has been completed.
-                    INSUFFICIENT_MEMORY_TO_LOAD //!< File found but not loaded because estimated memory usage is not enought
+                    FILE_REQUESTED, //!< Asynchronous file read has been requested, but returning immediately, keep polling plugin until file read has been completed.
+                    INSUFFICIENT_MEMORY_TO_LOAD //!< File found but not loaded because estimated required memory surpasses available memory.
                 };
 
                 ReadResult(ReadStatus status=FILE_NOT_HANDLED):_status(status) {}
@@ -167,7 +167,7 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
 
                 enum WriteStatus
                 {
-                    NOT_IMPLEMENTED, //!< write*() method not implemented in concreate ReaderWriter.
+                    NOT_IMPLEMENTED, //!< write*() method not implemented in concrete ReaderWriter.
                     FILE_NOT_HANDLED,
                     FILE_SAVED,
                     ERROR_IN_WRITING_FILE
@@ -202,14 +202,14 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
 
         typedef osgDB::Options Options;
 
-        /** determine if a file exists, normally the default implementation will be approrpiate for local file access
-         *  but with plugins like the libcurl based on it will return true if the file is accessible a server.*/
+        /** Determine if a file exists, normally the default implementation will be appropiate for local file access
+         *  but with plugins like the libcurl based one it will return true if the file is accessible at the server. */
         virtual bool fileExists(const std::string& filename, const Options* options) const;
 
-        /** open an archive for reading, writing, or to create an empty archive for writing to.*/ 
+        /** Open an archive for reading, writing, or to create an empty archive for writing to.*/
         virtual ReadResult openArchive(const std::string& /*fileName*/,ArchiveStatus, unsigned int =4096, const Options* =NULL) const { return ReadResult(ReadResult::NOT_IMPLEMENTED); }
 
-        /** open an archive for reading.*/ 
+        /** Open an archive for reading.*/
         virtual ReadResult openArchive(std::istream& /*fin*/,const Options* =NULL) const { return ReadResult(ReadResult::NOT_IMPLEMENTED); }
 
         virtual ReadResult readObject(const std::string& /*fileName*/,const Options* =NULL) const { return ReadResult(ReadResult::NOT_IMPLEMENTED); }
@@ -238,15 +238,15 @@ class OSGDB_EXPORT ReaderWriter : public osg::Object
 
         /** Specify fmt string as a supported protocol.
           * Please note, this method should usually only be used internally by subclasses of ReaderWriter, Only in special cases
-          * will a ReaderWriter implementation be able to handle a protocol format that is wasn't original designed for.
-          * To know whether it's safe to inject a new protocol format to an existing ReaderWriter you will need to review
+          * will a ReaderWriter implementation be able to handle a protocol format that it wasn't originally designed for.
+          * To know whether it's safe to inject a new protocol format into an existing ReaderWriter you will need to review
           * the source code and dependencies of that ReaderWriter. */
         void supportsProtocol(const std::string& fmt, const std::string& description);
 
         /** Specify ext string as a supported file extension.
           * Please note, this method should usually only be used internally by subclasses of ReaderWriter. Only in special cases
-          * will a ReaderWriter implementation be able to handle a file extension that is wasn't original designed for.
-          * To know whether it's safe to inject a new file extension to an existing ReaderWriter you will need to review the
+          * will a ReaderWriter implementation be able to handle a file extension that it wasn't originally designed for.
+          * To know whether it's safe to inject a new file extension into an existing ReaderWriter you will need to review the
           * the source code and dependencies of that ReaderWriter. */
         void supportsExtension(const std::string& ext, const std::string& description);
 

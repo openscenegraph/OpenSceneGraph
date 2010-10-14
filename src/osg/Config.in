@@ -32,7 +32,6 @@
 #cmakedefine OSG_USE_UTF8_FILENAME
 #cmakedefine OSG_DISABLE_MSVC_WARNINGS
 
-#cmakedefine OSG_GLU_AVAILABLE
 #cmakedefine OSG_GL1_AVAILABLE
 #cmakedefine OSG_GL2_AVAILABLE
 #cmakedefine OSG_GL3_AVAILABLE

@@ -24,7 +24,7 @@ using namespace osgDB;
 static std::string s_lastSchema;
 
 InputStream::InputStream( const osgDB::Options* options )
-    :   _byteSwap(0), _useFloatMatrix(true), _useSchemaData(false), _forceReadingImage(false), _dataDecompress(0)
+    :   _byteSwap(0), _useSchemaData(false), _forceReadingImage(false), _dataDecompress(0)
 {
     if ( !options ) return;
     _options = options;
@@ -141,27 +141,104 @@ InputStream& InputStream::operator>>( osg::Plane& p )
     p.set( p0, p1, p2, p3 ); return *this;
 }
 
+#if 0
 InputStream& InputStream::operator>>( osg::Matrixf& mat )
 {
-    *this >> PROPERTY("Matrixf") >> BEGIN_BRACKET;
+   ObjectProperty property("");
+   *this >> property  >> BEGIN_BRACKET;
+
+   if (property._name == "Matrixf")
+   {
+        // stream has same type as what we want to read so read directly
+        for ( int r=0; r<4; ++r )
+        {
+            *this >> mat(r, 0) >> mat(r, 1) >> mat(r, 2) >> mat(r, 3);
+        }
+   }
+   else if (property._name == "Matrixd")
+   {
+        // stream has different type than what we want to read so read stream into
+        // a temporary and then copy across to the final matrix
+        double value;
+        for ( int r=0; r<4; ++r )
+        {
+            for ( int c=0; c<4; ++c)
+            {
+                *this >> value;
+                mat(r,c) = static_cast<float>(value);
+            }
+        }
+   }
+
+   *this >> END_BRACKET;
+   return *this;
+}
+
+InputStream& InputStream::operator>>( osg::Matrixd& mat )
+{
+   ObjectProperty property("");
+   *this >> property  >> BEGIN_BRACKET;
+
+   if (property._name == "Matrixf")
+   {
+        // stream has different type than what we want to read so read stream into
+        // a temporary and then copy across to the final matrix
+        float value;
+        for ( int r=0; r<4; ++r )
+        {
+            for ( int c=0; c<4; ++c)
+            {
+                *this >> value;
+                mat(r,c) = static_cast<float>(value);
+            }
+        }
+   }
+   else if (property._name == "Matrixd")
+   {
+        // stream has same type as what we want to read so read directly
+        for ( int r=0; r<4; ++r )
+        {
+            *this >> mat(r, 0) >> mat(r, 1) >> mat(r, 2) >> mat(r, 3);
+        }
+   }
+
+   *this >> END_BRACKET;
+   return *this;
+}
+#else
+InputStream& InputStream::operator>>( osg::Matrixf& mat )
+{
+    *this >> BEGIN_BRACKET;
+
+    // stream has different type than what we want to read so read stream into
+    // a temporary and then copy across to the final matrix
+    double value;
     for ( int r=0; r<4; ++r )
     {
-        *this >> mat(r, 0) >> mat(r, 1) >> mat(r, 2) >> mat(r, 3);
+        for ( int c=0; c<4; ++c)
+        {
+            *this >> value;
+            mat(r,c) = static_cast<float>(value);
+        }
     }
+
     *this >> END_BRACKET;
     return *this;
 }
 
 InputStream& InputStream::operator>>( osg::Matrixd& mat )
 {
-    *this >> PROPERTY("Matrixd") >> BEGIN_BRACKET;
+    *this >> BEGIN_BRACKET;
+
     for ( int r=0; r<4; ++r )
     {
         *this >> mat(r, 0) >> mat(r, 1) >> mat(r, 2) >> mat(r, 3);
     }
+
     *this >> END_BRACKET;
     return *this;
 }
+#endif
 
 osg::Array* InputStream::readArray()
 {
@@ -171,7 +248,10 @@ osg::Array* InputStream::readArray()
     *this >> PROPERTY("ArrayID") >> id;
     
     ArrayMap::iterator itr = _arrayMap.find( id );
-    if ( itr!=_arrayMap.end() ) return itr->second.get();
+    if ( itr!=_arrayMap.end() )
+    {
+        return itr->second.get();
+    }
     
     DEF_MAPPEE(ArrayType, type);
     *this >> type;
@@ -330,6 +410,7 @@ osg::Array* InputStream::readArray()
     
     if ( getException() ) return NULL;
     _arrayMap[id] = array;
+
     return array.release();
 }
 
@@ -417,23 +498,24 @@ osg::PrimitiveSet* InputStream::readPrimitiveSet()
 
 osg::Image* InputStream::readImage()
 {
+    std::string className="osg::Image";
     unsigned int id = 0;
-    *this >> PROPERTY("ImageID") >> id;
+
+    *this >> PROPERTY("UniqueID") >> id;
     if ( getException() ) return NULL;
-    
+
     IdentifierMap::iterator itr = _identifierMap.find( id );
     if ( itr!=_identifierMap.end() )
     {
-        advanceToCurrentEndBracket();
         return static_cast<osg::Image*>( itr->second.get() );
     }
-    
+
     std::string name;
     int writeHint, decision = IMAGE_EXTERNAL;
     *this >> PROPERTY("FileName"); readWrappedString(name);
     *this >> PROPERTY("WriteHint") >> writeHint >> decision;
     if ( getException() ) return NULL;
-    
+
     osg::ref_ptr<osg::Image> image = NULL;
     bool readFromExternal = true;
     switch ( decision )
@@ -533,9 +615,12 @@ osg::Image* InputStream::readImage()
         image->setFileName( name );
         image->setWriteHint( (osg::Image::WriteHint)writeHint );
     }
-    
-    image = static_cast<osg::Image*>( readObject(image.get()) );
-    return image.release();
+
+    image = static_cast<osg::Image*>( readObjectFields(className, image.get()) );
+
+   _identifierMap[id] = image;
+
+   return image.release();
 }
 
 osg::Object* InputStream::readObject( osg::Object* existingObj )
@@ -551,13 +636,23 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
         advanceToCurrentEndBracket();
         return itr->second.get();
     }
-    
+
+    osg::ref_ptr<osg::Object> obj = readObjectFields( className );
+
+    _identifierMap[id] = obj;
+
+    advanceToCurrentEndBracket();
+
+    return obj.release();
+}
+
+osg::Object* InputStream::readObjectFields( const std::string& className, osg::Object* existingObj )
+{
     ObjectWrapper* wrapper = Registry::instance()->getObjectWrapperManager()->findWrapper( className );
     if ( !wrapper )
     {
         OSG_WARN << "InputStream::readObject(): Unsupported wrapper class "
                                << className << std::endl;
-        advanceToCurrentEndBracket();
         return NULL;
     }
     _fields.push_back( className );
@@ -565,8 +660,6 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
     osg::ref_ptr<osg::Object> obj = existingObj ? existingObj : wrapper->getProto()->cloneType();
     if ( obj.valid() )
     {
-        _identifierMap[id] = obj;
-        
         const StringList& associates = wrapper->getAssociates();
         for ( StringList::const_iterator itr=associates.begin(); itr!=associates.end(); ++itr )
         {
@@ -585,7 +678,6 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
             _fields.pop_back();
         }
     }
-    advanceToCurrentEndBracket();
     _fields.pop_back();
     return obj.release();
 }
@@ -627,7 +719,6 @@ InputStream::ReadType InputStream::start( InputIterator* inIterator )
         type = static_cast<ReadType>(typeValue);
         
         unsigned int attributes; *this >> attributes;
-        if ( attributes&0x1 ) _useFloatMatrix = false;
         if ( attributes&0x2 ) _useSchemaData = true;
     }
     if ( !isBinary() )

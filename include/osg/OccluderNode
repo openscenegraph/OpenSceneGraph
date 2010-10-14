@@ -19,11 +19,10 @@
 
 namespace osg {
 
-/** OccluderNode is a Group node which allows OccluderNodeing between children.
-    Typical uses would be for objects which might need to be rendered
-    differently at different times, for instance a OccluderNode could be used 
-    to represent the different states of a traffic light.
-*/
+/**
+ * OccluderNode is a Group node which provides hooks for adding
+ * ConvexPlanarOccluders to the scene.
+ */
 class OSG_EXPORT OccluderNode : public Group
 {
     public :

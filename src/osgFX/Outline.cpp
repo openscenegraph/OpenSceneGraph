@@ -30,7 +30,8 @@
 #include <osg/Texture1D>
 
 
-namespace {
+namespace
+{
     const unsigned int Override_On = osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE;
     const unsigned int Override_Off = osg::StateAttribute::OFF|osg::StateAttribute::OVERRIDE;
 }
@@ -71,8 +72,9 @@ namespace osgFX
             _color = color;
             if (_material.valid()) {
                 const osg::Material::Face face = osg::Material::FRONT_AND_BACK;
-                _material->setAmbient(face, color);
-                _material->setDiffuse(face, color);
+                _material->setAmbient(face, osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f));
+                _material->setDiffuse(face, osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f));
+                _material->setSpecular(face, osg::Vec4(0.0f, 0.0f, 0.0f, 1.0f));
                 _material->setEmission(face, color);
             }
         }
@@ -119,14 +121,14 @@ namespace osgFX
                 state->setAttributeAndModes(stencil, Override_On);
 
                 // cull front-facing polys
-                osg::CullFace* cf = new osg::CullFace;
-                cf->setMode(osg::CullFace::FRONT);
-                state->setAttributeAndModes(cf, Override_On);
+                osg::CullFace* cullFace = new osg::CullFace;
+                cullFace->setMode(osg::CullFace::FRONT);
+                state->setAttributeAndModes(cullFace, Override_On);
 
                 // draw back-facing polygon lines
-                osg::PolygonMode* pm = new osg::PolygonMode;
-                pm->setMode(osg::PolygonMode::BACK, osg::PolygonMode::LINE);
-                state->setAttributeAndModes(pm, Override_On);
+                osg::PolygonMode* polyMode = new osg::PolygonMode;
+                polyMode->setMode(osg::PolygonMode::BACK, osg::PolygonMode::LINE);
+                state->setAttributeAndModes(polyMode, Override_On);
 
                 // outline width
                 _lineWidth = new osg::LineWidth;
@@ -135,13 +137,13 @@ namespace osgFX
 
                 // outline color/material
                 _material = new osg::Material;
-                _material->setColorMode(osg::Material::AMBIENT_AND_DIFFUSE);
+                _material->setColorMode(osg::Material::OFF);
                 setColor(_color);
                 state->setAttributeAndModes(_material.get(), Override_On);
 
                 // disable modes
                 state->setMode(GL_BLEND, Override_Off);
-                state->setMode(GL_DEPTH_TEST, Override_Off);
+                //state->setMode(GL_DEPTH_TEST, Override_Off);
                 state->setTextureMode(0, GL_TEXTURE_1D, Override_Off);
                 state->setTextureMode(0, GL_TEXTURE_2D, Override_Off);
                 state->setTextureMode(0, GL_TEXTURE_3D, Override_Off);

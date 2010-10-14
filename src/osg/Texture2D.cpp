@@ -52,7 +52,7 @@ Texture2D::~Texture2D()
 int Texture2D::compare(const StateAttribute& sa) const
 {
     // check the types are equal and then create the rhs variable
-    // used by the COMPARE_StateAttribute_Parameter macro's below.
+    // used by the COMPARE_StateAttribute_Parameter macros below.
     COMPARE_StateAttribute_Types(Texture2D,sa)
 
     if (_image!=rhs._image) // smart pointer comparison.
@@ -102,7 +102,7 @@ int Texture2D::compare(const StateAttribute& sa) const
 #endif
     COMPARE_StateAttribute_Parameter(_subloadCallback)
 
-    return 0; // passed all the above comparison macro's, must be equal.
+    return 0; // passed all the above comparison macros, must be equal.
 }
 
 void Texture2D::setImage(Image* image)
@@ -191,8 +191,7 @@ void Texture2D::apply(State& state) const
     }
     else if (_subloadCallback.valid())
     {
-
-        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(this, contextID,GL_TEXTURE_2D);
+        _textureObjectBuffer[contextID] = textureObject = _subloadCallback->generateTextureObject(*this, state);
 
         textureObject->bind();
 
@@ -248,13 +247,11 @@ void Texture2D::apply(State& state) const
         // update the modified tag to show that it is upto date.
         getModifiedCount(contextID) = image->getModifiedCount();
 
-        if (state.getMaxTexturePoolSize()==0 &&
-            _unrefImageDataAfterApply &&
-            areAllTextureObjectsLoaded() &&
-            image->getDataVariance()==STATIC)
+        // unref image data?
+        if (isSafeToUnrefImageData(state) && image->getDataVariance()==STATIC)
         {
             Texture2D* non_const_this = const_cast<Texture2D*>(this);
-            non_const_this->_image = 0;
+            non_const_this->_image = NULL;
         }
 
         // in theory the following line is redundent, but in practice

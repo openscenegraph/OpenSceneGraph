@@ -9,6 +9,7 @@ BEGIN_USER_TABLE( Shape, osgParticle::Particle );
     ADD_USER_VALUE( QUAD_TRIANGLESTRIP );
     ADD_USER_VALUE( HEXAGON );
     ADD_USER_VALUE( LINE );
+    ADD_USER_VALUE( USER );
 END_USER_TABLE()
 
 USER_READ_FUNC( Shape, readShapeValue )
@@ -68,6 +69,14 @@ bool readParticle( osgDB::InputStream& is, osgParticle::Particle& p )
     p.setAngularVelocity( angleV );
     p.setTextureTile( s, t, num );
     
+    bool hasObject = false; is >> osgDB::PROPERTY("Drawable") >> hasObject;
+    if ( hasObject )
+    {
+        is >> osgDB::BEGIN_BRACKET;
+        p.setDrawable( dynamic_cast<osg::Drawable*>(is.readObject()) );
+        is >> osgDB::END_BRACKET;
+    }
+    
     is >> osgDB::END_BRACKET;
     return true;
 }
@@ -101,6 +110,15 @@ bool writeParticle( osgDB::OutputStream& os, const osgParticle::Particle& p )
     os << osgDB::PROPERTY("Angle") << osg::Vec3d(p.getAngle()) << std::endl;
     os << osgDB::PROPERTY("AngularVelocity") << osg::Vec3d(p.getAngularVelocity()) << std::endl;
     os << osgDB::PROPERTY("TextureTile") << p.getTileS() << p.getTileT() << p.getNumTiles() << std::endl;
+    
+    os << osgDB::PROPERTY("Drawable") << (p.getDrawable()!=NULL);
+    if ( p.getDrawable()!=NULL )
+    {
+        os << osgDB::BEGIN_BRACKET << std::endl;
+        os.writeObject( p.getDrawable() );
+        os << osgDB::END_BRACKET;
+    }
+    os << std::endl;
     
     os << osgDB::END_BRACKET << std::endl;
     return true;

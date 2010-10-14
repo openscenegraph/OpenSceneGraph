@@ -76,7 +76,7 @@ TextureRectangle::~TextureRectangle()
 int TextureRectangle::compare(const StateAttribute& sa) const
 {
     // check the types are equal and then create the rhs variable
-    // used by the COMPARE_StateAttribute_Parameter macro's below.
+    // used by the COMPARE_StateAttribute_Parameter macros below.
     COMPARE_StateAttribute_Types(TextureRectangle,sa)
 
     if (_image!=rhs._image) // smart pointer comparison.
@@ -118,7 +118,7 @@ int TextureRectangle::compare(const StateAttribute& sa) const
     COMPARE_StateAttribute_Parameter(_textureHeight)
     COMPARE_StateAttribute_Parameter(_subloadCallback)
 
-    return 0; // passed all the above comparison macro's, must be equal.
+    return 0; // passed all the above comparison macros, must be equal.
 }
 
 void TextureRectangle::setImage(Image* image)
@@ -259,12 +259,12 @@ void TextureRectangle::apply(State& state) const
             textureObject->setAllocated(true);
         }
 
-        if (state.getMaxTexturePoolSize()==0 && _unrefImageDataAfterApply && areAllTextureObjectsLoaded() && _image->getDataVariance()==STATIC)
+        // unref image data?
+        if (isSafeToUnrefImageData(state) && _image->getDataVariance()==STATIC)
         {
             TextureRectangle* non_const_this = const_cast<TextureRectangle*>(this);
-            non_const_this->_image = 0;
+            non_const_this->_image = NULL;
         }
-
     }
     else if ( (_textureWidth!=0) && (_textureHeight!=0) && (_internalFormat!=0) )
     {

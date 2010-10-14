@@ -47,9 +47,23 @@ namespace osgParticle
         /// Enable or disable this operator.
         inline void setEnabled(bool v);
         
-        /**    Do something on a particle. 
+        /** Do something on all emitted particles.
             This method is called by <CODE>ModularProgram</CODE> objects to perform some operations
-            on the particles. You must override it in descendant classes. Common operations
+            on the particles. By default, it will call the <CODE>operate()</CODE> method for each particle.
+            You must override it in descendant classes.
+        */
+        virtual void operateParticles(ParticleSystem* ps, double dt)
+        {
+            int n = ps->numParticles();
+            for (int i=0; i<n; ++i)
+            {
+                Particle* P = ps->getParticle(i);
+                if (P->isAlive() && isEnabled()) operate(P, dt);
+            }
+        }
+        
+        /**    Do something on a particle. 
+            You must override it in descendant classes. Common operations
             consist of modifying the particle's velocity vector. The <CODE>dt</CODE> parameter is
             the time elapsed from last operation.            
         */

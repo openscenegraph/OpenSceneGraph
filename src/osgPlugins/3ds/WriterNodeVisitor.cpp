@@ -84,7 +84,7 @@ inline void copyOsgQuatToLib3dsQuat(float lib3ds_vector[4], const osg::Quat& osg
 
 std::string getFileName(const std::string & path)
 {
-    unsigned int slashPos = path.find_last_of("/\\");
+    size_t slashPos = path.find_last_of("/\\");
     if (slashPos == std::string::npos) return path;
     return path.substr(slashPos+1);
 }
@@ -98,7 +98,7 @@ bool is83(const std::string & s)
     if (s.find_first_of("/\\") != std::string::npos) return false;            // It should not be a path, but a filename
     unsigned int len = s.length();
     if (len > 12 || len == 0) return false;
-    unsigned int pointPos = s.rfind('.');
+    size_t pointPos = s.rfind('.');
     if (pointPos == std::string::npos) return len <= 8;        // Without point
     // With point
     if (pointPos > 8) return false;
@@ -114,8 +114,8 @@ bool is3DSpath(const std::string & s, bool extendedFilePaths)
     if (extendedFilePaths) return true;        // Extended paths are simply those that fits the 64 bytes buffer!
 
     // For each subdirectory
-    unsigned int tokenLen;
-    for (unsigned int tokenBegin=0, tokenEnd=0; tokenEnd == std::string::npos; tokenBegin = tokenEnd+1)
+    size_t tokenLen;
+    for (size_t tokenBegin=0, tokenEnd=0; tokenEnd == std::string::npos; tokenBegin = tokenEnd+1)
     {
         tokenEnd = s.find_first_of("/\\", tokenBegin);
         if (tokenEnd != std::string::npos) tokenLen = tokenEnd-tokenBegin-1;        // -1 to avoid reading the separator
@@ -503,12 +503,12 @@ WriterNodeVisitor::WriterNodeVisitor(Lib3dsFile * file3ds, const std::string & f
     osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
     _succeeded(true),
     _srcDirectory(srcDirectory),
-    file3ds(file3ds),
+    _file3ds(file3ds),
     _currentStateSet(new osg::StateSet()),
     _lastMaterialIndex(0),
     _lastMeshIndex(0),
     _cur3dsNode(NULL),
-    options(options),
+    _options(options),
     _imageCount(0),
     _extendedFilePaths(false)
 {
@@ -531,7 +531,7 @@ WriterNodeVisitor::WriterNodeVisitor(Lib3dsFile * file3ds, const std::string & f
 void WriterNodeVisitor::writeMaterials()
 {
     unsigned int nbMat = _materialMap.size();
-    lib3ds_file_reserve_materials(file3ds, nbMat, 1);
+    lib3ds_file_reserve_materials(_file3ds, nbMat, 1);
     // Ugly thing: it seems lib3ds_file_insert_material() doesn't support insertion in a random order (else materials are not assigned the right way)
     for (unsigned int iMat=0; iMat<nbMat; ++iMat)
     {
@@ -580,7 +580,7 @@ void WriterNodeVisitor::writeMaterials()
                 if(_imageSet.find(mat.image.get()) == _imageSet.end())
                 {
                     _imageSet.insert(mat.image.get());
-                    osgDB::writeImageFile(*(mat.image), path);
+                    osgDB::writeImageFile(*(mat.image), path, _options);
                 }
                 // Here we don't assume anything about initial flags state (actually it is set to LIB3DS_TEXTURE_NO_TILE by lib3DS, but this is subject to change)
                 if (mat.texture_transparency) tex.flags |= LIB3DS_TEXTURE_ALPHA_SOURCE;
@@ -590,7 +590,7 @@ void WriterNodeVisitor::writeMaterials()
             }
             if (!succeeded())
                 return;
-            lib3ds_file_insert_material(file3ds, mat3ds, itr->second.index);
+            lib3ds_file_insert_material(_file3ds, mat3ds, itr->second.index);
             break;        // Ugly thing (3)
         }
         assert(found);        // Ugly thing (4) - Implementation error if !found
@@ -795,11 +795,11 @@ WriterNodeVisitor::buildMesh(osg::Geode        & geo,
             mesh->texcos[it->second][1] = vecs[it->first.first][1];
         }
     }
-    lib3ds_file_insert_mesh(file3ds, mesh, _lastMeshIndex);
+    lib3ds_file_insert_mesh(_file3ds, mesh, _lastMeshIndex);
     ++_lastMeshIndex;
 
     Lib3dsMeshInstanceNode * node3ds = lib3ds_node_new_mesh_instance(mesh, mesh->name, NULL, NULL, NULL);
-    lib3ds_file_append_node(file3ds, reinterpret_cast<Lib3dsNode*>(node3ds), reinterpret_cast<Lib3dsNode*>(_cur3dsNode));
+    lib3ds_file_append_node(_file3ds, reinterpret_cast<Lib3dsNode*>(node3ds), reinterpret_cast<Lib3dsNode*>(_cur3dsNode));
 }
 
 unsigned int 
@@ -1066,7 +1066,7 @@ void WriterNodeVisitor::apply3DSMatrixNode(osg::Node &node, const osg::Matrix * 
         node3ds = lib3ds_node_new_mesh_instance(NULL, getUniqueName(node.getName().empty() ? node.className() : node.getName(), prefix).c_str(), NULL, NULL, NULL);
     }
 
-    lib3ds_file_append_node(file3ds, reinterpret_cast<Lib3dsNode*>(node3ds), reinterpret_cast<Lib3dsNode*>(parent));
+    lib3ds_file_append_node(_file3ds, reinterpret_cast<Lib3dsNode*>(node3ds), reinterpret_cast<Lib3dsNode*>(parent));
     _cur3dsNode = node3ds;
 }
 

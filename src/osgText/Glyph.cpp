@@ -434,13 +434,9 @@ void Glyph::subload() const
     GLenum errorNo = glGetError();
     if (errorNo!=GL_NO_ERROR)
     {
-#ifdef OSG_GLU_AVAILABLE
-        const GLubyte* msg = gluErrorString(errorNo);
+        const GLubyte* msg = osg::gluErrorString(errorNo);
         if (msg) { OSG_WARN<<"before Glyph::subload(): detected OpenGL error: "<<msg<<std::endl; }
         else  { OSG_WARN<<"before Glyph::subload(): detected OpenGL error number: "<<errorNo<<std::endl; }
-#else
-        OSG_WARN<<"before Glyph::subload(): detected OpenGL error number: "<<errorNo<<std::endl;
-#endif
     }
 
     if(s() <= 0 || t() <= 0)
@@ -463,13 +459,9 @@ void Glyph::subload() const
     {
 
 
-#ifdef OSG_GLU_AVAILABLE
-        const GLubyte* msg = gluErrorString(errorNo);
+        const GLubyte* msg = osg::gluErrorString(errorNo);
         if (msg) { OSG_WARN<<"after Glyph::subload() : detected OpenGL error: "<<msg<<std::endl; }
         else { OSG_WARN<<"after Glyph::subload() : detected OpenGL error number: "<<errorNo<<std::endl; }
-#else
-        OSG_WARN<<"after Glyph::subload() : detected OpenGL error number: "<<errorNo<<std::endl;
-#endif
 
         OSG_WARN<< "\tglTexSubImage2D(0x"<<hex<<GL_TEXTURE_2D<<dec<<" ,"<<0<<"\t"<<std::endl<<
                                  "\t                "<<_texturePosX<<" ,"<<_texturePosY<<std::endl<<
@@ -492,30 +484,110 @@ Glyph3D::Glyph3D(Font* font, unsigned int glyphCode):
 
 void Glyph3D::setThreadSafeRefUnref(bool threadSafe)
 {
-    if (_vertexArray.valid()) _vertexArray->setThreadSafeRefUnref(threadSafe);
-    if (_normalArray.valid()) _normalArray->setThreadSafeRefUnref(threadSafe);
+    GlyphGeometries _glyphGeometries;
+    for(GlyphGeometries::iterator itr = _glyphGeometries.begin();
+        itr != _glyphGeometries.end();
+        ++itr)
+    {
+        (*itr)->setThreadSafeRefUnref(threadSafe);
+    }
 }
 
-void Glyph3D::computeText3DGeometryData()
+GlyphGeometry* Glyph3D::getGlyphGeometry(const Style* style)
 {
-    float creaseAngle = 30.0f;
-    float width = _font->getFontDepth();
-    bool smooth = true;
 
-    osg::ref_ptr<osg::Geometry> textGeometry = osgText::computeTextGeometry(this, width);
-    if (!textGeometry) return;
-
-    // create the normals
-    if (smooth && textGeometry.valid())
+    for(GlyphGeometries::iterator itr = _glyphGeometries.begin();
+        itr != _glyphGeometries.end();
+        ++itr)
     {
-        osgUtil::SmoothingVisitor::smooth(*textGeometry, osg::DegreesToRadians(creaseAngle));
+        GlyphGeometry* glyphGeometry = itr->get();
+        if (glyphGeometry->match(style))
+        {
+            OSG_INFO<<"Glyph3D::getGlyphGeometry(Style* style) found matching GlyphGeometry."<<std::endl;
+            return glyphGeometry;
+        }
     }
 
-    _vertexArray = dynamic_cast<osg::Vec3Array*>(textGeometry->getVertexArray());
-    _normalArray = dynamic_cast<osg::Vec3Array*>(textGeometry->getNormalArray());
+    OSG_INFO<<"Glyph3D::getGlyphGeometry(Style* style) could not find matching GlyphGeometry, creating a new one."<<std::endl;
 
-    for(osg::Geometry::PrimitiveSetList::iterator itr = textGeometry->getPrimitiveSetList().begin();
-        itr != textGeometry->getPrimitiveSetList().end();
+    osg::ref_ptr<GlyphGeometry> glyphGeometry = new GlyphGeometry();
+    glyphGeometry->setup(this, style);
+    _glyphGeometries.push_back(glyphGeometry);
+
+    return glyphGeometry.get();
+}
+
+
+GlyphGeometry::GlyphGeometry()
+{
+}
+
+void GlyphGeometry::setThreadSafeRefUnref(bool threadSafe)
+{
+    if (_geode.valid()) _geode->setThreadSafeRefUnref(threadSafe);
+}
+
+void GlyphGeometry::setup(const Glyph3D* glyph, const Style* style)
+{
+    float creaseAngle = 30.0f;
+    bool smooth = true;
+    osg::ref_ptr<osg::Geometry> shellGeometry;
+
+    if (!style)
+    {
+        OSG_INFO<<"GlyphGeometry::setup(const Glyph* glyph, NULL) creating default glyph geometry."<<std::endl;
+
+        float width = 0.1f;
+
+        _geometry = osgText::computeTextGeometry(glyph, width);
+    }
+    else
+    {
+        OSG_INFO<<"GlyphGeometry::setup(const Glyph* glyph, NULL) create glyph geometry with custom Style."<<std::endl;
+
+        // record the style
+        _style = dynamic_cast<Style*>(style->clone(osg::CopyOp::DEEP_COPY_ALL));
+
+        const Bevel* bevel = style ? style->getBevel() : 0;
+        bool outline = style ? style->getOutlineRatio()>0.0f : false;
+        float width = style->getThicknessRatio();
+
+        if (bevel)
+        {
+            float thickness = bevel->getBevelThickness();
+
+            osg::ref_ptr<osg::Geometry> glyphGeometry = osgText::computeGlyphGeometry(glyph, thickness, width);
+
+            _geometry = osgText::computeTextGeometry(glyphGeometry.get(), *bevel, width);
+            shellGeometry = outline ? osgText::computeShellGeometry(glyphGeometry.get(), *bevel, width) : 0;
+        }
+        else
+        {
+            _geometry = osgText::computeTextGeometry(glyph, width);
+        }
+    }
+
+    if (!_geometry)
+    {
+        OSG_INFO<<"Warning: GlyphGeometry::setup(const Glyph* glyph, const Style* style) failed."<<std::endl;
+        return;
+    }
+
+    _geode = new osg::Geode;
+    _geode->addDrawable(_geometry.get());
+    if (shellGeometry.valid()) _geode->addDrawable(shellGeometry.get());
+
+    // create the normals
+    if (smooth)
+    {
+        osgUtil::SmoothingVisitor::smooth(*_geometry, osg::DegreesToRadians(creaseAngle));
+    }
+
+    _vertices = dynamic_cast<osg::Vec3Array*>(_geometry->getVertexArray());
+    _normals = dynamic_cast<osg::Vec3Array*>(_geometry->getNormalArray());
+
+    for(osg::Geometry::PrimitiveSetList::iterator itr = _geometry->getPrimitiveSetList().begin();
+        itr != _geometry->getPrimitiveSetList().end();
         ++itr)
     {
         osg::PrimitiveSet* prim = itr->get();
@@ -523,4 +595,12 @@ void Glyph3D::computeText3DGeometryData()
         else if (prim->getName()=="back") _backPrimitiveSetList.push_back(prim);
         else if (prim->getName()=="wall") _wallPrimitiveSetList.push_back(prim);
     }
+}
+
+bool GlyphGeometry::match(const Style* style) const
+{
+    if (_style == style) return true;
+    if (!_style || !style) return false;
+
+    return (*_style==*style);
 }

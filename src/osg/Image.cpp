@@ -31,35 +31,6 @@
 
 #include "dxtctool.h"
 
-#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
-    #define GL_RED                  0x1903
-    #define GL_GREEN                0x1904
-    #define GL_BLUE                 0x1905
-    #define GL_DEPTH_COMPONENT      0x1902
-    #define GL_STENCIL_INDEX        0x1901
-#endif
-
-#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE) || defined(OSG_GL3_AVAILABLE)
-    #define GL_BITMAP               0x1A00
-    #define GL_COLOR_INDEX          0x1900
-    #define GL_INTENSITY12          0x804C
-    #define GL_INTENSITY16          0x804D
-    #define GL_INTENSITY4           0x804A
-    #define GL_INTENSITY8           0x804B
-    #define GL_LUMINANCE12          0x8041
-    #define GL_LUMINANCE12_ALPHA4   0x8046
-    #define GL_LUMINANCE12_ALPHA12  0x8047
-    #define GL_LUMINANCE16          0x8042
-    #define GL_LUMINANCE16_ALPHA16  0x8048
-    #define GL_LUMINANCE4           0x803F
-    #define GL_LUMINANCE4_ALPHA4    0x8043
-    #define GL_LUMINANCE6_ALPHA2    0x8044
-    #define GL_LUMINANCE8           0x8040
-    #define GL_LUMINANCE8_ALPHA8    0x8045
-    #define GL_RGBA8                0x8058
-    #define GL_PACK_ROW_LENGTH      0x0D02
-#endif
-
 using namespace osg;
 using namespace std;
 
@@ -940,7 +911,6 @@ void Image::readImageFromCurrentTexture(unsigned int contextID, bool copyMipMaps
 
 void Image::scaleImage(int s,int t,int r, GLenum newDataType)
 {
-#ifdef OSG_GLU_AVAILABLE
     if (_s==s && _t==t && _r==r) return;
 
     if (_data==NULL)
@@ -955,8 +925,6 @@ void Image::scaleImage(int s,int t,int r, GLenum newDataType)
         return;
     }
 
-
-
     unsigned int newTotalSize = computeRowWidthInBytes(s,_pixelFormat,newDataType,_packing)*t;
 
     // need to sort out what size to really use...
@@ -968,10 +936,11 @@ void Image::scaleImage(int s,int t,int r, GLenum newDataType)
         return;
     }
 
-    glPixelStorei(GL_PACK_ALIGNMENT,_packing);
-    glPixelStorei(GL_UNPACK_ALIGNMENT,_packing);
+    PixelStorageModes psm;
+    psm.pack_alignment = _packing;
+    psm.unpack_alignment = _packing;
 
-    GLint status = gluScaleImage(_pixelFormat,
+    GLint status = gluScaleImage(&psm, _pixelFormat,
         _s,
         _t,
         _dataType,
@@ -998,14 +967,10 @@ void Image::scaleImage(int s,int t,int r, GLenum newDataType)
     }
 
     dirty();
-#else
-    OSG_NOTICE<<"Warning: Image::scaleImage(int s,int t,int r, GLenum newDataType) not supported."<<std::endl;
-#endif
 }
 
 void Image::copySubImage(int s_offset, int t_offset, int r_offset, const osg::Image* source)
 {
-#ifdef OSG_GLU_AVAILABLE
     if (!source) return;
     if (s_offset<0 || t_offset<0 || r_offset<0)
     {
@@ -1036,12 +1001,12 @@ void Image::copySubImage(int s_offset, int t_offset, int r_offset, const osg::Im
 
     void* data_destination = data(s_offset,t_offset,r_offset);
 
-    glPixelStorei(GL_PACK_ALIGNMENT,source->getPacking());
-    glPixelStorei(GL_PACK_ROW_LENGTH,_s);
+    PixelStorageModes psm;
+    psm.pack_alignment = _packing;
+    psm.pack_row_length = _s;
+    psm.unpack_alignment = _packing;
 
-    glPixelStorei(GL_UNPACK_ALIGNMENT,_packing);
-
-    GLint status = gluScaleImage(_pixelFormat,
+    GLint status = gluScaleImage(&psm, _pixelFormat,
         source->s(),
         source->t(),
         source->getDataType(),
@@ -1057,9 +1022,6 @@ void Image::copySubImage(int s_offset, int t_offset, int r_offset, const osg::Im
     {
         OSG_WARN << "Error Image::scaleImage() did not succeed : errorString = "<< gluErrorString((GLenum)status) << ". The rendering context may be invalid." << std::endl;
     }
-#else
-    OSG_NOTICE<<"Warning: Image::copySubImage(int, int, int, const osg::Image*)) not supported."<<std::endl;
-#endif
 }
 
 void Image::flipHorizontal()

@@ -29,7 +29,7 @@ class Vec4d
 {
     public:
 
-        /** Type of Vec class.*/
+        /** Data type of vector components.*/
         typedef double value_type;
 
         /** Number of vector components. */
@@ -37,6 +37,7 @@ class Vec4d
         
         value_type _v[4];
 
+        /** Constructor that sets all components of the vector to zero */
         Vec4d() { _v[0]=0.0; _v[1]=0.0; _v[2]=0.0; _v[3]=0.0; }
 
         Vec4d(value_type x, value_type y, value_type z, value_type w)
@@ -123,7 +124,9 @@ class Vec4d
                    (unsigned int)clampTo((_v[0]*255.0),0.0,255.0);
         }
 
+        /** Returns true if all components have values that are not NaN. */
         inline bool valid() const { return !isNaN(); }
+        /** Returns true if at least one component has value NaN. */
         inline bool isNaN() const { return osg::isNaN(_v[0]) || osg::isNaN(_v[1]) || osg::isNaN(_v[2]) || osg::isNaN(_v[3]); }
 
         /** Dot product. */

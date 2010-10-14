@@ -246,6 +246,19 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         /** Get mask selecting default implict buffer attachments for Cameras secondary MULTISAMPLE FBOs. */
         ImplicitBufferAttachmentMask getImplicitBufferAttachmentResolveMask() const { return _implicitBufferAttachmentResolveMask;}
 
+        enum SwapMethod
+        {
+            SWAP_DEFAULT,   // Leave swap method at default returned by choose Pixel Format.
+            SWAP_EXCHANGE,  // Flip front / back buffer. 
+            SWAP_COPY,      // Copy back to front buffer. 
+            SWAP_UNDEFINED  // Move back to front buffer leaving contents of back buffer undefined.
+        };
+        
+        /** Select preferred swap method */
+        void setSwapMethod( SwapMethod swapMethod ) { _swapMethod = swapMethod; }
+
+        /** Get preferred swap method */
+        SwapMethod getSwapMethod( void ) { return _swapMethod; }
 
         /** Set the hint of which OpenGL version to attempt to create a graphics context for.*/
         void setGLContextVersion(const std::string& version) { _glContextVersion = version; }
@@ -315,6 +328,8 @@ class OSG_EXPORT DisplaySettings : public osg::Referenced
         std::string                     _glContextVersion;
         unsigned int                    _glContextFlags;
         unsigned int                    _glContextProfileMask;
+
+        SwapMethod                      _swapMethod;
 };
 
 }

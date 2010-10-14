@@ -210,7 +210,7 @@ class OSG_EXPORT Texture2DArray : public Texture
 
         /**
          * Use std::vector to encapsulate referenced pointers to images of different layers.
-         * Vectors gives us a random access iterator. The overhead of non-used elements is negligeable */
+         * Vectors gives us a random access iterator. The overhead of non-used elements is negligible */
         std::vector<ref_ptr<Image> > _images;
 
         // subloaded images can have different texture and image sizes.

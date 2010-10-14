@@ -156,11 +156,13 @@ public:
         std::string realStr;
         for ( std::string::const_iterator itr=str.begin(); itr!=str.end(); ++itr )
         {
-            if ( *itr=='\"' )
-                realStr += "''";
-            else
-                realStr += *itr;
+            char ch = *itr;
+            if ( ch=='\"' ) realStr += '\\';
+            else if ( ch=='\\' ) realStr += '\\';
+            realStr += ch;
         }
+        realStr.insert( 0, 1, '\"' );
+        realStr += '\"';
         addToCurrentNode( realStr );
     }
     
@@ -432,31 +434,56 @@ public:
     
     virtual void readWrappedString( std::string& str )
     {
-        std::string realStr;
-        if ( prepareStream() ) std::getline( _sstream, realStr );
-        for ( std::string::const_iterator itr=realStr.begin(); itr!=realStr.end(); ++itr )
+        if ( !prepareStream() ) return;
+        
+        // Read available string in the stream buffer
+        unsigned int availSize = _sstream.rdbuf()->in_avail();
+        std::string realStr = _sstream.str();
+        _sstream.str("");
+        
+        // Find the first quot or valid character
+        bool hasQuot = false;
+        std::string::iterator itr = realStr.begin() + (realStr.size() - availSize);
+        for ( ; itr!=realStr.end(); ++itr )
         {
-            if ( *itr=='\'' )
+            char ch = *itr;
+            if ((ch==' ') || (ch=='\n') || (ch=='\r')) continue;
+            else if (ch=='"') hasQuot = true;
+            else str += ch;
+
+            itr++;
+            break;
+        }
+
+        for ( ; itr!=realStr.end(); ++itr )
+        {
+            char ch = *itr;
+            if (ch=='\\')
             {
                 itr++;
-                if ( itr==realStr.end() ) break;
-                
-                if ( *itr=='\'' ) str += '\"';
-                else str += '\'' + *itr;
+                if (itr == realStr.end()) break;
+                str += *itr;
+            }
+            else if (hasQuot && ch=='"')
+            {
+                // Get to the end of the wrapped string
+                itr++;
+                break;
             }
             else
-                str += *itr;
+                str += ch;
+        }
+        if (itr != realStr.end())
+        {
+            _sstream << std::string(itr, realStr.end());
         }
     }
     
     virtual bool matchString( const std::string& str )
     {
         prepareStream();
-        unsigned int size = str.length();
-        if ( _sstream.str().length()<size ) return false;
-        
-        int result = _sstream.str().compare( 0, size, str );
-        if ( !result )
+        std::string strInStream = osgDB::trimEnclosingSpaces(_sstream.str());
+        if ( strInStream==str )
         {
             std::string prop; readString( prop );
             return true;
@@ -476,26 +503,28 @@ protected:
         _sstream.clear();
         
         osgDB::XmlNode* current = _nodePath.back().get();
-        if ( !current->name.empty() )
+        if ( current->type!=osgDB::XmlNode::COMMENT )
         {
-            _sstream.str( current->name );
-            current->name.clear();
-            return true;
+            if ( !current->name.empty() )
+            {
+                _sstream.str( current->name );
+                current->name.clear();
+                return true;
+            }
+            
+            if ( current->properties.size()>0 )
+            {
+                if ( applyPropertyToStream(current, "attribute") ) return true;
+                else if ( applyPropertyToStream(current, "text") ) return true;
+            }
+            
+            if ( current->children.size()>0 )
+            {
+                _nodePath.push_back( current->children.front() );
+                current->children.erase( current->children.begin() );
+                return prepareStream();
+            }
         }
-        
-        if ( current->properties.size()>0 )
-        {
-            if ( applyPropertyToStream(current, "attribute") ) return true;
-            else if ( applyPropertyToStream(current, "text") ) return true;
-        }
-        
-        if ( current->children.size()>0 )
-        {
-            _nodePath.push_back( current->children.front() );
-            current->children.erase( current->children.begin() );
-            return prepareStream();
-        }
-        
         _nodePath.pop_back();
         return prepareStream();
     }

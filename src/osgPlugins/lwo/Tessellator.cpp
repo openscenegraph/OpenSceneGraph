@@ -44,15 +44,15 @@ bool Tessellator::tessellate(const Polygon &poly, const osg::Vec3Array *points, 
     out_ = out;
     last_error_ = 0;
 
-    GLUtesselator *tess = gluNewTess();
+    osg::GLUtesselator *tess = osg::gluNewTess();
 
-    gluTessCallback(tess, GLU_TESS_BEGIN_DATA, (GLU_TESS_CALLBACK) (cb_begin_data));
-    gluTessCallback(tess, GLU_TESS_VERTEX_DATA, (GLU_TESS_CALLBACK) (cb_vertex_data));
-    gluTessCallback(tess, GLU_TESS_END_DATA, (GLU_TESS_CALLBACK) (cb_end_data));
-    gluTessCallback(tess, GLU_TESS_ERROR_DATA, (GLU_TESS_CALLBACK) (cb_error_data));
+    osg::gluTessCallback(tess, GLU_TESS_BEGIN_DATA, (osg::GLU_TESS_CALLBACK) (cb_begin_data));
+    osg::gluTessCallback(tess, GLU_TESS_VERTEX_DATA, (osg::GLU_TESS_CALLBACK) (cb_vertex_data));
+    osg::gluTessCallback(tess, GLU_TESS_END_DATA, (osg::GLU_TESS_CALLBACK) (cb_end_data));
+    osg::gluTessCallback(tess, GLU_TESS_ERROR_DATA, (osg::GLU_TESS_CALLBACK) (cb_error_data));
 
-    gluTessBeginPolygon(tess, this);
-    gluTessBeginContour(tess);    
+    osg::gluTessBeginPolygon(tess, this);
+    osg::gluTessBeginContour(tess);    
 
     double *vertices = new double[poly.indices().size() * 3];
     int *indices = new int[poly.indices().size()];
@@ -72,9 +72,9 @@ bool Tessellator::tessellate(const Polygon &poly, const osg::Vec3Array *points, 
         gluTessVertex(tess, v, x);
     }
 
-    gluTessEndContour(tess);
-    gluTessEndPolygon(tess);
-    gluDeleteTess(tess);
+    osg::gluTessEndContour(tess);
+    osg::gluTessEndPolygon(tess);
+    osg::gluDeleteTess(tess);
 
     delete[] vertices;
     delete[] indices;

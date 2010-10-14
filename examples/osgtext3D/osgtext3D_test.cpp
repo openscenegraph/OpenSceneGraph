@@ -137,7 +137,7 @@ int main_test(int, char**)
     osg::Geode* pGeodeSphere = new osg::Geode;
     pGeodeSphere->addDrawable( new osg::ShapeDrawable( new osg::Sphere(osg::Vec3(0.0f,0.0f,0.0f),0.01f) ) );
     rPat->addChild( pGeodeSphere );
-    pGroup->addChild( rPat );
+    pGroup->addChild( rPat.get() );
 
     osg::Vec3 center(0.0f,0.0f,0.0f);
     float radius = 1.0f;

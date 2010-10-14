@@ -38,52 +38,8 @@
 
 typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
 
-
-class MyGraphicsContext {
-    public:
-        MyGraphicsContext()
-        {
-            osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-            traits->x = 0;
-            traits->y = 0;
-            traits->width = 1;
-            traits->height = 1;
-            traits->windowDecoration = false;
-            traits->doubleBuffer = false;
-            traits->sharedContext = 0;
-            traits->pbuffer = true;
-
-            _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-
-            if (!_gc)
-            {
-                traits->pbuffer = false;
-                _gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-            }
-
-            if (_gc.valid()) 
-            {
-                _gc->realize();
-                _gc->makeCurrent();
-            }
-        }
-        
-        bool valid() const { return _gc.valid() && _gc->isRealized(); }
-        
-    private:
-        osg::ref_ptr<osg::GraphicsContext> _gc;
-};
-
-
 osg::StateSet* createState()
 {
-    MyGraphicsContext gc;
-    if (!gc.valid()) 
-    {
-        osg::notify(osg::NOTICE)<<"Unable to create the graphics context required to build 3d image."<<std::endl;
-        return 0;
-    }
-
     // read 4 2d images
     osg::ref_ptr<osg::Image> image_0 = osgDB::readImageFile("Images/lz.rgb");
     osg::ref_ptr<osg::Image> image_1 = osgDB::readImageFile("Images/reflect.rgb");
@@ -102,10 +58,7 @@ osg::StateSet* createState()
         return new osg::StateSet;
     }
 
-    // get max 3D texture size
-    GLint textureSize = osg::Texture3D::getExtensions(0,true)->maxTexture3DSize();
-    if (textureSize > 256)
-        textureSize = 256;
+    GLint textureSize = 256;
 
     // scale them all to the same size.
     image_0->scaleImage(textureSize,textureSize,1);

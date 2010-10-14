@@ -73,7 +73,7 @@ TextureCubeMap::~TextureCubeMap()
 int TextureCubeMap::compare(const StateAttribute& sa) const
 {
     // check the types are equal and then create the rhs variable
-    // used by the COMPARE_StateAttribute_Paramter macro's below.
+    // used by the COMPARE_StateAttribute_Parameter macros below.
     COMPARE_StateAttribute_Types(TextureCubeMap,sa)
 
     bool noImages = true;
@@ -117,12 +117,12 @@ int TextureCubeMap::compare(const StateAttribute& sa) const
     int result = compareTexture(rhs);
     if (result!=0) return result;
 
-    // compare each paramter in turn against the rhs.
+    // compare each parameter in turn against the rhs.
     COMPARE_StateAttribute_Parameter(_textureWidth)
     COMPARE_StateAttribute_Parameter(_textureHeight)
     COMPARE_StateAttribute_Parameter(_subloadCallback)
 
-    return 0; // passed all the above comparison macro's, must be equal.
+    return 0; // passed all the above comparison macros, must be equal.
 }
 
 
@@ -312,14 +312,15 @@ void TextureCubeMap::apply(State& state) const
 
         _textureObjectBuffer[contextID] = textureObject;
 
-        if (state.getMaxTexturePoolSize()==0 && _unrefImageDataAfterApply && areAllTextureObjectsLoaded())
+        // unref image data?
+        if (isSafeToUnrefImageData(state))
         {
             TextureCubeMap* non_const_this = const_cast<TextureCubeMap*>(this);
             for (int n=0; n<6; n++)
             {                
                 if (_images[n].valid() && _images[n]->getDataVariance()==STATIC)
                 {
-                    non_const_this->_images[n] = 0;
+                    non_const_this->_images[n] = NULL;
                 }
             }
         }

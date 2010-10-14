@@ -197,7 +197,6 @@ namespace osgParticle
         _enabled = v;
         if (_enabled)
         {
-            _t0 = -1;
             _currentTime = 0;
         }
     }

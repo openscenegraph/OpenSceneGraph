@@ -65,7 +65,7 @@ class OSG_EXPORT Multisample : public StateAttribute
         virtual int compare(const StateAttribute& sa) const
         {
             // check the types are equal and then create the rhs variable
-            // used by the COMPARE_StateAttribute_Parameter macro's below.
+            // used by the COMPARE_StateAttribute_Parameter macros below.
             COMPARE_StateAttribute_Types(Multisample,sa)
 
             // compare each parameter in turn against the rhs.

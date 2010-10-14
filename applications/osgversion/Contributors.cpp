@@ -416,7 +416,9 @@ TypoCorrection typoCorrections[] =
     {"Yefrei",         "Yefei"},
     {"Yfei",           "Yefei"},
     {"Gurhrie",        "Guthrie"},
-    {"Byran",          "Bryan"}
+    {"Byran",          "Bryan"},
+    {"Fielder",        "Fiedler"},
+    {"Mathia",         "Mathias"}
 };
 
 
@@ -430,6 +432,8 @@ struct NameCorrection
 
 NameCorrection nameCorrections[] =
 {
+    {"Marin",          "Lavery",
+     "Martin",         "Lavery"},
     {"Nguyen",         "Van",
      "Nguyen",         "Van Truong"},
     {"Thom",           "Carlo",
@@ -537,7 +541,9 @@ NameCorrection nameCorrections[] =
     {"Alberto",        "Lucas",
      "Alberto",        "Luaces"},
     {"Tyge",           "",
-     "Tyge",           "Løvset"}
+     "Tyge",           "Løvset"},
+    {"Ricard",         "Schmidt",
+     "Richard",        "Schmidt"}
 };
 
 

@@ -48,6 +48,15 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/SmokeTrailEffect
     ${HEADER_PATH}/VariableRateCounter
     ${HEADER_PATH}/Version
+    
+    ${HEADER_PATH}/CompositePlacer
+    ${HEADER_PATH}/AngularDampingOperator
+    ${HEADER_PATH}/DampingOperator
+    ${HEADER_PATH}/ExplosionOperator
+    ${HEADER_PATH}/OrbitOperator
+    ${HEADER_PATH}/DomainOperator
+    ${HEADER_PATH}/BounceOperator
+    ${HEADER_PATH}/SinkOperator
 )
 
 # FIXME: For OS X, need flag for Framework or dylib
@@ -74,6 +83,10 @@ ADD_LIBRARY(${LIB_NAME}
     SmokeEffect.cpp
     SmokeTrailEffect.cpp
     Version.cpp
+    
+    DomainOperator.cpp
+    BounceOperator.cpp
+    SinkOperator.cpp
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 

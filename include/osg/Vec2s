@@ -20,7 +20,7 @@ class Vec2s
 {
     public:
 
-        /** Type of Vec class.*/
+        /** Data type of vector components.*/
         typedef short value_type;
 
         /** Number of vector components. */
@@ -28,6 +28,7 @@ class Vec2s
         
         value_type _v[2];
 
+        /** Constructor that sets all components of the vector to zero */
         Vec2s() { _v[0]=0; _v[1]=0; }
 
         Vec2s(value_type x, value_type y) { _v[0] = x; _v[1] = y; }

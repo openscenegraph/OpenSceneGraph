@@ -35,7 +35,7 @@ void CullSettings::setDefaults()
     _smallFeatureCullingPixelSize = 2.0f;
 
     _computeNearFar = COMPUTE_NEAR_FAR_USING_BOUNDING_VOLUMES;
-    _nearFarRatio = 0.0005f;
+    _nearFarRatio = 0.0005;
     _impostorActive = true;
     _depthSortImpostorSprites = false;
     _impostorPixelErrorThreshold = 4.0f;

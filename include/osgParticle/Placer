@@ -39,6 +39,9 @@ namespace osgParticle
 
         /// Place a particle. Must be implemented in descendant classes.
         virtual void place(Particle* P) const = 0;
+        
+        /// Volume of the placer. Can be implemented in descendant classes.
+        virtual float volume() const { return 1.0f; }
 
         /// Return the control position of particles that placer will generate. Must be implemented in descendant classes.
         virtual osg::Vec3 getControlPosition() const = 0;

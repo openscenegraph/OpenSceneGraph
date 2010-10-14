@@ -34,6 +34,8 @@ bool  read_particle(osgDB::Input &fr, osgParticle::Particle &P)
                         P.setShape(osgParticle::Particle::QUAD_TRIANGLESTRIP);
                     } else if (std::string(ptstr) == "LINE") {
                         P.setShape(osgParticle::Particle::LINE);
+                    } else if (std::string(ptstr) == "USER") {
+                        P.setShape(osgParticle::Particle::USER);
                     } else {
                         osg::notify(osg::WARN) << "Particle reader warning: invalid shape: " << ptstr << std::endl;
                     }
@@ -163,6 +165,15 @@ bool  read_particle(osgDB::Input &fr, osgParticle::Particle &P)
                 }
                 ++fr;
             }
+            if (fr[0].matchWord("drawable") && fr[1].matchString("{")) {
+                fr += 2;
+                itAdvanced = true;
+                osg::Drawable *drawable = dynamic_cast<osg::Drawable *>(fr.readObject());
+                if (drawable) {
+                    P.setDrawable(drawable);
+                }
+                ++fr;
+            }
         }
         return true;
     }
@@ -181,8 +192,9 @@ void  write_particle(const osgParticle::Particle &P, osgDB::Output &fw)
     case osgParticle::Particle::HEXAGON: fw << "HEXAGON" << std::endl; break;
     case osgParticle::Particle::QUAD_TRIANGLESTRIP: fw << "QUAD_TRIANGLESTRIP" << std::endl; break;
     case osgParticle::Particle::QUAD: fw << "QUAD" << std::endl; break;
-    case osgParticle::Particle::LINE:
-    default: fw << "LINE" << std::endl; break;
+    case osgParticle::Particle::LINE: fw << "LINE" << std::endl; break;
+    case osgParticle::Particle::USER:
+    default: fw << "USER" << std::endl; break;
     }
 
     fw.indent() << "lifeTime " << P.getLifeTime() << std::endl;
@@ -235,6 +247,12 @@ void  write_particle(const osgParticle::Particle &P, osgDB::Output &fw)
     fw.indent() << "colorInterpolator {" << std::endl;
     fw.moveIn();
     fw.writeObject(*P.getColorInterpolator());
+    fw.moveOut();
+    fw.indent() << "}" << std::endl;
+    
+    fw.indent() << "drawable {" << std::endl;
+    fw.moveIn();
+    fw.writeObject(*P.getDrawable());
     fw.moveOut();
     fw.indent() << "}" << std::endl;
 

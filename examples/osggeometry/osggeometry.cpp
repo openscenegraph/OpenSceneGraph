@@ -37,12 +37,12 @@
 
 #include <iostream>
 
-// This demos uses the illustrates how to creates the various different types of geometry that
-// the osg::Geometry class can represent.  This demos uses the OpenGL red books diagram of different 
+// This demo illustrates how to create the various different types of geometry that
+// the osg::Geometry class can represent.  This demo uses the OpenGL red book diagram of different 
 // OpenGL Primitives as a template for all the equivalent OpenSceneGraph Primitives.  The OpenSceneGraph 
-// wraps OpenGL very thinly so uses all the same enum and naming conventions. The coordinate data is also 
+// wraps OpenGL very thinly and therefore uses all the same enum and naming conventions. The coordinate data is also 
 // wrapped around OpenGL's vertex arrays and draw arrays/elements calls.  Familiarity with
-// OpenGL will help understand the the osg::Geometry class which encapsulate all this, or if you
+// OpenGL will help you understand the osg::Geometry class which encapsulate all this, or if you
 // havn't learned OpenGL yet, learning osg::Geometry will help you understand how OpenGL
 // works!
 
@@ -84,9 +84,9 @@ osg::Node* createScene()
     // create the Geode (Geometry Node) to contain all our osg::Geometry objects.
     osg::Geode* geode = new osg::Geode();
 
-    // follows are separate blocks for creating POINTS, LINES, LINE_STRIP, LINE_LOOP, POLYGON, QUADS,
-    // QUAD_STRIP, TRIANGLES, TRIANGLE_STRIP and TRIANGLE_FAN primitives.  A image of these primitives
-    // are provided in the distribution : OpenSceneGraph-Data/Images/primitives.gif.
+    // following are separate blocks for creating POINTS, LINES, LINE_STRIP, LINE_LOOP, POLYGON, QUADS,
+    // QUAD_STRIP, TRIANGLES, TRIANGLE_STRIP and TRIANGLE_FAN primitives. An image of these primitives
+    // is provided in the distribution: OpenSceneGraph-Data/Images/primitives.gif.
 
 
     // create POINTS
@@ -297,20 +297,20 @@ osg::Node* createScene()
 
 
     // Note on vertex ordering.
-    // While the OpenGL diagram should vertices specified in a clockwise direction
-    // in reality you need to specify coords for polygons into a anticlockwise direction
-    // for their front face to be pointing towards your, get this wrong and you could
+    // According to the OpenGL diagram vertices should be specified in a clockwise direction.
+    // In reality you need to specify coords for polygons in a anticlockwise direction
+    // for their front face to be pointing towards you; get this wrong and you could
     // find back face culling removing the wrong faces of your models.  The OpenGL diagram 
-    // is just plain wrong, but its nice diagram so we'll keep it for now!
+    // is just plain wrong, but it's a nice diagram so we'll keep it for now!
 
     // create POLYGON
     {
         // create Geometry object to store all the vertices and lines primitive.
         osg::Geometry* polyGeom = new osg::Geometry();
         
-        // this time we'll a C arrays to initialize the vertices.
+        // this time we'll use C arrays to initialize the vertices.
         // note, anticlockwise ordering.
-        // note II, OpenGL polygons must be convex plan polygons, otherwise 
+        // note II, OpenGL polygons must be convex, planar polygons, otherwise 
         // undefined results will occur.  If you have concave polygons or ones
         // that cross over themselves then use the osgUtil::Tessellator to fix
         // the polygons into a set of valid polygons.
@@ -529,7 +529,7 @@ osg::Node* createScene()
 }
 
 
-// define a node callback to animation a transform as a cycle along the y axis, between 0 and 2.0.
+// define a node callback to animate a transform as a cycle along the y axis, between 0 and 2.0.
 class MyTransformCallback : public osg::NodeCallback
 {
 

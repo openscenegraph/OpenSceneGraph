@@ -28,7 +28,6 @@ osgParticle::Particle::Particle()
     _si(new LinearInterpolator), 
     _ai(new LinearInterpolator), 
     _ci(new LinearInterpolator),
-    _alive(true),
     _mustdie(false),
     _lifeTime(2),
     _radius(0.2f),
@@ -41,8 +40,9 @@ osgParticle::Particle::Particle()
     _angle(0, 0, 0),
     _angul_arvel(0, 0, 0),
     _t0(0),
-    _current_size(0),
-    _current_alpha(0),
+    _alive(1.0f),
+    _current_size(0.0f),
+    _current_alpha(0.0f),
     _s_tile(1.0f),
     _t_tile(1.0f),
     _start_tile(0),
@@ -51,16 +51,17 @@ osgParticle::Particle::Particle()
     _s_coord(0.0f),
     _t_coord(0.0f),
     _previousParticle(INVALID_INDEX),
-    _nextParticle(INVALID_INDEX)
+    _nextParticle(INVALID_INDEX),
+    _depth(0.0)
 {
 }
 
-bool osgParticle::Particle::update(double dt)
+bool osgParticle::Particle::update(double dt, bool onlyTimeStamp)
 {
     // this method should return false when the particle dies;
     // so, if we were instructed to die, do it now and return.
     if (_mustdie) {
-        _alive = false;
+        _alive = -1.0;
         return false;
     }
 
@@ -75,9 +76,30 @@ bool osgParticle::Particle::update(double dt)
 
     // if our age is over the lifetime limit, then die and return.
     if (x > 1) {
-        _alive = false;
+        _alive = -1.0;
         return false;
     }
+    
+    // compute the current values for size, alpha and color.
+    if (_lifeTime <= 0) {
+       if (dt == _t0) {
+          _current_size = _sr.get_random();
+          _current_alpha = _ar.get_random();
+          _current_color = _cr.get_random();
+       }
+    } else {
+       _current_size = _si.get()->interpolate(x, _sr);
+       _current_alpha = _ai.get()->interpolate(x, _ar);
+       _current_color = _ci.get()->interpolate(x, _cr);
+    }
+    
+    // update position
+    _prev_pos = _position;
+    _position += _velocity * dt;
+    
+    // return now if we indicate that only time stamp should be updated
+    // the shader will handle remain properties in this case
+    if (onlyTimeStamp) return true;
 
     //Compute the current texture tile based on our normalized age
     int currentTile = _start_tile + static_cast<int>(x * getNumTiles());
@@ -93,23 +115,6 @@ bool osgParticle::Particle::update(double dt)
         // OSG_NOTICE<<this<<" setting tex coords "<<_s_coord<<" "<<_t_coord<<std::endl;
     }
     
-    // compute the current values for size, alpha and color.
-    if (_lifeTime <= 0) {
-       if (dt == _t0) {
-          _current_size = _sr.get_random();
-          _current_alpha = _ar.get_random();
-          _current_color = _cr.get_random();
-       }
-    } else {
-       _current_size = _si.get()->interpolate(x, _sr);
-       _current_alpha = _ai.get()->interpolate(x, _ar);
-       _current_color = _ci.get()->interpolate(x, _cr);
-    }
-
-    // update position
-    _prev_pos = _position;
-    _position += _velocity * dt;
-
     // update angle
     _prev_angle = _angle;
     _angle += _angul_arvel * dt;
@@ -214,11 +219,40 @@ void osgParticle::Particle::render(osg::GLBeginEndAdapter* gl, const osg::Vec3& 
     }
 }
 
+void osgParticle::Particle::render(osg::RenderInfo& renderInfo, const osg::Vec3& xpos, const osg::Vec3& xrot) const
+{
+#if defined(OSG_GL_MATRICES_AVAILABLE)
+    if (_drawable.valid())
+    {
+        bool requiresRotation = (xrot.x()!=0.0f || xrot.y()!=0.0f || xrot.z()!=0.0f);
+        glColor4f(_current_color.x(),
+                  _current_color.y(),
+                  _current_color.z(),
+                  _current_color.w() * _current_alpha);
+        glPushMatrix();
+        glTranslatef(xpos.x(), xpos.y(), xpos.z());
+        if (requiresRotation)
+        {
+            osg::Quat rotation(xrot.x(), osg::X_AXIS, xrot.y(), osg::Y_AXIS, xrot.z(), osg::Z_AXIS);
+#if defined(OSG_GLES1_AVAILABLE)
+            glMultMatrixf(osg::Matrixf(rotation).ptr());
+#else
+            glMultMatrixd(osg::Matrixd(rotation).ptr());
+#endif
+        }
+        _drawable->draw(renderInfo);
+        glPopMatrix();
+    }
+#else
+    OSG_NOTICE<<"Warning: Particle::render(..) not supported for user-defined shape."<<std::endl;
+#endif
+}
+
 void osgParticle::Particle::setUpTexCoordsAsPartOfConnectedParticleSystem(ParticleSystem* ps)
 {
     if (getPreviousParticle()!=Particle::INVALID_INDEX)
     {
-        update(0.0);
+        update(0.0, false);
 
         Particle* previousParticle = ps->getParticle(getPreviousParticle());
         const osg::Vec3& previousPosition = previousParticle->getPosition();

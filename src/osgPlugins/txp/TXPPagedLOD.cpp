@@ -30,6 +30,15 @@ void TXPPagedLOD::traverse(osg::NodeVisitor& nv)
 
     double timeStamp = nv.getFrameStamp()?nv.getFrameStamp()->getReferenceTime():0.0;
     bool updateTimeStamp = nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR;
+    int frameNumber = nv.getFrameStamp()?nv.getFrameStamp()->getFrameNumber():0;
+
+    // set the frame number of the traversal so that external nodes can find out how active this
+    // node is.
+    if (nv.getFrameStamp() && 
+        nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR) 
+    {
+        setFrameNumberOfLastTraversal(nv.getFrameStamp()->getFrameNumber());
+    }
 
     switch(nv.getTraversalMode())
     {
@@ -55,7 +64,10 @@ void TXPPagedLOD::traverse(osg::NodeVisitor& nv)
                     if (i<_children.size())
                     {
                         if (updateTimeStamp)
+                        {
                             _perRangeDataList[i]._timeStamp=timeStamp;
+                            _perRangeDataList[i]._frameNumber=frameNumber;
+                        }
 
                         _children[i]->accept(nv);
                         lastChildTraversed = (int)i;

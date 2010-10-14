@@ -164,10 +164,10 @@ void OccluderEventHandler::endOccluder()
 
 osg::Node* createOccluder(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec3& v3,const osg::Vec3& v4,float holeRatio=-1.0f)
 {
-   // create and occluder which will site along side the loadmodel model.
+   // create an occluder which will sit alongside the loaded model.
     osg::OccluderNode* occluderNode = new osg::OccluderNode;
 
-    // create the convex planer occluder 
+    // create the convex planar occluder
     osg::ConvexPlanarOccluder* cpo = new osg::ConvexPlanarOccluder;
 
     // attach it to the occluder node.
@@ -181,7 +181,7 @@ osg::Node* createOccluder(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
     occluder.add(v3);
     occluder.add(v4);
 
-    // create a whole at the center of the occluder if needed.
+    // create a hole at the center of the occluder if needed.
     if (holeRatio>0.0f)
     {
         // create hole.
@@ -228,7 +228,7 @@ osg::Node* createOccluder(const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec
     
     // add the occluder geode as a child of the occluder,
     // as the occluder can't self occlude its subgraph the
-    // geode will never be occluder by this occluder.
+    // geode will never be occluded by this occluder.
     occluderNode->addChild(geode);    
     
     return occluderNode;
@@ -304,7 +304,7 @@ int main( int argc, char **argv )
         viewer.addEventHandler(new OccluderEventHandler(&viewer));
     }
 
-    // if user request help write it out to cout.
+    // if user requests help write it out to cout.
     if (arguments.read("-h") || arguments.read("--help"))
     {
         arguments.getApplicationUsage()->write(std::cout);
@@ -314,12 +314,12 @@ int main( int argc, char **argv )
     // load the nodes from the commandline arguments.
     osg::Node* loadedmodel = osgDB::readNodeFiles(arguments);
     
-    // if not loaded assume no arguments passed in, try use default mode instead.
+    // if not loaded assume no arguments passed in, try using default mode instead.
     if (!loadedmodel) loadedmodel = osgDB::readNodeFile("glider.osg");
     
     if (!loadedmodel)
     {
-        osg::notify(osg::NOTICE)<<"Please sepecify and model filename on the command line."<<std::endl;
+        osg::notify(osg::NOTICE)<<"Please specify a model filename on the command line."<<std::endl;
         return 1;
     }
     

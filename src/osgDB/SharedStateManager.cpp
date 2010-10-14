@@ -72,7 +72,7 @@ void SharedStateManager::share(osg::Node *node, OpenThreads::Mutex *mt)
 //    osg::Timer_t start_tick = timer.tick();
     
     _mutex = mt;
-    apply(*node);
+    node->accept(*this);
     tmpSharedTextureList.clear();
     tmpSharedStateSetList.clear();
     _mutex = 0;
@@ -252,7 +252,7 @@ void SharedStateManager::process(osg::StateSet* ss, osg::Object* parent)
                         = StateSetSharePair(ss, false);            
                 }
                 // Only in this case sharing textures is also required
-                if (_shareMode & (SHARE_UNSPECIFIED_TEXTURES | SHARE_UNSPECIFIED_TEXTURES | SHARE_UNSPECIFIED_TEXTURES))
+                if (_shareMode & (SHARE_DYNAMIC_TEXTURES | SHARE_STATIC_TEXTURES | SHARE_UNSPECIFIED_TEXTURES))
                 {
                     shareTextures(ss);
                 }
@@ -267,7 +267,7 @@ void SharedStateManager::process(osg::StateSet* ss, osg::Object* parent)
             if(_mutex) _mutex->unlock();
         }
     }
-    else if (_shareMode & (SHARE_UNSPECIFIED_TEXTURES | SHARE_UNSPECIFIED_TEXTURES | SHARE_UNSPECIFIED_TEXTURES))
+    else if (_shareMode & (SHARE_DYNAMIC_TEXTURES | SHARE_STATIC_TEXTURES | SHARE_UNSPECIFIED_TEXTURES))
     {
         shareTextures(ss);
     }

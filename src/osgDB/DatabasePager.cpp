@@ -105,6 +105,32 @@ RefPtrAdapter<FuncObj> refPtrAdapt(const FuncObj& func)
 }
 }
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  CountPagedLODList
+//
+struct DatabasePager::DatabasePagerCompileCompletedCallback : public osgUtil::IncrementalCompileOperation::CompileCompletedCallback
+{
+    DatabasePagerCompileCompletedCallback(osgDB::DatabasePager* pager, osgDB::DatabasePager::DatabaseRequest* databaseRequest):
+        _pager(pager),
+        _databaseRequest(databaseRequest) {}
+
+    virtual bool compileCompleted(osgUtil::IncrementalCompileOperation::CompileSet* compileSet)
+    {
+        _pager->compileCompleted(_databaseRequest.get());
+        return true;
+    }
+
+    osgDB::DatabasePager*                               _pager;
+    osg::ref_ptr<osgDB::DatabasePager::DatabaseRequest> _databaseRequest;
+};
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//  CountPagedLODList
+//
 class DatabasePager::CountPagedLODsVisitor : public osg::NodeVisitor
 {
 public:
@@ -362,7 +388,6 @@ public:
             // if texture object attributes exist and need to be
             // compiled, add the state to the list for later
             // compilation.
-            bool compileStateSet = false;
             for(unsigned int i=0;i<stateset->getTextureAttributeList().size();++i)
             {
                 osg::Texture* texture = dynamic_cast<osg::Texture*>(stateset->getTextureAttribute(i,osg::StateAttribute::TEXTURE));
@@ -380,7 +405,8 @@ public:
 
                     if (!_pager->isCompiled(texture))
                     {
-                        compileStateSet = true;
+                        _dataToCompile->_textures.push_back(texture);
+
                         if (osg::getNotifyLevel() >= osg::DEBUG_INFO)
                         {
                             OSG_INFO <<"Found compilable texture " << texture << " ";
@@ -391,10 +417,6 @@ public:
                         break;
                     }
                 }
-            }
-            if (compileStateSet && _dataToCompile)
-            {
-                _dataToCompile->first.insert(stateset);
             }
 
         }
@@ -437,7 +459,7 @@ public:
         // anything for VBOs, does it?
         if (_dataToCompile && (drawable->getUseVertexBufferObjects() || drawable->getUseDisplayList()) && !_pager->isCompiled(drawable))
         {
-            _dataToCompile->second.push_back(drawable);
+            _dataToCompile->_drawables.push_back(drawable);
         }
     }
     
@@ -991,13 +1013,21 @@ void DatabasePager::DatabaseThread::run()
 
                 databaseRequest->_loadedModel->accept(frov);
 
-                if (_pager->_doPreCompile &&
-                    !_pager->_activeGraphicsContexts.empty())
+                if (_pager->_doPreCompile && !dtc->empty())
                 {
-                    if (!dtc->first.empty() || !dtc->second.empty())
+                    if (_pager->_incrementalCompileOperation.valid())
                     {
-                        loadedObjectsNeedToBeCompiled = true;                
+                        OSG_NOTICE<<"Using IncrementalCompileOperation"<<std::endl;
 
+                        osgUtil::IncrementalCompileOperation::CompileSet* compileSet = new osgUtil::IncrementalCompileOperation::CompileSet(databaseRequest->_loadedModel.get());
+                        compileSet->_compileCompletedCallback = new DatabasePagerCompileCompletedCallback(_pager, databaseRequest);
+
+                        _pager->_incrementalCompileOperation->add(compileSet);
+ 
+                        loadedObjectsNeedToBeCompiled = true;
+                    }
+                    else if (!_pager->_activeGraphicsContexts.empty())
+                    {
                         // copy the objects from the compile list to the other graphics context list.
                         for(;
                             itr != _pager->_activeGraphicsContexts.end();
@@ -1012,7 +1042,10 @@ void DatabasePager::DatabaseThread::run()
                 // dataToCompile or dataToMerge lists.
                 if (loadedObjectsNeedToBeCompiled)
                 {
-                    _pager->_dataToCompileList->add(databaseRequest.get());
+                    if (!_pager->_incrementalCompileOperation)
+                    {
+                        _pager->_dataToCompileList->add(databaseRequest.get());
+                    }
                 }
                 else
                 {
@@ -1313,6 +1346,11 @@ DatabasePager::DatabasePager(const DatabasePager& rhs)
     resetStats();
 }
 
+
+void DatabasePager::setIncrementalCompileOperation(osgUtil::IncrementalCompileOperation* ico)
+{
+    _incrementalCompileOperation = ico;
+}
 
 DatabasePager::~DatabasePager()
 {
@@ -2052,6 +2090,12 @@ bool DatabasePager::requiresExternalCompileGLObjects(unsigned int contextID) con
     return osg::GraphicsContext::getCompileContext(contextID)==0;
 }
 
+void DatabasePager::compileCompleted(DatabaseRequest* databaseRequest)
+{
+    OSG_NOTICE<<"DatabasePager::compileCompleted("<<databaseRequest<<")"<<std::endl;
+    _dataToMergeList->add(databaseRequest);
+}
+
 void DatabasePager::compileAllGLObjects(osg::State& state, bool doFlush)
 {
     double availableTime = DBL_MAX;
@@ -2089,23 +2133,25 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime, b
         {
             DataToCompileMap& dcm = databaseRequest->_dataToCompileMap;
             DataToCompile& dtc = dcm[state.getContextID()];
-            if (!dtc.first.empty() && (elapsedTime+estimatedTextureDuration)<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame)
+            if (!dtc._textures.empty() && (elapsedTime+estimatedTextureDuration)<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame)
             {
 
                 #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)  && !defined(OSG_GL3_AVAILABLE)
                     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_PRIORITY, 1.0);
                 #endif
 
-                // we have StateSet's to compile
-                StateSetList& sslist = dtc.first;
-                //OSG_INFO<<"Compiling statesets"<<std::endl;
-                StateSetList::iterator itr=sslist.begin();
+                //OSG_INFO<<"Compiling textures"<<std::endl;
+
+                // we have Textures to compile
+                typedef osgUtil::IncrementalCompileOperation::CompileData::Textures Textures;
+                Textures& textures = dtc._textures;
+                Textures::iterator itr=textures.begin();
                 unsigned int objTemp = numObjectsCompiled;
                 for(;
-                    itr!=sslist.end() && (compileAll || ((elapsedTime+estimatedTextureDuration)<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame));
+                    itr!=textures.end() && (compileAll || ((elapsedTime+estimatedTextureDuration)<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame));
                     ++itr)
                 {
-                    //OSG_INFO<<"    Compiling stateset "<<(*itr).get()<<std::endl;
+                    OSG_INFO<<"    Compiling texture "<<(*itr).get()<<std::endl;
                     if (isCompiled(itr->get(), state.getContextID())
                         || (sharedManager && sharedManager->isShared(itr->get())))
                     {
@@ -2114,7 +2160,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime, b
                     }
                     double startCompileTime = timer.delta_s(start_tick,timer.tick());
 
-                    (*itr)->compileGLObjects(state);
+                    (*itr)->apply(state);
 
                     #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
                         GLint p;
@@ -2130,19 +2176,20 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime, b
                 }
                 if (osg::getNotifyLevel() >= osg::DEBUG_INFO
                     && numObjectsCompiled > objTemp)
-                    OSG_INFO<< _frameNumber << " compiled "
+                    OSG_NOTICE<< _frameNumber << " compiled "
                                                 << numObjectsCompiled - objTemp
                                                 << " StateSets" << std::endl;
                 // remove the compiled statesets from the list.
-                sslist.erase(sslist.begin(),itr);
+                textures.erase(textures.begin(),itr);
             }
 
-            if (!dtc.second.empty() && (compileAll || ((elapsedTime+estimatedDrawableDuration)<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame)))
+            if (!dtc._drawables.empty() && (compileAll || ((elapsedTime+estimatedDrawableDuration)<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame)))
             {
                 // we have Drawable's to compile
                 //OSG_INFO<<"Compiling drawables"<<std::endl;
-                DrawableList& dwlist = dtc.second;
-                DrawableList::iterator itr=dwlist.begin();
+                typedef osgUtil::IncrementalCompileOperation::CompileData::Drawables Drawables;
+                Drawables& dwlist = dtc._drawables;
+                Drawables::iterator itr = dwlist.begin();
                 unsigned int objTemp = numObjectsCompiled;
                 for(;
                     itr!=dwlist.end() && (compileAll || ((elapsedTime+estimatedDrawableDuration)<availableTime && numObjectsCompiled<_maximumNumOfObjectsToCompilePerFrame));
@@ -2186,12 +2233,11 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime, b
                 itr!=dcm.end() && allCompiled;
                 ++itr)
             {
-                if (!(itr->second.first.empty())) allCompiled=false;
-                if (!(itr->second.second.empty())) allCompiled=false;
+                if (!(itr->second.empty())) allCompiled=false;
             }
 
-            //if (numObjectsCompiled > 0)
-            //OSG_NOTICE<< _frameNumber << "compiled " << numObjectsCompiled << " objects" << std::endl;
+            if (numObjectsCompiled > 0)
+               OSG_NOTICE<< "Framenumber "<<_frameNumber << ": compiled " << numObjectsCompiled << " objects" << std::endl;
             
             if (allCompiled)
             {

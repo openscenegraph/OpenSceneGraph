@@ -109,6 +109,8 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
         
         struct CompileCompletedCallback : public osg::Referenced
         {
+            /// return true if the callback assumes responsibility for merging any associated subgraphs with the main scene graph
+            /// return false if callback doesn't handle the merge, and instead requires the IncrementalCompileOperation to handle this for us
             virtual bool compileCompleted(CompileSet* compileSet) = 0;
         };
 

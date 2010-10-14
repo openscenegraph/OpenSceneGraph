@@ -28,9 +28,12 @@
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Condition>
 
+#include <osgUtil/IncrementalCompileOperation>
+
 #include <osgDB/SharedStateManager>
 #include <osgDB/ReaderWriter>
 #include <osgDB/Options>
+
 
 #include <map>
 #include <list>
@@ -164,6 +167,15 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
           * the DatabasePager so it can keep track of expired nodes.
           * note, should be only be called from the update thread. */
         virtual void registerPagedLODs(osg::Node* subgraph, int frameNumber = 0);
+
+        /** Set the incremental compile operation.
+          * Used to manage the OpenGL object compilation and merging of subgraphs in a way that avoids overloading
+          * the rendering of frame with too many new objects in one frame. */
+        void setIncrementalCompileOperation(osgUtil::IncrementalCompileOperation* ico);
+
+        /** Get the incremental compile operation. */
+        osgUtil::IncrementalCompileOperation* getIncrementalCompileOperation() { return _incrementalCompileOperation.get(); }
+
 
         /** Set whether the database pager should pre compile OpenGL objects before allowing
           * them to be merged into the scene graph.
@@ -318,7 +330,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** Report how many items are in the _dataToCompileList queue */
         unsigned int getDataToCompileListSize() const { return _dataToCompileList->size(); }
         
-        /** Report how many items are in the _dataToCompileList queue */
+        /** Report how many items are in the _dataToMergeList queue */
         unsigned int getDataToMergeListSize() const { return _dataToMergeList->size(); }
 
         /** Report whether any requests are in the pager.*/
@@ -338,7 +350,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         typedef std::set< osg::ref_ptr<osg::StateSet> >                 StateSetList;
         typedef std::vector< osg::ref_ptr<osg::Drawable> >              DrawableList;
-        typedef std::pair<StateSetList,DrawableList>                    DataToCompile;
+        //typedef std::pair<StateSetList,DrawableList>                    DataToCompile;
+        typedef osgUtil::IncrementalCompileOperation::CompileData       DataToCompile;
         typedef std::map< unsigned int, DataToCompile >                 DataToCompileMap; 
         typedef std::set<unsigned int>                                  ActiveGraphicsContexts;
         typedef std::vector< osg::observer_ptr<osg::GraphicsContext> >  CompileGraphicsContexts;
@@ -357,6 +370,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             virtual void insertPagedLOD(const osg::observer_ptr<osg::PagedLOD>& plod) = 0;
             virtual bool containsPagedLOD(const osg::observer_ptr<osg::PagedLOD>& plod) const = 0;
         };
+
 
     protected:
 
@@ -407,7 +421,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
                 return _valid && (frameNumber - _frameNumberLastRequest <= 1);
             }
         };
-        
+
+
         struct RequestQueue : public osg::Referenced
         {
         public:
@@ -470,7 +485,10 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         // forward declare inner helper classes
         class FindCompileableGLObjectsVisitor;
         friend class FindCompileableGLObjectsVisitor;
-        
+
+        struct DatabasePagerCompileCompletedCallback;
+        friend struct DatabasePagerCompileCompletedCallback;
+
         class FindPagedLODsVisitor;
         friend class FindPagedLODsVisitor;
 
@@ -568,7 +586,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             return true;
         }
 
-        
+        void compileCompleted(DatabaseRequest* databaseRequest);
+
         /** Iterate through the active PagedLOD nodes children removing 
           * children which havn't been visited since specified expiryTime.
           * note, should be only be called from the update thread. */
@@ -620,6 +639,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         // CompileGraphicsContexts         _compileGraphicsContexts;
         
         bool                            _doPreCompile;
+        osg::ref_ptr<osgUtil::IncrementalCompileOperation>  _incrementalCompileOperation;
+
         double                          _targetFrameRate;
         double                          _minimumTimeAvailableForGLCompileAndDeletePerFrame;
         unsigned int                    _maximumNumOfObjectsToCompilePerFrame;

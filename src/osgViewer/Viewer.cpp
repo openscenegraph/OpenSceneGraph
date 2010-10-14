@@ -66,6 +66,11 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
     //arguments.getApplicationUsage()->addCommandLineOption("--collar","");
     //arguments.getApplicationUsage()->addCommandLineOption("--im","");
 
+    if (arguments.read("--ico"))
+    {
+        setIncrementalCompileOperation(new osgUtil::IncrementalCompileOperation());
+    }
+
     std::string filename;
     bool readConfig = false;
     while (arguments.read("-c",filename))

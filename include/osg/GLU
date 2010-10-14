@@ -168,18 +168,18 @@ typedef GLUtesselator GLUtriangulatorObj;
 typedef void (GL_APIENTRY * _GLUfuncptr)();
 typedef void (GL_APIENTRY * GLU_TESS_CALLBACK)();
 
-extern OSG_EXPORT GLUtesselator* gluNewTess (void);
-extern OSG_EXPORT void gluDeleteTess (GLUtesselator* tess);
+extern OSG_EXPORT GLUtesselator* GL_APIENTRY gluNewTess (void);
+extern OSG_EXPORT void GL_APIENTRY gluDeleteTess (GLUtesselator* tess);
 
-extern OSG_EXPORT void gluTessBeginContour (GLUtesselator* tess);
-extern OSG_EXPORT void gluTessCallback (GLUtesselator* tess, GLenum which, _GLUfuncptr CallBackFunc);
-extern OSG_EXPORT void gluTessEndContour (GLUtesselator* tess);
-extern OSG_EXPORT void gluTessNormal (GLUtesselator* tess, GLdouble valueX, GLdouble valueY, GLdouble valueZ);
-extern OSG_EXPORT void gluTessProperty (GLUtesselator* tess, GLenum which, GLdouble data);
-extern OSG_EXPORT void gluTessVertex (GLUtesselator* tess, GLdouble *location, GLvoid* data);
-extern OSG_EXPORT void gluTessBeginPolygon (GLUtesselator* tess, GLvoid* data);
-extern OSG_EXPORT void gluTessEndPolygon (GLUtesselator* tess);
-extern OSG_EXPORT void gluGetTessProperty( GLUtesselator *tess, GLenum which, GLdouble *value );
+extern OSG_EXPORT void GL_APIENTRY gluTessBeginContour (GLUtesselator* tess);
+extern OSG_EXPORT void GL_APIENTRY gluTessCallback (GLUtesselator* tess, GLenum which, _GLUfuncptr CallBackFunc);
+extern OSG_EXPORT void GL_APIENTRY gluTessEndContour (GLUtesselator* tess);
+extern OSG_EXPORT void GL_APIENTRY gluTessNormal (GLUtesselator* tess, GLdouble valueX, GLdouble valueY, GLdouble valueZ);
+extern OSG_EXPORT void GL_APIENTRY gluTessProperty (GLUtesselator* tess, GLenum which, GLdouble data);
+extern OSG_EXPORT void GL_APIENTRY gluTessVertex (GLUtesselator* tess, GLdouble *location, GLvoid* data);
+extern OSG_EXPORT void GL_APIENTRY gluTessBeginPolygon (GLUtesselator* tess, GLvoid* data);
+extern OSG_EXPORT void GL_APIENTRY gluTessEndPolygon (GLUtesselator* tess);
+extern OSG_EXPORT void GL_APIENTRY gluGetTessProperty( GLUtesselator *tess, GLenum which, GLdouble *value );
 
 }
 

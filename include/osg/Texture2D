@@ -87,6 +87,11 @@ class OSG_EXPORT Texture2D : public Texture
         class OSG_EXPORT SubloadCallback : public Referenced
         {
             public:
+                virtual TextureObject* generateTextureObject(const Texture2D& texture, State& state) const
+                {
+                    return osg::Texture::generateTextureObject(&texture, state.getContextID(), GL_TEXTURE_2D);
+                }
+
                 virtual void load(const Texture2D& texture,State& state) const = 0;
                 virtual void subload(const Texture2D& texture,State& state) const = 0;
         };

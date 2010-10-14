@@ -191,8 +191,7 @@ void Texture2D::apply(State& state) const
     }
     else if (_subloadCallback.valid())
     {
-
-        _textureObjectBuffer[contextID] = textureObject = generateTextureObject(this, contextID,GL_TEXTURE_2D);
+        _textureObjectBuffer[contextID] = textureObject = _subloadCallback->generateTextureObject(*this, state);
 
         textureObject->bind();
 

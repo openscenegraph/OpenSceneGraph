@@ -405,7 +405,7 @@ public:
 
                     if (!_pager->isCompiled(texture))
                     {
-                        _dataToCompile->_textures.push_back(texture);
+                        _dataToCompile->_textures.insert(texture);
 
                         if (osg::getNotifyLevel() >= osg::DEBUG_INFO)
                         {
@@ -459,7 +459,7 @@ public:
         // anything for VBOs, does it?
         if (_dataToCompile && (drawable->getUseVertexBufferObjects() || drawable->getUseDisplayList()) && !_pager->isCompiled(drawable))
         {
-            _dataToCompile->_drawables.push_back(drawable);
+            _dataToCompile->_drawables.insert(drawable);
         }
     }
     
@@ -2143,7 +2143,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime, b
                 //OSG_INFO<<"Compiling textures"<<std::endl;
 
                 // we have Textures to compile
-                typedef osgUtil::IncrementalCompileOperation::CompileData::Textures Textures;
+                typedef osgUtil::CompileData::Textures Textures;
                 Textures& textures = dtc._textures;
                 Textures::iterator itr=textures.begin();
                 unsigned int objTemp = numObjectsCompiled;
@@ -2187,7 +2187,7 @@ void DatabasePager::compileGLObjects(osg::State& state, double& availableTime, b
             {
                 // we have Drawable's to compile
                 //OSG_INFO<<"Compiling drawables"<<std::endl;
-                typedef osgUtil::IncrementalCompileOperation::CompileData::Drawables Drawables;
+                typedef osgUtil::CompileData::Drawables Drawables;
                 Drawables& dwlist = dtc._drawables;
                 Drawables::iterator itr = dwlist.begin();
                 unsigned int objTemp = numObjectsCompiled;

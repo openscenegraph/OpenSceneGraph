@@ -17,7 +17,6 @@
 #include <osg/DeleteHandler>
 #include <osg/io_utils>
 
-#include <osgUtil/GLObjectsVisitor>
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 #include <osgGA/TrackballManipulator>

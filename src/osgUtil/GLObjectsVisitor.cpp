@@ -89,7 +89,8 @@ void GLObjectsVisitor::apply(osg::Drawable& drawable)
         drawable.setUseVertexBufferObjects(false);
     }
 
-    if (_mode&COMPILE_DISPLAY_LISTS && _renderInfo.getState())
+    if (_mode&COMPILE_DISPLAY_LISTS && _renderInfo.getState() &&
+        (drawable.getUseDisplayList() || drawable.getUseVertexBufferObjects()))
     {
         drawable.compileGLObjects(_renderInfo);
     }

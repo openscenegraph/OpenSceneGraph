@@ -350,8 +350,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         typedef std::set< osg::ref_ptr<osg::StateSet> >                 StateSetList;
         typedef std::vector< osg::ref_ptr<osg::Drawable> >              DrawableList;
-        //typedef std::pair<StateSetList,DrawableList>                    DataToCompile;
-        typedef osgUtil::IncrementalCompileOperation::CompileData       DataToCompile;
+        typedef osgUtil::CompileData                                    DataToCompile;
         typedef std::map< unsigned int, DataToCompile >                 DataToCompileMap; 
         typedef std::set<unsigned int>                                  ActiveGraphicsContexts;
         typedef std::vector< osg::observer_ptr<osg::GraphicsContext> >  CompileGraphicsContexts;

@@ -941,6 +941,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
             if ((*itr)->getBufferObject()) bufferObjects.insert((*itr)->getBufferObject());
         }
 
+        osg::ElapsedTime timer;
 
         // now compile any buffer objects that require it.
         for(BufferObjects::iterator itr = bufferObjects.begin();
@@ -954,6 +955,8 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
                 glBufferObject->compileBuffer();
             }
         }
+
+        // OSG_NOTICE<<"Time to compile "<<timer.elapsedTime_m()<<"ms"<<std::endl;
 
         // unbind the BufferObjects
         extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);

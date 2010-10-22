@@ -23,6 +23,7 @@
 #include <osgDB/ReadFile>
 
 #include <osgGA/TrackballManipulator>
+#include <osgGA/StateSetManipulator>
 
 #include <osgUtil/IncrementalCompileOperation>
 #include <osgUtil/Simplifier>
@@ -236,9 +237,10 @@ int main(int argc, char** argv)
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
 
-    viewer.setCameraManipulator(new osgGA::TrackballManipulator());
-    viewer.addEventHandler(new osgViewer::StatsHandler());
-    viewer.addEventHandler(new osgViewer::WindowSizeHandler);
+    viewer.setCameraManipulator( new osgGA::TrackballManipulator() );
+    viewer.addEventHandler( new osgViewer::StatsHandler());
+    viewer.addEventHandler( new osgViewer::WindowSizeHandler() );
+    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
 
     /////////////////////////////////////////////////////////////////////////////////
     //

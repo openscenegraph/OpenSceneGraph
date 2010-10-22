@@ -232,7 +232,7 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
         typedef std::set<osg::GraphicsContext*> ContextSet;
         typedef std::map<osg::GraphicsContext*, CompileData >  CompileMap;
         
-        struct CompileCompletedCallback : public osg::Referenced
+        struct CompileCompletedCallback : public virtual osg::Referenced
         {
             /// return true if the callback assumes responsibility for merging any associated subgraphs with the main scene graph
             /// return false if callback doesn't handle the merge, and instead requires the IncrementalCompileOperation to handle this for us

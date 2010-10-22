@@ -220,7 +220,7 @@ void CompileOperator::runTimingTests(osg::RenderInfo& renderInfo)
         bool useVBO = false;
         for(unsigned int i=0; i<mx; ++i)
         {
-            unsigned int numVertices = pow(2,i);
+            unsigned int numVertices = pow(2.0,double(i));
             osg::ref_ptr<osg::Geometry> geometry = createTestGeometry(numVertices, useVBO);
             double size = geometry->getGLObjectSizeHint();
             double time = timeCompile(renderInfo, geometry);
@@ -233,7 +233,7 @@ void CompileOperator::runTimingTests(osg::RenderInfo& renderInfo)
         bool useVBO = true;
         for(unsigned int i=0; i<mx; ++i)
         {
-            unsigned int numVertices = pow(2,i);
+            unsigned int numVertices = pow(2.0,double(i));
             osg::ref_ptr<osg::Geometry> geometry = createTestGeometry(numVertices, useVBO);
             double size = geometry->getGLObjectSizeHint();
             double time = timeCompile(renderInfo, geometry);

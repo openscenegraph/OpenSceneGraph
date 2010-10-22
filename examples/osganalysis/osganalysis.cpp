@@ -232,17 +232,17 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    typedef std::vector< osg::ref_ptr<osg::Node> > Models;
-    unsigned int modelIndex = 0;
-    Models models;
 
-    osg::ref_ptr<osg::Group> group = new osg::Group;
-    viewer.setSceneData(group);
-
-    osg::ref_ptr<osg::OperationThread> databasePagingThread;
-    osg::ref_ptr<DatabasePagingOperation> databasePagingOperation;
     if (readDatabasesInPagingThread)
     {
+        // load the models using a paging thread and use the incremental compile operation to
+        // manage the compilation of GL objects without breaking frame.
+
+        unsigned int modelIndex = 0;
+
+        osg::ref_ptr<osg::OperationThread> databasePagingThread;
+        osg::ref_ptr<DatabasePagingOperation> databasePagingOperation;
+
         databasePagingThread = new osg::OperationThread;
         databasePagingThread->startThread();
 
@@ -253,43 +253,19 @@ int main(int argc, char** argv)
 
         databasePagingThread->add(databasePagingOperation.get());
 
-    }
-    else
-    {
-        for(FileNames::iterator itr = fileNames.begin();
-            itr != fileNames.end();
-            ++itr)
+        osg::ref_ptr<osg::Group> group = new osg::Group;
+        viewer.setSceneData(group);
+
+        viewer.realize();
+
+        double timeOfLastMerge = viewer.getFrameStamp()->getReferenceTime();
+
+        while(!viewer.done())
         {
-            // not an option so assume string is a filename.
-            osg::ref_ptr<osg::Node> node = osgDB::readNodeFile( *itr );
-            if(node.valid())
-            {
-                if (node->getName().empty()) node->setName( *itr );
+            viewer.frame();
 
-                node = sceneGraphProcessor->process(node.get());
+            double currentTime = viewer.getFrameStamp()->getReferenceTime();
 
-                models.push_back(node.get());
-            }
-        }
-
-        group->addChild(models[modelIndex++].get());
-
-    }
-
-    viewer.realize();
-
-    double timeOfLastMerge = viewer.getFrameStamp()->getReferenceTime();
-
-    osg::ref_ptr<CustomCompileCompletedCallback> compileCompletedCallback;
-
-    while(!viewer.done())
-    {
-        viewer.frame();
-
-        double currentTime = viewer.getFrameStamp()->getReferenceTime();
-
-        if (readDatabasesInPagingThread)
-        {
             if (!databasePagingOperation &&
                 modelIndex<fileNames.size() &&
                 (currentTime-timeOfLastMerge)>timeBetweenMerges)
@@ -318,8 +294,49 @@ int main(int argc, char** argv)
                 viewer.home();
             }
         }
-        else
+
+    }
+    else
+    {
+        // load the models directly and then just use the IncrementalCompileOperation to
+        // compile the GL objects for us.
+        typedef std::vector< osg::ref_ptr<osg::Node> > Models;
+        Models models;
+        unsigned int modelIndex = 0;
+
+        for(FileNames::iterator itr = fileNames.begin();
+            itr != fileNames.end();
+            ++itr)
         {
+            // not an option so assume string is a filename.
+            osg::ref_ptr<osg::Node> node = osgDB::readNodeFile( *itr );
+            if(node.valid())
+            {
+                if (node->getName().empty()) node->setName( *itr );
+
+                node = sceneGraphProcessor->process(node.get());
+
+                models.push_back(node.get());
+            }
+        }
+
+        osg::ref_ptr<osg::Group> group = new osg::Group;
+        group->addChild(models[modelIndex++].get());
+
+        viewer.setSceneData(group);
+
+        viewer.realize();
+
+        double timeOfLastMerge = viewer.getFrameStamp()->getReferenceTime();
+
+        osg::ref_ptr<CustomCompileCompletedCallback> compileCompletedCallback;
+
+        while(!viewer.done())
+        {
+            viewer.frame();
+
+            double currentTime = viewer.getFrameStamp()->getReferenceTime();
+
             if (!compileCompletedCallback &&
                 modelIndex<fileNames.size() &&
                 (currentTime-timeOfLastMerge)>timeBetweenMerges)

@@ -19,9 +19,55 @@
 
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
+
 #include <osgDB/ReadFile>
+
 #include <osgGA/TrackballManipulator>
+
 #include <osgUtil/IncrementalCompileOperation>
+#include <osgUtil/Simplifier>
+
+class StripStateVisitor : public osg::NodeVisitor
+{
+public:
+    StripStateVisitor(bool useStateSets, bool useDisplayLists, bool useVBO):
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _useStateSets(useStateSets),
+        _useDisplayLists(useDisplayLists),
+        _useVBO(useVBO) {}
+
+    bool _useStateSets;
+    bool _useDisplayLists;
+    bool _useVBO;
+
+    void apply(osg::Node& node)
+    {
+        if (!_useStateSets && node.getStateSet()) node.setStateSet(0);
+        traverse(node);
+    }
+
+    void apply(osg::Geode& node)
+    {
+        if (!_useStateSets && node.getStateSet()) node.setStateSet(0);
+        for(unsigned int i = 0; i<node.getNumDrawables(); ++i)
+        {
+            process(*node.getDrawable(i));
+        }
+
+        traverse(node);
+    }
+
+    void process(osg::Drawable& drawable)
+    {
+        if (!_useStateSets && drawable.getStateSet())
+        {
+            drawable.setStateSet(0);
+        }
+
+        drawable.setUseDisplayList(_useDisplayLists);
+        drawable.setUseVertexBufferObjects(_useVBO);
+    }
+};
 
 class SceneGraphProcessor : public osg::Referenced
 {
@@ -37,11 +83,14 @@ public:
 
         while (arguments.read("--vbo")) { modifyDrawableSettings = true; useVBO = true;  }
         while (arguments.read("--dl")) { modifyDrawableSettings = true; useDisplayLists = true;  }
-        while (arguments.read("--simplify", simplificatioRatio)) {}
+
+        while (arguments.read("-s", simplificatioRatio)) {}
 
         while (arguments.read("--build-mipmaps")) { modifyTextureSettings = true; buildImageMipmaps = true; }
         while (arguments.read("--compress")) { modifyTextureSettings = true; compressImages = true; }
         while (arguments.read("--disable-mipmaps")) { modifyTextureSettings = true; disableMipmaps = true; }
+
+        OSG_NOTICE<<"simplificatioRatio="<<simplificatioRatio<<std::endl;
     }
 
     virtual osg::Node* process(osg::Node* node)
@@ -53,6 +102,22 @@ public:
         }
 
         OSG_NOTICE<<"SceneGraphProcessor::process("<<node<<") : "<<node->getName()<<std::endl;
+
+        if (simplificatioRatio < 1.0)
+        {
+            OSG_NOTICE<<"Running simplifier with simplification ratio="<<simplificatioRatio<<std::endl;
+            float maxError = 4.0f;
+            osgUtil::Simplifier simplifier(simplificatioRatio, maxError);
+            node->accept(simplifier);
+        }
+
+        if (modifyDrawableSettings || modifyTextureSettings)
+        {
+            OSG_NOTICE<<"Running StripStateVisitor"<<std::endl;
+            StripStateVisitor ssv(true, useDisplayLists, useVBO);
+            node->accept(ssv);
+        }
+
 
         return node;
     }
@@ -75,7 +140,7 @@ protected:
     bool modifyDrawableSettings;
     bool useVBO;
     bool useDisplayLists;
-    bool simplificatioRatio;
+    float simplificatioRatio;
 
     bool modifyTextureSettings;
     bool buildImageMipmaps;

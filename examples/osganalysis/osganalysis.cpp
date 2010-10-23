@@ -21,6 +21,7 @@
 #include <osgViewer/ViewerEventHandlers>
 
 #include <osgDB/ReadFile>
+#include <osgDB/WriteFile>
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/StateSetManipulator>
@@ -109,6 +110,8 @@ public:
             OSG_NOTICE<<"Running simplifier with simplification ratio="<<simplificatioRatio<<std::endl;
             float maxError = 4.0f;
             osgUtil::Simplifier simplifier(simplificatioRatio, maxError);
+            simplifier.setDoTriStrip(false);
+            simplifier.setSmoothing(false);
             node->accept(simplifier);
         }
 
@@ -150,32 +153,17 @@ protected:
 
 };
 
-
-class CustomCompileCompletedCallback : public osgUtil::IncrementalCompileOperation::CompileCompletedCallback
-{
-public:
-    CustomCompileCompletedCallback():
-        completed(false) {}
-
-    virtual bool compileCompleted(osgUtil::IncrementalCompileOperation::CompileSet* compileSet)
-    {
-        OSG_NOTICE<<"compileCompleted"<<std::endl;
-        completed = true;
-        return true;
-    }
-
-    bool completed;
-};
-
 class DatabasePagingOperation : public osg::Operation, public osgUtil::IncrementalCompileOperation::CompileCompletedCallback
 {
 public:
 
     DatabasePagingOperation(const std::string& filename,
+                            const std::string& outputFilename,
                              SceneGraphProcessor* sceneGraphProcessor, 
                              osgUtil::IncrementalCompileOperation* ico):
         Operation("DatabasePaging Operation", false),
         _filename(filename),
+        _outputFilename(outputFilename),
         _modelReadyToMerge(false),
         _sceneGraphProcessor(sceneGraphProcessor),
         _incrementalCompileOperation(ico) {}
@@ -197,6 +185,11 @@ public:
 
         if (_loadedModel.valid())
         {
+            if (!_outputFilename.empty())
+            {
+                osgDB::writeNodeFile(*_loadedModel, _outputFilename);
+            }
+
             if (_incrementalCompileOperation.valid())
             {
                 osg::ref_ptr<osgUtil::IncrementalCompileOperation::CompileSet> compileSet =
@@ -223,6 +216,7 @@ public:
     }
 
     std::string                                         _filename;
+    std::string                                         _outputFilename;
     osg::ref_ptr<osg::Node>                             _loadedModel;
     bool                                                _modelReadyToMerge;
     osg::ref_ptr<SceneGraphProcessor>                   _sceneGraphProcessor;
@@ -280,8 +274,9 @@ int main(int argc, char** argv)
     double timeBetweenMerges = 2.0;
     while(arguments.read("--interval",timeBetweenMerges)) {}
 
-    bool readDatabasesInPagingThread = false;
-    while(arguments.read("--paging")) { readDatabasesInPagingThread = true; }
+    std::string outputPostfix;
+    while (arguments.read("-o",outputPostfix)) {}
+
 
     typedef std::vector< std::string > FileNames;
     FileNames fileNames;
@@ -299,141 +294,71 @@ int main(int argc, char** argv)
         return 1;
     }
 
+    // load the models using a paging thread and use the incremental compile operation to
+    // manage the compilation of GL objects without breaking frame.
 
-    if (readDatabasesInPagingThread)
+    unsigned int modelIndex = 0;
+
+    osg::ref_ptr<osg::OperationThread> databasePagingThread;
+    osg::ref_ptr<DatabasePagingOperation> databasePagingOperation;
+
+    databasePagingThread = new osg::OperationThread;
+    databasePagingThread->startThread();
+
+    std::string filename = fileNames[modelIndex++];
+    std::string outputFilename = outputPostfix.empty() ? std::string() : filename+outputPostfix;
+
+    databasePagingOperation = new DatabasePagingOperation(
+        filename,
+        outputFilename,
+        sceneGraphProcessor.get(),
+        incrementalCompile.get());
+
+    databasePagingThread->add(databasePagingOperation.get());
+
+    osg::ref_ptr<osg::Group> group = new osg::Group;
+    viewer.setSceneData(group);
+
+    viewer.realize();
+
+    double timeOfLastMerge = viewer.getFrameStamp()->getReferenceTime();
+
+    while(!viewer.done())
     {
-        // load the models using a paging thread and use the incremental compile operation to
-        // manage the compilation of GL objects without breaking frame.
+        viewer.frame();
 
-        unsigned int modelIndex = 0;
+        double currentTime = viewer.getFrameStamp()->getReferenceTime();
 
-        osg::ref_ptr<osg::OperationThread> databasePagingThread;
-        osg::ref_ptr<DatabasePagingOperation> databasePagingOperation;
-
-        databasePagingThread = new osg::OperationThread;
-        databasePagingThread->startThread();
-
-        databasePagingOperation = new DatabasePagingOperation(
-            fileNames[modelIndex++],
-            sceneGraphProcessor.get(),
-            incrementalCompile.get());
-
-        databasePagingThread->add(databasePagingOperation.get());
-
-        osg::ref_ptr<osg::Group> group = new osg::Group;
-        viewer.setSceneData(group);
-
-        viewer.realize();
-
-        double timeOfLastMerge = viewer.getFrameStamp()->getReferenceTime();
-
-        while(!viewer.done())
+        if (!databasePagingOperation &&
+            modelIndex<fileNames.size() &&
+            (currentTime-timeOfLastMerge)>timeBetweenMerges)
         {
-            viewer.frame();
+            std::string filename = fileNames[modelIndex++];
+            std::string outputFilename = outputPostfix.empty() ? std::string() : filename+outputPostfix;
 
-            double currentTime = viewer.getFrameStamp()->getReferenceTime();
+            databasePagingOperation = new DatabasePagingOperation(
+                filename,
+                outputFilename,
+                sceneGraphProcessor.get(),
+                incrementalCompile.get());
 
-            if (!databasePagingOperation &&
-                modelIndex<fileNames.size() &&
-                (currentTime-timeOfLastMerge)>timeBetweenMerges)
-            {
-                databasePagingOperation = new DatabasePagingOperation(
-                    fileNames[modelIndex++],
-                    sceneGraphProcessor.get(),
-                    incrementalCompile.get());
-
-                databasePagingThread->add(databasePagingOperation.get());
-            }
-
-            if (databasePagingOperation.get() && databasePagingOperation->_modelReadyToMerge)
-            {
-                timeOfLastMerge = currentTime;
-
-                group->removeChildren(0,group->getNumChildren());
-
-                group->addChild(databasePagingOperation->_loadedModel.get());
-
-                viewer.home();
-
-                // we no longer need the paging operation as it's done it's job.
-                databasePagingOperation = 0;
-
-                viewer.home();
-            }
+            databasePagingThread->add(databasePagingOperation.get());
         }
 
-    }
-    else
-    {
-        // load the models directly and then just use the IncrementalCompileOperation to
-        // compile the GL objects for us.
-        typedef std::vector< osg::ref_ptr<osg::Node> > Models;
-        Models models;
-        unsigned int modelIndex = 0;
-
-        for(FileNames::iterator itr = fileNames.begin();
-            itr != fileNames.end();
-            ++itr)
+        if (databasePagingOperation.get() && databasePagingOperation->_modelReadyToMerge)
         {
-            // not an option so assume string is a filename.
-            osg::ref_ptr<osg::Node> node = osgDB::readNodeFile( *itr );
-            if(node.valid())
-            {
-                if (node->getName().empty()) node->setName( *itr );
+            timeOfLastMerge = currentTime;
 
-                node = sceneGraphProcessor->process(node.get());
+            group->removeChildren(0,group->getNumChildren());
 
-                models.push_back(node.get());
-            }
-        }
+            group->addChild(databasePagingOperation->_loadedModel.get());
 
-        osg::ref_ptr<osg::Group> group = new osg::Group;
-        group->addChild(models[modelIndex++].get());
+            viewer.home();
 
-        viewer.setSceneData(group);
+            // we no longer need the paging operation as it's done it's job.
+            databasePagingOperation = 0;
 
-        viewer.realize();
-
-        double timeOfLastMerge = viewer.getFrameStamp()->getReferenceTime();
-
-        osg::ref_ptr<CustomCompileCompletedCallback> compileCompletedCallback;
-
-        while(!viewer.done())
-        {
-            viewer.frame();
-
-            double currentTime = viewer.getFrameStamp()->getReferenceTime();
-
-            if (!compileCompletedCallback &&
-                modelIndex<fileNames.size() &&
-                (currentTime-timeOfLastMerge)>timeBetweenMerges)
-            {
-                OSG_NOTICE<<"Compiling model "<<modelIndex<<" at "<<currentTime<<std::endl;
-
-                osg::ref_ptr<osgUtil::IncrementalCompileOperation::CompileSet> compileSet =
-                    new osgUtil::IncrementalCompileOperation::CompileSet(models[modelIndex].get());
-
-                compileCompletedCallback = new CustomCompileCompletedCallback;
-
-                compileSet->_compileCompletedCallback = compileCompletedCallback;
-
-                incrementalCompile->add(compileSet.get());
-            }
-
-            if (compileCompletedCallback.valid() && compileCompletedCallback->completed)
-            {
-                OSG_NOTICE<<"Merging model "<<modelIndex<<" at "<<currentTime<<std::endl;
-
-                timeOfLastMerge = currentTime;
-
-                group->removeChildren(0,group->getNumChildren());
-
-                group->addChild(models[modelIndex++].get());
-
-                compileCompletedCallback = 0;
-
-                viewer.home();
-            }
+            viewer.home();
         }
     }
 

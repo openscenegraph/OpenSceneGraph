@@ -385,6 +385,16 @@ void Renderer::cull()
             stats->setAttribute(frameNumber, "Visible number of impostors", static_cast<double>(sceneStats.nimpostor));
             stats->setAttribute(frameNumber, "Number of ordered leaves", static_cast<double>(sceneStats.numOrderedLeaves));
 
+            unsigned int totalNumPrimitiveSets = 0;
+            const osgUtil::Statistics::PrimitiveValueMap& pvm = sceneStats.getPrimitiveValueMap();
+            for(osgUtil::Statistics::PrimitiveValueMap::const_iterator pvm_itr = pvm.begin();
+                pvm_itr != pvm.end();
+                ++pvm_itr)
+            {
+                totalNumPrimitiveSets += pvm_itr->second.first;
+            }
+            stats->setAttribute(frameNumber, "Visible number of PrimitiveSets", static_cast<double>(totalNumPrimitiveSets));
+
             osgUtil::Statistics::PrimitiveCountMap& pcm = sceneStats.getPrimitiveCountMap();
             stats->setAttribute(frameNumber, "Visible number of GL_POINTS", static_cast<double>(pcm[GL_POINTS]));
             stats->setAttribute(frameNumber, "Visible number of GL_LINES", static_cast<double>(pcm[GL_LINES]));

@@ -110,8 +110,8 @@ public:
             OSG_NOTICE<<"Running simplifier with simplification ratio="<<simplificatioRatio<<std::endl;
             float maxError = 4.0f;
             osgUtil::Simplifier simplifier(simplificatioRatio, maxError);
-            simplifier.setDoTriStrip(false);
-            simplifier.setSmoothing(false);
+            //simplifier.setDoTriStrip(false);
+            //simplifier.setSmoothing(false);
             node->accept(simplifier);
         }
 

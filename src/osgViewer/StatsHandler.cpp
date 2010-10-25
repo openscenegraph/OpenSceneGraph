@@ -419,6 +419,7 @@ struct CameraSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCall
                 STATS_ATTRIBUTE("Visible number of fast drawables")
                 STATS_ATTRIBUTE("Visible vertex count")
 
+                STATS_ATTRIBUTE("Visible number of PrimitiveSets")
                 STATS_ATTRIBUTE("Visible number of GL_POINTS")
                 STATS_ATTRIBUTE("Visible number of GL_LINES")
                 STATS_ATTRIBUTE("Visible number of GL_LINE_STRIP")
@@ -1410,7 +1411,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         group->addChild(geode);
         geode->addDrawable(createBackgroundRectangle(pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
                                                         10 * characterSize + 2 * backgroundMargin,
-                                                        21 * characterSize + 2 * backgroundMargin,
+                                                        22 * characterSize + 2 * backgroundMargin,
                                                         backgroundColor));
 
         // Camera scene & primitive stats static text
@@ -1436,6 +1437,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         viewStr << "Sorted Drawables" << std::endl;
         viewStr << "Fast Drawables" << std::endl;
         viewStr << "Vertices" << std::endl;
+        viewStr << "PrimitiveSets" << std::endl;
         viewStr << "Points" << std::endl;
         viewStr << "Lines" << std::endl;
         viewStr << "Line strips" << std::endl;
@@ -1458,7 +1460,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
         {
             geode->addDrawable(createBackgroundRectangle(pos + osg::Vec3(-backgroundMargin, characterSize + backgroundMargin, 0),
                                                             5 * characterSize + 2 * backgroundMargin,
-                                                            21 * characterSize + 2 * backgroundMargin,
+                                                            22 * characterSize + 2 * backgroundMargin,
                                                             backgroundColor));
 
             // Camera scene stats

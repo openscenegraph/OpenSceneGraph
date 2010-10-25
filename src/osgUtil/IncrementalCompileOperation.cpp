@@ -212,6 +212,8 @@ void CompileOperator::runTimingTests(osg::RenderInfo& renderInfo)
     OSG_NOTICE<<"runTimingTests()"<<std::endl;
     _timingTestsCompleted = true;
 
+    return;
+
     unsigned int mx = 18;
     double Mbsec = 1.0/(1024.0*1024.0);
     for(unsigned int j=0; j<4; ++j)
@@ -273,22 +275,25 @@ bool CompileOperator::compile(osg::RenderInfo& renderInfo, CompileData& cd, unsi
             const osg::Drawable* drawable = itr->get();
             unsigned int size = drawable->getGLObjectSizeHint();
             const std::string& nameOfDrawableType = drawable->getUseVertexBufferObjects() ? vboDrawablesName : dlDawablesName;
+
+#if 0
             double estimatedTime = _compileStats->estimateTime(nameOfDrawableType, double(size));
             double estimatedTime2 = _compileStats->estimateTime2(nameOfDrawableType, double(size));
             double estimatedTime3 = _compileStats->estimateTime3(nameOfDrawableType, double(size));
             double estimatedTime4 = _compileStats->estimateTime4(nameOfDrawableType, double(size));
-
+#endif
             drawable->compileGLObjects(renderInfo);
             osg::Timer_t currTick = osg::Timer::instance()->tick();
             double timeForCompile = osg::Timer::instance()->delta_s(previousTick, currTick);
             previousTick = currTick;
 
+#if 0
             OSG_NOTICE<<"Drawable size = "<<size<<std::endl;
             OSG_NOTICE<<"  Estimated time   ="<<estimatedTime<<", actual time="<<timeForCompile<<" ratio = "<<timeForCompile/estimatedTime<<std::endl;
             OSG_NOTICE<<"  Estimated time2="<<estimatedTime2<<", actual time="<<timeForCompile<<" ratio = "<<timeForCompile/estimatedTime2<<std::endl;
             OSG_NOTICE<<"  Estimated time3="<<estimatedTime3<<", actual time="<<timeForCompile<<" ratio = "<<timeForCompile/estimatedTime3<<std::endl;
             OSG_NOTICE<<"  Estimated time4="<<estimatedTime4<<", actual time="<<timeForCompile<<" ratio = "<<timeForCompile/estimatedTime4<<std::endl;
-
+#endif
             _compileStats->add(nameOfDrawableType, double(size), timeForCompile);
 
 

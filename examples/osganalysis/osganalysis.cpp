@@ -28,6 +28,7 @@
 
 #include <osgUtil/IncrementalCompileOperation>
 #include <osgUtil/Simplifier>
+#include <osgUtil/MeshOptimizers>
 
 class StripStateVisitor : public osg::NodeVisitor
 {
@@ -87,6 +88,14 @@ public:
         while (arguments.read("--dl")) { modifyDrawableSettings = true; useDisplayLists = true;  }
 
         while (arguments.read("-s", simplificatioRatio)) {}
+        while (arguments.read("--tristripper")) { useTriStripVisitor=true; }
+        while (arguments.read("--no-tristripper")) { useTriStripVisitor=false; }
+        while (arguments.read("--smoother")) {  useSmoothingVisitor=true; }
+        while (arguments.read("--no-smoother")) {  useSmoothingVisitor=false; }
+
+        while (arguments.read("--remove-duplicate-vertices") || arguments.read("--rdv")) removeDuplicateVertices = true;
+        while (arguments.read("--optimize-vertex-cache") || arguments.read("--ovc")) optimizeVertexCache = true;
+        while (arguments.read("--optimize-vertex-order") || arguments.read("--ovo")) optimizeVertexOrder = true;
 
         while (arguments.read("--build-mipmaps")) { modifyTextureSettings = true; buildImageMipmaps = true; }
         while (arguments.read("--compress")) { modifyTextureSettings = true; compressImages = true; }
@@ -110,9 +119,33 @@ public:
             OSG_NOTICE<<"Running simplifier with simplification ratio="<<simplificatioRatio<<std::endl;
             float maxError = 4.0f;
             osgUtil::Simplifier simplifier(simplificatioRatio, maxError);
-            //simplifier.setDoTriStrip(false);
-            //simplifier.setSmoothing(false);
+            simplifier.setDoTriStrip(useTriStripVisitor);
+            simplifier.setSmoothing(useSmoothingVisitor);
             node->accept(simplifier);
+        }
+
+        if (removeDuplicateVertices)
+        {
+            OSG_NOTICE<<"Running osgUtil::IndexMeshVisitor"<<std::endl;
+            osgUtil::IndexMeshVisitor imv;
+            node->accept(imv);
+            imv.makeMesh();
+        }
+
+        if (optimizeVertexCache)
+        {
+            OSG_NOTICE<<"Running osgUtil::VertexCacheVisitor"<<std::endl;
+            osgUtil::VertexCacheVisitor vcv;
+            node->accept(vcv);
+            vcv.optimizeVertices();
+        }
+
+        if (optimizeVertexOrder)
+        {
+            OSG_NOTICE<<"Running osgUtil::VertexAccessOrderVisitor"<<std::endl;
+            osgUtil::VertexAccessOrderVisitor vaov;
+            node->accept(vaov);
+            vaov.optimizeOrder();
         }
 
         if (modifyDrawableSettings || modifyTextureSettings)
@@ -121,7 +154,6 @@ public:
             StripStateVisitor ssv(true, useDisplayLists, useVBO);
             node->accept(ssv);
         }
-
 
         return node;
     }
@@ -133,7 +165,14 @@ protected:
         modifyDrawableSettings = false;
         useVBO = false;
         useDisplayLists = false;
+
         simplificatioRatio = 1.0;
+        useTriStripVisitor = false;
+        useSmoothingVisitor = false;
+
+        removeDuplicateVertices = false;
+        optimizeVertexCache = false;
+        optimizeVertexOrder = false;
 
         modifyTextureSettings = false;
         buildImageMipmaps = false;
@@ -144,7 +183,14 @@ protected:
     bool modifyDrawableSettings;
     bool useVBO;
     bool useDisplayLists;
+
     float simplificatioRatio;
+    bool useTriStripVisitor;
+    bool useSmoothingVisitor;
+
+    bool removeDuplicateVertices;
+    bool optimizeVertexCache;
+    bool optimizeVertexOrder;
 
     bool modifyTextureSettings;
     bool buildImageMipmaps;

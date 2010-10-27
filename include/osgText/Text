@@ -39,9 +39,7 @@ public:
 
 
     void setColor(const osg::Vec4& color);
-
     const osg::Vec4& getColor() const { return _color; }
-
 
 
     /**
@@ -50,9 +48,9 @@ public:
      * the other backdrop implementations are really only useful for backwards
      * compatibility and are not worth updating to utilize this flag.
      */
-    bool setEnableDepthWrites() { return _enableDepthWrites; }
-
     void setEnableDepthWrites(bool enable) { _enableDepthWrites = enable; }
+    bool getEnableDepthWrites() const { return _enableDepthWrites; }
+
 
     enum BackdropType
     {

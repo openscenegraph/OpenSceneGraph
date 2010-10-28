@@ -953,7 +953,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
             if ((*itr)->getBufferObject()) bufferObjects.insert((*itr)->getBufferObject());
         }
 
-        osg::ElapsedTime timer;
+        //osg::ElapsedTime timer;
 
         // now compile any buffer objects that require it.
         for(BufferObjects::iterator itr = bufferObjects.begin();

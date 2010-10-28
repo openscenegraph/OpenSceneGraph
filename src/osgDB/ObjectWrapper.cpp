@@ -102,6 +102,14 @@ bool ObjectWrapper::read( InputStream& is, osg::Object& obj )
                                << _name << "::" << (*itr)->getName() << std::endl;
         readOK = false;
     }
+
+    for ( FinishedObjectReadCallbackList::iterator itr=_finishedObjectReadCallbacks.begin();
+          itr!=_finishedObjectReadCallbacks.end();
+          ++itr )
+     {
+         (*itr)->objectRead(is, obj);
+     }
+    
     return readOK;
 }
 

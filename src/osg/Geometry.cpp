@@ -79,6 +79,18 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
     {
         _vertexAttribList.push_back(ArrayData(*vitr, copyop));
     }
+
+    if ((copyop.getCopyFlags() & osg::CopyOp::DEEP_COPY_ARRAYS))
+    {
+        if (_useVertexBufferObjects)
+        {
+            // copying of arrays doesn't set up buffer objects so we'll need to force
+            // Geometry to assign these, we'll do this by switching off VBO's then renabling them.
+            setUseVertexBufferObjects(false);
+            setUseVertexBufferObjects(true);
+        }
+    }
+    
 }
 
 Geometry::~Geometry()

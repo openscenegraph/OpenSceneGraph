@@ -60,22 +60,16 @@ static bool writeColorLayers( osgDB::OutputStream& os, const osgTerrain::Terrain
     return true;
 }
 
-// TileLoadedCallback
-static bool checkTileLoadedCallback( const osgTerrain::TerrainTile& tile )
-{ return true; }
-
-static bool readTileLoadedCallback( osgDB::InputStream& is, osgTerrain::TerrainTile& tile )
+struct TerrainTileFinishedObjectReadCallback : public osgDB::FinishedObjectReadCallback
 {
-    if ( osgTerrain::TerrainTile::getTileLoadedCallback().valid() ) 
-        osgTerrain::TerrainTile::getTileLoadedCallback()->loaded( &tile, is.getOptions() );
-    return true;
-}
+    virtual void objectRead(osgDB::InputStream& is, osg::Object& obj)
+    {
+        osgTerrain::TerrainTile& tile = static_cast<osgTerrain::TerrainTile&>(obj);
+        if ( osgTerrain::TerrainTile::getTileLoadedCallback().valid() )
+            osgTerrain::TerrainTile::getTileLoadedCallback()->loaded( &tile, is.getOptions() );
+        }
+};
 
-static bool writeTileLoadedCallback( osgDB::OutputStream& os, const osgTerrain::TerrainTile& tile )
-{
-    os<<std::endl;
-    return true;
-}
 
 REGISTER_OBJECT_WRAPPER( osgTerrain_TerrainTile,
                          new osgTerrain::TerrainTile,
@@ -96,5 +90,5 @@ REGISTER_OBJECT_WRAPPER( osgTerrain_TerrainTile,
         ADD_ENUM_VALUE( ENABLE_BLENDING_WHEN_ALPHA_PRESENT );
     END_ENUM_SERIALIZER();  // BlendingPolicy
     
-    ADD_USER_SERIALIZER( TileLoadedCallback );
+    wrapper->addFinishedObjectReadCallback( new TerrainTileFinishedObjectReadCallback() );
 }

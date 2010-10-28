@@ -37,10 +37,16 @@ protected:
     std::string _name;
 };
 
+struct FinishedObjectReadCallback : public osg::Referenced
+{
+    virtual void objectRead(osgDB::InputStream& is, osg::Object& obj) = 0;
+};
+
 class OSGDB_EXPORT ObjectWrapper : public osg::Referenced
 {
 public:
     typedef std::vector< osg::ref_ptr<BaseSerializer> > SerializerList;
+    typedef std::vector< osg::ref_ptr<FinishedObjectReadCallback> > FinishedObjectReadCallbackList;
     
     ObjectWrapper( osg::Object* proto, const std::string& name,
                    const std::string& associates );
@@ -50,6 +56,9 @@ public:
     const StringList& getAssociates() const { return _associates; }
     
     void addSerializer( BaseSerializer* s ) { _serializers.push_back(s); }
+    void addFinishedObjectReadCallback ( FinishedObjectReadCallback* forc) { _finishedObjectReadCallbacks.push_back(forc); }
+
+    
     bool read( InputStream&, osg::Object& );
     bool write( OutputStream&, const osg::Object& );
     
@@ -67,6 +76,7 @@ protected:
     StringList _associates;
     SerializerList _serializers;
     SerializerList _backupSerializers;
+    FinishedObjectReadCallbackList _finishedObjectReadCallbacks;
 };
 
 class Registry;

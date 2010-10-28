@@ -209,10 +209,11 @@ osg::StateSet* CompileOperator::createTestStateSet(unsigned int imageSize, bool 
 
 void CompileOperator::runTimingTests(osg::RenderInfo& renderInfo)
 {
-    OSG_NOTICE<<"runTimingTests()"<<std::endl;
     _timingTestsCompleted = true;
 
     return;
+
+    OSG_NOTICE<<"runTimingTests()"<<std::endl;
 
     unsigned int mx = 18;
     double Mbsec = 1.0/(1024.0*1024.0);
@@ -254,6 +255,8 @@ bool CompileOperator::compile(osg::RenderInfo& renderInfo, CompileData& cd, unsi
         runTimingTests(renderInfo);
     }
 
+    osg::NotifySeverity level = osg::INFO;
+
     unsigned int totalDataSizeCompiled = 0;
     unsigned int drawablesCompiled = 0;
     unsigned int texturesCompiled = 0;
@@ -288,17 +291,17 @@ bool CompileOperator::compile(osg::RenderInfo& renderInfo, CompileData& cd, unsi
             previousTick = currTick;
 
 #if 0
-            OSG_NOTICE<<"Drawable size = "<<size<<std::endl;
-            OSG_NOTICE<<"  Estimated time   ="<<estimatedTime<<", actual time="<<timeForCompile<<" ratio = "<<timeForCompile/estimatedTime<<std::endl;
-            OSG_NOTICE<<"  Estimated time2="<<estimatedTime2<<", actual time="<<timeForCompile<<" ratio = "<<timeForCompile/estimatedTime2<<std::endl;
-            OSG_NOTICE<<"  Estimated time3="<<estimatedTime3<<", actual time="<<timeForCompile<<" ratio = "<<timeForCompile/estimatedTime3<<std::endl;
-            OSG_NOTICE<<"  Estimated time4="<<estimatedTime4<<", actual time="<<timeForCompile<<" ratio = "<<timeForCompile/estimatedTime4<<std::endl;
+            OSG_NOTIFY(level)<<"Drawable size = "<<size<<std::endl;
+            OSG_NOTIFY(level)<<"  Estimated time   ="<<estimatedTime<<", actual time="<<timeForCompile<<" ratio = "<<timeForCompile/estimatedTime<<std::endl;
+            OSG_NOTIFY(level)<<"  Estimated time2="<<estimatedTime2<<", actual time="<<timeForCompile<<" ratio = "<<timeForCompile/estimatedTime2<<std::endl;
+            OSG_NOTIFY(level)<<"  Estimated time3="<<estimatedTime3<<", actual time="<<timeForCompile<<" ratio = "<<timeForCompile/estimatedTime3<<std::endl;
+            OSG_NOTIFY(level)<<"  Estimated time4="<<estimatedTime4<<", actual time="<<timeForCompile<<" ratio = "<<timeForCompile/estimatedTime4<<std::endl;
 #endif
             _compileStats->add(nameOfDrawableType, double(size), timeForCompile);
 
 
             totalDataSizeCompiled += size;
-            // OSG_NOTICE<<"Compiled drawable, getGLObjectSizeHint()="<<(*itr)->getGLObjectSizeHint()<<std::endl;
+            // OSG_NOTIFY(level)<<"Compiled drawable, getGLObjectSizeHint()="<<(*itr)->getGLObjectSizeHint()<<std::endl;
 
             ++drawablesCompiled;
             --maxNumObjectsToCompile;
@@ -321,7 +324,7 @@ bool CompileOperator::compile(osg::RenderInfo& renderInfo, CompileData& cd, unsi
             bool needtoBuildMipmaps = false;
             bool needtoCompress = false;
 
-            OSG_NOTICE<<"  texture->isCompressedInternalFormat()="<<textureCompressedFormat<<std::endl;
+            OSG_NOTIFY(level)<<"  texture->isCompressedInternalFormat()="<<textureCompressedFormat<<std::endl;
 
             for(unsigned int i=0; i<texture->getNumImages();++i)
             {
@@ -335,8 +338,8 @@ bool CompileOperator::compile(osg::RenderInfo& renderInfo, CompileData& cd, unsi
             }
 
 
-            OSG_NOTICE<<"compiling texture, textureMipmapped="<<textureMipmapped<<", needtoBuildMipmaps="<<needtoBuildMipmaps<<std::endl;
-            OSG_NOTICE<<"                   textureCompressedFormat="<<textureCompressedFormat<<", needtoCompress="<<needtoCompress<<std::endl;
+            OSG_NOTIFY(level)<<"compiling texture, textureMipmapped="<<textureMipmapped<<", needtoBuildMipmaps="<<needtoBuildMipmaps<<std::endl;
+            OSG_NOTIFY(level)<<"                   textureCompressedFormat="<<textureCompressedFormat<<", needtoCompress="<<needtoCompress<<std::endl;
 
             // if (needtoBuildMipmaps) texture->setFilter(osg::Texture::MIN_FILTER, osg::Texture::LINEAR);
 
@@ -433,7 +436,7 @@ bool CompileOperator::compile(osg::RenderInfo& renderInfo, CompileData& cd, unsi
 
     double timeUsed = osg::Timer::instance()->delta_s(startTick, osg::Timer::instance()->tick());
 
-    OSG_NOTICE<<"compile time, texturesCompiled="<<texturesCompiled<<", drawablesCompiled="<<drawablesCompiled<<", programsCompiled="<<programsCompiled<<", timeUsed="<<timeUsed*1000.0<<" totalDataSizeCompiled="<<totalDataSizeCompiled<<" bytes, download rate="<<double(totalDataSizeCompiled)/(1024.0*1024*timeUsed)<<"Mb/sec"<<std::endl;
+    OSG_NOTIFY(level)<<"compile time, texturesCompiled="<<texturesCompiled<<", drawablesCompiled="<<drawablesCompiled<<", programsCompiled="<<programsCompiled<<", timeUsed="<<timeUsed*1000.0<<" totalDataSizeCompiled="<<totalDataSizeCompiled<<" bytes, download rate="<<double(totalDataSizeCompiled)/(1024.0*1024*timeUsed)<<"Mb/sec"<<std::endl;
 
     compileTime -= timeUsed;
 

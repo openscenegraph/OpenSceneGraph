@@ -72,6 +72,247 @@ public:
     }
 };
 
+class SwapArrayVisitor : public osg::ArrayVisitor
+{
+public:
+    SwapArrayVisitor(osg::Array* array):
+        _array(array) {}
+
+    template <class ARRAY>
+    void apply_imp(ARRAY& array)
+    {
+        if (array.getType()!=_array->getType())
+        {
+            OSG_NOTICE<<"Arrays incompatible"<<std::endl;
+            return;
+        }
+        OSG_NOTICE<<"Swapping Array"<<std::endl;
+        array.swap(*static_cast<ARRAY*>(_array));
+    }
+
+    virtual void apply(osg::ByteArray& ba) { apply_imp(ba); }
+    virtual void apply(osg::ShortArray& ba) { apply_imp(ba); }
+    virtual void apply(osg::IntArray& ba) { apply_imp(ba); }
+    virtual void apply(osg::UByteArray& ba) { apply_imp(ba); }
+    virtual void apply(osg::UShortArray& ba) { apply_imp(ba); }
+    virtual void apply(osg::UIntArray& ba) { apply_imp(ba); }
+    virtual void apply(osg::Vec4ubArray& ba) { apply_imp(ba); }
+    virtual void apply(osg::FloatArray& ba) { apply_imp(ba); }
+    virtual void apply(osg::Vec2Array& ba) { apply_imp(ba); }
+    virtual void apply(osg::Vec3Array& ba) { apply_imp(ba); }
+    virtual void apply(osg::Vec4Array& ba) { apply_imp(ba); }
+
+    osg::Array* _array;
+};
+
+class MemoryVisitor : public osg::NodeVisitor
+{
+public:
+     MemoryVisitor():
+         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN) {}
+
+
+    void reset()
+    {
+         _nodes.clear();
+         _geometryMap.clear();
+         _arrayMap.clear();
+         _primitiveSetMap.clear();
+    }
+
+    void apply(osg::Node& node)
+    {
+        _nodes.insert(&node);
+        traverse(node);
+    }
+
+    void apply(osg::Geode& geode)
+    {
+        _nodes.insert(&geode);
+        for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
+        {
+            apply(&geode, geode.getDrawable(i));
+        }
+    }
+
+    void apply(osg::Geode* geode, osg::Drawable* drawable)
+    {
+        if (!drawable) return;
+
+        osg::Geometry* geometry = drawable->asGeometry();
+        if (geometry)
+        {
+            _geometryMap[geometry].insert(geode);
+
+            apply(geometry, geometry->getVertexArray());
+            apply(geometry, geometry->getNormalArray());
+            apply(geometry, geometry->getColorArray());
+            apply(geometry, geometry->getSecondaryColorArray());
+            apply(geometry, geometry->getFogCoordArray());
+
+            for(unsigned int i=0; i<geometry->getNumTexCoordArrays(); ++i)
+            {
+                apply(geometry, geometry->getTexCoordArray(i));
+            }
+            for(unsigned int i=0; i<geometry->getNumVertexAttribArrays(); ++i)
+            {
+                apply(geometry, geometry->getVertexAttribArray(i));
+            }
+
+            for(unsigned int i=0; i<geometry->getNumPrimitiveSets(); ++i)
+            {
+                apply(geometry, geometry->getPrimitiveSet(i));
+            }
+        }
+    }
+
+    void apply(osg::Geometry* geometry, osg::Array* array)
+    {
+        if (!array) return;
+        _arrayMap[array].insert(geometry);
+    }
+
+    void apply(osg::Geometry* geometry, osg::PrimitiveSet* primitiveSet)
+    {
+        if (!primitiveSet) return;
+        _primitiveSetMap[primitiveSet].insert(geometry);
+    }
+
+    void report(std::ostream& out)
+    {
+        OSG_NOTICE<<"Nodes "<<_nodes.size()<<std::endl;
+        OSG_NOTICE<<"Geometries "<<_geometryMap.size()<<std::endl;
+        OSG_NOTICE<<"Arrays "<<_arrayMap.size()<<std::endl;
+        OSG_NOTICE<<"PrimitiveSets "<<_primitiveSetMap.size()<<std::endl;
+    }
+
+    void reallocate()
+    {
+        OSG_NOTICE<<"Reallocating Arrays"<<std::endl;
+
+        typedef std::vector< osg::ref_ptr<osg::Array> > ArrayVector;
+        typedef std::vector< osg::ref_ptr<osg::Geometry> > GeometryVector;
+        ArrayVector newArrays;
+        GeometryVector newGeometries;
+        for(GeometryMap::iterator itr = _geometryMap.begin();
+            itr != _geometryMap.end();
+            ++itr)
+        {
+            osg::Geometry* geometry = itr->first;
+            bool useVBO = geometry->getUseVertexBufferObjects();
+            osg::Geometry* newGeometry = osg::clone(geometry, osg::CopyOp(osg::CopyOp::DEEP_COPY_ALL));
+            newGeometry->setUseVertexBufferObjects(false);
+            newGeometry->setUseVertexBufferObjects(useVBO);
+            newGeometries.push_back(newGeometry);
+        }
+
+        GeometryVector::iterator geom_itr = newGeometries.begin();
+        for(GeometryMap::iterator itr = _geometryMap.begin();
+            itr != _geometryMap.end();
+            ++itr, ++geom_itr)
+        {
+            osg::Geometry* geometry = itr->first;
+            Geodes& geodes = itr->second;
+            for(Geodes::iterator gitr = geodes.begin();
+                gitr != geodes.end();
+                ++gitr)
+            {
+                osg::Geode* geode = const_cast<osg::Geode*>(*gitr);
+                geode->replaceDrawable(geometry, geom_itr->get());
+            }
+        }
+    }
+
+    typedef std::vector< osg::ref_ptr<osg::Geometry> > GeometryVector;
+    typedef std::pair<osg::Array*, osg::Array*> ArrayPair;
+    typedef std::vector< ArrayPair > ArrayVector;
+    typedef std::pair<osg::PrimitiveSet*, osg::PrimitiveSet*> PrimitiveSetPair;
+    typedef std::vector< PrimitiveSetPair > PrimitiveSetVector;
+
+    osg::Array* cloneArray(ArrayVector& arrayVector, osg::Array* array)
+    {
+        if (!array) return 0;
+        osg::Array* newArray = static_cast<osg::Array*>(array->cloneType());
+        arrayVector.push_back(ArrayPair(array,newArray));
+        return newArray;
+    }
+
+    osg::PrimitiveSet* clonePrimitiveSet(PrimitiveSetVector& psVector, osg::PrimitiveSet* ps)
+    {
+        if (!ps) return 0;
+        osg::PrimitiveSet* newPS = static_cast<osg::PrimitiveSet*>(ps->cloneType());
+        psVector.push_back(PrimitiveSetPair(ps,newPS));
+        return newPS;
+    }
+
+    void reallocate2()
+    {
+        OSG_NOTICE<<"Reallocating Arrays"<<std::endl;
+
+        ArrayVector arrayVector;
+        PrimitiveSetVector primitiveSetVector;
+        GeometryVector newGeometries;
+
+        for(GeometryMap::iterator itr = _geometryMap.begin();
+            itr != _geometryMap.end();
+            ++itr)
+        {
+            osg::Geometry* geometry = itr->first;
+            osg::ref_ptr<osg::Geometry> newGeometry = osg::clone(geometry, osg::CopyOp::SHALLOW_COPY);
+            newGeometries.push_back(newGeometry.get());
+
+            newGeometry->setVertexArray(cloneArray(arrayVector, geometry->getVertexArray()));
+            newGeometry->setNormalArray(cloneArray(arrayVector, geometry->getNormalArray()));
+            newGeometry->setColorArray(cloneArray(arrayVector, geometry->getColorArray()));
+            newGeometry->setSecondaryColorArray(cloneArray(arrayVector, geometry->getSecondaryColorArray()));
+            newGeometry->setFogCoordArray(cloneArray(arrayVector, geometry->getFogCoordArray()));
+            for(unsigned int i=0; i<geometry->getNumTexCoordArrays(); ++i)
+            {
+                newGeometry->setTexCoordArray(i, cloneArray(arrayVector, geometry->getTexCoordArray(i)));
+            }
+            for(unsigned int i=0; i<geometry->getNumVertexAttribArrays(); ++i)
+            {
+                newGeometry->setVertexAttribArray(i, cloneArray(arrayVector, geometry->getVertexAttribArray(i)));
+            }
+
+            for(unsigned int i=0; i<geometry->getNumPrimitiveSets(); ++i)
+            {
+                newGeometry->setPrimitiveSet(i,clonePrimitiveSet(primitiveSetVector, geometry->getPrimitiveSet(i)));
+            }
+        }
+
+        GeometryVector::iterator geom_itr = newGeometries.begin();
+        for(GeometryMap::iterator itr = _geometryMap.begin();
+            itr != _geometryMap.end();
+            ++itr, ++geom_itr)
+        {
+            osg::Geometry* geometry = itr->first;
+            Geodes& geodes = itr->second;
+            for(Geodes::iterator gitr = geodes.begin();
+                gitr != geodes.end();
+                ++gitr)
+            {
+                osg::Geode* geode = const_cast<osg::Geode*>(*gitr);
+                geode->replaceDrawable(geometry, geom_itr->get());
+            }
+        }
+    }
+
+protected:
+
+     typedef std::set<osg::Node*>  Nodes;
+     typedef std::set<osg::Geode*>  Geodes;
+     typedef std::set<osg::Geometry*>  Geometries;
+     typedef std::map<osg::Geometry*, Geodes> GeometryMap;
+     typedef std::map<osg::Array*, Geometries> ArrayMap;
+     typedef std::map<osg::PrimitiveSet*, Geometries> PrimitiveSetMap;
+
+     Nodes              _nodes;
+     GeometryMap        _geometryMap;
+     ArrayMap           _arrayMap;
+     PrimitiveSetMap    _primitiveSetMap;
+};
+
 class SceneGraphProcessor : public osg::Referenced
 {
 public:
@@ -100,6 +341,9 @@ public:
         while (arguments.read("--build-mipmaps")) { modifyTextureSettings = true; buildImageMipmaps = true; }
         while (arguments.read("--compress")) { modifyTextureSettings = true; compressImages = true; }
         while (arguments.read("--disable-mipmaps")) { modifyTextureSettings = true; disableMipmaps = true; }
+
+        while (arguments.read("--reallocate") || arguments.read("--ra") ) { reallocateMemory = true; }
+
 
         OSG_NOTICE<<"simplificatioRatio="<<simplificatioRatio<<std::endl;
     }
@@ -155,6 +399,20 @@ public:
             node->accept(ssv);
         }
 
+        MemoryVisitor mv;
+        node->accept(mv);
+        mv.report(osg::notify(osg::NOTICE));
+
+        if (reallocateMemory)
+        {
+            OSG_NOTICE<<"Running Reallocation of scene graph memory"<<std::endl;
+            mv.reallocate();
+        }
+
+        mv.reset();
+        node->accept(mv);
+        mv.report(osg::notify(osg::NOTICE));
+
         return node;
     }
 
@@ -174,6 +432,8 @@ protected:
         optimizeVertexCache = false;
         optimizeVertexOrder = false;
 
+        reallocateMemory = false;
+        
         modifyTextureSettings = false;
         buildImageMipmaps = false;
         compressImages = false;
@@ -192,6 +452,8 @@ protected:
     bool optimizeVertexCache;
     bool optimizeVertexOrder;
 
+    bool reallocateMemory;
+    
     bool modifyTextureSettings;
     bool buildImageMipmaps;
     bool compressImages;

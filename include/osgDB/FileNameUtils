@@ -44,7 +44,14 @@ extern OSGDB_EXPORT std::string convertFileNameToWindowsStyle(const std::string&
 extern OSGDB_EXPORT std::string convertFileNameToUnixStyle(const std::string& fileName);
 extern OSGDB_EXPORT std::string convertToLowerCase(const std::string& fileName);
 
+const char UNIX_PATH_SEPARATOR = '/';
+const char WINDOWS_PATH_SEPARATOR = '\\';
+
+/** Get the path separator for the current platform. */
+extern OSGDB_EXPORT char getNativePathSeparator();
+/** Check if the path contains only the current platform's path separators. */
 extern OSGDB_EXPORT bool isFileNameNativeStyle(const std::string& fileName);
+/** Convert the path to contain only the current platform's path separators. */
 extern OSGDB_EXPORT std::string convertFileNameToNativeStyle(const std::string& fileName);
 
 extern OSGDB_EXPORT bool equalCaseInsensitive(const std::string& lhs,const std::string& rhs);

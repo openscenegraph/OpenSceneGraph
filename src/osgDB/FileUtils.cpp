@@ -530,6 +530,39 @@ static void appendInstallationLibraryFilePaths(osgDB::FilePathList& filepath)
 #endif // unix getDirectoryContexts
 
 
+osgDB::DirectoryContents osgDB::expandWildcardsInFilename(const std::string& filename)
+{
+    osgDB::DirectoryContents contents;
+
+    std::string dir = osgDB::getFilePath(filename);
+    std::string filenameOnly = filename.substr(dir.length(), std::string::npos);
+    std::string left = filenameOnly.substr(0, filenameOnly.find('*'));
+    std::string right = filenameOnly.substr(filenameOnly.find('*')+1, std::string::npos);
+
+    if (dir.empty())
+        dir = osgDB::getCurrentWorkingDirectory();
+
+    osgDB::DirectoryContents dirContents = osgDB::getDirectoryContents(dir);
+    for (unsigned int i = 0; i < dirContents.size(); ++i)
+    {
+        std::string filenameInDir = dirContents[i];
+
+        if (filenameInDir == "." ||
+            filenameInDir == "..")
+        {
+            continue;
+        }
+
+        if ((filenameInDir.find(left) == 0 || left.empty()) &&
+            (filenameInDir.find(right) == filenameInDir.length() - right.length() || right.empty()))
+        {
+            contents.push_back( dir + osgDB::getNativePathSeparator() + filenameInDir );
+        }
+    }
+
+    return contents;
+}
+
 osgDB::FileOpResult::Value osgDB::copyFile(const std::string & source, const std::string & destination)
 {
     if (source.empty() || destination.empty())

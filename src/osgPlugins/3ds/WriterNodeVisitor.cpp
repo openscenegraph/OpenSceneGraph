@@ -115,7 +115,7 @@ bool is3DSpath(const std::string & s, bool extendedFilePaths)
 
     // For each subdirectory
     size_t tokenLen;
-    for (size_t tokenBegin=0, tokenEnd=0; tokenEnd == std::string::npos; tokenBegin = tokenEnd+1)
+    for (size_t tokenBegin=0, tokenEnd=0; tokenEnd != std::string::npos; tokenBegin = tokenEnd+1)
     {
         tokenEnd = s.find_first_of("/\\", tokenBegin);
         if (tokenEnd != std::string::npos) tokenLen = tokenEnd-tokenBegin-1;        // -1 to avoid reading the separator

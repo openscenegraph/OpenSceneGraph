@@ -509,6 +509,20 @@ bool Geometry::insertPrimitiveSet(unsigned int i,PrimitiveSet* primitiveset)
     return false;
 }
 
+void Geometry::setPrimitiveSetList(const PrimitiveSetList& primitives)
+{
+   _primitives = primitives;
+   if (_useVertexBufferObjects)
+   {
+      for (unsigned int primitiveSetIndex=0;primitiveSetIndex<_primitives.size();++primitiveSetIndex)
+      {
+         addElementBufferObjectIfRequired(_primitives[primitiveSetIndex]);
+      }
+      
+   }
+   dirtyDisplayList(); dirtyBound();
+}
+
 bool Geometry::removePrimitiveSet(unsigned int i, unsigned int numElementsToRemove)
 {
     if (numElementsToRemove==0) return false;

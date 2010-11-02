@@ -249,12 +249,14 @@ void  write_particle(const osgParticle::Particle &P, osgDB::Output &fw)
     fw.writeObject(*P.getColorInterpolator());
     fw.moveOut();
     fw.indent() << "}" << std::endl;
-    
-    fw.indent() << "drawable {" << std::endl;
-    fw.moveIn();
-    fw.writeObject(*P.getDrawable());
-    fw.moveOut();
-    fw.indent() << "}" << std::endl;
+
+    if ( P.getDrawable() != NULL ) {
+        fw.indent() << "drawable {" << std::endl;
+        fw.moveIn();
+        fw.writeObject(*P.getDrawable());
+        fw.moveOut();
+        fw.indent() << "}" << std::endl;
+    }
 
     fw.moveOut();
     fw.indent() << "}" << std::endl;

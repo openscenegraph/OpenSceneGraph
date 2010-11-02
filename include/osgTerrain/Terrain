@@ -49,6 +49,14 @@ class OSGTERRAIN_EXPORT Terrain : public osg::CoordinateSystemNode
         /** Get the vertical scale hint.*/
         float getVerticalScale() const { return _verticalScale; }
 
+        /** If set to true the boundaries between adjacent tiles should be equalized.
+          * Note, it is only possible to equalizae boundaries when the TerrainTile's contain properly assigned TileID's,
+          * databases built with VirtualPlanetBuilder-0.9.11 and older do not set the TileID, so databases must be
+          * built with later versions of VirtualPlanetBuilder to take advatange of boundary equalization. */
+        void setEqualizeBoundaries(bool equalizeBoundaries);
+
+        /** If true the boundaries between adjacent tiles will be equalized. */
+        bool getEqualizeBoundaries() const { return _equalizeBoundaries; }
 
         /** Set the default policy to use when deciding whether to enable/disable blending and use of transparent bin.
           * Note, the Terrain::BlendingPolicy value only sets the value for the TerrainTiles it encloses for the
@@ -95,6 +103,7 @@ class OSGTERRAIN_EXPORT Terrain : public osg::CoordinateSystemNode
         float                               _sampleRatio;
         float                               _verticalScale;
         TerrainTile::BlendingPolicy         _blendingPolicy;
+        bool                                _equalizeBoundaries;
 
         mutable OpenThreads::Mutex          _mutex;
         TerrainTileSet                      _terrainTileSet;

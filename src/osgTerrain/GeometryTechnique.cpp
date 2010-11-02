@@ -29,8 +29,6 @@
 
 using namespace osgTerrain;
 
-#define NEW_COORD_CODE
-
 GeometryTechnique::GeometryTechnique()
 {
     setFilterBias(0);
@@ -880,8 +878,7 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
     //
     VNG.populateCenter(elevationLayer, layerToTexCoordMap);
 
-#if 1
-    if (terrain)
+    if (terrain && terrain->getEqualizeBoundaries())
     {
         TileID tileID = _terrainTile->getTileID();
 
@@ -997,7 +994,6 @@ void GeometryTechnique::generateGeometry(BufferData& buffer, Locator* masterLoca
         }
 #endif
     }
-#endif
 
 
     osg::ref_ptr<osg::Vec3Array> skirtVectors = new osg::Vec3Array((*VNG._normals));

@@ -138,11 +138,13 @@ void GLBufferObject::compileBuffer()
                 entry.dataSource = bd;
 
                 newTotalSize += entry.dataSize;
-                if (previousEndOfBufferDataMarker==newTotalSize)
+                if (previousEndOfBufferDataMarker!=newTotalSize)
                 {
                     offsetChanged = true;
                 }
             }
+            else
+                newTotalSize += entry.dataSize;
         }
         else
         {

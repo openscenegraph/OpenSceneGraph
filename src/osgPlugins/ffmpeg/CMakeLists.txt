@@ -26,6 +26,7 @@ SET(TARGET_SRC
     FFmpegDecoderVideo.cpp
     FFmpegImageStream.cpp
     FFmpegAudioStream.cpp
+    FFmpegParameters.cpp
     ReaderWriterFFmpeg.cpp
 )
 
@@ -39,6 +40,7 @@ SET(TARGET_H
     FFmpegPacket.hpp
     FFmpegImageStream.hpp
     FFmpegAudioStream.hpp
+    FFmpegParameters.hpp
     MessageQueue.hpp
 )
 

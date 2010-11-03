@@ -15,6 +15,8 @@ namespace osgFFmpeg
 
     template <class T>
     class MessageQueue;
+    
+    class FFmpegParameters;
 
     class FFmpegImageStream : public osg::ImageStream, public OpenThreads::Thread
     {
@@ -25,7 +27,7 @@ namespace osgFFmpeg
 
         META_Object(osgFFmpeg, FFmpegImageStream);
 
-        bool open(const std::string & filename);
+        bool open(const std::string & filename, FFmpegParameters* parameters);
 
         virtual void play();
         virtual void pause();

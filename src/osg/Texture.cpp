@@ -2258,6 +2258,7 @@ Texture::Extensions::Extensions(unsigned int contextID)
         OSG_INFO<<"Disabling _isNonPowerOfTwoTextureMipMappedSupported for GeForce FX hardware."<<std::endl;
     }
 
+    _maxTextureSize=0;
     glGetIntegerv(GL_MAX_TEXTURE_SIZE,&_maxTextureSize);
 
     char *ptr;
@@ -2274,6 +2275,7 @@ Texture::Extensions::Extensions(unsigned int contextID)
 
     if( _isMultiTexturingSupported )
     {
+       _numTextureUnits = 0;
        #if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GL3_AVAILABLE)
            glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS,&_numTextureUnits);
        #else

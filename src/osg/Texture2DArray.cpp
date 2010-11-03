@@ -711,7 +711,9 @@ void Texture2DArray::Extensions::setupGLExtensions(unsigned int contextID)
     _isTexture3DSupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_EXT_texture3D");
     _isTexture2DArraySupported = OSG_GL3_FEATURES || isGLExtensionSupported(contextID,"GL_EXT_texture_array");
 
+    _max2DSize = 0;
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &_max2DSize);
+    _maxLayerCount = 0;
     glGetIntegerv(GL_MAX_ARRAY_TEXTURE_LAYERS_EXT, &_maxLayerCount);
 
     setGLExtensionFuncPtr(_glTexImage3D, "glTexImage3D","glTexImage3DEXT");

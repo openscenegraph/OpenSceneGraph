@@ -129,7 +129,7 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
                     #  ifndef GL_NUM_EXTENSIONS
                     #    define GL_NUM_EXTENSIONS 0x821D
                     #  endif
-                    GLint numExt;
+                    GLint numExt = 0;
                     glGetIntegerv( GL_NUM_EXTENSIONS, &numExt );
                     int idx;
                     for( idx=0; idx<numExt; idx++ )

@@ -899,7 +899,7 @@ void State::initializeExtensionProcs()
                                  osg::isGLExtensionSupported(_contextID,"GL_EXT_multitexture") ||
                                  OSG_GLES1_FEATURES)
     {
-        GLint maxTextureUnits;
+        GLint maxTextureUnits = 0;
         glGetIntegerv(GL_MAX_TEXTURE_UNITS,&maxTextureUnits);
         _glMaxTextureUnits = maxTextureUnits;
         _glMaxTextureCoords = maxTextureUnits;

@@ -150,7 +150,7 @@ void FragmentProgram::apply(State& state) const
                                      _fragmentProgram.length(), _fragmentProgram.c_str());
 
         // Check for errors
-        GLint errorposition;
+        GLint errorposition = 0;
         glGetIntegerv(GL_PROGRAM_ERROR_POSITION_ARB, &errorposition);
         if (errorposition != -1)
         {

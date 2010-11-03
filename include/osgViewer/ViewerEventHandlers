@@ -108,7 +108,15 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
         /** Get the keyboard and mouse usage of this manipulator.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const;
 
-    protected:
+        /** This allows the user to register additional stats lines that will 
+            be added to the graph. The stats for these will be gotten from the
+            viewer (viewer->getViewerStats()). */
+        void addUserStatsLine(const std::string& label, const osg::Vec4& textColor, const osg::Vec4& barColor, 
+                              const std::string& timeTakenName, float multiplier, bool average, bool averageInInverseSpace, 
+                              const std::string& beginTimeName, const std::string& endTimeName, float maxValue);
+        void removeUserStatsLine(const std::string& label);
+
+protected:
 
         void setUpHUDCamera(osgViewer::ViewerBase* viewer);
 
@@ -120,7 +128,12 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
 
         osg::Geometry* createTick(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numTicks);
 
-        osg::Node* createCameraTimeStats(const std::string& font, osg::Vec3& pos, float startBlocks, bool acquireGPUStats, float characterSize, osg::Stats* viewerStats, osg::Camera* camera);
+        void createTimeStatsLine(const std::string& lineLabel, osg::Vec3 pos, 
+                                 const osg::Vec4& textColor, const osg::Vec4& barColor, osg::Stats* viewerStats, osg::Stats* stats, 
+                                 const std::string& timeTakenName, float multiplier, bool average, bool averageInInverseSpace, 
+                                 const std::string& beginTimeName, const std::string& endTimeName);
+
+        void createCameraTimeStats(osg::Vec3& pos, bool acquireGPUStats, osg::Stats* viewerStats, osg::Camera* camera);
 
         void setUpScene(osgViewer::ViewerBase* viewer);
 
@@ -137,6 +150,8 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
 
         osg::ref_ptr<osg::Switch>           _switch;
 
+        osg::ref_ptr<osg::Geode>            _statsGeode;
+
         ViewerBase::ThreadingModel          _threadingModel;
         osg::ref_ptr<osgText::Text>         _threadingModelText;
 
@@ -150,6 +165,36 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
         float                               _statsWidth;
         float                               _statsHeight;
 
+        std::string                         _font;
+        float                               _startBlocks;
+        float                               _leftPos;
+        float                               _characterSize;
+
+        struct UserStatsLine
+        {
+            std::string label;
+            osg::Vec4 textColor;
+            osg::Vec4 barColor;
+            std::string timeTakenName;
+            float multiplier;
+            bool average;
+            bool averageInInverseSpace;
+            std::string beginTimeName;
+            std::string endTimeName;
+            float maxValue;
+
+            UserStatsLine(const std::string& label_, const osg::Vec4& textColor_, const osg::Vec4& barColor_, 
+                          const std::string& timeTakenName_, float multiplier_, bool average_, bool averageInInverseSpace_, 
+                          const std::string& beginTimeName_, const std::string& endTimeName_, float maxValue_)
+                : label(label_), textColor(textColor_), barColor(barColor_), 
+                  timeTakenName(timeTakenName_), multiplier(multiplier_), average(average_), averageInInverseSpace(averageInInverseSpace_), 
+                  beginTimeName(beginTimeName_), endTimeName(endTimeName_), maxValue(maxValue_)
+            {
+            }
+        };
+
+        typedef std::vector<UserStatsLine>  UserStatsLines;
+        UserStatsLines                      _userStatsLines;
 
 };
 

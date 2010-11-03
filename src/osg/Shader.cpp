@@ -503,7 +503,7 @@ void Shader::PerContextShader::compileShader(osg::State& state)
 #if defined(OSG_GLES2_AVAILABLE)
     if (_shader->getShaderBinary())
     {
-        GLint numFormats;
+        GLint numFormats = 0;
         glGetIntegerv(GL_NUM_SHADER_BINARY_FORMATS, &numFormats);
 
         if (numFormats>0)

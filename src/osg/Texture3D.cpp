@@ -606,6 +606,7 @@ void Texture3D::Extensions::setupGLExtensions(unsigned int contextID)
     if (_isTexture3DFast) _isTexture3DSupported = true;
     else _isTexture3DSupported = strncmp((const char*)glGetString(GL_VERSION),"1.2",3)>=0;
     
+    _maxTexture3DSize = 0;
     glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE, &_maxTexture3DSize);
 
     setGLExtensionFuncPtr(glTexImage3D,"glTexImage3D","glTexImage3DEXT");

@@ -99,7 +99,7 @@ public:
 #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
                  if (pixelFormat == GL_RGB)
                  {
-                    GLint value;
+                    GLint value = 0;
                     #ifndef GL_IMPLEMENTATION_COLOR_READ_FORMAT
                         #define GL_IMPLEMENTATION_COLOR_READ_FORMAT 0x8B9B
                     #endif

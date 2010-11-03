@@ -637,7 +637,7 @@ struct StatsGraph : public osg::MatrixTransform
 
     void addStatGraph(osg::Stats* viewerStats, osg::Stats* stats, const osg::Vec4& color, float max, const std::string& nameBegin, const std::string& nameEnd = "")
     {
-        _statsGraphGeode->addDrawable(new Graph(_width, _height, viewerStats, stats, color, max, nameBegin, nameEnd));
+        _statsGraphGeode->addDrawable(new Graph(_pos, _width, _height, viewerStats, stats, color, max, nameBegin, nameEnd));
     }
 
     osg::Vec3           _pos;
@@ -649,7 +649,7 @@ struct StatsGraph : public osg::MatrixTransform
 protected:
     struct Graph : public osg::Geometry
     {
-        Graph(float width, float height, osg::Stats* viewerStats, osg::Stats* stats,
+        Graph(const osg::Vec3& pos, float width, float height, osg::Stats* viewerStats, osg::Stats* stats,
               const osg::Vec4& color, float max, const std::string& nameBegin, const std::string& nameEnd = "")
         {
             setUseDisplayList(false);
@@ -661,15 +661,15 @@ protected:
             setColorArray(colors);
             setColorBinding(osg::Geometry::BIND_OVERALL);
 
-            setDrawCallback(new GraphUpdateCallback(width, height, viewerStats, stats, max, nameBegin, nameEnd));
+            setDrawCallback(new GraphUpdateCallback(pos, width, height, viewerStats, stats, max, nameBegin, nameEnd));
         }
     };
 
     struct GraphUpdateCallback : public osg::Drawable::DrawCallback
     {
-        GraphUpdateCallback(float width, float height, osg::Stats* viewerStats, osg::Stats* stats,
+        GraphUpdateCallback(const osg::Vec3& pos, float width, float height, osg::Stats* viewerStats, osg::Stats* stats,
                             float max, const std::string& nameBegin, const std::string& nameEnd = "")
-            : _width((unsigned int)width), _height((unsigned int)height), _curX(0),
+            : _pos(pos), _width((unsigned int)width), _height((unsigned int)height), _curX(0),
               _viewerStats(viewerStats), _stats(stats), _max(max), _nameBegin(nameBegin), _nameEnd(nameEnd)
         {
         }
@@ -711,39 +711,39 @@ protected:
             vertices->push_back(osg::Vec3(float(_curX), float(_height) / _max * value, 0));
 
             // One vertex per pixel in X.
-            if (vertices->size() > _width)
+            int excedent = vertices->size() - _width;
+            if (excedent > 0)
             {
-                unsigned int excedent = vertices->size() - _width;
                 vertices->erase(vertices->begin(), vertices->begin() + excedent);
-
-                // Make the graph scroll when there is enough data.
-                // Note: We check the frame number so that even if we have
-                // many graphs, the transform is translated only once per
-                // frame.
-                static const float increment = -1.0;
-                if (GraphUpdateCallback::_frameNumber != frameNumber)
-                {
-                    // We know the exact layout of this part of the scene
-                    // graph, so this is OK...
-                    osg::MatrixTransform* transform =
-                        geometry->getParent(0)->getParent(0)->asTransform()->asMatrixTransform();
-                    if (transform)
-                    {
-                        transform->setMatrix(transform->getMatrix() * osg::Matrix::translate(osg::Vec3(increment, 0, 0)));
-                    }
-                }
             }
-            else
-            {
-                // Create primitive set if none exists.
-                if (geometry->getNumPrimitiveSets() == 0)
-                    geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP, 0, 0));
 
-                // Update primitive set.
-                osg::DrawArrays* drawArrays = dynamic_cast<osg::DrawArrays*>(geometry->getPrimitiveSet(0));
-                if (!drawArrays) return;
-                drawArrays->setFirst(0);
-                drawArrays->setCount(vertices->size());
+            // Create primitive set if none exists.
+            if (geometry->getNumPrimitiveSets() == 0)
+                geometry->addPrimitiveSet(new osg::DrawArrays(GL_LINE_STRIP, 0, 0));
+
+            // Update primitive set.
+            osg::DrawArrays* drawArrays = dynamic_cast<osg::DrawArrays*>(geometry->getPrimitiveSet(0));
+            if (!drawArrays) return;
+            drawArrays->setFirst(0);
+            drawArrays->setCount(vertices->size());
+
+            // Make the graph scroll when there is enough data.
+            // Note: We check the frame number so that even if we have
+            // many graphs, the transform is translated only once per
+            // frame.
+            //static const float increment = -1.0;
+            if (GraphUpdateCallback::_frameNumber != frameNumber)
+            {
+                // We know the exact layout of this part of the scene
+                // graph, so this is OK...
+                osg::MatrixTransform* transform =
+                    geometry->getParent(0)->getParent(0)->asTransform()->asMatrixTransform();
+                if (transform)
+                {
+                    //osg::Matrix matrix = transform->getMatrix();
+                    //matrix.setTrans(-(*vertices)[0].x(), matrix.getTrans().y(), matrix.getTrans().z());
+                    transform->setMatrix(osg::Matrix::translate(_pos + osg::Vec3(-(*vertices)[0].x(), 0, 0)));
+                }
             }
 
             _curX++;
@@ -754,6 +754,7 @@ protected:
             drawable->drawImplementation(renderInfo);
         }
 
+        const osg::Vec3         _pos;
         const unsigned int      _width;
         const unsigned int      _height;
         mutable unsigned int    _curX;

@@ -64,6 +64,13 @@
   #define GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT   0x8DBE
 #endif
 
+#ifndef GL_IMG_texture_compression_pvrtc
+    #define GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG      0x8C00
+    #define GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG      0x8C01
+    #define GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG     0x8C02
+    #define GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG     0x8C03
+#endif
+
 #ifndef GL_ARB_INTERNAL_TEXTURE_FORMAT
     #define GL_RGBA32F_ARB                           0x8814
     #define GL_RGB32F_ARB                            0x8815
@@ -642,6 +649,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 void setTextureCompressionRGTCSupported(bool flag) { _isTextureCompressionRGTCSupported=flag; }
                 bool isTextureCompressionRGTCSupported() const { return _isTextureCompressionRGTCSupported; }
 
+                void setTextureCompressionPVRTCSupported(bool flag) { _isTextureCompressionPVRTCSupported=flag; }
+                bool isTextureCompressionPVRTCSupported() const { return _isTextureCompressionPVRTCSupported; }
+
                 void setTextureMirroredRepeatSupported(bool flag) { _isTextureMirroredRepeatSupported=flag; }
                 bool isTextureMirroredRepeatSupported() const { return _isTextureMirroredRepeatSupported; }
 
@@ -741,6 +751,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 bool    _isTextureCompressionARBSupported;
                 bool    _isTextureCompressionS3TCSupported;
                 bool    _isTextureCompressionRGTCSupported;
+                bool    _isTextureCompressionPVRTCSupported;
                 bool    _isTextureMirroredRepeatSupported;
                 bool    _isTextureEdgeClampSupported;
                 bool    _isTextureBorderClampSupported;

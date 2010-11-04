@@ -135,6 +135,11 @@ void Texture::TextureProfile::computeSize()
         case(GL_COMPRESSED_RED_RGTC1_EXT):              numBitsPerTexel = 4; break;
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT): numBitsPerTexel = 8; break;
         case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT):        numBitsPerTexel = 8; break;
+
+        case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG):  numBitsPerTexel = 2; break;
+        case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG): numBitsPerTexel = 2; break;
+        case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG):  numBitsPerTexel = 4; break;
+        case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG): numBitsPerTexel = 4; break;
     }
 
     _size = (unsigned int)(ceil(double(_width * _height * _depth * numBitsPerTexel)/8.0));
@@ -1351,6 +1356,10 @@ bool Texture::isCompressedInternalFormat(GLint internalFormat)
         case(GL_COMPRESSED_RED_RGTC1_EXT):
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT):
         case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT):
+        case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG):
+        case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG):
+        case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG):
+        case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG):
             return true;
         default:
             return false;
@@ -1367,6 +1376,38 @@ void Texture::getCompressedSize(GLenum internalFormat, GLint width, GLint height
         blockSize = 8;
     else if (internalFormat == GL_COMPRESSED_RED_GREEN_RGTC2_EXT || internalFormat == GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT)
         blockSize = 16;    
+    else if (internalFormat == GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG || internalFormat == GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG)
+    {
+         blockSize = 8 * 4; // Pixel by pixel block size for 2bpp
+         GLint widthBlocks = width / 8;
+         GLint heightBlocks = height / 4;
+         GLint bpp = 2;
+         
+         // Clamp to minimum number of blocks
+         if(widthBlocks < 2)
+             widthBlocks = 2;
+         if(heightBlocks < 2)
+             heightBlocks = 2;
+         
+         size = widthBlocks * heightBlocks * ((blockSize  * bpp) / 8);    
+         return;
+     }
+    else if (internalFormat == GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG || internalFormat == GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG)
+    {
+         blockSize = 4 * 4; // Pixel by pixel block size for 4bpp
+         GLint widthBlocks = width / 4;
+         GLint heightBlocks = height / 4;
+         GLint bpp = 4;
+         
+         // Clamp to minimum number of blocks
+         if(widthBlocks < 2)
+             widthBlocks = 2;
+         if(heightBlocks < 2)
+             heightBlocks = 2;
+         
+         size = widthBlocks * heightBlocks * ((blockSize  * bpp) / 8);    
+         return;
+    }
     else
     {
         OSG_WARN<<"Texture::getCompressedSize(...) : cannot compute correct size of compressed format ("<<internalFormat<<") returning 0."<<std::endl;
@@ -2217,6 +2258,8 @@ Texture::Extensions::Extensions(unsigned int contextID)
     _isTextureCompressionS3TCSupported = isGLExtensionSupported(contextID,"GL_EXT_texture_compression_s3tc");
 
     _isTextureCompressionRGTCSupported = isGLExtensionSupported(contextID,"GL_EXT_texture_compression_rgtc");
+
+    _isTextureCompressionPVRTCSupported = isGLExtensionSupported(contextID,"GL_IMG_texture_compression_pvrtc");
 
     _isTextureMirroredRepeatSupported = builtInSupport || 
                                         isGLExtensionOrVersionSupported(contextID,"GL_IBM_texture_mirrored_repeat", 1.4f) ||

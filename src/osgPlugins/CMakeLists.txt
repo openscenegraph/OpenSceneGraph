@@ -246,6 +246,8 @@ IF(LIBVNCSERVER_FOUND)
     ADD_SUBDIRECTORY(vnc)
 ENDIF()
 
+ADD_SUBDIRECTORY(pvr)
+
 ##########to get all the variables of Cmake
 #GET_CMAKE_PROPERTY(MYVARS VARIABLES)
 #FOREACH(myvar ${MYVARS})

@@ -307,6 +307,10 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
         case(GL_COMPRESSED_RED_RGTC1_EXT):   return 1;
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT): return 2;
         case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT): return 2;    
+        case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG): return 3;
+        case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG): return 3;
+        case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG): return 4;
+        case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG): return 4;
         case(GL_COLOR_INDEX): return 1;
         case(GL_STENCIL_INDEX): return 1;
         case(GL_DEPTH_COMPONENT): return 1;
@@ -417,6 +421,11 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT): return 8;
         case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT): return 8;
 
+        case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG): return 4;
+        case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG): return 2;
+        case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG): return 4;
+        case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG): return 2;
+        
         default: break;
     }
 
@@ -551,6 +560,10 @@ bool Image::isCompressed() const
         case(GL_COMPRESSED_RED_RGTC1_EXT):
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT):
         case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT):
+        case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG): 
+        case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG):
+        case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG):
+        case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG):
             return true;
         default:
             return false;

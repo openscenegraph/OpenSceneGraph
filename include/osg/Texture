@@ -955,6 +955,7 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 _height = height;
                 _depth = depth;
                 _border = border;
+                computeSize();
             }
 
             inline bool match(GLenum    target,

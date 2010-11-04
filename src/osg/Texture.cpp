@@ -91,12 +91,19 @@ void Texture::TextureObject::setAllocated(GLint     numMipmapLevels,
     _allocated=true;
     if (!match(_profile._target,numMipmapLevels,internalFormat,width,height,depth,border))
     {
+        // keep previous size
+        unsigned int previousSize = _profile._size;
+
         _profile.set(numMipmapLevels,internalFormat,width,height,depth,border);
 
         if (_set)
         {
             _set->moveToSet(this, _set->getParent()->getTextureObjectSet(_profile));
-        }
+
+            // Update texture pool size
+            _set->getParent()->getCurrTexturePoolSize() -= previousSize;
+            _set->getParent()->getCurrTexturePoolSize() += _profile._size;
+       }
     }
 }
 

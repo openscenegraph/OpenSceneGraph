@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield 
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -47,9 +47,10 @@ public:
         supportsExtension("mkv",    "Matroska");
         supportsExtension("mjpeg",  "Motion JPEG");
         supportsExtension("mp4",    "MPEG-4");
-        supportsExtension("sav",    "MPEG-4");
-        supportsExtension("3gp",    "MPEG-4");
-        supportsExtension("sdp",    "MPEG-4");
+        supportsExtension("sav",    "Unknown");
+        supportsExtension("3gp",    "3G multi-media format");
+        supportsExtension("sdp",    "Session Description Protocol");
+        supportsExtension("m2ts",   "MPEG-2 Transport Stream");
         
         supportsOption("format",            "Force setting input format (e.g. vfwcap for Windows webcam)");
         supportsOption("pixel_format",      "Set pixel format");
@@ -67,7 +68,6 @@ public:
 
     virtual ~ReaderWriterFFmpeg()
     {
-
     }
 
     virtual const char * className() const
@@ -75,7 +75,7 @@ public:
         return "ReaderWriterFFmpeg";
     }
 
-    virtual ReadResult readImage(const std::string & filename, const osgDB::ReaderWriter::Options * options) const
+    virtual ReadResult readImage(const std::string & filename, const osgDB::ReaderWriter::Options* options) const
     {
         const std::string ext = osgDB::getLowerCaseFileExtension(filename);
         if (ext=="ffmpeg") return readImage(osgDB::getNameLessExtension(filename),options);

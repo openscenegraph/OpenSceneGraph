@@ -72,12 +72,24 @@ class OSG_EXPORT AutoTransform : public Transform
         {
             NO_ROTATION,
             ROTATE_TO_SCREEN,
-            ROTATE_TO_CAMERA
+            ROTATE_TO_CAMERA,
+            ROTATE_TO_AXIS
         };
 
-        void setAutoRotateMode(AutoRotateMode mode) { _autoRotateMode = mode; _firstTimeToInitEyePoint = true; }
+        void setAutoRotateMode(AutoRotateMode mode);
 
         AutoRotateMode getAutoRotateMode() const { return _autoRotateMode; }
+
+        /** Set the rotation axis for the AutoTransform's child nodes.
+          * Only utilized when _autoRotateMode==ROTATE_TO_AXIS. */
+        void setAxis(const Vec3& axis);
+        /** Get the rotation axis. */
+        inline const Vec3& getAxis() const { return _axis; }
+
+        /** This normal defines child Nodes' front face direction when unrotated. */
+        void setNormal(const Vec3& normal);
+        /** Get the front face direction normal. */
+        inline const Vec3& getNormal() const { return _normal; }
 
         void setAutoScaleToScreen(bool autoScaleToScreen) { _autoScaleToScreen = autoScaleToScreen; _matrixDirty=true; }
 
@@ -124,6 +136,24 @@ class OSG_EXPORT AutoTransform : public Transform
 
         mutable bool                    _matrixDirty;
         mutable osg::Matrixd            _cachedMatrix;
+
+        enum AxisAligned
+        {
+            AXIAL_ROT_X_AXIS=ROTATE_TO_AXIS+1,
+            AXIAL_ROT_Y_AXIS,
+            AXIAL_ROT_Z_AXIS,
+            CACHE_DIRTY
+        };
+
+        Vec3                            _axis;
+        Vec3                            _normal;
+
+        // used internally as cache of which what _axis is aligned to help
+        // decide which method of rotation to use.
+        int                             _cachedMode;
+        Vec3                            _side;
+        void updateCache();
+
 };
 
 }

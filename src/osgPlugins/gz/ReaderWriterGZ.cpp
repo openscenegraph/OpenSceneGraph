@@ -227,7 +227,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriterGZ::writeFile(ObjectType objectType
     std::stringstream strstream;
     osgDB::ReaderWriter::WriteResult writeResult = writeFile(objectType, object, rw, strstream, options);
     
-    osgDB::ofstream fout(fullFileName.c_str());
+    osgDB::ofstream fout(fullFileName.c_str(), std::ios::binary|std::ios::out);
     
     write(fout,strstream.str());
     

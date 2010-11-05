@@ -26,7 +26,11 @@ AutoTransform::AutoTransform():
     _minimumScale(0.0),
     _maximumScale(DBL_MAX),
     _autoScaleTransitionWidthRatio(0.25),
-    _matrixDirty(true)
+    _matrixDirty(true),
+    _axis(0.0f,0.0f,1.0f),
+    _normal(0.0f,-1.0f,0.0f),
+    _cachedMode(NO_ROTATION),
+    _side(1.0f,0.0,0.0f)
 {
 //    setNumChildrenRequiringUpdateTraversal(1);
 }
@@ -44,9 +48,50 @@ AutoTransform::AutoTransform(const AutoTransform& pat,const CopyOp& copyop):
     _minimumScale(pat._minimumScale),
     _maximumScale(pat._maximumScale),
     _autoScaleTransitionWidthRatio(pat._autoScaleTransitionWidthRatio),
-    _matrixDirty(true)
+    _matrixDirty(true),
+    _axis(pat._axis),
+    _normal(pat._normal),
+    _cachedMode(pat._cachedMode),
+    _side(pat._side)
 {
 //    setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            
+}
+
+void AutoTransform::setAutoRotateMode(AutoRotateMode mode)
+{ 
+    _autoRotateMode = mode; 
+    _firstTimeToInitEyePoint = true; 
+    _cachedMode = CACHE_DIRTY;
+    updateCache();
+}
+
+void AutoTransform::setAxis(const Vec3& axis)
+{
+    _axis = axis;
+    _axis.normalize();
+    updateCache();
+}
+
+void AutoTransform::setNormal(const Vec3& normal)
+{
+    _normal = normal;
+    _normal.normalize();
+    updateCache();
+}
+
+void AutoTransform::updateCache()
+{
+    if (_autoRotateMode==ROTATE_TO_AXIS)
+    {
+        if      (_axis==Vec3(1.0f,0.0,0.0f) && _normal==Vec3(0.0f,-1.0,0.0f)) _cachedMode = AXIAL_ROT_X_AXIS;
+        else if (_axis==Vec3(0.0f,1.0,0.0f) && _normal==Vec3(1.0f, 0.0,0.0f)) _cachedMode = AXIAL_ROT_Y_AXIS;
+        else if (_axis==Vec3(0.0f,0.0,1.0f) && _normal==Vec3(0.0f,-1.0,0.0f)) _cachedMode = AXIAL_ROT_Z_AXIS;
+        else                                                                  _cachedMode = ROTATE_TO_AXIS;
+    }
+    else _cachedMode = _autoRotateMode;
+    
+    _side = _axis^_normal;
+    _side.normalize();   
 }
 
 void AutoTransform::setScale(const Vec3d& scale)
@@ -238,6 +283,80 @@ void AutoTransform::accept(NodeVisitor& nv)
                             osg::Vec3d(0,0,0), PosToEye, localUp);
                         Quat q;
                         q.set(osg::Matrix::inverse(lookto));
+                        setRotation(q);
+                    }
+                    else if (_autoRotateMode==ROTATE_TO_AXIS)
+                    {
+                        Matrix matrix;
+                        Vec3 ev(eyePoint - _position);
+
+                        switch(_cachedMode)
+                        {
+                            case(AXIAL_ROT_Z_AXIS):
+                            {
+                                ev.z() = 0.0f;
+                                float ev_length = ev.length();
+                                if (ev_length>0.0f)
+                                {
+                                    //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
+                                    //mat.makeRotate(inRadians(rotation_z),0.0f,0.0f,1.0f);
+                                    float inv = 1.0f/ev_length;
+                                    float s = ev.x()*inv;
+                                    float c = -ev.y()*inv;
+                                    matrix(0,0) = c;
+                                    matrix(1,0) = -s;
+                                    matrix(0,1) = s;
+                                    matrix(1,1) = c;
+                                }
+                                break;
+                            }
+                            case(AXIAL_ROT_Y_AXIS):
+                            {
+                                ev.y() = 0.0f;
+                                float ev_length = ev.length();
+                                if (ev_length>0.0f)
+                                {
+                                    //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
+                                    //mat.makeRotate(inRadians(rotation_z),0.0f,0.0f,1.0f);
+                                    float inv = 1.0f/ev_length;
+                                    float s = -ev.z()*inv;
+                                    float c = ev.x()*inv;
+                                    matrix(0,0) = c;
+                                    matrix(2,0) = s;
+                                    matrix(0,2) = -s;
+                                    matrix(2,2) = c;
+                                }
+                                break;
+                            }
+                            case(AXIAL_ROT_X_AXIS):
+                            {
+                                ev.x() = 0.0f;
+                                float ev_length = ev.length();
+                                if (ev_length>0.0f)
+                                {
+                                    //float rotation_zrotation_z = atan2f(ev.x(),ev.y());
+                                    //mat.makeRotate(inRadians(rotation_z),0.0f,0.0f,1.0f);
+                                    float inv = 1.0f/ev_length;
+                                    float s = -ev.z()*inv;
+                                    float c = -ev.y()*inv;
+                                    matrix(1,1) = c;
+                                    matrix(2,1) = -s;
+                                    matrix(1,2) = s;
+                                    matrix(2,2) = c;
+                                }
+                                break;
+                            }
+                            case(ROTATE_TO_AXIS): // need to implement 
+                            {
+                                float ev_side = ev*_side;
+                                float ev_normal = ev*_normal;
+                                float rotation = atan2f(ev_side,ev_normal);
+                                matrix.makeRotate(rotation,_axis);
+                                break;
+                            }
+                        }
+                        Quat q;
+                        q.set(matrix);
                         setRotation(q);
                     }
 

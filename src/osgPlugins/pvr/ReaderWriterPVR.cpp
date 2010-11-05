@@ -1,5 +1,9 @@
 // ReaderWriter for pvr images
 
+#if defined(_MSC_VER)
+#include <windows.h>
+#endif
+
 #include <osg/Image>
 #include <osg/Notify>
 
@@ -14,7 +18,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#if defined(_MSC_VER)
+typedef UINT64     uint64_t;
+typedef INT64      int64_t;
+typedef UINT32     uint32_t;
+typedef INT32      int32_t;
+typedef UINT16     uint16_t;
+typedef UINT8      uint8_t;
+#else
 #include <stdint.h>
+#endif
 
 using namespace osg;
 
@@ -193,8 +207,8 @@ public:
                 
                 dataOffset += widthBlocks * heightBlocks * ((blockSize  * bpp) / 8);
                 
-                width = std::max(width >> 1, (uint32_t)1);
-                height = std::max(height >> 1, (uint32_t)1);
+                width = osg::maximum(width >> 1, (uint32_t)1);
+                height = osg::maximum(height >> 1, (uint32_t)1);
             }
             
             if(!mipmapdata.empty())

@@ -261,8 +261,8 @@ bool ReaderWriterGZ::read(std::istream& fin, std::string& destination) const
 
         fin.read((char*)in, CHUNK);
         strm.avail_in = fin.gcount();
-
-        if (fin.fail())
+        
+        if (fin.bad())
         {
             (void)inflateEnd(&strm);
             return false;

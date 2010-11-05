@@ -111,6 +111,7 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
             rendererString = renderer ? (const char*)renderer : "";
 
             // get the extension list from OpenGL.
+            GLint numExt = 0;
             #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
             if( osg::getGLVersionNumber() >= 3.0 )
             {
@@ -129,7 +130,6 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
                     #  ifndef GL_NUM_EXTENSIONS
                     #    define GL_NUM_EXTENSIONS 0x821D
                     #  endif
-                    GLint numExt = 0;
                     glGetIntegerv( GL_NUM_EXTENSIONS, &numExt );
                     int idx;
                     for( idx=0; idx<numExt; idx++ )
@@ -142,8 +142,10 @@ bool osg::isGLExtensionOrVersionSupported(unsigned int contextID, const char *ex
                     OSG_WARN << "isGLExtensionOrVersionSupported: Can't obtain glGetStringi function pointer." << std::endl;
                 }
             }
-            else
             #endif
+
+            // No extensions found so far, so try with glGetString
+            if (numExt == 0)
             {
                 // Get extensions using GL1/2 interface.
 

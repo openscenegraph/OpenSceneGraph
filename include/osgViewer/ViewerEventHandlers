@@ -110,10 +110,40 @@ class OSGVIEWER_EXPORT StatsHandler : public osgGA::GUIEventHandler
 
         /** This allows the user to register additional stats lines that will 
             be added to the graph. The stats for these will be gotten from the
-            viewer (viewer->getViewerStats()). */
+            viewer (viewer->getViewerStats()). The stats can be displayed in 
+            either or all of the following ways:
+
+            - A numeric time beside the stat name
+              Requires that an elapsed time be recorded in the viewer's stats 
+              for the "timeTakenName".
+            - A bar in the top bar graph
+              Requires that two times (relative to the viewer's start tick) be 
+              recorded in the viewer's stats for the "beginTimeName" and 
+              "endTimeName".
+            - A line in the bottom graph
+              Requires that an elapsed time be recorded in the viewer's stats 
+              for the "timeTakenName" and that the value be used as an average.
+
+            If you don't want a numeric value and a line in the bottom line 
+            graph for your value, pass the empty string for timeTakenName. If 
+            you don't want a bar in the graph, pass the empty string for 
+            beginTimeName and endTimeName.
+
+            @param label                 The label to be displayed to identify the line in the stats.
+            @param textColor             Will be used for the text label, the numeric time and the bottom line graph.
+            @param barColor              Will be used for the bar in the top bar graph.
+            @param timeTakenName         The name to be queried in the viewer stats for the numeric value (also used for the bottom line graph).
+            @param multiplier            The multiplier to apply to the numeric value before displaying it in the stats.
+            @param average               Whether to use the average value of the numeric value.
+            @param averageInInverseSpace Whether to average in inverse space (used for frame rate).
+            @param beginTimeName         The name to be queried in the viewer stats for the begin time for the top bar graph.
+            @param endTimeName           The name to be queried in the viewer stats for the end time for the top bar graph.
+            @param maxValue              The value to use as maximum in the bottom line graph. Stats will be clamped between 0 and that value, and it will be the highest visible value in the graph.
+          */
         void addUserStatsLine(const std::string& label, const osg::Vec4& textColor, const osg::Vec4& barColor, 
                               const std::string& timeTakenName, float multiplier, bool average, bool averageInInverseSpace, 
                               const std::string& beginTimeName, const std::string& endTimeName, float maxValue);
+
         void removeUserStatsLine(const std::string& label);
 
 protected:
@@ -169,6 +199,7 @@ protected:
         float                               _startBlocks;
         float                               _leftPos;
         float                               _characterSize;
+        float                               _lineHeight;
 
         struct UserStatsLine
         {

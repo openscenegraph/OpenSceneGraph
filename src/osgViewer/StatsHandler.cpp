@@ -46,7 +46,8 @@ StatsHandler::StatsHandler():
     _font("fonts/arial.ttf"),
     _startBlocks(150.0f),
     _leftPos(10.0f),
-    _characterSize(20.0f)
+    _characterSize(20.0f),
+    _lineHeight(1.5f)
 {
     _camera = new osg::Camera;
     _camera->setRenderer(new Renderer(_camera.get()));
@@ -1146,7 +1147,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
         frameRateValue->setDrawCallback(new AveragedValueTextDrawCallback(viewer->getViewerStats(),"Frame rate",-1, true, 1.0));
 
-        pos.y() -= _characterSize*1.5f;
+        pos.y() -= _characterSize*_lineHeight;
 
     }
 
@@ -1180,21 +1181,23 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
 
             updateThreadingModelText();
 
-            pos.y() -= _characterSize*1.5f;
+            pos.y() -= _characterSize*_lineHeight;
         }
 
         float topOfViewerStats = pos.y() + _characterSize;
 
-        double cameraSize = 4.5 * cameras.size();
+        double cameraSize = _lineHeight * 3.0 * cameras.size();
         if(!acquireGPUStats) //reduce size if GPU stats not needed
         {
-            cameraSize -= 1.5 * cameras.size();
+            cameraSize -= _lineHeight * cameras.size();
         }
+
+        double userStatsLinesSize = _lineHeight * _userStatsLines.size();
 
         _statsGeode->addDrawable(createBackgroundRectangle(
             pos + osg::Vec3(-backgroundMargin, _characterSize + backgroundMargin, 0),
             _statsWidth - 2 * backgroundMargin,
-            (3 + cameraSize) * _characterSize + 2 * backgroundMargin,
+            (3 + cameraSize + userStatsLinesSize) * _characterSize + 2 * backgroundMargin,
             backgroundColor) );
 
         // Add user stats lines before the normal viewer and per-camera stats.
@@ -1206,7 +1209,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             createTimeStatsLine(line.label, pos, line.textColor, line.barColor, viewer->getViewerStats(), viewer->getViewerStats(), 
                 line.timeTakenName, line.multiplier, line.average, line.averageInInverseSpace, line.beginTimeName, line.endTimeName);
         
-            pos.y() -= _characterSize*1.5f;
+            pos.y() -= _characterSize*_lineHeight;
         }
 
         {
@@ -1215,7 +1218,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             createTimeStatsLine("Event", pos, colorUpdate, colorUpdateAlpha, viewer->getViewerStats(), viewer->getViewerStats(), 
                 "Event traversal time taken", 1000.0, true, false, "Event traversal begin time", "Event traversal end time");
 
-            pos.y() -= _characterSize*1.5f;
+            pos.y() -= _characterSize*_lineHeight;
         }
 
         {
@@ -1224,7 +1227,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             createTimeStatsLine("Update", pos, colorUpdate, colorUpdateAlpha, viewer->getViewerStats(), viewer->getViewerStats(), 
                 "Update traversal time taken", 1000.0, true, false, "Update traversal begin time", "Update traversal end time");
 
-            pos.y() -= _characterSize*1.5f;
+            pos.y() -= _characterSize*_lineHeight;
         }
 
         pos.x() = _leftPos;
@@ -1275,7 +1278,7 @@ void StatsHandler::setUpScene(osgViewer::ViewerBase* viewer)
             for (unsigned int i = 0; i < _userStatsLines.size(); ++i)
             {
                 UserStatsLine& line = _userStatsLines[i];
-                if (line.average)
+                if (!line.timeTakenName.empty() && line.average)
                 {
                     statsGraph->addStatGraph(viewer->getViewerStats(), viewer->getViewerStats(), line.textColor, line.maxValue, line.timeTakenName);
                 }
@@ -1658,7 +1661,7 @@ void StatsHandler::createCameraTimeStats(osg::Vec3& pos, bool acquireGPUStats, o
         createTimeStatsLine("Cull", pos, colorCull, colorCullAlpha, viewerStats, stats, 
             "Cull traversal time taken", 1000.0, true, false, "Cull traversal begin time", "Cull traversal end time");
 
-        pos.y() -= _characterSize*1.5f;
+        pos.y() -= _characterSize*_lineHeight;
     }
 
     {
@@ -1667,7 +1670,7 @@ void StatsHandler::createCameraTimeStats(osg::Vec3& pos, bool acquireGPUStats, o
         createTimeStatsLine("Draw", pos, colorDraw, colorDrawAlpha, viewerStats, stats, 
             "Draw traversal time taken", 1000.0, true, false, "Draw traversal begin time", "Draw traversal end time");
 
-        pos.y() -= _characterSize*1.5f;
+        pos.y() -= _characterSize*_lineHeight;
     }
 
     if (acquireGPUStats)
@@ -1677,7 +1680,7 @@ void StatsHandler::createCameraTimeStats(osg::Vec3& pos, bool acquireGPUStats, o
         createTimeStatsLine("GPU", pos, colorGPU, colorGPUAlpha, viewerStats, stats, 
             "GPU draw time taken", 1000.0, true, false, "GPU draw begin time", "GPU draw end time");
 
-        pos.y() -= _characterSize*1.5f;
+        pos.y() -= _characterSize*_lineHeight;
     }
 }
 

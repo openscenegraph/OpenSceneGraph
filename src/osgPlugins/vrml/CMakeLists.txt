@@ -37,10 +37,12 @@ SET(TARGET_SRC
     IndexedFaceSet.cpp
     Primitives.cpp
     ReaderWriterVRML2.cpp 
+    ConvertToVRML.cpp
 )
 
 SET(TARGET_H
     ReaderWriterVRML2.h
+    ConvertToVRML.h
 )
 
 #### end var setup  ###

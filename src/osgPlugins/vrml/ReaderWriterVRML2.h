@@ -4,7 +4,10 @@
  *
  * VRML2 file converter for OpenSceneGraph.
  *
- * authors : Jan Ciger (jan.ciger@gmail.com),
+ * authors :
+ *           Johan Nouvel (johan_nouvel@yahoo.com) for the writeNode function. 
+ *
+ *           Jan Ciger (jan.ciger@gmail.com),
  *           Tolga Abaci (tolga.abaci@gmail.com),
  *           Bruno Herbelin (bruno.herbelin@gmail.com)
  *
@@ -74,6 +77,8 @@ public:
 
     virtual ReadResult readNode(const std::string&, const osgDB::Options *options) const;
     // virtual ReadResult readNode(std::istream& fin, const osgDB::Options* options) const;
+
+    virtual WriteResult writeNode(const osg::Node&,const std::string& filename,const osgDB::ReaderWriter::Options *options) const;
 
 private:
     typedef std::map<float, osg::ref_ptr<osg::Geometry> > SphereLibrary;

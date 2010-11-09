@@ -20,9 +20,10 @@
 #include <osg/Object>
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
+
 #include <string>
 #include <sstream>
-
+#include <limits.h>
 
 namespace osgDB
 {
@@ -126,13 +127,15 @@ public:
         RW_MATRIXF, RW_MATRIXD, RW_MATRIX, RW_GLENUM, RW_STRING, RW_ENUM
     };
 
-    BaseSerializer() : _version(0) {}
+    BaseSerializer() : _firstVersion(0), _lastVersion(INT_MAX) {}
+
     virtual bool read( InputStream&, osg::Object& ) = 0;
     virtual bool write( OutputStream&, const osg::Object& ) = 0;
     virtual const std::string& getName() const = 0;
 
 protected:
-    int _version;  // Library version when the serializer is added, or removed (neg value)
+    int _firstVersion;  // Library version when the serializer is first introduced
+    int _lastVersion;  // Library version when the serializer is last required.
 };
 
 template<typename C>

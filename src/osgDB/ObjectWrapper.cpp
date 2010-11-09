@@ -86,9 +86,50 @@ void osgDB::split( const std::string& src, StringList& list, char separator )
 ObjectWrapper::ObjectWrapper( osg::Object* proto, const std::string& name,
                               const std::string& associates )
 :   osg::Referenced(),
-    _proto(proto), _name(name)
+    _proto(proto), _name(name), _version(0)
 {
     split( associates, _associates );
+}
+
+void ObjectWrapper::markSerializerAsRemoved( const std::string& name )
+{
+    for ( SerializerList::iterator itr=_serializers.begin(); itr!=_serializers.end(); ++itr )
+    {
+        // When a serializer is marked as 'removed', it means that this serializer won't be used any more
+        // from specified OSG version (by macro UPDATE_TO_VERSION). The read() functions of higher versions
+        // will thus ignore it according to the sign and value of the _version variable.
+        if ( (*itr)->getName()==name )
+            (*itr)->_version = -_version;
+    }
+}
+
+BaseSerializer* ObjectWrapper::getSerializer( const std::string& name )
+{
+    for ( SerializerList::iterator itr=_serializers.begin(); itr!=_serializers.end(); ++itr )
+    {
+        if ( (*itr)->getName()==name )
+            return *itr;
+    }
+    
+    for ( StringList::const_iterator itr=_associates.begin(); itr!=_associates.end(); ++itr )
+    {
+        const std::string& assocName = *itr;
+        ObjectWrapper* assocWrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(assocName);
+        if ( !assocWrapper )
+        {
+            osg::notify(osg::WARN) << "ObjectWrapper::getSerializer(): Unsupported associated class "
+                                   << assocName << std::endl;
+            continue;
+        }
+        
+        for ( SerializerList::iterator aitr=assocWrapper->_serializers.begin();
+              aitr!=assocWrapper->_serializers.end(); ++aitr )
+        {
+            if ( (*aitr)->getName()==name )
+                return *aitr;
+        }
+    }
+    return NULL;
 }
 
 bool ObjectWrapper::read( InputStream& is, osg::Object& obj )
@@ -97,6 +138,25 @@ bool ObjectWrapper::read( InputStream& is, osg::Object& obj )
     for ( SerializerList::iterator itr=_serializers.begin();
           itr!=_serializers.end(); ++itr )
     {
+        int serializerVersion = (*itr)->_version;
+        if ( serializerVersion!=0 )
+        {
+            if ( serializerVersion<0 )
+            {
+                serializerVersion = -serializerVersion;
+                
+                // The serializer is removed from a specified version,
+                // and the file in reading is at the same or higher version, ignore it.
+                if ( is.getFileVersion()>=serializerVersion ) continue;
+            }
+            else
+            {
+                // The serializer is added at a specified version,
+                // but the file in reading is at a lower version, ignore it.
+                if ( is.getFileVersion()<serializerVersion ) continue;
+            }
+        }
+        
         if ( (*itr)->read(is, obj) ) continue;
         OSG_WARN << "ObjectWrapper::read(): Error reading property "
                                << _name << "::" << (*itr)->getName() << std::endl;
@@ -127,8 +187,9 @@ bool ObjectWrapper::write( OutputStream& os, const osg::Object& obj )
     return writeOK;
 }
 
-bool ObjectWrapper::readSchema( const StringList& properties )
+bool ObjectWrapper::readSchema( const StringList& properties, const std::vector<int>& )
 {
+    // FIXME: At present, I didn't do anything to determine serializers from their types...
     if ( !_backupSerializers.size() )
         _backupSerializers = _serializers;
     _serializers.clear();
@@ -169,12 +230,18 @@ bool ObjectWrapper::readSchema( const StringList& properties )
     return size==_serializers.size();
 }
 
-void ObjectWrapper::writeSchema( StringList& properties )
+void ObjectWrapper::writeSchema( StringList& properties, std::vector<int>& types )
 {
     for ( SerializerList::iterator itr=_serializers.begin();
           itr!=_serializers.end(); ++itr )
     {
         properties.push_back( (*itr)->getName() );
+    }
+    
+    for ( std::vector<int>::iterator itr=_typeList.begin();
+          itr!=_typeList.end(); ++itr )
+    {
+        types.push_back( (*itr) );
     }
 }
 

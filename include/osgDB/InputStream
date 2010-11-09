@@ -69,6 +69,7 @@ public:
     virtual ~InputStream();
     
     bool isBinary() const { return _in->isBinary(); }
+    int getFileVersion() const { return _fileVersion; }
     const osgDB::Options* getOptions() const { return _options.get(); }
     
     // Serialization related functions
@@ -159,6 +160,7 @@ protected:
     ArrayMap _arrayMap;
     IdentifierMap _identifierMap;
     
+    int _fileVersion;
     int _byteSwap;
     bool _useSchemaData;
     bool _forceReadingImage;

@@ -18,6 +18,7 @@
 #include <osgDB/WriteFile>
 #include <osgDB/ObjectWrapper>
 #include <fstream>
+#include <sstream>
 
 using namespace osgDB;
 
@@ -27,39 +28,19 @@ OutputStream::OutputStream( const osgDB::Options* options )
     if ( !options ) return;
     _options = options;
     
-    StringList optionList;
-    split( options->getOptionString(), optionList );
-    for ( StringList::iterator itr=optionList.begin(); itr!=optionList.end(); ++itr )
+    if ( options->getPluginStringData("SchemaData")=="true" )
+        _useSchemaData = true;
+    if ( !options->getPluginStringData("SchemaFile").empty() )
+        _schemaName = options->getPluginStringData("SchemaFile");
+    if ( !options->getPluginStringData("Compressor").empty() )
+        _compressorName = options->getPluginStringData("Compressor");
+    if ( !options->getPluginStringData("WriteImageHint").empty() )
     {
-        const std::string& option = *itr;
-        if ( option=="Ascii" )
-        {
-            // Omit this
-        }
-        else if ( option=="SchemaData" )
-        {
-            _useSchemaData = true;
-        }
-        else
-        {
-            StringList keyAndValues;
-            split( option, keyAndValues, '=' );
-            if ( keyAndValues.size()<2 ) continue;
-            
-            if ( keyAndValues[0]=="SchemaFile" )
-                _schemaName = keyAndValues[1];
-            else if ( keyAndValues[0]=="Compressor" )
-                _compressorName = keyAndValues[1];
-            else if ( keyAndValues[0]=="WriteImageHint" )
-            {
-                if ( keyAndValues[1]=="IncludeData" ) _writeImageHint = WRITE_INLINE_DATA;
-                else if ( keyAndValues[1]=="IncludeFile" ) _writeImageHint = WRITE_INLINE_FILE;
-                else if ( keyAndValues[1]=="UseExternal" ) _writeImageHint = WRITE_USE_EXTERNAL;
-                else if ( keyAndValues[1]=="WriteOut" ) _writeImageHint = WRITE_EXTERNAL_FILE;
-            }
-            else
-                OSG_WARN << "OutputStream: Unknown option " << option << std::endl;
-        }
+        std::string hintString = options->getPluginStringData("WriteImageHint");
+        if ( hintString=="IncludeData" ) _writeImageHint = WRITE_INLINE_DATA;
+        else if ( hintString=="IncludeFile" ) _writeImageHint = WRITE_INLINE_FILE;
+        else if ( hintString=="UseExternal" ) _writeImageHint = WRITE_USE_EXTERNAL;
+        else if ( hintString=="WriteOut" ) _writeImageHint = WRITE_EXTERNAL_FILE;
     }
 }
 
@@ -490,16 +471,18 @@ void OutputStream::writeObjectFields( const osg::Object* obj )
             if ( _inbuiltSchemaMap.find(assocName)==_inbuiltSchemaMap.end() )
             {
                 StringList properties;
-                assocWrapper->writeSchema( properties );
-                if ( properties.size()>0 )
+                std::vector<int> types;
+                assocWrapper->writeSchema( properties, types );
+                
+                unsigned int size = osg::minimum( properties.size(), types.size() );
+                if ( size>0 )
                 {
-                    std::string propertiesString;
-                    for ( StringList::iterator sitr=properties.begin(); sitr!=properties.end(); ++sitr )
+                    std::stringstream propertiesStream;
+                    for ( unsigned int i=0; i<size; ++i )
                     {
-                        propertiesString += *sitr;
-                        propertiesString += ' ';
+                        propertiesStream << properties[i] << ":" << types[i] << " ";
                     }
-                    _inbuiltSchemaMap[assocName] = propertiesString;
+                    _inbuiltSchemaMap[assocName] = propertiesStream.str();
                 }
             }
         }
@@ -526,7 +509,7 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
     
     if ( isBinary() )
     {
-        *this << (unsigned int)type << (unsigned int)PLUGIN_VERSION;
+        *this << (unsigned int)type << (unsigned int)OPENSCENEGRAPH_SOVERSION;
         
         bool useCompressSource = false;
         unsigned int attributes = 0;
@@ -574,7 +557,7 @@ void OutputStream::start( OutputIterator* outIterator, OutputStream::WriteType t
         }
         
         *this << typeString << std::endl;
-        *this << PROPERTY("#Version") << (unsigned int)PLUGIN_VERSION << std::endl;
+        *this << PROPERTY("#Version") << (unsigned int)OPENSCENEGRAPH_SOVERSION << std::endl;
         *this << PROPERTY("#Generator") << std::string("OpenSceneGraph")
               << std::string(osgGetVersion()) << std::endl;
         *this << std::endl;
@@ -642,13 +625,14 @@ void OutputStream::writeSchema( std::ostream& fout )
         fout << itr->first << " =";
         
         StringList properties;
-        wrapper->writeSchema( properties );
-        if ( properties.size()>0 )
+        std::vector<int> types;
+        wrapper->writeSchema( properties, types );
+        
+        std::string propertiesString;
+        unsigned int size = osg::minimum( properties.size(), types.size() );
+        for ( unsigned int i=0; i<size; ++i )
         {
-            for ( StringList::iterator sitr=properties.begin(); sitr!=properties.end(); ++sitr )
-            {
-                fout << ' ' << *sitr;
-            }
+            fout << " " << properties[i] << ":" << types[i];
         }
         fout << std::endl;
     }

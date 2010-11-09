@@ -50,33 +50,39 @@ public:
     
     ObjectWrapper( osg::Object* proto, const std::string& name,
                    const std::string& associates );
+    void setUpdatedVersion( int ver ) { _version = ver; }
     
     const osg::Object* getProto() const { return _proto.get(); }
     const std::string& getName() const { return _name; }
     const StringList& getAssociates() const { return _associates; }
-    
-    void addSerializer( BaseSerializer* s ) { _serializers.push_back(s); }
+
+    void addSerializer( BaseSerializer* s, BaseSerializer::Type t=BaseSerializer::RW_UNDEFINED )
+    { s->_version = _version; _serializers.push_back(s); _typeList.push_back(static_cast<int>(t)); }
+
+    void markSerializerAsRemoved( const std::string& name );
+    BaseSerializer* getSerializer( const std::string& name );
     void addFinishedObjectReadCallback ( FinishedObjectReadCallback* forc) { _finishedObjectReadCallbacks.push_back(forc); }
 
-    
     bool read( InputStream&, osg::Object& );
     bool write( OutputStream&, const osg::Object& );
-    
-    bool readSchema( const StringList& properties );
-    void writeSchema( StringList& properties );
+
+    bool readSchema( const StringList& properties, const std::vector<int>& types );
+    void writeSchema( StringList& properties, std::vector<int>& types );
     void resetSchema()
     { if ( _backupSerializers.size()>0 ) _serializers = _backupSerializers; }
     
 protected:
-    ObjectWrapper() {}
+    ObjectWrapper() : _version(0) {}
     virtual ~ObjectWrapper() {}
-    
+
     osg::ref_ptr<osg::Object> _proto;
     std::string _name;
     StringList _associates;
     SerializerList _serializers;
     SerializerList _backupSerializers;
+    std::vector<int> _typeList;
     FinishedObjectReadCallbackList _finishedObjectReadCallbacks;
+    int _version;  // Last updated version of the wrapper
 };
 
 class Registry;
@@ -143,6 +149,7 @@ protected:
 };
 
 #define REGISTER_OBJECT_WRAPPER(NAME, PROTO, CLASS, ASSOCIATES) \
+    extern "C" void wrapper_serializer_##NAME(void) {} \
     extern void wrapper_propfunc_##NAME(osgDB::ObjectWrapper*); \
     static osgDB::RegisterWrapperProxy wrapper_proxy_##NAME( \
         PROTO, #CLASS, ASSOCIATES, &wrapper_propfunc_##NAME); \
@@ -150,6 +157,7 @@ protected:
     void wrapper_propfunc_##NAME(osgDB::ObjectWrapper* wrapper)
 
 #define REGISTER_OBJECT_WRAPPER2(NAME, PROTO, CLASS, CLASSNAME, ASSOCIATES) \
+    extern "C" void wrapper_serializer_##NAME(void) {} \
     extern void wrapper_propfunc_##NAME(osgDB::ObjectWrapper*); \
     static osgDB::RegisterWrapperProxy wrapper_proxy_##NAME( \
         PROTO, CLASSNAME, ASSOCIATES, &wrapper_propfunc_##NAME); \
@@ -167,6 +175,7 @@ protected:
 };
 
 #define REGISTER_COMPRESSOR(NAME, CLASS) \
+    extern "C" void wrapper_compressor_##CLASS(void) {} \
     static osgDB::RegisterCompressorProxy compressor_proxy_##CLASS(NAME, new CLASS);
 
 }

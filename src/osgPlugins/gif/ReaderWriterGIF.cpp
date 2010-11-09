@@ -546,6 +546,10 @@ GifImageStream** obj)
     }
     while (recordtype != TERMINATE_RECORD_TYPE);
 
+    // Delete the last allocated buffer to avoid memory leaks if we using GifImageStream
+    if ( obj && *obj )
+        delete [] buffer;
+
     delete [] rowdata;
     *width_ret = giffile->SWidth;
     *height_ret = giffile->SHeight;

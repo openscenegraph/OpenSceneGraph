@@ -50,20 +50,40 @@ IF (NOT DYNAMIC_OPENSCENEGRAPH)
             osgdb_ive
             osgdb_osg
             osgdb_p3d
-
-            osgdb_freetype
-            osgdb_pdf
             osgdb_rgb
-            osgdb_jpeg
-            osgdb_png
-
-            osgdb_ffmpeg
-
             osgdb_openflight
             osgdb_obj
-
-            osgdb_curl
     )
+
+    IF(JPEG_FOUND)
+        ADD_DEFINITIONS(-DUSE_JPEG)
+        SET(TARGET_ADDED_LIBRARIES ${TARGET_ADDED_LIBRARIES} osgdb_jpeg)
+    ENDIF(JPEG_FOUND)
+
+    IF(PNG_FOUND)
+        ADD_DEFINITIONS(-DUSE_PNG)
+        SET(TARGET_ADDED_LIBRARIES ${TARGET_ADDED_LIBRARIES} osgdb_png)
+    ENDIF(PNG_FOUND)
+
+    IF(CURL_FOUND)
+        ADD_DEFINITIONS(-DUSE_CURL)
+        SET(TARGET_ADDED_LIBRARIES ${TARGET_ADDED_LIBRARIES} osgdb_curl)
+    ENDIF(CURL_FOUND)
+
+    IF(FFMPEG_FOUND)
+        ADD_DEFINITIONS(-DUSE_FFMPEG)
+        SET(TARGET_ADDED_LIBRARIES ${TARGET_ADDED_LIBRARIES} osgdb_ffmpeg)
+    ENDIF(FFMPEG_FOUND)
+
+    IF(FREETYPE_FOUND)
+        ADD_DEFINITIONS(-DUSE_FREETYPE)
+        SET(TARGET_ADDED_LIBRARIES ${TARGET_ADDED_LIBRARIES} osgdb_freetype)
+    ENDIF(FREETYPE_FOUND)
+
+    IF(POPPLER_FOUND AND CAIRO_FOUND)
+        ADD_DEFINITIONS(-DUSE_POPPLER_CAIRO)
+        SET(TARGET_ADDED_LIBRARIES ${TARGET_ADDED_LIBRARIES} osgdb_pdf)
+    ENDIF(POPPLER_FOUND AND CAIRO_FOUND)
 ENDIF()
 
 IF   (WIN32)

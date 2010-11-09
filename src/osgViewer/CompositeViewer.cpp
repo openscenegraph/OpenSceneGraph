@@ -953,7 +953,18 @@ void CompositeViewer::eventTraversal()
 
                     view->getSceneData()->accept(*_eventVisitor);
 
-                    // call any camera update callbacks, but only traverse that callback, don't traverse its subgraph
+                    // Do EventTraversal for slaves with their own subgraph
+                    for(unsigned int i=0; i<view->getNumSlaves(); ++i)
+                    {
+                        osg::View::Slave& slave = view->getSlave(i);
+                        osg::Camera* camera = slave._camera.get();
+                        if(camera && !slave._useMastersSceneData)
+                        {
+                            camera->accept(*_eventVisitor);
+                        }
+                    }
+
+                    // call any camera event callbacks, but only traverse that callback, don't traverse its subgraph
                     // leave that to the scene update traversal.
                     osg::NodeVisitor::TraversalMode tm = _eventVisitor->getTraversalMode();
                     _eventVisitor->setTraversalMode(osg::NodeVisitor::TRAVERSE_NONE);
@@ -962,8 +973,12 @@ void CompositeViewer::eventTraversal()
 
                     for(unsigned int i=0; i<view->getNumSlaves(); ++i)
                     {
+                        osg::View::Slave& slave = view->getSlave(i);
                         osg::Camera* camera = view->getSlave(i)._camera.get();
-                        if (camera && camera->getEventCallback()) camera->accept(*_eventVisitor);
+                        if (camera && slave._useMastersSceneData && camera->getEventCallback())
+                        {
+                            camera->accept(*_eventVisitor);
+                        }
                     }
 
                     _eventVisitor->setTraversalMode(tm);
@@ -1075,6 +1090,17 @@ void CompositeViewer::updateTraversal()
         View* view = vitr->get();
 
         {
+            // Do UpdateTraversal for slaves with their own subgraph
+            for(unsigned int i=0; i<view->getNumSlaves(); ++i)
+            {
+                osg::View::Slave& slave = view->getSlave(i);
+                osg::Camera* camera = slave._camera.get();
+                if(camera && !slave._useMastersSceneData) 
+                {
+                    camera->accept(*_updateVisitor);
+                }
+            }
+
             // call any camera update callbacks, but only traverse that callback, don't traverse its subgraph
             // leave that to the scene update traversal.
             osg::NodeVisitor::TraversalMode tm = _updateVisitor->getTraversalMode();
@@ -1084,8 +1110,12 @@ void CompositeViewer::updateTraversal()
 
             for(unsigned int i=0; i<view->getNumSlaves(); ++i)
             {
-                osg::Camera* camera = view->getSlave(i)._camera.get();
-                if (camera && camera->getUpdateCallback()) camera->accept(*_updateVisitor);
+                osg::View::Slave& slave = view->getSlave(i);
+                osg::Camera* camera = slave._camera.get();
+                if (camera && slave._useMastersSceneData && camera->getUpdateCallback())
+                {
+                    camera->accept(*_updateVisitor);
+                }
             }
 
             _updateVisitor->setTraversalMode(tm);

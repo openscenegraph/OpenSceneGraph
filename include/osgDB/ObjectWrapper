@@ -56,9 +56,7 @@ public:
     const std::string& getName() const { return _name; }
     const StringList& getAssociates() const { return _associates; }
 
-    void addSerializer( BaseSerializer* s, BaseSerializer::Type t=BaseSerializer::RW_UNDEFINED )
-    { s->_version = _version; _serializers.push_back(s); _typeList.push_back(static_cast<int>(t)); }
-
+    void addSerializer( BaseSerializer* s, BaseSerializer::Type t=BaseSerializer::RW_UNDEFINED );
     void markSerializerAsRemoved( const std::string& name );
     BaseSerializer* getSerializer( const std::string& name );
     void addFinishedObjectReadCallback ( FinishedObjectReadCallback* forc) { _finishedObjectReadCallbacks.push_back(forc); }

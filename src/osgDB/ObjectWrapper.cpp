@@ -91,6 +91,13 @@ ObjectWrapper::ObjectWrapper( osg::Object* proto, const std::string& name,
     split( associates, _associates );
 }
 
+void ObjectWrapper::addSerializer( BaseSerializer* s, BaseSerializer::Type t )
+{
+    s->_firstVersion = _version;
+    _serializers.push_back(s);
+    _typeList.push_back(static_cast<int>(t));
+}
+
 void ObjectWrapper::markSerializerAsRemoved( const std::string& name )
 {
     for ( SerializerList::iterator itr=_serializers.begin(); itr!=_serializers.end(); ++itr )
@@ -99,7 +106,7 @@ void ObjectWrapper::markSerializerAsRemoved( const std::string& name )
         // from specified OSG version (by macro UPDATE_TO_VERSION). The read() functions of higher versions
         // will thus ignore it according to the sign and value of the _version variable.
         if ( (*itr)->getName()==name )
-            (*itr)->_version = -_version;
+            (*itr)->_lastVersion = _version-1;
     }
 }
 
@@ -138,29 +145,21 @@ bool ObjectWrapper::read( InputStream& is, osg::Object& obj )
     for ( SerializerList::iterator itr=_serializers.begin();
           itr!=_serializers.end(); ++itr )
     {
-        int serializerVersion = (*itr)->_version;
-        if ( serializerVersion!=0 )
+        BaseSerializer* serializer = itr->get();
+        if ( serializer->_firstVersion <= is.getFileVersion() &&
+             is.getFileVersion() <= serializer->_lastVersion)
         {
-            if ( serializerVersion<0 )
+            if ( !serializer->read(is, obj) )
             {
-                serializerVersion = -serializerVersion;
-                
-                // The serializer is removed from a specified version,
-                // and the file in reading is at the same or higher version, ignore it.
-                if ( is.getFileVersion()>=serializerVersion ) continue;
-            }
-            else
-            {
-                // The serializer is added at a specified version,
-                // but the file in reading is at a lower version, ignore it.
-                if ( is.getFileVersion()<serializerVersion ) continue;
+                OSG_WARN << "ObjectWrapper::read(): Error reading property "
+                                    << _name << "::" << (*itr)->getName() << std::endl;
+                readOK = false;
             }
         }
-        
-        if ( (*itr)->read(is, obj) ) continue;
-        OSG_WARN << "ObjectWrapper::read(): Error reading property "
-                               << _name << "::" << (*itr)->getName() << std::endl;
-        readOK = false;
+        else
+        {
+            // OSG_NOTICE<<"Ignoring serializer due to version mismatch"<<std::endl;
+        }
     }
 
     for ( FinishedObjectReadCallbackList::iterator itr=_finishedObjectReadCallbacks.begin();

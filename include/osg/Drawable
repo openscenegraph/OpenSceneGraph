@@ -45,6 +45,7 @@
 
 #ifndef GL_TIME_ELAPSED
     #define GL_TIME_ELAPSED                    0x88BF
+    #define GL_TIMESTAMP                       0x8E28
 #endif
 
 #ifndef GL_QUERY_RESULT
@@ -607,7 +608,8 @@ class OSG_EXPORT Drawable : public Object
 
             void setTimerQuerySupported(bool flag) { _isTimerQuerySupported = flag; }
             bool isTimerQuerySupported() const { return _isTimerQuerySupported; }
-
+            void setARBTimerQuerySupported(bool flag) { _isARBTimerQuerySupported = flag; }
+            bool isARBTimerQuerySupported() { return _isARBTimerQuerySupported; }
             void glSecondaryColor3ubv(const GLubyte* coord) const;
             void glSecondaryColor3fv(const GLfloat* coord) const;
 
@@ -661,11 +663,13 @@ class OSG_EXPORT Drawable : public Object
             void glGenQueries(GLsizei n, GLuint *ids) const;
             void glBeginQuery(GLenum target, GLuint id) const;
             void glEndQuery(GLenum target) const;
+            void glQueryCounter(GLuint id, GLenum target) const;
             GLboolean glIsQuery(GLuint id) const;
             void glDeleteQueries(GLsizei n, const GLuint *ids) const;
             void glGetQueryObjectiv(GLuint id, GLenum pname, GLint *params) const;
             void glGetQueryObjectuiv(GLuint id, GLenum pname, GLuint *params) const;
             void glGetQueryObjectui64v(GLuint id, GLenum pname, GLuint64EXT *params) const;
+            void glGetInteger64v(GLenum pname, GLint64EXT *params) const;
 
         protected:
 
@@ -715,10 +719,12 @@ class OSG_EXPORT Drawable : public Object
             typedef GLboolean (GL_APIENTRY *IsQueryProc) (GLuint id);
             typedef void (GL_APIENTRY *BeginQueryProc) (GLenum target, GLuint id);
             typedef void (GL_APIENTRY *EndQueryProc) (GLenum target);
+            typedef void (GL_APIENTRY *QueryCounterProc)(GLuint id, GLenum target);
             typedef void (GL_APIENTRY *GetQueryivProc) (GLenum target, GLenum pname, GLint *params);
             typedef void (GL_APIENTRY *GetQueryObjectivProc) (GLuint id, GLenum pname, GLint *params);
             typedef void (GL_APIENTRY *GetQueryObjectuivProc) (GLuint id, GLenum pname, GLuint *params);
             typedef void (GL_APIENTRY *GetQueryObjectui64vProc) (GLuint id, GLenum pname, GLuint64EXT *params);
+            typedef void (GL_APIENTRY *GetInteger64vProc) (GLenum pname, GLint64EXT *params);
 
             ~Extensions() {}
 
@@ -729,6 +735,7 @@ class OSG_EXPORT Drawable : public Object
             bool _isOcclusionQuerySupported;
             bool _isARBOcclusionQuerySupported;
             bool _isTimerQuerySupported;
+            bool _isARBTimerQuerySupported;
 
             FogCoordProc _glFogCoordfv;
 
@@ -785,10 +792,12 @@ class OSG_EXPORT Drawable : public Object
             IsQueryProc _gl_is_query_arb;
             BeginQueryProc _gl_begin_query_arb;
             EndQueryProc _gl_end_query_arb;
+            QueryCounterProc _glQueryCounter;
             GetQueryivProc _gl_get_queryiv_arb;
             GetQueryObjectivProc _gl_get_query_objectiv_arb;
             GetQueryObjectuivProc  _gl_get_query_objectuiv_arb;
             GetQueryObjectui64vProc  _gl_get_query_objectui64v;
+            GetInteger64vProc _glGetInteger64v;
 
         };
 

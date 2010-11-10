@@ -15,6 +15,7 @@
 #include <osg/Notify>
 #include <osg/GLU>
 #include <osg/GLExtensions>
+#include <osg/Drawable>
 #include <osg/ApplicationUsage>
 
 #include <sstream>
@@ -157,6 +158,11 @@ State::State():
 
     _glBeginEndAdapter.setState(this);
     _arrayDispatchers.setState(this);
+
+    _startTick = 0;
+    _gpuTick = 0;
+    _gpuTimestamp = 0;
+    _timestampBits = 0;
 }
 
 State::~State()
@@ -910,6 +916,16 @@ void State::initializeExtensionProcs()
         _glMaxTextureCoords = 1;
     }
 
+    osg::Drawable::Extensions* extensions = osg::Drawable::getExtensions(getContextID(), true);
+    if (extensions && extensions->isARBTimerQuerySupported())
+    {
+        GLint bits = 0;
+        extensions->glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS_ARB, &bits);
+        OSG_NOTICE << "timestamp query counter bits: " << bits << "\n";
+        setTimestampBits(bits);
+    }
+
+
     _extensionProcsInitialized = true;
 }
 
@@ -1568,60 +1584,17 @@ void State::print(std::ostream& fout) const
             fout<<(*itr)->getName()<<"  "<<*itr<<std::endl;
         }
         fout<<"}"<<std::endl;
+}
 
+void State::frameCompleted()
+{
 
-#if 0
-        unsigned int                                                    _maxTexturePoolSize;
-        unsigned int                                                    _maxBufferObjectPoolSize;
-
-        struct EnabledArrayPair
-        {
-            EnabledArrayPair():_lazy_disable(false),_dirty(true),_enabled(false),_normalized(0),_pointer(0) {}
-            EnabledArrayPair(const EnabledArrayPair& eap):_lazy_disable(eap._lazy_disable),_dirty(eap._dirty), _enabled(eap._enabled),_normalized(eap._normalized),_pointer(eap._pointer) {}
-            EnabledArrayPair& operator = (const EnabledArrayPair& eap) { _lazy_disable = eap._lazy_disable;_dirty=eap._dirty; _enabled=eap._enabled; _normalized=eap._normalized;_pointer=eap._pointer; return *this; }
-
-            bool            _lazy_disable;
-            bool            _dirty;
-            bool            _enabled;
-            GLboolean       _normalized;
-            const GLvoid*   _pointer;
-        };
-
-        typedef std::vector<EnabledArrayPair>                   EnabledTexCoordArrayList;
-        typedef std::vector<EnabledArrayPair>                   EnabledVertexAttribArrayList;
-
-        EnabledArrayPair                _vertexArray;
-        EnabledArrayPair                _normalArray;
-        EnabledArrayPair                _colorArray;
-        EnabledArrayPair                _secondaryColorArray;
-        EnabledArrayPair                _fogArray;
-        EnabledTexCoordArrayList        _texCoordArrayList;
-        EnabledVertexAttribArrayList    _vertexAttribArrayList;
-
-        unsigned int                    _currentActiveTextureUnit;
-        unsigned int                    _currentClientActiveTextureUnit;
-        GLBufferObject*                 _currentVBO;
-        GLBufferObject*                 _currentEBO;
-        GLBufferObject*                 _currentPBO;
-
-        mutable bool _isSecondaryColorSupportResolved;
-        mutable bool _isSecondaryColorSupported;
-        bool computeSecondaryColorSupported() const;
-
-        mutable bool _isFogCoordSupportResolved;
-        mutable bool _isFogCoordSupported;
-        bool computeFogCoordSupported() const;
-
-        mutable bool _isVertexBufferObjectSupportResolved;
-        mutable bool _isVertexBufferObjectSupported;
-        bool computeVertexBufferObjectSupported() const;
-#endif
-
-#if 0
-        unsigned int                                            _dynamicObjectCount;
-        osg::ref_ptr<DynamicObjectRenderingCompletedCallback>   _completeDynamicObjectRenderingCallback;
-
-        GLBeginEndAdapter           _glBeginEndAdapter;
-        ArrayDispatchers            _arrayDispatchers;
-#endif
+    osg::Drawable::Extensions* extensions = osg::Drawable::getExtensions(getContextID(), true);
+    if (extensions && getTimestampBits())
+    {
+        GLint64EXT timestamp;
+        extensions->glGetInteger64v(GL_TIMESTAMP, &timestamp);
+        setGpuTimestamp(osg::Timer::instance()->tick(), timestamp);
+        OSG_NOTICE<<"State::frameCompleted() setting time stamp."<<std::endl;
+    }
 }

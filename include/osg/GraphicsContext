@@ -392,6 +392,34 @@ class OSG_EXPORT GraphicsContext : public Object
           * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual void bindPBufferToTextureImplementation(GLenum buffer) = 0;
 
+        struct SwapCallback : public osg::Referenced
+        {
+            virtual void swapBuffersImplementation(GraphicsContext* gc) = 0;
+        };
+        /** Set the swap callback which overrides the
+          * GraphicsContext::swapBuffersImplementation(), allowing
+          * developers to provide custom behavior for swap.
+          * The callback must call
+          * GraphicsContext::swapBuffersImplementation() */  
+        void setSwapCallback(SwapCallback* rc) { _swapCallback = rc; }
+
+        /** Get the swap callback which overrides the GraphicsContext::swapBuffersImplementation().*/
+        SwapCallback* getSwapCallback() { return _swapCallback.get(); }
+
+        /** Get the const swap callback which overrides the GraphicsContext::swapBuffersImplementation().*/
+        const SwapCallback* getSwapCallback() const { return _swapCallback.get(); }
+
+        /** convinience method for handling whether to call swapbuffers callback or the standard context swapBuffersImplementation.
+          * swapBuffersCallbackOrImplemenation() is called by swapBuffers() and osg::SwapBuffersOperation, end users should normally
+          * call swapBuffers() rather than swapBuffersCallbackOrImplemenation(). */
+        void swapBuffersCallbackOrImplemenation()
+        {
+            if (_state.valid()) _state->frameCompleted();
+
+            if (_swapCallback.valid()) _swapCallback->swapBuffersImplementation(this);
+            else swapBuffersImplementation();
+        }
+
         /** Swap the front and back buffers implementation.
           * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual void swapBuffersImplementation() = 0;
@@ -411,14 +439,14 @@ class OSG_EXPORT GraphicsContext : public Object
             virtual void resizedImplementation(GraphicsContext* gc, int x, int y, int width, int height) = 0;
         };
 
-        /** Set the resized callback which overrides the GraphicsContext::resizedImplementation(), allow developers to provide custom behavior
+        /** Set the resized callback which overrides the GraphicsConext::realizedImplementation(), allow developers to provide custom behavior
           * in response to a window being resized.*/
         void setResizedCallback(ResizedCallback* rc) { _resizedCallback = rc; }
 
-        /** Get the resized callback which overrides the GraphicsContext::resizedImplementation().*/
+        /** Get the resized callback which overrides the GraphicsConext::realizedImplementation().*/
         ResizedCallback* getResizedCallback() { return _resizedCallback.get(); }
 
-        /** Get the const resized callback which overrides the GraphicsContext::resizedImplementation().*/
+        /** Get the const resized callback which overrides the GraphicsConext::realizedImplementation().*/
         const ResizedCallback* getResizedCallback() const { return _resizedCallback.get(); }
 
         /** resized implementation, by default resizes the viewports and aspect ratios the cameras associated with the graphics Window. */
@@ -479,6 +507,7 @@ class OSG_EXPORT GraphicsContext : public Object
         ref_ptr<GraphicsThread>             _graphicsThread;
         
         ref_ptr<ResizedCallback>            _resizedCallback;
+        ref_ptr<SwapCallback>               _swapCallback;
         
         Timer_t                             _lastClearTick;
 };

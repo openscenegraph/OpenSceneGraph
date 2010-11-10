@@ -55,7 +55,7 @@ void GraphicsOperation::operator () (Object* object)
  
 void SwapBuffersOperation::operator () (GraphicsContext* context)
 {
-    context->swapBuffersImplementation();
+    context->swapBuffersCallbackOrImplemenation();
     context->clear();
 }
 

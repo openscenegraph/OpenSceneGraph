@@ -36,15 +36,37 @@ using namespace osgViewer;
 
 
 OpenGLQuerySupport::OpenGLQuerySupport():
-    _startTick(0),
-    _initialized(false),
-    _timerQuerySupported(false),
-    _extensions(0),
+    _extensions(0)
+{
+}
+
+class OSGVIEWER_EXPORT EXTQuerySupport : public OpenGLQuerySupport
+{
+ public:
+    EXTQuerySupport();
+    void checkQuery(osg::Stats* stats, osg::State* state, osg::Timer_t startTick);
+    virtual void beginQuery(int frameNumber, osg::State* state);
+    virtual void endQuery(osg::State* state);
+    virtual void initialize(osg::State* state, osg::Timer_t startTick);
+ protected:
+    GLuint createQueryObject();
+    typedef std::pair<GLuint, int> QueryFrameNumberPair;
+    typedef std::list<QueryFrameNumberPair> QueryFrameNumberList;
+    typedef std::vector<GLuint> QueryList;
+    
+    QueryFrameNumberList                        _queryFrameNumberList;
+    QueryList                                   _availableQueryObjects;
+    double                                      _previousQueryTime;
+};
+
+
+EXTQuerySupport::EXTQuerySupport():
     _previousQueryTime(0.0)
 {
 }
 
-void OpenGLQuerySupport::checkQuery(osg::Stats* stats)
+void EXTQuerySupport::checkQuery(osg::Stats* stats, osg::State* state,
+                                 osg::Timer_t startTick)
 {
     for(QueryFrameNumberList::iterator itr = _queryFrameNumberList.begin();
         itr != _queryFrameNumberList.end();
@@ -59,7 +81,7 @@ void OpenGLQuerySupport::checkQuery(osg::Stats* stats)
             _extensions->glGetQueryObjectui64v(query, GL_QUERY_RESULT, &timeElapsed);
 
             double timeElapsedSeconds = double(timeElapsed)*1e-9;
-            double currentTime = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+            double currentTime = osg::Timer::instance()->delta_s(startTick, osg::Timer::instance()->tick());
             double estimatedEndTime = (_previousQueryTime + currentTime) * 0.5;
             double estimatedBeginTime = estimatedEndTime - timeElapsedSeconds;
 
@@ -77,10 +99,10 @@ void OpenGLQuerySupport::checkQuery(osg::Stats* stats)
         }
 
     }
-    _previousQueryTime = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+    _previousQueryTime = osg::Timer::instance()->delta_s(startTick, osg::Timer::instance()->tick());
 }
 
-GLuint OpenGLQuerySupport::createQueryObject()
+GLuint EXTQuerySupport::createQueryObject()
 {
     if (_availableQueryObjects.empty())
     {
@@ -96,26 +118,169 @@ GLuint OpenGLQuerySupport::createQueryObject()
     }
 }
 
-void OpenGLQuerySupport::beginQuery(int frameNumber)
+void EXTQuerySupport::beginQuery(int frameNumber, osg::State* state)
 {
     GLuint query = createQueryObject();
     _extensions->glBeginQuery(GL_TIME_ELAPSED, query);
     _queryFrameNumberList.push_back(QueryFrameNumberPair(query, frameNumber));
 }
 
-void OpenGLQuerySupport::endQuery()
+void EXTQuerySupport::endQuery(osg::State* state)
 {
     _extensions->glEndQuery(GL_TIME_ELAPSED);
 }
 
-void OpenGLQuerySupport::initialize(osg::State* state)
+void OpenGLQuerySupport::initialize(osg::State* state, osg::Timer_t startTick)
 {
-    if (_initialized) return;
-
-    _initialized = true;
     _extensions = osg::Drawable::getExtensions(state->getContextID(),true);
-    _timerQuerySupported = _extensions && _extensions->isTimerQuerySupported();
-    _previousQueryTime = osg::Timer::instance()->delta_s(_startTick, osg::Timer::instance()->tick());
+}
+
+void EXTQuerySupport::initialize(osg::State* state, osg::Timer_t startTick)
+{
+    OpenGLQuerySupport::initialize(state, startTick);
+    _previousQueryTime = osg::Timer::instance()->delta_s(startTick, osg::Timer::instance()->tick());
+
+}
+
+class ARBQuerySupport : public OpenGLQuerySupport
+{
+public:
+    virtual void checkQuery(osg::Stats* stats, osg::State* state,
+                            osg::Timer_t startTick);
+        
+    virtual void beginQuery(int frameNumber, osg::State* state);
+    virtual void endQuery(osg::State* state);
+    virtual void initialize(osg::State* state, osg::Timer_t startTick);
+protected:
+    typedef std::pair<GLuint, GLuint> QueryPair;
+    struct ActiveQuery {
+        ActiveQuery() : queries(0, 0), frameNumber(0) {}
+        ActiveQuery(GLuint start_, GLuint end_, int frameNumber_)
+            : queries(start_, end_), frameNumber(frameNumber_)
+        {
+        }
+        ActiveQuery(const QueryPair& queries_, int frameNumber_)
+            : queries(queries_), frameNumber(frameNumber_)
+        {
+        }
+        QueryPair queries;
+        int frameNumber;
+    };
+    typedef std::list<ActiveQuery> QueryFrameList;
+    typedef std::vector<QueryPair> QueryList;
+    QueryFrameList _queryFrameList;
+    QueryList _availableQueryObjects;
+};
+
+void ARBQuerySupport::initialize(osg::State* state, osg::Timer_t startTick)
+{
+    OpenGLQuerySupport::initialize(state, startTick);
+}
+
+void ARBQuerySupport::beginQuery(int frameNumber, osg::State* state)
+{
+    QueryPair query;
+    if (_availableQueryObjects.empty())
+    {
+        _extensions->glGenQueries(1, &query.first);
+        _extensions->glGenQueries(1, &query.second);
+    }
+    else
+    {
+        query = _availableQueryObjects.back();
+        _availableQueryObjects.pop_back();
+    }
+    _extensions->glQueryCounter(query.first, GL_TIMESTAMP);
+    _queryFrameList.push_back(ActiveQuery(query, frameNumber));
+}
+
+void ARBQuerySupport::endQuery(osg::State* state)
+{
+    _extensions->glQueryCounter(_queryFrameList.back().queries.second,
+                                GL_TIMESTAMP);
+}
+
+void ARBQuerySupport::checkQuery(osg::Stats* stats, osg::State* state,
+                                 osg::Timer_t startTick)
+{
+    for(QueryFrameList::iterator itr = _queryFrameList.begin();
+        itr != _queryFrameList.end();
+        )
+    {
+        GLint available = 0;
+        // If the end query is available, the begin query must be too.
+        _extensions->glGetQueryObjectiv(itr->queries.second,
+                                        GL_QUERY_RESULT_AVAILABLE, &available);
+        if (available)
+        {
+            QueryPair queries = itr->queries;
+            GLuint64EXT beginTimestamp = 0;
+            GLuint64EXT endTimestamp = 0;
+            _extensions->glGetQueryObjectui64v(queries.first, GL_QUERY_RESULT,
+                                               &beginTimestamp);
+            _extensions->glGetQueryObjectui64v(queries.second, GL_QUERY_RESULT,
+                                               &endTimestamp);
+            GLuint64EXT gpuTimestamp = state->getGpuTimestamp();
+            // Have any of the timestamps wrapped around?
+            int tbits = state->getTimestampBits();
+            if (tbits < 64)
+            {
+                // If the high bits on any of the timestamp bits are
+                // different then the counters may have wrapped.
+                const int hiShift = (tbits - 1);
+                const GLuint64EXT hiMask = 1 << hiShift;
+                const GLuint64EXT sum = (beginTimestamp >> hiShift)
+                    + (endTimestamp >> hiShift) + (gpuTimestamp >> hiShift);
+                if (sum == 1 || sum == 2) {
+                    const GLuint64EXT wrapAdd = 1 << tbits;
+                    // Counter wrapped between begin and end?
+                    if (beginTimestamp > endTimestamp)
+                    {
+                        endTimestamp += wrapAdd;
+                    }
+                    else if (gpuTimestamp < beginTimestamp
+                             && beginTimestamp - gpuTimestamp > (hiMask >> 1))
+                    {
+                        gpuTimestamp += wrapAdd;
+                    }
+                    else if (endTimestamp < gpuTimestamp
+                             && gpuTimestamp - endTimestamp > (hiMask >> 1))
+                    {
+                        beginTimestamp += wrapAdd;
+                        endTimestamp += wrapAdd;
+                    }
+                }
+            }
+            GLuint64EXT timeElapsed = endTimestamp - beginTimestamp;
+            double timeElapsedSeconds = double(timeElapsed)*1e-9;
+            double gpuTick = state->getGpuTime();
+                     double beginTime = 0.0;
+            double endTime = 0.0;
+            if (beginTimestamp > gpuTimestamp)
+                beginTime = gpuTick
+                    + double(beginTimestamp - gpuTimestamp) * 1e-9;
+            else
+                beginTime = gpuTick
+                    - double(gpuTimestamp - beginTimestamp) * 1e-9;
+            if (endTimestamp > gpuTimestamp)
+                endTime = gpuTick
+                    + double(endTimestamp - gpuTimestamp) * 1e-9;
+            else
+                endTime = gpuTick
+                    - double(gpuTimestamp - endTimestamp) * 1e-9;
+            stats->setAttribute(itr->frameNumber, "GPU draw begin time",
+                                beginTime);
+            stats->setAttribute(itr->frameNumber, "GPU draw end time", endTime);
+            stats->setAttribute(itr->frameNumber, "GPU draw time taken",
+                                timeElapsedSeconds);
+            itr = _queryFrameList.erase(itr);
+            _availableQueryObjects.push_back(queries);
+        }
+        else
+        {
+            ++itr;
+        }
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -162,7 +327,6 @@ static OpenThreads::Mutex s_drawSerializerMutex;
 //  Renderer
 Renderer::Renderer(osg::Camera* camera):
     osg::GraphicsOperation("Renderer",true),
-    OpenGLQuerySupport(),
     _targetFrameRate(100.0),
     _minimumTimeAvailableForGLCompileAndDeletePerFrame(0.001),
     _flushTimeRatio(0.5),
@@ -170,7 +334,9 @@ Renderer::Renderer(osg::Camera* camera):
     _camera(camera),
     _done(false),
     _graphicsThreadDoesCull(true),
-    _compileOnNextDraw(true)
+    _compileOnNextDraw(true),
+    _initialized(false),
+    _startTick(0)
 {
 
     DEBUG_MESSAGE<<"Render::Render() "<<this<<std::endl;
@@ -238,6 +404,21 @@ Renderer::~Renderer()
     DEBUG_MESSAGE<<"Render::~Render() "<<this<<std::endl;
 }
 
+void Renderer::initialize(osg::State* state)
+{
+    if (!_initialized)
+    {
+        _initialized = true;
+        osg::Drawable::Extensions* ext = osg::Drawable::getExtensions(state->getContextID(), true);
+        if (ext->isARBTimerQuerySupported())
+            _querySupport = new ARBQuerySupport();
+        else if (ext->isTimerQuerySupported())
+            _querySupport = new EXTQuerySupport();
+        if (_querySupport.valid())
+            _querySupport->initialize(state, _startTick);
+    }
+}
+
 void Renderer::setGraphicsThreadDoesCull(bool flag)
 {
     if (_graphicsThreadDoesCull==flag) return;
@@ -296,6 +477,7 @@ void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
     sceneView->setDisplaySettings(ds);
 
     if (view) _startTick = view->getStartTick();
+    if (state) state->setStartTick(_startTick);
 }
 
 void Renderer::compile()
@@ -477,18 +659,18 @@ void Renderer::draw()
             state->getDynamicObjectRenderingCompletedCallback()->completed(state);
         }
 
-        bool acquireGPUStats = stats && _timerQuerySupported && stats->collectStats("gpu");
+        bool acquireGPUStats = stats && _querySupport && stats->collectStats("gpu");
 
         if (acquireGPUStats)
         {
-            checkQuery(stats);
+            _querySupport->checkQuery(stats, state, _startTick);
         }
 
         // do draw traversal
         if (acquireGPUStats)
         {
-            checkQuery(stats);
-            beginQuery(frameNumber);
+            _querySupport->checkQuery(stats, state, _startTick);
+            _querySupport->beginQuery(frameNumber, state);
         }
 
         osg::Timer_t beforeDrawTick;
@@ -519,8 +701,8 @@ void Renderer::draw()
 
         if (acquireGPUStats)
         {
-            endQuery();
-            checkQuery(stats);
+            _querySupport->endQuery(state);
+            _querySupport->checkQuery(stats, state, _startTick);
         }
 
         //glFlush();
@@ -585,11 +767,11 @@ void Renderer::cull_draw()
         initialize(state);
     }
 
-    bool acquireGPUStats = stats && _timerQuerySupported && stats->collectStats("gpu");
+    bool acquireGPUStats = stats && _querySupport && stats->collectStats("gpu");
 
     if (acquireGPUStats)
     {
-        checkQuery(stats);
+        _querySupport->checkQuery(stats, state, _startTick);
     }
 
     // do cull traversal
@@ -626,8 +808,8 @@ void Renderer::cull_draw()
     // do draw traversal
     if (acquireGPUStats)
     {
-        checkQuery(stats);
-        beginQuery(frameNumber);
+        _querySupport->checkQuery(stats, state, _startTick);
+        _querySupport->beginQuery(frameNumber, state);
     }
 
     osg::Timer_t beforeDrawTick;
@@ -656,8 +838,8 @@ void Renderer::cull_draw()
 
     if (acquireGPUStats)
     {
-        endQuery();
-        checkQuery(stats);
+        _querySupport->endQuery(state);
+        _querySupport->checkQuery(stats, state, _startTick);
     }
 
     osg::Timer_t afterDrawTick = osg::Timer::instance()->tick();

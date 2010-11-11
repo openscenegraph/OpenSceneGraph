@@ -147,7 +147,7 @@ public:
     typedef bool (*Writer)( OutputStream&, const C& );
     
     UserSerializer( const char* name, Checker cf, Reader rf, Writer wf )
-    : _name(name), _checker(cf), _reader(rf), _writer(wf) {}
+    : BaseSerializer(), _name(name), _checker(cf), _reader(rf), _writer(wf) {}
     
     virtual bool read( InputStream& is, osg::Object& obj )
     {
@@ -198,7 +198,7 @@ class TemplateSerializer : public BaseSerializer
 {
 public:
     TemplateSerializer( const char* name )
-    : _name(name) {}
+    : BaseSerializer(), _name(name) {}
     
     virtual bool read( InputStream& is, osg::Object& obj ) = 0;
     virtual bool write( OutputStream& os, const osg::Object& obj ) = 0;

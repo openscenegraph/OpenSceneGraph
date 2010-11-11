@@ -12,6 +12,7 @@
 */
 // Written by Wang Rui, (C) 2010
 
+#include <osg/Version>
 #include <osg/Notify>
 #include <osg/BlendFunc>
 #include <osg/ClampColor>
@@ -178,10 +179,21 @@ bool ObjectWrapper::write( OutputStream& os, const osg::Object& obj )
     for ( SerializerList::iterator itr=_serializers.begin();
           itr!=_serializers.end(); ++itr )
     {
-        if ( (*itr)->write(os, obj) ) continue;
-        OSG_WARN << "ObjectWrapper::write(): Error writing property "
-                               << _name << "::" << (*itr)->getName() << std::endl;
-        writeOK = false;
+        BaseSerializer* serializer = itr->get();
+        if ( serializer->_firstVersion <= OPENSCENEGRAPH_SOVERSION &&
+             OPENSCENEGRAPH_SOVERSION <= serializer->_lastVersion)
+        {
+            if ( !serializer->write(os, obj) )
+            {
+                OSG_WARN << "ObjectWrapper::write(): Error writing property "
+                                    << _name << "::" << (*itr)->getName() << std::endl;
+                writeOK = false;
+            }
+        }
+        else
+        {
+            // OSG_NOTICE<<"Ignoring serializer due to version mismatch"<<std::endl;
+        }
     }
     return writeOK;
 }

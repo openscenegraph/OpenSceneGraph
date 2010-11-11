@@ -637,9 +637,17 @@ struct PluginFunctionProxy
     extern "C" void dotosgwrapper_##classname(void); \
     static osgDB::PluginFunctionProxy proxy_dotosgwrapper_##classname(dotosgwrapper_##classname);
 
+#define USE_DOTOSGWRAPPER_LIBRARY(libname) \
+    extern "C" void dotosgwrapper_library_##libname(void); \
+    static osgDB::PluginFunctionProxy proxy_dotosgwrapper_library_##libname(dotosgwrapper_library_##libname);
+
 #define USE_SERIALIZER_WRAPPER(classname) \
     extern "C" void wrapper_serializer_##classname(void); \
     static osgDB::PluginFunctionProxy proxy_serializer_##classname(wrapper_serializer_##classname);
+
+#define USE_SERIALIZER_WRAPPER_LIBRARY(libname) \
+    extern "C" void wrapper_serializer_library_##libname(void); \
+    static osgDB::PluginFunctionProxy proxy_serializer_library_##libname(wrapper_serializer_library_##libname);
 
 #define USE_COMPRESSOR_WRAPPER(classname) \
     extern "C" void wrapper_serializer_##classname(void); \

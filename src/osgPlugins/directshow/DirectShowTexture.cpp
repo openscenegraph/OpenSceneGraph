@@ -997,13 +997,15 @@ struct ListCapDeviceAvailable
             filterFrameRate.insert(std::pair<double, CapEntry>(error, filterResolution[i]));
         }
 
-        CapEntry best = CapEntry(0,0);
-        CapEntry first = CapEntry(0,0);
+        CapEntry nullCapEntry(static_cast<AM_MEDIA_TYPE*>(NULL), static_cast<VIDEOINFOHEADER*>(NULL));
+        CapEntry best = nullCapEntry;
+        CapEntry first = nullCapEntry;
+
         for (ContainerFrameRateSorted::iterator it = filterFrameRate.begin();
                it != filterFrameRate.end();
                ++it)
         {
-            if (first == CapEntry(0,0))
+            if (first == nullCapEntry)
                 first = it->second;
 
             if (it->first < 1e-3)
@@ -1015,14 +1017,14 @@ struct ListCapDeviceAvailable
                     best = it->second;
             }
         }
-        if (best != CapEntry(0,0))
+        if (best != nullCapEntry)
             return best;
-        if (first != CapEntry(0,0))
+        if (first != nullCapEntry)
             return first;
         
         if (!_capsList.empty())
             return _capsList.front();
-        return CapEntry(0,0);
+        return nullCapEntry;
     }
 
     void createList()

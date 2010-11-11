@@ -385,6 +385,9 @@ FIND_PACKAGE(XUL)
 FIND_PACKAGE(FFmpeg)
 FIND_PACKAGE(DirectShow)
 FIND_PACKAGE(SDL)
+FIND_PACKAGE(Poppler-glib)
+FIND_PACKAGE(RSVG)
+FIND_PACKAGE(GtkGl)
 
 # Include macro utilities here
 INCLUDE(OsgMacroUtils)
@@ -408,28 +411,6 @@ ELSE()
     ENDIF()
 
 ENDIF()
-
-#use pkg-config to find various modues
-INCLUDE(FindPkgConfig OPTIONAL)
-
-IF(PKG_CONFIG_FOUND)
-
-    INCLUDE(FindPkgConfig)
-
-    PKG_CHECK_MODULES(GTK gtk+-2.0)
-
-    IF(WIN32)
-        PKG_CHECK_MODULES(GTKGL gtkglext-win32-1.0)
-    ELSE()
-        PKG_CHECK_MODULES(GTKGL gtkglext-x11-1.0)
-    ENDIF()
-
-    PKG_CHECK_MODULES(RSVG librsvg-2.0)
-    PKG_CHECK_MODULES(CAIRO cairo)
-    PKG_CHECK_MODULES(POPPLER poppler-glib)
-
-ENDIF()
-
 
 #optional example related dependencies
 IF   (BUILD_OSG_EXAMPLES)

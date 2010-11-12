@@ -44,7 +44,11 @@ osg::ref_ptr<Font>& Font::getDefaultFont()
     return s_defaultFont;
 }
 
-static OpenThreads::ReentrantMutex s_FontFileMutex;
+static OpenThreads::ReentrantMutex& getFontFileMutex()
+{
+    static OpenThreads::ReentrantMutex s_FontFileMutex;
+    return s_FontFileMutex;
+}
 
 std::string osgText::findFontFile(const std::string& str)
 {
@@ -52,7 +56,7 @@ std::string osgText::findFontFile(const std::string& str)
     std::string filename = osgDB::findDataFile(str);
     if (!filename.empty()) return filename;
 
-    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(s_FontFileMutex);
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(getFontFileMutex());
 
     static osgDB::FilePathList s_FontFilePath;
     static bool initialized = false;
@@ -107,7 +111,7 @@ osgText::Font* osgText::readFontFile(const std::string& filename, const osgDB::R
     if (foundFile.empty())
         foundFile = filename;
     
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_FontFileMutex);
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getFontFileMutex());
 
     osg::ref_ptr<osgDB::ReaderWriter::Options> localOptions;
     if (!userOptions)
@@ -129,7 +133,7 @@ osgText::Font* osgText::readFontFile(const std::string& filename, const osgDB::R
 
 osgText::Font* osgText::readFontStream(std::istream& stream, const osgDB::ReaderWriter::Options* userOptions)
 {
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_FontFileMutex);
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getFontFileMutex());
 
     osg::ref_ptr<osgDB::ReaderWriter::Options> localOptions;
     if (!userOptions)
@@ -168,7 +172,7 @@ osg::ref_ptr<Font> osgText::readRefFontFile(const std::string& filename, const o
     if (foundFile.empty())
         foundFile = filename;
     
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_FontFileMutex);
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getFontFileMutex());
 
     osg::ref_ptr<osgDB::ReaderWriter::Options> localOptions;
     if (!userOptions)
@@ -188,7 +192,7 @@ osg::ref_ptr<Font> osgText::readRefFontFile(const std::string& filename, const o
 
 osg::ref_ptr<Font> osgText::readRefFontStream(std::istream& stream, const osgDB::ReaderWriter::Options* userOptions)
 {
-    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_FontFileMutex);
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(getFontFileMutex());
 
     osg::ref_ptr<osgDB::ReaderWriter::Options> localOptions;
     if (!userOptions)

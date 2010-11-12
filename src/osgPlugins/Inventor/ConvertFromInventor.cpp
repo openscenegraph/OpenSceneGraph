@@ -134,9 +134,9 @@ ConvertFromInventor::restructure(void* data, SoCallbackAction* action,
                     // Create the graph of nodes that may be influenced
                     // by the node
                     const SoFullPath *path = (const SoFullPath*)action->getCurPath();
-                    assert(path->getLength() == 0 ||
-                           path->getNode(path->getLength()-1) == group &&
-                           "Group being restructured is not at the end of the path.");
+                    //assert(path->getLength() == 0 ||
+                    //       path->getNode(path->getLength()-1) == group &&
+                    //       "Group being restructured is not at the end of the path.");
                     int stackLevel = stack.size()-2;
                     for (int j=path->getLength()-2; j>=0; j--, stackLevel--) {
 
@@ -222,8 +222,8 @@ ConvertFromInventor::restructurePostNode(void* data, SoCallbackAction* action,
 
         assert(node->getChildren());
         for (int i=nodesToRemove.size()-1; i>=0; i--) {
-            assert(i==0 || nodesToRemove[i-1] < nodesToRemove[i] &&
-                   "Children to remove are not in order.");
+            //assert(i==0 || nodesToRemove[i-1] < nodesToRemove[i] &&
+            //       "Children to remove are not in order.");
             node->getChildren()->remove(nodesToRemove[i]);
         }
     }
@@ -514,9 +514,9 @@ ConvertFromInventor::ivPopState(const SoCallbackAction *action,
         // Get multipop value
         IvStateItem ivState = ivStateStack.top();
         multipop = ivState.flags & IvStateItem::MULTI_POP;
-        assert(multipop ||
-               ivState.pushInitiator == initiator &&
-               "ivStateStack push was initiated by different node.");
+        //assert(multipop ||
+        //       ivState.pushInitiator == initiator &&
+        //       "ivStateStack push was initiated by different node.");
 
         // Get osgStateRoot (note: we HAVE TO reference it)
         osg::ref_ptr<osg::Group> r = ivState.osgStateRoot;

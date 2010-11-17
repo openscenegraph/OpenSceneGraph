@@ -31,9 +31,49 @@
 #include <osg/io_utils>
 
 #include <osgText/TextNode>
+#include <osgText/Text3D>
 
 extern int main_orig(int, char**);
 extern int main_test(int, char**);
+
+
+int main_size(int argc, char** argv)
+{
+    osg::ArgumentParser arguments(&argc, argv);
+
+    osgViewer::Viewer viewer(arguments);
+
+    std::string fontFile("arial.ttf");
+    while(arguments.read("-f",fontFile)) {}
+
+    osg::ref_ptr<osgText::Font> font = osgText::readFontFile(fontFile);
+    if (!font) return 1;
+    OSG_NOTICE<<"Read font "<<fontFile<<" font="<<font.get()<<std::endl;
+
+    osg::Geode* geode = new osg::Geode;
+
+    geode->addDrawable( osg::createTexturedQuadGeometry(osg::Vec3(0.0f,0.0f,0.0f),osg::Vec3(1.0f,0.0,0.0),osg::Vec3(0.0f,0.0,1.0), 0.0, 0.0, 1.0, 1.0) );
+
+    osgText::Text3D* text3d = new osgText::Text3D;
+    text3d->setPosition(osg::Vec3(1.0f,0.0f,0.0f));
+    text3d->setFont(osgText::readFontFile("arial.ttf"));
+    text3d->setCharacterSizeMode(osgText::Text3D::OBJECT_COORDS);
+    text3d->setCharacterSize(1.0f);
+    text3d->setCharacterDepth(0.1f);
+    text3d->setAxisAlignment(osgText::Text3D::XZ_PLANE);
+    text3d->setText("This is a size test");
+
+    geode->addDrawable(text3d);
+
+    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
+    viewer.addEventHandler(new osgViewer::StatsHandler);
+
+    viewer.setSceneData(geode);
+
+    return viewer.run();
+}
+
+
 
 int main(int argc, char** argv)
 {
@@ -46,6 +86,10 @@ int main(int argc, char** argv)
     else if (arguments.read("--original") || arguments.read("--orig"))
     {
         return main_orig(argc,argv);
+    }
+    else if (arguments.read("--size-test"))
+    {
+        return main_size(argc,argv);
     }
 
     osgViewer::Viewer viewer(arguments);
@@ -92,5 +136,5 @@ int main(int argc, char** argv)
     viewer.addEventHandler(new osgViewer::StatsHandler);
     viewer.setSceneData(text);
 
-    return viewer.run();
+        return viewer.run();
 }

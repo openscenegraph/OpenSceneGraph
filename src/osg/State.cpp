@@ -1595,6 +1595,6 @@ void State::frameCompleted()
         GLint64EXT timestamp;
         extensions->glGetInteger64v(GL_TIMESTAMP, &timestamp);
         setGpuTimestamp(osg::Timer::instance()->tick(), timestamp);
-        OSG_NOTICE<<"State::frameCompleted() setting time stamp."<<std::endl;
+        OSG_INFO<<"State::frameCompleted() setting time stamp."<<std::endl;
     }
 }

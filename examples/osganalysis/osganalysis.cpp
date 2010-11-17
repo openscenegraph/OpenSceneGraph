@@ -25,6 +25,12 @@
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/StateSetManipulator>
+#include <osgGA/TrackballManipulator>
+#include <osgGA/FlightManipulator>
+#include <osgGA/DriveManipulator>
+#include <osgGA/KeySwitchMatrixManipulator>
+#include <osgGA/AnimationPathManipulator>
+#include <osgGA/TerrainManipulator>
 
 #include <osgUtil/IncrementalCompileOperation>
 #include <osgUtil/Simplifier>
@@ -531,6 +537,22 @@ public:
     osg::ref_ptr<osgUtil::IncrementalCompileOperation>  _incrementalCompileOperation;
 };
 
+class TexturePoolHandler : public osgGA::GUIEventHandler
+{
+public:
+    virtual bool handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter& aa)
+    {
+        if (ea.getEventType() == osgGA::GUIEventAdapter::KEYUP)
+        {
+            if (ea.getKey()=='r')
+            {
+                osg::Texture::getTextureObjectManager(0)->reportStats();
+            }
+        }
+        return false;
+    }
+};
+
 
 int main(int argc, char** argv)
 {
@@ -539,10 +561,39 @@ int main(int argc, char** argv)
     // construct the viewer.
     osgViewer::Viewer viewer(arguments);
 
-    viewer.setCameraManipulator( new osgGA::TrackballManipulator() );
-    viewer.addEventHandler( new osgViewer::StatsHandler());
-    viewer.addEventHandler( new osgViewer::WindowSizeHandler() );
-    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
+    // set up camera manipulators
+    {
+        osg::ref_ptr<osgGA::KeySwitchMatrixManipulator> keyswitchManipulator = new osgGA::KeySwitchMatrixManipulator;
+
+        keyswitchManipulator->addMatrixManipulator( '1', "Trackball", new osgGA::TrackballManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '2', "Flight", new osgGA::FlightManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
+        keyswitchManipulator->addMatrixManipulator( '4', "Terrain", new osgGA::TerrainManipulator() );
+
+        std::string pathfile;
+        char keyForAnimationPath = '8';
+        while (arguments.read("-p",pathfile))
+        {
+            osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
+            if (apm || !apm->valid())
+            {
+                unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
+                keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
+                keyswitchManipulator->selectMatrixManipulator(num);
+                ++keyForAnimationPath;
+            }
+        }
+
+        viewer.setCameraManipulator( keyswitchManipulator.get() );
+    }
+
+    // set up event handlers 
+    {
+        viewer.addEventHandler( new osgViewer::StatsHandler());
+        viewer.addEventHandler( new osgViewer::WindowSizeHandler() );
+        viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
+        viewer.addEventHandler( new TexturePoolHandler() );
+    }
 
     /////////////////////////////////////////////////////////////////////////////////
     //

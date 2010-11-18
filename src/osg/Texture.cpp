@@ -393,18 +393,49 @@ void Texture::TextureObjectSet::flushDeletedTextureObjects(double currentTime, d
 {
     // OSG_NOTICE<<"Texture::TextureObjectSet::flushDeletedTextureObjects(..)"<<std::endl;
 
+
+
+    if (_parent->getCurrTexturePoolSize()<=_parent->getMaxTexturePoolSize())
+    {
+        // OSG_NOTICE<<"Plenty of space in TexturePool"<<std::endl;
+        return;
+    }
+
+#if 1
+    if (!_pendingOrphanedTextureObjects.empty())
+    {
+        // OSG_NOTICE<<"Texture::TextureObjectSet::flushDeletedTextureObjects(..) handling orphans"<<std::endl;
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        handlePendingOrphandedTextureObjects();
+    }
+#endif
+
     // if nothing to delete return
-    if (_orphanedTextureObjects.empty()) return;
+    if (_orphanedTextureObjects.empty())
+    {
+        return;
+    }
 
     // if no time available don't try to flush objects.
     if (availableTime<=0.0) return;
 
+#if 0
     // if we don't have too many orphaned texture objects then don't bother deleting them, as we can potentially reuse them later.
     if (_parent->getNumberOrphanedTextureObjects()<=s_minimumNumberOfTextureObjectsToRetainInCache) return;
 
     unsigned int numDeleted = 0;
     unsigned int maxNumObjectsToDelete = _parent->getNumberOrphanedTextureObjects()-s_minimumNumberOfTextureObjectsToRetainInCache;
     if (maxNumObjectsToDelete>4) maxNumObjectsToDelete = 4;
+
+#else
+
+    unsigned int numDeleted = 0;
+    unsigned int sizeRequired = _parent->getCurrTexturePoolSize() - _parent->getMaxTexturePoolSize();
+    unsigned int maxNumObjectsToDelete = static_cast<unsigned int>(ceil(double(sizeRequired) / double(_profile._size)));
+    // OSG_NOTICE<<"_parent->getCurrTexturePoolSize()="<<_parent->getCurrTexturePoolSize() <<" _parent->getMaxTexturePoolSize()="<< _parent->getMaxTexturePoolSize()<<std::endl;
+    // OSG_NOTICE<<"Looking to reclaim "<<sizeRequired<<", going to look to remove "<<maxNumObjectsToDelete<<" from "<<_orphanedTextureObjects.size()<<" orhpans"<<std::endl;
+
+#endif
 
     ElapsedTime timer;
 
@@ -440,6 +471,15 @@ void Texture::TextureObjectSet::flushDeletedTextureObjects(double currentTime, d
 
 bool Texture::TextureObjectSet::makeSpace(unsigned int& size)
 {
+#if 1
+    if (!_pendingOrphanedTextureObjects.empty())
+    {
+        // OSG_NOTICE<<"Texture::TextureObjectSet::Texture::TextureObjectSet::makeSpace(..) handling orphans"<<std::endl;
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        handlePendingOrphandedTextureObjects();
+    }
+#endif
+
     if (!_orphanedTextureObjects.empty())
     {
         unsigned int sizeAvailable = _orphanedTextureObjects.size() * _profile._size;
@@ -841,6 +881,14 @@ void Texture::TextureObjectManager::discardAllDeletedTextureObjects()
 void Texture::TextureObjectManager::flushDeletedTextureObjects(double currentTime, double& availableTime)
 {
     ElapsedTime elapsedTime(&(getDeleteTime()));
+
+    static double max_ratio = 0.0f;
+    double ratio = double(getCurrTexturePoolSize())/double(getMaxTexturePoolSize());
+    if (ratio>max_ratio)
+    {
+        max_ratio = ratio;
+    }
+    // OSG_NOTICE<<"TexturePool Size ratio "<<ratio<<", max ratio "<<max_ratio<<std::endl;
 
     for(TextureSetMap::iterator itr = _textureSetMap.begin();
         (itr != _textureSetMap.end()) && (availableTime > 0.0);

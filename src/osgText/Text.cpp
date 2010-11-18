@@ -30,7 +30,6 @@ using namespace osgText;
 //#define TREES_CODE_FOR_MAKING_SPACES_EDITABLE
 
 Text::Text():
-    _color(1.0f,1.0f,1.0f,1.0f),
     _enableDepthWrites(true),
     _backdropType(NONE),
     _backdropImplementation(DELAYED_DEPTH_WRITES),
@@ -46,7 +45,6 @@ Text::Text():
 
 Text::Text(const Text& text,const osg::CopyOp& copyop):
     osgText::TextBase(text,copyop),
-    _color(text._color),
     _enableDepthWrites(text._enableDepthWrites),
     _backdropType(text._backdropType),
     _backdropImplementation(text._backdropImplementation),
@@ -64,12 +62,6 @@ Text::Text(const Text& text,const osg::CopyOp& copyop):
 
 Text::~Text()
 {
-}
-
-
-void Text::setColor(const osg::Vec4& color)
-{
-    _color = color;
 }
 
 

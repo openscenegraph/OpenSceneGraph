@@ -78,7 +78,7 @@ struct Char3DInfo
         }
 
         if (!(_currentPrimitiveSet->empty()) &&
-            (*_verts)[(*_currentPrimitiveSet)[0]] == pos)
+            (*_verts)[(*+_currentPrimitiveSet)[0]] == pos)
         {
             _currentPrimitiveSet->push_back( (*_currentPrimitiveSet)[0] );
         }
@@ -249,14 +249,15 @@ FreeTypeFont::~FreeTypeFont()
 
 void FreeTypeFont::init()
 {
-
-    FT_Error _error = FT_Set_Pixel_Sizes(_face, 32, 32);
+    FT_Error _error;
+#if 0
+    _error = FT_Set_Pixel_Sizes(_face, 32, 32);
     if (_error)
     {
         OSG_NOTICE << "FreeTypeFont3D: set pixel sizes failed ..." << std::endl;
         return;
     }
-
+#endif
     FT_Set_Char_Size( _face, 64*64, 64*64, 600, 600);
 
     int glyphIndex = FT_Get_Char_Index( _face, 'M' );
@@ -451,6 +452,9 @@ osgText::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, u
 osgText::Glyph3D * FreeTypeFont::getGlyph3D(unsigned int charcode)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
+
+    FT_Set_Char_Size( _face, 64*64, 64*64, 600, 600);
+    _currentRes = osgText::FontResolution(0,0);
 
     //
     // GT: fix for symbol fonts (i.e. the Webdings font) as the wrong character are being

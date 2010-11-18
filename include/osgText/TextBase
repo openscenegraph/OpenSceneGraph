@@ -36,7 +36,8 @@ public:
     virtual const char* className() const { return "TextBase"; }
     virtual const char* libraryName() const { return "osgText"; }
 
-
+    void setColor(const osg::Vec4& color);
+    const osg::Vec4& getColor() const { return _color; }
 
     /** Set the Font to use to render the text.
       * setFont(0) sets the use of the default font.*/
@@ -279,6 +280,7 @@ protected:
     
     
     // members which have public access.
+    osg::Vec4                               _color;
     osg::ref_ptr<Font>                      _font;
     osg::ref_ptr<Style>                     _style;
     FontResolution                          _fontSize;

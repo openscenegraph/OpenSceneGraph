@@ -38,10 +38,6 @@ public:
     virtual const char* libraryName() const { return "osgText"; }
 
 
-    void setColor(const osg::Vec4& color);
-    const osg::Vec4& getColor() const { return _color; }
-
-
     /**
      * Turns off writing to the depth buffer when rendering text. This only affects text
      * with no backdrop or text using the DELAYED_DEPTH_WRITES implementation, since
@@ -351,7 +347,6 @@ protected:
     String::iterator computeLastCharacterOnLine(osg::Vec2& cursor, String::iterator first,String::iterator last);
     
     // members which have public access.
-    osg::Vec4                               _color;
 
     // iternal map used for rendering. Set up by the computeGlyphRepresentation() method.
     mutable TextureGlyphQuadMap            _textureGlyphQuadMap;

@@ -534,6 +534,8 @@ void Text3D::drawImplementation(osg::RenderInfo& renderInfo) const
     osg::State & state = *renderInfo.getState();
     unsigned int contextID = state.getContextID();
 
+    state.disableColorPointer();
+    state.Color(_color.r(),_color.g(),_color.b(),_color.a());
 
     // ** save the previous modelview matrix
     osg::Matrix previous(state.getModelViewMatrix());

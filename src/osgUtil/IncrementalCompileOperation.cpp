@@ -715,8 +715,6 @@ void IncrementalCompileOperation::CompileSet::buildCompileMap(ContextSet& contex
 
 void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
 {
-    // OSG_NOTICE<<"IncrementalCompileOperation::operator () ("<<context<<")"<<std::endl;
-
     osg::NotifySeverity level = osg::INFO;
 
     double targetFrameRate = _targetFrameRate;

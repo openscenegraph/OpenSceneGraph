@@ -103,18 +103,6 @@ bool Text_readLocalData(osg::Object &obj, osgDB::Input &fr)
     bool itAdvanced = false;
 
 
-    // color
-    if (fr[0].matchWord("color"))
-    {
-        osg::Vec4 c;
-        if (fr[1].getFloat(c.x()) && fr[2].getFloat(c.y()) && fr[3].getFloat(c.z()) && fr[4].getFloat(c.w()))
-        {
-            text.setColor(c);
-            fr += 4;
-            itAdvanced = true;
-        }
-    }
-
     // backdropType
     if (fr[0].matchWord("backdropType"))
     {
@@ -253,10 +241,6 @@ bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 {
     const osgText::Text &text = static_cast<const osgText::Text &>(obj);
 
-    // color
-    osg::Vec4 c = text.getColor();
-    fw.indent() << "color " << c.x() << " " << c.y() << " " << c.z() << " " << c.w() << std::endl;
-
     // backdropType
     fw.indent() << "backdropType " << convertBackdropTypeEnumToString(text.getBackdropType()) << std::endl;
     
@@ -267,7 +251,7 @@ bool Text_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
     fw.indent() << "backdropVerticalOffset " << text.getBackdropVerticalOffset() << std::endl;
     
     // backdropColor
-    c = text.getBackdropColor();
+    osg::Vec4 c = text.getBackdropColor();
     fw.indent() << "backdropColor " << c.x() << " " << c.y() << " " << c.z() << " " << c.w() << std::endl;
     
     // backdropImplementation

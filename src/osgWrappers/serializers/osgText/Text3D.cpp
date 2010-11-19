@@ -14,4 +14,9 @@ REGISTER_OBJECT_WRAPPER( osgText_Text3D,
         ADD_ENUM_VALUE( PER_FACE );
         ADD_ENUM_VALUE( PER_GLYPH );
     END_ENUM_SERIALIZER();  // _renderMode
+
+    UPDATE_TO_VERSION( 68 )
+    {
+        ADD_VEC4_SERIALIZER( Color, osg::Vec4(1.0,1.0,1.0,1.0) );  // _color
+    }
 }

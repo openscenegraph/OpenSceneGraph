@@ -1,7 +1,7 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 2007 Cedric Pinson
  *
  * This application is open source and may be redistributed and/or modified   
- * freely and without restriction, both in commericial and non commericial
+ * freely and without restriction, both in commercial and non commercial
  * applications, as long as this copyright notice is maintained.
  * 
  * This application is distributed in the hope that it will be useful,

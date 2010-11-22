@@ -78,7 +78,7 @@ struct Char3DInfo
         }
 
         if (!(_currentPrimitiveSet->empty()) &&
-            (*_verts)[(*+_currentPrimitiveSet)[0]] == pos)
+            (*_verts)[(*_currentPrimitiveSet)[0]] == pos)
         {
             _currentPrimitiveSet->push_back( (*_currentPrimitiveSet)[0] );
         }

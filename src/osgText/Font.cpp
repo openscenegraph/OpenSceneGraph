@@ -75,10 +75,14 @@ std::string osgText::findFontFile(const std::string& str)
             winFontPath += "\\fonts";
             s_FontFilePath.push_back(winFontPath);
         }
+    #elif defined(__APPLE__) 
+      osgDB::convertStringPathIntoFilePathList( 
+        ".:/usr/share/fonts/ttf:/usr/share/fonts/ttf/western:/usr/share/fonts/ttf/decoratives:/Library/Fonts:/System/Library/Fonts",
+        s_FontFilePath);
     #else
-        osgDB::convertStringPathIntoFilePathList(
-            ".:/usr/share/fonts/ttf:/usr/share/fonts/ttf/western:/usr/share/fonts/ttf/decoratives",
-            s_FontFilePath);
+      osgDB::convertStringPathIntoFilePathList(
+        ".:/usr/share/fonts/ttf:/usr/share/fonts/ttf/western:/usr/share/fonts/ttf/decoratives",
+        s_FontFilePath);
     #endif
     }
 

@@ -226,7 +226,7 @@ void CompileOperator::runTimingTests(osg::RenderInfo& renderInfo)
             unsigned int numVertices = pow(2.0,double(i));
             osg::ref_ptr<osg::Geometry> geometry = createTestGeometry(numVertices, useVBO);
             double size = geometry->getGLObjectSizeHint();
-            double time = timeCompile(renderInfo, geometry);
+            double time = timeCompile(renderInfo, geometry.get());
             OSG_NOTICE<<"   numVertices = "<<numVertices<<" size = "<<size<<", time = "<<time*1000.0<<"ms rate= "<<(size/time)*Mbsec<<"Mb/sec"<<std::endl;
         }
     }
@@ -239,7 +239,7 @@ void CompileOperator::runTimingTests(osg::RenderInfo& renderInfo)
             unsigned int numVertices = pow(2.0,double(i));
             osg::ref_ptr<osg::Geometry> geometry = createTestGeometry(numVertices, useVBO);
             double size = geometry->getGLObjectSizeHint();
-            double time = timeCompile(renderInfo, geometry);
+            double time = timeCompile(renderInfo, geometry.get());
             OSG_NOTICE<<"   numVertices = "<<numVertices<<" size = "<<size<<", time = "<<time*1000.0<<"ms rate= "<<(size/time)*Mbsec<<"Mb/sec"<<std::endl;
         }
     }

@@ -116,7 +116,7 @@ BaseSerializer* ObjectWrapper::getSerializer( const std::string& name )
     for ( SerializerList::iterator itr=_serializers.begin(); itr!=_serializers.end(); ++itr )
     {
         if ( (*itr)->getName()==name )
-            return *itr;
+            return itr->get();
     }
     
     for ( StringList::const_iterator itr=_associates.begin(); itr!=_associates.end(); ++itr )
@@ -134,7 +134,7 @@ BaseSerializer* ObjectWrapper::getSerializer( const std::string& name )
               aitr!=assocWrapper->_serializers.end(); ++aitr )
         {
             if ( (*aitr)->getName()==name )
-                return *aitr;
+                return aitr->get();
         }
     }
     return NULL;

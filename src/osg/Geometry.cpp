@@ -516,7 +516,7 @@ void Geometry::setPrimitiveSetList(const PrimitiveSetList& primitives)
     {
         for (unsigned int primitiveSetIndex=0;primitiveSetIndex<_primitives.size();++primitiveSetIndex)
         {
-            addElementBufferObjectIfRequired(_primitives[primitiveSetIndex]);
+            addElementBufferObjectIfRequired(_primitives[primitiveSetIndex].get());
         }
 
     }

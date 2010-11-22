@@ -1020,7 +1020,7 @@ void DatabasePager::DatabaseThread::run()
                         OSG_NOTICE<<"Using IncrementalCompileOperation"<<std::endl;
 
                         osgUtil::IncrementalCompileOperation::CompileSet* compileSet = new osgUtil::IncrementalCompileOperation::CompileSet(databaseRequest->_loadedModel.get());
-                        compileSet->_compileCompletedCallback = new DatabasePagerCompileCompletedCallback(_pager, databaseRequest);
+                        compileSet->_compileCompletedCallback = new DatabasePagerCompileCompletedCallback(_pager, databaseRequest.get());
 
                         _pager->_incrementalCompileOperation->add(compileSet);
  

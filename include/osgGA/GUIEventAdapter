@@ -501,7 +501,7 @@ public:
 
         void addTouchPoint(unsigned int id, TouchPhase phase, float x, float y, unsigned int tapCount = 0);
         
-        TouchData* getTouchData() const { return _touchData; }
+        TouchData* getTouchData() const { return _touchData.get(); }
         bool isMultiTouchEvent() const { return (_touchData.valid()); }
         
     protected:

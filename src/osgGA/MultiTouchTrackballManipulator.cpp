@@ -43,41 +43,40 @@ void MultiTouchTrackballManipulator::handleMultiTouchDrag(GUIEventAdapter::Touch
     osg::Vec2 pt_2_now(now->get(1).x,now->get(1).y);
     osg::Vec2 pt_1_last(last->get(0).x,last->get(0).y);
     osg::Vec2 pt_2_last(last->get(1).x,last->get(1).y);
-    
-    
-    
+
+
+
     float gap_now((pt_1_now - pt_2_now).length());
     float gap_last((pt_1_last - pt_2_last).length());
-    
+
     // osg::notify(osg::ALWAYS) << gap_now << " " << gap_last << std::endl;
-    
-    if (abs(gap_last - gap_now) >= zoom_threshold) 
+
+    if (abs(gap_last - gap_now) >= zoom_threshold)
     {
         // zoom gesture
         zoomModel( (gap_last - gap_now) * eventTimeDelta, true );
-    } 
-    
-    // drag gesture
-    
-    osg::Vec2 delta = ((pt_1_last - pt_1_now) + (pt_2_last - pt_2_now)) / 2.0f;
-    
-    float scale = 0.2f * _distance * eventTimeDelta;
-   
-    // osg::notify(osg::ALWAYS) << "drag: " << delta << " scale: " << scale << std::endl;
-   
-    panModel( delta.x() * scale, delta.y() * scale * (-1)); // flip y-coord because of different origins.
+    }
 
-    
+    // drag gesture
+
+    osg::Vec2 delta = ((pt_1_last - pt_1_now) + (pt_2_last - pt_2_now)) / 2.0f;
+
+    float scale = 0.2f * _distance * eventTimeDelta;
+
+    // osg::notify(osg::ALWAYS) << "drag: " << delta << " scale: " << scale << std::endl;
+
+    panModel( delta.x() * scale, delta.y() * scale * (-1)); // flip y-coord because of different origins.
 }
 
 
 bool MultiTouchTrackballManipulator::handle( const GUIEventAdapter& ea, GUIActionAdapter& us )
 {
-    
+
     bool handled(false);
-    
-    switch(ea.getEventType()) {
-    
+
+    switch(ea.getEventType())
+    {
+
         case osgGA::GUIEventAdapter::PUSH:
         case osgGA::GUIEventAdapter::DRAG:
         case osgGA::GUIEventAdapter::RELEASE:
@@ -90,37 +89,41 @@ bool MultiTouchTrackballManipulator::handle( const GUIEventAdapter& ea, GUIActio
                     eventTimeDelta = 0.;
                 }
                 osgGA::GUIEventAdapter::TouchData* data = ea.getTouchData();
-                
+
                 // three touches or two taps for home position
-                if ((data->getNumTouchPoints() == 3) || ((data->getNumTouchPoints() == 1) && (data->get(0).tapCount >= 2))) {
+                if ((data->getNumTouchPoints() == 3) || ((data->getNumTouchPoints() == 1) && (data->get(0).tapCount >= 2)))
+                {
                     flushMouseEventStack();
                     _thrown = false;
                     home(ea,us);
                     handled = true;
-                } 
-                
-                else if (data->getNumTouchPoints() >= 2) 
+                }
+
+                else if (data->getNumTouchPoints() >= 2)
                 {
-                    if ((_lastTouchData.valid()) && (_lastTouchData->getNumTouchPoints() >= 2)) {
-                        handleMultiTouchDrag(data, _lastTouchData, eventTimeDelta);
+                    if ((_lastTouchData.valid()) && (_lastTouchData->getNumTouchPoints() >= 2))
+                    {
+                        handleMultiTouchDrag(data, _lastTouchData.get(), eventTimeDelta);
                     }
-                    
+
                     handled = true;
-                } 
-                
-                _lastTouchData = data; 
-                
+                }
+
+                _lastTouchData = data;
+
                 // check if all touches ended
                 unsigned int num_touches_ended(0);
-                for(osgGA::GUIEventAdapter::TouchData::iterator i = data->begin(); i != data->end(); ++i) {
+                for(osgGA::GUIEventAdapter::TouchData::iterator i = data->begin(); i != data->end(); ++i)
+                {
                     if ((*i).phase == osgGA::GUIEventAdapter::TOUCH_ENDED)
                         num_touches_ended++;
                 }
-                
-                if(num_touches_ended == data->getNumTouchPoints()) {
+
+                if(num_touches_ended == data->getNumTouchPoints())
+                {
                     _lastTouchData = NULL;
                 }
-                
+
             }
             break;
         default:

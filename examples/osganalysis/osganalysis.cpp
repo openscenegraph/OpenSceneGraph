@@ -676,7 +676,7 @@ int main(int argc, char** argv)
     databasePagingThread->add(databasePagingOperation.get());
 
     osg::ref_ptr<osg::Group> group = new osg::Group;
-    viewer.setSceneData(group);
+    viewer.setSceneData(group.get());
 
     viewer.realize();
 

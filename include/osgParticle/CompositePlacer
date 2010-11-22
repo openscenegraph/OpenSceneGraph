@@ -48,8 +48,8 @@ public:
     { if (i<_placers.size()) _placers.erase(_placers.begin()+i); }
     
     /// Get a child placer
-    Placer* getPlacer( unsigned int i ) { return _placers.at(i); }
-    const Placer* getPlacer( unsigned int i ) const { return _placers.at(i); }
+    Placer* getPlacer( unsigned int i ) { return _placers[i].get(); }
+    const Placer* getPlacer( unsigned int i ) const { return _placers[i].get(); }
     
     /// Get number of placers
     unsigned int getNumPlacers() const { return _placers.size(); }

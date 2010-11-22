@@ -70,6 +70,12 @@ public:
     ReaderWriterVRML2()
     {
         supportsExtension("wrl","VRML format");
+        supportsOption("directoryTexture=<aDirectory>","Export option. If a texture needs to be copied, it will be into directory <aDirectory> instead of the working one");
+        supportsOption("convertTextures=0","Export option. Keep textures in their original format but copy them into <directoryTexture> directory");
+        supportsOption("convertTextures=-1","Export option. Use textures but do not convert them, keep them in their original format and location.");
+        supportsOption("convertTextures=-2","Export option. Do not use textures, export only geometry");
+        supportsOption("convertTextures=-3","Export option. Default value.Convert textures to jpeg or png format, according to alpha values, and copy them into <directoryTexture> directory ");
+        supportsOption("textureUnit=<X>","Export option. Use parameters of texture unit X instead of unit 0 in case of multitexture input file");
     }
 
     virtual const char* className() const { return "VRML2 Reader/Writer"; }

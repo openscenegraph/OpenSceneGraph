@@ -35,11 +35,16 @@ ELSE()
 ENDIF()
 
 # SET final path
-#osg_fbx code is compatible with 2011.2 and 2011.3 so find either directory
+#osg_fbx code is compatible with 2011.2, 2011.3 and 2011.3.1 so find any directory
 SET( FBX_SEARCH_PATHS 
     $ENV{FBX_DIR}
+    $ENV{ProgramW6432}/Autodesk/FBX/FbxSdk/2011.3.1
+    $ENV{PROGRAMFILES}/Autodesk/FBX/FbxSdk/2011.3.1
+    /Applications/Autodesk/FBXSDK201131
+    $ENV{ProgramW6432}/Autodesk/FBX/FbxSdk/2011.3
     $ENV{PROGRAMFILES}/Autodesk/FBX/FbxSdk/2011.3
     /Applications/Autodesk/FBXSDK20113
+    $ENV{ProgramW6432}/Autodesk/FBX/FbxSdk/2011.2
     $ENV{PROGRAMFILES}/Autodesk/FBX/FbxSdk/2011.2
     /Applications/Autodesk/FBXSDK20112
 )

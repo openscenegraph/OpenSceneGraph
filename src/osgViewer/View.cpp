@@ -1601,6 +1601,11 @@ void View::assignSceneDataToCameras()
 {
     // OSG_NOTICE<<"View::assignSceneDataToCameras()"<<std::endl;
 
+    if (_scene.valid() && _scene->getDatabasePager() && getViewerBase())
+    {
+        _scene->getDatabasePager()->setIncrementalCompileOperation(getViewerBase()->getIncrementalCompileOperation());
+    }
+
     osg::Node* sceneData = _scene.valid() ? _scene->getSceneData() : 0;
 
     if (_cameraManipulator.valid())

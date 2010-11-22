@@ -17,7 +17,6 @@
 #include <osg/DeleteHandler>
 #include <osg/io_utils>
 
-#include <osgUtil/GLObjectsVisitor>
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 #include <osgGA/TrackballManipulator>
@@ -65,6 +64,11 @@ Viewer::Viewer(osg::ArgumentParser& arguments)
     //arguments.getApplicationUsage()->addCommandLineOption("--radius","");
     //arguments.getApplicationUsage()->addCommandLineOption("--collar","");
     //arguments.getApplicationUsage()->addCommandLineOption("--im","");
+
+    if (arguments.read("--ico"))
+    {
+        setIncrementalCompileOperation(new osgUtil::IncrementalCompileOperation());
+    }
 
     std::string filename;
     bool readConfig = false;

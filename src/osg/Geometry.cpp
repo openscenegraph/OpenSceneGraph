@@ -79,6 +79,18 @@ Geometry::Geometry(const Geometry& geometry,const CopyOp& copyop):
     {
         _vertexAttribList.push_back(ArrayData(*vitr, copyop));
     }
+
+    if ((copyop.getCopyFlags() & osg::CopyOp::DEEP_COPY_ARRAYS))
+    {
+        if (_useVertexBufferObjects)
+        {
+            // copying of arrays doesn't set up buffer objects so we'll need to force
+            // Geometry to assign these, we'll do this by switching off VBO's then renabling them.
+            setUseVertexBufferObjects(false);
+            setUseVertexBufferObjects(true);
+        }
+    }
+    
 }
 
 Geometry::~Geometry()
@@ -941,6 +953,7 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
             if ((*itr)->getBufferObject()) bufferObjects.insert((*itr)->getBufferObject());
         }
 
+        //osg::ElapsedTime timer;
 
         // now compile any buffer objects that require it.
         for(BufferObjects::iterator itr = bufferObjects.begin();
@@ -954,6 +967,8 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
                 glBufferObject->compileBuffer();
             }
         }
+
+        // OSG_NOTICE<<"Time to compile "<<timer.elapsedTime_m()<<"ms"<<std::endl;
 
         // unbind the BufferObjects
         extensions->glBindBuffer(GL_ARRAY_BUFFER_ARB,0);

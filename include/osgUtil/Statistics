@@ -121,6 +121,10 @@ class OSGUTIL_EXPORT Statistics : public osg::PrimitiveFunctor
         PrimitiveCountMap& getPrimitiveCountMap() { return _primitives_count; }
         const PrimitiveCountMap& getPrimitiveCountMap() const { return _primitives_count; }
         
+        PrimitiveValueMap& getPrimitiveValueMap() { return _primitiveCount; }
+        const PrimitiveValueMap& getPrimitiveValueMap() const { return _primitiveCount; }
+
+
         /// deprecated
         PrimitiveCountMap::iterator GetPrimitivesBegin() { return _primitives_count.begin(); }
         /// deprecated

@@ -226,6 +226,9 @@ class OSG_EXPORT Image : public BufferData
         void setPacking(unsigned int packing) { _packing = packing; }
         inline unsigned int getPacking() const { return _packing; }
 
+        /** return true of the pixel format is an OpenGL compressed pixel format.*/
+        bool isCompressed() const;
+
         /** Set the pixel aspect ratio, defined as the pixel width divided by the pixel height.*/
         inline void setPixelAspectRatio(float pixelAspectRatio) { _pixelAspectRatio = pixelAspectRatio; }
 
@@ -301,7 +304,7 @@ class OSG_EXPORT Image : public BufferData
         static unsigned int computeRowWidthInBytes(int width,GLenum pixelFormat,GLenum type,int packing);
         static int computeNearestPowerOfTwo(int s,float bias=0.5f);
         static int computeNumberOfMipmapLevels(int s,int t = 1, int r = 1);
-                
+
         /** Precomputed mipmaps stuff. */
         typedef std::vector< unsigned int > MipmapDataType;
 

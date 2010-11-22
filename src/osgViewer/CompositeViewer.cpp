@@ -12,7 +12,6 @@
 */
 
 #include <osg/GLExtensions>
-#include <osgUtil/GLObjectsVisitor>
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/CompositeViewer>
 #include <osgViewer/Renderer>

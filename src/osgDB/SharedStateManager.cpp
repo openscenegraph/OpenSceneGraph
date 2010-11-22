@@ -108,12 +108,23 @@ void SharedStateManager::apply(osg::Geode& geode)
     }
 }
  
-bool SharedStateManager::isShared(osg::StateSet *ss)
+bool SharedStateManager::isShared(osg::StateSet* ss)
 {
     if (shareStateSet(ss->getDataVariance()))
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_listMutex);
         return find(ss) != 0;
+    }
+    else
+        return false;
+}
+
+bool SharedStateManager::isShared(osg::Texture* texture)
+{
+    if (shareTexture(texture->getDataVariance()))
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_listMutex);
+        return find(texture) != 0;
     }
     else
         return false;

@@ -60,11 +60,12 @@ void Geometry::write(DataOutputStream* out){
     out->writeBool(getVertexArray()!=0);
     if (getVertexArray())
     {
-    out->writeArray(getVertexArray());
+        out->writeArray(getVertexArray());
     }
     // Write vertex indices if any
     out->writeBool(getVertexIndices()!=0);
-    if (getVertexIndices()){
+    if (getVertexIndices())
+    {
         out->writeArray(getVertexIndices());
     }
     

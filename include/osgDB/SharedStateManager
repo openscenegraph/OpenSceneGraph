@@ -62,10 +62,14 @@ namespace osgDB {
 
         void apply(osg::Node& node);
         void apply(osg::Geode& geode);
+
         // Answers the question "Will this state set be eliminated by
         // the SharedStateManager because an equivalent one has been
         // seen already?" Safe to call from the pager thread.
         bool isShared(osg::StateSet* stateSet);
+
+        bool isShared(osg::Texture* texture);
+
     protected:
 
         inline bool shareTexture(osg::Object::DataVariance variance)

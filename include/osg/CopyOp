@@ -64,6 +64,9 @@ class OSG_EXPORT CopyOp
         inline CopyOp(CopyFlags flags=SHALLOW_COPY):_flags(flags) {}
         virtual ~CopyOp() {}
 
+        void setCopyFlags(CopyFlags flags) { _flags = flags; }
+        CopyFlags getCopyFlags() const { return _flags; }
+
         virtual Referenced*     operator() (const Referenced* ref) const;
         virtual Object*         operator() (const Object* obj) const;
         virtual Node*           operator() (const Node* node) const;

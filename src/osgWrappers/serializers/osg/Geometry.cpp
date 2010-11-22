@@ -97,6 +97,19 @@ ADD_ARRAYDATA_FUNCTIONS( FogCoordData )
 ADD_ARRAYLIST_FUNCTIONS( TexCoordData, TexCoordArrayList )
 ADD_ARRAYLIST_FUNCTIONS( VertexAttribData, VertexAttribArrayList )
 
+struct GeometryFinishedObjectReadCallback : public osgDB::FinishedObjectReadCallback
+{
+    virtual void objectRead(osgDB::InputStream&, osg::Object& obj)
+    {
+        osg::Geometry& geometry = static_cast<osg::Geometry&>(obj);
+        if (geometry.getUseVertexBufferObjects())
+        {
+            geometry.setUseVertexBufferObjects(false);
+            geometry.setUseVertexBufferObjects(true);
+        }
+    }
+};
+
 REGISTER_OBJECT_WRAPPER( Geometry,
                          new osg::Geometry,
                          osg::Geometry,
@@ -112,4 +125,6 @@ REGISTER_OBJECT_WRAPPER( Geometry,
     ADD_USER_SERIALIZER( VertexAttribData );  // _vertexAttribList
     ADD_BOOL_SERIALIZER( FastPathHint, true );  // _fastPathHint
     //ADD_OBJECT_SERIALIZER( InternalOptimizedGeometry, osg::Geometry, NULL );  // _internalOptimizedGeometry
+
+    wrapper->addFinishedObjectReadCallback( new GeometryFinishedObjectReadCallback() );
 }

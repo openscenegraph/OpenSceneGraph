@@ -563,6 +563,17 @@ void ViewerBase::setIncrementalCompileOperation(osgUtil::IncrementalCompileOpera
     // assign new operation        
     _incrementalCompileOperation = ico;
 
+    Scenes scenes;
+    getScenes(scenes,false);
+    for(Scenes::iterator itr = scenes.begin();
+        itr != scenes.end();
+        ++itr)
+    {
+        osgDB::DatabasePager* dp = (*itr)->getDatabasePager();
+        dp->setIncrementalCompileOperation(ico);
+    }
+
+
     if (_incrementalCompileOperation) _incrementalCompileOperation->assignContexts(contexts);
 }
 

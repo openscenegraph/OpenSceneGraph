@@ -30,8 +30,9 @@
 #include <osgViewer/ViewerEventHandlers>
 #include <osg/io_utils>
 
-#include <osgText/TextNode>
 #include <osgText/Text3D>
+
+#include "TextNode.h"
 
 extern int main_orig(int, char**);
 extern int main_test(int, char**);

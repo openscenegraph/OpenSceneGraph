@@ -2,6 +2,7 @@
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  * Copyright (C) 2004-2005 Nathan Cournia
  * Copyright (C) 2008 Zebra Imaging
+ * Copyright (C) 2010 VIRES Simulationstechnologie GmbH
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commercial and non commercial
@@ -14,6 +15,7 @@
 
 /* file:   include/osg/Shader
  * author: Mike Weiblen 2008-01-02
+ *         Holger Helmich 2010-10-21
 */
 
 #ifndef OSG_SHADER
@@ -86,8 +88,10 @@ class OSG_EXPORT Shader : public osg::Object
 
         enum Type {
             VERTEX = GL_VERTEX_SHADER,
-            FRAGMENT = GL_FRAGMENT_SHADER,
+            TESSCONTROL = GL_TESS_CONTROL_SHADER,
+            TESSEVALUATION = GL_TESS_EVALUATION_SHADER,
             GEOMETRY = GL_GEOMETRY_SHADER_EXT,
+            FRAGMENT = GL_FRAGMENT_SHADER,
             UNDEFINED = -1
         };
 

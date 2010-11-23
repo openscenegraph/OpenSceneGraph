@@ -302,6 +302,10 @@ void GL2Extensions::lowestCommonDenominator(const GL2Extensions& rhs)
     if (!rhs._glFramebufferTextureLayer) _glFramebufferTextureLayer = 0;
     if (!rhs._glFramebufferTextureFace) _glFramebufferTextureFace = 0;
 
+    // ARB_tessellation_shader
+    if (!rhs._glPatchParameteri) _glPatchParameteri = 0;
+    if (!rhs._glPatchParameterfv) _glPatchParameterfv = 0;
+
     // EXT_gpu_shader4
     if (!rhs._glGetUniformuiv) _glGetUniformuiv = 0;
     if (!rhs._glBindFragDataLocation) _glBindFragDataLocation = 0;
@@ -337,6 +341,7 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
     _isLanguage100Supported = shadersBuiltIn || osg::isGLExtensionSupported(contextID,"GL_ARB_shading_language_100");
     _isGeometryShader4Supported = osg::isGLExtensionSupported(contextID,"GL_EXT_geometry_shader4");
     _isGpuShader4Supported = osg::isGLExtensionSupported(contextID,"GL_EXT_gpu_shader4");
+    _areTessellationShadersSupported = osg::isGLExtensionSupported(contextID, "GL_ARB_tessellation_shader");
     
     if( isGlslSupported() )
     {
@@ -469,6 +474,10 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
     setGLExtensionFuncPtr(_glFramebufferTexture,  "glFramebufferTexture", "glFramebufferTextureEXT" );
     setGLExtensionFuncPtr(_glFramebufferTextureLayer,  "glFramebufferTextureLayer", "glFramebufferTextureLayerEXT" );
     setGLExtensionFuncPtr(_glFramebufferTextureFace,  "glFramebufferTextureFace", "glFramebufferTextureFaceEXT" );
+
+    // ARB_tesselation_shader
+    setGLExtensionFuncPtr(_glPatchParameteri, "glPatchParameteri" );
+    setGLExtensionFuncPtr(_glPatchParameterfv, "glPatchParameterfv");
 
     // EXT_gpu_shader4
     setGLExtensionFuncPtr(_glGetUniformuiv,  "glGetUniformuiv", "glGetUniformuivEXT" );
@@ -1973,6 +1982,30 @@ void GL2Extensions::glFramebufferTextureFace( GLenum target, GLenum attachment, 
     }
 }
 
+void GL2Extensions::glPatchParameteri( GLenum pname, GLint value ) const
+{
+    if (_glPatchParameteri)
+    {
+
+        _glPatchParameteri( pname, value );
+    }
+    else
+    {
+        NotSupported( "glPatchParameteri" );
+    }
+}
+void GL2Extensions::glPatchParameterfv( GLenum pname, const GLfloat* values ) const
+{
+    if (_glPatchParameterfv)
+    {
+
+        _glPatchParameterfv( pname, values );
+    }
+    else
+    {
+        NotSupported( "glPatchParameterfv" );
+    }
+}
 
 void GL2Extensions::glGetUniformuiv( GLuint program, GLint location, GLuint* params ) const
 {

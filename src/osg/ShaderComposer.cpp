@@ -1,4 +1,5 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ * Copyright (C) 2010-10-21 VIRES Simulationstechnologie GmbH
  *
  * This library is open source and may be redistributed and/or modified under
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
@@ -10,6 +11,10 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
+
+/*
+ * mod:        Holger Helmich 2010-10-21
+ */
 
 #include <osg/ShaderComposer>
 #include <osg/Notify>
@@ -43,6 +48,8 @@ osg::Program* ShaderComposer::getOrCreateProgram(const ShaderComponents& shaderC
 
     // strip out vertex shaders
     Shaders vertexShaders;
+    Shaders tessControlShaders;
+    Shaders tessEvaluationShaders;
     Shaders geometryShaders;
     Shaders fragmentShaders;
 
@@ -61,6 +68,12 @@ osg::Program* ShaderComposer::getOrCreateProgram(const ShaderComponents& shaderC
             {
                 case(Shader::VERTEX):
                     vertexShaders.push_back(shader);
+                    break;
+                case(Shader::TESSCONTROL):
+                    tessControlShaders.push_back(shader);
+                    break;
+                case(Shader::TESSEVALUATION):
+                    tessEvaluationShaders.push_back(shader);
                     break;
                 case(Shader::GEOMETRY):
                     geometryShaders.push_back(shader);

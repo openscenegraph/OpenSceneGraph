@@ -2,6 +2,7 @@
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  * Copyright (C) 2004-2005 Nathan Cournia
  * Copyright (C) 2008 Zebra Imaging
+ * Copyright (C) 2010 Vires Simulationstechnologie GmbH
  *
  * This application is open source and may be redistributed and/or modified
  * freely and without restriction, both in commercial and non commercial
@@ -14,6 +15,7 @@
 
 /* file:        include/osg/Program
  * author:      Mike Weiblen 2008-01-02
+ *              Holger Helmich 2010-10-21
 */
 
 #ifndef OSG_PROGRAM
@@ -95,6 +97,9 @@ class OSG_EXPORT Program : public osg::StateAttribute
         /** Set/get GL program parameters */
         void setParameter( GLenum pname, GLint value );
         GLint getParameter( GLenum pname ) const;
+
+        void setParameterfv( GLenum pname, const GLfloat* value );
+        const GLfloat* getParameterfv( GLenum pname ) const;
 
         /** Add an attribute location binding. */
         void addBindAttribLocation( const std::string& name, GLuint index );
@@ -275,8 +280,17 @@ class OSG_EXPORT Program : public osg::StateAttribute
         GLint _geometryInputType;
         GLint _geometryOutputType;
 
+        /** Parameter maintained with glPatchParameteri */
+        GLint _patchVertices;
+
+        /** Parameter maintained with glPatchParameterfv */
+        // todo add tessellation default level
+        //GLfloat _patchDefaultInnerLevel[2];
+        //GLfloat _patchDefaultOuterLevel[4];
+
     private:
         Program& operator=(const Program&);        // disallowed
+
 };
 
 }

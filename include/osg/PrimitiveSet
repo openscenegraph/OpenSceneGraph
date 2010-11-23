@@ -177,7 +177,8 @@ class OSG_EXPORT PrimitiveSet : public BufferData
             LINES_ADJACENCY = GL_LINES_ADJACENCY_EXT, 
             LINE_STRIP_ADJACENCY = GL_LINE_STRIP_ADJACENCY_EXT, 
             TRIANGLES_ADJACENCY = GL_TRIANGLES_ADJACENCY_EXT, 
-            TRIANGLE_STRIP_ADJACENCY = GL_TRIANGLE_STRIP_ADJACENCY_EXT
+            TRIANGLE_STRIP_ADJACENCY = GL_TRIANGLE_STRIP_ADJACENCY_EXT,
+            PATCHES = GL_PATCHES
         };
 
         PrimitiveSet(Type primType=PrimitiveType,GLenum mode=0, int numInstances=0):

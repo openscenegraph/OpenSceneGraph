@@ -2,6 +2,7 @@
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  * Copyright (C) 2004-2005 Nathan Cournia
  * Copyright (C) 2008 Zebra Imaging
+ * Copyright (C) 2010 VIRES Simulationstechnologie GmbH
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commercial and non commercial
@@ -15,6 +16,7 @@
 
 /* file:   src/osg/Shader.cpp
  * author: Mike Weiblen 2008-01-02
+ *         Holger Helmich 2010-10-21
 */
 
 #include <fstream>
@@ -321,8 +323,10 @@ const char* Shader::getTypename() const
     switch( getType() )
     {
         case VERTEX:    return "VERTEX";
-        case FRAGMENT:  return "FRAGMENT";
+        case TESSCONTROL: return "TESSCONTROL";
+        case TESSEVALUATION: return "TESSEVALUATION";
         case GEOMETRY:  return "GEOMETRY";
+        case FRAGMENT:  return "FRAGMENT";
         default:        return "UNDEFINED";
     }
 }
@@ -331,8 +335,10 @@ const char* Shader::getTypename() const
 Shader::Type Shader::getTypeId( const std::string& tname )
 {
     if( tname == "VERTEX" )     return VERTEX;
-    if( tname == "FRAGMENT" )   return FRAGMENT;
+    if( tname == "TESSCONTROL" ) return TESSCONTROL;
+    if( tname == "TESSEVALUATION") return TESSEVALUATION;
     if( tname == "GEOMETRY" )   return GEOMETRY;
+    if( tname == "FRAGMENT" )   return FRAGMENT;
     return UNDEFINED;
 }
 

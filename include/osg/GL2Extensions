@@ -3,6 +3,7 @@
  * Copyright (C) 2004-2005 Nathan Cournia
  * Copyright (C) 2007 Art Tevs
  * Copyright (C) 2008 Zebra Imaging
+ * Copyright (C) 2010 VIRES Simulationstechnologie GmbH
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commercial and non commercial
@@ -15,6 +16,7 @@
 
 /* file:        include/osg/GL2Extensions
  * author:      Mike Weiblen 2008-01-02
+ *              Holger Helmich 2010-10-21
 */
 
 #ifndef OSG_GL2EXTENSIONS
@@ -178,6 +180,42 @@ typedef char GLchar;
 #define GL_PROGRAM_POINT_SIZE_EXT                    0x8642
 #endif
 
+// ARB_tesselation_shader
+#ifndef GL_TESS_EVALUATION_SHADER
+#define GL_PATCHES                                             0x000E
+#define GL_PATCH_VERTICES                                      0x8E72
+#define GL_PATCH_DEFAULT_INNER_LEVEL                           0x8E73
+#define GL_PATCH_DEFAULT_OUTER_LEVEL                           0x8E74
+#define GL_MAX_PATCH_VERTICES                                  0x8E7D
+#define GL_MAX_TESS_GEN_LEVEL                                  0x8E7E
+#define GL_MAX_TESS_CONTROL_UNIFORM_COMPONENTS                 0x8E7F
+#define GL_MAX_TESS_EVALUATION_UNIFORM_COMPONENTS              0x8E80
+#define GL_MAX_TESS_CONTROL_TEXTURE_IMAGE_UNITS                0x8E81
+#define GL_MAX_MAX_TESS_EVALUATION_TEXTURE_IMAGE_UNITS         0x8E82
+#define GL_MAX_MAX_TESS_CONTROL_OUTPUT_COMPONENTS              0x8E83
+#define GL_MAX_MAX_TESS_PATCH_COMPONENTS                       0x8E84
+#define GL_MAX_MAX_TESS_CONTROL_TOTAL_OUTPUT_COMPONENTS        0x8E85
+#define GL_MAX_MAX_TESS_EVALUATION_OUTPUT_COMPONENTS           0x8E86
+#define GL_MAX_MAX_TESS_CONTROL_UNIFORM_BLOCKS                 0x8E89
+#define GL_MAX_MAX_TESS_EVALUATION_UNIFORM_BLOCKS              0x8E8A
+#define GL_MAX_MAX_TESS_CONTROL_INPUT_COMPONENTS               0x886C
+#define GL_MAX_MAX_TESS_EVALUATION_INPUT_COMPONENTS            0x886D
+#define GL_MAX_MAX_COMBINED_TESS_CONTROL_UNIFORM_COMPONENTS    0x8E1E
+#define GL_MAX_MAX_COMBINED_TESS_EVALUATION_UNIFORM_COMPONENTS 0x8E1F
+#define GL_TESS_EVALUATION_SHADER                              0x8E87
+#define GL_TESS_CONTROL_SHADER                                 0x8E88
+#define GL_TESS_CONTROL_OUTPUT_VERTICES                        0x8E75
+#define GL_TESS_GEN_MODE                                       0x8E76
+#define GL_TESS_GEN_SPACING                                    0x8E77
+#define GL_TESS_GEN_VERTEX_ORDER                               0x8E78
+#define GL_TESS_GEN_POINT_MODE                                 0x8E79
+#define GL_ISOLINES                                            0x8E7A
+#define GL_FRACTIONAL_ODD                                      0x8E7B
+#define GL_FRACTIONAL_EVEN                                     0x8E7C
+#define GL_UNIFORM_BLOCK_REFERENCED_BY_TESS_CONTROL_SHADER     0x84F0
+#define GL_UNIFORM_BLOCK_REFERENCED_BY_TESS_EVALUATION_SHADER  0x84F1
+#endif
+
 // EXT_gpu_shader4
 #ifndef GL_INT_SAMPLER_2D_EXT
 #define GL_SAMPLER_1D_ARRAY_EXT               0x8DC0
@@ -242,6 +280,9 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
 
         void setGeometryShader4Supported(bool flag) { _isGeometryShader4Supported = flag; }
         bool isGeometryShader4Supported() const { return _isGeometryShader4Supported; }
+
+        void setTessellationShadersSupported(bool flag) { _areTessellationShadersSupported = flag; }
+        bool areTessellationShadersSupported() const { return _areTessellationShadersSupported; }
 
         void setGpuShader4Supported(bool flag) { _isGpuShader4Supported = flag; }
         bool isGpuShader4Supported() const { return _isGpuShader4Supported; }
@@ -375,6 +416,10 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         void glFramebufferTextureLayer( GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer ) const;
         void glFramebufferTextureFace( GLenum target, GLenum attachment, GLuint texture, GLint level, GLenum face ) const;
 
+        // ARB_tessellation_shader
+        void glPatchParameteri(GLenum pname, GLint value) const;
+        void glPatchParameterfv(GLenum pname, const GLfloat *values) const;
+
         // EXT_gpu_shader4
         void glGetUniformuiv( GLuint program, GLint location, GLuint *params ) const;
         void glBindFragDataLocation( GLuint program, GLuint color, const GLchar *name ) const;
@@ -399,6 +444,7 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         bool _isFragmentShaderSupported;
         bool _isLanguage100Supported;
         bool _isGeometryShader4Supported;
+        bool _areTessellationShadersSupported;
         bool _isGpuShader4Supported;
 
         typedef void (GL_APIENTRY * BlendEquationSeparateProc)(GLenum modeRGB, GLenum modeAlpha);
@@ -507,6 +553,8 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         typedef void (GL_APIENTRY * FramebufferTextureProc)( GLenum target, GLenum attachment, GLuint texture, GLint level );
         typedef void (GL_APIENTRY * FramebufferTextureLayerProc)( GLenum target, GLenum attachment, GLuint texture, GLint level, GLint layer );
         typedef void (GL_APIENTRY * FramebufferTextureFaceProc)( GLenum target, GLenum attachment, GLuint texture, GLint level, GLenum face );
+        typedef void (GL_APIENTRY * PatchParameteriProc)( GLenum pname, GLint value );
+        typedef void (GL_APIENTRY * PatchParameterfvProc)( GLenum pname, const GLfloat* values );
         typedef void (GL_APIENTRY * GetUniformuivProc)( GLuint program, GLint location, GLuint* params );
         typedef void (GL_APIENTRY * BindFragDataLocationProc)( GLuint program, GLuint color, const GLchar* name );
         typedef GLint (GL_APIENTRY * GetFragDataLocationProc)( GLuint program, const GLchar* name );
@@ -632,6 +680,10 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         FramebufferTextureProc _glFramebufferTexture;
         FramebufferTextureLayerProc _glFramebufferTextureLayer;
         FramebufferTextureFaceProc _glFramebufferTextureFace;
+
+        // ARB_tesselation_shader
+        PatchParameteriProc _glPatchParameteri;
+        PatchParameterfvProc _glPatchParameterfv;
 
         // EXT_gpu_shader4
         GetUniformuivProc _glGetUniformuiv;

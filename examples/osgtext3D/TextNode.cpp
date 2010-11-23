@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgText/TextNode>
-#include "GlyphGeometry.h"
+#include "TextNode.h"
+#include "../../src/osgText/GlyphGeometry.h"
 
 #include <osg/PositionAttitudeTransform>
 #include <osg/Geode>

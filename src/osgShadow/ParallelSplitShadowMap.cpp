@@ -1,33 +1,28 @@
-/* OpenSceneGraph example, osgshadow.
-*
-*  Permission is hereby granted, free of charge, to any person obtaining a copy
-*  of this software and associated documentation files (the "Software"), to deal
-*  in the Software without restriction, including without limitation the rights
-*  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-*  copies of the Software, and to permit persons to whom the Software is
-*  furnished to do so, subject to the following conditions:
-*
-*  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-*  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-*  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-*  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-*  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-*  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-*  THE SOFTWARE.
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
 */
 
 /* ##################################################################################################### */
-/* ParallelSplitShadowMap written by Adrian Egli (3dhelp (at) gmail.com)                                   */
+/* ParallelSplitShadowMap written by Adrian Egli (3dhelp (at) gmail.com)                                 */
 /* ##################################################################################################### */
-/*                                                                                                         */
-/* the pssm main idea is based on:                                                                            */
-/*                                                                                                         */
-/* Parallel-Split Shadow Maps for Large-scale Virtual Environments                                         */
-/*    Fan Zhang     Hanqiu Sun    Leilei Xu    Lee Kit Lun                                                 */
-/*    The Chinese University of Hong Kong                                                                 */
-/*                                                                                                         */
+/*                                                                                                       */
+/* the pssm main idea is based on:                                                                       */
+/*                                                                                                       */
+/* Parallel-Split Shadow Maps for Large-scale Virtual Environments                                       */
+/*    Fan Zhang     Hanqiu Sun    Leilei Xu    Lee Kit Lun                                               */
+/*    The Chinese University of Hong Kong                                                                */
+/*                                                                                                       */
 /* Refer to our latest project webpage for "Parallel-Split Shadow Maps on Programmable GPUs" in GPU Gems */
-/*                                                                                                         */
+/*                                                                                                       */
 /* ##################################################################################################### */
 
 #include <osgShadow/ParallelSplitShadowMap>
@@ -108,7 +103,7 @@ std::string ParallelSplitShadowMap::FragmentShaderGenerator::generateGLSL_Fragme
         }
         for (unsigned int i=0;i<nbrSplits;i++)    {
             if (!filtered) {
-                sstr << "    float shadow"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]).r;"   << std::endl;
+                sstr << "    float shadow"    <<    i    <<" = shadow2D( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"].xyz).r;"   << std::endl;
                 sstr << " shadow"    <<    i    <<" = step(0.25,shadow"    <<    i    <<");" << std::endl; // reduce shadow artefacts
             } else {
 
@@ -121,11 +116,11 @@ std::string ParallelSplitShadowMap::FragmentShaderGenerator::generateGLSL_Fragme
                 //
                 // / 6
 
-                sstr << "    float shadowOrg"    <<    i    <<" = shadow2DProj( shadowTexture"  <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]+vec4(0.0,0.0,fZOffSet,0.0) ).r;"   << std::endl;
-                sstr << "    float shadow0"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]+vec4(-fTexelSize,-fTexelSize,fZOffSet,0.0) ).r;"   << std::endl;
-                sstr << "    float shadow1"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]+vec4( fTexelSize,-fTexelSize,fZOffSet,0.0) ).r;"   << std::endl;
-                sstr << "    float shadow2"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]+vec4( fTexelSize, fTexelSize,fZOffSet,0.0) ).r;"   << std::endl;
-                sstr << "    float shadow3"    <<    i    <<" = shadow2DProj( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"]+vec4(-fTexelSize, fTexelSize,fZOffSet,0.0) ).r;"   << std::endl;
+                sstr << "    float shadowOrg"    <<    i    <<" = shadow2D( shadowTexture"  <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"].xyz+vec3(0.0,0.0,fZOffSet) ).r;"   << std::endl;
+                sstr << "    float shadow0"    <<    i    <<" = shadow2D( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"].xyz+vec3(-fTexelSize,-fTexelSize,fZOffSet) ).r;"   << std::endl;
+                sstr << "    float shadow1"    <<    i    <<" = shadow2D( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"].xyz+vec3( fTexelSize,-fTexelSize,fZOffSet) ).r;"   << std::endl;
+                sstr << "    float shadow2"    <<    i    <<" = shadow2D( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"].xyz+vec3( fTexelSize, fTexelSize,fZOffSet) ).r;"   << std::endl;
+                sstr << "    float shadow3"    <<    i    <<" = shadow2D( shadowTexture"    <<    i    <<",gl_TexCoord["    <<    (i+textureOffset)    <<"].xyz+vec3(-fTexelSize, fTexelSize,fZOffSet) ).r;"   << std::endl;
 
                 sstr << "    float shadow"    <<    i    <<" = ( 2.0*shadowOrg"    <<    i    
                     <<" + shadow0"    <<    i  
@@ -285,7 +280,7 @@ void ParallelSplitShadowMap::init(){
     if (!_shadowedScene) return;
 
     osg::StateSet* sharedStateSet = new osg::StateSet;
-
+    sharedStateSet->setDataVariance(osg::Object::DYNAMIC);
 
     unsigned int iCamerasMax=_number_of_splits;
     for (unsigned int iCameras=0;iCameras<iCamerasMax;iCameras++)
@@ -564,8 +559,12 @@ void ParallelSplitShadowMap::cull(osgUtil::CullVisitor& cv){
     unsigned int traversalMask = cv.getTraversalMask();
     osgUtil::RenderStage* orig_rs = cv.getRenderStage();
 
+#ifdef SHADOW_TEXTURE_GLSL
+    PSSMShadowSplitTextureMap::iterator it=_PSSMShadowSplitTextureMap.begin();
+#else
     // do traversal of shadow receiving scene which does need to be decorated by the shadow map
     for (PSSMShadowSplitTextureMap::iterator it=_PSSMShadowSplitTextureMap.begin();it!=_PSSMShadowSplitTextureMap.end();it++)
+#endif
     {
         PSSMShadowSplitTexture pssmShadowSplitTexture = it->second;
         cv.pushStateSet(pssmShadowSplitTexture._stateset.get());
@@ -733,125 +732,116 @@ void ParallelSplitShadowMap::cleanSceneGraph(){
 //
 //
 //unit box representing frustum in clip space
-const osg::Vec3f const_pointFarTR(1.0f, 1.0f, 1.0f);
-const osg::Vec3f const_pointFarBR(1.0f, -1.0f, 1.0f);
-const osg::Vec3f const_pointFarTL(-1.0f, 1.0f, 1.0f);
-const osg::Vec3f const_pointFarBL(-1.0f, -1.0f, 1.0f);
-const osg::Vec3f const_pointNearTR(1.0f, 1.0f, -1.0f);
-const osg::Vec3f const_pointNearBR(1.0f, -1.0f, -1.0f);
-const osg::Vec3f const_pointNearTL(-1.0f, 1.0f, -1.0f);
-const osg::Vec3f const_pointNearBL(-1.0f, -1.0f, -1.0f);
+const osg::Vec3d const_pointFarTR(   1.0,  1.0,  1.0);
+const osg::Vec3d const_pointFarBR(   1.0, -1.0,  1.0);
+const osg::Vec3d const_pointFarTL(  -1.0,  1.0,  1.0);
+const osg::Vec3d const_pointFarBL(  -1.0, -1.0,  1.0);
+const osg::Vec3d const_pointNearTR(  1.0,  1.0, -1.0);
+const osg::Vec3d const_pointNearBR(  1.0, -1.0, -1.0);
+const osg::Vec3d const_pointNearTL( -1.0,  1.0, -1.0);
+const osg::Vec3d const_pointNearBL( -1.0, -1.0, -1.0);
 //////////////////////////////////////////////////////////////////////////
 
 
-void ParallelSplitShadowMap::calculateFrustumCorners(
-    PSSMShadowSplitTexture &pssmShadowSplitTexture,
-    osg::Vec3d *frustumCorners
-    ) {
-
-        // get user cameras
-        double fovy,aspectRatio,camNear,camFar;
-        pssmShadowSplitTexture._cameraProj.getPerspective(fovy,aspectRatio,camNear,camFar);
+void ParallelSplitShadowMap::calculateFrustumCorners(PSSMShadowSplitTexture &pssmShadowSplitTexture, osg::Vec3d *frustumCorners) 
+{
+    // get user cameras
+    double fovy,aspectRatio,camNear,camFar;
+    pssmShadowSplitTexture._cameraProj.getPerspective(fovy,aspectRatio,camNear,camFar);
 
 
-        // force to max far distance to show shadow, for some scene it can be solve performance problems.
-        if ( _isSetMaxFarDistance ) {
-            if (_setMaxFarDistance < camFar) camFar = _setMaxFarDistance;
+    // force to max far distance to show shadow, for some scene it can be solve performance problems.
+    if ((_isSetMaxFarDistance) && (_setMaxFarDistance < camFar))
+        camFar = _setMaxFarDistance;
+
+
+    // build camera matrix with some offsets (the user view camera)
+    osg::Matrixd viewMat;
+    osg::Vec3d camEye,camCenter,camUp;
+    pssmShadowSplitTexture._cameraView.getLookAt(camEye,camCenter,camUp);
+    osg::Vec3d viewDir = camCenter - camEye;
+    //viewDir.normalize(); //we can assume that viewDir is still normalized in the viewMatrix
+    camEye = camEye  - viewDir * _move_vcam_behind_rcam_factor;
+    camFar += _move_vcam_behind_rcam_factor * viewDir.length();
+    viewMat.makeLookAt(camEye,camCenter,camUp);
+
+
+
+    //////////////////////////////////////////////////////////////////////////
+    /// CALCULATE SPLIT
+    double maxFar = camFar;
+    // double minNear = camNear;
+    double camNearFar_Dist = maxFar - camNear;
+    if ( _SplitCalcMode == SPLIT_LINEAR ) 
+    {
+        camFar  = camNear + (camNearFar_Dist) * ((double)(pssmShadowSplitTexture._splitID+1))/((double)(_number_of_splits));
+        camNear = camNear + (camNearFar_Dist) * ((double)(pssmShadowSplitTexture._splitID))/((double)(_number_of_splits));
+    }
+    else
+    {
+        // Exponential split scheme:
+        //
+        // Ci = (n - f)*(i/numsplits)^(bias+1) + n;
+        //
+        static double fSplitSchemeBias[2]={0.25f,0.66f};
+        fSplitSchemeBias[1]=Clamp(fSplitSchemeBias[1],0.0,3.0);
+        double* pSplitDistances =new double[_number_of_splits+1];
+
+        for(int i=0;i<(int)_number_of_splits;i++) 
+        {
+            double fIDM=(double)(i)/(double)(_number_of_splits);
+            pSplitDistances[i]=camNearFar_Dist*(pow(fIDM,fSplitSchemeBias[1]+1))+camNear;
         }
+        // make sure border values are right
+        pSplitDistances[0]=camNear;
+        pSplitDistances[_number_of_splits]=camFar;
+
+        camNear = pSplitDistances[pssmShadowSplitTexture._splitID];
+        camFar  = pSplitDistances[pssmShadowSplitTexture._splitID+1];
+
+        delete[] pSplitDistances;
+    }
 
 
-        // build camera matrix with some offsets (the user view camera)
-        osg::Matrixf viewMat;
-        osg::Vec3d camEye,camCenter,camUp;
-        pssmShadowSplitTexture._cameraView.getLookAt(camEye,camCenter,camUp);
-        osg::Vec3d viewDir = camCenter - camEye;
-        //viewDir.normalize(); //we can assume that viewDir is still normalized in the viewMatrix
-        camEye = camEye  - viewDir * _move_vcam_behind_rcam_factor;
-        camFar += _move_vcam_behind_rcam_factor * viewDir.length();
-        viewMat.makeLookAt(camEye,camCenter,camUp);
-
-
-
-        //////////////////////////////////////////////////////////////////////////
-        /// CALCULATE SPLIT
-        double maxFar = camFar;
-        // double minNear = camNear;
-        double camNearFar_Dist = maxFar - camNear;
-        if ( _SplitCalcMode == SPLIT_LINEAR ) {
-            camFar  = camNear + (camNearFar_Dist) * ((double)(pssmShadowSplitTexture._splitID+1))/((double)(_number_of_splits));
-            camNear = camNear + (camNearFar_Dist) * ((double)(pssmShadowSplitTexture._splitID))/((double)(_number_of_splits));
-        } else {
-            // Exponential split scheme:
-            //
-            // Ci = (n - f)*(i/numsplits)^(bias+1) + n;
-            //
-            static float fSplitSchemeBias[2]={0.25f,0.66f};
-            fSplitSchemeBias[1]=Clamp(fSplitSchemeBias[1],0.0f,3.0f);
-            float* pSplitDistances =new float[_number_of_splits+1];
-
-            for(int i=0;i<(int)_number_of_splits;i++) {
-                float fIDM=i/(float)_number_of_splits;
-                pSplitDistances[i]=camNearFar_Dist*(powf(fIDM,fSplitSchemeBias[1]+1))+camNear;
-            }
-            // make sure border values are right
-            pSplitDistances[0]=camNear;
-            pSplitDistances[_number_of_splits]=camFar;
-
-            camNear = pSplitDistances[pssmShadowSplitTexture._splitID];
-            camFar  = pSplitDistances[pssmShadowSplitTexture._splitID+1];
-
-            delete[] pSplitDistances;
-        }
-
-
-        pssmShadowSplitTexture._split_far = camFar;
+    pssmShadowSplitTexture._split_far = camFar;
 
 
 
-        //////////////////////////////////////////////////////////////////////////
-        /// TRANSFORM frustum corners (Optimized for Orthogonal)
+    //////////////////////////////////////////////////////////////////////////
+    /// TRANSFORM frustum corners (Optimized for Orthogonal)
 
 
-        osg::Matrixf projMat;
-        projMat.makePerspective(fovy,aspectRatio,camNear,camFar);
-        osg::Matrixf projViewMat(viewMat*projMat);
-        osg::Matrixf invProjViewMat;
-        invProjViewMat.invert(projViewMat);
+    osg::Matrixd projMat;
+    projMat.makePerspective(fovy,aspectRatio,camNear,camFar);
+    osg::Matrixd projViewMat(viewMat*projMat);
+    osg::Matrixd invProjViewMat;
+    invProjViewMat.invert(projViewMat);
 
-        //transform frustum vertices to world space
-        frustumCorners[0] = const_pointFarBR * invProjViewMat;
-        frustumCorners[1] = const_pointNearBR* invProjViewMat;
-        frustumCorners[2] = const_pointNearTR* invProjViewMat;
-        frustumCorners[3] = const_pointFarTR * invProjViewMat;
-        frustumCorners[4] = const_pointFarTL * invProjViewMat;
-        frustumCorners[5] = const_pointFarBL * invProjViewMat;
-        frustumCorners[6] = const_pointNearBL* invProjViewMat;
-        frustumCorners[7] = const_pointNearTL* invProjViewMat;
+    //transform frustum vertices to world space
+    frustumCorners[0] = const_pointFarBR * invProjViewMat;
+    frustumCorners[1] = const_pointNearBR* invProjViewMat;
+    frustumCorners[2] = const_pointNearTR* invProjViewMat;
+    frustumCorners[3] = const_pointFarTR * invProjViewMat;
+    frustumCorners[4] = const_pointFarTL * invProjViewMat;
+    frustumCorners[5] = const_pointFarBL * invProjViewMat;
+    frustumCorners[6] = const_pointNearBL* invProjViewMat;
+    frustumCorners[7] = const_pointNearTL* invProjViewMat;
 
-        //std::cout << "camFar : "<<pssmShadowSplitTexture._splitID << " / " << camNear << "," << camFar << std::endl;
+    //std::cout << "camFar : "<<pssmShadowSplitTexture._splitID << " / " << camNear << "," << camFar << std::endl;
 }
 
 //////////////////////////////////////////////////////////////////////////
 //
 // compute directional light initial position;
-void ParallelSplitShadowMap::calculateLightInitialPosition(PSSMShadowSplitTexture &pssmShadowSplitTexture,osg::Vec3d *frustumCorners){
+void ParallelSplitShadowMap::calculateLightInitialPosition(PSSMShadowSplitTexture &pssmShadowSplitTexture,osg::Vec3d *frustumCorners)
+{
     pssmShadowSplitTexture._frustumSplitCenter = frustumCorners[0];
-    for(int i=1;i<8;i++) {
+    for(int i=1;i<8;i++) 
+    {
         pssmShadowSplitTexture._frustumSplitCenter +=frustumCorners[i];
     }
-    pssmShadowSplitTexture._frustumSplitCenter /= 8.0;
-
-
-    //
-    // To avoid edge problems, scale the frustum so
-    // that it's at least a few pixels larger
-    //
-    for(int i=0;i<8;i++)
-    {
-        // scale by adding offset from center
-        frustumCorners[i]+=(frustumCorners[i]-pssmShadowSplitTexture._frustumSplitCenter)*(0.75);
-    }
-
+    //    pssmShadowSplitTexture._frustumSplitCenter /= 8.0;
+    pssmShadowSplitTexture._frustumSplitCenter *= 0.125;
 }
 
 void ParallelSplitShadowMap::calculateLightNearFarFormFrustum(
@@ -888,15 +878,14 @@ void ParallelSplitShadowMap::calculateLightNearFarFormFrustum(
 
 
 
-void ParallelSplitShadowMap::calculateLightViewProjectionFormFrustum(PSSMShadowSplitTexture &pssmShadowSplitTexture,osg::Vec3d *frustumCorners) {
-
-
+void ParallelSplitShadowMap::calculateLightViewProjectionFormFrustum(PSSMShadowSplitTexture &pssmShadowSplitTexture,osg::Vec3d *frustumCorners)
+{
 
     // calculate the camera's coordinate system
     osg::Vec3d camEye,camCenter,camUp;
     pssmShadowSplitTexture._cameraView.getLookAt(camEye,camCenter,camUp);
     osg::Vec3d viewDir(camCenter-camEye);
-    osg::Vec3d camRight(camUp^viewDir);
+    osg::Vec3d camRight(viewDir^camUp);
 
     // we force to have normalized vectors (camera's view)
     camUp.normalize();
@@ -916,7 +905,7 @@ void ParallelSplitShadowMap::calculateLightViewProjectionFormFrustum(PSSMShadowS
     for(int i(0); i < 8; i++)
     {
 
-        osg::Vec3d diffCorner(pssmShadowSplitTexture._lightCameraSource - frustumCorners[i]);
+        osg::Vec3d diffCorner(frustumCorners[i] - pssmShadowSplitTexture._frustumSplitCenter);
         double lright(diffCorner*right);
         double lTop(diffCorner*top);
 

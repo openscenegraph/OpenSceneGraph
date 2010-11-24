@@ -919,10 +919,22 @@ void State::initializeExtensionProcs()
     osg::Drawable::Extensions* extensions = osg::Drawable::getExtensions(getContextID(), true);
     if (extensions && extensions->isARBTimerQuerySupported())
     {
-        GLint bits = 0;
-        extensions->glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS_ARB, &bits);
-        OSG_NOTICE << "timestamp query counter bits: " << bits << "\n";
-        setTimestampBits(bits);
+        const GLubyte* renderer = glGetString(GL_RENDERER);
+        std::string rendererString = renderer ? (const char*)renderer : "";
+        if (rendererString.find("Radeon")!=std::string::npos || rendererString.find("RADEON")!=std::string::npos)
+        {
+            // AMD/ATI drivers are producing an invalid enumerate error on the
+            // glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS_ARB, &bits);
+            // call so work around it by assuming 64 bits for counter.
+            setTimestampBits(64);
+            //setTimestampBits(0);
+        }
+        else
+        {
+            GLint bits = 0;
+            extensions->glGetQueryiv(GL_TIMESTAMP, GL_QUERY_COUNTER_BITS_ARB, &bits);
+            setTimestampBits(bits);
+        }
     }
 
 
@@ -1588,13 +1600,12 @@ void State::print(std::ostream& fout) const
 
 void State::frameCompleted()
 {
-
     osg::Drawable::Extensions* extensions = osg::Drawable::getExtensions(getContextID(), true);
     if (extensions && getTimestampBits())
     {
         GLint64EXT timestamp;
         extensions->glGetInteger64v(GL_TIMESTAMP, &timestamp);
         setGpuTimestamp(osg::Timer::instance()->tick(), timestamp);
-        OSG_INFO<<"State::frameCompleted() setting time stamp."<<std::endl;
+        //OSG_NOTICE<<"State::frameCompleted() setting time stamp. timestamp="<<timestamp<<std::endl;
     }
 }

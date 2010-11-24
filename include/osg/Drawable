@@ -609,7 +609,7 @@ class OSG_EXPORT Drawable : public Object
             void setTimerQuerySupported(bool flag) { _isTimerQuerySupported = flag; }
             bool isTimerQuerySupported() const { return _isTimerQuerySupported; }
             void setARBTimerQuerySupported(bool flag) { _isARBTimerQuerySupported = flag; }
-            bool isARBTimerQuerySupported() { return _isARBTimerQuerySupported; }
+            bool isARBTimerQuerySupported() const { return _isARBTimerQuerySupported; }
             void glSecondaryColor3ubv(const GLubyte* coord) const;
             void glSecondaryColor3fv(const GLfloat* coord) const;
 

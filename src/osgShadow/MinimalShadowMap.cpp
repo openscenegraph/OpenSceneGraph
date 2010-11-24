@@ -168,7 +168,7 @@ void MinimalShadowMap::ViewData::aimShadowCastingCamera
     osg::Matrix mvp = _camera->getViewMatrix() * _camera->getProjectionMatrix();
     cutScenePolytope( osg::Matrix::inverse( mvp ),  mvp );
 
-    MinimalShadowMap::ViewData::frameShadowCastingCamera
+    frameShadowCastingCamera
             ( _cv->getRenderStage()->getCamera(), _camera.get(), 0 );
 }
 
@@ -207,7 +207,7 @@ void MinimalShadowMap::ViewData::frameShadowCastingCamera
         // space (-1..1), it may get "twisted" by precisely adjusted shadow cam 
         // projection in second pass. 
 
-        if ( pass == 0 ) 
+        if ( pass == 0 && _frameShadowCastingCameraPasses > 1 )
         { // Make sure extruded polytope does not extend beyond light frustum
             osg::Polytope lightFrustum;
             lightFrustum.setToUnitFrustum();
@@ -304,6 +304,8 @@ void MinimalShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv )
     _modellingSpaceToWorldPtr = &st->_modellingSpaceToWorld;
     _minLightMarginPtr        = &st->_minLightMargin;
     _maxFarPlanePtr           = &st->_maxFarPlane;
+
+    _frameShadowCastingCameraPasses = 1;
 }
 
 void MinimalShadowMap::ViewData::cutScenePolytope

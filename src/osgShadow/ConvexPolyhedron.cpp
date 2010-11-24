@@ -31,7 +31,16 @@ using namespace osgShadow;
 
 
 #if defined( DEBUG ) || defined( _DEBUG ) || defined( _DEBUG_ )
-    #define MAKE_CHECKS 1
+// ConvexPolyhedron may produce tons of warnings when it becomes non convex.
+// Unfortuantely this condition often happens in daily routine of shadow usage 
+// due precision errors mixed with repeating frustum cuts performed by MinimalShadowClasses.
+// However, in most of above cases this condition is not fatal
+// because polyhedron becomes concave by very small margin (mesuring deep the hole).
+// Unfortunately warnings are produced even for such small margin cases and can 
+// easily flood the console.
+// So I leave MAKE_CHECKS commented out. Its really useful only for a guy who debugs 
+// larger concaveness issues which means most developers will want to keep it commented.
+//    #define MAKE_CHECKS 1
 #endif
 
 #if MAKE_CHECKS

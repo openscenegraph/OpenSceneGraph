@@ -65,9 +65,12 @@ class OSGSHADOW_EXPORT ProjectionShadowMap : public MinimalBoundsBaseClass
             virtual void frameShadowCastingCamera
                 ( const osg::Camera* cameraMain, osg::Camera* cameraShadow, int pass = 1 )
             {
-                // Force dependent name lookup
-                ShadowProjectionAlgorithmClass::operator()
-                    ( &this->_sceneReceivingShadowPolytope, cameraMain, cameraShadow );
+                if( pass == BaseClass::ViewData::_frameShadowCastingCameraPasses - 1 )
+                {
+                    // Force dependent name lookup
+                    ShadowProjectionAlgorithmClass::operator()
+                        ( &this->_sceneReceivingShadowPolytope, cameraMain, cameraShadow );
+                }
 
                 // DebugBoundingBox( computeScenePolytopeBounds(), "ProjectionShadowMap" );
                 BaseClass::ViewData::frameShadowCastingCamera( cameraMain, cameraShadow, pass );

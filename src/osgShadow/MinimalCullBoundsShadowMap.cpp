@@ -41,6 +41,7 @@ void MinimalCullBoundsShadowMap::ViewData::init
     ( ThisClass *st, osgUtil::CullVisitor *cv )
 {
     BaseClass::ViewData::init( st, cv );
+    _frameShadowCastingCameraPasses = 2;
 }
 
 void MinimalCullBoundsShadowMap::ViewData::aimShadowCastingCamera

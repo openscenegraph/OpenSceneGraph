@@ -271,6 +271,7 @@ void MinimalDrawBoundsShadowMap::ViewData::init
 {
     BaseClass::ViewData::init( st, cv );
     
+    _frameShadowCastingCameraPasses = 2;
     _camera->setCullCallback
         ( new CameraCullCallback( this, _camera->getCullCallback() ) );
     

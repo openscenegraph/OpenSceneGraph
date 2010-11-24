@@ -29,7 +29,7 @@ namespace osgText {
 // forward declare
 class TextNode;
 
-class OSGTEXT_EXPORT Layout : public osg::Object
+class /*OSGTEXT_EXPORT*/ Layout : public osg::Object
 {
     public:
 
@@ -46,7 +46,7 @@ class OSGTEXT_EXPORT Layout : public osg::Object
     protected:
 };
 
-class OSGTEXT_EXPORT TextTechnique : public osg::Object
+class /*OSGTEXT_EXPORT*/ TextTechnique : public osg::Object
 {
     public:
 
@@ -85,7 +85,7 @@ class OSGTEXT_EXPORT TextTechnique : public osg::Object
         TextNode* _textNode;
 };
 
-class OSGTEXT_EXPORT TextNode : public osg::Group
+class /*OSGTEXT_EXPORT*/ TextNode : public osg::Group
 {
     public:
 

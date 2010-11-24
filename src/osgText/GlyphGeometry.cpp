@@ -455,7 +455,7 @@ struct CollectTriangleIndicesFunctor
 };
 
 
-osg::Geometry* computeGlyphGeometry(const osgText::Glyph3D* glyph, float bevelThickness, float shellThickness)
+OSGTEXT_EXPORT osg::Geometry* computeGlyphGeometry(const osgText::Glyph3D* glyph, float bevelThickness, float shellThickness)
 {
     const osg::Vec3Array* orig_vertices = glyph->getRawVertexArray();
     const osg::Geometry::PrimitiveSetList& orig_primitives = glyph->getRawFacePrimitiveSetList();
@@ -536,7 +536,7 @@ osg::Geometry* computeGlyphGeometry(const osgText::Glyph3D* glyph, float bevelTh
 //
 // computeTextGeometry
 //
-osg::Geometry* computeTextGeometry(const osgText::Glyph3D* glyph, float width)
+OSGTEXT_EXPORT osg::Geometry* computeTextGeometry(const osgText::Glyph3D* glyph, float width)
 {
     const osg::Vec3Array* orig_vertices = glyph->getRawVertexArray();
     const osg::Geometry::PrimitiveSetList& orig_primitives = glyph->getRawFacePrimitiveSetList();
@@ -655,7 +655,7 @@ osg::Geometry* computeTextGeometry(const osgText::Glyph3D* glyph, float width)
 //
 // computeTextGeometry
 //
-osg::Geometry* computeTextGeometry(osg::Geometry* glyphGeometry, const osgText::Bevel& profile, float width)
+OSGTEXT_EXPORT osg::Geometry* computeTextGeometry(osg::Geometry* glyphGeometry, const osgText::Bevel& profile, float width)
 {
     osg::Vec3Array* orig_vertices = dynamic_cast<osg::Vec3Array*>(glyphGeometry->getVertexArray());
     if (!orig_vertices)
@@ -838,7 +838,7 @@ osg::Geometry* computeTextGeometry(osg::Geometry* glyphGeometry, const osgText::
 //
 // computeShellGeometry
 //
-osg::Geometry* computeShellGeometry(osg::Geometry* glyphGeometry, const osgText::Bevel& profile, float width)
+OSGTEXT_EXPORT osg::Geometry* computeShellGeometry(osg::Geometry* glyphGeometry, const osgText::Bevel& profile, float width)
 {
     osg::Vec3Array* orig_vertices = dynamic_cast<osg::Vec3Array*>(glyphGeometry->getVertexArray());
     if (!orig_vertices)

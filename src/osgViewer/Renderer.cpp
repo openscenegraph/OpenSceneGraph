@@ -410,7 +410,7 @@ void Renderer::initialize(osg::State* state)
     {
         _initialized = true;
         osg::Drawable::Extensions* ext = osg::Drawable::getExtensions(state->getContextID(), true);
-        if (ext->isARBTimerQuerySupported())
+        if (ext->isARBTimerQuerySupported() && state->getTimestampBits() > 0)
             _querySupport = new ARBQuerySupport();
         else if (ext->isTimerQuerySupported())
             _querySupport = new EXTQuerySupport();

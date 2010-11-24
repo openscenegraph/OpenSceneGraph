@@ -505,6 +505,7 @@ ObjectWrapperManager::ObjectWrapperManager()
     primitiveTable.add( "GL_LINE_STRIP_ADJACENCY_EXT", GL_LINE_STRIP_ADJACENCY_EXT );
     primitiveTable.add( "GL_TRIANGLES_ADJACENCY_EXT", GL_TRIANGLES_ADJACENCY_EXT );
     primitiveTable.add( "GL_TRIANGLE_STRIP_ADJACENCY_EXT", GL_TRIANGLE_STRIP_ADJACENCY_EXT );
+    primitiveTable.add( "GL_PATCHES", GL_PATCHES );
 }
 
 ObjectWrapperManager::~ObjectWrapperManager()

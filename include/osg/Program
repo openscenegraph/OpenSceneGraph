@@ -147,8 +147,9 @@ class OSG_EXPORT Program : public osg::StateAttribute
             GLenum _type;
             GLint _size;
         };
+        typedef std::map< unsigned int, ActiveVarInfo > ActiveUniformMap;
         typedef std::map< std::string, ActiveVarInfo > ActiveVarInfoMap;
-        const ActiveVarInfoMap& getActiveUniforms(unsigned int contextID) const;
+        const ActiveUniformMap& getActiveUniforms(unsigned int contextID) const;
         const ActiveVarInfoMap& getActiveAttribs(unsigned int contextID) const;
 
     public:
@@ -189,7 +190,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 
                 inline void apply(const Uniform& uniform) const
                 {
-                    GLint location = getUniformLocation(uniform.getName());
+                    GLint location = getUniformLocation(uniform.getNameID());
                     if (location>=0)
                     {
                         if ((unsigned int)location>=_lastAppliedUniformList.size()) _lastAppliedUniformList.resize(location+1);
@@ -211,10 +212,10 @@ class OSG_EXPORT Program : public osg::StateAttribute
                     }
                 }
 
-                const ActiveVarInfoMap& getActiveUniforms() const {return _uniformInfoMap;}
+                const ActiveUniformMap& getActiveUniforms() const {return _uniformInfoMap;}
                 const ActiveVarInfoMap& getActiveAttribs() const {return _attribInfoMap;}
 
-                inline GLint getUniformLocation( const std::string& name ) const { ActiveVarInfoMap::const_iterator itr = _uniformInfoMap.find(name); return (itr!=_uniformInfoMap.end()) ? itr->second._location : -1; }
+                inline GLint getUniformLocation( unsigned int uniformNameID ) const { ActiveUniformMap::const_iterator itr = _uniformInfoMap.find(uniformNameID); return (itr!=_uniformInfoMap.end()) ? itr->second._location : -1; }
                 inline GLint getAttribLocation( const std::string& name ) const { ActiveVarInfoMap::const_iterator itr = _attribInfoMap.find(name); return (itr!=_attribInfoMap.end()) ? itr->second._location : -1; }
 
                 inline void addShaderToAttach(Shader *shader)
@@ -243,7 +244,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 bool _isLinked;
                 const unsigned int _contextID;
 
-                ActiveVarInfoMap _uniformInfoMap;
+                ActiveUniformMap _uniformInfoMap;
                 ActiveVarInfoMap _attribInfoMap;
                 
                 typedef std::pair<osg::ref_ptr<const osg::Uniform>, unsigned int> UniformModifiedCountPair;

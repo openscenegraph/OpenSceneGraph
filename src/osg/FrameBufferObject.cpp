@@ -39,7 +39,15 @@ FBOExtensions* FBOExtensions::instance(unsigned contextID, bool createIfNotInita
 /**************************************************************************
  * FBOExtensions
  **************************************************************************/
-#define LOAD_FBO_EXT(name) setGLExtensionFuncPtr(name, (#name), ( std::string(#name)+std::string("EXT") ).c_str() )
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+    #if defined(OSG_GLES1_AVAILABLE)
+        #define LOAD_FBO_EXT(name) setGLExtensionFuncPtr(name, (#name), (std::string(#name)+std::string("OES") ).c_str() )
+    #else
+        #define LOAD_FBO_EXT(name) setGLExtensionFuncPtr(name, (#name), std::string(#name).c_str() )
+    #endif
+#else
+    #define LOAD_FBO_EXT(name) setGLExtensionFuncPtr(name, (#name), (std::string(#name)+std::string("EXT") ).c_str() )
+#endif
 
 FBOExtensions::FBOExtensions(unsigned int contextID)
 :   glBindRenderbuffer(0),

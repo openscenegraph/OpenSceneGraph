@@ -47,6 +47,24 @@ typedef char TCHAR;
     // I'm not sure how we would handle this in raw Darwin
     // without the AvailablilityMacros.
     #include <AvailabilityMacros.h>
+
+    //>OSG_IOS
+    //IOS includes
+    #include "TargetConditionals.h"
+    
+    #if (TARGET_OS_IPHONE) 
+        #include <Availability.h>
+        // workaround a bug which appears when compiling for SDK < 4.0 and for the simulator
+        #ifdef __IPHONE_4_0 && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
+            #define stat64 stat
+        #else 
+            #if !TARGET_IPHONE_SIMULATOR
+                #define stat64 stat
+            #endif
+        #endif
+    #endif
+    //<OSG_IPHONE
+
     // 10.5 defines stat64 so we can't use this #define
     // By default, MAC_OS_X_VERSION_MAX_ALLOWED is set to the latest
     // system the headers know about. So I will use this as the control
@@ -827,9 +845,11 @@ osgDB::FileOpResult::Value osgDB::copyFile(const std::string & source, const std
     }
     
 #elif defined(__APPLE__)
-
-    // #define COMPILE_COCOA_VERSION
-    #define COMPILE_CARBON_VERSION
+#if (TARGET_OS_IPHONE)
+    #define COMPILE_COCOA_VERSION
+#else
+     #define COMPILE_CARBON_VERSION
+#endif
     // WARNING: Cocoa version is currently untested.
     #ifdef COMPILE_COCOA_VERSION
         #include <Foundation/Foundation.h>

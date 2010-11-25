@@ -12,7 +12,6 @@
 */
 
 #include <osgTerrain/Terrain>
-#include <osgTerrain/GeometryTechnique>
 #include <osgUtil/UpdateVisitor>
 
 #include <iterator>
@@ -29,7 +28,6 @@ Terrain::Terrain():
     _equalizeBoundaries(false)
 {
     setNumChildrenRequiringUpdateTraversal(1);
-    _terrainTechnique = new GeometryTechnique;
 }
 
 Terrain::Terrain(const Terrain& ts, const osg::CopyOp& copyop):

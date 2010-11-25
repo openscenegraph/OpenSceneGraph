@@ -476,8 +476,11 @@ void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
 
     sceneView->setDisplaySettings(ds);
 
-    if (view) _startTick = view->getStartTick();
-    if (state) state->setStartTick(_startTick);
+    if (view)
+    {
+        _startTick = view->getStartTick();
+        if (state) state->setStartTick(_startTick);
+    }
 }
 
 void Renderer::compile()

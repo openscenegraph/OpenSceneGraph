@@ -452,7 +452,7 @@ bool Program::getGlProgramInfoLog(unsigned int contextID, std::string& log) cons
     return getPCP( contextID )->getInfoLog( log );
 }
 
-const Program::ActiveVarInfoMap& Program::getActiveUniforms(unsigned int contextID) const
+const Program::ActiveUniformMap& Program::getActiveUniforms(unsigned int contextID) const
 {
     return getPCP( contextID )->getActiveUniforms();
 }
@@ -609,13 +609,13 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
             
             if( loc != -1 )
             {
-                _uniformInfoMap[reinterpret_cast<char*>(name)] = ActiveVarInfo(loc,type,size);
+                _uniformInfoMap[Uniform::getNameID(reinterpret_cast<const char*>(name))] = ActiveVarInfo(loc,type,size);
 
                 OSG_INFO << "\tUniform \"" << name << "\""
-                         << " loc="<< loc
-                         << " size="<< size
-                         << " type=" << Uniform::getTypename((Uniform::Type)type)
-                         << std::endl;
+                    << " loc="<< loc
+                    << " size="<< size
+                    << " type=" << Uniform::getTypename((Uniform::Type)type)
+                    << std::endl;
             }
         }
         delete [] name;

@@ -39,8 +39,8 @@ class OSGTERRAIN_EXPORT TerrainNeighbours
 
     protected:
 
-        TerrainNeighbours(const TerrainNeighbours& tn) {}
-        TerrainNeighbours& operator = (const TerrainNeighbours& rhs) { return *this; }
+        TerrainNeighbours(const TerrainNeighbours& /*tn*/) {}
+        TerrainNeighbours& operator = (const TerrainNeighbours& /*rhs*/) { return *this; }
 
         typedef std::set<TerrainTile*> Neighbours;
 

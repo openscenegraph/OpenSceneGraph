@@ -460,6 +460,11 @@ class OSG_EXPORT GraphicsContext : public Object
 
         /** Get the the const list of cameras associated with this graphics context.*/
         const Cameras& getCameras() const { return _cameras; }
+        
+        /** set the default FBO-id, this id will be used when the rendering-backend is finished with RTT FBOs */
+        void setDefaultFboId(GLuint i) { _defaultFboId = i; }
+        
+        GLuint getDefaultFboId() const { return _defaultFboId; }
 
     public:
 
@@ -510,6 +515,8 @@ class OSG_EXPORT GraphicsContext : public Object
         ref_ptr<SwapCallback>               _swapCallback;
         
         Timer_t                             _lastClearTick;
+        
+        GLuint                              _defaultFboId;
 };
 
 

@@ -452,11 +452,11 @@ static void usage( const char *prog, const char *msg )
     osg::notify(osg::NOTICE)<<"    --compressed-dxt3  - Enable the usage of S3TC DXT3 compressed textures"<< std::endl;
     osg::notify(osg::NOTICE)<<"    --compressed-dxt5  - Enable the usage of S3TC DXT5 compressed textures"<< std::endl;
     osg::notify(osg::NOTICE)<< std::endl;
-    osg::notify(osg::NOTICE)<<"    --fix-transparency  - fix stateset which are curerntly declared as transprent,"<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --fix-transparency  - fix stateset which are curerntly declared as transparent,"<< std::endl;
     osg::notify(osg::NOTICE)<<"                         but should be opaque. Defaults to using the "<< std::endl;
     osg::notify(osg::NOTICE)<<"                         fixTranspancyMode MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE."<< std::endl;
     osg::notify(osg::NOTICE)<<"    --fix-transparency-mode <mode_string>  - fix stateset which are curerntly declared as"<< std::endl;
-    osg::notify(osg::NOTICE)<<"                         transprent but should be opaque. The mode_string determines"<< std::endl;
+    osg::notify(osg::NOTICE)<<"                         transparent but should be opaque. The mode_string determines"<< std::endl;
     osg::notify(osg::NOTICE)<<"                         algorithm is used to fix the transparency, options are:    "<< std::endl;
     osg::notify(osg::NOTICE)<<"                                 MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE,"<<std::endl;
     osg::notify(osg::NOTICE)<<"                                 MAKE_ALL_STATESET_OPAQUE."<<std::endl;

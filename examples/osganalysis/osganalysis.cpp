@@ -649,7 +649,7 @@ int main(int argc, char** argv)
 
     if (fileNames.empty())
     {
-        OSG_NOTICE<<"No files loaded, please specifies files on commandline."<<std::endl;
+        OSG_NOTICE<<"No files loaded, please specify files on commandline."<<std::endl;
         return 1;
     }
 

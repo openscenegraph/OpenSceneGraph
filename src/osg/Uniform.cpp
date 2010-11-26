@@ -88,8 +88,8 @@ void Uniform::setName( const std::string& name )
         OSG_WARN << "cannot change Uniform name" << std::endl;
         return;
     }
-    _name = name;
-    _nameID = getNameID(name);
+    Object::setName(name);
+    _nameID = getNameID(_name);
 }
 
 void Uniform::setNumElements( unsigned int numElements )

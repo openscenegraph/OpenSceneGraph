@@ -241,7 +241,7 @@ class OSG_EXPORT Uniform : public Object
         Type getType() const { return _type; }
 
         /** Set the name of the glUniform, ensuring it is only set once.*/
-        void setName( const std::string& name );
+        virtual void setName( const std::string& name );
 
         /** Set the length of a uniform, ensuring it is only set once (1==scalar)*/
         void setNumElements( unsigned int numElements );

@@ -141,9 +141,43 @@ ENDIF(OSG_MAINTAINER)
 # Find OpenGL
 FIND_PACKAGE(OpenGL)
 
+
 IF(APPLE)
+    # Trying to get CMake to generate an XCode IPhone project, current efforts are to get iphoneos sdk 3.1 working
+    # Added option which needs manually setting to select the IPhone SDK for building. We can only have one of the below
+    # set to true. Should realy have an OSG_BUILD_PLATFORM variable that we set to our desired platform
+    OPTION(OSG_BUILD_PLATFORM_IPHONE "Enable IPhoneSDK Device support" OFF)
+    OPTION(OSG_BUILD_PLATFORM_IPHONE_SIMULATOR "Enable IPhoneSDK Simulator support" OFF)
+
+    IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
+
+        #you need to manually set the default sdk version here
+        SET (IPHONE_SDKVER "3.2")
+
+        #the below is taken from ogre, it states the gcc stuff needs to happen before PROJECT() is called. I've no clue if we even need it
+        # Force gcc <= 4.2 on iPhone
+        include(CMakeForceCompiler)
+        CMAKE_FORCE_C_COMPILER(gcc-4.2 GNU)
+        CMAKE_FORCE_CXX_COMPILER(gcc-4.2 GNU)
+        SET(GCC_THUMB_SUPPORT NO)
+
+        #set either the device sdk or the simulator sdk. Can't find away to separate these in the same project
+        IF(OSG_BUILD_PLATFORM_IPHONE)
+            SET (IPHONE_DEVROOT "/Developer/Platforms/iPhoneOS.platform/Developer")
+            SET (IPHONE_SDKROOT "${IPHONE_DEVROOT}/SDKs/iPhoneOS${IPHONE_SDKVER}.sdk")
+        ELSE()
+            SET (IPHONE_DEVROOT "/Developer/Platforms/iPhoneSimulator.platform/Developer")
+            SET (IPHONE_SDKROOT "${IPHONE_DEVROOT}/SDKs/iPhoneSimulator${IPHONE_SDKVER}.sdk")
+        ENDIF()
+    ENDIF ()
+
     FIND_LIBRARY(CARBON_LIBRARY Carbon)
     FIND_LIBRARY(COCOA_LIBRARY Cocoa)
+
+   IF(OSG_BUILD_PLATFORM_IPHONE)
+        FIND_LIBRARY(OPENGLES_LIBRARY OpenGLES)
+    ENDIF()
+
     OPTION(OSG_COMPILE_FRAMEWORKS "compile frameworks instead of dylibs (experimental)" OFF)
     SET(OSG_COMPILE_FRAMEWORKS_INSTALL_NAME_DIR "@executable_path/../Frameworks" CACHE STRING "install name dir for compiled frameworks")
 ENDIF()
@@ -663,43 +697,70 @@ IF   (BUILD_OSG_EXAMPLES)
 ENDIF()
 
 
-# Set defaults for Universal Binaries. We want 32-bit Intel/PPC on 10.4
-# and 32/64-bit Intel/PPC on >= 10.5. Anything <= 10.3 doesn't support.
 IF(APPLE)
-    # These are just defaults/recommendations, but how we want to build
-    # out of the box. But the user needs to be able to change these options.
-    # So we must only set the values the first time CMake is run, or we
-    # will overwrite any changes the user sets.
-    # FORCE is used because the options are not reflected in the UI otherwise.
-    # Seems like a good place to add version specific compiler flags too.
-    IF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
-        # This is really fragile, but CMake doesn't provide the OS system
-        # version information we need. (Darwin versions can be changed
-        # independently of OS X versions.)
-        # It does look like CMake handles the CMAKE_OSX_SYSROOT automatically.
-        IF(EXISTS /Developer/SDKs/MacOSX10.6.sdk)
-            SET(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for OSX" FORCE)
-            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.6 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
-            SET(OSG_WINDOWING_SYSTEM "Cocoa" CACHE STRING "Forced Cocoa windowing system in 64 bits snow leopard"  FORCE)
-            SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio " CACHE STRING "Forced imageio default image plugin for OSX in 64 bits snow leopard" FORCE)
-        ELSEIF(EXISTS /Developer/SDKs/MacOSX10.5.sdk)
-            # 64-bit compiles are not supported with Carbon. We should enable 
-            # 64-bit compilation by default once osgviewer has been 
-            # rewritten with Cocoa.
-            #SET(CMAKE_OSX_ARCHITECTURES "ppc;i386;ppc64;x86_64" CACHE STRING "Build architectures for OSX" FORCE)
-            SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
-            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.5 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
-        ELSEIF(EXISTS /Developer/SDKs/MacOSX10.4u.sdk)
-            SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
-            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.4 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
-        ELSE()
-            # No Universal Binary support
-            # Should break down further to set the -mmacosx-version-min,
-            # but the SDK detection is too unreliable here.
-        ENDIF()
-    ENDIF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
 
-    OPTION(OSG_BUILD_APPLICATION_BUNDLES "Enable the building of applications and examples as OSX Bundles" OFF)
+        #Here we check if the user specified IPhone SDK
+    IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
+
+        #set iphone arch and flags taken from http://sites.google.com/site/michaelsafyan/coding/resources/how-to-guides/cross-compile-for-the-iphone/how-to-cross-compile-for-the-iphone-using-cmake
+        IF(OSG_BUILD_PLATFORM_IPHONE)
+            SET(CMAKE_OSX_ARCHITECTURES "armv6;armv7" CACHE STRING "Build architectures for iOS" FORCE)
+            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -miphoneos-version-min=3.1 -mno-thumb -arch armv6 -pipe -no-cpp-precomp" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+        ELSE()
+            #simulator uses i386 architectures
+            SET(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for iOS Simulator" FORCE)
+            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -miphoneos-version-min=3.1 -mno-thumb -arch i386 -pipe -no-cpp-precomp" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+        ENDIF()
+
+        #here we set the specific iphone sdk version. We can only set either device or simulator sdk. So if you want both you currently have to have two seperate projects
+        SET(CMAKE_OSX_SYSROOT "${IPHONE_SDKROOT}" CACHE STRING "System root for iOS" FORCE)
+
+        #hack, force link to opengles
+        set(CMAKE_EXE_LINKER_FLAGS "-framework Foundation -framework OpenGLES")
+
+        #use the IPhone windowing system
+        SET(OSG_WINDOWING_SYSTEM "IOS" CACHE STRING "Forced IPhone windowing system on iOS"  FORCE)
+        SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio " CACHE STRING "Forced imageio default image plugin for iOS" FORCE)
+
+        #I think this or similar will be required for IPhone apps
+        OPTION(OSG_BUILD_APPLICATION_BUNDLES "Enable the building of applications and examples as OSX Bundles" ON)
+
+    ELSE()
+
+        # Set defaults for Universal Binaries. We want 32-bit Intel/PPC on 10.4
+        # and 32/64-bit Intel/PPC on >= 10.5. Anything <= 10.3 doesn't support.
+
+        # These are just defaults/recommendations, but how we want to build
+        # out of the box. But the user needs to be able to change these options.
+        # So we must only set the values the first time CMake is run, or we
+        # will overwrite any changes the user sets.
+        # FORCE is used because the options are not reflected in the UI otherwise.
+        # Seems like a good place to add version specific compiler flags too.
+        IF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
+            # This is really fragile, but CMake doesn't provide the OS system
+            # version information we need. (Darwin versions can be changed
+            # independently of OS X versions.)
+            # It does look like CMake handles the CMAKE_OSX_SYSROOT automatically.
+            IF(EXISTS /Developer/SDKs/MacOSX10.5.sdk)
+                # 64-bit compiles are not supported with Carbon. We should enable 
+                # 64-bit compilation by default once osgviewer has been 
+                # rewritten with Cocoa.
+                #SET(CMAKE_OSX_ARCHITECTURES "ppc;i386;ppc64;x86_64" CACHE STRING "Build architectures for OSX" FORCE)
+                SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
+                SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.5 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+            ELSEIF(EXISTS /Developer/SDKs/MacOSX10.4u.sdk)
+                SET(CMAKE_OSX_ARCHITECTURES "ppc;i386" CACHE STRING "Build architectures for OSX" FORCE)
+                SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mmacosx-version-min=10.4 -ftree-vectorize -fvisibility-inlines-hidden" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+            ELSE()
+                # No Universal Binary support
+                # Should break down further to set the -mmacosx-version-min,
+                # but the SDK detection is too unreliable here.
+            ENDIF()
+        ENDIF(NOT OSG_CONFIG_HAS_BEEN_RUN_BEFORE)
+
+        OPTION(OSG_BUILD_APPLICATION_BUNDLES "Enable the building of applications and examples as OSX Bundles" OFF)
+
+    ENDIF()
 
 ENDIF(APPLE)
 

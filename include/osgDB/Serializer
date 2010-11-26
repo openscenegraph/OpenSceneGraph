@@ -356,12 +356,10 @@ public:
         const osg::Matrix& value = (object.*_getter)();
         if ( os.isBinary() )
         {
-            OSG_NOTICE<<"MatrixSerializer::write() binary"<<std::endl;
             os << value;
         }
         else if ( ParentType::_defaultValue!=value )
         {
-            OSG_NOTICE<<"MatrixSerializer::write() ascii, ParentType::_name="<<ParentType::_name<<std::endl;
             os << PROPERTY((ParentType::_name).c_str()) << value << std::endl;
         }
         return true;

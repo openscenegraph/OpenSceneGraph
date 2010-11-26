@@ -947,7 +947,7 @@ FltExportVisitor::handleDrawArrays( const osg::DrawArrays* da, const osg::Geomet
             int numVerts = writeVertexList( first, n );
             first += n;
 
-            writeUVList( numVerts, geom, first );
+            writeUVList( numVerts, geom );
 
             writePop();
         }
@@ -1032,7 +1032,7 @@ FltExportVisitor::handleDrawArrayLengths( const osg::DrawArrayLengths* dal, cons
                     first += n;
                 }
 
-                writeUVList( numVerts, geom, first );
+                writeUVList( numVerts, geom );
 
                 writePop();
             }

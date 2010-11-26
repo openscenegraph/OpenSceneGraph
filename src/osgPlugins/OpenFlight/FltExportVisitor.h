@@ -137,7 +137,7 @@ public:
     void writeLocalVertexPool( const osg::Geometry& geom );
     void writeMultitexture( const osg::Geometry& geom );
     void writeUVList( int numVerts, const osg::Geometry& geom, const std::vector<unsigned int>& indices );
-    void writeUVList( int numVerts, const osg::Geometry& geom, unsigned int first);
+    void writeUVList( int numVerts, const osg::Geometry& geom, unsigned int first=0);
 
     // Light Point records
     void writeLightPoint();

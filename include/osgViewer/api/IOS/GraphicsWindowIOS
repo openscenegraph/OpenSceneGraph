@@ -1,0 +1,209 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+/* Note, elements of GraphicsWindowX11 have used Prodcer/RenderSurface_X11.cpp as both
+ * a guide to use of X11/GLX and copiying directly in the case of setBorder().
+ * These elements are license under OSGPL as above, with Copyright (C) 2001-2004  Don Burns.
+ */
+
+#ifndef OSGVIEWER_GRAPHICSWINDOWCOCOA
+#define OSGVIEWER_GRAPHICSWINDOWCOCOA 1
+
+#ifdef __APPLE__
+
+#ifdef __OBJC__
+@class GraphicsWindowIOSWindow;
+@class GraphicsWindowIOSGLView;
+@class GraphicsWindowIOSGLViewController;
+@class EAGLContext;
+@class UIWindow;
+@class UIView;
+#else
+class GraphicsWindowIOSGLView;
+class GraphicsWindowIOSWindow;
+class GraphicsWindowIOSGLViewController;
+class EAGLContext;
+class UIWindow;
+class UIView;
+#endif
+
+#include <osgViewer/GraphicsWindow>
+
+// we may not include any cocoa-header here, because this will pollute the name-sapce and tend to compile-errors
+
+namespace osgViewer
+{
+
+class GraphicsWindowIOS : public osgViewer::GraphicsWindow
+{
+    public:
+    class Implementation;
+
+        GraphicsWindowIOS(osg::GraphicsContext::Traits* traits)
+			: GraphicsWindow(),
+            _valid(false),
+            _initialized(false),
+            _realized(false),
+            _ownsWindow(true),
+            _adaptToDeviceOrientation(true),
+			_viewContentScaleFactor(-1.0f),
+            _window(NULL),
+            _context(NULL)
+        {
+            _traits = traits;
+
+            init();
+            
+            if (valid())
+            {
+                setState( new osg::State );
+                getState()->setGraphicsContext(this);
+
+                if (_traits.valid() && _traits->sharedContext)
+                {
+                    getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
+                    incrementContextIDUsageCount( getState()->getContextID() );   
+                }
+                else
+                {
+                    getState()->setContextID( osg::GraphicsContext::createNewContextID() );
+                }
+            }
+        }
+    
+        virtual bool isSameKindAs(const Object* object) const { return dynamic_cast<const GraphicsWindowIOS*>(object)!=0; }
+        virtual const char* libraryName() const { return "osgViewer"; }
+        virtual const char* className() const { return "GraphicsWindowCarbon"; }
+
+        virtual bool valid() const { return _valid; }
+
+        /** Realise the GraphicsContext.*/
+        virtual bool realizeImplementation();
+
+        /** Return true if the graphics context has been realised and is ready to use.*/
+        virtual bool isRealizedImplementation() const { return _realized; }
+
+        /** Close the graphics context.*/
+        virtual void closeImplementation();
+
+        /** Make this graphics context current.*/
+        virtual bool makeCurrentImplementation();
+        
+        /** Release the graphics context.*/
+        virtual bool releaseContextImplementation();
+
+        /** Swap the front and back buffers.*/
+        virtual void swapBuffersImplementation();
+        
+        /** Check to see if any events have been generated.*/
+        virtual void checkEvents();
+
+        /** Set Window decoration.*/
+        virtual bool setWindowDecorationImplementation(bool flag);
+
+        /** Get focus.*/
+        virtual void grabFocus();
+        
+        /** Get focus on if the pointer is in this window.*/
+        virtual void grabFocusIfPointerInWindow();
+		
+		/** Raise the window to the top.*/
+		virtual void raiseWindow();
+        
+        bool requestClose() {return false; }
+        
+        virtual void resizedImplementation(int x, int y, int width, int height);
+        
+        virtual bool setWindowRectangleImplementation(int x, int y, int width, int height);
+        
+        virtual void setWindowName (const std::string & name);
+        virtual void useCursor(bool cursorOn);
+        virtual void setCursor(MouseCursor mouseCursor);
+               
+        // WindowData is used to pass in the an existing UIWindow to be used to display our glView
+        class WindowData : public osg::Referenced
+        {
+            public:
+                WindowData(UIWindow* window = NULL, bool adaptToDeviceOrientation = true, float scaleFactor = -1.0f)
+                :   _window(window),
+                    _adaptToDeviceOrientation(adaptToDeviceOrientation),
+					_viewContentScaleFactor(scaleFactor)
+                {
+                }
+                
+                void setAdaptToDeviceOrientation(bool flag) { _adaptToDeviceOrientation = flag; }
+				
+				void setViewContentScaleFactor(float scaleFactor) { _viewContentScaleFactor = scaleFactor; }
+                
+            private:
+
+                UIWindow*     _window;
+                bool          _adaptToDeviceOrientation;
+				float         _viewContentScaleFactor; 
+        
+            friend class GraphicsWindowIOS;
+
+        };
+        
+        EAGLContext* getContext() { return _context; }
+        GraphicsWindowIOSWindow* getWindow() { return _window; }
+                
+        void setVSync(bool f);
+        
+        /** adapts a resize / move of the window, coords in global screen space */
+        void adaptResize(int x, int y, int w, int h);
+        
+        
+        bool adaptToDeviceOrientation() const { return _adaptToDeviceOrientation; }
+        
+        void setAdaptToDeviceOrientation(bool flag) { _adaptToDeviceOrientation = flag; }
+		
+		
+		//
+		//helper funs for converting points to pixels
+		osg::Vec2 pointToPixel(const osg::Vec2& point);
+		osg::Vec2 pixelToPoint(const osg::Vec2& pixel);
+                
+    protected:
+    
+        void init();
+        
+        void transformMouseXY(float& x, float& y);
+
+        virtual ~GraphicsWindowIOS();
+
+
+        bool            _valid;
+        bool            _initialized;
+        bool            _realized;
+        bool            _useWindowDecoration;
+
+         
+    private:        
+       
+        GraphicsWindowIOSWindow*      _window;
+        GraphicsWindowIOSGLView*      _view;
+        GraphicsWindowIOSGLViewController* _viewController;
+        EAGLContext*					_context;
+        bool                            _updateContext;
+		
+		bool _ownsWindow, _adaptToDeviceOrientation;
+		
+		float _viewContentScaleFactor;
+		
+};
+
+}
+
+#endif
+#endif

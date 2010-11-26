@@ -64,7 +64,7 @@ REGISTER_OBJECT_WRAPPER( AnimationPath,
 {
     ADD_USER_SERIALIZER( TimeControlPointMap );  // _timeControlPointMap
     
-    BEGIN_ENUM_SERIALIZER( LoopMode, NO_LOOPING );
+    BEGIN_ENUM_SERIALIZER( LoopMode, LOOP );
         ADD_ENUM_VALUE( SWING );
         ADD_ENUM_VALUE( LOOP );
         ADD_ENUM_VALUE( NO_LOOPING );

@@ -316,6 +316,35 @@ class Replicate : public Record
 
 REGISTER_FLTRECORD(Replicate, REPLICATE_OP)
 
+
+/** IndexedString -
+  */
+class IndexedString : public Record
+{
+    public:
+
+        IndexedString() {}
+
+        META_Record(IndexedString)
+
+    protected:
+
+        virtual ~IndexedString() {}
+
+        virtual void readRecord(RecordInputStream& in, Document& /*document*/)
+        {
+            std::streamsize size = in.getRecordSize();
+            uint32 index = in.readUInt32();
+            std::string name = in.readString(size-8);
+
+            if (_parent.valid())
+                _parent->setMultiSwitchValueName(index, name);
+        }
+};
+
+REGISTER_FLTRECORD(IndexedString, INDEXED_STRING_OP)
+
+
 // Prevent "unknown record" message for the following ancillary records:
 REGISTER_FLTRECORD(DummyRecord, OLD_TRANSLATE2_OP)
 REGISTER_FLTRECORD(DummyRecord, OLD_ROTATE_ABOUT_POINT_OP)
@@ -327,7 +356,6 @@ REGISTER_FLTRECORD(DummyRecord, OLD_ROTATE_ABOUT_POINT2_OP)
 REGISTER_FLTRECORD(DummyRecord, OLD_ROTATE_SCALE_TO_POINT_OP)
 REGISTER_FLTRECORD(DummyRecord, OLD_PUT_TRANSFORM_OP)
 REGISTER_FLTRECORD(DummyRecord, OLD_BOUNDING_BOX_OP)
-REGISTER_FLTRECORD(DummyRecord, INDEXED_STRING_OP)
 REGISTER_FLTRECORD(DummyRecord, ROAD_ZONE_OP)
 REGISTER_FLTRECORD(DummyRecord, ROTATE_ABOUT_EDGE_OP)
 REGISTER_FLTRECORD(DummyRecord, TRANSLATE_OP)

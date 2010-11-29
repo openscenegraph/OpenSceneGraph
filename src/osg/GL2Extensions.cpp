@@ -47,6 +47,7 @@ GL2Extensions::GL2Extensions(const GL2Extensions& rhs) : osg::Referenced()
     _isLanguage100Supported = rhs._isLanguage100Supported;
     _isGeometryShader4Supported = rhs._isGeometryShader4Supported;
     _isGpuShader4Supported = rhs._isGpuShader4Supported;
+    _isUniformBufferObjectSupported = rhs._isUniformBufferObjectSupported;
 
     _glBlendEquationSeparate = rhs._glBlendEquationSeparate;
     _glDrawBuffers = rhs._glDrawBuffers;
@@ -173,6 +174,15 @@ GL2Extensions::GL2Extensions(const GL2Extensions& rhs) : osg::Referenced()
     _glUniform2uiv = rhs._glUniform2uiv;
     _glUniform3uiv = rhs._glUniform3uiv;
     _glUniform4uiv = rhs._glUniform4uiv;
+
+    // ARB_uniform_buffer_object
+    _glGetUniformIndices = rhs._glGetUniformIndices;
+    _glGetActiveUniformsiv = rhs._glGetActiveUniformsiv;
+    _glGetActiveUniformName = rhs._glGetActiveUniformName;
+    _glGetUniformBlockIndex = rhs._glGetUniformBlockIndex;
+    _glGetActiveUniformBlockiv = rhs._glGetActiveUniformBlockiv;
+    _glGetActiveUniformBlockName = rhs._glGetActiveUniformBlockName;
+    _glUniformBlockBinding = rhs._glUniformBlockBinding;
 }
 
 
@@ -318,6 +328,16 @@ void GL2Extensions::lowestCommonDenominator(const GL2Extensions& rhs)
     if (!rhs._glUniform2uiv) _glUniform2uiv = 0;
     if (!rhs._glUniform3uiv) _glUniform3uiv = 0;
     if (!rhs._glUniform4uiv) _glUniform4uiv = 0;
+
+    // ARB_uniform_buffer_object
+    if (!rhs._glGetUniformIndices) _glGetUniformIndices = 0;
+    if (!rhs._glGetActiveUniformsiv) _glGetActiveUniformsiv = 0;
+    if (!rhs._glGetActiveUniformName) _glGetActiveUniformName = 0;
+    if (!rhs._glGetUniformBlockIndex) _glGetUniformBlockIndex = 0;
+    if (!rhs._glGetActiveUniformBlockiv) _glGetActiveUniformBlockiv = 0;
+    if (!rhs._glGetActiveUniformBlockName) _glGetActiveUniformBlockName = 0;
+    if (!rhs._glUniformBlockBinding) _glUniformBlockBinding = 0;
+
 }
 
 
@@ -342,6 +362,7 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
     _isGeometryShader4Supported = osg::isGLExtensionSupported(contextID,"GL_EXT_geometry_shader4");
     _isGpuShader4Supported = osg::isGLExtensionSupported(contextID,"GL_EXT_gpu_shader4");
     _areTessellationShadersSupported = osg::isGLExtensionSupported(contextID, "GL_ARB_tessellation_shader");
+    _isUniformBufferObjectSupported = osg::isGLExtensionSupported(contextID,"ARB_uniform_buffer_object");
     
     if( isGlslSupported() )
     {
@@ -491,6 +512,15 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
     setGLExtensionFuncPtr(_glUniform2uiv,  "glUniform2uiv", "glUniform2uivEXT" );
     setGLExtensionFuncPtr(_glUniform3uiv,  "glUniform3uiv", "glUniform3uivEXT" );
     setGLExtensionFuncPtr(_glUniform4uiv,  "glUniform4uiv", "glUniform4uivEXT" );
+    // ARB_uniform_buffer_object
+    setGLExtensionFuncPtr(_glGetUniformIndices, "glGetUniformIndices");
+    setGLExtensionFuncPtr(_glGetActiveUniformsiv, "glGetActiveUniformsiv");
+    setGLExtensionFuncPtr(_glGetActiveUniformName, "glGetActiveUniformName");
+    setGLExtensionFuncPtr(_glGetUniformBlockIndex, "glGetUniformBlockIndex");
+    setGLExtensionFuncPtr(_glGetActiveUniformBlockiv, "glGetActiveUniformBlockiv");
+    setGLExtensionFuncPtr(_glGetActiveUniformBlockName, "glGetActiveUniformBlockName");
+    setGLExtensionFuncPtr(_glUniformBlockBinding, "glUniformBlockBinding");
+
 }
 
 
@@ -2152,6 +2182,110 @@ void GL2Extensions::glUniform4uiv( GLint location, GLsizei count, const GLuint *
     }
 }
 
+// ARB_uniform_buffer_object
+void GL2Extensions::glGetUniformIndices(GLuint program, GLsizei uniformCount,
+                                        const GLchar* *uniformNames,
+                                        GLuint *uniformIndices) const
+{
+    if (_glGetUniformIndices)
+    {
+        _glGetUniformIndices(program, uniformCount, uniformNames,
+                             uniformIndices);
+    }
+    else
+    {
+        NotSupported("glGetUniformIndices");
+    }
+}
+
+void GL2Extensions::glGetActiveUniformsiv(GLuint program, GLsizei uniformCount,
+                                          const GLuint *uniformIndices,
+                                          GLenum pname, GLint *params) const
+{
+    if (_glGetActiveUniformsiv)
+    {
+        _glGetActiveUniformsiv(program, uniformCount, uniformIndices, pname,
+                               params);
+    }
+    else
+    {
+        NotSupported("glGetActiveUniformsiv");
+    }
+}
+
+void GL2Extensions::glGetActiveUniformName(GLuint program, GLuint uniformIndex,
+                                           GLsizei bufSize, GLsizei *length,
+                                           GLchar *uniformName) const
+{
+    if (_glGetActiveUniformName)
+    {
+        _glGetActiveUniformName(program, uniformIndex, bufSize, length,
+                                uniformName);
+    }
+    else
+    {
+        NotSupported("glGetActiveUniformName");
+    }
+}
+
+GLuint GL2Extensions::glGetUniformBlockIndex(GLuint program,
+                                             const GLchar *uniformBlockName) const
+{
+    if (_glGetUniformBlockIndex)
+    {
+        return _glGetUniformBlockIndex(program, uniformBlockName);
+    }
+    else
+    {
+        NotSupported("glGetUniformBlockIndex");
+        return GL_INVALID_INDEX;
+    }
+}
+
+void GL2Extensions::glGetActiveUniformBlockiv(GLuint program,
+                                              GLuint uniformBlockIndex,
+                                              GLenum pname, GLint *params) const
+{
+    if (_glGetActiveUniformBlockiv)
+    {
+        _glGetActiveUniformBlockiv(program, uniformBlockIndex, pname, params);
+    }
+    else
+    {
+        NotSupported("glGetActiveUniformBlockiv");
+    }
+}
+
+void GL2Extensions::glGetActiveUniformBlockName(GLuint program,
+                                                GLuint uniformBlockIndex,
+                                                GLsizei bufSize,
+                                                GLsizei *length,
+                                                GLchar *uniformBlockName) const
+{
+    if (_glGetActiveUniformBlockName)
+    {
+        _glGetActiveUniformBlockName(program, uniformBlockIndex, bufSize,
+                                     length, uniformBlockName);
+    }
+    else
+    {
+        NotSupported("glGetActiveUniformBlockName");
+    }
+}
+
+void GL2Extensions::glUniformBlockBinding(GLuint program,
+                                          GLuint uniformBlockIndex,
+                                          GLuint uniformBlockBinding) const
+{
+    if (_glUniformBlockBinding)
+    {
+        _glUniformBlockBinding(program, uniformBlockIndex, uniformBlockBinding);
+    }
+    else
+    {
+        NotSupported("glUniformBlockBinding");
+    }
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // C++-friendly convenience methods

@@ -36,6 +36,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/BoundingSphere
     ${HEADER_PATH}/BoundsChecking
     ${HEADER_PATH}/buffered_value
+    ${HEADER_PATH}/BufferIndexBinding
     ${HEADER_PATH}/BufferObject
     ${HEADER_PATH}/Camera
     ${HEADER_PATH}/CameraNode
@@ -209,6 +210,7 @@ ADD_LIBRARY(${LIB_NAME}
     BlendColor.cpp
     BlendEquation.cpp
     BlendFunc.cpp
+    BufferIndexBinding.cpp
     BufferObject.cpp
     Camera.cpp
     CameraView.cpp

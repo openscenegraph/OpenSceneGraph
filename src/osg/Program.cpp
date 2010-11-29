@@ -386,6 +386,21 @@ void Program::removeBindFragDataLocation( const std::string& name )
     dirtyProgram();
 }
 
+void Program::addBindUniformBlock(const std::string& name, GLuint index)
+{
+    _uniformBlockBindingList[name] = index;
+    dirtyProgram(); // XXX
+}
+
+void Program::removeBindUniformBlock(const std::string& name)
+{
+    _uniformBlockBindingList.erase(name);
+    dirtyProgram(); // XXX
+}
+
+
+
+
 void Program::apply( osg::State& state ) const
 {
     const unsigned int contextID = state.getContextID();
@@ -587,6 +602,58 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
             OSG_INFO << "Program \""<< _program->getName() << "\" "<<
                                       "link succeded, infolog:\n" << infoLog << std::endl;
         }
+    }
+
+    if (_extensions->isUniformBufferObjectSupported())
+    {
+        GLuint activeUniformBlocks = 0;
+        GLsizei maxBlockNameLen = 0;
+        _extensions->glGetProgramiv(_glProgramHandle, GL_ACTIVE_UNIFORM_BLOCKS,
+                                    reinterpret_cast<GLint*>(&activeUniformBlocks));
+        _extensions->glGetProgramiv(_glProgramHandle,
+                                    GL_ACTIVE_UNIFORM_MAX_LENGTH,
+                                    &maxBlockNameLen);
+        if (maxBlockNameLen > 0)
+        {
+            std::vector<GLchar> blockName(maxBlockNameLen);
+            for (GLuint i = 0; i < activeUniformBlocks; ++i)
+            {
+                GLsizei len = 0;
+                GLint blockSize = 0;
+                _extensions->glGetActiveUniformBlockName(_glProgramHandle, i,
+                                                         maxBlockNameLen, &len,
+                                                         &blockName[0]);
+                _extensions->glGetActiveUniformBlockiv(_glProgramHandle, i,
+                                                       GL_UNIFORM_BLOCK_DATA_SIZE,
+                                                       &blockSize);
+                _uniformBlockMap
+                    .insert(UniformBlockMap::value_type(&blockName[0],
+                                                        UniformBlockInfo(i, blockSize)));
+            }
+        }
+        // Bind any uniform blocks
+        const UniformBlockBindingList& bindingList = _program->getUniformBlockBindingList();
+        for (UniformBlockMap::iterator itr = _uniformBlockMap.begin(),
+                 end = _uniformBlockMap.end();
+             itr != end;
+            ++itr)
+        {
+            const std::string& blockName = itr->first;
+            UniformBlockBindingList::const_iterator bitr = bindingList.find(blockName);
+            if (bitr != bindingList.end())
+            {
+                _extensions->glUniformBlockBinding(_glProgramHandle, itr->second._index,
+                                                   bitr->second);
+                OSG_INFO << "uniform block " << blockName << ": " << itr->second._index
+                         << " binding: " << bitr->second << "\n";
+            }
+            else
+            {
+                OSG_WARN << "uniform block " << blockName << " has no binding.\n";
+            }
+
+        }
+
     }
 
     // build _uniformInfoMap

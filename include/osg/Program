@@ -113,11 +113,22 @@ class OSG_EXPORT Program : public osg::StateAttribute
         /** Remove an frag data location binding. */
         void removeBindFragDataLocation( const std::string& name );
 
+        /** Add a uniform block binding to an index target. XXX This
+         * should not be an attribute of the program. It should be a
+         * pseudo-uniform that can live in StateSet objects because
+         * it is cheap to set. */
+        void addBindUniformBlock(const std::string& name, GLuint index);
+
+        /** Remove a uniform block binding. */
+        void removeBindUniformBlock(const std::string& name);
+
         typedef std::map<std::string,GLuint> AttribBindingList;
         typedef std::map<std::string,GLuint> FragDataBindingList;
+        typedef std::map<std::string,GLuint> UniformBlockBindingList;
 
         const AttribBindingList& getAttribBindingList() const { return _attribBindingList; }
         const FragDataBindingList& getFragDataBindingList() const { return _fragDataBindingList; }
+        const UniformBlockBindingList& getUniformBlockBindingList() const { return _uniformBlockBindingList; }
 
         /** Return true if this Program represents "fixed-functionality" rendering */
         bool isFixedFunction() const;
@@ -151,7 +162,18 @@ class OSG_EXPORT Program : public osg::StateAttribute
         typedef std::map< std::string, ActiveVarInfo > ActiveVarInfoMap;
         const ActiveUniformMap& getActiveUniforms(unsigned int contextID) const;
         const ActiveVarInfoMap& getActiveAttribs(unsigned int contextID) const;
-
+        struct UniformBlockInfo
+        {
+            UniformBlockInfo() : _index(GL_INVALID_INDEX), _size(0) {}
+            UniformBlockInfo(GLuint index, GLsizei size)
+                : _index(index), _size(size)
+            {
+            }
+            GLuint _index;
+            GLsizei _size;
+        };
+        typedef std::map<std::string, UniformBlockInfo> UniformBlockMap;
+        const UniformBlockMap& getUniformBlocks(unsigned contextID) const;
     public:
 
         // make PerContextProgram a friend to allow it access Program's protected
@@ -214,7 +236,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
 
                 const ActiveUniformMap& getActiveUniforms() const {return _uniformInfoMap;}
                 const ActiveVarInfoMap& getActiveAttribs() const {return _attribInfoMap;}
-
+                const UniformBlockMap& getUniformBlocks() const {return _uniformBlockMap; }
                 inline GLint getUniformLocation( unsigned int uniformNameID ) const { ActiveUniformMap::const_iterator itr = _uniformInfoMap.find(uniformNameID); return (itr!=_uniformInfoMap.end()) ? itr->second._location : -1; }
                 inline GLint getAttribLocation( const std::string& name ) const { ActiveVarInfoMap::const_iterator itr = _attribInfoMap.find(name); return (itr!=_attribInfoMap.end()) ? itr->second._location : -1; }
 
@@ -246,6 +268,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
 
                 ActiveUniformMap _uniformInfoMap;
                 ActiveVarInfoMap _attribInfoMap;
+                UniformBlockMap _uniformBlockMap;
                 
                 typedef std::pair<osg::ref_ptr<const osg::Uniform>, unsigned int> UniformModifiedCountPair;
                 typedef std::vector<UniformModifiedCountPair> LastAppliedUniformList;
@@ -272,6 +295,7 @@ class OSG_EXPORT Program : public osg::StateAttribute
         mutable osg::buffered_value< osg::ref_ptr<PerContextProgram> > _pcpList;
         AttribBindingList _attribBindingList;
         FragDataBindingList _fragDataBindingList;
+        UniformBlockBindingList _uniformBlockBindingList;
 
         typedef std::vector< ref_ptr<Shader> > ShaderList;
         ShaderList _shaderList;

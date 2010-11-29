@@ -254,6 +254,7 @@ class OSG_EXPORT GLBufferObject : public Referenced
 
             bool isBufferObjectSupported() const { return _glGenBuffers!=0; }
             bool isPBOSupported() const { return _isPBOSupported; }
+            bool isUniformBufferObjectSupported() const { return _isUniformBufferObjectSupported; }
 
             void glGenBuffers (GLsizei n, GLuint *buffers) const;
             void glBindBuffer (GLenum target, GLuint buffer) const;
@@ -266,6 +267,8 @@ class OSG_EXPORT GLBufferObject : public Referenced
             GLboolean glUnmapBuffer (GLenum target) const;
             void glGetBufferParameteriv (GLenum target, GLenum pname, GLint *params) const;
             void glGetBufferPointerv (GLenum target, GLenum pname, GLvoid* *params) const;
+            void glBindBufferRange (GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size);
+            void glBindBufferBase (GLenum target, GLuint index, GLuint buffer);
 
         protected:
 
@@ -280,6 +283,9 @@ class OSG_EXPORT GLBufferObject : public Referenced
             typedef GLboolean (GL_APIENTRY * UnmapBufferProc) (GLenum target);
             typedef void (GL_APIENTRY * GetBufferParameterivProc) (GLenum target, GLenum pname, GLint *params);
             typedef void (GL_APIENTRY * GetBufferPointervProc) (GLenum target, GLenum pname, GLvoid* *params);
+            typedef void (GL_APIENTRY * BindBufferRangeProc) (GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size);
+            typedef void (GL_APIENTRY * BindBufferBaseProc) (GLenum target, GLuint index, GLuint buffer);
+
 
             GenBuffersProc          _glGenBuffers;
             BindBufferProc          _glBindBuffer;
@@ -292,8 +298,11 @@ class OSG_EXPORT GLBufferObject : public Referenced
             UnmapBufferProc         _glUnmapBuffer;
             GetBufferParameterivProc _glGetBufferParameteriv;
             GetBufferPointervProc   _glGetBufferPointerv;
+            BindBufferRangeProc     _glBindBufferRange;
+            BindBufferBaseProc      _glBindBufferBase;
 
             bool _isPBOSupported;
+            bool _isUniformBufferObjectSupported;
         };
 
         /** Function to call to get the extension of a specified context.
@@ -751,6 +760,16 @@ class OSG_EXPORT PixelDataBufferObject : public BufferObject
         
         mutable ModeList _mode;
         
+};
+
+class OSG_EXPORT UniformBufferObject : public BufferObject
+{
+ public:
+    UniformBufferObject();
+    UniformBufferObject(const UniformBufferObject& ubo, const CopyOp& copyop=CopyOp::SHALLOW_COPY);
+    META_Object(osg, UniformBufferObject);
+ protected:
+    virtual ~UniformBufferObject();
 };
 
 inline void GLBufferObject::bindBuffer()

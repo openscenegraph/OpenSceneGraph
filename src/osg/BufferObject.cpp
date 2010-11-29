@@ -17,6 +17,7 @@
 #include <osg/BufferObject>
 #include <osg/Notify>
 #include <osg/GLExtensions>
+#include <osg/GL2Extensions>
 #include <osg/Timer>
 #include <osg/Image>
 #include <osg/State>
@@ -275,6 +276,9 @@ GLBufferObject::Extensions::Extensions(const Extensions& rhs):
     _glUnmapBuffer = rhs._glUnmapBuffer;
     _glGetBufferParameteriv = rhs._glGetBufferParameteriv;
     _glGetBufferPointerv = rhs._glGetBufferPointerv;
+    _glBindBufferRange = rhs._glBindBufferRange;
+    _glBindBufferBase = rhs._glBindBufferBase;
+
 }
 
 
@@ -291,6 +295,8 @@ void GLBufferObject::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._glUnmapBuffer) _glUnmapBuffer = rhs._glUnmapBuffer;
     if (!rhs._glGetBufferParameteriv) _glGetBufferParameteriv = rhs._glGetBufferParameteriv;
     if (!rhs._glGetBufferParameteriv) _glGetBufferPointerv = rhs._glGetBufferPointerv;
+    if (!rhs._glBindBufferRange) _glBindBufferRange = rhs._glBindBufferRange;
+    if (!rhs._glBindBufferBase) _glBindBufferBase = rhs._glBindBufferBase;
 }
 
 void GLBufferObject::Extensions::setupGLExtensions(unsigned int contextID)
@@ -307,6 +313,10 @@ void GLBufferObject::Extensions::setupGLExtensions(unsigned int contextID)
     setGLExtensionFuncPtr(_glGetBufferParameteriv, "glGetBufferParameteriv","glGetBufferParameterivARB");
     setGLExtensionFuncPtr(_glGetBufferPointerv, "glGetBufferPointerv","glGetBufferPointervARB");
     _isPBOSupported = OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_pixel_buffer_object");
+    setGLExtensionFuncPtr(_glBindBufferRange, "glBindBufferRange");
+    setGLExtensionFuncPtr(_glBindBufferBase, "glBindBufferBase");
+    _isUniformBufferObjectSupported
+        = osg::isGLExtensionSupported(contextID, "GL_ARB_uniform_buffer_object");
 }
 
 void GLBufferObject::Extensions::glGenBuffers(GLsizei n, GLuint *buffers) const
@@ -387,6 +397,17 @@ void GLBufferObject::Extensions::glGetBufferPointerv (GLenum target, GLenum pnam
     else OSG_WARN<<"Error: glGetBufferPointerv not supported by OpenGL driver"<<std::endl;
 }
 
+void GLBufferObject::Extensions::glBindBufferRange (GLenum target, GLuint index, GLuint buffer, GLintptr offset, GLsizeiptr size)
+{
+    if (_glBindBufferRange) _glBindBufferRange(target, index, buffer, offset, size);
+    else OSG_WARN<<"Error: glBindBufferRange not supported by OpenGL driver\n";
+}
+
+void GLBufferObject::Extensions::glBindBufferBase (GLenum target, GLuint index, GLuint buffer)
+{
+    if (_glBindBufferBase) _glBindBufferBase(target, index, buffer);
+    else OSG_WARN<<"Error: glBindBufferBase not supported by OpenGL driver\n";
+}
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // GLBufferObjectSet
@@ -1539,3 +1560,17 @@ void PixelDataBufferObject::resizeGLObjectBuffers(unsigned int maxSize)
     _mode.resize(maxSize);
 }
 
+UniformBufferObject::UniformBufferObject()
+{
+    setTarget(GL_UNIFORM_BUFFER);
+    setUsage(GL_STREAM_DRAW_ARB);
+}
+
+UniformBufferObject::UniformBufferObject(const UniformBufferObject& ubo, const CopyOp& copyop)
+    : BufferObject(ubo, copyop)
+{
+}
+
+UniformBufferObject::~UniformBufferObject()
+{
+}

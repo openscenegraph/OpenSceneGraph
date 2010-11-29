@@ -247,6 +247,43 @@ typedef char GLchar;
 #define GL_MAX_PROGRAM_TEXEL_OFFSET_EXT       0x8905
 #endif
 
+// ARB_uniform_buffer_object
+#ifndef GL_UNIFORM_BUFFER
+#define GL_UNIFORM_BUFFER                 0x8A11
+#define GL_UNIFORM_BUFFER_BINDING         0x8A28
+#define GL_UNIFORM_BUFFER_START           0x8A29
+#define GL_UNIFORM_BUFFER_SIZE            0x8A2A
+#define GL_MAX_VERTEX_UNIFORM_BLOCKS      0x8A2B
+#define GL_MAX_GEOMETRY_UNIFORM_BLOCKS    0x8A2C
+#define GL_MAX_FRAGMENT_UNIFORM_BLOCKS    0x8A2D
+#define GL_MAX_COMBINED_UNIFORM_BLOCKS    0x8A2E
+#define GL_MAX_UNIFORM_BUFFER_BINDINGS    0x8A2F
+#define GL_MAX_UNIFORM_BLOCK_SIZE         0x8A30
+#define GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS 0x8A31
+#define GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS 0x8A32
+#define GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS 0x8A33
+#define GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT 0x8A34
+#define GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH 0x8A35
+#define GL_ACTIVE_UNIFORM_BLOCKS          0x8A36
+#define GL_UNIFORM_TYPE                   0x8A37
+#define GL_UNIFORM_SIZE                   0x8A38
+#define GL_UNIFORM_NAME_LENGTH            0x8A39
+#define GL_UNIFORM_BLOCK_INDEX            0x8A3A
+#define GL_UNIFORM_OFFSET                 0x8A3B
+#define GL_UNIFORM_ARRAY_STRIDE           0x8A3C
+#define GL_UNIFORM_MATRIX_STRIDE          0x8A3D
+#define GL_UNIFORM_IS_ROW_MAJOR           0x8A3E
+#define GL_UNIFORM_BLOCK_BINDING          0x8A3F
+#define GL_UNIFORM_BLOCK_DATA_SIZE        0x8A40
+#define GL_UNIFORM_BLOCK_NAME_LENGTH      0x8A41
+#define GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS  0x8A42
+#define GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES 0x8A43
+#define GL_UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER 0x8A44
+#define GL_UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER 0x8A45
+#define GL_UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER 0x8A46
+#define GL_INVALID_INDEX                  0xFFFFFFFFu
+#endif
+
 
 namespace osg {
 
@@ -287,6 +324,8 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         void setGpuShader4Supported(bool flag) { _isGpuShader4Supported = flag; }
         bool isGpuShader4Supported() const { return _isGpuShader4Supported; }
 
+        void setUniformBufferObjectSupported(bool flag) { _isUniformBufferObjectSupported = flag; }
+        bool isUniformBufferObjectSupported() {return _isUniformBufferObjectSupported; }
         /** Function to call to get the extension of a specified context.
           * If the Exentsion object for that context has not yet been created then
           * and the 'createIfNotInitalized' flag been set to false then returns NULL.
@@ -433,6 +472,14 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         void glUniform3uiv( GLint location, GLsizei count, const GLuint *value ) const;
         void glUniform4uiv( GLint location, GLsizei count, const GLuint *value ) const;
 
+        // ARB_uniform_buffer_object
+        void glGetUniformIndices(GLuint program, GLsizei uniformCount, const GLchar* *uniformNames, GLuint *uniformIndices) const;
+        void glGetActiveUniformsiv(GLuint program, GLsizei uniformCount, const GLuint *uniformIndices, GLenum pname, GLint *params) const;
+        void glGetActiveUniformName(GLuint program, GLuint uniformIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformName) const;
+        GLuint glGetUniformBlockIndex(GLuint program, const GLchar *uniformBlockName) const;
+        void glGetActiveUniformBlockiv(GLuint program, GLuint uniformBlockIndex, GLenum pname, GLint *params) const;
+        void glGetActiveUniformBlockName(GLuint program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformBlockName) const;
+        void glUniformBlockBinding(GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding) const;
     protected:
         ~GL2Extensions() {}
 
@@ -446,6 +493,7 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         bool _isGeometryShader4Supported;
         bool _areTessellationShadersSupported;
         bool _isGpuShader4Supported;
+        bool _isUniformBufferObjectSupported;
 
         typedef void (GL_APIENTRY * BlendEquationSeparateProc)(GLenum modeRGB, GLenum modeAlpha);
         typedef void (GL_APIENTRY * DrawBuffersProc)(GLsizei n, const GLenum *bufs);
@@ -567,6 +615,13 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         typedef void (GL_APIENTRY * Uniform3uivProc)( GLint location, GLsizei count, const GLuint *value );
         typedef void (GL_APIENTRY * Uniform4uivProc)( GLint location, GLsizei count, const GLuint *value );
         typedef GLuint (GL_APIENTRY * GetHandleProc) (GLenum pname);
+        typedef void (GL_APIENTRY * GetUniformIndicesProc)(GLuint program, GLsizei uniformCount, const GLchar* *uniformNames, GLuint *uniformIndices);
+        typedef void (GL_APIENTRY * GetActiveUniformsivProc)(GLuint program, GLsizei uniformCount, const GLuint *uniformIndices, GLenum pname, GLint *params);
+        typedef void (GL_APIENTRY * GetActiveUniformNameProc)(GLuint program, GLuint uniformIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformName);
+        typedef GLuint (GL_APIENTRY * GetUniformBlockIndexProc)(GLuint program, const GLchar *uniformBlockName);
+        typedef void (GL_APIENTRY * GetActiveUniformBlockivProc)(GLuint program, GLuint uniformBlockIndex, GLenum pname, GLint *params);
+        typedef void (GL_APIENTRY * GetActiveUniformBlockNameProc)(GLuint program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformBlockName);
+        typedef void (GL_APIENTRY * UniformBlockBindingProc)(GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
 
         BlendEquationSeparateProc _glBlendEquationSeparate;        
         DrawBuffersProc _glDrawBuffers;
@@ -697,6 +752,15 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         Uniform2uivProc _glUniform2uiv;
         Uniform3uivProc _glUniform3uiv;
         Uniform4uivProc _glUniform4uiv;
+
+        // ARB_uniform_buffer_object
+        GetUniformIndicesProc _glGetUniformIndices;
+        GetActiveUniformsivProc _glGetActiveUniformsiv;
+        GetActiveUniformNameProc _glGetActiveUniformName;
+        GetUniformBlockIndexProc _glGetUniformBlockIndex;
+        GetActiveUniformBlockivProc _glGetActiveUniformBlockiv;
+        GetActiveUniformBlockNameProc _glGetActiveUniformBlockName;
+        UniformBlockBindingProc _glUniformBlockBinding;
 };
 
 }

@@ -1169,47 +1169,6 @@ DatabasePager::DatabasePager()
 
     }
 
-    _expiryDelay = 10.0;
-    if( (ptr = getenv("OSG_EXPIRY_DELAY")) != 0)
-    {
-        _expiryDelay = osg::asciiToDouble(ptr);
-        OSG_NOTICE<<"DatabasePager: Expiry delay = "<<_expiryDelay<<std::endl;
-    }
-
-    _expiryFrames = 1; // Last frame will not be expired
-    if( (ptr = getenv("OSG_EXPIRY_FRAMES")) != 0)
-    {
-        _expiryFrames = atoi(ptr);
-        OSG_NOTICE<<"DatabasePager: Expiry frames = "<<_expiryFrames<<std::endl;
-    }
-
-    if( (ptr = getenv("OSG_RELEASE_DELAY")) != 0)
-    {
-        if (strcmp(ptr,"OFF")==0 || strcmp(ptr,"Off")==0  || strcmp(ptr,"off")==0)
-        {
-            setReleaseDelay(DBL_MAX);
-        }
-        else
-        {
-            setReleaseDelay(osg::asciiToDouble(ptr));
-        }
-            
-        OSG_NOTICE<<"DatabasePager: Release delay = "<<_releaseDelay<<std::endl;
-    }
-    else
-    {
-        setReleaseDelay(DBL_MAX);
-    }
-    
-
-    _releaseFrames = 1; // Last frame will not be release
-    if( (ptr = getenv("OSG_RELEASE_FRAMES")) != 0)
-    {
-        _releaseFrames = atoi(ptr);
-        OSG_NOTICE<<"Release frames = "<<_releaseFrames<<std::endl;
-    }
-
-
     _targetMaximumNumberOfPageLOD = 300;
     if( (ptr = getenv("OSG_MAX_PAGEDLOD")) != 0)
     {
@@ -1312,13 +1271,8 @@ DatabasePager::DatabasePager(const DatabasePager& rhs)
 
 
     _deleteRemovedSubgraphsInDatabaseThread = rhs._deleteRemovedSubgraphsInDatabaseThread;
+
     
-    _expiryDelay = rhs._expiryDelay;
-    _expiryFrames = rhs._expiryFrames;
-
-    _releaseDelay = rhs._releaseDelay;
-    _releaseFrames = rhs._releaseFrames;
-
     _targetMaximumNumberOfPageLOD = rhs._targetMaximumNumberOfPageLOD;
 
     _doPreCompile = rhs._doPreCompile;
@@ -1415,23 +1369,6 @@ unsigned int DatabasePager::addDatabaseThread(DatabaseThread::Mode mode, const s
     }
     
     return pos;
-}
-
-void DatabasePager::setReleaseDelay(double releaseDelay)
-{
-    _releaseDelay = releaseDelay;
-
-    if (_releaseDelay==DBL_MAX)
-    {
-        _changeAutoUnRef = true;
-        _valueAutoUnRef = true;
-    }
-    else
-    {
-        // when GLObject release is used make sure Images aren't unref'd as they may be needed later.
-        _changeAutoUnRef = true;
-        _valueAutoUnRef = false;
-    }
 }
 
 int DatabasePager::setSchedulePriority(OpenThreads::Thread::ThreadPriority priority)
@@ -1723,52 +1660,10 @@ bool DatabasePager::requiresUpdateSceneGraph() const
     return !(_dataToMergeList->empty());
 }
 
-#define UPDATE_TIMING 0
 void DatabasePager::updateSceneGraph(const osg::FrameStamp& frameStamp)
 {
 
-#if 0
-    {
-        // check threads to see which are active and how long the active ones have been working in their current iteration.
-
-        double timeToSuspectADeadlock = 1.0;
-        bool possibleDeadLock = false;
-
-        unsigned int numThreadsActive = 0;
-        for(DatabaseThreadList::iterator itr = _databaseThreads.begin(); itr != _databaseThreads.end(); ++itr)
-        {
-            DatabaseThread* thread = itr->get();
-            if (thread->getActive())
-            {
-                ++numThreadsActive;
-                if (thread->getTimeSinceStartOfIteration()>timeToSuspectADeadlock)
-                {
-                    possibleDeadLock = true;
-                }
-            }
-        }
-
-        if (possibleDeadLock && numThreadsActive>0)
-        {
-            OSG_NOTICE<<"DatabasePager::updateSceneGraph() possibleDeadLock="<<possibleDeadLock<<std::endl;
-            for(DatabaseThreadList::iterator itr = _databaseThreads.begin(); itr != _databaseThreads.end(); ++itr)
-            {
-                DatabaseThread* thread = itr->get();
-
-                double t = thread->getTimeSinceStartOfIteration();
-                if (thread->getActive())
-                {
-                    OSG_NOTICE<<"  "<<thread->getName()<<" active for "<<t*1000<<"ms"<<std::endl;
-                }
-                else
-                {
-                    OSG_NOTICE<<"  "<<thread->getName()<<" inactive for "<<t*1000<<"ms"<<std::endl;
-                }
-            }
-        }
-    }
-#endif
-
+#define UPDATE_TIMING 0
 #if UPDATE_TIMING
     osg::ElapsedTime timer;
     double timeFor_removeExpiredSubgraphs, timeFor_addLoadedDataToSceneGraph;

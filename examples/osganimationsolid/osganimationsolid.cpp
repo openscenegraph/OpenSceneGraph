@@ -24,6 +24,7 @@
 #include <osgAnimation/Channel>
 #include <osgAnimation/UpdateMatrixTransform>
 #include <osgAnimation/StackedTranslateElement>
+#include <osgAnimation/StackedRotateAxisElement>
 
 using namespace osgAnimation;
 
@@ -72,13 +73,24 @@ int main (int argc, char* argv[])
     osg::ref_ptr<osg::Geode> geode = new osg::Geode;
     geode->addDrawable(new osg::ShapeDrawable(new osg::Box(osg::Vec3(0.0f,0.0f,0.0f),0.5)));
 
+    //Tranformation to be manipulated by the animation
     osg::ref_ptr<osg::MatrixTransform> trans = new osg::MatrixTransform();
     trans->setName("AnimatedNode");
+    //Dynamic object, has to be updated during update traversal
     trans->setDataVariance(osg::Object::DYNAMIC);
+    //Animation callback for Matrix transforms, name is targetName for Channels
     osgAnimation::UpdateMatrixTransform* updatecb = new osgAnimation::UpdateMatrixTransform("AnimatedCallback");
+    //add manipulator Stack, names must match with channel names
+    //elements are applied in LIFO order
+    //The first element modifies the position component of the matrix
+    //The second element modifies the rotation around x-axis
     updatecb->getStackedTransforms().push_back(new osgAnimation::StackedTranslateElement("position"));
+    updatecb->getStackedTransforms().push_back(new osgAnimation::StackedRotateAxisElement("euler",osg::Vec3(1,0,0),0));
+    //connect the UpdateMatrixTransform callback to the MatrixTRanform
     trans->setUpdateCallback(updatecb);
+    //initialize MatrixTranform
     trans->setMatrix(osg::Matrix::identity());
+    //append geometry node
     trans->addChild (geode.get());
 
     root->addChild (axe.get());
@@ -86,27 +98,35 @@ int main (int argc, char* argv[])
 
     // Define a scheduler for our animations
     osg::Group* grp = new osg::Group;
+    //add the animation manager to the scene graph to get it called during update traversals
     osgAnimation::BasicAnimationManager* mng = new osgAnimation::BasicAnimationManager();
     grp->setUpdateCallback(mng);
-
+    //add the rest of the scene to the grp node
     grp->addChild(root);
 
-    // And we finaly define our channel
+    // And we finaly define our channel for linear Vector interpolation
     osgAnimation::Vec3LinearChannel* channelAnimation1 = new osgAnimation::Vec3LinearChannel;
+    //name of the AnimationUpdateCallback
     channelAnimation1->setTargetName("AnimatedCallback");
+    //name of the StackedElementTransform for position modification
     channelAnimation1->setName("position");
+    //Create keyframes for (in this case linear) interpolation of a osg::Vec3
     channelAnimation1->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::Vec3Keyframe(0, osg::Vec3(0,0,0)));
     channelAnimation1->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::Vec3Keyframe(2, osg::Vec3(1,1,0)));
     osgAnimation::Animation* anim1 = new osgAnimation::Animation;
-    anim1->addChannel(channelAnimation1);
+    anim1->addChannel(channelAnimation1);    
     anim1->setPlayMode(osgAnimation::Animation::PPONG);
 
 
-    osgAnimation::Vec3LinearChannel* channelAnimation2 = new osgAnimation::Vec3LinearChannel;
+    //define the channel for interpolation of a float angle value
+    osgAnimation::FloatLinearChannel* channelAnimation2 = new osgAnimation::FloatLinearChannel;
+    //name of the AnimationUpdateCallback
     channelAnimation2->setTargetName("AnimatedCallback");
+    //name of the StackedElementTransform for position modification
     channelAnimation2->setName("euler");
-    channelAnimation2->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::Vec3Keyframe(0, osg::Vec3(0,0,0)));
-    channelAnimation2->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::Vec3Keyframe(1.5, osg::Vec3(2*osg::PI,0,0)));
+    //Create keyframes for (in this case linear) interpolation of a osg::Vec3
+    channelAnimation2->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::FloatKeyframe(0, 0));
+    channelAnimation2->getOrCreateSampler()->getOrCreateKeyframeContainer()->push_back(osgAnimation::FloatKeyframe(1.5, 2*osg::PI));
     osgAnimation::Animation* anim2 = new osgAnimation::Animation;
     anim2->addChannel(channelAnimation2);
     anim2->setPlayMode(osgAnimation::Animation::LOOP);
@@ -115,10 +135,12 @@ int main (int argc, char* argv[])
     // We register all animation inside the scheduler
     mng->registerAnimation(anim1);
     mng->registerAnimation(anim2);
-
+    
+    //start the animation
     mng->playAnimation(anim1);
     mng->playAnimation(anim2);
 
+    //set the grp-Group with the scene and the AnimationManager as viewer's scene data
     viewer.setSceneData( grp );
     return viewer.run();
 }

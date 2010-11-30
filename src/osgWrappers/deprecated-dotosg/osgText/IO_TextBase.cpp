@@ -30,6 +30,18 @@ bool TextBase_readLocalData(osg::Object &obj, osgDB::Input &fr)
     osgText::Text &text = static_cast<osgText::Text &>(obj);
     bool itAdvanced = false;
 
+    // color
+    if (fr[0].matchWord("color"))
+    {
+        osg::Vec4 c;
+        if (fr[1].getFloat(c.x()) && fr[2].getFloat(c.y()) && fr[3].getFloat(c.z()) && fr[4].getFloat(c.w()))
+        {
+            text.setColor(c);
+            fr += 4;
+            itAdvanced = true;
+        }
+    }
+
     if (fr.matchSequence("font %w"))
     {
         text.setFont(fr[1].getStr());
@@ -287,6 +299,10 @@ bool TextBase_readLocalData(osg::Object &obj, osgDB::Input &fr)
 bool TextBase_writeLocalData(const osg::Object &obj, osgDB::Output &fw)
 {
     const osgText::Text &text = static_cast<const osgText::Text &>(obj);
+
+    // color
+    osg::Vec4 c = text.getColor();
+    fw.indent() << "color " << c.x() << " " << c.y() << " " << c.z() << " " << c.w() << std::endl;
 
     if (text.getFont())
     {

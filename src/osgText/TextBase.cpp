@@ -31,6 +31,7 @@ using namespace osgText;
 //#define TREES_CODE_FOR_MAKING_SPACES_EDITABLE
 
 TextBase::TextBase():
+    _color(1.0f,1.0f,1.0f,1.0f),
     _fontSize(32,32),
     _characterHeight(32),
     _characterSizeMode(OBJECT_COORDS),
@@ -54,6 +55,7 @@ TextBase::TextBase():
 
 TextBase::TextBase(const TextBase& textBase,const osg::CopyOp& copyop):
     osg::Drawable(textBase,copyop),
+    _color(textBase._color),
     _font(textBase._font),
     _style(textBase._style),
     _fontSize(textBase._fontSize),
@@ -80,6 +82,12 @@ TextBase::TextBase(const TextBase& textBase,const osg::CopyOp& copyop):
 TextBase::~TextBase()
 {
 }
+
+void TextBase::setColor(const osg::Vec4& color)
+{
+    _color = color;
+}
+
 
 void TextBase::setFont(osg::ref_ptr<Font> font)
 {

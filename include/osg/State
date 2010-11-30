@@ -20,6 +20,7 @@
 #include <osg/Uniform>
 #include <osg/BufferObject>
 #include <osg/Observer>
+#include <osg/Timer>
 
 #include <osg/ShaderComposer>
 #include <osg/FrameStamp>
@@ -47,6 +48,16 @@
         #define GL_SECONDARY_COLOR_ARRAY GL_SECONDARY_COLOR_ARRAY_EXT
     #else
         #define GL_SECONDARY_COLOR_ARRAY 0x845E
+    #endif
+#endif
+
+#if !defined(GL_EXT_timer_query) && !defined(OSG_GL3_AVAILABLE)
+    #ifdef _WIN32
+        typedef          __int64 GLint64EXT;
+        typedef unsigned __int64 GLuint64EXT;
+    #else
+        typedef long long int GLint64EXT;
+        typedef unsigned long long int GLuint64EXT;
     #endif
 #endif
 
@@ -1242,7 +1253,7 @@ class OSG_EXPORT State : public Referenced, public Observer
         }
         inline const Program::PerContextProgram* getLastAppliedProgramObject() const { return _lastAppliedProgramObject; }
 
-        inline GLint getUniformLocation( const std::string& name ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getUniformLocation(name) : -1; }
+        inline GLint getUniformLocation( unsigned int uniformNameID ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getUniformLocation(uniformNameID) : -1; }
         inline GLint getAttribLocation( const std::string& name ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getAttribLocation(name) : -1; }
 
         typedef std::pair<const StateAttribute*,StateAttribute::OverrideValue>  AttributePair;
@@ -1365,6 +1376,31 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         /** get the helper class for dispatching osg::Arrays as OpenGL attribute data.*/
         inline ArrayDispatchers& getArrayDispatchers() { return _arrayDispatchers; }
+
+        /** Support for synchronizing the system time and the timestamp
+         * counter available with ARB_timer_query. Note that State
+         * doesn't update these values itself.
+         */
+        Timer_t getStartTick() const { return _startTick; }
+        void setStartTick(Timer_t tick) { _startTick = tick; }
+        Timer_t getGpuTick() const { return _gpuTick; }
+
+        double getGpuTime() const
+        {
+            return osg::Timer::instance()->delta_s(_startTick, _gpuTick);
+        }
+        GLuint64EXT getGpuTimestamp() const { return _gpuTimestamp; }
+
+        void setGpuTimestamp(Timer_t tick, GLuint64EXT timestamp)
+        {
+            _gpuTick = tick;
+            _gpuTimestamp = timestamp;
+        }
+        int getTimestampBits() const { return _timestampBits; }
+        void setTimestampBits(int bits) { _timestampBits = bits; }
+
+        /** called by the GraphicsContext just before GraphicsContext::swapBuffersImplementation().*/
+        virtual void frameCompleted();
 
     protected:
 
@@ -1776,7 +1812,10 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         GLBeginEndAdapter           _glBeginEndAdapter;
         ArrayDispatchers            _arrayDispatchers;
-
+        Timer_t                      _startTick;
+        Timer_t                      _gpuTick;
+        GLuint64EXT                 _gpuTimestamp;
+        int                         _timestampBits;
 };
 
 inline void State::pushModeList(ModeMap& modeMap,const StateSet::ModeList& modeList)

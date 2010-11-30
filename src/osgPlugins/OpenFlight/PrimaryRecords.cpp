@@ -615,6 +615,14 @@ public:
         }
     }
 
+    virtual void setMultiSwitchValueName(unsigned int switchSet, const std::string& name)
+    {
+        if (_multiSwitch.valid())
+        {
+            _multiSwitch->setValueName(switchSet, name);
+        }
+    }
+
 protected:
 
     virtual ~Switch() {}

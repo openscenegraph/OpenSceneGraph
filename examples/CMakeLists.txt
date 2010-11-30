@@ -115,6 +115,8 @@ IF(DYNAMIC_OPENSCENEGRAPH)
     ADD_SUBDIRECTORY(osgtexturerectangle)
     ADD_SUBDIRECTORY(osgtexturecompression)
     ADD_SUBDIRECTORY(osgthirdpersonview)
+    ADD_SUBDIRECTORY(osguniformbuffer)
+    ADD_SUBDIRECTORY(osguserstats)
     ADD_SUBDIRECTORY(osgvertexprogram)
     ADD_SUBDIRECTORY(osgvertexattributes)
     ADD_SUBDIRECTORY(osgvolume)
@@ -239,6 +241,12 @@ ELSE(DYNAMIC_OPENSCENEGRAPH)
     ADD_DEFINITIONS(-DOSG_LIBRARY_STATIC)
 
     ADD_SUBDIRECTORY(osgstaticviewer)
+
+    # IPHONE_PORT@tom
+    IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
+        ADD_SUBDIRECTORY(osgviewerIPhone)
+    ENDIF()
+     # IPHONE_PORT@tom
     
 ENDIF(DYNAMIC_OPENSCENEGRAPH)
 

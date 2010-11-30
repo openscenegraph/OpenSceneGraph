@@ -3,7 +3,7 @@
  * Copyright (C) 2008 Zebra Imaging
  *
  * This application is open source and may be redistributed and/or modified   
- * freely and without restriction, both in commericial and non commericial
+ * freely and without restriction, both in commercial and non commercial
  * applications, as long as this copyright notice is maintained.
  * 
  * This application is distributed in the hope that it will be useful,
@@ -21,6 +21,7 @@
 #include <osg/Program>
 #include <osg/StateSet>
 
+#include <limits.h>
 #include <algorithm>
 
 using namespace osg;
@@ -30,13 +31,13 @@ using namespace osg;
 ///////////////////////////////////////////////////////////////////////////
 
 Uniform::Uniform() :
-    _type(UNDEFINED), _numElements(0), _modifiedCount(0)
+    _type(UNDEFINED), _numElements(0), _nameID(UINT_MAX), _modifiedCount(0)
 {
 }
 
 
 Uniform::Uniform( Type type, const std::string& name, int numElements ) :
-    _type(type), _numElements(0), _modifiedCount(0)
+    _type(type), _numElements(0), _nameID(UINT_MAX), _modifiedCount(0)
 {
     setName(name);
     setNumElements(numElements);
@@ -87,7 +88,8 @@ void Uniform::setName( const std::string& name )
         OSG_WARN << "cannot change Uniform name" << std::endl;
         return;
     }
-    _name = name;
+    Object::setName(name);
+    _nameID = getNameID(_name);
 }
 
 void Uniform::setNumElements( unsigned int numElements )
@@ -255,6 +257,7 @@ void Uniform::copyData(const Uniform& rhs)
 {
     // caller must ensure that _type==rhs._type
     _numElements = rhs._numElements;
+    _nameID = rhs._nameID;
     if (rhs._floatArray.valid() || rhs._intArray.valid() || rhs._uintArray.valid()) allocateDataArray();
     if( _floatArray.valid() && rhs._floatArray.valid() ) *_floatArray = *rhs._floatArray;
     if( _intArray.valid() && rhs._intArray.valid() )     *_intArray = *rhs._intArray;
@@ -598,6 +601,24 @@ GLenum Uniform::getInternalArrayType( Type t )
     default:
         return 0;
     }
+}
+
+
+unsigned int Uniform::getNameID(const std::string& name)
+{
+    typedef std::map<std::string, unsigned int> UniformNameIDMap;
+    static OpenThreads::Mutex s_mutex_uniformNameIDMap;
+    static UniformNameIDMap s_uniformNameIDMap;
+
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_uniformNameIDMap);
+    UniformNameIDMap::iterator it = s_uniformNameIDMap.find(name);
+    if (it != s_uniformNameIDMap.end())
+    {
+        return it->second;
+    }
+    unsigned int id = s_uniformNameIDMap.size();
+    s_uniformNameIDMap.insert(UniformNameIDMap::value_type(name, id));
+    return id;
 }
 
 
@@ -1386,6 +1407,11 @@ bool Uniform::getElement( unsigned int index, bool& b0, bool& b1, bool& b2, bool
     b2 = ((*_intArray)[j+2] != 0);
     b3 = ((*_intArray)[j+3] != 0);
     return true;
+}
+
+unsigned int Uniform::getNameID() const
+{
+    return _nameID;
 }
 
 ///////////////////////////////////////////////////////////////////////////

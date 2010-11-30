@@ -48,7 +48,7 @@
 
 INCLUDE_DIRECTORIES( ${DIRECTSHOW_INLUDE_DIRS} )
 SET (TARGET_EXTERNAL_LIBRARIES
-    quartz comsuppw winmm d3d9 d3dx9 kernel32 user32 gdi32 winspool shell32 ole32 oleaut32 uuid comdlg32 advapi32
+    quartz comsuppw winmm d3d9 kernel32 user32 gdi32 winspool shell32 ole32 oleaut32 uuid comdlg32 advapi32
     )
     
 SET(TARGET_SRC 

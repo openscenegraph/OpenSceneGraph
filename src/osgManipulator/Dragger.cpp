@@ -309,9 +309,6 @@ bool Dragger::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& 
 
                 if (view->computeIntersections(ea.getX(),ea.getY(),intersections))
                 {
-                    _pointer.setCamera(view->getCamera());
-                    _pointer.setMousePosition(ea.getX(), ea.getY());
-
                     for(osgUtil::LineSegmentIntersector::Intersections::iterator hitr = intersections.begin();
                         hitr != intersections.end();
                         ++hitr)
@@ -327,6 +324,24 @@ bool Dragger::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& 
                         {
                             if (dragger==this)
                             {
+                                osg::Camera *rootCamera = view->getCamera();
+                                osg::NodePath nodePath = _pointer._hitList.front().first;
+                                osg::NodePath::reverse_iterator ritr;
+                                for(ritr = nodePath.rbegin();
+                                    ritr != nodePath.rend();
+                                    ++ritr)
+                                {
+                                    osg::Camera* camera = dynamic_cast<osg::Camera*>(*ritr);
+                                    if (camera && (camera->getReferenceFrame()!=osg::Transform::RELATIVE_RF || camera->getParents().empty()))
+                                    {
+                                         rootCamera = camera;
+                                         break;
+                                    }
+                                }
+
+                                _pointer.setCamera(rootCamera);
+                                _pointer.setMousePosition(ea.getX(), ea.getY());
+
                                 dragger->handle(_pointer, ea, aa);
                                 dragger->setDraggerActive(true);
                                 handled = true;
@@ -341,7 +356,7 @@ bool Dragger::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& 
                 if (_draggerActive)
                 {
                     _pointer._hitIter = _pointer._hitList.begin();
-                    _pointer.setCamera(view->getCamera());
+//                    _pointer.setCamera(view->getCamera());
                     _pointer.setMousePosition(ea.getX(), ea.getY());
 
                     handle(_pointer, ea, aa);

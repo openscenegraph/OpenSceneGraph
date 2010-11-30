@@ -18,7 +18,6 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Style
     ${HEADER_PATH}/TextBase
     ${HEADER_PATH}/Text
-    ${HEADER_PATH}/TextNode
     ${HEADER_PATH}/Text3D
     ${HEADER_PATH}/Version
 )
@@ -38,7 +37,6 @@ ADD_LIBRARY(${LIB_NAME}
     Style.cpp
     TextBase.cpp
     Text.cpp
-    TextNode.cpp
     Text3D.cpp
     Version.cpp
     ${OPENSCENEGRAPH_VERSIONINFO_RC}

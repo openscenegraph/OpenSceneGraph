@@ -30,6 +30,7 @@ unsigned int PrimitiveSet::getNumPrimitives() const
         case(TRIANGLE_STRIP):
         case(TRIANGLE_FAN):
         case(QUAD_STRIP):
+        case(PATCHES): 
         case(POLYGON): return 1;
     }
     return 0;
@@ -84,6 +85,7 @@ unsigned int DrawArrayLengths::getNumPrimitives() const
         case(TRIANGLE_STRIP):
         case(TRIANGLE_FAN):
         case(QUAD_STRIP):
+        case(PATCHES):
         case(POLYGON): return size();
     }
     return 0;

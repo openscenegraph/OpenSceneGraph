@@ -227,7 +227,8 @@ class OSG_EXPORT Geometry : public Drawable
 
         typedef std::vector< ref_ptr<PrimitiveSet> > PrimitiveSetList;
 
-        void setPrimitiveSetList(const PrimitiveSetList& primitives) { _primitives = primitives; dirtyDisplayList(); dirtyBound(); }
+        void setPrimitiveSetList(const PrimitiveSetList& primitives);
+        
         PrimitiveSetList& getPrimitiveSetList() { return _primitives; }
         const PrimitiveSetList& getPrimitiveSetList() const { return _primitives; }
 

@@ -1261,7 +1261,7 @@ bool Optimizer::FlattenStaticTransformsVisitor::removeTransforms(osg::Node* node
 }
 
 ////////////////////////////////////////////////////////////////////////////
-// CombineStatucTransforms
+// CombineStaticTransforms
 ////////////////////////////////////////////////////////////////////////////
 
 void Optimizer::CombineStaticTransformsVisitor::apply(osg::MatrixTransform& transform)
@@ -1851,6 +1851,49 @@ void Optimizer::MakeFastGeometryVisitor::checkGeode(osg::Geode& geode)
     }
 }
 
+/// Shortcut to get size of an array, even if pointer is NULL.
+inline unsigned int getSize(const osg::Array * a) { return a ? a->getNumElements() : 0; }
+
+/// When merging geometries, tests if two arrays can be merged, regarding to their number of components, and the number of vertices.
+bool isArrayCompatible(unsigned int numVertice1, unsigned int numVertice2, const osg::Array* compare1, const osg::Array* compare2)
+{
+    // Sumed up truth table:
+    //  If array (1 or 2) not empty and vertices empty => error, should not happen (allows simplification in formulae below)
+    //  If one side has both vertices and array, and the other side has only vertices => then arrays cannot be merged
+    //  Else, arrays can be merged
+    //assert(numVertice1 || !getSize(compare1));
+    //assert(numVertice2 || !getSize(compare2));
+    return !(   (numVertice1 && !getSize(compare1) && getSize(compare2))
+             || (numVertice2 && !getSize(compare2) && getSize(compare1)) );
+}
+
+/// Return true only if both geometries have same array type and if arrays (such as TexCoords) are compatible (i.e. both empty or both filled)
+bool isAbleToMerge(const osg::Geometry& g1, const osg::Geometry& g2)
+{
+    unsigned int numVertice1( getSize(g1.getVertexArray()) );
+    unsigned int numVertice2( getSize(g2.getVertexArray()) );
+
+    // first verify arrays size
+    if (!isArrayCompatible(numVertice1,numVertice2,g1.getNormalArray(),g2.getNormalArray()) ||
+        !isArrayCompatible(numVertice1,numVertice2,g1.getColorArray(),g2.getColorArray()) ||
+        !isArrayCompatible(numVertice1,numVertice2,g1.getSecondaryColorArray(),g2.getSecondaryColorArray()) ||
+        !isArrayCompatible(numVertice1,numVertice2,g1.getFogCoordArray(),g2.getFogCoordArray()) ||
+        g1.getNumTexCoordArrays()!=g2.getNumTexCoordArrays()) return false;
+
+    for (unsigned int eachTexCoordArray=0;eachTexCoordArray<g1.getNumTexCoordArrays();++eachTexCoordArray)
+    {
+        if (!isArrayCompatible(numVertice1,numVertice2,g1.getTexCoordArray(eachTexCoordArray),g2.getTexCoordArray(eachTexCoordArray))) return false;
+    }
+
+    // then verify data type compatibility
+    if (g1.getVertexArray() && g2.getVertexArray() && g1.getVertexArray()->getDataType()!=g2.getVertexArray()->getDataType()) return false;
+    if (g1.getNormalArray() && g2.getNormalArray() && g1.getNormalArray()->getDataType()!=g2.getNormalArray()->getDataType()) return false;
+    if (g1.getColorArray() && g2.getColorArray() && g1.getColorArray()->getDataType()!=g2.getColorArray()->getDataType()) return false;
+    if (g1.getSecondaryColorArray() && g2.getSecondaryColorArray() && g1.getSecondaryColorArray()->getDataType()!=g2.getSecondaryColorArray()->getDataType()) return false;
+    if (g1.getFogCoordArray() && g2.getNormalArray() && g1.getFogCoordArray()->getDataType()!=g2.getFogCoordArray()->getDataType()) return false;
+    return true;
+}
+
 bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
 {
     if (!isOperationPermissibleForObject(&geode)) return false;
@@ -1894,52 +1937,116 @@ bool Optimizer::MergeGeometryVisitor::mergeGeode(osg::Geode& geode)
         }
 
 #if 1
-        bool needToDoMerge = false;
-        MergeList mergeList;
+        // first try to group geometries with the same properties
+        // (i.e. array types) to avoid loss of data during merging
+        MergeList mergeListChecked;        // List of drawables just before merging, grouped by "compatibility" and vertex limit
+        MergeList mergeList;            // Intermediate list of drawables, grouped ony by "compatibility"
         for(GeometryDuplicateMap::iterator itr=geometryDuplicateMap.begin();
             itr!=geometryDuplicateMap.end();
             ++itr)
         {
-            mergeList.push_back(DuplicateList());
-            DuplicateList* duplicateList = &mergeList.back();
-            
-            if (itr->second.size()>1)
+            if (itr->second.empty()) continue;
+            if (itr->second.size()==1)
             {
-                std::sort(itr->second.begin(),itr->second.end(),LessGeometryPrimitiveType());
-                osg::Geometry* lhs = itr->second[0];
+                mergeList.push_back(DuplicateList());
+                DuplicateList* duplicateList = &mergeList.back();
+                duplicateList->push_back(itr->second[0]);
+                continue;
+            }
 
-                duplicateList->push_back(lhs);
-                
-                unsigned int numVertices = lhs->getVertexArray() ? lhs->getVertexArray()->getNumElements() : 0;
+            std::sort(itr->second.begin(),itr->second.end(),LessGeometryPrimitiveType());
 
-                for(DuplicateList::iterator dupItr=itr->second.begin()+1;
-                    dupItr!=itr->second.end();
-                    ++dupItr)
+            // initialize the temporary list by pushing the first geometry
+            MergeList mergeListTmp;
+            mergeListTmp.push_back(DuplicateList());
+            DuplicateList* duplicateList = &mergeListTmp.back();
+            duplicateList->push_back(itr->second[0]);
+
+            for(DuplicateList::iterator dupItr=itr->second.begin()+1;
+                dupItr!=itr->second.end();
+                ++dupItr)
+            {
+                osg::Geometry* geomToPush = *dupItr;
+
+                // try to group geomToPush with another geometry
+                MergeList::iterator eachMergeList=mergeListTmp.begin();
+                for(;eachMergeList!=mergeListTmp.end();++eachMergeList)
                 {
-                
-                    osg::Geometry* rhs = *dupItr;
-                    
-                    unsigned int numRhsVertices = rhs->getVertexArray() ? rhs->getVertexArray()->getNumElements() : 0;
-
-                    if (numVertices+numRhsVertices < _targetMaximumNumberOfVertices)
+                    if (!eachMergeList->empty() && eachMergeList->front()!=NULL
+                        && isAbleToMerge(*eachMergeList->front(),*geomToPush))
                     {
-                        duplicateList->push_back(rhs); 
-                        numVertices += numRhsVertices;
-                        needToDoMerge = true;
+                        eachMergeList->push_back(geomToPush);
+                        break;
                     }
-                    else
-                    {
-                        numVertices = numRhsVertices;
-                        mergeList.push_back(DuplicateList());
-                        duplicateList = &mergeList.back();
-                        duplicateList->push_back(rhs);
-                    }
+                }
 
+                // if no suitable group was found, then a new one is created
+                if (eachMergeList==mergeListTmp.end())
+                {
+                    mergeListTmp.push_back(DuplicateList());
+                    duplicateList = &mergeListTmp.back();
+                    duplicateList->push_back(geomToPush);
                 }
             }
-            else if (itr->second.size()>0)
+
+            // copy the group in the mergeListChecked
+            for(MergeList::iterator eachMergeList=mergeListTmp.begin();eachMergeList!=mergeListTmp.end();++eachMergeList)
             {
-                duplicateList->push_back(itr->second[0]);
+                mergeListChecked.push_back(*eachMergeList);
+            }
+        }
+
+        // then build merge list using _targetMaximumNumberOfVertices
+        bool needToDoMerge = false;
+        // dequeue each DuplicateList when vertices limit is reached or when all elements has been checked
+        for(;!mergeListChecked.empty();)
+        {
+            MergeList::iterator itr=mergeListChecked.begin();
+            DuplicateList& duplicateList(*itr);
+            if (duplicateList.size()==0)
+            {
+                mergeListChecked.erase(itr);
+                continue;
+            }
+
+            if (duplicateList.size()==1)
+            {
+                mergeList.push_back(duplicateList);
+                mergeListChecked.erase(itr);
+                continue;
+            }
+
+            unsigned int numVertices(duplicateList.front()->getVertexArray() ? duplicateList.front()->getVertexArray()->getNumElements() : 0);
+            DuplicateList::iterator eachGeom(duplicateList.begin()+1);
+            // until all geometries have been checked or _targetMaximumNumberOfVertices is reached 
+            for (;eachGeom!=duplicateList.end(); ++eachGeom)
+            {
+                unsigned int numAddVertices((*eachGeom)->getVertexArray() ? (*eachGeom)->getVertexArray()->getNumElements() : 0);
+                if (numVertices+numAddVertices<_targetMaximumNumberOfVertices)
+                {
+                    break;
+                }
+                else
+                {
+                    numVertices += numAddVertices;
+                }
+            }
+
+            // push back if bellow the limit
+            if (numVertices<_targetMaximumNumberOfVertices)
+            {
+                if (duplicateList.size()>1) needToDoMerge = true;
+                mergeList.push_back(duplicateList);
+                mergeListChecked.erase(itr);
+            }
+            // else split the list to store what is below the limit and retry on what is above
+            else
+            {
+                mergeList.push_back(DuplicateList());
+                DuplicateList* duplicateListResult = &mergeList.back();
+                duplicateListResult->insert(duplicateListResult->end(),duplicateList.begin(),eachGeom);
+                duplicateList.erase(duplicateList.begin(),eachGeom);
+                if (duplicateListResult->size()>1) needToDoMerge = true;
             }
         }
         
@@ -2272,25 +2379,26 @@ bool Optimizer::MergeGeometryVisitor::geometryContainsSharedArrays(osg::Geometry
 
 class MergeArrayVisitor : public osg::ArrayVisitor
 {
-    public:
-    
+    protected:
         osg::Array* _lhs;
         int         _offset;
-    
+    public:
         MergeArrayVisitor() :
             _lhs(0),
             _offset(0) {}
             
             
-        void merge(osg::Array* lhs,osg::Array* rhs, int offset=0)
+        /// try to merge the content of two arrays.
+        bool merge(osg::Array* lhs,osg::Array* rhs, int offset=0)
         {
-            if (lhs==0 || rhs==0) return;
-            if (lhs->getType()!=rhs->getType()) return;
+            if (lhs==0 || rhs==0) return true;
+            if (lhs->getType()!=rhs->getType()) return false;
             
             _lhs = lhs;
             _offset = offset;
             
             rhs->accept(*this);
+            return true;
         }
         
         template<typename T>
@@ -2353,8 +2461,10 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     {
 
         base = lhs.getVertexArray()->getNumElements();
-        merger.merge(lhs.getVertexArray(),rhs.getVertexArray());
-
+        if (!merger.merge(lhs.getVertexArray(),rhs.getVertexArray()))
+        {
+            OSG_DEBUG << "MergeGeometry: vertex array not merged. Some data may be lost." <<std::endl;
+        }
     }
     else if (rhs.getVertexArray())
     {
@@ -2366,8 +2476,10 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     {
 
         base = lhs.getVertexIndices()->getNumElements();
-        merger.merge(lhs.getVertexIndices(),rhs.getVertexIndices(),vbase);
-
+        if (!merger.merge(lhs.getVertexIndices(),rhs.getVertexIndices(),vbase))
+        {
+            OSG_DEBUG << "MergeGeometry: vertex indices not merged. Some data may be lost." <<std::endl;
+        }
     }
     else if (rhs.getVertexIndices())
     {
@@ -2379,7 +2491,10 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     unsigned int nbase = lhs.getNormalArray() ? lhs.getNormalArray()->getNumElements() : 0; 
     if (lhs.getNormalArray() && rhs.getNormalArray() && lhs.getNormalBinding()!=osg::Geometry::BIND_OVERALL)
     {
-        merger.merge(lhs.getNormalArray(),rhs.getNormalArray());
+        if (!merger.merge(lhs.getNormalArray(),rhs.getNormalArray()))
+        {
+            OSG_DEBUG << "MergeGeometry: normal array not merged. Some data may be lost." <<std::endl;
+        }
     }
     else if (rhs.getNormalArray())
     {
@@ -2388,7 +2503,10 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
 
     if (lhs.getNormalIndices() && rhs.getNormalIndices() && lhs.getNormalBinding()!=osg::Geometry::BIND_OVERALL)
     {
-        merger.merge(lhs.getNormalIndices(),rhs.getNormalIndices(),nbase);
+        if (!merger.merge(lhs.getNormalIndices(),rhs.getNormalIndices(),nbase))
+        {
+            OSG_DEBUG << "MergeGeometry: Vertex Array not merged. Some data may be lost." <<std::endl;
+        }
     }
     else if (rhs.getNormalIndices())
     {
@@ -2400,7 +2518,10 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     unsigned int cbase = lhs.getColorArray() ? lhs.getColorArray()->getNumElements() : 0; 
     if (lhs.getColorArray() && rhs.getColorArray() && lhs.getColorBinding()!=osg::Geometry::BIND_OVERALL)
     {
-        merger.merge(lhs.getColorArray(),rhs.getColorArray());
+        if (!merger.merge(lhs.getColorArray(),rhs.getColorArray()))
+        {
+            OSG_DEBUG << "MergeGeometry: color array not merged. Some data may be lost." <<std::endl;
+        }
     }
     else if (rhs.getColorArray())
     {
@@ -2409,7 +2530,10 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     
     if (lhs.getColorIndices() && rhs.getColorIndices() && lhs.getColorBinding()!=osg::Geometry::BIND_OVERALL)
     {
-        merger.merge(lhs.getColorIndices(),rhs.getColorIndices(),cbase);
+        if (!merger.merge(lhs.getColorIndices(),rhs.getColorIndices(),cbase))
+        {
+            OSG_DEBUG << "MergeGeometry: color indices not merged. Some data may be lost." <<std::endl;
+        }
     }
     else if (rhs.getColorIndices())
     {
@@ -2420,7 +2544,10 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     unsigned int scbase = lhs.getSecondaryColorArray() ? lhs.getSecondaryColorArray()->getNumElements() : 0; 
     if (lhs.getSecondaryColorArray() && rhs.getSecondaryColorArray() && lhs.getSecondaryColorBinding()!=osg::Geometry::BIND_OVERALL)
     {
-        merger.merge(lhs.getSecondaryColorArray(),rhs.getSecondaryColorArray());
+        if (!merger.merge(lhs.getSecondaryColorArray(),rhs.getSecondaryColorArray()))
+        {
+            OSG_DEBUG << "MergeGeometry: secondary color array not merged. Some data may be lost." <<std::endl;
+        }
     }
     else if (rhs.getSecondaryColorArray())
     {
@@ -2429,7 +2556,10 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     
     if (lhs.getSecondaryColorIndices() && rhs.getSecondaryColorIndices() && lhs.getSecondaryColorBinding()!=osg::Geometry::BIND_OVERALL)
     {
-        merger.merge(lhs.getSecondaryColorIndices(),rhs.getSecondaryColorIndices(),scbase);
+        if (!merger.merge(lhs.getSecondaryColorIndices(),rhs.getSecondaryColorIndices(),scbase))
+        {
+            OSG_DEBUG << "MergeGeometry: secondary color indices not merged. Some data may be lost." <<std::endl;
+        }
     }
     else if (rhs.getSecondaryColorIndices())
     {
@@ -2440,7 +2570,10 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     unsigned int fcbase = lhs.getFogCoordArray() ? lhs.getFogCoordArray()->getNumElements() : 0; 
     if (lhs.getFogCoordArray() && rhs.getFogCoordArray() && lhs.getFogCoordBinding()!=osg::Geometry::BIND_OVERALL)
     {
-        merger.merge(lhs.getFogCoordArray(),rhs.getFogCoordArray());
+        if (!merger.merge(lhs.getFogCoordArray(),rhs.getFogCoordArray()))
+        {
+            OSG_DEBUG << "MergeGeometry: fog coord array not merged. Some data may be lost." <<std::endl;
+        }
     }
     else if (rhs.getFogCoordArray())
     {
@@ -2449,7 +2582,10 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
 
     if (lhs.getFogCoordIndices() && rhs.getFogCoordIndices() && lhs.getFogCoordBinding()!=osg::Geometry::BIND_OVERALL)
     {
-        merger.merge(lhs.getFogCoordIndices(),rhs.getFogCoordIndices(),fcbase);
+        if (!merger.merge(lhs.getFogCoordIndices(),rhs.getFogCoordIndices(),fcbase))
+        {
+            OSG_DEBUG << "MergeGeometry: fog coord indices not merged. Some data may be lost." <<std::endl;
+        }
     }
     else if (rhs.getFogCoordIndices())
     {
@@ -2462,22 +2598,34 @@ bool Optimizer::MergeGeometryVisitor::mergeGeometry(osg::Geometry& lhs,osg::Geom
     for(unit=0;unit<lhs.getNumTexCoordArrays();++unit)
     {
         unsigned int tcbase = lhs.getTexCoordArray(unit) ? lhs.getTexCoordArray(unit)->getNumElements() : 0; 
-        merger.merge(lhs.getTexCoordArray(unit),rhs.getTexCoordArray(unit));
-        
+        if (!merger.merge(lhs.getTexCoordArray(unit),rhs.getTexCoordArray(unit)))
+        {
+            OSG_DEBUG << "MergeGeometry: tex coord array not merged. Some data may be lost." <<std::endl;
+        }
+
         if (lhs.getTexCoordIndices(unit) && rhs.getTexCoordIndices(unit))
         {
-            merger.merge(lhs.getTexCoordIndices(unit),rhs.getTexCoordIndices(unit),tcbase);
+            if (!merger.merge(lhs.getTexCoordIndices(unit),rhs.getTexCoordIndices(unit),tcbase))
+            {
+                OSG_DEBUG << "MergeGeometry: tex coord indices not merged. Some data may be lost." <<std::endl;
+            }
         }
     }
     
     for(unit=0;unit<lhs.getNumVertexAttribArrays();++unit)
     {
         unsigned int vabase = lhs.getVertexAttribArray(unit) ? lhs.getVertexAttribArray(unit)->getNumElements() : 0; 
-        merger.merge(lhs.getVertexAttribArray(unit),rhs.getVertexAttribArray(unit));
+        if (!merger.merge(lhs.getVertexAttribArray(unit),rhs.getVertexAttribArray(unit)))
+        {
+            OSG_DEBUG << "MergeGeometry: vertex attrib array not merged. Some data may be lost." <<std::endl;
+        }
         
         if (lhs.getVertexAttribIndices(unit) && rhs.getVertexAttribIndices(unit))
         {
-            merger.merge(lhs.getVertexAttribIndices(unit),rhs.getVertexAttribIndices(unit),vabase);
+            if (!merger.merge(lhs.getVertexAttribIndices(unit),rhs.getVertexAttribIndices(unit),vabase))
+            {
+                OSG_DEBUG << "MergeGeometry: vertex attrib indices not merged. Some data may be lost." <<std::endl;
+            }
         }
     }
 
@@ -3241,13 +3389,13 @@ void Optimizer::TextureAtlasBuilder::reset()
     _atlasList.clear();
 }
 
-void Optimizer::TextureAtlasBuilder::setMaximumAtlasSize(unsigned int width, unsigned int height)
+void Optimizer::TextureAtlasBuilder::setMaximumAtlasSize(int width, int height)
 {
     _maximumAtlasWidth = width;
     _maximumAtlasHeight = height;
 }
 
-void Optimizer::TextureAtlasBuilder::setMargin(unsigned int margin)
+void Optimizer::TextureAtlasBuilder::setMargin(int margin)
 {
     _margin = margin;
 }
@@ -3262,31 +3410,136 @@ void Optimizer::TextureAtlasBuilder::addSource(const osg::Texture2D* texture)
     if (!getSource(texture)) _sourceList.push_back(new Source(texture));
 }
 
+
+void Optimizer::TextureAtlasBuilder::completeRow(unsigned int indexAtlas)
+{
+    AtlasList::iterator aitr = _atlasList.begin() + indexAtlas;
+    //SourceList::iterator sitr = _sourceList.begin() + indexSource;
+    Atlas * atlas = aitr->get();
+    if(atlas->_indexFirstOfRow < atlas->_sourceList.size())
+    {
+        //Try to fill the row with smaller images.
+        int x_max = atlas->_width  - _margin;
+        int y_max = atlas->_height - _margin;
+        //int x_max = atlas->_maximumAtlasWidth  - _margin;
+        //int y_max = atlas->_maximumAtlasHeight - _margin;
+
+        // Fill last Row
+        for(SourceList::iterator sitr3 = _sourceList.begin(); sitr3 != _sourceList.end(); ++sitr3)
+        {
+            int x_min = atlas->_x + _margin;
+            int y_min = atlas->_y + _margin;
+            if (y_min >= y_max || x_min >= x_max) continue;
+
+            Source * source = sitr3->get();
+            if (source->_atlas || atlas->_image->getPixelFormat() != source->_image->getPixelFormat() || 
+                atlas->_image->getDataType() != source->_image->getDataType())
+            {
+                continue;
+            }
+
+            int image_s = source->_image->s();
+            int image_t = source->_image->t();
+            if (x_min + image_s <= x_max && y_min + image_t <= y_max)        // Test if the image can fit in the empty space.
+            {
+                source->_x = x_min;
+                source->_y = y_min;
+                //assert(source->_x + source->_image->s()+_margin <= atlas->_maximumAtlasWidth );        // "+_margin" and not "+2*_margin" because _x already takes the margin into account
+                //assert(source->_y + source->_image->t()+_margin <= atlas->_maximumAtlasHeight);
+                //assert(source->_x >= _margin);
+                //assert(source->_y >= _margin);
+                atlas->_x += image_s + 2*_margin;
+                //assert(atlas->_x <= atlas->_maximumAtlasWidth);
+                source->_atlas = atlas;
+                atlas->_sourceList.push_back(source);
+            }
+        }
+
+        // Fill the last column
+        SourceList srcListTmp;
+        for(SourceList::iterator sitr4 = atlas->_sourceList.begin() + atlas->_indexFirstOfRow;
+            sitr4 != atlas->_sourceList.end(); ++sitr4)
+        {
+            Source * srcAdded = sitr4->get();
+            int y_min = srcAdded->_y + srcAdded->_image->t() + 2 * _margin;
+            int x_min = srcAdded->_x;
+            int x_max = x_min + srcAdded->_image->s();        // Hides upper block's x_max
+            if (y_min >= y_max || x_min >= x_max) continue;
+
+            Source * maxWidthSource = NULL;
+            for(SourceList::iterator sitr2 = _sourceList.begin(); sitr2 != _sourceList.end(); ++sitr2)
+            {
+                Source * source = sitr2->get();
+                if (source->_atlas || atlas->_image->getPixelFormat() != source->_image->getPixelFormat() || 
+                    atlas->_image->getDataType() != source->_image->getDataType())
+                {
+                    continue;
+                }
+                int image_s = source->_image->s();
+                int image_t = source->_image->t();
+                if(x_min + image_s <= x_max && y_min + image_t <= y_max)        // Test if the image can fit in the empty space.
+                {
+                    if (maxWidthSource == NULL || maxWidthSource->_image->s() < source->_image->s())
+                    {
+                        maxWidthSource = source; //Keep the maximum width for source.
+                    }
+                }
+            }
+            if (maxWidthSource)
+            {
+                // Add the source with the max width to the atlas
+                maxWidthSource->_x = x_min;
+                maxWidthSource->_y = y_min;
+                maxWidthSource->_atlas = atlas;
+                srcListTmp.push_back(maxWidthSource); //Store the mawWidth source in the temporary vector.
+            }
+        }
+        for(SourceList::iterator itTmp = srcListTmp.begin(); itTmp != srcListTmp.end(); ++itTmp)
+        {
+            //Add the sources to the general list (wasn't possible in the loop using the iterator on the same list)
+            atlas->_sourceList.push_back(*itTmp);
+        }
+        atlas->_indexFirstOfRow = atlas->_sourceList.size();
+    }
+}
+
 void Optimizer::TextureAtlasBuilder::buildAtlas()
 {
-    // assign the source to the atlas
+    std::sort(_sourceList.begin(), _sourceList.end(), CompareSrc());        // Sort using the height of images
     _atlasList.clear();
     for(SourceList::iterator sitr = _sourceList.begin();
         sitr != _sourceList.end();
         ++sitr)
     {
-        Source* source = sitr->get();
-        if (source->suitableForAtlas(_maximumAtlasWidth,_maximumAtlasHeight,_margin))
+        Source * source = sitr->get();
+        if (!source->_atlas && source->suitableForAtlas(_maximumAtlasWidth,_maximumAtlasHeight,_margin))
         {
             bool addedSourceToAtlas = false;
             for(AtlasList::iterator aitr = _atlasList.begin();
                 aitr != _atlasList.end() && !addedSourceToAtlas;
                 ++aitr)
             {
-                OSG_INFO<<"checking source "<<source->_image->getFileName()<<" to see it it'll fit in atlas "<<aitr->get()<<std::endl;
-                if ((*aitr)->doesSourceFit(source))
+                if(!(*aitr)->_image || 
+                    ((*aitr)->_image->getPixelFormat() == (*sitr)->_image->getPixelFormat() &&
+                    (*aitr)->_image->getPacking() == (*sitr)->_image->getPacking()))
                 {
-                    addedSourceToAtlas = true;
-                    (*aitr)->addSource(source);
-                }
-                else
-                {
-                    OSG_INFO<<"source "<<source->_image->getFileName()<<" does not fit in atlas "<<aitr->get()<<std::endl;
+                    OSG_INFO<<"checking source "<<source->_image->getFileName()<<" to see it it'll fit in atlas "<<aitr->get()<<std::endl;
+                    Optimizer::TextureAtlasBuilder::Atlas::FitsIn fitsIn = (*aitr)->doesSourceFit(source);
+                    if (fitsIn == Optimizer::TextureAtlasBuilder::Atlas::YES)
+                    {
+                        addedSourceToAtlas = true;
+                        (*aitr)->addSource(source); // Add in the currentRow.
+                    }
+                    else if(fitsIn == Optimizer::TextureAtlasBuilder::Atlas::IN_NEXT_ROW)
+                    {
+                        completeRow(aitr - _atlasList.begin()); //Fill Empty spaces.
+                        addedSourceToAtlas = true;
+                        (*aitr)->addSource(source); // Add the source in the new row.
+                    }
+                    else
+                    {
+                        completeRow(aitr - _atlasList.begin()); //Fill Empty spaces before creating a new atlas.
+                    }
                 }
             }
 
@@ -3295,9 +3548,8 @@ void Optimizer::TextureAtlasBuilder::buildAtlas()
                 OSG_INFO<<"creating new Atlas for "<<source->_image->getFileName()<<std::endl;
 
                 osg::ref_ptr<Atlas> atlas = new Atlas(_maximumAtlasWidth,_maximumAtlasHeight,_margin);
-                _atlasList.push_back(atlas.get());
-                
-                atlas->addSource(source);
+                _atlasList.push_back(atlas);
+                if (!source->_atlas) atlas->addSource(source);
             }
         }
     }
@@ -3308,13 +3560,13 @@ void Optimizer::TextureAtlasBuilder::buildAtlas()
         aitr != _atlasList.end();
         ++aitr)
     {
-        Atlas* atlas = aitr->get();
+        osg::ref_ptr<Atlas> atlas = *aitr;
 
         if (atlas->_sourceList.size()==1)
         {
             // no point building an atlas with only one entry
             // so disconnect the source.
-            Source* source = atlas->_sourceList[0].get();
+            Source * source = atlas->_sourceList[0].get();
             source->_atlas = 0;
             atlas->_sourceList.clear();
         }
@@ -3324,14 +3576,11 @@ void Optimizer::TextureAtlasBuilder::buildAtlas()
             std::stringstream ostr;
             ostr<<"atlas_"<<activeAtlasList.size()<<".rgb";
             atlas->_image->setFileName(ostr.str());
-        
             activeAtlasList.push_back(atlas);
             atlas->clampToNearestPowerOfTwoSize();
             atlas->copySources();
-            
         }
     }
-    
     // keep only the active atlas'
     _atlasList.swap(activeAtlasList);
 
@@ -3419,7 +3668,7 @@ Optimizer::TextureAtlasBuilder::Source* Optimizer::TextureAtlasBuilder::getSourc
     return 0;
 }
 
-bool Optimizer::TextureAtlasBuilder::Source::suitableForAtlas(unsigned int maximumAtlasWidth, unsigned int maximumAtlasHeight, unsigned int margin)
+bool Optimizer::TextureAtlasBuilder::Source::suitableForAtlas(int maximumAtlasWidth, int maximumAtlasHeight, int margin)
 {
     if (!_image) return false;
     
@@ -3450,7 +3699,6 @@ bool Optimizer::TextureAtlasBuilder::Source::suitableForAtlas(unsigned int maxim
         // pixel size not byte aligned so report as not suitable to prevent other atlas code from having problems with byte boundaries.
         return false;
     }
-
     if (_texture.valid())
     {
 
@@ -3483,22 +3731,23 @@ osg::Matrix Optimizer::TextureAtlasBuilder::Source::computeTextureMatrix() const
     if (!_atlas) return osg::Matrix();
     if (!_image) return osg::Matrix();
     if (!(_atlas->_image)) return osg::Matrix();
-    
-    return osg::Matrix::scale(float(_image->s())/float(_atlas->_image->s()), float(_image->t())/float(_atlas->_image->t()), 1.0)*
-           osg::Matrix::translate(float(_x)/float(_atlas->_image->s()), float(_y)/float(_atlas->_image->t()), 0.0);
+
+    typedef osg::Matrix::value_type Float;
+    return osg::Matrix::scale(Float(_image->s())/Float(_atlas->_image->s()), Float(_image->t())/Float(_atlas->_image->t()), 1.0)*
+           osg::Matrix::translate(Float(_x)/Float(_atlas->_image->s()), Float(_y)/Float(_atlas->_image->t()), 0.0);
 }
 
-bool Optimizer::TextureAtlasBuilder::Atlas::doesSourceFit(Source* source)
+Optimizer::TextureAtlasBuilder::Atlas::FitsIn Optimizer::TextureAtlasBuilder::Atlas::doesSourceFit(Source* source)
 {
     // does the source have a valid image?
     const osg::Image* sourceImage = source->_image.get();
-    if (!sourceImage) return false;
+    if (!sourceImage) return NO;
     
     // does pixel format match?
     if (_image.valid())
     {
-        if (_image->getPixelFormat() != sourceImage->getPixelFormat()) return false;
-        if (_image->getDataType() != sourceImage->getDataType()) return false;
+        if (_image->getPixelFormat() != sourceImage->getPixelFormat()) return NO;
+        if (_image->getDataType() != sourceImage->getDataType()) return NO;
     }
     
     const osg::Texture2D* sourceTexture = source->_texture.get();
@@ -3508,20 +3757,20 @@ bool Optimizer::TextureAtlasBuilder::Atlas::doesSourceFit(Source* source)
             sourceTexture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::MIRROR)
         {
             // can't support repeating textures in texture atlas
-            return false;
+            return NO;
         }
 
         if (sourceTexture->getWrap(osg::Texture2D::WRAP_T)==osg::Texture2D::REPEAT ||
             sourceTexture->getWrap(osg::Texture2D::WRAP_T)==osg::Texture2D::MIRROR)
         {
             // can't support repeating textures in texture atlas
-            return false;
+            return NO;
         }
 
         if (sourceTexture->getReadPBuffer()!=0)
         {
             // pbuffer textures not suitable
-            return false;
+            return NO;
         }
 
         if (_texture.valid())
@@ -3536,55 +3785,55 @@ bool Optimizer::TextureAtlasBuilder::Atlas::doesSourceFit(Source* source)
             if (sourceUsesBorder!=atlasUsesBorder)
             {
                 // border wrapping does not match
-                return false;
+                return NO;
             }
 
             if (sourceUsesBorder)
             {
                 // border colours don't match
-                if (_texture->getBorderColor() != sourceTexture->getBorderColor()) return false;
+                if (_texture->getBorderColor() != sourceTexture->getBorderColor()) return NO;
             }
             
             if (_texture->getFilter(osg::Texture2D::MIN_FILTER) != sourceTexture->getFilter(osg::Texture2D::MIN_FILTER))
             {
                 // inconsitent min filters
-                return false;
+                return NO;
             }
  
             if (_texture->getFilter(osg::Texture2D::MAG_FILTER) != sourceTexture->getFilter(osg::Texture2D::MAG_FILTER))
             {
                 // inconsitent mag filters
-                return false;
+                return NO;
             }
             
             if (_texture->getMaxAnisotropy() != sourceTexture->getMaxAnisotropy())
             {
                 // anisotropy different.
-                return false;
+                return NO;
             }
             
             if (_texture->getInternalFormat() != sourceTexture->getInternalFormat())
             {
                 // internal formats inconistent
-                return false;
+                return NO;
             }
             
             if (_texture->getShadowCompareFunc() != sourceTexture->getShadowCompareFunc())
             {
                 // shadow functions inconsitent
-                return false;
+                return NO;
             }
                 
             if (_texture->getShadowTextureMode() != sourceTexture->getShadowTextureMode())
             {
                 // shadow texture mode inconsitent
-                return false;
+                return NO;
             }
 
             if (_texture->getShadowAmbient() != sourceTexture->getShadowAmbient())
             {
                 // shadow ambient inconsitent
-                return false;
+                return NO;
             }
         }
     }
@@ -3592,19 +3841,19 @@ bool Optimizer::TextureAtlasBuilder::Atlas::doesSourceFit(Source* source)
     if (sourceImage->s() + 2*_margin > _maximumAtlasWidth)
     {
         // image too big for Atlas
-        return false;
+        return NO;
     }
     
     if (sourceImage->t() + 2*_margin > _maximumAtlasHeight)
     {
         // image too big for Atlas
-        return false;
+        return NO;
     }
 
     if ((_y + sourceImage->t() + 2*_margin) > _maximumAtlasHeight)
     {
         // image doesn't have up space in height axis.
-        return false;
+        return NO;
     }
 
     // does the source fit in the current row?
@@ -3612,7 +3861,7 @@ bool Optimizer::TextureAtlasBuilder::Atlas::doesSourceFit(Source* source)
     {
         // yes it fits :-)
         OSG_INFO<<"Fits in current row"<<std::endl;
-        return true;
+        return YES;
     }
 
     // does the source fit in the new row up?
@@ -3620,11 +3869,11 @@ bool Optimizer::TextureAtlasBuilder::Atlas::doesSourceFit(Source* source)
     {
         // yes it fits :-)
         OSG_INFO<<"Fits in next row"<<std::endl;
-        return true;
+        return IN_NEXT_ROW;
     }
     
     // no space for the texture
-    return false;
+    return NO;
 }
 
 bool Optimizer::TextureAtlasBuilder::Atlas::addSource(Source* source)
@@ -3635,7 +3884,6 @@ bool Optimizer::TextureAtlasBuilder::Atlas::addSource(Source* source)
         OSG_INFO<<"source "<<source->_image->getFileName()<<" does not fit in atlas "<<this<<std::endl;
         return false;
     }
-    
     const osg::Image* sourceImage = source->_image.get();
     const osg::Texture2D* sourceTexture = source->_texture.get();
 
@@ -3643,10 +3891,11 @@ bool Optimizer::TextureAtlasBuilder::Atlas::addSource(Source* source)
     {
         // need to create an image of the same pixel format to store the atlas in
         _image = new osg::Image;
+        _image->setPacking(sourceImage->getPacking());
         _image->setPixelFormat(sourceImage->getPixelFormat());
         _image->setDataType(sourceImage->getDataType());
     }
-    
+
     if (!_texture && sourceTexture)
     {
         _texture = new osg::Texture2D(_image.get());
@@ -3688,7 +3937,7 @@ bool Optimizer::TextureAtlasBuilder::Atlas::addSource(Source* source)
         
         if (_x > _width) _width = _x;
         
-        unsigned int localTop = _y + sourceImage->t() + 2*_margin;
+        int localTop = _y + sourceImage->t() + 2*_margin;
         if ( localTop > _height) _height = localTop;
 
         return true;
@@ -3731,10 +3980,10 @@ bool Optimizer::TextureAtlasBuilder::Atlas::addSource(Source* source)
 
 void Optimizer::TextureAtlasBuilder::Atlas::clampToNearestPowerOfTwoSize()
 {
-    unsigned int w = 1;
+    int w = 1;
     while (w<_width) w *= 2;
 
-    unsigned int h = 1;
+    int h = 1;
     while (h<_height) h *= 2;
     
     OSG_INFO<<"Clamping "<<_width<<", "<<_height<<" to "<<w<<","<<h<<std::endl;
@@ -3746,10 +3995,13 @@ void Optimizer::TextureAtlasBuilder::Atlas::clampToNearestPowerOfTwoSize()
 
 void Optimizer::TextureAtlasBuilder::Atlas::copySources()
 {
+    GLenum pixelFormat = _image->getPixelFormat();
+    GLenum dataType = _image->getDataType();
+    GLenum packing = _image->getPacking();
     OSG_INFO<<"Allocated to "<<_width<<","<<_height<<std::endl;
     _image->allocateImage(_width,_height,1,
-                          _image->getPixelFormat(),_image->getDataType(),
-                          _image->getPacking());
+                          pixelFormat, dataType,
+                          packing);
                           
     {
         // clear memory
@@ -3759,6 +4011,7 @@ void Optimizer::TextureAtlasBuilder::Atlas::copySources()
     }        
 
     OSG_INFO<<"Atlas::copySources() "<<std::endl;
+
     for(SourceList::iterator itr = _sourceList.begin();
         itr !=_sourceList.end();
         ++itr)
@@ -3766,21 +4019,27 @@ void Optimizer::TextureAtlasBuilder::Atlas::copySources()
         Source* source = itr->get();
         Atlas* atlas = source->_atlas;
 
-        if (atlas)
+        if (atlas == this)
         {
             OSG_INFO<<"Copying image "<<source->_image->getFileName()<<" to "<<source->_x<<" ,"<<source->_y<<std::endl;
             OSG_INFO<<"        image size "<<source->_image->s()<<","<<source->_image->t()<<std::endl;
 
             const osg::Image* sourceImage = source->_image.get();
             osg::Image* atlasImage = atlas->_image.get();
-
+            //assert(sourceImage->getPacking() == atlasImage->getPacking()); //Test if packings are equals.
             unsigned int rowSize = sourceImage->getRowSizeInBytes();
             unsigned int pixelSizeInBits = sourceImage->getPixelSizeInBits();
             unsigned int pixelSizeInBytes = pixelSizeInBits/8;
             unsigned int marginSizeInBytes = pixelSizeInBytes*_margin;
 
-            unsigned int x = source->_x;
-            unsigned int y = source->_y;
+            //assert(atlas->_width  == static_cast<int>(atlasImage->s()));
+            //assert(atlas->_height == static_cast<int>(atlasImage->t()));
+            //assert(source->_x + static_cast<int>(source->_image->s())+_margin <= static_cast<int>(atlas->_image->s()));        // "+_margin" and not "+2*_margin" because _x already takes the margin into account
+            //assert(source->_y + static_cast<int>(source->_image->t())+_margin <= static_cast<int>(atlas->_image->t()));
+            //assert(source->_x >= _margin);
+            //assert(source->_y >= _margin);
+            int x = source->_x;
+            int y = source->_y;
 
             int t;
             for(t=0; t<sourceImage->t(); ++t, ++y)
@@ -3795,7 +4054,7 @@ void Optimizer::TextureAtlasBuilder::Atlas::copySources()
             
             // copy top row margin
             y = source->_y + sourceImage->t();
-            unsigned int m;
+            int m;
             for(m=0; m<_margin; ++m, ++y)
             {
                 unsigned char* destPtr = atlasImage->data(x, y);
@@ -4135,7 +4394,8 @@ void Optimizer::TextureAtlasVisitor::optimize()
             texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture::CLAMP);
         }
     }
-
+    //typedef std::list<osg::Texture2D *> SourceListTmp;
+    //SourceListTmp sourceToAdd;
     // add the textures as sources for the TextureAtlasBuilder
     for(titr = _textures.begin();
         titr != _textures.end();
@@ -4154,8 +4414,7 @@ void Optimizer::TextureAtlasVisitor::optimize()
             _builder.addSource(*titr);
         }
     }
-    
-    // build the atlas'
+
     _builder.buildAtlas();
 
 

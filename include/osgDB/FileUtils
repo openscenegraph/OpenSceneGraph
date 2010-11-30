@@ -66,11 +66,18 @@ extern OSGDB_EXPORT std::string findFileInDirectory(const std::string& fileName,
 /** simple list of names to represent a directory's contents. */
 typedef std::vector<std::string> DirectoryContents;
 
-/** return the contents of a directory.
-  * returns an empty array on any error.*/
+/** Return the contents of a directory.
+  * Return value will contain filenames only, not absolute paths.
+  * Returns an empty array on any error.*/
 extern OSGDB_EXPORT DirectoryContents getDirectoryContents(const std::string& dirName);
 
-
+/** Return the list of filenames that match the given filename with wildcards.
+  * Will only expand '*', and will not expand wildcards in directory, only in 
+  * filename part of the given filename. 
+  * Return value will contain path+filename so that if ever the above 
+  * limitation (expanding wildcards in directory) is fixed, client code will 
+  * still work unchanged. */
+extern OSGDB_EXPORT DirectoryContents expandWildcardsInFilename(const std::string& filename);
 
 namespace FileOpResult {
     enum Value

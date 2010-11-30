@@ -3,7 +3,7 @@
  * Copyright (C) 2008 Zebra Imaging
  *
  * This application is open source and may be redistributed and/or modified   
- * freely and without restriction, both in commericial and non commericial
+ * freely and without restriction, both in commercial and non commercial
  * applications, as long as this copyright notice is maintained.
  * 
  * This application is distributed in the hope that it will be useful,
@@ -241,7 +241,7 @@ class OSG_EXPORT Uniform : public Object
         Type getType() const { return _type; }
 
         /** Set the name of the glUniform, ensuring it is only set once.*/
-        void setName( const std::string& name );
+        virtual void setName( const std::string& name );
 
         /** Set the length of a uniform, ensuring it is only set once (1==scalar)*/
         void setNumElements( unsigned int numElements );
@@ -267,6 +267,9 @@ class OSG_EXPORT Uniform : public Object
 
         /** Return the internal data array type corresponding to a GLSL type */
         static GLenum getInternalArrayType( Type t );
+
+        /** Return the number that the name maps to uniquely */
+        static unsigned int getNameID(const std::string& name);
 
         /** convenient scalar (non-array) constructors w/ assignment */
         explicit Uniform( const char* name, float f );
@@ -472,6 +475,8 @@ class OSG_EXPORT Uniform : public Object
         inline void setModifiedCount(unsigned int mc) { _modifiedCount = mc; }
         inline unsigned int getModifiedCount() const { return _modifiedCount; }
 
+        /** Get the number that the Uniform's name maps to uniquely */
+        unsigned int getNameID() const;
 
         void apply(const GL2Extensions* ext, GLint location) const;
 
@@ -493,6 +498,8 @@ class OSG_EXPORT Uniform : public Object
 
         Type                _type;
         unsigned int        _numElements;
+        unsigned int        _nameID;
+
 
         // The internal data for osg::Uniforms are stored as an array of
         // getInternalArrayType() of length getInternalArrayNumElements().

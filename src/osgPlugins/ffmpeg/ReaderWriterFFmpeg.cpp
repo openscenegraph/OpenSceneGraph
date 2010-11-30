@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2010 Robert Osfield 
  *
  * This library is open source and may be redistributed and/or modified under  
  * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
@@ -13,6 +13,7 @@
 
 #include "FFmpegHeaders.hpp"
 #include "FFmpegImageStream.hpp"
+#include "FFmpegParameters.hpp"
 
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
@@ -46,9 +47,16 @@ public:
         supportsExtension("mkv",    "Matroska");
         supportsExtension("mjpeg",  "Motion JPEG");
         supportsExtension("mp4",    "MPEG-4");
-        supportsExtension("sav",    "MPEG-4");
-        supportsExtension("3gp",    "MPEG-4");
-        supportsExtension("sdp",    "MPEG-4");
+        supportsExtension("sav",    "Unknown");
+        supportsExtension("3gp",    "3G multi-media format");
+        supportsExtension("sdp",    "Session Description Protocol");
+        supportsExtension("m2ts",   "MPEG-2 Transport Stream");
+        
+        supportsOption("format",            "Force setting input format (e.g. vfwcap for Windows webcam)");
+        supportsOption("pixel_format",      "Set pixel format");
+        supportsOption("frame_size",              "Set frame size (e.g. 320x240)");
+        supportsOption("frame_rate",        "Set frame rate (e.g. 25)");
+        supportsOption("audio_sample_rate", "Set audio sampling rate (e.g. 44100)");
 
 #ifdef USE_AV_LOCK_MANAGER
         // enable thread locking
@@ -60,7 +68,6 @@ public:
 
     virtual ~ReaderWriterFFmpeg()
     {
-
     }
 
     virtual const char * className() const
@@ -68,16 +75,23 @@ public:
         return "ReaderWriterFFmpeg";
     }
 
-    virtual ReadResult readImage(const std::string & filename, const osgDB::ReaderWriter::Options * options) const
+    virtual ReadResult readImage(const std::string & filename, const osgDB::ReaderWriter::Options* options) const
     {
         const std::string ext = osgDB::getLowerCaseFileExtension(filename);
         if (ext=="ffmpeg") return readImage(osgDB::getNameLessExtension(filename),options);
 
         if (filename.compare(0, 5, "/dev/")==0)
         {
-            return readImageStream(filename, options);
+            return readImageStream(filename, NULL);
         }
-    
+
+        osg::ref_ptr<osgFFmpeg::FFmpegParameters> parameters(new osgFFmpeg::FFmpegParameters);
+        parseOptions(parameters.get(), options);
+        if (parameters->isFormatAvailable())
+        {
+            return readImageStream(filename, parameters.get());
+        }
+
         if (! acceptsExtension(ext))
             return ReadResult::FILE_NOT_HANDLED;
 
@@ -88,22 +102,36 @@ public:
         if (path.empty())
             return ReadResult::FILE_NOT_FOUND;
 
-        return readImageStream(path, options);
+        return readImageStream(path, parameters.get());
     }
     
-    ReadResult readImageStream(const std::string& filename, const osgDB::ReaderWriter::Options * options) const
+    ReadResult readImageStream(const std::string& filename, osgFFmpeg::FFmpegParameters* parameters) const
     {
         OSG_INFO << "ReaderWriterFFmpeg::readImage " << filename << std::endl;
 
         osg::ref_ptr<osgFFmpeg::FFmpegImageStream> image_stream(new osgFFmpeg::FFmpegImageStream);
 
-        if (! image_stream->open(filename))
+        if (! image_stream->open(filename, parameters))
             return ReadResult::FILE_NOT_HANDLED;
 
         return image_stream.release();
     }
 
 private:
+    
+    void parseOptions(osgFFmpeg::FFmpegParameters* parameters, const osgDB::ReaderWriter::Options * options) const
+    {
+        if (options && options->getNumPluginStringData()>0)
+        {
+            const FormatDescriptionMap& supportedOptList = supportedOptions();
+            for (FormatDescriptionMap::const_iterator itr = supportedOptList.begin();
+                 itr != supportedOptList.end(); ++itr)
+            {
+                const std::string& name = itr->first;
+                parameters->parse(name, options->getPluginStringData(name));
+            }
+        }
+    }
 
 #ifdef USE_AV_LOCK_MANAGER
     static int lockMgr(void **mutex, enum AVLockOp op)

@@ -12,7 +12,6 @@
 */
 
 #include <osgTerrain/Terrain>
-#include <osgTerrain/GeometryTechnique>
 #include <osgUtil/UpdateVisitor>
 
 #include <iterator>
@@ -25,10 +24,10 @@ using namespace osgTerrain;
 Terrain::Terrain():
     _sampleRatio(1.0),
     _verticalScale(1.0),
-    _blendingPolicy(TerrainTile::INHERIT)
+    _blendingPolicy(TerrainTile::INHERIT),
+    _equalizeBoundaries(false)
 {
     setNumChildrenRequiringUpdateTraversal(1);
-    _terrainTechnique = new GeometryTechnique;
 }
 
 Terrain::Terrain(const Terrain& ts, const osg::CopyOp& copyop):
@@ -36,6 +35,7 @@ Terrain::Terrain(const Terrain& ts, const osg::CopyOp& copyop):
     _sampleRatio(ts._sampleRatio),
     _verticalScale(ts._verticalScale),
     _blendingPolicy(ts._blendingPolicy),
+    _equalizeBoundaries(ts._equalizeBoundaries),
     _terrainTechnique(ts._terrainTechnique)
 {
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);
@@ -69,6 +69,13 @@ void Terrain::setVerticalScale(float scale)
     if (_verticalScale == scale) return;
     _verticalScale = scale;
     dirtyRegisteredTiles();
+}
+
+void Terrain::setEqualizeBoundaries(bool equalizeBoundaries)
+{
+  if(_equalizeBoundaries == equalizeBoundaries) return;
+  _equalizeBoundaries = equalizeBoundaries;
+  dirtyRegisteredTiles();
 }
 
 void Terrain::setBlendingPolicy(TerrainTile::BlendingPolicy policy)

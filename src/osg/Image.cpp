@@ -307,6 +307,10 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
         case(GL_COMPRESSED_RED_RGTC1_EXT):   return 1;
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT): return 2;
         case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT): return 2;    
+        case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG): return 3;
+        case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG): return 3;
+        case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG): return 4;
+        case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG): return 4;
         case(GL_COLOR_INDEX): return 1;
         case(GL_STENCIL_INDEX): return 1;
         case(GL_DEPTH_COMPONENT): return 1;
@@ -417,6 +421,11 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT): return 8;
         case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT): return 8;
 
+        case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG): return 4;
+        case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG): return 2;
+        case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG): return 4;
+        case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG): return 2;
+        
         default: break;
     }
 
@@ -551,6 +560,10 @@ bool Image::isCompressed() const
         case(GL_COMPRESSED_RED_RGTC1_EXT):
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT):
         case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT):
+        case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG): 
+        case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG):
+        case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG):
+        case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG):
             return true;
         default:
             return false;
@@ -1347,6 +1360,9 @@ Geode* osg::createGeodeForImage(osg::Image* image,float s,float t)
             float y = 1.0;
             float x = y*(s/t);
 
+            float texcoord_y_b = (image->getOrigin() == osg::Image::BOTTOM_LEFT) ? 0.0f : 1.0f;
+            float texcoord_y_t = (image->getOrigin() == osg::Image::BOTTOM_LEFT) ? 1.0f : 0.0f;
+
             // set up the texture.
 
 #if 0
@@ -1355,14 +1371,14 @@ Geode* osg::createGeodeForImage(osg::Image* image,float s,float t)
             texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
             //texture->setResizeNonPowerOfTwoHint(false);
             float texcoord_x = image->s();
-            float texcoord_y = image->t();
+            texcoord_y_b *= image->t();
+            texcoord_y_t *= image->t();
 #else
             osg::Texture2D* texture = new osg::Texture2D;
             texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
             texture->setFilter(osg::Texture::MAG_FILTER,osg::Texture::LINEAR);
             texture->setResizeNonPowerOfTwoHint(false);
             float texcoord_x = 1.0f;
-            float texcoord_y = 1.0f;
 #endif
             texture->setImage(image);
 
@@ -1384,10 +1400,10 @@ Geode* osg::createGeodeForImage(osg::Image* image,float s,float t)
             geom->setVertexArray(coords);
 
             Vec2Array* tcoords = new Vec2Array(4);
-            (*tcoords)[0].set(0.0f*texcoord_x,1.0f*texcoord_y);
-            (*tcoords)[1].set(0.0f*texcoord_x,0.0f*texcoord_y);
-            (*tcoords)[2].set(1.0f*texcoord_x,0.0f*texcoord_y);
-            (*tcoords)[3].set(1.0f*texcoord_x,1.0f*texcoord_y);
+            (*tcoords)[0].set(0.0f*texcoord_x,texcoord_y_t);
+            (*tcoords)[1].set(0.0f*texcoord_x,texcoord_y_b);
+            (*tcoords)[2].set(1.0f*texcoord_x,texcoord_y_b);
+            (*tcoords)[3].set(1.0f*texcoord_x,texcoord_y_t);
             geom->setTexCoordArray(0,tcoords);
 
             osg::Vec4Array* colours = new osg::Vec4Array(1);

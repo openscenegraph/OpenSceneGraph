@@ -1,6 +1,7 @@
 
 #include "FFmpegImageStream.hpp"
 #include "FFmpegAudioStream.hpp"
+#include "FFmpegParameters.hpp"
 
 #include <OpenThreads/ScopedLock>
 #include <osg/Notify>
@@ -60,11 +61,11 @@ FFmpegImageStream::~FFmpegImageStream()
 
 
 
-bool FFmpegImageStream::open(const std::string & filename)
+bool FFmpegImageStream::open(const std::string & filename, FFmpegParameters* parameters)
 {
     setFileName(filename);
 
-    if (! m_decoder->open(filename))
+    if (! m_decoder->open(filename, parameters))
         return false;
 
     setImage(

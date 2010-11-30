@@ -20,6 +20,7 @@
 
 #include <limits>
 #include <stdlib.h>
+#include <float.h>
 
 using namespace osg;
 
@@ -848,8 +849,8 @@ void Matrix_implementation::makeFrustum(double left, double right,
     // note transpose of Matrix_implementation wr.t OpenGL documentation, since the OSG use post multiplication rather than pre.
     double A = (right+left)/(right-left);
     double B = (top+bottom)/(top-bottom);
-    double C = -(zFar+zNear)/(zFar-zNear);
-    double D = -2.0*zFar*zNear/(zFar-zNear);
+    double C = (fabs(zFar)>DBL_MAX) ? -1. : -(zFar+zNear)/(zFar-zNear);
+    double D = (fabs(zFar)>DBL_MAX) ? -2.*zNear : -2.0*zFar*zNear/(zFar-zNear);
     SET_ROW(0, 2.0*zNear/(right-left),                    0.0, 0.0,  0.0 )
     SET_ROW(1,                    0.0, 2.0*zNear/(top-bottom), 0.0,  0.0 )
     SET_ROW(2,                      A,                      B,   C, -1.0 )
@@ -860,18 +861,23 @@ bool Matrix_implementation::getFrustum(double& left, double& right,
                                        double& bottom, double& top,
                                        double& zNear, double& zFar) const
 {
-    if (_mat[0][3]!=0.0 || _mat[1][3]!=0.0 || _mat[2][3]!=-1.0 || _mat[3][3]!=0.0) return false;
+    if (_mat[0][3]!=0.0 || _mat[1][3]!=0.0 || _mat[2][3]!=-1.0 || _mat[3][3]!=0.0)
+        return false;
 
+    // note: near and far must be used inside this method instead of zNear and zFar
+    // because zNear and zFar are references and they may point to the same variable.
+    double temp_near = _mat[3][2] / (_mat[2][2]-1.0);
+    double temp_far = _mat[3][2] / (1.0+_mat[2][2]);
 
-    zNear = _mat[3][2] / (_mat[2][2]-1.0);
-    zFar = _mat[3][2] / (1.0+_mat[2][2]);
+    left = temp_near * (_mat[2][0]-1.0) / _mat[0][0];
+    right = temp_near * (1.0+_mat[2][0]) / _mat[0][0];
+
+    top = temp_near * (1.0+_mat[2][1]) / _mat[1][1];
+    bottom = temp_near * (_mat[2][1]-1.0) / _mat[1][1];
     
-    left = zNear * (_mat[2][0]-1.0) / _mat[0][0];
-    right = zNear * (1.0+_mat[2][0]) / _mat[0][0];
+    zNear = temp_near;
+    zFar = temp_far;
 
-    top = zNear * (1.0+_mat[2][1]) / _mat[1][1];
-    bottom = zNear * (_mat[2][1]-1.0) / _mat[1][1];
-    
     return true;
 }                 
 
@@ -895,13 +901,22 @@ bool Matrix_implementation::getPerspective(double& fovy,double& aspectRatio,
     double left   =  0.0;
     double top    =  0.0;
     double bottom =  0.0;
-    if (getFrustum(left,right,bottom,top,zNear,zFar))
+
+    // note: near and far must be used inside this method instead of zNear and zFar
+    // because zNear and zFar are references and they may point to the same variable.
+    double temp_near   =  0.0;
+    double temp_far    =  0.0;
+
+    // get frustum and compute results
+    bool r = getFrustum(left,right,bottom,top,temp_near,temp_far);
+    if (r)
     {
-        fovy = RadiansToDegrees(atan(top/zNear)-atan(bottom/zNear));
+        fovy = RadiansToDegrees(atan(top/temp_near)-atan(bottom/temp_near));
         aspectRatio = (right-left)/(top-bottom);
-        return true;
     }
-    return false;
+    zNear = temp_near;
+    zFar = temp_far;
+    return r;
 }
 
 void Matrix_implementation::makeLookAt(const Vec3d& eye,const Vec3d& center,const Vec3d& up)
@@ -927,22 +942,36 @@ void Matrix_implementation::getLookAt(Vec3f& eye,Vec3f& center,Vec3f& up,value_t
 {
     Matrix_implementation inv;
     inv.invert(*this);
-    eye = osg::Vec3f(0.0,0.0,0.0)*inv;
+
+    // note: e and c variables must be used inside this method instead of eye and center
+    // because eye and center are references and they may point to the same variable.
+    Vec3f e = osg::Vec3f(0.0,0.0,0.0)*inv;
     up = transform3x3(*this,osg::Vec3f(0.0,1.0,0.0));
-    center = transform3x3(*this,osg::Vec3f(0.0,0.0,-1));
-    center.normalize();
-    center = eye + center*lookDistance;
+    Vec3f c = transform3x3(*this,osg::Vec3f(0.0,0.0,-1));
+    c.normalize();
+    c = e + c*lookDistance;
+
+    // assign the results
+    eye = e;
+    center = c;
 }
 
 void Matrix_implementation::getLookAt(Vec3d& eye,Vec3d& center,Vec3d& up,value_type lookDistance) const
 {
     Matrix_implementation inv;
     inv.invert(*this);
-    eye = osg::Vec3d(0.0,0.0,0.0)*inv;
+
+    // note: e and c variables must be used inside this method instead of eye and center
+    // because eye and center are references and they may point to the same variable.
+    Vec3d e = osg::Vec3d(0.0,0.0,0.0)*inv;
     up = transform3x3(*this,osg::Vec3d(0.0,1.0,0.0));
-    center = transform3x3(*this,osg::Vec3d(0.0,0.0,-1));
-    center.normalize();
-    center = eye + center*lookDistance;
+    Vec3d c = transform3x3(*this,osg::Vec3d(0.0,0.0,-1));
+    c.normalize();
+    c = e + c*lookDistance;
+
+    // assign the results
+    eye = e;
+    center = c;
 }
 
 #undef SET_ROW

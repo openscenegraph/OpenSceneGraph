@@ -39,7 +39,15 @@ FBOExtensions* FBOExtensions::instance(unsigned contextID, bool createIfNotInita
 /**************************************************************************
  * FBOExtensions
  **************************************************************************/
-#define LOAD_FBO_EXT(name) setGLExtensionFuncPtr(name, (#name), ( std::string(#name)+std::string("EXT") ).c_str() )
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+    #if defined(OSG_GLES1_AVAILABLE)
+        #define LOAD_FBO_EXT(name) setGLExtensionFuncPtr(name, (#name), (std::string(#name)+std::string("OES") ).c_str() )
+    #else
+        #define LOAD_FBO_EXT(name) setGLExtensionFuncPtr(name, (#name), std::string(#name).c_str() )
+    #endif
+#else
+    #define LOAD_FBO_EXT(name) setGLExtensionFuncPtr(name, (#name), (std::string(#name)+std::string("EXT") ).c_str() )
+#endif
 
 FBOExtensions::FBOExtensions(unsigned int contextID)
 :   glBindRenderbuffer(0),
@@ -571,7 +579,7 @@ void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachmen
             ext->glFramebufferTexture3D(target, attachment_point, GL_TEXTURE_3D, tobj->id(), _ximpl->level, _ximpl->zoffset);
         break;
     case Pimpl::TEXTURE2DARRAY:
-        if (_ximpl->cubeMapFace == Camera::FACE_CONTROLLED_BY_GEOMETRY_SHADER)
+        if (_ximpl->zoffset == Camera::FACE_CONTROLLED_BY_GEOMETRY_SHADER)
         {
             if (ext->glFramebufferTexture)
             {

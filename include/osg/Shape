@@ -428,6 +428,8 @@ class OSG_EXPORT InfinitePlane : public Shape, public Plane
         virtual ~InfinitePlane();
 };
 
+/** Exists to support collision detection engines not for doing rendering, use \ref osg::Geometry instead.
+ */
 class OSG_EXPORT TriangleMesh : public Shape
 {
     public:

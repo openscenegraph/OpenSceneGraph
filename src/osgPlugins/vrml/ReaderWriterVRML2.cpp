@@ -4,7 +4,10 @@
  *
  * VRML2 file converter for OpenSceneGraph.
  *
- * authors : Jan Ciger (jan.ciger@gmail.com),
+ * authors :
+ *           Johan Nouvel (johan_nouvel@yahoo.com) for the writeNode function. 
+ *
+ *           Jan Ciger (jan.ciger@gmail.com),
  *           Tolga Abaci (tolga.abaci@gmail.com),
  *           Bruno Herbelin (bruno.herbelin@gmail.com)
  *
@@ -16,6 +19,7 @@
  */
 
 #include "ReaderWriterVRML2.h"
+#include "ConvertToVRML.h"
 
 #include <iostream>
 #include <fstream>
@@ -110,16 +114,15 @@ class resource_fetcher: public openvrml::resource_fetcher
                         using std::find;
                         using std::string;
                         using boost::algorithm::iequals;
-                        using boost::next;
                         string media_type = "application/octet-stream";
 
                         const string::const_reverse_iterator dot_pos = find(this->url_.rbegin(), this->url_.rend(), '.');
-                        if (dot_pos == this->url_.rend() || next(dot_pos.base()) == this->url_.end())
+                        if (dot_pos == this->url_.rend() || boost::next(dot_pos.base()) == this->url_.end())
                         {
                             return media_type;
                         }
 
-                        const string::const_iterator hash_pos = find(next(dot_pos.base()), this->url_.end(), '#');
+                        const string::const_iterator hash_pos = find(boost::next(dot_pos.base()), this->url_.end(), '#');
                         const string ext(dot_pos.base(), hash_pos);
 
                         if (iequals(ext, "wrl") || iequals(ext, "vrml"))
@@ -223,6 +226,21 @@ osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string& f
     catch (openvrml::invalid_vrml) { return ReadResult::FILE_NOT_HANDLED; }
     catch (std::invalid_argument)  { return ReadResult::FILE_NOT_HANDLED; }
 }
+
+osgDB::ReaderWriter::WriteResult ReaderWriterVRML2::writeNode(const osg::Node& root,const std::string& filename, const osgDB::ReaderWriter::Options *options) const
+{
+  std::string ext = osgDB::getLowerCaseFileExtension(filename);
+  if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
+
+
+  osg::notify(osg::INFO) << "osgDB::ReaderWriterVRML::writeNode() Writing file "
+                         << filename << std::endl;
+
+  return(convertToVRML(root,filename,options));
+}
+
+
+
 
 osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
 {

@@ -42,7 +42,8 @@ GUIEventAdapter::GUIEventAdapter():
     _modKeyMask(0),
     _mouseYOrientation(Y_INCREASING_DOWNWARDS),
     _scrolling(),
-    _tabletPen()
+    _tabletPen(),
+    _touchData(NULL)
 {}
 
 GUIEventAdapter::GUIEventAdapter(const GUIEventAdapter& rhs,const osg::CopyOp& copyop):
@@ -67,7 +68,8 @@ GUIEventAdapter::GUIEventAdapter(const GUIEventAdapter& rhs,const osg::CopyOp& c
     _modKeyMask(rhs._modKeyMask),
     _mouseYOrientation(rhs._mouseYOrientation),
     _scrolling(rhs._scrolling),
-    _tabletPen(rhs._tabletPen)
+    _tabletPen(rhs._tabletPen),
+    _touchData(rhs._touchData)
 {}
 
 GUIEventAdapter::~GUIEventAdapter()
@@ -106,4 +108,15 @@ const osg::Matrix GUIEventAdapter::getPenOrientation() const
     osg::Matrix zrot = osg::Matrix::rotate ( zRad, osg::Vec3f(0.0f, 1.0f, 0.0f) );
     
     return ( zrot * yrot * xrot );
+}
+
+void GUIEventAdapter::addTouchPoint(unsigned int id, TouchPhase phase, float x, float y, unsigned int tapCount)
+{
+    if (!_touchData.valid()) {
+        _touchData = new TouchData();
+        setX(x);
+        setY(y);
+    }
+    
+    _touchData->addTouchPoint(id, phase, x, y, tapCount);
 }

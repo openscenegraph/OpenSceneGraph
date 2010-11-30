@@ -20,6 +20,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/GUIEventHandler
     ${HEADER_PATH}/KeySwitchMatrixManipulator
     ${HEADER_PATH}/CameraManipulator
+    ${HEADER_PATH}/MultiTouchTrackballManipulator
     ${HEADER_PATH}/NodeTrackerManipulator
     ${HEADER_PATH}/OrbitManipulator
     ${HEADER_PATH}/StandardManipulator
@@ -46,6 +47,7 @@ ADD_LIBRARY(${LIB_NAME}
     GUIEventHandler.cpp
     KeySwitchMatrixManipulator.cpp
     CameraManipulator.cpp
+    MultiTouchTrackballManipulator.cpp
     NodeTrackerManipulator.cpp
     OrbitManipulator.cpp
     StandardManipulator.cpp
@@ -56,6 +58,7 @@ ADD_LIBRARY(${LIB_NAME}
     UFOManipulator.cpp
     Version.cpp
     CameraViewSwitchManipulator.cpp
+    ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
 LINK_INTERNAL(${LIB_NAME}

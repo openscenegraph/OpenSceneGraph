@@ -2,5 +2,6 @@
 
 
 SET(TARGET_SRC osghud.cpp )
+SET(TARGET_ADDED_LIBRARIES osgManipulator )
 #### end var setup  ###
 SETUP_EXAMPLE(osghud)

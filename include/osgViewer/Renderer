@@ -21,38 +21,23 @@
 
 namespace osgViewer {
 
-class OSGVIEWER_EXPORT OpenGLQuerySupport
+class OSGVIEWER_EXPORT OpenGLQuerySupport : public osg::Referenced
 {
     public:
         OpenGLQuerySupport();
 
-        typedef std::pair<GLuint, int> QueryFrameNumberPair;
-        typedef std::list<QueryFrameNumberPair> QueryFrameNumberList;
-        typedef std::vector<GLuint> QueryList;
-
-        void setStartTick(osg::Timer_t startTick) { _startTick = startTick; }
-        osg::Timer_t getStartTick() const { return _startTick; }
-
-        void checkQuery(osg::Stats* stats);
+        virtual void checkQuery(osg::Stats* stats, osg::State* state,
+                                osg::Timer_t startTick) = 0;
         
-        GLuint createQueryObject();
-        void beginQuery(int frameNumber);
-        void endQuery();
-        void initialize(osg::State* state);
-
+        virtual void beginQuery(int frameNumber, osg::State* state) = 0;
+        virtual void endQuery(osg::State* state) = 0;
+        virtual void initialize(osg::State* state, osg::Timer_t startTick);
     protected:
 
-        osg::Timer_t                                _startTick;
-        bool                                        _initialized;
-        bool                                        _timerQuerySupported;
         const osg::Drawable::Extensions*            _extensions;
-        QueryFrameNumberList                        _queryFrameNumberList;
-        QueryList                                   _availableQueryObjects;
-        double                                      _previousQueryTime;
-
 };
 
-class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation, public OpenGLQuerySupport
+class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation
 {
     public:
 
@@ -132,7 +117,7 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation, public OpenGLQu
         bool getCameraRequiresSetUp() const;
 
     protected:
-    
+        void initialize(osg::State* state);
         virtual ~Renderer();
 
         virtual void updateSceneView(osgUtil::SceneView* sceneView);        
@@ -178,6 +163,9 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation, public OpenGLQu
         ThreadSafeQueue _availableQueue;
         ThreadSafeQueue _drawQueue;
 
+        bool _initialized;
+        osg::ref_ptr<OpenGLQuerySupport> _querySupport;
+        osg::Timer_t _startTick;
 };
 
 }

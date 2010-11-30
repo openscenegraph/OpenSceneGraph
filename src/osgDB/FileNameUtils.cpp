@@ -68,9 +68,9 @@ std::string osgDB::convertFileNameToWindowsStyle(const std::string& fileName)
     std::string new_fileName(fileName);
     
     std::string::size_type slash = 0;
-    while( (slash=new_fileName.find_first_of('/',slash)) != std::string::npos)
+    while( (slash=new_fileName.find_first_of(UNIX_PATH_SEPARATOR,slash)) != std::string::npos)
     {
-        new_fileName[slash]='\\';
+        new_fileName[slash]=WINDOWS_PATH_SEPARATOR;
     }
     return new_fileName;
 }
@@ -80,20 +80,29 @@ std::string osgDB::convertFileNameToUnixStyle(const std::string& fileName)
     std::string new_fileName(fileName);
     
     std::string::size_type slash = 0;
-    while( (slash=new_fileName.find_first_of('\\',slash)) != std::string::npos)
+    while( (slash=new_fileName.find_first_of(WINDOWS_PATH_SEPARATOR,slash)) != std::string::npos)
     {
-        new_fileName[slash]='/';
+        new_fileName[slash]=UNIX_PATH_SEPARATOR;
     }
 
     return new_fileName;
 }
 
+char osgDB::getNativePathSeparator()
+{
+#if defined(WIN32) && !defined(__CYGWIN__)
+    return WINDOWS_PATH_SEPARATOR;
+#else
+    return UNIX_PATH_SEPARATOR;
+#endif
+}
+
 bool osgDB::isFileNameNativeStyle(const std::string& fileName)
 {
 #if defined(WIN32) && !defined(__CYGWIN__)
-    return fileName.find('/') == std::string::npos; // return true if no unix style slash exist
+    return fileName.find(UNIX_PATH_SEPARATOR) == std::string::npos; // return true if no unix style slash exist
 #else
-    return fileName.find('\\') == std::string::npos; // return true if no windows style slash exist
+    return fileName.find(WINDOWS_PATH_SEPARATOR) == std::string::npos; // return true if no windows style backslash exist
 #endif
 }
 
@@ -245,11 +254,11 @@ std::string osgDB::getServerFileName(const std::string& filename)
 std::string osgDB::concatPaths(const std::string& left, const std::string& right)
 {
 #if defined(WIN32) && !defined(__CYGWIN__)
-    const char delimiterNative  = '\\';
-    const char delimiterForeign = '/';
+    const char delimiterNative  = WINDOWS_PATH_SEPARATOR;
+    const char delimiterForeign = UNIX_PATH_SEPARATOR;
 #else
-    const char delimiterNative  = '/';
-    const char delimiterForeign = '\\';
+    const char delimiterNative  = UNIX_PATH_SEPARATOR;
+    const char delimiterForeign = WINDOWS_PATH_SEPARATOR;
 #endif
 
     if(left.empty())
@@ -299,7 +308,7 @@ std::string osgDB::getRealPath(const std::string& path)
         if (0 == GetLongPathName(tempbuf1, tempbuf2, sizeof(tempbuf2)))
             return std::string(retbuf);
         FilePath = std::string(tempbuf2);
-        FilePath.append("\\");
+        FilePath += WINDOWS_PATH_SEPARATOR;
         FilePath.append(getSimpleFileName(std::string(retbuf)));
         return FilePath;
     }

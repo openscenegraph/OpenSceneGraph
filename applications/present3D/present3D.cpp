@@ -56,27 +56,63 @@
     #include "SDLIntegration.h"
 #endif
 
-#if OSG_LIBRARY_STATIC
+#ifdef OSG_LIBRARY_STATIC
 
     // include the plugins we need
     USE_OSGPLUGIN(ive)
     USE_OSGPLUGIN(osg)
+    USE_OSGPLUGIN(osg2)
     USE_OSGPLUGIN(p3d)
     USE_OSGPLUGIN(paths)
-
-    USE_OSGPLUGIN(freetype)
     USE_OSGPLUGIN(rgb)
-    USE_OSGPLUGIN(png)
-    USE_OSGPLUGIN(jpeg)
-
-    USE_OSGPLUGIN(ffmpeg)
-    USE_OSGPLUGIN(pdf)
-
     USE_OSGPLUGIN(OpenFlight)
     USE_OSGPLUGIN(obj)
 
-    USE_OSGPLUGIN(curl)
+#ifdef USE_FREETYPE
+    USE_OSGPLUGIN(freetype)
+#endif
 
+#ifdef USE_PNG
+    USE_OSGPLUGIN(png)
+#endif
+
+#ifdef USE_JPEG
+    USE_OSGPLUGIN(jpeg)
+#endif
+
+#ifdef USE_FFMPEG
+    USE_OSGPLUGIN(ffmpeg)
+#endif
+
+#ifdef USE_POPPLER_CAIRO
+    USE_OSGPLUGIN(pdf)
+#endif
+
+#ifdef USE_CURL
+    USE_OSGPLUGIN(curl)
+#endif
+
+    USE_DOTOSGWRAPPER_LIBRARY(osg)
+    USE_DOTOSGWRAPPER_LIBRARY(osgFX)
+    USE_DOTOSGWRAPPER_LIBRARY(osgParticle)
+    USE_DOTOSGWRAPPER_LIBRARY(osgShadow)
+    USE_DOTOSGWRAPPER_LIBRARY(osgSim)
+    USE_DOTOSGWRAPPER_LIBRARY(osgTerrain)
+    USE_DOTOSGWRAPPER_LIBRARY(osgText)
+    USE_DOTOSGWRAPPER_LIBRARY(osgViewer)
+    USE_DOTOSGWRAPPER_LIBRARY(osgVolume)
+    USE_DOTOSGWRAPPER_LIBRARY(osgWidget)
+
+    USE_SERIALIZER_WRAPPER_LIBRARY(osg)
+    USE_SERIALIZER_WRAPPER_LIBRARY(osgAnimation)
+    USE_SERIALIZER_WRAPPER_LIBRARY(osgFX)
+    USE_SERIALIZER_WRAPPER_LIBRARY(osgManipulator)
+    USE_SERIALIZER_WRAPPER_LIBRARY(osgParticle)
+    USE_SERIALIZER_WRAPPER_LIBRARY(osgShadow)
+    USE_SERIALIZER_WRAPPER_LIBRARY(osgSim)
+    USE_SERIALIZER_WRAPPER_LIBRARY(osgTerrain)
+    USE_SERIALIZER_WRAPPER_LIBRARY(osgText)
+    USE_SERIALIZER_WRAPPER_LIBRARY(osgVolume)
 
     // include the platform specific GraphicsWindow implementation.
     USE_GRAPHICSWINDOW()

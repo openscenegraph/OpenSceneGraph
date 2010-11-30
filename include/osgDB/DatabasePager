@@ -234,31 +234,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         unsigned int getTargetMaximumNumberOfPageLOD() const { return _targetMaximumNumberOfPageLOD; }
 
 
-        /** Deprecated.*/
-        void setExpiryDelay(double expiryDelay) { _expiryDelay = expiryDelay; }
-        
-        /** Deprecated.*/
-        double getExpiryDelay() const { return _expiryDelay; }
-
-        /** Deprecated.*/
-        void setExpiryFrames(int expiryFrames) { _expiryFrames = expiryFrames; }
-        
-        /** Deprecated.*/
-        int getExpiryFrames() const { return _expiryFrames; }
-
-        /** Deprecated.*/
-        void setReleaseDelay(double releaseDelay);
-        
-        /** Deprecated.*/
-        double getReleaseDelay() const { return _releaseDelay; }
-
-        /** Deprecated.*/
-        void setReleaseFrames(int releaseFrames) { _releaseFrames = releaseFrames; }
-        
-        /** Deprecated.*/
-        int getReleaseFrames() const { return _releaseFrames; }
-
-
         /** Set whether the removed subgraphs should be deleted in the database thread or not.*/
         void setDeleteRemovedSubgraphsInDatabaseThread(bool flag) { _deleteRemovedSubgraphsInDatabaseThread = flag; }
         
@@ -587,7 +562,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         void compileCompleted(DatabaseRequest* databaseRequest);
 
-        /** Iterate through the active PagedLOD nodes children removing 
+        /** Iterate through the active PagedLOD nodes children removing
           * children which havn't been visited since specified expiryTime.
           * note, should be only be called from the update thread. */
         virtual void removeExpiredSubgraphs(const osg::FrameStamp &frameStamp);
@@ -599,7 +574,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         bool                            _done;
         bool                            _acceptNewRequests;
         bool                            _databasePagerThreadPaused;
-    
+
         DatabaseThreadList              _databaseThreads;
 
         int                             _numFramesActive;
@@ -609,7 +584,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         osg::ref_ptr<ReadQueue>         _fileRequestQueue;
         osg::ref_ptr<ReadQueue>         _httpRequestQueue;
 
-         
+
         osg::ref_ptr<RequestQueue>      _dataToCompileList;
 
         DrawablePolicy                  _drawablePolicy;
@@ -622,39 +597,33 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         bool                            _deleteRemovedSubgraphsInDatabaseThread;
 
         osg::ref_ptr<RequestQueue>      _dataToMergeList;
-        
+
         osg::ref_ptr<PagedLODList>      _activePagedLODList;
         osg::ref_ptr<PagedLODList>      _inactivePagedLODList;
-        
+
         unsigned int                    _targetMaximumNumberOfPageLOD;
-
-        double                          _expiryDelay;
-        int                             _expiryFrames;
-
-        double                          _releaseDelay;
-        int                             _releaseFrames;
 
         ActiveGraphicsContexts          _activeGraphicsContexts;
         // CompileGraphicsContexts         _compileGraphicsContexts;
-        
+
         bool                            _doPreCompile;
         osg::ref_ptr<osgUtil::IncrementalCompileOperation>  _incrementalCompileOperation;
 
         double                          _targetFrameRate;
         double                          _minimumTimeAvailableForGLCompileAndDeletePerFrame;
         unsigned int                    _maximumNumOfObjectsToCompilePerFrame;
-        
+
         double                          _minimumTimeToMergeTile;
         double                          _maximumTimeToMergeTile;
         double                          _totalTimeToMergeTiles;
         unsigned int                    _numTilesMerges;
-        
+
         struct CompileOperation : public osg::GraphicsOperation
         {
             CompileOperation(DatabasePager* databasePager);
-            
+
             virtual void operator () (osg::GraphicsContext* context);
-            
+
             osg::observer_ptr<DatabasePager> _databasePager;
         };
 };

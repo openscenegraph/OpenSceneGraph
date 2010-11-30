@@ -24,46 +24,26 @@ using namespace osgDB;
 static std::string s_lastSchema;
 
 InputStream::InputStream( const osgDB::Options* options )
-    :   _byteSwap(0), _useSchemaData(false), _forceReadingImage(false), _dataDecompress(0)
+    :   _fileVersion(0), _byteSwap(0), _useSchemaData(false), _forceReadingImage(false), _dataDecompress(0)
 {
     if ( !options ) return;
     _options = options;
     
     std::string schema;
-    StringList optionList;
-    split( options->getOptionString(), optionList );
-    for ( StringList::iterator itr=optionList.begin(); itr!=optionList.end(); ++itr )
+    if ( options->getPluginStringData("ForceReadingImage")=="true" )
+        _forceReadingImage = true;
+    if ( !options->getPluginStringData("SchemaFile").empty() )
     {
-        const std::string& option = *itr;
-        if ( option=="Ascii" )
+        schema = options->getPluginStringData("SchemaFile");
+        if ( s_lastSchema!=schema )
         {
-            // Omit this
-        }
-        else if ( option=="ForceReadingImage" )
-        {
-            _forceReadingImage = true;
-        }
-        else
-        {
-            StringList keyAndValues;
-            split( option, keyAndValues, '=' );
-            if ( keyAndValues.size()<2 ) continue;
-            
-            if ( keyAndValues[0]=="SchemaFile" )
-            {
-                schema = keyAndValues[1];
-                if ( s_lastSchema!=schema )
-                {
-                    osgDB::ifstream schemaStream( schema.c_str(), std::ios::in );
-                    if ( !schemaStream.fail() ) readSchema( schemaStream );
-                    schemaStream.close();
-                    s_lastSchema = schema;
-                }
-            }
-            else
-                OSG_WARN << "InputStream: Unknown option " << option << std::endl;
+            osgDB::ifstream schemaStream( schema.c_str(), std::ios::in );
+            if ( !schemaStream.fail() ) readSchema( schemaStream );
+            schemaStream.close();
+            s_lastSchema = schema;
         }
     }
+    
     if ( schema.empty() )
     {
         resetSchema();
@@ -733,13 +713,8 @@ InputStream::ReadType InputStream::start( InputIterator* inIterator )
         *this >> PROPERTY("#Generator") >> osgName >> osgVersion;
     }
     
-    // Check file version
-    if ( version!=PLUGIN_VERSION )
-    {
-        OSG_WARN << "InputStream: Input data version " << version
-                               << " may be incompatible with current reader version "
-                               << PLUGIN_VERSION << std::endl;
-    }
+    // Record file version for back-compatibility checking of wrappers
+    _fileVersion = version;
     _fields.pop_back();
     return type;
 }
@@ -793,9 +768,25 @@ void InputStream::setWrapperSchema( const std::string& name, const std::string& 
         return;
     }
     
-    StringList schema;
+    StringList schema, methods, keyAndValue;
+    std::vector<int> types;
     split( properties, schema );
-    wrapper->readSchema( schema );
+    for ( StringList::iterator itr=schema.begin(); itr!=schema.end(); ++itr )
+    {
+        split( *itr, keyAndValue, ':' );
+        if ( keyAndValue.size()>1 )
+        {
+            methods.push_back( keyAndValue.front() );
+            types.push_back( atoi(keyAndValue.back().c_str()) );
+        }
+        else
+        {
+            methods.push_back( *itr );
+            types.push_back( 0 );
+        }
+        keyAndValue.clear();
+    }
+    wrapper->readSchema( methods, types );
 }
 
 void InputStream::resetSchema()

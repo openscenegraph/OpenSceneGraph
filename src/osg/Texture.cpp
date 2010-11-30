@@ -91,12 +91,19 @@ void Texture::TextureObject::setAllocated(GLint     numMipmapLevels,
     _allocated=true;
     if (!match(_profile._target,numMipmapLevels,internalFormat,width,height,depth,border))
     {
+        // keep previous size
+        unsigned int previousSize = _profile._size;
+
         _profile.set(numMipmapLevels,internalFormat,width,height,depth,border);
 
         if (_set)
         {
             _set->moveToSet(this, _set->getParent()->getTextureObjectSet(_profile));
-        }
+
+            // Update texture pool size
+            _set->getParent()->getCurrTexturePoolSize() -= previousSize;
+            _set->getParent()->getCurrTexturePoolSize() += _profile._size;
+       }
     }
 }
 
@@ -135,6 +142,11 @@ void Texture::TextureProfile::computeSize()
         case(GL_COMPRESSED_RED_RGTC1_EXT):              numBitsPerTexel = 4; break;
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT): numBitsPerTexel = 8; break;
         case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT):        numBitsPerTexel = 8; break;
+
+        case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG):  numBitsPerTexel = 2; break;
+        case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG): numBitsPerTexel = 2; break;
+        case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG):  numBitsPerTexel = 4; break;
+        case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG): numBitsPerTexel = 4; break;
     }
 
     _size = (unsigned int)(ceil(double(_width * _height * _depth * numBitsPerTexel)/8.0));
@@ -381,18 +393,49 @@ void Texture::TextureObjectSet::flushDeletedTextureObjects(double currentTime, d
 {
     // OSG_NOTICE<<"Texture::TextureObjectSet::flushDeletedTextureObjects(..)"<<std::endl;
 
+
+
+    if (_parent->getCurrTexturePoolSize()<=_parent->getMaxTexturePoolSize())
+    {
+        // OSG_NOTICE<<"Plenty of space in TexturePool"<<std::endl;
+        return;
+    }
+
+#if 1
+    if (!_pendingOrphanedTextureObjects.empty())
+    {
+        // OSG_NOTICE<<"Texture::TextureObjectSet::flushDeletedTextureObjects(..) handling orphans"<<std::endl;
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        handlePendingOrphandedTextureObjects();
+    }
+#endif
+
     // if nothing to delete return
-    if (_orphanedTextureObjects.empty()) return;
+    if (_orphanedTextureObjects.empty())
+    {
+        return;
+    }
 
     // if no time available don't try to flush objects.
     if (availableTime<=0.0) return;
 
+#if 0
     // if we don't have too many orphaned texture objects then don't bother deleting them, as we can potentially reuse them later.
     if (_parent->getNumberOrphanedTextureObjects()<=s_minimumNumberOfTextureObjectsToRetainInCache) return;
 
     unsigned int numDeleted = 0;
     unsigned int maxNumObjectsToDelete = _parent->getNumberOrphanedTextureObjects()-s_minimumNumberOfTextureObjectsToRetainInCache;
     if (maxNumObjectsToDelete>4) maxNumObjectsToDelete = 4;
+
+#else
+
+    unsigned int numDeleted = 0;
+    unsigned int sizeRequired = _parent->getCurrTexturePoolSize() - _parent->getMaxTexturePoolSize();
+    unsigned int maxNumObjectsToDelete = static_cast<unsigned int>(ceil(double(sizeRequired) / double(_profile._size)));
+    // OSG_NOTICE<<"_parent->getCurrTexturePoolSize()="<<_parent->getCurrTexturePoolSize() <<" _parent->getMaxTexturePoolSize()="<< _parent->getMaxTexturePoolSize()<<std::endl;
+    // OSG_NOTICE<<"Looking to reclaim "<<sizeRequired<<", going to look to remove "<<maxNumObjectsToDelete<<" from "<<_orphanedTextureObjects.size()<<" orhpans"<<std::endl;
+
+#endif
 
     ElapsedTime timer;
 
@@ -428,6 +471,15 @@ void Texture::TextureObjectSet::flushDeletedTextureObjects(double currentTime, d
 
 bool Texture::TextureObjectSet::makeSpace(unsigned int& size)
 {
+#if 1
+    if (!_pendingOrphanedTextureObjects.empty())
+    {
+        // OSG_NOTICE<<"Texture::TextureObjectSet::Texture::TextureObjectSet::makeSpace(..) handling orphans"<<std::endl;
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        handlePendingOrphandedTextureObjects();
+    }
+#endif
+
     if (!_orphanedTextureObjects.empty())
     {
         unsigned int sizeAvailable = _orphanedTextureObjects.size() * _profile._size;
@@ -829,6 +881,14 @@ void Texture::TextureObjectManager::discardAllDeletedTextureObjects()
 void Texture::TextureObjectManager::flushDeletedTextureObjects(double currentTime, double& availableTime)
 {
     ElapsedTime elapsedTime(&(getDeleteTime()));
+
+    static double max_ratio = 0.0f;
+    double ratio = double(getCurrTexturePoolSize())/double(getMaxTexturePoolSize());
+    if (ratio>max_ratio)
+    {
+        max_ratio = ratio;
+    }
+    // OSG_NOTICE<<"TexturePool Size ratio "<<ratio<<", max ratio "<<max_ratio<<std::endl;
 
     for(TextureSetMap::iterator itr = _textureSetMap.begin();
         (itr != _textureSetMap.end()) && (availableTime > 0.0);
@@ -1351,6 +1411,10 @@ bool Texture::isCompressedInternalFormat(GLint internalFormat)
         case(GL_COMPRESSED_RED_RGTC1_EXT):
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT):
         case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT):
+        case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG):
+        case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG):
+        case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG):
+        case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG):
             return true;
         default:
             return false;
@@ -1367,6 +1431,38 @@ void Texture::getCompressedSize(GLenum internalFormat, GLint width, GLint height
         blockSize = 8;
     else if (internalFormat == GL_COMPRESSED_RED_GREEN_RGTC2_EXT || internalFormat == GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT)
         blockSize = 16;    
+    else if (internalFormat == GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG || internalFormat == GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG)
+    {
+         blockSize = 8 * 4; // Pixel by pixel block size for 2bpp
+         GLint widthBlocks = width / 8;
+         GLint heightBlocks = height / 4;
+         GLint bpp = 2;
+         
+         // Clamp to minimum number of blocks
+         if(widthBlocks < 2)
+             widthBlocks = 2;
+         if(heightBlocks < 2)
+             heightBlocks = 2;
+         
+         size = widthBlocks * heightBlocks * ((blockSize  * bpp) / 8);    
+         return;
+     }
+    else if (internalFormat == GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG || internalFormat == GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG)
+    {
+         blockSize = 4 * 4; // Pixel by pixel block size for 4bpp
+         GLint widthBlocks = width / 4;
+         GLint heightBlocks = height / 4;
+         GLint bpp = 4;
+         
+         // Clamp to minimum number of blocks
+         if(widthBlocks < 2)
+             widthBlocks = 2;
+         if(heightBlocks < 2)
+             heightBlocks = 2;
+         
+         size = widthBlocks * heightBlocks * ((blockSize  * bpp) / 8);    
+         return;
+    }
     else
     {
         OSG_WARN<<"Texture::getCompressedSize(...) : cannot compute correct size of compressed format ("<<internalFormat<<") returning 0."<<std::endl;
@@ -2223,6 +2319,8 @@ Texture::Extensions::Extensions(unsigned int contextID)
 
     _isTextureCompressionRGTCSupported = isGLExtensionSupported(contextID,"GL_EXT_texture_compression_rgtc");
 
+    _isTextureCompressionPVRTCSupported = isGLExtensionSupported(contextID,"GL_IMG_texture_compression_pvrtc");
+
     _isTextureMirroredRepeatSupported = builtInSupport || 
                                         isGLExtensionOrVersionSupported(contextID,"GL_IBM_texture_mirrored_repeat", 1.4f) ||
                                         isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_mirrored_repeat", 1.4f);
@@ -2243,7 +2341,7 @@ Texture::Extensions::Extensions(unsigned int contextID)
 
     _isClientStorageSupported = isGLExtensionSupported(contextID,"GL_APPLE_client_storage");
 
-    _isNonPowerOfTwoTextureNonMipMappedSupported = builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_non_power_of_two", 2.0);
+    _isNonPowerOfTwoTextureNonMipMappedSupported = builtInSupport || isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_non_power_of_two", 2.0) || isGLExtensionSupported(contextID,"GL_APPLE_texture_2D_limited_npot");
 
     _isNonPowerOfTwoTextureMipMappedSupported = builtInSupport || _isNonPowerOfTwoTextureNonMipMappedSupported;
     
@@ -2263,6 +2361,7 @@ Texture::Extensions::Extensions(unsigned int contextID)
         OSG_INFO<<"Disabling _isNonPowerOfTwoTextureMipMappedSupported for GeForce FX hardware."<<std::endl;
     }
 
+    _maxTextureSize=0;
     glGetIntegerv(GL_MAX_TEXTURE_SIZE,&_maxTextureSize);
 
     char *ptr;
@@ -2279,6 +2378,7 @@ Texture::Extensions::Extensions(unsigned int contextID)
 
     if( _isMultiTexturingSupported )
     {
+       _numTextureUnits = 0;
        #if defined(OSG_GLES2_AVAILABLE) || defined(OSG_GL3_AVAILABLE)
            glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS,&_numTextureUnits);
        #else

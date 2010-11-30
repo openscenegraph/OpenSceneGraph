@@ -30,3 +30,26 @@ Options::Options(const Options& options,const osg::CopyOp& copyop):
     _writeFileCallback(options._writeFileCallback),
     _fileLocationCallback(options._fileLocationCallback),
     _fileCache(options._fileCache) {}
+
+void Options::parsePluginStringData(const std::string& str, char separator1, char separator2)
+{
+    StringList valueList;
+    split(str, valueList, separator1);
+    if (valueList.size() > 0)
+    {
+        StringList keyAndValue;
+        for (StringList::iterator itr=valueList.begin(); itr!=valueList.end(); ++itr)
+        {
+            split(*itr, keyAndValue, separator2);
+            if (keyAndValue.size() > 1)
+            {
+                setPluginStringData(keyAndValue.front(), keyAndValue.back());
+            }
+            else if (keyAndValue.size() > 0)
+            {
+                setPluginStringData(keyAndValue.front(), "true");
+            }
+            keyAndValue.clear();
+        }
+    }
+}

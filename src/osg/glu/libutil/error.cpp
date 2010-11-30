@@ -132,7 +132,7 @@ static const struct token_string Errors[] = {
    { GLU_OUT_OF_MEMORY, "out of memory" },
    { GLU_INCOMPATIBLE_GL_VERSION, "incompatible gl version" },
    { GLU_INVALID_OPERATION, "invalid operation" },
-   { ~0, NULL } /* end of list indicator */
+   { ~0u, NULL } /* end of list indicator */
 };
 
 

@@ -145,3 +145,32 @@ jpeg, tiff, png, and gif will not work, nor will animations dependent on
 Quicktime. A new ImageIO-based plugin is being developed to handle the
 still images, and a QTKit plugin will need to be developed to handle
 animations.
+
+
+-- Release notes on iOS build, by Thomas Hoghart
+
+* Run CMake with either OSG_BUILD_PLATFORM_IPHONE or OSG_BUILD_PLATFORM_IPHONE_SIMULATOR set:
+  $ mkdir build-iOS ; cd build-iOS
+  $ ccmake -DOSG_BUILD_PLATFORM_IPHONE_SIMULATOR=YES -G Xcode ..
+* Check that CMAKE_OSX_ARCHITECTURE is i386 for the simulator or armv6;armv7 for the device
+* Disable DYNAMIC_OPENSCENEGRAPH, DYNAMIC_OPENTHREADS
+  This will give us the static build we need for iPhone.
+* Disable OSG_GL1_AVAILABLE, OSG_GL2_AVAILABLE, OSG_GL3_AVAILABLE, OSG_GLU_AVAILABLE
+* Enable OSG_GLES1_AVAILABLE *OR* OSG_GLES2_AVAILABLE
+* Ensure OSG_WINDOWING_SYSTEM is set to IOS
+* Change FREETYPE include and library paths to an iPhone version 
+  (OpenFrameworks has one bundled with its distribution)
+* Ensure that CMake_OSX_SYSROOT points to your iOS SDK.
+* Generate the Xcode project
+* Open the Xcode project
+  $ open OpenSceneGraph.xcodeproj
+* Under Sources -> osgDB, select FileUtils.cpp and open the 'Get Info' panel, change File Type
+  to source.cpp.objcpp
+
+Known issues:
+* When Linking final app against ive plugin, you need to add -lz to 
+  the 'Other linker flags' list.
+* Apps and exes don't get created
+* You can only select Simulator, or Device projects. In the XCode 
+  project you will see both types but the sdk they link will 
+  be the same.

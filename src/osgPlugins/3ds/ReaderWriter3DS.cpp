@@ -548,6 +548,8 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap drawStateMap,L
             if (node->type == LIB3DS_NODE_MESH_INSTANCE)
                 group->setName(reinterpret_cast<Lib3dsMeshInstanceNode *>(node)->instance_name); 
         }
+        else if (node->type == LIB3DS_NODE_MESH_INSTANCE && strlen(reinterpret_cast<Lib3dsMeshInstanceNode *>(node)->instance_name) != 0)
+            group->setName(reinterpret_cast<Lib3dsMeshInstanceNode *>(node)->instance_name);
         else
             group->setName(node->name);
 

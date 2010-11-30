@@ -997,13 +997,15 @@ struct ListCapDeviceAvailable
             filterFrameRate.insert(std::pair<double, CapEntry>(error, filterResolution[i]));
         }
 
-        CapEntry best = CapEntry(0,0);
-        CapEntry first = CapEntry(0,0);
+        CapEntry nullCapEntry(static_cast<AM_MEDIA_TYPE*>(NULL), static_cast<VIDEOINFOHEADER*>(NULL));
+        CapEntry best = nullCapEntry;
+        CapEntry first = nullCapEntry;
+
         for (ContainerFrameRateSorted::iterator it = filterFrameRate.begin();
                it != filterFrameRate.end();
                ++it)
         {
-            if (first == CapEntry(0,0))
+            if (first == nullCapEntry)
                 first = it->second;
 
             if (it->first < 1e-3)
@@ -1015,14 +1017,14 @@ struct ListCapDeviceAvailable
                     best = it->second;
             }
         }
-        if (best != CapEntry(0,0))
+        if (best != nullCapEntry)
             return best;
-        if (first != CapEntry(0,0))
+        if (first != nullCapEntry)
             return first;
         
         if (!_capsList.empty())
             return _capsList.front();
-        return CapEntry(0,0);
+        return nullCapEntry;
     }
 
     void createList()
@@ -1448,20 +1450,13 @@ bool CTextureRenderer::openFile(const std::string& file)
 
     std::string lowercase = file;
     std::transform(lowercase.begin(), lowercase.end(), lowercase.begin(), tolower);
-    if (lowercase.rfind(".wmv") != std::string::npos)
-    {
-        hr = _graphBuilder->AddSourceFilter(wFileName, L"Windows Media source filter", &_fileSource);
-        if (!checkError(prefixForMessage, hr))
-            return false;
-        hr = _fileSource?_fileSource->FindPin(L"Raw Video 1", &videoOutputPin):0;
-    }
-    else
-    {
-        hr = _graphBuilder->AddSourceFilter(wFileName, L"File Source", &_fileSource);
-        if (!checkError(prefixForMessage, hr))
-            return false;
-        hr = _fileSource?_fileSource->FindPin(L"Output", &videoOutputPin):0;
-    }
+
+    hr = _graphBuilder->AddSourceFilter(wFileName, L"Source", &_fileSource);
+    if (!checkError(prefixForMessage, hr))
+        return false;
+    
+    //Find the video pin
+    hr = _fileSource? ::GetPin(_fileSource, &MEDIATYPE_Video, PINDIR_OUTPUT, &videoOutputPin):0;
 
     if (!checkError(prefixForMessage, hr))
         return false;
@@ -1478,26 +1473,26 @@ bool CTextureRenderer::openFile(const std::string& file)
     if (!checkError(prefixForMessage, hr))
         return false;
 
-
-    if (lowercase.rfind(".avi") == std::string::npos) // not an avi, dont try to connect sounds
-        return true;
-
     // check if we find the sounds output pin on the streams
-    IBaseFilter* AVISpliterFilter = 0;
-    hr = _graphBuilder->FindFilterByName(L"AVI Splitter", &AVISpliterFilter);
+    IBaseFilter* soundFilter;
+    hr = _graphBuilder->FindFilterByName(L"AVI Splitter", &soundFilter);
     if (FAILED(hr))
     {
-        OSG_WARN << prefixForMessage << " did not find AVI SPlitter to connect sound, " << getErrorMessage(hr) << std::endl;
+        //Could not find the AVI Splitter filter, try the main source itself
+        soundFilter = _fileSource;
     }
-    if (AVISpliterFilter)
+
+    if (soundFilter)
     {
         IPin* soundStreamPinOut = 0;
-        hr = AVISpliterFilter->FindPin(L"Stream 01",&soundStreamPinOut);
-        AVISpliterFilter->Release(); AVISpliterFilter = 0;
+        //Try to find the audio pin
+        hr = ::GetPin(soundFilter, &MEDIATYPE_Audio, PINDIR_OUTPUT, &soundStreamPinOut);
+        if (soundFilter != _fileSource) soundFilter->Release();
+        soundFilter = 0;
 
         if (FAILED(hr))
         {
-            OSG_WARN << prefixForMessage << " can't find Stream 01 pin on AVIS Splitter, maybe the flux does have sound, " << getErrorMessage(hr) << std::endl;
+            OSG_WARN << prefixForMessage << " can't find audio pin" << getErrorMessage(hr) << std::endl;
         }
 
         if (soundStreamPinOut)

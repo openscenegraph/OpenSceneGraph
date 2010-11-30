@@ -1446,6 +1446,7 @@ bool Geometry_matchPrimitiveModeStr(const char* str,GLenum& mode)
     else if (strcmp(str,"TRIANGLES_ADJACENCY")==0)      mode = PrimitiveSet::TRIANGLES_ADJACENCY;
     else if (strcmp(str,"TRIANGLE_STRIP_ADJECENCY")==0) mode = PrimitiveSet::TRIANGLE_STRIP_ADJACENCY;
     else if (strcmp(str,"TRIANGLE_STRIP_ADJACENCY")==0) mode = PrimitiveSet::TRIANGLE_STRIP_ADJACENCY;
+    else if (strcmp(str,"PATCHES")==0)                  mode = PrimitiveSet::PATCHES;
     else return false;
     return true;
 }
@@ -1469,6 +1470,7 @@ const char* Geometry_getPrimitiveModeStr(GLenum mode)
         case (PrimitiveSet::LINE_STRIP_ADJACENCY)       : return "LINE_STRIP_ADJACENCY";
         case (PrimitiveSet::TRIANGLES_ADJACENCY)        : return "TRIANGLES_ADJACENCY";
         case (PrimitiveSet::TRIANGLE_STRIP_ADJACENCY)   : return "TRIANGLE_STRIP_ADJACENCY";
+        case (PrimitiveSet::PATCHES)                    : return "PATCHES";
         default                                         : return "UnknownPrimitveType";
     }
 }

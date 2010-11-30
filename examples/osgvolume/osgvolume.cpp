@@ -1107,11 +1107,29 @@ int main( int argc, char **argv )
         int pos=images_pos+1;
         for(;pos<arguments.argc() && !arguments.isOption(pos);++pos)
         {
-            // not an option so assume string is a filename.
-            osg::Image *image = osgDB::readImageFile( arguments[pos]);
-            if(image)
+            std::string arg(arguments[pos]);
+            if (arg.find('*') != std::string::npos)
             {
-                imageList.push_back(image);
+                osgDB::DirectoryContents contents = osgDB::expandWildcardsInFilename(arg);
+                for (unsigned int i = 0; i < contents.size(); ++i)
+                {
+                    osg::Image *image = osgDB::readImageFile( contents[i] );
+
+                    if(image)
+                    {
+                        imageList.push_back(image);
+                    }
+                }
+            }
+            else
+            {
+                // not an option so assume string is a filename.
+                osg::Image *image = osgDB::readImageFile( arguments[pos] );
+
+                if(image)
+                {
+                    imageList.push_back(image);
+                }
             }
         }
 

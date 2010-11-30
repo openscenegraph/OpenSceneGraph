@@ -128,6 +128,7 @@ class OSGReaderWriter : public ReaderWriter
 
         bool loadWrappers() const
         {
+#ifndef OSG_LIBRARY_STATIC
             if (_wrappersLoaded) return true;
 
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
@@ -146,6 +147,9 @@ class OSGReaderWriter : public ReaderWriter
                 _wrappersLoaded = true;
                 return false;
             }
+#else
+            return true;
+#endif
         }
 
         virtual ReadResult readObject(const std::string& file, const Options* opt) const

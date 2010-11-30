@@ -12,6 +12,7 @@
 */
 // Written by Wang Rui, (C) 2010
 
+#include <osg/Version>
 #include <osg/Notify>
 #include <osg/BlendFunc>
 #include <osg/ClampColor>
@@ -86,9 +87,57 @@ void osgDB::split( const std::string& src, StringList& list, char separator )
 ObjectWrapper::ObjectWrapper( osg::Object* proto, const std::string& name,
                               const std::string& associates )
 :   osg::Referenced(),
-    _proto(proto), _name(name)
+    _proto(proto), _name(name), _version(0)
 {
     split( associates, _associates );
+}
+
+void ObjectWrapper::addSerializer( BaseSerializer* s, BaseSerializer::Type t )
+{
+    s->_firstVersion = _version;
+    _serializers.push_back(s);
+    _typeList.push_back(static_cast<int>(t));
+}
+
+void ObjectWrapper::markSerializerAsRemoved( const std::string& name )
+{
+    for ( SerializerList::iterator itr=_serializers.begin(); itr!=_serializers.end(); ++itr )
+    {
+        // When a serializer is marked as 'removed', it means that this serializer won't be used any more
+        // from specified OSG version (by macro UPDATE_TO_VERSION). The read() functions of higher versions
+        // will thus ignore it according to the sign and value of the _version variable.
+        if ( (*itr)->getName()==name )
+            (*itr)->_lastVersion = _version-1;
+    }
+}
+
+BaseSerializer* ObjectWrapper::getSerializer( const std::string& name )
+{
+    for ( SerializerList::iterator itr=_serializers.begin(); itr!=_serializers.end(); ++itr )
+    {
+        if ( (*itr)->getName()==name )
+            return itr->get();
+    }
+    
+    for ( StringList::const_iterator itr=_associates.begin(); itr!=_associates.end(); ++itr )
+    {
+        const std::string& assocName = *itr;
+        ObjectWrapper* assocWrapper = Registry::instance()->getObjectWrapperManager()->findWrapper(assocName);
+        if ( !assocWrapper )
+        {
+            osg::notify(osg::WARN) << "ObjectWrapper::getSerializer(): Unsupported associated class "
+                                   << assocName << std::endl;
+            continue;
+        }
+        
+        for ( SerializerList::iterator aitr=assocWrapper->_serializers.begin();
+              aitr!=assocWrapper->_serializers.end(); ++aitr )
+        {
+            if ( (*aitr)->getName()==name )
+                return aitr->get();
+        }
+    }
+    return NULL;
 }
 
 bool ObjectWrapper::read( InputStream& is, osg::Object& obj )
@@ -97,10 +146,21 @@ bool ObjectWrapper::read( InputStream& is, osg::Object& obj )
     for ( SerializerList::iterator itr=_serializers.begin();
           itr!=_serializers.end(); ++itr )
     {
-        if ( (*itr)->read(is, obj) ) continue;
-        OSG_WARN << "ObjectWrapper::read(): Error reading property "
-                               << _name << "::" << (*itr)->getName() << std::endl;
-        readOK = false;
+        BaseSerializer* serializer = itr->get();
+        if ( serializer->_firstVersion <= is.getFileVersion() &&
+             is.getFileVersion() <= serializer->_lastVersion)
+        {
+            if ( !serializer->read(is, obj) )
+            {
+                OSG_WARN << "ObjectWrapper::read(): Error reading property "
+                                    << _name << "::" << (*itr)->getName() << std::endl;
+                readOK = false;
+            }
+        }
+        else
+        {
+            // OSG_NOTICE<<"Ignoring serializer due to version mismatch"<<std::endl;
+        }
     }
 
     for ( FinishedObjectReadCallbackList::iterator itr=_finishedObjectReadCallbacks.begin();
@@ -119,16 +179,28 @@ bool ObjectWrapper::write( OutputStream& os, const osg::Object& obj )
     for ( SerializerList::iterator itr=_serializers.begin();
           itr!=_serializers.end(); ++itr )
     {
-        if ( (*itr)->write(os, obj) ) continue;
-        OSG_WARN << "ObjectWrapper::write(): Error writing property "
-                               << _name << "::" << (*itr)->getName() << std::endl;
-        writeOK = false;
+        BaseSerializer* serializer = itr->get();
+        if ( serializer->_firstVersion <= OPENSCENEGRAPH_SOVERSION &&
+             OPENSCENEGRAPH_SOVERSION <= serializer->_lastVersion)
+        {
+            if ( !serializer->write(os, obj) )
+            {
+                OSG_WARN << "ObjectWrapper::write(): Error writing property "
+                                    << _name << "::" << (*itr)->getName() << std::endl;
+                writeOK = false;
+            }
+        }
+        else
+        {
+            // OSG_NOTICE<<"Ignoring serializer due to version mismatch"<<std::endl;
+        }
     }
     return writeOK;
 }
 
-bool ObjectWrapper::readSchema( const StringList& properties )
+bool ObjectWrapper::readSchema( const StringList& properties, const std::vector<int>& )
 {
+    // FIXME: At present, I didn't do anything to determine serializers from their types...
     if ( !_backupSerializers.size() )
         _backupSerializers = _serializers;
     _serializers.clear();
@@ -169,12 +241,18 @@ bool ObjectWrapper::readSchema( const StringList& properties )
     return size==_serializers.size();
 }
 
-void ObjectWrapper::writeSchema( StringList& properties )
+void ObjectWrapper::writeSchema( StringList& properties, std::vector<int>& types )
 {
     for ( SerializerList::iterator itr=_serializers.begin();
           itr!=_serializers.end(); ++itr )
     {
         properties.push_back( (*itr)->getName() );
+    }
+    
+    for ( std::vector<int>::iterator itr=_typeList.begin();
+          itr!=_typeList.end(); ++itr )
+    {
+        types.push_back( (*itr) );
     }
 }
 
@@ -427,6 +505,7 @@ ObjectWrapperManager::ObjectWrapperManager()
     primitiveTable.add( "GL_LINE_STRIP_ADJACENCY_EXT", GL_LINE_STRIP_ADJACENCY_EXT );
     primitiveTable.add( "GL_TRIANGLES_ADJACENCY_EXT", GL_TRIANGLES_ADJACENCY_EXT );
     primitiveTable.add( "GL_TRIANGLE_STRIP_ADJACENCY_EXT", GL_TRIANGLE_STRIP_ADJACENCY_EXT );
+    primitiveTable.add( "GL_PATCHES", GL_PATCHES );
 }
 
 ObjectWrapperManager::~ObjectWrapperManager()

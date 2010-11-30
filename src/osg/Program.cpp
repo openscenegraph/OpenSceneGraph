@@ -2,6 +2,7 @@
  * Copyright (C) 2003-2005 3Dlabs Inc. Ltd.
  * Copyright (C) 2004-2005 Nathan Cournia
  * Copyright (C) 2008 Zebra Imaging
+ * Copyright (C) 2010 VIRES Simulationstechnologie GmbH
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commercial and non commercial
@@ -15,6 +16,7 @@
 
 /* file:        src/osg/Program.cpp
  * author:      Mike Weiblen 2008-01-19
+ *              Holger Helmich 2010-10-21
 */
 
 #include <list>
@@ -97,7 +99,8 @@ void Program::discardDeletedGlPrograms(unsigned int contextID)
 
 Program::Program() :
     _geometryVerticesOut(1), _geometryInputType(GL_TRIANGLES),
-    _geometryOutputType(GL_TRIANGLE_STRIP)
+    _geometryOutputType(GL_TRIANGLE_STRIP),
+    _patchVertices(3)
 {
 }
 
@@ -125,6 +128,8 @@ Program::Program(const Program& rhs, const osg::CopyOp& copyop):
     _geometryVerticesOut = rhs._geometryVerticesOut;
     _geometryInputType = rhs._geometryInputType;
     _geometryOutputType = rhs._geometryOutputType;
+
+    _patchVertices = rhs._patchVertices;
 }
 
 
@@ -158,6 +163,9 @@ int Program::compare(const osg::StateAttribute& sa) const
 
     if( _geometryOutputType < rhs._geometryOutputType ) return -1;
     if( rhs._geometryOutputType < _geometryOutputType ) return 1;
+
+    if( _patchVertices < rhs._patchVertices ) return -1;
+    if( rhs._patchVertices < _patchVertices ) return 1;
 
     ShaderList::const_iterator litr=_shaderList.begin();
     ShaderList::const_iterator ritr=rhs._shaderList.begin();
@@ -299,12 +307,45 @@ void Program::setParameter( GLenum pname, GLint value )
             break;
         case GL_GEOMETRY_OUTPUT_TYPE_EXT:
             _geometryOutputType = value;
-            dirtyProgram();    // needed?
+            //dirtyProgram();    // needed?
+            break;
+        case GL_PATCH_VERTICES:
+            _patchVertices = value;
+            dirtyProgram();
             break;
         default:
             OSG_WARN << "setParameter invalid param " << pname << std::endl;
             break;
     }
+}
+
+void Program::setParameterfv( GLenum pname, const GLfloat* value )
+{
+    switch( pname )
+    {
+      // todo tessellation default level
+        case GL_PATCH_DEFAULT_INNER_LEVEL:
+            break;
+        case GL_PATCH_DEFAULT_OUTER_LEVEL:
+            break;
+        default:
+            OSG_WARN << "setParameter invalid param " << pname << std::endl;
+            break;
+    }
+}
+
+const GLfloat* Program::getParameterfv( GLenum pname ) const
+{
+    switch( pname )
+    {
+      ;
+      // todo tessellation default level
+      //        case GL_PATCH_DEFAULT_INNER_LEVEL: return _patchDefaultInnerLevel;
+      //        case GL_PATCH_DEFAULT_OUTER_LEVEL: return _patchDefaultOuterLevel;
+
+    }
+    OSG_WARN << "getParameter invalid param " << pname << std::endl;
+    return 0;
 }
 
 GLint Program::getParameter( GLenum pname ) const
@@ -314,6 +355,7 @@ GLint Program::getParameter( GLenum pname ) const
         case GL_GEOMETRY_VERTICES_OUT_EXT: return _geometryVerticesOut;
         case GL_GEOMETRY_INPUT_TYPE_EXT:   return _geometryInputType;
         case GL_GEOMETRY_OUTPUT_TYPE_EXT:  return _geometryOutputType;
+        case GL_PATCH_VERTICES:            return _patchVertices; 
     }
     OSG_WARN << "getParameter invalid param " << pname << std::endl;
     return 0;
@@ -343,6 +385,21 @@ void Program::removeBindFragDataLocation( const std::string& name )
     _fragDataBindingList.erase(name);
     dirtyProgram();
 }
+
+void Program::addBindUniformBlock(const std::string& name, GLuint index)
+{
+    _uniformBlockBindingList[name] = index;
+    dirtyProgram(); // XXX
+}
+
+void Program::removeBindUniformBlock(const std::string& name)
+{
+    _uniformBlockBindingList.erase(name);
+    dirtyProgram(); // XXX
+}
+
+
+
 
 void Program::apply( osg::State& state ) const
 {
@@ -410,7 +467,7 @@ bool Program::getGlProgramInfoLog(unsigned int contextID, std::string& log) cons
     return getPCP( contextID )->getInfoLog( log );
 }
 
-const Program::ActiveVarInfoMap& Program::getActiveUniforms(unsigned int contextID) const
+const Program::ActiveUniformMap& Program::getActiveUniforms(unsigned int contextID) const
 {
     return getPCP( contextID )->getActiveUniforms();
 }
@@ -464,14 +521,20 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
         _extensions->glProgramParameteri( _glProgramHandle, GL_GEOMETRY_INPUT_TYPE_EXT, _program->_geometryInputType );
         _extensions->glProgramParameteri( _glProgramHandle, GL_GEOMETRY_OUTPUT_TYPE_EXT, _program->_geometryOutputType );
     }
-    
+
+    if (_extensions->areTessellationShadersSupported() )
+    {
+        _extensions->glPatchParameteri( GL_PATCH_VERTICES, _program->_patchVertices );
+        // todo: add default tessellation level
+    }
+
     // Detach removed shaders
     for( unsigned int i=0; i < _shadersToDetach.size(); ++i )
     {
         _shadersToDetach[i]->detachShader( _contextID, _glProgramHandle );
     }
     _shadersToDetach.clear();
-    
+
     // Attach new shaders
     for( unsigned int i=0; i < _shadersToAttach.size(); ++i )
     {
@@ -541,6 +604,58 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
         }
     }
 
+    if (_extensions->isUniformBufferObjectSupported())
+    {
+        GLuint activeUniformBlocks = 0;
+        GLsizei maxBlockNameLen = 0;
+        _extensions->glGetProgramiv(_glProgramHandle, GL_ACTIVE_UNIFORM_BLOCKS,
+                                    reinterpret_cast<GLint*>(&activeUniformBlocks));
+        _extensions->glGetProgramiv(_glProgramHandle,
+                                    GL_ACTIVE_UNIFORM_MAX_LENGTH,
+                                    &maxBlockNameLen);
+        if (maxBlockNameLen > 0)
+        {
+            std::vector<GLchar> blockName(maxBlockNameLen);
+            for (GLuint i = 0; i < activeUniformBlocks; ++i)
+            {
+                GLsizei len = 0;
+                GLint blockSize = 0;
+                _extensions->glGetActiveUniformBlockName(_glProgramHandle, i,
+                                                         maxBlockNameLen, &len,
+                                                         &blockName[0]);
+                _extensions->glGetActiveUniformBlockiv(_glProgramHandle, i,
+                                                       GL_UNIFORM_BLOCK_DATA_SIZE,
+                                                       &blockSize);
+                _uniformBlockMap
+                    .insert(UniformBlockMap::value_type(&blockName[0],
+                                                        UniformBlockInfo(i, blockSize)));
+            }
+        }
+        // Bind any uniform blocks
+        const UniformBlockBindingList& bindingList = _program->getUniformBlockBindingList();
+        for (UniformBlockMap::iterator itr = _uniformBlockMap.begin(),
+                 end = _uniformBlockMap.end();
+             itr != end;
+            ++itr)
+        {
+            const std::string& blockName = itr->first;
+            UniformBlockBindingList::const_iterator bitr = bindingList.find(blockName);
+            if (bitr != bindingList.end())
+            {
+                _extensions->glUniformBlockBinding(_glProgramHandle, itr->second._index,
+                                                   bitr->second);
+                OSG_INFO << "uniform block " << blockName << ": " << itr->second._index
+                         << " binding: " << bitr->second << "\n";
+            }
+            else
+            {
+                OSG_WARN << "uniform block " << blockName << " has no binding.\n";
+            }
+
+        }
+
+    }
+
     // build _uniformInfoMap
     GLint numUniforms = 0;
     GLsizei maxLen = 0;
@@ -561,13 +676,13 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
             
             if( loc != -1 )
             {
-                _uniformInfoMap[reinterpret_cast<char*>(name)] = ActiveVarInfo(loc,type,size);
+                _uniformInfoMap[Uniform::getNameID(reinterpret_cast<const char*>(name))] = ActiveVarInfo(loc,type,size);
 
                 OSG_INFO << "\tUniform \"" << name << "\""
-                         << " loc="<< loc
-                         << " size="<< size
-                         << " type=" << Uniform::getTypename((Uniform::Type)type)
-                         << std::endl;
+                    << " loc="<< loc
+                    << " size="<< size
+                    << " type=" << Uniform::getTypename((Uniform::Type)type)
+                    << std::endl;
             }
         }
         delete [] name;

@@ -69,7 +69,7 @@ InputIterator* readInputIterator( std::istream& fin, const Options* options )
     return NULL;
 }
 
-OutputIterator* writeInputIterator( std::ostream& fout, const Options* options )
+OutputIterator* writeOutputIterator( std::ostream& fout, const Options* options )
 {
     if ( options && options->getOptionString().find("Ascii")!=std::string::npos )
     {
@@ -258,7 +258,7 @@ public:
     
     virtual WriteResult writeObject( const osg::Object& object, std::ostream& fout, const Options* options ) const
     {
-        osg::ref_ptr<OutputIterator> oi = writeInputIterator(fout, options);
+        osg::ref_ptr<OutputIterator> oi = writeOutputIterator(fout, options);
         
         OutputStream os( options );
         os.start( oi.get(), OutputStream::WRITE_OBJECT ); CATCH_EXCEPTION(os);
@@ -294,7 +294,7 @@ public:
     
     virtual WriteResult writeImage( const osg::Image& image, std::ostream& fout, const Options* options ) const
     {
-        osg::ref_ptr<OutputIterator> oi = writeInputIterator(fout, options);
+        osg::ref_ptr<OutputIterator> oi = writeOutputIterator(fout, options);
         
         OutputStream os( options );
         os.start( oi.get(), OutputStream::WRITE_IMAGE ); CATCH_EXCEPTION(os);
@@ -330,7 +330,7 @@ public:
     
     virtual WriteResult writeNode( const osg::Node& node, std::ostream& fout, const Options* options ) const
     {
-        osg::ref_ptr<OutputIterator> oi = writeInputIterator(fout, options);
+        osg::ref_ptr<OutputIterator> oi = writeOutputIterator(fout, options);
         
         OutputStream os( options );
         os.start( oi.get(), OutputStream::WRITE_SCENE ); CATCH_EXCEPTION(os);

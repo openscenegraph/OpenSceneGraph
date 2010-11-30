@@ -20,7 +20,7 @@
 #if defined(OSG_GLES1_AVAILABLE)
 
     #ifdef __APPLE__
-        //if its apple include the target defines so we can check for iphone
+        //if its apple include the target defines so we can check for IOS
         #include "TargetConditionals.h"
         #include <OpenGLES/ES1/gl.h>
     #else
@@ -30,7 +30,7 @@
 #elif defined(OSG_GLES2_AVAILABLE)
 
     #ifdef __APPLE__
-        //if its apple include the target defines so we can check for iphone
+        //if its apple include the target defines so we can check for IOS
         #include "TargetConditionals.h"
         #include <OpenGLES/ES2/gl.h>
     #else

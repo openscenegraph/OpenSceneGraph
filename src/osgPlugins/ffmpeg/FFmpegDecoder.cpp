@@ -1,5 +1,6 @@
 
 #include "FFmpegDecoder.hpp"
+#include "FFmpegParameters.hpp"
 
 #include <osg/Notify>
 #include <osgDB/FileNameUtils>
@@ -36,7 +37,7 @@ FFmpegDecoder::~FFmpegDecoder()
 }
 
 
-bool FFmpegDecoder::open(const std::string & filename)
+bool FFmpegDecoder::open(const std::string & filename, FFmpegParameters* parameters)
 {
     try
     {
@@ -100,7 +101,9 @@ bool FFmpegDecoder::open(const std::string & filename)
         }
         else
         {
-            if (av_open_input_file(&p_format_context, filename.c_str(), 0, 0, 0) !=0 )
+            AVInputFormat* av_format = (parameters ? parameters->getFormat() : 0);
+            AVFormatParameters* av_params = (parameters ? parameters->getFormatParameter() : 0);
+            if (av_open_input_file(&p_format_context, filename.c_str(), av_format, 0, av_params) !=0 )
                 throw std::runtime_error("av_open_input_file() failed");
         }
         

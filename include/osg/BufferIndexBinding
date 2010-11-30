@@ -14,9 +14,14 @@
 
 #ifndef OSG_BUFFERINDEXBINDING
 #define OSG_BUFFERINDEXBINDING 1
+
 #include <osg/Export>
 #include <osg/BufferObject>
 #include <osg/StateAttribute>
+
+#ifndef GL_TRANSFORM_FEEDBACK_BUFFER
+    #define GL_TRANSFORM_FEEDBACK_BUFFER      0x8C8E
+#endif
 
 namespace osg {
 

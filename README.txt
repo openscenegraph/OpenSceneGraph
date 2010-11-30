@@ -147,32 +147,30 @@ still images, and a QTKit plugin will need to be developed to handle
 animations.
 
 
--- Release notes on IOS build, by Thomas Hoghart
+-- Release notes on iOS build, by Thomas Hoghart
 
-* Manually set the relevant OSG_BUILD_PLATFORM_IPHONE... option in root 
-  CMakeLists file. Can only have one or the other at the moment.
-* Run CMake
-* Disable all OpenGL types accodrding to OSG_GLES1_AVALIABLE or 
-  OSG_GLES2_AVALIABLE. Also disable OSG_GLU_AVAILABLE
-* Disable OSG_GL_DISPLAYLISTS_AVALIABLE
+* Run CMake with either OSG_BUILD_PLATFORM_IPHONE or OSG_BUILD_PLATFORM_IPHONE_SIMULATOR set:
+  $ mkdir build-iOS ; cd build-iOS
+  $ ccmake -DOSG_BUILD_PLATFORM_IPHONE_SIMULATOR=YES -G Xcode ..
+* Check that CMAKE_OSX_ARCHITECTURE is i386 for the simulator or armv6;armv7 for the device
+* Disable DYNAMIC_OPENSCENEGRAPH, DYNAMIC_OPENTHREADS
+  This will give us the static build we need for iPhone.
+* Disable OSG_GL1_AVAILABLE, OSG_GL2_AVAILABLE, OSG_GL3_AVAILABLE, OSG_GLU_AVAILABLE
+* Enable OSG_GLES1_AVAILABLE *OR* OSG_GLES2_AVAILABLE
 * Ensure OSG_WINDOWING_SYSTEM is set to IOS
-* Change FREETYPE include and library paths to an IPhone version 
+* Change FREETYPE include and library paths to an iPhone version 
   (OpenFrameworks has one bundled with its distribution)
-* Under DYNAMIC ensure you untick DYNAMIC_OPENSCENEGRAPH and 
-  DYNAMIC_OPENTHREADS. This will give us the static build we need 
-  for IPhone
-* Under CMake ensure the CMake_OSX_SYSROOT points to your 
-  IOS SDK. Also check that the architecture is armv6/7 for 
-  device or i386 for Simulator.
-* Generate the XCode project
-* Find osgDB FileUtis.cpp, open the 'Get Info' panel, change File Type
+* Ensure that CMake_OSX_SYSROOT points to your iOS SDK.
+* Generate the Xcode project
+* Open the Xcode project
+  $ open OpenSceneGraph.xcodeproj
+* Under Sources -> osgDB, select FileUtils.cpp and open the 'Get Info' panel, change File Type
   to source.cpp.objcpp
+
+Known issues:
 * When Linking final app against ive plugin, you need to add -lz to 
   the 'Other linker flags' list.
-
-known Issues:
 * Apps and exes don't get created
 * You can only select Simulator, or Device projects. In the XCode 
   project you will see both types but the sdk they link will 
   be the same.
-

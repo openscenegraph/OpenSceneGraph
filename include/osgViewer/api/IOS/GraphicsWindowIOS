@@ -39,31 +39,34 @@ class UIView;
 
 #include <osgViewer/GraphicsWindow>
 
-// we may not include any cocoa-header here, because this will pollute the name-sapce and tend to compile-errors
+// Do not include any cocoa-header here, because this will pollute the name-space and causes compile errors
 
 namespace osgViewer
 {
-
+/**
+ * Implementation of a GraphicsWindow for the iOS platform.
+ */
 class GraphicsWindowIOS : public osgViewer::GraphicsWindow
 {
     public:
-    class Implementation;
+        class Implementation;
 
-        GraphicsWindowIOS(osg::GraphicsContext::Traits* traits)
-			: GraphicsWindow(),
+        GraphicsWindowIOS(osg::GraphicsContext::Traits* traits) : GraphicsWindow(),
             _valid(false),
             _initialized(false),
             _realized(false),
+            _window(NULL),
+            _view(NULL),
+            _viewController(NULL),
+            _context(NULL),
             _ownsWindow(true),
             _adaptToDeviceOrientation(true),
-			_viewContentScaleFactor(-1.0f),
-            _window(NULL),
-            _context(NULL)
+            _viewContentScaleFactor(-1.0f)
         {
             _traits = traits;
 
             init();
-            
+
             if (valid())
             {
                 setState( new osg::State );
@@ -116,11 +119,9 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
         
         /** Get focus on if the pointer is in this window.*/
         virtual void grabFocusIfPointerInWindow();
-		
-		/** Raise the window to the top.*/
-		virtual void raiseWindow();
         
-        bool requestClose() {return false; }
+        /** Raise the window to the top.*/
+        virtual void raiseWindow();
         
         virtual void resizedImplementation(int x, int y, int width, int height);
         
@@ -137,19 +138,19 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
                 WindowData(UIWindow* window = NULL, bool adaptToDeviceOrientation = true, float scaleFactor = -1.0f)
                 :   _window(window),
                     _adaptToDeviceOrientation(adaptToDeviceOrientation),
-					_viewContentScaleFactor(scaleFactor)
+                    _viewContentScaleFactor(scaleFactor)
                 {
                 }
                 
                 void setAdaptToDeviceOrientation(bool flag) { _adaptToDeviceOrientation = flag; }
-				
-				void setViewContentScaleFactor(float scaleFactor) { _viewContentScaleFactor = scaleFactor; }
+                
+                void setViewContentScaleFactor(float scaleFactor) { _viewContentScaleFactor = scaleFactor; }
                 
             private:
 
                 UIWindow*     _window;
                 bool          _adaptToDeviceOrientation;
-				float         _viewContentScaleFactor; 
+                float         _viewContentScaleFactor; 
         
             friend class GraphicsWindowIOS;
 
@@ -167,12 +168,12 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
         bool adaptToDeviceOrientation() const { return _adaptToDeviceOrientation; }
         
         void setAdaptToDeviceOrientation(bool flag) { _adaptToDeviceOrientation = flag; }
-		
-		
-		//
-		//helper funs for converting points to pixels
-		osg::Vec2 pointToPixel(const osg::Vec2& point);
-		osg::Vec2 pixelToPoint(const osg::Vec2& pixel);
+        
+        
+        //
+        //helper funs for converting points to pixels
+        osg::Vec2 pointToPixel(const osg::Vec2& point);
+        osg::Vec2 pixelToPoint(const osg::Vec2& pixel);
                 
     protected:
     
@@ -194,13 +195,13 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
         GraphicsWindowIOSWindow*      _window;
         GraphicsWindowIOSGLView*      _view;
         GraphicsWindowIOSGLViewController* _viewController;
-        EAGLContext*					_context;
+        EAGLContext*                    _context;
         bool                            _updateContext;
-		
-		bool _ownsWindow, _adaptToDeviceOrientation;
-		
-		float _viewContentScaleFactor;
-		
+        
+        bool _ownsWindow, _adaptToDeviceOrientation;
+        
+        float _viewContentScaleFactor;
+        
 };
 
 }

@@ -6,8 +6,12 @@ SET(TARGET_SRC
     osgIPhoneViewer-Info.plist
 )
 
-#INCLUDE_DIRECTORIES( ${GLUT_INCLUDE_DIR} )
-SET(TARGET_LIBRARIES_VARS Foundation.framework QuartzCore.framework UIKit.framework)
-
-#### end var setup  ###
+#backup setting
+SET(TMP_OSG_BUILD_APPLICATION_BUNDLES {$OSG_BUILD_APPLICATION_BUNDLES})
+SET(OSG_BUILD_APPLICATION_BUNDLES TRUE)
 SETUP_EXAMPLE(osgViewerIPhone)
+#restore setting
+SET(OSG_BUILD_APPLICATION_BUNDLES {$TMP_OSG_BUILD_APPLICATION_BUNDLES})
+
+SET(CMAKE_EXE_LINKER_FLAGS "-framework Foundation -framework OpenGLES  -framework UIKit")
+

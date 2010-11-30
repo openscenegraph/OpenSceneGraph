@@ -148,7 +148,7 @@ public:
         std::ios::openmode mode = std::ios::in;
         Options* local_opt = prepareReading( result, fileName, mode, options );
         if ( !result.success() ) return result;
-        
+
         osgDB::ifstream istream( fileName.c_str(), mode );
         return readObject( istream, local_opt );
     }
@@ -157,14 +157,17 @@ public:
     {
         osg::ref_ptr<InputIterator> ii = readInputIterator(fin, options);
         if ( !ii ) return ReadResult::FILE_NOT_HANDLED;
-        
+
         InputStream is( options );
-        if ( is.start(ii.get())!=InputStream::READ_OBJECT )
+
+        osgDB::InputStream::ReadType readType = is.start(ii.get());
+        if ( readType==InputStream::READ_UNKNOWN )
         {
             CATCH_EXCEPTION(is);
             return ReadResult::FILE_NOT_HANDLED;
         }
         is.decompress(); CATCH_EXCEPTION(is);
+
         osg::Object* obj = is.readObject(); CATCH_EXCEPTION(is);
         return obj;
     }

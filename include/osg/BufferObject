@@ -73,6 +73,17 @@
 #endif
 
 #ifndef GL_VERSION_1_5
+    #if defined(_WIN64)
+        typedef __int64 GLintptr;
+        typedef __int64 GLsizeiptr;
+    #elif defined(__ia64__) || defined(__x86_64__)
+        typedef long int GLintptr;
+        typedef long int GLsizeiptr;
+    #else
+        typedef int GLintptr;
+        typedef int GLsizeiptr;
+    #endif
+
     #define GL_STREAM_DRAW                    0x88E0
     #define GL_STREAM_READ                    0x88E1
     #define GL_STREAM_COPY                    0x88E2

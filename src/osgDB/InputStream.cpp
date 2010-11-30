@@ -617,7 +617,7 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
         return itr->second.get();
     }
 
-    osg::ref_ptr<osg::Object> obj = readObjectFields( className );
+    osg::ref_ptr<osg::Object> obj = readObjectFields( className, existingObj );
 
     _identifierMap[id] = obj;
 

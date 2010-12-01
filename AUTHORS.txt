@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.9.9
+OpenSceneGraph Library 2.9.10
 
-432 Contributors:
+442 Contributors:
 
 Firstname Surname
 -----------------
@@ -11,58 +11,59 @@ Paul Martz
 Marco Jez
 Mathias Fröhlich
 Mike Weiblen
+Jean-Sebastien Guay
 Eric Wing
 Farshid Lashkari
-Jean-Sebastien Guay
 Cedric Pinson
-Brede Johansen
 Ulrich Hertlein
+Brede Johansen
 Bob Kuehne
 Geoff Michel
-Eric Sokolowsky
-Michael Platings
-Wojciech Lewandowski
 Wang Rui
-Martin Lavery
+Michael Platings
+Eric Sokolowsky
+Wojciech Lewandowski
 David Callu
+Martin Lavery
 Trajce Nikolov
+Sukender 
 Colin McDonald
 Tree 
 Luigi Calori
+Tim Moore
 Mike Wittman
-Sukender 
 Roland Smeenk
 Roger James
 Jeremy Moles
 Chris Hanson
-Tim Moore
-Paul Melis
 Jason Beverage
+Paul Melis
 Mattias Helsing
 J.P. Delport
 Andy Skinner
 Tom Jolley
 Pavel Moloshtan
+David Fries
 Philip Lowman
 Norman Vine
 Jason Daly
+Jan Peciva
 Art Tevs
 Alberto Luaces
 Serge Lages
-Jan Peciva
-David Fries
 Alberto Farre
+Sherman Wilcox
+Robert Milharcic
 Mathieu Marache
 Laurens Voerman
 André Garneau
 Adrian Egli
 Terry Welsh
 Ruben Lopez
-Robert Milharcic
 Randall Hopper
-Sherman Wilcox
 Per Fahlberg
 Olaf Flebbe
+Magnus Kessler
 Gideon May
 Don Tidrow
 Chris Denham
@@ -73,31 +74,30 @@ Joakim Simonsson
 David Spilling
 Daniel Sjölie
 Bryan Thrall
+Brad Christiansen
+Fabien Lavignotte
 Melchior Franz
 Lionel Lagarde
 Jan Ciger
 Glenn Waldron
 Neil Hughes
+Mourad Boufarguine
 Mike Connell
 Martin Beckett
-Magnus Kessler
 Joran Jessurun
 Gino van den Bergen
 Frederic Marmond
 Csaba Halasz
-Brad Christiansen
 Boris Bralo
 Yefei He
 Sondra Iverson
 Rune Schmidt Jensen
 Rainer Oder
-Mourad Boufarguine
 Martin Naylor
 Martin Aumueller
 Mario Valle
 Luc Frauciel
 Gordon Tomlinson
-Fabien Lavignotte
 David Guthrie
 Cory Riddell
 Carlo Camporesi
@@ -112,6 +112,7 @@ Markus Trenkwalder
 Loic Dachary
 Joseph Steel
 John Shue
+Chuck Seberino
 Brad Colbert
 Vivek Rajan
 Thom DeCarlo
@@ -128,6 +129,8 @@ Mihai Radu
 Michael Hartman
 Martins Innus
 Maciej Krol
+Johan Nouvel
+Hartwig Wiesmann
 Frederic Bouvier
 Donn Mielcarek
 Corbin Holtz
@@ -144,13 +147,14 @@ Nico Kruithof
 Maria Ten
 Liang Aibin
 Leandro Motta Barros
+Katharina Plugge
 John Vidar Larring
 John Kelso
+John Ivar
 Gustav Haapalahti
 Emmanuel Roche
 Daniel Larimer
 Colin Dunlop
-Chuck Seberino
 Bruce Clay
 Andreas Goebel
 Alok Priyadarshi
@@ -158,26 +162,27 @@ Alberto Barbati
 Vladimir Shabanov
 Uwe Woessner
 Tugkan Calapoglu
+Tim Daoust
+Thomas Hogarth
 Sohey Yamamoto
 Sergey Leontyev
 Santosh Gaikwad
 Rudolf Wiedemann
 Phil Atkin
 Nathan Monteleone
+Mikhail Izmestev
 Miguel Escriva
 Mattias Linde
+Mark Sciabica
 Lilin Xiong
 Lee Butler
 Konstantin Sinitsyn
 Ken Sewell
 Julian Ortiz
-John Ivar
-Johan Nouvel
 Jim Vaughan
 Jeremy Bell
 Jaromir Vitek
 James French
-Hartwig Wiesmann
 Gary Quinn
 Garrett Potts
 Gabor Dorka
@@ -193,11 +198,12 @@ Antoine Hue
 Andrew Bettison
 Anders Backman
 Ali Botorabi
+Alexander Wiebel
+Alexander Irion
 Zach Deedler
 Yuzhong Shen
 Warren Macchi
 Vincent Bourdier
-Tim Daoust
 Terrex 
 Sylvain Marie
 Steve Lunsford
@@ -222,17 +228,16 @@ Mathias Fiedler
 Mathew May
 Martin Spott
 Martijn Kragtwijk
-Mark Sciabica
 Lukasz Izdebski
 Lilith Bryant
 Lars Nilsson
 Kevin Moiule
 Keith Steffen
-Katharina Plugge
 Julen Garcia
 Joseph Winston
 John Aughey
 Joachim Pouderoux
+Javier Taibo
 James Moliere
 Igor Kravtchenko
 Himar Carmona
@@ -252,7 +257,6 @@ Aric Aumann
 Andrew Sampson
 Andrew Lorino
 Alexandre Amalric
-Alexander Wiebel
 Alessandro Terenzi
 Zbigniew Sroczynski
 Yuri Vilmanis
@@ -274,7 +278,6 @@ Tomas Hnilica
 Todd Furlong
 Tino Schwarze
 Thomas Weidner
-Thomas Halgarth
 Tassilo Glander
 Tan Dunning
 Stewart Andreason
@@ -307,6 +310,7 @@ Pierre Bourdin
 Philipp Siemoleit
 Philipp Mächler
 Petr Salinger
+Peter Bear
 Peter Amstutz
 Paul Palumbo
 Paul Fredrikson
@@ -334,9 +338,11 @@ Matthew May
 Matt Green
 Matt Burke
 Mathias Walker
+Mathias Goldau
 Mason Menninger
 Martin Scheffler
 Martin Lambers
+Martin Beck
 Marius Heise
 Mario Guimaraes
 Marco Sciabica
@@ -370,8 +376,10 @@ Jean-Christophe Lombardo
 Jay Zuckerman
 Jason Howlett
 Jason Ballenger
+Jan Klimke
 James Killian
 J.E. Hoffmann
+Holger Helmich
 Henrique Bucher
 Hautio Jari
 Gunter Huber
@@ -390,6 +398,7 @@ Ferdinand Cornelissen
 Fajran Iman
 Fabien Dachicourt
 Erik Johnson
+Eduardo Poyart
 Eduardo Alberto
 Edmond Gheury
 Ed Ralston
@@ -404,6 +413,7 @@ Daniel Stien
 Dan Minor
 César L. B. Silveira
 Cyril Brulebois
+Craig Bosma
 Clay Fowler
 Chuck Sembroski
 Christopher Blaesius

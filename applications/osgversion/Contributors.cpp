@@ -201,6 +201,7 @@ const char* invalidNames[] =
     "TessellationHints",
     "TestManipulator",
     "TestSupportCallback",
+    "Text",
     "TexEnv",
     "TexMat(Matrix",
     "Texture",
@@ -239,6 +240,9 @@ const char* invalidNames[] =
     "ImageLayer",
     "Xml",
     "Y",
+    "UpdateSkeleton",
+    "IncementalCompileOperation",
+    "Billboard",
     "UpdateSkeleton"
 };
 
@@ -251,6 +255,7 @@ struct TypoCorrection
 
 TypoCorrection typoCorrections[] =
 {
+    {"Alaxandre",      "Alexandre"},
     {"Aderian",        "Adrian"},
     {"Adndre",         "Andre"},
     {"Adrain",         "Adrian"},
@@ -336,11 +341,13 @@ TypoCorrection typoCorrections[] =
     {"Lownman",        "Lowman"},
     {"Lugi",           "Luigi"},
     {"Lweandowski",    "Lewandowski"},
+    {"Lavingotte",     "Lavignotte"},
     {"Maceij",         "Maciej"},
     {"Machler",        "Mächler"},
     {"Macro",          "Marco"},
     {"Maechler",       "Mächler"},
     {"Mahai",          "Mihai"},
+    {"Magnes",          "Magnus"},
     {"Mammond",        "Marmond"},
     {"March",          "Marco"},
     {"Martsz",         "Martz"},
@@ -418,7 +425,10 @@ TypoCorrection typoCorrections[] =
     {"Gurhrie",        "Guthrie"},
     {"Byran",          "Bryan"},
     {"Fielder",        "Fiedler"},
-    {"Mathia",         "Mathias"}
+    {"Mathia",         "Mathias"},
+    {"Halgarth",       "Hogarth"},
+    {"Jean-Sebasien",  "Jean-Sebastien"},
+    {"Katherina",      "Katharina"}
 };
 
 
@@ -432,6 +442,14 @@ struct NameCorrection
 
 NameCorrection nameCorrections[] =
 {
+    {"Alexandre","Irion",
+     "Alexander", "Irion"},
+    {"WojciechLewandowski","",
+     "Wojciech", "Lewandowski"},
+    {"Marin",          "Platings",
+     "Michael",        "Platings"},
+    {"Tomas",          "Holgarth",
+     "Thomas",         "Hogarth"},
     {"Marin",          "Lavery",
      "Martin",         "Lavery"},
     {"Nguyen",         "Van",

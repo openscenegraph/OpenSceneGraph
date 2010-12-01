@@ -337,13 +337,7 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
 
     // switch off mip-mapping.
     //
-    _textureObjectBuffer[contextID] = textureObject = generateTextureObject(this, contextID,GL_TEXTURE_2D);
-
-    textureObject->bind();
-    
-    applyTexParameters(GL_TEXTURE_2D,state);
-
-
+  
     bool needHardwareMipMap = (_min_filter != LINEAR && _min_filter != NEAREST);
     bool hardwareMipMapOn = false;
     if (needHardwareMipMap)
@@ -357,12 +351,6 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
             _min_filter = LINEAR;
         }
     }
-    
-    GenerateMipmapMode mipmapResult = mipmapBeforeTexImage(state, hardwareMipMapOn);
-
-    glCopyTexImage2D( GL_TEXTURE_2D, 0, _internalFormat, x, y, width, height, 0 );
-
-    mipmapAfterTexImage(state, mipmapResult);
 
     _textureWidth = width;
     _textureHeight = height;
@@ -373,7 +361,20 @@ void Texture2D::copyTexImage2D(State& state, int x, int y, int width, int height
         for(int s=1; s<width || s<height; s <<= 1, ++_numMipmapLevels) {}
     }
 
-    textureObject->setAllocated(_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
+    _textureObjectBuffer[contextID] = textureObject = generateTextureObject(this, contextID,GL_TEXTURE_2D,_numMipmapLevels,_internalFormat,_textureWidth,_textureHeight,1,0);
+
+    textureObject->bind();
+    
+    applyTexParameters(GL_TEXTURE_2D,state);
+
+    
+    GenerateMipmapMode mipmapResult = mipmapBeforeTexImage(state, hardwareMipMapOn);
+
+    glCopyTexImage2D( GL_TEXTURE_2D, 0, _internalFormat, x, y, width, height, 0 );
+
+    mipmapAfterTexImage(state, mipmapResult);
+
+    textureObject->setAllocated(true);
 
     // inform state that this texture is the current one bound.
     state.haveAppliedTextureAttribute(state.getActiveTextureUnit(), this);

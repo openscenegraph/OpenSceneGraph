@@ -198,9 +198,9 @@ IF(DYNAMIC_OPENSCENEGRAPH)
 
         IF (BUILD_QT_EXAMPLES AND QT4_FOUND)
             ADD_SUBDIRECTORY(osgviewerQtWidget)
-            ADD_SUBDIRECTORY(osgQtWidgets)
 
             IF (QT_QTWEBKIT_FOUND)
+                ADD_SUBDIRECTORY(osgQtWidgets)
                 ADD_SUBDIRECTORY(osgQtBrowser)
             ENDIF()
 

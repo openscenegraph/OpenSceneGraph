@@ -1017,7 +1017,7 @@ void DatabasePager::DatabaseThread::run()
                 {
                     if (_pager->_incrementalCompileOperation.valid())
                     {
-                        OSG_NOTICE<<"Using IncrementalCompileOperation"<<std::endl;
+                        //OSG_NOTICE<<"Using IncrementalCompileOperation"<<std::endl;
 
                         osgUtil::IncrementalCompileOperation::CompileSet* compileSet = new osgUtil::IncrementalCompileOperation::CompileSet(databaseRequest->_loadedModel.get());
                         compileSet->_compileCompletedCallback = new DatabasePagerCompileCompletedCallback(_pager, databaseRequest.get());
@@ -1987,7 +1987,7 @@ bool DatabasePager::requiresExternalCompileGLObjects(unsigned int contextID) con
 
 void DatabasePager::compileCompleted(DatabaseRequest* databaseRequest)
 {
-    OSG_NOTICE<<"DatabasePager::compileCompleted("<<databaseRequest<<")"<<std::endl;
+    //OSG_NOTICE<<"DatabasePager::compileCompleted("<<databaseRequest<<")"<<std::endl;
     _dataToMergeList->add(databaseRequest);
 }
 

@@ -654,8 +654,6 @@ bool PixelBufferWin32::realizeImplementation()
     
     if (!_initialized) return false;
 
-    makeCurrentImplementation();
-
     if ( _traits->sharedContext )
     {
         GraphicsHandleWin32* graphicsHandleWin32 = dynamic_cast<GraphicsHandleWin32*>(_traits->sharedContext);

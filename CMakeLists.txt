@@ -138,10 +138,6 @@ IF (OSG_MAINTAINER)
 ENDIF(OSG_MAINTAINER)
 
 
-# Find OpenGL
-FIND_PACKAGE(OpenGL)
-
-
 IF(APPLE)
     # Trying to get CMake to generate an XCode IPhone project, current efforts are to get iphoneos sdk 3.1 working
     # Added option which needs manually setting to select the IPhone SDK for building. We can only have one of the below
@@ -169,17 +165,22 @@ IF(APPLE)
             SET (IPHONE_DEVROOT "/Developer/Platforms/iPhoneSimulator.platform/Developer")
             SET (IPHONE_SDKROOT "${IPHONE_DEVROOT}/SDKs/iPhoneSimulator${IPHONE_SDKVER}.sdk")
         ENDIF()
-    ENDIF ()
 
-    FIND_LIBRARY(CARBON_LIBRARY Carbon)
-    FIND_LIBRARY(COCOA_LIBRARY Cocoa)
-
-   IF(OSG_BUILD_PLATFORM_IPHONE)
+        # Apple iOS: Find OpenGLES
         FIND_LIBRARY(OPENGLES_LIBRARY OpenGLES)
-    ENDIF()
+    ELSE ()
+        FIND_LIBRARY(CARBON_LIBRARY Carbon)
+        FIND_LIBRARY(COCOA_LIBRARY Cocoa)
+
+        # Apple OS X: Find OpenGL
+        FIND_PACKAGE(OpenGL)
+    ENDIF ()
 
     OPTION(OSG_COMPILE_FRAMEWORKS "compile frameworks instead of dylibs (experimental)" OFF)
     SET(OSG_COMPILE_FRAMEWORKS_INSTALL_NAME_DIR "@executable_path/../Frameworks" CACHE STRING "install name dir for compiled frameworks")
+ELSE()
+    # Non-Apple: Find OpenGL
+    FIND_PACKAGE(OpenGL)
 ENDIF()
 
 IF(UNIX)
@@ -708,8 +709,8 @@ IF(APPLE)
             SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -miphoneos-version-min=3.1 -mno-thumb -arch armv6 -pipe -no-cpp-precomp" CACHE STRING "Flags used by the compiler during all build types." FORCE)
         ELSE()
             #simulator uses i386 architectures
-            SET(CMAKE_OSX_ARCHITECTURES "i386;x86_64" CACHE STRING "Build architectures for iOS Simulator" FORCE)
-            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -miphoneos-version-min=3.1 -mno-thumb -arch i386 -pipe -no-cpp-precomp" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+            SET(CMAKE_OSX_ARCHITECTURES "i386" CACHE STRING "Build architectures for iOS Simulator" FORCE)
+            SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mno-thumb -arch i386 -pipe -no-cpp-precomp" CACHE STRING "Flags used by the compiler during all build types." FORCE)
         ENDIF()
 
         #here we set the specific iphone sdk version. We can only set either device or simulator sdk. So if you want both you currently have to have two seperate projects
@@ -720,7 +721,7 @@ IF(APPLE)
 
         #use the IPhone windowing system
         SET(OSG_WINDOWING_SYSTEM "IOS" CACHE STRING "Forced IPhone windowing system on iOS"  FORCE)
-        SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio " CACHE STRING "Forced imageio default image plugin for iOS" FORCE)
+        SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "imageio" CACHE STRING "Forced imageio default image plugin for iOS" FORCE)
 
         #I think this or similar will be required for IPhone apps
         OPTION(OSG_BUILD_APPLICATION_BUNDLES "Enable the building of applications and examples as OSX Bundles" ON)

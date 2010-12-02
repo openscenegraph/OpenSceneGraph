@@ -594,8 +594,10 @@ int Thread::start() {
     // value.
     //
     if(pd->stackSize) {
+#ifdef PTHREAD_STACK_MIN
         if(pd->stackSize < PTHREAD_STACK_MIN)
             pd->stackSize = PTHREAD_STACK_MIN;
+#endif
         pthread_attr_setstacksize( &thread_attr, pd->stackSize);
         if(status != 0) {
             return status;

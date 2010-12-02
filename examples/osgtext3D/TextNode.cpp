@@ -227,7 +227,7 @@ void TextTechnique::finish()
 void TextTechnique::traverse(osg::NodeVisitor& nv)
 {
     // OSG_NOTICE<<"TextTechnique::traverse()"<<std::endl;
-    if (_textNode) _textNode->Group::traverse(nv);
+    if (_textNode) _textNode->osg::Group::traverse(nv);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////

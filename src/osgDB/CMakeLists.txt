@@ -121,8 +121,10 @@ ADD_LIBRARY(${LIB_NAME}
 )
 
 IF(APPLE)
-    # Needs CoreFoundation calls and a Carbon function
-    SET(OSGDB_PLATFORM_SPECIFIC_LIBRARIES ${CARBON_LIBRARY})
+    IF(NOT OSG_BUILD_PLATFORM_IPHONE AND NOT OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
+        # Needs CoreFoundation calls and a Carbon function
+        SET(OSGDB_PLATFORM_SPECIFIC_LIBRARIES ${CARBON_LIBRARY})
+    ENDIF()
  
     SET(OSG_DEFAULT_IMAGE_PLUGIN_FOR_OSX "quicktime" CACHE STRING "standard image plugin for os x, options are quicktime, imageio")
 

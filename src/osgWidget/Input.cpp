@@ -524,7 +524,7 @@ bool Input::keyDown(int key, int mask, const WindowManager*)
                     data = data.substr(0, _maxSize-s.size()-(deleteMax - deleteMin));
 
                     s.erase(s.begin() + deleteMin, s.begin() + deleteMax);
-                    s.insert(s.begin() + deleteMin, data.begin(), data.end());
+                    std::copy(data.begin(), data.end(), std::inserter(s, s.begin() + deleteMin));
 
                     _index = deleteMin + data.size();
                 }
@@ -532,7 +532,7 @@ bool Input::keyDown(int key, int mask, const WindowManager*)
                 {
                     data = data.substr(0, _maxSize-s.size());
 
-                    s.insert(s.begin() + _index, data.begin(), data.end());
+                    std::copy(data.begin(), data.end(), std::inserter(s, s.begin() + _index));
                     _index += data.length();
                 }
 
@@ -558,7 +558,7 @@ bool Input::keyDown(int key, int mask, const WindowManager*)
             if (selectionMax - selectionMin > 0)
             {
                 std::string data;
-                data.insert(data.begin(), s.begin() + selectionMin, s.begin() + selectionMax);
+                std::copy(s.begin() + selectionMin, s.begin() + selectionMax, std::inserter(data, data.begin()));
 
 // Data to clipboard
 #ifdef WIN32

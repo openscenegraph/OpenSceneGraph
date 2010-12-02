@@ -27,7 +27,11 @@ typedef INT32      int32_t;
 typedef UINT16     uint16_t;
 typedef UINT8      uint8_t;
 #else
+#if defined __sun || defined __hpux
+#include <inttypes.h>
+#else
 #include <stdint.h>
+#endif
 #endif
 
 using namespace osg;

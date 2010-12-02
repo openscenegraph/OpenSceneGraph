@@ -18,6 +18,7 @@
 #include <osg/Vec2>
 #include <osgText/Export>
 
+#include <iosfwd>
 #include <vector>
 
 namespace osgText

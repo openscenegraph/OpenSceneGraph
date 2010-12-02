@@ -706,9 +706,9 @@ void IncrementalCompileOperation::CompileSet::buildCompileMap(ContextSet& contex
         ++itr)
     {
         CompileData& cd = _compileMap[*itr];
-        cd._drawables.insert(cstc._drawables.begin(), cstc._drawables.end());
-        cd._textures.insert(cstc._textures.begin(), cstc._textures.end());
-        cd._programs.insert(cstc._programs.begin(), cstc._programs.end());
+        std::copy(cstc._drawables.begin(), cstc._drawables.end(), std::inserter(cd._drawables, cd._drawables.end()));
+        std::copy(cstc._textures.begin(), cstc._textures.end(), std::inserter(cd._textures, cd._textures.end()));
+        std::copy(cstc._programs.begin(), cstc._programs.end(), std::inserter(cd._programs, cd._programs.end()));
     }
     
 }

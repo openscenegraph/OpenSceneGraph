@@ -30,6 +30,7 @@
 #include <osg/GLBeginEndAdapter>
 #include <osg/ArrayDispatchers>
 
+#include <iosfwd>
 #include <vector>
 #include <map>
 #include <set>

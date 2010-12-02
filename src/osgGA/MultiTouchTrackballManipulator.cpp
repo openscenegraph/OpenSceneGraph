@@ -51,7 +51,7 @@ void MultiTouchTrackballManipulator::handleMultiTouchDrag(GUIEventAdapter::Touch
 
     // osg::notify(osg::ALWAYS) << gap_now << " " << gap_last << std::endl;
 
-    if (abs(gap_last - gap_now) >= zoom_threshold)
+    if (fabs(gap_last - gap_now) >= zoom_threshold)
     {
         // zoom gesture
         zoomModel( (gap_last - gap_now) * eventTimeDelta, true );

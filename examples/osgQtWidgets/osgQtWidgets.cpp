@@ -363,7 +363,9 @@ int main(int argc, char **argv)
         if (!sanityCheck)
         {
             osg::ref_ptr<osgQt::QWidgetImage> widgetImage = new osgQt::QWidgetImage(widget);
+#if (QT_VERSION >= QT_VERSION_CHECK(4, 5, 0))
             widgetImage->getQWidget()->setAttribute(Qt::WA_TranslucentBackground);
+#endif
             widgetImage->getQGraphicsViewAdapter()->setBackgroundColor(QColor(0, 0, 0, 0));
             //widgetImage->getQGraphicsViewAdapter()->resize(800, 600);
             graphicsScene = widgetImage->getQGraphicsViewAdapter()->getQGraphicsScene();

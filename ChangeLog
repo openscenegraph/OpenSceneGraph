@@ -1,3 +1,125 @@
+2010-12-03 17:50  robert
+
+	* src/osgText/Text.cpp: From Johannes Bauerle, "When trying to use
+	  the osgText functionality in an osg application built without
+	  support for the fixed function pipeline I got a lot of warning
+	  messages about invalid calls.
+	  I found two indirect calls to the glTexEnv in the file Text.cpp:
+	  
+	  state.applyTextureAttribute(0,getActiveFont()->getTexEnv());
+	  
+	  In the attached fix I surrounded these calls with #ifdef's
+	  checking for OSG_GL_FIXED_FUNCTION_AVAILABLE to ensure that the
+	  above function is only called when the fixed function pipeline is
+	  available.
+	  "
+
+2010-12-03 17:20  robert
+
+	* src/osg/Texture2D.cpp: Removed redundent call.
+
+2010-12-03 14:24  robert
+
+	* src/osg/Texture2D.cpp: Commented out debug message
+
+2010-12-03 14:18  robert
+
+	* include/osg/Texture2D, src/osg/Texture2D.cpp: Introduced bool
+	  Texture2D::textureObjectValid(State) and bool
+	  SubloadCallback::textureObjectValid(Texture2D&,State&) method to
+	  make it tell Texture2D::apply() whether the texture object is
+	  still valid or whether it's no longed valid for the any changes
+	  to the image attached to the Texture
+
+2010-12-02 14:20  robert
+
+	* CMakeLists.txt, examples/osgviewerIPhone/CMakeLists.txt,
+	  src/osgDB/CMakeLists.txt, src/osgPlugins/freetype/CMakeLists.txt,
+	  src/osgPlugins/imageio/CMakeLists.txt,
+	  src/osgViewer/CMakeLists.txt: From Ulrich Hertlein, "Attached;
+	  here's a summary of the changes:
+	  - CMakeLists.txt
+	  -- don't look for GL when compiling for iOS (device or
+	  simulator), look for OGLES instead
+	  -- use architecture i386 for simulator
+	  -- removed iphoneos-version-min for simulator
+	  
+	  - examples/osgviewerIPhone/CMakeLists.txt
+	  -- added build dependencies for osgdb_osg, osgdb_freetype,
+	  osgdb_imageio
+	  -- added framework QuartzCore link dependency
+	  
+	  - src/osgDB/CMakeLists.txt
+	  -- don't link against Carbon on iOS (device or simulator)
+	  
+	  - src/osgPlugins/freetype/CMakeLists.txt
+	  -- don't link against OpenGL on iOS device or simulator
+	  
+	  - src/osgViewer/CMakeLists.txt
+	  -- link against OpenGLES on iOS (device or simulator)
+	  
+	  - src/osgPlugins/imageio/CMakeLists.txt
+	  -- compile ReaderWriterImageIO_IOS.cpp as Objective-C++
+	  
+	  "
+
+2010-12-02 14:13  robert
+
+	* applications/present3D/CMakeLists.txt,
+	  examples/osgQtWidgets/osgQtWidgets.cpp,
+	  examples/osgcluster/CMakeLists.txt,
+	  examples/osgmultiviewpaging/osgmultiviewpaging.cpp,
+	  examples/osgtext3D/TextNode.cpp, include/osg/State,
+	  include/osgText/Style, src/OpenThreads/pthreads/PThread.c++,
+	  src/osgGA/MultiTouchTrackballManipulator.cpp,
+	  src/osgPlugins/3ds/lib3ds/lib3ds_impl.h,
+	  src/osgPlugins/pvr/ReaderWriterPVR.cpp,
+	  src/osgUtil/IncrementalCompileOperation.cpp,
+	  src/osgWidget/Input.cpp: From Mathias Froehlich, "Attached are
+	  most of the fixes that are required to build osg on solaris and
+	  hpux. I have skipped irix this time as irix is too dead to keep
+	  osg building
+	  there.
+	  
+	  As usual, solaris does not like member templates in stl
+	  containers.
+	  Some headers missing and link problems due to missing libraries."
+
+2010-12-02 14:01  robert
+
+	* examples/osgmultiviewpaging/osgmultiviewpaging.cpp: Ran dos2unix
+	  to fix line endings
+
+2010-12-02 13:53  robert
+
+	* src/osgDB/DatabasePager.cpp: From Brad Christiansen, commented
+	  out debug messages
+
+2010-12-02 09:39  robert
+
+	* src/osgViewer/PixelBufferWin32.cpp: Removed redudent
+	  makeCurrentImplementation() that was causing a crash in
+	  osgscreencapture.
+
+2010-12-01 20:14  robert
+
+	* AUTHORS.txt, applications/osgversion/Contributors.cpp: Updated
+	  AUTHORS and Contributors.cpp to reflect new ChangeLog correctly
+
+2010-12-01 19:49  robert
+
+	* examples/CMakeLists.txt: From Jason Daly, "OK, I dug a bit into
+	  the CMake scripts and found a fairly obvious solution to the
+	  QtWebkit issue on RHEL 6 (see my other message on osg-users). I
+	  just moved the osgQtWidgets example in examples/CMakeLists.txt
+	  under the check for QtWebKit.
+	  
+	  Fix is attached:"
+
+2010-12-01 14:03  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2010-12-01 13:33  robert
 
 	* src/osg/Texture2D.cpp: From Fabien Lavignotte, "I use

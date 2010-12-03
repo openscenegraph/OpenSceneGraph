@@ -1,6 +1,6 @@
 OpenSceneGraph Library 2.9.10
 
-442 Contributors:
+443 Contributors:
 
 Firstname Surname
 -----------------
@@ -14,8 +14,8 @@ Mike Weiblen
 Jean-Sebastien Guay
 Eric Wing
 Farshid Lashkari
-Cedric Pinson
 Ulrich Hertlein
+Cedric Pinson
 Brede Johansen
 Bob Kuehne
 Geoff Michel
@@ -43,10 +43,10 @@ J.P. Delport
 Andy Skinner
 Tom Jolley
 Pavel Moloshtan
+Jason Daly
 David Fries
 Philip Lowman
 Norman Vine
-Jason Daly
 Jan Peciva
 Art Tevs
 Alberto Luaces
@@ -67,6 +67,7 @@ Magnus Kessler
 Gideon May
 Don Tidrow
 Chris Denham
+Brad Christiansen
 Stephane Lamoliatte
 Romano José Magacho da Silva
 Michael Gronager
@@ -74,7 +75,6 @@ Joakim Simonsson
 David Spilling
 Daniel Sjölie
 Bryan Thrall
-Brad Christiansen
 Fabien Lavignotte
 Melchior Franz
 Lionel Lagarde
@@ -369,6 +369,7 @@ John Grant
 John Donovan
 John Davis
 John Argentieri
+Johannes Bauerle
 Joan Abadie
 Jim Brooks
 Jeroen den Dekker

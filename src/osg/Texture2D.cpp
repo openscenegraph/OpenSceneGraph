@@ -160,7 +160,7 @@ void Texture2D::apply(State& state) const
 
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
-    if (textureObject && !textureObjectValid(state))
+    if (textureObject)
     {
         bool textureObjectInvalidated = false;
         if (_subloadCallback.valid())

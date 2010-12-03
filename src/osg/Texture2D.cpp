@@ -174,7 +174,7 @@ void Texture2D::apply(State& state) const
 
         if (textureObjectInvalidated)
         {
-            OSG_NOTICE<<"Discarding TextureObject"<<std::endl;
+            // OSG_NOTICE<<"Discarding TextureObject"<<std::endl;
             Texture::releaseTextureObject(contextID, _textureObjectBuffer[contextID].get());
             _textureObjectBuffer[contextID] = 0;
             textureObject = 0;

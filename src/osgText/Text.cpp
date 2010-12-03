@@ -1207,8 +1207,9 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
 #else
     state.applyTextureMode(0,GL_TEXTURE_2D,false);
 #endif
+#if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
     state.applyTextureAttribute(0,getActiveFont()->getTexEnv());
-
+#endif
     if (_characterSizeMode!=OBJECT_COORDS || _autoRotateToScreen)
     {
         int frameNumber = state.getFrameStamp()?state.getFrameStamp()->getFrameNumber():0;
@@ -1345,7 +1346,9 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
 #else
     state.applyTextureMode(0,GL_TEXTURE_2D,false);
 #endif
+#if defined(OSG_GL_FIXED_FUNCTION_AVAILABLE)
     state.applyTextureAttribute(0,getActiveFont()->getTexEnv());
+#endif
 
     if (_drawMode & TEXT)
     {

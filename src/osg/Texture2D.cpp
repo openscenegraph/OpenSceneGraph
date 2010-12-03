@@ -125,6 +125,25 @@ void Texture2D::setImage(Image* image)
     }
 }
 
+bool Texture2D::textureObjectValid(State& state) const
+{
+    TextureObject* textureObject = getTextureObject(state.getContextID());
+    if (!textureObject) return false;
+
+    // return true if image isn't assigned as we won't be override the value.
+    if (!_image) return true;
+
+    // compute the internal texture format, this set the _internalFormat to an appropriate value.
+    computeInternalFormat();
+
+    GLsizei new_width, new_height, new_numMipmapLevels;
+
+    // compute the dimensions of the texture.
+    computeRequiredTextureDimensions(state, *_image, new_width, new_height, new_numMipmapLevels);
+
+    return textureObject->match(GL_TEXTURE_2D, new_numMipmapLevels, _internalFormat, new_width, new_height, 1, _borderWidth);
+}
+
 
 void Texture2D::apply(State& state) const
 {
@@ -141,25 +160,24 @@ void Texture2D::apply(State& state) const
 
     // get the texture object for the current contextID.
     TextureObject* textureObject = getTextureObject(contextID);
-
-    if (textureObject)
+    if (textureObject && !textureObjectValid(state))
     {
-        if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
+        bool textureObjectInvalidated = false;
+        if (_subloadCallback.valid())
         {
-            // compute the internal texture format, this set the _internalFormat to an appropriate value.
-            computeInternalFormat();
+            textureObjectInvalidated = !_subloadCallback->textureObjectValid(*this, state);
+        }
+        else if (_image.valid() && getModifiedCount(contextID) != _image->getModifiedCount())
+        {
+            textureObjectInvalidated = !textureObjectValid(state);
+        }
 
-            GLsizei new_width, new_height, new_numMipmapLevels;
-
-            // compute the dimensions of the texture.
-            computeRequiredTextureDimensions(state, *_image, new_width, new_height, new_numMipmapLevels);
-
-            if (!textureObject->match(GL_TEXTURE_2D, new_numMipmapLevels, _internalFormat, new_width, new_height, 1, _borderWidth))
-            {
-                Texture::releaseTextureObject(contextID, _textureObjectBuffer[contextID].get());
-                _textureObjectBuffer[contextID] = 0;
-                textureObject = 0;
-            }
+        if (textureObjectInvalidated)
+        {
+            OSG_NOTICE<<"Discarding TextureObject"<<std::endl;
+            Texture::releaseTextureObject(contextID, _textureObjectBuffer[contextID].get());
+            _textureObjectBuffer[contextID] = 0;
+            textureObject = 0;
         }
     }
 

@@ -3525,7 +3525,7 @@ void Optimizer::TextureAtlasBuilder::buildAtlas()
                 {
                     OSG_INFO<<"checking source "<<source->_image->getFileName()<<" to see it it'll fit in atlas "<<aitr->get()<<std::endl;
                     Optimizer::TextureAtlasBuilder::Atlas::FitsIn fitsIn = (*aitr)->doesSourceFit(source);
-                    if (fitsIn == Optimizer::TextureAtlasBuilder::Atlas::YES)
+                    if (fitsIn == Optimizer::TextureAtlasBuilder::Atlas::FITS_IN_CURRENT_ROW)
                     {
                         addedSourceToAtlas = true;
                         (*aitr)->addSource(source); // Add in the currentRow.
@@ -3741,13 +3741,13 @@ Optimizer::TextureAtlasBuilder::Atlas::FitsIn Optimizer::TextureAtlasBuilder::At
 {
     // does the source have a valid image?
     const osg::Image* sourceImage = source->_image.get();
-    if (!sourceImage) return NO;
+    if (!sourceImage) return DOES_NOT_FIT_IN_ANY_ROW;
     
     // does pixel format match?
     if (_image.valid())
     {
-        if (_image->getPixelFormat() != sourceImage->getPixelFormat()) return NO;
-        if (_image->getDataType() != sourceImage->getDataType()) return NO;
+        if (_image->getPixelFormat() != sourceImage->getPixelFormat()) return DOES_NOT_FIT_IN_ANY_ROW;
+        if (_image->getDataType() != sourceImage->getDataType()) return DOES_NOT_FIT_IN_ANY_ROW;
     }
     
     const osg::Texture2D* sourceTexture = source->_texture.get();
@@ -3757,20 +3757,20 @@ Optimizer::TextureAtlasBuilder::Atlas::FitsIn Optimizer::TextureAtlasBuilder::At
             sourceTexture->getWrap(osg::Texture2D::WRAP_S)==osg::Texture2D::MIRROR)
         {
             // can't support repeating textures in texture atlas
-            return NO;
+            return DOES_NOT_FIT_IN_ANY_ROW;
         }
 
         if (sourceTexture->getWrap(osg::Texture2D::WRAP_T)==osg::Texture2D::REPEAT ||
             sourceTexture->getWrap(osg::Texture2D::WRAP_T)==osg::Texture2D::MIRROR)
         {
             // can't support repeating textures in texture atlas
-            return NO;
+            return DOES_NOT_FIT_IN_ANY_ROW;
         }
 
         if (sourceTexture->getReadPBuffer()!=0)
         {
             // pbuffer textures not suitable
-            return NO;
+            return DOES_NOT_FIT_IN_ANY_ROW;
         }
 
         if (_texture.valid())
@@ -3785,55 +3785,55 @@ Optimizer::TextureAtlasBuilder::Atlas::FitsIn Optimizer::TextureAtlasBuilder::At
             if (sourceUsesBorder!=atlasUsesBorder)
             {
                 // border wrapping does not match
-                return NO;
+                return DOES_NOT_FIT_IN_ANY_ROW;
             }
 
             if (sourceUsesBorder)
             {
                 // border colours don't match
-                if (_texture->getBorderColor() != sourceTexture->getBorderColor()) return NO;
+                if (_texture->getBorderColor() != sourceTexture->getBorderColor()) return DOES_NOT_FIT_IN_ANY_ROW;
             }
             
             if (_texture->getFilter(osg::Texture2D::MIN_FILTER) != sourceTexture->getFilter(osg::Texture2D::MIN_FILTER))
             {
                 // inconsitent min filters
-                return NO;
+                return DOES_NOT_FIT_IN_ANY_ROW;
             }
  
             if (_texture->getFilter(osg::Texture2D::MAG_FILTER) != sourceTexture->getFilter(osg::Texture2D::MAG_FILTER))
             {
                 // inconsitent mag filters
-                return NO;
+                return DOES_NOT_FIT_IN_ANY_ROW;
             }
             
             if (_texture->getMaxAnisotropy() != sourceTexture->getMaxAnisotropy())
             {
                 // anisotropy different.
-                return NO;
+                return DOES_NOT_FIT_IN_ANY_ROW;
             }
             
             if (_texture->getInternalFormat() != sourceTexture->getInternalFormat())
             {
                 // internal formats inconistent
-                return NO;
+                return DOES_NOT_FIT_IN_ANY_ROW;
             }
             
             if (_texture->getShadowCompareFunc() != sourceTexture->getShadowCompareFunc())
             {
                 // shadow functions inconsitent
-                return NO;
+                return DOES_NOT_FIT_IN_ANY_ROW;
             }
                 
             if (_texture->getShadowTextureMode() != sourceTexture->getShadowTextureMode())
             {
                 // shadow texture mode inconsitent
-                return NO;
+                return DOES_NOT_FIT_IN_ANY_ROW;
             }
 
             if (_texture->getShadowAmbient() != sourceTexture->getShadowAmbient())
             {
                 // shadow ambient inconsitent
-                return NO;
+                return DOES_NOT_FIT_IN_ANY_ROW;
             }
         }
     }
@@ -3841,19 +3841,19 @@ Optimizer::TextureAtlasBuilder::Atlas::FitsIn Optimizer::TextureAtlasBuilder::At
     if (sourceImage->s() + 2*_margin > _maximumAtlasWidth)
     {
         // image too big for Atlas
-        return NO;
+        return DOES_NOT_FIT_IN_ANY_ROW;
     }
     
     if (sourceImage->t() + 2*_margin > _maximumAtlasHeight)
     {
         // image too big for Atlas
-        return NO;
+        return DOES_NOT_FIT_IN_ANY_ROW;
     }
 
     if ((_y + sourceImage->t() + 2*_margin) > _maximumAtlasHeight)
     {
         // image doesn't have up space in height axis.
-        return NO;
+        return DOES_NOT_FIT_IN_ANY_ROW;
     }
 
     // does the source fit in the current row?
@@ -3861,7 +3861,7 @@ Optimizer::TextureAtlasBuilder::Atlas::FitsIn Optimizer::TextureAtlasBuilder::At
     {
         // yes it fits :-)
         OSG_INFO<<"Fits in current row"<<std::endl;
-        return YES;
+        return FITS_IN_CURRENT_ROW;
     }
 
     // does the source fit in the new row up?
@@ -3873,7 +3873,7 @@ Optimizer::TextureAtlasBuilder::Atlas::FitsIn Optimizer::TextureAtlasBuilder::At
     }
     
     // no space for the texture
-    return NO;
+    return DOES_NOT_FIT_IN_ANY_ROW;
 }
 
 bool Optimizer::TextureAtlasBuilder::Atlas::addSource(Source* source)

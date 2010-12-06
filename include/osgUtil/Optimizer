@@ -760,14 +760,11 @@ class OSGUTIL_EXPORT Optimizer
                 unsigned int _indexFirstOfRow; ///< Contain the index of the first element of the last row.
                 enum FitsIn
                 {
-                    NO,
-                    YES,
+                    DOES_NOT_FIT_IN_ANY_ROW,
+                    FITS_IN_CURRENT_ROW,
                     IN_NEXT_ROW
                 };
-                //Return YES if it fits in the current row,
-                //NO if it can't fit in any row.
-                //IN_NEXT_ROW if it can't fin the the current row, but can fit in next row or atlas.
-                FitsIn doesSourceFit(Source* source); 
+                FitsIn doesSourceFit(Source* source);
                 bool addSource(Source* source);
                 void clampToNearestPowerOfTwoSize();
                 void copySources();

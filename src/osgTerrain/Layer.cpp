@@ -45,7 +45,7 @@ void osgTerrain::extractSetNameAndFileName(const std::string& compoundstring, st
     filename = compoundstring.substr(secondcolonpos+1, std::string::npos);
 }
 
-std::string osgTerrain::createCompondSetNameAndFileName(const std::string& setname, const std::string& filename)
+std::string osgTerrain::createCompoundSetNameAndFileName(const std::string& setname, const std::string& filename)
 {
     if (setname.empty()) return filename;
     return std::string("set:")+setname+std::string(":")+filename;
@@ -620,7 +620,7 @@ void CompositeLayer::setCompoundName(unsigned int i, const std::string& compound
 
 std::string CompositeLayer::getCompoundName(unsigned int i) const
 {
-    return createCompondSetNameAndFileName(_layers[i].setname, _layers[i].filename);
+    return createCompoundSetNameAndFileName(_layers[i].setname, _layers[i].filename);
 }
 
 void CompositeLayer::addLayer(const std::string& compoundname)

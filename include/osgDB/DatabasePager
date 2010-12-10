@@ -110,8 +110,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             void setActive(bool active) { _active = active; }
             bool getActive() const { return _active; }
 
-            double getTimeSinceStartOfIteration() const;
-
             virtual int cancel();
             
             virtual void run();
@@ -120,12 +118,11 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
             virtual ~DatabaseThread();
         
-            bool            _done;
-            bool            _active;
-            DatabasePager*  _pager;
-            Mode            _mode;
-            std::string     _name;
-            osg::Timer_t    _tickSinceStartOfIteration;
+            volatile bool       _done;
+            volatile bool       _active;
+            DatabasePager*      _pager;
+            Mode                _mode;
+            std::string         _name;
 
         };
         
@@ -188,42 +185,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         bool getDoPreCompile() const { return _doPreCompile; }
 
 
-        /** Set the target frame rate that the DatabasePager should assume.
-          * Typically one would set this to the value refresh rate of your display system i.e. 60Hz.
-          * Default value is 100.
-          * Usage notes.  The TargetFrameRate and the MinimumTimeAvailableForGLCompileAndDeletePerFrame
-          * parameters are not directly used by DatabasePager, but are should be used as a guide for how
-          * long to set aside per frame for compiling and deleting OpenGL objects - ie. the value to use 
-          * when calling DatabasePager::compileGLObjectgs(state,availableTime,). The longer amount of
-          * time to set aside  cthe faster databases will be paged in but with increased chance of frame drops,
-          * the lower the amount of time the set aside the slower databases will paged it but with better
-          * chance of avoid any frame drops.  The default values are chosen to achieve the later when running
-          * on a modern mid to high end  PC. 
-          * The way to compute the amount of available time use a scheme such as :
-          *    availableTime = maximum(1.0/targetFrameRate - timeTakenDuringUpdateCullAndDraw, minimumTimeAvailableForGLCompileAndDeletePerFrame). 
-          */
-        void setTargetFrameRate(double tfr) { _targetFrameRate = tfr; }
-
-        /** Get the target frame rate that the DatabasePager should assume.*/
-        double getTargetFrameRate() const { return _targetFrameRate; }
-        
-        /** Set the minimum amount of time (in seconds) that should be made available for compiling and delete OpenGL objects per frame.
-          * Default value is 0.001 (1 millisecond). 
-          * For usage see notes in setTargetFrameRate.*/
-        void setMinimumTimeAvailableForGLCompileAndDeletePerFrame(double ta) { _minimumTimeAvailableForGLCompileAndDeletePerFrame = ta; }
-
-        /** Get the minimum amount of time that should be made available for compiling and delete OpenGL objects per frame.
-          * For usage see notes in setTargetFrameRate.*/
-        double getMinimumTimeAvailableForGLCompileAndDeletePerFrame() const { return _minimumTimeAvailableForGLCompileAndDeletePerFrame; }
-
-        /** Set the maximum number of OpenGL objects that the page should attempt to compile per frame.
-          * Note, Lower values reduces chances of a frame drop but lower the rate that database will be paged in at.
-          * Default value is 8. */
-        void setMaximumNumOfObjectsToCompilePerFrame(unsigned int num) { _maximumNumOfObjectsToCompilePerFrame = num; }
-
-        /** Get the maximum number of OpenGL objects that the page should attempt to compile per frame.*/
-        unsigned int getMaximumNumOfObjectsToCompilePerFrame() const { return _maximumNumOfObjectsToCompilePerFrame; }
-
 
         /** Set the target maximum number of PagedLOD to maintain in memory.
           * Note, if more than the target number are required for rendering of a frame then these active PagedLOD are excempt from being expiried.
@@ -275,29 +236,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** Merge the changes to the scene graph by calling calling removeExpiredSubgraphs then addLoadedDataToSceneGraph.
           * Note, must only be called from single thread update phase. */
         virtual void updateSceneGraph(const osg::FrameStamp& frameStamp);
-                
-        /** Turn the compilation of rendering objects for specified graphics context on (true) or off(false). */
-        void setCompileGLObjectsForContextID(unsigned int contextID, bool on);
-        
-        /** Get whether the compilation of rendering objects for specified graphics context on (true) or off(false). */
-        bool getCompileGLObjectsForContextID(unsigned int contextID);
-
-        /** Return true if an external draw thread should call compileGLObjects(..) or not.*/
-        bool requiresExternalCompileGLObjects(unsigned int contextID) const;
-
-        /** Return true if there are pending compile operations that are required.
-          * If requiresCompileGLObjects() return true the application should call compileGLObjects() .*/
-        bool requiresCompileGLObjects() const;
-
-        /** Compile the rendering objects (display lists,texture objects, VBO's) on loaded subgraph.
-          * note, should only be called from the draw thread.
-          * Note, must only be called from a valid graphics context. */
-        virtual void compileGLObjects(osg::State& state,double& availableTime, bool doFlush = false);
-        
-        /** Compile the rendering objects (display lists,texture objects, VBO's) on loaded subgraph.
-          * note, should only be called from the draw thread.
-          * Note, must only be called from a valid graphics context. */
-        virtual void compileAllGLObjects(osg::State& state, bool doFlush = false);
 
         /** Report how many items are in the _fileRequestList queue */
         unsigned int getFileRequestListSize() const { return _fileRequestQueue->size() + _httpRequestQueue->size(); }
@@ -325,10 +263,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         typedef std::set< osg::ref_ptr<osg::StateSet> >                 StateSetList;
         typedef std::vector< osg::ref_ptr<osg::Drawable> >              DrawableList;
-        typedef osgUtil::CompileData                                    DataToCompile;
-        typedef std::map< unsigned int, DataToCompile >                 DataToCompileMap; 
-        typedef std::set<unsigned int>                                  ActiveGraphicsContexts;
-        typedef std::vector< osg::observer_ptr<osg::GraphicsContext> >  CompileGraphicsContexts;
 
         class CountPagedLODsVisitor;
 
@@ -374,21 +308,22 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
             bool valid() const { return _valid; }
 
-            bool                                _valid;
-            std::string                         _fileName;
-            int                                 _frameNumberFirstRequest;
-            double                              _timestampFirstRequest;
-            float                               _priorityFirstRequest;
-            int                                 _frameNumberLastRequest;
-            double                              _timestampLastRequest;
-            float                               _priorityLastRequest;
-            unsigned int                        _numOfRequests;
-            osg::ObserverNodePath               _observerNodePath;
-            osg::Group*                         _groupForAddingLoadedSubgraph;
-            osg::ref_ptr<osg::Node>             _loadedModel;
-            DataToCompileMap                    _dataToCompileMap;
-            osg::ref_ptr<Options>               _loadOptions;
-            RequestQueue*                       _requestQueue;
+            bool                        _valid;
+            std::string                 _fileName;
+            int                         _frameNumberFirstRequest;
+            double                      _timestampFirstRequest;
+            float                       _priorityFirstRequest;
+            int                         _frameNumberLastRequest;
+            double                      _timestampLastRequest;
+            float                       _priorityLastRequest;
+            unsigned int                _numOfRequests;
+            osg::ObserverNodePath       _observerNodePath;
+            osg::Group*                 _groupForAddingLoadedSubgraph;
+            osg::ref_ptr<osg::Node>     _loadedModel;
+            osg::ref_ptr<Options>       _loadOptions;
+            RequestQueue*               _requestQueue;
+
+            osg::observer_ptr<osgUtil::IncrementalCompileOperation::CompileSet> _compileSet;
 
             bool isRequestCurrent (int frameNumber) const
             {
@@ -404,6 +339,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             RequestQueue(DatabasePager* pager);
 
             void add(DatabaseRequest* databaseRequest);
+            void remove(DatabaseRequest* databaseRequest);
+
             void addNoLock(DatabaseRequest* databaseRequest);
 
             void takeFirst(osg::ref_ptr<DatabaseRequest>& databaseRequest);
@@ -412,6 +349,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             bool pruneOldRequestsAndCheckIfEmpty();
 
             virtual void updateBlock() {}
+
+            void invalidate(DatabaseRequest* dr);
 
             bool empty() const { return size()==0; }
 
@@ -424,7 +363,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             void swap(RequestList& requestList);
 
             DatabasePager*              _pager;
-            unsigned int                _size;
+            volatile unsigned int       _size;
             RequestList                 _requestList;
             OpenThreads::Mutex          _requestMutex;
             int                         _frameNumberLastPruned;
@@ -473,93 +412,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         OpenThreads::Mutex              _run_mutex;
         bool                            _startThreadCalled;
 
-        // Helper functions for determining if objects need to be
-        // compiled.
-        inline static bool isCompiled(const osg::Texture* texture,
-                                      unsigned int contextID)
-        {
-            return( texture->getTextureObject(contextID) != NULL );
-        }
-        // Is texture compiled for all active contexts?
-        inline bool isCompiled(osg::Texture* texture) const
-        {
-            for (ActiveGraphicsContexts::const_iterator iter=_activeGraphicsContexts.begin();
-                   iter!=_activeGraphicsContexts.end(); ++iter )
-            {
-                if ( texture->getTextureObject(*iter) == NULL ) return false;
-            }
-            return true;
-        }
-        
-        inline static bool isCompiled(const osg::StateSet* stateSet,
-                                      unsigned int contextID)
-        {
-            for (unsigned i = 0;
-                 i < stateSet->getTextureAttributeList().size();
-                 ++i)
-            {
-                const osg::Texture* texture
-                    = dynamic_cast<const osg::Texture*>(stateSet->getTextureAttribute(i,osg::StateAttribute::TEXTURE));
-                if (texture && !isCompiled(texture, contextID))
-                    return false;
-            }
-            return true;
-        }
-
-        inline bool isCompiled(osg::StateSet* stateSet)
-        {
-            for (unsigned i = 0;
-                 i < stateSet->getTextureAttributeList().size();
-                 ++i)
-            {
-                osg::Texture* texture
-                    = dynamic_cast<osg::Texture*>(stateSet->getTextureAttribute(i,osg::StateAttribute::TEXTURE));
-                if (texture)
-                {
-                    for (ActiveGraphicsContexts::iterator iter=_activeGraphicsContexts.begin();
-                            iter!=_activeGraphicsContexts.end(); ++iter )
-                    {
-                        if ( texture->getTextureObject(*iter) == NULL ) return false;
-                    }
-                }
-            }
-            return true;
-        }
-        
-        inline static bool isCompiled(const osg::Drawable* drawable,
-                                      unsigned int contextID)
-        {
-            if (drawable->getUseVertexBufferObjects())
-            {
-                // say it's not compiled leaving it up to the compileGLObjects() to handle.
-                return false;
-            }
-            else if (drawable->getUseDisplayList())
-            {
-                return drawable->getDisplayList(contextID) != 0;
-            }
-
-            return true;
-        }
-
-        inline bool isCompiled(const osg::Drawable* drawable) const
-        {
-            if (drawable->getUseVertexBufferObjects())
-            {
-                // say it's not compiled leaving it up to the compileGLObjects() to handle.
-                return false;
-            }
-            if (drawable->getUseDisplayList())
-            {
-                for (ActiveGraphicsContexts::const_iterator iter=_activeGraphicsContexts.begin();
-                        iter!=_activeGraphicsContexts.end(); ++iter )
-                {
-                    if ( drawable->getDisplayList(*iter) == 0 ) return false;
-                }
-            }
-            return true;
-        }
-
         void compileCompleted(DatabaseRequest* databaseRequest);
 
         /** Iterate through the active PagedLOD nodes children removing
@@ -583,9 +435,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         osg::ref_ptr<ReadQueue>         _fileRequestQueue;
         osg::ref_ptr<ReadQueue>         _httpRequestQueue;
-
-
         osg::ref_ptr<RequestQueue>      _dataToCompileList;
+        osg::ref_ptr<RequestQueue>      _dataToMergeList;
 
         DrawablePolicy                  _drawablePolicy;
 
@@ -596,36 +447,20 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         bool                            _deleteRemovedSubgraphsInDatabaseThread;
 
-        osg::ref_ptr<RequestQueue>      _dataToMergeList;
 
         osg::ref_ptr<PagedLODList>      _activePagedLODList;
         osg::ref_ptr<PagedLODList>      _inactivePagedLODList;
 
         unsigned int                    _targetMaximumNumberOfPageLOD;
 
-        ActiveGraphicsContexts          _activeGraphicsContexts;
-        // CompileGraphicsContexts         _compileGraphicsContexts;
-
         bool                            _doPreCompile;
         osg::ref_ptr<osgUtil::IncrementalCompileOperation>  _incrementalCompileOperation;
 
-        double                          _targetFrameRate;
-        double                          _minimumTimeAvailableForGLCompileAndDeletePerFrame;
-        unsigned int                    _maximumNumOfObjectsToCompilePerFrame;
 
         double                          _minimumTimeToMergeTile;
         double                          _maximumTimeToMergeTile;
         double                          _totalTimeToMergeTiles;
         unsigned int                    _numTilesMerges;
-
-        struct CompileOperation : public osg::GraphicsOperation
-        {
-            CompileOperation(DatabasePager* databasePager);
-
-            virtual void operator () (osg::GraphicsContext* context);
-
-            osg::observer_ptr<DatabasePager> _databasePager;
-        };
 };
 
 }

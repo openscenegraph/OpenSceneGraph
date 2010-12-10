@@ -148,7 +148,8 @@ SceneView::SceneView(DisplaySettings* ds)
 
     _camera->setDrawBuffer(GL_BACK);
 
-    _requiresFlush = true;
+    _automaticFlush = true;
+    _requiresFlush = false;
     
     _activeUniforms = DEFAULT_UNIFORMS;
     
@@ -180,7 +181,8 @@ SceneView::SceneView(const SceneView& rhs, const osg::CopyOp& copyop):
     
     _initCalled = false;
 
-    _requiresFlush = rhs._requiresFlush;
+    _automaticFlush = rhs._automaticFlush;
+    _requiresFlush = false;
     
     _activeUniforms = rhs._activeUniforms;
     
@@ -1025,6 +1027,8 @@ void SceneView::flushAllDeletedGLObjects()
 
 void SceneView::flushDeletedGLObjects(double& availableTime)
 {
+    // OSG_NOTICE<<"SceneView::flushDeletedGLObjects(availableTime="<<availableTime<<")"<<std::endl;
+    
     osg::State* state = _renderInfo.getState();
 
     _requiresFlush = false;
@@ -1061,7 +1065,7 @@ void SceneView::draw()
     }
 
     // assume the the draw which is about to happen could generate GL objects that need flushing in the next frame.
-    _requiresFlush = true;
+    _requiresFlush = _automaticFlush;
 
     RenderLeaf* previous = NULL;
     if (_displaySettings.valid() && _displaySettings->getStereo()) 

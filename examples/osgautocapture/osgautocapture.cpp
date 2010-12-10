@@ -142,8 +142,6 @@ public:
         : osgViewer::Renderer(camera),
           _cullOnly(true)
         {
-            setTargetFrameRate(1);
-            setMinimumTimeAvailableForGLCompileAndDeletePerFrame(1);
         }
 
     /** Set flag to omit drawing in renderingTraversals */

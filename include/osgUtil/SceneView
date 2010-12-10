@@ -478,7 +478,11 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         virtual void flushDeletedGLObjects(double& availableTime);
         
         /** Extract stats for current draw list. */
-        bool getStats(Statistics& primStats); 
+        bool getStats(Statistics& primStats);
+
+        /** Set whether the SceneView should automatically call flishDeletedObjects() on each new frame.*/
+        void setAutomaticFlush(bool automaticFlush) { _automaticFlush = automaticFlush; }
+        bool getAutomaticFlush() const { return _automaticFlush; }
 
     protected:
 
@@ -536,6 +540,7 @@ class OSGUTIL_EXPORT SceneView : public osg::Object, public osg::CullSettings
         
         bool                                        _prioritizeTextures;
         
+        bool                                        _automaticFlush;
         bool                                        _requiresFlush;
         
         int                                         _activeUniforms;        

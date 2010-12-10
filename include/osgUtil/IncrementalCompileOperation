@@ -266,7 +266,7 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
                 return true;
             }
 
-            osg::ref_ptr<osg::Group>                _attachmentPoint;
+            osg::observer_ptr<osg::Group>           _attachmentPoint;
             osg::ref_ptr<osg::Node>                 _subgraphToCompile;
             osg::ref_ptr<CompileCompletedCallback>  _compileCompletedCallback;
             CompileMap                              _compileMap;
@@ -287,9 +287,12 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
         /** Add a CompileSet to be compiled.*/
         void add(CompileSet* compileSet, bool callBuildCompileMap=true);
 
+        /** Remove CompileSet from list.*/
+        void remove(CompileSet* compileSet);
 
+        
         OpenThreads::Mutex* getToCompiledMutex() { return &_toCompileMutex; }
-        CompileSets& getToCompile() { return _compiled; }
+        CompileSets& getToCompile() { return _toCompile; }
         
         OpenThreads::Mutex* getCompiledMutex() { return &_compiledMutex; }
         CompileSets& getCompiled() { return _compiled; }

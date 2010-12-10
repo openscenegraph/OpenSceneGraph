@@ -18,6 +18,7 @@
 #include <osg/GLObjects>
 #include <osg/Depth>
 #include <osg/ColorMask>
+#include <osg/ApplicationUsage>
 
 #include <OpenThreads/ScopedLock>
 
@@ -28,6 +29,23 @@
 namespace osgUtil 
 {
 
+
+// TODO
+// priority of CompileSets
+// isCompiled
+// time estimation
+// early completion
+// needs compile given time slot
+// custom CompileData elements
+// pruneOldRequestsAndCheckIfEmpty()
+// Use? :
+//                     #if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE) && !defined(OSG_GL3_AVAILABLE)
+//                        GLint p;
+//                        glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_RESIDENT, &p);
+//                    #endif
+
+static osg::ApplicationUsageProxy ICO_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MINIMUM_COMPILE_TIME_PER_FRAME <float>","minimum compile time alloted to compiling OpenGL objects per frame in database pager.");
+static osg::ApplicationUsageProxy UCO_e2(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAXIMUM_OBJECTS_TO_COMPILE_PER_FRAME <int>","maximum number of OpenGL objects to compile per frame in database pager.");
 
 /////////////////////////////////////////////////////////////////
 //
@@ -248,6 +266,11 @@ void CompileOperator::runTimingTests(osg::RenderInfo& renderInfo)
 
 bool CompileOperator::compile(osg::RenderInfo& renderInfo, CompileData& cd, unsigned int& maxNumObjectsToCompile, double& compileTime)
 {
+    osg::NotifySeverity level = osg::INFO;
+    //osg::NotifySeverity level = osg::NOTICE;
+
+    OSG_NOTIFY(level)<<"compile(..,maxNumObjectsToCompile="<<maxNumObjectsToCompile<<", compileTime="<<compileTime<<")"<<std::endl;
+
     osg::Timer_t startTick = osg::Timer::instance()->tick();
 
     if (!_timingTestsCompleted)
@@ -255,7 +278,6 @@ bool CompileOperator::compile(osg::RenderInfo& renderInfo, CompileData& cd, unsi
         runTimingTests(renderInfo);
     }
 
-    osg::NotifySeverity level = osg::INFO;
 
     unsigned int totalDataSizeCompiled = 0;
     unsigned int drawablesCompiled = 0;
@@ -436,7 +458,7 @@ bool CompileOperator::compile(osg::RenderInfo& renderInfo, CompileData& cd, unsi
 
     double timeUsed = osg::Timer::instance()->delta_s(startTick, osg::Timer::instance()->tick());
 
-    OSG_NOTIFY(level)<<"compile time, texturesCompiled="<<texturesCompiled<<", drawablesCompiled="<<drawablesCompiled<<", programsCompiled="<<programsCompiled<<", timeUsed="<<timeUsed*1000.0<<" totalDataSizeCompiled="<<totalDataSizeCompiled<<" bytes, download rate="<<double(totalDataSizeCompiled)/(1024.0*1024*timeUsed)<<"Mb/sec"<<std::endl;
+    OSG_NOTIFY(level)<<"   texturesCompiled="<<texturesCompiled<<", drawablesCompiled="<<drawablesCompiled<<", programsCompiled="<<programsCompiled<<", timeUsed="<<timeUsed*1000.0<<" totalDataSizeCompiled="<<totalDataSizeCompiled<<" bytes, download rate="<<double(totalDataSizeCompiled)/(1024.0*1024*timeUsed)<<"Mb/sec"<<std::endl;
 
     compileTime -= timeUsed;
 
@@ -467,6 +489,8 @@ IncrementalCompileOperation::IncrementalCompileOperation():
     }
 
     _compileOperator = new CompileOperator;
+
+    // assignForceTextureDownloadGeometry();
 }
 
 IncrementalCompileOperation::~IncrementalCompileOperation()
@@ -551,6 +575,44 @@ void IncrementalCompileOperation::add(CompileSet* compileSet, bool callBuildComp
     _toCompile.push_back(compileSet);
 }
 
+void IncrementalCompileOperation::remove(CompileSet* compileSet)
+{
+    // OSG_NOTICE<<"IncrementalCompileOperation::remove(CompileSet* compileSet)"<<std::endl;
+    
+    if (!compileSet) return;
+
+    // remove CompileSet from _toCompile list if it's present.
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex>  lock(_toCompileMutex);
+        for(CompileSets::iterator itr = _toCompile.begin();
+            itr != _toCompile.end();
+            ++itr)
+        {
+            if (*itr == compileSet)
+            {
+                _toCompile.erase(itr);
+                return;
+            }
+        }
+    }
+
+    // remove CompileSet from _compiled list if it's present.
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex>  lock(_compiledMutex);
+        for(CompileSets::iterator itr = _compiled.begin();
+            itr != _compiled.end();
+            ++itr)
+        {
+            if (*itr == compileSet)
+            {
+                _toCompile.erase(itr);
+                return;
+            }
+        }
+    }
+}
+
+
 void IncrementalCompileOperation::mergeCompiledSubgraphs()
 {
     // OSG_INFO<<"IncrementalCompileOperation::mergeCompiledSubgraphs()"<<std::endl;
@@ -562,9 +624,10 @@ void IncrementalCompileOperation::mergeCompiledSubgraphs()
         ++itr)
     {
         CompileSet* cs = itr->get();
-        if (cs->_attachmentPoint.valid())
+        osg::ref_ptr<osg::Group> group;
+        if (cs->_attachmentPoint.lock(group))
         {
-            cs->_attachmentPoint->addChild(cs->_subgraphToCompile.get());
+            group->addChild(cs->_subgraphToCompile.get());
         }
     }
     
@@ -756,6 +819,8 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
 #endif
 
 
+    //level = osg::NOTICE;
+
     osg::RenderInfo renderInfo;
     renderInfo.setState(context->getState());
 
@@ -766,7 +831,7 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
     }
 
     for(CompileSets::iterator itr = toCompileCopy.begin();
-        itr != toCompileCopy.end() && compileTime>0.0;
+        itr != toCompileCopy.end() && compileTime>0.0 && maxNumOfObjectsToCompilePerFrame>0;
         ++itr)
     {
         CompileSet* cs = itr->get();
@@ -810,6 +875,8 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
             }
         }
     }
+    //glFush();
+    //glFinish();
 }
 
 } // end of namespace osgUtil

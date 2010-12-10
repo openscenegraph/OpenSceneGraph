@@ -327,10 +327,6 @@ static OpenThreads::Mutex s_drawSerializerMutex;
 //  Renderer
 Renderer::Renderer(osg::Camera* camera):
     osg::GraphicsOperation("Renderer",true),
-    _targetFrameRate(100.0),
-    _minimumTimeAvailableForGLCompileAndDeletePerFrame(0.001),
-    _flushTimeRatio(0.5),
-    _conservativeTimeRatio(0.5),
     _camera(camera),
     _done(false),
     _graphicsThreadDoesCull(true),
@@ -359,7 +355,10 @@ Renderer::Renderer(osg::Camera* camera):
     }
 
     osgViewer::View* view = dynamic_cast<osgViewer::View*>(_camera->getView());
-
+    osgViewer::ViewerBase* viewer = view ? view->getViewerBase() : 0;
+    osgUtil::IncrementalCompileOperation* ico = viewer ? viewer->getIncrementalCompileOperation() : 0;
+    bool automaticFlush = (ico==NULL);
+    
     osg::DisplaySettings* ds = _camera->getDisplaySettings() ?  _camera->getDisplaySettings() :
                                ((view && view->getDisplaySettings()) ?  view->getDisplaySettings() :  osg::DisplaySettings::instance().get());
 
@@ -374,9 +373,11 @@ Renderer::Renderer(osg::Camera* camera):
         }
     }
 
+    _sceneView[0]->setAutomaticFlush(automaticFlush);
     _sceneView[0]->setGlobalStateSet(global_stateset);
     _sceneView[0]->setSecondaryStateSet(secondary_stateset);
 
+    _sceneView[1]->setAutomaticFlush(automaticFlush);
     _sceneView[1]->setGlobalStateSet(global_stateset);
     _sceneView[1]->setSecondaryStateSet(secondary_stateset);
 
@@ -395,8 +396,6 @@ Renderer::Renderer(osg::Camera* camera):
     _availableQueue.add(_sceneView[1].get());
 
     DEBUG_MESSAGE<<"_availableQueue.size()="<<_availableQueue._queue.size()<<std::endl;
-
-    _flushOperation = new osg::FlushDeletedGLObjectsOperation(0.1);
 }
 
 Renderer::~Renderer()
@@ -460,7 +459,12 @@ void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
     }
 
     osgViewer::View* view = dynamic_cast<osgViewer::View*>(_camera->getView());
+    osgViewer::ViewerBase* viewer = view ? view->getViewerBase() : 0;
+    osgUtil::IncrementalCompileOperation* ico = viewer ? viewer->getIncrementalCompileOperation() : 0;
+    bool automaticFlush = (ico==NULL);
 
+    sceneView->setAutomaticFlush(automaticFlush);
+    
     osgDB::DatabasePager* databasePager = view ? view->getDatabasePager() : 0;
     sceneView->getCullVisitor()->setDatabaseRequestHandler(databasePager);
 
@@ -468,8 +472,6 @@ void Renderer::updateSceneView(osgUtil::SceneView* sceneView)
     sceneView->getCullVisitor()->setImageRequestHandler(imagePager);
 
     sceneView->setFrameStamp(view ? view->getFrameStamp() : state->getFrameStamp());
-
-    if (databasePager) databasePager->setCompileGLObjectsForContextID(state->getContextID(), true);
 
     osg::DisplaySettings* ds = _camera->getDisplaySettings() ?  _camera->getDisplaySettings() :
                                ((view &&view->getDisplaySettings()) ?  view->getDisplaySettings() :  osg::DisplaySettings::instance().get());
@@ -611,9 +613,6 @@ void Renderer::draw()
 
     DEBUG_MESSAGE<<"draw() got SceneView "<<sceneView<<std::endl;
 
-    osg::GraphicsContext* compileContext = sceneView ? osg::GraphicsContext::getCompileContext(sceneView->getState()->getContextID()) : 0;
-    osg::GraphicsThread* compileThread = compileContext ? compileContext->getGraphicsThread() : 0;
-
     if (sceneView && !_done)
     {
         // since we are running the draw thread in parallel with the main thread it's possible to unreference Camera's
@@ -625,9 +624,6 @@ void Renderer::draw()
         {
             compile();
         }
-
-        osgViewer::View* view = dynamic_cast<osgViewer::View*>(_camera->getView());
-        osgDB::DatabasePager* databasePager = view ? view->getDatabasePager() : 0;
 
         // OSG_NOTICE<<"Drawing buffer "<<_currentDraw<<std::endl;
 
@@ -694,14 +690,7 @@ void Renderer::draw()
         }
 
         _availableQueue.add(sceneView);
-
-        osg::Timer_t afterDispatchTick = osg::Timer::instance()->tick();
-
-        double dispatchTime = osg::Timer::instance()->delta_s(beforeDrawTick, afterDispatchTick);
-
-        // now flush delete OpenGL objects and compile any objects as required by the DatabasePager
-        flushAndCompile(dispatchTime, sceneView, databasePager, compileThread);
-
+    
         if (acquireGPUStats)
         {
             _querySupport->endQuery(state);
@@ -749,11 +738,6 @@ void Renderer::cull_draw()
     }
 
     osgViewer::View* view = dynamic_cast<osgViewer::View*>(_camera->getView());
-    osgDB::DatabasePager* databasePager = view ? view->getDatabasePager() : 0;
-
-    osg::GraphicsContext* compileContext = osg::GraphicsContext::getCompileContext(sceneView->getState()->getContextID());
-    osg::GraphicsThread* compileThread = compileContext ? compileContext->getGraphicsThread() : 0;
-
 
     // OSG_NOTICE<<"RenderingOperation"<<std::endl;
 
@@ -832,13 +816,6 @@ void Renderer::cull_draw()
         sceneView->draw();
     }
 
-    osg::Timer_t afterDispatchTick = osg::Timer::instance()->tick();
-    double cullAndDispatchTime = osg::Timer::instance()->delta_s(beforeCullTick, afterDispatchTick);
-
-    // now flush delete OpenGL objects and compile any objects as required by the DatabasePager
-    flushAndCompile(cullAndDispatchTime, sceneView, databasePager, compileThread);
-
-
     if (acquireGPUStats)
     {
         _querySupport->endQuery(state);
@@ -862,54 +839,6 @@ void Renderer::cull_draw()
 
     DEBUG_MESSAGE<<"end cull_draw() "<<this<<std::endl;
 
-}
-
-void Renderer::flushAndCompile(double currentElapsedFrameTime, osgUtil::SceneView* sceneView, osgDB::DatabasePager* databasePager, osg::GraphicsThread* compileThread)
-{
-
-    double targetFrameRate = _targetFrameRate;
-    double minimumTimeAvailableForGLCompileAndDeletePerFrame = _minimumTimeAvailableForGLCompileAndDeletePerFrame;
-
-    if (databasePager)
-    {
-        targetFrameRate = std::min(targetFrameRate, databasePager->getTargetFrameRate());
-        minimumTimeAvailableForGLCompileAndDeletePerFrame = std::min(minimumTimeAvailableForGLCompileAndDeletePerFrame, databasePager->getMinimumTimeAvailableForGLCompileAndDeletePerFrame());
-    }
-
-    double targetFrameTime = 1.0/targetFrameRate;
-
-    double availableTime = std::max((targetFrameTime - currentElapsedFrameTime)*_conservativeTimeRatio,
-                                    minimumTimeAvailableForGLCompileAndDeletePerFrame);
-
-    double flushTime = availableTime * _flushTimeRatio;
-    double compileTime = availableTime - flushTime;
-
-#if 0
-    OSG_NOTICE<<"total availableTime = "<<availableTime*1000.0<<std::endl;
-    OSG_NOTICE<<"      flushTime     = "<<flushTime*1000.0<<std::endl;
-    OSG_NOTICE<<"      compileTime   = "<<compileTime*1000.0<<std::endl;
-#endif
-
-    if (compileThread)
-    {
-        compileThread->add(_flushOperation.get());
-    }
-    else
-    {
-        sceneView->flushDeletedGLObjects(flushTime);
-    }
-
-    // if any time left over from flush add this to compile time.
-    if (flushTime>0.0) compileTime += flushTime;
-
-#if 0
-    OSG_NOTICE<<"      revised compileTime   = "<<compileTime*1000.0<<std::endl;
-#endif
-
-    if (databasePager && databasePager->requiresExternalCompileGLObjects(sceneView->getState()->getContextID()))
-    {
-        databasePager->compileGLObjects(*(sceneView->getState()), compileTime);
-    }
 }
 
 void Renderer::operator () (osg::Object* object)

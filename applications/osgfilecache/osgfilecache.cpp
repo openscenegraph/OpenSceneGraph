@@ -14,6 +14,7 @@
 #include <osg/ApplicationUsage>
 #include <osg/CoordinateSystemNode>
 #include <osg/Geometry>
+#include <osg/PagedLOD>
 #include <osg/io_utils>
 
 #include <osgTerrain/TerrainTile>

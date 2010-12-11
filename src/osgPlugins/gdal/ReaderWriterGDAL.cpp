@@ -679,7 +679,8 @@ class ReaderWriterGDAL : public osgDB::ReaderWriter
             
             
             double geoTransform[6];
-            OSG_INFO << "   GetGeoTransform == "<< dataset->GetGeoTransform(geoTransform)<<" == CE_None"<<std::endl;
+            CPLErr err = dataset->GetGeoTransform(geoTransform);
+            OSG_INFO << "   GetGeoTransform == "<< err <<" == CE_None"<<std::endl;
             OSG_INFO << "    GetGeoTransform "<< std::endl;
             OSG_INFO << "        Origin = "<<geoTransform[0]<<" "<<geoTransform[3]<<std::endl;
             OSG_INFO << "        Pixel X = "<<geoTransform[1]<<" "<<geoTransform[4]<<std::endl;

@@ -238,6 +238,17 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 const ActiveVarInfoMap& getActiveAttribs() const {return _attribInfoMap;}
                 const UniformBlockMap& getUniformBlocks() const {return _uniformBlockMap; }
                 inline GLint getUniformLocation( unsigned int uniformNameID ) const { ActiveUniformMap::const_iterator itr = _uniformInfoMap.find(uniformNameID); return (itr!=_uniformInfoMap.end()) ? itr->second._location : -1; }
+
+                /**
+                  * Alternative version of getUniformLocation( unsigned int uniformNameID )
+                  * retrofited into OSG for backward compatibility with osgCal,
+                  * after uniform ids were refactored from std::strings to GLints in OSG version 2.9.10.
+                  * 
+                  * Drawbacks: This method is not particularly fast. It has to access mutexed static 
+                  * map of uniform ids. So don't overuse it or your app performance will suffer.
+                */
+                inline GLint getUniformLocation( const std::string & uniformName ) const { return getUniformLocation( Uniform::getNameID( uniformName ) ); }
+
                 inline GLint getAttribLocation( const std::string& name ) const { ActiveVarInfoMap::const_iterator itr = _attribInfoMap.find(name); return (itr!=_attribInfoMap.end()) ? itr->second._location : -1; }
 
                 inline void addShaderToAttach(Shader *shader)

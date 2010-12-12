@@ -620,7 +620,7 @@ static void smooth_new(osg::Geometry& geom, double creaseAngle)
     if (!vertices) return;
 
     osg::Vec3Array* normals = dynamic_cast<osg::Vec3Array*>(geom.getNormalArray());
-    if (!normals)
+    if (!normals || (normals && normals->size() != vertices->size()))
     {
         normals = new osg::Vec3Array(vertices->size());
         geom.setNormalArray(normals);

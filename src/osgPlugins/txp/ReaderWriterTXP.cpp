@@ -58,7 +58,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
         //we will set our osgdb loader options on the archive and set the appropriate archive on 
         //the txpNode.
         int id = ++_archiveId;
-        osg::ref_ptr< TXPArchive > archive = getArchive(id,osgDB::getFilePath(fileName));
+        osg::ref_ptr< TXPArchive > archive = createArchive(id,osgDB::getFilePath(fileName));
 
         if (archive != NULL)
         {
@@ -86,6 +86,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
         unsigned int id;
         sscanf(name.c_str(),"tile%d_%dx%d_%u",&lod,&x,&y,&id);
         osg::ref_ptr< TXPArchive > archive = getArchive(id,osgDB::getFilePath(file));
+        if (archive == NULL)
+            return ReadResult::ERROR_IN_READING_FILE;
 
         // The way this is done a 'tile' should only be created for lod 0 only,
         // something is wrong if this is no the case
@@ -199,6 +201,8 @@ osgDB::ReaderWriter::ReadResult ReaderWriterTXP::local_readNode(const std::strin
         unsigned int id;
         sscanf(name.c_str(),"subtiles%d_%dx%d_%u",&lod,&x,&y,&id);
         osg::ref_ptr< TXPArchive > archive = getArchive(id,osgDB::getFilePath(file));
+        if (archive == NULL)
+            return ReadResult::ERROR_IN_READING_FILE;
 
         int majorVersion, minorVersion;
         archive->GetVersion(majorVersion, minorVersion);
@@ -563,63 +567,82 @@ bool ReaderWriterTXP::extractChildrenLocations(const std::string& name, int pare
 
 }
 
+std::string ReaderWriterTXP::getArchiveName(const std::string& dir)
+{
+#ifdef _WIN32
+    const char _PATHD = '\\';
+#elif defined(macintosh)
+    const char _PATHD = ':';
+#else
+    const char _PATHD = '/';
+#endif
+
+    return dir+_PATHD+"archive.txp";
+}
+
 osg::ref_ptr< TXPArchive > ReaderWriterTXP::getArchive(int id, const std::string& dir)
 {
     osg::ref_ptr< TXPArchive > archive = NULL;
 
     std::map< int,osg::ref_ptr<TXPArchive> >::iterator iter = _archives.find(id);
     
-
     if (iter != _archives.end())
     {
         archive = iter->second.get();
     }
-
-    if (archive == NULL)
+    else
     {
-#ifdef _WIN32
-        const char _PATHD = '\\';
-#elif defined(macintosh)
-        const char _PATHD = ':';
-#else
-        const char _PATHD = '/';
-#endif
-        std::string archiveName = dir+_PATHD+"archive.txp";
-        archive = new TXPArchive;
-        if (archive->openFile(archiveName) == false)
-        {
-            ReaderWriterTXPERROR("getArchive()") << "failed to load archive: \"" << archiveName << "\"" << std::endl;
-            return NULL;
-        }
-
-        if (archive->loadMaterials() == false)
-        {
-            ReaderWriterTXPERROR("getArchive()") << "failed to load materials from archive: \"" << archiveName << "\"" << std::endl;
-            return NULL;
-        }
-
-        if (archive->loadModels() == false)
-        {
-            ReaderWriterTXPERROR("getArchive()") << "failed to load models from archive: \"" << archiveName << "\"" << std::endl;
-            return NULL;
-        }
-
-        if (archive->loadLightAttributes() == false)
-        {
-            ReaderWriterTXPERROR("getArchive()") << "failed to load light attributes from archive: \"" << archiveName << "\"" << std::endl;
-            return NULL;
-        }
-
-        if (archive->loadTextStyles() == false)
-        {
-            ReaderWriterTXPERROR("getArchive()") << "failed to load text styles from archive: \"" << archiveName << "\"" << std::endl;
-            return NULL;
-        }
-
-        archive->setId(id);
-
-        _archives[id] = archive;
+        std::string archiveName = getArchiveName(dir);
+        ReaderWriterTXPERROR("getArchive()") << "archive id " << id << " not found: \"" << archiveName << "\"" << std::endl;
     }
+    return archive;
+}
+
+osg::ref_ptr< TXPArchive > ReaderWriterTXP::createArchive(int id, const std::string& dir)
+{
+    std::string archiveName = getArchiveName(dir);
+
+    osg::ref_ptr< TXPArchive > archive = getArchive(id, dir);
+    if (archive != NULL)
+    {
+        ReaderWriterTXPERROR("createArchive()") << "archive id " << id << " already exists: \"" << archiveName << "\"" << std::endl;
+        return NULL;
+    }
+
+    archive = new TXPArchive;
+    if (archive->openFile(archiveName) == false)
+    {
+        ReaderWriterTXPERROR("createArchive()") << "failed to load archive: \"" << archiveName << "\"" << std::endl;
+        return NULL;
+    }
+
+    if (archive->loadMaterials() == false)
+    {
+        ReaderWriterTXPERROR("createArchive()") << "failed to load materials from archive: \"" << archiveName << "\"" << std::endl;
+        return NULL;
+    }
+
+    if (archive->loadModels() == false)
+    {
+        ReaderWriterTXPERROR("createArchive()") << "failed to load models from archive: \"" << archiveName << "\"" << std::endl;
+        return NULL;
+    }
+
+    if (archive->loadLightAttributes() == false)
+    {
+        ReaderWriterTXPERROR("createArchive()") << "failed to load light attributes from archive: \"" << archiveName << "\"" << std::endl;
+        return NULL;
+    }
+
+    if (archive->loadTextStyles() == false)
+    {
+        ReaderWriterTXPERROR("createArchive()") << "failed to load text styles from archive: \"" << archiveName << "\"" << std::endl;
+        return NULL;
+    }
+
+    archive->setId(id);
+
+    _archives[id] = archive;
 
     return archive;
 }
@@ -627,7 +650,12 @@ osg::ref_ptr< TXPArchive > ReaderWriterTXP::getArchive(int id, const std::string
 bool ReaderWriterTXP::removeArchive( int id )
 {
     OSG_INFO<<"ReaderWriterTXP::removeArchive(id="<<id<<")"<<std::endl;
-    return (_archives.erase(id) >= 1);
+    //return (_archives.erase(id) >= 1);
+    bool result=_archives.erase(id) >= 1;
+    OSG_WARN<<"remove archive " << id << " size " << _archives.size()
+        << " result " << result << std::endl;
+    return result;
+
 }
 
 class SeamFinder: public osg::NodeVisitor

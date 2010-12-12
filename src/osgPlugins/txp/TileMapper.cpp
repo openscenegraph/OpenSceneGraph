@@ -104,9 +104,9 @@ void TileMapper::apply(osg::Group& node)
 
 #if 0
             std::cout<<"found Group="<<tid->lod
-		     <<"  X="<<tid->x
-		     <<"  Y="<<tid->y
-		     <<"  ptr="<<&node<<std::endl;  
+                     <<"  X="<<tid->x
+                     <<"  Y="<<tid->y
+                     <<"  ptr="<<&node<<std::endl;
 
             std::cout<<"      inheritance list "<<_tileStack.size()<<std::endl;
             for(TileStack::iterator itr=_tileStack.begin();
@@ -181,9 +181,9 @@ void TileMapper::apply(osg::PagedLOD& node)
 
 #if 0
             std::cout<<"found txpPagedLOD LOD="<<txpPagedLOD->_tileIdentifier.lod
-		     <<"  X="<<txpPagedLOD->_tileIdentifier.x
-		     <<"  Y="<<txpPagedLOD->_tileIdentifier.y
-		     <<"  ptr="<<txpPagedLOD<<std::endl;  
+                     <<"  X="<<txpPagedLOD->_tileIdentifier.x
+                     <<"  Y="<<txpPagedLOD->_tileIdentifier.y
+                     <<"  ptr="<<txpPagedLOD<<std::endl;
 
             std::cout<<"      inheritance list "<<_tileStack.size()<<std::endl;
             for(TileStack::iterator itr=_tileStack.begin();
@@ -243,15 +243,18 @@ bool TileMapper::canParentBeTraversed(const TileIdentifier& tid) const
     // note tile here, is tid's parent.
     const TileStack::value_type* tile = (ts.size()>=2) ? &ts[ts.size()-2] : 0;
 
-    // note parent here, is tid's parents parent.
-    const TileStack::value_type* parent = (ts.size()>=3) ? &ts[ts.size()-3] : 0;
-    
     if (!tile)
     {
         // no self!!! so we can descend safely?!! shouldn't ever get here.
         //std::cout<<"TileMapper::canDescend() tile==0"<<std::endl;
         return true;
     }
+
+
+    // note parent here, is tid's parents parent.
+    const TileStack::value_type* parent = (ts.size()>=3) ? &ts[ts.size()-3] : 0;
+    
+    
 
     if (!parent)
     {
@@ -271,14 +274,22 @@ bool TileMapper::canParentBeTraversed(const TileIdentifier& tid) const
         return true;
     }
 
+    // FIXME: this guy gives us wrong parent
+    // Nick 2010/12/12
+#if 0
     const TileIdentifier& parent_tid = parent->first;
+#else
+    TileIdentifier parent_tid(tid.x/2,tid.y/2,tid.lod-1);
+#endif
     
     bool parentHasNorthNeighour = _tileMap.count(TileIdentifier(parent_tid.x,parent_tid.y+1,parent_tid.lod))!=0;
     bool parentHasEastNeighour = _tileMap.count(TileIdentifier(parent_tid.x+1,parent_tid.y,parent_tid.lod))!=0;
     bool parentHasSouthNeighour = _tileMap.count(TileIdentifier(parent_tid.x,parent_tid.y-1,parent_tid.lod))!=0;
     bool parentHasWestNeighour = _tileMap.count(TileIdentifier(parent_tid.x-1,parent_tid.y,parent_tid.lod))!=0;
     
-
+    // FIXME: this guy gives us wrong parent
+    // Nick 2010/12/12
+#if 0
     // identify whether the tile is a NE/SE/SW/NW tile relative to its parent.
     osg::Vec3 delta = tile->second->getBound().center() - parent->second->getBound().center();
     
@@ -308,6 +319,37 @@ bool TileMapper::canParentBeTraversed(const TileIdentifier& tid) const
             return (!parentHasSouthNeighour && !parentHasWestNeighour);
         }
     }
+#else
+    // identify whether the tile is a NE/SE/SW/NW tile relative to its parent.
+    osg::Vec3 delta(tid.x%2,tid.y%2,0);
+
+    if (delta.y()>0.0f) // noth side
+    {
+        if (delta.x()>0.0f)
+        {
+            // NE, only traverse if our parent doesn't have any neighbours to the north or east.
+            return (!parentHasNorthNeighour && !parentHasEastNeighour);
+        }
+        else 
+        {
+            // NW, only traverse if our parent doesn't have any neighbours to the north or west.
+            return (!parentHasNorthNeighour && !parentHasWestNeighour);
+        }
+    }
+    else // south side
+    {
+        if (delta.x()>0.0f)
+        {
+            // SE, only traverse if our parent doesn't have any neighbours to the south or east.
+            return (!parentHasSouthNeighour && !parentHasEastNeighour);
+        }
+        else 
+        {
+            // SW, only traverse if our parent doesn't have any neighbours to the south or west.
+            return (!parentHasSouthNeighour && !parentHasWestNeighour);
+        }
+    }
+#endif
 }
 
 void TileMapper::checkValidityOfAllVisibleTiles()
@@ -321,7 +363,7 @@ void TileMapper::checkValidityOfAllVisibleTiles()
     do
     {
 //        std::cout<<"doing checkAllVisibleTiles() loop with "<<_tileMap.size()<<std::endl;
-    
+
         toRemoveList.clear();
         toAddList.clear();
 
@@ -369,23 +411,22 @@ void TileMapper::checkValidityOfAllVisibleTiles()
 
 #if 0
 
-	if ( !_blackListedNodeSet.empty() )
-		std::cout << "********** We have blacked list " << _blackListedNodeSet.size() << std::endl;
+    if ( !_blackListedNodeSet.empty() )
+        std::cout << "********** We have blacked list " << _blackListedNodeSet.size() << std::endl;
 
     std::cout<<"TileMap contains "<<_tileMap.size()<<std::endl;
     for(TileMap::iterator itr=_tileMap.begin();
         itr!=_tileMap.end();
         ++itr)
     {
-	std::cout<<"    tile="<<itr->first.lod
-		 <<"  X="<<itr->first.x
-		 <<"  Y="<<itr->first.y<<std::endl;  
-        
+        std::cout<<"    tile="<<itr->first.lod
+                 <<"  X="<<itr->first.x
+                 <<"  Y="<<itr->first.y<<std::endl;
+
     }
 #endif
-    
-}
 
+}
 bool TileMapper::isTileNeighbourALowerLODLevel(const TileIdentifier& tid, int dx, int dy) const
 {
     if (_tileMap.count(TileIdentifier(tid.x+dx,tid.y+dy,tid.lod))!=0)
@@ -401,9 +442,9 @@ bool TileMapper::isTileNeighbourALowerLODLevel(const TileIdentifier& tid, int dx
         // not found tile in _tileMap, what should we do??
         // return true as a fallback right now.
 #if 0
-	std::cout << "TileMapper::isTileNeighbourALowerLODLevel() Not found tile in map," << std::endl;
-	std::cout << "    LOD=" << tid.lod << "  X=" << tid.x << "  Y=" << tid.y << std::endl;
-#endif 
+    std::cout << "TileMapper::isTileNeighbourALowerLODLevel() Not found tile in map," << std::endl;
+    std::cout << "    LOD=" << tid.lod << "  X=" << tid.x << "  Y=" << tid.y << std::endl;
+#endif
         return true;
     }
 
@@ -418,6 +459,10 @@ bool TileMapper::isTileNeighbourALowerLODLevel(const TileIdentifier& tid, int dx
         return false;
     }
 
+    // FIXME: this guy gives us wrong parent
+    // Nick 2010/12/12
+#if 0
+
     // note parent here, is tid's parents parent.
     const TileStack::value_type* parent = (ts.size()>=2) ? &ts[ts.size()-2] : 0;
     
@@ -426,9 +471,14 @@ bool TileMapper::isTileNeighbourALowerLODLevel(const TileIdentifier& tid, int dx
         // no parent so we must assume that is not at a lower level
         return false;
     }
-    
+
     const TileIdentifier& parent_tid = parent->first;
-    
+#else
+
+    TileIdentifier parent_tid(tid.x/2,tid.y/2,tid.lod-1);
+
+#endif
+
     bool parentHasNorthNeighour = _tileMap.count(TileIdentifier(parent_tid.x,  parent_tid.y+1,parent_tid.lod))!=0;
     bool parentHasEastNeighour  = _tileMap.count(TileIdentifier(parent_tid.x+1,parent_tid.y,  parent_tid.lod))!=0;
     bool parentHasSouthNeighour = _tileMap.count(TileIdentifier(parent_tid.x,  parent_tid.y-1,parent_tid.lod))!=0;
@@ -436,6 +486,10 @@ bool TileMapper::isTileNeighbourALowerLODLevel(const TileIdentifier& tid, int dx
     
 
     // identify whether the tile is a NE/SE/SW/NW tile relative to its parent.
+
+        // FIXME: wrong parent wrong values
+        // Nick 2010/12/12
+#if 0
     osg::Vec3 delta = tile->second->getBound().center() - parent->second->getBound().center();
     
     if (delta.y()>=0.0f) // noth side
@@ -444,17 +498,17 @@ bool TileMapper::isTileNeighbourALowerLODLevel(const TileIdentifier& tid, int dx
         {
             // NE
             if (dy==1)
-		return parentHasNorthNeighour;
+                return parentHasNorthNeighour;
             else if (dx==1)
-		return parentHasEastNeighour;
+                return parentHasEastNeighour;
         }
         else 
         {
             // NW
             if (dy==1)
-		return parentHasNorthNeighour;
+                return parentHasNorthNeighour;
             else if (dx==-1)
-		return parentHasWestNeighour;
+                return parentHasWestNeighour;
         }
     }
     else // south side
@@ -463,19 +517,61 @@ bool TileMapper::isTileNeighbourALowerLODLevel(const TileIdentifier& tid, int dx
         {
             // SE
             if (dy==-1)
-		return parentHasSouthNeighour;
+                return parentHasSouthNeighour;
             else if (dx==1)
-		return parentHasEastNeighour;
+                return parentHasEastNeighour;
+        }
+        else
+        {
+            // SW
+            if (dy==-1)
+                return parentHasSouthNeighour;
+            else if (dx==-1)
+                return parentHasWestNeighour;
+        }
+    }
+#else
+    osg::Vec3 delta(tid.x%2,tid.y%2,0);
+
+    if (delta.y()>0.0f) // noth side
+    {
+        if (delta.x()>0.0f)
+        {
+            // NE
+            if (dy==1)
+                return parentHasNorthNeighour;
+            else if (dx==1)
+                return parentHasEastNeighour;
+        }
+        else 
+        {
+            // NW
+            if (dy==1)
+                return parentHasNorthNeighour;
+            else if (dx==-1)
+                return parentHasWestNeighour;
+        }
+    }
+    else // south side
+    {
+        if (delta.x()>0.0f)
+        {
+            // SE
+            if (dy==-1)
+                return parentHasSouthNeighour;
+            else if (dx==1)
+                return parentHasEastNeighour;
         }
         else 
         {
             // SW
             if (dy==-1)
-		return parentHasSouthNeighour;
+                return parentHasSouthNeighour;
             else if (dx==-1)
-		return parentHasWestNeighour;
+                return parentHasWestNeighour;
         }
     }
-    
+#endif
+
     return false;
 }

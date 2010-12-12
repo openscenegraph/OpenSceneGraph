@@ -279,6 +279,10 @@ static ApplicationUsageProxy DisplaySetting_e24(ApplicationUsage::ENVIRONMENTAL_
 static ApplicationUsageProxy DisplaySetting_e25(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
         "OSG_GL_CONTEXT_PROFILE_MASK <uint>",
         "Set the hint for the GL context profile mask to use when creating contexts.");
+static ApplicationUsageProxy DisplaySetting_e26(ApplicationUsage::ENVIRONMENTAL_VARIABLE,
+        "OSG_SWAP_METHOD <method>",
+        "DEFAULT | EXCHANGE | COPY | UNDEFINED. Select preferred swap method.");
+
 
 void DisplaySettings::readEnvironmentalVariables()
 {
@@ -582,6 +586,7 @@ void DisplaySettings::readCommandLine(ArgumentParser& arguments)
         arguments.getApplicationUsage()->addCommandLineOption("--gl-version <major.minor>","Set the hint of which GL version to use when creating graphics contexts.");
         arguments.getApplicationUsage()->addCommandLineOption("--gl-flags <mask>","Set the hint of which GL flags projfile mask to use when creating graphics contexts.");
         arguments.getApplicationUsage()->addCommandLineOption("--gl-profile-mask <mask>","Set the hint of which GL context profile mask to use when creating graphics contexts.");
+        arguments.getApplicationUsage()->addCommandLineOption("--swap-method <method>","DEFAULT | EXCHANGE | COPY | UNDEFINED. Select preferred swap method.");
     }
 
     std::string str;

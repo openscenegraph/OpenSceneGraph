@@ -16,6 +16,10 @@
  * These elements are licensed under OSGPL as above, with Copyright (C) 2001-2004  Don Burns.
  */
 
+// TODO:
+// implement http://www.opengl.org/registry/specs/OML/glx_swap_method.txt
+// Fix toggling of fullscreen to window mode as it does enable window decoration with recent linux window managers
+
 #include <osgViewer/api/X11/GraphicsWindowX11>
 #include <osgViewer/api/X11/PixelBufferX11>
 

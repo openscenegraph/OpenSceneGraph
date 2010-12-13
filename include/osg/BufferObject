@@ -631,7 +631,15 @@ class OSG_EXPORT BufferData : public Object
         /** Get modified count value.*/
         inline unsigned int getModifiedCount() const { return _modifiedCount; }
 
-    protected:
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
+        /** If State is non-zero, this function releases OpenGL objects for
+          * the specified graphics context. Otherwise, releases OpenGL objects
+          * for all graphics contexts. */
+        void releaseGLObjects(State* state=0) const;
+
+protected:
 
         virtual ~BufferData();
 

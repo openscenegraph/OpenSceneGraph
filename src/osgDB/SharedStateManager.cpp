@@ -283,3 +283,30 @@ void SharedStateManager::process(osg::StateSet* ss, osg::Object* parent)
         shareTextures(ss);
     }
 }
+
+void SharedStateManager::releaseGLObjects(osg::State* state) const
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_listMutex);
+
+    {
+        TextureSet::const_iterator it;
+        for ( it = _sharedTextureList.begin(); it != _sharedTextureList.end(); ++it )
+        {
+            if ( it->valid() )
+            {
+                it->get()->releaseGLObjects(state);
+            }
+        }
+    }
+
+    {
+        StateSetSet::const_iterator it;
+        for( it = _sharedStateSetList.begin(); it != _sharedStateSetList.end(); ++it )
+        {
+            if ( it->valid() )
+            {
+                it->get()->releaseGLObjects(state);
+            }
+        }
+    }
+}

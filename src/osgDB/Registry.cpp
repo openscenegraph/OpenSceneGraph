@@ -1563,6 +1563,11 @@ void Registry::releaseGLObjects(osg::State* state)
         osg::Object* object = itr->second.first.get();
         object->releaseGLObjects(state);
     }
+
+    if (_sharedStateManager.valid())
+    {
+      _sharedStateManager->releaseGLObjects( state );
+    }
 }
 
 SharedStateManager* Registry::getOrCreateSharedStateManager()

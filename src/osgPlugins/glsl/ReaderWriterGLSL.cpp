@@ -1,3 +1,4 @@
+#include <sstream>
 #include <osg/Shader>
 #include <osg/Notify>
 #include <osg/GL>
@@ -5,6 +6,7 @@
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
+#include <osgDB/ReadFile>
 #include <osgDB/fstream>
 
 
@@ -23,19 +25,61 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
     
         virtual const char* className() const { return "GLSL Shader Reader"; }
 
+        osg::Shader* processIncludes( const osg::Shader* shader, const Options* options ) const
+        {
+            std::string code = shader->getShaderSource();
+
+            std::string::size_type pos = 0;
+
+            static std::string::size_type includeLen = 8;
+
+            while( ( pos = code.find( "#include", pos ) ) != std::string::npos )
+            {
+                // we found an include
+                std::string::size_type pos2 = code.find_first_not_of( " ", pos + includeLen );
+
+                if ( ( pos2 == std::string::npos ) || ( code[ pos2 ] != '\"' ) )
+                {
+                    // error, bail out
+                    return NULL;
+                }
+
+                // we found an "
+                std::string::size_type pos3 = code.find( "\"", pos2 + 1 );
+
+                if ( pos3 == std::string::npos )
+                {
+                    return NULL;
+                }
+
+                const std::string filename = code.substr( pos2 + 1, pos3 - pos2 - 1 );
+
+                osg::ref_ptr<osg::Shader> innerShader = osgDB::readShaderFile( shader->getType(), filename, options );
+
+                if ( !innerShader.valid() )
+                {
+                    return NULL;
+                }
+
+                code.replace( pos, pos3 - pos + 1, innerShader->getShaderSource() );
+
+                pos += innerShader->getShaderSource().size();
+            }
+
+            return new osg::Shader( shader->getType(), code );
+        }
+
+
         virtual ReadResult readShader(std::istream& fin,const Options* options) const
         {
-            // read source
-            fin.seekg(0, std::ios::end);
-            int length = fin.tellg();
-            char *text = new char[length + 1];
-            fin.seekg(0, std::ios::beg);
-            fin.read(text, length);
-            text[length] = '\0';
-        
             // create shader
-            osg::Shader* shader = new osg::Shader();
-            shader->setShaderSource( text );
+            osg::ref_ptr<osg::Shader> shader = new osg::Shader();
+
+            {
+                std::stringstream ss;
+                ss << fin.rdbuf();
+                shader->setShaderSource( ss.str() );
+            }
 
             // check options which can define the type of the shader program
             if (options)
@@ -45,11 +89,8 @@ class ReaderWriterGLSL : public osgDB::ReaderWriter
                 if (options->getOptionString().find("geometry")!=std::string::npos) shader->setType(osg::Shader::GEOMETRY);
             }
 
-            // cleanup
-            delete [] text;
-
             // return valid shader
-            return shader;
+            return processIncludes( shader.get(), options );
         }
 
         virtual ReadResult readShader(const std::string& file, const osgDB::ReaderWriter::Options* options) const

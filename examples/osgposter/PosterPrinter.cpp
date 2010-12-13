@@ -219,9 +219,9 @@ void PosterIntersector::intersect( osgUtil::IntersectionVisitor& iv, osg::Drawab
 }
 
 /* PosterPrinter: The implementation class of high-res rendering */
-PosterPrinter::PosterPrinter()
-:   _isRunning(false), _isFinishing(false), _lastBindingFrame(0),
+PosterPrinter::PosterPrinter():
     _outputTiles(false), _outputTileExt("bmp"),
+    _isRunning(false), _isFinishing(false), _lastBindingFrame(0),
     _currentRow(0), _currentColumn(0),
     _camera(0), _finalPoster(0)
 {

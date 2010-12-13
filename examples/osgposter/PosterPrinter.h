@@ -45,8 +45,8 @@ protected:
     }
     
     PagedNodeNameSet _pagedNodeNames;
-    unsigned int _needToApplyCount;
     unsigned int _appliedCount;
+    unsigned int _needToApplyCount;
     bool _addingCallbacks;
 };
 

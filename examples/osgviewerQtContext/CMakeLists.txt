@@ -1,7 +1,5 @@
 SET( TARGET_SRC
-     GraphicsWindowQt
-     GraphicsWindowQt.cpp
-     osgviewerQtContext.cpp
+    osgviewerQtContext.cpp
 )
 
 IF( QT4_FOUND )
@@ -12,4 +10,7 @@ ELSE( QT4_FOUND )
 ENDIF( QT4_FOUND )
 
 INCLUDE_DIRECTORIES( ${QT_INCLUDE_DIR} )
+
+SET(TARGET_ADDED_LIBRARIES osgWidget osgQt)
+
 SETUP_EXAMPLE( osgviewerQtContext )

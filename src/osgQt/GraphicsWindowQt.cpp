@@ -11,7 +11,10 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include "GraphicsWindowQt"
+#include <osgQt/GraphicsWindowQt>
+
+namespace osgQt
+{
 
 GraphWidget::GraphWidget( const QGLFormat& format, QWidget* parent, const QGLWidget* shareWidget, Qt::WindowFlags f )
 : QGLWidget(format, parent, shareWidget, f)
@@ -339,4 +342,6 @@ void GraphicsWindowQt::requestWarpPointer( float x, float y )
 {
     if ( _widget )
         QCursor::setPos( _widget->mapToGlobal(QPoint((int)x,(int)y)) );
+}
+
 }

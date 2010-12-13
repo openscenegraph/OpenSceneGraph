@@ -17,6 +17,7 @@ QT4_WRAP_CPP( SOURCES_H_MOC ${SOURCES_H} OPTIONS "-f" )
 
 SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Export
+    ${HEADER_PATH}/GraphicsWindowQt
     ${HEADER_PATH}/QFontImplementation
     ${HEADER_PATH}/QGraphicsViewAdapter
     ${HEADER_PATH}/QWidgetImage
@@ -28,6 +29,7 @@ SET(LIB_PUBLIC_HEADERS
 ADD_LIBRARY(${LIB_NAME}
     ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
     ${LIB_PUBLIC_HEADERS}
+    GraphicsWindowQt.cpp
     QFontImplementation.cpp
     QGraphicsViewAdapter.cpp
     QWidgetImage.cpp

@@ -20,7 +20,12 @@
 #include <QtGui/QInputEvent>
 #include <QtOpenGL/QGLWidget>
 
-class GraphWidget : public QGLWidget
+#include <osgQt/Export>
+
+namespace osgQt
+{
+
+class OSGQT_EXPORT GraphWidget : public QGLWidget
 {
 public:
     GraphWidget( const QGLFormat& format, QWidget* parent=0, const QGLWidget* shareWidget=0, Qt::WindowFlags f=0 );
@@ -42,7 +47,7 @@ protected:
     osgViewer::GraphicsWindow* _gw;
 };
 
-class GraphicsWindowQt : public osgViewer::GraphicsWindow
+class OSGQT_EXPORT GraphicsWindowQt : public osgViewer::GraphicsWindow
 {
 public:
     GraphicsWindowQt( osg::GraphicsContext::Traits* traits );
@@ -88,4 +93,7 @@ protected:
     bool _realized;
 };
 
+}
+
 #endif
+

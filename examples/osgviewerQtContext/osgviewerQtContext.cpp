@@ -1,12 +1,17 @@
 #include <QtCore/QTimer>
 #include <QtGui/QApplication>
 #include <QtGui/QGridLayout>
+
 #include <osgViewer/CompositeViewer>
 #include <osgViewer/ViewerEventHandlers>
+
 #include <osgGA/TrackballManipulator>
+
 #include <osgDB/ReadFile>
+
+#include <osgQt/GraphicsWindowQt>
+
 #include <iostream>
-#include "GraphicsWindowQt"
 
 class ViewerWidget : public QWidget, public osgViewer::CompositeViewer
 {
@@ -44,7 +49,7 @@ public:
         view->addEventHandler( new osgViewer::StatsHandler );
         view->setCameraManipulator( new osgGA::TrackballManipulator );
         
-        GraphicsWindowQt* gw = dynamic_cast<GraphicsWindowQt*>( camera->getGraphicsContext() );
+        osgQt::GraphicsWindowQt* gw = dynamic_cast<osgQt::GraphicsWindowQt*>( camera->getGraphicsContext() );
         return gw ? gw->getGraphWidget() : NULL;
     }
     
@@ -65,7 +70,7 @@ public:
         traits->samples = ds->getNumMultiSamples();
         
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
-        camera->setGraphicsContext( new GraphicsWindowQt(traits.get()) );
+        camera->setGraphicsContext( new osgQt::GraphicsWindowQt(traits.get()) );
         
         camera->setClearColor( osg::Vec4(0.2, 0.2, 0.6, 1.0) );
         camera->setViewport( new osg::Viewport(0, 0, traits->width, traits->height) );

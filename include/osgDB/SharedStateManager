@@ -70,6 +70,8 @@ namespace osgDB {
 
         bool isShared(osg::Texture* texture);
 
+        void releaseGLObjects(osg::State* state ) const;
+
     protected:
 
         inline bool shareTexture(osg::Object::DataVariance variance)

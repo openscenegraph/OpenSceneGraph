@@ -101,13 +101,6 @@ IF(GDAL_FOUND)
     ADD_SUBDIRECTORY(ogr)
 ENDIF()
 
-IF(XUL_FOUND)
-    IF(WIN32 OR APPLE OR GTK_FOUND)
-        ADD_SUBDIRECTORY(gecko)
-    ENDIF()
-ENDIF()
-
-
 
 ############################################################
 #

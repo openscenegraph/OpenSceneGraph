@@ -106,6 +106,9 @@ void MainFrame::SetViewer(osgViewer::Viewer *viewer)
 
 void MainFrame::OnIdle(wxIdleEvent &event)
 {
+    if (!_viewer->isRealized())
+        return;
+
     _viewer->frame();
 
     event.RequestMore();

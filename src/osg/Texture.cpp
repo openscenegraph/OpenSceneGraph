@@ -57,18 +57,6 @@ ApplicationUsageProxy Texture_e0(ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_M
 typedef buffered_value< ref_ptr<Texture::Extensions> > BufferedExtensions;
 static BufferedExtensions s_extensions;
 
-unsigned int s_minimumNumberOfTextureObjectsToRetainInCache = 0;
-
-void Texture::setMinimumNumberOfTextureObjectsToRetainInCache(unsigned int minimum)
-{
-    s_minimumNumberOfTextureObjectsToRetainInCache = minimum;
-}
-
-unsigned int Texture::getMinimumNumberOfTextureObjectsToRetainInCache()
-{
-    return s_minimumNumberOfTextureObjectsToRetainInCache;
-}
-
 
 Texture::TextureObject::~TextureObject()
 {

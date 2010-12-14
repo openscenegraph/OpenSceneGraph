@@ -1238,13 +1238,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                                                      GLsizei   depth,
                                                      GLint     border);
 
-
-        /** Set the minimum number of texture objects to retain in the deleted display list cache. */
-        static void setMinimumNumberOfTextureObjectsToRetainInCache(unsigned int minimum);
-
-        /** Get the minimum number of display lists to retain in the deleted display list cache. */
-        static unsigned int getMinimumNumberOfTextureObjectsToRetainInCache();
-
         static void deleteAllTextureObjects(unsigned int contextID);
         static void discardAllTextureObjects(unsigned int contextID);
         static void flushAllDeletedTextureObjects(unsigned int contextID);

@@ -365,6 +365,8 @@ class OSG_EXPORT GLBufferObjectSet : public Referenced
     public:
         GLBufferObjectSet(GLBufferObjectManager* parent, const BufferObjectProfile& profile);
 
+        const BufferObjectProfile& getProfile() const { return _profile; }
+
         void handlePendingOrphandedGLBufferObjects();
 
         void deleteAllGLBufferObjects();
@@ -389,6 +391,11 @@ class OSG_EXPORT GLBufferObjectSet : public Referenced
         bool checkConsistency() const;
 
         GLBufferObjectManager* getParent() { return _parent; }
+
+        unsigned int computeNumGLBufferObjectsInList() const;
+        unsigned int getNumOfGLBufferObjects() const { return _numOfGLBufferObjects; }
+        unsigned int getNumOrphans() const { return _orphanedGLBufferObjects.size(); }
+        unsigned int getNumPendingOrphans() const { return _pendingOrphanedGLBufferObjects.size(); }
 
 
     protected:
@@ -449,7 +456,8 @@ class OSG_EXPORT GLBufferObjectManager : public osg::Referenced
 
         void newFrame(osg::FrameStamp* fs);
         void resetStats();
-        void reportStats();
+        void reportStats(std::ostream& out);
+        void recomputeStats(std::ostream& out);
 
         unsigned int& getFrameNumber() { return _frameNumber; }
         unsigned int& getNumberFrames() { return _numFrames; }

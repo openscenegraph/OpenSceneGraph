@@ -187,10 +187,10 @@ public:
 
     void report(std::ostream& out)
     {
-        OSG_NOTICE<<"Nodes "<<_nodes.size()<<std::endl;
-        OSG_NOTICE<<"Geometries "<<_geometryMap.size()<<std::endl;
-        OSG_NOTICE<<"Arrays "<<_arrayMap.size()<<std::endl;
-        OSG_NOTICE<<"PrimitiveSets "<<_primitiveSetMap.size()<<std::endl;
+        out<<"Nodes "<<_nodes.size()<<std::endl;
+        out<<"Geometries "<<_geometryMap.size()<<std::endl;
+        out<<"Arrays "<<_arrayMap.size()<<std::endl;
+        out<<"PrimitiveSets "<<_primitiveSetMap.size()<<std::endl;
     }
 
     void reallocate()
@@ -551,8 +551,8 @@ public:
         {
             if (ea.getKey()=='r')
             {
-                osg::Texture::getTextureObjectManager(0)->reportStats();
-                osg::GLBufferObjectManager::getGLBufferObjectManager(0)->reportStats();
+                osg::Texture::getTextureObjectManager(0)->reportStats(osg::notify(osg::NOTICE));
+                osg::GLBufferObjectManager::getGLBufferObjectManager(0)->reportStats(osg::notify(osg::NOTICE));
             }
         }
         return false;

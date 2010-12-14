@@ -50,9 +50,9 @@ SET(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-${OPENSCENEGRAPH_VERSION}")
 
 # these goes for all platforms. Setting these stops the CPack.cmake script from generating options about other package compression formats (.z .tz, etc.)
 IF(WIN32)
-    SET(CPACK_GENERATOR "ZIP")
+    SET(CPACK_GENERATOR "ZIP" CACHE STRING "CPack package generator type (i.e ZIP,NSIS,TGZ,DEB,RPM, -- see CPack for valid stypes")
 ELSE()
-    SET(CPACK_GENERATOR "TGZ")
+    SET(CPACK_GENERATOR "TGZ" CACHE STRING "CPack package generator type (i.e ZIP,NSIS,TGZ,DEB,RPM, -- see CPack for valid stypes")
 ENDIF()
 SET(CPACK_SOURCE_GENERATOR "TGZ")
 
@@ -120,16 +120,12 @@ MACRO(GENERATE_PACKAGING_TARGET package_name)
     ADD_CUSTOM_TARGET(${PACKAGE_TARGETNAME})
     ADD_CUSTOM_COMMAND(TARGET ${PACKAGE_TARGETNAME}
         COMMAND ${CMAKE_CPACK_COMMAND} -C ${OSG_CPACK_CONFIGURATION} --config ${OpenSceneGraph_BINARY_DIR}/CPackConfig-${package_name}.cmake
-        COMMAND "${MOVE_COMMAND}" "${CPACK_PACKAGE_FILE_NAME}.${ARCHIVE_EXT}" "${OSG_PACKAGE_FILE_NAME}.${ARCHIVE_EXT}"
-        COMMAND ${CMAKE_COMMAND} -E echo "renamed ${CPACK_PACKAGE_FILE_NAME}.${ARCHIVE_EXT} -> ${OSG_PACKAGE_FILE_NAME}.${ARCHIVE_EXT}"
         COMMENT "Run CPack packaging for ${package_name}..."
     )
     # Add the exact same custom command to the all package generating target. 
     # I can't use add_dependencies to do this because it would allow parallell building of packages so am going brute here
     ADD_CUSTOM_COMMAND(TARGET ${PACKAGE_ALL_TARGETNAME}
         COMMAND ${CMAKE_CPACK_COMMAND} -C ${OSG_CPACK_CONFIGURATION} --config ${OpenSceneGraph_BINARY_DIR}/CPackConfig-${package_name}.cmake
-        COMMAND "${MOVE_COMMAND}" "${CPACK_PACKAGE_FILE_NAME}.${ARCHIVE_EXT}" "${OSG_PACKAGE_FILE_NAME}.${ARCHIVE_EXT}"
-        COMMAND ${CMAKE_COMMAND} -E echo "renamed ${CPACK_PACKAGE_FILE_NAME}.${ARCHIVE_EXT} -> ${OSG_PACKAGE_FILE_NAME}.${ARCHIVE_EXT}"
     )
 ENDMACRO(GENERATE_PACKAGING_TARGET)
 

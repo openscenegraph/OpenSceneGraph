@@ -467,7 +467,7 @@ protected:
     bool disableMipmaps;
 
 };
-
+// 
 class DatabasePagingOperation : public osg::Operation, public osgUtil::IncrementalCompileOperation::CompileCompletedCallback
 {
 public:
@@ -559,6 +559,15 @@ public:
     }
 };
 
+struct ReportStatsAnimationCompletedCallback : public osgGA::AnimationPathManipulator::AnimationCompletedCallback
+{
+    virtual void completed(const osgGA::AnimationPathManipulator*)
+    {
+        OSG_NOTICE<<"Animation completed"<<std::endl;
+        osg::Texture::getTextureObjectManager(0)->reportStats(osg::notify(osg::NOTICE));
+        osg::GLBufferObjectManager::getGLBufferObjectManager(0)->reportStats(osg::notify(osg::NOTICE));
+    }
+};
 
 int main(int argc, char** argv)
 {
@@ -576,13 +585,19 @@ int main(int argc, char** argv)
         keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
         keyswitchManipulator->addMatrixManipulator( '4', "Terrain", new osgGA::TerrainManipulator() );
 
-        std::string pathfile;
         char keyForAnimationPath = '8';
+        double animationSpeed = 1.0;
+        while(arguments.read("--speed",animationSpeed) ) {}
+
+        std::string pathfile;
         while (arguments.read("-p",pathfile))
         {
             osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
             if (apm || !apm->valid())
             {
+                apm->setTimeScale(animationSpeed);
+                apm->setAnimationCompletedCallback(new ReportStatsAnimationCompletedCallback());
+                
                 unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
                 keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
                 keyswitchManipulator->selectMatrixManipulator(num);

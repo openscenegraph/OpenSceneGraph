@@ -1202,15 +1202,9 @@ DatabasePager::DatabasePager(const DatabasePager& rhs)
     _inactivePagedLODList = rhs._inactivePagedLODList->clone();
 
 #if 1
-    // need to set the texture object manager to be able to reuse textures
-    osg::Texture::setMinimumNumberOfTextureObjectsToRetainInCache(100);
-
     // need to set the display list manager to be able to reuse display lists
     osg::Drawable::setMinimumNumberOfDisplayListsToRetainInCache(100);
 #else
-    // need to set the texture object manager to be able to reuse textures
-    osg::Texture::setMinimumNumberOfTextureObjectsToRetainInCache(0);
-
     // need to set the display list manager to be able to reuse display lists
     osg::Drawable::setMinimumNumberOfDisplayListsToRetainInCache(0);
 #endif

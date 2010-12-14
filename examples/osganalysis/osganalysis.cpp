@@ -22,6 +22,7 @@
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
+#include <osgDB/FileNameUtils>
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/StateSetManipulator>
@@ -480,7 +481,9 @@ public:
         _outputFilename(outputFilename),
         _modelReadyToMerge(false),
         _sceneGraphProcessor(sceneGraphProcessor),
-        _incrementalCompileOperation(ico) {}
+        _incrementalCompileOperation(ico)
+        {
+        }
 
     virtual void operator () (osg::Object* object)
     {
@@ -501,6 +504,8 @@ public:
         {
             if (!_outputFilename.empty())
             {
+                OSG_NOTICE<<"Writing out file "<<_outputFilename<<std::endl;
+                
                 osgDB::writeNodeFile(*_loadedModel, _outputFilename);
             }
 
@@ -635,7 +640,7 @@ int main(int argc, char** argv)
     while(arguments.read("--interval",timeBetweenMerges)) {}
 
     std::string outputPostfix;
-    while (arguments.read("-o",outputPostfix)) {}
+    while (arguments.read("-o",outputPostfix)) { OSG_NOTICE<<"Set ouputPostfix to "<<outputPostfix<<std::endl; }
 
 
     typedef std::vector< std::string > FileNames;
@@ -666,7 +671,7 @@ int main(int argc, char** argv)
     databasePagingThread->startThread();
 
     std::string filename = fileNames[modelIndex++];
-    std::string outputFilename = outputPostfix.empty() ? std::string() : filename+outputPostfix;
+    std::string outputFilename = outputPostfix.empty() ? std::string() : osgDB::getStrippedName(filename)+outputPostfix;
 
     databasePagingOperation = new DatabasePagingOperation(
         filename,
@@ -694,7 +699,7 @@ int main(int argc, char** argv)
             (currentTime-timeOfLastMerge)>timeBetweenMerges)
         {
             std::string filename = fileNames[modelIndex++];
-            std::string outputFilename = outputPostfix.empty() ? std::string() : filename+outputPostfix;
+            std::string outputFilename = outputPostfix.empty() ? std::string() : osgDB::getStrippedName(filename)+outputPostfix;
 
             databasePagingOperation = new DatabasePagingOperation(
                 filename,

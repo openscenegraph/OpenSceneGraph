@@ -547,6 +547,7 @@ public:
             if (ea.getKey()=='r')
             {
                 osg::Texture::getTextureObjectManager(0)->reportStats();
+                osg::GLBufferObjectManager::getGLBufferObjectManager(0)->reportStats();
             }
         }
         return false;

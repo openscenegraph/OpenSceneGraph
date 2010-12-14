@@ -732,6 +732,18 @@ void Texture::TextureObjectSet::moveToSet(TextureObject* to, TextureObjectSet* s
     set->addToBack(to);
 }
 
+unsigned int Texture::TextureObjectSet::computeNumTextureObjectsInList() const
+{
+    unsigned int num=0;
+    TextureObject* obj = _head;
+    while(obj!=NULL)
+    {
+        ++num;
+        obj = obj->_next;
+    }
+    return num;
+}
+
 
 Texture::TextureObjectManager::TextureObjectManager(unsigned int contextID):
     _contextID(contextID),
@@ -901,14 +913,16 @@ void Texture::TextureObjectManager::newFrame(osg::FrameStamp* fs)
     ++_numFrames;
 }
 
-void Texture::TextureObjectManager::reportStats()
+void Texture::TextureObjectManager::reportStats(std::ostream& out)
 {
     double numFrames(_numFrames==0 ? 1.0 : _numFrames);
-    OSG_NOTICE<<"TextureObjectMananger::reportStats()"<<std::endl;
-    OSG_NOTICE<<"   total _numOfTextureObjects="<<_numActiveTextureObjects<<", _numOrphanedTextureObjects="<<_numOrphanedTextureObjects<<" _currTexturePoolSize="<<_currTexturePoolSize<<std::endl;
-    OSG_NOTICE<<"   total _numGenerated="<<_numGenerated<<", _generateTime="<<_generateTime<<", averagePerFrame="<<_generateTime/numFrames*1000.0<<"ms"<<std::endl;
-    OSG_NOTICE<<"   total _numDeleted="<<_numDeleted<<", _deleteTime="<<_deleteTime<<", averagePerFrame="<<_deleteTime/numFrames*1000.0<<"ms"<<std::endl;
-    OSG_NOTICE<<"   total _numApplied="<<_numApplied<<", _applyTime="<<_applyTime<<", averagePerFrame="<<_applyTime/numFrames*1000.0<<"ms"<<std::endl;
+    out<<"TextureObjectMananger::reportStats()"<<std::endl;
+    out<<"   total _numOfTextureObjects="<<_numActiveTextureObjects<<", _numOrphanedTextureObjects="<<_numOrphanedTextureObjects<<" _currTexturePoolSize="<<_currTexturePoolSize<<std::endl;
+    out<<"   total _numGenerated="<<_numGenerated<<", _generateTime="<<_generateTime<<", averagePerFrame="<<_generateTime/numFrames*1000.0<<"ms"<<std::endl;
+    out<<"   total _numDeleted="<<_numDeleted<<", _deleteTime="<<_deleteTime<<", averagePerFrame="<<_deleteTime/numFrames*1000.0<<"ms"<<std::endl;
+    out<<"   total _numApplied="<<_numApplied<<", _applyTime="<<_applyTime<<", averagePerFrame="<<_applyTime/numFrames*1000.0<<"ms"<<std::endl;
+
+    recomputeStats(out);
 }
 
 void Texture::TextureObjectManager::resetStats()
@@ -924,6 +938,34 @@ void Texture::TextureObjectManager::resetStats()
     _applyTime = 0;
 }
 
+
+void Texture::TextureObjectManager::recomputeStats(std::ostream& out)
+{
+    out<<"Texture::TextureObjectManager::recomputeStats()"<<std::endl;
+    unsigned int numObjectsInLists = 0;
+    unsigned int numActive = 0;
+    unsigned int numOrphans = 0;
+    unsigned int numPendingOrphans = 0;
+    unsigned int currentSize = 0;
+    for(TextureSetMap::iterator itr = _textureSetMap.begin();
+        itr != _textureSetMap.end();
+        ++itr)
+    {
+         TextureObjectSet* os = itr->second.get();
+         numObjectsInLists += os->computeNumTextureObjectsInList();
+         numActive += os->getNumOfTextureObjects();
+         numOrphans += os->getNumOrphans();
+         numPendingOrphans += os->getNumPendingOrphans();
+         currentSize += os->getProfile()._size * (numObjectsInLists+numOrphans);
+         out<<"   size="<<os->getProfile()._size
+           <<", os->computeNumGLBufferObjectsInList()"<<os->computeNumTextureObjectsInList()
+           <<", os->getNumOfGLBufferObjects()"<<os->getNumOfTextureObjects()
+           <<", os->getNumOrphans()"<<os->getNumOrphans()
+           <<", os->getNumPendingOrphans()"<<os->getNumPendingOrphans()
+           <<std::endl;
+    }
+    out<<"   numObjectsInLists="<<numObjectsInLists<<", numActive="<<numActive<<", numOrphans="<<numOrphans<<" currentSize="<<currentSize<<std::endl;
+}
 
 
 osg::ref_ptr<Texture::TextureObjectManager>& Texture::getTextureObjectManager(unsigned int contextID)

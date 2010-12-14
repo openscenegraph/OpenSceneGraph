@@ -255,7 +255,7 @@ int main( int argc, char** argv )
     int posterWidth = 640*2, posterHeight = 480*2;
     std::string posterName = "poster.bmp", extName = "bmp";
     osg::Vec4 bgColor(0.2f, 0.2f, 0.6f, 1.0f);
-    osg::Camera::RenderTargetImplementation renderImplementation = osg::Camera::FRAME_BUFFER;
+    osg::Camera::RenderTargetImplementation renderImplementation = osg::Camera::FRAME_BUFFER_OBJECT;
     
     while ( arguments.read("--inactive") ) { activeMode = false; }
     while ( arguments.read("--color", bgColor.r(), bgColor.g(), bgColor.b()) ) {}
@@ -330,15 +330,35 @@ int main( int argc, char** argv )
         printer->setOutputPosterName( posterName );
     }
     
-    // Create root and start the viewer
+#if 0
+    // While recording sub-images of the poster, the scene will always be traversed twice, from its two
+    // parent node: root and camera. Sometimes this may not be so comfortable.
+    // To prevent this behaviour, we can use a switch node to enable one parent and disable the other.
+    // However, the solution also needs to be used with care, as the window will go blank while taking
+    // snapshots and recover later.
     osg::ref_ptr<osg::Switch> root = new osg::Switch;
     root->addChild( scene, true );
     root->addChild( camera.get(), false );
+#else
+    osg::ref_ptr<osg::Group> root = new osg::Group;
+    root->addChild( scene );
+    root->addChild( camera.get() );
+#endif
     
     osgViewer::Viewer viewer;
-    viewer.setUpViewInWindow( 100, 100, tileWidth, tileHeight );
     viewer.setSceneData( root.get() );
     viewer.getDatabasePager()->setDoPreCompile( false );
+    
+    if ( renderImplementation==osg::Camera::FRAME_BUFFER )
+    {
+        // FRAME_BUFFER requires the window resolution equal or greater than the to-be-copied size
+        viewer.setUpViewInWindow( 100, 100, tileWidth, tileHeight );
+    }
+    else
+    {
+        // We want to see the console output, so just render in a window
+        viewer.setUpViewInWindow( 100, 100, 800, 600 );
+    }
     
     if ( activeMode )
     {

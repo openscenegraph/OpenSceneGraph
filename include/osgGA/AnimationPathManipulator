@@ -41,6 +41,21 @@ class OSGGA_EXPORT AnimationPathManipulator : public CameraManipulator
         
         virtual const char* className() const { return "AnimationPath"; }
 
+        void setTimeScale(double s) { _timeScale = s; }
+        double getTimeScale() const { return _timeScale; }
+        
+        void setTimeOffset(double o) { _timeOffset = o; }
+        double getTimeOffset() const { return _timeOffset; }
+
+        struct AnimationCompletedCallback : public virtual osg::Referenced
+        {
+            virtual void completed(const AnimationPathManipulator* apm) = 0;
+        };
+
+        void setAnimationCompletedCallback(AnimationCompletedCallback* acc) { _animationCompletedCallback = acc; }
+        AnimationCompletedCallback* getAnimationCompletedCallback() { return _animationCompletedCallback.get(); }
+        const AnimationCompletedCallback* getAnimationCompletedCallback() const { return _animationCompletedCallback.get(); }
+
         void setPrintOutTimingInfo(bool printOutTimingInfo) { _printOutTimingInfo=printOutTimingInfo; }
         bool getPrintOutTimingInfo() const { return _printOutTimingInfo; }
         
@@ -87,6 +102,9 @@ class OSGGA_EXPORT AnimationPathManipulator : public CameraManipulator
         
         double  _timeOffset;
         double  _timeScale;
+
+        osg::ref_ptr<AnimationCompletedCallback> _animationCompletedCallback;
+
         double  _pauseTime;
         bool    _isPaused;
         

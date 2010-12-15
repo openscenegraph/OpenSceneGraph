@@ -308,10 +308,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 {
 
     public :
-    
-        static unsigned int s_numberTextureReusedLastInLastFrame;
-        static unsigned int s_numberNewTextureInLastFrame;
-        static unsigned int s_numberDeletedTextureInLastFrame;
 
         Texture();
 

@@ -1189,7 +1189,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             void newFrame(osg::FrameStamp* fs);
             void resetStats();
             void reportStats(std::ostream& out);
-            void recomputeStats(std::ostream& out);
+            void recomputeStats(std::ostream& out) const;
+            bool checkConsistency() const;
 
             unsigned int& getFrameNumber() { return _frameNumber; }
             unsigned int& getNumberFrames() { return _numFrames; }

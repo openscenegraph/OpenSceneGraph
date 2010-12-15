@@ -1159,7 +1159,7 @@ void GLBufferObjectManager::recomputeStats(std::ostream& out)
          numActive += os->getNumOfGLBufferObjects();
          numOrphans += os->getNumOrphans();
          numPendingOrphans += os->getNumPendingOrphans();
-         currentSize += os->getProfile()._size * (numObjectsInLists+numOrphans);
+         currentSize += os->getProfile()._size * (os->computeNumGLBufferObjectsInList()+os->getNumOrphans());
          out<<"   size="<<os->getProfile()._size
            <<", os->computeNumGLBufferObjectsInList()"<<os->computeNumGLBufferObjectsInList()
            <<", os->getNumOfGLBufferObjects()"<<os->getNumOfGLBufferObjects()

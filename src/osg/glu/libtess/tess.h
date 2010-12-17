@@ -37,8 +37,11 @@
 
 // #include <GL/glu.h>
 #include <osg/GLU>
- 
-#define GLAPIENTRY GL_APIENTRY 
+
+
+#ifndef GLAPIENTRY
+    #define GLAPIENTRY GL_APIENTRY 
+#endif
 
 #include <setjmp.h>
 #include "mesh.h"

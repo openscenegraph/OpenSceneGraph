@@ -862,7 +862,7 @@ FltExportVisitor::writeUVList( int numVerts, const osg::Geometry& geom, unsigned
                 _fltOpt->getWriteResult().warn( warning.str() );
                 t2 = new osg::Vec2Array;
             }
-            else if (static_cast<int>(t2->getNumElements()) < first + numVerts)
+            else if (t2->getNumElements() < first + numVerts)
             {
                 std::ostringstream warning;
                 warning << "fltexp: Invalid number of texture coordinates for unit " << idx;

@@ -749,14 +749,17 @@ GLBufferObject* GLBufferObjectSet::takeFromOrphans(BufferObject* bufferObject)
 
 GLBufferObject* GLBufferObjectSet::takeOrGenerate(BufferObject* bufferObject)
 {
-    // see if we can recyle GLBufferObject from the orphane list
-    if (!_pendingOrphanedGLBufferObjects.empty())
+    // see if we can recyle GLBufferObject from the orphan list
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-        handlePendingOrphandedGLBufferObjects();
-        return takeFromOrphans(bufferObject);
+        if (!_pendingOrphanedGLBufferObjects.empty())
+        {
+            handlePendingOrphandedGLBufferObjects();
+            return takeFromOrphans(bufferObject);
+        }
     }
-    else if (!_orphanedGLBufferObjects.empty())
+
+    if (!_orphanedGLBufferObjects.empty())
     {
         return takeFromOrphans(bufferObject);
     }

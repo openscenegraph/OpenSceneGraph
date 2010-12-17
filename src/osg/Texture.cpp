@@ -514,14 +514,17 @@ Texture::TextureObject* Texture::TextureObjectSet::takeFromOrphans(Texture* text
 
 Texture::TextureObject* Texture::TextureObjectSet::takeOrGenerate(Texture* texture)
 {
-    // see if we can recyle TextureObject from the orphane list
-    if (!_pendingOrphanedTextureObjects.empty())
+    // see if we can recyle TextureObject from the orphan list
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-        handlePendingOrphandedTextureObjects();
-        return takeFromOrphans(texture);
+        if (!_pendingOrphanedTextureObjects.empty())
+        {
+            handlePendingOrphandedTextureObjects();
+            return takeFromOrphans(texture);
+        }
     }
-    else if (!_orphanedTextureObjects.empty())
+
+    if (!_orphanedTextureObjects.empty())
     {
         return takeFromOrphans(texture);
     }

@@ -47,8 +47,11 @@
 #define GL_STORAGE_SHARED_APPLE           0x85BF
 #endif
 
-// #define DO_TIMING
-// #define CHECK_CONSISTENCY
+#if 0
+    #define CHECK_CONSISTENCY checkConsistency();
+#else
+    #define CHECK_CONSISTENCY
+#endif
 
 namespace osg {
 
@@ -178,10 +181,7 @@ Texture::TextureObjectSet::~TextureObjectSet()
 
 bool Texture::TextureObjectSet::checkConsistency() const
 {
-#ifndef CHECK_CONSISTENCY
-    return true;
-#else
-    // OSG_NOTICE<<"TextureObjectSet::checkConsistency()"<<std::endl;
+    OSG_NOTICE<<"TextureObjectSet::checkConsistency()"<<std::endl;
     // check consistency of linked list.
     unsigned int numInList = 0;
     Texture::TextureObject* to = _head;
@@ -220,8 +220,9 @@ bool Texture::TextureObjectSet::checkConsistency() const
         return false;
     }
 
+    _parent->checkConsistency();
+
     return true;
-#endif
 }
 
 void Texture::TextureObjectSet::handlePendingOrphandedTextureObjects()
@@ -241,14 +242,6 @@ void Texture::TextureObjectSet::handlePendingOrphandedTextureObjects()
         _orphanedTextureObjects.push_back(to);
 
         remove(to);
-
-#if 0
-        OSG_NOTICE<<"  HPOTO  after  _head = "<<_head<<std::endl;
-        OSG_NOTICE<<"  HPOTO  after _tail = "<<_tail<<std::endl;
-        OSG_NOTICE<<"  HPOTO  after to->_previous = "<<to->_previous<<std::endl;
-        OSG_NOTICE<<"  HPOTO  after to->_next = "<<to->_next<<std::endl;
-#endif
-
     }
 
 
@@ -258,13 +251,24 @@ void Texture::TextureObjectSet::handlePendingOrphandedTextureObjects()
 
     _pendingOrphanedTextureObjects.clear();
 
-    checkConsistency();
+    CHECK_CONSISTENCY
 }
 
 
 void Texture::TextureObjectSet::deleteAllTextureObjects()
 {
     // OSG_NOTICE<<"Texture::TextureObjectSet::deleteAllTextureObjects()"<<std::endl;
+
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        if (!_pendingOrphanedTextureObjects.empty())
+        {
+            // OSG_NOTICE<<"Texture::TextureObjectSet::flushDeletedTextureObjects(..) handling orphans"<<std::endl;
+            handlePendingOrphandedTextureObjects();
+        }
+    }
+
+    CHECK_CONSISTENCY
 
     // detect all the active texture objects from their Textures
     unsigned int numOrphaned = 0;
@@ -636,7 +640,7 @@ void Texture::TextureObjectSet::moveToBack(Texture::TextureObject* to)
     OSG_NOTICE<<"  m2B   after to->_previous = "<<to->_previous<<std::endl;
     OSG_NOTICE<<"  m2B   after to->_next = "<<to->_next<<std::endl;
 #endif
-    checkConsistency();
+    CHECK_CONSISTENCY
 }
 
 void Texture::TextureObjectSet::addToBack(Texture::TextureObject* to)
@@ -669,7 +673,7 @@ void Texture::TextureObjectSet::addToBack(Texture::TextureObject* to)
     OSG_NOTICE<<"  a2B   after to->_previous = "<<to->_previous<<std::endl;
     OSG_NOTICE<<"  a2B   after to->_next = "<<to->_next<<std::endl;
 #endif
-    checkConsistency();
+    CHECK_CONSISTENCY
 }
 
 void Texture::TextureObjectSet::orphan(Texture::TextureObject* to)

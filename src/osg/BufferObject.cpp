@@ -27,7 +27,11 @@
 #include <OpenThreads/ScopedLock>
 #include <OpenThreads/Mutex>
 
-// #define CHECK_CONSISTENCY
+#if 0
+    #define CHECK_CONSISTENCY checkConsistency();
+#else
+    #define CHECK_CONSISTENCY
+#endif
 
 using namespace osg;
 
@@ -424,10 +428,7 @@ GLBufferObjectSet::~GLBufferObjectSet()
 
 bool GLBufferObjectSet::checkConsistency() const
 {
-#ifndef CHECK_CONSISTENCY
-    return true;
-#else
-    // OSG_NOTICE<<"GLBufferObjectSet::checkConsistency()"<<std::endl;
+    OSG_NOTICE<<"GLBufferObjectSet::checkConsistency()"<<std::endl;
     // check consistency of linked list.
     unsigned int numInList = 0;
     GLBufferObject* to = _head;
@@ -467,7 +468,6 @@ bool GLBufferObjectSet::checkConsistency() const
     }
 
     return true;
-#endif
 }
 
 void GLBufferObjectSet::handlePendingOrphandedGLBufferObjects()
@@ -487,14 +487,6 @@ void GLBufferObjectSet::handlePendingOrphandedGLBufferObjects()
         _orphanedGLBufferObjects.push_back(to);
 
         remove(to);
-
-#if 0
-        OSG_NOTICE<<"  HPOTO  after  _head = "<<_head<<std::endl;
-        OSG_NOTICE<<"  HPOTO  after _tail = "<<_tail<<std::endl;
-        OSG_NOTICE<<"  HPOTO  after to->_previous = "<<to->_previous<<std::endl;
-        OSG_NOTICE<<"  HPOTO  after to->_next = "<<to->_next<<std::endl;
-#endif
-
     }
 
 
@@ -504,13 +496,25 @@ void GLBufferObjectSet::handlePendingOrphandedGLBufferObjects()
 
     _pendingOrphanedGLBufferObjects.clear();
 
-    checkConsistency();
+    CHECK_CONSISTENCY
 }
 
 void GLBufferObjectSet::deleteAllGLBufferObjects()
 {
     // OSG_NOTICE<<"GLBufferObjectSet::deleteAllGLBufferObjects()"<<std::endl;
 
+    {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+        if (!_pendingOrphanedGLBufferObjects.empty())
+        {
+            // OSG_NOTICE<<"GLBufferObjectSet::flushDeletedGLBufferObjects(..) handling orphans"<<std::endl;
+            handlePendingOrphandedGLBufferObjects();
+        }
+    }
+
+    CHECK_CONSISTENCY
+
+    unsigned int numOrphaned = 0;
     GLBufferObject* to = _head;
     while(to!=0)
     {
@@ -519,7 +523,10 @@ void GLBufferObjectSet::deleteAllGLBufferObjects()
         to = to->_next;
 
         _orphanedGLBufferObjects.push_back(glbo.get());
+
         remove(glbo.get());
+
+        ++numOrphaned;
 
         ref_ptr<BufferObject> original_BufferObject = glbo->getBufferObject();
         if (original_BufferObject.valid())
@@ -529,8 +536,8 @@ void GLBufferObjectSet::deleteAllGLBufferObjects()
         }
     }
 
-    _head = 0;
-    _tail = 0;
+    _parent->getNumberOrphanedGLBufferObjects() += numOrphaned;
+    _parent->getNumberActiveGLBufferObjects() -= numOrphaned;
 
     // do the actual delete.
     flushAllDeletedGLBufferObjects();
@@ -865,7 +872,7 @@ void GLBufferObjectSet::moveToBack(GLBufferObject* to)
     OSG_NOTICE<<"  m2B   after to->_previous = "<<to->_previous<<std::endl;
     OSG_NOTICE<<"  m2B   after to->_next = "<<to->_next<<std::endl;
 #endif
-    checkConsistency();
+    CHECK_CONSISTENCY
 }
 
 void GLBufferObjectSet::addToBack(GLBufferObject* to)
@@ -898,7 +905,7 @@ void GLBufferObjectSet::addToBack(GLBufferObject* to)
     OSG_NOTICE<<"  a2B   after to->_previous = "<<to->_previous<<std::endl;
     OSG_NOTICE<<"  a2B   after to->_next = "<<to->_next<<std::endl;
 #endif
-    checkConsistency();
+    CHECK_CONSISTENCY
 }
 
 void GLBufferObjectSet::orphan(GLBufferObject* to)

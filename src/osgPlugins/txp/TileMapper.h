@@ -11,6 +11,10 @@
  * OpenSceneGraph Public License for more details.
 */
 
+/*    Dec 2010 - TileMapper was fixed and simplified
+    Nick
+*/
+
 #ifndef __TILEMAPPER_H_
 #define __TILEMAPPER_H_
 
@@ -96,7 +100,7 @@ public:
             
     virtual osg::Vec3 getEyePoint() const
     {
-	return getEyeLocal();
+        return getEyeLocal();
     }
     virtual float getDistanceToEyePoint(const osg::Vec3& pos, bool withLODScale) const;
     virtual float getDistanceFromEyePoint(const osg::Vec3& pos, bool withLODScale) const;
@@ -108,33 +112,13 @@ public:
     
     void insertTile(const TileIdentifier& tid);
     
-    bool canParentBeTraversed(const TileIdentifier& tid) const;
-    
-    void checkValidityOfAllVisibleTiles();
-    
-    bool containsBlackListedNodes() const
-    {
-        return !_blackListedNodeSet.empty();
-    }
-
-    inline bool isNodeBlackListed(const osg::Node* node) const
-    {
-        return _blackListedNodeSet.count(node)!=0;
-    }
-    
     bool isTileNeighbourALowerLODLevel(const TileIdentifier& tid, int dx, int dy) const;
     
 protected:
 
-    typedef std::vector< std::pair<TileIdentifier,osg::Node*> > TileStack;
-    typedef std::map< TileIdentifier, TileStack > TileMap;
-    typedef std::set< const osg::Node* > BlacklistedNodeSet;
-    
-    TileStack           _tileStack;
-    TileMap             _tileMap;
-    bool                _containsGeode;
-    
-    BlacklistedNodeSet  _blackListedNodeSet;
+    typedef std::map< TileIdentifier, int>        TileMap;
+    TileMap                                        _tileMap;
+    bool                                        _containsGeode;
     
 };
 

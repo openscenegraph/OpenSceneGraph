@@ -134,8 +134,6 @@ void TXPNode::traverse(osg::NodeVisitor& nv)
 
             //std::cout<<"   found " << tileMapper._tileMap.size() << std::endl;
             
-            tileMapper->checkValidityOfAllVisibleTiles();
-            
             cv->setUserData(tileMapper.get());
 
 #ifdef PRINT_TILEMAPP_TIMEINFO        

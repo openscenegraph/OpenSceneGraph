@@ -37,14 +37,6 @@
          #include <GLES2/gl2.h>
     #endif
 
-#elif defined(OSG_GL3_AVAILABLE)
-
-    #define GL3_PROTOTYPES 1
-    #include <GL3/gl3.h>
-
-    #ifndef GL_APIENTRY
-        #define GL_APIENTRY APIENTRY
-    #endif // GL_APIENTRY
 
 #else
 
@@ -111,14 +103,21 @@
 
     #endif // WIN32
 
-    #ifndef __gl_h_
-        #ifdef __APPLE__
-            #include <OpenGL/gl.h>
-        #else
-            #include <GL/gl.h>
+    #if defined(OSG_GL3_AVAILABLE)
+
+        #define GL3_PROTOTYPES 1
+        #include <GL3/gl3.h>
+
+    #else
+        #ifndef __gl_h_
+            #ifdef __APPLE__
+                #include <OpenGL/gl.h>
+            #else
+                #include <GL/gl.h>
+            #endif
         #endif
     #endif
-    
+
     #ifndef GL_APIENTRY
         #define GL_APIENTRY APIENTRY
     #endif // GL_APIENTRY

@@ -819,98 +819,98 @@ bool Array_writeLocalData(const Array& array,Output& fw)
     {
         case(Array::ByteArrayType):
             {
-                const ByteArray& carray = static_cast<const ByteArray&>(array);
-                fw<<array.className()<<" "<<carray.size()<<std::endl;
-                writeArrayAsInts(fw,carray.begin(),carray.end());
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const ByteArray::ElementDataType* base = static_cast<const ByteArray::ElementDataType*>(array.getDataPointer());
+                writeArrayAsInts(fw,&base[0], &base[array.getNumElements()]);
                 return true;
             }
             break;
         case(Array::ShortArrayType):
             {
-                const ShortArray& carray = static_cast<const ShortArray&>(array);
-                fw<<array.className()<<" "<<carray.size()<<std::endl;
-                writeArray(fw,carray.begin(),carray.end());
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const ShortArray::ElementDataType* base = static_cast<const ShortArray::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()]);
                 return true;
             }
             break;
         case(Array::IntArrayType):
             {
-                const IntArray& carray = static_cast<const IntArray&>(array);
-                fw<<array.className()<<" "<<carray.size()<<std::endl;
-                writeArray(fw,carray.begin(),carray.end());
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const IntArray::ElementDataType* base = static_cast<const IntArray::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()]);
                 return true;
             }
             break;
         case(Array::UByteArrayType):
             {
-                const UByteArray& carray = static_cast<const UByteArray&>(array);
-                fw<<array.className()<<" "<<carray.size()<<std::endl;
-                writeArrayAsInts(fw,carray.begin(),carray.end());
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const UByteArray::ElementDataType* base = static_cast<const UByteArray::ElementDataType*>(array.getDataPointer());
+                writeArrayAsInts(fw,&base[0], &base[array.getNumElements()]);
                 return true;
             }
             break;
         case(Array::UShortArrayType):
             {
-                const UShortArray& carray = static_cast<const UShortArray&>(array);
-                fw<<array.className()<<" "<<carray.size()<<std::endl;
-                writeArray(fw,carray.begin(),carray.end());
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const UShortArray::ElementDataType* base = static_cast<const UShortArray::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()]);
                 return true;
             }
             break;
         case(Array::UIntArrayType):
             {
-                const UIntArray& carray = static_cast<const UIntArray&>(array);
-                fw<<array.className()<<" "<<carray.size()<<" ";
-                writeArray(fw,carray.begin(),carray.end());
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const UIntArray::ElementDataType* base = static_cast<const UIntArray::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()]);
                 return true;
             }
             break;
         case(Array::Vec4ubArrayType):
             {
-                const Vec4ubArray& carray = static_cast<const Vec4ubArray&>(array);
-                fw<<array.className()<<" "<<carray.size()<<" ";
-                writeArray(fw,carray.begin(),carray.end(),1);
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const Vec4ubArray::ElementDataType* base = static_cast<const Vec4ubArray::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()],1);
                 return true;
             }
             break;
         case(Array::FloatArrayType):
             {
-                const FloatArray& carray = static_cast<const FloatArray&>(array);
-                fw<<array.className()<<" "<<carray.size()<<std::endl;
-                writeArray(fw,carray.begin(),carray.end());
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const FloatArray::ElementDataType* base = static_cast<const FloatArray::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()]);
                 return true;
             }
             break;
         case(Array::Vec2ArrayType):
             {
-                const Vec2Array& carray = static_cast<const Vec2Array&>(array);
-                fw<<array.className()<<" "<<carray.size()<<std::endl;
-                writeArray(fw,carray.begin(),carray.end(),1);
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const Vec2Array::ElementDataType* base = static_cast<const Vec2Array::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()],1);
                 return true;
             }
             break;
         case(Array::Vec3ArrayType):
             {
-                const Vec3Array& carray = static_cast<const Vec3Array&>(array);
-                fw<<array.className()<<" "<<carray.size()<<std::endl;
-                writeArray(fw,carray.begin(),carray.end(),1);
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const Vec3Array::ElementDataType* base = static_cast<const Vec3Array::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()],1);
                 return true;
             }
             break;
         case(Array::Vec4ArrayType):
             {
-                const Vec4Array& carray = static_cast<const Vec4Array&>(array);
-                fw<<array.className()<<" "<<carray.size()<<std::endl;
-                writeArray(fw,carray.begin(),carray.end(),1);
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const Vec4Array::ElementDataType* base = static_cast<const Vec4Array::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()],1);
                 return true;
             }
             break;
         case(Array::DoubleArrayType):
             {
                 int prec = fw.precision(15);
-                const DoubleArray& carray = static_cast<const DoubleArray&>(array);
-                fw<<array.className()<<" "<<carray.size()<<std::endl;
-                writeArray(fw,carray.begin(),carray.end());
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const DoubleArray::ElementDataType* base = static_cast<const DoubleArray::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()]);
                 fw.precision(prec);
                 return true;
             }
@@ -918,9 +918,9 @@ bool Array_writeLocalData(const Array& array,Output& fw)
         case(Array::Vec2dArrayType):
             {
                 int prec = fw.precision(15);
-                const Vec2dArray& carray = static_cast<const Vec2dArray&>(array);
-                fw<<array.className()<<" "<<carray.size()<<std::endl;
-                writeArray(fw,carray.begin(),carray.end(),1);
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const Vec2dArray::ElementDataType* base = static_cast<const Vec2dArray::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()],1);
                 fw.precision(prec);
                 return true;
             }
@@ -928,9 +928,9 @@ bool Array_writeLocalData(const Array& array,Output& fw)
         case(Array::Vec3dArrayType):
             {
                 int prec = fw.precision(15);
-                const Vec3dArray& carray = static_cast<const Vec3dArray&>(array);
-                fw<<array.className()<<" "<<carray.size()<<std::endl;
-                writeArray(fw,carray.begin(),carray.end(),1);
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const Vec3dArray::ElementDataType* base = static_cast<const Vec3dArray::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()],1);
                 fw.precision(prec);
                 return true;
             }
@@ -938,58 +938,58 @@ bool Array_writeLocalData(const Array& array,Output& fw)
         case(Array::Vec4dArrayType):
             {
                 int prec = fw.precision(15);
-                const Vec4dArray& carray = static_cast<const Vec4dArray&>(array);
-                fw<<array.className()<<" "<<carray.size()<<std::endl;
-                writeArray(fw,carray.begin(),carray.end(),1);
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const Vec4dArray::ElementDataType* base = static_cast<const Vec4dArray::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()],1);
                 fw.precision(prec);
                 return true;
             }
             break;
         case(Array::Vec2sArrayType):
             {
-                const Vec2sArray& carray = static_cast<const Vec2sArray&>(array);
-                fw<<array.className()<<" "<<carray.size()<<std::endl;
-                writeArray(fw,carray.begin(),carray.end(), 3);
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const Vec2sArray::ElementDataType* base = static_cast<const Vec2sArray::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()], 3);
                 return true;
             }
             break;
         case(Array::Vec3sArrayType):
             {
-                const Vec3sArray& carray = static_cast<const Vec3sArray&>(array);
-                fw<<array.className()<<" "<<carray.size()<<std::endl;
-                writeArray(fw,carray.begin(),carray.end(), 2);
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const Vec3sArray::ElementDataType* base = static_cast<const Vec3sArray::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()], 2);
                 return true;
             }
             break;
         case(Array::Vec4sArrayType):
             {
-                const Vec4sArray& carray = static_cast<const Vec4sArray&>(array);
-                fw<<array.className()<<" "<<carray.size()<<std::endl;
-                writeArray(fw,carray.begin(),carray.end(), 1);
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const Vec4sArray::ElementDataType* base = static_cast<const Vec4sArray::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()], 1);
                 return true;
             }
             break;
         case(Array::Vec2bArrayType):
             {
-                const Vec2bArray& carray = static_cast<const Vec2bArray&>(array);
-                fw<<array.className()<<" "<<carray.size()<<" ";
-                writeArray(fw,carray.begin(),carray.end(),1);
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const Vec2bArray::ElementDataType* base = static_cast<const Vec2bArray::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()],1);
                 return true;
             }
             break;
         case(Array::Vec3bArrayType):
             {
-                const Vec3bArray& carray = static_cast<const Vec3bArray&>(array);
-                fw<<array.className()<<" "<<carray.size()<<" ";
-                writeArray(fw,carray.begin(),carray.end(),1);
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const Vec3bArray::ElementDataType* base = static_cast<const Vec3bArray::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()],1);
                 return true;
             }
             break;
         case(Array::Vec4bArrayType):
             {
-                const Vec4bArray& carray = static_cast<const Vec4bArray&>(array);
-                fw<<array.className()<<" "<<carray.size()<<" ";
-                writeArray(fw,carray.begin(),carray.end(),1);
+                fw<<array.className()<<" "<<array.getNumElements()<<std::endl;
+                const Vec4bArray::ElementDataType* base = static_cast<const Vec4bArray::ElementDataType*>(array.getDataPointer());
+                writeArray(fw,&base[0], &base[array.getNumElements()],1);
                 return true;
             }
             break;

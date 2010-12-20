@@ -52,8 +52,20 @@ osg::Geometry* getShape(const std::string& name)
 {
     osg::Node* shape0 = osgDB::readNodeFile(name);
     GeometryFinder finder;
+    /*
     shape0->accept(finder);
     return finder._geom.get();
+    */
+    //is changed to
+    if (shape0)
+    {
+        shape0->accept(finder);
+        return finder._geom.get();
+    }
+    else
+    {
+        return NULL;
+    }
 }
 
 

@@ -693,6 +693,8 @@ protected:
     TXPArchive *_archive;
 };
 
+#define equalDoubles(a, b) (fabs(a-b) < 0.001)
+
 osg::Node* SeamFinder::seamReplacement(osg::Node* node)
 {
     osg::Group* group = node->asGroup();
@@ -742,16 +744,25 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
 
         if (!_info.bbox.contains(lodCenter))
         {
-            // seams have center as the neighbour tile
-            osg::Vec3 d = _info.center - lodCenter;
-            if (((fabs(d.x())-_info.size.x()) > 0.0001) && ((fabs(d.y())-_info.size.y()) > 0.0001))
+            const osg::LOD::RangeList& rangeList = lod->getRangeList();
+            if (!rangeList.size())
             {
-                nonSeamChildren.push_back(lod);
+                // TODO: Warn here
                 continue;
             }
 
+            TXPArchive::TileInfo lod_plus_one_info;
+            if (!this->_archive->getTileInfo(_x,_y,_lod+1,lod_plus_one_info))
+            {
+                // TODO: Warn here
+                continue;
+            }
+
+            double lod_plus_oneSwitchInDistance =  lod_plus_one_info.maxRange;
+            double lod0SwitchInDistance =  _info.lod0Range;
+
             // low res seam has min/max ranges of lod+1 range/lod 0 range
-            if ((fabs((float)_info.minRange-lod->getMinRange(0))<0.001)&&(fabs((float)_info.lod0Range-lod->getMaxRange(0))<0.001))
+            if (equalDoubles(lod_plus_oneSwitchInDistance,rangeList.at(0).first) && equalDoubles(lod0SwitchInDistance,rangeList.at(0).second))
             {
 
                 if (loRes==0)
@@ -760,9 +771,9 @@ osg::Node* SeamFinder::seamReplacement(osg::Node* node)
                     nonSeamChild = false;
                 }
             }
-
+            else
             // hi res seam has min/max ranges of 0 range/lod+1 range
-            if ((lod->getMinRange(0)==0.0f)&&(fabs(_info.minRange-lod->getMaxRange(0))<0.001))
+            if (rangeList.at(0).first==0.0 && equalDoubles(lod_plus_oneSwitchInDistance,rangeList.at(0).second))
             {
                 if (hiRes==0)
                 {

@@ -24,7 +24,7 @@
 #include <osg/TexEnv>
 #include <osg/AlphaFunc>
 #include <osg/LineSegment>
-#include <osg/TriangleFunctor>
+#include <osg/TemplatePrimitiveFunctor>
 #include <osg/Geometry>
 #include <osg/io_utils>
 
@@ -325,13 +325,161 @@ struct ComputeNearestPointFunctor
     
     Polygon                         _pointCache;
 
+    // Handle Points
+    inline void operator() ( const osg::Vec3 &v1, bool)
+    {
+        CullVisitor::value_type n1 = distance(v1,_matrix);
+
+        // check if point is behind znear, if so discard
+        if (n1 >= _znear)
+        {
+            //OSG_NOTICE<<"Point beyond znear"<<std::endl;
+            return;
+        }
+
+        if (n1 < 0.0)
+        {
+            // OSG_NOTICE<<"Point behind eye point"<<std::endl;
+            return;
+        }
+
+        // If point is outside any of frustum planes, discard.
+        osg::Polytope::PlaneList::const_iterator pitr;
+        for(pitr = _planes->begin();
+            pitr != _planes->end();
+            ++pitr)
+        {
+            const osg::Plane& plane = *pitr;
+            float d1 = plane.distance(v1);
+
+            if (d1<0.0)
+            {
+                //OSG_NOTICE<<"Point outside frustum "<<d1<<std::endl;
+                return;
+            }
+            //OSG_NOTICE<<"Point ok w.r.t plane "<<d1<<std::endl;
+        }        
+    
+        _znear = n1;
+        //OSG_NOTICE<<"Near plane updated "<<_znear<<std::endl;
+    }
+
+    // Handle Lines
+    inline void operator() ( const osg::Vec3 &v1, const osg::Vec3 &v2, bool)
+    {
+        CullVisitor::value_type n1 = distance(v1,_matrix);
+        CullVisitor::value_type n2 = distance(v2,_matrix);
+
+        // check if line is totally behind znear, if so discard
+        if (n1 >= _znear &&
+            n2 >= _znear)
+        {
+            //OSG_NOTICE<<"Line totally beyond znear"<<std::endl;
+            return;
+        }
+
+        if (n1 < 0.0 &&
+            n2 < 0.0)
+        {
+            // OSG_NOTICE<<"Line totally behind eye point"<<std::endl;
+            return;
+        }
+
+        // Check each vertex to each frustum plane.
+        osg::Polytope::ClippingMask selector_mask = 0x1;
+        osg::Polytope::ClippingMask active_mask = 0x0;
+
+        osg::Polytope::PlaneList::const_iterator pitr;
+        for(pitr = _planes->begin();
+            pitr != _planes->end();
+            ++pitr)
+        {
+            const osg::Plane& plane = *pitr;
+            float d1 = plane.distance(v1);
+            float d2 = plane.distance(v2);
+
+            unsigned int numOutside = ((d1<0.0)?1:0) + ((d2<0.0)?1:0);
+            if (numOutside==2)
+            {
+                //OSG_NOTICE<<"Line totally outside frustum "<<d1<<"\t"<<d2<<std::endl;
+                return;
+            }
+            unsigned int numInside = ((d1>=0.0)?1:0) + ((d2>=0.0)?1:0);
+            if (numInside<2)
+            {
+                active_mask = active_mask | selector_mask;
+            }
+            
+            //OSG_NOTICE<<"Line ok w.r.t plane "<<d1<<"\t"<<d2<<std::endl;
+
+            selector_mask <<= 1; 
+        }        
+    
+        if (active_mask==0)
+        {
+            _znear = osg::minimum(_znear,n1);
+            _znear = osg::minimum(_znear,n2);
+            // OSG_NOTICE<<"Line all inside frustum "<<n1<<"\t"<<n2<<" number of plane="<<_planes->size()<<std::endl;
+            return;
+        }
+        
+        //OSG_NOTICE<<"Using brute force method of line cutting frustum walls"<<std::endl;
+        DistancePoint p1(0, v1);
+        DistancePoint p2(0, v2);
+        
+        selector_mask = 0x1;
+
+        for(pitr = _planes->begin();
+            pitr != _planes->end();
+            ++pitr)
+        {
+            if (active_mask & selector_mask)
+            {    
+                // clip line to plane
+                const osg::Plane& plane = *pitr;
+
+                // assign the distance from the current plane.
+                p1.first = plane.distance(p1.second);
+                p2.first = plane.distance(p2.second);
+
+                if (p1.first >= 0.0f)
+                {
+                    // p1 is in.
+                    if (p2.first < 0.0)
+                    {
+                        // p2 is out.
+                        // replace p2 with intersection
+                        float r = p1.first/(p1.first-p2.first);
+                        p2 = DistancePoint(0.0f, p1.second*(1.0f-r) + p2.second*r);
+                        
+                    }
+                }
+                else if (p2.first >= 0.0f)
+                {
+                    // p1 is out and p2 is in.
+                    // replace p1 with intersection
+                    float r = p1.first/(p1.first-p2.first);
+                    p1 = DistancePoint(0.0f, p1.second*(1.0f-r) + p2.second*r);
+                }
+                // The case where both are out was handled above.
+            }
+            selector_mask <<= 1; 
+        }
+
+        n1 = distance(p1.second,_matrix);
+        n2 = distance(p2.second,_matrix);
+        _znear = osg::minimum(n1, n2);
+        //OSG_NOTICE<<"Near plane updated "<<_znear<<std::endl;
+    }
+
+    // Handle Triangles
     inline void operator() ( const osg::Vec3 &v1, const osg::Vec3 &v2, const osg::Vec3 &v3, bool)
     {
         CullVisitor::value_type n1 = distance(v1,_matrix);
         CullVisitor::value_type n2 = distance(v2,_matrix);
         CullVisitor::value_type n3 = distance(v3,_matrix);
 
-        // check if triangle is total behind znear, if so disguard
+        // check if triangle is total behind znear, if so discard
         if (n1 >= _znear &&
             n2 >= _znear &&
             n3 >= _znear)
@@ -349,7 +497,7 @@ struct ComputeNearestPointFunctor
             return;
         }
 
-        // check which planes the points
+        // Check each vertex to each frustum plane.
         osg::Polytope::ClippingMask selector_mask = 0x1;
         osg::Polytope::ClippingMask active_mask = 0x0;
 
@@ -392,7 +540,7 @@ struct ComputeNearestPointFunctor
         //return;
     
         // numPartiallyInside>0) so we have a triangle cutting an frustum wall,
-        // this means that use brute force methods for deviding up triangle. 
+        // this means that use brute force methods for dividing up triangle. 
         
         //OSG_NOTICE<<"Using brute force method of triangle cutting frustum walls"<<std::endl;
         _polygonOriginal.clear();
@@ -402,7 +550,6 @@ struct ComputeNearestPointFunctor
         
         selector_mask = 0x1;
         
-
         for(pitr = _planes->begin();
             pitr != _planes->end() && !_polygonOriginal.empty();
             ++pitr)
@@ -462,13 +609,20 @@ struct ComputeNearestPointFunctor
             }
         }
     }
+
+    // Handle Quadrilaterals
+    inline void operator() ( const osg::Vec3 &v1, const osg::Vec3 &v2, const osg::Vec3 &v3, const osg::Vec3 &v4, bool treatVertexDataAsTemporary)
+    {
+        this->operator()(v1, v2, v3, treatVertexDataAsTemporary);
+        this->operator()(v1, v3, v4, treatVertexDataAsTemporary);
+    }
 };
 
 CullVisitor::value_type CullVisitor::computeNearestPointInFrustum(const osg::Matrix& matrix, const osg::Polytope::PlaneList& planes,const osg::Drawable& drawable)
 {
     // OSG_WARN<<"CullVisitor::computeNearestPointInFrustum("<<getTraversalNumber()<<"\t"<<planes.size()<<std::endl;
 
-    osg::TriangleFunctor<ComputeNearestPointFunctor> cnpf;
+    osg::TemplatePrimitiveFunctor<ComputeNearestPointFunctor> cnpf;
     cnpf.set(_computed_znear, matrix, &planes);
     
     drawable.accept(cnpf);
@@ -495,7 +649,7 @@ bool CullVisitor::updateCalculatedNearFar(const osg::Matrix& matrix,const osg::B
 
     if (d_far<0.0)
     {
-        // whole object behind the eye point so disguard
+        // whole object behind the eye point so discard
         return false;
     }
 

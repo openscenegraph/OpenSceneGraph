@@ -727,15 +727,6 @@ bool TXPArchive::getTileInfo(const TileLocationInfo& loc, TileInfo& info)
 
 bool TXPArchive::getTileInfo(int x, int y, int lod, TileInfo& info)
 {
-   
-    if(_majorVersion == 2 && _minorVersion >=1)
-    {
-    // Version 2.1
-    // Tile table contain only lod 0
-    if(lod > 0)
-        return false;
-    }
-
     trpgwAppAddress addr;
     float minz = 0.f;
     float maxz = 0.f;

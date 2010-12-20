@@ -48,19 +48,14 @@ struct GeometryFinder : public osg::NodeVisitor
     }
 };
 
-osg::Geometry* getShape(const std::string& name)
+osg::ref_ptr<osg::Geometry> getShape(const std::string& name)
 {
-    osg::Node* shape0 = osgDB::readNodeFile(name);
-    GeometryFinder finder;
-    /*
-    shape0->accept(finder);
-    return finder._geom.get();
-    */
-    //is changed to
+    osg::ref_ptr<osg::Node> shape0 = osgDB::readNodeFile(name);
     if (shape0)
     {
+        GeometryFinder finder;
         shape0->accept(finder);
-        return finder._geom.get();
+        return finder._geom;
     }
     else
     {
@@ -88,13 +83,13 @@ int main (int argc, char* argv[])
     osgAnimation::BasicAnimationManager* bam = new osgAnimation::BasicAnimationManager;
     bam->registerAnimation(animation);
 
-    osg::Geometry* geom0 = getShape("morphtarget_shape0.osg");
+    osg::ref_ptr<osg::Geometry> geom0 = getShape("morphtarget_shape0.osg");
     if (!geom0) {
         std::cerr << "can't read morphtarget_shape0.osg" << std::endl;
         return 0;
     }
 
-    osg::Geometry* geom1 = getShape("morphtarget_shape1.osg");
+    osg::ref_ptr<osg::Geometry> geom1 = getShape("morphtarget_shape1.osg");
     if (!geom1) {
         std::cerr << "can't read morphtarget_shape1.osg" << std::endl;
         return 0;
@@ -102,7 +97,7 @@ int main (int argc, char* argv[])
 
     // initialize with the first shape
     osgAnimation::MorphGeometry* morph = new osgAnimation::MorphGeometry(*geom0);
-    morph->addMorphTarget(geom1);
+    morph->addMorphTarget(geom1.get());
 
     viewer.setCameraManipulator(new osgGA::TrackballManipulator());
 

@@ -384,12 +384,13 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
     std::stringstream buffer;
 
     EasyCurl::StreamObject sp(&buffer, std::string());
-
+    EasyCurl& easyCurl = getEasyCurl();
+    
     // setup the timeouts:
-    getEasyCurl().setConnectionTimeout(connectTimeout);
-    getEasyCurl().setTimeout(timeout);
+    easyCurl.setConnectionTimeout(connectTimeout);
+    easyCurl.setTimeout(timeout);
 
-    ReadResult curlResult = getEasyCurl().read(proxyAddress, fileName, sp, options);
+    ReadResult curlResult = easyCurl.read(proxyAddress, fileName, sp, options);
 
     if (curlResult.status()==ReadResult::FILE_LOADED)
     {
@@ -404,7 +405,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterCURL::readFile(ObjectType objectType
         // mime-type:
         if ( !reader )
         {
-            std::string mimeType = getEasyCurl().getResultMimeType(sp);
+            std::string mimeType = easyCurl.getResultMimeType(sp);
             OSG_INFO << "CURL: Looking up extension for mime-type " << mimeType << std::endl;
             if ( mimeType.length() > 0 )
             {

@@ -794,30 +794,30 @@ FltExportVisitor::writeUVList( int numVerts, const osg::Geometry& geom, const st
 
     osg::Vec2 defaultCoord( 0., 0. );
     // const osg::StateSet* ss = getCurrentStateSet();
-    for( idx=1; idx<8; idx++)
+    for( int vertexIdx=0; vertexIdx<numVerts; vertexIdx++)
     {
-        if( isTextured( idx, geom ) )
+        for( idx=1; idx<8; idx++)
         {
-            osg::Array* t = const_cast<osg::Array*>( geom.getTexCoordArray( idx ) );
-            osg::ref_ptr<osg::Vec2Array> t2 = dynamic_cast<osg::Vec2Array*>( t );
-            if (!t2.valid())
+            if( isTextured( idx, geom ) )
             {
-                std::ostringstream warning;
-                warning << "fltexp: No Texture2D for unit " << idx;
-                OSG_WARN << warning.str() << std::endl;
-                _fltOpt->getWriteResult().warn( warning.str() );
-                t2 = new osg::Vec2Array;
-            }
+                osg::Array* t = const_cast<osg::Array*>( geom.getTexCoordArray( idx ) );
+                osg::ref_ptr<osg::Vec2Array> t2 = dynamic_cast<osg::Vec2Array*>( t );
+                if (!t2.valid())
+                {
+                    std::ostringstream warning;
+                    warning << "fltexp: No Texture2D for unit " << idx;
+                    OSG_WARN << warning.str() << std::endl;
+                    _fltOpt->getWriteResult().warn( warning.str() );
+                    t2 = new osg::Vec2Array;
+                }
 
-            const int size = t2->getNumElements();
-            for( int cIdx=0; cIdx<numVerts; cIdx++)
-            {
-               int vIdx = indices[cIdx];
+                const int size = t2->getNumElements();
+                int vIdx = indices[ vertexIdx ];
                 osg::Vec2& tc( defaultCoord );
                 if (vIdx < size)
-                    tc = (*t2)[ vIdx ];
-                _records->writeFloat32( tc[0] );
-                _records->writeFloat32( tc[1] );
+                    tc = ( *t2 )[ vIdx ];
+                _records->writeFloat32( tc[ 0 ] );
+                _records->writeFloat32( tc[ 1 ] );
             }
         }
     }
@@ -848,33 +848,32 @@ FltExportVisitor::writeUVList( int numVerts, const osg::Geometry& geom, unsigned
     _records->writeInt32( flags );
 
     osg::Vec2 defaultCoord( 0., 0. );
-    for( idx=1; idx<8; idx++)
+    for( int vertexIdx=0; vertexIdx<numVerts; vertexIdx++)
     {
-        if( isTextured( idx, geom ) )
+        for( idx=1; idx<8; idx++)
         {
-            osg::Array* t = const_cast<osg::Array*>( geom.getTexCoordArray( idx ) );
-            osg::ref_ptr<osg::Vec2Array> t2 = dynamic_cast<osg::Vec2Array*>( t );
-            if (!t2.valid())
+            if( isTextured( idx, geom ) )
             {
-                std::ostringstream warning;
-                warning << "fltexp: No Texture2D for unit " << idx;
-                osg::notify( osg::WARN ) << warning.str() << std::endl;
-                _fltOpt->getWriteResult().warn( warning.str() );
-                t2 = new osg::Vec2Array;
-            }
-            else if (t2->getNumElements() < first + numVerts)
-            {
-                std::ostringstream warning;
-                warning << "fltexp: Invalid number of texture coordinates for unit " << idx;
-                OSG_WARN << warning.str() << std::endl;
-                _fltOpt->getWriteResult().warn( warning.str() );
-            }
+                osg::Array* t = const_cast<osg::Array*>( geom.getTexCoordArray( idx ) );
+                osg::ref_ptr<osg::Vec2Array> t2 = dynamic_cast<osg::Vec2Array*>( t );
+                if (!t2.valid())
+                {
+                    std::ostringstream warning;
+                    warning << "fltexp: No Texture2D for unit " << idx;
+                    osg::notify( osg::WARN ) << warning.str() << std::endl;
+                    _fltOpt->getWriteResult().warn( warning.str() );
+                    t2 = new osg::Vec2Array;
+                }
+                else if (t2->getNumElements() < first + numVerts)
+                {
+                    std::ostringstream warning;
+                    warning << "fltexp: Invalid number of texture coordinates for unit " << idx;
+                    OSG_WARN << warning.str() << std::endl;
+                    _fltOpt->getWriteResult().warn( warning.str() );
+                }
 
-            const int size = t2->getNumElements();
-            int cIdx;
-            for( cIdx=0; cIdx<numVerts; cIdx++)
-            {
-               int vIdx = first + cIdx;
+                const int size = t2->getNumElements();
+                int vIdx = first + vertexIdx;
                 osg::Vec2& tc( defaultCoord );
                 if (vIdx < size)
                     tc = (*t2)[ vIdx ];

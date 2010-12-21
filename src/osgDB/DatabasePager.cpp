@@ -958,17 +958,24 @@ void DatabasePager::DatabaseThread::run()
                     databaseRequest->_loadedModel = loadedModel;
                     databaseRequest->_compileSet = compileSet;
                 }
+                // Dereference the databaseRequest while the queue is
+                // locked. This prevents the request from being
+                // deleted at an unpredictable time within
+                // addLoadedDataToSceneGraph.
                 if (loadedObjectsNeedToBeCompiled)
                 {
                     _pager->_incrementalCompileOperation->add(compileSet);
-
-                    databaseRequest->_compileSet = compileSet;
-
-                    _pager->_dataToCompileList->add(databaseRequest.get());
+                    OpenThreads::ScopedLock<OpenThreads::Mutex> listLock(
+                        _pager->_dataToCompileList->_requestMutex);
+                    _pager->_dataToCompileList->addNoLock(databaseRequest.get());
+                    databaseRequest = 0;
                 }
                 else
                 {
-                    _pager->_dataToMergeList->add(databaseRequest.get());
+                    OpenThreads::ScopedLock<OpenThreads::Mutex> listLock(
+                        _pager->_dataToMergeList->_requestMutex);
+                    _pager->_dataToMergeList->addNoLock(databaseRequest.get());
+                    databaseRequest = 0;
                 }
             
             }

@@ -266,14 +266,14 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         class CountPagedLODsVisitor;
 
+        typedef std::list<  osg::ref_ptr<osg::Object> > ObjectList;
+
         struct PagedLODList : public osg::Referenced
         {
             virtual PagedLODList* clone() = 0;
             virtual void clear() = 0;
             virtual unsigned int size() = 0;
-            virtual void moveInactivePagedLODTo(PagedLODList& inactivePagedLODList, const osg::FrameStamp& framestamp) = 0;
-            virtual void moveActivePagedLODTo(PagedLODList& activePagedLODList, const osg::FrameStamp& framestamp) = 0;
-            virtual void removeExpiredChildren(int& numberChildrenToRemove, double expiryTime, int expiryFrame, osg::NodeList& childrenRemoved) = 0;
+            virtual void removeExpiredChildren(int numberChildrenToRemove, double expiryTime, int expiryFrame, ObjectList& childrenRemoved, bool visitActive) = 0;
             virtual void removeNodes(osg::NodeList& nodesToRemove) = 0;
             virtual void insertPagedLOD(const osg::observer_ptr<osg::PagedLOD>& plod) = 0;
             virtual bool containsPagedLOD(const osg::observer_ptr<osg::PagedLOD>& plod) const = 0;
@@ -300,8 +300,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
                 _frameNumberLastRequest(0),
                 _timestampLastRequest(0.0),
                 _priorityLastRequest(0.0f),
-                _numOfRequests(0),
-                _requestQueue(0)
+                _numOfRequests(0)
             {}
 
             void invalidate();
@@ -318,10 +317,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             float                       _priorityLastRequest;
             unsigned int                _numOfRequests;
             osg::ObserverNodePath       _observerNodePath;
-            osg::Group*                 _groupForAddingLoadedSubgraph;
             osg::ref_ptr<osg::Node>     _loadedModel;
             osg::ref_ptr<Options>       _loadOptions;
-            RequestQueue*               _requestQueue;
 
             osg::observer_ptr<osgUtil::IncrementalCompileOperation::CompileSet> _compileSet;
 
@@ -352,9 +349,9 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
             void invalidate(DatabaseRequest* dr);
 
-            bool empty() const { return size()==0; }
+            bool empty();
 
-            unsigned int size() const { return _size; }
+            unsigned int size();
 
             void clear();
 
@@ -363,7 +360,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             void swap(RequestList& requestList);
 
             DatabasePager*              _pager;
-            volatile unsigned int       _size;
             RequestList                 _requestList;
             OpenThreads::Mutex          _requestMutex;
             int                         _frameNumberLastPruned;
@@ -374,7 +370,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         
         typedef std::vector< osg::ref_ptr<DatabaseThread> > DatabaseThreadList;
-        typedef std::vector<  osg::ref_ptr<osg::Object> > ObjectList;
 
         struct ReadQueue : public RequestQueue
         {
@@ -410,6 +405,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         
         OpenThreads::Mutex              _run_mutex;
+        OpenThreads::Mutex              _dr_mutex;
         bool                            _startThreadCalled;
 
         void compileCompleted(DatabaseRequest* databaseRequest);
@@ -431,7 +427,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         int                             _numFramesActive;
         mutable OpenThreads::Mutex      _numFramesActiveMutex;
-        int                             _frameNumber;
+        volatile int                    _frameNumber;
 
         osg::ref_ptr<ReadQueue>         _fileRequestQueue;
         osg::ref_ptr<ReadQueue>         _httpRequestQueue;
@@ -449,7 +445,6 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
 
         osg::ref_ptr<PagedLODList>      _activePagedLODList;
-        osg::ref_ptr<PagedLODList>      _inactivePagedLODList;
 
         unsigned int                    _targetMaximumNumberOfPageLOD;
 

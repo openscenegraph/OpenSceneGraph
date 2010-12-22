@@ -43,7 +43,7 @@ public:
             if ( nv->getFrameStamp() && updateTimeStamp )
             {
                 double timeStamp = nv->getFrameStamp()?nv->getFrameStamp()->getReferenceTime():0.0;
-                int frameNumber = nv->getFrameStamp()?nv->getFrameStamp()->getFrameNumber():0;
+                unsigned int frameNumber = nv->getFrameStamp()?nv->getFrameStamp()->getFrameNumber():0;
                 
                 pagedLOD->setFrameNumberOfLastTraversal( frameNumber );
                 pagedLOD->setTimeStamp( numChildren-1, timeStamp );

@@ -71,8 +71,8 @@ class OSG_EXPORT PagedLOD : public LOD
             float                           _priorityOffset;
             float                           _priorityScale;
             double                          _timeStamp;
-            int                             _frameNumber;
-            int                             _frameNumberOfLastReleaseGLObjects;
+            unsigned int                    _frameNumber;
+            unsigned int                    _frameNumberOfLastReleaseGLObjects;
             osg::ref_ptr<osg::Referenced>   _databaseRequest;
         };
 
@@ -96,8 +96,8 @@ class OSG_EXPORT PagedLOD : public LOD
         double getTimeStamp(unsigned int childNo) const { return _perRangeDataList[childNo]._timeStamp; }
         unsigned int getNumTimeStamps() const { return _perRangeDataList.size(); }
 
-        void setFrameNumber(unsigned int childNo, int frameNumber) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._frameNumber=frameNumber; }
-        double getFrameNumber(unsigned int childNo) const { return _perRangeDataList[childNo]._frameNumber; }
+        void setFrameNumber(unsigned int childNo, unsigned int frameNumber) { expandPerRangeDataTo(childNo); _perRangeDataList[childNo]._frameNumber=frameNumber; }
+        unsigned getFrameNumber(unsigned int childNo) const { return _perRangeDataList[childNo]._frameNumber; }
         unsigned int getNumFrameNumbers() const { return _perRangeDataList.size(); }
 
 
@@ -114,10 +114,10 @@ class OSG_EXPORT PagedLOD : public LOD
         /** Set the frame number of the last time that this PageLOD node was traversed.
           * Note, this frame number is automatically set by the traverse() method for all traversals (update, cull etc.). 
           */
-        inline void setFrameNumberOfLastTraversal(int frameNumber) { _frameNumberOfLastTraversal=frameNumber; }
+        inline void setFrameNumberOfLastTraversal(unsigned int frameNumber) { _frameNumberOfLastTraversal=frameNumber; }
 
         /** Get the frame number of the last time that this PageLOD node was traversed.*/
-        inline int getFrameNumberOfLastTraversal() const { return _frameNumberOfLastTraversal; }
+        inline unsigned int getFrameNumberOfLastTraversal() const { return _frameNumberOfLastTraversal; }
 
 
         /** Set the number of children that the PagedLOD must keep around, even if they are older than their expiry time.*/
@@ -137,11 +137,7 @@ class OSG_EXPORT PagedLOD : public LOD
           * The removed children are added to the removeChildren list passed into the method,
           * this allows the children to be deleted later at the caller's discretion.
           * Return true if children are removed, false otherwise. */
-        virtual bool removeExpiredChildren(double expiryTime, int expiryFrame, NodeList& removedChildren);
-
-        /** Release the GL Objects of the children from the PagedLOD which haven't been visited since specified expiry time and expiry frame number.
-          * Return true if any children have release called upon them, false otherwise. */
-        virtual bool releaseGLObjectsOnExpiredChildren(double releaseTime, int releaseFrame);
+        virtual bool removeExpiredChildren(double expiryTime, unsigned int expiryFrame, NodeList& removedChildren);
         
     protected :
     
@@ -152,7 +148,7 @@ class OSG_EXPORT PagedLOD : public LOD
         ref_ptr<Referenced> _databaseOptions;
         std::string         _databasePath;
 
-        int                 _frameNumberOfLastTraversal;
+        unsigned int        _frameNumberOfLastTraversal;
         unsigned int        _numChildrenThatCannotBeExpired;
         bool                _disableExternalChildrenPaging;
 

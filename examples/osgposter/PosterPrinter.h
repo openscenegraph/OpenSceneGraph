@@ -142,7 +142,7 @@ protected:
     
     bool _isRunning;
     bool _isFinishing;
-    int _lastBindingFrame;
+    unsigned int _lastBindingFrame;
     int _tileRows;
     int _tileColumns;
     int _currentRow;

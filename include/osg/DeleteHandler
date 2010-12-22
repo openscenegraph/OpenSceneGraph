@@ -32,7 +32,7 @@ class OSG_EXPORT DeleteHandler
 {
     public:
 
-        typedef std::pair<int, const osg::Referenced*> FrameNumberObjectPair;
+        typedef std::pair<unsigned int, const osg::Referenced*> FrameNumberObjectPair;
         typedef std::list<FrameNumberObjectPair> ObjectsToDeleteList;
 
         DeleteHandler(int numberOfFramesToRetainObjects=0);
@@ -44,15 +44,15 @@ class OSG_EXPORT DeleteHandler
           * The ability to retain objects for several frames is useful to prevent premature deletion when objects
           * are still be used the graphics threads that are using double buffering of rendering data structures with
           * non ref_ptr<> pointers to scene graph elements.*/        
-        void setNumFramesToRetainObjects(int numberOfFramesToRetainObjects) {  _numFramesToRetainObjects = numberOfFramesToRetainObjects; }
+        void setNumFramesToRetainObjects(unsigned int numberOfFramesToRetainObjects) {  _numFramesToRetainObjects = numberOfFramesToRetainObjects; }
 
-        int getNumFramesToRetainObjects() const { return _numFramesToRetainObjects; }
+        unsigned int getNumFramesToRetainObjects() const { return _numFramesToRetainObjects; }
 
         /** Set the current frame number so that subsequent deletes get tagged as associated with this frame.*/
-        void setFrameNumber(int frameNumber) { _currentFrameNumber = frameNumber; }
+        void setFrameNumber(unsigned int frameNumber) { _currentFrameNumber = frameNumber; }
 
         /** Get the current frame number.*/
-        int getFrameNumber() const { return _currentFrameNumber; }
+        unsigned int getFrameNumber() const { return _currentFrameNumber; }
 
         inline void doDelete(const Referenced* object) { delete object; }
 
@@ -76,10 +76,10 @@ class OSG_EXPORT DeleteHandler
             _currentFrameNumber(0) {}
         DeleteHandler operator = (const DeleteHandler&) { return *this; }
 
-        int                 _numFramesToRetainObjects;
-        int                 _currentFrameNumber;
-        OpenThreads::Mutex  _mutex;
-        ObjectsToDeleteList _objectsToDelete;
+        unsigned int            _numFramesToRetainObjects;
+        unsigned int            _currentFrameNumber;
+        OpenThreads::Mutex      _mutex;
+        ObjectsToDeleteList     _objectsToDelete;
 
 };
 

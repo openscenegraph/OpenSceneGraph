@@ -37,7 +37,7 @@ void DeleteHandler::flush()
         // list, but delete the objects outside this scoped lock so that if any objects deleted
         // unref their children then no deadlock happens.
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-        int frameNumberToClearTo = _currentFrameNumber - _numFramesToRetainObjects;
+        unsigned int frameNumberToClearTo = _currentFrameNumber - _numFramesToRetainObjects;
 
         ObjectsToDeleteList::iterator itr;
         for(itr = _objectsToDelete.begin();
@@ -65,7 +65,7 @@ void DeleteHandler::flush()
 
 void DeleteHandler::flushAll()
 {
-    int temp_numFramesToRetainObjects = _numFramesToRetainObjects;
+    unsigned int temp_numFramesToRetainObjects = _numFramesToRetainObjects;
     _numFramesToRetainObjects = 0;
 
     typedef std::list<const osg::Referenced*> DeletionList;

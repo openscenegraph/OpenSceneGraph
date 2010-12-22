@@ -10,7 +10,7 @@ ShuttleCallback::ShuttleCallback(const osg::Vec3& startPos,
     _endPos = endPos;
     _frequency = frequency;
 
-    _previousTraversalNumber = -1;
+    _previousTraversalNumber = osg::UNINITIALIZED_FRAME_NUMBER;
     _previousTime = -1.0;
     _angle = 0.0;
 }

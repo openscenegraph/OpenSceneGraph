@@ -87,7 +87,7 @@ void updateUserStats(osgViewer::Viewer& viewer)
         // use that frame's timings because it's probably not finished 
         // rendering yet (in multithreaded viewer modes). So we'll use the
         // timings for framenumber-2 for this demo.
-        int framenumber = viewer.getFrameStamp()->getFrameNumber();
+        unsigned int framenumber = viewer.getFrameStamp()->getFrameNumber();
 
         // Get the update time and the viewer main camera's cull time. We use 
         // getAveragedAttribute() in order to get the actual time elapsed as 
@@ -131,7 +131,7 @@ void startTiming(osgViewer::Viewer& viewer, const std::string& name)
 {
     osg::Timer_t tick = osg::Timer::instance()->tick();
     double currentTime = osg::Timer::instance()->delta_s(viewer.getStartTick(), tick);
-    int framenumber = viewer.getFrameStamp()->getFrameNumber();
+    unsigned int framenumber = viewer.getFrameStamp()->getFrameNumber();
 
     viewer.getViewerStats()->setAttribute(framenumber, name + " begin", currentTime);
 }
@@ -142,7 +142,7 @@ void endTiming(osgViewer::Viewer& viewer, const std::string& name)
 {
     osg::Timer_t tick = osg::Timer::instance()->tick();
     double currentTime = osg::Timer::instance()->delta_s(viewer.getStartTick(), tick);
-    int framenumber = viewer.getFrameStamp()->getFrameNumber();
+    unsigned int framenumber = viewer.getFrameStamp()->getFrameNumber();
 
     viewer.getViewerStats()->setAttribute(framenumber, name + " end", currentTime);
 

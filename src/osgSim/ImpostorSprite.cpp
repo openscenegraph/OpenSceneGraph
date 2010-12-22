@@ -39,6 +39,8 @@ ImpostorSprite::ImpostorSprite()
     _previous = NULL;
     _next = NULL;
 
+    _lastFrameUsed = osg::UNINITIALIZED_FRAME_NUMBER;
+    
     _texture = NULL;
     _s = 0;
     _t = 0;        
@@ -238,7 +240,7 @@ void ImpostorSpriteManager::remove(ImpostorSprite* is)
     if (_last==is) _last = is->_previous;
 }
 
-ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,int frameNumber)
+ImpostorSprite* ImpostorSpriteManager::createOrReuseImpostorSprite(int s,int t,unsigned int frameNumber)
 {
     if (!empty())
     {

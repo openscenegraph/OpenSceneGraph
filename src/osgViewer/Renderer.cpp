@@ -45,12 +45,12 @@ class OSGVIEWER_EXPORT EXTQuerySupport : public OpenGLQuerySupport
  public:
     EXTQuerySupport();
     void checkQuery(osg::Stats* stats, osg::State* state, osg::Timer_t startTick);
-    virtual void beginQuery(int frameNumber, osg::State* state);
+    virtual void beginQuery(unsigned int frameNumber, osg::State* state);
     virtual void endQuery(osg::State* state);
     virtual void initialize(osg::State* state, osg::Timer_t startTick);
  protected:
     GLuint createQueryObject();
-    typedef std::pair<GLuint, int> QueryFrameNumberPair;
+    typedef std::pair<GLuint, unsigned int> QueryFrameNumberPair;
     typedef std::list<QueryFrameNumberPair> QueryFrameNumberList;
     typedef std::vector<GLuint> QueryList;
     
@@ -118,7 +118,7 @@ GLuint EXTQuerySupport::createQueryObject()
     }
 }
 
-void EXTQuerySupport::beginQuery(int frameNumber, osg::State* state)
+void EXTQuerySupport::beginQuery(unsigned int frameNumber, osg::State* state)
 {
     GLuint query = createQueryObject();
     _extensions->glBeginQuery(GL_TIME_ELAPSED, query);
@@ -148,7 +148,7 @@ public:
     virtual void checkQuery(osg::Stats* stats, osg::State* state,
                             osg::Timer_t startTick);
         
-    virtual void beginQuery(int frameNumber, osg::State* state);
+    virtual void beginQuery(unsigned int frameNumber, osg::State* state);
     virtual void endQuery(osg::State* state);
     virtual void initialize(osg::State* state, osg::Timer_t startTick);
 protected:
@@ -159,12 +159,12 @@ protected:
             : queries(start_, end_), frameNumber(frameNumber_)
         {
         }
-        ActiveQuery(const QueryPair& queries_, int frameNumber_)
+        ActiveQuery(const QueryPair& queries_, unsigned int frameNumber_)
             : queries(queries_), frameNumber(frameNumber_)
         {
         }
         QueryPair queries;
-        int frameNumber;
+        unsigned int frameNumber;
     };
     typedef std::list<ActiveQuery> QueryFrameList;
     typedef std::vector<QueryPair> QueryList;
@@ -177,7 +177,7 @@ void ARBQuerySupport::initialize(osg::State* state, osg::Timer_t startTick)
     OpenGLQuerySupport::initialize(state, startTick);
 }
 
-void ARBQuerySupport::beginQuery(int frameNumber, osg::State* state)
+void ARBQuerySupport::beginQuery(unsigned int frameNumber, osg::State* state)
 {
     QueryPair query;
     if (_availableQueryObjects.empty())
@@ -531,7 +531,7 @@ void Renderer::cull()
         osg::Stats* stats = sceneView->getCamera()->getStats();
         osg::State* state = sceneView->getState();
         const osg::FrameStamp* fs = state->getFrameStamp();
-        int frameNumber = fs ? fs->getFrameNumber() : 0;
+        unsigned int frameNumber = fs ? fs->getFrameNumber() : 0;
 
         // do cull traversal
         osg::Timer_t beforeCullTick = osg::Timer::instance()->tick();
@@ -643,7 +643,7 @@ void Renderer::draw()
 
         osg::Stats* stats = sceneView->getCamera()->getStats();
         osg::State* state = sceneView->getState();
-        int frameNumber = state->getFrameStamp()->getFrameNumber();
+        unsigned int frameNumber = state->getFrameStamp()->getFrameNumber();
 
         if (!_initialized)
         {
@@ -747,7 +747,7 @@ void Renderer::cull_draw()
     osg::Stats* stats = sceneView->getCamera()->getStats();
     osg::State* state = sceneView->getState();
     const osg::FrameStamp* fs = state->getFrameStamp();
-    int frameNumber = fs ? fs->getFrameNumber() : 0;
+    unsigned int frameNumber = fs ? fs->getFrameNumber() : 0;
 
     if (!_initialized)
     {

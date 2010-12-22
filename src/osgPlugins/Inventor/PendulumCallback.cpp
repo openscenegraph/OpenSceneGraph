@@ -11,7 +11,7 @@ PendulumCallback::PendulumCallback(const osg::Vec3& axis,
     _endAngle = endAngle;
     _frequency = frequency;
 
-    _previousTraversalNumber = -1;
+    _previousTraversalNumber = osg::UNINITIALIZED_FRAME_NUMBER;
     _previousTime = -1.0;
     _angle = 0.0;
 }

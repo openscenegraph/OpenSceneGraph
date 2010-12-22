@@ -139,9 +139,17 @@ REGISTER_OBJECT_WRAPPER( PagedLOD,
     // Note: osg::Group is not in the list to prevent recording dynamic loaded children
     
     ADD_USER_SERIALIZER( DatabasePath );  // _databasePath
-    ADD_INT_SERIALIZER( FrameNumberOfLastTraversal, 0 );  // _frameNumberOfLastTraversal
+    ADD_UINT_SERIALIZER( FrameNumberOfLastTraversal, 0 );  // _frameNumberOfLastTraversal, note, not required, removed from soversion 70 onwwards, see below
     ADD_UINT_SERIALIZER( NumChildrenThatCannotBeExpired, 0 );  // _numChildrenThatCannotBeExpired
     ADD_BOOL_SERIALIZER( DisableExternalChildrenPaging, false );  // _disableExternalChildrenPaging
     ADD_USER_SERIALIZER( RangeDataList );  // _perRangeDataList
     ADD_USER_SERIALIZER( Children );  // _children (which are not loaded from external)
+
+    UPDATE_TO_VERSION( 70 )
+    {
+        REMOVE_SERIALIZER( FrameNumberOfLastTraversal ); 
+    }
+
+
+    
 }

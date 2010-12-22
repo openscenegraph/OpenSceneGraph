@@ -20,7 +20,7 @@ class ShuttleCallback : public osg::NodeCallback
         osg::Vec3 _endPos;
         float _frequency;
 
-        int _previousTraversalNumber;
+        unsigned int _previousTraversalNumber;
         double _previousTime;
         float _angle;
 };

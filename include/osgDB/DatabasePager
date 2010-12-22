@@ -104,8 +104,8 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             void setName(const std::string& name) { _name = name; }
             const std::string& getName() const { return _name; }
 
-            void setDone(bool done) { _done = done; }
-            bool getDone() const { return _done; }
+            void setDone(bool done) { _done.exchange(done?1:0); }
+            bool getDone() const { return _done!=0; }
             
             void setActive(bool active) { _active = active; }
             bool getActive() const { return _active; }
@@ -118,7 +118,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
             virtual ~DatabaseThread();
         
-            volatile bool       _done;
+            OpenThreads::Atomic _done;
             volatile bool       _active;
             DatabasePager*      _pager;
             Mode                _mode;
@@ -163,7 +163,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         /** Find all PagedLOD nodes in a subgraph and register them with 
           * the DatabasePager so it can keep track of expired nodes.
           * note, should be only be called from the update thread. */
-        virtual void registerPagedLODs(osg::Node* subgraph, int frameNumber = 0);
+        virtual void registerPagedLODs(osg::Node* subgraph, unsigned int frameNumber = 0);
 
         /** Set the incremental compile operation.
           * Used to manage the OpenGL object compilation and merging of subgraphs in a way that avoids overloading
@@ -273,7 +273,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             virtual PagedLODList* clone() = 0;
             virtual void clear() = 0;
             virtual unsigned int size() = 0;
-            virtual void removeExpiredChildren(int numberChildrenToRemove, double expiryTime, int expiryFrame, ObjectList& childrenRemoved, bool visitActive) = 0;
+            virtual void removeExpiredChildren(int numberChildrenToRemove, double expiryTime, unsigned int expiryFrame, ObjectList& childrenRemoved, bool visitActive) = 0;
             virtual void removeNodes(osg::NodeList& nodesToRemove) = 0;
             virtual void insertPagedLOD(const osg::observer_ptr<osg::PagedLOD>& plod) = 0;
             virtual bool containsPagedLOD(const osg::observer_ptr<osg::PagedLOD>& plod) const = 0;
@@ -309,10 +309,10 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
             bool                        _valid;
             std::string                 _fileName;
-            int                         _frameNumberFirstRequest;
+            unsigned int                _frameNumberFirstRequest;
             double                      _timestampFirstRequest;
             float                       _priorityFirstRequest;
-            int                         _frameNumberLastRequest;
+            unsigned int                _frameNumberLastRequest;
             double                      _timestampLastRequest;
             float                       _priorityLastRequest;
             unsigned int                _numOfRequests;
@@ -362,7 +362,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
             DatabasePager*              _pager;
             RequestList                 _requestList;
             OpenThreads::Mutex          _requestMutex;
-            int                         _frameNumberLastPruned;
+            unsigned int                _frameNumberLastPruned;
 
         protected:
             virtual ~RequestQueue();
@@ -427,7 +427,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         int                             _numFramesActive;
         mutable OpenThreads::Mutex      _numFramesActiveMutex;
-        volatile int                    _frameNumber;
+        OpenThreads::Atomic             _frameNumber;
 
         osg::ref_ptr<ReadQueue>         _fileRequestQueue;
         osg::ref_ptr<ReadQueue>         _httpRequestQueue;

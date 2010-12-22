@@ -584,10 +584,10 @@ int ViewerBase::run()
         realize();
     }
 
-    const char* str = getenv("OSG_RUN_FRAME_COUNT");
-    int runTillFrameNumber = str==0 ? -1 : atoi(str);
+    const char* run_frame_count_str = getenv("OSG_RUN_FRAME_COUNT");
+    unsigned int runTillFrameNumber = run_frame_count_str==0 ? osg::UNINITIALIZED_FRAME_NUMBER : atoi(run_frame_count_str);
 
-    while(!done() && (runTillFrameNumber<0 || getViewerFrameStamp()->getFrameNumber()<runTillFrameNumber))
+    while(!done() && (run_frame_count_str==0 || getViewerFrameStamp()->getFrameNumber()<runTillFrameNumber))
     {
         double minFrameTime = _runMaxFrameRate>0.0 ? 1.0/_runMaxFrameRate : 0.0;
         osg::Timer_t startFrameTick = osg::Timer::instance()->tick();
@@ -676,7 +676,7 @@ void ViewerBase::renderingTraversals()
 
     if (getViewerStats() && getViewerStats()->collectStats("scene"))
     {
-        int frameNumber = frameStamp ? frameStamp->getFrameNumber() : 0;
+        unsigned int frameNumber = frameStamp ? frameStamp->getFrameNumber() : 0;
     
         Views views;
         getViews(views);

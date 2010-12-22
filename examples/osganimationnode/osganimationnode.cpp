@@ -80,7 +80,7 @@ public:
     osg::Timer_t _startTime;
     osg::Timer_t _currentTime;
     bool _playing;
-    int _lastUpdate;
+    unsigned int _lastUpdate;
 };
 
 
@@ -143,7 +143,7 @@ public:
     osg::Timer_t _startTime;
     osg::Timer_t _currentTime;
     bool _playing;
-    int _lastUpdate;
+    unsigned int _lastUpdate;
 };
 
 

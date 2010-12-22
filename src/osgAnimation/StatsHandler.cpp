@@ -150,7 +150,7 @@ struct StatsGraph : public osg::MatrixTransform
         const float             _max;
         const std::string       _nameBegin;
         const std::string       _nameEnd;
-        mutable int              _frameNumber;
+        mutable unsigned int    _frameNumber;
 
         GraphUpdateCallback(float width, float height, osg::Stats* viewerStats, osg::Stats* stats,
                             float max, const std::string& nameBegin, const std::string& nameEnd = "")
@@ -168,7 +168,7 @@ struct StatsGraph : public osg::MatrixTransform
             osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
             if (!vertices) return;
 
-            int frameNumber = nv->getFrameStamp()->getFrameNumber();
+            unsigned int frameNumber = nv->getFrameStamp()->getFrameNumber();
             if (frameNumber == _frameNumber)
                 return;
 
@@ -253,7 +253,7 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
     {
         osgText::Text* text = (osgText::Text*)drawable;
 
-        int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
+        unsigned int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
         if (frameNumber == _frameNumber) {
             text->drawImplementation(renderInfo);
             return;
@@ -276,7 +276,7 @@ struct ValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
     osg::ref_ptr<osg::Stats>    _stats;
     std::string                 _attributeName;
     mutable char                _tmpText[128];
-    mutable int                 _frameNumber;
+    mutable unsigned int        _frameNumber;
 };
 
 
@@ -562,10 +562,10 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                     typedef std::vector<osg::Stats*> StatsList;
                     StatsList statsList;
 
-                    for (int i = 0; i < (int)finder._timelines.size(); i++)
+                    for (unsigned int i = 0; i < finder._timelines.size(); i++)
                         statsList.push_back(finder._timelines[i]->getStats());
 
-                    for(int i = statsList[0]->getEarliestFrameNumber(); i<= statsList[0]->getLatestFrameNumber()-1; ++i)
+                    for(unsigned int i = statsList[0]->getEarliestFrameNumber(); i< statsList[0]->getLatestFrameNumber(); ++i)
                     {
                         for(StatsList::iterator itr = statsList.begin();
                             itr != statsList.end();

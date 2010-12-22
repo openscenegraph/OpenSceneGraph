@@ -176,7 +176,7 @@ namespace osgParticle
         inline virtual void reuseParticle(int i) { _deadparts.push(&(_particles[i])); }
 
         /// Get the last frame number.
-        inline int getLastFrameNumber() const;
+        inline unsigned int getLastFrameNumber() const;
         
         /// Get the unique delta time for emitters and updaters to use
         inline double& getDeltaTime( double currentTime );
@@ -294,7 +294,7 @@ namespace osgParticle
         bool _bounds_computed;
 
         Particle _def_ptemp;
-        mutable int _last_frame;
+        mutable unsigned int _last_frame;
         mutable bool _dirty_dt;
         bool _freeze_on_cull;
         
@@ -403,7 +403,7 @@ namespace osgParticle
         _particles[i].kill();
     }
     
-    inline int ParticleSystem::getLastFrameNumber() const
+    inline unsigned int ParticleSystem::getLastFrameNumber() const
     {
         return _last_frame;
     }

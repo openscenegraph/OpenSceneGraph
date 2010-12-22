@@ -569,7 +569,7 @@ void Viewer::advance(double simulationTime)
     if (_done) return;
 
     double prevousReferenceTime = _frameStamp->getReferenceTime();
-    int previousFrameNumber = _frameStamp->getFrameNumber();
+    unsigned int previousFrameNumber = _frameStamp->getFrameNumber();
 
     _frameStamp->setFrameNumber(_frameStamp->getFrameNumber()+1);
 

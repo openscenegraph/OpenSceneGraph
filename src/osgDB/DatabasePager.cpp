@@ -46,10 +46,6 @@ using namespace OpenThreads;
 static osg::ApplicationUsageProxy DatabasePager_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DO_PRE_COMPILE <ON/OFF>","Switch on or off the pre compile of OpenGL object database pager.");
 static osg::ApplicationUsageProxy DatabasePager_e3(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DATABASE_PAGER_DRAWABLE <mode>","Set the drawable policy for setting of loaded drawable to specified type.  mode can be one of DoNotModify, DisplayList, VBO or VertexArrays>.");
 static osg::ApplicationUsageProxy DatabasePager_e4(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DATABASE_PAGER_PRIORITY <mode>", "Set the thread priority to DEFAULT, MIN, LOW, NOMINAL, HIGH or MAX.");
-static osg::ApplicationUsageProxy DatabasePager_e7(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_EXPIRY_DELAY <float> ","Set the length of time a PagedLOD child is kept in memory, without being used, before its tagged as expired, and ear marked to deletion.");
-static osg::ApplicationUsageProxy DatabasePager_e8(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_EXPIRY_FRAMES <int> ","Set number of frames a PagedLOD child is kept in memory, without being used, before its tagged as expired, and ear marked to deletion.");
-static osg::ApplicationUsageProxy DatabasePager_e9(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_RELEASE_DELAY <float> ","Set the length of time a PagedLOD child's OpenGL objects are kept in memory, without being used, before be released (setting to OFF disables this feature.)");
-static osg::ApplicationUsageProxy DatabasePager_e10(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_RELEASE_FRAMES <int> ","Set number of frames a PagedLOD child's OpenGL objects are kept in memory, without being used, before be released.");
 static osg::ApplicationUsageProxy DatabasePager_e11(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAX_PAGEDLOD <num>","Set the target maximum number of PagedLOD to maintain.");
 
 // Convert function objects that take pointer args into functions that a
@@ -154,10 +150,12 @@ public:
         traverse(plod);
     }
 
-    bool removeExpiredChildrenAndCountPagedLODs(osg::PagedLOD* plod, double expiryTime, int expiryFrame, osg::NodeList& removedChildren)
+    bool removeExpiredChildrenAndCountPagedLODs(osg::PagedLOD* plod, double expiryTime, unsigned int expiryFrame, osg::NodeList& removedChildren)
     {
         size_t sizeBefore = removedChildren.size();
+
         plod->removeExpiredChildren(expiryTime, expiryFrame, removedChildren);
+
         for(size_t i = sizeBefore; i<removedChildren.size(); ++i)
         {
             removedChildren[i]->accept(*this);
@@ -197,7 +195,7 @@ public:
     virtual unsigned int size() { return _pagedLODs.size(); }
 
     virtual void removeExpiredChildren(
-        int numberChildrenToRemove, double expiryTime, int expiryFrame,
+        int numberChildrenToRemove, double expiryTime, unsigned int expiryFrame,
         DatabasePager::ObjectList& childrenRemoved, bool visitActive)
     {
         int leftToRemove = numberChildrenToRemove;
@@ -208,34 +206,33 @@ public:
             osg::ref_ptr<osg::PagedLOD> plod;
             if (itr->lock(plod))
             {
-                int delta = expiryFrame - plod->getFrameNumberOfLastTraversal();
-                if ((visitActive && delta > 0) || (!visitActive && delta <= 0))
+                bool plodActive = expiryFrame < plod->getFrameNumberOfLastTraversal();
+                if (visitActive==plodActive) // true if (visitActive && plodActive) OR (!visitActive &&!plodActive)
                 {
-                    ++itr;
-                    continue;
+                    DatabasePager::CountPagedLODsVisitor countPagedLODsVisitor;
+                    osg::NodeList expiredChildren; // expired PagedLODs
+                    countPagedLODsVisitor.removeExpiredChildrenAndCountPagedLODs(
+                        plod.get(), expiryTime, expiryFrame, expiredChildren);
+                    // Clear any expired PagedLODs out of the set
+                    for (DatabasePager::CountPagedLODsVisitor::PagedLODset::iterator
+                             citr = countPagedLODsVisitor._pagedLODs.begin(),
+                             end = countPagedLODsVisitor._pagedLODs.end();
+                         citr != end;
+                        ++citr)
+                    {
+                        osg::observer_ptr<osg::PagedLOD> clod(*citr);
+                        // This child PagedLOD cannot be equal to the
+                        // PagedLOD pointed to by itr because it must be
+                        // in itr's subgraph. Therefore erasing it doesn't
+                        // invalidate itr.
+                        if (_pagedLODs.erase(clod) > 0)
+                            leftToRemove--;
+                    }
+                    childrenRemoved.insert(childrenRemoved.end(),
+                                           expiredChildren.begin(),
+                                           expiredChildren.end());
                 }
-                DatabasePager::CountPagedLODsVisitor countPagedLODsVisitor;
-                osg::NodeList expiredChildren; // expired PagedLODs
-                countPagedLODsVisitor.removeExpiredChildrenAndCountPagedLODs(
-                    plod.get(), expiryTime, expiryFrame, expiredChildren);
-                // Clear any expired PagedLODs out of the set
-                for (DatabasePager::CountPagedLODsVisitor::PagedLODset::iterator
-                         citr = countPagedLODsVisitor._pagedLODs.begin(),
-                         end = countPagedLODsVisitor._pagedLODs.end();
-                     citr != end;
-                    ++citr)
-                {
-                    osg::observer_ptr<osg::PagedLOD> clod(*citr);
-                    // This child PagedLOD cannot be equal to the
-                    // PagedLOD pointed to by itr because it must be
-                    // in itr's subgraph. Therefore erasing it doesn't
-                    // invalidate itr.
-                    if (_pagedLODs.erase(clod) > 0)
-                        leftToRemove--;
-                }
-                childrenRemoved.insert(childrenRemoved.end(),
-                                       expiredChildren.begin(),
-                                       expiredChildren.end());
+            
                 // advance the iterator to the next element
                 ++itr;
             }
@@ -485,7 +482,7 @@ bool DatabasePager::RequestQueue::pruneOldRequestsAndCheckIfEmpty()
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_requestMutex);
 
-    int frameNumber = _pager->_frameNumber;
+    unsigned int frameNumber = _pager->_frameNumber;
     if (_frameNumberLastPruned != frameNumber)
     {
         for(RequestQueue::RequestList::iterator citr = _requestList.begin();
@@ -686,8 +683,7 @@ int DatabasePager::DatabaseThread::cancel()
 
     if( isRunning() )
     {
-    
-        _done = true;
+        setDone(true);
         
         switch(_mode)
         {
@@ -710,9 +706,10 @@ int DatabasePager::DatabaseThread::cancel()
             // OSG_INFO<<"Waiting for DatabasePager::DatabaseThread to cancel"<<std::endl;
             OpenThreads::Thread::YieldCurrentThread();
         }
-        
+
         // _startThreadCalled = false;
     }
+
     //OSG_NOTICE<<"DatabasePager::DatabaseThread stopped running"<<std::endl;
     return result;
 
@@ -1013,7 +1010,7 @@ DatabasePager::DatabasePager()
     _databasePagerThreadPaused = false;
     
     _numFramesActive = 0;
-    _frameNumber = 0;
+    _frameNumber.exchange(0);
     
 
 #if __APPLE__
@@ -1139,7 +1136,7 @@ DatabasePager::DatabasePager(const DatabasePager& rhs)
     _databasePagerThreadPaused = false;
     
     _numFramesActive = 0;
-    _frameNumber = 0;
+    _frameNumber.exchange(0);
 
     _drawablePolicy = rhs._drawablePolicy;
 
@@ -1387,7 +1384,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
     
 
     double timestamp = framestamp?framestamp->getReferenceTime():0.0;
-    int frameNumber = framestamp?framestamp->getFrameNumber():_frameNumber;
+    unsigned int frameNumber = framestamp?framestamp->getFrameNumber():static_cast<unsigned int>(_frameNumber);
 
 // #define WITH_REQUESTNODEFILE_TIMING
 #ifdef WITH_REQUESTNODEFILE_TIMING
@@ -1521,7 +1518,7 @@ void DatabasePager::signalBeginFrame(const osg::FrameStamp* framestamp)
         _dataToCompileList->pruneOldRequestsAndCheckIfEmpty();
 
         //OSG_INFO << "signalBeginFrame "<<framestamp->getFrameNumber()<<">>>>>>>>>>>>>>>>"<<std::endl;
-        _frameNumber = framestamp->getFrameNumber();
+        _frameNumber.exchange(framestamp->getFrameNumber());
 
     } //else OSG_INFO << "signalBeginFrame >>>>>>>>>>>>>>>>"<<std::endl;
 }
@@ -1594,7 +1591,7 @@ void DatabasePager::updateSceneGraph(const osg::FrameStamp& frameStamp)
 void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
 {
     double timeStamp = frameStamp.getReferenceTime();
-    int frameNumber = frameStamp.getFrameNumber();
+    unsigned int frameNumber = frameStamp.getFrameNumber();
 
     osg::Timer_t before = osg::Timer::instance()->tick(), mid, last;
 
@@ -1702,6 +1699,13 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
     static double s_total_time_stage_c = 0.0;
     static double s_total_max_stage_c = 0.0;
 
+    if (frameStamp.getFrameNumber()==0)
+    {
+        // No need to remove anything on first frame.
+        return;
+    }
+
+
     osg::Timer_t startTick = osg::Timer::instance()->tick();
 
     // numPagedLODs >= actual number of PagedLODs. There can be
@@ -1727,7 +1731,7 @@ void DatabasePager::removeExpiredSubgraphs(const osg::FrameStamp& frameStamp)
     ObjectList childrenRemoved;
     
     double expiryTime = frameStamp.getReferenceTime() - 0.1;
-    int expiryFrame = frameStamp.getFrameNumber() - 1;
+    unsigned int expiryFrame = frameStamp.getFrameNumber() - 1;
 
     // First traverse inactive PagedLODs, as their children will
     // certainly have expired. Then traverse active nodes if we still
@@ -1783,7 +1787,7 @@ class DatabasePager::FindPagedLODsVisitor : public osg::NodeVisitor
 {
 public:
 
-    FindPagedLODsVisitor(DatabasePager::PagedLODList& pagedLODList, int frameNumber):
+    FindPagedLODsVisitor(DatabasePager::PagedLODList& pagedLODList, unsigned int frameNumber):
         osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
         _activePagedLODList(pagedLODList),
         _frameNumber(frameNumber)
@@ -1803,7 +1807,7 @@ public:
     }
 
     DatabasePager::PagedLODList& _activePagedLODList;
-    int _frameNumber;
+    unsigned int _frameNumber;
 
 protected:
 
@@ -1811,7 +1815,7 @@ protected:
 };
 
 
-void DatabasePager::registerPagedLODs(osg::Node* subgraph, int frameNumber)
+void DatabasePager::registerPagedLODs(osg::Node* subgraph, unsigned int frameNumber)
 {
     if (!subgraph) return;
 

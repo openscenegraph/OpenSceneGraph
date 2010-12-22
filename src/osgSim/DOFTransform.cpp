@@ -27,7 +27,7 @@ static const unsigned int SCALE_Z_LIMIT_BIT        = 0x80000000u >> 8;
 
 
 DOFTransform::DOFTransform():
-    _previousTraversalNumber(-1),
+    _previousTraversalNumber(osg::UNINITIALIZED_FRAME_NUMBER),
     _previousTime(0.0),
     _limitationFlags(0), 
     _animationOn(false), 

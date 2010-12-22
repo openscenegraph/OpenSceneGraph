@@ -91,7 +91,7 @@ class OSGQT_EXPORT QGraphicsViewAdapter : public QObject
 
         OpenThreads::Mutex              _qimagesMutex;
         OpenThreads::Mutex              _qresizeMutex;
-        int                             _previousFrameNumber;
+        unsigned int                    _previousFrameNumber;
         bool                            _newImageAvailable;
         unsigned int                    _currentRead;
         unsigned int                    _currentWrite;

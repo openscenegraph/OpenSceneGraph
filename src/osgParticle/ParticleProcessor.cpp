@@ -101,7 +101,7 @@ void osgParticle::ParticleProcessor::traverse(osg::NodeVisitor& nv)
                         if (alive && 
                             _enabled && 
                             !_ps->isFrozen() && 
-                            (_ps->getLastFrameNumber() >= (nv.getFrameStamp()->getFrameNumber() - 1) || !_ps->getFreezeOnCull()))
+                            ((_ps->getLastFrameNumber()+1) >= (nv.getFrameStamp()->getFrameNumber()) || !_ps->getFreezeOnCull()))
                         {
                             // initialize matrix flags
                             _need_ltw_matrix = true;

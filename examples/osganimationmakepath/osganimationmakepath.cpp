@@ -88,7 +88,7 @@
       osg::Timer_t _startTime;
       osg::Timer_t _currentTime;
       bool _playing;
-      int _lastUpdate;
+      unsigned int _lastUpdate;
   };
 
 
@@ -150,7 +150,7 @@ public:
     osg::Timer_t _startTime;
     osg::Timer_t _currentTime;
     bool _playing;
-    int _lastUpdate;
+    unsigned int _lastUpdate;
 };
 
 // This won't really give good results in any situation, but it does demonstrate

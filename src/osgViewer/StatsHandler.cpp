@@ -219,7 +219,7 @@ bool StatsHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdap
                         }
                     }
 
-                    for(int i = viewer->getViewerStats()->getEarliestFrameNumber(); i<= viewer->getViewerStats()->getLatestFrameNumber()-1; ++i)
+                    for(unsigned int i = viewer->getViewerStats()->getEarliestFrameNumber(); i<= viewer->getViewerStats()->getLatestFrameNumber()-1; ++i)
                     {
                         for(StatsList::iterator itr = statsList.begin();
                             itr != statsList.end();
@@ -402,7 +402,7 @@ struct RawValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
         {
             _tickLastUpdated = tick;
 
-            int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
+            unsigned int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
             double value;
             if (_stats->getAttribute(frameNumber, _attributeName, value))
             {
@@ -469,7 +469,7 @@ struct CameraSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCall
                     viewStr << _camera->getName();
                 viewStr << std::endl;
 
-                int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
+                unsigned int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
                 if (!(renderer->getGraphicsThreadDoesCull()))
                 {
                     --frameNumber;
@@ -556,7 +556,7 @@ struct ViewSceneStatsTextDrawCallback : public virtual osg::Drawable::DrawCallba
                     viewStr << ": " << _view->getName();
                 viewStr << std::endl;
 
-                int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
+                unsigned int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
                 // if (!(renderer->getGraphicsThreadDoesCull()))
                 {
                     --frameNumber;
@@ -625,7 +625,6 @@ struct BlockDrawCallback : public virtual osg::Drawable::DrawCallback
         osg::Vec3Array* vertices = (osg::Vec3Array*)geom->getVertexArray();
 
         int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
-
         int startFrame = frameNumber + _frameDelta - _numFrames + 1;
         int endFrame = frameNumber + _frameDelta;
         double referenceTime;
@@ -755,7 +754,7 @@ protected:
             osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geometry->getVertexArray());
             if (!vertices) return;
 
-            int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
+            unsigned int frameNumber = renderInfo.getState()->getFrameStamp()->getFrameNumber();
 
             // Get stats
             double value;
@@ -837,11 +836,11 @@ protected:
         const float             _max;
         const std::string       _nameBegin;
         const std::string       _nameEnd;
-        static int              _frameNumber;
+        static unsigned int     _frameNumber;
     };
 };
 
-int StatsGraph::GraphUpdateCallback::_frameNumber = 0;
+unsigned int StatsGraph::GraphUpdateCallback::_frameNumber = 0;
 
 
 osg::Geometry* StatsHandler::createGeometry(const osg::Vec3& pos, float height, const osg::Vec4& colour, unsigned int numBlocks)

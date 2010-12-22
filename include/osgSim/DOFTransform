@@ -116,8 +116,8 @@ class OSGSIM_EXPORT DOFTransform : public osg::Transform
 
         virtual ~DOFTransform() {}
 
-        int       _previousTraversalNumber;
-        double    _previousTime;
+        unsigned int    _previousTraversalNumber;
+        double          _previousTime;
 
         osg::Vec3 _minHPR;
         osg::Vec3 _maxHPR;

@@ -379,7 +379,7 @@ void SceneView::updateUniforms()
     
     if ((_activeUniforms & FRAME_NUMBER_UNIFORM) && _frameStamp.valid())
     {
-        osg::Uniform* uniform = _localStateSet->getOrCreateUniform("osg_FrameNumber",osg::Uniform::INT);
+        osg::Uniform* uniform = _localStateSet->getOrCreateUniform("osg_FrameNumber",osg::Uniform::UNSIGNED_INT);
         uniform->set(_frameStamp->getFrameNumber());        
     }
     

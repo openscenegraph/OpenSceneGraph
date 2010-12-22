@@ -512,7 +512,7 @@ OcclusionQueryNode::getPassed( const osg::Camera* camera, osg::NodeVisitor& nv )
         //  2) we haven't rendered for an abnormally long time (probably because we're an out-of-range LOD child)
         // In these cases, assume we're visible to avoid blinking.
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _frameCountMutex );
-        const int& lastQueryFrame( _frameCountMap[ camera ] );
+        const unsigned int& lastQueryFrame( _frameCountMap[ camera ] );
         if( ( lastQueryFrame == 0 ) ||
             ( (nv.getTraversalNumber() - lastQueryFrame) >  (_queryFrameCount + 1) ) )
             return true;
@@ -559,7 +559,7 @@ OcclusionQueryNode::traverseQuery( const osg::Camera* camera, osg::NodeVisitor& 
         const int curFrame = nv.getTraversalNumber();
 
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _frameCountMutex );
-        int& lastQueryFrame = _frameCountMap[ camera ];
+        unsigned int& lastQueryFrame = _frameCountMap[ camera ];
         issueQuery = (curFrame - lastQueryFrame >= _queryFrameCount);
         if (issueQuery)
             lastQueryFrame = curFrame;

@@ -29,7 +29,7 @@ class OSGVIEWER_EXPORT OpenGLQuerySupport : public osg::Referenced
         virtual void checkQuery(osg::Stats* stats, osg::State* state,
                                 osg::Timer_t startTick) = 0;
         
-        virtual void beginQuery(int frameNumber, osg::State* state) = 0;
+        virtual void beginQuery(unsigned int frameNumber, osg::State* state) = 0;
         virtual void endQuery(osg::State* state) = 0;
         virtual void initialize(osg::State* state, osg::Timer_t startTick);
     protected:

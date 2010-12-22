@@ -1212,7 +1212,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
 #endif
     if (_characterSizeMode!=OBJECT_COORDS || _autoRotateToScreen)
     {
-        int frameNumber = state.getFrameStamp()?state.getFrameStamp()->getFrameNumber():0;
+        unsigned int frameNumber = state.getFrameStamp()?state.getFrameStamp()->getFrameNumber():0;
         AutoTransformCache& atc = _autoTransformCache[contextID];
         const osg::Matrix& modelview = state.getModelViewMatrix();
         const osg::Matrix& projection = state.getProjectionMatrix();

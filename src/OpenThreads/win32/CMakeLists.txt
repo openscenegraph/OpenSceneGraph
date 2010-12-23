@@ -14,7 +14,6 @@ ADD_LIBRARY(${LIB_NAME}
     HandleHolder.h
     Win32BarrierPrivateData.h
     WIN32Condition.cpp
-    Win32Condition.h
     Win32ConditionPrivateData.h
     Win32Mutex.cpp
     Win32MutexPrivateData.h

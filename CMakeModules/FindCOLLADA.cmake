@@ -101,7 +101,7 @@ FIND_LIBRARY(COLLADA_DYNAMIC_LIBRARY_DEBUG
 )
 
 FIND_LIBRARY(COLLADA_STATIC_LIBRARY 
-    NAMES libcollada14dom21-s  libcollada14dom22-s
+    NAMES libcollada14dom21-s  libcollada14dom22-s libcollada14dom.a
     PATHS
     ${COLLADA_DOM_ROOT}/build/${COLLADA_BUILDNAME}-1.4
     $ENV{COLLADA_DIR}/build/${COLLADA_BUILDNAME}-1.4
@@ -124,7 +124,7 @@ FIND_LIBRARY(COLLADA_STATIC_LIBRARY
 )
 
 FIND_LIBRARY(COLLADA_STATIC_LIBRARY_DEBUG 
-    NAMES collada_dom-sd collada14dom-sd libcollada14dom21-sd libcollada14dom22-sd
+    NAMES collada_dom-sd collada14dom-sd libcollada14dom21-sd libcollada14dom22-sd libcollada14dom-d.a
     PATHS
     ${COLLADA_DOM_ROOT}/build/${COLLADA_BUILDNAME}-1.4-d
     $ENV{COLLADA_DIR}/build/${COLLADA_BUILDNAME}-1.4-d

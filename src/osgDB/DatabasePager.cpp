@@ -448,7 +448,7 @@ void DatabasePager::DatabaseRequest::invalidate()
 //
 DatabasePager::RequestQueue::RequestQueue(DatabasePager* pager):
     _pager(pager),
-    _frameNumberLastPruned(-1)
+    _frameNumberLastPruned(osg::UNINITIALIZED_FRAME_NUMBER)
 {
 }
 

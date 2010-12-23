@@ -235,7 +235,7 @@ setup_segment(Lib3dsTrack *track, int index, Lib3dsKey *pp, Lib3dsKey *p0, Lib3d
             *pp = track->keys[track->nkeys - 2];
             pp->frame = track->keys[track->nkeys - 2].frame - (track->keys[track->nkeys - 1].frame - track->keys[0].frame);
         }
-		else ip = -1;		// Avoids a compiler warning
+	else ip = -1;		// Avoids a compiler warning
     }
 
     *p0 = track->keys[index - 1];
@@ -250,6 +250,7 @@ setup_segment(Lib3dsTrack *track, int index, Lib3dsKey *pp, Lib3dsKey *p0, Lib3d
             *pn = track->keys[1];
             pn->frame = track->keys[1].frame + (track->keys[track->nkeys-1].frame - track->keys[0].frame);
         }
+        else in = -1; // Avoids a compiler warning
     }
 
     if (track->type == LIB3DS_TRACK_QUAT) {

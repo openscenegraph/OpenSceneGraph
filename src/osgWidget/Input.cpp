@@ -3,6 +3,7 @@
 #include <osg/io_utils>
 #include <osgWidget/WindowManager>
 #include <osgWidget/Input>
+#include <iterator>
 
 #ifdef WIN32
 #include <windows.h>

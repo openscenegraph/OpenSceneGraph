@@ -19,29 +19,6 @@
 
 namespace osgUtil {
 
-class CompileData : public osg::Referenced
-{
-    public:
-
-        CompileData() {}
-
-        typedef std::set< osg::ref_ptr<osg::Drawable> > Drawables;
-        typedef std::set< osg::ref_ptr<osg::Texture> >  Textures;
-        typedef std::set< osg::ref_ptr<osg::Program> >  Programs;
-
-        bool empty() const { return _drawables.empty() && _textures.empty() &&  _programs.empty(); }
-
-        void reset()
-        {
-            _drawables.clear();
-            _textures.clear();
-            _programs.clear();
-        }
-
-        Drawables   _drawables;
-        Textures    _textures;
-        Programs    _programs;
-};
 
 class OSGUTIL_EXPORT CompileStats : public osg::Referenced
 {
@@ -111,52 +88,6 @@ class OSGUTIL_EXPORT CompileStats : public osg::Referenced
         StatsMap _statsMap;
 };
 
-class OSGUTIL_EXPORT CompileOperator : public osg::Referenced
-{
-    public:
-
-        CompileOperator();
-
-        /** Assign a geometry and associated StateSet than is applied after each texture compile to atttempt to force the OpenGL
-          * drive to download the texture object to OpenGL graphics card.*/
-        void assignForceTextureDownloadGeometry();
-
-        /** Set the osg::Geometry to apply after each texture compile to atttempt to force the OpenGL
-          * drive to download the texture object to OpenGL graphics card.*/
-        void setForceTextureDownloadGeometry(osg::Geometry* geom) { _forceTextureDownloadGeometry = geom; }
-        osg::Geometry* getForceTextureDownloadGeometry() { return _forceTextureDownloadGeometry.get(); }
-        const osg::Geometry* getForceTextureDownloadGeometry() const { return _forceTextureDownloadGeometry.get(); }
-
-        /** Compile as many elements in the CompileData container as possible within specified time.
-          * return true if all have been compiled. */
-        virtual bool compile(osg::RenderInfo& renderInfo, CompileData& compileData, unsigned int& maxNumObjectsToCompile, double& availableTime);
-
-        /** Compile all the elements in the CompileData container. */
-        void compileAll(osg::RenderInfo& renderInfo, CompileData& compileData)
-        {
-            unsigned int maxNumObjectsToCompile = 32768;
-            double availableTime = DBL_MAX;
-            compile(renderInfo, compileData, maxNumObjectsToCompile, availableTime);
-        }
-
-        CompileStats* getCompileStats() { return _compileStats.get(); }
-        const CompileStats* getCompileStats() const { return _compileStats.get(); }
-
-    protected:
-
-        void runTimingTests(osg::RenderInfo& renderInfo);
-
-        double timeCompile(osg::RenderInfo& renderInfo, osg::Geometry* geometry) const;
-        double timeCompile(osg::RenderInfo& renderInfo, osg::StateSet* stateset) const;
-        osg::Geometry* createTestGeometry(unsigned int numVertices, bool vbo) const;
-        osg::StateSet* createTestStateSet(unsigned int imageSize, bool mipmapped) const;
-
-        osg::ref_ptr<osg::Geometry>     _forceTextureDownloadGeometry;
-        osg::ref_ptr<CompileStats>      _compileStats;
-        bool                            _timingTestsCompleted;
-};
-
-
 class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
 {
     public:
@@ -211,6 +142,18 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
         void setConservativeTimeRatio(double ratio) { _conservativeTimeRatio = ratio; }
         double getConservativeTimeRatio() const { return _conservativeTimeRatio; }
 
+        /** Assign a geometry and associated StateSet than is applied after each texture compile to atttempt to force the OpenGL
+          * drive to download the texture object to OpenGL graphics card.*/
+        void assignForceTextureDownloadGeometry();
+
+        /** Set the osg::Geometry to apply after each texture compile to atttempt to force the OpenGL
+          * drive to download the texture object to OpenGL graphics card.*/
+        void setForceTextureDownloadGeometry(osg::Geometry* geom) { _forceTextureDownloadGeometry = geom; }
+        osg::Geometry* getForceTextureDownloadGeometry() { return _forceTextureDownloadGeometry.get(); }
+        const osg::Geometry* getForceTextureDownloadGeometry() const { return _forceTextureDownloadGeometry.get(); }
+
+        CompileStats* getCompileStats() { return _compileStats.get(); }
+        const CompileStats* getCompileStats() const { return _compileStats.get(); }
 
 
         typedef std::vector<osg::GraphicsContext*> Contexts;
@@ -225,12 +168,74 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
         void mergeCompiledSubgraphs();
 
         virtual void operator () (osg::GraphicsContext* context);
+
+        struct OSGUTIL_EXPORT CompileInfo : public osg::RenderInfo
+        {
+            CompileInfo(osg::GraphicsContext* context, IncrementalCompileOperation* ico);
+
+            double availableTime() { return allocatedTime - timer.elapsedTime(); }
+            
+            IncrementalCompileOperation*        incrementalCompileOperation;
+            unsigned int                        maxNumObjectsToCompile;
+            osg::ElapsedTime                    timer;
+            double                              allocatedTime;
+        };
         
+        struct CompileOp : public osg::Referenced
+        {
+            /** return an estimate for how many seconds the compile will take.*/
+            virtual double estimatedTimeForCompile(CompileInfo& compileInfo) const = 0;
+            /** compile associated objects, return true if object as been fully compiled and this CompileOp can be removed from the to compile list.*/
+            virtual bool compile(CompileInfo& compileInfo) = 0;
+        };
+
+        struct OSGUTIL_EXPORT CompileDrawableOp : public CompileOp
+        {
+            CompileDrawableOp(osg::Drawable* drawable);
+            double estimatedTimeForCompile(CompileInfo& compileInfo) const;
+            bool compile(CompileInfo& compileInfo);
+            osg::ref_ptr<osg::Drawable> _drawable;
+        };
+
+        struct OSGUTIL_EXPORT CompileTextureOp : public CompileOp
+        {
+            CompileTextureOp(osg::Texture* texture);
+            double estimatedTimeForCompile(CompileInfo& compileInfo) const;
+            bool compile(CompileInfo& compileInfo);
+            osg::ref_ptr<osg::Texture> _texture;
+        };
+
+        struct OSGUTIL_EXPORT CompileProgramOp : public CompileOp
+        {
+            CompileProgramOp(osg::Program* program);
+            double estimatedTimeForCompile(CompileInfo& compileInfo) const;
+            bool compile(CompileInfo& compileInfo);
+            osg::ref_ptr<osg::Program> _program;
+        };
+
+        class OSGUTIL_EXPORT CompileList
+        {
+        public:
+            CompileList();
+            ~CompileList();
+
+            bool empty() const { return _compileOps.empty(); }
+            void add(CompileOp* compileOp);
+            void add(osg::Drawable* drawable) { add(new CompileDrawableOp(drawable)); }
+            void add(osg::Texture* texture) { add(new CompileTextureOp(texture)); }
+            void add(osg::Program* program) { add(new CompileProgramOp(program)); }
+
+            double estimatedTimeForCompile(CompileInfo& compileInfo) const;
+            bool compile(CompileInfo& compileInfo);
+
+
+            typedef std::list< osg::ref_ptr<CompileOp> > CompileOps;
+            CompileOps _compileOps;
+        };
 
 
         class CompileSet;
         typedef std::set<osg::GraphicsContext*> ContextSet;
-        typedef std::map<osg::GraphicsContext*, CompileData >  CompileMap;
         
         struct CompileCompletedCallback : public virtual osg::Referenced
         {
@@ -242,36 +247,29 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
         class OSGUTIL_EXPORT CompileSet : public osg::Referenced
         {
         public:
-        
-            
             CompileSet() {}
-            
+
             CompileSet(osg::Node*subgraphToCompile):
                 _subgraphToCompile(subgraphToCompile) {}
 
-            CompileSet(osg::Group* attachmentPoint, osg::Node*subgraphToCompile):
+            CompileSet(osg::Group* attachmentPoint, osg::Node* subgraphToCompile):
                 _attachmentPoint(attachmentPoint),
                 _subgraphToCompile(subgraphToCompile) {}
-        
+
             void buildCompileMap(ContextSet& context, GLObjectsVisitor::Mode mode=GLObjectsVisitor::COMPILE_DISPLAY_LISTS|GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES);
 
-            bool compileCompleted() const
-            {
-                for(CompileMap::const_iterator itr = _compileMap.begin();
-                    itr != _compileMap.end();
-                    ++itr)
-                {
-                    if (!(itr->second.empty())) return false;
-                }
-                return true;
-            }
+            bool compile(CompileInfo& compileInfo);
+
+            OpenThreads::Atomic                     _numberCompileListsToCompile;
 
             osg::observer_ptr<osg::Group>           _attachmentPoint;
             osg::ref_ptr<osg::Node>                 _subgraphToCompile;
             osg::ref_ptr<CompileCompletedCallback>  _compileCompletedCallback;
+
+            typedef std::map<osg::GraphicsContext*, CompileList >  CompileMap;
             CompileMap                              _compileMap;
 
-        // protected:
+        protected:
 
             virtual ~CompileSet() {}
         };
@@ -297,14 +295,6 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
         OpenThreads::Mutex* getCompiledMutex() { return &_compiledMutex; }
         CompileSets& getCompiled() { return _compiled; }
 
-        void setCompileOperator(CompileOperator* compileOperator) { _compileOperator = compileOperator; }
-        CompileOperator* getCompileOperator() { return _compileOperator.get(); }
-        const CompileOperator* getCompileOperator() const { return _compileOperator.get(); }
-
-        /** Assign a geometry and associated StateSet than is applied after each texture compile to atttempt to force the OpenGL
-          * drive to download the texture object to OpenGL graphics card.*/
-        void assignForceTextureDownloadGeometry();
-
     protected:
 
         virtual ~IncrementalCompileOperation();
@@ -318,7 +308,8 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
         double                          _flushTimeRatio;
         double                          _conservativeTimeRatio;
 
-        osg::ref_ptr<CompileOperator>   _compileOperator;
+        osg::ref_ptr<osg::Geometry>     _forceTextureDownloadGeometry;
+        osg::ref_ptr<CompileStats>      _compileStats;
 
         OpenThreads::Mutex              _toCompileMutex;
         CompileSets                     _toCompile;

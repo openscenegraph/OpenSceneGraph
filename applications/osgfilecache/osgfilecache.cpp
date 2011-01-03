@@ -130,6 +130,40 @@ struct Extents
     osg::Vec2d      _max;
 };
 
+class CheckValidVisitor : public osg::NodeVisitor
+{
+public:
+
+    CheckValidVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _numInvalidGeometries(0) {}
+
+    void apply(osg::Geode& geode)
+    {
+        unsigned int local_numInvalidGeometries = 0;
+        for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
+        {
+            osg::Geometry* geometry = dynamic_cast<osg::Geometry*>(geode.getDrawable(i));
+            if (geometry)
+            {
+                if (!geometry->verifyArrays(_errorReports)) ++local_numInvalidGeometries;
+            }
+        }
+        if (local_numInvalidGeometries)
+        {
+            _errorReports<<"Geode "<<geode.getName()<<" contains problem geometries"<<std::endl;
+            _numInvalidGeometries += local_numInvalidGeometries;
+        }
+    }
+
+    bool valid() const { return _numInvalidGeometries==0; }
+
+    unsigned int _numInvalidGeometries;
+    std::stringstream _errorReports;
+    
+};
+
+
 class LoadDataVisitor : public osg::NodeVisitor
 {
 public:
@@ -274,35 +308,47 @@ public:
     
     osg::Node* readNodeFileAndWriteToCache(const std::string& filename)
     {
-        
+        osg::Node* node = 0;
         if (_fileCache.valid() && osgDB::containsServerAddress(filename))
         {
             if (_fileCache->existsInCache(filename))
             {
                 osg::notify(osg::NOTICE)<<"reading from FileCache: "<<filename<<std::endl;
-                return _fileCache->readNode(filename, osgDB::Registry::instance()->getOptions()).takeNode();
+                node = _fileCache->readNode(filename, osgDB::Registry::instance()->getOptions()).takeNode();
             }
             else
             {
                 osg::notify(osg::NOTICE)<<"reading : "<<filename<<std::endl;
 
-                osg::Node* node = osgDB::readNodeFile(filename);
+                node = osgDB::readNodeFile(filename);
                 if (node)
                 {
                     osg::notify(osg::NOTICE)<<"write to FileCache : "<<filename<<std::endl;
 
                     _fileCache->writeNode(*node, filename, osgDB::Registry::instance()->getOptions());
                 }
-                return node;
             }
         }
         else
         {
             osg::notify(osg::NOTICE)<<"reading : "<<filename<<std::endl;
-            return osgDB::readNodeFile(filename);
+            node = osgDB::readNodeFile(filename);
         }
+
+        if (node)
+        {
+            CheckValidVisitor cvv;
+            node->accept(cvv);
+            if (!cvv.valid())
+            {
+                OSG_NOTICE<<"Warning, errors in geometry found in file "<<filename<<std::endl;
+                OSG_NOTICE<<cvv._errorReports.str()<<std::endl;
+            }
+        }
+        return node;
     }
-    
+
+
 protected:
 
     inline void pushMatrix(osg::Matrix& matrix) { _matrixStack.push_back(matrix); }

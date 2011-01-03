@@ -997,6 +997,14 @@ void Geometry::compileGLObjects(RenderInfo& renderInfo) const
 
 void Geometry::drawImplementation(RenderInfo& renderInfo) const
 {
+#if 0
+    if (!validGeometry())
+    {
+        OSG_NOTICE<<"Error, osg::Geometry has invalid array/primitive set usage"<<std::endl;
+        return;
+    }
+#endif
+    
     if (_internalOptimizedGeometry.valid())
     {
         _internalOptimizedGeometry->drawImplementation(renderInfo);
@@ -2483,6 +2491,245 @@ void Geometry::computeInternalOptimizedGeometry()
     }
 }
 
+class CheckArrayValidity
+{
+public:
+    CheckArrayValidity(const osg::Geometry* geometry)
+    {
+        numPrimitiveSets = geometry->getNumPrimitiveSets();
+        primitiveNum = 0;
+        maxVertexNumber = 0;
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //
+        // draw the primitives themselves.
+        //
+        for(unsigned int primitiveSetNum=0; primitiveSetNum != numPrimitiveSets; ++primitiveSetNum)
+        {
+            const PrimitiveSet* primitiveset = geometry->getPrimitiveSet(primitiveSetNum);
+
+            GLenum mode=primitiveset->getMode();
+
+            unsigned int primLength;
+            switch(mode)
+            {
+                case(GL_POINTS):    primLength=1; break;
+                case(GL_LINES):     primLength=2; break;
+                case(GL_TRIANGLES): primLength=3; break;
+                case(GL_QUADS):     primLength=4; break;
+                default:            primLength=0; break; // compute later when =0.
+            }
+
+            // draw primitives by the more flexible "slow" path,
+            // sending OpenGL glBegin/glVertex.../glEnd().
+            switch(primitiveset->getType())
+            {
+                case(PrimitiveSet::DrawArraysPrimitiveType):
+                {
+                    if (primLength==0) primLength=primitiveset->getNumIndices();
+
+                    const DrawArrays* drawArray = static_cast<const DrawArrays*>(primitiveset);
+
+                    unsigned int primCount=0;
+                    unsigned int indexEnd = drawArray->getFirst()+drawArray->getCount();
+                    for(unsigned int vindex=drawArray->getFirst();
+                        vindex<indexEnd;
+                        ++vindex,++primCount)
+                    {
+                        if ((primCount%primLength)==0)
+                        {
+                            primitiveNum++;
+                        }
+                    }
+                    if ((indexEnd-1) > maxVertexNumber) maxVertexNumber = (indexEnd-1);
+                    break;
+                }
+                case(PrimitiveSet::DrawArrayLengthsPrimitiveType):
+                {
+                    const DrawArrayLengths* drawArrayLengths = static_cast<const DrawArrayLengths*>(primitiveset);
+                    unsigned int vindex=drawArrayLengths->getFirst();
+                    for(DrawArrayLengths::const_iterator primItr=drawArrayLengths->begin();
+                        primItr!=drawArrayLengths->end();
+                        ++primItr)
+                    {
+                        unsigned int localPrimLength;
+                        if (primLength==0) localPrimLength=*primItr;
+                        else localPrimLength=primLength;
+
+                        for(GLsizei primCount=0;
+                            primCount<*primItr;
+                            ++vindex,++primCount)
+                        {
+                            if ((primCount%localPrimLength)==0)
+                            {
+                                primitiveNum++;
+                            }
+                        }
+
+                    }
+                    if ((vindex-1) > maxVertexNumber) maxVertexNumber = (vindex-1);
+                    break;
+                }
+                case(PrimitiveSet::DrawElementsUBytePrimitiveType):
+                {
+                    if (primLength==0) primLength=primitiveset->getNumIndices();
+
+                    const DrawElementsUByte* drawElements = static_cast<const DrawElementsUByte*>(primitiveset);
+
+                    unsigned int primCount=0;
+                    for(DrawElementsUByte::const_iterator primItr=drawElements->begin();
+                        primItr!=drawElements->end();
+                        ++primCount,++primItr)
+                    {
+                        if ((primCount%primLength)==0)
+                        {
+                            primitiveNum++;
+                        }
+                        unsigned int vindex = *primItr;
+                        if (vindex > maxVertexNumber) maxVertexNumber = vindex;
+                    }
+
+                    break;
+                }
+                case(PrimitiveSet::DrawElementsUShortPrimitiveType):
+                {
+                    if (primLength==0) primLength=primitiveset->getNumIndices();
+
+                    const DrawElementsUShort* drawElements = static_cast<const DrawElementsUShort*>(primitiveset);
+                    unsigned int primCount=0;
+                    for(DrawElementsUShort::const_iterator primItr=drawElements->begin();
+                        primItr!=drawElements->end();
+                        ++primCount,++primItr)
+                    {
+                        if ((primCount%primLength)==0)
+                        {
+                            primitiveNum++;
+                        }
+                        unsigned int vindex = *primItr;
+                        if (vindex > maxVertexNumber) maxVertexNumber = vindex;
+                    }
+
+                    break;
+                }
+                case(PrimitiveSet::DrawElementsUIntPrimitiveType):
+                {
+                    if (primLength==0) primLength=primitiveset->getNumIndices();
+
+                    const DrawElementsUInt* drawElements = static_cast<const DrawElementsUInt*>(primitiveset);
+                    unsigned int primCount=0;
+                    for(DrawElementsUInt::const_iterator primItr=drawElements->begin();
+                        primItr!=drawElements->end();
+                        ++primCount,++primItr)
+                    {
+                        if ((primCount%primLength)==0)
+                        {
+                            primitiveNum++;
+                        }
+                        unsigned int vindex = *primItr;
+                        if (vindex > maxVertexNumber) maxVertexNumber = vindex;
+                    }
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+        }
+    }
+
+    bool validArray(std::ostream& out, const osg::Geometry::ArrayData& arrayData, const char* arrayName)
+    {
+        unsigned int numRequired = 0;
+        switch(arrayData.binding)
+        {
+            case(osg::Geometry::BIND_OFF): numRequired = 0; break;
+            case(osg::Geometry::BIND_OVERALL): numRequired = 1; break;
+            case(osg::Geometry::BIND_PER_PRIMITIVE): numRequired = primitiveNum; break;
+            case(osg::Geometry::BIND_PER_PRIMITIVE_SET): numRequired = numPrimitiveSets; break;
+            case(osg::Geometry::BIND_PER_VERTEX): numRequired = maxVertexNumber+1; break;
+        }
+
+        if (arrayData.indices.valid())
+        {
+            unsigned int numIndices= arrayData.indices.valid() ? arrayData.indices->getNumElements() : 0;
+            if (numIndices<numRequired)
+            {
+                out<<"Not enough "<<arrayName<<" indices, numRequired="<<numRequired<<std::endl;
+                return false;
+            }
+
+            unsigned int numNormals = arrayData.array.valid() ? arrayData.array->getNumElements() : 0;
+            for(unsigned int i=0; i<numIndices; ++i)
+            {
+                if (arrayData.indices->index(i)>=numNormals)
+                {
+                    out<<arrayName<<" index out of bounds of normal array"<<std::endl;
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            unsigned int numElements = arrayData.array.valid() ? arrayData.array->getNumElements() : 0;
+            if (numElements<numRequired)
+            {
+                out<<"Not enough "<<arrayName<<"s, numRequired="<<numRequired<<", but number in array="<<numElements<<std::endl;
+                return false;
+            }
+        }
+        return true;
+    }
+
+    unsigned int numPrimitiveSets;
+    unsigned int primitiveNum;
+    unsigned int maxVertexNumber;
+
+};
+
+bool Geometry::verifyArrays(std::ostream& out) const
+{
+    CheckArrayValidity cav(this);
+
+    bool result = true;
+
+    // check _vertexData
+    if (_vertexData.indices.valid())
+    {
+        unsigned int numIndices= _vertexData.indices.valid() ? _vertexData.indices->getNumElements() : 0;
+        if (numIndices<=cav.maxVertexNumber)
+        {
+            out<<"Not enough vertex indices"<<std::endl;
+            result = false;
+        }
+
+        unsigned int numVertices = _vertexData.array.valid() ? _vertexData.array->getNumElements() : 0;
+        for(unsigned int i=0; i<numIndices; ++i)
+        {
+            if (_vertexData.indices->index(i)>=numVertices)
+            {
+                out<<"Vertex indice out of bounds of vertex array"<<std::endl;
+                result = false;
+            }
+        }
+    }
+    else
+    {
+        unsigned int numVertices = _vertexData.array.valid() ? _vertexData.array->getNumElements() : 0;
+        if (numVertices<cav.maxVertexNumber)
+        {
+            out<<"Not enough vertices"<<std::endl;
+            result = false;
+        }
+    }
+
+    // check _normalData
+    if (!cav.validArray(out, _normalData, "Normal")) result = false;
+    if (!cav.validArray(out, _colorData, "Color")) result = false;
+    if (!cav.validArray(out, _secondaryColorData, "SecondaryColor")) result = false;
+
+    return result;
+}
 
 Geometry* osg::createTexturedQuadGeometry(const Vec3& corner,const Vec3& widthVec,const Vec3& heightVec, float l, float b, float r, float t)
 {

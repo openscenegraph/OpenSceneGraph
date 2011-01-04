@@ -41,6 +41,8 @@ Geometry::Geometry()
     // temporary test
     // setSupportsDisplayList(false);
 
+    _vertexData.binding = BIND_PER_VERTEX;
+
     _fastPath = false;
     _fastPathHint = true;
 }
@@ -2674,7 +2676,7 @@ public:
             unsigned int numElements = arrayData.array.valid() ? arrayData.array->getNumElements() : 0;
             if (numElements<numRequired)
             {
-                out<<"Not enough "<<arrayName<<"s, numRequired="<<numRequired<<", but number in array="<<numElements<<std::endl;
+                out<<"Not enough "<<arrayName<<", numRequired="<<numRequired<<", but number in array="<<numElements<<std::endl;
                 return false;
             }
         }
@@ -2693,40 +2695,21 @@ bool Geometry::verifyArrays(std::ostream& out) const
 
     bool result = true;
 
-    // check _vertexData
-    if (_vertexData.indices.valid())
-    {
-        unsigned int numIndices= _vertexData.indices.valid() ? _vertexData.indices->getNumElements() : 0;
-        if (numIndices<=cav.maxVertexNumber)
-        {
-            out<<"Not enough vertex indices"<<std::endl;
-            result = false;
-        }
-
-        unsigned int numVertices = _vertexData.array.valid() ? _vertexData.array->getNumElements() : 0;
-        for(unsigned int i=0; i<numIndices; ++i)
-        {
-            if (_vertexData.indices->index(i)>=numVertices)
-            {
-                out<<"Vertex indice out of bounds of vertex array"<<std::endl;
-                result = false;
-            }
-        }
-    }
-    else
-    {
-        unsigned int numVertices = _vertexData.array.valid() ? _vertexData.array->getNumElements() : 0;
-        if (numVertices<cav.maxVertexNumber)
-        {
-            out<<"Not enough vertices"<<std::endl;
-            result = false;
-        }
-    }
-
-    // check _normalData
+    if (!cav.validArray(out, _vertexData, "Vertex")) result = false;
     if (!cav.validArray(out, _normalData, "Normal")) result = false;
     if (!cav.validArray(out, _colorData, "Color")) result = false;
     if (!cav.validArray(out, _secondaryColorData, "SecondaryColor")) result = false;
+    if (!cav.validArray(out, _fogCoordData, "FogCoord")) result = false;
+
+    for(unsigned int ti=0;ti<_texCoordList.size();++ti)
+    {
+        if (!cav.validArray(out, _texCoordList[ti], "TexCoord")) result = false;
+    }
+
+    for(unsigned int vi=0;vi<_vertexAttribList.size();++vi)
+    {
+        if (!cav.validArray(out, _vertexAttribList[vi], "TexCoord")) result = false;
+    }
 
     return result;
 }

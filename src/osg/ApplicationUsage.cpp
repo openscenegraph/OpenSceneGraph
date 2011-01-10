@@ -77,10 +77,20 @@ void ApplicationUsage::getFormattedString(std::string& str, const UsageMap& um,u
     {
         maxNumCharsInOptions = maximum(maxNumCharsInOptions,(unsigned int)citr->first.length());
     }
-    
+
+
     unsigned int fullWidth = widthOfOutput;
     unsigned int optionPos = 2;
     unsigned int explanationPos = optionPos+maxNumCharsInOptions+2;
+
+    double ratioOfExplanationToOutputWidth = float(explanationPos)/float(widthOfOutput);
+    double maxRatioOfExplanationToOutputWidth = 0.25f;
+
+    if (ratioOfExplanationToOutputWidth > maxRatioOfExplanationToOutputWidth)
+    {
+        explanationPos = static_cast<unsigned int>(maxRatioOfExplanationToOutputWidth*float(widthOfOutput));
+    }
+
     unsigned int defaultPos = 0;
     if (showDefaults)
     {
@@ -97,12 +107,20 @@ void ApplicationUsage::getFormattedString(std::string& str, const UsageMap& um,u
     {
         line.assign(fullWidth,' ');
         line.replace(optionPos,citr->first.length(),citr->first);
+        unsigned int currentEndPos = optionPos + citr->first.length();
 
         if (showDefaults)
         {
+
             UsageMap::const_iterator ditr = ud.find(citr->first);
             if (ditr != ud.end())
             {
+                if (currentEndPos+1>=defaultPos)
+                {
+                    str += line; str += "\n";
+                    line.assign(fullWidth,' ');
+                }
+
                 line.replace(defaultPos, std::string::npos, "");
                 if (ditr->second != "")
                 {
@@ -113,6 +131,8 @@ void ApplicationUsage::getFormattedString(std::string& str, const UsageMap& um,u
                 str += line;
                 str += "\n";
                 line.assign(fullWidth,' ');
+
+                currentEndPos =  0;
             }
         }
         
@@ -122,6 +142,13 @@ void ApplicationUsage::getFormattedString(std::string& str, const UsageMap& um,u
         bool firstInLine = true;
         if (!explanation.empty())
         {
+
+            if (currentEndPos+1>explanationPos)
+            {
+                str += line; str += "\n";
+                line.assign(fullWidth,' ');
+            }
+
             while (pos<explanation.length())
             {
                 if (firstInLine) offset = 0;

@@ -146,7 +146,7 @@ class OSGGA_EXPORT StandardManipulator : public CameraManipulator
         bool _verticalAxisFixed;
 
         // animation stuff
-        class AnimationData : public osg::Referenced {
+        class OSGGA_EXPORT AnimationData : public osg::Referenced {
         public:
             double _animationTime;
             bool _isAnimating;

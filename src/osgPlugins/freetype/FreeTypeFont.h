@@ -55,7 +55,6 @@ protected:
     FT_Byte*                _buffer;
     FT_Face                 _face;
     unsigned int            _flags;
-    float                   _freetype_scale;
 };
 
 #endif

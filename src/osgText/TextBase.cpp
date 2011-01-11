@@ -93,14 +93,6 @@ void TextBase::setFont(osg::ref_ptr<Font> font)
 {
     if (_font==font) return;
 
-    osg::StateSet* previousFontStateSet = _font.valid() ? _font->getStateSet() : Font::getDefaultFont()->getStateSet();
-    osg::StateSet* newFontStateSet = font.valid() ? font->getStateSet() : Font::getDefaultFont()->getStateSet();
-
-    if (getStateSet() == previousFontStateSet)
-    {
-        setStateSet( newFontStateSet );
-    }
-
     _font = font;
 
     computeGlyphRepresentation();

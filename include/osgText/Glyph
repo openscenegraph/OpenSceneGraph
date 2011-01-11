@@ -49,6 +49,12 @@ public:
 
     unsigned int getGlyphCode() const { return _glyphCode; }
 
+    void setWidth(float width) { _width = width; }
+    float getWidth() const { return _width; }
+
+    void setHeight(float height) { _height = height; }
+    float getHeight() const { return _height; }
+
     void setHorizontalBearing(const osg::Vec2& bearing);
     const osg::Vec2& getHorizontalBearing() const;
 
@@ -83,6 +89,9 @@ protected:
 
     Font*                       _font;
     unsigned int                _glyphCode;
+
+    float                       _width;
+    float                       _height;
 
     osg::Vec2                   _horizontalBearing;
     float                       _horizontalAdvance;
@@ -159,6 +168,12 @@ public:
 
     unsigned int getGlyphCode() const { return _glyphCode; }
 
+    void setWidth(float width) { _width = width; }
+    float getWidth() const { return _width; }
+
+    void setHeight(float height) { _height = height; }
+    float getHeight() const { return _height; }
+
     void setHorizontalBearing(const osg::Vec2& bearing) { _horizontalBearing=bearing; }
     const osg::Vec2 & getHorizontalBearing() const { return _horizontalBearing; }
 
@@ -187,18 +202,6 @@ public:
     osg::Geometry::PrimitiveSetList & getRawFacePrimitiveSetList() { return _rawFacePrimitiveSetList; }
     const osg::Geometry::PrimitiveSetList & getRawFacePrimitiveSetList() const { return _rawFacePrimitiveSetList; }
 
-
-    float getHorizontalWidth() const { return (-_horizontalBearing.x() + _horizontalAdvance); }
-    float getHorizontalHeight() const { return (-_horizontalBearing.y() + _bb.yMax()); }
-    float getVerticalWidth() const { return (-_verticalBearing.x() + _bb.xMax()); }
-    float getVerticalHeight() const { return (-_verticalBearing.y() + _verticalAdvance); }
-
-    void setWidth(float width) { _width = width; }
-    float getWidth() const { return _width; }
-
-    void setHeight(float height) { _height = height; }
-    float getHeight() const { return _height; }
-
     GlyphGeometry* getGlyphGeometry(const Style* style);
 
 protected:
@@ -207,6 +210,9 @@ protected:
 
     Font*                       _font;
     unsigned int                _glyphCode;
+
+    float                       _width;
+    float                       _height;
 
     osg::Vec2                   _horizontalBearing;
     float                       _horizontalAdvance;
@@ -217,8 +223,6 @@ protected:
     osg::BoundingBox            _bb;
 //        osg::Vec2                   _advance;
 
-    float _width;
-    float _height;
 
     osg::ref_ptr<osg::Vec3Array>    _rawVertexArray;
     osg::Geometry::PrimitiveSetList _rawFacePrimitiveSetList;

@@ -1255,6 +1255,15 @@ class OSG_EXPORT State : public Referenced, public Observer
         inline const Program::PerContextProgram* getLastAppliedProgramObject() const { return _lastAppliedProgramObject; }
 
         inline GLint getUniformLocation( unsigned int uniformNameID ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getUniformLocation(uniformNameID) : -1; }
+        /**
+          * Alternative version of getUniformLocation( unsigned int uniformNameID )
+          * retrofited into OSG for backward compatibility with osgCal,
+          * after uniform ids were refactored from std::strings to GLints in OSG version 2.9.10.
+          * 
+          * Drawbacks: This method is not particularly fast. It has to access mutexed static 
+          * map of uniform ids. So don't overuse it or your app performance will suffer.
+        */
+        inline GLint getUniformLocation( const std::string & uniformName ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getUniformLocation(uniformName) : -1; }
         inline GLint getAttribLocation( const std::string& name ) const { return _lastAppliedProgramObject ? _lastAppliedProgramObject->getAttribLocation(name) : -1; }
 
         typedef std::pair<const StateAttribute*,StateAttribute::OverrideValue>  AttributePair;

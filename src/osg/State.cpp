@@ -1265,11 +1265,11 @@ namespace State_Utils
         return replacedStr;
     }
 
-    void replaceAndInsertDeclaration(std::string& source, const std::string& originalStr, const std::string& newStr, const std::string& declarationPrefix)
+    void replaceAndInsertDeclaration(std::string& source, std::string::size_type declPos, const std::string& originalStr, const std::string& newStr, const std::string& declarationPrefix)
     {
         if (replace(source, originalStr, newStr))
         {
-            source.insert(0, declarationPrefix + newStr + std::string(";\n"));
+            source.insert(declPos, declarationPrefix + newStr + std::string(";\n"));
         }
     }
 }
@@ -1279,32 +1279,46 @@ bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
     OSG_NOTICE<<"State::convertShaderSourceToOsgBuiltIns()"<<std::endl;
 
     OSG_NOTICE<<"++Before Converted source "<<std::endl<<source<<std::endl<<"++++++++"<<std::endl;
-
+    
     // replace ftransform as it only works with built-ins
     State_Utils::replace(source, "ftransform()", "gl_ModelViewProjectionMatrix * gl_Vertex");
 
-    State_Utils::replaceAndInsertDeclaration(source, "gl_Normal", "osg_Normal", "attribute vec3 ");
-    State_Utils::replaceAndInsertDeclaration(source, "gl_Vertex", "osg_Vertex", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, "gl_Color", "osg_Color", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, "gl_SecondaryColor", "osg_SecondaryColor", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, "gl_FogCoord", "osg_FogCoord", "attribute float ");
+    // find the first legal insertion point for replacement declarations. GLSL requires that nothing
+    // precede a "#verson" compiler directive, so we must insert new declarations after it.
+    std::string::size_type declPos = source.rfind( "#version " );
+    if ( declPos != std::string::npos )
+    {
+        // found the string, now find the next linefeed and set the insertion point after it.
+        declPos = source.find( '\n', declPos );
+        declPos = declPos != std::string::npos ? declPos+1 : source.length();
+    }
+    else
+    {
+        declPos = 0;
+    }
 
-    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord0", "osg_MultiTexCoord0", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord1", "osg_MultiTexCoord1", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord2", "osg_MultiTexCoord2", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord3", "osg_MultiTexCoord3", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord4", "osg_MultiTexCoord4", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord5", "osg_MultiTexCoord5", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord6", "osg_MultiTexCoord6", "attribute vec4 ");
-    State_Utils::replaceAndInsertDeclaration(source, "gl_MultiTexCoord7", "osg_MultiTexCoord7", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_Normal", "osg_Normal", "attribute vec3 ");
+    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_Vertex", "osg_Vertex", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_Color", "osg_Color", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_SecondaryColor", "osg_SecondaryColor", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_FogCoord", "osg_FogCoord", "attribute float ");
+
+    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_MultiTexCoord0", "osg_MultiTexCoord0", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_MultiTexCoord1", "osg_MultiTexCoord1", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_MultiTexCoord2", "osg_MultiTexCoord2", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_MultiTexCoord3", "osg_MultiTexCoord3", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_MultiTexCoord4", "osg_MultiTexCoord4", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_MultiTexCoord5", "osg_MultiTexCoord5", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_MultiTexCoord6", "osg_MultiTexCoord6", "attribute vec4 ");
+    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_MultiTexCoord7", "osg_MultiTexCoord7", "attribute vec4 ");
 
     // replace built in uniform
-    State_Utils::replaceAndInsertDeclaration(source, "gl_ModelViewMatrix", "osg_ModelViewMatrix", "uniform mat4 ");
-    State_Utils::replaceAndInsertDeclaration(source, "gl_ModelViewProjectionMatrix", "osg_ModelViewProjectionMatrix", "uniform mat4 ");
-    State_Utils::replaceAndInsertDeclaration(source, "gl_ProjectionMatrix", "osg_ProjectionMatrix", "uniform mat4 ");
-    State_Utils::replaceAndInsertDeclaration(source, "gl_NormalMatrix", "osg_NormalMatrix", "uniform mat3 ");
+    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_ModelViewMatrix", "osg_ModelViewMatrix", "uniform mat4 ");
+    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_ModelViewProjectionMatrix", "osg_ModelViewProjectionMatrix", "uniform mat4 ");
+    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_ProjectionMatrix", "osg_ProjectionMatrix", "uniform mat4 ");
+    State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_NormalMatrix", "osg_NormalMatrix", "uniform mat3 ");
 
-    OSG_NOTICE<<"-------- Converted source "<<std::endl<<source<<std::endl<<"----------------"<<std::endl;
+    OSG_NOTICE<<"-------- Converted source "<<std::endl<<source<<std::endl<<"----------------"<<std::endl;   
 
     return true;
 }

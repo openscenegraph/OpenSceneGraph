@@ -125,17 +125,54 @@ int main(int argc, char** argv)
     // set up outline.
     while(arguments.read("--outline",r)) { style->setOutlineRatio(r); }
 
+    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
+    viewer.addEventHandler(new osgViewer::StatsHandler);
 
+#if 1
+    osg::Geode* geode = new osg::Geode;
+
+    float characterSize = 1.0f;
+    while(arguments.read("--size",characterSize)) {}
+
+    if (arguments.read("--2d"))
+    {
+        osgText::Text* text2D = new osgText::Text;
+        text2D->setFont(font.get());
+        text2D->setCharacterSize(characterSize);
+        text2D->setFontResolution(256,256);
+        text2D->setDrawMode(osgText::Text::TEXT | osgText::Text::BOUNDINGBOX);
+        text2D->setAxisAlignment(osgText::Text::XZ_PLANE);
+        text2D->setText(word);
+        geode->addDrawable(text2D);
+    }
+        if (!arguments.read("--no-3d"))
+    {
+        osgText::Text3D* text3D = new osgText::Text3D;
+        text3D->setFont(font.get());
+        text3D->setStyle(style.get());
+        text3D->setCharacterSize(characterSize);
+        text3D->setDrawMode(osgText::Text3D::TEXT | osgText::Text3D::BOUNDINGBOX);
+        text3D->setAxisAlignment(osgText::Text3D::XZ_PLANE);
+        text3D->setText(word);
+        geode->addDrawable(text3D);
+    }
+    
+
+    if (arguments.read("--size-quad"))
+    {
+        geode->addDrawable( osg::createTexturedQuadGeometry(osg::Vec3(0.0f,characterSize*thickness,0.0f),osg::Vec3(characterSize,0.0,0.0),osg::Vec3(0.0f,0.0,characterSize), 0.0, 0.0, 1.0, 1.0) );
+    }
+    
+    viewer.setSceneData(geode);
+#else
     osgText::TextNode* text = new osgText::TextNode;
-    text->setText(word);
     text->setFont(font.get());
     text->setStyle(style.get());
     text->setTextTechnique(new osgText::TextTechnique);
+    text->setText(word);
     text->update();
-
-    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
-    viewer.addEventHandler(new osgViewer::StatsHandler);
     viewer.setSceneData(text);
+#endif
 
-        return viewer.run();
+    return viewer.run();
 }

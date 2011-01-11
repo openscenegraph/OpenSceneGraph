@@ -112,7 +112,7 @@ void Layout::layout(TextNode& text) const
             {
                 osg::Vec3 local_scale( size );
                 technique->addCharacter(pos, local_scale, glyph, style);
-                pos += osg::Vec3(size.x()*glyph->getHorizontalWidth(), 0.0f ,0.0f);
+                pos += osg::Vec3(size.x()*glyph->getWidth(), 0.0f ,0.0f);
             }
         }
 

@@ -24,7 +24,7 @@ namespace
             AntiSquishCallback(AntiSquish* asq) : osg::NodeCallback(), _antiSquish(asq) {}
             virtual ~AntiSquishCallback() {};
             
-            virtual void operator() (osg::Node*, osg::NodeVisitor* nv)
+            virtual void operator() (osg::Node* node, osg::NodeVisitor* nv)
             {
                 // Get the node path.
                 osg::NodePath np = nv->getNodePath();
@@ -40,6 +40,7 @@ namespace
                 osg::Matrix _unsquishedMatrix = _antiSquish->computeUnSquishedMatrix(localToWorld, flag);
                 if (flag)
                     _antiSquish->setMatrix(_unsquishedMatrix);
+                traverse(node,nv);
             }
 
         protected:

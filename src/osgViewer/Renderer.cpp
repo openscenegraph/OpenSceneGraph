@@ -289,34 +289,53 @@ void ARBQuerySupport::checkQuery(osg::Stats* stats, osg::State* state,
 //  ThreadSafeQueue
 
 Renderer::ThreadSafeQueue::ThreadSafeQueue()
+    : _isReleased(false)
 {
-    _block.set(false);
 }
 
 Renderer::ThreadSafeQueue::~ThreadSafeQueue()
 {
 }
 
+void Renderer::ThreadSafeQueue::release()
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+    _isReleased = true;
+    _cond.broadcast();
+}
+
 osgUtil::SceneView* Renderer::ThreadSafeQueue::takeFront()
 {
-    if (_queue.empty()) _block.block();
-
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-    if (_queue.empty()) return 0;
-
-    osgUtil::SceneView* front = _queue.front();
-    _queue.pop_front();
-
-    if (_queue.empty()) _block.set(false);
-
-    return front;
+    // Loop in case there are spurious wakeups from the condition wait.
+    while (true)
+    {
+        // If the queue has been released but nothing is enqueued,
+        // just return. This prevents a deadlock when threading is
+        // restarted.
+        if (_isReleased)
+        {
+            if (!_queue.empty())
+            {
+                osgUtil::SceneView* front = _queue.front();
+                _queue.pop_front();
+                if (_queue.empty())
+                    _isReleased = false;
+                return front;
+            }
+            return 0;
+        }
+        _cond.wait(&_mutex);
+    }
+    return 0;                   // Can't happen
 }
 
 void Renderer::ThreadSafeQueue::add(osgUtil::SceneView* sv)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
     _queue.push_back(sv);
-    _block.set(true);
+    _isReleased = true;
+    _cond.broadcast();
 }
 
 static OpenThreads::Mutex s_drawSerializerMutex;

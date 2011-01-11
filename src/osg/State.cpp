@@ -1276,9 +1276,9 @@ namespace State_Utils
 
 bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
 {
-    OSG_NOTICE<<"State::convertShaderSourceToOsgBuiltIns()"<<std::endl;
+    OSG_INFO<<"State::convertShaderSourceToOsgBuiltIns()"<<std::endl;
 
-    OSG_NOTICE<<"++Before Converted source "<<std::endl<<source<<std::endl<<"++++++++"<<std::endl;
+    OSG_INFO<<"++Before Converted source "<<std::endl<<source<<std::endl<<"++++++++"<<std::endl;
     
     // replace ftransform as it only works with built-ins
     State_Utils::replace(source, "ftransform()", "gl_ModelViewProjectionMatrix * gl_Vertex");
@@ -1318,7 +1318,7 @@ bool State::convertVertexShaderSourceToOsgBuiltIns(std::string& source) const
     State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_ProjectionMatrix", "osg_ProjectionMatrix", "uniform mat4 ");
     State_Utils::replaceAndInsertDeclaration(source, declPos, "gl_NormalMatrix", "osg_NormalMatrix", "uniform mat3 ");
 
-    OSG_NOTICE<<"-------- Converted source "<<std::endl<<source<<std::endl<<"----------------"<<std::endl;   
+    OSG_INFO<<"-------- Converted source "<<std::endl<<source<<std::endl<<"----------------"<<std::endl;
 
     return true;
 }

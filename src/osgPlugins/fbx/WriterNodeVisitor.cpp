@@ -335,6 +335,7 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor& writerNodeVisitor,
                                       ImageSet& imageSet,
                                       ImageFilenameSet& imageFilenameSet,
                                       unsigned int& lastGeneratedImageFileName,
+                                      const osgDB::ReaderWriter::Options * options,
                                       int index) :
     _index(index),
     _fbxMaterial(NULL),
@@ -429,7 +430,7 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor& writerNodeVisitor,
                     if (imageFilenameSet.find(destPath) != imageFilenameSet.end()) break;
                 }
                 lastGeneratedImageFileName = imageNumber;
-                osgDB::writeImageFile(*_osgImage, destPath);
+                osgDB::writeImageFile(*_osgImage, destPath, options);
             }
             else
             {
@@ -441,7 +442,7 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor& writerNodeVisitor,
                     {
                         OSG_NOTICE << "Can't create directory for file '" << destPath << "'. May fail creating the image file." << std::endl;
                     }
-                    osgDB::writeImageFile(*_osgImage, destPath);
+                    osgDB::writeImageFile(*_osgImage, destPath, options);
                 }
             }
 
@@ -474,7 +475,7 @@ int WriterNodeVisitor::processStateSet(const osg::StateSet* ss)
     {
         int matNum = _lastMaterialIndex;
         _materialMap.insert(MaterialMap::value_type(MaterialMap::key_type(ss),
-            Material(*this, _srcDirectory, ss, mat, tex, _pSdkManager, _directory, _imageSet, _imageFilenameSet, _lastGeneratedImageFileName, matNum)));
+            Material(*this, _srcDirectory, ss, mat, tex, _pSdkManager, _directory, _imageSet, _imageFilenameSet, _lastGeneratedImageFileName, _options, matNum)));
         ++_lastMaterialIndex;
         return matNum;
     }

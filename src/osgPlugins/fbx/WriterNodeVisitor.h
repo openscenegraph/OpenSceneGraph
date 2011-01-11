@@ -149,6 +149,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
                      ImageSet&            imageSet,
                      ImageFilenameSet&    imageFilenameSet,
                      unsigned int&        lastGeneratedImageFileName,
+                     const osgDB::ReaderWriter::Options * options,
                      int                  index = -1);
 
             KFbxTexture* getFbxTexture() const

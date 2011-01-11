@@ -387,6 +387,8 @@ void GlyphTexture::resizeGLObjectBuffers(unsigned int maxSize)
 Glyph::Glyph(Font* font, unsigned int glyphCode):
     _font(font),
     _glyphCode(glyphCode),
+    _width(1.0f),
+    _height(1.0f),
     _horizontalBearing(0.0f,0.f),
     _horizontalAdvance(0.f),
     _verticalBearing(0.0f,0.f),
@@ -477,6 +479,8 @@ Glyph3D::Glyph3D(Font* font, unsigned int glyphCode):
     osg::Referenced(true),
     _font(font),
     _glyphCode(glyphCode),
+    _width(1.0f),
+    _height(1.0f),
     _horizontalBearing(0,0),
     _horizontalAdvance(0),
     _verticalBearing(0,0),

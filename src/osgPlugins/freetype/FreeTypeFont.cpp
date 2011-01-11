@@ -205,8 +205,7 @@ FreeTypeFont::FreeTypeFont(const std::string& filename, FT_Face face, unsigned i
     _filename(filename),
     _buffer(0),
     _face(face),
-    _flags(flags),
-    _freetype_scale(1.0f)
+    _flags(flags)
 {
     init();
 }
@@ -216,8 +215,7 @@ FreeTypeFont::FreeTypeFont(FT_Byte* buffer, FT_Face face, unsigned int flags):
     _filename(""),
     _buffer(buffer),
     _face(face),
-    _flags(flags),
-    _freetype_scale(1.0f)
+    _flags(flags)
 {
     init();
 }
@@ -250,60 +248,14 @@ FreeTypeFont::~FreeTypeFont()
 void FreeTypeFont::init()
 {
     FT_Error _error;
-#if 0
     _error = FT_Set_Pixel_Sizes(_face, 32, 32);
     if (_error)
     {
         OSG_NOTICE << "FreeTypeFont3D: set pixel sizes failed ..." << std::endl;
         return;
     }
-#endif
-    FT_Set_Char_Size( _face, 64*64, 64*64, 600, 600);
-
-    int glyphIndex = FT_Get_Char_Index( _face, 'M' );
-    _error = FT_Load_Glyph( _face, glyphIndex, FT_LOAD_DEFAULT );
-    if (_error)
-    {
-        OSG_NOTICE << "FreeTypeFont3D: initial glyph load failed ..." << std::endl;
-        return;
-    }
-
-    if (_face->glyph->format != FT_GLYPH_FORMAT_OUTLINE)
-    {
-        OSG_NOTICE << "FreeTypeFont3D: not a vector font" << std::endl;
-        return;
-    }
-
-    {
-        FreeType::Char3DInfo char3d(10);
-
-        FT_Outline outline = _face->glyph->outline;
-        FT_Outline_Funcs funcs;
-        funcs.conic_to = (FT_Outline_ConicToFunc)&FreeType::conicTo;
-        funcs.line_to = (FT_Outline_LineToFunc)&FreeType::lineTo;
-        funcs.cubic_to = (FT_Outline_CubicToFunc)&FreeType::cubicTo;
-        funcs.move_to = (FT_Outline_MoveToFunc)&FreeType::moveTo;
-        funcs.shift = 0;
-        funcs.delta = 0;
-        _error = FT_Outline_Decompose(&outline,&funcs,&char3d);
-        if (_error)
-        {
-            OSG_NOTICE << "FreeTypeFont3D: - outline decompose failed ..." << std::endl;
-            return;
-        }
-
-        FT_BBox bb;
-        FT_Outline_Get_BBox(&outline,&bb);
-
-        long ymin = ft_floor( bb.yMin );
-        long ymax = ft_ceiling( bb.yMax );
-        double height = double(ymax - ymin)/64.0;
-
-        // long xmin = ft_floor( bb.xMin );
-        // long xmax = ft_ceiling( bb.xMax );
-        // double width = (xmax - xmin)/64.0;
-        _freetype_scale = 1.0f/height;
-    }
+    _currentRes.first = 32;
+    _currentRes.second = 32;
 }
 
 void FreeTypeFont::setFontResolution(const osgText::FontResolution& fontSize)
@@ -346,6 +298,8 @@ osgText::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, u
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
 
     setFontResolution(fontRes);
+
+    float coord_scale = 1.0f/(float(_currentRes.second)*64.0f);
 
     //
     // GT: fix for symbol fonts (i.e. the Webdings font) as the wrong character are being  
@@ -432,17 +386,23 @@ osgText::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, u
 
     FT_Glyph_Metrics* metrics = &(_face->glyph->metrics);
 
-#if 0
-    float coord_scale = _freetype_scale/64.0f;
-#else
-    float coord_scale = 1.0f/64.0f;
-#endif
-
+    glyph->setWidth((float)metrics->width * coord_scale);
+    glyph->setHeight((float)metrics->height * coord_scale);
     glyph->setHorizontalBearing(osg::Vec2((float)metrics->horiBearingX * coord_scale,(float)(metrics->horiBearingY-metrics->height) * coord_scale)); // bottom left.
     glyph->setHorizontalAdvance((float)metrics->horiAdvance * coord_scale);
     glyph->setVerticalBearing(osg::Vec2((float)metrics->vertBearingX * coord_scale,(float)(metrics->vertBearingY-metrics->height) * coord_scale)); // top middle.
     glyph->setVerticalAdvance((float)metrics->vertAdvance * coord_scale);
 
+#if 0
+    OSG_NOTICE<<"getGlyph("<<charcode<<", "<<char(charcode)<<")"<<std::endl;
+    OSG_NOTICE<<"   height="<<glyph->getHeight()<<std::endl;
+    OSG_NOTICE<<"   width="<<glyph->getWidth()<<std::endl;
+    OSG_NOTICE<<"   horizontalBearing="<<glyph->getHorizontalBearing()<<std::endl;
+    OSG_NOTICE<<"   horizontalAdvance="<<glyph->getHorizontalAdvance()<<std::endl;
+    OSG_NOTICE<<"   verticalBearing="<<glyph->getHorizontalBearing()<<std::endl;
+    OSG_NOTICE<<"   verticalAdvance="<<glyph->getVerticalAdvance()<<std::endl;
+#endif
+    
 //    cout << "      in getGlyph() implementation="<<this<<"  "<<_filename<<"  facade="<<_facade<<endl;
 
     return glyph.release();
@@ -452,9 +412,6 @@ osgText::Glyph* FreeTypeFont::getGlyph(const osgText::FontResolution& fontRes, u
 osgText::Glyph3D * FreeTypeFont::getGlyph3D(unsigned int charcode)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(FreeTypeLibrary::instance()->getMutex());
-
-    FT_Set_Char_Size( _face, 64*64, 64*64, 600, 600);
-    _currentRes = osgText::FontResolution(0,0);
 
     //
     // GT: fix for symbol fonts (i.e. the Webdings font) as the wrong character are being
@@ -483,7 +440,9 @@ osgText::Glyph3D * FreeTypeFont::getGlyph3D(unsigned int charcode)
         return 0;
     }
 
-    float coord_scale = _freetype_scale/64.0f;
+    //float coord_scale = _freetype_scale/64.0f;
+    //float coord_scale = (1.0f/float(fontDPI))/64.0f;
+    float coord_scale = 1.0f/(float(_currentRes.second)*64.0f);
 
     // ** init FreeType to describe the glyph
     FreeType::Char3DInfo char3d(_facade->getNumberCurveSamples());
@@ -519,36 +478,39 @@ osgText::Glyph3D * FreeTypeFont::getGlyph3D(unsigned int charcode)
     }
 
     // ** save vertices and PrimitiveSetList of each face in the Glyph3D PrimitiveSet face list
-    osg::ref_ptr<osgText::Glyph3D> glyph3D = new osgText::Glyph3D(_facade, charcode);
+    osg::ref_ptr<osgText::Glyph3D> glyph = new osgText::Glyph3D(_facade, charcode);
 
     // copy the raw primitive set list before we tessellate it.
-    glyph3D->getRawFacePrimitiveSetList() = rawPrimitives;
-    glyph3D->setRawVertexArray(rawVertices.get());
+    glyph->getRawFacePrimitiveSetList() = rawPrimitives;
+    glyph->setRawVertexArray(rawVertices.get());
 
 
     FT_Glyph_Metrics* metrics = &(_face->glyph->metrics);
 
-    glyph3D->setHorizontalBearing(osg::Vec2((float)metrics->horiBearingX * coord_scale,(float)(metrics->horiBearingY-metrics->height) * coord_scale)); // bottom left.
-    glyph3D->setHorizontalAdvance((float)metrics->horiAdvance * coord_scale);
-    glyph3D->setVerticalBearing(osg::Vec2((float)metrics->vertBearingX * coord_scale,(float)(metrics->vertBearingY-metrics->height) * coord_scale)); // top middle.
-    glyph3D->setVerticalAdvance((float)metrics->vertAdvance * coord_scale);
+    glyph->setWidth((float)metrics->width * coord_scale);
+    glyph->setHeight((float)metrics->height * coord_scale);
+    glyph->setHorizontalBearing(osg::Vec2((float)metrics->horiBearingX * coord_scale,(float)(metrics->horiBearingY-metrics->height) * coord_scale)); // bottom left.
+    glyph->setHorizontalAdvance((float)metrics->horiAdvance * coord_scale);
+    glyph->setVerticalBearing(osg::Vec2((float)metrics->vertBearingX * coord_scale,(float)(metrics->vertBearingY-metrics->height) * coord_scale)); // top middle.
+    glyph->setVerticalAdvance((float)metrics->vertAdvance * coord_scale);
 
-    glyph3D->setWidth((float)metrics->width * coord_scale);
-    glyph3D->setHeight((float)metrics->height * coord_scale);
+#if 0
+    OSG_NOTICE<<"getGlyph3D("<<charcode<<", "<<char(charcode)<<")"<<std::endl;
+    OSG_NOTICE<<"   height="<<glyph->getHeight()<<std::endl;
+    OSG_NOTICE<<"   width="<<glyph->getWidth()<<std::endl;
+    OSG_NOTICE<<"   horizontalBearing="<<glyph->getHorizontalBearing()<<std::endl;
+    OSG_NOTICE<<"   horizontalAdvance="<<glyph->getHorizontalAdvance()<<std::endl;
+    OSG_NOTICE<<"   verticalBearing="<<glyph->getHorizontalBearing()<<std::endl;
+    OSG_NOTICE<<"   verticalAdvance="<<glyph->getVerticalAdvance()<<std::endl;
+#endif
 
     FT_BBox ftbb;
     FT_Outline_Get_BBox(&outline, &ftbb);
+    osg::BoundingBox bb(float(ftbb.xMin) * coord_scale, float(ftbb.yMin) * coord_scale, 0.0f, float(ftbb.xMax) * coord_scale, float(ftbb.yMax) * coord_scale, 0.0f);
 
-    long xmin = ft_floor( ftbb.xMin );
-    long xmax = ft_ceiling( ftbb.xMax );
-    long ymin = ft_floor( ftbb.yMin );
-    long ymax = ft_ceiling( ftbb.yMax );
+    glyph->setBoundingBox(bb);
 
-    osg::BoundingBox bb(xmin * coord_scale, ymin * coord_scale, 0.0f, xmax * coord_scale, ymax * coord_scale, 0.0f);
-
-    glyph3D->setBoundingBox(bb);
-
-    return glyph3D.release();
+    return glyph.release();
 }
 
 osg::Vec2 FreeTypeFont::getKerning(unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType kerningType)
@@ -578,7 +540,11 @@ osg::Vec2 FreeTypeFont::getKerning(unsigned int leftcharcode,unsigned int rightc
         return osg::Vec2(0.0f,0.0f);
     }
 
-    return osg::Vec2((float)kerning.x/64.0f,(float)kerning.y/64.0f);
+    //float coord_scale = _freetype_scale/64.0f;
+    //float coord_scale = 1.0f/64.0f;
+    float coord_scale = 1.0f/(float(_currentRes.second)*64.0f);
+
+    return osg::Vec2((float)kerning.x*coord_scale,(float)kerning.y*coord_scale);
 }
 
 bool FreeTypeFont::hasVertical() const

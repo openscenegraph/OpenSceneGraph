@@ -14,6 +14,7 @@
 #ifndef OSGVIEWER_RENDERER
 #define OSGVIEWER_RENDERER 1
 
+#include <OpenThreads/Condition>
 #include <osg/Timer>
 #include <osgDB/DatabasePager>
 #include <osgUtil/SceneView>
@@ -89,20 +90,21 @@ class OSGVIEWER_EXPORT Renderer : public osg::GraphicsOperation
         struct OSGVIEWER_EXPORT ThreadSafeQueue
         {
             OpenThreads::Mutex _mutex;
-            OpenThreads::Block _block;
+            OpenThreads::Condition _cond;
             typedef std::list<osgUtil::SceneView*> SceneViewList;
             SceneViewList _queue;
+            bool _isReleased;
             
             ThreadSafeQueue();
             ~ThreadSafeQueue();
-            
-            void release()
-            {
-                _block.release();
-            }
-            
+
+            /** Release any thread waiting on the queue, even if the queue is empty. */
+            void release();
+
+            /** Take a SceneView from the queue. Can return 0 if release() is called when the queue is empty. */
             osgUtil::SceneView* takeFront();
-            
+
+            /**  Add a SceneView object to the back of the queue. */
             void add(osgUtil::SceneView* sv);
         };
 

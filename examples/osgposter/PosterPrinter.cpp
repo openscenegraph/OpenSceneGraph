@@ -59,14 +59,14 @@ public:
                 if ( pagedLOD->getDatabasePath().empty() )
                 {
                     nv->getDatabaseRequestHandler()->requestNodeFile(
-                        pagedLOD->getFileName(numChildren), pagedLOD,
+                        pagedLOD->getFileName(numChildren), nv->getNodePath(),
                         1.0, nv->getFrameStamp(),
                         pagedLOD->getDatabaseRequest(numChildren), pagedLOD->getDatabaseOptions() );
                 }
                 else
                 {
                     nv->getDatabaseRequestHandler()->requestNodeFile(
-                        pagedLOD->getDatabasePath()+pagedLOD->getFileName(numChildren), pagedLOD,
+                        pagedLOD->getDatabasePath()+pagedLOD->getFileName(numChildren), nv->getNodePath(),
                         1.0, nv->getFrameStamp(),
                         pagedLOD->getDatabaseRequest(numChildren), pagedLOD->getDatabaseOptions() );
                 }

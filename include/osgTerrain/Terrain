@@ -34,7 +34,11 @@ class OSGTERRAIN_EXPORT Terrain : public osg::CoordinateSystemNode
         META_Node(osgTerrain, Terrain);
 
         virtual void traverse(osg::NodeVisitor& nv);
-        
+
+        virtual osgTerrain::Terrain* asTerrain() { return this; }
+        virtual const osgTerrain::Terrain* asTerrain() const { return this; }
+
+
         /** Set the sample ratio hint that TerrainTile should use when building geometry.
           * Defaults to 1.0, which means use all original sample points.*/
         void setSampleRatio(float ratio);

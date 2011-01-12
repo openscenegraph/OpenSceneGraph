@@ -23,8 +23,15 @@
 #include <string>
 #include <vector>
 
+
+// forward declare osgTerrrain::Terrain to enable declaration of asTerrain() method.
+namespace osgTerrain {
+class Terrain;
+}
+
 namespace osg {
 
+// forcing declare classes to enable declaration of as*() methods.
 class NodeVisitor;
 class Group;
 class Transform;
@@ -113,6 +120,15 @@ class OSG_EXPORT Node : public Object
         /** convert 'const this' into a const Geode pointer if Node is a Geode, otherwise return 0.
           * Equivalent to dynamic_cast<const Geode*>(this).*/
         virtual const Geode* asGeode() const { return 0; }
+
+        /** Convert 'this' into a Transform pointer if Node is a Terrain, otherwise return 0.
+          * Equivalent to dynamic_cast<Terrrain*>(this).*/
+        virtual osgTerrain::Terrain* asTerrain() { return 0; }
+
+        /** convert 'const this' into a const Terrain pointer if Node is a Terrain, otherwise return 0.
+          * Equivalent to dynamic_cast<const Terrain*>(this).*/
+        virtual const osgTerrain::Terrain* asTerrain() const { return 0; }
+
 
         /** Visitor Pattern : calls the apply method of a NodeVisitor with this node's type.*/
         virtual void accept(NodeVisitor& nv);

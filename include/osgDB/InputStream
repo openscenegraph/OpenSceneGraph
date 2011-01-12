@@ -25,6 +25,7 @@
 #include <osg/PrimitiveSet>
 #include <osgDB/ReaderWriter>
 #include <osgDB/StreamOperator>
+#include <osgDB/Options>
 #include <iostream>
 #include <sstream>
 

@@ -105,7 +105,7 @@ void TXPPagedLOD::traverse(osg::NodeVisitor& nv)
 
                     //std::cout<<"    requesting child "<<_fileNameList[numChildren]<<" priotity = "<<priority<<std::endl;
                     nv.getDatabaseRequestHandler()->requestNodeFile(_perRangeDataList[numChildren]._filename,
-                                                                    this,
+                                                                    nv.getNodePath(),
                                                                     priority,
                                                                     nv.getFrameStamp(),
                                                                     _perRangeDataList[numChildren]._databaseRequest);

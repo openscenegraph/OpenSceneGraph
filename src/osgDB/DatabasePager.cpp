@@ -799,7 +799,15 @@ void DatabasePager::DatabaseThread::run()
             {
                 if (dr_loadOptions->getFileCache()) fileCache = dr_loadOptions->getFileCache();
                 if (dr_loadOptions->getFileLocationCallback()) fileLocationCallback = dr_loadOptions->getFileLocationCallback();
+
+                dr_loadOptions = dr_loadOptions->cloneOptions();
             }
+            else
+            {
+                dr_loadOptions = new osgDB::Options;
+            }
+
+            dr_loadOptions->setTerrain(databaseRequest->_terrain);
 
             // disable the FileCache if the fileLocationCallback tells us that it isn't required for this request.
             if (fileLocationCallback.valid() && !fileLocationCallback->useFileCache()) fileCache = 0;
@@ -893,23 +901,13 @@ void DatabasePager::DatabaseThread::run()
             {
                 fileCache->writeNode(*(loadedModel), fileName, dr_loadOptions.get());
             }
-            osg::RefNodePath refNodePath;
+
             {
                 OpenThreads::ScopedLock<OpenThreads::Mutex> drLock(_pager->_dr_mutex);
                 if ((_pager->_frameNumber-databaseRequest->_frameNumberLastRequest)>1)
                 {
                     OSG_INFO<<_name<<": Warning DatabaseRquest no longer required."<<std::endl;
                     loadedModel = 0;
-                }
-                else
-                {
-                    // take a refNodePath to ensure that none of the nodes
-                    // go out of scope while we are using them.
-                    if (!databaseRequest->_observerNodePath.getRefNodePath(refNodePath))
-                    {
-                        OSG_INFO<<_name<<": Warning node in parental chain has been deleted, discarding load."<<std::endl;
-                        loadedModel = 0;
-                    }
                 }
             }
 
@@ -924,17 +922,6 @@ void DatabasePager::DatabaseThread::run()
                                                                     _pager->_changeAnisotropy, _pager->_valueAnisotropy,
                                                                     _pager->_drawablePolicy,
                                                                     _pager);
-
-                // push the soon to be parent on the nodepath of the NodeVisitor so that 
-                // during traversal one can test for where it'll be in the overall scene graph
-                // This is the benefit for osgTerrain::TerrainTile, so
-                // that it will find its Terrain node on its first traversal.
-                for(osg::RefNodePath::iterator rnp_itr = refNodePath.begin();
-                    rnp_itr != refNodePath.end();
-                    ++rnp_itr)
-                {
-                    frov.pushOntoNodePath(rnp_itr->get());
-                }
 
                 loadedModel->accept(frov);
 
@@ -1362,7 +1349,7 @@ bool DatabasePager::getRequestsInProgress() const
 }
 
 
-void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* group,
+void DatabasePager::requestNodeFile(const std::string& fileName, osg::NodePath& nodePath,
                                     float priority, const osg::FrameStamp* framestamp,
                                     osg::ref_ptr<osg::Referenced>& databaseRequestRef,
                                     const osg::Referenced* options)
@@ -1381,7 +1368,28 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
 
 
     if (!_acceptNewRequests) return;
-    
+
+
+    if (nodePath.empty())
+    {
+        OSG_NOTICE<<"Warning: DatabasePager::requestNodeFile(..) passed empty NodePath, so nowhere to attach new subgraph to."<<std::endl;
+        return;
+    }
+
+    osg::Group* group = nodePath.back()->asGroup();
+    if (!group)
+    {
+        OSG_NOTICE<<"Warning: DatabasePager::requestNodeFile(..) passed NodePath without group as last node in path, so nowhere to attach new subgraph to."<<std::endl;
+        return;
+    }
+
+    osg::Node* terrain = 0;
+    for(osg::NodePath::reverse_iterator itr = nodePath.rbegin();
+        itr != nodePath.rend();
+        ++itr)
+    {
+        if ((*itr)->asTerrain()) terrain = *itr;
+    }
 
     double timestamp = framestamp?framestamp->getReferenceTime():0.0;
     unsigned int frameNumber = framestamp?framestamp->getFrameNumber():static_cast<unsigned int>(_frameNumber);
@@ -1410,7 +1418,7 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
         bool requeue = false;
         if (databaseRequest)
         {
-            OpenThreads::ScopedLock<OpenThreads::Mutex> drLock(_dr_mutex);            
+            OpenThreads::ScopedLock<OpenThreads::Mutex> drLock(_dr_mutex);
             if (!(databaseRequest->valid()))
             {
                 OSG_INFO<<"DatabaseRequest has been previously invalidated whilst still attached to scene graph."<<std::endl;
@@ -1436,7 +1444,8 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
                     databaseRequest->_frameNumberLastRequest = frameNumber;
                     databaseRequest->_timestampLastRequest = timestamp;
                     databaseRequest->_priorityLastRequest = priority;
-                    databaseRequest->_observerNodePath.setNodePathTo(group);
+                    databaseRequest->_group = group;
+                    databaseRequest->_terrain = terrain;
                     databaseRequest->_loadOptions = loadOptions;
                     requeue = true;
                 }
@@ -1467,7 +1476,8 @@ void DatabasePager::requestNodeFile(const std::string& fileName,osg::Group* grou
             databaseRequest->_frameNumberLastRequest = frameNumber;
             databaseRequest->_timestampLastRequest = timestamp;
             databaseRequest->_priorityLastRequest = priority;
-            databaseRequest->_observerNodePath.setNodePathTo(group);
+            databaseRequest->_group = group;
+            databaseRequest->_terrain = terrain;
             databaseRequest->_loadOptions = loadOptions;
 
             _fileRequestQueue->addNoLock(databaseRequest.get());
@@ -1608,19 +1618,17 @@ void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
         ++itr)
     {
         DatabaseRequest* databaseRequest = itr->get();
+
         // No need to take _dr_mutex. The pager threads are done with
         // the request; the cull traversal -- which might redispatch
         // the request -- can't run at the sametime as this update traversal.
-        osg::RefNodePath refNodePath;
-        if (databaseRequest->_observerNodePath.getRefNodePath(refNodePath))
+        osg::ref_ptr<osg::Group> group;
+        if (databaseRequest->_group.lock(group))
         {
-            // OSG_NOTICE<<"Merging "<<_frameNumber-(*itr)->_frameNumberLastRequest<<std::endl;
-            osg::Group* group = static_cast<osg::Group*>(refNodePath.back().get());
-
             if (osgDB::Registry::instance()->getSharedStateManager())
                 osgDB::Registry::instance()->getSharedStateManager()->share(databaseRequest->_loadedModel.get());
 
-            osg::PagedLOD* plod = dynamic_cast<osg::PagedLOD*>(group);
+            osg::PagedLOD* plod = dynamic_cast<osg::PagedLOD*>(group.get());
             if (plod)
             {
                 plod->setTimeStamp(plod->getNumChildren(), timeStamp);
@@ -1629,7 +1637,7 @@ void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
             }
             else
             {
-                osg::ProxyNode* proxyNode = dynamic_cast<osg::ProxyNode*>(group);
+                osg::ProxyNode* proxyNode = dynamic_cast<osg::ProxyNode*>(group.get());
                 if (proxyNode)
                 {
                     proxyNode->getDatabaseRequest(proxyNode->getNumChildren()) = 0;

@@ -15,6 +15,7 @@
 #define OSGDB_OPTIONS 1
 
 #include <osgDB/Callbacks>
+#include <osg/ObserverNodePath>
 
 #include <deque>
 #include <list>
@@ -227,12 +228,18 @@ class OSGDB_EXPORT Options : public osg::Object
         /** Get the callback to use inform the DatabasePager whether a file is located on local or remote file system.*/
         FileLocationCallback* getFileLocationCallback() const { return _fileLocationCallback.get(); }
 
-
         /** Set the FileCache that is used to manage local storage of files downloaded from the internet.*/
         void setFileCache(FileCache* fileCache) { _fileCache = fileCache; }
 
         /** Get the FileCache that is used to manage local storage of files downloaded from the internet.*/
         FileCache* getFileCache() const { return _fileCache.get(); }
+
+
+        /** Set the terrain observer_ptr, use to decorate any osgTerrain subgraphs.*/
+        void setTerrain(osg::observer_ptr<osg::Node>& terrain) { _terrain = terrain; }
+
+        /** Get the terrain observer_ptr, use to decorate any osgTerrain subgraphs.*/
+        const osg::observer_ptr<osg::Node>& getTerrain() const { return _terrain; }
 
 
     protected:
@@ -257,6 +264,8 @@ class OSGDB_EXPORT Options : public osg::Object
         osg::ref_ptr<FileLocationCallback>  _fileLocationCallback;
 
         osg::ref_ptr<FileCache>             _fileCache;
+
+        osg::observer_ptr<osg::Node>        _terrain;
 };
 
 }

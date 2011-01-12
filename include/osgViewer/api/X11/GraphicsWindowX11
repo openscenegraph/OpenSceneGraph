@@ -134,7 +134,7 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow, pub
 
     public:
     
-        // X11 specific aces functions
+        // X11 specific access functions
 
         Display* getEventDisplay() const { return _eventDisplay; }
         Display* getDisplayToUse() const ;

@@ -66,6 +66,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/fstream
     ${HEADER_PATH}/ImageOptions
     ${HEADER_PATH}/ImagePager
+    ${HEADER_PATH}/ImageProcessor
     ${HEADER_PATH}/Input
     ${HEADER_PATH}/Output
     ${HEADER_PATH}/Options

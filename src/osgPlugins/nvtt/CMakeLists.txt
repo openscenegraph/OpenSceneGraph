@@ -1,0 +1,11 @@
+INCLUDE_DIRECTORIES( ${NVTT_INCLUDE_DIR} )
+
+
+SET(TARGET_SRC
+    NVTTImageProcessor.cpp
+)
+
+SET(TARGET_LIBRARIES_VARS NVTT_LIBRARY)
+
+#### end var setup  ###
+SETUP_PLUGIN(nvtt)

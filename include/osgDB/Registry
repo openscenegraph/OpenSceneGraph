@@ -27,6 +27,7 @@
 #include <osgDB/ObjectWrapper>
 #include <osgDB/FileCache>
 #include <osgDB/SharedStateManager>
+#include <osgDB/ImageProcessor>
 
 #include <vector>
 #include <map>
@@ -58,7 +59,6 @@ struct type_wrapper: basic_type_wrapper {
         return dynamic_cast<const T*>(proto) != 0;
     }
 };
-
 
 /**
     Registry is a singleton factory which stores
@@ -101,6 +101,9 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         void addReaderWriter(ReaderWriter* rw);
         void removeReaderWriter(ReaderWriter* rw);
 
+        void addImageProcessor(ImageProcessor* ip);
+        void removeImageProcessor(ImageProcessor* ip);
+
         /** create the platform specific library name associated with file.*/
         std::string createLibraryNameForFile(const std::string& fileName);
 
@@ -141,6 +144,21 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** get const list of all registered ReaderWriters.*/
         const ReaderWriterList& getReaderWriterList() const { return _rwList; }
  
+
+        typedef std::vector< osg::ref_ptr<ImageProcessor> > ImageProcessorList;
+
+        /** get a image processor if available.*/
+        ImageProcessor* getImageProcessor();
+
+        /** get a image processor which is associated specified extension.*/
+        ImageProcessor* getImageProcessorForExtension(const std::string& ext);
+
+        /** get list of all registered ImageProcessors.*/
+        ImageProcessorList& getImageProcessorList() { return _ipList; }
+
+        /** get const list of all registered ImageProcessors.*/
+        const ImageProcessorList& getImageProcessorList() const { return _ipList; }
+
 
         typedef class osgDB::FindFileCallback FindFileCallback;
         typedef class osgDB::ReadFileCallback ReadFileCallback;
@@ -555,6 +573,7 @@ class OSGDB_EXPORT Registry : public osg::Referenced
 
         OpenThreads::ReentrantMutex _pluginMutex;
         ReaderWriterList            _rwList;
+        ImageProcessorList          _ipList;
         DynamicLibraryList          _dlList;
 
         bool _openingLibrary;
@@ -624,6 +643,34 @@ class RegisterReaderWriterProxy
 };
 
 
+/** Proxy class for automatic registration of reader/writers with the Registry.*/
+template<class T>
+class RegisterImageProcessorProxy
+{
+    public:
+        RegisterImageProcessorProxy()
+        {
+            if (Registry::instance())
+            {
+                _rw = new T;
+                Registry::instance()->addImageProcessor(_rw.get());
+            }
+        }
+
+        ~RegisterImageProcessorProxy()
+        {
+            if (Registry::instance())
+            {
+                Registry::instance()->removeImageProcessor(_rw.get());
+            }
+        }
+
+        T* get() { return _rw.get(); }
+
+    protected:
+        osg::ref_ptr<T> _rw;
+};
+
 struct PluginFunctionProxy
 {
     PluginFunctionProxy(CPluginFunction function) { (function)(); }
@@ -657,6 +704,9 @@ struct PluginFunctionProxy
     extern "C" void osgdb_##ext(void) {} \
     static osgDB::RegisterReaderWriterProxy<classname> g_proxy_##classname;
 
+#define REGISTER_OSGIMAGEPROCESSOR(ext, classname) \
+    extern "C" void osgdb_##ext(void) {} \
+    static osgDB::RegisterImageProcessorProxy<classname> g_proxy_##classname;
 
 }
 

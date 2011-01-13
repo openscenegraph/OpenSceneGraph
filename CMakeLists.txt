@@ -423,6 +423,7 @@ FIND_PACKAGE(Poppler-glib)
 FIND_PACKAGE(RSVG)
 FIND_PACKAGE(GtkGl)
 FIND_PACKAGE(DirectInput)
+FIND_PACKAGE(NVTT)
 
 # Include macro utilities here
 INCLUDE(OsgMacroUtils)

@@ -550,6 +550,71 @@ void Registry::removeReaderWriter(ReaderWriter* rw)
 
 }
 
+ImageProcessor* Registry::getImageProcessor()
+{
+    {
+        OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
+        if (!_ipList.empty())
+        {
+            return _ipList.front().get();
+        }
+    }
+    return getImageProcessorForExtension("nvtt");
+}
+
+ImageProcessor* Registry::getImageProcessorForExtension(const std::string& ext)
+{
+    {
+        OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
+        if (!_ipList.empty())
+        {
+            return _ipList.front().get();
+        }
+    }
+
+    std::string libraryName = createLibraryNameForExtension(ext);
+    OSG_NOTICE << "Now checking for plug-in "<<libraryName<< std::endl;
+    if (loadLibrary(libraryName)==LOADED)
+    {
+        OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
+        if (!_ipList.empty())
+        {
+            OSG_NOTICE << "Loaded plug-in "<<libraryName<<" and located ImageProcessor"<< std::endl;
+            return _ipList.front().get();
+        }
+    }
+    return 0;
+}
+
+void Registry::addImageProcessor(ImageProcessor* ip)
+{
+    if (ip==0L) return;
+
+    OSG_NOTIFY(NOTICE) << "osg::Registry::addImageProcessor("<<ip->className()<<")"<< std::endl;
+
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
+
+    _ipList.push_back(ip);
+
+}
+
+
+void Registry::removeImageProcessor(ImageProcessor* ip)
+{
+    if (ip==0L) return;
+
+    OSG_NOTIFY(NOTICE) << "osg::Registry::removeImageProcessor();"<< std::endl;
+
+    OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_pluginMutex);
+
+    ImageProcessorList::iterator ipitr = std::find(_ipList.begin(),_ipList.end(),ip);
+    if (ipitr!=_ipList.end())
+    {
+        _ipList.erase(ipitr);
+    }
+
+}
+
 
 void Registry::addFileExtensionAlias(const std::string mapExt, const std::string toExt)
 {

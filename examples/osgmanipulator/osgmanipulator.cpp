@@ -95,8 +95,63 @@ osgManipulator::Dragger* createDragger(const std::string& name)
     return dragger;
 }
 
+// The DraggerContainer node is used to fix the dragger's size on the screen
+class DraggerContainer : public osg::Group
+{
+public:
+    DraggerContainer() : _draggerSize(240.0f), _active(true) {}
+    
+    DraggerContainer( const DraggerContainer& copy, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY )
+    :   osg::Group(copy, copyop),
+        _dragger(copy._dragger), _draggerSize(copy._draggerSize), _active(copy._active)
+    {}
+    
+    META_Node( osgManipulator, DraggerContainer );
+    
+    void setDragger( osgManipulator::Dragger* dragger )
+    {
+        _dragger = dragger;
+        if ( !containsNode(dragger) ) addChild( dragger );
+    }
+    
+    osgManipulator::Dragger* getDragger() { return _dragger.get(); }
+    const osgManipulator::Dragger* getDragger() const { return _dragger.get(); }
+    
+    void setDraggerSize( float size ) { _draggerSize = size; }
+    float getDraggerSize() const { return _draggerSize; }
+    
+    void setActive( bool b ) { _active = b; }
+    bool getActive() const { return _active; }
+    
+    void traverse( osg::NodeVisitor& nv )
+    {
+        if ( _dragger.valid() )
+        {
+            if ( _active && nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR )
+            {
+                osgUtil::CullVisitor* cv = static_cast<osgUtil::CullVisitor*>(&nv);
+                
+                float pixelSize = cv->pixelSize(_dragger->getBound().center(), 0.48f);
+                if ( pixelSize!=_draggerSize )
+                {
+                    float pixelScale = pixelSize>0.0f ? _draggerSize/pixelSize : 1.0f;
+                    osg::Vec3d scaleFactor(pixelScale, pixelScale, pixelScale);
+                    
+                    osg::Vec3 trans = _dragger->getMatrix().getTrans();
+                    _dragger->setMatrix( osg::Matrix::scale(scaleFactor) * osg::Matrix::translate(trans) );
+                }
+            }
+        }
+        osg::Group::traverse(nv);
+    }
+    
+protected:
+    osg::ref_ptr<osgManipulator::Dragger> _dragger;
+    float _draggerSize;
+    bool _active;
+};
 
-osg::Node* addDraggerToScene(osg::Node* scene, const std::string& name)
+osg::Node* addDraggerToScene(osg::Node* scene, const std::string& name, bool fixedSizeInScreen)
 {
     scene->getOrCreateStateSet()->setMode(GL_NORMALIZE, osg::StateAttribute::ON);
 
@@ -105,10 +160,17 @@ osg::Node* addDraggerToScene(osg::Node* scene, const std::string& name)
 
     osgManipulator::Dragger* dragger = createDragger(name);
 
-
     osg::Group* root = new osg::Group;
-    root->addChild(dragger);
     root->addChild(selection);
+
+    if ( fixedSizeInScreen )
+    {
+        DraggerContainer* draggerContainer = new DraggerContainer;
+        draggerContainer->setDragger( dragger );
+        root->addChild(draggerContainer);
+    }
+    else
+        root->addChild(dragger);
 
     float scale = scene->getBound().radius() * 1.6;
     dragger->setMatrix(osg::Matrix::scale(scale, scale, scale) *
@@ -130,7 +192,7 @@ osg::Node* addDraggerToScene(osg::Node* scene, const std::string& name)
     return root;
 }
 
-osg::Node* createDemoScene() {
+osg::Node* createDemoScene(bool fixedSizeInScreen) {
  
     osg::Group* root = new osg::Group;
 
@@ -206,13 +268,13 @@ osg::Node* createDemoScene() {
     matirial->setShininess(osg::Material::FRONT_AND_BACK, 64.0f);
     root->getOrCreateStateSet()->setAttributeAndModes(matirial.get(), osg::StateAttribute::ON);
 
-      transform_1.get()->addChild(addDraggerToScene(geode_1.get(),"TabBoxDragger"));
-    transform_2.get()->addChild(addDraggerToScene(geode_2.get(),"TabPlaneDragger"));
-    transform_3.get()->addChild(addDraggerToScene(geode_3.get(),"TabBoxTrackballDragger"));
-    transform_4.get()->addChild(addDraggerToScene(geode_4.get(),"TrackballDragger"));
-    transform_5.get()->addChild(addDraggerToScene(geode_5.get(),"Translate1DDragger"));
-    transform_6.get()->addChild(addDraggerToScene(geode_6.get(),"Translate2DDragger"));
-    transform_7.get()->addChild(addDraggerToScene(geode_7.get(),"TranslateAxisDragger"));
+      transform_1.get()->addChild(addDraggerToScene(geode_1.get(),"TabBoxDragger",fixedSizeInScreen));
+    transform_2.get()->addChild(addDraggerToScene(geode_2.get(),"TabPlaneDragger",fixedSizeInScreen));
+    transform_3.get()->addChild(addDraggerToScene(geode_3.get(),"TabBoxTrackballDragger",fixedSizeInScreen));
+    transform_4.get()->addChild(addDraggerToScene(geode_4.get(),"TrackballDragger",fixedSizeInScreen));
+    transform_5.get()->addChild(addDraggerToScene(geode_5.get(),"Translate1DDragger",fixedSizeInScreen));
+    transform_6.get()->addChild(addDraggerToScene(geode_6.get(),"Translate2DDragger",fixedSizeInScreen));
+    transform_7.get()->addChild(addDraggerToScene(geode_7.get(),"TranslateAxisDragger",fixedSizeInScreen));
 
     root->addChild(transform_1.get());
     root->addChild(transform_2.get());
@@ -244,7 +306,10 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--help-all","Display all command line, env vars and keyboard & mouse bindings.");
 
     arguments.getApplicationUsage()->addCommandLineOption("--dragger <draggername>","Use the specified dragger for manipulation [TabPlaneDragger,TabPlaneTrackballDragger,TrackballDragger,Translate1DDragger,Translate2DDragger,TranslateAxisDragger,TabBoxDragger]");
+    arguments.getApplicationUsage()->addCommandLineOption("--fixedDraggerSize","Fix the size of the dragger geometry in the screen space");
     
+    bool fixedSizeInScreen = false;
+    while (arguments.read("--fixedDraggerSize")) { fixedSizeInScreen = true; }
 
     // construct the viewer.
     osgViewer::Viewer viewer;
@@ -284,7 +349,7 @@ int main( int argc, char **argv )
     {
         //std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;
         //return 1;
-        loadedModel = createDemoScene();
+        loadedModel = createDemoScene(fixedSizeInScreen);
         tragger2Scene=false;
     }
 
@@ -309,7 +374,7 @@ int main( int argc, char **argv )
     
     // pass the loaded scene graph to the viewer.
     if ( tragger2Scene ) {
-        viewer.setSceneData(addDraggerToScene(loadedModel.get(), dragger_name));
+        viewer.setSceneData(addDraggerToScene(loadedModel.get(), dragger_name, fixedSizeInScreen));
     } else { 
         viewer.setSceneData(loadedModel.get());
     }

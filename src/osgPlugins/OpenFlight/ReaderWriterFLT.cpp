@@ -231,6 +231,7 @@ class FLTReaderWriter : public ReaderWriter
             supportsOption("keepExternalReferences","Import option");
             supportsOption("preserveFace","Import option");
             supportsOption("preserveObject","Import option");
+            supportsOption("replaceDoubleSidedPolys","Import option");
             supportsOption("dofAnimation","Import option");
             supportsOption("billboardCenter","Import option");
             supportsOption("noTextureAlphaForTransparancyBinning","Import option");
@@ -359,6 +360,9 @@ class FLTReaderWriter : public ReaderWriter
 
                 document.setPreserveObject((options->getOptionString().find("preserveObject")!=std::string::npos));
                 OSG_DEBUG << readerMsg << "preserveObject=" << document.getPreserveObject() << std::endl;
+
+                document.setReplaceDoubleSidedPolys((options->getOptionString().find("replaceDoubleSidedPolys")!=std::string::npos));
+                OSG_DEBUG  << readerMsg << "replaceDoubleSidedPolys=" << document.getReplaceDoubleSidedPolys() << std::endl;
 
                 document.setDefaultDOFAnimationState((options->getOptionString().find("dofAnimation")!=std::string::npos));
                 OSG_DEBUG << readerMsg << "dofAnimation=" << document.getDefaultDOFAnimationState() << std::endl;

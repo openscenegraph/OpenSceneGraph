@@ -136,7 +136,7 @@ public:
     // Global reading functions
     osg::Array* readArray();
     osg::PrimitiveSet* readPrimitiveSet();
-    osg::Image* readImage();
+    osg::Image* readImage(bool readFromExternal=true);
     osg::Object* readObject( osg::Object* existingObj=0 );
     osg::Object* readObjectFields( const std::string& className, osg::Object* existingObj=0);
     

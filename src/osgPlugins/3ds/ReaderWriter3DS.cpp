@@ -211,7 +211,10 @@ protected:
         bool restoreMatrixTransformsNoMeshes;
         typedef std::map<unsigned int,FaceList> SmoothingFaceMap;
         void addDrawableFromFace(osg::Geode * geode, FaceList & faceList, Lib3dsMesh * mesh, const osg::Matrix * matrix, osg::StateSet * stateSet);
-    };
+
+        typedef std::map<std::string, osg::ref_ptr<osg::Texture2D> > TexturesMap;        // Should be an unordered map (faster)
+        TexturesMap texturesMap;
+};
 };
 
 // now register with Registry to instantiate the above
@@ -967,6 +970,14 @@ osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *
     {
         OSG_INFO<<"texture->name="<<texture->name<<", _directory="<<_directory<<std::endl;
 
+        // First try already loaded textures.
+        TexturesMap::iterator itTex = texturesMap.find(texture->name);
+        if (itTex != texturesMap.end()) {
+            OSG_DEBUG << "Texture '" << texture->name << "' found in cache." << std::endl;
+            return itTex->second.get();
+        }
+
+        // Texture not in cache: locate and load.
         std::string fileName = osgDB::findFileInDirectory(texture->name,_directory,osgDB::CASE_INSENSITIVE);
         if (fileName.empty())
         {
@@ -1028,6 +1039,8 @@ osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *
                                  // bilinear.
         osg_texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR_MIPMAP_NEAREST);
 
+        // Insert in cache map
+        texturesMap.insert(TexturesMap::value_type(texture->name, osg_texture));
         return osg_texture;
     }
     else

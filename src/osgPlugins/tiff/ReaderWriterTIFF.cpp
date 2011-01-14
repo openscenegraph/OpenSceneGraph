@@ -217,6 +217,9 @@ simage_tiff_error(char * buffer, int buflen)
         case ERR_OPEN:
             strncpy(buffer, "TIFF loader: Error opening file", buflen);
             break;
+        case ERR_READ:
+            strncpy(buffer, "TIFF loader: Error reding/decoding file", buflen);
+            break;
         case ERR_MEM:
             strncpy(buffer, "TIFF loader: Out of memory error", buflen);
             break;
@@ -226,28 +229,65 @@ simage_tiff_error(char * buffer, int buflen)
         case ERR_TIFFLIB:
             strncpy(buffer, "TIFF loader: Illegal tiff file", buflen);
             break;
+        default:
+            strncpy(buffer, "TIFF loader: unknown error", buflen);
+            break;
     }
     return tifferror;
 }
 
 
+/// Generates a std::string from a printf format string and a va_list.
+/// Took & adapted from the man page of printf.
+///\todo Externalize this function to make is useable for all OSG?
+std::string doFormat(const char* fmt, va_list ap) {
+    static const int MSG_BUFSIZE = 256;            // Initial size of the buffer used for formatting
+    static const int MAX_BUFSIZE = 256*1024;    // Maximum size of the buffer used for formatting
+    for(int size=MSG_BUFSIZE; size<MAX_BUFSIZE; )
+    {
+        // Sukender: Here we could try/catch(std::bad_alloc &), but this is clearly an and-of-all-things condition knowing the fact 'size' is kept small.
+        //           Hence the commented code, to avoid the burden.
+        //try {
+        char * p = new char[size];
+        //} catch (std::bad_alloc &) {
+        //    return std::string();
+        //}
 
+        /* Try to print in the allocated space. */
+        int n = vsnprintf (p, size, fmt, ap);
+        // Now reset the state of the va_list (TIFF calling method will call
 
-
+        /* If that worked, return the string. */
+        if (n >= 0 && n < size) {
+            std::string res(p);
+            delete[] p;
+            return res;
+        }
+        /* Else try again with more space. */
+        if (n > 0)      /* glibc 2.1 */
+            size = n+1; /* precisely what is needed */
+        else            /* glibc 2.0 */
+            size *= 2;  /* twice the old size */
+        delete[] p;
+    }
+    return std::string(fmt, fmt+MSG_BUFSIZE) + "...";        // Fallback: Message is not formatted and truncated, but that's better than no message
+}
 
 static void
-tiff_error(const char*, const char*, va_list)
+tiff_error(const char*, const char* fmt, va_list ap)
 {
     // values are (const char* module, const char* fmt, va_list list)
     /* FIXME: store error message ? */
+    OSG_WARN << "TIFF rader: " << doFormat(fmt, ap) << std::endl;
 }
 
 
 static void
-tiff_warn(const char *, const char *, va_list)
+tiff_warn(const char*, const char* fmt, va_list ap)
 {
     // values are (const char* module, const char* fmt, va_list list)
     /* FIXME: notify? */
+    OSG_NOTICE << "TIFF rader: " << doFormat(fmt, ap) << std::endl;
 }
 
 

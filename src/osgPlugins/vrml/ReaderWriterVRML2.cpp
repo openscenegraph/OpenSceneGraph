@@ -216,7 +216,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string& f
             for (unsigned i = 0; i < mfn.size(); i++)
             {
                 openvrml::node *vrml_node = mfn[i].get();
-                osg_root->addChild(convertFromVRML(vrml_node).get());
+                osg_root->addChild(convertFromVRML(vrml_node));
             }
             osgDB::getDataFilePathList().pop_front();
             return osg_root.get();
@@ -242,7 +242,7 @@ osgDB::ReaderWriter::WriteResult ReaderWriterVRML2::writeNode(const osg::Node& r
 
 
 
-osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
+osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
 {
     //static int osgLightNum = 0; //light
 
@@ -276,7 +276,7 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
             // no children
         }
 
-        return osg_group.get();
+        return osg_group.release();
 
     }
 
@@ -302,7 +302,7 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
                 for (it_npv = node_ptr_vector.begin(); it_npv != node_ptr_vector.end(); it_npv++)
                 {
                     openvrml::node *node = (*(it_npv)).get();
-                    osg_m->addChild(convertFromVRML(node).get());
+                    osg_m->addChild(convertFromVRML(node));
                 }
             }
         }
@@ -311,7 +311,7 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
             // no children
         }
 
-        return osg_m.get();
+        return osg_m.release();
 
     }
 
@@ -503,7 +503,7 @@ osg::ref_ptr<osg::Node> ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) 
             }
         }
 
-        return osg_geode.get();
+        return osg_geode.release();
     }
     else
     {

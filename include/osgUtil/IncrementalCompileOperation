@@ -20,6 +20,35 @@
 namespace osgUtil {
 
 
+class OSGUTIL_EXPORT StateToCompile : public osg::NodeVisitor
+{
+    public:
+
+        StateToCompile(GLObjectsVisitor::Mode mode);
+
+        typedef std::set<osg::Drawable*> DrawableSet;
+        typedef std::set<osg::StateSet*> StateSetSet;
+        typedef std::set<osg::Texture*> TextureSet;
+        typedef std::set<osg::Program*> ProgramSet;
+
+        DrawableSet _drawablesHandled;
+        StateSetSet _statesetsHandled;
+
+        GLObjectsVisitor::Mode _mode;
+        DrawableSet _drawables;
+        TextureSet _textures;
+        ProgramSet _programs;
+
+        bool empty() const { return _textures.empty() &&  _programs.empty() && _drawables.empty(); }
+
+        virtual void apply(osg::Node& node);
+        virtual void apply(osg::Geode& node);
+
+        virtual void apply(osg::Drawable& drawable);
+        virtual void apply(osg::StateSet& stateset);
+        virtual void apply(osg::Texture& texture);
+};
+
 class OSGUTIL_EXPORT CompileStats : public osg::Referenced
 {
     public:
@@ -93,7 +122,12 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
     public:
 
         IncrementalCompileOperation();
-        
+
+        /** Return true if the IncrementCompileOperation is active.*/
+        bool isActive() const { return !_contexts.empty(); }
+
+        bool requiresCompile(StateToCompile& stateToCompile);
+
         /** Set the target frame rate that the IncrementalCompileOperation should assume.
           * Typically one would set this to the value refresh rate of your display system i.e. 60Hz.
           * Default value is 100.
@@ -162,6 +196,10 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
 
         void addGraphicsContext(osg::GraphicsContext* gc);
         void removeGraphicsContext(osg::GraphicsContext* gc);
+
+        typedef std::set<osg::GraphicsContext*> ContextSet;
+        ContextSet& getContextSet() { return _contexts; }
+        const ContextSet& getContextSet() const { return _contexts; }
 
 
         /** Merge subgraphs that have been compiled.*/
@@ -235,7 +273,6 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
 
 
         class CompileSet;
-        typedef std::set<osg::GraphicsContext*> ContextSet;
         
         struct CompileCompletedCallback : public virtual osg::Referenced
         {
@@ -256,7 +293,8 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
                 _attachmentPoint(attachmentPoint),
                 _subgraphToCompile(subgraphToCompile) {}
 
-            void buildCompileMap(ContextSet& context, GLObjectsVisitor::Mode mode=GLObjectsVisitor::COMPILE_DISPLAY_LISTS|GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES);
+            void buildCompileMap(ContextSet& contexts, StateToCompile& stateToCompile);
+            void buildCompileMap(ContextSet& contexts, GLObjectsVisitor::Mode mode=GLObjectsVisitor::COMPILE_DISPLAY_LISTS|GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES);
 
             bool compile(CompileInfo& compileInfo);
 
@@ -299,8 +337,6 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
 
         virtual ~IncrementalCompileOperation();
         
-        // forward declare to keep within class namespace
-        class CollectStateToCompile;
     
         double                          _targetFrameRate;
         double                          _minimumTimeAvailableForGLCompileAndDeletePerFrame;

@@ -290,18 +290,38 @@ public:
 //
 //  FindCompileableGLObjectsVisitor
 //
-class DatabasePager::FindCompileableGLObjectsVisitor : public osg::NodeVisitor
+class DatabasePager::FindCompileableGLObjectsVisitor : public osgUtil::StateToCompile
 {
 public:
-    FindCompileableGLObjectsVisitor(bool changeAutoUnRef, bool valueAutoUnRef,
-                                    bool changeAnisotropy, float valueAnisotropy,
-                                    DatabasePager::DrawablePolicy drawablePolicy,
-                                    const DatabasePager* pager):
-            osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-            _changeAutoUnRef(changeAutoUnRef), _valueAutoUnRef(valueAutoUnRef),
-            _changeAnisotropy(changeAnisotropy), _valueAnisotropy(valueAnisotropy),
-            _drawablePolicy(drawablePolicy), _pager(pager)
+    FindCompileableGLObjectsVisitor(const DatabasePager* pager):
+            osgUtil::StateToCompile(osgUtil::GLObjectsVisitor::COMPILE_DISPLAY_LISTS|osgUtil::GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES),
+            _pager(pager),
+            _changeAutoUnRef(false), _valueAutoUnRef(false),
+            _changeAnisotropy(false), _valueAnisotropy(1.0)
     {
+        _changeAutoUnRef = _pager->_changeAutoUnRef;
+        _valueAutoUnRef = _pager->_valueAutoUnRef;
+        _changeAnisotropy = _pager->_changeAnisotropy;
+        _valueAnisotropy = _pager->_valueAnisotropy;
+
+        switch(_pager->_drawablePolicy)
+        {
+            case DatabasePager::DO_NOT_MODIFY_DRAWABLE_SETTINGS:
+                // do nothing, leave settings as they came in from loaded database.
+                // OSG_NOTICE<<"DO_NOT_MODIFY_DRAWABLE_SETTINGS"<<std::endl;
+                break;
+            case DatabasePager::USE_DISPLAY_LISTS:
+                _mode = _mode | osgUtil::GLObjectsVisitor::SWITCH_ON_DISPLAY_LISTS;
+                break;
+            case DatabasePager::USE_VERTEX_BUFFER_OBJECTS:
+                _mode = _mode | osgUtil::GLObjectsVisitor::SWITCH_ON_VERTEX_BUFFER_OBJECTS;
+                break;
+            case DatabasePager::USE_VERTEX_ARRAYS:
+                _mode = _mode & ~osgUtil::GLObjectsVisitor::SWITCH_ON_DISPLAY_LISTS;
+                _mode = _mode & ~osgUtil::GLObjectsVisitor::SWITCH_ON_VERTEX_BUFFER_OBJECTS;
+                break;
+        }
+
         if (osgDB::Registry::instance()->getBuildKdTreesHint()==osgDB::Options::BUILD_KDTREES &&
             osgDB::Registry::instance()->getKdTreeBuilder())
         {
@@ -311,25 +331,11 @@ public:
 
     META_NodeVisitor("osgDB","FindCompileableGLObjectsVisitor")
 
-    bool requiresCompilation() const { return true; }
-
-    virtual void apply(osg::Node& node)
-    {
-        apply(node.getStateSet());
-
-        traverse(node);
-    }
+    bool requiresCompilation() const { return !empty(); }
 
     virtual void apply(osg::Geode& geode)
     {
-        apply(geode.getStateSet());
-
-        for(unsigned int i=0;i<geode.getNumDrawables();++i)
-        {
-            apply(geode.getDrawable(i));
-        }
-
-        traverse(geode);
+        StateToCompile::apply(geode);
 
         if (_kdTreeBuilder.valid())
         {
@@ -337,75 +343,26 @@ public:
         }
     }
 
-    inline void apply(osg::StateSet* stateset)
+    void apply(osg::Texture& texture)
     {
-        if (stateset)
-        {
-            // search for the existance of any texture object
-            // attributes
-            // if texture object attributes exist and need to be
-            // compiled, add the state to the list for later
-            // compilation.
-            for(unsigned int i=0;i<stateset->getTextureAttributeList().size();++i)
-            {
-                osg::Texture* texture = dynamic_cast<osg::Texture*>(stateset->getTextureAttribute(i,osg::StateAttribute::TEXTURE));
-                // Has this texture already been encountered?
-                if (texture && !_textureSet.count(texture))
-                {
-                    _textureSet.insert(texture);
-                    if (_changeAutoUnRef) texture->setUnRefImageDataAfterApply(_valueAutoUnRef);
-                    if ((_changeAnisotropy
-                         && texture->getMaxAnisotropy() != _valueAnisotropy))
-                    {
-                        if (_changeAnisotropy)
-                            texture->setMaxAnisotropy(_valueAnisotropy);
-                    }
-                }
-            }
+        StateToCompile::apply(texture);
 
+        if (_changeAutoUnRef)
+        {
+            texture.setUnRefImageDataAfterApply(_valueAutoUnRef);
+        }
+
+        if ((_changeAnisotropy && texture.getMaxAnisotropy() != _valueAnisotropy))
+        {
+            texture.setMaxAnisotropy(_valueAnisotropy);
         }
     }
 
-    inline void apply(osg::Drawable* drawable)
-    {
-        if (_drawableSet.count(drawable))
-            return;
-
-        _drawableSet.insert(drawable);
-
-        apply(drawable->getStateSet());
-
-        switch(_drawablePolicy)
-        {
-        case DatabasePager::DO_NOT_MODIFY_DRAWABLE_SETTINGS: 
-             // do nothing, leave settings as they came in from loaded database.
-             // OSG_NOTICE<<"DO_NOT_MODIFY_DRAWABLE_SETTINGS"<<std::endl;
-             break;
-        case DatabasePager::USE_DISPLAY_LISTS: 
-             drawable->setUseDisplayList(true);
-             drawable->setUseVertexBufferObjects(false);
-             break;
-        case DatabasePager::USE_VERTEX_BUFFER_OBJECTS:
-             drawable->setUseDisplayList(true);
-             drawable->setUseVertexBufferObjects(true);
-             // OSG_NOTICE<<"USE_VERTEX_BUFFER_OBJECTS"<<std::endl;
-             break;
-        case DatabasePager::USE_VERTEX_ARRAYS:
-             drawable->setUseDisplayList(false);
-             drawable->setUseVertexBufferObjects(false);
-             // OSG_NOTICE<<"USE_VERTEX_ARRAYS"<<std::endl;
-             break;
-        }
-    }
-    
+    const DatabasePager*                    _pager;
     bool                                    _changeAutoUnRef;
     bool                                    _valueAutoUnRef;
     bool                                    _changeAnisotropy;
     float                                   _valueAnisotropy;
-    DatabasePager::DrawablePolicy           _drawablePolicy;
-    const DatabasePager*                    _pager;
-    std::set<osg::ref_ptr<osg::Texture> >   _textureSet;
-    std::set<osg::ref_ptr<osg::Drawable> >  _drawableSet;
     osg::ref_ptr<osg::KdTreeBuilder>        _kdTreeBuilder;
     
 protected:
@@ -918,24 +875,24 @@ void DatabasePager::DatabaseThread::run()
                 loadedModel->getBound();
 
                 // find all the compileable rendering objects
-                DatabasePager::FindCompileableGLObjectsVisitor frov(_pager->_changeAutoUnRef, _pager->_valueAutoUnRef,
-                                                                    _pager->_changeAnisotropy, _pager->_valueAnisotropy,
-                                                                    _pager->_drawablePolicy,
-                                                                    _pager);
+                DatabasePager::FindCompileableGLObjectsVisitor stateToCompile(_pager);
+                loadedModel->accept(stateToCompile);
 
-                loadedModel->accept(frov);
-
-                bool loadedObjectsNeedToBeCompiled = (_pager->_doPreCompile && frov.requiresCompilation() && _pager->_incrementalCompileOperation.valid());
+                bool loadedObjectsNeedToBeCompiled = _pager->_doPreCompile &&
+                                                     _pager->_incrementalCompileOperation.valid() &&
+                                                     _pager->_incrementalCompileOperation->requiresCompile(stateToCompile);
 
                 // move the databaseRequest from the front of the fileRequest to the end of
                 // dataToCompile or dataToMerge lists.
-                osgUtil::IncrementalCompileOperation::CompileSet* compileSet = 0;
+                osg::ref_ptr<osgUtil::IncrementalCompileOperation::CompileSet> compileSet = 0;
                 if (loadedObjectsNeedToBeCompiled)
                 {
                     // OSG_NOTICE<<"Using IncrementalCompileOperation"<<std::endl;
 
                     compileSet = new osgUtil::IncrementalCompileOperation::CompileSet(loadedModel.get());
+                    compileSet->buildCompileMap(_pager->_incrementalCompileOperation->getContextSet(), stateToCompile);
                     compileSet->_compileCompletedCallback = new DatabasePagerCompileCompletedCallback(_pager, databaseRequest.get());
+                    _pager->_incrementalCompileOperation->add(compileSet, false);
                 }
                 {
                     OpenThreads::ScopedLock<OpenThreads::Mutex> drLock(_pager->_dr_mutex);
@@ -948,7 +905,6 @@ void DatabasePager::DatabaseThread::run()
                 // addLoadedDataToSceneGraph.
                 if (loadedObjectsNeedToBeCompiled)
                 {
-                    _pager->_incrementalCompileOperation->add(compileSet);
                     OpenThreads::ScopedLock<OpenThreads::Mutex> listLock(
                         _pager->_dataToCompileList->_requestMutex);
                     _pager->_dataToCompileList->addNoLock(databaseRequest.get());
@@ -1054,7 +1010,7 @@ DatabasePager::DatabasePager()
     }
 
 
-    _doPreCompile = false;
+    _doPreCompile = true;
     if( (ptr = getenv("OSG_DO_PRE_COMPILE")) != 0)
     {
         _doPreCompile = strcmp(ptr,"yes")==0 || strcmp(ptr,"YES")==0 ||
@@ -1064,12 +1020,6 @@ DatabasePager::DatabasePager()
     // initialize the stats variables
     resetStats();
 
-    // make sure a SharedStateManager exists.
-    //osgDB::Registry::instance()->getOrCreateSharedStateManager();
-    
-    //if (osgDB::Registry::instance()->getSharedStateManager())
-        //osgDB::Registry::instance()->setUseObjectCacheHint(true);
-        
     _fileRequestQueue = new ReadQueue(this,"fileRequestQueue");
     _httpRequestQueue = new ReadQueue(this,"httpRequestQueue");
     

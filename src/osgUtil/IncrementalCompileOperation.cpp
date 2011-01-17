@@ -51,125 +51,117 @@ static osg::ApplicationUsageProxy UCO_e2(osg::ApplicationUsage::ENVIRONMENTAL_VA
 //
 // CollectStateToCompile
 //
-class IncrementalCompileOperation::CollectStateToCompile : public osg::NodeVisitor
+StateToCompile::StateToCompile(GLObjectsVisitor::Mode mode):
+    osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+    _mode(mode)
 {
-public:
+}
 
-    CollectStateToCompile(GLObjectsVisitor::Mode mode):
-        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-        _mode(mode) {}
-
-    GLObjectsVisitor::Mode _mode;
-
-    typedef std::set<osg::Drawable*> DrawableSet;
-    typedef std::set<osg::StateSet*> StateSetSet;
-    typedef std::set<osg::Texture*> TextureSet;
-    typedef std::set<osg::Program*> ProgramSet;
-
-    DrawableSet _drawablesHandled;
-    StateSetSet _statesetsHandled;
-
-    DrawableSet _drawables;
-    TextureSet _textures;
-    ProgramSet _programs;
-
-    void apply(osg::Node& node)
+void StateToCompile::apply(osg::Node& node)
+{
+    if (node.getStateSet())
     {
-        if (node.getStateSet())
-        {
-            apply(*(node.getStateSet()));
-        }
-
-        traverse(node);
+        apply(*(node.getStateSet()));
     }
 
-    void apply(osg::Geode& node)
+    traverse(node);
+}
+
+void StateToCompile::apply(osg::Geode& node)
+{
+    if (node.getStateSet())
     {
-        if (node.getStateSet())
+        apply(*(node.getStateSet()));
+    }
+
+    for(unsigned int i=0;i<node.getNumDrawables();++i)
+    {
+        osg::Drawable* drawable = node.getDrawable(i);
+        if (drawable)
         {
-            apply(*(node.getStateSet()));
+            apply(*drawable);
+            if (drawable->getStateSet())
+            {
+                apply(*(drawable->getStateSet()));
+            }
+        }
+    }
+}
+
+void StateToCompile::apply(osg::Drawable& drawable)
+{
+    if (_drawablesHandled.count(&drawable)!=0) return;
+
+    _drawablesHandled.insert(&drawable);
+
+    if (_mode&GLObjectsVisitor::SWITCH_OFF_DISPLAY_LISTS)
+    {
+        drawable.setUseDisplayList(false);
+    }
+
+    if (_mode&GLObjectsVisitor::SWITCH_ON_DISPLAY_LISTS)
+    {
+        drawable.setUseDisplayList(true);
+    }
+
+    if (_mode&GLObjectsVisitor::SWITCH_ON_VERTEX_BUFFER_OBJECTS)
+    {
+        drawable.setUseVertexBufferObjects(true);
+    }
+
+    if (_mode&GLObjectsVisitor::SWITCH_OFF_VERTEX_BUFFER_OBJECTS)
+    {
+        drawable.setUseVertexBufferObjects(false);
+    }
+
+    if (_mode&GLObjectsVisitor::COMPILE_DISPLAY_LISTS &&
+        (drawable.getUseDisplayList() || drawable.getUseVertexBufferObjects()))
+    {
+        _drawables.insert(&drawable);
+    }
+}
+
+void StateToCompile::apply(osg::StateSet& stateset)
+{
+    if (_statesetsHandled.count(&stateset)!=0) return;
+
+    _statesetsHandled.insert(&stateset);
+
+    if (_mode & GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES)
+    {
+        osg::Program* program = dynamic_cast<osg::Program*>(stateset.getAttribute(osg::StateAttribute::PROGRAM));
+        if (program)
+        {
+            _programs.insert(program);
         }
 
-        for(unsigned int i=0;i<node.getNumDrawables();++i)
+        osg::StateSet::TextureAttributeList& tal = stateset.getTextureAttributeList();
+        for(osg::StateSet::TextureAttributeList::iterator itr = tal.begin();
+            itr != tal.end();
+            ++itr)
         {
-            osg::Drawable* drawable = node.getDrawable(i);
-            if (drawable)
+            osg::StateSet::AttributeList& al = *itr;
+            osg::StateAttribute::TypeMemberPair tmp(osg::StateAttribute::TEXTURE,0);
+            osg::StateSet::AttributeList::iterator texItr = al.find(tmp);
+            if (texItr != al.end())
             {
-                apply(*drawable);
-                if (drawable->getStateSet())
+                osg::Texture* texture = dynamic_cast<osg::Texture*>(texItr->second.first.get());
+                if (texture)
                 {
-                    apply(*(drawable->getStateSet()));
+                    if (_textures.count(texture)==0)
+                    {
+                        apply(*texture);
+                    }
                 }
             }
         }
     }
+}
 
-    void apply(osg::Drawable& drawable)
-    {
-        if (_drawablesHandled.count(&drawable)!=0) return;
-
-        _drawablesHandled.insert(&drawable);
-
-        if (_mode&GLObjectsVisitor::SWITCH_OFF_DISPLAY_LISTS)
-        {
-            drawable.setUseDisplayList(false);
-        }
-
-        if (_mode&GLObjectsVisitor::SWITCH_ON_DISPLAY_LISTS)
-        {
-            drawable.setUseDisplayList(true);
-        }
-
-        if (_mode&GLObjectsVisitor::SWITCH_ON_VERTEX_BUFFER_OBJECTS)
-        {
-            drawable.setUseVertexBufferObjects(true);
-        }
-
-        if (_mode&GLObjectsVisitor::SWITCH_OFF_VERTEX_BUFFER_OBJECTS)
-        {
-            drawable.setUseVertexBufferObjects(false);
-        }
-
-        if (_mode&GLObjectsVisitor::COMPILE_DISPLAY_LISTS &&
-            (drawable.getUseDisplayList() || drawable.getUseVertexBufferObjects()))
-        {
-            _drawables.insert(&drawable);
-        }
-
-    }
-
-    void apply(osg::StateSet& stateset)
-    {
-        if (_statesetsHandled.count(&stateset)!=0) return;
-
-        _statesetsHandled.insert(&stateset);
-
-        if (_mode & GLObjectsVisitor::COMPILE_STATE_ATTRIBUTES)
-        {
-            osg::Program* program = dynamic_cast<osg::Program*>(stateset.getAttribute(osg::StateAttribute::PROGRAM));
-            if (program)
-            {
-                _programs.insert(program);
-            }
-
-            osg::StateSet::TextureAttributeList& tal = stateset.getTextureAttributeList();
-            for(osg::StateSet::TextureAttributeList::iterator itr = tal.begin();
-                itr != tal.end();
-                ++itr)
-            {
-                osg::StateSet::AttributeList& al = *itr;
-                osg::StateAttribute::TypeMemberPair tmp(osg::StateAttribute::TEXTURE,0);
-                osg::StateSet::AttributeList::iterator texItr = al.find(tmp);
-                if (texItr != al.end())
-                {
-                    osg::Texture* texture = dynamic_cast<osg::Texture*>(texItr->second.first.get());
-                    if (texture) _textures.insert(texture);
-                }
-            }
-        }
-    }
-
-};
+void StateToCompile::apply(osg::Texture& texture)
+{
+    _textures.insert(&texture);
+}
 
 /////////////////////////////////////////////////////////////////
 //
@@ -391,14 +383,11 @@ bool IncrementalCompileOperation::CompileList::compile(CompileInfo& compileInfo)
 //
 // CompileSet
 //
-void IncrementalCompileOperation::CompileSet::buildCompileMap(ContextSet& contexts, GLObjectsVisitor::Mode mode)
+void IncrementalCompileOperation::CompileSet::buildCompileMap(ContextSet& contexts, StateToCompile& stc)
 {
-    if (contexts.empty() || !_subgraphToCompile) return;
+    if (contexts.empty() || stc.empty()) return;
 
-    CollectStateToCompile cstc(mode);
-    _subgraphToCompile->accept(cstc);
-
-    if (cstc._textures.empty() &&  cstc._programs.empty() && cstc._drawables.empty()) return;
+    if (stc.empty()) return;
 
     for(ContextSet::iterator itr = contexts.begin();
         itr != contexts.end();
@@ -406,29 +395,39 @@ void IncrementalCompileOperation::CompileSet::buildCompileMap(ContextSet& contex
     {
         // increment the number of compile lists that will need to compile
         ++_numberCompileListsToCompile;
-        
+
         CompileList& cl = _compileMap[*itr];
-        for(CollectStateToCompile::DrawableSet::iterator ditr = cstc._drawables.begin();
-            ditr != cstc._drawables.end();
+        for(StateToCompile::DrawableSet::iterator ditr = stc._drawables.begin();
+            ditr != stc._drawables.end();
             ++ditr)
         {
             cl.add(*ditr);
         }
 
-        for(CollectStateToCompile::TextureSet::iterator titr = cstc._textures.begin();
-            titr != cstc._textures.end();
+        for(StateToCompile::TextureSet::iterator titr = stc._textures.begin();
+            titr != stc._textures.end();
             ++titr)
         {
             cl.add(*titr);
         }
 
-        for(CollectStateToCompile::ProgramSet::iterator pitr = cstc._programs.begin();
-            pitr != cstc._programs.end();
+        for(StateToCompile::ProgramSet::iterator pitr = stc._programs.begin();
+            pitr != stc._programs.end();
             ++pitr)
         {
             cl.add(*pitr);
         }
     }
+}
+
+void IncrementalCompileOperation::CompileSet::buildCompileMap(ContextSet& contexts, GLObjectsVisitor::Mode mode)
+{
+    if (contexts.empty() || !_subgraphToCompile) return;
+
+    StateToCompile stc(mode);
+    _subgraphToCompile->accept(stc);
+
+    buildCompileMap(contexts, stc);
 }
 
 bool IncrementalCompileOperation::CompileSet::compile(CompileInfo& compileInfo)
@@ -543,6 +542,11 @@ void IncrementalCompileOperation::removeGraphicsContext(osg::GraphicsContext* gc
         gc->remove(this);
         _contexts.erase(gc);
     }
+}
+
+bool IncrementalCompileOperation::requiresCompile(StateToCompile& stateToCompile)
+{
+    return isActive() && !stateToCompile.empty();
 }
 
 void IncrementalCompileOperation::add(osg::Node* subgraphToCompile)

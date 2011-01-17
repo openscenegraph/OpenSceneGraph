@@ -222,6 +222,8 @@ class OSG_EXPORT StateSet : public Object
         /** return the const list of all Texture related GLModes contained in this const StateSet.*/
         inline const TextureModeList& getTextureModeList() const  { return _textureModeList; }
 
+        /** Return the number texture units active in the TextureModeList.*/
+        inline unsigned int getNumTextureModeLists() const { return _textureModeList.size(); }
 
         typedef std::vector<AttributeList>  TextureAttributeList;
 
@@ -256,6 +258,9 @@ class OSG_EXPORT StateSet : public Object
 
         /** Return the const list of all Texture related StateAttributes contained in this const StateSet.*/
         inline const TextureAttributeList& getTextureAttributeList() const { return _textureAttributeList; }
+
+        /** Return the number of texture units active in the TextureAttributeList.*/
+        inline unsigned int getNumTextureAttributeLists() const { return _textureAttributeList.size(); }
 
 
         void setAssociatedModes(const StateAttribute* attribute, StateAttribute::GLModeValue value);

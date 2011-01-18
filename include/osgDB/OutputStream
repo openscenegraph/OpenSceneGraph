@@ -96,6 +96,7 @@ public:
     OutputStream& operator<<( float f ) { _out->writeFloat(f); return *this; }
     OutputStream& operator<<( double d ) { _out->writeDouble(d); return *this; }
     OutputStream& operator<<( const std::string& s ) { _out->writeString(s); return *this; }
+    OutputStream& operator<<( const char* s ) { _out->writeString(s); return *this; }
     OutputStream& operator<<( std::ostream& (*fn)(std::ostream&) ) { _out->writeStream(fn); return *this; }
     OutputStream& operator<<( std::ios_base& (*fn)(std::ios_base&) ) { _out->writeBase(fn); return *this; }
     

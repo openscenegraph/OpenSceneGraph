@@ -738,7 +738,6 @@ bool InteractiveImageHandler::mousePosition(osgViewer::View* view, osg::NodeVisi
 
     if (foundIntersection)
     {
-
         osg::Vec2 tc(0.5f,0.5f);
 
         // use the nearest intersection                 
@@ -773,42 +772,42 @@ bool InteractiveImageHandler::mousePosition(osgViewer::View* view, osg::NodeVisi
                     tc = tc1*r1 + tc2*r2 + tc3*r3;
                 }
             }
+
+            osg::TexMat* activeTexMat = 0;
+            osg::Texture* activeTexture = 0;
+
+            if (drawable->getStateSet())
+            {
+                osg::TexMat* texMat = dynamic_cast<osg::TexMat*>(drawable->getStateSet()->getTextureAttribute(0,osg::StateAttribute::TEXMAT));
+                if (texMat) activeTexMat = texMat;
+
+                osg::Texture* texture = dynamic_cast<osg::Texture*>(drawable->getStateSet()->getTextureAttribute(0,osg::StateAttribute::TEXTURE));
+                if (texture) activeTexture = texture;
+            }
+
+            if (activeTexMat)
+            {
+                osg::Vec4 tc_transformed = osg::Vec4(tc.x(), tc.y(), 0.0f,0.0f) * activeTexMat->getMatrix();
+                tc.x() = tc_transformed.x();
+                tc.y() = tc_transformed.y();
+            }
+
+            if (dynamic_cast<osg::TextureRectangle*>(activeTexture))
+            {
+                x = int( tc.x() );
+                y = int( tc.y() );
+            }
+            else if (_image.valid())
+            {
+                x = int( float(_image->s()) * tc.x() );
+                y = int( float(_image->t()) * tc.y() );
+            }
+
+            return true;
         }
 
-        osg::TexMat* activeTexMat = 0;
-        osg::Texture* activeTexture = 0;
-        
-        if (geometry->getStateSet())
-        {
-            osg::TexMat* texMat = dynamic_cast<osg::TexMat*>(geometry->getStateSet()->getTextureAttribute(0,osg::StateAttribute::TEXMAT));
-            if (texMat) activeTexMat = texMat;
-
-            osg::Texture* texture = dynamic_cast<osg::Texture*>(geometry->getStateSet()->getTextureAttribute(0,osg::StateAttribute::TEXTURE));
-            if (texture) activeTexture = texture;
-        }
-
-        if (activeTexMat)
-        {
-            osg::Vec4 tc_transformed = osg::Vec4(tc.x(), tc.y(), 0.0f,0.0f) * activeTexMat->getMatrix();
-            tc.x() = tc_transformed.x();
-            tc.y() = tc_transformed.y();
-        }
-
-        if (dynamic_cast<osg::TextureRectangle*>(activeTexture))
-        {
-            x = int( tc.x() );
-            y = int( tc.y() );
-        }
-        else if (_image.valid())
-        {
-            x = int( float(_image->s()) * tc.x() );
-            y = int( float(_image->t()) * tc.y() );
-        }
-
-
-        return true;
     }
-    
+
     return false;
 }
 

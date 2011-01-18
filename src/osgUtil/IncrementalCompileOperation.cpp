@@ -441,7 +441,7 @@ bool IncrementalCompileOperation::CompileSet::compile(CompileInfo& compileInfo)
             return _numberCompileListsToCompile==0;
         }
     }
-    return false;
+    return _numberCompileListsToCompile==0;
 }
 
 /////////////////////////////////////////////////////////////////

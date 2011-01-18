@@ -892,7 +892,7 @@ void DatabasePager::DatabaseThread::run()
                     compileSet = new osgUtil::IncrementalCompileOperation::CompileSet(loadedModel.get());
                     compileSet->buildCompileMap(_pager->_incrementalCompileOperation->getContextSet(), stateToCompile);
                     compileSet->_compileCompletedCallback = new DatabasePagerCompileCompletedCallback(_pager, databaseRequest.get());
-                    _pager->_incrementalCompileOperation->add(compileSet, false);
+                    _pager->_incrementalCompileOperation->add(compileSet.get(), false);
                 }
                 {
                     OpenThreads::ScopedLock<OpenThreads::Mutex> drLock(_pager->_dr_mutex);

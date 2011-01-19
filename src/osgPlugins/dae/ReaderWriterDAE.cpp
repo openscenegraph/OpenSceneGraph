@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commercial and non commercial
@@ -176,9 +176,43 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
     return retVal;
 }
 
+static void replace(std::string & str, const char from, const std::string & to) {
+    // Replace for all occurences
+    for(std::string::size_type pos=str.find(from); pos!=std::string::npos; pos=str.find(from))
+    {
+        str.replace(pos, 1, to);
+    }
+}
+
 std::string ReaderWriterDAE::ConvertFilePathToColladaCompatibleURI(const std::string& FilePath)
 {
-    return cdom::nativePathToUri(FilePath);
+    std::string path( cdom::nativePathToUri(FilePath) );
+
+    // Unfortunately, cdom::nativePathToUri() does not convert '#' characters to "%23" as expected.
+    // So having /a/#b/c will generate a wrong conversion, as '#' will be misinterpreted as an URI fragment.
+    // Here are listed all special chars, but only # was found problematic. I (Sukender) tested #{}^~[]`;@=&$ under Windows.
+    // Uncomment lines if you find issues with some other special characters.
+
+    //replace(path, '%', "%25");        // % at first
+    //replace(path, ' ', "%20");
+    replace(path, '#', "%23");
+    //replace(path, '<', "%3C");
+    //replace(path, '>', "%3E");
+    //replace(path, '{', "%7B");
+    //replace(path, '}', "%7D");
+    //replace(path, '|', "%7C");
+    //replace(path, '^', "%5E");
+    //replace(path, '~', "%7E");
+    //replace(path, '[', "%5B");
+    //replace(path, '}', "%5D");
+    //replace(path, '`', "%60");
+    //replace(path, ';', "%3B");
+    //replace(path, '?', "%3F");
+    //replace(path, '@', "%40");
+    //replace(path, '=', "%3D");
+    //replace(path, '&', "%26");
+    //replace(path, '$', "%24");
+    return path;
 }
 
 

@@ -133,7 +133,7 @@ inline osg::Matrix parseMatrixString(const std::string& valueAsString)
 */ 
 class daeReader {
 public:
-    daeReader(DAE *dae_, bool strictTransparency = false);
+    daeReader(DAE *dae_, bool strictTransparency, int precisionHint);
     virtual ~daeReader();
 
     bool convert( const std::string &fileURI );
@@ -393,6 +393,7 @@ private:
 
     AuthoringTool _authoringTool;
     bool _strictTransparency, _invertTransparency;
+    int _precisionHint;        ///< Precision hint flags, as specified in osgDB::Options::PrecisionHint
 
     // Additional Information
     std::string _assetUnitName;

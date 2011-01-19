@@ -23,6 +23,53 @@
 
 namespace osgDAE {
 
+daeWriter::ArrayNIndices::ArrayNIndices( osg::Array* valArray, osg::IndexArray* ind ) :
+    vec2(0),  vec3(0),  vec4(0),
+    vec2d(0), vec3d(0), vec4d(0),
+    vec4ub(0),
+    valArray(valArray),
+    inds( ind ), mode(NONE)
+{
+    if ( valArray != NULL )
+    {
+        switch( valArray->getType() )
+        {
+        case osg::Array::Vec2ArrayType:
+            mode = VEC2F;
+            vec2 = (osg::Vec2Array*)valArray;
+            break;
+        case osg::Array::Vec3ArrayType:
+            mode = VEC3F;
+            vec3 = (osg::Vec3Array*)valArray;
+            break;
+        case osg::Array::Vec4ArrayType:
+            mode = VEC4F;
+            vec4 = (osg::Vec4Array*)valArray;
+            break;
+        case osg::Array::Vec2dArrayType:
+            mode = VEC2D;
+            vec2d = (osg::Vec2dArray*)valArray;
+            break;
+        case osg::Array::Vec3dArrayType:
+            mode = VEC3D;
+            vec3d = (osg::Vec3dArray*)valArray;
+            break;
+        case osg::Array::Vec4dArrayType:
+            mode = VEC4D;
+            vec4d = (osg::Vec4dArray*)valArray;
+            break;
+        case osg::Array::Vec4ubArrayType:
+            mode = VEC4_UB;
+            vec4ub = (osg::Vec4ubArray*)valArray;
+            break;
+        default:
+            OSG_WARN << "Array is unsupported vector type" << std::endl;
+            break;
+        }
+    }
+}
+
+
 std::string toString(const osg::Vec3f& value)
 {
     std::stringstream str;

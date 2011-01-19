@@ -22,7 +22,7 @@
 
 using namespace osgDAE;
 
-daeReader::daeReader(DAE *dae_, bool strictTransparency) : 
+daeReader::daeReader(DAE *dae_, bool strictTransparency, int precisionHint) : 
                   _dae(dae_),
                   _rootNode(NULL),
                   _visualScene(NULL),
@@ -32,6 +32,7 @@ daeReader::daeReader(DAE *dae_, bool strictTransparency) :
                   _authoringTool(UNKNOWN),
                   _strictTransparency(strictTransparency),
                   _invertTransparency(false),
+                  _precisionHint(precisionHint),
                   _assetUnitName("meter"),
                   _assetUnitMeter(1.0),
                   _assetUp_axis(UPAXISTYPE_Y_UP)

@@ -17,13 +17,20 @@
 
 using namespace osgDAE;
 
-domSourceReader::domSourceReader() : m_array_type( None ), m_count( 0 )
+domSourceReader::domSourceReader() : m_array_type( None ), m_count( 0 ), srcInit( NULL )//, initialized( false )
 {}
 
-domSourceReader::domSourceReader( domSource *src ) : m_array_type( None ), m_count( 0 )
+domSourceReader::domSourceReader( domSource *src ) : m_array_type( None ), m_count( 0 ), srcInit( src )//, initialized( false )
 {
+}
+
+void domSourceReader::convert(bool doublePrecision)
+{
+    domSource * src = srcInit;
+    srcInit = NULL;
     domSource::domTechnique_common* technique = src->getTechnique_common();
-    if ( technique == NULL ) {
+    if ( technique == NULL )
+    {
         OSG_WARN<<"Warning: IntDaeSource::createFrom: Unable to find COMMON technique"<<std::endl;
         return;
     }
@@ -51,16 +58,40 @@ domSourceReader::domSourceReader( domSource *src ) : m_array_type( None ), m_cou
             m_float_array = new osg::FloatArray();
             break;
         case 2:
-            m_array_type = Vec2;
-            m_vec2_array = new osg::Vec2Array();
+            if (!doublePrecision)
+            {
+                m_array_type = Vec2;
+                m_vec2_array = new osg::Vec2Array();
+            }
+            else
+            {
+                m_array_type = Vec2d;
+                m_vec2d_array = new osg::Vec2dArray();
+            }
             break;
         case 3:
-            m_array_type = Vec3;
-            m_vec3_array = new osg::Vec3Array();
+            if (!doublePrecision)
+            {
+                m_array_type = Vec3;
+                m_vec3_array = new osg::Vec3Array();
+            }
+            else
+            {
+                m_array_type = Vec3d;
+                m_vec3d_array = new osg::Vec3dArray();
+            }
             break;
         case 4:
-            m_array_type = Vec4;
-            m_vec4_array = new osg::Vec4Array();
+            if (!doublePrecision)
+            {
+                m_array_type = Vec4;
+                m_vec4_array = new osg::Vec4Array();
+            }
+            else
+            {
+                m_array_type = Vec4d;
+                m_vec4d_array = new osg::Vec4dArray();
+            }
             break;
         case 16:
             m_array_type = Matrix;
@@ -74,32 +105,54 @@ domSourceReader::domSourceReader( domSource *src ) : m_array_type( None ), m_cou
     if (float_array) 
     {
         daeDoubleArray& va = *float_array;
-        for ( size_t i = 0; i < accessor->getCount(); i++ ) 
+        switch (m_array_type)
         {
-            switch ( accessor->getStride() ) 
-            {
-                case 1:
-                    m_float_array->push_back(va[i]);
-                    break;
-                case 2:
-                    m_vec2_array->push_back( osg::Vec2( va[i*2], va[i*2+1]));
-                    break;
-                case 3:
-                    m_vec3_array->push_back( osg::Vec3( va[i*3], va[i*3+1], va[i*3+2]));
-                    break;
-                case 4:
-                    m_vec4_array->push_back( osg::Vec4( va[i*4], va[i*4+1], va[i*4+2], va[i*4+3]));
-                    break;
-                case 16:
-                    m_matrix_array->push_back(osg::Matrixf( va[i*16+0],    va[i*16+4],    va[i*16+8],    va[i*16+12],
-                                                            va[i*16+1],    va[i*16+5],    va[i*16+9],    va[i*16+13],
-                                                            va[i*16+2],    va[i*16+6],    va[i*16+10],    va[i*16+14],
-                                                            va[i*16+3],    va[i*16+7],    va[i*16+11],    va[i*16+15]));
-                    break;
-                default:
-                    OSG_WARN << "Unsupported stride in Source: " << accessor->getStride() << std::endl;
-                    return;
+        case Float:
+            for ( size_t i = 0; i < accessor->getCount(); i++ ) {
+                m_float_array->push_back(va[i]);
             }
+            break;
+        case Vec2:
+            for ( size_t i = 0; i < accessor->getCount(); i++ ) {
+                m_vec2_array->push_back( osg::Vec2( va[i*2], va[i*2+1]));
+            }
+            break;
+        case Vec2d:
+            for ( size_t i = 0; i < accessor->getCount(); i++ ) {
+                m_vec2d_array->push_back( osg::Vec2d( va[i*2], va[i*2+1]));
+            }
+            break;
+        case Vec3:
+            for ( size_t i = 0; i < accessor->getCount(); i++ ) {
+                m_vec3_array->push_back( osg::Vec3( va[i*3], va[i*3+1], va[i*3+2]));
+            }
+            break;
+        case Vec3d:
+            for ( size_t i = 0; i < accessor->getCount(); i++ ) {
+                m_vec3d_array->push_back( osg::Vec3d( va[i*3], va[i*3+1], va[i*3+2]));
+            }
+            break;
+        case Vec4:
+            for ( size_t i = 0; i < accessor->getCount(); i++ ) {
+                m_vec4_array->push_back( osg::Vec4( va[i*4], va[i*4+1], va[i*4+2], va[i*4+3]));
+            }
+            break;
+        case Vec4d:
+            for ( size_t i = 0; i < accessor->getCount(); i++ ) {
+                m_vec4d_array->push_back( osg::Vec4d( va[i*4], va[i*4+1], va[i*4+2], va[i*4+3]));
+            }
+            break;
+        case Matrix:
+            for ( size_t i = 0; i < accessor->getCount(); i++ ) {
+                m_matrix_array->push_back(osg::Matrixf( va[i*16+0],    va[i*16+4],    va[i*16+8],    va[i*16+12],
+                                                        va[i*16+1],    va[i*16+5],    va[i*16+9],    va[i*16+13],
+                                                        va[i*16+2],    va[i*16+6],    va[i*16+10],    va[i*16+14],
+                                                        va[i*16+3],    va[i*16+7],    va[i*16+11],    va[i*16+15]));
+            }
+            break;
+        default:
+            OSG_WARN << "Unsupported stride in Source: " << stride << std::endl;
+            return;
         }
     }
     else

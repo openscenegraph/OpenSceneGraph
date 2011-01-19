@@ -360,18 +360,56 @@ void daeReader::processSkin(domSkin* pDomSkin, domNode* skeletonRoot, osgAnimati
             if (!pOsgRigGeometry)
                 continue;
 
-            osg::Vec3Array& vertices = *static_cast<osg::Vec3Array*>(pOsgRigGeometry->getVertexArray());
-
-            for (size_t i = 0; i < vertices.size(); ++i)
+            osg::Array * vert = pOsgRigGeometry->getVertexArray();
+            osg::Vec3Array * vertf = NULL;
+            osg::Vec3dArray* vertd = NULL;
+            if (vert->getType() == osg::Array::Vec3ArrayType)
             {
-                vertices[i] = vertices[i] * bindMatrix;
+                vertf = static_cast<osg::Vec3Array*>(vert);
+                for (size_t i = 0; i < vertf->size(); ++i)
+                {
+                    (*vertf)[i] = (*vertf)[i] * bindMatrix;
+                }
+            }
+            else if (vert->getType() == osg::Array::Vec3dArrayType)
+            {
+                vertd = static_cast<osg::Vec3dArray*>(vert);
+                for (size_t i = 0; i < vertd->size(); ++i)
+                {
+                    (*vertd)[i] = (*vertd)[i] * bindMatrix;
+                }
+            }
+            else
+            {
+                OSG_NOTIFY(osg::WARN) << "Vertices vector type isn't supported." << std::endl;
+                continue;
             }
 
-            if (osg::Vec3Array* normals = static_cast<osg::Vec3Array*>(pOsgRigGeometry->getNormalArray()))
+            osg::Array * norm = pOsgRigGeometry->getNormalArray();
+            if (norm)
             {
-                for (size_t i = 0; i < normals->size(); ++i)
+                osg::Vec3Array * normf = NULL;
+                osg::Vec3dArray* normd = NULL;
+                if (norm->getType() == osg::Array::Vec3ArrayType)
                 {
-                    (*normals)[i] = osg::Matrix::transform3x3((*normals)[i], bindMatrix);
+                    normf = static_cast<osg::Vec3Array*>(norm);
+                    for (size_t i = 0; i < normf->size(); ++i)
+                    {
+                        (*normf)[i] = osg::Matrix::transform3x3((*normf)[i], bindMatrix);
+                    }
+                }
+                else if (norm->getType() == osg::Array::Vec3dArrayType)
+                {
+                    normd = static_cast<osg::Vec3dArray*>(norm);
+                    for (size_t i = 0; i < normd->size(); ++i)
+                    {
+                        (*normd)[i] = osg::Matrix::transform3x3((*normd)[i], bindMatrix);
+                    }
+                }
+                else
+                {
+                    OSG_NOTIFY(osg::WARN) << "Normals vector type isn't supported." << std::endl;
+                    //continue;
                 }
             }
 

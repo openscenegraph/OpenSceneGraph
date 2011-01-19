@@ -604,10 +604,13 @@ daeReader::ChannelPart* daeReader::processSampler(domChannel* pDomChannel, Sourc
         }
     }
 
+    //const bool readDoubleKeyframes = (_precisionHint & osgDB::Options::DOUBLE_PRECISION_KEYFRAMES) != 0;
+    static const bool readDoubleKeyframes = false;
+
     findInputSourceBySemantic(domInputArray, COMMON_PROFILE_INPUT_OUTPUT, output_source, &tmp);
     findInputSourceBySemantic(domInputArray, COMMON_PROFILE_INPUT_IN_TANGENT, output_intangent_source, &tmp);
     findInputSourceBySemantic(domInputArray, COMMON_PROFILE_INPUT_OUT_TANGENT, output_outtangent_source, &tmp);
-    domSourceReader::ArrayType arrayType = sources[output_source].getArrayType();
+    domSourceReader::ArrayType arrayType = sources[output_source].getArrayType(readDoubleKeyframes);
 
     struct InterpTypeName
     {
@@ -709,6 +712,27 @@ daeReader::ChannelPart* daeReader::processSampler(domChannel* pDomChannel, Sourc
             sources[output_source].getVec4Array(),
             sources[output_intangent_source].getVec4Array(),
             sources[output_outtangent_source].getVec4Array(),
+            interpolationType);
+        break;
+    case domSourceReader::Vec2d:
+        keyframes = makeKeyframes<osg::Vec2d>(pOsgTimesArray,
+            sources[output_source].getVec2dArray(),
+            sources[output_intangent_source].getVec2dArray(),
+            sources[output_outtangent_source].getVec2dArray(),
+            interpolationType);
+        break;
+    case domSourceReader::Vec3d:
+        keyframes = makeKeyframes<osg::Vec3d>(pOsgTimesArray,
+            sources[output_source].getVec3dArray(),
+            sources[output_intangent_source].getVec3dArray(),
+            sources[output_outtangent_source].getVec3dArray(),
+            interpolationType);
+        break;
+    case domSourceReader::Vec4d:
+        keyframes = makeKeyframes<osg::Vec4d>(pOsgTimesArray,
+            sources[output_source].getVec4dArray(),
+            sources[output_intangent_source].getVec4dArray(),
+            sources[output_outtangent_source].getVec4dArray(),
             interpolationType);
         break;
     case domSourceReader::Matrix:

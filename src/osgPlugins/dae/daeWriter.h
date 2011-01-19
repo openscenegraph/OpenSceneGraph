@@ -248,15 +248,17 @@ protected: //members
 
     osg::StateSet* CleanStateSet(osg::StateSet* pStateSet) const;
 
+    void updateCurrentDaeNode();
+
 protected: //inner classes
     class ArrayNIndices
     {
     public:
         enum Mode { NONE = 0, VEC2 = 2, VEC3 = 3, VEC4 = 4 };
-        osg::Vec2Array *vec2;
-        osg::Vec3Array *vec3;
-        osg::Vec4Array *vec4;
-        osg::IndexArray *inds;
+        osg::Vec2Array*  vec2;
+        osg::Vec3Array*  vec3;
+        osg::Vec4Array*  vec4;
+        osg::IndexArray* inds;
         Mode mode;
 
         ArrayNIndices( osg::Array *array, osg::IndexArray *ind ) : vec2(0), vec3(0), vec4(0), inds( ind ), mode(NONE)

@@ -68,13 +68,7 @@ void daeWriter::writeNodeExtra(osg::Node &node)
 void daeWriter::apply( osg::Group &node )
 {
     debugPrint( node );
-
-    while ( lastDepth >= _nodePath.size() )
-    {
-        //We are not a child of previous node
-        currentNode = daeSafeCast< domNode >( currentNode->getParentElement() );
-        lastDepth--;
-    }
+    updateCurrentDaeNode();
     currentNode = daeSafeCast< domNode >(currentNode->add( COLLADA_ELEMENT_NODE ) );
     
     // If a multiswitch node, store it's data as extra "MultiSwitch" data in the "OpenSceneGraph" technique
@@ -144,13 +138,7 @@ void daeWriter::apply( osg::Group &node )
 void daeWriter::apply( osg::Switch &node )
 {
     debugPrint( node );
-
-    while ( lastDepth >= _nodePath.size() )
-    {
-        //We are not a child of previous node
-        currentNode = daeSafeCast< domNode >( currentNode->getParentElement() );
-        lastDepth--;
-    }
+    updateCurrentDaeNode();
     currentNode = daeSafeCast< domNode >(currentNode->add( COLLADA_ELEMENT_NODE ) );
     currentNode->setId(getNodeName(node,"switch").c_str());
 
@@ -197,13 +185,7 @@ void daeWriter::apply( osg::Switch &node )
 void daeWriter::apply( osg::Sequence &node )
 {
     debugPrint( node );
-
-    while ( lastDepth >= _nodePath.size() )
-    {
-        //We are not a child of previous node
-        currentNode = daeSafeCast< domNode >( currentNode->getParentElement() );
-        lastDepth--;
-    }
+    updateCurrentDaeNode();
     currentNode = daeSafeCast< domNode >(currentNode->add( COLLADA_ELEMENT_NODE ) );
     currentNode->setId(getNodeName(node,"sequence").c_str());
 
@@ -280,15 +262,9 @@ void daeWriter::apply( osg::Sequence &node )
 void daeWriter::apply( osg::LOD &node )
 {
     debugPrint( node );
-
-    while ( lastDepth >= _nodePath.size() )
-    {
-        //We are not a child of previous node
-        currentNode = daeSafeCast< domNode >( currentNode->getParentElement() );
-        lastDepth--;
-    }
-    currentNode = daeSafeCast< domNode >(currentNode->add( COLLADA_ELEMENT_NODE ) );
+    updateCurrentDaeNode();
     lastDepth = _nodePath.size();
+    currentNode = daeSafeCast< domNode >(currentNode->add( COLLADA_ELEMENT_NODE ) );
     currentNode->setId(getNodeName(node,"LOD").c_str());
 
     if (writeExtras)
@@ -354,6 +330,7 @@ void daeWriter::apply( osg::ProxyNode &node )
 void daeWriter::apply( osg::LightSource &node )
 {
     debugPrint( node );
+    updateCurrentDaeNode();
 
     domInstance_light *il = daeSafeCast< domInstance_light >( currentNode->add( COLLADA_ELEMENT_INSTANCE_LIGHT ) );
     std::string name = node.getName();
@@ -486,6 +463,7 @@ void daeWriter::apply( osg::LightSource &node )
 void daeWriter::apply( osg::Camera &node )
 {
     debugPrint( node );
+    updateCurrentDaeNode();
 
     domInstance_camera *ic = daeSafeCast< domInstance_camera >( currentNode->add( COLLADA_ELEMENT_INSTANCE_CAMERA ) );
     std::string name = node.getName();
@@ -509,6 +487,7 @@ void daeWriter::apply( osg::Camera &node )
 void daeWriter::apply( osg::CameraView &node)
 {
     debugPrint( node );
+    updateCurrentDaeNode();
 
     domInstance_camera *ic = daeSafeCast< domInstance_camera >( currentNode->add(COLLADA_ELEMENT_INSTANCE_CAMERA));
     std::string name = node.getName();

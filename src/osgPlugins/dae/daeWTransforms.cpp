@@ -62,14 +62,7 @@ void daeWriter::apply( osg::MatrixTransform &node )
 #ifdef _DEBUG
     debugPrint( node );
 #endif
-
-    while ( lastDepth >= _nodePath.size() )
-    {
-        //We are not a child of previous node
-        currentNode = daeSafeCast< domNode >( currentNode->getParentElement() );
-        lastDepth--;
-    }
-
+    updateCurrentDaeNode();
     currentNode = daeSafeCast< domNode >(currentNode->add( COLLADA_ELEMENT_NODE ) );
     std::string nodeName = getNodeName(node,"matrixTransform");
     currentNode->setId(nodeName.c_str());
@@ -122,13 +115,7 @@ void daeWriter::apply( osg::PositionAttitudeTransform &node )
 #ifdef _DEBUG
     debugPrint( node );
 #endif
-
-    while ( lastDepth >= _nodePath.size() )
-    {
-        //We are not a child of previous node
-        currentNode = daeSafeCast< domNode >( currentNode->getParentElement() );
-        lastDepth--;
-    }
+    updateCurrentDaeNode();
     currentNode = daeSafeCast< domNode >(currentNode->add( COLLADA_ELEMENT_NODE ) );
     std::string nodeName = getNodeName(node,"positionAttitudeTransform");
     currentNode->setId(nodeName.c_str());
@@ -192,13 +179,7 @@ void daeWriter::apply( osg::PositionAttitudeTransform &node )
 void daeWriter::apply( osg::Transform &node )
 {
     debugPrint( node );
-
-    while ( lastDepth >= _nodePath.size() )
-    {
-        // We are not a child of previous node
-        currentNode = daeSafeCast< domNode >( currentNode->getParentElement() );
-        lastDepth--;
-    }
+    updateCurrentDaeNode();
     currentNode = daeSafeCast< domNode >(currentNode->add( COLLADA_ELEMENT_NODE ) );
 
     // If a DOFTransform node store it's data as extra "DOFTransform" data in the "OpenSceneGraph" technique

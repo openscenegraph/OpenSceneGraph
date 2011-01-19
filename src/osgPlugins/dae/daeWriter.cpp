@@ -141,6 +141,15 @@ void daeWriter::apply( osg::Node &node )
     traverse( node );
 }
 
+void daeWriter::updateCurrentDaeNode()
+{
+    while ( lastDepth >= _nodePath.size() )
+    {
+        //We are not a child of previous node
+        currentNode = daeSafeCast< domNode >( currentNode->getParentElement() );
+        --lastDepth;
+    }
+}
 
 std::string daeWriter::uniquify( const std::string &name )
 {

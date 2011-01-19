@@ -26,6 +26,70 @@
 
 using namespace osgDAE;
 
+
+unsigned int daeWriter::ArrayNIndices::getDAESize()
+{
+    switch( mode )
+    {
+    case VEC2F:
+    case VEC2D:
+        return 2;
+    case VEC3F:
+    case VEC3D:
+        return 3;
+    case VEC4F:
+    case VEC4D:
+    case VEC4_UB:
+        return 4;
+    case NONE:
+        return 0;
+    }
+    return 0;
+}
+
+/// Appends an OSG vector (Vec2, Vec3...) to a domListOfFloats.
+template<class VecType>
+inline void append(domListOfFloats & list, const VecType & vec)
+{
+    for(unsigned int i=0; i<VecType::num_components; ++i) list.append( vec[i] );
+}
+
+/// Appends an OSG vector array (Vec2Array, Vec3Array...) to a domListOfFloats.
+bool daeWriter::ArrayNIndices::append(domListOfFloats & list)
+{
+    switch(getMode())
+    {
+    case VEC2F:
+        for (osg::Vec2Array::const_iterator it=vec2->begin(), itEnd=vec2->end(); it!=itEnd; ++it) ::append<osg::Vec2>(list, *it);
+        break;
+    case VEC2D:
+        for (osg::Vec2dArray::const_iterator it=vec2d->begin(), itEnd=vec2d->end(); it!=itEnd; ++it) ::append<osg::Vec2d>(list, *it);
+        break;
+    case VEC3F:
+        for (osg::Vec3Array::const_iterator it=vec3->begin(), itEnd=vec3->end(); it!=itEnd; ++it) ::append<osg::Vec3>(list, *it);
+        break;
+    case VEC3D:
+        for (osg::Vec3dArray::const_iterator it=vec3d->begin(), itEnd=vec3d->end(); it!=itEnd; ++it) ::append<osg::Vec3d>(list, *it);
+        break;
+    case VEC4F:
+        for (osg::Vec4Array::const_iterator it=vec4->begin(), itEnd=vec4->end(); it!=itEnd; ++it) ::append<osg::Vec4>(list, *it);
+        break;
+    case VEC4D:
+        for (osg::Vec4dArray::const_iterator it=vec4d->begin(), itEnd=vec4d->end(); it!=itEnd; ++it) ::append<osg::Vec4d>(list, *it);
+        break;
+    case VEC4_UB:
+        for (osg::Vec4ubArray::const_iterator it=vec4ub->begin(), itEnd=vec4ub->end(); it!=itEnd; ++it) ::append<osg::Vec4ub>(list, *it);
+        break;
+    default:
+        return false;
+    }
+    return true;
+}
+
+
+
+
+
 domGeometry* daeWriter::getOrCreateDomGeometry(osg::Geometry* pOsgGeometry)
 {
     // See if geometry exists in cache
@@ -42,7 +106,7 @@ domGeometry* daeWriter::getOrCreateDomGeometry(osg::Geometry* pOsgGeometry)
         }
         domGeometry* pDomGeometry = daeSafeCast< domGeometry >( lib_geoms->add( COLLADA_ELEMENT_GEOMETRY ) );
 
-        std::string name = pOsgGeometry->getName();
+        std::string name( pOsgGeometry->getName() );
         if (name.empty())
             name = uniquify("geometry");
         else
@@ -89,7 +153,7 @@ void daeWriter::writeRigGeometry(osgAnimation::RigGeometry *pOsgRigGeometry)
             //   1      <vertex_weights>
             //   0..1    <extra>
             pDomController = daeSafeCast< domController >( lib_controllers->add( COLLADA_ELEMENT_CONTROLLER) );
-            std::string name = pOsgRigGeometry->getName();
+            std::string name( pOsgRigGeometry->getName() );
             if (name.empty())
                 name = uniquify("skincontroller");
             else 
@@ -257,7 +321,7 @@ void daeWriter::writeMorphGeometry(osgAnimation::MorphGeometry *pOsgMorphGeometr
             //        0..*    <extra>
             //   0..* <extra>
             pDomController = daeSafeCast< domController >( lib_controllers->add( COLLADA_ELEMENT_CONTROLLER) );
-            std::string name = pOsgMorphGeometry->getName();
+            std::string name( pOsgMorphGeometry->getName() );
             if (name.empty())
                 name = uniquify("morphcontroller");
             else 
@@ -364,6 +428,7 @@ void daeWriter::writeMorphGeometry(osgAnimation::MorphGeometry *pOsgMorphGeometr
 void daeWriter::apply( osg::Geode &node )
 {
     debugPrint( node );
+    updateCurrentDaeNode();
 
     pushStateSet(node.getStateSet());
     if (NULL != node.getStateSet())
@@ -465,10 +530,10 @@ void daeWriter::appendGeometryIndices(osg::Geometry *geom,
     //ArrayNIndices &tc = texcoords[ti];
     p->getValue().append( texcoords[ti].inds!=NULL?texcoords[ti].inds->index(vindex):vindex );
   }
-    
 
 }
-    
+
+
 bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const std::string &name )
 {   
     domMesh *mesh = daeSafeCast< domMesh >( geo->add( COLLADA_ELEMENT_MESH ) );
@@ -508,104 +573,45 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
             vertexAttributes.push_back(ArrayNIndices( geom->getVertexAttribArray( i ), geom->getVertexAttribIndices(i)));
         }
     }
-       
-    // process POSITION
-    std::string sName = name + "-positions";
-    pos = createSource( mesh, sName, verts.mode );
 
-    switch( verts.mode )
+    // process POSITION
+    std::string sName;
     {
-    case ArrayNIndices::VEC2:
-        pos->getFloat_array()->setCount( verts.vec2->size() *2 );
-        pos->getTechnique_common()->getAccessor()->setCount( verts.vec2->size() );
-        for ( unsigned int i = 0; i < verts.vec2->size(); i++ )
+        sName = name + "-positions";
+        unsigned int elementSize = verts.getDAESize();
+        unsigned int numElements = verts.valArray->getNumElements();
+        pos = createSource( mesh, sName, elementSize );
+        pos->getFloat_array()->setCount( numElements * elementSize );
+        pos->getTechnique_common()->getAccessor()->setCount( numElements );
+        if (!verts.append(pos->getFloat_array()->getValue()))
         {
-            pos->getFloat_array()->getValue().append( (*verts.vec2)[i].x() );
-            pos->getFloat_array()->getValue().append( (*verts.vec2)[i].y() );
+            OSG_WARN << "Invalid array type for vertices" << std::endl;
         }
-        break;
-    case ArrayNIndices::VEC3:
-        pos->getFloat_array()->setCount( verts.vec3->size() *3 );
-        pos->getTechnique_common()->getAccessor()->setCount( verts.vec3->size() );
-        for ( unsigned int i = 0; i < verts.vec3->size(); i++ )
-        {
-            pos->getFloat_array()->getValue().append( (*verts.vec3)[i].x() );
-            pos->getFloat_array()->getValue().append( (*verts.vec3)[i].y() );
-            pos->getFloat_array()->getValue().append( (*verts.vec3)[i].z() );
-        }
-        break;
-    case ArrayNIndices::VEC4:
-        pos->getFloat_array()->setCount( verts.vec4->size() *4 );
-        pos->getTechnique_common()->getAccessor()->setCount( verts.vec4->size() );
-        for ( unsigned int i = 0; i < verts.vec4->size(); i++ )
-        {
-            pos->getFloat_array()->getValue().append( (*verts.vec4)[i].x() );
-            pos->getFloat_array()->getValue().append( (*verts.vec4)[i].y() );
-            pos->getFloat_array()->getValue().append( (*verts.vec4)[i].z() );
-            pos->getFloat_array()->getValue().append( (*verts.vec4)[i].w() );
-        }
-        break;
-    default:
-        OSG_WARN << "Invalid array type for vertices" << std::endl;
-        break;
+
+        //create a vertices element
+        domVertices *vertices = daeSafeCast< domVertices >( mesh->add( COLLADA_ELEMENT_VERTICES ) );
+        std::string vName = name + "-vertices";
+        vertices->setId( vName.c_str() );
+
+        //make a POSITION input in it
+        domInputLocal *il = daeSafeCast< domInputLocal >( vertices->add( COLLADA_ELEMENT_INPUT ) );
+        il->setSemantic( COMMON_PROFILE_INPUT_POSITION );
+        std::string url("#" + std::string(pos->getId()) );
+        il->setSource( url.c_str() );
     }
 
-    //create a vertices element
-    domVertices *vertices = daeSafeCast< domVertices >( mesh->add( COLLADA_ELEMENT_VERTICES ) );
-    std::string vName = name + "-vertices";
-    vertices->setId( vName.c_str() );
-
-    //make a POSITION input in it
-    domInputLocal *il = daeSafeCast< domInputLocal >( vertices->add( COLLADA_ELEMENT_INPUT ) );
-    il->setSemantic( COMMON_PROFILE_INPUT_POSITION );
-    std::string url = "#" + std::string( pos->getId() );
-    il->setSource( url.c_str() );
-
     //process NORMAL
-    if ( normals.mode != ArrayNIndices::NONE )
+    if ( normals.getMode() != ArrayNIndices::NONE )
     {
         sName = name + "-normals";
-        norm = createSource( mesh, sName, normals.mode );
-        
-        switch( normals.mode )
+        unsigned int elementSize = normals.getDAESize();
+        unsigned int numElements = normals.valArray->getNumElements();
+        norm = createSource( mesh, sName, elementSize );
+        norm->getFloat_array()->setCount( numElements * elementSize );
+        norm->getTechnique_common()->getAccessor()->setCount( numElements );
+        if (!normals.append(norm->getFloat_array()->getValue()))
         {
-        case ArrayNIndices::VEC2:
-            norm->getFloat_array()->setCount( normals.vec2->size() *2 );
-            norm->getTechnique_common()->getAccessor()->setCount( normals.vec2->size() );
-            for ( unsigned int i = 0; i < normals.vec2->size(); i++ )
-            {
-                norm->getFloat_array()->getValue().append( (*normals.vec2)[i].x() );
-                norm->getFloat_array()->getValue().append( (*normals.vec2)[i].y() );
-            }
-            break;
-        case ArrayNIndices::VEC3:
-            norm->getFloat_array()->setCount( normals.vec3->size() *3 );
-            norm->getTechnique_common()->getAccessor()->setCount( normals.vec3->size() );
-            for ( unsigned int i = 0; i < normals.vec3->size(); i++ )
-            {
-                norm->getFloat_array()->getValue().append( (*normals.vec3)[i].x() );
-                norm->getFloat_array()->getValue().append( (*normals.vec3)[i].y() );
-                norm->getFloat_array()->getValue().append( (*normals.vec3)[i].z() );
-            }
-            break;
-        case ArrayNIndices::VEC4:
-            norm->getFloat_array()->setCount( normals.vec4->size() *4 );
-            norm->getTechnique_common()->getAccessor()->setCount( normals.vec4->size() );
-            for ( unsigned int i = 0; i < normals.vec4->size(); i++ )
-            {
-                norm->getFloat_array()->getValue().append( (*normals.vec4)[i].x() );
-                norm->getFloat_array()->getValue().append( (*normals.vec4)[i].y() );
-                norm->getFloat_array()->getValue().append( (*normals.vec4)[i].z() );
-                norm->getFloat_array()->getValue().append( (*normals.vec4)[i].w() );
-            }
-            break;
-
-        //no normals
-        case ArrayNIndices::NONE:
-          OSG_WARN << "No array type for normals"<<std::endl;
-        default:
-          OSG_WARN << "Invalid array type for normals"<<std::endl;
-          break;
+            OSG_WARN << "Invalid array type for normals" << std::endl;
         }
 
         //if NORMAL shares same indices as POSITION put it in the vertices
@@ -618,47 +624,19 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
     }
 
     //process COLOR
-    if ( colors.mode != ArrayNIndices::NONE )
+    if ( colors.getMode() != ArrayNIndices::NONE )
     {
         sName = name + "-colors";
-        color = createSource( mesh, sName, colors.mode, true );
-        
-        switch( colors.mode )
+        unsigned int elementSize = colors.getDAESize();
+        unsigned int numElements = colors.valArray->getNumElements();
+        color = createSource( mesh, sName, elementSize, true );
+        color->getFloat_array()->setCount( numElements * elementSize );
+        color->getTechnique_common()->getAccessor()->setCount( numElements );
+        if (!colors.append(color->getFloat_array()->getValue()))
         {
-        case ArrayNIndices::VEC2:
-            color->getFloat_array()->setCount( colors.vec2->size() *2 );
-            color->getTechnique_common()->getAccessor()->setCount( colors.vec2->size() );
-            for ( unsigned int i = 0; i < colors.vec2->size(); i++ )
-            {
-                color->getFloat_array()->getValue().append( (*colors.vec2)[i].x() );
-                color->getFloat_array()->getValue().append( (*colors.vec2)[i].y() );
-            }
-            break;
-        case ArrayNIndices::VEC3:
-            color->getFloat_array()->setCount( colors.vec3->size() *3 );
-            color->getTechnique_common()->getAccessor()->setCount( colors.vec3->size() );
-            for ( unsigned int i = 0; i < colors.vec3->size(); i++ )
-            {
-                color->getFloat_array()->getValue().append( (*colors.vec3)[i].x() );
-                color->getFloat_array()->getValue().append( (*colors.vec3)[i].y() );
-                color->getFloat_array()->getValue().append( (*colors.vec3)[i].z() );
-            }
-            break;
-        case ArrayNIndices::VEC4:
-            color->getFloat_array()->setCount( colors.vec4->size() *4 );
-            color->getTechnique_common()->getAccessor()->setCount( colors.vec4->size() );
-            for ( unsigned int i = 0; i < colors.vec4->size(); i++ )
-            {
-                color->getFloat_array()->getValue().append( (*colors.vec4)[i].r() );
-                color->getFloat_array()->getValue().append( (*colors.vec4)[i].g() );
-                color->getFloat_array()->getValue().append( (*colors.vec4)[i].b() );
-                color->getFloat_array()->getValue().append( (*colors.vec4)[i].a() );
-            }
-            break;
-        default:
             OSG_WARN << "Invalid array type for colors" << std::endl;
-            break;
         }
+
         //if COLOR shares same indices as POSITION put it in the vertices
         /*if ( colorInds == vertInds && vertInds != NULL ) {
             il = daeSafeCast< domInputLocal >( vertices->add( COLLADA_ELEMENT_INPUT ) );
@@ -672,106 +650,47 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
     //TODO: Do the same as normal and colors for texcoods. But in a loop since you can have many
     for ( unsigned int ti = 0; ti < texcoords.size(); ti++ )
     {
+        if (texcoords[ti].getMode() == ArrayNIndices::NONE) continue;
+
         std::ostringstream intstr;
         intstr << std::dec << ti;
         sName = name + "-texcoord_" + intstr.str();
 
-        domSource *t = createSource( mesh, sName, texcoords[ti].mode, false, true );
-        switch( texcoords[ti].mode )
+        unsigned int elementSize = texcoords[ti].getDAESize();
+        unsigned int numElements = texcoords[ti].valArray->getNumElements();
+        domSource *t = createSource( mesh, sName, elementSize, false, true );
+        t->getFloat_array()->setCount( numElements * elementSize );
+        t->getTechnique_common()->getAccessor()->setCount( numElements );
+        if (!texcoords[ti].append(t->getFloat_array()->getValue()))
         {
-        case ArrayNIndices::VEC2:
-            t->getFloat_array()->setCount( texcoords[ti].vec2->size() *2 );
-            t->getTechnique_common()->getAccessor()->setCount( texcoords[ti].vec2->size() );
-            for ( unsigned int i = 0; i < texcoords[ti].vec2->size(); i++ )
-            {
-                t->getFloat_array()->getValue().append( (*texcoords[ti].vec2)[i].x() );
-                t->getFloat_array()->getValue().append( (*texcoords[ti].vec2)[i].y() );
-            }
-            break;
-        case ArrayNIndices::VEC3:
-            t->getFloat_array()->setCount( texcoords[ti].vec3->size() *3 );
-            t->getTechnique_common()->getAccessor()->setCount( texcoords[ti].vec3->size() );
-            for ( unsigned int i = 0; i < texcoords[ti].vec3->size(); i++ )
-            {
-                t->getFloat_array()->getValue().append( (*texcoords[ti].vec3)[i].x() );
-                t->getFloat_array()->getValue().append( (*texcoords[ti].vec3)[i].y() );
-                t->getFloat_array()->getValue().append( (*texcoords[ti].vec3)[i].z() );
-            }
-            break;
-        case ArrayNIndices::VEC4:
-            t->getFloat_array()->setCount( texcoords[ti].vec4->size() *4 );
-            t->getTechnique_common()->getAccessor()->setCount( texcoords[ti].vec4->size() );
-            for ( unsigned int i = 0; i < texcoords[ti].vec4->size(); i++ )
-            {
-                t->getFloat_array()->getValue().append( (*texcoords[ti].vec4)[i].x() );
-                t->getFloat_array()->getValue().append( (*texcoords[ti].vec4)[i].y() );
-                t->getFloat_array()->getValue().append( (*texcoords[ti].vec4)[i].z() );
-                t->getFloat_array()->getValue().append( (*texcoords[ti].vec4)[i].w() );
-            }
-            break;
-        default:
-          //##ti and not i
-            OSG_WARN << "Invalid array type for texcoord" << ti << std::endl;
-            break;
+            OSG_WARN << "Invalid array type for texcoord" << std::endl;
         }
+
         texcoord.push_back( t );
     }
 
     //RS
-    //process TEXCOORD
+    //process VERTEX ATTRIBUTES
     //TODO: Do the same as normal and colors for texcoods. But in a loop since you can have many
     for ( unsigned int ti = 0; ti < vertexAttributes.size(); ti++ )
     {
-        if (vertexAttributes[ti].mode != ArrayNIndices::NONE)
-        {
-            std::ostringstream intstr;
-            intstr << std::dec << ti;
-            sName = name + "-vertexAttribute_" + intstr.str();
+        if (vertexAttributes[ti].getMode() == ArrayNIndices::NONE) continue;
 
-            domSource *t = createSource( mesh, sName, vertexAttributes[ti].mode, false, true );
-            switch( vertexAttributes[ti].mode )
-            {
-            case ArrayNIndices::VEC2:
-                t->getFloat_array()->setCount( vertexAttributes[ti].vec2->size() *2 );
-                t->getTechnique_common()->getAccessor()->setCount( vertexAttributes[ti].vec2->size() );
-                for ( unsigned int i = 0; i < vertexAttributes[ti].vec2->size(); i++ )
-                {
-                    t->getFloat_array()->getValue().append( (*vertexAttributes[ti].vec2)[i].x() );
-                    t->getFloat_array()->getValue().append( (*vertexAttributes[ti].vec2)[i].y() );
-                }
-                break;
-            case ArrayNIndices::VEC3:
-                t->getFloat_array()->setCount( vertexAttributes[ti].vec3->size() *3 );
-                t->getTechnique_common()->getAccessor()->setCount( vertexAttributes[ti].vec3->size() );
-                for ( unsigned int i = 0; i < vertexAttributes[ti].vec3->size(); i++ )
-                {
-                    t->getFloat_array()->getValue().append( (*vertexAttributes[ti].vec3)[i].x() );
-                    t->getFloat_array()->getValue().append( (*vertexAttributes[ti].vec3)[i].y() );
-                    t->getFloat_array()->getValue().append( (*vertexAttributes[ti].vec3)[i].z() );
-                }
-                break;
-            case ArrayNIndices::VEC4:
-                t->getFloat_array()->setCount( vertexAttributes[ti].vec4->size() *4 );
-                t->getTechnique_common()->getAccessor()->setCount( vertexAttributes[ti].vec4->size() );
-                for ( unsigned int i = 0; i < vertexAttributes[ti].vec4->size(); i++ )
-                {
-                    t->getFloat_array()->getValue().append( (*vertexAttributes[ti].vec4)[i].x() );
-                    t->getFloat_array()->getValue().append( (*vertexAttributes[ti].vec4)[i].y() );
-                    t->getFloat_array()->getValue().append( (*vertexAttributes[ti].vec4)[i].z() );
-                    t->getFloat_array()->getValue().append( (*vertexAttributes[ti].vec4)[i].w() );
-                }
-                break;
-            default:
-              //##ti and not i
-                OSG_WARN << "Invalid array type for vertex attribute" << ti << std::endl;
-                break;
-            }
-            vertexAttribute.push_back( t );
-        }
-        else
+        std::ostringstream intstr;
+        intstr << std::dec << ti;
+        sName = name + "-vertexAttribute_" + intstr.str();
+
+        unsigned int elementSize = vertexAttributes[ti].getDAESize();
+        unsigned int numElements = vertexAttributes[ti].valArray->getNumElements();
+        domSource *t = createSource( mesh, sName, elementSize, false, true );        // Sukender: should we *REALLY* call createSource(... false, true)? (I mean with such flags)
+        t->getFloat_array()->setCount( numElements * elementSize );
+        t->getTechnique_common()->getAccessor()->setCount( numElements );
+        if (!vertexAttributes[ti].append(t->getFloat_array()->getValue()))
         {
             OSG_WARN << "Invalid array type for vertex attribute" << ti << std::endl;
         }
+
+        vertexAttribute.push_back( t );
     }
 
     //process each primitive group
@@ -1001,7 +920,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                                      verts,normals,colors,texcoords,
                                      ncount,ccount);
 
-                       if ( vcount % primLength == 0 )
+                       if ( vcount>0 && ((vcount % primLength) == 0) )
                        {
                          if ( geom->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE )
                          {
@@ -1092,30 +1011,30 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                     unsigned int indexEnd=indexBegin+nbVerticesPerPoly;
                     for( unsigned int iPoly = 0; iPoly < p.size(); ++iPoly )
                     {
-                       // printf("indexBegin %d,indexPolyEnd %d \n",indexBegin,indexEnd);
-                       for( unsigned int primCount = indexBegin; primCount < indexEnd; ++primCount )
+                        // printf("indexBegin %d,indexPolyEnd %d \n",indexBegin,indexEnd);
+                        for( unsigned int primCount = indexBegin; primCount < indexEnd; ++primCount )
                         {
-                          appendGeometryIndices(geom,p[iPoly],vindex,
-                                           norm,color,
-                                           verts,normals,colors,texcoords,
-                                           ncount,ccount);
-                          
-                          if ( primCount % localPrimLength == 0 )
-                                                  {
-                             if ( geom->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE ) 
-                             {
+                            appendGeometryIndices(geom,p[iPoly],vindex,
+                                                  norm,color,
+                                                  verts,normals,colors,texcoords,
+                                                  ncount,ccount);
+
+                            if ( primCount>0 && ((primCount % localPrimLength) == 0) )
+                            {
+                                if ( geom->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE )
+                                {
                                     ncount++;
-                             }
-                             if ( geom->getColorBinding() == osg::Geometry::BIND_PER_PRIMITIVE ) 
-                             {
+                                }
+                                if ( geom->getColorBinding() == osg::Geometry::BIND_PER_PRIMITIVE )
+                                {
                                     ccount++;
-                             }
-                          }
-                                             vindex++;
-                       }
-                       indexBegin+=nbVerticesPerPoly;
-                       indexEnd+=nbVerticesPerPoly;
-                       }
+                                }
+                            }
+                            vindex++;
+                        }
+                        indexBegin+=nbVerticesPerPoly;
+                        indexEnd+=nbVerticesPerPoly;
+                     }
                 }
                 break;
             }
@@ -1194,13 +1113,13 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                     {
 
                         unsigned int vindex = *primItr;
-    
+
                         appendGeometryIndices(geom,p[iPoly],vindex,
                                               norm,color,
                                               verts,normals,colors,texcoords,
                                               ncount,ccount);
-                        
-                        if ( primCount % primLength == 0 )
+
+                        if ( primCount>0 && ((primCount % primLength) == 0) )
                         {
                             if ( geom->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE )
                             {
@@ -1299,7 +1218,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                                        verts,normals,colors,texcoords,
                                        ncount,ccount);
                         
-                    if ( primCount % primLength == 0 )
+                    if ( primCount>0 && ((primCount % primLength) == 0) )
                     {
                       if ( geom->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE )
                       {
@@ -1401,7 +1320,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                                        verts,normals,colors,texcoords,
                                        ncount,ccount);
                         
-                    if ( primCount % primLength == 0 )
+                    if ( primCount>0 && ((primCount % primLength) == 0) )
                     {
                       if ( geom->getNormalBinding() == osg::Geometry::BIND_PER_PRIMITIVE )
                       {
@@ -1471,7 +1390,8 @@ domSource *daeWriter::createSource( daeElement *parent, const std::string &baseN
         param->setName( "B" );
         param->setType( "float" );
 
-        if ( size == 4 ) {
+        if ( size == 4 )
+        {
             param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
             param->setName( "A" );
             param->setType( "float" );
@@ -1480,44 +1400,47 @@ domSource *daeWriter::createSource( daeElement *parent, const std::string &baseN
     }
     else if ( uv )
     {
+        const char * const type = "float";
+
         acc->setStride( size );
         param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
         param->setName( "S" );
-        param->setType( "float" );
+        param->setType( type );
 
         param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
         param->setName( "T" );
-        param->setType( "float" );
+        param->setType( type );
 
         if ( size >=3 )
         {
             param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
             param->setName( "P" );
-            param->setType( "float" );
+            param->setType( type );
         }
     }
     else
     {
+        const char * const type = "float";
         acc->setStride( size );
         param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
         param->setName( "X" );
-        param->setType( "float" );
+        param->setType( type );
 
         param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
         param->setName( "Y" );
-        param->setType( "float" );
+        param->setType( type );
 
         if ( size >=3 )
         {
             param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
             param->setName( "Z" );
-            param->setType( "float" );
+            param->setType( type );
 
             if ( size == 4 )
             {
                 param = daeSafeCast< domParam >( acc->add( COLLADA_ELEMENT_PARAM ) );
                 param->setName( "W" );
-                param->setType( "float" );
+                param->setType( type );
             }
         }
     }

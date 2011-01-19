@@ -71,7 +71,8 @@ namespace osgDAE {
 
 /// Convert value to string using it's stream operator
 template <typename T>
-std::string toString(T value) {
+std::string toString(T value)
+{
     std::stringstream str;
     str << value;
     return str.str();
@@ -254,37 +255,29 @@ protected: //inner classes
     class ArrayNIndices
     {
     public:
-        enum Mode { NONE = 0, VEC2 = 2, VEC3 = 3, VEC4 = 4 };
-        osg::Vec2Array*  vec2;
-        osg::Vec3Array*  vec3;
-        osg::Vec4Array*  vec4;
-        osg::IndexArray* inds;
-        Mode mode;
+        enum Mode { NONE, VEC2F, VEC2D, VEC3F, VEC3D, VEC4F, VEC4D, VEC4_UB };
 
-        ArrayNIndices( osg::Array *array, osg::IndexArray *ind ) : vec2(0), vec3(0), vec4(0), inds( ind ), mode(NONE)
-        {
-            if ( array != NULL )
-            {
-                switch( array->getType() )
-                {
-                case osg::Array::Vec2ArrayType:
-                    mode = VEC2;
-                    vec2 = (osg::Vec2Array*)array;
-                    break;
-                case osg::Array::Vec3ArrayType:
-                    mode = VEC3;
-                    vec3 = (osg::Vec3Array*)array;
-                    break;
-                case osg::Array::Vec4ArrayType:
-                    mode = VEC4;
-                    vec4 = (osg::Vec4Array*)array;
-                    break;
-                default:
-                    OSG_WARN << "Array is unsupported vector type" << std::endl;
-                    break;
-                }
-            }
-        }
+        osg::Vec2Array*         vec2;
+        osg::Vec3Array*         vec3;
+        osg::Vec4Array*         vec4;
+        osg::Vec2dArray*        vec2d;
+        osg::Vec3dArray*        vec3d;
+        osg::Vec4dArray*        vec4d;
+        osg::Vec4ubArray*       vec4ub;
+
+        osg::Array*             valArray;
+        osg::IndexArray*        inds;
+
+        ArrayNIndices( osg::Array* valArray, osg::IndexArray* ind );
+
+        Mode getMode() const { return mode; }
+
+        unsigned int getDAESize();
+
+        /// Appends the contained OSG vector array to a domListOfFloats
+        bool append(domListOfFloats & list);
+    protected:
+        Mode mode;
     };
 
 private: //members

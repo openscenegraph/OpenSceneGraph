@@ -1,4 +1,4 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
  *
  * This application is open source and may be redistributed and/or modified   
  * freely and without restriction, both in commercial and non commercial
@@ -129,9 +129,9 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
             if( opt == "polygon")  usePolygon = true;
             else if (opt == "GoogleMode") googleMode = true;
             else if (opt == "NoExtras") writeExtras = false;
-            else if (opt == "DaeEarthTex") earthTex = true;
-            else if (opt == "ZUpAxis") zUpAxis = true;
-            else if (opt == "ForceTexture") forceTexture = true;
+            else if (opt == "daeEarthTex") earthTex = true;
+            else if (opt == "daeZUpAxis") zUpAxis = true;
+            else if (opt == "daeForceTexture") forceTexture = true;
             else if (!opt.empty())
             {
                 OSG_NOTICE << std::endl << "COLLADA dae plugin: unrecognized option \"" << opt <<  std::endl;

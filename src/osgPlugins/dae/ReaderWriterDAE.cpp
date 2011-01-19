@@ -121,7 +121,6 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
         std::istringstream iss( optString );
         std::string opt;
 
-        bool unrecognizedOption = false;
         //while (iss >> opt)
         while( std::getline( iss, opt, ',' ) )
         {
@@ -131,20 +130,10 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
             else if (opt == "DaeEarthTex") earthTex = true;
             else if (opt == "ZUpAxis") zUpAxis = true;
             else if (opt == "ForceTexture") forceTexture = true;
-            else
+            else if (!opt.empty())
             {
-                OSG_NOTICE
-                    << std::endl << "COLLADA dae plugin: unrecognized option \"" << opt <<  std::endl;
-                unrecognizedOption = true;
+                OSG_NOTICE << std::endl << "COLLADA dae plugin: unrecognized option \"" << opt <<  std::endl;
             }
-        }
-        if (unrecognizedOption) {
-            // TODO Remove this or make use of supportedOptions()
-            OSG_NOTICE
-                << "comma-delimited options:" <<  std::endl <<  std::endl 
-                << "\tpolygon = use polygons instead of polylists for element" <<  std::endl 
-                << "\tGoogleMode = write files suitable for use by Google products" <<  std::endl 
-                << "example: osgviewer -O polygon bar.dae" <<  std::endl << std::endl;
         }
     }
 

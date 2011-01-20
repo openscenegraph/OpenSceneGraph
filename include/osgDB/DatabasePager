@@ -289,7 +289,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         struct RequestQueue;
 
-        struct DatabaseRequest : public osg::Referenced
+        struct OSGDB_EXPORT DatabaseRequest : public osg::Referenced
         {
             DatabaseRequest():
                 osg::Referenced(true),
@@ -332,7 +332,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         };
 
 
-        struct RequestQueue : public osg::Referenced
+        struct OSGDB_EXPORT RequestQueue : public osg::Referenced
         {
         public:
 
@@ -374,7 +374,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         
         typedef std::vector< osg::ref_ptr<DatabaseThread> > DatabaseThreadList;
 
-        struct ReadQueue : public RequestQueue
+        struct OSGDB_EXPORT ReadQueue : public RequestQueue
         {
             ReadQueue(DatabasePager* pager, const std::string& name);
 

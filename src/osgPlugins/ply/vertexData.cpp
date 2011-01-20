@@ -45,13 +45,15 @@ VertexData::VertexData()
     _colors = NULL;
     _normals = NULL;
     _triangles = NULL;
-    
+    _diffuse = NULL;
+    _ambient = NULL;
+    _specular = NULL;
 }
 
 
 /*  Read the vertex and (if available/wanted) color data from the open file.  */
 void VertexData::readVertices( PlyFile* file, const int nVertices, 
-                               const bool readColors )
+                               const int fields )
 {
     // temporary vertex structure for ply loading
     struct _Vertex
@@ -59,9 +61,23 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,
         float           x;
         float           y;
         float           z;
-        unsigned char   r;
-        unsigned char   g;
-        unsigned char   b;
+        float           nx;
+        float           ny;
+        float           nz;
+        unsigned char   red;
+        unsigned char   green;
+        unsigned char   blue;
+        unsigned char   ambient_red;
+        unsigned char   ambient_green;
+        unsigned char   ambient_blue;
+        unsigned char   diffuse_red;
+        unsigned char   diffuse_green;
+        unsigned char   diffuse_blue;
+        unsigned char   specular_red;
+        unsigned char   specular_green;
+        unsigned char   specular_blue;
+        float           specular_coeff;
+        float           specular_power;
     } vertex;
 
     PlyProperty vertexProps[] = 
@@ -69,34 +85,109 @@ void VertexData::readVertices( PlyFile* file, const int nVertices,
         { "x", PLY_FLOAT, PLY_FLOAT, offsetof( _Vertex, x ), 0, 0, 0, 0 },
         { "y", PLY_FLOAT, PLY_FLOAT, offsetof( _Vertex, y ), 0, 0, 0, 0 },
         { "z", PLY_FLOAT, PLY_FLOAT, offsetof( _Vertex, z ), 0, 0, 0, 0 },
-        { "red", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, r ), 0, 0, 0, 0 },
-        { "green", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, g ), 0, 0, 0, 0 },
-        { "blue", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, b ), 0, 0, 0, 0 }
+        { "nx", PLY_FLOAT, PLY_FLOAT, offsetof( _Vertex, nx ), 0, 0, 0, 0 },
+        { "ny", PLY_FLOAT, PLY_FLOAT, offsetof( _Vertex, ny ), 0, 0, 0, 0 },
+        { "nz", PLY_FLOAT, PLY_FLOAT, offsetof( _Vertex, nz ), 0, 0, 0, 0 },
+        { "red", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, red ), 0, 0, 0, 0 },
+        { "green", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, green ), 0, 0, 0, 0 },
+        { "blue", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, blue ), 0, 0, 0, 0 },
+        { "ambient_red", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, ambient_red ), 0, 0, 0, 0 },
+        { "ambient_green", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, ambient_green ), 0, 0, 0, 0 },
+        { "ambient_blue", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, ambient_blue ), 0, 0, 0, 0 },
+        { "diffuse_red", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, diffuse_red ), 0, 0, 0, 0 },
+        { "diffuse_green", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, diffuse_green ), 0, 0, 0, 0 },
+        { "diffuse_blue", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, diffuse_blue ), 0, 0, 0, 0 },
+        { "specular_red", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, specular_red ), 0, 0, 0, 0 },
+        { "specular_green", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, specular_green ), 0, 0, 0, 0 },
+        { "specular_blue", PLY_UCHAR, PLY_UCHAR, offsetof( _Vertex, specular_blue ), 0, 0, 0, 0 },
+        { "specular_coeff", PLY_FLOAT, PLY_FLOAT, offsetof( _Vertex, specular_coeff ), 0, 0, 0, 0 },
+        { "specular_power", PLY_FLOAT, PLY_FLOAT, offsetof( _Vertex, specular_power ), 0, 0, 0, 0 },
     };
     
     // use all 6 properties when reading colors, only the first 3 otherwise
-    int limit = readColors ? 6 : 3;
-    for( int i = 0; i < limit; ++i ) 
+    for( int i = 0; i < 3; ++i ) 
         ply_get_property( file, "vertex", &vertexProps[i] );
     
+    if (fields & NORMALS)
+      for( int i = 3; i < 6; ++i ) 
+        ply_get_property( file, "vertex", &vertexProps[i] );
+
+    if (fields & RGB)
+      for( int i = 6; i < 9; ++i ) 
+        ply_get_property( file, "vertex", &vertexProps[i] );
+
+    if (fields & AMBIENT)
+      for( int i = 9; i < 12; ++i ) 
+        ply_get_property( file, "vertex", &vertexProps[i] );
+
+    if (fields & DIFFUSE)
+      for( int i = 12; i < 15; ++i ) 
+        ply_get_property( file, "vertex", &vertexProps[i] );
+
+    if (fields & SPECULAR)
+      for( int i = 15; i < 20; ++i ) 
+        ply_get_property( file, "vertex", &vertexProps[i] );
+
     // check whether array is valid otherwise allocate the space
     if(!_vertices.valid())
         _vertices = new osg::Vec3Array; 
+
+    if( fields & NORMALS )
+    {
+        if(!_normals.valid())
+            _normals = new osg::Vec3Array;
+    }
     
     // If read colors allocate space for color array
-    if( readColors )
+    if( fields & RGB )
     {
         if(!_colors.valid())
             _colors = new osg::Vec4Array;
     }
+
+    if( fields & AMBIENT )
+    {
+        if(!_ambient.valid())
+            _ambient = new osg::Vec4Array;
+    }
+
+    if( fields & DIFFUSE )
+    {
+        if(!_diffuse.valid())
+            _diffuse = new osg::Vec4Array;
+    }
     
+    if( fields & SPECULAR )
+    {
+        if(!_specular.valid())
+            _specular = new osg::Vec4Array;
+    }
+
     // read in the vertices
     for( int i = 0; i < nVertices; ++i )
     {
         ply_get_element( file, static_cast< void* >( &vertex ) );
         _vertices->push_back( osg::Vec3( vertex.x, vertex.y, vertex.z ) );
-        if( readColors )
-            _colors->push_back( osg::Vec4( (unsigned int) vertex.r / 256.0, (unsigned int) vertex.g / 256.0 , (unsigned int) vertex.b/ 256.0, 0.0 ) );
+	if (fields & NORMALS)
+	  _normals->push_back( osg::Vec3( vertex.nx, vertex.ny, vertex.nz ) );
+        if( fields & RGB )
+            _colors->push_back( osg::Vec4( (unsigned int) vertex.red / 256.0,
+					   (unsigned int) vertex.green / 256.0 ,
+					   (unsigned int) vertex.blue / 256.0, 0.0 ) );
+        if( fields & AMBIENT )
+	  _ambient->push_back( osg::Vec4( (unsigned int) vertex.ambient_red / 256.0,
+					   (unsigned int) vertex.ambient_green / 256.0 ,
+					   (unsigned int) vertex.ambient_blue / 256.0, 0.0 ) );
+
+        if( fields & DIFFUSE )
+	  _diffuse->push_back( osg::Vec4( (unsigned int) vertex.diffuse_red / 256.0,
+					   (unsigned int) vertex.diffuse_green / 256.0 ,
+					   (unsigned int) vertex.diffuse_blue / 256.0, 0.0 ) );
+
+        if( fields & SPECULAR )
+	  _specular->push_back( osg::Vec4( (unsigned int) vertex.specular_red / 256.0,
+					   (unsigned int) vertex.specular_green / 256.0 ,
+					   (unsigned int) vertex.specular_blue / 256.0, 0.0 ) );
     }
 }
 
@@ -232,25 +323,57 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         // if the string is vertex means vertex data is started
         if( equal_strings( elemNames[i], "vertex" ) )
         {
-            bool hasColors = false;
+ 	    int fields = NONE;
             // determine if the file stores vertex colors
             for( int j = 0; j < nProps; ++j )
+	      {
                 // if the string have the red means color info is there
+                if( equal_strings( props[j]->name, "x" ) )
+                    fields |= XYZ;
+                if( equal_strings( props[j]->name, "nx" ) )
+                    fields |= NORMALS;
                 if( equal_strings( props[j]->name, "red" ) )
-                    hasColors = true;
-            
+                    fields |= RGB;
+                if( equal_strings( props[j]->name, "ambient" ) )
+                    fields |= AMBIENT;
+                if( equal_strings( props[j]->name, "diffuse_red" ) )
+                    fields |= DIFFUSE;
+                if( equal_strings( props[j]->name, "specular_red" ) )
+                    fields |= SPECULAR;
+	      }
+
             if( ignoreColors )
+	      {
+		fields &= ~(XYZ | NORMALS);
                 MESHINFO << "Colors in PLY file ignored per request." << endl;
-         
+	      }
+
             try {   
                 // Read vertices and store in a std::vector array
-                readVertices( file, nElems, hasColors && !ignoreColors );
+                readVertices( file, nElems, fields );
                 // Check whether all vertices are loaded or not
                 MESHASSERT( _vertices->size() == static_cast< size_t >( nElems ) );
-                // Check all color elements read or not
-                if( hasColors && !ignoreColors )
+
+		// Check if all the optional elements were read or not
+                if( fields & NORMALS )
+                {
+                    MESHASSERT( _normals->size() == static_cast< size_t >( nElems ) );
+                }
+                if( fields & RGB )
                 {
                     MESHASSERT( _colors->size() == static_cast< size_t >( nElems ) );
+                }
+                if( fields & AMBIENT )
+                {
+                    MESHASSERT( _ambient->size() == static_cast< size_t >( nElems ) );
+                }
+                if( fields & DIFFUSE )
+                {
+                    MESHASSERT( _diffuse->size() == static_cast< size_t >( nElems ) );
+                }
+                if( fields & SPECULAR )
+                {
+                    MESHASSERT( _specular->size() == static_cast< size_t >( nElems ) );
                 }
 
                 result = true;
@@ -311,27 +434,47 @@ osg::Node* VertexData::readPlyFile( const char* filename, const bool ignoreColor
         {
             if(!_normals.valid())
                 _calculateNormals();
+	}
 
-            // set the normals
+        // Set the normals
+	if (_normals.valid())
+	{
             geom->setNormalArray(_normals.get());
             geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
         }
         
-        // Add the premetive set
+        // Add the primitive set
         if (_triangles.valid() && _triangles->size() > 0 )
             geom->addPrimitiveSet(_triangles.get());
         else
             geom->addPrimitiveSet(new osg::DrawArrays(GL_POINTS, 0, _vertices->size()));
 
-        // if color info is given set the color array
+
+	// Apply the colours to the model; at the moment this is a
+	// kludge because we only use one kind and apply them all the
+	// same way. Also, the priority order is completely arbitrary
+
         if(_colors.valid())
         {
             geom->setColorArray(_colors.get());
             geom->setColorBinding( osg::Geometry::BIND_PER_VERTEX );
-            
+        }
+        else if(_ambient.valid())
+        {
+            geom->setColorArray(_ambient.get());
+            geom->setColorBinding( osg::Geometry::BIND_PER_VERTEX );
+        }
+        else if(_diffuse.valid())
+        {
+            geom->setColorArray(_diffuse.get());
+            geom->setColorBinding( osg::Geometry::BIND_PER_VERTEX );
+        }
+	else if(_specular.valid())
+        {
+            geom->setColorArray(_specular.get());
+            geom->setColorBinding( osg::Geometry::BIND_PER_VERTEX );
         }
 
-        
         // set flage true to activate the vertex buffer object of drawable
         geom->setUseVertexBufferObjects(true);
         

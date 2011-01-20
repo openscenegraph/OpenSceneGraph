@@ -46,8 +46,8 @@ class ImageProcessor : public osg::Object
             HIGHEST
         };
 
-        virtual void compress(osg::Image& image, osg::Texture::InternalFormatMode compressedFormat, bool generateMipMap, bool resizeToPowerOfTwo, CompressionMethod method, CompressionQuality quality) {}
-        virtual void generateMipMap(osg::Image& image, bool resizeToPowerOfTwo, CompressionMethod method) {}
+        virtual void compress(osg::Image& /*image*/, osg::Texture::InternalFormatMode /*compressedFormat*/, bool /*generateMipMap*/, bool /*resizeToPowerOfTwo*/, CompressionMethod /*method*/, CompressionQuality /*quality*/) {}
+        virtual void generateMipMap(osg::Image& /*image*/, bool /*resizeToPowerOfTwo*/, CompressionMethod /*method*/) {}
 };
 
 }

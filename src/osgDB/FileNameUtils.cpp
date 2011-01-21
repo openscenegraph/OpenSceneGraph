@@ -320,3 +320,46 @@ std::string osgDB::getRealPath(const std::string& path)
     else return path;
 #endif 
 }
+
+std::string osgDB::getPathRelative(const std::string& from, const std::string& to)
+{
+    std::string::size_type slash = to.find_last_of('/');
+    std::string::size_type backslash = to.find_last_of('\\');
+    if (slash == std::string::npos) 
+    {
+        if (backslash == std::string::npos) return to;
+        slash = backslash;
+    }
+    else if (backslash != std::string::npos && backslash > slash)
+    {
+        slash = backslash;
+    }
+
+    if (from.empty() || from.length() > to.length())
+        return osgDB::getSimpleFileName(to);
+
+    std::string::const_iterator itTo = to.begin();
+    for (std::string::const_iterator itFrom = from.begin();
+        itFrom != from.end(); ++itFrom, ++itTo)
+    {
+        char a = tolower(*itFrom), b = tolower(*itTo);
+        if (a == '\\') a = '/';
+        if (b == '\\') b = '/';
+        if (a != b || itTo == to.begin() + slash + 1)
+        {
+            return osgDB::getSimpleFileName(to);
+        }
+    }
+
+    while (itTo != to.end() && (*itTo == '\\' || *itTo == '/'))
+    {
+        ++itTo;
+    }
+
+    return std::string(itTo, to.end());
+}
+
+//std::string testA = getPathRelative("C:\\a\\b", "C:\\a/b/d/f");
+//std::string testB = getPathRelative("C:\\a\\d", "C:\\a/b/d/f");
+//std::string testC = getPathRelative("C:\\ab", "C:\\a/b/d/f");
+//std::string testD = getPathRelative("a/d", "a/d");

@@ -23,7 +23,9 @@ public:
         supportsOption("NoExtras",        "(Write option) Undocumented");
         supportsOption("daeEarthTex",     "(Write option) DAE settings for writing earth textures");
         supportsOption("daeZUpAxis",      "(Write option) Indicates the up axis is Z instead of Y");
-        supportsOption("daeForceTexture", "(Write option) Force writing references to an image for a texture, even if the file is not found");
+        supportsOption("daeLinkOriginalTexturesNoForce", "(Write option) Writes reference to the original image if found, instead of writing the image in memory");
+        supportsOption("daeLinkOriginalTexturesForce",   "(Write option) Writes reference to the original image even if not found, instead of writing the image in memory");
+        supportsOption("daeNamesUseCodepage",            "(Write option) All names except filenames (materials, animation, geometries...) should be considered as encoded using current codepage (UTF8 if not). Filenames follow OSG_USE_UTF8_FILENAME.");
 
         supportsOption("StrictTransparency", "(Read option) Undocumented");
     }

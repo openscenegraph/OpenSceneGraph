@@ -109,9 +109,11 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
     bool usePolygon(false);   // Use plugin option "polygon" to enable
     bool googleMode(false);   // Use plugin option "GoogleMode" to enable
     bool writeExtras(true);   // Use plugin option "NoExtras" to disable
-    bool earthTex(false);     // Use plugin option "DaeEarthTex" to enable
-    bool zUpAxis(false);      // Use plugin option "ZUpAxis" to enable
-    bool forceTexture(false); // Use plugin option "ForceTexture" to enable
+    bool earthTex(false);     // Use plugin option "daeEarthTex" to enable
+    bool zUpAxis(false);      // Use plugin option "daeZUpAxis" to enable
+    bool linkOrignialTextures(false);
+    bool forceTexture(false);
+    bool namesUseCodepage(false);
     if( options )
     {
         pDAE = (DAE*)options->getPluginData("DAE");
@@ -131,7 +133,9 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
             else if (opt == "NoExtras") writeExtras = false;
             else if (opt == "daeEarthTex") earthTex = true;
             else if (opt == "daeZUpAxis") zUpAxis = true;
-            else if (opt == "daeForceTexture") forceTexture = true;
+            else if (opt == "daeLinkOriginalTexturesNoForce") { linkOrignialTextures = true; forceTexture = false; }
+            else if (opt == "daeLinkOriginalTexturesForce")   { linkOrignialTextures = true; forceTexture = true; }
+            else if (opt == "daeNamesUseCodepage") namesUseCodepage = true;
             else if (!opt.empty())
             {
                 OSG_NOTICE << std::endl << "COLLADA dae plugin: unrecognized option \"" << opt <<  std::endl;
@@ -150,7 +154,7 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
 
     osg::NodeVisitor::TraversalMode traversalMode = writeExtras ? osg::NodeVisitor::TRAVERSE_ALL_CHILDREN : osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN;
 
-    osgDAE::daeWriter daeWriter(pDAE, fileURI, usePolygon, googleMode, traversalMode, writeExtras, earthTex, zUpAxis, forceTexture);
+    osgDAE::daeWriter daeWriter(pDAE, fileURI, osgDB::getFilePath(fname), osgDB::getFilePath(node.getName().empty() ? fname : node.getName()), options, usePolygon, googleMode, traversalMode, writeExtras, earthTex, zUpAxis, linkOrignialTextures, forceTexture, namesUseCodepage);
     daeWriter.setRootNode( node );
     const_cast<osg::Node*>(&node)->accept( daeWriter );
 
@@ -178,7 +182,8 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
     return retVal;
 }
 
-static void replace(std::string & str, const char from, const std::string & to) {
+static void replace(std::string & str, const char from, const std::string & to)
+{
     // Replace for all occurences
     for(std::string::size_type pos=str.find(from); pos!=std::string::npos; pos=str.find(from))
     {
@@ -188,7 +193,11 @@ static void replace(std::string & str, const char from, const std::string & to) 
 
 std::string ReaderWriterDAE::ConvertFilePathToColladaCompatibleURI(const std::string& FilePath)
 {
-    std::string path( cdom::nativePathToUri(FilePath) );
+#ifdef OSG_USE_UTF8_FILENAME
+    std::string path( cdom::nativePathToUri( FilePath ) );
+#else
+    std::string path( cdom::nativePathToUri( osgDB::convertStringFromCurrentCodePageToUTF8(FilePath) ) );
+#endif
 
     // Unfortunately, cdom::nativePathToUri() does not convert '#' characters to "%23" as expected.
     // So having /a/#b/c will generate a wrong conversion, as '#' will be misinterpreted as an URI fragment.

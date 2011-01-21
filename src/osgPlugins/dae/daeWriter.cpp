@@ -19,6 +19,7 @@
 #include <dom/domConstants.h>
 
 #include <sstream>
+#include <osgDB/ConvertUTF>
 
 
 namespace osgDAE {
@@ -95,7 +96,7 @@ std::string toString(const osg::Matrix& value)
 }
 
 
-daeWriter::daeWriter( DAE *dae_, const std::string &fileURI, bool _usePolygons,  bool googleMode, TraversalMode tm, bool _writeExtras, bool earthTex, bool zUpAxis, bool forceTexture) : osg::NodeVisitor( tm ),
+daeWriter::daeWriter( DAE *dae_, const std::string & fileURI, const std::string & directory, const std::string & srcDirectory, const osgDB::ReaderWriter::Options * options, bool _usePolygons,  bool googleMode, TraversalMode tm, bool _writeExtras, bool earthTex, bool zUpAxis, bool linkOrignialTextures, bool forceTexture, bool namesUseCodepage) : osg::NodeVisitor( tm ),
                                         dae(dae_),
                                         _domLibraryAnimations(NULL),
                                         writeExtras(_writeExtras),
@@ -104,8 +105,14 @@ daeWriter::daeWriter( DAE *dae_, const std::string &fileURI, bool _usePolygons, 
                                         m_GoogleMode(googleMode),
                                         m_EarthTex(earthTex),
                                         m_ZUpAxis(zUpAxis),
+                                        m_linkOrignialTextures(linkOrignialTextures),
                                         m_ForceTexture(forceTexture),
-                                        m_CurrentRenderingHint(osg::StateSet::DEFAULT_BIN)
+                                        _namesUseCodepage(namesUseCodepage),
+                                        m_CurrentRenderingHint(osg::StateSet::DEFAULT_BIN),
+                                        _lastGeneratedImageFileName(0),
+                                        _directory(directory),
+                                        _srcDirectory(srcDirectory),
+                                        _options(options)
 {
     success = true;
 
@@ -198,8 +205,9 @@ void daeWriter::updateCurrentDaeNode()
     }
 }
 
-std::string daeWriter::uniquify( const std::string &name )
+std::string daeWriter::uniquify( const std::string &_name )
 {
+    const std::string name( _namesUseCodepage ? osgDB::convertStringFromCurrentCodePageToUTF8(_name) : _name );
     std::map< std::string, int >::iterator iter = uniqueNames.find( name );
     if ( iter != uniqueNames.end() )
     {

@@ -20,6 +20,9 @@
 #include <dom/domProfile_COMMON.h>
 
 #include <sstream>
+#include <osgDB/ConvertUTF>
+#include <osgDB/FileNameUtils>
+#include <osgDB/WriteFile>
 
 //#include <dom/domLibrary_effects.h>
 //#include <dom/domLibrary_materials.h>
@@ -35,7 +38,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
     osg::ref_ptr<osg::StateSet> ssClean = CleanStateSet(ss); // Need to hold a ref to this or the materialMap.find() will delete it
     domBind_material::domTechnique_common *tc = daeSafeCast< domBind_material::domTechnique_common >( pDomBindMaterial->add( COLLADA_ELEMENT_TECHNIQUE_COMMON ) );
     domInstance_material *pDomInstanceMaterial = daeSafeCast< domInstance_material >( tc->add( COLLADA_ELEMENT_INSTANCE_MATERIAL ) );
-    std::string symbol = geoName + "_material";
+    const std::string symbol( _namesUseCodepage ? osgDB::convertStringFromCurrentCodePageToUTF8(geoName + "_material") : (geoName + "_material") );
     pDomInstanceMaterial->setSymbol( symbol.c_str() );
 
     // See if material already exists in cache
@@ -53,7 +56,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
     }
 
     domMaterial *mat = daeSafeCast< domMaterial >( lib_mats->add( COLLADA_ELEMENT_MATERIAL ) );
-    std::string name = ssClean->getName();
+    std::string name( ssClean->getName() );
     if ( name.empty() )
     {
         name = "material";
@@ -99,16 +102,71 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
         osg::Image *osgimg = tex->getImage( 0 );
 
         domImage::domInit_from *imgif = daeSafeCast< domImage::domInit_from >( img->add( COLLADA_ELEMENT_INIT_FROM ) );
-        std::string fileURI = ReaderWriterDAE::ConvertFilePathToColladaCompatibleURI(osgDB::findDataFile(osgimg->getFileName()));
-        if (fileURI=="" && m_ForceTexture)
+
+        std::string fileURI;
+        if (m_linkOrignialTextures)
         {
-            fileURI = osgimg->getFileName();
+            // We link to orignial images.
+            fileURI = osgDB::findDataFile(osgimg->getFileName());
+            if (fileURI=="" && m_ForceTexture)
+            {
+                fileURI = osgDB::getRealPath(osgimg->getFileName());
+            }
         }
+        else
+        {
+            // We do not link to orignial images. Then must ensure to write the image.
+            // Following code block is borrowed from FBX's WriterNodeVisitor::Material::Material().
+            ImageSet::iterator it = _imageSet.find(osgimg);
+            if (it == _imageSet.end())
+            {
+                fileURI = osgDB::getRealPath(osgDB::convertFileNameToNativeStyle(osgimg->getFileName()));
+                std::string destPath;
+                std::string relativePath;
+                if (fileURI.empty())
+                {
+                    static const unsigned int MAX_IMAGE_NUMBER = UINT_MAX-1;        // -1 to allow doing +1 without an overflow
+                    unsigned int imageNumber;
+                    for (imageNumber=_lastGeneratedImageFileName+1; imageNumber<MAX_IMAGE_NUMBER; ++imageNumber)
+                    {
+                        std::ostringstream oss;
+                        oss << "Image_" << imageNumber << ".tga";
+                        relativePath = oss.str();
+                        destPath = osgDB::concatPaths(_directory, relativePath);
+                        if (_imageFilenameSet.find(destPath) != _imageFilenameSet.end()) break;
+                    }
+                    _lastGeneratedImageFileName = imageNumber;
+                    osgDB::writeImageFile(*osgimg, destPath, _options);
+                }
+                else
+                {
+                    relativePath = osgDB::getPathRelative(_srcDirectory, fileURI);
+                    destPath = osgDB::getRealPath(osgDB::convertFileNameToNativeStyle( osgDB::concatPaths(_directory, relativePath) ));
+                    if (destPath != fileURI)
+                    {
+                        if (!osgDB::makeDirectoryForFile(destPath))
+                        {
+                            OSG_NOTICE << "Can't create directory for file '" << destPath << "'. May fail creating the image file." << std::endl;
+                        }
+                        osgDB::writeImageFile(*osgimg, destPath, _options);
+                    }
+                }
+
+                assert(!destPath.empty());        // Else the implementation is to be fixed
+                assert(!relativePath.empty());    // ditto
+                fileURI = relativePath;
+                it = _imageSet.insert(ImageSet::value_type(osgimg, relativePath)).first;
+                _imageFilenameSet.insert(destPath);
+            }
+            // (end of code borrowed from FBX)
+        }
+
+        fileURI = ReaderWriterDAE::ConvertFilePathToColladaCompatibleURI(fileURI);
 
         daeURI dd(*dae, fileURI);
         imgif->setValue( dd );
         // The document URI should contain the canonical path it was created with
-        imgif->getValue().makeRelativeTo(doc->getDocumentURI());
+        if (m_linkOrignialTextures) imgif->getValue().makeRelativeTo(doc->getDocumentURI());
 
         if (!m_EarthTex)
         {

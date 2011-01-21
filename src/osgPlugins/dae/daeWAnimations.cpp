@@ -29,12 +29,14 @@
 #include <osg/Sequence>
 #include <osg/Billboard>
 #include <osg/CameraView>
+#include <osgDB/ConvertUTF>
 
 using namespace osgDAE;
 
 
 void daeWriter::writeAnimations( osg::Node &node )
 {
+    const std::string nodeNameUTF( _namesUseCodepage ? osgDB::convertStringFromCurrentCodePageToUTF8(node.getName()) : node.getName() );
     osg::NodeCallback* ncb = node.getUpdateCallback();
     if (ncb)
     {
@@ -54,7 +56,7 @@ void daeWriter::writeAnimations( osg::Node &node )
                 domAnimation* pMainDomAnimation = pDomAnimation;
 
                 osg::ref_ptr<osgAnimation::Animation> animation = animationList[i];
-                std::string animationName = animation->getName();
+                std::string animationName( animation->getName() );
                 if (animationName.empty())
                     animationName = "animation";
                 animationName = uniquify( animationName );
@@ -65,7 +67,8 @@ void daeWriter::writeAnimations( osg::Node &node )
                 for (size_t j=0; j < animationChannels.size(); j++)
                 {
                     osgAnimation::Channel* channel = animationChannels[j].get();
-                    std::string channelName = channel->getName();
+                    std::string channelName( channel->getName() );
+                    std::string channelNameUTF( _namesUseCodepage ? osgDB::convertStringFromCurrentCodePageToUTF8(channelName) : channelName );
 
                     // Wrap each animation channel into it's own child <animation> when more than 1 channel
                     if (animationChannels.size() > 1)
@@ -73,15 +76,18 @@ void daeWriter::writeAnimations( osg::Node &node )
                         pDomAnimation = daeSafeCast< domAnimation >( pMainDomAnimation->add( COLLADA_ELEMENT_ANIMATION ) );
 
                         if (channelName.empty())
+                        {
                             channelName = "channel";
+                            channelNameUTF = channelName;
+                        }
                         animationName = uniquify( channelName );
-                        pDomAnimation->setId(channelName.c_str());
+                        pDomAnimation->setId(channelNameUTF.c_str());
                     }
 
-                    std::string sourceName = channelName + "_sampler";
-                    std::string inputSourceName = channelName + "_input";
-                    std::string outputSourceName = channelName + "_output";
-                    std::string interpolationSourceName = channelName + "_interpolation";
+                    std::string sourceName( channelNameUTF + "_sampler" );
+                    std::string inputSourceName( channelNameUTF + "_input" );
+                    std::string outputSourceName( channelNameUTF + "_output" );
+                    std::string interpolationSourceName( channelNameUTF + "_interpolation" );
 
                     // Fill dom sources based on sampler
                     osgAnimation::Sampler* animationSampler = channel->getSampler();
@@ -104,7 +110,7 @@ void daeWriter::writeAnimations( osg::Node &node )
                             osg::Vec3 vec = (*v3kc)[i].getValue();
 
                             // This needs some serious cleanup
-                            if (channelName.find("euler") != std::string::npos)
+                            if (channelNameUTF.find("euler") != std::string::npos)
                             {
                                 frameValues.append(osg::RadiansToDegrees(vec.x()));
                                 frameValues.append(osg::RadiansToDegrees(vec.y()));
@@ -179,7 +185,7 @@ void daeWriter::writeAnimations( osg::Node &node )
                     pDomParam->setType(COLLADA_TYPE_NAME);
 
                     // Split up access to the euler float array into three sources, because we need to target three separate transforms
-                    if (channelName.find("euler") != std::string::npos)
+                    if (channelNameUTF.find("euler") != std::string::npos)
                     {
                         pDomSource = daeSafeCast< domSource >(pDomAnimation->add(COLLADA_ELEMENT_SOURCE));
                         std::string outputSourceNameX = outputSourceName + "_X";
@@ -283,7 +289,7 @@ void daeWriter::writeAnimations( osg::Node &node )
                             osg::Node* node = _animatedNodeCollector.getTargetNode(targetName);
                             if (node)
                             {
-                                std::string domChannelTargetName = node->getName() + "/rotateX.ANGLE";
+                                std::string domChannelTargetName = nodeNameUTF + "/rotateX.ANGLE";
                                 pDomChannel->setTarget(domChannelTargetName.c_str());
                             }
                             else
@@ -327,7 +333,7 @@ void daeWriter::writeAnimations( osg::Node &node )
                             osg::Node* node = _animatedNodeCollector.getTargetNode(targetName);
                             if (node)
                             {
-                                std::string domChannelTargetName = node->getName() + "/rotateY.ANGLE";
+                                std::string domChannelTargetName = nodeNameUTF + "/rotateY.ANGLE";
                                 pDomChannel->setTarget(domChannelTargetName.c_str());
                             }
                             else
@@ -371,7 +377,7 @@ void daeWriter::writeAnimations( osg::Node &node )
                             osg::Node* node = _animatedNodeCollector.getTargetNode(targetName);
                             if (node)
                             {
-                                std::string domChannelTargetName = node->getName() + "/rotateZ.ANGLE";
+                                std::string domChannelTargetName = nodeNameUTF + "/rotateZ.ANGLE";
                                 pDomChannel->setTarget(domChannelTargetName.c_str());
                             }
                             else
@@ -457,13 +463,13 @@ void daeWriter::writeAnimations( osg::Node &node )
                         osg::Node* node = _animatedNodeCollector.getTargetNode(targetName);
                         if (node)
                         {
-                            std::string domChannelTargetName = node->getName();
+                            std::string domChannelTargetName = nodeNameUTF;
 
-                            if (channelName.find("position") != std::string::npos)
+                            if (channelNameUTF.find("position") != std::string::npos)
                             {
                                 domChannelTargetName += "/translate";
                             }
-                            else if (channelName.find("scale") != std::string::npos)
+                            else if (channelNameUTF.find("scale") != std::string::npos)
                             {
                                 domChannelTargetName += "/scale";
                             }

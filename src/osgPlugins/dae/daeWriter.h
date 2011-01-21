@@ -136,7 +136,7 @@ class daeWriter : public osg::NodeVisitor
 protected:
     class ArrayNIndices;
 public:
-    daeWriter( DAE *dae_, const std::string &fileURI, bool usePolygons=false, bool googleMode = false, TraversalMode tm=TRAVERSE_ALL_CHILDREN, bool writeExtras = true, bool earthTex = false, bool zUpAxis=false, bool forceTexture=false);
+    daeWriter( DAE *dae_, const std::string &fileURI, const std::string & directory, const std::string & srcDirectory, const osgDB::ReaderWriter::Options * options, bool usePolygons=false, bool googleMode = false, TraversalMode tm=TRAVERSE_ALL_CHILDREN, bool writeExtras = true, bool earthTex = false, bool zUpAxis=false, bool linkOrignialTextures=false, bool forceTexture=false, bool namesUseCodepage=false);
     virtual ~daeWriter();
 
     void setRootNode( const osg::Node &node );
@@ -310,7 +310,10 @@ private: //members
         /** indicates if the up axis is on Z axis*/
         bool m_ZUpAxis;
 
-        /** force the use an image for a texture, even if the file is not found*/
+        /** link to original images instead of exporting */
+        bool m_linkOrignialTextures;
+
+        /** force the use an image for a texture, even if the file is not found (when m_linkOrignialTextures). */
         bool m_ForceTexture;
 
         /** Current RenderingHint */
@@ -318,6 +321,18 @@ private: //members
         int m_CurrentRenderingHint;
 
         FindAnimatedNodeVisitor _animatedNodeCollector;
+
+        /** Number used when writing images with no name, to generate a file name. */
+        unsigned int _lastGeneratedImageFileName;
+        std::string _directory;
+        std::string _srcDirectory;
+        const osgDB::ReaderWriter::Options * _options;
+        bool _namesUseCodepage;
+
+        typedef std::map<const osg::Image*, std::string> ImageSet;
+        typedef std::set<std::string> ImageFilenameSet;        // Sub-optimal because strings are doubled (in ImageSet). Moreover, an unordered_set (= hashset) would be more efficient (Waiting for unordered_set to be included in C++ standard ;) ).
+        ImageSet                            _imageSet;
+        ImageFilenameSet                    _imageFilenameSet;
 };
 
 }

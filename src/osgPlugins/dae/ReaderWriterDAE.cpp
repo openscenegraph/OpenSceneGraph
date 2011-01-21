@@ -18,6 +18,7 @@
 #include <osgDB/ReaderWriter>
 #include <osgDB/FileNameUtils>
 #include <osgDB/Registry>
+#include <osgDB/ConvertUTF>
 
 #include <OpenThreads/ScopedLock>
 

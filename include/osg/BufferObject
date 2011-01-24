@@ -19,6 +19,7 @@
 #include <osg/buffered_value>
 #include <osg/FrameStamp>
 
+#include <iosfwd>
 #include <list>
 #include <map>
 

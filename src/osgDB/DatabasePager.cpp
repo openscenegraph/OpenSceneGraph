@@ -228,9 +228,7 @@ public:
                         if (_pagedLODs.erase(clod) > 0)
                             leftToRemove--;
                     }
-                    childrenRemoved.insert(childrenRemoved.end(),
-                                           expiredChildren.begin(),
-                                           expiredChildren.end());
+                    std::copy(expiredChildren.begin(), expiredChildren.end(), std::back_inserter(childrenRemoved));
                 }
             
                 // advance the iterator to the next element

@@ -161,7 +161,7 @@ public:
             else if ( ch=='\\' ) realStr += '\\';
             realStr += ch;
         }
-        realStr.insert( 0, 1, '\"' );
+        realStr.insert( std::string::size_type(0), 1, '\"' );
         realStr += '\"';
         addToCurrentNode( realStr );
     }

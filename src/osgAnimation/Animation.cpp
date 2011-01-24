@@ -34,7 +34,7 @@ Animation::Animation(const osgAnimation::Animation& anim, const osg::CopyOp& cop
 void Animation::addChannel(Channel* pChannel)
 {
     _channels.push_back(pChannel);
-    if (!_duration)
+    if (_duration == _originalDuration)
         computeDuration();
     else
         _originalDuration = computeDurationFromChannels();

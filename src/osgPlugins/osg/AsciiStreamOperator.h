@@ -1,6 +1,7 @@
 #ifndef OSGDB_ASCIISTREAMOPERATOR
 #define OSGDB_ASCIISTREAMOPERATOR
 
+#include <ostream>
 #include <osgDB/StreamOperator>
 
 class AsciiOutputIterator : public osgDB::OutputIterator
@@ -69,7 +70,7 @@ public:
     
     virtual void writeGLenum( const osgDB::ObjectGLenum& value )
     {
-        GLenum e = value.get(); 
+        GLenum e = value.get();
         const std::string& enumString = osgDB::Registry::instance()->getObjectWrapperManager()->getString("GL", e);
         indentIfRequired(); *_out << enumString << ' ';
     }
@@ -104,7 +105,7 @@ public:
             wrappedStr += ch;
         }
         
-        wrappedStr.insert( 0, 1, '\"' );
+        wrappedStr.insert( std::string::size_type(0), 1, '\"' );
         wrappedStr += '\"';
 
         indentIfRequired();

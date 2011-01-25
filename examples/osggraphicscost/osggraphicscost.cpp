@@ -68,6 +68,9 @@ typedef std::pair<double, double> CostPair;
 class GeometryCostEstimator : public osg::Referenced
 {
 public:
+    GeometryCostEstimator();
+    void setDefaults();
+    void calibrate(osg::RenderInfo& renderInfo);
     CostPair estimateCompileCost(const osg::Geometry* geometry) const;
     CostPair estimateDrawCost(const osg::Geometry* geometry) const;
 };
@@ -75,6 +78,9 @@ public:
 class TextureCostEstimator : public osg::Referenced
 {
 public:
+    TextureCostEstimator();
+    void setDefaults();
+    void calibrate(osg::RenderInfo& renderInfo);
     CostPair estimateCompileCost(const osg::Texture* texture) const;
     CostPair estimateDrawCost(const osg::Texture* texture) const;
 };
@@ -83,6 +89,9 @@ public:
 class ProgramCostEstimator : public osg::Referenced
 {
 public:
+    ProgramCostEstimator();
+    void setDefaults();
+    void calibrate(osg::RenderInfo& renderInfo);
     CostPair estimateCompileCost(const osg::Program* program) const;
     CostPair estimateDrawCost(const osg::Program* program) const;
 };
@@ -120,7 +129,21 @@ protected:
 
 };
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+//
+// GeometryCostEstimator
+//
+GeometryCostEstimator::GeometryCostEstimator()
+{
+}
 
+void GeometryCostEstimator::setDefaults()
+{
+}
+
+void GeometryCostEstimator::calibrate(osg::RenderInfo& renderInfo)
+{
+}
 
 CostPair GeometryCostEstimator::estimateCompileCost(const osg::Geometry* geometry) const
 {
@@ -132,6 +155,22 @@ CostPair GeometryCostEstimator::estimateDrawCost(const osg::Geometry* geometry) 
     return CostPair(0.0,0.0);
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+//
+// TextureCostEstimator
+//
+TextureCostEstimator::TextureCostEstimator()
+{
+}
+
+void TextureCostEstimator::setDefaults()
+{
+}
+
+void TextureCostEstimator::calibrate(osg::RenderInfo& renderInfo)
+{
+}
+
 CostPair TextureCostEstimator::estimateCompileCost(const osg::Texture* texture) const
 {
     return CostPair(0.0,0.0);
@@ -139,7 +178,23 @@ CostPair TextureCostEstimator::estimateCompileCost(const osg::Texture* texture) 
 
 CostPair TextureCostEstimator::estimateDrawCost(const osg::Texture* texture) const
 {
-    return CostPair(0.0,0.0);
+    return CostPair(1.0,1.0);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+//
+// ProgramCostEstimator
+//
+ProgramCostEstimator::ProgramCostEstimator()
+{
+}
+
+void ProgramCostEstimator::setDefaults()
+{
+}
+
+void ProgramCostEstimator::calibrate(osg::RenderInfo& renderInfo)
+{
 }
 
 CostPair ProgramCostEstimator::estimateCompileCost(const osg::Program* program) const
@@ -153,9 +208,15 @@ CostPair ProgramCostEstimator::estimateDrawCost(const osg::Program* program) con
 }
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+//
+// GeometryCostEstimator
+//
 GraphicsCostEstimator::GraphicsCostEstimator()
 {
-    setDefaults();
+    _geometryEstimator = new GeometryCostEstimator;
+    _textureEstimator = new TextureCostEstimator;
+    _programEstimator = new ProgramCostEstimator;
 }
 
 GraphicsCostEstimator::~GraphicsCostEstimator()
@@ -164,7 +225,9 @@ GraphicsCostEstimator::~GraphicsCostEstimator()
 
 void GraphicsCostEstimator::setDefaults()
 {
-    OSG_NOTICE<<"GraphicsCostEstimator::setDefaults()"<<std::endl;
+    _geometryEstimator->setDefaults();
+    _textureEstimator->setDefaults();
+    _programEstimator->setDefaults();
 }
 
 
@@ -245,6 +308,67 @@ public:
     CostPair    _costs;
 };
 
+
+class CollectDrawCosts : public osg::NodeVisitor
+{
+public:
+    CollectDrawCosts(const GraphicsCostEstimator* gce):
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN),
+        _gce(gce),
+        _costs(0.0,0.0)
+        {}
+
+    virtual void apply(osg::Node& node)
+    {
+        apply(node.getStateSet());
+        traverse(node);
+    }
+
+    virtual void apply(osg::Geode& geode)
+    {
+        apply(geode.getStateSet());
+        for(unsigned int i=0; i<geode.getNumDrawables(); ++i)
+        {
+            apply(geode.getDrawable(i)->getStateSet());
+            osg::Geometry* geometry = geode.getDrawable(i)->asGeometry();
+            if (geometry) apply(geometry);
+        }
+    }
+
+    void apply(osg::StateSet* stateset)
+    {
+        if (!stateset) return;
+
+        const osg::Program* program = dynamic_cast<const osg::Program*>(stateset->getAttribute(osg::StateAttribute::PROGRAM));
+        if (program)
+        {
+            CostPair cost = _gce->estimateDrawCost(program);
+            _costs.first += cost.first;
+            _costs.second += cost.second;
+        }
+
+        for(unsigned int i=0; i<stateset->getNumTextureAttributeLists(); ++i)
+        {
+            const osg::Texture* texture = dynamic_cast<const osg::Texture*>(stateset->getTextureAttribute(i, osg::StateAttribute::TEXTURE));
+            CostPair cost = _gce->estimateDrawCost(texture);
+            _costs.first += cost.first;
+            _costs.second += cost.second;
+        }
+    }
+
+    void apply(osg::Geometry* geometry)
+    {
+        if (!geometry) return;
+
+        CostPair cost = _gce->estimateDrawCost(geometry);
+        _costs.first += cost.first;
+        _costs.second += cost.second;
+    }
+
+    const GraphicsCostEstimator* _gce;
+    CostPair    _costs;
+};
+
 CostPair GraphicsCostEstimator::estimateCompileCost(const osg::Node* node) const
 {
     if (!node) return CostPair(0.0,0.0);
@@ -255,7 +379,10 @@ CostPair GraphicsCostEstimator::estimateCompileCost(const osg::Node* node) const
 
 CostPair GraphicsCostEstimator::estimateDrawCost(const osg::Node* node) const
 {
-    return CostPair(0.0,0.0);
+    if (!node) return CostPair(0.0,0.0);
+    CollectDrawCosts cdc(this);
+    const_cast<osg::Node*>(node)->accept(cdc);
+    return cdc._costs;
 }
 
 }

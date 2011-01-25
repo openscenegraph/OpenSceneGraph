@@ -17,7 +17,6 @@ FbxMaterialToOsgStateSet::convert(const KFbxSurfaceMaterial* pFbxMat)
     FbxMaterialMap::const_iterator it = _fbxMaterialMap.find(pFbxMat);
     if (it != _fbxMaterialMap.end())
         return it->second;
-    static int nbMat = 0;
 
     osg::ref_ptr<osg::Material> pOsgMat = new osg::Material;
     pOsgMat->setName(pFbxMat->GetName());

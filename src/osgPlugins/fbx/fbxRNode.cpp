@@ -216,7 +216,7 @@ void readRotationElement(KFbxTypedProperty<fbxDouble3>& prop,
         }
         else
         {
-            char* curveNames[3] = {KFCURVENODE_R_X, KFCURVENODE_R_Y, KFCURVENODE_R_Z};
+            const char* curveNames[3] = {KFCURVENODE_R_X, KFCURVENODE_R_Y, KFCURVENODE_R_Z};
             osg::Vec3 axes[3] = {osg::Vec3(1,0,0), osg::Vec3(0,1,0), osg::Vec3(0,0,1)};
 
             fbxDouble3 fbxPropValue = prop.Get();

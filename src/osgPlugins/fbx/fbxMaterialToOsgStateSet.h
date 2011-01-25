@@ -62,7 +62,7 @@ struct StateSetContent
         DIFFUSE_TEXTURE_UNIT = 0,
         OPACITY_TEXTURE_UNIT,
         REFLECTION_TEXTURE_UNIT,
-        EMISSIVE_TEXTURE_UNIT,
+        EMISSIVE_TEXTURE_UNIT
         // more texture units here...
     };
 };

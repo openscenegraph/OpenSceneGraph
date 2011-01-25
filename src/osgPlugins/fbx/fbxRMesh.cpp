@@ -725,7 +725,7 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
     {
         geomType = GEOMETRY_RIG;
     }
-    else if (nMorphShapeCount = fbxMesh->GetShapeCount())
+    else if ((nMorphShapeCount = fbxMesh->GetShapeCount()))
     {
         geomType = GEOMETRY_MORPH;
     }

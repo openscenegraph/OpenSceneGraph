@@ -50,9 +50,9 @@ public:
         fbxMaterialToOsgStateSet(fbxMaterialToOsgStateSet1),
         fbxSkeletons(fbxSkeletons1),
         options(options1),
-        authoringTool(authoringTool1),
 		lightmapTextures(lightmapTextures1),
-		tessellatePolygons(tessellatePolygons1)
+		tessellatePolygons(tessellatePolygons1),
+        authoringTool(authoringTool1)
     {}
 
     osgDB::ReaderWriter::ReadResult readFbxNode(

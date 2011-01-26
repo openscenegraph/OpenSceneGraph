@@ -15,7 +15,7 @@
 #define OSGUTIL_INCREMENTALCOMPILEOPERATOR
 
 #include <osgUtil/GLObjectsVisitor>
-#include <osg/Geometry>
+#include <osgUtil/GraphicsCostEstimator>
 
 namespace osgUtil {
 
@@ -47,74 +47,6 @@ class OSGUTIL_EXPORT StateToCompile : public osg::NodeVisitor
         virtual void apply(osg::Drawable& drawable);
         virtual void apply(osg::StateSet& stateset);
         virtual void apply(osg::Texture& texture);
-};
-
-class OSGUTIL_EXPORT CompileStats : public osg::Referenced
-{
-    public:
-
-        CompileStats();
-
-        void add(const std::string& name,double size, double time);
-
-        double estimateTime(const std::string& name, double size) const;
-        double estimateTime2(const std::string& name, double size) const;
-        double estimateTime3(const std::string& name, double size) const;
-        double estimateTime4(const std::string& name, double size) const;
-        double averageTime(const std::string& name) const;
-
-        void print(std::ostream& out) const;
-
-    protected:
-
-        struct OSGUTIL_EXPORT Values
-        {
-            Values():
-                totalSize(0.0), totalTime(0.0), totalNum(0.0),
-                minSize(0.0), minTime(0.0),
-                a(0.0), b(0.0),
-                m(0.0), n(0.0), o(0.0), p(0.0) {}
-
-            void add(double size, double time);
-
-            double estimateTime(double size) const
-            {
-                return a + b * size;
-            }
-
-            double estimateTime2(double size) const
-            {
-                return (totalTime/totalSize) * size;
-            }
-
-            double estimateTime3(double size) const
-            {
-                if (size<minSize) return minTime;
-                return minTime + (totalTime/totalSize) * (size-minSize);
-            }
-
-            double estimateTime4(double size) const
-            {
-                if (size<minSize) return minTime;
-                double denominator = totalSize-minSize*totalNum;
-                return denominator==0.0 ? minTime : 
-                       minTime + (totalTime-minTime*totalNum)/(totalSize-minSize*totalNum) * (size-minSize);
-            }
-
-            double averageTime() const
-            {
-                if (totalNum!=0.0) return totalTime/totalTime;
-                else return 0.0;
-            }
-
-            double totalSize, totalTime, totalNum;
-            double minSize, minTime;
-            double a,b;
-            double m,n,o,p;
-        };
-
-        typedef std::map<std::string, Values> StatsMap;
-        StatsMap _statsMap;
 };
 
 class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
@@ -186,8 +118,8 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
         osg::Geometry* getForceTextureDownloadGeometry() { return _forceTextureDownloadGeometry.get(); }
         const osg::Geometry* getForceTextureDownloadGeometry() const { return _forceTextureDownloadGeometry.get(); }
 
-        CompileStats* getCompileStats() { return _compileStats.get(); }
-        const CompileStats* getCompileStats() const { return _compileStats.get(); }
+        GraphicsCostEstimator* getGraphicsCostEstimator() { return _graphicsCostEstimator.get(); }
+        const GraphicsCostEstimator* getGraphicsCostEstimator() const { return _graphicsCostEstimator.get(); }
 
 
         typedef std::vector<osg::GraphicsContext*> Contexts;
@@ -338,22 +270,22 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
         virtual ~IncrementalCompileOperation();
         
     
-        double                          _targetFrameRate;
-        double                          _minimumTimeAvailableForGLCompileAndDeletePerFrame;
-        unsigned int                    _maximumNumOfObjectsToCompilePerFrame;
-        double                          _flushTimeRatio;
-        double                          _conservativeTimeRatio;
+        double                              _targetFrameRate;
+        double                              _minimumTimeAvailableForGLCompileAndDeletePerFrame;
+        unsigned int                        _maximumNumOfObjectsToCompilePerFrame;
+        double                              _flushTimeRatio;
+        double                              _conservativeTimeRatio;
 
-        osg::ref_ptr<osg::Geometry>     _forceTextureDownloadGeometry;
-        osg::ref_ptr<CompileStats>      _compileStats;
+        osg::ref_ptr<osg::Geometry>         _forceTextureDownloadGeometry;
+        osg::ref_ptr<GraphicsCostEstimator> _graphicsCostEstimator;
 
-        OpenThreads::Mutex              _toCompileMutex;
-        CompileSets                     _toCompile;
+        OpenThreads::Mutex                  _toCompileMutex;
+        CompileSets                         _toCompile;
         
-        OpenThreads::Mutex              _compiledMutex;
-        CompileSets                     _compiled;
+        OpenThreads::Mutex                  _compiledMutex;
+        CompileSets                         _compiled;
         
-        ContextSet                      _contexts;
+        ContextSet                          _contexts;
 
 };
 

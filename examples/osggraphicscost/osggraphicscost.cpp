@@ -32,30 +32,25 @@
 namespace osgUtil
 {
 
-
-struct CostFunction1D
+struct ClampedLinearCostFunction1D
 {
-    virtual double operator() (unsigned int input) = 0;
-};
-
-struct LinearCostFunction1D : public CostFunction1D
-{
-    LinearCostFunction1D(double cost0, double dcost_di):
-        _cost0(cost0),
-        _dcost_di(dcost_di) {}
-    virtual double operator() (unsigned int input) { return _cost0 + _dcost_di * double(input); }
-    double _cost0;
-    double _dcost_di;
-};
-
-struct ClampedLinearCostFunction1D : public CostFunction1D
-{
-    ClampedLinearCostFunction1D(double cost0, double dcost_di, unsigned int min_input):
+    ClampedLinearCostFunction1D(double cost0=0.0, double dcost_di=0.0, unsigned int min_input=0):
         _cost0(cost0),
         _dcost_di(dcost_di),
         _min_input(min_input) {}
 
-    virtual double operator() (unsigned int input) { return _cost0 + _dcost_di * double(input<=_min_input ? 0u : input-_min_input); }
+    void set(double cost0, double dcost_di, unsigned int min_input)
+    {
+        _cost0 = cost0;
+        _dcost_di = dcost_di;
+        _min_input = min_input;
+    }
+
+    double operator() (unsigned int input) const
+    {
+        OSG_NOTICE<<"ClampedLinearCostFunction1D::operator("<<input<<")"<<std::endl;
+        return _cost0 + _dcost_di * double(input<=_min_input ? 0u : input-_min_input);
+    }
     double _cost0;
     double _dcost_di;
     unsigned int _min_input;
@@ -73,6 +68,16 @@ public:
     void calibrate(osg::RenderInfo& renderInfo);
     CostPair estimateCompileCost(const osg::Geometry* geometry) const;
     CostPair estimateDrawCost(const osg::Geometry* geometry) const;
+
+protected:
+    ClampedLinearCostFunction1D _arrayCompileCost;
+    ClampedLinearCostFunction1D _primtiveSetCompileCost;
+
+    ClampedLinearCostFunction1D _arrayDrawCost;
+    ClampedLinearCostFunction1D _primtiveSetDrawCost;
+
+    double _displayListCompileConstant;
+    double _displayListCompileFactor;
 };
 
 class TextureCostEstimator : public osg::Referenced
@@ -83,6 +88,10 @@ public:
     void calibrate(osg::RenderInfo& renderInfo);
     CostPair estimateCompileCost(const osg::Texture* texture) const;
     CostPair estimateDrawCost(const osg::Texture* texture) const;
+
+protected:
+    ClampedLinearCostFunction1D _compileCost;
+    ClampedLinearCostFunction1D _drawCost;
 };
 
 
@@ -94,6 +103,11 @@ public:
     void calibrate(osg::RenderInfo& renderInfo);
     CostPair estimateCompileCost(const osg::Program* program) const;
     CostPair estimateDrawCost(const osg::Program* program) const;
+
+protected:
+    ClampedLinearCostFunction1D _shaderCompileCost;
+    ClampedLinearCostFunction1D _linkCost;
+    ClampedLinearCostFunction1D _drawCost;
 };
 
 class GraphicsCostEstimator : public osg::Referenced
@@ -135,10 +149,21 @@ protected:
 //
 GeometryCostEstimator::GeometryCostEstimator()
 {
+    setDefaults();
 }
 
 void GeometryCostEstimator::setDefaults()
 {
+    double transfer_bandwidth = 10000000000.0; // 1GB/sec
+    double gpu_bandwidth = 50000000000.0; // 50 GB/second
+    double min_time = 0.00001; // 10 nano seconds.
+    _arrayCompileCost.set(min_time, 1.0/transfer_bandwidth, 256); // min time 1/10th of millisecond, min size 256
+    _primtiveSetCompileCost.set(min_time, 1.0/transfer_bandwidth, 256); // min time 1/10th of millisecond, min size 256
+    _arrayDrawCost.set(min_time, 1.0/gpu_bandwidth, 256); // min time 1/10th of millisecond, min size 256;
+    _primtiveSetDrawCost.set(min_time, 1.0/gpu_bandwidth, 256); // min time 1/10th of millisecond, min size 256;
+
+    _displayListCompileConstant = 0.0;
+    _displayListCompileFactor = 10.0;
 }
 
 void GeometryCostEstimator::calibrate(osg::RenderInfo& renderInfo)
@@ -147,7 +172,49 @@ void GeometryCostEstimator::calibrate(osg::RenderInfo& renderInfo)
 
 CostPair GeometryCostEstimator::estimateCompileCost(const osg::Geometry* geometry) const
 {
-    return CostPair(1.0,2.0);
+    OSG_NOTICE<<"GeometryCostEstimator::estimateCompileCost(..)"<<std::endl;
+
+    bool usesVBO = geometry->getUseVertexBufferObjects() && geometry->areFastPathsUsed();
+    bool usesDL = !usesVBO && geometry->getUseDisplayList() && geometry->getSupportsDisplayList();
+
+    if (usesVBO || usesDL)
+    {
+        CostPair cost;
+        if (geometry->getVertexArray()) { cost.first += _arrayCompileCost(geometry->getVertexArray()->getTotalDataSize()); }
+        if (geometry->getNormalArray()) { cost.first += _arrayCompileCost(geometry->getNormalArray()->getTotalDataSize()); }
+        if (geometry->getColorArray()) { cost.first += _arrayCompileCost(geometry->getColorArray()->getTotalDataSize()); }
+        if (geometry->getSecondaryColorArray()) { cost.first += _arrayCompileCost(geometry->getSecondaryColorArray()->getTotalDataSize()); }
+        if (geometry->getFogCoordArray()) { cost.first += _arrayCompileCost(geometry->getFogCoordArray()->getTotalDataSize()); }
+        for(unsigned i=0; i<geometry->getNumTexCoordArrays(); ++i)
+        {
+            if (geometry->getTexCoordArray(i)) { cost.first += _arrayCompileCost(geometry->getTexCoordArray(i)->getTotalDataSize()); }
+        }
+        for(unsigned i=0; i<geometry->getNumVertexAttribArrays(); ++i)
+        {
+            if (geometry->getVertexAttribArray(i)) { cost.first += _arrayCompileCost(geometry->getVertexAttribArray(i)->getTotalDataSize()); }
+        }
+        for(unsigned i=0; i<geometry->getNumPrimitiveSets(); ++i)
+        {
+            const osg::PrimitiveSet* primSet = geometry->getPrimitiveSet(i);
+            const osg::DrawElements* drawElements = primSet ? primSet->getDrawElements() : 0;
+            if (drawElements) { cost.first += _primtiveSetCompileCost(drawElements->getTotalDataSize()); }
+        }
+
+
+
+        if (usesDL)
+        {
+            cost.first = _displayListCompileConstant + _displayListCompileFactor * cost.first ;
+        }
+
+        OSG_NOTICE<<"   cost.first="<<cost.first<<std::endl;
+
+        return cost;
+    }
+    else
+    {
+        return CostPair(0.0,0.0);
+    }
 }
 
 CostPair GeometryCostEstimator::estimateDrawCost(const osg::Geometry* geometry) const
@@ -178,7 +245,7 @@ CostPair TextureCostEstimator::estimateCompileCost(const osg::Texture* texture) 
 
 CostPair TextureCostEstimator::estimateDrawCost(const osg::Texture* texture) const
 {
-    return CostPair(1.0,1.0);
+    return CostPair(0.0,0.0);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -292,6 +359,9 @@ public:
         _geometries.insert(geometry);
 
         CostPair cost = _gce->estimateCompileCost(geometry);
+
+        OSG_NOTICE<<"apply(Geometry), cost.first="<<cost.first<<std::endl;
+        
         _costs.first += cost.first;
         _costs.second += cost.second;
     }

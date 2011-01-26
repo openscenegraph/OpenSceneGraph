@@ -18,6 +18,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/EdgeCollector
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/GLObjectsVisitor
+    ${HEADER_PATH}/GraphicsCostEstimator
     ${HEADER_PATH}/HalfWayMapGenerator
     ${HEADER_PATH}/HighlightMapGenerator
     ${HEADER_PATH}/IntersectionVisitor
@@ -62,6 +63,7 @@ ADD_LIBRARY(${LIB_NAME}
     DrawElementTypeSimplifier.cpp
     EdgeCollector.cpp
     GLObjectsVisitor.cpp
+    GraphicsCostEstimator.cpp
     HalfWayMapGenerator.cpp
     HighlightMapGenerator.cpp
     IntersectionVisitor.cpp

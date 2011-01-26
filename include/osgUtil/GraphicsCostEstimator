@@ -39,7 +39,6 @@ struct ClampedLinearCostFunction1D
 
     double operator() (unsigned int input) const
     {
-        OSG_NOTICE<<"ClampedLinearCostFunction1D::operator("<<input<<")"<<std::endl;
         return _cost0 + _dcost_di * double(input<=_min_input ? 0u : input-_min_input);
     }
     double _cost0;
@@ -115,7 +114,7 @@ public:
     CostPair estimateCompileCost(const osg::Geometry* geometry) const { return _geometryEstimator->estimateCompileCost(geometry); }
     CostPair estimateDrawCost(const osg::Geometry* geometry) const { return _geometryEstimator->estimateDrawCost(geometry); }
 
-    CostPair estimateCompileCost(const osg::Texture* texture) const { return _textureEstimator->estimateDrawCost(texture); }
+    CostPair estimateCompileCost(const osg::Texture* texture) const { return _textureEstimator->estimateCompileCost(texture); }
     CostPair estimateDrawCost(const osg::Texture* texture) const { return _textureEstimator->estimateDrawCost(texture); }
 
     CostPair estimateCompileCost(const osg::Program* program) const { return _programEstimator->estimateCompileCost(program); }

@@ -46,7 +46,7 @@ void GeometryCostEstimator::calibrate(osg::RenderInfo& renderInfo)
 
 CostPair GeometryCostEstimator::estimateCompileCost(const osg::Geometry* geometry) const
 {
-    OSG_NOTICE<<"GeometryCostEstimator::estimateCompileCost(..)"<<std::endl;
+    OSG_INFO<<"GeometryCostEstimator::estimateCompileCost(..)"<<std::endl;
 
     bool usesVBO = geometry->getUseVertexBufferObjects() && geometry->areFastPathsUsed();
     bool usesDL = !usesVBO && geometry->getUseDisplayList() && geometry->getSupportsDisplayList();
@@ -79,7 +79,7 @@ CostPair GeometryCostEstimator::estimateCompileCost(const osg::Geometry* geometr
             cost.first = _displayListCompileConstant + _displayListCompileFactor * cost.first ;
         }
 
-        OSG_NOTICE<<"   cost.first="<<cost.first<<std::endl;
+        OSG_INFO<<"   cost.first="<<cost.first<<std::endl;
 
         return cost;
     }
@@ -100,10 +100,16 @@ CostPair GeometryCostEstimator::estimateDrawCost(const osg::Geometry* geometry) 
 //
 TextureCostEstimator::TextureCostEstimator()
 {
+    setDefaults();
 }
 
 void TextureCostEstimator::setDefaults()
 {
+    double transfer_bandwidth = 10000000000.0; // 1GB/sec
+    double gpu_bandwidth = 50000000000.0; // 50 GB/second
+    double min_time = 0.00001; // 10 nano seconds.
+    _compileCost.set(min_time, 1.0/transfer_bandwidth, 256); // min time 1/10th of millisecond, min size 256
+    _drawCost.set(min_time, 1.0/gpu_bandwidth, 256); // min time 1/10th of millisecond, min size 256
 }
 
 void TextureCostEstimator::calibrate(osg::RenderInfo& renderInfo)
@@ -112,7 +118,14 @@ void TextureCostEstimator::calibrate(osg::RenderInfo& renderInfo)
 
 CostPair TextureCostEstimator::estimateCompileCost(const osg::Texture* texture) const
 {
-    return CostPair(0.0,0.0);
+    CostPair cost;
+    for(unsigned int i=0; i<texture->getNumImages(); ++i)
+    {
+        const osg::Image* image = texture->getImage(i);
+        if (image) cost.first += _compileCost(image->getTotalDataSize());
+    }
+    OSG_NOTICE<<"TextureCostEstimator::estimateCompileCost(), size="<<cost.first<<std::endl;
+    return cost;
 }
 
 CostPair TextureCostEstimator::estimateDrawCost(const osg::Texture* texture) const
@@ -232,8 +245,6 @@ public:
 
         CostPair cost = _gce->estimateCompileCost(geometry);
 
-        OSG_NOTICE<<"apply(Geometry), cost.first="<<cost.first<<std::endl;
-        
         _costs.first += cost.first;
         _costs.second += cost.second;
     }

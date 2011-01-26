@@ -165,97 +165,6 @@ void StateToCompile::apply(osg::Texture& texture)
 
 /////////////////////////////////////////////////////////////////
 //
-// CompileStats
-//
-CompileStats::CompileStats()
-{
-}
-
-void CompileStats::add(const std::string& name,double size, double time)
-{
-    Values& values = _statsMap[name];
-    values.add(size,time);
-}
-
-double CompileStats::estimateTime(const std::string& name, double size) const
-{
-    StatsMap::const_iterator itr = _statsMap.find(name);
-    return (itr!=_statsMap.end()) ? itr->second.estimateTime(size) : 0.0;
-}
-
-double CompileStats::estimateTime2(const std::string& name, double size) const
-{
-    StatsMap::const_iterator itr = _statsMap.find(name);
-    return (itr!=_statsMap.end()) ? itr->second.estimateTime2(size) : 0.0;
-}
-
-double CompileStats::estimateTime3(const std::string& name, double size) const
-{
-    StatsMap::const_iterator itr = _statsMap.find(name);
-    return (itr!=_statsMap.end()) ? itr->second.estimateTime3(size) : 0.0;
-}
-
-double CompileStats::estimateTime4(const std::string& name, double size) const
-{
-    StatsMap::const_iterator itr = _statsMap.find(name);
-    return (itr!=_statsMap.end()) ? itr->second.estimateTime4(size) : 0.0;
-}
-
-double CompileStats::averageTime(const std::string& name) const
-{
-    StatsMap::const_iterator itr = _statsMap.find(name);
-    return (itr!=_statsMap.end()) ? itr->second.averageTime() : 0.0;
-}
-
-void CompileStats::print(std::ostream& out) const
-{
-    for(StatsMap::const_iterator itr = _statsMap.begin();
-        itr != _statsMap.end();
-        ++itr)
-    {
-        const Values& values = itr->second;
-        out<<itr->first<<" : averageTime "<<values.averageTime()<<", a="<<values.a<<" b="<<values.b<<std::endl;
-    }
-}
-
-void CompileStats::Values::add(double size, double time)
-{
-    if (totalNum==0.0)
-    {
-        minSize = size;
-        minTime = time;
-    }
-    else
-    {
-        if (size<minSize) minSize = size;
-        if (time<minTime) minTime = time;
-    }
-
-    totalSize += size;
-    totalTime += time;
-    totalNum += 1.0;
-
-    m += time/(size*size); // sum of yi/xi^2
-    n += time/size; // sum of yi/xi
-    o += 1.0/(size*size); // sum of 1/xi^2
-    p += 1.0/size; // sum of 1/xi
-
-    double d = o + p*p;
-    if (d!=0.0)
-    {
-        a = (n*p - m)/d;
-        b = (n*o - m*p)/d;
-    }
-    else
-    {
-        a = time;
-        b = 0.0;
-    }
-}
-
-
-/////////////////////////////////////////////////////////////////
-//
 // CompileOps
 //
 IncrementalCompileOperation::CompileDrawableOp::CompileDrawableOp(osg::Drawable* drawable):
@@ -467,7 +376,7 @@ IncrementalCompileOperation::IncrementalCompileOperation():
         _maximumNumOfObjectsToCompilePerFrame = atoi(ptr);
     }
 
-    _compileStats = new CompileStats;
+    _graphicsCostEstimator = new GraphicsCostEstimator;
 
     // assignForceTextureDownloadGeometry();
 }

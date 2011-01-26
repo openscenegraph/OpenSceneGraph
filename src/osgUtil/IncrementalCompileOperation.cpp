@@ -174,7 +174,13 @@ IncrementalCompileOperation::CompileDrawableOp::CompileDrawableOp(osg::Drawable*
 
 double IncrementalCompileOperation::CompileDrawableOp::estimatedTimeForCompile(CompileInfo& compileInfo) const
 {
-    return 0.0;
+    GraphicsCostEstimator* gce = compileInfo.incrementalCompileOperation->getGraphicsCostEstimator();
+    osg::Geometry* geometry = _drawable->asGeometry();
+    if (gce && geometry)
+    {
+        return gce->estimateCompileCost(geometry).first;
+    }
+    else return 0.0;
 }
 
 bool IncrementalCompileOperation::CompileDrawableOp::compile(CompileInfo& compileInfo)
@@ -191,7 +197,9 @@ IncrementalCompileOperation::CompileTextureOp::CompileTextureOp(osg::Texture* te
 
 double IncrementalCompileOperation::CompileTextureOp::estimatedTimeForCompile(CompileInfo& compileInfo) const
 {
-    return 0.0;
+    GraphicsCostEstimator* gce = compileInfo.incrementalCompileOperation->getGraphicsCostEstimator();
+    if (gce) return gce->estimateCompileCost(_texture.get()).first;
+    else return 0.0;
 }
 
 bool IncrementalCompileOperation::CompileTextureOp::compile(CompileInfo& compileInfo)
@@ -224,7 +232,9 @@ IncrementalCompileOperation::CompileProgramOp::CompileProgramOp(osg::Program* pr
 
 double IncrementalCompileOperation::CompileProgramOp::estimatedTimeForCompile(CompileInfo& compileInfo) const
 {
-    return 0.0;
+    GraphicsCostEstimator* gce = compileInfo.incrementalCompileOperation->getGraphicsCostEstimator();
+    if (gce) return gce->estimateCompileCost(_program.get()).first;
+    else return 0.0;
 }
 
 bool IncrementalCompileOperation::CompileProgramOp::compile(CompileInfo& compileInfo)
@@ -276,14 +286,21 @@ bool IncrementalCompileOperation::CompileList::compile(CompileInfo& compileInfo)
         itr != _compileOps.end() && compileInfo.availableTime()>0.0 && compileInfo.maxNumObjectsToCompile>0;
     )
     {
+        double estimatedCompileCost = (*itr)->estimatedTimeForCompile(compileInfo);
+        
         --compileInfo.maxNumObjectsToCompile;
 
+        osg::ElapsedTime timer;
+        
         CompileOps::iterator saved_itr(itr);
         ++itr;
         if ((*saved_itr)->compile(compileInfo))
         {
             _compileOps.erase(saved_itr);
         }
+
+        double actualCompileCost = timer.elapsedTime();
+        OSG_NOTICE<<"IncrementalCompileOperation::CompileList::compile() estimatedTimForCompile= "<<estimatedCompileCost<<", actual="<<actualCompileCost<<", ratio="<<(estimatedCompileCost/actualCompileCost)<<std::endl;
     }
     return empty();
 }

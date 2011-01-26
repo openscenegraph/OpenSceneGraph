@@ -57,7 +57,7 @@ public:
     virtual void writeStream( std::ostream& (*fn)(std::ostream&) )
     {
         indentIfRequired(); *_out << fn;
-        if ( fn==static_cast<std::ostream& (*)(std::ostream&)>(std::endl) )
+        if ( isEndl( fn ) )
         {
             _readyForIndent = true;
         }

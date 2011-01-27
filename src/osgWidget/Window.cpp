@@ -324,7 +324,7 @@ void Window::update() {
         else if(_vAnchor == VA_BOTTOM) y = 0.0f;
 
         if(_hAnchor == HA_LEFT) x = 0.0f;
-        else if(_hAnchor == HA_CENTER) x = osg::round(_wm->getWidth() / 2.0f);
+        else if(_hAnchor == HA_CENTER) x = osg::round((_wm->getWidth() - _width.current)/ 2.0f);
         else if(_hAnchor == HA_RIGHT) x = _wm->getWidth() - _width.current + _visibleArea[2];
 
         xy.set(x, y);

@@ -401,62 +401,62 @@ class Win32KeyboardMap
             _keymap[VK_F10          ] = osgGA::GUIEventAdapter::KEY_F10;
             _keymap[VK_F11          ] = osgGA::GUIEventAdapter::KEY_F11;
             _keymap[VK_F12          ] = osgGA::GUIEventAdapter::KEY_F12;
-            _keymap[0xc0            ] = '`';
-            _keymap['0'             ] = '0';
-            _keymap['1'             ] = '1';
-            _keymap['2'             ] = '2';
-            _keymap['3'             ] = '3';
-            _keymap['4'             ] = '4';
-            _keymap['5'             ] = '5';
-            _keymap['6'             ] = '6';
-            _keymap['7'             ] = '7';
-            _keymap['8'             ] = '8';
-            _keymap['9'             ] = '9';
-            _keymap[0xbd            ] = '-';
-            _keymap[0xbb            ] = '=';
+            _keymap[0xc0            ] = osgGA::GUIEventAdapter::KEY_Backquote;
+            _keymap['0'             ] = osgGA::GUIEventAdapter::KEY_0;
+            _keymap['1'             ] = osgGA::GUIEventAdapter::KEY_1;
+            _keymap['2'             ] = osgGA::GUIEventAdapter::KEY_2;
+            _keymap['3'             ] = osgGA::GUIEventAdapter::KEY_3;
+            _keymap['4'             ] = osgGA::GUIEventAdapter::KEY_4;
+            _keymap['5'             ] = osgGA::GUIEventAdapter::KEY_5;
+            _keymap['6'             ] = osgGA::GUIEventAdapter::KEY_6;
+            _keymap['7'             ] = osgGA::GUIEventAdapter::KEY_7;
+            _keymap['8'             ] = osgGA::GUIEventAdapter::KEY_8;
+            _keymap['9'             ] = osgGA::GUIEventAdapter::KEY_9;
+            _keymap[0xbd            ] = osgGA::GUIEventAdapter::KEY_Minus;
+            _keymap[0xbb            ] = osgGA::GUIEventAdapter::KEY_Equals;
             _keymap[VK_BACK         ] = osgGA::GUIEventAdapter::KEY_BackSpace;
             _keymap[VK_TAB          ] = osgGA::GUIEventAdapter::KEY_Tab;
-            _keymap['A'             ] = 'A';
-            _keymap['B'             ] = 'B';
-            _keymap['C'             ] = 'C';
-            _keymap['D'             ] = 'D';
-            _keymap['E'             ] = 'E';
-            _keymap['F'             ] = 'F';
-            _keymap['G'             ] = 'G';
-            _keymap['H'             ] = 'H';
-            _keymap['I'             ] = 'I';
-            _keymap['J'             ] = 'J';
-            _keymap['K'             ] = 'K';
-            _keymap['L'             ] = 'L';
-            _keymap['M'             ] = 'M';
-            _keymap['N'             ] = 'N';
-            _keymap['O'             ] = 'O';
-            _keymap['P'             ] = 'P';
-            _keymap['Q'             ] = 'Q';
-            _keymap['R'             ] = 'R';
-            _keymap['S'             ] = 'S';
-            _keymap['T'             ] = 'T';
-            _keymap['U'             ] = 'U';
-            _keymap['V'             ] = 'V';
-            _keymap['W'             ] = 'W';
-            _keymap['X'             ] = 'X';
-            _keymap['Y'             ] = 'Y';
-            _keymap['Z'             ] = 'Z';
-            _keymap[0xdb            ] = '[';
-            _keymap[0xdd            ] = ']';
-            _keymap[0xdc            ] = '\\';
+            _keymap['A'             ] = osgGA::GUIEventAdapter::KEY_A;
+            _keymap['B'             ] = osgGA::GUIEventAdapter::KEY_B;
+            _keymap['C'             ] = osgGA::GUIEventAdapter::KEY_C;
+            _keymap['D'             ] = osgGA::GUIEventAdapter::KEY_D;
+            _keymap['E'             ] = osgGA::GUIEventAdapter::KEY_E;
+            _keymap['F'             ] = osgGA::GUIEventAdapter::KEY_F;
+            _keymap['G'             ] = osgGA::GUIEventAdapter::KEY_G;
+            _keymap['H'             ] = osgGA::GUIEventAdapter::KEY_H;
+            _keymap['I'             ] = osgGA::GUIEventAdapter::KEY_I;
+            _keymap['J'             ] = osgGA::GUIEventAdapter::KEY_J;
+            _keymap['K'             ] = osgGA::GUIEventAdapter::KEY_K;
+            _keymap['L'             ] = osgGA::GUIEventAdapter::KEY_L;
+            _keymap['M'             ] = osgGA::GUIEventAdapter::KEY_M;
+            _keymap['N'             ] = osgGA::GUIEventAdapter::KEY_N;
+            _keymap['O'             ] = osgGA::GUIEventAdapter::KEY_O;
+            _keymap['P'             ] = osgGA::GUIEventAdapter::KEY_P;
+            _keymap['Q'             ] = osgGA::GUIEventAdapter::KEY_Q;
+            _keymap['R'             ] = osgGA::GUIEventAdapter::KEY_R;
+            _keymap['S'             ] = osgGA::GUIEventAdapter::KEY_S;
+            _keymap['T'             ] = osgGA::GUIEventAdapter::KEY_T;
+            _keymap['U'             ] = osgGA::GUIEventAdapter::KEY_U;
+            _keymap['V'             ] = osgGA::GUIEventAdapter::KEY_V;
+            _keymap['W'             ] = osgGA::GUIEventAdapter::KEY_W;
+            _keymap['X'             ] = osgGA::GUIEventAdapter::KEY_X;
+            _keymap['Y'             ] = osgGA::GUIEventAdapter::KEY_Y;
+            _keymap['Z'             ] = osgGA::GUIEventAdapter::KEY_Z;
+            _keymap[0xdb            ] = osgGA::GUIEventAdapter::KEY_Leftbracket;
+            _keymap[0xdd            ] = osgGA::GUIEventAdapter::KEY_Rightbracket;
+            _keymap[0xdc            ] = osgGA::GUIEventAdapter::KEY_Backslash;
             _keymap[VK_CAPITAL      ] = osgGA::GUIEventAdapter::KEY_Caps_Lock;
-            _keymap[0xba            ] = ';';
-            _keymap[0xde            ] = '\'';
+            _keymap[0xba            ] = osgGA::GUIEventAdapter::KEY_Semicolon;
+            _keymap[0xde            ] = osgGA::GUIEventAdapter::KEY_Quote;
             _keymap[VK_RETURN       ] = osgGA::GUIEventAdapter::KEY_Return;
             _keymap[VK_LSHIFT       ] = osgGA::GUIEventAdapter::KEY_Shift_L;
-            _keymap[0xbc            ] = ',';
-            _keymap[0xbe            ] = '.';
-            _keymap[0xbf            ] = '/';
+            _keymap[0xbc            ] = osgGA::GUIEventAdapter::KEY_Comma;
+            _keymap[0xbe            ] = osgGA::GUIEventAdapter::KEY_Period;
+            _keymap[0xbf            ] = osgGA::GUIEventAdapter::KEY_Slash;
             _keymap[VK_RSHIFT       ] = osgGA::GUIEventAdapter::KEY_Shift_R;
             _keymap[VK_LCONTROL     ] = osgGA::GUIEventAdapter::KEY_Control_L;
             _keymap[VK_LWIN         ] = osgGA::GUIEventAdapter::KEY_Super_L;
-            _keymap[VK_SPACE        ] = ' ';
+            _keymap[VK_SPACE        ] = osgGA::GUIEventAdapter::KEY_Space;
             _keymap[VK_LMENU        ] = osgGA::GUIEventAdapter::KEY_Alt_L;
             _keymap[VK_RMENU        ] = osgGA::GUIEventAdapter::KEY_Alt_R;
             _keymap[VK_RWIN         ] = osgGA::GUIEventAdapter::KEY_Super_R;
@@ -2237,7 +2237,7 @@ void GraphicsWindowWin32::setSyncToVBlank( bool on )
 #endif
 }
 
-void GraphicsWindowWin32::adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol, unsigned int& modifierMask )
+void GraphicsWindowWin32::adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol, unsigned int& modifierMask, int& unmodifiedKeySymbol)
 {
     modifierMask = 0;
 
@@ -2303,7 +2303,10 @@ void GraphicsWindowWin32::adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol
     {
         keySymbol = osgGA::GUIEventAdapter::KEY_KP_Enter;
     }
-    else if ((keySymbol & 0xff00)==0) 
+    
+    unmodifiedKeySymbol = keySymbol;
+        
+    if ((keySymbol & 0xff00)==0) 
     {
         char asciiKey[2];
         int numChars = ::ToAscii(wParam, (lParam>>16)&0xff, keyState, reinterpret_cast<WORD*>(asciiKey), 0);
@@ -2479,11 +2482,12 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
 
             {
                 int keySymbol = 0;
+                int unmodifiedKeySymbol = 0;
                 unsigned int modifierMask = 0;
-                adaptKey(wParam, lParam, keySymbol, modifierMask);
-                _keyMap[keySymbol] = true;
+                adaptKey(wParam, lParam, keySymbol, modifierMask, unmodifiedKeySymbol);
+                _keyMap[std::make_pair(keySymbol,unmodifiedKeySymbol)] = true;
                 //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
-                getEventQueue()->keyPress(keySymbol, eventTime);
+                getEventQueue()->keyPress(keySymbol, eventTime, unmodifiedKeySymbol);
             }
             break;
 
@@ -2494,11 +2498,12 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
 
             {
                 int keySymbol = 0;
+                int unmodifiedKeySymbol = 0;
                 unsigned int modifierMask = 0;
-                adaptKey(wParam, lParam, keySymbol, modifierMask);
-                _keyMap[keySymbol] = false;
+                adaptKey(wParam, lParam, keySymbol, modifierMask, unmodifiedKeySymbol);
+                _keyMap[std::make_pair(keySymbol, unmodifiedKeySymbol)] = false;
                 //getEventQueue()->getCurrentEventState()->setModKeyMask(modifierMask);
-                getEventQueue()->keyRelease(keySymbol, eventTime);
+                getEventQueue()->keyRelease(keySymbol, eventTime, unmodifiedKeySymbol);
             }
             break;
 
@@ -2538,12 +2543,12 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
         ///////////////////
 
             // Release all keys that were pressed when the window lost focus.
-            for (std::map<int, bool>::iterator key = _keyMap.begin();
+            for (std::map<std::pair<int, int>, bool>::iterator key = _keyMap.begin();
                  key != _keyMap.end(); ++key)
             {
                 if (key->second)
                 {
-                    getEventQueue()->keyRelease(key->first);
+                    getEventQueue()->keyRelease(key->first.first, key->first.second);
                     key->second = false;
                 }
             }

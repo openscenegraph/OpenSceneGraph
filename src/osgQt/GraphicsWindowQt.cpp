@@ -157,6 +157,7 @@ bool GraphicsWindowQt::init()
     format.setStencil( _traits->stencil>0 );
     format.setDoubleBuffer( _traits->doubleBuffer );
     format.setSwapInterval( _traits->vsync ? 1 : 0 );
+    format.setStereo( _traits->quadBufferStereo ? 1 : 0 );
     
     WindowData* windowData = _traits.get() ? dynamic_cast<WindowData*>(_traits->inheritedWindowData.get()) : 0;
     _widget = windowData ? windowData->_widget : 0;

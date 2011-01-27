@@ -163,7 +163,7 @@ class OSGVIEWER_EXPORT GraphicsWindowX11 : public osgViewer::GraphicsWindow, pub
 
 
         void transformMouseXY(float& x, float& y);
-        void adaptKey(XKeyEvent& keyevent, int& keySymbol);
+        void adaptKey(XKeyEvent& keyevent, int& keySymbol, int& unmodifiedKeySymbol);
         void forceKey(int key, double time, bool state);
         void rescanModifierMapping();
         void getModifierMap(char* keymap) const;

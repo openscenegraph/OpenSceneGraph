@@ -135,7 +135,7 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow, p
         
         bool setPixelFormat();
         
-        void adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol, unsigned int& modifierMask );
+        void adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol, unsigned int& modifierMask, int& unmodifiedKeySymbol );
                 
         void transformMouseXY(float& x, float& y);
         
@@ -178,7 +178,7 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow, p
         
         std::map<MouseCursor,HCURSOR> _mouseCursorMap;
 
-        std::map<int, bool> _keyMap;
+        std::map<std::pair<int, int>, bool> _keyMap;
 
         bool   _applyWorkaroundForMultimonitorMultithreadNVidiaWin32Issues;
 };

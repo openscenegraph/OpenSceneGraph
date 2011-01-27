@@ -31,9 +31,13 @@
 
 using namespace std;
 
+static const char * const PATH_SEPARATORS = "/\\";
+static unsigned int PATH_SEPARATORS_LEN = 2;
+
+
 std::string osgDB::getFilePath(const std::string& fileName)
 {
-    std::string::size_type slash = fileName.find_last_of("/\\");
+    std::string::size_type slash = fileName.find_last_of(PATH_SEPARATORS);
     if (slash==std::string::npos) return std::string();
     else return std::string(fileName, 0, slash);
 }
@@ -41,7 +45,7 @@ std::string osgDB::getFilePath(const std::string& fileName)
 
 std::string osgDB::getSimpleFileName(const std::string& fileName)
 {
-    std::string::size_type slash = fileName.find_last_of("/\\");
+    std::string::size_type slash = fileName.find_last_of(PATH_SEPARATORS);
     if (slash==std::string::npos) return fileName;
     else return std::string(fileName.begin()+slash+1,fileName.end());
 }
@@ -50,7 +54,7 @@ std::string osgDB::getSimpleFileName(const std::string& fileName)
 std::string osgDB::getFileExtension(const std::string& fileName)
 {
     std::string::size_type dot = fileName.find_last_of('.');
-    std::string::size_type slash = fileName.find_last_of("/\\");
+    std::string::size_type slash = fileName.find_last_of(PATH_SEPARATORS);
     if (dot==std::string::npos || (slash!=std::string::npos && dot<slash)) return std::string("");
     return std::string(fileName.begin()+dot+1,fileName.end());
 }
@@ -58,7 +62,7 @@ std::string osgDB::getFileExtension(const std::string& fileName)
 std::string osgDB::getFileExtensionIncludingDot(const std::string& fileName)
 {
     std::string::size_type dot = fileName.find_last_of('.');
-    std::string::size_type slash = fileName.find_last_of("/\\");
+    std::string::size_type slash = fileName.find_last_of(PATH_SEPARATORS);
     if (dot==std::string::npos || (slash!=std::string::npos && dot<slash)) return std::string("");
     return std::string(fileName.begin()+dot,fileName.end());
 }
@@ -138,7 +142,7 @@ std::string osgDB::convertToLowerCase(const std::string& str)
 std::string osgDB::getNameLessExtension(const std::string& fileName)
 {
     std::string::size_type dot = fileName.find_last_of('.');
-    std::string::size_type slash = fileName.find_last_of("/\\");        // Finds forward slash *or* back slash
+    std::string::size_type slash = fileName.find_last_of(PATH_SEPARATORS);        // Finds forward slash *or* back slash
     if (dot==std::string::npos || (slash!=std::string::npos && dot<slash)) return fileName;
     return std::string(fileName.begin(),fileName.begin()+dot);
 }
@@ -148,7 +152,7 @@ std::string osgDB::getNameLessExtension(const std::string& fileName)
 std::string osgDB::getNameLessAllExtensions(const std::string& fileName)
 {
     // Finds start serach position: from last slash, or the begining of the string if none found
-    std::string::size_type startPos = fileName.find_last_of("/\\");            // Finds forward slash *or* back slash
+    std::string::size_type startPos = fileName.find_last_of(PATH_SEPARATORS);            // Finds forward slash *or* back slash
     if (startPos == std::string::npos) startPos = 0;
     std::string::size_type dot = fileName.find_first_of('.', startPos);        // Finds *FIRST* dot from start pos
     if (dot==std::string::npos) return fileName;
@@ -321,45 +325,101 @@ std::string osgDB::getRealPath(const std::string& path)
 #endif 
 }
 
-std::string osgDB::getPathRelative(const std::string& from, const std::string& to)
-{
-    std::string::size_type slash = to.find_last_of('/');
-    std::string::size_type backslash = to.find_last_of('\\');
-    if (slash == std::string::npos) 
-    {
-        if (backslash == std::string::npos) return to;
-        slash = backslash;
-    }
-    else if (backslash != std::string::npos && backslash > slash)
-    {
-        slash = backslash;
-    }
 
-    if (from.empty() || from.length() > to.length())
-        return osgDB::getSimpleFileName(to);
-
-    std::string::const_iterator itTo = to.begin();
-    for (std::string::const_iterator itFrom = from.begin();
-        itFrom != from.end(); ++itFrom, ++itTo)
+/// Helper to iterate over elements of a path (including Windows' root, if any).
+class PathIterator {
+public:
+    PathIterator(const std::string & v) : end(v.end()), start(v.begin()), stop(v.begin()) { operator++(); }
+    bool valid() const { return start!=end; }
+    PathIterator & operator++()
     {
-        char a = tolower(*itFrom), b = tolower(*itTo);
-        if (a == '\\') a = '/';
-        if (b == '\\') b = '/';
-        if (a != b || itTo == to.begin() + slash + 1)
-        {
-            return osgDB::getSimpleFileName(to);
-        }
+        if (!valid()) return *this;
+        start = skipSeparators(stop);
+        if (start != end) stop = next(start);
+        return *this;
+    }
+    std::string operator*()
+    {
+        if (!valid()) return std::string();
+        return std::string(start, stop);
     }
 
-    while (itTo != to.end() && (*itTo == '\\' || *itTo == '/'))
+protected:
+    std::string::const_iterator end;     ///< End of path string
+    std::string::const_iterator start;   ///< Points to the first char of an element, or ==end() if no more
+    std::string::const_iterator stop;    ///< Points to the separator after 'start', or ==end()
+
+    /// Iterate until 'it' points to something different from a separator
+    std::string::const_iterator skipSeparators(std::string::const_iterator it)
     {
-        ++itTo;
+        for (; it!=end && std::find_first_of(it, it+1, PATH_SEPARATORS, PATH_SEPARATORS+PATH_SEPARATORS_LEN) != it+1; ++it) {}
+        return it;
     }
 
-    return std::string(itTo, to.end());
+    std::string::const_iterator next(std::string::const_iterator it)
+    {
+        return std::find_first_of(it, end, PATH_SEPARATORS, PATH_SEPARATORS+PATH_SEPARATORS_LEN);
+    }
+};
+
+/// Gets root part of a path, or an empty string if none found
+std::string getPathRoot(const std::string& path) {
+    // Test for unix root
+    if (path.empty()) return "";
+    if (path[0] == '/') return "/";
+    // Now test for Windows root
+    if (path.length()<2) return "";
+    if (path[1] == ':') return path.substr(0, 2);        // We should check that path[0] is a letter, but as ':' is invalid in paths in other cases, that's not a problem.
+    return "";
 }
 
-//std::string testA = getPathRelative("C:\\a\\b", "C:\\a/b/d/f");
-//std::string testB = getPathRelative("C:\\a\\d", "C:\\a/b/d/f");
-//std::string testC = getPathRelative("C:\\ab", "C:\\a/b/d/f");
-//std::string testD = getPathRelative("a/d", "a/d");
+std::string osgDB::getPathRelative(const std::string& from, const std::string& to)
+{
+    // This implementation is not 100% robust, and should be replaced with C++0x "std::path" as soon as possible.
+
+    // Definition: an "element" is a part between slashes. Ex: "/a/b" has two elements ("a" and "b").
+    // Algorithm:
+    // 1. If paths are neither both absolute nor both relative, then we cannot do anything (we need to make them absolute, but need additionnal info on how to make it). Return.
+    // 2. If both paths are absolute and root isn't the same (for Windows only, as roots are of the type "C:", "D:"), then the operation is impossible. Return.
+    // 3. Iterate over two paths elements until elements are equal
+    // 4. For each remaining element in "from", add ".." to result
+    // 5. For each remaining element in "to", add this element to result
+
+    // 1 & 2
+    const std::string root = getPathRoot(from);
+    if (root != getPathRoot(to)) {
+        OSG_INFO << "Cannot relativise paths. From=" << from << ", To=" << to << ". Returning 'to' unchanged." << std::endl;
+        //return to;
+        return osgDB::getSimpleFileName(to);
+    }
+
+    // 3
+    PathIterator itFrom(from), itTo(to);
+    // Iterators may point to Windows roots. As we tested they are equal, there is no need to ++itFrom and ++itTo.
+    // However, if we got an Unix root, we must add it to the result.
+    std::string res(root == "/" ? "/" : "");
+    for(; itFrom.valid() && itTo.valid() && *itFrom==*itTo; ++itFrom, ++itTo) {}
+
+    // 4
+    for(; itFrom.valid(); ++itFrom) res += "../";
+
+    // 5
+    for(; itTo.valid(); ++itTo) res += *itTo + "/";
+
+    // Remove trailing slash before returning
+    if (!res.empty() && std::find_first_of(res.rbegin(), res.rbegin()+1, PATH_SEPARATORS, PATH_SEPARATORS+PATH_SEPARATORS_LEN) != res.rbegin()+1)
+    {
+        return res.substr(0, res.length()-1);
+    }
+    return res;
+}
+
+//using namespace osgDB;
+//std::string testA = getPathRelative("C:\\a\\b", "C:\\a/b/d/f");       // d/f
+//std::string testB = getPathRelative("C:\\a\\d", "C:\\a/b/d/f");       // ../b/d/f
+//std::string testC = getPathRelative("C:\\ab", "C:\\a/b/d/f");         // ../a/b/d/f
+//std::string testD = getPathRelative("a/d", "a/d");                    // ""
+//std::string testE = getPathRelative("a", "a/d");                      // ../d
+//std::string testF = getPathRelative("C:/a/b", "a/d");                 // Precondition fail. Returns d.
+//std::string testG = getPathRelative("/a/b", "a/d");                   // Precondition fail. Returns d.
+//std::string testH = getPathRelative("a/b", "/a/d");                   // Precondition fail. Returns d.

@@ -556,7 +556,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
 
     // RS BUG
     // getNumTexCoordArrays may return larger number
-    // where getTexCoordArray(0) may have a BIND_OFF and an empty arrat
+    // where getTexCoordArray(0) may have a BIND_OFF and an empty array
     std::vector<ArrayNIndices> texcoords;
     for ( unsigned int i = 0; i < geom->getNumTexCoordArrays(); i++ )
     {

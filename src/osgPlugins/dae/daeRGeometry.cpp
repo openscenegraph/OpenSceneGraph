@@ -701,8 +701,55 @@ struct VertexIndices
         return false;
     }
 
+    /// Templated getter for memebers, used for createGeometryData()
+    enum ValueType { POSITION, COLOR, NORMAL, TEXCOORD };
+    template <int Value>
+    inline int get() const;
+
     int position_index, color_index, normal_index, texcoord_indices[MAX_TEXTURE_COORDINATE_SETS];
 };
+
+template<>
+inline int VertexIndices::get<VertexIndices::POSITION>() const { return position_index; }
+template<>
+inline int VertexIndices::get<VertexIndices::COLOR>() const { return color_index; }
+template<>
+inline int VertexIndices::get<VertexIndices::NORMAL>() const { return normal_index; }
+template<int Value>
+inline int VertexIndices::get() const {
+    // TEXCOORD has not to be implemented here as we need compile-time constants for texcoord number
+    return -1;
+}
+
+
+typedef std::map<VertexIndices, GLuint> VertexIndicesIndexMap;
+
+/// Creates a value array, packed in a osg::Geometry::ArrayData, corresponding to indexed values.
+template <class ArrayType, int Value>
+osg::Geometry::ArrayData createGeometryData(domSourceReader & sourceReader, const VertexIndicesIndexMap & vertexIndicesIndexMap, int texcoordNum=-1) {
+    const ArrayType * source = sourceReader.getArray<ArrayType>();
+    if (!source) return osg::Geometry::ArrayData();
+    ArrayType * pArray = new ArrayType;
+    for (VertexIndicesIndexMap::const_iterator it = vertexIndicesIndexMap.begin(), end = vertexIndicesIndexMap.end(); it != end; ++it) {
+        int index = texcoordNum>=0 ? it->first.texcoord_indices[texcoordNum] : it->first.get<Value>();
+        if (index>=0 && static_cast<unsigned int>(index)<source->size()) pArray->push_back(source->at(index));
+        else {
+            // Invalid data (index out of bounds)
+            //LOG_WARN << ...
+            //pArray->push_back(0);
+            return osg::Geometry::ArrayData();
+        }
+    }
+    return osg::Geometry::ArrayData(pArray, osg::Geometry::BIND_PER_VERTEX);
+}
+
+
+template <class ArrayTypeSingle, class ArrayTypeDouble, int Value>
+inline osg::Geometry::ArrayData createGeometryData(domSourceReader & sourceReader, const VertexIndicesIndexMap & vertexIndicesIndexMap, bool useDoublePrecision, int texcoordNum=-1) {
+    if (useDoublePrecision) return createGeometryData<ArrayTypeDouble, Value>(sourceReader, vertexIndicesIndexMap);
+    else                    return createGeometryData<ArrayTypeSingle, Value>(sourceReader, vertexIndicesIndexMap);
+}
+
 
 void daeReader::resolveMeshArrays(const domP_Array& domPArray,
     const domInputLocalOffset_Array& inputs, const domMesh* pDomMesh,
@@ -735,7 +782,6 @@ void daeReader::resolveMeshArrays(const domP_Array& domPArray,
     }
     ++stride;
 
-    typedef std::map<VertexIndices, GLuint> VertexIndicesIndexMap;
     VertexIndicesIndexMap vertexIndicesIndexMap;
 
     for (size_t j = 0; j < domPArray.getCount(); ++j)
@@ -794,99 +840,35 @@ void daeReader::resolveMeshArrays(const domP_Array& domPArray,
         }
     }
 
-// Local defines to make te code a bit more readable
-// Sukender: This is not a very clean way to code, I know, but else the code is unmaintanable.
-#define FOREACH_INDEX for (VertexIndicesIndexMap::const_iterator it = vertexIndicesIndexMap.begin(), end = vertexIndicesIndexMap.end(); it != end; ++it)
-//#define FOREACH_INDEX for (VertexIndicesIndexMap::const_iterator it = vertexIndicesIndexMap.begin(); it != vertexIndicesIndexMap.end(); ++it)
-#define ENSURE_VECTOR_SIZE(arrayName, text) if (arrayName) { \
-    if (arrayName->size() > nbVertices) OSG_NOTIFY(osg::NOTICE) << "More " #text " coordinates than vertices found. Result may not be what expected." << std::endl; \
-        if (arrayName->size() < nbVertices) { \
-            OSG_NOTIFY(osg::WARN) << "Less " #text " coordinates than vertices found. Skipping " #text " components." << std::endl; \
-            arrayName = NULL; \
-        } \
-    } \
-/**/
     const bool readDoubleVertices  = (_precisionHint & osgDB::Options::DOUBLE_PRECISION_VERTEX) != 0;
     const bool readDoubleColors    = (_precisionHint & osgDB::Options::DOUBLE_PRECISION_COLOR) != 0;
     const bool readDoubleNormals   = (_precisionHint & osgDB::Options::DOUBLE_PRECISION_NORMAL) != 0;
     const bool readDoubleTexcoords = (_precisionHint & osgDB::Options::DOUBLE_PRECISION_TEX_COORD) != 0;
 
-    unsigned int nbVertices(0);
-    // TODO Factorize code below!
+    // Vertices
     {
-        if (!readDoubleVertices)
+        osg::Geometry::ArrayData arrayData( createGeometryData<osg::Vec3Array, osg::Vec3dArray, VertexIndices::POSITION>(sources[position_source], vertexIndicesIndexMap, readDoubleVertices) );
+        if (arrayData.array.valid())
         {
-            const osg::Vec3Array * source = sources[position_source].getVec3Array();
-            if (source)
-            {
-                nbVertices = source->size();
-                osg::Vec3Array* pArray = new osg::Vec3Array;
-                FOREACH_INDEX pArray->push_back(source->at(it->first.position_index));
-                geometry->setVertexData(osg::Geometry::ArrayData(pArray, osg::Geometry::BIND_PER_VERTEX));
-            }
-        }
-        else
-        {
-            const osg::Vec3dArray* source = sources[position_source].getVec3dArray();
-            if (source)
-            {
-                nbVertices = source->size();
-                osg::Vec3dArray* pArray = new osg::Vec3dArray;
-                FOREACH_INDEX pArray->push_back(source->at(it->first.position_index));
-                geometry->setVertexData(osg::Geometry::ArrayData(pArray, osg::Geometry::BIND_PER_VERTEX));
-            }
+            geometry->setVertexData(arrayData);
         }
     }
 
     if (color_source)
     {
-        if (!readDoubleColors)
+        osg::Geometry::ArrayData arrayData( createGeometryData<osg::Vec4Array, osg::Vec4dArray, VertexIndices::COLOR>(sources[color_source], vertexIndicesIndexMap, readDoubleColors) );
+        if (arrayData.array.valid())
         {
-            const osg::Vec4Array * colorSource = sources[color_source].getVec4Array();
-            ENSURE_VECTOR_SIZE(colorSource, color)
-            if (colorSource)
-            {
-                osg::Vec4Array* pArray = new osg::Vec4Array;
-                FOREACH_INDEX pArray->push_back(colorSource->at(it->first.color_index));
-                geometry->setColorData(osg::Geometry::ArrayData(pArray, osg::Geometry::BIND_PER_VERTEX));
-            }
-        }
-        else
-        {
-            const osg::Vec4dArray* colorSource = sources[color_source].getVec4dArray();
-            ENSURE_VECTOR_SIZE(colorSource, color)
-            if (colorSource)
-            {
-                osg::Vec4dArray* pArray = new osg::Vec4dArray;
-                FOREACH_INDEX pArray->push_back(colorSource->at(it->first.color_index));
-                geometry->setColorData(osg::Geometry::ArrayData(pArray, osg::Geometry::BIND_PER_VERTEX));
-            }
+            geometry->setColorData(arrayData);
         }
     }
 
     if (normal_source)
     {
-        if (!readDoubleNormals)
+        osg::Geometry::ArrayData arrayData( createGeometryData<osg::Vec3Array, osg::Vec3dArray, VertexIndices::NORMAL>(sources[normal_source], vertexIndicesIndexMap, readDoubleNormals) );
+        if (arrayData.array.valid())
         {
-            const osg::Vec3Array * normalSource = sources[normal_source].getVec3Array();
-            ENSURE_VECTOR_SIZE(normalSource, normal)
-            if (normalSource)
-            {
-                osg::Vec3Array* pArray = new osg::Vec3Array;
-                FOREACH_INDEX pArray->push_back(normalSource->at(it->first.normal_index));
-                geometry->setNormalData(osg::Geometry::ArrayData(pArray, osg::Geometry::BIND_PER_VERTEX));
-            }
-        }
-        else
-        {
-            const osg::Vec3dArray* normalSource = sources[normal_source].getVec3dArray();
-            ENSURE_VECTOR_SIZE(normalSource, normal)
-            if (normalSource)
-            {
-                osg::Vec3dArray* pArray = new osg::Vec3dArray;
-                FOREACH_INDEX pArray->push_back(normalSource->at(it->first.normal_index));
-                geometry->setNormalData(osg::Geometry::ArrayData(pArray, osg::Geometry::BIND_PER_VERTEX));
-            }
+            geometry->setNormalData(arrayData);
         }
     }
 
@@ -894,57 +876,20 @@ void daeReader::resolveMeshArrays(const domP_Array& domPArray,
     {
         if (daeElement* texcoord_source = texcoord_sources[texcoord_set])
         {
-            osg::Array* pArray = NULL;
-            if (!readDoubleTexcoords)
+            // 2D Texcoords
+            osg::Geometry::ArrayData arrayData( createGeometryData<osg::Vec2Array, osg::Vec2dArray, VertexIndices::TEXCOORD>(sources[texcoord_source], vertexIndicesIndexMap, readDoubleTexcoords, texcoord_set) );
+            if (arrayData.array.valid())
             {
-                const osg::Vec2Array * tcSource2f = sources[texcoord_source].getVec2Array();
-                const osg::Vec3Array * tcSource3f = sources[texcoord_source].getVec3Array();
-                if (tcSource2f)
-                {
-                    ENSURE_VECTOR_SIZE(tcSource2f, texture)
-                    if (tcSource2f)
-                    {
-                        osg::Vec2Array* pVec2Array = new osg::Vec2Array;
-                        pArray = pVec2Array;
-                        FOREACH_INDEX pVec2Array->push_back(tcSource2f->at(it->first.texcoord_indices[texcoord_set]));
-                    }
-                }
-                else if (tcSource3f)
-                {
-                    ENSURE_VECTOR_SIZE(tcSource3f, texture)
-                    if (tcSource3f) {
-                        osg::Vec3Array* pVec3Array = new osg::Vec3Array;
-                        pArray = pVec3Array;
-                        FOREACH_INDEX pVec3Array->push_back(tcSource3f->at(it->first.texcoord_indices[texcoord_set]));
-                    }
-                }
+                geometry->setTexCoordData(texcoord_set, arrayData);
             }
             else
             {
-                const osg::Vec2dArray* tcSource2d = sources[texcoord_source].getVec2dArray();
-                const osg::Vec3dArray* tcSource3d = sources[texcoord_source].getVec3dArray();
-                if (tcSource2d)
+                // 3D Textcoords
+                osg::Geometry::ArrayData arrayData( createGeometryData<osg::Vec3Array, osg::Vec3dArray, VertexIndices::TEXCOORD>(sources[texcoord_source], vertexIndicesIndexMap, readDoubleTexcoords, texcoord_set) );
+                if (arrayData.array.valid())
                 {
-                    ENSURE_VECTOR_SIZE(tcSource2d, texture)
-                    if (tcSource2d) {
-                        osg::Vec2dArray* pVec2Array = new osg::Vec2dArray;
-                        pArray = pVec2Array;
-                        FOREACH_INDEX pVec2Array->push_back(tcSource2d->at(it->first.texcoord_indices[texcoord_set]));
-                    }
+                    geometry->setTexCoordData(texcoord_set, arrayData);
                 }
-                else if (tcSource3d)
-                {
-                    ENSURE_VECTOR_SIZE(tcSource3d, texture)
-                    if (tcSource3d) {
-                        osg::Vec3dArray* pVec3Array = new osg::Vec3dArray;
-                        pArray = pVec3Array;
-                        FOREACH_INDEX pVec3Array->push_back(tcSource3d->at(it->first.texcoord_indices[texcoord_set]));
-                    }
-                }
-            }
-            if (pArray)
-            {
-                geometry->setTexCoordData(texcoord_set, osg::Geometry::ArrayData(pArray, osg::Geometry::BIND_PER_VERTEX));
             }
         }
     }

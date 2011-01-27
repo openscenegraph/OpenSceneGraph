@@ -106,7 +106,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
         std::string fileURI;
         if (m_linkOrignialTextures)
         {
-            // We link to orignial images.
+            // We link to orignial images (not the ones in memory).
             fileURI = osgDB::findDataFile(osgimg->getFileName());
             if (fileURI=="" && m_ForceTexture)
             {
@@ -115,10 +115,14 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
         }
         else
         {
-            // We do not link to orignial images. Then must ensure to write the image.
+            // We do not link to orignial images but to the ones in memory. Then must ensure to write the images.
             // Following code block is borrowed from FBX's WriterNodeVisitor::Material::Material().
             ImageSet::iterator it = _imageSet.find(osgimg);
-            if (it == _imageSet.end())
+            if (it != _imageSet.end())
+            {
+                fileURI = it->second;
+            }
+            else
             {
                 fileURI = osgDB::getRealPath(osgDB::convertFileNameToNativeStyle(osgimg->getFileName()));
                 std::string destPath;
@@ -155,7 +159,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
                 assert(!destPath.empty());        // Else the implementation is to be fixed
                 assert(!relativePath.empty());    // ditto
                 fileURI = relativePath;
-                it = _imageSet.insert(ImageSet::value_type(osgimg, relativePath)).first;
+                it = _imageSet.insert(ImageSet::value_type(osgimg, fileURI)).first;
                 _imageFilenameSet.insert(destPath);
             }
             // (end of code borrowed from FBX)

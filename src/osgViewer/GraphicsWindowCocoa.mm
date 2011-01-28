@@ -365,15 +365,26 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
         osgGA::GUIEventAdapter::KEY_Caps_Lock
     };
     
+    // std::cout << "flags: " << flags << " cached: " << _cachedModifierFlags << std::endl;
+        
     for(unsigned int i = 0; i < 5; ++i) {
         
         if ((flags & masks[i]) && !(_cachedModifierFlags & masks[i]))
         {
             _win->getEventQueue()->keyPress(keys[i]);
+            
+            // we don't get a key up for the caps lock so emulate it.
+            if (i == 4)
+                _win->getEventQueue()->keyRelease(keys[i]);
         }
         
         if (!(flags & masks[i]) && (_cachedModifierFlags & masks[i]))
         {
+            if (i == 4) {
+                // emulate a key down for caps-lock.
+                _win->getEventQueue()->keyPress(keys[i]);
+            }
+            
             _win->getEventQueue()->keyRelease(keys[i]);
         }
     }
@@ -672,11 +683,18 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 {
     if (!_win) return;
     
-    NSString* chars = [theEvent charactersIgnoringModifiers]; 
+    NSString* unmodified_chars = [theEvent charactersIgnoringModifiers]; 
+    if ([theEvent modifierFlags] && NSShiftKeyMask) {
+        unmodified_chars = [unmodified_chars lowercaseString];
+    }
+    
+    NSString* chars = [theEvent characters]; 
+    
     if ((chars) && ([chars length] > 0)) {
+        unsigned int unmodified_keyCode = remapCocoaKey([unmodified_chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask) );
         unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask) );
         // std::cout << "key dn: " <<[chars characterAtIndex:0] << "=" << keyCode << std::endl;   
-        _win->getEventQueue()->keyPress( remapCocoaKey(keyCode), [theEvent timestamp]);
+        _win->getEventQueue()->keyPress( keyCode, [theEvent timestamp], unmodified_keyCode);
     }
 }
 
@@ -685,11 +703,18 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
 {   
     if (!_win) return;
     
-    NSString* chars = [theEvent charactersIgnoringModifiers]; 
+    NSString* unmodified_chars = [theEvent charactersIgnoringModifiers]; 
+    if ([theEvent modifierFlags] && NSShiftKeyMask) {
+        unmodified_chars = [unmodified_chars lowercaseString];
+    }
+    
+    NSString* chars = [theEvent characters]; 
+    
     if ((chars) && ([chars length] > 0)) {
-        unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask));
-        // std::cout << "key up: " <<[chars characterAtIndex:0] << "=" << keyCode << std::endl;   
-        _win->getEventQueue()->keyRelease( remapCocoaKey(keyCode), [theEvent timestamp]);
+        unsigned int unmodified_keyCode = remapCocoaKey([unmodified_chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask) );
+        unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask) );
+        // std::cout << "key dn: " <<[chars characterAtIndex:0] << "=" << keyCode << std::endl;   
+        _win->getEventQueue()->keyRelease( keyCode, [theEvent timestamp], unmodified_keyCode);
     }
 }
 

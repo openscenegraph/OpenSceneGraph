@@ -107,12 +107,12 @@ daeWriter::daeWriter( DAE *dae_, const std::string & fileURI, const std::string 
                                         m_ZUpAxis(zUpAxis),
                                         m_linkOrignialTextures(linkOrignialTextures),
                                         m_ForceTexture(forceTexture),
-                                        _namesUseCodepage(namesUseCodepage),
                                         m_CurrentRenderingHint(osg::StateSet::DEFAULT_BIN),
                                         _lastGeneratedImageFileName(0),
                                         _directory(directory),
                                         _srcDirectory(srcDirectory),
-                                        _options(options)
+                                        _options(options),
+                                        _namesUseCodepage(namesUseCodepage)
 {
     success = true;
 

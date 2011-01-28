@@ -282,16 +282,22 @@ double IncrementalCompileOperation::CompileList::estimatedTimeForCompile(Compile
 
 bool IncrementalCompileOperation::CompileList::compile(CompileInfo& compileInfo)
 {
+//#define USE_TIME_ESTIMATES
+    
     for(CompileOps::iterator itr = _compileOps.begin();
         itr != _compileOps.end() && compileInfo.availableTime()>0.0 && compileInfo.maxNumObjectsToCompile>0;
     )
     {
+        #ifdef USE_TIME_ESTIMATES
         double estimatedCompileCost = (*itr)->estimatedTimeForCompile(compileInfo);
-        
+        #endif
+
         --compileInfo.maxNumObjectsToCompile;
 
+        #ifdef USE_TIME_ESTIMATES
         osg::ElapsedTime timer;
-        
+        #endif
+
         CompileOps::iterator saved_itr(itr);
         ++itr;
         if ((*saved_itr)->compile(compileInfo))
@@ -299,8 +305,10 @@ bool IncrementalCompileOperation::CompileList::compile(CompileInfo& compileInfo)
             _compileOps.erase(saved_itr);
         }
 
+        #ifdef USE_TIME_ESTIMATES
         double actualCompileCost = timer.elapsedTime();
         OSG_NOTICE<<"IncrementalCompileOperation::CompileList::compile() estimatedTimForCompile= "<<estimatedCompileCost<<", actual="<<actualCompileCost<<", ratio="<<(estimatedCompileCost/actualCompileCost)<<std::endl;
+        #endif
     }
     return empty();
 }

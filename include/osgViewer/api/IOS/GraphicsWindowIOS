@@ -86,7 +86,7 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
     
         virtual bool isSameKindAs(const Object* object) const { return dynamic_cast<const GraphicsWindowIOS*>(object)!=0; }
         virtual const char* libraryName() const { return "osgViewer"; }
-        virtual const char* className() const { return "GraphicsWindowCarbon"; }
+        virtual const char* className() const { return "GraphicsWindowIOS"; }
 
         virtual bool valid() const { return _valid; }
 

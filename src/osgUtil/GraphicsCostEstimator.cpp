@@ -46,7 +46,6 @@ void GeometryCostEstimator::calibrate(osg::RenderInfo& renderInfo)
 
 CostPair GeometryCostEstimator::estimateCompileCost(const osg::Geometry* geometry) const
 {
-    OSG_INFO<<"GeometryCostEstimator::estimateCompileCost(..)"<<std::endl;
 
     bool usesVBO = geometry->getUseVertexBufferObjects() && geometry->areFastPathsUsed();
     bool usesDL = !usesVBO && geometry->getUseDisplayList() && geometry->getSupportsDisplayList();
@@ -79,7 +78,7 @@ CostPair GeometryCostEstimator::estimateCompileCost(const osg::Geometry* geometr
             cost.first = _displayListCompileConstant + _displayListCompileFactor * cost.first ;
         }
 
-        OSG_INFO<<"   cost.first="<<cost.first<<std::endl;
+        OSG_NOTICE<<"GeometryCostEstimator::estimateCompileCost(..) size="<<cost.first<<std::endl;
 
         return cost;
     }

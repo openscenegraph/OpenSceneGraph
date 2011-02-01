@@ -53,7 +53,8 @@ static osg::ApplicationUsageProxy UCO_e2(osg::ApplicationUsage::ENVIRONMENTAL_VA
 //
 StateToCompile::StateToCompile(GLObjectsVisitor::Mode mode):
     osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-    _mode(mode)
+    _mode(mode),
+    _assignPBOToImages(true)
 {
 }
 
@@ -160,6 +161,45 @@ void StateToCompile::apply(osg::StateSet& stateset)
 
 void StateToCompile::apply(osg::Texture& texture)
 {
+    if (_assignPBOToImages)
+    {
+        unsigned int numRequringPBO = 0;
+        osg::ref_ptr<osg::PixelBufferObject> pbo = 0;
+        for(unsigned int i=0; i<texture.getNumImages(); ++i)
+        {
+            osg::Image* image = texture.getImage(i);
+            if (image)
+            {
+                if (image->getPixelBufferObject())
+                {
+                    pbo = image->getPixelBufferObject();
+                }
+                else
+                {
+                    ++numRequringPBO;
+                }
+            }
+        }
+        if (numRequringPBO>0)
+        {
+            // assign pbo
+            if (!pbo) pbo = new osg::PixelBufferObject;
+
+            for(unsigned int i=0; i<texture.getNumImages(); ++i)
+            {
+                osg::Image* image = texture.getImage(i);
+                if (image)
+                {
+                    if (!image->getPixelBufferObject())
+                    {
+                        //OSG_NOTICE<<"Assigning PBO"<<std::endl;
+                        image->setPixelBufferObject(pbo.get());
+                    }
+                }
+            }
+        }
+    }
+
     _textures.insert(&texture);
 }
 
@@ -282,7 +322,7 @@ double IncrementalCompileOperation::CompileList::estimatedTimeForCompile(Compile
 
 bool IncrementalCompileOperation::CompileList::compile(CompileInfo& compileInfo)
 {
-//#define USE_TIME_ESTIMATES
+#define USE_TIME_ESTIMATES
     
     for(CompileOps::iterator itr = _compileOps.begin();
         itr != _compileOps.end() && compileInfo.availableTime()>0.0 && compileInfo.maxNumObjectsToCompile>0;
@@ -307,7 +347,9 @@ bool IncrementalCompileOperation::CompileList::compile(CompileInfo& compileInfo)
 
         #ifdef USE_TIME_ESTIMATES
         double actualCompileCost = timer.elapsedTime();
-        OSG_NOTICE<<"IncrementalCompileOperation::CompileList::compile() estimatedTimForCompile= "<<estimatedCompileCost<<", actual="<<actualCompileCost<<", ratio="<<(estimatedCompileCost/actualCompileCost)<<std::endl;
+        OSG_NOTICE<<"IncrementalCompileOperation::CompileList::compile() estimatedTimForCompile= "<<estimatedCompileCost<<", actual="<<actualCompileCost;
+        if (estimatedCompileCost>0.0) OSG_NOTICE<<", ratio="<<(actualCompileCost/estimatedCompileCost);
+        OSG_NOTICE<<std::endl;
         #endif
     }
     return empty();

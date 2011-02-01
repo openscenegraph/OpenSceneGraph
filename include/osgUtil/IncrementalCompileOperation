@@ -36,8 +36,9 @@ class OSGUTIL_EXPORT StateToCompile : public osg::NodeVisitor
 
         GLObjectsVisitor::Mode _mode;
         DrawableSet _drawables;
-        TextureSet _textures;
-        ProgramSet _programs;
+        TextureSet  _textures;
+        ProgramSet  _programs;
+        bool        _assignPBOToImages;
 
         bool empty() const { return _textures.empty() &&  _programs.empty() && _drawables.empty(); }
 

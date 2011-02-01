@@ -173,12 +173,28 @@ class RemapArray : public osg::ArrayVisitor
         virtual void apply(osg::UByteArray& array) { remap(array); }
         virtual void apply(osg::UShortArray& array) { remap(array); }
         virtual void apply(osg::UIntArray& array) { remap(array); }
-        virtual void apply(osg::Vec4ubArray& array) { remap(array); }
         virtual void apply(osg::FloatArray& array) { remap(array); }
+        virtual void apply(osg::DoubleArray& array) { remap(array); }
+
         virtual void apply(osg::Vec2Array& array) { remap(array); }
         virtual void apply(osg::Vec3Array& array) { remap(array); }
         virtual void apply(osg::Vec4Array& array) { remap(array); }
+        
+        virtual void apply(osg::Vec4ubArray& array) { remap(array); }
 
+        virtual void apply(osg::Vec2bArray& array) { remap(array); }        
+        virtual void apply(osg::Vec3bArray& array) { remap(array); }        
+        virtual void apply(osg::Vec4bArray& array) { remap(array); }        
+
+        virtual void apply(osg::Vec2sArray& array) { remap(array); }
+        virtual void apply(osg::Vec3sArray& array) { remap(array); }
+        virtual void apply(osg::Vec4sArray& array) { remap(array); }
+
+        virtual void apply(osg::Vec2dArray& array) { remap(array); }
+        virtual void apply(osg::Vec3dArray& array) { remap(array); }
+        virtual void apply(osg::Vec4dArray& array) { remap(array); }
+        
+        virtual void apply(osg::MatrixfArray& array) { remap(array); }
 protected:
 
         RemapArray& operator = (const RemapArray&) { return *this; }
@@ -1033,11 +1049,28 @@ public:
     virtual void apply(osg::UByteArray& array) { remap(array); }
     virtual void apply(osg::UShortArray& array) { remap(array); }
     virtual void apply(osg::UIntArray& array) { remap(array); }
-    virtual void apply(osg::Vec4ubArray& array) { remap(array); }
     virtual void apply(osg::FloatArray& array) { remap(array); }
+    virtual void apply(osg::DoubleArray& array) { remap(array); }
+
     virtual void apply(osg::Vec2Array& array) { remap(array); }
     virtual void apply(osg::Vec3Array& array) { remap(array); }
     virtual void apply(osg::Vec4Array& array) { remap(array); }
+    
+    virtual void apply(osg::Vec4ubArray& array) { remap(array); }
+
+    virtual void apply(osg::Vec2bArray& array) { remap(array); }        
+    virtual void apply(osg::Vec3bArray& array) { remap(array); }        
+    virtual void apply(osg::Vec4bArray& array) { remap(array); }        
+
+    virtual void apply(osg::Vec2sArray& array) { remap(array); }
+    virtual void apply(osg::Vec3sArray& array) { remap(array); }
+    virtual void apply(osg::Vec4sArray& array) { remap(array); }
+
+    virtual void apply(osg::Vec2dArray& array) { remap(array); }
+    virtual void apply(osg::Vec3dArray& array) { remap(array); }
+    virtual void apply(osg::Vec4dArray& array) { remap(array); }
+    
+    virtual void apply(osg::MatrixfArray& array) { remap(array); }
 };
 
 const unsigned Remapper::invalidIndex = std::numeric_limits<unsigned>::max();

@@ -554,7 +554,7 @@ int main(int argc, char** argv)
     MainWindow widget;
     
     // set the scene to render
-    widget.setSceneData(group);
+    widget.setSceneData(group.get());
     widget.setCameraManipulator(new osgGA::TrackballManipulator);
 
     widget.setGeometry(100, 100, 800, 600);

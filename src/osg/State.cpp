@@ -941,6 +941,12 @@ void State::initializeExtensionProcs()
 
 
     _extensionProcsInitialized = true;
+
+    if (_graphicsCostEstimator.valid())
+    {
+        RenderInfo renderInfo(this,0);
+        _graphicsCostEstimator->calibrate(renderInfo);
+    }
 }
 
 bool State::setClientActiveTextureUnit( unsigned int unit )

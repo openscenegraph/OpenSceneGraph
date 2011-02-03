@@ -159,6 +159,8 @@ State::State():
     _glBeginEndAdapter.setState(this);
     _arrayDispatchers.setState(this);
 
+    _graphicsCostEstimator = new GraphicsCostEstimator;
+
     _startTick = 0;
     _gpuTick = 0;
     _gpuTimestamp = 0;

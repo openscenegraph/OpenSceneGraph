@@ -15,7 +15,6 @@
 #define OSGUTIL_INCREMENTALCOMPILEOPERATOR
 
 #include <osgUtil/GLObjectsVisitor>
-#include <osg/GraphicsCostEstimator>
 #include <osg/Geometry>
 
 namespace osgUtil {
@@ -120,10 +119,6 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
         osg::Geometry* getForceTextureDownloadGeometry() { return _forceTextureDownloadGeometry.get(); }
         const osg::Geometry* getForceTextureDownloadGeometry() const { return _forceTextureDownloadGeometry.get(); }
 
-        osg::GraphicsCostEstimator* getGraphicsCostEstimator() { return _graphicsCostEstimator.get(); }
-        const osg::GraphicsCostEstimator* getGraphicsCostEstimator() const { return _graphicsCostEstimator.get(); }
-
-
         typedef std::vector<osg::GraphicsContext*> Contexts;
         void assignContexts(Contexts& contexts);
         void removeContexts(Contexts& contexts);
@@ -148,7 +143,6 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
             double availableTime() { return allocatedTime - timer.elapsedTime(); }
             
             IncrementalCompileOperation*        incrementalCompileOperation;
-            osg::GraphicsCostEstimator*         graphicsCostEstimator;
             unsigned int                        maxNumObjectsToCompile;
             osg::ElapsedTime                    timer;
             double                              allocatedTime;
@@ -280,7 +274,6 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
         double                              _conservativeTimeRatio;
 
         osg::ref_ptr<osg::Geometry>         _forceTextureDownloadGeometry;
-        osg::ref_ptr<osg::GraphicsCostEstimator> _graphicsCostEstimator;
 
         OpenThreads::Mutex                  _toCompileMutex;
         CompileSets                         _toCompile;

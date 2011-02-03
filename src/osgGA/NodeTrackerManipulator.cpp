@@ -39,39 +39,9 @@ NodeTrackerManipulator::NodeTrackerManipulator( const NodeTrackerManipulator& m,
 
 void NodeTrackerManipulator::setTrackNodePath(const osg::NodePath& nodePath)
 {
-    _trackNodePath.clear();
-    _trackNodePath.reserve(nodePath.size());
-    std::copy(nodePath.begin(), nodePath.end(), std::back_inserter(_trackNodePath));
+    _trackNodePath.setNodePath(nodePath);
 }
 
-
-osg::NodePath NodeTrackerManipulator::getNodePath() const
-{
-    osg::NodePath nodePath;
-    for(ObserverNodePath::const_iterator itr = _trackNodePath.begin();
-        itr != _trackNodePath.end();
-        ++itr)
-    {
-        nodePath.push_back(const_cast<osg::Node*>(itr->get()));
-    }
-    return nodePath;
-}
-
-bool NodeTrackerManipulator::validateNodePath() const
-{
-    for(ObserverNodePath::const_iterator itr = _trackNodePath.begin();
-        itr != _trackNodePath.begin();
-        ++itr)
-    {
-        if (*itr==0)
-        {
-            OSG_NOTICE<<"Warning: tracked node path has been invalidated by changes in the scene graph."<<std::endl;
-            const_cast<ObserverNodePath&>(_trackNodePath).clear();
-            return false;
-        }
-    }
-    return true;
-}
 
 void NodeTrackerManipulator::setTrackerMode(TrackerMode mode)
 {
@@ -125,28 +95,33 @@ void NodeTrackerManipulator::setTrackNode(osg::Node* node)
             OSG_NOTICE<<"osgGA::NodeTrackerManipualtor::setTrackNode(..) taking first parent path, ignoring others."<<std::endl;
         }
 
+        for(unsigned int i=0; i<nodePaths.size(); ++i)
+        {
+            OSG_NOTICE<<"NodePath "<<i<<std::endl;
+            for(NodePath::iterator itr = nodePaths[i].begin();
+                itr != nodePaths[i].end();
+                ++itr)
+            {
+                OSG_NOTICE<<"     "<<(*itr)->className()<<std::endl;
+            }
+        }
+        
+
         OSG_INFO<<"NodeTrackerManipulator::setTrackNode(Node*"<<node<<" "<<node->getName()<<"): Path set"<<std::endl;
-        _trackNodePath.clear();
-        setTrackNodePath( nodePaths.front() );
+        setTrackNodePath( nodePaths[0] );
     }
     else
     {
         OSG_NOTICE<<"NodeTrackerManipulator::setTrackNode(Node*): Unable to set tracked node due to empty parental path."<<std::endl;
     }
 
-    OSG_INFO<<"setTrackNode("<<node->getName()<<")"<<std::endl;
-    for(unsigned int i=0; i<_trackNodePath.size(); ++i)
-    {
-        OSG_INFO<<"  "<<_trackNodePath[i]->className()<<" '"<<_trackNodePath[i]->getName()<<"'"<<std::endl;
-    }
 
 }
 
 
 void NodeTrackerManipulator::computeHomePosition()
 {
-    osg::Node* node = _trackNodePath.empty() ? getNode() : _trackNodePath.back().get();
-
+    osg::Node* node = getTrackNode();
     if(node)
     {
         const osg::BoundingSphere& boundingSphere=node->getBound();
@@ -168,17 +143,19 @@ void NodeTrackerManipulator::setByMatrix(const osg::Matrixd& matrix)
 
 void NodeTrackerManipulator::computeNodeWorldToLocal(osg::Matrixd& worldToLocal) const
 {
-    if (validateNodePath())
+    osg::NodePath nodePath;
+    if (_trackNodePath.getNodePath(nodePath))
     {
-        worldToLocal = osg::computeWorldToLocal(getNodePath());
+        worldToLocal = osg::computeWorldToLocal(nodePath);
     }
 }
 
 void NodeTrackerManipulator::computeNodeLocalToWorld(osg::Matrixd& localToWorld) const
 {
-    if (validateNodePath())
+    osg::NodePath nodePath;
+    if (_trackNodePath.getNodePath(nodePath))
     {
-        localToWorld = osg::computeLocalToWorld(getNodePath());
+        localToWorld = osg::computeLocalToWorld(nodePath);
     }
 
 }
@@ -189,8 +166,9 @@ void NodeTrackerManipulator::computeNodeCenterAndRotation(osg::Vec3d& nodeCenter
     computeNodeLocalToWorld(localToWorld);
     computeNodeWorldToLocal(worldToLocal);
 
-    if (validateNodePath())
-        nodeCenter = osg::Vec3d(_trackNodePath.back()->getBound().center())*localToWorld;
+    osg::NodePath nodePath;
+    if (_trackNodePath.getNodePath(nodePath))
+        nodeCenter = osg::Vec3d(nodePath.back()->getBound().center())*localToWorld;
     else
         nodeCenter = osg::Vec3d(0.0f,0.0f,0.0f)*localToWorld;
 

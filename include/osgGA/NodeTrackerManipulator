@@ -15,6 +15,7 @@
 #define OSGGA_NODE_TRACKER_MANIPULATOR 1
 
 #include <osgGA/OrbitManipulator>
+#include <osg/ObserverNodePath>
 
 
 namespace osgGA {
@@ -33,15 +34,13 @@ class OSGGA_EXPORT NodeTrackerManipulator : public OrbitManipulator
 
         META_Object( osgGA, NodeTrackerManipulator );
 
-        typedef std::vector< osg::observer_ptr<osg::Node> >   ObserverNodePath;
-
         void setTrackNodePath(const osg::NodePath& nodePath);
-        void setTrackNodePath(const ObserverNodePath& nodePath) { _trackNodePath = nodePath; }
-        ObserverNodePath& getTrackNodePath() { return _trackNodePath; }
+        void setTrackNodePath(const osg::ObserverNodePath& nodePath) { _trackNodePath = nodePath; }
+        osg::ObserverNodePath& getTrackNodePath() { return _trackNodePath; }
 
         void setTrackNode(osg::Node* node);
-        osg::Node* getTrackNode() { return _trackNodePath.empty() ? 0 : _trackNodePath.back().get(); }
-        const osg::Node* getTrackNode() const { return _trackNodePath.empty() ? 0 : _trackNodePath.back().get(); }
+        osg::Node* getTrackNode() { osg::NodePath nodePath; return _trackNodePath.getNodePath(nodePath) && !nodePath.empty() ? nodePath.back() : 0; }
+        const osg::Node* getTrackNode() const { osg::NodePath nodePath; return _trackNodePath.getNodePath(nodePath) && !nodePath.empty()  ? nodePath.back() : 0; }
 
         enum TrackerMode
         {
@@ -90,10 +89,6 @@ class OSGGA_EXPORT NodeTrackerManipulator : public OrbitManipulator
         virtual bool performMovementMiddleMouseButton(const double eventTimeDelta, const double dx, const double dy);
         virtual bool performMovementRightMouseButton(const double eventTimeDelta, const double dx, const double dy);
 
-        osg::NodePath getNodePath() const;
-
-        bool validateNodePath() const;
-
         void computeNodeWorldToLocal(osg::Matrixd& worldToLocal) const;
         void computeNodeLocalToWorld(osg::Matrixd& localToWorld) const;
 
@@ -102,8 +97,7 @@ class OSGGA_EXPORT NodeTrackerManipulator : public OrbitManipulator
         void computePosition(const osg::Vec3d& eye,const osg::Vec3d& lv,const osg::Vec3d& up);
 
 
-        ObserverNodePath        _trackNodePath;
-
+        osg::ObserverNodePath   _trackNodePath;
         TrackerMode             _trackerMode;
 
 };

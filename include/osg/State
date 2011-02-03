@@ -29,6 +29,7 @@
 #include <osg/Viewport>
 #include <osg/GLBeginEndAdapter>
 #include <osg/ArrayDispatchers>
+#include <osg/GraphicsCostEstimator>
 
 #include <iosfwd>
 #include <vector>
@@ -1381,11 +1382,23 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         virtual void objectDeleted(void* object);
 
-        /** get the GL adapter object used to map OpenGL 1.0 glBegin/glEnd usage to vertex arrays.*/
+        /** Get the GL adapter object used to map OpenGL 1.0 glBegin/glEnd usage to vertex arrays.*/
         inline GLBeginEndAdapter& getGLBeginEndAdapter() { return _glBeginEndAdapter; }
 
-        /** get the helper class for dispatching osg::Arrays as OpenGL attribute data.*/
+        /** Get the helper class for dispatching osg::Arrays as OpenGL attribute data.*/
         inline ArrayDispatchers& getArrayDispatchers() { return _arrayDispatchers; }
+
+
+        /** Set the helper class that provides applications with estimate on how much different graphics operations will cost.*/
+        inline void setGraphicsCostEstimator(GraphicsCostEstimator* gce) { _graphicsCostEstimator = gce; }
+
+        /** Get the helper class that provides applications with estimate on how much different graphics operations will cost.*/
+        inline GraphicsCostEstimator* getGraphicsCostEstimator() { return _graphicsCostEstimator.get(); }
+
+        /** Get the cont helper class that provides applications with estimate on how much different graphics operations will cost.*/
+        inline const GraphicsCostEstimator* getGraphicsCostEstimator() const { return _graphicsCostEstimator.get(); }
+
+
 
         /** Support for synchronizing the system time and the timestamp
          * counter available with ARB_timer_query. Note that State
@@ -1822,6 +1835,9 @@ class OSG_EXPORT State : public Referenced, public Observer
 
         GLBeginEndAdapter           _glBeginEndAdapter;
         ArrayDispatchers            _arrayDispatchers;
+
+        osg::ref_ptr<GraphicsCostEstimator> _graphicsCostEstimator;
+        
         Timer_t                      _startTick;
         Timer_t                      _gpuTick;
         GLuint64EXT                 _gpuTimestamp;

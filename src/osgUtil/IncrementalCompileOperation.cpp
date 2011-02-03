@@ -54,7 +54,7 @@ static osg::ApplicationUsageProxy UCO_e2(osg::ApplicationUsage::ENVIRONMENTAL_VA
 StateToCompile::StateToCompile(GLObjectsVisitor::Mode mode):
     osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
     _mode(mode),
-    _assignPBOToImages(true)
+    _assignPBOToImages(false)
 {
 }
 
@@ -214,7 +214,7 @@ IncrementalCompileOperation::CompileDrawableOp::CompileDrawableOp(osg::Drawable*
 
 double IncrementalCompileOperation::CompileDrawableOp::estimatedTimeForCompile(CompileInfo& compileInfo) const
 {
-    osg::GraphicsCostEstimator* gce = compileInfo.graphicsCostEstimator;
+    osg::GraphicsCostEstimator* gce = compileInfo.getState()->getGraphicsCostEstimator();
     osg::Geometry* geometry = _drawable->asGeometry();
     if (gce && geometry)
     {
@@ -237,7 +237,7 @@ IncrementalCompileOperation::CompileTextureOp::CompileTextureOp(osg::Texture* te
 
 double IncrementalCompileOperation::CompileTextureOp::estimatedTimeForCompile(CompileInfo& compileInfo) const
 {
-    osg::GraphicsCostEstimator* gce = compileInfo.graphicsCostEstimator;
+    osg::GraphicsCostEstimator* gce = compileInfo.getState()->getGraphicsCostEstimator();
     if (gce) return gce->estimateCompileCost(_texture.get()).first;
     else return 0.0;
 }
@@ -272,7 +272,7 @@ IncrementalCompileOperation::CompileProgramOp::CompileProgramOp(osg::Program* pr
 
 double IncrementalCompileOperation::CompileProgramOp::estimatedTimeForCompile(CompileInfo& compileInfo) const
 {
-    osg::GraphicsCostEstimator* gce = compileInfo.graphicsCostEstimator;
+    osg::GraphicsCostEstimator* gce = compileInfo.getState()->getGraphicsCostEstimator();
     if (gce) return gce->estimateCompileCost(_program.get()).first;
     else return 0.0;
 }
@@ -288,7 +288,6 @@ IncrementalCompileOperation::CompileInfo::CompileInfo(osg::GraphicsContext* cont
 {
     setState(context->getState());
     incrementalCompileOperation = ico;
-    graphicsCostEstimator = ico->getGraphicsCostEstimator();
 }
 
 
@@ -443,8 +442,6 @@ IncrementalCompileOperation::IncrementalCompileOperation():
     {
         _maximumNumOfObjectsToCompilePerFrame = atoi(ptr);
     }
-
-    _graphicsCostEstimator = new osg::GraphicsCostEstimator;
 
     // assignForceTextureDownloadGeometry();
 }

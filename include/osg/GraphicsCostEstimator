@@ -11,17 +11,21 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#ifndef OSGUTIL_GRAPHICSCOSTESTIMATOR
-#define OSGUTIL_GRAPHICSCOSTESTIMATOR
+#ifndef OSG_GRAPHICSCOSTESTIMATOR
+#define OSG_GRAPHICSCOSTESTIMATOR
 
-#include <osgUtil/Export>
+#include <osg/Referenced>
+#include <osg/ref_ptr>
+#include <utility>
 
-#include <osg/Geometry>
-#include <osg/Texture>
-#include <osg/Program>
-
-namespace osgUtil
+namespace osg
 {
+
+class Geometry;
+class Texture;
+class Program;
+class Node;
+class RenderInfo;
 
 struct ClampedLinearCostFunction1D
 {
@@ -50,7 +54,7 @@ struct ClampedLinearCostFunction1D
 typedef std::pair<double, double> CostPair;
 
 
-class OSGUTIL_EXPORT GeometryCostEstimator : public osg::Referenced
+class OSG_EXPORT GeometryCostEstimator : public osg::Referenced
 {
 public:
     GeometryCostEstimator();
@@ -70,7 +74,7 @@ protected:
     double _displayListCompileFactor;
 };
 
-class OSGUTIL_EXPORT TextureCostEstimator : public osg::Referenced
+class OSG_EXPORT TextureCostEstimator : public osg::Referenced
 {
 public:
     TextureCostEstimator();
@@ -85,7 +89,7 @@ protected:
 };
 
 
-class OSGUTIL_EXPORT ProgramCostEstimator : public osg::Referenced
+class OSG_EXPORT ProgramCostEstimator : public osg::Referenced
 {
 public:
     ProgramCostEstimator();
@@ -100,7 +104,7 @@ protected:
     ClampedLinearCostFunction1D _drawCost;
 };
 
-class OSGUTIL_EXPORT GraphicsCostEstimator : public osg::Referenced
+class OSG_EXPORT GraphicsCostEstimator : public osg::Referenced
 {
 public:
     GraphicsCostEstimator();

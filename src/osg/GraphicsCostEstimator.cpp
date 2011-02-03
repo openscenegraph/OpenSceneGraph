@@ -11,10 +11,15 @@
  * OpenSceneGraph Public License for more details.
 */
 
-#include <osgUtil/GraphicsCostEstimator>
+#include <osg/GraphicsCostEstimator>
+
+#include <osg/RenderInfo>
+#include <osg/Geometry>
+#include <osg/Texture>
+#include <osg/Program>
 #include <osg/Geode>
 
-namespace osgUtil
+namespace osg
 {
 
 /////////////////////////////////////////////////////////////////////////////////////////////

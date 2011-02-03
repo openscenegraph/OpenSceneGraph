@@ -79,6 +79,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/GLBeginEndAdapter
     ${HEADER_PATH}/GLObjects
     ${HEADER_PATH}/GLU
+    ${HEADER_PATH}/GraphicsCostEstimator
     ${HEADER_PATH}/GraphicsContext
     ${HEADER_PATH}/GraphicsThread
     ${HEADER_PATH}/Group
@@ -251,6 +252,7 @@ ADD_LIBRARY(${LIB_NAME}
     GLObjects.cpp
     GLStaticLibrary.h
     GLStaticLibrary.cpp
+    GraphicsCostEstimator.cpp
     GraphicsContext.cpp
     GraphicsThread.cpp
     Group.cpp

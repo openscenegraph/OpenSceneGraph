@@ -22,13 +22,13 @@
 
 #include <osgDB/ReadFile>
 
-#include <osgUtil/GraphicsCostEstimator>
+#include <osg/GraphicsCostEstimator>
 
 class CalibrateCostEsimator : public osg::GraphicsOperation
 {
 public:
 
-    CalibrateCostEsimator(osgUtil::GraphicsCostEstimator* gce):
+    CalibrateCostEsimator(osg::GraphicsCostEstimator* gce):
         osg::GraphicsOperation("CalbirateCostEstimator",false),
         _gce(gce) {}
 
@@ -38,7 +38,7 @@ public:
         _gce->calibrate(renderInfo);
     }
 
-    osg::ref_ptr<osgUtil::GraphicsCostEstimator> _gce;
+    osg::ref_ptr<osg::GraphicsCostEstimator> _gce;
 
 };
 
@@ -54,14 +54,14 @@ int main(int argc, char** argv)
     osg::ref_ptr<osg::Node> node = osgDB::readNodeFiles(arguments);
     if (!node) return 0;
 
-    osg::ref_ptr<osgUtil::GraphicsCostEstimator> gce = new osgUtil::GraphicsCostEstimator;
+    osg::ref_ptr<osg::GraphicsCostEstimator> gce = new osg::GraphicsCostEstimator;
 
     viewer.setSceneData(node.get());
 
     viewer.realize();
 
-    osgUtil::CostPair compileCost = gce->estimateCompileCost(node.get());
-    osgUtil::CostPair drawCost = gce->estimateDrawCost(node.get());
+    osg::CostPair compileCost = gce->estimateCompileCost(node.get());
+    osg::CostPair drawCost = gce->estimateDrawCost(node.get());
 
     OSG_NOTICE<<"estimateCompileCost("<<node->getName()<<"), CPU="<<compileCost.first<<" GPU="<<compileCost.second<<std::endl;
     OSG_NOTICE<<"estimateDrawCost("<<node->getName()<<"), CPU="<<drawCost.first<<" GPU="<<drawCost.second<<std::endl;

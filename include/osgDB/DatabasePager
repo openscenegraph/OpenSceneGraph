@@ -216,6 +216,13 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
         DrawablePolicy getDrawablePolicy() const { return _drawablePolicy; }
 
 
+        /** Set whether newly loaded textures should have a PixelBufferObject assigned to them to aid download to the GPU.*/
+        void setApplyPBOToImages(bool assignPBOToImages) { _assignPBOToImages = assignPBOToImages; }
+
+        /** Get whether newly loaded textures should have a PixelBufferObject assigned to them..*/
+        bool getApplyPBOToImages() const { return _assignPBOToImages; }
+
+
         /** Set whether newly loaded textures should have their UnrefImageDataAfterApply set to a specified value.*/
         void setUnrefImageDataAfterApplyPolicy(bool changeAutoUnRef, bool valueAutoUnRef) { _changeAutoUnRef = changeAutoUnRef; _valueAutoUnRef = valueAutoUnRef; }
 
@@ -439,6 +446,7 @@ class OSGDB_EXPORT DatabasePager : public osg::NodeVisitor::DatabaseRequestHandl
 
         DrawablePolicy                  _drawablePolicy;
 
+        bool                            _assignPBOToImages;
         bool                            _changeAutoUnRef;
         bool                            _valueAutoUnRef;
         bool                            _changeAnisotropy;

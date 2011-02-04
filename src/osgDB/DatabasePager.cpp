@@ -47,6 +47,7 @@ static osg::ApplicationUsageProxy DatabasePager_e0(osg::ApplicationUsage::ENVIRO
 static osg::ApplicationUsageProxy DatabasePager_e3(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DATABASE_PAGER_DRAWABLE <mode>","Set the drawable policy for setting of loaded drawable to specified type.  mode can be one of DoNotModify, DisplayList, VBO or VertexArrays>.");
 static osg::ApplicationUsageProxy DatabasePager_e4(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_DATABASE_PAGER_PRIORITY <mode>", "Set the thread priority to DEFAULT, MIN, LOW, NOMINAL, HIGH or MAX.");
 static osg::ApplicationUsageProxy DatabasePager_e11(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAX_PAGEDLOD <num>","Set the target maximum number of PagedLOD to maintain.");
+static osg::ApplicationUsageProxy DatabasePager_e12(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_ASSIGN_PBO_TO_IMAGES <ON/OFF>","Set whether PixelBufferObjects should be assigned to Images to aid download to the GPU.");
 
 // Convert function objects that take pointer args into functions that a
 // reference to an osg::ref_ptr. This is quite useful for doing STL
@@ -297,6 +298,8 @@ public:
             _changeAutoUnRef(false), _valueAutoUnRef(false),
             _changeAnisotropy(false), _valueAnisotropy(1.0)
     {
+        _assignPBOToImages = _pager->_assignPBOToImages;
+
         _changeAutoUnRef = _pager->_changeAutoUnRef;
         _valueAutoUnRef = _pager->_valueAutoUnRef;
         _changeAnisotropy = _pager->_changeAnisotropy;
@@ -988,35 +991,43 @@ DatabasePager::DatabasePager()
         } 
     }
 
+    _assignPBOToImages = false;
+    if( (str = getenv("OSG_ASSIGN_PBO_TO_IMAGES")) != 0)
+    {
+        _assignPBOToImages = strcmp(str,"yes")==0 || strcmp(str,"YES")==0 ||
+                             strcmp(str,"on")==0 || strcmp(str,"ON")==0;
+
+        OSG_NOTICE<<"OSG_ASSIGN_PBO_TO_IMAGES set to "<<_assignPBOToImages<<std::endl;
+    }
+
     _changeAutoUnRef = true;
     _valueAutoUnRef = false;
  
     _changeAnisotropy = false;
     _valueAnisotropy = 1.0f;
 
-    const char* ptr=0;
 
     _deleteRemovedSubgraphsInDatabaseThread = true;
-    if( (ptr = getenv("OSG_DELETE_IN_DATABASE_THREAD")) != 0)
+    if( (str = getenv("OSG_DELETE_IN_DATABASE_THREAD")) != 0)
     {
-        _deleteRemovedSubgraphsInDatabaseThread = strcmp(ptr,"yes")==0 || strcmp(ptr,"YES")==0 ||
-                        strcmp(ptr,"on")==0 || strcmp(ptr,"ON")==0;
+        _deleteRemovedSubgraphsInDatabaseThread = strcmp(str,"yes")==0 || strcmp(str,"YES")==0 ||
+                                                  strcmp(str,"on")==0 || strcmp(str,"ON")==0;
 
     }
 
     _targetMaximumNumberOfPageLOD = 300;
-    if( (ptr = getenv("OSG_MAX_PAGEDLOD")) != 0)
+    if( (str = getenv("OSG_MAX_PAGEDLOD")) != 0)
     {
-        _targetMaximumNumberOfPageLOD = atoi(ptr);
+        _targetMaximumNumberOfPageLOD = atoi(str);
         OSG_NOTICE<<"_targetMaximumNumberOfPageLOD = "<<_targetMaximumNumberOfPageLOD<<std::endl;
     }
 
 
     _doPreCompile = true;
-    if( (ptr = getenv("OSG_DO_PRE_COMPILE")) != 0)
+    if( (str = getenv("OSG_DO_PRE_COMPILE")) != 0)
     {
-        _doPreCompile = strcmp(ptr,"yes")==0 || strcmp(ptr,"YES")==0 ||
-                        strcmp(ptr,"on")==0 || strcmp(ptr,"ON")==0;
+        _doPreCompile = strcmp(str,"yes")==0 || strcmp(str,"YES")==0 ||
+                        strcmp(str,"on")==0 || strcmp(str,"ON")==0;
     }
 
     // initialize the stats variables
@@ -1078,6 +1089,8 @@ DatabasePager::DatabasePager(const DatabasePager& rhs)
     _frameNumber.exchange(0);
 
     _drawablePolicy = rhs._drawablePolicy;
+
+    _assignPBOToImages = rhs._assignPBOToImages;
 
     _changeAutoUnRef = rhs._changeAutoUnRef;
     _valueAutoUnRef = rhs._valueAutoUnRef;

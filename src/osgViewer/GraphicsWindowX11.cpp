@@ -1910,7 +1910,22 @@ public:
             resolution.width = DisplayWidth(display, si.screenNum);
             resolution.height = DisplayHeight(display, si.screenNum);
             resolution.colorDepth = DefaultDepth(display, si.screenNum);
+
             resolution.refreshRate = 0;            // Missing call. Need a X11 expert.
+
+
+#ifdef OSGVIEWER_USE_XRANDR
+           if (supportsRandr(display))
+           {
+
+               XRRScreenConfiguration* screenConfig = XRRGetScreenInfo ( display, RootWindow(display, si.screenNum) );
+
+               resolution.refreshRate = XRRConfigCurrentRate ( screenConfig );
+
+               XRRFreeScreenConfigInfo( screenConfig );
+           }
+#endif
+
             
             XCloseDisplay(display);
         }

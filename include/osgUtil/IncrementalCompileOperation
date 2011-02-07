@@ -39,6 +39,7 @@ class OSGUTIL_EXPORT StateToCompile : public osg::NodeVisitor
         TextureSet  _textures;
         ProgramSet  _programs;
         bool        _assignPBOToImages;
+        osg::ref_ptr<osg::PixelBufferObject> _pbo;
 
         bool empty() const { return _textures.empty() &&  _programs.empty() && _drawables.empty(); }
 
@@ -48,6 +49,7 @@ class OSGUTIL_EXPORT StateToCompile : public osg::NodeVisitor
         virtual void apply(osg::Drawable& drawable);
         virtual void apply(osg::StateSet& stateset);
         virtual void apply(osg::Texture& texture);
+
 };
 
 class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation

@@ -741,7 +741,7 @@ GLBufferObject* GLBufferObjectSet::takeFromOrphans(BufferObject* bufferObject)
     // place at back of active list
     addToBack(glbo.get());
 
-    OSG_INFO<<"Reusing orphaned GLBufferObject, _numOfGLBufferObjects="<<_numOfGLBufferObjects<<std::endl;
+    //OSG_NOTICE<<"Reusing orphaned GLBufferObject, _numOfGLBufferObjects="<<_numOfGLBufferObjects<<" target="<<std::hex<<_profile._target<<std::dec<<std::endl;
 
     return glbo.release();
 }
@@ -1231,12 +1231,14 @@ void GLBufferObject::releaseGLBufferObject(unsigned int contextID, GLBufferObjec
 //
 // BufferObject
 //
-BufferObject::BufferObject()
+BufferObject::BufferObject():
+    _copyDataAndReleaseGLBufferObject(false)
 {
 }
 
 BufferObject::BufferObject(const BufferObject& bo,const CopyOp& copyop):
-    Object(bo,copyop)
+    Object(bo,copyop),
+    _copyDataAndReleaseGLBufferObject(bo._copyDataAndReleaseGLBufferObject)
 {
 }
 

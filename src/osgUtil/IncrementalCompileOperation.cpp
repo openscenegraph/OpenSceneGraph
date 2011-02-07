@@ -23,8 +23,9 @@
 #include <OpenThreads/ScopedLock>
 
 #include <algorithm>
-#include <stdlib.h>
 #include <iterator>
+#include <stdlib.h>
+#include <string.h>
 
 namespace osgUtil 
 {
@@ -46,6 +47,7 @@ namespace osgUtil
 
 static osg::ApplicationUsageProxy ICO_e1(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MINIMUM_COMPILE_TIME_PER_FRAME <float>","minimum compile time alloted to compiling OpenGL objects per frame in database pager.");
 static osg::ApplicationUsageProxy UCO_e2(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_MAXIMUM_OBJECTS_TO_COMPILE_PER_FRAME <int>","maximum number of OpenGL objects to compile per frame in database pager.");
+static osg::ApplicationUsageProxy UCO_e3(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE,"OSG_FORCE_TEXTURE_DOWNLOAD <ON/OFF>","should the texture compiles be forced to download using a dummy Geometry.");
 
 /////////////////////////////////////////////////////////////////
 //
@@ -183,7 +185,11 @@ void StateToCompile::apply(osg::Texture& texture)
         if (numRequringPBO>0)
         {
             // assign pbo
-            if (!pbo) pbo = new osg::PixelBufferObject;
+            if (!pbo)
+            {
+                if (!_pbo) _pbo = new osg::PixelBufferObject;
+                pbo = _pbo;
+            }
 
             for(unsigned int i=0; i<texture.getNumImages(); ++i)
             {
@@ -193,6 +199,8 @@ void StateToCompile::apply(osg::Texture& texture)
                     if (!image->getPixelBufferObject())
                     {
                         //OSG_NOTICE<<"Assigning PBO"<<std::endl;
+                        //pbo->setCopyDataAndReleaseGLBufferObject(true);
+                        pbo->setUsage(GL_DYNAMIC_DRAW_ARB);
                         image->setPixelBufferObject(pbo.get());
                     }
                 }
@@ -443,7 +451,20 @@ IncrementalCompileOperation::IncrementalCompileOperation():
         _maximumNumOfObjectsToCompilePerFrame = atoi(ptr);
     }
 
-    // assignForceTextureDownloadGeometry();
+    bool useForceTextureDownload = false;
+    if( (ptr = getenv("OSG_FORCE_TEXTURE_DOWNLOAD")) != 0)
+    {
+        useForceTextureDownload = strcmp(ptr,"yes")==0 || strcmp(ptr,"YES")==0 ||
+                                  strcmp(ptr,"on")==0 || strcmp(ptr,"ON")==0;
+
+        OSG_NOTICE<<"OSG_FORCE_TEXTURE_DOWNLOAD set to "<<useForceTextureDownload<<std::endl;
+    }
+
+    if (useForceTextureDownload)
+    {
+        assignForceTextureDownloadGeometry();
+    }
+
 }
 
 IncrementalCompileOperation::~IncrementalCompileOperation()
@@ -617,7 +638,7 @@ void IncrementalCompileOperation::mergeCompiledSubgraphs()
 
 void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
 {
-    osg::NotifySeverity level = osg::INFO;
+    osg::NotifySeverity level = osg::NOTICE;
 
     double targetFrameRate = _targetFrameRate;
     double minimumTimeAvailableForGLCompileAndDeletePerFrame = _minimumTimeAvailableForGLCompileAndDeletePerFrame;

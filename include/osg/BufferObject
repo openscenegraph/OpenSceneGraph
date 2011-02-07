@@ -528,6 +528,14 @@ class OSG_EXPORT BufferObject : public Object
         BufferObjectProfile& getProfile() { return _profile; }
         const BufferObjectProfile& getProfile() const { return _profile; }
 
+
+        /** Set whether the BufferObject should use a GLBufferObject just for copying the BufferData and release it immmediately so that it may be reused.*/
+        void setCopyDataAndReleaseGLBufferObject(bool copyAndRelease) { _copyDataAndReleaseGLBufferObject = copyAndRelease; }
+
+        /** Get whether the BufferObject should use a GLBufferObject just for copying the BufferData and release it immmediately.*/
+        bool getCopyDataAndReleaseGLBufferObject() const { return _copyDataAndReleaseGLBufferObject; }
+
+
         void dirty();
 
         /** Resize any per context GLObject buffers to specified size. */
@@ -571,6 +579,8 @@ class OSG_EXPORT BufferObject : public Object
         typedef osg::buffered_object< osg::ref_ptr<GLBufferObject> > GLBufferObjects;
 
         BufferObjectProfile     _profile;
+
+        bool                    _copyDataAndReleaseGLBufferObject;
 
         BufferDataList          _bufferDataList;
 

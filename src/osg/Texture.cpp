@@ -1959,7 +1959,7 @@ void Texture::applyTexImage2D_load(State& state, GLenum target, const Image* ima
     {
         state.unbindPixelBufferObject();
 
-        BufferObject* bo = image->getBufferObject();
+        const BufferObject* bo = image->getBufferObject();
         if (bo->getCopyDataAndReleaseGLBufferObject())
         {
             //OSG_NOTICE<<"Release PBO"<<std::endl;

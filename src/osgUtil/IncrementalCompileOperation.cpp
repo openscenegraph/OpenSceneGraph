@@ -139,6 +139,13 @@ void StateToCompile::apply(osg::StateSet& stateset)
         }
 
         osg::StateSet::TextureAttributeList& tal = stateset.getTextureAttributeList();
+
+#if 0
+        if (tal.size()>1)
+        {
+            tal.erase(tal.begin()+1,tal.end());
+        }
+#endif
         for(osg::StateSet::TextureAttributeList::iterator itr = tal.begin();
             itr != tal.end();
             ++itr)
@@ -199,7 +206,7 @@ void StateToCompile::apply(osg::Texture& texture)
                     if (!image->getPixelBufferObject())
                     {
                         //OSG_NOTICE<<"Assigning PBO"<<std::endl;
-                        //pbo->setCopyDataAndReleaseGLBufferObject(true);
+                        pbo->setCopyDataAndReleaseGLBufferObject(true);
                         pbo->setUsage(GL_DYNAMIC_DRAW_ARB);
                         image->setPixelBufferObject(pbo.get());
                     }
@@ -256,6 +263,8 @@ bool IncrementalCompileOperation::CompileTextureOp::compile(CompileInfo& compile
     osg::Geometry* forceDownloadGeometry = compileInfo.incrementalCompileOperation->getForceTextureDownloadGeometry();
     if (forceDownloadGeometry)
     {
+
+        //OSG_NOTICE<<"Force texture download"<<std::endl;
         if (forceDownloadGeometry->getStateSet())
         {
             compileInfo.getState()->apply(forceDownloadGeometry->getStateSet());
@@ -355,7 +364,7 @@ bool IncrementalCompileOperation::CompileList::compile(CompileInfo& compileInfo)
 
         #ifdef USE_TIME_ESTIMATES
         double actualCompileCost = timer.elapsedTime();
-        OSG_NOTICE<<"IncrementalCompileOperation::CompileList::compile() estimatedTimForCompile= "<<estimatedCompileCost<<", actual="<<actualCompileCost;
+        OSG_NOTICE<<"IncrementalCompileOperation::CompileList::compile() estimatedTimForCompile = "<<estimatedCompileCost*1000.0<<"ms, actual = "<<actualCompileCost*1000.0<<"ms";
         if (estimatedCompileCost>0.0) OSG_NOTICE<<", ratio="<<(actualCompileCost/estimatedCompileCost);
         OSG_NOTICE<<std::endl;
         #endif
@@ -638,8 +647,11 @@ void IncrementalCompileOperation::mergeCompiledSubgraphs()
 
 void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
 {
-    osg::NotifySeverity level = osg::NOTICE;
+    osg::NotifySeverity level = osg::INFO;
 
+    //glFinish();
+    //glFlush();
+    
     double targetFrameRate = _targetFrameRate;
     double minimumTimeAvailableForGLCompileAndDeletePerFrame = _minimumTimeAvailableForGLCompileAndDeletePerFrame;
 

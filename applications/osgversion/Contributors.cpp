@@ -40,7 +40,8 @@ const char* validNames[] =
 {
     "de",
     "den",
-    "van"
+    "van",
+    "von"
 };
 
 const char* invalidNames[] =
@@ -243,7 +244,9 @@ const char* invalidNames[] =
     "UpdateSkeleton",
     "IncementalCompileOperation",
     "Billboard",
-    "UpdateSkeleton"
+    "UpdateSkeleton",
+    "Vec3",
+    "Plugin"
 };
 
 
@@ -428,7 +431,9 @@ TypoCorrection typoCorrections[] =
     {"Mathia",         "Mathias"},
     {"Halgarth",       "Hogarth"},
     {"Jean-Sebasien",  "Jean-Sebastien"},
-    {"Katherina",      "Katharina"}
+    {"Katherina",      "Katharina"},
+    {"Biyfarguine",    "Boufarguine"},
+    {"Dickenson",       "Dickinson"}
 };
 
 
@@ -442,6 +447,8 @@ struct NameCorrection
 
 NameCorrection nameCorrections[] =
 {
+    {"Martin","von",
+     "Martin", "von Gargern"},
     {"Alexandre","Irion",
      "Alexander", "Irion"},
     {"WojciechLewandowski","",

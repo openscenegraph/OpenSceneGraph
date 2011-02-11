@@ -1,3 +1,1592 @@
+2011-02-10 14:24  robert
+
+	* src/osgUtil/IncrementalCompileOperation.cpp: Tweak to output
+	  details
+
+2011-02-10 14:09  robert
+
+	* AUTHORS.txt, applications/osgversion/Contributors.cpp: Updated
+	  AUTHORS and Contributors.cpp files
+
+2011-02-10 12:23  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegHeaders.hpp: From Martin von Gagern,
+	  build fix for latest ffmpeg changes
+
+2011-02-08 14:36  robert
+
+	* src/osg/Texture.cpp: Added const
+
+2011-02-07 14:19  robert
+
+	* include/osg/BufferObject,
+	  include/osgUtil/IncrementalCompileOperation,
+	  src/osg/BufferObject.cpp, src/osg/Texture.cpp,
+	  src/osgUtil/IncrementalCompileOperation.cpp: Implementated
+	  experimental reuse of PBO's after download
+
+2011-02-04 12:43  robert
+
+	* include/osgDB/DatabasePager, src/osgDB/DatabasePager.cpp: Added
+	  support for enabling the assignment of PixelBufferObjects to
+	  loaded Images to aid the download of images to the GPU.
+	  Feature can be enabled/disabled (default) by setting the env :
+	  
+	  OSG_ASSIGN_PBO_TO_IMAGES to ON or OFF
+
+2011-02-04 10:27  robert
+
+	* src/osgViewer/GraphicsWindowX11.cpp: Added support for getting
+	  the current screen refresh rate using the XrandR extension.
+
+2011-02-03 17:07  robert
+
+	* include/osgGA/NodeTrackerManipulator,
+	  src/osgGA/NodeTrackerManipulator.cpp: Refactored
+	  NodeTrackerManipulator to use osg::ObserverNodePath rather than
+	  it's only local equivilant.
+
+2011-02-03 14:27  robert
+
+	* src/osg/State.cpp: Added call to
+	  GraphicsCostEstimator::calibrate.
+
+2011-02-03 12:42  robert
+
+	* include/osg/State, include/osgUtil/IncrementalCompileOperation,
+	  src/osg/State.cpp, src/osgUtil/IncrementalCompileOperation.cpp:
+	  Moved GraphicsCostEstimator ref pointer into osg::State
+
+2011-02-03 12:22  robert
+
+	* examples/osggraphicscost/osggraphicscost.cpp,
+	  include/osg/GraphicsCostEstimator,
+	  include/osgUtil/GraphicsCostEstimator,
+	  include/osgUtil/IncrementalCompileOperation,
+	  src/osg/CMakeLists.txt, src/osg/GraphicsCostEstimator.cpp,
+	  src/osgUtil/CMakeLists.txt,
+	  src/osgUtil/GraphicsCostEstimator.cpp,
+	  src/osgUtil/IncrementalCompileOperation.cpp: Moved
+	  GraphicsCostEstimator from osgUtil into core OSG library
+
+2011-02-02 17:23  robert
+
+	* examples/osgqfont/osgqfont.cpp: From Jean-Sebastien Guay, build
+	  fix
+
+2011-02-02 16:44  mplatings
+
+	* src/osgPlugins/fbx/ReaderWriterFBX.h: Updated information about
+	  the FBX SDK version
+
+2011-02-01 18:12  robert
+
+	* src/osgUtil/MeshOptimizers.cpp: From Sukender, "Vertices in
+	  DOUBLE PRECISION were not handled by Remapper classes. I added
+	  missing virtual methods."
+
+2011-02-01 12:18  robert
+
+	* src/osgDB/DatabasePager.cpp: Fixed the setting of the Drawable
+	  modes
+
+2011-02-01 12:18  robert
+
+	* include/osgUtil/IncrementalCompileOperation,
+	  src/osgUtil/GraphicsCostEstimator.cpp,
+	  src/osgUtil/IncrementalCompileOperation.cpp: Added experimental
+	  timing and PBO usage into ICO+GCE classes
+
+2011-02-01 12:17  robert
+
+	* src/osg/BufferObject.cpp: Fixed bug in PixelBufferObject
+	  constructor for the case when a null Image is passed in to it.
+	  Added extra checks for NULL buffer data.
+
+2011-01-31 11:40  robert
+
+	* include/osg/ArrayDispatchers, include/osg/AudioStream,
+	  include/osg/BufferIndexBinding, include/osg/ComputeBoundsVisitor,
+	  include/osg/GLBeginEndAdapter, include/osg/GLObjects,
+	  include/osg/Hint, include/osg/ImageSequence,
+	  include/osg/ImageUtils, include/osg/KdTree,
+	  include/osg/MixinVector, include/osg/Observer,
+	  include/osg/ObserverNodePath, include/osg/OcclusionQueryNode,
+	  include/osg/OperationThread, include/osg/ShaderAttribute,
+	  include/osg/ShaderComposer, include/osg/StateAttributeCallback,
+	  include/osg/TemplatePrimitiveFunctor, include/osg/Texture2DArray,
+	  include/osg/Texture2DMultisample, include/osg/TransferFunction,
+	  include/osgAnimation/Action,
+	  include/osgAnimation/ActionAnimation,
+	  include/osgAnimation/ActionBlendIn,
+	  include/osgAnimation/ActionBlendOut,
+	  include/osgAnimation/ActionCallback,
+	  include/osgAnimation/ActionStripAnimation,
+	  include/osgAnimation/ActionVisitor,
+	  include/osgAnimation/Animation,
+	  include/osgAnimation/AnimationManagerBase,
+	  include/osgAnimation/AnimationUpdateCallback,
+	  include/osgAnimation/BasicAnimationManager,
+	  include/osgAnimation/Bone, include/osgAnimation/BoneMapVisitor,
+	  include/osgAnimation/Channel, include/osgAnimation/CubicBezier,
+	  include/osgAnimation/EaseMotion, include/osgAnimation/Export,
+	  include/osgAnimation/FrameAction,
+	  include/osgAnimation/Interpolator, include/osgAnimation/Keyframe,
+	  include/osgAnimation/LinkVisitor,
+	  include/osgAnimation/MorphGeometry,
+	  include/osgAnimation/RigGeometry,
+	  include/osgAnimation/RigTransform,
+	  include/osgAnimation/RigTransformHardware,
+	  include/osgAnimation/RigTransformSoftware,
+	  include/osgAnimation/Sampler, include/osgAnimation/Skeleton,
+	  include/osgAnimation/StackedMatrixElement,
+	  include/osgAnimation/StackedQuaternionElement,
+	  include/osgAnimation/StackedRotateAxisElement,
+	  include/osgAnimation/StackedScaleElement,
+	  include/osgAnimation/StackedTransform,
+	  include/osgAnimation/StackedTransformElement,
+	  include/osgAnimation/StackedTranslateElement,
+	  include/osgAnimation/StatsHandler,
+	  include/osgAnimation/StatsVisitor, include/osgAnimation/Target,
+	  include/osgAnimation/Timeline,
+	  include/osgAnimation/TimelineAnimationManager,
+	  include/osgAnimation/UpdateBone,
+	  include/osgAnimation/UpdateMaterial,
+	  include/osgAnimation/UpdateMatrixTransform,
+	  include/osgAnimation/Vec3Packed,
+	  include/osgAnimation/VertexInfluence,
+	  include/osgDB/AuthenticationMap, include/osgDB/Callbacks,
+	  include/osgDB/ConvertUTF, include/osgDB/DataTypes,
+	  include/osgDB/DatabaseRevisions, include/osgDB/FileCache,
+	  include/osgDB/ImagePager, include/osgDB/ImageProcessor,
+	  include/osgDB/InputStream, include/osgDB/ObjectWrapper,
+	  include/osgDB/Options, include/osgDB/OutputStream,
+	  include/osgDB/PluginQuery, include/osgDB/Serializer,
+	  include/osgDB/StreamOperator, include/osgDB/XmlParser,
+	  include/osgDB/fstream, include/osgFX/Outline,
+	  include/osgFX/Version, include/osgGA/CameraViewSwitchManipulator,
+	  include/osgGA/FirstPersonManipulator,
+	  include/osgGA/MultiTouchTrackballManipulator,
+	  include/osgGA/OrbitManipulator,
+	  include/osgGA/SphericalManipulator,
+	  include/osgGA/StandardManipulator,
+	  include/osgManipulator/TabBoxTrackballDragger,
+	  include/osgManipulator/Version,
+	  include/osgParticle/AngularDampingOperator,
+	  include/osgParticle/BounceOperator,
+	  include/osgParticle/CompositePlacer,
+	  include/osgParticle/DampingOperator,
+	  include/osgParticle/DomainOperator,
+	  include/osgParticle/ExplosionOperator,
+	  include/osgParticle/OrbitOperator,
+	  include/osgParticle/SinkOperator,
+	  include/osgPresentation/AnimationMaterial,
+	  include/osgPresentation/CompileSlideCallback,
+	  include/osgPresentation/Export,
+	  include/osgPresentation/PickEventHandler,
+	  include/osgPresentation/SlideEventHandler,
+	  include/osgPresentation/SlideShowConstructor,
+	  include/osgQt/Export, include/osgQt/GraphicsWindowQt,
+	  include/osgQt/QFontImplementation,
+	  include/osgQt/QGraphicsViewAdapter, include/osgQt/QWebViewImage,
+	  include/osgQt/QWidgetImage, include/osgShadow/ConvexPolyhedron,
+	  include/osgShadow/DebugShadowMap,
+	  include/osgShadow/LightSpacePerspectiveShadowMap,
+	  include/osgShadow/MinimalCullBoundsShadowMap,
+	  include/osgShadow/MinimalDrawBoundsShadowMap,
+	  include/osgShadow/MinimalShadowMap,
+	  include/osgShadow/ParallelSplitShadowMap,
+	  include/osgShadow/ProjectionShadowMap,
+	  include/osgShadow/SoftShadowMap,
+	  include/osgShadow/StandardShadowMap,
+	  include/osgShadow/ViewDependentShadowTechnique,
+	  include/osgSim/ObjectRecordData, include/osgSim/ShapeAttribute,
+	  include/osgTerrain/GeometryTechnique, include/osgTerrain/Layer,
+	  include/osgTerrain/Locator, include/osgTerrain/Terrain,
+	  include/osgTerrain/ValidDataOperator, include/osgText/Font3D,
+	  include/osgText/Glyph, include/osgText/KerningType,
+	  include/osgText/Style, include/osgText/Text3D,
+	  include/osgText/TextBase, include/osgUtil/ConvertVec,
+	  include/osgUtil/DrawElementTypeSimplifier,
+	  include/osgUtil/EdgeCollector,
+	  include/osgUtil/GraphicsCostEstimator,
+	  include/osgUtil/IncrementalCompileOperation,
+	  include/osgUtil/MeshOptimizers,
+	  include/osgUtil/OperationArrayFunctor,
+	  include/osgUtil/PrintVisitor,
+	  include/osgUtil/ReversePrimitiveFunctor,
+	  include/osgUtil/SceneGraphBuilder, include/osgUtil/ShaderGen:
+	  Ran:
+	  svn propset svn:eol-style native include/*/*
+	  svn propset svn:keywords "Author Date Id Revision" include/*/*
+
+2011-01-31 11:35  robert
+
+	* include/OpenThreads/Atomic, include/OpenThreads/Block,
+	  include/OpenThreads/ReadWriteMutex,
+	  include/OpenThreads/ReentrantMutex, include/OpenThreads/Version:
+	  svn propset svn:keywords "Author Date Id Revision"
+	  include/OpenThreads/*
+
+2011-01-31 10:41  robert
+
+	* include/OpenThreads/Atomic, include/OpenThreads/Block,
+	  include/OpenThreads/ReadWriteMutex,
+	  include/OpenThreads/ReentrantMutex, include/OpenThreads/Version:
+	  Set eol-style to native.
+
+2011-01-28 14:24  robert
+
+	* src/osgUtil/IncrementalCompileOperation.cpp: Temporarily disabled
+	  the cost estimate code for the 2.9.11 release
+
+2011-01-28 13:54  robert
+
+	* src/osgViewer/GraphicsWindowCocoa.mm: From Ulrich Hertlein, "I
+	  adapted the Cocoa implementation so that it reports the
+	  unmodified key
+	  and the modified key as requested. Can other OS X developers
+	  please test
+	  the attached file, to make sure it works for everybody?
+	  
+	  I fixed the problem with the caps-lock-key, too."
+
+2011-01-28 12:34  robert
+
+	* src/osgText/DefaultFont.cpp: Fixed size of default font
+
+2011-01-28 11:07  robert
+
+	* src/osgPlugins/dae/daeWriter.cpp,
+	  src/osgPlugins/pfb/ConvertFromPerformer.cpp: From Per Fahlberg,
+	  warning fixes
+
+2011-01-28 10:59  robert
+
+	* examples/CMakeLists.txt, examples/osgqfont,
+	  examples/osgqfont/CMakeLists.txt, examples/osgqfont/osgqfont.cpp:
+	  From Mathias Froehlich, "Driven by the last qfontimplementation
+	  changes, I realized, that I never
+	  contributed my testcase/demo for the original implementation.
+	  This attached change is similar to osgtext but uses the
+	  QFontImplementation in
+	  a Qt based viewer.
+	  With that, it should be easier for all of us to test changes in
+	  qfontimplementation"
+
+2011-01-28 10:53  robert
+
+	* src/osgPlugins/dae/domSourceReader.h: From Ulrich Hertlien, "the
+	  changes from r12126 (see below) in dae/domSourceReader.h cause
+	  compiler errors on OS X
+	  with gcc-4.2.1:
+	  
+	  In file included from
+	  /Users/uli/Projects/osg/OpenSceneGraph/src/osgPlugins/dae/daeRAnimations.cpp:3:
+	  /Users/uli/Projects/osg/OpenSceneGraph/src/osgPlugins/dae/domSourceReader.h:43:
+	  error:
+	  explicit specialization in non-namespace scope 'class
+	  osgDAE::domSourceReader'
+	  /Users/uli/Projects/osg/OpenSceneGraph/src/osgPlugins/dae/domSourceReader.h:45:
+	  error:
+	  explicit specialization in non-namespace scope 'class
+	  osgDAE::domSourceReader'
+	  /Users/uli/Projects/osg/OpenSceneGraph/src/osgPlugins/dae/domSourceReader.h:47:
+	  error:
+	  explicit specialization in non-namespace scope 'class
+	  osgDAE::domSourceReader'
+	  /Users/uli/Projects/osg/OpenSceneGraph/src/osgPlugins/dae/domSourceReader.h:49:
+	  error:
+	  explicit specialization in non-namespace scope 'class
+	  osgDAE::domSourceReader'
+	  /Users/uli/Projects/osg/OpenSceneGraph/src/osgPlugins/dae/domSourceReader.h:51:
+	  error:
+	  explicit specialization in non-namespace scope 'class
+	  osgDAE::domSourceReader'
+	  ...
+	  
+	  The attached file fixes this."
+
+2011-01-28 10:50  robert
+
+	* examples/osganalysis/osganalysis.cpp,
+	  include/osgViewer/api/IOS/GraphicsWindowIOS: From Mourad
+	  Boufarguine, "This is a tiny fix for some typos in osg code."
+
+2011-01-27 18:49  robert
+
+	* src/osgQt/GraphicsWindowQt.cpp: From Andreas Roth, "simple fix to
+	  support quad buffer stereo in osgQt"
+
+2011-01-27 17:14  robert
+
+	* src/osgWidget/Window.cpp: From Eric Buehler, "I believe that the
+	  osgWidget::Window::HA_CENTER alignment should be center aligned
+	  rather than by the origin, as the osgWidget::Window::VA_TOP
+	  causes.
+	  
+	  The current setAnchorHorizontal() command doesn't center the
+	  center of the object, it just center's the object's origin. The
+	  following change to osgWidget::Window::update() will correct that
+	  behavior so that it is consistent with setAnchorVertical()
+	  behavior.
+	  "
+
+2011-01-27 17:12  robert
+
+	* src/osgDB/FileNameUtils.cpp,
+	  src/osgPlugins/dae/daeRAnimations.cpp,
+	  src/osgPlugins/dae/daeRGeometry.cpp,
+	  src/osgPlugins/dae/daeWGeometry.cpp,
+	  src/osgPlugins/dae/daeWMaterials.cpp,
+	  src/osgPlugins/dae/domSourceReader.h: From Sukender, "I found the
+	  bug I was chasing! Here is my "twin" submission, from latest
+	  trunk rev: 12124.
+	  
+	  1. DAE submission:
+	  DAE plugin now correctly writes images URI in Collada file, when
+	  images are used twice.
+	  I also greatly improved readability and maintenability of
+	  geometry reading (mainly daeRGeometry.cpp), by factorizing code,
+	  templatizing it (for double/single precision), and removing ugly
+	  macros.
+	  
+	  2. osgDB submission:
+	  I updated osgDB::getPathRelative(): it is now far more readable,
+	  it handles more cases (especially when you want to relativise
+	  "a/c" from "a/b", which results in "../c"), and I added comments
+	  to make it clearer to maintain."
+
+2011-01-27 16:23  robert
+
+	* examples/osgkeyboard/osgkeyboard.cpp, include/osgGA/EventQueue,
+	  include/osgGA/GUIEventAdapter,
+	  include/osgViewer/api/Win32/GraphicsWindowWin32,
+	  include/osgViewer/api/X11/GraphicsWindowX11,
+	  src/osgGA/EventQueue.cpp, src/osgGA/GUIEventAdapter.cpp,
+	  src/osgViewer/GraphicsWindowWin32.cpp,
+	  src/osgViewer/GraphicsWindowX11.cpp: From Alexander Sinditskiy,
+	  "reason of this changes described in
+	  http://forum.openscenegraph.org/viewtopic.php?t=7596
+	  
+	  and another problem is:
+	  example osgkeyboard is not work (keys not highlight) if user have
+	  2 keyboard layout native and english and current user layout is
+	  native
+	  
+	  I try to explain my changes
+	  
+	  we need something that is identify key without modifier keys and
+	  layout -> this is UnmodifedKey
+	  
+	  I think osg must have its own UnmodifiedKeys table. Code must be
+	  run same on different platforms. This can de guaranteed by
+	  UnmodifiedKeys table.
+	  
+	  Mikhail Izmestev helped me. He implemented VirtualKey changes in
+	  GraphicsWindowX11"
+
+2011-01-27 09:41  robert
+
+	* examples/osgviewerIPhone/iphoneViewerAppDelegate.h,
+	  examples/osgviewerIPhone/iphoneViewerAppDelegate.mm,
+	  examples/osgviewerIPhone/main.m,
+	  examples/osgviewerIPhone/osgIPhoneViewer-Info.plist,
+	  examples/osgviewerIPhone/osgPlugins.h: Removed the executable
+	  property from source files
+
+2011-01-26 18:47  robert
+
+	* include/osgUtil/GraphicsCostEstimator,
+	  src/osgUtil/GraphicsCostEstimator.cpp,
+	  src/osgUtil/IncrementalCompileOperation.cpp: Implement first pass
+	  at texture compile estimation
+
+2011-01-26 16:47  robert
+
+	* include/osgUtil/IncrementalCompileOperation,
+	  src/osgUtil/IncrementalCompileOperation.cpp: Replaced
+	  CompileStats with GraphicsCostEstimator
+
+2011-01-26 16:46  robert
+
+	* src/osg/glu/libutil/mipmap.cpp: From Mourad Biyfarguine, "This is
+	  a fix to some 'potentially uninitialized local variable' warnings
+	  in src/osg/glu/libutil/mipmap.cpp."
+
+2011-01-26 16:45  robert
+
+	* include/osgDB/StreamOperator,
+	  src/osgPlugins/osg/AsciiStreamOperator.h,
+	  src/osgPlugins/osg/XmlStreamOperator.h: From Mathias Froehlich,
+	  build fix for Solaris
+
+2011-01-26 16:10  robert
+
+	* src/osgQt/QFontImplementation.cpp: From Wang Rui, "I've found a
+	  problem when using QFont (osgQt/QFontImplementation.cpp)
+	  to read fonts: only the first character of a whole text is
+	  correctly
+	  shown and others are disappeared. I haven't got into the font
+	  implementation so can't explain why this happened and how it
+	  should
+	  work under other platforms, but it seems to be fixed by
+	  specifying
+	  width and height of the glyph object. The source file is attached
+	  for
+	  future developments. At present it just works for my own project.
+	  :-)
+	  "
+
+2011-01-26 12:51  robert
+
+	* examples/osggraphicscost/osggraphicscost.cpp,
+	  include/osgUtil/GraphicsCostEstimator,
+	  src/osgUtil/CMakeLists.txt,
+	  src/osgUtil/GraphicsCostEstimator.cpp: Moved
+	  GraphicsCostEstimator into osgUtil.
+
+2011-01-26 12:07  robert
+
+	* examples/osggraphicscost/osggraphicscost.cpp: Implemented first
+	  pass at geometry cost estimation.
+
+2011-01-25 16:48  robert
+
+	* src/osgPlugins/fbx/WriterCompareTriangle.cpp,
+	  src/osgPlugins/fbx/fbxMaterialToOsgStateSet.cpp,
+	  src/osgPlugins/fbx/fbxMaterialToOsgStateSet.h,
+	  src/osgPlugins/fbx/fbxRAnimation.cpp,
+	  src/osgPlugins/fbx/fbxRMesh.cpp, src/osgPlugins/fbx/fbxRNode.cpp,
+	  src/osgPlugins/fbx/fbxReader.h: Fixed warnings
+
+2011-01-25 11:11  robert
+
+	* examples/osggraphicscost/osggraphicscost.cpp: Further work on
+	  GraphicsCostEstimator classes
+
+2011-01-24 21:12  robert
+
+	* include/osg/BufferObject, src/osgDB/DatabasePager.cpp,
+	  src/osgPlugins/osg/AsciiStreamOperator.h,
+	  src/osgPlugins/osg/XmlStreamOperator.h,
+	  src/osgViewer/CMakeLists.txt: From Mathias Froehlich, build fixes
+
+2011-01-24 20:45  robert
+
+	* examples/CMakeLists.txt, examples/osggraphicscost,
+	  examples/osggraphicscost/CMakeLists.txt,
+	  examples/osggraphicscost/osggraphicscost.cpp: Added
+	  osggraphicscost example as a base of for developing and testing
+	  the new osgUtil::GraphicsCostEsimator class.
+
+2011-01-24 11:45  cedricpinson
+
+	* src/osgAnimation/Animation.cpp: From Michael Platings, Fix
+	  animation duration when adding channel to animation
+
+2011-01-21 14:11  robert
+
+	* src/osgPlugins/dae/ReaderWriterDAE.cpp: Added #include to fix
+	  build
+
+2011-01-21 13:40  robert
+
+	* src/osgPlugins/dae/ReaderWriterDAE.cpp,
+	  src/osgPlugins/dae/ReaderWriterDAE.h,
+	  src/osgPlugins/dae/daeWAnimations.cpp,
+	  src/osgPlugins/dae/daeWMaterials.cpp,
+	  src/osgPlugins/dae/daeWriter.cpp, src/osgPlugins/dae/daeWriter.h:
+	  From Sukender, "
+	  DAE plugin was linking ORIGINAL images in the Collada file, using
+	  image->getName() as a path (even if images were modified in
+	  memory!). As the behaviour was not the one of other plugins (3DS,
+	  FBX, and such), I made the plugin relativise images filenames (as
+	  those plugins) and write the image which is in memory. However,
+	  in order to avoid removing features, I kept the previous
+	  behaviour but moved it in an option. Here are the options of the
+	  plugin I changed:
+	  - daeForceTexture was unclear in this new context and removed in
+	  favor of two new options
+	  - daeLinkOriginalTexturesNoForce: Writes reference to the
+	  original image if found, instead of writing the image in memory
+	  - daeLinkOriginalTexturesForce: Writes reference to the original
+	  image even if not found, instead of writing the image in memory
+	  Of course, if you specify no option, images are written as for
+	  other plugins.
+	  
+	  Other thing I changed is the UTF8 support as I told you in a
+	  previous conversation. Now there is a simple option,
+	  "daeNamesUseCodepage", which makes all names except filenames
+	  (materials, animation, geometries...) be considered as encoded
+	  using current codepage. If so, they'll be converted to UTF8 when
+	  writing; else they are written directly. Of course, filenames
+	  follow OSG_USE_UTF8_FILENAME as usual.
+	  
+	  I did "
+
+2011-01-21 12:17  mplatings
+
+	* src/osgPlugins/fbx/WriterNodeVisitor.cpp: From Sukender: I had to
+	  call code from the FBX plugin (to relativise paths). I thus
+	  extracted it from FBX and moved it in osgDB (FileNameUtils)
+
+2011-01-21 11:46  robert
+
+	* include/osgDB/FileNameUtils, src/osgDB/FileNameUtils.cpp: From
+	  Sukender, getPathRelative() method.
+
+2011-01-20 12:34  robert
+
+	* include/osgDB/DatabasePager: Added export to see if it address
+	  Mingw link problems
+
+2011-01-20 12:32  robert
+
+	* include/osg/OperationThread, src/osg/OperationThread.cpp: From
+	  Matthew Johnson-Roberson, "Small fix for operation thread to
+	  protect the access to _operations vector by functions
+	  getNumOperationsInQueue() and empty(). It is simply an addition
+	  of OpenThreads::ScopedLock<OpenThreads::Mutex>
+	  lock(_operationsMutex);
+	  to protect against accessing while writing which was segfaulting
+	  in VPB
+	  specifically in void ThreadPool::run(osg::Operation* op)
+	  in the waiting loop
+	  
+	  while (_operationQueue->getNumOperationsInQueue() >=
+	  _maxNumberOfOperationsInQueue)
+	  "
+
+2011-01-20 12:27  robert
+
+	* include/osgDB/ImageProcessor: From Per Fahlberg, warning fixes
+
+2011-01-20 12:23  robert
+
+	* src/osgPlugins/ply/vertexData.cpp,
+	  src/osgPlugins/ply/vertexData.h: From Simon Julier, "I have been
+	  using the ply plugin to read files created by bundler and pmvs2
+	  (http://grail.cs.washington.edu/software/pmvs/). This program
+	  generates models in the form of vertices only. However, the
+	  existing ply reader implementation was not able to handle the
+	  models generated in a satisfactory manner for two reasons:
+	  
+	  1. It did not support normals applied to individual vertices.
+	  2. It would only support red / green / blue colour triples, but
+	  the pmvs models are generated with diffuse colours. (The PLY
+	  format, http://local.wasp.uwa.edu.au/~pbourke/dataformats/ply/,
+	  lists specular and ambient colour forms as well.)
+	  
+	  To partially overcome these limitations, please find attached
+	  modified versions of
+	  
+	  src/osgPlugins/ply/vertexData.cpp
+	  src/osgPlugins/ply/vertexData.h
+	  
+	  The changes I've made are:
+	  
+	  1. I have changed the boolean hasColor flag to a vertexField
+	  (which is a boolean operation on an enum) to indicate what fields
+	  are present in the ply file. (This is required because Turk's ply
+	  reader spits out warnings for every line where you try to read
+	  fields which do not exist.)
+	  2. I have modified the code to apply valid normals to either
+	  triangles or vertices.
+	  3. I have kludged in "support" for the various colour variants.
+	  Specifically, all the colour specified can be read from the file.
+	  However, they are all applied in the same way (namely as a colour
+	  array, bound to each vertex)."
+
+2011-01-19 10:57  robert
+
+	* CMakeModules/FindOpenEXR.cmake, src/osgPlugins/CMakeLists.txt,
+	  src/osgPlugins/exr/CMakeLists.txt: From Simon Julier, "I ran
+	  across linking errors with osgdb_exr. Specifically, I found it
+	  was necessary to link against libImlIlf, libImlThread, libHalf,
+	  libIex and libzip.
+	  
+	  I have attached a patch, against the trunk from 13:30 today,
+	  which consists of the following:
+	  
+	  1. CMakeModules/FindOpenEXR.cmake: Look for libIlmThread and
+	  libIex as well. 2. src/osgPlugins/CMakeList.txt: Only include the
+	  exr subdirectory if both the OpenEXR and zip libraries were
+	  found. 3. src/osgPlugins/exr/CMakeLists.txt: Add ZIP_LIBRARY to
+	  TARGET_EXTERNAL_LIBRARIES."
+
+2011-01-19 10:38  robert
+
+	* src/osgPlugins/dae/ReaderWriterDAE.cpp,
+	  src/osgPlugins/dae/ReaderWriterDAE.h: From Sukender, normalized
+	  option names
+
+2011-01-19 10:31  robert
+
+	* src/osgPlugins/dae/ReaderWriterDAE.cpp,
+	  src/osgPlugins/dae/daeRAnimations.cpp,
+	  src/osgPlugins/dae/daeRGeometry.cpp,
+	  src/osgPlugins/dae/daeRSkinning.cpp,
+	  src/osgPlugins/dae/daeReader.cpp, src/osgPlugins/dae/daeReader.h,
+	  src/osgPlugins/dae/daeWGeometry.cpp,
+	  src/osgPlugins/dae/daeWriter.cpp, src/osgPlugins/dae/daeWriter.h,
+	  src/osgPlugins/dae/domSourceReader.cpp,
+	  src/osgPlugins/dae/domSourceReader.h: From Sukender, "Added
+	  ability for writer to read from Vec3/4d/f. Plugin now warns if it
+	  finds another type of data"
+
+2011-01-19 09:53  robert
+
+	* src/osgPlugins/dae/daeWSceneObjects.cpp,
+	  src/osgPlugins/dae/daeWTransforms.cpp,
+	  src/osgPlugins/dae/daeWriter.cpp, src/osgPlugins/dae/daeWriter.h:
+	  From Sukender, "Factorized the depth loop ("while ( lastDepth >=
+	  _nodePath.size() )...") into a method called
+	  updateCurrentDaeNode(). Added missing calls into
+	  apply(osg::LightSource &) and daeWriter::apply(osg::Camera &) and
+	  daeWriter::apply(osg::CameraView &)"
+
+2011-01-19 09:36  robert
+
+	* src/osgPlugins/dae/ReaderWriterDAE.cpp: From Sukender, "Fixed
+	  ReaderWriterDAE::ConvertFilePathToColladaCompatibleURI(): It now
+	  handles paths containing '#' character as expected."
+
+2011-01-19 09:34  robert
+
+	* src/osgPlugins/dae/ReaderWriterDAE.cpp,
+	  src/osgPlugins/dae/ReaderWriterDAE.h: From Sukender and Robert
+	  Osfield, clean up of options
+
+2011-01-18 16:14  robert
+
+	* include/osgDB/OutputStream: From Michael Platings, "I've attached
+	  a fix for a subtle bug that causes animations (and quite possibly
+	  other things) to be serialized incorrectly.
+	  
+	  For the following code:
+	  
+	  #define MYMACRO(NAME) myOutputStream << #NAME;
+	  MYMACRO(Group)
+	  
+	  you would expect that "Group" would be output. However, as there
+	  are many overloaded operator<< functions, none of which take a
+	  const char* argument, the function that's actually called is
+	  operator<<(bool). Hence what actually gets output is "TRUE".
+	  An actual example of this is in
+	  serializers\osgAnimation\Animation.cpp, WRITE_CHANNEL_FUNC2.
+	  
+	  So the simple solution to this is to add operator<<(const char*),
+	  attached.
+	  "
+
+2011-01-18 15:00  robert
+
+	* src/osgViewer/ViewerEventHandlers.cpp: Moved the StateSet query
+	  and texcoord settings to within the if (vertices) block to avoid
+	  an attempt to dereferences geometry->getStateSet() when non
+	  Geometry drawable is intersected.
+
+2011-01-18 11:20  robert
+
+	* src/osgUtil/IncrementalCompileOperation.cpp: Fixed CompileSet so
+	  it returns true when there is nothing to compile at all.
+
+2011-01-18 09:54  robert
+
+	* src/osgDB/DatabasePager.cpp: Build fix
+
+2011-01-17 17:17  robert
+
+	* include/osgUtil/IncrementalCompileOperation,
+	  src/osgDB/DatabasePager.cpp,
+	  src/osgUtil/IncrementalCompileOperation.cpp: Implemented better
+	  coupling of DatabasePager and IcrementalCompileOperation,
+	  removing functional duplication and opening the door to dynamic
+	  enabling/disabling
+	  of pre compile based on load.
+
+2011-01-17 09:10  robert
+
+	* include/osg/StateSet: Added getNum methods
+
+2011-01-15 18:12  robert
+
+	* examples/osganalysis/osganalysis.cpp: First steps on the path to
+	  integrating ImageProcessor
+
+2011-01-14 14:30  robert
+
+	* src/osgPlugins/OpenFlight/Document.cpp,
+	  src/osgPlugins/OpenFlight/Document.h,
+	  src/osgPlugins/OpenFlight/GeometryRecords.cpp,
+	  src/osgPlugins/OpenFlight/ReaderWriterFLT.cpp: From Guy
+	  Volckaert, "Changes to the openflight plugin to support replacing
+	  double sided polygons by 2 opposite facing polygons. This is
+	  sometimes required to resolved lighting and intersection issues.
+	  A new import option was was added to activate this feature called
+	  "replaceDoubleSidedPolys".
+	  
+
+2011-01-14 13:31  robert
+
+	* src/osgPlugins/3ds/ReaderWriter3DS.cpp: From Sukender, "- Lowered
+	  one notify level (it's now coherent with the "if" just above)"
+
+2011-01-14 12:08  robert
+
+	* examples/osgmanipulator/osgmanipulator.cpp: From Wang Rui, "I'd
+	  like to submit a small new feature to the osgmanipulator example
+	  which could fix the dragger size in screen, so that no matter how
+	  we
+	  zoom in/out the camera, the dragger will never be scaled.
+	  
+	  This is what 3D graphics software like 3dsmax and maya behave,
+	  which
+	  helps users select and manipulate draggers more easily.
+	  
+	  You may turn on the feature with the new --fixedDraggerSize
+	  argument:
+	  
+	  # osgmanipulator.exe --fixedDraggerSize --dragger
+	  TranslateAxisDragger
+	  cessna.osg
+	  "
+
+2011-01-14 12:03  robert
+
+	* src/osgPlugins/tiff/ReaderWriterTIFF.cpp: From Sukender, "TIFF
+	  plugin now outputs messages coming from libtiff.
+	  "
+
+2011-01-14 11:49  robert
+
+	* src/osgPlugins/3ds/ReaderWriter3DS.cpp: From Sukender, "Small
+	  submission: - 3DS reader now takes care to not create Texture2D
+	  duplicates"
+
+2011-01-14 11:46  robert
+
+	* src/osgPlugins/vrml/ReaderWriterVRML2.cpp,
+	  src/osgPlugins/vrml/ReaderWriterVRML2.h: Fixed for build with non
+	  autoatic ref_ptr<> to C pointer conversion
+
+2011-01-14 11:00  robert
+
+	* include/osgDB/InputStream, src/osgDB/InputStream.cpp,
+	  src/osgWrappers/serializers/osgTerrain/ImageLayer.cpp: From Brad
+	  Christiansen, "Attached is a fix which implements the lazy
+	  loading of optional layers (if requested) in the new osgb/osgt
+	  formats."
+
+2011-01-13 18:49  robert
+
+	* CMakeLists.txt, include/osg/Version: Updated so version number
+
+2011-01-13 18:05  robert
+
+	* src/osgDB/CMakeLists.txt: From Tim Moore, added missing
+	  ImageProcessor header reference
+
+2011-01-13 14:59  robert
+
+	* CMakeLists.txt, CMakeModules/FindNVTT.cmake,
+	  include/osgDB/ImageProcessor, include/osgDB/Registry,
+	  src/osgDB/Registry.cpp, src/osgPlugins/CMakeLists.txt,
+	  src/osgPlugins/nvtt, src/osgPlugins/nvtt/CMakeLists.txt,
+	  src/osgPlugins/nvtt/NVTTImageProcessor.cpp: Added ImageProcessor
+	  interface class and plugin mechnanism for ImageProcessor
+	  implementations to osgDB::Registry.
+	  
+	  Add NVidiaTextureTools based plugin that provides an
+	  ImageProcessor implementation within an nvtt plugin.
+
+2011-01-12 19:29  robert
+
+	* examples/osgposter/PosterPrinter.cpp, include/osg/Node,
+	  include/osg/NodeVisitor, include/osgDB/DatabasePager,
+	  include/osgDB/InputStream, include/osgDB/Options,
+	  include/osgTerrain/Terrain, src/osg/PagedLOD.cpp,
+	  src/osg/ProxyNode.cpp, src/osgDB/DatabasePager.cpp,
+	  src/osgDB/Options.cpp, src/osgPlugins/ive/TerrainTile.cpp,
+	  src/osgPlugins/txp/TXPPagedLOD.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgTerrain/TerrainTile.cpp,
+	  src/osgWrappers/serializers/osgTerrain/TerrainTile.cpp:
+	  Refactored the way that the DatabasePager passes the Terrain
+	  decorator node onto the TerrainTile.
+	  
+	  The DatabasePager now passes the Terrain pointer into the
+	  ReaderWriter's via osgDB::Options object,
+	  rather than pushing a NodePath containing the Terrain onto
+	  NodeVisitor. This
+	  change means that the DatabasePager nolonger needs to observer
+	  the whole NodePath and
+	  will be lighter and quicker for it.
+	  
+	  The change also means that ReadFileCallback can now run custom
+	  NodeVisitor's on the scene graph without
+	  having to worry about TerrainTile's constructing scene graphs
+	  prior to the Terrain being assigned.
+	  
+	  Also changed is the NodeVisitor::DatabaseRequestHandler which now
+	  requires a NodePath to the node that you wish
+	  to add to rather than just the pointer to the node you wish to
+	  add to. This is more robust when handling scenes
+	  with multiple parental paths, whereas previously errors could
+	  have occurred due to the default of picking the first
+	  available parental path. This change means that subclasses of
+	  DatabasePager will need to be updated to use this new
+	  function entry point.
+
+2011-01-12 17:39  robert
+
+	* include/osgViewer/api/X11/GraphicsWindowX11: Fixed comment
+
+2011-01-11 17:29  robert
+
+	* src/osgPlugins/fbx/WriterNodeVisitor.cpp,
+	  src/osgPlugins/fbx/WriterNodeVisitor.h: From Sukender, "FBX
+	  plugin did not relay the osgDB::ReaderWriter::Options* when
+	  writing images (the writeImage() call). Now it does."
+
+2011-01-11 17:29  robert
+
+	* src/osgPlugins/fbx/WriterCompareTriangle.cpp,
+	  src/osgPlugins/fbx/WriterCompareTriangle.h,
+	  src/osgPlugins/fbx/WriterNodeVisitor.cpp,
+	  src/osgPlugins/fbx/WriterNodeVisitor.h,
+	  src/osgPlugins/fbx/fbxMaterialToOsgStateSet.cpp,
+	  src/osgPlugins/fbx/fbxRAnimation.cpp,
+	  src/osgPlugins/fbx/fbxRNode.cpp, src/osgPlugins/fbx/fbxReader.h:
+	  Changed dos endings to unix line endings
+
+2011-01-11 17:23  robert
+
+	* src/osgManipulator/AntiSquish.cpp: From Mikhail Izmestev,
+	  "Current osgManipulator::AntiSquishCallback stops update
+	  traversal of childrens."
+
+2011-01-11 17:20  robert
+
+	* include/osgGA/StandardManipulator: From Wojciech Lewandowski, "We
+	  encountered a problem when we tried overloading
+	  StandardManipulator class. Linker was unable to find
+	  StandardManipulator::AnimationData methods. Prefixing
+	  AnimationData with OSGGA_EXPORT removed the issue.
+	  
+	  Fixed header is attached."
+
+2011-01-11 17:18  robert
+
+	* include/osg/State: From Chris Hanson, "As an extension to this
+	  excellent work:
+	  http://forum.openscenegraph.org/viewtopic.php?t=7285
+	  
+	  This file adds the same string API wrapper to the State object
+	  for other older apps that
+	  track Uniforms by string. The original comment about performance
+	  is preserved."
+
+2011-01-11 17:05  robert
+
+	* src/osg/State.cpp: Changed debug messages to INFO
+
+2011-01-11 17:04  robert
+
+	* src/osg/State.cpp: From Glenn Waldron, "Attached is a fix to
+	  State::convertVertexShaderSourceToOsgBuiltIns. The method was
+	  incorrectly inserting new declarations before a GLSL "#version"
+	  directive, which must always be the first line in a shader. This
+	  patch detects the #version directive and ensures that new
+	  declarations are inserted after it.
+	  
+	  Attached is the modified State.cpp file.
+	  
+	  I have also attached a sample transcript, showing the new code
+	  working properly. I ran it against osgEarth's shaders and it
+	  works as expected.
+	  
+	  "
+
+2011-01-11 16:58  robert
+
+	* include/osgViewer/Renderer, src/osgViewer/Renderer.cpp: From Tim
+	  Moore, "This patch fixes a race condition in
+	  Renderer::ThreadSafeQueue that was causing some notifications of
+	  available SceneView objects to be missed. I saw a very noticeable
+	  performance problem (60 fps -> 8 fps) in DrawThreadPerContext
+	  mode in an osgEarth application before this patch. I had high
+	  hopes that this change might fix the much-discussed multiple GPU
+	  problem; no such luck, but I think the root cause of that is
+	  probably a similar threading issue."
+
+2011-01-11 16:18  robert
+
+	* src/osgPlugins/3ds/lib3ds/lib3ds_io.c: From Guy Volckaert,
+	  warning fixes
+
+2011-01-11 11:39  robert
+
+	* examples/osgtext3D/TextNode.cpp,
+	  examples/osgtext3D/osgtext3D.cpp: Added more flexible testing of
+	  Text3D
+
+2011-01-11 11:39  robert
+
+	* include/osgText/Glyph, include/osgText/Text,
+	  include/osgText/TextBase,
+	  src/osgPlugins/freetype/FreeTypeFont.cpp,
+	  src/osgPlugins/freetype/FreeTypeFont.h, src/osgText/Glyph.cpp,
+	  src/osgText/Text.cpp, src/osgText/Text3D.cpp,
+	  src/osgText/TextBase.cpp: Unified more of the 2D and 3D text
+	  setup, fixed bugs in Text3D setup
+	  which address the problems of black 3D text and the kerning
+	  causing problems with font positioning.
+
+2011-01-10 13:28  robert
+
+	* src/osg/ApplicationUsage.cpp: Improved the handling of
+	  application argument output when the options are very long.
+
+2011-01-05 11:43  robert
+
+	* src/osgText/GlyphGeometry.cpp: Added check for invalid face size
+	  to prevent a crash
+
+2011-01-04 10:21  robert
+
+	* src/osg/Geometry.cpp: Added extra checks to
+	  osg::Geometry::verifyArrays(std::ostream&)
+
+2011-01-03 19:41  robert
+
+	* applications/osgfilecache/osgfilecache.cpp, include/osg/Geometry,
+	  src/osg/Geometry.cpp: Added
+	  osg::Geometry::verifyArray(std::ostream&) method to enable checks
+	  to be done on osg::Geometry to see if the arrays
+	  are big enough to handle the primitives used in the geometry.
+	  
+	  Added usage of verifyArray into osgfilecache so that it reports
+	  any problems on reading files in paged database.
+
+2010-12-24 19:47  robert
+
+	* src/osgWidget/Input.cpp: Added iterator include
+
+2010-12-24 19:19  robert
+
+	* include/osgUtil/IncrementalCompileOperation,
+	  src/osgUtil/IncrementalCompileOperation.cpp: Refactored
+	  IncrementalCompileOperation to make it more flexible.
+
+2010-12-23 13:11  robert
+
+	* src/osg/NodeVisitor.cpp, src/osgDB/DatabasePager.cpp,
+	  src/osgPlugins/3ds/lib3ds/lib3ds_track.c: Fixed warnings
+
+2010-12-23 10:45  robert
+
+	* src/OpenThreads/win32/Makefile,
+	  src/OpenThreads/win32/OpenThreads.mak: Deleted old makefile files
+	  that are no longer required now we have CMake
+
+2010-12-23 10:07  robert
+
+	* CMakeModules/FindCOLLADA.cmake: From Per Fahlberg, "The
+	  FindCOLLADA.cmake module failed to find the static libs for the
+	  latest collada dom, attached is the fixed file."
+
+2010-12-23 10:05  robert
+
+	* src/OpenThreads/win32/CMakeLists.txt,
+	  src/OpenThreads/win32/OpenThreads.mak,
+	  src/OpenThreads/win32/Win32Condition.h: From Ulrich Hertlein
+	  (applied by Robert Osfield), "OpenThreads/win32/Win32Condition.h
+	  is not used anymore and could be removed from the
+	  repository and win32/OpenThreads.mak and win32/CMakeLists.txt."
+
+2010-12-23 09:59  robert
+
+	* examples/osgterrain/osgterrain.cpp: From Jean-Sebastien, "In my
+	  auto-build today there are 3 errors caused by using a ref_ptr<T>
+	  in a function taking a T* when building without the implicit
+	  conversion."
+
+2010-12-22 20:11  robert
+
+	* CMakeLists.txt,
+	  examples/osganimationmakepath/osganimationmakepath.cpp,
+	  examples/osganimationnode/osganimationnode.cpp,
+	  examples/osgmultitexturecontrol/osgmultitexturecontrol.cpp,
+	  examples/osgposter/PosterPrinter.cpp,
+	  examples/osgposter/PosterPrinter.h,
+	  examples/osguserstats/osguserstats.cpp,
+	  include/osg/DeleteHandler, include/osg/FrameStamp,
+	  include/osg/NodeVisitor, include/osg/OcclusionQueryNode,
+	  include/osg/PagedLOD, include/osg/Stats, include/osg/Version,
+	  include/osgDB/DatabasePager,
+	  include/osgParticle/ParticleProcessor,
+	  include/osgParticle/ParticleSystem,
+	  include/osgParticle/ParticleSystemUpdater,
+	  include/osgPresentation/CompileSlideCallback,
+	  include/osgQt/QGraphicsViewAdapter, include/osgSim/DOFTransform,
+	  include/osgSim/ImpostorSprite, include/osgUtil/TransformCallback,
+	  include/osgViewer/Renderer, src/osg/DeleteHandler.cpp,
+	  src/osg/OcclusionQueryNode.cpp, src/osg/PagedLOD.cpp,
+	  src/osg/Stats.cpp, src/osgAnimation/StatsHandler.cpp,
+	  src/osgDB/DatabasePager.cpp,
+	  src/osgParticle/ParticleProcessor.cpp,
+	  src/osgPlugins/Inventor/PendulumCallback.cpp,
+	  src/osgPlugins/Inventor/PendulumCallback.h,
+	  src/osgPlugins/Inventor/ShuttleCallback.cpp,
+	  src/osgPlugins/Inventor/ShuttleCallback.h,
+	  src/osgPlugins/txp/TXPPagedLOD.cpp,
+	  src/osgQt/QGraphicsViewAdapter.cpp, src/osgSim/DOFTransform.cpp,
+	  src/osgSim/ImpostorSprite.cpp, src/osgText/Text.cpp,
+	  src/osgUtil/SceneView.cpp, src/osgUtil/TransformCallback.cpp,
+	  src/osgViewer/CompositeViewer.cpp, src/osgViewer/Renderer.cpp,
+	  src/osgViewer/StatsHandler.cpp, src/osgViewer/Viewer.cpp,
+	  src/osgViewer/ViewerBase.cpp,
+	  src/osgWrappers/serializers/osg/OcclusionQueryNode.cpp,
+	  src/osgWrappers/serializers/osg/PagedLOD.cpp: Converted
+	  FrameStamp::g/setFrameNumber from int to uint
+
+2010-12-21 12:54  robert
+
+	* src/osgDB/DatabasePager.cpp: From Tim Moore, Dereference the
+	  databaseRequest while the queue is locked. This prevents the
+	  request from being
+	  deleted at an unpredictable time within
+	  addLoadedDataToSceneGraph.
+
+2010-12-21 12:51  robert
+
+	* src/osgPlugins/curl/ReaderWriterCURL.cpp: Introduced a local
+	  reference to the appropriate EasyCurl object to avoid seperate
+	  getEasyCurl() incurring a mutex lock overhead.
+
+2010-12-21 10:23  robert
+
+	* src/OpenThreads/pthreads/PThread.c++: Improved indentation to
+	  make it more readable and consistent with OSG.
+
+2010-12-21 09:36  robert
+
+	* include/osgDB/DatabasePager, src/osgDB/DatabasePager.cpp: Cleaned
+	  up the frame number increment.
+
+2010-12-21 09:12  robert
+
+	* src/osgPlugins/OpenFlight/expGeometryRecords.cpp: From Paul
+	  Martz, Fix for "in expGeometryRecords.cpp lines 813-820, we write
+	  the UV list data incorrectly. According to the FLT spec, the data
+	  should be grouped per-vertex, not per-layer.
+	  
+	  We should have:
+	  UV for vertex 0, layer 1
+	  UV for vertex 0, layer 2
+	  UV for vertex 1, layer 1
+	  UV for vertex 1, layer 2
+	  ...etc...
+	  
+	  Instead, we have this:
+	  UV for vertex 0, layer 1
+	  UV for vertex 1, layer 1
+	  ...etc...
+	  UV for vertex 0, layer 2
+	  UV for vertex 1, layer 2
+	  ...etc..."
+
+2010-12-20 17:04  robert
+
+	* src/osgUtil/CullVisitor.cpp: From Andy Skinner, "In this file
+	  I’ve changed TriangleFunctor to TemplatePrimitiveFunctor, and
+	  added operator() methods for:
+	  
+	  · points (just look at points in frustum)
+	  
+	  · lines (simple line clip—replace the external point)
+	  
+	  · quadrilaterals (call operator() for triangles twice)"
+
+2010-12-20 16:23  robert
+
+	* src/osgWrappers/deprecated-dotosg/osg/Geometry.cpp: From Andy
+	  Skinner, "We use a shared array for our OpenSceneGraph arrays,
+	  and the existing (deprecated) OSG plugin casts the Array to
+	  IntArray and FloatArray and the like. Because our arrays don’t
+	  use FloatArray, this crashes for us.
+	  
+	  
+	  
+	  Attached is src/osgWrappers/deprecated-dotosg/osg/Geometry.cpp.
+	  It gets the data pointer out and casts it to a pointer to the
+	  element type, rather than casting the array object itself. This
+	  seems to work."
+
+2010-12-20 12:17  robert
+
+	* include/osg/GL: Moved the GL3 include to within the code block
+	  that handles GL1/GL2
+
+2010-12-20 12:03  robert
+
+	* examples/osganimationmorph/osganimationmorph.cpp: Fixed memory
+	  leak by introducing use of ref_ptr<>
+
+2010-12-20 12:02  robert
+
+	* examples/osganimationmorph/osganimationmorph.cpp: From Kim
+	  Seokhwan, "Error fix in
+	  example/osganimationmorph/osganimationmorph.cpp
+	  
+	  in this file,
+	  function,
+	  osg::Geometry* getShape(const std::string& name)
+	  (line 51)
+	  
+	  tries to use null pointer when model is not provided.
+	  I added simple comment in attached file."
+
+2010-12-20 10:49  robert
+
+	* src/osgPlugins/txp/ReaderWriterTXP.cpp,
+	  src/osgPlugins/txp/TXPArchive.cpp: From Trajce Nikolov, Fixes to
+	  avoid cracks in older archives, tested with archives 2.0, 2.1,
+	  2.2 .
+
+2010-12-19 13:25  robert
+
+	* src/osgPlugins/txp/TXPNode.cpp,
+	  src/osgPlugins/txp/TileMapper.cpp,
+	  src/osgPlugins/txp/TileMapper.h: From Trajce Nicklov, "I went
+	  thru the TileMapper today very carefuly and I remove all the
+	  tileStack approach - it made everything simplier and I think more
+	  proper. Cleaned the code as well. It was tested on huge archive
+	  with many lods as well with variable lods. Fix attached."
+
+2010-12-17 13:43  robert
+
+	* src/osg/BufferObject.cpp, src/osg/Texture.cpp: From Tim Moore,
+	  fix for race conditions in takeOrGenerate() methods
+
+2010-12-17 11:46  robert
+
+	* src/osg/glu/libtess/normal.cpp, src/osg/glu/libtess/tess.h,
+	  src/osgPlugins/OpenFlight/expGeometryRecords.cpp,
+	  src/osgPlugins/vrml/ConvertToVRML.cpp: Fixed warnings
+
+2010-12-17 11:19  robert
+
+	* applications/osgviewer/osgviewer.cpp: Added --speed <ratio>
+	  command line parameter to osgviewer to enable control of the
+	  speed that animation paths are played back at.
+
+2010-12-17 10:59  robert
+
+	* src/osg/BufferObject.cpp, src/osg/Texture.cpp: Fixed the
+	  GLBufferObjectSet::deleteAllGLBufferObjets() and
+	  TextureObjectSet::deletaAllTextureObjects() methods
+	  and improved the checkConsistency() usage so it's now possible to
+	  switch if off completed from being compiled in.
+
+2010-12-15 19:44  robert
+
+	* include/osg/Texture, src/osg/BufferObject.cpp,
+	  src/osg/Texture.cpp: Fixed the size computation
+
+2010-12-15 16:30  robert
+
+	* include/osg/Texture: Removed no longer used static member
+	  variables
+
+2010-12-15 12:34  robert
+
+	* src/osg/BufferObject.cpp, src/osg/Texture.cpp: Improvements to
+	  GLBufferObject and TextureObject pools
+
+2010-12-14 20:22  robert
+
+	* src/osg/BufferObject.cpp, src/osg/Texture.cpp: Added report of
+	  ration of current size to max target size for buffer.
+
+2010-12-14 20:07  robert
+
+	* examples/osganalysis/osganalysis.cpp: Added --speed option and
+	  output of buffer object and texture object pool stats at the end
+	  of the animation path.
+
+2010-12-14 20:07  robert
+
+	* include/osgGA/AnimationPathManipulator,
+	  src/osgGA/AnimationPathManipulator.cpp: Added
+	  AnimationCompletedCallback, s/getTimeScale and s/getTimeOffset()
+	  method to enable finer control of AnimationPathManipulator.
+
+2010-12-14 19:29  robert
+
+	* examples/osganalysis/osganalysis.cpp, include/osg/BufferObject,
+	  include/osg/Texture, src/osg/BufferObject.cpp,
+	  src/osg/Texture.cpp: Added methods for checking sizes of various
+	  buffer object/texture object pool sizes.
+
+2010-12-14 15:28  robert
+
+	* include/osg/Texture, src/osg/Texture.cpp,
+	  src/osgDB/DatabasePager.cpp: Removed redundent
+	  MinimumNumberOfTextureObjectsToRetainInCache static variable
+
+2010-12-14 14:32  robert
+
+	* examples/osganalysis/osganalysis.cpp: Improved the parsing of
+	  output filename
+
+2010-12-14 13:43  robert
+
+	* examples/osganalysis/osganalysis.cpp: Added
+	  GLBufferObjectManager::reportStats()
+
+2010-12-14 10:42  robert
+
+	* CMakeModules/OsgCPack.cmake,
+	  CMakeModules/OsgCPackConfig.cmake.in: From Alan Dickenson, "I
+	  modified the CPack CMake files to provide the ability to easily
+	  create packages of the OpenSceneGraph components.
+	  
+	  I modified the OsgCPackConfig.cmake.in and OsgCPack.cmake files
+	  to expose access to select the package generator mechanism
+	  through cmake CPACK_GENERATOR option. The user can specify the
+	  type of package generator (i.e. rpms. deb, NSIS, tar, zip, etc)
+	  that they would like to use from the CPack supported
+	  packages/installation methods.
+	  
+	  I also changed the CPACK_PACKAGE_FILE_NAME to use
+	  OSG_PACKAGE_FILE_NAME which contains the name of each component
+	  so all of the component packages can be generated without
+	  renaming the files.
+	  
+	  This should make it even easier to create distribution packages
+	  for the various linux, windows and mac distribution methods
+	  supported by CPack."
+
+2010-12-14 08:58  robert
+
+	* src/osgPlugins/CMakeLists.txt: Moved Performer and Inventor
+	  plugins into block protected to only compile when not using GLES.
+
+2010-12-14 08:53  robert
+
+	* examples/osgposter/osgposter.cpp: From Wang Rui, "A modified
+	  version is attached. The blank while generating is in fact
+	  used to avoid dual update traversals of the scene, which is not
+	  allowed in my application (but I forgot the reason ;-) Now the
+	  blank
+	  problem will disappear.
+	  
+	  Inactive mode is also available, using the --inactive mode and
+	  --camera-eye and --camera-hpr to set camera position:
+	  
+	  ./osgposter --output-poster --poster output.bmp --tilesize 800
+	  600
+	  --finalsize 8000 6000 cow.osg --inactive --camera-eye 0 0 20
+	  "
+
+2010-12-13 17:54  robert
+
+	* examples/CMakeLists.txt, examples/osgviewerQt,
+	  examples/osgviewerQtContext: Renamed osgviewerQtContext to
+	  osgviewerQt, and removed deprecated examples from CMakeLists.txt
+
+2010-12-13 17:50  robert
+
+	* examples/osgviewerQT, examples/osgviewerQtWidget: Moved
+	  osgviewerQT and osgviewQtWidget to deprecated as
+	  osgviewerQtContext will no be the main Qt example
+
+2010-12-13 17:50  robert
+
+	* examples/osgbrowser: Moved osgbrowser into svn/trunk.
+
+2010-12-13 17:49  robert
+
+	* examples/osgcegui: Move osgcegui into deprecated
+
+2010-12-13 17:37  robert
+
+	* CMakeModules/FindXUL.cmake: Have moved FindXUL.cmake to
+	  deprecated
+
+2010-12-13 17:36  robert
+
+	* CMakeLists.txt, src/osgPlugins/CMakeLists.txt,
+	  src/osgPlugins/gecko: Have moved gecko plugin to deprecated
+
+2010-12-13 17:09  robert
+
+	* include/osg/BufferObject, src/osg/BufferObject.cpp: Added
+	  resizeGLObjectBuffers(uint) and relaseGLObjects(State*) to
+	  BufferData.
+
+2010-12-13 16:25  robert
+
+	* examples/osgviewerQtContext/CMakeLists.txt,
+	  examples/osgviewerQtContext/GraphicsWindowQt,
+	  examples/osgviewerQtContext/GraphicsWindowQt.cpp,
+	  examples/osgviewerQtContext/osgviewerQtContext.cpp,
+	  include/osgQt/GraphicsWindowQt, src/osgQt/CMakeLists.txt,
+	  src/osgQt/GraphicsWindowQt.cpp: Moved GraphicsWindowQt from
+	  osgviewerQtContext into osgQt.
+
+2010-12-13 13:41  robert
+
+	* examples/osgposter/PosterPrinter.cpp,
+	  examples/osgposter/PosterPrinter.h: Fixed warnings
+
+2010-12-13 13:37  robert
+
+	* examples/CMakeLists.txt, examples/osgposter,
+	  examples/osgposter/CMakeLists.txt,
+	  examples/osgposter/PosterPrinter.cpp,
+	  examples/osgposter/PosterPrinter.h,
+	  examples/osgposter/osgposter.cpp: From Wang Rui, "Attachment is
+	  an example of rendering 3D scenes to high resolution screenshots.
+	  
+	  I uses a queue of Camera objects to do offscreen rendering with
+	  the Camera::attach() function. The entire picture is split into
+	  many tiles and it will take a few seconds while attaching and
+	  detaching cameras with tiles. You may select to output every tile
+	  as an image file, or combine them together to create a large
+	  poster, for example, a 12800 x 9600 image.
+	  
+	  Start the program like this:
+	  
+	  ./osgposter --output-poster --poster output.bmp --tilesize 800
+	  600 --finalsize 8000 6000 cow.osg
+	  
+	  Adjust the scene camera to a suitable position and press 'p' or
+	  'P' on the keyboard. Wait until sub-cameras dispatching is
+	  finished. And the poster file will be created while closing
+	  window. A 8000 x 6000 output.bmp will be created to show a
+	  fine-printed cow. :)
+	  
+	  The command below may also help:
+	  
+	  ./osgposter --help
+	  "
+
+2010-12-13 12:16  robert
+
+	* include/osgDB/SharedStateManager, src/osgDB/Registry.cpp,
+	  src/osgDB/SharedStateManager.cpp,
+	  src/osgPlugins/glsl/ReaderWriterGLSL.cpp: Form Richard Schmidt,
+	  "The following features were added:
+	  
+	  * the glsl plugin now supports processing #includes. The file
+	  extension sets the shader type.
+	  
+	  * the registry releases gl objects of the shared state manager
+	  "
+
+2010-12-13 11:34  robert
+
+	* CMakeLists.txt, CMakeModules/FindDirectInput.cmake,
+	  examples/CMakeLists.txt, examples/osgdirectinput,
+	  examples/osgdirectinput/CMakeLists.txt,
+	  examples/osgdirectinput/DirectInputRegistry,
+	  examples/osgdirectinput/DirectInputRegistry.cpp,
+	  examples/osgdirectinput/osgdirectinput.cpp: From Wang Rui, "I
+	  implemented a customized viewer event traversal here to read
+	  state
+	  changes from the DirectInput devices and add events to the event
+	  queue. I've tested with the keyboard and joystick supports.
+	  Because of
+	  only having a very old 6-button gamepad, I can't do more
+	  experiments.
+	  Hope this will bring more ideas to those who face similar
+	  problems,
+	  especially simulation game designers. :)
+	  
+	  I didn't map all DirectInput key values to GUIEventAdapter key
+	  symbols. Users may add more in the buildKeyMap() function freely.
+	  The
+	  mouse handling operations are also ignored, but will be easily
+	  improved in the same way of creating keyboard and joystick
+	  devices.
+	  
+	  Please add a line:
+	  
+	  FIND_PACKAGE(DirectInput)
+	  
+	  in the CMakeLists of root directory. And in the
+	  examples/CMakeLists.txt:
+	  
+	  IF(DIRECTINPUT_FOUND)
+	  ADD_SUBDIRECTORY(osgdirectinput)
+	  ENDIF(DIRECTINPUT_FOUND)
+	  
+	  DirectX SDK 2009 is used here, but an older version like DX8
+	  should
+	  also work in my opinion.
+	  "
+
+2010-12-13 10:46  robert
+
+	* examples/osgviewerWX/osgviewerWX.cpp,
+	  examples/osgviewerWX/osgviewerWX.h: From Eduardo Poyart, "The
+	  attached patch fixes a race condition that caused OSG to try to
+	  render the scene before the window is realized. It works ok in my
+	  osgviewerWX-derived application under Linux."
+
+2010-12-12 10:00  robert
+
+	* src/osgViewer/GraphicsWindowX11.cpp: Added TODO notes
+
+2010-12-12 09:58  robert
+
+	* src/osg/DisplaySettings.cpp: From Wojciech Lewandowski, added
+	  docs on Swap Method env vars and command line options
+
+2010-12-12 09:52  robert
+
+	* src/osgPlugins/txp/TileMapper.cpp: From Trajce Nikolov, "attached
+	  is a fix for the txp loader (in TileMapper). The code was giving
+	  wrong parent tile ids using the stack - I implemented differnt
+	  approach for that"
+
+2010-12-12 09:40  robert
+
+	* src/osgPlugins/ffmpeg/ReaderWriterFFmpeg.cpp: From David Fries,
+	  "The ffmpeg lockmanager was introduced in ffmpeg 52 30 1, but
+	  later backported to 52 20 1, so add that to the version check
+	  in ReaderWriterFFmpeg.cpp."
+
+2010-12-12 09:37  robert
+
+	* src/osgPlugins/txp/ReaderWriterTXP.cpp,
+	  src/osgPlugins/txp/ReaderWriterTXP.h: From David Fries, "Avoid a
+	  terrapage crash with outstanding
+	  requests to a removed archive file.
+	  ReaderWriterTXP::getArchiveName
+	  will create an archive if it doesn't exist. This is causing a
+	  crash
+	  if the terrain is removed and there are outstanding database
+	  requests
+	  in the database pager. The request will create a new archive, and
+	  as
+	  the archive is newly create doesn't have the materials etc to
+	  support
+	  the subtile that was just loaded. To fix the problem
+	  getArchiveName
+	  will only return existing archives. createArchiveName was added
+	  to
+	  create archives.
+	  "
+
+2010-12-12 09:22  robert
+
+	* include/osg/Program: From Wojciech Lewandowski, "As suggested I
+	  have added missing method to PerContextProgram. Tested with our
+	  programs.
+	  
+	  I see that we should expect some performance penalty for using
+	  this method. It won’t be painful in my current case because I
+	  have only a few animated characters. But I suspect some day I
+	  will have to fix osgCal to use int UniformIds natively for larger
+	  crowds."
+
+2010-12-12 08:56  robert
+
+	* src/osgUtil/SmoothingVisitor.cpp: From Wang Rui, "I've found a
+	  possible bug in the new SmoothingVisitor implementation
+	  (with a great 'crease angle' feature), which will crash if the
+	  normal
+	  array is already set but without BIND_PER_VERTEX. I just believe
+	  that
+	  we should reallocate the normal array in these cases, as the old
+	  implementation does.
+	  "
+
+2010-12-12 08:54  robert
+
+	* include/osg/TriangleIndexFunctor: Introuced a local typedef of
+	  the index array type to keep the functor parameters consistent
+
+2010-12-11 15:12  robert
+
+	* src/osgPlugins/gdal/ReaderWriterGDAL.cpp: From Cedric Pinson,
+	  "Here a small fix about gdal plugin used to read dem file, if you
+	  dont
+	  setup the log level to INFO it does not work. It's because of
+	  this line:
+	  OSG_INFO << " GetGeoTransform == "<<
+	  dataset->GetGeoTransform(geoTransform)<<"
+	  
+	  I have just put the function outside of an stream stuff, and it
+	  works.
+	  It's possible we have other code like that in other plugins, I
+	  guess
+	  it's a side effect of the MACRO stuff about notification."
+
+2010-12-10 15:27  robert
+
+	* include/osgDB/DatabasePager, include/osgDB/Registry,
+	  include/osgUtil/IncrementalCompileOperation,
+	  include/osgUtil/SceneView, include/osgViewer/Renderer,
+	  src/osgDB/DatabasePager.cpp,
+	  src/osgUtil/IncrementalCompileOperation.cpp,
+	  src/osgUtil/SceneView.cpp, src/osgViewer/Renderer.cpp: Refactor
+	  of DatabasePage/IncrementalCompileOperation to use the
+	  IncrementalCompileOperator for compiling objects
+
+2010-12-10 13:22  robert
+
+	* applications/osgfilecache/osgfilecache.cpp,
+	  examples/osgautocapture/osgautocapture.cpp,
+	  src/osgPlugins/mdl/VTXReader.cpp: Build fixes to keep up with
+	  changes in head inclusions/API in osgDB
+
+2010-12-09 12:16  robert
+
+	* examples/osgterrain/osgterrain.cpp: Added handling of
+	  CoordinateSystemNode when they decorate a loaded model, copying
+	  the contents of the CoordinateSystemNode across to the Terrain
+	  node
+
+2010-12-08 11:01  robert
+
+	* CMakeLists.txt, include/osg/Version: Updated version number for
+	  2.9.11 dev release
+
+2010-12-08 10:34  robert
+
+	* include/osgTerrain/Layer, include/osgTerrain/Terrain,
+	  src/osgTerrain/Layer.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgTerrain/HeightFieldLayer.cpp:
+	  From Ulrich Hertlein, "attached are patches to osgTerrain that
+	  fix some typos and add a bit of documentation.
+	  "
+
+2010-12-08 09:54  robert
+
+	* src/osgDB/ObjectWrapper.cpp: Added protection against the
+	  Registry from being deleted prior to the proxy objects
+	  unregistering themselves
+
+2010-12-08 09:52  robert
+
+	* src/osgDB/DatabasePager.cpp: Fixes for benign threading memory
+	  contentions.
+
+2010-12-06 10:35  robert
+
+	* include/osgUtil/Optimizer, src/osgUtil/Optimizer.cpp: Renamed YES
+	  and NO enums with more description names that don't overlap with
+	  iOS #define's
+
+2010-12-03 19:04  robert
+
+	* AUTHORS.txt, ChangeLog: Updated ChangeLog and AUTHORS for release
+
 2010-12-03 17:50  robert
 
 	* src/osgText/Text.cpp: From Johannes Bauerle, "When trying to use

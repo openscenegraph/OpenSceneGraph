@@ -167,7 +167,7 @@ void NodeTrackerManipulator::computeNodeCenterAndRotation(osg::Vec3d& nodeCenter
     computeNodeWorldToLocal(worldToLocal);
 
     osg::NodePath nodePath;
-    if (_trackNodePath.getNodePath(nodePath))
+    if (_trackNodePath.getNodePath(nodePath) && !nodePath.empty())
         nodeCenter = osg::Vec3d(nodePath.back()->getBound().center())*localToWorld;
     else
         nodeCenter = osg::Vec3d(0.0f,0.0f,0.0f)*localToWorld;

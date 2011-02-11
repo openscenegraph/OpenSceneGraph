@@ -56,6 +56,57 @@
 #include "IslandScene.h"
 
 
+class ChangeFOVHandler : public osgGA::GUIEventHandler
+{
+public:
+    ChangeFOVHandler(osg::Camera* camera)
+        : _camera(camera)
+    {
+        double fovy, aspectRatio, zNear, zFar;
+        _camera->getProjectionMatrix().getPerspective(fovy, aspectRatio, zNear, zFar);
+        std::cout << "FOV is " << fovy << std::endl;
+    }
+
+    /** Deprecated, Handle events, return true if handled, false otherwise. */
+    virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    {
+        if (ea.getEventType() == osgGA::GUIEventAdapter::KEYUP)
+        {
+            if (ea.getKey() == '-' || ea.getKey() == '=' || ea.getKey() == '0')
+            {
+                double fovy, aspectRatio, zNear, zFar;
+                _camera->getProjectionMatrix().getPerspective(fovy, aspectRatio, zNear, zFar);
+
+                if (ea.getKey() == '-')
+                {
+                    fovy -= 5.0;
+                }
+
+                if (ea.getKey() == '=')
+                {
+                    fovy += 5.0;
+                }
+
+                if (ea.getKey() == '0')
+                {
+                    fovy = 45.0;
+                }
+
+                std::cout << "Setting FOV to " << fovy << std::endl;
+                _camera->getProjectionMatrix().makePerspective(fovy, aspectRatio, zNear, zFar);
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    osg::ref_ptr<osg::Camera> _camera;
+};
+
+
+
 static int ReceivesShadowTraversalMask = 0x1;
 static int CastsShadowTraversalMask = 0x2;
 
@@ -799,6 +850,8 @@ int main(int argc, char** argv)
     shadowedScene->addChild(ls.get());
 
     viewer.setSceneData(shadowedScene.get());
+
+    viewer.addEventHandler(new ChangeFOVHandler(viewer.getCamera()));
 
     // create the windows and run the threads.
     viewer.realize();

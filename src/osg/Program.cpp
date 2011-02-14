@@ -95,25 +95,25 @@ void Program::discardDeletedGlPrograms(unsigned int contextID)
 
 
 ///////////////////////////////////////////////////////////////////////////
-// osg::ProgramBinary
+// osg::Program::ProgramBinary
 ///////////////////////////////////////////////////////////////////////////
 
-ProgramBinary::ProgramBinary() : _format(0)
+Program::ProgramBinary::ProgramBinary() : _format(0)
 {
 }
 
-ProgramBinary::ProgramBinary(const ProgramBinary& rhs, const osg::CopyOp&) :
+Program::ProgramBinary::ProgramBinary(const ProgramBinary& rhs, const osg::CopyOp&) :
     _data(rhs._data), _format(rhs._format)
 {
 }
 
-void ProgramBinary::allocate(unsigned int size)
+void Program::ProgramBinary::allocate(unsigned int size)
 {
     _data.clear();
     _data.resize(size);
 }
 
-void ProgramBinary::assign(unsigned int size, const unsigned char* data)
+void Program::ProgramBinary::assign(unsigned int size, const unsigned char* data)
 {
     allocate(size);
     if (data)
@@ -516,8 +516,8 @@ const Program::ActiveVarInfoMap& Program::getActiveAttribs(unsigned int contextI
 
 Program::PerContextProgram::PerContextProgram(const Program* program, unsigned int contextID ) :
         osg::Referenced(),
-        _contextID( contextID ),
-        _loadedBinary(false)
+        _loadedBinary(false),
+        _contextID( contextID )
 {
     _program = program;
     _extensions = GL2Extensions::Get( _contextID, true );
@@ -808,7 +808,7 @@ bool Program::PerContextProgram::getInfoLog( std::string& infoLog ) const
     return _extensions->getProgramInfoLog( _glProgramHandle, infoLog );
 }
 
-ProgramBinary* Program::PerContextProgram::compileProgramBinary(osg::State& state)
+Program::ProgramBinary* Program::PerContextProgram::compileProgramBinary(osg::State& state)
 {
     linkProgram(state);
     GLint binaryLength = 0;

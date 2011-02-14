@@ -193,6 +193,10 @@ protected: //methods
 
     void createAssetTag(bool isZUpAxis);
 
+    // Overloaded version of createAssetTag which provides ability to
+    // set user defined values for child elements
+    void createAssetTag(const osg::Node &node);
+
     void pushStateSet(osg::StateSet* ss);
 
     void popStateSet(osg::StateSet* ss);

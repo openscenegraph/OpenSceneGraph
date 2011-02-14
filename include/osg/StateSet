@@ -17,10 +17,7 @@
 #include <osg/Object>
 #include <osg/StateAttribute>
 #include <osg/ref_ptr>
-
 #include <osg/Uniform>
-#include <osg/Program>
-
 
 #include <map>
 #include <vector>

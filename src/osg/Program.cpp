@@ -20,6 +20,7 @@
 */
 
 #include <list>
+#include <fstream>
 
 #include <osg/Notify>
 #include <osg/State>
@@ -90,6 +91,38 @@ void Program::discardDeletedGlPrograms(unsigned int contextID)
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_deletedGlProgramCache);
     GlProgramHandleList& pList = s_deletedGlProgramCache[contextID];
     pList.clear();
+}
+
+
+///////////////////////////////////////////////////////////////////////////
+// osg::ProgramBinary
+///////////////////////////////////////////////////////////////////////////
+
+ProgramBinary::ProgramBinary() : _format(0)
+{
+}
+
+ProgramBinary::ProgramBinary(const ProgramBinary& rhs, const osg::CopyOp&) :
+    _data(rhs._data), _format(rhs._format)
+{
+}
+
+void ProgramBinary::allocate(unsigned int size)
+{
+    _data.clear();
+    _data.resize(size);
+}
+
+void ProgramBinary::assign(unsigned int size, const unsigned char* data)
+{
+    allocate(size);
+    if (data)
+    {
+        for(unsigned int i=0; i<size; ++i)
+        {
+            _data[i] = data[i];
+        }
+    }
 }
 
 
@@ -240,7 +273,6 @@ void Program::releaseGLObjects(osg::State* state) const
     }   
 }
 
-
 bool Program::addShader( Shader* shader )
 {
     if( !shader ) return false;
@@ -336,14 +368,14 @@ void Program::setParameterfv( GLenum pname, const GLfloat* value )
 
 const GLfloat* Program::getParameterfv( GLenum pname ) const
 {
-    switch( pname )
+    /*switch( pname )
     {
       ;
       // todo tessellation default level
       //        case GL_PATCH_DEFAULT_INNER_LEVEL: return _patchDefaultInnerLevel;
       //        case GL_PATCH_DEFAULT_OUTER_LEVEL: return _patchDefaultOuterLevel;
 
-    }
+    }*/
     OSG_WARN << "getParameter invalid param " << pname << std::endl;
     return 0;
 }
@@ -484,7 +516,8 @@ const Program::ActiveVarInfoMap& Program::getActiveAttribs(unsigned int contextI
 
 Program::PerContextProgram::PerContextProgram(const Program* program, unsigned int contextID ) :
         osg::Referenced(),
-        _contextID( contextID )
+        _contextID( contextID ),
+        _loadedBinary(false)
 {
     _program = program;
     _extensions = GL2Extensions::Get( _contextID, true );
@@ -515,30 +548,48 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
              << " contextID=" << _contextID
              <<  std::endl;
 
-    if (_extensions->isGeometryShader4Supported())
+    const ProgramBinary* programBinary = _program->getProgramBinary();
+
+    _loadedBinary = false;
+    if (programBinary && programBinary->getSize())
     {
-        _extensions->glProgramParameteri( _glProgramHandle, GL_GEOMETRY_VERTICES_OUT_EXT, _program->_geometryVerticesOut );
-        _extensions->glProgramParameteri( _glProgramHandle, GL_GEOMETRY_INPUT_TYPE_EXT, _program->_geometryInputType );
-        _extensions->glProgramParameteri( _glProgramHandle, GL_GEOMETRY_OUTPUT_TYPE_EXT, _program->_geometryOutputType );
+        GLint linked = GL_FALSE;
+        _extensions->glProgramBinary( _glProgramHandle, programBinary->getFormat(),
+            reinterpret_cast<const GLvoid*>(programBinary->getData()), programBinary->getSize() );
+        _extensions->glGetProgramiv( _glProgramHandle, GL_LINK_STATUS, &linked );
+        _loadedBinary = _isLinked = (linked == GL_TRUE);
     }
 
-    if (_extensions->areTessellationShadersSupported() )
+    if (!_loadedBinary)
     {
-        _extensions->glPatchParameteri( GL_PATCH_VERTICES, _program->_patchVertices );
-        // todo: add default tessellation level
-    }
+        if (_extensions->isGeometryShader4Supported())
+        {
+            _extensions->glProgramParameteri( _glProgramHandle, GL_GEOMETRY_VERTICES_OUT_EXT, _program->_geometryVerticesOut );
+            _extensions->glProgramParameteri( _glProgramHandle, GL_GEOMETRY_INPUT_TYPE_EXT, _program->_geometryInputType );
+            _extensions->glProgramParameteri( _glProgramHandle, GL_GEOMETRY_OUTPUT_TYPE_EXT, _program->_geometryOutputType );
+        }
 
-    // Detach removed shaders
-    for( unsigned int i=0; i < _shadersToDetach.size(); ++i )
-    {
-        _shadersToDetach[i]->detachShader( _contextID, _glProgramHandle );
+        if (_extensions->areTessellationShadersSupported() )
+        {
+            _extensions->glPatchParameteri( GL_PATCH_VERTICES, _program->_patchVertices );
+            // todo: add default tessellation level
+        }
+
+        // Detach removed shaders
+        for( unsigned int i=0; i < _shadersToDetach.size(); ++i )
+        {
+            _shadersToDetach[i]->detachShader( _contextID, _glProgramHandle );
+        }
     }
     _shadersToDetach.clear();
 
-    // Attach new shaders
-    for( unsigned int i=0; i < _shadersToAttach.size(); ++i )
+    if (!_loadedBinary)
     {
-        _shadersToAttach[i]->attachShader( _contextID, _glProgramHandle );
+        // Attach new shaders
+        for( unsigned int i=0; i < _shadersToAttach.size(); ++i )
+        {
+            _shadersToAttach[i]->attachShader( _contextID, _glProgramHandle );
+        }
     }
     _shadersToAttach.clear();
 
@@ -546,41 +597,51 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
     _attribInfoMap.clear();
     _lastAppliedUniformList.clear();
 
-    // set any explicit vertex attribute bindings
-    const AttribBindingList& programBindlist = _program->getAttribBindingList();
-    for( AttribBindingList::const_iterator itr = programBindlist.begin();
-        itr != programBindlist.end(); ++itr )
+    if (!_loadedBinary)
     {
-        OSG_INFO<<"Program's vertex attrib binding "<<itr->second<<", "<<itr->first<<std::endl;
-        _extensions->glBindAttribLocation( _glProgramHandle, itr->second, reinterpret_cast<const GLchar*>(itr->first.c_str()) );
-    }
-
-    // set any explicit vertex attribute bindings that are set up via osg::State, such as the vertex arrays
-    //  that have been aliase to vertex attrib arrays
-    if (state.getUseVertexAttributeAliasing())
-    {
-        const AttribBindingList& stateBindlist = state.getAttributeBindingList();
-        for( AttribBindingList::const_iterator itr = stateBindlist.begin();
-            itr != stateBindlist.end(); ++itr )
+        // set any explicit vertex attribute bindings
+        const AttribBindingList& programBindlist = _program->getAttribBindingList();
+        for( AttribBindingList::const_iterator itr = programBindlist.begin();
+            itr != programBindlist.end(); ++itr )
         {
-            OSG_INFO<<"State's vertex attrib binding "<<itr->second<<", "<<itr->first<<std::endl;
+            OSG_INFO<<"Program's vertex attrib binding "<<itr->second<<", "<<itr->first<<std::endl;
             _extensions->glBindAttribLocation( _glProgramHandle, itr->second, reinterpret_cast<const GLchar*>(itr->first.c_str()) );
         }
+
+        // set any explicit vertex attribute bindings that are set up via osg::State, such as the vertex arrays
+        //  that have been aliase to vertex attrib arrays
+        if (state.getUseVertexAttributeAliasing())
+        {
+            const AttribBindingList& stateBindlist = state.getAttributeBindingList();
+            for( AttribBindingList::const_iterator itr = stateBindlist.begin();
+                itr != stateBindlist.end(); ++itr )
+            {
+                OSG_INFO<<"State's vertex attrib binding "<<itr->second<<", "<<itr->first<<std::endl;
+                _extensions->glBindAttribLocation( _glProgramHandle, itr->second, reinterpret_cast<const GLchar*>(itr->first.c_str()) );
+            }
+        }
+
+        // set any explicit frag data bindings
+        const FragDataBindingList& fdbindlist = _program->getFragDataBindingList();
+        for( FragDataBindingList::const_iterator itr = fdbindlist.begin();
+            itr != fdbindlist.end(); ++itr )
+        {
+            _extensions->glBindFragDataLocation( _glProgramHandle, itr->second, reinterpret_cast<const GLchar*>(itr->first.c_str()) );
+        }
+
+        // if any program binary has been set then assume we want to retrieve a binary later.
+        if (programBinary)
+        {
+            _extensions->glProgramParameteri( _glProgramHandle, GL_PROGRAM_BINARY_RETRIEVABLE_HINT, GL_TRUE );
+        }
+
+        // link the glProgram
+        GLint linked = GL_FALSE;
+        _extensions->glLinkProgram( _glProgramHandle );
+        _extensions->glGetProgramiv( _glProgramHandle, GL_LINK_STATUS, &linked );
+        _isLinked = (linked == GL_TRUE);
     }
 
-    // set any explicit frag data bindings
-    const FragDataBindingList& fdbindlist = _program->getFragDataBindingList();
-    for( FragDataBindingList::const_iterator itr = fdbindlist.begin();
-        itr != fdbindlist.end(); ++itr )
-    {
-        _extensions->glBindFragDataLocation( _glProgramHandle, itr->second, reinterpret_cast<const GLchar*>(itr->first.c_str()) );
-    }
-
-    // link the glProgram
-    GLint linked = GL_FALSE;
-    _extensions->glLinkProgram( _glProgramHandle );
-    _extensions->glGetProgramiv( _glProgramHandle, GL_LINK_STATUS, &linked );
-    _isLinked = (linked == GL_TRUE);
     if( ! _isLinked )
     {
         OSG_WARN << "glLinkProgram \""<< _program->getName() << "\" FAILED" << std::endl;
@@ -600,7 +661,7 @@ void Program::PerContextProgram::linkProgram(osg::State& state)
         if( getInfoLog(infoLog) )
         {
             OSG_INFO << "Program \""<< _program->getName() << "\" "<<
-                                      "link succeded, infolog:\n" << infoLog << std::endl;
+                                      "link succeeded, infolog:\n" << infoLog << std::endl;
         }
     }
 
@@ -745,6 +806,23 @@ bool Program::PerContextProgram::validateProgram()
 bool Program::PerContextProgram::getInfoLog( std::string& infoLog ) const
 {
     return _extensions->getProgramInfoLog( _glProgramHandle, infoLog );
+}
+
+ProgramBinary* Program::PerContextProgram::compileProgramBinary(osg::State& state)
+{
+    linkProgram(state);
+    GLint binaryLength = 0;
+    _extensions->glGetProgramiv( _glProgramHandle, GL_PROGRAM_BINARY_LENGTH, &binaryLength );
+    if (binaryLength)
+    {
+        ProgramBinary* programBinary = new ProgramBinary;
+        programBinary->allocate(binaryLength);
+        GLenum binaryFormat = 0;
+        _extensions->glGetProgramBinary( _glProgramHandle, binaryLength, 0, &binaryFormat, reinterpret_cast<GLvoid*>(programBinary->getData()) );
+        programBinary->setFormat(binaryFormat);
+        return programBinary;
+    }
+    return 0;
 }
 
 void Program::PerContextProgram::useProgram() const

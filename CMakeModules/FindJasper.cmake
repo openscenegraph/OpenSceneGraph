@@ -11,6 +11,7 @@
 
 FIND_PATH(JASPER_INCLUDE_DIR jasper/jasper.h
     $ENV{JASPER_DIR}/include
+    $ENV{JASPER_DIR}/src/libjasper/include
     $ENV{JASPER_DIR}
     ~/Library/Frameworks
     /Library/Frameworks
@@ -24,9 +25,29 @@ FIND_PATH(JASPER_INCLUDE_DIR jasper/jasper.h
 )
 
 FIND_LIBRARY(JASPER_LIBRARY 
-    NAMES jasper
+    NAMES jasper libjasper
     PATHS
     $ENV{JASPER_DIR}/lib
+    $ENV{JASPER_DIR}/src/libjasper/lib
+    $ENV{JASPER_DIR}/src/msvc/Win32_Release
+    $ENV{JASPER_DIR}
+    ~/Library/Frameworks
+    /Library/Frameworks
+    /usr/local/lib
+    /usr/lib
+    /sw/lib
+    /opt/local/lib
+    /opt/csw/lib
+    /opt/lib
+    /usr/freeware/lib64
+)
+
+FIND_LIBRARY(JASPER_LIBRARY_DEBUG
+    NAMES jasper libjasper jasperd libjasperd
+    PATHS
+    $ENV{JASPER_DIR}/lib
+    $ENV{JASPER_DIR}/src/libjasper/lib
+    $ENV{JASPER_DIR}/src/msvc/Win32_Debug
     $ENV{JASPER_DIR}
     ~/Library/Frameworks
     /Library/Frameworks
@@ -43,5 +64,4 @@ SET(JASPER_FOUND "NO")
 IF(JASPER_LIBRARY AND JASPER_INCLUDE_DIR)
     SET(JASPER_FOUND "YES")
 ENDIF(JASPER_LIBRARY AND JASPER_INCLUDE_DIR)
-
 

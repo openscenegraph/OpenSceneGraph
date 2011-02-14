@@ -18,6 +18,10 @@ class ConvertFromInventor
         ConvertFromInventor();
         ~ConvertFromInventor();
 
+        /** Initializes internal converting structures.
+         *  The function is expected to be called after Inventor initialization. */
+        static void init();
+
         /// Conversts from IV to OSG scene graph
         osg::Node* convert(SoNode* rootIVNode);
 

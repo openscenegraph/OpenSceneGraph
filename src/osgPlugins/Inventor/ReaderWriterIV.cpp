@@ -55,6 +55,9 @@ void ReaderWriterIV::initInventor() const
 #ifdef __COIN__
     // Disable delayed loading of VRML textures
     SoVRMLImageTexture::setDelayFetchURL(FALSE);
+    
+    // initialize convertor
+    ConvertFromInventor::init();
 #endif
 }
 

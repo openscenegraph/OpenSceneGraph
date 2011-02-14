@@ -20,6 +20,7 @@
 #include <osg/LightSource>
 #include <osg/ShadeModel>
 #include <osg/LOD>
+#include <osgDB/ReadFile>
 #include <osgUtil/TransformCallback>
 
 // Inventor headers
@@ -52,6 +53,7 @@
 #include <Inventor/VRMLnodes/SoVRMLTransform.h>
 #include <Inventor/VRMLnodes/SoVRMLAppearance.h>
 #include <Inventor/VRMLnodes/SoVRMLMaterial.h>
+#include <Inventor/lists/SbStringList.h>
 #endif
 
 #if defined(__COIN__) && (COIN_MAJOR_VERSION >= 3 || \
@@ -984,6 +986,318 @@ ConvertFromInventor::postShape(void* data, SoCallbackAction* action,
     return SoCallbackAction::CONTINUE;
 }
 ///////////////////////////////////////////////////////////////
+
+#ifdef __COIN__
+
+//
+//  Following classes can be used for redirecting texture loading from Coin routines
+//  that use simage library to native OSG routines. This removes the dependency
+//  on simage and using the same routines by OSG and Coin may provide some
+//  advantages to programmer as well.
+//
+//  Classes that are loading textures: SoTexture2, SoTexture3 (since Coin 2.0),
+//  SoVRMLImageTexture (since Coin 2.0), SoVRMLMovieTexture (not yet implemented in Coin)
+//
+//  Principle: SoType::overrideType() can be used for changing
+//  of the class instantiation method. So let's change it and create our own
+//  API compatible class that will just not load texture from file.
+//
+
+#include <Inventor/nodes/SoTexture2.h>
+#include <Inventor/nodes/SoTexture3.h>
+#include <Inventor/VRMLnodes/SoVRMLImageTexture.h>
+
+
+// This macro gives the common API for all overriding classes.
+#define OVERRIDE_HEADER(_class_,_parent_) \
+public: \
+\
+    static void overrideClass() \
+    { \
+        if (overrideCounter == 0) { \
+            SoType t = _parent_::getClassTypeId(); \
+            oldMethod = t.getInstantiationMethod(); \
+            SoType::overrideType(t, _class_::createInstance); \
+        } \
+        overrideCounter++; \
+    } \
+\
+    static SbBool cancelOverrideClass() \
+    { \
+        assert(overrideCounter > 0 && #_class_ "::cancelOverride called more times\n" \
+               "than " #_class_ "::override"); \
+        assert(_parent_::getClassTypeId().getInstantiationMethod() == _class_::createInstance && \
+               "Somebody changed " #_parent_ " instantiation method\n" \
+               "(probably through SoType::overrideType) and did not restored it."); \
+\
+        overrideCounter--; \
+        if (overrideCounter == 0) \
+            SoType::overrideType(_parent_::getClassTypeId(), oldMethod); \
+\
+        return overrideCounter==0; \
+    } \
+\
+private: \
+\
+    static int overrideCounter; \
+\
+    static SoType::instantiationMethod oldMethod; \
+\
+    static void* createInstance() \
+    { \
+        return new _class_; \
+    }
+
+#define OVERRIDE_SRC(_class_) \
+\
+int _class_::overrideCounter = 0; \
+SoType::instantiationMethod _class_::oldMethod
+
+
+class SoTexture2Osg : public SoTexture2 {
+    OVERRIDE_HEADER(SoTexture2Osg, SoTexture2);
+protected:
+    virtual SbBool readInstance(SoInput *in, unsigned short flags);
+};
+
+
+class SoTexture3Osg : public SoTexture3 {
+    OVERRIDE_HEADER(SoTexture3Osg, SoTexture3);
+protected:
+    virtual SbBool readInstance(SoInput *in, unsigned short flags);
+};
+
+
+class SoVRMLImageTextureOsg : public SoVRMLImageTexture {
+    OVERRIDE_HEADER(SoVRMLImageTextureOsg, SoVRMLImageTexture);
+protected:
+    virtual SbBool readInstance(SoInput *in, unsigned short flags);
+};
+
+OVERRIDE_SRC(SoTexture2Osg);
+OVERRIDE_SRC(SoTexture3Osg);
+OVERRIDE_SRC(SoVRMLImageTextureOsg);
+
+static osgDB::ReaderWriter::Options* createOptions()
+{
+    const SbStringList &soInputDirectories = SoInput::getDirectories();
+    osgDB::ReaderWriter::Options *options = new osgDB::ReaderWriter::Options;
+    osgDB::FilePathList &pathList = options->getDatabasePathList();
+    int c = soInputDirectories.getLength();
+    for (int i=0; i<c; i++)
+        pathList.push_back(soInputDirectories[i]->getString());
+
+    return options;
+}
+
+static osg::Image* loadImage(const char *fileName, osgDB::ReaderWriter::Options *options)
+{
+    osg::Image *osgImage = osgDB::readImageFile(fileName, options);
+
+    if (!osgImage)
+        OSG_WARN << NOTIFY_HEADER << "Could not read texture file '" << fileName << "'.";
+
+    return osgImage;
+}
+
+SbBool SoTexture2Osg::readInstance(SoInput *in, unsigned short flags)
+{
+    // disable notification and read inherited fields
+    SbBool oldNotify = filename.enableNotify(FALSE);
+    SbBool readOK = SoNode::readInstance(in, flags);
+    this->setReadStatus((int) readOK);
+
+    // if file name given
+    if (readOK && !filename.isDefault() && filename.getValue() != "")
+    {
+        // create options and read the file
+        osgDB::ReaderWriter::Options *options = createOptions();
+        osg::ref_ptr<osg::Image> image = loadImage(filename.getValue().getString(), options);
+
+        if (image.valid())
+        {
+            // get image dimensions and data
+            int nc = osg::Image::computeNumComponents(image->getPixelFormat());
+            SbVec2s size(image->s(), image->t());
+            unsigned char *bytes = image->data();
+
+            // disable notification on image while setting data from filename
+            // as a notify will cause a filename.setDefault(TRUE)
+            SbBool oldnotify = this->image.enableNotify(FALSE);
+            this->image.setValue(size, nc, bytes);
+            this->image.enableNotify(oldnotify);
+            // PRIVATE(this)->glimagevalid = FALSE; -> recreate GL image in next GLRender()
+            // We can safely ignore this as we are not going to render the scene graph.
+        }
+        else
+        {
+            // image loading failed -> set readOK
+            readOK = FALSE;
+            this->setReadStatus(FALSE);
+        }
+
+        // write filename, not image
+        this->image.setDefault(TRUE);
+    }
+
+    filename.enableNotify(oldNotify);
+    return readOK;
+}
+
+SbBool SoTexture3Osg::readInstance(SoInput *in, unsigned short flags)
+{
+    // disable notification and read inherited fields
+    SbBool oldNotify = filenames.enableNotify(FALSE);
+    SbBool readOK = SoNode::readInstance(in, flags);
+    this->setReadStatus((int) readOK);
+
+    // if file name given
+    int numImages = filenames.getNum();
+    if (readOK && !filenames.isDefault() && numImages > 0)
+    {
+        // Fail on empty filenames
+        SbBool sizeError = FALSE;
+        SbBool retval = FALSE;
+        SbVec3s volumeSize(0,0,0);
+        int volumenc = -1;
+        int i;
+        for (i=0; i<numImages; i++)
+            if (this->filenames[i].getLength()==0) break;
+
+        if (i==numImages)
+        {
+            // create options
+            osgDB::ReaderWriter::Options *options = createOptions();
+
+            for (int n=0; n<numImages && !sizeError; n++)
+            {
+                // read the file
+                osg::ref_ptr<osg::Image> image = loadImage(filenames[n].getString(), options);
+
+                if (!image.valid())
+                {
+                    OSG_WARN << NOTIFY_HEADER << "Could not read texture file #" << n << ": "
+                             << filenames[n].getString() << "\n";
+                    retval = FALSE;
+                }
+                else
+                {
+                    // get image dimensions and data
+                    int nc = osg::Image::computeNumComponents(image->getPixelFormat());
+                    SbVec3s size(image->s(), image->t(), image->r());
+                    if (size[2]==0)
+                        size[2]=1;
+                    unsigned char *imgbytes = image->data();
+
+                    if (this->images.isDefault()) { // First time => allocate memory
+                        volumeSize.setValue(size[0],
+                                            size[1],
+                                            size[2]*numImages);
+                        volumenc = nc;
+                        this->images.setValue(volumeSize, nc, NULL);
+                    }
+                    else { // Verify size & components
+                        if (size[0] != volumeSize[0] ||
+                            size[1] != volumeSize[1] ||
+                            //FIXME: always 1 or what? (kintel 20020110)
+                            size[2] != (volumeSize[2]/numImages) ||
+                            nc != volumenc)
+                        {
+                            sizeError = TRUE;
+                            retval = FALSE;
+
+                            OSG_WARN << NOTIFY_HEADER << "Texture file #" << n << " ("
+                                     << filenames[n].getString() << ") has wrong size: "
+                                     << "Expected (" << volumeSize[0] << "," << volumeSize[1] << ","
+                                     << volumeSize[2] << "," << volumenc << ") got ("
+                                     << size[0] << "," << size[1] << "," << size[2] << "," << nc << ")\n";
+                        }
+                    }
+
+                    if (!sizeError)
+                    {
+                        // disable notification on images while setting data from the
+                        // filenames as a notify will cause a filenames.setDefault(TRUE).
+                        SbBool oldnotify = this->images.enableNotify(FALSE);
+                        unsigned char *volbytes = this->images.startEditing(volumeSize,
+                                                                            volumenc);
+                        memcpy(volbytes+int(size[0])*int(size[1])*int(size[2])*nc*n,
+                               imgbytes, int(size[0])*int(size[1])*int(size[2])*nc);
+                        this->images.finishEditing();
+                        this->images.enableNotify(oldnotify);
+                        // PRIVATE(this)->glimagevalid = FALSE; -> recreate GL image in next GLRender()
+                        // We can safely ignore this as we are not going to render the scene graph.
+                        retval = TRUE;
+                    }
+                }
+            }
+        }
+
+        if (!retval)
+        {
+            // if image loading failed, set read status,
+            // but not set readOK to false (according to Coin source code)
+            this->setReadStatus(FALSE);
+        }
+
+        // write filename, not image
+        this->images.setDefault(TRUE);
+    }
+
+    filenames.enableNotify(oldNotify);
+    return readOK;
+}
+
+SbBool SoVRMLImageTextureOsg::readInstance(SoInput *in, unsigned short flags)
+{
+    // disable notification and read inherited fields
+    SbBool oldNotify = url.enableNotify(FALSE);
+    SbBool readOK = SoNode::readInstance(in, flags);
+    this->setReadStatus((int) readOK);
+
+    if (readOK) {
+
+        // create options and read the file
+        osgDB::ReaderWriter::Options *options = createOptions();
+
+        SbBool retval = TRUE;
+        if (url.getNum() && url[0].getLength()) {
+            osg::ref_ptr<osg::Image> image = loadImage(url[0].getString(), options);
+            retval = image->valid();
+            if (!image->valid())
+            {
+                OSG_WARN << "Could not read texture file: " << url[0].getString() << std::endl;
+                this->setReadStatus(FALSE);
+            }
+            else
+            {
+                // get image dimensions and data
+                int nc = osg::Image::computeNumComponents(image->getPixelFormat());
+                SbVec2s size(image->s(), image->t());
+                unsigned char *bytes = image->data();
+
+                SbImage ivImage(bytes, size, nc);
+
+                // disable notification on image while setting data from filename
+                // as a notify will cause a filename.setDefault(TRUE)
+                //SbBool oldnotify = this->image.enableNotify(FALSE); <- difficult to implement for SoVRMLImageTexture
+                this->setImage(ivImage);
+                //this->image.enableNotify(oldnotify); <- difficult to implement for SoVRMLImageTexture
+                // PRIVATE(this)->glimagevalid = FALSE; -> recreate GL image in next GLRender()
+                // We can safely ignore this as we are not going to render the scene graph.
+            }
+        }
+        else
+            retval = TRUE;
+    }
+
+    url.enableNotify(oldNotify);
+    return readOK;
+}
+
+#endif /* __COIN__ */
+
+///////////////////////////////////////////////////////////////
 SoCallbackAction::Response
 ConvertFromInventor::postTexture(void* data, SoCallbackAction *,
                                  const SoNode* node)
@@ -1106,7 +1420,7 @@ ConvertFromInventor::preLight(void* data, SoCallbackAction* action,
 #if 1 // Let's place the light to its place in scene graph instead of
       // old approach of global light group.
         SbVec3f l(dirLight->direction.getValue());
-        osgLight->setPosition(osg::Vec4(l[0], l[1], l[2] , 0.));
+        osgLight->setPosition(osg::Vec4(-l[0], -l[1], -l[2] , 0.));
 #else
         osg::Vec3 transVec;
         thisPtr->transformLight(action, dirLight->direction.getValue(), transVec);
@@ -1197,7 +1511,7 @@ ConvertFromInventor::preEnvironment(void* data, SoCallbackAction* action,
                                     const SoNode* node)
 {
 #ifdef DEBUG_IV_PLUGIN
-    OSG_DEBUG << NOTIFY_HEADER << "preLight()   "
+    OSG_DEBUG << NOTIFY_HEADER << "preEnvironment()   "
               << node->getTypeId().getName().getString() << std::endl;
 #endif
 
@@ -1899,4 +2213,13 @@ void ConvertFromInventor::addPointCB(void* data, SoCallbackAction* action,
 
     thisPtr->numPrimitives++;
     thisPtr->primitiveType = osg::PrimitiveSet::POINTS;
+}
+//////////////////////////////////////////////////////////////////////////
+void ConvertFromInventor::init()
+{
+#ifdef __COIN__
+    SoTexture2Osg::overrideClass();
+    SoTexture3Osg::overrideClass();
+    SoVRMLImageTextureOsg::overrideClass();
+#endif
 }

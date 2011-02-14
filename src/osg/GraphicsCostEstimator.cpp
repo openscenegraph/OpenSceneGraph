@@ -189,7 +189,7 @@ void GraphicsCostEstimator::setDefaults()
 
 void GraphicsCostEstimator::calibrate(osg::RenderInfo& renderInfo)
 {
-    OSG_NOTICE<<"GraphicsCostEstimator::calibrate(..)"<<std::endl;
+    OSG_INFO<<"GraphicsCostEstimator::calibrate(..)"<<std::endl;
 }
 
 class CollectCompileCosts : public osg::NodeVisitor

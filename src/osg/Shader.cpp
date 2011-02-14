@@ -271,6 +271,9 @@ int Shader::compare(const Shader& rhs) const
     if( getShaderSource() < rhs.getShaderSource() ) return -1;
     if( rhs.getShaderSource() < getShaderSource() ) return 1;
 
+    if( getShaderBinary() < rhs.getShaderBinary() ) return -1;
+    if( rhs.getShaderBinary() < getShaderBinary() ) return 1;
+
     if( getFileName() < rhs.getFileName() ) return -1;
     if( rhs.getFileName() < getFileName() ) return 1;
     return 0;

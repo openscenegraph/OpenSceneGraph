@@ -48,6 +48,7 @@ GL2Extensions::GL2Extensions(const GL2Extensions& rhs) : osg::Referenced()
     _isGeometryShader4Supported = rhs._isGeometryShader4Supported;
     _isGpuShader4Supported = rhs._isGpuShader4Supported;
     _isUniformBufferObjectSupported = rhs._isUniformBufferObjectSupported;
+    _isGetProgramBinarySupported = rhs._isGetProgramBinarySupported;
 
     _glBlendEquationSeparate = rhs._glBlendEquationSeparate;
     _glDrawBuffers = rhs._glDrawBuffers;
@@ -183,6 +184,10 @@ GL2Extensions::GL2Extensions(const GL2Extensions& rhs) : osg::Referenced()
     _glGetActiveUniformBlockiv = rhs._glGetActiveUniformBlockiv;
     _glGetActiveUniformBlockName = rhs._glGetActiveUniformBlockName;
     _glUniformBlockBinding = rhs._glUniformBlockBinding;
+
+    // ARB_get_program_binary
+    _glGetProgramBinary = rhs._glGetProgramBinary;
+    _glProgramBinary = rhs._glProgramBinary;
 }
 
 
@@ -338,6 +343,9 @@ void GL2Extensions::lowestCommonDenominator(const GL2Extensions& rhs)
     if (!rhs._glGetActiveUniformBlockName) _glGetActiveUniformBlockName = 0;
     if (!rhs._glUniformBlockBinding) _glUniformBlockBinding = 0;
 
+    // ARB_get_program_binary
+    if (!rhs._glGetProgramBinary) _glGetProgramBinary = 0;
+    if (!rhs._glProgramBinary) _glProgramBinary = 0;
 }
 
 
@@ -362,7 +370,8 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
     _isGeometryShader4Supported = osg::isGLExtensionSupported(contextID,"GL_EXT_geometry_shader4");
     _isGpuShader4Supported = osg::isGLExtensionSupported(contextID,"GL_EXT_gpu_shader4");
     _areTessellationShadersSupported = osg::isGLExtensionSupported(contextID, "GL_ARB_tessellation_shader");
-    _isUniformBufferObjectSupported = osg::isGLExtensionSupported(contextID,"ARB_uniform_buffer_object");
+    _isUniformBufferObjectSupported = osg::isGLExtensionSupported(contextID,"GL_ARB_uniform_buffer_object");
+    _isGetProgramBinarySupported = osg::isGLExtensionSupported(contextID,"GL_ARB_get_program_binary");
     
     if( isGlslSupported() )
     {
@@ -520,7 +529,9 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
     setGLExtensionFuncPtr(_glGetActiveUniformBlockiv, "glGetActiveUniformBlockiv");
     setGLExtensionFuncPtr(_glGetActiveUniformBlockName, "glGetActiveUniformBlockName");
     setGLExtensionFuncPtr(_glUniformBlockBinding, "glUniformBlockBinding");
-
+    //ARB_get_program_binary
+    setGLExtensionFuncPtr(_glGetProgramBinary, "glGetProgramBinary");
+    setGLExtensionFuncPtr(_glProgramBinary, "glProgramBinary");
 }
 
 
@@ -2284,6 +2295,38 @@ void GL2Extensions::glUniformBlockBinding(GLuint program,
     else
     {
         NotSupported("glUniformBlockBinding");
+    }
+}
+
+//ARB_get_program_binary
+void GL2Extensions::glGetProgramBinary(GLuint program,
+                                       GLsizei bufSize,
+                                       GLsizei *length,
+                                       GLenum *binaryFormat,
+                                       GLvoid *binary) const
+{
+    if (_glGetProgramBinary)
+    {
+        _glGetProgramBinary(program, bufSize, length, binaryFormat, binary);
+    }
+    else
+    {
+        NotSupported("glGetProgramBinary");
+    }
+}
+
+void GL2Extensions::glProgramBinary(GLuint program,
+                                    GLenum binaryFormat,
+                                    const GLvoid *binary,
+                                    GLsizei length) const
+{
+    if (_glProgramBinary)
+    {
+        _glProgramBinary(program, binaryFormat, binary, length);
+    }
+    else
+    {
+        NotSupported("glProgramBinary");
     }
 }
 

@@ -35,6 +35,51 @@ namespace osg {
 
 class State;
 
+/** Simple class for wrapping up the data used in glProgramBinary and glGetProgramBinary.  
+  * On the first run of your application Programs should be assigned an empty ProgramBinary.
+  * Before your application exits it should retrieve the program binary via
+  * Program::PerContextProgram::compileProgramBinary and save it to disk.
+  * When your application is run subsequently, load your binary from disk and use it to set
+  * the data of a ProgramBinary, and set the ProgramBinary on the associated Program.
+  * This will typically result in Program::compileGLObjects executing much faster.*/
+class OSG_EXPORT ProgramBinary : public osg::Object
+{
+    public:
+
+        ProgramBinary();
+
+        /** Copy constructor using CopyOp to manage deep vs shallow copy.*/
+        ProgramBinary(const ProgramBinary& rhs, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_Object(osg, ProgramBinary);
+
+        /** Allocated a data buffer of specified size/*/
+        void allocate(unsigned int size);
+
+        /** Assign program binary data, copying the specified data into locally stored data buffer, the original data can then be deleted.*/
+        void assign(unsigned int size, const unsigned char* data);
+
+        /** Set the format of the program binary data.*/
+        void setFormat(GLenum format) {_format = format;}
+
+        /** Get the format of the program binary data.*/
+        GLenum getFormat() const {return _format;}
+
+        /** Get the size of the program binary data.*/
+        unsigned int getSize() const { return _data.size(); }
+
+        /** Get a ptr to the program binary data.*/
+        unsigned char* getData() { return _data.empty() ? 0 : &(_data.front()); }
+
+        /** Get a const ptr to the program binary data.*/
+        const unsigned char* getData() const { return _data.empty() ? 0 : &(_data.front()); }
+
+    protected:
+        std::vector<unsigned char> _data;
+        GLenum _format;
+};
+
+
 ///////////////////////////////////////////////////////////////////////////
 /** osg::Program is an application-level abstraction of an OpenGL glProgram.
   * It is an osg::StateAttribute that, when applied, will activate a
@@ -122,6 +167,17 @@ class OSG_EXPORT Program : public osg::StateAttribute
         /** Remove a uniform block binding. */
         void removeBindUniformBlock(const std::string& name);
 
+        /** Set the Program using a ProgramBinary. If a ProgramBinary is not yet
+         * available then setting an empty one signals that compileProgramBinary
+         * will be called later.*/
+        void setProgramBinary(ProgramBinary* programBinary) { _programBinary = programBinary; } 
+
+        /** Get the Program's ProgramBinary, return NULL if none is assigned. */
+        ProgramBinary* getProgramBinary() { return _programBinary.get(); } 
+
+        /** Get the const Program's ProgramBinary, return NULL if none is assigned. */
+        const ProgramBinary* getProgramBinary() const { return _programBinary.get(); } 
+
         typedef std::map<std::string,GLuint> AttribBindingList;
         typedef std::map<std::string,GLuint> FragDataBindingList;
         typedef std::map<std::string,GLuint> UniformBlockBindingList;
@@ -195,6 +251,17 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 bool needsLink() const {return _needsLink;}
                 bool isLinked() const {return _isLinked;}
                 bool getInfoLog( std::string& infoLog ) const;
+
+                /** Was glProgramBinary called successfully? */
+                bool loadedBinary() const {return _loadedBinary;}
+
+                /** Compile a program binary. For this to work setProgramBinary must have
+                 * been called on the osg::Program with an empty ProgramBinary prior to
+                 * compileGLObjects being called.
+                 * compileProgramBinary should be called after the program has been
+                 * "exercised" by rendering with it. The ProgramBinary can then be saved
+                 * to disk for faster subsequent compiling. */
+                ProgramBinary* compileProgramBinary(osg::State& state);
 
                 void useProgram() const;
 
@@ -275,6 +342,8 @@ class OSG_EXPORT Program : public osg::StateAttribute
                 bool _needsLink;
                 /** Is our glProgram successfully linked? */
                 bool _isLinked;
+                /** Was glProgramBinary called successfully? */
+                bool _loadedBinary;
                 const unsigned int _contextID;
 
                 ActiveUniformMap _uniformInfoMap;
@@ -310,6 +379,8 @@ class OSG_EXPORT Program : public osg::StateAttribute
 
         typedef std::vector< ref_ptr<Shader> > ShaderList;
         ShaderList _shaderList;
+
+        osg::ref_ptr<ProgramBinary> _programBinary;
 
         /** Parameters maintained with glProgramParameteriEXT */
         GLint _geometryVerticesOut;

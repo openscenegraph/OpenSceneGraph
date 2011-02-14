@@ -618,7 +618,7 @@ void CompositeViewer::advance(double simulationTime)
 {
     if (_done) return;
 
-    double prevousReferenceTime = _frameStamp->getReferenceTime();
+    double previousReferenceTime = _frameStamp->getReferenceTime();
     unsigned int previousFrameNumber = _frameStamp->getFrameNumber();
 
 
@@ -638,7 +638,7 @@ void CompositeViewer::advance(double simulationTime)
     if (getViewerStats() && getViewerStats()->collectStats("frame_rate"))
     {
         // update previous frame stats
-        double deltaFrameTime = _frameStamp->getReferenceTime() - prevousReferenceTime;
+        double deltaFrameTime = _frameStamp->getReferenceTime() - previousReferenceTime;
         getViewerStats()->setAttribute(previousFrameNumber, "Frame duration", deltaFrameTime);
         getViewerStats()->setAttribute(previousFrameNumber, "Frame rate", 1.0/deltaFrameTime);
 

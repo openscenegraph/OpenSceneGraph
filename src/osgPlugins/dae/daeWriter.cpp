@@ -133,7 +133,7 @@ daeWriter::daeWriter( DAE *dae_, const std::string & fileURI, const std::string 
     currentNode->setId( "sceneRoot" );
 
     //create Asset
-    createAssetTag(m_ZUpAxis);
+    //createAssetTag(m_ZUpAxis); // we now call this in the set root node
 
     lib_cameras = NULL;
     lib_effects = NULL;
@@ -170,6 +170,8 @@ void daeWriter::debugPrint( osg::Node &node )
 void daeWriter::setRootNode( const osg::Node &node )
 {
     std::string fname = osgDB::findDataFile( node.getName() );
+    //create Asset with root node providing meta data
+    createAssetTag( node );
 
     const_cast<osg::Node*>(&node)->accept( _animatedNodeCollector );
 }
@@ -239,6 +241,149 @@ void daeWriter::createAssetTag( bool isZUpAxis )
     
     u->setName( "meter" );
     u->setMeter( 1 );
+}
+
+
+// Overloaded version of createAssetTag that provides the ability to specify
+// user defined values for child elements within asset tags
+void daeWriter::createAssetTag(const osg::Node &node)
+{
+   domAsset *asset = daeSafeCast< domAsset >(dom->add( COLLADA_ELEMENT_ASSET ) );
+   domAsset::domCreated *c = daeSafeCast< domAsset::domCreated >(asset->add("created" ));
+   domAsset::domModified *m = daeSafeCast< domAsset::domModified >(asset->add("modified" ));
+   domAsset::domUnit *u = daeSafeCast< domAsset::domUnit >(asset->add("unit"));
+   domAsset::domUp_axis *up_axis = daeSafeCast< domAsset::domUp_axis >(asset->add("up_axis"));
+
+   domAsset::domContributor *contributor = daeSafeCast< domAsset::domContributor >(asset->add("contributor" ));
+
+   // set date and time
+   // Generate the date like this
+   // "YYYY-mm-ddTHH:MM:SSZ"  ISO 8601  Date Time format
+   const size_t bufSize = 1024;
+   static char dateStamp[bufSize];
+   time_t rawTime = time(NULL);
+   struct tm* timeInfo = localtime(&rawTime);
+   strftime(dateStamp, sizeof(dateStamp), "%Y-%m-%dT%H:%M:%SZ", timeInfo);
+
+
+   // set up fallback defaults
+   c->setValue( dateStamp );
+   m->setValue( dateStamp );
+   u->setName( "meter" );    // NOTE: SketchUp incorrectly sets this to "meters" but it does not really matter.
+                             //  Also note that since the default is: <unit meter="1.0" name="meter"/>  this is equivalent to <unit/>
+   u->setMeter( 1.0 );        // this is the important units setting as it tells consuming apps how to convert to meters.
+   up_axis->setValue(UPAXISTYPE_Z_UP);
+
+
+
+   // get description info as name value pairs 
+   if (node.getDescriptions().size()%2 == 0)
+   {
+      for(osg::Node::DescriptionList::const_iterator ditr=node.getDescriptions().begin();
+         ditr!=node.getDescriptions().end();
+         ++ditr)
+      {
+         std::string attrName( *ditr );   ++ditr;
+         std::string attrValue( *ditr );
+ 
+         if (attrName=="collada_created" && !attrValue.empty())
+         {
+            c->setValue( attrValue.c_str() );
+         } 
+         else if (attrName=="collada_modified" && !attrValue.empty())
+         {
+            m->setValue( attrValue.c_str() );
+         } 
+         else if (attrName=="collada_keywords" && !attrValue.empty())
+         {
+            domAsset::domKeywords *keywords = daeSafeCast< domAsset::domKeywords >(asset->add("keywords" ));
+            keywords->setValue( attrValue.c_str() );
+         }
+         else if (attrName=="collada_revision" && !attrValue.empty())
+         {
+            domAsset::domRevision *revision = daeSafeCast< domAsset::domRevision >(asset->add("revision" ));
+            revision->setValue( attrValue.c_str() );
+         }
+         else if (attrName=="collada_subject" && !attrValue.empty())
+         {
+            domAsset::domSubject  *subject = daeSafeCast< domAsset::domSubject >(asset->add("subject" ));
+            subject->setValue( attrValue.c_str() );
+         }
+         else if (attrName=="collada_title" && !attrValue.empty())
+         {
+            domAsset::domTitle  *title = daeSafeCast< domAsset::domTitle >(asset->add("title" ));
+            title->setValue( attrValue.c_str() );
+         }
+         else if (attrName=="collada_up_axis" && !attrValue.empty())
+         {
+            if (attrValue=="X_UP")
+            {
+               up_axis->setValue( UPAXISTYPE_X_UP );
+            }
+            else if (attrValue=="Y_UP")
+            {
+               up_axis->setValue( UPAXISTYPE_Y_UP );
+            }
+            else
+            {
+               up_axis->setValue( UPAXISTYPE_Z_UP );   // default
+            }
+         }
+         else if (attrName=="collada_unit_name" && !attrValue.empty())
+         {
+            u->setName( attrValue.c_str() );
+         }
+         else if (attrName=="collada_unit_meter_length" && !attrValue.empty())
+         {
+            double fValFromStr(1.0);
+            try {
+               std::istringstream sConversion(attrValue);
+               sConversion >> fValFromStr;
+               u->setMeter((domFloat)fValFromStr);
+            }
+            catch (...)
+            {
+               // TODO: handle error
+               u->setMeter((domFloat)fValFromStr);
+               continue;
+            }
+         }
+         else if (attrName=="collada_contributor{0}.author" && !attrValue.empty())
+         {
+            domAsset::domContributor::domAuthor *author = 
+               daeSafeCast< domAsset::domContributor::domAuthor >(contributor->add("author" ));
+            author->setValue( attrValue.c_str() );
+         }
+         else if (attrName=="collada_contributor{0}.authoring_tool" && !attrValue.empty())
+         {
+            domAsset::domContributor::domAuthoring_tool *authoring_tool = 
+               daeSafeCast< domAsset::domContributor::domAuthoring_tool >(contributor->add("authoring_tool" ));
+            authoring_tool->setValue( attrValue.c_str() );
+         }
+         else if (attrName=="collada_contributor{0}.comments" && !attrValue.empty())
+         {
+            domAsset::domContributor::domComments *comments = 
+               daeSafeCast< domAsset::domContributor::domComments >(contributor->add("comments" ));
+            comments->setValue( attrValue.c_str() );
+         }
+         else if (attrName=="collada_contributor{0}.source_data" && !attrValue.empty())
+         {
+            domAsset::domContributor::domSource_data *source_data = 
+               daeSafeCast< domAsset::domContributor::domSource_data >(contributor->add("source_data" ));
+            source_data->setValue( attrValue.c_str() );
+         }
+         else if (attrName=="collada_contributor{0}.copyright" && !attrValue.empty())
+         {
+            domAsset::domContributor::domCopyright *copyright = 
+               daeSafeCast< domAsset::domContributor::domCopyright >(contributor->add("copyright" ));
+            copyright->setValue( attrValue.c_str() );
+         }
+         
+         // TODO:  handle array of contributor data rather that just the first.
+         // also there is probably a better way to pass attribute data as DescriptionList is a bit fragile
+
+      }
+   }
 }
 
 void daeWriter::traverse (osg::Node &node)

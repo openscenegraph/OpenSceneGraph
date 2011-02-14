@@ -114,7 +114,7 @@ class OSGDB_EXPORT Options : public osg::Object
 
         META_Object(osgDB,Options);
 
-        Options* cloneOptions() const { return new Options(*this); }
+        Options* cloneOptions() const { return static_cast<Options*>(clone(osg::CopyOp::SHALLOW_COPY)); }
 
         /** Set the general Options string.*/
         void setOptionString(const std::string& str) { _str = str; parsePluginStringData(str); }

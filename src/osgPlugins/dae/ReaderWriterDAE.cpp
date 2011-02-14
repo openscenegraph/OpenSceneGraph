@@ -115,9 +115,14 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
     bool linkOrignialTextures(false);
     bool forceTexture(false);
     bool namesUseCodepage(false);
+    std::string srcDirectory( osgDB::getFilePath(node.getName().empty() ? fname : node.getName()) );        // Base dir when relativising images paths
     if( options )
     {
         pDAE = (DAE*)options->getPluginData("DAE");
+
+        const std::string & baseDir = options->getPluginStringData("baseImageDir");        // Rename "srcModelPath" (and call getFilePath() on it)?
+        if (!baseDir.empty()) srcDirectory = baseDir;
+
         // Sukender's note: I don't know why DAE seems to accept comma-sparated options instead of space-separated options as other ReaderWriters. However, to avoid breaking compatibility, here's a workaround:
         std::string optString( options->getOptionString() );
         for(std::string::iterator it=optString.begin(); it!=optString.end(); ++it) {
@@ -155,7 +160,7 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
 
     osg::NodeVisitor::TraversalMode traversalMode = writeExtras ? osg::NodeVisitor::TRAVERSE_ALL_CHILDREN : osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN;
 
-    osgDAE::daeWriter daeWriter(pDAE, fileURI, osgDB::getFilePath(fname), osgDB::getFilePath(node.getName().empty() ? fname : node.getName()), options, usePolygon, googleMode, traversalMode, writeExtras, earthTex, zUpAxis, linkOrignialTextures, forceTexture, namesUseCodepage);
+    osgDAE::daeWriter daeWriter(pDAE, fileURI, osgDB::getFilePath(fname), srcDirectory, options, usePolygon, googleMode, traversalMode, writeExtras, earthTex, zUpAxis, linkOrignialTextures, forceTexture, namesUseCodepage);
     daeWriter.setRootNode( node );
     const_cast<osg::Node*>(&node)->accept( daeWriter );
 

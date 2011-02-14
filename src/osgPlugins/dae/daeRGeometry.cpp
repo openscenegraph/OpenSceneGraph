@@ -746,8 +746,8 @@ osg::Geometry::ArrayData createGeometryData(domSourceReader & sourceReader, cons
 
 template <class ArrayTypeSingle, class ArrayTypeDouble, int Value>
 inline osg::Geometry::ArrayData createGeometryData(domSourceReader & sourceReader, const VertexIndicesIndexMap & vertexIndicesIndexMap, bool useDoublePrecision, int texcoordNum=-1) {
-    if (useDoublePrecision) return createGeometryData<ArrayTypeDouble, Value>(sourceReader, vertexIndicesIndexMap);
-    else                    return createGeometryData<ArrayTypeSingle, Value>(sourceReader, vertexIndicesIndexMap);
+    if (useDoublePrecision) return createGeometryData<ArrayTypeDouble, Value>(sourceReader, vertexIndicesIndexMap, texcoordNum);
+    else                    return createGeometryData<ArrayTypeSingle, Value>(sourceReader, vertexIndicesIndexMap, texcoordNum);
 }
 
 

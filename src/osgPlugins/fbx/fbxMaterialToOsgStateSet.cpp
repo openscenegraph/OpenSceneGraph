@@ -143,6 +143,9 @@ FbxMaterialToOsgStateSet::convert(const KFbxSurfaceMaterial* pFbxMat)
             static_cast<float>(color[2] * factor),
             1.0f));
 
+        // get maps factors...
+		result.diffuseFactor = pFbxLambert->GetDiffuseFactor().Get();
+
         if (const KFbxSurfacePhong* pFbxPhong = dynamic_cast<const KFbxSurfacePhong*>(pFbxLambert))
         {
             color = pFbxPhong->GetSpecularColor().Get();
@@ -157,9 +160,7 @@ FbxMaterialToOsgStateSet::convert(const KFbxSurfaceMaterial* pFbxMat)
                 static_cast<float>(pFbxPhong->GetShininess().Get()));
 
             // get maps factors...
-            result.diffuseFactor = pFbxPhong->GetDiffuseFactor().Get();
             result.reflectionFactor = pFbxPhong->GetReflectionFactor().Get();
-            result.opacityFactor = pFbxPhong->GetTransparencyFactor().Get();
             // get more factors here...
         }
     }

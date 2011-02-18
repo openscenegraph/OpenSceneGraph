@@ -246,16 +246,10 @@ osg::Geometry* getGeometry(osg::Geode* pGeode, GeometryMap& geometryMap,
                 stateSet->setTextureAttributeAndModes(StateSetContent::OPACITY_TEXTURE_UNIT, texmat.get(), osg::StateAttribute::ON);
             }
 
-            // setup combiner for factor...
-            //In practice factor will always be zero, hence the RGB of the
-            //opacity map will be ignored. The alpha will modulate the previous alpha.
-            double factor = ssc.opacityFactor;
+            // setup combiner to ignore RGB...
             osg::ref_ptr<osg::TexEnvCombine> texenv = new osg::TexEnvCombine();    
-            texenv->setCombine_RGB(osg::TexEnvCombine::INTERPOLATE);
-            texenv->setSource0_RGB(osg::TexEnvCombine::TEXTURE);
-            texenv->setSource1_RGB(osg::TexEnvCombine::PREVIOUS);
-            texenv->setSource2_RGB(osg::TexEnvCombine::CONSTANT);
-            texenv->setConstantColor(osg::Vec4(factor, factor, factor, factor));
+            texenv->setCombine_RGB(osg::TexEnvCombine::REPLACE);
+            texenv->setSource0_RGB(osg::TexEnvCombine::PREVIOUS);
             stateSet->setTextureAttributeAndModes(StateSetContent::OPACITY_TEXTURE_UNIT, texenv.get(), osg::StateAttribute::ON);
 
             // setup transparency...

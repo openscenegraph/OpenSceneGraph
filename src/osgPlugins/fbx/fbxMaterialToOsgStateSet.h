@@ -20,7 +20,6 @@ struct StateSetContent
 {
     StateSetContent()
         : diffuseFactor(1.0),
-        opacityFactor(1.0),
         reflectionFactor(1.0),
         emissiveFactor(1.0)
     {
@@ -44,7 +43,6 @@ struct StateSetContent
 
     // combining factors...
     double diffuseFactor;
-    double opacityFactor;
     double reflectionFactor;
     double emissiveFactor;
     // more combining factors here...

@@ -595,10 +595,18 @@ int main(int argc, char** argv)
         arguments.getApplicationUsage()->write(std::cout);
         return 1;
     }
+    
+    float fov = 0.0;
+    while (arguments.read("--fov",fov)) {}
 
-    bool postionalLight = true;
-    while (arguments.read("--positionalLight")) postionalLight = true;
-    while (arguments.read("--directionalLight")) postionalLight = false;
+    osg::Vec4 lightpos(0.0,0.0,1,0.0);
+    while (arguments.read("--positionalLight")) { lightpos.set(0.5,0.5,1.5,1.0); }
+    while (arguments.read("--directionalLight")) { lightpos.set(0.0,0.0,1,0.0); }
+
+    while ( arguments.read("--light-pos", lightpos.x(), lightpos.y(), lightpos.z(), lightpos.w())) {}
+    while ( arguments.read("--light-pos", lightpos.x(), lightpos.y(), lightpos.z())) { lightpos.w()=1.0; }
+    while ( arguments.read("--light-dir", lightpos.x(), lightpos.y(), lightpos.z())) { lightpos.w()=0.0; }
+
 
     while (arguments.read("--castsShadowMask", CastsShadowTraversalMask ));
     while (arguments.read("--receivesShadowMask", ReceivesShadowTraversalMask ));
@@ -640,6 +648,9 @@ int main(int argc, char** argv)
 
     // add the record camera path handler
     viewer.addEventHandler(new osgViewer::RecordCameraPathHandler);
+
+    // add the window size toggle handler
+    viewer.addEventHandler(new osgViewer::WindowSizeHandler);
 
     // add the threading handler
     viewer.addEventHandler( new osgViewer::ThreadingHandler() );
@@ -785,18 +796,13 @@ int main(int argc, char** argv)
     model->accept(cbbv);
     osg::BoundingBox bb = cbbv.getBoundingBox();
 
-    osg::Vec4 lightpos;
-
-    if (postionalLight)
+    if (lightpos.w()==1.0)
     {
-        lightpos.set(bb.center().x(), bb.center().y(), bb.zMax() + bb.radius()*2.0f  ,1.0f);
+        lightpos.x() = bb.xMin()+(bb.xMax()-bb.xMin())*lightpos.x();
+        lightpos.y() = bb.yMin()+(bb.yMax()-bb.yMin())*lightpos.y();
+        lightpos.z() = bb.zMin()+(bb.zMax()-bb.zMin())*lightpos.z();
     }
-    else
-    {
-        lightpos.set(0.5f,0.25f,0.8f,0.0f);
-    }
-
-
+      
     if ( arguments.read("--base"))
     {
 
@@ -855,6 +861,15 @@ int main(int argc, char** argv)
 
     // create the windows and run the threads.
     viewer.realize();
+    
+    if (fov!=0.0)
+    {
+        double fovy, aspectRatio, zNear, zFar;
+        viewer.getCamera()->getProjectionMatrix().getPerspective(fovy, aspectRatio, zNear, zFar);
+
+        std::cout << "Setting FOV to " << fov << std::endl;
+        viewer.getCamera()->getProjectionMatrix().makePerspective(fov, aspectRatio, zNear, zFar);
+    }
 
     // it is done after viewer.realize() so that the windows are already initialized
     if ( arguments.read("--debugHUD"))
@@ -909,7 +924,7 @@ int main(int argc, char** argv)
         {
             float t = viewer.getFrameStamp()->getSimulationTime();
 
-            if (postionalLight)
+            if (lightpos.w()==1.0)
             {
                 lightpos.set(bb.center().x()+sinf(t)*bb.radius(), bb.center().y() + cosf(t)*bb.radius(), bb.zMax() + bb.radius()*3.0f  ,1.0f);
             }

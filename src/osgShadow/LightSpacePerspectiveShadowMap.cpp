@@ -23,8 +23,8 @@
 #define DIRECTIONAL_ADAPTED  1
 #define DIRECTIONAL_AND_SPOT 2
 
-//#define LISPSM_ALGO DIRECTIONAL_ONLY 
-#define LISPSM_ALGO DIRECTIONAL_ADAPTED 
+//#define LISPSM_ALGO DIRECTIONAL_ONLY
+#define LISPSM_ALGO DIRECTIONAL_ADAPTED
 //#define LISPSM_ALGO DIRECTIONAL_AND_SPOT
 
 #define PRINT_COMPUTED_N_OPT 0
@@ -155,7 +155,7 @@ LightSpacePerspectiveShadowMapAlgorithm::~LightSpacePerspectiveShadowMapAlgorith
 }
 
 void LightSpacePerspectiveShadowMapAlgorithm::operator()
-    ( const ViewDependentShadow::ConvexPolyhedron* hullShadowedView,
+    ( const osgShadow::ConvexPolyhedron* hullShadowedView,
       const osg::Camera* cameraMain,
       osg::Camera* cameraShadow ) const
 {
@@ -373,8 +373,8 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
 
 
 //we search the point in the LVS volume that is nearest to the camera
-
-static const float INFINITY = FLT_MAX;
+#include <limits.h>
+static const float OSG_INFINITY = FLT_MAX;
 
 namespace osgShadow {
 
@@ -495,7 +495,7 @@ public:
     virtual void updateLightMtx( osg::Matrix& lightView, osg::Matrix& lightProj ) const;
 };
 
-};
+}
 
 osg::Vec3d LispSM::getNearCameraPointE( ) const 
 {
@@ -656,7 +656,7 @@ osg::Matrix LispSM::getLispSmMtx( const osg::Matrix& lightSpace ) const
     //c start has the x and y coordinate of e, the z coord of B.min() 
     const osg::Vec3d Cstart_lp(e_ls.x(),e_ls.y(),B_ls.zMax());
 
-    if( n >= INFINITY ) {
+    if( n >= OSG_INFINITY ) {
         //if n is inf. than we should do uniform shadow mapping
         return osg::Matrix::identity();
     }
@@ -789,7 +789,7 @@ void LispSM::updateLightMtx
 }
 
 void LightSpacePerspectiveShadowMapAlgorithm::operator()
-    ( const ViewDependentShadow::ConvexPolyhedron* hullShadowedView, 
+    ( const osgShadow::ConvexPolyhedron* hullShadowedView,
       const osg::Camera* cameraMain, 
       osg::Camera* cameraShadow ) const
 {
@@ -797,12 +797,22 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
     lispsm->setViewMatrix( cameraMain->getViewMatrix() );
     lispsm->setProjectionMatrix( cameraMain->getViewMatrix() );
 
-    lispsm->setLightDir
-        ( osg::Matrix::transform3x3( osg::Vec3d( 0, 0, -1 ),
-            osg::Matrix::inverse( cameraShadow->getViewMatrix() ) ) );
+#if 1
+    osg::Vec3d lightDir = osg::Matrix::transform3x3( osg::Vec3d( 0, 0, -1 ), osg::Matrix::inverse( cameraShadow->getViewMatrix() ) );
+    osg::Vec3d eyeDir = osg::Matrix::transform3x3( osg::Vec3d( 0, 0, -1 ), osg::Matrix::inverse( cameraMain->getViewMatrix() ) );
 
-    osg::Vec3d eyeDir = osg::Matrix::transform3x3( osg::Vec3d( 0, 0, -1 ),
-                                  osg::Matrix::inverse( cameraMain->getViewMatrix() ) );
+#else
+    
+    osg::Vec3d lightDir = osg::Matrix::transform3x3( cameraShadow->getViewMatrix(), osg::Vec3d( 0.0, 0.0, -1.0 ) );
+    osg::Vec3d eyeDir = osg::Matrix::transform3x3( cameraMain->getViewMatrix(), osg::Vec3d( 0.0, 0.0, -1.0 ) );
+
+#endif
+
+    lightDir.normalize();
+    eyeDir.normalize();
+
+    lispsm->setLightDir(lightDir);
+
 
     osg::Matrix &proj = cameraShadow->getProjectionMatrix();
     double l,r,b,t,n,f;

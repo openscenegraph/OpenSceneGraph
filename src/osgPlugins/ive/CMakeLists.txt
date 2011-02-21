@@ -231,6 +231,7 @@ SET(TARGET_H
     Stencil.h
     Switch.h
     SwitchLayer.h
+    Terrain.h
     TerrainTile.h
     TexEnvCombine.h
     TexEnv.h

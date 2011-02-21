@@ -721,9 +721,13 @@ void Text3D::setThreadSafeRefUnref(bool threadSafe)
 
 void Text3D::resizeGLObjectBuffers(unsigned int maxSize)
 {
+    OSG_INFO<<"Text3D::resizeGLObjectBuffers("<<maxSize<<")"<<std::endl;
+
     TextBase::resizeGLObjectBuffers(maxSize);
 
     if (_font.valid()) _font->resizeGLObjectBuffers(maxSize);
+
+    TextBase::computePositions();
 }
 
 void Text3D::releaseGLObjects(osg::State* state) const

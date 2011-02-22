@@ -576,13 +576,21 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 
             unsigned int totalNumSlices = 0;
 
+            typedef std::map<std::string, ReadResult> ErrorMap;
+            ErrorMap errorMap;
+
             for(Files::iterator itr = files.begin();
                 itr != files.end();
                 ++itr)
             {
                 DcmFileFormat fileformat;
-                OFCondition status = fileformat.loadFile((*itr).c_str());
-                if(!status.good()) return ReadResult::ERROR_IN_READING_FILE;
+                const std::string& dicom_filename = *itr;
+                OFCondition status = fileformat.loadFile(dicom_filename.c_str());
+                if(!status.good())
+                {
+                    errorMap[dicom_filename] = ReadResult::ERROR_IN_READING_FILE;
+                    continue;
+                }
 
                 FileInfo fileInfo;
                 fileInfo.filename = *itr;
@@ -900,6 +908,16 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                     {
                         warning()<<"Error in reading dicom file "<<fileName.c_str()<<", error = "<<DicomImage::getString(dcmImage->getStatus())<<std::endl;
                     }
+                }
+            }
+
+            if (!errorMap.empty())
+            {
+                for(ErrorMap::iterator itr = errorMap.begin();
+                    itr != errorMap.end();
+                    ++itr)
+                {
+                    warning()<<"Error in reading file "<<itr->first<<std::endl;
                 }
             }
 

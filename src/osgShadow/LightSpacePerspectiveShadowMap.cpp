@@ -16,6 +16,7 @@
 
 
 #include <osgShadow/LightSpacePerspectiveShadowMap>
+#include <osg/io_utils>
 #include <iostream>
 #include <iomanip>
 
@@ -26,6 +27,8 @@
 //#define LISPSM_ALGO DIRECTIONAL_ONLY
 #define LISPSM_ALGO DIRECTIONAL_ADAPTED
 //#define LISPSM_ALGO DIRECTIONAL_AND_SPOT
+
+#define ROBERTS_TEST_CHANGES 1
 
 #define PRINT_COMPUTED_N_OPT 0
 
@@ -279,8 +282,13 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
     m.makeLookAt( eye, center, up );
 
     osg::BoundingBox bb = hullShadowedView->computeBoundingBox( mvpLight * m );
-    if( !bb.valid() ) 
+    if( !bb.valid() )
+    {
+#if ROBERTS_TEST_CHANGES
+        OSG_NOTICE<<"LightSpacePerspectiveShadowMapAlgorithm::operator() invalid bb A"<<std::endl;
+#endif
         return;
+    }
 
     double nearDist = -bb._max[2];
 
@@ -310,10 +318,24 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
     // checking light postperspective transform camera z ( negative value means this )
     // and make sure min distance to shadow hull is clamped to positive value.
 
-    if( eye[2] < 0 && nearDist <= 0 ) {
+    if( eye[2] < 0 && nearDist <= 0 )
+    {
         float clampedNearDist = 0.0001;
         eye += viewDir * ( clampedNearDist - nearDist );
         nearDist = clampedNearDist;
+#if ROBERTS_TEST_CHANGES
+        OSG_NOTICE<<"LightSpacePerspectiveShadowMapAlgorithm::operator() adjusting eye"<<std::endl;
+#endif
+        
+    }
+#endif
+
+
+#if ROBERTS_TEST_CHANGES
+    if (nearDist<0.0)
+    {
+        nearDist = 0.0;
+        OSG_NOTICE<<"LightSpacePerspectiveShadowMapAlgorithm::operator() nearDist<0.0, resetting to 0.0."<<std::endl;
     }
 #endif
 
@@ -331,8 +353,13 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
     osg::Matrix lightView; // compute coarse light view matrix
     lightView.makeLookAt( eye, eye + lightDir, up );
     bb = hullShadowedView->computeBoundingBox( mvpLight * lightView );
-    if( !bb.valid() ) 
+    if( !bb.valid() )
+    {
+#if ROBERTS_TEST_CHANGES
+        OSG_NOTICE<<"LightSpacePerspectiveShadowMapAlgorithm::operator() invalid bb B"<<std::endl;
+#endif
         return;
+    }
 
     //use the formulas from the LiSPSM paper to get n (and f)
     const double dotProd = viewDir * lightDir;
@@ -342,7 +369,16 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
     //perspective transform depth light space y extents
     const double d = fabs( bb._max[1]-bb._min[1]); 
     const double z_f = z_n + d*sinGamma;
-    const double n = (z_n+sqrt(z_f*z_n))/sinGamma;
+    double n = (z_n+sqrt(z_f*z_n))/sinGamma;
+
+#if ROBERTS_TEST_CHANGES
+    // clamp the localtion of p so that it isn't too close to the eye as to cause problems
+    if (n<d*0.05)
+    {
+        n=d*0.05;
+        OSG_NOTICE<<"LightSpacePerspectiveShadowMapAlgorithm::operator() n too small, clamping n to 0.05*d."<<std::endl;
+    }
+#endif
     const double f = n+d;
     osg::Vec3d pos = eye-up*(n-nearDist);
     lightView.makeLookAt( pos, pos + lightDir, up );
@@ -359,6 +395,9 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
 
     cameraShadow->setProjectionMatrix
         ( cameraShadow->getProjectionMatrix() * lightView * lispProjection );
+
+    //OSG_NOTICE<<"LightSpacePerspectiveShadowMapAlgorithm::operator() normal case dotProd="<<dotProd<<", sinGamma="<<sinGamma<<" d="<<d<<", pos=("<<pos<<"), (n-nearDist)="<<(n-nearDist)<<std::endl;
+    //OSG_NOTICE<<"    eye=("<<eye<<"), up=("<<up<<"), n="<<n<<", nearDist="<<nearDist<<", z_n="<<z_n<<", z_f="<<z_f<<std::endl;
 }
 
 #endif

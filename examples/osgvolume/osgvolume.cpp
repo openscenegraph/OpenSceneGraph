@@ -137,6 +137,26 @@ struct ProcessRow
             case(GL_RGBA): RGBA_to_RGBA(num, source, dest); break;
             }
             break;
+        case(GL_BGR):
+            switch(dest_pixelFormat)
+            {
+            case(GL_LUMINANCE):
+            case(GL_ALPHA): BGR_to_A(num, source, dest); break;
+            case(GL_LUMINANCE_ALPHA): BGR_to_LA(num, source, dest); break;
+            case(GL_RGB): BGR_to_RGB(num, source, dest); break;
+            case(GL_RGBA): BGR_to_RGBA(num, source, dest); break;
+            }
+            break;
+        case(GL_BGRA):
+            switch(dest_pixelFormat)
+            {
+            case(GL_LUMINANCE):
+            case(GL_ALPHA): BGRA_to_A(num, source, dest); break;
+            case(GL_LUMINANCE_ALPHA): BGRA_to_LA(num, source, dest); break;
+            case(GL_RGB): BGRA_to_RGB(num, source, dest); break;
+            case(GL_RGBA): BGRA_to_RGBA(num, source, dest); break;
+            }
+            break;
         }
     }
 
@@ -310,6 +330,109 @@ struct ProcessRow
             *dest++ = *source++;
         }
     }
+
+     ///////////////////////////////////////////////////////////////////////////////
+    // BGR sources..
+    virtual void BGR_to_A(unsigned int num, unsigned char* source, unsigned char* dest) const
+    {
+        for(unsigned int i=0;i<num;++i)
+        {
+            unsigned char val = *source;
+            *dest++ = val;
+            source += 3;
+        }
+    }
+
+    virtual void BGR_to_LA(unsigned int num, unsigned char* source, unsigned char* dest) const
+    {
+        for(unsigned int i=0;i<num;++i)
+        {
+            unsigned char val = *source;
+            *dest++ = val;
+            *dest++ = val;
+            source += 3;
+        }
+    }
+
+    virtual void BGR_to_RGB(unsigned int num, unsigned char* source, unsigned char* dest) const
+    {
+        for(unsigned int i=0;i<num;++i)
+        {
+            unsigned char blue = *source++;
+            unsigned char green = *source++;
+            unsigned char red = *source++;
+            *dest++ = red;
+            *dest++ = green;
+            *dest++ = blue;
+        }
+    }
+
+    virtual void BGR_to_RGBA(unsigned int num, unsigned char* source, unsigned char* dest) const
+    {
+        for(unsigned int i=0;i<num;++i)
+        {
+            unsigned char blue = *source++;
+            unsigned char green = *source++;
+            unsigned char red = *source++;
+            unsigned char val = (unsigned char)((int(red)+int(green)+int(blue))/3);
+            *dest++ = red;
+            *dest++ = green;
+            *dest++ = blue;
+            *dest++ = val;
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // BGRA sources..
+    virtual void BGRA_to_A(unsigned int num, unsigned char* source, unsigned char* dest) const
+    {
+        for(unsigned int i=0;i<num;++i)
+        {
+            source += 3;
+            *dest++ = *source++;
+        }
+    }
+
+    virtual void BGRA_to_LA(unsigned int num, unsigned char* source, unsigned char* dest) const
+    {
+        for(unsigned int i=0;i<num;++i)
+        {
+            unsigned char val = *source;
+            source += 3;
+            *dest++ = val;
+            *dest++ = *source++;
+        }
+    }
+
+    virtual void BGRA_to_RGB(unsigned int num, unsigned char* source, unsigned char* dest) const
+    {
+        for(unsigned int i=0;i<num;++i)
+        {
+            unsigned char blue = *source++;
+            unsigned char green = *source++;
+            unsigned char red = *source++;
+            *dest++ = red;
+            *dest++ = green;
+            *dest++ = blue;
+            ++source;
+        }
+    }
+
+    virtual void BGRA_to_RGBA(unsigned int num, unsigned char* source, unsigned char* dest) const
+    {
+        for(unsigned int i=0;i<num;++i)
+        {
+            unsigned char blue = *source++;
+            unsigned char green = *source++;
+            unsigned char red = *source++;
+            unsigned char alpha = *source++;
+            *dest++ = red;
+            *dest++ = green;
+            *dest++ = blue;
+            *dest++ = alpha;
+        }
+    }
+
 };
 
 
@@ -435,7 +558,9 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow,
             pixelFormat==GL_INTENSITY ||
             pixelFormat==GL_LUMINANCE_ALPHA ||
             pixelFormat==GL_RGB ||
-            pixelFormat==GL_RGBA)
+            pixelFormat==GL_RGBA ||
+            pixelFormat==GL_BGR ||
+            pixelFormat==GL_BGRA)
         {
 
             int num_r = osg::minimum(image->r(), (image_3d->r() - curr_dest_r));

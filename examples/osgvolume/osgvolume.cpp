@@ -979,6 +979,9 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--gpu-tf","Aply the transfer function on the GPU. (default)");
     arguments.getApplicationUsage()->addCommandLineOption("--cpu-tf","Apply the transfer function on the CPU.");
     arguments.getApplicationUsage()->addCommandLineOption("--mip","Use Maximum Intensity Projection (MIP) filtering.");
+    arguments.getApplicationUsage()->addCommandLineOption("--isosurface","Use Iso surface render.");
+    arguments.getApplicationUsage()->addCommandLineOption("--light","Use normals computed on the GPU to render a lit volume.");
+    arguments.getApplicationUsage()->addCommandLineOption("-n","Use normals computed on the GPU to render a lit volume.");
     arguments.getApplicationUsage()->addCommandLineOption("--xSize <size>","Relative width of rendered brick.");
     arguments.getApplicationUsage()->addCommandLineOption("--ySize <size>","Relative length of rendered brick.");
     arguments.getApplicationUsage()->addCommandLineOption("--zSize <size>","Relative height of rendered brick.");
@@ -1080,9 +1083,9 @@ int main( int argc, char **argv )
     ShadingModel shadingModel = Standard;
     while(arguments.read("--mip")) shadingModel =  MaximumIntensityProjection;
 
-    while (arguments.read("--isosurface")) shadingModel = Isosurface;
+    while (arguments.read("--isosurface") || arguments.read("--iso-surface")) shadingModel = Isosurface;
 
-    while (arguments.read("--light")) shadingModel = Light;
+    while (arguments.read("--light") || arguments.read("-n")) shadingModel = Light;
 
     float xSize=0.0f, ySize=0.0f, zSize=0.0f;
     while (arguments.read("--xSize",xSize)) {}

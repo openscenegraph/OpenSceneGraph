@@ -1,6 +1,6 @@
 OpenSceneGraph Library 2.9.11
 
-450 Contributors:
+449 Contributors:
 
 Firstname Surname
 -----------------
@@ -116,6 +116,7 @@ John Shue
 Chuck Seberino
 Brad Colbert
 Vivek Rajan
+Uwe Woessner
 Thom DeCarlo
 Tatsuhiro Nishioka
 Tanguy Fautré
@@ -161,7 +162,6 @@ Andreas Goebel
 Alok Priyadarshi
 Alberto Barbati
 Vladimir Shabanov
-Uwe Woessner
 Tugkan Calapoglu
 Tim Daoust
 Thomas Hogarth
@@ -248,7 +248,6 @@ Guillaume Chouvenc
 Gerrick Bivins
 George Tarantilis
 Ferdi Smit
-Ewe Woessner
 Eric Buehler
 Eduardo Poyart
 Edgar Ellis

@@ -1550,7 +1550,18 @@ int main( int argc, char **argv )
         }
     };
 
-    layer->setLocator(new osgVolume::Locator(*matrix));
+    if (xMultiplier<0.0 || yMultiplier<0.0 || zMultiplier<0.0)
+    {
+        layer->setLocator(new osgVolume::Locator(
+            osg::Matrix::translate(xMultiplier<0.0 ? -1.0 : 0.0, yMultiplier<0.0 ? -1.0 : 0.0, zMultiplier<0.0 ? -1.0 : 0.0) *
+            osg::Matrix::scale(xMultiplier<0.0 ? -1.0 : 1.0, yMultiplier<0.0 ? -1.0 : 1.0, zMultiplier<0.0 ? -1.0 : 1.0) *
+            (*matrix)
+            ));;
+    }
+    else
+    {
+        layer->setLocator(new osgVolume::Locator(*matrix));
+    }
     tile->setLocator(new osgVolume::Locator(*matrix));
 
     tile->setLayer(layer.get());

@@ -491,6 +491,12 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow,
         }
     }
 
+    if (max_components==3)
+    {
+        // change RGB to a RGBA
+        max_components = 4;
+    }
+
     if (numComponentsDesired!=0) max_components = numComponentsDesired;
 
     GLenum desiredPixelFormat = 0;
@@ -1081,7 +1087,7 @@ int main( int argc, char **argv )
         while (arguments.read("--yMultiplier",yMultiplier)) { OSG_NOTICE<<"Warning: --yMultiplier option no longer supported."<<std::endl; invalidOption = true; }
 
         float zMultiplier=1.0f;
-        while (arguments.read("--zMultiplier",zMultiplier)) { OSG_NOTICE<<"Warning: --yMultiplier option no longer supported."<<std::endl; invalidOption = true; }
+        while (arguments.read("--zMultiplier",zMultiplier)) { OSG_NOTICE<<"Warning: --zMultiplier option no longer supported."<<std::endl; invalidOption = true; }
 
         if (invalidOption) return 1;
     }

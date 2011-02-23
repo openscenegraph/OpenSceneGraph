@@ -1080,17 +1080,18 @@ int main( int argc, char **argv )
         float sliceEnd=1.0f;
         while (arguments.read("--clip",sliceEnd)) { OSG_NOTICE<<"Warning: --clip option no longer supported."<<std::endl; invalidOption = true; }
 
-        float xMultiplier=1.0f;
-        while (arguments.read("--xMultiplier",xMultiplier)) { OSG_NOTICE<<"Warning: --xMultiplier option no longer supported."<<std::endl; invalidOption = true; }
-
-        float yMultiplier=1.0f;
-        while (arguments.read("--yMultiplier",yMultiplier)) { OSG_NOTICE<<"Warning: --yMultiplier option no longer supported."<<std::endl; invalidOption = true; }
-
-        float zMultiplier=1.0f;
-        while (arguments.read("--zMultiplier",zMultiplier)) { OSG_NOTICE<<"Warning: --zMultiplier option no longer supported."<<std::endl; invalidOption = true; }
 
         if (invalidOption) return 1;
     }
+
+    float xMultiplier=1.0f;
+    while (arguments.read("--xMultiplier",xMultiplier)) {}
+
+    float yMultiplier=1.0f;
+    while (arguments.read("--yMultiplier",yMultiplier)) {}
+
+    float zMultiplier=1.0f;
+    while (arguments.read("--zMultiplier",zMultiplier)) {}
 
 
     float alphaFunc=0.02f;
@@ -1388,6 +1389,12 @@ int main( int argc, char **argv )
                                     0.0,   ySize, 0.0,   0.0,
                                     0.0,   0.0,   zSize, 0.0,
                                     0.0,   0.0,   0.0,   1.0);
+    }
+
+
+    if (xMultiplier!=1.0 || yMultiplier!=1.0 || zMultiplier!=1.0)
+    {
+        matrix->postMultScale(osg::Vec3d(fabs(xMultiplier), fabs(yMultiplier), fabs(zMultiplier)));
     }
 
     osg::Vec4 minValue(FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX);

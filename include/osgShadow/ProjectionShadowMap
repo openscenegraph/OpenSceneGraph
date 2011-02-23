@@ -43,7 +43,7 @@ class OSGSHADOW_EXPORT ProjectionShadowMap : public MinimalBoundsBaseClass
         }
 
         /** Declaration of standard OSG object methods */
-        META_Object( ViewDependentShadow, ProjectionShadowMap );
+        META_Object( osgShadow, ProjectionShadowMap );
 
     protected:        
 

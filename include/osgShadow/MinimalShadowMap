@@ -38,7 +38,7 @@ class OSGSHADOW_EXPORT MinimalShadowMap : public StandardShadowMap
             const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         /** Declaration of standard OSG object methods */
-        META_Object( ViewDependentShadow, MinimalShadowMap );
+        META_Object( osgShadow, MinimalShadowMap );
 
         void setModellingSpaceToWorldTransform( const osg::Matrix & modellingSpaceToWorld )
             { _modellingSpaceToWorld = modellingSpaceToWorld; }

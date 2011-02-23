@@ -476,7 +476,9 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow,
             pixelFormat==GL_LUMINANCE ||
             pixelFormat==GL_LUMINANCE_ALPHA ||
             pixelFormat==GL_RGB ||
-            pixelFormat==GL_RGBA)
+            pixelFormat==GL_RGBA ||
+            pixelFormat==GL_BGR ||
+            pixelFormat==GL_BGRA)
         {
             max_s = osg::maximum(image->s(), max_s);
             max_t = osg::maximum(image->t(), max_t);
@@ -485,7 +487,7 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow,
         }
         else
         {
-            osg::notify(osg::NOTICE)<<"Image "<<image->getFileName()<<" has unsuitable pixel format"<< std::hex<< pixelFormat << std::dec << std::endl;
+            osg::notify(osg::NOTICE)<<"Image "<<image->getFileName()<<" has unsuitable pixel format 0x"<< std::hex<< pixelFormat << std::dec << std::endl;
         }
     }
 
@@ -1242,6 +1244,7 @@ int main( int argc, char **argv )
 
                     if(image)
                     {
+                        OSG_NOTICE<<"Read osg::Image FileName::"<<image->getFileName()<<", pixelFormat=0x"<<std::hex<<image->getPixelFormat()<<std::dec<<", s="<<image->s()<<", t="<<image->t()<<", r="<<image->r()<<std::endl;
                         imageList.push_back(image);
                     }
                 }
@@ -1253,6 +1256,7 @@ int main( int argc, char **argv )
 
                 if(image)
                 {
+                    OSG_NOTICE<<"Read osg::Image FileName::"<<image->getFileName()<<", pixelFormat=0x"<<std::hex<<image->getPixelFormat()<<std::dec<<", s="<<image->s()<<", t="<<image->t()<<", r="<<image->r()<<std::endl;
                     imageList.push_back(image);
                 }
             }
@@ -1263,7 +1267,10 @@ int main( int argc, char **argv )
         // pack the textures into a single texture.
         ProcessRow processRow;
         osg::Image* image = createTexture3D(imageList, processRow, numComponentsDesired, s_maximumTextureSize, t_maximumTextureSize, r_maximumTextureSize, resizeToPowerOfTwo);
-        if (image) images.push_back(image);
+        if (image)
+        {
+            images.push_back(image);
+        }
     }
 
 

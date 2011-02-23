@@ -972,7 +972,6 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is the example which demonstrates use of 3D textures.");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-h or --help","Display this information");
-    arguments.getApplicationUsage()->addCommandLineOption("-s <numSlices>","Number of slices to create.");
     arguments.getApplicationUsage()->addCommandLineOption("--images [filenames]","Specify a stack of 2d images to build the 3d volume from.");
     arguments.getApplicationUsage()->addCommandLineOption("--shader","Use OpenGL Shading Language. (default)");
     arguments.getApplicationUsage()->addCommandLineOption("--no-shader","Disable use of OpenGL Shading Language.");
@@ -985,10 +984,6 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--xSize <size>","Relative width of rendered brick.");
     arguments.getApplicationUsage()->addCommandLineOption("--ySize <size>","Relative length of rendered brick.");
     arguments.getApplicationUsage()->addCommandLineOption("--zSize <size>","Relative height of rendered brick.");
-    arguments.getApplicationUsage()->addCommandLineOption("--xMultiplier <multiplier>","Tex coord x mulitplier.");
-    arguments.getApplicationUsage()->addCommandLineOption("--yMultiplier <multiplier>","Tex coord y mulitplier.");
-    arguments.getApplicationUsage()->addCommandLineOption("--zMultiplier <multiplier>","Tex coord z mulitplier.");
-    arguments.getApplicationUsage()->addCommandLineOption("--clip <ratio>","clip volume as a ratio, 0.0 clip all, 1.0 clip none.");
     arguments.getApplicationUsage()->addCommandLineOption("--maxTextureSize <size>","Set the texture maximum resolution in the s,t,r (x,y,z) dimensions.");
     arguments.getApplicationUsage()->addCommandLineOption("--s_maxTextureSize <size>","Set the texture maximum resolution in the s (x) dimension.");
     arguments.getApplicationUsage()->addCommandLineOption("--t_maxTextureSize <size>","Set the texture maximum resolution in the t (y) dimension.");
@@ -1068,12 +1063,29 @@ int main( int argc, char **argv )
         transferFunction->assign(transferFunction->getColorMap());
     }
 
-    unsigned int numSlices=500;
-    while (arguments.read("-s",numSlices)) {}
+    {
+        // deprecated options
 
+        bool invalidOption = false;
 
-    float sliceEnd=1.0f;
-    while (arguments.read("--clip",sliceEnd)) {}
+        unsigned int numSlices=500;
+        while (arguments.read("-s",numSlices)) { OSG_NOTICE<<"Warning: -s option no longer supported."<<std::endl; invalidOption = true; }
+
+        float sliceEnd=1.0f;
+        while (arguments.read("--clip",sliceEnd)) { OSG_NOTICE<<"Warning: --clip option no longer supported."<<std::endl; invalidOption = true; }
+
+        float xMultiplier=1.0f;
+        while (arguments.read("--xMultiplier",xMultiplier)) { OSG_NOTICE<<"Warning: --xMultiplier option no longer supported."<<std::endl; invalidOption = true; }
+
+        float yMultiplier=1.0f;
+        while (arguments.read("--yMultiplier",yMultiplier)) { OSG_NOTICE<<"Warning: --yMultiplier option no longer supported."<<std::endl; invalidOption = true; }
+
+        float zMultiplier=1.0f;
+        while (arguments.read("--zMultiplier",zMultiplier)) { OSG_NOTICE<<"Warning: --yMultiplier option no longer supported."<<std::endl; invalidOption = true; }
+
+        if (invalidOption) return 1;
+    }
+
 
     float alphaFunc=0.02f;
     while (arguments.read("--alphaFunc",alphaFunc)) {}
@@ -1675,5 +1687,4 @@ int main( int argc, char **argv )
     }
 
     return 0;
-
 }

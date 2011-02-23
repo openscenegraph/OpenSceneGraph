@@ -18,7 +18,6 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/SoftShadowMap
     ${HEADER_PATH}/ParallelSplitShadowMap
     ${HEADER_PATH}/Version
-
     ${HEADER_PATH}/ConvexPolyhedron
     ${HEADER_PATH}/DebugShadowMap
     ${HEADER_PATH}/LightSpacePerspectiveShadowMap
@@ -27,6 +26,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/MinimalShadowMap
     ${HEADER_PATH}/ProjectionShadowMap
     ${HEADER_PATH}/StandardShadowMap
+    ${HEADER_PATH}/TrapezoidalShadowMap
     ${HEADER_PATH}/ViewDependentShadowTechnique
 )
 
@@ -50,6 +50,7 @@ ADD_LIBRARY(${LIB_NAME}
     MinimalDrawBoundsShadowMap.cpp
     MinimalShadowMap.cpp
     StandardShadowMap.cpp
+    TrapezoidalShadowMap.cpp
     ViewDependentShadowTechnique.cpp
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )

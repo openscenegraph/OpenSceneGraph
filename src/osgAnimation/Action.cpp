@@ -64,19 +64,25 @@ Action::Callback* Action::getFrameCallback(double time)
 
 bool osgAnimation::Action::evaluateFrame(unsigned int frame, unsigned int& resultframe, unsigned int& nbloop )
 {
-    nbloop = frame / getNumFrames();
+    unsigned int nbFrames = getNumFrames();
+    if (!nbFrames) {
+        nbFrames = 1;
+        osg::notify(osg::WARN) << "osgAnimation::Action::evaluateFrame your action " << getName() << " has 0 frames, it seems like an error in the data" << std::endl;
+    }
+
+    nbloop = frame / nbFrames;
     resultframe = frame;
 
-    if (frame > getNumFrames()-1)
+    if (frame > nbFrames-1)
     {
         if (!getLoop())
-            resultframe = frame % getNumFrames();
+            resultframe = frame % nbFrames;
         else
         {
             if (nbloop >= getLoop())
                 return false;
             else
-                resultframe = frame % getNumFrames();
+                resultframe = frame % nbFrames;
         }
     }
     return true;

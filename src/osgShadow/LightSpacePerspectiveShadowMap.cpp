@@ -169,12 +169,12 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
 
     osg::Matrix lightViewToWorld = cameraShadow->getInverseViewMatrix();
 
-    osg::Vec3 eyePos = osg::Vec3( 0, 0, 0 ) * eyeViewToWorld;
+    osg::Vec3d eyePos = osg::Vec3d( 0, 0, 0 ) * eyeViewToWorld;
 
-    osg::Vec3 viewDir( osg::Matrix::transform3x3( osg::Vec3(0,0,-1), eyeViewToWorld ) );
+    osg::Vec3d viewDir( osg::Matrix::transform3x3( osg::Vec3d(0,0,-1), eyeViewToWorld ) );
 
-    osg::Vec3 lightDir( osg::Matrix::transform3x3( osg::Vec3( 0,0,-1), lightViewToWorld ) );
-    osg::Vec3 up( osg::Matrix::transform3x3( osg::Vec3(0,1,0), lightViewToWorld ) );
+    osg::Vec3d lightDir( osg::Matrix::transform3x3( osg::Vec3d( 0,0,-1), lightViewToWorld ) );
+    osg::Vec3d up( osg::Matrix::transform3x3( osg::Vec3d(0,1,0), lightViewToWorld ) );
 
     osg::Matrix lightView; // compute coarse light view matrix
     lightView.makeLookAt( eyePos, eyePos + lightDir, up );
@@ -237,8 +237,8 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
     bb = computeScenePolytopeBounds
         ( cameraShadow->getViewMatrix() * cameraShadow->getProjectionMatrix() );
     
-    if( !osg::equivalent( 0.f, (bb._min - osg::Vec3(-1,-1,-1)).length2() ) ||
-        !osg::equivalent( 0.f, (bb._max - osg::Vec3( 1, 1, 1)).length2() ) )
+    if( !osg::equivalent( 0.f, (bb._min - osg::Vec3d(-1,-1,-1)).length2() ) ||
+        !osg::equivalent( 0.f, (bb._max - osg::Vec3d( 1, 1, 1)).length2() ) )
     {
         bb = computeScenePolytopeBounds
             ( cameraShadow->getViewMatrix() * cameraShadow->getProjectionMatrix() );

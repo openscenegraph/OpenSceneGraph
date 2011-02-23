@@ -39,7 +39,7 @@ class OSGSHADOW_EXPORT MinimalCullBoundsShadowMap
             const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         /** Declaration of standard OSG object methods */
-        META_Object( ViewDependentShadow, MinimalCullBoundsShadowMap );
+        META_Object( osgShadow, MinimalCullBoundsShadowMap );
 
     protected:
         /** Classic protected OSG destructor */

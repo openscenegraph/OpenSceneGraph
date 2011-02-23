@@ -143,7 +143,7 @@ void MinimalShadowMap::ViewData::aimShadowCastingCamera
     // We compute this vector on -ZY view plane, perpendicular to light direction
     // Matrix m = ViewToWorld
 #if 0
-        osg::Matrix m = osg::Matrix::inverse( *cv.getModelViewMatrix() );
+        osg::Matrix m = osg::Matrix::inverse( _cv->getModelViewMatrix() );
         osg::Vec3 camFw( -m( 2, 0 ), -m( 2, 1 ), -m( 2, 2 ) );
         camFw.normalize();
 
@@ -244,6 +244,34 @@ void MinimalShadowMap::ViewData::frameShadowCastingCamera
             ( cameraMain, cameraShadow, &_sceneReceivingShadowPolytope );
 #endif
 
+    if( pass == _frameShadowCastingCameraPasses - 1 )
+    {
+#if 1
+        {
+            osg::Matrix mvp = cameraShadow->getViewMatrix() * cameraShadow->getProjectionMatrix();
+            ConvexPolyhedron frustum;
+            frustum.setToUnitFrustum();
+            frustum.transform( osg::Matrix::inverse( mvp ), mvp );
+
+            setDebugPolytope( "shadowCamFrustum", frustum, osg::Vec4(0,0,1,1) );    
+        }
+
+        {
+            osg::Matrix mvp = cameraMain->getViewMatrix() * cameraMain->getProjectionMatrix();
+            ConvexPolyhedron frustum;
+            frustum.setToUnitFrustum();
+            frustum.transform( osg::Matrix::inverse( mvp ), mvp );
+
+            setDebugPolytope( "mainCamFrustum", frustum, osg::Vec4(1,1,1,1) );
+        }
+#endif
+        std::string * filename = getDebugDump( );
+        if( filename && !filename->empty() )
+        {
+            dump( *filename );
+            filename->clear();
+        } 
+    }
 }
 
 void MinimalShadowMap::ViewData::cullShadowReceivingScene( )
@@ -294,7 +322,6 @@ void MinimalShadowMap::ViewData::cullShadowReceivingScene( )
 
     setDebugPolytope
         ( "frustum", _sceneReceivingShadowPolytope, osg::Vec4(1,0,1,1));
-
 }
 
 void MinimalShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv )

@@ -388,6 +388,7 @@ void DebugShadowMap::ViewData::init( ThisClass *st, osgUtil::CullVisitor *cv )
     BaseClass::ViewData::init( st, cv );
 
     _doDebugDrawPtr           = &st->_doDebugDraw;
+    _debugDumpPtr             = &st->_debugDump;
 
     _hudSize                  = st->_hudSize;
     _hudOrigin                = st->_hudOrigin;
@@ -456,7 +457,7 @@ public:
     osg::ref_ptr< osg::Texture > _pTexture;
 };
 
-void DebugShadowMap::ViewData::dump( const char * filename )
+void DebugShadowMap::ViewData::dump( const std::string & filename )
 {
     osg::ref_ptr< osg::Group > root = new osg::Group;    
     osgUtil::CullVisitor * cv = _cv.get();

@@ -37,7 +37,7 @@ class OSGSHADOW_EXPORT StandardShadowMap : public DebugShadowMap
                           const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
 
         /** Declaration of standard OSG object methods */
-        META_Object( ViewDependentShadow, StandardShadowMap );
+        META_Object( osgShadow, StandardShadowMap );
 
         void setBaseTextureUnit( unsigned int unit )
             { _baseTextureUnit = unit; dirty(); }

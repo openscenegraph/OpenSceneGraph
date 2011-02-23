@@ -29,6 +29,7 @@
 using namespace osgShadow;
 
 #define DISPLAY_SHADOW_TEXEL_TO_PIXEL_ERROR 0
+#define FRAGMENT_SHADERS_ONLY 1
 
 
 StandardShadowMap::StandardShadowMap():
@@ -42,6 +43,50 @@ StandardShadowMap::StandardShadowMap():
     _shadowTextureCoordIndex( 1 )
 
 { 
+#if FRAGMENT_SHADERS_ONLY
+    _mainFragmentShader = new osg::Shader( osg::Shader::FRAGMENT,
+        " // following expressions are auto modified - do not change them:       \n"
+        " // gl_TexCoord[0]  0 - can be subsituted with other index              \n"
+        "                                                                        \n"
+        "float DynamicShadow( );                                                 \n"
+        "                                                                        \n"
+        "uniform sampler2D baseTexture;                                          \n"
+        "                                                                        \n"
+        "void main(void)                                                         \n"
+        "{                                                                       \n"
+        "  vec4 colorAmbientEmissive = gl_FrontLightModelProduct.sceneColor;     \n"
+        "  // Add ambient from Light of index = 0                                \n"
+        "  colorAmbientEmissive += gl_FrontLightProduct[0].ambient;              \n"
+        "  vec4 color = texture2D( baseTexture, gl_TexCoord[0].xy );             \n"
+        "  color *= mix( colorAmbientEmissive, gl_Color, DynamicShadow() );      \n"
+#if DISPLAY_SHADOW_TEXEL_TO_PIXEL_ERROR
+        "  color.xy = abs( dFdy( gl_TexCoord[1].xy / gl_TexCoord[1].w ) )* 1024.0; \n"
+        "  color.z = color.y; \n"
+        "  color.x = color.z; \n"
+        "  color.y = color.z; \n"
+        "  color.a = 1.0; \n"
+#endif
+//      "  float fog = clamp((gl_Fog.end - gl_FogFragCoord)*gl_Fog.scale, 0.,1.);\n"
+//      "  color.rgb = mix( gl_Fog.color.rgb, color.rgb, fog );                  \n"
+        "  gl_FragColor = color;                                                 \n"
+        "} \n" );   
+
+    _shadowFragmentShader = new osg::Shader( osg::Shader::FRAGMENT,
+        " // following expressions are auto modified - do not change them:      \n"
+        " // gl_TexCoord[1]  1 - can be subsituted with other index             \n"
+        "                                                                       \n"
+        "uniform sampler2DShadow shadowTexture;                                 \n"
+        "                                                                       \n"
+        "float DynamicShadow( )                                                 \n"
+        "{                                                                      \n"
+        "    return shadow2DProj( shadowTexture, gl_TexCoord[1] ).r;            \n"
+        "} \n" );
+    
+    
+    _shadowVertexShader = NULL;
+    _mainVertexShader = NULL;
+
+#else
     _mainFragmentShader = new osg::Shader( osg::Shader::FRAGMENT,
         " // following expressions are auto modified - do not change them:       \n"
         " // gl_TexCoord[0]  0 - can be subsituted with other index              \n"
@@ -287,6 +332,7 @@ StandardShadowMap::StandardShadowMap():
         "                                                                       \n"
         "    gl_FogFragCoord = ecLen;                                           \n"
         "} \n" );
+#endif
 }
 
 StandardShadowMap::StandardShadowMap(const StandardShadowMap& copy, const osg::CopyOp& copyop) :

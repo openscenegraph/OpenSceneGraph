@@ -42,7 +42,6 @@
 #include <osgShadow/SoftShadowMap>
 #include <osgShadow/ParallelSplitShadowMap>
 #include <osgShadow/LightSpacePerspectiveShadowMap>
-#include <osgShadow/TrapezoidalShadowMap>
 #include <osgShadow/StandardShadowMap>
 
 #include <osgDB/ReadFile>
@@ -601,15 +600,14 @@ int main(int argc, char** argv)
     arguments.getApplicationUsage()->addCommandLineOption("--PolyOffset-Unit", "ParallelSplitShadowMap set PolygonOffset unit.");//ADEGLI
 
     arguments.getApplicationUsage()->addCommandLineOption("--lispsm", "Select LightSpacePerspectiveShadowMap implementation.");
-    arguments.getApplicationUsage()->addCommandLineOption("--tsm", "Select TrapezoidalShadowMap implementation.");
     arguments.getApplicationUsage()->addCommandLineOption("--msm", "Select MinimalShadowMap implementation.");
-    arguments.getApplicationUsage()->addCommandLineOption("--ViewBounds", "MSM, LiSPSM & TSM optimize shadow for view frustum (weakest option)");
-    arguments.getApplicationUsage()->addCommandLineOption("--CullBounds", "MSM, LiSPSM & TSM optimize shadow for bounds of culled objects in view frustum (better option).");
-    arguments.getApplicationUsage()->addCommandLineOption("--DrawBounds", "MSM, LiSPSM & TSM optimize shadow for bounds of predrawn pixels in view frustum (best & default).");
-    arguments.getApplicationUsage()->addCommandLineOption("--mapres", "MSM, LiSPSM & TSM texture resolution.");
-    arguments.getApplicationUsage()->addCommandLineOption("--maxFarDist", "MSM, LiSPSM & TSM max far distance to shadow.");
-    arguments.getApplicationUsage()->addCommandLineOption("--moveVCamFactor", "MSM, LiSPSM & TSM move the virtual frustum behind the real camera, (also back ground object can cast shadow).");
-    arguments.getApplicationUsage()->addCommandLineOption("--minLightMargin", "MSM, LiSPSM t& TSM the same as --moveVCamFactor.");
+    arguments.getApplicationUsage()->addCommandLineOption("--ViewBounds", "MSM, LiSPSM & optimize shadow for view frustum (weakest option)");
+    arguments.getApplicationUsage()->addCommandLineOption("--CullBounds", "MSM, LiSPSM & optimize shadow for bounds of culled objects in view frustum (better option).");
+    arguments.getApplicationUsage()->addCommandLineOption("--DrawBounds", "MSM, LiSPSM & optimize shadow for bounds of predrawn pixels in view frustum (best & default).");
+    arguments.getApplicationUsage()->addCommandLineOption("--mapres", "MSM, LiSPSM & texture resolution.");
+    arguments.getApplicationUsage()->addCommandLineOption("--maxFarDist", "MSM, LiSPSM & max far distance to shadow.");
+    arguments.getApplicationUsage()->addCommandLineOption("--moveVCamFactor", "MSM, LiSPSM & move the virtual frustum behind the real camera, (also back ground object can cast shadow).");
+    arguments.getApplicationUsage()->addCommandLineOption("--minLightMargin", "MSM, LiSPSM t& the same as --moveVCamFactor.");
 
     arguments.getApplicationUsage()->addCommandLineOption("-1", "Use test model one.");
     arguments.getApplicationUsage()->addCommandLineOption("-2", "Use test model two.");
@@ -773,15 +771,6 @@ int main(int argc, char** argv)
         else // if( arguments.read( "--DrawBounds" ) ) // default
             msm = new osgShadow::LightSpacePerspectiveShadowMapDB;
     } 
-    else if( arguments.read("--tsm") ) 
-    {
-       if( arguments.read( "--ViewBounds" ) )
-            msm = new osgShadow::TrapezoidalShadowMapVB;
-       else if( arguments.read( "--CullBounds" ) )
-            msm = new osgShadow::TrapezoidalShadowMapCB;
-       else // if( arguments.read( "--DrawBounds" ) ) 
-            msm = new osgShadow::TrapezoidalShadowMapDB;
-    }
     else if( arguments.read("--msm") )
     {
        if( arguments.read( "--ViewBounds" ) )
@@ -801,7 +790,7 @@ int main(int argc, char** argv)
             sm->setTextureSize(osg::Vec2s(mapres,mapres));
     }
 
-    if( msm )// Set common MSM & TSM & LISPSM arguments
+    if( msm )// Set common MSM & LISPSM arguments
     {
         shadowedScene->setShadowTechnique( msm.get() );
         while( arguments.read("--debugHUD") )           

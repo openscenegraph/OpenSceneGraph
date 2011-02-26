@@ -60,6 +60,7 @@
 #include "PolygonStipple.h"
 
 
+#include "Node.h"
 #include "Group.h"
 #include "MatrixTransform.h"
 #include "Camera.h"
@@ -1853,6 +1854,10 @@ osg::Node* DataInputStream::readNode()
     else if(nodeTypeID== IVEVOLUMETILE){
         node = new osgVolume::VolumeTile();
         ((ive::VolumeTile*)(node.get()))->read(this);
+    }
+    else if(nodeTypeID== IVENODE){
+        node = new osg::Node();
+        ((ive::Node*)(node.get()))->read(this);
     }
     else{
         throwException("Unknown node identification in DataInputStream::readNode()");

@@ -1410,7 +1410,10 @@ void DataOutputStream::writeNode(const osg::Node* node)
             ((ive::LightPointNode*)(node))->write(this);
         }
         else
-            throwException("Unknown node in Group::write()");
+        {
+            OSG_WARN<<"Unknown node in Group::write(), className()="<<node->className()<<std::endl;
+            // throwException(std::string("Unknown node in Group::write(), className()=")+node->className());
+        }
 
         if (_verboseOutput) std::cout<<"read/writeNode() ["<<id<<"]"<<std::endl;
     }

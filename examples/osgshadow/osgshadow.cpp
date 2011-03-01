@@ -603,7 +603,7 @@ struct MyUpdateSlaveCallback : public osg::View::Slave::UpdateSlaveCallback
 
 void setUpViewForDepthPartion(osgViewer::Viewer& viewer, double partitionPosition)
 {
-    OSG_NOTICE<<"setUpViewForDepthPartion(Viewer, "<<partitionPosition<<")std::endl;
+    OSG_NOTICE<<"setUpViewForDepthPartion(Viewer, "<<partitionPosition<<")"<<std::endl;
 
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
     if (!wsi)

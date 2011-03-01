@@ -603,7 +603,7 @@ struct MyUpdateSlaveCallback : public osg::View::Slave::UpdateSlaveCallback
 
 void setUpViewForDepthPartion(osgViewer::Viewer& viewer, double partitionPosition)
 {
-    OSG_NOTICE<<"setUpViewForDepthPartion(Viewer, "<<partitionPosition<<std::endl;
+    OSG_NOTICE<<"setUpViewForDepthPartion(Viewer, "<<partitionPosition<<")std::endl;
 
     osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
     if (!wsi)
@@ -644,22 +644,9 @@ void setUpViewForDepthPartion(osgViewer::Viewer& viewer, double partitionPositio
         osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
     }
 
-#if 0
-
-    osg::Camera* camera = viewer.getCamera();
-
-    camera->setGraphicsContext(gc);
-    camera->setViewport(new osg::Viewport(0,0, width, height));
-    GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
-    camera->setDrawBuffer(buffer);
-    camera->setReadBuffer(buffer);
-
-#else
-
     double zNear = 0.5;
-    double zMid = 10.0;
+    double zMid = partitionPosition;
     double zFar = 200.0;
-
 
     // far camera
     {
@@ -705,10 +692,6 @@ void setUpViewForDepthPartion(osgViewer::Viewer& viewer, double partitionPositio
         osg::View::Slave& slave = viewer.getSlave(viewer.getNumSlaves()-1);
         slave._updateSlaveCallback =  new MyUpdateSlaveCallback(zNear, zMid);
     }
-
-
-#endif
-
 }
 
 
@@ -770,7 +753,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    double partitionPosition = 0.1;
+    double partitionPosition = 5.0;
     if (arguments.read("--depth-partition",partitionPosition) || arguments.read("--dp"))
     {
         setUpViewForDepthPartion(viewer,partitionPosition);

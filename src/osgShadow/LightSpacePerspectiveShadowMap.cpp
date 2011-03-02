@@ -285,7 +285,7 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
     if( !bb.valid() )
     {
 #if ROBERTS_TEST_CHANGES
-        OSG_NOTICE<<"LightSpacePerspectiveShadowMapAlgorithm::operator() invalid bb A"<<std::endl;
+        // OSG_NOTICE<<"LightSpacePerspectiveShadowMapAlgorithm::operator() invalid bb A"<<std::endl;
 #endif
         return;
     }
@@ -324,7 +324,7 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
         eye += viewDir * ( clampedNearDist - nearDist );
         nearDist = clampedNearDist;
 #if ROBERTS_TEST_CHANGES
-        OSG_NOTICE<<"LightSpacePerspectiveShadowMapAlgorithm::operator() adjusting eye"<<std::endl;
+        // OSG_NOTICE<<"LightSpacePerspectiveShadowMapAlgorithm::operator() adjusting eye"<<std::endl;
 #endif
         
     }
@@ -335,7 +335,7 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
     if (nearDist<0.0)
     {
         nearDist = 0.0;
-        OSG_NOTICE<<"LightSpacePerspectiveShadowMapAlgorithm::operator() nearDist<0.0, resetting to 0.0."<<std::endl;
+        // OSG_NOTICE<<"LightSpacePerspectiveShadowMapAlgorithm::operator() nearDist<0.0, resetting to 0.0."<<std::endl;
     }
 #endif
 
@@ -356,7 +356,7 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
     if( !bb.valid() )
     {
 #if ROBERTS_TEST_CHANGES
-        OSG_NOTICE<<"LightSpacePerspectiveShadowMapAlgorithm::operator() invalid bb B"<<std::endl;
+        // OSG_NOTICE<<"LightSpacePerspectiveShadowMapAlgorithm::operator() invalid bb B"<<std::endl;
 #endif
         return;
     }
@@ -373,14 +373,16 @@ void LightSpacePerspectiveShadowMapAlgorithm::operator()
 
 #if ROBERTS_TEST_CHANGES
     // clamp the localtion of p so that it isn't too close to the eye as to cause problems
-    if (n<d*0.05)
+    float minRatio=0.02;
+    if (n<d*minRatio)
     {
-        n=d*0.05;
-        OSG_NOTICE<<"LightSpacePerspectiveShadowMapAlgorithm::operator() n too small, clamping n to 0.05*d."<<std::endl;
+        n=d*minRatio;
+        // OSG_NOTICE<<"LightSpacePerspectiveShadowMapAlgorithm::operator() n too small, clamping n to "<<minRatio<<"*d."<<std::endl;
     }
 #endif
     const double f = n+d;
     osg::Vec3d pos = eye-up*(n-nearDist);
+    //pos = eye;  
     lightView.makeLookAt( pos, pos + lightDir, up );
 
     //one possibility for a simple perspective transformation matrix

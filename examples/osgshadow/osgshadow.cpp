@@ -773,7 +773,7 @@ void setUpViewForDepthPartion(osgViewer::Viewer& viewer, double partitionPositio
     // far camera
     {
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
-        camera->setGraphicsContext(gc);
+        camera->setGraphicsContext(gc.get());
         camera->setViewport(new osg::Viewport(0,0, width, height));
 
         GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
@@ -795,7 +795,7 @@ void setUpViewForDepthPartion(osgViewer::Viewer& viewer, double partitionPositio
     // near camera
     {
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
-        camera->setGraphicsContext(gc);
+        camera->setGraphicsContext(gc.get());
         camera->setViewport(new osg::Viewport(0,0, width, height));
 
         GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;

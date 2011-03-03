@@ -30,6 +30,26 @@
 
 namespace osgViewer {
 
+
+struct OSGVIEWER_EXPORT DepthPartitionSettings : public osg::Referenced
+{
+    enum DepthMode
+    {
+        FIXED_RANGE,
+        BOUNDING_VOLUME
+    };
+
+    DepthPartitionSettings(DepthMode mode=BOUNDING_VOLUME);
+
+    virtual bool getDepthRange(osg::View& view, unsigned int partition, double& zNear, double& zFar);
+
+    DepthMode _mode;
+    double _zNear;
+    double _zMid;
+    double _zFar;
+};
+
+    
 /** View holds a single view on a scene, this view may be composed of one or more slave cameras.*/
 class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 {
@@ -181,6 +201,13 @@ class OSGVIEWER_EXPORT View : public osg::View, public osgGA::GUIActionAdapter
 
         /** Convenience method for autostereoscopic Philips WoWvx display.*/
         void setUpViewForWoWVxDisplay(unsigned int screenNum, unsigned char wow_content, unsigned char wow_factor, unsigned char wow_offset, float wow_disparity_Zd, float wow_disparity_vz, float wow_disparity_M, float wow_disparity_C);
+
+
+        /** Convenience method for setting up multiple slave cameras that depth partition the specified camera.*/
+        bool setUpDepthPartitionForCamera(osg::Camera* cameraToPartition, DepthPartitionSettings* dps=0);
+
+        /** Convenience method for setting up multiple slave cameras that depth partition each of the view's active cameras.*/
+        bool setUpDepthPartition(DepthPartitionSettings* dsp=0);
 
 
         /** Return true if this view contains a specified camera.*/

@@ -1595,6 +1595,290 @@ void View::setUpViewForWoWVxDisplay(unsigned int screenNum, unsigned char wow_co
     }
 }
 
+DepthPartitionSettings::DepthPartitionSettings(DepthMode mode):
+    _mode(mode),
+    _zNear(1.0), _zMid(5.0), _zFar(1000.0)
+{}
+
+bool DepthPartitionSettings::getDepthRange(osg::View& view, unsigned int partition, double& zNear, double& zFar)
+{
+    switch(_mode)
+    {
+        case(FIXED_RANGE):
+        {
+            if (partition==0)
+            {
+                zNear = _zNear;
+                zFar = _zMid;
+                return true;
+            }
+            else if (partition==1)
+            {
+                zNear = _zMid;
+                zFar = _zFar;
+                return true;
+            }
+            return false;
+        }
+        case(BOUNDING_VOLUME):
+        {
+            osgViewer::View* view_withSceneData = dynamic_cast<osgViewer::View*>(&view);
+            const osg::Node* node = view_withSceneData ? view_withSceneData->getSceneData() : 0;
+            if (!node) return false;
+
+            const osg::Camera* masterCamera = view.getCamera();
+            if (!masterCamera) return false;
+
+            osg::BoundingSphere bs = node->getBound();
+            const osg::Matrixd& viewMatrix = masterCamera->getViewMatrix();
+            //osg::Matrixd& projectionMatrix = masterCamera->getProjectionMatrix();
+
+            osg::Vec3d lookVectorInWorldCoords = osg::Matrixd::transform3x3(viewMatrix,osg::Vec3d(0.0,0.0,-1.0));
+            lookVectorInWorldCoords.normalize();
+
+            osg::Vec3d nearPointInWorldCoords = bs.center() - lookVectorInWorldCoords*bs.radius();
+            osg::Vec3d farPointInWorldCoords = bs.center() + lookVectorInWorldCoords*bs.radius();
+
+            osg::Vec3d nearPointInEyeCoords = nearPointInWorldCoords * viewMatrix;
+            osg::Vec3d farPointInEyeCoords = farPointInWorldCoords * viewMatrix;
+
+#if 0
+            OSG_NOTICE<<std::endl;
+            OSG_NOTICE<<"viewMatrix = "<<viewMatrix<<std::endl;
+            OSG_NOTICE<<"lookVectorInWorldCoords = "<<lookVectorInWorldCoords<<std::endl;
+            OSG_NOTICE<<"nearPointInWorldCoords = "<<nearPointInWorldCoords<<std::endl;
+            OSG_NOTICE<<"farPointInWorldCoords = "<<farPointInWorldCoords<<std::endl;
+            OSG_NOTICE<<"nearPointInEyeCoords = "<<nearPointInEyeCoords<<std::endl;
+            OSG_NOTICE<<"farPointInEyeCoords = "<<farPointInEyeCoords<<std::endl;
+#endif
+            double minZNearRatio = 0.001;
+
+
+            if (masterCamera->getDisplaySettings())
+            {
+                OSG_NOTICE<<"Has display settings"<<std::endl;
+            }
+
+            double scene_zNear = -nearPointInEyeCoords.z();
+            double scene_zFar = -farPointInEyeCoords.z();
+            if (scene_zNear<=0.0) scene_zNear = minZNearRatio * scene_zFar;
+
+            double scene_zMid = sqrt(scene_zFar*scene_zNear);
+
+#if 0
+            OSG_NOTICE<<"scene_zNear = "<<scene_zNear<<std::endl;
+            OSG_NOTICE<<"scene_zMid = "<<scene_zMid<<std::endl;
+            OSG_NOTICE<<"scene_zFar = "<<scene_zFar<<std::endl;
+#endif
+            if (partition==0)
+            {
+                zNear = scene_zNear;
+                zFar = scene_zMid;
+                return true;
+            }
+            else if (partition==1)
+            {
+                zNear = scene_zMid;
+                zFar = scene_zFar;
+                return true;
+            }
+
+            return false;
+        }
+    }
+}
+
+namespace osgDepthPartition {
+
+struct MyUpdateSlaveCallback : public osg::View::Slave::UpdateSlaveCallback
+{
+    MyUpdateSlaveCallback(DepthPartitionSettings* dps, unsigned int partition):_dps(dps), _partition(partition) {}
+
+    virtual void updateSlave(osg::View& view, osg::View::Slave& slave)
+    {
+        slave.updateSlaveImplementation(view);
+
+        if (!_dps) return;
+
+        osg::Camera* camera = slave._camera.get();
+
+        double computed_zNear;
+        double computed_zFar;
+        if (!_dps->getDepthRange(view, _partition, computed_zNear, computed_zFar))
+        {
+            OSG_NOTICE<<"Switching off Camera "<<camera<<std::endl;
+            camera->setNodeMask(0x0);
+            return;
+        }
+        else
+        {
+            camera->setNodeMask(0xffffff);
+        }
+
+        if (camera->getProjectionMatrix()(0,3)==0.0 &&
+            camera->getProjectionMatrix()(1,3)==0.0 &&
+            camera->getProjectionMatrix()(2,3)==0.0)
+        {
+            double left, right, bottom, top, zNear, zFar;
+            camera->getProjectionMatrixAsOrtho(left, right, bottom, top, zNear, zFar);
+            camera->setProjectionMatrixAsOrtho(left, right, bottom, top, computed_zNear, computed_zFar);
+        }
+        else
+        {
+            double left, right, bottom, top, zNear, zFar;
+            camera->getProjectionMatrixAsFrustum(left, right, bottom, top, zNear, zFar);
+
+            double nr = computed_zNear / zNear;
+            camera->setProjectionMatrixAsFrustum(left * nr, right * nr, bottom * nr, top * nr, computed_zNear, computed_zFar);
+        }
+    }
+
+    osg::ref_ptr<DepthPartitionSettings> _dps;
+    unsigned int _partition;
+};
+
+
+typedef std::list< osg::ref_ptr<osg::Camera> > Cameras;
+
+Cameras getActiveCameras(osg::View& view)
+{
+    Cameras activeCameras;
+
+    if (view.getCamera() && view.getCamera()->getGraphicsContext())
+    {
+        activeCameras.push_back(view.getCamera());
+    }
+
+    for(unsigned int i=0; i<view.getNumSlaves(); ++i)
+    {
+        osg::View::Slave& slave = view.getSlave(i);
+        if (slave._camera.valid() && slave._camera->getGraphicsContext())
+        {
+            activeCameras.push_back(slave._camera.get());
+        }
+    }
+    return activeCameras;
+}
+
+}
+
+bool View::setUpDepthPartitionForCamera(osg::Camera* cameraToPartition, DepthPartitionSettings* incomming_dps)
+{
+    osg::ref_ptr<osg::GraphicsContext> context = cameraToPartition->getGraphicsContext();
+    if (!context) return false;
+
+    osg::ref_ptr<osg::Viewport> viewport = cameraToPartition->getViewport();
+    if (!viewport) return false;
+
+    osg::ref_ptr<DepthPartitionSettings> dps = incomming_dps;
+    if (!dps) dps = new DepthPartitionSettings;
+
+    bool useMastersSceneData = true;
+    osg::Matrixd projectionOffset;
+    osg::Matrixd viewOffset;
+
+    if (getCamera()==cameraToPartition)
+    {
+        // replace main camera with depth partition cameras
+        OSG_INFO<<"View::setUpDepthPartitionForCamera(..) Replacing main Camera"<<std::endl;
+    }
+    else
+    {
+        unsigned int i = findSlaveIndexForCamera(cameraToPartition);
+        if (i>=getNumSlaves()) return false;
+
+        osg::View::Slave& slave = getSlave(i);
+
+        useMastersSceneData = slave._useMastersSceneData;
+        projectionOffset = slave._projectionOffset;
+        viewOffset = slave._viewOffset;
+
+        OSG_NOTICE<<"View::setUpDepthPartitionForCamera(..) Replacing slave Camera"<<i<<std::endl;
+        removeSlave(i);
+    }
+
+    cameraToPartition->setGraphicsContext(0);
+    cameraToPartition->setViewport(0);
+
+    // far camera
+    {
+        osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+        camera->setGraphicsContext(context.get());
+        camera->setViewport(viewport.get());
+
+        camera->setDrawBuffer(cameraToPartition->getDrawBuffer());
+        camera->setReadBuffer(cameraToPartition->getReadBuffer());
+
+        camera->setComputeNearFarMode(osg::Camera::DO_NOT_COMPUTE_NEAR_FAR);
+        camera->setCullingMode(osg::Camera::ENABLE_ALL_CULLING);
+
+        addSlave(camera.get());
+
+        osg::View::Slave& slave = getSlave(getNumSlaves()-1);
+
+        slave._useMastersSceneData = useMastersSceneData;
+        slave._projectionOffset = projectionOffset;
+        slave._viewOffset = viewOffset;
+        slave._updateSlaveCallback =  new osgDepthPartition::MyUpdateSlaveCallback(dps.get(), 1);
+    }
+
+    // near camera
+    {
+        osg::ref_ptr<osg::Camera> camera = new osg::Camera;
+        camera->setGraphicsContext(context.get());
+        camera->setViewport(viewport.get());
+
+        camera->setDrawBuffer(cameraToPartition->getDrawBuffer());
+        camera->setReadBuffer(cameraToPartition->getReadBuffer());
+
+        camera->setComputeNearFarMode(osg::Camera::DO_NOT_COMPUTE_NEAR_FAR);
+        camera->setCullingMode(osg::Camera::ENABLE_ALL_CULLING);
+        camera->setClearMask(GL_DEPTH_BUFFER_BIT);
+
+        addSlave(camera.get());
+
+        osg::View::Slave& slave = getSlave(getNumSlaves()-1);
+        slave._useMastersSceneData = useMastersSceneData;
+        slave._projectionOffset = projectionOffset;
+        slave._viewOffset = viewOffset;
+        slave._updateSlaveCallback =  new osgDepthPartition::MyUpdateSlaveCallback(dps.get(), 0);
+    }
+
+    return true;
+}
+
+
+
+bool View::setUpDepthPartition(DepthPartitionSettings* dsp)
+{
+    osgDepthPartition::Cameras originalCameras = osgDepthPartition::getActiveCameras(*this);
+    if (originalCameras.empty())
+    {
+        OSG_INFO<<"osgView::View::setUpDepthPartition(,..), no windows assigned, doing view.setUpViewAcrossAllScreens()"<<std::endl;
+        setUpViewAcrossAllScreens();
+
+        originalCameras = osgDepthPartition::getActiveCameras(*this);
+        if (originalCameras.empty())
+        {
+            OSG_NOTICE<<"osgView::View::setUpDepthPartition(View,..) Unable to set up windows for viewer."<<std::endl;
+            return false;
+        }
+    }
+
+    bool threadsWereRunning = getViewerBase()->areThreadsRunning();
+    if (threadsWereRunning) getViewerBase()->stopThreading();
+
+    for(osgDepthPartition::Cameras::iterator itr = originalCameras.begin();
+        itr != originalCameras.end();
+        ++itr)
+    {
+        setUpDepthPartitionForCamera(itr->get(), dsp);
+    }
+
+    if (threadsWereRunning) getViewerBase()->startThreading();
+
+    return true;
+}
 
 
 void View::assignSceneDataToCameras()

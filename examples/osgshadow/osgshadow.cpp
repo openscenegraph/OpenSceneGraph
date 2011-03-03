@@ -720,100 +720,144 @@ struct MyUpdateSlaveCallback : public osg::View::Slave::UpdateSlaveCallback
     unsigned int _partition;
 };
 
-void setUpViewForDepthPartion(osgViewer::Viewer& viewer, double partitionPosition)
+
+bool setUpDepthPartitionForCamera(osg::View& view, osg::Camera* cameraToPartition, DepthPartitionSettings* dps)
 {
-    OSG_NOTICE<<"setUpViewForDepthPartion(Viewer, "<<partitionPosition<<")"<<std::endl;
+    osg::ref_ptr<osg::GraphicsContext> context = cameraToPartition->getGraphicsContext();
+    if (!context) return false;
 
-    osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface();
-    if (!wsi)
+    osg::ref_ptr<osg::Viewport> viewport = cameraToPartition->getViewport();
+    if (!viewport) return false;
+
+    cameraToPartition->setGraphicsContext(0);
+    cameraToPartition->setViewport(0);
+
+    bool useMastersSceneData = true;
+    osg::Matrixd projectionOffset;
+    osg::Matrixd viewOffset;
+
+    if (view.getCamera()==cameraToPartition)
     {
-        OSG_NOTICE<<"View::setUpViewAcrossAllScreens() : Error, no WindowSystemInterface available, cannot create windows."<<std::endl;
-        return;
-    }
-
-
-    osg::GraphicsContext::ScreenIdentifier si(0);
-    si.readDISPLAY();
-
-    // displayNum has not been set so reset it to 0.
-    if (si.displayNum<0) si.displayNum = 0;
-    if (si.screenNum<0) si.screenNum = 0;
-
-    unsigned int width = 1280, height = 1024;
-    wsi->getScreenResolution(si, width, height);
-
-
-    osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
-    traits->screenNum = 0;
-    traits->x = 0;
-    traits->y = 0;
-    traits->width = width;
-    traits->height = height;
-    traits->windowDecoration = false;
-    traits->doubleBuffer = true;
-    traits->sharedContext = 0;
-
-    osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
-    if (gc.valid())
-    {
-        osg::notify(osg::INFO)<<"  GraphicsWindow has been created successfully."<<std::endl;
+        // replace main camera with depth partition cameras
+        OSG_NOTICE<<"Replacing main Camera"<<std::endl;
     }
     else
     {
-        osg::notify(osg::NOTICE)<<"  GraphicsWindow has not been created successfully."<<std::endl;
+        unsigned int i = view.findSlaveIndexForCamera(cameraToPartition);
+        if (i>=view.getNumSlaves()) return false;
+
+        osg::View::Slave& slave = view.getSlave(i);
+
+        useMastersSceneData = slave._useMastersSceneData;
+        projectionOffset = slave._projectionOffset;
+        viewOffset = slave._viewOffset;
+
+        OSG_NOTICE<<"Replacing slave Camera"<<i<<std::endl;
+        view.removeSlave(i);
     }
-
-    osg::ref_ptr<DepthPartitionSettings> dps = new DepthPartitionSettings;
-
-    dps->_mode = DepthPartitionSettings::BOUNDING_VOLUME;
-    dps->_zNear = 0.5;
-    dps->_zMid = partitionPosition;
-    dps->_zFar = 1000.0;
 
     // far camera
     {
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
-        camera->setGraphicsContext(gc.get());
-        camera->setViewport(new osg::Viewport(0,0, width, height));
+        camera->setGraphicsContext(context.get());
+        camera->setViewport(viewport.get());
 
-        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
-        camera->setDrawBuffer(buffer);
-        camera->setReadBuffer(buffer);
-
-        double scale_z = 1.0;
-        double translate_z = 0.0;
+        camera->setDrawBuffer(cameraToPartition->getDrawBuffer());
+        camera->setReadBuffer(cameraToPartition->getReadBuffer());
 
         camera->setComputeNearFarMode(osg::Camera::DO_NOT_COMPUTE_NEAR_FAR);
         camera->setCullingMode(osg::Camera::ENABLE_ALL_CULLING);
 
-        viewer.addSlave(camera.get(), osg::Matrix::scale(1.0, 1.0, scale_z)*osg::Matrix::translate(0.0, 0.0, translate_z), osg::Matrix() );
+        view.addSlave(camera.get());
 
-        osg::View::Slave& slave = viewer.getSlave(viewer.getNumSlaves()-1);
-        slave._updateSlaveCallback =  new MyUpdateSlaveCallback(dps.get(), 1);
+        osg::View::Slave& slave = view.getSlave(view.getNumSlaves()-1);
+
+        slave._useMastersSceneData = useMastersSceneData;
+        slave._projectionOffset = projectionOffset;
+        slave._viewOffset = viewOffset;
+        slave._updateSlaveCallback =  new MyUpdateSlaveCallback(dps, 1);
     }
 
     // near camera
     {
         osg::ref_ptr<osg::Camera> camera = new osg::Camera;
-        camera->setGraphicsContext(gc.get());
-        camera->setViewport(new osg::Viewport(0,0, width, height));
+        camera->setGraphicsContext(context.get());
+        camera->setViewport(viewport.get());
 
-        GLenum buffer = traits->doubleBuffer ? GL_BACK : GL_FRONT;
-        camera->setDrawBuffer(buffer);
-        camera->setReadBuffer(buffer);
-
-        double scale_z = 1.0;
-        double translate_z = 0.0;
+        camera->setDrawBuffer(cameraToPartition->getDrawBuffer());
+        camera->setReadBuffer(cameraToPartition->getReadBuffer());
 
         camera->setComputeNearFarMode(osg::Camera::DO_NOT_COMPUTE_NEAR_FAR);
         camera->setCullingMode(osg::Camera::ENABLE_ALL_CULLING);
         camera->setClearMask(GL_DEPTH_BUFFER_BIT);
 
-        viewer.addSlave(camera.get(), osg::Matrix::scale(1.0, 1.0, scale_z)*osg::Matrix::translate(0.0, 0.0, translate_z), osg::Matrix() );
+        view.addSlave(camera.get());
 
-        osg::View::Slave& slave = viewer.getSlave(viewer.getNumSlaves()-1);
-        slave._updateSlaveCallback =  new MyUpdateSlaveCallback(dps.get(), 0);
+        osg::View::Slave& slave = view.getSlave(view.getNumSlaves()-1);
+        slave._useMastersSceneData = useMastersSceneData;
+        slave._projectionOffset = projectionOffset;
+        slave._viewOffset = viewOffset;
+        slave._updateSlaveCallback =  new MyUpdateSlaveCallback(dps, 0);
     }
+
+    return true;
+}
+
+
+typedef std::list< osg::ref_ptr<osg::Camera> > Cameras;
+
+Cameras getActiveCameras(osg::View& view)
+{
+    Cameras activeCameras;
+
+    if (view.getCamera() && view.getCamera()->getGraphicsContext())
+    {
+        activeCameras.push_back(view.getCamera());
+    }
+
+    for(unsigned int i=0; i<view.getNumSlaves(); ++i)
+    {
+        osg::View::Slave& slave = view.getSlave(i);
+        if (slave._camera.valid() && slave._camera->getGraphicsContext())
+        {
+            activeCameras.push_back(slave._camera.get());
+        }
+    }
+    return activeCameras;
+}
+
+
+bool setUpDepthPartition(osgViewer::View& view, DepthPartitionSettings* dsp)
+{
+    OSG_NOTICE<<"setUpDepthPartition(View,..)"<<std::endl;
+
+    Cameras originalCameras = getActiveCameras(view);
+    if (originalCameras.empty())
+    {
+        OSG_NOTICE<<"setUpDepthPartition(View,..) doing view.setUpViewAcrossAllScreens()"<<std::endl;
+        view.setUpViewAcrossAllScreens();
+
+        originalCameras = getActiveCameras(view);
+        if (originalCameras.empty())
+        {
+            OSG_NOTICE<<"setUpDepthPartition(View,..) Unable to set up windows for viewer."<<std::endl;
+            return false;
+        }
+    }
+
+    bool threadsWereRunning = view.getViewerBase()->areThreadsRunning();
+    if (threadsWereRunning) view.getViewerBase()->stopThreading();
+
+    for(Cameras::iterator itr = originalCameras.begin();
+        itr != originalCameras.end();
+        ++itr)
+    {
+        setUpDepthPartitionForCamera(view, itr->get(), dsp);
+    }
+
+    if (threadsWereRunning) view.getViewerBase()->startThreading();
+    
+    return true;
 }
 
 
@@ -878,7 +922,13 @@ int main(int argc, char** argv)
     double partitionPosition = 5.0;
     if (arguments.read("--depth-partition",partitionPosition) || arguments.read("--dp"))
     {
-        setUpViewForDepthPartion(viewer,partitionPosition);
+        // set up depth partitioning
+        osg::ref_ptr<DepthPartitionSettings> dps = new DepthPartitionSettings;
+        dps->_mode = DepthPartitionSettings::BOUNDING_VOLUME;
+        dps->_zNear = 0.5;
+        dps->_zMid = partitionPosition;
+        dps->_zFar = 1000.0;
+        setUpDepthPartition(viewer, dps.get());
     }
 
     float fov = 0.0;
@@ -1163,7 +1213,7 @@ int main(int argc, char** argv)
 
     // create the windows and run the threads.
     viewer.realize();
-    
+
     if (fov!=0.0)
     {
         double fovy, aspectRatio, zNear, zFar;

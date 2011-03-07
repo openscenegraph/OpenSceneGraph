@@ -603,13 +603,13 @@ int main(int argc, char** argv)
 
     arguments.getApplicationUsage()->addCommandLineOption("--lispsm", "Select LightSpacePerspectiveShadowMap implementation.");
     arguments.getApplicationUsage()->addCommandLineOption("--msm", "Select MinimalShadowMap implementation.");
-    arguments.getApplicationUsage()->addCommandLineOption("--ViewBounds", "MSM, LiSPSM & optimize shadow for view frustum (weakest option)");
-    arguments.getApplicationUsage()->addCommandLineOption("--CullBounds", "MSM, LiSPSM & optimize shadow for bounds of culled objects in view frustum (better option).");
-    arguments.getApplicationUsage()->addCommandLineOption("--DrawBounds", "MSM, LiSPSM & optimize shadow for bounds of predrawn pixels in view frustum (best & default).");
+    arguments.getApplicationUsage()->addCommandLineOption("--ViewBounds", "MSM, LiSPSM optimize shadow for view frustum (weakest option)");
+    arguments.getApplicationUsage()->addCommandLineOption("--CullBounds", "MSM, LiSPSM optimize shadow for bounds of culled objects in view frustum (better option).");
+    arguments.getApplicationUsage()->addCommandLineOption("--DrawBounds", "MSM, LiSPSM optimize shadow for bounds of predrawn pixels in view frustum (best & default).");
     arguments.getApplicationUsage()->addCommandLineOption("--mapres", "MSM, LiSPSM & texture resolution.");
-    arguments.getApplicationUsage()->addCommandLineOption("--maxFarDist", "MSM, LiSPSM & max far distance to shadow.");
-    arguments.getApplicationUsage()->addCommandLineOption("--moveVCamFactor", "MSM, LiSPSM & move the virtual frustum behind the real camera, (also back ground object can cast shadow).");
-    arguments.getApplicationUsage()->addCommandLineOption("--minLightMargin", "MSM, LiSPSM t& the same as --moveVCamFactor.");
+    arguments.getApplicationUsage()->addCommandLineOption("--maxFarDist", "MSM, LiSPSM max far distance to shadow.");
+    arguments.getApplicationUsage()->addCommandLineOption("--moveVCamFactor", "MSM, LiSPSM move the virtual frustum behind the real camera, (also back ground object can cast shadow).");
+    arguments.getApplicationUsage()->addCommandLineOption("--minLightMargin", "MSM, LiSPSM the same as --moveVCamFactor.");
 
     arguments.getApplicationUsage()->addCommandLineOption("-1", "Use test model one.");
     arguments.getApplicationUsage()->addCommandLineOption("-2", "Use test model two.");

@@ -584,6 +584,17 @@ void Text3D::renderPerGlyph(osg::State & state) const
 {
     osg::Matrix original_modelview = state.getModelViewMatrix();
 
+    const osg::StateSet* frontStateSet = getStateSet();
+    const osg::StateSet* wallStateSet = getWallStateSet();
+    const osg::StateSet* backStateSet = getBackStateSet();
+    bool applyMainColor = false;
+
+    if (wallStateSet==0) wallStateSet = frontStateSet;
+    else if (wallStateSet->getAttribute(osg::StateAttribute::MATERIAL)!=0) applyMainColor = true;
+
+    if (backStateSet==0) backStateSet = frontStateSet;
+    else if (backStateSet->getAttribute(osg::StateAttribute::MATERIAL)!=0) applyMainColor = true;
+
     // ** for each line, do ...
     TextRenderInfo::const_iterator itLine, endLine = _textRenderInfo.end();
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
@@ -605,6 +616,11 @@ void Text3D::renderPerGlyph(osg::State & state) const
 
             state.applyDisablingOfVertexAttributes();
 
+            if (frontStateSet!=backStateSet)
+            {
+                state.apply(frontStateSet);
+                if (applyMainColor) state.Color(_color.r(),_color.g(),_color.b(),_color.a());
+            }
 
             osg::Geometry::PrimitiveSetList & pslFront = it->_glyphGeometry->getFrontPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslFront.begin(), end = pslFront.end(); itr!=end; ++itr)
@@ -612,11 +628,19 @@ void Text3D::renderPerGlyph(osg::State & state) const
                 (*itr)->draw(state, false);
             }
 
+            if (wallStateSet!=frontStateSet) state.apply(wallStateSet);
+
             // ** render the wall face of the glyph
             osg::Geometry::PrimitiveSetList & pslWall = it->_glyphGeometry->getWallPrimitiveSetList();
             for(osg::Geometry::PrimitiveSetList::const_iterator itr=pslWall.begin(), end=pslWall.end(); itr!=end; ++itr)
             {
                 (*itr)->draw(state, false);
+            }
+
+            if (backStateSet!=wallStateSet)
+            {
+                state.apply(backStateSet);
+                if (applyMainColor) state.Color(_color.r(),_color.g(),_color.b(),_color.a());
             }
 
             osg::Geometry::PrimitiveSetList & pslBack = it->_glyphGeometry->getBackPrimitiveSetList();
@@ -635,6 +659,18 @@ void Text3D::renderPerFace(osg::State & state) const
     // ** render all front faces
     state.Normal(0.0f,0.0f,1.0f);
 #endif
+
+    const osg::StateSet* frontStateSet = getStateSet();
+    const osg::StateSet* wallStateSet = getWallStateSet();
+    const osg::StateSet* backStateSet = getBackStateSet();
+    bool applyMainColor = false;
+
+    if (wallStateSet==0) wallStateSet = frontStateSet;
+    else if (wallStateSet->getAttribute(osg::StateAttribute::MATERIAL)!=0) applyMainColor = true;
+
+    if (backStateSet==0) backStateSet = frontStateSet;
+    else if (backStateSet->getAttribute(osg::StateAttribute::MATERIAL)!=0) applyMainColor = true;
+
 
     TextRenderInfo::const_iterator itLine, endLine = _textRenderInfo.end();
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
@@ -659,6 +695,7 @@ void Text3D::renderPerFace(osg::State & state) const
         }
     }
 
+    if (wallStateSet!=frontStateSet) state.apply(wallStateSet);
 
     // ** render all wall face of the text
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
@@ -687,6 +724,13 @@ void Text3D::renderPerFace(osg::State & state) const
     // ** render all back face of the text
     state.Normal(0.0f,0.0f,-1.0f);
 #endif
+
+    if (backStateSet!=wallStateSet)
+    {
+        state.apply(backStateSet);
+        if (applyMainColor) state.Color(_color.r(),_color.g(),_color.b(),_color.a());
+    }
+
     for (itLine = _textRenderInfo.begin(); itLine!=endLine; ++itLine)
     {
         // ** for each glyph in the line, do ...

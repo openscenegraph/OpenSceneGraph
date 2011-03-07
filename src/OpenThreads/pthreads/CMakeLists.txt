@@ -11,12 +11,12 @@ SET(LIB_PUBLIC_HEADERS ${OpenThreads_PUBLIC_HEADERS})
 ADD_LIBRARY(${LIB_NAME}
     ${OPENTHREADS_USER_DEFINED_DYNAMIC_OR_STATIC}
     ${LIB_PUBLIC_HEADERS}
-    PThread.c++
-    PThreadBarrier.c++
+    PThread.cpp
+    PThreadBarrier.cpp
     PThreadBarrierPrivateData.h
-    PThreadCondition.c++
+    PThreadCondition.cpp
     PThreadConditionPrivateData.h
-    PThreadMutex.c++
+    PThreadMutex.cpp
     PThreadMutexPrivateData.h
     PThreadPrivateData.h
     ../common/Version.cpp

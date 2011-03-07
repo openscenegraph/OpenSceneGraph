@@ -17,81 +17,24 @@
 */
 
 #include <osg/ArgumentParser>
-#include <osg/Geode>
-#include <osg/Geometry>
-#include <osg/CullFace>
-#include <osg/TriangleIndexFunctor>
+#include <osg/Material>
 #include <osg/PositionAttitudeTransform>
-#include <osgUtil/SmoothingVisitor>
+#include <osg/io_utils>
+
+#include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
 #include <osgGA/StateSetManipulator>
-#include <osgUtil/Tessellator>
 #include <osgViewer/Viewer>
 #include <osgViewer/ViewerEventHandlers>
-#include <osg/io_utils>
 
 #include <osgText/Text3D>
 
 #include "TextNode.h"
 
-extern int main_orig(int, char**);
-extern int main_test(int, char**);
-
-
-int main_size(int argc, char** argv)
-{
-    osg::ArgumentParser arguments(&argc, argv);
-
-    osgViewer::Viewer viewer(arguments);
-
-    std::string fontFile("arial.ttf");
-    while(arguments.read("-f",fontFile)) {}
-
-    osg::ref_ptr<osgText::Font> font = osgText::readFontFile(fontFile);
-    if (!font) return 1;
-    OSG_NOTICE<<"Read font "<<fontFile<<" font="<<font.get()<<std::endl;
-
-    osg::Geode* geode = new osg::Geode;
-
-    geode->addDrawable( osg::createTexturedQuadGeometry(osg::Vec3(0.0f,0.0f,0.0f),osg::Vec3(1.0f,0.0,0.0),osg::Vec3(0.0f,0.0,1.0), 0.0, 0.0, 1.0, 1.0) );
-
-    osgText::Text3D* text3d = new osgText::Text3D;
-    text3d->setPosition(osg::Vec3(1.0f,0.0f,0.0f));
-    text3d->setFont(osgText::readFontFile("arial.ttf"));
-    text3d->setCharacterSizeMode(osgText::Text3D::OBJECT_COORDS);
-    text3d->setCharacterSize(1.0f);
-    text3d->setCharacterDepth(0.1f);
-    text3d->setAxisAlignment(osgText::Text3D::XZ_PLANE);
-    text3d->setText("This is a size test");
-
-    geode->addDrawable(text3d);
-
-    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
-    viewer.addEventHandler(new osgViewer::StatsHandler);
-
-    viewer.setSceneData(geode);
-
-    return viewer.run();
-}
-
-
 
 int main(int argc, char** argv)
 {
     osg::ArgumentParser arguments(&argc, argv);
-
-    if (arguments.read("--test"))
-    {
-        return main_test(argc,argv);
-    }
-    else if (arguments.read("--original") || arguments.read("--orig"))
-    {
-        return main_orig(argc,argv);
-    }
-    else if (arguments.read("--size-test"))
-    {
-        return main_size(argc,argv);
-    }
 
     osgViewer::Viewer viewer(arguments);
 
@@ -125,11 +68,12 @@ int main(int argc, char** argv)
     // set up outline.
     while(arguments.read("--outline",r)) { style->setOutlineRatio(r); }
 
+
     viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
     viewer.addEventHandler(new osgViewer::StatsHandler);
 
 #if 1
-    osg::Geode* geode = new osg::Geode;
+    osg::ref_ptr<osg::Group> group = new osg::Group;
 
     float characterSize = 1.0f;
     while(arguments.read("--size",characterSize)) {}
@@ -143,9 +87,24 @@ int main(int argc, char** argv)
         text2D->setDrawMode(osgText::Text::TEXT | osgText::Text::BOUNDINGBOX);
         text2D->setAxisAlignment(osgText::Text::XZ_PLANE);
         text2D->setText(word);
+        osg::Geode* geode = new osg::Geode;
         geode->addDrawable(text2D);
+        group->addChild(geode);
     }
-        if (!arguments.read("--no-3d"))
+
+    if (arguments.read("--TextNode"))
+    {
+        // experimental text node
+        osgText::TextNode* text = new osgText::TextNode;
+        text->setFont(font.get());
+        text->setStyle(style.get());
+        text->setTextTechnique(new osgText::TextTechnique);
+        text->setText(word);
+        text->update();
+
+        group->addChild(text);
+    }
+    else if (!arguments.read("--no-3d"))
     {
         osgText::Text3D* text3D = new osgText::Text3D;
         text3D->setFont(font.get());
@@ -154,24 +113,76 @@ int main(int argc, char** argv)
         text3D->setDrawMode(osgText::Text3D::TEXT | osgText::Text3D::BOUNDINGBOX);
         text3D->setAxisAlignment(osgText::Text3D::XZ_PLANE);
         text3D->setText(word);
-        geode->addDrawable(text3D);
-    }
-    
 
-    if (arguments.read("--size-quad"))
-    {
-        geode->addDrawable( osg::createTexturedQuadGeometry(osg::Vec3(0.0f,characterSize*thickness,0.0f),osg::Vec3(characterSize,0.0,0.0),osg::Vec3(0.0f,0.0,characterSize), 0.0, 0.0, 1.0, 1.0) );
+        osg::Geode* geode = new osg::Geode;
+        geode->addDrawable(text3D);
+        group->addChild(geode);
+
+        osg::Vec4 color(1.0f, 1.0f, 1.0f, 1.0f);
+        while(arguments.read("--color",color.r(),color.g(),color.b(),color.a()))
+        {
+            OSG_NOTICE<<"--color "<<color<<std::endl;
+            text3D->setColor(color);
+        }
+
+        std::string imageFilename;
+        while(arguments.read("--image",imageFilename))
+        {
+            OSG_NOTICE<<"--image "<<imageFilename<<std::endl;
+            osg::ref_ptr<osg::Image> image = osgDB::readImageFile(imageFilename);
+            if (image.valid())
+            {
+                OSG_NOTICE<<"  loaded image "<<imageFilename<<std::endl;
+                osg::StateSet* stateset = text3D->getOrCreateStateSet();
+                stateset->setTextureAttributeAndModes(0, new osg::Texture2D(image.get()), osg::StateAttribute::ON);
+            }
+        }
+
+        while(arguments.read("--wall-color",color.r(),color.g(),color.b(),color.a()))
+        {
+            osg::StateSet* stateset = text3D->getOrCreateWallStateSet();
+            osg::Material* material = new osg::Material;
+            material->setDiffuse(osg::Material::FRONT_AND_BACK, color);
+            stateset->setAttribute(material);
+        }
+
+        while(arguments.read("--wall-image",imageFilename))
+        {
+            osg::ref_ptr<osg::Image> image = osgDB::readImageFile(imageFilename);
+            if (image.valid())
+            {
+                osg::StateSet* stateset = text3D->getOrCreateWallStateSet();
+                stateset->setTextureAttributeAndModes(0, new osg::Texture2D(image.get()), osg::StateAttribute::ON);
+            }
+        }
+
+        while(arguments.read("--back-color",color.r(),color.g(),color.b(),color.a()))
+        {
+            osg::StateSet* stateset = text3D->getOrCreateBackStateSet();
+            osg::Material* material = new osg::Material;
+            material->setDiffuse(osg::Material::FRONT_AND_BACK, color);
+            stateset->setAttribute(material);
+        }
+
+        while(arguments.read("--back-image",imageFilename))
+        {
+            osg::ref_ptr<osg::Image> image = osgDB::readImageFile(imageFilename);
+            if (image.valid())
+            {
+                osg::StateSet* stateset = text3D->getOrCreateBackStateSet();
+                stateset->setTextureAttributeAndModes(0, new osg::Texture2D(image.get()), osg::StateAttribute::ON);
+            }
+        }
+
+        if (arguments.read("--size-quad"))
+        {
+            geode->addDrawable( osg::createTexturedQuadGeometry(osg::Vec3(0.0f,characterSize*thickness,0.0f),osg::Vec3(characterSize,0.0,0.0),osg::Vec3(0.0f,0.0,characterSize), 0.0, 0.0, 1.0, 1.0) );
+        }
     }
+
     
-    viewer.setSceneData(geode);
-#else
-    osgText::TextNode* text = new osgText::TextNode;
-    text->setFont(font.get());
-    text->setStyle(style.get());
-    text->setTextTechnique(new osgText::TextTechnique);
-    text->setText(word);
-    text->update();
-    viewer.setSceneData(text);
+    viewer.setSceneData(group.get());
+
 #endif
 
     return viewer.run();

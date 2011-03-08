@@ -8,7 +8,7 @@ ENDIF()
 SET(LIB_NAME osgViewer)
 
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
-SET(LIB_PUBLIC_HEADERS
+SET(TARGET_H
     ${HEADER_PATH}/CompositeViewer
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/GraphicsWindow
@@ -51,7 +51,7 @@ IF(WIN32)
         ADD_DEFINITIONS(-DOSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND)
     ENDIF()
 
-    SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS}
+    SET(TARGET_H ${TARGET_H}
         ${HEADER_PATH}/api/Win32/GraphicsHandleWin32
         ${HEADER_PATH}/api/Win32/GraphicsWindowWin32
         ${HEADER_PATH}/api/Win32/PixelBufferWin32
@@ -87,7 +87,7 @@ ELSE()
             SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Cocoa)
             SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Cocoa)
         ELSE()
-            SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} 
+            SET(TARGET_H ${TARGET_H} 
                 ${HEADER_PATH}/api/Cocoa/GraphicsHandleCocoa
                 ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa
                 ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa
@@ -115,7 +115,7 @@ ELSE()
             SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Carbon)
             SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Carbon/PixelBufferCarbon PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Carbon)
         ELSE()
-            SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} 
+            SET(TARGET_H ${TARGET_H} 
                 ${HEADER_PATH}/api/Carbon/GraphicsHandleCarbon
                 ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon
                 ${HEADER_PATH}/api/Carbon/PixelBufferCarbon
@@ -142,7 +142,7 @@ ELSE()
 
             SET_PROPERTY(SOURCE ${HEADER_PATH}/api/IOS/GraphicsWindowIOS PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/IOS)
         ELSE()
-            SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} 
+            SET(TARGET_H ${TARGET_H} 
                 ${HEADER_PATH}/api/IOS/GraphicsWindowIOS
                 #${HEADER_PATH}/api/IOS/PixelBufferIOS
             )
@@ -170,7 +170,7 @@ ELSE()
             SET(OSGVIEWER_USE_XRANDR OFF)
         ENDIF()
 
-        SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS}
+        SET(TARGET_H ${TARGET_H}
             ${HEADER_PATH}/api/X11/GraphicsHandleX11
             ${HEADER_PATH}/api/X11/GraphicsWindowX11
             ${HEADER_PATH}/api/X11/PixelBufferX11
@@ -221,15 +221,13 @@ ELSE()
 ENDIF()
 
 
-ADD_LIBRARY(${LIB_NAME}
-    ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
-    ${LIB_PUBLIC_HEADERS}
+SET(TARGET_SRC
     ${LIB_PRIVATE_HEADERS}
     ${LIB_COMMON_FILES}
 )
 
 
-LINK_INTERNAL(${LIB_NAME}     
+SET(TARGET_LIBRARIES    
     osgGA
     osgText
     osgDB
@@ -238,17 +236,15 @@ LINK_INTERNAL(${LIB_NAME}
     OpenThreads
 )
 
-LINK_EXTERNAL(${LIB_NAME} ${LIB_EXTRA_LIBS})
-
-LINK_CORELIB_DEFAULT(${LIB_NAME})
+SET(TARGET_EXTERNAL_LIBRARIES ${LIB_EXTRA_LIBS})
 
 IF(MINGW OR CYGWIN)
-    LINK_EXTERNAL(${LIB_NAME} gdi32 )
+    SET(TARGET_EXTERNAL_LIBRARIES ${TARGET_EXTERNAL_LIBRARY} gdi32 )
 ENDIF()
 
-INCLUDE(ModuleInstall OPTIONAL)
+SETUP_LIBRARY(${LIB_NAME})
 
-FOREACH(INCLUDEFILE ${LIB_PUBLIC_HEADERS} )
+FOREACH(INCLUDEFILE ${TARGET_H} )
    FILE(RELATIVE_PATH REL_INCLUDEFILE ${HEADER_PATH} ${INCLUDEFILE})
    GET_FILENAME_COMPONENT(REL_INCLUDE_PATH ${REL_INCLUDEFILE} PATH)
    INSTALL(

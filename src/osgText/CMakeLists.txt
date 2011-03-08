@@ -7,7 +7,7 @@ ENDIF()
 
 SET(LIB_NAME osgText)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
-SET(LIB_PUBLIC_HEADERS
+SET(TARGET_H
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/Font
     ${HEADER_PATH}/Font3D
@@ -23,9 +23,7 @@ SET(LIB_PUBLIC_HEADERS
 )
 
 # FIXME: For OS X, need flag for Framework or dylib
-ADD_LIBRARY(${LIB_NAME}
-    ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
-    ${LIB_PUBLIC_HEADERS}
+SET(TARGET_SRC
     DefaultFont.cpp
     DefaultFont.h
     GlyphGeometry.h
@@ -42,12 +40,12 @@ ADD_LIBRARY(${LIB_NAME}
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
-LINK_INTERNAL(${LIB_NAME}     
+SET(TARGET_LIBRARIES
     osgDB
     osg
     osgUtil
     OpenThreads
 )
-LINK_CORELIB_DEFAULT(${LIB_NAME})
 
-INCLUDE(ModuleInstall OPTIONAL)
+SETUP_LIBRARY(${LIB_NAME})
+

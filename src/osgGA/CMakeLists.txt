@@ -7,7 +7,7 @@ ENDIF(DYNAMIC_OPENSCENEGRAPH)
 
 SET(LIB_NAME osgGA)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
-SET(LIB_PUBLIC_HEADERS
+SET(TARGET_H
     ${HEADER_PATH}/AnimationPathManipulator
     ${HEADER_PATH}/DriveManipulator
     ${HEADER_PATH}/EventQueue
@@ -33,10 +33,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/CameraViewSwitchManipulator
 )
 
-# FIXME: For OS X, need flag for Framework or dylib
-ADD_LIBRARY(${LIB_NAME}
-    ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
-    ${LIB_PUBLIC_HEADERS}
+SET(TARGET_SRC
     AnimationPathManipulator.cpp
     DriveManipulator.cpp
     EventQueue.cpp
@@ -61,13 +58,12 @@ ADD_LIBRARY(${LIB_NAME}
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
-LINK_INTERNAL(${LIB_NAME}
+SET(TARGET_LIBRARIES
     osgDB
     osgUtil
     osg
     OpenThreads
 )
 
-LINK_CORELIB_DEFAULT(${LIB_NAME})
+SETUP_LIBRARY(${LIB_NAME})
 
-INCLUDE(ModuleInstall OPTIONAL)

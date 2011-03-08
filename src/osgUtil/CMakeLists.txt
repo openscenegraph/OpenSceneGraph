@@ -8,7 +8,7 @@ ENDIF()
 
 SET(LIB_NAME osgUtil)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
-SET(LIB_PUBLIC_HEADERS
+SET(TARGET_H
     ${HEADER_PATH}/ConvertVec
     ${HEADER_PATH}/CubeMapGenerator
     ${HEADER_PATH}/CullVisitor
@@ -52,9 +52,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/Version
 )
 
-ADD_LIBRARY(${LIB_NAME}
-    ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
-    ${LIB_PUBLIC_HEADERS}
+SET(TARGET_SRC
     CubeMapGenerator.cpp
     CullVisitor.cpp
     DelaunayTriangulator.cpp
@@ -110,10 +108,10 @@ ADD_LIBRARY(${LIB_NAME}
 
 INCLUDE_DIRECTORIES("tristripper/include")
 
-LINK_INTERNAL(${LIB_NAME}     
+SET(TARGET_LIBRARIES
     osg
     OpenThreads
 )
-LINK_CORELIB_DEFAULT(${LIB_NAME})
 
-INCLUDE(ModuleInstall OPTIONAL)
+SETUP_LIBRARY(${LIB_NAME})
+

@@ -7,7 +7,7 @@ ENDIF()
 
 SET(LIB_NAME osgSim)
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
-SET(LIB_PUBLIC_HEADERS
+SET(TARGET_H
     ${HEADER_PATH}/BlinkSequence
     ${HEADER_PATH}/ColorRange
     ${HEADER_PATH}/DOFTransform
@@ -35,9 +35,7 @@ SET(LIB_PUBLIC_HEADERS
 )
 
 # FIXME: For OS X, need flag for Framework or dylib
-ADD_LIBRARY(${LIB_NAME}
-    ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
-    ${LIB_PUBLIC_HEADERS}
+SET(TARGET_SRC
     BlinkSequence.cpp
     ColorRange.cpp
     DOFTransform.cpp
@@ -65,13 +63,14 @@ ADD_LIBRARY(${LIB_NAME}
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 
-LINK_INTERNAL(${LIB_NAME}     
+SET(TARGET_LIBRARIES
     osgText
     osgUtil
     osgDB
     osg
     OpenThreads
 )
-LINK_CORELIB_DEFAULT(${LIB_NAME})
 
-INCLUDE(ModuleInstall OPTIONAL)
+SETUP_LIBRARY(${LIB_NAME})
+
+

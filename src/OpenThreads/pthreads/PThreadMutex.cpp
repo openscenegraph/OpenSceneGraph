@@ -75,18 +75,18 @@ Mutex::Mutex(MutexType type):
 #if defined (_POSIX_THREAD_PRIO_INHERIT) || defined (_POSIX_THREAD_PRIO_PROTECT) // [
 
     if(sysconf(_POSIX_THREAD_PRIO_INHERIT)) {
-	
-	pthread_mutexattr_setprotocol(&mutex_attr, PTHREAD_PRIO_INHERIT);
-	
+
+        pthread_mutexattr_setprotocol(&mutex_attr, PTHREAD_PRIO_INHERIT);
+
     } else if (sysconf(_POSIX_THREAD_PRIO_PROTECT)) {
 
-	int th_policy;
-	struct sched_param th_param;
-	pthread_getschedparam(pthread_self(), &th_policy, &th_param);
+        int th_policy;
+        struct sched_param th_param;
+        pthread_getschedparam(pthread_self(), &th_policy, &th_param);
 
-	pthread_mutexattr_setprotocol(&mutex_attr, PTHREAD_PRIO_PROTECT);
-	pthread_mutexattr_setprioceiling(&mutex_attr, 
-					 sched_get_priority_max(th_policy));
+        pthread_mutexattr_setprotocol(&mutex_attr, PTHREAD_PRIO_PROTECT);
+        pthread_mutexattr_setprioceiling(&mutex_attr,
+                         sched_get_priority_max(th_policy));
 
     }
 

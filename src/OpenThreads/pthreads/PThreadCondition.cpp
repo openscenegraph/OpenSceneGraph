@@ -36,24 +36,24 @@ int gettimeofday(struct timeval* tp, void* tzp) {
     LARGE_INTEGER t;
 
     if(QueryPerformanceCounter(&t)) {
-	/* hardware supports a performance counter */
-	static int been_here = 0;
-	static LARGE_INTEGER f;
-	if( !been_here )
-	{
-	    been_here = 1;
-	    QueryPerformanceFrequency(&f);
-	}
-	tp->tv_sec = t.QuadPart/f.QuadPart;
-	tp->tv_usec = ((float)t.QuadPart/f.QuadPart*1000*1000)
-		      - (tp->tv_sec*1000*1000);
+        /* hardware supports a performance counter */
+        static int been_here = 0;
+        static LARGE_INTEGER f;
+        if( !been_here )
+        {
+            been_here = 1;
+            QueryPerformanceFrequency(&f);
+        }
+        tp->tv_sec = t.QuadPart/f.QuadPart;
+        tp->tv_usec = ((float)t.QuadPart/f.QuadPart*1000*1000)
+                  - (tp->tv_sec*1000*1000);
     } else {
-	/* hardware doesn't support a performance counter, so get the
-           time in a more traditional way. */
-	DWORD t;
-	t = timeGetTime();
-	tp->tv_sec = t / 1000;
-	tp->tv_usec = t % 1000;
+        /* hardware doesn't support a performance counter, so get the
+               time in a more traditional way. */
+        DWORD t;
+        t = timeGetTime();
+        tp->tv_sec = t / 1000;
+        tp->tv_usec = t % 1000;
     }
 
     /* 0 indicates that the call succeeded. */

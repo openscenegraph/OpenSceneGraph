@@ -1,0 +1,8 @@
+#ANDROID makefile in src
+
+SRC_ROOT := $(call my-dir)
+LOCAL_PATH := $(call my-dir)
+SRC_ROOT := $(LOCAL_PATH)
+
+$ENV{AND_OSG_LIB_PATHS}
+

@@ -1,0 +1,7 @@
+#ANDROID ROOT MAKEFILE
+OSG_ROOT := $(call my-dir)
+LOCAL_PATH := $(call my-dir)
+OSG_ROOT := $(LOCAL_PATH)
+OSGInclude :=   $(OSG_ROOT)/include/OpenThreads \
+                $(OSG_ROOT)/include/osg 
+include src/Android.mk

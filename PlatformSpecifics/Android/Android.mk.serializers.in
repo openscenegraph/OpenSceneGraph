@@ -1,0 +1,17 @@
+#ANDROID makefile in src
+
+SERIALIZER_ROOT := $(call my-dir)
+LOCAL_PATH := $(call my-dir)
+SERIALIZER_ROOT := $(LOCAL_PATH)
+
+#include $(call all-subdir-makefiles)
+include $(SERIALIZER_ROOT)/osg/Android.mk
+include $(SERIALIZER_ROOT)/osgAnimation/Android.mk
+include $(SERIALIZER_ROOT)/osgFX/Android.mk
+include $(SERIALIZER_ROOT)/osgManipulator/Android.mk
+include $(SERIALIZER_ROOT)/osgParticle/Android.mk
+include $(SERIALIZER_ROOT)/osgShadow/Android.mk
+include $(SERIALIZER_ROOT)/osgSim/Android.mk
+include $(SERIALIZER_ROOT)/osgTerrain/Android.mk
+include $(SERIALIZER_ROOT)/osgText/Android.mk
+include $(SERIALIZER_ROOT)/osgVolume/Android.mk

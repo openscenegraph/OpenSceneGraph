@@ -71,7 +71,11 @@ ELSE()
         ENDIF()
 
     ELSE()
-        SET(OSG_WINDOWING_SYSTEM "X11" CACHE STRING "Windowing system type for graphics window creation. options only X11")
+        IF(ANDROID)
+            SET(OSG_WINDOWING_SYSTEM "None" CACHE STRING "None Windowing system type for graphics window creation.")
+        ELSE()
+            SET(OSG_WINDOWING_SYSTEM "X11" CACHE STRING "Windowing system type for graphics window creation. options only X11")
+        ENDIF()
     ENDIF()
 
     IF(${OSG_WINDOWING_SYSTEM} STREQUAL "Cocoa")
@@ -156,7 +160,7 @@ ELSE()
 
         SET(LIB_EXTRA_LIBS ${COCOA_LIBRARY} ${LIB_EXTRA_LIBS})
 
-    ELSE()
+    ELSEIF(${OSG_WINDOWING_SYSTEM} STREQUAL "x11")
         # X11 for everybody else
         INCLUDE(FindPkgConfig OPTIONAL)
         IF(PKG_CONFIG_FOUND)
@@ -217,6 +221,8 @@ ELSE()
 
             SET(LIB_EXTRA_LIBS ${X11_X11_LIB} ${LIB_EXTRA_LIBS})
         ENDIF(APPLE)
+    ELSE()
+        MESSAGE(STATUS "Windowing system not supported")
     ENDIF()
 ENDIF()
 

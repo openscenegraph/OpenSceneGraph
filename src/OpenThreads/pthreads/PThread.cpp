@@ -23,11 +23,13 @@
 #include <pthread.h>
 #include <limits.h>
 
-#if defined __linux || defined __sun || defined __APPLE__
+#if defined __linux || defined __sun || defined __APPLE__ || ANDROID
 #include <string.h>
 #include <sys/time.h>
 #include <sys/resource.h>
-#include <sys/unistd.h>
+#if !defined ANDROID
+    #include <sys/unistd.h>
+#endif
 #endif
 #if defined(__sgi)
 #include <unistd.h>
@@ -42,6 +44,12 @@
 #if defined (__FreeBSD__) || defined (__APPLE__) || defined (__MACH__)
     #include <sys/types.h>
     #include <sys/sysctl.h>
+#endif
+
+#if defined(ANDROID)
+    #ifndef PAGE_SIZE
+        #define PAGE_SIZE 0x400
+    #endif
 #endif
 
 #include <OpenThreads/Thread>
@@ -723,7 +731,7 @@ int Thread::join()
 //
 int Thread::testCancel()
 {
-
+#if defined(HAVE_PTHREAD_TESTCANCEL)
     PThreadPrivateData *pd = static_cast<PThreadPrivateData *> (_prvData);
 
     if(pthread_self() != pd->tid)
@@ -732,7 +740,9 @@ int Thread::testCancel()
     pthread_testcancel();
 
     return 0;
-
+#else
+    return 0;
+#endif
 }
 
 
@@ -744,7 +754,7 @@ int Thread::testCancel()
 //
 int Thread::cancel()
 {
-
+#if defined(HAVE_PTHREAD_CANCEL)
     PThreadPrivateData *pd = static_cast<PThreadPrivateData *> (_prvData);
     if (pd->isRunning)
     {
@@ -753,6 +763,9 @@ int Thread::cancel()
         return status;
     }
     return 0;
+#else
+    return 0;
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -763,9 +776,11 @@ int Thread::cancel()
 //
 int Thread::setCancelModeDisable()
 {
-
+#if defined(HAVE_PTHREAD_SETCANCELSTATE)
     return pthread_setcancelstate( PTHREAD_CANCEL_DISABLE, 0 );
-
+#else
+    return 0;
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -776,10 +791,14 @@ int Thread::setCancelModeDisable()
 //
 int Thread::setCancelModeAsynchronous() {
 
+#if defined(HAVE_PTHREAD_SETCANCELSTATE)
     int status = pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, 0);
     if(status != 0) return status;
 
     return pthread_setcancelstate( PTHREAD_CANCEL_ENABLE, 0);
+#else
+    return 0;
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -790,11 +809,14 @@ int Thread::setCancelModeAsynchronous() {
 //
 int Thread::setCancelModeDeferred() {
 
+#if defined(HAVE_PTHREAD_SETCANCELSTATE)
     int status = pthread_setcanceltype(PTHREAD_CANCEL_DEFERRED, 0);
     if(status != 0) return status;
 
     return pthread_setcancelstate( PTHREAD_CANCEL_ENABLE, 0);
-
+#else
+    return 0;
+#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -947,7 +969,12 @@ int Thread::YieldCurrentThread()
 //
 int Thread::microSleep(unsigned int microsec)
 {
+#if !defined(ANDROID)
     return ::usleep(microsec);
+#else
+    ::usleep(microsec);
+    return 0;
+#endif
 }
 
 

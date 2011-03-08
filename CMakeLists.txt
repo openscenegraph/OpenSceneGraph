@@ -62,6 +62,34 @@ SET(OpenThreads_SOURCE_DIR ${OpenSceneGraph_SOURCE_DIR})
 # Maybe this can be used override existing behavior if needed?
 SET(CMAKE_MODULE_PATH "${OpenSceneGraph_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_PATH}")
 
+## Option to enable Android build using AndroidNDK
+OPTION(OSG_BUILD_PLATFORM_ANDROID OFF)
+IF(OSG_BUILD_PLATFORM_ANDROID)
+    INCLUDE(OsgAndroidMacroUtils)
+    SET(ANDROID TRUE)
+    SET(ANDROID_PLATFORM 5)
+    FIND_PACKAGE(AndroidNDK REQUIRED)    
+
+    SET(OSG_ANDROID_TEMPLATES "${CMAKE_SOURCE_DIR}/PlatformSpecifics/Android")
+    
+    SET(J  "4" CACHE STRING "how many processes for make -j <J>")
+
+    ADD_CUSTOM_COMMAND(
+        OUTPUT    Android-OpenSceneGraph
+        DEPENDS   ${CMAKE_BINARY_DIR}/Android.mk
+        COMMAND   "${ANDROID_NDK}/ndk-build" 
+        ARGS      --directory=${CMAKE_BINARY_DIR} NDK_APPLICATION_MK=Application.mk -j${J} NDK_LOG=1
+    )
+
+    ADD_CUSTOM_TARGET(ndk ALL echo
+          DEPENDS Android-OpenSceneGraph
+    )
+
+    ADD_DEFINITIONS(-DANDROID)
+
+ENDIF()
+
+
 
 # Okay, here's the problem: On some platforms, linking against OpenThreads
 # is not enough and explicit linking to the underlying thread library
@@ -74,7 +102,9 @@ SET(CMAKE_MODULE_PATH "${OpenSceneGraph_SOURCE_DIR}/CMakeModules;${CMAKE_MODULE_
 # cases. With IRIX, we're going to hope explicit linking to the underlying
 # library is not necessary. We currently don't case for pthreads on Windows
 # which might be an issue on things like Cygwin. This may need to be fixed.
-FIND_PACKAGE(Threads)
+IF(NOT ANDROID)
+    FIND_PACKAGE(Threads)
+ENDIF()
 IF(CMAKE_SYSTEM MATCHES IRIX)
     # Erase CMAKE_THREAD_LIBS_INIT and hope it works
     SET(CMAKE_THREAD_LIBS_INIT "" CACHE INTERNAL "")
@@ -137,7 +167,7 @@ IF (OSG_MAINTAINER)
     
 ENDIF(OSG_MAINTAINER)
 
-
+IF(NOT ANDROID)
 IF(APPLE)
     # Trying to get CMake to generate an XCode IPhone project, current efforts are to get iphoneos sdk 3.1 working
     # Added option which needs manually setting to select the IPhone SDK for building. We can only have one of the below
@@ -182,8 +212,9 @@ ELSE()
     # Non-Apple: Find OpenGL
     FIND_PACKAGE(OpenGL)
 ENDIF()
+ENDIF()
 
-IF(UNIX)
+IF(UNIX AND NOT ANDROID)
     # Not sure what this will do on Cygwin and Msys
     # Also, remember OS X X11 is a user installed option so it may not exist.
     FIND_PACKAGE(X11)
@@ -216,7 +247,7 @@ ENDIF()
 # Platform specific definitions
 
 
-IF(WIN32)
+IF(WIN32 AND NOT ANDROID)
 
     IF(MSVC)
         # This option is to enable the /MP switch for Visual Studio 2005 and above compilers
@@ -295,7 +326,7 @@ IF(WIN32)
             ENDIF(NOT OSG_MSVC_DEBUG_INCREMENTAL_LINK)
         ENDIF()
     ENDIF(MSVC)
-ENDIF(WIN32)
+ENDIF(WIN32 AND NOT ANDROID)
 
 ########################################################################################################
 ##### these were settings located in SetupCommon.cmake used in Luigi builds.... find out what are useful
@@ -395,61 +426,66 @@ OPTION(BUILD_OSG_EXAMPLES "Enable to build OSG Examples" OFF)
 
 ################################################################################
 # 3rd Party Dependency Stuff
-IF(WIN32)
+IF(WIN32 AND NOT ANDROID)
     INCLUDE(Find3rdPartyDependencies)
 ENDIF()
 
-# Common to all platforms:
-FIND_PACKAGE(FreeType)
-FIND_PACKAGE(Inventor)
-FIND_PACKAGE(Jasper)
-FIND_PACKAGE(OpenEXR)
-FIND_PACKAGE(COLLADA)
-FIND_PACKAGE(FBX)
-FIND_PACKAGE(ZLIB)
-FIND_PACKAGE(Xine)
-FIND_PACKAGE(OpenVRML)
-FIND_PACKAGE(Performer)
-FIND_PACKAGE(GDAL)
-FIND_PACKAGE(CURL)
-FIND_PACKAGE(ITK)
-FIND_PACKAGE(LibVNCServer)
-FIND_PACKAGE(OurDCMTK)
-FIND_PACKAGE(OpenAL)
-FIND_PACKAGE(FFmpeg)
-FIND_PACKAGE(DirectShow)
-FIND_PACKAGE(SDL)
-FIND_PACKAGE(Poppler-glib)
-FIND_PACKAGE(RSVG)
-FIND_PACKAGE(GtkGl)
-FIND_PACKAGE(DirectInput)
-FIND_PACKAGE(NVTT)
+IF(ANDROID)
+# FIXME: add here any platform find
+ELSE()
+# Common to all platforms except android:
+    FIND_PACKAGE(FreeType)
+    FIND_PACKAGE(Inventor)
+    FIND_PACKAGE(Jasper)
+    FIND_PACKAGE(OpenEXR)
+    FIND_PACKAGE(COLLADA)
+    FIND_PACKAGE(FBX)
+    FIND_PACKAGE(ZLIB)
+    FIND_PACKAGE(Xine)
+    FIND_PACKAGE(OpenVRML)
+    FIND_PACKAGE(Performer)
+    FIND_PACKAGE(GDAL)
+    FIND_PACKAGE(CURL)
+    FIND_PACKAGE(ITK)
+    FIND_PACKAGE(LibVNCServer)
+    FIND_PACKAGE(OurDCMTK)
+    FIND_PACKAGE(OpenAL)
+    FIND_PACKAGE(FFmpeg)
+    FIND_PACKAGE(DirectShow)
+    FIND_PACKAGE(SDL)
+    FIND_PACKAGE(Poppler-glib)
+    FIND_PACKAGE(RSVG)
+    FIND_PACKAGE(GtkGl)
+    FIND_PACKAGE(DirectInput)
+    FIND_PACKAGE(NVTT)
+ENDIF()
 
 # Include macro utilities here
 INCLUDE(OsgMacroUtils)
 
+IF(NOT ANDROID)
 # To select a specific version of QT define DESIRED_QT_VERSION
 # via cmake -DDESIRED_QT_VERSION=4
-IF  (DESIRED_QT_VERSION)
+    IF  (DESIRED_QT_VERSION)
 
-    IF  (DESIRED_QT_VERSION MATCHES 4)
-      FIND_PACKAGE(Qt4)
+        IF  (DESIRED_QT_VERSION MATCHES 4)
+              FIND_PACKAGE(Qt4)
+        ELSE()
+              FIND_PACKAGE(Qt3)
+        ENDIF()
+
     ELSE()
-      FIND_PACKAGE(Qt3)
+
+        FIND_PACKAGE(Qt4)
+
+        IF  (NOT QT4_FOUND)
+            FIND_PACKAGE(Qt3)
+        ENDIF()
+
     ENDIF()
-
-ELSE()
-
-    FIND_PACKAGE(Qt4)
-
-    IF  (NOT QT4_FOUND)
-        FIND_PACKAGE(Qt3)
-    ENDIF()
-
-ENDIF()
-
+ENDIF(NOT ANDROID)
 #optional example related dependencies
-IF   (BUILD_OSG_EXAMPLES)
+IF   (BUILD_OSG_EXAMPLES AND NOT ANDROID)
 
 
     FIND_PACKAGE(FLTK)
@@ -459,7 +495,7 @@ IF   (BUILD_OSG_EXAMPLES)
     SET(wxWidgets_USE_LIBS base core gl net)
     FIND_PACKAGE(wxWidgets)
 
-ENDIF(BUILD_OSG_EXAMPLES)
+ENDIF(BUILD_OSG_EXAMPLES AND NOT ANDROID)
 
 
 # Platform specific:
@@ -476,21 +512,23 @@ ENDIF(BUILD_OSG_EXAMPLES)
 
 # Image readers/writers depend on 3rd party libraries except for OS X which
 # can use Quicktime.
-IF(NOT APPLE)
-    FIND_PACKAGE(GIFLIB)
-    FIND_PACKAGE(JPEG)
-    FIND_PACKAGE(PNG)
-    FIND_PACKAGE(TIFF)
+IF(NOT ANDROID)
+    IF(NOT APPLE)
+        FIND_PACKAGE(GIFLIB)
+        FIND_PACKAGE(JPEG)
+        FIND_PACKAGE(PNG)
+        FIND_PACKAGE(TIFF)
 
-    # QuickTime is required for OS X, but optional for Windows.
-    IF(WIN32)
+        # QuickTime is required for OS X, but optional for Windows.
+        IF(WIN32)
+            FIND_PACKAGE(QuickTime)
+        ENDIF()
+
+    ELSE()
         FIND_PACKAGE(QuickTime)
+        FIND_PACKAGE(QTKit)
+        FIND_PACKAGE(CoreVideo)
     ENDIF()
-
-ELSE()
-    FIND_PACKAGE(QuickTime)
-    FIND_PACKAGE(QTKit)
-    FIND_PACKAGE(CoreVideo)
 ENDIF()
 
 ################################################################################
@@ -690,7 +728,7 @@ ENDIF()
 # OSG Core
 ADD_SUBDIRECTORY(src)
 
-IF   (BUILD_OSG_APPLICATIONS)
+IF   (BUILD_OSG_APPLICATIONS AND NOT ANDROID)
     ADD_SUBDIRECTORY(applications)
 ENDIF()
 
@@ -966,3 +1004,12 @@ CONFIGURE_FILE(
   IMMEDIATE @ONLY)
 ADD_CUSTOM_TARGET(uninstall
   "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake")
+
+#
+IF(ANDROID)
+    message(STATUS "Creating Android Makefile Master files" )
+    configure_file("${OSG_ANDROID_TEMPLATES}/Android.mk.master.in" "${CMAKE_BINARY_DIR}/Android.mk")
+    configure_file("${OSG_ANDROID_TEMPLATES}/Application.mk.master.in" "${CMAKE_BINARY_DIR}/Application.mk")
+    configure_file("${OSG_ANDROID_TEMPLATES}/AndroidManifest.xml.master.in" "${CMAKE_BINARY_DIR}/AndroidManifest.xml")
+ENDIF(ANDROID)
+

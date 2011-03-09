@@ -83,8 +83,6 @@ CostPair GeometryCostEstimator::estimateCompileCost(const osg::Geometry* geometr
             cost.first = _displayListCompileConstant + _displayListCompileFactor * cost.first ;
         }
 
-        OSG_NOTICE<<"GeometryCostEstimator::estimateCompileCost(..) size="<<cost.first<<std::endl;
-
         return cost;
     }
     else

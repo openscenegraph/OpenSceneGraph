@@ -517,8 +517,8 @@ void Shader::PerContextShader::compileShader(osg::State& state)
 
         if (numFormats>0)
         {
-            GLint* formats = new GLint[numFormats];
-            glGetIntegerv(GL_SHADER_BINARY_FORMATS, formats);
+            std::vector<GLint> formats(numFormats);
+            glGetIntegerv(GL_SHADER_BINARY_FORMATS, &formats[0]);
 
             for(GLint i=0; i<numFormats; ++i)
             {
@@ -531,7 +531,6 @@ void Shader::PerContextShader::compileShader(osg::State& state)
                     return;
                 }
             }
-            delete [] formats;
             
             if (_shader->getShaderSource().empty())
             {

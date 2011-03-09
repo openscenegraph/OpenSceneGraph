@@ -92,6 +92,7 @@ MACRO(LINK_CORELIB_DEFAULT CORELIB_NAME)
     IF(OPENSCENEGRAPH_SONAMES)
       SET_TARGET_PROPERTIES(${CORELIB_NAME} PROPERTIES VERSION ${OPENSCENEGRAPH_VERSION} SOVERSION ${OPENSCENEGRAPH_SOVERSION})
     ENDIF(OPENSCENEGRAPH_SONAMES)
+    
 ENDMACRO(LINK_CORELIB_DEFAULT CORELIB_NAME)
 
 
@@ -110,7 +111,7 @@ ENDMACRO(LINK_CORELIB_DEFAULT CORELIB_NAME)
 MACRO(SETUP_LINK_LIBRARIES)
     ######################################################################
     #
-    # This set up the libraries to link to, it assumes there are two variable: one common for a group of examples or plagins
+    # This set up the libraries to link to, it assumes there are two variable: one common for a group of examples or plugins
     # kept in the variable TARGET_COMMON_LIBRARIES and an example or plugin specific kept in TARGET_ADDED_LIBRARIES 
     # they are combined in a single list checked for unicity 
     # the suffix ${CMAKE_DEBUG_POSTFIX} is used for differentiating optimized and debug
@@ -215,6 +216,8 @@ MACRO(SETUP_LIBRARY LIB_NAME)
     ELSE()
         SET(TARGET_NAME ${LIB_NAME} )
         SET(TARGET_TARGETNAME ${LIB_NAME} )
+        SET_TARGET_PROPERTIES(${CORELIB_NAME} PROPERTIES FOLDER "OSG Core")
+
 
         ADD_LIBRARY(${LIB_NAME}
             ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
@@ -314,7 +317,8 @@ MACRO(SETUP_PLUGIN PLUGIN_NAME)
     ENDIF(NOT MSVC)
 
     SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES PROJECT_LABEL "${TARGET_LABEL}")
- 
+    SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES FOLDER "Plugins")
+
     SETUP_LINK_LIBRARIES()
 
 #the installation path are differentiated for win32 that install in bib versus other architecture that install in lib${LIB_POSTFIX}/${OSG_PLUGINS}
@@ -410,6 +414,8 @@ MACRO(SETUP_APPLICATION APPLICATION_NAME)
             
         SETUP_EXE(${IS_COMMANDLINE_APP})
         
+        SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES FOLDER "Applications")
+        
         IF(APPLE)
             INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION bin BUNDLE DESTINATION bin)
         ELSE(APPLE)
@@ -436,6 +442,8 @@ MACRO(SETUP_EXAMPLE EXAMPLE_NAME)
         ENDIF(${ARGC} GREATER 1)
             
         SETUP_EXE(${IS_COMMANDLINE_APP})
+        
+        SET_TARGET_PROPERTIES(${TARGET_TARGETNAME} PROPERTIES FOLDER "Examples")
         
         IF(APPLE)
             INSTALL(TARGETS ${TARGET_TARGETNAME} RUNTIME DESTINATION share/OpenSceneGraph/bin BUNDLE DESTINATION share/OpenSceneGraph/bin )            

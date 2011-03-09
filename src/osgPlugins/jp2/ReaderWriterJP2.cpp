@@ -177,13 +177,13 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
             supportsExtension("jp2","Jpeg2000 image format");
             supportsExtension("jpc","Jpeg2000 image format");
 
+            jas_init();
+
             // little dance here to get around warnings created by jas_image_strtofmt use of char* rather than const char*
             // as a parameted and modern compilers deprecating "jp2" string being treated as char*.
-            jas_init();//jas_image_strtofmt() bound to return -1 if jas_init has not been called.
             char* jp2 = strdup("jp2");
             _fmt_jp2 = jas_image_strtofmt(jp2);
             free(jp2);
-            jas_image_clearfmts();
         }
 
         ~ReaderWriterJP2()
@@ -219,8 +219,6 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
                 return img;
             }
 
-            jas_init();
-
             jas_stream_t* in = jas_stream_fopen(fileName.c_str(), "rb");
 
             char* opt = 0;
@@ -246,7 +244,6 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
 
             jas_image_destroy(jimage);
             jas_stream_close(in);
-            jas_image_clearfmts();
 
             unsigned int pixelFormat =
                 internalFormat == 1 ? GL_LUMINANCE :
@@ -287,8 +284,6 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
 
             sdata = &vdata[0];
 
-            jas_init();
-
             jas_stream_t* in = jas_stream_memopen((char*)sdata, ssize);
 
             char* opt = 0;
@@ -316,7 +311,6 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
 
             jas_image_destroy(jimage);
             jas_stream_close(in);
-            jas_image_clearfmts();
 
             unsigned int pixelFormat =
                 internalFormat == 1 ? GL_LUMINANCE :
@@ -360,8 +354,6 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
         {
             std::string ext = osgDB::getFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
-            
-            jas_init();
 
             jas_image_cmptparm_t cmptparms[4];
             jas_image_cmptparm_t *cmptparm;
@@ -433,15 +425,12 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
 
             jas_stream_close(out);
             jas_image_destroy(jimage);
-            jas_image_clearfmts();
 
             return WriteResult::FILE_SAVED;
         }
 
         WriteResult writeImage(const osg::Image& img, std::ostream& fout, const Options* options) const
         {
-            jas_init();
-
             jas_image_cmptparm_t cmptparms[4];
             jas_image_cmptparm_t *cmptparm;
 
@@ -506,7 +495,7 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
                 opt = new char[options->getOptionString().size() + 1];
                 strcpy(opt, options->getOptionString().c_str());
             }
-            
+
             jas_image_encode(jimage, out, _fmt_jp2,  opt);
             if(opt) delete[] opt;
 
@@ -522,7 +511,6 @@ class ReaderWriterJP2 : public osgDB::ReaderWriter
             jas_stream_close(out);
 
             jas_image_destroy(jimage);
-            jas_image_clearfmts();
 
             return WriteResult::FILE_SAVED;
         }

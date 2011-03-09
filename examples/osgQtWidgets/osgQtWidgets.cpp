@@ -137,8 +137,9 @@ int main(int argc, char **argv)
 
     // true = run osgViewer in a separate thread than Qt
     // false = interleave osgViewer and Qt in the main thread
-    bool useFrameLoopThread = true;
-    if (arguments.read("--noFrameThread")) useFrameLoopThread = false;
+    bool useFrameLoopThread = false;
+    if (arguments.read("--no-frame-thread")) useFrameLoopThread = false;
+    if (arguments.read("--frame-thread")) useFrameLoopThread = true;
 
     // true = use QWidgetImage
     // false = use QWebViewImage
@@ -376,10 +377,21 @@ int main(int argc, char **argv)
             geode->addDrawable(quad);
 
             osg::MatrixTransform* mt = new osg::MatrixTransform;
+
+            osg::Texture2D* texture = new osg::Texture2D(widgetImage.get());
+            texture->setResizeNonPowerOfTwoHint(false);
+            texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
+            texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP_TO_EDGE);
+            texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP_TO_EDGE);
+            mt->getOrCreateStateSet()->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
+
+            osgViewer::InteractiveImageHandler* handler; 
             if (inScene)
             {
                 mt->setMatrix(osg::Matrix::rotate(osg::Vec3(0,1,0), osg::Vec3(0,0,1)));
                 mt->addChild(geode);
+
+                handler = new osgViewer::InteractiveImageHandler(widgetImage.get());
             }
             else    // fullscreen
             {
@@ -401,6 +413,8 @@ int main(int argc, char **argv)
                 camera->setViewport(0, 0, 1024, 768);
 
                 mt->addChild(camera);
+
+                handler = new osgViewer::InteractiveImageHandler(widgetImage.get(), texture, camera);
             }
 
             mt->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
@@ -408,19 +422,11 @@ int main(int argc, char **argv)
             mt->getOrCreateStateSet()->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
             mt->getOrCreateStateSet()->setAttribute(new osg::Program);
 
-            osg::Texture2D* texture = new osg::Texture2D(widgetImage.get());
-            texture->setResizeNonPowerOfTwoHint(false);
-            texture->setFilter(osg::Texture::MIN_FILTER,osg::Texture::LINEAR);
-            texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP_TO_EDGE);
-            texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP_TO_EDGE);
-            mt->getOrCreateStateSet()->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
-
             osg::Group* overlay = new osg::Group;
             overlay->addChild(mt);
 
             root->addChild(overlay);
-
-            osgViewer::InteractiveImageHandler* handler = new osgViewer::InteractiveImageHandler(widgetImage.get(), texture, camera);
+            
             quad->setEventCallback(handler);
             quad->setCullCallback(handler);
         }

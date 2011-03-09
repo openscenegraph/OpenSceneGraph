@@ -12,6 +12,7 @@
  */
 
 #include "daeReader.h"
+#include "ReaderWriterDAE.h"
 
 #include <dae.h>
 #include <dae/daeSIDResolver.h>
@@ -884,7 +885,7 @@ std::string daeReader::processImagePath(const domImage* pDomImage) const
         {
             std::string path = pDomImage->getInit_from()->getValue().pathDir() +
                 pDomImage->getInit_from()->getValue().pathFile();
-            path = cdom::uriToNativePath(path);
+            path = ReaderWriterDAE::ConvertColladaCompatibleURIToFilePath(path);
             if (path.empty())
             {
                 OSG_WARN << "Unable to get path from URI." << std::endl;

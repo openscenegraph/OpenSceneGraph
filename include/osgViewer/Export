@@ -15,7 +15,9 @@
 #ifndef OSGVIEWER_EXPORT_
 #define OSGVIEWER_EXPORT_ 1
 
-#if defined(WIN32) && !(defined(__CYGWIN__) || defined(__MINGW32__))
+#include<osg/Config>
+
+#if defined(_MSC_VER) && defined(OSG_DISABLE_MSVC_WARNINGS)
     #pragma warning( disable : 4244 )
     #pragma warning( disable : 4251 )
     #pragma warning( disable : 4267 )

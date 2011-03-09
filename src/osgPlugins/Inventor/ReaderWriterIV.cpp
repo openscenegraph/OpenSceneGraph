@@ -7,6 +7,9 @@
 #include <Inventor/SoDB.h>
 #include <Inventor/SoInteraction.h>
 #include <Inventor/nodekits/SoNodeKit.h>
+#include <Inventor/errors/SoDebugError.h>
+#include <Inventor/errors/SoMemoryError.h>
+#include <Inventor/errors/SoReadError.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/actions/SoWriteAction.h>
 #include <Inventor/actions/SoCallbackAction.h>
@@ -21,6 +24,7 @@
 // forward declarations of static functions
 static void addSearchPaths(const osgDB::FilePathList *searchPaths);
 static void removeSearchPaths(const osgDB::FilePathList *searchPaths);
+static void errorCallback(const SoError *error, void * data);
 
 
 // Register with Registry to instantiate the inventor reader.
@@ -52,13 +56,48 @@ void ReaderWriterIV::initInventor() const
     SoNodeKit::init();
     SoInteraction::init();
 
+    // Redirect error messages to OSG notify
+    SoError::setHandlerCallback(errorCallback, NULL);
+    SoDebugError::setHandlerCallback(errorCallback, NULL);
+    SoMemoryError::setHandlerCallback(errorCallback, NULL);
+    SoReadError::setHandlerCallback(errorCallback, NULL);
+
 #ifdef __COIN__
     // Disable delayed loading of VRML textures
     SoVRMLImageTexture::setDelayFetchURL(FALSE);
-    
+
     // initialize convertor
     ConvertFromInventor::init();
 #endif
+}
+
+
+static void errorCallback(const SoError *error, void *data)
+{
+    // note: Coin and SGI Inventor puts "Inventor read error..." or "Coin warning..."
+    // introduction string to the error message, so we do not prepend the error message
+    // by anything.
+
+    if (error->isOfType(SoDebugError::getClassTypeId()))
+    {
+        switch (((SoDebugError*)error)->getSeverity())
+        {
+            case SoDebugError::INFO:
+                OSG_INFO << error->getDebugString().getString() << std::endl;
+                break;
+            case SoDebugError::WARNING:
+                OSG_WARN << error->getDebugString().getString() << std::endl;
+                break;
+            case SoDebugError::ERROR:
+            default:
+                OSG_WARN << error->getDebugString().getString() << std::endl;
+                break;
+        }
+    }
+    else
+    {
+        OSG_WARN << error->getDebugString().getString() << std::endl;
+    }
 }
 
 

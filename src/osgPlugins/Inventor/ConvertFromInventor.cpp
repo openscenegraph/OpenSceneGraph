@@ -16,6 +16,7 @@
 #include <osg/BlendFunc>
 #include <osg/Material>
 #include <osg/CullFace>
+#include <osg/Depth>
 #include <osg/LightModel>
 #include <osg/LightSource>
 #include <osg/ShadeModel>
@@ -1697,28 +1698,44 @@ ConvertFromInventor::getStateSet(SoCallbackAction* action)
     // Set transparency
     SbBool hasTextureTransparency = FALSE;
     if (ivTexture) {
-      SbVec2s tmp;
+      SbVec2s size(0, 0);
       int bpp = 0;
+      const unsigned char *data = NULL;
       if (ivTexture->isOfType(SoTexture2::getClassTypeId()))
-        ((SoTexture2*)ivTexture)->image.getValue(tmp, bpp);
+        data = ((SoTexture2*)ivTexture)->image.getValue(size, bpp);
 #ifdef __COIN__
       else
       if (ivTexture->isOfType(SoVRMLImageTexture::getClassTypeId())) {
         const SbImage *img = ((SoVRMLImageTexture*)ivTexture)->getImage();
-        if (img) img->getValue(tmp, bpp);
+        if (img)
+          data = img->getValue(size, bpp);
       }
 #endif
-      hasTextureTransparency = bpp==4 || bpp==2;
+
+      // look whether texture really contains transparency
+      if ((bpp==4 || bpp==2) && data) {
+        data += bpp - 1;
+        for (int y=0; y<size[1]; y++)
+          for (int x=0; x<size[0]; x++, data += bpp)
+            if (*data != 255) {
+              hasTextureTransparency = TRUE;
+              goto finished;
+            }
+      finished:;
+      }
     }
 
     if (transparency > 0 || hasTextureTransparency)
     {
-        osg::ref_ptr<osg::BlendFunc> transparency = new osg::BlendFunc;
-        stateSet->setAttributeAndModes(transparency.get(),
-                                       osg::StateAttribute::ON);
+        // Blending to SRC_APLHA and ONE_MINUS_SRC_ALPHA
+        stateSet->setAttributeAndModes(new osg::BlendFunc);
+
+        // Disable depth writes
+        stateSet->setAttributeAndModes(new osg::Depth(osg::Depth::LEQUAL, 0., 1., false));
 
         // Enable depth sorting for transparent objects
         stateSet->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
+        stateSet->setNestRenderBins(false);
     }
 
     // Set linewidth

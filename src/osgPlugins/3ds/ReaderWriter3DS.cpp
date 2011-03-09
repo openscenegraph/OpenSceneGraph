@@ -268,9 +268,9 @@ ReaderWriter3DS::ReaderObject::ReaderObject(const osgDB::ReaderWriter::Options* 
         {
             if (opt == "noMatrixTransforms")
                 noMatrixTransforms = true;
-            if (opt == "checkForEspilonIdentityMatrices")
+            else if (opt == "checkForEspilonIdentityMatrices")
                 checkForEspilonIdentityMatrices = true;
-            if (opt == "restoreMatrixTransformsNoMeshes")
+            else if (opt == "restoreMatrixTransformsNoMeshes")
                 restoreMatrixTransformsNoMeshes = true;
         }
     }
@@ -487,13 +487,14 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap drawStateMap,L
 
     // Retreive LOCAL transform
     static const osg::Matrix::value_type MATRIX_EPSILON = 1e-10;
-    osg::Matrix osgNodeMatrix( copyLib3dsMatrixToOsgMatrix(node->matrix) );
-
+    osg::Matrix osgWorldToNodeMatrix( copyLib3dsMatrixToOsgMatrix(node->matrix) );
+    osg::Matrix osgWorldToParentNodeMatrix;
     if (node->parent)
     {
         // Matrices evaluated by lib3DS are multiplied by parents' ones
-        osgNodeMatrix *= osg::Matrix::inverse( copyLib3dsMatrixToOsgMatrix(node->parent->matrix) );
+        osgWorldToParentNodeMatrix = copyLib3dsMatrixToOsgMatrix(node->parent->matrix);
     }
+    osg::Matrix osgNodeMatrix( osgWorldToNodeMatrix * osg::Matrix::inverse(osgWorldToParentNodeMatrix) );
 
     // Test if we should create an intermediate Group (or MatrixTransform) and which matrix we should apply to the vertices
     osg::Group* group = NULL;
@@ -505,20 +506,20 @@ osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap drawStateMap,L
     osg::Matrix meshMat;
     if (mesh)
     {
-         if (!noMatrixTransforms)
-         {
+        if (!noMatrixTransforms)
+        {
             // There can be a transform directly on a mesh instance (= as if a osg::MatrixTransform and a osg::Geode were merged together) in object->pos/rot/scl
-            if (!pivoted) {
-                meshMat = osg::Matrix::inverse(copyLib3dsMatrixToOsgMatrix(mesh->matrix));
-            } else {
+            if (pivoted) {
                 meshMat = osg::Matrix::inverse(copyLib3dsMatrixToOsgMatrix(mesh->matrix)) * osg::Matrix::translate(-pivot);
+            } else {
+                meshMat = osg::Matrix::inverse(copyLib3dsMatrixToOsgMatrix(mesh->matrix));
             }
         }
         else {
             if (pivoted) {
-                meshMat = osg::Matrix::inverse(copyLib3dsMatrixToOsgMatrix(mesh->matrix)) * osg::Matrix::translate(-pivot) * copyLib3dsMatrixToOsgMatrix(node->matrix);
+                meshMat = osg::Matrix::inverse(copyLib3dsMatrixToOsgMatrix(mesh->matrix)) * osg::Matrix::translate(-pivot) * osgWorldToNodeMatrix;
             } else {
-                meshMat = osg::Matrix::inverse(copyLib3dsMatrixToOsgMatrix(mesh->matrix)) * copyLib3dsMatrixToOsgMatrix(node->matrix);
+                meshMat = osg::Matrix::inverse(copyLib3dsMatrixToOsgMatrix(mesh->matrix)) * osgWorldToNodeMatrix;        // ==Identity when not pivoted?
             }
             osgNodeMatrix = osg::Matrix::identity();        // Not sure it's useful, but it's harmless ;)
         }

@@ -91,6 +91,7 @@ std::string getFileName(const std::string & path)
 
 
 /// Checks if a filename (\b not path) is 8.3 (an empty name is never 8.3, and a path is never 8.3).
+/// Please note the '8' and '3' limitations are in \b bytes, not in characters (which is different when using UTF8).
 bool is83(const std::string & s)
 {
     // 012345678901
@@ -441,49 +442,6 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor & writerNodeVisitor, osg
 }
 
 
-// If 'to' is in a subdirectory of 'from' then this function returns the
-// subpath. Otherwise it just returns the file name.
-// (Same as in FBX plugin)
-std::string getPathRelative(const std::string& from/*directory*/,
-                            const std::string& to/*file path*/)
-{
-
-    std::string::size_type slash = to.find_last_of('/');
-    std::string::size_type backslash = to.find_last_of('\\');
-    if (slash == std::string::npos) 
-    {
-        if (backslash == std::string::npos) return to;
-        slash = backslash;
-    }
-    else if (backslash != std::string::npos && backslash > slash)
-    {
-        slash = backslash;
-    }
-
-    if (from.empty() || from.length() > to.length())
-        return osgDB::getSimpleFileName(to);
-
-    std::string::const_iterator itTo = to.begin();
-    for (std::string::const_iterator itFrom = from.begin();
-        itFrom != from.end(); ++itFrom, ++itTo)
-    {
-        char a = tolower(*itFrom), b = tolower(*itTo);
-        if (a == '\\') a = '/';
-        if (b == '\\') b = '/';
-        if (a != b || itTo == to.begin() + slash + 1)
-        {
-            return osgDB::getSimpleFileName(to);
-        }
-    }
-
-    while (itTo != to.end() && (*itTo == '\\' || *itTo == '/'))
-    {
-        ++itTo;
-    }
-
-    return std::string(itTo, to.end());
-}
-
 /// Converts an extension to a 3-letters long one equivalent.
 std::string convertExt(const std::string & path, bool extendedFilePaths)
 {
@@ -562,7 +520,7 @@ void WriterNodeVisitor::writeMaterials()
                 }
                 else
                 {
-                    path = getPathRelative(_srcDirectory, mat.image->getFileName());
+                    path = osgDB::getPathRelative(_srcDirectory, mat.image->getFileName());
                 }
                 path = convertExt(path, _extendedFilePaths);
 
@@ -597,6 +555,31 @@ void WriterNodeVisitor::writeMaterials()
     }
 }
 
+/// Truncates an UTF8 string so that it does not takes more than a given \b bytes amount (\b excluding the potential NULL end character).
+/// The function assumes the UTF8 string is valid.
+///\return A valid UTF8 string which size is less or equal to \c byteLimit.
+// May be moved in osgDB/ConvertUTF?
+std::string utf8TruncateBytes(const std::string & s, std::string::size_type byteLimit) {
+    // Untruncated strings
+    if (s.size() <= byteLimit) return s;
+
+    // Truncated strings
+    std::string::const_iterator it=s.begin(), itEnd=s.begin()+byteLimit;
+    std::string::const_iterator itStop=it;
+    // Note: itEnd is < s.end(), so that we can always write "it+1"
+    for(; it!=itEnd; ++it) {
+        unsigned char c = static_cast<unsigned char>(*it);
+        if ((c & 0x80) == 0) itStop=it+1;        // 7 bits ANSI. itStop must then point after that character.
+        else if ((c & 0x40) != 0) itStop=it;    // UTF8 sequence start: this is also past-the-end for the previous character (ANSI or UTF8)
+    }
+    return std::string(s.begin(), itStop);
+}
+
+#ifdef OSG_USE_UTF8_FILENAME
+#    define truncateFilenameBytes(str, size) utf8TruncateBytes(str, size)
+#else
+#    define truncateFilenameBytes(str, size) std::string(str, 0, size)
+#endif
 
 std::string WriterNodeVisitor::getUniqueName(const std::string& _defaultValue, const std::string & _defaultPrefix, bool nameIsPath)
 {
@@ -615,7 +598,8 @@ std::string WriterNodeVisitor::getUniqueName(const std::string& _defaultValue, c
     // Handling of paths is not well done yet. Defaulting to something very simple.
     // We should actually ensure each component is 8 chars long, and final filename is 8.3, and total is <64 chars, or simply ensure total length for extended 3DS paths.
     std::string defaultValue(nameIsPath ? osgDB::getSimpleFileName(_defaultValue) : _defaultValue);
-    std::string ext(nameIsPath ? osgDB::getFileExtensionIncludingDot(_defaultValue).substr(0, std::min<unsigned int>(_defaultValue.size(), 4)) : "");        // 4 chars = dot + 3 chars
+    std::string ext(nameIsPath ? osgDB::getFileExtensionIncludingDot(_defaultValue) : "");
+    ext = truncateFilenameBytes(ext, std::min<unsigned int>(_defaultValue.size(), 4));        // 4 chars = dot + 3 chars
     if (ext == ".") ext = "";
 
     std::string defaultPrefix(_defaultPrefix.empty() ? "_" : _defaultPrefix);
@@ -626,12 +610,12 @@ std::string WriterNodeVisitor::getUniqueName(const std::string& _defaultValue, c
     {
         if (defaultValue[i] == '.')
         {
-            truncDefaultValue = defaultValue.substr(0, i);
+            truncDefaultValue = truncateFilenameBytes(defaultValue, i);
             break;
         }
     }
     if (truncDefaultValue.empty())
-        truncDefaultValue = defaultValue.substr(0, std::min<unsigned int>(defaultValue.size(), MAX_PREFIX_LEGNTH));
+        truncDefaultValue = truncateFilenameBytes(defaultValue, std::min<unsigned int>(defaultValue.size(), MAX_PREFIX_LEGNTH));
     assert(truncDefaultValue.size() <= MAX_PREFIX_LEGNTH);
     std::map<std::string, unsigned int>::iterator pairPrefix;
 
@@ -680,7 +664,7 @@ std::string WriterNodeVisitor::getUniqueName(const std::string& _defaultValue, c
 
     // Failed finding a name
     // Try with a shorter prefix if possible
-    if (defaultPrefix.length()>1) return getUniqueName(_defaultValue, defaultPrefix.substr(0, defaultPrefix.length()-1), nameIsPath);
+    if (defaultPrefix.length()>1) return getUniqueName(_defaultValue, truncateFilenameBytes(defaultPrefix, defaultPrefix.length()-1), nameIsPath);
     // Try with default prefix if not arleady done
     if (defaultPrefix != std::string("_")) return getUniqueName(_defaultValue, "_", nameIsPath);
 

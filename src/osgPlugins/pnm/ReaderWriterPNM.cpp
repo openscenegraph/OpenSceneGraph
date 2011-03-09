@@ -14,41 +14,41 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <sstream>
+
 using namespace osg;
+
 template <class T>
-    unsigned char* read_bitmap_ascii(FILE* fp, int width, int height)
+    unsigned char* read_bitmap_ascii(std::istream& fin, int width, int height)
 {
     T* data = new T[width*height];
 
     T* dst = data;
     T* end = data + width*height;
+    T value = 0;
+    unsigned long num;
 
     while(dst < end)
     {
-        T value = 0;
-
         // read in characters looking for '0's and '1's, these
         // values map to 255 and 0. Any other characters
         // are silently ignored.
-        while(1)
+        fin >> num;
+        if (!fin.good())
         {
-            int ch = fgetc(fp);
-            if (feof(fp) || ferror(fp))
-            {
-                delete [] data;
-                return NULL;
-            }
+            delete [] data;
+            return NULL;
+        }
 
-            if (ch == '0')
-            {
-                value = 255;
-                break;
-            }
-            else if (ch == '1')
-            {
-                value = 0;
-                break;
-            }
+        if (num == 1)
+        {
+            value = 0;
+            break;
+        }
+        else if (num == 0)
+        {
+            value = 255;
+            break;
         }
 
         // place value in the image
@@ -59,44 +59,23 @@ template <class T>
 }
 
 template <class T>
-    unsigned char* read_grayscale_ascii(FILE* fp, int width, int height)
+    unsigned char* read_grayscale_ascii(std::istream& fin, int width, int height)
 {
     T* data = new T[width*height];
 
     T* dst = data;
     T* end = data + width*height;
+    T value = 0;
+    unsigned long num;
 
     while(dst < end)
     {
-        int ch;
-        T value = 0;
-
-        // read and discard any whitespace
-        // until a digit is reached
-        do
+        fin >> num;
+        if (!fin.good())
         {
-            ch = fgetc(fp);
-            if (feof(fp) || ferror(fp))
-            {
-                delete [] data;
-                return NULL;
-            }
+            delete [] data;
+            return NULL;
         }
-        while(!isdigit(ch));
-
-        // continue reading digits and incrementally
-        // construct the integer value
-        do
-        {
-            value = 10*value + (ch - '0');
-            ch = fgetc(fp);
-            if (feof(fp) || ferror(fp))
-            {
-                delete [] data;
-                return NULL;
-            }
-        }
-        while(isdigit(ch));
 
         // place value in the image
         *(dst++) = value;
@@ -106,67 +85,33 @@ template <class T>
 }
 
 template <class T>
-    unsigned char* read_color_ascii(FILE* fp, int width, int height)
+    unsigned char* read_color_ascii(std::istream& fin, int width, int height)
 {
     T* data = new T[3*width*height];
 
     T* dst = data;
     T* end = data + 3*width*height;
-
-    OSG_NOTICE<<"Width = "<<width<<std::endl;
-    OSG_NOTICE<<"Height = "<<height<<std::endl;
-    
-    unsigned int numRead = 0;
+    T value = 0;
+    unsigned long num;
 
     while(dst < end)
     {
-        int ch;
-        T value = 0;
-
-        // read and discard any whitespace
-        // until a digit is reached
-        do
+        fin >> num;
+        if (!fin.good())
         {
-            ch = fgetc(fp);
-            if (feof(fp) || ferror(fp))
-            {
-                OSG_NOTICE<<"Error 1 "<<numRead<<std::endl;
-
-                delete [] data;
-                return NULL;
-            }
+            delete [] data;
+            return NULL;
         }
-        while(!isdigit(ch));
-
-        // continue reading digits and incrementally
-        // construct the integer value
-        do
-        {
-            value = 10*value + (ch - '0');
-            ch = fgetc(fp);
-            if (feof(fp) || ferror(fp))
-            {
-                OSG_NOTICE<<"Error 2"<<std::endl;
-
-                delete [] data;
-                return NULL;
-            }
-        }
-        while(isdigit(ch));
-
-        ++numRead;
 
         // place value in the image
         *(dst++) = value;
     }
 
-    OSG_NOTICE<<"Completed"<<std::endl;
-
     return reinterpret_cast<unsigned char*>(data);
 }
 
 template <class T>
-    unsigned char* read_bitmap_binary(FILE* fp, int width, int height)
+    unsigned char* read_bitmap_binary(std::istream& fin, int width, int height)
 {
     T* data = new T[width*height];
 
@@ -177,10 +122,9 @@ template <class T>
 
         while(dst < end)
         {
-            unsigned char b = fgetc(fp);
-            if (feof(fp) || ferror(fp))
+            unsigned char b = (unsigned char) fin.get();
+            if (!fin.good())
             {
-                fclose(fp);
                 delete [] data;
                 return NULL;
             }
@@ -198,19 +142,19 @@ template <class T>
 }
 
 template <class T>
-    unsigned char* read_grayscale_binary(FILE* fp, int width, int height)
+    unsigned char* read_grayscale_binary(std::istream& fin, int width, int height)
 {
-    T* data = new T[width*height];
+    unsigned char* data = new unsigned char[sizeof(T)*width*height];
 
-    if (fread(data, sizeof(T)*width*height, 1, fp) != 1)
+    fin.read((char*)data, sizeof(T)*width*height);
+    if (!fin.good())
     {
-        fclose(fp);
         delete [] data;
         return NULL;
     }
 
     // if the machine is little endian swap the bytes around
-    if (sizeof(T) > 1 && getCpuByteOrder() == osg::LittleEndian)
+    if (sizeof(T) == 2 && getCpuByteOrder() == osg::LittleEndian)
     {
         for(int i = 0; i < width*height; i++)
         {
@@ -219,23 +163,23 @@ template <class T>
         }
     }
 
-    return reinterpret_cast<unsigned char*>(data);
+    return data;
 }
 
 template <class T>
-    unsigned char* read_color_binary(FILE* fp, int width, int height)
+    unsigned char* read_color_binary(std::istream& fin, int width, int height)
 {
-    T* data = new T[3*width*height];
+    unsigned char* data = new unsigned char[sizeof(T)*3*width*height];
 
-    if (fread(data, 3*sizeof(T)*width*height, 1, fp) != 1)
+    fin.read((char*)data, sizeof(T)*3*width*height);
+    if (!fin.good())
     {
-        fclose(fp);
         delete [] data;
         return NULL;
     }
 
     // if the machine is little endian swap the bytes around
-    if (sizeof(T) > 1 && getCpuByteOrder() == osg::LittleEndian)
+    if (sizeof(T) == 2 && getCpuByteOrder() == osg::LittleEndian)
     {
         for(int i = 0; i < 3*width*height; i++)
         {
@@ -260,32 +204,23 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
         
         virtual const char* className() const { return "PNM Image Reader/Writer"; }
 
-        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        virtual ReadResult readImage(std::istream& fin, const osgDB::ReaderWriter::Options* options=NULL) const
         {
-            std::string ext = osgDB::getLowerCaseFileExtension(file);
-            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
-
-            std::string fileName = osgDB::findDataFile( file, options );
-            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
-
-            FILE *fp = NULL;
-            char line[300];
             int ppmtype = 0;    /* P1, P2, etc. */
             int width = 0;
             int height = 0;
             int max_value = 0;
 
-            // Open file.
-            fp = osgDB::fopen(fileName.c_str(), "rb");
-
             // Read header items.
+            std::string line;
             int row;
             for (row = 1; row <= 3; row++)
             {
-                if ( fgets(line, 300, fp) == NULL)
-                    break;
+                getline(fin, line);
+                if (!fin.good())
+                    return ReadResult::ERROR_IN_READING_FILE;
 
-                char *cp = line;
+                const char *cp = line.c_str();
                 while (*cp && isspace(*cp))
                     cp++;
                 if (! *cp || *cp == '#')
@@ -303,12 +238,10 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
                 }
                 else if (row == 2)
                 {
-                    // Get the image size.
-                    width = atoi(line);
-                    char *cp = line + strspn(line, "\t \n\r");
-                    cp += strspn(cp, "0123456789");
-                    cp += strspn(line, "\t \n\r");
-                    height = atoi(cp);
+                    std::istringstream istr(line);
+
+                    istr >> width;
+                    istr >> height;
 
                     // pbm files don't have row 3
                     if (ppmtype == 1 || ppmtype == 4)
@@ -320,7 +253,8 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
                 else if (row == 3)
                 {
                     // Get the maximum value
-                    max_value = atoi(line);
+                    std::istringstream istr(line);
+                    istr >> max_value;
                 }
             }
 
@@ -329,7 +263,6 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
                 max_value <= 0 || max_value > 65535 ||
                 ppmtype < 1 || ppmtype > 6)
             {
-                fclose(fp);
                 return ReadResult::ERROR_IN_READING_FILE;
             }
 
@@ -339,32 +272,33 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
 
             if (max_value > 255)
             {
+                OSG_NOTICE<<"OpenSceneGraph PPM reader: width="<<width<<" height="<<height<<std::endl;
                 dataType = GL_UNSIGNED_SHORT;
                 switch(ppmtype)
                 {
                     case 1:    // bitmap ascii
                         pixelFormat = GL_LUMINANCE;
-                        data = read_bitmap_ascii<unsigned short>(fp, width, height);
+                        data = read_bitmap_ascii<unsigned short>(fin, width, height);
                         break;
                     case 2:    // grayscale ascii
                         pixelFormat = GL_LUMINANCE;
-                        data = read_grayscale_ascii<unsigned short>(fp, width, height);
+                        data = read_grayscale_ascii<unsigned short>(fin, width, height);
                         break;
                     case 3:    // color ascii
                         pixelFormat = GL_RGB;
-                        data = read_color_ascii<unsigned short>(fp, width, height);
+                        data = read_color_ascii<unsigned short>(fin, width, height);
                         break;
                     case 4:    // bitmap binary
                         pixelFormat = GL_LUMINANCE;
-                        data = read_bitmap_binary<unsigned short>(fp, width, height);
+                        data = read_bitmap_binary<unsigned short>(fin, width, height);
                         break;
                     case 5:    // grayscale binary
                         pixelFormat = GL_LUMINANCE;
-                        data = read_grayscale_binary<unsigned short>(fp, width, height);
+                        data = read_grayscale_binary<unsigned short>(fin, width, height);
                         break;
                     case 6:    // color binary
                         pixelFormat = GL_RGB;
-                        data = read_color_binary<unsigned short>(fp, width, height);
+                        data = read_color_binary<unsigned short>(fin, width, height);
                         break;
                 }
             }
@@ -375,44 +309,38 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
                 {
                     case 1:    // bitmap ascii
                         pixelFormat = GL_LUMINANCE;
-                        data = read_bitmap_ascii<unsigned char>(fp, width, height);
+                        data = read_bitmap_ascii<unsigned char>(fin, width, height);
                         break;
                     case 2:    // grayscale ascii
                         pixelFormat = GL_LUMINANCE;
-                        data = read_grayscale_ascii<unsigned char>(fp, width, height);
+                        data = read_grayscale_ascii<unsigned char>(fin, width, height);
                         break;
                     case 3:    // color ascii
                         pixelFormat = GL_RGB;
-                        data = read_color_ascii<unsigned char>(fp, width, height);
+                        data = read_color_ascii<unsigned char>(fin, width, height);
                         break;
                     case 4:    // bitmap binary
                         pixelFormat = GL_LUMINANCE;
-                        data = read_bitmap_binary<unsigned char>(fp, width, height);
+                        data = read_bitmap_binary<unsigned char>(fin, width, height);
                         break;
                     case 5:    // grayscale binary
                         pixelFormat = GL_LUMINANCE;
-                        data = read_grayscale_binary<unsigned char>(fp, width, height);
+                        data = read_grayscale_binary<unsigned char>(fin, width, height);
                         break;
                     case 6:    // color binary
                         pixelFormat = GL_RGB;
-                        data = read_color_binary<unsigned char>(fp, width, height);
+                        data = read_color_binary<unsigned char>(fin, width, height);
                         break;
                 }
             }
 
             if (data == NULL)
             {
-                if (fp)
-                    fclose(fp);
                 return ReadResult::FILE_NOT_HANDLED;
             }
 
-            if (fp)
-                fclose(fp);
-
             osg::Image* pOsgImage = new osg::Image();
 
-            pOsgImage->setFileName(fileName.c_str());
             pOsgImage->setImage(width, height, 1,
                 pixelFormat,
                 pixelFormat,
@@ -426,6 +354,24 @@ class ReaderWriterPNM : public osgDB::ReaderWriter
             }
 
             return pOsgImage;
+        }
+
+        virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
+        {
+            std::string ext = osgDB::getLowerCaseFileExtension(file);
+            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+
+            std::string fileName = osgDB::findDataFile( file, options );
+            if (fileName.empty()) return ReadResult::FILE_NOT_FOUND;
+
+            std::ifstream fin(fileName.c_str());
+            if (!fin.good())
+                return ReadResult::ERROR_IN_READING_FILE;
+
+            ReadResult rr = readImage(fin, options);
+            fin.close();
+            if (rr.validImage()) rr.getImage()->setFileName(file);
+            return rr;
         }
 
         virtual WriteResult writeImage(const osg::Image& image,std::ostream& fout,const osgDB::ReaderWriter::Options* options) const

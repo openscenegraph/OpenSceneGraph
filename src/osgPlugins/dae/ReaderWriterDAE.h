@@ -37,7 +37,8 @@ public:
     WriteResult writeNode(const osg::Node&, const std::string&, const Options*) const;
 
     static std::string ConvertFilePathToColladaCompatibleURI(const std::string& FilePath);
-  
+    static std::string ConvertColladaCompatibleURIToFilePath(const std::string& uri);
+
 private:
     mutable OpenThreads::ReentrantMutex _serializerMutex;
 };

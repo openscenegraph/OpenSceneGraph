@@ -197,6 +197,17 @@ static void replace(std::string & str, const char from, const std::string & to)
     }
 }
 
+static void replace(std::string & str, const std::string & from, const std::string & to)
+{
+    // Replace for all occurences
+    std::size_t lenFrom = from.size();
+    std::size_t lenTo = to.size();
+    for(std::string::size_type pos=str.find(from); pos!=std::string::npos; pos = str.find(from, pos+lenTo))
+    {
+        str.replace(pos, lenFrom, to);
+    }
+}
+
 std::string ReaderWriterDAE::ConvertFilePathToColladaCompatibleURI(const std::string& FilePath)
 {
 #ifdef OSG_USE_UTF8_FILENAME
@@ -232,6 +243,18 @@ std::string ReaderWriterDAE::ConvertFilePathToColladaCompatibleURI(const std::st
     return path;
 }
 
+std::string ReaderWriterDAE::ConvertColladaCompatibleURIToFilePath(const std::string& uri)
+{
+    // Reciprocal of ConvertFilePathToColladaCompatibleURI()
+
+#ifdef OSG_USE_UTF8_FILENAME
+    std::string path( cdom::uriToNativePath( uri ) );
+#else
+    std::string path( osgDB::convertStringFromCurrentCodePageToUTF8( cdom::uriToNativePath(uri) ) );
+#endif
+    replace(path, "%23", "#");
+    return path;
+}
 
 ///////////////////////////////////////////////////////////////////////////
 // Add ourself to the Registry to instantiate the reader/writer.

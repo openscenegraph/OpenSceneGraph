@@ -234,6 +234,7 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
 
     osg::Camera::BufferAttachmentMap& bufferAttachments = _camera->getBufferAttachmentMap();
 
+    _bufferAttachmentMap.clear();
 
     // compute the required dimensions
     int width = static_cast<int>(_viewport->x() + _viewport->width());

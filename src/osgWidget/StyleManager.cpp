@@ -362,6 +362,31 @@ bool StyleManager::_applyStyleToObject(osg::Object* obj, const std::string& styl
         style,
         c
     );
+    else if(!std::string("Window").compare(c)) return _coerceAndApply<Window>(
+        obj,
+        style,
+        c
+    );
+    else if(!std::string("Input").compare(c)) return _coerceAndApply<Input>(
+        obj,
+        style,
+        c
+    );
+    else if(!std::string("Corner").compare(c)) return _coerceAndApply<Frame::Corner>(
+        obj,
+        style,
+        c
+    );
+    else if(!std::string("Border").compare(c)) return _coerceAndApply<Frame::Border>(
+        obj,
+        style,
+        c
+    );
+    else if(!std::string("EmbeddedWindow").compare(c)) return _coerceAndApply<Window::EmbeddedWindow>(
+        obj,
+        style,
+        c
+    );
 
 
     else warn()

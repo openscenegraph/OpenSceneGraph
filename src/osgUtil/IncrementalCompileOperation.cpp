@@ -339,7 +339,7 @@ double IncrementalCompileOperation::CompileList::estimatedTimeForCompile(Compile
 
 bool IncrementalCompileOperation::CompileList::compile(CompileInfo& compileInfo)
 {
-#define USE_TIME_ESTIMATES
+//#define USE_TIME_ESTIMATES
     
     for(CompileOps::iterator itr = _compileOps.begin();
         itr != _compileOps.end() && compileInfo.availableTime()>0.0 && compileInfo.maxNumObjectsToCompile>0;

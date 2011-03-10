@@ -14,6 +14,7 @@
 #include <string.h>
 #include <limits.h>
 
+#include <osgDB/ConvertUTF>
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 
@@ -288,6 +289,41 @@ std::string osgDB::concatPaths(const std::string& left, const std::string& right
 std::string osgDB::getRealPath(const std::string& path)
 {
 #if defined(WIN32)  && !defined(__CYGWIN__)
+
+#ifdef OSG_USE_UTF8_FILENAME
+
+    std::wstring wpath = convertUTF8toUTF16(path);
+    wchar_t retbuf[MAX_PATH + 1];
+    wchar_t tempbuf1[MAX_PATH + 1];
+    GetFullPathNameW(wpath.c_str(), _countof(retbuf), retbuf, NULL);
+    // Force drive letter to upper case
+    if ((retbuf[1] == ':') && iswlower(retbuf[0]))
+        retbuf[0] = towupper(retbuf[0]);
+    if (fileExists(convertUTF16toUTF8(retbuf)))
+    {
+        // Canonicalise the full path
+        GetShortPathNameW(retbuf, tempbuf1, _countof(tempbuf1));
+        GetLongPathNameW(tempbuf1, retbuf, _countof(retbuf));
+        return convertUTF16toUTF8(retbuf);
+    }
+    else
+    {
+        std::string retbuf8 = convertUTF16toUTF8(retbuf);
+        // Canonicalise the directories
+        std::string FilePath = getFilePath(retbuf8);
+        wchar_t tempbuf2[MAX_PATH + 1];
+        if (0 == GetShortPathNameW(convertUTF8toUTF16(FilePath).c_str(), tempbuf1, _countof(tempbuf1)))
+            return retbuf8;
+        if (0 == GetLongPathNameW(tempbuf1, tempbuf2, _countof(tempbuf2)))
+            return retbuf8;
+        FilePath = convertUTF16toUTF8(tempbuf2);
+        FilePath += WINDOWS_PATH_SEPARATOR;
+        FilePath.append(getSimpleFileName(retbuf8));
+        return FilePath;
+    }
+
+#else
+
     // Not unicode compatible should give an error if UNICODE defined
     char retbuf[MAX_PATH + 1];
     char tempbuf1[MAX_PATH + 1];
@@ -316,6 +352,8 @@ std::string osgDB::getRealPath(const std::string& path)
         FilePath.append(getSimpleFileName(std::string(retbuf)));
         return FilePath;
     }
+#endif
+
 #else
     char resolved_path[PATH_MAX];
     char* result = realpath(path.c_str(), resolved_path);

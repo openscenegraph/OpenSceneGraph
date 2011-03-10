@@ -38,7 +38,7 @@ SET(LIB_COMMON_FILES
 
 SET(LIB_EXTRA_LIBS)
 
-IF(WIN32)
+IF(WIN32 AND NOT ANDROID)
     #
     # Enable workaround for OpenGL driver issues when used in multithreaded/multiscreen with NVidia drivers on Windows XP 
     # For example: osgviewer dumptruck.osg was showing total garbage (screen looked like shattered, splashed hedgehog) 

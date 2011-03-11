@@ -184,18 +184,29 @@ protected:
 
     bool createFileObject(const osg::Node& node, Lib3dsFile * file3ds,const std::string& fileName, const osgDB::ReaderWriter::Options* options) const;
 
+    /// An OSG state set with the original 3DS material attached (used to get info such as UV scaling & offset)
+    struct StateSetInfo
+    {
+        StateSetInfo(osg::StateSet * stateset=NULL, Lib3dsMaterial * lib3dsmat=NULL) : stateset(stateset), lib3dsmat(lib3dsmat) {}
+        StateSetInfo(const StateSetInfo & v) : stateset(v.stateset), lib3dsmat(v.lib3dsmat) {}
+        StateSetInfo & operator=(const StateSetInfo & v) { stateset=v.stateset; lib3dsmat=v.lib3dsmat; return *this; }
+
+        osg::StateSet * stateset;
+        Lib3dsMaterial * lib3dsmat;
+    };
+
     class ReaderObject
     {
     public:
         ReaderObject(const osgDB::ReaderWriter::Options* options);
 
-        typedef std::vector<osg::StateSet*> StateSetMap;
+        typedef std::vector<StateSetInfo> StateSetMap;
         typedef std::vector<int> FaceList;
         typedef std::map<std::string,osg::StateSet*> GeoStateMap;
 
         osg::Texture2D* createTexture(Lib3dsTextureMap *texture,const char* label,bool& transparancy);
-        osg::StateSet* createStateSet(Lib3dsMaterial *materials);
-        osg::Drawable* createDrawable(Lib3dsMesh *meshes,FaceList& faceList, const osg::Matrix * matrix);
+        StateSetInfo createStateSet(Lib3dsMaterial *materials);
+        osg::Drawable* createDrawable(Lib3dsMesh *meshes,FaceList& faceList, const osg::Matrix * matrix, StateSetInfo & ssi);
 
         std::string _directory;
         bool _useSmoothingGroups;
@@ -203,14 +214,14 @@ protected:
 
         // MIKEC
         osg::Node* processMesh(StateSetMap& drawStateMap,osg::Group* parent,Lib3dsMesh* mesh, const osg::Matrix * matrix);
-        osg::Node* processNode(StateSetMap drawStateMap,Lib3dsFile *f,Lib3dsNode *node);
+        osg::Node* processNode(StateSetMap& drawStateMap,Lib3dsFile *f,Lib3dsNode *node);
     private:
         const osgDB::ReaderWriter::Options* options;
         bool noMatrixTransforms;            ///< Should the plugin apply matrices into the mesh vertices ("old behaviour"), instead of restoring matrices ("new behaviour")?
         bool checkForEspilonIdentityMatrices;
         bool restoreMatrixTransformsNoMeshes;
         typedef std::map<unsigned int,FaceList> SmoothingFaceMap;
-        void addDrawableFromFace(osg::Geode * geode, FaceList & faceList, Lib3dsMesh * mesh, const osg::Matrix * matrix, osg::StateSet * stateSet);
+        void addDrawableFromFace(osg::Geode * geode, FaceList & faceList, Lib3dsMesh * mesh, const osg::Matrix * matrix, StateSetInfo & ssi);
 
         typedef std::map<std::string, osg::ref_ptr<osg::Texture2D> > TexturesMap;        // Should be an unordered map (faster)
         TexturesMap texturesMap;
@@ -368,7 +379,7 @@ void print(Lib3dsNode *node, int level)
 void ReaderWriter3DS::ReaderObject::addDrawableFromFace(osg::Geode * geode, FaceList & faceList,
                                                         Lib3dsMesh * mesh,
                                                         const osg::Matrix * matrix,
-                                                        osg::StateSet * stateSet)
+                                                        StateSetInfo & ssi)
 {
     if (_useSmoothingGroups)
     {
@@ -388,22 +399,22 @@ void ReaderWriter3DS::ReaderObject::addDrawableFromFace(osg::Geode * geode, Face
             // to ensure the vertices on adjacent groups
             // don't get shared.
             FaceList& smoothFaceMap = sitr->second;
-            osg::ref_ptr<osg::Drawable> drawable = createDrawable(mesh,smoothFaceMap,matrix);
+            osg::ref_ptr<osg::Drawable> drawable = createDrawable(mesh,smoothFaceMap,matrix,ssi);
             if (drawable.valid())
             {
-                if (stateSet)
-                    drawable->setStateSet(stateSet);
+                if (ssi.stateset)
+                    drawable->setStateSet(ssi.stateset);
                 geode->addDrawable(drawable.get());
             }
         }
     }
     else // ignore smoothing groups.
     {
-        osg::ref_ptr<osg::Drawable> drawable = createDrawable(mesh,faceList,matrix);
+        osg::ref_ptr<osg::Drawable> drawable = createDrawable(mesh,faceList,matrix,ssi);
         if (drawable.valid())
         {
-            if (stateSet)
-                drawable->setStateSet(stateSet);
+            if (ssi.stateset)
+                drawable->setStateSet(ssi.stateset);
             geode->addDrawable(drawable.get());
         }
     }
@@ -443,7 +454,8 @@ osg::Node* ReaderWriter3DS::ReaderObject::processMesh(StateSetMap& drawStateMap,
         geode->setName(mesh->name);
         if (!defaultMaterialFaceList.empty())
         {
-            addDrawableFromFace(geode, defaultMaterialFaceList, mesh, matrix, NULL);
+            StateSetInfo emptySSI;
+            addDrawableFromFace(geode, defaultMaterialFaceList, mesh, matrix, emptySSI);
         }
         for(unsigned int imat=0; imat<numMaterials; ++imat)
         {
@@ -478,7 +490,7 @@ How to cope with pivot points in 3ds (short version)
     Transform the node by the node matrix, which does the orientation about the pivot point, (and currently) transforms the object back by a translation to the PP.
 
 */
-osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap drawStateMap,Lib3dsFile *f,Lib3dsNode *node)
+osg::Node* ReaderWriter3DS::ReaderObject::processNode(StateSetMap& drawStateMap,Lib3dsFile *f,Lib3dsNode *node)
 {
     // Get mesh
     Lib3dsMeshInstanceNode * object = (node->type == LIB3DS_NODE_MESH_INSTANCE) ? reinterpret_cast<Lib3dsMeshInstanceNode *>(node) : NULL;
@@ -746,7 +758,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::constructFrom3dsFile(Lib3dsFile
 
     ReaderObject::StateSetMap drawStateMap;
     unsigned int numMaterials = f->nmaterials;
-    drawStateMap.insert(drawStateMap.begin(), numMaterials, NULL);        // Setup the map
+    drawStateMap.insert(drawStateMap.begin(), numMaterials, StateSetInfo());        // Setup the map
     for (unsigned int imat=0; imat<numMaterials; ++imat)
     {
         Lib3dsMaterial * mat = f->materials[imat];
@@ -821,7 +833,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriter3DS::constructFrom3dsFile(Lib3dsFile
 /**
 use matrix to pretransform geometry, or NULL to do nothing
 */
-osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceList& faceList, const osg::Matrix * matrix)
+osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceList& faceList, const osg::Matrix * matrix, StateSetInfo & ssi)
 {
     osg::Geometry * geom = new osg::Geometry;
     unsigned int i;
@@ -876,9 +888,24 @@ osg::Drawable* ReaderWriter3DS::ReaderObject::createDrawable(Lib3dsMesh *m,FaceL
     {
         osg::ref_ptr<osg::Vec2Array> osg_tcoords = new osg::Vec2Array(noVertex);
         geom->setTexCoordArray(0, osg_tcoords.get());
+
+        // Texture 0 parameters (only one texture supported for now)
+        float scaleU(1.f), scaleV(1.f);
+        float offsetU(0.f), offsetV(0.f);
+        if (ssi.lib3dsmat && *(ssi.lib3dsmat->texture1_map.name))     // valid texture = name not empty
+        {
+            Lib3dsTextureMap & tex3ds = ssi.lib3dsmat->texture1_map;
+            scaleU = tex3ds.scale[0];
+            scaleV = tex3ds.scale[1];
+            offsetU = tex3ds.offset[0];
+            offsetV = tex3ds.offset[1];
+            if (tex3ds.rotation != 0) OSG_NOTICE << "3DS texture rotation not supported yet" << std::endl;
+            //TODO: tint_1, tint_2, tint_r, tint_g, tint_b
+        }
+
         for (i=0; i<m->nvertices; ++i)
         {
-            if (orig2NewMapping[i]>=0) (*osg_tcoords)[orig2NewMapping[i]].set(m->texcos[i][0],m->texcos[i][1]);
+            if (orig2NewMapping[i]>=0) (*osg_tcoords)[orig2NewMapping[i]].set(m->texcos[i][0]*scaleU + offsetU, m->texcos[i][1]*scaleV + offsetV);
         }
     }
 
@@ -1049,9 +1076,9 @@ osg::Texture2D*  ReaderWriter3DS::ReaderObject::createTexture(Lib3dsTextureMap *
 }
 
 
-osg::StateSet* ReaderWriter3DS::ReaderObject::createStateSet(Lib3dsMaterial *mat)
+ReaderWriter3DS::StateSetInfo ReaderWriter3DS::ReaderObject::createStateSet(Lib3dsMaterial *mat)
 {
-    if (mat==NULL) return NULL;
+    if (mat==NULL) return StateSetInfo();
 
     bool textureTransparency=false;
     bool transparency = false;
@@ -1151,6 +1178,7 @@ osg::StateSet* ReaderWriter3DS::ReaderObject::createStateSet(Lib3dsMaterial *mat
 
     if ((alpha < 1.0f) || transparency)
     {
+        //stateset->setAttributeAndModes(new osg::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
         stateset->setMode(GL_BLEND,osg::StateAttribute::ON);
         stateset->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
     }
@@ -1172,7 +1200,7 @@ osg::StateSet* ReaderWriter3DS::ReaderObject::createStateSet(Lib3dsMaterial *mat
     osg::ref_ptr<osg::Texture> reflection_map = createTexture(&(mat->reflection_map),"reflection_map",textureTransparancy);
     osg::ref_ptr<osg::Texture> reflection_mask = createTexture(&(mat->reflection_mask),"reflection_mask",textureTransparancy);
 */
-    return stateset;
+    return StateSetInfo(stateset, mat);
 }
 
 

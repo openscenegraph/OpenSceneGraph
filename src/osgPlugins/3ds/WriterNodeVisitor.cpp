@@ -82,13 +82,6 @@ inline void copyOsgQuatToLib3dsQuat(float lib3ds_vector[4], const osg::Quat& osg
     lib3ds_vector[3] = static_cast<float>(-angle);
 }
 
-std::string getFileName(const std::string & path)
-{
-    size_t slashPos = path.find_last_of("/\\");
-    if (slashPos == std::string::npos) return path;
-    return path.substr(slashPos+1);
-}
-
 
 /// Checks if a filename (\b not path) is 8.3 (an empty name is never 8.3, and a path is never 8.3).
 /// Please note the '8' and '3' limitations are in \b bytes, not in characters (which is different when using UTF8).
@@ -107,23 +100,20 @@ bool is83(const std::string & s)
     return true;
 }
 
-/// Tests if the given string is a path supported by 3DS format (8.3, 63 chars max).
-bool is3DSpath(const std::string & s, bool extendedFilePaths)
+inline std::string::size_type maxNameLen(bool extendedFilePaths, bool isNodeName) {
+    if (extendedFilePaths) return 63;
+    return isNodeName ? 8 : (8+1+3);
+}
+
+/// Tests if the given string is a path supported by 3DS format (8.3, 63 chars max, non empty).
+inline bool is3DSName(const std::string & s, bool extendedFilePaths, bool isNodeName)
 {
     unsigned int len = s.length();
-    if (len >= 64 || len == 0) return false;
-    if (extendedFilePaths) return true;        // Extended paths are simply those that fits the 64 bytes buffer!
-
-    // For each subdirectory
-    size_t tokenLen;
-    for (size_t tokenBegin=0, tokenEnd=0; tokenEnd != std::string::npos; tokenBegin = tokenEnd+1)
-    {
-        tokenEnd = s.find_first_of("/\\", tokenBegin);
-        if (tokenEnd != std::string::npos) tokenLen = tokenEnd-tokenBegin-1;        // -1 to avoid reading the separator
-        else tokenLen = len-tokenBegin;
-        if ( tokenLen>0 && !is83(s.substr(tokenBegin, tokenLen)) ) return false;
-    }
-    return true;
+    if (len > maxNameLen(extendedFilePaths, isNodeName) || len == 0) return false;
+    // Extended paths are simply those that fits the 64 bytes buffer.
+    if (extendedFilePaths) return true;
+    // Short paths simply must have no subdirectory.
+    return is83(s);
 }
 
 
@@ -397,7 +387,7 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor & writerNodeVisitor, osg
         //shininess = mat->getShininess(osg::Material::FRONT) <= 0 ? 0 : log( mat->getShininess(osg::Material::FRONT) ) / log(2.f) / 10.f;
 
         transparency = 1-diffuse.w();
-        name = writerNodeVisitor.getUniqueName(mat->getName(),"mat");
+        name = writerNodeVisitor.getUniqueName(mat->getName(),true,"mat");
         osg::StateAttribute * attribute = stateset->getAttribute(osg::StateAttribute::CULLFACE);
         if (!attribute)
         {
@@ -501,7 +491,7 @@ void WriterNodeVisitor::writeMaterials()
             found = true;
 
             assert(mat.index>=0 && mat.index < static_cast<int>(_materialMap.size()));
-            Lib3dsMaterial * mat3ds = lib3ds_material_new(getFileName(mat.name).c_str());
+            Lib3dsMaterial * mat3ds = lib3ds_material_new(osgDB::getSimpleFileName(mat.name).c_str());
             copyOsgColorToLib3dsColor(mat3ds->ambient,  mat.ambient);
             copyOsgColorToLib3dsColor(mat3ds->diffuse,  mat.diffuse);
             copyOsgColorToLib3dsColor(mat3ds->specular, mat.specular);
@@ -510,36 +500,40 @@ void WriterNodeVisitor::writeMaterials()
             mat3ds->two_sided = mat.double_sided ? 1 : 0;
             if (mat.image)
             {
-                Lib3dsTextureMap & tex = mat3ds->texture1_map;
                 std::string path;
-                if(mat.image->getFileName().empty())
+                ImageSet::const_iterator itImage( _imageSet.find(mat.image.get()) );
+                if (itImage != _imageSet.end())
                 {
-                    std::ostringstream oss;
-                    oss << "Image_" << _imageCount++ << ".rgb";
-                    path = oss.str();
+                    // Image has been already used
+                    path = itImage->second;
                 }
                 else
                 {
-                    path = osgDB::getPathRelative(_srcDirectory, mat.image->getFileName());
-                }
-                path = convertExt(path, _extendedFilePaths);
+                    // First time we 'see' this image
+                    if (mat.image->getFileName().empty())
+                    {
+                        std::ostringstream oss;
+                        oss << "Image_" << _imageCount++ << ".rgb";
+                        path = oss.str();
+                    }
+                    else
+                    {
+                        path = osgDB::getPathRelative(_srcDirectory, mat.image->getFileName());
+                    }
+                    path = convertExt(path, _extendedFilePaths);
+                    path = getUniqueName(path, false, "");
 
-                if(!is3DSpath(path, _extendedFilePaths))
-                {
-                    path = getUniqueName(path, "", true);
-                    //path = osgDB::getSimpleFileName(path);
+                    // Write
+                    const std::string fullPath( osgDB::concatPaths(_directory, path) );
+                    osgDB::makeDirectoryForFile(fullPath);
+                    osgDB::writeImageFile(*(mat.image), fullPath, _options);
+
+                    // Insert in map
+                    _imageSet.insert(ImageSet::value_type(mat.image.get(), path));
                 }
 
+                Lib3dsTextureMap & tex = mat3ds->texture1_map;
                 strcpy(tex.name, path.c_str());
-                path = osgDB::concatPaths(_directory, path);
-                osgDB::makeDirectoryForFile(path);
-
-                //if (mat.image->valid()) osgDB::writeImageFile(*(mat.image), path);
-                if(_imageSet.find(mat.image.get()) == _imageSet.end())
-                {
-                    _imageSet.insert(mat.image.get());
-                    osgDB::writeImageFile(*(mat.image), path, _options);
-                }
                 // Here we don't assume anything about initial flags state (actually it is set to LIB3DS_TEXTURE_NO_TILE by lib3DS, but this is subject to change)
                 if (mat.texture_transparency) tex.flags |= LIB3DS_TEXTURE_ALPHA_SOURCE;
                 else tex.flags &= ~LIB3DS_TEXTURE_ALPHA_SOURCE;
@@ -581,92 +575,143 @@ std::string utf8TruncateBytes(const std::string & s, std::string::size_type byte
 #    define truncateFilenameBytes(str, size) std::string(str, 0, size)
 #endif
 
-std::string WriterNodeVisitor::getUniqueName(const std::string& _defaultValue, const std::string & _defaultPrefix, bool nameIsPath)
+std::string WriterNodeVisitor::getUniqueName(const std::string& _defaultValue, bool isNodeName, const std::string & _defaultPrefix, int currentPrefixLen)
 {
-    static const unsigned int MAX_PREFIX_LEGNTH = 4;        // Arbitrarily defined to 4 chars
-    assert(_defaultPrefix.length()<=MAX_PREFIX_LEGNTH);        // Default prefix is too long (implementation error)
+    //const unsigned int MAX_LENGTH = maxNameLen(_extendedFilePaths);
+    const unsigned int MAX_PREFIX_LENGTH = _extendedFilePaths ? 52 : 6;        // Arbitrarily defined for short names, kept enough room for displaying UINT_MAX (10 characters) for long names.
+    assert(_defaultPrefix.length()<=4);        // Default prefix is too long (implementation error)
+    const std::string defaultPrefix(_defaultPrefix.empty() ? "_" : _defaultPrefix);
+    if (currentPrefixLen<0) currentPrefixLen = osg::maximum(_defaultPrefix.length(), _defaultValue.length());
+    currentPrefixLen = osg::clampBelow(currentPrefixLen, static_cast<int>(MAX_PREFIX_LENGTH));
 
     // Tests if default name is valid and unique
-    bool defaultIs83 = is83(_defaultValue);
-    bool defaultIsValid = nameIsPath ? is3DSpath(_defaultValue, _extendedFilePaths) : defaultIs83;
-    if (defaultIsValid && _nameMap.find(_defaultValue) == _nameMap.end())
-    {
-        _nameMap.insert(_defaultValue);
-        return _defaultValue;
-    }
+    NameMap & nameMap = isNodeName ? _nodeNameMap : _imageNameMap;
+    PrefixMap & prefixMap = isNodeName ? _nodePrefixMap : _imagePrefixMap;
 
-    // Handling of paths is not well done yet. Defaulting to something very simple.
-    // We should actually ensure each component is 8 chars long, and final filename is 8.3, and total is <64 chars, or simply ensure total length for extended 3DS paths.
-    std::string defaultValue(nameIsPath ? osgDB::getSimpleFileName(_defaultValue) : _defaultValue);
-    std::string ext(nameIsPath ? osgDB::getFileExtensionIncludingDot(_defaultValue) : "");
-    ext = truncateFilenameBytes(ext, std::min<unsigned int>(_defaultValue.size(), 4));        // 4 chars = dot + 3 chars
-    if (ext == ".") ext = "";
-
-    std::string defaultPrefix(_defaultPrefix.empty() ? "_" : _defaultPrefix);
-
+    // Handling of paths is simple. Algorithm:
+    //    - For short names, subdirectories are simply forbidden. Use the simple file name.
+    //    - Else, the whole (relative) path must simply be <64 chars.
+    // After this, begin enumeration.
+    std::string parentPath, filename, ext, namePrefix;
     unsigned int max_val = 0;
-    std::string truncDefaultValue = "";
-    for (unsigned int i = 0; i < std::min<unsigned int>(defaultValue.size(), MAX_PREFIX_LEGNTH); ++i)
+
+    // TODO Move the two parts of this giant if/else into two separate functions for better readability.
+    if (_extendedFilePaths)
     {
-        if (defaultValue[i] == '.')
+        // Tests if default name is valid and unique
+        if (is3DSName(_defaultValue, _extendedFilePaths, isNodeName))
         {
-            truncDefaultValue = truncateFilenameBytes(defaultValue, i);
-            break;
+            std::pair<NameMap::iterator, bool> insertion( nameMap.insert(_defaultValue) ); 
+            if (insertion.second) return _defaultValue;        // Return if element is newly inserted in the map (else there is a naming collision)
         }
-    }
-    if (truncDefaultValue.empty())
-        truncDefaultValue = truncateFilenameBytes(defaultValue, std::min<unsigned int>(defaultValue.size(), MAX_PREFIX_LEGNTH));
-    assert(truncDefaultValue.size() <= MAX_PREFIX_LEGNTH);
-    std::map<std::string, unsigned int>::iterator pairPrefix;
 
-    // TODO - Handle the case of extended 3DS paths and allow more than 8 chars
-    defaultIs83 = is83(truncDefaultValue);
-    if (defaultIs83)
-    {
-        max_val = static_cast<unsigned int>(pow(10., 8. - truncDefaultValue.length())) -1;
-        pairPrefix = _mapPrefix.find(truncDefaultValue);
-    }  
+        // Simply separate name and last extension
+        filename = osgDB::getNameLessExtension(osgDB::getSimpleFileName(_defaultValue));
+        if (!isNodeName)
+        {
+            ext = osgDB::getFileExtensionIncludingDot(_defaultValue);
+            if (ext == ".") ext = "";
+        }
 
-    if (defaultIs83 && (pairPrefix == _mapPrefix.end() || pairPrefix->second <= max_val))
-    {
-        defaultPrefix = truncDefaultValue;
+        // Compute parent path
+        // Pre-condition: paths are supposed to be relative.
+        // If full path is too long (>MAX_PREFIX_LENGTH), cut path to let enough space for simple file name.
+        // Do not cut in the middle of a name, but at path separators.
+        parentPath = osgDB::getFilePath(_defaultValue);
+        if (_defaultValue.length() >MAX_PREFIX_LENGTH)        // Not parentPath but _defaultValue!
+        {
+            // Nodes names: keep last directories (used only for the root name, generally named after the full file path)
+            // Images names: keep first directories (for images)
+            if (isNodeName) std::reverse(parentPath.begin(), parentPath.end());
+            parentPath = truncateFilenameBytes(parentPath, MAX_PREFIX_LENGTH - (filename.length() + ext.length() + 1));        // +1 for the path separator
+            std::string::size_type separator = parentPath.find_last_of("/\\");
+            if (separator != std::string::npos) parentPath = parentPath.substr(0, separator);
+            if (isNodeName) std::reverse(parentPath.begin(), parentPath.end());
+        }
+
+        // Assert "MAX_PREFIX_LENGTH - parent path length - extension length -1" is >=0 and truncate name to this length to get our new prefix.
+        assert(parentPath.length() + ext.length() <= MAX_PREFIX_LENGTH);
+        const unsigned int len = MAX_PREFIX_LENGTH - (parentPath.length() + ext.length() +1);
+        namePrefix = truncateFilenameBytes(filename, len);
+        if (namePrefix.empty()) namePrefix = defaultPrefix;
+
+        // Truncate the filename to get our new prefix
+        namePrefix = truncateFilenameBytes(filename, currentPrefixLen);
+
+        // Enough space has been reserved for UINT_MAX values
+        max_val = UINT_MAX;
     }
     else
     {
-        max_val = static_cast<unsigned int>(pow(10., 8. - defaultPrefix.length())) -1;
-        pairPrefix = _mapPrefix.find(defaultPrefix);
-    }
+        // Get last extension, and make filename have no extension
+        filename = osgDB::getNameLessAllExtensions(osgDB::getSimpleFileName(_defaultValue));
+        if (!isNodeName)
+        {
+            ext = truncateFilenameBytes(osgDB::getFileExtensionIncludingDot(_defaultValue), 4);        // 4 chars = dot + 3 chars
+            if (ext == ".") ext = "";
+        }
 
-    unsigned int searchStart = 0;
-    if (pairPrefix != _mapPrefix.end())
+        // Tests if STRIPPED default name is valid and unique
+        const std::string strippedName( filename + ext );
+        if (is3DSName(strippedName, _extendedFilePaths, isNodeName))
+        {
+            std::pair<NameMap::iterator, bool> insertion( nameMap.insert(strippedName) ); 
+            if (insertion.second) return strippedName;        // Return if element is newly inserted in the map (else there is a naming collision)
+        }
+
+        namePrefix = filename;
+        if (namePrefix.empty()) namePrefix = defaultPrefix;
+        // Truncate the filename to get our new prefix
+        namePrefix = truncateFilenameBytes(namePrefix, currentPrefixLen);
+
+        // Compute the maximum enumeration value
+        max_val = static_cast<unsigned int>(pow(10., 8. - namePrefix.length())) -1;
+    }
+    assert(namePrefix.size() <= MAX_PREFIX_LENGTH);
+
+    // Find the current enumeration value (searchStart)
+    unsigned int searchStart(0);
+    PrefixMap::iterator pairPrefix( prefixMap.find(namePrefix) );
+    if (pairPrefix != prefixMap.end())
     {
         searchStart = pairPrefix->second;
     }
+    else
+    {
+        // Check if truncated name is ok
+        const std::string res( osgDB::concatPaths(parentPath, namePrefix + ext) );
+        if (nameMap.find(res) == nameMap.end()) {
+            prefixMap.insert(std::pair<std::string, unsigned int>(namePrefix, 0));
+            nameMap.insert(res);
+            return res;
+        }
+    }
 
+    // Search for a free value
     for(unsigned int i = searchStart; i <= max_val; ++i)
     {
         std::stringstream ss;
-        ss << defaultPrefix << i;
-        const std::string & res = ss.str();
-        if (_nameMap.find(res) == _nameMap.end())
+        ss << namePrefix << i;
+        const std::string res( osgDB::concatPaths(parentPath, ss.str() + ext) );
+        if (nameMap.find(res) == nameMap.end())
         {
-            if (pairPrefix != _mapPrefix.end())
+            if (pairPrefix != prefixMap.end())
             {
                 pairPrefix->second = i + 1;
             } else
             {
-                _mapPrefix.insert(std::pair<std::string, unsigned int>(defaultPrefix, i + 1));
+                prefixMap.insert(std::pair<std::string, unsigned int>(namePrefix, i + 1));
             }
-            _nameMap.insert(res);
-            return res + ext;
+            nameMap.insert(res);
+            return res;
         }
     }
 
     // Failed finding a name
     // Try with a shorter prefix if possible
-    if (defaultPrefix.length()>1) return getUniqueName(_defaultValue, truncateFilenameBytes(defaultPrefix, defaultPrefix.length()-1), nameIsPath);
+    if (currentPrefixLen>1) return getUniqueName(_defaultValue, isNodeName, defaultPrefix, currentPrefixLen-1);
     // Try with default prefix if not arleady done
-    if (defaultPrefix != std::string("_")) return getUniqueName(_defaultValue, "_", nameIsPath);
+    if (defaultPrefix != std::string("_")) return getUniqueName(_defaultValue, isNodeName, "_", 1);
 
     // No more names
     OSG_NOTIFY(osg::FATAL) << "No more names available!" << std::endl;
@@ -809,7 +854,7 @@ WriterNodeVisitor::buildFaces(osg::Geode        & geo,
     unsigned int nbVerticesRemaining  = calcVertices(geo);        // May set _succeded to false
     if (!succeeded()) return;
 
-    std::string name( getUniqueName(geo.getName().empty() ? geo.className() : geo.getName(), "geo") );
+    std::string name( getUniqueName(geo.getName().empty() ? geo.className() : geo.getName(), true, "geo") );
     if (!succeeded()) return;
     Lib3dsMesh *mesh = lib3ds_mesh_new( name.c_str() );
     if (!mesh)
@@ -855,7 +900,7 @@ WriterNodeVisitor::buildFaces(osg::Geode        & geo,
             // We can't call a thing like "nbVerticesRemaining -= ...;" because points may be used multiple times.
             // [Sukender: An optimisation here would take too much time I think.]
 
-            mesh = lib3ds_mesh_new( getUniqueName(geo.getName().empty() ? geo.className() : geo.getName(), "geo").c_str());
+            mesh = lib3ds_mesh_new( getUniqueName(geo.getName().empty() ? geo.className() : geo.getName(), true, "geo").c_str());
             if (!mesh)
             {
                 OSG_NOTIFY(osg::FATAL) << "Allocation error" << std::endl;
@@ -1043,11 +1088,11 @@ void WriterNodeVisitor::apply3DSMatrixNode(osg::Node &node, const osg::Matrix * 
         copyOsgVectorToLib3dsVector(pos, osgPos);
         copyOsgVectorToLib3dsVector(scl, osgScl);
         copyOsgQuatToLib3dsQuat(rot, osgRot);
-        node3ds = lib3ds_node_new_mesh_instance(NULL, getUniqueName(node.getName().empty() ? node.className() : node.getName(), prefix).c_str(), pos, scl, rot);
+        node3ds = lib3ds_node_new_mesh_instance(NULL, getUniqueName(node.getName().empty() ? node.className() : node.getName(), true, prefix).c_str(), pos, scl, rot);
     }
     else
     {
-        node3ds = lib3ds_node_new_mesh_instance(NULL, getUniqueName(node.getName().empty() ? node.className() : node.getName(), prefix).c_str(), NULL, NULL, NULL);
+        node3ds = lib3ds_node_new_mesh_instance(NULL, getUniqueName(node.getName().empty() ? node.className() : node.getName(), true, prefix).c_str(), NULL, NULL, NULL);
     }
 
     lib3ds_file_append_node(_file3ds, reinterpret_cast<Lib3dsNode*>(node3ds), reinterpret_cast<Lib3dsNode*>(parent));

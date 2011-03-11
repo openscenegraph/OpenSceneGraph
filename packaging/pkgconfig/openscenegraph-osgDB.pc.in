@@ -10,5 +10,5 @@ Description: File format reading library for Openscenegraph
 Version: @OPENSCENEGRAPH_VERSION@
 Requires: openscenegraph-osg openthreads
 Conflicts:
-Libs: -L${libdir} -losgDB
+Libs: -L${libdir} -losgDB@CMAKE_BUILD_POSTFIX@
 Cflags: -I${includedir}

@@ -10,5 +10,5 @@ Description: 3D scenegraph
 Version: @OPENSCENEGRAPH_VERSION@
 Requires: openthreads
 Conflicts:
-Libs: -L${libdir} -losg
+Libs: -L${libdir} -losg@CMAKE_BUILD_POSTFIX@
 Cflags: -I${includedir}

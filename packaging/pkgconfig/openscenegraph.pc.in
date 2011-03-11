@@ -10,5 +10,19 @@ Description: 3D scenegraph
 Version: @OPENSCENEGRAPH_VERSION@
 Requires: openthreads
 Conflicts:
-Libs: -L${libdir} -losg -losgDB -losgFX -losgGA -losgParticle -losgSim -losgText -losgUtil -losgTerrain -losgManipulator -losgViewer -losgWidget -losgShadow -losgAnimation -losgVolume
+Libs: -L${libdir} -losg@CMAKE_BUILD_POSTFIX@ \
+                  -losgDB@CMAKE_BUILD_POSTFIX@ \
+                  -losgFX@CMAKE_BUILD_POSTFIX@ \
+                  -losgGA@CMAKE_BUILD_POSTFIX@ \
+                  -losgParticle@CMAKE_BUILD_POSTFIX@ \
+                  -losgSim@CMAKE_BUILD_POSTFIX@ \
+                  -losgText@CMAKE_BUILD_POSTFIX@ \
+                  -losgUtil@CMAKE_BUILD_POSTFIX@ \
+                  -losgTerrain@CMAKE_BUILD_POSTFIX@ \
+                  -losgManipulator@CMAKE_BUILD_POSTFIX@ \
+                  -losgViewer@CMAKE_BUILD_POSTFIX@ \
+                  -losgWidget@CMAKE_BUILD_POSTFIX@ \
+                  -losgShadow@CMAKE_BUILD_POSTFIX@ \
+                  -losgAnimation@CMAKE_BUILD_POSTFIX@ \
+                  -losgVolume@CMAKE_BUILD_POSTFIX@
 Cflags: -I${includedir}

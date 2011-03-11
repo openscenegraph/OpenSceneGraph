@@ -10,5 +10,5 @@ Description: Windowing toolkit library for Openscenegraph
 Version: @OPENSCENEGRAPH_VERSION@
 Requires: openscenegraph-osgText openscenegraph-osgViewer openscenegraph-osgDB openscenegraph-osgGA openscenegraph-osg openthreads
 Conflicts:
-Libs: -L${libdir} -losgWidget
+Libs: -L${libdir} -losgWidget@CMAKE_BUILD_POSTFIX@
 Cflags: -I${includedir}

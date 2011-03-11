@@ -10,5 +10,5 @@ Description: Skinning and morphing library for Openscenegraph
 Version: @OPENSCENEGRAPH_VERSION@
 Requires: openscenegraph-osg openscenegraph-osgText openscenegraph-osgGA openscenegraph-osgViewer openthreads
 Conflicts:
-Libs: -L${libdir} -losgAnimation
+Libs: -L${libdir} -losgAnimation@CMAKE_BUILD_POSTFIX@
 Cflags: -I${includedir}

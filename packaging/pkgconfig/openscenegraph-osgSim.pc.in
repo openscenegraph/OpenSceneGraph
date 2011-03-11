@@ -10,5 +10,5 @@ Description: Simulator utility library for Openscenegraph
 Version: @OPENSCENEGRAPH_VERSION@
 Requires: openscenegraph-osgText openscenegraph-osgDB openscenegraph-osgUtil openscenegraph-osg openthreads
 Conflicts:
-Libs: -L${libdir} -losgSim
+Libs: -L${libdir} -losgSim@CMAKE_BUILD_POSTFIX@
 Cflags: -I${includedir}

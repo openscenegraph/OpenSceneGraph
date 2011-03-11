@@ -10,5 +10,5 @@ Description: Object-Oriented (OO) thread interface for C++ programmers
 Version: @OPENTHREADS_VERSION@
 Requires:
 Conflicts:
-Libs: -L${libdir} -lOpenThreads
+Libs: -L${libdir} -lOpenThreads@CMAKE_BUILD_POSTFIX@
 Cflags: -I${includedir}

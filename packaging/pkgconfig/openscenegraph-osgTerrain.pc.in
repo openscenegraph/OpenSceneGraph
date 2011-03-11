@@ -10,5 +10,5 @@ Description: Terrain library for Openscenegraph
 Version: @OPENSCENEGRAPH_VERSION@
 Requires: openscenegraph-osgUtil openscenegraph-osgDB openscenegraph-osg openthreads
 Conflicts:
-Libs: -L${libdir} -losgTerrain
+Libs: -L${libdir} -losgTerrain@CMAKE_BUILD_POSTFIX@
 Cflags: -I${includedir}

@@ -10,5 +10,5 @@ Description: Utility library for Openscenegraph
 Version: @OPENSCENEGRAPH_VERSION@
 Requires: openscenegraph-osg openthreads
 Conflicts:
-Libs: -L${libdir} -losgUtil
+Libs: -L${libdir} -losgUtil@CMAKE_BUILD_POSTFIX@
 Cflags: -I${includedir}

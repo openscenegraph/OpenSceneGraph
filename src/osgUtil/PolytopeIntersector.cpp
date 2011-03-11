@@ -75,7 +75,7 @@ namespace PolytopeIntersectorUtils
         typedef osg::Polytope::PlaneList PlaneList;
 
         /// a line defined by the intersection of two planes
-        struct PlanesLine 
+        struct PlanesLine
         {
             PlanesLine(PlaneMask m, Vec3_type p, Vec3_type d) :
             mask(m), pos(p), dir(d) {}
@@ -108,7 +108,7 @@ namespace PolytopeIntersectorUtils
             {
                 const osg::Plane& plane=*it;
                 if (selector_mask & inside_mask) continue;
-                
+
                 for (CandList_t::iterator pointIt=_candidates.begin(); pointIt!=_candidates.end(); ++pointIt)
                 {
                     PlaneMask& mask=pointIt->first;
@@ -161,7 +161,7 @@ namespace PolytopeIntersectorUtils
                 const bool d1IsNegative = (d1<0.0f);
                 const bool d2IsNegative = (d2<0.0f);
                 if (d1IsNegative && d2IsNegative) return;      // line outside
-                
+
                 if (!d1IsNegative && !d2IsNegative)
                 {
                     inside_mask |= selector_mask;
@@ -311,16 +311,16 @@ namespace PolytopeIntersectorUtils
                 Vec3_type p=line.dir^e2;
                 const value_type a=e1*p;
                 if (osg::absolute(a)<eps()) continue;
-                
+
                 const value_type f=1.0f/a;
                 const Vec3_type s=(line.pos-v1);
                 const value_type u=f*(s*p);
                 if (u<0.0f || u>1.0f) continue;
-                
+
                 const Vec3_type q=s^e1;
                 const value_type v=f*(line.dir*q);
                 if (v<0.0f || u+v>1.0f) continue;
-                
+
                 const value_type t=f*(e2*q);
 
                 _candidates.push_back(CandList_t::value_type(line.mask, line.pos+line.dir*t));
@@ -344,10 +344,11 @@ namespace PolytopeIntersectorUtils
                 ++_index;
                 return;
             }
+
             this->operator()(v1,v2,v3,treatVertexDataAsTemporary);
-            
+
             --_index;
-            
+
             this->operator()(v1,v3,v4,treatVertexDataAsTemporary);
         }
 

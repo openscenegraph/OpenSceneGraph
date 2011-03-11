@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -32,23 +32,23 @@ namespace LineSegmentIntersectorUtils
             _index(index),
             _normal(normal),
             _r1(r1),
-            _v1(v1),        
+            _v1(v1),
             _r2(r2),
-            _v2(v2),        
+            _v2(v2),
             _r3(r3),
             _v3(v3) {}
 
         unsigned int        _index;
         const osg::Vec3     _normal;
         float               _r1;
-        const osg::Vec3*    _v1;        
+        const osg::Vec3*    _v1;
         float               _r2;
-        const osg::Vec3*    _v2;        
+        const osg::Vec3*    _v2;
         float               _r3;
         const osg::Vec3*    _v3;
-        
+
     protected:
-    
+
         TriangleIntersection& operator = (const TriangleIntersection&) { return *this; }
     };
 
@@ -246,18 +246,18 @@ Intersector* LineSegmentIntersector::clone(osgUtil::IntersectionVisitor& iv)
     osg::Matrix matrix;
     switch (_coordinateFrame)
     {
-        case(WINDOW): 
+        case(WINDOW):
             if (iv.getWindowMatrix()) matrix.preMult( *iv.getWindowMatrix() );
             if (iv.getProjectionMatrix()) matrix.preMult( *iv.getProjectionMatrix() );
             if (iv.getViewMatrix()) matrix.preMult( *iv.getViewMatrix() );
             if (iv.getModelMatrix()) matrix.preMult( *iv.getModelMatrix() );
             break;
-        case(PROJECTION): 
+        case(PROJECTION):
             if (iv.getProjectionMatrix()) matrix.preMult( *iv.getProjectionMatrix() );
             if (iv.getViewMatrix()) matrix.preMult( *iv.getViewMatrix() );
             if (iv.getModelMatrix()) matrix.preMult( *iv.getModelMatrix() );
             break;
-        case(VIEW): 
+        case(VIEW):
             if (iv.getViewMatrix()) matrix.preMult( *iv.getViewMatrix() );
             if (iv.getModelMatrix()) matrix.preMult( *iv.getModelMatrix() );
             break;
@@ -304,7 +304,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
                 ++itr)
             {
                 osg::KdTree::LineSegmentIntersection& lsi = *(itr);
-                
+
                 // get ratio in s,e range
                 double ratio = lsi.ratio;
 
@@ -320,26 +320,26 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
                 hit.primitiveIndex = lsi.primitiveIndex;
 
                 hit.localIntersectionPoint = _start*(1.0-remap_ratio) + _end*remap_ratio;
-                
+
                 // OSG_NOTICE<<"KdTree: ratio="<<hit.ratio<<" ("<<hit.localIntersectionPoint<<")"<<std::endl;
-                
+
                 hit.localIntersectionNormal = lsi.intersectionNormal;
-                
+
                 hit.indexList.reserve(3);
                 hit.ratioList.reserve(3);
-                if (lsi.r0!=0.0f) 
+                if (lsi.r0!=0.0f)
                 {
                     hit.indexList.push_back(lsi.p0);
                     hit.ratioList.push_back(lsi.r0);
                 }
-                
-                if (lsi.r1!=0.0f) 
+
+                if (lsi.r1!=0.0f)
                 {
                     hit.indexList.push_back(lsi.p1);
                     hit.ratioList.push_back(lsi.r1);
                 }
 
-                if (lsi.r2!=0.0f) 
+                if (lsi.r2!=0.0f)
                 {
                     hit.indexList.push_back(lsi.p2);
                     hit.ratioList.push_back(lsi.r2);
@@ -348,7 +348,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
                 insertIntersection(hit);
             }
         }
-        
+
         return;
     }
 
@@ -409,7 +409,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
                     }
                 }
             }
-            
+
             insertIntersection(hit);
 
         }
@@ -419,14 +419,14 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
 void LineSegmentIntersector::reset()
 {
     Intersector::reset();
-    
+
     _intersections.clear();
 }
 
 bool LineSegmentIntersector::intersects(const osg::BoundingSphere& bs)
 {
     // if bs not valid then return true based on the assumption that an invalid sphere is yet to be defined.
-    if (!bs.valid()) return true; 
+    if (!bs.valid()) return true;
 
     osg::Vec3d sm = _start - bs._center;
     double c = sm.length2()-bs._radius*bs._radius;
@@ -582,9 +582,9 @@ bool LineSegmentIntersector::intersectAndClip(osg::Vec3d& s, osg::Vec3d& e,const
             s = s+(e-s)*(bb_max.z()-s.z())/(e.z()-s.z());
         }
     }
-    
+
     // OSG_NOTICE<<"clampped segment "<<s<<" "<<e<<std::endl;
-    
+
     // if (s==e) return false;
 
     return true;

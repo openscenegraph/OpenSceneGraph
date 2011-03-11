@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -28,7 +28,7 @@ namespace PlaneIntersectorUtils
     {
         typedef std::vector<osg::Vec4d> Polyline;
         Polyline _polyline;
-        
+
         void reverse()
         {
             unsigned int s=0;
@@ -37,32 +37,32 @@ namespace PlaneIntersectorUtils
             {
                 std::swap(_polyline[s],_polyline[e]);
             }
-            
+
         }
     };
 
     class PolylineConnector
     {
     public:
-        
+
         typedef std::map<osg::Vec4d, osg::ref_ptr<RefPolyline> > PolylineMap;
         typedef std::vector< osg::ref_ptr<RefPolyline> > PolylineList;
-        
+
         PolylineList    _polylines;
         PolylineMap     _startPolylineMap;
         PolylineMap     _endPolylineMap;
         osg::ref_ptr<osg::EllipsoidModel>   _em;
-        
+
 
         void add(const osg::Vec3d& v1, const osg::Vec3d& v2)
         {
             add(osg::Vec4d(v1,0.0), osg::Vec4d(v2,0.0));
         }
-        
+
         void add(const osg::Vec4d& v1, const osg::Vec4d& v2)
         {
             if (v1==v2) return;
-        
+
             PolylineMap::iterator v1_start_itr = _startPolylineMap.find(v1);
             PolylineMap::iterator v1_end_itr = _endPolylineMap.find(v1);
 
@@ -76,7 +76,7 @@ namespace PlaneIntersectorUtils
             unsigned int v2_connections = 0;
             if (v2_start_itr != _startPolylineMap.end()) ++v2_connections;
             if (v2_end_itr != _endPolylineMap.end()) ++v2_connections;
-            
+
             if (v1_connections==0) // v1 is no connected to anything.
             {
                 if (v2_connections==0)
@@ -130,15 +130,15 @@ namespace PlaneIntersectorUtils
                     OSG_NOTICE<<"v1="<<v1<<" must connect to a start and an end - must have a loop!!!!!."<<std::endl;
                 }
             }
-            else 
+            else
             {
                 // v1 and v2 connect to existing lines, now need to fuse them together.
                 bool v1_connected_to_start = v1_start_itr != _startPolylineMap.end();
                 bool v1_connected_to_end = v1_end_itr != _endPolylineMap.end();
-                
+
                 bool v2_connected_to_start = v2_start_itr != _startPolylineMap.end();
                 bool v2_connected_to_end = v2_end_itr != _endPolylineMap.end();
-                
+
                 if (v1_connected_to_start)
                 {
                     if (v2_connected_to_start)
@@ -175,7 +175,7 @@ namespace PlaneIntersectorUtils
                 }
             }
         }
-        
+
         void newline(const osg::Vec4d& v1, const osg::Vec4d& v2)
         {
             RefPolyline* polyline = new RefPolyline;
@@ -184,7 +184,7 @@ namespace PlaneIntersectorUtils
             _startPolylineMap[v1] = polyline;
             _endPolylineMap[v2] = polyline;
         }
-        
+
         void insertAtStart(const osg::Vec4d& v, PolylineMap::iterator v_start_itr)
         {
             // put v1 at the start of its poyline
@@ -198,7 +198,7 @@ namespace PlaneIntersectorUtils
             _startPolylineMap.erase(v_start_itr);
 
         }
-        
+
         void insertAtEnd(const osg::Vec4d& v, PolylineMap::iterator v_end_itr)
         {
             // put v1 at the end of its poyline
@@ -229,11 +229,11 @@ namespace PlaneIntersectorUtils
 
             // reverse the first polyline
             poly1->reverse();
-            
+
             // add the second polyline to the first
             poly1->_polyline.insert( poly1->_polyline.end(),
                                      poly2->_polyline.begin(), poly2->_polyline.end() );
-            
+
             _startPolylineMap[poly1->_polyline.front()] = poly1;
             _endPolylineMap[poly1->_polyline.back()] = poly1;
 
@@ -243,17 +243,17 @@ namespace PlaneIntersectorUtils
         {
             osg::ref_ptr<RefPolyline> end_poly = end_itr->second;
             osg::ref_ptr<RefPolyline> start_poly = start_itr->second;
-            
+
             PolylineMap::iterator end_start_poly_itr = _endPolylineMap.find(start_poly->_polyline.back());
-            
+
             // add start_poly to end of end_poly
             end_poly->_polyline.insert( end_poly->_polyline.end(),
                                         start_poly->_polyline.begin(), start_poly->_polyline.end() );
-                    
+
             // reassign the end of the start poly so that it now points to the merged end_poly
             end_start_poly_itr->second = end_poly;
 
-            
+
             // remove entries for the end of the end_poly and the start of the start_poly
             _endPolylineMap.erase(end_itr);
             _startPolylineMap.erase(start_itr);
@@ -284,11 +284,11 @@ namespace PlaneIntersectorUtils
 
             // reverse the first polyline
             poly2->reverse();
-            
+
             // add the second polyline to the first
             poly1->_polyline.insert( poly1->_polyline.end(),
                                      poly2->_polyline.begin(), poly2->_polyline.end() );
-            
+
             _startPolylineMap[poly1->_polyline.front()] = poly1;
             _endPolylineMap[poly1->_polyline.back()] = poly1;
 
@@ -347,7 +347,7 @@ namespace PlaneIntersectorUtils
              OSG_NOTICE<<"supposed to be doing a fuse..."<<std::endl;
         }
 
-        
+
     };
 
     struct TriangleIntersector
@@ -401,7 +401,7 @@ namespace PlaneIntersectorUtils
                     osg::Plane& plane = *itr;
                     double ds = distance(plane,vs);
                     double de = distance(plane,ve);
-                    
+
                     if (ds<0.0)
                     {
                         if (de<0.0)
@@ -409,14 +409,14 @@ namespace PlaneIntersectorUtils
                             // OSG_NOTICE<<"Discard segment "<<std::endl;
                             return;
                         }
-                        
+
                         // OSG_NOTICE<<"Trim start vs="<<vs;
 
                         double div = 1.0/(de-ds);
                         vs = vs*(de*div) - ve*(ds*div);
 
                         // OSG_NOTICE<<" after vs="<<vs<<std::endl;
-                        
+
                     }
                     else if (de<0.0)
                     {
@@ -426,14 +426,14 @@ namespace PlaneIntersectorUtils
                         ve = ve*(ds*div) - vs*(de*div);
 
                         // OSG_NOTICE<<" after ve="<<ve<<std::endl;
-                        
+
                     }
-                    
-                } 
+
+                }
                 // OSG_NOTICE<<"Segment fine"<<std::endl;
 
                 _polylineConnector.add(vs,ve);
-                
+
             }
         }
 
@@ -443,25 +443,25 @@ namespace PlaneIntersectorUtils
             double d1 = _plane.distance(v1);
             double d2 = _plane.distance(v2);
             double d3 = _plane.distance(v3);
-            
+
             unsigned int numBelow = 0;
             unsigned int numAbove = 0;
             unsigned int numOnPlane = 0;
             if (d1<0) ++numBelow;
             else if (d1>0) ++numAbove;
             else ++numOnPlane;
-        
+
             if (d2<0) ++numBelow;
             else if (d2>0) ++numAbove;
             else ++numOnPlane;
-        
+
             if (d3<0) ++numBelow;
             else if (d3>0) ++numAbove;
             else ++numOnPlane;
-            
+
             // trivially discard triangles that are completely one side of the plane
             if (numAbove==3 || numBelow==3) return;
-            
+
             _hit = true;
 
             if (numOnPlane==3)
@@ -487,15 +487,15 @@ namespace PlaneIntersectorUtils
 
             osg::Vec4d v[2];
             unsigned int numIntersects = 0;
-            
+
             osg::Vec4d p1(v1, v1.z());
             osg::Vec4d p2(v2, v2.z());
             osg::Vec4d p3(v3, v3.z());
-            
+
             if (_em.valid())
             {
                 double latitude, longitude, height;
-                
+
                 if (_matrix.valid())
                 {
                     osg::Vec3d tp = v1 * (*_matrix);
@@ -550,7 +550,7 @@ namespace PlaneIntersectorUtils
                 {
                     OSG_NOTICE<<"!!! too many intersecting edges found !!!"<<std::endl;
                 }
-                 
+
             }
 
             add(v[0],v[1]);
@@ -600,18 +600,18 @@ Intersector* PlaneIntersector::clone(osgUtil::IntersectionVisitor& iv)
     osg::Matrix matrix;
     switch (_coordinateFrame)
     {
-        case(WINDOW): 
+        case(WINDOW):
             if (iv.getWindowMatrix()) matrix.preMult( *iv.getWindowMatrix() );
             if (iv.getProjectionMatrix()) matrix.preMult( *iv.getProjectionMatrix() );
             if (iv.getViewMatrix()) matrix.preMult( *iv.getViewMatrix() );
             if (iv.getModelMatrix()) matrix.preMult( *iv.getModelMatrix() );
             break;
-        case(PROJECTION): 
+        case(PROJECTION):
             if (iv.getProjectionMatrix()) matrix.preMult( *iv.getProjectionMatrix() );
             if (iv.getViewMatrix()) matrix.preMult( *iv.getViewMatrix() );
             if (iv.getModelMatrix()) matrix.preMult( *iv.getModelMatrix() );
             break;
-        case(VIEW): 
+        case(VIEW):
             if (iv.getViewMatrix()) matrix.preMult( *iv.getViewMatrix() );
             if (iv.getModelMatrix()) matrix.preMult( *iv.getModelMatrix() );
             break;
@@ -664,7 +664,7 @@ void PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable
     if (ti._hit)
     {
         Intersections& intersections = getIntersections();
-     
+
         for(PlaneIntersectorUtils::PolylineConnector::PolylineList::iterator pitr = ti._polylineConnector._polylines.begin();
             pitr != ti._polylineConnector._polylines.end();
             ++pitr)
@@ -676,10 +676,10 @@ void PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable
             Intersection& new_intersection = intersections[pos];
 
             new_intersection.matrix = iv.getModelMatrix();
-    
+
             new_intersection.polyline.reserve((*pitr)->_polyline.size());
             if (_recordHeightsAsAttributes) new_intersection.attributes.reserve((*pitr)->_polyline.size());
-            
+
             for(PlaneIntersectorUtils::RefPolyline::Polyline::iterator vitr = (*pitr)->_polyline.begin();
                 vitr != (*pitr)->_polyline.end();
                 ++vitr)
@@ -700,6 +700,6 @@ void PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable
 void PlaneIntersector::reset()
 {
     Intersector::reset();
-    
+
     _intersections.clear();
 }

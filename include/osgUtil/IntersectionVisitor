@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -33,7 +33,7 @@ class IntersectionVisitor;
 class Intersector : public osg::Referenced
 {
     public:
-    
+
         enum CoordinateFrame
         {
             WINDOW,
@@ -45,33 +45,33 @@ class Intersector : public osg::Referenced
         Intersector(CoordinateFrame cf=MODEL):
             _coordinateFrame(cf),
             _disabledCount(0) {}
-    
-    
+
+
         void setCoordinateFrame(CoordinateFrame cf) { _coordinateFrame = cf; }
-        
+
         CoordinateFrame getCoordinateFrame() const { return _coordinateFrame; }
         
         
         virtual Intersector* clone(osgUtil::IntersectionVisitor& iv) = 0;
-        
+
         virtual bool enter(const osg::Node& node) = 0;
-        
+
         virtual void leave() = 0;
-        
+
         virtual void intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable) = 0;
-        
+
         virtual void reset() { _disabledCount = 0; }
-        
+
         virtual bool containsIntersections() = 0;
-        
+
         inline bool disabled() const { return _disabledCount!=0; }
-        
+
         inline void incrementDisabledCount() { ++_disabledCount; }
-        
+
         inline void decrementDisabledCount() { if (_disabledCount>0) --_disabledCount; }
 
    protected:
-    
+
         CoordinateFrame _coordinateFrame;
         unsigned int    _disabledCount;
 
@@ -83,38 +83,38 @@ class Intersector : public osg::Referenced
 class OSGUTIL_EXPORT IntersectorGroup : public Intersector
 {
     public:
-    
+
         IntersectorGroup();
 
         /** Add an Intersector. */
         void addIntersector(Intersector* intersector);
-        
+
         typedef std::vector< osg::ref_ptr<Intersector> > Intersectors;
 
         /** Get the list of intersector. */
         Intersectors& getIntersectors() { return _intersectors; }
 
-        /** Clear the list of intersectors.*/    
+        /** Clear the list of intersectors.*/
         void clear();
 
     public:
 
         virtual Intersector* clone(osgUtil::IntersectionVisitor& iv);
-        
+
         virtual bool enter(const osg::Node& node);
-        
+
         virtual void leave();
-        
+
         virtual void intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable);
-        
+
         virtual void reset();
 
         virtual bool containsIntersections();
 
     protected:
-        
+
         Intersectors _intersectors;
-    
+
 };
 
 /** InteresectionVisitor is used to testing for intersections with the scene, traversing the scene using generic osgUtil::Intersector's to test against the scene.
@@ -136,7 +136,7 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
 
 
         IntersectionVisitor(Intersector* intersector=0, ReadCallback* readCallback=0);
-        
+
         META_NodeVisitor("osgUtil","IntersectionVisitor")
 
         virtual void reset();
@@ -144,7 +144,7 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
 
         /** Set the intersector that will be used to intersect with the scene, and to store any hits that occur.*/
         void setIntersector(Intersector* intersector);
-        
+
         /** Get the intersector that will be used to intersect with the scene, and to store any hits that occur.*/
         Intersector* getIntersector() { return _intersectorStack.empty() ? 0 : _intersectorStack.front().get(); }
 
@@ -154,10 +154,10 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
 
         /** Set whether the intersectors should use KdTrees when they are found on the scene graph.*/
         void setUseKdTreeWhenAvailable(bool useKdTrees) { _useKdTreesWhenAvailable = useKdTrees; }
-        
+
         /** Set whether the intersectors should use KdTrees.*/
         bool getUseKdTreeWhenAvailable() const { return _useKdTreesWhenAvailable; }
-        
+
         void setDoDummyTraversal(bool dummy) { _dummyTraversal = dummy; }
         bool getDoDummyTraversal() const { return _dummyTraversal; }
 
@@ -170,8 +170,8 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
 
         /** Get the const read callback.*/
         const ReadCallback* getReadCallback() const { return _readCallback.get(); }
-        
-        
+
+
         void pushWindowMatrix(osg::RefMatrix* matrix) { _windowStack.push_back(matrix); _eyePointDirty = true; }
         void pushWindowMatrix(osg::Viewport* viewport) { _windowStack.push_back(new osg::RefMatrix( viewport->computeWindowMatrix()) ); _eyePointDirty = true; }
         void popWindowMatrix() { _windowStack.pop_back(); _eyePointDirty = true; }
@@ -189,7 +189,7 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
         const osg::RefMatrix* getViewMatrix() const { return _viewStack.empty() ? 0 :  _viewStack.back().get(); }
 
         void pushModelMatrix(osg::RefMatrix* matrix) { _modelStack.push_back(matrix); _eyePointDirty = true; }
-        void popModelMatrix() { _modelStack.pop_back(); _eyePointDirty = true; } 
+        void popModelMatrix() { _modelStack.pop_back(); _eyePointDirty = true; }
         osg::RefMatrix* getModelMatrix() { return _modelStack.empty() ? 0 :  _modelStack.back().get(); }
         const osg::RefMatrix* getModelMatrix() const { return _modelStack.empty() ? 0 :  _modelStack.back().get(); }
 
@@ -199,13 +199,13 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
 
         /** Get the reference eye point.*/
         const osg::Vec3& getReferenceEyePoint() const { return _referenceEyePoint; }
-        
+
         /** Set the coordinate frame of the reference eye point.*/
         void setReferenceEyePointCoordinateFrame(Intersector::CoordinateFrame cf) { _referenceEyePointCoordinateFrame = cf; }
 
         /** Get the coordinate frame of the reference eye point.*/
         Intersector::CoordinateFrame getReferenceEyePointCoordinateFrame() const { return _referenceEyePointCoordinateFrame; }
-        
+
 
         /** Get the eye point in the local coordinate frame a given traversal point.*/
         virtual osg::Vec3 getEyePoint() const;
@@ -215,7 +215,7 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
             USE_HIGHEST_LEVEL_OF_DETAIL,
             USE_EYE_POINT_FOR_LOD_LEVEL_SELECTION
         };
-        
+
         /** Set the LOD selection scheme.*/
         void setLODSelectionMode(LODSelectionMode mode) { _lodSelectionMode = mode; }
 
@@ -237,9 +237,9 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
         virtual void apply(osg::Transform& transform);
         virtual void apply(osg::Projection& projection);
         virtual void apply(osg::Camera& camera);
-    
+
     protected:
-    
+
         inline bool enter(const osg::Node& node) { return _intersectorStack.empty() ? false : _intersectorStack.back()->enter(node); }
         inline void leave() { _intersectorStack.back()->leave(); }
         inline void intersect(osg::Drawable* drawable) { _intersectorStack.back()->intersect(*this, drawable); }
@@ -251,9 +251,9 @@ class OSGUTIL_EXPORT IntersectionVisitor : public osg::NodeVisitor
 
         bool _useKdTreesWhenAvailable;
         bool _dummyTraversal;
-        
+
         osg::ref_ptr<ReadCallback> _readCallback;
-        
+
         typedef std::list< osg::ref_ptr<osg::RefMatrix> > MatrixStack;
         MatrixStack _windowStack;
         MatrixStack _projectionStack;

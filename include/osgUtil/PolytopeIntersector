@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -71,9 +71,9 @@ class OSGUTIL_EXPORT PolytopeIntersector : public Intersector
             osg::Vec3                       intersectionPoints[MaxNumIntesectionPoints];
             unsigned int                    primitiveIndex; ///< primitive index
         };
-        
+
         typedef std::set<Intersection> Intersections;
-        
+
         inline void insertIntersection(const Intersection& intersection) { getIntersections().insert(intersection); }
 
         inline Intersections& getIntersections() { return _parent ? _parent->_intersections : _intersections; }
@@ -100,13 +100,13 @@ class OSGUTIL_EXPORT PolytopeIntersector : public Intersector
     public:
 
         virtual Intersector* clone(osgUtil::IntersectionVisitor& iv);
-        
+
         virtual bool enter(const osg::Node& node);
-        
+
         virtual void leave();
-        
+
         virtual void intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable);
-        
+
         virtual void reset();
 
         virtual bool containsIntersections() { return !_intersections.empty(); }
@@ -121,7 +121,7 @@ class OSGUTIL_EXPORT PolytopeIntersector : public Intersector
         osg::Plane _referencePlane; ///< plane to use for sorting intersections
 
         Intersections _intersections;
-    
+
 };
 
 }

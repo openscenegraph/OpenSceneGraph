@@ -1685,6 +1685,7 @@ bool DepthPartitionSettings::getDepthRange(osg::View& view, unsigned int partiti
 
             return false;
         }
+        default: return false;
     }
 }
 

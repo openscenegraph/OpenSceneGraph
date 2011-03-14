@@ -542,13 +542,24 @@ void SlideShowConstructor::addBullet(const std::string& bullet, PositionData& po
     text->setFont(fontData.font);
     text->setColor(fontData.color);
     text->setCharacterSize(fontData.characterSize*_slideHeight);
+    text->setCharacterSizeMode(fontData.characterSizeMode);
     text->setFontResolution(110,120);
     text->setMaximumWidth(fontData.maximumWidth*_slideWidth);
     text->setLayout(fontData.layout);
     text->setAlignment(fontData.alignment);
     text->setAxisAlignment(fontData.axisAlignment);
     text->setPosition(localPosition);
-    
+
+    if (positionData.autoRotate)
+    {
+        text->setAxisAlignment(osgText::Text::SCREEN);
+    }
+
+    if (positionData.autoScale)
+    {
+        text->setCharacterSizeMode(osgText::Text::SCREEN_COORDS);
+    }
+
     text->setText(bullet);
 
     osg::BoundingBox bb = text->getBound();
@@ -595,6 +606,7 @@ void SlideShowConstructor::addParagraph(const std::string& paragraph, PositionDa
     text->setFont(fontData.font);
     text->setColor(fontData.color);
     text->setCharacterSize(fontData.characterSize*_slideHeight);
+    text->setCharacterSizeMode(fontData.characterSizeMode);
     text->setFontResolution(110,120);
     text->setMaximumWidth(fontData.maximumWidth*_slideWidth);
     text->setLayout(fontData.layout);
@@ -602,6 +614,15 @@ void SlideShowConstructor::addParagraph(const std::string& paragraph, PositionDa
     text->setAxisAlignment(fontData.axisAlignment);
     text->setPosition(localPosition);
     
+    if (positionData.autoRotate)
+    {
+        text->setAxisAlignment(osgText::Text::SCREEN);
+    }
+
+    if (positionData.autoScale)
+    {
+        text->setCharacterSizeMode(osgText::Text::SCREEN_COORDS);
+    }
     text->setText(paragraph);
 
     osg::BoundingBox bb = text->getBound();
@@ -819,21 +840,37 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
 
     float image_width = _slideWidth*positionData.scale.x();
     float image_height = image_width*aspectRatio*positionData.scale.y()/positionData.scale.x();
-    float offset = height*image_height*0.1f;
+    float offset = 0.0f; //height*image_height*0.1f;
 
-    osg::Vec3 pos = computePositionInModelCoords(positionData) + osg::Vec3(-image_width*0.5f+offset,-offset,-image_height*0.5f-offset);
-
-    osg::Geode* picture = new osg::Geode;
-    osg::Node* subgraph = picture;
+    osg::Vec3 pos = computePositionInModelCoords(positionData);
+    osg::Vec3 image_local_pos = osg::Vec3(-image_width*0.5f+offset,-offset,-image_height*0.5f-offset);
+    osg::Vec3 image_pos = positionData.autoRotate ? image_local_pos : (pos+image_local_pos);
 
 
     bool usedTextureRectangle = false;
-    osg::Geometry* pictureQuad = createTexturedQuadGeometry(pos, positionData.rotate, image_width, image_height, image, usedTextureRectangle);
+    osg::Geometry* pictureQuad = createTexturedQuadGeometry(image_pos, positionData.rotate, image_width, image_height, image, usedTextureRectangle);
     osg::StateSet* pictureStateSet = pictureQuad->getOrCreateStateSet();
 
     attachTexMat(pictureStateSet, imageData, s, t, usedTextureRectangle);
 
-    picture->addDrawable(pictureQuad);
+    osg::Node* subgraph = 0;
+
+    if (positionData.autoRotate)
+    {
+        osg::Billboard* picture = new osg::Billboard;
+        picture->setMode(osg::Billboard::POINT_ROT_EYE);
+        picture->setNormal(osg::Vec3(0.0f,-1.0f,0.0f));
+        picture->setAxis(osg::Vec3(0.0f,0.0f,1.0f));
+        picture->addDrawable(pictureQuad,pos);
+        subgraph = picture;
+    }
+    else
+    {
+        osg::Geode* picture = new osg::Geode;
+        picture->addDrawable(pictureQuad);
+        subgraph = picture;
+    }
+
 
     // attach any meterial animation.
     if (positionData.requiresMaterialAnimation())
@@ -853,7 +890,7 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
         osg::MatrixTransform* animation_transform = new osg::MatrixTransform;
         animation_transform->setDataVariance(osg::Object::DYNAMIC);
         animation_transform->setUpdateCallback(
-            new osgUtil::TransformCallback(picture->getBound().center(),
+            new osgUtil::TransformCallback(subgraph->getBound().center(),
                                            osg::Vec3(positionData.rotation[1],positionData.rotation[2],positionData.rotation[3]),
                                            osg::DegreesToRadians(positionData.rotation[0])));
 

@@ -41,17 +41,29 @@ class Intersector : public osg::Referenced
             VIEW,
             MODEL
         };
-        
+
+        enum IntersectionLimit
+        {
+            NO_LIMIT,
+            LIMIT_ONE_PER_DRAWABLE,
+            LIMIT_ONE,
+            LIMIT_NEAREST
+        };
+
         Intersector(CoordinateFrame cf=MODEL):
             _coordinateFrame(cf),
+            _intersectionLimit(NO_LIMIT),
             _disabledCount(0) {}
 
 
         void setCoordinateFrame(CoordinateFrame cf) { _coordinateFrame = cf; }
 
         CoordinateFrame getCoordinateFrame() const { return _coordinateFrame; }
-        
-        
+
+        void setIntersectionLimit(IntersectionLimit limit) { _intersectionLimit = limit; }
+
+        IntersectionLimit getIntersectionLimit() const { return _intersectionLimit; }
+
         virtual Intersector* clone(osgUtil::IntersectionVisitor& iv) = 0;
 
         virtual bool enter(const osg::Node& node) = 0;
@@ -70,9 +82,12 @@ class Intersector : public osg::Referenced
 
         inline void decrementDisabledCount() { if (_disabledCount>0) --_disabledCount; }
 
+        inline bool reachedLimit() { return _intersectionLimit == LIMIT_ONE && containsIntersections(); }
+
    protected:
 
         CoordinateFrame _coordinateFrame;
+        IntersectionLimit _intersectionLimit;
         unsigned int    _disabledCount;
 
 };

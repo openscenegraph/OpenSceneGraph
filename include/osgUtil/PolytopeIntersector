@@ -109,7 +109,7 @@ class OSGUTIL_EXPORT PolytopeIntersector : public Intersector
 
         virtual void reset();
 
-        virtual bool containsIntersections() { return !_intersections.empty(); }
+        virtual bool containsIntersections() { return !getIntersections().empty(); }
 
     protected:
 

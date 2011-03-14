@@ -88,6 +88,7 @@ namespace PolytopeIntersectorUtils
         PolytopePrimitiveIntersector() :
             _index(0),
              _dimensionMask( PolytopeIntersector::AllDims ),
+             _limitOneIntersection( false ),
             _candidates(20) {}
 
             void addIntersection(unsigned int index, const CandList_t& cands) {
@@ -130,6 +131,9 @@ namespace PolytopeIntersectorUtils
         {
             ++_index;
             if ((_dimensionMask & PolytopeIntersector::DimZero) == 0) return;
+
+            if (_limitOneIntersection && !intersections.empty()) return;
+
             for (PlaneList::const_iterator it=_planes.begin(); it!=_planes.end(); ++it)
             {
                 const osg::Plane& plane=*it;
@@ -146,7 +150,9 @@ namespace PolytopeIntersectorUtils
         {
             ++_index;
             if ((_dimensionMask & PolytopeIntersector::DimOne) == 0) return;
-            
+
+            if (_limitOneIntersection && !intersections.empty()) return;
+
             PlaneMask selector_mask = 0x1;
             PlaneMask inside_mask = 0x0;
             _candidates.clear();
@@ -209,6 +215,8 @@ namespace PolytopeIntersectorUtils
         {
             ++_index;
             if ((_dimensionMask & PolytopeIntersector::DimTwo) == 0) return;
+
+            if (_limitOneIntersection && !intersections.empty()) return;
 
             PlaneMask selector_mask = 0x1;
             PlaneMask inside_mask = 0x0;
@@ -354,6 +362,8 @@ namespace PolytopeIntersectorUtils
 
         void setDimensionMask(unsigned int dimensionMask) { _dimensionMask = dimensionMask; }
 
+        void setLimitOneIntersection(bool limit) { _limitOneIntersection = limit; }
+
         void setPolytope(osg::Polytope& polytope, osg::Plane& referencePlane)
         {
             _referencePlane = referencePlane;
@@ -426,6 +436,7 @@ namespace PolytopeIntersectorUtils
         unsigned int _index;
 
         private:
+        bool _limitOneIntersection;
         unsigned int _dimensionMask;
         PlaneList _planes;                   ///< active planes extracted from polytope
         LinesList _lines;                    ///< all intersection lines of two polytope planes
@@ -492,6 +503,7 @@ Intersector* PolytopeIntersector::clone(osgUtil::IntersectionVisitor& iv)
     {
         osg::ref_ptr<PolytopeIntersector> pi = new PolytopeIntersector(_polytope);
         pi->_parent = this;
+        pi->_intersectionLimit = this->_intersectionLimit;
         pi->_dimensionMask = this->_dimensionMask;
         pi->_referencePlane = this->_referencePlane;
         return pi.release();
@@ -527,6 +539,7 @@ Intersector* PolytopeIntersector::clone(osgUtil::IntersectionVisitor& iv)
 
     osg::ref_ptr<PolytopeIntersector> pi = new PolytopeIntersector(transformedPolytope);
     pi->_parent = this;
+    pi->_intersectionLimit = this->_intersectionLimit;
     pi->_dimensionMask = this->_dimensionMask;
     pi->_referencePlane = this->_referencePlane;
     pi->_referencePlane.transformProvidingInverse(matrix);
@@ -535,6 +548,7 @@ Intersector* PolytopeIntersector::clone(osgUtil::IntersectionVisitor& iv)
 
 bool PolytopeIntersector::enter(const osg::Node& node)
 {
+    if (reachedLimit()) return false;
     return !node.isCullingActive() || _polytope.contains( node.getBound() );
 }
 
@@ -547,11 +561,14 @@ void PolytopeIntersector::leave()
 
 void PolytopeIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)
 {
+    if (reachedLimit()) return;
+
     if ( !_polytope.contains( drawable->getBound() ) ) return;
 
     osg::TemplatePrimitiveFunctor<PolytopeIntersectorUtils::PolytopePrimitiveIntersector> func;
     func.setPolytope( _polytope, _referencePlane );
     func.setDimensionMask( _dimensionMask );
+    func.setLimitOneIntersection( _intersectionLimit == LIMIT_ONE_PER_DRAWABLE || _intersectionLimit == LIMIT_ONE );
 
     drawable->accept(func);
 

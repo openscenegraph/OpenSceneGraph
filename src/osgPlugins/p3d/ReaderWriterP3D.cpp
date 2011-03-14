@@ -880,28 +880,48 @@ osg::TransferFunction1D* ReaderWriterP3DXML::readTransferFunctionFile(const std:
     std::string foundFile = osgDB::findDataFile(filename);
     if (foundFile.empty())
     {
-        std::cout<<"Error: could not find transfer function file : "<<filename<<std::endl;
+        OSG_NOTICE<<"Error: could not find transfer function file : "<<filename<<std::endl;
         return 0;
     }
 
-    std::cout<<"Reading transfer function "<<filename<<std::endl;
+    OSG_NOTICE<<"Reading transfer function "<<filename<<std::endl;
 
     osg::TransferFunction1D::ColorMap colorMap;
     osgDB::ifstream fin(foundFile.c_str());
     while(fin)
     {
-        float value, red, green, blue, alpha;
-        fin >> value >> red >> green >> blue >> alpha;
-        if (fin)
+        char readline[4096];
+        *readline = 0;
+        fin.getline(readline, sizeof(readline));
+
+        if (*readline!=0)
         {
-            std::cout<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")"<<std::endl;
+            std::stringstream str(readline);
+
+            float value, red, green, blue, alpha;
+            str >> value >> red >> green >> blue >> alpha;
+
+            *readline = 0;
+            str.getline(readline, sizeof(readline));
+
+            char* comment = readline;
+            while(*comment==' ' || *comment=='\t' ) ++comment;
+
+            if (*comment!=0)
+            {
+                OSG_NOTICE<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<") comment = ["<<comment<<"]"<<std::endl;
+            }
+            else
+            {
+                OSG_NOTICE<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")"<<std::endl;
+            }
             colorMap[value] = osg::Vec4(red*scale,green*scale,blue*scale,alpha*scale);
         }
     }
 
     if (colorMap.empty())
     {
-        std::cout<<"Error: No values read from transfer function file: "<<filename<<std::endl;
+        OSG_NOTICE<<"Error: No values read from transfer function file: "<<filename<<std::endl;
         return 0;
     }
 

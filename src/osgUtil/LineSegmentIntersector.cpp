@@ -63,6 +63,7 @@ namespace LineSegmentIntersectorUtils
         int         _index;
         float       _ratio;
         bool        _hit;
+        bool        _limitOneIntersection;
 
         TriangleIntersections _intersections;
 
@@ -72,6 +73,7 @@ namespace LineSegmentIntersectorUtils
             _index = 0;
             _ratio = 0.0f;
             _hit = false;
+            _limitOneIntersection = false;
         }
 
         void set(const osg::Vec3d& start, osg::Vec3d& end, float ratio=FLT_MAX)
@@ -89,6 +91,8 @@ namespace LineSegmentIntersectorUtils
         inline void operator () (const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec3& v3, bool treatVertexDataAsTemporary)
         {
             ++_index;
+
+            if (_limitOneIntersection && _hit) return;
 
             if (v1==v2 || v2==v3 || v1==v3) return;
 
@@ -238,6 +242,7 @@ Intersector* LineSegmentIntersector::clone(osgUtil::IntersectionVisitor& iv)
     {
         osg::ref_ptr<LineSegmentIntersector> lsi = new LineSegmentIntersector(_start, _end);
         lsi->_parent = this;
+        lsi->_intersectionLimit = this->_intersectionLimit;
         return lsi.release();
     }
 
@@ -271,11 +276,13 @@ Intersector* LineSegmentIntersector::clone(osgUtil::IntersectionVisitor& iv)
 
     osg::ref_ptr<LineSegmentIntersector> lsi = new LineSegmentIntersector(_start * inverse, _end * inverse);
     lsi->_parent = this;
+    lsi->_intersectionLimit = this->_intersectionLimit;
     return lsi.release();
 }
 
 bool LineSegmentIntersector::enter(const osg::Node& node)
 {
+    if (reachedLimit()) return false;
     return !node.isCullingActive() || intersects( node.getBound() );
 }
 
@@ -286,7 +293,9 @@ void LineSegmentIntersector::leave()
 
 void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)
 {
-    osg::Vec3d s(_start), e(_end);    
+    if (reachedLimit()) return;
+
+    osg::Vec3d s(_start), e(_end);
     if ( !intersectAndClip( s, e, drawable->getBound() ) ) return;
 
     if (iv.getDoDummyTraversal()) return;
@@ -354,6 +363,7 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
 
     osg::TriangleFunctor<LineSegmentIntersectorUtils::TriangleIntersector> ti;
     ti.set(s,e);
+    ti._limitOneIntersection = (_intersectionLimit == LIMIT_ONE_PER_DRAWABLE || _intersectionLimit == LIMIT_ONE);
     drawable->accept(ti);
 
     if (ti._hit)
@@ -370,6 +380,14 @@ void LineSegmentIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Dr
 
             // remap ratio into _start, _end range
             double remap_ratio = ((s-_start).length() + ratio * (e-s).length() )/(_end-_start).length();
+
+            if ( _intersectionLimit == LIMIT_NEAREST && !getIntersections().empty() )
+            {
+                if (remap_ratio >= getIntersections().begin()->ratio )
+                    break;
+                else
+                    getIntersections().clear();
+            }
 
             LineSegmentIntersectorUtils::TriangleIntersection& triHit = thitr->second;
 
@@ -449,6 +467,12 @@ bool LineSegmentIntersector::intersects(const osg::BoundingSphere& bs)
     if (r1<=0.0 && r2<=0.0) return false;
 
     if (r1>=1.0 && r2>=1.0) return false;
+
+    if (_intersectionLimit == LIMIT_NEAREST && !getIntersections().empty())
+    {
+        double ratio = (sm.length() - bs._radius) / sqrt(a);
+        if (ratio >= getIntersections().begin()->ratio) return false;
+    }
 
     // passed all the rejection tests so line must intersect bounding sphere, return true.
     return true;

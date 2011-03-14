@@ -359,13 +359,15 @@ namespace PlaneIntersectorUtils
         osg::ref_ptr<osg::RefMatrix>        _matrix;
         bool _recordHeightsAsAttributes;
         osg::ref_ptr<osg::EllipsoidModel>   _em;
-        
+        bool _limitOneIntersection;
+
         PolylineConnector _polylineConnector;
 
 
         TriangleIntersector()
         {
             _hit = false;
+            _limitOneIntersection = false;
         }
 
         void set(const osg::Plane& plane, const osg::Polytope& polytope, osg::RefMatrix* matrix, bool recordHeightsAsAttributes, osg::EllipsoidModel* em)
@@ -439,7 +441,9 @@ namespace PlaneIntersectorUtils
 
         inline void operator () (const osg::Vec3& v1,const osg::Vec3& v2,const osg::Vec3& v3, bool)
         {
-        
+
+            if (_limitOneIntersection && _hit) return;
+
             double d1 = _plane.distance(v1);
             double d2 = _plane.distance(v2);
             double d3 = _plane.distance(v3);
@@ -590,6 +594,7 @@ Intersector* PlaneIntersector::clone(osgUtil::IntersectionVisitor& iv)
     {
         osg::ref_ptr<PlaneIntersector> pi = new PlaneIntersector(_plane, _polytope);
         pi->_parent = this;
+        pi->_intersectionLimit = this->_intersectionLimit;
         pi->_recordHeightsAsAttributes = _recordHeightsAsAttributes;
         pi->_em = _em;
         return pi.release();
@@ -628,6 +633,7 @@ Intersector* PlaneIntersector::clone(osgUtil::IntersectionVisitor& iv)
 
     osg::ref_ptr<PlaneIntersector> pi = new PlaneIntersector(plane, transformedPolytope);
     pi->_parent = this;
+    pi->_intersectionLimit = this->_intersectionLimit;
     pi->_recordHeightsAsAttributes = _recordHeightsAsAttributes;
     pi->_em = _em;
     return pi.release();
@@ -635,6 +641,7 @@ Intersector* PlaneIntersector::clone(osgUtil::IntersectionVisitor& iv)
 
 bool PlaneIntersector::enter(const osg::Node& node)
 {
+    if (reachedLimit()) return false;
     return !node.isCullingActive() ||
            ( _plane.intersect(node.getBound())==0 && _polytope.contains(node.getBound()) );
 }
@@ -650,6 +657,7 @@ void PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable
 {
     // OSG_NOTICE<<"PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable* drawable)"<<std::endl;
 
+    if (reachedLimit()) return;
     if ( _plane.intersect( drawable->getBound() )!=0 ) return;
     if ( !_polytope.contains( drawable->getBound() ) ) return;
 
@@ -657,6 +665,7 @@ void PlaneIntersector::intersect(osgUtil::IntersectionVisitor& iv, osg::Drawable
 
     osg::TriangleFunctor<PlaneIntersectorUtils::TriangleIntersector> ti;
     ti.set(_plane, _polytope, iv.getModelMatrix(), _recordHeightsAsAttributes, _em.get());
+    ti._limitOneIntersection = (_intersectionLimit == LIMIT_ONE_PER_DRAWABLE || _intersectionLimit == LIMIT_ONE);
     drawable->accept(ti);
 
     ti._polylineConnector.consolidatePolylineLists();

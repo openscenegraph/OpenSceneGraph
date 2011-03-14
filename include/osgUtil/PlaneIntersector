@@ -86,7 +86,7 @@ class OSGUTIL_EXPORT PlaneIntersector : public Intersector
 
         virtual void reset();
 
-        virtual bool containsIntersections() { return !_intersections.empty(); }
+        virtual bool containsIntersections() { return !getIntersections().empty(); }
 
     protected:
 

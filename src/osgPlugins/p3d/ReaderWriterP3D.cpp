@@ -72,6 +72,10 @@ public:
         _alignmentMap["RIGHT_BASE_LINE"] = osgText::Text::RIGHT_BASE_LINE;
         _alignmentMap["BASE_LINE"] = osgText::Text::LEFT_BASE_LINE;
 
+        _characterSizeModeMap["OBJECT_COORDS"] = osgText::Text::OBJECT_COORDS;
+        _characterSizeModeMap["SCREEN_COORDS"] = osgText::Text::SCREEN_COORDS;
+        _characterSizeModeMap["OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT"] = osgText::Text::OBJECT_COORDS_WITH_MAXIMUM_SCREEN_SIZE_CAPPED_BY_FONT_HEIGHT;
+
         _stringKeyMap["Home"]=' ';
         _stringKeyMap["Start"]= osgGA::GUIEventAdapter::KEY_Home;
         _stringKeyMap["Next"]= osgGA::GUIEventAdapter::KEY_Page_Down;
@@ -185,6 +189,7 @@ public:
     bool getTrimmedProperty(osgDB::XmlNode*cur, const char* token, std::string& value) const;
     bool getProperty(osgDB::XmlNode*cur, const char* token, osgText::Text::Layout& value) const;
     bool getProperty(osgDB::XmlNode*cur, const char* token, osgText::Text::AlignmentType& value) const;
+    bool getProperty(osgDB::XmlNode*cur, const char* token, osgText::Text::CharacterSizeMode& value) const;
     
     bool getProperties(osgDB::XmlNode*cur, osgPresentation::SlideShowConstructor::PositionData& value) const;
     bool getProperties(osgDB::XmlNode*cur, osgPresentation::SlideShowConstructor::FontData& value) const;
@@ -198,15 +203,17 @@ public:
     typedef std::map<std::string,osg::Vec4> ColorMap;
     typedef std::map<std::string,osgText::Text::Layout> LayoutMap;
     typedef std::map<std::string,osgText::Text::AlignmentType> AlignmentMap;
+    typedef std::map<std::string,osgText::Text::CharacterSizeMode> CharacterSizeModeMap;
     typedef std::map<std::string, unsigned int> StringKeyMap;
 
     std::string expandEnvVarsInFileName(const std::string& filename) const; 
 
 
-    ColorMap            _colorMap;
-    LayoutMap           _layoutMap;
-    AlignmentMap        _alignmentMap;
-    StringKeyMap        _stringKeyMap;
+    ColorMap                _colorMap;
+    LayoutMap               _layoutMap;
+    AlignmentMap            _alignmentMap;
+    CharacterSizeModeMap    _characterSizeModeMap;
+    StringKeyMap            _stringKeyMap;
     
     typedef std::map<std::string, osg::ref_ptr<osgDB::XmlNode> > TemplateMap;
     mutable TemplateMap _templateMap;
@@ -459,6 +466,20 @@ bool ReaderWriterP3DXML::getProperty(osgDB::XmlNode*cur, const char* token, osgT
     return true;
 }
 
+bool ReaderWriterP3DXML::getProperty(osgDB::XmlNode*cur, const char* token, osgText::Text::CharacterSizeMode& value) const
+{
+    osgDB::XmlNode::Properties::iterator pitr = cur->properties.find(token);
+    if (pitr==cur->properties.end()) return false;
+
+    const std::string& str = pitr->second;
+    CharacterSizeModeMap::const_iterator itr = _characterSizeModeMap.find(str);
+    if (itr!=_characterSizeModeMap.end())
+    {
+        value = itr->second;
+    }
+    return true;
+}
+
 bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::SlideShowConstructor::PositionData& value) const
 {
     bool propertiesRead=false;    
@@ -698,6 +719,20 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         propertiesRead = true;
     }
 
+    if (getProperty(cur, "billboard", str))
+    {
+        value.autoRotate = (str != "off" && str != "Off" && str != "OFF");
+        OSG_NOTIFY(_notifyLevel)<<"billboard, str="<<str<<", autoRotate="<<value.autoRotate<<std::endl;
+        propertiesRead = true;
+    }
+
+    if (getProperty(cur, "scale_to_screen",str))
+    {
+        value.autoScale = (str != "off" && str != "Off" && str != "OFF");
+        OSG_NOTIFY(_notifyLevel)<<"scale-to-screen, str="<<str<<", autoRotate="<<value.autoScale<<std::endl;
+        propertiesRead = true;
+    }
+
     return propertiesRead;
 }
 
@@ -719,17 +754,24 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         OSG_NOTIFY(_notifyLevel)<<"read height \""<<value.characterSize<<"\""<<std::endl;
     }
 
+    if (getProperty(cur, "character_size_mode", value.characterSizeMode))
+    {
+        propertiesRead = true;
+
+        OSG_NOTIFY(_notifyLevel)<<"read character_size_mode \""<<value.characterSizeMode<<"\""<<std::endl;
+    }
+
     if (getProperty(cur, "layout", value.layout))
     {
         propertiesRead = true;
-        
+
         OSG_NOTIFY(_notifyLevel)<<"read layout \""<<value.layout<<"\""<<std::endl;
     }
 
     if (getProperty(cur, "alignment", value.alignment))
     {
         propertiesRead = true;
-        
+
         OSG_NOTIFY(_notifyLevel)<<"read alignment \""<<value.alignment<<"\""<<std::endl;
     }
 

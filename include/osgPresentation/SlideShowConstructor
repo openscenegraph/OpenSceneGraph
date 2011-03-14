@@ -129,8 +129,11 @@ public:
             path_loop_mode(osg::AnimationPath::NO_LOOPING),
             animation_material_time_offset(0.0),
             animation_material_time_multiplier(1.0),
-            animation_material_loop_mode(AnimationMaterial::NO_LOOPING) {}
-    
+            animation_material_loop_mode(AnimationMaterial::NO_LOOPING),
+            autoRotate(false),
+            autoScale(false) {}
+
+
         bool requiresPosition() const
         {
             return (position[0]!=0.0f || position[1]!=1.0f || position[2]!=1.0f);
@@ -173,6 +176,8 @@ public:
         AnimationMaterial::LoopMode             animation_material_loop_mode;
         std::string                             animation_material_filename;
         std::string                             fade;
+        bool                                    autoRotate;
+        bool                                    autoScale;
     };
 
     struct ModelData
@@ -247,19 +252,21 @@ public:
             layout(osgText::Text::LEFT_TO_RIGHT),
             alignment(osgText::Text::LEFT_BASE_LINE),
             axisAlignment(osgText::Text::XZ_PLANE),
+            characterSizeMode(osgText::Text::OBJECT_COORDS),
             characterSize(0.04f),
             maximumHeight(1.0f),
             maximumWidth(1.0f),
             color(1.0f,1.0f,1.0f,1.0f) {}
 
-        std::string                     font;
-        osgText::Text::Layout           layout;
-        osgText::Text::AlignmentType    alignment;
-        osgText::Text::AxisAlignment    axisAlignment;
-        float                           characterSize;
-        float                           maximumHeight;
-        float                           maximumWidth;
-        osg::Vec4                       color;
+        std::string                         font;
+        osgText::Text::Layout               layout;
+        osgText::Text::AlignmentType        alignment;
+        osgText::Text::AxisAlignment        axisAlignment;
+        osgText::Text::CharacterSizeMode    characterSizeMode;
+        float                               characterSize;
+        float                               maximumHeight;
+        float                               maximumWidth;
+        osg::Vec4                           color;
     };
 
 

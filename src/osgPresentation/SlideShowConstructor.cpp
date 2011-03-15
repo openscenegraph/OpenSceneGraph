@@ -90,12 +90,67 @@ public:
     }        
 };
 
+class HUDTransform : public osg::Transform
+{
+    public:
+
+        HUDTransform(double slideDistance, float eyeOffset, unsigned int leftMask, unsigned int rightMask):
+            _slideDistance(slideDistance),
+            _eyeOffset(eyeOffset),
+            _leftMask(leftMask),
+            _rightMask(rightMask)
+        {
+            setDataVariance(osg::Object::DYNAMIC);
+            setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+        }
+
+        virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const
+        {
+            osgUtil::CullVisitor* cullVisitor = dynamic_cast<osgUtil::CullVisitor*>(nv);
+
+
+            matrix.makeLookAt(osg::Vec3d(0.0,0.0,0.0),osg::Vec3d(0.0,_slideDistance,0.0),osg::Vec3d(0.0,0.0,1.0));
+
+            if (cullVisitor)
+            {
+                if (cullVisitor->getTraversalMask()==_leftMask)
+                {
+                    matrix.postMultTranslate(osg::Vec3(_eyeOffset,0.0,0.0));
+                }
+                else if (cullVisitor->getTraversalMask()==_rightMask)
+                {
+                    matrix.postMultTranslate(osg::Vec3(-_eyeOffset,0.0,0.0));
+                }
+            }
+
+            return true;
+        }
+
+        virtual bool computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisitor*) const
+        {
+            osg::Matrix localToWorld;
+            localToWorld.makeLookAt(osg::Vec3d(0.0,0.0,0.0),osg::Vec3d(0.0,_slideDistance,0.0),osg::Vec3d(0.0,0.0,1.0));
+            matrix.invert(localToWorld);
+            return true;
+        }
+
+protected:
+
+        double          _slideDistance;
+        double          _eyeOffset;
+        unsigned int    _leftMask;
+        unsigned int    _rightMask;
+};
+
 SlideShowConstructor::SlideShowConstructor(osgDB::Options* options):
     _options(options)
 {
-    _slideDistance = osg::DisplaySettings::instance()->getScreenDistance();
     _slideHeight = osg::DisplaySettings::instance()->getScreenHeight();
     _slideWidth = osg::DisplaySettings::instance()->getScreenWidth();
+    _slideDistance = osg::DisplaySettings::instance()->getScreenDistance();
+    _leftEyeMask = 0x01;
+    _rightEyeMask = 0x02;
+    _eyeOffset = 0.025;
 
     _backgroundColor.set(0.0f,0.0f,0.0f,1.0f);
 
@@ -392,7 +447,7 @@ void SlideShowConstructor::addLayer(bool inheritPreviousLayers, bool defineAsBas
 
             geode->addDrawable(text);
 
-            _currentLayer->addChild(geode);
+            _currentLayer->addChild(decorateSubgraphForPosition(geode, _titlePositionData));
         }
         
     }
@@ -529,6 +584,39 @@ void SlideShowConstructor::layerClickEventOperation(const KeyPosition& keyPos, b
     
 }
 
+
+osg::Node* SlideShowConstructor::decorateSubgraphForPosition(osg::Node* node, PositionData& positionData)
+{
+    osg::Node* subgraph = node;
+    
+    if (positionData.requiresMaterialAnimation())
+    {
+        subgraph = attachMaterialAnimation(subgraph,positionData);
+    }
+
+    if (positionData.rotation[0]!=0.0)
+    {
+        osg::MatrixTransform* animation_transform = new osg::MatrixTransform;
+        animation_transform->setDataVariance(osg::Object::DYNAMIC);
+        animation_transform->setUpdateCallback(
+            new osgUtil::TransformCallback(subgraph->getBound().center(),
+                                           osg::Vec3(positionData.rotation[1],positionData.rotation[2],positionData.rotation[3]),
+                                           osg::DegreesToRadians(positionData.rotation[0])));
+        animation_transform->addChild(subgraph);
+
+        subgraph = animation_transform;
+    }
+
+    if (positionData.hud)
+    {
+        HUDTransform* hudTransform = new HUDTransform(_slideDistance, _eyeOffset, _leftEyeMask, _rightEyeMask);
+        hudTransform->addChild(subgraph);
+
+        subgraph = hudTransform;
+    }
+    return subgraph;
+}
+
 void SlideShowConstructor::addBullet(const std::string& bullet, PositionData& positionData, FontData& fontData)
 {
     if (!_currentLayer) addLayer();
@@ -570,25 +658,7 @@ void SlideShowConstructor::addBullet(const std::string& bullet, PositionData& po
     
     geode->addDrawable(text);
     
-    osg::Node* subgraph = geode;
-    
-    if (positionData.requiresMaterialAnimation())
-        subgraph = attachMaterialAnimation(subgraph,positionData);
-
-    if (positionData.rotation[0]!=0.0)
-    {
-        osg::MatrixTransform* animation_transform = new osg::MatrixTransform;
-        animation_transform->setDataVariance(osg::Object::DYNAMIC);
-        animation_transform->setUpdateCallback(
-            new osgUtil::TransformCallback(geode->getBound().center(),
-                                           osg::Vec3(positionData.rotation[1],positionData.rotation[2],positionData.rotation[3]),
-                                           osg::DegreesToRadians(positionData.rotation[0])));
-        animation_transform->addChild(subgraph);
-
-        subgraph = animation_transform;
-    }
-
-    _currentLayer->addChild(subgraph);
+    _currentLayer->addChild( decorateSubgraphForPosition(geode, positionData) );
 
     bool needToApplyPosition = (_textPositionData.position == positionData.position);
     if (needToApplyPosition)
@@ -637,25 +707,7 @@ void SlideShowConstructor::addParagraph(const std::string& paragraph, PositionDa
 
     geode->addDrawable(text);
     
-    osg::Node* subgraph = geode;
-
-    if (positionData.requiresMaterialAnimation())
-        subgraph = attachMaterialAnimation(subgraph,positionData);
-
-    if (positionData.rotation[0]!=0.0)
-    {
-        osg::MatrixTransform* animation_transform = new osg::MatrixTransform;
-        animation_transform->setDataVariance(osg::Object::DYNAMIC);
-        animation_transform->setUpdateCallback(
-            new osgUtil::TransformCallback(geode->getBound().center(),
-                                           osg::Vec3(positionData.rotation[1],positionData.rotation[2],positionData.rotation[3]),
-                                           osg::DegreesToRadians(positionData.rotation[0])));
-        animation_transform->addChild(subgraph);
-
-        subgraph = animation_transform;
-    }
-
-    _currentLayer->addChild(subgraph);
+    _currentLayer->addChild( decorateSubgraphForPosition(geode, positionData) );
 
     bool needToApplyPosition = (_textPositionData.position == positionData.position);
     if (needToApplyPosition)
@@ -1005,7 +1057,7 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
 
     osg::Geode* pictureLeft = new osg::Geode;
     {
-        pictureLeft->setNodeMask(0x01);
+        pictureLeft->setNodeMask(_leftEyeMask);
 
         osg::Geometry* pictureLeftQuad = createTexturedQuadGeometry(pos, positionData.rotate, image_width,image_height,imageLeft.get(),usedTextureRectangle);
         osg::StateSet* pictureLeftStateSet = pictureLeftQuad->getOrCreateStateSet();
@@ -1023,7 +1075,7 @@ void SlideShowConstructor::addStereoImagePair(const std::string& filenameLeft, c
 
     osg::Geode* pictureRight = new osg::Geode;
     {
-        pictureRight->setNodeMask(0x02);
+        pictureRight->setNodeMask(_rightEyeMask);
 
         osg::Geometry* pictureRightQuad = createTexturedQuadGeometry(pos, positionData.rotate, image_width,image_height,imageRight.get(),usedTextureRectangle);
         osg::StateSet* pictureRightStateSet = pictureRightQuad->getOrCreateStateSet();

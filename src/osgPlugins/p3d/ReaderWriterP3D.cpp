@@ -733,6 +733,14 @@ bool ReaderWriterP3DXML::getProperties(osgDB::XmlNode*cur, osgPresentation::Slid
         propertiesRead = true;
     }
 
+    if (getProperty(cur, "hud", str))
+    {
+        value.hud = (str != "off" && str != "Off" && str != "OFF");
+        OSG_NOTIFY(_notifyLevel)<<"hud, str="<<str<<", hud="<<value.hud<<std::endl;
+        propertiesRead = true;
+    }
+
+
     return propertiesRead;
 }
 

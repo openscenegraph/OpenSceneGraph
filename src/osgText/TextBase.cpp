@@ -279,7 +279,7 @@ osg::BoundingBox TextBase::computeBound() const
             if (_autoTransformCache[i]._traversalNumber<0 && (_characterSizeMode!=OBJECT_COORDS || _autoRotateToScreen))
             {
                 // _autoTransformCache is not valid so don't take it into accoumt when compute bounding volume.
-#if 0
+#if 1
                 // so fallback to estimating the bounding box size by assuming a scale of 1
                 // but might cause problems due to small feature culling...
                 osg::Matrix matrix;

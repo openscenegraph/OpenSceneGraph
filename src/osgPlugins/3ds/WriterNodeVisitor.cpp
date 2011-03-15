@@ -623,7 +623,9 @@ std::string WriterNodeVisitor::getUniqueName(const std::string& _defaultValue, b
             // Nodes names: keep last directories (used only for the root name, generally named after the full file path)
             // Images names: keep first directories (for images)
             if (isNodeName) std::reverse(parentPath.begin(), parentPath.end());
-            parentPath = truncateFilenameBytes(parentPath, MAX_PREFIX_LENGTH - (filename.length() + ext.length() + 1));        // +1 for the path separator
+            unsigned lenToDelete(filename.length() + ext.length() + 1);
+            lenToDelete = osg::clampBelow(lenToDelete, MAX_PREFIX_LENGTH);
+            parentPath = truncateFilenameBytes(parentPath, MAX_PREFIX_LENGTH - lenToDelete);        // +1 for the path separator
             std::string::size_type separator = parentPath.find_last_of("/\\");
             if (separator != std::string::npos) parentPath = parentPath.substr(0, separator);
             if (isNodeName) std::reverse(parentPath.begin(), parentPath.end());

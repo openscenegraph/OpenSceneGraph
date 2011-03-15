@@ -590,7 +590,11 @@ void SlideShowConstructor::addBullet(const std::string& bullet, PositionData& po
 
     _currentLayer->addChild(subgraph);
 
-    updatePositionFromInModelCoords(localPosition, positionData);
+    bool needToApplyPosition = (_textPositionData.position == positionData.position);
+    if (needToApplyPosition)
+    {
+        updatePositionFromInModelCoords(localPosition, _textPositionData);
+    }
 }
 
 void SlideShowConstructor::addParagraph(const std::string& paragraph, PositionData& positionData, FontData& fontData)
@@ -653,7 +657,11 @@ void SlideShowConstructor::addParagraph(const std::string& paragraph, PositionDa
 
     _currentLayer->addChild(subgraph);
 
-    updatePositionFromInModelCoords(localPosition, positionData);
+    bool needToApplyPosition = (_textPositionData.position == positionData.position);
+    if (needToApplyPosition)
+    {
+        updatePositionFromInModelCoords(localPosition, _textPositionData);
+    }
 }
 
 class FindImageStreamsVisitor : public osg::NodeVisitor
@@ -825,9 +833,6 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
     float s = image->s();
     float t = image->t();
 
-    // temporary hack
-    float height = 0.0f;
-
     float sx = imageData.region_in_pixel_coords ? 1.0f : s;
     float sy = imageData.region_in_pixel_coords ? 1.0f : t;
 
@@ -840,7 +845,7 @@ void SlideShowConstructor::addImage(const std::string& filename, const PositionD
 
     float image_width = _slideWidth*positionData.scale.x();
     float image_height = image_width*aspectRatio*positionData.scale.y()/positionData.scale.x();
-    float offset = 0.0f; //height*image_height*0.1f;
+    float offset = 0.0f;
 
     osg::Vec3 pos = computePositionInModelCoords(positionData);
     osg::Vec3 image_local_pos = osg::Vec3(-image_width*0.5f+offset,-offset,-image_height*0.5f-offset);

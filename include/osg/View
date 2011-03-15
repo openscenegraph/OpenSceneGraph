@@ -94,7 +94,7 @@ class OSG_EXPORT View : public virtual osg::Object
 
 
         /** Slave allows one to up a camera that follows the master with a local offset to the project and view matrices.*/
-        struct Slave
+        struct OSG_EXPORT Slave
         {
             Slave(bool useMastersSceneData=true):
                 _useMastersSceneData(useMastersSceneData) {}

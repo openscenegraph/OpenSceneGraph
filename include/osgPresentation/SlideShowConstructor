@@ -131,7 +131,8 @@ public:
             animation_material_time_multiplier(1.0),
             animation_material_loop_mode(AnimationMaterial::NO_LOOPING),
             autoRotate(false),
-            autoScale(false) {}
+            autoScale(false),
+            hud(false) {}
 
 
         bool requiresPosition() const
@@ -178,6 +179,7 @@ public:
         std::string                             fade;
         bool                                    autoRotate;
         bool                                    autoScale;
+        bool                                    hud;
     };
 
     struct ModelData
@@ -405,14 +407,19 @@ protected:
         return stateset;
     }
 
+    osg::Node* decorateSubgraphForPosition(osg::Node* node, PositionData& positionData);
+
     osg::ref_ptr<osgDB::Options> _options;
 
     osg::Vec3   _slideOrigin;
     osg::Vec3   _eyeOrigin;
-    float       _slideWidth;
-    float       _slideHeight;
-    float       _slideDistance;
-
+    double      _slideWidth;
+    double      _slideHeight;
+    double      _slideDistance;
+    unsigned    _leftEyeMask;
+    unsigned    _rightEyeMask;
+    double      _eyeOffset;
+    
     // title settings
     FontData        _titleFontData;
     FontData        _titleFontDataDefault;

@@ -32,6 +32,44 @@
 namespace osgPresentation
 {
 
+class OSGPRESENTATION_EXPORT HUDSettings : public osg::Referenced
+{
+    public:
+        HUDSettings(double slideDistance, float eyeOffset, unsigned int leftMask, unsigned int rightMask);
+
+        virtual bool getModelViewMatrix(osg::Matrix& matrix, osg::NodeVisitor* nv) const;
+
+        virtual bool getInverseModelViewMatrix(osg::Matrix& matrix, osg::NodeVisitor* nv) const;
+
+        double          _slideDistance;
+        double          _eyeOffset;
+        unsigned int    _leftMask;
+        unsigned int    _rightMask;
+
+protected:
+
+        virtual ~HUDSettings();
+};
+
+
+class OSGPRESENTATION_EXPORT HUDTransform : public osg::Transform
+{
+    public:
+
+        HUDTransform(HUDSettings* hudSettings);
+
+        virtual bool computeLocalToWorldMatrix(osg::Matrix& matrix,osg::NodeVisitor* nv) const;
+
+        virtual bool computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisitor*) const;
+
+protected:
+
+        virtual ~HUDTransform();
+
+        osg::ref_ptr<HUDSettings> _hudSettings;
+
+};
+
 class OSGPRESENTATION_EXPORT SlideShowConstructor
 {
 public:
@@ -303,6 +341,7 @@ public:
         _slideTitle = name;
     }
 
+    void setSlideBackgrondHUD(bool hud) { _slideBackgroundAsHUD = hud; }
     void setSlideBackground(const std::string& name) { _slideBackgroundImageFileName = name; }
     
     void setSlideDuration(double duration);
@@ -380,6 +419,10 @@ public:
     void setAutoSteppingActive(bool flag = true) { _autoSteppingActive = flag; }
     bool getAutoSteppingActive() const { return _autoSteppingActive; }
 
+    void setHUDSettings(HUDSettings* hudSettings) { _hudSettings = hudSettings; }
+    HUDSettings* getHUDSettings() { return _hudSettings.get(); }
+    const HUDSettings* getHUDSettings() const { return _hudSettings.get(); }
+
 
 protected:
 
@@ -416,9 +459,10 @@ protected:
     double      _slideWidth;
     double      _slideHeight;
     double      _slideDistance;
-    unsigned    _leftEyeMask;
-    unsigned    _rightEyeMask;
-    double      _eyeOffset;
+    unsigned int _leftEyeMask;
+    unsigned int _rightEyeMask;
+
+    osg::ref_ptr<HUDSettings> _hudSettings;
     
     // title settings
     FontData        _titleFontData;
@@ -456,6 +500,7 @@ protected:
     osg::ref_ptr<osg::Switch>       _slide;
     std::string                     _slideTitle;
     std::string                     _slideBackgroundImageFileName;
+    bool                            _slideBackgroundAsHUD;
     
     osg::ref_ptr<osg::Group>        _previousLayer;
     osg::ref_ptr<osg::Group>        _currentLayer;

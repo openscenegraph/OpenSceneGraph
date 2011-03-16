@@ -1550,6 +1550,14 @@ void ReaderWriterP3DXML::parseSlide (osgPresentation::SlideShowConstructor& cons
             else if (cur->name == "background")
             {
                 constructor.setSlideBackground(cur->contents);
+
+                std::string str;
+                if (getProperty(cur, "hud", str))
+                {
+                    bool hud = (str != "off" && str != "Off" && str != "OFF");
+                    OSG_NOTIFY(_notifyLevel)<<"background hud, str="<<str<<", hud="<<hud<<std::endl;
+                    constructor.setSlideBackgrondHUD(hud);
+                }
             }
             else if (cur->name == "bgcolor")
             {

@@ -79,7 +79,7 @@ MACRO(SEARCH_3RDPARTY OSG_3RDPARTY_BIN)
         FIND_DEPENDENCY(GIFLIB gif_lib.h "ungif;libungif;giflib" ${OSG_3RDPARTY_BIN} "D" "")
         FIND_DEPENDENCY(ZLIB zlib.h "z;zlib;zlib1" ${OSG_3RDPARTY_BIN} "D" "")
         IF(ZLIB_FOUND)
-            FIND_DEPENDENCY(PNG png.h "libpng;libpng13" ${OSG_3RDPARTY_BIN} "D" "")
+            FIND_DEPENDENCY(PNG png.h "libpng;libpng13;libpng15" ${OSG_3RDPARTY_BIN} "D" "")
             IF(PNG_FOUND)
                 #forcing subsequent FindPNG stuff to not search for other variables.... kind of a hack 
                 SET(PNG_PNG_INCLUDE_DIR ${PNG_INCLUDE_DIR} CACHE FILEPATH "")

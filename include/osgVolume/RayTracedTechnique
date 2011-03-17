@@ -44,8 +44,15 @@ class OSGVOLUME_EXPORT RayTracedTechnique : public VolumeTechnique
     protected:
     
         virtual ~RayTracedTechnique();
-        
+
         osg::ref_ptr<osg::MatrixTransform> _transform;
+
+        typedef std::map<osgUtil::CullVisitor*, osg::Matrix> ModelViewMatrixMap;
+
+        OpenThreads::Mutex _mutex;
+        ModelViewMatrixMap _modelViewMatrixMap;
+
+        osg::ref_ptr<osg::StateSet> _lodStateSet;
 };
 
 }

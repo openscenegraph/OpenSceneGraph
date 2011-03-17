@@ -534,6 +534,9 @@ void RayTracedTechnique::init()
 
     } 
 
+    _lodStateSet = new osg::StateSet;
+    _lodStateSet->addUniform(new osg::Uniform("SampleDensityValue",0.01f), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
+
 }
 
 void RayTracedTechnique::update(osgUtil::UpdateVisitor* uv)
@@ -543,8 +546,40 @@ void RayTracedTechnique::update(osgUtil::UpdateVisitor* uv)
 
 void RayTracedTechnique::cull(osgUtil::CullVisitor* cv)
 {
-    //OSG_NOTICE<<"RayTracedTechnique::cull(osgUtil::CullVisitor* nv)"<<std::endl;    
-    if (_transform.valid())
+    if (!_transform.valid()) return;
+
+    if (_lodStateSet.valid())
+    {
+        bool moving = false;
+        {
+            OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
+            ModelViewMatrixMap::iterator itr = _modelViewMatrixMap.find(cv);
+            if (itr!=_modelViewMatrixMap.end())
+            {
+                osg::Matrix newModelViewMatrix = *(cv->getModelViewMatrix());
+                osg::Matrix& previousModelViewMatrix = itr->second;
+                moving = (newModelViewMatrix != previousModelViewMatrix);
+
+                previousModelViewMatrix = newModelViewMatrix;
+            }
+            else
+            {
+                _modelViewMatrixMap[cv] = *(cv->getModelViewMatrix());
+            }
+        }
+
+        if (moving)
+        {
+            cv->pushStateSet(_lodStateSet.get());
+            _transform->accept(*cv);
+            cv->popStateSet();
+        }
+        else
+        {
+            _transform->accept(*cv);
+        }
+    }
+    else
     {
         _transform->accept(*cv);
     }

@@ -553,7 +553,7 @@ void RayTracedTechnique::cull(osgUtil::CullVisitor* cv)
         bool moving = false;
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
-            ModelViewMatrixMap::iterator itr = _modelViewMatrixMap.find(cv);
+            ModelViewMatrixMap::iterator itr = _modelViewMatrixMap.find(cv->getIdentifier());
             if (itr!=_modelViewMatrixMap.end())
             {
                 osg::Matrix newModelViewMatrix = *(cv->getModelViewMatrix());
@@ -564,7 +564,7 @@ void RayTracedTechnique::cull(osgUtil::CullVisitor* cv)
             }
             else
             {
-                _modelViewMatrixMap[cv] = *(cv->getModelViewMatrix());
+                _modelViewMatrixMap[cv->getIdentifier()] = *(cv->getModelViewMatrix());
             }
         }
 

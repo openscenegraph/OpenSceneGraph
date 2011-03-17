@@ -52,7 +52,7 @@ class OSGVOLUME_EXPORT RayTracedTechnique : public VolumeTechnique
         OpenThreads::Mutex _mutex;
         ModelViewMatrixMap _modelViewMatrixMap;
 
-        osg::ref_ptr<osg::StateSet> _lodStateSet;
+        osg::ref_ptr<osg::StateSet> _whenMovingStateSet;
 };
 
 }

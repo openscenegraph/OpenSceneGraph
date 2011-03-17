@@ -47,7 +47,7 @@ class OSGVOLUME_EXPORT RayTracedTechnique : public VolumeTechnique
 
         osg::ref_ptr<osg::MatrixTransform> _transform;
 
-        typedef std::map<osgUtil::CullVisitor*, osg::Matrix> ModelViewMatrixMap;
+        typedef std::map<osgUtil::CullVisitor::Identifier*, osg::Matrix> ModelViewMatrixMap;
 
         OpenThreads::Mutex _mutex;
         ModelViewMatrixMap _modelViewMatrixMap;

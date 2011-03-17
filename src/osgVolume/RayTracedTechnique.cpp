@@ -534,9 +534,11 @@ void RayTracedTechnique::init()
 
     } 
 
-    _lodStateSet = new osg::StateSet;
-    _lodStateSet->addUniform(new osg::Uniform("SampleDensityValue",0.01f), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
-
+    if (cpv._sampleDensityWhenMovingProperty.valid())
+    {
+        _whenMovingStateSet = new osg::StateSet;
+        _whenMovingStateSet->addUniform(cpv._sampleDensityWhenMovingProperty->getUniform(), osg::StateAttribute::OVERRIDE | osg::StateAttribute::ON);
+    }
 }
 
 void RayTracedTechnique::update(osgUtil::UpdateVisitor* uv)
@@ -548,7 +550,7 @@ void RayTracedTechnique::cull(osgUtil::CullVisitor* cv)
 {
     if (!_transform.valid()) return;
 
-    if (_lodStateSet.valid())
+    if (_whenMovingStateSet.valid())
     {
         bool moving = false;
         {
@@ -570,7 +572,7 @@ void RayTracedTechnique::cull(osgUtil::CullVisitor* cv)
 
         if (moving)
         {
-            cv->pushStateSet(_lodStateSet.get());
+            cv->pushStateSet(_whenMovingStateSet.get());
             _transform->accept(*cv);
             cv->popStateSet();
         }

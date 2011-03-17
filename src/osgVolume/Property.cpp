@@ -181,6 +181,21 @@ SampleDensityProperty::SampleDensityProperty(const SampleDensityProperty& isp,co
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// SampleDensityWhenMovingProperty
+//
+SampleDensityWhenMovingProperty::SampleDensityWhenMovingProperty(float value):
+    ScalarProperty("SampleDensityValue",value)
+{
+}
+
+SampleDensityWhenMovingProperty::SampleDensityWhenMovingProperty(const SampleDensityWhenMovingProperty& isp,const osg::CopyOp& copyop):
+    ScalarProperty(isp, copyop)
+{
+}
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // TransparencyProperty
 //
 TransparencyProperty::TransparencyProperty(float value):
@@ -246,6 +261,7 @@ void CollectPropertiesVisitor::apply(AlphaFuncProperty& af) { _afProperty = &af;
 void CollectPropertiesVisitor::apply(MaximumIntensityProjectionProperty& mip) { _mipProperty = &mip; }
 void CollectPropertiesVisitor::apply(LightingProperty& lp) { _lightingProperty = &lp; }
 void CollectPropertiesVisitor::apply(SampleDensityProperty& sdp) { _sampleDensityProperty = &sdp; }
+void CollectPropertiesVisitor::apply(SampleDensityWhenMovingProperty& sdp) { _sampleDensityWhenMovingProperty = &sdp; }
 void CollectPropertiesVisitor::apply(TransparencyProperty& tp) { _transparencyProperty = &tp; }
 
 

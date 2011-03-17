@@ -1576,6 +1576,7 @@ int main( int argc, char **argv )
 
         osgVolume::AlphaFuncProperty* ap = new osgVolume::AlphaFuncProperty(alphaFunc);
         osgVolume::SampleDensityProperty* sd = new osgVolume::SampleDensityProperty(0.005);
+        osgVolume::SampleDensityWhenMovingProperty* sdwm = new osgVolume::SampleDensityWhenMovingProperty(0.02);
         osgVolume::TransparencyProperty* tp = new osgVolume::TransparencyProperty(1.0);
         osgVolume::TransferFunctionProperty* tfp = transferFunction.valid() ? new osgVolume::TransferFunctionProperty(transferFunction.get()) : 0;
 
@@ -1584,6 +1585,7 @@ int main( int argc, char **argv )
             osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
             cp->addProperty(ap);
             cp->addProperty(sd);
+            cp->addProperty(sdwm);
             cp->addProperty(tp);
             if (tfp) cp->addProperty(tfp);
 

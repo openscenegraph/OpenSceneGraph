@@ -1811,6 +1811,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
     osgVolume::AlphaFuncProperty* ap = new osgVolume::AlphaFuncProperty(volumeData.cutoffValue);
     osgVolume::TransparencyProperty* tp = new osgVolume::TransparencyProperty(volumeData.alphaValue);
     osgVolume::SampleDensityProperty* sd = new osgVolume::SampleDensityProperty(volumeData.sampleDensityValue);
+    osgVolume::SampleDensityWhenMovingProperty* sdm = (volumeData.sampleDensityWhenMovingValue > 0.0f) ? (new osgVolume::SampleDensityWhenMovingProperty(volumeData.sampleDensityWhenMovingValue)) : 0;
     osgVolume::TransferFunctionProperty* tfp = volumeData.transferFunction.valid() ? new osgVolume::TransferFunctionProperty(volumeData.transferFunction.get()) : 0;
 
     {
@@ -1819,6 +1820,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         cp->addProperty(ap);
         cp->addProperty(sd);
         cp->addProperty(tp);
+        if (sdm) cp->addProperty(sdm);
         if (tfp) cp->addProperty(tfp);
 
         sp->addProperty(cp);

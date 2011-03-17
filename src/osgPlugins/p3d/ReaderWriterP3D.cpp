@@ -1004,6 +1004,7 @@ void ReaderWriterP3DXML::parseVolume(osgPresentation::SlideShowConstructor& cons
     if (getProperty(cur, "cutoff", volumeData.cutoffValue)) {}
     if (getProperty(cur, "region", 6, volumeData.region)) {}
     if (getProperty(cur, "sampleDensity", volumeData.sampleDensityValue)) {}
+    if (getProperty(cur, "sampleDensityWhenMoving", volumeData.sampleDensityWhenMovingValue)) {}
 
     // check for any transfer function required
     std::string transferFunctionFile;

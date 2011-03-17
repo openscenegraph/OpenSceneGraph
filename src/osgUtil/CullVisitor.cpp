@@ -53,6 +53,7 @@ CullVisitor::CullVisitor():
     _currentReuseRenderLeafIndex(0),
     _numberOfEncloseOverrideRenderBinDetails(0)
 {
+    _identifier = new Identifier;
 }
 
 CullVisitor::CullVisitor(const CullVisitor& rhs):
@@ -63,7 +64,8 @@ CullVisitor::CullVisitor(const CullVisitor& rhs):
     _computed_znear(FLT_MAX),
     _computed_zfar(-FLT_MAX),
     _currentReuseRenderLeafIndex(0),
-    _numberOfEncloseOverrideRenderBinDetails(0)
+    _numberOfEncloseOverrideRenderBinDetails(0),
+    _identifier(rhs._identifier)
 {
 }
 

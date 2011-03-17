@@ -409,6 +409,24 @@ Renderer::Renderer(osg::Camera* camera):
     _sceneView[0]->setCamera(_camera.get(), false);
     _sceneView[1]->setCamera(_camera.get(), false);
 
+    {
+        // assign CullVisitor::Identifier so that the double buffering of SceneView doesn't interfer
+        // with code that requires a consistent knowledge and which effective cull traversal to taking place
+        osg::ref_ptr<osgUtil::CullVisitor::Identifier> leftEyeIdentifier = _sceneView[0]->getCullVisitor()->getIdentifier();
+        osg::ref_ptr<osgUtil::CullVisitor::Identifier> rightEyeIdentifier = new osgUtil::CullVisitor::Identifier();
+
+        _sceneView[0]->setCullVisitorLeft(_sceneView[0]->getCullVisitor()->clone());
+        _sceneView[0]->getCullVisitorLeft()->setIdentifier(leftEyeIdentifier.get());
+        _sceneView[0]->setCullVisitorRight(_sceneView[0]->getCullVisitor()->clone());
+        _sceneView[0]->getCullVisitorRight()->setIdentifier(rightEyeIdentifier.get());
+
+        _sceneView[1]->getCullVisitor()->setIdentifier(leftEyeIdentifier.get());
+        _sceneView[1]->setCullVisitorLeft(_sceneView[1]->getCullVisitor()->clone());
+        _sceneView[1]->getCullVisitorLeft()->setIdentifier(leftEyeIdentifier.get());
+        _sceneView[1]->setCullVisitorRight(_sceneView[1]->getCullVisitor()->clone());
+        _sceneView[1]->getCullVisitorRight()->setIdentifier(rightEyeIdentifier.get());
+    }
+
     // lock the mutex for the current cull SceneView to
     // prevent the draw traversal from reading from it before the cull traversal has been completed.
     _availableQueue.add(_sceneView[0].get());

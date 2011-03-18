@@ -134,6 +134,29 @@ FIND_LIBRARY(DCMTK_dcmnet_LIBRARY dcmnet
     /usr/local/dicom/lib
 )
 
+FIND_LIBRARY(DCMTK_oflog_LIBRARY oflog
+    ${DCMTK_DIR}/dcmnet/libsrc/Release
+    ${DCMTK_DIR}/dcmnet/libsrc/Debug
+    ${DCMTK_DIR}/dcmnet/libsrc/
+    /usr/local/dicom/lib
+    /usr/local/lib64
+    /usr/lib64
+    /usr/local/lib
+    /usr/lib
+    /usr/local/dicom/lib
+)
+
+FIND_LIBRARY(DCMTK_ofstd_LIBRARY ofstd
+    ${DCMTK_DIR}/dcmnet/libsrc/Release
+    ${DCMTK_DIR}/dcmnet/libsrc/Debug
+    ${DCMTK_DIR}/dcmnet/libsrc/
+    /usr/local/dicom/lib
+    /usr/local/lib64
+    /usr/lib64
+    /usr/local/lib
+    /usr/lib
+    /usr/local/dicom/lib
+)
 
 IF( DCMTK_config_INCLUDE_DIR
     AND DCMTK_ofstd_INCLUDE_DIR
@@ -171,6 +194,20 @@ IF( DCMTK_config_INCLUDE_DIR
    ${DCMTK_dcmnet_LIBRARY}
    )
   ENDIF(DCMTK_dcmnet_LIBRARY)
+
+  IF(DCMTK_oflog_LIBRARY)
+   SET( DCMTK_LIBRARIES
+   ${DCMTK_LIBRARIES}
+   ${DCMTK_oflog_LIBRARY}
+   )
+  ENDIF(DCMTK_oflog_LIBRARY)
+
+  IF(DCMTK_ofstd_LIBRARY)
+   SET( DCMTK_LIBRARIES
+   ${DCMTK_LIBRARIES}
+   ${DCMTK_ofstd_LIBRARY}
+   )
+  ENDIF(DCMTK_ofstd_LIBRARY)
 
   IF( WIN32 )
     SET( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} netapi32 )

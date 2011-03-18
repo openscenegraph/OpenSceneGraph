@@ -102,6 +102,17 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 
         virtual const char* className() const { return "DICOM Image Reader/Writer"; }
 
+        bool isFileADicom(const std::string& filename) const
+        {
+            std::ifstream fin(filename.c_str(), std::ios::in | std::ios::binary);
+            if (!fin) return false;
+
+            char str[133];
+            str[128]=str[129]=str[130]=str[131]=0;
+            fin.getline(str, sizeof(str));
+            return (str[128]=='D' && str[129]=='I' && str[130]=='C' && str[131]=='M');
+        }
+
         typedef std::vector<std::string> Files;
         bool getDicomFilesInDirectory(const std::string& path, Files& files) const
         {
@@ -122,8 +133,8 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 }
 
                 std::string localFile = path + "/" + *itr;
-                if (acceptsExtension(osgDB::getLowerCaseFileExtension(localFile)) &&
-                    osgDB::fileType(localFile) == osgDB::REGULAR_FILE)
+
+                if (isFileADicom(localFile))
                 {
                     files.push_back(localFile);
                 }
@@ -253,8 +264,6 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
-            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
-
             std::string fileName = file;
             if (ext=="dicom")
             {
@@ -271,16 +280,9 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             {
                 getDicomFilesInDirectory(fileName, files);
             }
-            else
+            else if (isFileADicom(fileName)
             {
-#if 1
                 files.push_back(fileName);
-#else
-                if (!getDicomFilesInDirectory(osgDB::getFilePath(fileName), files))
-                {
-                    files.push_back(fileName);
-                }
-#endif
             }
 
             if (files.empty())
@@ -520,8 +522,6 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             info()<<"Reading DICOM file "<<file<<" using DCMTK"<<std::endl;
 
             std::string ext = osgDB::getLowerCaseFileExtension(file);
-            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
-
             std::string fileName = file;
             if (ext=="dicom")
             {
@@ -538,16 +538,9 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             {
                 getDicomFilesInDirectory(fileName, files);
             }
-            else
+            else if (isFileADicom(fileName))
             {
-#if 1
                 files.push_back(fileName);
-#else
-                if (!getDicomFilesInDirectory(osgDB::getFilePath(fileName), files))
-                {
-                    files.push_back(fileName);
-                }
-#endif
             }
 
             if (files.empty())

@@ -149,7 +149,7 @@ bool HUDTransform::computeWorldToLocalMatrix(osg::Matrix& matrix,osg::NodeVisito
 SlideShowConstructor::SlideShowConstructor(osgDB::Options* options):
     _options(options)
 {
-    osg::DisplaySettings* ds = osg::DisplaySettings::instance();
+    const osg::DisplaySettings* ds = osg::DisplaySettings::instance().get();
     
     _slideHeight = ds->getScreenHeight();
     _slideWidth = ds->getScreenWidth();

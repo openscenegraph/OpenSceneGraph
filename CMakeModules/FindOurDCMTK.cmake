@@ -110,6 +110,31 @@ FIND_LIBRARY( DCMTK_dcmimgle_LIBRARY dcmimgle
     /usr/local/dicom/lib
 )
 
+FIND_PATH( DCMTK_dcmimage_INCLUDE_DIR diregist.h
+    ${DCMTK_ROOT_INCLUDE_DIR}/dcmtk/dcmimage
+    ${DCMTK_DIR}/dcmimage/include
+    ${DCMTK_DIR}/include/dcmimage
+    /usr/local/dicom/include/dcmtk/dcmimage
+    /usr/local/include/dcmtk/dcmimage
+    /usr/include/dcmtk/dcmimage
+    /usr/local/dicom/include/dcmtk/dcmimage
+)
+
+FIND_LIBRARY( DCMTK_dcmimage_LIBRARY dcmimage
+    ${DCMTK_DIR}/dcmimage/libsrc
+    ${DCMTK_DIR}/dcmimage/libsrc/Release
+    ${DCMTK_DIR}/dcmimage/libsrc/Debug
+    ${DCMTK_DIR}/dcmimage/Release
+    ${DCMTK_DIR}/dcmimage/Debug
+    ${DCMTK_DIR}/lib
+    /usr/local/dicom/lib
+    /usr/local/lib64
+    /usr/lib64
+    /usr/local/lib
+    /usr/lib
+    /usr/local/dicom/lib
+)
+
 FIND_LIBRARY(DCMTK_imagedb_LIBRARY imagedb
     ${DCMTK_DIR}/imagectn/libsrc/Release
     ${DCMTK_DIR}/imagectn/libsrc/
@@ -164,7 +189,9 @@ IF( DCMTK_config_INCLUDE_DIR
     AND DCMTK_dcmdata_INCLUDE_DIR
     AND DCMTK_dcmdata_LIBRARY
     AND DCMTK_dcmimgle_INCLUDE_DIR
-    AND DCMTK_dcmimgle_LIBRARY )
+    AND DCMTK_dcmimgle_LIBRARY
+    AND DCMTK_dcmimage_INCLUDE_DIR
+    AND DCMTK_dcmimage_LIBRARY )
 
   SET( DCMTK_FOUND "YES" )
   SET( DCMTK_INCLUDE_DIRS
@@ -172,10 +199,12 @@ IF( DCMTK_config_INCLUDE_DIR
     ${DCMTK_ofstd_INCLUDE_DIR}
     ${DCMTK_dcmdata_INCLUDE_DIR}
     ${DCMTK_dcmimgle_INCLUDE_DIR}
+    ${DCMTK_dcmimage_INCLUDE_DIR}
   )
 
   SET( DCMTK_LIBRARIES
     ${DCMTK_dcmimgle_LIBRARY}
+    ${DCMTK_dcmimage_LIBRARY}
     ${DCMTK_dcmdata_LIBRARY}
     ${DCMTK_ofstd_LIBRARY}
     ${DCMTK_config_LIBRARY}
@@ -186,42 +215,36 @@ IF( DCMTK_config_INCLUDE_DIR
    ${DCMTK_LIBRARIES}
    ${DCMTK_imagedb_LIBRARY}
    )
-  ENDIF(DCMTK_imagedb_LIBRARY)
+  ENDIF()
 
   IF(DCMTK_dcmnet_LIBRARY)
    SET( DCMTK_LIBRARIES
    ${DCMTK_LIBRARIES}
    ${DCMTK_dcmnet_LIBRARY}
    )
-  ENDIF(DCMTK_dcmnet_LIBRARY)
+  ENDIF()
 
   IF(DCMTK_oflog_LIBRARY)
    SET( DCMTK_LIBRARIES
    ${DCMTK_LIBRARIES}
    ${DCMTK_oflog_LIBRARY}
    )
-  ENDIF(DCMTK_oflog_LIBRARY)
+  ENDIF()
 
   IF(DCMTK_ofstd_LIBRARY)
    SET( DCMTK_LIBRARIES
    ${DCMTK_LIBRARIES}
    ${DCMTK_ofstd_LIBRARY}
    )
-  ENDIF(DCMTK_ofstd_LIBRARY)
+  ENDIF()
 
   IF( WIN32 )
     SET( DCMTK_LIBRARIES ${DCMTK_LIBRARIES} netapi32 )
-  ENDIF( WIN32 )
+  ENDIF()
 
-ENDIF( DCMTK_config_INCLUDE_DIR
-    AND DCMTK_ofstd_INCLUDE_DIR
-    AND DCMTK_ofstd_LIBRARY
-    AND DCMTK_dcmdata_INCLUDE_DIR
-    AND DCMTK_dcmdata_LIBRARY
-    AND DCMTK_dcmimgle_INCLUDE_DIR
-    AND DCMTK_dcmimgle_LIBRARY )
+ENDIF()
 
 IF( NOT DCMTK_FOUND )
   SET( DCMTK_DIR "" CACHE PATH "Root of DCMTK source tree (optional)." )
   MARK_AS_ADVANCED( DCMTK_DIR )
-ENDIF( NOT DCMTK_FOUND )
+ENDIF()

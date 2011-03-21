@@ -28,6 +28,9 @@
     #include <dcmtk/dcmdata/dcdeftag.h>
     #include <dcmtk/dcmdata/dcuid.h>
     #include <dcmtk/dcmimgle/dcmimage.h>
+    #include <dcmtk/dcmimgle/dimopx.h>
+    #include <dcmtk/dcmimage/dicopx.h>
+    #include "dcmtk/dcmimage/diregist.h"
 #endif
 
 #ifdef USE_ITK
@@ -519,8 +522,6 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
-            info()<<"Reading DICOM file "<<file<<" using DCMTK"<<std::endl;
-
             std::string ext = osgDB::getLowerCaseFileExtension(file);
             std::string fileName = file;
             if (ext=="dicom")
@@ -542,11 +543,18 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             {
                 files.push_back(fileName);
             }
+            else
+            {
+                return ReadResult::FILE_NOT_HANDLED;
+            }
 
             if (files.empty())
             {
                 return ReadResult::FILE_NOT_FOUND;
             }
+
+            info()<<"Reading DICOM file "<<file<<" using DCMTK"<<std::endl;
+
 
             osg::ref_ptr<osgVolume::ImageDetails> details = new osgVolume::ImageDetails;
             details->setMatrix(new osg::RefMatrix);
@@ -791,6 +799,12 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                     if (dcmImage->getStatus()==EIS_Normal)
                     {
 
+                        EP_Representation curr_pixelRep;
+                        int curr_numPlanes;
+                        GLenum curr_pixelFormat;
+                        GLenum curr_dataType;
+                        unsigned int curr_pixelSize;
+
                         // get the pixel data
                         const DiPixel* pixelData = dcmImage->getInterData();
                         if(!pixelData)
@@ -799,25 +813,45 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                             return ReadResult::ERROR_IN_READING_FILE;
                         }
 
-                        osg::ref_ptr<osg::Image> imageAdapter = new osg::Image;
-
-                        EP_Representation curr_pixelRep;
-                        int curr_numPlanes;
-                        GLenum curr_pixelFormat;
-                        GLenum curr_dataType;
-                        unsigned int curr_pixelSize;
-
                         // create the new image
                         convertPixelTypes(pixelData,
                                         curr_pixelRep, curr_numPlanes,
                                         curr_dataType, curr_pixelFormat, curr_pixelSize);
 
-                        imageAdapter->setImage(dcmImage->getWidth(), dcmImage->getHeight(), dcmImage->getFrameCount(),
-                                            curr_pixelFormat,
-                                            curr_pixelFormat,
-                                            curr_dataType,
-                                            (unsigned char*)(pixelData->getData()),
-                                            osg::Image::NO_DELETE);
+                        // dcmImage->getFrameCount()
+
+                        osg::ref_ptr<osg::Image> imageAdapter = new osg::Image;
+
+                        if (dcmImage->isMonochrome())
+                        {
+                            imageAdapter->setImage(dcmImage->getWidth(), dcmImage->getHeight(), dcmImage->getFrameCount(),
+                                                curr_pixelFormat,
+                                                curr_pixelFormat,
+                                                curr_dataType,
+                                                (unsigned char*)(pixelData->getData()),
+                                                osg::Image::NO_DELETE);
+
+                        }
+                        else
+                        {
+                            imageAdapter->allocateImage(dcmImage->getWidth(), dcmImage->getHeight(), dcmImage->getFrameCount(),
+                                            curr_pixelFormat, curr_dataType);
+
+                            void* data = imageAdapter->data(0,0,0);
+                            unsigned long size = dcmImage->createWindowsDIB( data,
+                                                                             imageAdapter->getTotalDataSize(),
+                                                                             0,
+                                                                             imageAdapter->getPixelSizeInBits(),
+                                                                             0,
+                                                                             0);
+
+                            if (size==0)
+                            {
+                                 info()<<"  dcmImage->createWindowsDIB() failed to create required imagery."<<std::endl;
+                                 continue;
+                            }
+                        }
+
                         if (!image)
                         {
                             pixelRep = curr_pixelRep;
@@ -899,7 +933,9 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                     }
                     else
                     {
-                        warning()<<"Error in reading dicom file "<<fileName.c_str()<<", error = "<<DicomImage::getString(dcmImage->getStatus())<<std::endl;
+                        warning()<<"Error in reading dicom file "<<fileInfo.filename<<", error = "<<DicomImage::getString(dcmImage->getStatus())<<std::endl;
+                        info()<<"    dcmImage->getPhotometricInterpretation()="<<DicomImage::getString(dcmImage->getPhotometricInterpretation())<<std::endl;
+                        info()<<"    dcmImage->width="<<dcmImage->getWidth()<<", height="<<dcmImage->getHeight()<<" FrameCount="<< dcmImage->getFrameCount()<<std::endl;
                     }
                 }
             }

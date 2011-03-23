@@ -50,6 +50,7 @@ public:
         supportsExtension("mkv",    "Matroska");
         supportsExtension("mjpeg",  "Motion JPEG");
         supportsExtension("mp4",    "MPEG-4");
+        supportsExtension("m4v",    "MPEG-4");
         supportsExtension("sav",    "Unknown");
         supportsExtension("3gp",    "3G multi-media format");
         supportsExtension("sdp",    "Session Description Protocol");

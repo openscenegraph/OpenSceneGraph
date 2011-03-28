@@ -11,13 +11,11 @@
  * OpenSceneGraph Public License for more details.
 */
 
+#include "FFmpegImageStream.hpp"
+
 #include <osgDB/Registry>
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
-
-#include "FFmpegHeaders.hpp"
-#include "FFmpegImageStream.hpp"
-
 
 
 /** Implementation heavily inspired by http://www.dranger.com/ffmpeg/ */

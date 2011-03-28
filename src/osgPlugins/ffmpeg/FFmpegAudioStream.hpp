@@ -2,8 +2,9 @@
 #ifndef HEADER_GUARD_OSGFFMPEG_FFMPEG_AUDIO_STREAM_H
 #define HEADER_GUARD_OSGFFMPEG_FFMPEG_AUDIO_STREAM_H
 
-#include <osg/AudioStream>
 #include "FFmpegDecoder.hpp"
+
+#include <osg/AudioStream>
 
 namespace osgFFmpeg
 {

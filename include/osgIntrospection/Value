@@ -224,7 +224,7 @@ namespace osgIntrospection
             // returns the actual pointed type if applicable
             virtual const Type* ptype() const { return 0; }
             // returns whether the data is a null pointer
-            virtual bool nullptr() const = 0;
+            virtual bool isnullptr() const = 0;
 
             Instance_base *inst_;
             Instance_base *_ref_inst;
@@ -237,9 +237,9 @@ namespace osgIntrospection
         {
             Instance_box(): Instance_box_base(), nullptr_(false) {}
 
-            Instance_box(const T &d, bool nullptr = false)
+            Instance_box(const T &d, bool isnullptr = false)
             :    Instance_box_base(),
-                nullptr_(nullptr)
+                nullptr_(isnullptr)
             {
                 Instance<T> *vl = new Instance<T>(d);
                 inst_ = vl;
@@ -267,7 +267,7 @@ namespace osgIntrospection
                 return &typeof(T);
             }
 
-            virtual bool nullptr() const
+            virtual bool isnullptr() const
             {
                 return nullptr_;
             }
@@ -322,7 +322,7 @@ namespace osgIntrospection
                 return &typeofvalue(*static_cast<Instance<T> *>(inst_)->_data);
             }
 
-            virtual bool nullptr() const
+            virtual bool isnullptr() const
             {
                 return static_cast<Instance<T> *>(inst_)->_data == 0;
             }
@@ -428,7 +428,7 @@ namespace osgIntrospection
 
     inline bool Value::isNullPointer() const
     {
-        return _inbox->nullptr();
+        return _inbox->isnullptr();
     }
 
 }

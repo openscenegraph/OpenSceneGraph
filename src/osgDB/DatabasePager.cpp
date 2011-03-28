@@ -29,6 +29,7 @@
 #include <algorithm>
 #include <functional>
 #include <set>
+#include <iterator>
 
 #include <stdlib.h>
 #include <string.h>

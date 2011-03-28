@@ -22,6 +22,7 @@
 #include<cassert>
 #include<deque>
 #include<algorithm>
+#include <iterator>
 
 #include <stdio.h>
 #include <string.h>

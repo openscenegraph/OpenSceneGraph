@@ -43,6 +43,7 @@
 #include <algorithm>
 #include <numeric>
 #include <sstream>
+#include <iterator>
 
 using namespace osgUtil;
 

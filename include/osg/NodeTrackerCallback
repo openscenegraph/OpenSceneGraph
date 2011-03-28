@@ -18,6 +18,8 @@
 #include <osg/NodeCallback>
 #include <osg/observer_ptr>
 
+#include <iterator>
+
 namespace osg
 {
 

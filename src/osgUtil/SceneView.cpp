@@ -27,6 +27,8 @@
 
 #include <osg/GLU>
 
+#include <iterator>
+
 using namespace osg;
 using namespace osgUtil;
 

@@ -288,13 +288,14 @@ bool PagedLOD::removeExpiredChildren(double expiryTime, unsigned int expiryFrame
 {
     if (_children.size()>_numChildrenThatCannotBeExpired)
     {
-        if (!_perRangeDataList[_children.size()-1]._filename.empty() &&
-            _perRangeDataList[_children.size()-1]._timeStamp<expiryTime &&
-            _perRangeDataList[_children.size()-1]._frameNumber<expiryFrame)
+        unsigned cindex = _children.size() - 1;
+        if (!_perRangeDataList[cindex]._filename.empty() &&
+            _perRangeDataList[cindex]._timeStamp<expiryTime &&
+            _perRangeDataList[cindex]._frameNumber<expiryFrame)
         {            
-            osg::Node* nodeToRemove = _children[_children.size()-1].get();
+            osg::Node* nodeToRemove = _children[cindex].get();
             removedChildren.push_back(nodeToRemove);
-            return Group::removeChildren(_children.size()-1,1);
+            return Group::removeChildren(cindex,1);
         }
     }
     return false;

@@ -129,29 +129,30 @@ void DatabasePager::compileCompleted(DatabaseRequest* databaseRequest)
     _dataToMergeList->add(databaseRequest);
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//  CountPagedLODList
-//
-class DatabasePager::CountPagedLODsVisitor : public osg::NodeVisitor
+// This class is a helper for the management of SetBasedPagedLODList.
+class DatabasePager::ExpirePagedLODsVisitor : public osg::NodeVisitor
 {
 public:
-    CountPagedLODsVisitor():
-        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-        _numPagedLODs(0)
+    ExpirePagedLODsVisitor():
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN)
     {
     }
 
-    META_NodeVisitor("osgDB","CountPagedLODsVisitor")
+    META_NodeVisitor("osgDB","ExpirePagedLODsVisitor")
 
     virtual void apply(osg::PagedLOD& plod)
     {
-        ++_numPagedLODs;
-        _pagedLODs.insert(&plod);
+        _childPagedLODs.insert(&plod);
+        markRequestsExpired(&plod);
         traverse(plod);
     }
 
-    bool removeExpiredChildrenAndCountPagedLODs(osg::PagedLOD* plod, double expiryTime, unsigned int expiryFrame, osg::NodeList& removedChildren)
+    // Remove expired children from a PagedLOD. On return
+    // removedChildren contains the nodes removed by the call to
+    // PagedLOD::removeExpiredChildren, and the _childPagedLODs member
+    // contains all the PagedLOD objects found in those children's
+    // subgraphs.
+    bool removeExpiredChildrenAndFindPagedLODs(osg::PagedLOD* plod, double expiryTime, unsigned int expiryFrame, osg::NodeList& removedChildren)
     {
         size_t sizeBefore = removedChildren.size();
 
@@ -161,23 +162,24 @@ public:
         {
             removedChildren[i]->accept(*this);
         }
-
-        for(PagedLODset::iterator itr = _pagedLODs.begin();
-            itr != _pagedLODs.end();
-            ++itr)
-        {
-            removedChildren.push_back(*itr);
-        }
-
         return sizeBefore!=removedChildren.size();
     }
 
-
     typedef std::set<osg::ref_ptr<osg::PagedLOD> > PagedLODset;
-    PagedLODset         _pagedLODs;
-    int                 _numPagedLODs;
+    PagedLODset         _childPagedLODs;
+private:
+    void markRequestsExpired(osg::PagedLOD* plod)
+    {
+        unsigned numFiles = plod->getNumFileNames();
+        for (unsigned i = 0; i < numFiles; ++i)
+        {
+            DatabasePager::DatabaseRequest* request
+                = dynamic_cast<DatabasePager::DatabaseRequest*>(plod->getDatabaseRequest(i).get());
+            if (request)
+                request->_groupExpired = true;
+        }
+    }
 };
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -201,7 +203,7 @@ public:
     {
         int leftToRemove = numberChildrenToRemove;
         for(PagedLODs::iterator itr = _pagedLODs.begin();
-            itr!=_pagedLODs.end() && leftToRemove >= 0;
+            itr!=_pagedLODs.end() && leftToRemove > 0;
             )
         {
             osg::ref_ptr<osg::PagedLOD> plod;
@@ -210,14 +212,14 @@ public:
                 bool plodActive = expiryFrame < plod->getFrameNumberOfLastTraversal();
                 if (visitActive==plodActive) // true if (visitActive && plodActive) OR (!visitActive &&!plodActive)
                 {
-                    DatabasePager::CountPagedLODsVisitor countPagedLODsVisitor;
+                    DatabasePager::ExpirePagedLODsVisitor expirePagedLODsVisitor;
                     osg::NodeList expiredChildren; // expired PagedLODs
-                    countPagedLODsVisitor.removeExpiredChildrenAndCountPagedLODs(
+                    expirePagedLODsVisitor.removeExpiredChildrenAndFindPagedLODs(
                         plod.get(), expiryTime, expiryFrame, expiredChildren);
                     // Clear any expired PagedLODs out of the set
-                    for (DatabasePager::CountPagedLODsVisitor::PagedLODset::iterator
-                             citr = countPagedLODsVisitor._pagedLODs.begin(),
-                             end = countPagedLODsVisitor._pagedLODs.end();
+                    for (DatabasePager::ExpirePagedLODsVisitor::PagedLODset::iterator
+                             citr = expirePagedLODsVisitor._childPagedLODs.begin(),
+                             end = expirePagedLODsVisitor._childPagedLODs.end();
                          citr != end;
                         ++citr)
                     {
@@ -1588,7 +1590,7 @@ void DatabasePager::addLoadedDataToSceneGraph(const osg::FrameStamp &frameStamp)
         // the request; the cull traversal -- which might redispatch
         // the request -- can't run at the sametime as this update traversal.
         osg::ref_ptr<osg::Group> group;
-        if (databaseRequest->_group.lock(group))
+        if (!databaseRequest->_groupExpired && databaseRequest->_group.lock(group))
         {
             if (osgDB::Registry::instance()->getSharedStateManager())
                 osgDB::Registry::instance()->getSharedStateManager()->share(databaseRequest->_loadedModel.get());

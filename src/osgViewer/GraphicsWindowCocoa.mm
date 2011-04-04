@@ -144,9 +144,17 @@ class CocoaKeyboardMap {
 // ----------------------------------------------------------------------------------------------------------
 // remapCocoaKey
 // ----------------------------------------------------------------------------------------------------------
-static unsigned int remapCocoaKey(unsigned int key, bool pressedOnKeypad = false)
+static unsigned int remapCocoaKey(unsigned int key, unsigned int modifiers)
 {
     static CocoaKeyboardMap s_CocoaKeyboardMap;
+    
+    
+    bool pressedOnKeypad = modifiers & NSNumericPadKeyMask;
+    if (modifiers & NSFunctionKeyMask)
+        pressedOnKeypad = false;
+    
+    //std::cout << std::hex << "remap " << key << " keypad: " << pressedOnKeypad << " modifiers: " << modifiers << std::endl;
+        
     return s_CocoaKeyboardMap.remapKey(key, pressedOnKeypad);
 }
 
@@ -371,21 +379,21 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
         
         if ((flags & masks[i]) && !(_cachedModifierFlags & masks[i]))
         {
-            _win->getEventQueue()->keyPress(keys[i]);
+            _win->getEventQueue()->keyPress(keys[i], [theEvent timestamp], keys[i]);
             
             // we don't get a key up for the caps lock so emulate it.
             if (i == 4)
-                _win->getEventQueue()->keyRelease(keys[i]);
+                _win->getEventQueue()->keyRelease(keys[i], [theEvent timestamp], keys[i]);
         }
         
         if (!(flags & masks[i]) && (_cachedModifierFlags & masks[i]))
         {
             if (i == 4) {
                 // emulate a key down for caps-lock.
-                _win->getEventQueue()->keyPress(keys[i]);
+                _win->getEventQueue()->keyPress(keys[i], [theEvent timestamp], keys[i]);
             }
             
-            _win->getEventQueue()->keyRelease(keys[i]);
+            _win->getEventQueue()->keyRelease(keys[i], [theEvent timestamp], keys[i]);
         }
     }
     
@@ -691,9 +699,9 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     NSString* chars = [theEvent characters]; 
     
     if ((chars) && ([chars length] > 0)) {
-        unsigned int unmodified_keyCode = remapCocoaKey([unmodified_chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask) );
-        unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask) );
-        // std::cout << "key dn: " <<[chars characterAtIndex:0] << "=" << keyCode << std::endl;   
+        unsigned int unmodified_keyCode = remapCocoaKey([unmodified_chars characterAtIndex:0], [theEvent modifierFlags] );
+        unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], [theEvent modifierFlags] );
+        //std::cout << std::hex << "key dn: " <<[chars characterAtIndex:0] << "=" << keyCode << " unmodified: " << unmodified_keyCode <<  std::endl;   
         _win->getEventQueue()->keyPress( keyCode, [theEvent timestamp], unmodified_keyCode);
     }
 }
@@ -711,9 +719,10 @@ static NSRect convertToQuartzCoordinates(const NSRect& rect)
     NSString* chars = [theEvent characters]; 
     
     if ((chars) && ([chars length] > 0)) {
-        unsigned int unmodified_keyCode = remapCocoaKey([unmodified_chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask) );
-        unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], ([theEvent modifierFlags] & NSFunctionKeyMask) );
-        // std::cout << "key dn: " <<[chars characterAtIndex:0] << "=" << keyCode << std::endl;   
+        unsigned int unmodified_keyCode = remapCocoaKey([unmodified_chars characterAtIndex:0], [theEvent modifierFlags] );
+        unsigned int keyCode = remapCocoaKey([chars characterAtIndex:0], [theEvent modifierFlags] );
+        //std::cout << std::hex << "key up: " <<[chars characterAtIndex:0] << "=" << keyCode << " unmodified: " << unmodified_keyCode <<  std::endl;   
+          
         _win->getEventQueue()->keyRelease( keyCode, [theEvent timestamp], unmodified_keyCode);
     }
 }
@@ -1293,6 +1302,7 @@ void GraphicsWindowCocoa::adaptResize(int x, int y, int w, int h)
     }
     
     resized(x-screenLeft,y-screenTop,w,h);
+    getEventQueue()->windowResize(x-screenLeft, y-screenTop, w, h, getEventQueue()->getTime());
 }
 
 

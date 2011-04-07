@@ -311,6 +311,9 @@ FIND_PACKAGE(OpenAL)
 FIND_PACKAGE(XUL)
 FIND_PACKAGE(FFmpeg)
 
+# Include macro utilities here
+INCLUDE(OsgMacroUtils)
+
 #use pkg-config to find various modues
 INCLUDE(FindPkgConfig OPTIONAL)
 
@@ -496,8 +499,16 @@ ENDIF(NOT MSVC)
 #
 # On CMake 2.6.x use the newly minted CMAKE_LIBRARY_OUTPUT_DIRECTORY,
 # CMAKE_ARCHIVE_OUTPUT_DIRECTORY & CMAKE_RUNTIME_OUTPUT_DIRECTORY
-
-IF(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION GREATER 4)
+#
+# CMake >= 2.8.1 changed the output directory algorithm (See doc).
+# Here we also set per-configuration directories (CMAKE_*_OUTPUT_DIRECTORY_<CONFIG>), or else binaries are generated in /bin/Debug and /bin/Release, etc. with MSVC and Xcode.
+# (Doc reads "multi-configuration generators (VS, Xcode) do NOT append a per-configuration subdirectory to the specified directory").
+# The workaround for 2.6.x (adding "../" as an output prefix for each target) seem to have no effect in >=2.8.1, so there is no need to change this.
+IF(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION LESS 5)
+    # If CMake < 2.6.0
+    SET(EXECUTABLE_OUTPUT_PATH ${OUTPUT_BINDIR})
+    SET(LIBRARY_OUTPUT_PATH    ${OUTPUT_LIBDIR})
+ELSE()
     # If CMake >= 2.6.0
     SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_LIBDIR})
     SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_BINDIR})
@@ -506,10 +517,22 @@ IF(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION GREATER 4)
     ELSE(WIN32)
         SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_LIBDIR})
     ENDIF(WIN32)
-ELSE(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION GREATER 4)
-    SET(EXECUTABLE_OUTPUT_PATH ${OUTPUT_BINDIR})
-    SET(LIBRARY_OUTPUT_PATH ${OUTPUT_LIBDIR})
-ENDIF(CMAKE_MAJOR_VERSION EQUAL 2 AND CMAKE_MINOR_VERSION GREATER 4)
+
+    # Testing CMAKE_VERSION is possible in >= 2.6.4 only
+    BUILDER_VERSION_GREATER(2 8 0)
+    IF(VALID_BUILDER_VERSION)  # If CMake >= 2.8.1
+        FOREACH(CONF ${CMAKE_CONFIGURATION_TYPES})        # For each configuration (Debug, Release, MinSizeRel... and/or anything the user chooses)
+            STRING(TOUPPER "${CONF}" CONF)                # Go uppercase (DEBUG, RELEASE...)
+            SET("CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${CONF}" "${OUTPUT_LIBDIR}")
+            SET("CMAKE_RUNTIME_OUTPUT_DIRECTORY_${CONF}" "${OUTPUT_BINDIR}")
+            IF(WIN32)
+                SET("CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CONF}" "${OUTPUT_BINDIR}")
+            ELSE()
+                SET("CMAKE_LIBRARY_OUTPUT_DIRECTORY_${CONF}" "${OUTPUT_LIBDIR}")
+            ENDIF()
+        ENDFOREACH()
+    ENDIF(VALID_BUILDER_VERSION)
+ENDIF()
 
 #SET(INSTALL_BINDIR OpenSceneGraph/bin)
 #SET(INSTALL_INCDIR OpenSceneGraph/include)
@@ -611,7 +634,7 @@ ELSE (DYNAMIC_OPENSCENEGRAPH)
     SET(OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC "STATIC")
 ENDIF(DYNAMIC_OPENSCENEGRAPH)
 
-INCLUDE(OsgMacroUtils)
+
 # OSG Core
 ADD_SUBDIRECTORY(src)
 

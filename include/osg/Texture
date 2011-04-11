@@ -447,7 +447,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             USE_S3TC_DXT3_COMPRESSION,
             USE_S3TC_DXT5_COMPRESSION,
             USE_RGTC1_COMPRESSION,
-            USE_RGTC2_COMPRESSION
+            USE_RGTC2_COMPRESSION,
+            USE_S3TC_DXT1c_COMPRESSION,
+            USE_S3TC_DXT1a_COMPRESSION
         };
 
         /** Sets the internal texture format mode. Note: If the texture format is

@@ -177,7 +177,8 @@ struct DDSURFACEDESC2
 
 //
 // Structure of a DXT-1 compressed texture block
-// see http://msdn.microsoft.com/library/default.asp?url=/library/en-us/directx9_c/Opaque_and_1_Bit_Alpha_Textures.asp
+// see page "Opaque and 1-Bit Alpha Textures (Direct3D 9)" on http://msdn.microsoft.com
+// url at time of writing http://msdn.microsoft.com/en-us/library/bb147243(v=VS.85).aspx
 //
 struct DXT1TexelsBlock
 {

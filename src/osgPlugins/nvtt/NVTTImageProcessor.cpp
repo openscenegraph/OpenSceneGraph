@@ -307,6 +307,12 @@ void NVTTProcessor::compress(osg::Image& image, osg::Texture::InternalFormatMode
         else
             format = nvtt::Format_DXT1;
         break;
+    case osg::Texture::USE_S3TC_DXT1c_COMPRESSION:
+        format = nvtt::Format_DXT1;
+        break;
+    case osg::Texture::USE_S3TC_DXT1a_COMPRESSION:
+        format = nvtt::Format_DXT1a;
+        break;
     case osg::Texture::USE_S3TC_DXT3_COMPRESSION:
         format = nvtt::Format_DXT3;
         break;

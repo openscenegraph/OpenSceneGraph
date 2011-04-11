@@ -1299,6 +1299,36 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
             else internalFormat = image.getInternalTextureFormat();
             break;
 
+        case(USE_S3TC_DXT1c_COMPRESSION):
+            if (extensions->isTextureCompressionS3TCSupported())
+            {
+                switch(image.getPixelFormat())
+                {
+                    case(3):        
+                    case(4):        
+                    case(GL_RGB):   
+                    case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT; break;
+                    default:        internalFormat = image.getInternalTextureFormat(); break;
+                }
+            }
+            else internalFormat = image.getInternalTextureFormat();
+            break;
+
+        case(USE_S3TC_DXT1a_COMPRESSION):
+            if (extensions->isTextureCompressionS3TCSupported())
+            {
+                switch(image.getPixelFormat())
+                {
+                    case(3):        
+                    case(4):        
+                    case(GL_RGB):   
+                    case(GL_RGBA):  internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT; break;
+                    default:        internalFormat = image.getInternalTextureFormat(); break;
+                }
+            }
+            else internalFormat = image.getInternalTextureFormat();
+            break;
+
         case(USE_S3TC_DXT3_COMPRESSION):
             if (extensions->isTextureCompressionS3TCSupported())
             {

@@ -510,7 +510,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
         switch(ddsd.ddpfPixelFormat.dwFourCC)
         {
         case FOURCC_DXT1:
-            OSG_NOTICE << "ReadDDSFile info : format = DXT1, usingAlpha=" <<usingAlpha<< std::endl;
+            OSG_INFO << "ReadDDSFile info : format = DXT1, usingAlpha=" <<usingAlpha<< std::endl;
             if (usingAlpha)
             {
                 internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
@@ -520,7 +520,6 @@ osg::Image* ReadDDSFile(std::istream& _istream)
             {
                 internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
                 pixelFormat    = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
-                //checkIfUsingOneBitAlpha = true;
             }
             break;
         case FOURCC_DXT3:

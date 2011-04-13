@@ -79,6 +79,7 @@ namespace dxtc_tool {
 // C-like function wrappers
 bool VerticalFlip(size_t Width, size_t Height, GLenum Format, void * pPixels);
 
+bool CompressedImageTranslucent(size_t Width, size_t Height, GLenum Format, void * pPixels);
 
 
 // Class holding reference to DXTC image pixels 

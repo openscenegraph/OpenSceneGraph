@@ -355,7 +355,6 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     // while compressed formats will use DDPF_FOURCC with a four-character code.
     
     bool usingAlpha = ddsd.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS;
-    bool checkIfUsingOneBitAlpha = false;
 
     // Uncompressed formats.
     if(ddsd.ddpfPixelFormat.dwFlags & DDPF_RGB)
@@ -511,7 +510,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
         switch(ddsd.ddpfPixelFormat.dwFourCC)
         {
         case FOURCC_DXT1:
-            OSG_INFO << "ReadDDSFile info : format = DXT1" << std::endl;
+            OSG_NOTICE << "ReadDDSFile info : format = DXT1, usingAlpha=" <<usingAlpha<< std::endl;
             if (usingAlpha)
             {
                 internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
@@ -521,7 +520,7 @@ osg::Image* ReadDDSFile(std::istream& _istream)
             {
                 internalFormat = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
                 pixelFormat    = GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
-                checkIfUsingOneBitAlpha = true;
+                //checkIfUsingOneBitAlpha = true;
             }
             break;
         case FOURCC_DXT3:
@@ -682,50 +681,10 @@ osg::Image* ReadDDSFile(std::istream& _istream)
         // this memory will not be used but it will not cause leak in worst meaning of this word.
     }
 
-    // Check if alpha information embedded in the 8-byte encoding blocks
-    if (checkIfUsingOneBitAlpha)
-    {
-        const DXT1TexelsBlock *texelsBlock = reinterpret_cast<const DXT1TexelsBlock*>(imageData);
-
-        // Only do the check on the first mipmap level, and stop when we
-        // see the first alpha texel
-        int i = size / sizeof(DXT1TexelsBlock);
-        bool foundAlpha = false;
-        while ((!foundAlpha) && (i>0))
-        {
-            // See if this block might contain transparent texels
-            if (texelsBlock->color_0<=texelsBlock->color_1)
-            {
-                // Scan the texels block for the '11' bit pattern that
-                // indicates a transparent texel
-                int j = 0;
-                while ((!foundAlpha) && (j < 32))
-                {
-                    // Check for the '11' bit pattern on this texel
-                    if ( ((texelsBlock->texels4x4 >> j) & 0x03) == 0x03)
-                    {
-                        // Texture is using the 1-bit alpha encoding, so we
-                        // need to update the assumed pixel format
-                        internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-                        pixelFormat    = GL_COMPRESSED_RGBA_S3TC_DXT1_EXT;
-                        foundAlpha = true;
-                    }
-
-                    // Next texel
-                    j += 2;
-                }
-            }
-
-            // Next block
-            --i;
-            ++texelsBlock;
-        }
-    }
-
     osgImage->setImage(s,t,r, internalFormat, pixelFormat, dataType, imageData, osg::Image::USE_NEW_DELETE);
 
     if (mipmap_offsets.size()>0) osgImage->setMipmapLevels(mipmap_offsets);
-         
+
     // Return Image.
     return osgImage.release();
 }
@@ -1004,6 +963,28 @@ public:
     {
         osg::Image* osgImage = ReadDDSFile(fin);
         if (osgImage==NULL) return ReadResult::FILE_NOT_HANDLED;
+
+        if (osgImage->getPixelFormat()==GL_COMPRESSED_RGB_S3TC_DXT1_EXT)
+        {
+            // check to see if DXT1c (RGB_S3TC_DXT1) format image might actually be
+            // a DXT1a format image
+
+            // temporarily set pixel format to GL_COMPRESSED_RGBA_S3TC_DXT1_EXT so
+            // that the isImageTranslucent() method assumes that RGBA is present and then
+            // checks the alpha values to see if they are all 1.0.
+            osgImage->setPixelFormat(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT);
+            if (!osgImage->isImageTranslucent())
+            {
+                // image contains alpha's that are 1.0, so treat is as RGB
+                OSG_INFO<<"Image with PixelFormat==GL_COMPRESSED_RGB_S3TC_DXT1_EXT is opaque."<<std::endl;
+                osgImage->setPixelFormat(GL_COMPRESSED_RGB_S3TC_DXT1_EXT);
+            }
+            else
+            {
+                // image contains alpha's that are non 1.0, so treat is as RGBA
+                OSG_INFO<<"Image with PixelFormat==GL_COMPRESSED_RGB_S3TC_DXT1_EXT has transparency, setting format to GL_COMPRESSED_RGBA_S3TC_DXT1_EXT."<<std::endl;
+            }
+        }
         
         if (options && options->getOptionString().find("dds_flip")!=std::string::npos)
         {

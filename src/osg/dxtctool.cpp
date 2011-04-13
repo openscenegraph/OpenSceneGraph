@@ -154,7 +154,70 @@ void dxtc_pixels::VFlip_DXT5() const
             }
 }
 
+//
+// Structure of a DXT-1 compressed texture block
+// see page "Opaque and 1-Bit Alpha Textures (Direct3D 9)" on http://msdn.microsoft.com
+// url at time of writing http://msdn.microsoft.com/en-us/library/bb147243(v=VS.85).aspx
+//
+struct DXT1TexelsBlock
+{
+    unsigned short color_0;     // colors at their
+    unsigned short color_1;     // extreme
+    unsigned int   texels4x4;   // interpolated colors (2 bits per texel)
+};
 
+bool CompressedImageTranslucent(size_t width, size_t height, GLenum format, void * imageData)
+{
+    // OSG_NOTICE<<"CompressedImageTranslucent("<<width<<", "<<height<<", "<<format<<", "<<imageData<<")"<<std::endl;
 
+    switch(format)
+    {
+        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
+        {
+            const DXT1TexelsBlock *texelsBlock = reinterpret_cast<const DXT1TexelsBlock*>(imageData);
+
+            // Only do the check on the first mipmap level, and stop when we
+            // see the first alpha texel
+            int i = (width*height)/16;
+            bool foundAlpha = false;
+            while ((!foundAlpha) && (i>0))
+            {
+                // See if this block might contain transparent texels
+                if (texelsBlock->color_0<=texelsBlock->color_1)
+                {
+                    // Scan the texels block for the '11' bit pattern that
+                    // indicates a transparent texel
+                    int j = 0;
+                    while ((!foundAlpha) && (j < 32))
+                    {
+                        // Check for the '11' bit pattern on this texel
+                        if ( ((texelsBlock->texels4x4 >> j) & 0x03) == 0x03)
+                        {
+                            // Texture is using the 1-bit alpha encoding, so we
+                            return true;
+                        }
+
+                        // Next texel
+                        j += 2;
+                    }
+                }
+
+                // Next block
+                --i;
+                ++texelsBlock;
+            }
+            return false;
+        }
+        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
+            return true;
+        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
+            return true;
+        default:
+            break;
+    }
+
+    return false;
+}
 
 } // namespace dxtc_tool

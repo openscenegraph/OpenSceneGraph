@@ -1251,6 +1251,15 @@ bool Image::isImageTranslucent() const
             offset = 3;
             delta = 4;
             break;
+        case(GL_RGB):
+            return false;
+        case(GL_BGR):
+            return false;
+        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
+        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
+            return dxtc_tool::CompressedImageTranslucent(_s, _t, _pixelFormat, _data);
         default:
             return false;
     }

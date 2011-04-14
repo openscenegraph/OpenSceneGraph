@@ -173,6 +173,8 @@ bool CompressedImageTranslucent(size_t width, size_t height, GLenum format, void
     switch(format)
     {
         case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
+            return false;
+
         case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
         {
             const DXT1TexelsBlock *texelsBlock = reinterpret_cast<const DXT1TexelsBlock*>(imageData);
@@ -209,10 +211,13 @@ bool CompressedImageTranslucent(size_t width, size_t height, GLenum format, void
             }
             return false;
         }
+
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
             return true;
+
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
             return true;
+
         default:
             break;
     }

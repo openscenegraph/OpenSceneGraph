@@ -924,10 +924,10 @@ public:
     ReaderWriterDDS()
     {
         supportsExtension("dds","DDS image format");
-        supportsOption("dds_dxt1_rgb","set the pixel format of DXT1 encoded images to be RGB");
-        supportsOption("dds_dxt1_rgba","set the pixel format of DXT1 encoded images to be RGBA");
-        supportsOption("dds_dxt1_detect_rgba","For DXT1 encode images set the pixel format according to presence of transparent pixels.");
-        supportsOption("dds_flip","flip the image about the horizontl axis");
+        supportsOption("dds_dxt1_rgb","Set the pixel format of DXT1 encoded images to be RGB variant of DXT1");
+        supportsOption("dds_dxt1_rgba","Set the pixel format of DXT1 encoded images to be RGBA variant of DXT1");
+        supportsOption("dds_dxt1_detect_rgba","For DXT1 encode images set the pixel format according to presence of transparent pixels");
+        supportsOption("dds_flip","Flip the image about the horizontl axis");
     }
 
     virtual const char* className() const

@@ -452,12 +452,14 @@ static void usage( const char *prog, const char *msg )
     osg::notify(osg::NOTICE)<<"    --compressed-dxt3  - Enable the usage of S3TC DXT3 compressed textures"<< std::endl;
     osg::notify(osg::NOTICE)<<"    --compressed-dxt5  - Enable the usage of S3TC DXT5 compressed textures"<< std::endl;
     osg::notify(osg::NOTICE)<< std::endl;
-    osg::notify(osg::NOTICE)<<"    --fix-transparency  - fix stateset which are curerntly declared as transparent,"<< std::endl;
-    osg::notify(osg::NOTICE)<<"                         but should be opaque. Defaults to using the "<< std::endl;
-    osg::notify(osg::NOTICE)<<"                         fixTranspancyMode MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE."<< std::endl;
-    osg::notify(osg::NOTICE)<<"    --fix-transparency-mode <mode_string>  - fix stateset which are curerntly declared as"<< std::endl;
-    osg::notify(osg::NOTICE)<<"                         transparent but should be opaque. The mode_string determines"<< std::endl;
-    osg::notify(osg::NOTICE)<<"                         algorithm is used to fix the transparency, options are:    "<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --fix-transparency - fix statesets which are currently"<< std::endl;
+    osg::notify(osg::NOTICE)<<"                         declared as transparent, but should be opaque."<< std::endl;
+    osg::notify(osg::NOTICE)<<"                         Defaults to using the fixTranspancyMode"<< std::endl;
+    osg::notify(osg::NOTICE)<<"                         MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE."<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --fix-transparency-mode <mode_string>  - fix statesets which are currently"<< std::endl;
+    osg::notify(osg::NOTICE)<<"                         declared as transparent but should be opaque."<< std::endl;
+    osg::notify(osg::NOTICE)<<"                         The mode_string determines which algorithm is used"<< std::endl;
+    osg::notify(osg::NOTICE)<<"                         to fix the transparency, options are:"<< std::endl;
     osg::notify(osg::NOTICE)<<"                                 MAKE_OPAQUE_TEXTURE_STATESET_OPAQUE,"<<std::endl;
     osg::notify(osg::NOTICE)<<"                                 MAKE_ALL_STATESET_OPAQUE."<<std::endl;
 
@@ -481,10 +483,11 @@ static void usage( const char *prog, const char *msg )
                               "\n"
                               "                         where X1,Y1,Z1 represent the UP vector in the input\n"
                               "                         files and X2,Y2,Z2 represent the UP vector of the\n"
-                              "                         output file, or degrees is the rotation angle in degrees\n"
-                              "                         around axis (A0,A1,A2).  For example, to convert a model\n"
-                              "                         built in a Y-Up coordinate system to a model with a Z-up\n"
-                              "                         coordinate system, the argument may look like\n"
+                              "                         output file, or degrees is the rotation angle in\n"
+                              "                         degrees around axis (A0,A1,A2).  For example, to\n"
+                              "                         convert a model built in a Y-Up coordinate system to a\n"
+                              "                         model with a Z-up coordinate system, the argument may\n"
+                              "                         look like\n"
                               "\n"
                               "                             0,1,0-0,0,1"
                               "\n"
@@ -499,9 +502,11 @@ static void usage( const char *prog, const char *msg )
                               "                         where X, Y, and Z represent the coordinates of the\n"
                               "                         absolute position in world space\n"
                               << std::endl;
-    osg::notify(osg::NOTICE)<<"    --simplify n       - Run simplifier on prior to output. Argument must be a" << std::endl
-                            <<"                         normalized value for the resultant percentage reduction." << std::endl
-                            <<"                         Example: --simplify .5 will produce an 50 reduced model." << std::endl
+    osg::notify(osg::NOTICE)<<"    --simplify n       - Run simplifier prior to output. Argument must be a" << std::endl
+                            <<"                         normalized value for the resultant percentage" << std::endl
+                            <<"                         reduction." << std::endl
+                            <<"                         Example: --simplify .5" << std::endl
+                            <<"                                 will produce a 50% reduced model." << std::endl
                             << std::endl;
     osg::notify(osg::NOTICE)<<"    -s scale           - Scale size of model.  Scale argument must be the \n"
                               "                         following :\n"
@@ -509,26 +514,27 @@ static void usage( const char *prog, const char *msg )
                               "                             SX,SY,SZ\n"
                               "\n"
                               "                         where SX, SY, and SZ represent the scale factors\n"
-                              "                         Caution: Scaling will be done in destination orientation\n"
+                              "                         Caution: Scaling is done in destination orientation\n"
                               << std::endl;
     osg::notify(osg::NOTICE)<<"    --smooth           - Smooth the surface by regenerating surface normals on\n"
-                              "                         all geometry"<< std::endl;
-    osg::notify(osg::NOTICE)<<"    --addMissingColors - Adding a white color value to all geometry that don't have\n"
-                              "                         their own color values (--addMissingColours also accepted)."<< std::endl;
+                              "                         all geometry nodes"<< std::endl;
+    osg::notify(osg::NOTICE)<<"    --addMissingColors - Add a white color value to all geometry nodes\n"
+                              "                         that don't have their own color values\n"
+                              "                         (--addMissingColours also accepted)."<< std::endl;
     osg::notify(osg::NOTICE)<<"    --overallNormal    - Replace normals with a single overall normal."<< std::endl;
     osg::notify(osg::NOTICE)<<"    --enable-object-cache - Enable caching of objects, images, etc."<< std::endl;
 
     osg::notify( osg::NOTICE ) << std::endl;
     osg::notify( osg::NOTICE ) <<
-        "    --formats          - Lists all supported formats and their supported options." << std::endl;
+        "    --formats          - List all supported formats and their supported options." << std::endl;
     osg::notify( osg::NOTICE ) <<
-        "    --format <format>  - Displays information about the spefied <format>, where <format>\n"
-        "                         is the file extension, such as \"flt\"." << std::endl;
+        "    --format <format>  - Display information about the specified <format>,\n"
+        "                         where <format> is the file extension, such as \"flt\"." << std::endl;
     osg::notify( osg::NOTICE ) <<
-        "    --plugins          - Lists all supported plugin files." << std::endl;
+        "    --plugins          - List all supported plugin files." << std::endl;
     osg::notify( osg::NOTICE ) <<
-        "    --plugin >plugin>  - Displays information about the spefied <plugin>, where <plugin>\n"
-        "                         is the plugin's full path and file name." << std::endl;
+        "    --plugin <plugin>  - Display information about the specified <plugin>,\n"
+        "                         where <plugin> is the plugin's full path and file name." << std::endl;
 }
 
 

@@ -155,7 +155,8 @@ animations.
 * Check that CMAKE_OSX_ARCHITECTURE is i386 for the simulator or armv6;armv7 for the device
 * Disable DYNAMIC_OPENSCENEGRAPH, DYNAMIC_OPENTHREADS
   This will give us the static build we need for iPhone.
-* Disable OSG_GL1_AVAILABLE, OSG_GL2_AVAILABLE, OSG_GL3_AVAILABLE, OSG_GLU_AVAILABLE
+* Disable OSG_GL1_AVAILABLE, OSG_GL2_AVAILABLE, OSG_GL3_AVAILABLE, 
+  OSG_GL_DISPLAYLISTS_AVAILABLE, OSG_GL_VERTEX_FUNCS_AVAILABLE
 * Enable OSG_GLES1_AVAILABLE *OR* OSG_GLES2_AVAILABLE
 * Ensure OSG_WINDOWING_SYSTEM is set to IOS
 * Change FREETYPE include and library paths to an iPhone version 
@@ -166,6 +167,29 @@ animations.
   $ open OpenSceneGraph.xcodeproj
 * Under Sources -> osgDB, select FileUtils.cpp and open the 'Get Info' panel, change File Type
   to source.cpp.objcpp
+
+Here's an example for the command-line:
+$ cmake -G Xcode \
+-D OSG_BUILD_PLATFORM_IPHONE:BOOL=ON \
+-D CMAKE_CXX_FLAGS:STRING="-ftree-vectorize -fvisibility-inlines-hidden -mno-thumb -arch armv6 -pipe -no-cpp-precomp -miphoneos-version-min=3.1 -mno-thumb" \
+-D BUILD_OSG_APPLICATIONS:BOOL=OFF \
+-D OSG_BUILD_FRAMEWORKS:BOOL=OFF \
+-D OSG_WINDOWING_SYSTEM:STRING=IOS \
+-D OSG_BUILD_PLATFORM_IPHONE:BOOL=ON \
+-D CMAKE_OSX_ARCHITECTURES:STRING="armv6;armv7" \
+-D CMAKE_OSX_SYSROOT:STRING=/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.2.sdk \
+-D OSG_GL1_AVAILABLE:BOOL=OFF \
+-D OSG_GL2_AVAILABLE:BOOL=OFF \
+-D OSG_GLES1_AVAILABLE:BOOL=ON \
+-D OSG_GL_DISPLAYLISTS_AVAILABLE:BOOL=OFF \
+-D OSG_GL_FIXED_FUNCTION_AVAILABLE:BOOL=ON \
+-D OSG_GL_LIBRARY_STATIC:BOOL=OFF \
+-D OSG_GL_MATRICES_AVAILABLE:BOOL=ON \
+-D OSG_GL_VERTEX_ARRAY_FUNCS_AVAILABLE:BOOL=ON \
+-D OSG_GL_VERTEX_FUNCS_AVAILABLE:BOOL=OFF \
+-D DYNAMIC_OPENSCENEGRAPH:BOOL=OFF \
+-D DYNAMIC_OPENTHREADS:BOOL=OFF .
+
 
 Known issues:
 * When Linking final app against ive plugin, you need to add -lz to 

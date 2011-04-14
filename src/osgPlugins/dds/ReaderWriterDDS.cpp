@@ -924,6 +924,10 @@ public:
     ReaderWriterDDS()
     {
         supportsExtension("dds","DDS image format");
+        supportsOption("dds_dxt1_rgb","set the pixel format of DXT1 encoded images to be RGB");
+        supportsOption("dds_dxt1_rgba","set the pixel format of DXT1 encoded images to be RGBA");
+        supportsOption("dds_dxt1_detect_rgba","For DXT1 encode images set the pixel format according to presence of transparent pixels.");
+        supportsOption("dds_flip","flip the image about the horizontl axis");
     }
 
     virtual const char* className() const
@@ -962,30 +966,43 @@ public:
         osg::Image* osgImage = ReadDDSFile(fin);
         if (osgImage==NULL) return ReadResult::FILE_NOT_HANDLED;
 
-        if (osgImage->getPixelFormat()==GL_COMPRESSED_RGB_S3TC_DXT1_EXT)
+        if (osgImage->getPixelFormat()==GL_COMPRESSED_RGB_S3TC_DXT1_EXT ||
+            osgImage->getPixelFormat()==GL_COMPRESSED_RGBA_S3TC_DXT1_EXT)
         {
-            // check to see if DXT1c (RGB_S3TC_DXT1) format image might actually be
-            // a DXT1a format image
-
-            // temporarily set pixel format to GL_COMPRESSED_RGBA_S3TC_DXT1_EXT so
-            // that the isImageTranslucent() method assumes that RGBA is present and then
-            // checks the alpha values to see if they are all 1.0.
-            osgImage->setPixelFormat(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT);
-            osgImage->setInternalTextureFormat(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT);
-            if (!osgImage->isImageTranslucent())
+            if (options && options->getOptionString().find("dds_dxt1_rgba")!=std::string::npos)
             {
-                // image contains alpha's that are 1.0, so treat is as RGB
-                OSG_INFO<<"Image with PixelFormat==GL_COMPRESSED_RGB_S3TC_DXT1_EXT is opaque."<<std::endl;
+                osgImage->setPixelFormat(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT);
+                osgImage->setInternalTextureFormat(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT);
+            }
+            else if (options && options->getOptionString().find("dds_dxt1_rgb")!=std::string::npos)
+            {
                 osgImage->setPixelFormat(GL_COMPRESSED_RGB_S3TC_DXT1_EXT);
                 osgImage->setInternalTextureFormat(GL_COMPRESSED_RGB_S3TC_DXT1_EXT);
             }
-            else
+            else if (options && options->getOptionString().find("dds_dxt1_detect_rgba")!=std::string::npos)
             {
-                // image contains alpha's that are non 1.0, so treat is as RGBA
-                OSG_INFO<<"Image with PixelFormat==GL_COMPRESSED_RGB_S3TC_DXT1_EXT has transparency, setting format to GL_COMPRESSED_RGBA_S3TC_DXT1_EXT."<<std::endl;
+                // check to see if DXT1c (RGB_S3TC_DXT1) format image might actually be
+                // a DXT1a format image
+
+                // temporarily set pixel format to GL_COMPRESSED_RGBA_S3TC_DXT1_EXT so
+                // that the isImageTranslucent() method assumes that RGBA is present and then
+                // checks the alpha values to see if they are all 1.0.
+                osgImage->setPixelFormat(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT);
+                osgImage->setInternalTextureFormat(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT);
+                if (!osgImage->isImageTranslucent())
+                {
+                    // image contains alpha's that are 1.0, so treat is as RGB
+                    OSG_INFO<<"Image with PixelFormat==GL_COMPRESSED_RGB_S3TC_DXT1_EXT is opaque."<<std::endl;
+                    osgImage->setPixelFormat(GL_COMPRESSED_RGB_S3TC_DXT1_EXT);
+                    osgImage->setInternalTextureFormat(GL_COMPRESSED_RGB_S3TC_DXT1_EXT);
+                }
+                else
+                {
+                    // image contains alpha's that are non 1.0, so treat is as RGBA
+                    OSG_INFO<<"Image with PixelFormat==GL_COMPRESSED_RGB_S3TC_DXT1_EXT has transparency, setting format to GL_COMPRESSED_RGBA_S3TC_DXT1_EXT."<<std::endl;
+                }
             }
         }
-
 
         if (options && options->getOptionString().find("dds_flip")!=std::string::npos)
         {

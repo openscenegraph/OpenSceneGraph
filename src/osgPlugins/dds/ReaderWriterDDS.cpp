@@ -506,7 +506,6 @@ osg::Image* ReadDDSFile(std::istream& _istream)
     // Compressed formats
     else if(ddsd.ddpfPixelFormat.dwFlags & DDPF_FOURCC)
     {
-        // TODO: Image::isImageTranslucent() doesn't work with S3TC compressed files
         switch(ddsd.ddpfPixelFormat.dwFourCC)
         {
         case FOURCC_DXT1:
@@ -972,11 +971,13 @@ public:
             // that the isImageTranslucent() method assumes that RGBA is present and then
             // checks the alpha values to see if they are all 1.0.
             osgImage->setPixelFormat(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT);
+            osgImage->setInternalTextureFormat(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT);
             if (!osgImage->isImageTranslucent())
             {
                 // image contains alpha's that are 1.0, so treat is as RGB
                 OSG_INFO<<"Image with PixelFormat==GL_COMPRESSED_RGB_S3TC_DXT1_EXT is opaque."<<std::endl;
                 osgImage->setPixelFormat(GL_COMPRESSED_RGB_S3TC_DXT1_EXT);
+                osgImage->setInternalTextureFormat(GL_COMPRESSED_RGB_S3TC_DXT1_EXT);
             }
             else
             {
@@ -984,7 +985,8 @@ public:
                 OSG_INFO<<"Image with PixelFormat==GL_COMPRESSED_RGB_S3TC_DXT1_EXT has transparency, setting format to GL_COMPRESSED_RGBA_S3TC_DXT1_EXT."<<std::endl;
             }
         }
-        
+
+
         if (options && options->getOptionString().find("dds_flip")!=std::string::npos)
         {
             osgImage->flipVertical();

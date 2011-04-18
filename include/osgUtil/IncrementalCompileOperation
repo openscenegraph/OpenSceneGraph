@@ -134,7 +134,26 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
 
 
         /** Merge subgraphs that have been compiled.*/
-        void mergeCompiledSubgraphs();
+        void mergeCompiledSubgraphs(const osg::FrameStamp* frameStamp);
+
+        /** Set the current frame number that the IncrementalCompileOperation should use as a reference
+         * value for calculations based on current frame number.
+         * Note, this value is set by the mergeCompiledSubgraphs(..) method so one won't normally need to call
+         * set the CurrentFrameNumber manually.*/
+        void setCurrentFrameNumber(unsigned int fn) { _currentFrameNumber = fn; }
+        unsigned int getCurrentFrameNumber() const { return _currentFrameNumber; }
+
+        /** tell the IncrementalCompileOperation to compile all pending objects during next draw traversal,
+         *  for specified number of frames.*/
+        void compileAllForNextFrame(unsigned int numFramesToDoCompileAll=1);
+
+        /** tell the IncrementalCompileOperation to compile all pending objects during next draw traversal,
+         * till specified frame number.*/
+        void setCompileAllTillFrameNumber(unsigned int fn) { _compileAllTillFrameNumber = fn; }
+        unsigned int getCompileAllTillFrameNumber() const { return _compileAllTillFrameNumber; }
+
+
+
 
         virtual void operator () (osg::GraphicsContext* context);
 
@@ -142,12 +161,19 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
         {
             CompileInfo(osg::GraphicsContext* context, IncrementalCompileOperation* ico);
 
-            double availableTime() { return allocatedTime - timer.elapsedTime(); }
-            
+            bool okToCompile(double estimatedTimeForCompile=0.0) const
+            {
+                if (compileAll) return true;
+                if (maxNumObjectsToCompile==0) return false;
+                return (allocatedTime - timer.elapsedTime()) >= estimatedTimeForCompile;
+            }
+
             IncrementalCompileOperation*        incrementalCompileOperation;
+
+            bool                                compileAll;
             unsigned int                        maxNumObjectsToCompile;
-            osg::ElapsedTime                    timer;
             double                              allocatedTime;
+            osg::ElapsedTime                    timer;
         };
         
         struct CompileOp : public osg::Referenced
@@ -257,32 +283,33 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
         /** Remove CompileSet from list.*/
         void remove(CompileSet* compileSet);
 
-        
         OpenThreads::Mutex* getToCompiledMutex() { return &_toCompileMutex; }
         CompileSets& getToCompile() { return _toCompile; }
-        
+
         OpenThreads::Mutex* getCompiledMutex() { return &_compiledMutex; }
         CompileSets& getCompiled() { return _compiled; }
 
     protected:
 
         virtual ~IncrementalCompileOperation();
-        
-    
+
         double                              _targetFrameRate;
         double                              _minimumTimeAvailableForGLCompileAndDeletePerFrame;
         unsigned int                        _maximumNumOfObjectsToCompilePerFrame;
         double                              _flushTimeRatio;
         double                              _conservativeTimeRatio;
 
+        unsigned int                        _currentFrameNumber;
+        unsigned int                        _compileAllTillFrameNumber;
+
         osg::ref_ptr<osg::Geometry>         _forceTextureDownloadGeometry;
 
         OpenThreads::Mutex                  _toCompileMutex;
         CompileSets                         _toCompile;
-        
+
         OpenThreads::Mutex                  _compiledMutex;
         CompileSets                         _compiled;
-        
+
         ContextSet                          _contexts;
 
 };

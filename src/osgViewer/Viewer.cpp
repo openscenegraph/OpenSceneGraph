@@ -983,7 +983,7 @@ void Viewer::updateTraversal()
     if (_incrementalCompileOperation.valid())
     {
         // merge subgraphs that have been compiled by the incremental compiler operation.
-        _incrementalCompileOperation->mergeCompiledSubgraphs();
+        _incrementalCompileOperation->mergeCompiledSubgraphs(getFrameStamp());
     }
 
     {

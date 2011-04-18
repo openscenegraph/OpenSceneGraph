@@ -301,7 +301,10 @@ bool IncrementalCompileOperation::CompileProgramOp::compile(CompileInfo& compile
     return true;
 }
 
-IncrementalCompileOperation::CompileInfo::CompileInfo(osg::GraphicsContext* context, IncrementalCompileOperation* ico)
+IncrementalCompileOperation::CompileInfo::CompileInfo(osg::GraphicsContext* context, IncrementalCompileOperation* ico):
+    compileAll(false),
+    maxNumObjectsToCompile(0),
+    allocatedTime(0)
 {
     setState(context->getState());
     incrementalCompileOperation = ico;
@@ -342,7 +345,7 @@ bool IncrementalCompileOperation::CompileList::compile(CompileInfo& compileInfo)
 //#define USE_TIME_ESTIMATES
     
     for(CompileOps::iterator itr = _compileOps.begin();
-        itr != _compileOps.end() && compileInfo.availableTime()>0.0 && compileInfo.maxNumObjectsToCompile>0;
+        itr != _compileOps.end() && compileInfo.okToCompile();
     )
     {
         #ifdef USE_TIME_ESTIMATES
@@ -444,7 +447,9 @@ bool IncrementalCompileOperation::CompileSet::compile(CompileInfo& compileInfo)
 IncrementalCompileOperation::IncrementalCompileOperation():
     osg::GraphicsOperation("IncrementalCompileOperation",true),
     _flushTimeRatio(0.5),
-    _conservativeTimeRatio(0.5)
+    _conservativeTimeRatio(0.5),
+    _currentFrameNumber(0),
+    _compileAllTillFrameNumber(0)
 {
     _targetFrameRate = 100.0;
     _minimumTimeAvailableForGLCompileAndDeletePerFrame = 0.001; // 1ms.
@@ -623,13 +628,15 @@ void IncrementalCompileOperation::remove(CompileSet* compileSet)
 }
 
 
-void IncrementalCompileOperation::mergeCompiledSubgraphs()
+void IncrementalCompileOperation::mergeCompiledSubgraphs(const osg::FrameStamp* frameStamp)
 {
     // OSG_INFO<<"IncrementalCompileOperation::mergeCompiledSubgraphs()"<<std::endl;
 
     OpenThreads::ScopedLock<OpenThreads::Mutex>  compilded_lock(_compiledMutex);
-    
-    for(CompileSets::iterator itr = _compiled.begin(); 
+
+    if (frameStamp) _currentFrameNumber = frameStamp->getFrameNumber();
+
+    for(CompileSets::iterator itr = _compiled.begin();
         itr != _compiled.end();
         ++itr)
     {
@@ -673,7 +680,6 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
 
     double flushTime = availableTime * _flushTimeRatio;
     double compileTime = availableTime - flushTime;
-    unsigned int maxNumOfObjectsToCompilePerFrame = _maximumNumOfObjectsToCompilePerFrame;
 
 #if 1
     OSG_NOTIFY(level)<<"total availableTime = "<<availableTime*1000.0<<std::endl;
@@ -696,6 +702,7 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
     CompileInfo compileInfo(context, this);
     compileInfo.maxNumObjectsToCompile = _maximumNumOfObjectsToCompilePerFrame;
     compileInfo.allocatedTime = compileTime;
+    compileInfo.compileAll = (_compileAllTillFrameNumber > _currentFrameNumber);
 
     CompileSets toCompileCopy;
     {
@@ -704,7 +711,7 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
     }
 
     for(CompileSets::iterator itr = toCompileCopy.begin();
-        itr != toCompileCopy.end() && compileTime>0.0 && maxNumOfObjectsToCompilePerFrame>0;
+        itr != toCompileCopy.end() && compileInfo.okToCompile();
         ++itr)
     {
         CompileSet* cs = itr->get();
@@ -737,5 +744,11 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
     //glFush();
     //glFinish();
 }
+
+void IncrementalCompileOperation::compileAllForNextFrame(unsigned int numFramesToDoCompileAll)
+{
+    _compileAllTillFrameNumber = _currentFrameNumber+numFramesToDoCompileAll;
+}
+
 
 } // end of namespace osgUtil

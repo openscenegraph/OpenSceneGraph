@@ -1036,7 +1036,12 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
 
             osgDB::Archive* archive = result.getArchive();
         
-            osg::ref_ptr<Options> options = new Options;
+            //if valid options were passed through the read functor clone them
+            //otherwise make new options
+            osg::ref_ptr<osgDB::ReaderWriter::Options> options = readFunctor._options ?
+                readFunctor._options->cloneOptions() :
+                new osgDB::ReaderWriter::Options;
+
             options->setDatabasePath(archiveName);
 
             return archive->readObject(fileName,options.get());

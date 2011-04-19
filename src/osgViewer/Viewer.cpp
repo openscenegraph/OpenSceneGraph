@@ -617,6 +617,10 @@ void Viewer::eventTraversal()
     Contexts contexts;
     getContexts(contexts);
 
+    // set done if there are no windows
+    checkWindowStatus(contexts);
+    if (_done) return;
+
     osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState();
     osg::Matrix masterCameraVPW = getCamera()->getViewMatrix() * getCamera()->getProjectionMatrix();
     if (getCamera()->getViewport())

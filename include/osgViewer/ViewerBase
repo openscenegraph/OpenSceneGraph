@@ -195,9 +195,6 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         osgUtil::IncrementalCompileOperation* getIncrementalCompileOperation() { return _incrementalCompileOperation.get(); }
 
 
-        /** Check to see if windows are still open, if not set viewer done to true. */
-        void checkWindowStatus();
-
         enum FrameScheme
         {
             ON_DEMAND,
@@ -252,6 +249,15 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
 
         typedef std::vector<osgViewer::View*> Views;
         virtual void getViews(Views& views, bool onlyValid=true) = 0;
+
+        /** Check to see if any windows are still open. If not, set viewer done to true. */
+        void checkWindowStatus();
+
+        /** Check to see if windows are still open using the list of contexts given as a parameter.
+         *  If no windows are open, stop rendering threads and set viewer done to true.
+         *  This function is more effective than checkWindowStatus() as it does not query
+         *  the context list and should be used whenever context list is already available in your code.*/
+        void checkWindowStatus(const Contexts& contexts);
 
         virtual double elapsedTime() = 0;
 

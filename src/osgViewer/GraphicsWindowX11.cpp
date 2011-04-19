@@ -1090,25 +1090,6 @@ void GraphicsWindowX11::swapBuffersImplementation()
 #endif
         glXSwapBuffers( _display, _window );
     #endif
-
-
-    while( XPending(_display) )
-    {
-        XEvent ev;
-        XNextEvent( _display, &ev );
-
-        switch( ev.type )
-        {
-            case ClientMessage:
-            {
-                if (static_cast<Atom>(ev.xclient.data.l[0]) == _deleteWindow)
-                {
-                    OSG_INFO<<"DeleteWindow event received"<<std::endl;
-                    getEventQueue()->closeWindow();
-                }
-            }
-        }
-    }
 }
 
 void GraphicsWindowX11::checkEvents()
@@ -1154,6 +1135,7 @@ void GraphicsWindowX11::checkEvents()
             }
             case Expose :
                 OSG_INFO<<"Expose x="<<ev.xexpose.x<<" y="<<ev.xexpose.y<<" width="<<ev.xexpose.width<<", height="<<ev.xexpose.height<<std::endl;
+                requestRedraw();
                 break;
 
             case GravityNotify :
@@ -1461,6 +1443,7 @@ void GraphicsWindowX11::checkEvents()
         _lastEventType = ev.type;
     }
 
+    // send window resize event if window position or size was changed
     if (windowX != _traits->x ||
         windowY != _traits->y ||
         windowWidth != _traits->width ||
@@ -1468,6 +1451,35 @@ void GraphicsWindowX11::checkEvents()
     {
         resized(windowX, windowY, windowWidth, windowHeight);
         getEventQueue()->windowResize(windowX, windowY, windowWidth, windowHeight, resizeTime);
+
+        // request window repaint if window size was changed
+        if (windowWidth != _traits->width ||
+            windowHeight != _traits->height)
+        {
+            requestRedraw();
+        }
+    }
+
+
+    //
+    // process events of _display
+    //
+    while( XPending(_display) )
+    {
+        XEvent ev;
+        XNextEvent( _display, &ev );
+
+        switch( ev.type )
+        {
+            case ClientMessage:
+            {
+                if (static_cast<Atom>(ev.xclient.data.l[0]) == _deleteWindow)
+                {
+                    OSG_INFO<<"DeleteWindow event received"<<std::endl;
+                    getEventQueue()->closeWindow();
+                }
+            }
+        }
     }
 
 #if 0

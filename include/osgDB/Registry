@@ -485,6 +485,9 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** Get the ObjectWrapperManager that is used to store all the ObjectWrappers. */
         DeprecatedDotOsgWrapperManager* getDeprecatedDotOsgObjectWrapperManager() { return _deprecatedDotOsgWrapperManager.get(); }
 
+        typedef std::vector< std::string> ArchiveExtensionList;
+        const ArchiveExtensionList& getArchiveExtensions() const { return _archiveExtList; }
+
     protected:
 
         virtual ~Registry();
@@ -492,7 +495,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         typedef std::vector< osg::ref_ptr<DynamicLibrary> >             DynamicLibraryList;
         typedef std::map< std::string, std::string>                     ExtensionAliasMap;
         typedef std::map< std::string, std::string>                     MimeTypeExtensionMap;
-        typedef std::vector< std::string>                               ArchiveExtensionList;
         
         typedef std::pair<osg::ref_ptr<osg::Object>, double >           ObjectTimeStampPair;
         typedef std::map<std::string, ObjectTimeStampPair >             ObjectCache;

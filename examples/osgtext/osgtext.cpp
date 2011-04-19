@@ -386,13 +386,15 @@ osg::Group* create3DText(const osg::Vec3& center,float radius)
 
     osg::Geode* geode  = new osg::Geode;
 
+    
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //    
 // Examples of how to set up axis/orientation alignments
 //
 
     float characterSize=radius*0.2f;
-    
+
+
     osg::Vec3 pos(center.x()-radius*.5f,center.y()-radius*.5f,center.z()-radius*.5f);
 
     osgText::Text* text1 = new osgText::Text;
@@ -419,6 +421,7 @@ osg::Group* create3DText(const osg::Vec3& center,float radius)
     text3->setText("XZ_PLANE");
     geode->addDrawable(text3);
 
+    osg::Vec4 characterSizeModeColor(1.0f,0.0f,0.5f,1.0f);
 
     osgText::Text* text4 = new osgText::Text;
     text4->setFont("fonts/times.ttf");
@@ -426,7 +429,12 @@ osg::Group* create3DText(const osg::Vec3& center,float radius)
     text4->setPosition(center);
     text4->setAxisAlignment(osgText::Text::SCREEN);
 
-    osg::Vec4 characterSizeModeColor(1.0f,0.0f,0.5f,1.0f);
+    // reproduce outline bounding box compute problem with backdrop on.
+    text4->setBackdropType(osgText::Text::OUTLINE);
+    text4->setDrawMode(osgText::Text::TEXT | osgText::Text::BOUNDINGBOX);
+
+    text4->setText("SCREEN");
+    geode->addDrawable(text4);
 
     osgText::Text* text5 = new osgText::Text;
     text5->setColor(characterSizeModeColor);
@@ -436,6 +444,7 @@ osg::Group* create3DText(const osg::Vec3& center,float radius)
     text5->setPosition(center - osg::Vec3(0.0, 0.0, 0.2));
     text5->setAxisAlignment(osgText::Text::SCREEN);
     text5->setCharacterSizeMode(osgText::Text::SCREEN_COORDS);
+    text5->setDrawMode(osgText::Text::TEXT | osgText::Text::BOUNDINGBOX);
     text5->setText("CharacterSizeMode SCREEN_COORDS(size 32.0)");
     geode->addDrawable(text5);
 
@@ -459,14 +468,7 @@ osg::Group* create3DText(const osg::Vec3& center,float radius)
     text7->setText("CharacterSizeMode OBJECT_COORDS (default)");
     geode->addDrawable(text7);
 
-#if 1
-    // reproduce outline bounding box compute problem with backdrop on.
-    text4->setBackdropType(osgText::Text::OUTLINE);
-    text4->setDrawMode(osgText::Text::TEXT | osgText::Text::BOUNDINGBOX);
-#endif
 
-    text4->setText("SCREEN");
-    geode->addDrawable(text4);
 
     osg::ShapeDrawable* shape = new osg::ShapeDrawable(new osg::Sphere(center,characterSize*0.2f));
     shape->getOrCreateStateSet()->setMode(GL_LIGHTING,osg::StateAttribute::ON);
@@ -678,7 +680,8 @@ int main(int argc, char** argv)
         
         // make sure the root node is group so we can add extra nodes to it.
         osg::Group* group = new osg::Group;
-        
+
+        if (true)
         {
             // create the hud.
             osg::Camera* camera = new osg::Camera;
@@ -692,7 +695,10 @@ int main(int argc, char** argv)
             group->addChild(camera);
         }
 
-        group->addChild(create3DText(center,radius));
+        if (true)
+        {
+            group->addChild(create3DText(center,radius));
+        }
 
         // set the scene to render
         viewer.setSceneData(group);

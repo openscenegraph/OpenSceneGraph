@@ -1095,7 +1095,7 @@ void CompositeViewer::updateTraversal()
             {
                 osg::View::Slave& slave = view->getSlave(i);
                 osg::Camera* camera = slave._camera.get();
-                if(camera && !slave._useMastersSceneData) 
+                if(camera && !slave._useMastersSceneData)
                 {
                     camera->accept(*_updateVisitor);
                 }

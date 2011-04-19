@@ -1,13 +1,13 @@
-/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -35,11 +35,11 @@ class View;
 class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
 {
     public:
-    
+
         ViewerBase();
         ViewerBase(const ViewerBase& vb);
-        
-        
+
+
         /** Set the Stats object used for collect various frame related timing and scene graph stats.*/
         virtual void setViewerStats(osg::Stats* stats) = 0;
 
@@ -49,10 +49,10 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         /** Get the Viewers Stats object.*/
         virtual const osg::Stats* getViewerStats() const = 0;
 
-            
+
          /** read the viewer configuration from a configuration file.*/
         virtual bool readConfiguration(const std::string& filename) = 0;
-        
+
         /** Get whether at least of one of this viewers windows are realized.*/
         virtual bool isRealized() const = 0;
 
@@ -72,7 +72,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
 
         /** Set the threading model the rendering traversals will use.*/
         virtual void setThreadingModel(ThreadingModel threadingModel);
-        
+
         /** Get the threading model the rendering traversals will use.*/
         ThreadingModel getThreadingModel() const { return _threadingModel; }
 
@@ -80,7 +80,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         virtual ThreadingModel suggestBestThreadingModel();
 
         /** Set up the threading and processor affinity as per the viewers threading model.*/
-        virtual void setUpThreading();      
+        virtual void setUpThreading();
 
         /** Return true if viewer threads are running. */
         bool areThreadsRunning() const { return _threadsRunning; }
@@ -89,14 +89,14 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         virtual void stopThreading();
 
         /** Start any threads required by the viewer.*/
-        virtual void startThreading();        
+        virtual void startThreading();
 
         enum BarrierPosition
         {
             BeforeSwapBuffers,
             AfterSwapBuffers
         };
-        
+
          /** Set the position of the end barrier.
           * AfterSwapBuffers may result in slightly higher framerates, but may
           * lead to inconsistent swapping between different windows.
@@ -107,8 +107,8 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         /** Get the end barrier position.*/
         BarrierPosition getEndBarrierPosition() const { return _endBarrierPosition; }
 
- 
- 
+
+
         /** Set the done flag to signal the viewer's work is done and should exit the frame loop.*/
         void setDone(bool done) { _done = done; }
 
@@ -132,23 +132,23 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
 
         /** get the key event that the viewer checks on each frame to see if the viewer's done flag.*/
         int getKeyEventSetsDone() const { return _keyEventSetsDone; }
-        
+
         /** if the flag is true, the viewer set its done flag when a QUIT_APPLICATION is received, false disables this feature */
         void setQuitEventSetsDone(bool flag) { _quitEventSetsDone = flag; }
-        
+
         /** @return true if the viewer respond to the QUIT_APPLICATION-event */
         bool getQuitEventSetsDone() const { return _quitEventSetsDone; }
 
 
         /** Hint to tell the renderingTraversals() method whether to call relaseContext() on the last
-          * context that was made current by the thread calling renderingTraverals().  Note, when 
+          * context that was made current by the thread calling renderingTraverals().  Note, when
           * running multi-threaded viewer no threads will be made current or release current.
           * Setting this hint to false can enable the frame loop to be lazy about calling makeCurrent
           * and releaseContext on each new frame, helping performance.  However, if you frame loop
           * is managing multiple graphics context all from the main frame thread then this hint must
           * be left on, otherwise the wrong context could be left active, introducing errors in rendering.*/
         void setReleaseContextAtEndOfFrameHint(bool hint) { _releaseContextAtEndOfFrameHint = hint; }
-        
+
         /** Hint to tell the renderingTraversals() method whether to call relaseContext().*/
         bool getReleaseContextAtEndOfFrameHint() const { return _releaseContextAtEndOfFrameHint; }
 
@@ -168,10 +168,10 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
 
         /** Get the Update OperationQueue. */
         osg::OperationQueue* getUpdateOperations() { return _updateOperations.get(); }
-        
+
         /** Get the const Update OperationQueue. */
         const osg::OperationQueue* getUpdateOperations() const { return _updateOperations.get(); }
-        
+
         /** Add an update operation.*/
         void addUpdateOperation(osg::Operation* operation);
 
@@ -184,8 +184,8 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
 
         /** Get the graphics operation to call on realization of the viewers graphics windows.*/
         osg::Operation* getRealizeOperation() { return _realizeOperation.get(); }
-        
-        
+
+
         /** Set the incremental compile operation.
           * Used to manage the OpenGL object compilation and merging of subgraphs in a way that avoids overloading
           * the rendering of frame with too many new objects in one frame. */
@@ -229,7 +229,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
         virtual void eventTraversal() = 0;
 
         virtual void updateTraversal() = 0;
-        
+
         virtual void renderingTraversals();
 
         typedef std::vector<osg::Camera*> Cameras;
@@ -259,7 +259,7 @@ class OSGVIEWER_EXPORT ViewerBase : public virtual osg::Object
 
         /** Get the keyboard and mouse usage of this viewer.*/
         virtual void getUsage(osg::ApplicationUsage& usage) const = 0;
-        
+
     protected:
 
         void viewerBaseInit();

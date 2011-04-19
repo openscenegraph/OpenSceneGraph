@@ -31,7 +31,7 @@ extern "C"
 namespace osgViewer {
 
 /** Base class for providing Windowing API agnostic access to creating and managing graphics window and events.
-  * Note, the GraphicsWindow is subclassed from osg::GraphicsContext, and to provide an implemention you'll need to implement its 
+  * Note, the GraphicsWindow is subclassed from osg::GraphicsContext, and to provide an implemention you'll need to implement its
   * range of pure virtual functions, you'll find these all have naming convention methodNameImplemention(..).
   * GraphicsWindow adds the event queue on top of the GraphicsContext, thereby adding a mechanism for adapting Windowing events
   * as well as basics graphics context work, you should wire up custom GraphicsWindowImplementation to push their events through
@@ -39,7 +39,7 @@ namespace osgViewer {
 class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgGA::GUIActionAdapter
 {
     public:
-    
+
         GraphicsWindow() { _eventQueue = new osgGA::EventQueue; _eventQueue->setGraphicsContext(this); }
 
         virtual bool isSameKindAs(const Object* object) const { return dynamic_cast<const GraphicsWindow*>(object)!=0; }
@@ -51,16 +51,16 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
         const osgGA::EventQueue* getEventQueue() const { return _eventQueue.get(); }
 
         virtual void checkEvents() {}
-        
+
         /** Set the window's position and size.*/
         void setWindowRectangle(int x, int y, int width, int height)
-        { 
+        {
             if (setWindowRectangleImplementation(x ,y ,width, height) && _traits.valid())
             {
                 resized(x,y,width,height);
             }
         }
-        
+
         /** implementation of setWindowRectangle, should be implemented by derived classes */
         virtual bool setWindowRectangleImplementation(int /*x*/, int /*y*/, int /*width*/, int /*height*/) { osg::notify(osg::NOTICE)<<"GraphicsWindow::setWindowRectangleImplementation(..) not implemented."<<std::endl; return false; }
 
@@ -69,13 +69,13 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
 
         /** Set Window decoration.*/
         void setWindowDecoration(bool flag)
-        {  
+        {
             if (setWindowDecorationImplementation(flag) && _traits.valid())
             {
                 _traits->windowDecoration = flag;
             }
         }
-        
+
         /** implementation of setWindowDecoration, should be implemented by derived classes */
         virtual bool setWindowDecorationImplementation(bool /*flag*/) {  osg::notify(osg::NOTICE)<<"GraphicsWindow::setWindowDecorationImplementation(..) not implemented."<<std::endl; return false; }
 
@@ -85,7 +85,7 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
 
         /** Get focus.*/
         virtual void grabFocus() { osg::notify(osg::NOTICE)<<"GraphicsWindow::grabFocus(..) not implemented."<<std::endl; }
-        
+
         /** Get focus on if the pointer is in this window.*/
         virtual void grabFocusIfPointerInWindow() { osg::notify(osg::NOTICE)<<"GraphicsWindow::grabFocusIfPointerInWindow(..) not implemented."<<std::endl; }
 
@@ -147,7 +147,7 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
         /** Return whether a valid and usable GraphicsContext has been created.*/
         virtual bool valid() const { osg::notify(osg::NOTICE)<<"GraphicsWindow::valid() not implemented."<<std::endl; return false; }
 
-        /** Realize the GraphicsContext implementation, 
+        /** Realize the GraphicsContext implementation,
           * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual bool realizeImplementation() { osg::notify(osg::NOTICE)<<"GraphicsWindow::realizeImplementation() not implemented."<<std::endl; return false; }
 
@@ -162,7 +162,7 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
         /** Make this graphics context current implementation.
           * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual bool makeCurrentImplementation()  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeCurrentImplementation() not implemented."<<std::endl; return false;}
-        
+
         /** Make this graphics context current with specified read context implementation.
           * Pure virtual - must be implemented by concrete implementations of GraphicsContext. */
         virtual bool makeContextCurrentImplementation(GraphicsContext* /*readContext*/)  { osg::notify(osg::NOTICE)<<"GraphicsWindow::makeContextCurrentImplementation(..) not implemented."<<std::endl; return false;}
@@ -191,22 +191,22 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
 
 
     protected:
-    
+
         osg::ref_ptr<osgGA::EventQueue> _eventQueue;
-        
+
 };
 
 
 class GraphicsWindowEmbedded : public GraphicsWindow
 {
     public:
-    
+
         GraphicsWindowEmbedded(osg::GraphicsContext::Traits* traits=0)
         {
             _traits = traits;
 
             init();
-            
+
         }
 
         GraphicsWindowEmbedded(int x, int y, int width, int height)
@@ -216,7 +216,7 @@ class GraphicsWindowEmbedded : public GraphicsWindow
             _traits->y = y;
             _traits->width = width;
             _traits->height = height;
-            
+
             init();
         }
 
@@ -234,7 +234,7 @@ class GraphicsWindowEmbedded : public GraphicsWindow
                 if (_traits.valid() && _traits->sharedContext)
                 {
                     getState()->setContextID( _traits->sharedContext->getState()->getContextID() );
-                    incrementContextIDUsageCount( getState()->getContextID() );   
+                    incrementContextIDUsageCount( getState()->getContextID() );
                 }
                 else
                 {

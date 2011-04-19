@@ -522,9 +522,11 @@ void ViewerBase::checkWindowStatus()
 {
     Contexts contexts;
     getContexts(contexts);
+    checkWindowStatus(contexts);
+}
 
-    // OSG_NOTICE<<"Viewer::checkWindowStatus() - "<<contexts.size()<<std::endl;
-
+void ViewerBase::checkWindowStatus(const Contexts& contexts)
+{
     if (contexts.size()==0)
     {
         _done = true;
@@ -665,9 +667,11 @@ void ViewerBase::renderingTraversals()
         }
     }
 
-    // check to see if windows are still valid
-    checkWindowStatus();
+    Contexts contexts;
+    getContexts(contexts);
 
+    // check to see if windows are still valid
+    checkWindowStatus(contexts);
     if (_done) return;
 
     double beginRenderingTraversals = elapsedTime();
@@ -759,9 +763,6 @@ void ViewerBase::renderingTraversals()
 
     // OSG_NOTICE<<std::endl<<"Start frame"<<std::endl;
 
-
-    Contexts contexts;
-    getContexts(contexts);
 
     Cameras cameras;
     getCameras(cameras);

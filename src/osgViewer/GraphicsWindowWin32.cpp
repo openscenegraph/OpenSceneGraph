@@ -1833,7 +1833,7 @@ bool GraphicsWindowWin32::realizeImplementation()
                 }
             }
         protected:
-            HDC        _hdc;
+            HDC      _hdc;
             HGLRC    _hglrc;
         } restoreContext;
 
@@ -2355,6 +2355,7 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                 PAINTSTRUCT paint;
                 ::BeginPaint(hwnd, &paint);
                 ::EndPaint(hwnd, &paint);
+                requestRedraw();
             }
             break;
 
@@ -2467,10 +2468,15 @@ LRESULT GraphicsWindowWin32::handleNativeWindowingEvent( HWND hwnd, UINT uMsg, W
                 int windowWidth = (clientRect.right == 0) ? 1 : clientRect.right ;
                 int windowHeight = (clientRect.bottom == 0) ? 1 : clientRect.bottom;;
 
+                // send resize event if window position or size was changed
                 if (windowX!=_traits->x || windowY!=_traits->y || windowWidth!=_traits->width || windowHeight!=_traits->height)
                 {
                     resized(windowX, windowY, windowWidth, windowHeight);
                     getEventQueue()->windowResize(windowX, windowY, windowWidth, windowHeight, resizeTime);
+
+                    // request redraw if window size was changed
+                    if (windowWidth!=_traits->width || windowHeight!=_traits->height)
+                        requestRedraw();
                 }
             }
             break;

@@ -23,6 +23,7 @@ SET(TARGET_H
 
 SET(LIB_COMMON_FILES
     CompositeViewer.cpp
+    GraphicsWindow.cpp
     HelpHandler.cpp
     Renderer.cpp
     Scene.cpp

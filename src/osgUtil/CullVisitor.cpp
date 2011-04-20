@@ -1285,6 +1285,30 @@ class RenderStageCache : public osg::Object
         
         typedef std::map<CullVisitor*, osg::ref_ptr<RenderStage> > RenderStageMap;
         
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize)
+        {
+            for(RenderStageMap::const_iterator itr = _renderStageMap.begin();
+                itr != _renderStageMap.end();
+                ++itr)
+            {
+                itr->second->resizeGLObjectBuffers(maxSize);
+            }
+        }
+
+        /** If State is non-zero, this function releases any associated OpenGL objects for
+           * the specified graphics context. Otherwise, releases OpenGL objexts
+           * for all graphics contexts. */
+        virtual void releaseGLObjects(osg::State* state= 0) const
+        {
+            for(RenderStageMap::const_iterator itr = _renderStageMap.begin();
+                itr != _renderStageMap.end();
+                ++itr)
+            {
+                itr->second->releaseGLObjects(state);
+            }
+        }
+
         OpenThreads::Mutex  _mutex;
         RenderStageMap      _renderStageMap;
 };

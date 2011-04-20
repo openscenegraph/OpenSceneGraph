@@ -41,6 +41,10 @@ extern OSGDB_EXPORT std::string getStrippedName(const std::string& fileName);
   * However, the function interprets slashes ('/') ans backslashes ('\') as they were equal.
   */
 extern OSGDB_EXPORT std::string getPathRelative(const std::string& from, const std::string& to);
+/** Gets root part of a path ("/" or "C:"), or an empty string if none found. */
+extern OSGDB_EXPORT std::string getPathRoot(const std::string& path);
+/** Tests if path is absolute, as !getPathRoot(path).empty(). */
+extern OSGDB_EXPORT bool isAbsolutePath(const std::string& path);
 
 
 /** Converts forward slashes (/) to back slashes (\). */

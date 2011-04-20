@@ -295,7 +295,9 @@ std::string osgDB::getRealPath(const std::string& path)
     std::wstring wpath = convertUTF8toUTF16(path);
     wchar_t retbuf[MAX_PATH + 1];
     wchar_t tempbuf1[MAX_PATH + 1];
-    GetFullPathNameW(wpath.c_str(), _countof(retbuf), retbuf, NULL);
+    if (GetFullPathNameW(wpath.c_str(), _countof(retbuf), retbuf, NULL)==0) {
+        return path;
+    }
     // Force drive letter to upper case
     if ((retbuf[1] == ':') && iswlower(retbuf[0]))
         retbuf[0] = towupper(retbuf[0]);
@@ -363,24 +365,16 @@ std::string osgDB::getRealPath(const std::string& path)
 #endif 
 }
 
+namespace osgDB
+{
 
-/// Helper to iterate over elements of a path (including Windows' root, if any).
+/** Helper to iterate over elements of a path (including Windows' root, if any). **/
 class PathIterator {
 public:
-    PathIterator(const std::string & v) : end(v.end()), start(v.begin()), stop(v.begin()) { operator++(); }
+    PathIterator(const std::string & v);
     bool valid() const { return start!=end; }
-    PathIterator & operator++()
-    {
-        if (!valid()) return *this;
-        start = skipSeparators(stop);
-        if (start != end) stop = next(start);
-        return *this;
-    }
-    std::string operator*()
-    {
-        if (!valid()) return std::string();
-        return std::string(start, stop);
-    }
+    PathIterator & operator++();
+    std::string operator*();
 
 protected:
     std::string::const_iterator end;     ///< End of path string
@@ -388,20 +382,39 @@ protected:
     std::string::const_iterator stop;    ///< Points to the separator after 'start', or ==end()
 
     /// Iterate until 'it' points to something different from a separator
-    std::string::const_iterator skipSeparators(std::string::const_iterator it)
-    {
-        for (; it!=end && std::find_first_of(it, it+1, PATH_SEPARATORS, PATH_SEPARATORS+PATH_SEPARATORS_LEN) != it+1; ++it) {}
-        return it;
-    }
-
-    std::string::const_iterator next(std::string::const_iterator it)
-    {
-        return std::find_first_of(it, end, PATH_SEPARATORS, PATH_SEPARATORS+PATH_SEPARATORS_LEN);
-    }
+    std::string::const_iterator skipSeparators(std::string::const_iterator it);
+    std::string::const_iterator next(std::string::const_iterator it);
 };
 
-/// Gets root part of a path, or an empty string if none found
-std::string getPathRoot(const std::string& path) {
+}
+
+osgDB::PathIterator::PathIterator(const std::string & v) : end(v.end()), start(v.begin()), stop(v.begin()) { operator++(); }
+osgDB::PathIterator & osgDB::PathIterator::operator++()
+{
+    if (!valid()) return *this;
+    start = skipSeparators(stop);
+    if (start != end) stop = next(start);
+    return *this;
+}
+std::string osgDB::PathIterator::operator*()
+{
+    if (!valid()) return std::string();
+    return std::string(start, stop);
+}
+
+std::string::const_iterator osgDB::PathIterator::skipSeparators(std::string::const_iterator it)
+{
+    for (; it!=end && std::find_first_of(it, it+1, PATH_SEPARATORS, PATH_SEPARATORS+PATH_SEPARATORS_LEN) != it+1; ++it) {}
+    return it;
+}
+
+std::string::const_iterator osgDB::PathIterator::next(std::string::const_iterator it)
+{
+    return std::find_first_of(it, end, PATH_SEPARATORS, PATH_SEPARATORS+PATH_SEPARATORS_LEN);
+}
+
+
+std::string osgDB::getPathRoot(const std::string& path) {
     // Test for unix root
     if (path.empty()) return "";
     if (path[0] == '/') return "/";
@@ -409,6 +422,15 @@ std::string getPathRoot(const std::string& path) {
     if (path.length()<2) return "";
     if (path[1] == ':') return path.substr(0, 2);        // We should check that path[0] is a letter, but as ':' is invalid in paths in other cases, that's not a problem.
     return "";
+}
+
+bool osgDB::isAbsolutePath(const std::string& path) {
+    // Test for unix root
+    if (path.empty()) return false;
+    if (path[0] == '/') return true;
+    // Now test for Windows root
+    if (path.length()<2) return false;
+    return path[1] == ':';        // We should check that path[0] is a letter, but as ':' is invalid in paths in other cases, that's not a problem.
 }
 
 std::string osgDB::getPathRelative(const std::string& from, const std::string& to)

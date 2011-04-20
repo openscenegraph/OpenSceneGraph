@@ -253,7 +253,12 @@ class OSGUTIL_EXPORT RenderStage : public RenderBin
         /** clear the references to any dependent cameras.*/
         void clearReferencesToDependentCameras();
 
-    protected:
+        /** If State is non-zero, this function releases any associated OpenGL objects for
+           * the specified graphics context. Otherwise, releases OpenGL objexts
+           * for all graphics contexts. */
+        virtual void releaseGLObjects(osg::State* state= 0) const;
+
+protected:
 
         virtual ~RenderStage();
 

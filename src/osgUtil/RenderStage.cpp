@@ -1494,3 +1494,35 @@ void RenderStage::clearReferencesToDependentCameras()
 
     _dependentCameras.clear();
 }
+
+void RenderStage::releaseGLObjects(osg::State* state) const
+{
+    RenderBin::releaseGLObjects(state);
+
+    for(RenderStageList::const_iterator itr = _preRenderList.begin();
+        itr != _preRenderList.end();
+        ++itr)
+    {
+        itr->second->releaseGLObjects(state);
+    }
+
+    for(RenderStageList::const_iterator itr = _postRenderList.begin();
+        itr != _postRenderList.end();
+        ++itr)
+    {
+        itr->second->releaseGLObjects(state);
+    }
+
+    for(Cameras::const_iterator itr = _dependentCameras.begin();
+        itr != _dependentCameras.end();
+        ++itr)
+    {
+        (*itr)->releaseGLObjects(state);
+    }
+
+    if (_texture.valid()) _texture->releaseGLObjects(state);
+
+    if (_fbo.valid()) _fbo->releaseGLObjects(state);
+    if (_resolveFbo.valid()) _resolveFbo->releaseGLObjects(state);
+    if (_graphicsContext.valid())  _graphicsContext->releaseGLObjects(state);
+}

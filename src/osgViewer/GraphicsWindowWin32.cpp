@@ -1252,7 +1252,7 @@ bool GraphicsWindowWin32::setWindow( HWND handle )
         return false;
     }
 
-    _hglrc = ::wglCreateContext(_hdc);
+    _hglrc = createContextImplementation();
     if (_hglrc==0)
     {
         reportErrorForScreen("GraphicsWindowWin32::setWindow() - Unable to create OpenGL rendering context", _traits->screenNum, ::GetLastError());

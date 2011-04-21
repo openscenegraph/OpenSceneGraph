@@ -52,7 +52,7 @@ IF(WIN32 AND NOT ANDROID)
         ADD_DEFINITIONS(-DOSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND)
     ENDIF()
 
-    SET(TARGET_H ${TARGET_H}
+    SET(TARGET_H_NO_MODULE_INSTALL
         ${HEADER_PATH}/api/Win32/GraphicsHandleWin32
         ${HEADER_PATH}/api/Win32/GraphicsWindowWin32
         ${HEADER_PATH}/api/Win32/PixelBufferWin32
@@ -92,7 +92,7 @@ ELSE()
             SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Cocoa)
             SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Cocoa)
         ELSE()
-            SET(TARGET_H ${TARGET_H} 
+            SET(TARGET_H_NO_MODULE_INSTALL
                 ${HEADER_PATH}/api/Cocoa/GraphicsHandleCocoa
                 ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa
                 ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa
@@ -120,7 +120,7 @@ ELSE()
             SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Carbon)
             SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Carbon/PixelBufferCarbon PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Carbon)
         ELSE()
-            SET(TARGET_H ${TARGET_H} 
+            SET(TARGET_H_NO_MODULE_INSTALL
                 ${HEADER_PATH}/api/Carbon/GraphicsHandleCarbon
                 ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon
                 ${HEADER_PATH}/api/Carbon/PixelBufferCarbon
@@ -147,7 +147,7 @@ ELSE()
 
             SET_PROPERTY(SOURCE ${HEADER_PATH}/api/IOS/GraphicsWindowIOS PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/IOS)
         ELSE()
-            SET(TARGET_H ${TARGET_H} 
+            SET(TARGET_H_NO_MODULE_INSTALL
                 ${HEADER_PATH}/api/IOS/GraphicsWindowIOS
                 #${HEADER_PATH}/api/IOS/PixelBufferIOS
             )
@@ -175,7 +175,7 @@ ELSE()
             SET(OSGVIEWER_USE_XRANDR OFF)
         ENDIF()
 
-        SET(TARGET_H ${TARGET_H}
+        SET(TARGET_H_NO_MODULE_INSTALL
             ${HEADER_PATH}/api/X11/GraphicsHandleX11
             ${HEADER_PATH}/api/X11/GraphicsWindowX11
             ${HEADER_PATH}/api/X11/PixelBufferX11
@@ -250,3 +250,19 @@ IF(MINGW OR CYGWIN)
 ENDIF()
 
 SETUP_LIBRARY(${LIB_NAME})
+
+# install these headers manually since setup_library and moduleinstall
+# wouldn't keep the structure, e.g. api/X11/xyz.h
+FOREACH(HEADERFILE ${TARGET_H_NO_MODULE_INSTALL})
+  # get relative path to graphics system dependant header
+  FILE(RELATIVE_PATH REL_INCLUDEFILE ${HEADER_PATH} ${HEADERFILE})
+  GET_FILENAME_COMPONENT(REL_INCLUDE_PATH ${REL_INCLUDEFILE} PATH)
+
+  INSTALL(FILES ${HEADERFILE} 
+    DESTINATION ${INSTALL_INCDIR}/${LIB_NAME}/${REL_INCLUDE_PATH}
+    COMPONENT libopenscenegraph-dev
+  )
+ENDFOREACH()
+
+# for structure in ide
+SOURCE_GROUP("${HEADERS_GROUP}\\api" FILES ${TARGET_H_NO_MODULE_INSTALL})

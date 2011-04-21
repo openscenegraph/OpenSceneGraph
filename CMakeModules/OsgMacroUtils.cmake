@@ -205,6 +205,7 @@ ENDMACRO(SET_OUTPUT_DIR_PROPERTY_260 TARGET_TARGETNAME RELATIVE_OUTDIR)
 #  LIB_NAME  is the name of the target library
 #  TARGET_SRC  are the sources of the target
 #  TARGET_H are the eventual headers of the target
+#  TARGET_H_NO_MODULE_INSTALL are headers that belong to target but shouldn't get installed by the ModuleInstall script
 #  TARGET_LIBRARIES are the libraries to link to that are internal to the project and have d suffix for debug
 #  TARGET_EXTERNAL_LIBRARIES are external libraries and are not differentiated with d suffix
 #  TARGET_LABEL is the label IDE should show up for targets
@@ -219,6 +220,7 @@ MACRO(SETUP_LIBRARY LIB_NAME)
         ADD_LIBRARY(${LIB_NAME}
             ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
             ${TARGET_H}
+            ${TARGET_H_NO_MODULE_INSTALL}
             ${TARGET_SRC}
         )
         SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES FOLDER "OSG Core")

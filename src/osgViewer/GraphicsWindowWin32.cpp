@@ -1815,7 +1815,7 @@ bool GraphicsWindowWin32::realizeImplementation()
         if (!_initialized) return false;
     }
 
-    if (_traits.valid() && (_traits->sharedContext /*|| _traits->vsync*/))
+    if (_traits.valid() && (_traits->sharedContext || _traits->vsync || _traits->swapGroupEnabled))
     {
         // make context current so we can test capabilities and set up context sharing
         struct RestoreContext
@@ -1827,10 +1827,7 @@ bool GraphicsWindowWin32::realizeImplementation()
             }
             ~RestoreContext()
             {
-                if (_hdc)
-                {
-                    wglMakeCurrent(_hdc,_hglrc);
-                }
+                wglMakeCurrent(_hdc,_hglrc);
             }
         protected:
             HDC      _hdc;
@@ -1861,6 +1858,12 @@ bool GraphicsWindowWin32::realizeImplementation()
         if (_traits->vsync)
         {
             setSyncToVBlank(_traits->vsync);
+        }
+
+        // If the swap group is active then enable it.
+        if (_traits->swapGroupEnabled)
+        {
+            setSwapGroup(_traits->swapGroupEnabled, _traits->swapGroup, _traits->swapBarrier);
         }
     }
 
@@ -2207,6 +2210,36 @@ HCURSOR GraphicsWindowWin32::getOrCreateCursor(MouseCursor mouseCursor)
     return _mouseCursorMap[mouseCursor];
 }
 
+void GraphicsWindowWin32::setSwapGroup(bool on, GLuint group, GLuint barrier)
+{
+    if (_traits.valid())
+    {
+        _traits->swapGroupEnabled = on;
+        _traits->swapGroup        = group;
+        _traits->swapBarrier      = barrier;
+    }
+
+    typedef BOOL (GL_APIENTRY *PFNWGLJOINSWAPGROUPNVPROC) (HDC hDC, GLuint group);
+    PFNWGLJOINSWAPGROUPNVPROC wglJoinSwapGroupNV = (PFNWGLJOINSWAPGROUPNVPROC)wglGetProcAddress( "wglJoinSwapGroupNV" );
+
+    typedef BOOL (GL_APIENTRY *PFNWGLBINDSWAPBARRIERNVPROC) (GLuint group, GLuint barrier);
+    PFNWGLBINDSWAPBARRIERNVPROC wglBindSwapBarrierNV = (PFNWGLBINDSWAPBARRIERNVPROC)wglGetProcAddress( "wglBindSwapBarrierNV" );
+
+    if ((!wglJoinSwapGroupNV) || (!wglBindSwapBarrierNV))
+    {
+        OSG_INFO << "GraphicsWindowWin32::wglJoinSwapGroupNV(bool, GLuint, GLuint) not supported" << std::endl;
+        return;
+    }
+
+    int swapGroup = (on ? group : 0);
+    BOOL resultJoin = wglJoinSwapGroupNV(_hdc, swapGroup);
+    OSG_INFO << "GraphicsWindowWin32::wglJoinSwapGroupNV (" << swapGroup << ") returned " << resultJoin << std::endl;
+
+    int swapBarrier = (on ? barrier : 0);
+    BOOL resultBind = wglBindSwapBarrierNV(swapGroup, swapBarrier);
+    OSG_INFO << "GraphicsWindowWin32::wglBindSwapBarrierNV (" << swapGroup << ", " << swapBarrier << ") returned " << resultBind << std::endl;
+}
+
 void GraphicsWindowWin32::setSyncToVBlank( bool on )
 {
     if (_traits.valid())
@@ -2214,7 +2247,7 @@ void GraphicsWindowWin32::setSyncToVBlank( bool on )
         _traits->vsync = on;
     }
 
-#if 0
+//#if 0
     // we ought to properly check if the extension is listed as supported rather than just
     // if the function pointer resolves through wglGetProcAddress, but in practice everything
     // supports this extension
@@ -2232,9 +2265,9 @@ void GraphicsWindowWin32::setSyncToVBlank( bool on )
     {
         OSG_INFO << "GraphicsWindowWin32::setSyncToVBlank(bool) not supported" << std::endl;
     }
-#else
-    OSG_INFO << "GraphicsWindowWin32::setSyncToVBlank(bool) not yet implemented."<< std::endl;
-#endif
+//#else
+//    OSG_INFO << "GraphicsWindowWin32::setSyncToVBlank(bool) not yet implemented."<< std::endl;
+//#endif
 }
 
 void GraphicsWindowWin32::adaptKey( WPARAM wParam, LPARAM lParam, int& keySymbol, unsigned int& modifierMask, int& unmodifiedKeySymbol)

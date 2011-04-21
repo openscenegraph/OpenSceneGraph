@@ -145,6 +145,14 @@ class OSGVIEWER_EXPORT GraphicsWindow : public osg::GraphicsContext, public osgG
 
         bool getSyncToVBlank() const { return _traits.valid() ? _traits->vsync : true; }
 
+        /** Set swap group. */
+        virtual void setSwapGroup(bool on, GLuint group, GLuint barrier)
+        {
+            osg::notify(osg::NOTICE) << "GraphicsWindow::setSwapGroup(" << on << " " << group << " " << barrier << ") not implemented." << std::endl;
+        }
+
+        void getSwapGroup(bool& on, GLuint& group, GLuint& barrier) const { on = _traits->swapGroupEnabled; group = _traits->swapGroup; barrier = _traits->swapBarrier; }
+
     public:
 
         /** Return whether a valid and usable GraphicsContext has been created.*/

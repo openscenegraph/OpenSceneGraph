@@ -90,6 +90,9 @@ class OSGVIEWER_EXPORT GraphicsWindowWin32 : public osgViewer::GraphicsWindow, p
         /** Set sync-to-vblank. */
         virtual void setSyncToVBlank(bool on);
 
+        /** Set swap group. */
+        virtual void setSwapGroup(bool on, GLuint group, GLuint barrier);
+
         /** Handle a native (Win32) windowing event as received from the system */
         virtual LRESULT handleNativeWindowingEvent( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
         

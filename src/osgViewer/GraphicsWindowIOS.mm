@@ -510,21 +510,35 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     osgViewer::GraphicsWindowIOS* win = [(GraphicsWindowIOSGLView*)(self.view) getGraphicsWindow];
-   
-    if ((win) && (win->adaptToDeviceOrientation() == false))
-        return NO;
+    if(!win){return  NO;}
     
+    osgViewer::GraphicsWindowIOS::WindowData::DeviceOrientationFlags flags = win->getDeviceOrientationFlags();
+    
+ 
     BOOL result(NO);
     
     switch (interfaceOrientation) {
         case UIDeviceOrientationPortrait:
+            if(flags & osgViewer::GraphicsWindowIOS::WindowData::PORTRAIT_ORIENTATION){
+                result = YES;
+            }
+            break;
         case UIDeviceOrientationPortraitUpsideDown:
-            result = YES;
+            if(flags & osgViewer::GraphicsWindowIOS::WindowData::PORTRAIT_UPSIDEDOWN_ORIENTATION){
+                result = YES;
+            }
+            break;
+        case UIInterfaceOrientationLandscapeLeft:
+            if(win->getTraits()->supportsResize && flags & osgViewer::GraphicsWindowIOS::WindowData::LANDSCAPE_LEFT_ORIENTATION){
+                result = YES;
+            }
+            break;
+        case UIInterfaceOrientationLandscapeRight:
+            if(win->getTraits()->supportsResize && flags & osgViewer::GraphicsWindowIOS::WindowData::LANDSCAPE_RIGHT_ORIENTATION){
+                result = YES;
+            }
             break;
         default:
-            {
-                result = (win) ? (win->getTraits()->supportsResize) ? YES : NO : NO;
-            }
             break;
     }
     OSG_INFO << "shouldAutorotateToInterfaceOrientation for " << interfaceOrientation << ": " << ((result==YES) ? "YES" : "NO") << std::endl;
@@ -630,7 +644,7 @@ bool GraphicsWindowIOS::realizeImplementation()
             _window = windowData->_window;
         }
         
-        _adaptToDeviceOrientation = windowData->_adaptToDeviceOrientation;
+        _deviceOrientationFlags = windowData->_deviceOrientationFlags;
         _viewContentScaleFactor = windowData->_viewContentScaleFactor;
     } 
     

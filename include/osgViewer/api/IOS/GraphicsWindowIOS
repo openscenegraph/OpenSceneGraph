@@ -60,7 +60,7 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
             _viewController(NULL),
             _context(NULL),
             _ownsWindow(true),
-            _adaptToDeviceOrientation(true),
+            _deviceOrientationFlags(WindowData::ALL_ORIENTATIONS),
             _viewContentScaleFactor(-1.0f)
         {
             _traits = traits;
@@ -135,22 +135,31 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
         class WindowData : public osg::Referenced
         {
             public:
-                WindowData(UIWindow* window = NULL, bool adaptToDeviceOrientation = true, float scaleFactor = -1.0f)
+                enum DeviceOrientation{
+                    PORTRAIT_ORIENTATION = 1<<0,
+                    PORTRAIT_UPSIDEDOWN_ORIENTATION  = 1<<1,
+                    LANDSCAPE_LEFT_ORIENTATION  = 1<<2,
+                    LANDSCAPE_RIGHT_ORIENTATION  = 1<<3,
+                    ALL_ORIENTATIONS = PORTRAIT_ORIENTATION  | PORTRAIT_UPSIDEDOWN_ORIENTATION  | LANDSCAPE_LEFT_ORIENTATION  | LANDSCAPE_RIGHT_ORIENTATION
+                };
+                typedef unsigned int DeviceOrientationFlags;
+
+                WindowData(UIWindow* window = NULL, DeviceOrientationFlags orientationFlags = ALL_ORIENTATIONS, float scaleFactor = -1.0f)
                 :   _window(window),
-                    _adaptToDeviceOrientation(adaptToDeviceOrientation),
+                    _deviceOrientationFlags(orientationFlags),
                     _viewContentScaleFactor(scaleFactor)
                 {
                 }
                 
-                void setAdaptToDeviceOrientation(bool flag) { _adaptToDeviceOrientation = flag; }
+                void setAdaptToDeviceOrientation(DeviceOrientationFlags flags) { _deviceOrientationFlags = flags; }
                 
                 void setViewContentScaleFactor(float scaleFactor) { _viewContentScaleFactor = scaleFactor; }
                 
             private:
 
-                UIWindow*     _window;
-                bool          _adaptToDeviceOrientation;
-                float         _viewContentScaleFactor; 
+                UIWindow*              _window;
+                DeviceOrientationFlags _deviceOrientationFlags;
+                float                  _viewContentScaleFactor; 
         
             friend class GraphicsWindowIOS;
 
@@ -165,9 +174,9 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
         void adaptResize(int x, int y, int w, int h);
         
         
-        bool adaptToDeviceOrientation() const { return _adaptToDeviceOrientation; }
+        WindowData::DeviceOrientationFlags getDeviceOrientationFlags() const { return _deviceOrientationFlags; }
         
-        void setAdaptToDeviceOrientation(bool flag) { _adaptToDeviceOrientation = flag; }
+        void getDeviceOrientationFlags(WindowData::DeviceOrientationFlags flags) { _deviceOrientationFlags = flags; }
         
         
         //
@@ -192,15 +201,17 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
          
     private:        
        
-        GraphicsWindowIOSWindow*      _window;
-        GraphicsWindowIOSGLView*      _view;
+        GraphicsWindowIOSWindow*           _window;
+        GraphicsWindowIOSGLView*           _view;
         GraphicsWindowIOSGLViewController* _viewController;
-        EAGLContext*                    _context;
-        bool                            _updateContext;
+        EAGLContext*                       _context;
+        bool                               _updateContext;
         
-        bool _ownsWindow, _adaptToDeviceOrientation;
+        bool                               _ownsWindow;
+
+        WindowData::DeviceOrientationFlags _deviceOrientationFlags;
         
-        float _viewContentScaleFactor;
+        float                              _viewContentScaleFactor;
         
 };
 

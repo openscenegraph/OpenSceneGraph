@@ -67,7 +67,11 @@ float osg::getGLVersionNumber()
     if (!versionstring) return 0.0;
 
     std::string vs( versionstring );
-    return( asciiToFloat( vs.substr( 0, vs.find( " " ) ).c_str() ) );
+    #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+        return( asciiToFloat( vs.substr( vs.find( "ES " )+3 ).c_str() ) );
+    #else
+        return( asciiToFloat( vs.substr( vs.find( " " )+1 ).c_str() ) );
+    #endif
 }
 
 bool osg::isExtensionInExtensionString(const char *extension, const char *extensionString)
@@ -319,8 +323,15 @@ std::string& osg::getGLExtensionDisableString()
     void* osg::getGLExtensionFuncPtr(const char *funcName)
     {
         // OSG_NOTICE<<"osg::getGLExtensionFuncPtr("<<funcName<<")"<<std::endl;
+    #if defined(ANDROID)
+        #if defined(OSG_GLES1_AVAILABLE)
+            static void *handle = dlopen("libGLESv1_CM.so", RTLD_NOW);
+        #elif defined(OSG_GLES2_AVAILABLE)
+            static void *handle = dlopen("libGLESv2.so", RTLD_NOW);
+        #endif
+        return dlsym(handle, funcName);
 
-    #if defined(WIN32)
+    #elif defined(WIN32)
 
         #if defined(OSG_GLES2_AVAILABLE)
             static HMODULE hmodule = GetModuleHandle(TEXT("libGLESv2.dll"));

@@ -377,9 +377,17 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
     {
         // If glGetString raises an error, assume initial release "1.00"
         while(glGetError() != GL_NO_ERROR) {}        // reset error flag
+
         const char* langVerStr = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
         if( (glGetError() == GL_NO_ERROR) && langVerStr )
-            _glslLanguageVersion = asciiToFloat( langVerStr );
+        {
+            std::string glslvs( langVerStr );
+            #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+                _glslLanguageVersion = ( asciiToFloat( glslvs.substr( glslvs.find( "GLSL ES " )+8 ).c_str() ) );
+            #else
+                _glslLanguageVersion = ( asciiToFloat( glslvs.substr( glslvs.find( "GLSL "+5 ) ).c_str() ) );
+            #endif
+        }
         else
             _glslLanguageVersion = 1.0f;
     }

@@ -762,7 +762,7 @@ class ReaderGEO
             }
             return nv;
         }
-        void outputGeode(georecord grec, osgDB::Output &fout) { // 
+        void outputGeode(const georecord& grec, osgDB::Output &fout) { //
             const std::vector<georecord *> gr=grec.getchildren();
             if (gr.size()>0) {
                 fout.moveIn();
@@ -946,7 +946,7 @@ class ReaderGEO
                 }
             }
         }
-        int  makeAnimatedGeometry(const georecord grec, const int imat,Group *nug) {
+        int makeAnimatedGeometry(const georecord& grec, const int imat,Group *nug) {
             // animated polygons - create a matrix & geode & poly & add to group nug
             const std::vector<georecord *> gr=grec.getchildren();
             int nanimations=0;
@@ -1168,7 +1168,7 @@ class ReaderGEO
             }
             return gr.size();
         }
-        void makeTexts(georecord grec, Group *nug)
+        void makeTexts(const georecord& grec, Group *nug)
         {    // makeTexts adds a set of text+transform Geometrys attached to current parent (Group nug)
             const std::vector<georecord *> gr=grec.getchildren();
             std::vector<osg::Geometry *> geom;

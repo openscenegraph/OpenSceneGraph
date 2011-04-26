@@ -1020,6 +1020,10 @@ bool GraphicsWindowCocoa::realizeImplementation()
         OSG_WARN << "GraphicsWindowCocoa::realizeImplementation :: could not create context" << std::endl;
         return false;
     }
+    
+    // set graphics handle for shared usage
+    setNSOpenGLContext(_context);
+    
     GraphicsWindowCocoaGLView* theView = [[ GraphicsWindowCocoaGLView alloc ] initWithFrame:[ _window frame ] ];
     [theView setAutoresizingMask:  (NSViewWidthSizable | NSViewHeightSizable) ];
     [theView setGraphicsWindowCocoa: this];

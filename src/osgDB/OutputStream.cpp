@@ -324,8 +324,8 @@ void OutputStream::writeImage( const osg::Image* img )
         {
         case OutputStream::WRITE_INLINE_DATA: decision = IMAGE_INLINE_DATA; break;
         case OutputStream::WRITE_INLINE_FILE: decision = IMAGE_INLINE_FILE; break;
-        case OutputStream::WRITE_EXTERNAL_FILE: decision = IMAGE_EXTERNAL; break;
-        case OutputStream::WRITE_USE_EXTERNAL: decision = IMAGE_WRITE_OUT; break;
+        case OutputStream::WRITE_EXTERNAL_FILE: decision = IMAGE_WRITE_OUT; break;
+        case OutputStream::WRITE_USE_EXTERNAL: decision = IMAGE_EXTERNAL; break;
         default:
             if ( img->getWriteHint()==osg::Image::EXTERNAL_FILE )
                 decision = IMAGE_EXTERNAL;

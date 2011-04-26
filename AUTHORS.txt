@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.9.11
+OpenSceneGraph Library 2.9.13
 
-449 Contributors:
+456 Contributors:
 
 Firstname Surname
 -----------------
@@ -12,22 +12,22 @@ Marco Jez
 Mathias Fröhlich
 Mike Weiblen
 Jean-Sebastien Guay
+Farshid Lashkari
 Eric Wing
 Ulrich Hertlein
-Farshid Lashkari
 Cedric Pinson
 Brede Johansen
 Wang Rui
 Bob Kuehne
 Geoff Michel
 Michael Platings
-Eric Sokolowsky
+Sukender 
 Wojciech Lewandowski
-Sukender I
+Eric Sokolowsky
 David Callu
 Trajce Nikolov
-Martin Lavery
 Tim Moore
+Martin Lavery
 Colin McDonald
 Tree 
 Luigi Calori
@@ -36,10 +36,11 @@ Roland Smeenk
 Roger James
 Chris Hanson
 Jeremy Moles
+Mattias Helsing
 Jason Beverage
 Andy Skinner
 Paul Melis
-Mattias Helsing
+Jan Peciva
 J.P. Delport
 David Fries
 Tom Jolley
@@ -48,7 +49,6 @@ Jason Daly
 Philip Lowman
 Per Fahlberg
 Norman Vine
-Jan Peciva
 Art Tevs
 Alberto Luaces
 Serge Lages
@@ -56,15 +56,16 @@ Alberto Farre
 Sherman Wilcox
 Robert Milharcic
 Mathieu Marache
+Magnus Kessler
 Laurens Voerman
 André Garneau
 Adrian Egli
 Terry Welsh
 Ruben Lopez
 Randall Hopper
+Mourad Boufarguine
 Brad Christiansen
 Olaf Flebbe
-Magnus Kessler
 Gideon May
 Don Tidrow
 Chris Denham
@@ -75,7 +76,6 @@ Joakim Simonsson
 David Spilling
 Daniel Sjölie
 Bryan Thrall
-Mourad Boufarguine
 Glenn Waldron
 Fabien Lavignotte
 Melchior Franz
@@ -87,19 +87,21 @@ Martin Beckett
 Joran Jessurun
 Gino van den Bergen
 Frederic Marmond
+David Guthrie
 Csaba Halasz
 Boris Bralo
 Yefei He
+Torben Dannhauer
 Sondra Iverson
 Simon Julier
 Rune Schmidt Jensen
 Rainer Oder
+Rafa Gaitan
 Martin Naylor
 Martin Aumueller
 Mario Valle
 Luc Frauciel
 Gordon Tomlinson
-David Guthrie
 Cory Riddell
 Carlo Camporesi
 Ben Discoe
@@ -130,6 +132,7 @@ Mihai Radu
 Michael Hartman
 Martins Innus
 Maciej Krol
+Johannes Baeuerle
 Johan Nouvel
 Hartwig Wiesmann
 Frederic Bouvier
@@ -137,13 +140,11 @@ Donn Mielcarek
 Corbin Holtz
 Blasius Czink
 Toshiyuki Takahei
-Torben Dannhauer
 Tony Horrobin
 Sebastien Grignard
 Ryan Kawicki
 Romano Magacho
 Riccardo Corsi
-Rafa Gaitan
 Nico Kruithof
 Mikhail Izmestev
 Maria Ten
@@ -161,6 +162,7 @@ Bruce Clay
 Andreas Goebel
 Alok Priyadarshi
 Alberto Barbati
+Alan Dickinson
 Vladimir Shabanov
 Tugkan Calapoglu
 Tim Daoust
@@ -205,6 +207,7 @@ Yuzhong Shen
 Warren Macchi
 Vincent Bourdier
 Terrex 
+Tassilo Glander
 Sylvain Marie
 Steve Lunsford
 Stephane Simon
@@ -214,6 +217,7 @@ Sebastian Messerschmidt
 Rene Molenaar
 Raymond de Vries
 Ralf Kern
+Piotr Gwiazdowski
 Pierre Haritchabalet
 Perry Miller
 Paul Obermeier
@@ -228,6 +232,7 @@ Mathias Fiedler
 Mathew May
 Martin Spott
 Martijn Kragtwijk
+Marius Heise
 Lukasz Izdebski
 Lilith Bryant
 Lars Nilsson
@@ -244,6 +249,7 @@ Himar Carmona
 He Sicong
 Guy Volckaert
 Gustavo Wagner
+Guillaume Taze
 Guillaume Chouvenc
 Gerrick Bivins
 George Tarantilis
@@ -253,14 +259,15 @@ Eduardo Poyart
 Edgar Ellis
 David Ergo
 Daniel Trstenjak
+Craig Bosma
 Christophe Loustaunau
+Bradley Anderegg
 Brad Anderegg
 Aric Aumann
 Andrew Sampson
 Andrew Lorino
 Alexandre Amalric
 Alessandro Terenzi
-Alan Dickinson
 Zbigniew Sroczynski
 Yuri Vilmanis
 Xin Li
@@ -277,11 +284,11 @@ Valery Bickov
 Vaclav Bilek
 Tyge Løvset
 Troy Yee
+Tomas Hogarth
 Tomas Hnilica
 Todd Furlong
 Tino Schwarze
 Thomas Weidner
-Tassilo Glander
 Tan Dunning
 Stewart Andreason
 Steven Thomas
@@ -310,6 +317,7 @@ Ragnar Hammarqvist
 Qing Shen
 Piotr Rak
 Pierre Bourdin
+Philipp Svehla
 Philipp Siemoleit
 Philipp Mächler
 Petr Salinger
@@ -348,7 +356,6 @@ Martin von Gargern
 Martin Scheffler
 Martin Lambers
 Martin Beck
-Marius Heise
 Mario Guimaraes
 Marco Sciabica
 Marco Lehmann
@@ -370,12 +377,12 @@ Jutta Sauer
 Julian Scheid
 Juan Hernando
 Josh Portway
+Jorge Ciges
 John Tan
 John Grant
 John Donovan
 John Davis
 John Argentieri
-Johannes Bauerle
 Joan Abadie
 Jim Brooks
 Jeroen den Dekker
@@ -390,13 +397,13 @@ Holger Helmich
 Henrique Bucher
 Hautio Jari
 Gunter Huber
-Guillaume Taze
 Guillaume Millet
 Gregory Jaegy
 Graeme Harkness
 Gian Lorenzetto
 George Papagiannakis
 Galen Faidley
+Frederic Smith
 Frank Warmerdam
 Frank Midgley
 Frank Lindeman
@@ -412,6 +419,7 @@ Duvan Cope
 Duncan Cavens
 Drew Whitehouse
 Douglas A. Pouk
+Dietmar Funck
 Dean Iverson
 David Jung
 Danny Valente
@@ -419,7 +427,6 @@ Daniel Stien
 Dan Minor
 César L. B. Silveira
 Cyril Brulebois
-Craig Bosma
 Clay Fowler
 Chuck Sembroski
 Christopher Blaesius
@@ -431,12 +438,12 @@ Carlos Garcea
 Bruno Herbelin
 Brian Keener
 Brandon Hamm
-Bradley Anderegg
 Bora Utka
 Björn Hein
 Bill Prendergast
 Bernardt Duvenhage
 Benoit Laniel
+Benjamin Wasty
 Ben van Basten
 Bart Gallet
 Axel Volley

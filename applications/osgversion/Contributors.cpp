@@ -433,7 +433,10 @@ TypoCorrection typoCorrections[] =
     {"Jean-Sebasien",  "Jean-Sebastien"},
     {"Katherina",      "Katharina"},
     {"Biyfarguine",    "Boufarguine"},
-    {"Dickenson",       "Dickinson"}
+    {"Dickenson",       "Dickinson"},
+    {"Jahannes","Johannes"},
+    {"Baeuerele","Baeuerle"},
+    {"Bauerle","Baeuerle"}
 };
 
 
@@ -447,6 +450,10 @@ struct NameCorrection
 
 NameCorrection nameCorrections[] =
 {
+    {"Sukender","I",
+     "Sukender", ""},
+    {"Sukender","Here",
+     "Sukender", ""},
     {"Ewe","Woessner",
      "Uwe", "Woessner"},
     {"Martin","von",

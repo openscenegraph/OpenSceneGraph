@@ -39,13 +39,13 @@ public:
     // changes and what-have-you on mousePush/mouseRelease/etc. is going to be
     // annoying...
 
-    virtual bool mousePush(double, double, osgWidget::WindowManager*) {
+    virtual bool mousePush(double, double, const osgWidget::WindowManager*) {
         addColor(0.2f, 0.2f, 0.2f, 0.0f);
         
         return true;
     }
 
-    virtual bool mouseRelease(double, double, osgWidget::WindowManager*) {
+    virtual bool mouseRelease(double, double, const osgWidget::WindowManager*) {
         addColor(-0.2f, -0.2f, -0.2f, 0.0f);
         
         return true;

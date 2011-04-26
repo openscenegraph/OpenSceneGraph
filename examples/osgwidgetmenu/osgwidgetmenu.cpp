@@ -27,17 +27,17 @@ struct ColorLabel: public osgWidget::Label {
         setEventMask(osgWidget::EVENT_MOUSE_PUSH | osgWidget::EVENT_MASK_MOUSE_MOVE);
     }
 
-    bool mousePush(double, double, osgWidget::WindowManager*) {
+    bool mousePush(double, double, const osgWidget::WindowManager*) {
         return true;
     }
 
-    bool mouseEnter(double, double, osgWidget::WindowManager*) {
+    bool mouseEnter(double, double, const osgWidget::WindowManager*) {
         setColor(0.6f, 0.6f, 0.6f, 1.0f);
         
         return true;
     }
 
-    bool mouseLeave(double, double, osgWidget::WindowManager*) {
+    bool mouseLeave(double, double, const osgWidget::WindowManager*) {
         setColor(0.3f, 0.3f, 0.3f, 1.0f);
         
         return true;
@@ -82,7 +82,7 @@ public:
         _window->resize(getWidth());
     }
 
-    bool mousePush(double, double, osgWidget::WindowManager*) {
+    bool mousePush(double, double, const osgWidget::WindowManager*) {
         if(!_window->isVisible()) _window->show();
 
         else _window->hide();
@@ -90,7 +90,7 @@ public:
         return true;
     }
 
-    bool mouseLeave(double, double, osgWidget::WindowManager*) {
+    bool mouseLeave(double, double, const osgWidget::WindowManager*) {
         if(!_window->isVisible()) setColor(0.8f, 0.8f, 0.8f, 0.8f);
 
         return true;

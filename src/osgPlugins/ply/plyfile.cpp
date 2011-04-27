@@ -1289,7 +1289,7 @@ PlyOtherProp *ply_get_other_properties(
   }
 #endif
   other->size = elem->other_size;
-  other->props = (PlyProperty **) myalloc (sizeof(PlyProperty) * elem->nprops);
+  other->props = (PlyProperty **) myalloc (sizeof(PlyProperty*) * elem->nprops);
   
   /* save descriptions of each "other" property */
   nprops = 0;

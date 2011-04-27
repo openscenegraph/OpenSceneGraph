@@ -79,6 +79,7 @@ BlendColor::Extensions::Extensions(const Extensions& rhs):
     Referenced()
 {
     _isBlendColorSupported = rhs._isBlendColorSupported;
+    _glBlendColor = rhs._glBlendColor;
 }
 
 void BlendColor::Extensions::lowestCommonDenominator(const Extensions& rhs)

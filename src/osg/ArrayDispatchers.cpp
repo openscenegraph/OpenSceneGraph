@@ -163,7 +163,6 @@ class TemplateTargetAttributeDispatch : public AttributeDispatch
             _functionPtr(_target, &(_array[pos * _stride]));
         }
 
-        GLBeginEndAdapter*      _glBeginEndAdapter;
         F                       _functionPtr;
         I                       _target;
         unsigned int            _stride;

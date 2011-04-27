@@ -2255,7 +2255,6 @@ void Texture::applyTexImage2D_subload(State& state, GLenum target, const Image* 
         {
             //OSG_WARN<<"Warning:: cannot subload mip mapped texture from non mipmapped image."<<std::endl;
             applyTexImage2D_load(state, target, image, inwidth, inheight,numMipmapLevels); 
-            return;
         }
     }
     

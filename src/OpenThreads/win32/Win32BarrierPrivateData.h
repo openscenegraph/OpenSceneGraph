@@ -28,7 +28,9 @@ class Barrier;
 class Win32BarrierPrivateData {
     friend class Barrier;
 private:
-    Win32BarrierPrivateData() {};
+    Win32BarrierPrivateData(int mc, int c, int p):
+         maxcnt(mc), cnt(c), phase(p) {}
+
     ~Win32BarrierPrivateData();
 
     Condition cond;            // cv for waiters at barrier

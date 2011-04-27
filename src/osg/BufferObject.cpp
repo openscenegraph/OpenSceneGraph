@@ -49,6 +49,7 @@ GLBufferObject::GLBufferObject(unsigned int contextID, BufferObject* bufferObjec
     _set(0),
     _previous(0),
     _next(0),
+    _frameLastUsed(0),
     _extensions(0)
 {
     assign(bufferObject);

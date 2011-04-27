@@ -69,6 +69,10 @@ void DisplaySettings::setDisplaySettings(const DisplaySettings& vs)
     _depthBuffer = vs._depthBuffer;
     _minimumNumberAlphaBits = vs._minimumNumberAlphaBits;
     _minimumNumberStencilBits = vs._minimumNumberStencilBits;
+    _minimumNumberAccumRedBits = vs._minimumNumberAccumRedBits;
+    _minimumNumberAccumGreenBits = vs._minimumNumberAccumGreenBits;
+    _minimumNumberAccumBlueBits = vs._minimumNumberAccumBlueBits;
+    _minimumNumberAccumAlphaBits = vs._minimumNumberAccumAlphaBits;
 
     _maxNumOfGraphicsContexts = vs._maxNumOfGraphicsContexts;
     _numMultiSamples = vs._numMultiSamples;

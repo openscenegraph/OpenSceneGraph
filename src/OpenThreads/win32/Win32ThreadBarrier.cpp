@@ -34,10 +34,7 @@ Win32BarrierPrivateData::~Win32BarrierPrivateData()
 // Use: public.
 //
 Barrier::Barrier(int numThreads) {
-    Win32BarrierPrivateData *pd = new Win32BarrierPrivateData();
-    pd->cnt = 0;
-    pd->phase = 0;
-    pd->maxcnt = numThreads;
+    Win32BarrierPrivateData *pd = new Win32BarrierPrivateData(numThreads, 0, 0);
     _valid = true;
     _prvData = static_cast<void *>(pd);
 }

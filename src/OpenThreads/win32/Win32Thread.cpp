@@ -231,6 +231,19 @@ int Thread::GetConcurrency() {
     return -1;
 }
 
+Win32ThreadPrivateData::Win32ThreadPrivateData()
+{
+    stackSize = 0;
+    isRunning = false;
+    cancelMode = 0;
+    uniqueId = 0;
+    threadPriority = Thread::THREAD_PRIORITY_DEFAULT;
+    threadPolicy = Thread::THREAD_SCHEDULE_DEFAULT;
+    detached = false;
+    cancelEvent.set(CreateEvent(NULL,TRUE,FALSE,NULL));
+    cpunum = -1;
+}
+
 //----------------------------------------------------------------------------
 //
 // Description: Constructor
@@ -243,16 +256,6 @@ Thread::Thread() {
     //    if(!s_isInitialized) Init();
 
     Win32ThreadPrivateData *pd = new Win32ThreadPrivateData();
-
-    pd->stackSize = 0;
-    pd->isRunning = false;
-    pd->cancelMode = 0;
-    pd->uniqueId = 0;
-    pd->threadPriority = Thread::THREAD_PRIORITY_DEFAULT;
-    pd->threadPolicy = Thread::THREAD_SCHEDULE_DEFAULT;
-    pd->detached = false;
-    pd->cancelEvent.set(CreateEvent(NULL,TRUE,FALSE,NULL));
-    pd->cpunum = -1;
 
     _prvData = static_cast<void *>(pd);
 }
@@ -678,8 +681,6 @@ int OpenThreads::GetNumberOfProcessors()
 
 int OpenThreads::SetProcessorAffinityOfCurrentThread(unsigned int cpunum)
 {
-    if (cpunum<0) return -1;
-    
     Thread::Init();
 
     Thread* thread = Thread::CurrentThread();

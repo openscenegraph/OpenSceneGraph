@@ -233,6 +233,7 @@ ParallelSplitShadowMap::ParallelSplitShadowMap(osg::Geode** gr, int icountplanes
     _debug_color_in_GLSL(false),
     _user_polgyonOffset_set(false),
     _resolution(TEXTURE_RESOLUTION),
+    _setMaxFarDistance(1000.0),
     _isSetMaxFarDistance(false),
     _split_min_near_dist(ZNEAR_MIN_FROM_LIGHT_SOURCE),
     _move_vcam_behind_rcam_factor(MOVE_VIRTUAL_CAMERA_BEHIND_REAL_CAMERA_FACTOR),
@@ -251,6 +252,7 @@ ParallelSplitShadowMap::ParallelSplitShadowMap(osg::Geode** gr, int icountplanes
 
 ParallelSplitShadowMap::ParallelSplitShadowMap(const ParallelSplitShadowMap& copy, const osg::CopyOp& copyop):
     ShadowTechnique(copy,copyop),
+    _displayTexturesGroupingNode(0),
     _textureUnitOffset(copy._textureUnitOffset),
     _number_of_splits(copy._number_of_splits),
     _debug_color_in_GLSL(copy._debug_color_in_GLSL),
@@ -276,10 +278,11 @@ void ParallelSplitShadowMap::setAmbientBias(const osg::Vec2& ambientBias)
     if (_ambientBiasUniform ) _ambientBiasUniform->set(osg::Vec2f(_ambientBias.x(), _ambientBias.y()));
 }
 
-void ParallelSplitShadowMap::init(){
+void ParallelSplitShadowMap::init()
+{
     if (!_shadowedScene) return;
 
-    osg::StateSet* sharedStateSet = new osg::StateSet;
+    osg::ref_ptr<osg::StateSet> sharedStateSet = new osg::StateSet;
     sharedStateSet->setDataVariance(osg::Object::DYNAMIC);
 
     unsigned int iCamerasMax=_number_of_splits;
@@ -390,7 +393,7 @@ void ParallelSplitShadowMap::init(){
         //////////////////////////////////////////////////////////////////////////
         // set up stateset and append texture, texGen ,...
         {
-            pssmShadowSplitTexture._stateset = sharedStateSet;//new osg::StateSet;
+            pssmShadowSplitTexture._stateset = sharedStateSet.get();//new osg::StateSet;
             pssmShadowSplitTexture._stateset->setTextureAttributeAndModes(pssmShadowSplitTexture._textureUnit,pssmShadowSplitTexture._texture.get(),osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
             pssmShadowSplitTexture._stateset->setTextureMode(pssmShadowSplitTexture._textureUnit,GL_TEXTURE_GEN_S,osg::StateAttribute::ON);
             pssmShadowSplitTexture._stateset->setTextureMode(pssmShadowSplitTexture._textureUnit,GL_TEXTURE_GEN_T,osg::StateAttribute::ON);

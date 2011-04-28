@@ -378,6 +378,7 @@ ArrayDispatchers::ArrayDispatchers():
     _colorDispatchers(0),
     _secondaryColorDispatchers(0),
     _fogCoordDispatchers(0),
+    _useVertexAttribAlias(false),
     _useGLBeginEndAdapter(false)
 {
 
@@ -574,6 +575,7 @@ void ArrayDispatchers::reset()
 {
     if (!_initialized) init();
 
+    _useVertexAttribAlias = false;
     _useGLBeginEndAdapter = false;
 
     for(ActiveDispatchList::iterator itr = _activeDispatchList.begin();

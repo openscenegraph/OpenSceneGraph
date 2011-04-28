@@ -17,6 +17,7 @@
 #include <osg/Referenced>
 #include <osg/CopyOp>
 #include <osg/ref_ptr>
+#include <osg/Notify>
 
 #include <string>
 
@@ -42,16 +43,69 @@ class State;
 template<typename T>
 T* clone(const T* t, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY)
 {
-    return dynamic_cast<T*>(t->clone(copyop)); 
-}
+    if (t)
+    {
+        osg::ref_ptr<osg::Object> obj = t->clone(copyop);
 
+        T* ptr = dynamic_cast<T*>(obj.get());
+        if (ptr)
+        {
+            obj.release();
+            return ptr;
+        }
+        else
+        {
+            OSG_WARN<<"Warning: osg::clone(const T*, osg::CopyOp&) cloned object not of type T, returning NULL."<<std::endl;
+            return 0;
+        }
+    }
+    else
+    {
+        OSG_WARN<<"Warning: osg::clone(const T*, osg::CopyOp&) passed null object to clone, returning NULL."<<std::endl;
+        return 0;
+    }
+}
 
 template<typename T>
 T* clone(const T* t, const std::string& name, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY)
 {
-    T* newObject = dynamic_cast<T*>(t->clone(copyop)); 
-    newObject->setName(name);
-    return newObject;
+    T* newObject = osg::clone(t, copyop);
+    if (newObject)
+    {
+        newObject->setName(name);
+        return newObject;
+    }
+    else
+    {
+        OSG_WARN<<"Warning: osg::clone(const T*, const std::string&, const osg::CopyOp) passed null object to clone, returning NULL."<<std::endl;
+        return 0;
+    }
+}
+
+template<typename T>
+T* cloneType(const T* t)
+{
+    if (t)
+    {
+        osg::ref_ptr<osg::Object> obj = t->cloneType();
+
+        T* ptr = dynamic_cast<T*>(obj.get());
+        if (ptr)
+        {
+            obj.release();
+            return ptr;
+        }
+        else
+        {
+            OSG_WARN<<"Warning: osg::cloneType(const T*) cloned object not of type T, returning NULL."<<std::endl;
+            return 0;
+        }
+    }
+    else
+    {
+        OSG_WARN<<"Warning: osg::cloneType(const T*) passed null object to clone, returning NULL."<<std::endl;
+        return 0;
+    }
 }
 
 /** Base class/standard interface for objects which require IO support, 

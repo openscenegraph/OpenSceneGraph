@@ -232,7 +232,6 @@ void ApplicationUsage::write(std::ostream& output, unsigned int type, unsigned i
     bool needspace = false;
     if ((type&COMMAND_LINE_OPTION) && !getCommandLineOptions().empty())
     {
-        if (needspace) output << std::endl;
         output << "Options";
         if (showDefaults) output << " [and default value]";
         output << ":"<<std::endl;

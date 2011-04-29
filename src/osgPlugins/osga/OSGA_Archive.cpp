@@ -330,6 +330,8 @@ bool OSGA_Archive::open(const std::string& filename, ArchiveStatus status, unsig
 {
     SERIALIZER();
 
+    _archiveFileName = filename;
+
     if (status==READ)
     {
         _status = status;
@@ -412,6 +414,8 @@ bool OSGA_Archive::open(const std::string& filename, ArchiveStatus status, unsig
 bool OSGA_Archive::open(std::istream& fin)
 {
     SERIALIZER();
+
+    _archiveFileName = "";
 
     OSG_NOTICE<<"OSGA_Archive::open"<<std::endl;
     static_cast<std::istream&>(_input).rdbuf(fin.rdbuf());
@@ -499,6 +503,12 @@ std::string OSGA_Archive::getMasterFileName() const
     return _masterFileName;
 }
 
+osgDB::FileType OSGA_Archive::getFileType(const std::string& filename) const
+{
+    if (_indexMap.count(filename)!=0) return osgDB::REGULAR_FILE;
+    return osgDB::FILE_NOT_FOUND;
+}
+
 bool OSGA_Archive::getFileNames(FileNameList& fileNameList) const
 {
     SERIALIZER();
@@ -514,6 +524,50 @@ bool OSGA_Archive::getFileNames(FileNameList& fileNameList) const
     return !fileNameList.empty();
 }
 
+osgDB::DirectoryContents OSGA_Archive::getDirectoryContents(const std::string& dirName) const
+{
+    osgDB::DirectoryContents files;
+    for(FileNamePositionMap::const_iterator itr=_indexMap.begin();
+        itr!=_indexMap.end();
+        ++itr)
+    {
+        const std::string& filename = itr->first;
+        if (filename.size()>dirName.size())
+        {
+            // check for match of directory name while accounting for potential
+            // differences in types of slashes
+            unsigned int i=0;
+            for(; i<dirName.size(); ++i)
+            {
+                char f = filename[i];
+                char d = dirName[i];
+                if (f=='\\') f='/';
+                if (d=='\\') d='/';
+                if (f!=d) break;
+            }
+
+            if (i==dirName.size())
+            {
+                // directory name matched, but need to make sure a trailing filename exists
+                // and to skip over any immediate slashes
+                char f = filename[i];
+
+                // check for slash
+                if (f=='\\' || f=='/')
+                {
+                    // found slash, now need to skip over it.
+                    ++i;
+                    if (i<filename.size())
+                    {
+                        // still have charaters left after slash which respresent the filename
+                        files.push_back(filename.substr(i));
+                    }
+                }
+            }
+        }
+    }
+    return files;
+}
 
 void OSGA_Archive::writeIndexBlocks()
 {

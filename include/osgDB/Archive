@@ -16,6 +16,7 @@
 
 #include <osgDB/ReaderWriter>
 #include <osgDB/Registry>
+#include <osgDB/FileUtils>
 
 #include <fstream>
 #include <list>
@@ -35,20 +36,31 @@ class OSGDB_EXPORT Archive : public ReaderWriter
         virtual const char* className() const { return "Archive"; }
 
         virtual bool acceptsExtension(const std::string& /*extension*/) const { return true; }
-        
+
         /** close the archive.*/
         virtual void close() = 0;
 
-        /** return true if file exists in archive.*/        
-        virtual bool fileExists(const std::string& filename) const = 0;
-        
+        /** Get the file name which represents the archived file.*/
+        virtual std::string getArchiveFileName() const = 0;
+
         /** Get the file name which represents the master file recorded in the Archive.*/
         virtual std::string getMasterFileName() const = 0;
-        
-        typedef std::vector<std::string> FileNameList;
-        
+
+        /** return true if file exists in archive.*/
+        virtual bool fileExists(const std::string& filename) const = 0;
+
+        /** return type of file. */
+        virtual FileType getFileType(const std::string& filename) const = 0;
+
+        typedef osgDB::DirectoryContents FileNameList;
+
         /** Get the full list of file names available in the archive.*/
-        virtual bool getFileNames(FileNameList& fileNameList) const = 0;
+        virtual bool getFileNames(FileNameList& fileNames) const = 0;
+
+        /** return the contents of a directory.
+          * returns an empty array on any error.*/
+        virtual DirectoryContents getDirectoryContents(const std::string& dirName) const = 0;
+
 
         virtual ReadResult readObject(const std::string& /*fileName*/,const Options* =NULL) const = 0;
         virtual ReadResult readImage(const std::string& /*fileName*/,const Options* =NULL) const = 0;
@@ -59,8 +71,6 @@ class OSGDB_EXPORT Archive : public ReaderWriter
         virtual WriteResult writeImage(const osg::Image& /*image*/,const std::string& /*fileName*/,const Options* =NULL) const = 0;
         virtual WriteResult writeHeightField(const osg::HeightField& /*heightField*/,const std::string& /*fileName*/,const Options* =NULL) const = 0;
         virtual WriteResult writeNode(const osg::Node& /*node*/,const std::string& /*fileName*/,const Options* =NULL) const = 0;
-           
-
 
 };
 

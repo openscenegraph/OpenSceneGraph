@@ -177,32 +177,54 @@ toff_t libtiffOStreamSeekProc(thandle_t fd, toff_t off, int i)
 {
     std::ostream *fout = (std::ostream*)fd;
 
-    toff_t ret;
+    toff_t pos_required = 0;
+    toff_t stream_end = 0;
     switch(i)
     {
         case SEEK_SET:
-            fout->seekp(off,std::ios::beg);
-            ret = fout->tellp();
-            if(fout->bad())
-                ret = 0;
-            break;
+        {
+            pos_required = off;
 
+            fout->seekp(0, std::ios::end);
+            stream_end = fout->tellp();
+            break;
+        }
         case SEEK_CUR:
-            fout->seekp(off,std::ios::cur);
-            ret = fout->tellp();
-            if(fout->bad())
-                ret = 0;
-            break;
+        {
+            toff_t stream_curr = fout->tellp();
+            pos_required = stream_curr + off;
 
+            fout->seekp(0, std::ios::end);
+            stream_end = fout->tellp();
+            break;
+        }
         case SEEK_END:
-            fout->seekp(off,std::ios::end);
-            ret = fout->tellp();
-            if(fout->bad())
-                ret = 0;
+        {
+            fout->seekp(0, std::ios::end);
+            stream_end = fout->tellp();
+            pos_required = stream_end + off;
             break;
+        }
         default:
-            ret = 0;
             break;
+    }
+
+    if (pos_required>stream_end)
+    {
+        // position required past the end of the stream so we need to insert extra characters to
+        // ensure the stream is big enough to encompass the new the position.
+        fout->seekp(0, std::ios::end);
+        for(toff_t i=stream_end; i<pos_required; ++i)
+        {
+            fout->put(char(0));
+        }
+    }
+
+    fout->seekp(pos_required,std::ios::beg);
+    toff_t ret = fout->tellp();
+    if (fout->bad())
+    {
+        ret = 0;
     }
     return ret;
 }

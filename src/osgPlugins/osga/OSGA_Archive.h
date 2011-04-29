@@ -44,16 +44,25 @@ class OSGA_Archive : public osgDB::Archive
         /** close the archive.*/
         virtual void close();
 
-        /** return true if file exists in archive.*/        
-        virtual bool fileExists(const std::string& filename) const;
+        /** Get the file name which represents the archived file.*/
+        virtual std::string getArchiveFileName() const { return _archiveFileName; }
         
         /** Get the file name which represents the master file recorded in the Archive.*/
         virtual std::string getMasterFileName() const;
         
-        typedef std::vector<std::string> FileNameList;
-        
+        /** return true if file exists in archive.*/
+        virtual bool fileExists(const std::string& filename) const;
+
+        /** return type of file. */
+        virtual osgDB::FileType getFileType(const std::string& filename) const;
+
         /** Get the full list of file names available in the archive.*/
         virtual bool getFileNames(FileNameList& fileNameList) const;
+
+        /** return the contents of a directory.
+          * returns an empty array on any error.*/
+        virtual osgDB::DirectoryContents getDirectoryContents(const std::string& dirName) const;
+
 
 
         /** Read an osg::Object of specified file name from the Archive.*/
@@ -206,7 +215,8 @@ class OSGA_Archive : public osgDB::Archive
         ArchiveStatus       _status;
         osgDB::ifstream     _input;
         osgDB::fstream      _output;
-        
+
+        std::string         _archiveFileName;
         std::string         _masterFileName;
         IndexBlockList      _indexBlockList;
         FileNamePositionMap _indexMap;

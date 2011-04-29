@@ -1,3 +1,283 @@
+2011-04-28 16:33  robert
+
+	* include/osg/Object, src/osg/CopyOp.cpp: Fixed Coverity reported
+	  issue.
+	  
+	  CID 11447: Unchecked dynamic_cast (FORWARD_NULL)
+	  Dynamic cast to pointer "dynamic_cast <struct osg::NodeCallback
+	  *>(nc->clone(this))" can return null.
+	  Assigning null: "first" = "dynamic_cast <struct osg::NodeCallback
+	  *>(nc->clone(this))".
+	  
+	  The clone() implementation is written using macro's so that it
+	  always returns the type of Object
+	  being cloned so it's normally safe to assume that a
+	  dynamic_cast<> will always return a valid pointer as long
+	  as the new T that involves creates a valid object. However, if
+	  the class being cloned doesn't correctly
+	  implement the clone() method then their potential for the
+	  dynamic_cast to fail and will return a NULL and will
+	  result in a memory leak of the object of paraent class that the
+	  clone would have defaulted to.
+	  
+	  I've tightened up the CopyOp.cpp code to check the return type
+	  and added better handling of the clone in the
+	  osg::clone() methods so thay don't have any potential mememory
+	  leaks and report warnings to OSG_WARN when
+	  problems are encountered. It may be more apporpriate to throw an
+	  exception so will need to ponder this
+	  issue further.
+
+2011-04-28 10:23  robert
+
+	* src/osg/ApplicationUsage.cpp: Fixed Coverity reported issue.
+	  
+	  CID 11403: Logically dead code (DEADCODE)
+	  After this line, the value of "needspace" is equal to 0.
+	  Assigning: "needspace" = "false".
+	  
+	  Technically the report is correct, but the code is just debugging
+	  code that was there just in case
+	  the code needed to be reviewed. This code is long since through
+	  it's debugging stage so the code
+	  is no longer really worth keeping so I've removed it for
+	  cleanness sake.
+
+2011-04-28 10:23  robert
+
+	* src/osg/ArrayDispatchers.cpp: Fixed Coverity reported issue.
+	  
+	  ID 11667: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _useVertexAttribAlias is not initialized
+	  in this constructor nor in any functions that it calls.
+	  
+	  Member variable should have been initialized but this varaible
+	  will have always been initialized in later code
+	  before it was used anyway so wouldn't have resulted in a runtime
+	  bug.
+
+2011-04-28 10:22  robert
+
+	* src/osg/BufferObject.cpp: Fixed Coverity reported issue.
+	  
+	  CID 11414: Logically dead code (DEADCODE)
+	  After this line, the value of "vboMemory" is equal to 0.
+	  Assigning: "vboMemory" = "NULL".
+	  
+	  Another case of debugging code paths being picked out. I have
+	  chosen to just delete these paths as the code
+	  looks to be working fine and less code is better than more code
+	  when it comes to maintenance.
+
+2011-04-27 16:37  robert
+
+	* src/OpenThreads/win32/Win32BarrierPrivateData.h,
+	  src/OpenThreads/win32/Win32ThreadBarrier.cpp: Fixed Coverity
+	  reported issue. Issue is benign as all the member variables are
+	  initialized in after construction,
+	  but I've moved this initialization into the constructor to make
+	  the code more managable.
+	  
+	  CID 11686: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member cnt is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member maxcnt is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member phase is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-04-27 16:35  robert
+
+	* src/OpenThreads/win32/Win32Thread.cpp,
+	  src/OpenThreads/win32/Win32ThreadPrivateData.h: Fixed 2 Coverity
+	  reported issues. Both issues are benign, but I've addressed then
+	  as with the changes the
+	  code is clean and more mantainable.
+	  
+	  CID 11676: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member cancelMode is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member cpunum is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member detached is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member isRunning is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member stackSize is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member threadPolicy is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member threadPriority is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member uniqueId is not initialized in this
+	  constructor nor in any functions that it calls.
+	  
+	  CID 11564: Unsigned compared against 0 (NO_EFFECT)
+	  This less-than-zero comparison of an unsigned value is never
+	  true. "cpunum < 0U".
+
+2011-04-27 16:06  robert
+
+	* src/osg/DisplaySettings.cpp: Fixed Coverity reported issue.
+	  
+	  CID 11677: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _minimumNumberAccumAlphaBits is not
+	  initialized in this constructor nor in any functions that it
+	  calls.
+	  Non-static class member _minimumNumberAccumBlueBits is not
+	  initialized in this constructor nor in any functions that it
+	  calls.
+	  Non-static class member _minimumNumberAccumGreenBits is not
+	  initialized in this constructor nor in any functions that it
+	  calls.
+	  Non-static class member _minimumNumberAccumRedBits is not
+	  initialized in this constructor nor in any functions that it
+	  calls.
+
+2011-04-27 16:06  robert
+
+	* src/osg/BufferObject.cpp: Fixed Coverity reported issue.
+	  
+	  CID 11690: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _frameLastUsed is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-04-27 16:05  robert
+
+	* src/osg/BlendColor.cpp: Fixed Coverity reported issue.
+	  
+	  CID 11689: Uninitialized pointer field (UNINIT_CTOR)
+	  Non-static class member _glBlendColor is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-04-27 16:05  robert
+
+	* src/osg/AutoTransform.cpp: Fixed 2 Coverity reported issues.
+	  
+	  CID 11681: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _previousHeight is not initialized in
+	  this constructor nor in any functions that it calls.
+	  Non-static class member _previousWidth is not initialized in this
+	  constructor nor in any functions that it calls.
+	  
+	  CID 11688: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _previousHeight is not initialized in
+	  this constructor nor in any functions that it calls.
+	  Non-static class member _previousWidth is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-04-27 16:04  robert
+
+	* src/osg/ArrayDispatchers.cpp: Fixed Coverity reported issue, in
+	  this case it's a unused member variable so could just be deleted.
+	  
+	  CID 11687: Uninitialized pointer field (UNINIT_CTOR)
+	  Non-static class member _glBeginEndAdapter is not initialized in
+	  this constructor nor in any functions that it calls.
+
+2011-04-27 16:03  robert
+
+	* src/osgShadow/ParallelSplitShadowMap.cpp: Fixed 3 Coverity
+	  reported issues. CID 11622 is a bit of false positive as for
+	  valid settings no leak would happen.
+	  
+	  CID 11810: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _setMaxFarDistance is not initialized in
+	  this constructor nor in any functions that it calls.
+	  
+	  CID 11811: Uninitialized pointer field (UNINIT_CTOR)
+	  Non-static class member _displayTexturesGroupingNode is not
+	  initialized in this constructor nor in any functions that it
+	  calls.
+	  
+	  CID 11622: Resource leak (RESOURCE_LEAK)
+	  Calling allocation function "operator new(unsigned long long)".
+	  Variable "<storage from new>" is not freed or pointed-to in
+	  function "osg::StateSet::StateSet()". [show details]
+	  Assigning: "sharedStateSet" = storage returned from "new
+	  osg::StateSet".
+	  282 osg::StateSet* sharedStateSet = new osg::StateSet;
+	  Variable "sharedStateSet" is not freed or pointed-to in function
+	  "osg::Object::setDataVariance(osg::Object::DataVariance)". [show
+	  details]
+
+2011-04-27 16:02  robert
+
+	* src/osg/Texture.cpp: Fixed Coverity reported issue.
+	  
+	  CID 11588: Resource leak (RESOURCE_LEAK)
+	  Calling allocation function "operator new[](unsigned long long)".
+	  Assigning: "dataPtr" = storage returned from "new unsigned
+	  char[newTotalSize]".
+
+2011-04-27 16:01  robert
+
+	* src/osg/Geometry.cpp: Fixed 2 Coverity reported issues.
+	  
+	  Following are both false positives as the the scope they are in
+	  will always assign the object to a ref counted
+	  structure. I've modified the code to use ref_ptr<> to just make
+	  it clear that it's underscope, although
+	  this is not strictly neccessary as the code is OK, I introduced
+	  this for clarity and robustness in
+	  presence of exceptions.
+	  
+	  CID 11586: Resource leak (RESOURCE_LEAK)
+	  Calling allocation function "operator new(unsigned long long)".
+	  Variable "<storage from new>" is not freed or pointed-to in
+	  function "osg::VertexBufferObject::VertexBufferObject()". [show
+	  details]
+	  Assigning: "vbo" = storage returned from "new
+	  osg::VertexBufferObject".
+	  
+	  
+	  CID 11587: Resource leak (RESOURCE_LEAK)
+	  Calling allocation function "operator new(unsigned long long)".
+	  Variable "<storage from new>" is not freed or pointed-to in
+	  function "osg::ElementBufferObject::ElementBufferObject()". [show
+	  details]
+	  Assigning: "ebo" = storage returned from "new
+	  osg::ElementBufferObject".
+
+2011-04-27 16:00  robert
+
+	* src/osgPlugins/ply/plyfile.cpp: Fixed Coverity reported issue.
+	  
+	  CID 11636: Allocation size mismatch (SIZECHECK)
+	  "my_alloc(sizeof (struct PlyProperty) /*36*/ * elem->nprops,
+	  1292, "..\\..\\..\\..\\src\\osgPlugins\\ply\\plyfile.cpp")"
+	  allocates memory. [show details]
+	  Allocating a multiple of 36 bytes to pointer "other->props",
+	  which needs 8 bytes.
+
+2011-04-26 19:31  robert
+
+	* src/osg/Geometry.cpp: Fixed 1 Coverity Low Impact issue "Unused
+	  pointer value (UNUSED_VALUE)
+	  Pointer "indices" returned by
+	  "this->_vertexAttribList[0ULL].indices.get()" is never used."
+	  
+	  Report highlighted the fact that later code wasn't using the
+	  indices variable when it should have been, so
+	  potentially a higher impact that the severity suggested by
+	  Coverity.
+
+2011-04-26 19:29  robert
+
+	* src/osgPlugins/geo/ReaderWriterGEO.cpp: Fixed 3 Coverity Low
+	  Impact performance issues relating to "Big parameter passed by
+	  value".
+
+2011-04-26 15:24  robert
+
+	* CMakeLists.txt, include/osg/Version: Updated version after 2.9.13
+	  dev release
+
+2011-04-26 14:55  robert
+
+	* AUTHORS.txt, ChangeLog, applications/osgversion/Contributors.cpp:
+	  Updated ChangeLog and AUTHORS for 2.9.13 dev release
+
 2011-04-26 12:07  robert
 
 	* examples/osgwidgetaddremove/osgwidgetaddremove.cpp,

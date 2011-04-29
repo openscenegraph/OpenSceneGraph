@@ -527,6 +527,16 @@ bool OSGA_Archive::getFileNames(FileNameList& fileNameList) const
 osgDB::DirectoryContents OSGA_Archive::getDirectoryContents(const std::string& dirName) const
 {
     osgDB::DirectoryContents files;
+    if (dirName.empty() || dirName==".")
+    {
+        getFileNames(files);
+        return files;
+    }
+
+    bool dirNameHasTrailingSlash = false;
+    char d = dirName[dirName.size()-1];
+    if (d=='\\' || d=='/') dirNameHasTrailingSlash = true;
+
     for(FileNamePositionMap::const_iterator itr=_indexMap.begin();
         itr!=_indexMap.end();
         ++itr)
@@ -548,20 +558,29 @@ osgDB::DirectoryContents OSGA_Archive::getDirectoryContents(const std::string& d
 
             if (i==dirName.size())
             {
-                // directory name matched, but need to make sure a trailing filename exists
-                // and to skip over any immediate slashes
-                char f = filename[i];
-
-                // check for slash
-                if (f=='\\' || f=='/')
+                bool directoryMatched = false;
+                if (!dirNameHasTrailingSlash)
                 {
-                    // found slash, now need to skip over it.
-                    ++i;
-                    if (i<filename.size())
+                    // no trailing slash on dirName so we won't have matched
+                    // the required slash on filename to make sure the next character is slash.
+                    char f = filename[i];
+
+                    // check for slash
+                    if (f=='\\' || f=='/')
                     {
-                        // still have charaters left after slash which respresent the filename
-                        files.push_back(filename.substr(i));
+                        // found slash, now need to skip over it.
+                        ++i;
+                        directoryMatched = true;
                     }
+                }
+                else
+                {
+                    directoryMatched = true;
+                }
+
+                if (directoryMatched)
+                {
+                    files.push_back(filename.substr(i));
                 }
             }
         }

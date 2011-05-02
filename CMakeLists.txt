@@ -30,7 +30,7 @@ PROJECT(OpenSceneGraph)
 
 SET(OPENSCENEGRAPH_MAJOR_VERSION 2)
 SET(OPENSCENEGRAPH_MINOR_VERSION 8)
-SET(OPENSCENEGRAPH_PATCH_VERSION 4)
+SET(OPENSCENEGRAPH_PATCH_VERSION 5)
 SET(OPENSCENEGRAPH_SOVERSION 65)
 
 # set to 0 when not a release candidate, non zero means that any generated 
@@ -244,6 +244,8 @@ ENDIF(WIN32)
 #luigi#    SET(CMAKE_CXX_FLAGS_DEBUG "-ggdb -gstabs")
 #luigi#ENDIF(UNIX)
 ########################################################################################################
+
+OPTION(OSG_NOTIFY_DISABLED "Set to ON to build OpenSceneGraph with the noitfy() disabled." OFF)
 
 OPTION(OSG_USE_FLOAT_MATRIX "Set to ON to build OpenSceneGraph with float Matrix instead of double." OFF)
 MARK_AS_ADVANCED(OSG_USE_FLOAT_MATRIX)

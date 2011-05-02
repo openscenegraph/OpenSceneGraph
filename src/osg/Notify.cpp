@@ -11,34 +11,148 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Notify>
+#include <osg/ApplicationUsage>
+#include <osg/ref_ptr>
 #include <string>
 #include <stdlib.h>
+#include <stdio.h>
+#include <sstream>
 #include <iostream>
-#include <fstream>
 
-using namespace std;
+#include <ctype.h>
 
-osg::NotifySeverity g_NotifyLevel = osg::NOTICE;
+namespace osg
+{
+
+class NullStreamBuffer : public std::streambuf
+{
+private:
+    std::streamsize xsputn(const std::streambuf::char_type *str, std::streamsize n)
+    {
+        return n;
+    }
+};
+
+struct NullStream : public std::ostream
+{
+public:
+    NullStream():
+        std::ostream(new NullStreamBuffer)
+    { _buffer = dynamic_cast<NullStreamBuffer *>(rdbuf()); }
+        
+    ~NullStream()
+    {
+        rdbuf(0);
+        delete _buffer;
+    }
+
+protected:
+    NullStreamBuffer* _buffer;
+};
+
+/** Stream buffer calling notify handler when buffer is synchronized (usually on std::endl).
+ * Stream stores last notification severity to pass it to handler call.
+ */
+struct NotifyStreamBuffer : public std::stringbuf
+{
+    NotifyStreamBuffer() : _severity(osg::NOTICE)
+    {
+    }
+
+    void setNotifyHandler(osg::NotifyHandler *handler) { _handler = handler; }
+    osg::NotifyHandler *getNotifyHandler() const { return _handler.get(); }
+
+    /** Sets severity for next call of notify handler */
+    void setCurrentSeverity(osg::NotifySeverity severity) { _severity = severity; }
+    osg::NotifySeverity getCurrentSeverity() const { return _severity; }
+
+private:
+
+    int sync()
+    {
+        sputc(0); // string termination
+        if (_handler.valid())
+            _handler->notify(_severity, pbase());
+        pubseekpos(0, std::ios_base::out); // or str(std::string())
+        return 0;
+    }
+
+    osg::ref_ptr<osg::NotifyHandler> _handler;
+    osg::NotifySeverity _severity;
+};
+
+struct NotifyStream : public std::ostream
+{
+public:
+    NotifyStream():
+        std::ostream(new NotifyStreamBuffer)
+    { _buffer = dynamic_cast<NotifyStreamBuffer *>(rdbuf()); }
+
+    void setCurrentSeverity(osg::NotifySeverity severity)
+    {
+        _buffer->setCurrentSeverity(severity);
+    }
+
+    osg::NotifySeverity getCurrentSeverity() const
+    {
+        return _buffer->getCurrentSeverity();
+    }
+        
+    ~NotifyStream()
+    {
+        rdbuf(0);
+        delete _buffer;
+    }
+
+protected:
+    NotifyStreamBuffer* _buffer;
+};
+
+}
+
+using namespace osg;
+
+static osg::ApplicationUsageProxy Notify_e0(osg::ApplicationUsage::ENVIRONMENTAL_VARIABLE, "OSG_NOTIFY_LEVEL <mode>", "FATAL | WARN | NOTICE | DEBUG_INFO | DEBUG_FP | DEBUG | INFO | ALWAYS");
+
+static bool s_NeedNotifyInit = true;
+static osg::NotifySeverity g_NotifyLevel = osg::NOTICE;
+static osg::NullStream *g_NullStream;
+static osg::NotifyStream *g_NotifyStream;
 
 void osg::setNotifyLevel(osg::NotifySeverity severity)
 {
-    osg::initNotifyLevel();
+    if (s_NeedNotifyInit) osg::initNotifyLevel();
     g_NotifyLevel = severity;
 }
 
 
 osg::NotifySeverity osg::getNotifyLevel()
 {
-    osg::initNotifyLevel();
+    if (s_NeedNotifyInit) osg::initNotifyLevel();
     return g_NotifyLevel;
 }
 
+void osg::setNotifyHandler(osg::NotifyHandler *handler)
+{
+    osg::NotifyStreamBuffer *buffer = static_cast<osg::NotifyStreamBuffer *>(g_NotifyStream->rdbuf());
+    if (buffer)
+        buffer->setNotifyHandler(handler);
+}
+
+osg::NotifyHandler* osg::getNotifyHandler()
+{
+    if (s_NeedNotifyInit) osg::initNotifyLevel();
+    osg::NotifyStreamBuffer *buffer = static_cast<osg::NotifyStreamBuffer *>(g_NotifyStream->rdbuf());
+    return buffer ? buffer->getNotifyHandler() : 0;
+}
 
 bool osg::initNotifyLevel()
 {
-    static bool s_NotifyInit = false;
+    static osg::NullStream s_NullStream;
+    static osg::NotifyStream s_NotifyStream;
 
-    if (s_NotifyInit) return true;
+    g_NullStream = &s_NullStream;
+    g_NotifyStream = &s_NotifyStream;
     
     // g_NotifyLevel
     // =============
@@ -72,56 +186,59 @@ bool osg::initNotifyLevel()
  
     }
 
-    s_NotifyInit = true;
+    // Setup standard notify handler
+    osg::NotifyStreamBuffer *buffer = dynamic_cast<osg::NotifyStreamBuffer *>(g_NotifyStream->rdbuf());
+    if (buffer && !buffer->getNotifyHandler())
+        buffer->setNotifyHandler(new StandardNotifyHandler);
+
+    s_NeedNotifyInit = false;
 
     return true;
 
 }
 
+#ifndef OSG_NOTIFY_DISABLED
 bool osg::isNotifyEnabled( osg::NotifySeverity severity )
 {
+    if (s_NeedNotifyInit) osg::initNotifyLevel();
     return severity<=g_NotifyLevel;
 }
-
-class NullStreamBuffer : public std::streambuf
-{
-    private:
-    
-        virtual streamsize xsputn (const char_type*, streamsize n)
-        {
-            return n;
-        }
-};
-
-struct NullStream : public std::ostream
-{
-    NullStream():
-        std::ostream(new NullStreamBuffer) {}
-        
-    virtual ~NullStream()
-    {
-        delete rdbuf();
-        rdbuf(0);
-    }
-};
+#endif
 
 std::ostream& osg::notify(const osg::NotifySeverity severity)
 {
-    // set up global notify null stream for inline notify
-    static NullStream s_NotifyNulStream;
+    if (s_NeedNotifyInit) osg::initNotifyLevel();
 
-    static bool initialized = false;
-    if (!initialized) 
+    if (osg::isNotifyEnabled(severity))
     {
-        std::cerr<<""; // dummy op to force construction of cerr, before a reference is passed back to calling code.
-        std::cout<<""; // dummy op to force construction of cout, before a reference is passed back to calling code.
-        initialized = osg::initNotifyLevel();
+        g_NotifyStream->setCurrentSeverity(severity);
+        return *g_NotifyStream;
     }
-
-    if (severity<=g_NotifyLevel)
-    {
-        if (severity<=osg::WARN) return std::cerr;
-        else return std::cout;
-    }
-    return s_NotifyNulStream;
+    return *g_NullStream;
 }
+
+void osg::StandardNotifyHandler::notify(osg::NotifySeverity severity, const char *message)
+{
+#if 1
+    if (severity <= osg::WARN) 
+        fputs(message, stderr);
+    else
+        fputs(message, stdout);
+#else
+   fputs(message, stdout);
+#endif
+}
+
+#if defined(WIN32) && !defined(__CYGWIN__)
+
+#ifndef WIN32_LEAN_AND_MEAN
+    #define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
+
+void osg::WinDebugNotifyHandler::notify(osg::NotifySeverity severity, const char *message)
+{
+    OutputDebugStringA(message);
+}
+
+#endif

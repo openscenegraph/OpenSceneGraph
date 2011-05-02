@@ -23,6 +23,7 @@
 #ifndef OSG_CONFIG
 #define OSG_CONFIG 1
 
+#cmakedefine OSG_NOTIFY_DISABLED
 #cmakedefine OSG_USE_FLOAT_MATRIX
 #cmakedefine OSG_USE_FLOAT_PLANE
 #cmakedefine OSG_USE_FLOAT_BOUNDINGSPHERE

@@ -9,56 +9,52 @@
 # correspond to the ./configure --prefix=$FBX_DIR
 
 IF(APPLE)
-    SET(FBX_LIBNAME "fbxsdk_gcc4_ub")
+    SET(FBX_LIBDIR "gcc4/ub")
 ELSEIF(CMAKE_COMPILER_IS_GNUCXX)
-    SET(FBX_LIBNAME "fbxsdk_gcc4")
-    #TODO: libs are provided for GCC 3.4 & 4.0 in both 32 and 64 bit versions
-    # but I don't know how to confgure that here.
-ELSEIF(MSVC71)
-    SET(FBX_LIBNAME "fbxsdk_md2003")
+    SET(FBX_LIBDIR "gcc4")
 ELSEIF(MSVC80)
-    SET(FBX_LIBNAME "fbxsdk_md2005")
+    SET(FBX_LIBDIR "vs2005")
 ELSEIF(MSVC90)
-    SET(FBX_LIBNAME "fbxsdk_md2008")
+    SET(FBX_LIBDIR "vs2008")
 ELSEIF(MSVC100 OR MSVC_VER>1600)
-    SET(FBX_LIBNAME "fbxsdk_md2010")
-ENDIF()
-
-IF(CMAKE_CL_64)
-    SET(FBX_LIBNAME ${FBX_LIBNAME}_amd64)
+    SET(FBX_LIBDIR "vs2010")
 ENDIF()
 
 IF(APPLE)
-    SET(FBX_LIBNAME_DEBUG ${FBX_LIBNAME})
+    # do nothing
+ELSEIF(CMAKE_CL_64 OR (CMAKE_COMPILER_IS_GNUCXX AND CMAKE_SIZEOF_VOID_P EQUAL 8))
+    SET(FBX_LIBDIR ${FBX_LIBDIR}/x64)
 ELSE()
-    SET(FBX_LIBNAME_DEBUG ${FBX_LIBNAME}d)
+    SET(FBX_LIBDIR ${FBX_LIBDIR}/x86)
 ENDIF()
 
-# SET final path
-#osg_fbx code is compatible with 2011.2, 2011.3 and 2011.3.1 so find any directory
-SET( FBX_SEARCH_PATHS 
+IF(APPLE)
+    SET(FBX_LIBNAME "fbxsdk-2012.1-static")
+ELSEIF(CMAKE_COMPILER_IS_GNUCXX)
+    SET(FBX_LIBNAME "fbxsdk-2012.1-static")
+ELSE()
+    SET(FBX_LIBNAME "fbxsdk-2012.1-md")
+ENDIF()
+
+SET(FBX_LIBNAME_DEBUG ${FBX_LIBNAME}d)
+
+SET( FBX_SEARCH_PATHS
     $ENV{FBX_DIR}
-    $ENV{ProgramW6432}/Autodesk/FBX/FbxSdk/2011.3.1
-    $ENV{PROGRAMFILES}/Autodesk/FBX/FbxSdk/2011.3.1
-    /Applications/Autodesk/FBXSDK201131
-    $ENV{ProgramW6432}/Autodesk/FBX/FbxSdk/2011.3
-    $ENV{PROGRAMFILES}/Autodesk/FBX/FbxSdk/2011.3
-    /Applications/Autodesk/FBXSDK20113
-    $ENV{ProgramW6432}/Autodesk/FBX/FbxSdk/2011.2
-    $ENV{PROGRAMFILES}/Autodesk/FBX/FbxSdk/2011.2
-    /Applications/Autodesk/FBXSDK20112
+    $ENV{ProgramW6432}/Autodesk/FBX/FbxSdk/2012.1
+    $ENV{PROGRAMFILES}/Autodesk/FBX/FbxSdk/2012.1
+    /Applications/Autodesk/FBXSDK20121
 )
 
 # search for headers & debug/release libraries
-FIND_PATH(FBX_INCLUDE_DIR fbxsdk.h
+FIND_PATH(FBX_INCLUDE_DIR "fbxsdk.h"
     PATHS ${FBX_SEARCH_PATHS}
-    PATH_SUFFIXES include )
+    PATH_SUFFIXES "include")
 FIND_LIBRARY( FBX_LIBRARY ${FBX_LIBNAME}
     PATHS ${FBX_SEARCH_PATHS}
-    PATH_SUFFIXES lib)
+    PATH_SUFFIXES "lib/${FBX_LIBDIR}")
 FIND_LIBRARY( FBX_LIBRARY_DEBUG ${FBX_LIBNAME_DEBUG}
     PATHS ${FBX_SEARCH_PATHS}
-    PATH_SUFFIXES lib)
+    PATH_SUFFIXES "lib/${FBX_LIBDIR}")
 
 IF(FBX_LIBRARY AND FBX_LIBRARY_DEBUG AND FBX_INCLUDE_DIR)
     SET(FBX_FOUND "YES")

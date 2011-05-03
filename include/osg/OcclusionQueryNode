@@ -18,11 +18,76 @@
 #include <osg/Export>
 #include <osg/CopyOp>
 #include <osg/Group>
-
+#include <osg/Geometry>
 
 
 namespace osg {
 
+// Create and return a StateSet appropriate for performing an occlusion
+//   query test (disable lighting, texture mapping, etc). Probably some
+//   room for improvement here. Could disable shaders, for example.
+osg::StateSet* initOQState();
+
+// Create and return a StateSet for rendering a debug representation of query geometry.
+osg::StateSet* initOQDebugState();
+
+// TestResult -- stores (per context) results of an occlusion query
+//   test performed by QueryGeometry. An OcclusionQueryNode has a
+//   Geode owning a single QueryGeometry that
+//   draws the occlusion query geometry. QueryGeometry keeps a
+//   TestResult per context to store the result/status of each query.
+// Accessed during the cull and draw traversals.
+class TestResult : public osg::Referenced
+{
+public:
+    TestResult() : _init( false ), _id( 0 ), _contextID( 0 ), _active( false ), _numPixels( 0 ) {}
+    ~TestResult() {}
+
+    bool _init;
+
+    // Query ID for this context.
+    GLuint _id;
+    // Context ID owning this query ID.
+    unsigned int _contextID;
+
+    // Set to true when a query gets issued and set to
+    //   false when the result is retrieved.
+    mutable bool _active;
+
+    // Result of last query.
+    GLint _numPixels;
+};
+
+// QueryGeometry -- A Drawable that performs an occlusion query,
+//   using its geometric data as the query geometry.
+class QueryGeometry : public osg::Geometry
+{
+public:
+    QueryGeometry( const std::string& oqnName=std::string("") );
+    ~QueryGeometry();
+
+    void reset();
+
+    // TBD implement copy constructor
+
+    virtual void drawImplementation( osg::RenderInfo& renderInfo ) const;
+
+    unsigned int getNumPixels( const osg::Camera* cam );
+
+
+    void releaseGLObjects( osg::State* state = 0 );
+    static void deleteQueryObject( unsigned int contextID, GLuint handle );
+    static void flushDeletedQueryObjects( unsigned int contextID, double currentTime, double& availableTime );
+    static void discardDeletedQueryObjects( unsigned int contextID );
+    
+protected:
+    typedef std::map< const osg::Camera*, TestResult > ResultMap;
+    mutable ResultMap _results;
+    mutable OpenThreads::Mutex _mapMutex;
+
+    // Needed for debug only
+    std::string _oqnName;
+};
 
 // This Node performs occlusion query testing on its children.
 //   You can use it directly to occlusion query test a portion
@@ -88,7 +153,7 @@ public:
     
     // These methods are public so that osgUtil::CullVisitor can access them.
     // Not intended for application use.
-    bool getPassed( const osg::Camera* camera, osg::NodeVisitor& nv );
+    virtual bool getPassed( const osg::Camera* camera, osg::NodeVisitor& nv );
     void traverseQuery( const osg::Camera* camera, osg::NodeVisitor& nv );
     void traverseDebug( osg::NodeVisitor& nv );
 
@@ -105,7 +170,7 @@ public:
 protected:
     virtual ~OcclusionQueryNode();
 
-    void createSupportNodes();
+    virtual void createSupportNodes();
 
     osg::ref_ptr< osg::Geode > _queryGeode;
     osg::ref_ptr< osg::Geode > _debugGeode;

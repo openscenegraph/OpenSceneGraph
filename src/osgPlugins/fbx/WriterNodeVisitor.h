@@ -27,6 +27,7 @@
 
 #if defined(_MSC_VER)
 #pragma warning( disable : 4505 )
+#pragma warning( default : 4996 )
 #endif
 #include <fbxsdk.h>
 
@@ -152,7 +153,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
                      const osgDB::ReaderWriter::Options * options,
                      int                  index = -1);
 
-            KFbxTexture* getFbxTexture() const
+            KFbxFileTexture* getFbxTexture() const
             {
                 return _fbxTexture;
             }
@@ -179,7 +180,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
 
         private:
             KFbxSurfacePhong*  _fbxMaterial;
-            KFbxTexture*       _fbxTexture;
+            KFbxFileTexture*       _fbxTexture;
             int                _index;///< Index in the Map
             const osg::Image*  _osgImage;
             const std::string& _directory;

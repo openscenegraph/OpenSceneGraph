@@ -5,6 +5,7 @@
 
 #if defined(_MSC_VER)
 #pragma warning( disable : 4505 )
+#pragma warning( default : 4996 )
 #endif
 #include <fbxsdk.h>
 
@@ -12,7 +13,7 @@
 
 osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxCamera(KFbxNode* pNode)
 {
-    const KFbxCamera* fbxCamera = dynamic_cast<const KFbxCamera*>(pNode->GetNodeAttribute());
+    const KFbxCamera* fbxCamera = KFbxCast<KFbxCamera>(pNode->GetNodeAttribute());
 
     if (!fbxCamera)
     {

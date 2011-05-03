@@ -10,6 +10,7 @@
 
 #if defined(_MSC_VER)
 #pragma warning( disable : 4505 )
+#pragma warning( default : 4996 )
 #endif
 #include <fbxsdk.h>
 
@@ -87,7 +88,7 @@ public:
 private:
     //Convert a texture fbx to an osg texture.
     osg::ref_ptr<osg::Texture2D>
-    fbxTextureToOsgTexture(const KFbxTexture* pOsgTex);
+    fbxTextureToOsgTexture(const KFbxFileTexture* pOsgTex);
     FbxMaterialMap       _fbxMaterialMap;
     ImageMap              _imageMap;
     const osgDB::Options* _options;

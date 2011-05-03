@@ -4,6 +4,7 @@
 
 #if defined(_MSC_VER)
 #pragma warning( disable : 4505 )
+#pragma warning( default : 4996 )
 #endif
 #include <fbxsdk.h>
 
@@ -11,7 +12,7 @@
 
 osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxLight(KFbxNode* pNode, int& nLightCount)
 {
-    const KFbxLight* fbxLight = dynamic_cast<const KFbxLight*>(pNode->GetNodeAttribute());
+    const KFbxLight* fbxLight = KFbxCast<KFbxLight>(pNode->GetNodeAttribute());
 
     if (!fbxLight)
     {

@@ -1132,6 +1132,7 @@ void GraphicsWindowX11::checkEvents()
                     destroyWindowRequested = true;
                     getEventQueue()->closeWindow(eventTime);
                 }
+                break;
             }
             case Expose :
                 OSG_INFO<<"Expose x="<<ev.xexpose.x<<" y="<<ev.xexpose.y<<" width="<<ev.xexpose.width<<", height="<<ev.xexpose.height<<std::endl;
@@ -1478,6 +1479,7 @@ void GraphicsWindowX11::checkEvents()
                     OSG_INFO<<"DeleteWindow event received"<<std::endl;
                     getEventQueue()->closeWindow();
                 }
+                break;
             }
         }
     }

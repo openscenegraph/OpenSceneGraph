@@ -2710,7 +2710,7 @@ static RegisterWindowingSystemInterfaceProxy createWindowingSystemInterfaceProxy
 
 
 // declare C entry point for static compilation.
-extern "C" void graphicswindow_Win32(void)
+extern "C" void OSGVIEWER_EXPORT graphicswindow_Win32(void)
 {
     osg::GraphicsContext::setWindowingSystemInterface(osgViewer::Win32WindowingSystem::getInterface());
 }

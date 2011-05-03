@@ -72,7 +72,7 @@ public:
 
     virtual void drawImplementation( osg::RenderInfo& renderInfo ) const;
 
-    unsigned int getNumPixels( const osg::Camera* cam );
+    unsigned int getNumPixels();
 
 
     void releaseGLObjects( osg::State* state = 0 );
@@ -81,9 +81,8 @@ public:
     static void discardDeletedQueryObjects( unsigned int contextID );
     
 protected:
-    typedef std::map< const osg::Camera*, TestResult > ResultMap;
+    typedef osg::buffered_object< TestResult > ResultMap;
     mutable ResultMap _results;
-    mutable OpenThreads::Mutex _mapMutex;
 
     // Needed for debug only
     std::string _oqnName;

@@ -333,30 +333,30 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor& writerNodeVisitor,
         _fbxMaterial = KFbxSurfacePhong::Create(pSdkManager, mat->getName().c_str());
         if (_fbxMaterial)
         {
-            _fbxMaterial->GetDiffuseFactor().Set(1, true);
-            _fbxMaterial->GetDiffuseColor().Set(fbxDouble3(
+            _fbxMaterial->DiffuseFactor.Set(1, true);
+            _fbxMaterial->Diffuse.Set(fbxDouble3(
                 diffuse.x(),
                 diffuse.y(),
                 diffuse.z()));
 
-            _fbxMaterial->GetTransparencyFactor().Set(transparency);
+            _fbxMaterial->TransparencyFactor.Set(transparency);
 
-            _fbxMaterial->GetAmbientColor().Set(fbxDouble3(
+            _fbxMaterial->Ambient.Set(fbxDouble3(
                 ambient.x(),
                 ambient.y(),
                 ambient.z()));
 
-            _fbxMaterial->GetEmissiveColor().Set(fbxDouble3(
+            _fbxMaterial->Emissive.Set(fbxDouble3(
                 emission.x(),
                 emission.y(),
                 emission.z()));
 
-            _fbxMaterial->GetSpecularColor().Set(fbxDouble3(
+            _fbxMaterial->Specular.Set(fbxDouble3(
                 specular.x(),
                 specular.y(),
                 specular.z()));
 
-            _fbxMaterial->GetShininess().Set(shininess);
+            _fbxMaterial->Shininess.Set(shininess);
         }
     }
     if (tex && tex->getImage(0))
@@ -405,7 +405,7 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor& writerNodeVisitor,
             imageFilenameSet.insert(destPath);
         }
 
-        _fbxTexture = KFbxTexture::Create(pSdkManager, it->second.c_str());
+        _fbxTexture = KFbxFileTexture::Create(pSdkManager, it->second.c_str());
         _fbxTexture->SetFileName(it->second.c_str());
     }
 }
@@ -468,15 +468,14 @@ WriterNodeVisitor::setLayerTextureAndMaterial(KFbxMesh* mesh)
     lMaterialLayer->SetReferenceMode(KFbxLayerElement::eINDEX_TO_DIRECT);
 
     lTextureDiffuseLayer->GetDirectArray().SetCount(_lastMaterialIndex);
-    lMaterialLayer->GetDirectArray().SetCount(_lastMaterialIndex);
     for (MaterialMap::iterator it = _materialMap.begin(); it != _materialMap.end(); ++it)
     {
         if (it->second.getIndex() != -1)
         {
             KFbxSurfaceMaterial* lMaterial = it->second.getFbxMaterial();
-            KFbxTexture* lTexture = it->second.getFbxTexture();
+            KFbxFileTexture* lTexture = it->second.getFbxTexture();
             lTextureDiffuseLayer->GetDirectArray().SetAt(it->second.getIndex(), lTexture);
-            lMaterialLayer->GetDirectArray().SetAt(it->second.getIndex(), lMaterial);
+            _curFbxNode->AddMaterial(lMaterial);
         }
     }
     mesh->GetLayer(0)->SetMaterials(lMaterialLayer);

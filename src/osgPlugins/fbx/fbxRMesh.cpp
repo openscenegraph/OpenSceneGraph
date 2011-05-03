@@ -20,6 +20,7 @@
 
 #if defined(_MSC_VER)
 #pragma warning( disable : 4505 )
+#pragma warning( default : 4996 )
 #endif
 #include <fbxsdk.h>
 
@@ -356,7 +357,7 @@ void addChannel(
 
 void readAnimation(KFbxNode* pNode, KFbxScene& fbxScene, const std::string& targetName,
     osg::ref_ptr<osgAnimation::AnimationManagerBase>& pAnimationManager,
-    KFbxMesh* pMesh, int nShape)
+    KFbxMesh* pMesh, int nBlendShape, int nBlendShapeChannel, int nShape)
 {
     for (int i = 0; i < fbxScene.GetSrcObjectCount(FBX_TYPE(KFbxAnimStack)); ++i)
     {
@@ -373,7 +374,8 @@ void readAnimation(KFbxNode* pNode, KFbxScene& fbxScene, const std::string& targ
         {
             KFbxAnimLayer* pAnimLayer = pAnimStack->GetMember(FBX_TYPE(KFbxAnimLayer), j);
 
-            KFbxAnimCurve* pCurve = pMesh->GetShapeChannel(nShape, pAnimLayer);
+            KFbxAnimCurve* pCurve = pMesh->GetShapeChannel(nBlendShape, nBlendShapeChannel, pAnimLayer, false);
+
             if (!pCurve)
             {
                 continue;
@@ -402,9 +404,6 @@ void readAnimation(KFbxNode* pNode, KFbxScene& fbxScene, const std::string& targ
             pChannel->setName(ss.str());
             addChannel(pChannel, pAnimationManager, pTakeName);
         }
-    }
-
-    {
     }
 }
 
@@ -710,7 +709,7 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
     int nPolys = fbxMesh->GetPolygonCount();
 
     int nDeformerCount = fbxMesh->GetDeformerCount(KFbxDeformer::eSKIN);
-    int nMorphShapeCount = 0;
+    int nDeformerBlendShapeCount = fbxMesh->GetDeformerCount(KFbxDeformer::eBLENDSHAPE);
 
     GeometryType geomType = GEOMETRY_STATIC;
 
@@ -719,7 +718,7 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
     {
         geomType = GEOMETRY_RIG;
     }
-    else if ((nMorphShapeCount = fbxMesh->GetShapeCount()))
+    else if (nDeformerBlendShapeCount)
     {
         geomType = GEOMETRY_MORPH;
     }
@@ -802,9 +801,9 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
             // Polygons - Store to add after triangles
             polygonRefList.push_back(PolygonRef(pGeometry, i, nVertex));
             nVertex += lPolygonSize;
-		}
-		else
-		{
+        }
+        else
+        {
             int nVertex0 = nVertex;
             nVertex += (std::min)(2, lPolygonSize);
 
@@ -991,9 +990,63 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
             pGeode->addUpdateCallback(new osgAnimation::UpdateMorph(morph.getName()));
 
             //read morph geometry
-            for (int j = 0; j < nMorphShapeCount; ++j)
+            for (int nBlendShape = 0; nBlendShape < nDeformerBlendShapeCount; ++nBlendShape)
             {
-                const KFbxGeometryBase* pMorphShape = fbxMesh->GetShape(i);
+                KFbxBlendShape* pBlendShape = KFbxCast<KFbxBlendShape>(fbxMesh->GetDeformer(nBlendShape, KFbxDeformer::eBLENDSHAPE));
+                const int nBlendShapeChannelCount = pBlendShape->GetBlendShapeChannelCount();
+
+                for (int nBlendShapeChannel = 0; nBlendShapeChannel < nBlendShapeChannelCount; ++nBlendShapeChannel)
+                {
+                    KFbxBlendShapeChannel* pBlendShapeChannel = pBlendShape->GetBlendShapeChannel(nBlendShapeChannel);
+                    if (!pBlendShapeChannel->GetTargetShapeCount()) continue;
+
+                    //Assume one shape
+                    if (pBlendShapeChannel->GetTargetShapeCount() > 1)
+                    {
+                        OSG_WARN << "Multiple FBX Target Shapes, only the first will be used" << std::endl;
+                    }
+                    const KFbxGeometryBase* pMorphShape = pBlendShapeChannel->GetTargetShape(0);
+
+                    const KFbxLayerElementNormal* pFbxShapeNormals = 0;
+                    if (const KFbxLayer* pFbxShapeLayer = pMorphShape->GetLayer(0))
+                    {
+                        pFbxShapeNormals = pFbxShapeLayer->GetNormals();
+                        if (!layerElementValid(pFbxShapeNormals)) pFbxShapeNormals = 0;
+                    }
+
+                    osg::Geometry* pMorphTarget = new osg::Geometry(morph);
+                    pMorphTarget->setVertexArray(static_cast<osg::Array*>(
+                        pMorphTarget->getVertexArray()->clone(osg::CopyOp::DEEP_COPY_ARRAYS)));
+                    if (pFbxShapeNormals)
+                    {
+                        if (osg::Array* pNormals = pMorphTarget->getNormalArray())
+                        {
+                            pMorphTarget->setNormalArray(static_cast<osg::Array*>(
+                                pNormals->clone(osg::CopyOp::DEEP_COPY_ARRAYS)));
+                        }
+                    }
+                    pMorphTarget->setName(pMorphShape->GetName());
+                    morph.addMorphTarget(pMorphTarget, 0.0f);
+
+                    readAnimation(pNode, fbxScene, morph.getName(), pAnimationManager, fbxMesh,
+                        nBlendShape, nBlendShapeChannel, (int)morph.getMorphTargetList().size() - 1);
+                }
+            }
+        }
+
+        int nMorphTarget = 0;
+        for (int nBlendShape = 0; nBlendShape < nDeformerBlendShapeCount; ++nBlendShape)
+        {
+            KFbxBlendShape* pBlendShape = KFbxCast<KFbxBlendShape>(fbxMesh->GetDeformer(nBlendShape, KFbxDeformer::eBLENDSHAPE));
+            const int nBlendShapeChannelCount = pBlendShape->GetBlendShapeChannelCount();
+
+            for (int nBlendShapeChannel = 0; nBlendShapeChannel < nBlendShapeChannelCount; ++nBlendShapeChannel)
+            {
+                KFbxBlendShapeChannel* pBlendShapeChannel = pBlendShape->GetBlendShapeChannel(nBlendShapeChannel);
+                if (!pBlendShapeChannel->GetTargetShapeCount()) continue;
+
+                //Assume one shape again
+                const KFbxGeometryBase* pMorphShape = pBlendShapeChannel->GetTargetShape(0);
 
                 const KFbxLayerElementNormal* pFbxShapeNormals = 0;
                 if (const KFbxLayer* pFbxShapeLayer = pMorphShape->GetLayer(0))
@@ -1002,77 +1055,52 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
                     if (!layerElementValid(pFbxShapeNormals)) pFbxShapeNormals = 0;
                 }
 
-                osg::Geometry* pMorphTarget = new osg::Geometry(morph);
-                pMorphTarget->setVertexArray(static_cast<osg::Array*>(
-                    pMorphTarget->getVertexArray()->clone(osg::CopyOp::DEEP_COPY_ARRAYS)));
-                if (pFbxShapeNormals)
+                const KFbxVector4* pControlPoints = pMorphShape->GetControlPoints();
+                int nControlPoints = pMorphShape->GetControlPointsCount();
+                for (int fbxIndex = 0; fbxIndex < nControlPoints; ++fbxIndex)
                 {
-                    if (osg::Array* pNormals = pMorphTarget->getNormalArray())
+                    osg::Vec3d vPos = convertVec3(pControlPoints[fbxIndex]);
+                    for (FbxToOsgVertexMap::const_iterator it =
+                        fbxToOsgVertMap.find(fbxIndex);
+                        it != fbxToOsgVertMap.end() &&
+                        it->first == fbxIndex; ++it)
                     {
-                        pMorphTarget->setNormalArray(static_cast<osg::Array*>(
-                            pNormals->clone(osg::CopyOp::DEEP_COPY_ARRAYS)));
-                    }
-                }
-                pMorphTarget->setName(fbxMesh->GetShapeName(j));
-                morph.addMorphTarget(pMorphTarget, 0.0f);
+                        GIPair gi = it->second;
+                        osgAnimation::MorphGeometry& morphGeom =
+                            dynamic_cast<osgAnimation::MorphGeometry&>(*gi.first);
+                        osg::Geometry* pGeometry = morphGeom.getMorphTarget(nMorphTarget).getGeometry();
 
-                readAnimation(pNode, fbxScene, morph.getName(), pAnimationManager, fbxMesh, j);
-            }
-        }
-
-        for (int i = 0; i < nMorphShapeCount; ++i)
-        {
-            const KFbxGeometryBase* pMorphShape = fbxMesh->GetShape(i);
-
-            const KFbxLayerElementNormal* pFbxShapeNormals = 0;
-            if (const KFbxLayer* pFbxShapeLayer = pMorphShape->GetLayer(0))
-            {
-                pFbxShapeNormals = pFbxShapeLayer->GetNormals();
-                if (!layerElementValid(pFbxShapeNormals)) pFbxShapeNormals = 0;
-            }
-
-            const KFbxVector4* pControlPoints = pMorphShape->GetControlPoints();
-            int nControlPoints = pMorphShape->GetControlPointsCount();
-            for (int fbxIndex = 0; fbxIndex < nControlPoints; ++fbxIndex)
-            {
-                osg::Vec3d vPos = convertVec3(pControlPoints[fbxIndex]);
-                for (FbxToOsgVertexMap::const_iterator it =
-                    fbxToOsgVertMap.find(fbxIndex);
-                    it != fbxToOsgVertMap.end() &&
-                    it->first == fbxIndex; ++it)
-                {
-                    GIPair gi = it->second;
-                    osgAnimation::MorphGeometry& morphGeom =
-                        dynamic_cast<osgAnimation::MorphGeometry&>(*gi.first);
-                    osg::Geometry* pGeometry = morphGeom.getMorphTarget(i).getGeometry();
-
-                    if (pGeometry->getVertexArray()->getType() == osg::Array::Vec3dArrayType)
-                    {
-                        osg::Vec3dArray* pVertices = static_cast<osg::Vec3dArray*>(pGeometry->getVertexArray());
-                        (*pVertices)[gi.second] = vPos;
-                    }
-                    else
-                    {
-                        osg::Vec3Array* pVertices = static_cast<osg::Vec3Array*>(pGeometry->getVertexArray());
-                        (*pVertices)[gi.second] = vPos;
-                    }
-
-                    if (pFbxShapeNormals && pGeometry->getNormalArray())
-                    {
-                        if (pGeometry->getNormalArray()->getType() == osg::Array::Vec3dArrayType)
+                        if (pGeometry->getVertexArray()->getType() == osg::Array::Vec3dArrayType)
                         {
-                            osg::Vec3dArray* pNormals = static_cast<osg::Vec3dArray*>(pGeometry->getNormalArray());
-                            (*pNormals)[gi.second] = convertVec3(
-                                pFbxShapeNormals->GetDirectArray().GetAt(osgToFbxNormMap[gi]));
+                            osg::Vec3dArray* pVertices = static_cast<osg::Vec3dArray*>(pGeometry->getVertexArray());
+                            (*pVertices)[gi.second] = vPos;
                         }
                         else
                         {
-                            osg::Vec3Array* pNormals = static_cast<osg::Vec3Array*>(pGeometry->getNormalArray());
-                            (*pNormals)[gi.second] = convertVec3(
-                                pFbxShapeNormals->GetDirectArray().GetAt(osgToFbxNormMap[gi]));
+                            osg::Vec3Array* pVertices = static_cast<osg::Vec3Array*>(pGeometry->getVertexArray());
+                            (*pVertices)[gi.second] = vPos;
+                        }
+
+                        if (pFbxShapeNormals && pGeometry->getNormalArray())
+                        {
+                            if (pGeometry->getNormalArray()->getType() == osg::Array::Vec3dArrayType)
+                            {
+                                osg::Vec3dArray* pNormals = static_cast<osg::Vec3dArray*>(pGeometry->getNormalArray());
+                                (*pNormals)[gi.second] = convertVec3(
+                                    pFbxShapeNormals->GetDirectArray().GetAt(osgToFbxNormMap[gi]));
+                            }
+                            else
+                            {
+                                osg::Vec3Array* pNormals = static_cast<osg::Vec3Array*>(pGeometry->getNormalArray());
+                                (*pNormals)[gi.second] = convertVec3(
+                                    pFbxShapeNormals->GetDirectArray().GetAt(osgToFbxNormMap[gi]));
+                            }
                         }
                     }
                 }
+
+                //don't put this in the for loop as we don't want to do it if the loop continues early
+                ++nMorphTarget;
             }
         }
     }
@@ -1125,7 +1153,7 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readMesh(
 osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxMesh(KFbxNode* pNode,
     std::vector<StateSetContent>& stateSetList)
 {
-    KFbxMesh* lMesh = dynamic_cast<KFbxMesh*>(pNode->GetNodeAttribute());
+    KFbxMesh* lMesh = KFbxCast<KFbxMesh>(pNode->GetNodeAttribute());
 
     if (!lMesh)
     {

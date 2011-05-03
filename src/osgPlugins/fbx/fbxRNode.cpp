@@ -23,10 +23,49 @@
 
 #if defined(_MSC_VER)
     #pragma warning( disable : 4505 )
+    #pragma warning( default : 4996 )
 #endif
 #include <fbxsdk.h>
 
 #include "fbxReader.h"
+
+bool isAnimated(KFbxProperty& prop, KFbxScene& fbxScene)
+{
+    for (int i = 0; i < fbxScene.GetSrcObjectCount(FBX_TYPE(KFbxAnimStack)); ++i)
+    {
+        KFbxAnimStack* pAnimStack = KFbxCast<KFbxAnimStack>(fbxScene.GetSrcObject(FBX_TYPE(KFbxAnimStack), i));
+
+        const int nbAnimLayers = pAnimStack->GetMemberCount(FBX_TYPE(KFbxAnimLayer));
+        for (int j = 0; j < nbAnimLayers; j++)
+        {
+            KFbxAnimLayer* pAnimLayer = pAnimStack->GetMember(FBX_TYPE(KFbxAnimLayer), j);
+            if (prop.GetCurveNode(pAnimLayer, false))
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool isAnimated(KFbxProperty& prop, const char* channel, KFbxScene& fbxScene)
+{
+    for (int i = 0; i < fbxScene.GetSrcObjectCount(FBX_TYPE(KFbxAnimStack)); ++i)
+    {
+        KFbxAnimStack* pAnimStack = KFbxCast<KFbxAnimStack>(fbxScene.GetSrcObject(FBX_TYPE(KFbxAnimStack), i));
+
+        const int nbAnimLayers = pAnimStack->GetMemberCount(FBX_TYPE(KFbxAnimLayer));
+        for (int j = 0; j < nbAnimLayers; j++)
+        {
+            KFbxAnimLayer* pAnimLayer = pAnimStack->GetMember(FBX_TYPE(KFbxAnimLayer), j);
+            if (prop.GetCurve<KFbxAnimCurve>(pAnimLayer, channel, false))
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
 osg::Quat makeQuat(const fbxDouble3& degrees, ERotationOrder fbxRotOrder)
 {
@@ -144,7 +183,8 @@ void makeLocalMatrix(const KFbxNode* pNode, osg::Matrix& m)
 
 void readTranslationElement(KFbxTypedProperty<fbxDouble3>& prop,
                             osgAnimation::UpdateMatrixTransform* pUpdate,
-                            osg::Matrix& staticTransform)
+                            osg::Matrix& staticTransform,
+                            KFbxScene& fbxScene)
 {
     fbxDouble3 fbxPropValue = prop.Get();
     osg::Vec3d val(
@@ -152,9 +192,7 @@ void readTranslationElement(KFbxTypedProperty<fbxDouble3>& prop,
         fbxPropValue[1],
         fbxPropValue[2]);
 
-    if (prop.GetKFCurve(KFCURVENODE_T_X) ||
-        prop.GetKFCurve(KFCURVENODE_T_Y) ||
-        prop.GetKFCurve(KFCURVENODE_T_Z))
+    if (isAnimated(prop, fbxScene))
     {
         if (!staticTransform.isIdentity())
         {
@@ -197,11 +235,10 @@ void readRotationElement(KFbxTypedProperty<fbxDouble3>& prop,
                          ERotationOrder fbxRotOrder,
                          bool quatInterpolate,
                          osgAnimation::UpdateMatrixTransform* pUpdate,
-                         osg::Matrix& staticTransform)
+                         osg::Matrix& staticTransform,
+                         KFbxScene& fbxScene)
 {
-    if (prop.GetKFCurve(KFCURVENODE_R_X) ||
-        prop.GetKFCurve(KFCURVENODE_R_Y) ||
-        prop.GetKFCurve(KFCURVENODE_R_Z))
+    if (isAnimated(prop, fbxScene))
     {
         if (quatInterpolate)
         {
@@ -230,7 +267,7 @@ void readRotationElement(KFbxTypedProperty<fbxDouble3>& prop,
             for (int i = 0; i < 3; ++i)
             {
                 int j = order[2-i];
-                if (prop.GetKFCurve(curveNames[j]))
+                if (isAnimated(prop, curveNames[j], fbxScene))
                 {
                     if (!staticTransform.isIdentity())
                     {
@@ -256,7 +293,8 @@ void readRotationElement(KFbxTypedProperty<fbxDouble3>& prop,
 
 void readScaleElement(KFbxTypedProperty<fbxDouble3>& prop,
                       osgAnimation::UpdateMatrixTransform* pUpdate,
-                      osg::Matrix& staticTransform)
+                      osg::Matrix& staticTransform,
+                      KFbxScene& fbxScene)
 {
     fbxDouble3 fbxPropValue = prop.Get();
     osg::Vec3d val(
@@ -264,9 +302,7 @@ void readScaleElement(KFbxTypedProperty<fbxDouble3>& prop,
         fbxPropValue[1],
         fbxPropValue[2]);
 
-    if (prop.GetKFCurve(KFCURVENODE_S_X) ||
-        prop.GetKFCurve(KFCURVENODE_S_Y) ||
-        prop.GetKFCurve(KFCURVENODE_S_Z))
+    if (isAnimated(prop, fbxScene))
     {
         if (!staticTransform.isIdentity())
         {
@@ -281,11 +317,11 @@ void readScaleElement(KFbxTypedProperty<fbxDouble3>& prop,
     }
 }
 
-void readUpdateMatrixTransform(osgAnimation::UpdateMatrixTransform* pUpdate, KFbxNode* pNode)
+void readUpdateMatrixTransform(osgAnimation::UpdateMatrixTransform* pUpdate, KFbxNode* pNode, KFbxScene& fbxScene)
 {
     osg::Matrix staticTransform;
 
-    readTranslationElement(pNode->LclTranslation, pUpdate, staticTransform);
+    readTranslationElement(pNode->LclTranslation, pUpdate, staticTransform, fbxScene);
 
     fbxDouble3 fbxRotOffset = pNode->RotationOffset.Get();
     fbxDouble3 fbxRotPiv = pNode->RotationPivot.Get();
@@ -308,7 +344,7 @@ void readUpdateMatrixTransform(osgAnimation::UpdateMatrixTransform* pUpdate, KFb
 
     readRotationElement(pNode->LclRotation, fbxRotOrder,
         pNode->QuaternionInterpolate.IsValid() && pNode->QuaternionInterpolate.Get(),
-        pUpdate, staticTransform);
+        pUpdate, staticTransform, fbxScene);
 
     if (rotationActive)
     {
@@ -322,7 +358,7 @@ void readUpdateMatrixTransform(osgAnimation::UpdateMatrixTransform* pUpdate, KFb
         fbxSclOffset[1] + fbxSclPiv[1] - fbxRotPiv[1],
         fbxSclOffset[2] + fbxSclPiv[2] - fbxRotPiv[2]));
 
-    readScaleElement(pNode->LclScaling, pUpdate, staticTransform);
+    readScaleElement(pNode->LclScaling, pUpdate, staticTransform, fbxScene);
 
     staticTransform.preMultTranslate(osg::Vec3d(
         -fbxSclPiv[0],
@@ -337,7 +373,7 @@ void readUpdateMatrixTransform(osgAnimation::UpdateMatrixTransform* pUpdate, KFb
 
 osg::Group* createGroupNode(KFbxSdkManager& pSdkManager, KFbxNode* pNode,
     const std::string& animName, const osg::Matrix& localMatrix, bool bNeedSkeleton,
-    std::map<KFbxNode*, osg::Node*>& nodeMap)
+    std::map<KFbxNode*, osg::Node*>& nodeMap, KFbxScene& fbxScene)
 {
     if (bNeedSkeleton)
     {
@@ -345,7 +381,7 @@ osg::Group* createGroupNode(KFbxSdkManager& pSdkManager, KFbxNode* pNode,
         osgBone->setDataVariance(osg::Object::DYNAMIC);
         osgBone->setName(pNode->GetName());
         osgAnimation::UpdateBone* pUpdate = new osgAnimation::UpdateBone(animName);
-        readUpdateMatrixTransform(pUpdate, pNode);
+        readUpdateMatrixTransform(pUpdate, pNode, fbxScene);
         osgBone->setUpdateCallback(pUpdate);
 
         nodeMap.insert(std::pair<KFbxNode*, osg::Node*>(pNode, osgBone));
@@ -368,7 +404,7 @@ osg::Group* createGroupNode(KFbxSdkManager& pSdkManager, KFbxNode* pNode,
         if (bAnimated)
         {
             osgAnimation::UpdateMatrixTransform* pUpdate = new osgAnimation::UpdateMatrixTransform(animName);
-            readUpdateMatrixTransform(pUpdate, pNode);
+            readUpdateMatrixTransform(pUpdate, pNode, fbxScene);
             pTransform->setUpdateCallback(pUpdate);
         }
 
@@ -539,7 +575,7 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxNode(
         osgDB::ReaderWriter::ReadResult(0);
     }
 
-    if (!osgGroup) osgGroup = createGroupNode(pSdkManager, pNode, animName, localMatrix, bIsBone, nodeMap);
+    if (!osgGroup) osgGroup = createGroupNode(pSdkManager, pNode, animName, localMatrix, bIsBone, nodeMap, fbxScene);
 
     osg::Group* pAddChildrenTo = osgGroup.get();
     if (bCreateSkeleton)

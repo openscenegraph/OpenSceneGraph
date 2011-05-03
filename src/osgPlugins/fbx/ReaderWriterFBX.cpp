@@ -23,6 +23,7 @@
 
 #if defined(_MSC_VER)
     #pragma warning( disable : 4505 )
+    #pragma warning( default : 4996 )
 #endif
 #include <fbxsdk.h>
 
@@ -103,7 +104,7 @@ public:
 //them from the nodes that skin deformers linked to.
 void findLinkedFbxSkeletonNodes(KFbxNode* pNode, std::set<const KFbxNode*>& fbxSkeletons)
 {
-    if (const KFbxGeometry* pMesh = dynamic_cast<const KFbxGeometry*>(pNode->GetNodeAttribute()))
+    if (const KFbxGeometry* pMesh = KFbxCast<KFbxGeometry>(pNode->GetNodeAttribute()))
     {
         for (int i = 0; i < pMesh->GetDeformerCount(KFbxDeformer::eSKIN); ++i)
         {
@@ -239,10 +240,8 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
             return ReadResult::ERROR_IN_READING_FILE;
         }
 
-        for (int i = 0; i < lImporter->GetTakeCount(); i++)
+        for (int i = 0; KFbxTakeInfo* lTakeInfo = lImporter->GetTakeInfo(i); i++)
         {
-            KFbxTakeInfo* lTakeInfo = lImporter->GetTakeInfo(i);
-
             lTakeInfo->mSelect = true;
         }
 
@@ -255,8 +254,6 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
 
         if (KFbxNode* pNode = pScene->GetRootNode())
         {
-            pScene->SetCurrentTake(pScene->GetCurrentTakeName());
-
             bool useFbxRoot = false;
             bool lightmapTextures = false;
             bool tessellatePolygons = false;
@@ -274,10 +271,10 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
                     {
                         lightmapTextures = true;
                     }
-					if (opt == "TessellatePolygons")
-					{
-						tessellatePolygons = true;
-					}
+                    if (opt == "TessellatePolygons")
+                    {
+                        tessellatePolygons = true;
+                    }
                 }
             }
 
@@ -336,7 +333,7 @@ ReaderWriterFBX::readNode(const std::string& filenameInit,
                 *localOptions,
                 authoringTool,
                 lightmapTextures,
-				tessellatePolygons);
+                tessellatePolygons);
 
             ReadResult res = reader.readFbxNode(pNode, bIsBone, nLightCount);
 

@@ -7,6 +7,7 @@
 
 #if defined(_MSC_VER)
     #pragma warning( disable : 4505 )
+    #pragma warning( default : 4996 )
 #endif
 #include <fbxsdk.h>
 #include <fbxfilesdk/fbxfilesdk_nsuse.h>

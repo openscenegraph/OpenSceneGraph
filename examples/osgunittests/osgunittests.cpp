@@ -489,7 +489,7 @@ void testThreadInitAndExit()
         OpenThreads::Thread::microSleep(5000000);
     }
 
-    std::cout<<"pass    noitfy thread test."<<std::endl<<std::endl;
+    std::cout<<"pass    notify thread test."<<std::endl<<std::endl;
 }
 
 void testPolytope()

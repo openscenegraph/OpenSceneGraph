@@ -381,6 +381,29 @@ class OSGVIEWER_EXPORT LODScaleHandler : public osgGA::GUIEventHandler
 
 };
 
+/** Event handler for toggling SyncToVBlank.*/
+class OSGVIEWER_EXPORT ToggleSyncToVBlankHandler : public osgGA::GUIEventHandler
+{
+    public:
+
+        ToggleSyncToVBlankHandler();
+
+        void setKeyEventToggleSyncToVBlankHandler(int key) { _keyEventToggleSyncToVBlank = key; }
+        int getKeyEventToggleSyncToVBlankHandler() const { return _keyEventToggleSyncToVBlank; }
+
+        bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
+
+        /** Get the keyboard and mouse usage of this manipulator.*/
+        virtual void getUsage(osg::ApplicationUsage& usage) const;
+
+    protected:
+
+
+        int _keyEventToggleSyncToVBlank;
+
+
+};
+
 
 /** Event handler that will capture the screen on key press. */
 class OSGVIEWER_EXPORT ScreenCaptureHandler : public osgGA::GUIEventHandler

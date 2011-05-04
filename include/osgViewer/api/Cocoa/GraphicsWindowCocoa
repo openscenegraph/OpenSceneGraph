@@ -163,7 +163,7 @@ class GraphicsWindowCocoa : public osgViewer::GraphicsWindow, public osgViewer::
         GraphicsWindowCocoaWindow* getWindow() { return _window; }
         NSOpenGLPixelFormat* getPixelFormat() { return _pixelformat; }
                 
-        void setVSync(bool f);
+        virtual void setSyncToVBlank(bool f);
         
         /** adapts a resize / move of the window, coords in global screen space */
         void adaptResize(int x, int y, int w, int h);

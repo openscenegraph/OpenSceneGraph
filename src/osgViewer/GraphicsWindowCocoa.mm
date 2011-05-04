@@ -1048,7 +1048,7 @@ bool GraphicsWindowCocoa::realizeImplementation()
     
     useCursor(_traits->useCursor);
     setWindowName(_traits->windowName);
-    setVSync(_traits->vsync);
+    setSyncToVBlank(_traits->vsync);
     
     MenubarController::instance()->update();
     
@@ -1419,11 +1419,12 @@ void GraphicsWindowCocoa::setCursor(MouseCursor mouseCursor)
 
 
 // ----------------------------------------------------------------------------------------------------------
-// setVSync
+// setSyncToVBlank
 // ----------------------------------------------------------------------------------------------------------
 
-void GraphicsWindowCocoa::setVSync(bool f) 
+void GraphicsWindowCocoa::setSyncToVBlank(bool f) 
 {
+    if (_traits.valid()) _traits->vsync = f;
     GLint VBL(f?1:0);
     [_context setValues:&VBL forParameter:NSOpenGLCPSwapInterval];
 }

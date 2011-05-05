@@ -789,9 +789,9 @@ class ReaderGEO
             gfd=gr->getField(GEO_DB_TEXT_STRING);
             const char *content=gfd ? gfd->getChar() : " ";
             text->setText(std::string(content));
-            gfd=gr->getField(GEO_DB_TEXT_SCALE_X);
+            //gfd=gr->getField(GEO_DB_TEXT_SCALE_X);
             //const float scx=gfd ? gfd->getFloat() : 1.0f;
-            gfd=gr->getField(GEO_DB_TEXT_SCALE_Y);
+            //gfd=gr->getField(GEO_DB_TEXT_SCALE_Y);
             //const float scy=gfd ? gfd->getFloat() : 1.0f;
             gfd=gr->getField(GEO_DB_TEXT_JUSTIFICATION); // GEO_DB_TEXT_DIRECTION);
             int tjus=gfd? gfd->getInt() : GEO_TEXT_LEFT_JUSTIFY;
@@ -1209,9 +1209,8 @@ class ReaderGEO
         }
         
         Group *makeLightPointGeodes(const georecord *gr) {
-            const geoField *gfd=gr->getField(GEO_DB_RENDERGROUP_MAT);
             Group *nug=new Group;
-            gfd=gr->getField(GEO_DB_NODE_NAME);
+            const geoField *gfd=gr->getField(GEO_DB_NODE_NAME);
             if (gfd) {
                 char *name = gfd->getChar();
                 nug->setName(name);
@@ -2049,7 +2048,7 @@ void userVars::addUserVar(const georecord &gr) {
         gfd= gr.getField(GEO_DB_FLOAT_VAR_VALUE);
         nm->setVal(gfd ? gfd->getFloat():0.0f);
 
-        gfd= gr.getField(GEO_DB_FLOAT_VAR_DEFAULT);
+        //gfd= gr.getField(GEO_DB_FLOAT_VAR_DEFAULT);
         //nm->setdefault(gfd ? gfd->getFloat():0.0f);
         //float fdef=gfd ? gfd->getFloat():0.0f;
         

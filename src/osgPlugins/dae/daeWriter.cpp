@@ -223,7 +223,6 @@ std::string daeWriter::uniquify( const std::string &_name )
         uniqueNames.insert( std::make_pair( name, 0 ) );
         return name;
     }
-    return "";
 }
 
 void daeWriter::createAssetTag( bool isZUpAxis )

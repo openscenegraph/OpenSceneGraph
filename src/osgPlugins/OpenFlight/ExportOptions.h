@@ -21,7 +21,6 @@
 
 #include <osg/Node>
 #include <osg/Notify>
-#include <osgDB/ReaderWriter>
 #include <osgDB/FileNameUtils>
 
 #include <string>

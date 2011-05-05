@@ -231,6 +231,7 @@ class FLTReaderWriter : public ReaderWriter
             supportsOption("keepExternalReferences","Import option");
             supportsOption("preserveFace","Import option");
             supportsOption("preserveObject","Import option");
+            supportsOption("replaceDoubleSidedPolys","Import option");
             supportsOption("dofAnimation","Import option");
             supportsOption("billboardCenter","Import option");
             supportsOption("noTextureAlphaForTransparancyBinning","Import option");
@@ -243,7 +244,7 @@ class FLTReaderWriter : public ReaderWriter
             supportsOption("convertToNauticalMiles","Import option");
 
             supportsOption( "version=<ver>", "Export option: Specifies the version of the output OpenFlight file. Supported values include 15.7, 15.8, and 16.1. Default is 16.1. Example: \"version=15.8\"." );
-            supportsOption( "units=<units>", "Export option: Specifies the contents of the Units field of the OpenFliht header record. Valid values include INCHES, FEET, METERS, KILOMETERS, and NATICAL_MILES. Default is METERS. Example: \"units=METERS\"." );
+            supportsOption( "units=<units>", "Export option: Specifies the contents of the Units field of the OpenFlight header record. Valid values include INCHES, FEET, METERS, KILOMETERS, and NAUTICAL_MILES. Default is METERS. Example: \"units=METERS\"." );
             supportsOption( "validate", "Export option: If present in the Options string, the plugin does not write an OpenFlight file. Instead, it returns an indication of the scene graph's suitability for OpenFlight export." );
             supportsOption( "tempDir=<dir>", "Export option: Specifies the directory to use for creation of temporary files. If not specified, the directory is taken from the file name. If the file doesn't contain a path, the current working directory is used. Applications should set this to the name of their app-specific temp directory. If the path contains spaces, use double quotes to ensure correct parsing. Examples: \"tempDir=/tmp\", \"tempDir=\"C:\\My Temp Dir\"." );
             supportsOption( "lighting=<ON|OFF>", "Export option: Specifies a default enable/disable state for lighting, for Nodes in the exported scene graph that don't set it explicitly. By default, the exporter assumes lighting is enabled (GL_LIGHTING ON). Set this to either ON or OFF. Example: \"lighting=OFF\"." );
@@ -310,7 +311,7 @@ class FLTReaderWriter : public ReaderWriter
 
                 if ( !keepExternalReferences )
                 {
-                    osg::notify(osg::DEBUG_INFO) << "keepExternalReferences not found, so externals will be re-readed"<<std::endl;
+                    OSG_DEBUG << "keepExternalReferences not found, so externals will be re-readed"<<std::endl;
                     // read externals.
                     if (rr.getNode())
                     {
@@ -322,7 +323,7 @@ class FLTReaderWriter : public ReaderWriter
                 }
                 else
                 {
-                    osg::notify(osg::DEBUG_INFO) << "keepExternalReferences found, so externals will be left as ProxyNodes"<<std::endl;    
+                    OSG_DEBUG << "keepExternalReferences found, so externals will be left as ProxyNodes"<<std::endl;    
                 }
             }
 
@@ -349,31 +350,34 @@ class FLTReaderWriter : public ReaderWriter
                 const char readerMsg[] = "flt reader option: ";
                 
                 document.setReplaceClampWithClampToEdge((options->getOptionString().find("clampToEdge")!=std::string::npos));
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "clampToEdge=" << document.getReplaceClampWithClampToEdge() << std::endl;
+                OSG_DEBUG << readerMsg << "clampToEdge=" << document.getReplaceClampWithClampToEdge() << std::endl;
 
                 document.setKeepExternalReferences((options->getOptionString().find("keepExternalReferences")!=std::string::npos));
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "keepExternalReferences=" << document.getKeepExternalReferences() << std::endl;
+                OSG_DEBUG << readerMsg << "keepExternalReferences=" << document.getKeepExternalReferences() << std::endl;
 
                 document.setPreserveFace((options->getOptionString().find("preserveFace")!=std::string::npos));
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "preserveFace=" << document.getPreserveFace() << std::endl;
+                OSG_DEBUG << readerMsg << "preserveFace=" << document.getPreserveFace() << std::endl;
 
                 document.setPreserveObject((options->getOptionString().find("preserveObject")!=std::string::npos));
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "preserveObject=" << document.getPreserveObject() << std::endl;
+                OSG_DEBUG << readerMsg << "preserveObject=" << document.getPreserveObject() << std::endl;
+
+                document.setReplaceDoubleSidedPolys((options->getOptionString().find("replaceDoubleSidedPolys")!=std::string::npos));
+                OSG_DEBUG  << readerMsg << "replaceDoubleSidedPolys=" << document.getReplaceDoubleSidedPolys() << std::endl;
 
                 document.setDefaultDOFAnimationState((options->getOptionString().find("dofAnimation")!=std::string::npos));
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "dofAnimation=" << document.getDefaultDOFAnimationState() << std::endl;
+                OSG_DEBUG << readerMsg << "dofAnimation=" << document.getDefaultDOFAnimationState() << std::endl;
 
                 document.setUseBillboardCenter((options->getOptionString().find("billboardCenter")!=std::string::npos));
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "billboardCenter=" << document.getUseBillboardCenter() << std::endl;
+                OSG_DEBUG << readerMsg << "billboardCenter=" << document.getUseBillboardCenter() << std::endl;
 
                 document.setUseTextureAlphaForTransparancyBinning(options->getOptionString().find("noTextureAlphaForTransparancyBinning")==std::string::npos);
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "noTextureAlphaForTransparancyBinning=" << !document.getUseTextureAlphaForTransparancyBinning() << std::endl;
+                OSG_DEBUG << readerMsg << "noTextureAlphaForTransparancyBinning=" << !document.getUseTextureAlphaForTransparancyBinning() << std::endl;
 
                 document.setReadObjectRecordData(options->getOptionString().find("readObjectRecordData")==std::string::npos);
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "readObjectRecordData=" << !document.getReadObjectRecordData() << std::endl;
+                OSG_DEBUG << readerMsg << "readObjectRecordData=" << !document.getReadObjectRecordData() << std::endl;
 
                 document.setDoUnitsConversion((options->getOptionString().find("noUnitsConversion")==std::string::npos)); // default to true, unless noUnitsConversion is specified.
-                osg::notify(osg::DEBUG_INFO) << readerMsg << "noUnitsConversion=" << !document.getDoUnitsConversion() << std::endl;
+                OSG_DEBUG << readerMsg << "noUnitsConversion=" << !document.getDoUnitsConversion() << std::endl;
 
                 if (document.getDoUnitsConversion())
                 {
@@ -533,9 +537,9 @@ class FLTReaderWriter : public ReaderWriter
         {
             if ( fileName.empty() )
             {
-                osg::notify( osg::FATAL ) << "fltexp: writeNode: empty file name" << std::endl;
                 return WriteResult::FILE_NOT_HANDLED;
             }
+
             std::string ext = osgDB::getLowerCaseFileExtension( fileName );
             if ( !acceptsExtension(ext) )
                 return WriteResult::FILE_NOT_HANDLED;
@@ -549,7 +553,7 @@ class FLTReaderWriter : public ReaderWriter
             fOut.open( fileName.c_str(), std::ios::out | std::ios::binary );
             if ( fOut.fail())
             {
-                osg::notify( osg::FATAL ) << "fltexp: Failed to open output stream." << std::endl;
+                OSG_FATAL << "fltexp: Failed to open output stream." << std::endl;
                 return WriteResult::ERROR_IN_WRITING_FILE;
             }
 
@@ -583,7 +587,7 @@ class FLTReaderWriter : public ReaderWriter
                 // If the temp directory doesn't already exist, make it.
                 if ( !osgDB::makeDirectory( fltOpt->getTempDir() ) )
                 {
-                    osg::notify( osg::FATAL ) << "fltexp: Error creating temp dir: " << fltOpt->getTempDir() << std::endl;
+                    OSG_FATAL << "fltexp: Error creating temp dir: " << fltOpt->getTempDir() << std::endl;
                     return WriteResult::ERROR_IN_WRITING_FILE;
                 }
             }

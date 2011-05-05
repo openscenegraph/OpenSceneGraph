@@ -190,17 +190,17 @@ class VertexCNT : public Record
 
             if (!coord.valid())
             {
-                osg::notify(osg::NOTICE)<<"Warning: data error detected in VertexCNT::readRecord coord="<<coord.x()<<" "<<coord.y()<<" "<<coord.z()<<std::endl;
+                OSG_NOTICE<<"Warning: data error detected in VertexCNT::readRecord coord="<<coord.x()<<" "<<coord.y()<<" "<<coord.z()<<std::endl;
             }
 
             if (!normal.valid())
             {
-                osg::notify(osg::NOTICE)<<"Warning: data error detected in VertexCNT::readRecord normal="<<normal.x()<<" "<<normal.y()<<" "<<normal.z()<<std::endl;
+                OSG_NOTICE<<"Warning: data error detected in VertexCNT::readRecord normal="<<normal.x()<<" "<<normal.y()<<" "<<normal.z()<<std::endl;
             }
 
             if (!uv.valid())
             {
-                osg::notify(osg::NOTICE)<<"Warning: data error detected in VertexCNT::readRecord uv="<<uv.x()<<" "<<uv.y()<<std::endl;
+                OSG_NOTICE<<"Warning: data error detected in VertexCNT::readRecord uv="<<uv.x()<<" "<<uv.y()<<std::endl;
             }
 
             // color

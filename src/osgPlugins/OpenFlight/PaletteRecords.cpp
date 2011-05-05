@@ -12,7 +12,7 @@
 */
 
 //
-// OpenFlight® loader for OpenSceneGraph
+// OpenFlight (R) loader for OpenSceneGraph
 //
 //  Copyright (C) 2005-2007  Brede Johansen
 //
@@ -29,6 +29,23 @@
 #include "Document.h"
 #include "AttrData.h"
 #include "RecordInputStream.h"
+
+#if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
+    #define GL_RGB5                     0x8050
+    #define GL_RGBA4                    0x8056
+    #define GL_RGBA8                    0x8058
+    #define GL_RGBA12                   0x805A
+    #define GL_RGB12                    0x8053
+    #define GL_LUMINANCE12_ALPHA4       0x8046
+    #define GL_LUMINANCE12_ALPHA12      0x8047
+    #define GL_INTENSITY16              0x804D
+#endif
+
+#if defined(OSG_GL3_AVAILABLE)
+    #define GL_LUMINANCE12_ALPHA4       0x8046
+    #define GL_LUMINANCE12_ALPHA12      0x8047
+    #define GL_INTENSITY16              0x804D
+#endif
 
 namespace flt {
 
@@ -449,7 +466,7 @@ protected:
         std::string pathname = osgDB::findDataFile(filename,document.getOptions());
         if (pathname.empty())
         {
-            osg::notify(osg::WARN) << "Can't find texture (" << index << ") " << filename << std::endl;
+            OSG_WARN << "Can't find texture (" << index << ") " << filename << std::endl;
             return;
         }
 

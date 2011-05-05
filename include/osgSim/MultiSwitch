@@ -69,8 +69,9 @@ class OSGSIM_EXPORT MultiSwitch : public osg::Group
         /** Get which of the available switch set lists to use.*/
         unsigned int getActiveSwitchSet() const { return _activeSwitchSet; }
 
-        typedef std::vector<bool>       ValueList;
-        typedef std::vector<ValueList>  SwitchSetList;
+        typedef std::vector<bool>        ValueList;
+        typedef std::vector<ValueList>   SwitchSetList;
+        typedef std::vector<std::string> SwitchSetNameList;
         
         /** Set the compile set of different values.*/
         void setSwitchSetList(const SwitchSetList& switchSetList);
@@ -84,6 +85,10 @@ class OSGSIM_EXPORT MultiSwitch : public osg::Group
         /** Get the a single set of different values for a particular switch set.*/
         const ValueList& getValueList(unsigned int switchSet) const { return _values[switchSet]; }
 
+        void setValueName(unsigned int switchSet, const std::string& name);
+
+        const std::string& getValueName(unsigned int switchSet) const { return _valueNames[switchSet]; }
+
     protected :
     
         virtual ~MultiSwitch() {}
@@ -91,9 +96,10 @@ class OSGSIM_EXPORT MultiSwitch : public osg::Group
         void expandToEncompassSwitchSet(unsigned int switchSet);
 
         // this is effectively a list of bit mask.
-        bool            _newChildDefaultValue;
-        unsigned int    _activeSwitchSet;
-        SwitchSetList   _values;
+        bool              _newChildDefaultValue;
+        unsigned int      _activeSwitchSet;
+        SwitchSetList     _values;
+        SwitchSetNameList _valueNames;
 };
 
 }

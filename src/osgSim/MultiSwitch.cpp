@@ -163,6 +163,7 @@ void MultiSwitch::expandToEncompassSwitchSet(unsigned int switchSet)
         // need to expand arrays.
         unsigned int originalSize = _values.size();
         _values.resize(switchSet+1);
+        _valueNames.resize(switchSet+1);
         for(unsigned int i=originalSize;i<=switchSet;++i)
         {
             ValueList& values = _values[i];
@@ -231,4 +232,11 @@ void MultiSwitch::setValueList(unsigned int switchSet, const ValueList& values)
     expandToEncompassSwitchSet(switchSet);
 
     _values[switchSet] = values;
+}
+
+void MultiSwitch::setValueName(unsigned int switchSet, const std::string& name)
+{
+    expandToEncompassSwitchSet(switchSet);
+
+    _valueNames[switchSet] = name;
 }

@@ -86,6 +86,7 @@ public:
     virtual void addVertex(Vertex& /*vertex*/) {}
     virtual void addVertexUV(int /*layer*/,const osg::Vec2& /*uv*/) {}
     virtual void addMorphVertex(Vertex& /*vertex0*/, Vertex& /*vertex100*/) {}
+    virtual void setMultiSwitchValueName(unsigned int /*switchSet*/, const std::string& /*name*/) {}
 
     void setNumberOfReplications(int num) { _numberOfReplications = num; }
     void setMatrix(const osg::Matrix& matrix) { _matrix = new osg::RefMatrix(matrix); }

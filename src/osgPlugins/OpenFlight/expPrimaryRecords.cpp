@@ -31,6 +31,7 @@
 #include <osgSim/LightPointNode>
 #include <osgSim/ObjectRecordData>
 
+#include <stdlib.h>
 
 // FIXME: This header was copied verbatim from the importer, with the only change
 // being that the symbols it defines are placed in namespace 'fltexp' instead
@@ -282,7 +283,7 @@ FltExportVisitor::writeObject( const osg::Group& group, osgSim::ObjectRecordData
     if (!ord)
     {
         std::string warning( "fltexp: writeObject has invalid ObjectRecordData." );
-        osg::notify( osg::WARN ) << warning << std::endl;
+        OSG_WARN << warning << std::endl;
         _fltOpt->getWriteResult().warn( warning );
         return;
     }

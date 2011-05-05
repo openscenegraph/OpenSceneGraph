@@ -893,9 +893,8 @@ std::string daeReader::processImagePath(const domImage* pDomImage) const
             }
 #ifdef WIN32
             // If the path has a drive specifier or a UNC name then strip the leading /
-            const char* szFilename = path.c_str();
             if (path.size() > 2 && (path[2] == ':' || (path[1] == '/' && path[2] == '/')))
-                return szFilename + 1;
+                return path.substr(1, std::string::npos);
 #endif
             return path;
         }

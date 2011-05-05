@@ -592,8 +592,8 @@ bool geoStrContentBehaviour::makeBehave(const georecord *grec, const geoHeaderGe
                         ctmp++;
                     }
                 }
-                gfd=grec->getField(GEO_DB_STRING_CONTENT_ACTION_PADDING_TYPE);
-                gfd=grec->getField(GEO_DB_STRING_CONTENT_ACTION_PADDING_TYPE);
+                //gfd=grec->getField(GEO_DB_STRING_CONTENT_ACTION_PADDING_TYPE);
+                //gfd=grec->getField(GEO_DB_STRING_CONTENT_ACTION_PADDING_TYPE);
                 ok=true;
             }
         }

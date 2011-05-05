@@ -623,7 +623,7 @@ void resolveMeshInputs(
     for (unsigned int i = 0; i < MAX_TEXTURE_COORDINATE_SETS; ++i)
     {
         texcoord_sources[i] = NULL;
-        texcoord_offsets[i] = NULL;
+        texcoord_offsets[i] = 0;
     }
 
     for ( size_t i = 0; i < inputs.getCount(); i++ )

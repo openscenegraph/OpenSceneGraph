@@ -855,7 +855,7 @@ int main( int argc, char **argv )
         }
         else if  (result.message().empty())
         {
-            osg::notify(osg::NOTICE)<<"Warning: file write to '"<<fileNameOut<<"' no supported."<< std::endl;
+            osg::notify(osg::NOTICE)<<"Warning: file write to '"<<fileNameOut<<"' not supported."<< std::endl;
         }
         else
         {

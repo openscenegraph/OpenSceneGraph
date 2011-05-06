@@ -1283,7 +1283,6 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
                     case(GL_INTENSITY): internalFormat = GL_COMPRESSED_INTENSITY_ARB; break;
                 }
             }
-            else internalFormat = image.getInternalTextureFormat();
             break;
 
         case(USE_S3TC_DXT1_COMPRESSION):
@@ -1298,7 +1297,6 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
                     default:        internalFormat = image.getInternalTextureFormat(); break;
                 }
             }
-            else internalFormat = image.getInternalTextureFormat();
             break;
 
         case(USE_S3TC_DXT1c_COMPRESSION):
@@ -1313,7 +1311,6 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
                     default:        internalFormat = image.getInternalTextureFormat(); break;
                 }
             }
-            else internalFormat = image.getInternalTextureFormat();
             break;
 
         case(USE_S3TC_DXT1a_COMPRESSION):
@@ -1328,7 +1325,6 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
                     default:        internalFormat = image.getInternalTextureFormat(); break;
                 }
             }
-            else internalFormat = image.getInternalTextureFormat();
             break;
 
         case(USE_S3TC_DXT3_COMPRESSION):
@@ -1343,7 +1339,6 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
                     default:        internalFormat = image.getInternalTextureFormat(); break;
                 }
             }
-            else internalFormat = image.getInternalTextureFormat();
             break;
 
         case(USE_S3TC_DXT5_COMPRESSION):
@@ -1358,8 +1353,8 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
                     default:        internalFormat = image.getInternalTextureFormat(); break;
                 }
             }
-            else internalFormat = image.getInternalTextureFormat();
             break;
+
         case(USE_PVRTC_2BPP_COMPRESSION):
             if (extensions->isTextureCompressionPVRTC2BPPSupported())
             {
@@ -1372,6 +1367,8 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
                 default:        internalFormat = image.getInternalTextureFormat(); break;
                 }
             }
+            break;
+
         case(USE_PVRTC_4BPP_COMPRESSION):
             if (extensions->isTextureCompressionPVRTC4BPPSupported())
             {
@@ -1384,6 +1381,8 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
                 default:        internalFormat = image.getInternalTextureFormat(); break;
                 }
             }
+            break;
+
         case(USE_ETC_COMPRESSION):
             if (extensions->isTextureCompressionETCSupported())
             {
@@ -1394,6 +1393,8 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
                 default:        internalFormat = image.getInternalTextureFormat(); break;
                 }
             }
+            break;
+
         case(USE_RGTC1_COMPRESSION):
             if (extensions->isTextureCompressionRGTCSupported())
             {
@@ -1406,8 +1407,8 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
                     default:        internalFormat = image.getInternalTextureFormat(); break;
                 }
             }
-            else internalFormat = image.getInternalTextureFormat();
-            break;        
+            break;
+            
         case(USE_RGTC2_COMPRESSION):
             if (extensions->isTextureCompressionRGTCSupported())
             {
@@ -1420,8 +1421,8 @@ void Texture::computeInternalFormatWithImage(const osg::Image& image) const
                     default:        internalFormat = image.getInternalTextureFormat(); break;
                 }
             }
-            else internalFormat = image.getInternalTextureFormat();
-            break;        
+            break;
+
         default:
             break;
         }

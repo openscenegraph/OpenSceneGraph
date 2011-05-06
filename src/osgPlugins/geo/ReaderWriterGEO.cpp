@@ -160,16 +160,16 @@ public:
         cpool=coord_pool; npool=normal_pool;
     }
     inline bool hasVertexActions(void) const { return !(BehList.empty()); }
-    inline osg::Vec4Array *getColors() const { return colors;}
-    inline osg::Vec3Array *getNorms() const { return norms;}
-    inline osg::Vec3Array *getCoords() const { return coords;}
-    inline osg::Vec2Array *getTexCoords() const { return txcoords;}
-    inline osg::IntArray *getColorIndices() const { return colorindices;}
-    inline osg::IntArray *getCoordIndices() const { return coordindices;}
-    inline osg::IntArray *getNormIndices() const { return normindices;}
-    inline osg::IntArray *getTextureIndices() const { return txindices;}
+    inline osg::Vec4Array *getColors() const { return colors.get();}
+    inline osg::Vec3Array *getNorms() const { return norms.get();}
+    inline osg::Vec3Array *getCoords() const { return coords.get();}
+    inline osg::Vec2Array *getTexCoords() const { return txcoords.get();}
+    inline osg::IntArray *getColorIndices() const { return colorindices.get();}
+    inline osg::IntArray *getCoordIndices() const { return coordindices.get();}
+    inline osg::IntArray *getNormIndices() const { return normindices.get();}
+    inline osg::IntArray *getTextureIndices() const { return txindices.get();}
     void addPolcolour( osg::Vec4 cl) { polycols->push_back(cl);}
-    osg::Vec4Array *getPolcolours() const { return polycols;}
+    osg::Vec4Array *getPolcolours() const { return polycols.get();}
     void addVertexActions(geoBehaviourDrawableCB *gcb) const { // add the actions to callback
         if ( !(BehList.empty()) ) {
             for (drBehList::const_iterator rcitr=BehList.begin();
@@ -342,16 +342,16 @@ public:
 private:
     const std::vector<osg::Vec3> *cpool; // passed in from the geo file
     const std::vector<osg::Vec3> *npool;
-    osg::Vec3Array *norms;
-    osg::Vec3Array *coords;
-    osg::Vec2Array *txcoords;
-    osg::Vec4Array *colors;
-    osg::IntArray *colorindices;
-    osg::IntArray *coordindices;
-    osg::IntArray *normindices;
-    osg::IntArray *txindices;
+    osg::ref_ptr<osg::Vec3Array> norms;
+    osg::ref_ptr<osg::Vec3Array> coords;
+    osg::ref_ptr<osg::Vec2Array> txcoords;
+    osg::ref_ptr<osg::Vec4Array> colors;
+    osg::ref_ptr<osg::IntArray> colorindices;
+    osg::ref_ptr<osg::IntArray> coordindices;
+    osg::ref_ptr<osg::IntArray> normindices;
+    osg::ref_ptr<osg::IntArray> txindices;
     drBehList BehList;
-    Vec4Array *polycols;
+    osg::ref_ptr<Vec4Array> polycols;
 };
 
 class geoInfo { // identifies properties required to make a new Geometry, and holds collection of vertices, indices, etc

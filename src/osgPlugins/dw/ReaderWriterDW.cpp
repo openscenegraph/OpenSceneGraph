@@ -327,8 +327,9 @@ public:
         poses.nrmv=nrm;
         poses.idx=idx[j];
     }
-    void tessellate(const std::vector<Vec3> verts, const dwmaterial *themat, 
-          GLUtesselator *ts, _dwobj *dwob, const Matrix *tmat) const;
+    void tessellate(const std::vector<Vec3>& verts, const dwmaterial *themat, 
+          GLUtesselator *ts, _dwobj *dwob, const RefMatrix *tmat) const;
+          
     void link(const int idop, const _face *f2, const int idop2,const std::vector<Vec3> verts, const dwmaterial *themat) const; // to join up opposed faces of a hole
     inline const int getidx(int i) const { return idx[i];}
 private:
@@ -354,17 +355,14 @@ private:
 
 class prims {
 public:
-    prims() { nbegin=0; // primlengs=NULL; gsidx=NULL;nrmidx=NULL;
-     //   txidx=NULL;nrms=NULL;txcoords=NULL;
-     //   nload=0; nff=0; curmode=0;
+    prims() {
+        nbegin=0;
         vertices = new osg::Vec3Array;
         normals = new osg::Vec3Array;
         txc = new osg::Vec3Array;
         txcoords=new osg::Vec3Array; // new Vec2[6*nfnvf]; // one texture coord per vertex
-        tmat=NULL;
     }
-    ~prims() {    /*delete [] primlengs; delete [] nrms;
-        delete [] gsidx; delete [] nrmidx; delete [] txcoords;*/
+    ~prims() {
     }
     void addv(avertex *pos) { // tessellation callback
         vertices->push_back(osg::Vec3(pos->pos[0],pos->pos[1],pos->pos[2]));
@@ -440,32 +438,32 @@ public:
         drw=new osg::DrawArrays(osg::PrimitiveSet::QUADS,n1,4);
         gset->addPrimitiveSet(drw);
     }
-    void tessellate(_face &fc, const std::vector<Vec3> verts, const dwmaterial *themat,GLUtesselator* ts, _dwobj *dwob) 
+    void tessellate(_face &fc, const std::vector<Vec3>& verts, const dwmaterial *themat,GLUtesselator* ts, _dwobj *dwob) 
     {    // generates a set of primitives all of one type (eg tris, qstrip trifan...)
         fc.setNBegin(vertices->size());
-        fc.tessellate(verts, themat, ts, dwob, tmat);
+        fc.tessellate(verts, themat, ts, dwob, tmat.get());
     }
     void buildGeometry() { // at end of all faces, add collection of vertices to geometry
         gset->setNormalBinding(osg::Geometry::BIND_PER_VERTEX); //BIND_PERPRIM); //
-        gset->setNormalArray(normals);
-        gset->setTexCoordArray(0,txcoords);
-        gset->setVertexArray(vertices); // setCoords( vts, nusidx );
+        gset->setNormalArray(normals.get());
+        gset->setTexCoordArray(0,txcoords.get());
+        gset->setVertexArray(vertices.get()); // setCoords( vts, nusidx );
     }
     void setGeometry(osg::Geometry *gs) {
         gset=gs;
     }
-    void settmat(const Matrix *mx) {
+    void settmat(const RefMatrix *mx) {
         tmat= mx;
     }
 private:
-    osg::Geometry *gset;
-    osg::Vec3Array* vertices;
-    osg::Vec3Array* normals;
-    osg::Vec3Array* txc;
-    osg::Vec3Array* txcoords;
+    osg::ref_ptr<osg::Geometry> gset;
+    osg::ref_ptr<osg::Vec3Array> vertices;
+    osg::ref_ptr<osg::Vec3Array> normals;
+    osg::ref_ptr<osg::Vec3Array> txc;
+    osg::ref_ptr<osg::Vec3Array> txcoords;
     GLenum primType;
     int nbegin; // vertex indices for current primitive
-    const Matrix *tmat; // local texture matrix, or may be NULL for default mapping
+    osg::ref_ptr<const RefMatrix> tmat; // local texture matrix, or may be NULL for default mapping
 };
 
 static prims *prd=NULL; // OK not nice to have a static but the OpenGL Tessellator etc wants to be able to refer
@@ -643,7 +641,7 @@ public:
         return nverts-1;
     }
     void settmat(const Matrix& mx) {
-        tmat= new Matrix(mx);
+        tmat= new RefMatrix(mx);
     }
     void makeuv(Vec2 &uv, const double pos[]) {
         Vec3 p;
@@ -653,7 +651,7 @@ public:
         uv[0]=txc[0];
         uv[1]=txc[1];
     }
-    inline void setmx(Matrix *m) { mx=m;}
+    inline void setmx(RefMatrix *m) { mx=m;}
 private:
     Vec4 colour;
     std::vector<Vec3> verts;
@@ -665,18 +663,18 @@ private:
     _dwedge *edges;
     int *openings;
     unsigned short *fc1, *fc2; // openings[i] is in faces[fc1[i]] to faces[fc2[i]]
-    Matrix *tmat;
-    Matrix *mx; // current uvw transform for currently tessealting face
+    osg::ref_ptr<RefMatrix> tmat;
+    osg::ref_ptr<RefMatrix> mx; // current uvw transform for currently tessealting face
 };
 
-void _face::tessellate(const std::vector<Vec3> verts, const dwmaterial *themat, 
-               GLUtesselator *ts, _dwobj *dwob, const Matrix * /*tmat*/) const {
+void _face::tessellate(const std::vector<Vec3>& verts, const dwmaterial *themat, 
+               GLUtesselator *ts, _dwobj *dwob, const RefMatrix * /*tmat*/) const {
     int nvall=getallverts();
     int nused=0;
     avertex *poses=new avertex[2*nvall]; // passed to Tessellator to redraw
     Matrix mx; // texture matrix transform to plane
     settrans(mx, nrm, verts,themat);
-    dwob->setmx(&mx); // may be used by combine callback to define txcoord
+    dwob->setmx(new RefMatrix(mx)); // may be used by combine callback to define txcoord
     gluTessBeginPolygon(ts, dwob); 
     gluTessBeginContour(ts); /**/
     for (int j=0; j<nv; j++) {
@@ -763,7 +761,7 @@ void _dwobj::buildDrawable(Group *grp, const osgDB::ReaderWriter::Options *optio
             // for Geometry we dont need to collect prim types individually
             //     prd.setmode(nvf , nfnvf); // filter out only this type of tessellated face
             prd=new prims;
-            prd->settmat(tmat);
+            prd->settmat(tmat.get());
             osg::Geometry *gset = new osg::Geometry;
             prd->setGeometry(gset);
             StateSet *dstate=themat->make(options);            

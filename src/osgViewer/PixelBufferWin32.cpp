@@ -188,7 +188,14 @@ static std::string sysError()
 class TemporaryWindow: public osg::Referenced
 {
 public:
-    TemporaryWindow();
+    TemporaryWindow():
+        _handle(0),
+        _dc(0),
+        _context(0),
+        _instance(0)
+    {
+        create();
+    }
 
     HWND  getHandle() const    { return _handle; }
     HDC   getDC() const        { return _dc; }
@@ -198,7 +205,13 @@ public:
 
 protected:
     ~TemporaryWindow();
-    TemporaryWindow(const TemporaryWindow &) {}
+    
+    TemporaryWindow(const TemporaryWindow &):
+        _handle(0),
+        _dc(0),
+        _context(0),
+        _instance(0) {}
+        
     TemporaryWindow &operator=(const TemporaryWindow &) { return *this; }
 
     void create();
@@ -211,15 +224,6 @@ private:
     HINSTANCE _instance;
     std::string _classname;
 };
-
-TemporaryWindow::TemporaryWindow()
-:    _handle(0),
-    _dc(0),
-    _context(0),
-    _instance(0)
-{
-    create();
-}
 
 void TemporaryWindow::create()
 {

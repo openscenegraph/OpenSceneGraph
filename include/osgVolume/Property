@@ -379,7 +379,7 @@ class OSGVOLUME_EXPORT PropertyAdjustmentCallback : public osgGA::GUIEventHandle
 
         PropertyAdjustmentCallback();
 
-        PropertyAdjustmentCallback(const PropertyAdjustmentCallback&,const osg::CopyOp&) {}
+        PropertyAdjustmentCallback(const PropertyAdjustmentCallback&,const osg::CopyOp&);
 
         META_Object(osgVolume,PropertyAdjustmentCallback);
 

@@ -204,7 +204,7 @@ public:
     virtual bool read( InputStream& is, osg::Object& obj ) = 0;
     virtual bool write( OutputStream& os, const osg::Object& obj ) = 0;
     virtual const std::string& getName() const { return _name; }
-    
+
 protected:
     std::string _name;
     P _defaultValue;
@@ -686,19 +686,21 @@ protected:
     IntLookup _lookup;
 };
 
+
 template<typename C, typename P>
-class ListSerializer : public TemplateSerializer<P>
+class ListSerializer : public BaseSerializer
 {
 public:
-    typedef TemplateSerializer<P> ParentType;
     typedef typename P::value_type ValueType;
     typedef typename P::const_iterator ConstIterator;
     typedef const P& (C::*Getter)() const;
     typedef void (C::*Setter)( const P& );
     
     ListSerializer( const char* name, Getter gf, Setter sf )
-    : ParentType(name), _getter(gf), _setter(sf) {}
+    : _name(name), _getter(gf), _setter(sf) {}
     
+    virtual const std::string& getName() const { return _name; }
+
     virtual bool read( InputStream& is, osg::Object& obj )
     {
         C& object = OBJECT_CAST<C&>(obj);
@@ -715,7 +717,7 @@ public:
             }
             if ( size>0 ) (object.*_setter)( list );
         }
-        else if ( is.matchString(ParentType::_name) )
+        else if ( is.matchString(_name) )
         {
             is >> size;
             if ( size>0 ) is >> BEGIN_BRACKET;
@@ -750,7 +752,7 @@ public:
         }
         else if ( size>0 )
         {
-            os << PROPERTY((ParentType::_name).c_str()) << size << BEGIN_BRACKET << std::endl;
+            os << PROPERTY((_name).c_str()) << size << BEGIN_BRACKET << std::endl;
             for ( ConstIterator itr=list.begin();
                   itr!=list.end(); ++itr )
             {
@@ -763,6 +765,7 @@ public:
     }
     
 public:
+    std::string _name;
     Getter _getter;
     Setter _setter;
 };

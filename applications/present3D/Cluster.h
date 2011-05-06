@@ -172,13 +172,11 @@ class DataConverter
             _numBytes = numBytes;
         }
 
-        char* _startPtr;
-        char* _endPtr;
-        unsigned int _numBytes;
-        bool _swapBytes;
+        ~DataConverter()
+        {
+            delete [] _startPtr;
+        }
 
-        char* _currentPtr;
-        
         void reset()
         {
             _currentPtr = _startPtr;
@@ -327,6 +325,18 @@ class DataConverter
         
         void write(CameraPacket& cameraPacket);
         void read(CameraPacket& cameraPacket);
+
+        char* startPtr() { return _startPtr; }
+        unsigned int numBytes() { return _numBytes; }
+        
+    protected:
+
+        char* _startPtr;
+        char* _endPtr;
+        unsigned int _numBytes;
+        bool _swapBytes;
+
+        char* _currentPtr;
 };
 
 

@@ -1228,8 +1228,8 @@ ReaderWriter::ReadResult Registry::readImplementation(const ReadFunctor& readFun
 
 ReaderWriter::ReadResult Registry::openArchiveImplementation(const std::string& fileName, ReaderWriter::ArchiveStatus status, unsigned int indexBlockSizeHint, const Options* options)
 {
-    osgDB::Archive* archive = getFromArchiveCache(fileName);
-    if (archive) return archive;
+    osg::ref_ptr<osgDB::Archive> archive = getRefFromArchiveCache(fileName);
+    if (archive.valid()) return archive.get();
 
     ReaderWriter::ReadResult result = readImplementation(ReadArchiveFunctor(fileName, status, indexBlockSizeHint, options),Options::CACHE_ARCHIVES);
 
@@ -1526,11 +1526,20 @@ void Registry::addEntryToObjectCache(const std::string& filename, osg::Object* o
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
     _objectCache[filename]=ObjectTimeStampPair(object,timestamp);
 }
+
 osg::Object* Registry::getFromObjectCache(const std::string& fileName)
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
     ObjectCache::iterator itr = _objectCache.find(fileName);
     if (itr!=_objectCache.end()) return itr->second.first.get();
+    else return 0;
+}
+
+osg::ref_ptr<osg::Object> Registry::getRefFromObjectCache(const std::string& fileName)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_objectCacheMutex);
+    ObjectCache::iterator itr = _objectCache.find(fileName);
+    if (itr!=_objectCache.end()) return itr->second.first;
     else return 0;
 }
 
@@ -1613,6 +1622,14 @@ osgDB::Archive* Registry::getFromArchiveCache(const std::string& fileName)
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_archiveCacheMutex);
     ArchiveCache::iterator itr = _archiveCache.find(fileName);
     if (itr!=_archiveCache.end()) return itr->second.get();
+    else return 0;
+}
+
+osg::ref_ptr<osgDB::Archive> Registry::getRefFromArchiveCache(const std::string& fileName)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_archiveCacheMutex);
+    ArchiveCache::iterator itr = _archiveCache.find(fileName);
+    if (itr!=_archiveCache.end()) return itr->second;
     else return 0;
 }
 

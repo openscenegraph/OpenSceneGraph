@@ -438,17 +438,23 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         /** Add a filename,object,timestamp triple to the Registry::ObjectCache.*/
         void addEntryToObjectCache(const std::string& filename, osg::Object* object, double timestamp = 0.0);
 
-        /** Get an object from the object cache*/ 
+        /** Get an Object from the object cache*/
         osg::Object* getFromObjectCache(const std::string& fileName);
         
+        /** Get an ref_ptr<Object> from the object cache*/
+        osg::ref_ptr<osg::Object> getRefFromObjectCache(const std::string& fileName);
+
         /** Add archive to archive cache so that future calls reference this archive.*/
         void addToArchiveCache(const std::string& fileName, osgDB::Archive* archive);
 
-        /** Remove archive from cache.*/
+        /** Remove Archive from cache.*/
         void removeFromArchiveCache(const std::string& fileName);
         
-        /** Get an archive from the archive cache*/ 
+        /** Get an Archive from the archive cache.*/
         osgDB::Archive* getFromArchiveCache(const std::string& fileName);
+
+        /** Get an ref_ptr<Archive> from the archive cache.*/
+        osg::ref_ptr<osgDB::Archive> getRefFromArchiveCache(const std::string& fileName);
         
         /** Remove all archives from the archive cache.*/
         void clearArchiveCache();

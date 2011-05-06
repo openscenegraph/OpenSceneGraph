@@ -32,7 +32,7 @@ PROJECT(OpenSceneGraph)
 SET(OPENSCENEGRAPH_MAJOR_VERSION 2)
 SET(OPENSCENEGRAPH_MINOR_VERSION 9)
 SET(OPENSCENEGRAPH_PATCH_VERSION 14)
-SET(OPENSCENEGRAPH_SOVERSION 73)
+SET(OPENSCENEGRAPH_SOVERSION 75)
 
 # set to 0 when not a release candidate, non zero means that any generated 
 # svn tags will be treated as release candidates of given number

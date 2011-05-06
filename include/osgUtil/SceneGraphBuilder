@@ -150,7 +150,7 @@ class OSGUTIL_EXPORT SceneGraphBuilder
         unsigned int                        _maxNumTexCoordComponents;
         osg::Vec4f                          _texCoord;
 
-        GLenum                              _primitiveMode;        
+        GLenum                              _primitiveMode;
         osg::ref_ptr<osg::Vec3Array>        _vertices;
         osg::ref_ptr<osg::Vec3Array>        _normals;
         osg::ref_ptr<osg::Vec4Array>        _colors;

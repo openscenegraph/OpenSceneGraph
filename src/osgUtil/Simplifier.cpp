@@ -71,7 +71,8 @@ public:
 
 
     EdgeCollapse():
-       _computeErrorMetricUsingLength(false)  {}
+        _geometry(0),
+        _computeErrorMetricUsingLength(false)  {}
         
     ~EdgeCollapse();
 

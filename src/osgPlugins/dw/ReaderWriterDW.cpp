@@ -524,7 +524,7 @@ public:
         nopens=nfaceverts=0; fc1=fc2=NULL; colour[0]=colour[1]=colour[2]=colour[3]=1;
     } 
     ~_dwobj() {/*delete verts; delete faces;delete openings;*/
-        delete fc1;delete fc2;
+        delete [] fc1;delete [] fc2;
     } 
     int readOpenings(FILE *fp, const int nexpected)
     { // read up to nexpected openings, each opening may have a number of vertices

@@ -89,6 +89,7 @@ namespace PolytopeIntersectorUtils
             _index(0),
              _limitOneIntersection( false ),
              _dimensionMask( PolytopeIntersector::AllDims ),
+             _plane_mask(0x0),
             _candidates(20) {}
 
             void addIntersection(unsigned int index, const CandList_t& cands) {

@@ -1055,7 +1055,7 @@ void VBSPReader::createScene()
     {
         // Get the entity
         entityText = bsp_data->getEntity(i);
-        currentEntity = new VBSPEntity(entityText, bsp_data);
+        currentEntity = new VBSPEntity(entityText, bsp_data.get());
 
         // See if the entity is visible
         if (currentEntity->isVisible())

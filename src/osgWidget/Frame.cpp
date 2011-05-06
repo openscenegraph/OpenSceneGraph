@@ -165,13 +165,14 @@ bool Frame::Border::mouseDrag(double x, double y, const WindowManager* wm)
 }
 
 Frame::Frame(const std::string& name, unsigned int flags):
-Table  (name, 3, 3),
-_flags (flags)
+    Table  (name, 3, 3),
+    _flags (flags)
 {
 }
 
 Frame::Frame(const Frame& frame, const osg::CopyOp& co):
-Table(frame, co)
+    Table(frame, co),
+    _flags(frame._flags)
 {
 }
 

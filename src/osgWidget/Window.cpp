@@ -139,20 +139,21 @@ void Window::EmbeddedWindow::updateSizeFromWindow() {
 }
 
 Window::Window(const std::string& name):
-_parent     (0),
-_wm         (0),
-_index      (0),
-_x          (0.0f),
-_y          (0.0f),
-_z          (0.0f),
-_zRange     (0.0f),
-_strata     (STRATA_NONE),
-_vis        (VM_FULL),
-_r          (0.0f),
-_s          (1.0f),
-_scaleDenom (100.0f),
-_vAnchor    (VA_NONE),
-_hAnchor    (HA_NONE) {
+    _parent     (0),
+    _wm         (0),
+    _index      (0),
+    _x          (0.0f),
+    _y          (0.0f),
+    _z          (0.0f),
+    _zRange     (0.0f),
+    _strata     (STRATA_NONE),
+    _vis        (VM_FULL),
+    _r          (0.0f),
+    _s          (1.0f),
+    _scaleDenom (100.0f),
+    _vAnchor    (VA_NONE),
+    _hAnchor    (HA_NONE)
+{
     _name = name.size() ? name : generateRandomName("Window");
 
     // TODO: Fix the "bg" name.
@@ -177,25 +178,27 @@ _hAnchor    (HA_NONE) {
 }
 
 Window::Window(const Window& window, const osg::CopyOp& co):
-MatrixTransform (window, co),
-EventInterface  (window),
-StyleInterface  (window),
-_parent         (0),
-_wm             (0),
-_x              (window._x),
-_y              (window._y),
-_z              (window._z), 
-_zRange         (window._zRange),
-_strata         (window._strata),
-_vis            (window._vis),
-_r              (window._r),
-_s              (window._s),
-_scaleDenom     (window._scaleDenom),
-_width          (window._width),
-_height         (window._height),
-_vAnchor        (window._vAnchor),
-_hAnchor        (window._hAnchor),
-_visibleArea    (window._visibleArea) {
+    MatrixTransform (window, co),
+    EventInterface  (window),
+    StyleInterface  (window),
+    _parent         (0),
+    _wm             (0),
+    _index          (0),
+    _x              (window._x),
+    _y              (window._y),
+    _z              (window._z),
+    _zRange         (window._zRange),
+    _strata         (window._strata),
+    _vis            (window._vis),
+    _r              (window._r),
+    _s              (window._s),
+    _scaleDenom     (window._scaleDenom),
+    _width          (window._width),
+    _height         (window._height),
+    _vAnchor        (window._vAnchor),
+    _hAnchor        (window._hAnchor),
+    _visibleArea    (window._visibleArea)
+{
     // Construct our vector of Widgets for easier use. :)
     // TODO: I almost certainly will need to use the getPosition() thing here eventually
     // for things to work 100% properly. For example, some Geodes may contain labels,

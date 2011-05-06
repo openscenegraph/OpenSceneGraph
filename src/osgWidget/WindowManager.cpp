@@ -25,8 +25,6 @@ _width          (width),
 _height         (height),
 _windowWidth    (width),
 _windowHeight   (height),
-_numForeground  (0.0f),
-_numBackground  (0.0f),
 _flags          (flags),
 _nodeMask       (nodeMask),
 _view           (view),
@@ -89,10 +87,31 @@ _styleManager   (new StyleManager()) {
 }
 
 WindowManager::WindowManager(const WindowManager& wm, const osg::CopyOp& co):
-osg::Switch(wm, co) {
+    osg::Switch(wm, co),
+    _width          (wm._width),
+    _height         (wm._height),
+    _windowWidth    (wm._width),
+    _windowHeight   (wm._height),
+    _flags          (wm._flags),
+    _nodeMask       (wm._nodeMask),
+    _view           (wm._view),
+    _lastX          (0.0f),
+    _lastY          (0.0f),
+    _lastEvent      (0),
+    _lastPush       (0),
+    _lastVertical   (PD_NONE),
+    _lastHorizontal (PD_NONE),
+    _focusMode      (PFM_FOCUS),
+    _leftDown       (false),
+    _middleDown     (false),
+    _rightDown      (false),
+    _scrolling      (osgGA::GUIEventAdapter::SCROLL_NONE),
+    _styleManager   (new StyleManager())
+{
 }
 
-WindowManager::~WindowManager() {
+WindowManager::~WindowManager()
+{
     if(_flags & WM_USE_LUA) _lua->close();
     
     if(_flags & WM_USE_PYTHON) _python->close();

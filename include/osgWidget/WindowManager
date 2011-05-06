@@ -305,8 +305,6 @@ class OSGWIDGET_EXPORT WindowManager: public osg::Switch, public UIObjectParent<
         point_type         _height;
         point_type         _windowWidth;
         point_type         _windowHeight;
-        matrix_type        _numForeground;
-        matrix_type        _numBackground;
         unsigned int       _flags;
         unsigned int       _nodeMask;
         osgViewer::View*   _view;

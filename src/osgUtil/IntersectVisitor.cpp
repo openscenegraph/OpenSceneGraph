@@ -31,7 +31,9 @@ using namespace osgUtil;
 
 
 
-Hit::Hit()
+Hit::Hit():
+        _ratio(0.0f),
+        _primitiveIndex(0)
 {
 }
 
@@ -444,7 +446,11 @@ struct TriangleIntersect
     
     TriangleHitList _thl;
 
-    TriangleIntersect()
+    TriangleIntersect():
+        _length(0.0f),
+        _index(0),
+        _ratio(0.0f),
+        _hit(false)
     {
     }
 

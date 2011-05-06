@@ -358,8 +358,9 @@ struct AveragedValueTextDrawCallback : public virtual osg::Drawable::DrawCallbac
             double value;
             if (_stats->getAveragedAttribute( _attributeName, value, _averageInInverseSpace))
             {
-                sprintf(_tmpText,"%4.2f",value * _multiplier);
-                text->setText(_tmpText);
+                char tmpText[128];
+                sprintf(tmpText,"%4.2f",value * _multiplier);
+                text->setText(tmpText);
             }
             else
             {
@@ -374,7 +375,6 @@ struct AveragedValueTextDrawCallback : public virtual osg::Drawable::DrawCallbac
     int                         _frameDelta;
     bool                        _averageInInverseSpace;
     double                      _multiplier;
-    mutable char                _tmpText[128];
     mutable osg::Timer_t        _tickLastUpdated;
 };
 
@@ -406,8 +406,9 @@ struct RawValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
             double value;
             if (_stats->getAttribute(frameNumber, _attributeName, value))
             {
-                sprintf(_tmpText,"%4.2f",value * _multiplier);
-                text->setText(_tmpText);
+                char tmpText[128];
+                sprintf(tmpText,"%4.2f",value * _multiplier);
+                text->setText(tmpText);
             }
             else
             {
@@ -421,7 +422,6 @@ struct RawValueTextDrawCallback : public virtual osg::Drawable::DrawCallback
     std::string                 _attributeName;
     int                         _frameDelta;
     double                      _multiplier;
-    mutable char                _tmpText[128];
     mutable osg::Timer_t        _tickLastUpdated;
 };
 
@@ -922,7 +922,7 @@ struct FrameMarkerDrawCallback : public virtual osg::Drawable::DrawCallback
 struct PagerCallback : public virtual osg::NodeCallback
 {
 
-    PagerCallback(    osgDB::DatabasePager* dp,
+    PagerCallback(  osgDB::DatabasePager* dp,
                     osgText::Text* minValue,
                     osgText::Text* maxValue,
                     osgText::Text* averageValue,
@@ -943,11 +943,13 @@ struct PagerCallback : public virtual osg::NodeCallback
     {
         if (_dp.valid())
         {
+            char tmpText[128];
+
             double value = _dp->getAverageTimeToMergeTiles();
             if (value>= 0.0 && value <= 1000)
             {
-                sprintf(_tmpText,"%4.0f",value * _multiplier);
-                _averageValue->setText(_tmpText);
+                sprintf(tmpText,"%4.0f",value * _multiplier);
+                _averageValue->setText(tmpText);
             }
             else
             {
@@ -957,8 +959,8 @@ struct PagerCallback : public virtual osg::NodeCallback
             value = _dp->getMinimumTimeToMergeTile();
             if (value>= 0.0 && value <= 1000)
             {
-                sprintf(_tmpText,"%4.0f",value * _multiplier);
-                _minValue->setText(_tmpText);
+                sprintf(tmpText,"%4.0f",value * _multiplier);
+                _minValue->setText(tmpText);
             }
             else
             {
@@ -968,19 +970,19 @@ struct PagerCallback : public virtual osg::NodeCallback
             value = _dp->getMaximumTimeToMergeTile();
             if (value>= 0.0 && value <= 1000)
             {
-                sprintf(_tmpText,"%4.0f",value * _multiplier);
-                _maxValue->setText(_tmpText);
+                sprintf(tmpText,"%4.0f",value * _multiplier);
+                _maxValue->setText(tmpText);
             }
             else
             {
                 _maxValue->setText("");
             }
 
-            sprintf(_tmpText,"%4d", _dp->getFileRequestListSize());
-            _filerequestlist->setText(_tmpText);
+            sprintf(tmpText,"%4d", _dp->getFileRequestListSize());
+            _filerequestlist->setText(tmpText);
 
-            sprintf(_tmpText,"%4d", _dp->getDataToCompileListSize());
-            _compilelist->setText(_tmpText);
+            sprintf(tmpText,"%4d", _dp->getDataToCompileListSize());
+            _compilelist->setText(tmpText);
         }
 
         traverse(node,nv);
@@ -993,9 +995,7 @@ struct PagerCallback : public virtual osg::NodeCallback
     osg::ref_ptr<osgText::Text> _averageValue;
     osg::ref_ptr<osgText::Text> _filerequestlist;
     osg::ref_ptr<osgText::Text> _compilelist;
-    double              _multiplier;
-    char                _tmpText[128];
-    osg::Timer_t        _tickLastUpdated;
+    double                      _multiplier;
 };
 
 

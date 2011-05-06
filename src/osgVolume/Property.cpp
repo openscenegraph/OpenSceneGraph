@@ -319,17 +319,28 @@ class CycleSwitchVisitor : public osgVolume::PropertyVisitor
 //
 // PropertyAdjustmentCallback
 //
-PropertyAdjustmentCallback::PropertyAdjustmentCallback()
+PropertyAdjustmentCallback::PropertyAdjustmentCallback():
+    _cyleForwardKey('v'),
+    _cyleBackwardKey('V'),
+    _transparencyKey('t'),
+    _alphaFuncKey('a'),
+    _sampleDensityKey('d'),
+    _updateTransparency(false),
+    _updateAlphaCutOff(false),
+    _updateSampleDensity(false)
 {
-    _cyleForwardKey = 'v';
-    _cyleBackwardKey = 'V';
-    _transparencyKey = 't';
-    _alphaFuncKey = 'a';
-    _sampleDensityKey = 'd';
+}
 
-    _updateTransparency = false;
-    _updateAlphaCutOff = false;
-    _updateSampleDensity = false;
+PropertyAdjustmentCallback::PropertyAdjustmentCallback(const PropertyAdjustmentCallback& pac,const osg::CopyOp&):
+    _cyleForwardKey(pac._cyleForwardKey),
+    _cyleBackwardKey(pac._cyleBackwardKey),
+    _transparencyKey(pac._transparencyKey),
+    _alphaFuncKey(pac._alphaFuncKey),
+    _sampleDensityKey(pac._sampleDensityKey),
+    _updateTransparency(false),
+    _updateAlphaCutOff(false),
+    _updateSampleDensity(false)
+{
 }
 
 bool PropertyAdjustmentCallback::handle(const osgGA::GUIEventAdapter& ea,osgGA::GUIActionAdapter&, osg::Object* object, osg::NodeVisitor*)

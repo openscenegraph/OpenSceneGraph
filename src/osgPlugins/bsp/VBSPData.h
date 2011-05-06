@@ -162,7 +162,7 @@ struct DisplacedVertex
 };
 
 
-class VBSPData
+class VBSPData : public osg::Referenced
 {
 protected:
 
@@ -211,10 +211,11 @@ protected:
     typedef std::vector< osg::ref_ptr<osg::StateSet> >  StateSetList;
     StateSetList                                        state_set_list;
    
+    virtual ~VBSPData();
+
 public:
 
     VBSPData();
-    virtual ~VBSPData();
 
     void                      addEntity(std::string & newEntity);
     const int                 getNumEntities() const;

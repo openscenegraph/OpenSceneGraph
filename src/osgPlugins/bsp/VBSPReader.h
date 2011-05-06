@@ -233,7 +233,7 @@ protected:
 
     std::string                map_name;
 
-    VBSPData *                 bsp_data;
+    osg::ref_ptr<VBSPData>     bsp_data;
 
     osg::ref_ptr<osg::Node>    root_node;
 

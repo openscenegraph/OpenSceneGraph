@@ -46,7 +46,11 @@ class OSGUTIL_EXPORT PolytopeIntersector : public Intersector
 
         struct Intersection
         {
-            Intersection() {}
+            Intersection():
+                distance(0.0),
+                maxDistance(0.0),
+                numIntersectionPoints(0),
+                primitiveIndex(0) {}
 
             bool operator < (const Intersection& rhs) const
             {

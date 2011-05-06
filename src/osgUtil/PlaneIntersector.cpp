@@ -353,22 +353,20 @@ namespace PlaneIntersectorUtils
     struct TriangleIntersector
     {
 
-        osg::Plane _plane;
-        osg::Polytope _polytope;
-        bool _hit;
-        osg::ref_ptr<osg::RefMatrix>        _matrix;
-        bool _recordHeightsAsAttributes;
-        osg::ref_ptr<osg::EllipsoidModel>   _em;
-        bool _limitOneIntersection;
+        osg::Plane                              _plane;
+        osg::Polytope                           _polytope;
+        bool                                    _hit;
+        osg::ref_ptr<osg::RefMatrix>            _matrix;
+        bool                                    _recordHeightsAsAttributes;
+        osg::ref_ptr<osg::EllipsoidModel>       _em;
+        bool                                    _limitOneIntersection;
 
         PolylineConnector _polylineConnector;
 
-
-        TriangleIntersector()
-        {
-            _hit = false;
-            _limitOneIntersection = false;
-        }
+        TriangleIntersector():
+            _hit(false),
+            _recordHeightsAsAttributes(false),
+            _limitOneIntersection(false) {}
 
         void set(const osg::Plane& plane, const osg::Polytope& polytope, osg::RefMatrix* matrix, bool recordHeightsAsAttributes, osg::EllipsoidModel* em)
         {

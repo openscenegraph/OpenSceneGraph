@@ -1,4 +1,4 @@
-OpenSceneGraph Library 2.9.13
+OpenSceneGraph Library 2.9.14
 
 456 Contributors:
 
@@ -18,9 +18,9 @@ Ulrich Hertlein
 Cedric Pinson
 Brede Johansen
 Wang Rui
+Michael Platings
 Bob Kuehne
 Geoff Michel
-Michael Platings
 Sukender 
 Wojciech Lewandowski
 Eric Sokolowsky

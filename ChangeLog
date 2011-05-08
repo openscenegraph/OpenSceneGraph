@@ -1,3 +1,554 @@
+2011-05-06 16:46  robert
+
+	* include/osgDB/Registry, src/osgDB/Registry.cpp: Added
+	  osg::ref_ptr<osgDB::Archive>
+	  osgDB::Registry::getRefFromArchiveCache() and
+	  osg::ref_ptr<osgDB::Object>
+	  osgDB::Registry::getRefFromObjectCache().
+
+2011-05-06 12:32  robert
+
+	* include/osgUtil/SceneGraphBuilder: Removed trailing spaces
+
+2011-05-06 12:30  robert
+
+	* include/osgUtil/PolytopeIntersector: Fixed Coverity reported
+	  issue.
+	  
+	  CID 11828: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member distance is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member maxDistance is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member numIntersectionPoints is not initialized
+	  in this constructor nor in any functions that it calls.
+	  Non-static class member primitiveIndex is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-05-06 12:30  robert
+
+	* include/osgVolume/Property: Moved constructor implementation into
+	  .cpp
+
+2011-05-06 12:27  robert
+
+	* src/osgVolume/Property.cpp: Fixed Coverity reported issue.
+	  
+	  CID 11838: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _alphaFuncKey is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _cyleBackwardKey is not initialized in
+	  this constructor nor in any functions that it calls.
+	  Non-static class member _cyleForwardKey is not initialized in
+	  this constructor nor in any functions that it calls.
+	  Non-static class member _sampleDensityKey is not initialized in
+	  this constructor nor in any functions that it calls.
+	  Non-static class member _transparencyKey is not initialized in
+	  this constructor nor in any functions that it calls.
+	  Non-static class member _updateAlphaCutOff is not initialized in
+	  this constructor nor in any functions that it calls.
+	  Non-static class member _updateSampleDensity is not initialized
+	  in this constructor nor in any functions that it calls.
+	  Non-static class member _updateTransparency is not initialized in
+	  this constructor nor in any functions that it calls.
+
+2011-05-06 12:26  robert
+
+	* src/osgUtil/PolytopeIntersector.cpp: Fixed Coverity reported
+	  issue.
+	  
+	  CID 11827: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _plane_mask is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-05-06 12:25  robert
+
+	* src/osgUtil/PlaneIntersector.cpp: Fixed Coverity reported issue.
+	  
+	  CID 11826: Uninitialized scalar field (UNINIT_CTOR)
+	  Class member declaration for _recordHeightsAsAttributes.
+
+2011-05-06 12:25  robert
+
+	* src/osgUtil/Simplifier.cpp: Fixed Coverity reported issue.
+	  
+	  CID 11830: Uninitialized pointer field (UNINIT_CTOR)
+	  Non-static class member _geometry is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-05-06 12:24  robert
+
+	* src/osgUtil/IntersectVisitor.cpp: Fixed Coverity reported issue.
+	  
+	  CID 11825: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _primitiveIndex is not initialized in
+	  this constructor nor in any functions that it calls.
+	  Non-static class member _ratio is not initialized in this
+	  constructor nor in any functions that it calls.
+	  
+	  CID 11824: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _hit is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _index is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _length is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _ratio is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-05-06 12:23  robert
+
+	* src/osgUtil/SceneGraphBuilder.cpp: Fixed Coverity reported issue.
+	  
+	  CID 11829: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _primitiveMode is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-05-06 12:22  robert
+
+	* include/osgViewer/ViewerEventHandlers: Fixed Coverity reported
+	  issue.
+	  
+	  CID 11836: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _fullscreen is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-05-06 12:22  robert
+
+	* src/osgViewer/PixelBufferWin32.cpp: Fixed Coverity reported
+	  issue.
+	  
+	  CID 11831: Uninitialized pointer field (UNINIT_CTOR)
+	  Non-static class member _context is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _dc is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _handle is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _instance is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-05-06 12:21  robert
+
+	* src/osgViewer/View.cpp: Fixed Coverity reported issue.
+	  
+	  CID 11835: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _startTick is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-05-06 12:20  robert
+
+	* src/osgViewer/StatsHandler.cpp: Fixed Coverity reported issues.
+	  
+	  CID 11834: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _tickLastUpdated is not initialized in
+	  this constructor nor in any functions that it calls.
+	  Non-static class member _tmpText is not initialized in this
+	  constructor nor in any functions that it calls.
+	  
+	  CID 11833: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _tmpText is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-05-06 10:30  robert
+
+	* include/osgParticle/ExplosionOperator: Fixed Coverity reported
+	  issues.
+	  
+	  CID 11843: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _inexp is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _outexp is not initialized in this
+	  constructor nor in any functions that it calls.
+	  
+	  CID 11842: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _inexp is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _outexp is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-05-06 10:29  robert
+
+	* include/osgWidget/WindowManager, src/osgWidget/Frame.cpp,
+	  src/osgWidget/Window.cpp, src/osgWidget/WindowManager.cpp: Fixed
+	  Coverity reported issues.
+	  
+	  
+	  WindowManager.cpp
+	  CID 11841: Uninitialized pointer field (UNINIT_CTOR)
+	  Non-static class member _lastEvent is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _lastPush is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _view is not initialized in this
+	  constructor nor in any functions that it calls.
+	  
+	  Frame.cpp
+	  CID 11840: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _flags is not initialized in this
+	  constructor nor in any functions that it calls.
+	  
+	  Window.cpp
+	  CID 11839: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _index is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-05-06 10:28  robert
+
+	* src/osgPlugins/dw/ReaderWriterDW.cpp: Fixed Coverity reported
+	  issue
+	  
+	  CID 11441: Non-array delete for scalars (DELETE_ARRAY)
+	  "_dwobj::readOpenings(_iobuf *, int)" allocates "obj.fc1". [show
+	  details]
+	  
+	  "_dwobj::~_dwobj()" uses delete on "obj.fc1" which is an array.
+	  It should be deleted with operator delete[]. [show details]
+
+2011-05-06 10:27  robert
+
+	* src/osgPlugins/geo/ReaderWriterGEO.cpp: Fixed Covertiy reported
+	  issues.
+	  CID 11394: Resource leak in object (CTOR_DTOR_LEAK)
+	  Allocating memory by calling "new osg::IntArray".
+	  Assigning: "this->colorindices" = "new osg::IntArray".
+	  The constructor allocates field "colorindices" of "struct
+	  vertexInfo" but there is no destructor.
+	  
+	  CID 11395: Resource leak in object (CTOR_DTOR_LEAK)
+	  Allocating memory by calling "new osg::IntArray".
+	  Assigning: "this->coordindices" = "new osg::IntArray".
+	  The constructor allocates field "coordindices" of "struct
+	  vertexInfo" but there is no destructor.
+	  
+	  CID 11396: Resource leak in object (CTOR_DTOR_LEAK)
+	  Allocating memory by calling "new osg::IntArray".
+	  Assigning: "this->normindices" = "new osg::IntArray".
+	  The constructor allocates field "normindices" of "struct
+	  vertexInfo" but there is no destructor.
+	  
+	  CID 11397: Resource leak in object (CTOR_DTOR_LEAK)
+	  Allocating memory by calling "new osg::IntArray".
+	  Assigning: "this->txindices" = "new osg::IntArray".
+	  The constructor allocates field "txindices" of "struct
+	  vertexInfo" but there is no destructor.
+	  
+	  CID 11398: Resource leak in object (CTOR_DTOR_LEAK)
+	  Allocating memory by calling "new osg::Vec2Array".
+	  Assigning: "this->txcoords" = "new osg::Vec2Array".
+	  The constructor allocates field "txcoords" of "struct vertexInfo"
+	  but there is no destructor.
+	  
+	  CID 11399: Resource leak in object (CTOR_DTOR_LEAK)
+	  Allocating memory by calling "new osg::Vec3Array".
+	  Assigning: "this->norms" = "new osg::Vec3Array".
+	  The constructor allocates field "norms" of "struct vertexInfo"
+	  but there is no destructor.
+	  
+	  CID 11400: Resource leak in object (CTOR_DTOR_LEAK)
+	  Allocating memory by calling "new osg::Vec3Array".
+	  Assigning: "this->coords" = "new osg::Vec3Array".
+	  The constructor allocates field "coords" of "struct vertexInfo"
+	  but there is no destructor.
+	  
+	  CID 11401: Resource leak in object (CTOR_DTOR_LEAK)
+	  Allocating memory by calling "new osg::Vec4Array".
+	  Assigning: "this->colors" = "new osg::Vec4Array".
+	  The constructor allocates field "colors" of "struct vertexInfo"
+	  but there is no destructor.
+	  
+	  CID 11402: Resource leak in object (CTOR_DTOR_LEAK)
+	  Allocating memory by calling "new osg::Vec4Array".
+	  Assigning: "this->polycols" = "new osg::Vec4Array".
+	  The constructor allocates field "polycols" of "struct vertexInfo"
+	  but there is no destructor.
+
+2011-05-06 09:26  robert
+
+	* CMakeLists.txt, include/osg/Version: Updated SO version number
+	  for dev release
+
+2011-05-06 09:22  robert
+
+	* applications/present3D/Cluster.h,
+	  applications/present3D/present3D.cpp: Fixed Coverity reported
+	  issue.
+	  
+	  CID 11388: Resource leak in object (CTOR_DTOR_LEAK)
+	  Allocating memory by calling "new char[numBytes]".
+	  Assigning: "this->_startPtr" = "new char[numBytes]".
+	  The constructor allocates field "_startPtr" of "struct
+	  DataConverter" but there is no destructor.
+	  Assigning: "this->_currentPtr" = "new char[numBytes]".
+	  The constructor allocates field "_currentPtr" of "struct
+	  DataConverter" but there is no destructor.
+
+2011-05-06 09:21  robert
+
+	* src/osg/Texture.cpp: Fixed Coverity reported issue.
+	  
+	  CID 12263: Missing break in switch (MISSING_BREAK)
+	  This case (value 8) is not terminated by a 'break' statement.
+	  
+	  CID 12262: Missing break in switch (MISSING_BREAK)
+	  This case (value 7) is not terminated by a 'break' statement.
+	  
+	  CID 12261: Missing break in switch (MISSING_BREAK)
+	  This case (value 6) is not terminated by a 'break' statement.
+
+2011-05-06 09:21  robert
+
+	* include/osg/PrimitiveSet: Fixed Coverity reported issues.
+	  
+	  CID 10392: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _maxIndex is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _minIndex is not initialized in this
+	  constructor nor in any functions that it calls.
+	  
+	  CID 10454: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _maxIndex is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _minIndex is not initialized in this
+	  constructor nor in any functions that it calls.
+	  
+	  CID 10505: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _maxIndex is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _minIndex is not initialized in this
+	  constructor nor in any functions that it calls.
+	  
+	  CID 10919: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _maxIndex is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _minIndex is not initialized in this
+	  constructor nor in any functions that it calls.
+	  
+	  CID 10920: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _maxIndex is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _minIndex is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-05-06 09:20  robert
+
+	* src/osgPlugins/bsp/VBSPData.h, src/osgPlugins/bsp/VBSPReader.cpp,
+	  src/osgPlugins/bsp/VBSPReader.h: Fixed Coverity reported issues.
+	  
+	  CID 11389: Resource leak in object (CTOR_DTOR_LEAK)
+	  Allocating memory by calling "new bsp::VBSPData".
+	  Assigning: "this->bsp_data" = "new bsp::VBSPData".
+	  The constructor allocates field "bsp_data" of "struct
+	  bsp::VBSPReader" but the destructor and whatever functions it
+	  calls do not free it.
+
+2011-05-06 09:19  robert
+
+	* src/osgPlugins/dw/ReaderWriterDW.cpp: Fixed Coverity reported
+	  issues by using ref_ptr<> for object.
+	  
+	  ID 11390: Resource leak in object (CTOR_DTOR_LEAK)
+	  Allocating memory by calling "new osg::Vec3Array".
+	  Assigning: "this->vertices" = "new osg::Vec3Array".
+	  The constructor allocates field "vertices" of "struct prims" but
+	  the destructor and whatever functions it calls do not free it.
+	  
+	  CID 11391: Resource leak in object (CTOR_DTOR_LEAK)
+	  Allocating memory by calling "new osg::Vec3Array".
+	  Assigning: "this->normals" = "new osg::Vec3Array".
+	  The constructor allocates field "normals" of "struct prims" but
+	  the destructor and whatever functions it calls do not free it.
+	  
+	  CID 11392: Resource leak in object (CTOR_DTOR_LEAK)
+	  Allocating memory by calling "new osg::Vec3Array".
+	  Assigning: "this->txc" = "new osg::Vec3Array".
+	  The constructor allocates field "txc" of "struct prims" but the
+	  destructor and whatever functions it calls do not free it.
+	  
+	  CID 11393: Resource leak in object (CTOR_DTOR_LEAK)
+	  Allocating memory by calling "new osg::Vec3Array".
+	  Assigning: "this->txcoords" = "new osg::Vec3Array".
+	  The constructor allocates field "txcoords" of "struct prims" but
+	  the destructor and whatever functions it calls do not free it.
+	  
+	  CID 11747: Uninitialized pointer field (UNINIT_CTOR)
+	  Non-static class member gset is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-05-06 09:00  robert
+
+	* include/osgDB/Serializer: Fixed build problem
+
+2011-05-05 12:40  robert
+
+	* src/osgPlugins/dae/daeWriter.cpp: Fixed Coverity reported issue.
+	  
+	  CID 11845: Structurally dead code (UNREACHABLE)
+	  This code cannot be reached: "<temporary>.basic_string("");".
+
+2011-05-05 12:39  robert
+
+	* src/osgPlugins/gif/ReaderWriterGIF.cpp: Fixed Coverity reported
+	  issue.
+	  
+	  CID 11855: Use after free (USE_AFTER_FREE)
+	  "operator delete[](void *)" frees "buffer".
+
+2011-05-05 12:38  robert
+
+	* src/osgPlugins/3ds/lib3ds/lib3ds_node.c: Fixed Coverity reported
+	  issue. This fix addresses a memory leak.
+	  
+	  CID 11847: Unused pointer value (UNUSED_VALUE)
+	  Pointer "node" returned by "lib3ds_node_new(LIB3DS_NODE_CAMERA)"
+	  is never used.
+
+2011-05-05 12:37  robert
+
+	* include/osgDB/Serializer: Fixed Coverity reported issue.
+	  
+	  CID 11844: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _defaultValue is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Index: ../include/osgDB/Serializer
+
+2011-05-05 11:31  robert
+
+	* src/osgPlugins/dae/daeRGeometry.cpp: Fixed warning
+
+2011-05-05 11:27  robert
+
+	* src/osgPlugins/dae/daeRMaterials.cpp: Fixed Coverity reported
+	  issue.
+	  
+	  CID 11864: Wrapper object use after free (WRAPPER_ESCAPE)
+	  Assigning: "szFilename" = "path.c_str()", which extracts wrapped
+	  state from local "path".
+
+2011-05-05 10:31  robert
+
+	* src/osgPlugins/geo/ReaderWriterGEO.cpp,
+	  src/osgPlugins/geo/geoActions.cpp: Fixed 4 Coverity reported
+	  issues
+	  
+	  CID 11851: Unused pointer value (UNUSED_VALUE)
+	  Pointer "gfd" returned by "gr->getField(26)" is never used.
+	  
+	  CID 11850: Unused pointer value (UNUSED_VALUE)
+	  Pointer "gfd" returned by "gr->getField(80)" is never used.
+	  
+	  CID 11849: Unused pointer value (UNUSED_VALUE)
+	  Pointer "gfd" returned by "gr->getField(3)" is never used.
+	  
+	  CID 11848: Unused pointer value (UNUSED_VALUE)
+	  Pointer "gfd" returned by "grec->getField(3)" is never used.
+
+2011-05-05 10:28  robert
+
+	* applications/osgconv/osgconv.cpp: Fixed typo
+
+2011-05-04 16:36  robert
+
+	* src/osgUtil/tristripper/include/public_types.h: From Mathias
+	  Froehlich, build fix for gcc 4.6
+
+2011-05-04 16:01  robert
+
+	* include/osgViewer/ViewerEventHandlers,
+	  include/osgViewer/api/Cocoa/GraphicsWindowCocoa,
+	  src/osgViewer/GraphicsWindowCocoa.mm,
+	  src/osgViewer/ViewerEventHandlers.cpp: From Stephan Huber,
+	  "attached you'll find a small enhancement for GraphicsWindowCocoa
+	  to
+	  implement the recently introduced setSyncToVBlank-method.
+	  
+	  Additionally I added a ToggleSyncToVBlank-eventhandler to
+	  osgViewer. I
+	  used it to test the code, perhaps you'll find it useful and
+	  include it
+	  in the distribution."
+
+2011-05-04 09:53  robert
+
+	* src/osgVolume/CMakeLists.txt, src/osgWidget/CMakeLists.txt:
+	  Removed unncessary references to FREETYPE
+
+2011-05-04 09:48  robert
+
+	* CMakeModules/FindFBX.cmake: From Michael Platings, fix for build
+	  with cmake 2.6.x
+
+2011-05-03 12:43  robert
+
+	* src/osgViewer/GraphicsWindowWin32.cpp: Added OSGVIEWER_EXPORT
+
+2011-05-03 10:14  robert
+
+	* src/osgViewer/GraphicsWindowX11.cpp: Added missing break;
+
+2011-05-03 09:58  robert
+
+	* CMakeModules/FindFBX.cmake: From Michael Platings, "I've updated
+	  the FBX plugin to use the latest FBX SDK (2012.1). Please apply
+	  the attached .cmake which finds the correct SDK headers &
+	  libraries."
+
+2011-05-03 09:11  mplatings
+
+	* src/osgPlugins/fbx/CMakeLists.txt,
+	  src/osgPlugins/fbx/ReaderWriterFBX.cpp,
+	  src/osgPlugins/fbx/ReaderWriterFBX.h,
+	  src/osgPlugins/fbx/WriterNodeVisitor.cpp,
+	  src/osgPlugins/fbx/WriterNodeVisitor.h,
+	  src/osgPlugins/fbx/fbxMaterialToOsgStateSet.cpp,
+	  src/osgPlugins/fbx/fbxMaterialToOsgStateSet.h,
+	  src/osgPlugins/fbx/fbxRAnimation.cpp,
+	  src/osgPlugins/fbx/fbxRCamera.cpp,
+	  src/osgPlugins/fbx/fbxRLight.cpp,
+	  src/osgPlugins/fbx/fbxRMesh.cpp, src/osgPlugins/fbx/fbxRNode.cpp,
+	  src/osgPlugins/fbx/fbxReader.h: Updated to use FBX SDK 2012.1
+
+2011-04-29 16:50  robert
+
+	* src/osgPlugins/osga/OSGA_Archive.cpp: Improved the handling of
+	  different combinations of slashes and dirNames.
+
+2011-04-29 16:34  robert
+
+	* include/osgDB/Archive, src/osgPlugins/osga/OSGA_Archive.cpp,
+	  src/osgPlugins/osga/OSGA_Archive.h: Added following methods to
+	  osgDB::Archive in support of work by Fradley Anderegg on .zip
+	  archive support:
+	  
+	  /** Get the file name which represents the archived file.*/
+	  virtual std::string getArchiveFileName() const = 0;
+	  
+	  /** return type of file. */
+	  virtual FileType getFileType(const std::string& filename) const =
+	  0;
+	  
+	  /** return the contents of a directory.
+	  * returns an empty array on any error.*/
+	  virtual DirectoryContents getDirectoryContents(const std::string&
+	  dirName) const = 0;
+	  
+	  Added implementations of these new methods into
+	  src/osgPlugins/osga/OSGA_Archive.h
+	  src/osgPlugins/osga/OSGA_Archive.cpp
+
+2011-04-29 14:31  robert
+
+	* src/osgPlugins/tiff/ReaderWriterTIFF.cpp: Refactored the
+	  libtiffOStreamSeekProc function so that it extendeds the stream
+	  when the
+	  requested file position is beyond the current end of the stream.
+	  This fix addresses
+	  a bug that occurred when writting to a streamstream.
+
+2011-04-29 09:16  robert
+
+	* ChangeLog: Update ChangeLog
+
 2011-04-28 16:33  robert
 
 	* include/osg/Object, src/osg/CopyOp.cpp: Fixed Coverity reported

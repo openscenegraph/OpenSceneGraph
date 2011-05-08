@@ -20,7 +20,7 @@ extern "C" {
 
 #define OPENSCENEGRAPH_MAJOR_VERSION    2
 #define OPENSCENEGRAPH_MINOR_VERSION    9
-#define OPENSCENEGRAPH_PATCH_VERSION    14
+#define OPENSCENEGRAPH_PATCH_VERSION    15
 #define OPENSCENEGRAPH_SOVERSION        75
 
 /* Convenience macro that can be used to decide whether a feature is present or not i.e.

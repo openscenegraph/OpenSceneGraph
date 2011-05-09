@@ -29,27 +29,35 @@
 using namespace osg;
 using namespace osgSim;
 
-ImpostorSprite::ImpostorSprite()
+ImpostorSprite::ImpostorSprite():
+    _parent(0),
+    _ism(0),
+    _previous(0),
+    _next(0),
+    _lastFrameUsed(osg::UNINITIALIZED_FRAME_NUMBER),
+    _texture(0),
+    _s(0),
+    _t(0)
 {
     // don't use display list since we will be updating the geometry.
-    _useDisplayList = false;
-    _parent = NULL;
-    
-    _ism = NULL;
-    _previous = NULL;
-    _next = NULL;
-
-    _lastFrameUsed = osg::UNINITIALIZED_FRAME_NUMBER;
-    
-    _texture = NULL;
-    _s = 0;
-    _t = 0;        
-
+    setUseDisplayList(false);
     _color.set(1.0f, 1.0f, 1.0f, 1.0f );
 }
 
-ImpostorSprite::ImpostorSprite(const ImpostorSprite&): Drawable() {}
-
+ImpostorSprite::ImpostorSprite(const ImpostorSprite&):
+    osg::Drawable(),
+    _parent(0),
+    _ism(0),
+    _previous(0),
+    _next(0),
+    _lastFrameUsed(osg::UNINITIALIZED_FRAME_NUMBER),
+    _texture(0),
+    _s(0),
+    _t(0)
+{
+    setUseDisplayList(false);
+    _color.set(1.0f, 1.0f, 1.0f, 1.0f );
+}
 
 ImpostorSprite::~ImpostorSprite()
 {

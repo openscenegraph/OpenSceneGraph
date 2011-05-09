@@ -846,6 +846,7 @@ OverlayNode::OverlayNode(const OverlayNode& copy, const osg::CopyOp& copyop):
     _overlayClearColor(copy._overlayClearColor),
     _continuousUpdate(copy._continuousUpdate),
     _overlayBaseHeight(copy._overlayBaseHeight),
+    _updateCamera(false),
     _renderTargetImpl(copy._renderTargetImpl)
 {
     setNumChildrenRequiringUpdateTraversal(getNumChildrenRequiringUpdateTraversal()+1);            

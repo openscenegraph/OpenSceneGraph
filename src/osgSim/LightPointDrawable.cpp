@@ -45,6 +45,7 @@ LightPointDrawable::LightPointDrawable():
 
 LightPointDrawable::LightPointDrawable(const LightPointDrawable& lpd,const osg::CopyOp& copyop):
     osg::Drawable(lpd,copyop),
+    _endian(lpd._endian),
     _simulationTime(lpd._simulationTime),
     _simulationTimeInterval(lpd._simulationTimeInterval),
     _sizedOpaqueLightPointList(lpd._sizedOpaqueLightPointList),

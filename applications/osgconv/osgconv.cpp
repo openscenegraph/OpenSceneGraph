@@ -656,7 +656,7 @@ int main( int argc, char **argv )
         if( sscanf( str.c_str(), "%f",
                 &nsimp ) != 1 )
         {
-            usage( argv[0], "Scale argument format incorrect." );
+            usage( argv[0], "Simplify argument format incorrect." );
             return 1;
         }
         std::cout << str << " " << nsimp << std::endl;

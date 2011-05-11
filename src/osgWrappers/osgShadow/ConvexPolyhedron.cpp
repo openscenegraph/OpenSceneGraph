@@ -125,11 +125,7 @@ BEGIN_VALUE_REFLECTOR(osgShadow::ConvexPolyhedron)
 	          __void__getPoints__Vertices_R1,
 	          "",
 	          "");
-	I_MethodWithDefaults1(osg::BoundingBox, computeBoundingBox, IN, const osg::Matrix &, m, osgShadow::ConvexPolyhedron::defaultMatrix,
-	                      Properties::NON_VIRTUAL,
-	                      __osg_BoundingBox__computeBoundingBox__C5_osg_Matrix_R1,
-	                      "",
-	                      "");
+
 	I_MethodWithDefaults3(osg::Geometry *, buildGeometry, IN, const osg::Vec4d &, colorOutline, , IN, const osg::Vec4d &, colorInside, , IN, osg::Geometry *, useGeometry, NULL,
 	                      Properties::NON_VIRTUAL,
 	                      __osg_Geometry_P1__buildGeometry__C5_osg_Vec4d_R1__C5_osg_Vec4d_R1__osg_Geometry_P1,

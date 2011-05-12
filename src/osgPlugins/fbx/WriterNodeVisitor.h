@@ -24,6 +24,7 @@
 #include <osg/PrimitiveSet>
 #include <osgDB/FileNameUtils>
 #include <osgDB/ReaderWriter>
+#include <osgDB/ExternalFileWriter>
 
 #if defined(_MSC_VER)
 #pragma warning( disable : 4505 )
@@ -80,12 +81,10 @@ class WriterNodeVisitor: public osg::NodeVisitor
             _currentStateSet(new osg::StateSet()),
             _lastMaterialIndex(0),
             _lastMeshIndex(0),
-            _lastGeneratedImageFileName(0),
             _curFbxNode(pScene->GetRootNode()),
             _options(options),
             _succeedLastApply(true),
-            _directory(osgDB::getFilePath(fileName)),
-            _srcDirectory(srcDirectory)
+            _externalWriter(srcDirectory, osgDB::getFilePath(fileName), true, 0)
         {}
 
         ///Tell us if last Node succeed traversing.
@@ -141,15 +140,11 @@ class WriterNodeVisitor: public osg::NodeVisitor
         public:
             ///Create a KfbxMaterial and KfbxTexture from osg::Texture and osg::Material.
             Material(WriterNodeVisitor&   writerNodeVisitor,
-                     const std::string&   srcDirectory,
+                     osgDB::ExternalFileWriter & externalWriter,
                      const osg::StateSet* stateset,
                      const osg::Material* mat,
                      const osg::Texture*  tex,
                      KFbxSdkManager*      pSdkManager,
-                     const std::string&   directory,
-                     ImageSet&            imageSet,
-                     ImageFilenameSet&    imageFilenameSet,
-                     unsigned int&        lastGeneratedImageFileName,
                      const osgDB::ReaderWriter::Options * options,
                      int                  index = -1);
 
@@ -183,7 +178,6 @@ class WriterNodeVisitor: public osg::NodeVisitor
             KFbxFileTexture*       _fbxTexture;
             int                _index;///< Index in the Map
             const osg::Image*  _osgImage;
-            const std::string& _directory;
         };
 
     protected:
@@ -258,13 +252,10 @@ class WriterNodeVisitor: public osg::NodeVisitor
 
         ///We store the fbx Materials and Textures in this map.
         MaterialMap                         _materialMap;
-        ImageSet                            _imageSet;
-        ImageFilenameSet                    _imageFilenameSet;
-        unsigned int                        _lastGeneratedImageFileName;
         unsigned int                        _lastMaterialIndex;
         unsigned int                        _lastMeshIndex;
         const osgDB::ReaderWriter::Options* _options;
-        const std::string                   _srcDirectory;
+        osgDB::ExternalFileWriter           _externalWriter;
 };
 
 // end namespace pluginfbx

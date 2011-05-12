@@ -28,7 +28,8 @@ void writeShader(osg::Shader* shader, const std::string& cppFileName, const std:
     std::string shaderSource = shader->getShaderSource();
     searchAndReplace(shaderSource, "\r\n", "\n");
     searchAndReplace(shaderSource, "\r", "\n");
-
+    searchAndReplace(shaderSource, "\"", "\\\"");
+ 
     std::string variableString = std::string("char ")+variableName+std::string("[] = ");
     
     std::string::size_type startOfLine = 0;

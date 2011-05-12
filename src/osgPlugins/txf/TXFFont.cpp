@@ -256,6 +256,10 @@ TXFFont::loadFont(std::istream& stream)
 
         float texToVertX = float(glyphs[i].width)/width;
         float texToVertY = float(glyphs[i].height)/height;
+
+        glyph->setWidth(width);
+        glyph->setHeight(height);
+        
         glyph->setHorizontalAdvance(glyphs[i].advance + 0.1f*maxheight);
         glyph->setHorizontalBearing(osg::Vec2((glyphs[i].x_off - 0.5f)*texToVertX,
                                               (glyphs[i].y_off - 0.5f)*texToVertY));

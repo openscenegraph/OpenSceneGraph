@@ -36,8 +36,6 @@ public:
 
     virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType kerningType);
 
-    virtual float getScale() const { return 1.0; }
-
     bool loadFont(std::istream& stream);
 
 protected:

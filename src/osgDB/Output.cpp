@@ -48,6 +48,7 @@ void Output::init()
     _numIndicesPerLine = 10;
     _pathNameHint = AS_IS;
     
+    _outputRelativeTextures = false;
     _outputTextureFiles = false;
     _textureFileNameNumber = 0;
 

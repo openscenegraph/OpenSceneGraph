@@ -47,6 +47,10 @@ public:
                     iss >> prec;
                     fout.precision(prec);
                 }
+                if (opt=="OutputRelativeTextures")
+                {
+                    fout.setOutputRelativeTextures(true);
+                }
                 if (opt=="OutputTextureFiles")
                 {
                     fout.setOutputTextureFiles(true);

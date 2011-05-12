@@ -5,6 +5,8 @@
 #include "osgDB/Input"
 #include "osgDB/Output"
 #include "osgDB/WriteFile"
+#include "osgDB/FileNameUtils"
+#include "osgDB/FileUtils"
 
 using namespace osg;
 using namespace osgDB;
@@ -87,7 +89,18 @@ bool Texture2D_writeLocalData(const Object& obj, Output& fw)
         else
         {
             std::string fileName = texture.getImage()->getFileName();
-            if (fw.getOutputTextureFiles())
+            if (fw.getOutputRelativeTextures())
+            {
+				std::string generatedFileName = osgDB::getSimpleFileName(osgDB::getNameLessExtension(fw.getTextureFileNameForOutput()));
+				std::string textureDir = osgDB::getNameLessExtension(fw.getFileName()) + "_textures";
+				std::string relativeDir = osgDB::getSimpleFileName(textureDir);
+				std::string texFnWithOriginalFormat = generatedFileName + osgDB::getFileExtensionIncludingDot(fileName);
+				std::string fullFileName =  osgDB::concatPaths(textureDir, texFnWithOriginalFormat);
+				fileName = relativeDir + "/" + texFnWithOriginalFormat;
+				osgDB::makeDirectory(textureDir);
+                osgDB::writeImageFile(*texture.getImage(), fullFileName);
+            }
+            else if (fw.getOutputTextureFiles())
             {
                 if (fileName.empty())
                 {

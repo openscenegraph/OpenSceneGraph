@@ -110,6 +110,7 @@ class OSGReaderWriter : public ReaderWriter
             supportsExtension("osgs","Psuedo OpenSceneGraph file loaded, with file encoded in filename string");
             supportsOption("precision","Set the floating point precision when writing out files");
             supportsOption("OutputTextureFiles","Write out the texture images to file");
+            supportsOption("OutputRelativeTextures","Write texture images to a subfolder and reference them with relative file names");
         }
     
         virtual const char* className() const { return "OSG Reader/Writer"; }
@@ -260,6 +261,10 @@ class OSGReaderWriter : public ReaderWriter
                         iss >> prec;
                         fout.precision(prec);
                     }
+                    if (opt=="OutputRelativeTextures")
+                    {
+                        fout.setOutputRelativeTextures(true);
+                    }
                     if (opt=="OutputTextureFiles")
                     {
                         fout.setOutputTextureFiles(true);
@@ -276,6 +281,7 @@ class OSGReaderWriter : public ReaderWriter
         {
             std::string ext = osgDB::getLowerCaseFileExtension(fileName);
             if (!acceptsExtension(ext)) return WriteResult::FILE_NOT_HANDLED;
+
 
             Output fout(fileName.c_str());
             if (fout)
@@ -295,6 +301,7 @@ class OSGReaderWriter : public ReaderWriter
 
         virtual WriteResult writeObject(const Object& obj,std::ostream& fout, const osgDB::ReaderWriter::Options* options) const
         {
+
 
             if (fout)
             {
@@ -360,6 +367,7 @@ class OSGReaderWriter : public ReaderWriter
         }
 
 };
+
 
 // now register with Registry to instantiate the above
 // reader/writer.

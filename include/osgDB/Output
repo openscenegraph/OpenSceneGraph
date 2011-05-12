@@ -91,6 +91,9 @@ class OSGDB_EXPORT Output : public osgDB::ofstream
         virtual std::string getFileNameForOutput(const std::string& filename) const;
         const std::string& getFileName() const { return _filename; }
 
+        void setOutputRelativeTextures(bool flag) { _outputRelativeTextures = flag; }
+        bool getOutputRelativeTextures() const { return _outputRelativeTextures; }
+
         void setOutputTextureFiles(bool flag) { _outputTextureFiles = flag; }
         bool getOutputTextureFiles() const { return _outputTextureFiles; }
 
@@ -120,6 +123,7 @@ class OSGDB_EXPORT Output : public osgDB::ofstream
         
         PathNameHint _pathNameHint;
 
+        bool _outputRelativeTextures;
         bool _outputTextureFiles;
         unsigned int _textureFileNameNumber;
 

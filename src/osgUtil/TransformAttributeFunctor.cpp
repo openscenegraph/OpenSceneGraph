@@ -46,3 +46,25 @@ void TransformAttributeFunctor::apply(osg::Drawable::AttributeType type,unsigned
         }
     }
 }
+
+void TransformAttributeFunctor::apply(osg::Drawable::AttributeType type,unsigned int count,osg::Vec3d* begin)
+{
+    if (type == osg::Drawable::VERTICES)
+    {
+        osg::Vec3d* end = begin+count;
+        for (osg::Vec3d* itr=begin;itr<end;++itr)
+        {
+            (*itr) = (*itr)*_m;
+        }
+    }
+    else if (type == osg::Drawable::NORMALS)
+    {
+        osg::Vec3d* end = begin+count;
+        for (osg::Vec3d* itr=begin;itr<end;++itr)
+        {
+            // note post mult by inverse for normals.
+            (*itr) = osg::Matrix::transform3x3(_im,(*itr));
+            (*itr).normalize();
+        }
+    }
+}

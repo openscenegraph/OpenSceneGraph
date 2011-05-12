@@ -279,22 +279,17 @@ void PrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
 }
 
 WriterNodeVisitor::Material::Material(WriterNodeVisitor& writerNodeVisitor,
-                                      const std::string& srcDirectory,
+                                      osgDB::ExternalFileWriter & externalWriter,
                                       const osg::StateSet* stateset,
                                       const osg::Material* mat,
                                       const osg::Texture* tex,
                                       KFbxSdkManager* pSdkManager,
-                                      const std::string& directory,
-                                      ImageSet& imageSet,
-                                      ImageFilenameSet& imageFilenameSet,
-                                      unsigned int& lastGeneratedImageFileName,
                                       const osgDB::ReaderWriter::Options * options,
                                       int index) :
     _index(index),
     _fbxMaterial(NULL),
     _fbxTexture(NULL),
-    _osgImage(NULL),
-    _directory(directory)
+    _osgImage(NULL)
 {
     osg::Vec4 diffuse(1,1,1,1),
               ambient(0.2,0.2,0.2,1),
@@ -363,50 +358,22 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor& writerNodeVisitor,
     {
         _osgImage = tex->getImage(0);
 
-        ImageSet::iterator it = imageSet.find(_osgImage);
+        std::string relativePath;
+        externalWriter.write(*_osgImage, options, NULL, &relativePath);
 
-        if (it == imageSet.end())
+        _fbxTexture = KFbxTexture::Create(pSdkManager, relativePath.c_str());
+        _fbxTexture->SetFileName(relativePath.c_str());
+        // Create a FBX material if needed
+        if (!_fbxMaterial)
         {
-            std::string canonicalPath( osgDB::getRealPath(osgDB::convertFileNameToNativeStyle(_osgImage->getFileName())) );
-            std::string destPath;
-            std::string relativePath;
-            if (canonicalPath.empty())
-            {
-                static const unsigned int MAX_IMAGE_NUMBER = UINT_MAX-1;        // -1 to allow doing +1 without an overflow
-                unsigned int imageNumber;
-                for (imageNumber=lastGeneratedImageFileName+1; imageNumber<MAX_IMAGE_NUMBER; ++imageNumber)
-                {
-                    std::ostringstream oss;
-                    oss << "Image_" << imageNumber << ".tga";
-                    relativePath = oss.str();
-                    destPath = osgDB::concatPaths(_directory, relativePath);
-                    if (imageFilenameSet.find(destPath) != imageFilenameSet.end()) break;
-                }
-                lastGeneratedImageFileName = imageNumber;
-                osgDB::writeImageFile(*_osgImage, destPath, options);
-            }
-            else
-            {
-                relativePath = osgDB::getPathRelative(srcDirectory, canonicalPath);
-                destPath = osgDB::getRealPath(osgDB::convertFileNameToNativeStyle( osgDB::concatPaths(_directory, relativePath) ));
-                if (destPath != canonicalPath)
-                {
-                    if (!osgDB::makeDirectoryForFile(destPath))
-                    {
-                        OSG_NOTICE << "Can't create directory for file '" << destPath << "'. May fail creating the image file." << std::endl;
-                    }
-                    osgDB::writeImageFile(*_osgImage, destPath, options);
-                }
-            }
-
-            assert(!destPath.empty());        // Else the implementation is to be fixed
-            assert(!relativePath.empty());    // ditto
-            it = imageSet.insert(ImageSet::value_type(_osgImage, relativePath)).first;
-            imageFilenameSet.insert(destPath);
+            _fbxMaterial = KFbxSurfacePhong::Create(pSdkManager, relativePath.c_str());
         }
-
-        _fbxTexture = KFbxFileTexture::Create(pSdkManager, it->second.c_str());
-        _fbxTexture->SetFileName(it->second.c_str());
+        // Connect texture to material's diffuse
+        // Note there should be no reason KFbxSurfacePhong::Create() would return NULL, but as previous code made this secirity test, here we keep the same way.
+        if (_fbxMaterial)
+        {
+            _fbxMaterial->GetDiffuseColor().ConnectSrcObject(_fbxTexture);
+        }
     }
 }
 
@@ -428,7 +395,7 @@ int WriterNodeVisitor::processStateSet(const osg::StateSet* ss)
     {
         int matNum = _lastMaterialIndex;
         _materialMap.insert(MaterialMap::value_type(MaterialMap::key_type(ss),
-            Material(*this, _srcDirectory, ss, mat, tex, _pSdkManager, _directory, _imageSet, _imageFilenameSet, _lastGeneratedImageFileName, _options, matNum)));
+            Material(*this, _externalWriter, ss, mat, tex, _pSdkManager, _options, matNum)));
         ++_lastMaterialIndex;
         return matNum;
     }
@@ -522,15 +489,11 @@ WriterNodeVisitor::setControlPointAndNormalsAndUV(const osg::Geode& geo,
         if (basevecs->getType() == osg::Array::Vec3ArrayType)
         {
             const osg::Vec3  & vec = (*static_cast<const osg::Vec3Array  *>(basevecs))[vertexIndex];
-            // Sukender: "*new KFbxVector4"? Shouldn't it be "KFbxVector4" alone?
-            //mesh->SetControlPointAt(*new KFbxVector4(vec.x(), vec.y(), vec.z()), it->second);
             vertex.Set(vec.x(), vec.y(), vec.z());
         }
         else if (basevecs->getType() == osg::Array::Vec3dArrayType)
         {
             const osg::Vec3d & vec = (*static_cast<const osg::Vec3dArray *>(basevecs))[vertexIndex];
-            // Sukender: "*new KFbxVector4"? Shouldn't it be "KFbxVector4" alone?
-            //mesh->SetControlPointAt(*new KFbxVector4(vec.x(), vec.y(), vec.z()), it->second);
             vertex.Set(vec.x(), vec.y(), vec.z());
         }
         else

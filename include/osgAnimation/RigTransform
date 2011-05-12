@@ -27,7 +27,7 @@ namespace osgAnimation
     public:
         RigTransform() {}
         virtual ~RigTransform() {}
-        virtual void operator()(RigGeometry& geometry) {}
+        virtual void operator()(RigGeometry&) {}
 
     };
 

@@ -413,6 +413,12 @@ std::string::const_iterator osgDB::PathIterator::next(std::string::const_iterato
     return std::find_first_of(it, end, PATH_SEPARATORS, PATH_SEPARATORS+PATH_SEPARATORS_LEN);
 }
 
+void osgDB::getPathElements(const std::string& path, std::vector<std::string> & out_elements)
+{
+    out_elements.clear();
+    for(osgDB::PathIterator it(path); it.valid(); ++it) out_elements.push_back(*it);
+}
+
 
 std::string osgDB::getPathRoot(const std::string& path) {
     // Test for unix root

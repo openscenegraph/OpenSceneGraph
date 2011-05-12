@@ -283,7 +283,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             {
                 getDicomFilesInDirectory(fileName, files);
             }
-            else if (isFileADicom(fileName)
+            else if (isFileADicom(fileName))
             {
                 files.push_back(fileName);
             }

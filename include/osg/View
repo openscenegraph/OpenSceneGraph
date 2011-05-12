@@ -112,6 +112,8 @@ class OSG_EXPORT View : public virtual osg::Object
                 _useMastersSceneData(rhs._useMastersSceneData),
                 _updateSlaveCallback(rhs._updateSlaveCallback) {}
 
+            virtual ~Slave() {}
+
             Slave& operator = (const Slave& rhs)
             {
                 _camera = rhs._camera;

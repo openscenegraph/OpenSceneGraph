@@ -17,6 +17,7 @@
 #include <osgDB/Export>
 
 #include <string>
+#include <vector>
 
 namespace osgDB {
 
@@ -77,6 +78,8 @@ extern OSGDB_EXPORT std::string concatPaths(const std::string& left, const std::
 /** Removes .. and . dirs in a path */
 extern OSGDB_EXPORT std::string getRealPath(const std::string& path);
 
+/** Splits a path into elements between separators (including Windows' root, if any). */
+extern OSGDB_EXPORT void getPathElements(const std::string& path, std::vector<std::string> & out_elements);
 
 }
 

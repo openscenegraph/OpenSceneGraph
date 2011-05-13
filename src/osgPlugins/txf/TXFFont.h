@@ -28,6 +28,8 @@ public:
 
     virtual std::string getFileName() const;
 
+    virtual bool supportsMultipleFontResolutions() const { return false; }
+    
     virtual osgText::Glyph* getGlyph(const osgText::FontResolution& fontRes, unsigned int charcode);
 
     virtual osgText::Glyph3D* getGlyph3D(unsigned int) { return 0; }

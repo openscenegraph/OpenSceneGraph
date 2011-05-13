@@ -27,8 +27,6 @@ QFontImplementation::QFontImplementation(const QFont& font) :
    _filename(font.toString().toStdString() + ".qfont"),
    _font(font)
 {
-   _currentRes.first = 0;
-   _currentRes.second = 0;
 }
 
 QFontImplementation::~QFontImplementation()
@@ -41,22 +39,13 @@ QFontImplementation::getFileName() const
     return _filename;
 }
 
-void
-QFontImplementation::setFontResolution(const osgText::FontResolution& fontSize)
-{
-    if (fontSize == _currentRes)
-        return;
-
-    _currentRes = fontSize;
-    _font.setPixelSize(fontSize.second);
-}
-
 osgText::Glyph*
 QFontImplementation::getGlyph(const osgText::FontResolution& fontRes, unsigned int charcode)
 {
-    setFontResolution(fontRes);
+    unsigned int fontSize = fontRes.second;
+    _font.setPixelSize(fontSize);
     
-    float coord_scale = 1.0f/float(_currentRes.second);
+    float coord_scale = 1.0f/float(fontSize);
 
     QFontMetrics fontMetrics(_font);
     QFontMetricsF fontMetricsF(_font);

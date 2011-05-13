@@ -33,11 +33,6 @@ DefaultFont::~DefaultFont()
 {
 }
 
-void DefaultFont::setSize(unsigned int, unsigned int)
-{
-    OSG_INFO<<"DefaultFont::setSize(,) call is ignored."<<std::endl;
-}
-
 osgText::Glyph* DefaultFont::getGlyph(const FontResolution& fontRes, unsigned int charcode)
 {
     if (_sizeGlyphMap.empty()) return 0;

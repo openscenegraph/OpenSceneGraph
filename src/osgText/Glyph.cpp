@@ -73,7 +73,7 @@ bool GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
         // move used markers on.
         _partUsedX += width;
         if (_usedY+height>_partUsedY) _partUsedY = _usedY+height;
-        
+
         return true;
     }
     
@@ -91,7 +91,7 @@ bool GlyphTexture::getSpaceForGlyph(Glyph* glyph, int& posX, int& posY)
         // move used markers on.
         _partUsedX += width;
         if (_usedY+height>_partUsedY) _partUsedY = _usedY+height;
-        
+
         return true;
     }
 
@@ -204,9 +204,6 @@ void GlyphTexture::apply(osg::State& state) const
         }
         
 
-//        OSG_NOTICE<<"Texture width = "<<getTextureWidth()<<std::endl;
-//        OSG_NOTICE<<"Texture height = "<<getTextureHeight()<<std::endl;
-               
         // allocate the texture memory.
         glTexImage2D( GL_TEXTURE_2D, 0, GL_ALPHA,
                 getTextureWidth(), getTextureHeight(), 0,
@@ -379,9 +376,37 @@ void GlyphTexture::setThreadSafeRefUnref(bool threadSafe)
 void GlyphTexture::resizeGLObjectBuffers(unsigned int maxSize)
 {
     osg::Texture2D::resizeGLObjectBuffers(maxSize);
+
+    unsigned int initialSize = _glyphsToSubload.size();
     _glyphsToSubload.resize(maxSize);
+    
+    for(unsigned i=initialSize; i<_glyphsToSubload.size(); ++i)
+    {
+        for(GlyphRefList::iterator itr = _glyphs.begin();
+            itr != _glyphs.end();
+            ++itr)
+        {
+            _glyphsToSubload[i].push_back(itr->get());
+        }
+    }
 }
 
+osg::Image* GlyphTexture::createImage()
+{
+    osg::ref_ptr<osg::Image> image = new osg::Image;
+    image->allocateImage(getTextureWidth(), getTextureHeight(), 1, GL_ALPHA, GL_UNSIGNED_BYTE);
+    memset(image->data(), 0, image->getTotalSizeInBytes());
+
+    for(GlyphRefList::iterator itr = _glyphs.begin();
+        itr != _glyphs.end();
+        ++itr)
+    {
+        Glyph* glyph = itr->get();
+        image->copySubImage(glyph->getTexturePositionX(), glyph->getTexturePositionY(), 0, glyph);
+    }
+
+    return image.release();
+}
 
 // all the methods in Font::Glyph have been made non inline because VisualStudio6.0 is STUPID, STUPID, STUPID PILE OF JUNK.
 Glyph::Glyph(Font* font, unsigned int glyphCode):

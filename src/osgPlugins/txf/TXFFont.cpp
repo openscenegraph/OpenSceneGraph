@@ -145,8 +145,7 @@ TXFFont::loadFont(std::istream& stream)
     readInt(stream, isSwapped);
     unsigned num_glyphs = readInt(stream, isSwapped);
 
-
-    unsigned maxwidth = 0;
+    unsigned computedmaxheight = 0;
 
     unsigned w = texwidth;
     unsigned h = texheight;
@@ -167,7 +166,7 @@ TXFFont::loadFont(std::istream& stream)
         glyphData.x = readShort(stream, isSwapped);
         glyphData.y = readShort(stream, isSwapped);
 
-        maxwidth = std::max(maxwidth, (unsigned)glyphData.width);
+        computedmaxheight = std::max(computedmaxheight, (unsigned)glyphData.height);
 
         glyphs.push_back(glyphData);
     }
@@ -220,20 +219,14 @@ TXFFont::loadFont(std::istream& stream)
         return false;
     }
 
-    for (unsigned i = 0; i < glyphs.size(); ++i)
+    float coord_scale = 1.0f/float(computedmaxheight);
+
     {
-        // have a special one for that
-        if (glyphs[i].ch == ' ')
-            continue;
+        // insert a trivial blank character
+        osgText::Glyph* glyph = new osgText::Glyph(_facade, ' ');
 
-        // add the characters ...
-        osgText::Glyph* glyph = new osgText::Glyph(_facade, glyphs[i].ch);
-
-        unsigned sourceWidth = glyphs[i].width;
-        unsigned sourceHeight = glyphs[i].height;
-
-        unsigned width = sourceWidth;
-        unsigned height = sourceHeight;
+        unsigned width = 1;
+        unsigned height = 1;
 
         glyph->allocateImage(width, height, 1, GL_ALPHA, GL_UNSIGNED_BYTE);
         glyph->setInternalTextureFormat(GL_ALPHA);
@@ -246,55 +239,55 @@ TXFFont::loadFont(std::istream& stream)
             }
         }
 
-        for (unsigned k = 0; k < glyphs[i].width; ++k)
+        glyph->setWidth(0.0f);
+        glyph->setHeight(0.0f);
+        glyph->setHorizontalAdvance(0.5f);
+        glyph->setHorizontalBearing(osg::Vec2(0.0f, 0.0f));
+        glyph->setVerticalAdvance(1.0f);
+        glyph->setVerticalBearing(osg::Vec2(-0.25f, 0.0f));
+        _chars[' '] = glyph;
+        addGlyph(fontResolution, ' ', glyph);
+    }
+    
+    for (unsigned i = 0; i < glyphs.size(); ++i)
+    {
+        // have a special one for that
+        if (glyphs[i].ch == ' ')
+            continue;
+
+        // add the characters ...
+        osgText::Glyph* glyph = new osgText::Glyph(_facade, glyphs[i].ch);
+
+        unsigned width = glyphs[i].width;
+        unsigned height = glyphs[i].height;
+
+        glyph->allocateImage(width, height, 1, GL_ALPHA, GL_UNSIGNED_BYTE);
+        glyph->setInternalTextureFormat(GL_ALPHA);
+
+        for (unsigned k = 0; k < width; ++k)
         {
-            for (unsigned l = 0; l < glyphs[i].height; ++l)
+            for (unsigned l = 0; l < height; ++l)
             {
                 *glyph->data(k, l) = *image->data(glyphs[i].x + k, glyphs[i].y + l);
             }
         }
 
-        float texToVertX = float(glyphs[i].width)/width;
-        float texToVertY = float(glyphs[i].height)/height;
-
-        glyph->setWidth(width);
-        glyph->setHeight(height);
+        glyph->setWidth(float(width)*coord_scale);
+        glyph->setHeight(float(height)*coord_scale);
         
-        glyph->setHorizontalAdvance(glyphs[i].advance + 0.1f*maxheight);
-        glyph->setHorizontalBearing(osg::Vec2((glyphs[i].x_off - 0.5f)*texToVertX,
-                                              (glyphs[i].y_off - 0.5f)*texToVertY));
-        glyph->setVerticalAdvance(sourceHeight);
-        glyph->setVerticalBearing(osg::Vec2(glyphs[i].x_off*texToVertX - 0.5f*glyphs[i].advance*texToVertX,
-                                            - glyphs[i].height*texToVertY));
+        // OSG_NOTICE<<"char="<<char(glyphs[i].ch)<<", glyphs[i].x_off="<<int(glyphs[i].x_off)<<", glyphs[i].y_off="<<int(glyphs[i].y_off)<<", glyphs[i].advance="<<int(glyphs[i].advance)<<", glyphs[i].width="<<int(glyphs[i].width)<<", glyphs[i].height="<<int(glyphs[i].height)<<std::endl;
 
+        glyph->setHorizontalAdvance(float(glyphs[i].advance)*coord_scale);
+        glyph->setHorizontalBearing(osg::Vec2((float(glyphs[i].x_off)*coord_scale),
+                                              (float(glyphs[i].y_off)*coord_scale)) );
+
+        glyph->setVerticalAdvance(1.0);
+        glyph->setVerticalBearing(osg::Vec2((float(glyphs[i].x_off-0.5f*float(glyphs[i].advance))*coord_scale),
+                                              (float(glyphs[i].y_off)*coord_scale)) );
         _chars[glyphs[i].ch] = glyph;
 
         addGlyph(fontResolution, glyphs[i].ch, glyph);
     }
-
-    // insert a trivial blank character
-    osgText::Glyph* glyph = new osgText::Glyph(_facade, ' ');
-
-    unsigned width = 1;
-    unsigned height = 1;
-    
-    glyph->allocateImage(width, height, 1, GL_ALPHA, GL_UNSIGNED_BYTE);
-    glyph->setInternalTextureFormat(GL_ALPHA);
-
-    for (unsigned k = 0; k < width; ++k)
-    {
-        for (unsigned l = 0; l < height; ++l)
-        {
-            *glyph->data(k, l) = 0;
-        }
-    }
-
-    glyph->setHorizontalAdvance(0.5f*float(fontResolution.second));
-    glyph->setHorizontalBearing(osg::Vec2(0.0f, 0.0f));
-    glyph->setVerticalAdvance(float(fontResolution.second));
-    glyph->setVerticalBearing(osg::Vec2(0.0f, 0.0f));
-    _chars[' '] = glyph;
-    addGlyph(fontResolution, ' ', glyph);
 
     return true;
 }

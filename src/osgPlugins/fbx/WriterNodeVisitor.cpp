@@ -361,7 +361,7 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor& writerNodeVisitor,
         std::string relativePath;
         externalWriter.write(*_osgImage, options, NULL, &relativePath);
 
-        _fbxTexture = KFbxTexture::Create(pSdkManager, relativePath.c_str());
+        _fbxTexture = KFbxFileTexture::Create(pSdkManager, relativePath.c_str());
         _fbxTexture->SetFileName(relativePath.c_str());
         // Create a FBX material if needed
         if (!_fbxMaterial)

@@ -16,9 +16,9 @@
 class ViewerWidget : public QWidget, public osgViewer::CompositeViewer
 {
 public:
-    ViewerWidget() : QWidget()
+    ViewerWidget(osgViewer::ViewerBase::ThreadingModel threadingModel=osgViewer::CompositeViewer::SingleThreaded) : QWidget()
     {
-        setThreadingModel(osgViewer::CompositeViewer::SingleThreaded);
+        setThreadingModel(threadingModel);
 
         QWidget* widget1 = addViewWidget( createCamera(0,0,100,100), osgDB::readNodeFile("cow.osg") );
         QWidget* widget2 = addViewWidget( createCamera(0,0,100,100), osgDB::readNodeFile("glider.osg") );
@@ -50,7 +50,7 @@ public:
         view->setCameraManipulator( new osgGA::TrackballManipulator );
         
         osgQt::GraphicsWindowQt* gw = dynamic_cast<osgQt::GraphicsWindowQt*>( camera->getGraphicsContext() );
-        return gw ? gw->getGraphWidget() : NULL;
+        return gw ? gw->getGLWidget() : NULL;
     }
     
     osg::Camera* createCamera( int x, int y, int w, int h, const std::string& name="", bool windowDecoration=false )
@@ -89,8 +89,16 @@ protected:
 
 int main( int argc, char** argv )
 {
+    osg::ArgumentParser arguments(&argc, argv);
+
+    osgViewer::ViewerBase::ThreadingModel threadingModel = osgViewer::ViewerBase::CullDrawThreadPerContext;
+    while (arguments.read("--SingleThreaded")) threadingModel = osgViewer::ViewerBase::SingleThreaded;
+    while (arguments.read("--CullDrawThreadPerContext")) threadingModel = osgViewer::ViewerBase::CullDrawThreadPerContext;
+    while (arguments.read("--DrawThreadPerContext")) threadingModel = osgViewer::ViewerBase::DrawThreadPerContext;
+    while (arguments.read("--CullThreadPerCameraDrawThreadPerContext")) threadingModel = osgViewer::ViewerBase::CullThreadPerCameraDrawThreadPerContext;
+    
     QApplication app(argc, argv);
-    ViewerWidget* viewWidget = new ViewerWidget;
+    ViewerWidget* viewWidget = new ViewerWidget(threadingModel);
     viewWidget->setGeometry( 100, 100, 800, 600 );
     viewWidget->show();
     return app.exec();

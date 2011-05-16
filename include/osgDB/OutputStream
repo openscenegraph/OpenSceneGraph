@@ -149,7 +149,12 @@ public:
     void writeObject( const osg::Object* obj );
     void writeObjectFields( const osg::Object* obj );
     
+    /// set an output iterator, used directly when not using OutputStream with a traditional file releated stream.
+    void setOutputIterator( OutputIterator* oi ) { _out = oi; }
+
+    /// start writing to OutputStream treating it as a traditional file releated stream, handles headers and versioning
     void start( OutputIterator* outIterator, WriteType type );
+
     void compress( std::ostream* ostream );
     
     // Schema handlers

@@ -22,7 +22,15 @@
 
 using namespace osgDAE;
 
-daeReader::daeReader(DAE *dae_, bool strictTransparency, int precisionHint) : 
+daeReader::Options::Options() :
+    strictTransparency(false),
+    precisionHint(0),
+    tessellateMode(TESSELLATE_POLYGONS_AS_TRIFAN),   // Use old tessellation behaviour as default
+    usePredefinedTextureUnits(true)
+{
+}
+
+daeReader::daeReader(DAE *dae_, const Options * pluginOptions) :
                   _dae(dae_),
                   _rootNode(NULL),
                   _visualScene(NULL),
@@ -30,12 +38,11 @@ daeReader::daeReader(DAE *dae_, bool strictTransparency, int precisionHint) :
                   _currentInstance_effect(NULL),
                   _currentEffect(NULL),
                   _authoringTool(UNKNOWN),
-                  _strictTransparency(strictTransparency),
                   _invertTransparency(false),
-                  _precisionHint(precisionHint),
                   _assetUnitName("meter"),
                   _assetUnitMeter(1.0),
-                  _assetUp_axis(UPAXISTYPE_Y_UP)
+                  _assetUp_axis(UPAXISTYPE_Y_UP),
+                  _pluginOptions(pluginOptions ? *pluginOptions : Options())
 {
 }
 

@@ -749,7 +749,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
             {
                 if ( polys == NULL )
                 {
-                    if (usePolygons)
+                    if (_pluginOptions.usePolygons)
                     {
                           polys = createPrimGroup<domPolygons>( COLLADA_ELEMENT_POLYGONS, mesh, norm, color, texcoord );
                           polys->add( COLLADA_ELEMENT_P );
@@ -810,7 +810,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
             {
                 if ( polys == NULL )
                 {
-                    if (usePolygons)
+                    if (_pluginOptions.usePolygons)
                     {
                         polys = createPrimGroup<domPolygons>( COLLADA_ELEMENT_POLYGONS, mesh, norm, color, texcoord );
                         polys->add( COLLADA_ELEMENT_P );
@@ -890,7 +890,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                     {
                         //TODO : test this case
                         unsigned int nbPolygons=drawArray->getCount()/primLength;
-                        if (usePolygons)
+                        if (_pluginOptions.usePolygons)
                         {
                             //for( unsigned int idx = 0; idx < nbPolygons; ++idx )
                             p.push_back(polys->getP_array()[0]);
@@ -990,7 +990,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                         default:           
                         {
 
-                            if (usePolygons)
+                            if (_pluginOptions.usePolygons)
                             {
                                 //for( unsigned int idx = 0; idx < nbPolygons; ++idx )
                                 p.push_back(polys->getP_array()[0]);
@@ -1084,7 +1084,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                     default:           
                     {
                         unsigned int nbPolygons=drawElements->size()/primLength;
-                        if (usePolygons)
+                        if (_pluginOptions.usePolygons)
                         {
                             //for( unsigned int idx = 0; idx < nbPolygons; ++idx ) /*idx*/
                             //huh ? why only one ?
@@ -1183,7 +1183,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                     default:           
                     {
                         unsigned int nbPolygons=drawElements->size()/primLength;
-                        if (usePolygons)
+                        if (_pluginOptions.usePolygons)
                         {
                             //for( unsigned int idx = 0; idx < nbPolygons; ++idx ) /*idx*/
                             //huh ? why only one ?
@@ -1284,7 +1284,7 @@ bool daeWriter::processGeometry( osg::Geometry *geom, domGeometry *geo, const st
                     default:           
                     {
                         unsigned int nbPolygons=drawElements->size()/primLength;
-                        if (usePolygons)
+                        if (_pluginOptions.usePolygons)
                         {
                             //for( unsigned int idx = 0; idx < nbPolygons; ++idx ) /*idx*/
                             //huh ? why only one ?

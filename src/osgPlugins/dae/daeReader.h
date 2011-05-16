@@ -133,7 +133,23 @@ inline osg::Matrix parseMatrixString(const std::string& valueAsString)
 */ 
 class daeReader {
 public:
-    daeReader(DAE *dae_, bool strictTransparency, int precisionHint);
+    enum TessellateMode
+    {
+        TESSELLATE_NONE,                 ///< Do not tessellate at all (Polygons are stored as GL_POLYGON - not suitable for concave polygons)
+        TESSELLATE_POLYGONS_AS_TRIFAN,   ///< Tessellate the old way, interpreting polygons as triangle fans (faster, but does not work for concave polygons)
+        TESSELLATE_POLYGONS              ///< Use full tessellation of polygons (slower, works for concave polygons)
+    };
+
+    struct Options
+    {
+        Options();
+        bool strictTransparency;
+        int precisionHint;              ///< Precision hint flags, as specified in osgDB::Options::PrecisionHint
+        bool usePredefinedTextureUnits;
+        TessellateMode tessellateMode;
+    };
+
+    daeReader(DAE *dae_, const Options * pluginOptions);
     virtual ~daeReader();
 
     bool convert( const std::string &fileURI );
@@ -305,11 +321,10 @@ private:
     template< typename T >
     void processMultiPPrimitive(osg::Geode* geode, const domMesh* pDomMesh, const T* group, SourceMap& sources, GLenum mode);
 
-    template <typename T>
-    void processPolygons(osg::Geode* geode, const domMesh* pDomMesh, const T *group, SourceMap& sources);
+    void processPolylist(osg::Geode* geode, const domMesh* pDomMesh, const domPolylist *group, SourceMap &sources, TessellateMode tessellateMode);
 
-    void processPolylist(osg::Geode* geode, const domMesh* pDomMesh, const domPolylist *group, SourceMap &sources);
-    void processPolygons(osg::Geode* geode, const domMesh* pDomMesh, const domPolygons *group, SourceMap &sources);
+    template< typename T >
+    void processPolygons(osg::Geode* geode, const domMesh* pDomMesh, const T *group, SourceMap &sources, GLenum mode, TessellateMode tessellateMode);
 
     void resolveMeshArrays(const domP_Array&,
         const domInputLocalOffset_Array& inputs, const domMesh* pDomMesh,
@@ -339,7 +354,7 @@ private:
     std::string processImagePath(const domImage*) const;
     osg::Image* processImageTransparency(const osg::Image*, domFx_opaque_enum, float transparency) const;
     osg::Texture2D* processTexture( domCommon_color_or_texture_type_complexType::domTexture *tex, const osg::StateSet*, TextureUnitUsage, domFx_opaque_enum = FX_OPAQUE_ENUM_A_ONE, float transparency = 1.0f);
-    void copyTextureCoordinateSet(const osg::StateSet* ss, const osg::Geometry* cachedGeometry, osg::Geometry* clonedGeometry, const domInstance_material* im, TextureUnitUsage);
+    bool copyTextureCoordinateSet(const osg::StateSet* ss, const osg::Geometry* cachedGeometry, osg::Geometry* clonedGeometry, const domInstance_material* im, TextureUnitUsage tuu, unsigned int textureUnit);
 
     //scene objects
     osg::Node* processLight( domLight *dlight );
@@ -392,8 +407,8 @@ private:
     OldToNewIndexMap _oldToNewIndexMap;
 
     AuthoringTool _authoringTool;
-    bool _strictTransparency, _invertTransparency;
-    int _precisionHint;        ///< Precision hint flags, as specified in osgDB::Options::PrecisionHint
+    bool _invertTransparency;
+    Options _pluginOptions;
 
     // Additional Information
     std::string _assetUnitName;

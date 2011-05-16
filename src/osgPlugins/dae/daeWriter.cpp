@@ -96,23 +96,25 @@ std::string toString(const osg::Matrix& value)
 }
 
 
-daeWriter::daeWriter( DAE *dae_, const std::string & fileURI, const std::string & directory, const std::string & srcDirectory, const osgDB::ReaderWriter::Options * options, bool _usePolygons,  bool googleMode, TraversalMode tm, bool _writeExtras, bool earthTex, bool zUpAxis, bool linkOrignialTextures, bool forceTexture, bool namesUseCodepage) : osg::NodeVisitor( tm ),
-                                        dae(dae_),
-                                        _domLibraryAnimations(NULL),
-                                        writeExtras(_writeExtras),
-                                        rootName(*dae_),
-                                        usePolygons (_usePolygons),
-                                        m_GoogleMode(googleMode),
-                                        m_EarthTex(earthTex),
-                                        m_ZUpAxis(zUpAxis),
-                                        m_linkOrignialTextures(linkOrignialTextures),
-                                        m_ForceTexture(forceTexture),
-                                        m_CurrentRenderingHint(osg::StateSet::DEFAULT_BIN),
-                                        _lastGeneratedImageFileName(0),
-                                        _directory(directory),
-                                        _srcDirectory(srcDirectory),
-                                        _options(options),
-                                        _namesUseCodepage(namesUseCodepage)
+daeWriter::Options::Options()
+    : usePolygons(false),
+    googleMode(false),
+    writeExtras(true),
+    earthTex(false),
+    linkOrignialTextures(false),
+    forceTexture(false),
+    namesUseCodepage(false),
+    relativiseImagesPathNbUpDirs(0)
+{}
+
+daeWriter::daeWriter( DAE *dae_, const std::string & fileURI, const std::string & directory, const std::string & srcDirectory, const osgDB::ReaderWriter::Options * options, TraversalMode tm, const Options * pluginOptions) : osg::NodeVisitor( tm ),
+    dae(dae_),
+    _domLibraryAnimations(NULL),
+    rootName(*dae_),
+    m_CurrentRenderingHint(osg::StateSet::DEFAULT_BIN),
+    _options(options),
+    _pluginOptions(pluginOptions ? *pluginOptions : Options()),
+    _externalWriter(srcDirectory, directory, true, pluginOptions ? pluginOptions->relativiseImagesPathNbUpDirs : 0)
 {
     success = true;
 
@@ -209,7 +211,7 @@ void daeWriter::updateCurrentDaeNode()
 
 std::string daeWriter::uniquify( const std::string &_name )
 {
-    const std::string name( _namesUseCodepage ? osgDB::convertStringFromCurrentCodePageToUTF8(_name) : _name );
+    const std::string name( _pluginOptions.namesUseCodepage ? osgDB::convertStringFromCurrentCodePageToUTF8(_name) : _name );
     std::map< std::string, int >::iterator iter = uniqueNames.find( name );
     if ( iter != uniqueNames.end() )
     {

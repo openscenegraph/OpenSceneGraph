@@ -136,6 +136,7 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
         {
             public:
                 enum DeviceOrientation{
+                    IGNORE_ORIENTATION = 0,
                     PORTRAIT_ORIENTATION = 1<<0,
                     PORTRAIT_UPSIDEDOWN_ORIENTATION  = 1<<1,
                     LANDSCAPE_LEFT_ORIENTATION  = 1<<2,
@@ -144,8 +145,8 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
                 };
                 typedef unsigned int DeviceOrientationFlags;
 
-                WindowData(UIWindow* window = NULL, DeviceOrientationFlags orientationFlags = ALL_ORIENTATIONS, float scaleFactor = -1.0f)
-                :   _window(window),
+                WindowData(UIView* window_or_view = NULL, DeviceOrientationFlags orientationFlags = ALL_ORIENTATIONS, float scaleFactor = -1.0f)
+                :   _windowOrView(window_or_view),
                     _deviceOrientationFlags(orientationFlags),
                     _viewContentScaleFactor(scaleFactor)
                 {
@@ -155,9 +156,10 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
                 
                 void setViewContentScaleFactor(float scaleFactor) { _viewContentScaleFactor = scaleFactor; }
                 
+                UIView* getWindowOrParentView() const { return _windowOrView; }
             private:
 
-                UIWindow*              _window;
+                UIView*                _windowOrView;
                 DeviceOrientationFlags _deviceOrientationFlags;
                 float                  _viewContentScaleFactor; 
         
@@ -167,7 +169,7 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
         
         EAGLContext* getContext() { return _context; }
         GraphicsWindowIOSWindow* getWindow() { return _window; }
-                
+        GraphicsWindowIOSGLView* getView() { return _view; }
         void setVSync(bool f);
         
         /** adapts a resize / move of the window, coords in global screen space */
@@ -176,7 +178,7 @@ class GraphicsWindowIOS : public osgViewer::GraphicsWindow
         
         WindowData::DeviceOrientationFlags getDeviceOrientationFlags() const { return _deviceOrientationFlags; }
         
-        void getDeviceOrientationFlags(WindowData::DeviceOrientationFlags flags) { _deviceOrientationFlags = flags; }
+        void setDeviceOrientationFlags(WindowData::DeviceOrientationFlags flags) { _deviceOrientationFlags = flags; }
         
         
         //

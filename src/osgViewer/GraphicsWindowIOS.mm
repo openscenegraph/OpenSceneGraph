@@ -125,7 +125,7 @@
 
 - (osgGA::GUIEventAdapter::TouchPhase) convertTouchPhase: (UITouchPhase) phase;
 - (osg::Vec2) convertPointToPixel: (osg::Vec2) point;
-
+- (void) dealloc;
 @end
 
 @implementation GraphicsWindowIOSGLView 
@@ -181,6 +181,7 @@
     _context = context;
 }
 
+
 // You must implement this method
 + (Class)layerClass {
     return [CAEAGLLayer class];
@@ -220,10 +221,8 @@
 //
 - (void) dealloc
 {
-    //[self destroyFramebuffer];
-    //[_context release];//OBJC_TEST
-    //_context = nil;
-    //_win = NULL;
+    OSG_INFO << "GraphicsWindowIOSGLView::dealloc" << std::endl;
+    
     [super dealloc];
 }
 
@@ -590,6 +589,9 @@ void GraphicsWindowIOS::init()
     _ownsWindow = false;
     _context = NULL;
     _window = NULL;
+    _view = NULL;
+    _viewController = NULL;
+    
     _updateContext = true;
     //if -1.0 we use the screens scale factor
     _viewContentScaleFactor = -1.0f;
@@ -638,10 +640,10 @@ bool GraphicsWindowIOS::realizeImplementation()
     WindowData* windowData = _traits->inheritedWindowData ? dynamic_cast<WindowData*>(_traits->inheritedWindowData.get()) : NULL;
     if (windowData) 
     {
-        if (windowData->_window)
+        if (windowData->getWindowOrParentView())
         {
             _ownsWindow = false;        
-            _window = windowData->_window;
+            _window = windowData->getWindowOrParentView();
         }
         
         _deviceOrientationFlags = windowData->_deviceOrientationFlags;
@@ -661,28 +663,28 @@ bool GraphicsWindowIOS::realizeImplementation()
     //but we need to create our views and windows in points. By default we create a full res buffer across all devices. This
     //means that for backward compatibility you need to set the windowData _viewContentScaleFactor to 1.0f and set the screen res to the
     //res of the older gen device.
-    CGRect viewBounds;
+    CGRect window_bounds;
     osg::Vec2 pointsOrigin = this->pixelToPoint(osg::Vec2(_traits->x, _traits->y));
     osg::Vec2 pointsSize = this->pixelToPoint(osg::Vec2(_traits->width, _traits->height));
 
-    viewBounds.origin.x = pointsOrigin.x(); 
-    viewBounds.origin.y = pointsOrigin.y();
-    viewBounds.size.width = pointsSize.x(); 
-    viewBounds.size.height = pointsSize.y();
+    window_bounds.origin.x = pointsOrigin.x(); 
+    window_bounds.origin.y = pointsOrigin.y();
+    window_bounds.size.width = pointsSize.x(); 
+    window_bounds.size.height = pointsSize.y();
     
     
     //if we own the window we need to create one
     if (_ownsWindow) 
     {
         //create the IOS window object using the viewbounds (in points) required for our context size
-        _window = [[GraphicsWindowIOSWindow alloc] initWithFrame: viewBounds];// styleMask: style backing: NSBackingStoreBuffered defer: NO];
+        _window = [[GraphicsWindowIOSWindow alloc] initWithFrame: window_bounds];// styleMask: style backing: NSBackingStoreBuffered defer: NO];
         
         if (!_window) {
             OSG_WARN << "GraphicsWindowIOS::realizeImplementation: ERROR: Failed to create GraphicsWindowIOSWindow can not display gl view" << std::endl;
             return false;
         }
         
-        OSG_DEBUG << "GraphicsWindowIOS::realizeImplementation: INFO: Created UIWindow with bounds '" << viewBounds.size.width << ", " << viewBounds.size.height << "' (points)." << std::endl;
+        OSG_DEBUG << "GraphicsWindowIOS::realizeImplementation: INFO: Created UIWindow with bounds '" << window_bounds.size.width << ", " << window_bounds.size.height << "' (points)." << std::endl;
         
         //if the user has requested a differnet screenNum from default 0 get the UIScreen object and
         //apply to our window (this is for IPad external screens, I don't have one, so I've no idea if it works)
@@ -711,7 +713,8 @@ bool GraphicsWindowIOS::realizeImplementation()
     }
 
     //create the view to display our context in our window
-    GraphicsWindowIOSGLView* theView = [[ GraphicsWindowIOSGLView alloc ] initWithFrame:[ _window frame ] : this ];
+    CGRect gl_view_bounds = (_ownsWindow) ? [_window frame] : window_bounds;
+    GraphicsWindowIOSGLView* theView = [[ GraphicsWindowIOSGLView alloc ] initWithFrame: gl_view_bounds : this ];
     if(!theView)
     {
         OSG_FATAL << "GraphicsWindowIOS::realizeImplementation: ERROR: Failed to create GraphicsWindowIOSGLView, can not create frame buffers." << std::endl;
@@ -724,7 +727,6 @@ bool GraphicsWindowIOS::realizeImplementation()
     //size to our desired context size.
 #ifdef __IPHONE_4_0 && (__IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_4_0)
     theView.contentScaleFactor = _viewContentScaleFactor;
-    
 #endif    
     [theView setGraphicsWindow: this];
     [theView setOpenGLContext:_context];
@@ -732,17 +734,19 @@ bool GraphicsWindowIOS::realizeImplementation()
     
     OSG_DEBUG << "GraphicsWindowIOS::realizeImplementation / view: " << theView << std::endl;
 
-    //
-    _viewController = [[GraphicsWindowIOSGLViewController alloc] init];
-    _viewController.view = _view;
-    
+    if (getDeviceOrientationFlags() != WindowData::IGNORE_ORIENTATION) 
+    {
+        _viewController = [[GraphicsWindowIOSGLViewController alloc] init];
+        _viewController.view = _view;
+    }
     
     // Attach view to window
     [_window addSubview: _view];
     [theView release];
     
     //if we own the window also make it visible
-    if (_ownsWindow) {
+    if (_ownsWindow) 
+    {
         //show window
         [_window makeKeyAndVisible];
     }
@@ -764,29 +768,35 @@ bool GraphicsWindowIOS::realizeImplementation()
 // ----------------------------------------------------------------------------------------------------------
 void GraphicsWindowIOS::closeImplementation()
 {
-    OSG_ALWAYS << "close IOS window" << std::endl;
+    OSG_INFO << "close IOS window" << std::endl;
     _valid = false;
     _realized = false;
    
     
-    if (_view) {
+    if (_view) 
+    {
+        [_view setOpenGLContext: NULL];
+        [_context release];
+        [_view removeFromSuperview];
         [_view setGraphicsWindow: NULL];
-        [_view release];
     }
     
-    if (_viewController) {
+    if (_viewController) 
+    {
         [_viewController release];
         _viewController = NULL;
     }
         
-    if (_window && _ownsWindow) {  
+    if (_window && _ownsWindow) 
+    {  
         [_window release];
         //[glView release];
     }
 
     
     _window = NULL;
-    _view = NULL;    
+    _view = NULL;  
+    _context = NULL;  
 }
 
 

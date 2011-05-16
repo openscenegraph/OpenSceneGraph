@@ -139,8 +139,13 @@ public:
     osg::Image* readImage(bool readFromExternal=true);
     osg::Object* readObject( osg::Object* existingObj=0 );
     osg::Object* readObjectFields( const std::string& className, osg::Object* existingObj=0);
-    
+
+    /// set an input iterator, used directly when not using InputStream with a traditional file releated stream.
+    void setInputIterator( InputIterator* ii ) { _in = ii; }
+
+    /// start reading from InputStream treating it as a traditional file releated stream, handles headers and versioning
     ReadType start( InputIterator* );
+
     void decompress();
     
     // Schema handlers

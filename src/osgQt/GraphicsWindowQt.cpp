@@ -21,7 +21,7 @@ class QtKeyboardMap
 
 public:
     QtKeyboardMap()
-    { 
+    {
         mKeyMap[Qt::Key_Escape     ] = osgGA::GUIEventAdapter::KEY_Escape;
         mKeyMap[Qt::Key_Delete   ] = osgGA::GUIEventAdapter::KEY_Delete;
         mKeyMap[Qt::Key_Home       ] = osgGA::GUIEventAdapter::KEY_Home;
@@ -250,26 +250,26 @@ bool GraphicsWindowQt::init()
     format.setDoubleBuffer( _traits->doubleBuffer );
     format.setSwapInterval( _traits->vsync ? 1 : 0 );
     format.setStereo( _traits->quadBufferStereo ? 1 : 0 );
-    
+
     WindowData* windowData = _traits.get() ? dynamic_cast<WindowData*>(_traits->inheritedWindowData.get()) : 0;
     _widget = windowData ? windowData->_widget : 0;
     if ( !_widget )
     {
         GraphicsWindowQt* sharedContextQt = dynamic_cast<GraphicsWindowQt*>(_traits->sharedContext);
         QGLWidget* shareWidget = sharedContextQt ? sharedContextQt->getGraphWidget() : 0;
-        
+
         Qt::WindowFlags flags = Qt::Window|Qt::CustomizeWindowHint;//|Qt::WindowStaysOnTopHint;
         if ( _traits->windowDecoration )
             flags |= Qt::WindowTitleHint|Qt::WindowMinMaxButtonsHint|Qt::WindowSystemMenuHint;
-        
+
         _widget = new GraphWidget( format, 0, shareWidget, flags );
     }
-    
+
     _widget->setWindowTitle( _traits->windowName.c_str() );
     _widget->move( _traits->x, _traits->y );
     if ( !_traits->supportsResize ) _widget->setFixedSize( _traits->width, _traits->height );
     else _widget->resize( _traits->width, _traits->height );
-    
+
     _widget->setFocusPolicy( Qt::WheelFocus );
     _widget->setGraphicsWindow( this );
     useCursor( _traits->useCursor );
@@ -300,7 +300,7 @@ bool GraphicsWindowQt::setWindowDecorationImplementation( bool windowDecoration 
     if ( windowDecoration )
         flags |= Qt::WindowTitleHint|Qt::WindowMinMaxButtonsHint|Qt::WindowSystemMenuHint;
     _traits->windowDecoration = windowDecoration;
-    
+
     // FIXME: Calling setWindowFlags or reparent widget will recreate the window handle,
     // which makes QGLContext no longer work...How to deal with that?
     //if ( _widget ) _widget->setWindowFlags( flags );

@@ -1,5 +1,5 @@
 SET( TARGET_SRC
-    osgviewerQtContext.cpp
+    osgviewerQt.cpp
 )
 
 IF( QT4_FOUND )
@@ -13,4 +13,4 @@ INCLUDE_DIRECTORIES( ${QT_INCLUDE_DIR} )
 
 SET(TARGET_ADDED_LIBRARIES osgWidget osgQt)
 
-SETUP_EXAMPLE( osgviewerQtContext )
+SETUP_EXAMPLE( osgviewerQt )

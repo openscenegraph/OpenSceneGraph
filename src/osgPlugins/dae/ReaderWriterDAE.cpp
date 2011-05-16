@@ -41,8 +41,27 @@ ReaderWriterDAE::readNode(const std::string& fname,
     bool bOwnDAE = false;
     DAE* pDAE = NULL;
 
-    if ( options )
+    // Process options
+    osgDAE::daeReader::Options pluginOptions;
+    if( options )
+    {
         pDAE = (DAE*)options->getPluginData("DAE");
+
+        pluginOptions.precisionHint = options->getPrecisionHint();
+
+        std::istringstream iss( options->getOptionString() );
+        std::string opt;
+        while (iss >> opt)
+        {
+            if( opt == "StrictTransparency") pluginOptions.strictTransparency = true;
+            else if (opt == "daeTessellateNone")              pluginOptions.tessellateMode = osgDAE::daeReader::TESSELLATE_NONE;
+            else if (opt == "daeTessellatePolygonsAsTriFans") pluginOptions.tessellateMode = osgDAE::daeReader::TESSELLATE_POLYGONS_AS_TRIFAN;
+            else if (opt == "daeTessellatePolygons")          pluginOptions.tessellateMode = osgDAE::daeReader::TESSELLATE_POLYGONS;
+            else if (opt == "daeUsePredefinedTextureUnits") pluginOptions.usePredefinedTextureUnits = true;
+            else if (opt == "daeUseSequencedTextureUnits")  pluginOptions.usePredefinedTextureUnits = false;
+        }
+    }
+
 
     std::string ext( osgDB::getLowerCaseFileExtension(fname) );
     if( ! acceptsExtension(ext) ) return ReadResult::FILE_NOT_HANDLED;
@@ -57,10 +76,9 @@ ReaderWriterDAE::readNode(const std::string& fname,
         bOwnDAE = true;
         pDAE = new DAE;
     }
+    std::auto_ptr<DAE> scopedDae(bOwnDAE ? pDAE : NULL);        // Deallocates locally created structure at scope exit
 
-    osgDAE::daeReader daeReader(pDAE,
-                                options && options->getOptionString().find("StrictTransparency") != std::string::npos,
-                                options ? options->getPrecisionHint() : 0 ) ;
+    osgDAE::daeReader daeReader(pDAE, &pluginOptions);
 
     // Convert file name to URI
     std::string fileURI = ConvertFilePathToColladaCompatibleURI(fileName);
@@ -85,9 +103,6 @@ ReaderWriterDAE::readNode(const std::string& fname,
             *(domUpAxisType*)options->getPluginData("DAE-AssetUp_axis") = daeReader.getAssetUpAxis();
     }
 
-    if (bOwnDAE)
-        delete pDAE;
-
     osg::Node* rootNode( daeReader.getRootNode() );
     return rootNode;
 }
@@ -107,14 +122,7 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
     if( ! acceptsExtension(ext) ) return WriteResult::FILE_NOT_HANDLED;
 
     // Process options
-    bool usePolygon(false);   // Use plugin option "polygon" to enable
-    bool googleMode(false);   // Use plugin option "GoogleMode" to enable
-    bool writeExtras(true);   // Use plugin option "NoExtras" to disable
-    bool earthTex(false);     // Use plugin option "daeEarthTex" to enable
-    bool zUpAxis(false);      // Use plugin option "daeZUpAxis" to enable
-    bool linkOrignialTextures(false);
-    bool forceTexture(false);
-    bool namesUseCodepage(false);
+    osgDAE::daeWriter::Options pluginOptions;
     std::string srcDirectory( osgDB::getFilePath(node.getName().empty() ? fname : node.getName()) );        // Base dir when relativising images paths
     if( options )
     {
@@ -122,6 +130,12 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
 
         const std::string & baseDir = options->getPluginStringData("baseImageDir");        // Rename "srcModelPath" (and call getFilePath() on it)?
         if (!baseDir.empty()) srcDirectory = baseDir;
+
+        const std::string & relativiseImagesPathNbUpDirs = options->getPluginStringData("DAE-relativiseImagesPathNbUpDirs");
+        if (!relativiseImagesPathNbUpDirs.empty()) {
+            std::istringstream iss(relativiseImagesPathNbUpDirs);
+            iss >> pluginOptions.relativiseImagesPathNbUpDirs;
+        }
 
         // Sukender's note: I don't know why DAE seems to accept comma-sparated options instead of space-separated options as other ReaderWriters. However, to avoid breaking compatibility, here's a workaround:
         std::string optString( options->getOptionString() );
@@ -134,14 +148,14 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
         //while (iss >> opt)
         while( std::getline( iss, opt, ',' ) )
         {
-            if( opt == "polygon")  usePolygon = true;
-            else if (opt == "GoogleMode") googleMode = true;
-            else if (opt == "NoExtras") writeExtras = false;
-            else if (opt == "daeEarthTex") earthTex = true;
-            else if (opt == "daeZUpAxis") zUpAxis = true;
-            else if (opt == "daeLinkOriginalTexturesNoForce") { linkOrignialTextures = true; forceTexture = false; }
-            else if (opt == "daeLinkOriginalTexturesForce")   { linkOrignialTextures = true; forceTexture = true; }
-            else if (opt == "daeNamesUseCodepage") namesUseCodepage = true;
+            if( opt == "polygon") pluginOptions.usePolygons = true;
+            else if (opt == "GoogleMode") pluginOptions.googleMode = true;
+            else if (opt == "NoExtras") pluginOptions.writeExtras = false;
+            else if (opt == "daeEarthTex") pluginOptions.earthTex = true;
+            else if (opt == "daeZUpAxis") {}    // Nothing (old option)
+            else if (opt == "daeLinkOriginalTexturesNoForce") { pluginOptions.linkOrignialTextures = true; pluginOptions.forceTexture = false; }
+            else if (opt == "daeLinkOriginalTexturesForce")   { pluginOptions.linkOrignialTextures = true; pluginOptions.forceTexture = true; }
+            else if (opt == "daeNamesUseCodepage") pluginOptions.namesUseCodepage = true;
             else if (!opt.empty())
             {
                 OSG_NOTICE << std::endl << "COLLADA dae plugin: unrecognized option \"" << opt <<  std::endl;
@@ -154,13 +168,14 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
         bOwnDAE = true;
         pDAE = new DAE;
     }
+    std::auto_ptr<DAE> scopedDae(bOwnDAE ? pDAE : NULL);        // Deallocates locally created structure at scope exit
 
     // Convert file name to URI
     std::string fileURI = ConvertFilePathToColladaCompatibleURI(fname);
 
-    osg::NodeVisitor::TraversalMode traversalMode = writeExtras ? osg::NodeVisitor::TRAVERSE_ALL_CHILDREN : osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN;
+    osg::NodeVisitor::TraversalMode traversalMode = pluginOptions.writeExtras ? osg::NodeVisitor::TRAVERSE_ALL_CHILDREN : osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN;
 
-    osgDAE::daeWriter daeWriter(pDAE, fileURI, osgDB::getFilePath(fname), srcDirectory, options, usePolygon, googleMode, traversalMode, writeExtras, earthTex, zUpAxis, linkOrignialTextures, forceTexture, namesUseCodepage);
+    osgDAE::daeWriter daeWriter(pDAE, fileURI, osgDB::getFilePath(fname), srcDirectory, options, traversalMode, &pluginOptions);
     daeWriter.setRootNode( node );
     const_cast<osg::Node*>(&node)->accept( daeWriter );
 
@@ -181,9 +196,6 @@ ReaderWriterDAE::writeNode( const osg::Node& node,
                 *(std::string*)options->getPluginData("DAE-DocumentURI") = fileURI;
         }
     }
-
-    if (bOwnDAE)
-        delete pDAE;
 
     return retVal;
 }
@@ -246,7 +258,6 @@ std::string ReaderWriterDAE::ConvertFilePathToColladaCompatibleURI(const std::st
 std::string ReaderWriterDAE::ConvertColladaCompatibleURIToFilePath(const std::string& uri)
 {
     // Reciprocal of ConvertFilePathToColladaCompatibleURI()
-
 #ifdef OSG_USE_UTF8_FILENAME
     std::string path( cdom::uriToNativePath( uri ) );
 #else

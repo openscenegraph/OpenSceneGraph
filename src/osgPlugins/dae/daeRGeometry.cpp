@@ -23,6 +23,8 @@
 #include <osg/ShapeDrawable>
 #include <osg/Geometry>
 
+#include <osgUtil/Tessellator>
+
 #include <osgAnimation/MorphGeometry>
 #include <osgAnimation/RigGeometry>
 #include <osgAnimation/UpdateBone>
@@ -375,14 +377,14 @@ osg::Geode *daeReader::processMesh(domMesh* pDomMesh)
     domPolygons_Array polygonsArray = pDomMesh->getPolygons_array();
     for ( size_t i = 0; i < polygonsArray.getCount(); i++)
     {
-        processPolygons<domPolygons>(pOsgGeode, pDomMesh, polygonsArray[i], sources);
+        processPolygons<domPolygons>(pOsgGeode, pDomMesh, polygonsArray[i], sources, GL_POLYGON, _pluginOptions.tessellateMode);
     }
 
     // 0..* <polylist>
     domPolylist_Array polylistArray = pDomMesh->getPolylist_array();
     for ( size_t i = 0; i < polylistArray.getCount(); i++)
     {
-        processPolylist(pOsgGeode, pDomMesh, polylistArray[i], sources);
+        processPolylist(pOsgGeode, pDomMesh, polylistArray[i], sources, _pluginOptions.tessellateMode);
     }
 
     // 0..* <triangles>
@@ -396,7 +398,7 @@ osg::Geode *daeReader::processMesh(domMesh* pDomMesh)
     domTrifans_Array trifansArray = pDomMesh->getTrifans_array();
     for ( size_t i = 0; i < trifansArray.getCount(); i++)
     {
-        processPolygons<domTrifans>(pOsgGeode, pDomMesh, trifansArray[i], sources);
+        processPolygons<domTrifans>(pOsgGeode, pDomMesh, trifansArray[i], sources, GL_TRIANGLE_FAN, TESSELLATE_NONE);
     }
 
     // 0..* <tristrips>
@@ -494,7 +496,7 @@ void daeReader::processMultiPPrimitive(osg::Geode* geode,
     }
 }
 
-void daeReader::processPolylist(osg::Geode* geode, const domMesh* pDomMesh, const domPolylist *group, SourceMap &sources)
+void daeReader::processPolylist(osg::Geode* geode, const domMesh* pDomMesh, const domPolylist *group, SourceMap &sources, TessellateMode tessellateMode)
 {
     const domPolylist::domVcount* pDomVcount = group->getVcount();
     if (!pDomVcount)
@@ -515,52 +517,119 @@ void daeReader::processPolylist(osg::Geode* geode, const domMesh* pDomMesh, cons
 
     const std::vector<GLuint>& vertexList = vertexLists.front();
 
-    osg::DrawElementsUInt* pDrawTriangles = new osg::DrawElementsUInt(GL_TRIANGLES);
-    geometry->addPrimitiveSet(pDrawTriangles);
-
-    const domListOfUInts& vCount = pDomVcount->getValue();
-    for (size_t i = 0, j = 0; i < vCount.getCount(); ++i)
+    osg::DrawElementsUInt* pDrawTriangles(NULL);
+    if (tessellateMode == TESSELLATE_POLYGONS_AS_TRIFAN)
     {
-        size_t primitiveLength = vCount[i];
-        if (j + primitiveLength > vertexList.size())
+        // Produce triangles, interpreting polygons as fans (old way)
+        pDrawTriangles = new osg::DrawElementsUInt(GL_TRIANGLES);
+        geometry->addPrimitiveSet(pDrawTriangles);
+
+        const domListOfUInts& vCount = pDomVcount->getValue();
+        for (size_t i = 0, j = 0; i < vCount.getCount(); ++i)
         {
-            OSG_WARN << "Error: vertex counts are greater than the number of indices." << std::endl;
-            return;
+            size_t primitiveLength = vCount[i];
+            if (j + primitiveLength > vertexList.size())
+            {
+                OSG_WARN << "Error: vertex counts are greater than the number of indices." << std::endl;
+                return;
+            }
+            for (size_t k = 2; k < primitiveLength; ++k)
+            {
+                pDrawTriangles->push_back(vertexList[j]);
+                pDrawTriangles->push_back(vertexList[j+k-1]);
+                pDrawTriangles->push_back(vertexList[j+k]);
+            }
+            j += primitiveLength;
         }
-        for (size_t k = 2; k < primitiveLength; ++k)
+    }
+    else
+    {
+        // Produce polygons or well-tessellated polygons
+        const domListOfUInts& vCount = pDomVcount->getValue();
+        for (size_t i = 0, j = 0; i < vCount.getCount(); ++i)
         {
-            pDrawTriangles->push_back(vertexList[j]);
-            pDrawTriangles->push_back(vertexList[j+k-1]);
-            pDrawTriangles->push_back(vertexList[j+k]);
+            size_t primitiveLength = vCount[i];
+            if (j + primitiveLength > vertexList.size())
+            {
+                OSG_WARN << "Error: vertex counts are greater than the number of indices." << std::endl;
+                return;
+            }
+
+            osg::DrawElementsUInt* pDrawElements = new osg::DrawElementsUInt(GL_POLYGON);
+            geometry->addPrimitiveSet(pDrawElements);
+            for (size_t k = 0; k < primitiveLength; ++k)
+            {
+                pDrawElements->push_back(vertexList[k+j]);
+            }
+
+            j += primitiveLength;
         }
-        j += primitiveLength;
+
+        if (tessellateMode == TESSELLATE_POLYGONS)
+        {
+            osgUtil::Tessellator tessellator;
+            tessellator.setTessellationType(osgUtil::Tessellator::TESS_TYPE_POLYGONS);
+            tessellator.setWindingType(osgUtil::Tessellator::TESS_WINDING_POSITIVE);
+            tessellator.retessellatePolygons(*geometry);
+        }
     }
 }
 
-template <typename T>
+template< typename T >
 void daeReader::processPolygons(osg::Geode* geode,
-    const domMesh* pDomMesh, const T *group, SourceMap& sources)
+    const domMesh* pDomMesh, const T *group, SourceMap& sources, GLenum mode, TessellateMode tessellateMode)
 {
     osg::Geometry *geometry = new osg::Geometry();
     geometry->setName(group->getMaterial());
     geode->addDrawable(geometry);
 
-    osg::DrawElementsUInt* pDrawElements = new osg::DrawElementsUInt(GL_TRIANGLES);
-    geometry->addPrimitiveSet(pDrawElements);
-
     std::vector<std::vector<GLuint> > indexLists;
     resolveMeshArrays(group->getP_array(), group->getInput_array(), pDomMesh,
         geometry, sources, indexLists);
 
-    for ( size_t i = 0; i < indexLists.size(); ++i)
+    if (tessellateMode == TESSELLATE_POLYGONS_AS_TRIFAN)
     {
-        const std::vector<GLuint>& indices = indexLists[i];
+        // Produce triangles, interpreting polygons as fans (old way)
+        osg::DrawElementsUInt* pDrawElements = new osg::DrawElementsUInt(GL_TRIANGLES);
+        geometry->addPrimitiveSet(pDrawElements);
 
-        for (size_t j = 2; j < indices.size(); ++j)
+        std::vector<std::vector<GLuint> > indexLists;
+        resolveMeshArrays(group->getP_array(), group->getInput_array(), pDomMesh,
+            geometry, sources, indexLists);
+
+        for ( size_t i = 0; i < indexLists.size(); ++i)
         {
-            pDrawElements->push_back(indices.front());
-            pDrawElements->push_back(indices[j - 1]);
-            pDrawElements->push_back(indices[j]);
+            const std::vector<GLuint>& indices = indexLists[i];
+
+            for (size_t j = 2; j < indices.size(); ++j)
+            {
+                pDrawElements->push_back(indices.front());
+                pDrawElements->push_back(indices[j - 1]);
+                pDrawElements->push_back(indices[j]);
+            }
+        }
+    }
+    else
+    {
+        // Produce polygons or well-tessellated polygons
+        for ( size_t i = 0; i < indexLists.size(); ++i)
+        {
+            const std::vector<GLuint>& indices = indexLists[i];
+
+            osg::DrawElementsUInt* pDrawElements = new osg::DrawElementsUInt(mode);
+            geometry->addPrimitiveSet(pDrawElements);
+            for (size_t j = 0; j < indices.size(); ++j)
+            {
+                pDrawElements->push_back(indices[j]);
+            }
+        }
+
+        if (tessellateMode == TESSELLATE_POLYGONS)
+        {
+            osgUtil::Tessellator tessellator;
+            tessellator.setTessellationType(osgUtil::Tessellator::TESS_TYPE_POLYGONS);
+            tessellator.setWindingType(osgUtil::Tessellator::TESS_WINDING_POSITIVE);
+            tessellator.retessellatePolygons(*geometry);
         }
     }
 }
@@ -840,10 +909,10 @@ void daeReader::resolveMeshArrays(const domP_Array& domPArray,
         }
     }
 
-    const bool readDoubleVertices  = (_precisionHint & osgDB::Options::DOUBLE_PRECISION_VERTEX) != 0;
-    const bool readDoubleColors    = (_precisionHint & osgDB::Options::DOUBLE_PRECISION_COLOR) != 0;
-    const bool readDoubleNormals   = (_precisionHint & osgDB::Options::DOUBLE_PRECISION_NORMAL) != 0;
-    const bool readDoubleTexcoords = (_precisionHint & osgDB::Options::DOUBLE_PRECISION_TEX_COORD) != 0;
+    const bool readDoubleVertices  = (_pluginOptions.precisionHint & osgDB::Options::DOUBLE_PRECISION_VERTEX) != 0;
+    const bool readDoubleColors    = (_pluginOptions.precisionHint & osgDB::Options::DOUBLE_PRECISION_COLOR) != 0;
+    const bool readDoubleNormals   = (_pluginOptions.precisionHint & osgDB::Options::DOUBLE_PRECISION_NORMAL) != 0;
+    const bool readDoubleTexcoords = (_pluginOptions.precisionHint & osgDB::Options::DOUBLE_PRECISION_TEX_COORD) != 0;
 
     // Vertices
     {
@@ -893,6 +962,4 @@ void daeReader::resolveMeshArrays(const domP_Array& domPArray,
             }
         }
     }
-
-#undef FOREACH_INDEX
 }

@@ -36,7 +36,7 @@ using namespace osgDAE;
 
 void daeWriter::writeAnimations( osg::Node &node )
 {
-    const std::string nodeNameUTF( _namesUseCodepage ? osgDB::convertStringFromCurrentCodePageToUTF8(node.getName()) : node.getName() );
+    const std::string nodeNameUTF( _pluginOptions.namesUseCodepage ? osgDB::convertStringFromCurrentCodePageToUTF8(node.getName()) : node.getName() );
     osg::NodeCallback* ncb = node.getUpdateCallback();
     if (ncb)
     {
@@ -68,7 +68,7 @@ void daeWriter::writeAnimations( osg::Node &node )
                 {
                     osgAnimation::Channel* channel = animationChannels[j].get();
                     std::string channelName( channel->getName() );
-                    std::string channelNameUTF( _namesUseCodepage ? osgDB::convertStringFromCurrentCodePageToUTF8(channelName) : channelName );
+                    std::string channelNameUTF( _pluginOptions.namesUseCodepage ? osgDB::convertStringFromCurrentCodePageToUTF8(channelName) : channelName );
 
                     // Wrap each animation channel into it's own child <animation> when more than 1 channel
                     if (animationChannels.size() > 1)

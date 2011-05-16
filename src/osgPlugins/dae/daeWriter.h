@@ -39,6 +39,7 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 #include <osgDB/Registry>
+#include <osgDB/ExternalFileWriter>
 #include <osgSim/MultiSwitch>
 #include <osgAnimation/AnimationManagerBase>
 #include <osgAnimation/UpdateBone>
@@ -136,7 +137,25 @@ class daeWriter : public osg::NodeVisitor
 protected:
     class ArrayNIndices;
 public:
-    daeWriter( DAE *dae_, const std::string &fileURI, const std::string & directory, const std::string & srcDirectory, const osgDB::ReaderWriter::Options * options, bool usePolygons=false, bool googleMode = false, TraversalMode tm=TRAVERSE_ALL_CHILDREN, bool writeExtras = true, bool earthTex = false, bool zUpAxis=false, bool linkOrignialTextures=false, bool forceTexture=false, bool namesUseCodepage=false);
+    struct Options
+    {
+        Options();
+
+        bool usePolygons;
+        /** work in Google compatibility mode. In daeWMaterials, change transparency color. And in daeWGeometry, replace tristrip and trifans by triangles*/
+        bool googleMode;
+        /** Write OSG specific data as extra data. */
+        bool writeExtras;
+        /** work in Google compatibility mode for textures*/
+        bool earthTex;
+        /** link to original images instead of exporting */
+        bool linkOrignialTextures;
+        /** force the use an image for a texture, even if the file is not found (when m_linkOrignialTextures). */
+        bool forceTexture;
+        bool namesUseCodepage;
+        unsigned int relativiseImagesPathNbUpDirs;
+    };
+    daeWriter(DAE *dae_, const std::string &fileURI, const std::string & directory, const std::string & srcDirectory, const osgDB::ReaderWriter::Options * options, TraversalMode tm=TRAVERSE_ALL_CHILDREN, const Options * pluginOptions=NULL);
     virtual ~daeWriter();
 
     void setRootNode( const osg::Node &node );
@@ -216,8 +235,6 @@ protected: //members
     domNode *currentNode;
     domVisual_scene *vs;
 
-    /// Write OSG specific data as extra data
-    bool writeExtras;
     bool success;
     unsigned int lastDepth;
 
@@ -248,8 +265,6 @@ protected: //members
     osg::ref_ptr<osg::StateSet> currentStateSet;
 
     daeURI rootName;
-
-    bool usePolygons;
 
     osg::StateSet* CleanStateSet(osg::StateSet* pStateSet) const;
 
@@ -305,38 +320,15 @@ private: //members
         /** provide an unique name */
         std::string uniquify( const std::string &name );
 
-        /** work in Google compatibility mode. In daeWMaterials, change transparency color. And in daeWGeometry, replace tristrip and trifans by triangles*/
-        bool m_GoogleMode;
-
-        /** work in Google compatibility mode for textures*/
-        bool m_EarthTex;
-
-        /** indicates if the up axis is on Z axis*/
-        bool m_ZUpAxis;
-
-        /** link to original images instead of exporting */
-        bool m_linkOrignialTextures;
-
-        /** force the use an image for a texture, even if the file is not found (when m_linkOrignialTextures). */
-        bool m_ForceTexture;
-
         /** Current RenderingHint */
         /** This are needed because the stateSet merge code currently does not handle it */
         int m_CurrentRenderingHint;
 
         FindAnimatedNodeVisitor _animatedNodeCollector;
 
-        /** Number used when writing images with no name, to generate a file name. */
-        unsigned int _lastGeneratedImageFileName;
-        std::string _directory;
-        std::string _srcDirectory;
         const osgDB::ReaderWriter::Options * _options;
-        bool _namesUseCodepage;
-
-        typedef std::map<const osg::Image*, std::string> ImageSet;
-        typedef std::set<std::string> ImageFilenameSet;        // Sub-optimal because strings are doubled (in ImageSet). Moreover, an unordered_set (= hashset) would be more efficient (Waiting for unordered_set to be included in C++ standard ;) ).
-        ImageSet                            _imageSet;
-        ImageFilenameSet                    _imageFilenameSet;
+        Options _pluginOptions;
+        osgDB::ExternalFileWriter _externalWriter;
 };
 
 }

@@ -35,7 +35,7 @@ void daeWriter::writeNodeExtra(osg::Node &node)
 {
     unsigned int numDesc = node.getDescriptions().size();
     // Only create extra if descriptions are filled in
-    if (writeExtras && (numDesc > 0))
+    if (_pluginOptions.writeExtras && (numDesc > 0))
     {
         // Adds the following to a node
 
@@ -73,7 +73,7 @@ void daeWriter::apply( osg::Group &node )
     
     // If a multiswitch node, store it's data as extra "MultiSwitch" data in the "OpenSceneGraph" technique
     osgSim::MultiSwitch* multiswitch = dynamic_cast<osgSim::MultiSwitch*>(&node);
-    if (writeExtras && multiswitch)
+    if (_pluginOptions.writeExtras && multiswitch)
     {
         // Adds the following to a node
 
@@ -142,7 +142,7 @@ void daeWriter::apply( osg::Switch &node )
     currentNode = daeSafeCast< domNode >(currentNode->add( COLLADA_ELEMENT_NODE ) );
     currentNode->setId(getNodeName(node,"switch").c_str());
 
-    if (writeExtras)
+    if (_pluginOptions.writeExtras)
     {
         // Adds the following to a node
 
@@ -190,7 +190,7 @@ void daeWriter::apply( osg::Sequence &node )
     currentNode->setId(getNodeName(node,"sequence").c_str());
 
     // If a sequence node, store it's data as extra "Sequence" data in the "OpenSceneGraph" technique
-    if (writeExtras)
+    if (_pluginOptions.writeExtras)
     {
         // Adds the following to a node
 
@@ -267,7 +267,7 @@ void daeWriter::apply( osg::LOD &node )
     currentNode = daeSafeCast< domNode >(currentNode->add( COLLADA_ELEMENT_NODE ) );
     currentNode->setId(getNodeName(node,"LOD").c_str());
 
-    if (writeExtras)
+    if (_pluginOptions.writeExtras)
     {
         // Store LOD data as extra "LOD" data in the "OpenSceneGraph" technique
         // Adds the following to a node

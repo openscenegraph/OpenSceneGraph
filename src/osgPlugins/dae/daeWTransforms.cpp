@@ -184,7 +184,7 @@ void daeWriter::apply( osg::Transform &node )
 
     // If a DOFTransform node store it's data as extra "DOFTransform" data in the "OpenSceneGraph" technique
     osgSim::DOFTransform* dof = dynamic_cast<osgSim::DOFTransform*>(&node);
-    if (writeExtras && dof)
+    if (_pluginOptions.writeExtras && dof)
     {
         // Adds the following to a node
 

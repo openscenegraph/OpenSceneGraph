@@ -1,13 +1,13 @@
 /* -*-c++-*- OpenSceneGraph - Copyright (C) 2009 Wang Rui
  *
- * This library is open source and may be redistributed and/or modified under  
- * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
  * (at your option) any later version.  The full license is in LICENSE file
  * included with this distribution, and on the openscenegraph.org website.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * OpenSceneGraph Public License for more details.
 */
 
@@ -29,11 +29,11 @@ class OSGQT_EXPORT GraphWidget : public QGLWidget
 {
 public:
     GraphWidget( const QGLFormat& format, QWidget* parent=0, const QGLWidget* shareWidget=0, Qt::WindowFlags f=0 );
-    
+
     inline void setGraphicsWindow( osgViewer::GraphicsWindow* gw ) { _gw = gw; }
-    
+
     void setKeyboardModifiers( QInputEvent* event );
-    
+
     virtual void resizeEvent( QResizeEvent* event );
     virtual void keyPressEvent( QKeyEvent* event );
     virtual void keyReleaseEvent( QKeyEvent* event );
@@ -42,7 +42,7 @@ public:
     virtual void mouseDoubleClickEvent( QMouseEvent* event );
     virtual void mouseMoveEvent( QMouseEvent* event );
     virtual void wheelEvent( QWheelEvent* event );
-    
+
 protected:
     osgViewer::GraphicsWindow* _gw;
 };
@@ -52,18 +52,18 @@ class OSGQT_EXPORT GraphicsWindowQt : public osgViewer::GraphicsWindow
 public:
     GraphicsWindowQt( osg::GraphicsContext::Traits* traits );
     virtual ~GraphicsWindowQt();
-    
+
     inline GraphWidget* getGraphWidget() { return _widget; }
     inline const GraphWidget* getGraphWidget() const { return _widget; }
-    
+
     struct WindowData : public osg::Referenced
     {
         WindowData( GraphWidget* widget ): _widget(widget) {}
         GraphWidget* _widget;
     };
-    
+
     bool init();
-    
+
     virtual bool setWindowRectangleImplementation( int x, int y, int width, int height );
     virtual void getWindowRectangle( int& x, int& y, int& width, int& height );
     virtual bool setWindowDecorationImplementation( bool windowDecoration );
@@ -75,7 +75,7 @@ public:
     virtual std::string getWindowName();
     virtual void useCursor( bool cursorOn );
     virtual void setCursor( MouseCursor cursor );
-    
+
     virtual bool valid() const;
     virtual bool realizeImplementation();
     virtual bool isRealizedImplementation() const;
@@ -83,9 +83,9 @@ public:
     virtual bool makeCurrentImplementation();
     virtual bool releaseContextImplementation();
     virtual void swapBuffersImplementation();
-    
+
     virtual void requestWarpPointer( float x, float y );
-    
+
 protected:
     GraphWidget* _widget;
     QCursor _currentCursor;

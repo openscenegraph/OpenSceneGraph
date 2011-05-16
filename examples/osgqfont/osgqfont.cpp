@@ -494,7 +494,7 @@ public:
 
         QGridLayout* grid = new QGridLayout;
         grid->setMargin(0);
-        grid->addWidget(graphicsWindow->getGraphWidget(), 0, 0);
+        grid->addWidget(graphicsWindow->getGLWidget(), 0, 0);
         setLayout(grid);
 
         _viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);

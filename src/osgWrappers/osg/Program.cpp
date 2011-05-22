@@ -26,9 +26,128 @@
 #undef OUT
 #endif
 
+BEGIN_VALUE_REFLECTOR(osg::Program::ActiveVarInfo)
+	I_DeclaringFile("osg/Program");
+	I_Constructor0(____ActiveVarInfo,
+	               "",
+	               "");
+	I_Constructor3(IN, GLint, loc, IN, GLenum, type, IN, GLint, size,
+	               ____ActiveVarInfo__GLint__GLenum__GLint,
+	               "",
+	               "");
+	I_PublicMemberProperty(GLint, _location);
+	I_PublicMemberProperty(GLenum, _type);
+	I_PublicMemberProperty(GLint, _size);
+END_REFLECTOR
+
+BEGIN_OBJECT_REFLECTOR(osg::Program::PerContextProgram)
+	I_DeclaringFile("osg/Program");
+	I_BaseType(osg::Referenced);
+	I_Constructor2(IN, const osg::Program *, program, IN, unsigned int, contextID,
+	               ____PerContextProgram__C5_Program_P1__unsigned_int,
+	               "",
+	               "");
+	I_Method0(GLuint, getHandle,
+	          Properties::NON_VIRTUAL,
+	          __GLuint__getHandle,
+	          "",
+	          "");
+	I_Method0(void, requestLink,
+	          Properties::NON_VIRTUAL,
+	          __void__requestLink,
+	          "",
+	          "");
+	I_Method0(void, linkProgram,
+	          Properties::NON_VIRTUAL,
+	          __void__linkProgram,
+	          "",
+	          "");
+	I_Method0(bool, validateProgram,
+	          Properties::NON_VIRTUAL,
+	          __bool__validateProgram,
+	          "",
+	          "");
+	I_Method0(bool, needsLink,
+	          Properties::NON_VIRTUAL,
+	          __bool__needsLink,
+	          "",
+	          "");
+	I_Method0(bool, isLinked,
+	          Properties::NON_VIRTUAL,
+	          __bool__isLinked,
+	          "",
+	          "");
+	I_Method1(bool, getInfoLog, IN, std::string &, infoLog,
+	          Properties::NON_VIRTUAL,
+	          __bool__getInfoLog__std_string_R1,
+	          "",
+	          "");
+	I_Method0(void, useProgram,
+	          Properties::NON_VIRTUAL,
+	          __void__useProgram,
+	          "",
+	          "");
+	I_Method0(void, resetAppliedUniforms,
+	          Properties::NON_VIRTUAL,
+	          __void__resetAppliedUniforms,
+	          "",
+	          "");
+	I_Method1(void, apply, IN, const osg::Uniform &, uniform,
+	          Properties::NON_VIRTUAL,
+	          __void__apply__C5_Uniform_R1,
+	          "",
+	          "");
+	I_Method0(const osg::Program::ActiveUniformMap &, getActiveUniforms,
+	          Properties::NON_VIRTUAL,
+	          __C5_ActiveUniformMap_R1__getActiveUniforms,
+	          "",
+	          "");
+	I_Method0(const osg::Program::ActiveVarInfoMap &, getActiveAttribs,
+	          Properties::NON_VIRTUAL,
+	          __C5_ActiveVarInfoMap_R1__getActiveAttribs,
+	          "",
+	          "");
+	I_Method1(GLint, getUniformLocation, IN, unsigned int, uniformNameID,
+	          Properties::NON_VIRTUAL,
+	          __GLint__getUniformLocation__unsigned_int,
+	          "",
+	          "");
+	I_Method1(GLint, getUniformLocation, IN, const std::string &, uniformName,
+	          Properties::NON_VIRTUAL,
+	          __GLint__getUniformLocation__C5_std_string_R1,
+	          "Alternative version of getUniformLocation( unsigned int uniformNameID ) retrofited into OSG for backward compatibility with osgCal, after uniform ids were refactored from std::strings to GLints in OSG version 2.9.10. ",
+	          "Drawbacks: This method is not particularly fast. It has to access mutexed static map of uniform ids. So don't overuse it or your app performance will suffer. ");
+	I_Method1(GLint, getAttribLocation, IN, const std::string &, name,
+	          Properties::NON_VIRTUAL,
+	          __GLint__getAttribLocation__C5_std_string_R1,
+	          "",
+	          "");
+	I_Method1(void, addShaderToAttach, IN, osg::Shader *, shader,
+	          Properties::NON_VIRTUAL,
+	          __void__addShaderToAttach__Shader_P1,
+	          "",
+	          "");
+	I_Method1(void, addShaderToDetach, IN, osg::Shader *, shader,
+	          Properties::NON_VIRTUAL,
+	          __void__addShaderToDetach__Shader_P1,
+	          "",
+	          "");
+	I_SimpleProperty(const osg::Program::ActiveVarInfoMap &, ActiveAttribs, 
+	                 __C5_ActiveVarInfoMap_R1__getActiveAttribs, 
+	                 0);
+	I_SimpleProperty(const osg::Program::ActiveUniformMap &, ActiveUniforms, 
+	                 __C5_ActiveUniformMap_R1__getActiveUniforms, 
+	                 0);
+	I_SimpleProperty(GLuint, Handle, 
+	                 __GLuint__getHandle, 
+	                 0);
+END_REFLECTOR
+
 TYPE_NAME_ALIAS(std::map< std::string COMMA  GLuint >, osg::Program::AttribBindingList)
 
 TYPE_NAME_ALIAS(std::map< std::string COMMA  GLuint >, osg::Program::FragDataBindingList)
+
+TYPE_NAME_ALIAS(std::map< unsigned int COMMA  osg::Program::ActiveVarInfo >, osg::Program::ActiveUniformMap)
 
 TYPE_NAME_ALIAS(std::map< std::string COMMA  osg::Program::ActiveVarInfo >, osg::Program::ActiveVarInfoMap)
 
@@ -182,9 +301,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Program)
 	          __bool__getGlProgramInfoLog__unsigned_int__std_string_R1,
 	          "Query InfoLog from a glProgram. ",
 	          "");
-	I_Method1(const osg::Program::ActiveVarInfoMap &, getActiveUniforms, IN, unsigned int, contextID,
+	I_Method1(const osg::Program::ActiveUniformMap &, getActiveUniforms, IN, unsigned int, contextID,
 	          Properties::NON_VIRTUAL,
-	          __C5_ActiveVarInfoMap_R1__getActiveUniforms__unsigned_int,
+	          __C5_ActiveUniformMap_R1__getActiveUniforms__unsigned_int,
 	          "",
 	          "");
 	I_Method1(const osg::Program::ActiveVarInfoMap &, getActiveAttribs, IN, unsigned int, contextID,
@@ -234,119 +353,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Program)
 	                 0);
 END_REFLECTOR
 
-BEGIN_VALUE_REFLECTOR(osg::Program::ActiveVarInfo)
-	I_DeclaringFile("osg/Program");
-	I_Constructor0(____ActiveVarInfo,
-	               "",
-	               "");
-	I_Constructor3(IN, GLint, loc, IN, GLenum, type, IN, GLint, size,
-	               ____ActiveVarInfo__GLint__GLenum__GLint,
-	               "",
-	               "");
-	I_PublicMemberProperty(GLint, _location);
-	I_PublicMemberProperty(GLenum, _type);
-	I_PublicMemberProperty(GLint, _size);
-END_REFLECTOR
-
-BEGIN_OBJECT_REFLECTOR(osg::Program::PerContextProgram)
-	I_DeclaringFile("osg/Program");
-	I_BaseType(osg::Referenced);
-	I_Constructor2(IN, const osg::Program *, program, IN, unsigned int, contextID,
-	               ____PerContextProgram__C5_Program_P1__unsigned_int,
-	               "",
-	               "");
-	I_Method0(GLuint, getHandle,
-	          Properties::NON_VIRTUAL,
-	          __GLuint__getHandle,
-	          "",
-	          "");
-	I_Method0(void, requestLink,
-	          Properties::NON_VIRTUAL,
-	          __void__requestLink,
-	          "",
-	          "");
-	I_Method0(void, linkProgram,
-	          Properties::NON_VIRTUAL,
-	          __void__linkProgram,
-	          "",
-	          "");
-	I_Method0(bool, validateProgram,
-	          Properties::NON_VIRTUAL,
-	          __bool__validateProgram,
-	          "",
-	          "");
-	I_Method0(bool, needsLink,
-	          Properties::NON_VIRTUAL,
-	          __bool__needsLink,
-	          "",
-	          "");
-	I_Method0(bool, isLinked,
-	          Properties::NON_VIRTUAL,
-	          __bool__isLinked,
-	          "",
-	          "");
-	I_Method1(bool, getInfoLog, IN, std::string &, infoLog,
-	          Properties::NON_VIRTUAL,
-	          __bool__getInfoLog__std_string_R1,
-	          "",
-	          "");
-	I_Method0(void, useProgram,
-	          Properties::NON_VIRTUAL,
-	          __void__useProgram,
-	          "",
-	          "");
-	I_Method0(void, resetAppliedUniforms,
-	          Properties::NON_VIRTUAL,
-	          __void__resetAppliedUniforms,
-	          "",
-	          "");
-	I_Method1(void, apply, IN, const osg::Uniform &, uniform,
-	          Properties::NON_VIRTUAL,
-	          __void__apply__C5_Uniform_R1,
-	          "",
-	          "");
-	I_Method0(const osg::Program::ActiveVarInfoMap &, getActiveUniforms,
-	          Properties::NON_VIRTUAL,
-	          __C5_ActiveVarInfoMap_R1__getActiveUniforms,
-	          "",
-	          "");
-	I_Method0(const osg::Program::ActiveVarInfoMap &, getActiveAttribs,
-	          Properties::NON_VIRTUAL,
-	          __C5_ActiveVarInfoMap_R1__getActiveAttribs,
-	          "",
-	          "");
-	I_Method1(GLint, getUniformLocation, IN, const std::string &, name,
-	          Properties::NON_VIRTUAL,
-	          __GLint__getUniformLocation__C5_std_string_R1,
-	          "",
-	          "");
-	I_Method1(GLint, getAttribLocation, IN, const std::string &, name,
-	          Properties::NON_VIRTUAL,
-	          __GLint__getAttribLocation__C5_std_string_R1,
-	          "",
-	          "");
-	I_Method1(void, addShaderToAttach, IN, osg::Shader *, shader,
-	          Properties::NON_VIRTUAL,
-	          __void__addShaderToAttach__Shader_P1,
-	          "",
-	          "");
-	I_Method1(void, addShaderToDetach, IN, osg::Shader *, shader,
-	          Properties::NON_VIRTUAL,
-	          __void__addShaderToDetach__Shader_P1,
-	          "",
-	          "");
-	I_SimpleProperty(const osg::Program::ActiveVarInfoMap &, ActiveAttribs, 
-	                 __C5_ActiveVarInfoMap_R1__getActiveAttribs, 
-	                 0);
-	I_SimpleProperty(const osg::Program::ActiveVarInfoMap &, ActiveUniforms, 
-	                 __C5_ActiveVarInfoMap_R1__getActiveUniforms, 
-	                 0);
-	I_SimpleProperty(GLuint, Handle, 
-	                 __GLuint__getHandle, 
-	                 0);
-END_REFLECTOR
-
 STD_MAP_REFLECTOR(std::map< std::string COMMA  GLuint >)
 
 STD_MAP_REFLECTOR(std::map< std::string COMMA  osg::Program::ActiveVarInfo >)
+
+STD_MAP_REFLECTOR(std::map< unsigned int COMMA  osg::Program::ActiveVarInfo >)
 

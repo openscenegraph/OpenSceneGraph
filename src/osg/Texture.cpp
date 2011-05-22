@@ -1563,70 +1563,6 @@ void Texture::setExtensions(unsigned int contextID,Extensions* extensions)
 
 Texture::Extensions::Extensions(unsigned int contextID)
 {
-    setupGLExtensions(contextID);
-}
-
-Texture::Extensions::Extensions(const Extensions& rhs):
-    Referenced()
-{
-    _isMultiTexturingSupported = rhs._isMultiTexturingSupported;
-    _isTextureFilterAnisotropicSupported = rhs._isTextureFilterAnisotropicSupported;
-    _isTextureCompressionARBSupported = rhs._isTextureCompressionARBSupported;
-    _isTextureCompressionS3TCSupported = rhs._isTextureCompressionS3TCSupported;
-    _isTextureMirroredRepeatSupported = rhs._isTextureMirroredRepeatSupported;
-    _isTextureEdgeClampSupported = rhs._isTextureEdgeClampSupported;
-    _isTextureBorderClampSupported = rhs._isTextureBorderClampSupported;
-    _isGenerateMipMapSupported = rhs._isGenerateMipMapSupported;
-
-    _maxTextureSize = rhs._maxTextureSize;
-
-    _glCompressedTexImage2D = rhs._glCompressedTexImage2D;
-
-    _isShadowSupported = rhs._isShadowSupported;
-    _isShadowAmbientSupported = rhs._isShadowAmbientSupported;
-
-    _isClientStorageSupported = rhs._isClientStorageSupported;
-
-    _isNonPowerOfTwoTextureMipMappedSupported = rhs._isNonPowerOfTwoTextureMipMappedSupported;
-    _isNonPowerOfTwoTextureNonMipMappedSupported = rhs._isNonPowerOfTwoTextureNonMipMappedSupported;
-
-    _isTextureIntegerEXTSupported = rhs._isTextureIntegerEXTSupported;
-}
-
-void Texture::Extensions::lowestCommonDenominator(const Extensions& rhs)
-{
-    if (!rhs._isMultiTexturingSupported) _isMultiTexturingSupported = false;
-    
-    if (!rhs._isTextureFilterAnisotropicSupported) _isTextureFilterAnisotropicSupported = false;
-    if (!rhs._isTextureMirroredRepeatSupported) _isTextureMirroredRepeatSupported = false;
-    if (!rhs._isTextureEdgeClampSupported) _isTextureEdgeClampSupported = false;
-    if (!rhs._isTextureBorderClampSupported) _isTextureBorderClampSupported = false;
-    
-    if (!rhs._isTextureCompressionARBSupported) _isTextureCompressionARBSupported = false;
-    if (!rhs._isTextureCompressionS3TCSupported) _isTextureCompressionS3TCSupported = false;
-    
-    if (!rhs._isGenerateMipMapSupported) _isGenerateMipMapSupported = false;
-
-    if (rhs._maxTextureSize<_maxTextureSize) _maxTextureSize = rhs._maxTextureSize;
-    if (rhs._numTextureUnits<_numTextureUnits) _numTextureUnits = rhs._numTextureUnits;
-
-    if (!rhs._glCompressedTexImage2D) _glCompressedTexImage2D = 0;
-    if (!rhs._glCompressedTexSubImage2D) _glCompressedTexSubImage2D = 0;
-    if (!rhs._glGetCompressedTexImage) _glGetCompressedTexImage = 0;
-
-    if (!rhs._isShadowSupported) _isShadowSupported = false;
-    if (!rhs._isShadowAmbientSupported) _isShadowAmbientSupported = false;
-    
-    if (!rhs._isClientStorageSupported) _isClientStorageSupported = false;
-
-    if (!rhs._isNonPowerOfTwoTextureMipMappedSupported) _isNonPowerOfTwoTextureMipMappedSupported = false;
-    if (!rhs._isNonPowerOfTwoTextureNonMipMappedSupported) _isNonPowerOfTwoTextureNonMipMappedSupported = false;
-
-    if (!rhs._isTextureIntegerEXTSupported) _isTextureIntegerEXTSupported = false;
-}
-
-void Texture::Extensions::setupGLExtensions(unsigned int contextID)
-{
     const char* version = (const char*) glGetString( GL_VERSION );
     if (!version)
     {
@@ -1655,6 +1591,8 @@ void Texture::Extensions::setupGLExtensions(unsigned int contextID)
     _isTextureBorderClampSupported = isGLExtensionOrVersionSupported(contextID,"GL_ARB_texture_border_clamp", 1.3f);
     
     _isGenerateMipMapSupported = isGLExtensionOrVersionSupported(contextID,"GL_SGIS_generate_mipmap", 1.4f);
+
+    _isTextureMultisampledSupported = isGLExtensionSupported(contextID,"GL_ARB_texture_multisample");
                                   
     _isShadowSupported = isGLExtensionSupported(contextID,"GL_ARB_shadow");
     
@@ -1706,73 +1644,12 @@ void Texture::Extensions::setupGLExtensions(unsigned int contextID)
     setGLExtensionFuncPtr(_glCompressedTexImage2D,"glCompressedTexImage2D","glCompressedTexImage2DARB");
     setGLExtensionFuncPtr(_glCompressedTexSubImage2D,"glCompressedTexSubImage2D","glCompressedTexSubImage2DARB");
     setGLExtensionFuncPtr(_glGetCompressedTexImage,"glGetCompressedTexImage","glGetCompressedTexImageARB");;
+    setGLExtensionFuncPtr(_glTexImage2DMultisample, "glTexImage2DMultisample", "glTexImage2DMultisampleARB");
 
     setGLExtensionFuncPtr(_glTexParameterIiv, "glTexParameterIiv", "glTexParameterIivARB");
     setGLExtensionFuncPtr(_glTexParameterIuiv, "glTexParameterIuiv", "glTexParameterIuivARB");
-    
+
+
     if (_glTexParameterIiv == NULL) setGLExtensionFuncPtr(_glTexParameterIiv, "glTexParameterIivEXT");
     if (_glTexParameterIuiv == NULL) setGLExtensionFuncPtr(_glTexParameterIuiv, "glTexParameterIuivEXT");
 }
-
-
-void Texture::Extensions::glTexParameterIiv(GLenum target, GLenum pname, const GLint* data) const
-{
-    if (_glTexParameterIiv)
-    {
-        _glTexParameterIiv(target, pname, data);
-    }
-    else
-    {
-        notify(WARN)<<"Error: glTexParameterIiv not supported by OpenGL driver"<<std::endl;
-    }
-}
-
-void Texture::Extensions::glTexParameterIuiv(GLenum target, GLenum pname, const GLuint* data) const
-{
-    if (_glTexParameterIuiv)
-    {
-        _glTexParameterIuiv(target, pname, data);
-    }
-    else
-    {
-        notify(WARN)<<"Error: glTexParameterIuiv not supported by OpenGL driver"<<std::endl;
-    }
-}
-
-void Texture::Extensions::glCompressedTexImage2D(GLenum target, GLint level, GLenum internalformat, GLsizei width, GLsizei height, GLint border, GLsizei imageSize, const GLvoid *data) const
-{
-    if (_glCompressedTexImage2D)
-    {
-        _glCompressedTexImage2D(target, level, internalformat, width, height, border, imageSize, data);
-    }
-    else
-    {
-        notify(WARN)<<"Error: glCompressedTexImage2D not supported by OpenGL driver"<<std::endl;
-    }
-    
-}
-
-void Texture::Extensions::glCompressedTexSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLsizei imageSize, const GLvoid *data) const
-{
-    if (_glCompressedTexSubImage2D)
-    {
-        _glCompressedTexSubImage2D(target, level, xoffset, yoffset, width, height, format, imageSize, data);
-    }
-    else
-    {
-        notify(WARN)<<"Error: glCompressedTexImage2D not supported by OpenGL driver"<<std::endl;
-    }
-    
-}
-void Texture::Extensions::glGetCompressedTexImage(GLenum target, GLint level, GLvoid *data) const
-{
-    if (_glGetCompressedTexImage)
-    {
-        _glGetCompressedTexImage(target, level, data);
-    }
-    else
-    {
-        notify(WARN)<<"Error: glGetCompressedTexImage not supported by OpenGL driver"<<std::endl;
-    }
-}
-

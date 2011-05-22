@@ -18,6 +18,7 @@
 #include <osg/GLExtensions>
 #include <osg/Texture1D>
 #include <osg/Texture2D>
+#include <osg/Texture2DMultisample>
 #include <osg/Texture3D>
 #include <osg/Texture2DArray>
 #include <osg/TextureCubeMap>
@@ -301,7 +302,8 @@ struct FrameBufferAttachment::Pimpl
         TEXTURE3D,
         TEXTURECUBE,
         TEXTURERECT,
-        TEXTURE2DARRAY
+        TEXTURE2DARRAY,
+        TEXTURE2DMULTISAMPLE
     };
     
     TargetType targetType;
@@ -358,6 +360,12 @@ FrameBufferAttachment::FrameBufferAttachment(Texture2D* target, int level)
     _ximpl->textureTarget = target;
 }
 
+FrameBufferAttachment::FrameBufferAttachment(Texture2DMultisample* target, int level)
+{
+    _ximpl = new Pimpl(Pimpl::TEXTURE2DMULTISAMPLE, level);
+    _ximpl->textureTarget = target;
+}
+
 FrameBufferAttachment::FrameBufferAttachment(Texture3D* target, int zoffset, int level)
 {
     _ximpl = new Pimpl(Pimpl::TEXTURE3D, level);
@@ -404,6 +412,14 @@ FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment& attachment)
         {
             _ximpl = new Pimpl(Pimpl::TEXTURE2D, attachment._level);
             _ximpl->textureTarget = texture2D;
+            return;
+        }
+
+        osg::Texture2DMultisample* texture2DMS = dynamic_cast<osg::Texture2DMultisample*>(texture);
+        if (texture2DMS)
+        {
+            _ximpl = new Pimpl(Pimpl::TEXTURE2DMULTISAMPLE, attachment._level);
+            _ximpl->textureTarget = texture2DMS;
             return;
         }
 
@@ -547,6 +563,9 @@ void FrameBufferAttachment::attach(State &state, GLenum target, GLenum attachmen
         break;
     case Pimpl::TEXTURE2D:
         ext->glFramebufferTexture2DEXT(target, attachment_point, GL_TEXTURE_2D, tobj->_id, _ximpl->level);
+        break;
+    case Pimpl::TEXTURE2DMULTISAMPLE:
+        ext->glFramebufferTexture2DEXT(target, attachment_point, GL_TEXTURE_2D_MULTISAMPLE, tobj->_id, _ximpl->level);
         break;
     case Pimpl::TEXTURE3D:
         ext->glFramebufferTexture3DEXT(target, attachment_point, GL_TEXTURE_3D, tobj->_id, _ximpl->level, _ximpl->zoffset);

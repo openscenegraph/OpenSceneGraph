@@ -334,7 +334,7 @@ protected:
 
 	trpgTileTable tileTable;
 
-	int numX,numY,numLod;
+	int numLod;
 	TileMode tileMode;
 
 	trpgwAppFile *tileFile;
@@ -342,7 +342,7 @@ protected:
 
 	std::vector<TileFile> tileFiles;
 
-   std::vector<TileFileEntry> externalTiles;
+        std::vector<TileFileEntry> externalTiles;
 
 	int maxTileFileLen;
 

@@ -204,8 +204,10 @@ class OSGUTIL_EXPORT CullVisitor : public osg::NodeVisitor, public osg::CullStac
             _currentRenderBin = rb;
         }
 
+        void setCalculatedNearPlane(value_type value) { _computed_znear = value; }
         inline value_type getCalculatedNearPlane() const { return _computed_znear; }
         
+        void setCalculatedFarPlane(value_type value) { _computed_zfar = value; }
         inline value_type getCalculatedFarPlane() const { return _computed_zfar; }
 
         value_type computeNearestPointInFrustum(const osg::Matrix& matrix, const osg::Polytope::PlaneList& planes,const osg::Drawable& drawable);

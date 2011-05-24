@@ -24,7 +24,8 @@ GLBeginEndAdapter::GLBeginEndAdapter(State* state):
     _normalAssigned(false),
     _normal(0.0f,0.0f,1.0f),
     _colorAssigned(false),
-    _color(1.0f,1.0f,1.0f,1.0f)
+    _color(1.0f,1.0f,1.0f,1.0f),
+    _primitiveMode(0)
 {
 }
 

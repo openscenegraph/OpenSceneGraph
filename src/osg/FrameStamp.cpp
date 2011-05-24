@@ -29,13 +29,13 @@ FrameStamp::FrameStamp():Referenced(true)
     tm_wday=0;           /* Day of week.    [0-6] */
     tm_yday=0;           /* Days in year.   [0-365]    */
     tm_isdst=0;           /* DST.           [-1/0/1]*/
-
 }
 
 FrameStamp::FrameStamp(const FrameStamp& fs):Referenced(true)
 {
     _frameNumber = fs._frameNumber;
     _referenceTime = fs._referenceTime;
+    _simulationTime = fs._simulationTime;
     
     tm_sec = fs.tm_sec;            /* Seconds.    [0-60] (1 leap second) */
     tm_min = fs.tm_min;            /* Minutes.    [0-59] */
@@ -46,7 +46,6 @@ FrameStamp::FrameStamp(const FrameStamp& fs):Referenced(true)
     tm_wday = fs.tm_wday;            /* Day of week.    [0-6] */
     tm_yday = fs.tm_yday;            /* Days in year.[0-365]    */
     tm_isdst = fs.tm_isdst;            /* DST.        [-1/0/1]*/
-
 }
 
 FrameStamp::~FrameStamp()

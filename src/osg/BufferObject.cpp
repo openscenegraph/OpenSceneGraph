@@ -277,6 +277,9 @@ void GLBufferObject::Extensions::lowestCommonDenominator(const Extensions& rhs)
     if (!rhs._glGetBufferParameteriv) _glGetBufferPointerv = rhs._glGetBufferPointerv;
     if (!rhs._glBindBufferRange) _glBindBufferRange = rhs._glBindBufferRange;
     if (!rhs._glBindBufferBase) _glBindBufferBase = rhs._glBindBufferBase;
+
+    _isPBOSupported = rhs._isPBOSupported;
+    _isUniformBufferObjectSupported = rhs._isUniformBufferObjectSupported;
 }
 
 void GLBufferObject::Extensions::setupGLExtensions(unsigned int contextID)
@@ -292,11 +295,11 @@ void GLBufferObject::Extensions::setupGLExtensions(unsigned int contextID)
     setGLExtensionFuncPtr(_glUnmapBuffer, "glUnmapBuffer","glUnmapBufferARB");
     setGLExtensionFuncPtr(_glGetBufferParameteriv, "glGetBufferParameteriv","glGetBufferParameterivARB");
     setGLExtensionFuncPtr(_glGetBufferPointerv, "glGetBufferPointerv","glGetBufferPointervARB");
-    _isPBOSupported = OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_pixel_buffer_object");
     setGLExtensionFuncPtr(_glBindBufferRange, "glBindBufferRange");
     setGLExtensionFuncPtr(_glBindBufferBase, "glBindBufferBase");
-    _isUniformBufferObjectSupported
-        = osg::isGLExtensionSupported(contextID, "GL_ARB_uniform_buffer_object");
+
+    _isPBOSupported = OSG_GL3_FEATURES || osg::isGLExtensionSupported(contextID,"GL_ARB_pixel_buffer_object");
+    _isUniformBufferObjectSupported = osg::isGLExtensionSupported(contextID, "GL_ARB_uniform_buffer_object");
 }
 
 void GLBufferObject::Extensions::glGenBuffers(GLsizei n, GLuint *buffers) const

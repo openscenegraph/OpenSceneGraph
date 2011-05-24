@@ -499,15 +499,20 @@ FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment& attachment)
                 format = attachment._internalFormat;
             _ximpl = new Pimpl(Pimpl::RENDERBUFFER);
             _ximpl->renderbufferTarget = new osg::RenderBuffer(image->s(), image->t(), format);
+            return;
         }
         else
         {
             OSG_WARN<<"Error: FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment&) passed an empty osg::Image, image must be allocated first."<<std::endl;
         }
-        return;
+    }
+    else
+    {
+        OSG_WARN<<"Error: FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment&) passed an unrecognised Texture type."<<std::endl;
     }
 
-    OSG_WARN<<"Error: FrameBufferAttachment::FrameBufferAttachment(Camera::Attachment&) passed an unrecognised Texture type."<<std::endl;
+    // provide all fallback
+    _ximpl = new Pimpl();
 }
 
 

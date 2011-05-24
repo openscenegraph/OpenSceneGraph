@@ -843,6 +843,7 @@ Drawable::Extensions::Extensions(const Extensions& rhs):
     _isFogCoordSupported = rhs._isFogCoordSupported;
     _isMultiTexSupported = rhs._isMultiTexSupported;
     _isOcclusionQuerySupported = rhs._isOcclusionQuerySupported;
+    _isARBOcclusionQuerySupported = rhs._isARBOcclusionQuerySupported;
     _isTimerQuerySupported = rhs._isTimerQuerySupported;
     _isARBTimerQuerySupported = rhs._isARBTimerQuerySupported;
     

@@ -188,6 +188,8 @@ GL2Extensions::GL2Extensions(const GL2Extensions& rhs) : osg::Referenced()
     // ARB_get_program_binary
     _glGetProgramBinary = rhs._glGetProgramBinary;
     _glProgramBinary = rhs._glProgramBinary;
+
+    _areTessellationShadersSupported = rhs._areTessellationShadersSupported;
 }
 
 
@@ -355,6 +357,163 @@ void GL2Extensions::setupGL2Extensions(unsigned int contextID)
     if (!version)
     {
         OSG_NOTIFY(osg::FATAL)<<"Error: OpenGL version test failed, requires valid graphics context."<<std::endl;
+
+        _glVersion = 0.0f;
+        _glslLanguageVersion = 0.0f;
+
+        _isShaderObjectsSupported = false;
+        _isVertexShaderSupported = false;
+        _isFragmentShaderSupported = false;
+        _isLanguage100Supported = false;
+        _isGeometryShader4Supported = false;
+        _areTessellationShadersSupported = false;
+        _isGpuShader4Supported = false;
+        _isUniformBufferObjectSupported = false;
+        _isGetProgramBinarySupported = false;
+
+        _glBlendEquationSeparate= 0;
+        _glDrawBuffers= 0;
+        _glStencilOpSeparate= 0;
+        _glStencilFuncSeparate= 0;
+        _glStencilMaskSeparate= 0;
+        _glAttachShader= 0;
+        _glBindAttribLocation= 0;
+        _glCompileShader= 0;
+        _glCreateProgram= 0;
+        _glCreateShader= 0;
+        _glDeleteProgram= 0;
+        _glDeleteShader= 0;
+        _glDetachShader= 0;
+        _glDisableVertexAttribArray= 0;
+        _glEnableVertexAttribArray= 0;
+        _glGetActiveAttrib= 0;
+        _glGetActiveUniform= 0;
+        _glGetAttachedShaders= 0;
+        _glGetAttribLocation= 0;
+        _glGetProgramiv= 0;
+        _glGetProgramInfoLog= 0;
+        _glGetShaderiv= 0;
+        _glGetShaderInfoLog= 0;
+        _glGetShaderSource= 0;
+        _glGetUniformLocation= 0;
+        _glGetUniformfv= 0;
+        _glGetUniformiv= 0;
+        _glGetVertexAttribdv= 0;
+        _glGetVertexAttribfv= 0;
+        _glGetVertexAttribiv= 0;
+        _glGetVertexAttribPointerv= 0;
+        _glIsProgram= 0;
+        _glIsShader= 0;
+        _glLinkProgram= 0;
+        _glShaderSource= 0;
+        _glUseProgram= 0;
+        _glUniform1f= 0;
+        _glUniform2f= 0;
+        _glUniform3f= 0;
+        _glUniform4f= 0;
+        _glUniform1i= 0;
+        _glUniform2i= 0;
+        _glUniform3i= 0;
+        _glUniform4i= 0;
+        _glUniform1fv= 0;
+        _glUniform2fv= 0;
+        _glUniform3fv= 0;
+        _glUniform4fv= 0;
+        _glUniform1iv= 0;
+        _glUniform2iv= 0;
+        _glUniform3iv= 0;
+        _glUniform4iv= 0;
+        _glUniformMatrix2fv= 0;
+        _glUniformMatrix3fv= 0;
+        _glUniformMatrix4fv= 0;
+        _glValidateProgram= 0;
+        _glVertexAttrib1d= 0;
+        _glVertexAttrib1dv= 0;
+        _glVertexAttrib1f= 0;
+        _glVertexAttrib1fv= 0;
+        _glVertexAttrib1s= 0;
+        _glVertexAttrib1sv= 0;
+        _glVertexAttrib2d= 0;
+        _glVertexAttrib2dv= 0;
+        _glVertexAttrib2f= 0;
+        _glVertexAttrib2fv= 0;
+        _glVertexAttrib2s= 0;
+        _glVertexAttrib2sv= 0;
+        _glVertexAttrib3d= 0;
+        _glVertexAttrib3dv= 0;
+        _glVertexAttrib3f= 0;
+        _glVertexAttrib3fv= 0;
+        _glVertexAttrib3s= 0;
+        _glVertexAttrib3sv= 0;
+        _glVertexAttrib4Nbv= 0;
+        _glVertexAttrib4Niv= 0;
+        _glVertexAttrib4Nsv= 0;
+        _glVertexAttrib4Nub= 0;
+        _glVertexAttrib4Nubv= 0;
+        _glVertexAttrib4Nuiv= 0;
+        _glVertexAttrib4Nusv= 0;
+        _glVertexAttrib4bv= 0;
+        _glVertexAttrib4d= 0;
+        _glVertexAttrib4dv= 0;
+        _glVertexAttrib4f= 0;
+        _glVertexAttrib4fv= 0;
+        _glVertexAttrib4iv= 0;
+        _glVertexAttrib4s= 0;
+        _glVertexAttrib4sv= 0;
+        _glVertexAttrib4ubv= 0;
+        _glVertexAttrib4uiv= 0;
+        _glVertexAttrib4usv= 0;
+        _glVertexAttribPointer= 0;
+
+        _glGetInfoLogARB= 0;
+        _glGetObjectParameterivARB= 0;
+        _glDeleteObjectARB= 0;
+        _glGetHandleARB= 0;
+
+        // GL 2.1
+        _glUniformMatrix2x3fv= 0;
+        _glUniformMatrix3x2fv= 0;
+        _glUniformMatrix2x4fv= 0;
+        _glUniformMatrix4x2fv= 0;
+        _glUniformMatrix3x4fv= 0;
+        _glUniformMatrix4x3fv= 0;
+
+        // EXT_geometry_shader4
+        _glProgramParameteri= 0;
+        _glFramebufferTexture= 0;
+        _glFramebufferTextureLayer= 0;
+        _glFramebufferTextureFace= 0;
+
+        // ARB_tesselation_shader
+        _glPatchParameteri= 0;
+        _glPatchParameterfv= 0;
+
+        // EXT_gpu_shader4
+        _glGetUniformuiv= 0;
+        _glBindFragDataLocation= 0;
+        _glGetFragDataLocation= 0;
+        _glUniform1ui= 0;
+        _glUniform2ui= 0;
+        _glUniform3ui= 0;
+        _glUniform4ui= 0;
+        _glUniform1uiv= 0;
+        _glUniform2uiv= 0;
+        _glUniform3uiv= 0;
+        _glUniform4uiv= 0;
+
+        // ARB_uniform_buffer_object
+        _glGetUniformIndices= 0;
+        _glGetActiveUniformsiv= 0;
+        _glGetActiveUniformName= 0;
+        _glGetUniformBlockIndex= 0;
+        _glGetActiveUniformBlockiv= 0;
+        _glGetActiveUniformBlockName= 0;
+        _glUniformBlockBinding= 0;
+
+        //ARB_get_program_binary
+        _glGetProgramBinary= 0;
+        _glProgramBinary= 0;
+
         return;
     }
     

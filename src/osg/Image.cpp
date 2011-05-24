@@ -76,6 +76,7 @@ Image::Image(const Image& image,const CopyOp& copyop):
     _dataType(image._dataType),
     _packing(image._packing),
     _pixelAspectRatio(image._pixelAspectRatio),
+    _allocationMode(USE_NEW_DELETE),
     _data(0L),
     _mipmapData(image._mipmapData)
 {
@@ -85,7 +86,6 @@ Image::Image(const Image& image,const CopyOp& copyop):
         setData(new unsigned char [size],USE_NEW_DELETE);
         memcpy(_data,image._data,size);
     }
-
 }
 
 Image::~Image()

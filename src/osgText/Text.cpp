@@ -26,6 +26,9 @@
 
 #include "DefaultFont.h"
 
+#include <osg/GLExtensions>
+#include <osg/GL>
+
 using namespace osg;
 using namespace osgText;
 
@@ -33,8 +36,9 @@ using namespace osgText;
 
 Text::Text():
     _color(1.0f,1.0f,1.0f,1.0f),
+    _enableDepthWrites(true),
     _backdropType(NONE),
-    _backdropImplementation(DEPTH_RANGE),
+    _backdropImplementation(DELAYED_DEPTH_WRITES),
     _backdropHorizontalOffset(0.07f),
     _backdropVerticalOffset(0.07f),
     _backdropColor(0.0f, 0.0f, 0.0f, 1.0f),
@@ -42,13 +46,14 @@ Text::Text():
     _colorGradientTopLeft(1.0f, 0.0f, 0.0f, 1.0f),
     _colorGradientBottomLeft(0.0f, 1.0f, 0.0f, 1.0f),
     _colorGradientBottomRight(0.0f, 0.0f, 1.0f, 1.0f),
-    _colorGradientTopRight(1.0f, 1.0f, 1.0f, 1.0f)    
+    _colorGradientTopRight(1.0f, 1.0f, 1.0f, 1.0f)
 {}
 
 Text::Text(const Text& text,const osg::CopyOp& copyop):
     osgText::TextBase(text,copyop),
     _font(text._font),
     _color(text._color),
+    _enableDepthWrites(text._enableDepthWrites),
     _backdropType(text._backdropType),
     _backdropImplementation(text._backdropImplementation),
     _backdropHorizontalOffset(text._backdropHorizontalOffset),
@@ -452,16 +457,31 @@ void Text::computeGlyphRepresentation()
                     glyphquad._glyphs.push_back(glyph);
                     glyphquad._lineNumbers.push_back(lineNumber);
 
+                    // Adjust coordinates and texture coordinates to avoid
+                    // clipping the edges of antialiased characters.
+                    osg::Vec2 mintc = glyph->getMinTexCoord();
+                    osg::Vec2 maxtc = glyph->getMaxTexCoord();
+                    osg::Vec2 vDiff = maxtc - mintc;
+                    float fHorizTCMargin = 1.0f / glyph->getTexture()->getTextureWidth();
+                    float fVertTCMargin = 1.0f / glyph->getTexture()->getTextureHeight();
+                    float fHorizQuadMargin = vDiff.x() == 0.0f ? 0.0f : width * fHorizTCMargin / vDiff.x();
+                    float fVertQuadMargin = vDiff.y() == 0.0f ? 0.0f : height * fVertTCMargin / vDiff.y();
+                    mintc.x() -= fHorizTCMargin;
+                    mintc.y() -= fVertTCMargin;
+                    maxtc.x() += fHorizTCMargin;
+                    maxtc.y() += fVertTCMargin;
+
                     // set up the coords of the quad
-                    glyphquad._coords.push_back(local+osg::Vec2(0.0f,height));
-                    glyphquad._coords.push_back(local+osg::Vec2(0.0f,0.0f));
-                    glyphquad._coords.push_back(local+osg::Vec2(width,0.0f));
-                    glyphquad._coords.push_back(local+osg::Vec2(width,height));
+                    osg::Vec2 upLeft = local+osg::Vec2(0.0f-fHorizQuadMargin,height+fVertQuadMargin);
+                    osg::Vec2 lowLeft = local+osg::Vec2(0.0f-fHorizQuadMargin,0.0f-fVertQuadMargin);
+                    osg::Vec2 lowRight = local+osg::Vec2(width+fHorizQuadMargin,0.0f-fVertQuadMargin);
+                    osg::Vec2 upRight = local+osg::Vec2(width+fHorizQuadMargin,height+fVertQuadMargin);
+                    glyphquad._coords.push_back(upLeft);
+                    glyphquad._coords.push_back(lowLeft);
+                    glyphquad._coords.push_back(lowRight);
+                    glyphquad._coords.push_back(upRight);
 
                     // set up the tex coords of the quad
-                    const osg::Vec2& mintc = glyph->getMinTexCoord();
-                    const osg::Vec2& maxtc = glyph->getMaxTexCoord();
-
                     glyphquad._texcoords.push_back(osg::Vec2(mintc.x(),maxtc.y()));
                     glyphquad._texcoords.push_back(osg::Vec2(mintc.x(),mintc.y()));
                     glyphquad._texcoords.push_back(osg::Vec2(maxtc.x(),mintc.y()));
@@ -473,20 +493,19 @@ void Text::computeGlyphRepresentation()
                     {
                       case LEFT_TO_RIGHT:
                           cursor.x() += glyph->getHorizontalAdvance() * wr;
-                          _textBB.expandBy(osg::Vec3(local.x(),local.y(),0.0f)); //lower left corner
-                          _textBB.expandBy(osg::Vec3(cursor.x(),local.y()+height,0.0f)); //upper right corner
+                          _textBB.expandBy(osg::Vec3(lowLeft.x(), lowLeft.y(), 0.0f)); //lower left corner
+                          _textBB.expandBy(osg::Vec3(upRight.x(), upRight.y(), 0.0f)); //upper right corner
                           break;
                       case VERTICAL:
-                          cursor.y() -= glyph->getVerticalAdvance() *hr;
-                          _textBB.expandBy(osg::Vec3(local.x(),local.y()+height,0.0f)); //upper left corner
-                          _textBB.expandBy(osg::Vec3(local.x()+width,cursor.y(),0.0f)); //lower right corner
+                          cursor.y() -= glyph->getVerticalAdvance() * hr;
+                          _textBB.expandBy(osg::Vec3(upLeft.x(),upLeft.y(),0.0f)); //upper left corner
+                          _textBB.expandBy(osg::Vec3(lowRight.x(),lowRight.y(),0.0f)); //lower right corner
                           break;
                       case RIGHT_TO_LEFT:
-                          _textBB.expandBy(osg::Vec3(local.x()+width,local.y(),0.0f)); //lower right corner
-                          _textBB.expandBy(osg::Vec3(cursor.x(),local.y()+height,0.0f)); //upper left corner
+                          _textBB.expandBy(osg::Vec3(lowRight.x(),lowRight.y(),0.0f)); //lower right corner
+                          _textBB.expandBy(osg::Vec3(upLeft.x(),upLeft.y(),0.0f)); //upper left corner
                           break;
                     }
-
                     previous_charcode = charcode;
 
                 }
@@ -1341,7 +1360,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
         // So this is a pick your poison approach. Each alternative
         // backend has trade-offs associated with it, but with luck,
         // the user may find that works for them.
-        if(_backdropType != NONE)
+        if(_backdropType != NONE && _backdropImplementation != DELAYED_DEPTH_WRITES)
         {
             switch(_backdropImplementation)
             {
@@ -1363,7 +1382,7 @@ void Text::drawImplementation(osg::State& state, const osg::Vec4& colorMultiplie
         }
         else
         {
-            renderOnlyForegroundText(state,colorMultiplier);
+            renderWithDelayedDepthWrites(state,colorMultiplier);
         }
     }
 
@@ -1754,7 +1773,137 @@ void Text::renderOnlyForegroundText(osg::State& state, const osg::Vec4& colorMul
 
         drawForegroundText(state, glyphquad, colorMultiplier);
     }
+}
 
+void Text::renderWithDelayedDepthWrites(osg::State& state, const osg::Vec4& colorMultiplier) const
+{
+    glPushAttrib( _enableDepthWrites ? (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT) : GL_DEPTH_BUFFER_BIT);
+    // Render to color buffer without writing to depth buffer.
+    glDepthMask(GL_FALSE);
+    drawTextWithBackdrop(state,colorMultiplier);
+
+    // Render to depth buffer if depth writes requested.
+    if( _enableDepthWrites )
+    {
+        glDepthMask(GL_TRUE);
+        glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+        drawTextWithBackdrop(state,colorMultiplier);
+    }
+    glPopAttrib();
+}
+
+//
+// NOTE: This section was taken from osg svn trunk, and was in the State
+// class. It is only included here to implement the osgText clipping patch
+// r11768. [2011-05-24 Eric Sokolowsky]
+//
+typedef std::vector<GLushort> Indices;
+Indices _quadIndices[6];
+
+// This function originally called glDrawElementsInstanced if available. 
+// Since this is a function only available in OpenGL 3.1 and later, I
+// removed its call for this patch. [2011-05-24 Eric Sokolowsky]
+inline void glDrawElementsInstanced(GLenum mode, GLsizei count, GLenum type, const GLvoid *indices, GLsizei primcount )
+{
+    glDrawElements(mode, count, type, indices);
+}
+
+void drawQuads(GLint first, GLsizei count, GLsizei primCount = 0)
+{
+    // OSG_NOTICE<<"State::drawQuads("<<first<<", "<<count<<")"<<std::endl;
+    
+    unsigned int array = first % 4;
+    unsigned int offsetFirst = ((first-array) / 4) * 6;
+    unsigned int numQuads = (count/4);
+    unsigned int numIndices = numQuads * 6;
+    unsigned int endOfIndices = offsetFirst+numIndices;
+    Indices& indices = _quadIndices[array];
+    if (endOfIndices>65536)
+    {
+        OSG_NOTICE<<"Warning: State::drawQuads("<<first<<", "<<count<<") too large handle in remapping to ushort glDrawElements."<<std::endl;
+        endOfIndices = 65536;
+    }
+    
+    if (endOfIndices >= indices.size())
+    {
+        // we need to expand the _indexArray to be big enough to cope with all the quads required.
+        unsigned int numExistingQuads = indices.size()/6;
+        unsigned int numRequiredQuads = endOfIndices/6;
+        indices.reserve(endOfIndices);
+        for(unsigned int i=numExistingQuads; i<numRequiredQuads; ++i)
+        {
+            unsigned int base = i*4 + array;
+            indices.push_back(base);
+            indices.push_back(base+1);
+            indices.push_back(base+3);
+            
+            indices.push_back(base+1);
+            indices.push_back(base+2);
+            indices.push_back(base+3);
+            
+            // OSG_NOTICE<<"   adding quad indices ("<<base<<")"<<std::endl;
+        }
+    }
+
+    // if (array!=0) return;
+
+    // OSG_NOTICE<<"  glDrawElements(GL_TRIANGLES, "<<numIndices<<", GL_UNSIGNED_SHORT, "<<&(indices[base])<<")"<<std::endl;
+    glDrawElementsInstanced(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, &(indices[offsetFirst]), primCount);
+}
+
+//
+// End of section taken from State.cpp.
+//
+
+void Text::drawTextWithBackdrop(osg::State& state, const osg::Vec4& colorMultiplier) const
+{
+    unsigned int contextID = state.getContextID();
+
+    for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();
+        titr!=_textureGlyphQuadMap.end();
+        ++titr)
+    {
+        // need to set the texture here...
+        state.applyTextureAttribute(0,titr->first.get());
+
+        const GlyphQuads& glyphquad = titr->second;
+
+        if(_backdropType != NONE)
+        {
+            unsigned int backdrop_index;
+            unsigned int max_backdrop_index;
+            if(_backdropType == OUTLINE)
+            {
+                backdrop_index = 0;
+                max_backdrop_index = 8;
+            }
+            else
+            {
+                backdrop_index = _backdropType;
+                max_backdrop_index = _backdropType+1;
+            }
+
+            state.setTexCoordPointer( 0, 2, GL_FLOAT, 0, &(glyphquad._texcoords.front()));
+            state.disableColorPointer();
+            // Original r11768 patch changed here [2011-05-24 Eric Sokolowsky]
+            //state.Color(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
+            glColor4f(_backdropColor.r(),_backdropColor.g(),_backdropColor.b(),_backdropColor.a());
+
+            for( ; backdrop_index < max_backdrop_index; backdrop_index++)
+            {
+                const GlyphQuads::Coords3& transformedBackdropCoords = glyphquad._transformedBackdropCoords[backdrop_index][contextID];
+                if (!transformedBackdropCoords.empty()) 
+                {
+                    state.setVertexPointer( 3, GL_FLOAT, 0, &(transformedBackdropCoords.front()));
+                    // Original r11768 patch changed here [2011-05-24 Eric Sokolowsky]
+                    //state.drawQuads(0,transformedBackdropCoords.size());
+                    drawQuads(0,transformedBackdropCoords.size());
+                }
+            }
+        }
+
+        drawForegroundText(state, glyphquad, colorMultiplier);
+    }
 }
 
 

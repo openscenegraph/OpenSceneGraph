@@ -345,7 +345,7 @@ bool GraphicsWindowQt::init( QWidget* parent, const QGLWidget* shareWidget, Qt::
             flags |= Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint;
 
         // create widget
-        _widget = new GLWidget( traits2qglFormat( _traits ), parent, shareWidget, flags );
+        _widget = new GLWidget( traits2qglFormat( _traits.get() ), parent, shareWidget, flags );
     }
 
     // set widget name and position

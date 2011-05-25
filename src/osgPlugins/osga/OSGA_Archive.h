@@ -59,11 +59,6 @@ class OSGA_Archive : public osgDB::Archive
         /** Get the full list of file names available in the archive.*/
         virtual bool getFileNames(FileNameList& fileNameList) const;
 
-        /** return the contents of a directory.
-          * returns an empty array on any error.*/
-        virtual osgDB::DirectoryContents getDirectoryContents(const std::string& dirName) const;
-
-
 
         /** Read an osg::Object of specified file name from the Archive.*/
         virtual ReadResult readObject(const std::string& fileName,const Options* options=NULL) const;

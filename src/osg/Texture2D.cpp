@@ -306,7 +306,7 @@ void Texture2D::apply(State& state) const
         glBindTexture( GL_TEXTURE_2D, 0 );
     }
 
-    // if texture object is now valid and we have to allocate mipmap levels, then
+        // if texture object is now valid and we have to allocate mipmap levels, then
     if (textureObject != 0 && _texMipmapGenerationDirtyList[contextID])
     {
         generateMipmap(state);

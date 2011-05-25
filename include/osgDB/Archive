@@ -59,7 +59,7 @@ class OSGDB_EXPORT Archive : public ReaderWriter
 
         /** return the contents of a directory.
           * returns an empty array on any error.*/
-        virtual DirectoryContents getDirectoryContents(const std::string& dirName) const = 0;
+        virtual DirectoryContents getDirectoryContents(const std::string& dirName) const;
 
 
         virtual ReadResult readObject(const std::string& /*fileName*/,const Options* =NULL) const = 0;

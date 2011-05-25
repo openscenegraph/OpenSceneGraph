@@ -4203,10 +4203,25 @@ ZRESULT TUnzip::Unzip(int index,void *dst,unsigned int len,DWORD flags)
     }
     bool reached_eof;
     int res = unzReadCurrentFile(uf,dst,len,&reached_eof);
-    if (res<=0) {unzCloseCurrentFile(uf); currentfile=-1;}
-    if (reached_eof) return ZR_OK;
-    if (res>0) return ZR_MORE;
-    if (res==UNZ_PASSWORD) return ZR_PASSWORD;
+    if (res<=0) 
+    {
+       unzCloseCurrentFile(uf); currentfile=-1;
+    }
+    if (reached_eof)
+    {
+       unzCloseCurrentFile(uf);
+       currentfile=-1;
+       return ZR_OK;
+    }
+    if (res>0)
+    {
+       return ZR_MORE;
+    }
+    if (res==UNZ_PASSWORD)
+    {
+       return ZR_PASSWORD;
+    }
+
     return ZR_FLATE;
   }
   // otherwise we're writing to a handle or a file

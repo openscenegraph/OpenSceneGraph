@@ -212,8 +212,9 @@ IF(APPLE)
         FIND_LIBRARY(CARBON_LIBRARY Carbon)
         FIND_LIBRARY(COCOA_LIBRARY Cocoa)
 
-        # Apple OS X: Find OpenGL
+        # Apple OS X: Find OpenGL and AGL
         FIND_PACKAGE(OpenGL)
+        FIND_LIBRARY(AGL_LIBRARY AGL)
     ENDIF ()
 
     OPTION(OSG_COMPILE_FRAMEWORKS "compile frameworks instead of dylibs (experimental)" OFF)

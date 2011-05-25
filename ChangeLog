@@ -1,3 +1,522 @@
+2011-05-25 09:13  robert
+
+	* src/osgPlugins/osga/OSGA_Archive.cpp,
+	  src/osgPlugins/osga/OSGA_Archive.h: Removed now redundent local
+	  implementation of getDirectoryContexts()
+
+2011-05-25 09:04  robert
+
+	* include/osgDB/Archive, src/osg/Texture2D.cpp,
+	  src/osgDB/Archive.cpp, src/osgPlugins/zip/CMakeLists.txt,
+	  src/osgPlugins/zip/ReaderWriterZIP.cpp,
+	  src/osgPlugins/zip/unzip.cpp: From Bradley Anderegg, "Ok, I am
+	  re-submitting this with the changes we discussed. That is, there
+	  is a default implementation of
+	  osgDB::Archive::getDirectoryContents() that uses getFileNames(),
+	  and the osgDB::ArchiveExtended header was removed as it is now
+	  unnecessary.
+	  
+	  Here is a quick list of the modified files:
+	  
+	  Archive - getDirectoryContents() no longer pure virtual
+	  Archive.cpp - default getDirectoryContents() implementation
+	  unzip.cpp - modified to fix a bug where the same file will not
+	  load twice in a row
+	  ZipArchive.h / ZipArchive.cpp - extends osgDB::Archive and
+	  provides support for random access loading within a .zip file
+	  ReaderWriterZip.cpp - modified to use the ZipArchive class"
+
+2011-05-24 13:05  robert
+
+	* src/osgViewer/CMakeLists.txt: From Olaf Flebbe, "build out-of-the
+	  box on MacOSX. The default windowing system is carbon and it
+	  needs the AGL OpenGL Windowing binding framework, which is
+	  missing. osgViewer does not link therefore. Cocoa does not use
+	  AGL.
+	  
+	  The fix adds the AGL Framework to the Carbon link line for
+	  osgViewer"
+
+2011-05-24 10:20  robert
+
+	* src/osg/GL2Extensions.cpp: Fixed Coverity issues.
+	  
+	  CID 11669: Uninitialized pointer field (UNINIT_CTOR)
+	  Non-static class member _glAttachShader is not initialized in
+	  this constructor nor in any functions that it calls.
+	  Non-static class member _glBindAttribLocation is not initialized
+	  in this constructor nor in any functions that it calls.
+	  ...
+	  
+	  
+	  CID 11699: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _areTessellationShadersSupported is not
+	  initialized in this constructor nor in any functions that it
+	  calls.
+
+2011-05-24 10:19  robert
+
+	* src/osg/KdTree.cpp: Fixed Coverity issue.
+	  
+	  CID 12328: Resource leak (RESOURCE_LEAK)
+	  Calling allocation function "osg::KdTree::cloneType() const".
+	  (The virtual call resolves to "osg::Object *
+	  osg::KdTree::cloneType() const".) [show details]
+	  Failing to save storage allocated by
+	  "this->_kdTreePrototype->cloneType()" leaks it.
+
+2011-05-24 10:18  robert
+
+	* src/osg/Image.cpp: Fixed Coverity issue.
+	  
+	  CID 11692: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _allocationMode is not initialized in
+	  this constructor nor in any functions that it calls.
+
+2011-05-24 10:18  robert
+
+	* src/osg/GLBeginEndAdapter.cpp: Fixed Coverity issue.
+	  
+	  CID 11668: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _primitiveMode is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-05-24 10:16  robert
+
+	* src/osg/Geometry.cpp: Fixed 3 Coverity issues.
+	  
+	  CID 11697: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _type is not initialized in this
+	  constructor nor in any functions that it calls.
+	  
+	  CID 11698: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _type is not initialized in this
+	  constructor nor in any functions that it calls.
+	  
+	  CID 12329: Resource leak (RESOURCE_LEAK)
+	  Calling allocation function "osg::Object::clone(osg::CopyOp const
+	  &) const". (The virtual call resolves to "osg::Object *
+	  GDALPlugin::DataSetLayer::clone(osg::CopyOp const &) const".)
+	  [show details]
+	  Failing to save storage allocated by
+	  "this->getVertexArray()->clone(struct osg::CopyOp const(128U))"
+	  leaks it.
+
+2011-05-24 10:15  robert
+
+	* src/osg/FrameStamp.cpp: Fixed Coverity issue.
+	  
+	  CID 11696: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _simulationTime is not initialized in
+	  this constructor nor in any functions that it calls.
+
+2011-05-24 10:15  robert
+
+	* src/osg/FrameBufferObject.cpp: Fixed Coverity issue.
+	  
+	  CID 11695: Uninitialized pointer field (UNINIT_CTOR)
+	  Non-static class member _ximpl is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-05-24 10:14  robert
+
+	* src/osg/Drawable.cpp: Fixed Coverity issue.
+	  
+	  CID 11694: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _isARBOcclusionQuerySupported is not
+	  initialized in this constructor nor in any functions that it
+	  calls.
+
+2011-05-24 10:14  robert
+
+	* include/osg/Drawable: Fixed Coverity issue.
+	  
+	  CID 11666: Uninitialized pointer field (UNINIT_CTOR)
+	  Non-static class member _glMultiTexCoord1dv is not initialized in
+	  this constructor nor in any functions that it calls.
+	  Non-static class member _glVertexAttrib1dv is not initialized in
+	  this constructor nor in any functions that it calls.
+
+2011-05-24 10:13  robert
+
+	* src/osg/BufferObject.cpp: Fixed Coverity issue.
+	  
+	  CID 11691: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _isPBOSupported is not initialized in
+	  this constructor nor in any functions that it calls.
+	  Non-static class member _isUniformBufferObjectSupported is not
+	  initialized in this constructor nor in any functions that it
+	  calls.
+
+2011-05-24 10:08  robert
+
+	* src/osgQt/GraphicsWindowQt.cpp: Fixed build error
+
+2011-05-23 16:58  robert
+
+	* src/osgPlugins/txp/trpage_warchive.cpp,
+	  src/osgPlugins/txp/trpage_write.h: Removed unused numX, numY
+	  member variables, and added initializer for firstHeaderWrite.
+
+2011-05-23 08:17  robert
+
+	* include/osgUtil/CullVisitor: Added
+	  CullVisitor::setCalculatedNearPlane() and
+	  setCalculatedFarPlane(() methods to enable 3rd party code to
+	  manage the compute of the near/far planes.
+
+2011-05-19 13:25  robert
+
+	* src/osgGA/FirstPersonManipulator.cpp: Uppded the default
+	  acceleration as it was too slow for reasonable sized models
+
+2011-05-17 12:57  robert
+
+	* src/osgDB/ExternalFileWriter.cpp: From Sukender, "There was a
+	  stupid parameter inversion in ExternalFileWriter.cpp.
+	  Sorry for this. Here is the fix."
+
+2011-05-17 09:21  robert
+
+	* src/osgQt/GraphicsWindowQt.cpp: From Wang Rui, added close button
+	  hint
+
+2011-05-16 12:44  robert
+
+	* include/osgViewer/api/IOS/GraphicsWindowIOS,
+	  src/osgViewer/GraphicsWindowIOS.mm: From Stephan Huber, "proposed
+	  changes allows the user to add a osgGraphicsWindowIOS as an
+	  UIView, respecting the sizes via GraphicsContext::Traits.
+	  This helps users, who want to integrate osg into an existing
+	  ios-app
+	  with multiple UIViews. Additinally a view-controller gets only
+	  created
+	  if needed, set IGNORE_ORIENTATION via the WindowData-struct.
+	  "
+
+2011-05-16 10:07  robert
+
+	* src/osgPlugins/dae/ReaderWriterDAE.cpp,
+	  src/osgPlugins/dae/ReaderWriterDAE.h,
+	  src/osgPlugins/dae/daeRGeometry.cpp,
+	  src/osgPlugins/dae/daeRMaterials.cpp,
+	  src/osgPlugins/dae/daeReader.cpp, src/osgPlugins/dae/daeReader.h,
+	  src/osgPlugins/dae/daeWAnimations.cpp,
+	  src/osgPlugins/dae/daeWGeometry.cpp,
+	  src/osgPlugins/dae/daeWMaterials.cpp,
+	  src/osgPlugins/dae/daeWSceneObjects.cpp,
+	  src/osgPlugins/dae/daeWTransforms.cpp,
+	  src/osgPlugins/dae/daeWriter.cpp, src/osgPlugins/dae/daeWriter.h:
+	  From Sukender, I wrapped my change about non-empty texture units
+	  in an off-by-default option, so that it doesn't break any
+	  existing code. But AFAIK, other readers (except OSGx) generate
+	  contiguous texture units, so I guess this option to be useful for
+	  users.
+	  
+	  Other changes in this sumbission include the added ability to
+	  tessellate polygons in Collada reader, with appropriate options.
+	  - No tessellation
+	  - Tessellate as triangle fan (previous behaviour, kept as default
+	  for backward-compatibility)
+	  - Full tessellation
+	  
+	  I also put auto_ptr<> for RAII of DAE structure (as discussed),
+	  and moved reader options in a structure, as for the writer.
+	  
+	  Code also make use of osgDB::ExternalFileWriter I submitted, so
+	  please merge this submission after the PluginImageWriter one.
+
+2011-05-16 09:17  robert
+
+	* examples/osgviewerQt/CMakeLists.txt,
+	  examples/osgviewerQt/osgviewerQt.cpp,
+	  examples/osgviewerQt/osgviewerQtContext.cpp: Renamed example from
+	  osgviewerQtContext to osgviewerQt.
+
+2011-05-16 09:16  robert
+
+	* examples/osgqfont/osgqfont.cpp: Updated example to use new
+	  GraphicsWindowQt::getGLWidget() method instead of deprecated
+	  getGraphWidget() method
+
+2011-05-16 09:15  robert
+
+	* examples/osgviewerQt/osgviewerQtContext.cpp: Added support for
+	  setting threading model from command line and changed default
+	  threading model to
+	  CullDrawThreadPerContext. New command line options are:
+	  
+	  osgviewerQtContext --SingleThreaded
+	  osgviewerQtContext --CullDrawThreadPerContext
+	  osgviewerQtContext --DrawThreadPerContext
+	  osgviewerQtContext --CullDrawThreadPerContext
+
+2011-05-16 09:06  robert
+
+	* include/osgQt/GraphicsWindowQt, src/osgQt/GraphicsWindowQt.cpp:
+	  From Jan Peciva, I have improved GraphicsWindowQt:
+	  
+	  - renamed osgQt::GraphWidget to osgQt::GLWidget
+	  as it better fits to Qt naming (osgQt::GLWidget is derived from
+	  QGLWidget
+	  while recent GraphWidget... it is unclear, maybe QGraphicsView,
+	  QGraphicsScene,....)
+	  - added the code to properly manage ON_DEMAND rendering scheme
+	  (involves osgQt::setViewer() and internal HeartBeat class)
+	  - added forward key events functionality. It allows to not eat
+	  the key events
+	  by GLWidget, but it forwards them to Qt processing as well.
+	  - destroying GLWidget before GraphicsWindowQt and vice versa does
+	  not crash
+	  the application
+	  - it is possible to request particular QGLFormat in GLWidget
+	  constructor
+	  - added QtWindowingSystem class
+	  - multithread OSG rendering improvements/fixes
+	  
+	  --
+	  
+	  From Robert Osfield, added back in getGraphWidget() method for
+	  backwards compatibility.
+
+2011-05-16 08:59  robert
+
+	* include/osgQt/GraphicsWindowQt, src/osgQt/GraphicsWindowQt.cpp:
+	  Fixed traling spaces
+
+2011-05-16 08:50  robert
+
+	* include/osgDB/InputStream, include/osgDB/OutputStream: From Rafa
+	  Gata, I've been playing around with serializers in order to use
+	  it as a
+	  "generic" property mechanism for osg::Object.
+	  
+	  The main problem I have found is that InputStream and
+	  OutputStream
+	  only takes the stream when you call start method, and in that
+	  case it
+	  attaches to the stream buffer some stuff, useful for files but
+	  not for
+	  runtime/gui usage. I have added a simple setInputIterator and
+	  setOutputIterator to the classes so now you can easily serialize
+	  values without version and other stuff.
+	  
+	  Writing matrix:
+	  osgDB::OutputStream os(0);
+	  std::stringstream sstream;
+	  os.setOutputIterator(new AsciiOutputIterator(&sstream));
+	  os << matrix;
+	  std::string value = sstream.str();
+	  
+	  Reading matrix:
+	  osgDB::InputStream is(0);
+	  std::stringstream sstream(value);
+	  is.setInputIterator(new AsciiInputIterator(&sstream));
+	  osg::Matrixf mat2;
+	  is >> mat2;
+	  
+	  From Robert Osfield, added doxygen comments to clarify the role
+	  of the methods.
+
+2011-05-15 08:27  robert
+
+	* src/osgPlugins/fbx/WriterNodeVisitor.cpp: From Wang Rui, build
+	  fix
+
+2011-05-13 19:19  robert
+
+	* CMakeLists.txt, include/osg/Version: Updated SO version as the
+	  osgText and osgQt libraries API have changed, albeit only by a
+	  small amount.
+
+2011-05-13 19:08  robert
+
+	* include/osgQt/QFontImplementation, include/osgText/Font,
+	  include/osgText/Glyph, src/osgPlugins/freetype/FreeTypeFont.h,
+	  src/osgPlugins/txf/TXFFont.h, src/osgQt/QFontImplementation.cpp,
+	  src/osgText/DefaultFont.cpp, src/osgText/DefaultFont.h,
+	  src/osgText/Font.cpp, src/osgText/Glyph.cpp: Fixed handling of
+	  Font implementations that don't handle multiple font resolutions.
+
+2011-05-13 11:20  robert
+
+	* src/osgPlugins/txf/TXFFont.cpp: Improved the size, advance and
+	  bearing settings
+
+2011-05-12 18:52  robert
+
+	* include/osg/View, src/osgPlugins/dicom/ReaderWriterDICOM.cpp:
+	  Warning and build fixes
+
+2011-05-12 18:40  robert
+
+	* include/osg/GraphicsCostEstimator: Added newline to end of file
+
+2011-05-12 14:07  robert
+
+	* src/osgPlugins/fbx/WriterNodeVisitor.cpp,
+	  src/osgPlugins/fbx/WriterNodeVisitor.h: From Sukender, ported
+	  across to use the new osgDB::ExternalFileWriter
+
+2011-05-12 13:27  robert
+
+	* include/osgDB/ExternalFileWriter, include/osgDB/FileNameUtils,
+	  src/osgDB/CMakeLists.txt, src/osgDB/ExternalFileWriter.cpp,
+	  src/osgDB/FileNameUtils.cpp: From Sukender, new
+	  ExternalFileWriter helper class that helps the management of
+	  writing out external files to disk
+	  avoid writing out of duplicates.
+
+2011-05-12 13:12  robert
+
+	* include/osgUtil/TransformAttributeFunctor,
+	  src/osgUtil/TransformAttributeFunctor.cpp: From Sukender, "Here
+	  is a tiny fix which adds missing virtual methods in
+	  osgUtil::TransformAttributeFunctor, to handle Vec3d."
+
+2011-05-12 13:08  robert
+
+	* include/osgAnimation/RigTransform: Removed unused parameter
+
+2011-05-12 12:28  robert
+
+	* examples/osg2cpp/osg2cpp.cpp: From Wang Rui, "A Chinese engineer
+	  (named Beilei Geng) reports a possible bug in the
+	  osg2cpp application to me today. The conversion result may become
+	  incorrect if there are quotation marks ( " ) in the shader file,
+	  which
+	  will mostly appear in comment lines.
+	  
+	  Replace all " into \" before writing to cpp files will solve the
+	  problem, as the attached file shows."
+
+2011-05-12 11:45  robert
+
+	* src/CMakeLists.txt: From Rene Molenaar, "I have found a problem
+	  regarding manifest in the plugins,
+	  see
+	  http://www.openscenegraph.org/projects/osg/browser/OpenSceneGraph/trunk/src/CMakeLists.txt
+	  the option OSG_MSVC_GENERATE_PLUGINS_AND_WRAPPERS_MANIFESTS is
+	  set to ON only after the subdirectories are added,
+	  this causes /MANIFEST:NO while the option is ON after the first
+	  configure, generate.
+	  
+	  if this option is moved (i.e. above the ADD_SUBDIRECTORY
+	  statement) results are as expected.
+	  
+	  attached you will find the correct CMakeLists.txt
+	  "
+
+2011-05-12 10:28  robert
+
+	* include/osgQt/QFontImplementation: Removed redundent method
+
+2011-05-12 10:10  robert
+
+	* src/osgPlugins/txf/TXFFont.cpp, src/osgPlugins/txf/TXFFont.h:
+	  Added setting of size.
+
+2011-05-09 10:54  robert
+
+	* src/osgSim/ImpostorSprite.cpp: Fixed Coverity reported issue.
+	  
+	  CID 11812: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _lastFrameUsed is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _s is not initialized in this constructor
+	  nor in any functions that it calls.
+	  Non-static class member _t is not initialized in this constructor
+	  nor in any functions that it calls.
+
+2011-05-09 10:54  robert
+
+	* src/osgSim/LightPointDrawable.cpp: Fixed Coverity reported issue.
+	  
+	  CID 11813: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _endian is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-05-09 10:53  robert
+
+	* src/osgSim/OverlayNode.cpp: Fixed Coverity reported issue.
+	  
+	  CID 11814: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _updateCamera is not initialized in this
+	  constructor nor in any functions that it calls.
+
+2011-05-09 10:53  robert
+
+	* include/osgSim/Sector: Fixed Coverity reported issue.
+	  
+	  CID 11815: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _cosMaxElevation is not initialized in
+	  this constructor nor in any functions that it calls.
+	  Non-static class member _cosMaxFadeElevation is not initialized
+	  in this constructor nor in any functions that it calls.
+	  Non-static class member _cosMinElevation is not initialized in
+	  this constructor nor in any functions that it calls.
+	  Non-static class member _cosMinFadeElevation is not initialized
+	  in this constructor nor in any functions that it calls.
+
+2011-05-09 10:52  robert
+
+	* src/osgSim/SphereSegment.cpp: Fixed 6 Coverity reported issues.
+	  
+	  CID 11820: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _azAngle is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _elevAngle is not initialized in this
+	  constructor nor in any functions that it calls.
+	  
+	  CID 11819: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _BoundaryAngle is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _planeOrientation is not initialized in
+	  this constructor nor in any functions that it calls.
+	  
+	  CID 11818: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _BoundaryAngle is not initialized in this
+	  constructor nor in any functions that it calls.
+	  Non-static class member _planeOrientation is not initialized in
+	  this constructor nor in any functions that it calls.
+	  
+	  CID 11817: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _distance is not initialized in this
+	  constructor nor in any functions that it calls.
+	  
+	  CID 11817: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _distance is not initialized in this
+	  constructor nor in any functions that it calls.
+	  
+	  CID 11816: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _leftRightSurfaces is not initialized in
+	  this constructor nor in any functions that it calls.
+
+2011-05-09 10:51  robert
+
+	* src/osgUtil/CullVisitor.cpp: Fixed 2 Coverty reported issues.
+	  
+	  CID 11821: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _traversalNumber is not initialized in
+	  this constructor nor in any functions that it calls.
+	  
+	  CID 11822: Uninitialized scalar field (UNINIT_CTOR)
+	  Non-static class member _traversalNumber is not initialized in
+	  this constructor nor in any functions that it calls.
+
+2011-05-08 12:06  robert
+
+	* CMakeLists.txt, include/osg/Version: Updated version number to
+	  2.9.15 after dev release
+
+2011-05-08 11:57  robert
+
+	* AUTHORS.txt: Updated AUTHORS for 2.9.14 dev release
+
+2011-05-08 11:56  robert
+
+	* ChangeLog: Update ChangeLog
+
 2011-05-06 16:46  robert
 
 	* include/osgDB/Registry, src/osgDB/Registry.cpp: Added

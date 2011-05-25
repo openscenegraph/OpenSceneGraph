@@ -134,8 +134,7 @@ ELSE()
             PixelBufferCarbon.cpp
         )
 
-        SET(LIB_EXTRA_LIBS ${COCOA_LIBRARY} ${LIB_EXTRA_LIBS})
-        SET(LIB_EXTRA_LIBS ${LIB_EXTRA_LIBS} "-framework AGL")
+        SET(LIB_EXTRA_LIBS ${COCOA_LIBRARY} ${AGL_LIBRARY} ${LIB_EXTRA_LIBS})
 
     ELSEIF(${OSG_WINDOWING_SYSTEM} STREQUAL "IOS")
 

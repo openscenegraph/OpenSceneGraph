@@ -187,6 +187,7 @@ void GLBufferObject::compileBuffer()
     {
         _allocatedSize = _profile._size;
         _extensions->glBufferData(_profile._target, _profile._size, NULL, _profile._usage);
+        compileAll = true;
     }
 
     for(BufferEntries::iterator itr = _bufferEntries.begin();
@@ -1299,7 +1300,9 @@ unsigned int BufferObject::addBufferData(BufferData* bd)
 
     _bufferDataList.push_back(bd);
 
-    //OSG_NOTICE<<"BufferObject "<<this<<":"<<className()<<"::addBufferData("<<bd<<"), bufferIndex= "<<_bufferDataList.size()-1<<std::endl;
+    dirty();
+
+//OSG_NOTICE<<"BufferObject "<<this<<":"<<className()<<"::addBufferData("<<bd<<"), bufferIndex= "<<_bufferDataList.size()-1<<std::endl;
 
     return _bufferDataList.size()-1;
 }

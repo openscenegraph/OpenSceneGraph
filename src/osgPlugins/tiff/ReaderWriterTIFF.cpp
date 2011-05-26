@@ -183,6 +183,14 @@ toff_t libtiffOStreamSeekProc(thandle_t fd, toff_t off, int i)
     {
         case SEEK_SET:
         {
+            if (off==0)
+            {
+                std::ostream::streampos checkEmpty = fout->tellp();
+                if(checkEmpty < 0)
+                {
+                    return 0;
+                }
+            }
             pos_required = off;
 
             fout->seekp(0, std::ios::end);

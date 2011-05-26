@@ -268,7 +268,7 @@ osg::Node* createDemoScene(bool fixedSizeInScreen) {
     matirial->setShininess(osg::Material::FRONT_AND_BACK, 64.0f);
     root->getOrCreateStateSet()->setAttributeAndModes(matirial.get(), osg::StateAttribute::ON);
 
-      transform_1.get()->addChild(addDraggerToScene(geode_1.get(),"TabBoxDragger",fixedSizeInScreen));
+    transform_1.get()->addChild(addDraggerToScene(geode_1.get(),"TabBoxDragger",fixedSizeInScreen));
     transform_2.get()->addChild(addDraggerToScene(geode_2.get(),"TabPlaneDragger",fixedSizeInScreen));
     transform_3.get()->addChild(addDraggerToScene(geode_3.get(),"TabBoxTrackballDragger",fixedSizeInScreen));
     transform_4.get()->addChild(addDraggerToScene(geode_4.get(),"TrackballDragger",fixedSizeInScreen));

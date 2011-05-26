@@ -370,7 +370,7 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor & writerNodeVisitor, osg
     double_sided(false),
     image(NULL),
     texture_transparency(false),
-    texture_no_tile(false)
+    texture_no_tile(true) // matches lib3ds_material.cpp initialize_texture_map(..) default flag setting
 {
     //static unsigned int s_objmaterial_id = 0;
     //++s_objmaterial_id;

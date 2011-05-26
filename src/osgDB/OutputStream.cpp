@@ -232,11 +232,11 @@ void OutputStream::writeArray( const osg::Array* a )
         writeArrayImplementation( static_cast<const osg::Vec4Array*>(a), a->getNumElements() );
         break;
     case osg::Array::Vec2dArrayType:
-        *this << MAPPEE(ArrayType, ID_VEC4D_ARRAY);
+        *this << MAPPEE(ArrayType, ID_VEC2D_ARRAY);
         writeArrayImplementation( static_cast<const osg::Vec2dArray*>(a), a->getNumElements() );
         break;
     case osg::Array::Vec3dArrayType:
-        *this << MAPPEE(ArrayType, ID_VEC4D_ARRAY);
+        *this << MAPPEE(ArrayType, ID_VEC3D_ARRAY);
         writeArrayImplementation( static_cast<const osg::Vec3dArray*>(a), a->getNumElements() );
         break;
     case osg::Array::Vec4dArrayType:

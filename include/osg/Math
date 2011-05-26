@@ -241,7 +241,14 @@ extern OSG_EXPORT double asciiToDouble(const char* str);
 /** Convert a ascii number to a float, ignoring locale settings.*/
 inline float asciiToFloat(const char* str) { return static_cast<float>(asciiToDouble(str)); }
 
+/** Detect first ascii POSITIVE number in string and convert to double.*/
+extern OSG_EXPORT double findAsciiToDouble(const char* str);
+
+/** Detect first ascii POSITIVE number in string and convert to double.*/
+inline float findAsciiToFloat(const char* str) { return static_cast<float>(findAsciiToDouble(str)); }
+
 }
+
 
 #endif  // __OSG_MATH
 

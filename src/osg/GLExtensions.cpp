@@ -66,12 +66,7 @@ float osg::getGLVersionNumber()
     char *versionstring   = (char*) glGetString( GL_VERSION );
     if (!versionstring) return 0.0;
 
-    std::string vs( versionstring );
-    #if defined(OSG_GLES1_AVAILABLE) || defined(OSG_GLES2_AVAILABLE)
-        return( asciiToFloat( vs.substr( vs.find( "ES " )+3 ).c_str() ) );
-    #else
-        return( asciiToFloat( vs.substr( vs.find( " " )+1 ).c_str() ) );
-    #endif
+    return (findAsciiToFloat(versionstring));
 }
 
 bool osg::isExtensionInExtensionString(const char *extension, const char *extensionString)

@@ -118,6 +118,8 @@ MACRO(GENERATE_PACKAGING_TARGET package_name)
     # Create a target that creates the current package
     # and rename the package to give it proper filename
     ADD_CUSTOM_TARGET(${PACKAGE_TARGETNAME})
+    SET_TARGET_PROPERTIES(${PACKAGE_TARGETNAME} PROPERTIES FOLDER "Packaging")
+
     ADD_CUSTOM_COMMAND(TARGET ${PACKAGE_TARGETNAME}
         COMMAND ${CMAKE_CPACK_COMMAND} -C ${OSG_CPACK_CONFIGURATION} --config ${OpenSceneGraph_BINARY_DIR}/CPackConfig-${package_name}.cmake
         COMMENT "Run CPack packaging for ${package_name}..."
@@ -127,6 +129,8 @@ MACRO(GENERATE_PACKAGING_TARGET package_name)
     ADD_CUSTOM_COMMAND(TARGET ${PACKAGE_ALL_TARGETNAME}
         COMMAND ${CMAKE_CPACK_COMMAND} -C ${OSG_CPACK_CONFIGURATION} --config ${OpenSceneGraph_BINARY_DIR}/CPackConfig-${package_name}.cmake
     )
+    SET_TARGET_PROPERTIES(${PACKAGE_ALL_TARGETNAME} PROPERTIES FOLDER "Packaging")
+
 ENDMACRO(GENERATE_PACKAGING_TARGET)
 
 # Create configs and targets for a package including all components

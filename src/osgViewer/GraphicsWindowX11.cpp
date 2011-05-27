@@ -1090,6 +1090,25 @@ void GraphicsWindowX11::swapBuffersImplementation()
 #endif
         glXSwapBuffers( _display, _window );
     #endif
+
+
+    while( XPending(_display) )
+    {
+        XEvent ev;
+        XNextEvent( _display, &ev );
+
+        switch( ev.type )
+        {
+            case ClientMessage:
+            {
+                if (static_cast<Atom>(ev.xclient.data.l[0]) == _deleteWindow)
+                {
+                    OSG_INFO<<"DeleteWindow event received"<<std::endl;
+                    getEventQueue()->closeWindow();
+                }
+            }
+        }
+    }
 }
 
 void GraphicsWindowX11::checkEvents()
@@ -1458,29 +1477,6 @@ void GraphicsWindowX11::checkEvents()
             windowHeight != _traits->height)
         {
             requestRedraw();
-        }
-    }
-
-
-    //
-    // process events of _display
-    //
-    while( XPending(_display) )
-    {
-        XEvent ev;
-        XNextEvent( _display, &ev );
-
-        switch( ev.type )
-        {
-            case ClientMessage:
-            {
-                if (static_cast<Atom>(ev.xclient.data.l[0]) == _deleteWindow)
-                {
-                    OSG_INFO<<"DeleteWindow event received"<<std::endl;
-                    getEventQueue()->closeWindow();
-                }
-                break;
-            }
         }
     }
 

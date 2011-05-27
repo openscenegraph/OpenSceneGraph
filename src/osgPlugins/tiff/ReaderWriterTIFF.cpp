@@ -829,7 +829,7 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             return pOsgImage;
         }
 
-        WriteResult::WriteStatus writeTIFStream(std::ostream& fout, const osg::Image& img, bool noCompression, float xResDPI, float yResDPI) const
+        WriteResult::WriteStatus writeTIFStream(std::ostream& fout, const osg::Image& img) const
         {
             //Code is based from the following article on CodeProject.com
             //http://www.codeproject.com/bitmap/BitmapsToTiffs.asp
@@ -887,10 +887,6 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
                     TIFFSetField(image, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_INT);
                     bitsPerSample = 16;
                     break;
-                case GL_UNSIGNED_SHORT:
-                    TIFFSetField(image, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_UINT);
-                    bitsPerSample = 16;
-                    break;
                 default:
                     bitsPerSample = 8;
                     break;
@@ -901,16 +897,9 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             TIFFSetField(image, TIFFTAG_BITSPERSAMPLE,bitsPerSample);
             TIFFSetField(image, TIFFTAG_SAMPLESPERPIXEL,samplesPerPixel);
             TIFFSetField(image, TIFFTAG_PHOTOMETRIC, photometric);
-            TIFFSetField(image, TIFFTAG_COMPRESSION, noCompression ? COMPRESSION_NONE : COMPRESSION_PACKBITS); 
+            TIFFSetField(image, TIFFTAG_COMPRESSION, COMPRESSION_PACKBITS); 
             TIFFSetField(image, TIFFTAG_FILLORDER, FILLORDER_MSB2LSB);
             TIFFSetField(image, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
-
-            if(xResDPI > 0 && yResDPI > 0)
-            {
-                TIFFSetField(image, TIFFTAG_RESOLUTIONUNIT, RESUNIT_INCH);
-                TIFFSetField(image, TIFFTAG_XRESOLUTION, xResDPI);
-                TIFFSetField(image, TIFFTAG_YRESOLUTION, yResDPI);
-            }
 
             //uint32 rowsperstrip = TIFFDefaultStripSize(image, -1); 
             //TIFFSetField(image, TIFFTAG_ROWSPERSTRIP, rowsperstrip);
@@ -956,36 +945,9 @@ class ReaderWriterTIFF : public osgDB::ReaderWriter
             return rr;
         }
 
-        virtual WriteResult writeImage(const osg::Image& img,std::ostream& fout,const osgDB::ReaderWriter::Options* options) const
+        virtual WriteResult writeImage(const osg::Image& img,std::ostream& fout,const osgDB::ReaderWriter::Options* /*options*/) const
         {
-            bool noCompression = false;
-            float xResDPI = 0;
-            float yResDPI = 0;
-
-            if(options)
-            {
-                std::istringstream iss(options->getOptionString());
-                std::string opt;
-
-                while( iss >> opt)
-                {
-                    if(opt == "no_compression")
-                    {
-                        noCompression = true;
-                    }
-                    else if(opt == "x_resolution")
-                    {
-                        iss >> xResDPI;
-                    }
-                    else if(opt == "y_resolution")
-                    {
-                        iss >> yResDPI;
-                    }
-                }
-            }
-
-
-            WriteResult::WriteStatus ws = writeTIFStream(fout,img,noCompression,xResDPI,yResDPI);
+            WriteResult::WriteStatus ws = writeTIFStream(fout,img);
             return ws;
         }
 

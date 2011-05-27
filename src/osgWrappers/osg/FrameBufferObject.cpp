@@ -20,6 +20,7 @@
 #include <osg/Texture1D>
 #include <osg/Texture2D>
 #include <osg/Texture2DArray>
+#include <osg/Texture2DMultisample>
 #include <osg/Texture3D>
 #include <osg/TextureCubeMap>
 #include <osg/TextureRectangle>
@@ -87,6 +88,10 @@ BEGIN_VALUE_REFLECTOR(osg::FrameBufferAttachment)
 	                           "");
 	I_ConstructorWithDefaults2(IN, osg::Texture2D *, target, , IN, int, level, 0,
 	                           ____FrameBufferAttachment__Texture2D_P1__int,
+	                           "",
+	                           "");
+	I_ConstructorWithDefaults2(IN, osg::Texture2DMultisample *, target, , IN, int, level, 0,
+	                           ____FrameBufferAttachment__Texture2DMultisample_P1__int,
 	                           "",
 	                           "");
 	I_ConstructorWithDefaults3(IN, osg::Texture3D *, target, , IN, int, zoffset, , IN, int, level, 0,

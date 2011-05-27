@@ -916,9 +916,12 @@ IF(BUILD_DOCUMENTATION)
     ADD_CUSTOM_TARGET(doc_openscenegraph ${DOXYGEN}
         ${PROJECT_BINARY_DIR}/doc/openscenegraph.doxyfile
     )
+    SET_TARGET_PROPERTIES(doc_openscenegraph PROPERTIES FOLDER "Documentation")
+    
     ADD_CUSTOM_TARGET(doc_openthreads ${DOXYGEN}
         ${PROJECT_BINARY_DIR}/doc/openthreads.doxyfile
     )
+    SET_TARGET_PROPERTIES(doc_openthreads PROPERTIES FOLDER "Documentation")
 ENDIF(BUILD_DOCUMENTATION)
 
 OPTION(BUILD_DASHBOARD_REPORTS "Set to ON to activate reporting of OpenSceneGraph builds here http://www.cdash.org/CDashPublic/index.php?project=OpenSceneGraph" OFF)

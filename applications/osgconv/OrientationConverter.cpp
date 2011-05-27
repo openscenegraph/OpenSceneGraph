@@ -12,6 +12,7 @@ OrientationConverter::OrientationConverter( void )
    R.makeIdentity();
    T.makeIdentity();
    _trans_set = false;
+   _use_world_frame = false;
    S.makeIdentity();
 }
 
@@ -36,21 +37,36 @@ void OrientationConverter::setScale( const Vec3 &scale )
     S = Matrix::scale(scale);
 }
 
+void OrientationConverter::useWorldFrame( bool worldFrame )
+{
+   _use_world_frame = worldFrame;
+}
 
 Node* OrientationConverter::convert( Node *node )
 {
     // Order of operations here is :
-    // 1. Translate to world origin (0,0,0)
+    // 1. If world frame option not set, translate to world origin (0,0,0)
     // 2. Rotate to new orientation
     // 3. Scale in new orientation coordinates
     // 4. If an absolute translation was specified then
     //        - translate to absolute translation in world coordinates
-    //    else
-    //        - translate back to model's original origin. 
+    //    else if world frame option not set,
+    //        - translate back to model's original origin.
     BoundingSphere bs = node->getBound();
-    Matrix C = Matrix::translate( -bs.center() );
-    if( _trans_set == false )
-        T = Matrix::translate( bs.center() );
+    Matrix C;
+
+    if (_use_world_frame)
+    {
+        C.makeIdentity();
+    }
+    else
+    {
+        C = Matrix::translate( -bs.center() );
+        
+        if (_trans_set == false)
+            T = Matrix::translate( bs.center() );
+    }
+
 
     osg::Group* root = new osg::Group;
     osg::MatrixTransform* transform = new osg::MatrixTransform;

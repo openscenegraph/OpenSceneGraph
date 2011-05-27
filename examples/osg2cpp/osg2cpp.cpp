@@ -14,6 +14,7 @@ void searchAndReplace(std::string& str, const std::string& spat, const std::stri
     while ((pos = str.find(spat, pos)) != std::string::npos)
     {
         str.replace(pos, spat.length(), rpat);
+        pos += rpat.length();
     }
 }
 

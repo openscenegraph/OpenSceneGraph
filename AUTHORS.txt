@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.9.14
+OpenSceneGraph Library 2.9.15
 
-456 Contributors:
+460 Contributors:
 
 Firstname Surname
 -----------------
@@ -16,14 +16,14 @@ Farshid Lashkari
 Eric Wing
 Ulrich Hertlein
 Cedric Pinson
-Brede Johansen
 Wang Rui
+Brede Johansen
+Sukender 
 Michael Platings
 Bob Kuehne
 Geoff Michel
-Sukender 
-Wojciech Lewandowski
 Eric Sokolowsky
+Wojciech Lewandowski
 David Callu
 Trajce Nikolov
 Tim Moore
@@ -52,20 +52,20 @@ Norman Vine
 Art Tevs
 Alberto Luaces
 Serge Lages
+Laurens Voerman
 Alberto Farre
+Terry Welsh
 Sherman Wilcox
 Robert Milharcic
+Olaf Flebbe
 Mathieu Marache
 Magnus Kessler
-Laurens Voerman
 André Garneau
 Adrian Egli
-Terry Welsh
 Ruben Lopez
 Randall Hopper
 Mourad Boufarguine
 Brad Christiansen
-Olaf Flebbe
 Gideon May
 Don Tidrow
 Chris Denham
@@ -81,6 +81,7 @@ Fabien Lavignotte
 Melchior Franz
 Lionel Lagarde
 Jan Ciger
+Rafa Gaitan
 Neil Hughes
 Mike Connell
 Martin Beckett
@@ -96,7 +97,6 @@ Sondra Iverson
 Simon Julier
 Rune Schmidt Jensen
 Rainer Oder
-Rafa Gaitan
 Martin Naylor
 Martin Aumueller
 Mario Valle
@@ -159,6 +159,7 @@ Emmanuel Roche
 Daniel Larimer
 Colin Dunlop
 Bruce Clay
+Bradley Anderegg
 Andreas Goebel
 Alok Priyadarshi
 Alberto Barbati
@@ -171,6 +172,7 @@ Sohey Yamamoto
 Sergey Leontyev
 Santosh Gaikwad
 Rudolf Wiedemann
+Rene Molenaar
 Phil Atkin
 Nathan Monteleone
 Miguel Escriva
@@ -214,7 +216,6 @@ Stephane Simon
 Stephan Eilemann
 Stanislav Blinov
 Sebastian Messerschmidt
-Rene Molenaar
 Raymond de Vries
 Ralf Kern
 Piotr Gwiazdowski
@@ -257,11 +258,11 @@ Ferdi Smit
 Eric Buehler
 Eduardo Poyart
 Edgar Ellis
+Dietmar Funck
 David Ergo
 Daniel Trstenjak
 Craig Bosma
 Christophe Loustaunau
-Bradley Anderegg
 Brad Anderegg
 Aric Aumann
 Andrew Sampson
@@ -299,6 +300,7 @@ Sid Byce
 Shuxing Xiao
 Shane Arnott
 Sebastien Kuntz
+Ryan Pavlik
 Ruth Lang
 Ruben Smelik
 Ross Anderson
@@ -332,6 +334,7 @@ Parag Chaudhur
 Panagiotis Papadakos
 Panagiotis Koutsourakis
 Orhun Birsoy
+Oliver Neumann
 Ole-Morten Duesund
 Nicolas Brodu
 Morten Haukness
@@ -419,7 +422,7 @@ Duvan Cope
 Duncan Cavens
 Drew Whitehouse
 Douglas A. Pouk
-Dietmar Funck
+Dimi Christop
 Dean Iverson
 David Jung
 Danny Valente
@@ -435,6 +438,7 @@ Christian Ehrlicher
 Christian Buchner
 Chris McGlone
 Carlos Garcea
+Bryce Eldridge
 Bruno Herbelin
 Brian Keener
 Brandon Hamm

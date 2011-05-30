@@ -809,8 +809,17 @@ void GraphicsWindowX11::init()
 
     if (_valid == false)
     {
-        XCloseDisplay( _display );
-        _display = 0;
+        if (_display)
+        {
+            XCloseDisplay( _display );
+            _display = 0;
+        }
+
+        if (_eventDisplay)
+        {
+            XCloseDisplay( _eventDisplay );
+            _eventDisplay = 0;
+        }
     }
 
 

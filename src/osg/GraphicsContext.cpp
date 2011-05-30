@@ -579,12 +579,12 @@ void GraphicsContext::close(bool callCloseImplementation)
 
 bool GraphicsContext::makeCurrent()
 {
+    _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThread();
+
     bool result = makeCurrentImplementation();
     
     if (result)
     {
-        _threadOfLastMakeCurrent = OpenThreads::Thread::CurrentThread();
-
         // initialize extension process, not only initializes on first
         // call, will be a non-op on subsequent calls.        
         getState()->initializeExtensionProcs();

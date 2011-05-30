@@ -1,3 +1,218 @@
+2011-05-30 13:02  robert
+
+	* src/osgPlugins/tiff/ReaderWriterTIFF.cpp: From Dimi Christop,
+	  build fix for RHEL 4.
+
+2011-05-30 09:26  robert
+
+	* src/osgViewer/GraphicsWindowX11.cpp: Added closing of the
+	  _eventDisplay on failure of initializing the context properly.
+
+2011-05-30 09:25  robert
+
+	* src/osg/GraphicsContext.cpp: Fixed X11 related crash that occured
+	  when GraphicsWindow::setCursor was called right after
+	  viewer.realize();
+	  The fix was to simply move the setting of the thread that has
+	  done the makeCurrent to right before the makeCurrent()
+	  rather than right after.
+
+2011-05-30 08:26  robert
+
+	* CMakeModules/Find3rdPartyDependencies.cmake: From Wang Rui, "The
+	  submission fixes the spelling bug we discussed in osg-users. It
+	  replaces the variable ACTUAL_3DPARTY_DIR to ACTUAL_3RDPARTY_DIR
+	  with
+	  back compatibility. Please find it in attachment.
+	  "
+
+2011-05-30 08:24  robert
+
+	* src/osgText/TextBase.cpp: From Terry Welsh, "I was having a small
+	  culling problem with osgText... new TextBase.cpp that fixes it."
+
+2011-05-27 16:04  robert
+
+	* src/osgViewer/GraphicsWindowX11.cpp: Reverted part of revision
+	  r12294 that introduced threading related problems under X11 due
+	  to checking the _display
+	  Display member variable assigned to the graphics thread from the
+	  main thread.
+
+2011-05-27 11:22  robert
+
+	* applications/osgconv/OrientationConverter.cpp,
+	  applications/osgconv/OrientationConverter.h,
+	  applications/osgconv/osgconv.cpp: From Ryan Pavlik, "Existing
+	  osgconv behavior is to transform the model bounding sphere center
+	  to the world origin before performing transformations specified
+	  on the command line, and translating back after rotation and
+	  scaling unless an alternate translation is specified. This patch
+	  adds a setting to the OrientationConverter class in osgconv to
+	  disable this extra transformation, which has the effect of
+	  applying specified transforms with respect to the input world
+	  coordinate system, rather than to the center of the bounding
+	  sphere. It also adds a command line argument "--use-world-frame"
+	  to enable this behavior. When this command line argument is not
+	  passed, behavior is unchanged from before the patch. The usage
+	  text has been updated to reflect this additional option, and the
+	  comments in OrientationConverter are also updated."
+	  
+	  Note from Robert Osfield, tweaked the OrientationConverter.cpp a
+	  little to improve readability.
+
+2011-05-27 11:18  robert
+
+	* applications/osgconv/OrientationConverter.h: Fixed indentation
+
+2011-05-27 11:07  robert
+
+	* examples/osg2cpp/osg2cpp.cpp: Fixed the searchAndReplace function
+	  so that it correctly skips over the newly inserted replacement
+	  strings.
+
+2011-05-27 09:08  robert
+
+	* CMakeLists.txt, CMakeModules/OsgCPack.cmake: From Jean-Sebastien
+	  Guay, "I like the recent addition that adds folders in the
+	  solution tree to better organize the numerous examples,
+	  libraries, plugins etc.
+	  
+	  I added two folders that were missing IMHO: packaging and
+	  documentation.
+	  "
+
+2011-05-27 09:05  robert
+
+	* src/osgPlugins/pnm/ReaderWriterPNM.cpp: From Eric Sokolowsky,
+	  "Attached is an updated PNM plugin for inclusion in both the
+	  trunk and for release version 2.8.5. The attached file fixes
+	  numerous bugs in reading 8-bit and 16-bit images, including
+	  loading the images upside-down. This file also incorporates trunk
+	  patch r12220 which updated the plugin for reading and writing
+	  images through streams instead of C-style FILE I/O."
+	  
+	  Note from Robert Osfield, previous revision was in error due to
+	  an incomplete merge, this revision completes the job.
+
+2011-05-27 09:00  robert
+
+	* src/osgUtil/TriStripVisitor.cpp: From Laurens Voerman, "While
+	  working on the osg exporter for 3dsmax I found a bug in the
+	  TriStripVisitor. I created a small example (attached), and a
+	  modified version of
+	  src\osgUtil\TriStripVisitor.cpp where the problem is removed."
+
+2011-05-27 08:55  robert
+
+	* src/osgPlugins/pnm/ReaderWriterPNM.cpp: From Eric Sokolowsky,
+	  "Attached is an updated PNM plugin for inclusion in both the
+	  trunk and for release version 2.8.5. The attached file fixes
+	  numerous bugs in reading 8-bit and 16-bit images, including
+	  loading the images upside-down. This file also incorporates trunk
+	  patch r12220 which updated the plugin for reading and writing
+	  images through streams instead of C-style FILE I/O."
+
+2011-05-27 08:22  robert
+
+	* src/osgPlugins/tiff/ReaderWriterTIFF.cpp: Reverted Bryce Eldrige
+	  submission.
+
+2011-05-26 16:52  robert
+
+	* include/osg/Math, src/osg/GL2Extensions.cpp,
+	  src/osg/GLExtensions.cpp, src/osg/Math.cpp: Form Jorge Ciges,
+	  improved GL version detection code.
+
+2011-05-26 16:34  robert
+
+	* src/osgDB/OutputStream.cpp: From Dietmar Funck, "I've noticed an
+	  issue when writing arrays of type Vec2D and Vec3D to a .osgb
+	  file. A number is written to the output stream to identify the
+	  array type. In case of Vec2D and Vec3D arrays Vec4D is written as
+	  array type - I guess this is a copy and paste mistake.
+	  Writing the correct array types fixes the issue - in my case it
+	  fixes writing and afterwards reading geometry instances."
+
+2011-05-26 16:26  robert
+
+	* src/osgPlugins/tiff/ReaderWriterTIFF.cpp: From Bryce Eldridge,
+	  "Here is an update for the TIFF plugin that includes the
+	  following features when writing out TIFF files:
+	  
+	  - Support for writing unsigned 16-bit images (GL_UNSIGNED_SHORT)
+	  - Code to parse the options string for the following options:
+	  -- Flag to turn off the compression. The PACKBITS compression
+	  type causes issues for me with some programs on Windows (Picasa
+	  for example).
+	  -- Options to set the XRESOLUTION and YRESOLUTION tags (DPI) in
+	  the TIFF file.
+	  
+	  Existing behavior (PACKBITS compression, DPI tags left at
+	  default) is preserved if the options string is not set.
+	  "
+
+2011-05-26 16:19  robert
+
+	* src/osgPlugins/3ds/WriterNodeVisitor.cpp: Fixed default setting
+	  of texture_no_tile to match the flags seet in lib3ds_material.cpp
+	  initialize_texture_map(..).
+
+2011-05-26 16:16  robert
+
+	* src/osgPlugins/tiff/ReaderWriterTIFF.cpp: From Oliver Neumann,
+	  
+	  "I checked your solution and found one missing point which makes
+	  it still produce the tif error:
+	  The very first seek_set on the empty stream with zero offset."
+	  
+	  "This means that the empty stream is seeked again resulting in
+	  the fail bit to be set. Your code does not check this case,
+	  furthermore you use t_off instead of std::ostream::streampos for
+	  the tellp() calls. In this special case (empty stream) tellp()
+	  returns -1 which is cast to 0xFFFFFFFFFF as t_off is unsigned. I
+	  suggest this addition to your code (within the switch statement)"
+
+2011-05-26 16:13  robert
+
+	* examples/osgmanipulator/osgmanipulator.cpp: Fixed indentation
+
+2011-05-26 15:47  robert
+
+	* src/osg/BufferObject.cpp: Fixed handling of changes in gl buffer
+	  object size so that when a gl buffer object is resized all the
+	  buffer data
+	  is recompiled.
+
+2011-05-25 12:41  robert
+
+	* src/osgPlugins/zip/ZipArchive.cpp,
+	  src/osgPlugins/zip/ZipArchive.h: From Bradley Anderegg, "Ok, I am
+	  re-submitting this with the changes we discussed. That is, there
+	  is a default implementation of
+	  osgDB::Archive::getDirectoryContents() that uses getFileNames(),
+	  and the osgDB::ArchiveExtended header was removed as it is now
+	  unnecessary.
+	  
+	  Here is a quick list of the modified files:
+	  
+	  Archive - getDirectoryContents() no longer pure virtual
+	  Archive.cpp - default getDirectoryContents() implementation
+	  unzip.cpp - modified to fix a bug where the same file will not
+	  load twice in a row
+	  ZipArchive.h / ZipArchive.cpp - extends osgDB::Archive and
+	  provides support for random access loading within a .zip file
+	  ReaderWriterZip.cpp - modified to use the ZipArchive class"
+
+2011-05-25 09:34  robert
+
+	* ChangeLog: Updated ChangeLog
+
+2011-05-25 09:34  robert
+
+	* CMakeLists.txt, src/osgViewer/CMakeLists.txt: From Olaf Flebbe,
+	  fixes for OSX AGL build
+
 2011-05-25 09:13  robert
 
 	* src/osgPlugins/osga/OSGA_Archive.cpp,

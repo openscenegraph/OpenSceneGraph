@@ -450,6 +450,8 @@ struct NameCorrection
 
 NameCorrection nameCorrections[] =
 {
+    {"Rafa","Gata",
+     "Rafa", "Gaitan"},
     {"Sukender","I",
      "Sukender", ""},
     {"Sukender","Here",

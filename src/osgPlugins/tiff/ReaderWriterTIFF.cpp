@@ -185,7 +185,7 @@ toff_t libtiffOStreamSeekProc(thandle_t fd, toff_t off, int i)
         {
             if (off==0)
             {
-                std::ostream::streampos checkEmpty = fout->tellp();
+                std::streampos checkEmpty = fout->tellp();
                 if(checkEmpty < 0)
                 {
                     return 0;

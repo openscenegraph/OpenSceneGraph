@@ -28,6 +28,7 @@
 #include "WriterNodeVisitor.h"
 #include <assert.h>
 #include <string.h>
+#include <limits.h>
 
 void copyOsgMatrixToLib3dsMatrix(Lib3dsMatrix lib3ds_matrix, const osg::Matrix& osg_matrix)
 {

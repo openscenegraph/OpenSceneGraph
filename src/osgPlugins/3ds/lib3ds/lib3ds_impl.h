@@ -35,7 +35,11 @@
 #endif
 
 #ifndef _MSC_VER
+#if defined __sun || defined __hpux
+#include <inttypes.h>
+#else
 #include <stdint.h>
+#endif
 #else
 typedef unsigned __int8 uint8_t;
 typedef unsigned __int16 uint16_t;

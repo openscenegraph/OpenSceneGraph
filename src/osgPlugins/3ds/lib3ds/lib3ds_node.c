@@ -166,7 +166,7 @@ lib3ds_node_new_mesh_instance(Lib3dsMesh *mesh, const char *instance_name, float
 
 Lib3dsCameraNode* 
 lib3ds_node_new_camera(Lib3dsCamera *camera) {
-    Lib3dsNode *node = lib3ds_node_new(LIB3DS_NODE_CAMERA);
+    Lib3dsNode *node;
     Lib3dsCameraNode *n;
     
     assert(camera);

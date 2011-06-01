@@ -446,13 +446,14 @@ mdata_read(Lib3dsFile *file, Lib3dsIo *io) {
 
 static int 
 compare_node_id( const void *a, const void *b ) {
-   return (*((Lib3dsNode**)a))->node_id - (*((Lib3dsNode**)b))->node_id;
+   return (int)((*((Lib3dsNode**)a))->node_id) - (int)((*((Lib3dsNode**)b))->node_id);
 }
 
 
 static int 
 compare_node_id2( const void *a, const void *b ) {
-   return *((unsigned short*)a) - (*((Lib3dsNode**)b))->node_id;
+   // not a is a pointer in the calling bsearch routine the user_id is an unsigned, while the node_id is an unsigned short?!
+   return (int)(*((unsigned*)a)) - (int)((*((Lib3dsNode**)b))->node_id);
 }
 
 

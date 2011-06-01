@@ -788,8 +788,6 @@ extern LIB3DSAPI void lib3ds_matrix_rotate(float m[4][4], float angle, float ax,
 extern LIB3DSAPI void lib3ds_matrix_camera(float m[4][4], float pos[3], float tgt[3], float roll);
 
 /* --- Code for OpenSceneGraph --- */
-extern LIB3DSAPI void setByteOrder();
-
 /* Definitions for compatibility with previous lib3DS used: */
 typedef float Lib3dsMatrix[4][4];
 typedef float Lib3dsVector[3];

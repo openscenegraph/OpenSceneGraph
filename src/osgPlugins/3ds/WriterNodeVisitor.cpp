@@ -5,13 +5,20 @@
  *
  * Copyright (C) ???
  *
- * Writing support added 2007 by Sukender (Benoit Neil), http://sukender.free.fr,
+ * Writing support added 2009 by Sukender (Benoit Neil), http://sukender.free.fr,
  * strongly inspired by the OBJ writer object by Stephan Huber
  *
  * The Open Scene Graph (OSG) is a cross platform C++/OpenGL library for
  * real-time rendering of large 3D photo-realistic models.
  * The OSG homepage is http://www.openscenegraph.org/
  */
+
+
+/// [EXPERIMENTAL] Disables animation data (and matrix transforms) for compatibility with some 3rd party apps.
+/// Animations are not read by all 3DS importers. Thus disabling them may allow some 3rd-party apps, such as Rhinoceros (tested with 4.0) to correctly import 3DS files.
+/// However, having proper hierarchy with matrix transforms will become impossible.
+///\warning This is still experimental, hence the compile flag. This should become a reader/writer option as soon as it works as intented (maybe "noMatrixTransforms" could become a read/write option?).
+#define DISABLE_3DS_ANIMATION 0            // Default = 0
 
 #include <osg/io_utils>
 #include <osg/CullFace>
@@ -21,7 +28,6 @@
 #include "WriterNodeVisitor.h"
 #include <assert.h>
 #include <string.h>
-
 
 void copyOsgMatrixToLib3dsMatrix(Lib3dsMatrix lib3ds_matrix, const osg::Matrix& osg_matrix)
 {
@@ -75,15 +81,9 @@ inline void copyOsgQuatToLib3dsQuat(float lib3ds_vector[4], const osg::Quat& osg
     lib3ds_vector[3] = static_cast<float>(-angle);
 }
 
-std::string getFileName(const std::string & path)
-{
-    unsigned int slashPos = path.find_last_of("/\\");
-    if (slashPos == std::string::npos) return path;
-    return path.substr(slashPos+1);
-}
-
 
 /// Checks if a filename (\b not path) is 8.3 (an empty name is never 8.3, and a path is never 8.3).
+/// Please note the '8' and '3' limitations are in \b bytes, not in characters (which is different when using UTF8).
 bool is83(const std::string & s)
 {
     // 012345678901
@@ -91,7 +91,7 @@ bool is83(const std::string & s)
     if (s.find_first_of("/\\") != std::string::npos) return false;            // It should not be a path, but a filename
     unsigned int len = s.length();
     if (len > 12 || len == 0) return false;
-    unsigned int pointPos = s.rfind('.');
+    size_t pointPos = s.rfind('.');
     if (pointPos == std::string::npos) return len <= 8;        // Without point
     // With point
     if (pointPos > 8) return false;
@@ -99,25 +99,138 @@ bool is83(const std::string & s)
     return true;
 }
 
-/// Tests if the given string is a path supported by 3DS format (8.3, 63 chars max).
-bool is3DSpath(const std::string & s, bool extendedFilePaths)
-{
-    unsigned int len = s.length();
-    if (len >= 64 || len == 0) return false;
-    if (extendedFilePaths) return true;        // Extended paths are simply those that fits the 64 bytes buffer!
-
-    // For each subdirectory
-    unsigned int tokenLen;
-    for (unsigned int tokenBegin=0, tokenEnd=0; tokenEnd == std::string::npos; tokenBegin = tokenEnd+1)
-    {
-        tokenEnd = s.find_first_of("/\\", tokenBegin);
-        if (tokenEnd != std::string::npos) tokenLen = tokenEnd-tokenBegin-1;        // -1 to avoid reading the separator
-        else tokenLen = len-tokenBegin;
-        if ( tokenLen>0 && !is83(s.substr(tokenBegin, tokenLen)) ) return false;
-    }
-    return true;
+inline std::string::size_type maxNameLen(bool extendedFilePaths, bool isNodeName) {
+    if (extendedFilePaths) return 63;
+    return isNodeName ? 8 : (8+1+3);
 }
 
+/// Tests if the given string is a path supported by 3DS format (8.3, 63 chars max, non empty).
+inline bool is3DSName(const std::string & s, bool extendedFilePaths, bool isNodeName)
+{
+    unsigned int len = s.length();
+    if (len > maxNameLen(extendedFilePaths, isNodeName) || len == 0) return false;
+    // Extended paths are simply those that fits the 64 bytes buffer.
+    if (extendedFilePaths) return true;
+    // Short paths simply must have no subdirectory.
+    return is83(s);
+}
+
+// **************************************************************************
+// **************************************************************************
+// The following block of code was taken from the osgDB 2.9.x trunk code 
+// (FileNameUtils) so that the 3ds plugin will be completely self-contained
+// in this release.
+
+static const char * const PATH_SEPARATORS = "/\\";
+static unsigned int PATH_SEPARATORS_LEN = 2;
+
+/** Helper to iterate over elements of a path (including Windows' root, if any). **/
+class PathIterator {
+public:
+    PathIterator(const std::string & v);
+    bool valid() const { return start!=end; }
+    PathIterator & operator++();
+    std::string operator*();
+
+protected:
+    std::string::const_iterator end;     ///< End of path string
+    std::string::const_iterator start;   ///< Points to the first char of an element, or ==end() if no more
+    std::string::const_iterator stop;    ///< Points to the separator after 'start', or ==end()
+
+    /// Iterate until 'it' points to something different from a separator
+    std::string::const_iterator skipSeparators(std::string::const_iterator it);
+    std::string::const_iterator next(std::string::const_iterator it);
+};
+
+PathIterator::PathIterator(const std::string & v) : end(v.end()), start(v.begin()), stop(v.begin()) { operator++(); }
+PathIterator & PathIterator::operator++()
+{
+    if (!valid()) return *this;
+    start = skipSeparators(stop);
+    if (start != end) stop = next(start);
+    return *this;
+}
+std::string PathIterator::operator*()
+{
+    if (!valid()) return std::string();
+    return std::string(start, stop);
+}
+
+std::string::const_iterator PathIterator::skipSeparators(std::string::const_iterator it)
+{
+    for (; it!=end && std::find_first_of(it, it+1, PATH_SEPARATORS, PATH_SEPARATORS+PATH_SEPARATORS_LEN) != it+1; ++it) {}
+    return it;
+}
+
+std::string::const_iterator PathIterator::next(std::string::const_iterator it)
+{
+    return std::find_first_of(it, end, PATH_SEPARATORS, PATH_SEPARATORS+PATH_SEPARATORS_LEN);
+}
+
+static std::string getPathRoot(const std::string& path) {
+    // Test for unix root
+    if (path.empty()) return "";
+    if (path[0] == '/') return "/";
+    // Now test for Windows root
+    if (path.length()<2) return "";
+    if (path[1] == ':') return path.substr(0, 2);        // We should check that path[0] is a letter, but as ':' is invalid in paths in other cases, that's not a problem.
+    return "";
+}
+
+static std::string getPathRelative(const std::string& from, const std::string& to)
+{
+    // This implementation is not 100% robust, and should be replaced with C++0x "std::path" as soon as possible.
+
+    // Definition: an "element" is a part between slashes. Ex: "/a/b" has two elements ("a" and "b").
+    // Algorithm:
+    // 1. If paths are neither both absolute nor both relative, then we cannot do anything (we need to make them absolute, but need additionnal info on how to make it). Return.
+    // 2. If both paths are absolute and root isn't the same (for Windows only, as roots are of the type "C:", "D:"), then the operation is impossible. Return.
+    // 3. Iterate over two paths elements until elements are equal
+    // 4. For each remaining element in "from", add ".." to result
+    // 5. For each remaining element in "to", add this element to result
+
+    // 1 & 2
+    const std::string root = getPathRoot(from);
+    if (root != getPathRoot(to)) {
+        OSG_INFO << "Cannot relativise paths. From=" << from << ", To=" << to << ". Returning 'to' unchanged." << std::endl;
+        //return to;
+        return osgDB::getSimpleFileName(to);
+    }
+
+    // 3
+    PathIterator itFrom(from), itTo(to);
+    // Iterators may point to Windows roots. As we tested they are equal, there is no need to ++itFrom and ++itTo.
+    // However, if we got an Unix root, we must add it to the result.
+    std::string res(root == "/" ? "/" : "");
+    for(; itFrom.valid() && itTo.valid() && *itFrom==*itTo; ++itFrom, ++itTo) {}
+
+    // 4
+    for(; itFrom.valid(); ++itFrom) res += "../";
+
+    // 5
+    for(; itTo.valid(); ++itTo) res += *itTo + "/";
+
+    // Remove trailing slash before returning
+    if (!res.empty() && std::find_first_of(res.rbegin(), res.rbegin()+1, PATH_SEPARATORS, PATH_SEPARATORS+PATH_SEPARATORS_LEN) != res.rbegin()+1)
+    {
+        return res.substr(0, res.length()-1);
+    }
+    return res;
+}
+
+// strip all extensions from the filename.
+static std::string getNameLessAllExtensions(const std::string& fileName)
+{
+    // Finds start serach position: from last slash, or the begining of the string if none found
+    std::string::size_type startPos = fileName.find_last_of(PATH_SEPARATORS);            // Finds forward slash *or* back slash
+    if (startPos == std::string::npos) startPos = 0;
+    std::string::size_type dot = fileName.find_first_of('.', startPos);        // Finds *FIRST* dot from start pos
+    if (dot==std::string::npos) return fileName;
+    return std::string(fileName.begin(),fileName.begin()+dot);
+}
+
+// **************************************************************************
+// **************************************************************************
 
 // Use namespace qualification to avoid static-link symbol collitions
 // from multiply defined symbols.
@@ -166,7 +279,7 @@ public:
           triangle.t2 = i2;
           triangle.t3 = i3;
           triangle.material = _material;
-          _listTriangles.push_back(std::pair<Triangle, unsigned int>(triangle, _drawable_n));
+          _listTriangles.push_back(ListTriangle::value_type(triangle, _drawable_n));
       }
       virtual void begin(GLenum mode)
       {
@@ -355,10 +468,12 @@ void PrimitiveIndexWriter::drawArrays(GLenum mode,GLint first,GLsizei count)
     case(GL_LINE_LOOP):
         //break;
     default:
-        osg::notify(osg::WARN) << "3DS WriterNodeVisitor: can't handle mode " << mode << std::endl;
+        OSG_WARN << "3DS WriterNodeVisitor: can't handle mode " << mode << std::endl;
         break;
     }
 }
+
+
 
 WriterNodeVisitor::Material::Material(WriterNodeVisitor & writerNodeVisitor, osg::StateSet * stateset, osg::Material* mat, osg::Texture* tex, int index) :
     index(index),
@@ -370,7 +485,7 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor & writerNodeVisitor, osg
     double_sided(false),
     image(NULL),
     texture_transparency(false),
-    texture_no_tile(false)
+    texture_no_tile(true) // matches lib3ds_material.cpp initialize_texture_map(..) default flag setting
 {
     //static unsigned int s_objmaterial_id = 0;
     //++s_objmaterial_id;
@@ -380,9 +495,14 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor & writerNodeVisitor, osg
         diffuse = mat->getDiffuse(osg::Material::FRONT);
         ambient = mat->getAmbient(osg::Material::FRONT);
         specular = mat->getSpecular(osg::Material::FRONT);
-        shininess = mat->getShininess(osg::Material::FRONT);
+        shininess = mat->getShininess(osg::Material::FRONT) / 128.f;
+        // OpenGL shininess = pow(2, 10.0*mat->shininess);            (As in lib3ds example)
+        // => mat->shininess = log.2( OpenGL shininess ) /10        (if values are >0)
+        // => mat->shininess = log( OpenGL shininess ) / log(2) /10
+        //shininess = mat->getShininess(osg::Material::FRONT) <= 0 ? 0 : log( mat->getShininess(osg::Material::FRONT) ) / log(2.f) / 10.f;
+
         transparency = 1-diffuse.w();
-        name = writerNodeVisitor.getUniqueName(mat->getName(),"mat");
+        name = writerNodeVisitor.getUniqueName(mat->getName(),true,"mat");
         osg::StateAttribute * attribute = stateset->getAttribute(osg::StateAttribute::CULLFACE);
         if (!attribute)
         {
@@ -395,13 +515,13 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor & writerNodeVisitor, osg
             if (mode == osg::CullFace::BACK) double_sided = false;
             else if (mode == osg::CullFace::FRONT)
             {
-                osg::notify(osg::WARN) << "3DS Writer: Reversed face (culled FRONT) not supported yet." << std::endl;
+                OSG_WARN << "3DS Writer: Reversed face (culled FRONT) not supported yet." << std::endl;
                 double_sided = false;
             }
             else
             {
                 assert(mode == osg::CullFace::FRONT_AND_BACK);
-                osg::notify(osg::WARN) << "3DS Writer: Invisible face (culled FRONT_AND_BACK) not supported yet." << std::endl;
+                OSG_WARN << "3DS Writer: Invisible face (culled FRONT_AND_BACK) not supported yet." << std::endl;
                 double_sided = false;
             }
         }
@@ -412,7 +532,8 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor & writerNodeVisitor, osg
         if(img)
         {
             texture_transparency = (stateset->getMode(GL_BLEND) == osg::StateAttribute::ON);
-            texture_no_tile = (tex->getWrap(osg::Texture2D::WRAP_S) == osg::Texture2D::CLAMP);
+            osg::Texture::WrapMode wrapS = tex->getWrap(osg::Texture2D::WRAP_S);
+            texture_no_tile = !(wrapS == osg::Texture2D::REPEAT || wrapS == osg::Texture2D::MIRROR);
             image = img;
         }
     }
@@ -425,49 +546,6 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor & writerNodeVisitor, osg
     }
 }
 
-
-// If 'to' is in a subdirectory of 'from' then this function returns the
-// subpath. Otherwise it just returns the file name.
-// (Same as in FBX plugin)
-std::string getPathRelative(const std::string& from/*directory*/,
-                            const std::string& to/*file path*/)
-{
-
-    std::string::size_type slash = to.find_last_of('/');
-    std::string::size_type backslash = to.find_last_of('\\');
-    if (slash == std::string::npos) 
-    {
-        if (backslash == std::string::npos) return to;
-        slash = backslash;
-    }
-    else if (backslash != std::string::npos && backslash > slash)
-    {
-        slash = backslash;
-    }
-
-    if (from.empty() || from.length() > to.length())
-        return osgDB::getSimpleFileName(to);
-
-    std::string::const_iterator itTo = to.begin();
-    for (std::string::const_iterator itFrom = from.begin();
-        itFrom != from.end(); ++itFrom, ++itTo)
-    {
-        char a = tolower(*itFrom), b = tolower(*itTo);
-        if (a == '\\') a = '/';
-        if (b == '\\') b = '/';
-        if (a != b || itTo == to.begin() + slash + 1)
-        {
-            return osgDB::getSimpleFileName(to);
-        }
-    }
-
-    while (itTo != to.end() && (*itTo == '\\' || *itTo == '/'))
-    {
-        ++itTo;
-    }
-
-    return std::string(itTo, to.end());
-}
 
 /// Converts an extension to a 3-letters long one equivalent.
 std::string convertExt(const std::string & path, bool extendedFilePaths)
@@ -488,12 +566,12 @@ WriterNodeVisitor::WriterNodeVisitor(Lib3dsFile * file3ds, const std::string & f
     osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
     _succeeded(true),
     _srcDirectory(srcDirectory),
-    file3ds(file3ds),
+    _file3ds(file3ds),
     _currentStateSet(new osg::StateSet()),
     _lastMaterialIndex(0),
     _lastMeshIndex(0),
     _cur3dsNode(NULL),
-    options(options),
+    _options(options),
     _imageCount(0),
     _extendedFilePaths(false)
 {
@@ -516,7 +594,7 @@ WriterNodeVisitor::WriterNodeVisitor(Lib3dsFile * file3ds, const std::string & f
 void WriterNodeVisitor::writeMaterials()
 {
     unsigned int nbMat = _materialMap.size();
-    lib3ds_file_reserve_materials(file3ds, nbMat, 1);
+    lib3ds_file_reserve_materials(_file3ds, nbMat, 1);
     // Ugly thing: it seems lib3ds_file_insert_material() doesn't support insertion in a random order (else materials are not assigned the right way)
     for (unsigned int iMat=0; iMat<nbMat; ++iMat)
     {
@@ -528,7 +606,7 @@ void WriterNodeVisitor::writeMaterials()
             found = true;
 
             assert(mat.index>=0 && mat.index < static_cast<int>(_materialMap.size()));
-            Lib3dsMaterial * mat3ds = lib3ds_material_new(getFileName(mat.name).c_str());
+            Lib3dsMaterial * mat3ds = lib3ds_material_new(osgDB::getSimpleFileName(mat.name).c_str());
             copyOsgColorToLib3dsColor(mat3ds->ambient,  mat.ambient);
             copyOsgColorToLib3dsColor(mat3ds->diffuse,  mat.diffuse);
             copyOsgColorToLib3dsColor(mat3ds->specular, mat.specular);
@@ -537,137 +615,223 @@ void WriterNodeVisitor::writeMaterials()
             mat3ds->two_sided = mat.double_sided ? 1 : 0;
             if (mat.image)
             {
-                Lib3dsTextureMap & tex = mat3ds->texture1_map;
                 std::string path;
-                if(mat.image->getFileName().empty())
+                ImageSet::const_iterator itImage( _imageSet.find(mat.image.get()) );
+                if (itImage != _imageSet.end())
                 {
-                    std::ostringstream oss;
-                    oss << "Image_" << _imageCount++ << ".rgb";
-                    path = oss.str();
+                    // Image has been already used
+                    path = itImage->second;
                 }
                 else
                 {
-                    path = getPathRelative(_srcDirectory, mat.image->getFileName());
-                }
-                path = convertExt(path, _extendedFilePaths);
+                    // First time we 'see' this image
+                    if (mat.image->getFileName().empty())
+                    {
+                        std::ostringstream oss;
+                        oss << "Image_" << _imageCount++ << ".rgb";
+                        path = oss.str();
+                    }
+                    else
+                    {
+                        path = getPathRelative(_srcDirectory, mat.image->getFileName());
+                    }
+                    path = convertExt(path, _extendedFilePaths);
+                    path = getUniqueName(path, false, "");
 
-                if(!is3DSpath(path, _extendedFilePaths))
-                {
-                    path = getUniqueName(path, "", true);
-                    //path = osgDB::getSimpleFileName(path);
+                    // Write
+                    const std::string fullPath( osgDB::concatPaths(_directory, path) );
+                    osgDB::makeDirectoryForFile(fullPath);
+                    osgDB::writeImageFile(*(mat.image), fullPath, _options);
+
+                    // Insert in map
+                    _imageSet.insert(ImageSet::value_type(mat.image.get(), path));
                 }
 
+                Lib3dsTextureMap & tex = mat3ds->texture1_map;
                 strcpy(tex.name, path.c_str());
-                path = osgDB::concatPaths(_directory, path);
-                osgDB::makeDirectoryForFile(path);
-
-                //if (mat.image->valid()) osgDB::writeImageFile(*(mat.image), path);
-                if(_imageSet.find(mat.image.get()) == _imageSet.end())
-                {
-                    _imageSet.insert(mat.image.get());
-                    osgDB::writeImageFile(*(mat.image), path);
-                }
+                // Here we don't assume anything about initial flags state (actually it is set to LIB3DS_TEXTURE_NO_TILE by lib3DS, but this is subject to change)
                 if (mat.texture_transparency) tex.flags |= LIB3DS_TEXTURE_ALPHA_SOURCE;
+                else tex.flags &= ~LIB3DS_TEXTURE_ALPHA_SOURCE;
                 if (mat.texture_no_tile) tex.flags |= LIB3DS_TEXTURE_NO_TILE;
+                else tex.flags &= ~LIB3DS_TEXTURE_NO_TILE;
             }
             if (!succeeded())
                 return;
-            lib3ds_file_insert_material(file3ds, mat3ds, itr->second.index);
+            lib3ds_file_insert_material(_file3ds, mat3ds, itr->second.index);
             break;        // Ugly thing (3)
         }
         assert(found);        // Ugly thing (4) - Implementation error if !found
     }
 }
 
+/// Truncates an UTF8 string so that it does not takes more than a given \b bytes amount (\b excluding the potential NULL end character).
+/// The function assumes the UTF8 string is valid.
+///\return A valid UTF8 string which size is less or equal to \c byteLimit.
+// May be moved in osgDB/ConvertUTF?
+std::string utf8TruncateBytes(const std::string & s, std::string::size_type byteLimit) {
+    // Untruncated strings
+    if (s.size() <= byteLimit) return s;
 
-std::string WriterNodeVisitor::getUniqueName(const std::string& _defaultValue, const std::string & _defaultPrefix, bool nameIsPath)
+    // Truncated strings
+    std::string::const_iterator it=s.begin(), itEnd=s.begin()+byteLimit;
+    std::string::const_iterator itStop=it;
+    // Note: itEnd is < s.end(), so that we can always write "it+1"
+    for(; it!=itEnd; ++it) {
+        unsigned char c = static_cast<unsigned char>(*it);
+        if ((c & 0x80) == 0) itStop=it+1;        // 7 bits ANSI. itStop must then point after that character.
+        else if ((c & 0x40) != 0) itStop=it;    // UTF8 sequence start: this is also past-the-end for the previous character (ANSI or UTF8)
+    }
+    return std::string(s.begin(), itStop);
+}
+
+#ifdef OSG_USE_UTF8_FILENAME
+#    define truncateFilenameBytes(str, size) utf8TruncateBytes(str, size)
+#else
+#    define truncateFilenameBytes(str, size) std::string(str, 0, size)
+#endif
+
+std::string WriterNodeVisitor::getUniqueName(const std::string& _defaultValue, bool isNodeName, const std::string & _defaultPrefix, int currentPrefixLen)
 {
-    static const unsigned int MAX_PREFIX_LEGNTH = 4;        // Arbitrarily defined to 4 chars
-    assert(_defaultPrefix.length()<=MAX_PREFIX_LEGNTH);        // Default prefix is too long (implementation error)
+    //const unsigned int MAX_LENGTH = maxNameLen(_extendedFilePaths);
+    const unsigned int MAX_PREFIX_LENGTH = _extendedFilePaths ? 52 : 6;        // Arbitrarily defined for short names, kept enough room for displaying UINT_MAX (10 characters) for long names.
+    assert(_defaultPrefix.length()<=4);        // Default prefix is too long (implementation error)
+    const std::string defaultPrefix(_defaultPrefix.empty() ? "_" : _defaultPrefix);
+    if (currentPrefixLen<0) currentPrefixLen = osg::maximum(_defaultPrefix.length(), _defaultValue.length());
+    currentPrefixLen = osg::clampBelow(currentPrefixLen, static_cast<int>(MAX_PREFIX_LENGTH));
 
     // Tests if default name is valid and unique
-    bool defaultIs83 = is83(_defaultValue);
-    bool defaultIsValid = nameIsPath ? is3DSpath(_defaultValue, _extendedFilePaths) : defaultIs83;
-    if (defaultIsValid && _nameMap.find(_defaultValue) == _nameMap.end())
-    {
-        _nameMap.insert(_defaultValue);
-        return _defaultValue;
-    }
+    NameMap & nameMap = isNodeName ? _nodeNameMap : _imageNameMap;
+    PrefixMap & prefixMap = isNodeName ? _nodePrefixMap : _imagePrefixMap;
 
-    // Handling of paths is not well done yet. Defaulting to something very simple.
-    // We should actually ensure each component is 8 chars long, and final filename is 8.3, and total is <64 chars, or simply ensure total length for extended 3DS paths.
-    std::string defaultValue(nameIsPath ? osgDB::getSimpleFileName(_defaultValue) : _defaultValue);
-    std::string ext(nameIsPath ? osgDB::getFileExtensionIncludingDot(_defaultValue).substr(0, std::min<unsigned int>(_defaultValue.size(), 4)) : "");        // 4 chars = dot + 3 chars
-    if (ext == ".") ext = "";
-
-    std::string defaultPrefix(_defaultPrefix.empty() ? "_" : _defaultPrefix);
-
+    // Handling of paths is simple. Algorithm:
+    //    - For short names, subdirectories are simply forbidden. Use the simple file name.
+    //    - Else, the whole (relative) path must simply be <64 chars.
+    // After this, begin enumeration.
+    std::string parentPath, filename, ext, namePrefix;
     unsigned int max_val = 0;
-    std::string truncDefaultValue = "";
-    for (unsigned int i = 0; i < std::min<unsigned int>(defaultValue.size(), MAX_PREFIX_LEGNTH); ++i)
+
+    // TODO Move the two parts of this giant if/else into two separate functions for better readability.
+    if (_extendedFilePaths)
     {
-        if (defaultValue[i] == '.')
+        // Tests if default name is valid and unique
+        if (is3DSName(_defaultValue, _extendedFilePaths, isNodeName))
         {
-            truncDefaultValue = defaultValue.substr(0, i);
-            break;
+            std::pair<NameMap::iterator, bool> insertion( nameMap.insert(_defaultValue) ); 
+            if (insertion.second) return _defaultValue;        // Return if element is newly inserted in the map (else there is a naming collision)
         }
-    }
-    if (truncDefaultValue.empty())
-        truncDefaultValue = defaultValue.substr(0, std::min<unsigned int>(defaultValue.size(), MAX_PREFIX_LEGNTH));
-    assert(truncDefaultValue.size() <= MAX_PREFIX_LEGNTH);
-    std::map<std::string, unsigned int>::iterator pairPrefix;
 
-    // TODO - Handle the case of extended 3DS paths and allow more than 8 chars
-    defaultIs83 = is83(truncDefaultValue);
-    if (defaultIs83)
-    {
-        max_val = static_cast<unsigned int>(pow(10., 8. - truncDefaultValue.length())) -1;
-        pairPrefix = _mapPrefix.find(truncDefaultValue);
-    }  
+        // Simply separate name and last extension
+        filename = osgDB::getNameLessExtension(osgDB::getSimpleFileName(_defaultValue));
+        if (!isNodeName)
+        {
+            ext = osgDB::getFileExtensionIncludingDot(_defaultValue);
+            if (ext == ".") ext = "";
+        }
 
-    if (defaultIs83 && (pairPrefix == _mapPrefix.end() || pairPrefix->second <= max_val))
-    {
-        defaultPrefix = truncDefaultValue;
+        // Compute parent path
+        // Pre-condition: paths are supposed to be relative.
+        // If full path is too long (>MAX_PREFIX_LENGTH), cut path to let enough space for simple file name.
+        // Do not cut in the middle of a name, but at path separators.
+        parentPath = osgDB::getFilePath(_defaultValue);
+        if (_defaultValue.length() >MAX_PREFIX_LENGTH)        // Not parentPath but _defaultValue!
+        {
+            // Nodes names: keep last directories (used only for the root name, generally named after the full file path)
+            // Images names: keep first directories (for images)
+            if (isNodeName) std::reverse(parentPath.begin(), parentPath.end());
+            unsigned lenToDelete(filename.length() + ext.length() + 1);
+            lenToDelete = osg::clampBelow(lenToDelete, MAX_PREFIX_LENGTH);
+            parentPath = truncateFilenameBytes(parentPath, MAX_PREFIX_LENGTH - lenToDelete);        // +1 for the path separator
+            std::string::size_type separator = parentPath.find_last_of("/\\");
+            if (separator != std::string::npos) parentPath = parentPath.substr(0, separator);
+            if (isNodeName) std::reverse(parentPath.begin(), parentPath.end());
+        }
+
+        // Assert "MAX_PREFIX_LENGTH - parent path length - extension length -1" is >=0 and truncate name to this length to get our new prefix.
+        assert(parentPath.length() + ext.length() <= MAX_PREFIX_LENGTH);
+        const unsigned int len = MAX_PREFIX_LENGTH - (parentPath.length() + ext.length() +1);
+        namePrefix = truncateFilenameBytes(filename, len);
+        if (namePrefix.empty()) namePrefix = defaultPrefix;
+
+        // Truncate the filename to get our new prefix
+        namePrefix = truncateFilenameBytes(filename, currentPrefixLen);
+
+        // Enough space has been reserved for UINT_MAX values
+        max_val = UINT_MAX;
     }
     else
     {
-        max_val = static_cast<unsigned int>(pow(10., 8. - defaultPrefix.length())) -1;
-        pairPrefix = _mapPrefix.find(defaultPrefix);
-    }
+        // Get last extension, and make filename have no extension
+        filename = getNameLessAllExtensions(osgDB::getSimpleFileName(_defaultValue));
+        if (!isNodeName)
+        {
+            ext = truncateFilenameBytes(osgDB::getFileExtensionIncludingDot(_defaultValue), 4);        // 4 chars = dot + 3 chars
+            if (ext == ".") ext = "";
+        }
 
-    unsigned int searchStart = 0;
-    if (pairPrefix != _mapPrefix.end())
+        // Tests if STRIPPED default name is valid and unique
+        const std::string strippedName( filename + ext );
+        if (is3DSName(strippedName, _extendedFilePaths, isNodeName))
+        {
+            std::pair<NameMap::iterator, bool> insertion( nameMap.insert(strippedName) ); 
+            if (insertion.second) return strippedName;        // Return if element is newly inserted in the map (else there is a naming collision)
+        }
+
+        namePrefix = filename;
+        if (namePrefix.empty()) namePrefix = defaultPrefix;
+        // Truncate the filename to get our new prefix
+        namePrefix = truncateFilenameBytes(namePrefix, currentPrefixLen);
+
+        // Compute the maximum enumeration value
+        max_val = static_cast<unsigned int>(pow(10., 8. - namePrefix.length())) -1;
+    }
+    assert(namePrefix.size() <= MAX_PREFIX_LENGTH);
+
+    // Find the current enumeration value (searchStart)
+    unsigned int searchStart(0);
+    PrefixMap::iterator pairPrefix( prefixMap.find(namePrefix) );
+    if (pairPrefix != prefixMap.end())
     {
         searchStart = pairPrefix->second;
     }
+    else
+    {
+        // Check if truncated name is ok
+        const std::string res( osgDB::concatPaths(parentPath, namePrefix + ext) );
+        if (nameMap.find(res) == nameMap.end()) {
+            prefixMap.insert(std::pair<std::string, unsigned int>(namePrefix, 0));
+            nameMap.insert(res);
+            return res;
+        }
+    }
 
+    // Search for a free value
     for(unsigned int i = searchStart; i <= max_val; ++i)
     {
         std::stringstream ss;
-        ss << defaultPrefix << i;
-        const std::string & res = ss.str();
-        if (_nameMap.find(res) == _nameMap.end())
+        ss << namePrefix << i;
+        const std::string res( osgDB::concatPaths(parentPath, ss.str() + ext) );
+        if (nameMap.find(res) == nameMap.end())
         {
-            if (pairPrefix != _mapPrefix.end())
+            if (pairPrefix != prefixMap.end())
             {
                 pairPrefix->second = i + 1;
             } else
             {
-                _mapPrefix.insert(std::pair<std::string, unsigned int>(defaultPrefix, i + 1));
+                prefixMap.insert(std::pair<std::string, unsigned int>(namePrefix, i + 1));
             }
-            _nameMap.insert(res);
-            return res + ext;
+            nameMap.insert(res);
+            return res;
         }
     }
 
     // Failed finding a name
     // Try with a shorter prefix if possible
-    if (defaultPrefix.length()>1) return getUniqueName(_defaultValue, defaultPrefix.substr(0, defaultPrefix.length()-1), nameIsPath);
+    if (currentPrefixLen>1) return getUniqueName(_defaultValue, isNodeName, defaultPrefix, currentPrefixLen-1);
     // Try with default prefix if not arleady done
-    if (defaultPrefix != std::string("_")) return getUniqueName(_defaultValue, "_", nameIsPath);
+    if (defaultPrefix != std::string("_")) return getUniqueName(_defaultValue, isNodeName, "_", 1);
 
     // No more names
-    osg::notify(osg::FATAL) << "No more names available!" << std::endl;
+    OSG_NOTIFY(osg::FATAL) << "No more names available!" << std::endl;
     _succeeded = false;
     return "ERROR";
 }
@@ -724,7 +888,7 @@ WriterNodeVisitor::buildMesh(osg::Geode        & geo,
                              bool                texcoords,
                              Lib3dsMesh        * mesh)
 {
-    osg::notify(osg::DEBUG_INFO) << "Building Mesh" << std::endl;
+    OSG_DEBUG << "Building Mesh" << std::endl;
     assert(mesh);
 
     // Write points
@@ -734,16 +898,27 @@ WriterNodeVisitor::buildMesh(osg::Geode        & geo,
     for(MapIndices::iterator it = index_vert.begin(); it != index_vert.end();++it)
     {
         osg::Geometry *g = geo.getDrawable( it->first.second )->asGeometry();
-        assert(g->getVertexArray());
-        if (g->getVertexArray()->getType() != osg::Array::Vec3ArrayType)
+        const osg::Array * basevecs = g->getVertexArray();
+        assert(basevecs);
+        if (!basevecs || basevecs->getNumElements()==0) continue;
+        if (basevecs->getType() == osg::Array::Vec3ArrayType)
         {
-            // TODO Handle double presision vertices by converting them to float with a warning
-            osg::notify(osg::FATAL) << "Vertex array is not Vec3. Not implemented" << std::endl;
+            const osg::Vec3Array & vecs= *static_cast<const osg::Vec3Array *>(basevecs);
+            copyOsgVectorToLib3dsVector(mesh->vertices[it->second], vecs[it->first.first]*mat);
+        }
+        else if (basevecs->getType() == osg::Array::Vec3dArrayType)
+        {
+            // Handle double presision vertices by converting them to float with a warning
+            OSG_NOTICE << "3DS format only supports single precision vertices. Converting double precision to single." << std::endl;
+            const osg::Vec3dArray & vecs= *static_cast<const osg::Vec3dArray *>(basevecs);
+            copyOsgVectorToLib3dsVector(mesh->vertices[it->second], vecs[it->first.first]*mat);
+        }
+        else
+        {
+            OSG_NOTIFY(osg::FATAL) << "Vertex array is not Vec3 or Vec3d. Not implemented" << std::endl;
             _succeeded = false;
             return;
         }
-        const osg::Vec3Array & vecs= *static_cast<osg::Vec3Array *>(g->getVertexArray());
-        copyOsgVectorToLib3dsVector(mesh->vertices[it->second], vecs[it->first.first]*mat);
     }
 
     // Write texture coords (Texture 0 only)
@@ -752,26 +927,25 @@ WriterNodeVisitor::buildMesh(osg::Geode        & geo,
         for(MapIndices::iterator it = index_vert.begin(); it != index_vert.end(); ++it)
         {
             osg::Geometry *g = geo.getDrawable( it->first.second )->asGeometry();
-            osg::Array * texarray = g->getTexCoordArray(0);
-            if (texarray)
+            const osg::Array * texarray = g->getNumTexCoordArrays()>=1 ? g->getTexCoordArray(0) : NULL;
+            if (!texarray || texarray->getNumElements()==0) continue;
+
+            if (g->getTexCoordArray(0)->getType() != osg::Array::Vec2ArrayType)
             {
-                if (g->getTexCoordArray(0)->getType() != osg::Array::Vec2ArrayType)
-                {
-                    osg::notify(osg::FATAL) << "Texture coords array is not Vec2. Not implemented" << std::endl;
-                    _succeeded = false;
-                    return;
-                }
-                const osg::Vec2Array & vecs= *static_cast<osg::Vec2Array *>(texarray);
-                mesh->texcos[it->second][0] = vecs[it->first.first][0];
-                mesh->texcos[it->second][1] = vecs[it->first.first][1];
+                OSG_NOTIFY(osg::FATAL) << "Texture coords array is not Vec2. Not implemented" << std::endl;
+                _succeeded = false;
+                return;
             }
+            const osg::Vec2Array & vecs= *static_cast<const osg::Vec2Array *>(texarray);
+            mesh->texcos[it->second][0] = vecs[it->first.first][0];
+            mesh->texcos[it->second][1] = vecs[it->first.first][1];
         }
     }
-    lib3ds_file_insert_mesh(file3ds, mesh, _lastMeshIndex);
+    lib3ds_file_insert_mesh(_file3ds, mesh, _lastMeshIndex);
     ++_lastMeshIndex;
 
     Lib3dsMeshInstanceNode * node3ds = lib3ds_node_new_mesh_instance(mesh, mesh->name, NULL, NULL, NULL);
-    lib3ds_file_append_node(file3ds, reinterpret_cast<Lib3dsNode*>(node3ds), reinterpret_cast<Lib3dsNode*>(_cur3dsNode));
+    lib3ds_file_append_node(_file3ds, reinterpret_cast<Lib3dsNode*>(node3ds), reinterpret_cast<Lib3dsNode*>(_cur3dsNode));
 }
 
 unsigned int 
@@ -781,16 +955,7 @@ WriterNodeVisitor::calcVertices(osg::Geode & geo)
     for (unsigned int i = 0; i < geo.getNumDrawables(); ++i)
     {
         osg::Geometry *g = geo.getDrawable( i )->asGeometry();
-        assert(g->getVertexArray());
-        if (g->getVertexArray()->getType() != osg::Array::Vec3ArrayType)
-        {
-            // TODO Handle double presision vertices by converting them to float with a warning
-            osg::notify(osg::FATAL) << "Vertex array is not Vec3. Not implemented" << std::endl;
-            _succeeded = false;
-            return 0;
-        }
-        const osg::Vec3Array & vecs= *static_cast<osg::Vec3Array *>(g->getVertexArray());
-        numVertice += vecs.getNumElements();
+        if (g->getVertexArray()) numVertice += g->getVertexArray()->getNumElements();
     }
     return numVertice;
 }
@@ -806,23 +971,24 @@ WriterNodeVisitor::buildFaces(osg::Geode        & geo,
     unsigned int nbVerticesRemaining  = calcVertices(geo);        // May set _succeded to false
     if (!succeeded()) return;
 
-    std::string name( getUniqueName(geo.getName().empty() ? geo.className() : geo.getName(), "geo") );
+    std::string name( getUniqueName(geo.getName().empty() ? geo.className() : geo.getName(), true, "geo") );
     if (!succeeded()) return;
     Lib3dsMesh *mesh = lib3ds_mesh_new( name.c_str() );
     if (!mesh)
     {
-        osg::notify(osg::FATAL) << "Allocation error" << std::endl;
+        OSG_NOTIFY(osg::FATAL) << "Allocation error" << std::endl;
         _succeeded = false;
         return;
     }
 
+    //copyOsgMatrixToLib3dsMatrix(mesh->matrix, mat);
     lib3ds_mesh_resize_faces   (mesh, osg::minimum(nbTrianglesRemaining, MAX_FACES));
     lib3ds_mesh_resize_vertices(mesh, osg::minimum(nbVerticesRemaining,  MAX_VERTICES), texcoords ? 0 : 1, 0);        // Not mandatory but will allocate once a big block
 
     // Test if the mesh will be split and needs sorting
     if (nbVerticesRemaining >= MAX_VERTICES || nbTrianglesRemaining >= MAX_FACES)
     {
-        osg::notify(osg::INFO) << "Sorting elements..." << std::endl;
+        OSG_INFO << "Sorting elements..." << std::endl;
         WriterCompareTriangle cmp(geo, nbVerticesRemaining);
         std::sort(listTriangles.begin(), listTriangles.end(), cmp);
     }
@@ -851,10 +1017,10 @@ WriterNodeVisitor::buildFaces(osg::Geode        & geo,
             // We can't call a thing like "nbVerticesRemaining -= ...;" because points may be used multiple times.
             // [Sukender: An optimisation here would take too much time I think.]
 
-            mesh = lib3ds_mesh_new( getUniqueName(geo.getName().empty() ? geo.className() : geo.getName(), "geo").c_str());
+            mesh = lib3ds_mesh_new( getUniqueName(geo.getName().empty() ? geo.className() : geo.getName(), true, "geo").c_str());
             if (!mesh)
             {
-                osg::notify(osg::FATAL) << "Allocation error" << std::endl;
+                OSG_NOTIFY(osg::FATAL) << "Allocation error" << std::endl;
                 _succeeded = false;
                 return;
             }
@@ -877,47 +1043,27 @@ WriterNodeVisitor::buildFaces(osg::Geode        & geo,
 }
 
 void 
-WriterNodeVisitor::createListTriangle(osg::Geometry    *    geo, 
-                                      ListTriangle    &    listTriangles,
-                                      bool            &    texcoords,
-                                      unsigned int    &   drawable_n)
+WriterNodeVisitor::createListTriangle(osg::Geometry * geo, 
+                                      ListTriangle  & listTriangles,
+                                      bool          & texcoords,
+                                      unsigned int  & drawable_n)
 {
-    unsigned int nbVertices = 0;
+    const osg::Array * basevecs = geo->getVertexArray();
+    if (!basevecs || basevecs->getNumElements()==0) return;
+
+    // Texture coords
+    const osg::Array * basetexvecs = geo->getNumTexCoordArrays()>=1 ? geo->getTexCoordArray(0) : NULL;
+    if (basetexvecs)
     {
-        if (geo->getVertexArray() && geo->getVertexArray()->getType() != osg::Array::Vec3ArrayType)
+        unsigned int nb = basetexvecs->getNumElements();
+        if (nb != geo->getVertexArray()->getNumElements())
         {
-            // TODO Handle double presision vertices by converting them to float with a warning
-            osg::notify(osg::FATAL) << "Vertex array is not Vec3. Not implemented" << std::endl;
+            OSG_NOTIFY(osg::FATAL) << "There are more/less texture coords than vertices (corrupted geometry)" << std::endl;
             _succeeded = false;
             return;
         }
-        const osg::Vec3Array * vecs = geo->getVertexArray() ? static_cast<osg::Vec3Array *>(geo->getVertexArray()) : NULL;
-        if (vecs) 
-        {
-            nbVertices = geo->getVertexArray()->getNumElements();
-            // Texture coords
-            if (geo->getTexCoordArray(0) && geo->getTexCoordArray(0)->getType() != osg::Array::Vec2ArrayType)
-            {
-                osg::notify(osg::FATAL) << "Texture coords array is not Vec2. Not implemented" << std::endl;
-                _succeeded = false;
-                return;
-            }
-            const osg::Vec2Array * texvecs = geo->getTexCoordArray(0) ? static_cast<osg::Vec2Array *>(geo->getTexCoordArray(0)) : NULL;
-            if (texvecs) 
-            {
-                unsigned int nb = geo->getTexCoordArray(0)->getNumElements();
-                if (nb != geo->getVertexArray()->getNumElements())
-                {
-                    osg::notify(osg::FATAL) << "There are more/less texture coords than vertices (corrupted geometry)" << std::endl;
-                    _succeeded = false;
-                    return;
-                }
-                texcoords = true;
-            }
-        }
+        texcoords = true;
     }
-
-    if (nbVertices==0) return;
 
     int material = processStateSet(_currentStateSet.get());    
 
@@ -949,8 +1095,12 @@ void WriterNodeVisitor::apply( osg::Geode &node )
     }
     if (succeeded() && count > 0)
     {
+#if DISABLE_3DS_ANIMATION
         osg::Matrix mat( osg::computeLocalToWorld(getNodePath()) );
         buildFaces(node, mat, listTriangles, texcoords);        // May set _succeded to false
+#else
+        buildFaces(node, osg::Matrix(), listTriangles, texcoords);        // May set _succeded to false
+#endif
     }
     popStateSet(node.getStateSet());
     //_nameStack.pop_back();
@@ -968,8 +1118,10 @@ void WriterNodeVisitor::apply( osg::Billboard &node )
     unsigned int count = node.getNumDrawables();
     ListTriangle listTriangles;
     bool texcoords = false;
-    osg::notify(osg::NOTICE) << "Warning: 3DS writer is incomplete for Billboards (rotation not implemented)." << std::endl;
+    OSG_NOTICE << "Warning: 3DS writer is incomplete for Billboards (rotation not implemented)." << std::endl;
+#if DISABLE_3DS_ANIMATION
     osg::Matrix m( osg::computeLocalToWorld(getNodePath()) );
+#endif
     for ( unsigned int i = 0; i < count; i++ )
     {
         osg::Geometry *g = node.getDrawable( i )->asGeometry();
@@ -983,9 +1135,15 @@ void WriterNodeVisitor::apply( osg::Billboard &node )
             popStateSet(g->getStateSet());        // May set _succeded to false
             if (!succeeded()) break;
 
-            osg::Matrix currentBillBoardMat(osg::Matrix::translate(node.getPosition(i)) * m);        // TODO handle rotation
-            apply3DSMatrixNode(node, currentBillBoardMat, "bil");        // Add a 3DS matrix node
-            buildFaces(node, currentBillBoardMat, listTriangles, texcoords);        // May set _succeded to false
+            osg::Matrix pointLocalMat(osg::Matrix::translate(node.getPosition(i)));        // TODO handle rotation
+#if DISABLE_3DS_ANIMATION
+            osg::Matrix currentBillboardWorldMat(pointLocalMat * m);
+            apply3DSMatrixNode(node, &pointLocalMat, "bil");                            // Add a 3DS matrix node (with local matrix)
+            buildFaces(node, currentBillboardWorldMat, listTriangles, texcoords);        // May set _succeded to false
+#else
+            apply3DSMatrixNode(node, &pointLocalMat, "bil");                            // Add a 3DS matrix node (with local matrix)
+            buildFaces(node, osg::Matrix(), listTriangles, texcoords);                    // May set _succeded to false
+#endif
             if (!succeeded()) break;
         }
     }
@@ -1002,7 +1160,12 @@ void WriterNodeVisitor::apply(osg::Group &node)
 {
     pushStateSet(node.getStateSet());
     Lib3dsMeshInstanceNode * parent = _cur3dsNode;
-    apply3DSMatrixNode(node, osg::computeLocalToWorld(getNodePath()), "grp");
+#if DISABLE_3DS_ANIMATION
+    osg::Matrix mat( osg::computeLocalToWorld(getNodePath()) );
+    apply3DSMatrixNode(node, &mat, "grp");
+#else
+    apply3DSMatrixNode(node, NULL, "grp");
+#endif
     if (succeeded())
         traverse(node);
     _cur3dsNode = parent;
@@ -1013,39 +1176,43 @@ void WriterNodeVisitor::apply(osg::MatrixTransform &node)
 {
     pushStateSet(node.getStateSet());
     Lib3dsMeshInstanceNode * parent = _cur3dsNode;
-    apply3DSMatrixNode(node, osg::computeLocalToWorld(getNodePath()), "mtx");
+#if DISABLE_3DS_ANIMATION
+    osg::Matrix mat( osg::computeLocalToWorld(getNodePath()) );
+#else
+    osg::Matrix mat( node.getMatrix() );
+#endif
+    apply3DSMatrixNode(node, &mat, "mtx");
     if (succeeded())
         traverse(node);
     _cur3dsNode = parent;
     popStateSet(node.getStateSet());
 }
 
-void WriterNodeVisitor::apply3DSMatrixNode(osg::Node &node, const osg::Matrix & m, const char * const prefix)
+void WriterNodeVisitor::apply3DSMatrixNode(osg::Node &node, const osg::Matrix * m, const char * const prefix)
 {
+    // Note: Creating a mesh instance with no transform and then copying the matrix doesn't work (matrix seems to be a temporary/computed value)
     Lib3dsMeshInstanceNode * parent = _cur3dsNode;
+    Lib3dsMeshInstanceNode * node3ds = NULL;
+    if (m)
+    {
+        osg::Vec3 osgScl, osgPos;
+        osg::Quat osgRot, osgSo;
+        m->decompose(osgPos, osgRot, osgScl, osgSo);
 
-    //const osg::Matrix & m = node.getMatrix();
-    //const osg::Matrix m( osg::computeLocalToWorld(nodePath) );        // [NEEDS TESTING!] 3DS matrices always contain world to local transformation (not local transform; ie. from parent)
+        float pos[3];
+        float scl[3];
+        float rot[4];
+        copyOsgVectorToLib3dsVector(pos, osgPos);
+        copyOsgVectorToLib3dsVector(scl, osgScl);
+        copyOsgQuatToLib3dsQuat(rot, osgRot);
+        node3ds = lib3ds_node_new_mesh_instance(NULL, getUniqueName(node.getName().empty() ? node.className() : node.getName(), true, prefix).c_str(), pos, scl, rot);
+    }
+    else
+    {
+        node3ds = lib3ds_node_new_mesh_instance(NULL, getUniqueName(node.getName().empty() ? node.className() : node.getName(), true, prefix).c_str(), NULL, NULL, NULL);
+    }
 
-    // Transform data used to be given to lib3ds_node_new_mesh_instance(), but it seems buggy (pivot problem? bug in conversion?).
-    float pos[3];
-    float scl[3];
-    float rot[4];
-    osg::Vec3 osgScl, osgPos;
-    osg::Quat osgRot, osgSo;
-    m.decompose(osgPos, osgRot, osgScl, osgSo);
-    copyOsgVectorToLib3dsVector(pos, osgPos);
-    copyOsgVectorToLib3dsVector(scl, osgScl);
-    copyOsgQuatToLib3dsQuat(rot, osgRot);
-    Lib3dsMeshInstanceNode * node3ds = lib3ds_node_new_mesh_instance
-        (NULL, getUniqueName(node.getName().empty() ? node.className() : node.getName(), prefix).c_str(), pos, scl, rot);
-
-    //// Create a mesh instance with no transform and then copy the matrix (doesn't work)
-    //Lib3dsMeshInstanceNode * node3ds = lib3ds_node_new_mesh_instance
-    //    (NULL, getUniqueName(node.getName().empty() ? node.className() : node.getName(), "mtx").c_str(), NULL, NULL, NULL);
-    //    copyOsgMatrixToLib3dsMatrix(node3ds->base.matrix, m);
-
-    lib3ds_file_append_node(file3ds, reinterpret_cast<Lib3dsNode*>(node3ds), reinterpret_cast<Lib3dsNode*>(parent));
+    lib3ds_file_append_node(_file3ds, reinterpret_cast<Lib3dsNode*>(node3ds), reinterpret_cast<Lib3dsNode*>(parent));
     _cur3dsNode = node3ds;
 }
 

@@ -151,6 +151,7 @@ IF(DYNAMIC_OPENSCENEGRAPH)
     ADD_SUBDIRECTORY(osgwidgetstyled)
     ADD_SUBDIRECTORY(osgwidgettable)
     ADD_SUBDIRECTORY(osgwidgetwindow)
+    ADD_SUBDIRECTORY(osguserdata)
 
     IF(OSG_CPP_EXCEPTIONS_AVAILABLE)
         ADD_SUBDIRECTORY(osgunittests)

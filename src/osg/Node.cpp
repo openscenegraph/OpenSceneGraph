@@ -81,8 +81,7 @@ Node::Node(const Node& node,const CopyOp& copyop):
         _cullingActive(node._cullingActive),
         _numChildrenWithCullingDisabled(0), // assume no children yet.
         _numChildrenWithOccluderNodes(0),
-        _nodeMask(node._nodeMask), 
-        _descriptions(node._descriptions)
+        _nodeMask(node._nodeMask)
 {
     setStateSet(copyop(node._stateset.get()));
 }
@@ -501,12 +500,9 @@ void Node::setThreadSafeRefUnref(bool threadSafe)
     Object::setThreadSafeRefUnref(threadSafe);
     
     if (_stateset.valid()) _stateset->setThreadSafeRefUnref(threadSafe);
-
     if (_updateCallback.valid()) _updateCallback->setThreadSafeRefUnref(threadSafe);
     if (_eventCallback.valid()) _eventCallback->setThreadSafeRefUnref(threadSafe);
     if (_cullCallback.valid()) _cullCallback->setThreadSafeRefUnref(threadSafe);
-
-    if (_userData.valid()) _userData->setThreadSafeRefUnref(threadSafe);
 }
 
 void Node::resizeGLObjectBuffers(unsigned int maxSize)

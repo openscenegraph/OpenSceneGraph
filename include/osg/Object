@@ -20,6 +20,7 @@
 #include <osg/Notify>
 
 #include <string>
+#include <vector>
 
 namespace osg {
 
@@ -147,7 +148,10 @@ class OSG_EXPORT Object : public Referenced
         /** return the name of the object's class type. Must be defined
             by derived classes.*/
         virtual const char* className() const = 0;
-        
+
+
+        /** Set whether to use a mutex to ensure ref() and unref() are thread safe.*/
+        virtual void setThreadSafeRefUnref(bool threadSafe);
 
         /** Set the name of object using C++ style string.*/
         virtual void setName( const std::string& name ) { _name = name; }
@@ -190,14 +194,83 @@ class OSG_EXPORT Object : public Referenced
          * subclassed from Referenced then create an adapter object
          * which points to your own object and handles the memory addressing.
          */
-        inline void setUserData(Referenced* obj) { _userData = obj; }
-        
-        /** Get user data.*/
-        inline Referenced* getUserData() { return _userData.get(); }
-        
-        /** Get const user data.*/
-        inline const Referenced* getUserData() const { return _userData.get(); }
+        void setUserData(Referenced* obj);
 
+        /** Get user data.*/
+        Referenced* getUserData();
+
+        /** Get const user data.*/
+        const Referenced* getUserData() const;
+
+        
+        /** Add user data object.*/
+        void addUserObject(Object* obj);
+
+         /** Add element to list of user data objects.*/
+        void setUserObject(unsigned int i, Object* obj);
+
+        /** Remove element from the list of user data objects.*/
+        void removeUserObject(unsigned int i);
+
+        /** Get the index position of specified user data object.*/
+        unsigned int getUserObjectIndex(const osg::Object* obj) const;
+        
+        /** Get the index position of first user data object that matches specified name.*/
+        unsigned int getUserObjectIndex(const std::string& name) const;
+
+        /** Get user data object as specified index position. */
+        Object* getUserObject(unsigned int i);
+
+        /** Get const user data object as specified index position. */
+        const Object* getUserObject(unsigned int i) const;
+
+        /** Get first user data object with specified name. */
+        Object* getUserObject(const std::string& name);
+
+        /** Get first const user data object with specified name. */
+        const Object* getUserObject(const std::string& name) const;
+
+        /** Get number of user objects assigned to this object.*/
+        unsigned int getNumUserObjects() const;
+
+        /** Convinience method that casts the named UserObject to osg::TemplateValueObject<T> and gets the value.
+          * To use this template method you need to include the osg/ValueObject header.*/
+        template<typename T>
+        bool getUserValue(const std::string& name, T& value) const;
+
+        /** Convinience method that creates the osg::TemplateValueObject<T> to store the
+          * specified value and adds it as a named UserObject.
+          * To use this template method you need to include the osg/ValueObject header. */
+        template<typename T>
+        void setUserValue(const std::string& name, const T& value);
+
+
+        
+        /** A vector of std::string's which are used to describe the object.*/
+        typedef std::vector<std::string> DescriptionList;
+
+        /** Set the list of string descriptions.*/
+        void setDescriptions(const DescriptionList& descriptions);
+
+        /** Get the description list of the node.*/
+        DescriptionList& getDescriptions();
+
+        /** Get the const description list of the const node.*/
+        const DescriptionList& getDescriptions() const;
+
+        /** Get a single const description of the const node.*/
+        const std::string& getDescription(unsigned int i) const;
+
+        /** Get a single description of the node.*/
+        std::string& getDescription(unsigned int i);
+
+        /** Get the number of descriptions of the node.*/
+        unsigned int getNumDescriptions() const;
+
+        /** Add a description string to the node.*/
+        void addDescription(const std::string& desc);
+
+        
         /** Resize any per context GLObject buffers to specified size. */
         virtual void resizeGLObjectBuffers(unsigned int /*maxSize*/) {}
 
@@ -205,6 +278,7 @@ class OSG_EXPORT Object : public Referenced
            * the specified graphics context. Otherwise, releases OpenGL objects
            * for all graphics contexts. */
         virtual void releaseGLObjects(osg::State* = 0) const {}
+
 
     protected:
 
@@ -219,7 +293,35 @@ class OSG_EXPORT Object : public Referenced
         
         std::string _name;
         DataVariance _dataVariance;
-        ref_ptr<Referenced> _userData;
+
+        /** Internal structure for storing all user data.*/
+        class OSG_EXPORT UserDataContainer : public osg::Referenced
+        {
+            public:
+                UserDataContainer();
+                UserDataContainer(const UserDataContainer& udc, const osg::CopyOp& copyop=CopyOp::SHALLOW_COPY);
+
+                virtual void setThreadSafeRefUnref(bool threadSafe);
+
+                typedef std::vector< osg::ref_ptr<osg::Object> > ObjectList;
+
+                ref_ptr<Referenced>     _userData;
+                DescriptionList         _descriptionList;
+                ObjectList              _objectList;
+
+            protected:
+                virtual ~UserDataContainer() {}
+        };
+
+        ref_ptr<UserDataContainer> _userDataContainer;
+
+        /** Convinience method that returns the UserDataContainer, and if one doesn't already exist creates and assigns
+         * one to the Object and then return this new UserDataContainer.*/
+        UserDataContainer* getOrCreateUserDataContainer()
+        {
+            if (!_userDataContainer.valid()) _userDataContainer = new UserDataContainer;
+            return _userDataContainer.get();
+        }
 
     private:
 
@@ -227,6 +329,7 @@ class OSG_EXPORT Object : public Referenced
         Object& operator = (const Object&) { return *this; }
 };
 
+    
 }
 
 #endif

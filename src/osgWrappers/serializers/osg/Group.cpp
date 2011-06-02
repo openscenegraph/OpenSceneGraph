@@ -13,7 +13,8 @@ static bool readChildren( osgDB::InputStream& is, osg::Group& node )
     unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
     {
-        osg::Node* child = dynamic_cast<osg::Node*>( is.readObject() );
+        osg::ref_ptr<osg::Object> obj = is.readObject();
+        osg::Node* child = dynamic_cast<osg::Node*>( obj.get() );
         if ( child ) node.addChild( child );
     }
     is >> osgDB::END_BRACKET;

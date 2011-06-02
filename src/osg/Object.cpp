@@ -24,13 +24,16 @@ Object::Object(const Object& obj,const CopyOp& copyop):
     _name(obj._name),
     _dataVariance(obj._dataVariance)
 {
-    if (copyop.getCopyFlags()&osg::CopyOp::DEEP_COPY_USERDATA)
+    if (obj._userDataContainer.valid())
     {
-        _userDataContainer = new UserDataContainer(*obj._userDataContainer, copyop);
-    }
-    else
-    {
-        _userDataContainer = obj._userDataContainer;
+        if (copyop.getCopyFlags()&osg::CopyOp::DEEP_COPY_USERDATA)
+        {
+            _userDataContainer = new UserDataContainer(*obj._userDataContainer, copyop);
+        }
+        else
+        {
+            _userDataContainer = obj._userDataContainer;
+        }
     }
 }
 

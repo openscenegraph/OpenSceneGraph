@@ -122,7 +122,7 @@ public:
     enum Type
     {
         RW_UNDEFINED = 0, RW_USER, RW_OBJECT, RW_IMAGE, RW_LIST,
-        RW_BOOL, RW_SHORT, RW_USHORT, RW_INT, RW_UINT, RW_FLOAT, RW_DOUBLE,
+        RW_BOOL, RW_CHAR, RW_UCHAR, RW_SHORT, RW_USHORT, RW_INT, RW_UINT, RW_FLOAT, RW_DOUBLE,
         RW_VEC2F, RW_VEC2D, RW_VEC3F, RW_VEC3D, RW_VEC4F, RW_VEC4D, RW_QUAT, RW_PLANE,
         RW_MATRIXF, RW_MATRIXD, RW_MATRIX, RW_GLENUM, RW_STRING, RW_ENUM
     };
@@ -782,6 +782,14 @@ public:
     wrapper->addSerializer( new osgDB::PropByValSerializer< MyClass, bool >( \
         #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_BOOL )
 
+#define ADD_CHAR_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByValSerializer< MyClass, char >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_CHAR )
+
+#define ADD_UCHAR_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByValSerializer< MyClass, unsigned char >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_UCHAR )
+
 #define ADD_SHORT_SERIALIZER(PROP, DEF) \
     wrapper->addSerializer( new osgDB::PropByValSerializer< MyClass, short >( \
         #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_SHORT )
@@ -816,6 +824,54 @@ public:
 
 #define ADD_DOUBLE_SERIALIZER(PROP, DEF) \
     wrapper->addSerializer( new osgDB::PropByValSerializer< MyClass, double >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_DOUBLE )
+
+#define ADD_REF_BOOL_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, bool >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_BOOL )
+
+#define ADD_REF_CHAR_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, char >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_CHAR )
+
+#define ADD_REF_UCHAR_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, unsigned char >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_UCHAR )
+
+#define ADD_REF_SHORT_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, short >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_SHORT )
+
+#define ADD_REF_USHORT_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, unsigned short >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_USHORT )
+
+#define ADD_REF_HEXSHORT_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, unsigned short >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP, true), osgDB::BaseSerializer::RW_USHORT )
+
+#define ADD_REF_INT_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, int >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_INT )
+
+#define ADD_REF_UINT_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, unsigned int >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_UINT )
+
+#define ADD_REF_GLINT_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, GLint >( \
+        #PROP, ((int)(DEF)), &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_INT )
+
+#define ADD_REF_HEXINT_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, unsigned int >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP, true), osgDB::BaseSerializer::RW_UINT )
+
+#define ADD_REF_FLOAT_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, float >( \
+        #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_FLOAT )
+
+#define ADD_REF_DOUBLE_SERIALIZER(PROP, DEF) \
+    wrapper->addSerializer( new osgDB::PropByRefSerializer< MyClass, double >( \
         #PROP, DEF, &MyClass::get##PROP, &MyClass::set##PROP), osgDB::BaseSerializer::RW_DOUBLE )
 
 #define ADD_VEC2F_SERIALIZER(PROP, DEF) \

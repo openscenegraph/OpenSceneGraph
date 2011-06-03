@@ -1833,6 +1833,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         cp->addProperty(sd);
         cp->addProperty(tp);
         cp->addProperty(new osgVolume::LightingProperty);
+        if (sdm) cp->addProperty(sdm);
         if (tfp) cp->addProperty(tfp);
 
         sp->addProperty(cp);
@@ -1844,6 +1845,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         cp->addProperty(sd);
         cp->addProperty(tp);
         cp->addProperty(new osgVolume::IsoSurfaceProperty(volumeData.cutoffValue));
+        if (sdm) cp->addProperty(sdm);
         if (tfp) cp->addProperty(tfp);
 
         sp->addProperty(cp);
@@ -1856,6 +1858,7 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
         cp->addProperty(sd);
         cp->addProperty(tp);
         cp->addProperty(new osgVolume::MaximumIntensityProjectionProperty);
+        if (sdm) cp->addProperty(sdm);
         if (tfp) cp->addProperty(tfp);
 
         sp->addProperty(cp);

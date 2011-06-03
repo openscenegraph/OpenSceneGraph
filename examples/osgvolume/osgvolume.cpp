@@ -842,7 +842,7 @@ osg::Image* doColourSpaceConversion(ColourSpaceOperation op, osg::Image* image, 
 }
 
 
-osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename)
+osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename, float colorScale=1.0f)
 {
     std::string foundFile = osgDB::findDataFile(filename);
     if (foundFile.empty())
@@ -862,7 +862,7 @@ osg::TransferFunction1D* readTransferFunctionFile(const std::string& filename)
         if (fin)
         {
             std::cout<<"value = "<<value<<" ("<<red<<", "<<green<<", "<<blue<<", "<<alpha<<")"<<std::endl;
-            colorMap[value] = osg::Vec4(red,green,blue,alpha);
+            colorMap[value] = osg::Vec4(red*colorScale,green*colorScale,blue*colorScale,alpha*colorScale);
         }
     }
 
@@ -1050,6 +1050,10 @@ int main( int argc, char **argv )
     while (arguments.read("--tf",tranferFunctionFile))
     {
         transferFunction = readTransferFunctionFile(tranferFunctionFile);
+    }
+    while (arguments.read("--tf-255",tranferFunctionFile))
+    {
+        transferFunction = readTransferFunctionFile(tranferFunctionFile,1.0f/255.0f);
     }
 
     while(arguments.read("--test"))

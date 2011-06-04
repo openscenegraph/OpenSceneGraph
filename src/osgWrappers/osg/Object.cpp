@@ -71,7 +71,7 @@ BEGIN_ABSTRACT_OBJECT_REFLECTOR(osg::Object)
 	          "return the name of the object's class type. ",
 	          "Must be defined by derived classes. ");
 	I_Method1(void, setName, IN, const std::string &, name,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__setName__C5_std_string_R1,
 	          "Set the name of object using C++ style string. ",
 	          "");

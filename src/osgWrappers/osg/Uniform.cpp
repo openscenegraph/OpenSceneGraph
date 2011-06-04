@@ -233,7 +233,7 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	          "Get the type of glUniform as enum. ",
 	          "");
 	I_Method1(void, setName, IN, const std::string &, name,
-	          Properties::NON_VIRTUAL,
+	          Properties::VIRTUAL,
 	          __void__setName__C5_std_string_R1,
 	          "Set the name of the glUniform, ensuring it is only set once. ",
 	          "");
@@ -862,6 +862,11 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	          __unsigned_int__getModifiedCount,
 	          "",
 	          "");
+	I_Method0(unsigned int, getNameID,
+	          Properties::NON_VIRTUAL,
+	          __unsigned_int__getNameID,
+	          "Get the number that the Uniform's name maps to uniquely. ",
+	          "");
 	I_Method2(void, apply, IN, const osg::GL2Extensions *, ext, IN, GLint, location,
 	          Properties::NON_VIRTUAL,
 	          __void__apply__C5_GL2Extensions_P1__GLint,
@@ -886,6 +891,10 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	I_StaticMethod1(GLenum, getInternalArrayType, IN, osg::Uniform::Type, t,
 	                __GLenum__getInternalArrayType__Type_S,
 	                "Return the internal data array type corresponding to a GLSL type. ",
+	                "");
+	I_StaticMethod1(unsigned int, getNameID, IN, const std::string &, name,
+	                __unsigned_int__getNameID__C5_std_string_R1_S,
+	                "Return the number that the name maps to uniquely. ",
 	                "");
 	I_ProtectedMethod1(bool, isCompatibleType, IN, osg::Uniform::Type, t,
 	                   Properties::NON_VIRTUAL,
@@ -945,6 +954,9 @@ BEGIN_OBJECT_REFLECTOR(osg::Uniform)
 	I_SimpleProperty(const std::string &, Name, 
 	                 0, 
 	                 __void__setName__C5_std_string_R1);
+	I_SimpleProperty(unsigned int, NameID, 
+	                 __unsigned_int__getNameID, 
+	                 0);
 	I_SimpleProperty(unsigned int, NumElements, 
 	                 0, 
 	                 __void__setNumElements__unsigned_int);

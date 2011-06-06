@@ -10,6 +10,6 @@ APP_CPPFLAGS := -fexceptions -frtti
 #APP_CPPFLAGS := -Os -mthumb-interwork -fno-short-enums
 #APP_CPPFLAGS := -Wl,--no-undefined
 
-APP_ABI := armeabi 
-#armeabi-v7a
+APP_ABI := armeabi armeabi-v7a
+
 APP_MODULES      := $ENV{AND_OSG_LIB_NAMES}

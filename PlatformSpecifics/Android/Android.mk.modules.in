@@ -4,6 +4,10 @@ LOCAL_PATH :=       ${MODULE_DIR}
 
 include $(CLEAR_VARS)
 
+ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
+LOCAL_ARM_NEON := true
+endif
+
 LOCAL_CPP_EXTENSION := ${CPP_EXTENSION}
 
 LOCAL_LDLIBS :=     ${MODULE_LIBS}

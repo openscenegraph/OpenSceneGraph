@@ -1653,7 +1653,7 @@ int main( int argc, char **argv )
     {
         std::string ext = osgDB::getFileExtension(outputFile);
         std::string name_no_ext = osgDB::getNameLessExtension(outputFile);
-        if (ext=="osg")
+        if (ext=="osg" || ext=="osgt" || ext=="osgx" )
         {
             if (image_3d.valid())
             {
@@ -1662,7 +1662,7 @@ int main( int argc, char **argv )
             }
             osgDB::writeNodeFile(*volume, outputFile);
         }
-        else if (ext=="ive")
+        else if (ext=="ive" || ext=="osgb" )
         {
             osgDB::writeNodeFile(*volume, outputFile);
         }

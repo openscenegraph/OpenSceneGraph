@@ -85,7 +85,10 @@ void Object::removeUserObject(unsigned int i)
 
 void Object::setUserObject(unsigned int i, Object* obj)
 {
-     if (_userDataContainer.valid() && i<_userDataContainer->_objectList.size())
+     // make sure the UserDataContainer exists
+     getOrCreateUserDataContainer();
+
+     if (i<_userDataContainer->_objectList.size())
      {
          _userDataContainer->_objectList[i] = obj;
      }
@@ -109,11 +112,11 @@ const Object* Object::getUserObject(unsigned int i) const
      return 0;
 }
 
-unsigned int Object::getUserObjectIndex(const osg::Object* obj) const
+unsigned int Object::getUserObjectIndex(const osg::Object* obj, unsigned int startPos) const
 {
      if (_userDataContainer.valid())
      {
-        for(unsigned int i = 0; i < _userDataContainer->_objectList.size(); ++i)
+        for(unsigned int i = startPos; i < _userDataContainer->_objectList.size(); ++i)
         {
             if (_userDataContainer->_objectList[i]==obj) return i;
         }
@@ -122,11 +125,11 @@ unsigned int Object::getUserObjectIndex(const osg::Object* obj) const
      return 0;
 }
 
-unsigned int Object::getUserObjectIndex(const std::string& name) const
+unsigned int Object::getUserObjectIndex(const std::string& name, unsigned int startPos) const
 {
      if (_userDataContainer.valid())
      {
-        for(unsigned int i = 0; i < _userDataContainer->_objectList.size(); ++i)
+        for(unsigned int i = startPos; i < _userDataContainer->_objectList.size(); ++i)
         {
             Object* obj = _userDataContainer->_objectList[i].get();
             if (obj && obj->getName()==name) return i;
@@ -136,11 +139,11 @@ unsigned int Object::getUserObjectIndex(const std::string& name) const
      return 0;
 }
 
-Object* Object::getUserObject(const std::string& name)
+Object* Object::getUserObject(const std::string& name, unsigned int startPos)
 {
      if (_userDataContainer.valid())
      {
-         unsigned int i = getUserObjectIndex(name);
+         unsigned int i = getUserObjectIndex(name, startPos);
          return (i<_userDataContainer->_objectList.size()) ? _userDataContainer->_objectList[i].get() : 0;
      }
      else
@@ -149,11 +152,11 @@ Object* Object::getUserObject(const std::string& name)
      }
 }
 
-const Object* Object::getUserObject(const std::string& name) const
+const Object* Object::getUserObject(const std::string& name, unsigned int startPos) const
 {
      if (_userDataContainer.valid())
      {
-         unsigned int i = getUserObjectIndex(name);
+         unsigned int i = getUserObjectIndex(name, startPos);
          return (i<_userDataContainer->_objectList.size()) ? _userDataContainer->_objectList[i].get() : 0;
      }
      else

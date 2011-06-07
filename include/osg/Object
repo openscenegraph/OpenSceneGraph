@@ -203,8 +203,8 @@ class OSG_EXPORT Object : public Referenced
         const Referenced* getUserData() const;
 
         
-        /** Add user data object.*/
-        void addUserObject(Object* obj);
+        /** Add user data object. Returns the index position of object added. */
+        unsigned int addUserObject(Object* obj);
 
          /** Add element to list of user data objects.*/
         void setUserObject(unsigned int i, Object* obj);
@@ -213,10 +213,10 @@ class OSG_EXPORT Object : public Referenced
         void removeUserObject(unsigned int i);
 
         /** Get the index position of specified user data object.*/
-        unsigned int getUserObjectIndex(const osg::Object* obj) const;
+        unsigned int getUserObjectIndex(const osg::Object* obj, unsigned int startPos=0) const;
         
         /** Get the index position of first user data object that matches specified name.*/
-        unsigned int getUserObjectIndex(const std::string& name) const;
+        unsigned int getUserObjectIndex(const std::string& name, unsigned int startPos=0) const;
 
         /** Get user data object as specified index position. */
         Object* getUserObject(unsigned int i);
@@ -225,10 +225,10 @@ class OSG_EXPORT Object : public Referenced
         const Object* getUserObject(unsigned int i) const;
 
         /** Get first user data object with specified name. */
-        Object* getUserObject(const std::string& name);
+        Object* getUserObject(const std::string& name, unsigned int startPos=0);
 
         /** Get first const user data object with specified name. */
-        const Object* getUserObject(const std::string& name) const;
+        const Object* getUserObject(const std::string& name, unsigned int startPos=0) const;
 
         /** Get number of user objects assigned to this object.*/
         unsigned int getNumUserObjects() const;

@@ -27,35 +27,6 @@ static bool writeUserData( osgDB::OutputStream& os, const osg::Object& obj )
     return true;
 }
 
-static bool checkUserObjects( const osg::Object& obj )
-{
-    return obj.getNumUserObjects()>0;
-}
-
-static bool readUserObjects( osgDB::InputStream& is, osg::Object& obj )
-{
-    unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
-    for( unsigned int i=0; i<size; ++i )
-    {
-        osg::Object* read_object = is.readObject();
-        if (read_object) obj.addUserObject( read_object );
-    }
-    is >> osgDB::END_BRACKET;
-    return true;
-}
-
-static bool writeUserObjects( osgDB::OutputStream& os, const osg::Object& obj )
-{
-    unsigned int numObjects = obj.getNumUserObjects();
-    os.writeSize(numObjects); os << osgDB::BEGIN_BRACKET << std::endl;
-    for ( unsigned int i=0; i<numObjects; ++i )
-    {
-        os << obj.getUserObject(i);
-    }
-    os << osgDB::END_BRACKET << std::endl;
-    return true;
-}
-
 REGISTER_OBJECT_WRAPPER( Object,
                          /*new osg::Object*/NULL,
                          osg::Object,
@@ -69,10 +40,11 @@ REGISTER_OBJECT_WRAPPER( Object,
         ADD_ENUM_VALUE( UNSPECIFIED );
     END_ENUM_SERIALIZER();  // _dataVariance
 
-    ADD_USER_SERIALIZER( UserData );  // _userData
+    ADD_USER_SERIALIZER( UserData );  // _userData, deprecated
     
     UPDATE_TO_VERSION( 77 )
     {
-        ADD_USER_SERIALIZER( UserObjects );  // _userData
+        REMOVE_SERIALIZER( UserData );
+        ADD_OBJECT_SERIALIZER( UserDataContainer, osg::Object, NULL );
     }
 }

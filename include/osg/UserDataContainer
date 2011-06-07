@@ -1,0 +1,99 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield 
+ *
+ * This library is open source and may be redistributed and/or modified under  
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or 
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ * 
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSG_USERDATACONTAINER
+#define OSG_USERDATACONTAINER 1
+
+#include <osg/Object>
+
+#include <string>
+#include <vector>
+
+namespace osg {
+
+/** Internal structure for storing all user data.*/
+class OSG_EXPORT UserDataContainer : public osg::Object
+{
+    public:
+        UserDataContainer();
+        UserDataContainer(const UserDataContainer& udc, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_Object(osg, UserDataContainer)
+
+        
+        virtual void setThreadSafeRefUnref(bool threadSafe);
+
+        /**
+         * Set user data, data must be subclassed from Referenced to allow
+         * automatic memory handling.  If your own data isn't directly
+         * subclassed from Referenced then create an adapter object
+         * which points to your own object and handles the memory addressing.
+         */
+        virtual void setUserData(Referenced* obj);
+
+        /** Get user data.*/
+        virtual Referenced* getUserData();
+
+        /** Get const user data.*/
+        virtual const Referenced* getUserData() const;
+
+        /** Add user data object. Returns the index position of object added. */
+        virtual unsigned int addUserObject(Object* obj);
+
+         /** Add element to list of user data objects.*/
+        virtual void setUserObject(unsigned int i, Object* obj);
+
+        /** Remove element from the list of user data objects.*/
+        virtual void removeUserObject(unsigned int i);
+
+
+        /** Get user data object as specified index position. */
+        virtual Object* getUserObject(unsigned int i);
+
+        /** Get const user data object as specified index position. */
+        virtual const Object* getUserObject(unsigned int i) const;
+
+        /** Get number of user objects assigned to this object.*/
+        virtual unsigned int getNumUserObjects() const;
+
+        /** Get the index position of specified user data object.*/
+        virtual unsigned int getUserObjectIndex(const osg::Object* obj, unsigned int startPos=0) const;
+
+        /** Get the index position of first user data object that matches specified name.*/
+        virtual unsigned int getUserObjectIndex(const std::string& name, unsigned int startPos=0) const;
+
+
+        /** Set the list of string descriptions.*/
+        virtual void setDescriptions(const DescriptionList& descriptions);
+
+        /** Get the description list of the node.*/
+        virtual DescriptionList& getDescriptions();
+
+        /** Get the const description list of the const node.*/
+        virtual const DescriptionList& getDescriptions() const;
+
+
+    protected:
+        virtual ~UserDataContainer() {}
+
+        typedef std::vector< osg::ref_ptr<osg::Object> > ObjectList;
+
+        ref_ptr<Referenced>     _userData;
+        DescriptionList         _descriptionList;
+        ObjectList              _objectList;
+};
+
+
+}
+
+#endif

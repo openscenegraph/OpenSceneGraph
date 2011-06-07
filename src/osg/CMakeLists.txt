@@ -172,6 +172,8 @@ SET(TARGET_H
     ${HEADER_PATH}/TriangleFunctor
     ${HEADER_PATH}/TriangleIndexFunctor
     ${HEADER_PATH}/Uniform
+    ${HEADER_PATH}/UserDataContainer
+    ${HEADER_PATH}/ValueObject
     ${HEADER_PATH}/Vec2
     ${HEADER_PATH}/Vec2b
     ${HEADER_PATH}/Vec2d
@@ -337,6 +339,7 @@ SET(TARGET_SRC
     TransferFunction.cpp
     Transform.cpp
     Uniform.cpp
+    UserDataContainer.cpp
     Version.cpp
     VertexProgram.cpp
     View.cpp

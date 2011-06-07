@@ -21,9 +21,52 @@
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
+
 #include <osg/io_utils>
+#include <osg/ArgumentParser>
+#include <osg/UserDataContainer>
 
 #include <osg/ValueObject>
+
+namespace MyNamespace
+{
+
+/** Provide an simple example of customizing the default UserDataContainer.*/
+class OSG_EXPORT MyUserDataContainer : public osg::UserDataContainer
+{
+    public:
+        MyUserDataContainer() {}
+        MyUserDataContainer(const MyUserDataContainer& udc, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
+            UserDataContainer(udc, copyop) {}
+
+        META_Object(MyNamespace, MyUserDataContainer)
+
+        virtual Object* getUserObject(unsigned int i)
+        {
+            OSG_NOTICE<<"MyUserDataContainer::getUserObject("<<i<<")"<<std::endl;
+            return  osg::UserDataContainer::getUserObject(i);
+        }
+
+        virtual const Object* getUserObject(unsigned int i) const
+        {
+            OSG_NOTICE<<"MyUserDataContainer::getUserObject("<<i<<") const"<<std::endl;
+            return osg::UserDataContainer::getUserObject(i);
+        }
+
+
+    protected:
+        virtual ~MyUserDataContainer() {}
+};
+
+}
+
+/** Provide basic example of providing serialization support for the MyUserDataContainer.*/
+REGISTER_OBJECT_WRAPPER( MyUserDataContainer,
+                         new MyNamespace::MyUserDataContainer,
+                         MyNamespace::MyUserDataContainer,
+                         "osg::Object osg::UserDataContainer MyNamespace::MyUserDataContainer" )
+{
+}
 
 class MyGetValueVisitor : public osg::ValueObject::GetValueVisitor
 {
@@ -134,8 +177,15 @@ void testResults(osg::Node* node)
 
 int main(int argc, char** argv)
 {
+    osg::ArgumentParser arguments(&argc, argv);
+    
     osg::ref_ptr<osg::Group> node = new osg::Group;
 
+    if (arguments.read("--MyUserDataContainer") || arguments.read("--mydc"))
+    {
+        node->setUserDataContainer(new MyNamespace::MyUserDataContainer);
+    }
+    
     int i = 10;
     node->setUserValue("Int value",i);
 

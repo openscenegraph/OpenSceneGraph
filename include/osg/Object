@@ -41,74 +41,6 @@ class State;
         virtual const char* libraryName() const { return #library; }\
         virtual const char* className() const { return #name; }
 
-template<typename T>
-T* clone(const T* t, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY)
-{
-    if (t)
-    {
-        osg::ref_ptr<osg::Object> obj = t->clone(copyop);
-
-        T* ptr = dynamic_cast<T*>(obj.get());
-        if (ptr)
-        {
-            obj.release();
-            return ptr;
-        }
-        else
-        {
-            OSG_WARN<<"Warning: osg::clone(const T*, osg::CopyOp&) cloned object not of type T, returning NULL."<<std::endl;
-            return 0;
-        }
-    }
-    else
-    {
-        OSG_WARN<<"Warning: osg::clone(const T*, osg::CopyOp&) passed null object to clone, returning NULL."<<std::endl;
-        return 0;
-    }
-}
-
-template<typename T>
-T* clone(const T* t, const std::string& name, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY)
-{
-    T* newObject = osg::clone(t, copyop);
-    if (newObject)
-    {
-        newObject->setName(name);
-        return newObject;
-    }
-    else
-    {
-        OSG_WARN<<"Warning: osg::clone(const T*, const std::string&, const osg::CopyOp) passed null object to clone, returning NULL."<<std::endl;
-        return 0;
-    }
-}
-
-template<typename T>
-T* cloneType(const T* t)
-{
-    if (t)
-    {
-        osg::ref_ptr<osg::Object> obj = t->cloneType();
-
-        T* ptr = dynamic_cast<T*>(obj.get());
-        if (ptr)
-        {
-            obj.release();
-            return ptr;
-        }
-        else
-        {
-            OSG_WARN<<"Warning: osg::cloneType(const T*) cloned object not of type T, returning NULL."<<std::endl;
-            return 0;
-        }
-    }
-    else
-    {
-        OSG_WARN<<"Warning: osg::cloneType(const T*) passed null object to clone, returning NULL."<<std::endl;
-        return 0;
-    }
-}
-
 /** Base class/standard interface for objects which require IO support, 
     cloning and reference counting.
     Based on GOF Composite, Prototype and Template Method patterns.
@@ -319,6 +251,73 @@ class OSG_EXPORT Object : public Referenced
         Object& operator = (const Object&) { return *this; }
 };
 
+template<typename T>
+T* clone(const T* t, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY)
+{
+    if (t)
+    {
+        osg::ref_ptr<osg::Object> obj = t->clone(copyop);
+
+        T* ptr = dynamic_cast<T*>(obj.get());
+        if (ptr)
+        {
+            obj.release();
+            return ptr;
+        }
+        else
+        {
+            OSG_WARN<<"Warning: osg::clone(const T*, osg::CopyOp&) cloned object not of type T, returning NULL."<<std::endl;
+            return 0;
+        }
+    }
+    else
+    {
+        OSG_WARN<<"Warning: osg::clone(const T*, osg::CopyOp&) passed null object to clone, returning NULL."<<std::endl;
+        return 0;
+    }
+}
+
+template<typename T>
+T* clone(const T* t, const std::string& name, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY)
+{
+    T* newObject = osg::clone(t, copyop);
+    if (newObject)
+    {
+        newObject->setName(name);
+        return newObject;
+    }
+    else
+    {
+        OSG_WARN<<"Warning: osg::clone(const T*, const std::string&, const osg::CopyOp) passed null object to clone, returning NULL."<<std::endl;
+        return 0;
+    }
+}
+
+template<typename T>
+T* cloneType(const T* t)
+{
+    if (t)
+    {
+        osg::ref_ptr<osg::Object> obj = t->cloneType();
+
+        T* ptr = dynamic_cast<T*>(obj.get());
+        if (ptr)
+        {
+            obj.release();
+            return ptr;
+        }
+        else
+        {
+            OSG_WARN<<"Warning: osg::cloneType(const T*) cloned object not of type T, returning NULL."<<std::endl;
+            return 0;
+        }
+    }
+    else
+    {
+        OSG_WARN<<"Warning: osg::cloneType(const T*) passed null object to clone, returning NULL."<<std::endl;
+        return 0;
+    }
+}
     
 }
 

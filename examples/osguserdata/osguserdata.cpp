@@ -192,7 +192,7 @@ int main(int argc, char** argv)
     std::string testString("All seems fine");
     node->setUserValue("Status",testString);
 
-    node->setUserValue<float>("Height",1.4);
+    node->setUserValue("Height",float(1.4));
 
     osg::ref_ptr<osg::Drawable> drawable = new osg::Geometry;
     drawable->setName("myDrawable");
@@ -201,7 +201,7 @@ int main(int argc, char** argv)
     node->setUserValue("fred",12);
     node->setUserValue("john",1.1);
     node->setUserValue("david",1.9f);
-    node->setUserValue<char>("char",65);
+    node->setUserValue("char",char(65));
     node->setUserValue("matrixd",osg::Matrixd::translate(1.0,2.0,3.0));
     node->setUserValue("flag-on",true);
     node->setUserValue("flag-off",false);

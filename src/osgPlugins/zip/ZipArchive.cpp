@@ -473,19 +473,17 @@ osgDB::DirectoryContents ZipArchive::getDirectoryContents(const std::string& dir
 
     for(; iter != iterEnd; ++iter)
     {
-        const ZipEntryMapping& ze = *iter;
-
         std::string searchPath = dirName;
         CleanupFileString(searchPath);
 
-        if(ze.first.size() > searchPath.size())
+        if(iter->first.size() > searchPath.size())
         {
-            size_t endSubElement = ze.first.find(searchPath);
+            size_t endSubElement = iter->first.find(searchPath);
 
             //we match the whole string in the beginning of the path
             if(endSubElement == 0)
             {
-                std::string remainingFile = ze.first.substr(searchPath.size() + 1, std::string::npos);
+                std::string remainingFile = iter->first.substr(searchPath.size() + 1, std::string::npos);
                 size_t endFileToken = remainingFile.find_first_of('/');
 
                 if(endFileToken == std::string::npos)

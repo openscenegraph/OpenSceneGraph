@@ -342,7 +342,11 @@ bool GraphicsWindowQt::init( QWidget* parent, const QGLWidget* shareWidget, Qt::
         // WindowFlags
         Qt::WindowFlags flags = f | Qt::Window | Qt::CustomizeWindowHint;
         if ( _traits->windowDecoration )
-            flags |= Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint;
+            flags |= Qt::WindowTitleHint | Qt::WindowMinMaxButtonsHint | Qt::WindowSystemMenuHint
+#if (QT_VERSION_CHECK(4, 5, 0) <= QT_VERSION)
+                | Qt::WindowCloseButtonHint
+#endif
+                ;
 
         // create widget
         _widget = new GLWidget( traits2qglFormat( _traits.get() ), parent, shareWidget, flags );

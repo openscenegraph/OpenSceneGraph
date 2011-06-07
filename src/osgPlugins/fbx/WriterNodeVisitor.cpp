@@ -372,7 +372,7 @@ WriterNodeVisitor::Material::Material(WriterNodeVisitor& writerNodeVisitor,
         // Note there should be no reason KFbxSurfacePhong::Create() would return NULL, but as previous code made this secirity test, here we keep the same way.
         if (_fbxMaterial)
         {
-            _fbxMaterial->GetDiffuseColor().ConnectSrcObject(_fbxTexture);
+            _fbxMaterial->Diffuse.ConnectSrcObject(_fbxTexture);
         }
     }
 }
@@ -435,6 +435,8 @@ WriterNodeVisitor::setLayerTextureAndMaterial(KFbxMesh* mesh)
     lMaterialLayer->SetReferenceMode(KFbxLayerElement::eINDEX_TO_DIRECT);
 
     lTextureDiffuseLayer->GetDirectArray().SetCount(_lastMaterialIndex);
+    lMaterialLayer->mDirectArray->SetCount(_lastMaterialIndex);
+
     for (MaterialMap::iterator it = _materialMap.begin(); it != _materialMap.end(); ++it)
     {
         if (it->second.getIndex() != -1)
@@ -442,7 +444,7 @@ WriterNodeVisitor::setLayerTextureAndMaterial(KFbxMesh* mesh)
             KFbxSurfaceMaterial* lMaterial = it->second.getFbxMaterial();
             KFbxFileTexture* lTexture = it->second.getFbxTexture();
             lTextureDiffuseLayer->GetDirectArray().SetAt(it->second.getIndex(), lTexture);
-            _curFbxNode->AddMaterial(lMaterial);
+            lMaterialLayer->mDirectArray->SetAt(it->second.getIndex(), lMaterial);
         }
     }
     mesh->GetLayer(0)->SetMaterials(lMaterialLayer);

@@ -1,3 +1,134 @@
+2011-06-07 14:28  robert
+
+	* src/osgPlugins/fbx/WriterNodeVisitor.cpp: From Sukender, "Lastest
+	  change (update to FBX 2012.1) introduced a regression. It didn't
+	  take materials' order into consideration. The line
+	  lMaterialLayer->GetDirectArray().SetAt(it->second.getIndex(),
+	  lMaterial);
+	  has been replaced by
+	  _curFbxNode->AddMaterial(lMaterial);
+	  because KFbxLayerElementMaterial::GetDirectArray() is now private
+	  and we can't access to it.
+	  However, pushing back the material at the end of the vector is
+	  wrong.
+	  We can use the (now) public attribute
+	  KFbxLayerElementMaterial::mDirectArray, as in this submission.
+	  "
+
+2011-06-07 14:26  robert
+
+	* examples/osguserdata/osguserdata.cpp, include/osg/Object,
+	  src/osgPlugins/zip/ZipArchive.cpp,
+	  src/osgQt/GraphicsWindowQt.cpp: From Mathias Froehlich, build
+	  fixes for legacy unix systems
+
+2011-06-07 13:02  robert
+
+	* examples/osguserdata/osguserdata.cpp, include/osg/Object,
+	  include/osg/UserDataContainer, src/osg/CMakeLists.txt,
+	  src/osg/Object.cpp, src/osg/UserDataContainer.cpp,
+	  src/osgWrappers/serializers/osg/Node.cpp,
+	  src/osgWrappers/serializers/osg/Object.cpp,
+	  src/osgWrappers/serializers/osg/UserDataContainer.cpp: Added
+	  ability to subclass from osg::Object to provide custom user data
+	  functionality. A new UserDataContainer provides the
+	  default implementation of the user data functionality.
+
+2011-06-07 09:28  robert
+
+	* src/osg/Object.cpp: Added the return of the index position of the
+	  added UserObject
+
+2011-06-07 08:53  robert
+
+	* include/osg/Object, src/osg/Object.cpp: Added support for
+	  searching for user objects from a given startPosition in the
+	  UserDataContainer object.
+
+2011-06-06 11:48  robert
+
+	* src/osgPlugins/imageio/ReaderWriterImageIO_IOS.cpp: From Frida
+	  Schlaug, "Imageio for ios had a poorly implemented function for
+	  reading from streams (always returning null). In this patch I
+	  copied some code from the non-ios imageio file and adjusted it to
+	  work on ios. "
+
+2011-06-06 11:45  robert
+
+	* PlatformSpecifics/Android/Android.mk.modules.in: From Jorge
+	  Ciges, Minor tweaks in Android makefiles that make possible to
+	  compile for armeabi v7 with neon
+
+2011-06-06 11:44  robert
+
+	* PlatformSpecifics/Android/Application.mk.master.in: From Jorge
+	  Ciges, Minor tweaks in Android makefiles that make possible to
+	  compile for armeabi v7 with neon
+
+2011-06-03 15:58  robert
+
+	* examples/osgvolume/osgvolume.cpp: Added support for --tf-255
+	  transfer function files
+
+2011-06-03 13:47  robert
+
+	* src/osgPresentation/SlideShowConstructor.cpp: Added support for
+	  using the sampleDensityWhenMoving tag with all techniques
+
+2011-06-02 22:49  robert
+
+	* src/osg/Object.cpp: Added extra check to make sure that
+	  _userDataContainer was available before copying it
+
+2011-06-02 22:07  robert
+
+	* include/osgDB/Serializer: Add new macro's to help with
+	  serialization of new user objects
+
+2011-06-02 22:06  robert
+
+	* examples/CMakeLists.txt, examples/osguserdata,
+	  examples/osguserdata/CMakeLists.txt,
+	  examples/osguserdata/osguserdata.cpp: Added new osguserdata
+	  example as a guide to the new user object API and as a testbed
+
+2011-06-02 22:05  robert
+
+	* src/osgWrappers/serializers/osg/Object.cpp,
+	  src/osgWrappers/serializers/osg/ValueObject.cpp: Added support
+	  for new osg::Object user objects.
+
+2011-06-02 22:04  robert
+
+	* include/osg/CopyOp, include/osg/Node, include/osg/Object,
+	  include/osg/ValueObject, src/osg/Drawable.cpp, src/osg/Node.cpp,
+	  src/osg/Object.cpp: Introduced new user object support into
+	  osg::Object that allows assignment of a list of user objects to
+	  an osg::Object.
+	  
+	  Refactored original UserData and Descriptions strings to be
+	  managed alongside the new user object suppport within
+	  a single osg::Object::UserDataContainer.
+
+2011-06-02 21:32  robert
+
+	* include/osg/Version: Updated version
+
+2011-06-02 20:38  robert
+
+	* src/osgWrappers/serializers/osg/Group.cpp: Added ref_ptr<> usage
+	  to avoid possible memory leak.
+
+2011-06-02 14:42  robert
+
+	* CMakeLists.txt: Updated version and so number for next dev
+	  release
+
+2011-05-30 15:43  robert
+
+	* AUTHORS.txt, ChangeLog, applications/osgversion/Contributors.cpp:
+	  Updated AUTHORS and ChangeLog for 2.9.15 dev release
+
 2011-05-30 13:02  robert
 
 	* src/osgPlugins/tiff/ReaderWriterTIFF.cpp: From Dimi Christop,

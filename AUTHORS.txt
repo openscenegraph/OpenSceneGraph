@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.9.15
+OpenSceneGraph Library 2.9.16
 
-460 Contributors:
+461 Contributors:
 
 Firstname Surname
 -----------------
@@ -183,6 +183,7 @@ Lee Butler
 Konstantin Sinitsyn
 Ken Sewell
 Julian Ortiz
+Jorge Ciges
 Jim Vaughan
 Jeremy Bell
 Jaromir Vitek
@@ -380,7 +381,6 @@ Jutta Sauer
 Julian Scheid
 Juan Hernando
 Josh Portway
-Jorge Ciges
 John Tan
 John Grant
 John Donovan
@@ -406,6 +406,7 @@ Graeme Harkness
 Gian Lorenzetto
 George Papagiannakis
 Galen Faidley
+Frida Schlaug
 Frederic Smith
 Frank Warmerdam
 Frank Midgley

@@ -1753,129 +1753,197 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
     // osg::Object::DataVariance defaultMatrixDataVariance = osg::Object::DYNAMIC; // STATIC
 
     std::string foundFile = filename;
-
-    osgDB::FileType fileType = osgDB::fileType(foundFile);
-    if (fileType == osgDB::FILE_NOT_FOUND)
-    {
-        foundFile = findFileAndRecordPath(foundFile);
-        fileType = osgDB::fileType(foundFile);
-    }
-    
     osg::ref_ptr<osg::Image> image;
-    if (fileType == osgDB::DIRECTORY)
+    osg::ref_ptr<osgVolume::Volume> volume;
+    osg::ref_ptr<osgVolume::VolumeTile> tile;
+    osg::ref_ptr<osgVolume::ImageLayer> layer;
+
+    // check for wild cards
+    if (filename.find('*')!=std::string::npos)
     {
-       image = osgDB::readImageFile(foundFile+".dicom", _options.get());
-    }
-    else if (fileType == osgDB::REGULAR_FILE)
-    {
-        image = osgDB::readImageFile( foundFile, _options.get() );
+        osgDB::DirectoryContents filenames = osgDB::expandWildcardsInFilename(filename);
+        if (filenames.empty()) return;
+
+        // make sure images are in alphabetical order.
+        std::sort(filenames.begin(), filenames.end());
+
+        typedef std::vector< osg::ref_ptr<osg::Image> > Images;
+        Images images;
+        for(osgDB::DirectoryContents::iterator itr = filenames.begin();
+            itr != filenames.end();
+            ++itr)
+        {
+            osg::ref_ptr<osg::Image> loadedImage = osgDB::readImageFile(*itr);
+            if (loadedImage.valid())
+            {
+                OSG_NOTICE<<"Image loaded "<<*itr<<std::endl;
+                images.push_back(loadedImage.get());
+            }
+        }
+        OSG_NOTICE<<"Need to build volume from images"<<std::endl;
     }
     else
     {
-        // not found image, so fallback to plguins/callbacks to find the model.
-        image = osgDB::readImageFile( filename, _options.get() );
-        if (image) recordOptionsFilePath(_options.get() );
+        osgDB::FileType fileType = osgDB::fileType(foundFile);
+        if (fileType == osgDB::FILE_NOT_FOUND)
+        {
+            foundFile = findFileAndRecordPath(foundFile);
+            fileType = osgDB::fileType(foundFile);
+        }
+
+        if (fileType == osgDB::DIRECTORY)
+        {
+            image = osgDB::readImageFile(foundFile+".dicom", _options.get());
+        }
+        else if (fileType == osgDB::REGULAR_FILE)
+        {
+            std::string ext = osgDB::getFileExtension(foundFile);
+            if (ext=="osg" || ext=="ive" || ext=="osgx" || ext=="osgb" || ext=="osgt")
+            {
+                osg::ref_ptr<osg::Object> obj = osgDB::readObjectFile(foundFile);
+                image = dynamic_cast<osg::Image*>(obj.get());
+                volume = dynamic_cast<osgVolume::Volume*>(obj.get());
+            }
+            else
+            {
+                image = osgDB::readImageFile( foundFile, _options.get() );
+            }
+        }
+        else
+        {
+            // not found image, so fallback to plguins/callbacks to find the model.
+            image = osgDB::readImageFile( filename, _options.get() );
+            if (image) recordOptionsFilePath(_options.get() );
+        }
     }
+    
+    if (!image && !volume) return;
 
-    if (!image) return;
-
-    osg::ref_ptr<osgVolume::ImageDetails> details = dynamic_cast<osgVolume::ImageDetails*>(image->getUserData());
-    osg::ref_ptr<osg::RefMatrix> matrix = details ? details->getMatrix() : dynamic_cast<osg::RefMatrix*>(image->getUserData());
-
-    osg::ref_ptr<osgVolume::Volume> volume = new osgVolume::Volume;
-    osg::ref_ptr<osgVolume::VolumeTile> tile = new osgVolume::VolumeTile;
-    volume->addChild(tile.get());
-
-    osg::ref_ptr<osgVolume::ImageLayer> layer = new osgVolume::ImageLayer(image.get());
-    if (details)
+    if (volume.valid())
     {
-        layer->setTexelOffset(details->getTexelOffset());
-        layer->setTexelScale(details->getTexelScale());
+        if (!tile)
+        {
+            if (volume->getNumChildren()>0)
+            {
+                tile = dynamic_cast<osgVolume::VolumeTile*>(volume->getChild(0));
+            }
+        }
     }
-    layer->rescaleToZeroToOneRange();
-
-    if (matrix.valid())
+    else
     {
-        layer->setLocator(new osgVolume::Locator(*matrix));
-        osg::Matrix tm = osg::Matrix::scale(volumeData.region[3]-volumeData.region[0], volumeData.region[4]-volumeData.region[1], volumeData.region[5]-volumeData.region[2]) *
-                         osg::Matrix::translate(volumeData.region[0],volumeData.region[1],volumeData.region[2]);
-        tile->setLocator(new osgVolume::Locator(tm * (*matrix)));
+        volume = new osgVolume::Volume;
     }
 
-
-    tile->setLayer(layer.get());
-
-    osgVolume::SwitchProperty* sp = new osgVolume::SwitchProperty;
-    sp->setActiveProperty(0);
-
-    osgVolume::AlphaFuncProperty* ap = new osgVolume::AlphaFuncProperty(volumeData.cutoffValue);
-    osgVolume::TransparencyProperty* tp = new osgVolume::TransparencyProperty(volumeData.alphaValue);
-    osgVolume::SampleDensityProperty* sd = new osgVolume::SampleDensityProperty(volumeData.sampleDensityValue);
-    osgVolume::SampleDensityWhenMovingProperty* sdm = (volumeData.sampleDensityWhenMovingValue > 0.0f) ? (new osgVolume::SampleDensityWhenMovingProperty(volumeData.sampleDensityWhenMovingValue)) : 0;
-    osgVolume::TransferFunctionProperty* tfp = volumeData.transferFunction.valid() ? new osgVolume::TransferFunctionProperty(volumeData.transferFunction.get()) : 0;
-
+    if (tile.valid())
     {
-        // Standard
-        osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
-        cp->addProperty(ap);
-        cp->addProperty(sd);
-        cp->addProperty(tp);
-        if (sdm) cp->addProperty(sdm);
-        if (tfp) cp->addProperty(tfp);
-
-        sp->addProperty(cp);
+        layer = dynamic_cast<osgVolume::ImageLayer*>(tile->getLayer());
+        image = layer.valid() ? layer->getImage() : 0;
     }
-
+    else
     {
-        // Light
-        osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
-        cp->addProperty(ap);
-        cp->addProperty(sd);
-        cp->addProperty(tp);
-        cp->addProperty(new osgVolume::LightingProperty);
-        if (sdm) cp->addProperty(sdm);
-        if (tfp) cp->addProperty(tfp);
+        if (!image) return;
 
-        sp->addProperty(cp);
+        tile = new osgVolume::VolumeTile;
+        volume->addChild(tile.get());
     }
 
+    if (!layer)
     {
-        // Isosurface
-        osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
-        cp->addProperty(sd);
-        cp->addProperty(tp);
-        cp->addProperty(new osgVolume::IsoSurfaceProperty(volumeData.cutoffValue));
-        if (sdm) cp->addProperty(sdm);
-        if (tfp) cp->addProperty(tfp);
+        if (!image) return;
 
-        sp->addProperty(cp);
+        osg::ref_ptr<osgVolume::ImageDetails> details = dynamic_cast<osgVolume::ImageDetails*>(image->getUserData());
+        osg::ref_ptr<osg::RefMatrix> matrix = details ? details->getMatrix() : dynamic_cast<osg::RefMatrix*>(image->getUserData());
+
+        osg::ref_ptr<osgVolume::ImageLayer> layer = new osgVolume::ImageLayer(image.get());
+        if (details)
+        {
+            layer->setTexelOffset(details->getTexelOffset());
+            layer->setTexelScale(details->getTexelScale());
+        }
+        layer->rescaleToZeroToOneRange();
+
+        if (matrix.valid())
+        {
+            layer->setLocator(new osgVolume::Locator(*matrix));
+            osg::Matrix tm = osg::Matrix::scale(volumeData.region[3]-volumeData.region[0], volumeData.region[4]-volumeData.region[1], volumeData.region[5]-volumeData.region[2]) *
+                            osg::Matrix::translate(volumeData.region[0],volumeData.region[1],volumeData.region[2]);
+            tile->setLocator(new osgVolume::Locator(tm * (*matrix)));
+        }
+
+
+        tile->setLayer(layer.get());
+
+        osgVolume::SwitchProperty* sp = new osgVolume::SwitchProperty;
+        sp->setActiveProperty(0);
+
+        osgVolume::AlphaFuncProperty* ap = new osgVolume::AlphaFuncProperty(volumeData.cutoffValue);
+        osgVolume::TransparencyProperty* tp = new osgVolume::TransparencyProperty(volumeData.alphaValue);
+        osgVolume::SampleDensityProperty* sd = new osgVolume::SampleDensityProperty(volumeData.sampleDensityValue);
+        osgVolume::SampleDensityWhenMovingProperty* sdm = (volumeData.sampleDensityWhenMovingValue > 0.0f) ? (new osgVolume::SampleDensityWhenMovingProperty(volumeData.sampleDensityWhenMovingValue)) : 0;
+        osgVolume::TransferFunctionProperty* tfp = volumeData.transferFunction.valid() ? new osgVolume::TransferFunctionProperty(volumeData.transferFunction.get()) : 0;
+
+        {
+            // Standard
+            osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
+            cp->addProperty(ap);
+            cp->addProperty(sd);
+            cp->addProperty(tp);
+            if (sdm) cp->addProperty(sdm);
+            if (tfp) cp->addProperty(tfp);
+
+            sp->addProperty(cp);
+        }
+
+        {
+            // Light
+            osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
+            cp->addProperty(ap);
+            cp->addProperty(sd);
+            cp->addProperty(tp);
+            cp->addProperty(new osgVolume::LightingProperty);
+            if (sdm) cp->addProperty(sdm);
+            if (tfp) cp->addProperty(tfp);
+
+            sp->addProperty(cp);
+        }
+
+        {
+            // Isosurface
+            osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
+            cp->addProperty(sd);
+            cp->addProperty(tp);
+            cp->addProperty(new osgVolume::IsoSurfaceProperty(volumeData.cutoffValue));
+            if (sdm) cp->addProperty(sdm);
+            if (tfp) cp->addProperty(tfp);
+
+            sp->addProperty(cp);
+        }
+
+        {
+            // MaximumIntensityProjection
+            osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
+            cp->addProperty(ap);
+            cp->addProperty(sd);
+            cp->addProperty(tp);
+            cp->addProperty(new osgVolume::MaximumIntensityProjectionProperty);
+            if (sdm) cp->addProperty(sdm);
+            if (tfp) cp->addProperty(tfp);
+
+            sp->addProperty(cp);
+        }
+
+        switch(volumeData.shadingModel)
+        {
+            case(VolumeData::Standard):                     sp->setActiveProperty(0); break;
+            case(VolumeData::Light):                        sp->setActiveProperty(1); break;
+            case(VolumeData::Isosurface):                   sp->setActiveProperty(2); break;
+            case(VolumeData::MaximumIntensityProjection):   sp->setActiveProperty(3); break;
+        }
+
+        layer->addProperty(sp);
+        tile->setVolumeTechnique(new osgVolume::RayTracedTechnique);
+        tile->setEventCallback(new osgVolume::PropertyAdjustmentCallback());
     }
-
-    {
-        // MaximumIntensityProjection
-        osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
-        cp->addProperty(ap);
-        cp->addProperty(sd);
-        cp->addProperty(tp);
-        cp->addProperty(new osgVolume::MaximumIntensityProjectionProperty);
-        if (sdm) cp->addProperty(sdm);
-        if (tfp) cp->addProperty(tfp);
-
-        sp->addProperty(cp);
-    }
-
-    switch(volumeData.shadingModel)
-    {
-        case(VolumeData::Standard):                     sp->setActiveProperty(0); break;
-        case(VolumeData::Light):                        sp->setActiveProperty(1); break;
-        case(VolumeData::Isosurface):                   sp->setActiveProperty(2); break;
-        case(VolumeData::MaximumIntensityProjection):   sp->setActiveProperty(3); break;
-    }
-
-    layer->addProperty(sp);
-    tile->setVolumeTechnique(new osgVolume::RayTracedTechnique);
-    tile->setEventCallback(new osgVolume::PropertyAdjustmentCallback());
-
 
     osg::ref_ptr<osg::Node> model = volume.get();
 

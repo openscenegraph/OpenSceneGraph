@@ -58,7 +58,7 @@ const Referenced* Object::getUserData() const
     return _userDataContainer.valid() ? _userDataContainer->_userData.get() : 0;
 }
 
-void Object::addUserObject(Object* obj)
+unsigned int Object::addUserObject(Object* obj)
 {
     // make sure the UserDataContainer exists
     getOrCreateUserDataContainer();
@@ -68,11 +68,15 @@ void Object::addUserObject(Object* obj)
     if (i<_userDataContainer->_objectList.size())
     {
         // object already in container so just return.
-        return;
+        return i;
     }
+
+    unsigned int pos = _userDataContainer->_objectList.size();
 
     // object not already on user data container so add it in.
     _userDataContainer->_objectList.push_back(obj);
+
+    return pos;
 }
 
 void Object::removeUserObject(unsigned int i)

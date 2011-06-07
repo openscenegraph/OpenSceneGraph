@@ -11,6 +11,7 @@
  * OpenSceneGraph Public License for more details.
 */
 #include <osg/Object>
+#include <osg/UserDataContainer>
 
 namespace osg
 {
@@ -28,7 +29,7 @@ Object::Object(const Object& obj,const CopyOp& copyop):
     {
         if (copyop.getCopyFlags()&osg::CopyOp::DEEP_COPY_USERDATA)
         {
-            _userDataContainer = new UserDataContainer(*obj._userDataContainer, copyop);
+            _userDataContainer = obj.getUserDataContainer()->clone(copyop);
         }
         else
         {
@@ -43,146 +44,87 @@ void Object::setThreadSafeRefUnref(bool threadSafe)
     if (_userDataContainer.valid()) _userDataContainer->setThreadSafeRefUnref(threadSafe);
 }
 
+osg::Object* Object::getOrCreateUserDataContainer()
+{
+    if (!_userDataContainer) _userDataContainer = new UserDataContainer();
+    return _userDataContainer.get();
+}
+
 void Object::setUserData(Referenced* obj)
 {
-    getOrCreateUserDataContainer()->_userData = obj;
+    getOrCreateUserDataContainer()->setUserData(obj);
 }
 
 Referenced* Object::getUserData()
 {
-    return _userDataContainer.valid() ? _userDataContainer->_userData.get() : 0;
+    return _userDataContainer.valid() ? _userDataContainer->getUserData() : 0;
 }
 
 const Referenced* Object::getUserData() const
 {
-    return _userDataContainer.valid() ? _userDataContainer->_userData.get() : 0;
+    return _userDataContainer.valid() ? _userDataContainer->getUserData() : 0;
 }
 
 unsigned int Object::addUserObject(Object* obj)
 {
     // make sure the UserDataContainer exists
-    getOrCreateUserDataContainer();
-
-    // make sure that the object isn't already in the container
-    unsigned int i = getUserObjectIndex(obj);
-    if (i<_userDataContainer->_objectList.size())
-    {
-        // object already in container so just return.
-        return i;
-    }
-
-    unsigned int pos = _userDataContainer->_objectList.size();
-
-    // object not already on user data container so add it in.
-    _userDataContainer->_objectList.push_back(obj);
-
-    return pos;
+    return getOrCreateUserDataContainer()->addUserObject(obj);
 }
 
 void Object::removeUserObject(unsigned int i)
 {
-     if (_userDataContainer.valid() && i<_userDataContainer->_objectList.size())
-     {
-         _userDataContainer->_objectList.erase(_userDataContainer->_objectList.begin()+i);
-     }
+    if (_userDataContainer.valid()) _userDataContainer->removeUserObject(i);
 }
 
 void Object::setUserObject(unsigned int i, Object* obj)
 {
-     // make sure the UserDataContainer exists
-     getOrCreateUserDataContainer();
-
-     if (i<_userDataContainer->_objectList.size())
-     {
-         _userDataContainer->_objectList[i] = obj;
-     }
+    // make sure the UserDataContainer exists
+    getOrCreateUserDataContainer()->setUserObject(i,obj);
 }
 
 Object* Object::getUserObject(unsigned int i)
 {
-     if (_userDataContainer.valid() && i<_userDataContainer->_objectList.size())
-     {
-         return _userDataContainer->_objectList[i].get();
-     }
-     return 0;
+    return _userDataContainer.valid() ? _userDataContainer->getUserObject(i) : 0;
 }
 
 const Object* Object::getUserObject(unsigned int i) const
 {
-     if (_userDataContainer.valid() && i<_userDataContainer->_objectList.size())
-     {
-         return _userDataContainer->_objectList[i].get();
-     }
-     return 0;
-}
-
-unsigned int Object::getUserObjectIndex(const osg::Object* obj, unsigned int startPos) const
-{
-     if (_userDataContainer.valid())
-     {
-        for(unsigned int i = startPos; i < _userDataContainer->_objectList.size(); ++i)
-        {
-            if (_userDataContainer->_objectList[i]==obj) return i;
-        }
-        return _userDataContainer->_objectList.size();
-     }
-     return 0;
-}
-
-unsigned int Object::getUserObjectIndex(const std::string& name, unsigned int startPos) const
-{
-     if (_userDataContainer.valid())
-     {
-        for(unsigned int i = startPos; i < _userDataContainer->_objectList.size(); ++i)
-        {
-            Object* obj = _userDataContainer->_objectList[i].get();
-            if (obj && obj->getName()==name) return i;
-        }
-        return _userDataContainer->_objectList.size();
-     }
-     return 0;
-}
-
-Object* Object::getUserObject(const std::string& name, unsigned int startPos)
-{
-     if (_userDataContainer.valid())
-     {
-         unsigned int i = getUserObjectIndex(name, startPos);
-         return (i<_userDataContainer->_objectList.size()) ? _userDataContainer->_objectList[i].get() : 0;
-     }
-     else
-     {
-         return 0;
-     }
-}
-
-const Object* Object::getUserObject(const std::string& name, unsigned int startPos) const
-{
-     if (_userDataContainer.valid())
-     {
-         unsigned int i = getUserObjectIndex(name, startPos);
-         return (i<_userDataContainer->_objectList.size()) ? _userDataContainer->_objectList[i].get() : 0;
-     }
-     else
-     {
-         return 0;
-     }
+    return _userDataContainer.valid() ? _userDataContainer->getUserObject(i) : 0;
 }
 
 unsigned int Object::getNumUserObjects() const
 {
-    return _userDataContainer.valid() ? _userDataContainer->_objectList.size() : 0;
+    return _userDataContainer.valid() ? _userDataContainer->getNumUserObjects() : 0;
 }
 
+unsigned int Object::getUserObjectIndex(const osg::Object* obj, unsigned int startPos) const
+{
+    return _userDataContainer.valid() ? _userDataContainer->getUserObjectIndex(obj, startPos) : 0;
+}
+
+unsigned int Object::getUserObjectIndex(const std::string& name, unsigned int startPos) const
+{
+    return _userDataContainer.valid() ? _userDataContainer->getUserObjectIndex(name, startPos) : 0;
+}
+
+Object* Object::getUserObject(const std::string& name, unsigned int startPos)
+{
+     return getUserObject(getUserObjectIndex(name, startPos));
+}
+
+const Object* Object::getUserObject(const std::string& name, unsigned int startPos) const
+{
+     return getUserObject(getUserObjectIndex(name, startPos));
+}
 
 void Object::setDescriptions(const DescriptionList& descriptions)
 {
-    getOrCreateUserDataContainer()->_descriptionList = descriptions;
+    getOrCreateUserDataContainer()->setDescriptions(descriptions);
 }
 
 Object::DescriptionList& Object::getDescriptions()
 {
-    return getOrCreateUserDataContainer()->_descriptionList;
+    return getOrCreateUserDataContainer()->getDescriptions();
 }
 
 static OpenThreads::Mutex s_mutex_StaticDescriptionList;
@@ -195,61 +137,29 @@ static const Object::DescriptionList& getStaticDescriptionList()
 
 const Object::DescriptionList& Object::getDescriptions() const
 {
-    if (_userDataContainer.valid()) return _userDataContainer->_descriptionList;
+    if (_userDataContainer.valid()) return _userDataContainer->getDescriptions();
     else return getStaticDescriptionList();
 }
 
 std::string& Object::getDescription(unsigned int i)
 {
-    return getOrCreateUserDataContainer()->_descriptionList[i];
+    return getOrCreateUserDataContainer()->getDescriptions()[i];
 }
 
 const std::string& Object::getDescription(unsigned int i) const
 {
-    if (_userDataContainer.valid()) return _userDataContainer->_descriptionList[i];
+    if (_userDataContainer.valid()) return _userDataContainer->getDescriptions()[i];
     else return getStaticDescriptionList()[i];
 }
 
 unsigned int Object::getNumDescriptions() const
 {
-    return _userDataContainer.valid() ? _userDataContainer->_descriptionList.size() : 0;
+    return _userDataContainer.valid() ? _userDataContainer->getDescriptions().size() : 0;
 }
 
 void Object::addDescription(const std::string& desc)
 {
-    getOrCreateUserDataContainer()->_descriptionList.push_back(desc);
+    getOrCreateUserDataContainer()->getDescriptions().push_back(desc);
 }
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// UserDataContainer
-//
-Object::UserDataContainer::UserDataContainer():
-    Referenced(true)
-{
-}
-
-Object::UserDataContainer::UserDataContainer(const UserDataContainer& udc, const osg::CopyOp& copyop):
-    Referenced(true)
-{
-    _userData = udc._userData;
-    _descriptionList = udc._descriptionList;
-}
-
-void Object::UserDataContainer::setThreadSafeRefUnref(bool threadSafe)
-{
-    Referenced::setThreadSafeRefUnref(threadSafe);
-
-    if (_userData.valid()) _userData->setThreadSafeRefUnref(threadSafe);
-
-    for(ObjectList::iterator itr = _objectList.begin();
-        itr != _objectList.end();
-        ++itr)
-    {
-        (*itr)->setThreadSafeRefUnref(threadSafe);
-    }
-}
-
-
 
 } // end of namespace osg

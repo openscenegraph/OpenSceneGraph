@@ -1652,7 +1652,7 @@ bool DepthPartitionSettings::getDepthRange(osg::View& view, unsigned int partiti
             OSG_NOTICE<<"nearPointInEyeCoords = "<<nearPointInEyeCoords<<std::endl;
             OSG_NOTICE<<"farPointInEyeCoords = "<<farPointInEyeCoords<<std::endl;
 #endif
-            double minZNearRatio = 0.001;
+            double minZNearRatio = 0.00001;
 
 
             if (masterCamera->getDisplaySettings())

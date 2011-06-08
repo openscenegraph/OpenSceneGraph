@@ -24,10 +24,10 @@
 #include <osg/PositionAttitudeTransform>
 
 #include <osgGA/TrackballManipulator>
+#include <osgGA/StateSetManipulator>
 
 #include <osgViewer/Viewer>
-
-#include "DepthPartitionNode.h"
+#include <osgViewer/ViewerEventHandlers>
 
 const double r_earth = 6378.137;
 const double r_sun = 695990.0;
@@ -132,6 +132,12 @@ int main( int argc, char **argv )
     // construct the viewer.
     osgViewer::Viewer viewer;
 
+    // add the state manipulator
+    viewer.addEventHandler( new osgGA::StateSetManipulator(viewer.getCamera()->getOrCreateStateSet()) );
+
+    // add stats
+    viewer.addEventHandler( new osgViewer::StatsHandler() );
+
     bool needToSetHomePosition = false;
 
     // read the scene from the list of file specified commandline args.
@@ -143,24 +149,33 @@ int main( int argc, char **argv )
         scene = createScene(); 
         needToSetHomePosition = true;
     }
-    
-    // Create a DepthPartitionNode to manage partitioning of the scene
-    osg::ref_ptr<DepthPartitionNode> dpn = new DepthPartitionNode;
-    dpn->addChild(scene.get());
-    dpn->setActive(true); // Control whether the node analyzes the scene
-        
     // pass the loaded scene graph to the viewer.
-    viewer.setSceneData(dpn.get());
+    viewer.setSceneData(scene.get());
 
     viewer.setCameraManipulator(new osgGA::TrackballManipulator);
 
     if (needToSetHomePosition)
     {
-      viewer.getCameraManipulator()->setHomePosition(osg::Vec3d(0.0,-5.0*r_earth,0.0),osg::Vec3d(0.0,0.0,0.0),osg::Vec3d(0.0,0.0,1.0));
+        viewer.getCameraManipulator()->setHomePosition(osg::Vec3d(0.0,-5.0*r_earth,0.0),osg::Vec3d(0.0,0.0,0.0),osg::Vec3d(0.0,0.0,1.0));
     }
     
-    // depth partion node is only supports single window/single threaded at present.
-    viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded);
+    double zNear=1.0, zMid=10.0, zFar=1000.0;
+    if (arguments.read("--depth-partition",zNear, zMid, zFar))
+    {
+        // set up depth partitioning
+        osg::ref_ptr<osgViewer::DepthPartitionSettings> dps = new osgViewer::DepthPartitionSettings;
+        dps->_mode = osgViewer::DepthPartitionSettings::FIXED_RANGE;
+        dps->_zNear = zNear;
+        dps->_zMid = zMid;
+        dps->_zFar = zFar;
+        viewer.setUpDepthPartition(dps.get());
+    }
+    else
+    {
+        // set up depth partitioning with default settings
+        viewer.setUpDepthPartition();
+    }
+    
 
     return viewer.run();
 }

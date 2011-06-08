@@ -21,6 +21,7 @@
 #include <osg/PositionAttitudeTransform>
 #include <osg/TexMat>
 #include <osg/ShapeDrawable>
+#include <osg/ImageUtils>
 #include <osg/Notify>
 #include <osg/io_utils>
 
@@ -1776,11 +1777,11 @@ void SlideShowConstructor::addVolume(const std::string& filename, const Position
             osg::ref_ptr<osg::Image> loadedImage = osgDB::readImageFile(*itr);
             if (loadedImage.valid())
             {
-                OSG_NOTICE<<"Image loaded "<<*itr<<std::endl;
                 images.push_back(loadedImage.get());
             }
         }
-        OSG_NOTICE<<"Need to build volume from images"<<std::endl;
+
+        image = osg::createImage3DWithAlpha(images);
     }
     else
     {

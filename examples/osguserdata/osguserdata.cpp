@@ -32,7 +32,7 @@ namespace MyNamespace
 {
 
 /** Provide an simple example of customizing the default UserDataContainer.*/
-class OSG_EXPORT MyUserDataContainer : public osg::UserDataContainer
+class MyUserDataContainer : public osg::UserDataContainer
 {
     public:
         MyUserDataContainer() {}

@@ -70,8 +70,6 @@
 #include <osgVolume/RayTracedTechnique>
 #include <osgVolume/FixedFunctionTechnique>
 
-typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
-
 enum ShadingModel
 {
     Standard,
@@ -85,6 +83,86 @@ struct PassThroughTransformFunction
     unsigned char operator() (unsigned char c) const { return c; }
 };
 
+
+void clampToNearestValidPowerOfTwo(int& sizeX, int& sizeY, int& sizeZ, int s_maximumTextureSize, int t_maximumTextureSize, int r_maximumTextureSize)
+{
+    // compute nearest powers of two for each axis.
+    int s_nearestPowerOfTwo = 1;
+    while(s_nearestPowerOfTwo<sizeX && s_nearestPowerOfTwo<s_maximumTextureSize) s_nearestPowerOfTwo*=2;
+
+    int t_nearestPowerOfTwo = 1;
+    while(t_nearestPowerOfTwo<sizeY && t_nearestPowerOfTwo<t_maximumTextureSize) t_nearestPowerOfTwo*=2;
+
+    int r_nearestPowerOfTwo = 1;
+    while(r_nearestPowerOfTwo<sizeZ && r_nearestPowerOfTwo<r_maximumTextureSize) r_nearestPowerOfTwo*=2;
+
+    sizeX = s_nearestPowerOfTwo;
+    sizeY = t_nearestPowerOfTwo;
+    sizeZ = r_nearestPowerOfTwo;
+}
+
+#if 1
+struct ModulateAlphaByLuminanceOperator
+{
+    ModulateAlphaByLuminanceOperator() {}
+
+    inline void luminance(float&) const {}
+    inline void alpha(float&) const {}
+    inline void luminance_alpha(float& l,float& a) const { a*= l; }
+    inline void rgb(float&,float&,float&) const {}
+    inline void rgba(float& r,float& g,float& b,float& a) const { float l = (r+g+b)*0.3333333; a *= l;}
+};
+
+osg::Image* createTexture3D(osg::ImageList& imageList,
+            unsigned int numComponentsDesired,
+            int s_maximumTextureSize,
+            int t_maximumTextureSize,
+            int r_maximumTextureSize,
+            bool resizeToPowerOfTwo)
+{
+
+    GLenum desiredPixelFormat = 0;
+    bool modulateAlphaByLuminance = false;
+    if (numComponentsDesired==0)
+    {
+        unsigned int maxNumComponents = osg::maximimNumOfComponents(imageList);
+        if (maxNumComponents==3)
+        {
+            desiredPixelFormat = GL_RGBA;
+            modulateAlphaByLuminance = true;
+        }
+    }
+    else
+    {
+        switch(numComponentsDesired)
+        {
+            case(1) : desiredPixelFormat = GL_LUMINANCE; break;
+            case(2) : desiredPixelFormat = GL_LUMINANCE_ALPHA; break;
+            case(3) : desiredPixelFormat = GL_RGB; break;
+            case(4) : desiredPixelFormat = GL_RGBA; break;
+        }
+    }
+
+    osg::ref_ptr<osg::Image> image = osg::createImage3D(imageList,
+                                        desiredPixelFormat,
+                                        s_maximumTextureSize,
+                                        t_maximumTextureSize,
+                                        r_maximumTextureSize,
+                                        resizeToPowerOfTwo);
+    if (image.valid())
+    {
+        if (modulateAlphaByLuminance)
+        {
+            osg::modifyImage(image.get(), ModulateAlphaByLuminanceOperator());
+        }
+        return image.release();
+    }
+    else
+    {
+        return 0;
+    }
+}
+#else
 
 struct ProcessRow
 {
@@ -435,36 +513,19 @@ struct ProcessRow
 
 };
 
-
-void clampToNearestValidPowerOfTwo(int& sizeX, int& sizeY, int& sizeZ, int s_maximumTextureSize, int t_maximumTextureSize, int r_maximumTextureSize)
-{
-    // compute nearest powers of two for each axis.
-    int s_nearestPowerOfTwo = 1;
-    while(s_nearestPowerOfTwo<sizeX && s_nearestPowerOfTwo<s_maximumTextureSize) s_nearestPowerOfTwo*=2;
-
-    int t_nearestPowerOfTwo = 1;
-    while(t_nearestPowerOfTwo<sizeY && t_nearestPowerOfTwo<t_maximumTextureSize) t_nearestPowerOfTwo*=2;
-
-    int r_nearestPowerOfTwo = 1;
-    while(r_nearestPowerOfTwo<sizeZ && r_nearestPowerOfTwo<r_maximumTextureSize) r_nearestPowerOfTwo*=2;
-
-    sizeX = s_nearestPowerOfTwo;
-    sizeY = t_nearestPowerOfTwo;
-    sizeZ = r_nearestPowerOfTwo;
-}
-
-osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow,
+osg::Image* createTexture3D(osg::ImageList& imageList, 
             unsigned int numComponentsDesired,
             int s_maximumTextureSize,
             int t_maximumTextureSize,
             int r_maximumTextureSize,
             bool resizeToPowerOfTwo)
 {
+    ProcessRow processRow;
     int max_s = 0;
     int max_t = 0;
     unsigned int max_components = 0;
     int total_r = 0;
-    ImageList::iterator itr;
+    osg::ImageList::iterator itr;
     for(itr=imageList.begin();
         itr!=imageList.end();
         ++itr)
@@ -592,7 +653,7 @@ osg::Image* createTexture3D(ImageList& imageList, ProcessRow& processRow,
     }
     return image_3d.release();
 }
-
+#endif
 
 struct ScaleOperator
 {
@@ -767,17 +828,6 @@ enum ColourSpaceOperation
     MODULATE_ALPHA_BY_COLOUR,
     REPLACE_ALPHA_WITH_LUMINANCE,
     REPLACE_RGB_WITH_LUMINANCE
-};
-
-struct ModulateAlphaByLuminanceOperator
-{
-    ModulateAlphaByLuminanceOperator() {}
-
-    inline void luminance(float&) const {}
-    inline void alpha(float&) const {}
-    inline void luminance_alpha(float& l,float& a) const { a*= l; }
-    inline void rgb(float&,float&,float&) const {}
-    inline void rgba(float& r,float& g,float& b,float& a) const { float l = (r+g+b)*0.3333333; a *= l;}
 };
 
 struct ModulateAlphaByColourOperator
@@ -1256,7 +1306,7 @@ int main( int argc, char **argv )
     int images_pos = arguments.find("--images");
     if (images_pos>=0)
     {
-        ImageList imageList;
+        osg::ImageList imageList;
         int pos=images_pos+1;
         for(;pos<arguments.argc() && !arguments.isOption(pos);++pos)
         {
@@ -1291,8 +1341,7 @@ int main( int argc, char **argv )
         arguments.remove(images_pos, pos-images_pos);
 
         // pack the textures into a single texture.
-        ProcessRow processRow;
-        osg::Image* image = createTexture3D(imageList, processRow, numComponentsDesired, s_maximumTextureSize, t_maximumTextureSize, r_maximumTextureSize, resizeToPowerOfTwo);
+        osg::Image* image = createTexture3D(imageList, numComponentsDesired, s_maximumTextureSize, t_maximumTextureSize, r_maximumTextureSize, resizeToPowerOfTwo);
         if (image)
         {
             images.push_back(image);

@@ -132,6 +132,28 @@ extern OSG_EXPORT bool copyImage(const osg::Image* srcImage, int src_s, int src_
 
 /** Compute the min max colour values in the image.*/
 extern OSG_EXPORT bool clearImageToColor(osg::Image* image, const osg::Vec4& colour);
+
+typedef std::vector< osg::ref_ptr<osg::Image> > ImageList;
+
+/** Search through the list of Images and find the maximum number of components used amoung the images.*/
+extern OSG_EXPORT unsigned int maximimNumOfComponents(const ImageList& imageList);
+
+/** create a 3D osg::Image from a list of osg::Image.*/
+extern OSG_EXPORT osg::Image* createImage3D(const ImageList& imageList,
+            GLenum desiredPixelFormat,
+            int s_maximumImageSize = 1024,
+            int t_maximumImageSize = 1024,
+            int r_maximumImageSize = 1024,
+            bool resizeToPowerOfTwo = false);
+
+/** create a 3D osg::Image from a list of osg::Image.*/
+extern OSG_EXPORT osg::Image* createImage3DWithAlpha(const ImageList& imageList,
+            int s_maximumImageSize = 1024,
+            int t_maximumImageSize = 1024,
+            int r_maximumImageSize = 1024,
+            bool resizeToPowerOfTwo = false);
+
+    
 }
 
 

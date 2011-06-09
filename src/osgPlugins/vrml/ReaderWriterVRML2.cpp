@@ -329,28 +329,30 @@ osg::Node* ReaderWriterVRML2::convertFromVRML(openvrml::node *obj) const
                 const openvrml::sfnode * sfn = dynamic_cast<const openvrml::sfnode *>(fv.get());
                 openvrml::sfnode::value_type node_ptr = sfn->value();
 
-                // is it indexed_face_set_node ?
-                if (node_ptr->type().id()=="IndexedFaceSet")
-                    osg_geom = convertVRML97IndexedFaceSet(node_ptr.get());
-
-                else if (node_ptr->type().id()=="IndexedLineSet")
-                    osg_geom = convertVRML97IndexedLineSet(node_ptr.get());
-
-                else if (node_ptr->type().id() == "Box")
-                    osg_geom = convertVRML97Box(node_ptr.get());
-
-                else if (node_ptr->type().id() == "Sphere")
-                    osg_geom = convertVRML97Sphere(node_ptr.get());
-
-                else if (node_ptr->type().id() == "Cone")
-                    osg_geom = convertVRML97Cone(node_ptr.get());
-
-                else if (node_ptr->type().id() == "Cylinder")
-                    osg_geom = convertVRML97Cylinder(node_ptr.get());
-
-                else
-                {
-                    // other geometry types not handled yet
+                if (node_ptr.get()) {
+                    // is it indexed_face_set_node ?
+                    if (node_ptr->type().id()=="IndexedFaceSet")
+                        osg_geom = convertVRML97IndexedFaceSet(node_ptr.get());
+                    
+                    else if (node_ptr->type().id()=="IndexedLineSet")
+                        osg_geom = convertVRML97IndexedLineSet(node_ptr.get());
+                    
+                    else if (node_ptr->type().id() == "Box")
+                        osg_geom = convertVRML97Box(node_ptr.get());
+                    
+                    else if (node_ptr->type().id() == "Sphere")
+                        osg_geom = convertVRML97Sphere(node_ptr.get());
+                    
+                    else if (node_ptr->type().id() == "Cone")
+                        osg_geom = convertVRML97Cone(node_ptr.get());
+                    
+                    else if (node_ptr->type().id() == "Cylinder")
+                        osg_geom = convertVRML97Cylinder(node_ptr.get());
+                    
+                    else
+                    {
+                        // other geometry types not handled yet
+                    }
                 }
             }
         }

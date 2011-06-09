@@ -26,6 +26,7 @@ namespace osg {
 
 // forward declare
 class State;
+class UserDataContainer;
 
 #define _ADDQUOTES(def) #def
 #define ADDQUOTES(def) _ADDQUOTES(def)
@@ -54,9 +55,9 @@ class OSG_EXPORT Object : public Referenced
             and therefore cannot be constructed on its own, only derived
             classes which override the clone and className methods are
             concrete classes and can be constructed.*/
-        inline Object():Referenced(),_dataVariance(UNSPECIFIED) {}
+        inline Object():Referenced(),_dataVariance(UNSPECIFIED), _userDataContainer(0) {}
 
-        inline explicit Object(bool threadSafeRefUnref):Referenced(threadSafeRefUnref),_dataVariance(UNSPECIFIED) {}
+        inline explicit Object(bool threadSafeRefUnref):Referenced(threadSafeRefUnref),_dataVariance(UNSPECIFIED),_userDataContainer(0) {}
 
         /** Copy constructor, optional CopyOp object can be used to control
           * shallow vs deep copying of dynamic data.*/
@@ -121,17 +122,17 @@ class OSG_EXPORT Object : public Referenced
 
 
         /** set the UserDataContainer object.*/
-        void setUserDataContainer(osg::Object* udc) { _userDataContainer = udc; }
+        void setUserDataContainer(osg::UserDataContainer* udc);
 
         /** get the UserDataContainer attached to this object.*/
-        osg::Object* getUserDataContainer() { return _userDataContainer.get(); }
+        osg::UserDataContainer* getUserDataContainer() { return _userDataContainer; }
 
         /** get the const UserDataContainer attached to this object.*/
-        const osg::Object* getUserDataContainer() const { return _userDataContainer.get(); }
+        const osg::UserDataContainer* getUserDataContainer() const { return _userDataContainer; }
 
         /** Convinience method that returns the UserDataContainer, and if one doesn't already exist creates and assigns
-         * one to the Object and then return this new UserDataContainer.*/
-        osg::Object* getOrCreateUserDataContainer();
+         * a DefaultUserDataContainer to the Object and then return this new UserDataContainer.*/
+        osg::UserDataContainer* getOrCreateUserDataContainer();
 
 
         /**
@@ -148,37 +149,6 @@ class OSG_EXPORT Object : public Referenced
         /** Get const user data.*/
         virtual const Referenced* getUserData() const;
         
-        /** Add user data object. Returns the index position of object added. */
-        virtual unsigned int addUserObject(Object* obj);
-
-         /** Add element to list of user data objects.*/
-        virtual void setUserObject(unsigned int i, Object* obj);
-
-        /** Remove element from the list of user data objects.*/
-        virtual void removeUserObject(unsigned int i);
-
-
-        /** Get user data object as specified index position. */
-        virtual Object* getUserObject(unsigned int i);
-
-        /** Get const user data object as specified index position. */
-        virtual const Object* getUserObject(unsigned int i) const;
-
-        /** Get number of user objects assigned to this object.*/
-        virtual unsigned int getNumUserObjects() const;
-
-        /** Get the index position of specified user data object.*/
-        virtual unsigned int getUserObjectIndex(const osg::Object* obj, unsigned int startPos=0) const;
-
-        /** Get the index position of first user data object that matches specified name.*/
-        virtual unsigned int getUserObjectIndex(const std::string& name, unsigned int startPos=0) const;
-
-        
-        /** Get first user data object with specified name. */
-        Object* getUserObject(const std::string& name, unsigned int startPos=0);
-
-        /** Get first const user data object with specified name. */
-        const Object* getUserObject(const std::string& name, unsigned int startPos=0) const;
 
 
         /** Convinience method that casts the named UserObject to osg::TemplateValueObject<T> and gets the value.
@@ -191,33 +161,6 @@ class OSG_EXPORT Object : public Referenced
           * To use this template method you need to include the osg/ValueObject header. */
         template<typename T>
         void setUserValue(const std::string& name, const T& value);
-
-
-        /** A vector of std::string's which are used to describe the object.*/
-        typedef std::vector<std::string> DescriptionList;
-
-        /** Set the list of string descriptions.*/
-        virtual void setDescriptions(const DescriptionList& descriptions);
-
-        /** Get the description list of the node.*/
-        virtual DescriptionList& getDescriptions();
-
-        /** Get the const description list of the const node.*/
-        virtual const DescriptionList& getDescriptions() const;
-
-
-        /** Get a single const description of the const node.*/
-        const std::string& getDescription(unsigned int i) const;
-
-        /** Get a single description of the node.*/
-        std::string& getDescription(unsigned int i);
-
-        /** Get the number of descriptions of the node.*/
-        unsigned int getNumDescriptions() const;
-
-        /** Add a description string to the node.*/
-        void addDescription(const std::string& desc);
-
 
         
         /** Resize any per context GLObject buffers to specified size. */
@@ -238,12 +181,12 @@ class OSG_EXPORT Object : public Referenced
             Nodes cannot be created on stack i.e Node node will not compile,
             forcing all nodes to be created on the heap i.e Node* node
             = new Node().*/
-        virtual ~Object() {}
+        virtual ~Object();
         
         std::string _name;
         DataVariance _dataVariance;
 
-        ref_ptr<osg::Object> _userDataContainer;
+        osg::UserDataContainer* _userDataContainer;
 
     private:
 

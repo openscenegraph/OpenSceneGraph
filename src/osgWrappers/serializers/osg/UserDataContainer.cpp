@@ -4,12 +4,12 @@
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
 
-static bool checkUDC_UserData( const osg::UserDataContainer& udc )
+static bool checkUDC_UserData( const osg::DefaultUserDataContainer& udc )
 {
     return dynamic_cast<const osg::Object*>(udc.getUserData())!=0;
 }
 
-static bool readUDC_UserData( osgDB::InputStream& is, osg::UserDataContainer& udc )
+static bool readUDC_UserData( osgDB::InputStream& is, osg::DefaultUserDataContainer& udc )
 {
     is >> osgDB::BEGIN_BRACKET;
     osg::Object* object = is.readObject();
@@ -18,7 +18,7 @@ static bool readUDC_UserData( osgDB::InputStream& is, osg::UserDataContainer& ud
     return true;
 }
 
-static bool writeUDC_UserData( osgDB::OutputStream& os, const osg::UserDataContainer& udc )
+static bool writeUDC_UserData( osgDB::OutputStream& os, const osg::DefaultUserDataContainer& udc )
 {
     os << osgDB::BEGIN_BRACKET << std::endl;
     os.writeObject(dynamic_cast<const osg::Object*>(udc.getUserData()));
@@ -27,12 +27,12 @@ static bool writeUDC_UserData( osgDB::OutputStream& os, const osg::UserDataConta
 }
 
 // _descriptions
-static bool checkUDC_Descriptions( const osg::UserDataContainer& udc )
+static bool checkUDC_Descriptions( const osg::DefaultUserDataContainer& udc )
 {
     return udc.getNumDescriptions()>0;
 }
 
-static bool readUDC_Descriptions( osgDB::InputStream& is, osg::UserDataContainer& udc )
+static bool readUDC_Descriptions( osgDB::InputStream& is, osg::DefaultUserDataContainer& udc )
 {
     unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
     for ( unsigned int i=0; i<size; ++i )
@@ -45,11 +45,11 @@ static bool readUDC_Descriptions( osgDB::InputStream& is, osg::UserDataContainer
     return true;
 }
 
-static bool writeUDC_Descriptions( osgDB::OutputStream& os, const osg::UserDataContainer& udc )
+static bool writeUDC_Descriptions( osgDB::OutputStream& os, const osg::DefaultUserDataContainer& udc )
 {
-    const osg::Object::DescriptionList& slist = udc.getDescriptions();
+    const osg::UserDataContainer::DescriptionList& slist = udc.getDescriptions();
     os.writeSize(slist.size()); os << osgDB::BEGIN_BRACKET << std::endl;
-    for ( osg::Object::DescriptionList::const_iterator itr=slist.begin();
+    for ( osg::UserDataContainer::DescriptionList::const_iterator itr=slist.begin();
           itr!=slist.end(); ++itr )
     {
         os.writeWrappedString( *itr );
@@ -60,12 +60,12 @@ static bool writeUDC_Descriptions( osgDB::OutputStream& os, const osg::UserDataC
 }
 
 
-static bool checkUDC_UserObjects( const osg::UserDataContainer& udc )
+static bool checkUDC_UserObjects( const osg::DefaultUserDataContainer& udc )
 {
     return udc.getNumUserObjects()>0;
 }
 
-static bool readUDC_UserObjects( osgDB::InputStream& is, osg::UserDataContainer& udc )
+static bool readUDC_UserObjects( osgDB::InputStream& is, osg::DefaultUserDataContainer& udc )
 {
     unsigned int size = is.readSize(); is >> osgDB::BEGIN_BRACKET;
     for( unsigned int i=0; i<size; ++i )
@@ -77,7 +77,7 @@ static bool readUDC_UserObjects( osgDB::InputStream& is, osg::UserDataContainer&
     return true;
 }
 
-static bool writeUDC_UserObjects( osgDB::OutputStream& os, const osg::UserDataContainer& udc )
+static bool writeUDC_UserObjects( osgDB::OutputStream& os, const osg::DefaultUserDataContainer& udc )
 {
     unsigned int numObjects = udc.getNumUserObjects();
     os.writeSize(numObjects); os << osgDB::BEGIN_BRACKET << std::endl;
@@ -90,13 +90,25 @@ static bool writeUDC_UserObjects( osgDB::OutputStream& os, const osg::UserDataCo
 }
 
 
-
-REGISTER_OBJECT_WRAPPER( UserDataContainer,
-                         new osg::UserDataContainer,
-                         osg::UserDataContainer,
-                         "osg::Object osg::UserDataContainer" )
+namespace UserDataContainerNamespace
 {
-    ADD_USER_SERIALIZER( UDC_UserData );  // _userData
-    ADD_USER_SERIALIZER( UDC_Descriptions );  // _descriptions
-    ADD_USER_SERIALIZER( UDC_UserObjects );  // _userData
+    REGISTER_OBJECT_WRAPPER( UserDataContainer,
+                            0,
+                            osg::UserDataContainer,
+                            "osg::Object osg::UserDataContainer" )
+    {
+    }
+}
+
+namespace DefaultUserDataContainerNamespace
+{
+    REGISTER_OBJECT_WRAPPER( DefaultUserDataContainer,
+                            new osg::DefaultUserDataContainer,
+                            osg::DefaultUserDataContainer,
+                            "osg::Object osg::UserDataContainer osg::DefaultUserDataContainer" )
+    {
+        ADD_USER_SERIALIZER( UDC_UserData );  // _userData
+        ADD_USER_SERIALIZER( UDC_Descriptions );  // _descriptions
+        ADD_USER_SERIALIZER( UDC_UserObjects );  // _userData
+    }
 }

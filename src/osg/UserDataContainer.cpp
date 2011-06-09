@@ -27,11 +27,34 @@ UserDataContainer::UserDataContainer():
 UserDataContainer::UserDataContainer(const UserDataContainer& udc, const osg::CopyOp& copyop):
     Object(udc, copyop)
 {
+}
+
+Object* UserDataContainer::getUserObject(const std::string& name, unsigned int startPos)
+{
+     return getUserObject(getUserObjectIndex(name, startPos));
+}
+
+const Object* UserDataContainer::getUserObject(const std::string& name, unsigned int startPos) const
+{
+     return getUserObject(getUserObjectIndex(name, startPos));
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// DefaultUserDataContainer
+//
+DefaultUserDataContainer::DefaultUserDataContainer()
+{
+}
+
+DefaultUserDataContainer::DefaultUserDataContainer(const DefaultUserDataContainer& udc, const osg::CopyOp& copyop):
+    UserDataContainer(udc, copyop)
+{
     _userData = udc._userData;
     _descriptionList = udc._descriptionList;
 }
 
-void UserDataContainer::setThreadSafeRefUnref(bool threadSafe)
+void DefaultUserDataContainer::setThreadSafeRefUnref(bool threadSafe)
 {
     Object::setThreadSafeRefUnref(threadSafe);
 
@@ -45,22 +68,22 @@ void UserDataContainer::setThreadSafeRefUnref(bool threadSafe)
     }
 }
 
-void UserDataContainer::setUserData(Referenced* obj)
+void DefaultUserDataContainer::setUserData(Referenced* obj)
 {
     _userData = obj;
 }
 
-Referenced* UserDataContainer::getUserData()
+Referenced* DefaultUserDataContainer::getUserData()
 {
     return _userData.get();
 }
 
-const Referenced* UserDataContainer::getUserData() const
+const Referenced* DefaultUserDataContainer::getUserData() const
 {
     return _userData.get();
 }
 
-unsigned int UserDataContainer::addUserObject(Object* obj)
+unsigned int DefaultUserDataContainer::addUserObject(Object* obj)
 {
     // make sure that the object isn't already in the container
     unsigned int i = getUserObjectIndex(obj);
@@ -78,7 +101,7 @@ unsigned int UserDataContainer::addUserObject(Object* obj)
     return pos;
 }
 
-void UserDataContainer::removeUserObject(unsigned int i)
+void DefaultUserDataContainer::removeUserObject(unsigned int i)
 {
     if (i<_objectList.size())
     {
@@ -86,7 +109,7 @@ void UserDataContainer::removeUserObject(unsigned int i)
     }
 }
 
-void UserDataContainer::setUserObject(unsigned int i, Object* obj)
+void DefaultUserDataContainer::setUserObject(unsigned int i, Object* obj)
 {
     if (i<_objectList.size())
     {
@@ -94,7 +117,7 @@ void UserDataContainer::setUserObject(unsigned int i, Object* obj)
     }
 }
 
-Object* UserDataContainer::getUserObject(unsigned int i)
+Object* DefaultUserDataContainer::getUserObject(unsigned int i)
 {
     if (i<_objectList.size())
     {
@@ -103,7 +126,7 @@ Object* UserDataContainer::getUserObject(unsigned int i)
     return 0;
 }
 
-const Object* UserDataContainer::getUserObject(unsigned int i) const
+const Object* DefaultUserDataContainer::getUserObject(unsigned int i) const
 {
     if (i<_objectList.size())
     {
@@ -112,12 +135,12 @@ const Object* UserDataContainer::getUserObject(unsigned int i) const
     return 0;
 }
 
-unsigned int UserDataContainer::getNumUserObjects() const
+unsigned int DefaultUserDataContainer::getNumUserObjects() const
 {
     return _objectList.size();
 }
 
-unsigned int UserDataContainer::getUserObjectIndex(const osg::Object* obj, unsigned int startPos) const
+unsigned int DefaultUserDataContainer::getUserObjectIndex(const osg::Object* obj, unsigned int startPos) const
 {
     for(unsigned int i = startPos; i < _objectList.size(); ++i)
     {
@@ -126,7 +149,7 @@ unsigned int UserDataContainer::getUserObjectIndex(const osg::Object* obj, unsig
     return _objectList.size();
 }
 
-unsigned int UserDataContainer::getUserObjectIndex(const std::string& name, unsigned int startPos) const
+unsigned int DefaultUserDataContainer::getUserObjectIndex(const std::string& name, unsigned int startPos) const
 {
     for(unsigned int i = startPos; i < _objectList.size(); ++i)
     {
@@ -136,21 +159,29 @@ unsigned int UserDataContainer::getUserObjectIndex(const std::string& name, unsi
     return _objectList.size();
 }
 
-void UserDataContainer::setDescriptions(const DescriptionList& descriptions)
+void DefaultUserDataContainer::setDescriptions(const DescriptionList& descriptions)
 {
     _descriptionList = descriptions;
 }
 
-Object::DescriptionList& UserDataContainer::getDescriptions()
+UserDataContainer::DescriptionList& DefaultUserDataContainer::getDescriptions()
 {
     return _descriptionList;
 }
 
-const Object::DescriptionList& UserDataContainer::getDescriptions() const
+const UserDataContainer::DescriptionList& DefaultUserDataContainer::getDescriptions() const
 {
     return _descriptionList;
 }
 
+unsigned int DefaultUserDataContainer::getNumDescriptions() const
+{
+    return _descriptionList.size();
+}
 
+void DefaultUserDataContainer::addDescription(const std::string& desc)
+{
+    _descriptionList.push_back(desc);
+}
 
 } // end of namespace osg

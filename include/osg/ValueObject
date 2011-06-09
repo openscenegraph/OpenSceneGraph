@@ -15,6 +15,7 @@
 #define OSG_VALUEOBJECT 1
 
 #include <osg/Object>
+#include <osg/UserDataContainer>
 
 namespace osg {
 
@@ -171,7 +172,7 @@ template<typename T>
 bool osg::Object::getUserValue(const std::string& name, T& value) const
 {
     typedef TemplateValueObject<T> UserValueObject;
-    const UserValueObject* uvo = dynamic_cast<const UserValueObject*>(getUserObject(name));
+    const UserValueObject* uvo = _userDataContainer ? dynamic_cast<const UserValueObject*>(_userDataContainer->getUserObject(name)) : 0;
     if (uvo)
     {
         value = uvo->getValue();
@@ -189,9 +190,11 @@ void osg::Object::setUserValue(const std::string& name, const T& value)
 {
     typedef TemplateValueObject<T> UserValueObject;
 
-    unsigned int i = getUserObjectIndex(name);
-    if (i<getNumUserObjects()) setUserObject(i, new UserValueObject(name,value));
-    else addUserObject(new UserValueObject(name,value));
+    getOrCreateUserDataContainer();
+    
+    unsigned int i = _userDataContainer->getUserObjectIndex(name);
+    if (i<_userDataContainer->getNumUserObjects()) _userDataContainer->setUserObject(i, new UserValueObject(name,value));
+    else _userDataContainer->addUserObject(new UserValueObject(name,value));
 }
 
 }

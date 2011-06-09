@@ -1,4 +1,5 @@
 #include <osg/Object>
+#include <osg/UserDataContainer>
 #include <osgDB/ObjectWrapper>
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
@@ -45,6 +46,6 @@ REGISTER_OBJECT_WRAPPER( Object,
     UPDATE_TO_VERSION( 77 )
     {
         REMOVE_SERIALIZER( UserData );
-        ADD_OBJECT_SERIALIZER( UserDataContainer, osg::Object, NULL );
+        ADD_OBJECT_SERIALIZER( UserDataContainer, osg::UserDataContainer, NULL );
     }
 }

@@ -318,6 +318,33 @@ class OSG_EXPORT Node : public Object
         /** Return the node's const StateSet. Returns NULL if a stateset is not attached.*/
         inline const osg::StateSet* getStateSet() const { return _stateset.get(); }
 
+
+        /** A vector of std::string's which are used to describe the object.*/
+        typedef std::vector<std::string> DescriptionList;
+
+        /** Set the list of string descriptions.*/
+        void setDescriptions(const DescriptionList& descriptions);
+
+        /** Get the description list of the node.*/
+        DescriptionList& getDescriptions();
+
+        /** Get the const description list of the const node.*/
+        const DescriptionList& getDescriptions() const;
+
+
+        /** Get a single const description of the const node.*/
+        const std::string& getDescription(unsigned int i) const;
+
+        /** Get a single description of the node.*/
+        std::string& getDescription(unsigned int i);
+
+        /** Get the number of descriptions of the node.*/
+        unsigned int getNumDescriptions() const;
+
+        /** Add a description string to the node.*/
+        void addDescription(const std::string& desc);
+        
+
         /** Set the initial bounding volume to use when computing the overall bounding volume.*/
         void setInitialBound(const osg::BoundingSphere& bsphere) { _initialBound = bsphere; dirtyBound(); }
 

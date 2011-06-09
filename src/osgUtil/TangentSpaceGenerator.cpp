@@ -104,6 +104,7 @@ void TangentSpaceGenerator::generate(osg::Geometry *geo, int normal_map_tex_unit
                 break;
 
             case osg::PrimitiveSet::TRIANGLE_FAN:
+            case osg::PrimitiveSet::POLYGON:
                 if (pset->getType() == osg::PrimitiveSet::DrawArrayLengthsPrimitiveType) {
                     osg::DrawArrayLengths *dal = static_cast<osg::DrawArrayLengths *>(pset);
                     unsigned int j = 0;
@@ -125,6 +126,8 @@ void TangentSpaceGenerator::generate(osg::Geometry *geo, int normal_map_tex_unit
             case osg::PrimitiveSet::LINES:
             case osg::PrimitiveSet::LINE_STRIP:
             case osg::PrimitiveSet::LINE_LOOP:
+            case osg::PrimitiveSet::LINES_ADJACENCY:
+            case osg::PrimitiveSet::LINE_STRIP_ADJACENCY:
                 break;
 
             default: OSG_WARN << "Warning: TangentSpaceGenerator: unknown primitive mode " << pset->getMode() << "\n";

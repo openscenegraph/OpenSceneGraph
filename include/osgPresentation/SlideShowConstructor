@@ -268,7 +268,7 @@ public:
             alphaValue(1.0),
             cutoffValue(0.1),
             sampleDensityValue(0.005),
-            sampleDensityWhenMovingValue(0.02)
+            sampleDensityWhenMovingValue(0.0)
         {
             region[0] = region[1] = region[2] = 0.0f;
             region[3] = region[4] = region[5] = 1.0f;

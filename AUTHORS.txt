@@ -151,6 +151,7 @@ Maria Ten
 Liang Aibin
 Leandro Motta Barros
 Katharina Plugge
+Jorge Ciges
 John Vidar Larring
 John Kelso
 John Ivar
@@ -183,7 +184,6 @@ Lee Butler
 Konstantin Sinitsyn
 Ken Sewell
 Julian Ortiz
-Jorge Ciges
 Jim Vaughan
 Jeremy Bell
 Jaromir Vitek
@@ -235,6 +235,7 @@ Mathew May
 Martin Spott
 Martijn Kragtwijk
 Marius Heise
+Marcin Hajder
 Lukasz Izdebski
 Lilith Bryant
 Lars Nilsson
@@ -364,7 +365,6 @@ Mario Guimaraes
 Marco Sciabica
 Marco Lehmann
 Marcin Prus
-Marcin Hajder
 Maik Keller
 Lukas Diduch
 Louis Hamilton

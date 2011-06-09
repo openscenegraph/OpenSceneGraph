@@ -547,6 +547,8 @@ int main( int argc, char **argv )
     arguments.getApplicationUsage()->addCommandLineOption("--shift-min-to-zero","Shift the pixel data so min value is 0.0.");
     arguments.getApplicationUsage()->addCommandLineOption("--sequence-length <num>","Set the length of time that a sequence of images with run for.");
     arguments.getApplicationUsage()->addCommandLineOption("--sd <num>","Short hand for --sequence-length");
+    arguments.getApplicationUsage()->addCommandLineOption("--sdwm <num>","Set the SampleDensityWhenMovingProperty to specified value");
+    arguments.getApplicationUsage()->addCommandLineOption("--lod","Enable techniques to reduce the level of detail when moving.");
 //    arguments.getApplicationUsage()->addCommandLineOption("--raw <sizeX> <sizeY> <sizeZ> <numberBytesPerComponent> <numberOfComponents> <endian> <filename>","read a raw image data");
 
     // construct the viewer.
@@ -720,9 +722,14 @@ int main( int argc, char **argv )
     while(arguments.read("--gpu-tf")) { gpuTransferFunction = true; }
     while(arguments.read("--cpu-tf")) { gpuTransferFunction = false; }
 
+    double sampleDensityWhenMoving = 0.0;
+    while(arguments.read("--sdwm", sampleDensityWhenMoving)) {}
+
+    while(arguments.read("--lod")) { sampleDensityWhenMoving = 0.02; }
+
     double sequenceLength = 10.0;
     while(arguments.read("--sequence-duration", sequenceLength) ||
-        arguments.read("--sd", sequenceLength)) {}
+          arguments.read("--sd", sequenceLength)) {}
 
     typedef std::list< osg::ref_ptr<osg::Image> > Images;
     Images images;
@@ -1118,7 +1125,7 @@ int main( int argc, char **argv )
 
         osgVolume::AlphaFuncProperty* ap = new osgVolume::AlphaFuncProperty(alphaFunc);
         osgVolume::SampleDensityProperty* sd = new osgVolume::SampleDensityProperty(0.005);
-        osgVolume::SampleDensityWhenMovingProperty* sdwm = new osgVolume::SampleDensityWhenMovingProperty(0.02);
+        osgVolume::SampleDensityWhenMovingProperty* sdwm = sampleDensityWhenMoving!=0.0 ? new osgVolume::SampleDensityWhenMovingProperty(sampleDensityWhenMoving) : 0;
         osgVolume::TransparencyProperty* tp = new osgVolume::TransparencyProperty(1.0);
         osgVolume::TransferFunctionProperty* tfp = transferFunction.valid() ? new osgVolume::TransferFunctionProperty(transferFunction.get()) : 0;
 
@@ -1127,8 +1134,8 @@ int main( int argc, char **argv )
             osgVolume::CompositeProperty* cp = new osgVolume::CompositeProperty;
             cp->addProperty(ap);
             cp->addProperty(sd);
-            cp->addProperty(sdwm);
             cp->addProperty(tp);
+            if (sdwm) cp->addProperty(sdwm);
             if (tfp) cp->addProperty(tfp);
 
             sp->addProperty(cp);
@@ -1141,6 +1148,7 @@ int main( int argc, char **argv )
             cp->addProperty(sd);
             cp->addProperty(tp);
             cp->addProperty(new osgVolume::LightingProperty);
+            if (sdwm) cp->addProperty(sdwm);
             if (tfp) cp->addProperty(tfp);
 
             sp->addProperty(cp);
@@ -1152,6 +1160,7 @@ int main( int argc, char **argv )
             cp->addProperty(sd);
             cp->addProperty(tp);
             cp->addProperty(new osgVolume::IsoSurfaceProperty(alphaFunc));
+            if (sdwm) cp->addProperty(sdwm);
             if (tfp) cp->addProperty(tfp);
 
             sp->addProperty(cp);
@@ -1164,6 +1173,7 @@ int main( int argc, char **argv )
             cp->addProperty(sd);
             cp->addProperty(tp);
             cp->addProperty(new osgVolume::MaximumIntensityProjectionProperty);
+            if (sdwm) cp->addProperty(sdwm);
             if (tfp) cp->addProperty(tfp);
 
             sp->addProperty(cp);

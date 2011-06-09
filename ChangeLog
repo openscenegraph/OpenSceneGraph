@@ -1,3 +1,200 @@
+2011-06-09 14:11  robert
+
+	* examples/osgAndroidExampleGLES1,
+	  examples/osgAndroidExampleGLES1/AndroidManifest.xml,
+	  examples/osgAndroidExampleGLES1/assets,
+	  examples/osgAndroidExampleGLES1/default.properties,
+	  examples/osgAndroidExampleGLES1/jni,
+	  examples/osgAndroidExampleGLES1/jni/Android.mk,
+	  examples/osgAndroidExampleGLES1/jni/Application.mk,
+	  examples/osgAndroidExampleGLES1/jni/OsgAndroidNotifyHandler.cpp,
+	  examples/osgAndroidExampleGLES1/jni/OsgAndroidNotifyHandler.hpp,
+	  examples/osgAndroidExampleGLES1/jni/OsgMainApp.cpp,
+	  examples/osgAndroidExampleGLES1/jni/OsgMainApp.hpp,
+	  examples/osgAndroidExampleGLES1/jni/osgNativeLib.cpp,
+	  examples/osgAndroidExampleGLES1/proguard.cfg,
+	  examples/osgAndroidExampleGLES1/res,
+	  examples/osgAndroidExampleGLES1/res/drawable-hdpi,
+	  examples/osgAndroidExampleGLES1/res/drawable-hdpi/osg.png,
+	  examples/osgAndroidExampleGLES1/res/drawable-hdpi/web_browser.png,
+	  examples/osgAndroidExampleGLES1/res/drawable-ldpi,
+	  examples/osgAndroidExampleGLES1/res/drawable-ldpi/osg.png,
+	  examples/osgAndroidExampleGLES1/res/drawable-mdpi,
+	  examples/osgAndroidExampleGLES1/res/drawable-mdpi/osg.png,
+	  examples/osgAndroidExampleGLES1/res/layout,
+	  examples/osgAndroidExampleGLES1/res/layout/dialog_text_entry.xml,
+	  examples/osgAndroidExampleGLES1/res/layout/main.xml,
+	  examples/osgAndroidExampleGLES1/res/layout/ui_layout_gles.xml,
+	  examples/osgAndroidExampleGLES1/res/menu,
+	  examples/osgAndroidExampleGLES1/res/menu/appmenu.xml,
+	  examples/osgAndroidExampleGLES1/res/values,
+	  examples/osgAndroidExampleGLES1/res/values/strings.xml,
+	  examples/osgAndroidExampleGLES1/src,
+	  examples/osgAndroidExampleGLES1/src/osg,
+	  examples/osgAndroidExampleGLES1/src/osg/AndroidExample,
+	  examples/osgAndroidExampleGLES1/src/osg/AndroidExample/ColorPickerDialog.java,
+	  examples/osgAndroidExampleGLES1/src/osg/AndroidExample/EGLview.java,
+	  examples/osgAndroidExampleGLES1/src/osg/AndroidExample/osgNativeLib.java,
+	  examples/osgAndroidExampleGLES1/src/osg/AndroidExample/osgViewer.java,
+	  examples/osgAndroidExampleGLES2,
+	  examples/osgAndroidExampleGLES2/AndroidManifest.xml,
+	  examples/osgAndroidExampleGLES2/assets,
+	  examples/osgAndroidExampleGLES2/default.properties,
+	  examples/osgAndroidExampleGLES2/jni,
+	  examples/osgAndroidExampleGLES2/jni/Android.mk,
+	  examples/osgAndroidExampleGLES2/jni/Application.mk,
+	  examples/osgAndroidExampleGLES2/jni/OsgAndroidNotifyHandler.cpp,
+	  examples/osgAndroidExampleGLES2/jni/OsgAndroidNotifyHandler.hpp,
+	  examples/osgAndroidExampleGLES2/jni/OsgMainApp.cpp,
+	  examples/osgAndroidExampleGLES2/jni/OsgMainApp.hpp,
+	  examples/osgAndroidExampleGLES2/jni/osgNativeLib.cpp,
+	  examples/osgAndroidExampleGLES2/proguard.cfg,
+	  examples/osgAndroidExampleGLES2/res,
+	  examples/osgAndroidExampleGLES2/res/drawable-hdpi,
+	  examples/osgAndroidExampleGLES2/res/drawable-hdpi/osg.png,
+	  examples/osgAndroidExampleGLES2/res/drawable-hdpi/web_browser.png,
+	  examples/osgAndroidExampleGLES2/res/drawable-ldpi,
+	  examples/osgAndroidExampleGLES2/res/drawable-ldpi/osg.png,
+	  examples/osgAndroidExampleGLES2/res/drawable-mdpi,
+	  examples/osgAndroidExampleGLES2/res/drawable-mdpi/osg.png,
+	  examples/osgAndroidExampleGLES2/res/layout,
+	  examples/osgAndroidExampleGLES2/res/layout/dialog_text_entry.xml,
+	  examples/osgAndroidExampleGLES2/res/layout/main.xml,
+	  examples/osgAndroidExampleGLES2/res/layout/ui_layout_gles.xml,
+	  examples/osgAndroidExampleGLES2/res/menu,
+	  examples/osgAndroidExampleGLES2/res/menu/appmenu.xml,
+	  examples/osgAndroidExampleGLES2/res/values,
+	  examples/osgAndroidExampleGLES2/res/values/strings.xml,
+	  examples/osgAndroidExampleGLES2/src,
+	  examples/osgAndroidExampleGLES2/src/osg,
+	  examples/osgAndroidExampleGLES2/src/osg/AndroidExample,
+	  examples/osgAndroidExampleGLES2/src/osg/AndroidExample/ColorPickerDialog.java,
+	  examples/osgAndroidExampleGLES2/src/osg/AndroidExample/EGLview.java,
+	  examples/osgAndroidExampleGLES2/src/osg/AndroidExample/osgNativeLib.java,
+	  examples/osgAndroidExampleGLES2/src/osg/AndroidExample/osgViewer.java:
+	  From Jorge Ciges, "two clean example viewers (GLES1/2) that
+	  permit load models withouth recompiling by options in the menu
+	  and some basic options. basic options.
+	  
+	  As Rafa and I told you earlier this can't be integrated in the
+	  CMAKE chain. It needs to be compiled by the user out of the OSG
+	  standard compilation. It could be stored in the examples. That
+	  way users will not come here asking for the examples.
+	  
+	  Main characteristics are:
+	  
+	  -Menu with loading and unloading by path.
+	  -Return to home view
+	  -Keyboard capabilities with manipilator switch and basic state
+	  changing.
+	  -Change color screen.
+	  -Osg log bypassed to LogCat (This comes practically straight from
+	  Marcin Hajder example I've only added personal TAG)
+	  -Earmbi / Earmbi V7
+	  -Install to SD (if the device supports the feature)
+	  
+	  And that's all. Now I'm looking to fix the environmental mapping
+	  with true GLES (it does not work well in Android) I will try to
+	  make it in time for 3.0. The other work that i'm studying Dynamic
+	  build with Android but that will need a lot of time to test.
+
+2011-06-09 12:57  robert
+
+	* examples/osguserdata/osguserdata.cpp, include/osg/Node,
+	  include/osg/Object, include/osg/UserDataContainer,
+	  include/osg/ValueObject, src/osg/Node.cpp, src/osg/Object.cpp,
+	  src/osg/UserDataContainer.cpp,
+	  src/osgWrappers/serializers/osg/Object.cpp,
+	  src/osgWrappers/serializers/osg/UserDataContainer.cpp: Refactored
+	  the UserDataContainer so that the osg::UserDataContainer is now a
+	  pure virtual base class,
+	  with a osg::DefaultUserDataContainer subclassed from this. The
+	  user object access methods have now all
+	  been moved from osg::Object into the UserDataContainer class,
+	  except for the set/getUserData() methods
+	  that are left in osg::Object for backwards compatibility, and the
+	  description list access methods have
+	  been moved back into osg::Node.
+	  
+	  main UserObject access methods are now all def
+
+2011-06-09 11:07  robert
+
+	* src/osgPlugins/vrml/ReaderWriterVRML2.cpp: From Mathias
+	  Froehlich, "the attached patch adds an additional null pointer
+	  check"
+
+2011-06-09 11:05  robert
+
+	* src/osgUtil/TangentSpaceGenerator.cpp: From Mathias Froehlich,
+	  "The attached patch adds the polygon primitive to the
+	  TangentSpace computation.
+	  As far as I understand, this should just work for the polygon as
+	  well as with
+	  the tristrip primitive.
+	  "
+
+2011-06-09 10:48  robert
+
+	* examples/osgvolume/osgvolume.cpp,
+	  include/osgPresentation/SlideShowConstructor: Changed the
+	  defaults volume setting to not enable the SampleDensityWhenMoving
+	  property.
+
+2011-06-08 17:45  robert
+
+	* examples/osgvolume/osgvolume.cpp: Cleaned up example to use the
+	  new ImageUtils functions for creating a 3D image from a list of
+	  images.
+
+2011-06-08 16:10  robert
+
+	* examples/osgvolume/osgvolume.cpp, include/osg/ImageUtils,
+	  src/osg/ImageUtils.cpp,
+	  src/osgPresentation/SlideShowConstructor.cpp: Added support for
+	  creating a 3D Image from an image list.
+	  
+	  Added support for reading a list of images in the Present3D
+	  <volume> tag.
+
+2011-06-08 09:28  robert
+
+	* examples/osguserdata/osguserdata.cpp: Removed OSG_EXPORT
+
+2011-06-08 09:24  robert
+
+	* src/osgViewer/View.cpp: Introduced a less conservative near
+	  ratio.
+
+2011-06-08 09:24  robert
+
+	* examples/osgdepthpartition/CMakeLists.txt,
+	  examples/osgdepthpartition/DepthPartitionNode.cpp,
+	  examples/osgdepthpartition/DepthPartitionNode.h,
+	  examples/osgdepthpartition/DistanceAccumulator.cpp,
+	  examples/osgdepthpartition/DistanceAccumulator.h,
+	  examples/osgdepthpartition/osgdepthpartition.cpp: Simplified the
+	  osgdepthpartion example to use the
+	  osgView::View::setUpDepthPartition(..) feature
+
+2011-06-07 20:24  robert
+
+	* src/osgPresentation/SlideShowConstructor.cpp: Added support for
+	  reading .osg, .osgb, .osgx, .osgt and .ive models that contain
+	  volumes from within the volume tag.
+
+2011-06-07 16:17  robert
+
+	* examples/osgvolume/osgvolume.cpp,
+	  src/osgWrappers/serializers/osgVolume/SampleDensityProperty.cpp:
+	  Added support for .osgt, .osgb and .osgx plugins to osgvolume
+	  example
+
+2011-06-07 15:33  robert
+
+	* AUTHORS.txt, ChangeLog: Updated ChangeLog and AUTHORS file for
+	  release
+
 2011-06-07 14:28  robert
 
 	* src/osgPlugins/fbx/WriterNodeVisitor.cpp: From Sukender, "Lastest

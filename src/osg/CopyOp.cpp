@@ -26,21 +26,22 @@ using namespace osg;
 TYPE* CopyOp::operator() (const TYPE* obj) const \
 { \
     if (obj && _flags&FLAG) \
-        return dynamic_cast<TYPE*>( obj->clone(*this) ); \
+        return osg::clone(obj, *this); \
     else \
         return const_cast<TYPE*>(obj); \
 } 
 
-COPY_OP( Object,         DEEP_COPY_OBJECTS )
-COPY_OP( Node,           DEEP_COPY_NODES )
-COPY_OP( Drawable,       DEEP_COPY_DRAWABLES )
-COPY_OP( StateSet,       DEEP_COPY_STATESETS )
-COPY_OP( Texture,        DEEP_COPY_TEXTURES )
-COPY_OP( Image,          DEEP_COPY_IMAGES )
-COPY_OP( Array,          DEEP_COPY_ARRAYS )
-COPY_OP( PrimitiveSet,   DEEP_COPY_PRIMITIVES )
-COPY_OP( Shape,          DEEP_COPY_SHAPES )
-COPY_OP( Uniform,        DEEP_COPY_UNIFORMS )
+COPY_OP( Object,                   DEEP_COPY_OBJECTS )
+COPY_OP( Node,                     DEEP_COPY_NODES )
+COPY_OP( StateSet,                 DEEP_COPY_STATESETS )
+COPY_OP( Image,                    DEEP_COPY_IMAGES )
+COPY_OP( Uniform,                  DEEP_COPY_UNIFORMS )
+COPY_OP( StateAttributeCallback,   DEEP_COPY_CALLBACKS )
+COPY_OP( Drawable,                 DEEP_COPY_DRAWABLES )
+COPY_OP( Texture,                  DEEP_COPY_TEXTURES )
+COPY_OP( Array,                    DEEP_COPY_ARRAYS )
+COPY_OP( PrimitiveSet,             DEEP_COPY_PRIMITIVES )
+COPY_OP( Shape,                    DEEP_COPY_SHAPES )
 
 Referenced* CopyOp::operator() (const Referenced* ref) const
 {
@@ -58,27 +59,31 @@ StateAttribute* CopyOp::operator() (const StateAttribute* attr) const
         }
         else 
         {
-            return dynamic_cast<StateAttribute*>(attr->clone(*this));
+            return osg::clone(attr, *this);
         }
     }
     else
         return const_cast<StateAttribute*>(attr);
 }
 
-
 NodeCallback* CopyOp::operator() (const NodeCallback* nc) const
 {
     if (nc && _flags&DEEP_COPY_CALLBACKS)
     {
         // deep copy the full chain of callback
-        osg::NodeCallback* first = dynamic_cast<osg::NodeCallback*>(nc->clone(*this));
+        osg::NodeCallback* first = osg::clone(nc, *this);
+        if (!first) return 0;
+
         first->setNestedCallback(0);
         nc = nc->getNestedCallback();
         while (nc) 
         {
-            osg::NodeCallback* ucb = dynamic_cast<osg::NodeCallback*>(nc->clone(*this));
-            ucb->setNestedCallback(0);
-            first->addNestedCallback(ucb);
+            osg::NodeCallback* ucb = osg::clone(nc, *this);
+            if (ucb)
+            {
+                ucb->setNestedCallback(0);
+                first->addNestedCallback(ucb);
+            }
             nc = nc->getNestedCallback();
         }
         return first;
@@ -86,17 +91,3 @@ NodeCallback* CopyOp::operator() (const NodeCallback* nc) const
     else
         return const_cast<NodeCallback*>(nc);
 }
-
-
-StateAttributeCallback* CopyOp::operator() (const StateAttributeCallback* sc) const
-{
-    if (sc && _flags&DEEP_COPY_CALLBACKS)
-    {
-        // deep copy the full chain of callback
-        StateAttributeCallback* cb = dynamic_cast<StateAttributeCallback*>(sc->clone(*this));
-        return cb;
-    }
-    else
-        return const_cast<StateAttributeCallback*>(sc);
-}
-

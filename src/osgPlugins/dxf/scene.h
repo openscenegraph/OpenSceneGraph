@@ -102,7 +102,7 @@ osg::Geometry* createTriGeometry( osg::Vec3Array* vertices, osg::Vec3Array* norm
     geom->setColorArray(colors);
     geom->setColorBinding(osg::Geometry::BIND_OVERALL);
     geom->setNormalArray(normals);
-    geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+    geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
     return geom;
 }
 
@@ -117,7 +117,7 @@ osg::Geometry* createQuadGeometry( osg::Vec3Array* vertices, osg::Vec3Array* nor
     geom->setColorArray(colors);
     geom->setColorBinding(osg::Geometry::BIND_OVERALL);
     geom->setNormalArray(normals);
-    geom->setNormalBinding(osg::Geometry::BIND_PER_PRIMITIVE);
+    geom->setNormalBinding(osg::Geometry::BIND_PER_VERTEX);
     return geom;
 }
 
@@ -252,11 +252,13 @@ protected:
                     coords->push_back(v);
                 }
                 osg::Vec3Array *norms = new osg::Vec3Array;
-                VList normlist = _trinorms[mitr->first];
+                VList& normlist = _trinorms[mitr->first];
                 for (itr = normlist.begin();
                     itr != normlist.end(); ++itr)
                 {
-                    norms->push_back(osg::Vec3(itr->x(), itr->y(), itr->z()));
+                    osg::Vec3 norm(itr->x(), itr->y(), itr->z());
+                    for (int i = 0; i < 3; ++i)
+                        norms->push_back(norm);
                 }
                 root->addChild(createModel(_name, createTriGeometry(coords, norms, getColor(mitr->first))));
             }
@@ -275,10 +277,12 @@ protected:
                     coords->push_back(v);
                 }
                 osg::Vec3Array *norms = new osg::Vec3Array;
-                VList normlist = _quadnorms[mitr->first];
+                VList& normlist = _quadnorms[mitr->first];
                 for (itr = normlist.begin();
                     itr != normlist.end(); ++itr) {
-                    norms->push_back(osg::Vec3(itr->x(), itr->y(), itr->z()));
+                    osg::Vec3 norm(itr->x(), itr->y(), itr->z());
+                    for (int i = 0; i < 4; ++i)
+                        norms->push_back(norm);
                 }
                 root->addChild(createModel(_name, createQuadGeometry(coords, norms, getColor(mitr->first))));
             }

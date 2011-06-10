@@ -4,6 +4,7 @@
 #include <osg/Notify>
 #include <osg/StateSet>
 #include <osg/Switch>
+#include <osg/LOD>
 #include <iostream>
 
 #include "VTXReader.h"

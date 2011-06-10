@@ -145,23 +145,27 @@ public:
     Side(SphereSegment* ss, SphereSegment::SideOrientation po, SphereSegment::BoundaryAngle pa):
             osg::Drawable(), _ss(ss), _planeOrientation(po), _BoundaryAngle(pa) {}
 
-    Side():_ss(0)
-    {
-        OSG_WARN<<
-            "Warning: unexpected call to osgSim::SphereSegment::Side() default constructor"<<std::endl;
-    }
-
-    Side(const Side& rhs, const osg::CopyOp& co=osg:: CopyOp::SHALLOW_COPY): osg::Drawable(rhs,co), _ss(0)
-    {
-        OSG_WARN<<
-            "Warning: unexpected call to osgSim::SphereSegment::Side() copy constructor"<<std::endl;
-    }
-
     META_Object(osgSim,Side)
 
     void drawImplementation(osg::RenderInfo& renderInfo) const;
 
 protected:
+
+    Side():_ss(0), _planeOrientation(SphereSegment::AZIM), _BoundaryAngle(SphereSegment::MIN)
+    {
+        OSG_WARN<<
+            "Warning: unexpected call to osgSim::SphereSegment::Side() default constructor"<<std::endl;
+    }
+
+    Side(const Side& rhs, const osg::CopyOp& co=osg:: CopyOp::SHALLOW_COPY):
+        osg::Drawable(rhs,co),
+        _ss(0),
+        _planeOrientation(rhs._planeOrientation),
+        _BoundaryAngle(rhs._BoundaryAngle)
+    {
+        OSG_WARN<<
+            "Warning: unexpected call to osgSim::SphereSegment::Side() copy constructor"<<std::endl;
+    }
 
     virtual osg::BoundingBox computeBound() const;
 
@@ -195,6 +199,12 @@ public:
     Spoke(SphereSegment* ss, SphereSegment::BoundaryAngle azAngle, SphereSegment::BoundaryAngle elevAngle):
             osg::Drawable(), _ss(ss), _azAngle(azAngle), _elevAngle(elevAngle) { init(); }
 
+    META_Object(osgSim,Spoke)
+
+    void drawImplementation(osg::RenderInfo& renderInfo) const;
+
+protected:
+
     Spoke():_ss(0)
     {
         init();
@@ -202,17 +212,15 @@ public:
             "Warning: unexpected call to osgSim::SphereSegment::Spoke() default constructor"<<std::endl;
     }
 
-    Spoke(const Spoke& rhs, const osg::CopyOp& co=osg:: CopyOp::SHALLOW_COPY): osg::Drawable(rhs,co), _ss(0)
+    Spoke(const Spoke& rhs, const osg::CopyOp& co=osg:: CopyOp::SHALLOW_COPY):
+        osg::Drawable(rhs,co),
+        _ss(0),
+        _azAngle(rhs._azAngle), _elevAngle(rhs._elevAngle)
     {
         OSG_WARN<<
             "Warning: unexpected call to osgSim::SphereSegment::Spoke() copy constructor"<<std::endl;
     }
 
-    META_Object(osgSim,Spoke)
-
-    void drawImplementation(osg::RenderInfo& renderInfo) const;
-
-protected:
 
     void init()
     {
@@ -1353,6 +1361,7 @@ namespace SphereSegmentIntersector
 
             Region():
                 _radiusSurface(OUTSIDE),
+                _leftRightSurfaces(OUTSIDE),
                 _leftSurface(OUTSIDE),
                 _rightSurface(OUTSIDE),
                 _bottomSurface(OUTSIDE),
@@ -2196,7 +2205,8 @@ namespace SphereSegmentIntersector
                 _line(line),
                 _lineEnd(0),
                 _neighbourLine(0),
-                _neighbourLineEnd(0) {}
+                _neighbourLineEnd(0),
+                _distance(FLT_MAX) {}
 
             bool operator < (const LinePair& linePair) const
             {

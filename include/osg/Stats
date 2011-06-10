@@ -38,15 +38,15 @@ class OSG_EXPORT Stats : public osg::Referenced
         
         void allocate(unsigned int numberOfFrames);
         
-        int getEarliestFrameNumber() const { return _latestFrameNumber < static_cast<int>(_attributeMapList.size()) ? 0 : _latestFrameNumber - static_cast<int>(_attributeMapList.size()) + 1; }
-        int getLatestFrameNumber() const { return _latestFrameNumber; }
+        unsigned int getEarliestFrameNumber() const { return _latestFrameNumber < static_cast<unsigned int>(_attributeMapList.size()) ? 0 : _latestFrameNumber - static_cast<unsigned int>(_attributeMapList.size()) + 1; }
+        unsigned int getLatestFrameNumber() const { return _latestFrameNumber; }
         
         typedef std::map<std::string, double> AttributeMap;
         typedef std::vector<AttributeMap> AttributeMapList;
 
-        bool setAttribute(int frameNumber, const std::string& attributeName, double value);
+        bool setAttribute(unsigned int frameNumber, const std::string& attributeName, double value);
         
-        inline bool getAttribute(int frameNumber, const std::string& attributeName, double& value) const
+        inline bool getAttribute(unsigned int frameNumber, const std::string& attributeName, double& value) const
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
             return getAttributeNoMutex(frameNumber, attributeName, value);
@@ -54,15 +54,15 @@ class OSG_EXPORT Stats : public osg::Referenced
 
         bool getAveragedAttribute(const std::string& attributeName, double& value, bool averageInInverseSpace=false) const;
         
-        bool getAveragedAttribute(int startFrameNumber, int endFrameNumber, const std::string& attributeName, double& value, bool averageInInverseSpace=false) const;        
+        bool getAveragedAttribute(unsigned int startFrameNumber, unsigned int endFrameNumber, const std::string& attributeName, double& value, bool averageInInverseSpace=false) const;
         
-        inline AttributeMap& getAttributeMap(int frameNumber)
+        inline AttributeMap& getAttributeMap(unsigned int frameNumber)
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
             return getAttributeMapNoMutex(frameNumber);
         }
         
-        inline const AttributeMap& getAttributeMap(int frameNumber) const
+        inline const AttributeMap& getAttributeMap(unsigned int frameNumber) const
         {
             OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_mutex);
             return getAttributeMapNoMutex(frameNumber);
@@ -87,13 +87,13 @@ class OSG_EXPORT Stats : public osg::Referenced
     
         virtual ~Stats() {}
         
-        bool getAttributeNoMutex(int frameNumber, const std::string& attributeName, double& value) const;
+        bool getAttributeNoMutex(unsigned int frameNumber, const std::string& attributeName, double& value) const;
 
-        AttributeMap& getAttributeMapNoMutex(int frameNumber);
-        const AttributeMap& getAttributeMapNoMutex(int frameNumber) const;
+        AttributeMap& getAttributeMapNoMutex(unsigned int frameNumber);
+        const AttributeMap& getAttributeMapNoMutex(unsigned int frameNumber) const;
 
 
-        int getIndex(int frameNumber) const
+        int getIndex(unsigned int frameNumber) const
         {
             // reject frame that are in the future
             if (frameNumber > _latestFrameNumber) return -1;
@@ -109,8 +109,8 @@ class OSG_EXPORT Stats : public osg::Referenced
         
         mutable OpenThreads::Mutex  _mutex;
         
-        int                 _baseFrameNumber;
-        int                 _latestFrameNumber;
+        unsigned int        _baseFrameNumber;
+        unsigned int        _latestFrameNumber;
         
         AttributeMapList    _attributeMapList;
         AttributeMap        _invalidAttributeMap;

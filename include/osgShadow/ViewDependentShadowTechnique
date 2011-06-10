@@ -119,7 +119,7 @@ class OSGSHADOW_EXPORT ViewDependentShadowTechnique
 
 
         /** Declaration of standard OSG object methods */
-        META_Object( ViewDependentShadow, ViewDependentShadowTechnique );
+        META_Object( osgShadow, ViewDependentShadowTechnique );
 
         /** Dirty view data bits and force update of view data resources */
         virtual void dirty();

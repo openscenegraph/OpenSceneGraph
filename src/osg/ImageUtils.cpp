@@ -197,7 +197,7 @@ struct WriteRowOperator
 };
 
 bool copyImage(const osg::Image* srcImage, int src_s, int src_t, int src_r, int width, int height, int depth,
-                          osg::Image* destImage, int dest_s, int dest_t, int dest_r, bool doRescale)
+               osg::Image* destImage, int dest_s, int dest_t, int dest_r, bool doRescale)
 {
     if ((src_s+width) > (dest_s + destImage->s()))
     {
@@ -287,8 +287,8 @@ bool copyImage(const osg::Image* srcImage, int src_s, int src_t, int src_r, int 
     }
     else
     {
-        OSG_NOTICE<<"copyImage("<<srcImage<<", "<<src_s<<", "<< src_t<<", "<<src_r<<", "<<width<<", "<<height<<", "<<depth<<std::endl;
-        OSG_NOTICE<<"          "<<destImage<<", "<<dest_s<<", "<< dest_t<<", "<<dest_r<<", "<<doRescale<<")"<<std::endl;
+        //OSG_NOTICE<<"copyImage("<<srcImage<<", "<<src_s<<", "<< src_t<<", "<<src_r<<", "<<width<<", "<<height<<", "<<depth<<std::endl;
+        //OSG_NOTICE<<"          "<<destImage<<", "<<dest_s<<", "<< dest_t<<", "<<dest_r<<", "<<doRescale<<")"<<std::endl;
                 
         RecordRowOperator readOp(width);
         WriteRowOperator writeOp;
@@ -344,5 +344,204 @@ bool clearImageToColor(osg::Image* image, const osg::Vec4& colour)
     return true;
 }
 
+/** Search through the list of Images and find the maximum number of components used amoung the images.*/
+unsigned int maximimNumOfComponents(const ImageList& imageList)
+{
+    unsigned int max_components = 0;
+    for(osg::ImageList::const_iterator itr=imageList.begin();
+        itr!=imageList.end();
+        ++itr)
+    {
+        osg::Image* image = itr->get();
+        GLenum pixelFormat = image->getPixelFormat();
+        if (pixelFormat==GL_ALPHA ||
+            pixelFormat==GL_INTENSITY ||
+            pixelFormat==GL_LUMINANCE ||
+            pixelFormat==GL_LUMINANCE_ALPHA ||
+            pixelFormat==GL_RGB ||
+            pixelFormat==GL_RGBA ||
+            pixelFormat==GL_BGR ||
+            pixelFormat==GL_BGRA)
+        {
+            max_components = osg::maximum(osg::Image::computeNumComponents(pixelFormat), max_components);
+        }
+    }
+    return max_components;
+}
+
+osg::Image* createImage3D(const ImageList& imageList,
+                          GLenum desiredPixelFormat,
+                          int s_maximumImageSize,
+                          int t_maximumImageSize,
+                          int r_maximumImageSize,
+                          bool resizeToPowerOfTwo)
+{
+    OSG_INFO<<"createImage3D(..)"<<std::endl;
+    int max_s = 0;
+    int max_t = 0;
+    int total_r = 0;
+    for(osg::ImageList::const_iterator itr=imageList.begin();
+        itr!=imageList.end();
+        ++itr)
+    {
+        osg::Image* image = itr->get();
+        GLenum pixelFormat = image->getPixelFormat();
+        if (pixelFormat==GL_ALPHA ||
+            pixelFormat==GL_INTENSITY ||
+            pixelFormat==GL_LUMINANCE ||
+            pixelFormat==GL_LUMINANCE_ALPHA ||
+            pixelFormat==GL_RGB ||
+            pixelFormat==GL_RGBA ||
+            pixelFormat==GL_BGR ||
+            pixelFormat==GL_BGRA)
+        {
+            max_s = osg::maximum(image->s(), max_s);
+            max_t = osg::maximum(image->t(), max_t);
+            total_r += image->r();
+        }
+        else
+        {
+            OSG_INFO<<"Image "<<image->getFileName()<<" has unsuitable pixel format 0x"<< std::hex<< pixelFormat << std::dec << std::endl;
+        }
+    }
+
+    //bool remapRGBtoLuminance;
+    //bool remapRGBtoRGBA;
+
+    if (desiredPixelFormat==0)
+    {
+        unsigned int max_components = maximimNumOfComponents(imageList);
+        switch(max_components)
+        {
+        case(1):
+            OSG_INFO<<"desiredPixelFormat = GL_LUMINANCE" << std::endl;
+            desiredPixelFormat = GL_LUMINANCE;
+            break;
+        case(2):
+            OSG_INFO<<"desiredPixelFormat = GL_LUMINANCE_ALPHA" << std::endl;
+            desiredPixelFormat = GL_LUMINANCE_ALPHA;
+            break;
+        case(3):
+            OSG_INFO<<"desiredPixelFormat = GL_RGB" << std::endl;
+            desiredPixelFormat = GL_RGB;
+            break;
+        case(4):
+            OSG_INFO<<"desiredPixelFormat = GL_RGBA" << std::endl;
+            desiredPixelFormat = GL_RGBA;
+            break;
+        }
+    }
+    if (desiredPixelFormat==0) return 0;
+
+    // compute nearest powers of two for each axis.
+
+    int size_s = 1;
+    int size_t = 1;
+    int size_r = 1;
+
+    if (resizeToPowerOfTwo)
+    {
+        while(size_s<max_s && size_s<s_maximumImageSize) size_s*=2;
+        while(size_t<max_t && size_t<t_maximumImageSize) size_t*=2;
+        while(size_r<total_r && size_r<r_maximumImageSize) size_r*=2;
+    }
+    else
+    {
+        size_s = max_s;
+        size_t = max_t;
+        size_r = total_r;
+    }
+
+    // now allocate the 3d texture;
+    osg::ref_ptr<osg::Image> image_3d = new osg::Image;
+    image_3d->allocateImage(size_s,size_t,size_r,
+                            desiredPixelFormat,GL_UNSIGNED_BYTE);
+
+    unsigned int r_offset = (total_r<size_r) ? (size_r-total_r)/2 : 0;
+
+    int curr_dest_r = r_offset;
+
+    // copy across the values from the source images into the image_3d.
+    for(osg::ImageList::const_iterator itr=imageList.begin();
+        itr!=imageList.end();
+        ++itr)
+    {
+        osg::Image* image = itr->get();
+        GLenum pixelFormat = image->getPixelFormat();
+        if (pixelFormat==GL_ALPHA ||
+            pixelFormat==GL_LUMINANCE ||
+            pixelFormat==GL_INTENSITY ||
+            pixelFormat==GL_LUMINANCE_ALPHA ||
+            pixelFormat==GL_RGB ||
+            pixelFormat==GL_RGBA ||
+            pixelFormat==GL_BGR ||
+            pixelFormat==GL_BGRA)
+        {
+            
+            int num_s = osg::minimum(image->s(), image_3d->s());
+            int num_t = osg::minimum(image->t(), image_3d->t());
+            int num_r = osg::minimum(image->r(), (image_3d->r() - curr_dest_r));
+
+            unsigned int s_offset_dest = (image->s()<size_s) ? (size_s - image->s())/2 : 0;
+            unsigned int t_offset_dest = (image->t()<size_t) ? (size_t - image->t())/2 : 0;
+
+            copyImage(image, 0, 0, 0, num_s, num_t, num_r,
+                      image_3d.get(), s_offset_dest, t_offset_dest, curr_dest_r, false);
+
+            curr_dest_r += num_r;
+        }
+    }
+    
+    return image_3d.release();
+}
+
+struct ModulateAlphaByLuminanceOperator
+{
+    ModulateAlphaByLuminanceOperator() {}
+
+    inline void luminance(float&) const {}
+    inline void alpha(float&) const {}
+    inline void luminance_alpha(float& l,float& a) const { a*= l; }
+    inline void rgb(float&,float&,float&) const {}
+    inline void rgba(float& r,float& g,float& b,float& a) const { float l = (r+g+b)*0.3333333; a *= l;}
+};
+ 
+osg::Image* createImage3DWithAlpha(const ImageList& imageList,
+            int s_maximumImageSize,
+            int t_maximumImageSize,
+            int r_maximumImageSize,
+            bool resizeToPowerOfTwo)
+{
+    GLenum desiredPixelFormat = 0;
+    bool modulateAlphaByLuminance = false;
+
+    unsigned int maxNumComponents = osg::maximimNumOfComponents(imageList);
+    if (maxNumComponents==3)
+    {
+        desiredPixelFormat = GL_RGBA;
+        modulateAlphaByLuminance = true;
+    }
+    
+    osg::ref_ptr<osg::Image> image = createImage3D(imageList,
+                                        desiredPixelFormat,
+                                        s_maximumImageSize,
+                                        t_maximumImageSize,
+                                        r_maximumImageSize,
+                                        resizeToPowerOfTwo);
+    if (image.valid())
+    {
+        if (modulateAlphaByLuminance)
+        {
+            osg::modifyImage(image.get(), ModulateAlphaByLuminanceOperator());
+        }
+        return image.release();
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+    
 }
 

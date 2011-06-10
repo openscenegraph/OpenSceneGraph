@@ -127,7 +127,7 @@ void PagedLOD::traverse(NodeVisitor& nv)
     }
 
     double timeStamp = nv.getFrameStamp()?nv.getFrameStamp()->getReferenceTime():0.0;
-    int frameNumber = nv.getFrameStamp()?nv.getFrameStamp()->getFrameNumber():0;
+    unsigned int frameNumber = nv.getFrameStamp()?nv.getFrameStamp()->getFrameNumber():0;
     bool updateTimeStamp = nv.getVisitorType()==osg::NodeVisitor::CULL_VISITOR;
 
     switch(nv.getTraversalMode())
@@ -218,12 +218,12 @@ void PagedLOD::traverse(NodeVisitor& nv)
 
                     if (_databasePath.empty())
                     {
-                        nv.getDatabaseRequestHandler()->requestNodeFile(_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp(), _perRangeDataList[numChildren]._databaseRequest, _databaseOptions.get());
+                        nv.getDatabaseRequestHandler()->requestNodeFile(_perRangeDataList[numChildren]._filename,nv.getNodePath(),priority,nv.getFrameStamp(), _perRangeDataList[numChildren]._databaseRequest, _databaseOptions.get());
                     }
                     else
                     {
                         // prepend the databasePath to the child's filename.
-                        nv.getDatabaseRequestHandler()->requestNodeFile(_databasePath+_perRangeDataList[numChildren]._filename,this,priority,nv.getFrameStamp(), _perRangeDataList[numChildren]._databaseRequest, _databaseOptions.get());
+                        nv.getDatabaseRequestHandler()->requestNodeFile(_databasePath+_perRangeDataList[numChildren]._filename,nv.getNodePath(),priority,nv.getFrameStamp(), _perRangeDataList[numChildren]._databaseRequest, _databaseOptions.get());
                     }
                 }
 
@@ -284,38 +284,19 @@ bool PagedLOD::removeChildren( unsigned int pos,unsigned int numChildrenToRemove
     return Group::removeChildren(pos,numChildrenToRemove);
 }
 
-bool PagedLOD::removeExpiredChildren(double expiryTime, int expiryFrame, NodeList& removedChildren)
+bool PagedLOD::removeExpiredChildren(double expiryTime, unsigned int expiryFrame, NodeList& removedChildren)
 {
     if (_children.size()>_numChildrenThatCannotBeExpired)
     {
-        if (!_perRangeDataList[_children.size()-1]._filename.empty() &&
-            _perRangeDataList[_children.size()-1]._timeStamp<expiryTime &&
-            _perRangeDataList[_children.size()-1]._frameNumber<expiryFrame)
+        unsigned cindex = _children.size() - 1;
+        if (!_perRangeDataList[cindex]._filename.empty() &&
+            _perRangeDataList[cindex]._timeStamp<expiryTime &&
+            _perRangeDataList[cindex]._frameNumber<expiryFrame)
         {            
-            osg::Node* nodeToRemove = _children[_children.size()-1].get();
+            osg::Node* nodeToRemove = _children[cindex].get();
             removedChildren.push_back(nodeToRemove);
-            return Group::removeChildren(_children.size()-1,1);
+            return Group::removeChildren(cindex,1);
         }
     }
     return false;
-}
-
-bool PagedLOD::releaseGLObjectsOnExpiredChildren(double releaseTime, int releaseFrame)
-{
-    unsigned int numChildrenReleased = 0;
-
-    unsigned int numChildren = osg::minimum(_perRangeDataList.size(), _children.size());
-    for(unsigned int i=_numChildrenThatCannotBeExpired; i<numChildren; ++i)
-    {
-        if (_perRangeDataList[i]._frameNumberOfLastReleaseGLObjects != _perRangeDataList[i]._frameNumber &&
-            _perRangeDataList[i]._timeStamp<releaseTime &&
-            _perRangeDataList[i]._frameNumber<releaseFrame)
-        {
-            _perRangeDataList[i]._frameNumberOfLastReleaseGLObjects = _perRangeDataList[i]._frameNumber;
-            
-            _children[i]->releaseGLObjects();
-            ++numChildrenReleased;
-        }
-    }
-    return numChildrenReleased>0;
 }

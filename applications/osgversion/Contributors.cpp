@@ -40,7 +40,8 @@ const char* validNames[] =
 {
     "de",
     "den",
-    "van"
+    "van",
+    "von"
 };
 
 const char* invalidNames[] =
@@ -201,6 +202,7 @@ const char* invalidNames[] =
     "TessellationHints",
     "TestManipulator",
     "TestSupportCallback",
+    "Text",
     "TexEnv",
     "TexMat(Matrix",
     "Texture",
@@ -239,7 +241,12 @@ const char* invalidNames[] =
     "ImageLayer",
     "Xml",
     "Y",
-    "UpdateSkeleton"
+    "UpdateSkeleton",
+    "IncementalCompileOperation",
+    "Billboard",
+    "UpdateSkeleton",
+    "Vec3",
+    "Plugin"
 };
 
 
@@ -251,6 +258,7 @@ struct TypoCorrection
 
 TypoCorrection typoCorrections[] =
 {
+    {"Alaxandre",      "Alexandre"},
     {"Aderian",        "Adrian"},
     {"Adndre",         "Andre"},
     {"Adrain",         "Adrian"},
@@ -336,11 +344,13 @@ TypoCorrection typoCorrections[] =
     {"Lownman",        "Lowman"},
     {"Lugi",           "Luigi"},
     {"Lweandowski",    "Lewandowski"},
+    {"Lavingotte",     "Lavignotte"},
     {"Maceij",         "Maciej"},
     {"Machler",        "Mächler"},
     {"Macro",          "Marco"},
     {"Maechler",       "Mächler"},
     {"Mahai",          "Mihai"},
+    {"Magnes",          "Magnus"},
     {"Mammond",        "Marmond"},
     {"March",          "Marco"},
     {"Martsz",         "Martz"},
@@ -418,7 +428,15 @@ TypoCorrection typoCorrections[] =
     {"Gurhrie",        "Guthrie"},
     {"Byran",          "Bryan"},
     {"Fielder",        "Fiedler"},
-    {"Mathia",         "Mathias"}
+    {"Mathia",         "Mathias"},
+    {"Halgarth",       "Hogarth"},
+    {"Jean-Sebasien",  "Jean-Sebastien"},
+    {"Katherina",      "Katharina"},
+    {"Biyfarguine",    "Boufarguine"},
+    {"Dickenson",       "Dickinson"},
+    {"Jahannes","Johannes"},
+    {"Baeuerele","Baeuerle"},
+    {"Bauerle","Baeuerle"}
 };
 
 
@@ -432,6 +450,24 @@ struct NameCorrection
 
 NameCorrection nameCorrections[] =
 {
+    {"Rafa","Gata",
+     "Rafa", "Gaitan"},
+    {"Sukender","I",
+     "Sukender", ""},
+    {"Sukender","Here",
+     "Sukender", ""},
+    {"Ewe","Woessner",
+     "Uwe", "Woessner"},
+    {"Martin","von",
+     "Martin", "von Gargern"},
+    {"Alexandre","Irion",
+     "Alexander", "Irion"},
+    {"WojciechLewandowski","",
+     "Wojciech", "Lewandowski"},
+    {"Marin",          "Platings",
+     "Michael",        "Platings"},
+    {"Tomas",          "Holgarth",
+     "Thomas",         "Hogarth"},
     {"Marin",          "Lavery",
      "Martin",         "Lavery"},
     {"Nguyen",         "Van",

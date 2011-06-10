@@ -1,0 +1,74 @@
+/* OpenSceneGraph example, osgdirectinput.
+*
+*  Permission is hereby granted, free of charge, to any person obtaining a copy
+*  of this software and associated documentation files (the "Software"), to deal
+*  in the Software without restriction, including without limitation the rights
+*  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+*  copies of the Software, and to permit persons to whom the Software is
+*  furnished to do so, subject to the following conditions:
+*
+*  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+*  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+*  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+*  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+*  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+*  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+*  THE SOFTWARE.
+*/
+
+#ifndef OSGDIRECTINPUT_H
+#define OSGDIRECTINPUT_H
+
+#define DIRECTINPUT_VERSION 0x0800
+#include <windows.h>
+#include <dinput.h>
+#include <iostream>
+
+class JoystickEvent : public osg::Referenced
+{
+public:
+    JoystickEvent() {}
+    virtual ~JoystickEvent() {}
+    DIJOYSTATE2 _js;
+};
+
+class DirectInputRegistry : public osg::Referenced
+{
+public:
+    static DirectInputRegistry* instance()
+    {
+        static osg::ref_ptr<DirectInputRegistry> s_registry = new DirectInputRegistry;
+        return s_registry.get();
+    }
+    
+    LPDIRECTINPUT8& getDevice() { return _inputDevice; }
+    LPDIRECTINPUTDEVICE8& getKeyboard() { return _keyboard; }
+    LPDIRECTINPUTDEVICE8& getMouse() { return _mouse; }
+    LPDIRECTINPUTDEVICE8& getJoyStick() { return _joystick; }
+    
+    bool valid() const { return _supportDirectInput; }
+    
+    bool initKeyboard( HWND handle );
+    bool initMouse( HWND handle );
+    bool initJoystick( HWND handle );
+    
+    void updateState( osgGA::EventQueue* eventQueue );
+    
+protected:
+    DirectInputRegistry();
+    virtual ~DirectInputRegistry();
+    
+    bool initImplementation( HWND handle, LPDIRECTINPUTDEVICE8 device, LPCDIDATAFORMAT format );
+    void pollDevice( LPDIRECTINPUTDEVICE8 device );
+    void releaseDevice( LPDIRECTINPUTDEVICE8 device );
+    
+    static BOOL CALLBACK EnumJoysticksCallback( const DIDEVICEINSTANCE* didInstance, VOID* );
+    
+    LPDIRECTINPUT8 _inputDevice;
+    LPDIRECTINPUTDEVICE8 _keyboard;
+    LPDIRECTINPUTDEVICE8 _mouse;
+    LPDIRECTINPUTDEVICE8 _joystick;
+    bool _supportDirectInput;
+};
+
+#endif

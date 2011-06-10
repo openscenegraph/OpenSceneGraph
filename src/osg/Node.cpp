@@ -17,6 +17,7 @@
 #include <osg/Notify>
 #include <osg/OccluderNode>
 #include <osg/Transform>
+#include <osg/UserDataContainer>
 
 #include <algorithm>
 
@@ -81,8 +82,7 @@ Node::Node(const Node& node,const CopyOp& copyop):
         _cullingActive(node._cullingActive),
         _numChildrenWithCullingDisabled(0), // assume no children yet.
         _numChildrenWithOccluderNodes(0),
-        _nodeMask(node._nodeMask), 
-        _descriptions(node._descriptions)
+        _nodeMask(node._nodeMask)
 {
     setStateSet(copyop(node._stateset.get()));
 }
@@ -473,6 +473,51 @@ bool Node::containsOccluderNodes() const
     return _numChildrenWithOccluderNodes>0 || dynamic_cast<const OccluderNode*>(this);
 }
 
+void Node::setDescriptions(const DescriptionList& descriptions)
+{
+    getOrCreateUserDataContainer()->setDescriptions(descriptions);
+}
+
+Node::DescriptionList& Node::getDescriptions()
+{
+    return getOrCreateUserDataContainer()->getDescriptions();
+}
+
+static OpenThreads::Mutex s_mutex_StaticDescriptionList;
+static const Node::DescriptionList& getStaticDescriptionList()
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(s_mutex_StaticDescriptionList);
+    static Node::DescriptionList s_descriptionList;
+    return s_descriptionList;
+}
+
+const Node::DescriptionList& Node::getDescriptions() const
+{
+    if (_userDataContainer) return _userDataContainer->getDescriptions();
+    else return getStaticDescriptionList();
+}
+
+std::string& Node::getDescription(unsigned int i)
+{
+    return getOrCreateUserDataContainer()->getDescriptions()[i];
+}
+
+const std::string& Node::getDescription(unsigned int i) const
+{
+    if (_userDataContainer) return _userDataContainer->getDescriptions()[i];
+    else return getStaticDescriptionList()[i];
+}
+
+unsigned int Node::getNumDescriptions() const
+{
+    return _userDataContainer ? _userDataContainer->getDescriptions().size() : 0;
+}
+
+void Node::addDescription(const std::string& desc)
+{
+    getOrCreateUserDataContainer()->getDescriptions().push_back(desc);
+}
+
 BoundingSphere Node::computeBound() const
 {
     return BoundingSphere();
@@ -501,12 +546,9 @@ void Node::setThreadSafeRefUnref(bool threadSafe)
     Object::setThreadSafeRefUnref(threadSafe);
     
     if (_stateset.valid()) _stateset->setThreadSafeRefUnref(threadSafe);
-
     if (_updateCallback.valid()) _updateCallback->setThreadSafeRefUnref(threadSafe);
     if (_eventCallback.valid()) _eventCallback->setThreadSafeRefUnref(threadSafe);
     if (_cullCallback.valid()) _cullCallback->setThreadSafeRefUnref(threadSafe);
-
-    if (_userData.valid()) _userData->setThreadSafeRefUnref(threadSafe);
 }
 
 void Node::resizeGLObjectBuffers(unsigned int maxSize)

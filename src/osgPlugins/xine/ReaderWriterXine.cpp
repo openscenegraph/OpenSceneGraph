@@ -316,6 +316,7 @@ class ReaderWriterXine : public osgDB::ReaderWriter
             supportsExtension("ogv","");
             supportsExtension("flv","");
             supportsExtension("mov","");
+            supportsExtension("m4v","");
             supportsExtension("mpg","Mpeg movie format");
             supportsExtension("mpv","Mpeg movie format");
             supportsExtension("wmv","");

@@ -28,6 +28,8 @@ public:
 
     virtual std::string getFileName() const;
 
+    virtual bool supportsMultipleFontResolutions() const { return false; }
+    
     virtual osgText::Glyph* getGlyph(const osgText::FontResolution& fontRes, unsigned int charcode);
 
     virtual osgText::Glyph3D* getGlyph3D(unsigned int) { return 0; }
@@ -35,8 +37,6 @@ public:
     virtual bool hasVertical() const;
 
     virtual osg::Vec2 getKerning(unsigned int leftcharcode,unsigned int rightcharcode, osgText::KerningType kerningType);
-
-    virtual float getScale() const { return 1.0; }
 
     bool loadFont(std::istream& stream);
 

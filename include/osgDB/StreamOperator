@@ -44,6 +44,20 @@ public:
     virtual void flush() { _out->flush(); }
     
 protected:
+    // Return true if the manipulator is std::endl
+    bool isEndl( std::ostream& (*fn)(std::ostream&) )
+    {
+#ifdef __sun
+        // What a mess, but solaris does not like taking the address below
+        std::stringstream ss;
+        ss << fn;
+        std::string s = ss.str();
+        return !s.empty() && s[0] == '\n';
+#else
+        return fn==static_cast<std::ostream& (*)(std::ostream&)>(std::endl);
+#endif
+    }
+
     std::ostream* _out;
 };
 

@@ -190,7 +190,7 @@ int main(int argc, char** argv)
     }
 
     // load the nodes from the commandline arguments.
-    osg::Node* rootnode = osgDB::readNodeFiles(arguments);
+    osg::ref_ptr<osg::Node> rootnode = osgDB::readNodeFiles(arguments);
 
     if (!rootnode)
     {
@@ -198,13 +198,28 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    osgTerrain::Terrain* terrain = findTopMostNodeOfType<osgTerrain::Terrain>(rootnode);
+    osg::ref_ptr<osgTerrain::Terrain> terrain = findTopMostNodeOfType<osgTerrain::Terrain>(rootnode.get());
     if (!terrain)
     {
+        // no Terrain node present insert one above the loaded model.
         terrain = new osgTerrain::Terrain;
-        terrain->addChild(rootnode);
 
-        rootnode = terrain;
+        // if CoordinateSystemNode is present copy it's contents into the Terrain, and discard it.
+        osg::CoordinateSystemNode* csn = findTopMostNodeOfType<osg::CoordinateSystemNode>(rootnode.get());
+        if (csn)
+        {
+            terrain->set(*csn);
+            for(unsigned int i=0; i<csn->getNumChildren();++i)
+            {
+                terrain->addChild(csn->getChild(i));
+            }
+        }
+        else
+        {
+            terrain->addChild(rootnode.get());
+        }
+
+        rootnode = terrain.get();
     }
 
     terrain->setSampleRatio(sampleRatio);
@@ -212,10 +227,10 @@ int main(int argc, char** argv)
     terrain->setBlendingPolicy(blendingPolicy);
 
     // register our custom handler for adjust Terrain settings
-    viewer.addEventHandler(new TerrainHandler(terrain));
+    viewer.addEventHandler(new TerrainHandler(terrain.get()));
 
     // add a viewport to the viewer and attach the scene graph.
-    viewer.setSceneData( rootnode );
+    viewer.setSceneData( rootnode.get() );
 
 
     // run the viewers main loop

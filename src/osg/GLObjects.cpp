@@ -34,8 +34,8 @@ void osg::flushDeletedGLObjects(unsigned int contextID, double currentTime, doub
 
     osg::GLBufferObject::flushDeletedBufferObjects(contextID,currentTime,availableTime);
     osg::FrameBufferObject::flushDeletedFrameBufferObjects(contextID,currentTime,availableTime);
-    osg::Program::flushDeletedGlPrograms(contextID,currentTime,availableTime);
     osg::RenderBuffer::flushDeletedRenderBuffers(contextID,currentTime,availableTime);
+    osg::Program::flushDeletedGlPrograms(contextID,currentTime,availableTime);
     osg::Shader::flushDeletedGlShaders(contextID,currentTime,availableTime);
     osg::Texture::flushDeletedTextureObjects(contextID,currentTime,availableTime);
     osg::OcclusionQueryNode::flushDeletedQueryObjects(contextID,currentTime,availableTime);

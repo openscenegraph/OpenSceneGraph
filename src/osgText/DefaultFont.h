@@ -30,8 +30,7 @@ public:
 
     virtual std::string getFileName() const { return ""; }
 
-    /** NOP with DefaultFont since it only supports a single fixed sized font. */
-    virtual void setSize(unsigned int width, unsigned int height);
+    virtual bool supportsMultipleFontResolutions() const { return false; }
 
     virtual osgText::Glyph* getGlyph(const FontResolution& fontRes, unsigned int charcode);
     

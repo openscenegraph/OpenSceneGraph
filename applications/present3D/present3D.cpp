@@ -918,15 +918,15 @@ int main( int argc, char **argv )
                 scratchPad.reset();
                 scratchPad.read(cp);
 
-                bc.setBuffer(scratchPad._startPtr, scratchPad._numBytes);
+                bc.setBuffer(scratchPad.startPtr(), scratchPad.numBytes());
                 
-                std::cout << "bc.sync()"<<scratchPad._numBytes<<std::endl;
+                std::cout << "bc.sync()"<<scratchPad.numBytes()<<std::endl;
 
                 bc.sync();
             }
             else if (P3DApplicationType==SLAVE)
             {
-                rc.setBuffer(scratchPad._startPtr, scratchPad._numBytes);
+                rc.setBuffer(scratchPad.startPtr(), scratchPad.numBytes());
 
                 rc.sync();
                 

@@ -39,6 +39,7 @@ static bool writeData( osgDB::OutputStream& os, const osg::ShaderBinary& sb )
     else
     {
         const unsigned char* data = sb.getData();
+        os << (unsigned int)sb.getSize();
         os << osgDB::BEGIN_BRACKET << std::endl;
         for ( unsigned int i=0; i<sb.getSize(); ++i )
         {

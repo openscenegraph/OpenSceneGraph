@@ -19,7 +19,10 @@
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
 
-#if LIBAVCODEC_VERSION_MAJOR >= 53 || (LIBAVCODEC_VERSION_MAJOR==52 && LIBAVCODEC_VERSION_MINOR>=30)
+
+#if LIBAVCODEC_VERSION_MAJOR >= 53 || \
+    (LIBAVCODEC_VERSION_MAJOR==52 && LIBAVCODEC_VERSION_MINOR>=30) || \
+    (LIBAVCODEC_VERSION_MAJOR==52 && LIBAVCODEC_VERSION_MINOR==20 && LIBAVCODEC_VERSION_MICRO >= 1)
     #define USE_AV_LOCK_MANAGER
 #endif
 
@@ -47,6 +50,7 @@ public:
         supportsExtension("mkv",    "Matroska");
         supportsExtension("mjpeg",  "Motion JPEG");
         supportsExtension("mp4",    "MPEG-4");
+        supportsExtension("m4v",    "MPEG-4");
         supportsExtension("sav",    "Unknown");
         supportsExtension("3gp",    "3G multi-media format");
         supportsExtension("sdp",    "Session Description Protocol");

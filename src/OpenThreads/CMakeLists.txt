@@ -9,7 +9,9 @@ SET(OPENTHREADS_SOVERSION 12)
 
 SET(OPENTHREADS_VERSION ${OPENTHREADS_MAJOR_VERSION}.${OPENTHREADS_MINOR_VERSION}.${OPENTHREADS_PATCH_VERSION})
 
-INCLUDE(CheckAtomicOps)
+IF(NOT ANDROID)
+    INCLUDE(CheckAtomicOps)
+ENDIF()
 
 # User Options
 OPTION(DYNAMIC_OPENTHREADS "Set to ON to build OpenThreads for dynamic linking.  Use OFF for static." ON)
@@ -62,9 +64,10 @@ SET(OpenThreads_PUBLIC_HEADERS
     ${OPENTHREADS_CONFIG_HEADER}
 )
 
+IF(NOT ANDROID)
 # Use our modified version of FindThreads.cmake which has Sproc hacks.
-FIND_PACKAGE(Threads)
-
+    FIND_PACKAGE(Threads)
+ENDIF()
 # Do we have sproc?
 IF(CMAKE_SYSTEM MATCHES IRIX)
     IF(CMAKE_USE_SPROC_INIT)
@@ -83,7 +86,9 @@ IF(QT4_FOUND)
 ENDIF()
 
 # Maybe we should be using the FindThreads.cmake module?
-IF(QT4_FOUND AND BUILD_OPENTHREADS_WITH_QT)
+IF(ANDROID)
+    SUBDIRS(pthreads)
+ELSEIF(QT4_FOUND AND BUILD_OPENTHREADS_WITH_QT)
     SUBDIRS(qt)
 ELSEIF(WIN32)
     # So I think Cygwin wants to use pthreads

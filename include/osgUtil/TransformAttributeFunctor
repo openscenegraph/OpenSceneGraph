@@ -34,6 +34,7 @@ class OSGUTIL_EXPORT TransformAttributeFunctor : public osg::Drawable::Attribute
 
         /** Do the work of transforming vertex and normal attributes. */
         virtual void apply(osg::Drawable::AttributeType type,unsigned int count,osg::Vec3* begin);
+        virtual void apply(osg::Drawable::AttributeType type,unsigned int count,osg::Vec3d* begin);
 
         osg::Matrix _m;
         osg::Matrix _im;

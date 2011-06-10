@@ -618,8 +618,8 @@ void CompositeViewer::advance(double simulationTime)
 {
     if (_done) return;
 
-    double prevousReferenceTime = _frameStamp->getReferenceTime();
-    int previousFrameNumber = _frameStamp->getFrameNumber();
+    double previousReferenceTime = _frameStamp->getReferenceTime();
+    unsigned int previousFrameNumber = _frameStamp->getFrameNumber();
 
 
     _frameStamp->setFrameNumber(_frameStamp->getFrameNumber()+1);
@@ -638,7 +638,7 @@ void CompositeViewer::advance(double simulationTime)
     if (getViewerStats() && getViewerStats()->collectStats("frame_rate"))
     {
         // update previous frame stats
-        double deltaFrameTime = _frameStamp->getReferenceTime() - prevousReferenceTime;
+        double deltaFrameTime = _frameStamp->getReferenceTime() - previousReferenceTime;
         getViewerStats()->setAttribute(previousFrameNumber, "Frame duration", deltaFrameTime);
         getViewerStats()->setAttribute(previousFrameNumber, "Frame rate", 1.0/deltaFrameTime);
 
@@ -687,6 +687,10 @@ void CompositeViewer::eventTraversal()
 
     Contexts contexts;
     getContexts(contexts);
+
+    // set done if there are no windows
+    checkWindowStatus(contexts);
+    if (_done) return;
 
     Scenes scenes;
     getScenes(scenes);
@@ -1075,7 +1079,7 @@ void CompositeViewer::updateTraversal()
     if (_incrementalCompileOperation.valid())
     {
         // merge subgraphs that have been compiled by the incremental compiler operation.
-        _incrementalCompileOperation->mergeCompiledSubgraphs();
+        _incrementalCompileOperation->mergeCompiledSubgraphs(getFrameStamp());
     }
 
     if (_updateOperations.valid())
@@ -1095,7 +1099,7 @@ void CompositeViewer::updateTraversal()
             {
                 osg::View::Slave& slave = view->getSlave(i);
                 osg::Camera* camera = slave._camera.get();
-                if(camera && !slave._useMastersSceneData) 
+                if(camera && !slave._useMastersSceneData)
                 {
                     camera->accept(*_updateVisitor);
                 }

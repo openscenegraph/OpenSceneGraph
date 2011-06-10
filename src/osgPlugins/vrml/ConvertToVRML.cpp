@@ -1237,7 +1237,7 @@ osg::Vec2Array* ToVRML::buildUVArray(osg::TexEnv* tEnv, osg::Vec3Array* array) {
   osg::ref_ptr < osg::TexEnv > texEnv = tEnv;
   osg::Vec2Array* uvRet = NULL;
 
-  osg::TexEnv::Mode mode = texEnv->getMode();
+ // osg::TexEnv::Mode mode = texEnv->getMode();
   //if (mode == osg::TexEnv::MODULATE) {
   //  std::cout << "I know" << std::endl;
   //} else {

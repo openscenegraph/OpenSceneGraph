@@ -81,6 +81,8 @@ protected:
 
     ReadResult local_readNode(const std::string& file, const osgDB::ReaderWriter::Options* options);
 
+    std::string getArchiveName(const std::string& dir);
+    osg::ref_ptr< TXPArchive > createArchive(int id, const std::string& dir);
     osg::ref_ptr< TXPArchive > getArchive(int id, const std::string&);
  
     osg::Node* getTileContent(const TXPArchive::TileInfo &info, int x, int y, int lod, TXPArchive* archive,  std::vector<TXPArchive::TileLocationInfo>& childrenLoc);

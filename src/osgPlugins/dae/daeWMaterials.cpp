@@ -20,6 +20,9 @@
 #include <dom/domProfile_COMMON.h>
 
 #include <sstream>
+#include <osgDB/ConvertUTF>
+#include <osgDB/FileNameUtils>
+#include <osgDB/WriteFile>
 
 //#include <dom/domLibrary_effects.h>
 //#include <dom/domLibrary_materials.h>
@@ -30,12 +33,13 @@
 
 using namespace osgDAE;
 
+
 void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMaterial, const std::string &geoName )
 {
     osg::ref_ptr<osg::StateSet> ssClean = CleanStateSet(ss); // Need to hold a ref to this or the materialMap.find() will delete it
     domBind_material::domTechnique_common *tc = daeSafeCast< domBind_material::domTechnique_common >( pDomBindMaterial->add( COLLADA_ELEMENT_TECHNIQUE_COMMON ) );
     domInstance_material *pDomInstanceMaterial = daeSafeCast< domInstance_material >( tc->add( COLLADA_ELEMENT_INSTANCE_MATERIAL ) );
-    std::string symbol = geoName + "_material";
+    const std::string symbol( _pluginOptions.namesUseCodepage ? osgDB::convertStringFromCurrentCodePageToUTF8(geoName + "_material") : (geoName + "_material") );
     pDomInstanceMaterial->setSymbol( symbol.c_str() );
 
     // See if material already exists in cache
@@ -53,7 +57,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
     }
 
     domMaterial *mat = daeSafeCast< domMaterial >( lib_mats->add( COLLADA_ELEMENT_MATERIAL ) );
-    std::string name = ssClean->getName();
+    std::string name( ssClean->getName() );
     if ( name.empty() )
     {
         name = "material";
@@ -99,18 +103,31 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
         osg::Image *osgimg = tex->getImage( 0 );
 
         domImage::domInit_from *imgif = daeSafeCast< domImage::domInit_from >( img->add( COLLADA_ELEMENT_INIT_FROM ) );
-        std::string fileURI = ReaderWriterDAE::ConvertFilePathToColladaCompatibleURI(osgDB::findDataFile(osgimg->getFileName()));
-        if (fileURI=="" && m_ForceTexture)
+
+        std::string fileURI;
+        if (_pluginOptions.linkOrignialTextures)
         {
-            fileURI = osgimg->getFileName();
+            // We link to orignial images (not the ones in memory).
+            fileURI = osgDB::findDataFile(osgimg->getFileName());
+            if (fileURI=="" && _pluginOptions.forceTexture)
+            {
+                fileURI = osgDB::getRealPath(osgimg->getFileName());
+            }
         }
+        else
+        {
+            // We do not link to original images but to the ones in memory. Then must ensure to write the images.
+            _externalWriter.write(*osgimg, _options, NULL, &fileURI);
+        }
+
+        fileURI = ReaderWriterDAE::ConvertFilePathToColladaCompatibleURI(fileURI);
 
         daeURI dd(*dae, fileURI);
         imgif->setValue( dd );
         // The document URI should contain the canonical path it was created with
-        imgif->getValue().makeRelativeTo(doc->getDocumentURI());
+        if (_pluginOptions.linkOrignialTextures) imgif->getValue().makeRelativeTo(doc->getDocumentURI());
 
-        if (!m_EarthTex)
+        if (!_pluginOptions.earthTex)
         {
             domCommon_newparam_type *np = daeSafeCast< domCommon_newparam_type >( pc->add(COLLADA_ELEMENT_NEWPARAM) );
             std::string surfName = efName + "-surface";
@@ -285,7 +302,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
         {
             cot = phong->getDiffuse();
             
-            if (writeExtras)
+            if (_pluginOptions.writeExtras)
             {
                 // Adds the following to a texture element
 
@@ -338,7 +355,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
                     domCommon_color_or_texture_type_complexType::domColor *pColor = daeSafeCast<domCommon_color_or_texture_type_complexType::domColor>(pTransparent->add(COLLADA_ELEMENT_COLOR));
                     domCommon_float_or_param_type *pFop = daeSafeCast<domCommon_float_or_param_type>(phong->add(COLLADA_ELEMENT_TRANSPARENCY));
                     domCommon_float_or_param_type_complexType::domFloat *pTransparency = daeSafeCast<domCommon_float_or_param_type_complexType::domFloat>(pFop->add(COLLADA_ELEMENT_FLOAT));
-                    if (m_GoogleMode)
+                    if (_pluginOptions.googleMode)
                     {
                         pColor->getValue().append(1.0);
                         pColor->getValue().append(1.0);
@@ -378,7 +395,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
                 ctt->setOpaque( FX_OPAQUE_ENUM_A_ONE );
                 domCommon_color_or_texture_type_complexType::domTexture * dtex = daeSafeCast< domCommon_color_or_texture_type_complexType::domTexture >( ctt->add(COLLADA_ELEMENT_TEXTURE) );
                 
-                if (!m_EarthTex)
+                if (!_pluginOptions.earthTex)
                 {
                     std::string sampName = efName + "-sampler";
                     dtex->setTexture( sampName.c_str() );
@@ -401,7 +418,7 @@ void daeWriter::processMaterial( osg::StateSet *ss, domBind_material *pDomBindMa
         }
     }
 
-    if (writeExtras)
+    if (_pluginOptions.writeExtras)
     {
         // Adds the following to a Profile_COMMON element
 

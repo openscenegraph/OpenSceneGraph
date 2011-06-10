@@ -90,12 +90,16 @@ int main(int argc, char** argv)
         keyswitchManipulator->addMatrixManipulator( '7', "Spherical", new osgGA::SphericalManipulator() );
 
         std::string pathfile;
+        double animationSpeed = 1.0;
+        while(arguments.read("--speed",animationSpeed) ) {}
         char keyForAnimationPath = '8';
         while (arguments.read("-p",pathfile))
         {
             osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
             if (apm || !apm->valid())
             {
+                apm->setTimeScale(animationSpeed);
+
                 unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
                 keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
                 keyswitchManipulator->selectMatrixManipulator(num);

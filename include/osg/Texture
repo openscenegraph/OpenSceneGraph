@@ -71,6 +71,10 @@
     #define GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG     0x8C03
 #endif
 
+#ifndef GL_OES_compressed_ETC1_RGB8_texture
+    #define GL_ETC1_RGB8_OES                            0x8D64   
+#endif
+
 #ifndef GL_ARB_INTERNAL_TEXTURE_FORMAT
     #define GL_RGBA32F_ARB                           0x8814
     #define GL_RGB32F_ARB                            0x8815
@@ -308,10 +312,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 {
 
     public :
-    
-        static unsigned int s_numberTextureReusedLastInLastFrame;
-        static unsigned int s_numberNewTextureInLastFrame;
-        static unsigned int s_numberDeletedTextureInLastFrame;
 
         Texture();
 
@@ -450,8 +450,13 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             USE_S3TC_DXT1_COMPRESSION,
             USE_S3TC_DXT3_COMPRESSION,
             USE_S3TC_DXT5_COMPRESSION,
+            USE_PVRTC_2BPP_COMPRESSION,
+            USE_PVRTC_4BPP_COMPRESSION,
+            USE_ETC_COMPRESSION,
             USE_RGTC1_COMPRESSION,
-            USE_RGTC2_COMPRESSION
+            USE_RGTC2_COMPRESSION,
+            USE_S3TC_DXT1c_COMPRESSION,
+            USE_S3TC_DXT1a_COMPRESSION
         };
 
         /** Sets the internal texture format mode. Note: If the texture format is
@@ -646,6 +651,15 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 void setTextureCompressionS3TCSupported(bool flag) { _isTextureCompressionS3TCSupported=flag; }
                 bool isTextureCompressionS3TCSupported() const { return _isTextureCompressionS3TCSupported; }
 
+                void setTextureCompressionPVRTC2BPPSupported(bool flag) { _isTextureCompressionPVRTC2BPPSupported=flag; }
+                bool isTextureCompressionPVRTC2BPPSupported() const { return _isTextureCompressionPVRTC2BPPSupported; }
+                
+                void setTextureCompressionPVRTC4BPPSupported(bool flag) { _isTextureCompressionPVRTC4BPPSupported=flag; }
+                bool isTextureCompressionPVRTC4BPPSupported() const { return _isTextureCompressionPVRTC4BPPSupported; }
+                
+                void setTextureCompressionETCSupported(bool flag) { _isTextureCompressionETCSupported=flag; }
+                bool isTextureCompressionETCSupported() const { return _isTextureCompressionETCSupported; }
+
                 void setTextureCompressionRGTCSupported(bool flag) { _isTextureCompressionRGTCSupported=flag; }
                 bool isTextureCompressionRGTCSupported() const { return _isTextureCompressionRGTCSupported; }
 
@@ -750,6 +764,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                 bool    _isTextureFilterAnisotropicSupported;
                 bool    _isTextureCompressionARBSupported;
                 bool    _isTextureCompressionS3TCSupported;
+                bool    _isTextureCompressionPVRTC2BPPSupported;
+                bool    _isTextureCompressionPVRTC4BPPSupported;
+                bool    _isTextureCompressionETCSupported;
                 bool    _isTextureCompressionRGTCSupported;
                 bool    _isTextureCompressionPVRTCSupported;
                 bool    _isTextureMirroredRepeatSupported;
@@ -1095,6 +1112,8 @@ class OSG_EXPORT Texture : public osg::StateAttribute
         public:
             TextureObjectSet(TextureObjectManager* parent, const TextureProfile& profile);
 
+            const TextureProfile& getProfile() const { return _profile; }
+
             void handlePendingOrphandedTextureObjects();
 
             void deleteAllTextureObjects();
@@ -1118,6 +1137,11 @@ class OSG_EXPORT Texture : public osg::StateAttribute
             bool checkConsistency() const;
 
             TextureObjectManager* getParent() { return _parent; }
+
+            unsigned int computeNumTextureObjectsInList() const;
+            unsigned int getNumOfTextureObjects() const { return _numOfTextureObjects; }
+            unsigned int getNumOrphans() const { return _orphanedTextureObjects.size(); }
+            unsigned int getNumPendingOrphans() const { return _pendingOrphanedTextureObjects.size(); }
 
         protected:
 
@@ -1185,7 +1209,9 @@ class OSG_EXPORT Texture : public osg::StateAttribute
 
             void newFrame(osg::FrameStamp* fs);
             void resetStats();
-            void reportStats();
+            void reportStats(std::ostream& out);
+            void recomputeStats(std::ostream& out) const;
+            bool checkConsistency() const;
 
             unsigned int& getFrameNumber() { return _frameNumber; }
             unsigned int& getNumberFrames() { return _numFrames; }
@@ -1237,13 +1263,6 @@ class OSG_EXPORT Texture : public osg::StateAttribute
                                                      GLsizei   height,
                                                      GLsizei   depth,
                                                      GLint     border);
-
-
-        /** Set the minimum number of texture objects to retain in the deleted display list cache. */
-        static void setMinimumNumberOfTextureObjectsToRetainInCache(unsigned int minimum);
-
-        /** Get the minimum number of display lists to retain in the deleted display list cache. */
-        static unsigned int getMinimumNumberOfTextureObjectsToRetainInCache();
 
         static void deleteAllTextureObjects(unsigned int contextID);
         static void discardAllTextureObjects(unsigned int contextID);

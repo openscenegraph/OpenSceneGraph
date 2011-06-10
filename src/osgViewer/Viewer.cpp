@@ -568,8 +568,8 @@ void Viewer::advance(double simulationTime)
 {
     if (_done) return;
 
-    double prevousReferenceTime = _frameStamp->getReferenceTime();
-    int previousFrameNumber = _frameStamp->getFrameNumber();
+    double previousReferenceTime = _frameStamp->getReferenceTime();
+    unsigned int previousFrameNumber = _frameStamp->getFrameNumber();
 
     _frameStamp->setFrameNumber(_frameStamp->getFrameNumber()+1);
 
@@ -587,7 +587,7 @@ void Viewer::advance(double simulationTime)
     if (getViewerStats() && getViewerStats()->collectStats("frame_rate"))
     {
         // update previous frame stats
-        double deltaFrameTime = _frameStamp->getReferenceTime() - prevousReferenceTime;
+        double deltaFrameTime = _frameStamp->getReferenceTime() - previousReferenceTime;
         getViewerStats()->setAttribute(previousFrameNumber, "Frame duration", deltaFrameTime);
         getViewerStats()->setAttribute(previousFrameNumber, "Frame rate", 1.0/deltaFrameTime);
 
@@ -616,6 +616,10 @@ void Viewer::eventTraversal()
 
     Contexts contexts;
     getContexts(contexts);
+
+    // set done if there are no windows
+    checkWindowStatus(contexts);
+    if (_done) return;
 
     osgGA::GUIEventAdapter* eventState = getEventQueue()->getCurrentEventState();
     osg::Matrix masterCameraVPW = getCamera()->getViewMatrix() * getCamera()->getProjectionMatrix();
@@ -983,7 +987,7 @@ void Viewer::updateTraversal()
     if (_incrementalCompileOperation.valid())
     {
         // merge subgraphs that have been compiled by the incremental compiler operation.
-        _incrementalCompileOperation->mergeCompiledSubgraphs();
+        _incrementalCompileOperation->mergeCompiledSubgraphs(getFrameStamp());
     }
 
     {

@@ -44,15 +44,15 @@ public:
         const osgDB::Options& options1,
         AuthoringTool authoringTool1,
         bool lightmapTextures1,
-		bool tessellatePolygons1)
+        bool tessellatePolygons1)
         : pSdkManager(pSdkManager1),
         fbxScene(fbxScene1),
         fbxMaterialToOsgStateSet(fbxMaterialToOsgStateSet1),
         fbxSkeletons(fbxSkeletons1),
         options(options1),
-        authoringTool(authoringTool1),
-		lightmapTextures(lightmapTextures1),
-		tessellatePolygons(tessellatePolygons1)
+        lightmapTextures(lightmapTextures1),
+        tessellatePolygons(tessellatePolygons1),
+        authoringTool(authoringTool1)
     {}
 
     osgDB::ReaderWriter::ReadResult readFbxNode(

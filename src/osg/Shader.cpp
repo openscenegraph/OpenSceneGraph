@@ -271,6 +271,9 @@ int Shader::compare(const Shader& rhs) const
     if( getShaderSource() < rhs.getShaderSource() ) return -1;
     if( rhs.getShaderSource() < getShaderSource() ) return 1;
 
+    if( getShaderBinary() < rhs.getShaderBinary() ) return -1;
+    if( rhs.getShaderBinary() < getShaderBinary() ) return 1;
+
     if( getFileName() < rhs.getFileName() ) return -1;
     if( rhs.getFileName() < getFileName() ) return 1;
     return 0;
@@ -514,8 +517,8 @@ void Shader::PerContextShader::compileShader(osg::State& state)
 
         if (numFormats>0)
         {
-            GLint* formats = new GLint[numFormats];
-            glGetIntegerv(GL_SHADER_BINARY_FORMATS, formats);
+            std::vector<GLint> formats(numFormats);
+            glGetIntegerv(GL_SHADER_BINARY_FORMATS, &formats[0]);
 
             for(GLint i=0; i<numFormats; ++i)
             {
@@ -528,7 +531,6 @@ void Shader::PerContextShader::compileShader(osg::State& state)
                     return;
                 }
             }
-            delete [] formats;
             
             if (_shader->getShaderSource().empty())
             {

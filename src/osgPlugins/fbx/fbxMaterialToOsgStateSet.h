@@ -10,6 +10,7 @@
 
 #if defined(_MSC_VER)
 #pragma warning( disable : 4505 )
+#pragma warning( default : 4996 )
 #endif
 #include <fbxsdk.h>
 
@@ -20,7 +21,6 @@ struct StateSetContent
 {
     StateSetContent()
         : diffuseFactor(1.0),
-        opacityFactor(1.0),
         reflectionFactor(1.0),
         emissiveFactor(1.0)
     {
@@ -44,7 +44,6 @@ struct StateSetContent
 
     // combining factors...
     double diffuseFactor;
-    double opacityFactor;
     double reflectionFactor;
     double emissiveFactor;
     // more combining factors here...
@@ -62,7 +61,7 @@ struct StateSetContent
         DIFFUSE_TEXTURE_UNIT = 0,
         OPACITY_TEXTURE_UNIT,
         REFLECTION_TEXTURE_UNIT,
-        EMISSIVE_TEXTURE_UNIT,
+        EMISSIVE_TEXTURE_UNIT
         // more texture units here...
     };
 };
@@ -89,7 +88,7 @@ public:
 private:
     //Convert a texture fbx to an osg texture.
     osg::ref_ptr<osg::Texture2D>
-    fbxTextureToOsgTexture(const KFbxTexture* pOsgTex);
+    fbxTextureToOsgTexture(const KFbxFileTexture* pOsgTex);
     FbxMaterialMap       _fbxMaterialMap;
     ImageMap              _imageMap;
     const osgDB::Options* _options;

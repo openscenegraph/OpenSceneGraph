@@ -188,6 +188,14 @@ bool TerrainTile_readLocalData(osg::Object& obj, osgDB::Input &fr)
         itrAdvanced = true;
     }
 
+    if (fr.getOptions())
+    {
+        osg::ref_ptr<osg::Node> node;
+        if (fr.getOptions()->getTerrain().lock(node))
+        {
+            terrainTile.setTerrain(node->asTerrain());
+        }
+    }
 
     if (osgTerrain::TerrainTile::getTileLoadedCallback().valid()) 
         osgTerrain::TerrainTile::getTileLoadedCallback()->loaded(&terrainTile, fr.getOptions());

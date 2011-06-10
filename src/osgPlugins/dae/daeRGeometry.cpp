@@ -23,6 +23,8 @@
 #include <osg/ShapeDrawable>
 #include <osg/Geometry>
 
+#include <osgUtil/Tessellator>
+
 #include <osgAnimation/MorphGeometry>
 #include <osgAnimation/RigGeometry>
 #include <osgAnimation/UpdateBone>
@@ -375,14 +377,14 @@ osg::Geode *daeReader::processMesh(domMesh* pDomMesh)
     domPolygons_Array polygonsArray = pDomMesh->getPolygons_array();
     for ( size_t i = 0; i < polygonsArray.getCount(); i++)
     {
-        processPolygons<domPolygons>(pOsgGeode, pDomMesh, polygonsArray[i], sources);
+        processPolygons<domPolygons>(pOsgGeode, pDomMesh, polygonsArray[i], sources, GL_POLYGON, _pluginOptions.tessellateMode);
     }
 
     // 0..* <polylist>
     domPolylist_Array polylistArray = pDomMesh->getPolylist_array();
     for ( size_t i = 0; i < polylistArray.getCount(); i++)
     {
-        processPolylist(pOsgGeode, pDomMesh, polylistArray[i], sources);
+        processPolylist(pOsgGeode, pDomMesh, polylistArray[i], sources, _pluginOptions.tessellateMode);
     }
 
     // 0..* <triangles>
@@ -396,7 +398,7 @@ osg::Geode *daeReader::processMesh(domMesh* pDomMesh)
     domTrifans_Array trifansArray = pDomMesh->getTrifans_array();
     for ( size_t i = 0; i < trifansArray.getCount(); i++)
     {
-        processPolygons<domTrifans>(pOsgGeode, pDomMesh, trifansArray[i], sources);
+        processPolygons<domTrifans>(pOsgGeode, pDomMesh, trifansArray[i], sources, GL_TRIANGLE_FAN, TESSELLATE_NONE);
     }
 
     // 0..* <tristrips>
@@ -494,7 +496,7 @@ void daeReader::processMultiPPrimitive(osg::Geode* geode,
     }
 }
 
-void daeReader::processPolylist(osg::Geode* geode, const domMesh* pDomMesh, const domPolylist *group, SourceMap &sources)
+void daeReader::processPolylist(osg::Geode* geode, const domMesh* pDomMesh, const domPolylist *group, SourceMap &sources, TessellateMode tessellateMode)
 {
     const domPolylist::domVcount* pDomVcount = group->getVcount();
     if (!pDomVcount)
@@ -515,52 +517,119 @@ void daeReader::processPolylist(osg::Geode* geode, const domMesh* pDomMesh, cons
 
     const std::vector<GLuint>& vertexList = vertexLists.front();
 
-    osg::DrawElementsUInt* pDrawTriangles = new osg::DrawElementsUInt(GL_TRIANGLES);
-    geometry->addPrimitiveSet(pDrawTriangles);
-
-    const domListOfUInts& vCount = pDomVcount->getValue();
-    for (size_t i = 0, j = 0; i < vCount.getCount(); ++i)
+    osg::DrawElementsUInt* pDrawTriangles(NULL);
+    if (tessellateMode == TESSELLATE_POLYGONS_AS_TRIFAN)
     {
-        size_t primitiveLength = vCount[i];
-        if (j + primitiveLength > vertexList.size())
+        // Produce triangles, interpreting polygons as fans (old way)
+        pDrawTriangles = new osg::DrawElementsUInt(GL_TRIANGLES);
+        geometry->addPrimitiveSet(pDrawTriangles);
+
+        const domListOfUInts& vCount = pDomVcount->getValue();
+        for (size_t i = 0, j = 0; i < vCount.getCount(); ++i)
         {
-            OSG_WARN << "Error: vertex counts are greater than the number of indices." << std::endl;
-            return;
+            size_t primitiveLength = vCount[i];
+            if (j + primitiveLength > vertexList.size())
+            {
+                OSG_WARN << "Error: vertex counts are greater than the number of indices." << std::endl;
+                return;
+            }
+            for (size_t k = 2; k < primitiveLength; ++k)
+            {
+                pDrawTriangles->push_back(vertexList[j]);
+                pDrawTriangles->push_back(vertexList[j+k-1]);
+                pDrawTriangles->push_back(vertexList[j+k]);
+            }
+            j += primitiveLength;
         }
-        for (size_t k = 2; k < primitiveLength; ++k)
+    }
+    else
+    {
+        // Produce polygons or well-tessellated polygons
+        const domListOfUInts& vCount = pDomVcount->getValue();
+        for (size_t i = 0, j = 0; i < vCount.getCount(); ++i)
         {
-            pDrawTriangles->push_back(vertexList[j]);
-            pDrawTriangles->push_back(vertexList[j+k-1]);
-            pDrawTriangles->push_back(vertexList[j+k]);
+            size_t primitiveLength = vCount[i];
+            if (j + primitiveLength > vertexList.size())
+            {
+                OSG_WARN << "Error: vertex counts are greater than the number of indices." << std::endl;
+                return;
+            }
+
+            osg::DrawElementsUInt* pDrawElements = new osg::DrawElementsUInt(GL_POLYGON);
+            geometry->addPrimitiveSet(pDrawElements);
+            for (size_t k = 0; k < primitiveLength; ++k)
+            {
+                pDrawElements->push_back(vertexList[k+j]);
+            }
+
+            j += primitiveLength;
         }
-        j += primitiveLength;
+
+        if (tessellateMode == TESSELLATE_POLYGONS)
+        {
+            osgUtil::Tessellator tessellator;
+            tessellator.setTessellationType(osgUtil::Tessellator::TESS_TYPE_POLYGONS);
+            tessellator.setWindingType(osgUtil::Tessellator::TESS_WINDING_POSITIVE);
+            tessellator.retessellatePolygons(*geometry);
+        }
     }
 }
 
-template <typename T>
+template< typename T >
 void daeReader::processPolygons(osg::Geode* geode,
-    const domMesh* pDomMesh, const T *group, SourceMap& sources)
+    const domMesh* pDomMesh, const T *group, SourceMap& sources, GLenum mode, TessellateMode tessellateMode)
 {
     osg::Geometry *geometry = new osg::Geometry();
     geometry->setName(group->getMaterial());
     geode->addDrawable(geometry);
 
-    osg::DrawElementsUInt* pDrawElements = new osg::DrawElementsUInt(GL_TRIANGLES);
-    geometry->addPrimitiveSet(pDrawElements);
-
     std::vector<std::vector<GLuint> > indexLists;
     resolveMeshArrays(group->getP_array(), group->getInput_array(), pDomMesh,
         geometry, sources, indexLists);
 
-    for ( size_t i = 0; i < indexLists.size(); ++i)
+    if (tessellateMode == TESSELLATE_POLYGONS_AS_TRIFAN)
     {
-        const std::vector<GLuint>& indices = indexLists[i];
+        // Produce triangles, interpreting polygons as fans (old way)
+        osg::DrawElementsUInt* pDrawElements = new osg::DrawElementsUInt(GL_TRIANGLES);
+        geometry->addPrimitiveSet(pDrawElements);
 
-        for (size_t j = 2; j < indices.size(); ++j)
+        std::vector<std::vector<GLuint> > indexLists;
+        resolveMeshArrays(group->getP_array(), group->getInput_array(), pDomMesh,
+            geometry, sources, indexLists);
+
+        for ( size_t i = 0; i < indexLists.size(); ++i)
         {
-            pDrawElements->push_back(indices.front());
-            pDrawElements->push_back(indices[j - 1]);
-            pDrawElements->push_back(indices[j]);
+            const std::vector<GLuint>& indices = indexLists[i];
+
+            for (size_t j = 2; j < indices.size(); ++j)
+            {
+                pDrawElements->push_back(indices.front());
+                pDrawElements->push_back(indices[j - 1]);
+                pDrawElements->push_back(indices[j]);
+            }
+        }
+    }
+    else
+    {
+        // Produce polygons or well-tessellated polygons
+        for ( size_t i = 0; i < indexLists.size(); ++i)
+        {
+            const std::vector<GLuint>& indices = indexLists[i];
+
+            osg::DrawElementsUInt* pDrawElements = new osg::DrawElementsUInt(mode);
+            geometry->addPrimitiveSet(pDrawElements);
+            for (size_t j = 0; j < indices.size(); ++j)
+            {
+                pDrawElements->push_back(indices[j]);
+            }
+        }
+
+        if (tessellateMode == TESSELLATE_POLYGONS)
+        {
+            osgUtil::Tessellator tessellator;
+            tessellator.setTessellationType(osgUtil::Tessellator::TESS_TYPE_POLYGONS);
+            tessellator.setWindingType(osgUtil::Tessellator::TESS_WINDING_POSITIVE);
+            tessellator.retessellatePolygons(*geometry);
         }
     }
 }
@@ -623,7 +692,7 @@ void resolveMeshInputs(
     for (unsigned int i = 0; i < MAX_TEXTURE_COORDINATE_SETS; ++i)
     {
         texcoord_sources[i] = NULL;
-        texcoord_offsets[i] = NULL;
+        texcoord_offsets[i] = 0;
     }
 
     for ( size_t i = 0; i < inputs.getCount(); i++ )
@@ -701,8 +770,55 @@ struct VertexIndices
         return false;
     }
 
+    /// Templated getter for memebers, used for createGeometryData()
+    enum ValueType { POSITION, COLOR, NORMAL, TEXCOORD };
+    template <int Value>
+    inline int get() const;
+
     int position_index, color_index, normal_index, texcoord_indices[MAX_TEXTURE_COORDINATE_SETS];
 };
+
+template<>
+inline int VertexIndices::get<VertexIndices::POSITION>() const { return position_index; }
+template<>
+inline int VertexIndices::get<VertexIndices::COLOR>() const { return color_index; }
+template<>
+inline int VertexIndices::get<VertexIndices::NORMAL>() const { return normal_index; }
+template<int Value>
+inline int VertexIndices::get() const {
+    // TEXCOORD has not to be implemented here as we need compile-time constants for texcoord number
+    return -1;
+}
+
+
+typedef std::map<VertexIndices, GLuint> VertexIndicesIndexMap;
+
+/// Creates a value array, packed in a osg::Geometry::ArrayData, corresponding to indexed values.
+template <class ArrayType, int Value>
+osg::Geometry::ArrayData createGeometryData(domSourceReader & sourceReader, const VertexIndicesIndexMap & vertexIndicesIndexMap, int texcoordNum=-1) {
+    const ArrayType * source = sourceReader.getArray<ArrayType>();
+    if (!source) return osg::Geometry::ArrayData();
+    ArrayType * pArray = new ArrayType;
+    for (VertexIndicesIndexMap::const_iterator it = vertexIndicesIndexMap.begin(), end = vertexIndicesIndexMap.end(); it != end; ++it) {
+        int index = texcoordNum>=0 ? it->first.texcoord_indices[texcoordNum] : it->first.get<Value>();
+        if (index>=0 && static_cast<unsigned int>(index)<source->size()) pArray->push_back(source->at(index));
+        else {
+            // Invalid data (index out of bounds)
+            //LOG_WARN << ...
+            //pArray->push_back(0);
+            return osg::Geometry::ArrayData();
+        }
+    }
+    return osg::Geometry::ArrayData(pArray, osg::Geometry::BIND_PER_VERTEX);
+}
+
+
+template <class ArrayTypeSingle, class ArrayTypeDouble, int Value>
+inline osg::Geometry::ArrayData createGeometryData(domSourceReader & sourceReader, const VertexIndicesIndexMap & vertexIndicesIndexMap, bool useDoublePrecision, int texcoordNum=-1) {
+    if (useDoublePrecision) return createGeometryData<ArrayTypeDouble, Value>(sourceReader, vertexIndicesIndexMap, texcoordNum);
+    else                    return createGeometryData<ArrayTypeSingle, Value>(sourceReader, vertexIndicesIndexMap, texcoordNum);
+}
+
 
 void daeReader::resolveMeshArrays(const domP_Array& domPArray,
     const domInputLocalOffset_Array& inputs, const domMesh* pDomMesh,
@@ -735,7 +851,6 @@ void daeReader::resolveMeshArrays(const domP_Array& domPArray,
     }
     ++stride;
 
-    typedef std::map<VertexIndices, GLuint> VertexIndicesIndexMap;
     VertexIndicesIndexMap vertexIndicesIndexMap;
 
     for (size_t j = 0; j < domPArray.getCount(); ++j)
@@ -794,48 +909,35 @@ void daeReader::resolveMeshArrays(const domP_Array& domPArray,
         }
     }
 
-    if (const osg::Vec3Array* source = sources[position_source].getVec3Array())
+    const bool readDoubleVertices  = (_pluginOptions.precisionHint & osgDB::Options::DOUBLE_PRECISION_VERTEX) != 0;
+    const bool readDoubleColors    = (_pluginOptions.precisionHint & osgDB::Options::DOUBLE_PRECISION_COLOR) != 0;
+    const bool readDoubleNormals   = (_pluginOptions.precisionHint & osgDB::Options::DOUBLE_PRECISION_NORMAL) != 0;
+    const bool readDoubleTexcoords = (_pluginOptions.precisionHint & osgDB::Options::DOUBLE_PRECISION_TEX_COORD) != 0;
+
+    // Vertices
     {
-        osg::Vec3Array* pArray = new osg::Vec3Array;
-
-        for (VertexIndicesIndexMap::const_iterator it = vertexIndicesIndexMap.begin(),
-            end = vertexIndicesIndexMap.end(); it != end; ++it)
+        osg::Geometry::ArrayData arrayData( createGeometryData<osg::Vec3Array, osg::Vec3dArray, VertexIndices::POSITION>(sources[position_source], vertexIndicesIndexMap, readDoubleVertices) );
+        if (arrayData.array.valid())
         {
-            pArray->push_back(source->at(it->first.position_index));
+            geometry->setVertexData(arrayData);
         }
-
-        geometry->setVertexData(osg::Geometry::ArrayData(pArray, osg::Geometry::BIND_PER_VERTEX));
     }
 
     if (color_source)
     {
-        if (const osg::Vec4Array* source = sources[color_source].getVec4Array())
+        osg::Geometry::ArrayData arrayData( createGeometryData<osg::Vec4Array, osg::Vec4dArray, VertexIndices::COLOR>(sources[color_source], vertexIndicesIndexMap, readDoubleColors) );
+        if (arrayData.array.valid())
         {
-            osg::Vec4Array* pArray = new osg::Vec4Array;
-
-            for (VertexIndicesIndexMap::const_iterator it = vertexIndicesIndexMap.begin(),
-                end = vertexIndicesIndexMap.end(); it != end; ++it)
-            {
-                pArray->push_back(source->at(it->first.color_index));
-            }
-
-            geometry->setColorData(osg::Geometry::ArrayData(pArray, osg::Geometry::BIND_PER_VERTEX));
+            geometry->setColorData(arrayData);
         }
     }
 
     if (normal_source)
     {
-        if (const osg::Vec3Array* source = sources[normal_source].getVec3Array())
+        osg::Geometry::ArrayData arrayData( createGeometryData<osg::Vec3Array, osg::Vec3dArray, VertexIndices::NORMAL>(sources[normal_source], vertexIndicesIndexMap, readDoubleNormals) );
+        if (arrayData.array.valid())
         {
-            osg::Vec3Array* pArray = new osg::Vec3Array;
-
-            for (VertexIndicesIndexMap::const_iterator it = vertexIndicesIndexMap.begin(),
-                end = vertexIndicesIndexMap.end(); it != end; ++it)
-            {
-                pArray->push_back(source->at(it->first.normal_index));
-            }
-
-            geometry->setNormalData(osg::Geometry::ArrayData(pArray, osg::Geometry::BIND_PER_VERTEX));
+            geometry->setNormalData(arrayData);
         }
     }
 
@@ -843,34 +945,20 @@ void daeReader::resolveMeshArrays(const domP_Array& domPArray,
     {
         if (daeElement* texcoord_source = texcoord_sources[texcoord_set])
         {
-            osg::Array* pArray = NULL;
-
-            if (const osg::Vec2Array* source = sources[texcoord_source].getVec2Array())
+            // 2D Texcoords
+            osg::Geometry::ArrayData arrayData( createGeometryData<osg::Vec2Array, osg::Vec2dArray, VertexIndices::TEXCOORD>(sources[texcoord_source], vertexIndicesIndexMap, readDoubleTexcoords, texcoord_set) );
+            if (arrayData.array.valid())
             {
-                osg::Vec2Array* pVec2Array = new osg::Vec2Array;
-                pArray = pVec2Array;
-
-                for (VertexIndicesIndexMap::const_iterator it = vertexIndicesIndexMap.begin(),
-                    end = vertexIndicesIndexMap.end(); it != end; ++it)
-                {
-                    pVec2Array->push_back(source->at(it->first.texcoord_indices[texcoord_set]));
-                }
+                geometry->setTexCoordData(texcoord_set, arrayData);
             }
-            else if (const osg::Vec3Array* source = sources[texcoord_source].getVec3Array())
+            else
             {
-                osg::Vec3Array* pVec3Array = new osg::Vec3Array;
-                pArray = pVec3Array;
-
-                for (VertexIndicesIndexMap::const_iterator it = vertexIndicesIndexMap.begin(),
-                    end = vertexIndicesIndexMap.end(); it != end; ++it)
+                // 3D Textcoords
+                osg::Geometry::ArrayData arrayData( createGeometryData<osg::Vec3Array, osg::Vec3dArray, VertexIndices::TEXCOORD>(sources[texcoord_source], vertexIndicesIndexMap, readDoubleTexcoords, texcoord_set) );
+                if (arrayData.array.valid())
                 {
-                    pVec3Array->push_back(source->at(it->first.texcoord_indices[texcoord_set]));
+                    geometry->setTexCoordData(texcoord_set, arrayData);
                 }
-            }
-
-            if (pArray)
-            {
-                geometry->setTexCoordData(texcoord_set, osg::Geometry::ArrayData(pArray, osg::Geometry::BIND_PER_VERTEX));
             }
         }
     }

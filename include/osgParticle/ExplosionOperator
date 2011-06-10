@@ -30,12 +30,15 @@ class ExplosionOperator : public Operator
 {
 public:
     ExplosionOperator()
-    : Operator(), _radius(1.0f), _magnitude(1.0f), _epsilon(1e-3), _sigma(1.0f)
+    :   Operator(), _radius(1.0f),
+        _magnitude(1.0f), _epsilon(1e-3), _sigma(1.0f),
+        _inexp(0.0f), _outexp(0.0f)
     {}
     
     ExplosionOperator( const ExplosionOperator& copy, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY )
     :   Operator(copy, copyop), _center(copy._center), _radius(copy._radius),
-        _magnitude(copy._magnitude), _epsilon(copy._epsilon), _sigma(copy._sigma)
+        _magnitude(copy._magnitude), _epsilon(copy._epsilon), _sigma(copy._sigma),
+        _inexp(copy._inexp), _outexp(copy._outexp)
     {}
     
     META_Object( osgParticle, ExplosionOperator );

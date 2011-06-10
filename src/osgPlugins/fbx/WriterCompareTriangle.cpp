@@ -30,7 +30,7 @@ WriterCompareTriangle::operator()(const std::pair<Triangle, int>& t1,
     int val2 = inWhichBox(x2,y2,z2);
 
     return (val1 < val2);
-};
+}
 
 void
 WriterCompareTriangle::setMaxMin(unsigned int& nbVerticesX,

@@ -160,16 +160,16 @@ public:
         cpool=coord_pool; npool=normal_pool;
     }
     inline bool hasVertexActions(void) const { return !(BehList.empty()); }
-    inline osg::Vec4Array *getColors() const { return colors;}
-    inline osg::Vec3Array *getNorms() const { return norms;}
-    inline osg::Vec3Array *getCoords() const { return coords;}
-    inline osg::Vec2Array *getTexCoords() const { return txcoords;}
-    inline osg::IntArray *getColorIndices() const { return colorindices;}
-    inline osg::IntArray *getCoordIndices() const { return coordindices;}
-    inline osg::IntArray *getNormIndices() const { return normindices;}
-    inline osg::IntArray *getTextureIndices() const { return txindices;}
+    inline osg::Vec4Array *getColors() const { return colors.get();}
+    inline osg::Vec3Array *getNorms() const { return norms.get();}
+    inline osg::Vec3Array *getCoords() const { return coords.get();}
+    inline osg::Vec2Array *getTexCoords() const { return txcoords.get();}
+    inline osg::IntArray *getColorIndices() const { return colorindices.get();}
+    inline osg::IntArray *getCoordIndices() const { return coordindices.get();}
+    inline osg::IntArray *getNormIndices() const { return normindices.get();}
+    inline osg::IntArray *getTextureIndices() const { return txindices.get();}
     void addPolcolour( osg::Vec4 cl) { polycols->push_back(cl);}
-    osg::Vec4Array *getPolcolours() const { return polycols;}
+    osg::Vec4Array *getPolcolours() const { return polycols.get();}
     void addVertexActions(geoBehaviourDrawableCB *gcb) const { // add the actions to callback
         if ( !(BehList.empty()) ) {
             for (drBehList::const_iterator rcitr=BehList.begin();
@@ -342,16 +342,16 @@ public:
 private:
     const std::vector<osg::Vec3> *cpool; // passed in from the geo file
     const std::vector<osg::Vec3> *npool;
-    osg::Vec3Array *norms;
-    osg::Vec3Array *coords;
-    osg::Vec2Array *txcoords;
-    osg::Vec4Array *colors;
-    osg::IntArray *colorindices;
-    osg::IntArray *coordindices;
-    osg::IntArray *normindices;
-    osg::IntArray *txindices;
+    osg::ref_ptr<osg::Vec3Array> norms;
+    osg::ref_ptr<osg::Vec3Array> coords;
+    osg::ref_ptr<osg::Vec2Array> txcoords;
+    osg::ref_ptr<osg::Vec4Array> colors;
+    osg::ref_ptr<osg::IntArray> colorindices;
+    osg::ref_ptr<osg::IntArray> coordindices;
+    osg::ref_ptr<osg::IntArray> normindices;
+    osg::ref_ptr<osg::IntArray> txindices;
     drBehList BehList;
-    Vec4Array *polycols;
+    osg::ref_ptr<Vec4Array> polycols;
 };
 
 class geoInfo { // identifies properties required to make a new Geometry, and holds collection of vertices, indices, etc
@@ -762,7 +762,7 @@ class ReaderGEO
             }
             return nv;
         }
-        void outputGeode(georecord grec, osgDB::Output &fout) { // 
+        void outputGeode(const georecord& grec, osgDB::Output &fout) { //
             const std::vector<georecord *> gr=grec.getchildren();
             if (gr.size()>0) {
                 fout.moveIn();
@@ -789,9 +789,9 @@ class ReaderGEO
             gfd=gr->getField(GEO_DB_TEXT_STRING);
             const char *content=gfd ? gfd->getChar() : " ";
             text->setText(std::string(content));
-            gfd=gr->getField(GEO_DB_TEXT_SCALE_X);
+            //gfd=gr->getField(GEO_DB_TEXT_SCALE_X);
             //const float scx=gfd ? gfd->getFloat() : 1.0f;
-            gfd=gr->getField(GEO_DB_TEXT_SCALE_Y);
+            //gfd=gr->getField(GEO_DB_TEXT_SCALE_Y);
             //const float scy=gfd ? gfd->getFloat() : 1.0f;
             gfd=gr->getField(GEO_DB_TEXT_JUSTIFICATION); // GEO_DB_TEXT_DIRECTION);
             int tjus=gfd? gfd->getInt() : GEO_TEXT_LEFT_JUSTIFY;
@@ -946,7 +946,7 @@ class ReaderGEO
                 }
             }
         }
-        int  makeAnimatedGeometry(const georecord grec, const int imat,Group *nug) {
+        int makeAnimatedGeometry(const georecord& grec, const int imat,Group *nug) {
             // animated polygons - create a matrix & geode & poly & add to group nug
             const std::vector<georecord *> gr=grec.getchildren();
             int nanimations=0;
@@ -1168,7 +1168,7 @@ class ReaderGEO
             }
             return gr.size();
         }
-        void makeTexts(georecord grec, Group *nug)
+        void makeTexts(const georecord& grec, Group *nug)
         {    // makeTexts adds a set of text+transform Geometrys attached to current parent (Group nug)
             const std::vector<georecord *> gr=grec.getchildren();
             std::vector<osg::Geometry *> geom;
@@ -1209,9 +1209,8 @@ class ReaderGEO
         }
         
         Group *makeLightPointGeodes(const georecord *gr) {
-            const geoField *gfd=gr->getField(GEO_DB_RENDERGROUP_MAT);
             Group *nug=new Group;
-            gfd=gr->getField(GEO_DB_NODE_NAME);
+            const geoField *gfd=gr->getField(GEO_DB_NODE_NAME);
             if (gfd) {
                 char *name = gfd->getChar();
                 nug->setName(name);
@@ -2049,7 +2048,7 @@ void userVars::addUserVar(const georecord &gr) {
         gfd= gr.getField(GEO_DB_FLOAT_VAR_VALUE);
         nm->setVal(gfd ? gfd->getFloat():0.0f);
 
-        gfd= gr.getField(GEO_DB_FLOAT_VAR_DEFAULT);
+        //gfd= gr.getField(GEO_DB_FLOAT_VAR_DEFAULT);
         //nm->setdefault(gfd ? gfd->getFloat():0.0f);
         //float fdef=gfd ? gfd->getFloat():0.0f;
         

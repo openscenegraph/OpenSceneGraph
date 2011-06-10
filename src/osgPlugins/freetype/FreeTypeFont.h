@@ -31,6 +31,8 @@ public:
 
     virtual std::string getFileName() const { return _filename; }
 
+    virtual bool supportsMultipleFontResolutions() const { return true; }
+
     virtual osgText::Glyph* getGlyph(const osgText::FontResolution& fontRes,unsigned int charcode);
 
     virtual osgText::Glyph3D* getGlyph3D(unsigned int charcode);
@@ -55,7 +57,6 @@ protected:
     FT_Byte*                _buffer;
     FT_Face                 _face;
     unsigned int            _flags;
-    float                   _freetype_scale;
 };
 
 #endif

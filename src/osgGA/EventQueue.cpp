@@ -274,7 +274,7 @@ void EventQueue::mouseButtonRelease(float x, float y, unsigned int button, doubl
     addEvent(event);
 }
 
-void EventQueue::keyPress(int key, double time)
+void EventQueue::keyPress(int key, double time, int unmodifiedKey)
 {
     switch(key)
     {
@@ -312,12 +312,13 @@ void EventQueue::keyPress(int key, double time)
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
     event->setEventType(GUIEventAdapter::KEYDOWN);
     event->setKey(key);
+    event->setUnmodifiedKey(unmodifiedKey);
     event->setTime(time);
     
     addEvent(event);
 }
 
-void EventQueue::keyRelease(int key, double time)
+void EventQueue::keyRelease(int key, double time, int unmodifiedKey)
 {
     switch(key)
     {
@@ -339,6 +340,7 @@ void EventQueue::keyRelease(int key, double time)
     GUIEventAdapter* event = new GUIEventAdapter(*_accumulateEventState);
     event->setEventType(GUIEventAdapter::KEYUP);
     event->setKey(key);
+    event->setUnmodifiedKey(unmodifiedKey);
     event->setTime(time);
     
     addEvent(event);

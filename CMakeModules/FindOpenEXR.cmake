@@ -39,6 +39,39 @@ FIND_LIBRARY(OPENEXR_IlmIlf_LIBRARY
     /usr/freeware/lib64
 )
 
+FIND_LIBRARY(OPENEXR_IlmThread_LIBRARY 
+    NAMES IlmThread
+    PATHS
+    $ENV{OPENEXR_DIR}/lib
+    $ENV{OPENEXR_DIR}
+    ~/Library/Frameworks
+    /Library/Frameworks
+    /usr/local/lib
+    /usr/lib
+    /sw/lib
+    /opt/local/lib
+    /opt/csw/lib
+    /opt/lib
+    /usr/freeware/lib64
+)
+
+
+FIND_LIBRARY(OPENEXR_Iex_LIBRARY 
+    NAMES Iex
+    PATHS
+    $ENV{OPENEXR_DIR}/lib
+    $ENV{OPENEXR_DIR}
+    ~/Library/Frameworks
+    /Library/Frameworks
+    /usr/local/lib
+    /usr/lib
+    /sw/lib
+    /opt/local/lib
+    /opt/csw/lib
+    /opt/lib
+    /usr/freeware/lib64
+)
+
 FIND_LIBRARY(OPENEXR_Half_LIBRARY 
     NAMES Half
     PATHS
@@ -56,10 +89,12 @@ FIND_LIBRARY(OPENEXR_Half_LIBRARY
 )
 
 SET(OPENEXR_FOUND "NO")
-IF(OPENEXR_INCLUDE_DIR AND OPENEXR_IlmIlf_LIBRARY AND OPENEXR_Half_LIBRARY)
+IF(OPENEXR_INCLUDE_DIR AND OPENEXR_IlmIlf_LIBRARY AND OPENEXR_IlmThread_LIBRARY AND OPENEXR_Iex_LIBRARY AND OPENEXR_Half_LIBRARY)
     SET(OPENEXR_LIBRARIES
         ${OPENEXR_IlmIlf_LIBRARY}
+        ${OPENEXR_IlmThread_LIBRARY}
         ${OPENEXR_Half_LIBRARY}
+        ${OPENEXR_Iex_LIBRARY}
     )
     SET(OPENEXR_FOUND "YES")
-ENDIF(OPENEXR_INCLUDE_DIR AND OPENEXR_IlmIlf_LIBRARY AND OPENEXR_Half_LIBRARY)
+ENDIF(OPENEXR_INCLUDE_DIR AND OPENEXR_IlmIlf_LIBRARY AND OPENEXR_IlmThread_LIBRARY AND OPENEXR_Iex_LIBRARY AND OPENEXR_Half_LIBRARY)

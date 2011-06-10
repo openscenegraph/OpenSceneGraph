@@ -19,6 +19,7 @@
 #include <osg/Version>
 #include <osgGA/GUIEventAdapter>
 
+#include <osg/NodeVisitor>
 #include <osg/io_utils>
 #include <QtGui/QGraphicsItem>
 #include <QtGui/QGraphicsProxyWidget>
@@ -100,7 +101,7 @@ QGraphicsViewAdapter::QGraphicsViewAdapter(osg::Image* image, QWidget* widget):
     _currentRead = 0;
     _currentWrite = 1;
     _previousWrite = 2;
-    _previousFrameNumber = 0;
+    _previousFrameNumber = osg::UNINITIALIZED_FRAME_NUMBER;
     _newImageAvailable = false;
 
     connect(_graphicsScene, SIGNAL(changed(const QList<QRectF> &)),

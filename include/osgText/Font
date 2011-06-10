@@ -161,13 +161,15 @@ public:
 
     typedef OpenThreads::Mutex FontMutex;
     
+    typedef std::vector< osg::ref_ptr<GlyphTexture> >       GlyphTextureList;
+    GlyphTextureList& getGlyphTextureList() { return _glyphTextureList; }
+    
 protected:
 
     virtual ~Font();
 
     void addGlyph(const FontResolution& fontRes, unsigned int charcode, Glyph* glyph);
 
-    typedef std::vector< osg::ref_ptr<GlyphTexture> >       GlyphTextureList;
     typedef std::vector< osg::ref_ptr<osg::StateSet> >      StateSetList;
     typedef std::map< unsigned int, osg::ref_ptr<Glyph> >   GlyphMap;
     typedef std::map< unsigned int, osg::ref_ptr<Glyph3D> >  Glyph3DMap;
@@ -213,6 +215,8 @@ public:
             _facade(0) {}
     
         virtual std::string getFileName() const = 0;
+
+        virtual bool supportsMultipleFontResolutions() const = 0;
 
         /** Get a Glyph for specified charcode, and the font size nearest to the current font size hint.*/
         virtual Glyph* getGlyph(const FontResolution& fontRes, unsigned int charcode) = 0;

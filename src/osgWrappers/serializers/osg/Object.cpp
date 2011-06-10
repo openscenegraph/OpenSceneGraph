@@ -1,7 +1,10 @@
 #include <osg/Object>
+#include <osg/UserDataContainer>
 #include <osgDB/ObjectWrapper>
 #include <osgDB/InputStream>
 #include <osgDB/OutputStream>
+#include <osg/Notify>
+#include <string.h>
 
 static bool checkUserData( const osg::Object& obj )
 {
@@ -25,7 +28,6 @@ static bool writeUserData( osgDB::OutputStream& os, const osg::Object& obj )
     return true;
 }
 
-
 REGISTER_OBJECT_WRAPPER( Object,
                          /*new osg::Object*/NULL,
                          osg::Object,
@@ -39,5 +41,11 @@ REGISTER_OBJECT_WRAPPER( Object,
         ADD_ENUM_VALUE( UNSPECIFIED );
     END_ENUM_SERIALIZER();  // _dataVariance
 
-    ADD_USER_SERIALIZER( UserData );  // _userData
+    ADD_USER_SERIALIZER( UserData );  // _userData, deprecated
+    
+    UPDATE_TO_VERSION( 77 )
+    {
+        REMOVE_SERIALIZER( UserData );
+        ADD_OBJECT_SERIALIZER( UserDataContainer, osg::UserDataContainer, NULL );
+    }
 }

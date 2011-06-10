@@ -350,9 +350,14 @@ osg::Texture::FilterMode Font::getMagFilterHint() const
 
 Glyph* Font::getGlyph(const FontResolution& fontRes, unsigned int charcode)
 {
+    if (!_implementation) return 0;
+
+    FontResolution fontResUsed(0,0);
+    if (_implementation->supportsMultipleFontResolutions()) fontResUsed = fontRes;
+        
     {
         OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_glyphMapMutex);
-        FontSizeGlyphMap::iterator itr = _sizeGlyphMap.find(fontRes);
+        FontSizeGlyphMap::iterator itr = _sizeGlyphMap.find(fontResUsed);
         if (itr!=_sizeGlyphMap.end())
         {
             GlyphMap& glyphmap = itr->second;
@@ -361,10 +366,10 @@ Glyph* Font::getGlyph(const FontResolution& fontRes, unsigned int charcode)
         }
     }
 
-    Glyph* glyph = _implementation.valid() ? _implementation->getGlyph(fontRes, charcode) : 0;
+    Glyph* glyph = _implementation->getGlyph(fontResUsed, charcode);
     if (glyph)
     {
-        addGlyph(fontRes, charcode, glyph);
+        addGlyph(fontResUsed, charcode, glyph);
         return glyph;
     }
     else return 0;

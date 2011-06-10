@@ -1,4 +1,4 @@
-/* OpenSceneGraph example, osgterrain.
+/* OpenSceneGraph example, osganalysis.
 *
 *  Permission is hereby granted, free of charge, to any person obtaining a copy
 *  of this software and associated documentation files (the "Software"), to deal
@@ -22,6 +22,7 @@
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
+#include <osgDB/FileNameUtils>
 
 #include <osgGA/TrackballManipulator>
 #include <osgGA/StateSetManipulator>
@@ -77,6 +78,74 @@ public:
         drawable.setUseVertexBufferObjects(_useVBO);
     }
 };
+
+class OptimizeImageVisitor : public osg::NodeVisitor
+{
+public:
+    OptimizeImageVisitor(osgDB::ImageProcessor* imageProcessor, bool compressImages, bool generateMipmaps):
+        osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
+        _imageProcessor(imageProcessor),
+        _compressImages(compressImages),
+        _generateMipmaps(generateMipmaps) {}
+
+    osg::ref_ptr<osgDB::ImageProcessor> _imageProcessor;
+    bool _compressImages;
+    bool _generateMipmaps;
+
+    void apply(osg::Node& node)
+    {
+        processStateSet(node.getStateSet());
+        traverse(node);
+    }
+
+    void apply(osg::Geode& node)
+    {
+        processStateSet(node.getStateSet());
+        for(unsigned int i = 0; i<node.getNumDrawables(); ++i)
+        {
+            processStateSet(node.getDrawable(i)->getStateSet());
+        }
+
+        traverse(node);
+    }
+
+    void processStateSet(osg::StateSet* stateset)
+    {
+        if (!stateset) return;
+
+        for(unsigned int i=0; i<stateset->getNumTextureAttributeLists(); ++i)
+        {
+            osg::StateAttribute* sa = stateset->getTextureAttribute(i, osg::StateAttribute::TEXTURE);
+            osg::Texture* texture = dynamic_cast<osg::Texture*>(sa);
+            if (texture)
+            {
+                for(unsigned int i=0; i<texture->getNumImages(); ++i)
+                {
+                    proccessImage(texture->getImage(i));
+                }
+            }
+        };
+    }
+
+
+    void proccessImage(osg::Image* image)
+    {
+        if (!image) return;
+
+        if (_imageProcessor.valid())
+        {
+            OSG_NOTICE<<"Will be using ImageProcessor to proces image "<<image->getFileName()<<std::endl;
+        }
+        else
+        {
+            OSG_NOTICE<<"No ImageProcessor to proces image "<<image->getFileName()<<std::endl;
+        }
+            OSG_NOTICE<<"   compressImage "<<_compressImages<<std::endl;
+            OSG_NOTICE<<"   generateMipmaps "<<_generateMipmaps<<std::endl;
+    }
+
+};
+
 
 class SwapArrayVisitor : public osg::ArrayVisitor
 {
@@ -186,10 +255,10 @@ public:
 
     void report(std::ostream& out)
     {
-        OSG_NOTICE<<"Nodes "<<_nodes.size()<<std::endl;
-        OSG_NOTICE<<"Geometries "<<_geometryMap.size()<<std::endl;
-        OSG_NOTICE<<"Arrays "<<_arrayMap.size()<<std::endl;
-        OSG_NOTICE<<"PrimitiveSets "<<_primitiveSetMap.size()<<std::endl;
+        out<<"Nodes "<<_nodes.size()<<std::endl;
+        out<<"Geometries "<<_geometryMap.size()<<std::endl;
+        out<<"Arrays "<<_arrayMap.size()<<std::endl;
+        out<<"PrimitiveSets "<<_primitiveSetMap.size()<<std::endl;
     }
 
     void reallocate()
@@ -350,7 +419,6 @@ public:
 
         while (arguments.read("--reallocate") || arguments.read("--ra") ) { reallocateMemory = true; }
 
-
         OSG_NOTICE<<"simplificatioRatio="<<simplificatioRatio<<std::endl;
     }
 
@@ -373,6 +441,14 @@ public:
             simplifier.setSmoothing(useSmoothingVisitor);
             node->accept(simplifier);
         }
+
+
+        if (modifyTextureSettings)
+        {
+            OptimizeImageVisitor oiv(osgDB::Registry::instance()->getImageProcessor(), compressImages, buildImageMipmaps);
+            node->accept(oiv);
+        }
+
 
         if (removeDuplicateVertices)
         {
@@ -398,7 +474,7 @@ public:
             vaov.optimizeOrder();
         }
 
-        if (modifyDrawableSettings || modifyTextureSettings)
+        if (modifyDrawableSettings)
         {
             OSG_NOTICE<<"Running StripStateVisitor"<<std::endl;
             StripStateVisitor ssv(true, useDisplayLists, useVBO);
@@ -466,7 +542,7 @@ protected:
     bool disableMipmaps;
 
 };
-
+// 
 class DatabasePagingOperation : public osg::Operation, public osgUtil::IncrementalCompileOperation::CompileCompletedCallback
 {
 public:
@@ -480,7 +556,9 @@ public:
         _outputFilename(outputFilename),
         _modelReadyToMerge(false),
         _sceneGraphProcessor(sceneGraphProcessor),
-        _incrementalCompileOperation(ico) {}
+        _incrementalCompileOperation(ico)
+        {
+        }
 
     virtual void operator () (osg::Object* object)
     {
@@ -501,11 +579,15 @@ public:
         {
             if (!_outputFilename.empty())
             {
+                OSG_NOTICE<<"Writing out file "<<_outputFilename<<std::endl;
+                
                 osgDB::writeNodeFile(*_loadedModel, _outputFilename);
             }
 
             if (_incrementalCompileOperation.valid())
             {
+                OSG_NOTICE<<"Registering with ICO "<<_outputFilename<<std::endl;
+
                 osg::ref_ptr<osgUtil::IncrementalCompileOperation::CompileSet> compileSet =
                     new osgUtil::IncrementalCompileOperation::CompileSet(_loadedModel.get());
 
@@ -546,13 +628,23 @@ public:
         {
             if (ea.getKey()=='r')
             {
-                osg::Texture::getTextureObjectManager(0)->reportStats();
+                osg::Texture::getTextureObjectManager(0)->reportStats(osg::notify(osg::NOTICE));
+                osg::GLBufferObjectManager::getGLBufferObjectManager(0)->reportStats(osg::notify(osg::NOTICE));
             }
         }
         return false;
     }
 };
 
+struct ReportStatsAnimationCompletedCallback : public osgGA::AnimationPathManipulator::AnimationCompletedCallback
+{
+    virtual void completed(const osgGA::AnimationPathManipulator*)
+    {
+        OSG_NOTICE<<"Animation completed"<<std::endl;
+        osg::Texture::getTextureObjectManager(0)->reportStats(osg::notify(osg::NOTICE));
+        osg::GLBufferObjectManager::getGLBufferObjectManager(0)->reportStats(osg::notify(osg::NOTICE));
+    }
+};
 
 int main(int argc, char** argv)
 {
@@ -570,13 +662,19 @@ int main(int argc, char** argv)
         keyswitchManipulator->addMatrixManipulator( '3', "Drive", new osgGA::DriveManipulator() );
         keyswitchManipulator->addMatrixManipulator( '4', "Terrain", new osgGA::TerrainManipulator() );
 
-        std::string pathfile;
         char keyForAnimationPath = '8';
+        double animationSpeed = 1.0;
+        while(arguments.read("--speed",animationSpeed) ) {}
+
+        std::string pathfile;
         while (arguments.read("-p",pathfile))
         {
             osgGA::AnimationPathManipulator* apm = new osgGA::AnimationPathManipulator(pathfile);
             if (apm || !apm->valid())
             {
+                apm->setTimeScale(animationSpeed);
+                apm->setAnimationCompletedCallback(new ReportStatsAnimationCompletedCallback());
+                
                 unsigned int num = keyswitchManipulator->getNumMatrixManipulators();
                 keyswitchManipulator->addMatrixManipulator( keyForAnimationPath, "Path", apm );
                 keyswitchManipulator->selectMatrixManipulator(num);
@@ -634,7 +732,7 @@ int main(int argc, char** argv)
     while(arguments.read("--interval",timeBetweenMerges)) {}
 
     std::string outputPostfix;
-    while (arguments.read("-o",outputPostfix)) {}
+    while (arguments.read("-o",outputPostfix)) { OSG_NOTICE<<"Set ouputPostfix to "<<outputPostfix<<std::endl; }
 
 
     typedef std::vector< std::string > FileNames;
@@ -664,8 +762,14 @@ int main(int argc, char** argv)
     databasePagingThread = new osg::OperationThread;
     databasePagingThread->startThread();
 
+
+    osg::ref_ptr<osg::Group> group = new osg::Group;
+    viewer.setSceneData(group.get());
+
+    viewer.realize();
+
     std::string filename = fileNames[modelIndex++];
-    std::string outputFilename = outputPostfix.empty() ? std::string() : filename+outputPostfix;
+    std::string outputFilename = outputPostfix.empty() ? std::string() : osgDB::getStrippedName(filename)+outputPostfix;
 
     databasePagingOperation = new DatabasePagingOperation(
         filename,
@@ -675,10 +779,6 @@ int main(int argc, char** argv)
 
     databasePagingThread->add(databasePagingOperation.get());
 
-    osg::ref_ptr<osg::Group> group = new osg::Group;
-    viewer.setSceneData(group.get());
-
-    viewer.realize();
 
     double timeOfLastMerge = viewer.getFrameStamp()->getReferenceTime();
 
@@ -693,7 +793,7 @@ int main(int argc, char** argv)
             (currentTime-timeOfLastMerge)>timeBetweenMerges)
         {
             std::string filename = fileNames[modelIndex++];
-            std::string outputFilename = outputPostfix.empty() ? std::string() : filename+outputPostfix;
+            std::string outputFilename = outputPostfix.empty() ? std::string() : osgDB::getStrippedName(filename)+outputPostfix;
 
             databasePagingOperation = new DatabasePagingOperation(
                 filename,
@@ -706,6 +806,8 @@ int main(int argc, char** argv)
 
         if (databasePagingOperation.get() && databasePagingOperation->_modelReadyToMerge)
         {
+            OSG_NOTICE<<"Merging subgraph"<<std::endl;
+            
             timeOfLastMerge = currentTime;
 
             group->removeChildren(0,group->getNumChildren());

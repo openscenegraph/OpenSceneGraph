@@ -87,6 +87,12 @@ class OSG_EXPORT Texture2D : public Texture
         class OSG_EXPORT SubloadCallback : public Referenced
         {
             public:
+
+                virtual bool textureObjectValid(const Texture2D& texture, State& state) const
+                {
+                    return texture.textureObjectValid(state);
+                }
+
                 virtual TextureObject* generateTextureObject(const Texture2D& texture, State& state) const
                 {
                     return osg::Texture::generateTextureObject(&texture, state.getContextID(), GL_TEXTURE_2D);
@@ -132,6 +138,8 @@ class OSG_EXPORT Texture2D : public Texture
           * compiled, create the texture mipmap levels. */
         virtual void apply(State& state) const;
 
+
+
     protected :
 
         virtual ~Texture2D();
@@ -139,6 +147,10 @@ class OSG_EXPORT Texture2D : public Texture
         virtual void computeInternalFormat() const;
         void allocateMipmap(State& state) const;
 
+        /** Return true of the TextureObject assigned to the context associate with osg::State object is valid.*/
+        bool textureObjectValid(State& state) const;
+
+        friend class SubloadCallback;
 
         ref_ptr<Image> _image;
 

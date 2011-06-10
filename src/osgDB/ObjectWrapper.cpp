@@ -265,12 +265,19 @@ RegisterWrapperProxy::RegisterWrapperProxy( osg::Object* proto, const std::strin
 {
     _wrapper = new ObjectWrapper( proto, name, associates );
     if ( func ) (*func)( _wrapper.get() );
-    Registry::instance()->getObjectWrapperManager()->addWrapper( _wrapper.get() );
+
+    if (Registry::instance())
+    {
+        Registry::instance()->getObjectWrapperManager()->addWrapper( _wrapper.get() );
+    }
 }
 
 RegisterWrapperProxy::~RegisterWrapperProxy()
 {
-    Registry::instance()->getObjectWrapperManager()->removeWrapper( _wrapper.get() );
+    if (Registry::instance())
+    {
+        Registry::instance()->getObjectWrapperManager()->removeWrapper( _wrapper.get() );
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -609,10 +616,16 @@ RegisterCompressorProxy::RegisterCompressorProxy( const std::string& name, BaseC
     _compressor(compressor)
 {
     _compressor->setName( name );
-    Registry::instance()->getObjectWrapperManager()->addCompressor( _compressor.get() );
+    if (Registry::instance())
+    {
+        Registry::instance()->getObjectWrapperManager()->addCompressor( _compressor.get() );
+    }
 }
 
 RegisterCompressorProxy::~RegisterCompressorProxy()
 {
-    Registry::instance()->getObjectWrapperManager()->removeCompressor( _compressor.get() );
+    if (Registry::instance())
+    {
+        Registry::instance()->getObjectWrapperManager()->removeCompressor( _compressor.get() );
+    }
 }

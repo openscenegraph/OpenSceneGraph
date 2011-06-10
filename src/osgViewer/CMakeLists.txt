@@ -8,7 +8,7 @@ ENDIF()
 SET(LIB_NAME osgViewer)
 
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
-SET(LIB_PUBLIC_HEADERS
+SET(TARGET_H
     ${HEADER_PATH}/CompositeViewer
     ${HEADER_PATH}/Export
     ${HEADER_PATH}/GraphicsWindow
@@ -23,6 +23,7 @@ SET(LIB_PUBLIC_HEADERS
 
 SET(LIB_COMMON_FILES
     CompositeViewer.cpp
+    GraphicsWindow.cpp
     HelpHandler.cpp
     Renderer.cpp
     Scene.cpp
@@ -38,7 +39,7 @@ SET(LIB_COMMON_FILES
 
 SET(LIB_EXTRA_LIBS)
 
-IF(WIN32)
+IF(WIN32 AND NOT ANDROID)
     #
     # Enable workaround for OpenGL driver issues when used in multithreaded/multiscreen with NVidia drivers on Windows XP 
     # For example: osgviewer dumptruck.osg was showing total garbage (screen looked like shattered, splashed hedgehog) 
@@ -51,7 +52,7 @@ IF(WIN32)
         ADD_DEFINITIONS(-DOSG_MULTIMONITOR_MULTITHREAD_WIN32_NVIDIA_WORKAROUND)
     ENDIF()
 
-    SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS}
+    SET(TARGET_H_NO_MODULE_INSTALL
         ${HEADER_PATH}/api/Win32/GraphicsHandleWin32
         ${HEADER_PATH}/api/Win32/GraphicsWindowWin32
         ${HEADER_PATH}/api/Win32/PixelBufferWin32
@@ -71,7 +72,11 @@ ELSE()
         ENDIF()
 
     ELSE()
-        SET(OSG_WINDOWING_SYSTEM "X11" CACHE STRING "Windowing system type for graphics window creation. options only X11")
+        IF(ANDROID)
+            SET(OSG_WINDOWING_SYSTEM "None" CACHE STRING "None Windowing system type for graphics window creation.")
+        ELSE()
+            SET(OSG_WINDOWING_SYSTEM "X11" CACHE STRING "Windowing system type for graphics window creation. options only X11")
+        ENDIF()
     ENDIF()
 
     IF(${OSG_WINDOWING_SYSTEM} STREQUAL "Cocoa")
@@ -87,7 +92,7 @@ ELSE()
             SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Cocoa)
             SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Cocoa)
         ELSE()
-            SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} 
+            SET(TARGET_H_NO_MODULE_INSTALL
                 ${HEADER_PATH}/api/Cocoa/GraphicsHandleCocoa
                 ${HEADER_PATH}/api/Cocoa/GraphicsWindowCocoa
                 ${HEADER_PATH}/api/Cocoa/PixelBufferCocoa
@@ -115,7 +120,7 @@ ELSE()
             SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Carbon)
             SET_PROPERTY(SOURCE ${HEADER_PATH}/api/Carbon/PixelBufferCarbon PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/Carbon)
         ELSE()
-            SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} 
+            SET(TARGET_H_NO_MODULE_INSTALL
                 ${HEADER_PATH}/api/Carbon/GraphicsHandleCarbon
                 ${HEADER_PATH}/api/Carbon/GraphicsWindowCarbon
                 ${HEADER_PATH}/api/Carbon/PixelBufferCarbon
@@ -129,7 +134,7 @@ ELSE()
             PixelBufferCarbon.cpp
         )
 
-        SET(LIB_EXTRA_LIBS ${COCOA_LIBRARY} ${LIB_EXTRA_LIBS})
+        SET(LIB_EXTRA_LIBS ${COCOA_LIBRARY} ${AGL_LIBRARY} ${LIB_EXTRA_LIBS})
 
     ELSEIF(${OSG_WINDOWING_SYSTEM} STREQUAL "IOS")
 
@@ -142,7 +147,7 @@ ELSE()
 
             SET_PROPERTY(SOURCE ${HEADER_PATH}/api/IOS/GraphicsWindowIOS PROPERTY MACOSX_PACKAGE_LOCATION Headers/api/IOS)
         ELSE()
-            SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS} 
+            SET(TARGET_H_NO_MODULE_INSTALL
                 ${HEADER_PATH}/api/IOS/GraphicsWindowIOS
                 #${HEADER_PATH}/api/IOS/PixelBufferIOS
             )
@@ -156,7 +161,7 @@ ELSE()
 
         SET(LIB_EXTRA_LIBS ${COCOA_LIBRARY} ${LIB_EXTRA_LIBS})
 
-    ELSE()
+    ELSEIF(${OSG_WINDOWING_SYSTEM} STREQUAL "X11")
         # X11 for everybody else
         INCLUDE(FindPkgConfig OPTIONAL)
         IF(PKG_CONFIG_FOUND)
@@ -170,7 +175,7 @@ ELSE()
             SET(OSGVIEWER_USE_XRANDR OFF)
         ENDIF()
 
-        SET(LIB_PUBLIC_HEADERS ${LIB_PUBLIC_HEADERS}
+        SET(TARGET_H_NO_MODULE_INSTALL
             ${HEADER_PATH}/api/X11/GraphicsHandleX11
             ${HEADER_PATH}/api/X11/GraphicsWindowX11
             ${HEADER_PATH}/api/X11/PixelBufferX11
@@ -195,7 +200,7 @@ ELSE()
         # X11 on Apple requires X11 library plus OpenGL linking hack on Leopard
         IF(APPLE)
             # hack for finding the iphone opengl es lib
-            IF(OSG_BUILD_PLATFORM_IOS)
+            IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
                 SET(OPENGL_INCLUDE_DIR ${IPHONE_SDKROOT}System/Library/Frameworks)
                 SET(OPENGL_LIBRARIES ${IPHONE_SDKROOT}System/Library/Frameworks/OpenGLES)
             ELSE()
@@ -213,20 +218,23 @@ ELSE()
                 SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-dylib_file,/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:${CMAKE_OSX_SYSROOT}/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib")
             ENDIF()
 
+        ELSE(APPLE)
+
+            SET(LIB_EXTRA_LIBS ${X11_X11_LIB} ${LIB_EXTRA_LIBS})
         ENDIF(APPLE)
+    ELSE()
+        MESSAGE(STATUS "Windowing system not supported")
     ENDIF()
 ENDIF()
 
 
-ADD_LIBRARY(${LIB_NAME}
-    ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
-    ${LIB_PUBLIC_HEADERS}
+SET(TARGET_SRC
     ${LIB_PRIVATE_HEADERS}
     ${LIB_COMMON_FILES}
 )
 
 
-LINK_INTERNAL(${LIB_NAME}     
+SET(TARGET_LIBRARIES    
     osgGA
     osgText
     osgDB
@@ -235,22 +243,26 @@ LINK_INTERNAL(${LIB_NAME}
     OpenThreads
 )
 
-LINK_EXTERNAL(${LIB_NAME} ${LIB_EXTRA_LIBS})
-
-LINK_CORELIB_DEFAULT(${LIB_NAME})
+SET(TARGET_EXTERNAL_LIBRARIES ${LIB_EXTRA_LIBS})
 
 IF(MINGW OR CYGWIN)
-    LINK_EXTERNAL(${LIB_NAME} gdi32 )
+    SET(TARGET_EXTERNAL_LIBRARIES ${TARGET_EXTERNAL_LIBRARY} gdi32 )
 ENDIF()
 
-INCLUDE(ModuleInstall OPTIONAL)
+SETUP_LIBRARY(${LIB_NAME})
 
-FOREACH(INCLUDEFILE ${LIB_PUBLIC_HEADERS} )
-   FILE(RELATIVE_PATH REL_INCLUDEFILE ${HEADER_PATH} ${INCLUDEFILE})
-   GET_FILENAME_COMPONENT(REL_INCLUDE_PATH ${REL_INCLUDEFILE} PATH)
-   INSTALL(
-   FILES        ${INCLUDEFILE}
-   DESTINATION ${INSTALL_INCDIR}/${LIB_NAME}/${REL_INCLUDE_PATH}
-   COMPONENT libopenscenegraph-dev
-   )
+# install these headers manually since setup_library and moduleinstall
+# wouldn't keep the structure, e.g. api/X11/xyz.h
+FOREACH(HEADERFILE ${TARGET_H_NO_MODULE_INSTALL})
+  # get relative path to graphics system dependant header
+  FILE(RELATIVE_PATH REL_INCLUDEFILE ${HEADER_PATH} ${HEADERFILE})
+  GET_FILENAME_COMPONENT(REL_INCLUDE_PATH ${REL_INCLUDEFILE} PATH)
+
+  INSTALL(FILES ${HEADERFILE} 
+    DESTINATION ${INSTALL_INCDIR}/${LIB_NAME}/${REL_INCLUDE_PATH}
+    COMPONENT libopenscenegraph-dev
+  )
 ENDFOREACH()
+
+# for structure in ide
+SOURCE_GROUP("${HEADERS_GROUP}\\api" FILES ${TARGET_H_NO_MODULE_INSTALL})

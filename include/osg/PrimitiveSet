@@ -184,15 +184,13 @@ class OSG_EXPORT PrimitiveSet : public BufferData
         PrimitiveSet(Type primType=PrimitiveType,GLenum mode=0, int numInstances=0):
             _primitiveType(primType),
             _numInstances(numInstances),
-            _mode(mode),
-            _rangeModifiedCount(0) {}
+            _mode(mode) {}
     
         PrimitiveSet(const PrimitiveSet& prim,const CopyOp& copyop=CopyOp::SHALLOW_COPY):
             BufferData(prim,copyop),
             _primitiveType(prim._primitiveType),
             _numInstances(prim._numInstances),
-            _mode(prim._mode),
-            _rangeModifiedCount(0) {}
+            _mode(prim._mode) {}
 
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const PrimitiveSet*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
@@ -232,7 +230,6 @@ class OSG_EXPORT PrimitiveSet : public BufferData
         Type            _primitiveType;
         int             _numInstances;
         GLenum          _mode;
-        mutable unsigned int    _rangeModifiedCount;
 };
 
 class OSG_EXPORT DrawArrays : public PrimitiveSet
@@ -429,27 +426,6 @@ class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
         
-        virtual void computeRange() const
-        {
-            if (empty()) 
-            {
-                _minIndex = 0;
-                _maxIndex = 0;
-                _rangeModifiedCount = _modifiedCount;
-                return;
-            }
-            
-            _minIndex = front();
-            _maxIndex = _minIndex;
-
-            for(vector_type::const_iterator itr=begin(); itr!=end();  ++itr)
-            {
-                if (*itr<_minIndex) _minIndex = *itr;
-                if (*itr>_maxIndex) _maxIndex = *itr;
-            }
-            _rangeModifiedCount = _modifiedCount;
-        }
-        
         virtual void reserveElements(unsigned int numIndices) { reserve(numIndices); }
         virtual void setElement(unsigned int i, unsigned int v)  { (*this)[i] = v; }
         virtual unsigned int getElement(unsigned int i) { return (*this)[i]; } 
@@ -458,9 +434,6 @@ class OSG_EXPORT DrawElementsUByte : public DrawElements, public VectorGLubyte
     protected:
 
         virtual ~DrawElementsUByte();
-
-        mutable unsigned int    _minIndex;
-        mutable unsigned int    _maxIndex;
 };
 
 
@@ -515,27 +488,6 @@ class OSG_EXPORT DrawElementsUShort : public DrawElements, public VectorGLushort
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
 
-        virtual void computeRange() const
-        {
-            if (empty()) 
-            {
-                _minIndex = 0;
-                _maxIndex = 0;
-                _rangeModifiedCount = _modifiedCount;
-                return;
-            }
-            
-            _minIndex = front();
-            _maxIndex = _minIndex;
-
-            for(vector_type::const_iterator itr=begin(); itr!=end();  ++itr)
-            {
-                if (*itr<_minIndex) _minIndex = *itr;
-                if (*itr>_maxIndex) _maxIndex = *itr;
-            }
-            _rangeModifiedCount = _modifiedCount;
-        }
-
         virtual void reserveElements(unsigned int numIndices) { reserve(numIndices); }
         virtual void setElement(unsigned int i, unsigned int v) { (*this)[i] = v; }
         virtual unsigned int getElement(unsigned int i) { return (*this)[i]; }
@@ -544,9 +496,6 @@ class OSG_EXPORT DrawElementsUShort : public DrawElements, public VectorGLushort
     protected:
 
         virtual ~DrawElementsUShort();
-
-        mutable unsigned int    _minIndex;
-        mutable unsigned int    _maxIndex;        
 };
 
 class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
@@ -601,28 +550,6 @@ class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
         virtual unsigned int index(unsigned int pos) const { return (*this)[pos]; }
         virtual void offsetIndices(int offset);
 
-        
-        virtual void computeRange() const
-        {
-            if (empty()) 
-            {
-                _minIndex = 0;
-                _maxIndex = 0;
-                _rangeModifiedCount = _modifiedCount;
-                return;
-            }
-            
-            _minIndex = front();
-            _maxIndex = _minIndex;
-
-            for(vector_type::const_iterator itr=begin(); itr!=end();  ++itr)
-            {
-                if (*itr<_minIndex) _minIndex = *itr;
-                if (*itr>_maxIndex) _maxIndex = *itr;
-            }
-            _rangeModifiedCount = _modifiedCount;
-        }
-
         virtual void reserveElements(unsigned int numIndices) { reserve(numIndices); }
         virtual void setElement(unsigned int i, unsigned int v) { (*this)[i] = v; }
         virtual unsigned int getElement(unsigned int i) { return (*this)[i]; }
@@ -631,9 +558,6 @@ class OSG_EXPORT DrawElementsUInt : public DrawElements, public VectorGLuint
     protected:
 
         virtual ~DrawElementsUInt();
-        
-        mutable unsigned int    _minIndex;
-        mutable unsigned int    _maxIndex;
 };
 
 }

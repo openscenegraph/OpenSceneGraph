@@ -34,7 +34,11 @@ class OSGTERRAIN_EXPORT Terrain : public osg::CoordinateSystemNode
         META_Node(osgTerrain, Terrain);
 
         virtual void traverse(osg::NodeVisitor& nv);
-        
+
+        virtual osgTerrain::Terrain* asTerrain() { return this; }
+        virtual const osgTerrain::Terrain* asTerrain() const { return this; }
+
+
         /** Set the sample ratio hint that TerrainTile should use when building geometry.
           * Defaults to 1.0, which means use all original sample points.*/
         void setSampleRatio(float ratio);
@@ -52,7 +56,7 @@ class OSGTERRAIN_EXPORT Terrain : public osg::CoordinateSystemNode
         /** If set to true the boundaries between adjacent tiles should be equalized.
           * Note, it is only possible to equalizae boundaries when the TerrainTile's contain properly assigned TileID's,
           * databases built with VirtualPlanetBuilder-0.9.11 and older do not set the TileID, so databases must be
-          * built with later versions of VirtualPlanetBuilder to take advatange of boundary equalization. */
+          * built with later versions of VirtualPlanetBuilder to take advantage of boundary equalization. */
         void setEqualizeBoundaries(bool equalizeBoundaries);
 
         /** If true the boundaries between adjacent tiles will be equalized. */

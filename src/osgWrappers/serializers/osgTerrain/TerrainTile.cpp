@@ -65,6 +65,16 @@ struct TerrainTileFinishedObjectReadCallback : public osgDB::FinishedObjectReadC
     virtual void objectRead(osgDB::InputStream& is, osg::Object& obj)
     {
         osgTerrain::TerrainTile& tile = static_cast<osgTerrain::TerrainTile&>(obj);
+
+        if (is.getOptions())
+        {
+            osg::ref_ptr<osg::Node> node;
+            if (is.getOptions()->getTerrain().lock(node))
+            {
+                tile.setTerrain(node->asTerrain());
+            }
+        }
+
         if ( osgTerrain::TerrainTile::getTileLoadedCallback().valid() )
             osgTerrain::TerrainTile::getTileLoadedCallback()->loaded( &tile, is.getOptions() );
         }

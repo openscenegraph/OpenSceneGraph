@@ -476,8 +476,9 @@ osg::PrimitiveSet* InputStream::readPrimitiveSet()
     return primitive.release();
 }
 
-osg::Image* InputStream::readImage()
+osg::Image* InputStream::readImage(bool readFromExternal) 
 {
+
     std::string className="osg::Image";
     unsigned int id = 0;
 
@@ -497,7 +498,7 @@ osg::Image* InputStream::readImage()
     if ( getException() ) return NULL;
 
     osg::ref_ptr<osg::Image> image = NULL;
-    bool readFromExternal = true;
+    
     switch ( decision )
     {
     case IMAGE_INLINE_DATA:
@@ -617,7 +618,7 @@ osg::Object* InputStream::readObject( osg::Object* existingObj )
         return itr->second.get();
     }
 
-    osg::ref_ptr<osg::Object> obj = readObjectFields( className );
+    osg::ref_ptr<osg::Object> obj = readObjectFields( className, existingObj );
 
     _identifierMap[id] = obj;
 

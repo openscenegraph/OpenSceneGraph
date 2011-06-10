@@ -76,6 +76,7 @@ Image::Image(const Image& image,const CopyOp& copyop):
     _dataType(image._dataType),
     _packing(image._packing),
     _pixelAspectRatio(image._pixelAspectRatio),
+    _allocationMode(USE_NEW_DELETE),
     _data(0L),
     _mipmapData(image._mipmapData)
 {
@@ -85,7 +86,6 @@ Image::Image(const Image& image,const CopyOp& copyop):
         setData(new unsigned char [size],USE_NEW_DELETE);
         memcpy(_data,image._data,size);
     }
-
 }
 
 Image::~Image()
@@ -311,6 +311,7 @@ unsigned int Image::computeNumComponents(GLenum pixelFormat)
         case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG): return 3;
         case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG): return 4;
         case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG): return 4;
+        case(GL_ETC1_RGB8_OES): return 3;
         case(GL_COLOR_INDEX): return 1;
         case(GL_STENCIL_INDEX): return 1;
         case(GL_DEPTH_COMPONENT): return 1;
@@ -415,17 +416,15 @@ unsigned int Image::computePixelSizeInBits(GLenum format,GLenum type)
         case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT): return 4;
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT): return 8;
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT): return 8;
-
         case(GL_COMPRESSED_SIGNED_RED_RGTC1_EXT): return 4;
         case(GL_COMPRESSED_RED_RGTC1_EXT):   return 4;
         case(GL_COMPRESSED_SIGNED_RED_GREEN_RGTC2_EXT): return 8;
         case(GL_COMPRESSED_RED_GREEN_RGTC2_EXT): return 8;
-
         case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG): return 4;
         case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG): return 2;
         case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG): return 4;
         case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG): return 2;
-        
+        case(GL_ETC1_RGB8_OES): return 4;
         default: break;
     }
 
@@ -564,6 +563,7 @@ bool Image::isCompressed() const
         case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG):
         case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG):
         case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG):
+        case(GL_ETC1_RGB8_OES):
             return true;
         default:
             return false;
@@ -604,6 +604,11 @@ unsigned int Image::getTotalSizeInBytesIncludingMipmaps() const
            break;
         case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
         case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
+        case(GL_COMPRESSED_RGB_PVRTC_2BPPV1_IMG):
+        case(GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG):
+        case(GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG):
+        case(GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG):
+        case(GL_ETC1_RGB8_OES):
            sizeOfLastMipMap = maximum(sizeOfLastMipMap, 16u); // block size of 16
            break;
         case(GL_COMPRESSED_SIGNED_RED_RGTC1_EXT):
@@ -633,18 +638,7 @@ void Image::setInternalTextureFormat(GLint internalFormat)
 
 void Image::setPixelFormat(GLenum pixelFormat)
 {
-    if (_pixelFormat==pixelFormat) return; // do nothing if the same.
-
-    if (_pixelFormat==0 || computeNumComponents(_pixelFormat)==computeNumComponents(pixelFormat))
-    {
-       // if the two formats have the same number of componets then
-       // we can do a straight swap.
-        _pixelFormat = pixelFormat;
-    }
-    else
-    {
-        OSG_WARN<<"Image::setPixelFormat(..) - warning, attempt to reset the pixel format with a different number of components."<<std::endl;
-    }
+    _pixelFormat = pixelFormat;
 }
 
 void Image::setDataType(GLenum dataType)
@@ -1251,6 +1245,16 @@ bool Image::isImageTranslucent() const
             offset = 3;
             delta = 4;
             break;
+        case(GL_RGB):
+            return false;
+        case(GL_BGR):
+            return false;
+        case(GL_COMPRESSED_RGB_S3TC_DXT1_EXT):
+            return false;
+        case(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT):
+        case(GL_COMPRESSED_RGBA_S3TC_DXT3_EXT):
+        case(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT):
+            return dxtc_tool::CompressedImageTranslucent(_s, _t, _pixelFormat, _data);
         default:
             return false;
     }

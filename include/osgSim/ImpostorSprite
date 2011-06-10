@@ -71,10 +71,10 @@ class OSGSIM_EXPORT ImpostorSprite : public osg::Drawable
         inline const osg::Vec3& getStoredLocalEyePoint() const { return _storedLocalEyePoint; }
         
         /** Set the frame number for when the ImpostorSprite was last used in rendering. */
-        inline void setLastFrameUsed(int frameNumber) { _lastFrameUsed = frameNumber; }
+        inline void setLastFrameUsed(unsigned int frameNumber) { _lastFrameUsed = frameNumber; }
         
         /** Get the frame number for when the ImpostorSprite was last used in rendering. */
-        inline int getLastFrameUsed() const { return _lastFrameUsed; }
+        inline unsigned int getLastFrameUsed() const { return _lastFrameUsed; }
         
 
         /** Get the coordinates of the corners of the quad.
@@ -180,7 +180,7 @@ class OSGSIM_EXPORT ImpostorSprite : public osg::Drawable
         ImpostorSprite*         _previous;
         ImpostorSprite*         _next;
         
-        int _lastFrameUsed;
+        unsigned int _lastFrameUsed;
 
         osg::Vec3 _storedLocalEyePoint;
         
@@ -212,7 +212,7 @@ class OSGSIM_EXPORT ImpostorSpriteManager : public osg::Referenced
         
         void remove(ImpostorSprite* is);
         
-        ImpostorSprite* createOrReuseImpostorSprite(int s,int t,int frameNumber);
+        ImpostorSprite* createOrReuseImpostorSprite(int s,int t,unsigned int frameNumber);
 
         osg::StateSet* createOrReuseStateSet();
 

@@ -28,6 +28,9 @@
     #include <dcmtk/dcmdata/dcdeftag.h>
     #include <dcmtk/dcmdata/dcuid.h>
     #include <dcmtk/dcmimgle/dcmimage.h>
+    #include <dcmtk/dcmimgle/dimopx.h>
+    #include <dcmtk/dcmimage/dicopx.h>
+    #include "dcmtk/dcmimage/diregist.h"
 #endif
 
 #ifdef USE_ITK
@@ -102,6 +105,17 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 
         virtual const char* className() const { return "DICOM Image Reader/Writer"; }
 
+        bool isFileADicom(const std::string& filename) const
+        {
+            std::ifstream fin(filename.c_str(), std::ios::in | std::ios::binary);
+            if (!fin) return false;
+
+            char str[133];
+            str[128]=str[129]=str[130]=str[131]=0;
+            fin.getline(str, sizeof(str));
+            return (str[128]=='D' && str[129]=='I' && str[130]=='C' && str[131]=='M');
+        }
+
         typedef std::vector<std::string> Files;
         bool getDicomFilesInDirectory(const std::string& path, Files& files) const
         {
@@ -122,8 +136,8 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 }
 
                 std::string localFile = path + "/" + *itr;
-                if (acceptsExtension(osgDB::getLowerCaseFileExtension(localFile)) &&
-                    osgDB::fileType(localFile) == osgDB::REGULAR_FILE)
+
+                if (isFileADicom(localFile))
                 {
                     files.push_back(localFile);
                 }
@@ -253,8 +267,6 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             std::string ext = osgDB::getLowerCaseFileExtension(file);
-            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
-
             std::string fileName = file;
             if (ext=="dicom")
             {
@@ -271,16 +283,9 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             {
                 getDicomFilesInDirectory(fileName, files);
             }
-            else
+            else if (isFileADicom(fileName))
             {
-#if 1
                 files.push_back(fileName);
-#else
-                if (!getDicomFilesInDirectory(osgDB::getFilePath(fileName), files))
-                {
-                    files.push_back(fileName);
-                }
-#endif
             }
 
             if (files.empty())
@@ -517,11 +522,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 
         virtual ReadResult readImage(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
-            info()<<"Reading DICOM file "<<file<<" using DCMTK"<<std::endl;
-
             std::string ext = osgDB::getLowerCaseFileExtension(file);
-            if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
-
             std::string fileName = file;
             if (ext=="dicom")
             {
@@ -538,22 +539,22 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             {
                 getDicomFilesInDirectory(fileName, files);
             }
+            else if (isFileADicom(fileName))
+            {
+                files.push_back(fileName);
+            }
             else
             {
-#if 1
-                files.push_back(fileName);
-#else
-                if (!getDicomFilesInDirectory(osgDB::getFilePath(fileName), files))
-                {
-                    files.push_back(fileName);
-                }
-#endif
+                return ReadResult::FILE_NOT_HANDLED;
             }
 
             if (files.empty())
             {
                 return ReadResult::FILE_NOT_FOUND;
             }
+
+            info()<<"Reading DICOM file "<<file<<" using DCMTK"<<std::endl;
+
 
             osg::ref_ptr<osgVolume::ImageDetails> details = new osgVolume::ImageDetails;
             details->setMatrix(new osg::RefMatrix);
@@ -576,13 +577,21 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 
             unsigned int totalNumSlices = 0;
 
+            typedef std::map<std::string, ReadResult> ErrorMap;
+            ErrorMap errorMap;
+
             for(Files::iterator itr = files.begin();
                 itr != files.end();
                 ++itr)
             {
                 DcmFileFormat fileformat;
-                OFCondition status = fileformat.loadFile((*itr).c_str());
-                if(!status.good()) return ReadResult::ERROR_IN_READING_FILE;
+                const std::string& dicom_filename = *itr;
+                OFCondition status = fileformat.loadFile(dicom_filename.c_str());
+                if(!status.good())
+                {
+                    errorMap[dicom_filename] = ReadResult::ERROR_IN_READING_FILE;
+                    continue;
+                }
 
                 FileInfo fileInfo;
                 fileInfo.filename = *itr;
@@ -790,6 +799,12 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                     if (dcmImage->getStatus()==EIS_Normal)
                     {
 
+                        EP_Representation curr_pixelRep;
+                        int curr_numPlanes;
+                        GLenum curr_pixelFormat;
+                        GLenum curr_dataType;
+                        unsigned int curr_pixelSize;
+
                         // get the pixel data
                         const DiPixel* pixelData = dcmImage->getInterData();
                         if(!pixelData)
@@ -798,25 +813,45 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                             return ReadResult::ERROR_IN_READING_FILE;
                         }
 
-                        osg::ref_ptr<osg::Image> imageAdapter = new osg::Image;
-
-                        EP_Representation curr_pixelRep;
-                        int curr_numPlanes;
-                        GLenum curr_pixelFormat;
-                        GLenum curr_dataType;
-                        unsigned int curr_pixelSize;
-
                         // create the new image
                         convertPixelTypes(pixelData,
                                         curr_pixelRep, curr_numPlanes,
                                         curr_dataType, curr_pixelFormat, curr_pixelSize);
 
-                        imageAdapter->setImage(dcmImage->getWidth(), dcmImage->getHeight(), dcmImage->getFrameCount(),
-                                            curr_pixelFormat,
-                                            curr_pixelFormat,
-                                            curr_dataType,
-                                            (unsigned char*)(pixelData->getData()),
-                                            osg::Image::NO_DELETE);
+                        // dcmImage->getFrameCount()
+
+                        osg::ref_ptr<osg::Image> imageAdapter = new osg::Image;
+
+                        if (dcmImage->isMonochrome())
+                        {
+                            imageAdapter->setImage(dcmImage->getWidth(), dcmImage->getHeight(), dcmImage->getFrameCount(),
+                                                curr_pixelFormat,
+                                                curr_pixelFormat,
+                                                curr_dataType,
+                                                (unsigned char*)(pixelData->getData()),
+                                                osg::Image::NO_DELETE);
+
+                        }
+                        else
+                        {
+                            imageAdapter->allocateImage(dcmImage->getWidth(), dcmImage->getHeight(), dcmImage->getFrameCount(),
+                                            curr_pixelFormat, curr_dataType);
+
+                            void* data = imageAdapter->data(0,0,0);
+                            unsigned long size = dcmImage->createWindowsDIB( data,
+                                                                             imageAdapter->getTotalDataSize(),
+                                                                             0,
+                                                                             imageAdapter->getPixelSizeInBits(),
+                                                                             0,
+                                                                             0);
+
+                            if (size==0)
+                            {
+                                 info()<<"  dcmImage->createWindowsDIB() failed to create required imagery."<<std::endl;
+                                 continue;
+                            }
+                        }
+
                         if (!image)
                         {
                             pixelRep = curr_pixelRep;
@@ -898,8 +933,20 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                     }
                     else
                     {
-                        warning()<<"Error in reading dicom file "<<fileName.c_str()<<", error = "<<DicomImage::getString(dcmImage->getStatus())<<std::endl;
+                        warning()<<"Error in reading dicom file "<<fileInfo.filename<<", error = "<<DicomImage::getString(dcmImage->getStatus())<<std::endl;
+                        info()<<"    dcmImage->getPhotometricInterpretation()="<<DicomImage::getString(dcmImage->getPhotometricInterpretation())<<std::endl;
+                        info()<<"    dcmImage->width="<<dcmImage->getWidth()<<", height="<<dcmImage->getHeight()<<" FrameCount="<< dcmImage->getFrameCount()<<std::endl;
                     }
+                }
+            }
+
+            if (!errorMap.empty())
+            {
+                for(ErrorMap::iterator itr = errorMap.begin();
+                    itr != errorMap.end();
+                    ++itr)
+                {
+                    warning()<<"Error in reading file "<<itr->first<<std::endl;
                 }
             }
 

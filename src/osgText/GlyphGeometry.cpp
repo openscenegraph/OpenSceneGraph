@@ -691,6 +691,13 @@ OSGTEXT_EXPORT osg::Geometry* computeTextGeometry(osg::Geometry* glyphGeometry, 
     // if we don't have a face we can't create any 3d text
     if (!face) return 0;
 
+    // face doesn't have enough vertices on it to represent a polygon.
+    if (face->size()<3)
+    {
+        OSG_NOTICE<<"Face does not have enough elements to be able to represent a polygon, face->size() = "<<face->size()<<std::endl;
+        return 0;
+    }
+
     // build up the vertices primitives for the front face, and record the indices
     // for later use, and to ensure sharing of vertices in the face primitive set
     osg::DrawElementsUShort* frontFace = new osg::DrawElementsUShort(GL_TRIANGLES);

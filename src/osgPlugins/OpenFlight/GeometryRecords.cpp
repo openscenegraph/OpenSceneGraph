@@ -29,7 +29,107 @@
 #include "Document.h"
 #include "RecordInputStream.h"
 
+#include <algorithm>
+
 namespace flt {
+
+template<class ARRAY>
+void reverseWindingOrder( ARRAY* data, GLenum mode, GLint first, GLint last )
+{
+    switch( mode )
+    {
+    case osg::PrimitiveSet::TRIANGLES:
+    case osg::PrimitiveSet::QUADS:
+    case osg::PrimitiveSet::POLYGON:
+        // reverse all the vertices.
+        std::reverse(data->begin()+first, data->begin()+last);
+        break;
+    case osg::PrimitiveSet::TRIANGLE_STRIP:
+    case osg::PrimitiveSet::QUAD_STRIP:
+        // reverse only the shared edges.
+        for( GLint i = first; i < last-1; i+=2 )
+        {
+            std::swap( (*data)[i], (*data)[i+1] );
+        }
+        break;
+    case osg::PrimitiveSet::TRIANGLE_FAN:
+        // reverse all vertices except the first vertex.
+        std::reverse(data->begin()+first+1, data->begin()+last);
+        break;
+    }
+}
+
+void addDrawableAndReverseWindingOrder( osg::Geode* geode )
+{
+    // Replace double sided polygons by duplicating the drawables and inverting the normals.
+    std::vector<osg::Geometry*> new_drawables;
+
+    for (size_t i=0; i<geode->getNumDrawables(); ++i)
+    {
+        const osg::Geometry* geometry = dynamic_cast<const osg::Geometry*>(geode->getDrawable(i));
+        if(geometry)
+        {
+            osg::Geometry* geom = new osg::Geometry(*geometry
+                , osg::CopyOp::DEEP_COPY_ARRAYS | osg::CopyOp::DEEP_COPY_PRIMITIVES);
+            new_drawables.push_back(geom);
+
+            for( size_t i = 0; i < geom->getNumPrimitiveSets( ); ++i )
+            {
+                osg::DrawArrays* drawarray = dynamic_cast<osg::DrawArrays*>( geom->getPrimitiveSet( i ) );
+                if( drawarray )
+                {
+                    GLint first = drawarray->getFirst();
+                    GLint last  = drawarray->getFirst()+drawarray->getCount();
+
+                    // Invert vertex order.
+                    osg::Vec3Array* vertices = dynamic_cast<osg::Vec3Array*>(geom->getVertexArray());
+                    if( vertices )
+                    {
+                        reverseWindingOrder( vertices, drawarray->getMode(), first, last );
+                    }
+
+                    if( geom->getNormalBinding( ) == osg::Geometry::BIND_PER_VERTEX )
+                    {
+                        osg::Vec3Array* normals = dynamic_cast<osg::Vec3Array*>(geom->getNormalArray());
+                        if( normals )
+                        {
+                            // First, invert the direction of the normals.
+                            for( GLint i = first; i < last; ++i )
+                            {
+                                (*normals)[i] = -(*normals)[i];
+                            }
+                            reverseWindingOrder( normals, drawarray->getMode(), first, last );
+                        }
+                    }
+
+                    if( geom->getColorBinding( ) == osg::Geometry::BIND_PER_VERTEX )
+                    {
+                        osg::Vec4Array* colors = dynamic_cast<osg::Vec4Array*>(geom->getColorArray());
+                        if( colors )
+                        {
+                            reverseWindingOrder( colors, drawarray->getMode(), first, last );
+                        }
+                    }
+
+                    for( size_t i = 0; i < geom->getNumTexCoordArrays(); ++i )
+                    {
+                        osg::Vec2Array* UVs = dynamic_cast<osg::Vec2Array*>(geom->getTexCoordArray(i));
+                        if( UVs )
+                        {
+                            reverseWindingOrder( UVs, drawarray->getMode(), first, last );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Now add the new geometry drawable.
+    for( size_t i = 0; i < new_drawables.size( ); ++i )
+    {
+        geode->addDrawable( new_drawables[i] );
+    }
+}
 
 /* Face record
  */
@@ -374,7 +474,15 @@ protected:
             break;
         }
         case SOLID_NO_BACKFACE:   // Disable backface culling
-            stateset->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);
+            if( document.getReplaceDoubleSidedPolys( ) )
+            {
+                static osg::ref_ptr<osg::CullFace> cullFace = new osg::CullFace(osg::CullFace::BACK);
+                stateset->setAttributeAndModes(cullFace.get(), osg::StateAttribute::ON);
+            }
+            else
+            {
+                stateset->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);
+            }
             break;
         }
 
@@ -475,6 +583,11 @@ protected:
                         geometry->setNormalArray(NULL);
                     }
                 }
+            }
+
+            if( getDrawMode( ) == SOLID_NO_BACKFACE && document.getReplaceDoubleSidedPolys( ) )
+            {
+                addDrawableAndReverseWindingOrder( _geode.get() );
             }
 
             osg::StateSet* stateset =  _geode->getOrCreateStateSet();
@@ -930,7 +1043,15 @@ protected:
             break;
         }
         case SOLID_NO_BACKFACE:   // Disable backface culling
-            stateset->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);
+            if( document.getReplaceDoubleSidedPolys( ) )
+            {
+                static osg::ref_ptr<osg::CullFace> cullFace = new osg::CullFace(osg::CullFace::BACK);
+                stateset->setAttributeAndModes(cullFace.get(), osg::StateAttribute::ON);
+            }
+            else
+            {
+                stateset->setMode(GL_CULL_FACE,osg::StateAttribute::OFF);
+            }
             break;
         }
 
@@ -958,6 +1079,11 @@ protected:
             if (_matrix.valid())
             {
                 insertMatrixTransform(*_geode,*_matrix,_numberOfReplications);
+            }
+
+            if( getDrawMode( ) == SOLID_NO_BACKFACE && document.getReplaceDoubleSidedPolys( ) )
+            {
+                addDrawableAndReverseWindingOrder( _geode.get() );
             }
 
             osg::StateSet* stateset =  _geode->getOrCreateStateSet();

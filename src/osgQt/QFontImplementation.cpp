@@ -27,8 +27,6 @@ QFontImplementation::QFontImplementation(const QFont& font) :
    _filename(font.toString().toStdString() + ".qfont"),
    _font(font)
 {
-   _currentRes.first = 0;
-   _currentRes.second = 0;
 }
 
 QFontImplementation::~QFontImplementation()
@@ -41,20 +39,13 @@ QFontImplementation::getFileName() const
     return _filename;
 }
 
-void
-QFontImplementation::setFontResolution(const osgText::FontResolution& fontSize)
-{
-    if (fontSize == _currentRes)
-        return;
-
-    _currentRes = fontSize;
-    _font.setPixelSize(fontSize.second);
-}
-
 osgText::Glyph*
 QFontImplementation::getGlyph(const osgText::FontResolution& fontRes, unsigned int charcode)
 {
-    setFontResolution(fontRes);
+    unsigned int fontSize = fontRes.second;
+    _font.setPixelSize(fontSize);
+    
+    float coord_scale = 1.0f/float(fontSize);
 
     QFontMetrics fontMetrics(_font);
     QFontMetricsF fontMetricsF(_font);
@@ -105,6 +96,9 @@ QFontImplementation::getGlyph(const osgText::FontResolution& fontRes, unsigned i
                     osg::Image::USE_NEW_DELETE,
                     1);
     glyph->setInternalTextureFormat(GL_ALPHA);
+    
+    glyph->setWidth((float)imageWidth * coord_scale);
+    glyph->setHeight((float)imageHeight * coord_scale);
 
     // Layout parameters
     float leftBearing = fontMetricsF.leftBearing(QChar(charcode));
@@ -112,17 +106,17 @@ QFontImplementation::getGlyph(const osgText::FontResolution& fontRes, unsigned i
 
     // for horizonal layout
     osg::Vec2 bottomLeft(leftBearing - margin, - rectF.bottom() - margin);
-    glyph->setHorizontalBearing(bottomLeft);
-    glyph->setHorizontalAdvance(fontMetricsF.width(QChar(charcode)));
+    glyph->setHorizontalBearing(bottomLeft * coord_scale);
+    glyph->setHorizontalAdvance(fontMetricsF.width(QChar(charcode)) * coord_scale);
 
     // for vertical layout
     osg::Vec2 topMiddle(- margin + 0.5*(leftBearing - rect.width() - rightBearing),
                         rectF.top() - margin);
-    glyph->setVerticalBearing(topMiddle);
-    glyph->setVerticalAdvance(rectF.height() + fontMetricsF.overlinePos() - fontMetricsF.xHeight());
+    glyph->setVerticalBearing(topMiddle * coord_scale);
+    glyph->setVerticalAdvance((rectF.height() + fontMetricsF.overlinePos() - fontMetricsF.xHeight()) * coord_scale);
     
     // ... ready
-    addGlyph(fontRes, charcode, glyph.get());
+    //addGlyph(fontRes, charcode, glyph.get());
     
     return glyph.release();
 }

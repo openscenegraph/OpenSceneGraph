@@ -68,7 +68,7 @@ bool HeightFieldLayer_writeLocalData(const osg::Object& obj, osgDB::Output& fw)
     
     if (!layer.getFileName().empty())
     {
-        std::string str = osgTerrain::createCompondSetNameAndFileName(layer.getName(), layer.getFileName());
+        std::string str = osgTerrain::createCompoundSetNameAndFileName(layer.getName(), layer.getFileName());
         fw.indent()<<"file "<< str << std::endl;
     }
     else

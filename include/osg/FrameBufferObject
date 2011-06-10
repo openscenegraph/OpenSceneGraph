@@ -242,6 +242,14 @@ namespace osg
 
         static int getMaxSamples(unsigned int contextID, const FBOExtensions *ext);
 
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
+        /** If State is non-zero, this function releases any associated OpenGL objects for
+           * the specified graphics context. Otherwise, releases OpenGL objexts
+           * for all graphics contexts. */
+        virtual void releaseGLObjects(osg::State* = 0) const;
+
     protected:
         virtual ~RenderBuffer();
         RenderBuffer &operator=(const RenderBuffer &) { return *this; }
@@ -450,6 +458,14 @@ namespace osg
         /** discard all the cached FBOs which need to be deleted
           * in the OpenGL context related to contextID.*/
         static void discardDeletedFrameBufferObjects(unsigned int contextID);
+
+        /** Resize any per context GLObject buffers to specified size. */
+        virtual void resizeGLObjectBuffers(unsigned int maxSize);
+
+        /** If State is non-zero, this function releases any associated OpenGL objects for
+           * the specified graphics context. Otherwise, releases OpenGL objexts
+           * for all graphics contexts. */
+        virtual void releaseGLObjects(osg::State* = 0) const;
 
     protected:
         virtual ~FrameBufferObject();

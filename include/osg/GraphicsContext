@@ -108,6 +108,11 @@ class OSG_EXPORT GraphicsContext : public Object
             // V-sync
             bool            vsync;
             
+            // Swap Group
+            bool            swapGroupEnabled;
+            GLuint          swapGroup;
+            GLuint          swapBarrier;
+
             // use multithreaded OpenGL-engine (OS X only)
             bool            useMultiThreadedOpenGLEngine;
             

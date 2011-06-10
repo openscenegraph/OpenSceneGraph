@@ -8,7 +8,6 @@ ENDIF()
 
 SET(LIB_NAME osg)
 
-
 #
 # Enable workaround for OpenGL driver crash with occlusion query
 #
@@ -19,7 +18,7 @@ ENDIF()
 
 
 SET(HEADER_PATH ${OpenSceneGraph_SOURCE_DIR}/include/${LIB_NAME})
-SET(LIB_PUBLIC_HEADERS
+SET(TARGET_H
     ${HEADER_PATH}/AlphaFunc
     ${HEADER_PATH}/AnimationPath
     ${HEADER_PATH}/ApplicationUsage
@@ -79,6 +78,7 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/GLBeginEndAdapter
     ${HEADER_PATH}/GLObjects
     ${HEADER_PATH}/GLU
+    ${HEADER_PATH}/GraphicsCostEstimator
     ${HEADER_PATH}/GraphicsContext
     ${HEADER_PATH}/GraphicsThread
     ${HEADER_PATH}/Group
@@ -172,6 +172,8 @@ SET(LIB_PUBLIC_HEADERS
     ${HEADER_PATH}/TriangleFunctor
     ${HEADER_PATH}/TriangleIndexFunctor
     ${HEADER_PATH}/Uniform
+    ${HEADER_PATH}/UserDataContainer
+    ${HEADER_PATH}/ValueObject
     ${HEADER_PATH}/Vec2
     ${HEADER_PATH}/Vec2b
     ${HEADER_PATH}/Vec2d
@@ -195,9 +197,10 @@ SET(LIB_PUBLIC_HEADERS
     ${OPENSCENEGRAPH_CONFIG_HEADER}
 )
 
-ADD_LIBRARY(${LIB_NAME}
-    ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
-    ${LIB_PUBLIC_HEADERS}
+#ADD_LIBRARY(${LIB_NAME}
+#    ${OPENSCENEGRAPH_USER_DEFINED_DYNAMIC_OR_STATIC}
+#    ${LIB_PUBLIC_HEADERS}
+SET(TARGET_SRC
     AlphaFunc.cpp
     AnimationPath.cpp
     ApplicationUsage.cpp
@@ -251,6 +254,7 @@ ADD_LIBRARY(${LIB_NAME}
     GLObjects.cpp
     GLStaticLibrary.h
     GLStaticLibrary.cpp
+    GraphicsCostEstimator.cpp
     GraphicsContext.cpp
     GraphicsThread.cpp
     Group.cpp
@@ -335,6 +339,7 @@ ADD_LIBRARY(${LIB_NAME}
     TransferFunction.cpp
     Transform.cpp
     Uniform.cpp
+    UserDataContainer.cpp
     Version.cpp
     VertexProgram.cpp
     View.cpp
@@ -371,11 +376,22 @@ ADD_LIBRARY(${LIB_NAME}
 
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
+SET(TARGET_LIBRARIES OpenThreads)
 
-LINK_INTERNAL(${LIB_NAME}     
-    OpenThreads
+SET(TARGET_EXTERNAL_LIBRARIES
+    ${CMAKE_THREAD_LIBS_INIT}    
+    ${MATH_LIBRARY} 
+    ${RT_LIBRARY} 
+    ${DL_LIBRARY}
 )
-LINK_EXTERNAL(${LIB_NAME} ${CMAKE_THREAD_LIBS_INIT}    ${MATH_LIBRARY} ${RT_LIBRARY} ${DL_LIBRARY})
-LINK_CORELIB_DEFAULT(${LIB_NAME} ${CMAKE_THREAD_LIBS_INIT} ${MATH_LIBRARY} ${RT_LIBRARY} )
 
-INCLUDE(ModuleInstall OPTIONAL)
+#LINK_INTERNAL(${LIB_NAME}     
+#    OpenThreads
+#)
+#LINK_EXTERNAL(${LIB_NAME} ${CMAKE_THREAD_LIBS_INIT}    ${MATH_LIBRARY} ${RT_LIBRARY} ${DL_LIBRARY})
+#LINK_CORELIB_DEFAULT(${LIB_NAME} ${CMAKE_THREAD_LIBS_INIT} ${MATH_LIBRARY} ${RT_LIBRARY} )
+
+#INCLUDE(ModuleInstall OPTIONAL)
+
+SETUP_LIBRARY(${LIB_NAME})
+

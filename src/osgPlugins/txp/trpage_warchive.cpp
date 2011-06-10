@@ -85,6 +85,8 @@ void trpgwArchive::Init(char *inDir,char *inFile,trpg2dPoint &sw, trpg2dPoint &n
     isRegenerate = true;
     errMess[0] = '\0';
 
+    firstHeaderWrite = true;
+
     // TODO: have a "setup from file" method for trpgwArchive
 
     // Open a Read Archive to get the rest of the info we need

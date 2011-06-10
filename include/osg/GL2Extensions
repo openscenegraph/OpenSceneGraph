@@ -284,6 +284,13 @@ typedef char GLchar;
 #define GL_INVALID_INDEX                  0xFFFFFFFFu
 #endif
 
+//ARB_get_program_binary
+#ifndef GL_PROGRAM_BINARY_RETRIEVABLE_HINT
+#define GL_PROGRAM_BINARY_RETRIEVABLE_HINT 0x8257
+#define GL_PROGRAM_BINARY_LENGTH           0x8741
+#define GL_NUM_PROGRAM_BINARY_FORMATS      0x87FE
+#define GL_PROGRAM_BINARY_FORMATS          0x87FF
+#endif
 
 namespace osg {
 
@@ -326,6 +333,10 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
 
         void setUniformBufferObjectSupported(bool flag) { _isUniformBufferObjectSupported = flag; }
         bool isUniformBufferObjectSupported() {return _isUniformBufferObjectSupported; }
+
+        void setGetProgramBinarySupported(bool flag) { _isGetProgramBinarySupported = flag; }
+        bool isGetProgramBinarySupported() {return _isGetProgramBinarySupported; }
+
         /** Function to call to get the extension of a specified context.
           * If the Exentsion object for that context has not yet been created then
           * and the 'createIfNotInitalized' flag been set to false then returns NULL.
@@ -480,6 +491,11 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         void glGetActiveUniformBlockiv(GLuint program, GLuint uniformBlockIndex, GLenum pname, GLint *params) const;
         void glGetActiveUniformBlockName(GLuint program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformBlockName) const;
         void glUniformBlockBinding(GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding) const;
+
+        // ARB_get_program_binary
+        void glGetProgramBinary(GLuint program, GLsizei bufSize, GLsizei *length, GLenum *binaryFormat, GLvoid *binary) const;
+        void glProgramBinary(GLuint program, GLenum binaryFormat, const GLvoid *binary, GLsizei length) const;
+
     protected:
         ~GL2Extensions() {}
 
@@ -494,6 +510,7 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         bool _areTessellationShadersSupported;
         bool _isGpuShader4Supported;
         bool _isUniformBufferObjectSupported;
+        bool _isGetProgramBinarySupported;
 
         typedef void (GL_APIENTRY * BlendEquationSeparateProc)(GLenum modeRGB, GLenum modeAlpha);
         typedef void (GL_APIENTRY * DrawBuffersProc)(GLsizei n, const GLenum *bufs);
@@ -622,6 +639,8 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         typedef void (GL_APIENTRY * GetActiveUniformBlockivProc)(GLuint program, GLuint uniformBlockIndex, GLenum pname, GLint *params);
         typedef void (GL_APIENTRY * GetActiveUniformBlockNameProc)(GLuint program, GLuint uniformBlockIndex, GLsizei bufSize, GLsizei *length, GLchar *uniformBlockName);
         typedef void (GL_APIENTRY * UniformBlockBindingProc)(GLuint program, GLuint uniformBlockIndex, GLuint uniformBlockBinding);
+        typedef void (GL_APIENTRY * GetProgramBinaryProc)(GLuint program, GLsizei bufSize, GLsizei *length, GLenum *binaryFormat, GLvoid *binary);
+        typedef void (GL_APIENTRY * ProgramBinaryProc)(GLuint program, GLenum binaryFormat, const GLvoid *binary, GLsizei length);
 
         BlendEquationSeparateProc _glBlendEquationSeparate;        
         DrawBuffersProc _glDrawBuffers;
@@ -761,6 +780,10 @@ class OSG_EXPORT GL2Extensions : public osg::Referenced
         GetActiveUniformBlockivProc _glGetActiveUniformBlockiv;
         GetActiveUniformBlockNameProc _glGetActiveUniformBlockName;
         UniformBlockBindingProc _glUniformBlockBinding;
+
+        //ARB_get_program_binary
+        GetProgramBinaryProc _glGetProgramBinary;
+        ProgramBinaryProc _glProgramBinary;
 };
 
 }

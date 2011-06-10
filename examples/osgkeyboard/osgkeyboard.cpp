@@ -42,14 +42,13 @@ public:
         
         osg::Group* getScene() { return _scene.get(); }
         
-        void keyChange(int key,int value);
+        void keyChange(int key, int virtualKey, int value);
         
 protected:
         
         ~KeyboardModel() {}
 
         osg::Switch* addKey(osg::Vec3& pos, int key,const std::string& text,float width, float height);
-        osg::Switch* addKey(int key,osg::Switch* sw);
 
         void createKeyboard();
 
@@ -61,12 +60,12 @@ protected:
 
 };
 
-void KeyboardModel::keyChange(int key,int value)
+void KeyboardModel::keyChange(int key, int virtualKey, int value)
 {
     osg::notify(osg::INFO) << "key value change, code="<<std::hex << key << "\t value="<< value << std::dec  << std::endl;
 
     // toggle the keys graphical representation on or off via osg::Swithc
-    KeyModelMap::iterator itr = _keyModelMap.find(key);
+    KeyModelMap::iterator itr = _keyModelMap.find(virtualKey);
     if (itr!=_keyModelMap.end())
     {
         itr->second->setSingleChildOn(value);
@@ -147,12 +146,6 @@ osg::Switch* KeyboardModel::addKey(osg::Vec3& pos, int key,const std::string& te
     
 }
 
-osg::Switch* KeyboardModel::addKey(int key,osg::Switch* sw)
-{
-    _keyModelMap[key] = sw;
-    return sw;
-}
-
 void KeyboardModel::createKeyboard()
 {
     _scene = new osg::Group;
@@ -175,70 +168,70 @@ void KeyboardModel::createKeyboard()
     pos.z() += 1.0f;
 
     addKey(pos,osgGA::GUIEventAdapter::KEY_Shift_L,"Shift",2.0f,0.5f);
-    addKey(pos,'\\',"\\",1.0f,1.0f);
-    addKey('Z',addKey(pos,'z',"Z",1.0f,1.0f));
-    addKey('X',addKey(pos,'x',"X",1.0f,1.0f));
-    addKey('C',addKey(pos,'c',"C",1.0f,1.0f));
-    addKey('V',addKey(pos,'v',"V",1.0f,1.0f));
-    addKey('B',addKey(pos,'b',"B",1.0f,1.0f));
-    addKey('N',addKey(pos,'n',"N",1.0f,1.0f));
-    addKey('M',addKey(pos,'m',"M",1.0f,1.0f));
-    addKey('<',addKey(pos,',',",",1.0f,1.0f));
-    addKey('>',addKey(pos,'.',".",1.0f,1.0f));
-    addKey('?',addKey(pos,'/',"/",1.0f,1.0f));
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Backslash,"\\",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Z,"Z",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_X,"X",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_C,"C",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_V,"V",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_B,"B",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_N,"N",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_M,"M",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Comma,",",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Period,".",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Slash,"/",1.0f,1.0f);
     addKey(pos,osgGA::GUIEventAdapter::KEY_Shift_R,"Shift",2.0f,0.5f);
 
     pos.x() = 0.0f;
     pos.z() += 1.0f;
     
     addKey(pos,osgGA::GUIEventAdapter::KEY_Caps_Lock,"Caps",2.0f,0.5f);
-    addKey('A',addKey(pos,'a',"A",1.0f,1.0f));
-    addKey('S',addKey(pos,'s',"S",1.0f,1.0f));
-    addKey('D',addKey(pos,'d',"D",1.0f,1.0f));
-    addKey('F',addKey(pos,'f',"F",1.0f,1.0f));
-    addKey('G',addKey(pos,'g',"G",1.0f,1.0f));
-    addKey('H',addKey(pos,'h',"H",1.0f,1.0f));
-    addKey('J',addKey(pos,'j',"J",1.0f,1.0f));
-    addKey('K',addKey(pos,'k',"K",1.0f,1.0f));
-    addKey('L',addKey(pos,'l',"L",1.0f,1.0f));
-    addKey(':',addKey(pos,';',";",1.0f,1.0f));
-    addKey('@',addKey(pos,'\'',"'",1.0f,1.0f));
-    addKey('~',addKey(pos,'#',"#",1.0f,1.0f));
+    addKey(pos,osgGA::GUIEventAdapter::KEY_A,"A",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_S,"S",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_D,"D",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_F,"F",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_G,"G",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_H,"H",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_J,"J",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_K,"K",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_L,"L",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Semicolon,";",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Quote,"'",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Hash,"#",1.0f,1.0f);
     addKey(pos,osgGA::GUIEventAdapter::KEY_Return,"Return",4.0f,0.5f);
 
     pos.x() = 0.0f;
     pos.z() += 1.0f;
     
     addKey(pos,osgGA::GUIEventAdapter::KEY_Tab,"Tab",2.0f,0.5f);
-    addKey('Q',addKey(pos,'q',"Q",1.0f,1.0f));
-    addKey('W',addKey(pos,'w',"W",1.0f,1.0f));
-    addKey('E',addKey(pos,'e',"E",1.0f,1.0f));
-    addKey('R',addKey(pos,'r',"R",1.0f,1.0f));
-    addKey('T',addKey(pos,'t',"T",1.0f,1.0f));
-    addKey('Y',addKey(pos,'y',"Y",1.0f,1.0f));
-    addKey('U',addKey(pos,'u',"U",1.0f,1.0f));
-    addKey('I',addKey(pos,'i',"I",1.0f,1.0f));
-    addKey('O',addKey(pos,'o',"O",1.0f,1.0f));
-    addKey('P',addKey(pos,'p',"P",1.0f,1.0f));
-    addKey('{',addKey(pos,'[',"[",1.0f,1.0f));
-    addKey('}',addKey(pos,']',"]",1.0f,1.0f));
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Q,"Q",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_W,"W",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_E,"E",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_R,"R",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_T,"T",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Y,"Y",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_U,"U",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_I,"I",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_O,"O",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_P,"P",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Leftbracket,"[",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Rightbracket,"]",1.0f,1.0f);
 
     pos.x() = 0.0f;
     pos.z() += 1.0f;
     
-    addKey(pos,'`',"`",1.0f,1.0f);
-    addKey(pos,'1',"1",1.0f,1.0f);
-    addKey(pos,'2',"2",1.0f,1.0f);
-    addKey(pos,'3',"3",1.0f,1.0f);
-    addKey(pos,'4',"4",1.0f,1.0f);
-    addKey(pos,'5',"5",1.0f,1.0f);
-    addKey(pos,'6',"6",1.0f,1.0f);
-    addKey(pos,'7',"7",1.0f,1.0f);
-    addKey(pos,'8',"8",1.0f,1.0f);
-    addKey(pos,'9',"9",1.0f,1.0f);
-    addKey(pos,'0',"0",1.0f,1.0f);
-    addKey(pos,'-',"-",1.0f,1.0f);
-    addKey(pos,'=',"=",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Backquote,"`",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_1,"1",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_2,"2",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_3,"3",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_4,"4",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_5,"5",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_6,"6",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_7,"7",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_8,"8",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_9,"9",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_0,"0",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Minus,"-",1.0f,1.0f);
+    addKey(pos,osgGA::GUIEventAdapter::KEY_Equals,"=",1.0f,1.0f);
     addKey(pos,osgGA::GUIEventAdapter::KEY_BackSpace,"Backspace",3.0f,0.5f);
 
     pos.x() = 0.0f;
@@ -405,12 +398,12 @@ public:
             {
                 case(osgGA::GUIEventAdapter::KEYDOWN):
                 {
-                    _keyboardModel->keyChange(ea.getKey(),1);
+                    _keyboardModel->keyChange(ea.getKey(), ea.getUnmodifiedKey(),1);
                     return true;
                 }
                 case(osgGA::GUIEventAdapter::KEYUP):
                 {
-                    _keyboardModel->keyChange(ea.getKey(),0);
+                    _keyboardModel->keyChange(ea.getKey(), ea.getUnmodifiedKey(),0);
                     return true;
                 }
 

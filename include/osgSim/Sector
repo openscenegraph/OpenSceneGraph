@@ -169,11 +169,6 @@ class OSGSIM_EXPORT ElevationSector : public Sector, public ElevationRange
     protected:
 
         virtual ~ElevationSector() {}
-
-        float _cosMinElevation;
-        float _cosMinFadeElevation;
-        float _cosMaxElevation;
-        float _cosMaxFadeElevation;
 };
 
 

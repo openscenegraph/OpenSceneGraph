@@ -72,7 +72,7 @@ extern "C"
         else return 0;
     }
 
-};
+}
 
 
 ConvertFromPerformer::ConvertFromPerformer()

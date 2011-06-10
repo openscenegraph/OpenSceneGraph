@@ -27,7 +27,11 @@ typedef INT32      int32_t;
 typedef UINT16     uint16_t;
 typedef UINT8      uint8_t;
 #else
+#if defined __sun || defined __hpux
+#include <inttypes.h>
+#else
 #include <stdint.h>
+#endif
 #endif
 
 using namespace osg;
@@ -41,7 +45,8 @@ enum
   kPVRTextureFlagTypePVRTC_2 = 12,
   kPVRTextureFlagTypePVRTC_4,
   kPVRTextureFlagTypeOGLPVRTC_2 = 24,
-  kPVRTextureFlagTypeOGLPVRTC_4
+  kPVRTextureFlagTypeOGLPVRTC_4,
+  kPVRTextureFlagTypeETC = 54
 };
 
 typedef struct _PVRTexHeader
@@ -150,11 +155,14 @@ public:
         bool hasAlpha;
         
         if(formatFlags == kPVRTextureFlagTypePVRTC_4 || formatFlags == kPVRTextureFlagTypePVRTC_2 ||
-           formatFlags == kPVRTextureFlagTypeOGLPVRTC_4 || formatFlags == kPVRTextureFlagTypeOGLPVRTC_2){
+           formatFlags == kPVRTextureFlagTypeOGLPVRTC_4 || formatFlags == kPVRTextureFlagTypeOGLPVRTC_2 ||
+           formatFlags == kPVRTextureFlagTypeETC){
             if(formatFlags == kPVRTextureFlagTypePVRTC_4 || formatFlags == kPVRTextureFlagTypeOGLPVRTC_4)
                 internalFormat = GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
             else if(formatFlags == kPVRTextureFlagTypePVRTC_2 || formatFlags == kPVRTextureFlagTypeOGLPVRTC_2)
                 internalFormat = GL_COMPRESSED_RGBA_PVRTC_2BPPV1_IMG;
+            else if(formatFlags == kPVRTextureFlagTypeETC)
+                internalFormat = GL_ETC1_RGB8_OES;
             
             width = header.width;
             height = header.height;
@@ -185,6 +193,11 @@ public:
             // Calculate the data size for each texture level and respect the minimum number of blocks
             while(dataOffset < header.dataLength){
                 if(formatFlags == kPVRTextureFlagTypePVRTC_4 || formatFlags == kPVRTextureFlagTypeOGLPVRTC_4){
+                    blockSize = 4 * 4; // Pixel by pixel block size for 4bpp
+                    widthBlocks = width / 4;
+                    heightBlocks = height / 4;
+                    bpp = 4;
+                }else if(formatFlags == kPVRTextureFlagTypeETC){
                     blockSize = 4 * 4; // Pixel by pixel block size for 4bpp
                     widthBlocks = width / 4;
                     heightBlocks = height / 4;

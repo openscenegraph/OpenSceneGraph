@@ -77,7 +77,16 @@ struct VertexAttribComparitor
     void add(osg::Array* array, osg::Geometry::AttributeBinding binding)
     {
         if (binding==osg::Geometry::BIND_PER_VERTEX && array)
+        {
+            for(ArrayList::const_iterator itr=_arrayList.begin();
+                itr!=_arrayList.end();
+                ++itr)
+            {
+                if ((*itr) == array) 
+                    return;
+            }
             _arrayList.push_back(array);
+        }
     }
     
     typedef std::vector<osg::Array*> ArrayList;

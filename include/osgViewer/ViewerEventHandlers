@@ -381,6 +381,29 @@ class OSGVIEWER_EXPORT LODScaleHandler : public osgGA::GUIEventHandler
 
 };
 
+/** Event handler for toggling SyncToVBlank.*/
+class OSGVIEWER_EXPORT ToggleSyncToVBlankHandler : public osgGA::GUIEventHandler
+{
+    public:
+
+        ToggleSyncToVBlankHandler();
+
+        void setKeyEventToggleSyncToVBlankHandler(int key) { _keyEventToggleSyncToVBlank = key; }
+        int getKeyEventToggleSyncToVBlankHandler() const { return _keyEventToggleSyncToVBlank; }
+
+        bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa);
+
+        /** Get the keyboard and mouse usage of this manipulator.*/
+        virtual void getUsage(osg::ApplicationUsage& usage) const;
+
+    protected:
+
+
+        int _keyEventToggleSyncToVBlank;
+
+
+};
+
 
 /** Event handler that will capture the screen on key press. */
 class OSGVIEWER_EXPORT ScreenCaptureHandler : public osgGA::GUIEventHandler
@@ -501,7 +524,7 @@ protected:
     InteractiveImageHandler() {}
 
     InteractiveImageHandler(const InteractiveImageHandler&,const osg::CopyOp& = osg::CopyOp::SHALLOW_COPY):
-        osg::Object(), osgGA::GUIEventHandler(), osg::Drawable::CullCallback() {}
+        osg::Object(), osgGA::GUIEventHandler(), osg::Drawable::CullCallback(), _fullscreen(false) {}
 
     bool mousePosition(osgViewer::View* view, osg::NodeVisitor* nv, const osgGA::GUIEventAdapter& ea, int& x, int &y) const;
     bool computeIntersections(osgViewer::View* view, float x,float y, const osg::NodePath& nodePath, osgUtil::LineSegmentIntersector::Intersections& intersections,osg::Node::NodeMask traversalMask = 0xffffffff) const;

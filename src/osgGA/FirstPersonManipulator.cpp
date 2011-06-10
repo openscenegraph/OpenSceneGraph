@@ -34,7 +34,7 @@ FirstPersonManipulator::FirstPersonManipulator( int flags )
    : inherited( flags ),
      _velocity( 0. )
 {
-   setAcceleration( 0.25, true );
+   setAcceleration( 1.0, true );
    setMaxVelocity( 0.25, true );
    setWheelMovement( 0.05, true );
    if( _flags & SET_CENTER_ON_WHEEL_FORWARD_MOVEMENT )

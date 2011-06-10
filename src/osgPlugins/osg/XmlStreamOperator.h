@@ -66,10 +66,10 @@ public:
     
     virtual void writeString( const std::string& s )
     { addToCurrentNode( s, true ); }
-    
+
     virtual void writeStream( std::ostream& (*fn)(std::ostream&) )
     {
-        if ( fn==static_cast<std::ostream& (*)(std::ostream&)>(std::endl) )
+        if ( isEndl( fn ) )
         {
             if ( _readLineType==PROP_LINE || _readLineType==END_BRACKET_LINE )
             {
@@ -161,7 +161,7 @@ public:
             else if ( ch=='\\' ) realStr += '\\';
             realStr += ch;
         }
-        realStr.insert( 0, 1, '\"' );
+        realStr.insert( std::string::size_type(0), 1, '\"' );
         realStr += '\"';
         addToCurrentNode( realStr );
     }

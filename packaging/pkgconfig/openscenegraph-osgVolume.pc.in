@@ -10,5 +10,5 @@ Description: Volume library for Openscenegraph
 Version: @OPENSCENEGRAPH_VERSION@
 Requires: openscenegraph-osgUtil openscenegraph-osgDB openscenegraph-osgGA openscenegraph-osg openthreads
 Conflicts:
-Libs: -L${libdir} -losgVolume
+Libs: -L${libdir} -losgVolume@CMAKE_BUILD_POSTFIX@
 Cflags: -I${includedir}

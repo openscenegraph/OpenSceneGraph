@@ -500,13 +500,10 @@ void Drawable::setThreadSafeRefUnref(bool threadSafe)
     Object::setThreadSafeRefUnref(threadSafe);
 
     if (_stateset.valid()) _stateset->setThreadSafeRefUnref(threadSafe);
-
     if (_updateCallback.valid()) _updateCallback->setThreadSafeRefUnref(threadSafe);
     if (_eventCallback.valid()) _eventCallback->setThreadSafeRefUnref(threadSafe);
     if (_cullCallback.valid()) _cullCallback->setThreadSafeRefUnref(threadSafe);
     if (_drawCallback.valid()) _drawCallback->setThreadSafeRefUnref(threadSafe);
-    
-    if (_userData.valid()) _userData->setThreadSafeRefUnref(threadSafe);
 }
 
 void Drawable::resizeGLObjectBuffers(unsigned int maxSize)
@@ -843,6 +840,7 @@ Drawable::Extensions::Extensions(const Extensions& rhs):
     _isFogCoordSupported = rhs._isFogCoordSupported;
     _isMultiTexSupported = rhs._isMultiTexSupported;
     _isOcclusionQuerySupported = rhs._isOcclusionQuerySupported;
+    _isARBOcclusionQuerySupported = rhs._isARBOcclusionQuerySupported;
     _isTimerQuerySupported = rhs._isTimerQuerySupported;
     _isARBTimerQuerySupported = rhs._isARBTimerQuerySupported;
     

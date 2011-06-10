@@ -11,6 +11,7 @@ static bool checkImages( const osg::Texture2DArray& tex )
 static bool readImages( osgDB::InputStream& is, osg::Texture2DArray& tex )
 {
     unsigned int size = 0; is >> size >> osgDB::BEGIN_BRACKET;
+    tex.setTextureDepth(size);
     for ( unsigned int i=0; i<size; ++i )
     {
         osg::Image* image = is.readImage();

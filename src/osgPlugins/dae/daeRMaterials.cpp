@@ -12,6 +12,7 @@
  */
 
 #include "daeReader.h"
+#include "ReaderWriterDAE.h"
 
 #include <dae.h>
 #include <dae/daeSIDResolver.h>
@@ -169,9 +170,10 @@ void daeReader::processBindMaterial( domBind_material *bm, domGeometry *geom, os
                     // 2. For each possible texture unit find the correct texcoord array and 
                     // indices from the cached drawable and place in the cloned drawable
                     // in the correct texture unit slot
-                    copyTextureCoordinateSet(ss, cachedGeometry, clonedGeometry, ima[j], AMBIENT_OCCLUSION_UNIT);
-                    copyTextureCoordinateSet(ss, cachedGeometry, clonedGeometry, ima[j], MAIN_TEXTURE_UNIT);
-                    copyTextureCoordinateSet(ss, cachedGeometry, clonedGeometry, ima[j], TRANSPARENCY_MAP_UNIT);
+                    unsigned int textureUnit(0);
+                    if (copyTextureCoordinateSet(ss, cachedGeometry, clonedGeometry, ima[j], AMBIENT_OCCLUSION_UNIT, textureUnit)) ++textureUnit;
+                    if (copyTextureCoordinateSet(ss, cachedGeometry, clonedGeometry, ima[j], MAIN_TEXTURE_UNIT     , textureUnit)) ++textureUnit;
+                    if (copyTextureCoordinateSet(ss, cachedGeometry, clonedGeometry, ima[j], TRANSPARENCY_MAP_UNIT , textureUnit)) ++textureUnit;
                 }
                 else
                 {
@@ -338,13 +340,15 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
                 mat->setAmbient( osg::Material::FRONT_AND_BACK, osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f ) );
                 mat->setDiffuse( osg::Material::FRONT_AND_BACK, osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f ) );
                 // Use the ambient texture map as an occlusion map.
-                ss->setTextureMode( AMBIENT_OCCLUSION_UNIT, GL_TEXTURE_2D, GL_TRUE );
-                ss->setTextureAttribute(AMBIENT_OCCLUSION_UNIT, new osg::TexEnv(osg::TexEnv::MODULATE) );
-                ss->setTextureAttribute( AMBIENT_OCCLUSION_UNIT, AmbientStateAttribute );
+                unsigned int textureUnit( _pluginOptions.usePredefinedTextureUnits ? AMBIENT_OCCLUSION_UNIT : 0);
+                ss->setTextureMode( textureUnit, GL_TEXTURE_2D, GL_TRUE );
+                ss->setTextureAttribute( textureUnit, new osg::TexEnv(osg::TexEnv::MODULATE) );
+                ss->setTextureAttribute( textureUnit, AmbientStateAttribute );
                 // Modulate in the diffuse texture
-                ss->setTextureMode( MAIN_TEXTURE_UNIT, GL_TEXTURE_2D, GL_TRUE );
-                ss->setTextureAttribute(MAIN_TEXTURE_UNIT, new osg::TexEnv(osg::TexEnv::MODULATE) );
-                ss->setTextureAttribute( MAIN_TEXTURE_UNIT, DiffuseStateAttribute );
+                textureUnit = _pluginOptions.usePredefinedTextureUnits ? MAIN_TEXTURE_UNIT : 1;
+                ss->setTextureMode( textureUnit, GL_TEXTURE_2D, GL_TRUE );
+                ss->setTextureAttribute( textureUnit, new osg::TexEnv(osg::TexEnv::MODULATE) );
+                ss->setTextureAttribute( textureUnit, DiffuseStateAttribute );
             }
             else
             {
@@ -352,9 +356,10 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
                 // plus any constant ambient contribution after the lighting calculation. This means that I am modulating the the
                 // ambient with the texture as well but I cannot see a way of avoiding that.
                 mat->setDiffuse( osg::Material::FRONT_AND_BACK, osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f ) );
-                ss->setTextureMode( MAIN_TEXTURE_UNIT, GL_TEXTURE_2D, GL_TRUE );
-                ss->setTextureAttribute(MAIN_TEXTURE_UNIT, new osg::TexEnv(osg::TexEnv::MODULATE) );
-                ss->setTextureAttribute( MAIN_TEXTURE_UNIT, DiffuseStateAttribute );
+                unsigned int textureUnit( _pluginOptions.usePredefinedTextureUnits ? MAIN_TEXTURE_UNIT : 0);
+                ss->setTextureMode( textureUnit, GL_TEXTURE_2D, GL_TRUE );
+                ss->setTextureAttribute( textureUnit, new osg::TexEnv(osg::TexEnv::MODULATE) );
+                ss->setTextureAttribute( textureUnit, DiffuseStateAttribute );
             }
 
             // Save the texture name for later
@@ -412,13 +417,15 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
                 mat->setAmbient( osg::Material::FRONT_AND_BACK, osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f ) );
                 mat->setDiffuse( osg::Material::FRONT_AND_BACK, osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f ) );
                 // Use the ambient texture map as an occlusion map.
-                ss->setTextureMode( AMBIENT_OCCLUSION_UNIT, GL_TEXTURE_2D, GL_TRUE );
-                ss->setTextureAttribute(AMBIENT_OCCLUSION_UNIT, new osg::TexEnv(osg::TexEnv::MODULATE) );
-                ss->setTextureAttribute( AMBIENT_OCCLUSION_UNIT, AmbientStateAttribute );
+                unsigned int textureUnit( _pluginOptions.usePredefinedTextureUnits ? AMBIENT_OCCLUSION_UNIT : 0);
+                ss->setTextureMode( textureUnit, GL_TEXTURE_2D, GL_TRUE );
+                ss->setTextureAttribute( textureUnit, new osg::TexEnv(osg::TexEnv::MODULATE) );
+                ss->setTextureAttribute( textureUnit, AmbientStateAttribute );
                 // Modulate in the diffuse texture
-                ss->setTextureMode( MAIN_TEXTURE_UNIT, GL_TEXTURE_2D, GL_TRUE );
-                ss->setTextureAttribute(MAIN_TEXTURE_UNIT, new osg::TexEnv(osg::TexEnv::MODULATE) );
-                ss->setTextureAttribute( MAIN_TEXTURE_UNIT, DiffuseStateAttribute );
+                textureUnit = _pluginOptions.usePredefinedTextureUnits ? MAIN_TEXTURE_UNIT : 1;
+                ss->setTextureMode( textureUnit, GL_TEXTURE_2D, GL_TRUE );
+                ss->setTextureAttribute( textureUnit, new osg::TexEnv(osg::TexEnv::MODULATE) );
+                ss->setTextureAttribute( textureUnit, DiffuseStateAttribute );
             }
             else
             {
@@ -426,9 +433,10 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
                 // plus any constant ambient contribution after the lighting calculation. This means that I am modulating the the
                 // ambient with the texture as well but I cannot see a way of avoiding that.
                 mat->setDiffuse( osg::Material::FRONT_AND_BACK, osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f ) );
-                ss->setTextureMode( MAIN_TEXTURE_UNIT, GL_TEXTURE_2D, GL_TRUE );
-                ss->setTextureAttribute(MAIN_TEXTURE_UNIT, new osg::TexEnv(osg::TexEnv::MODULATE) );
-                ss->setTextureAttribute( MAIN_TEXTURE_UNIT, DiffuseStateAttribute );
+                unsigned int textureUnit( _pluginOptions.usePredefinedTextureUnits ? MAIN_TEXTURE_UNIT : 0);
+                ss->setTextureMode( textureUnit, GL_TEXTURE_2D, GL_TRUE );
+                ss->setTextureAttribute( textureUnit, new osg::TexEnv(osg::TexEnv::MODULATE) );
+                ss->setTextureAttribute( textureUnit, DiffuseStateAttribute );
             }
 
             // Save the texture name for later
@@ -484,13 +492,15 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
                 mat->setAmbient( osg::Material::FRONT_AND_BACK, osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f ) );
                 mat->setDiffuse( osg::Material::FRONT_AND_BACK, osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f ) );
                 // Use the ambient texture map as an occlusion map.
-                ss->setTextureMode( AMBIENT_OCCLUSION_UNIT, GL_TEXTURE_2D, GL_TRUE );
-                ss->setTextureAttribute(AMBIENT_OCCLUSION_UNIT, new osg::TexEnv(osg::TexEnv::MODULATE) );
-                ss->setTextureAttribute( AMBIENT_OCCLUSION_UNIT, AmbientStateAttribute );
+                unsigned int textureUnit( _pluginOptions.usePredefinedTextureUnits ? AMBIENT_OCCLUSION_UNIT : 0);
+                ss->setTextureMode( textureUnit, GL_TEXTURE_2D, GL_TRUE );
+                ss->setTextureAttribute( textureUnit, new osg::TexEnv(osg::TexEnv::MODULATE) );
+                ss->setTextureAttribute( textureUnit, AmbientStateAttribute );
                 // Modulate in the diffuse texture
-                ss->setTextureMode( MAIN_TEXTURE_UNIT, GL_TEXTURE_2D, GL_TRUE );
-                ss->setTextureAttribute(MAIN_TEXTURE_UNIT, new osg::TexEnv(osg::TexEnv::MODULATE) );
-                ss->setTextureAttribute( MAIN_TEXTURE_UNIT, DiffuseStateAttribute );
+                textureUnit = _pluginOptions.usePredefinedTextureUnits ? MAIN_TEXTURE_UNIT : 1;
+                ss->setTextureMode( textureUnit, GL_TEXTURE_2D, GL_TRUE );
+                ss->setTextureAttribute( textureUnit, new osg::TexEnv(osg::TexEnv::MODULATE) );
+                ss->setTextureAttribute( textureUnit, DiffuseStateAttribute );
             }
             else
             {
@@ -498,9 +508,10 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
                 // plus any constant ambient contribution after the lighting calculation. This means that I am modulating the the
                 // ambient with the texture as well but I cannot see a way of avoiding that.
                 mat->setDiffuse( osg::Material::FRONT_AND_BACK, osg::Vec4( 1.0f, 1.0f, 1.0f, 1.0f ) );
-                ss->setTextureMode( MAIN_TEXTURE_UNIT, GL_TEXTURE_2D, GL_TRUE );
-                ss->setTextureAttribute(MAIN_TEXTURE_UNIT, new osg::TexEnv(osg::TexEnv::MODULATE) );
-                ss->setTextureAttribute( MAIN_TEXTURE_UNIT, DiffuseStateAttribute );
+                unsigned int textureUnit( _pluginOptions.usePredefinedTextureUnits ? MAIN_TEXTURE_UNIT : 0);
+                ss->setTextureMode( textureUnit, GL_TEXTURE_2D, GL_TRUE );
+                ss->setTextureAttribute( textureUnit, new osg::TexEnv(osg::TexEnv::MODULATE) );
+                ss->setTextureAttribute( textureUnit, DiffuseStateAttribute );
             }
 
             // Save the texture name for later
@@ -528,9 +539,10 @@ void daeReader::processProfileCOMMON(osg::StateSet *ss, domProfile_COMMON *pc )
         processColorOrTextureType(ss, c->getEmission(), osg::Material::EMISSION, mat.get(), NULL, &sa );
         if (sa != NULL ) 
         {
-            ss->setTextureMode( MAIN_TEXTURE_UNIT, GL_TEXTURE_2D, GL_TRUE );
-            ss->setTextureAttribute(MAIN_TEXTURE_UNIT, new osg::TexEnv(osg::TexEnv::REPLACE) );
-            ss->setTextureAttribute( MAIN_TEXTURE_UNIT, sa );
+            unsigned int textureUnit( _pluginOptions.usePredefinedTextureUnits ? MAIN_TEXTURE_UNIT : 0);
+            ss->setTextureMode( textureUnit, GL_TEXTURE_2D, GL_TRUE );
+            ss->setTextureAttribute( textureUnit, new osg::TexEnv(osg::TexEnv::REPLACE) );
+            ss->setTextureAttribute( textureUnit, sa );
         }
 
         // Use the emission colour as the main colour in transparency calculations
@@ -617,7 +629,7 @@ bool daeReader::processColorOrTextureType(const osg::StateSet* ss,
         else if (cot->getParam() != NULL)
         {
             domFloat4 f4;
-            if (GetFloat4Param(cot->getParam()->getRef(), f4))
+            if (cot->getParam()->getRef() != 0 && GetFloat4Param(cot->getParam()->getRef(), f4))
             {
                 mat->setAmbient( osg::Material::FRONT_AND_BACK, osg::Vec4( f4[0], f4[1], f4[2], f4[3] ) );
                 retVal = true;
@@ -884,7 +896,7 @@ std::string daeReader::processImagePath(const domImage* pDomImage) const
         {
             std::string path = pDomImage->getInit_from()->getValue().pathDir() +
                 pDomImage->getInit_from()->getValue().pathFile();
-            path = cdom::uriToNativePath(path);
+            path = ReaderWriterDAE::ConvertColladaCompatibleURIToFilePath(path);
             if (path.empty())
             {
                 OSG_WARN << "Unable to get path from URI." << std::endl;
@@ -892,9 +904,8 @@ std::string daeReader::processImagePath(const domImage* pDomImage) const
             }
 #ifdef WIN32
             // If the path has a drive specifier or a UNC name then strip the leading /
-            const char* szFilename = path.c_str();
             if (path.size() > 2 && (path[2] == ':' || (path[1] == '/' && path[2] == '/')))
-                return szFilename + 1;
+                return path.substr(1, std::string::npos);
 #endif
             return path;
         }
@@ -1241,7 +1252,7 @@ void daeReader::processTransparencySettings( domCommon_transparent_type *ctt,
     }
     else
     {
-        bool strictTransparency = _strictTransparency;
+        bool strictTransparency = _pluginOptions.strictTransparency;
         if (!strictTransparency)
         {
             const osg::Texture* pMainTexture = dynamic_cast<osg::Texture*>(
@@ -1270,40 +1281,41 @@ void daeReader::processTransparencySettings( domCommon_transparent_type *ctt,
     ss->setRenderingHint(osg::StateSet::TRANSPARENT_BIN);
 }
 
-void daeReader::copyTextureCoordinateSet(const osg::StateSet* ss, const osg::Geometry* cachedGeometry, osg::Geometry* clonedGeometry, const domInstance_material* im, TextureUnitUsage tuu)
+bool daeReader::copyTextureCoordinateSet(const osg::StateSet* ss, const osg::Geometry* cachedGeometry, osg::Geometry* clonedGeometry, const domInstance_material* im, TextureUnitUsage tuu, unsigned int textureUnit)
 {
-    if (!ss->getTextureAttribute(tuu, osg::StateAttribute::TEXTURE))
-        return;
+    unsigned int localTextureUnit( _pluginOptions.usePredefinedTextureUnits ? tuu : textureUnit);
+    if (!ss->getTextureAttribute(localTextureUnit, osg::StateAttribute::TEXTURE))
+        return false;
 
     const std::string& texCoordSetName = _texCoordSetMap
         [TextureToCoordSetMap::key_type(ss, tuu)];
-    if (!texCoordSetName.empty())
+    if (texCoordSetName.empty()) return false;
+
+    const domInstance_material::domBind_vertex_input_Array &bvia = im->getBind_vertex_input_array();
+    size_t k;
+    for (k = 0; k < bvia.getCount(); k++)
     {
-        const domInstance_material::domBind_vertex_input_Array &bvia = im->getBind_vertex_input_array();
-        size_t k;
-        for (k = 0; k < bvia.getCount(); k++)
+        if (!strcmp(bvia[k]->getSemantic(), texCoordSetName.c_str()) && !strcmp(bvia[k]->getInput_semantic(), COMMON_PROFILE_INPUT_TEXCOORD))
         {
-            if (!strcmp(bvia[k]->getSemantic(), texCoordSetName.c_str()) && !strcmp(bvia[k]->getInput_semantic(), COMMON_PROFILE_INPUT_TEXCOORD))
+            unsigned set = bvia[k]->getInput_set();
+            if (set < cachedGeometry->getNumTexCoordArrays())
             {
-                unsigned set = bvia[k]->getInput_set();
-                if (set < cachedGeometry->getNumTexCoordArrays())
-                {
-                    clonedGeometry->setTexCoordData(tuu, cachedGeometry->getTexCoordData(set));
-                }
-                else
-                {
-                    OSG_WARN << "Texture coordinate set " << set << " not found." << std::endl;
-                }
-                break;
+            clonedGeometry->setTexCoordData(localTextureUnit, cachedGeometry->getTexCoordData(set));
             }
-        }
-        if (k == bvia.getCount())
-        {
-            OSG_WARN << "Failed to find matching <bind_vertex_input> for " << texCoordSetName << std::endl;
-            if (cachedGeometry->getNumTexCoordArrays())
+            else
             {
-                clonedGeometry->setTexCoordData(tuu, cachedGeometry->getTexCoordData(0));
+                OSG_WARN << "Texture coordinate set " << set << " not found." << std::endl;
             }
+            break;
         }
     }
+    if (k == bvia.getCount())
+    {
+        OSG_WARN << "Failed to find matching <bind_vertex_input> for " << texCoordSetName << std::endl;
+        if (cachedGeometry->getNumTexCoordArrays())
+        {
+        clonedGeometry->setTexCoordData(localTextureUnit, cachedGeometry->getTexCoordData(0));
+        }
+    }
+    return true;
 }

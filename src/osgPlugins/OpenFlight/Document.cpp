@@ -26,6 +26,7 @@ Document::Document() :
     _replaceClampWithClampToEdge(false),
     _preserveFace(false),
     _preserveObject(false),
+    _replaceDoubleSidedPolys(false),
     _defaultDOFAnimationState(false),
     _useTextureAlphaForTransparancyBinning(true),
     _useBillboardCenter(false),

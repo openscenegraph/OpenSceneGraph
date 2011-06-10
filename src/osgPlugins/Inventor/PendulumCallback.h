@@ -21,7 +21,7 @@ class PendulumCallback : public osg::NodeCallback
         float _frequency;
         osg::Vec3 _axis;
 
-        int _previousTraversalNumber;
+        unsigned int _previousTraversalNumber;
         double _previousTime;
         float _angle;
 };

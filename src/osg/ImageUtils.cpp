@@ -17,6 +17,7 @@
 #include <osg/Math>
 #include <osg/Notify>
 #include <osg/ImageUtils>
+#include <osg/Texture>
 
 namespace osg
 {

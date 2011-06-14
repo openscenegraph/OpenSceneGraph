@@ -20,12 +20,12 @@ public:
     {
         setThreadingModel(threadingModel);
 
-        QWidget* widget1 = addViewWidget( createCamera(0,0,100,100), osgDB::readNodeFile("cow.osg") );
-        QWidget* widget2 = addViewWidget( createCamera(0,0,100,100), osgDB::readNodeFile("glider.osg") );
-        QWidget* widget3 = addViewWidget( createCamera(0,0,100,100), osgDB::readNodeFile("axes.osg") );
-        QWidget* widget4 = addViewWidget( createCamera(0,0,100,100), osgDB::readNodeFile("fountain.osg") );
+        QWidget* widget1 = addViewWidget( createCamera(0,0,100,100), osgDB::readNodeFile("cow.osgt") );
+        QWidget* widget2 = addViewWidget( createCamera(0,0,100,100), osgDB::readNodeFile("glider.osgt") );
+        QWidget* widget3 = addViewWidget( createCamera(0,0,100,100), osgDB::readNodeFile("axes.osgt") );
+        QWidget* widget4 = addViewWidget( createCamera(0,0,100,100), osgDB::readNodeFile("fountain.osgt") );
         QWidget* popupWidget = addViewWidget( createCamera(900,100,320,240,"Popup window",true),
-                                            osgDB::readNodeFile("dumptruck.osg") );
+                                            osgDB::readNodeFile("dumptruck.osgt") );
         popupWidget->show();
 
         QGridLayout* grid = new QGridLayout;

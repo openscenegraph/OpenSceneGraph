@@ -32,7 +32,7 @@
 // second View's displayed frustum.
 //
 // Command line arguments are taken to be models for display. If you
-// specify no command line arguments, the code attempts to load cow.osg.
+// specify no command line arguments, the code attempts to load cow.osgt.
 
 
 #include <osg/Geometry>
@@ -147,8 +147,8 @@ main( int argc,
     {
         // User didn't specify anything, or file(s) didn't exist.
         // Try to load the cow...
-        osg::notify( osg::WARN ) << arguments.getApplicationName() << ": Could not find specified files. Trying \"cow.osg\" instead." << std::endl;
-        if ( !(scene = osgDB::readNodeFile( std::string( "cow.osg" ) ) ) )
+        osg::notify( osg::WARN ) << arguments.getApplicationName() << ": Could not find specified files. Trying \"cow.osgt\" instead." << std::endl;
+        if ( !(scene = osgDB::readNodeFile( std::string( "cow.osgt" ) ) ) )
         {
             osg::notify( osg::FATAL ) << arguments.getApplicationName() << ": No data loaded." << std::endl;
             return 1;

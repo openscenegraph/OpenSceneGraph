@@ -760,7 +760,7 @@ int main( int argc, char **argv )
     if (!rootNode) return 0;
 
 
-    //osgDB::writeNodeFile(*rootNode,"test.osg");
+    //osgDB::writeNodeFile(*rootNode,"test.osgt");
 
     // set the scene to render
     viewer.setSceneData(album->getScene());

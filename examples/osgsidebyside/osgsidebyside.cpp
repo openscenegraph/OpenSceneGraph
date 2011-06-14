@@ -241,7 +241,7 @@ int main( int argc, char **argv )
 
     osgViewer::Viewer viewer(arguments);
     
-    std::string outputfile("output.osg");
+    std::string outputfile("output.osgt");
     while (arguments.read("-o",outputfile)) {}
 
     while (arguments.read("-s")) { viewer.setThreadingModel(osgViewer::Viewer::SingleThreaded); }
@@ -278,12 +278,12 @@ int main( int argc, char **argv )
     group1->setNodeMask(1);
 
     // Uncomment these lines if you like to compare the loaded model to the resulting model in a merge/diff tool
-    //osgDB::writeNodeFile(*loadedModel.get(), "dummy1.osg");
+    //osgDB::writeNodeFile(*loadedModel.get(), "dummy1.osgt");
 
     osgDB::writeNodeFile(*loadedModel.get(), outputfile);
     osg::ref_ptr<osg::Node> convertedModel = osgDB::readNodeFile(outputfile);
 
-    //osgDB::writeNodeFile(*convertedModel.get(), "dummy2.osg");
+    //osgDB::writeNodeFile(*convertedModel.get(), "dummy2.osgt");
 
     osg::Group* group2 = new osg::Group;
     group2->addChild(convertedModel.get());

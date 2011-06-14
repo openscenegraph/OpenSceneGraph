@@ -346,7 +346,7 @@ int main(int argc, char** argv)
 
 //    AlphaSetterVisitor alpha(.8f);
 //    frame->accept(alpha);
-    return osgWidget::createExample(viewer, wm); //osgDB::readNodeFile("cow.osg"));
+    return osgWidget::createExample(viewer, wm); //osgDB::readNodeFile("cow.osgt"));
 
 }
 
@@ -674,6 +674,6 @@ int main(int argc, char** argv)
 
     AlphaSetterVisitor alpha(.8f);
     frame->accept(alpha);
-    return osgWidget::createExample(viewer, wm, osgDB::readNodeFile("cow.osg"));
+    return osgWidget::createExample(viewer, wm, osgDB::readNodeFile("cow.osgt"));
 }
 #endif

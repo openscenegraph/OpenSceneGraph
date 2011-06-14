@@ -145,7 +145,7 @@ int main( int argc, char **argv )
     osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
     
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!loadedModel) loadedModel = osgDB::readNodeFile("glider.osg");
+    if (!loadedModel) loadedModel = osgDB::readNodeFile("glider.osgt");
     
     if (!loadedModel)
     {

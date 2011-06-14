@@ -298,7 +298,7 @@ int main( int argc, char** argv )
     
     // Construct scene graph
     osg::Node* scene = osgDB::readNodeFiles( arguments );
-    if ( !scene ) scene = osgDB::readNodeFile( "cow.osg" );
+    if ( !scene ) scene = osgDB::readNodeFile( "cow.osgt" );
     if ( !scene )
     {
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;

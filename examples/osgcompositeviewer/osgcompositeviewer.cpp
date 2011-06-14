@@ -150,7 +150,7 @@ int main( int argc, char **argv )
         {
             osgViewer::View* view = new osgViewer::View;
             view->setName("Single view");
-            view->setSceneData(osgDB::readNodeFile("fountain.osg"));
+            view->setSceneData(osgDB::readNodeFile("fountain.osgt"));
 
             view->addEventHandler( new osgViewer::StatsHandler );
 
@@ -284,7 +284,7 @@ int main( int argc, char **argv )
             view->setName("View three");
             viewer.addView(view);
 
-            view->setSceneData(osgDB::readNodeFile("cessnafire.osg"));
+            view->setSceneData(osgDB::readNodeFile("cessnafire.osgt"));
 
             view->getCamera()->setName("Cam three");
             view->getCamera()->setProjectionMatrixAsPerspective(30.0, double(traits->width) / double(traits->height/2), 1.0, 1000.0);

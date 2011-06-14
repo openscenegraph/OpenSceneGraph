@@ -62,6 +62,34 @@ bool EventQueue::takeEvents(Events& events)
     }
 }
 
+bool EventQueue::takeEvents(Events& events, double cutOffTime)
+{
+    OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_eventQueueMutex);
+    if (!_eventQueue.empty())
+    {
+        bool eventsTaken = false;
+        Events::iterator itr = _eventQueue.begin();
+        for(;
+            itr != _eventQueue.end() && ((*itr)->getTime() <= cutOffTime);
+            ++itr)
+        {
+            events.push_back(*itr);
+            eventsTaken = true;
+        }
+
+        if (eventsTaken)
+        {
+            _eventQueue.erase(_eventQueue.begin(), itr);
+        }
+        
+        return eventsTaken;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 bool EventQueue::copyEvents(Events& events) const
 {
     OpenThreads::ScopedLock<OpenThreads::Mutex> lock(_eventQueueMutex);

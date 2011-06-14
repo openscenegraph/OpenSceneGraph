@@ -32,7 +32,7 @@ int main( int argc, char **argv )
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
 
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!loadedModel) loadedModel = osgDB::readNodeFile("cow.osg");
+    if (!loadedModel) loadedModel = osgDB::readNodeFile("cow.osgt");
     
     // if no model has been successfully loaded report failure.
     if (!loadedModel) 

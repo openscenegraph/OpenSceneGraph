@@ -327,7 +327,7 @@ int main( int argc, char **argv )
     osg::Node* loadedModel = osgDB::readNodeFiles(arguments);
     
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!loadedModel) loadedModel = osgDB::readNodeFile("glider.osg");
+    if (!loadedModel) loadedModel = osgDB::readNodeFile("glider.osgt");
     
     // create a room made of foor walls, a floor, a roof, and swinging light fitting.
     osg::Node* rootnode = createRoom(loadedModel);

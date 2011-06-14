@@ -401,7 +401,7 @@ int main(int argc, char **argv)
             }
 
 
-            osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
+            osg::Node* cessna = osgDB::readNodeFile("cessna.osgt");
             if (cessna)
             {
                 double s = 200000.0 / cessna->getBound().radius();
@@ -457,7 +457,7 @@ int main(int argc, char **argv)
             }
             else
             {
-                 std::cout<<"Failed to read cessna.osg"<<std::endl;
+                 std::cout<<"Failed to read cessna.osgt"<<std::endl;
             }
 
         }    

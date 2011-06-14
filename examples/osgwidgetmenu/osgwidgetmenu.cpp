@@ -120,7 +120,7 @@ int main(int argc, char** argv) {
     menu->getBackground()->setColor(1.0f, 1.0f, 1.0f, 0.0f);
     menu->resizePercent(100.0f);
 
-    osg::Node* model = osgDB::readNodeFile("osgcool.osg");
+    osg::Node* model = osgDB::readNodeFile("osgcool.osgt");
 
     model->setNodeMask(MASK_3D);
 

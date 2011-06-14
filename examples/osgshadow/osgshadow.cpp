@@ -423,7 +423,7 @@ namespace ModelTwo
 
         osg::Group* model = new osg::Group;
 
-        osg::Node* cessna = osgDB::readNodeFile("cessna.osg");
+        osg::Node* cessna = osgDB::readNodeFile("cessna.osgt");
         if (cessna)
         {
             const osg::BoundingSphere& bs = cessna->getBound();
@@ -959,7 +959,7 @@ int main(int argc, char** argv)
     }
 
 
-    // osgDB::writeNodeFile(*group,"test.osg");
+    // osgDB::writeNodeFile(*group,"test.osgt");
  
     while (!viewer.done())
     {
@@ -1016,7 +1016,7 @@ int main(int argc, char** argv)
             static int dumpFileNo = 0;
             dumpFileNo ++;
             char filename[256];
-            std::sprintf( filename, "shadowDump%d.osg", dumpFileNo );
+            std::sprintf( filename, "shadowDump%d.osgt", dumpFileNo );
             
             osgShadow::MinimalShadowMap * msm = dynamic_cast<osgShadow::MinimalShadowMap*>( shadowedScene->getShadowTechnique() );
 

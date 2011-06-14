@@ -616,7 +616,7 @@ int main( int argc, char **argv )
     if (!onDisk)  rootNode = createScene(fileList,texmatLeft,texmatRight,radius,height,length);
     else rootNode=new osg::Switch();
 
-    //osgDB::writeNodeFile(*rootNode,"test.osg");
+    //osgDB::writeNodeFile(*rootNode,"test.osgt");
 
 
 

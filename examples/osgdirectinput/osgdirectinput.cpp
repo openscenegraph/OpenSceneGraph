@@ -97,7 +97,7 @@ int main( int argc, char** argv )
 {
     osg::ArgumentParser arguments( &argc, argv );
     osg::Node* model = osgDB::readNodeFiles( arguments );
-    if ( !model ) model = osgDB::readNodeFile( "cow.osg" );
+    if ( !model ) model = osgDB::readNodeFile( "cow.osgt" );
     if ( !model ) 
     {
         std::cout << arguments.getApplicationName() <<": No data loaded" << std::endl;

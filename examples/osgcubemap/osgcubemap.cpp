@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
     osg::Node* rootnode = osgDB::readNodeFiles(arguments);
 
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!rootnode) rootnode = osgDB::readNodeFile("cessna.osg");
+    if (!rootnode) rootnode = osgDB::readNodeFile("cessna.osgt");
 
     if (!rootnode)
     {

@@ -1440,7 +1440,7 @@ int main( int argc, char **argv )
 
     rootNode->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
 
-    //osgDB::writeNodeFile(*rootNode,"test.osg");
+    //osgDB::writeNodeFile(*rootNode,"test.osgt");
 
     // for some reason osgcatch is hanging on exit inside the new TextureObject clean up code when the it's
     // run as multi-threaded view, switching to SingleThreaded cures this.

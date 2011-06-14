@@ -112,7 +112,7 @@ int main(int argc, char** argv) {
 
     box4->hide();
 
-    osg::Node* model = osgDB::readNodeFile("spaceship.osg");
+    osg::Node* model = osgDB::readNodeFile("spaceship.osgt");
 
     model->setNodeMask(MASK_3D);
 

@@ -134,10 +134,10 @@ osg::Sequence* createSequence(osg::ArgumentParser& arguments)
     }
     else
     {
-        filenames.push_back("cow.osg");
-        filenames.push_back("dumptruck.osg");
-        filenames.push_back("cessna.osg");
-        filenames.push_back("glider.osg");
+        filenames.push_back("cow.osgt");
+        filenames.push_back("dumptruck.osgt");
+        filenames.push_back("cessna.osgt");
+        filenames.push_back("glider.osgt");
     }
     
     for(Filenames::iterator itr = filenames.begin();

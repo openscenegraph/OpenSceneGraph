@@ -121,7 +121,7 @@ int main( int argc, char **argv )
 
 
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!loadedModel) loadedModel = osgDB::readNodeFile("cow.osg");
+    if (!loadedModel) loadedModel = osgDB::readNodeFile("cow.osgt");
 
 
     if (!loadedModel)

@@ -94,8 +94,8 @@ public:
                     return true;
                 }
                 if (ea.getKey() == 'x') {
-                    osgDB::writeNodeFile(*ep_->getRoot(), "osgfx_model.osg");
-                    std::cout << "written nodes to \"osgfx_model.osg\"\n";
+                    osgDB::writeNodeFile(*ep_->getRoot(), "osgfx_model.osgt");
+                    std::cout << "written nodes to \"osgfx_model.osgt\"\n";
                     return true;
                 }
                 if (ea.getKey() == 'r') {
@@ -339,7 +339,7 @@ int main(int argc, char *argv[])
     osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
 
     // if not loaded assume no arguments passed in, try use default mode instead.
-    if (!loadedModel) loadedModel = osgDB::readNodeFile("dumptruck.osg");
+    if (!loadedModel) loadedModel = osgDB::readNodeFile("dumptruck.osgt");
   
     if (!loadedModel)
     {

@@ -331,7 +331,7 @@ int main( int argc, char **argv )
         // load the scene.
         osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(arguments);
 
-        if (!loadedModel) loadedModel = osgDB::readNodeFile("cow.osg");
+        if (!loadedModel) loadedModel = osgDB::readNodeFile("cow.osgt");
 
         if (!loadedModel) 
         {

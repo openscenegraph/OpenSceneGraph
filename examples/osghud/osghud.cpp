@@ -275,7 +275,7 @@ int main( int argc, char **argv )
     osg::ref_ptr<osg::Node> scene = osgDB::readNodeFiles(arguments);
     
     // if not loaded assume no arguments passed in, try use default model instead.
-    if (!scene) scene = osgDB::readNodeFile("dumptruck.osg");
+    if (!scene) scene = osgDB::readNodeFile("dumptruck.osgt");
     
     
     if (!scene)

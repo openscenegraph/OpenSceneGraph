@@ -192,8 +192,8 @@ void runMultiThreadReadTests(int numThreads, osg::ArgumentParser& arguments)
         readThread->setStartBarrier(startBarrier.get());
         readThread->setEndBarrier(endBarrier.get());
 
-        readThread->addFileName("cessna.osg");
-        readThread->addFileName("glider.osg");
+        readThread->addFileName("cessna.osgt");
+        readThread->addFileName("glider.osgt");
         readThread->addFileName("town.ive");
         
         readThreads.push_back(readThread.get());

@@ -41,6 +41,9 @@ class OSGGA_EXPORT EventQueue : public osg::Referenced
         /** Take the entire event queue leaving the EventQueue' event queue empty.*/
         bool takeEvents(Events& events);
 
+        /** Take the events that were recorded before with specified time queue.*/
+        bool takeEvents(Events& events, double cutOffTime);
+
         /** Take a copy the entire event queue leaving the EventQueue' event queue intact.*/
         bool copyEvents(Events& events) const;
 

@@ -47,6 +47,10 @@ IF(QUICKTIME_LIBRARY AND QUICKTIME_INCLUDE_DIR)
   SET(QUICKTIME_FOUND "YES")
 ENDIF()
 
+IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
+    SET(QUICKTIME_FOUND "NO")
+ENDIF()
+
 IF(APPLE)
     #Quicktime is not supported under 64bit OSX build so we need to detect it and disable it.
     #First check to see if we are running with a native 64-bit compiler (10.6 default) and implicit arch

@@ -512,8 +512,11 @@ class OSG_EXPORT State : public Referenced, public Observer
             _currentPBO = 0;
         }
 
-        typedef std::vector<GLushort> Indices;
-        Indices _quadIndices[6];
+        typedef std::vector<GLushort> IndicesGLushort;
+        IndicesGLushort _quadIndicesGLushort[4];
+
+        typedef std::vector<GLuint> IndicesGLuint;
+        IndicesGLuint _quadIndicesGLuint[4];
 
         void drawQuads(GLint first, GLsizei count, GLsizei primCount=0);
 

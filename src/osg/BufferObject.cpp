@@ -110,6 +110,8 @@ void GLBufferObject::compileBuffer()
     bool compileAll = false;
     bool offsetChanged = false;
 
+    unsigned int bufferAlignment = 4;
+
     unsigned int newTotalSize = 0;
     unsigned int i=0;
     for(; i<_bufferObject->getNumBufferData(); ++i)
@@ -122,7 +124,7 @@ void GLBufferObject::compileBuffer()
                 entry.dataSource != bd ||
                 entry.dataSize != bd->getTotalDataSize())
             {
-                unsigned int previousEndOfBufferDataMarker = entry.offset + entry.dataSize;
+                unsigned int previousEndOfBufferDataMarker = computeBufferAlignment(entry.offset + entry.dataSize, bufferAlignment);
 
                 // OSG_NOTICE<<"GLBufferObject::compileBuffer(..) updating BufferEntry"<<std::endl;
 
@@ -139,7 +141,9 @@ void GLBufferObject::compileBuffer()
                 }
             }
             else
-                newTotalSize += entry.dataSize;
+            {
+                newTotalSize = computeBufferAlignment(newTotalSize + entry.dataSize, bufferAlignment);
+            }
         }
         else
         {
@@ -155,7 +159,7 @@ void GLBufferObject::compileBuffer()
             OSG_NOTICE<<"   dataSource "<<entry.dataSource<<std::endl;
             OSG_NOTICE<<"   modifiedCount "<<entry.modifiedCount<<std::endl;
 #endif
-            newTotalSize += entry.dataSize;
+            newTotalSize = computeBufferAlignment(newTotalSize + entry.dataSize, bufferAlignment);
 
             _bufferEntries.push_back(entry);
         }

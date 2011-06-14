@@ -2102,11 +2102,12 @@ void GraphicsWindowWin32::setWindowName( const std::string & name )
 
 void GraphicsWindowWin32::useCursor( bool cursorOn )
 {
-    _traits->useCursor = cursorOn;
-    if (_traits->useCursor == false)
-    {
-       setCursor(NoCursor);
-    }
+    if (_traits.valid())
+        _traits->useCursor = cursorOn;
+
+    // note, we are using setCursorImpl to set the cursor, so we can use 
+    // _appMouseCursor to cache the current mouse-cursor
+    setCursorImpl(cursorOn ? _appMouseCursor : NoCursor);
 }
 
 void GraphicsWindowWin32::setCursor( MouseCursor mouseCursor )

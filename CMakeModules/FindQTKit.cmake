@@ -23,6 +23,10 @@ IF(QTKIT_LIBRARY AND QTKIT_INCLUDE_DIR)
   SET(QTKIT_FOUND "YES")
 ENDIF()
 
+IF(OSG_BUILD_PLATFORM_IPHONE OR OSG_BUILD_PLATFORM_IPHONE_SIMULATOR)
+    SET(QTKIT_FOUND "NO")
+ENDIF()
+
 IF(APPLE)
     # Technically QTKit is 64-bit capable, but the QTKit plug-in currently uses
     # a few 32-bit only APIs to bridge QTKit and Core Video.

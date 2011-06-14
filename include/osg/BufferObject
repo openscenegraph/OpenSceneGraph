@@ -334,6 +334,13 @@ class OSG_EXPORT GLBufferObject : public Referenced
 
         virtual ~GLBufferObject();
 
+        unsigned int computeBufferAlignment(unsigned int pos, unsigned int bufferAlignment) const
+        {
+            if (bufferAlignment<2) return pos;
+            if ((pos%bufferAlignment)==0) return pos;
+            return ((pos/bufferAlignment)+1)*bufferAlignment;
+        }
+
         unsigned int            _contextID;
         GLuint                  _glObjectID;
 

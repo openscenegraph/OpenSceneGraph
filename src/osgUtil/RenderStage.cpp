@@ -954,7 +954,8 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
     if (fbo_supported && _resolveFbo.valid() && fbo_ext->glBlitFramebuffer)
     {
         GLbitfield blitMask = 0;
-
+        bool needToBlitColorBuffers = false;
+        
         //find which buffer types should be copied
         for (FrameBufferObject::AttachmentMap::const_iterator
             it = _resolveFbo->getAttachmentMap().begin(),
@@ -970,8 +971,12 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
                 break;
             case Camera::PACKED_DEPTH_STENCIL_BUFFER:
                 blitMask |= GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT;
-            default:
+                break;
+            case Camera::COLOR_BUFFER:
                 blitMask |= GL_COLOR_BUFFER_BIT;
+                break;
+            default:
+                needToBlitColorBuffers = true;
                 break;
             }
         }
@@ -980,15 +985,42 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
         _fbo->apply(state, FrameBufferObject::READ_FRAMEBUFFER);
         _resolveFbo->apply(state, FrameBufferObject::DRAW_FRAMEBUFFER);
 
-        // Blit to the resolve framebuffer.
-        // Note that (with nvidia 175.16 windows drivers at least) if the read
-        // framebuffer is multisampled then the dimension arguments are ignored
-        // and the whole framebuffer is always copied.
-        fbo_ext->glBlitFramebuffer(
-            0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
-            0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
-            blitMask, GL_NEAREST);
+        if (blitMask)
+        {
+            // Blit to the resolve framebuffer.
+            // Note that (with nvidia 175.16 windows drivers at least) if the read
+            // framebuffer is multisampled then the dimension arguments are ignored
+            // and the whole framebuffer is always copied.
+            fbo_ext->glBlitFramebuffer(
+                0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
+                0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
+                blitMask, GL_NEAREST);
+        }
 
+        if (needToBlitColorBuffers)
+        {
+            for (FrameBufferObject::AttachmentMap::const_iterator
+                it = _resolveFbo->getAttachmentMap().begin(),
+                end =_resolveFbo->getAttachmentMap().end(); it != end; ++it)
+            {
+                osg::Camera::BufferComponent attachment = it->first;
+                if (attachment >=osg::Camera::COLOR_BUFFER0)
+                {
+                    glReadBuffer(GL_COLOR_ATTACHMENT0_EXT + (attachment - osg::Camera::COLOR_BUFFER0));
+                    glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT + (attachment - osg::Camera::COLOR_BUFFER0));
+
+                    fbo_ext->glBlitFramebuffer(
+                        0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
+                        0, 0, static_cast<GLint>(_viewport->width()), static_cast<GLint>(_viewport->height()),
+                        GL_COLOR_BUFFER_BIT, GL_NEAREST);
+                }
+            }
+            // reset the read and draw buffers?
+            // glReadBuffer(GL_COLOR_ATTACHMENT0_EXT);
+            // glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
+        }
+
+        
         apply_read_fbo = true;
         read_fbo = _resolveFbo.get();
 

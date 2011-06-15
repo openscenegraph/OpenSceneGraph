@@ -255,6 +255,8 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
 
             bool compile(CompileInfo& compileInfo);
 
+            bool compiled() const { return _numberCompileListsToCompile==0; }
+
             OpenThreads::Atomic                     _numberCompileListsToCompile;
 
             osg::observer_ptr<osg::Group>           _attachmentPoint;
@@ -292,6 +294,8 @@ class OSGUTIL_EXPORT IncrementalCompileOperation : public osg::GraphicsOperation
     protected:
 
         virtual ~IncrementalCompileOperation();
+
+        void compileSets(CompileSets& toCompile, CompileInfo compileInfo);
 
         double                              _targetFrameRate;
         double                              _minimumTimeAvailableForGLCompileAndDeletePerFrame;

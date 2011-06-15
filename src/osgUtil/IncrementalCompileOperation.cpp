@@ -669,8 +669,9 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
 
     double currentElapsedFrameTime = context->getTimeSinceLastClear();
     
-    OSG_NOTIFY(level)<<"currentTime = "<<currentTime<<std::endl;
-    OSG_NOTIFY(level)<<"currentElapsedFrameTime = "<<currentElapsedFrameTime<<std::endl;
+    OSG_NOTIFY(level)<<"IncrementalCompileOperation()"<<std::endl;
+    OSG_NOTIFY(level)<<"    currentTime = "<<currentTime<<std::endl;
+    OSG_NOTIFY(level)<<"    currentElapsedFrameTime = "<<currentElapsedFrameTime<<std::endl;
     
     double _flushTimeRatio(0.5);
     double _conservativeTimeRatio(0.5);
@@ -682,20 +683,10 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
     double compileTime = availableTime - flushTime;
 
 #if 1
-    OSG_NOTIFY(level)<<"total availableTime = "<<availableTime*1000.0<<std::endl;
-    OSG_NOTIFY(level)<<"      flushTime     = "<<flushTime*1000.0<<std::endl;
-    OSG_NOTIFY(level)<<"      compileTime   = "<<compileTime*1000.0<<std::endl;
+    OSG_NOTIFY(level)<<"    availableTime = "<<availableTime*1000.0<<std::endl;
+    OSG_NOTIFY(level)<<"    flushTime     = "<<flushTime*1000.0<<std::endl;
+    OSG_NOTIFY(level)<<"    compileTime   = "<<compileTime*1000.0<<std::endl;
 #endif
-
-    osg::flushDeletedGLObjects(context->getState()->getContextID(), currentTime, flushTime);
-
-    // if any time left over from flush add this to compile time.        
-    if (flushTime>0.0) compileTime += flushTime;
-
-#if 1
-    OSG_NOTIFY(level)<<"      revised compileTime   = "<<compileTime*1000.0<<std::endl;
-#endif
-
 
     //level = osg::NOTICE;
 
@@ -710,9 +701,36 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
         std::copy(_toCompile.begin(),_toCompile.end(),std::back_inserter<CompileSets>(toCompileCopy));
     }
 
-    for(CompileSets::iterator itr = toCompileCopy.begin();
-        itr != toCompileCopy.end() && compileInfo.okToCompile();
-        ++itr)
+    if (!toCompileCopy.empty())
+    {
+        compileSets(toCompileCopy, compileInfo);
+    }
+
+    osg::flushDeletedGLObjects(context->getState()->getContextID(), currentTime, flushTime);
+
+    if (!toCompileCopy.empty() && compileInfo.maxNumObjectsToCompile>0)
+    {
+        compileInfo.allocatedTime += flushTime;
+
+        // if any time left over from flush add on this remaining time to a second pass of compiling.
+        if (compileInfo.okToCompile())
+        {
+            OSG_NOTIFY(level)<<"    Passing on "<<flushTime<<" to second round of compileSets(..)"<<std::endl;
+            compileSets(toCompileCopy, compileInfo);
+        }
+    }
+    
+    //glFush();
+    //glFinish();
+}
+
+void IncrementalCompileOperation::compileSets(CompileSets& toCompile, CompileInfo compileInfo)
+{
+    osg::NotifySeverity level = osg::INFO;
+
+    for(CompileSets::iterator itr = toCompile.begin();
+        itr != toCompile.end() && compileInfo.okToCompile();
+        )
     {
         CompileSet* cs = itr->get();
         if (cs->compile(compileInfo))
@@ -723,7 +741,7 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
                 CompileSets::iterator cs_itr = std::find(_toCompile.begin(), _toCompile.end(), *itr);
                 if (cs_itr != _toCompile.end())
                 {
-                    OSG_NOTIFY(level)<<"Erasing from list"<<std::endl;
+                    OSG_NOTIFY(level)<<"    Erasing from list"<<std::endl;
 
                     // remove from the _toCompile list, note cs won't be deleted here as the tempoary
                     // toCompile_Copy list will retain a reference.
@@ -739,12 +757,19 @@ void IncrementalCompileOperation::operator () (osg::GraphicsContext* context)
                 OpenThreads::ScopedLock<OpenThreads::Mutex>  compilded_lock(_compiledMutex);
                 _compiled.push_back(cs);
             }
+
+            // remove entry from list.
+            itr = toCompile.erase(itr);
+        }
+        else
+        {
+            ++itr;
         }
     }
-    //glFush();
-    //glFinish();
+
 }
 
+        
 void IncrementalCompileOperation::compileAllForNextFrame(unsigned int numFramesToDoCompileAll)
 {
     _compileAllTillFrameNumber = _currentFrameNumber+numFramesToDoCompileAll;

@@ -35,20 +35,20 @@ struct TileIdentifier : public osg::Referenced
         x(-1),
         y(-1),
         lod(-1)
-	{}
+    {}
 
     TileIdentifier(int ax, int ay, int alod):
         x(ax),
         y(ay),
         lod(alod)
-	{}
+    {}
     
     TileIdentifier(const TileIdentifier& rhs):
         osg::Referenced(),
         x(rhs.x),
         y(rhs.y),
         lod(rhs.lod)
-	{}
+    {}
 
     TileIdentifier& operator = (const TileIdentifier& rhs)
     {

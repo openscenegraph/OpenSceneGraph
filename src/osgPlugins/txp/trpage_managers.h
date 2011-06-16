@@ -19,10 +19,10 @@
 #include <deque>
 
 /* This file contains class definitions for managers
-	that help you keep track of data related to
-	paging.  For instance, which tiles to load
-	in at any given time and what textures you need
-	to read for a given tile.
+    that help you keep track of data related to
+    paging.  For instance, which tiles to load
+    in at any given time and what textures you need
+    to read for a given tile.
  */
 
 class trpgPageManager;
@@ -37,8 +37,8 @@ struct TileLocationInfo
 };
 
 /* Managed Tiles are used by the trpgPageManager to keep
-	track of which tiles are loaded and what textures (and
-	models) they need loaded into memory with them.
+    track of which tiles are loaded and what textures (and
+    models) they need loaded into memory with them.
  */
 TX_EXDECL class TX_CLDECL trpgManagedTile
 {
@@ -136,7 +136,7 @@ TX_EXDECL class TX_CLDECL trpgManagedTile
     // Children info, will throw exception if child index is out of bound
     unsigned int GetNbChildren() const
     {
-	return (unsigned int)childLocationInfo.size();
+    return (unsigned int)childLocationInfo.size();
     }
     bool SetChildLocationInfo(int childIdx, int x, int y, const trpgwAppAddress& addr);
     bool SetChildLocationInfo(int childIdx, const TileLocationInfo& info);
@@ -207,15 +207,15 @@ TX_EXDECL class TX_CLDECL trpgPageManager
     */
     virtual trpgManagedTile *GetNextLoad(void);
     /*  Acknowledge Tile Load.
-	This method should be called when a tile has been
-	loaded by the caller.  This method is used in conjunction
-	with GetNextLoad().
+    This method should be called when a tile has been
+    loaded by the caller.  This method is used in conjunction
+    with GetNextLoad().
 
-	Version 2.1 and over supports variable lod so that we cannot know
-	from the tile table if a tile exist or not. So to manage this
-	the user must parse the loaded tile and extract its list of children
-	and pass it on to AckLoad() which will add to the  appropriate lod list 
-	the children info. If this is not done then only lod 0 will be pageable.
+    Version 2.1 and over supports variable lod so that we cannot know
+    from the tile table if a tile exist or not. So to manage this
+    the user must parse the loaded tile and extract its list of children
+    and pass it on to AckLoad() which will add to the  appropriate lod list 
+    the children info. If this is not done then only lod 0 will be pageable.
     */
  
     virtual void AckLoad(std::vector<TileLocationInfo> const& children);
@@ -272,156 +272,156 @@ TX_EXDECL class TX_CLDECL trpgPageManager
        detail as related to paging.  
     */
     TX_EXDECL class TX_CLDECL LodPageInfo {
-	friend class trpgPageManager;
+    friend class trpgPageManager;
     public:
-	LodPageInfo(void);
-	virtual ~LodPageInfo(void);
+    LodPageInfo(void);
+    virtual ~LodPageInfo(void);
 
-	/* Initializes the class with its current LOD.
-	   It figures out all the rest.
-	*/
-	virtual bool Init(trpgr_Archive *, int myLod, double scale, int freeListDivider = 1);
+    /* Initializes the class with its current LOD.
+       It figures out all the rest.
+    */
+    virtual bool Init(trpgr_Archive *, int myLod, double scale, int freeListDivider = 1);
 
-	/* Reset the location.  This forces a recalculation
-	   of what to load and unload if the cell has changed
-	   or if this is the first SetLocation.
-	   The location passed in must be relative to the southwest
-	   corner of the TerraPage archive.
-	*/
-	virtual bool SetLocation(trpg2dPoint &);
+    /* Reset the location.  This forces a recalculation
+       of what to load and unload if the cell has changed
+       or if this is the first SetLocation.
+       The location passed in must be relative to the southwest
+       corner of the TerraPage archive.
+    */
+    virtual bool SetLocation(trpg2dPoint &);
 
-	// Return the next tile to load for this terrain lod
-	virtual trpgManagedTile *GetNextLoad(void);
-	// Acknowledge the load.  Move the active tile to the
-	//  loaded list.
-	virtual void AckLoad();
+    // Return the next tile to load for this terrain lod
+    virtual trpgManagedTile *GetNextLoad(void);
+    // Acknowledge the load.  Move the active tile to the
+    //  loaded list.
+    virtual void AckLoad();
 
-	// Get the lsit of 
-	//bool GetLoadedTile
+    // Get the lsit of 
+    //bool GetLoadedTile
 
-	// Return the next tile to unload for this terrain lod
-	virtual trpgManagedTile *GetNextUnload(void);
-	// Acknowledge the unload.  Move the active tile to the
-	//  free list.
-	virtual void AckUnload(void);
-	// Called to stop paging.  Everything active is dumped on
-	//  the unload list.
-	virtual bool Stop(void);
-	// Print current status and content information
-	virtual void Print(trpgPrintBuffer &);
+    // Return the next tile to unload for this terrain lod
+    virtual trpgManagedTile *GetNextUnload(void);
+    // Acknowledge the unload.  Move the active tile to the
+    //  free list.
+    virtual void AckUnload(void);
+    // Called to stop paging.  Everything active is dumped on
+    //  the unload list.
+    virtual bool Stop(void);
+    // Print current status and content information
+    virtual void Print(trpgPrintBuffer &);
 
-	const trpg2iPoint& GetLodSize() const
-	{
-	    return lodSize;
-	}
+    const trpg2iPoint& GetLodSize() const
+    {
+        return lodSize;
+    }
 
-	int GetLod() const
-	{
-	    return lod;
-	}
+    int GetLod() const
+    {
+        return lod;
+    }
 
-	double GetPageDistance() const
-	{
-	    return pageDist;
-	}
+    double GetPageDistance() const
+    {
+        return pageDist;
+    }
 
-	const trpg2dPoint& GetCellSize() const
-	{
-	    return cellSize;
-	}
+    const trpg2dPoint& GetCellSize() const
+    {
+        return cellSize;
+    }
 
-	// The unit are cellSize
-	const trpg2iPoint& GetAreaOfInterest() const
-	{
-	    return aoiSize;
-	}
+    // The unit are cellSize
+    const trpg2iPoint& GetAreaOfInterest() const
+    {
+        return aoiSize;
+    }
   
 
-	// The middle of this cell correspond to our paging
-	// location
-	const trpg2iPoint& GetCellPagingLocation() const
-	{
-	    return cell;
-	}
+    // The middle of this cell correspond to our paging
+    // location
+    const trpg2iPoint& GetCellPagingLocation() const
+    {
+        return cell;
+    }
 
     protected:
-	virtual void Clean(void);
-	virtual void Update(void);
+    virtual void Clean(void);
+    virtual void Update(void);
 
-	// Add to the load list the given tile if it is within the proper
-	// bound
-	bool AddToLoadList(int x, int y, const trpgwAppAddress& addr);
+    // Add to the load list the given tile if it is within the proper
+    // bound
+    bool AddToLoadList(int x, int y, const trpgwAppAddress& addr);
 
-	// Add the children of the given parent list
-	// to the load list if it it not already loaded
-	// or if it is not already in the list
-	void AddChildrenToLoadList(std::vector<trpgManagedTile*>& parentList);
+    // Add the children of the given parent list
+    // to the load list if it it not already loaded
+    // or if it is not already in the list
+    void AddChildrenToLoadList(std::vector<trpgManagedTile*>& parentList);
 
-	// Check if the given tile is within the area we care about
-	bool isWithin(trpgManagedTile *,trpg2iPoint &sw,trpg2iPoint &ne);
+    // Check if the given tile is within the area we care about
+    bool isWithin(trpgManagedTile *,trpg2iPoint &sw,trpg2iPoint &ne);
 
-	// Get the list of currently loaded tiles that fall within
-	// the region calculated from the given paging distance.
-	void GetLoadedTileWithin(double pagingDistance, std::vector<trpgManagedTile*>& tileList);
+    // Get the list of currently loaded tiles that fall within
+    // the region calculated from the given paging distance.
+    void GetLoadedTileWithin(double pagingDistance, std::vector<trpgManagedTile*>& tileList);
 
-	bool valid;
+    bool valid;
 
-	// Terrain LOD we're responsible for
-	int lod;
+    // Terrain LOD we're responsible for
+    int lod;
 
-	/* Adjusted (e.g. paranoid) distance outward from
-	   which to page this terrain LOD.  This takes into
-	   account the distance in the header as well as 
-	   any factor the user may have added.
-	*/
-	double pageDist;
+    /* Adjusted (e.g. paranoid) distance outward from
+       which to page this terrain LOD.  This takes into
+       account the distance in the header as well as 
+       any factor the user may have added.
+    */
+    double pageDist;
 
-	/* Max tiles we could have loaded in at any given time.
-	   This is just a guess because it's up to the user
-	   to load (and, more importantly) unload.
-	*/
-	int maxNumTiles;
+    /* Max tiles we could have loaded in at any given time.
+       This is just a guess because it's up to the user
+       to load (and, more importantly) unload.
+    */
+    int maxNumTiles;
 
-	// Size of a single cell.  Copied from the archive.
-	trpg2dPoint cellSize;
+    // Size of a single cell.  Copied from the archive.
+    trpg2dPoint cellSize;
 
-	// Number of tiles (cells) in each direction
-	trpg2iPoint lodSize;
+    // Number of tiles (cells) in each direction
+    trpg2iPoint lodSize;
 
-	/* Area of interest size in cells
-	   This is a linear distance "ahead" of the center cell.
-	*/
-	trpg2iPoint aoiSize;
+    /* Area of interest size in cells
+       This is a linear distance "ahead" of the center cell.
+    */
+    trpg2iPoint aoiSize;
 
-	/* Our effective paging location sits at the middle
-	   of this cell.  We don't recalculate unless the
-	   cell changes. */
-	trpg2iPoint cell;
+    /* Our effective paging location sits at the middle
+       of this cell.  We don't recalculate unless the
+       cell changes. */
+    trpg2iPoint cell;
 
-	// List of tiles to load
-	std::deque<trpgManagedTile *> load;
-	// List of tiles to unload
-	std::deque<trpgManagedTile *> unload;
-	// List of currently loaded tiles
-	std::deque<trpgManagedTile *> current;
+    // List of tiles to load
+    std::deque<trpgManagedTile *> load;
+    // List of tiles to unload
+    std::deque<trpgManagedTile *> unload;
+    // List of currently loaded tiles
+    std::deque<trpgManagedTile *> current;
 
-	// Used by Update.  Here because we want to avoid memory allocs, if possible.
-	std::vector<bool> tmpCurrent;
+    // Used by Update.  Here because we want to avoid memory allocs, if possible.
+    std::vector<bool> tmpCurrent;
 
-	// Set if a load is in progress
-	// Load w/o ACK
-	bool activeLoad;
-	// Set if an unload is in progress
-	// Unload w/o ACK
-	bool activeUnload;
+    // Set if a load is in progress
+    // Load w/o ACK
+    bool activeLoad;
+    // Set if an unload is in progress
+    // Unload w/o ACK
+    bool activeUnload;
 
-	// List of tile pointers we can reuse
-	std::deque<trpgManagedTile *> freeList;
+    // List of tile pointers we can reuse
+    std::deque<trpgManagedTile *> freeList;
 
-	// TerraPage version
-	int majorVersion, minorVersion;
+    // TerraPage version
+    int majorVersion, minorVersion;
 
-	const trpgTileTable *tileTable;
+    const trpgTileTable *tileTable;
     };
 
     // Per terrain lod paging information

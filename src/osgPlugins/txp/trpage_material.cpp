@@ -55,13 +55,13 @@ void trpgMatTable::Reset()
 bool trpgMatTable::isValid() const
 {
     if(materialMap.size()==0)
-	return false;
+    return false;
     // get an iterator for the materialMap
     MaterialMapType::const_iterator itr = materialMap.begin();
     for (  ; itr != materialMap.end( ); itr++) {
-	if(!(*itr).second.isValid()) {
-	    return false;
-	}
+    if(!(*itr).second.isValid()) {
+        return false;
+    }
     }
 
     return true;
@@ -71,7 +71,7 @@ bool trpgMatTable::isValid() const
 void trpgMatTable::SetNumTable(int no)
 {
     if ((no < 0) || (no==numTable))
-	return;
+    return;
     numTable = no;
 }
 void trpgMatTable::SetNumMaterial(int /*no*/)
@@ -82,7 +82,7 @@ void trpgMatTable::SetNumMaterial(int /*no*/)
 
 
 void trpgMatTable::SetMaterial(int nm,const trpgMaterial &mat)
-{	
+{    
     materialMap[nm] = mat;
     numMat = materialMap.size();
 }
@@ -92,7 +92,7 @@ void trpgMatTable::SetMaterial(int nm,const trpgMaterial &mat)
 int trpgMatTable::AddMaterial(const trpgMaterial &mat,bool lookForExisting)
 {
     trpgMaterial cmat = mat; // necessary?
-	
+    
     // having a shadeModel of 999 indicates that the entry is free.  I thought this would
     // work fine, until I realized that evidently most of the time the shademodel isn't set
     // at all.  Now my kludge takes so much work it's almost worth doing it right.
@@ -101,61 +101,61 @@ int trpgMatTable::AddMaterial(const trpgMaterial &mat,bool lookForExisting)
 
     int baseMat=0;
     bool spaceInTable=false;
-	//int offset=baseMat;
-	
+    //int offset=baseMat;
+    
     if (lookForExisting) {
-	// Look for a matching base material minus the textures
-	//for (baseMat = 0;baseMat < numMat;baseMat++) {
-	MaterialMapType::const_iterator itr = materialMap.begin();
-	for (  ; itr != materialMap.end( ); itr++) {
-	    baseMat = itr->first;
-	    const trpgMaterial &bm = itr->second;
-	    if (bm.shadeModel==999) {
-		// this is an 'empty' entry.  Means we won't find it, either.
-		spaceInTable=true;
-		break;
-	    }
+    // Look for a matching base material minus the textures
+    //for (baseMat = 0;baseMat < numMat;baseMat++) {
+    MaterialMapType::const_iterator itr = materialMap.begin();
+    for (  ; itr != materialMap.end( ); itr++) {
+        baseMat = itr->first;
+        const trpgMaterial &bm = itr->second;
+        if (bm.shadeModel==999) {
+        // this is an 'empty' entry.  Means we won't find it, either.
+        spaceInTable=true;
+        break;
+        }
 
-	    // Compare structures
-	    if (CEQ(cmat.color,bm.color) && CEQ(cmat.ambient,bm.ambient) &&
-		CEQ(cmat.diffuse,bm.diffuse) && CEQ(cmat.specular,bm.specular) &&
-		CEQ(cmat.emission,bm.emission) && cmat.shininess == bm.shininess &&
-		cmat.shadeModel == bm.shadeModel && cmat.pointSize == bm.pointSize &&
-		cmat.lineWidth == bm.lineWidth && cmat.cullMode == bm.cullMode &&
-		cmat.alphaFunc == bm.alphaFunc && cmat.alphaRef == bm.alphaRef &&
-		cmat.attrSet.fid == bm.attrSet.fid && cmat.attrSet.smc == bm.attrSet.smc &&
-		cmat.attrSet.stp == bm.attrSet.stp && cmat.attrSet.swc == bm.attrSet.swc &&
-		cmat.autoNormal == bm.autoNormal && cmat.texEnvs.size() == bm.texEnvs.size()) {
-		// Test the texture envs
-		bool isSame=true;
+        // Compare structures
+        if (CEQ(cmat.color,bm.color) && CEQ(cmat.ambient,bm.ambient) &&
+        CEQ(cmat.diffuse,bm.diffuse) && CEQ(cmat.specular,bm.specular) &&
+        CEQ(cmat.emission,bm.emission) && cmat.shininess == bm.shininess &&
+        cmat.shadeModel == bm.shadeModel && cmat.pointSize == bm.pointSize &&
+        cmat.lineWidth == bm.lineWidth && cmat.cullMode == bm.cullMode &&
+        cmat.alphaFunc == bm.alphaFunc && cmat.alphaRef == bm.alphaRef &&
+        cmat.attrSet.fid == bm.attrSet.fid && cmat.attrSet.smc == bm.attrSet.smc &&
+        cmat.attrSet.stp == bm.attrSet.stp && cmat.attrSet.swc == bm.attrSet.swc &&
+        cmat.autoNormal == bm.autoNormal && cmat.texEnvs.size() == bm.texEnvs.size()) {
+        // Test the texture envs
+        bool isSame=true;
                 unsigned int i;
-		for (i=0;i<cmat.texEnvs.size();i++) {
-					const trpgTextureEnv &e1 = cmat.texEnvs[i];
-		    const trpgTextureEnv &e2 = bm.texEnvs[i];
-		    if (e1.envMode != e2.envMode ||
-			e1.minFilter != e2.minFilter ||
-			e1.magFilter != e2.magFilter ||
-			e1.wrapS != e2.wrapS || e1.wrapT != e2.wrapT ||
-			!CEQ(e1.borderCol,e2.borderCol))
-			isSame = false;
-		}
-		// Test the texture IDs
-		for (i=0;i<cmat.texids.size();i++) {
-		    if (cmat.texids[i] != bm.texids[i])
-			isSame = false;
-		}
-		if (isSame)
-		    return baseMat;
-	    }
-	}
+        for (i=0;i<cmat.texEnvs.size();i++) {
+                    const trpgTextureEnv &e1 = cmat.texEnvs[i];
+            const trpgTextureEnv &e2 = bm.texEnvs[i];
+            if (e1.envMode != e2.envMode ||
+            e1.minFilter != e2.minFilter ||
+            e1.magFilter != e2.magFilter ||
+            e1.wrapS != e2.wrapS || e1.wrapT != e2.wrapT ||
+            !CEQ(e1.borderCol,e2.borderCol))
+            isSame = false;
+        }
+        // Test the texture IDs
+        for (i=0;i<cmat.texids.size();i++) {
+            if (cmat.texids[i] != bm.texids[i])
+            isSame = false;
+        }
+        if (isSame)
+            return baseMat;
+        }
+    }
     }
 
     // Didn't find it.  Add it
     int idx;
     if(cmat.writeHandle)
-	idx = cmat.GetHandle();
+    idx = cmat.GetHandle();
     else
-	idx = numMat;
+    idx = numMat;
     materialMap[idx] = cmat;
     numMat = materialMap.size();
     return idx;
@@ -164,57 +164,57 @@ int trpgMatTable::AddMaterial(const trpgMaterial &mat,bool lookForExisting)
 // Write out material table
 bool trpgMatTable::Write(trpgWriteBuffer &buf)
 {
-	if (!isValid())
-		return false;
+    if (!isValid())
+        return false;
 
-	buf.Begin(TRPGMATTABLE);
+    buf.Begin(TRPGMATTABLE);
 
-	// Total number of materials
-	buf.Add((int32)numTable);
-	buf.Add((int32)numMat);
+    // Total number of materials
+    buf.Add((int32)numTable);
+    buf.Add((int32)numMat);
 
-	// Write the materials
-	MaterialMapType::const_iterator itr = materialMap.begin();
-	for (  ; itr != materialMap.end( ); itr++) {
-		((trpgMaterial)(*itr).second).Write(buf);
-	}
-	buf.End();
+    // Write the materials
+    MaterialMapType::const_iterator itr = materialMap.begin();
+    for (  ; itr != materialMap.end( ); itr++) {
+        ((trpgMaterial)(*itr).second).Write(buf);
+    }
+    buf.End();
 
-	return true;
+    return true;
 }
 
 /* ************
-	Material Table Read
+    Material Table Read
    ***********
    */
 
 // Get functions
 bool trpgMatTable::GetNumTable(int &no) const
 {
-	if (!isValid()) {
-		no = 0; // otherwise this causes errors because it is uninitialized.	
-		return false;
-	}
-	no = numTable;
-	return true;
+    if (!isValid()) {
+        no = 0; // otherwise this causes errors because it is uninitialized.    
+        return false;
+    }
+    no = numTable;
+    return true;
 }
 bool trpgMatTable::GetNumMaterial(int &no) const
 {
-	if (!isValid()) {
-		no = 0;	
-		return false;
-	}	
-	no = numMat;
-	return true;
+    if (!isValid()) {
+        no = 0;    
+        return false;
+    }    
+    no = numMat;
+    return true;
 }
 
 bool trpgMatTable::GetMaterial(int nt,int nm,trpgMaterial &mat) const
 {
     if (!isValid()) return false;
 
-	MaterialMapType::const_iterator itr = materialMap.find((nt*numMat)+nm);
-	if(itr == materialMap.end())
-		return false;
+    MaterialMapType::const_iterator itr = materialMap.find((nt*numMat)+nm);
+    if(itr == materialMap.end())
+        return false;
 
     mat = (*itr).second;
     return true;
@@ -222,57 +222,57 @@ bool trpgMatTable::GetMaterial(int nt,int nm,trpgMaterial &mat) const
 
 const trpgMaterial *trpgMatTable::GetMaterialRef(int nt,int nm) const
 {
-	MaterialMapType::const_iterator itr = materialMap.find((nt*numMat)+nm);
-	if(itr == materialMap.end())
-		return false;
-	return const_cast<trpgMaterial *>(&(*itr).second);
+    MaterialMapType::const_iterator itr = materialMap.find((nt*numMat)+nm);
+    if(itr == materialMap.end())
+        return false;
+    return const_cast<trpgMaterial *>(&(*itr).second);
 }
 
 
 bool trpgMatTable::Read(trpgReadBuffer &buf)
 {
-	trpgMaterial mat;
-	trpgToken matTok;
-	int32 len;
-	bool status;
-	int i,j;
-	int nMat,nTable;
+    trpgMaterial mat;
+    trpgToken matTok;
+    int32 len;
+    bool status;
+    int i,j;
+    int nMat,nTable;
 
-	try {
-		buf.Get(nTable);
-		buf.Get(nMat);
-		if (nTable <= 0 || nMat < 0) throw 1;
-		// Read the materials
-		for (i=0;i<nTable;i++)
-			for (j=0;j<nMat;j++) {
-				buf.GetToken(matTok,len);
-				if (matTok != TRPGMATERIAL) throw 1;
-				buf.PushLimit(len);
-				mat.Reset();
-				status = mat.Read(buf);
-				buf.PopLimit();
-				if (!status) throw 1;
-				AddMaterial(mat,false);				
-			}
-			numTable += nTable;
-			numMat = materialMap.size();
-	}
-	catch (...) {
-		return false;
-	}
+    try {
+        buf.Get(nTable);
+        buf.Get(nMat);
+        if (nTable <= 0 || nMat < 0) throw 1;
+        // Read the materials
+        for (i=0;i<nTable;i++)
+            for (j=0;j<nMat;j++) {
+                buf.GetToken(matTok,len);
+                if (matTok != TRPGMATERIAL) throw 1;
+                buf.PushLimit(len);
+                mat.Reset();
+                status = mat.Read(buf);
+                buf.PopLimit();
+                if (!status) throw 1;
+                AddMaterial(mat,false);                
+            }
+            numTable += nTable;
+            numMat = materialMap.size();
+    }
+    catch (...) {
+        return false;
+    }
 
-	return isValid();
+    return isValid();
 }
 
 /* Write Texture Environment class
-	Used to specify how a texture is applied.
-	Associated with materials.
-	*/
+    Used to specify how a texture is applied.
+    Associated with materials.
+    */
 
 // Constructor
 trpgTextureEnv::trpgTextureEnv()
 {
-	Reset();
+    Reset();
 }
 trpgTextureEnv::~trpgTextureEnv()
 {
@@ -281,11 +281,11 @@ trpgTextureEnv::~trpgTextureEnv()
 // Reset function
 void trpgTextureEnv::Reset()
 {
-	envMode = Decal;
-	minFilter = Linear;
-	magFilter = MipmapBilinear;
-	wrapS = wrapT = Repeat;
-	borderCol = trpgColor(0,0,0);
+    envMode = Decal;
+    minFilter = Linear;
+    magFilter = MipmapBilinear;
+    wrapS = wrapT = Repeat;
+    borderCol = trpgColor(0,0,0);
 }
 
 bool trpgTextureEnv::isValid() const
@@ -320,7 +320,7 @@ void trpgTextureEnv::SetBorderColor(const trpgColor &col)
 bool trpgTextureEnv::Write(trpgWriteBuffer &buf)
 {
     if (!isValid())
-	return false;
+    return false;
 
     buf.Begin(TRPGMAT_TEXENV);
 
@@ -402,33 +402,33 @@ void * textureEnvCB::Parse(trpgToken tok,trpgReadBuffer &buf)
     trpgColor borderCol;
 
     try {
-	switch (tok) {
-	case TRPGMAT_TXENV_MODE:
-	    buf.Get(envMode);
-	    tenv->SetEnvMode(envMode);
-	    break;
-	case TRPGMAT_TXENV_FILTER:
-	    buf.Get(minFilter);
-	    buf.Get(magFilter);
-	    tenv->SetMinFilter(minFilter);
-	    tenv->SetMagFilter(magFilter);
-	    break;
-	case TRPGMAT_TXENV_WRAP:
-	    buf.Get(wrapS);
-	    buf.Get(wrapT);
-	    tenv->SetWrap(wrapS,wrapT);
-	    break;
-	case TRPGMAT_TXENV_BORDER:
-	    buf.Get(borderCol);
-	    tenv->SetBorderColor(borderCol);
-	    break;
-	default:
-	    // Don't know this token.  Skip
-	    break;
-	}
+    switch (tok) {
+    case TRPGMAT_TXENV_MODE:
+        buf.Get(envMode);
+        tenv->SetEnvMode(envMode);
+        break;
+    case TRPGMAT_TXENV_FILTER:
+        buf.Get(minFilter);
+        buf.Get(magFilter);
+        tenv->SetMinFilter(minFilter);
+        tenv->SetMagFilter(magFilter);
+        break;
+    case TRPGMAT_TXENV_WRAP:
+        buf.Get(wrapS);
+        buf.Get(wrapT);
+        tenv->SetWrap(wrapS,wrapT);
+        break;
+    case TRPGMAT_TXENV_BORDER:
+        buf.Get(borderCol);
+        tenv->SetBorderColor(borderCol);
+        break;
+    default:
+        // Don't know this token.  Skip
+        break;
+    }
     }
     catch (...) {
-	return NULL;
+    return NULL;
     }
 
     return tenv;
@@ -499,11 +499,11 @@ bool trpgMaterial::isValid() const
 {
     // Only thing we really care about is texture
     if (numTex < 0)
-	return false;
+    return false;
 
     for (int i=0;i<numTex;i++)
-	if (!texEnvs[i].isValid())
-	    return false;
+    if (!texEnvs[i].isValid())
+        return false;
 
     return true;
 }
@@ -569,7 +569,7 @@ void trpgMaterial::SetAutoNormal(bool val)
 }
 void trpgMaterial::SetNumTexture(int no)
 {
-    if (no < 0)	return;
+    if (no < 0)    return;
     numTex = no;
     texids.resize(no);
     texEnvs.resize(no);
@@ -577,7 +577,7 @@ void trpgMaterial::SetNumTexture(int no)
 void trpgMaterial::SetTexture(int no,int id,const trpgTextureEnv &env)
 {
     if (no < 0 || (unsigned int)no >= texids.size())
-	return;
+    return;
 
     texids[no] = id;
     texEnvs[no] = env;
@@ -606,17 +606,17 @@ void trpgMaterial::SetAttr(int attrCode,int val)
 {
     switch (attrCode) {
     case TR_FID:
-	attrSet.fid = val;
-	break;
+    attrSet.fid = val;
+    break;
     case TR_SMC:
-	attrSet.smc = val;
-	break;
+    attrSet.smc = val;
+    break;
     case TR_STP:
-	attrSet.stp = val;
-	break;
+    attrSet.stp = val;
+    break;
     case TR_SWC:
-	attrSet.swc = val;
-	break;
+    attrSet.swc = val;
+    break;
     }
 
     return;
@@ -626,7 +626,7 @@ void trpgMaterial::SetAttr(int attrCode,int val)
 bool trpgMaterial::Write(trpgWriteBuffer &buf)
 {
     if (!isValid())
-	return false;
+    return false;
 
     buf.Begin(TRPGMATERIAL);
 
@@ -669,8 +669,8 @@ bool trpgMaterial::Write(trpgWriteBuffer &buf)
     buf.Begin(TRPGMAT_TEXTURE);
     buf.Add(numTex);
     for (int i=0;i<numTex;i++) {
-	buf.Add(texids[i]);
-	texEnvs[i].Write(buf);
+    buf.Add(texids[i]);
+    texEnvs[i].Write(buf);
     }
     buf.End();
 
@@ -691,9 +691,9 @@ bool trpgMaterial::Write(trpgWriteBuffer &buf)
      * If the terrapage version is >= 2.3, handle will be set to a unique identifier.
      **/
     if(writeHandle) {
-	buf.Begin(TRPGMAT_HANDLE);
-	buf.Add((int)handle);
-	buf.End();
+    buf.Begin(TRPGMAT_HANDLE);
+    buf.Add((int)handle);
+    buf.End();
     }
 
     buf.End();
@@ -800,7 +800,7 @@ bool trpgMaterial::GetNumTexture(int &no) const
 bool trpgMaterial::GetTexture(int no,int &id,trpgTextureEnv &te) const
 {
     if (!isValid() || no < 0  || no >= numTex)
-	return false;
+    return false;
     id = texids[no];
     te = texEnvs[no];
     return true;
@@ -821,19 +821,19 @@ bool trpgMaterial::GetAttr(int attrCode,int &ret) const
 {
     switch (attrCode) {
     case TR_FID:
-	ret = attrSet.fid;
-	break;
+    ret = attrSet.fid;
+    break;
     case TR_SMC:
-	ret = attrSet.smc;
-	break;
+    ret = attrSet.smc;
+    break;
     case TR_STP:
-	ret = attrSet.stp;
-	break;
+    ret = attrSet.stp;
+    break;
     case TR_SWC:
-	ret = attrSet.swc;
-	break;
+    ret = attrSet.swc;
+    break;
     default:
-	return false;
+    return false;
     }
 
     return true;
@@ -866,105 +866,105 @@ void * materialCB::Parse(trpgToken tok,trpgReadBuffer &buf)
     int i;
 
     try {
-	switch (tok) {
-	case TRPGMAT_BASIC:
-	    buf.Get(color);
-	    mat->SetColor(color);
-	    buf.Get(color);
-	    mat->SetAmbient(color);
-	    buf.Get(color);
-	    mat->SetDiffuse(color);
-	    buf.Get(color);
-	    mat->SetSpecular(color);
-	    buf.Get(color);
-	    mat->SetEmission(color);
-	    buf.Get(shininess);
-	    mat->SetShininess(shininess);
-	    buf.Get(numtile);
-	    mat->SetNumTiles(numtile);
-	    break;
-	case TRPGMAT_SHADE:
-	    buf.Get(shadeModel);
-	    mat->SetShadeModel(shadeModel);
-	    break;
-	case TRPGMAT_SIZES:
-	    buf.Get(size);
-	    mat->SetPointSize(size);
-	    buf.Get(size);
-	    mat->SetLineWidth(size);
-	    break;
-	case TRPGMAT_CULL:
-	    buf.Get(cullMode);
-	    mat->SetCullMode(cullMode);
-	    break;
-	case TRPGMAT_ALPHA:
-	    buf.Get(alphaFunc);
-	    buf.Get(alphaRef);
-	    buf.Get(alpha);
-	    mat->SetAlphaFunc(alphaFunc);
-	    mat->SetAlphaRef(alphaRef);
-	    mat->SetAlpha(alpha);
-	    break;
-	case TRPGMAT_NORMAL:
-	{
-	    int32 tmp;
-	    buf.Get(tmp);
-	    if (tmp)
-		autoNormal = true;
-	    else
-		autoNormal = false;
-	    mat->SetAutoNormal(autoNormal);
-	}
-	break;
-	case TRPGMAT_TEXTURE:
-	    buf.Get(numTex);
-	    for (i=0;i<numTex;i++) {
-		buf.Get(texId);
-		// Parse the texture Env
-		buf.GetToken(envTok,len);
-		if (envTok != TRPGMAT_TEXENV)  throw 1;
-		buf.PushLimit(len);
-		status = texEnv.Read(buf);
-		buf.PopLimit();
-		if (!status) throw 1;
+    switch (tok) {
+    case TRPGMAT_BASIC:
+        buf.Get(color);
+        mat->SetColor(color);
+        buf.Get(color);
+        mat->SetAmbient(color);
+        buf.Get(color);
+        mat->SetDiffuse(color);
+        buf.Get(color);
+        mat->SetSpecular(color);
+        buf.Get(color);
+        mat->SetEmission(color);
+        buf.Get(shininess);
+        mat->SetShininess(shininess);
+        buf.Get(numtile);
+        mat->SetNumTiles(numtile);
+        break;
+    case TRPGMAT_SHADE:
+        buf.Get(shadeModel);
+        mat->SetShadeModel(shadeModel);
+        break;
+    case TRPGMAT_SIZES:
+        buf.Get(size);
+        mat->SetPointSize(size);
+        buf.Get(size);
+        mat->SetLineWidth(size);
+        break;
+    case TRPGMAT_CULL:
+        buf.Get(cullMode);
+        mat->SetCullMode(cullMode);
+        break;
+    case TRPGMAT_ALPHA:
+        buf.Get(alphaFunc);
+        buf.Get(alphaRef);
+        buf.Get(alpha);
+        mat->SetAlphaFunc(alphaFunc);
+        mat->SetAlphaRef(alphaRef);
+        mat->SetAlpha(alpha);
+        break;
+    case TRPGMAT_NORMAL:
+    {
+        int32 tmp;
+        buf.Get(tmp);
+        if (tmp)
+        autoNormal = true;
+        else
+        autoNormal = false;
+        mat->SetAutoNormal(autoNormal);
+    }
+    break;
+    case TRPGMAT_TEXTURE:
+        buf.Get(numTex);
+        for (i=0;i<numTex;i++) {
+        buf.Get(texId);
+        // Parse the texture Env
+        buf.GetToken(envTok,len);
+        if (envTok != TRPGMAT_TEXENV)  throw 1;
+        buf.PushLimit(len);
+        status = texEnv.Read(buf);
+        buf.PopLimit();
+        if (!status) throw 1;
 
-		mat->AddTexture(texId,texEnv);
-	    }
-	    break;
-	case TRPGMAT_BUMP:
-	{
-	    int32 tmp;
-	    buf.Get(tmp);
-	    bool isBump = (tmp) ? true : false;
-	    mat->SetIsBumpMap(isBump);
-	}
-	break;
-	case TRPGMAT_ATTR:
-	{
-	    int tmp;
-	    buf.Get(tmp);
-	    mat->SetAttr(trpgMaterial::TR_FID,tmp);
-	    buf.Get(tmp);
-	    mat->SetAttr(trpgMaterial::TR_SMC,tmp);
-	    buf.Get(tmp);
-	    mat->SetAttr(trpgMaterial::TR_STP,tmp);
-	    buf.Get(tmp);
-	    mat->SetAttr(trpgMaterial::TR_SWC,tmp);
-	}
-	break;
-	case TRPGMAT_HANDLE:
-	{
-	    int hdl;
-	    buf.Get(hdl);
-	    mat->SetHandle(hdl);				
-	}
-	break;
-	default:
-	    break;
-	}
+        mat->AddTexture(texId,texEnv);
+        }
+        break;
+    case TRPGMAT_BUMP:
+    {
+        int32 tmp;
+        buf.Get(tmp);
+        bool isBump = (tmp) ? true : false;
+        mat->SetIsBumpMap(isBump);
+    }
+    break;
+    case TRPGMAT_ATTR:
+    {
+        int tmp;
+        buf.Get(tmp);
+        mat->SetAttr(trpgMaterial::TR_FID,tmp);
+        buf.Get(tmp);
+        mat->SetAttr(trpgMaterial::TR_SMC,tmp);
+        buf.Get(tmp);
+        mat->SetAttr(trpgMaterial::TR_STP,tmp);
+        buf.Get(tmp);
+        mat->SetAttr(trpgMaterial::TR_SWC,tmp);
+    }
+    break;
+    case TRPGMAT_HANDLE:
+    {
+        int hdl;
+        buf.Get(hdl);
+        mat->SetHandle(hdl);                
+    }
+    break;
+    default:
+        break;
+    }
     }
     catch (...) {
-	return NULL;
+    return NULL;
     }
 
     return mat;
@@ -1050,7 +1050,7 @@ void trpgTexture::Reset()
     type = trpg_Unknown;
     numLayer = -1;
     if (name)
-	delete [] name;
+    delete [] name;
     name = NULL;
     useCount = 0;
     sizeX = sizeY = -1;
@@ -1073,15 +1073,15 @@ bool trpgTexture::isValid() const
 {
     switch (mode) {
     case External:
-	return (name != NULL);
+    return (name != NULL);
     case Local:
-	return (type != trpg_Unknown && sizeX != -1 && sizeY != -1);
+    return (type != trpg_Unknown && sizeX != -1 && sizeY != -1);
     case Global:
-	return (type != trpg_Unknown);
+    return (type != trpg_Unknown);
     case Template:
-	return (type != trpg_Unknown && sizeX != -1 && sizeY != -1);
+    return (type != trpg_Unknown && sizeX != -1 && sizeY != -1);
     default:
-	return false;
+    return false;
     }
 }
 
@@ -1090,11 +1090,11 @@ bool trpgTexture::isValid() const
 void trpgTexture::SetName(const char *inName)
 {
     if (name)
-	delete [] name;
+    delete [] name;
     name = NULL;
 
     if (!inName)
-	return;
+    return;
 
     name = new char[strlen(inName)+1];
     strcpy(name,inName);
@@ -1104,7 +1104,7 @@ void trpgTexture::SetName(const char *inName)
 bool trpgTexture::GetName(char *outName,int outLen) const
 {
     if (!isValid()) 
-	return false;
+    return false;
 
     int len = (name) ? strlen(name) : 0;
     strncpy(outName,name,MIN(len,outLen)+1);
@@ -1141,7 +1141,7 @@ void trpgTexture::SetImageSize(const trpg2iPoint &inSize)
 bool trpgTexture::GetImageSize(trpg2iPoint &outSize) const
 {
     if (mode != Local && mode != Template)
-	return false;
+    return false;
     outSize.x = sizeX;
     outSize.y = sizeY;
 
@@ -1159,7 +1159,7 @@ bool trpgTexture::GetIsMipmap(bool &ret) const
 bool trpgTexture::GetImageAddr(trpgwAppAddress &outAddr) const
 {
     if (mode != Local)
-	return false;
+    return false;
 
     outAddr = addr;
 
@@ -1173,46 +1173,46 @@ bool trpgTexture::GetImageDepth(int32 &depth) const
 {
     switch (type) {
     case trpg_RGB8:
-	depth = 3;
-	break;
+    depth = 3;
+    break;
     case trpg_RGBA8:
-	depth = 4;
-	break;
+    depth = 4;
+    break;
     case trpg_INT8:
-	depth = 1;
-	break;
+    depth = 1;
+    break;
     case trpg_INTA8:
-	depth = 2;
-	break;
+    depth = 2;
+    break;
     case trpg_FXT1:
-	depth = 3;
-	break;
+    depth = 3;
+    break;
     case trpg_RGBX:
-	depth = numLayer;
-	break;
+    depth = numLayer;
+    break;
     case trpg_DXT1:
-	depth = 3;
-	break;
+    depth = 3;
+    break;
     case trpg_DXT3:
-	depth = 3;
-	break;
+    depth = 3;
+    break;
     case trpg_DXT5:
-	depth = 3;
-	break;
+    depth = 3;
+    break;
     case trpg_MCM5:
-	depth = 5;
-	break;
+    depth = 5;
+    break;
     case trpg_MCM6R:
     case trpg_MCM6A:
-	depth = 6;
-	break;
+    depth = 6;
+    break;
     case trpg_MCM7RA:
     case trpg_MCM7AR:
-	depth = 7;
-	break;
+    depth = 7;
+    break;
     default:
-	depth = -1;
-	break;
+    depth = -1;
+    break;
     }
 
     return true;
@@ -1226,7 +1226,7 @@ void trpgTexture::SetNumLayer(int layers)
 bool trpgTexture::GetNumLayer(int &layers) const
 {
     if (!isValid()) 
-	return false;
+    return false;
     GetImageDepth(layers);
     return true;
 }
@@ -1243,7 +1243,7 @@ void trpgTexture::AddTile()
 bool trpgTexture::GetNumTile(int &num) const
 {
     if (!isValid()) 
-	return false;
+    return false;
     num = useCount;
     return true;
 }
@@ -1255,7 +1255,7 @@ trpgTexture &trpgTexture::operator = (const trpgTexture &in)
     type = in.type;
 
     if (in.name)
-	SetName(in.name);
+    SetName(in.name);
 
     useCount = in.useCount;
     
@@ -1267,7 +1267,7 @@ trpgTexture &trpgTexture::operator = (const trpgTexture &in)
 
     isMipmap = in.isMipmap;
     addr = in.addr;
-	
+    
     writeHandle = in.writeHandle;
     handle = in.handle;
 
@@ -1278,28 +1278,28 @@ trpgTexture &trpgTexture::operator = (const trpgTexture &in)
 int trpgTexture::operator == (const trpgTexture &in) const
 {
     if (mode != in.mode)
-	return 0;
+    return 0;
 
     switch (mode) {
     case External:
-	if (!in.name && !name)
-	    return 1;
-	if (!in.name || !name)
-	    return 0;
-	return (!strcmp(in.name,name));
-	break;
+    if (!in.name && !name)
+        return 1;
+    if (!in.name || !name)
+        return 0;
+    return (!strcmp(in.name,name));
+    break;
     case Local:
-	if (type == in.type && sizeX == in.sizeX && sizeY == in.sizeY &&
-	    isMipmap == in.isMipmap &&
-	    addr.file == in.addr.file && addr.offset == in.addr.offset &&
-	    addr.row == in.addr.row && addr.col==in.addr.col )
-	    return 1;
-	break;
+    if (type == in.type && sizeX == in.sizeX && sizeY == in.sizeY &&
+        isMipmap == in.isMipmap &&
+        addr.file == in.addr.file && addr.offset == in.addr.offset &&
+        addr.row == in.addr.row && addr.col==in.addr.col )
+        return 1;
+    break;
     case Global:
     case Template:
-	if (type == in.type && sizeX == in.sizeX && sizeY == in.sizeY &&
-	    isMipmap == in.isMipmap)
-	    return 1;
+    if (type == in.type && sizeX == in.sizeX && sizeY == in.sizeY &&
+        isMipmap == in.isMipmap)
+        return 1;
     }
 
     return 0;
@@ -1318,8 +1318,8 @@ int32 trpgTexture::CalcNumMipmaps() const
     // Now look for the highest bit
     int p2;
     for (p2=0;p2<32;p2++)
-	if ((1<<p2) & bval)
-	    break;
+    if ((1<<p2) & bval)
+        break;
 
     return p2+1;
 }
@@ -1332,7 +1332,7 @@ int32 trpgTexture::CalcTotalSize() const
 
     int totSize = 0;
     for (unsigned int i=0;i<storageSize.size();i++)
-	totSize += storageSize[i];
+    totSize += storageSize[i];
 
     return totSize;
 }
@@ -1340,11 +1340,11 @@ int32 trpgTexture::CalcTotalSize() const
 // Calculate the size of a given mip level
 int32 trpgTexture::MipLevelSize(int miplevel)
 {
-	
+    
     if ( miplevel >= 0 && miplevel < CalcNumMipmaps() ) {
-	if ( !storageSize.size() )
-	    CalcMipLevelSizes();
-	return storageSize[miplevel];
+    if ( !storageSize.size() )
+        CalcMipLevelSizes();
+    return storageSize[miplevel];
     }
 
     return 0;
@@ -1353,9 +1353,9 @@ int32 trpgTexture::MipLevelSize(int miplevel)
 int32 trpgTexture::MipLevelOffset(int miplevel)
 {
     if ( miplevel > 0 && miplevel < CalcNumMipmaps() ) {
-	if ( !levelOffset.size() )
-	    CalcMipLevelSizes();
-	return levelOffset[miplevel];
+    if ( !levelOffset.size() )
+        CalcMipLevelSizes();
+    return levelOffset[miplevel];
     }
 
     return 0;
@@ -1380,7 +1380,7 @@ bool trpgTexture::Write(trpgWriteBuffer &buf)
     buf.Add(addr.offset);
     buf.Add((int32)isMipmap);
     if(writeHandle) {
-	buf.Add((int32)handle);
+    buf.Add((int32)handle);
     }
     buf.End();
 
@@ -1393,42 +1393,42 @@ bool trpgTexture::Read(trpgReadBuffer &buf)
     char texName[1024];
 
     try {
-	buf.Get(texName,1023);
-	SetName(texName);
-	buf.Get(useCount);
+    buf.Get(texName,1023);
+    SetName(texName);
+    buf.Get(useCount);
 
-	mode = External;
-	// New in 2.0 from here down
-	unsigned char bval;
-	buf.Get(bval);  mode = (trpgTexture::ImageMode)bval;
-	buf.Get(bval);	type = (trpgTexture::ImageType)bval;
-	GetImageDepth(numLayer); // heh
-	buf.Get(sizeX);
-	buf.Get(sizeY);
-	buf.Get(addr.file);
-	buf.Get(addr.offset);
-	int32 ival;
-	buf.Get(ival);  
-	// Read the handle if we can..
-	try {
+    mode = External;
+    // New in 2.0 from here down
+    unsigned char bval;
+    buf.Get(bval);  mode = (trpgTexture::ImageMode)bval;
+    buf.Get(bval);    type = (trpgTexture::ImageType)bval;
+    GetImageDepth(numLayer); // heh
+    buf.Get(sizeX);
+    buf.Get(sizeY);
+    buf.Get(addr.file);
+    buf.Get(addr.offset);
+    int32 ival;
+    buf.Get(ival);  
+    // Read the handle if we can..
+    try {
             int32 tempHandle;                
-	    if(buf.Get(tempHandle)) 
+        if(buf.Get(tempHandle)) 
             {
-		writeHandle = true;
+        writeHandle = true;
                 handle = tempHandle;
             }
             else
             {
-		handle = -1;
-	    }
-	}
-	catch (...) {
-	    handle = -1;
-	}
-	isMipmap = (ival) ? true : false;
+        handle = -1;
+        }
     }
     catch (...) {
-	return false;
+        handle = -1;
+    }
+    isMipmap = (ival) ? true : false;
+    }
+    catch (...) {
+    return false;
     }
 
     if (!isValid()) return false;
@@ -1452,51 +1452,51 @@ void trpgTexture::CalcMipLevelSizes()
 
     switch (type) {
     case trpg_DXT1:
-	isDXT = true;
-	block_size = 8;
-	break;
+    isDXT = true;
+    block_size = 8;
+    break;
     case trpg_DXT3:
     case trpg_DXT5:
-	isDXT = true;
-	block_size = 16;
-	break;
+    isDXT = true;
+    block_size = 16;
+    break;
     case trpg_RGB8:
-	pad_size = 4;
-	pixel_size = 3;
-	break;
+    pad_size = 4;
+    pixel_size = 3;
+    break;
     case trpg_RGBA8:
-	pad_size = 4;
-	pixel_size = 4;
-	break;
+    pad_size = 4;
+    pixel_size = 4;
+    break;
     case trpg_RGBX:
-	pad_size = 4;
-	pixel_size = numLayer;
-	break;
+    pad_size = 4;
+    pixel_size = numLayer;
+    break;
     case trpg_MCM5:
-	pad_size = 4;
-	pixel_size = 5;
-	break;
+    pad_size = 4;
+    pixel_size = 5;
+    break;
     case trpg_MCM6R:
     case trpg_MCM6A:
-	pad_size = 4;
-	pixel_size = 6;
-	break;
+    pad_size = 4;
+    pixel_size = 6;
+    break;
     case trpg_MCM7RA:
     case trpg_MCM7AR:
-	pad_size = 4;
-	pixel_size = 7;
-	break;
+    pad_size = 4;
+    pixel_size = 7;
+    break;
     case trpg_INT8:
-	pad_size = 4;
-	pixel_size = 1;
-	break;
+    pad_size = 4;
+    pixel_size = 1;
+    break;
     case trpg_INTA8:
-	pad_size = 4;
-	pixel_size = 2;
-	break;
+    pad_size = 4;
+    pixel_size = 2;
+    break;
     case trpg_FXT1:
-	isFXT = true;
-	break;
+    isFXT = true;
+    break;
     default:
         break;
     }
@@ -1510,85 +1510,85 @@ void trpgTexture::CalcMipLevelSizes()
 
 
     if ( isDXT ) { // DXT compressed
-	int num_x_blocks = ((sizeX/4)+(sizeX%4?1:0));
-	int num_y_blocks = ((sizeY/4)+(sizeY%4?1:0));
+    int num_x_blocks = ((sizeX/4)+(sizeX%4?1:0));
+    int num_y_blocks = ((sizeY/4)+(sizeY%4?1:0));
 
-	level_size = num_x_blocks * num_y_blocks * block_size;
-	storageSize.push_back(level_size);
+    level_size = num_x_blocks * num_y_blocks * block_size;
+    storageSize.push_back(level_size);
 
-	for ( int i = 1; i < num_miplevels; i++ ) {
-	    level_offset += level_size;
-	    levelOffset.push_back(level_offset);
+    for ( int i = 1; i < num_miplevels; i++ ) {
+        level_offset += level_size;
+        levelOffset.push_back(level_offset);
 
-	    num_x_blocks /= 2;
-	    num_y_blocks /= 2;
-	    num_x_blocks = MAX(1,num_x_blocks);
-	    num_y_blocks = MAX(1,num_y_blocks);
+        num_x_blocks /= 2;
+        num_y_blocks /= 2;
+        num_x_blocks = MAX(1,num_x_blocks);
+        num_y_blocks = MAX(1,num_y_blocks);
 
-	    level_size = num_x_blocks * num_y_blocks * block_size;
-	    storageSize.push_back(level_size);
-	}
+        level_size = num_x_blocks * num_y_blocks * block_size;
+        storageSize.push_back(level_size);
+    }
 
-	return;
+    return;
     }
     if ( isFXT) {
-	// bits per pixel and size
-	int bpp = 4;
-	int x = sizeX;
-	int y = sizeY;
-			
-	int nummiplevels = (isMipmap ? CalcNumMipmaps() : 1);
-	for (int i = 0; i < nummiplevels; i++) {
-	    if (i > 0)
-		levelOffset.push_back(level_offset);
+    // bits per pixel and size
+    int bpp = 4;
+    int x = sizeX;
+    int y = sizeY;
+            
+    int nummiplevels = (isMipmap ? CalcNumMipmaps() : 1);
+    for (int i = 0; i < nummiplevels; i++) {
+        if (i > 0)
+        levelOffset.push_back(level_offset);
 
-	    x = ( x + 0x7 ) & ~0x7;
-	    y = ( y + 0x3 ) & ~0x3;
+        x = ( x + 0x7 ) & ~0x7;
+        y = ( y + 0x3 ) & ~0x3;
 
-	    // Number of bytes
-	    level_size = ( x * y * bpp ) >> 3;
-	    storageSize.push_back(level_size);
-	    level_offset += level_size;
+        // Number of bytes
+        level_size = ( x * y * bpp ) >> 3;
+        storageSize.push_back(level_size);
+        level_offset += level_size;
 
-	    if (x > 1)  x /= 2;
-	    if (y > 1)  y /= 2;
-	}
+        if (x > 1)  x /= 2;
+        if (y > 1)  y /= 2;
+    }
 
-	return;
+    return;
     }
 
     {
-	int x_size = sizeX;
-	int y_size = sizeY;
+    int x_size = sizeX;
+    int y_size = sizeY;
 
-	// Pad to a given size, if necessary
-	int row_size = x_size * pixel_size;
-	if (pad_size > 0) {
-	    int left = row_size%pad_size;
-	    if (left)
-		row_size += pad_size - left;
-	}
+    // Pad to a given size, if necessary
+    int row_size = x_size * pixel_size;
+    if (pad_size > 0) {
+        int left = row_size%pad_size;
+        if (left)
+        row_size += pad_size - left;
+    }
 
-	level_size = row_size * y_size;
-	storageSize.push_back(level_size);
-	for ( int i = 1; i < num_miplevels; i++ ) {
-	    level_offset += level_size;
-	    levelOffset.push_back(level_offset);
+    level_size = row_size * y_size;
+    storageSize.push_back(level_size);
+    for ( int i = 1; i < num_miplevels; i++ ) {
+        level_offset += level_size;
+        levelOffset.push_back(level_offset);
 
-	    x_size /= 2;
-	    y_size /= 2;
-	    x_size = MAX(1,x_size);
-	    y_size = MAX(1,y_size);
+        x_size /= 2;
+        y_size /= 2;
+        x_size = MAX(1,x_size);
+        y_size = MAX(1,y_size);
 
-	    row_size = x_size * pixel_size;
-	    if (pad_size > 0) {
-		int left = row_size%pad_size;
-		if (left)
-		    row_size += pad_size - left;
-	    }
-	    level_size = row_size * y_size;
-	    storageSize.push_back(level_size);
-	}
+        row_size = x_size * pixel_size;
+        if (pad_size > 0) {
+        int left = row_size%pad_size;
+        if (left)
+            row_size += pad_size - left;
+        }
+        level_size = row_size * y_size;
+        storageSize.push_back(level_size);
+    }
     }
 }
 
@@ -1628,16 +1628,16 @@ bool trpgTexTable::isValid() const
 {
     if (!textureMap.size())
     {
-	strcpy(errMess, "Texture table list is empty");
-	return false;
+    strcpy(errMess, "Texture table list is empty");
+    return false;
     }
 
     TextureMapType::const_iterator itr = textureMap.begin();
-    for (  ; itr != textureMap.end( ); itr++) {		
-	if(!itr->second.isValid()) {
-	    strcpy(errMess, "A texture in the texture table is invalid");
-	    return false;
-	}
+    for (  ; itr != textureMap.end( ); itr++) {        
+    if(!itr->second.isValid()) {
+        strcpy(errMess, "A texture in the texture table is invalid");
+        return false;
+    }
     }
     return true;
 }
@@ -1647,37 +1647,37 @@ bool trpgTexTable::isValid() const
 void trpgTexTable::SetNumTextures(int /*no*/)
 {
     // obsolete. This method doesn't need to do anything since we're using a map instead of a vector.
-    //	texList.resize(no);
+    //    texList.resize(no);
 }
 int trpgTexTable::AddTexture(const trpgTexture &inTex)
 {
-	
+    
     TeAttrHdl hdl = inTex.GetHandle();
     if(hdl==-1) {
-	// if no handle is specified, we will use an index as the handle (just like before 2.3)
-	hdl = textureMap.size(); 
+    // if no handle is specified, we will use an index as the handle (just like before 2.3)
+    hdl = textureMap.size(); 
     }
     TextureMapType::iterator itr = textureMap.find(hdl);
     // Don't overwrite the texture if it was already there
     if(itr==textureMap.end())
-	textureMap[hdl] = inTex;
+    textureMap[hdl] = inTex;
     return hdl;
 }
 int trpgTexTable::FindAddTexture(const trpgTexture &inTex)
 {
     TextureMapType::iterator itr = textureMap.begin();
     for (  ; itr != textureMap.end( ); itr++) {
-	trpgTexture tx = itr->second;
-	if(tx == inTex) {
-	    return itr->first;
-	}
+    trpgTexture tx = itr->second;
+    if(tx == inTex) {
+        return itr->first;
+    }
     }
     return AddTexture(inTex);
 }
 void trpgTexTable::SetTexture(int id,const trpgTexture &inTex)
 {
     if (id < 0)
-	return;
+    return;
     textureMap[id] = inTex;
 }
 
@@ -1687,9 +1687,9 @@ trpgTexTable &trpgTexTable::operator = (const trpgTexTable &in)
     Reset();
     TextureMapType::const_iterator itr = in.textureMap.begin();
     for (  ; itr != in.textureMap.end( ); itr++) {
-	trpgTexture tex = itr->second;
-	in.GetTexture(itr->first,tex);
-	AddTexture(tex);
+    trpgTexture tex = itr->second;
+    in.GetTexture(itr->first,tex);
+    AddTexture(tex);
     }
 
     return *this;
@@ -1701,14 +1701,14 @@ bool trpgTexTable::Write(trpgWriteBuffer &buf)
     int32 numTex;
 
     if (!isValid())
-	return false;
+    return false;
 
     buf.Begin(TRPGTEXTABLE2);
     numTex = textureMap.size();
     buf.Add(numTex);
     TextureMapType::iterator itr = textureMap.begin();
     for (  ; itr != textureMap.end( ); itr++) {
-	itr->second.Write(buf);
+    itr->second.Write(buf);
     }
     buf.End();
 
@@ -1729,12 +1729,12 @@ bool trpgTexTable::GetNumTextures(int &no) const
 bool trpgTexTable::GetTexture(int id,trpgTexture &ret) const
 {
     if (!isValid()) 
-	return false;
+    return false;
     if (id < 0) 
-	return false;
+    return false;
     TextureMapType::const_iterator itr = textureMap.find(id);
-    if(itr == textureMap.end())	{
-	return false;
+    if(itr == textureMap.end())    {
+    return false;
     }
     ret = itr->second;
 
@@ -1743,10 +1743,10 @@ bool trpgTexTable::GetTexture(int id,trpgTexture &ret) const
 const trpgTexture *trpgTexTable::GetTextureRef(int id) const
 {
     if (id < 0) 
-	return false;
+    return false;
     TextureMapType::const_iterator itr = textureMap.find(id);
-    if(itr == textureMap.end())	{
-	return false;
+    if(itr == textureMap.end())    {
+    return false;
     }
     const trpgTexture *ret = &(itr->second);
     return ret;
@@ -1756,14 +1756,14 @@ const trpgTexture *trpgTexTable::FindByName(const char *name, int &texid) const
 {
     TextureMapType::const_iterator itr = textureMap.begin();
     for (  ; itr != textureMap.end( ); itr++) {
-	char thisName[1024];
-	thisName[0] = '\0';
-	itr->second.GetName(thisName,1023);
-	if(strcasecmp(thisName,name)==0)
-	{
-	    texid = itr->first;
-	    return &(itr->second);
-	}
+    char thisName[1024];
+    thisName[0] = '\0';
+    itr->second.GetName(thisName,1023);
+    if(strcasecmp(thisName,name)==0)
+    {
+        texid = itr->first;
+        return &(itr->second);
+    }
     }
     return false;
 
@@ -1776,29 +1776,29 @@ bool trpgTexTable::Read(trpgReadBuffer &buf)
     int32 len;
 
     try {
-	buf.Get(numTex);
-		
-	for (int i=0;i<numTex;i++) {
-	    buf.GetToken(texTok,len);
-	    if (texTok != TRPGTEXTURE) throw 1;
-	    buf.PushLimit(len);
-	    trpgTexture tex;
-	    bool status = tex.Read(buf);
-	    //set the block for multi-archive archives (version>=2.3)
-	    if((currentRow!=-1)&&(currentCol!=-1)) {
-		trpgwAppAddress taddr;
-		tex.GetImageAddr(taddr);
-		taddr.col = currentCol;
-		taddr.row = currentRow;
-		tex.SetImageAddr(taddr);
-	    }
-	    AddTexture(tex);
-	    buf.PopLimit();
-	    if (!status) throw 1;
-	}
+    buf.Get(numTex);
+        
+    for (int i=0;i<numTex;i++) {
+        buf.GetToken(texTok,len);
+        if (texTok != TRPGTEXTURE) throw 1;
+        buf.PushLimit(len);
+        trpgTexture tex;
+        bool status = tex.Read(buf);
+        //set the block for multi-archive archives (version>=2.3)
+        if((currentRow!=-1)&&(currentCol!=-1)) {
+        trpgwAppAddress taddr;
+        tex.GetImageAddr(taddr);
+        taddr.col = currentCol;
+        taddr.row = currentRow;
+        tex.SetImageAddr(taddr);
+        }
+        AddTexture(tex);
+        buf.PopLimit();
+        if (!status) throw 1;
+    }
     }
     catch (...) {
-	return false;
+    return false;
     }
 
     return true;
@@ -1835,7 +1835,7 @@ void trpgLocalMaterial::Reset()
 {
     baseMat = -1;
     sx = sy = ex = ey = destWidth = destHeight = 0;
-//	storageSize.resize(0);
+//    storageSize.resize(0);
     addr.resize(1);
     addr[0].file = 0;
     addr[0].offset = 0;
@@ -1940,7 +1940,7 @@ bool trpgLocalMaterial::isValid() const
 bool trpgLocalMaterial::Write(trpgWriteBuffer &buf)
 {
     if (!isValid())
-	return false;
+    return false;
 
     buf.Begin(TRPGLOCALMATERIAL);
 
@@ -1958,11 +1958,11 @@ bool trpgLocalMaterial::Write(trpgWriteBuffer &buf)
     // and in case there's more...
     int numAddrs=(int)(addr.size());
     if (numAddrs>1) {
-	buf.Add(numAddrs-1); // suppressed due to breaking old readers.
-	for (int i=1;i<numAddrs;i++) {
-	    buf.Add(addr[i].file);
-	    buf.Add(addr[i].offset);
-	}
+    buf.Add(numAddrs-1); // suppressed due to breaking old readers.
+    for (int i=1;i<numAddrs;i++) {
+        buf.Add(addr[i].file);
+        buf.Add(addr[i].offset);
+    }
     }
     buf.End();
 
@@ -1974,33 +1974,33 @@ bool trpgLocalMaterial::Write(trpgWriteBuffer &buf)
 bool trpgLocalMaterial::Read(trpgReadBuffer &buf)
 {
     try {
-	buf.Get(baseMatTable);
-	buf.Get(baseMat);
-	buf.Get(sx);
-	buf.Get(sy);
-	buf.Get(ex);
-	buf.Get(ey);
-	buf.Get(destWidth);
-	buf.Get(destHeight);
-	buf.Get(addr[0].file);
-	buf.Get(addr[0].offset);
-	if ( !buf.isEmpty() ) {
-	    // there might be more
-	    int extraAddrs;
-	    buf.Get(extraAddrs);
-	    if (extraAddrs!=0) {
-		addr.resize(extraAddrs+1);
-		for (int i=1;i<=extraAddrs;i++) {
-		    buf.Get(addr[i].file);
-		    buf.Get(addr[i].offset);
-		    addr[i].col = -1;
-		    addr[i].row = -1;
-		}
-	    }
-	}
+    buf.Get(baseMatTable);
+    buf.Get(baseMat);
+    buf.Get(sx);
+    buf.Get(sy);
+    buf.Get(ex);
+    buf.Get(ey);
+    buf.Get(destWidth);
+    buf.Get(destHeight);
+    buf.Get(addr[0].file);
+    buf.Get(addr[0].offset);
+    if ( !buf.isEmpty() ) {
+        // there might be more
+        int extraAddrs;
+        buf.Get(extraAddrs);
+        if (extraAddrs!=0) {
+        addr.resize(extraAddrs+1);
+        for (int i=1;i<=extraAddrs;i++) {
+            buf.Get(addr[i].file);
+            buf.Get(addr[i].offset);
+            addr[i].col = -1;
+            addr[i].row = -1;
+        }
+        }
+    }
     }
     catch (...) {
-	return false;
+    return false;
     }
 
     return isValid();

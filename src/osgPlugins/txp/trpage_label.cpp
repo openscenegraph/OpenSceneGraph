@@ -309,7 +309,7 @@ bool trpgTextStyleTable::Read(trpgReadBuffer &buf)
     int32 len;
     bool status;
     int numStyle;
-	int i;
+    int i;
 
     Reset();
 
@@ -319,7 +319,7 @@ bool trpgTextStyleTable::Read(trpgReadBuffer &buf)
         if (numStyle < 0)
             throw 1;
 
-		for (i=0;i<numStyle;i++) {
+        for (i=0;i<numStyle;i++) {
             buf.GetToken(styleTok,len);
             if (styleTok != TRPG_TEXT_STYLE) throw 1;
             buf.PushLimit(len);
@@ -554,7 +554,7 @@ bool trpgSupportStyleTable::Read(trpgReadBuffer &buf)
     int32 len;
     bool status;
     int numStyle;
-	int i;
+    int i;
 
     Reset();
 
@@ -564,7 +564,7 @@ bool trpgSupportStyleTable::Read(trpgReadBuffer &buf)
         if (numStyle < 0)
             throw 1;
         //styles.resize(numStyle);
-		for (i=0;i<numStyle;i++) {
+        for (i=0;i<numStyle;i++) {
             buf.GetToken(styleTok,len);
             if (styleTok != TRPG_SUPPORT_STYLE) throw 1;
             buf.PushLimit(len);
@@ -814,7 +814,7 @@ bool trpgLabelPropertyTable::Read(trpgReadBuffer &buf)
     int32 len;
     bool status;
     int numProperty;
-	int i;
+    int i;
 
     Reset();
 
@@ -824,7 +824,7 @@ bool trpgLabelPropertyTable::Read(trpgReadBuffer &buf)
         if (numProperty < 0)
             throw 1;
         //properties.resize(numProperty);
-		for (i=0;i<numProperty;i++) {
+        for (i=0;i<numProperty;i++) {
             buf.GetToken(propertyTok,len);
             if (propertyTok != TRPG_LABEL_PROPERTY) throw 1;
             buf.PushLimit(len);
@@ -985,7 +985,7 @@ const std::vector<trpg3dPoint> *trpgLabel::GetSupports() const
 
 bool trpgLabel::Write(trpgWriteBuffer &buf)
 {
-	unsigned int i;
+    unsigned int i;
 
     buf.Begin(TRPG_LABEL);
     buf.Add(propertyId);
@@ -998,7 +998,7 @@ bool trpgLabel::Write(trpgWriteBuffer &buf)
     buf.Add(url);
     buf.Add(location);
     buf.Add((int)supports.size());
-	for (i=0;i<supports.size();i++)
+    for (i=0;i<supports.size();i++)
         buf.Add(supports[i]);
     buf.End();
 
@@ -1007,7 +1007,7 @@ bool trpgLabel::Write(trpgWriteBuffer &buf)
 
 bool trpgLabel::Read(trpgReadBuffer &buf)
 {
-	int numSupport,i;
+    int numSupport,i;
     trpg3dPoint support;
     int iVal;
 
@@ -1026,7 +1026,7 @@ bool trpgLabel::Read(trpgReadBuffer &buf)
         buf.Get(location);
         buf.Get(numSupport);
         if (numSupport < 0) throw 1;
-		for (i=0;i<numSupport;i++) {
+        for (i=0;i<numSupport;i++) {
             buf.Get(support);
             supports.push_back(support);
         }

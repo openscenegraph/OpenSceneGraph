@@ -14,8 +14,8 @@
    */
 
 /* trpage_sys.h
-	System specific declarations.
-	*/
+    System specific declarations.
+    */
 
 #ifndef trpage_sys_h_
 #define trpage_sys_h_
@@ -29,11 +29,11 @@
 #endif
 
 #if defined(_WIN32)
-/*	*********************
-	System Specific Section.
-	This is currently set up for win32.
-	*********************
-	*/
+/*    *********************
+    System Specific Section.
+    This is currently set up for win32.
+    *********************
+    */
 
 #include <windows.h>
 

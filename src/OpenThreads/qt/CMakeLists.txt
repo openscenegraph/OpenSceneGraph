@@ -55,8 +55,8 @@ ENDIF()
 
 INSTALL(
     TARGETS OpenThreads
-    ARCHIVE DESTINATION lib COMPONENT libopenthreads-dev
-    LIBRARY DESTINATION lib COMPONENT libopenthreads
+    ARCHIVE DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads-dev
+    LIBRARY DESTINATION lib${LIB_POSTFIX} COMPONENT libopenthreads
     RUNTIME DESTINATION bin COMPONENT libopenthreads
 )
 INSTALL(

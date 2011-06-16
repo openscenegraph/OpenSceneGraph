@@ -11,8 +11,8 @@
  * OpenSceneGraph Public License for more details.
 */
 
-/*	Dec 2010 - TileMapper was fixed and simplified
-	Nick
+/*    Dec 2010 - TileMapper was fixed and simplified
+    Nick
 */
 
 #include "TileMapper.h"

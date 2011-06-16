@@ -52,79 +52,79 @@ TX_EXDECL class TX_CLDECL trpgHeader : public trpgReadWriteable
     ~trpgHeader(void);
 
     // Set the TerraPage version info.
-    void	SetVersion(int major,int minor);
+    void    SetVersion(int major,int minor);
     // Set the database version info.
-    void	SetDbVersion(int major,int minor);
+    void    SetDbVersion(int major,int minor);
     /* Set the tile size for the given LOD.  See GetTileSize for more info.
        Each LOD must have its size set, otherwise the trpgHeader won't be valid.
        You must set the number of LODs with SetNumLods first.
        You should use the AddLod method if you can, which handles all of this.
     */
-    void	SetTileSize(int lod,const trpg2dPoint &size);
+    void    SetTileSize(int lod,const trpg2dPoint &size);
     // Origin defaults to 0,0,0
-    void	SetOrigin(const trpg3dPoint &);
+    void    SetOrigin(const trpg3dPoint &);
     // 2D archive extents.  Must be set.
-    void	SetExtents(const trpg2dPoint &sw,const trpg2dPoint &ne);
+    void    SetExtents(const trpg2dPoint &sw,const trpg2dPoint &ne);
 
     typedef enum {DatabaseLocal,Absolute,TileLocal} trpgTileType;
     // How the coordinates are treated with respect to real world values.
-    void	SetTileOriginType(trpgTileType);
+    void    SetTileOriginType(trpgTileType);
 
     /* Number of terrain LODs.  If you use this method when building a database
        you have to use the SetLodRange and SetLodSize methods on each LOD as well.
        It's better to use AddLod instead of calling these three methods.
     */
-    void	SetNumLods(int);
+    void    SetNumLods(int);
     /* Number of tiles (x,y) for each LOD.
        The single argument version assumes lod = 0, num lods = 1.
     */
-    void	SetLodSize(int lod,const trpg2iPoint &);
-    void	SetLodSize(const trpg2iPoint *);
+    void    SetLodSize(int lod,const trpg2iPoint &);
+    void    SetLodSize(const trpg2iPoint *);
     /* Set the range for the given terrain LOD.
        The single argument version assumes lod = 0, num lods = 1.
     */
-    void	SetLodRange(int,float64);
-    void	SetLodRange(const float64 *);
+    void    SetLodRange(int,float64);
+    void    SetLodRange(const float64 *);
     // Increase the number of terrain LODs, adding a new one with the given size and range
-    void	AddLod(const trpg2iPoint &size,const trpg2dPoint &ext,float64 range);
+    void    AddLod(const trpg2iPoint &size,const trpg2dPoint &ext,float64 range);
 
     // Set details for an LOD, resizing if necessary
-    void	SetLod(const trpg2iPoint &size,const trpg2dPoint &ext,float64 range,unsigned int lod);
+    void    SetLod(const trpg2iPoint &size,const trpg2dPoint &ext,float64 range,unsigned int lod);
 
     // Keep track of the maximum assigned group IDs (for tile paging)
-    void	SetMaxGroupID(int);
+    void    SetMaxGroupID(int);
     /* Instead of keeping a count of all the group IDs you added and then
        calling SetMaxGroupID, you can call this function and it will return
        the next valid groupID to you.  It will also keep track of the maximum.
     */
-    int			AddGroupID(void);
+    int            AddGroupID(void);
 
     // Validity check
-    bool		isValid(void) const;
+    bool        isValid(void) const;
     // Resets the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
 
     // TerraVista version information is two integers.
-    bool	GetVersion(int &,int &) const;
+    bool    GetVersion(int &,int &) const;
     // Database version information is user defined.  Put whatever you want here.
-    bool	GetDbVersion(int &,int &) const;
+    bool    GetDbVersion(int &,int &) const;
     /* This is the extents, in X/Y of a
        single tile.  All tiles within an LOD should be the same size (although this is not
        enforced).  It's also assumed that a given tile lives entirely within
        its own extents (as calculated with this value), although that's not
        enforced either. */
-    bool	GetTileSize(int,trpg2dPoint &) const;
+    bool    GetTileSize(int,trpg2dPoint &) const;
     /* The meaning of the database origin varies depending on the value returned
        by GetTileOriginType.  If the database is Absolute, then this value
        will be the lower left corner.  If the database is DatabaseLocal or
        TileLocal you can use this value to determine the real world coordinates.
        Just add origin + coordinate.
     */
-    bool	GetOrigin(trpg3dPoint &) const;
+    bool    GetOrigin(trpg3dPoint &) const;
     /* These are the 2D extents that the database covers.  You can use this
        information to determine where the middle is, for example.
     */
-    bool	GetExtents(trpg2dPoint &sw,trpg2dPoint &ne) const;
+    bool    GetExtents(trpg2dPoint &sw,trpg2dPoint &ne) const;
     /* The tile origin type tells you the coordinate system of each database
        tile.  There are three type:
        * Absolute - All coordinate values are absolute.  No translation is required.
@@ -135,13 +135,13 @@ TX_EXDECL class TX_CLDECL trpgHeader : public trpgReadWriteable
        can do Double coordinates if necessary, as well).  To determine the
        real world coordinate value do: tileID*tileSize + coord.
     */
-    bool	GetTileOriginType(trpgTileType &) const;
+    bool    GetTileOriginType(trpgTileType &) const;
     /* Group IDs are used by TerraPage to hook level of detail structures together.
        A TerraPage database can have an arbitrary number of terrain LODs, each stored
        seperately.  To hook them together we use trpgAttach nodes and number each group &
        LOD node.  This returns the maximum group ID in the file, which is important
        to know if you're keeping an array of them. */
-    bool	GetMaxGroupID(int &) const;
+    bool    GetMaxGroupID(int &) const;
 
     /* A TerraPage archive can contain any number of terrain LODs (a typical number is 4).
        Each of these terrain LODs is accessed seperately (as are the tiles within them).
@@ -153,12 +153,12 @@ TX_EXDECL class TX_CLDECL trpgHeader : public trpgReadWriteable
        the gaming area for all of the lods. trpgAttach node are no longer used, instead
        see trpgChildRef
     */
-    bool	GetNumLods(int32 &) const;
+    bool    GetNumLods(int32 &) const;
     /* A terrain LOD conceptually covers the entire database and is broken up
        into some X x Y set of tiles.  We make no assumptions about the number
        of tiles in each terrain LOD.  That's entirely up to the writer.  This
        returns the number of tiles in 2D for a given terrain LOD. */
-    bool	GetLodSize(int32,trpg2iPoint &) const;
+    bool    GetLodSize(int32,trpg2iPoint &) const;
     /* It's up to the TerraPage archive writer to make their terrain LOD structure
        work by using trpgAttach nodes.  The scheme they're using may be quad-tree
        or replacement LOD or something where the highest LOD isn't even terrain.
@@ -166,56 +166,56 @@ TX_EXDECL class TX_CLDECL trpgHeader : public trpgReadWriteable
        when tiles for a given LOD must be pulled in.  This returns that range
        in database coordinates (usually meters).
     */
-    bool	GetLodRange(int32,float64 &) const;
+    bool    GetLodRange(int32,float64 &) const;
 
     // Read/Write functions
 
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
     // {secret}
-    bool	ReadLodInfo(trpgReadBuffer &);
+    bool    ReadLodInfo(trpgReadBuffer &);
 
     void    SetMaster(bool isMaster)
     {
-	if((verMajor >= TRPG_NOMERGE_VERSION_MAJOR) && (verMinor >=TRPG_NOMERGE_VERSION_MINOR))
-	{
-	    if(isMaster) 
-		flags |= ISMASTER;//set the master flag
-	    else
-		flags &= ~ISMASTER;//clear the master flag
-	}
+    if((verMajor >= TRPG_NOMERGE_VERSION_MAJOR) && (verMinor >=TRPG_NOMERGE_VERSION_MINOR))
+    {
+        if(isMaster) 
+        flags |= ISMASTER;//set the master flag
+        else
+        flags &= ~ISMASTER;//clear the master flag
     }
-    bool	GetIsMaster() const
+    }
+    bool    GetIsMaster() const
     { 
-	return ((flags & ISMASTER)==ISMASTER);
+    return ((flags & ISMASTER)==ISMASTER);
     }
-    void	SetLocal(bool isLocal)
+    void    SetLocal(bool isLocal)
     {
-	if((verMajor >= TRPG_NOMERGE_VERSION_MAJOR) && (verMinor >=TRPG_NOMERGE_VERSION_MINOR))
-	{
-	    if(isLocal) 
-		flags |= ISLOCAL;//set the local flag
-	    else
-		flags &= ~ISLOCAL;//clear the local flag
-	}
+    if((verMajor >= TRPG_NOMERGE_VERSION_MAJOR) && (verMinor >=TRPG_NOMERGE_VERSION_MINOR))
+    {
+        if(isLocal) 
+        flags |= ISLOCAL;//set the local flag
+        else
+        flags &= ~ISLOCAL;//clear the local flag
     }
-    bool	GetIsLocal() const
-    {
-	return ((flags & ISLOCAL)==ISLOCAL);
     }
-    void	SetBlocks(int rows,int cols)
+    bool    GetIsLocal() const
     {
-	this->rows = rows;
-	this->cols = cols;
+    return ((flags & ISLOCAL)==ISLOCAL);
     }
-    void	GetBlocks(int &rows,int &cols)
+    void    SetBlocks(int rows,int cols)
     {
-	rows = this->rows;
-	cols = this->cols;
+    this->rows = rows;
+    this->cols = cols;
+    }
+    void    GetBlocks(int &rows,int &cols)
+    {
+    rows = this->rows;
+    cols = this->cols;
     }
  protected:
     int verMinor,verMajor;
@@ -230,8 +230,8 @@ TX_EXDECL class TX_CLDECL trpgHeader : public trpgReadWriteable
     std::vector<trpg2iPoint> lodSizes;
     std::vector<float64>   lodRanges;
     int32   flags;
-    int32	rows;
-    int32	cols;
+    int32    rows;
+    int32    cols;
 };
 
 /* The Texture Environment is used by the trpgMaterial to define texture
@@ -256,21 +256,21 @@ TX_EXDECL class TX_CLDECL trpgTextureEnv : public trpgReadWriteable
     // Environment mode values
     enum {Alpha,Blend,Decal,Modulate,AddDetail,ModulateDetail};
     // Set the application mode for the texture.
-    void	SetEnvMode(int);
+    void    SetEnvMode(int);
     // Values used by SetMinFilter and SetMagFilter
     enum {Point, Linear, MipmapPoint, MipmapLinear, 
-	  MipmapBilinear, MipmapTrilinear, Nearest};
+      MipmapBilinear, MipmapTrilinear, Nearest};
     // Set the Minification filter for a texture
-    void	SetMinFilter(int);
+    void    SetMinFilter(int);
     // Set the Magnification filter for a texture
-    void	SetMagFilter(int);
+    void    SetMagFilter(int);
 
     // Values used by SetWrap
     enum {Clamp,Repeat};
     // Set the texture wrapping for S and T, respectively
-    void	SetWrap(int,int);
+    void    SetWrap(int,int);
     // Set the texture border color
-    void	SetBorderColor(const trpgColor &);
+    void    SetBorderColor(const trpgColor &);
 
     /* The environment mode controls how the texture is applied.
        It can take the following values:
@@ -281,32 +281,32 @@ TX_EXDECL class TX_CLDECL trpgTextureEnv : public trpgReadWriteable
        AddDetail - See openGL spec for definition.
        ModulateDetail - See openGL spec for definition.
     */
-    bool	GetEnvMode(int32 &) const;
+    bool    GetEnvMode(int32 &) const;
     /* The Minification and Magnification filters control how texture
        mipmap levels are used.  We support the values: Point, Linear,
        MipmapPoint, MipmapLinear, 
        MipmapBilinear, MipmapTrilinear, Nearest
     */
-    bool	GetMinFilter(int32 &) const;
+    bool    GetMinFilter(int32 &) const;
     // Get the magnification filter
-    bool	GetMagFilter(int32 &) const;
+    bool    GetMagFilter(int32 &) const;
     /* Wrapping controls how textures are used near the edges.
        There are two valid values: Clamp, Repeat.
     */
-    bool	GetWrap(int &,int &) const;
+    bool    GetWrap(int &,int &) const;
     /* This maps straight into the OpenGL definition of border color. */
-    bool	GetBorderColor(trpgColor &) const;
+    bool    GetBorderColor(trpgColor &) const;
 
     // Validity check
-    bool		isValid(void) const;
+    bool        isValid(void) const;
     // Resets the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
     // Writes this class to a write buffer
-    bool		Write(trpgWriteBuffer &);
+    bool        Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
  protected:
     int envMode;
@@ -349,109 +349,109 @@ TX_EXDECL class TX_CLDECL trpgMaterial : public trpgReadWriteable
     trpgMaterial(void);
     ~trpgMaterial(void);
     // Set base material color
-    void	SetColor(const trpgColor &);
+    void    SetColor(const trpgColor &);
     // Ambient color
-    void	SetAmbient(const trpgColor &);
+    void    SetAmbient(const trpgColor &);
     // Diffuse color (the most commonly used)
-    void	SetDiffuse(const trpgColor &);
+    void    SetDiffuse(const trpgColor &);
     // Specular color used in lighting
-    void	SetSpecular(const trpgColor &);
+    void    SetSpecular(const trpgColor &);
     // Emissive color used in lighting
-    void	SetEmission(const trpgColor &);
+    void    SetEmission(const trpgColor &);
     // Shininess used in lighting
-    void	SetShininess(float64);
+    void    SetShininess(float64);
 
     enum {Smooth,Flat};
     // Shading model
-    void	SetShadeModel(int);
+    void    SetShadeModel(int);
     // Point size
-    void	SetPointSize(float64);
+    void    SetPointSize(float64);
     // Line width
-    void	SetLineWidth(float64);
+    void    SetLineWidth(float64);
     enum {Front,Back,FrontAndBack};
     // Cull mode.  See GetCullMode
-    void	SetCullMode(int);
+    void    SetCullMode(int);
 #ifdef Always
     // None and Always appear to be defined on the SGI
     //  in such a way as to interfere with a local enum
     //  declaration within a class
     enum {trNone,trAlways,Equal,GreaterThanOrEqual,GreaterThan,
-	  LessThanOrEqual,LessThan,Never,NotEqual};
+      LessThanOrEqual,LessThan,Never,NotEqual};
 #else
     enum {None,Always,Equal,GreaterThanOrEqual,GreaterThan,
-	  LessThanOrEqual,LessThan,Never,NotEqual};
+      LessThanOrEqual,LessThan,Never,NotEqual};
 #endif
     // Alpha Function.  See GetAlphaFunc
-    void	SetAlphaFunc(int);
+    void    SetAlphaFunc(int);
     // Alpha Ref value.  See GetAlphaRef
-    void	SetAlphaRef(float64);
+    void    SetAlphaRef(float64);
     // Alpha value for any polygon using this material
-    void	SetAlpha(float64);
+    void    SetAlpha(float64);
     // Generate normals automatically from geometry
-    void	SetAutoNormal(bool);
+    void    SetAutoNormal(bool);
 
     /* Set the total number of textures used by this trpgMaterial.
        This works with SetTexture.  We recommend that you used
        AddTexture instead of these two methods. */
-    void	SetNumTexture(int);
+    void    SetNumTexture(int);
     /* Works with SetNumTexture.
        This method sets the texture ID and texture environment for the given
        texture instance in this material.  Use AddTexture instead, if you can.
     */
-    void	SetTexture(int no,int id,const trpgTextureEnv &);
+    void    SetTexture(int no,int id,const trpgTextureEnv &);
     /* This method takes a texture ID that refers to a trpgTexTable and a
        trpgTextureEnv which specifies the application information relating
        to this texture instance.  It returns the reference number (i.e. the
        3rd texture in this material, etc...)
     */
-    int		AddTexture(int,const trpgTextureEnv &);
+    int        AddTexture(int,const trpgTextureEnv &);
 
     // Number of tiles this material is used in
-    void	SetNumTiles(int);
+    void    SetNumTiles(int);
     // Adds a count to the number of tiles this material is used in and returns that number
-    int		AddTile(void);
+    int        AddTile(void);
 
     // Sets bump map status (color etc... isn't important)
-    void	SetIsBumpMap(bool);
+    void    SetIsBumpMap(bool);
 
     // Set an attribute (e.g. fid/smc)
     enum {TR_FID,TR_SMC,TR_STP,TR_SWC};
-    void	SetAttr(int attrCode,int val);
+    void    SetAttr(int attrCode,int val);
 
     // Return the current color
-    bool	GetColor(trpgColor &) const;
+    bool    GetColor(trpgColor &) const;
     // Returns the ambient color
-    bool	GetAmbient(trpgColor &) const;
+    bool    GetAmbient(trpgColor &) const;
     // Returns the diffuse color (the most commonly used color)
-    bool	GetDiffuse(trpgColor &) const;
+    bool    GetDiffuse(trpgColor &) const;
     // Specular color used for lighting
-    bool	GetSpecular(trpgColor &) const;
+    bool    GetSpecular(trpgColor &) const;
     // Emissive color used for lighting
-    bool	GetEmission(trpgColor &) const;
+    bool    GetEmission(trpgColor &) const;
     // Shininess used for lighting
-    bool	GetShininess(float64 &) const;
+    bool    GetShininess(float64 &) const;
 
     // The shading model can be either Smooth or Flat
-    bool	GetShadeModel(int &) const;
+    bool    GetShadeModel(int &) const;
     // Point size
-    bool	GetPointSize(float64 &) const;
+    bool    GetPointSize(float64 &) const;
     // Line width
-    bool	GetLineWidth(float64 &) const;
+    bool    GetLineWidth(float64 &) const;
     /* Cull mode determines whether geometry will be rejected if it's Front facing, Back
        facing, or neither (FrontAndBack)
     */
-    bool	GetCullMode(int &) const;
+    bool    GetCullMode(int &) const;
     /* This controls what alpha values in a texture mean.  It can take the values:
        None,Always,Equal,GreaterThanOrEqual,GreaterThan,
        LessThanOrEqual,LessThan,Never,NotEqual
     */
-    bool	GetAlphaFunc(int &) const;
+    bool    GetAlphaFunc(int &) const;
     /* The Alpha Ref is a value used in some of the Alpha Functions */
-    bool	GetAlphaRef(float64 &) const;
+    bool    GetAlphaRef(float64 &) const;
     // Whether or not to generate normals from geometry
-    bool	GetAutoNormal(bool &) const;
+    bool    GetAutoNormal(bool &) const;
     // A single Alpha value that applies to any polygons using this material
-    bool	GetAlpha(float64 &) const;
+    bool    GetAlpha(float64 &) const;
     /* One of the useful things about TerraPage is that it contains enough information
        to page textures & materials as well as terrain.  This is part of that.
        It returns the number of tiles this material is used in.  The trpgTexture has
@@ -459,12 +459,12 @@ TX_EXDECL class TX_CLDECL trpgMaterial : public trpgReadWriteable
        this if you have some costly material definition in your hardware and so have
        to swap them in and out.
     */
-    bool	GetNumTile(int &) const;
+    bool    GetNumTile(int &) const;
 
     /* There can be multiple textures per material.  This returns the number.
        The first is the base texture, so just use that if you can only do 1 texture per poly.
     */
-    bool	GetNumTexture(int &) const;
+    bool    GetNumTexture(int &) const;
     /* TerraPage supports multiple textures per polygon.  Some hardware can do this,
        some can't.  If you can support it, here's how this works.
        This method returns the texture definition for the Nth texture used in this material.
@@ -473,27 +473,27 @@ TX_EXDECL class TX_CLDECL trpgMaterial : public trpgReadWriteable
        Multiple materials can also appear per trpgGeometry, so be aware that there are
        two ways to have multiple textures per polygon.
     */
-    bool	GetTexture(int no,int &id,trpgTextureEnv &) const;
+    bool    GetTexture(int no,int &id,trpgTextureEnv &) const;
 
     // Return whether or not this material is a bump map
-    bool	GetIsBumpMap(bool &) const;
+    bool    GetIsBumpMap(bool &) const;
 
     // Get an attribute (e.g. fid/smc)
-    bool	GetAttr(int attrCode,int &val) const;
+    bool    GetAttr(int attrCode,int &val) const;
 
     // Validity check
-    bool	isValid(void) const;
+    bool    isValid(void) const;
     // Resets the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
     // Note: Need to do equality operator
-	
+    
  protected:
     bool isBump;
     trpgColor color;
@@ -514,10 +514,10 @@ TX_EXDECL class TX_CLDECL trpgMaterial : public trpgReadWriteable
     int32 numTile;
     struct _attrSet
     {
-	int fid;
-	int smc;
-	int stp;
-	int swc;
+    int fid;
+    int smc;
+    int stp;
+    int swc;
     } attrSet;
     std::vector<int> texids;
     std::vector<trpgTextureEnv> texEnvs;
@@ -542,89 +542,89 @@ TX_EXDECL class TX_CLDECL trpgLightAttr : public trpgReadWriteable
     // Light Flags
     enum
     {
-	// Light flags
-	trpg_Day =		0x0001,
-	trpg_Dusk =		0x0002,
-	trpg_Night =		0x0004,
-	trpg_Directional =	0x0008,
-	trpg_BackColor =	0x0010,
-	trpg_Reflective =	0x0020,
+    // Light flags
+    trpg_Day =        0x0001,
+    trpg_Dusk =        0x0002,
+    trpg_Night =        0x0004,
+    trpg_Directional =    0x0008,
+    trpg_BackColor =    0x0010,
+    trpg_Reflective =    0x0020,
 
-	// Animation flags
-	trpg_Flashing =		0x0100,
-	trpg_Rotating =		0x0200,
-	trpg_ClockWise =	0x0400,
-	trpg_AnimationMask =	0x0f00,
+    // Animation flags
+    trpg_Flashing =        0x0100,
+    trpg_Rotating =        0x0200,
+    trpg_ClockWise =    0x0400,
+    trpg_AnimationMask =    0x0f00,
 
-	// Performer light flags
-	trpg_Perspective =	0x1000,
-	trpg_Fade =		0x2000,
-	trpg_ZBuffer =		0x4000,
-	trpg_FogPunch =		0x8000,
-	trpg_PerformerMask =	0xf000
+    // Performer light flags
+    trpg_Perspective =    0x1000,
+    trpg_Fade =        0x2000,
+    trpg_ZBuffer =        0x4000,
+    trpg_FogPunch =        0x8000,
+    trpg_PerformerMask =    0xf000
     } LightFlags;
 
     // Light Type
     typedef enum
     {
-	trpg_Raster,
-	trpg_Calligraphic,
-	trpg_RASCAL
+    trpg_Raster,
+    trpg_Calligraphic,
+    trpg_RASCAL
     } LightType;
 
     // Light Directionality
     typedef enum
     {
-	trpg_Omnidirectional,
-	trpg_Bidirectional,
-	trpg_Unidirectional
+    trpg_Omnidirectional,
+    trpg_Bidirectional,
+    trpg_Unidirectional
     } LightDirectionality;
 
     // Light Quality
     typedef enum
     {
-	trpg_Off,
-	trpg_Low,
-	trpg_Medium,
-	trpg_High,
-	trpg_Undefined
+    trpg_Off,
+    trpg_Low,
+    trpg_Medium,
+    trpg_High,
+    trpg_Undefined
     } LightQuality;
 
     // Struct for Performer Lights
     struct PerformerAttr
     {
-	PerformerAttr() : flags(0),minPixelSize(0),maxPixelSize(0),actualSize(0),
-	     transparentPixelSize(0),transparentFallofExp(0),transparentScale(0),
-	     transparentClamp(0),fogScale(0) {};
-	int32					flags;
-	float64					minPixelSize;
-	float64					maxPixelSize;
-	float64					actualSize;
-	float64					transparentPixelSize;
-	float64					transparentFallofExp;
-	float64					transparentScale;
-	float64					transparentClamp;
-	float64					fogScale;
+    PerformerAttr() : flags(0),minPixelSize(0),maxPixelSize(0),actualSize(0),
+         transparentPixelSize(0),transparentFallofExp(0),transparentScale(0),
+         transparentClamp(0),fogScale(0) {};
+    int32                    flags;
+    float64                    minPixelSize;
+    float64                    maxPixelSize;
+    float64                    actualSize;
+    float64                    transparentPixelSize;
+    float64                    transparentFallofExp;
+    float64                    transparentScale;
+    float64                    transparentClamp;
+    float64                    fogScale;
     };
 
     // Struct for Animated Lights
     struct AnimationAttr
     {
-	AnimationAttr() : period(0),phaseDelay(0),timeOn(0),vector(trpg3dPoint(0,0,0)),flags(0) {};
-	float64					period;
-	float64					phaseDelay;
-	float64					timeOn;
-	trpg3dPoint				vector;
-	int32					flags;
+    AnimationAttr() : period(0),phaseDelay(0),timeOn(0),vector(trpg3dPoint(0,0,0)),flags(0) {};
+    float64                    period;
+    float64                    phaseDelay;
+    float64                    timeOn;
+    trpg3dPoint                vector;
+    int32                    flags;
     };
 
     // Struct for Calligraphic Lights
     struct CalligraphicAttr
     {
-	CalligraphicAttr() : drawOrder(0),minDefocus(0),maxDefocus(0) {} ;
-	int32					drawOrder;
-	float64					minDefocus;
-	float64					maxDefocus;
+    CalligraphicAttr() : drawOrder(0),minDefocus(0),maxDefocus(0) {} ;
+    int32                    drawOrder;
+    float64                    minDefocus;
+    float64                    maxDefocus;
     };
 
     // Setters
@@ -717,7 +717,7 @@ TX_EXDECL class TX_CLDECL trpgLightAttr : public trpgReadWriteable
 
     // Set the transparent scale for Performer Lights
     void SetPerformerTpScale( float64 );
-	
+    
     // Set the transparent clamp for Performer Lights
     void SetPerformerTpClamp( float64 );
 
@@ -811,28 +811,28 @@ TX_EXDECL class TX_CLDECL trpgLightAttr : public trpgReadWriteable
  protected:
     struct DataSet
     {
-	LightType		type;
-	LightDirectionality	directionality;
-	trpgColor		frontColor;
-	float64			frontIntensity;
-	trpgColor		backColor;
-	float64			backIntensity;
-	trpg3dPoint		normal;
-	int32			smc;
-	int32			fid;
-	int32			flags;
-	float64			horizontalLobeAngle;
-	float64			verticalLobeAngle;
-	float64			lobeRollAngle;
-	float64			lobeFalloff;
-	float64			ambientIntensity;
-	LightQuality		quality;
-	LightQuality		randomIntensity;
-	float64			rascalSignificance;
-	CalligraphicAttr	calligraphicAttr;
-	PerformerAttr		performerAttr;
-	AnimationAttr		animationAttr;
-	char			*commentStr;
+    LightType        type;
+    LightDirectionality    directionality;
+    trpgColor        frontColor;
+    float64            frontIntensity;
+    trpgColor        backColor;
+    float64            backIntensity;
+    trpg3dPoint        normal;
+    int32            smc;
+    int32            fid;
+    int32            flags;
+    float64            horizontalLobeAngle;
+    float64            verticalLobeAngle;
+    float64            lobeRollAngle;
+    float64            lobeFalloff;
+    float64            ambientIntensity;
+    LightQuality        quality;
+    LightQuality        randomIntensity;
+    float64            rascalSignificance;
+    CalligraphicAttr    calligraphicAttr;
+    PerformerAttr        performerAttr;
+    AnimationAttr        animationAttr;
+    char            *commentStr;
     } data;
 };
 
@@ -892,8 +892,8 @@ TX_EXDECL class TX_CLDECL trpgLight : public trpgReadWriteable
 
  protected:
     // Here we store the light locations
-    std::vector<trpg3dPoint>	lightPoints;
-    int				index;
+    std::vector<trpg3dPoint>    lightPoints;
+    int                index;
 };
 
 /* The Light Table is stored in the TerraPage header and consolidates
@@ -919,7 +919,7 @@ TX_EXDECL class TX_CLDECL trpgLightTable : public trpgReadWriteable
        first.  This is convenient for writers who aren't keeping track of their
        own light attrib internally.
     */
-    int	FindAddLightAttr(const trpgLightAttr&);
+    int    FindAddLightAttr(const trpgLightAttr&);
 
     // Returns the number of light attrib in this table
     bool GetNumLightAttrs(int &) const;
@@ -944,7 +944,7 @@ TX_EXDECL class TX_CLDECL trpgLightTable : public trpgReadWriteable
 
     // operator
     trpgLightTable & operator = (const trpgLightTable &);
-	
+    
     typedef std::map<int,trpgLightAttr> LightMapType;
     LightMapType *getLightMap() { return &lightMap; }
  protected:
@@ -970,39 +970,39 @@ TX_EXDECL class TX_CLDECL trpgRange : public trpgReadWriteable
     trpgRange(const trpgRange &);
 
     // Set the name and subName (can be NULL)
-    void	SetCategory(const char *cat,const char *subCat);
+    void    SetCategory(const char *cat,const char *subCat);
 
     /* Get the name and subName
        Name should be the major category (e.g. "trees")
        SubName should be the minor category (e.g. "big trees")
     */
-    void	GetCategory(char *cat,int maxCatLen,char *subCat,int maxSubCatLen) const;
+    void    GetCategory(char *cat,int maxCatLen,char *subCat,int maxSubCatLen) const;
 
     // Set the lod info
-    void	SetLodInfo(double in,double out);
+    void    SetLodInfo(double in,double out);
 
     // Get the lod info (this will be duplicated in the trpgLod node)
     // However, you may want to change these values yourself during a run
-    void	GetLodInfo(double &in,double &out) const;
+    void    GetLodInfo(double &in,double &out) const;
 
     // Set the priority
-    void	SetPriority(int);
+    void    SetPriority(int);
 
     /* Get the priority.
        Priority is a hint to the run-time system as to the relative importance
        of range limited features.  Features with lower priorities should be
        sacrified before those with higher priorities.
     */
-    void	GetPriority(int &) const;
+    void    GetPriority(int &) const;
 
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
 
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
 
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
     // Reset back to a clean state
     void Reset(void);
@@ -1023,7 +1023,7 @@ TX_EXDECL class TX_CLDECL trpgRange : public trpgReadWriteable
 /* The Range Table is new to 2.0.  The goal is to provide information about
    certain classes of features within a TerraPage database.  It's intended
    to solve the following problem.  
-	
+    
    Let's say that you have an Image Generator that must draw a given TerraPage
    database at 60Hz.  However, it's only hitting 30Hz reliably.  Often, some 
    feature set (e.g. bushes) must be sacrified in order to reach the target frame rate.
@@ -1046,7 +1046,7 @@ TX_EXDECL class TX_CLDECL trpgRange : public trpgReadWriteable
    allow run-time systems to tell users what they're dropping (or allow them to pick).
    The priority is there to tell systems what to get rid of first (according to the
    user who build the TerraPage archive).  
-	
+    
    Priorities are relative to each other within the Range Table.  There can be
    duplicates and there may be holes in the numbering.
 
@@ -1059,30 +1059,30 @@ TX_EXDECL class TX_CLDECL trpgRangeTable : public trpgReadWriteable
     ~trpgRangeTable(void);
 
     // Get the given range info 
-    bool	GetRange(int id,trpgRange &) const;
+    bool    GetRange(int id,trpgRange &) const;
 
     // Get the number of entries in the table
-    int		GetNumRanges() {return int(rangeMap.size());}
+    int        GetNumRanges() {return int(rangeMap.size());}
     // Set the range info for the given ID
-    bool	SetRange(int id,trpgRange &);
+    bool    SetRange(int id,trpgRange &);
 
     // Add a new range and return the ID
-    int		AddRange(trpgRange &);
+    int        AddRange(trpgRange &);
 
     // Find a matching range and return it or add a new one if needed
-    int		FindAddRange(trpgRange &);
+    int        FindAddRange(trpgRange &);
 
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
 
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
 
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
     // Resets the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
 
     // Assignment operator
     trpgRangeTable & operator = (const trpgRangeTable &);
@@ -1108,7 +1108,7 @@ TX_EXDECL class TX_CLDECL trpgRangeTable : public trpgReadWriteable
    If you're doing a TerraPage reader you'll get a trpgMatTable from the trpgr_Archive.
    This is your central index for materials.  If you can handle the multiple channels/sub-tables
    then you can access those as you need.  If you can't, just use 0 for the sub-table index where appropriate.
-	
+    
    If you're doing a TerraPage writer you'll need to build up a trpgMatTable to pass to
    trpgwArchive.  If you're only doing a single sub-table (i.e. visible materials only)
    just use AddMaterial and add them as you go.  The trpgMaterial object you build up
@@ -1124,25 +1124,25 @@ TX_EXDECL class TX_CLDECL trpgMatTable : public trpgReadWriteable
     /* If you intend to have more than one material sub-table you'll
        need to set this first before doing anything else.
     */
-    void	SetNumTable(int);
+    void    SetNumTable(int);
     /* This sets the total number of materials.  Each sub-table will
        have this many of its own materials.  If you call this function
        you can't use AddMaterial.
     */
-    void	SetNumMaterial(int);
+    void    SetNumMaterial(int);
     /* Sets a material definition for the given sub-table material ID
        combination.  If you only have one sub-table you can use
        AddMaterial instead.
        The two argument version assumes subTable = 0
     */
-    //void	SetMaterial(int subTable,int mat,const trpgMaterial &);
-    void	SetMaterial(int,const trpgMaterial &);
-	
+    //void    SetMaterial(int subTable,int mat,const trpgMaterial &);
+    void    SetMaterial(int,const trpgMaterial &);
+    
     /* This function should be used if you only have a single material sub-table.
        It searches for a matching material and then adds a new one if it doesn't
        find a match.  The new (or old) ID is returned.
     */
-    int		AddMaterial(const trpgMaterial &,bool lookForExisting=true);
+    int        AddMaterial(const trpgMaterial &,bool lookForExisting=true);
 
 
     // The following method is unused currently
@@ -1150,24 +1150,24 @@ TX_EXDECL class TX_CLDECL trpgMatTable : public trpgReadWriteable
        It searches for a matching material and then adds a new one if it doesn't
        find a match.  The new (or old) ID is returned.
     */
-    //int	AddMaterialInSubtable(const trpgMaterial &,int table,bool lookForExisting=true);
+    //int    AddMaterialInSubtable(const trpgMaterial &,int table,bool lookForExisting=true);
 
     /* Return the number of sub-tables.  This will, most commonly, be 1.
        Any value more than 1 means the archive has alternate material definitions
        (think IR or Radar versions).
     */
-    bool	GetNumTable(int &) const;
+    bool    GetNumTable(int &) const;
     /* The number of materials per sub-table.  Each sub-table has the same number
        of materials.  So there will be N x M number of materials total, but you'll
        only see M of them at any given time.
     */
-    bool	GetNumMaterial(int &) const;
+    bool    GetNumMaterial(int &) const;
 
     /* Returns the material definition for the given subTable and the given material
        ID.  The most common subTable will be 0 (visual).  The material ID comes
        from the value(s) in trpgGeometry.
     */
-    bool	GetMaterial(int subTable,int matID,trpgMaterial &) const;
+    bool    GetMaterial(int subTable,int matID,trpgMaterial &) const;
 
     /* This is a convenience method for getting a reference to a trpgMaterial object.
        The reason you might want to do this is if you don't want to create a full
@@ -1177,16 +1177,16 @@ TX_EXDECL class TX_CLDECL trpgMatTable : public trpgReadWriteable
     const trpgMaterial *GetMaterialRef(int,int) const;
 
     // Validity check
-    bool	isValid(void) const;
+    bool    isValid(void) const;
     // Resets the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
 
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
 
  protected:
@@ -1251,40 +1251,40 @@ TX_EXDECL class TX_CLDECL trpgTexture : public trpgReadWriteable
     */
     typedef enum
     {
-	trpg_RGB8,
-	trpg_RGBA8,
-	trpg_INT8,
-	trpg_INTA8,
-	trpg_FXT1,
-	trpg_Filler,  // This is not a texture format.  It's here to keep the numbering consistent
-	trpg_RGBX, // MCM no longer
-	trpg_Unknown,
-	trpg_DDS,
-	trpg_DXT1,
-	trpg_DXT3,
-	trpg_DXT5,
-	// This is a bit ugly, but we can't change the size of the texture record without
-	// breaking existing readers.  So there will be multiple MCM types to indicate the number
-	// of bands and the nature of the extra channels, if any
-	trpg_MCM5,
-	trpg_MCM6R,
-	trpg_MCM6A,
-	trpg_MCM7RA,
-	trpg_MCM7AR
+    trpg_RGB8,
+    trpg_RGBA8,
+    trpg_INT8,
+    trpg_INTA8,
+    trpg_FXT1,
+    trpg_Filler,  // This is not a texture format.  It's here to keep the numbering consistent
+    trpg_RGBX, // MCM no longer
+    trpg_Unknown,
+    trpg_DDS,
+    trpg_DXT1,
+    trpg_DXT3,
+    trpg_DXT5,
+    // This is a bit ugly, but we can't change the size of the texture record without
+    // breaking existing readers.  So there will be multiple MCM types to indicate the number
+    // of bands and the nature of the extra channels, if any
+    trpg_MCM5,
+    trpg_MCM6R,
+    trpg_MCM6A,
+    trpg_MCM7RA,
+    trpg_MCM7AR
     } ImageType;
 
     // Set the texture name.
-    void	SetName(const char *);
+    void    SetName(const char *);
     /* This is the texture name.  You pass in a string of a pre-defined length
        and it returns the texture name in that. */
-    bool	GetName(char *retStr,int strLen) const;
+    bool    GetName(char *retStr,int strLen) const;
 
     /* Sets the number of tiles this texture is used in.  This hint is used by
        readers to determine texture pageability. */
-    void	SetNumTile(int);
+    void    SetNumTile(int);
     /* Instead of calling SetNumTile after you've built a database, you can call
        AddTile as you encounter each texture reference (per tile). */
-    void	AddTile(void);
+    void    AddTile(void);
 
     /* This tells you the number of tiles this texture is used in.  You can
        use this to do texture paging (if you can support it).  It's a pretty
@@ -1294,83 +1294,83 @@ TX_EXDECL class TX_CLDECL trpgTexture : public trpgReadWriteable
        Template texture, it will be set to the total number of uses of the template
        (which should be fairly large).
     */
-    bool	GetNumTile(int &) const;
+    bool    GetNumTile(int &) const;
 
     // Retrieve the image mode for this texture.  See ImageMode for details.
-    bool	GetImageMode(ImageMode &) const;
+    bool    GetImageMode(ImageMode &) const;
 
     // Retrieve the image type for this texture.  See ImageType for details.
     // This method is only used if ImageMode is Local or Template
-    bool	GetImageType(ImageType &) const;
+    bool    GetImageType(ImageType &) const;
 
     // Retrieve the size of this image. Valid only for Local and Template textures.
-    bool	GetImageSize(trpg2iPoint &) const;
+    bool    GetImageSize(trpg2iPoint &) const;
 
     // Get the location of a Local image
-    bool	GetImageAddr(trpgwAppAddress &) const;
+    bool    GetImageAddr(trpgwAppAddress &) const;
 
     // Figure out the image depth from the type
-    bool	GetImageDepth(int32 &depth) const;
+    bool    GetImageDepth(int32 &depth) const;
 
     // Determine whether this image (must be Local or Template) has all its mipmaps
-    bool	GetIsMipmap(bool &) const;
+    bool    GetIsMipmap(bool &) const;
 
     // Set the image mode of this texture.  Used by writers only.
-    void	SetImageMode(ImageMode);
+    void    SetImageMode(ImageMode);
 
     // Set the image type of this texture.  See GetImageType for details.
-    void	SetImageType(ImageType);
+    void    SetImageType(ImageType);
 
     // Set the image size of this texture.  See GetImageSize for details
-    void	SetImageSize(const trpg2iPoint &);
+    void    SetImageSize(const trpg2iPoint &);
 
     // Set the image location (For Local images only)
-    void	SetImageAddr(const trpgwAppAddress &);
+    void    SetImageAddr(const trpgwAppAddress &);
 
     // Set whether or not this is a full set of mipmaps
-    void	SetIsMipmap(bool);
+    void    SetIsMipmap(bool);
 
     // Set the storage sizes for all mipmap levels
-    //	void	SetStorageSizes(vector<int> &);
+    //    void    SetStorageSizes(vector<int> &);
 
     // Get the storage sizes for all mipmap levels.
-    //	bool	GetStorageSizes(const vector<int> *) const;
+    //    bool    GetStorageSizes(const vector<int> *) const;
 
     // Set the number of mipmap levels
-    void	SetNumMipmap(int);
+    void    SetNumMipmap(int);
 
     // Set the number of layers used in an RGBX image
-    void	SetNumLayer(int);
+    void    SetNumLayer(int);
 
     // Get the number of layers used in an RGBX image.  RGBX images are typically for
     //  sensors and contain arbitrary data which is not visual.
-    bool	GetNumLayer(int &) const;
+    bool    GetNumLayer(int &) const;
 
     /* Utility to figure out the number of mipmap levels this image would have.
        Only really necessary for Local or Template images.
     */
-    int32	CalcNumMipmaps() const;
+    int32    CalcNumMipmaps() const;
 
     // Calculate the total size of this texture
-    int32	CalcTotalSize() const;
+    int32    CalcTotalSize() const;
 
     // Returns the size of a given mip level
-    int32	MipLevelSize(int miplevel);
+    int32    MipLevelSize(int miplevel);
 
     // Returns the offset of the mip level in the whole texture data buffer 
-    int32	MipLevelOffset(int miplevel);
+    int32    MipLevelOffset(int miplevel);
 
     // Validity check
-    bool	isValid(void) const;
+    bool    isValid(void) const;
     // Resets the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
 
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
     trpgTexture & operator = (const trpgTexture &);
     int operator == (const trpgTexture &) const;
@@ -1446,26 +1446,26 @@ TX_EXDECL class TX_CLDECL trpgTexTable : public trpgReadWriteable
        combination with SetTexture.  If you can, you should use AddTexture
        and FindAddTexture instead.
     */
-    void	SetNumTextures(int);
+    void    SetNumTextures(int);
     /* Adds the given texture to the table and increments the total texture
        count.  If you use this, you should not use SetNumTextures and SetTexture.
     */
-    int		AddTexture(const trpgTexture &);
+    int        AddTexture(const trpgTexture &);
     /* This is the same as AddTexture except that it searches for a matching texture
        first.  This is convenient for writers who aren't keeping track of their
        own textures internally.
     */
-    int		FindAddTexture(const trpgTexture &);
+    int        FindAddTexture(const trpgTexture &);
     /* This sets the given texture ID to be the trpgTexture passed in.  It's used
        in combination with SetNumTextures.  Use AddTexture or FindAddTexture instead
        if you can.
     */
-    void	SetTexture(int texID,const trpgTexture &);
+    void    SetTexture(int texID,const trpgTexture &);
 
     // Returns the number of textures in this table
-    bool	GetNumTextures(int &) const;
+    bool    GetNumTextures(int &) const;
     // This returns the trpgTexture corresponding to the given ID (from a trpgMaterial)
-    bool	GetTexture(int texID,trpgTexture &) const;
+    bool    GetTexture(int texID,trpgTexture &) const;
     /* Does the same thing as GetTexture only it returns a pointer instead.
        You would use this if you don't want a new trpgTexture created for you.
        Assume the value it returns is only good until the next GetTextureRef call.
@@ -1473,34 +1473,34 @@ TX_EXDECL class TX_CLDECL trpgTexTable : public trpgReadWriteable
     const trpgTexture *GetTextureRef(int) const;
 
     // Validity check
-    bool	isValid(void) const;
+    bool    isValid(void) const;
     // Resets the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
 
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
 
     trpgTexTable & operator = (const trpgTexTable &);
     const trpgTexture *FindByName(const char *name, int &texid) const;
-    void	SetCurrentBlock(int row, int col)
+    void    SetCurrentBlock(int row, int col)
     {
-	currentRow = row;
-	currentCol = col;
+    currentRow = row;
+    currentCol = col;
     }
 
     //bool dumpGeoTypicalTextures(trpgwImageHelper *ihelper);
     typedef std::map<int,trpgTexture> TextureMapType;
     TextureMapType *getTextureMap()
     {
-	return &textureMap;
+    return &textureMap;
     }
  protected:
-	
+    
     TextureMapType textureMap;
     //These are used to initialize the row/col values for
     //multi-archive archives
@@ -1545,46 +1545,46 @@ TX_EXDECL class TX_CLDECL trpgModel : public trpgReadWriteable
     // Sets the name of the external model file and sets this model to External type.
     // 5.28.04 - It will not set the model to be as of external type. Use the method
     // from below to set the type of the model
-    void	SetName(const char *);
+    void    SetName(const char *);
     // Sets the on-disk reference to an internal model and sets this model to Internal type.
     // 5.28.04 - It will not set the model to be as of internal type. Use the method
     // from below to set the type of the model
-    void	SetReference(trpgDiskRef);
+    void    SetReference(trpgDiskRef);
     // Sets the model type
-    void	SetType(int);
+    void    SetType(int);
     /* Models are reference counted (per-tile).  It's up to the writer to set this
        value.  */
-    void	SetNumTiles(int);
+    void    SetNumTiles(int);
     /* TerraPage writers can use AddTile (starts at 0) every time they use this model
        in a tile.  Note that this is not for every instance within a tile.  So if
        you use a model 40 times within a tile, you call AddTile once.
        This is used instead of SetNumTiles. */
-    void	AddTile(void);
+    void    AddTile(void);
 
     /* Returns the type (Local or External) of this model */
-    bool	GetType(int &);
+    bool    GetType(int &);
     /* If the model is external, this returns the file name of that model.
        You pass in a string and a length and it copies the filename into that. */
-    bool	GetName(char *ret,int strLen) const;
+    bool    GetName(char *ret,int strLen) const;
     /* If the model is internal, this returns the disk reference to it.
        At some future data you'll be able to simply read these out of an archive. */
-    bool	GetReference(trpgDiskRef &) const;
+    bool    GetReference(trpgDiskRef &) const;
     /* Models are reference counted, like trpgTexture objects.  You can  use this
        value to determine whether or not you should page models.
     */
-    bool	GetNumTiles(int &) const;
+    bool    GetNumTiles(int &) const;
 
     // Validity check
-    bool	isValid(void) const;
+    bool    isValid(void) const;
     // Resets the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
 
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &, bool);
+    bool    Read(trpgReadBuffer &, bool);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
 
     trpgModel & operator =  (const trpgModel &);
@@ -1622,22 +1622,22 @@ TX_EXDECL class TX_CLDECL trpgModelTable : public trpgReadWriteable
     /* Set the total number of models in the table.  Use this in conjunction
        with SetModel.  If you can, use AddModel isntead of either of these.
     */
-    void	SetNumModels(int);
+    void    SetNumModels(int);
     /* Add the given model to the table.  Makes a copy of the model you pass in
        and returns the new model ID which you'll need to reference in trpgModelRef.
     */
-    int		AddModel(trpgModel &);
+    int        AddModel(trpgModel &);
     /* Look for a given model.  If it's not there, add it. */
-    int		FindAddModel(trpgModel &);
+    int        FindAddModel(trpgModel &);
     /* Sets the model definition corresponding to the given ID.  Use this in conjunction
        with SetNumModels. */
-    void	SetModel(int,const trpgModel &);
+    void    SetModel(int,const trpgModel &);
 
     // Returns the number of models in this table
-    bool	GetNumModels(int &) const;
+    bool    GetNumModels(int &) const;
     /* Returns the Nth model.  trpgModelRef objects point into this table
        and that is where the model ID comes from. */
-    bool	GetModel(int modID,trpgModel &) const;
+    bool    GetModel(int modID,trpgModel &) const;
 
     /* The same as GetModel only it returns a pointer to the trpgModel instead.
        Use this if you don't want to create a copy of the model.
@@ -1646,25 +1646,25 @@ TX_EXDECL class TX_CLDECL trpgModelTable : public trpgReadWriteable
     trpgModel *GetModelRef(int);
 
     // Validity check
-    bool	isValid(void) const;
+    bool    isValid(void) const;
     // Resets the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
 
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
     bool FindByName(const char *name, unsigned int &mId);
     typedef std::map<int,trpgModel> ModelMapType;
     ModelMapType *GetModelMap()
     {
-	return &modelsMap;
+    return &modelsMap;
     }
  protected:
-	
+    
     ModelMapType modelsMap;
 };
 
@@ -1689,56 +1689,56 @@ TX_EXDECL class TX_CLDECL trpgTileTable : public trpgReadWriteable
     ~trpgTileTable(void);
 
     // Set the tile storage mode: external or local
-    void	SetMode(TileMode);
+    void    SetMode(TileMode);
     // Set the total number of LODs
     // For version 2.1 only lod 0 is stored in the table
-    void	SetNumLod(int numLod);
+    void    SetNumLod(int numLod);
     // Set the number of tiles in each dimenion for each terrain LOD
     // This must agree with trpgHeader
-    void	SetNumTiles(int numX,int numY,int lod);
+    void    SetNumTiles(int numX,int numY,int lod);
     // Set the external address of a given tile as well as its Z value
-    void	SetTile(int x,int y,int lod,trpgwAppAddress &,float32 min,float32 max);
+    void    SetTile(int x,int y,int lod,trpgwAppAddress &,float32 min,float32 max);
 
     // Local or external tiles
-    bool	GetMode(TileMode &) const;
+    bool    GetMode(TileMode &) const;
     // Get the disk reference (local)
-    bool	GetTile(int x,int y,int lod,trpgwAppAddress &,float32 &min,float32 &max) const; 
+    bool    GetTile(int x,int y,int lod,trpgwAppAddress &,float32 &min,float32 &max) const; 
 
     // Validity check
-    bool	isValid(void) const;
+    bool    isValid(void) const;
     // Reads this class from a read buffer
-    void	Reset(void);
+    void    Reset(void);
 
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
     /**
      * SetCurrentBlock is used in two cases:
      * 1. When building a block specific tile archive (MMB and non-MMB). (local is TRUE)
      * 2. When merging several blocks into memory for visualization. (local is FALSE)
      **/
-    void	SetCurrentBlock(int row, int col, bool local)
+    void    SetCurrentBlock(int row, int col, bool local)
     {
-	currentRow = row;
-	currentCol = col;
-	localBlock = local;
+    currentRow = row;
+    currentCol = col;
+    localBlock = local;
     }
  protected:
     TileMode mode;
 
     class LodInfo
     {
-					      public:
-	int numX,numY;
-	// Tile addresses into external Appendable files
-	std::vector<trpgwAppAddress> addr;
-	// Elevation of the midpoint of each tile
-	// This is used for calculating bounding boxes
-	std::vector<float> elev_min;
-	std::vector<float> elev_max;
+                          public:
+    int numX,numY;
+    // Tile addresses into external Appendable files
+    std::vector<trpgwAppAddress> addr;
+    // Elevation of the midpoint of each tile
+    // This is used for calculating bounding boxes
+    std::vector<float> elev_min;
+    std::vector<float> elev_max;
     };
     std::vector <LodInfo> lodInfo;
     //These are used to initialize the row/col values for
@@ -1767,7 +1767,7 @@ TX_EXDECL class TX_CLDECL trpgLocalMaterial : public trpgReadWriteable
     ~trpgLocalMaterial(void);
 
     // Set the base material for this local material
-    void	SetBaseMaterial(int32 matSubTable,int32 matID);
+    void    SetBaseMaterial(int32 matSubTable,int32 matID);
 
     /* Get the base material for this local material.  Base materials
        define the colors, specularity, texture environments, and in
@@ -1782,68 +1782,68 @@ TX_EXDECL class TX_CLDECL trpgLocalMaterial : public trpgReadWriteable
        textures per polygon makes my head hurt in general).
        // 2003-06-17.  Your prophecy (my headache) has come true.  MD
        */
-    bool	GetBaseMaterial(int32 &matSubTable,int32 &matID) const;
+    bool    GetBaseMaterial(int32 &matSubTable,int32 &matID) const;
 
     class SubImageInfo
     {
     public:
-	int32 sx,sy;  // Source (sx,sy) in pixels
-	int32 ex,ey;  // Source (ex,ey) in pixels
-	int32 destWidth,destHeight;  // Size of destination image (in pixels)
+    int32 sx,sy;  // Source (sx,sy) in pixels
+    int32 ex,ey;  // Source (ex,ey) in pixels
+    int32 destWidth,destHeight;  // Size of destination image (in pixels)
     };
 
     // Set the sub image info (only for writers)
-    void	SetSubImageInfo(const SubImageInfo &);
+    void    SetSubImageInfo(const SubImageInfo &);
 
     /* Get the sub image info.  This is valid only for Global images
        (you can check what a given Local Material is by looking at the
        base material's texture).
     */
-    bool	GetSubImageInfo(SubImageInfo &) const;
+    bool    GetSubImageInfo(SubImageInfo &) const;
 
     // Set the address info (only for writers)
-    void	SetAddr(const trpgwAppAddress &);
+    void    SetAddr(const trpgwAppAddress &);
 
     // Set address info for one of multiple local textures
-    void	SetNthAddr(unsigned int subtable, const trpgwAppAddress &);
+    void    SetNthAddr(unsigned int subtable, const trpgwAppAddress &);
 
     /* Get the address (location in an archive) for an image.
        This is valid for Local images only.  You can determine what
        a Local Material refers to by looking in its base material's texture.
     */
-    bool	GetAddr(trpgwAppAddress &) const;
+    bool    GetAddr(trpgwAppAddress &) const;
 
     // Get address info for one of multiple local textures
-    bool	GetNthAddr(unsigned int subtable, trpgwAppAddress &) const;
+    bool    GetNthAddr(unsigned int subtable, trpgwAppAddress &) const;
 
     // Get the number of local images associated with this local material
     // Tile Local Images only
-    bool	GetNumLocals(int &) const;
+    bool    GetNumLocals(int &) const;
 
     // Set the storage sizes for all mipmap levels
-    //	bool	SetStorageSizes(vector<int> &);
+    //    bool    SetStorageSizes(vector<int> &);
 
     // Get the storage sizes for all mipmap levels.
-    //	bool	GetStorageSizes(const vector<int> *) const;
+    //    bool    GetStorageSizes(const vector<int> *) const;
 
     // Validity check
-    bool	isValid(void) const;
+    bool    isValid(void) const;
     // Reads this class from a read buffer
-    void	Reset(void);
+    void    Reset(void);
 
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
  protected:
     int32 baseMatTable,baseMat;
     // These are valid for Global images
     int32 sx,sy,ex,ey,destWidth,destHeight;
     // Storage sizes for each mipmap level.  Important for compressed textures.
-    //	vector<int> storageSize;
+    //    vector<int> storageSize;
     // This is valid only for Tile Local images
     std::vector<trpgwAppAddress> addr;
 };
@@ -1886,7 +1886,7 @@ TX_EXDECL class TX_CLDECL trpgLocalMaterial : public trpgReadWriteable
 
    If you want to page models, you can do so by looking at the list of model IDs
    used in a tile.
-	
+    
    If you're doing a TerraPage writer you will need to construct one of these for
    each tile that you build (remember that tiles are per-terrain LOD).  You'll want
    to call AddMaterial for every material that you use in a tile and AddModel
@@ -1902,73 +1902,73 @@ TX_EXDECL class TX_CLDECL trpgTileHeader : public trpgReadWriteable
     ~trpgTileHeader(void);
     /* Add the given material reference to this tile if it's not already there.
        The ID passed in refers to a trpgMatTable. */
-    void	AddMaterial(int);
+    void    AddMaterial(int);
     /* Add the given model reference to this tile if it's not already there.
        The ID passed in refers to a trpgModelTable. */
-    void	AddModel(int);
+    void    AddModel(int);
     /* Add the given local material to the list of local materials in this tile.
        Local materials are used to page sub-pieces of very large images and
        are referenced by trpgGeometry nodes (in their material indices) within
        a given tile.  Local materials can't be referenced across tiles.
     */
-    void	AddLocalMaterial(trpgLocalMaterial &);
+    void    AddLocalMaterial(trpgLocalMaterial &);
     // {secret}
-    void	SetDate(int32);
+    void    SetDate(int32);
     /* Set the given material reference to the given value.
        It's easier to use AddMaterial(), if possible.
     */
-    void	SetMaterial(int no,int id);
+    void    SetMaterial(int no,int id);
     /* Set the given model reference (in this tile) to the given value
        It's easier to use AddModel(), if possible.
     */
-    void	SetModel(int no,int id);
+    void    SetModel(int no,int id);
 
     // Returns the number of materials used in this tile
-    bool	GetNumMaterial(int32 &) const;
+    bool    GetNumMaterial(int32 &) const;
     /* Return the material ID of the Nth material reference.
        The ID returned points into a trpgMatTable. */
-    bool	GetMaterial(int32 nth,int32 &matID) const;
+    bool    GetMaterial(int32 nth,int32 &matID) const;
     // This is the number of models used in this tile
-    bool	GetNumModel(int32 &) const;
+    bool    GetNumModel(int32 &) const;
     /* Gets the model ID of the Nth model reference.
        The ID returned points into a trpgModelTable. */
-    bool	GetModel(int32 nth,int32 &modID) const;
+    bool    GetModel(int32 nth,int32 &modID) const;
     // Returns the number of local materials in this tile
-    bool	GetNumLocalMaterial(int32 &) const;
+    bool    GetNumLocalMaterial(int32 &) const;
     /* Return the given local material.  Local materials are used
        to page sub-pieces of extremely large images.  The Local Material
        list within a tile is distinct from the list of materials used within
        a tile.  Local materials will be referenced by trpgGeometry nodes within
        a given tile.
     */
-    bool	GetLocalMaterial(int32 nth,trpgLocalMaterial &locMat) const;
+    bool    GetLocalMaterial(int32 nth,trpgLocalMaterial &locMat) const;
     /* Return a pointer to the list of locally defined materials.
        See GetLocalMaterial for an explantion of local materials.
     */
     const std::vector<trpgLocalMaterial> *GetLocalMaterialList(void) const;
     // {secret}
-    bool	GetDate(int32 &) const;
+    bool    GetDate(int32 &) const;
 
     // Validity check
-    bool	isValid(void) const;
+    bool    isValid(void) const;
     // Resets the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
 
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
-    void	SetBlockNo(int row, int col)
+    bool    Print(trpgPrintBuffer &) const;
+    void    SetBlockNo(int row, int col)
     {
-	this->row = row;
-	this->col = col;
+    this->row = row;
+    this->col = col;
     }
-    void	GetBlockNo(int &row, int &col)
+    void    GetBlockNo(int &row, int &col)
     {
-	row = this->row;
-	col = this->col;
+    row = this->row;
+    col = this->col;
     }
  protected:
     std::vector<int> matList;
@@ -2079,30 +2079,30 @@ TX_EXDECL class TX_CLDECL trpgGeometry : public trpgReadWriteable
     trpgGeometry(void);
     ~trpgGeometry(void);
     typedef enum {Points,LineStrips,LineLoops,Lines,Polygons,TriStrips,
-		  TriFans,Triangles,QuadStrips,Quads} PrimType;
+          TriFans,Triangles,QuadStrips,Quads} PrimType;
     // Set the primitive type for the geometry node
-    void	SetPrimType(PrimType type);
+    void    SetPrimType(PrimType type);
     /* Some primitive types require lengths.  These include TriStrips and
        TriFans, but not Triangles, for example. */
-    void	SetPrimLengths(int,const int *);
+    void    SetPrimLengths(int,const int *);
     /* Add a primitive length on to the end of the current primLength array.
        Use this if you're adding geometry one vertex at a time.
     */
-    void	AddPrimLength(int);
+    void    AddPrimLength(int);
     /* This just increments the number of primitives in the structure.  Use this
        if you're adding geometry one vertex at a time for a Triangle array, for example.
     */
-    void	AddPrim(void);
+    void    AddPrim(void);
     /* Set the total number of primitives.  You would use this only when the PrimType
        does not require primitive lengths (e.g. Triangles, but not TriStrips).  Use
        SetPrimLengths() or AddPrimLength() in that case.
     */
-    void	SetNumPrims(int);  // Only when there are no primitive lengths
+    void    SetNumPrims(int);  // Only when there are no primitive lengths
     /* This function sets the total number of materials applied to this group
        of geometry.  If you're only using one material, trpgGeometry defaults to
        1, so you can just do a SetMaterial() and ignore this.
     */
-    void	SetNumMaterial(int);
+    void    SetNumMaterial(int);
     /* Set the given material instance (in this trpgGeometry node) to the given
        material ID.  The material ID is an index into a trpgMatTable.  You would
        need to do a SetNumMaterial() call first, before any number of SetMaterial()
@@ -2113,18 +2113,18 @@ TX_EXDECL class TX_CLDECL trpgGeometry : public trpgReadWriteable
        GetMaterial, however you must set them as negative so that GetMaterial
        can set its isLocal bit on return.
     */
-    void	SetMaterial(int which,int matID,bool isLocal=false);
+    void    SetMaterial(int which,int matID,bool isLocal=false);
     /* This is the same as repeated SetMaterial() calls.
      */
-    void	SetMaterials(int32 numMat,const int32 *matIDs);
+    void    SetMaterials(int32 numMat,const int32 *matIDs);
     /* This adds the given material ID to the end of the material list.
        You can use this instead of SetNumMaterial() and SetMaterial().
     */
-    int		AddMaterial(int matID);
+    int        AddMaterial(int matID);
 
     // These are primitive types used within the trpgGeometry structure.
     enum {VertexFloat,VertexDouble,NormalFloat,NormalDouble,
-	  Color,TextureFloat,TextureDouble,EdgeFlag};
+      Color,TextureFloat,TextureDouble,EdgeFlag};
 
     /* Used to tell some of the trpgGeometry methods what kind of
        data they're getting */
@@ -2135,13 +2135,13 @@ TX_EXDECL class TX_CLDECL trpgGeometry : public trpgReadWriteable
        The num passed in is the number of vertices, not the number of individual
        floats or doubles (as with GetNumVertex).
     */
-    void	SetVertices(int num,const float32 *);
-    void	SetVertices(int num,const float64 *);
+    void    SetVertices(int num,const float32 *);
+    void    SetVertices(int num,const float64 *);
     /* This method will add a vertex to the end of the appropriate data array
        (either float or double, but never both).  You would use this method
        if you were building up a trpgGeometry structure vertex by vertex.
     */
-    void	AddVertex(DataType type,trpg3dPoint &);
+    void    AddVertex(DataType type,trpg3dPoint &);
     /* Binding type used by colors, normals, and textures (just PerPrim).
      */
     typedef enum {Overall,PerPrim,PerVertex} BindType;
@@ -2152,13 +2152,13 @@ TX_EXDECL class TX_CLDECL trpgGeometry : public trpgReadWriteable
        num is the number of individual normals, not float values, unlike
        the GetNumNormal() call.
     */
-    void	SetNormals(int num,BindType bind,const float32 *);
-    void	SetNormals(int num,BindType bind,const float64 *);
+    void    SetNormals(int num,BindType bind,const float32 *);
+    void    SetNormals(int num,BindType bind,const float64 *);
     /* This method is used to add normals one by one of the given type.
        You would use this if you were adding geometry one vertex at a time
        in conjuntion with AddVertex().
     */
-    void	AddNormal(DataType type,trpg3dPoint &);
+    void    AddNormal(DataType type,trpg3dPoint &);
     /* This constant is used to select the type of a color array
        passed to SetColors().
     */
@@ -2168,7 +2168,7 @@ TX_EXDECL class TX_CLDECL trpgGeometry : public trpgReadWriteable
        these color arrays as you like, they're simply stored in an array for
        later use.
     */
-    void	SetColors(int num,ColorType type,BindType bind,const trpgColor *);
+    void    SetColors(int num,ColorType type,BindType bind,const trpgColor *);
     /* The SetTexCoords() methods set a list of texture coordinates.  This
        essentially builds a trpgTexData class and pushes it onto the current
        list of texture coordinate sets.  Choose the appropriate method based
@@ -2177,31 +2177,31 @@ TX_EXDECL class TX_CLDECL trpgGeometry : public trpgReadWriteable
 
        bind should be PerPrim in all cases.
     */
-    void	SetTexCoords(int num,BindType bind,const float32 *);
-    void	SetTexCoords(int num,BindType bind,const float64 *);
+    void    SetTexCoords(int num,BindType bind,const float32 *);
+    void    SetTexCoords(int num,BindType bind,const float64 *);
     /* This is the same as SetTexCoords(0,bind,NULL) */
-    void	AddTexCoords(BindType bind);
+    void    AddTexCoords(BindType bind);
     /* This method adds a texture coordinate to array n.  You would use
        this if you were adding vertices one at a time.
     */
-    void	AddTexCoord(DataType type,trpg2dPoint &,int n=0);
+    void    AddTexCoord(DataType type,trpg2dPoint &,int n=0);
     /* This method adds a texture coordinate to each trpgTexData.  You would use
        this if you were adding vertices one at a time with multiple materials.
     */
-    void	AddTexCoord(DataType type,std::vector<trpg2dPoint> &pts);
+    void    AddTexCoord(DataType type,std::vector<trpg2dPoint> &pts);
     /* Edge flags are used by some primitives in OpenGL.  We don't typically
        use them, but they can be read and written with TerraPage.
     */
-    void	SetEdgeFlags(int num,const char *);
+    void    SetEdgeFlags(int num,const char *);
 
     /* Returns the primitive type for this trpgGeometry structure.
      */
-    bool	GetPrimType(PrimType &type) const;
+    bool    GetPrimType(PrimType &type) const;
     /* Number of primitives in this structure.  Primitives are things
        like a single triangle, a triangle strip or fan.  Some primitives
        require a primitive length array.
     */
-    bool	GetNumPrims(int &num) const;
+    bool    GetNumPrims(int &num) const;
     /* This returns the primitive length array.  Some primitive types, like
        TriStrips or TriFans (but not Triangles) require a primitive length
        array to tell you how to break up the vertex/normal/texture/color
@@ -2209,67 +2209,67 @@ TX_EXDECL class TX_CLDECL trpgGeometry : public trpgReadWriteable
        of a certain length (returned by GetNumPrims()) and will only be
        valid for some primitive types.
     */
-    bool	GetPrimLengths(int *lenArray) const;
+    bool    GetPrimLengths(int *lenArray) const;
     /* TerraPage supports multiple materials per geometry set.  This method
        tells you how many are applied to this structure.  There will always
        be at least one.
     */
-    bool	GetNumMaterial(int &num) const;
+    bool    GetNumMaterial(int &num) const;
     /* Returns the material ID for a material instance.  num is the
        nth material instance.  matId is an index into a trpgMatTable.
        isLocal is true if the given material is local to this tile.
        Local materials are only used to page small pieces of a larger image.
     */
-    bool	GetMaterial(int num,int32 &matID,bool &isLocal) const;
+    bool    GetMaterial(int num,int32 &matID,bool &isLocal) const;
     /* This returns num_vertex.  The function returns the length
        of the vertex array dived by 3, which is the total number of
        vertices.
     */
-    bool	GetNumVertex(int &num) const;
+    bool    GetNumVertex(int &num) const;
     /* The GetVertices() methods return a list of vertices in the given
        form (32 or 64 bit floating point).  These functions will convert to
        the appropriate format, just ask for the one you need.
        The length of the vertex array is determined by GetNumVertex(), which
        returns 3* the number of vertices.
     */
-    bool	GetVertices(float32 *) const;
-    bool	GetVertices(float64 *) const;
+    bool    GetVertices(float32 *) const;
+    bool    GetVertices(float64 *) const;
     /* This method lets you get an individual vertex.  The number of vertices
        can be determined by GetNumVertex()/3.
     */
-    bool	GetVertex(int id,trpg3dPoint &) const;
+    bool    GetVertex(int id,trpg3dPoint &) const;
     /* GetNumNormal() returns the number of normals.  See GetNumVertex()
        for an explanation of why.
     */
-    bool	GetNumNormal(int &num) const;
+    bool    GetNumNormal(int &num) const;
     /* Much, like GetVertices(), these methods will copy the contents of
        the normal array into the array passed in.  They will convert the
        contents to the appropriate format (32 or 64 bit floating point).
        The length of the input array can be determined by GetNumNormal().
     */
-    bool	GetNormals(float32 *) const;
-    bool	GetNormals(float64 *) const;
+    bool    GetNormals(float32 *) const;
+    bool    GetNormals(float64 *) const;
     /* This returns the number of color sets in the trpgGeometry structure.
        There can be one color set per ColorType.  Color sets are either
        per vertex, per primitive, or per geometry unit (i.e. only one)
        arrays of color data.
     */
-    bool	GetNumColorSets(int &num) const;
+    bool    GetNumColorSets(int &num) const;
     /* This method fills out the trpgColorInfo class that you pass in.
        The number of color sets is determined by GetNumColorSets and
        the structure you passed can be reused (to save memory).
     */
-    bool	GetColorSet(int id,trpgColorInfo *) const;
+    bool    GetColorSet(int id,trpgColorInfo *) const;
     /* Returns the number of texture coordinate sets.  There could (and
        should) be one texture coordinate set per material applied to this
        geometry.  Tex Coord sets can be retrieved with GetTexCoordSet.
     */
-    bool	GetNumTexCoordSets(int &) const;
+    bool    GetNumTexCoordSets(int &) const;
     /* This method returns the texture coordinate set specified by the given
        index.  GetNumTexCoordSets determines the total number of texture
        coordinate sets.
     */
-    bool	GetTexCoordSet(int id,trpgTexData *) const;
+    bool    GetTexCoordSet(int id,trpgTexData *) const;
     /* This method returns this trpgGeometry's texture coordinate set specified by the given
        index.  GetNumTexCoordSets determines the total number of texture
        coordinate sets.
@@ -2278,22 +2278,22 @@ TX_EXDECL class TX_CLDECL trpgGeometry : public trpgReadWriteable
     /* Returns the number of edge flags in this geometry node.
        Edge flags are used on certain primitive types, but are rather rare.
     */
-    bool	GetNumEdgeFlag(int &num) const;
+    bool    GetNumEdgeFlag(int &num) const;
     /* This returns the edge flags for the current set of primitives.
      */
-    bool	GetEdgeFlags(char *) const;
+    bool    GetEdgeFlags(char *) const;
 
     // Returns true if the trpgGeometry structure is valid
-    bool	isValid(void) const;
+    bool    isValid(void) const;
     // Resets the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
 
     // Write self to a buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Read self from a buffer.  Check isValid() afterwards
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
  protected:
     int primType;
@@ -2341,36 +2341,36 @@ TX_EXDECL class TX_CLDECL trpgGroup : public trpgReadWriteable
 {
  public:
     trpgGroup(void);
-    virtual		~trpgGroup(void);
+    virtual        ~trpgGroup(void);
     // Resets the contents back to empty
-    virtual void	Reset(void);
+    virtual void    Reset(void);
 
     /* Set the total number of children this group will have */
-    virtual void	SetNumChild(int);
+    virtual void    SetNumChild(int);
     // Starting from 0, increments the number of children
-    virtual int		AddChild(void);
+    virtual int        AddChild(void);
     /* The writer is supposed to set this value to the number of
        children. */
-    virtual bool	GetNumChild(int &) const;
+    virtual bool    GetNumChild(int &) const;
 
     /* Set the group ID */
-    virtual void	SetID(int);
+    virtual void    SetID(int);
     // Returns the group ID
-    virtual bool	GetID(int &) const;
+    virtual bool    GetID(int &) const;
 
     /* Set the group name */
-    void	SetName(const char* );
+    void    SetName(const char* );
     // Returns the group name
-    const char*		GetName(void) const;
+    const char*        GetName(void) const;
 
     // Validity check
-    virtual bool	isValid(void) const;
+    virtual bool    isValid(void) const;
     // Writes this class to a write buffer
-    virtual bool	Write(trpgWriteBuffer &);
+    virtual bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool		Read(trpgReadBuffer &);
+    bool        Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool		Print(trpgPrintBuffer &) const;
+    bool        Print(trpgPrintBuffer &) const;
 
  protected:
     int id;
@@ -2444,30 +2444,30 @@ TX_EXDECL class TX_CLDECL trpgAttach : public trpgGroup
     trpgAttach(void);
     ~trpgAttach(void);
     // Resets the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
 
     // Set the parent of the group/LOD/whatever to attach to when loaded in
-    void	SetParentID(int);
+    void    SetParentID(int);
     // Retrieve the parent ID we'll need to attach this thing into the scene graph
-    bool	GetParentID(int &) const;
+    bool    GetParentID(int &) const;
 
     /* The writer is supposed to set this value to a unique position with relation
        to its parent group. */
-    void	SetChildPos(int);
+    void    SetChildPos(int);
     /* The child position is a hint as to which child this is in its parent group.
        That is, if there are 3 children, of which this is one, then it could be
        at child position 0, 1, or 3 in its parent.  You can safely ignore this if
        you want to just this node to its parent's list of children. */
-    bool	GetChildPos(int &) const;
+    bool    GetChildPos(int &) const;
 
     // Validity check
-    bool	isValid(void) const;
+    bool    isValid(void) const;
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
  protected:
     int parentID,childPos;
@@ -2479,7 +2479,7 @@ TX_EXDECL class TX_CLDECL trpgChildRef : public trpgReadWriteable
     trpgChildRef();
     ~trpgChildRef();
     // Resets the contents back to empty
-    void	Reset();
+    void    Reset();
 
     // Set the tile grid location
     void SetTileLoc(int gx,int gy,int glod);
@@ -2497,13 +2497,13 @@ TX_EXDECL class TX_CLDECL trpgChildRef : public trpgReadWriteable
  
 
     // Validity check
-    bool	isValid(void) const;
+    bool    isValid(void) const;
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
  protected:
     // Grid Location
@@ -2537,14 +2537,14 @@ TX_EXDECL class TX_CLDECL trpgBillboard : public trpgGroup
     ~trpgBillboard(void);
     enum {Individual,Group};
     // Set the type.  See GetType for details.
-    void	SetType(int);
+    void    SetType(int);
     // Set the center.
-    void	SetCenter(const trpg3dPoint &);
+    void    SetCenter(const trpg3dPoint &);
     enum {Axial,World,Eye};
     // Set the rotation mode.
-    void	SetMode(int);
+    void    SetMode(int);
     // Set the rotation axis if mode == Axial
-    void	SetAxis(const trpg3dPoint &);
+    void    SetAxis(const trpg3dPoint &);
 
     /* The type controls how the billboard node relates to its children.  There
        are two modes: (1) Group - This is the obvious one.  Everything below
@@ -2555,29 +2555,29 @@ TX_EXDECL class TX_CLDECL trpgBillboard : public trpgGroup
        account the unique center of each one and rotate it around that.  If you have
        some optimization scheme where you can deal with groups of billboards (ala Performer)
        it is valid to do so in the Individual case. */
-    bool	GetType(int &) const;
+    bool    GetType(int &) const;
     /* Center of the thing to be rotated.  For Group this does the obvious thing.
        For Individual it should be the center of the group of things you want to rotate.
        This has no use if you're going to rotate each primitive seperately, but if you've
        got some sort of optimized scheme for doing so (ala Performer) this information is useful.
     */
-    bool	GetCenter(trpg3dPoint &) const;
+    bool    GetCenter(trpg3dPoint &) const;
     /* The mode will be one of: (1) Axial - rotate around the Axis.  This is the normal
        one for tree. (2) Eye - Always rotate toward the eye point.  (3) world.
     */
-    bool	GetMode(int &) const;
+    bool    GetMode(int &) const;
     /* The axis used when GetMode returns Axial. */
-    bool	GetAxis(trpg3dPoint &) const;
+    bool    GetAxis(trpg3dPoint &) const;
 
     // Resets the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
 
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
  protected:
     int type;
     int mode;
@@ -2629,45 +2629,45 @@ TX_EXDECL class TX_CLDECL trpgLod : public trpgReadWriteable
     trpgLod(void);
     ~trpgLod(void);
     // Set the calculated center
-    void	SetCenter(const trpg3dPoint &);
+    void    SetCenter(const trpg3dPoint &);
     // Set the number of children hint
-    void	SetNumChild(int);
+    void    SetNumChild(int);
     // Set the LOD information
-    void	SetLOD(double in,double out,double width);
+    void    SetLOD(double in,double out,double width);
 
     // Center of this LOD.  Distance from the viewer is calculated from this.
-    bool	GetCenter(trpg3dPoint &) const;
+    bool    GetCenter(trpg3dPoint &) const;
     // Number of children hint.
-    bool	GetNumChild(int &) const;
+    bool    GetNumChild(int &) const;
     // LOD specific information.  in and out can be switched.  width is
     // the transition range for doing fading.
-    bool	GetLOD(double &in,double &out,double &width) const;
+    bool    GetLOD(double &in,double &out,double &width) const;
 
     // Set the group ID
-    void	SetID(int);
+    void    SetID(int);
 
     // Group IDs are used here the same way as in trpgGroup
-    bool	GetID(int &) const;
+    bool    GetID(int &) const;
 
     /* Set the lod name */
-    void	SetName(const char* );
+    void    SetName(const char* );
     // Returns the lod name
     const char* GetName(void) const;
 
     // Set the range Index
-    void	SetRangeIndex(int ri);
+    void    SetRangeIndex(int ri);
     // Get the range index
-    bool	GetRangeIndex(int &ri) const;
+    bool    GetRangeIndex(int &ri) const;
 
     // Resets the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
 
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
  protected:
     int numRange;
@@ -2703,14 +2703,14 @@ TX_EXDECL class TX_CLDECL trpgLayer : public trpgGroup
     trpgLayer(void);
     ~trpgLayer(void);
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
     // Resets the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
  protected:
 };
 
@@ -2726,20 +2726,20 @@ TX_EXDECL class TX_CLDECL trpgTransform : public trpgGroup
     ~trpgTransform(void);
 
     // Set the 4x4 matrix
-    void	SetMatrix(const float64 *);
+    void    SetMatrix(const float64 *);
 
     // Get the 4x4 matrix
-    bool	GetMatrix(float64 *) const;
+    bool    GetMatrix(float64 *) const;
 
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
     // Resets the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
  protected:
     float64 m[4][4];
 };
@@ -2769,24 +2769,24 @@ TX_EXDECL class TX_CLDECL trpgModelRef : public trpgReadWriteable
     trpgModelRef(void);
     ~trpgModelRef(void);
     // Set the model ID.  Must come from a trpgModelTable
-    void	SetModel(int);
+    void    SetModel(int);
     // Set the 4x4 rotate/translate/scale matrix
-    void	SetMatrix(const float64 *);
+    void    SetMatrix(const float64 *);
 
     // Model ID pointing into a trpgModelTable
-    bool	GetModel(int32 &) const;
+    bool    GetModel(int32 &) const;
     // Positional matrix.  Works just like a trpgTransform.
-    bool	GetMatrix(float64 *) const;
+    bool    GetMatrix(float64 *) const;
 
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
     // Resets the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
  protected:
     int modelRef;
     float64 m[4][4];
@@ -2807,44 +2807,44 @@ TX_EXDECL class TX_CLDECL trpgTextStyle : public trpgReadWriteable
     bool operator == (const trpgTextStyle&) const;
 
     // Set the material ID.  Should point into trpgMatTable
-    void	SetMaterial(int);
+    void    SetMaterial(int);
     // Get the material ID.  Points into trpgMatTable
-    int		GetMaterial(void) const;
+    int        GetMaterial(void) const;
 
     // Set the font description
-    void	SetFont(std::string &);
+    void    SetFont(std::string &);
     // Get the font description
     const std::string *GetFont(void) const;
 
     // Set bold to on/off
-    void	SetBold(bool);
+    void    SetBold(bool);
     // Return value of bold status
-    bool	GetBold(void) const;
+    bool    GetBold(void) const;
 
     // Set italic on/off
-    void	SetItalic(bool);
+    void    SetItalic(bool);
     // Return value of italic status
-    bool	GetItalic(void) const;
+    bool    GetItalic(void) const;
 
     // Set underline on/off
-    void	SetUnderline(bool);
+    void    SetUnderline(bool);
     // Return value of underline status
-    bool	GetUnderline(void) const;
+    bool    GetUnderline(void) const;
 
     // Set character size: MUST BE IN METER
-    void	SetCharacterSize(float32);
+    void    SetCharacterSize(float32);
     // Get character (e.g. font) size
-    float32	GetCharacterSize(void) const;
+    float32    GetCharacterSize(void) const;
 
     // Write this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
     // Reset the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
 
     // Return object validity
     bool isValid(void) const;
@@ -2866,32 +2866,32 @@ TX_EXDECL class TX_CLDECL trpgTextStyleTable : public trpgReadWriteable
     ~trpgTextStyleTable(void);
 
     // Add a single text style
-    int		AddStyle(const trpgTextStyle &);
+    int        AddStyle(const trpgTextStyle &);
 
-    int		FindAddStyle(const trpgTextStyle &);
+    int        FindAddStyle(const trpgTextStyle &);
 
     // Figure out how many text styles there are
-    int		GetNumStyle(void) const;
+    int        GetNumStyle(void) const;
 
     // Return a reference to the given style
     const trpgTextStyle *GetStyleRef(int) const;
 
     // Validity check
-    bool	isValid(void) const;
+    bool    isValid(void) const;
     // Reset the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
 
     // Write this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Read this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Print this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
     typedef std::map<int,trpgTextStyle> StyleMapType;
     const StyleMapType *getStyleMap()const  { return &styleMap; }
  protected:
     //std::vector<trpgTextStyle> styles;
-	
+    
     StyleMapType styleMap;
 };
 
@@ -2912,30 +2912,30 @@ TX_EXDECL class TX_CLDECL trpgSupportStyle : public trpgReadWriteable
     typedef enum {Line,Cylinder,MaxSupportType} SupportType;
 
     // Set the support type.  Get GetSupportType() for more information
-    void	SetType(SupportType);
+    void    SetType(SupportType);
     /* Return the support types.  Supports are geometry that run from the
        bottom middle of the label object to some point in space.
        Most likely that point is somewhere on the ground, but not
        necessarily.  How the support is drawn is controlled both by
        the support type and the material ID for the support.
     */
-    SupportType	GetType(void) const;
+    SupportType    GetType(void) const;
 
     // Set the material ID.  Should point into trpgMatTable
-    void	SetMaterial(int);
+    void    SetMaterial(int);
     // Get the material ID.  Points into trpgMatTable
-    int		GetMaterial(void) const;
+    int        GetMaterial(void) const;
 
 
     // Write this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
     // Reset the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
 
     // Return object validity
     bool        isValid(void) const;
@@ -2955,27 +2955,27 @@ TX_EXDECL class TX_CLDECL trpgSupportStyleTable : public trpgReadWriteable
     ~trpgSupportStyleTable(void);
 
     // Add a single text style
-    int		AddStyle(const trpgSupportStyle &);
+    int        AddStyle(const trpgSupportStyle &);
 
-    int		FindAddStyle(const trpgSupportStyle &);
+    int        FindAddStyle(const trpgSupportStyle &);
 
     // Figure out how many text styles there are
-    int		GetNumStyle(void) const;
+    int        GetNumStyle(void) const;
 
     // Return a reference to the given style
     const trpgSupportStyle *GetStyleRef(int) const;
 
     // Validity check
-    bool	isValid(void) const;
+    bool    isValid(void) const;
     // Reset the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
 
     // Write this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Read this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Print this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
  protected:
     //std::vector<trpgSupportStyle> styles;
@@ -3000,7 +3000,7 @@ TX_EXDECL class TX_CLDECL trpgLabelProperty : public trpgReadWriteable
     bool operator == (const trpgLabelProperty&) const;
 
     // Set the label type.  See GetType() for more information.
-    void	SetType(LabelType);
+    void    SetType(LabelType);
     /* Return the label type.  This controls the geometry for the label.
        Panel labels are simple polygons.  Cube labels should display
        the text on every side with single sided polygons.
@@ -3008,27 +3008,27 @@ TX_EXDECL class TX_CLDECL trpgLabelProperty : public trpgReadWriteable
        That is, they will always be pointed directly toward the user.
        Vertical billboards rotate toward the user, but have an axis along +Z.
     */
-    LabelType	GetType(void) const;
+    LabelType    GetType(void) const;
 
     // Set the font style ID.  Should point into trpgTextStyleTable
-    void	SetFontStyle(int);
+    void    SetFontStyle(int);
     // Get the font style ID.  Points into trpgTextStyleTable
-    int		GetFontStyle(void) const;
+    int        GetFontStyle(void) const;
 
     // Set the support style ID.  Should point into trpgSupportTable
-    void	SetSupport(int);
+    void    SetSupport(int);
     // Get the font style ID.  Points into trpgSupportTable
-    int		GetSupport(void) const;
-	
+    int        GetSupport(void) const;
+    
     // Write this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
     // Reset the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
 
     // Return object validity
     bool isValid(void) const;
@@ -3049,28 +3049,28 @@ TX_EXDECL class TX_CLDECL trpgLabelPropertyTable : public trpgReadWriteable
     ~trpgLabelPropertyTable(void);
 
     // Add a single label property
-    int		AddProperty(const trpgLabelProperty &);
+    int        AddProperty(const trpgLabelProperty &);
 
     // Find or Add a single label property
     int FindAddProperty(const trpgLabelProperty& property);
 
     // Figure out how many properties there are
-    int		GetNumProperty(void) const;
+    int        GetNumProperty(void) const;
 
     // Return a reference to the given property
     const trpgLabelProperty *GetPropertyRef(int) const;
 
     // Validity check
-    bool	isValid(void) const;
+    bool    isValid(void) const;
     // Reset the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
 
     // Write this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Read this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Print this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
  protected:
     //std::vector<trpgLabelProperty> properties;
@@ -3091,17 +3091,17 @@ TX_EXDECL class TX_CLDECL trpgLabel : public trpgReadWriteable {
 
     bool isValid(void) const;
 
-	
+    
     typedef enum {Left,Center,Right,MaxAlignmentType} AlignmentType;
 
     // Set the label property ID. This is an index into a tprgLabelPropertyTable
-    void	SetProperty(int);
-    int		GetProperty() const;
+    void    SetProperty(int);
+    int        GetProperty() const;
 
 
 
     // Set the text for this label.  See GetText() for more information
-    void	SetText(const std::string &);
+    void    SetText(const std::string &);
     /* Return the text for this label.  The text may contain basic formatting
        such as newlines and tabs.  Expect to see those as \n and \t respectively.
        Eventually, this text might contain HTML formatting, but we do not use
@@ -3111,16 +3111,16 @@ TX_EXDECL class TX_CLDECL trpgLabel : public trpgReadWriteable {
     const std::string *GetText(void) const;
 
     // Set the text alignment.  See GetAlignmentType() for more information.
-    void	SetAlignment(AlignmentType);
+    void    SetAlignment(AlignmentType);
     /* Return the alignement type.  This controls the alignement of the text
        with respect to the label geometry.
     */
-    AlignmentType	GetAlignment(void) const;
+    AlignmentType    GetAlignment(void) const;
 
     // Set the number of spaces between tabs
-    void	SetTab(int);
+    void    SetTab(int);
     // Get the number of spaces between tabs
-    int		GetTab(void) const;
+    int        GetTab(void) const;
 
     // Set the text scaling value: font size * scale = real world text size in meter
     void        SetScale(float32);
@@ -3132,7 +3132,7 @@ TX_EXDECL class TX_CLDECL trpgLabel : public trpgReadWriteable {
     float32     GetThickness() const;
 
     // Set the description for this label.  Set GetDesc() for more information
-    void	SetDesc(const std::string &);
+    void    SetDesc(const std::string &);
     /* Return the description for this label.  Descriptions should contain no
        formatting.  They are a description of what the label represents and may
        appear if a user interacts with the label, but should not be drawn in 3D.
@@ -3141,7 +3141,7 @@ TX_EXDECL class TX_CLDECL trpgLabel : public trpgReadWriteable {
     const std::string *GetDesc(void) const;
 
     // Set the URL for this label.  See GetURL() for more information.
-    void	SetURL(const std::string &);
+    void    SetURL(const std::string &);
     /* Return the URL for this label.  The URL would invoke some sort of
        web browser if the user of the 3D application clicks on the label.
        May be empty.
@@ -3149,16 +3149,16 @@ TX_EXDECL class TX_CLDECL trpgLabel : public trpgReadWriteable {
     const std::string *GetURL(void) const;
 
     // Set the number of spaces between tabs
-    void	SetTabSize(int);
+    void    SetTabSize(int);
     // Get the number of spaces between tabs
-    int		GetTabSize(void) const;
+    int        GetTabSize(void) const;
 
     // Set the location of the label.
     void SetLocation(const trpg3dPoint &);
     const trpg3dPoint& GetLocation() const;
 
     // Add a support.  See GetSupports() for more information
-    void	AddSupport(const trpg3dPoint &);
+    void    AddSupport(const trpg3dPoint &);
     /* Return the support array.  Supports are linear features that run from
        the middle bottom of the label to some set of points in the database.
        These will often be on the ground, but need not be.  Support display
@@ -3167,14 +3167,14 @@ TX_EXDECL class TX_CLDECL trpgLabel : public trpgReadWriteable {
     const std::vector<trpg3dPoint> *GetSupports(void) const;
 
     // Writes this class to a write buffer
-    bool	Write(trpgWriteBuffer &);
+    bool    Write(trpgWriteBuffer &);
     // Reads this class from a read buffer
-    bool	Read(trpgReadBuffer &);
+    bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
-    bool	Print(trpgPrintBuffer &) const;
+    bool    Print(trpgPrintBuffer &) const;
 
     // Resets the contents back to empty
-    void	Reset(void);
+    void    Reset(void);
 
  protected:
     int propertyId;

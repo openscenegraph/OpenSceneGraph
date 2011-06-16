@@ -27,7 +27,7 @@ namespace osgDB
 ///    - "../../a/b/c/d/e" goes 2
 ///    - "../a/../b/../.." goes 2
 ///    - "a/b/../c" goes 0
-unsigned int countNbDirsUp(const std::string & path)
+static unsigned int countNbDirsUp(const std::string & path)
 {
     // Algorithm:
     //    - For each path component, count +1 for "..", 0 for ".", and -1 for anything else
@@ -53,7 +53,7 @@ unsigned int countNbDirsUp(const std::string & path)
 
 /// Local hash function for a path.
 /// Does not canonize the given path, but is not confused with mixed separators.
-unsigned int pathHash(const std::string & s)
+static unsigned int pathHash(const std::string & s)
 {
     // This is based on the DJB hash algorithm
     // Note: SDBM Hash initializes at 0 and is
@@ -86,7 +86,7 @@ enum WriteType {
 };
 
 /// Default prefixes for unnamed objects.
-const char * const PREFIX[/*MAX_WRITE_TYPE*/] = {
+static const char * const FILE_PREFIX[/*MAX_WRITE_TYPE*/] = {
     "Object_",
     "Image_",
     "HF_",
@@ -94,6 +94,14 @@ const char * const PREFIX[/*MAX_WRITE_TYPE*/] = {
     "Shader_"
 };
 
+/// Default prefixes for unnamed objects.
+static const char * const FILE_EXTENSION[/*MAX_WRITE_TYPE*/] = {
+    ".osgb",
+    ".tga",
+    ".osgb",
+    ".osgb",
+    ".glsl"
+};
 
 //.frag
 //.vert
@@ -237,12 +245,10 @@ bool ExternalFileWriter::absoluteObjectPathExists(const std::string & path)
 void ExternalFileWriter::generateObjectName(std::string & out_relativePath, std::string & out_absolutePath, int type)
 {
     static const ObjectIndex MAX_NUMBER = UINT_MAX-1;        // -1 to allow doing +1 without an overflow
-    static const char * const IMAGE_EXT  = ".tga";     // Default extension (PNG would be preferable since widely used, but it requires libpng)
-    static const char * const SHADER_EXT = ".frag";    // Default extension
     for (ObjectIndex number=_lastGeneratedObjectIndex+1; number<MAX_NUMBER; ++number)
     {
         std::ostringstream oss;
-        oss << PREFIX[type] << number << IMAGE_EXT;
+        oss << FILE_PREFIX[type] << number << FILE_EXTENSION[type];
         out_relativePath = oss.str();
         out_absolutePath = osgDB::concatPaths(_destDirectory, out_relativePath);
 

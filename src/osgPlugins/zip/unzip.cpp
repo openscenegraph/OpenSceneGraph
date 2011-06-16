@@ -128,6 +128,15 @@
 #endif
 #endif
 
+// workaround for Windows warnings.
+#if defined(_MSC_VER)
+    #define FILENO _fileno
+    #define GETCWD _getcwd
+#else
+    #define FILENO fileno
+    #define GETCWD getcwd
+#endif
+
 
 
 #define ZIP_HANDLE   1
@@ -188,7 +197,7 @@ typedef struct tm_unz_s
 // some windows<->linux portability things
 #ifdef ZIP_STD
 DWORD GetFilePosU(HANDLE hfout)
-{ struct stat st; fstat(fileno(hfout),&st);
+{ struct stat st; fstat(FILENO(hfout),&st);
   if ((st.st_mode&S_IFREG)==0) return 0xFFFFFFFF;
   return ftell(hfout);
 }
@@ -3928,7 +3937,7 @@ ZRESULT TUnzip::Open(void *z,unsigned int len,DWORD flags)
 { if (uf!=0 || currentfile!=-1) return ZR_NOTINITED;
   //
 #ifdef ZIP_STD
-  char* buf = getcwd(rootdir,MAX_PATH-1);
+  char* buf = GETCWD(rootdir,MAX_PATH-1);
   if (buf==0) return ZR_NOFILE;
 #else
 #ifdef GetCurrentDirectory

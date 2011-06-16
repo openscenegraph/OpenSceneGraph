@@ -123,11 +123,11 @@ void Receiver::sync( void )
     }
 
 #if defined(__linux) || defined(__FreeBSD__) || defined( __APPLE__ )
-    socklen_t 
+    socklen_t size; 
 #else
-    int
+    int size;
 #endif
-        size = sizeof( struct sockaddr_in );
+    size = sizeof( struct sockaddr_in );
 
     fd_set fdset;
     FD_ZERO( &fdset );
@@ -144,7 +144,7 @@ void Receiver::sync( void )
     int err = WSAGetLastError ();
     if (err!=0) fprintf( stderr, "Receiver::sync() - error %d\n",err );
 
-    while( select( _so+1, &fdset, 0L, 0L, &tv ) )
+    while( select( static_cast<int>(_so)+1, &fdset, 0L, 0L, &tv ) )
     {
         if( FD_ISSET( _so, &fdset ) )
         {

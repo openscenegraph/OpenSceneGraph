@@ -31,7 +31,7 @@
 */
 TX_EXDECL class TX_CLDECL trpgr_Callback
 {
- public:
+public:
     virtual ~trpgr_Callback(void) { };
     virtual void *Parse(trpgToken,trpgReadBuffer &) { return (void *)1; };
 };
@@ -42,7 +42,7 @@ TX_EXDECL class TX_CLDECL trpgr_Callback
 */
 TX_EXDECL class TX_CLDECL trpgr_Token
 {
- public:
+public:
     trpgr_Token(void);
     trpgr_Token(int,trpgr_Callback *,bool destroy=true);
     ~trpgr_Token(void);
@@ -59,7 +59,7 @@ TX_EXDECL class TX_CLDECL trpgr_Token
 */
 TX_EXDECL class TX_CLDECL trpgr_Parser
 {
- public:
+public:
     trpgr_Parser(void);
     virtual ~trpgr_Parser(void);
     bool isValid(void) const;
@@ -74,9 +74,9 @@ TX_EXDECL class TX_CLDECL trpgr_Parser
     // Parse a read buffer
     virtual bool Parse(trpgReadBuffer &);
     virtual bool TokenIsValid(trpgToken);  // Check token validity
- protected:
+protected:
     void *lastObject;
- private:
+private:
     // Note: Just how slow is a map<> anyway?
     //         This usage is self-contained and could be replaced with an array
 #if defined(_WIN32)
@@ -184,7 +184,7 @@ TX_EXDECL class TX_CLDECL trpgrImageHelper
 */
 TX_EXDECL class TX_CLDECL trpgr_Archive : public trpgCheckable
 {
- public:
+public:
     trpgr_Archive(void);
     virtual ~trpgr_Archive(void);
 
@@ -223,7 +223,7 @@ TX_EXDECL class TX_CLDECL trpgr_Archive : public trpgCheckable
     virtual trpgrAppFileCache* GetNewRAppFileCache(const char *fullBase, const char *ext);
     virtual int32 GetHeaderData(char *dataPtr,int32 length,FILE *filehandle);
     virtual int32 GetMagicNumber() {return TRPG_MAGIC;};
- protected:
+protected:
     bool headerRead;
     trpgEndian ness;
     FILE *fp;
@@ -258,10 +258,10 @@ TX_EXDECL class TX_CLDECL trpgSceneParser : public trpgr_Parser
     friend class trpgSceneHelperPush;
     friend class trpgSceneHelperPop;
     friend class trpgSceneHelperDefault;
- public:
+public:
     trpgSceneParser(void);
     virtual ~trpgSceneParser(void);
- protected:
+protected:
     // Start defining children for the given object
     virtual bool StartChildren(void *) { return true;};
     virtual bool EndChildren(void *) { return true;};

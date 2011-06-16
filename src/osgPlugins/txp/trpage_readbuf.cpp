@@ -572,7 +572,7 @@ bool trpgrAppFile::Read(char *data,int32 baseOffset,int32 objOffset,int32 dataSi
 
     // Read the raw data
     // Note: What about byte swapping?
-        if (fread(data,sizeof(char),dataSize,fp) != (uint32)dataSize) {
+    if (fread(data,sizeof(char),dataSize,fp) != (uint32)dataSize) {
         valid = false;
         return false;
     }

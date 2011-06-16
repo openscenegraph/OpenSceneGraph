@@ -839,7 +839,7 @@ bool trpgwArchive::WriteTile(unsigned int x,unsigned int y,unsigned int lod, flo
             return false;
 
         // Write the header first
-                unsigned int len;
+        unsigned int len;
         const char *data;
         if (head) {
             data = head->getData();

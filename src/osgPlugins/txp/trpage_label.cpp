@@ -131,7 +131,7 @@ bool trpgTextStyle::Write(trpgWriteBuffer &buf)
 // If we do it this way it's easier to expand later.
 class textStyleCB : public trpgr_Callback
 {
-  public:
+public:
     void * Parse(trpgToken,trpgReadBuffer &);
     trpgTextStyle *style;
 };

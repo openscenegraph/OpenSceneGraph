@@ -184,9 +184,9 @@ public:
         if((verMajor >= TRPG_NOMERGE_VERSION_MAJOR) && (verMinor >=TRPG_NOMERGE_VERSION_MINOR))
         {
             if(isMaster)
-            flags |= ISMASTER;//set the master flag
+                flags |= ISMASTER;//set the master flag
             else
-            flags &= ~ISMASTER;//clear the master flag
+                flags &= ~ISMASTER;//clear the master flag
         }
     }
     bool    GetIsMaster() const
@@ -198,9 +198,9 @@ public:
         if((verMajor >= TRPG_NOMERGE_VERSION_MAJOR) && (verMinor >=TRPG_NOMERGE_VERSION_MINOR))
         {
             if(isLocal)
-            flags |= ISLOCAL;//set the local flag
+                flags |= ISLOCAL;//set the local flag
             else
-            flags &= ~ISLOCAL;//clear the local flag
+                flags &= ~ISLOCAL;//clear the local flag
         }
     }
     bool    GetIsLocal() const
@@ -514,10 +514,10 @@ protected:
     int32 numTile;
     struct _attrSet
     {
-    int fid;
-    int smc;
-    int stp;
-    int swc;
+        int fid;
+        int smc;
+        int stp;
+        int swc;
     } attrSet;
     std::vector<int> texids;
     std::vector<trpgTextureEnv> texEnvs;

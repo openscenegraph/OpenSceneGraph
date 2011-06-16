@@ -56,7 +56,7 @@ bool trpgManagedTile::ParseTileHeader(trpgReadBuffer &buf)
 {
     isLoaded = false;
     if (!tileHead.Read(buf))
-    return false;
+        return false;
 
     int numLoc;
     tileHead.GetNumLocalMaterial(numLoc);
@@ -79,7 +79,7 @@ bool trpgManagedTile::SetTileLoc(int inX,int inY,int inLod)
     location.x = inX;
     location.y = inY;
     if (inLod < 0)
-    return false;
+        return false;
     location.lod = inLod;
 
     return true;
@@ -108,18 +108,18 @@ const trpgwAppAddress& trpgManagedTile::GetTileAddress() const
 bool trpgManagedTile::SetChildLocationInfo(int childIdx, int x, int y, const trpgwAppAddress& addr)
 {
     if(childIdx < 0)
-    throw std::invalid_argument(
-            "trpgManagedTile::SetChildLocationInfo(): index argument out of bound.");
+        throw std::invalid_argument(
+                "trpgManagedTile::SetChildLocationInfo(): index argument out of bound.");
 
     int size = childLocationInfo.size();
     if(childIdx < size)
-    childLocationInfo[childIdx] = TileLocationInfo(x, y, location.lod+1, addr);
+        childLocationInfo[childIdx] = TileLocationInfo(x, y, location.lod+1, addr);
     else if(childIdx == size)
-    childLocationInfo.push_back(TileLocationInfo(x, y, location.lod+1, addr));
+        childLocationInfo.push_back(TileLocationInfo(x, y, location.lod+1, addr));
     else
     {
-    childLocationInfo.resize(childIdx+1);
-    childLocationInfo[childIdx] = TileLocationInfo(x, y, location.lod+1, addr);
+        childLocationInfo.resize(childIdx+1);
+        childLocationInfo[childIdx] = TileLocationInfo(x, y, location.lod+1, addr);
     }
 
     return true;
@@ -127,18 +127,18 @@ bool trpgManagedTile::SetChildLocationInfo(int childIdx, int x, int y, const trp
 bool trpgManagedTile::SetChildLocationInfo(int childIdx, const TileLocationInfo& info)
 {
     if(childIdx < 0)
-    throw std::invalid_argument(
-            "trpgManagedTile::SetChildLocationInfo(): index argument out of bound.");
+        throw std::invalid_argument(
+                "trpgManagedTile::SetChildLocationInfo(): index argument out of bound.");
 
     int size = childLocationInfo.size();
     if(childIdx < size)
-    childLocationInfo[childIdx] = info;
+        childLocationInfo[childIdx] = info;
     else if(childIdx == size)
-    childLocationInfo.push_back(info);
+        childLocationInfo.push_back(info);
     else
     {
-    childLocationInfo.resize(childIdx+1);
-    childLocationInfo[childIdx] = info;
+        childLocationInfo.resize(childIdx+1);
+        childLocationInfo[childIdx] = info;
     }
 
     return true;
@@ -146,8 +146,8 @@ bool trpgManagedTile::SetChildLocationInfo(int childIdx, const TileLocationInfo&
 const TileLocationInfo& trpgManagedTile::GetChildLocationInfo(int childIdx) const
 {
     if(childIdx < 0 || childIdx >= (int)childLocationInfo.size())
-    throw std::invalid_argument(
-            "trpgManagedTile::GetChildLocationInfo(): index argument out of bound.");
+        throw std::invalid_argument(
+                "trpgManagedTile::GetChildLocationInfo(): index argument out of bound.");
    
 
     return childLocationInfo[childIdx];
@@ -156,8 +156,8 @@ const TileLocationInfo& trpgManagedTile::GetChildLocationInfo(int childIdx) cons
 bool trpgManagedTile::GetChildTileLoc(int childIdx, int &x,int &y,int &lod) const
 {
     if(childIdx < 0 || childIdx >= (int)childLocationInfo.size())
-    throw std::invalid_argument(
-            "trpgManagedTile::GetChildTileLoc(): index argument out of bound.");
+        throw std::invalid_argument(
+                "trpgManagedTile::GetChildTileLoc(): index argument out of bound.");
     TileLocationInfo const& info = childLocationInfo[childIdx];
 
     x = info.x;  
@@ -170,8 +170,8 @@ bool trpgManagedTile::GetChildTileLoc(int childIdx, int &x,int &y,int &lod) cons
 const trpgwAppAddress& trpgManagedTile::GetChildTileAddress(int childIdx) const
 {
     if(childIdx < 0 || childIdx >= (int)childLocationInfo.size())
-    throw std::invalid_argument(
-            "trpgManagedTile::GetChildTileAddress(): index argument out of bound.");
+        throw std::invalid_argument(
+                "trpgManagedTile::GetChildTileAddress(): index argument out of bound.");
     return childLocationInfo[childIdx].addr;
 }
 
@@ -191,7 +191,7 @@ const trpgLocalMaterial *trpgManagedTile::GetLocMaterial(int id) const
     matList = tileHead.GetLocalMaterialList();
 
     if (id <0 || id >= (int)matList->size())
-    return NULL;
+        return NULL;
     
     return &(*matList)[id];
 }
@@ -209,7 +209,7 @@ void *trpgManagedTile::GetLocalData() const
 bool trpgManagedTile::SetMatData(int id,void *info)
 {
     if (id < 0 || id >= (int)localMatData.size())
-    return false;
+        return false;
 
     localMatData[id] = info;
 
@@ -219,7 +219,7 @@ bool trpgManagedTile::SetMatData(int id,void *info)
 void *trpgManagedTile::GetMatData(int id) const
 {
     if (id < 0 || id >= (int)localMatData.size())
-    return NULL;
+        return NULL;
 
     return localMatData[id];
 }
@@ -263,19 +263,19 @@ void trpgPageManager::LodPageInfo::Clean()
     // Clean up managed tile structures
     unsigned int i;
     for (i=0;i<load.size();i++)
-    if (load[i])
-        delete load[i];
+        if (load[i])
+            delete load[i];
     load.resize(0);
     for (i=0;i<unload.size();i++)
-    if (unload[i])
-        delete unload[i];
+        if (unload[i])
+            delete unload[i];
     unload.resize(0);
     for (i=0;i<current.size();i++)
-    if (current[i])
-        delete current[i];
+        if (current[i])
+            delete current[i];
     current.resize(0);
     for (i=0;i<freeList.size();i++)
-    delete freeList[i];
+        delete freeList[i];
     freeList.resize(0);
     activeLoad = false;
     activeUnload = false;
@@ -318,17 +318,17 @@ bool trpgPageManager::LodPageInfo::Init(trpgr_Archive *archive, int myLod, doubl
     */ 
     maxNumTiles = (int)(1.15*(2*aoiSize.x+1)*(2*aoiSize.y+1));
     if(majorVersion == 2 && minorVersion >= 1)
-    maxNumTiles = (int)(1.15*(2*aoiSize.x+1)*(2*aoiSize.y+1)/freeListDivider);
+        maxNumTiles = (int)(1.15*(2*aoiSize.x+1)*(2*aoiSize.y+1)/freeListDivider);
     else
-    maxNumTiles = (int)(1.15*(2*aoiSize.x+1)*(2*aoiSize.y+1));
+        maxNumTiles = (int)(1.15*(2*aoiSize.x+1)*(2*aoiSize.y+1));
 
 
    
 
     // Allocate 'em
     for (int i=0;i<maxNumTiles;i++) {
-    trpgManagedTile *tile = new trpgManagedTile();
-    freeList.push_back(tile);
+        trpgManagedTile *tile = new trpgManagedTile();
+        freeList.push_back(tile);
     }
 
     // We still don't have a position yet
@@ -352,7 +352,7 @@ bool trpgPageManager::LodPageInfo::SetLocation(trpg2dPoint &loc)
 
     // Nothing to page.  Done.
     if (newCell.x == cell.x && newCell.y == cell.y)
-    return false;
+        return false;
 
     // Cell has changed.  Update.
     cell = newCell;
@@ -366,15 +366,15 @@ trpgManagedTile *trpgPageManager::LodPageInfo::GetNextLoad()
 {
     // Can only load one tile at a time
     if (activeLoad)
-    return NULL;
+        return NULL;
 
     // Clear any NULLs at the beginning
     while (load.size() && !load[0])
-    load.pop_front();
+        load.pop_front();
 
     if (load.size() > 0) {
-    activeLoad = true;
-    return load[0];
+        activeLoad = true;
+        return load[0];
     }
 
     return NULL;
@@ -383,8 +383,8 @@ trpgManagedTile *trpgPageManager::LodPageInfo::GetNextLoad()
 void trpgPageManager::LodPageInfo::AckLoad()
 {
     if (activeLoad) {
-    current.push_back(load[0]);
-    load.pop_front();
+        current.push_back(load[0]);
+        load.pop_front();
     }
     activeLoad = false;
 }
@@ -393,15 +393,15 @@ trpgManagedTile *trpgPageManager::LodPageInfo::GetNextUnload()
 {
     // Can only unload one tile at a time
     if (activeUnload)
-    return NULL;
+        return NULL;
 
     // Clear any NULLs at the beginning
     while (unload.size() && !unload[0])
-    unload.pop_front();
+        unload.pop_front();
 
     if (unload.size() > 0) {
-    activeUnload = true;
-    return unload[0];
+        activeUnload = true;
+        return unload[0];
     }
 
     return NULL;
@@ -410,10 +410,10 @@ trpgManagedTile *trpgPageManager::LodPageInfo::GetNextUnload()
 void trpgPageManager::LodPageInfo::AckUnload()
 {
     if (activeUnload) {
-    trpgManagedTile *tile = unload[0];
-    tile->Reset();
-    freeList.push_back(tile);
-    unload.pop_front();
+        trpgManagedTile *tile = unload[0];
+        tile->Reset();
+        freeList.push_back(tile);
+        unload.pop_front();
     }
     activeUnload = false;
 }
@@ -424,11 +424,11 @@ bool trpgPageManager::LodPageInfo::isWithin(trpgManagedTile *tile,trpg2iPoint &s
     tile->GetTileLoc(tileX,tileY,tileLod);
     if (tileX >= sw.x && 
         tileX <= ne.x &&
-    tileY >= sw.y && 
+        tileY >= sw.y && 
         tileY <= ne.y)
-    return true;
+        return true;
     else
-    return false;
+        return false;
 }
 
 bool trpgPageManager::LodPageInfo::Stop()
@@ -436,13 +436,13 @@ bool trpgPageManager::LodPageInfo::Stop()
     // Empty the load list
     unsigned int i;
     for (i=0;i<load.size();i++)
-    freeList.push_back(load[i]);
+        freeList.push_back(load[i]);
     load.resize(0);
 
     // Move the current tiles to the unload list
     for (i=0;i<current.size();i++)
-    if (current[i])
-        unload.push_back(current[i]);
+        if (current[i])
+            unload.push_back(current[i]);
     current.resize(0);
 
     return (unload.size() > 0);
@@ -450,7 +450,7 @@ bool trpgPageManager::LodPageInfo::Stop()
 void trpgPageManager::LodPageInfo::AddChildrenToLoadList(std::vector<trpgManagedTile*>& parentList)
 {
     if(parentList.size() == 0)
-    return;
+        return;
 
     // Area coverage, in cell unit
     trpg2iPoint sw,ne;
@@ -470,50 +470,50 @@ void trpgPageManager::LodPageInfo::AddChildrenToLoadList(std::vector<trpgManaged
     tmpCurrent.resize(dx*dy);
     std::fill(tmpCurrent.begin(), tmpCurrent.end(), false);
     for (unsigned int i = 0; i<current.size(); i++) {
-    trpgManagedTile *tile = current[i];
-    if (tile) {
-        int tileX,tileY,tileLod;
-        tile->GetTileLoc(tileX,tileY,tileLod);
-        tmpCurrent[(tileY-sw.y)*dx + (tileX-sw.x)] = true;
-    }
+        trpgManagedTile *tile = current[i];
+        if (tile) {
+            int tileX,tileY,tileLod;
+            tile->GetTileLoc(tileX,tileY,tileLod);
+            tmpCurrent[(tileY-sw.y)*dx + (tileX-sw.x)] = true;
+        }
     }
     for (unsigned int i=0;i<load.size();i++) {
-    trpgManagedTile *tile = load[i];
-    if (tile) {
-        int tileX,tileY,tileLod;
-        tile->GetTileLoc(tileX,tileY,tileLod);
-        tmpCurrent[(tileY-sw.y)*dx + (tileX-sw.x)] = true;
-    }
+        trpgManagedTile *tile = load[i];
+        if (tile) {
+            int tileX,tileY,tileLod;
+            tile->GetTileLoc(tileX,tileY,tileLod);
+            tmpCurrent[(tileY-sw.y)*dx + (tileX-sw.x)] = true;
+        }
     }
 
     for(unsigned int parentIdx = 0; parentIdx < parentList.size(); ++parentIdx) {
       
-    trpgManagedTile* parentTile = parentList[parentIdx];
-    unsigned int nbChildren = parentTile->GetNbChildren();
+        trpgManagedTile* parentTile = parentList[parentIdx];
+        unsigned int nbChildren = parentTile->GetNbChildren();
 
-    for(unsigned int childIdx = 0; childIdx < nbChildren; ++childIdx) {
-         
-        const TileLocationInfo& childLoc = parentTile->GetChildLocationInfo(childIdx);
+        for(unsigned int childIdx = 0; childIdx < nbChildren; ++childIdx) {
 
-        // a sanity check: if the lod is not the same then this
-        // parent is not at the right place
-        if(childLoc.lod != lod)
-        break;
+            const TileLocationInfo& childLoc = parentTile->GetChildLocationInfo(childIdx);
 
-        // Make sure it is within
-        if (childLoc.x >= sw.x && 
-        childLoc.x <= ne.x &&
-        childLoc.y >= sw.y && 
-        childLoc.y <= ne.y)   {
-           
-        // Is it alread there ?
-        if(!tmpCurrent[(childLoc.y - sw.y)*dx + (childLoc.x - sw.x)]) {
-              
-            // Not there, add it
-            AddToLoadList(childLoc.x, childLoc.y, childLoc.addr);
+            // a sanity check: if the lod is not the same then this
+            // parent is not at the right place
+            if(childLoc.lod != lod)
+            break;
+
+            // Make sure it is within
+            if (childLoc.x >= sw.x &&
+            childLoc.x <= ne.x &&
+            childLoc.y >= sw.y &&
+            childLoc.y <= ne.y)   {
+
+            // Is it alread there ?
+            if(!tmpCurrent[(childLoc.y - sw.y)*dx + (childLoc.x - sw.x)]) {
+
+                // Not there, add it
+                AddToLoadList(childLoc.x, childLoc.y, childLoc.addr);
+            }
+            }
         }
-        }
-    }
     }
 }
   
@@ -533,26 +533,26 @@ bool trpgPageManager::LodPageInfo::AddToLoadList(int x, int y, const trpgwAppAdd
     ne.y = MIN(lodSize.y-1,ne.y);
 
     if (x >= sw.x &&
-    x <= ne.x &&
-    y >= sw.y &&
-    y <= ne.y)   {
+        x <= ne.x &&
+        y >= sw.y &&
+        y <= ne.y)   {
       
-    trpgManagedTile *tile = 0;
-    if(freeList.size() > 0){
+        trpgManagedTile *tile = 0;
+        if(freeList.size() > 0){
 
-        tile = freeList[0];
-        freeList.pop_front();
+            tile = freeList[0];
+            freeList.pop_front();
+        }
+        else
+            tile = new trpgManagedTile();
+        tile->SetTileLoc(x, y, lod);
+        tile->SetTileAddress(addr);
+        load.push_back(tile);
+
+        return true;
     }
     else
-        tile = new trpgManagedTile();
-    tile->SetTileLoc(x, y, lod);
-    tile->SetTileAddress(addr);
-    load.push_back(tile);
-
-    return true;
-    }
-    else
-    return false;
+        return false;
 }
 
 /* Update does the major work of figuring out what to load and
@@ -576,10 +576,10 @@ void trpgPageManager::LodPageInfo::Update()
     */
     unsigned int i;
     for (i=0;i<load.size();i++) {
-    if (load[i] && !isWithin(load[i],sw,ne)) {
-        freeList.push_back(load[i]);
-        load[i] = NULL;
-    }
+        if (load[i] && !isWithin(load[i],sw,ne)) {
+            freeList.push_back(load[i]);
+            load[i] = NULL;
+        }
     }
 
     /* Unload list -
@@ -587,10 +587,10 @@ void trpgPageManager::LodPageInfo::Update()
        be in view again.  Move them back to current.
     */
     for (i=0;i<unload.size();i++) {
-    if (unload[i] && isWithin(unload[i],sw,ne)) {
-        current.push_back(unload[i]);
-        unload[i] = NULL;
-    }
+        if (unload[i] && isWithin(unload[i],sw,ne)) {
+            current.push_back(unload[i]);
+            unload[i] = NULL;
+        }
     }
 
     /* Current list -
@@ -603,70 +603,70 @@ void trpgPageManager::LodPageInfo::Update()
     // Look for tiles to page out
     // Move them to the unload list
     for (i=0;i<current.size();i++) {
-    if (current[i] && !isWithin(current[i],sw,ne)) {
-        unload.push_back(current[i]);
-        current[i] = NULL;
-    }
+        if (current[i] && !isWithin(current[i],sw,ne)) {
+            unload.push_back(current[i]);
+            current[i] = NULL;
+        }
     }
     // Clean the NULLs out of the current list
     int curPos = 0;
     for (i=0;i<current.size();i++) {
-    if (current[i]) {
-        current[curPos] = current[i];
-        curPos++;
-    }
+        if (current[i]) {
+            current[curPos] = current[i];
+            curPos++;
+        }
     }
     current.resize(curPos);
     
     bool doUpdate = true;
     if(majorVersion == 2 && minorVersion >= 1)
     {
-    // Version 2.1, we update only lod 0 since the tile table
-    // will only contain lod 0. All tiles from other lod must be
-    // update through the trpgPageManager::AckLoad(tile info)
-    if(lod != 0)
-        doUpdate = false;
+        // Version 2.1, we update only lod 0 since the tile table
+        // will only contain lod 0. All tiles from other lod must be
+        // update through the trpgPageManager::AckLoad(tile info)
+        if(lod != 0)
+            doUpdate = false;
     }
     if(doUpdate)
     {
-    // Sort the currently loaded stuff into a spatial array
-    //  so we can figure out what needs to be loaded in addition.
-    int dx,dy;
-    dx = ne.x - sw.x+1;  dy = ne.y - sw.y+1;
-    tmpCurrent.resize(dx*dy);
-    for (i=0;i<tmpCurrent.size();i++)  tmpCurrent[i] = false;
-    for (i=0;i<current.size();i++) {
-        trpgManagedTile *tile = current[i];
-        if (tile) {
-        int tileX,tileY,tileLod;
-        tile->GetTileLoc(tileX,tileY,tileLod);
-        tmpCurrent[(tileY-sw.y)*dx + (tileX-sw.x)] = true;
+        // Sort the currently loaded stuff into a spatial array
+        //  so we can figure out what needs to be loaded in addition.
+        int dx,dy;
+        dx = ne.x - sw.x+1;  dy = ne.y - sw.y+1;
+        tmpCurrent.resize(dx*dy);
+        for (i=0;i<tmpCurrent.size();i++)  tmpCurrent[i] = false;
+        for (i=0;i<current.size();i++) {
+            trpgManagedTile *tile = current[i];
+            if (tile) {
+                int tileX,tileY,tileLod;
+                tile->GetTileLoc(tileX,tileY,tileLod);
+                tmpCurrent[(tileY-sw.y)*dx + (tileX-sw.x)] = true;
+            }
         }
-    }
 
-    // Now figure out which ones are missing and add them
-    //  to the load list
-    for (int x=0;x<dx;x++) {
-        for (int y=0;y<dy;y++) {
-        if (!tmpCurrent[y*dx + x]) {
-            // Allocate a new tile
-            trpgManagedTile *tile = NULL;
-            if (freeList.size() > 0) {
-            tile = freeList[0];
-            freeList.pop_front();
-            } else
-            tile = new trpgManagedTile();
-            tile->SetTileLoc(x+sw.x,y+sw.y,lod);
-            trpgwAppAddress addr;
-            float32 zmin, zmax;
+        // Now figure out which ones are missing and add them
+        //  to the load list
+        for (int x=0;x<dx;x++) {
+            for (int y=0;y<dy;y++) {
+                if (!tmpCurrent[y*dx + x]) {
+                    // Allocate a new tile
+                    trpgManagedTile *tile = NULL;
+                    if (freeList.size() > 0) {
+                    tile = freeList[0];
+                    freeList.pop_front();
+                    } else
+                    tile = new trpgManagedTile();
+                    tile->SetTileLoc(x+sw.x,y+sw.y,lod);
+                    trpgwAppAddress addr;
+                    float32 zmin, zmax;
 
-            if(tileTable && tileTable->GetTile(x+sw.x, y+sw.y, lod, addr, zmin, zmax))
-            tile->SetTileAddress(addr);
+                    if(tileTable && tileTable->GetTile(x+sw.x, y+sw.y, lod, addr, zmin, zmax))
+                    tile->SetTileAddress(addr);
 
-            load.push_back(tile);
+                    load.push_back(tile);
+                }
+            }
         }
-        }
-    }
     }
 
     // That's it.  All the rest is handled by the caller
@@ -694,8 +694,8 @@ void trpgPageManager::LodPageInfo::GetLoadedTileWithin(double pagingDistance, st
     tileList.clear();
 
     for (unsigned i=0; i <current.size(); i++) {
-    if (current[i] && isWithin(current[i],sw,ne)) 
-        tileList.push_back(current[i]);
+        if (current[i] && isWithin(current[i],sw,ne))
+            tileList.push_back(current[i]);
     }
 }
 void trpgPageManager::LodPageInfo::Print(trpgPrintBuffer &buf)
@@ -711,22 +711,22 @@ void trpgPageManager::LodPageInfo::Print(trpgPrintBuffer &buf)
     sprintf(line,"Loads:  (activeLoad = %s)",(activeLoad ? "yes" : "no"));  buf.prnLine(line);
     buf.IncreaseIndent();
     for (i=0;i<load.size();i++)
-    if (load[i])
-        load[i]->Print(buf);
+        if (load[i])
+            load[i]->Print(buf);
     buf.DecreaseIndent();
 
     sprintf(line,"Unloads:  (activeUnload = %s)",(activeUnload ? "yes" : "no"));  buf.prnLine(line);
     buf.IncreaseIndent();
     for (i=0;i<unload.size();i++)
-    if (unload[i])
-        unload[i]->Print(buf);
+        if (unload[i])
+            unload[i]->Print(buf);
     buf.DecreaseIndent();
 
     buf.prnLine("Currently loaded:");
     buf.IncreaseIndent();
     for (i=0;i<current.size();i++)
-    if (current[i])
-        current[i]->Print(buf);
+        if (current[i])
+            current[i]->Print(buf);
     buf.DecreaseIndent();
 
     sprintf(line,"Free list size = %d", (int)freeList.size());  buf.prnLine(line);
@@ -769,10 +769,10 @@ void trpgPageManager::Init(trpgr_Archive *inArch)
     valid = true;
     pageInfo.resize(numLod);
     for (int i=0;i<numLod;i++) {
-    if(i > 3)
-        pageInfo[i].Init(archive,i,scale, 4);
-    else
-        pageInfo[i].Init(archive,i,scale);
+        if(i > 3)
+            pageInfo[i].Init(archive,i,scale, 4);
+        else
+            pageInfo[i].Init(archive,i,scale);
     }
 }
 
@@ -803,10 +803,10 @@ void trpgPageManager::Init(trpgr_Archive *inArch, int maxLod)
     valid = true;
     pageInfo.resize(maxLod);
     for (int i=0;i<maxLod;i++) {
-    if(i > 3)
-        pageInfo[i].Init(archive,i,scale, 4);
-    else
-        pageInfo[i].Init(archive,i,scale);
+        if(i > 3)
+            pageInfo[i].Init(archive,i,scale, 4);
+        else
+            pageInfo[i].Init(archive,i,scale);
     }
 }
 
@@ -814,7 +814,7 @@ bool trpgPageManager::SetPageDistFactor(double inFact)
 {
     // A scaling factor less than 1 will break the archive display.
     if (inFact <= 1.0)
-    return false;
+        return false;
 
     scale = inFact;
 
@@ -825,42 +825,42 @@ bool trpgPageManager::SetLocation(trpg2dPoint &pt)
 {
     // Do a basic sanity check
     if (!valid || (pagePt.x == pt.x && pagePt.y == pt.y))
-    return false;
+        return false;
     pagePt = pt;
 
     // Call each terrain LOD and let if figure out if something
     //  has changed.
     bool change = false;
     for (unsigned int i=0;i<pageInfo.size();i++) {
-    if (pageInfo[i].SetLocation(pt))
-        change = true;
+        if (pageInfo[i].SetLocation(pt))
+            change = true;
     }
 
     if(majorVersion == 2 && minorVersion >= 1 && change) {
 
-    // Version 2.1 and over
-    // Since we don't have a tile table for lod > 0, 
-    // we must rely on the parent to see if children 
-    // tiles have to be loaded:
-    // First we get the list of parent tiles that falls
-    // in the area of interest of the children,
-    // Second we add to the load list all the parent's 
-    // children that are no already part of the list
+        // Version 2.1 and over
+        // Since we don't have a tile table for lod > 0,
+        // we must rely on the parent to see if children
+        // tiles have to be loaded:
+        // First we get the list of parent tiles that falls
+        // in the area of interest of the children,
+        // Second we add to the load list all the parent's
+        // children that are no already part of the list
 
-    for(unsigned int lodIdx = 1; lodIdx < pageInfo.size(); ++lodIdx) {
+        for(unsigned int lodIdx = 1; lodIdx < pageInfo.size(); ++lodIdx) {
 
-        LodPageInfo& parentInfo = pageInfo[lodIdx -1];
-        LodPageInfo& childInfo = pageInfo[lodIdx];
+            LodPageInfo& parentInfo = pageInfo[lodIdx -1];
+            LodPageInfo& childInfo = pageInfo[lodIdx];
 
-        // Get the list of parents tile that are currently
-        // loaded in the children aoi
-        std::vector<trpgManagedTile*> parentList;
-        parentInfo.GetLoadedTileWithin(childInfo.GetPageDistance(), parentList);
-      
-        // Add the children of those parents to the load list
-        // of the children info, if they are not already there
-        childInfo.AddChildrenToLoadList(parentList);
-    }
+            // Get the list of parents tile that are currently
+            // loaded in the children aoi
+            std::vector<trpgManagedTile*> parentList;
+            parentInfo.GetLoadedTileWithin(childInfo.GetPageDistance(), parentList);
+
+            // Add the children of those parents to the load list
+            // of the children info, if they are not already there
+            childInfo.AddChildrenToLoadList(parentList);
+        }
 
     }
 
@@ -871,22 +871,22 @@ trpgManagedTile *trpgPageManager::GetNextLoad()
 {
     // If we're already doing something, let them know about it
     if (lastLoad != None)
-    throw 1;
+        throw 1;
 
     // Look for anything that needs loaded
     // Start with lowest LOD, work up to highest
     trpgManagedTile *tile = NULL;
     for (unsigned int i=0;i<pageInfo.size();i++) {
-    LodPageInfo &info = pageInfo[i];
-    if ((tile = info.GetNextLoad()))
-        break;
-    }
+        LodPageInfo &info = pageInfo[i];
+        if ((tile = info.GetNextLoad()))
+            break;
+        }
 
-    // Found one.  Now the user has to load it.
-    if (tile) {
-    lastLoad = Load;
-    lastTile = tile;
-    lastLod = tile->location.lod;
+        // Found one.  Now the user has to load it.
+        if (tile) {
+        lastLoad = Load;
+        lastTile = tile;
+        lastLod = tile->location.lod;
     }
 
     return tile;
@@ -901,25 +901,25 @@ void trpgPageManager::AckLoad(std::vector<TileLocationInfo> const& children)
 {
     // If we're not in the middle of a load, register our displeasure
     if (lastLoad != Load)
-    throw 1;
+        throw 1;
 
     if(majorVersion >= 2 && minorVersion >=1)
     {
-    if(children.size() > 0)
-    {
-        LodPageInfo& childInfo = pageInfo[lastLod+1];
-        for(unsigned int idx = 0; idx < children.size(); ++idx)
+        if(children.size() > 0)
         {
-        TileLocationInfo const&childLocInfo = children[idx]; 
-        if(childLocInfo.lod != lastLod+1)
-            continue; // Something wrong here
-        childInfo.AddToLoadList(childLocInfo.x, childLocInfo.y, childLocInfo.addr);
+            LodPageInfo& childInfo = pageInfo[lastLod+1];
+            for(unsigned int idx = 0; idx < children.size(); ++idx)
+            {
+                TileLocationInfo const&childLocInfo = children[idx];
+                if(childLocInfo.lod != lastLod+1)
+                    continue; // Something wrong here
+                childInfo.AddToLoadList(childLocInfo.x, childLocInfo.y, childLocInfo.addr);
 
-        // Also save info in parent tile
-        lastTile->SetChildLocationInfo(idx, childLocInfo);
+                // Also save info in parent tile
+                lastTile->SetChildLocationInfo(idx, childLocInfo);
 
+            }
         }
-    }
     }
   
     pageInfo[lastLod].AckLoad();
@@ -937,7 +937,7 @@ void *trpgPageManager::GetGroupData(int groupID)
 {
     ManageGroupMap::const_iterator p = groupMap.find(groupID);
     if (p != groupMap.end())
-    return (*p).second;
+        return (*p).second;
 
     return NULL;
 }
@@ -946,22 +946,22 @@ trpgManagedTile *trpgPageManager::GetNextUnload()
 {
     // If we're already doing something, let them know about it
     if (lastLoad != None)
-    throw 1;
+        throw 1;
 
     // Look for anything that needs unloaded
     // Start with highest LOD, work down to lowest
     trpgManagedTile *tile = NULL;
     for (int i=pageInfo.size()-1;i>=0;i--) {
-    LodPageInfo &info = pageInfo[i];
-    if ((tile = info.GetNextUnload()))
-        break;
+        LodPageInfo &info = pageInfo[i];
+        if ((tile = info.GetNextUnload()))
+            break;
     }
 
     // Found one.  Now the user has to unload it.
     if (tile) {
-    lastLoad = Unload;
-    lastTile = tile;
-    lastLod = tile->location.lod;
+        lastLoad = Unload;
+        lastTile = tile;
+        lastLod = tile->location.lod;
     }
 
     return tile;
@@ -971,14 +971,14 @@ void trpgPageManager::AckUnload()
 {
     // If we're not in the middle of an unload, let 'em know.
     if (lastLoad != Unload)
-    throw 1;
+        throw 1;
 
     // Remove this tile's group IDs from the map
     const std::vector<int> *groupIDs = lastTile->GetGroupIDs();
     for (unsigned int i=0;i<groupIDs->size();i++) {
-    ManageGroupMap::iterator p = groupMap.find((*groupIDs)[i]);
-    if (p != groupMap.end())
-        groupMap.erase(p);
+        ManageGroupMap::iterator p = groupMap.find((*groupIDs)[i]);
+        if (p != groupMap.end())
+            groupMap.erase(p);
     }
 
     LodPageInfo &info = pageInfo[lastLod];
@@ -991,7 +991,7 @@ bool trpgPageManager::Stop()
 {
     bool res=false;
     for (unsigned int i=0;i<pageInfo.size();i++)
-    res |= pageInfo[i].Stop();
+        res |= pageInfo[i].Stop();
 
     lastLoad = None;
 
@@ -1005,10 +1005,10 @@ void trpgPageManager::Print(trpgPrintBuffer &buf)
     buf.prnLine("Terrain LODs:");
 
     for (unsigned int i=0;i<pageInfo.size();i++) {
-    sprintf(line,"----Terrain lod %d---",i);  buf.prnLine(line);
-        buf.IncreaseIndent();
-    pageInfo[i].Print(buf);
-    buf.DecreaseIndent();
+        sprintf(line,"----Terrain lod %d---",i);  buf.prnLine(line);
+            buf.IncreaseIndent();
+        pageInfo[i].Print(buf);
+        buf.DecreaseIndent();
     }
 }
 
@@ -1017,16 +1017,16 @@ void *trpgr_ChildRefCB::Parse(trpgToken tok, trpgReadBuffer& rbuf)
     // It should be a tile ref token, if not then something is wrong
     if(tok == TRPG_CHILDREF)
     {
-    childList.push_back(trpgChildRef());
-    trpgChildRef &childRef = childList.back();
-    if(childRef.Read(rbuf))
-        return &childRef;
-    else
-        return false;
+        childList.push_back(trpgChildRef());
+        trpgChildRef &childRef = childList.back();
+        if(childRef.Read(rbuf))
+            return &childRef;
+        else
+            return false;
 
     }
     else
-    return 0;
+        return 0;
 }
 void trpgr_ChildRefCB::Reset()
 {
@@ -1040,10 +1040,10 @@ unsigned int trpgr_ChildRefCB::GetNbChildren() const
 const trpgChildRef& trpgr_ChildRefCB::GetChildRef(unsigned int idx) const
 {
     if(idx >= childList.size())
-    throw std::invalid_argument(
-            "trpgPageManageTester::ChildRefCB::GetChild(): index argument out of bound.");
+        throw std::invalid_argument(
+                "trpgPageManageTester::ChildRefCB::GetChild(): index argument out of bound.");
     else
-    return childList[idx];
+        return childList[idx];
 }
 
 /* Page Manager Tester
@@ -1067,7 +1067,7 @@ void trpgPageManageTester::Init(trpgPrintBuffer *pBuf,trpgPageManager *pMan,trpg
     printBuf = pBuf;
 
     if (!archive->isValid())
-    throw 1;
+        throw 1;
 
     const trpgHeader *header = archive->GetHeader();
     header->GetVersion(majorVersion, minorVersion);
@@ -1081,11 +1081,11 @@ void trpgPageManageTester::Init(trpgPrintBuffer *pBuf,trpgPageManager *pMan,trpg
 void trpgPageManageTester::RandomTest(int num,int seed)
 {
     if (!manager || !archive || !printBuf)
-    throw 1;
+        throw 1;
 
     // Seed the random number generator so we can replicate runs
     if (seed != -1)
-    srand(seed);
+        srand(seed);
 
     // Need the extents
     trpg2dPoint ll,ur,lod0Size;
@@ -1101,20 +1101,20 @@ void trpgPageManageTester::RandomTest(int num,int seed)
     int i;
     char line[1024];
     for (i=0;i<num;i++) {
-    // Generate a point
-    double randNum1 = rand()/(double)RAND_MAX;
-    double randNum2 = rand()/(double)RAND_MAX;
-    trpg2dPoint pt;
-    pt.x = (ur.x - ll.x)*randNum1;
-    pt.y = (ur.y - ll.y)*randNum2;
+        // Generate a point
+        double randNum1 = rand()/(double)RAND_MAX;
+        double randNum2 = rand()/(double)RAND_MAX;
+        trpg2dPoint pt;
+        pt.x = (ur.x - ll.x)*randNum1;
+        pt.y = (ur.y - ll.y)*randNum2;
 
-    // Jump to the point
-    bool changes = manager->SetLocation(pt);
-    sprintf(line,"Jumped to (%f,%f).  Tiles to load/unload = %s",pt.x,pt.y,
-            (changes ? "yes" : "no"));  printBuf->prnLine(line);
+        // Jump to the point
+        bool changes = manager->SetLocation(pt);
+        sprintf(line,"Jumped to (%f,%f).  Tiles to load/unload = %s",pt.x,pt.y,
+                (changes ? "yes" : "no"));  printBuf->prnLine(line);
 
-    // Process the results
-    ProcessChanges();
+        // Process the results
+        ProcessChanges();
     }
 
     // Ask the page manager for its final status
@@ -1128,7 +1128,7 @@ void trpgPageManageTester::Fly_LL_to_UR(double dist)
     char line[1024];
 
     if (!manager || !archive || !printBuf)
-    throw 1;
+        throw 1;
 
     // Need the extents
     trpg2dPoint ll,ur,lod0Size;
@@ -1144,15 +1144,15 @@ void trpgPageManageTester::Fly_LL_to_UR(double dist)
     // Fly the path
     trpg2dPoint loc;   loc = ll;
     do {
-    loc.x += dist;  loc.y += dist;
+        loc.x += dist;  loc.y += dist;
 
-    // Jump to next point
-    bool changes = manager->SetLocation(loc);
-    sprintf(line,"Moved to (%f,%f).  Tiles to load/unload = %s",loc.x,loc.y,
-        (changes ? "yes" : "no"));  printBuf->prnLine(line);
+        // Jump to next point
+        bool changes = manager->SetLocation(loc);
+        sprintf(line,"Moved to (%f,%f).  Tiles to load/unload = %s",loc.x,loc.y,
+            (changes ? "yes" : "no"));  printBuf->prnLine(line);
 
-    // Process new location
-    ProcessChanges();
+        // Process new location
+        ProcessChanges();
     } while (loc.x < ur.x && loc.y < ur.y);
 
     // Ask the page manager for its final status
@@ -1171,9 +1171,9 @@ void trpgPageManageTester::ProcessChanges()
     printBuf->prnLine("Tiles to unload:");
     printBuf->IncreaseIndent();
     while ((unloadTile = manager->GetNextUnload())) {
-    unloadTile->GetTileLoc(x,y,lod);
-    sprintf(line,"x = %d, y = %d, lod = %d",x,y,lod);  printBuf->prnLine(line);
-    manager->AckUnload();
+        unloadTile->GetTileLoc(x,y,lod);
+        sprintf(line,"x = %d, y = %d, lod = %d",x,y,lod);  printBuf->prnLine(line);
+        manager->AckUnload();
     }
     printBuf->DecreaseIndent();
 
@@ -1182,45 +1182,45 @@ void trpgPageManageTester::ProcessChanges()
     printBuf->prnLine("Tiles to load:");
     printBuf->IncreaseIndent();
     while ((loadTile = manager->GetNextLoad())) {
-    loadTile->GetTileLoc(x,y,lod);
-    sprintf(line,"x = %d, y = %d, lod = %d",x,y,lod);  printBuf->prnLine(line);
+        loadTile->GetTileLoc(x,y,lod);
+        sprintf(line,"x = %d, y = %d, lod = %d",x,y,lod);  printBuf->prnLine(line);
 
-    if(majorVersion == 2 && minorVersion >= 1)
-    {
-        // Version 2.1 and over
-        // We need to parse the loaded tile to get all of its children info
-        const trpgwAppAddress& tileAddress = loadTile->GetTileAddress();
-        trpgMemReadBuffer buf(archive->GetEndian());
-        if(archive->ReadTile(tileAddress, buf))
+        if(majorVersion == 2 && minorVersion >= 1)
         {
-        childRefCB.Reset();
-        if(tileParser.Parse(buf))
-        {
-            //  childRefCB should now have alist of trpgChildRef found in the tile
-            unsigned int nbChildRef = childRefCB.GetNbChildren();
-            if(nbChildRef > 0)
+            // Version 2.1 and over
+            // We need to parse the loaded tile to get all of its children info
+            const trpgwAppAddress& tileAddress = loadTile->GetTileAddress();
+            trpgMemReadBuffer buf(archive->GetEndian());
+            if(archive->ReadTile(tileAddress, buf))
             {
-            std::vector<TileLocationInfo> locInfoList;
-            for(unsigned int idx = 0; idx < nbChildRef; ++idx)
-            {
-                const trpgChildRef& childRef = childRefCB.GetChildRef(idx);
-                locInfoList.push_back(TileLocationInfo());
-                TileLocationInfo& locInfo = locInfoList.back(); 
-                childRef.GetTileLoc(locInfo.x, locInfo.y, locInfo.lod);
-                childRef.GetTileAddress(locInfo.addr);
-            }
+                childRefCB.Reset();
+                if(tileParser.Parse(buf))
+                {
+                    //  childRefCB should now have alist of trpgChildRef found in the tile
+                    unsigned int nbChildRef = childRefCB.GetNbChildren();
+                    if(nbChildRef > 0)
+                    {
+                        std::vector<TileLocationInfo> locInfoList;
+                        for(unsigned int idx = 0; idx < nbChildRef; ++idx)
+                        {
+                            const trpgChildRef& childRef = childRefCB.GetChildRef(idx);
+                            locInfoList.push_back(TileLocationInfo());
+                            TileLocationInfo& locInfo = locInfoList.back();
+                            childRef.GetTileLoc(locInfo.x, locInfo.y, locInfo.lod);
+                            childRef.GetTileAddress(locInfo.addr);
+                        }
 
-            manager->AckLoad(locInfoList);
+                        manager->AckLoad(locInfoList);
+                    }
+                    else
+                        manager->AckLoad();
+                }
             }
             else
-            manager->AckLoad();
-        }
+                manager->AckLoad();
         }
         else
-        manager->AckLoad();
-    }
-    else
-        manager->AckLoad();
+            manager->AckLoad();
     }
     printBuf->DecreaseIndent();
 }

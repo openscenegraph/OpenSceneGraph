@@ -140,7 +140,7 @@ bool trpgRange::operator == (const trpgRange &in) const
             return false;
     } else {
         if ((category && !in.category) ||
-                (!category && in.category) )
+            (!category && in.category) )
             return false;
     }
 
@@ -192,13 +192,13 @@ bool trpgRange::Read(trpgReadBuffer &buf)
 
         // Read the handle if we can..
         try {
-                        int32 tempHandle;                
+            int32 tempHandle;
             if(buf.Get(tempHandle)) 
-                        {
-                            handle = tempHandle;
-                        }
-                        else
-                        {
+            {
+                handle = tempHandle;
+            }
+            else
+            {
                 handle = -1;
             }
         }
@@ -245,7 +245,7 @@ bool trpgRangeTable::GetRange(int id,trpgRange &ret) const
         return false;
 
     RangeMapType::const_iterator itr = rangeMap.find(id);
-    if(itr == rangeMap.end())    {
+    if(itr == rangeMap.end()) {
         return false;
     }
     ret = itr->second;

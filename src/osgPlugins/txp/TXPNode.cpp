@@ -330,10 +330,10 @@ osg::Node* TXPNode::addPagedLODTile(int x, int y)
     }
     else
     {
-    _nodesToAdd.push_back(pagedLOD);
-    
-    return pagedLOD;
-}
+        _nodesToAdd.push_back(pagedLOD);
+
+        return pagedLOD;
+    }
 }
 
 void TXPNode::updateSceneGraph()

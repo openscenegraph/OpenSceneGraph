@@ -248,18 +248,19 @@ bool trpgModel::Read(trpgReadBuffer &buf, bool hasHandle)
         // TerraPage 2.2 will store the unique handle after the type
         // we use a different token, so this is backwards compatible.
         if(hasHandle) {
-                    int32 tempHandle;                
-                if(buf.Get(tempHandle)) 
-                    {
-                        handle = tempHandle;
-                    }
-                    else
-                    {
+            int32 tempHandle;
+            if(buf.Get(tempHandle))
+            {
+                handle = tempHandle;
+            }
+            else
+            {
                 handle = -1;
-                }
+            }
         }
         else 
             handle = -1;
+
         if (type == Local) {
             // two possibilities:
             // name, diskRef, useCount
@@ -304,6 +305,7 @@ bool trpgModel::Read(trpgReadBuffer &buf, bool hasHandle)
 trpgModelTable::trpgModelTable()
 {
 }
+
 trpgModelTable::~trpgModelTable()
 {
 }

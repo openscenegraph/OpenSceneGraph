@@ -1057,17 +1057,17 @@ void trpgwGeomHelper::EndPolygon()
     break;
     }
 
-        ResetPolygon();
+    ResetPolygon();
 }
 
 // Clean out the polygon arrays
 void trpgwGeomHelper::ResetPolygon()
 {
-        tmpTex.resize(0);
-        matPoly.resize(0);
-        polyTex.resize(0);
-        polyNorm.resize(0);
-        polyVert.resize(0);
+    tmpTex.resize(0);
+    matPoly.resize(0);
+    polyTex.resize(0);
+    polyNorm.resize(0);
+    polyVert.resize(0);
 }
 
 // Set the current color
@@ -1081,28 +1081,28 @@ void trpgwGeomHelper::SetColor(trpgColor& /*col*/)
 // Note: Required
 void trpgwGeomHelper::SetTexCoord(trpg2dPoint &pt)
 {
-        tmpTex.resize(0);
-        tmpTex.push_back(pt);
+    tmpTex.resize(0);
+    tmpTex.push_back(pt);
 }
 
 void trpgwGeomHelper::AddTexCoord(trpg2dPoint &pt)
 {
-        tmpTex.push_back(pt);
+    tmpTex.push_back(pt);
 }
 
 // Set the current normal
 // Note: required
 void trpgwGeomHelper::SetNormal(trpg3dPoint &pt)
 {
-        tmpNorm = pt;
+    tmpNorm = pt;
 }
 
 // Set the current material
 // Note: required
 void trpgwGeomHelper::SetMaterial(int32 imat)
 {
-        matPoly.resize(0);
-        matPoly.push_back(imat);
+    matPoly.resize(0);
+    matPoly.push_back(imat);
 }
 
 void trpgwGeomHelper::AddMaterial(int32 imat)
@@ -1135,7 +1135,7 @@ void trpgwGeomHelper::AddVertex(trpg3dPoint &pt)
     }
     else
 #endif
-        polyVert.push_back(pt);
+    polyVert.push_back(pt);
 
     // Update min/max
     zmin = MIN(pt.z,zmin);

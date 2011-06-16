@@ -59,7 +59,7 @@ void trpgr_Token::init(int in_tok,trpgr_Callback *in_cb,bool in_dest)
 void trpgr_Token::Destruct()
 {
     if (cb && destroy)
-    delete cb;
+        delete cb;
     cb = NULL;
     destroy = true;
 }
@@ -119,17 +119,17 @@ const trpgr_Callback *trpgr_Parser::GetCallback(trpgToken tok) const
 {
     tok_map::const_iterator iter = tokenMap.find(tok);
     if(iter != tokenMap.end())
-    return iter->second.cb;
+        return iter->second.cb;
     else
-    return 0;
+        return 0;
 }
 trpgr_Callback *trpgr_Parser::GetCallback(trpgToken tok)
 {
     tok_map::iterator iter = tokenMap.find(tok);
     if(iter != tokenMap.end())
-    return iter->second.cb;
+        return iter->second.cb;
     else
-    return 0;
+        return 0;
 }
    
 
@@ -154,7 +154,7 @@ void trpgr_Parser::SetDefaultCallback(trpgr_Callback *cb,bool in_dest)
 bool trpgr_Parser::TokenIsValid(trpgToken tok)
 {
     if (tok < 0)
-    return false;
+        return false;
 
     return true;
 }
@@ -170,61 +170,61 @@ bool trpgr_Parser::Parse(trpgReadBuffer &buf)
 
     try
     {
-    while (!buf.isEmpty())
-    {
-        /* We're expecting the following
-           Token    (int32)
-           Length  (int32)
-           Data    (variable)
-        */
-        trpgToken tok;
-        int32 len;
-        if (!buf.Get(tok))  throw 1;
-        // Push and Pop are special - no data
-        if (tok != TRPG_PUSH && tok != TRPG_POP)
+        while (!buf.isEmpty())
         {
-        if (!buf.Get(len)) throw 1;
-        if (!TokenIsValid(tok))  throw 1;
-        if (len < 0)  throw 1;
-        // Limit what we're reading to the length of this 
-        buf.PushLimit(len);
-        }
+            /* We're expecting the following
+            Token    (int32)
+            Length  (int32)
+            Data    (variable)
+            */
+            trpgToken tok;
+            int32 len;
+            if (!buf.Get(tok))  throw 1;
+            // Push and Pop are special - no data
+            if (tok != TRPG_PUSH && tok != TRPG_POP)
+            {
+                if (!buf.Get(len)) throw 1;
+                if (!TokenIsValid(tok))  throw 1;
+                if (len < 0)  throw 1;
+                // Limit what we're reading to the length of this
+                buf.PushLimit(len);
+            }
 
-        // Call our token handler for this one
-        try
-        {
-        const trpgr_Token *tcb = NULL;
-        tok_map::const_iterator p = tokenMap.find(tok);
-        if (p != tokenMap.end())
-            tcb = &(*p).second;
-        if (!tcb)
-            // No such token, call the default
-            tcb = &defCb;
+            // Call our token handler for this one
+            try
+            {
+                const trpgr_Token *tcb = NULL;
+                tok_map::const_iterator p = tokenMap.find(tok);
+                if (p != tokenMap.end())
+                    tcb = &(*p).second;
+                if (!tcb)
+                    // No such token, call the default
+                    tcb = &defCb;
 
-        // Run the callback
-        if (tcb->cb)
-        {
-            void *ret = tcb->cb->Parse(tok,buf);
-            // Note: Do something with the return value
-            lastObject = ret;
+                // Run the callback
+                if (tcb->cb)
+                {
+                    void *ret = tcb->cb->Parse(tok,buf);
+                    // Note: Do something with the return value
+                    lastObject = ret;
+                }
+            }
+            catch (...)
+            {
+                // Don't want to screw up the limit stack
+            }
+            // No limit to worry about with push and pop
+            if (tok != TRPG_PUSH && tok != TRPG_POP)
+            {
+                buf.SkipToLimit();
+                buf.PopLimit();
+            }
         }
-        }
-        catch (...)
-        {
-        // Don't want to screw up the limit stack
-        }
-        // No limit to worry about with push and pop
-        if (tok != TRPG_PUSH && tok != TRPG_POP)
-        {
-        buf.SkipToLimit();
-        buf.PopLimit();
-        }
-    }
     }
     catch (...)
     {
-    // Failed to parse.
-    ret = false;
+        // Failed to parse.
+        ret = false;
     }
 
     return ret;
@@ -243,10 +243,10 @@ public:
         
     void *Parse(trpgToken /*tok*/,trpgReadBuffer& /*buf*/)
     {
-    // Call the start children callback
-    parse->StartChildren(parse->lastObject);
-    parse->parents.push_back(parse->lastObject);
-    return (void *)1;
+        // Call the start children callback
+        parse->StartChildren(parse->lastObject);
+        parse->parents.push_back(parse->lastObject);
+        return (void *)1;
     }
 protected:
     trpgSceneParser *parse;
@@ -260,15 +260,15 @@ public:
     { parse = in_parse; };
     void *Parse(trpgToken /*tok*/,trpgReadBuffer& /*buf*/)
     {
-    // Make sure we don't have an extra pop
-    if (parse->parents.size() == 0)
-        // Note: let someone know about the extra pop
-        return NULL;
-    // Call the end children callback
-    int len = parse->parents.size();
-    parse->EndChildren(parse->parents[len-1]);
-    parse->parents.resize(len-1);
-    return (void *)1;
+        // Make sure we don't have an extra pop
+        if (parse->parents.size() == 0)
+            // Note: let someone know about the extra pop
+            return NULL;
+        // Call the end children callback
+        int len = parse->parents.size();
+        parse->EndChildren(parse->parents[len-1]);
+        parse->parents.resize(len-1);
+        return (void *)1;
     }
 protected:
     trpgSceneParser *parse;
@@ -283,8 +283,8 @@ public:
     trpgSceneHelperDefault(trpgSceneParser *in_parse) { parse = in_parse; }
     void *Parse(trpgToken /*tok*/,trpgReadBuffer& /*buf*/)
     {
-    // Absorb it quietly
-    return (void *)1;
+        // Absorb it quietly
+        return (void *)1;
     }
 protected:
     trpgSceneParser *parse;

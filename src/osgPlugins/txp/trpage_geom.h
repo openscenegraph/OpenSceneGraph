@@ -47,7 +47,7 @@ class trpgMatTable;
 */
 TX_EXDECL class TX_CLDECL trpgHeader : public trpgReadWriteable
 {
- public:
+public:
     trpgHeader(void);
     ~trpgHeader(void);
 
@@ -181,43 +181,43 @@ TX_EXDECL class TX_CLDECL trpgHeader : public trpgReadWriteable
 
     void    SetMaster(bool isMaster)
     {
-    if((verMajor >= TRPG_NOMERGE_VERSION_MAJOR) && (verMinor >=TRPG_NOMERGE_VERSION_MINOR))
-    {
-        if(isMaster) 
-        flags |= ISMASTER;//set the master flag
-        else
-        flags &= ~ISMASTER;//clear the master flag
-    }
+        if((verMajor >= TRPG_NOMERGE_VERSION_MAJOR) && (verMinor >=TRPG_NOMERGE_VERSION_MINOR))
+        {
+            if(isMaster)
+            flags |= ISMASTER;//set the master flag
+            else
+            flags &= ~ISMASTER;//clear the master flag
+        }
     }
     bool    GetIsMaster() const
     { 
-    return ((flags & ISMASTER)==ISMASTER);
+        return ((flags & ISMASTER)==ISMASTER);
     }
     void    SetLocal(bool isLocal)
     {
-    if((verMajor >= TRPG_NOMERGE_VERSION_MAJOR) && (verMinor >=TRPG_NOMERGE_VERSION_MINOR))
-    {
-        if(isLocal) 
-        flags |= ISLOCAL;//set the local flag
-        else
-        flags &= ~ISLOCAL;//clear the local flag
-    }
+        if((verMajor >= TRPG_NOMERGE_VERSION_MAJOR) && (verMinor >=TRPG_NOMERGE_VERSION_MINOR))
+        {
+            if(isLocal)
+            flags |= ISLOCAL;//set the local flag
+            else
+            flags &= ~ISLOCAL;//clear the local flag
+        }
     }
     bool    GetIsLocal() const
     {
-    return ((flags & ISLOCAL)==ISLOCAL);
+        return ((flags & ISLOCAL)==ISLOCAL);
     }
     void    SetBlocks(int rows,int cols)
     {
-    this->rows = rows;
-    this->cols = cols;
+        this->rows = rows;
+        this->cols = cols;
     }
     void    GetBlocks(int &rows,int &cols)
     {
-    rows = this->rows;
-    cols = this->cols;
+        rows = this->rows;
+        cols = this->cols;
     }
- protected:
+protected:
     int verMinor,verMajor;
     int dbVerMinor,dbVerMajor;
     int maxGroupID;
@@ -249,7 +249,7 @@ TX_EXDECL class TX_CLDECL trpgHeader : public trpgReadWriteable
 TX_EXDECL class TX_CLDECL trpgTextureEnv : public trpgReadWriteable
 {
     friend class trpgMatTable;
- public:
+public:
     trpgTextureEnv(void);
     ~trpgTextureEnv(void);
 
@@ -308,7 +308,7 @@ TX_EXDECL class TX_CLDECL trpgTextureEnv : public trpgReadWriteable
     // Prints this class to a print buffer
     bool    Print(trpgPrintBuffer &) const;
 
- protected:
+protected:
     int envMode;
     int minFilter;
     int magFilter;
@@ -345,7 +345,7 @@ TX_EXDECL class TX_CLDECL trpgTextureEnv : public trpgReadWriteable
 TX_EXDECL class TX_CLDECL trpgMaterial : public trpgReadWriteable
 {
     friend class trpgMatTable;
- public:
+public:
     trpgMaterial(void);
     ~trpgMaterial(void);
     // Set base material color
@@ -494,7 +494,7 @@ TX_EXDECL class TX_CLDECL trpgMaterial : public trpgReadWriteable
 
     // Note: Need to do equality operator
     
- protected:
+protected:
     bool isBump;
     trpgColor color;
     trpgColor ambient;
@@ -531,7 +531,7 @@ TX_EXDECL class TX_CLDECL trpgMaterial : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgLightAttr : public trpgReadWriteable
 {
- public:
+public:
     // Default constructor
     trpgLightAttr(void);
     // Copy constructor
@@ -542,89 +542,89 @@ TX_EXDECL class TX_CLDECL trpgLightAttr : public trpgReadWriteable
     // Light Flags
     enum
     {
-    // Light flags
-    trpg_Day =        0x0001,
-    trpg_Dusk =        0x0002,
-    trpg_Night =        0x0004,
-    trpg_Directional =    0x0008,
-    trpg_BackColor =    0x0010,
-    trpg_Reflective =    0x0020,
+        // Light flags
+        trpg_Day =        0x0001,
+        trpg_Dusk =        0x0002,
+        trpg_Night =        0x0004,
+        trpg_Directional =    0x0008,
+        trpg_BackColor =    0x0010,
+        trpg_Reflective =    0x0020,
 
-    // Animation flags
-    trpg_Flashing =        0x0100,
-    trpg_Rotating =        0x0200,
-    trpg_ClockWise =    0x0400,
-    trpg_AnimationMask =    0x0f00,
+        // Animation flags
+        trpg_Flashing =        0x0100,
+        trpg_Rotating =        0x0200,
+        trpg_ClockWise =    0x0400,
+        trpg_AnimationMask =    0x0f00,
 
-    // Performer light flags
-    trpg_Perspective =    0x1000,
-    trpg_Fade =        0x2000,
-    trpg_ZBuffer =        0x4000,
-    trpg_FogPunch =        0x8000,
-    trpg_PerformerMask =    0xf000
+        // Performer light flags
+        trpg_Perspective =    0x1000,
+        trpg_Fade =        0x2000,
+        trpg_ZBuffer =        0x4000,
+        trpg_FogPunch =        0x8000,
+        trpg_PerformerMask =    0xf000
     } LightFlags;
 
     // Light Type
     typedef enum
     {
-    trpg_Raster,
-    trpg_Calligraphic,
-    trpg_RASCAL
+        trpg_Raster,
+        trpg_Calligraphic,
+        trpg_RASCAL
     } LightType;
 
     // Light Directionality
     typedef enum
     {
-    trpg_Omnidirectional,
-    trpg_Bidirectional,
-    trpg_Unidirectional
+        trpg_Omnidirectional,
+        trpg_Bidirectional,
+        trpg_Unidirectional
     } LightDirectionality;
 
     // Light Quality
     typedef enum
     {
-    trpg_Off,
-    trpg_Low,
-    trpg_Medium,
-    trpg_High,
-    trpg_Undefined
+        trpg_Off,
+        trpg_Low,
+        trpg_Medium,
+        trpg_High,
+        trpg_Undefined
     } LightQuality;
 
     // Struct for Performer Lights
     struct PerformerAttr
     {
-    PerformerAttr() : flags(0),minPixelSize(0),maxPixelSize(0),actualSize(0),
-         transparentPixelSize(0),transparentFallofExp(0),transparentScale(0),
-         transparentClamp(0),fogScale(0) {};
-    int32                    flags;
-    float64                    minPixelSize;
-    float64                    maxPixelSize;
-    float64                    actualSize;
-    float64                    transparentPixelSize;
-    float64                    transparentFallofExp;
-    float64                    transparentScale;
-    float64                    transparentClamp;
-    float64                    fogScale;
+        PerformerAttr() : flags(0),minPixelSize(0),maxPixelSize(0),actualSize(0),
+            transparentPixelSize(0),transparentFallofExp(0),transparentScale(0),
+            transparentClamp(0),fogScale(0) {};
+        int32                    flags;
+        float64                    minPixelSize;
+        float64                    maxPixelSize;
+        float64                    actualSize;
+        float64                    transparentPixelSize;
+        float64                    transparentFallofExp;
+        float64                    transparentScale;
+        float64                    transparentClamp;
+        float64                    fogScale;
     };
 
     // Struct for Animated Lights
     struct AnimationAttr
     {
-    AnimationAttr() : period(0),phaseDelay(0),timeOn(0),vector(trpg3dPoint(0,0,0)),flags(0) {};
-    float64                    period;
-    float64                    phaseDelay;
-    float64                    timeOn;
-    trpg3dPoint                vector;
-    int32                    flags;
+        AnimationAttr() : period(0),phaseDelay(0),timeOn(0),vector(trpg3dPoint(0,0,0)),flags(0) {};
+        float64                    period;
+        float64                    phaseDelay;
+        float64                    timeOn;
+        trpg3dPoint                vector;
+        int32                    flags;
     };
 
     // Struct for Calligraphic Lights
     struct CalligraphicAttr
     {
-    CalligraphicAttr() : drawOrder(0),minDefocus(0),maxDefocus(0) {} ;
-    int32                    drawOrder;
-    float64                    minDefocus;
-    float64                    maxDefocus;
+        CalligraphicAttr() : drawOrder(0),minDefocus(0),maxDefocus(0) {} ;
+        int32                    drawOrder;
+        float64                    minDefocus;
+        float64                    maxDefocus;
     };
 
     // Setters
@@ -808,31 +808,31 @@ TX_EXDECL class TX_CLDECL trpgLightAttr : public trpgReadWriteable
     void Reset(void);
 
 
- protected:
+protected:
     struct DataSet
     {
-    LightType        type;
-    LightDirectionality    directionality;
-    trpgColor        frontColor;
-    float64            frontIntensity;
-    trpgColor        backColor;
-    float64            backIntensity;
-    trpg3dPoint        normal;
-    int32            smc;
-    int32            fid;
-    int32            flags;
-    float64            horizontalLobeAngle;
-    float64            verticalLobeAngle;
-    float64            lobeRollAngle;
-    float64            lobeFalloff;
-    float64            ambientIntensity;
-    LightQuality        quality;
-    LightQuality        randomIntensity;
-    float64            rascalSignificance;
-    CalligraphicAttr    calligraphicAttr;
-    PerformerAttr        performerAttr;
-    AnimationAttr        animationAttr;
-    char            *commentStr;
+        LightType        type;
+        LightDirectionality    directionality;
+        trpgColor        frontColor;
+        float64            frontIntensity;
+        trpgColor        backColor;
+        float64            backIntensity;
+        trpg3dPoint        normal;
+        int32            smc;
+        int32            fid;
+        int32            flags;
+        float64            horizontalLobeAngle;
+        float64            verticalLobeAngle;
+        float64            lobeRollAngle;
+        float64            lobeFalloff;
+        float64            ambientIntensity;
+        LightQuality        quality;
+        LightQuality        randomIntensity;
+        float64            rascalSignificance;
+        CalligraphicAttr    calligraphicAttr;
+        PerformerAttr        performerAttr;
+        AnimationAttr        animationAttr;
+        char            *commentStr;
     } data;
 };
 
@@ -843,7 +843,7 @@ TX_EXDECL class TX_CLDECL trpgLightAttr : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgLight : public trpgReadWriteable
 {
- public:
+public:
     // Default constructor
     trpgLight(void);
     // Copy constructor
@@ -890,7 +890,7 @@ TX_EXDECL class TX_CLDECL trpgLight : public trpgReadWriteable
     // operator
     trpgLight& operator = (const trpgLight &);
 
- protected:
+protected:
     // Here we store the light locations
     std::vector<trpg3dPoint>    lightPoints;
     int                index;
@@ -902,7 +902,7 @@ TX_EXDECL class TX_CLDECL trpgLight : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgLightTable : public trpgReadWriteable
 {
- public:
+public:
     // Default constructor
     trpgLightTable(void);
 
@@ -947,7 +947,7 @@ TX_EXDECL class TX_CLDECL trpgLightTable : public trpgReadWriteable
     
     typedef std::map<int,trpgLightAttr> LightMapType;
     LightMapType *getLightMap() { return &lightMap; }
- protected:
+protected:
     // Here we store the light attributes
     //std::vector<trpgLightAttr> lightList;
     LightMapType lightMap;
@@ -962,7 +962,7 @@ TX_EXDECL class TX_CLDECL trpgLightTable : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgRange : public trpgReadWriteable
 {
- public:
+public:
     trpgRange(void);
     ~trpgRange(void);
 
@@ -1013,7 +1013,7 @@ TX_EXDECL class TX_CLDECL trpgRange : public trpgReadWriteable
     // Assignment operator
     trpgRange & operator = (const trpgRange &);
 
- protected:
+protected:
     double inLod,outLod;
     char *category;
     char *subCategory;
@@ -1054,7 +1054,7 @@ TX_EXDECL class TX_CLDECL trpgRange : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgRangeTable : public trpgReadWriteable
 {
- public:
+public:
     trpgRangeTable(void);
     ~trpgRangeTable(void);
 
@@ -1087,7 +1087,7 @@ TX_EXDECL class TX_CLDECL trpgRangeTable : public trpgReadWriteable
     // Assignment operator
     trpgRangeTable & operator = (const trpgRangeTable &);
 
- protected:
+protected:
     typedef std::map<int,trpgRange> RangeMapType;
     RangeMapType rangeMap;
     //std::vector<trpgRange> rangeList;
@@ -1118,7 +1118,7 @@ TX_EXDECL class TX_CLDECL trpgRangeTable : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgMatTable : public trpgReadWriteable
 {
- public:
+public:
     trpgMatTable(void);
     ~trpgMatTable(void);
     /* If you intend to have more than one material sub-table you'll
@@ -1189,7 +1189,7 @@ TX_EXDECL class TX_CLDECL trpgMatTable : public trpgReadWriteable
     bool    Print(trpgPrintBuffer &) const;
 
 
- protected:
+protected:
     int numTable;
     int numMat;
     typedef std::map<int,trpgMaterial> MaterialMapType;
@@ -1225,7 +1225,7 @@ TX_EXDECL class TX_CLDECL trpgMatTable : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgTexture : public trpgReadWriteable
 {
- public:
+public:
     trpgTexture(void);
     trpgTexture(const trpgTexture &);
     ~trpgTexture(void);
@@ -1251,26 +1251,26 @@ TX_EXDECL class TX_CLDECL trpgTexture : public trpgReadWriteable
     */
     typedef enum
     {
-    trpg_RGB8,
-    trpg_RGBA8,
-    trpg_INT8,
-    trpg_INTA8,
-    trpg_FXT1,
-    trpg_Filler,  // This is not a texture format.  It's here to keep the numbering consistent
-    trpg_RGBX, // MCM no longer
-    trpg_Unknown,
-    trpg_DDS,
-    trpg_DXT1,
-    trpg_DXT3,
-    trpg_DXT5,
-    // This is a bit ugly, but we can't change the size of the texture record without
-    // breaking existing readers.  So there will be multiple MCM types to indicate the number
-    // of bands and the nature of the extra channels, if any
-    trpg_MCM5,
-    trpg_MCM6R,
-    trpg_MCM6A,
-    trpg_MCM7RA,
-    trpg_MCM7AR
+        trpg_RGB8,
+        trpg_RGBA8,
+        trpg_INT8,
+        trpg_INTA8,
+        trpg_FXT1,
+        trpg_Filler,  // This is not a texture format.  It's here to keep the numbering consistent
+        trpg_RGBX, // MCM no longer
+        trpg_Unknown,
+        trpg_DDS,
+        trpg_DXT1,
+        trpg_DXT3,
+        trpg_DXT5,
+        // This is a bit ugly, but we can't change the size of the texture record without
+        // breaking existing readers.  So there will be multiple MCM types to indicate the number
+        // of bands and the nature of the extra channels, if any
+        trpg_MCM5,
+        trpg_MCM6R,
+        trpg_MCM6A,
+        trpg_MCM7RA,
+        trpg_MCM7AR
     } ImageType;
 
     // Set the texture name.
@@ -1374,7 +1374,7 @@ TX_EXDECL class TX_CLDECL trpgTexture : public trpgReadWriteable
 
     trpgTexture & operator = (const trpgTexture &);
     int operator == (const trpgTexture &) const;
- protected:
+protected:
     // Mode for this texture.  See ImageMode for details
     ImageMode mode;
 
@@ -1437,7 +1437,7 @@ TX_EXDECL class TX_CLDECL trpgTexture : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgTexTable : public trpgReadWriteable
 {
- public:
+public:
     trpgTexTable(void);
     trpgTexTable(const trpgTexTable &);
     ~trpgTexTable(void);
@@ -1489,17 +1489,17 @@ TX_EXDECL class TX_CLDECL trpgTexTable : public trpgReadWriteable
     const trpgTexture *FindByName(const char *name, int &texid) const;
     void    SetCurrentBlock(int row, int col)
     {
-    currentRow = row;
-    currentCol = col;
+        currentRow = row;
+        currentCol = col;
     }
 
     //bool dumpGeoTypicalTextures(trpgwImageHelper *ihelper);
     typedef std::map<int,trpgTexture> TextureMapType;
     TextureMapType *getTextureMap()
     {
-    return &textureMap;
+        return &textureMap;
     }
- protected:
+protected:
     
     TextureMapType textureMap;
     //These are used to initialize the row/col values for
@@ -1537,7 +1537,7 @@ TX_EXDECL class TX_CLDECL trpgTexTable : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgModel : public trpgReadWriteable
 {
- public:
+public:
     trpgModel(void);
     trpgModel(const trpgModel &);
     ~trpgModel(void);
@@ -1591,7 +1591,7 @@ TX_EXDECL class TX_CLDECL trpgModel : public trpgReadWriteable
     int operator == (const trpgModel &) const;
 
 
- protected:
+protected:
     int type;
     char *name;
     trpgDiskRef diskRef;
@@ -1615,7 +1615,7 @@ TX_EXDECL class TX_CLDECL trpgModel : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgModelTable : public trpgReadWriteable
 {
- public:
+public:
     trpgModelTable(void);
     ~trpgModelTable(void);
 
@@ -1661,9 +1661,9 @@ TX_EXDECL class TX_CLDECL trpgModelTable : public trpgReadWriteable
     typedef std::map<int,trpgModel> ModelMapType;
     ModelMapType *GetModelMap()
     {
-    return &modelsMap;
+        return &modelsMap;
     }
- protected:
+protected:
     
     ModelMapType modelsMap;
 };
@@ -1679,7 +1679,7 @@ TX_EXDECL class TX_CLDECL trpgModelTable : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgTileTable : public trpgReadWriteable
 {
- public:
+public:
     // Tiles can be stored individually (External and ExternalSaved) or in grouped files (Local).
     // ExternalSaved still have an entry in the table. In this case the addess data is not valid.
    
@@ -1722,23 +1722,23 @@ TX_EXDECL class TX_CLDECL trpgTileTable : public trpgReadWriteable
      **/
     void    SetCurrentBlock(int row, int col, bool local)
     {
-    currentRow = row;
-    currentCol = col;
-    localBlock = local;
+        currentRow = row;
+        currentCol = col;
+        localBlock = local;
     }
- protected:
+protected:
     TileMode mode;
 
     class LodInfo
     {
-                          public:
-    int numX,numY;
-    // Tile addresses into external Appendable files
-    std::vector<trpgwAppAddress> addr;
-    // Elevation of the midpoint of each tile
-    // This is used for calculating bounding boxes
-    std::vector<float> elev_min;
-    std::vector<float> elev_max;
+    public:
+        int numX,numY;
+        // Tile addresses into external Appendable files
+        std::vector<trpgwAppAddress> addr;
+        // Elevation of the midpoint of each tile
+        // This is used for calculating bounding boxes
+        std::vector<float> elev_min;
+        std::vector<float> elev_max;
     };
     std::vector <LodInfo> lodInfo;
     //These are used to initialize the row/col values for
@@ -1762,7 +1762,7 @@ TX_EXDECL class TX_CLDECL trpgTileTable : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgLocalMaterial : public trpgReadWriteable
 {
- public:
+public:
     trpgLocalMaterial(void);
     ~trpgLocalMaterial(void);
 
@@ -1787,9 +1787,9 @@ TX_EXDECL class TX_CLDECL trpgLocalMaterial : public trpgReadWriteable
     class SubImageInfo
     {
     public:
-    int32 sx,sy;  // Source (sx,sy) in pixels
-    int32 ex,ey;  // Source (ex,ey) in pixels
-    int32 destWidth,destHeight;  // Size of destination image (in pixels)
+        int32 sx,sy;  // Source (sx,sy) in pixels
+        int32 ex,ey;  // Source (ex,ey) in pixels
+        int32 destWidth,destHeight;  // Size of destination image (in pixels)
     };
 
     // Set the sub image info (only for writers)
@@ -1838,7 +1838,7 @@ TX_EXDECL class TX_CLDECL trpgLocalMaterial : public trpgReadWriteable
     // Prints this class to a print buffer
     bool    Print(trpgPrintBuffer &) const;
 
- protected:
+protected:
     int32 baseMatTable,baseMat;
     // These are valid for Global images
     int32 sx,sy,ex,ey,destWidth,destHeight;
@@ -1897,7 +1897,7 @@ TX_EXDECL class TX_CLDECL trpgLocalMaterial : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgTileHeader : public trpgReadWriteable
 {
- public:
+public:
     trpgTileHeader(void);
     ~trpgTileHeader(void);
     /* Add the given material reference to this tile if it's not already there.
@@ -1962,15 +1962,15 @@ TX_EXDECL class TX_CLDECL trpgTileHeader : public trpgReadWriteable
     bool    Print(trpgPrintBuffer &) const;
     void    SetBlockNo(int row, int col)
     {
-    this->row = row;
-    this->col = col;
+        this->row = row;
+        this->col = col;
     }
     void    GetBlockNo(int &row, int &col)
     {
-    row = this->row;
-    col = this->col;
+        row = this->row;
+        col = this->col;
     }
- protected:
+protected:
     std::vector<int> matList;
     std::vector<int> modelList;
     std::vector<trpgLocalMaterial> locMats;
@@ -1989,7 +1989,7 @@ TX_EXDECL class TX_CLDECL trpgTileHeader : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgColorInfo
 {
- public:
+public:
     trpgColorInfo(void);
     ~trpgColorInfo(void);
 
@@ -2023,7 +2023,7 @@ TX_EXDECL class TX_CLDECL trpgColorInfo
 */
 TX_EXDECL class TX_CLDECL trpgTexData
 {
- public:
+public:
     trpgTexData(void);
     ~trpgTexData(void);
     // This should always be set to PerVertex
@@ -2075,7 +2075,7 @@ TX_EXDECL class TX_CLDECL trpgTexData
 */
 TX_EXDECL class TX_CLDECL trpgGeometry : public trpgReadWriteable
 {
- public:
+public:
     trpgGeometry(void);
     ~trpgGeometry(void);
     typedef enum {Points,LineStrips,LineLoops,Lines,Polygons,TriStrips,
@@ -2295,7 +2295,7 @@ TX_EXDECL class TX_CLDECL trpgGeometry : public trpgReadWriteable
     // Prints this class to a print buffer
     bool    Print(trpgPrintBuffer &) const;
 
- protected:
+protected:
     int primType;
     int numPrim;
     std::vector<int> primLength;
@@ -2339,7 +2339,7 @@ TX_EXDECL class TX_CLDECL trpgGeometry : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgGroup : public trpgReadWriteable
 {
- public:
+public:
     trpgGroup(void);
     virtual        ~trpgGroup(void);
     // Resets the contents back to empty
@@ -2372,7 +2372,7 @@ TX_EXDECL class TX_CLDECL trpgGroup : public trpgReadWriteable
     // Prints this class to a print buffer
     bool        Print(trpgPrintBuffer &) const;
 
- protected:
+protected:
     int id;
     int numChild;
     char* name;
@@ -2440,7 +2440,7 @@ TX_EXDECL class TX_CLDECL trpgGroup : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgAttach : public trpgGroup
 {
- public:
+public:
     trpgAttach(void);
     ~trpgAttach(void);
     // Resets the contents back to empty
@@ -2469,13 +2469,13 @@ TX_EXDECL class TX_CLDECL trpgAttach : public trpgGroup
     // Prints this class to a print buffer
     bool    Print(trpgPrintBuffer &) const;
 
- protected:
+protected:
     int parentID,childPos;
 };
 
 TX_EXDECL class TX_CLDECL trpgChildRef : public trpgReadWriteable
 {
- public:
+public:
     trpgChildRef();
     ~trpgChildRef();
     // Resets the contents back to empty
@@ -2505,7 +2505,7 @@ TX_EXDECL class TX_CLDECL trpgChildRef : public trpgReadWriteable
     // Prints this class to a print buffer
     bool    Print(trpgPrintBuffer &) const;
 
- protected:
+protected:
     // Grid Location
     int x,y,lod;
     // File Location
@@ -2532,7 +2532,7 @@ TX_EXDECL class TX_CLDECL trpgChildRef : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgBillboard : public trpgGroup
 {
- public:
+public:
     trpgBillboard(void);
     ~trpgBillboard(void);
     enum {Individual,Group};
@@ -2578,7 +2578,7 @@ TX_EXDECL class TX_CLDECL trpgBillboard : public trpgGroup
     bool    Read(trpgReadBuffer &);
     // Prints this class to a print buffer
     bool    Print(trpgPrintBuffer &) const;
- protected:
+protected:
     int type;
     int mode;
     trpg3dPoint center;
@@ -2625,7 +2625,7 @@ TX_EXDECL class TX_CLDECL trpgBillboard : public trpgGroup
 */
 TX_EXDECL class TX_CLDECL trpgLod : public trpgReadWriteable
 {
- public:
+public:
     trpgLod(void);
     ~trpgLod(void);
     // Set the calculated center
@@ -2669,7 +2669,7 @@ TX_EXDECL class TX_CLDECL trpgLod : public trpgReadWriteable
     // Prints this class to a print buffer
     bool    Print(trpgPrintBuffer &) const;
 
- protected:
+protected:
     int numRange;
     double switchIn,switchOut,width;
     trpg3dPoint center;
@@ -2699,7 +2699,7 @@ TX_EXDECL class TX_CLDECL trpgLod : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgLayer : public trpgGroup
 {
- public:
+public:
     trpgLayer(void);
     ~trpgLayer(void);
     // Writes this class to a write buffer
@@ -2711,7 +2711,7 @@ TX_EXDECL class TX_CLDECL trpgLayer : public trpgGroup
 
     // Resets the contents back to empty
     void    Reset(void);
- protected:
+protected:
 };
 
 /* This is pretty much a standard 4x4 static transform.  It has a matrix
@@ -2721,7 +2721,7 @@ TX_EXDECL class TX_CLDECL trpgLayer : public trpgGroup
 */
 TX_EXDECL class TX_CLDECL trpgTransform : public trpgGroup
 {
- public:
+public:
     trpgTransform(void);
     ~trpgTransform(void);
 
@@ -2740,7 +2740,7 @@ TX_EXDECL class TX_CLDECL trpgTransform : public trpgGroup
 
     // Resets the contents back to empty
     void    Reset(void);
- protected:
+protected:
     float64 m[4][4];
 };
 
@@ -2765,7 +2765,7 @@ TX_EXDECL class TX_CLDECL trpgTransform : public trpgGroup
 */
 TX_EXDECL class TX_CLDECL trpgModelRef : public trpgReadWriteable
 {
- public:
+public:
     trpgModelRef(void);
     ~trpgModelRef(void);
     // Set the model ID.  Must come from a trpgModelTable
@@ -2787,7 +2787,7 @@ TX_EXDECL class TX_CLDECL trpgModelRef : public trpgReadWriteable
 
     // Resets the contents back to empty
     void    Reset(void);
- protected:
+protected:
     int modelRef;
     float64 m[4][4];
 };
@@ -2800,7 +2800,7 @@ TX_EXDECL class TX_CLDECL trpgModelRef : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgTextStyle : public trpgReadWriteable
 {
- public:
+public:
     trpgTextStyle(void);
     ~trpgTextStyle(void);
 
@@ -2848,7 +2848,7 @@ TX_EXDECL class TX_CLDECL trpgTextStyle : public trpgReadWriteable
 
     // Return object validity
     bool isValid(void) const;
- protected:
+protected:
     std::string font;
     bool bold,italic,underline;
     float32 characterSize;
@@ -2861,7 +2861,7 @@ TX_EXDECL class TX_CLDECL trpgTextStyle : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgTextStyleTable : public trpgReadWriteable
 {
- public:
+public:
     trpgTextStyleTable(void);
     ~trpgTextStyleTable(void);
 
@@ -2889,7 +2889,7 @@ TX_EXDECL class TX_CLDECL trpgTextStyleTable : public trpgReadWriteable
     bool    Print(trpgPrintBuffer &) const;
     typedef std::map<int,trpgTextStyle> StyleMapType;
     const StyleMapType *getStyleMap()const  { return &styleMap; }
- protected:
+protected:
     //std::vector<trpgTextStyle> styles;
     
     StyleMapType styleMap;
@@ -2903,7 +2903,7 @@ TX_EXDECL class TX_CLDECL trpgTextStyleTable : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgSupportStyle : public trpgReadWriteable
 {
- public:
+public:
     trpgSupportStyle(void);
     ~trpgSupportStyle(void);
 
@@ -2939,7 +2939,7 @@ TX_EXDECL class TX_CLDECL trpgSupportStyle : public trpgReadWriteable
 
     // Return object validity
     bool        isValid(void) const;
- protected:
+protected:
     SupportType type;
     int matId;
 };
@@ -2950,7 +2950,7 @@ TX_EXDECL class TX_CLDECL trpgSupportStyle : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgSupportStyleTable : public trpgReadWriteable
 {
- public:
+public:
     trpgSupportStyleTable(void);
     ~trpgSupportStyleTable(void);
 
@@ -2977,7 +2977,7 @@ TX_EXDECL class TX_CLDECL trpgSupportStyleTable : public trpgReadWriteable
     // Print this class to a print buffer
     bool    Print(trpgPrintBuffer &) const;
 
- protected:
+protected:
     //std::vector<trpgSupportStyle> styles;
     typedef std::map<int,trpgSupportStyle> SupportStyleMapType;
     SupportStyleMapType supportStyleMap;
@@ -2991,7 +2991,7 @@ TX_EXDECL class TX_CLDECL trpgSupportStyleTable : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgLabelProperty : public trpgReadWriteable
 {
- public:
+public:
     trpgLabelProperty(void);
     ~trpgLabelProperty(void);
 
@@ -3032,7 +3032,7 @@ TX_EXDECL class TX_CLDECL trpgLabelProperty : public trpgReadWriteable
 
     // Return object validity
     bool isValid(void) const;
- protected:
+protected:
     int fontId;
     int supportId;
     LabelType type;
@@ -3044,7 +3044,7 @@ TX_EXDECL class TX_CLDECL trpgLabelProperty : public trpgReadWriteable
 */
 TX_EXDECL class TX_CLDECL trpgLabelPropertyTable : public trpgReadWriteable
 {
- public:
+public:
     trpgLabelPropertyTable(void);
     ~trpgLabelPropertyTable(void);
 
@@ -3072,7 +3072,7 @@ TX_EXDECL class TX_CLDECL trpgLabelPropertyTable : public trpgReadWriteable
     // Print this class to a print buffer
     bool    Print(trpgPrintBuffer &) const;
 
- protected:
+protected:
     //std::vector<trpgLabelProperty> properties;
     typedef std::map<int,trpgLabelProperty> LabelPropertyMapType;
     LabelPropertyMapType labelPropertyMap;
@@ -3085,7 +3085,7 @@ TX_EXDECL class TX_CLDECL trpgLabelPropertyTable : public trpgReadWriteable
    over a specific building in a visual database.
 */
 TX_EXDECL class TX_CLDECL trpgLabel : public trpgReadWriteable {
- public:
+public:
     trpgLabel(void);
     ~trpgLabel(void);
 
@@ -3176,7 +3176,7 @@ TX_EXDECL class TX_CLDECL trpgLabel : public trpgReadWriteable {
     // Resets the contents back to empty
     void    Reset(void);
 
- protected:
+protected:
     int propertyId;
     std::string text;  // Actual label text.  May contain formatting
     AlignmentType alignment;

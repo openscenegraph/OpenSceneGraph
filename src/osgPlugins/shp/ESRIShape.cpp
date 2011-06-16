@@ -5,7 +5,7 @@
     
     namespace esri
     {
-        int read(int fd, void * buf, size_t nbytes) { return _read(fd, buf, nbytes); }
+        int read(int fd, void * buf, size_t nbytes) { return _read(fd, buf, static_cast<unsigned int>(nbytes)); }
     }
     
 #else

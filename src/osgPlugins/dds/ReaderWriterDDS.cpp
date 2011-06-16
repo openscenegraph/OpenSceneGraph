@@ -782,6 +782,17 @@ bool WriteDDSFile(const osg::Image *img, std::ostream& fout)
             SD_flags |= DDSD_PITCH;
         }
         break;
+    case GL_BGR:
+        {
+            ddpf.dwBBitMask        = 0x000000ff;
+            ddpf.dwGBitMask        = 0x0000ff00;
+            ddpf.dwRBitMask        = 0x00ff0000;  
+            PF_flags |= DDPF_RGB;
+            ddpf.dwRGBBitCount = pixelSize;
+            ddsd.lPitch = img->getRowSizeInBytes();
+            SD_flags |= DDSD_PITCH;
+        }
+        break;
     case GL_LUMINANCE:
         {
             ddpf.dwRBitMask         = 0x000000ff;

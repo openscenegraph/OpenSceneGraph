@@ -207,15 +207,15 @@ public:
     */
     virtual trpgManagedTile *GetNextLoad(void);
     /*  Acknowledge Tile Load.
-    This method should be called when a tile has been
-    loaded by the caller.  This method is used in conjunction
-    with GetNextLoad().
+        This method should be called when a tile has been
+        loaded by the caller.  This method is used in conjunction
+        with GetNextLoad().
 
-    Version 2.1 and over supports variable lod so that we cannot know
-    from the tile table if a tile exist or not. So to manage this
-    the user must parse the loaded tile and extract its list of children
-    and pass it on to AckLoad() which will add to the  appropriate lod list 
-    the children info. If this is not done then only lod 0 will be pageable.
+        Version 2.1 and over supports variable lod so that we cannot know
+        from the tile table if a tile exist or not. So to manage this
+        the user must parse the loaded tile and extract its list of children
+        and pass it on to AckLoad() which will add to the  appropriate lod list
+        the children info. If this is not done then only lod 0 will be pageable.
     */
  
     virtual void AckLoad(std::vector<TileLocationInfo> const& children);
@@ -262,7 +262,7 @@ public:
     // Print current status and content information
     virtual void Print(trpgPrintBuffer &);
 
- protected:
+protected:
     trpgr_Archive *archive;
 
     // Center of paging
@@ -278,15 +278,15 @@ public:
         virtual ~LodPageInfo(void);
 
         /* Initializes the class with its current LOD.
-        It figures out all the rest.
+           It figures out all the rest.
         */
         virtual bool Init(trpgr_Archive *, int myLod, double scale, int freeListDivider = 1);
 
         /* Reset the location.  This forces a recalculation
-        of what to load and unload if the cell has changed
-        or if this is the first SetLocation.
-        The location passed in must be relative to the southwest
-        corner of the TerraPage archive.
+           of what to load and unload if the cell has changed
+           or if this is the first SetLocation.
+           The location passed in must be relative to the southwest
+           corner of the TerraPage archive.
         */
         virtual bool SetLocation(trpg2dPoint &);
 
@@ -370,15 +370,15 @@ public:
         int lod;
 
         /* Adjusted (e.g. paranoid) distance outward from
-        which to page this terrain LOD.  This takes into
-        account the distance in the header as well as
-        any factor the user may have added.
+           which to page this terrain LOD.  This takes into
+           account the distance in the header as well as
+           any factor the user may have added.
         */
         double pageDist;
 
         /* Max tiles we could have loaded in at any given time.
-        This is just a guess because it's up to the user
-        to load (and, more importantly) unload.
+           This is just a guess because it's up to the user
+           to load (and, more importantly) unload.
         */
         int maxNumTiles;
 
@@ -389,13 +389,13 @@ public:
         trpg2iPoint lodSize;
 
         /* Area of interest size in cells
-        This is a linear distance "ahead" of the center cell.
+           This is a linear distance "ahead" of the center cell.
         */
         trpg2iPoint aoiSize;
 
         /* Our effective paging location sits at the middle
-        of this cell.  We don't recalculate unless the
-        cell changes. */
+           of this cell.  We don't recalculate unless the
+           cell changes. */
         trpg2iPoint cell;
 
         // List of tiles to load
@@ -459,7 +459,7 @@ public:
 // the list of trpgChildRef nodes found.
 TX_EXDECL class TX_CLDECL trpgr_ChildRefCB : public trpgr_Callback
 {
- public:
+public:
     void *Parse(trpgToken tok, trpgReadBuffer& rbuf);
     // After parsing this will return the number of trpgChildRef node found.
     unsigned int GetNbChildren() const;
@@ -469,7 +469,7 @@ TX_EXDECL class TX_CLDECL trpgr_ChildRefCB : public trpgr_Callback
 
     // Clear the children list
     void Reset();
- protected:
+protected:
 //   typedef std::vector<const trpgChildRef> ChildList;
 // The const in the template parameter was removed because it causes GCC to 
 // freak out.  I am of the opinion that const doesn't make sense in a template 
@@ -485,7 +485,7 @@ TX_EXDECL class TX_CLDECL trpgr_ChildRefCB : public trpgr_Callback
 */
 TX_EXDECL class TX_CLDECL trpgPageManageTester
 {
- public:
+public:
     trpgPageManageTester();
     virtual ~trpgPageManageTester();
 
@@ -505,7 +505,7 @@ TX_EXDECL class TX_CLDECL trpgPageManageTester
     */
     void RandomTest(int no=100,int seed=-1);
 
- protected:
+protected:
 
     // Does the work of "load" and "unloading"
     void ProcessChanges();

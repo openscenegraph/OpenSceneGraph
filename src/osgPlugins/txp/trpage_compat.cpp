@@ -104,18 +104,18 @@ bool trpgMatTable1_0::Read(trpgReadBuffer &buf)
 
     // Now convert to the new style material table
     for (i=0;i<shortTable.size();i++) {
-    trpgShortMaterial &shortMat = shortTable[i];
-    trpgMaterial &baseMat = baseMats[shortMat.baseMat];
-    AddMaterial(baseMat,false);
-        
-    trpgMaterial newMat = baseMat; 
-    newMat.SetNumTexture(shortMat.texids.size());
-    for (j=0;j<shortMat.texids.size();j++) {
-        int texId;
-        trpgTextureEnv texEnv;
-        baseMat.GetTexture(j,texId,texEnv);
-        newMat.SetTexture(j,shortMat.texids[j],texEnv);            
-    }
+        trpgShortMaterial &shortMat = shortTable[i];
+        trpgMaterial &baseMat = baseMats[shortMat.baseMat];
+        AddMaterial(baseMat,false);
+
+        trpgMaterial newMat = baseMat;
+        newMat.SetNumTexture(shortMat.texids.size());
+        for (j=0;j<shortMat.texids.size();j++) {
+            int texId;
+            trpgTextureEnv texEnv;
+            baseMat.GetTexture(j,texId,texEnv);
+            newMat.SetTexture(j,shortMat.texids[j],texEnv);
+        }
     }
 
     valid = true;
@@ -235,17 +235,17 @@ bool trpgTexTable1_0::Read(trpgReadBuffer &buf)
     int32 numTex;
 
     try {
-    buf.Get(numTex);
-    //texList.resize(numTex);
-    for (int i=0;i<numTex;i++) {
-        trpgTexture1_0 tex1_0;
-        tex1_0.Read(buf);
-        AddTexture(tex1_0);
-        //texList[i] = tex1_0;
-    }
+        buf.Get(numTex);
+        //texList.resize(numTex);
+        for (int i=0;i<numTex;i++) {
+            trpgTexture1_0 tex1_0;
+            tex1_0.Read(buf);
+            AddTexture(tex1_0);
+            //texList[i] = tex1_0;
+        }
     }
     catch (...) {
-    return false;
+        return false;
     }
 
     valid = true;

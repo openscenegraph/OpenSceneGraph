@@ -40,7 +40,7 @@ void trpgManagedTile::Reset()
 {
     // Null out the local material data
     for (unsigned int i=0;i<localMatData.size();i++)
-    localMatData[i] = NULL;
+        localMatData[i] = NULL;
     groupIDs.resize(0);
 
     isLoaded = false;
@@ -498,20 +498,20 @@ void trpgPageManager::LodPageInfo::AddChildrenToLoadList(std::vector<trpgManaged
             // a sanity check: if the lod is not the same then this
             // parent is not at the right place
             if(childLoc.lod != lod)
-            break;
+                break;
 
             // Make sure it is within
             if (childLoc.x >= sw.x &&
-            childLoc.x <= ne.x &&
-            childLoc.y >= sw.y &&
-            childLoc.y <= ne.y)   {
+                childLoc.x <= ne.x &&
+                childLoc.y >= sw.y &&
+                childLoc.y <= ne.y)   {
 
-            // Is it alread there ?
-            if(!tmpCurrent[(childLoc.y - sw.y)*dx + (childLoc.x - sw.x)]) {
+                // Is it alread there ?
+                if(!tmpCurrent[(childLoc.y - sw.y)*dx + (childLoc.x - sw.x)]) {
 
-                // Not there, add it
-                AddToLoadList(childLoc.x, childLoc.y, childLoc.addr);
-            }
+                    // Not there, add it
+                    AddToLoadList(childLoc.x, childLoc.y, childLoc.addr);
+                }
             }
         }
     }
@@ -652,16 +652,16 @@ void trpgPageManager::LodPageInfo::Update()
                     // Allocate a new tile
                     trpgManagedTile *tile = NULL;
                     if (freeList.size() > 0) {
-                    tile = freeList[0];
-                    freeList.pop_front();
+                        tile = freeList[0];
+                        freeList.pop_front();
                     } else
-                    tile = new trpgManagedTile();
+                        tile = new trpgManagedTile();
                     tile->SetTileLoc(x+sw.x,y+sw.y,lod);
                     trpgwAppAddress addr;
                     float32 zmin, zmax;
 
                     if(tileTable && tileTable->GetTile(x+sw.x, y+sw.y, lod, addr, zmin, zmax))
-                    tile->SetTileAddress(addr);
+                        tile->SetTileAddress(addr);
 
                     load.push_back(tile);
                 }
@@ -797,7 +797,7 @@ void trpgPageManager::Init(trpgr_Archive *inArch, int maxLod)
     head->GetVersion(majorVersion, minorVersion);
 
     if(maxLod > numLod)
-    maxLod = numLod;
+        maxLod = numLod;
     
     // Reset the terrain LOD paging classes.
     valid = true;

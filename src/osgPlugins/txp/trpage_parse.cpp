@@ -98,10 +98,10 @@ class WriteWrapper : public trpgr_Callback {
 public:
     WriteWrapper(trpgReadWriteable *in_wr)  { wr = in_wr; };
     void *Parse(trpgToken,trpgReadBuffer &buf) { 
-    if (wr->Read(buf))
-        return wr;
-    else
-        return NULL;
+        if (wr->Read(buf))
+            return wr;
+        else
+            return NULL;
     }
 protected:
     trpgReadWriteable *wr;

@@ -59,9 +59,9 @@ bool trpgMatTable::isValid() const
     // get an iterator for the materialMap
     MaterialMapType::const_iterator itr = materialMap.begin();
     for (  ; itr != materialMap.end( ); itr++) {
-    if(!(*itr).second.isValid()) {
-        return false;
-    }
+        if(!(*itr).second.isValid()) {
+            return false;
+        }
     }
 
     return true;
@@ -71,7 +71,7 @@ bool trpgMatTable::isValid() const
 void trpgMatTable::SetNumTable(int no)
 {
     if ((no < 0) || (no==numTable))
-    return;
+        return;
     numTable = no;
 }
 void trpgMatTable::SetNumMaterial(int /*no*/)
@@ -104,58 +104,58 @@ int trpgMatTable::AddMaterial(const trpgMaterial &mat,bool lookForExisting)
     //int offset=baseMat;
     
     if (lookForExisting) {
-    // Look for a matching base material minus the textures
-    //for (baseMat = 0;baseMat < numMat;baseMat++) {
-    MaterialMapType::const_iterator itr = materialMap.begin();
-    for (  ; itr != materialMap.end( ); itr++) {
-        baseMat = itr->first;
-        const trpgMaterial &bm = itr->second;
-        if (bm.shadeModel==999) {
-        // this is an 'empty' entry.  Means we won't find it, either.
-        spaceInTable=true;
-        break;
-        }
+        // Look for a matching base material minus the textures
+        //for (baseMat = 0;baseMat < numMat;baseMat++) {
+        MaterialMapType::const_iterator itr = materialMap.begin();
+        for (  ; itr != materialMap.end( ); itr++) {
+            baseMat = itr->first;
+            const trpgMaterial &bm = itr->second;
+            if (bm.shadeModel==999) {
+                // this is an 'empty' entry.  Means we won't find it, either.
+                spaceInTable=true;
+                break;
+            }
 
-        // Compare structures
-        if (CEQ(cmat.color,bm.color) && CEQ(cmat.ambient,bm.ambient) &&
-        CEQ(cmat.diffuse,bm.diffuse) && CEQ(cmat.specular,bm.specular) &&
-        CEQ(cmat.emission,bm.emission) && cmat.shininess == bm.shininess &&
-        cmat.shadeModel == bm.shadeModel && cmat.pointSize == bm.pointSize &&
-        cmat.lineWidth == bm.lineWidth && cmat.cullMode == bm.cullMode &&
-        cmat.alphaFunc == bm.alphaFunc && cmat.alphaRef == bm.alphaRef &&
-        cmat.attrSet.fid == bm.attrSet.fid && cmat.attrSet.smc == bm.attrSet.smc &&
-        cmat.attrSet.stp == bm.attrSet.stp && cmat.attrSet.swc == bm.attrSet.swc &&
-        cmat.autoNormal == bm.autoNormal && cmat.texEnvs.size() == bm.texEnvs.size()) {
-        // Test the texture envs
-        bool isSame=true;
+            // Compare structures
+            if (CEQ(cmat.color,bm.color) && CEQ(cmat.ambient,bm.ambient) &&
+                CEQ(cmat.diffuse,bm.diffuse) && CEQ(cmat.specular,bm.specular) &&
+                CEQ(cmat.emission,bm.emission) && cmat.shininess == bm.shininess &&
+                cmat.shadeModel == bm.shadeModel && cmat.pointSize == bm.pointSize &&
+                cmat.lineWidth == bm.lineWidth && cmat.cullMode == bm.cullMode &&
+                cmat.alphaFunc == bm.alphaFunc && cmat.alphaRef == bm.alphaRef &&
+                cmat.attrSet.fid == bm.attrSet.fid && cmat.attrSet.smc == bm.attrSet.smc &&
+                cmat.attrSet.stp == bm.attrSet.stp && cmat.attrSet.swc == bm.attrSet.swc &&
+                cmat.autoNormal == bm.autoNormal && cmat.texEnvs.size() == bm.texEnvs.size()) {
+                // Test the texture envs
+                bool isSame=true;
                 unsigned int i;
-        for (i=0;i<cmat.texEnvs.size();i++) {
-                    const trpgTextureEnv &e1 = cmat.texEnvs[i];
-            const trpgTextureEnv &e2 = bm.texEnvs[i];
-            if (e1.envMode != e2.envMode ||
-            e1.minFilter != e2.minFilter ||
-            e1.magFilter != e2.magFilter ||
-            e1.wrapS != e2.wrapS || e1.wrapT != e2.wrapT ||
-            !CEQ(e1.borderCol,e2.borderCol))
-            isSame = false;
+                for (i=0;i<cmat.texEnvs.size();i++) {
+                            const trpgTextureEnv &e1 = cmat.texEnvs[i];
+                    const trpgTextureEnv &e2 = bm.texEnvs[i];
+                    if (e1.envMode != e2.envMode ||
+                    e1.minFilter != e2.minFilter ||
+                    e1.magFilter != e2.magFilter ||
+                    e1.wrapS != e2.wrapS || e1.wrapT != e2.wrapT ||
+                    !CEQ(e1.borderCol,e2.borderCol))
+                    isSame = false;
+                }
+                // Test the texture IDs
+                for (i=0;i<cmat.texids.size();i++) {
+                    if (cmat.texids[i] != bm.texids[i])
+                    isSame = false;
+                }
+                if (isSame)
+                    return baseMat;
+            }
         }
-        // Test the texture IDs
-        for (i=0;i<cmat.texids.size();i++) {
-            if (cmat.texids[i] != bm.texids[i])
-            isSame = false;
-        }
-        if (isSame)
-            return baseMat;
-        }
-    }
     }
 
     // Didn't find it.  Add it
     int idx;
     if(cmat.writeHandle)
-    idx = cmat.GetHandle();
+        idx = cmat.GetHandle();
     else
-    idx = numMat;
+        idx = numMat;
     materialMap[idx] = cmat;
     numMat = materialMap.size();
     return idx;
@@ -402,30 +402,30 @@ void * textureEnvCB::Parse(trpgToken tok,trpgReadBuffer &buf)
     trpgColor borderCol;
 
     try {
-    switch (tok) {
-    case TRPGMAT_TXENV_MODE:
-        buf.Get(envMode);
-        tenv->SetEnvMode(envMode);
-        break;
-    case TRPGMAT_TXENV_FILTER:
-        buf.Get(minFilter);
-        buf.Get(magFilter);
-        tenv->SetMinFilter(minFilter);
-        tenv->SetMagFilter(magFilter);
-        break;
-    case TRPGMAT_TXENV_WRAP:
-        buf.Get(wrapS);
-        buf.Get(wrapT);
-        tenv->SetWrap(wrapS,wrapT);
-        break;
-    case TRPGMAT_TXENV_BORDER:
-        buf.Get(borderCol);
-        tenv->SetBorderColor(borderCol);
-        break;
-    default:
-        // Don't know this token.  Skip
-        break;
-    }
+        switch (tok) {
+        case TRPGMAT_TXENV_MODE:
+            buf.Get(envMode);
+            tenv->SetEnvMode(envMode);
+            break;
+        case TRPGMAT_TXENV_FILTER:
+            buf.Get(minFilter);
+            buf.Get(magFilter);
+            tenv->SetMinFilter(minFilter);
+            tenv->SetMagFilter(magFilter);
+            break;
+        case TRPGMAT_TXENV_WRAP:
+            buf.Get(wrapS);
+            buf.Get(wrapT);
+            tenv->SetWrap(wrapS,wrapT);
+            break;
+        case TRPGMAT_TXENV_BORDER:
+            buf.Get(borderCol);
+            tenv->SetBorderColor(borderCol);
+            break;
+        default:
+            // Don't know this token.  Skip
+            break;
+        }
     }
     catch (...) {
     return NULL;
@@ -691,9 +691,9 @@ bool trpgMaterial::Write(trpgWriteBuffer &buf)
      * If the terrapage version is >= 2.3, handle will be set to a unique identifier.
      **/
     if(writeHandle) {
-    buf.Begin(TRPGMAT_HANDLE);
-    buf.Add((int)handle);
-    buf.End();
+        buf.Begin(TRPGMAT_HANDLE);
+        buf.Add((int)handle);
+        buf.End();
     }
 
     buf.End();
@@ -800,7 +800,7 @@ bool trpgMaterial::GetNumTexture(int &no) const
 bool trpgMaterial::GetTexture(int no,int &id,trpgTextureEnv &te) const
 {
     if (!isValid() || no < 0  || no >= numTex)
-    return false;
+        return false;
     id = texids[no];
     te = texEnvs[no];
     return true;
@@ -919,16 +919,16 @@ void * materialCB::Parse(trpgToken tok,trpgReadBuffer &buf)
         case TRPGMAT_TEXTURE:
             buf.Get(numTex);
             for (i=0;i<numTex;i++) {
-            buf.Get(texId);
-            // Parse the texture Env
-            buf.GetToken(envTok,len);
-            if (envTok != TRPGMAT_TEXENV)  throw 1;
-            buf.PushLimit(len);
-            status = texEnv.Read(buf);
-            buf.PopLimit();
-            if (!status) throw 1;
+                buf.Get(texId);
+                // Parse the texture Env
+                buf.GetToken(envTok,len);
+                if (envTok != TRPGMAT_TEXENV)  throw 1;
+                buf.PushLimit(len);
+                status = texEnv.Read(buf);
+                buf.PopLimit();
+                if (!status) throw 1;
 
-            mat->AddTexture(texId,texEnv);
+                mat->AddTexture(texId,texEnv);
             }
             break;
         case TRPGMAT_BUMP:
@@ -1243,7 +1243,7 @@ void trpgTexture::AddTile()
 bool trpgTexture::GetNumTile(int &num) const
 {
     if (!isValid()) 
-    return false;
+        return false;
     num = useCount;
     return true;
 }
@@ -1300,6 +1300,7 @@ int trpgTexture::operator == (const trpgTexture &in) const
         if (type == in.type && sizeX == in.sizeX && sizeY == in.sizeY &&
             isMipmap == in.isMipmap)
             return 1;
+        break;
     }
 
     return 0;
@@ -1583,8 +1584,8 @@ void trpgTexture::CalcMipLevelSizes()
             row_size = x_size * pixel_size;
             if (pad_size > 0) {
                 int left = row_size%pad_size;
-            if (left)
-                row_size += pad_size - left;
+                if (left)
+                    row_size += pad_size - left;
             }
             level_size = row_size * y_size;
             storageSize.push_back(level_size);

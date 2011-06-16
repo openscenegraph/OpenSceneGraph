@@ -76,14 +76,14 @@ class WriterNodeVisitor: public osg::NodeVisitor
                           const osgDB::ReaderWriter::Options* options,
                           const std::string& srcDirectory) :
             osg::NodeVisitor(osg::NodeVisitor::TRAVERSE_ALL_CHILDREN),
-            _pScene(pScene),
             _pSdkManager(pSdkManager),
+            _succeedLastApply(true),
+            _pScene(pScene),
+            _curFbxNode(pScene->GetRootNode()),
             _currentStateSet(new osg::StateSet()),
             _lastMaterialIndex(0),
             _lastMeshIndex(0),
-            _curFbxNode(pScene->GetRootNode()),
             _options(options),
-            _succeedLastApply(true),
             _externalWriter(srcDirectory, osgDB::getFilePath(fileName), true, 0)
         {}
 
@@ -175,7 +175,7 @@ class WriterNodeVisitor: public osg::NodeVisitor
 
         private:
             KFbxSurfacePhong*  _fbxMaterial;
-            KFbxFileTexture*       _fbxTexture;
+            KFbxFileTexture*   _fbxTexture;
             int                _index;///< Index in the Map
             const osg::Image*  _osgImage;
         };

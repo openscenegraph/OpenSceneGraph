@@ -997,6 +997,7 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
                 blitMask, GL_NEAREST);
         }
 
+#if !defined(OSG_GLES1_AVAILABLE) && !defined(OSG_GLES2_AVAILABLE)
         if (needToBlitColorBuffers)
         {
             for (FrameBufferObject::AttachmentMap::const_iterator
@@ -1015,11 +1016,12 @@ void RenderStage::drawInner(osg::RenderInfo& renderInfo,RenderLeaf*& previous, b
                         GL_COLOR_BUFFER_BIT, GL_NEAREST);
                 }
             }
-            // reset the read and draw buffers?
+            // reset the read and draw buffers?  will comment out for now with the assumption that
+            // the buffers will be set explictly when needed elsewhere.
             // glReadBuffer(GL_COLOR_ATTACHMENT0_EXT);
             // glDrawBuffer(GL_COLOR_ATTACHMENT0_EXT);
         }
-
+#endif
         
         apply_read_fbo = true;
         read_fbo = _resolveFbo.get();

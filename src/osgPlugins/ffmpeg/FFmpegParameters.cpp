@@ -5,6 +5,18 @@
 #include <iostream>
 #include <sstream>
 
+#if LIBAVCODEC_VERSION_MAJOR >= 53 || \
+    (LIBAVCODEC_VERSION_MAJOR==52 && LIBAVCODEC_VERSION_MINOR>=73) || \
+    (LIBAVCODEC_VERSION_MAJOR==52 && LIBAVCODEC_VERSION_MINOR==72 && LIBAVCODEC_VERSION_MICRO >= 2)
+
+    #include <pixdesc.h>
+    inline PixelFormat osg_av_get_pix_fmt(const char *name) { return av_get_pix_fmt(name); }
+
+#else
+    inline PixelFormat osg_av_get_pix_fmt(const char *name) { return avcodec_get_pix_fmt(name); }
+#endif
+
+
 namespace osgFFmpeg {
 
 
@@ -35,7 +47,7 @@ void FFmpegParameters::parse(const std::string& name, const std::string& value)
     }
     else if (name == "pixel_format")
     {
-        m_parameters.pix_fmt = av_get_pix_fmt(value.c_str());
+        m_parameters.pix_fmt = osg_av_get_pix_fmt(value.c_str());
     }
     else if (name == "frame_size")
     {

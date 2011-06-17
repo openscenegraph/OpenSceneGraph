@@ -12,7 +12,6 @@ extern "C"
 #include <avcodec.h>
 #include <avformat.h>
 #include <avdevice.h>
-#include <pixdesc.h>
 
 #ifdef USE_SWSCALE    
     #include <swscale.h>

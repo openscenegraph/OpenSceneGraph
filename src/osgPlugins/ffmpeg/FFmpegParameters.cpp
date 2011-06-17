@@ -8,7 +8,11 @@
 #if LIBAVCODEC_VERSION_MAJOR >= 53 || \
     (LIBAVCODEC_VERSION_MAJOR==52 && LIBAVCODEC_VERSION_MINOR>=49)
 
-    #include <pixdesc.h>
+    extern "C"
+    {
+        #include <pixdesc.h>
+    }
+    
     inline PixelFormat osg_av_get_pix_fmt(const char *name) { return av_get_pix_fmt(name); }
 
 #else

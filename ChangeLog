@@ -1,3 +1,33 @@
+2011-06-17 11:47  robert
+
+	* include/OpenThreads/Version: Updated version number
+
+2011-06-17 11:47  robert
+
+	* AUTHORS.txt, applications/osgversion/Contributors.cpp: Fixed
+	  Jorge Izquierdo name.
+
+2011-06-17 11:02  robert
+
+	* src/OpenThreads/CMakeLists.txt: Updated OpenThreads version
+	  number for stable release
+
+2011-06-17 10:35  robert
+
+	* applications/present3D/CMakeLists.txt: Tempory fix for static
+	  build of Present3D which disables the use of ffmpeg when
+	  compiling static, will need to
+	  look into unresolved symbols assoiated with FFMPEG at a later
+	  date.
+
+2011-06-17 09:20  robert
+
+	* AUTHORS.txt: Updated AUTHORS file for 3.0.0-rc1
+
+2011-06-17 09:19  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2011-06-17 09:05  robert
 
 	* src/osg/StencilTwoSided.cpp: From Jan Peciva, "sending updated

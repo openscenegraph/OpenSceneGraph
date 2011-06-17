@@ -6,8 +6,7 @@
 #include <sstream>
 
 #if LIBAVCODEC_VERSION_MAJOR >= 53 || \
-    (LIBAVCODEC_VERSION_MAJOR==52 && LIBAVCODEC_VERSION_MINOR>=73) || \
-    (LIBAVCODEC_VERSION_MAJOR==52 && LIBAVCODEC_VERSION_MINOR==72 && LIBAVCODEC_VERSION_MICRO >= 2)
+    (LIBAVCODEC_VERSION_MAJOR==52 && LIBAVCODEC_VERSION_MINOR>=49)
 
     #include <pixdesc.h>
     inline PixelFormat osg_av_get_pix_fmt(const char *name) { return av_get_pix_fmt(name); }

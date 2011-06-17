@@ -5,8 +5,6 @@
 #include <iostream>
 #include <sstream>
 
-
-
 namespace osgFFmpeg {
 
 
@@ -37,7 +35,7 @@ void FFmpegParameters::parse(const std::string& name, const std::string& value)
     }
     else if (name == "pixel_format")
     {
-        m_parameters.pix_fmt = avcodec_get_pix_fmt(value.c_str());
+        m_parameters.pix_fmt = av_get_pix_fmt(value.c_str());
     }
     else if (name == "frame_size")
     {

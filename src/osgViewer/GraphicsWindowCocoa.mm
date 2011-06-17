@@ -148,12 +148,11 @@ static unsigned int remapCocoaKey(unsigned int key, unsigned int modifiers)
 {
     static CocoaKeyboardMap s_CocoaKeyboardMap;
     
-    
     bool pressedOnKeypad = modifiers & NSNumericPadKeyMask;
     if (modifiers & NSFunctionKeyMask)
         pressedOnKeypad = false;
     
-    std::cout << std::hex << "remap " << key << " keypad: " << pressedOnKeypad << " modifiers: " << modifiers << std::endl;
+    //std::cout << std::hex << "remap " << key << " keypad: " << pressedOnKeypad << " modifiers: " << modifiers << std::endl;
         
     return s_CocoaKeyboardMap.remapKey(key, pressedOnKeypad);
 }

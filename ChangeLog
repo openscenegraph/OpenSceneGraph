@@ -1,3 +1,337 @@
+2011-06-17 09:05  robert
+
+	* src/osg/StencilTwoSided.cpp: From Jan Peciva, "sending updated
+	  version of StencilTwoSided.
+	  It supports now even GL_ATI_separate_stencil extension and there
+	  are more
+	  OSG_INFOs to see, which API is used."
+
+2011-06-17 09:02  robert
+
+	* CMakeLists.txt, include/osg/Version: Updated version number of
+	  3.0.0-rc1
+
+2011-06-17 08:47  robert
+
+	* src/osgUtil/RenderStage.cpp: Added GLES version checks to prevent
+	  build problems under GLES1 and GLES2
+
+2011-06-17 08:42  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegParameters.cpp: Refined the version
+	  checking
+
+2011-06-17 08:41  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegHeaders.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegParameters.cpp: Build fix
+
+2011-06-17 08:26  robert
+
+	* src/osgViewer/GraphicsWindowCocoa.mm: From Ulrich Hertlein, "the
+	  OS X/Cocoa implementation logs some debug junk on every key
+	  stroke. The attached
+	  patch removes this."
+
+2011-06-17 08:15  robert
+
+	* CMakeLists.txt: From Jorge Ciges, "This is one of those bugs that
+	  you don't find until you try to compile under another pc that
+	  doesn't have Cmake 2.8."
+
+2011-06-17 06:22  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegHeaders.hpp,
+	  src/osgPlugins/ffmpeg/FFmpegParameters.cpp: Fixed warning
+
+2011-06-17 06:09  robert
+
+	* src/osgPlugins/dae/daeReader.cpp: Fixed warnings
+
+2011-06-17 05:57  robert
+
+	* src/osg/glu/libtess/tess.h,
+	  src/osgPlugins/jpeg/ReaderWriterJPEG.cpp: Added disabling of
+	  VisualStudio warning C4324 : structure was padded due to
+	  __declspec(align())
+
+2011-06-16 18:43  robert
+
+	* src/osgPlugins/fbx/ReaderWriterFBX.cpp,
+	  src/osgPlugins/fbx/WriterNodeVisitor.cpp,
+	  src/osgPlugins/fbx/WriterNodeVisitor.h: Fixed warnings.
+
+2011-06-16 18:25  robert
+
+	* src/osgWrappers/deprecated-dotosg/osg/Texture.cpp,
+	  src/osgWrappers/serializers/osg/Texture.cpp: Added support for
+	  new InternalTextureFormatModes
+
+2011-06-16 18:12  robert
+
+	* src/osgDB/ExternalFileWriter.cpp: Added wider file extension
+	  support to ExternalFileWriter::generateObjectName
+
+2011-06-16 16:02  robert
+
+	* src/osgPlugins/dds/ReaderWriterDDS.cpp: From Farshid Lashkari,
+	  "Attached is a small patch that adds support for writing BGR
+	  images to the DDS plugin."
+
+2011-06-16 16:00  robert
+
+	* src/OpenThreads/qt/CMakeLists.txt: From John Cummings, "While
+	  testing recent OSG developer releases and the subversion trunk, I
+	  have noticed that on my 64-bit Linux machines, all of the OSG
+	  libraries
+	  get installed into the "lib64" directory as I would expect.
+	  However, the
+	  OpenThreads library gets installed into the "lib" directory when
+	  selecting "Build OpenThreads with Qt threading support." That is,
+	  with
+	  the BUILD_OPENTHREADS_WITH_QT set to ON.
+	  
+	  I am attaching the a fix for this issue in the file:
+	  
+	  src/OpenThreads/qt/CMakeLists.txt
+	  
+	  It simply adds ${LIB_POSTFIX} to the destination as in done with
+	  all
+	  other CMakeLists.txt with libraries in OSG. I have tested it on
+	  both
+	  32-bit and 64-bit Linux."
+
+2011-06-16 15:57  robert
+
+	* examples/osgcluster/receiver.cpp,
+	  src/OpenThreads/win32/Win32Thread.cpp,
+	  src/osgPlugins/shp/ESRIShape.cpp, src/osgPlugins/zip/unzip.cpp:
+	  Windows warning fixes
+
+2011-06-16 13:00  robert
+
+	* src/osgPlugins/txp/trpage_compat.cpp,
+	  src/osgPlugins/txp/trpage_geom.h,
+	  src/osgPlugins/txp/trpage_label.cpp,
+	  src/osgPlugins/txp/trpage_managers.cpp,
+	  src/osgPlugins/txp/trpage_managers.h,
+	  src/osgPlugins/txp/trpage_material.cpp,
+	  src/osgPlugins/txp/trpage_nodes.cpp,
+	  src/osgPlugins/txp/trpage_parse.cpp,
+	  src/osgPlugins/txp/trpage_read.h,
+	  src/osgPlugins/txp/trpage_readbuf.cpp,
+	  src/osgPlugins/txp/trpage_warchive.cpp: Fixed indentation issues
+
+2011-06-16 10:05  robert
+
+	* src/osgPlugins/txp/ReaderWriterTXP.cpp,
+	  src/osgPlugins/txp/TXPArchive.h, src/osgPlugins/txp/TXPNode.cpp,
+	  src/osgPlugins/txp/trpage_compat.cpp,
+	  src/osgPlugins/txp/trpage_geom.h,
+	  src/osgPlugins/txp/trpage_managers.cpp,
+	  src/osgPlugins/txp/trpage_managers.h,
+	  src/osgPlugins/txp/trpage_material.cpp,
+	  src/osgPlugins/txp/trpage_model.cpp,
+	  src/osgPlugins/txp/trpage_parse.cpp,
+	  src/osgPlugins/txp/trpage_print.h,
+	  src/osgPlugins/txp/trpage_range.cpp,
+	  src/osgPlugins/txp/trpage_warchive.cpp,
+	  src/osgPlugins/txp/trpage_write.h: Improved indentation.
+
+2011-06-16 08:59  robert
+
+	* src/osgPlugins/txp/TileMapper.cpp,
+	  src/osgPlugins/txp/TileMapper.h, src/osgPlugins/txp/trdll.h,
+	  src/osgPlugins/txp/trpage_basic.cpp,
+	  src/osgPlugins/txp/trpage_compat.cpp,
+	  src/osgPlugins/txp/trpage_compat.h,
+	  src/osgPlugins/txp/trpage_geom.cpp,
+	  src/osgPlugins/txp/trpage_geom.h,
+	  src/osgPlugins/txp/trpage_header.cpp,
+	  src/osgPlugins/txp/trpage_io.h,
+	  src/osgPlugins/txp/trpage_label.cpp,
+	  src/osgPlugins/txp/trpage_light.cpp,
+	  src/osgPlugins/txp/trpage_main.cpp,
+	  src/osgPlugins/txp/trpage_managers.cpp,
+	  src/osgPlugins/txp/trpage_managers.h,
+	  src/osgPlugins/txp/trpage_material.cpp,
+	  src/osgPlugins/txp/trpage_model.cpp,
+	  src/osgPlugins/txp/trpage_nodes.cpp,
+	  src/osgPlugins/txp/trpage_parse.cpp,
+	  src/osgPlugins/txp/trpage_pparse.cpp,
+	  src/osgPlugins/txp/trpage_range.cpp,
+	  src/osgPlugins/txp/trpage_read.h,
+	  src/osgPlugins/txp/trpage_scene.cpp,
+	  src/osgPlugins/txp/trpage_scene.h,
+	  src/osgPlugins/txp/trpage_swap.h,
+	  src/osgPlugins/txp/trpage_sys.h,
+	  src/osgPlugins/txp/trpage_tile.cpp,
+	  src/osgPlugins/txp/trpage_util.cpp,
+	  src/osgPlugins/txp/trpage_util.h,
+	  src/osgPlugins/txp/trpage_write.h: Replaced tabs with four spaces
+
+2011-06-16 08:46  robert
+
+	* CMakeModules/FindOurDCMTK.cmake: From Jean-Christophe Lombardo,
+	  "On Fedora 14, dcmtk libs are under /usr/lib/dcmtk. I've added a
+	  PATH_SUFFIX to take that into account"
+
+2011-06-15 18:31  robert
+
+	* include/osgUtil/IncrementalCompileOperation,
+	  src/osgUtil/IncrementalCompileOperation.cpp: Improved the
+	  handling of compiling vs flushing deleted objects
+
+2011-06-15 17:00  robert
+
+	* src/osgViewer/GraphicsWindowCocoa.mm: Changed the key handling
+	  code to use EventQueue::getTime() rather then the theEvent
+	  timestamp.
+
+2011-06-15 09:36  robert
+
+	* src/osgUtil/RenderStage.cpp: Fixed blitting of FBO's with
+	  multiple render targets.
+
+2011-06-15 09:35  robert
+
+	* examples/osgmultiplerendertargets/osgmultiplerendertargets.cpp:
+	  From Anthousis Andreadis, added multiple sampling test for
+	  multiple rendering targets which is activated by the --ms command
+	  line option.
+
+2011-06-14 18:10  robert
+
+	* CMakeModules/FindAndroidNDK.cmake: From Jorge Ciges, "Update to
+	  FindAndroidNDK to make it use the latest Ndk (r5c) automatically.
+	  
+	  That fixes compatibilities with some 2.1 devices. And it looks
+	  like all goes well."
+
+2011-06-14 16:54  robert
+
+	* examples/osganimate/osganimate.cpp,
+	  examples/osgblendequation/osgblendequation.cpp,
+	  examples/osgcallback/osgcallback.cpp,
+	  examples/osgcamera/osgcamera.cpp, examples/osgcatch/osgcatch.cpp,
+	  examples/osgclip/osgclip.cpp,
+	  examples/osgcompositeviewer/osgcompositeviewer.cpp,
+	  examples/osgcopy/osgcopy.cpp, examples/osgcubemap/osgcubemap.cpp,
+	  examples/osgdirectinput/osgdirectinput.cpp,
+	  examples/osgdistortion/osgdistortion.cpp,
+	  examples/osgdrawinstanced/osgdrawinstanced.cpp,
+	  examples/osgfxbrowser/osgfxbrowser.cpp,
+	  examples/osggeometry/osggeometry.cpp, examples/osghud/osghud.cpp,
+	  examples/osgkeyboardmouse/osgkeyboardmouse.cpp,
+	  examples/osglight/osglight.cpp,
+	  examples/osglogicop/osglogicop.cpp,
+	  examples/osgmotionblur/osgmotionblur.cpp,
+	  examples/osgmultitexture/osgmultitexture.cpp,
+	  examples/osgoccluder/osgoccluder.cpp,
+	  examples/osgoutline/osgoutline.cpp,
+	  examples/osgparticleeffects/osgparticleeffects.cpp,
+	  examples/osgphotoalbum/osgphotoalbum.cpp,
+	  examples/osgpick/osgpick.cpp, examples/osgposter/osgposter.cpp,
+	  examples/osgprerender/osgprerender.cpp,
+	  examples/osgreflect/osgreflect.cpp,
+	  examples/osgscribe/osgscribe.cpp,
+	  examples/osgsequence/osgsequence.cpp,
+	  examples/osgshadow/osgshadow.cpp,
+	  examples/osgsidebyside/osgsidebyside.cpp,
+	  examples/osgsimplifier/osgsimplifier.cpp,
+	  examples/osgsimulation/osgsimulation.cpp,
+	  examples/osgspheresegment/osgspheresegment.cpp,
+	  examples/osgspotlight/osgspotlight.cpp,
+	  examples/osgstereoimage/osgstereoimage.cpp,
+	  examples/osgtexture1D/osgtexture1D.cpp,
+	  examples/osgthirdpersonview/osgthirdpersonview.cpp,
+	  examples/osgunittests/FileNameUtils.cpp,
+	  examples/osgunittests/MultiThreadRead.cpp,
+	  examples/osgviewerFOX/FOX_OSG_MDIView.cpp,
+	  examples/osgviewerQt/osgviewerQt.cpp,
+	  examples/osgwidgetbox/osgwidgetbox.cpp,
+	  examples/osgwidgetmenu/osgwidgetmenu.cpp,
+	  examples/osgwidgetmessagebox/osgwidgetmessagebox.cpp,
+	  examples/osgwidgetprogress/osgwidgetprogress.cpp,
+	  examples/osgwidgetwindow/osgwidgetwindow.cpp,
+	  examples/osgwindows/osgwindows.cpp, runexamples.bat: Replaced
+	  .osg with .osgt file usage
+
+2011-06-14 16:50  robert
+
+	* examples/osgocclusionquery/osgocclusionquery.cpp: Improved the
+	  handling of command line parameters
+
+2011-06-14 15:55  robert
+
+	* CMakeLists.txt, include/osg/Version: Updated version
+
+2011-06-14 15:48  robert
+
+	* include/osg/State, src/osg/State.cpp: Added support
+	  osg::State::drawQuad(..) for number of vertices in quads to uint
+	  range rather than just ushort range.
+
+2011-06-14 12:44  robert
+
+	* include/osgGA/EventQueue, src/osgGA/EventQueue.cpp,
+	  src/osgViewer/CompositeViewer.cpp, src/osgViewer/Viewer.cpp:
+	  Fixed issue with events having a negative delta of time between
+	  them.
+
+2011-06-14 10:15  robert
+
+	* include/osg/BufferObject, src/osg/BufferObject.cpp: Added
+	  GLBufferObject::computeBufferAlignment(..) method to enable
+	  buffer entries to be aligned along specified buffer alignment
+	  boundaries, currently defaulting to 4.
+
+2011-06-14 09:16  robert
+
+	* src/osgViewer/GraphicsWindowWin32.cpp: From Stephan Huber,
+	  "attached you'll find a fix for the non-working
+	  useCursor()-method for
+	  Windows. With the old code you can switch off the cursor, but not
+	  back on."
+
+2011-06-14 09:11  robert
+
+	* include/osgViewer/api/IOS/GraphicsWindowIOS,
+	  src/osgPlugins/imageio/ReaderWriterImageIO_IOS.cpp,
+	  src/osgViewer/GraphicsWindowIOS.mm, src/osgViewer/IOSUtils.h,
+	  src/osgViewer/IOSUtils.mm: Removed executable permission.
+
+2011-06-14 09:01  robert
+
+	* CMakeModules/FindQTKit.cmake, CMakeModules/FindQuickTime.cmake:
+	  From Stephan Huber, "attached you'll find some tweaks for the
+	  FindQuicktime and
+	  > FindQTKit-cmake-plugins, so they get disabled for ios-builds."
+
+2011-06-13 15:20  robert
+
+	* src/osgDB/FileUtils.cpp: Fixed wild card search when wild card
+	  filename includes a path.
+
+2011-06-13 08:52  robert
+
+	* src/osgText/Style.cpp: From Jeremy Moles, fixed style ==
+	  operator.
+
+2011-06-13 08:45  robert
+
+	* src/osg/ImageUtils.cpp: From Stephan Huber, build fix for IOS
+
+2011-06-10 11:42  robert
+
+	* include/osg/ValueObject: Added handling of s/gUserValue()
+	  directly on a UserDataContainer.
+
+2011-06-09 14:20  robert
+
+	* AUTHORS.txt, ChangeLog: Updated ChangeLog and AUTHORS file for
+	  2.9.16 dev release
+
 2011-06-09 14:11  robert
 
 	* examples/osgAndroidExampleGLES1,

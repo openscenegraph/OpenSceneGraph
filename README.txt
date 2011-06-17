@@ -6,21 +6,33 @@ OpenSceneGraph website:
 
     http://www.openscenegraph.org
   
-For the impatient, read the simplified build notes below. For support 
-subscribe to our public mailing list:
+For support subscribe to our public mailing list:
 
     http://www.openscenegraph.org/projects/osg/wiki/MailingLists
 
+or forum:
 
+    http://forum.openscenegraph.org/
+
+For the impatient, we've included quick build instructions below, these
+are are broken down is three parts:
+
+  1) General notes on building the OpenSceneGraph
+  2) OSX release notes
+  3) iOS release notes
+
+If details below are not sufficient then head over to the openscenegraph.org
+to the Documentation/GettingStarted and Documentation/PlatformSpecifics sections for
+more indepth instructions.
 
 Robert Osfield.
 Project Lead.
-10th December 2009.
+17th June 2011.
 
 --
 
-How to build the OpenSceneGraph
-===============================
+Section 1. How to build the OpenSceneGraph
+==========================================
 
 The OpenSceneGraph uses the CMake build system to generate a 
 platform-specific build environment.  CMake reads the CMakeLists.txt 
@@ -74,7 +86,8 @@ information read "Getting Started" guide:
     http://www.openscenegraph.org/projects/osg/wiki/Support/GettingStarted
    
    
--- Release notes on OSX build, by Eric Sokolowsky, August 5, 2008
+Section 2. Release notes on OSX build, by Eric Sokolowsky, August 5, 2008
+=========================================================================
 
 There are several ways to compile OpenSceneGraph under OSX.  The
 recommended way is to use CMake 2.6 to generate Xcode projects, then use
@@ -147,7 +160,8 @@ still images, and a QTKit plugin will need to be developed to handle
 animations.
 
 
--- Release notes on iOS build, by Thomas Hoghart
+Section 3. Release notes on iOS build, by Thomas Hoghart
+=========================================================
 
 * Run CMake with either OSG_BUILD_PLATFORM_IPHONE or OSG_BUILD_PLATFORM_IPHONE_SIMULATOR set:
   $ mkdir build-iOS ; cd build-iOS

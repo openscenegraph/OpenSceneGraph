@@ -38,6 +38,10 @@
 // #include <GL/glu.h>
 #include <osg/GLU>
 
+#if defined(_MSC_VER) && defined(OSG_DISABLE_MSVC_WARNINGS)
+    // disable "structure was padded due to __declspec(align())
+    #pragma warning( disable : 4324 )
+#endif
 
 #ifndef GLAPIENTRY
     #define GLAPIENTRY GL_APIENTRY 

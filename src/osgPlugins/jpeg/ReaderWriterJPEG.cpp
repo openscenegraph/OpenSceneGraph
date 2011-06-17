@@ -9,6 +9,11 @@
 
 #include <sstream>
 
+#if defined(_MSC_VER) && defined(OSG_DISABLE_MSVC_WARNINGS)
+    // disable "structure was padded due to __declspec(align())
+    #pragma warning( disable : 4324 )
+#endif
+
 /****************************************************************************
  *
  * Follows is code extracted from the simage library.  Original Authors:

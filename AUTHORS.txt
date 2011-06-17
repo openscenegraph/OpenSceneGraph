@@ -1,6 +1,6 @@
-OpenSceneGraph Library 2.9.16
+OpenSceneGraph Library 3.0.0
 
-461 Contributors:
+463 Contributors:
 
 Firstname Surname
 -----------------
@@ -34,13 +34,13 @@ Luigi Calori
 Mike Wittman
 Roland Smeenk
 Roger James
-Chris Hanson
 Jeremy Moles
+Chris Hanson
 Mattias Helsing
 Jason Beverage
+Jan Peciva
 Andy Skinner
 Paul Melis
-Jan Peciva
 J.P. Delport
 David Fries
 Tom Jolley
@@ -114,6 +114,7 @@ Neil Groves
 Markus Trenkwalder
 Loic Dachary
 Joseph Steel
+Jorge Ciges
 John Shue
 Chuck Seberino
 Brad Colbert
@@ -151,7 +152,6 @@ Maria Ten
 Liang Aibin
 Leandro Motta Barros
 Katharina Plugge
-Jorge Ciges
 John Vidar Larring
 John Kelso
 John Ivar
@@ -245,6 +245,7 @@ Julen Garcia
 Joseph Winston
 John Aughey
 Joachim Pouderoux
+Jean-Christophe Lombardo
 Javier Taibo
 James Moliere
 Igor Kravtchenko
@@ -385,11 +386,11 @@ John Tan
 John Grant
 John Donovan
 John Davis
+John Cummings
 John Argentieri
 Joan Abadie
 Jim Brooks
 Jeroen den Dekker
-Jean-Christophe Lombardo
 Jay Zuckerman
 Jason Howlett
 Jason Ballenger
@@ -452,6 +453,7 @@ Benjamin Wasty
 Ben van Basten
 Bart Gallet
 Axel Volley
+Anthousis Andreadis
 Andy Preece
 Andrew Reyonolds
 Andreas Roth

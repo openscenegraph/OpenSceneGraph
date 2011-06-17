@@ -25,24 +25,25 @@ using namespace osgDAE;
 daeReader::Options::Options() :
     strictTransparency(false),
     precisionHint(0),
-    tessellateMode(TESSELLATE_POLYGONS_AS_TRIFAN),   // Use old tessellation behaviour as default
-    usePredefinedTextureUnits(true)
+    usePredefinedTextureUnits(true),
+    tessellateMode(TESSELLATE_POLYGONS_AS_TRIFAN)   // Use old tessellation behaviour as default
 {
 }
 
 daeReader::daeReader(DAE *dae_, const Options * pluginOptions) :
                   _dae(dae_),
                   _rootNode(NULL),
+                  _document(NULL),
                   _visualScene(NULL),
                   _numlights(0),
                   _currentInstance_effect(NULL),
                   _currentEffect(NULL),
                   _authoringTool(UNKNOWN),
                   _invertTransparency(false),
+                  _pluginOptions(pluginOptions ? *pluginOptions : Options()),
                   _assetUnitName("meter"),
                   _assetUnitMeter(1.0),
-                  _assetUp_axis(UPAXISTYPE_Y_UP),
-                  _pluginOptions(pluginOptions ? *pluginOptions : Options())
+                  _assetUp_axis(UPAXISTYPE_Y_UP)
 {
 }
 

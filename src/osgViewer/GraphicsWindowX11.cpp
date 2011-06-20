@@ -878,7 +878,7 @@ bool GraphicsWindowX11::createWindow()
     wsi->getScreenResolution(*_traits, screenWidth, screenHeight);
 
     bool isFullScreen = x == 0 && y == 0 && width == (int)screenWidth && height == (int)screenHeight && !_traits->windowDecoration;
-    if (isFullScreen)
+    if (isFullScreen && !_traits->overrideRedirect)
     {
         // follows is hack to get around problems with toggling off full screen with modern X11 window
         // managers that try to be too clever when toggling off full screen and ignore the window size

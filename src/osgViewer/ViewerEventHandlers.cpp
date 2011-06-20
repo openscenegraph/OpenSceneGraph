@@ -93,8 +93,12 @@ bool WindowSizeHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
         {
             if (_toggleFullscreen == true && ea.getKey() == _keyEventToggleFullscreen)
             {
-                osgViewer::Viewer::Windows    windows;
 
+                // sleep to allow any viewer rendering threads to complete before we
+                // resize the window
+                OpenThreads::Thread::microSleep(100000);
+
+                osgViewer::Viewer::Windows windows;
                 viewer->getWindows(windows);
                 for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
                     itr != windows.end();
@@ -108,9 +112,12 @@ bool WindowSizeHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
             }
             else if (_changeWindowedResolution == true && ea.getKey() == _keyEventWindowedResolutionUp)
             {
+                // sleep to allow any viewer rendering threads to complete before we
+                // resize the window
+                OpenThreads::Thread::microSleep(100000);
+
                 // Increase resolution
                 osgViewer::Viewer::Windows    windows;
-
                 viewer->getWindows(windows);
                 for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
                     itr != windows.end();
@@ -124,9 +131,12 @@ bool WindowSizeHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIActio
             }
             else if (_changeWindowedResolution == true && ea.getKey() == _keyEventWindowedResolutionDown)
             {
+                // sleep to allow any viewer rendering threads to complete before we
+                // resize the window
+                OpenThreads::Thread::microSleep(100000);
+
                 // Decrease resolution
                 osgViewer::Viewer::Windows    windows;
-
                 viewer->getWindows(windows);
                 for(osgViewer::Viewer::Windows::iterator itr = windows.begin();
                     itr != windows.end();

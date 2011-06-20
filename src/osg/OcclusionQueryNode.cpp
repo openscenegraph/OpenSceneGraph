@@ -54,59 +54,45 @@ namespace osg
 // Create and return a StateSet appropriate for performing an occlusion
 //   query test (disable lighting, texture mapping, etc). Probably some
 //   room for improvement here. Could disable shaders, for example.
-osg::StateSet*
-initOQState()
+StateSet* initOQState()
 {
-    osg::StateSet* state = new osg::StateSet;
+    StateSet* state = new StateSet;
     // TBD Possible bug, need to allow user to set render bin number.
     state->setRenderBinDetails( 9, "RenderBin" );
 
-    state->setMode( GL_LIGHTING, osg::StateAttribute::OFF |
-        osg::StateAttribute::PROTECTED);
-    state->setTextureMode( 0, GL_TEXTURE_2D, osg::StateAttribute::OFF |
-        osg::StateAttribute::PROTECTED);
-    state->setMode( GL_CULL_FACE, osg::StateAttribute::ON |
-        osg::StateAttribute::PROTECTED);
+    state->setMode( GL_LIGHTING, StateAttribute::OFF | StateAttribute::PROTECTED);
+    state->setTextureMode( 0, GL_TEXTURE_2D, StateAttribute::OFF | StateAttribute::PROTECTED);
+    state->setMode( GL_CULL_FACE, StateAttribute::ON | StateAttribute::PROTECTED);
 
-    osg::ColorMask* cm = new osg::ColorMask( false, false, false, false );
-    state->setAttributeAndModes( cm, osg::StateAttribute::ON |
-        osg::StateAttribute::PROTECTED);
-    osg::Depth* d = new osg::Depth( osg::Depth::LEQUAL, 0.f, 1.f, false );
-    state->setAttributeAndModes( d, osg::StateAttribute::ON |
-        osg::StateAttribute::PROTECTED);
-    osg::PolygonMode* pm = new osg::PolygonMode(
-        osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::FILL );
-    state->setAttributeAndModes( pm, osg::StateAttribute::ON |
-        osg::StateAttribute::PROTECTED);
+    ColorMask* cm = new ColorMask( false, false, false, false );
+    state->setAttributeAndModes( cm, StateAttribute::ON | StateAttribute::PROTECTED);
 
-    osg::PolygonOffset* po = new osg::PolygonOffset( -1., -1. );
-    state->setAttributeAndModes( po, osg::StateAttribute::ON |
-        osg::StateAttribute::PROTECTED);
+    Depth* d = new Depth( Depth::LEQUAL, 0.f, 1.f, false );
+    state->setAttributeAndModes( d, StateAttribute::ON | StateAttribute::PROTECTED);
+
+    PolygonMode* pm = new PolygonMode( PolygonMode::FRONT_AND_BACK, PolygonMode::FILL );
+    state->setAttributeAndModes( pm, StateAttribute::ON | StateAttribute::PROTECTED);
+
+    PolygonOffset* po = new PolygonOffset( -1., -1. );
+    state->setAttributeAndModes( po, StateAttribute::ON | StateAttribute::PROTECTED);
 
     return state;
 }
 
 // Create and return a StateSet for rendering a debug representation of query geometry.
-osg::StateSet*
-initOQDebugState()
+StateSet* initOQDebugState()
 {
     osg::StateSet* debugState = new osg::StateSet;
 
-    debugState->setMode( GL_LIGHTING, osg::StateAttribute::OFF |
-        osg::StateAttribute::PROTECTED);
-    debugState->setTextureMode( 0, GL_TEXTURE_2D, osg::StateAttribute::OFF |
-        osg::StateAttribute::PROTECTED);
-    debugState->setMode( GL_CULL_FACE, osg::StateAttribute::ON |
-        osg::StateAttribute::PROTECTED);
+    debugState->setMode( GL_LIGHTING, StateAttribute::OFF | StateAttribute::PROTECTED);
+    debugState->setTextureMode( 0, GL_TEXTURE_2D, StateAttribute::OFF | StateAttribute::PROTECTED);
+    debugState->setMode( GL_CULL_FACE, StateAttribute::ON | StateAttribute::PROTECTED);
 
-    osg::PolygonMode* pm = new osg::PolygonMode(
-        osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::LINE );
-    debugState->setAttributeAndModes( pm, osg::StateAttribute::ON |
-        osg::StateAttribute::PROTECTED);
+    PolygonMode* pm = new PolygonMode( PolygonMode::FRONT_AND_BACK, PolygonMode::LINE );
+    debugState->setAttributeAndModes( pm, StateAttribute::ON | StateAttribute::PROTECTED);
 
-    osg::PolygonOffset* po = new osg::PolygonOffset( -1., -1. );
-    debugState->setAttributeAndModes( po, osg::StateAttribute::ON |
-        osg::StateAttribute::PROTECTED);
+    PolygonOffset* po = new PolygonOffset( -1., -1. );
+    debugState->setAttributeAndModes( po, StateAttribute::ON | StateAttribute::PROTECTED);
 
     return debugState;
 }
@@ -484,7 +470,7 @@ OcclusionQueryNode::~OcclusionQueryNode()
 {
 }
 
-OcclusionQueryNode::OcclusionQueryNode( const OcclusionQueryNode& oqn, const osg::CopyOp& copyop )
+OcclusionQueryNode::OcclusionQueryNode( const OcclusionQueryNode& oqn, const CopyOp& copyop )
   : Group( oqn, copyop ),
     _passed( false )
 {
@@ -498,8 +484,7 @@ OcclusionQueryNode::OcclusionQueryNode( const OcclusionQueryNode& oqn, const osg
 }
 
 
-bool
-OcclusionQueryNode::getPassed( const osg::Camera* camera, osg::NodeVisitor& nv )
+bool OcclusionQueryNode::getPassed( const Camera* camera, NodeVisitor& nv )
 {
     if ( !_enabled )
         // Queries are not enabled. The caller should be osgUtil::CullVisitor,
@@ -551,8 +536,7 @@ OcclusionQueryNode::getPassed( const osg::Camera* camera, osg::NodeVisitor& nv )
     return _passed;
 }
 
-void
-OcclusionQueryNode::traverseQuery( const osg::Camera* camera, osg::NodeVisitor& nv )
+void OcclusionQueryNode::traverseQuery( const Camera* camera, NodeVisitor& nv )
 {
     bool issueQuery;
     {
@@ -568,16 +552,14 @@ OcclusionQueryNode::traverseQuery( const osg::Camera* camera, osg::NodeVisitor& 
         _queryGeode->accept( nv );
 }
 
-void
-OcclusionQueryNode::traverseDebug( osg::NodeVisitor& nv )
+void OcclusionQueryNode::traverseDebug( NodeVisitor& nv )
 {
     if (_debugBB)
         // If requested, display the debug geometry
         _debugGeode->accept( nv );
 }
 
-osg::BoundingSphere
-OcclusionQueryNode::computeBound() const
+BoundingSphere OcclusionQueryNode::computeBound() const
 {
     {
         // Need to make this routine thread-safe. Typically called by the update
@@ -590,22 +572,22 @@ OcclusionQueryNode::computeBound() const
         osg::OcclusionQueryNode* nonConstThis = const_cast<osg::OcclusionQueryNode*>( this );
 
 
-        osg::ComputeBoundsVisitor cbv;
+        ComputeBoundsVisitor cbv;
         nonConstThis->accept( cbv );
-        osg::BoundingBox bb = cbv.getBoundingBox();
+        BoundingBox bb = cbv.getBoundingBox();
 
-        osg::ref_ptr<osg::Vec3Array> v = new osg::Vec3Array;
+        osg::ref_ptr<Vec3Array> v = new Vec3Array;
         v->resize( 8 );
-        (*v)[0] = osg::Vec3( bb._min.x(), bb._min.y(), bb._min.z() );
-        (*v)[1] = osg::Vec3( bb._max.x(), bb._min.y(), bb._min.z() );
-        (*v)[2] = osg::Vec3( bb._max.x(), bb._min.y(), bb._max.z() );
-        (*v)[3] = osg::Vec3( bb._min.x(), bb._min.y(), bb._max.z() );
-        (*v)[4] = osg::Vec3( bb._max.x(), bb._max.y(), bb._min.z() );
-        (*v)[5] = osg::Vec3( bb._min.x(), bb._max.y(), bb._min.z() );
-        (*v)[6] = osg::Vec3( bb._min.x(), bb._max.y(), bb._max.z() );
-        (*v)[7] = osg::Vec3( bb._max.x(), bb._max.y(), bb._max.z() );
+        (*v)[0] = Vec3( bb._min.x(), bb._min.y(), bb._min.z() );
+        (*v)[1] = Vec3( bb._max.x(), bb._min.y(), bb._min.z() );
+        (*v)[2] = Vec3( bb._max.x(), bb._min.y(), bb._max.z() );
+        (*v)[3] = Vec3( bb._min.x(), bb._min.y(), bb._max.z() );
+        (*v)[4] = Vec3( bb._max.x(), bb._max.y(), bb._min.z() );
+        (*v)[5] = Vec3( bb._min.x(), bb._max.y(), bb._min.z() );
+        (*v)[6] = Vec3( bb._min.x(), bb._max.y(), bb._max.z() );
+        (*v)[7] = Vec3( bb._max.x(), bb._max.y(), bb._max.z() );
 
-        osg::Geometry* geom = static_cast< osg::Geometry* >( nonConstThis->_queryGeode->getDrawable( 0 ) );
+        Geometry* geom = static_cast< Geometry* >( nonConstThis->_queryGeode->getDrawable( 0 ) );
         geom->setVertexArray( v.get() );
 
         geom = static_cast< osg::Geometry* >( nonConstThis->_debugGeode->getDrawable( 0 ) );
@@ -617,28 +599,23 @@ OcclusionQueryNode::computeBound() const
 
 
 // Should only be called outside of cull/draw. No thread issues.
-void
-OcclusionQueryNode::setQueriesEnabled( bool enable )
+void OcclusionQueryNode::setQueriesEnabled( bool enable )
 {
     _enabled = enable;
 }
 
 // Should only be called outside of cull/draw. No thread issues.
-void
-OcclusionQueryNode::setDebugDisplay( bool debug )
+void OcclusionQueryNode::setDebugDisplay( bool debug )
 {
     _debugBB = debug;
 }
-bool
-OcclusionQueryNode::getDebugDisplay() const
+
+bool OcclusionQueryNode::getDebugDisplay() const
 {
     return _debugBB;
 }
 
-
-
-void
-OcclusionQueryNode::setQueryStateSet( osg::StateSet* ss )
+void OcclusionQueryNode::setQueryStateSet( StateSet* ss )
 {
     if (!_queryGeode)
     {
@@ -648,8 +625,8 @@ OcclusionQueryNode::setQueryStateSet( osg::StateSet* ss )
 
     _queryGeode->setStateSet( ss );
 }
-osg::StateSet*
-OcclusionQueryNode::getQueryStateSet()
+
+StateSet* OcclusionQueryNode::getQueryStateSet()
 {
     if (!_queryGeode)
     {
@@ -659,8 +636,7 @@ OcclusionQueryNode::getQueryStateSet()
     return _queryGeode->getStateSet();
 }
 
-const osg::StateSet*
-OcclusionQueryNode::getQueryStateSet() const
+const StateSet* OcclusionQueryNode::getQueryStateSet() const
 {
     if (!_queryGeode)
     {
@@ -670,8 +646,7 @@ OcclusionQueryNode::getQueryStateSet() const
     return _queryGeode->getStateSet();
 }
 
-void
-OcclusionQueryNode::setDebugStateSet( osg::StateSet* ss )
+void OcclusionQueryNode::setDebugStateSet( StateSet* ss )
 {
     if (!_debugGeode)
     {
@@ -681,8 +656,7 @@ OcclusionQueryNode::setDebugStateSet( osg::StateSet* ss )
     _debugGeode->setStateSet( ss );
 }
 
-osg::StateSet*
-OcclusionQueryNode::getDebugStateSet()
+StateSet* OcclusionQueryNode::getDebugStateSet()
 {
     if (!_debugGeode.valid())
     {
@@ -691,8 +665,7 @@ OcclusionQueryNode::getDebugStateSet()
     }
     return _debugGeode->getStateSet();
 }
-const osg::StateSet*
-OcclusionQueryNode::getDebugStateSet() const
+const StateSet* OcclusionQueryNode::getDebugStateSet() const
 {
     if (!_debugGeode.valid())
     {
@@ -702,15 +675,13 @@ OcclusionQueryNode::getDebugStateSet() const
     return _debugGeode->getStateSet();
 }
 
-bool
-OcclusionQueryNode::getPassed() const
+bool OcclusionQueryNode::getPassed() const
 {
     return _passed;
 }
 
 
-void
-OcclusionQueryNode::createSupportNodes()
+void OcclusionQueryNode::createSupportNodes()
 {
     GLushort indices[] = { 0, 1, 2, 3,  4, 5, 6, 7,
         0, 3, 6, 5,  2, 1, 4, 7,
@@ -718,14 +689,13 @@ OcclusionQueryNode::createSupportNodes()
 
     {
         // Add the test geometry Geode
-        _queryGeode = new osg::Geode;
+        _queryGeode = new Geode;
         _queryGeode->setName( "OQTest" );
-        _queryGeode->setDataVariance( osg::Object::DYNAMIC );
+        _queryGeode->setDataVariance( Object::DYNAMIC );
 
-        osg::ref_ptr< QueryGeometry > geom = new QueryGeometry( getName() );
-        geom->setDataVariance( osg::Object::DYNAMIC );
-        geom->addPrimitiveSet( new osg::DrawElementsUShort(
-                    osg::PrimitiveSet::QUADS, 24, indices ) );
+        ref_ptr< QueryGeometry > geom = new QueryGeometry( getName() );
+        geom->setDataVariance( Object::DYNAMIC );
+        geom->addPrimitiveSet( new DrawElementsUShort( PrimitiveSet::QUADS, 24, indices ) );
 
         _queryGeode->addDrawable( geom.get() );
     }
@@ -733,20 +703,19 @@ OcclusionQueryNode::createSupportNodes()
     {
         // Add a Geode that is a visual representation of the
         //   test geometry for debugging purposes
-        _debugGeode = new osg::Geode;
+        _debugGeode = new Geode;
         _debugGeode->setName( "Debug" );
-        _debugGeode->setDataVariance( osg::Object::DYNAMIC );
+        _debugGeode->setDataVariance( Object::DYNAMIC );
 
-        osg::ref_ptr<osg::Geometry> geom = new osg::Geometry;
-        geom->setDataVariance( osg::Object::DYNAMIC );
+        ref_ptr<Geometry> geom = new Geometry;
+        geom->setDataVariance( Object::DYNAMIC );
 
-        osg::ref_ptr<osg::Vec4Array> ca = new osg::Vec4Array;
-        ca->push_back( osg::Vec4( 1.f, 1.f, 1.f, 1.f ) );
+        ref_ptr<Vec4Array> ca = new Vec4Array;
+        ca->push_back( Vec4( 1.f, 1.f, 1.f, 1.f ) );
         geom->setColorArray( ca.get() );
-        geom->setColorBinding( osg::Geometry::BIND_OVERALL );
+        geom->setColorBinding( Geometry::BIND_OVERALL );
 
-        geom->addPrimitiveSet( new osg::DrawElementsUShort(
-                    osg::PrimitiveSet::QUADS, 24, indices ) );
+        geom->addPrimitiveSet( new DrawElementsUShort( PrimitiveSet::QUADS, 24, indices ) );
 
         _debugGeode->addDrawable( geom.get() );
     }
@@ -759,8 +728,7 @@ OcclusionQueryNode::createSupportNodes()
 }
 
 
-void
-OcclusionQueryNode::releaseGLObjects( osg::State* state ) const
+void OcclusionQueryNode::releaseGLObjects( State* state ) const
 {
     if(_queryGeode->getDrawable( 0 ) != NULL)
     {
@@ -771,15 +739,13 @@ OcclusionQueryNode::releaseGLObjects( osg::State* state ) const
     }
 }
 
-void
-OcclusionQueryNode::flushDeletedQueryObjects( unsigned int contextID, double currentTime, double& availableTime )
+void OcclusionQueryNode::flushDeletedQueryObjects( unsigned int contextID, double currentTime, double& availableTime )
 {
     // Query object discard and deletion is handled by QueryGeometry support class.
     QueryGeometry::flushDeletedQueryObjects( contextID, currentTime, availableTime );
 }
 
-void
-OcclusionQueryNode::discardDeletedQueryObjects( unsigned int contextID )
+void OcclusionQueryNode::discardDeletedQueryObjects( unsigned int contextID )
 {
     // Query object discard and deletion is handled by QueryGeometry support class.
     QueryGeometry::discardDeletedQueryObjects( contextID );

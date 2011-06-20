@@ -877,6 +877,7 @@ bool GraphicsWindowX11::createWindow()
     unsigned int screenHeight;
     wsi->getScreenResolution(*_traits, screenWidth, screenHeight);
 
+    bool doFullSceenWorkAround = false;
     bool isFullScreen = x == 0 && y == 0 && width == (int)screenWidth && height == (int)screenHeight && !_traits->windowDecoration;
     if (isFullScreen && !_traits->overrideRedirect)
     {
@@ -898,6 +899,8 @@ bool GraphicsWindowX11::createWindow()
             y = height/4;
             width /= 2;
             height /= 2;
+
+            doFullSceenWorkAround = true;
         }
     }
         
@@ -937,6 +940,7 @@ bool GraphicsWindowX11::createWindow()
 
     setWindowDecoration(_traits->windowDecoration);
 
+    
     useCursor(_traits->useCursor);
 
     _deleteWindow = XInternAtom (_display, "WM_DELETE_WINDOW", False);
@@ -952,6 +956,18 @@ bool GraphicsWindowX11::createWindow()
     if (_traits->x != watt.x || _traits->y != watt.y
         ||_traits->width != watt.width || _traits->height != watt.height)
     {
+
+        if (doFullSceenWorkAround)
+        {
+            OSG_INFO<<"Full Screen failed, resizing manually"<<std::endl;
+            XMoveResizeWindow(_display, _window, _traits->x, _traits->y, _traits->width, _traits->height);
+
+            XFlush(_display);
+            XSync(_display, 0);
+
+            XGetWindowAttributes( _display, _window, &watt );
+        }
+
         resized( watt.x, watt.y, watt.width, watt.height );
     }
 

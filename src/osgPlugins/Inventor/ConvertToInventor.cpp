@@ -653,7 +653,7 @@ static void postProcessField(const SbIntList &runLengths, osg::PrimitiveSet::Mod
   field->finishEditing();
 
   // free resources
-  delete tmpArray;
+  delete [] tmpArray;
 }
 
 

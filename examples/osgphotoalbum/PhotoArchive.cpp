@@ -41,7 +41,12 @@ bool PhotoArchive::readPhotoIndex(const std::string& filename)
     
     char* fileIndentifier = new char [FILE_IDENTIFER.size()];
     in.read(fileIndentifier,FILE_IDENTIFER.size());
-    if (FILE_IDENTIFER!=fileIndentifier) return false;
+    if (FILE_IDENTIFER!=fileIndentifier)
+    {
+        delete [] fileIndentifier;
+        return false;
+    }
+    delete [] fileIndentifier;
     
     unsigned int numPhotos;
     in.read((char*)&numPhotos,sizeof(numPhotos));
@@ -231,9 +236,9 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
 
             if (status!=0)
             {
-               delete [] newData;
-
+                delete [] newData;
                 osg::notify(osg::WARN) << "Error scaleImage() did not succeed : errorString = "<<osg::gluErrorString((GLenum)status)<<std::endl;
+                return;
             }
     
             // now set up the photo header.
@@ -298,9 +303,9 @@ void PhotoArchive::buildArchive(const std::string& filename, const FileNameList&
 
             if (status!=0)
             {
-               delete [] newData;
-
+                delete [] newData;
                 osg::notify(osg::WARN) << "Error scaleImage() did not succeed : errorString = "<<osg::gluErrorString((GLenum)status)<<std::endl;
+                return;
             }
 
             ImageHeader imageHeader;

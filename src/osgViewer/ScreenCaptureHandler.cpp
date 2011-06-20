@@ -606,9 +606,10 @@ ScreenCaptureHandler::CaptureOperation* ScreenCaptureHandler::getCaptureOperatio
 void ScreenCaptureHandler::addCallbackToViewer(osgViewer::ViewerBase& viewer)
 {
     osg::Camera* camera = findAppropriateCameraForCallback(viewer);
+    if (!camera) return;
 
     WindowCaptureCallback* callback = static_cast<WindowCaptureCallback*>(_callback.get());
-    if (camera && callback->getFramePosition() == WindowCaptureCallback::START_FRAME)
+    if (callback && callback->getFramePosition() == WindowCaptureCallback::START_FRAME)
     {
         camera->setInitialDrawCallback(_callback.get());
     }
@@ -621,9 +622,10 @@ void ScreenCaptureHandler::addCallbackToViewer(osgViewer::ViewerBase& viewer)
 void ScreenCaptureHandler::removeCallbackFromViewer(osgViewer::ViewerBase& viewer)
 {
     osg::Camera* camera = findAppropriateCameraForCallback(viewer);
+    if (!camera) return;
 
     WindowCaptureCallback* callback = static_cast<WindowCaptureCallback*>(_callback.get());
-    if (camera && callback->getFramePosition() == WindowCaptureCallback::START_FRAME)
+    if (callback && callback->getFramePosition() == WindowCaptureCallback::START_FRAME)
     {
         camera->setInitialDrawCallback(0);
     }

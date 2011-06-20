@@ -58,11 +58,37 @@
 //
 geoHeaderGeo::geoHeaderGeo()
 { // animations for the header - actually updates all control variables
-    intVars=new internalVars; useVars=new userVars;
+    intVars=new internalVars;
+    useVars=new userVars;
     extVars=new userVars;
-    _initialTick = _timer.tick();
     color_palette=new colourPalette;
+    _initialTick = _timer.tick();
 }
+
+geoHeaderGeo::geoHeaderGeo(const geoHeaderGeo &geo,const osg::CopyOp& copyop) :
+        geoHeader(geo,copyop)
+{
+    intVars=new internalVars(*geo.intVars);
+    useVars=new userVars(*geo.useVars);
+    extVars=new userVars(*geo.extVars);
+    color_palette=new colourPalette;
+    _initialTick = _timer.tick();
+}
+
+geoHeaderGeo::~geoHeaderGeo()
+{
+    delete intVars;
+    delete useVars;
+    delete extVars;
+    
+    if (color_palette)
+    {
+        color_palette->clear();
+        delete color_palette;
+    }
+}
+
+
 const geoValue *geoHeaderGeo::getGeoVar(const unsigned fid) const {
     const geoValue *st=intVars->getGeoVar(fid);
     if (!st) {
@@ -207,37 +233,50 @@ public:
             int shademodel=gfshade ? gfshade->getInt() : -1;
             if (shademodel!=GEO_POLY_SHADEMODEL_LIT && shademodel!=GEO_POLY_SHADEMODEL_FLAT) {
                 const geoField *gfd=gr->getField(GEO_DB_VRTX_NORMAL);
-                if (gfd->getType()==DB_UINT) {
-                    if (gfd) {
+                if (gfd)
+                {
+                    if (gfd->getType()==DB_UINT)
+                    {
                         unsigned int idx=gfd->getUInt();
                         normindices->push_back(idx);
                         norms->push_back((*npool)[idx]);
-                    } else {
+                    }
+                    else if (gfd->getType()==DB_VEC3F)
+                    {
+                        float *p=gfd->getVec3Arr();
+                        osg::Vec3 nrm;
+                        nrm.set(p[0],p[1],p[2]);
+                        norms->push_back(nrm);
+                    }
+                    else
+                    {
                         OSG_WARN << "No valid vertex index" << std::endl;
                     }
-                } else if (gfd->getType()==DB_VEC3F) {
-                    float *p=gfd->getVec3Arr();
-                    osg::Vec3 nrm;
-                    nrm.set(p[0],p[1],p[2]);
-                    norms->push_back(nrm); 
                 }
             }
-            const geoField *gfd=gr->getField(GEO_DB_VRTX_COORD);
             osg::Vec3 pos;
-            if (gfd->getType()==DB_INT) {
-                if (gfd) {
-                                        int idx=gfd->getInt();
+            const geoField *gfd=gr->getField(GEO_DB_VRTX_COORD);
+            if (gfd)
+            {
+                if (gfd->getType()==DB_INT)
+                {
+                    int idx=gfd->getInt();
                     pos=(*cpool)[idx];
                     coords->push_back((*cpool)[idx]); //osg::Vec3(cpool[3*idx],cpool[3*idx+1],cpool[3*idx+2]));
                     coordindices->push_back(coords->size());
-                } else {
+                }
+                else if (gfd->getType()==DB_VEC3F)
+                {
+                    float *p=gfd->getVec3Arr();
+                    pos.set(p[0],p[1],p[2]);
+                    coords->push_back(pos); //osg::Vec3(cpool[3*idx],cpool[3*idx+1],cpool[3*idx+2]));
+                }
+                else
+                {
                     OSG_WARN << "No valid vertex index" << std::endl;
                 }
-            } else if (gfd->getType()==DB_VEC3F) {
-                float *p=gfd->getVec3Arr();
-                pos.set(p[0],p[1],p[2]);
-                coords->push_back(pos); //osg::Vec3(cpool[3*idx],cpool[3*idx+1],cpool[3*idx+2]));
             }
+
             std::vector< georecord *>bhv=gr->getBehaviour(); // behaviours for vertices, eg tranlate, colour!
             if (!bhv.empty()) {
                 int ncoord=coords->size();
@@ -898,19 +937,24 @@ class ReaderGEO
                     (*itr)->getType()==DB_DSK_FAT_VERTEX || 
                     (*itr)->getType()==DB_DSK_SLIM_VERTEX)
                 { // light point vertices
-                    const geoField *gfd=(*itr)->getField(GEO_DB_VRTX_COORD);
                     osg::Vec3 pos;
-                    if (gfd->getType()==DB_INT) {
-                        if (gfd) {
-                                                        int idx=gfd->getInt();
-                            pos=coord_pool[idx];
-                        } else {
+                    const geoField *gfd=(*itr)->getField(GEO_DB_VRTX_COORD);
+                    if (gfd) {
+                        if (gfd->getType()==DB_INT)
+                        {
+                                int idx=gfd->getInt();
+                                pos=coord_pool[idx];
+                        }
+                        else if (gfd->getType()==DB_VEC3F)
+                        {
+                            float *p=gfd->getVec3Arr();
+                            pos.set(p[0],p[1],p[2]);
+                        }
+                        else {
                             OSG_WARN << "No valid vertex index" << std::endl;
                         }
-                    } else if (gfd->getType()==DB_VEC3F) {
-                        float *p=gfd->getVec3Arr();
-                        pos.set(p[0],p[1],p[2]);
                     }
+
                     gfd=(*itr)->getField(GEO_DB_VRTX_PACKED_COLOR);
                     if (gfd) {
                         unsigned char *cls=gfd->getUCh4Arr();

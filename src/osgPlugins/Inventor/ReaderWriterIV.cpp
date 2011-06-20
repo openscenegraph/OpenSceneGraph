@@ -234,7 +234,13 @@ ReaderWriterIV::readNode(std::istream& fin,
         dataSize += fin.gcount();
         if (bufSize == dataSize) {
            bufSize *= 2;
-           buf = (char*)realloc(buf, bufSize);
+           char* new_buf = (char*)realloc(buf, bufSize);
+           if (!new_buf)
+           {
+               free(buf);
+               return osgDB::ReaderWriter::ReadResult::INSUFFICIENT_MEMORY_TO_LOAD;
+           }
+           buf = new_buf;
         }
     }
     input.setBuffer(buf, dataSize);

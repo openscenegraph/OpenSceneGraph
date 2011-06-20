@@ -149,8 +149,8 @@ int *numComponents_ret)
     if (tmpbuf == NULL || buffer == NULL)
     {
         picerror = ERROR_MEMORY;
-        if (tmpbuf) free(tmpbuf);
-        if (buffer) free(buffer);
+        if (tmpbuf) delete [] tmpbuf;
+        if (buffer) delete [] buffer;
         fclose(fp);
         return NULL;
     }

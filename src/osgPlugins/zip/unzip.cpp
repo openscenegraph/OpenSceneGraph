@@ -3147,17 +3147,18 @@ unzFile unzOpenInternal(LUFILE *fin)
 //  return UNZ_OK if there is no problem.
 int unzClose (unzFile file)
 {
-	unz_s* s;
-	if (file==NULL)
-		return UNZ_PARAMERROR;
-	s=(unz_s*)file;
+    
+    if (file==NULL)
+        return UNZ_PARAMERROR;
+
+    unz_s* s=(unz_s*)file;
 
     if (s->pfile_in_zip_read!=NULL)
         unzCloseCurrentFile(file);
 
-	lufclose(s->file);
-	if (s) zfree(s); // unused s=0;
-	return UNZ_OK;
+    lufclose(s->file);
+    zfree(s);
+    return UNZ_OK;
 }
 
 
@@ -4144,15 +4145,18 @@ ZRESULT TUnzip::Find(const TCHAR *tname,bool ic,int *index,ZIPENTRY *ze)
 void EnsureDirectory(const TCHAR *rootdir, const TCHAR *dir)
 { // first check that rootdir exists. nb. rootdir has a trailing slash
   if (rootdir!=0)
-  { TCHAR rd[MAX_PATH];
+  { TCHAR rd[MAX_PATH+1];
 
 #ifdef ZIP_STD
   strncpy(rd,rootdir,MAX_PATH);
 #else
   _tcsncpy_s(rd,MAX_PATH,rootdir,MAX_PATH);
-#endif     
+#endif
+
+    // make sure there rd is always null terminated
+    rd[MAX_PATH] = 0;
   
-  size_t len=_tcslen(rd);
+    size_t len=_tcslen(rd);
     if (len>0 && (rd[len-1]=='/' || rd[len-1]=='\\')) rd[len-1]=0;
 #ifdef ZIP_STD
     if (!FileExists(rd)) lumkdir(rd);

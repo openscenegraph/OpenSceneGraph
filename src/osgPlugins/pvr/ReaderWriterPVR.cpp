@@ -172,11 +172,18 @@ public:
             else
                 hasAlpha = false;
             
-            osg::Image *image = new osg::Image;
-            unsigned char *imageData = new unsigned char[header.dataLength]; 
+            osg::ref_ptr<osg::Image> image = new osg::Image;
+            if (!image) return ReadResult::INSUFFICIENT_MEMORY_TO_LOAD;
+            
+            unsigned char *imageData = new unsigned char[header.dataLength];
+            if (!imageData) return ReadResult::INSUFFICIENT_MEMORY_TO_LOAD;
+            
             fin.read((char*)imageData, header.dataLength);
             if(!fin.good())
+            {
+                delete [] imageData;
                 return ReadResult::ERROR_IN_READING_FILE;
+            }
             
             image->setImage(header.width, header.height, 1,
                             internalFormat,    internalFormat,
@@ -227,7 +234,7 @@ public:
             if(!mipmapdata.empty())
                 image->setMipmapLevels(mipmapdata);
             
-            return image;
+            return image.get();
         }
         
         osg::notify(osg::WARN) << "Failed to read pvr data." << std::endl;

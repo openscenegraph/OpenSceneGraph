@@ -389,8 +389,10 @@ void OutputStream::writeImage( const osg::Image* img )
                     {
                         char* data = new char[size];
                         if ( !data )
+                        {
                             throwException( "OutputStream::writeImage(): Out of memory." );
-                        if ( getException() ) return;
+                            if ( getException() ) return;
+                        }
 
                         infile.seekg( 0, std::ios::beg );
                         infile.read( data, size );

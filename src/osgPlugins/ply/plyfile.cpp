@@ -828,6 +828,8 @@ PlyFile *ply_read(FILE *fp, int *nelems, char ***elem_names)
   /* create record for this object */
 
   plyfile = (PlyFile *) myalloc (sizeof (PlyFile));
+  if (!plyfile) return (NULL);
+  
   plyfile->nelems = 0;
   plyfile->comments = NULL;
   plyfile->num_comments = 0;
@@ -840,15 +842,25 @@ PlyFile *ply_read(FILE *fp, int *nelems, char ***elem_names)
 
   words = get_words (plyfile->fp, &nwords, &orig_line);
   if (!words || !equal_strings (words[0], "ply"))
+  {
+    if (words) free( words);
+    free( plyfile );
     return (NULL);
+  }
 
-  while (words) {
+  while (words)
+  {
 
     /* parse words */
 
-    if (equal_strings (words[0], "format")) {
+    if (equal_strings (words[0], "format"))
+    {
       if (nwords != 3)
+      {
+        free( words );
+        free( plyfile );
         return (NULL);
+      }
       if (equal_strings (words[1], "ascii"))
         plyfile->file_type = PLY_ASCII;
       else if (equal_strings (words[1], "binary_big_endian"))
@@ -856,10 +868,11 @@ PlyFile *ply_read(FILE *fp, int *nelems, char ***elem_names)
       else if (equal_strings (words[1], "binary_little_endian"))
         plyfile->file_type = PLY_BINARY_LE;
       else
-        {
-        free (words);
+      {
+        free( words );
+        free( plyfile );
         return (NULL);
-        }
+      }
       plyfile->version = osg::asciiToDouble (words[2]);
     }
     else if (equal_strings (words[0], "element"))
@@ -871,10 +884,10 @@ PlyFile *ply_read(FILE *fp, int *nelems, char ***elem_names)
     else if (equal_strings (words[0], "obj_info"))
       add_obj_info (plyfile, orig_line);
     else if (equal_strings (words[0], "end_header"))
-      {
+    {
       free (words);
       break;
-      }
+    }
 
     /* free up words space */
     free (words);

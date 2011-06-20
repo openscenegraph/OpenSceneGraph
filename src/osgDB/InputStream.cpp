@@ -549,8 +549,10 @@ osg::Image* InputStream::readImage(bool readFromExternal)
             {
                 char* data = new char[size];
                 if ( !data )
+                {
                     throwException( "InputStream::readImage(): Out of memory." );
-                if ( getException() ) return NULL;
+                    if ( getException() ) return NULL;
+                }
                 readCharArray( data, size );
                 
                 std::string ext = osgDB::getFileExtension( name );

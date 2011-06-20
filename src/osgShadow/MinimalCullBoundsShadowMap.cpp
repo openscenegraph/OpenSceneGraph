@@ -328,7 +328,7 @@ osg::BoundingBox MinimalCullBoundsShadowMap::ViewData::ComputeRenderLeavesBounds
         // Don't trust already computed bounds for cull generated drawables
         // LightPointDrawable & LightPointSpriteDrawable are such examples
         // they store wrong recorded bounds from very first pass  
-        if( rl && rl->_modelview == NULL ) 
+        if(rl->_modelview == NULL )
             rl->_drawable->dirtyBound();
 
         bb = rl->_drawable->getBound();

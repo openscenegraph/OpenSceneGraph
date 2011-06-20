@@ -153,7 +153,6 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
 {
     struct stat st;
     void *mapbase;
-//    void *p;
     int file_fd;
     osg::Node* result = NULL;
 
@@ -163,23 +162,23 @@ load_md2 (const char *filename, const osgDB::ReaderWriter::Options* options)
 
     file_fd = open (filename, O_RDONLY);
     if (file_fd <= 0) {
-        return NULL;
-    }
-
-#if 0
-    mapbase = mmap (NULL, st.st_size, PROT_READ, MAP_SHARED, file_fd, 0);
-    if (mapbase == NULL) {
         close (file_fd);
         return NULL;
     }
-#else
+
     mapbase = malloc (st.st_size);
-    if (read(file_fd, mapbase, st.st_size)==0)
+    if (!mapbase)
     {
         close (file_fd);
         return NULL;
     }
-#endif
+    
+    if (read(file_fd, mapbase, st.st_size)==0)
+    {
+        close (file_fd);
+        if (mapbase) free(mapbase);
+        return NULL;
+    }
 
     if (g_md2NormalsArray == NULL) {
         g_md2NormalsArray = new osg::Vec3Array;

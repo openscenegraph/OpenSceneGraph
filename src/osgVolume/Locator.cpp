@@ -207,6 +207,7 @@ void Locator::removeCallback(LocatorCallback* callback)
         if (*itr == callback)
         {
             _locatorCallbacks.erase(itr);
+            return;
         }
     }
 }

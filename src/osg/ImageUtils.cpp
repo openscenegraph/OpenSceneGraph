@@ -113,7 +113,7 @@ bool offsetAndScaleImage(osg::Image* image, const osg::Vec4& offset, const osg::
 {
     if (!image) return false;
 
-    osg::modifyImage(image,osg::OffsetAndScaleOperator(offset, scale));
+    modifyImage(image,OffsetAndScaleOperator(offset, scale));
     
     return true;
 }
@@ -304,12 +304,12 @@ bool copyImage(const osg::Image* srcImage, int src_s, int src_t, int src_r, int 
                 writeOp._pos = 0;
             
                 // read the pixels into readOp's _colour array
-                osg::readRow(width, srcImage->getPixelFormat(), srcImage->getDataType(), srcImage->data(src_s,src_t+row,src_r+slice), readOp);
+                readRow(width, srcImage->getPixelFormat(), srcImage->getDataType(), srcImage->data(src_s,src_t+row,src_r+slice), readOp);
                                 
                 // pass readOp's _colour array contents over to writeOp (note this is just a pointer swap).
                 writeOp._colours.swap(readOp._colours);
                 
-                osg::modifyRow(width, destImage->getPixelFormat(), destImage->getDataType(), destImage->data(dest_s, dest_t+row,dest_r+slice), writeOp);
+                modifyRow(width, destImage->getPixelFormat(), destImage->getDataType(), destImage->data(dest_s, dest_t+row,dest_r+slice), writeOp);
 
                 // return readOp's _colour array contents back to its rightful owner.
                 writeOp._colours.swap(readOp._colours);
@@ -364,7 +364,7 @@ unsigned int maximimNumOfComponents(const ImageList& imageList)
             pixelFormat==GL_BGR ||
             pixelFormat==GL_BGRA)
         {
-            max_components = osg::maximum(osg::Image::computeNumComponents(pixelFormat), max_components);
+            max_components = maximum(Image::computeNumComponents(pixelFormat), max_components);
         }
     }
     return max_components;
@@ -396,8 +396,8 @@ osg::Image* createImage3D(const ImageList& imageList,
             pixelFormat==GL_BGR ||
             pixelFormat==GL_BGRA)
         {
-            max_s = osg::maximum(image->s(), max_s);
-            max_t = osg::maximum(image->t(), max_t);
+            max_s = maximum(image->s(), max_s);
+            max_t = maximum(image->t(), max_t);
             total_r += image->r();
         }
         else
@@ -479,9 +479,9 @@ osg::Image* createImage3D(const ImageList& imageList,
             pixelFormat==GL_BGRA)
         {
             
-            int num_s = osg::minimum(image->s(), image_3d->s());
-            int num_t = osg::minimum(image->t(), image_3d->t());
-            int num_r = osg::minimum(image->r(), (image_3d->r() - curr_dest_r));
+            int num_s = minimum(image->s(), image_3d->s());
+            int num_t = minimum(image->t(), image_3d->t());
+            int num_r = minimum(image->r(), (image_3d->r() - curr_dest_r));
 
             unsigned int s_offset_dest = (image->s()<size_s) ? (size_s - image->s())/2 : 0;
             unsigned int t_offset_dest = (image->t()<size_t) ? (size_t - image->t())/2 : 0;
@@ -516,7 +516,7 @@ osg::Image* createImage3DWithAlpha(const ImageList& imageList,
     GLenum desiredPixelFormat = 0;
     bool modulateAlphaByLuminance = false;
 
-    unsigned int maxNumComponents = osg::maximimNumOfComponents(imageList);
+    unsigned int maxNumComponents = maximimNumOfComponents(imageList);
     if (maxNumComponents==3)
     {
         desiredPixelFormat = GL_RGBA;
@@ -533,7 +533,7 @@ osg::Image* createImage3DWithAlpha(const ImageList& imageList,
     {
         if (modulateAlphaByLuminance)
         {
-            osg::modifyImage(image.get(), ModulateAlphaByLuminanceOperator());
+            modifyImage(image.get(), ModulateAlphaByLuminanceOperator());
         }
         return image.release();
     }

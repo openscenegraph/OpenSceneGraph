@@ -164,7 +164,7 @@ FltExportVisitor::writeFace( const osg::Geode& geode, const osg::Geometry& geom,
         if (c && (c->size() > 0))
         {
             packedColorRaw = (*c)[0];
-            transparency = flt::uint16((1. - packedColorRaw[3]) * (double)0xffff);
+            transparency = uint16((1. - packedColorRaw[3]) * (double)0xffff);
         }
 
         if ( isLit( geom ) )
@@ -370,7 +370,7 @@ FltExportVisitor::writeMesh( const osg::Geode& geode, const osg::Geometry& geom 
         if (c && (c->size() > 0))
         {
             packedColorRaw = (*c)[0];
-            transparency = flt::uint16((1. - packedColorRaw[3]) * (double)0xffff);
+            transparency = uint16((1. - packedColorRaw[3]) * (double)0xffff);
         }
 
         if (isLit( geom ))

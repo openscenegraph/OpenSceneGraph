@@ -513,7 +513,16 @@ static bool bmp_save(const osg::Image& img, std::ostream& fout)
         fout.write((char*) &dib, sizeof(dib));
     }
 
-    const unsigned int channelsPerPixel = img.computeNumComponents(img.getPixelFormat());
+    unsigned int pixelFormat = img.getPixelFormat();
+
+    unsigned int r = 0, g = 1, b = 2;
+    if ( pixelFormat == GL_BGR || pixelFormat == GL_BGRA )
+    {
+        r = 2;
+        b = 0;
+    }
+
+    const unsigned int channelsPerPixel = img.computeNumComponents(pixelFormat);
 
     std::vector<unsigned char> rowBuffer(bytesPerRowAlign);
     for (int y = 0; y < img.t(); ++y)
@@ -523,9 +532,9 @@ static bool bmp_save(const osg::Image& img, std::ostream& fout)
         {
             // RGB -> BGR
             unsigned int rowOffs = x * 3, imgOffs = x * channelsPerPixel;
-            rowBuffer[rowOffs + 2] = imgp[imgOffs + 0];
-            rowBuffer[rowOffs + 1] = imgp[imgOffs + 1];
-            rowBuffer[rowOffs + 0] = imgp[imgOffs + 2];
+            rowBuffer[rowOffs + 2] = imgp[imgOffs + r];
+            rowBuffer[rowOffs + 1] = imgp[imgOffs + g];
+            rowBuffer[rowOffs + 0] = imgp[imgOffs + b];
         }
         fout.write((char*) &*rowBuffer.begin(), rowBuffer.size());
     }

@@ -1,3 +1,307 @@
+2011-06-21 09:54  robert
+
+	* src/osgPlugins/fbx/WriterCompareTriangle.h,
+	  src/osgPlugins/fbx/fbxMaterialToOsgStateSet.h: Added returns to
+	  end of files
+
+2011-06-21 09:54  robert
+
+	* src/osgPlugins/fbx/WriterCompareTriangle.cpp: Added return to end
+	  of file
+
+2011-06-21 09:53  robert
+
+	* src/osgPlugins/fbx/fbxMaterialToOsgStateSet.cpp,
+	  src/osgPlugins/fbx/fbxRLight.cpp,
+	  src/osgPlugins/fbx/fbxRMesh.cpp, src/osgPlugins/fbx/fbxRNode.cpp:
+	  Conveted tabs to four spaces and added a return to end of file
+
+2011-06-21 09:29  mplatings
+
+	* src/osgPlugins/fbx/fbxMaterialToOsgStateSet.cpp,
+	  src/osgPlugins/fbx/fbxRLight.cpp,
+	  src/osgPlugins/fbx/fbxRMesh.cpp, src/osgPlugins/fbx/fbxRNode.cpp:
+	  Fixed redundant "enumeration not handled in switch" warnings.
+	  Fixed a warning about a comparison between different enums -
+	  EUnifiedMappingType was being compared with EMappingType. In
+	  general the FBX SDK is moving away from Get & Set functions to
+	  giving direct access to properties, so I have changed
+	  GetMappingType() to CurrentMappingType.Get()
+
+2011-06-21 09:00  robert
+
+	* src/osg/glu/libtess/tess.h: Disabled VisualStudio warning warning
+	  C4611: interaction between '_setjmp' and C++ object destruction
+	  is non-portable
+
+2011-06-20 19:15  robert
+
+	* examples/osgphotoalbum/PhotoArchive.cpp,
+	  src/osgDB/InputStream.cpp, src/osgDB/OutputStream.cpp,
+	  src/osgPlugins/Inventor/ConvertToInventor.cpp,
+	  src/osgPlugins/Inventor/ReaderWriterIV.cpp,
+	  src/osgPlugins/cfg/CameraConfig.cpp,
+	  src/osgPlugins/freetype/FreeTypeLibrary.cpp,
+	  src/osgPlugins/geo/ReaderWriterGEO.cpp,
+	  src/osgPlugins/geo/osgGeoNodes.h,
+	  src/osgPlugins/md2/ReaderWriterMD2.cpp,
+	  src/osgPlugins/pic/ReaderWriterPIC.cpp,
+	  src/osgPlugins/ply/plyfile.cpp,
+	  src/osgPlugins/pvr/ReaderWriterPVR.cpp,
+	  src/osgPlugins/shp/ESRIShapeParser.cpp,
+	  src/osgPlugins/shp/XBaseParser.cpp, src/osgPlugins/zip/unzip.cpp,
+	  src/osgShadow/MinimalCullBoundsShadowMap.cpp,
+	  src/osgViewer/ScreenCaptureHandler.cpp,
+	  src/osgVolume/Locator.cpp, src/osgVolume/RayTracedTechnique.cpp,
+	  src/osgWrappers/serializers/osg/ShaderBinary.cpp: Fixed a range
+	  of issues reported by cppcheck:
+	  
+	  [examples/osgphotoalbum/PhotoArchive.cpp:56]: (error) Memory
+	  leak: fileIndentifier
+	  [examples/osgphotoalbum/PhotoArchive.cpp:257]: (error)
+	  Deallocating a deallocated pointer: newData
+	  [examples/osgphotoalbum/PhotoArchive.cpp:318]: (error)
+	  Deallocating a deallocated pointer: newData
+	  [src/osg/ImageUtils.cpp:116]: (portability) Extra qualification
+	  'osg::' unnecessary and considered an error by many compilers.
+	  [src/osg/ImageUtils.cpp:307]: (portability) Extra qualification
+	  'osg::' unnecessary and considered an error by many compilers.
+	  [src/osg/ImageUtils.cpp:312]: (portability) Extra qualification
+	  'osg::' unnecessary and considered an error by many compilers.
+	  [src/osg/ImageUtils.cpp:367]: (portability) Extra qualification
+	  'osg::' unnecessary and considered an error by many compilers.
+	  [src/osg/ImageUtils.cpp:399]: (portability) Extra qualification
+	  'osg::' unnecessary and considered an error by many compilers.
+	  [src/osg/ImageUtils.cpp:400]: (portability) Extra qualification
+	  'osg::' unnecessary and considered an error by many compilers.
+	  [src/osg/ImageUtils.cpp:482]: (portability) Extra qualification
+	  'osg::' unnecessary and considered an error by many compilers.
+	  [src/osg/ImageUtils.cpp:483]: (portability) Extra qualification
+	  'osg::' unnecessary and considered an error by many compilers.
+	  [src/osg/ImageUtils.cpp:484]: (portability) Extra qualification
+	  'osg::' unnecessary and considered an error by many compilers.
+	  [src/osg/ImageUtils.cpp:519]: (portability) Extra qualification
+	  'osg::' unnecessary and considered an error by many compilers.
+	  [src/osg/ImageUtils.cpp:536]: (portability) Extra qualification
+	  'osg::' unnecessary and considered an error by many compilers.
+	  [src/osg/OcclusionQueryNode.cpp:71]: (portability) Extra
+	  qualification 'osg::' unnecessary and considered an error by many
+	  compilers.
+	  [src/osg/OcclusionQueryNode.cpp:74]: (portability) Extra
+	  qualification 'osg::' unnecessary and considered an error by many
+	  compilers.
+	  [src/osg/OcclusionQueryNode.cpp:77]: (portability) Extra
+	  qualification 'osg::' unnecessary and considered an error by many
+	  compilers.
+	  [src/osg/OcclusionQueryNode.cpp:82]: (portability) Extra
+	  qualification 'osg::' unnecessary and considered an error by many
+	  compilers.
+	  [src/osg/OcclusionQueryNode.cpp:102]: (portability) Extra
+	  qualification 'osg::' unnecessary and considered an error by many
+	  compilers.
+	  [src/osg/OcclusionQueryNode.cpp:107]: (portability) Extra
+	  qualification 'osg::' unnecessary and considered an error by many
+	  compilers.
+	  [src/osg/OcclusionQueryNode.cpp:599]: (portability) Extra
+	  qualification 'osg::' unnecessary and considered an error by many
+	  compilers.
+	  [src/osg/OcclusionQueryNode.cpp:600]: (portability) Extra
+	  qualification 'osg::' unnecessary and considered an error by many
+	  compilers.
+	  [src/osg/OcclusionQueryNode.cpp:601]: (portability) Extra
+	  qualification 'osg::' unnecessary and considered an error by many
+	  compilers.
+	  [src/osg/OcclusionQueryNode.cpp:602]: (portability) Extra
+	  qualification 'osg::' unnecessary and considered an error by many
+	  compilers.
+	  [src/osg/OcclusionQueryNode.cpp:603]: (portability) Extra
+	  qualification 'osg::' unnecessary and considered an error by many
+	  compilers.
+	  [src/osg/OcclusionQueryNode.cpp:604]: (portability) Extra
+	  qualification 'osg::' unnecessary and considered an error by many
+	  compilers.
+	  [src/osg/OcclusionQueryNode.cpp:605]: (portability) Extra
+	  qualification 'osg::' unnecessary and considered an error by many
+	  compilers.
+	  [src/osg/OcclusionQueryNode.cpp:606]: (portability) Extra
+	  qualification 'osg::' unnecessary and considered an error by many
+	  compilers.
+	  [src/osgDB/ExternalFileWriter.cpp:134]: (portability) Extra
+	  qualification 'osgDB::' unnecessary and considered an error by
+	  many compilers.
+	  [src/osgDB/ExternalFileWriter.cpp:135]: (portability) Extra
+	  qualification 'osgDB::' unnecessary and considered an error by
+	  many compilers.
+	  [src/osgDB/ExternalFileWriter.cpp:136]: (portability) Extra
+	  qualification 'osgDB::' unnecessary and considered an error by
+	  many compilers.
+	  [src/osgDB/ExternalFileWriter.cpp:137]: (portability) Extra
+	  qualification 'osgDB::' unnecessary and considered an error by
+	  many compilers.
+	  [src/osgDB/ExternalFileWriter.cpp:139]: (portability) Extra
+	  qualification 'osgDB::' unnecessary and considered an error by
+	  many compilers.
+	  [src/osgDB/ExternalFileWriter.cpp:177]: (portability) Extra
+	  qualification 'osgDB::' unnecessary and considered an error by
+	  many compilers.
+	  [src/osgDB/ExternalFileWriter.cpp:178]: (portability) Extra
+	  qualification 'osgDB::' unnecessary and considered an error by
+	  many compilers.
+	  [src/osgDB/ExternalFileWriter.cpp:195]: (portability) Extra
+	  qualification 'osgDB::' unnecessary and considered an error by
+	  many compilers.
+	  [src/osgDB/ExternalFileWriter.cpp:198]: (portability) Extra
+	  qualification 'osgDB::' unnecessary and considered an error by
+	  many compilers.
+	  [src/osgDB/ExternalFileWriter.cpp:203]: (portability) Extra
+	  qualification 'osgDB::' unnecessary and considered an error by
+	  many compilers.
+	  [src/osgDB/ExternalFileWriter.cpp:205]: (portability) Extra
+	  qualification 'osgDB::' unnecessary and considered an error by
+	  many compilers.
+	  [src/osgDB/ExternalFileWriter.cpp:253]: (portability) Extra
+	  qualification 'osgDB::' unnecessary and considered an error by
+	  many compilers.
+	  [src/osgDB/InputStream.cpp:553]: (error) Memory leak: data
+	  [src/osgDB/OutputStream.cpp:393]: (error) Memory leak: data
+	  [src/osgPlugins/Inventor/ConvertToInventor.cpp:656]: (error)
+	  Mismatching allocation and deallocation: tmpArray
+	  [src/osgPlugins/Inventor/ReaderWriterIV.cpp:237]: (error) Common
+	  realloc mistake: 'buf' nulled but not freed upon failure
+	  [src/osgPlugins/OpenFlight/expGeometryRecords.cpp:167]:
+	  (portability) Extra qualification 'flt::' unnecessary and
+	  considered an error by many compilers.
+	  [src/osgPlugins/OpenFlight/expGeometryRecords.cpp:373]:
+	  (portability) Extra qualification 'flt::' unnecessary and
+	  considered an error by many compilers.
+	  [src/osgPlugins/cfg/CameraConfig.cpp:635]: (error) Unusual
+	  pointer arithmetic
+	  [src/osgPlugins/freetype/FreeTypeLibrary.cpp:122]: (error) Memory
+	  leak: buffer
+	  [src/osgPlugins/geo/ReaderWriterGEO.cpp:210]: (error) Possible
+	  null pointer dereference: gfd - otherwise it is redundant to
+	  check if gfd is null at line 211
+	  [src/osgPlugins/geo/ReaderWriterGEO.cpp:227]: (error) Possible
+	  null pointer dereference: gfd - otherwise it is redundant to
+	  check if gfd is null at line 228
+	  [src/osgPlugins/geo/ReaderWriterGEO.cpp:903]: (error) Possible
+	  null pointer dereference: gfd - otherwise it is redundant to
+	  check if gfd is null at line 904
+	  [src/osgPlugins/geo/osgGeoNodes.h:180]: (error) Memory leak:
+	  geoHeaderGeo::intVars
+	  [src/osgPlugins/geo/osgGeoNodes.h:181]: (error) Memory leak:
+	  geoHeaderGeo::useVars
+	  [src/osgPlugins/geo/osgGeoNodes.h:182]: (error) Memory leak:
+	  geoHeaderGeo::extVars
+	  [src/osgPlugins/md2/ReaderWriterMD2.cpp:180]: (error) Memory
+	  leak: mapbase
+	  [src/osgPlugins/md2/ReaderWriterMD2.cpp:166]: (error) Resource
+	  leak: file_fd
+	  [src/osgPlugins/pic/ReaderWriterPIC.cpp:152]: (error) Mismatching
+	  allocation and deallocation: tmpbuf
+	  [src/osgPlugins/pic/ReaderWriterPIC.cpp:153]: (error) Mismatching
+	  allocation and deallocation: buffer
+	  [src/osgPlugins/ply/plyfile.cpp:843]: (error) Memory leak:
+	  plyfile
+	  [src/osgPlugins/pvr/ReaderWriterPVR.cpp:179]: (error) Memory
+	  leak: imageData
+	  [src/osgPlugins/shp/ESRIShapeParser.cpp:29]: (error) Resource
+	  leak: fd
+	  [src/osgPlugins/shp/XBaseParser.cpp:96]: (error) Resource leak:
+	  fd
+	  [src/osgPlugins/zip/unzip.cpp:3158]: (error) Possible null
+	  pointer dereference: s - otherwise it is redundant to check if s
+	  is null at line 3159
+	  [src/osgPlugins/zip/unzip.cpp:4155]: (error) Dangerous usage of
+	  'rd' (strncpy doesn't always 0-terminate it)
+	  [src/osgShadow/MinimalCullBoundsShadowMap.cpp:334]: (error)
+	  Possible null pointer dereference: rl - otherwise it is redundant
+	  to check if rl is null at line 331
+	  [src/osgViewer/ScreenCaptureHandler.cpp:617]: (error) Possible
+	  null pointer dereference: camera - otherwise it is redundant to
+	  check if camera is null at line 611
+	  [src/osgViewer/ScreenCaptureHandler.cpp:632]: (error) Possible
+	  null pointer dereference: camera - otherwise it is redundant to
+	  check if camera is null at line 626
+	  [src/osgVolume/Locator.cpp:209]: (error) Dangerous iterator usage
+	  after erase()-method.
+	  [src/osgVolume/RayTracedTechnique.cpp:274]: (error) Possible null
+	  pointer dereference: imageLayer - otherwise it is redundant to
+	  check if imageLayer is null at line 259
+	  [src/osgVolume/RayTracedTechnique.cpp:275]: (error) Possible null
+	  pointer dereference: imageLayer - otherwise it is redundant to
+	  check if imageLayer is null at line 259
+	  [src/osgWrappers/serializers/osg/ShaderBinary.cpp:28]: (error)
+	  Mismatching allocation and deallocation: data
+
+2011-06-20 14:09  robert
+
+	* src/osg/ImageUtils.cpp, src/osg/OcclusionQueryNode.cpp,
+	  src/osgDB/ExternalFileWriter.cpp,
+	  src/osgPlugins/OpenFlight/expGeometryRecords.cpp: Removed
+	  unneccesary namespace qualifiers, and issue picked out by
+	  cppcheck.
+
+2011-06-20 12:36  robert
+
+	* src/osgPlugins/bmp/ReaderWriterBMP.cpp,
+	  src/osgPlugins/png/ReaderWriterPNG.cpp,
+	  src/osgPlugins/tga/ReaderWriterTGA.cpp: From Farshid Lashkari,
+	  BGR write support for BMP, PNG and TGA
+
+2011-06-20 11:25  robert
+
+	* src/osgViewer/GraphicsWindowX11.cpp: Added catch for window
+	  manager doesn't set the window size to full screen.
+
+2011-06-20 09:28  robert
+
+	* src/osgViewer/GraphicsWindowX11.cpp: Added check against
+	  Traits::overrideRedirct to prevent the fullscreen workaround
+	  being run when overrideRedirect
+	  is on as overrideRedirect switches off the window managers
+	  ability to manage the fullscreen so the problem doesn't
+	  need working around.
+
+2011-06-20 09:22  robert
+
+	* src/osgViewer/GraphicsWindowX11.cpp: Introduced a workaround for
+	  fullscreen toggle issues under modern X11 window managers.
+
+2011-06-20 09:20  robert
+
+	* src/osgViewer/ViewerEventHandlers.cpp: Added sleep before window
+	  resizing to make it less likely that the previous frames
+	  rendering traversal is still
+	  running when the window(s) is resized, something that creates
+	  what looks like a glitch in rendering.
+
+2011-06-19 19:16  robert
+
+	* CMakeModules/Find3rdPartyDependencies.cmake: From Torben
+	  Dannhauer, "Just in time for OSG 3.0 I will present an updated
+	  3rdParty package for VS2008 , which includes some updated
+	  libraries (libcurl, freetype, jpeg). It also provides now all
+	  debug databases (*.pdb), so all the annoying compile warnings
+	  about missing .pdb files are gone.
+	  
+	  I extended the CMAKE module to find the new library."
+
+2011-06-17 16:55  robert
+
+	* CMakeLists.txt, include/osg/Version: Updated version to 3.1.0 in
+	  prep for the first developer release for 3.x series
+
+2011-06-17 12:57  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegParameters.cpp: Added extern "C" to
+	  fix build issues under OSX
+
+2011-06-17 12:31  robert
+
+	* ChangeLog, NEWS.txt, README.txt: Updated ChangeLog, NEWS and
+	  READE for 3.0.0-rc1
+
 2011-06-17 11:47  robert
 
 	* include/OpenThreads/Version: Updated version number

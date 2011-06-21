@@ -62,6 +62,8 @@ bool layerElementValid(const KFbxLayerElementTemplate<T>* pLayerElement)
     case KFbxLayerElement::eDIRECT:
     case KFbxLayerElement::eINDEX_TO_DIRECT:
         return true;
+    default:
+        break;
     }
 
     return false;
@@ -85,6 +87,8 @@ int getVertexIndex(const KFbxLayerElementTemplate<T>* pLayerElement,
     case KFbxLayerElement::eBY_POLYGON:
         index = nPolygon;
         break;
+	default:
+		OSG_WARN << "getVertexIndex: unsupported FBX mapping mode" << std::endl;
     }
 
     if (pLayerElement->GetReferenceMode() == KFbxLayerElement::eDIRECT)
@@ -107,6 +111,8 @@ int getPolygonIndex(const KFbxLayerElementTemplate<T>* pLayerElement, int nPolyg
             return nPolygon;
         case KFbxLayerElement::eINDEX_TO_DIRECT:
             return pLayerElement->GetIndexArray().GetAt(nPolygon);
+		default:
+			break;
         }
     }
 

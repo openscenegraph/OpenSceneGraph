@@ -56,6 +56,8 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxLight(KFbxNode* pNode, int&
 
         switch (fbxLight->DecayType.Get())
         {
+		case KFbxLight::eNONE:
+			break;
         case KFbxLight::eLINEAR:
             osgLight->setLinearAttenuation(fbxDecayStart);
             break;

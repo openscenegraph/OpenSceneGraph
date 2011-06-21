@@ -59,7 +59,7 @@ ENDMACRO(FIND_DEPENDENCY DEPNAME INCLUDEFILE LIBRARY_NAMES_BASE SEARCHPATHLIST D
 
 MACRO(SEARCH_3RDPARTY OSG_3RDPARTY_BIN)
         FIND_DEPENDENCY(TIFF tiff.h libtiff ${OSG_3RDPARTY_BIN} "D" "_i")
-        FIND_DEPENDENCY(FREETYPE ft2build.h "freetype;freetype2311MT;freetype234;freetype234MT;freetype235;freetype237;freetype238;freetype244MT;" ${OSG_3RDPARTY_BIN} "d" "")
+        FIND_DEPENDENCY(FREETYPE ft2build.h "freetype;freetype2311MT;freetype234;freetype234MT;freetype235;freetype237;freetype238;freetype244;" ${OSG_3RDPARTY_BIN} "d" "")
         IF(FREETYPE_FOUND)
             #forcing subsequent FindFreeType stuff to not search for other variables.... kind of a hack 
             SET(FREETYPE_INCLUDE_DIR_ft2build ${FREETYPE_INCLUDE_DIR} CACHE PATH "" FORCE)

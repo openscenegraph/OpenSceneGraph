@@ -568,8 +568,8 @@ osgDB::ReaderWriter::ReadResult OsgFbxReader::readFbxNode(
             }
         }
         break;
-	default:
-		break;
+    default:
+        break;
     }
 
     if (bEmpty)

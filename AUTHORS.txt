@@ -81,6 +81,7 @@ Fabien Lavignotte
 Melchior Franz
 Lionel Lagarde
 Jan Ciger
+Torben Dannhauer
 Rafa Gaitan
 Neil Hughes
 Mike Connell
@@ -92,7 +93,6 @@ David Guthrie
 Csaba Halasz
 Boris Bralo
 Yefei He
-Torben Dannhauer
 Sondra Iverson
 Simon Julier
 Rune Schmidt Jensen

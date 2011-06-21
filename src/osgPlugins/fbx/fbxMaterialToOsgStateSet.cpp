@@ -84,7 +84,7 @@ FbxMaterialToOsgStateSet::convert(const KFbxSurfaceMaterial* pFbxMat)
             if (lTexture)
             {
                 // support only spherical reflection maps...
-                if (KFbxFileTexture::eUMT_ENVIRONMENT == lTexture->GetMappingType())
+                if (KFbxFileTexture::eUMT_ENVIRONMENT == lTexture->CurrentMappingType.Get())
                 {
                     result.reflectionTexture = fbxTextureToOsgTexture(lTexture);
                     result.reflectionChannel = lTexture->UVSet.Get();

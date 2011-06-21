@@ -8563,8 +8563,6 @@ static GLdouble extractUbyte(int isSwap, const void *ubyte)
 {
    isSwap= isSwap;                /* turn off warnings */
 
-   assert(*((const GLubyte *)ubyte) <= 255);
-
    return (GLdouble)(*((const GLubyte *)ubyte));
 } /* extractUbyte() */
 
@@ -8578,8 +8576,6 @@ static void shoveUbyte(GLdouble value, int index, void *data)
 static GLdouble extractSbyte(int isSwap, const void *sbyte)
 {
    isSwap= isSwap;                /* turn off warnings */
-
-   assert(*((const GLbyte *)sbyte) <= 127);
 
    return (GLdouble)(*((const GLbyte *)sbyte));
 } /* extractSbyte() */
@@ -8599,8 +8595,6 @@ static GLdouble extractUshort(int isSwap, const void *uitem)
    else {
      ushort= *(const GLushort *)uitem;
    }
-
-   assert(ushort <= 65535);
 
    return (GLdouble)ushort;
 } /* extractUshort() */
@@ -8622,8 +8616,6 @@ static GLdouble extractSshort(int isSwap, const void *sitem)
    else {
      sshort= *(const GLshort *)sitem;
    }
-
-   assert(sshort <= 32767);
 
    return (GLdouble)sshort;
 } /* extractSshort() */

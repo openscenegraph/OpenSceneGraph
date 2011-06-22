@@ -38,7 +38,6 @@ extern "C" {
         jas_matrix_t *data[4];
         jas_seqent_t *d[4];
         jas_seqent_t v;
-        int linelen;
         int width, height;
 
         width = jas_image_cmptwidth(image, 0);
@@ -64,7 +63,6 @@ extern "C" {
                 }
                 d[cmptno] = jas_matrix_getref(data[cmptno], 0, 0);
             }
-            linelen = 0;
             for (x = 0; x < width; ++x) {
                 for (cmptno = 0; cmptno < numcmpts; ++cmptno) {
                     v = *d[cmptno];

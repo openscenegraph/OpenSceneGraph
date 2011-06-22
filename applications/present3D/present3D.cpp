@@ -636,11 +636,8 @@ int main( int argc, char **argv )
     float width = osg::DisplaySettings::instance()->getScreenWidth();
     float height = osg::DisplaySettings::instance()->getScreenHeight();
     float distance = osg::DisplaySettings::instance()->getScreenDistance();
-    bool sizesSpecified = false;
     while (arguments.read("-s", width, height, distance)) 
     {
-        sizesSpecified = true;
-        
         osg::DisplaySettings::instance()->setScreenDistance(distance);
         osg::DisplaySettings::instance()->setScreenHeight(height);
         osg::DisplaySettings::instance()->setScreenWidth(width);

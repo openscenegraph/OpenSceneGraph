@@ -254,10 +254,7 @@ bool NodeTrackerManipulator::performMovementLeftMouseButton( const double eventT
          osg::Matrix rotation_matrix;
          rotation_matrix.makeRotate(_rotation);
 
-         osg::Vec3d lookVector = -getUpVector(rotation_matrix);
          osg::Vec3d sideVector = getSideVector(rotation_matrix);
-         osg::Vec3d upVector = getFrontVector(rotation_matrix);
-
          osg::Vec3d localUp(0.0f,0.0f,1.0f);
 
          osg::Vec3d forwardVector = localUp^sideVector;

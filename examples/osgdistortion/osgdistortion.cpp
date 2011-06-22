@@ -122,8 +122,6 @@ osg::Node* createDistortionSubgraph(osg::Node* subgraph, const osg::Vec4& clearC
         osg::Vec2 dx_texcoord(1.0f/(float)(noSteps-1),0.0f);
         osg::Vec2 dy_texcoord(0.0f,1.0f/(float)(noSteps-1));
 
-        osg::Vec3 cursor = bottom;
-        osg::Vec2 texcoord = bottom_texcoord;
         int i,j;
         for(i=0;i<noSteps;++i)
         {
@@ -355,10 +353,7 @@ osg::Geometry* createDomeDistortionMesh(const osg::Vec3& origin, const osg::Vec3
     osg::Vec3d screenCenter = origin + widthVector*0.5f + heightVector*0.5f;
     float screenRadius = heightVector.length() * 0.5f;
 
-    osg::Vec3 cursor = bottom;
     int i,j;
-    
-    
     if (centerProjection)
     {
         for(i=0;i<noSteps;++i)

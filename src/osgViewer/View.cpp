@@ -734,7 +734,6 @@ static osg::Geometry* create3DSphericalDisplayDistortionMesh(const osg::Vec3& or
     osg::Vec3d screenCenter = origin + widthVector*0.5f + heightVector*0.5f;
     float screenRadius = heightVector.length() * 0.5f;
 
-    osg::Vec3 cursor = bottom;
     int i,j;
 
     if (centerProjection)
@@ -1114,10 +1113,6 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
     osg::Vec2Array* texcoords1 = intensityMap==0 ? new osg::Vec2Array : 0;
     osg::Vec4Array* colors = new osg::Vec4Array;
 
-    osg::Vec3 bottom = origin;
-    osg::Vec3 dx = xAxis*(width/((float)(noSteps-2)));
-    osg::Vec3 dy = yAxis*(height/((float)(noSteps-1)));
-
     osg::Vec3 top = origin + yAxis*height;
 
     osg::Vec3 screenCenter = origin + widthVector*0.5f + heightVector*0.5f;
@@ -1127,7 +1122,6 @@ static osg::Geometry* createParoramicSphericalDisplayDistortionMesh(const osg::V
 
     for(int i=0;i<noSteps;++i)
     {
-        osg::Vec3 cursor = bottom+dy*(float)i;
         for(int j=0;j<noSteps;++j)
         {
             osg::Vec2 texcoord(double(i)/double(noSteps-1), double(j)/double(noSteps-1));

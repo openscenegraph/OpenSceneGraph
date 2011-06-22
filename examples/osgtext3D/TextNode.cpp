@@ -77,13 +77,11 @@ void Layout::layout(TextNode& text) const
     }
 
     float characterWidthScale = 1.0f;
-    float characterHeightScale = 1.0f;
 
     bool textIs3D = (style && style->getThicknessRatio()!=0.0);
     if (!textIs3D)
     {
         characterWidthScale = 1.0f/static_cast<float>(resolution.first);
-        characterHeightScale = 1.0f/static_cast<float>(resolution.second);
     }
 
     osgText::KerningType kerningType = osgText::KERNING_DEFAULT;

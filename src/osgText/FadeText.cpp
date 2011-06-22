@@ -71,8 +71,6 @@ struct FadeTextPolytopeData : public FadeTextData, public osg::Polytope
     {
         osg::Vec3d edge01 = _vertices[1] - _vertices[0];
         osg::Vec3d edge12 = _vertices[2] - _vertices[1];
-        osg::Vec3d edge23 = _vertices[3] - _vertices[2];
-        osg::Vec3d edge30 = _vertices[0] - _vertices[3];
 
         osg::Vec3d normalFrontFace = edge01 ^ edge12;
         bool needToFlip = normalFrontFace.z()>0.0f;
@@ -89,7 +87,6 @@ struct FadeTextPolytopeData : public FadeTextData, public osg::Polytope
         OSG_NOTICE<<" normalFrontFace = "<<normalFrontFace<<std::endl;
         OSG_NOTICE<<" edge01 = "<<edge01<<std::endl;
         OSG_NOTICE<<" edge12 = "<<edge12<<std::endl;
-        OSG_NOTICE<<" edge23 = "<<edge23<<std::endl;
         OSG_NOTICE<<" _vertices[0]= "<<_vertices[0]<<std::endl;
         OSG_NOTICE<<" _vertices[1]= "<<_vertices[1]<<std::endl;
         OSG_NOTICE<<" _vertices[2]= "<<_vertices[2]<<std::endl;

@@ -2118,8 +2118,6 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
 
     osgDB::FilePathList previousPaths = osgDB::getDataFilePathList();
 
-    bool readSlide = false;
-
     for(osgDB::XmlNode::Children::iterator itr = root->children.begin();
         itr != root->children.end();
         ++itr)
@@ -2242,13 +2240,11 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
         }
         else if (readOnlyHoldingPage && cur->name == "holding_slide")
         {
-            readSlide = true;
             constructor.addSlide();
             parseSlide (constructor, cur);
         }
         else if (!readOnlyHoldingPage && cur->name == "slide")
         {
-            readSlide = true;
             constructor.addSlide();
 
             std::string inherit;
@@ -2266,7 +2262,6 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
         }
         else if (!readOnlyHoldingPage && cur->name == "modify_slide")
         {
-            readSlide = true;
             int slideNum;
             if (getProperty(cur, "slide", slideNum))
             {            
@@ -2280,17 +2275,14 @@ osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode* root, bool readOnly
         }
         else if (!readOnlyHoldingPage && cur->name == "page")
         {
-            readSlide = true;
             parsePage (constructor, cur);
         }
         else if (!readOnlyHoldingPage && cur->name == "pdf_document")
         {
-            readSlide = true;
             parsePdfDocument(constructor, cur);
         }
         else if (!readOnlyHoldingPage && cur->name == "template_slide")
         {
-            readSlide = true;
             std::string name;
             if (getProperty(cur, "name", name))
             {            

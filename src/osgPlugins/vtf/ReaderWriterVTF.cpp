@@ -357,7 +357,6 @@ osg::Image* ReadVTFFile(std::istream& _istream)
     int               s, t, r;
     unsigned int      lrSize;
     unsigned char *   imageData;
-    unsigned int      base;
     unsigned int      size;
     int               mip;
     int               mipSize;
@@ -498,7 +497,7 @@ osg::Image* ReadVTFFile(std::istream& _istream)
     }
 
     // Compute the base position of the high-res image data
-    base = vtf_header.header_size + lrSize;
+    // unsigned int base = vtf_header.header_size + lrSize;
 
     // Now, get the internal format, pixel format, and data type from the
     // full-size image format, and check whether the format is supported

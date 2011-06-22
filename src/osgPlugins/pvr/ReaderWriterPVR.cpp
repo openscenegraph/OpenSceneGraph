@@ -152,7 +152,6 @@ public:
         uint32_t formatFlags = header.flags & PVR_TEXTURE_FLAG_TYPE_MASK;
         GLenum internalFormat = GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
         uint32_t width, height;
-        bool hasAlpha;
         
         if(formatFlags == kPVRTextureFlagTypePVRTC_4 || formatFlags == kPVRTextureFlagTypePVRTC_2 ||
            formatFlags == kPVRTextureFlagTypeOGLPVRTC_4 || formatFlags == kPVRTextureFlagTypeOGLPVRTC_2 ||
@@ -166,12 +165,7 @@ public:
             
             width = header.width;
             height = header.height;
-            
-            if(header.bitmaskAlpha)
-                hasAlpha = true;
-            else
-                hasAlpha = false;
-            
+
             osg::ref_ptr<osg::Image> image = new osg::Image;
             if (!image) return ReadResult::INSUFFICIENT_MEMORY_TO_LOAD;
             

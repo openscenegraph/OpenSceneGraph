@@ -88,7 +88,6 @@ bool ZipArchive::getFileNames(osgDB::Archive::FileNameList& fileNameList) const
     if(mZipLoaded)
     {
         ZipEntryMap::const_iterator iter = mZipIndex.begin();
-        ZipEntryMap::const_iterator iterEnd = mZipIndex.end();
 
         for(;iter != mZipIndex.end(); ++iter)
         {

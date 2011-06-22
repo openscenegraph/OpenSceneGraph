@@ -98,7 +98,7 @@ bool HDRLoader::load(const char *_fileName, const bool _rawRGBE, HDRLoaderResult
     }
     fseek(file, 1, SEEK_CUR);
 
-    char cmd[2000];
+    //char cmd[2000];
     i = 0;
     char c = 0, oldc;
     while(true) {
@@ -106,7 +106,7 @@ bool HDRLoader::load(const char *_fileName, const bool _rawRGBE, HDRLoaderResult
         c = fgetc(file);
         if (c == 0xa && oldc == 0xa)
             break;
-        cmd[i++] = c;
+        //cmd[i++] = c;
     }
 
     char reso[2000];

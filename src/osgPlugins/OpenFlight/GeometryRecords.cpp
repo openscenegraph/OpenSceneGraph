@@ -366,7 +366,7 @@ protected:
         _lightMode = in.readUInt8(FACE_COLOR);
         in.forward(7);
         osg::Vec4 primaryPackedColor = in.readColor32();
-        osg::Vec4 secondaryPackedColor = in.readColor32();
+        /*osg::Vec4 secondaryPackedColor =*/ in.readColor32();
         // version >= VERSION_15_1
         /*int textureMappingIndex =*/ in.readInt16(-1);
         in.forward(2);
@@ -939,7 +939,7 @@ protected:
         _lightMode = in.readUInt8(FACE_COLOR);
         in.forward(7);
         osg::Vec4 primaryPackedColor = in.readColor32();
-        osg::Vec4 secondaryPackedColor = in.readColor32();
+        /*osg::Vec4 secondaryPackedColor =*/ in.readColor32();
         // version >= VERSION_15_1
         /*int textureMappingIndex =*/ in.readInt16(-1);
         in.forward(2);

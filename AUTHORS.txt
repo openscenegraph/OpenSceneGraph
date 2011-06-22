@@ -52,6 +52,7 @@ Norman Vine
 Art Tevs
 Alberto Luaces
 Serge Lages
+Magnus Kessler
 Laurens Voerman
 Alberto Farre
 Terry Welsh
@@ -59,7 +60,6 @@ Sherman Wilcox
 Robert Milharcic
 Olaf Flebbe
 Mathieu Marache
-Magnus Kessler
 André Garneau
 Adrian Egli
 Ruben Lopez

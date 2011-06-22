@@ -1,3 +1,21 @@
+2011-06-22 16:18  robert
+
+	* CMakeModules/FindCOLLADA.cmake: From Magnus Kessler, "I have
+	  recently installed the latest version of collada-dom on Linux,
+	  and
+	  found that the include path has changed. By default, collada-dom
+	  now installs
+	  its header files under /usr/local/include/collada-dom
+	  or/usr/include/collada-
+	  dom. The attached FindCollada.cmake has been updated to look for
+	  these
+	  locations in addition to the previous candidate locations."
+
+2011-06-22 15:41  robert
+
+	* AUTHORS.txt, ChangeLog: Updated ChangeLog and AUTHORS file for
+	  release
+
 2011-06-22 12:45  robert
 
 	* CMakeLists.txt: Updated RC number for the 3.0.0-rc3

@@ -1,3 +1,307 @@
+2011-06-22 12:45  robert
+
+	* CMakeLists.txt: Updated RC number for the 3.0.0-rc3
+
+2011-06-22 12:38  robert
+
+	* applications/present3D/present3D.cpp,
+	  examples/osgdistortion/osgdistortion.cpp,
+	  examples/osgposter/osgposter.cpp,
+	  examples/osgtext3D/TextNode.cpp,
+	  examples/osgthreadedterrain/osgthreadedterrain.cpp,
+	  examples/osgvolume/osgvolume.cpp,
+	  examples/osgwidgetcanvas/osgwidgetcanvas.cpp,
+	  src/osg/ShapeDrawable.cpp, src/osgGA/NodeTrackerManipulator.cpp,
+	  src/osgGA/TerrainManipulator.cpp,
+	  src/osgParticle/FluidProgram.cpp,
+	  src/osgPlugins/Inventor/ConvertToInventor.cpp,
+	  src/osgPlugins/OpenFlight/GeometryRecords.cpp,
+	  src/osgPlugins/OpenFlight/ReaderWriterFLT.cpp,
+	  src/osgPlugins/ac/Geode.cpp, src/osgPlugins/cfg/ConfigParser.cpp,
+	  src/osgPlugins/dds/ReaderWriterDDS.cpp,
+	  src/osgPlugins/hdr/hdrloader.cpp,
+	  src/osgPlugins/ive/ShapeAttributeList.cpp,
+	  src/osgPlugins/jp2/ReaderWriterJP2.cpp,
+	  src/osgPlugins/p3d/ReaderWriterP3D.cpp,
+	  src/osgPlugins/pvr/ReaderWriterPVR.cpp,
+	  src/osgPlugins/txp/trpage_geom.cpp,
+	  src/osgPlugins/txp/trpage_material.cpp,
+	  src/osgPlugins/txp/trpage_rarchive.cpp,
+	  src/osgPlugins/vtf/ReaderWriterVTF.cpp,
+	  src/osgPlugins/zip/ZipArchive.cpp, src/osgPlugins/zip/unzip.cpp,
+	  src/osgQt/QGraphicsViewAdapter.cpp,
+	  src/osgShadow/ParallelSplitShadowMap.cpp,
+	  src/osgTerrain/GeometryTechnique.cpp, src/osgText/FadeText.cpp,
+	  src/osgText/Text.cpp, src/osgUtil/DelaunayTriangulator.cpp,
+	  src/osgUtil/RenderStage.cpp, src/osgViewer/View.cpp,
+	  src/osgVolume/FixedFunctionTechnique.cpp: Merged from svn/trunk
+	  changeset 12597:
+	  
+	  Resolved warnings reported by g++ 4.6's
+	  -Wunused-but-set-variable.
+	  
+	  Warnings were:
+	  
+	  src/osg/ShapeDrawable.cpp: In member function ?void
+	  PrimitiveShapeVisitor::createHalfSphere(unsigned int, unsigned
+	  int, float, int, float, const Matrix&)?:
+	  src/osg/ShapeDrawable.cpp:1409:11: warning: variable ?nzBase? set
+	  but not used [-Wunused-but-set-variable]
+	  src/osg/ShapeDrawable.cpp:1410:11: warning: variable ?nRatioBase?
+	  set but not used [-Wunused-but-set-variable]
+	  src/osgUtil/DelaunayTriangulator.cpp: In function
+	  ?osgUtil::Triangle_list osgUtil::fillHole(osg::Vec3Array*,
+	  std::vector<unsigned int, std::allocator<unsigned int> >)?:
+	  src/osgUtil/DelaunayTriangulator.cpp:569:27: warning: variable
+	  ?ptest? set but not used [-Wunused-but-set-variable]
+	  src/osgUtil/DelaunayTriangulator.cpp: In member function ?bool
+	  osgUtil::DelaunayTriangulator::triangulate()?:
+	  src/osgUtil/DelaunayTriangulator.cpp:979:45: warning: variable
+	  ?curp? set but not used [-Wunused-but-set-variable]
+	  src/osgUtil/RenderStage.cpp: In member function ?void
+	  osgUtil::RenderStage::runCameraSetUp(osg::RenderInfo&)?:
+	  src/osgUtil/RenderStage.cpp:631:18: warning: variable
+	  ?stencilAttached? set but not used [-Wunused-but-set-variable]
+	  src/osgText/FadeText.cpp: In member function ?void
+	  FadeTextPolytopeData::buildPolytope()?:
+	  src/osgText/FadeText.cpp:74:20: warning: variable ?edge23? set
+	  but not used [-Wunused-but-set-variable]
+	  src/osgText/FadeText.cpp:75:20: warning: variable ?edge30? set
+	  but not used [-Wunused-but-set-variable]
+	  src/osgText/Text.cpp: In member function ?void
+	  osgText::Text::computeBackdropPositions(unsigned int) const?:
+	  src/osgText/Text.cpp:747:10: warning: variable ?is_valid_size?
+	  set but not used [-Wunused-but-set-variable]
+	  src/osgGA/NodeTrackerManipulator.cpp: In member function ?virtual
+	  bool
+	  osgGA::NodeTrackerManipulator::performMovementLeftMouseButton(double,
+	  double, double)?:
+	  src/osgGA/NodeTrackerManipulator.cpp:257:21: warning: variable
+	  ?lookVector? set but not used [-Wunused-but-set-variable]
+	  src/osgGA/NodeTrackerManipulator.cpp:259:21: warning: variable
+	  ?upVector? set but not used [-Wunused-but-set-variable]
+	  src/osgGA/TerrainManipulator.cpp: In member function ?virtual
+	  bool
+	  osgGA::TerrainManipulator::performMovementMiddleMouseButton(double,
+	  double, double)?:
+	  src/osgGA/TerrainManipulator.cpp:217:11: warning: variable
+	  ?lookVector? set but not used [-Wunused-but-set-variable]
+	  src/osgGA/TerrainManipulator.cpp:219:11: warning: variable
+	  ?upVector? set but not used [-Wunused-but-set-variable]
+	  src/osgVolume/FixedFunctionTechnique.cpp: In member function
+	  ?virtual void osgVolume::FixedFunctionTechnique::init()?:
+	  src/osgVolume/FixedFunctionTechnique.cpp:124:30: warning:
+	  variable ?tf? set but not used [-Wunused-but-set-variable]
+	  src/osgParticle/FluidProgram.cpp: In member function ?virtual
+	  void osgParticle::FluidProgram::execute(double)?:
+	  src/osgParticle/FluidProgram.cpp:38:23: warning: variable
+	  ?velBefore? set but not used [-Wunused-but-set-variable]
+	  src/osgShadow/ParallelSplitShadowMap.cpp: In member function
+	  ?virtual void
+	  osgShadow::ParallelSplitShadowMap::cull(osgUtil::CullVisitor&)?:
+	  src/osgShadow/ParallelSplitShadowMap.cpp:593:22: warning:
+	  variable ?bb? set but not used [-Wunused-but-set-variable]
+	  src/osgTerrain/GeometryTechnique.cpp: In member function ?virtual
+	  void
+	  osgTerrain::GeometryTechnique::generateGeometry(osgTerrain::GeometryTechnique::BufferData&,
+	  osgTerrain::Locator*, const osg::Vec3d&)?:
+	  src/osgTerrain/GeometryTechnique.cpp:777:12: warning: variable
+	  ?i_sampleFactor? set but not used [-Wunused-but-set-variable]
+	  src/osgTerrain/GeometryTechnique.cpp:778:12: warning: variable
+	  ?j_sampleFactor? set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/dds/ReaderWriterDDS.cpp: In function ?osg::Image*
+	  ReadDDSFile(std::istream&)?:
+	  src/osgPlugins/dds/ReaderWriterDDS.cpp:314:10: warning: variable
+	  ?is3dImage? set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/dds/ReaderWriterDDS.cpp: In function ?bool
+	  WriteDDSFile(const osg::Image*, std::ostream&)?:
+	  src/osgPlugins/dds/ReaderWriterDDS.cpp:721:10: warning: variable
+	  ?is3dImage? set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/hdr/hdrloader.cpp: In static member function
+	  ?static bool HDRLoader::load(const char*, bool,
+	  HDRLoaderResult&)?:
+	  src/osgPlugins/hdr/hdrloader.cpp:101:10: warning: variable ?cmd?
+	  set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/vtf/ReaderWriterVTF.cpp: In function ?osg::Image*
+	  ReadVTFFile(std::istream&)?:
+	  src/osgPlugins/vtf/ReaderWriterVTF.cpp:360:23: warning: variable
+	  ?base? set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/jp2/ReaderWriterJP2.cpp: In function ?int
+	  putdata(jas_stream_t*, jas_image_t*, int)?:
+	  src/osgPlugins/jp2/ReaderWriterJP2.cpp:41:13: warning: variable
+	  ?linelen? set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/Inventor/ConvertToInventor.cpp: In member function
+	  ?void ConvertToInventor::processGeometry(const osg::Geometry*,
+	  ConvertToInventor::InventorState*)?:
+	  src/osgPlugins/Inventor/ConvertToInventor.cpp:1639:10: warning:
+	  variable ?ok? set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/Inventor/ConvertFromInventor.cpp: In member
+	  function ?virtual SbBool
+	  SoVRMLImageTextureOsg::readInstance(SoInput*, short unsigned
+	  int)?:
+	  src/osgPlugins/Inventor/ConvertFromInventor.cpp:1264:16: warning:
+	  variable ?retval? set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/OpenFlight/GeometryRecords.cpp: In member function
+	  ?virtual void flt::Face::readRecord(flt::RecordInputStream&,
+	  flt::Document&)?:
+	  src/osgPlugins/OpenFlight/GeometryRecords.cpp:369:19: warning:
+	  variable ?secondaryPackedColor? set but not used
+	  [-Wunused-but-set-variable]
+	  src/osgPlugins/OpenFlight/GeometryRecords.cpp: In member function
+	  ?virtual void flt::Mesh::readRecord(flt::RecordInputStream&,
+	  flt::Document&)?:
+	  src/osgPlugins/OpenFlight/GeometryRecords.cpp:942:19: warning:
+	  variable ?secondaryPackedColor? set but not used
+	  [-Wunused-but-set-variable]
+	  src/osgPlugins/OpenFlight/ReaderWriterFLT.cpp: In member function
+	  ?virtual osgDB::ReaderWriter::ReadResult
+	  FLTReaderWriter::readNode(std::istream&, const Options*) const?:
+	  src/osgPlugins/OpenFlight/ReaderWriterFLT.cpp:427:40: warning:
+	  variable ?pos? set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/ive/ShapeAttributeList.cpp: In member function
+	  ?void ive::ShapeAttributeList::write(ive::DataOutputStream*)?:
+	  src/osgPlugins/ive/ShapeAttributeList.cpp:31:48: warning:
+	  variable ?it? set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/ac/Geode.cpp: In member function ?void
+	  ac3d::Geode::ProcessGeometry(std::ostream&, unsigned int)?:
+	  src/osgPlugins/ac/Geode.cpp:806:35: warning: variable ?fRep_s?
+	  set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/ac/Geode.cpp:806:43: warning: variable ?fRep_t?
+	  set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/ac/Geode.cpp:807:35: warning: variable ?fOffset_s?
+	  set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/ac/Geode.cpp:807:46: warning: variable ?fOffset_t?
+	  set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/ac/Geode.cpp:932:38: warning: variable
+	  ?primLength? set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/txp/trpage_geom.cpp: In member function ?virtual
+	  bool trpgGeometry::Write(trpgWriteBuffer&)?:
+	  src/osgPlugins/txp/trpage_geom.cpp:615:19: warning: variable ?u?
+	  set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/txp/trpage_material.cpp: In member function ?int
+	  trpgMatTable::AddMaterial(const trpgMaterial&, bool)?:
+	  src/osgPlugins/txp/trpage_material.cpp:103:10: warning: variable
+	  ?spaceInTable? set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/txp/trpage_rarchive.cpp: In member function
+	  ?virtual bool trpgr_Archive::ReadHeader(bool)?:
+	  src/osgPlugins/txp/trpage_rarchive.cpp:261:14: warning: variable
+	  ?headerHasTexTable? set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/zip/unzip.cpp: In member function ?ZRESULT
+	  TUnzip::Get(int, ZIPENTRY*)?:
+	  src/osgPlugins/zip/unzip.cpp:4055:8: warning: variable ?hidden?
+	  set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/zip/unzip.cpp:4055:22: warning: variable ?system?
+	  set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/zip/unzip.cpp:4055:36: warning: variable ?archive?
+	  set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/zip/ZipArchive.cpp: In member function ?virtual
+	  bool ZipArchive::getFileNames(osgDB::Archive::FileNameList&)
+	  const?:
+	  src/osgPlugins/zip/ZipArchive.cpp:91:37: warning: variable
+	  ?iterEnd? set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/pvr/ReaderWriterPVR.cpp: In member function
+	  ?osgDB::ReaderWriter::ReadResult
+	  ReaderWriterPVR::readPVRStream(std::istream&) const?:
+	  src/osgPlugins/pvr/ReaderWriterPVR.cpp:155:14: warning: variable
+	  ?hasAlpha? set but not used [-Wunused-but-set-variable]
+	  src/osgViewer/View.cpp: In function ?osg::Geometry*
+	  create3DSphericalDisplayDistortionMesh(const Vec3&, const Vec3&,
+	  const Vec3&, double, double, osg::Image*, const Matrix&)?:
+	  src/osgViewer/View.cpp:737:15: warning: variable ?cursor? set but
+	  not used [-Wunused-but-set-variable]
+	  src/osgViewer/View.cpp: In function ?osg::Geometry*
+	  createParoramicSphericalDisplayDistortionMesh(const Vec3&, const
+	  Vec3&, const Vec3&, double, double, osg::Image*, const Matrix&)?:
+	  src/osgViewer/View.cpp:1130:19: warning: variable ?cursor? set
+	  but not used [-Wunused-but-set-variable]
+	  src/osgViewer/View.cpp:1118:15: warning: variable ?dx? set but
+	  not used [-Wunused-but-set-variable]
+	  src/osgViewer/GraphicsWindowX11.cpp: In member function ?virtual
+	  void osgViewer::GraphicsWindowX11::checkEvents()?:
+	  src/osgViewer/GraphicsWindowX11.cpp:1181:10: warning: variable
+	  ?destroyWindowRequested? set but not used
+	  [-Wunused-but-set-variable]
+	  src/osgPlugins/cfg/ConfigParser.cpp: In member function ?bool
+	  osgProducer::CameraConfig::parseFile(const string&)?:
+	  src/osgPlugins/cfg/ConfigParser.cpp:2247:13: warning: variable
+	  ?result? set but not used [-Wunused-but-set-variable]
+	  src/osgQt/QGraphicsViewAdapter.cpp: In member function ?bool
+	  osgQt::QGraphicsViewAdapter::handlePointerEvent(int, int, int)?:
+	  src/osgQt/QGraphicsViewAdapter.cpp:344:17: warning: variable
+	  ?viewportGeometry? set but not used [-Wunused-but-set-variable]
+	  examples/osgdistortion/osgdistortion.cpp: In function ?osg::Node*
+	  createDistortionSubgraph(osg::Node*, const Vec4&)?:
+	  examples/osgdistortion/osgdistortion.cpp:125:19: warning:
+	  variable ?cursor? set but not used [-Wunused-but-set-variable]
+	  examples/osgdistortion/osgdistortion.cpp:126:19: warning:
+	  variable ?texcoord? set but not used [-Wunused-but-set-variable]
+	  examples/osgdistortion/osgdistortion.cpp: In function
+	  ?osg::Geometry* createDomeDistortionMesh(const Vec3&, const
+	  Vec3&, const Vec3&, osg::ArgumentParser&)?:
+	  examples/osgdistortion/osgdistortion.cpp:358:15: warning:
+	  variable ?cursor? set but not used [-Wunused-but-set-variable]
+	  examples/osgposter/osgposter.cpp: In function ?int main(int,
+	  char**)?:
+	  examples/osgposter/osgposter.cpp:253:31: warning: variable
+	  ?outputTiles? set but not used [-Wunused-but-set-variable]
+	  examples/osgthreadedterrain/osgthreadedterrain.cpp: In function
+	  ?int main(int, char**)?:
+	  examples/osgthreadedterrain/osgthreadedterrain.cpp:669:10:
+	  warning: variable ?readParameter? set but not used
+	  [-Wunused-but-set-variable]
+	  examples/osgtext3D/TextNode.cpp: In member function ?virtual void
+	  osgText::Layout::layout(osgText::TextNode&) const?:
+	  examples/osgtext3D/TextNode.cpp:80:11: warning: variable
+	  ?characterHeightScale? set but not used
+	  [-Wunused-but-set-variable]
+	  examples/osgvolume/osgvolume.cpp: In function ?int main(int,
+	  char**)?:
+	  examples/osgvolume/osgvolume.cpp:678:38: warning: variable
+	  ?internalFormatMode? set but not used [-Wunused-but-set-variable]
+	  examples/osgwidgetcanvas/osgwidgetcanvas.cpp: In function ?bool
+	  windowMouseOver(osgWidget::Event&)?:
+	  examples/osgwidgetcanvas/osgwidgetcanvas.cpp:27:24: warning:
+	  variable ?xy? set but not used [-Wunused-but-set-variable]
+	  examples/osgwidgetcanvas/osgwidgetcanvas.cpp: In function ?bool
+	  widgetMouseOver(osgWidget::Event&)?:
+	  examples/osgwidgetcanvas/osgwidgetcanvas.cpp:35:24: warning:
+	  variable ?xy? set but not used [-Wunused-but-set-variable]
+	  src/osgPlugins/p3d/ReaderWriterP3D.cpp: In member function
+	  ?osg::Node* ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode*,
+	  bool, osgDB::Options*) const?:
+	  src/osgPlugins/p3d/ReaderWriterP3D.cpp:2121:10: warning: variable
+	  ?readSlide? set but not used [-Wunused-but-set-variable]
+	  applications/present3D/present3D.cpp: In function ?int main(int,
+	  char**)?:
+	  applications/present3D/present3D.cpp:639:10: warning: variable
+	  ?sizesSpecified? set but not used [-Wunused-but-set-variable]
+
+2011-06-22 09:06  robert
+
+	* src/osgViewer/CompositeViewer.cpp, src/osgViewer/Viewer.cpp:
+	  Fixed regression in --run-on-demand feature
+
+2011-06-21 17:30  robert
+
+	* src/osg/glu/libutil/mipmap.cpp: Merged from svn/trunk changeset
+	  r12593, Removed assert() that always evaluated to true.
+
+2011-06-21 13:03  robert
+
+	* CMakeModules/Find3rdPartyDependencies.cmake: Merged from
+	  svn/trunk, changeset 12591, From Torben Dannhauer, "originally I
+	  posted the addendum of 'freetype244MT', but that was wrong.
+	  I updated it to the correct addendum of 'freetype244' yesterday,
+	  but supposedly that was not forwarded to you by the
+	  forum-to-mail-gateway.
+	  
+	  Find attached the corrected CMake module. "
+
+2011-06-21 10:26  robert
+
+	* AUTHORS.txt, ChangeLog: Updated ChangeLog and AUTHORS file for
+	  3.0.0-rc2
+
 2011-06-21 10:07  robert
 
 	* src/osg/glu/libtess/tess.h: Merged changeset 12581 from svn/trunk

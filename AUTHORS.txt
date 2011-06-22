@@ -78,10 +78,10 @@ Daniel Sjölie
 Bryan Thrall
 Glenn Waldron
 Fabien Lavignotte
+Torben Dannhauer
 Melchior Franz
 Lionel Lagarde
 Jan Ciger
-Torben Dannhauer
 Rafa Gaitan
 Neil Hughes
 Mike Connell

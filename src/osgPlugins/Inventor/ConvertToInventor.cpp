@@ -1653,6 +1653,10 @@ void ConvertToInventor::processGeometry(const osg::Geometry *g, InventorState *i
                                   startIndex, stopIndex, normalIndex, colorIndex,
                                   coords, normals, ivMaterial, texCoords,
                                   ivState->ivTexture, shape, indexedRoot, nonIndexedRoot);
+        if (!ok)
+        {
+            OSG_WARN<<"Inventor plugin, ConvertToInventor processPrimitiveSet() failed."<<std::endl;
+        }
         break;
       }
 
@@ -1667,6 +1671,10 @@ void ConvertToInventor::processGeometry(const osg::Geometry *g, InventorState *i
                                   -1, primSize, startIndex, -1, normalIndex, colorIndex,
                                   coords, normals, ivMaterial, texCoords,
                                   ivState->ivTexture, shape, indexedRoot, nonIndexedRoot);
+        if (!ok)
+        {
+            OSG_WARN<<"Inventor plugin, ConvertToInventor processPrimitiveSet() failed."<<std::endl;
+        }
 
         break;
       }
@@ -1716,6 +1724,10 @@ void ConvertToInventor::processGeometry(const osg::Geometry *g, InventorState *i
                                   0, drawElemIndices->getNumElements(), normalIndex, colorIndex,
                                   coords, normals, ivMaterial, texCoords,
                                   ivState->ivTexture, shape, indexedRoot, nonIndexedRoot);
+        if (!ok)
+        {
+            OSG_WARN<<"Inventor plugin, ConvertToInventor processPrimitiveSet() failed."<<std::endl;
+        }
         break;
       }
 

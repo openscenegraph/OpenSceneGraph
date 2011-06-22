@@ -4042,8 +4042,6 @@ ZRESULT TUnzip::Get(int index,ZIPENTRY *ze)
   _tcsncpy_s(ze->name,MAX_PATH, sfn,MAX_PATH);
 #endif
 
-
-
   unsigned long a = ufi.external_fa;
   // zip has an 'attribute' 32bit value. Its lower half is windows stuff
   // its upper half is standard unix stat.st_mode. We'll start trying
@@ -4052,15 +4050,11 @@ ZRESULT TUnzip::Get(int index,ZIPENTRY *ze)
   bool readonly=  (a&0x00800000)==0;
   //bool readable=  (a&0x01000000)!=0; // unused
   //bool executable=(a&0x00400000)!=0; // unused
-  bool hidden=false, system=false, archive=true;
   // but in normal hostmodes these are overridden by the lower half...
   int host = ufi.version>>8;
   if (host==0 || host==7 || host==11 || host==14)
   { readonly=  (a&0x00000001)!=0;
-    hidden=    (a&0x00000002)!=0;
-    system=    (a&0x00000004)!=0;
     isdir=     (a&0x00000010)!=0;
-    archive=   (a&0x00000020)!=0;
   }
   // readonly; hidden; system; isdir; archive;
   ze->attr=0;
@@ -4069,10 +4063,18 @@ ZRESULT TUnzip::Get(int index,ZIPENTRY *ze)
   if (isdir) ze->attr |= S_IFDIR;
   if (readonly) ze->attr &= ~S_IWUSR;
 #else
+  bool hidden=false, system=false, archive=true;
+  if (host==0 || host==7 || host==11 || host==14)
+  {
+    hidden=    (a&0x00000002)!=0;
+    system=    (a&0x00000004)!=0;
+    archive=   (a&0x00000020)!=0;
+  }
+
   if (isdir) ze->attr |= FILE_ATTRIBUTE_DIRECTORY;
+  if (readonly) ze->attr|=FILE_ATTRIBUTE_READONLY;
   if (archive) ze->attr|=FILE_ATTRIBUTE_ARCHIVE;
   if (hidden) ze->attr|=FILE_ATTRIBUTE_HIDDEN;
-  if (readonly) ze->attr|=FILE_ATTRIBUTE_READONLY;
   if (system) ze->attr|=FILE_ATTRIBUTE_SYSTEM;
 #endif
   ze->comp_size = ufi.compressed_size;

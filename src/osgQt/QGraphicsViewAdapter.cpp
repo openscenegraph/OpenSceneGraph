@@ -341,10 +341,7 @@ bool QGraphicsViewAdapter::handlePointerEvent(int x, int y, int buttonMask)
         (middleButtonPressed ? Qt::MidButton : Qt::NoButton) |
         (rightButtonPressed ? Qt::RightButton : Qt::NoButton);
 
-    const QRect viewportGeometry = _graphicsView->viewport()->geometry();
     const QPoint globalPos(x, y);
-     
-
       
     if (buttonMask != _previousButtonMask)
     {

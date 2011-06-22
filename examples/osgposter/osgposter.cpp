@@ -231,8 +231,8 @@ int main( int argc, char** argv )
     usage->addCommandLineOption( "--finalsize <w> <h>", "Size of the poster (Default: 6400 4800)." );
     usage->addCommandLineOption( "--enable-output-poster", "Output the final poster file (Default)." );
     usage->addCommandLineOption( "--disable-output-poster", "Don't output the final poster file." );
-    usage->addCommandLineOption( "--enable-output-tiles", "Output all tile files." );
-    usage->addCommandLineOption( "--disable-output-tiles", "Don't output all tile files (Default)." );
+    //usage->addCommandLineOption( "--enable-output-tiles", "Output all tile files." );
+    //usage->addCommandLineOption( "--disable-output-tiles", "Don't output all tile files (Default)." );
     usage->addCommandLineOption( "--use-fb", "Use Frame Buffer for rendering tiles (Default, recommended).");
     usage->addCommandLineOption( "--use-fbo", "Use Frame Buffer Object for rendering tiles.");
     usage->addCommandLineOption( "--use-pbuffer","Use Pixel Buffer for rendering tiles.");
@@ -250,7 +250,8 @@ int main( int argc, char** argv )
     
     // Poster arguments
     bool activeMode = true;
-    bool outputPoster = true, outputTiles = false;
+    bool outputPoster = true;
+    //bool outputTiles = false;
     int tileWidth = 640, tileHeight = 480;
     int posterWidth = 640*2, posterHeight = 480*2;
     std::string posterName = "poster.bmp", extName = "bmp";
@@ -265,8 +266,8 @@ int main( int argc, char** argv )
     while ( arguments.read("--ext", extName) ) {}
     while ( arguments.read("--enable-output-poster") ) { outputPoster = true; }
     while ( arguments.read("--disable-output-poster") ) { outputPoster = false; }
-    while ( arguments.read("--enable-output-tiles") ) { outputTiles = true; }
-    while ( arguments.read("--disable-output-tiles") ) { outputTiles = false; }
+    //while ( arguments.read("--enable-output-tiles") ) { outputTiles = true; }
+    //while ( arguments.read("--disable-output-tiles") ) { outputTiles = false; }
     while ( arguments.read("--use-fbo")) { renderImplementation = osg::Camera::FRAME_BUFFER_OBJECT; }
     while ( arguments.read("--use-pbuffer")) { renderImplementation = osg::Camera::PIXEL_BUFFER; }
     while ( arguments.read("--use-pbuffer-rtt")) { renderImplementation = osg::Camera::PIXEL_BUFFER_RTT; }

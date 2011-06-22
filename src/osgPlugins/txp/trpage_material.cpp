@@ -100,7 +100,7 @@ int trpgMatTable::AddMaterial(const trpgMaterial &mat,bool lookForExisting)
     if (cmat.shadeModel>100) cmat.shadeModel=trpgMaterial::Smooth;
 
     int baseMat=0;
-    bool spaceInTable=false;
+    //bool spaceInTable=false;
     //int offset=baseMat;
     
     if (lookForExisting) {
@@ -112,7 +112,7 @@ int trpgMatTable::AddMaterial(const trpgMaterial &mat,bool lookForExisting)
             const trpgMaterial &bm = itr->second;
             if (bm.shadeModel==999) {
                 // this is an 'empty' entry.  Means we won't find it, either.
-                spaceInTable=true;
+                //spaceInTable=true;
                 break;
             }
 

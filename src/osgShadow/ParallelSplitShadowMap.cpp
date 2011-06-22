@@ -590,7 +590,7 @@ void ParallelSplitShadowMap::cull(osgUtil::CullVisitor& cv){
     osg::ComputeBoundsVisitor cbbv(osg::NodeVisitor::TRAVERSE_ACTIVE_CHILDREN);
     cbbv.setTraversalMask(getShadowedScene()->getCastsShadowTraversalMask());
     _shadowedScene->osg::Group::traverse(cbbv);
-    osg::BoundingBox bb = cbbv.getBoundingBox();
+
     //////////////////////////////////////////////////////////////////////////
     const osg::Light* selectLight = 0;
 

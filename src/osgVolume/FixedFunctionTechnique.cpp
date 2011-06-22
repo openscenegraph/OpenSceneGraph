@@ -121,7 +121,6 @@ void FixedFunctionTechnique::init()
     float alphaFuncValue = 0.1;
    
     osg::Image* image_3d = 0;
-    osg::TransferFunction1D* tf = 0;
     osgVolume::Locator* masterLocator = _volumeTile->getLocator();
     osg::Texture::InternalFormatMode internalFormatMode = osg::Texture::USE_IMAGE_DATA_FORMAT; 
 
@@ -136,11 +135,6 @@ void FixedFunctionTechnique::init()
     if (cpv._isoProperty.valid())
     {
         alphaFuncValue = cpv._isoProperty->getValue();
-    }
-
-    if (cpv._tfProperty.valid())
-    {
-        tf = dynamic_cast<osg::TransferFunction1D*>(cpv._tfProperty->getTransferFunction());
     }
 
     if (cpv._afProperty.valid())

@@ -423,9 +423,6 @@ class FLTReaderWriter : public ReaderWriter
             {
                 // The continuation record complicates things a bit.
 
-                // Get current read position in stream.
-                std::istream::pos_type pos = fin.tellg();
-
                 // get opcode and size
                 flt::DataInputStream dataStream(fin.rdbuf());
                 opcode_type opcode = (opcode_type)dataStream.readUInt16();

@@ -225,6 +225,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <errno.h>
 #include <string>
 
 #include "FlexLexer.h"
@@ -2245,6 +2246,11 @@ bool CameraConfig::parseFile( const std::string &file )
 
         int pd[2];
         int result = pipe( pd );
+        if (result<0)
+        {
+            fprintf( stderr, "CameraConfig::parseFile() - pipe() failed, errno= \"%d\".\n",  errno);
+            return false;
+        }
 
         flexer = new yyFlexLexer;
         if( fork() == 0 )
@@ -2252,7 +2258,12 @@ bool CameraConfig::parseFile( const std::string &file )
             // we don't want to read from the pipe in the child, so close it.
             close( pd[0] );
             close( 1 );
-            result = dup( pd[1] );
+            int result = dup( pd[1] );
+            if (result<0)
+            {
+                fprintf( stderr, "CameraConfig::parseFile() - dup() failed, errno= \"%d\".\n",  errno);
+                return false;
+            }
 
 
             /* This was here to allow reading a config file from stdin.
@@ -2270,7 +2281,12 @@ bool CameraConfig::parseFile( const std::string &file )
         {
             close( pd[1]);
             close( 0 );
-            result = dup( pd[0] );
+            int result = dup( pd[0] );
+            if (result<0)
+            {
+                fprintf( stderr, "CameraConfig::parseFile() - dup() failed, errno= \"%d\".\n",  errno);
+                return false;
+            }
 
             cfg = this;
 

@@ -628,7 +628,6 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
 
             bool colorAttached = false;
             bool depthAttached = false;
-            bool stencilAttached = false;
             for(osg::Camera::BufferAttachmentMap::iterator itr = bufferAttachments.begin();
                 itr != bufferAttachments.end();
                 ++itr)
@@ -647,7 +646,6 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                     case(osg::Camera::STENCIL_BUFFER):
                     {
                         traits->stencil = 8;
-                        stencilAttached = true;
                         break;
                     }
                     case(osg::Camera::PACKED_DEPTH_STENCIL_BUFFER):
@@ -655,7 +653,6 @@ void RenderStage::runCameraSetUp(osg::RenderInfo& renderInfo)
                         traits->depth = 24;
                         depthAttached = true;
                         traits->stencil = 8;
-                        stencilAttached = true;
                     }
                     case(osg::Camera::COLOR_BUFFER):
                     {

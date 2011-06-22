@@ -28,7 +28,6 @@ void ShapeAttributeList::write(DataOutputStream* out)
     out->writeUInt(size());
 
     // Write elements of the list
-    osgSim::ShapeAttributeList::const_iterator it = begin();
     for (const_iterator it = begin(); it != end(); it++)
     {
         write(out, *it);

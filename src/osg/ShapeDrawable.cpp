@@ -1406,8 +1406,6 @@ void PrimitiveShapeVisitor::createHalfSphere(unsigned int numSegments, unsigned 
     float rBase=(top?(cosf(lBase)*radius):0.0f);
     float zBase=(top?(sinf(lBase)*radius):-radius);
     float vBase=(top?(vDelta*(numRows/2)):0.0f);
-    float nzBase=(top?(sinf(lBase)):-1.0f);
-    float nRatioBase=(top?(cosf(lBase)):0.0f);
 
     unsigned int rowbegin = top?numRows/2:0;
     unsigned int rowend   = top?numRows:numRows/2;
@@ -1419,8 +1417,6 @@ void PrimitiveShapeVisitor::createHalfSphere(unsigned int numSegments, unsigned 
         float rTop = cosf(lTop)*radius;
         float zTop = sinf(lTop)*radius;
         float vTop = vBase+vDelta;
-        float nzTop= sinf(lTop);
-        float nRatioTop= cosf(lTop);
 
         _functor.begin(GL_QUAD_STRIP);
 
@@ -1449,9 +1445,6 @@ void PrimitiveShapeVisitor::createHalfSphere(unsigned int numSegments, unsigned 
         rBase=rTop;
         zBase=zTop;
         vBase=vTop;
-        nzBase=nzTop;
-        nRatioBase=nRatioTop;
-
     }
         
 }

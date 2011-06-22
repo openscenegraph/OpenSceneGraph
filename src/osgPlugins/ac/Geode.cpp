@@ -929,27 +929,21 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
                         const osg::PrimitiveSet* primitiveset = pItr->get();
                         GLenum mode=primitiveset->getMode();
                         
-                        unsigned int primLength;
                         unsigned int surfaceFlags = 0x00;
                         
                         switch(mode)
                         {
                         case(osg::PrimitiveSet::POINTS):
-                            primLength = 1;
                             surfaceFlags = 0x02;
                             break;
                         case(osg::PrimitiveSet::LINES):
-                            primLength = 2;
                             surfaceFlags = 0x02;
                             break;
                         case(osg::PrimitiveSet::TRIANGLES):
-                            primLength = 3;
                             break;
                         case(osg::PrimitiveSet::QUADS):
-                            primLength = 4;
                             break;
                         default:
-                            primLength = 0;
                             break; // compute later when =0.
                         }
                         
@@ -1027,25 +1021,6 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
                                 default:
                                     break; // unknown shape
                                 }
-        /*                        const osg::DrawArrayLengths* drawArrayLengths = static_cast<const osg::DrawArrayLengths*>(primitiveset);
-                                unsigned int vindex = drawArrayLengths->getFirst();
-                                for(osg::DrawArrayLengths::const_iterator primItr = drawArrayLengths->begin(); primItr !=drawArrayLengths->end(); ++primItr)
-                                {
-                                    unsigned int localPrimLength;
-                                    if (primLength == 0) localPrimLength = *primItr;
-                                    else localPrimLength = primLength;
-                                    
-                                    for(GLsizei primCount = 0; primCount < *primItr; ++primCount)
-                                    {
-                                        if ((primCount%localPrimLength)==0)
-                                        {
-                                            OutputSurfHead(iCurrentMaterial,surfaceFlags,localPrimLength, fout);
-                                        }
-                                        OutputVertex(vindex, pVertexIndices, pTexCoords, pTexIndices, fout);
-                                        ++vindex;
-                                    }
-                                    
-                                }*/
                                 break;
                             }
                         case(osg::PrimitiveSet::DrawElementsUBytePrimitiveType):
@@ -1074,24 +1049,6 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
                                 default:
                                     break; // unknown shape
                                 }
-/*                                if (primLength == 0)
-                                    primLength = primitiveset->getNumIndices();
-                                
-                                const osg::DrawElementsUByte* drawElements = static_cast<const osg::DrawElementsUByte*>(primitiveset);
-                                
-                                unsigned int primCount = 0;
-                                for(osg::DrawElementsUByte::const_iterator primItr=drawElements->begin(); primItr!=drawElements->end(); ++primCount,++primItr)
-                                {
-                                    
-                                    if ((primCount%primLength) == 0)
-                                    {
-        OutputSurfHead(iCurrentMaterial,surfaceFlags,primLength, fout);
-                                    }
-                                    
-                                    unsigned int vindex=*primItr;
-                                    OutputVertex(vindex, pVertexIndices, pTexCoords, pTexIndices, fout);
-                                }
-                                */
                                 
                                 break;
                             }

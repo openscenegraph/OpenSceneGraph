@@ -258,13 +258,9 @@ bool trpgr_Archive::ReadHeader(bool readAllBlocks)
     if(header.GetIsMaster()) 
     {
         // bool firstBlock = true;
-        bool headerHasTexTable = false;
         //if the master has textures, we want to use them instead of the tables in the
         //block archives
-        int numTex = 0;
-        texTable.GetNumTextures(numTex);
-        if(numTex)
-            headerHasTexTable = true;
+
         // int numTiles = 0;
         //tileTable.
         int totalrows,totalcols;

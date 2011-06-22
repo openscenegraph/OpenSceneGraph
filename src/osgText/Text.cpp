@@ -753,6 +753,8 @@ void Text::computeBackdropPositions(unsigned int contextID) const
     // Since we tend to loop over contextID, we should cache this value some how
     // instead of recomputing it each time.
     is_valid_size = computeAverageGlyphWidthAndHeight(avg_width, avg_height);
+
+    if (!is_valid_size) return;
     
     // now apply matrix to the glyphs.
     for(TextureGlyphQuadMap::iterator titr=_textureGlyphQuadMap.begin();

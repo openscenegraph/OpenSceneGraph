@@ -46,8 +46,10 @@ FIND_PATH(COLLADA_INCLUDE_DIR dae.h
     /opt/local/Library/Frameworks #macports
     /usr/local/include
     /usr/local/include/colladadom
+    /usr/local/include/collada-dom
     /usr/include/
     /usr/include/colladadom
+    /usr/include/collada-dom
     /sw/include # Fink
     /opt/local/include # DarwinPorts
     /opt/csw/include # Blastwave

@@ -28,7 +28,8 @@ CompositeViewer::CompositeViewer()
 }
 
 CompositeViewer::CompositeViewer(const CompositeViewer& cv,const osg::CopyOp& copyop):
-    ViewerBase()
+    osg::Object(true),
+    ViewerBase(cv)
 {
     constructorInit();
 }

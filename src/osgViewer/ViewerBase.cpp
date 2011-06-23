@@ -44,7 +44,7 @@ ViewerBase::ViewerBase():
     viewerBaseInit();
 }
 
-ViewerBase::ViewerBase(const ViewerBase& base):
+ViewerBase::ViewerBase(const ViewerBase&):
     osg::Object(true)
 {
     viewerBaseInit();

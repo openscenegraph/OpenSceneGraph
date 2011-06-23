@@ -31,7 +31,7 @@ namespace osgAnimation
         public:
             META_Object(osgAnimation, UpdateSkeleton);
             UpdateSkeleton();
-            UpdateSkeleton(const UpdateSkeleton&, const osg::CopyOp&);
+            UpdateSkeleton(const UpdateSkeleton&, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY);
             virtual void operator()(osg::Node* node, osg::NodeVisitor* nv);
             bool needToValidate() const;
         protected:

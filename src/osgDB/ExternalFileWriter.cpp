@@ -218,7 +218,7 @@ bool ExternalFileWriter::write(const osg::Object & obj, const Options * options,
     else written = true;
 
     // Add entry
-    _objects.insert(ObjectsSet::value_type(&obj, ObjectData(absoluteDestinationPath, relativeDestinationPath, written))).first;
+    _objects.insert(ObjectsSet::value_type(&obj, ObjectData(absoluteDestinationPath, relativeDestinationPath, written)));
     _searchMap.insert(SearchMap::value_type(pathHash(absoluteDestinationPath), &obj));
 
     // Fill output strings

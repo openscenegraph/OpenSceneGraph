@@ -1,4 +1,4 @@
-OpenSceneGraph Library 3.0.0
+OpenSceneGraph Library 3.1.0
 
 463 Contributors:
 
@@ -52,6 +52,7 @@ Norman Vine
 Art Tevs
 Alberto Luaces
 Serge Lages
+Magnus Kessler
 Laurens Voerman
 Alberto Farre
 Terry Welsh
@@ -59,7 +60,6 @@ Sherman Wilcox
 Robert Milharcic
 Olaf Flebbe
 Mathieu Marache
-Magnus Kessler
 André Garneau
 Adrian Egli
 Ruben Lopez
@@ -78,6 +78,7 @@ Daniel Sjölie
 Bryan Thrall
 Glenn Waldron
 Fabien Lavignotte
+Torben Dannhauer
 Melchior Franz
 Lionel Lagarde
 Jan Ciger
@@ -92,7 +93,6 @@ David Guthrie
 Csaba Halasz
 Boris Bralo
 Yefei He
-Torben Dannhauer
 Sondra Iverson
 Simon Julier
 Rune Schmidt Jensen
@@ -217,6 +217,7 @@ Stephane Simon
 Stephan Eilemann
 Stanislav Blinov
 Sebastian Messerschmidt
+Ryan Pavlik
 Raymond de Vries
 Ralf Kern
 Piotr Gwiazdowski
@@ -261,6 +262,7 @@ Ferdi Smit
 Eric Buehler
 Eduardo Poyart
 Edgar Ellis
+Dimi Christopoulos
 Dietmar Funck
 David Ergo
 Daniel Trstenjak
@@ -303,7 +305,6 @@ Sid Byce
 Shuxing Xiao
 Shane Arnott
 Sebastien Kuntz
-Ryan Pavlik
 Ruth Lang
 Ruben Smelik
 Ross Anderson
@@ -424,7 +425,6 @@ Duvan Cope
 Duncan Cavens
 Drew Whitehouse
 Douglas A. Pouk
-Dimi Christop
 Dean Iverson
 David Jung
 Danny Valente

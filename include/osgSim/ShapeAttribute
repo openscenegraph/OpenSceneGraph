@@ -14,10 +14,8 @@
 #ifndef OSGSIM_SHAPEATTRIBUTE
 #define OSGSIM_SHAPEATTRIBUTE 1
 
-#include <string>
-#include <vector>
-
 #include <osg/Object>
+#include <osg/MixinVector>
 
 #include <osgSim/Export>
 
@@ -85,7 +83,7 @@ class OSGSIM_EXPORT ShapeAttribute
         
 };
 
-class OSGSIM_EXPORT ShapeAttributeList : public osg::Object, public std::vector<ShapeAttribute>
+class OSGSIM_EXPORT ShapeAttributeList : public osg::Object, public osg::MixinVector<ShapeAttribute>
 {
     public:
         META_Object(osgSim, ShapeAttributeList)
@@ -97,9 +95,9 @@ class OSGSIM_EXPORT ShapeAttributeList : public osg::Object, public std::vector<
         /** Copy constructor, optional CopyOp object can be used to control
           * shallow vs deep copying of dynamic data.*/
         ShapeAttributeList(const ShapeAttributeList& sal,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
-            osg::Object(sal, copyop)
+            osg::Object(sal, copyop),
+            MixinVector<ShapeAttribute>(sal)
         {
-            std::copy(sal.begin(),sal.end(), begin());
         }
     
         /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/

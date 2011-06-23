@@ -1,3 +1,465 @@
+2011-06-23 11:09  robert
+
+	* include/osgGA/GUIEventHandler, include/osgManipulator/Dragger,
+	  include/osgSim/ShapeAttribute, src/osgPlugins/zip/unzip.cpp,
+	  src/osgViewer/CompositeViewer.cpp, src/osgViewer/View.cpp,
+	  src/osgViewer/Viewer.cpp, src/osgViewer/ViewerBase.cpp: Fixed
+	  warnings.
+	  
+	  OpenSceneGraph/src/osgGA/NodeTrackerManipulator.cpp:32:1:
+	  warning: base class ?class osg::Object? should be explicitly
+	  initialized in the copy constructor
+	  OpenSceneGraph/src/osgGA/TerrainManipulator.cpp:31:1: warning:
+	  base class ?class osg::Object? should be explicitly initialized
+	  in the copy constructor
+	  OpenSceneGraph/include/osgSim/ShapeAttribute:99:9: warning: base
+	  class ?class std::vector<osgSim::ShapeAttribute>? should be
+	  explicitly initialized in the copy constructor
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::gi?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::byte_before_the_zipfile?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::num_file?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::pos_in_central_dir?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::current_file_ok?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::central_pos?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::size_central_dir?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::offset_central_dir?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::cur_file_info?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::cur_file_info_internal?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::pfile_in_zip_read?
+	  OpenSceneGraph/src/osgViewer/CompositeViewer.cpp:30:1: warning:
+	  base class ?class osg::Object? should be explicitly initialized
+	  in the copy constructor
+	  OpenSceneGraph/src/osgViewer/View.cpp:159:1: warning: base class
+	  ?class osg::Object? should be explicitly initialized in the copy
+	  constructor
+	  OpenSceneGraph/src/osgViewer/Viewer.cpp:196:1: warning: base
+	  class ?class osg::Object? should be explicitly initialized in the
+	  copy constructor
+	  OpenSceneGraph/src/osgViewer/Viewer.cpp:196:1: warning: base
+	  class ?class osgViewer::ViewerBase? should be explicitly
+	  initialized in the copy constructor
+	  OpenSceneGraph/include/osgManipulator/Dragger:47:9: warning: base
+	  class ?class osg::Object? should be explicitly initialized in the
+	  copy constructor
+
+2011-06-23 09:26  robert
+
+	* include/osg/Array, include/osgAnimation/Interpolator,
+	  src/osgPlugins/lwo/lwo2parser.h: From Ryan Pavlik, "I have
+	  successfully compiled OpenSceneGraph trunk using the Clang
+	  compiler (using a recent trunk build of llvm and clang, haven't
+	  tested an older release). The attached files contain the change
+	  shown in the diff below, which was required to finish the build
+	  with Clang. It fixes an issue with two-phase name lookup -
+	  there's more information here
+	  http://blog.llvm.org/2009/12/dreaded-two-phase-name-lookup.html
+	  "
+
+2011-06-23 09:22  robert
+
+	* src/osg/glu/libutil/mipmap.cpp: From Dimi Christopoulos, "I
+	  attach a fixed version of mipmap.cpp which produced a lot of
+	  warning on my gcc
+	  compiler."
+
+2011-06-23 07:13  robert
+
+	* src/osgPlugins/lwo/lwo2parser.h: Converted tabs to four spaces
+
+2011-06-22 16:18  robert
+
+	* CMakeModules/FindCOLLADA.cmake: From Magnus Kessler, "I have
+	  recently installed the latest version of collada-dom on Linux,
+	  and
+	  found that the include path has changed. By default, collada-dom
+	  now installs
+	  its header files under /usr/local/include/collada-dom
+	  or/usr/include/collada-
+	  dom. The attached FindCollada.cmake has been updated to look for
+	  these
+	  locations in addition to the previous candidate locations."
+
+2011-06-22 12:30  robert
+
+	* applications/present3D/present3D.cpp,
+	  examples/osgdistortion/osgdistortion.cpp,
+	  examples/osgposter/osgposter.cpp,
+	  examples/osgtext3D/TextNode.cpp,
+	  examples/osgthreadedterrain/osgthreadedterrain.cpp,
+	  examples/osgvolume/osgvolume.cpp,
+	  examples/osgwidgetcanvas/osgwidgetcanvas.cpp,
+	  src/osg/ShapeDrawable.cpp, src/osgGA/NodeTrackerManipulator.cpp,
+	  src/osgGA/TerrainManipulator.cpp,
+	  src/osgParticle/FluidProgram.cpp,
+	  src/osgPlugins/Inventor/ConvertToInventor.cpp,
+	  src/osgPlugins/OpenFlight/GeometryRecords.cpp,
+	  src/osgPlugins/OpenFlight/ReaderWriterFLT.cpp,
+	  src/osgPlugins/ac/Geode.cpp, src/osgPlugins/cfg/ConfigParser.cpp,
+	  src/osgPlugins/dds/ReaderWriterDDS.cpp,
+	  src/osgPlugins/hdr/hdrloader.cpp,
+	  src/osgPlugins/ive/ShapeAttributeList.cpp,
+	  src/osgPlugins/jp2/ReaderWriterJP2.cpp,
+	  src/osgPlugins/p3d/ReaderWriterP3D.cpp,
+	  src/osgPlugins/pvr/ReaderWriterPVR.cpp,
+	  src/osgPlugins/txp/trpage_geom.cpp,
+	  src/osgPlugins/txp/trpage_material.cpp,
+	  src/osgPlugins/txp/trpage_rarchive.cpp,
+	  src/osgPlugins/vtf/ReaderWriterVTF.cpp,
+	  src/osgPlugins/zip/ZipArchive.cpp, src/osgPlugins/zip/unzip.cpp,
+	  src/osgQt/QGraphicsViewAdapter.cpp,
+	  src/osgShadow/ParallelSplitShadowMap.cpp,
+	  src/osgTerrain/GeometryTechnique.cpp, src/osgText/FadeText.cpp,
+	  src/osgText/Text.cpp, src/osgUtil/DelaunayTriangulator.cpp,
+	  src/osgUtil/RenderStage.cpp, src/osgViewer/View.cpp,
+	  src/osgVolume/FixedFunctionTechnique.cpp: Resolved warnings
+	  reported by g++ 4.6's -Wunused-but-set-variable.
+	  
+	  Warnings were:
+	  
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osg/ShapeDrawable.cpp:
+	  In member function ‘void
+	  PrimitiveShapeVisitor::createHalfSphere(unsigned int, unsigned
+	  int, float, int, float, const Matrix&)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osg/ShapeDrawable.cpp:1409:11:
+	  warning: variable ‘nzBase’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osg/ShapeDrawable.cpp:1410:11:
+	  warning: variable ‘nRatioBase’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgUtil/DelaunayTriangulator.cpp:
+	  In function ‘osgUtil::Triangle_list
+	  osgUtil::fillHole(osg::Vec3Array*, std::vector<unsigned int,
+	  std::allocator<unsigned int> >)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgUtil/DelaunayTriangulator.cpp:569:27:
+	  warning: variable ‘ptest’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgUtil/DelaunayTriangulator.cpp:
+	  In member function ‘bool
+	  osgUtil::DelaunayTriangulator::triangulate()’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgUtil/DelaunayTriangulator.cpp:979:45:
+	  warning: variable ‘curp’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgUtil/RenderStage.cpp:
+	  In member function ‘void
+	  osgUtil::RenderStage::runCameraSetUp(osg::RenderInfo&)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgUtil/RenderStage.cpp:631:18:
+	  warning: variable ‘stencilAttached’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgText/FadeText.cpp:
+	  In member function ‘void FadeTextPolytopeData::buildPolytope()’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgText/FadeText.cpp:74:20:
+	  warning: variable ‘edge23’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgText/FadeText.cpp:75:20:
+	  warning: variable ‘edge30’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgText/Text.cpp:
+	  In member function ‘void
+	  osgText::Text::computeBackdropPositions(unsigned int) const’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgText/Text.cpp:747:10:
+	  warning: variable ‘is_valid_size’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgGA/NodeTrackerManipulator.cpp:
+	  In member function ‘virtual bool
+	  osgGA::NodeTrackerManipulator::performMovementLeftMouseButton(double,
+	  double, double)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgGA/NodeTrackerManipulator.cpp:257:21:
+	  warning: variable ‘lookVector’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgGA/NodeTrackerManipulator.cpp:259:21:
+	  warning: variable ‘upVector’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgGA/TerrainManipulator.cpp:
+	  In member function ‘virtual bool
+	  osgGA::TerrainManipulator::performMovementMiddleMouseButton(double,
+	  double, double)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgGA/TerrainManipulator.cpp:217:11:
+	  warning: variable ‘lookVector’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgGA/TerrainManipulator.cpp:219:11:
+	  warning: variable ‘upVector’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgVolume/FixedFunctionTechnique.cpp:
+	  In member function ‘virtual void
+	  osgVolume::FixedFunctionTechnique::init()’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgVolume/FixedFunctionTechnique.cpp:124:30:
+	  warning: variable ‘tf’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgParticle/FluidProgram.cpp:
+	  In member function ‘virtual void
+	  osgParticle::FluidProgram::execute(double)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgParticle/FluidProgram.cpp:38:23:
+	  warning: variable ‘velBefore’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgShadow/ParallelSplitShadowMap.cpp:
+	  In member function ‘virtual void
+	  osgShadow::ParallelSplitShadowMap::cull(osgUtil::CullVisitor&)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgShadow/ParallelSplitShadowMap.cpp:593:22:
+	  warning: variable ‘bb’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgTerrain/GeometryTechnique.cpp:
+	  In member function ‘virtual void
+	  osgTerrain::GeometryTechnique::generateGeometry(osgTerrain::GeometryTechnique::BufferData&,
+	  osgTerrain::Locator*, const osg::Vec3d&)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgTerrain/GeometryTechnique.cpp:777:12:
+	  warning: variable ‘i_sampleFactor’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgTerrain/GeometryTechnique.cpp:778:12:
+	  warning: variable ‘j_sampleFactor’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/dds/ReaderWriterDDS.cpp:
+	  In function ‘osg::Image* ReadDDSFile(std::istream&)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/dds/ReaderWriterDDS.cpp:314:10:
+	  warning: variable ‘is3dImage’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/dds/ReaderWriterDDS.cpp:
+	  In function ‘bool WriteDDSFile(const osg::Image*,
+	  std::ostream&)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/dds/ReaderWriterDDS.cpp:721:10:
+	  warning: variable ‘is3dImage’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/hdr/hdrloader.cpp:
+	  In static member function ‘static bool HDRLoader::load(const
+	  char*, bool, HDRLoaderResult&)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/hdr/hdrloader.cpp:101:10:
+	  warning: variable ‘cmd’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/vtf/ReaderWriterVTF.cpp:
+	  In function ‘osg::Image* ReadVTFFile(std::istream&)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/vtf/ReaderWriterVTF.cpp:360:23:
+	  warning: variable ‘base’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/jp2/ReaderWriterJP2.cpp:
+	  In function ‘int putdata(jas_stream_t*, jas_image_t*, int)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/jp2/ReaderWriterJP2.cpp:41:13:
+	  warning: variable ‘linelen’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/Inventor/ConvertToInventor.cpp:
+	  In member function ‘void ConvertToInventor::processGeometry(const
+	  osg::Geometry*, ConvertToInventor::InventorState*)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/Inventor/ConvertToInventor.cpp:1639:10:
+	  warning: variable ‘ok’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/Inventor/ConvertFromInventor.cpp:
+	  In member function ‘virtual SbBool
+	  SoVRMLImageTextureOsg::readInstance(SoInput*, short unsigned
+	  int)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/Inventor/ConvertFromInventor.cpp:1264:16:
+	  warning: variable ‘retval’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/OpenFlight/GeometryRecords.cpp:
+	  In member function ‘virtual void
+	  flt::Face::readRecord(flt::RecordInputStream&, flt::Document&)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/OpenFlight/GeometryRecords.cpp:369:19:
+	  warning: variable ‘secondaryPackedColor’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/OpenFlight/GeometryRecords.cpp:
+	  In member function ‘virtual void
+	  flt::Mesh::readRecord(flt::RecordInputStream&, flt::Document&)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/OpenFlight/GeometryRecords.cpp:942:19:
+	  warning: variable ‘secondaryPackedColor’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/OpenFlight/ReaderWriterFLT.cpp:
+	  In member function ‘virtual osgDB::ReaderWriter::ReadResult
+	  FLTReaderWriter::readNode(std::istream&, const Options*) const’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/OpenFlight/ReaderWriterFLT.cpp:427:40:
+	  warning: variable ‘pos’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/ive/ShapeAttributeList.cpp:
+	  In member function ‘void
+	  ive::ShapeAttributeList::write(ive::DataOutputStream*)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/ive/ShapeAttributeList.cpp:31:48:
+	  warning: variable ‘it’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/ac/Geode.cpp:
+	  In member function ‘void
+	  ac3d::Geode::ProcessGeometry(std::ostream&, unsigned int)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/ac/Geode.cpp:806:35:
+	  warning: variable ‘fRep_s’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/ac/Geode.cpp:806:43:
+	  warning: variable ‘fRep_t’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/ac/Geode.cpp:807:35:
+	  warning: variable ‘fOffset_s’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/ac/Geode.cpp:807:46:
+	  warning: variable ‘fOffset_t’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/ac/Geode.cpp:932:38:
+	  warning: variable ‘primLength’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/txp/trpage_geom.cpp:
+	  In member function ‘virtual bool
+	  trpgGeometry::Write(trpgWriteBuffer&)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/txp/trpage_geom.cpp:615:19:
+	  warning: variable ‘u’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/txp/trpage_material.cpp:
+	  In member function ‘int trpgMatTable::AddMaterial(const
+	  trpgMaterial&, bool)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/txp/trpage_material.cpp:103:10:
+	  warning: variable ‘spaceInTable’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/txp/trpage_rarchive.cpp:
+	  In member function ‘virtual bool
+	  trpgr_Archive::ReadHeader(bool)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/txp/trpage_rarchive.cpp:261:14:
+	  warning: variable ‘headerHasTexTable’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/zip/unzip.cpp:
+	  In member function ‘ZRESULT TUnzip::Get(int, ZIPENTRY*)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/zip/unzip.cpp:4055:8:
+	  warning: variable ‘hidden’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/zip/unzip.cpp:4055:22:
+	  warning: variable ‘system’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/zip/unzip.cpp:4055:36:
+	  warning: variable ‘archive’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/zip/ZipArchive.cpp:
+	  In member function ‘virtual bool
+	  ZipArchive::getFileNames(osgDB::Archive::FileNameList&) const’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/zip/ZipArchive.cpp:91:37:
+	  warning: variable ‘iterEnd’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/pvr/ReaderWriterPVR.cpp:
+	  In member function ‘osgDB::ReaderWriter::ReadResult
+	  ReaderWriterPVR::readPVRStream(std::istream&) const’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/pvr/ReaderWriterPVR.cpp:155:14:
+	  warning: variable ‘hasAlpha’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgViewer/View.cpp:
+	  In function ‘osg::Geometry*
+	  create3DSphericalDisplayDistortionMesh(const Vec3&, const Vec3&,
+	  const Vec3&, double, double, osg::Image*, const Matrix&)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgViewer/View.cpp:737:15:
+	  warning: variable ‘cursor’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgViewer/View.cpp:
+	  In function ‘osg::Geometry*
+	  createParoramicSphericalDisplayDistortionMesh(const Vec3&, const
+	  Vec3&, const Vec3&, double, double, osg::Image*, const Matrix&)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgViewer/View.cpp:1130:19:
+	  warning: variable ‘cursor’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgViewer/View.cpp:1118:15:
+	  warning: variable ‘dx’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgViewer/GraphicsWindowX11.cpp:
+	  In member function ‘virtual void
+	  osgViewer::GraphicsWindowX11::checkEvents()’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgViewer/GraphicsWindowX11.cpp:1181:10:
+	  warning: variable ‘destroyWindowRequested’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/cfg/ConfigParser.cpp:
+	  In member function ‘bool
+	  osgProducer::CameraConfig::parseFile(const string&)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/cfg/ConfigParser.cpp:2247:13:
+	  warning: variable ‘result’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgQt/QGraphicsViewAdapter.cpp:
+	  In member function ‘bool
+	  osgQt::QGraphicsViewAdapter::handlePointerEvent(int, int, int)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgQt/QGraphicsViewAdapter.cpp:344:17:
+	  warning: variable ‘viewportGeometry’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/examples/osgdistortion/osgdistortion.cpp:
+	  In function ‘osg::Node* createDistortionSubgraph(osg::Node*,
+	  const Vec4&)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/examples/osgdistortion/osgdistortion.cpp:125:19:
+	  warning: variable ‘cursor’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/examples/osgdistortion/osgdistortion.cpp:126:19:
+	  warning: variable ‘texcoord’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/examples/osgdistortion/osgdistortion.cpp:
+	  In function ‘osg::Geometry* createDomeDistortionMesh(const Vec3&,
+	  const Vec3&, const Vec3&, osg::ArgumentParser&)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/examples/osgdistortion/osgdistortion.cpp:358:15:
+	  warning: variable ‘cursor’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/examples/osgposter/osgposter.cpp:
+	  In function ‘int main(int, char**)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/examples/osgposter/osgposter.cpp:253:31:
+	  warning: variable ‘outputTiles’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/examples/osgthreadedterrain/osgthreadedterrain.cpp:
+	  In function ‘int main(int, char**)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/examples/osgthreadedterrain/osgthreadedterrain.cpp:669:10:
+	  warning: variable ‘readParameter’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/examples/osgtext3D/TextNode.cpp:
+	  In member function ‘virtual void
+	  osgText::Layout::layout(osgText::TextNode&) const’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/examples/osgtext3D/TextNode.cpp:80:11:
+	  warning: variable ‘characterHeightScale’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/examples/osgvolume/osgvolume.cpp:
+	  In function ‘int main(int, char**)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/examples/osgvolume/osgvolume.cpp:678:38:
+	  warning: variable ‘internalFormatMode’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/examples/osgwidgetcanvas/osgwidgetcanvas.cpp:
+	  In function ‘bool windowMouseOver(osgWidget::Event&)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/examples/osgwidgetcanvas/osgwidgetcanvas.cpp:27:24:
+	  warning: variable ‘xy’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/examples/osgwidgetcanvas/osgwidgetcanvas.cpp:
+	  In function ‘bool widgetMouseOver(osgWidget::Event&)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/examples/osgwidgetcanvas/osgwidgetcanvas.cpp:35:24:
+	  warning: variable ‘xy’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/p3d/ReaderWriterP3D.cpp:
+	  In member function ‘osg::Node*
+	  ReaderWriterP3DXML::parseXmlGraph(osgDB::XmlNode*, bool,
+	  osgDB::Options*) const’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/src/osgPlugins/p3d/ReaderWriterP3D.cpp:2121:10:
+	  warning: variable ‘readSlide’ set but not used
+	  [-Wunused-but-set-variable]
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/applications/present3D/present3D.cpp:
+	  In function ‘int main(int, char**)’:
+	  /home/stephan/Dev/LibSources/OpenSceneGraph-3.0.0-rc2/applications/present3D/present3D.cpp:639:10:
+	  warning: variable ‘sizesSpecified’ set but not used
+	  [-Wunused-but-set-variable]
+
+2011-06-22 09:12  robert
+
+	* src/osgViewer/CompositeViewer.cpp, src/osgViewer/Viewer.cpp:
+	  Fixed regression in --run-on-demand feature
+
+2011-06-21 17:26  robert
+
+	* src/osg/glu/libutil/mipmap.cpp: Removed assert() that always
+	  evaluated to true.
+
+2011-06-21 13:01  robert
+
+	* CMakeModules/Find3rdPartyDependencies.cmake: From Torben
+	  Dannhauer, "originally I posted the addendum of 'freetype244MT',
+	  but that was wrong.
+	  I updated it to the correct addendum of 'freetype244' yesterday,
+	  but supposedly that was not forwarded to you by the
+	  forum-to-mail-gateway.
+	  
+	  Find attached the corrected CMake module. "
+
+2011-06-21 10:15  robert
+
+	* ChangeLog: Updated ChangeLog
+
 2011-06-21 09:54  robert
 
 	* src/osgPlugins/fbx/WriterCompareTriangle.h,

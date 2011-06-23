@@ -903,7 +903,7 @@ bool GraphicsWindowX11::createWindow()
             doFullSceenWorkAround = true;
         }
     }
-        
+    
     _window = XCreateWindow( _display, _parent,
                              x,
                              y,
@@ -1201,8 +1201,6 @@ void GraphicsWindowX11::checkEvents()
     int windowWidth = _traits->width;
     int windowHeight = _traits->height;
 
-    bool destroyWindowRequested = false;
-
     Time firstEventTime = 0;
 
     // OSG_NOTICE<<"Check events"<<std::endl;
@@ -1220,7 +1218,6 @@ void GraphicsWindowX11::checkEvents()
                 {
                     OSG_NOTICE<<"DeleteWindow event received"<<std::endl;
                     // FIXME only do if _ownsWindow ?
-                    destroyWindowRequested = true;
                     getEventQueue()->closeWindow(eventTime);
                 }
                 break;
@@ -1551,13 +1548,6 @@ void GraphicsWindowX11::checkEvents()
             requestRedraw();
         }
     }
-
-#if 0
-    if (destroyWindowRequested)
-    {
-        close();
-    }
-#endif
 }
 
 void GraphicsWindowX11::grabFocus()

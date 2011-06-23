@@ -172,7 +172,7 @@ void Dragger::addConstraint(Constraint* constraint)
         itr != _constraints.end();
         ++itr)
     {
-        if (*itr = constraint) return;
+        if (*itr == constraint) return;
     }
 
     _constraints.push_back(constraint);
@@ -184,9 +184,9 @@ void Dragger::removeConstraint(Constraint* constraint)
         itr != _constraints.end();
         )
     {
-        if (*itr = constraint)
+        if (*itr == constraint)
         {
-            itr = _constraints.erase(itr);
+            _constraints.erase(itr);
             return;
         } else
         {

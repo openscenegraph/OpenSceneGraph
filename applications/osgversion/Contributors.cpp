@@ -246,7 +246,8 @@ const char* invalidNames[] =
     "Billboard",
     "UpdateSkeleton",
     "Vec3",
-    "Plugin"
+    "Plugin",
+    "Get"
 };
 
 
@@ -450,6 +451,8 @@ struct NameCorrection
 
 NameCorrection nameCorrections[] =
 {
+    {"Dimi","Christop",
+     "Dimi", "Christopoulos"},
     {"Jorge","Ciges",
      "Jorge", "Izquierdo"},
     {"Rafa","Gata",

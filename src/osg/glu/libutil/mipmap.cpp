@@ -973,7 +973,7 @@ static void halve1Dimage_uint(GLint components, GLuint width, GLuint height,
                uint[0]= *(const GLuint*)src;
                uint[1]= *(const GLuint*)(src+group_size);
             }
-            *dest= ((double)uint[0]+(double)uint[1])/2.0;
+            *dest= GLuint(((double)uint[0]+(double)uint[1])/2.0);
 
             src+= element_size;
             dest++;
@@ -1005,7 +1005,7 @@ static void halve1Dimage_uint(GLint components, GLuint width, GLuint height,
                uint[0]= *(const GLuint*)src;
                uint[1]= *(const GLuint*)(src+ysize);
             }
-            *dest= ((double)uint[0]+(double)uint[1])/2.0;
+            *dest= GLuint(((double)uint[0]+(double)uint[1])/2.0);
 
             src+= element_size;
             dest++;
@@ -1051,10 +1051,10 @@ static void halveImage_int(GLint components, GLuint width, GLuint height,
     for (i = 0; i < newheight; i++) {
         for (j = 0; j < newwidth; j++) {
             for (k = 0; k < components; k++) {
-                s[0] = ((float)*(const GLint*)t +
+                s[0] = GLint(((float)*(const GLint*)t +
                         (float)*(const GLint*)(t+group_size) +
                         (float)*(const GLint*)(t+ysize) +
-                        (float)*(const GLint*)(t+ysize+group_size))/4 + 0.5;
+                        (float)*(const GLint*)(t+ysize+group_size))/4 + 0.5);
                 s++; t += element_size;
             }
             t += group_size;
@@ -1119,7 +1119,7 @@ static void halve1Dimage_int(GLint components, GLuint width, GLuint height,
                uint[0]= *(const GLuint*)src;
                uint[1]= *(const GLuint*)(src+group_size);
             }
-            *dest= ((float)uint[0]+(float)uint[1])/2.0;
+            *dest= GLint(((float)uint[0]+(float)uint[1])/2.0);
 
             src+= element_size;
             dest++;
@@ -1151,7 +1151,7 @@ static void halve1Dimage_int(GLint components, GLuint width, GLuint height,
                uint[0]= *(const GLuint*)src;
                uint[1]= *(const GLuint*)(src+ysize);
             }
-            *dest= ((float)uint[0]+(float)uint[1])/2.0;
+            *dest= GLint(((float)uint[0]+(float)uint[1])/2.0);
 
             src+= element_size;
             dest++;
@@ -1363,7 +1363,7 @@ static void scale_internal(GLint components, GLint widthin, GLint heightin,
             area = 0.0;
 
             y = lowy;
-            yint = floor(y);
+            yint = int(floor(y));
             while (y < highy) {
                 yindex = (yint + heightin) % heightin;
                 if (highy < yint+1) {
@@ -1373,7 +1373,7 @@ static void scale_internal(GLint components, GLint widthin, GLint heightin,
                 }
 
                 x = lowx;
-                xint = floor(x);
+                xint = int(floor(x));
 
                 while (x < highx) {
                     xindex = (xint + widthin) % widthin;
@@ -1402,7 +1402,7 @@ static void scale_internal(GLint components, GLint widthin, GLint heightin,
                 /* totals[] should be rounded in the case of enlarging an RGB
                  * ramp when the type is 332 or 4444
                  */
-                dataout[temp + k] = (totals[k]+0.5)/area;
+                dataout[temp + k] = GLushort((totals[k]+0.5)/area);
             }
         }
     }
@@ -1442,9 +1442,9 @@ static void scale_internal_ubyte(GLint components, GLint widthin,
     }
     convy = (float) heightin/heightout;
     convx = (float) widthin/widthout;
-    convy_int = floor(convy);
+    convy_int = int(floor(convy));
     convy_float = convy - convy_int;
-    convx_int = floor(convx);
+    convx_int = int(floor(convx));
     convx_float = convx - convx_int;
 
     area = convx * convy;
@@ -1602,7 +1602,7 @@ static void scale_internal_ubyte(GLint components, GLint widthin,
 
             outindex = (j + (i * widthout)) * components;
             for (k = 0; k < components; k++) {
-                dataout[outindex + k] = totals[k]/area;
+                dataout[outindex + k] = GLubyte(totals[k]/area);
                 /*printf("totals[%d] = %f\n", k, totals[k]);*/
             }
             lowx_int = highx_int;
@@ -1659,9 +1659,9 @@ static void scale_internal_byte(GLint components, GLint widthin,
     }
     convy = (float) heightin/heightout;
     convx = (float) widthin/widthout;
-    convy_int = floor(convy);
+    convy_int = int(floor(convy));
     convy_float = convy - convy_int;
-    convx_int = floor(convx);
+    convx_int = int(floor(convx));
     convx_float = convx - convx_int;
 
     area = convx * convy;
@@ -1819,7 +1819,7 @@ static void scale_internal_byte(GLint components, GLint widthin,
 
             outindex = (j + (i * widthout)) * components;
             for (k = 0; k < components; k++) {
-                dataout[outindex + k] = totals[k]/area;
+                dataout[outindex + k] = GLbyte(totals[k]/area);
                 /*printf("totals[%d] = %f\n", k, totals[k]);*/
             }
             lowx_int = highx_int;
@@ -1877,9 +1877,9 @@ static void scale_internal_ushort(GLint components, GLint widthin,
     }
     convy = (float) heightin/heightout;
     convx = (float) widthin/widthout;
-    convy_int = floor(convy);
+    convy_int = int(floor(convy));
     convy_float = convy - convy_int;
-    convx_int = floor(convx);
+    convx_int = int(floor(convx));
     convx_float = convx - convx_int;
 
     area = convx * convy;
@@ -2099,7 +2099,7 @@ static void scale_internal_ushort(GLint components, GLint widthin,
 
             outindex = (j + (i * widthout)) * components;
             for (k = 0; k < components; k++) {
-                dataout[outindex + k] = totals[k]/area;
+                dataout[outindex + k] = GLushort(totals[k]/area);
                 /*printf("totals[%d] = %f\n", k, totals[k]);*/
             }
             lowx_int = highx_int;
@@ -2159,9 +2159,9 @@ static void scale_internal_short(GLint components, GLint widthin,
     }
     convy = (float) heightin/heightout;
     convx = (float) widthin/widthout;
-    convy_int = floor(convy);
+    convy_int = int(floor(convy));
     convy_float = convy - convy_int;
-    convx_int = floor(convx);
+    convx_int = int(floor(convx));
     convx_float = convx - convx_int;
 
     area = convx * convy;
@@ -2393,7 +2393,7 @@ static void scale_internal_short(GLint components, GLint widthin,
 
             outindex = (j + (i * widthout)) * components;
             for (k = 0; k < components; k++) {
-                dataout[outindex + k] = totals[k]/area;
+                dataout[outindex + k] = GLshort(totals[k]/area);
                 /*printf("totals[%d] = %f\n", k, totals[k]);*/
             }
             lowx_int = highx_int;
@@ -2451,9 +2451,9 @@ static void scale_internal_uint(GLint components, GLint widthin,
     }
     convy = (float) heightin/heightout;
     convx = (float) widthin/widthout;
-    convy_int = floor(convy);
+    convy_int = int(floor(convy));
     convy_float = convy - convy_int;
-    convx_int = floor(convx);
+    convx_int = int(floor(convx));
     convx_float = convx - convx_int;
 
     area = convx * convy;
@@ -2679,7 +2679,7 @@ static void scale_internal_uint(GLint components, GLint widthin,
                 if (value >= (float) UINT_MAX) {        /* need '=' */
                   dataout[outindex + k] = UINT_MAX;
                 }
-                else dataout[outindex + k] = value;
+                else dataout[outindex + k] = GLuint(value);
             }
             lowx_int = highx_int;
             lowx_float = highx_float;
@@ -2740,9 +2740,9 @@ static void scale_internal_int(GLint components, GLint widthin,
     }
     convy = (float) heightin/heightout;
     convx = (float) widthin/widthout;
-    convy_int = floor(convy);
+    convy_int = int(floor(convy));
     convy_float = convy - convy_int;
-    convx_int = floor(convx);
+    convx_int = int(floor(convx));
     convx_float = convx - convx_int;
 
     area = convx * convy;
@@ -2974,7 +2974,7 @@ static void scale_internal_int(GLint components, GLint widthin,
 
             outindex = (j + (i * widthout)) * components;
             for (k = 0; k < components; k++) {
-                dataout[outindex + k] = totals[k]/area;
+                dataout[outindex + k] = GLint(totals[k]/area);
                 /*printf("totals[%d] = %f\n", k, totals[k]);*/
             }
             lowx_int = highx_int;
@@ -3036,9 +3036,9 @@ static void scale_internal_float(GLint components, GLint widthin,
     }
     convy = (float) heightin/heightout;
     convx = (float) widthin/widthout;
-    convy_int = floor(convy);
+    convy_int = int(floor(convy));
     convy_float = convy - convy_int;
-    convx_int = floor(convx);
+    convx_int = int(floor(convx));
     convx_float = convx - convx_int;
 
     area = convx * convy;
@@ -3901,7 +3901,7 @@ static int gluBuild2DMipmapLevelsCore(GLenum target, GLint internalFormat,
         groups_per_line = width;
     }
 
-    element_size = bytes_per_element(type);
+    element_size = GLint(bytes_per_element(type));
     group_size = element_size * cmpts;
     if (element_size == 1) myswap_bytes = 0;
 
@@ -4943,7 +4943,7 @@ assert(height > 0);
     if (type == GL_BITMAP) {
         bytes_per_row = (width + 7) / 8;
     } else {
-        bytes_per_row = bytes_per_element(type) * width;
+        bytes_per_row = GLint(bytes_per_element(type) * width);
     }
     return bytes_per_row * height * components;
 }
@@ -5021,7 +5021,7 @@ static void fill_image(const PixelStorageModes *psm,
             start += rowsize;
         }
     } else {
-        element_size = bytes_per_element(type);
+        element_size = GLint(bytes_per_element(type));
         group_size = element_size * components;
         if (element_size == 1) myswap_bytes = 0;
 
@@ -5165,9 +5165,9 @@ static void fill_image(const PixelStorageModes *psm,
                     }
                     if (type == GL_FLOAT) {
                         if (index_format) {
-                            *iter2++ = widget.f;
+                            *iter2++ = GLushort(widget.f);
                         } else {
-                            *iter2++ = 65535 * widget.f;
+                            *iter2++ = GLushort(65535 * widget.f);
                         }
                     } else if (type == GL_UNSIGNED_INT) {
                         if (index_format) {
@@ -5295,7 +5295,7 @@ static void empty_image(const PixelStorageModes *psm,
     } else {
         float shoveComponents[4];
 
-        element_size = bytes_per_element(type);
+        element_size = GLint(bytes_per_element(type));
         group_size = element_size * components;
         if (element_size == 1) myswap_bytes = 0;
 
@@ -6131,9 +6131,9 @@ static void scaleInternalPackedPixel(int components,
     }
     convy = (float) heightIn/heightOut;
     convx = (float) widthIn/widthOut;
-    convy_int = floor(convy);
+    convy_int = int(floor(convy));
     convy_float = convy - convy_int;
-    convx_int = floor(convx);
+    convx_int = int(floor(convx));
     convx_float = convx - convx_int;
 
     area = convx * convy;
@@ -6690,7 +6690,7 @@ static GLint imageSize3D(GLint width, GLint height, GLint depth,
                          GLenum format, GLenum type)
 {
     int components= elements_per_group(format,type);
-    int bytes_per_row=        bytes_per_element(type) * width;
+    int bytes_per_row= int(bytes_per_element(type) * width);
 
 assert(width > 0 && height > 0 && depth > 0);
 assert(type != GL_BITMAP);
@@ -6725,7 +6725,7 @@ static void fillImage3D(const PixelStorageModes *psm,
    else {
       groupsPerLine= width;
    }
-   elementSize= bytes_per_element(type);
+   elementSize= int(bytes_per_element(type));
    groupSize= elementSize * components;
    if (elementSize == 1) myswapBytes= 0;
 
@@ -6887,9 +6887,9 @@ static void fillImage3D(const PixelStorageModes *psm,
               }
               if (type == GL_FLOAT) {
                   if (indexFormat) {
-                      *iter2++ = widget.f;
+                      *iter2++ = GLushort(widget.f);
                   } else {
-                      *iter2++ = 65535 * widget.f;
+                      *iter2++ = GLushort(65535 * widget.f);
                   }
               } else if (type == GL_UNSIGNED_INT) {
                   if (indexFormat) {
@@ -6994,7 +6994,7 @@ static void scaleInternal3D(GLint components,
                volume = 0.0;
 
                z = lowz;
-               zint = floor(z);
+               zint = int(floor(z));
                while (z < highz) {
                   zindex = (zint + depthIn) % depthIn;
                   if (highz < zint+1) {
@@ -7004,7 +7004,7 @@ static void scaleInternal3D(GLint components,
                   }
 
                   y = lowy;
-                  yint = floor(y);
+                  yint = int(floor(y));
                   while (y < highy) {
                       yindex = (yint + heightIn) % heightIn;
                       if (highy < yint+1) {
@@ -7014,7 +7014,7 @@ static void scaleInternal3D(GLint components,
                       }
 
                       x = lowx;
-                      xint = floor(x);
+                      xint = int(floor(x));
 
                       while (x < highx) {
                           xindex = (xint + widthIn) % widthIn;
@@ -7056,7 +7056,7 @@ static void scaleInternal3D(GLint components,
                     */
                    assert(0 <= (temp+k) &&
                           (temp+k) < (widthOut*heightOut*depthOut*components));
-                   dataOut[temp + k] = (totals[k]+0.5)/volume;
+                   dataOut[temp + k] = GLushort((totals[k]+0.5)/volume);
                }
            } /* for j */
        } /* for i */
@@ -7091,7 +7091,7 @@ static void emptyImage3D(const PixelStorageModes *psm,
       groupsPerLine = width;
    }
 
-   elementSize= bytes_per_element(type);
+   elementSize= int(bytes_per_element(type));
    groupSize= elementSize * components;
    if (elementSize == 1) myswapBytes= 0;
 
@@ -7795,7 +7795,7 @@ static int gluBuild3DMipmapLevelsCore(GLTexImage3DProc gluTexImage3D,
        groupsPerLine = width;
    }
 
-   elementSize = bytes_per_element(type);
+   elementSize = GLint(bytes_per_element(type));
    groupSize = elementSize * cmpts;
    if (elementSize == 1) myswapBytes = 0;
 

@@ -268,7 +268,12 @@ bool FileExists(const TCHAR *fn)
 
 // unz_global_info structure contain global data about the ZIPfile
 typedef struct unz_global_info_s
-{ unsigned long number_entry;         // total number of entries in the central dir on this disk
+{
+  unz_global_info_s():
+    number_entry(0),
+    size_comment(0) {}
+
+  unsigned long number_entry;         // total number of entries in the central dir on this disk
   unsigned long size_comment;         // size of the global comment of the zipfile
 } unz_global_info;
 
@@ -2745,6 +2750,9 @@ const char unz_copyright[] = " unzip 0.15 Copyright 1998 Gilles Vollant ";
 // unz_file_info_interntal contain internal info about a file in zipfile
 typedef struct unz_file_info_internal_s
 {
+    unz_file_info_internal_s():
+        offset_curfile(0) {}
+        
     uLong offset_curfile;// relative offset of local header 4 bytes
 } unz_file_info_internal;
 
@@ -2902,21 +2910,34 @@ typedef struct
 
 
 // unz_s contain internal information about the zipfile
-typedef struct
+typedef struct unz_ss
 {
-	LUFILE* file;               // io structore of the zipfile
-	unz_global_info gi;         // public global information
-	uLong byte_before_the_zipfile;// byte before the zipfile, (>0 for sfx)
-	uLong num_file;             // number of the current file in the zipfile
-	uLong pos_in_central_dir;   // pos of the current file in the central dir
-	uLong current_file_ok;      // flag about the usability of the current file
-	uLong central_pos;          // position of the beginning of the central dir
+    unz_ss():
+        file(0),
+        byte_before_the_zipfile(0),
+        num_file(0),
+        pos_in_central_dir(0),
+        current_file_ok(0),
+        central_pos(0),
+        size_central_dir(0),
+        offset_central_dir(0),
+        pfile_in_zip_read(0)
+    {
+    }
 
-	uLong size_central_dir;     // size of the central directory
-	uLong offset_central_dir;   // offset of start of central directory with respect to the starting disk number
+    LUFILE* file;               // io structore of the zipfile
+    unz_global_info gi;         // public global information
+    uLong byte_before_the_zipfile;// byte before the zipfile, (>0 for sfx)
+    uLong num_file;             // number of the current file in the zipfile
+    uLong pos_in_central_dir;   // pos of the current file in the central dir
+    uLong current_file_ok;      // flag about the usability of the current file
+    uLong central_pos;          // position of the beginning of the central dir
 
-	unz_file_info cur_file_info; // public info about the current file in zip
-	unz_file_info_internal cur_file_info_internal; // private info about it
+    uLong size_central_dir;     // size of the central directory
+    uLong offset_central_dir;   // offset of start of central directory with respect to the starting disk number
+
+    unz_file_info cur_file_info; // public info about the current file in zip
+    unz_file_info_internal cur_file_info_internal; // private info about it
     file_in_zip_read_info_s* pfile_in_zip_read; // structure about the current file if we are decompressing it
 } unz_s, *unzFile;
 
@@ -3099,7 +3120,7 @@ unzFile unzOpenInternal(LUFILE *fin)
   if (unz_copyright[0]!=' ') {lufclose(fin); return NULL;}
 
   int err=UNZ_OK;
-  unz_s us={0};
+  unz_s us;
   uLong central_pos=0,uL=0;
   central_pos = unzlocal_SearchCentralDir(fin);
   if (central_pos==0xFFFFFFFF) err=UNZ_ERRNO;

@@ -43,8 +43,11 @@ extern OSGMANIPULATOR_EXPORT void computeNodePathToRoot(osg::Node& node, osg::No
 class DraggerCallback : virtual public osg::Object
 {
     public:
-        DraggerCallback() {}
-        DraggerCallback(const DraggerCallback&, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY) {}
+        DraggerCallback():
+            osg::Object(true) {}
+
+        DraggerCallback(const DraggerCallback&, const osg::CopyOp& copyop = osg::CopyOp::SHALLOW_COPY):
+            osg::Object(true) {}
 
         META_Object(osgManipulator, DraggerCallback);
 

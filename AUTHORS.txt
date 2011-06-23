@@ -11,7 +11,7 @@ Paul Martz
 Marco Jez
 Mathias Fröhlich
 Mike Weiblen
-Jean-Sebastien Guay
+Jean-Sébastien Guay
 Farshid Lashkari
 Eric Wing
 Ulrich Hertlein

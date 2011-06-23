@@ -1,3 +1,88 @@
+2011-06-23 11:10  robert
+
+	* include/osgGA/GUIEventHandler, include/osgManipulator/Dragger,
+	  include/osgSim/ShapeAttribute, src/osgPlugins/zip/unzip.cpp,
+	  src/osgViewer/CompositeViewer.cpp, src/osgViewer/View.cpp,
+	  src/osgViewer/Viewer.cpp, src/osgViewer/ViewerBase.cpp: Merged
+	  from svn/trunk changeset r12611.
+	  
+	  Fixed warnings.
+	  
+	  OpenSceneGraph/src/osgGA/NodeTrackerManipulator.cpp:32:1:
+	  warning: base class ?class osg::Object? should be explicitly
+	  initialized in the copy constructor
+	  OpenSceneGraph/src/osgGA/TerrainManipulator.cpp:31:1: warning:
+	  base class ?class osg::Object? should be explicitly initialized
+	  in the copy constructor
+	  OpenSceneGraph/include/osgSim/ShapeAttribute:99:9: warning: base
+	  class ?class std::vector<osgSim::ShapeAttribute>? should be
+	  explicitly initialized in the copy constructor
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::gi?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::byte_before_the_zipfile?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::num_file?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::pos_in_central_dir?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::current_file_ok?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::central_pos?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::size_central_dir?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::offset_central_dir?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::cur_file_info?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::cur_file_info_internal?
+	  OpenSceneGraph/src/osgPlugins/zip/unzip.cpp:3102:14: warning:
+	  missing initializer for member ?unz_s::pfile_in_zip_read?
+	  OpenSceneGraph/src/osgViewer/CompositeViewer.cpp:30:1: warning:
+	  base class ?class osg::Object? should be explicitly initialized
+	  in the copy constructor
+	  OpenSceneGraph/src/osgViewer/View.cpp:159:1: warning: base class
+	  ?class osg::Object? should be explicitly initialized in the copy
+	  constructor
+	  OpenSceneGraph/src/osgViewer/Viewer.cpp:196:1: warning: base
+	  class ?class osg::Object? should be explicitly initialized in the
+	  copy constructor
+	  OpenSceneGraph/src/osgViewer/Viewer.cpp:196:1: warning: base
+	  class ?class osgViewer::ViewerBase? should be explicitly
+	  initialized in the copy constructor
+	  OpenSceneGraph/include/osgManipulator/Dragger:47:9: warning: base
+	  class ?class osg::Object? should be explicitly initialized in the
+	  copy constructor
+
+2011-06-23 09:39  robert
+
+	* include/osg/Array, include/osgAnimation/Interpolator,
+	  src/osgPlugins/lwo/lwo2parser.h: From Ryan Pavlik, merge from
+	  svn/trunk changeset 12608, "I have successfully compiled
+	  OpenSceneGraph trunk using the Clang compiler (using a recent
+	  trunk build of llvm and clang, haven't tested an older release).
+	  The attached files contain the change shown in the diff below,
+	  which was required to finish the build with Clang. It fixes an
+	  issue with two-phase name lookup - there's more information here
+	  http://blog.llvm.org/2009/12/dreaded-two-phase-name-lookup.html"
+
+2011-06-23 09:27  robert
+
+	* src/osgPlugins/lwo/lwo2parser.h: Converted tabs to four spaces
+
+2011-06-23 09:24  robert
+
+	* src/osg/glu/libutil/mipmap.cpp: From Dimi Christopoulos, merged
+	  from svn/trunk changeset 12606."I attach a fixed version of
+	  mipmap.cpp which produced a lot of warning on my gcc
+	  compiler."
+
+2011-06-22 16:34  robert
+
+	* AUTHORS.txt, ChangeLog: Update ChangeLog and AUTHORs file for
+	  3.0.0-rc3
+
 2011-06-22 16:18  robert
 
 	* CMakeModules/FindCOLLADA.cmake: From Magnus Kessler, "I have

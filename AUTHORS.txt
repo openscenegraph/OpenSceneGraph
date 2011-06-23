@@ -217,6 +217,7 @@ Stephane Simon
 Stephan Eilemann
 Stanislav Blinov
 Sebastian Messerschmidt
+Ryan Pavlik
 Raymond de Vries
 Ralf Kern
 Piotr Gwiazdowski
@@ -261,6 +262,7 @@ Ferdi Smit
 Eric Buehler
 Eduardo Poyart
 Edgar Ellis
+Dimi Christopoulos
 Dietmar Funck
 David Ergo
 Daniel Trstenjak
@@ -303,7 +305,6 @@ Sid Byce
 Shuxing Xiao
 Shane Arnott
 Sebastien Kuntz
-Ryan Pavlik
 Ruth Lang
 Ruben Smelik
 Ross Anderson
@@ -424,7 +425,6 @@ Duvan Cope
 Duncan Cavens
 Drew Whitehouse
 Douglas A. Pouk
-Dimi Christop
 Dean Iverson
 David Jung
 Danny Valente

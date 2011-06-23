@@ -84,7 +84,7 @@ namespace osgAnimation
                 return;
             }
 
-            int i = getKeyIndexFromTime(keyframes,time);
+            int i = this->getKeyIndexFromTime(keyframes,time);
             result = keyframes[i].getValue();
         }
     };
@@ -110,7 +110,7 @@ namespace osgAnimation
                 return;
             }
         
-            int i = getKeyIndexFromTime(keyframes,time);
+            int i = this->getKeyIndexFromTime(keyframes,time);
             float blend = (time - keyframes[i].getTime()) / ( keyframes[i+1].getTime() -  keyframes[i].getTime());
             const TYPE& v1 =  keyframes[i].getValue();
             const TYPE& v2 =  keyframes[i+1].getValue();
@@ -137,7 +137,7 @@ namespace osgAnimation
                 return;
             }
 
-            int i = getKeyIndexFromTime(keyframes,time);
+            int i = this->getKeyIndexFromTime(keyframes,time);
             float blend = (time -  keyframes[i].getTime()) / ( keyframes[i+1].getTime() -  keyframes[i].getTime());
             const TYPE& q1 =  keyframes[i].getValue();
             const TYPE& q2 =  keyframes[i+1].getValue();
@@ -165,7 +165,7 @@ namespace osgAnimation
                 return;
             }
 
-            int i = getKeyIndexFromTime(keyframes,time);
+            int i = this->getKeyIndexFromTime(keyframes,time);
             float blend = (time - keyframes[i].getTime()) / ( keyframes[i+1].getTime() -  keyframes[i].getTime());
             TYPE v1,v2;
             keyframes[i].getValue().uncompress(keyframes.mScale, keyframes.mMin, v1);
@@ -196,7 +196,7 @@ namespace osgAnimation
                 return;
             }
 
-            int i = getKeyIndexFromTime(keyframes,time);
+            int i = this->getKeyIndexFromTime(keyframes,time);
       
             float t = (time - keyframes[i].getTime()) / ( keyframes[i+1].getTime() -  keyframes[i].getTime());
             float one_minus_t = 1.0-t;

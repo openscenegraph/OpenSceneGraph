@@ -60,12 +60,66 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
             return archive.get();
         }
 
+        osgDB::ReaderWriter::ReadResult readNodeFromArchive(osgDB::Archive& archive, const osgDB::ReaderWriter::Options* options) const
+        {
+            osgDB::ReaderWriter::ReadResult result(osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND);
+
+            if (!archive.getMasterFileName().empty())
+            {
+                result = archive.readNode(archive.getMasterFileName(), options);
+            }
+            else
+            {
+                osgDB::Archive::FileNameList fileNameList;
+                if (archive.getFileNames(fileNameList))
+                {
+                    typedef std::list< osg::ref_ptr<osg::Node> > Nodes;
+                    Nodes nodes;
+                    for(osgDB::Archive::FileNameList::iterator itr = fileNameList.begin();
+                        itr != fileNameList.end();
+                        ++itr)
+                    {
+                        result = archive.readNode(*itr, options);
+                        if (result.validNode()) nodes.push_back(result.getNode());
+                    }
+
+                    if (!nodes.empty())
+                    {
+                        if (nodes.size()==1)
+                        {
+                            result = osgDB::ReaderWriter::ReadResult(nodes.front().get());
+                        }
+                        else
+                        {
+                            osg::ref_ptr<osg::Group> group = new osg::Group;
+                            for(Nodes::iterator itr = nodes.begin();
+                                itr != nodes.end();
+                                ++itr)
+                            {
+                                group->addChild(itr->get());
+                            }
+                            result = osgDB::ReaderWriter::ReadResult(group.get());
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
 
         virtual osgDB::ReaderWriter::ReadResult readNode(const std::string& file, const osgDB::ReaderWriter::Options* options) const
         {
             osgDB::ReaderWriter::ReadResult result = openArchive(file, osgDB::Archive::READ);
 
             if (!result.validArchive()) return result;
+
+            osg::ref_ptr<osgDB::Archive> archive = result.getArchive();
+
+            if (!options || (options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_ARCHIVES))
+            {
+                // register the archive so that it is cached for future use.
+                osgDB::Registry::instance()->addToArchiveCache(file, archive.get());
+            }
 
             // copy the incoming options if possible so that plugin options can be applied to files
             // inside the archive
@@ -75,25 +129,16 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
 
             local_options->setDatabasePath(file);
 
-            //todo- what should we read here?
-            osgDB::ReaderWriter::ReadResult result_2 = result.getArchive()->readNode(result.getArchive()->getMasterFileName(),local_options.get());
-
-            if (!options || (options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_ARCHIVES))
-            {
-                // register the archive so that it is cached for future use.
-                osgDB::Registry::instance()->addToArchiveCache(file, result.getArchive());
-            }
-
-            return result_2;
-
+            return readNodeFromArchive(*archive, local_options.get());
         }
 
         virtual ReadResult readNode(std::istream& fin,const osgDB::ReaderWriter::Options* options) const
         {
-
             osgDB::ReaderWriter::ReadResult result = openArchive(fin, options);
 
             if (!result.validArchive()) return result;
+
+            osg::ref_ptr<osgDB::Archive> archive = result.getArchive();
 
             // copy the incoming options if possible so that plugin options can be applied to files
             // inside the archive
@@ -101,50 +146,74 @@ class ReaderWriterZIP : public osgDB::ReaderWriter
                 options->cloneOptions() :
                 new osgDB::ReaderWriter::Options;
 
-            //todo- what should the database path be?
-            //local_options->setDatabasePath(file);
+            return readNodeFromArchive(*archive, local_options.get());
+        }
 
+        osgDB::ReaderWriter::ReadResult readImageFromArchive(osgDB::Archive& archive, const osgDB::ReaderWriter::Options* options) const
+        {
+            osgDB::ReaderWriter::ReadResult result(osgDB::ReaderWriter::ReadResult::FILE_NOT_FOUND);
 
-            //todo- what should we read here?
-            osgDB::ReaderWriter::ReadResult result_2 = result.getArchive()->readNode(result.getArchive()->getMasterFileName(),local_options.get());
-
-            //todo- what to do to cache the archive here?
-            //if (!options || (options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_ARCHIVES))
-            //{
-            //   // register the archive so that it is cached for future use.
-            //   osgDB::Registry::instance()->addToArchiveCache(file, result.getArchive());
-            //}
-
-            return result_2;
+            if (!archive.getMasterFileName().empty())
+            {
+                result = archive.readImage(archive.getMasterFileName(), options);
+            }
+            else
+            {
+                osgDB::Archive::FileNameList fileNameList;
+                if (archive.getFileNames(fileNameList))
+                {
+                    for(osgDB::Archive::FileNameList::iterator itr = fileNameList.begin();
+                        itr != fileNameList.end() && !result.validImage();
+                        ++itr)
+                    {
+                        result = archive.readImage(*itr, options);
+                    }
+                }
+            }
+            return result;
         }
 
         virtual ReadResult readImage(const std::string& file,const Options* options) const
         {
-           ReadResult result = openArchive(file,osgDB::Archive::READ);
+            osgDB::ReaderWriter::ReadResult result = openArchive(file, osgDB::Archive::READ);
 
-           if (!result.validArchive()) return result;
+            if (!result.validArchive()) return result;
 
+            osg::ref_ptr<osgDB::Archive> archive = result.getArchive();
 
-           // copy the incoming options if possible so that plugin options can be applied to files
-           // inside the archive
-           osg::ref_ptr<osgDB::ReaderWriter::Options> local_options = options?
+            if (!options || (options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_ARCHIVES))
+            {
+                // register the archive so that it is cached for future use.
+                osgDB::Registry::instance()->addToArchiveCache(file, archive.get());
+            }
+
+            // copy the incoming options if possible so that plugin options can be applied to files
+            // inside the archive
+            osg::ref_ptr<osgDB::ReaderWriter::Options> local_options = options?
                 options->cloneOptions() :
                 new osgDB::ReaderWriter::Options;
 
-           local_options->setDatabasePath(file);
+            local_options->setDatabasePath(file);
 
-           ReadResult result_2 = result.getArchive()->readImage(result.getArchive()->getMasterFileName(),local_options.get());
-
-
-           if (!options || (options->getObjectCacheHint() & osgDB::ReaderWriter::Options::CACHE_ARCHIVES))
-           {
-              // register the archive so that it is cached for future use.
-              osgDB::Registry::instance()->addToArchiveCache(file, result.getArchive());
-           }
-
-           return result_2;
+            return readImageFromArchive(*archive, local_options.get());
         }
 
+        virtual ReadResult readImage(std::istream& fin,const osgDB::ReaderWriter::Options* options) const
+        {
+            osgDB::ReaderWriter::ReadResult result = openArchive(fin, options);
+
+            if (!result.validArchive()) return result;
+
+            osg::ref_ptr<osgDB::Archive> archive = result.getArchive();
+
+            // copy the incoming options if possible so that plugin options can be applied to files
+            // inside the archive
+            osg::ref_ptr<osgDB::ReaderWriter::Options> local_options = options?
+                options->cloneOptions() :
+                new osgDB::ReaderWriter::Options;
+
+            return readImageFromArchive(*archive, local_options.get());
+        }
 };
 
 // now register with sgRegistry to instantiate the above

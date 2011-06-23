@@ -96,7 +96,7 @@ class OSGSIM_EXPORT ShapeAttributeList : public osg::Object, public osg::MixinVe
           * shallow vs deep copying of dynamic data.*/
         ShapeAttributeList(const ShapeAttributeList& sal,const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY):
             osg::Object(sal, copyop),
-            MixinVector<ShapeAttribute>(sal)
+            osg::MixinVector<ShapeAttribute>(sal)
         {
         }
     

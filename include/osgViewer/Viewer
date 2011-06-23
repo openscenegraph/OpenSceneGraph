@@ -39,7 +39,7 @@ class OSGVIEWER_EXPORT Viewer : public ViewerBase, public osgViewer::View
         META_Object(osgViewer,Viewer);
 
         /** Take all the settings, Camera and Slaves from the passed in view(er), leaving it empty. */
-        virtual void take(View& rhs);
+        virtual void take(osg::View& rhs);
 
 
         /** Set the Stats object used for collect various frame related timing and scene graph stats.*/

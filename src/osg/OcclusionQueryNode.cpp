@@ -373,14 +373,17 @@ QueryGeometry::getNumPixels( const osg::Camera* cam )
 
 
 void
-QueryGeometry::releaseGLObjects( osg::State* state )
+QueryGeometry::releaseGLObjects( osg::State* state ) const
 {
     if (!state)
+    {
         // delete all query IDs for all contexts.
-        reset();
-
+        const_cast<QueryGeometry*>(this)->reset();
+    }
     else
     {
+        OpenThreads::ScopedLock<OpenThreads::Mutex> lock( _mapMutex );
+
         // Delete all query IDs for the specified context.
         unsigned int contextID = state->getContextID();
         ResultMap::iterator it = _results.begin();

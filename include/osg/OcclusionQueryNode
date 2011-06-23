@@ -74,8 +74,8 @@ public:
 
     unsigned int getNumPixels( const osg::Camera* cam );
 
-
-    void releaseGLObjects( osg::State* state = 0 );
+    virtual void releaseGLObjects( osg::State* state = 0 ) const;
+    
     static void deleteQueryObject( unsigned int contextID, GLuint handle );
     static void flushDeletedQueryObjects( unsigned int contextID, double currentTime, double& availableTime );
     static void discardDeletedQueryObjects( unsigned int contextID );

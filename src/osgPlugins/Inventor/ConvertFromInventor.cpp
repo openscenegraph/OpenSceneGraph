@@ -1261,10 +1261,9 @@ SbBool SoVRMLImageTextureOsg::readInstance(SoInput *in, unsigned short flags)
         // create options and read the file
         osgDB::ReaderWriter::Options *options = createOptions();
 
-        SbBool retval = TRUE;
-        if (url.getNum() && url[0].getLength()) {
+        if (url.getNum() && url[0].getLength())
+        {
             osg::ref_ptr<osg::Image> image = loadImage(url[0].getString(), options);
-            retval = image->valid();
             if (!image->valid())
             {
                 OSG_WARN << "Could not read texture file: " << url[0].getString() << std::endl;
@@ -1288,8 +1287,6 @@ SbBool SoVRMLImageTextureOsg::readInstance(SoInput *in, unsigned short flags)
                 // We can safely ignore this as we are not going to render the scene graph.
             }
         }
-        else
-            retval = TRUE;
     }
 
     url.enableNotify(oldNotify);

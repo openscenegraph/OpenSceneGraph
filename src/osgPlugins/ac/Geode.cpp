@@ -803,9 +803,6 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
                         //                    assert(NULL != pTexture2D);
                         if (NULL != pTexture2D)
                         {
-                            float fRep_s, fRep_t;
-                            float fOffset_s, fOffset_t;
-                            
                             pTexCoords = (const osg::Vec2*)pGeometry->getTexCoordArray(0)->getDataPointer();
                             
                             // OK now see if I can calcualate the repeats
@@ -828,8 +825,6 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
                                         if (pTexCoords[j][0] < fMin)
                                             fMin = pTexCoords[j][0];
                                     }
-                                    fRep_s = fMax - fMin;
-                                    fOffset_s = fMin;
                                     fMin = std::numeric_limits<float>::max();
                                     fMax = std::numeric_limits<float>::min();
                                     for (j = 0; j < iNumTexCoords; j++)
@@ -839,24 +834,9 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
                                         if (pTexCoords[j][1] < fMin)
                                             fMin = pTexCoords[j][1];
                                     }
-                                    fRep_t = fMax - fMin;
-                                    fOffset_t = fMin;
-                                }
-                                else
-                                {
-                                    fRep_s = 1.0;
-                                    fOffset_s = 0.0;
-                                    fRep_t = 1.0;
-                                    fOffset_t = 0.0;
                                 }
                             }
-                            else
-                            {
-                                fRep_s = 1.0;
-                                fOffset_s = 0.0;
-                                fRep_t = 1.0;
-                                fOffset_t = 0.0;
-                            }
+
                             { // replace back slash with / for ac3d convention GWM Sep 2003
                                 std::string fname=pTexture2D->getImage()->getFileName();
                                 unsigned int pos;
@@ -865,8 +845,6 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
                                 }
                                 fout << "texture \"" << fname << "\"" << std::endl;
                             }
-//                            fout << "texrep " << fRep_s << " " << fRep_t << std::endl;
-//                            fout << "texoff " << fOffset_s << " " << fOffset_s << std::endl;
                             // Temp frig
                             fout << "texrep 1 1" << std::endl;
                             fout << "texoff 0 0" << std::endl;

@@ -69,7 +69,7 @@ namespace lwo2
                     throw parser_error("invalid file format");
                 }
                 while (it < end)
-                    chk->data.push_back(parse_chunk(it, "FORM"));
+                    chk->data.push_back(this->parse_chunk(it, "FORM"));
                 return chk;
             }
         }

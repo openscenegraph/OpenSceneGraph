@@ -156,7 +156,7 @@ class TemplateArray : public Array, public MixinVector<T>
         TemplateArray& operator = (const TemplateArray& array)
         {
             if (this==&array) return *this;
-            assign(array.begin(),array.end());
+            this->assign(array.begin(),array.end());
             return *this;
         } 
 
@@ -242,7 +242,7 @@ class TemplateIndexArray : public IndexArray, public MixinVector<T>
         TemplateIndexArray& operator = (const TemplateIndexArray& array)
         {
             if (this==&array) return *this;
-            assign(array.begin(),array.end());
+            this->assign(array.begin(),array.end());
             return *this;
         } 
 

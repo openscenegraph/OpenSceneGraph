@@ -349,28 +349,28 @@ public:
     }
     
     virtual void readShort( short& s )
-    { if ( prepareStream() ) _sstream >> s; }
+    { std::string str; if (prepareStream()) _sstream >> str; s = static_cast<short>(strtol(str.c_str(), NULL, 0)); }
     
     virtual void readUShort( unsigned short& s )
-    { if ( prepareStream() ) _sstream >> s; }
+    { std::string str; if (prepareStream()) _sstream >> str; s = static_cast<unsigned short>(strtoul(str.c_str(), NULL, 0)); }
     
     virtual void readInt( int& i )
-    { if ( prepareStream() ) _sstream >> i; }
+    { std::string str; if (prepareStream()) _sstream >> str; i = static_cast<int>(strtol(str.c_str(), NULL, 0)); }
     
     virtual void readUInt( unsigned int& i )
-    { if ( prepareStream() ) _sstream >> i; }
+    { std::string str; if (prepareStream()) _sstream >> str; i = static_cast<unsigned int>(strtoul(str.c_str(), NULL, 0)); }
     
     virtual void readLong( long& l )
-    { if ( prepareStream() ) _sstream >> l; }
+    { std::string str; if (prepareStream()) _sstream >> str; l = strtol(str.c_str(), NULL, 0); }
     
     virtual void readULong( unsigned long& l )
-    { if ( prepareStream() ) _sstream >> l; }
+    { std::string str; if (prepareStream()) _sstream >> str; l = strtoul(str.c_str(), NULL, 0); }
     
     virtual void readFloat( float& f )
-    { if ( prepareStream() ) _sstream >> f; }
+    { std::string str; if (prepareStream()) _sstream >> str; f = osg::asciiToFloat(str.c_str()); }
     
     virtual void readDouble( double& d )
-    { if ( prepareStream() ) _sstream >> d; }
+    { std::string str; if (prepareStream()) _sstream >> str; d = osg::asciiToDouble(str.c_str()); }
     
     virtual void readString( std::string& s )
     {

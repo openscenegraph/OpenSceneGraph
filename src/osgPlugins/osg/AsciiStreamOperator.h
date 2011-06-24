@@ -166,28 +166,28 @@ public:
     }
     
     virtual void readShort( short& s )
-    { *_in >> s; }
+    { std::string str; *_in >> str; s = static_cast<short>(strtol(str.c_str(), NULL, 0)); }
     
     virtual void readUShort( unsigned short& s )
-    { *_in >> s; }
+    { std::string str; *_in >> str; s = static_cast<unsigned short>(strtoul(str.c_str(), NULL, 0)); }
     
     virtual void readInt( int& i )
-    { *_in >> i; }
+    { std::string str; *_in >> str; i = static_cast<int>(strtol(str.c_str(), NULL, 0)); }
     
     virtual void readUInt( unsigned int& i )
-    { *_in >> i; }
+    { std::string str; *_in >> str; i = static_cast<unsigned int>(strtoul(str.c_str(), NULL, 0)); }
     
     virtual void readLong( long& l )
-    { *_in >> l; }
+    { std::string str; *_in >> str; l = strtol(str.c_str(), NULL, 0); }
     
     virtual void readULong( unsigned long& l )
-    { *_in >> l; }
+    { std::string str; *_in >> str; l = strtoul(str.c_str(), NULL, 0); }
     
     virtual void readFloat( float& f )
-    { *_in >> f; }
+    { std::string str; *_in >> str; f = osg::asciiToFloat(str.c_str()); }
     
     virtual void readDouble( double& d )
-    { *_in >> d; }
+    { std::string str; *_in >> str; d = osg::asciiToDouble(str.c_str()); }
     
     virtual void readString( std::string& s )
     { *_in >> s; }

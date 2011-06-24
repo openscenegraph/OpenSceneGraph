@@ -72,6 +72,9 @@ class OSGA_Archive : public osgDB::Archive
         /** Read an osg::Node of specified file name from the Archive.*/
         virtual ReadResult readNode(const std::string& fileName,const Options* options=NULL) const;
 
+        /** Read an osg::Shader of specified file name from the Archive.*/
+        virtual ReadResult readShader(const std::string& fileName,const Options* options=NULL) const;
+
         /** Write an osg::Object with specified file name to the Archive.*/
         virtual WriteResult writeObject(const osg::Object& obj,const std::string& fileName,const Options* options=NULL) const;
 
@@ -83,6 +86,9 @@ class OSGA_Archive : public osgDB::Archive
 
         /** Write an osg::Node with specified file name to the Archive.*/
         virtual WriteResult writeNode(const osg::Node& node,const std::string& fileName,const Options* options=NULL) const;
+
+        /** Write an osg::Shader with specified file name to the Archive.*/
+        virtual WriteResult writeShader(const osg::Shader& shader,const std::string& fileName,const Options* options=NULL) const;
         
         #if defined(_MSC_VER)
         typedef __int64 pos_type;
@@ -186,12 +192,14 @@ class OSGA_Archive : public osgDB::Archive
         struct ReadImageFunctor;
         struct ReadHeightFieldFunctor;
         struct ReadNodeFunctor;
+        struct ReadShaderFunctor;
 
 
         struct WriteObjectFunctor;
         struct WriteImageFunctor;
         struct WriteHeightFieldFunctor;
         struct WriteNodeFunctor;
+        struct WriteShaderFunctor;
 
 
         osgDB::ReaderWriter::ReadResult read(const ReadFunctor& readFunctor);

@@ -572,6 +572,8 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         // forward declare helper class
         class AvailableReaderWriterIterator;
         friend class AvailableReaderWriterIterator;
+        class AvailableArchiveIterator;
+        friend class AvailableArchiveIterator;
 
 
         osg::ref_ptr<FindFileCallback>      _findFileCallback;
@@ -583,6 +585,9 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         ReaderWriterList            _rwList;
         ImageProcessorList          _ipList;
         DynamicLibraryList          _dlList;
+
+        OpenThreads::ReentrantMutex _archiveCacheMutex;
+        ArchiveCache                _archiveCache;
 
         bool _openingLibrary;
     
@@ -605,8 +610,6 @@ class OSGDB_EXPORT Registry : public osg::Referenced
         ObjectCache                             _objectCache;
         OpenThreads::Mutex                      _objectCacheMutex;
         
-        ArchiveCache                            _archiveCache;
-        OpenThreads::Mutex                      _archiveCacheMutex;
 
         ArchiveExtensionList                    _archiveExtList;
 

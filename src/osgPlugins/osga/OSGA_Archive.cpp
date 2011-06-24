@@ -661,7 +661,13 @@ struct OSGA_Archive::ReadHeightFieldFunctor : public OSGA_Archive::ReadFunctor
 struct OSGA_Archive::ReadNodeFunctor : public OSGA_Archive::ReadFunctor
 {
     ReadNodeFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
-    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input) const { return rw.readNode(input, _options); }    
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input) const { return rw.readNode(input, _options); }
+};
+
+struct OSGA_Archive::ReadShaderFunctor : public OSGA_Archive::ReadFunctor
+{
+    ReadShaderFunctor(const std::string& filename, const ReaderWriter::Options* options):ReadFunctor(filename,options) {}
+    virtual ReaderWriter::ReadResult doRead(ReaderWriter& rw, std::istream& input) const { return rw.readShader(input, _options); }
 };
 
 ReaderWriter::ReadResult OSGA_Archive::read(const ReadFunctor& readFunctor)
@@ -724,6 +730,11 @@ ReaderWriter::ReadResult OSGA_Archive::readNode(const std::string& fileName,cons
     return const_cast<OSGA_Archive*>(this)->read(ReadNodeFunctor(fileName, options));
 }
 
+ReaderWriter::ReadResult OSGA_Archive::readShader(const std::string& fileName,const Options* options) const
+{
+    return const_cast<OSGA_Archive*>(this)->read(ReadShaderFunctor(fileName, options));
+}
+
 
 struct OSGA_Archive::WriteObjectFunctor : public OSGA_Archive::WriteFunctor
 {
@@ -762,7 +773,17 @@ struct OSGA_Archive::WriteNodeFunctor : public OSGA_Archive::WriteFunctor
         _object(object) {}
     const osg::Node& _object;
 
-    virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const { return rw.writeNode(_object, output, _options); }    
+    virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const { return rw.writeNode(_object, output, _options); }
+};
+
+struct OSGA_Archive::WriteShaderFunctor : public OSGA_Archive::WriteFunctor
+{
+    WriteShaderFunctor(const osg::Shader& object, const std::string& filename, const ReaderWriter::Options* options):
+        WriteFunctor(filename,options),
+        _object(object) {}
+    const osg::Shader& _object;
+
+    virtual ReaderWriter::WriteResult doWrite(ReaderWriter& rw, std::ostream& output) const { return rw.writeShader(_object, output, _options); }
 };
 
 ReaderWriter::WriteResult OSGA_Archive::write(const WriteFunctor& writeFunctor)

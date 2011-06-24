@@ -1,3 +1,20 @@
+2011-06-24 19:18  robert
+
+	* examples/osganimationskinning/osganimationskinning.cpp: Merged
+	  from svn/trunk changeset 12648, tightened up float/double usage
+
+2011-06-24 16:27  robert
+
+	* ChangeLog, NEWS.txt, README.txt: Updated ChangeLog, NEWS and
+	  READE for 3.0.0-rc5
+
+2011-06-24 16:16  robert
+
+	* src/osgPlugins/3ds/WriterNodeVisitor.cpp,
+	  src/osgPlugins/ac/Geode.cpp: Merged from svn/trunk changeset
+	  12645. Removed redundent assert and associated variables to fix
+	  warnings.
+
 2011-06-24 16:05  robert
 
 	* CMakeLists.txt: Updated release candidate number to 5 for

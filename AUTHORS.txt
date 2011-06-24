@@ -1,6 +1,6 @@
 OpenSceneGraph Library 3.0.0
 
-463 Contributors:
+464 Contributors:
 
 Firstname Surname
 -----------------
@@ -362,6 +362,7 @@ Mason Menninger
 Martin von Gargern
 Martin Scheffler
 Martin Lambers
+Martin Innus
 Martin Beck
 Mario Guimaraes
 Marco Sciabica

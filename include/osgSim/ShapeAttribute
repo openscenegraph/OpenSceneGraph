@@ -48,6 +48,13 @@ class OSGSIM_EXPORT ShapeAttribute
         
         ShapeAttribute& operator = (const ShapeAttribute& sa);
         
+        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
+        int compare(const osgSim::ShapeAttribute& sa) const;
+
+        inline bool operator == (const osgSim::ShapeAttribute& sa) const { return compare(sa)==0; }
+        inline bool operator != (const osgSim::ShapeAttribute& sa) const { return compare(sa)!=0; }
+        inline bool operator <  (const osgSim::ShapeAttribute& sa) const { return compare(sa)<0; }
+
         const std::string & getName() const { return _name; }
         void setName(const std::string& name) { _name = name; }
 
@@ -61,9 +68,6 @@ class OSGSIM_EXPORT ShapeAttribute
         void setValue(double value) { free(); _type = DOUBLE; _double = value; }
         void setValue(const char * value);
 
-        /** return -1 if *this < *rhs, 0 if *this==*rhs, 1 if *this>*rhs.*/
-        int compare(const osgSim::ShapeAttribute& sa) const;
-        
         
     private:
     

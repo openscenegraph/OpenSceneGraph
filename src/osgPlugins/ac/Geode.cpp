@@ -784,19 +784,10 @@ void Geode::ProcessGeometry(ostream& fout, const unsigned int ioffset)
                     // Check for a texture
                     if (theState)
                     {
-                    const osg::StateSet::TextureModeList& TextureModeList = theState->getTextureModeList();
                     const osg::StateSet::TextureAttributeList& TextureAttributeList = theState->getTextureAttributeList();
                     if (TextureAttributeList.size() > 0)
                     {
-                        // Dont yet know how to handle more than one texture
-                        assert(TextureAttributeList.size() == 1);
-                        assert(TextureModeList.size() == 1);
-                        const osg::StateSet::ModeList& ModeList = TextureModeList[0];
-                        assert(ModeList.size() == 1);
                         // Check for a single mode of GL_TEXTURE_2D and ON
-                                                osg::StateSet::ModeList::value_type ModeValuePair = *ModeList.begin();
-                        assert(ModeValuePair.first == GL_TEXTURE_2D);
-                        assert(ModeValuePair.second == osg::StateAttribute::ON);
                         const osg::StateSet::AttributeList& AttributeList = TextureAttributeList[0];
                         //                    assert(AttributeList.size() == 1);
                         const osg::Texture2D *pTexture2D = dynamic_cast<const osg::Texture2D*>(AttributeList.begin()->second.first.get());

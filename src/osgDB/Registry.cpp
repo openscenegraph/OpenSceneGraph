@@ -111,6 +111,50 @@ protected:
 
 };
 
+class Registry::AvailableArchiveIterator
+{
+public:
+    AvailableArchiveIterator(Registry::ArchiveCache& archives, OpenThreads::ReentrantMutex& mutex):
+        _archives(archives),
+        _mutex(mutex) {}
+
+
+    Archive& operator * () { return *get(); }
+    Archive* operator -> () { return get(); }
+
+    bool valid() { return get()!=0; }
+
+    void operator ++()
+    {
+        _archivesUsed.insert(get());
+    }
+
+
+protected:
+
+    AvailableArchiveIterator& operator = (const AvailableArchiveIterator&) { return *this; }
+
+    Registry::ArchiveCache&         _archives;
+    OpenThreads::ReentrantMutex&    _mutex;
+
+    std::set<Archive*>              _archivesUsed;
+
+    Archive* get()
+    {
+        OpenThreads::ScopedLock<OpenThreads::ReentrantMutex> lock(_mutex);
+        Registry::ArchiveCache::iterator itr=_archives.begin();
+        for(;itr!=_archives.end();++itr)
+        {
+            if (_archivesUsed.find(itr->second.get())==_archivesUsed.end())
+            {
+                return itr->second.get();
+            }
+        }
+        return 0;
+    }
+
+};
+
 #if 0
     // temporary test of autoregistering, not compiled by default.
     enum Methods
@@ -1047,7 +1091,7 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
             return archive->readObject(fileName,options.get());
         }
     }
- 
+    
     // record the errors reported by readerwriters.
     typedef std::vector<ReaderWriter::ReadResult> Results;
     Results results;
@@ -1060,6 +1104,16 @@ ReaderWriter::ReadResult Registry::read(const ReadFunctor& readFunctor)
         if (readFunctor.isValid(rr)) return rr;
         else results.push_back(rr);
     }
+
+    // check loaded archives.
+    AvailableArchiveIterator aaitr(_archiveCache, _archiveCacheMutex);
+    for(;aaitr.valid();++aaitr)
+    {
+        ReaderWriter::ReadResult rr = readFunctor.doRead(*aaitr);
+        if (readFunctor.isValid(rr)) return rr;
+        else results.push_back(rr);
+    }
+
 
     if (!results.empty())
     {

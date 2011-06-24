@@ -842,3 +842,9 @@ ReaderWriter::WriteResult OSGA_Archive::writeNode(const osg::Node& node,const st
     return const_cast<OSGA_Archive*>(this)->write(WriteNodeFunctor(node, fileName, options));
 }
 
+ReaderWriter::WriteResult OSGA_Archive::writeShader(const osg::Shader& shader,const std::string& fileName,const Options* options) const
+{
+    OSG_INFO<<"OSGA_Archive::writeShader(obj, "<<fileName<<")"<<std::endl;
+    return const_cast<OSGA_Archive*>(this)->write(WriteShaderFunctor(shader, fileName, options));
+}
+

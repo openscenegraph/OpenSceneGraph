@@ -483,14 +483,11 @@ void WriterNodeVisitor::writeMaterials()
     // Ugly thing: it seems lib3ds_file_insert_material() doesn't support insertion in a random order (else materials are not assigned the right way)
     for (unsigned int iMat=0; iMat<nbMat; ++iMat)
     {
-        bool found = false;
         for(MaterialMap::iterator itr = _materialMap.begin(); itr != _materialMap.end(); ++itr)
         {
             const Material & mat = itr->second;
             if (mat.index != static_cast<int>(iMat)) continue;        // Ugly thing (2)
-            found = true;
 
-            assert(mat.index>=0 && mat.index < static_cast<int>(_materialMap.size()));
             Lib3dsMaterial * mat3ds = lib3ds_material_new(osgDB::getSimpleFileName(mat.name).c_str());
             copyOsgColorToLib3dsColor(mat3ds->ambient,  mat.ambient);
             copyOsgColorToLib3dsColor(mat3ds->diffuse,  mat.diffuse);
@@ -545,7 +542,6 @@ void WriterNodeVisitor::writeMaterials()
             lib3ds_file_insert_material(_file3ds, mat3ds, itr->second.index);
             break;        // Ugly thing (3)
         }
-        assert(found);        // Ugly thing (4) - Implementation error if !found
     }
 }
 

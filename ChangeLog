@@ -1,3 +1,58 @@
+2011-06-24 16:05  robert
+
+	* CMakeLists.txt: Updated release candidate number to 5 for
+	  3.0.0-rc5
+
+2011-06-24 15:05  robert
+
+	* src/osgPlugins/osga/OSGA_Archive.cpp: Merged from svn/trunk
+	  changeset 12642, "Implemented missing writeShader"
+
+2011-06-24 13:36  robert
+
+	* src/osgSim/ShapeAttribute.cpp: Merged from svn/trunk changeset
+	  12640, From Martin Innus, fixed erroneous change of INTEGER to
+	  UNKNOWN, reverting back to INTEGER.
+
+2011-06-24 12:52  robert
+
+	* include/osgDB/Archive, include/osgDB/Registry,
+	  src/osgDB/Registry.cpp, src/osgPlugins/osga/OSGA_Archive.cpp,
+	  src/osgPlugins/osga/OSGA_Archive.h,
+	  src/osgPlugins/zip/ZipArchive.cpp,
+	  src/osgPlugins/zip/ZipArchive.h: Merged from svn/trunk changeset
+	  12638:
+	  
+	  Implemented missing Archive::readShader/writeShader, and added
+	  searching of the archive list in Registr::read() so that files
+	  that are stored in the archives can be found.
+	  
+
+2011-06-24 08:33  robert
+
+	* ChangeLog, include/osgSim/ShapeAttribute,
+	  src/osgSim/ShapeAttribute.cpp,
+	  src/osgWrappers/deprecated-dotosg/osgSim/IO_ShapeAttribute.cpp:
+	  Merged from svn/trunk changeset 12636, "While we're on
+	  osgSim/ShapeAttribute, here's a fix that fixes the 'UNKNOW' typo
+	  and some
+	  doxygen"
+
+2011-06-24 08:16  robert
+
+	* src/osgPlugins/osg/AsciiStreamOperator.h,
+	  src/osgPlugins/osg/XmlStreamOperator.h: From Wang Rui, Merged
+	  from svn/trunk changeset 12633.
+	  
+	  "I've modified the code to handle -1.#IND and other kinds of
+	  infinite
+	  values. Please see the attachments for details"
+
+2011-06-24 08:15  robert
+
+	* include/osgSim/ShapeAttribute: Merged from svn/trunk changeset
+	  12632. Added operator ==, != and < to fix VS build
+
 2011-06-23 20:09  robert
 
 	* include/osgAnimation/Skeleton,

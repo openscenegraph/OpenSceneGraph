@@ -25,10 +25,10 @@ namespace osgSim
 class OSGSIM_EXPORT ShapeAttribute
 {
     public:
-        
+        /// ShapeAttribute data type. 
         enum Type
         {
-            UNKNOW,
+            UNKNOWN,
             INTEGER,
             DOUBLE,
             STRING
@@ -55,17 +55,31 @@ class OSGSIM_EXPORT ShapeAttribute
         inline bool operator != (const osgSim::ShapeAttribute& sa) const { return compare(sa)!=0; }
         inline bool operator <  (const osgSim::ShapeAttribute& sa) const { return compare(sa)<0; }
 
+        /// Get the attribute name.
         const std::string & getName() const { return _name; }
+
+        /// Set the attribute name.
         void setName(const std::string& name) { _name = name; }
 
+        /// Get the attribute data type.
         const Type getType() const { return _type; }
         
+        /// Get the attribute data as an int.
         int getInt() const { return _integer; }
+
+        /// Get the attribute data as a double.
         double getDouble() const { return _double; }
+
+        /// Get the attribute data as a string.
         const char * getString() const { return _string; }
        
+        /// Set an integer attribute data.
         void setValue(int value) { free(); _type = INTEGER; _integer = value; }
+
+        /// Set a double attribute data.
         void setValue(double value) { free(); _type = DOUBLE; _double = value; }
+
+        /// Set a string attribute data.
         void setValue(const char * value);
 
         
@@ -83,8 +97,6 @@ class OSGSIM_EXPORT ShapeAttribute
             double _double;
             char* _string;
         };
-        
-        
 };
 
 class OSGSIM_EXPORT ShapeAttributeList : public osg::Object, public osg::MixinVector<ShapeAttribute>

@@ -85,7 +85,7 @@ bool ShapeAttributeList_writeLocalData(const osg::Object &obj, osgDB::Output &fw
                 fw.indent()<<"double "<< fw.wrapString(it->getName())<<" "<<it->getDouble() << std::endl;
                 break;
             }
-            case osgSim::ShapeAttribute::UNKNOW:
+            case osgSim::ShapeAttribute::UNKNOWN:
                 default: break;
         }
     }

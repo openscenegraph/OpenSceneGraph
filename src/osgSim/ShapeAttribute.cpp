@@ -20,19 +20,19 @@
 namespace osgSim
 {
 ShapeAttribute::ShapeAttribute() :
-    _type(UNKNOW),
+    _type(UNKNOWN),
     _integer(0)
 {}
 
 ShapeAttribute::ShapeAttribute(const char * name) :
     _name(name),
-    _type(UNKNOW),
+    _type(UNKNOWN),
     _integer(0)
 {}
 
 ShapeAttribute::ShapeAttribute(const char * name, int value) :
     _name(name),
-    _type(INTEGER),
+    _type(UNKNOWN),
     _integer(value)
 {}
         
@@ -98,7 +98,7 @@ void ShapeAttribute::copy(const ShapeAttribute& sa)
             _double = sa._double;
             break;
         }
-        case UNKNOW:
+        case UNKNOWN:
         default:
         {
             _integer = 0;
@@ -142,7 +142,7 @@ int ShapeAttribute::compare(const osgSim::ShapeAttribute& sa) const
             if (sa._double<_double) return 1;
         }
         case INTEGER:
-        case UNKNOW:
+        case UNKNOWN:
         default:
         {
             if (_integer<sa._integer) return -1;

@@ -73,18 +73,18 @@ osgAnimation::RigGeometry* createTesselatedBox(int nsplit, float size)
     geometry->setColorArray (colors.get());
     geometry->setColorBinding (osg::Geometry::BIND_PER_VERTEX);    
   
-    float step = size / nsplit;
-    float s = 0.5/4.0;
+    float step = size / static_cast<float>(nsplit);
+    float s = 0.5f/4.0f;
     for (int i = 0; i < nsplit; i++) 
     {
-        float x = -1 + i * step;
+        float x = -1.0f + static_cast<float>(i) * step;
         std::cout << x << std::endl;
         vertices->push_back (osg::Vec3 ( x, s, s));
         vertices->push_back (osg::Vec3 ( x, -s, s));
         vertices->push_back (osg::Vec3 ( x, -s, -s));
         vertices->push_back (osg::Vec3 ( x, s, -s));
-        osg::Vec3 c (0,0,0);
-        c[i%3] = 1;
+        osg::Vec3 c (0.0f,0.0f,0.0f);
+        c[i%3] = 1.0f;
         colors->push_back (c);
         colors->push_back (c);
         colors->push_back (c);
@@ -149,11 +149,11 @@ void initVertexMap(osgAnimation::Bone* b0,
         float val = (*array)[i][0];
         std::cout << val << std::endl;
         if (val >= -1 && val <= 0)
-            (*vim)[b0->getName()].push_back(osgAnimation::VertexIndexWeight(i,1));
+            (*vim)[b0->getName()].push_back(osgAnimation::VertexIndexWeight(i,1.0f));
         else if ( val > 0 && val <= 1)
-            (*vim)[b1->getName()].push_back(osgAnimation::VertexIndexWeight(i,1));
+            (*vim)[b1->getName()].push_back(osgAnimation::VertexIndexWeight(i,1.0f));
         else if ( val > 1)
-            (*vim)[b2->getName()].push_back(osgAnimation::VertexIndexWeight(i,1));
+            (*vim)[b2->getName()].push_back(osgAnimation::VertexIndexWeight(i,1.0f));
     }
 
     geom->setInfluenceMap(vim);
@@ -171,26 +171,26 @@ int main (int argc, char* argv[])
     osg::ref_ptr<osgAnimation::Skeleton> skelroot = new osgAnimation::Skeleton;
     skelroot->setDefaultUpdateCallback();
     osg::ref_ptr<osgAnimation::Bone> root = new osgAnimation::Bone;
-    root->setInvBindMatrixInSkeletonSpace(osg::Matrix::inverse(osg::Matrix::translate(-1,0,0)));
+    root->setInvBindMatrixInSkeletonSpace(osg::Matrix::inverse(osg::Matrix::translate(-1.0,0.0,0.0)));
     root->setName("root");
     osgAnimation::UpdateBone* pRootUpdate = new osgAnimation::UpdateBone("root");
-    pRootUpdate->getStackedTransforms().push_back(new osgAnimation::StackedTranslateElement("translate",osg::Vec3(-1,0,0)));
+    pRootUpdate->getStackedTransforms().push_back(new osgAnimation::StackedTranslateElement("translate",osg::Vec3(-1.0f,0.0f,0.0f)));
     root->setUpdateCallback(pRootUpdate);
 
     osg::ref_ptr<osgAnimation::Bone> right0 = new osgAnimation::Bone;
-    right0->setInvBindMatrixInSkeletonSpace(osg::Matrix::inverse(osg::Matrix::translate(0,0,0)));
+    right0->setInvBindMatrixInSkeletonSpace(osg::Matrix::inverse(osg::Matrix::translate(0.0,0.0,0.0)));
     right0->setName("right0");
     osgAnimation::UpdateBone* pRight0Update = new osgAnimation::UpdateBone("right0");
-    pRight0Update->getStackedTransforms().push_back(new osgAnimation::StackedTranslateElement("translate", osg::Vec3(1,0,0)));
-    pRight0Update->getStackedTransforms().push_back(new osgAnimation::StackedRotateAxisElement("rotate", osg::Vec3(0,0,1), 0));
+    pRight0Update->getStackedTransforms().push_back(new osgAnimation::StackedTranslateElement("translate", osg::Vec3(1.0f,0.0f,0.0f)));
+    pRight0Update->getStackedTransforms().push_back(new osgAnimation::StackedRotateAxisElement("rotate", osg::Vec3(0.0f,0.0f,1.0f), 0.0));
     right0->setUpdateCallback(pRight0Update);
 
     osg::ref_ptr<osgAnimation::Bone> right1 = new osgAnimation::Bone;
-    right1->setInvBindMatrixInSkeletonSpace(osg::Matrix::inverse(osg::Matrix::translate(1,0,0)));
+    right1->setInvBindMatrixInSkeletonSpace(osg::Matrix::inverse(osg::Matrix::translate(1.0,0.0,0.0)));
     right1->setName("right1");
     osgAnimation::UpdateBone* pRight1Update = new osgAnimation::UpdateBone("right1");
-    pRight1Update->getStackedTransforms().push_back(new osgAnimation::StackedTranslateElement("translate", osg::Vec3(1,0,0)));
-    pRight1Update->getStackedTransforms().push_back(new osgAnimation::StackedRotateAxisElement("rotate", osg::Vec3(0,0,1), 0));
+    pRight1Update->getStackedTransforms().push_back(new osgAnimation::StackedTranslateElement("translate", osg::Vec3(1.0f,0.0f,0.0f)));
+    pRight1Update->getStackedTransforms().push_back(new osgAnimation::StackedRotateAxisElement("rotate", osg::Vec3(0.0f,0.0f,1.0f), 0.0));
     right1->setUpdateCallback(pRight1Update);
 
     root->addChild(right0.get());
@@ -204,9 +204,9 @@ int main (int argc, char* argv[])
     osgAnimation::Animation* anim = new osgAnimation::Animation;
     {
         osgAnimation::FloatKeyframeContainer* keys0 = new osgAnimation::FloatKeyframeContainer;
-        keys0->push_back(osgAnimation::FloatKeyframe(0,0));
-        keys0->push_back(osgAnimation::FloatKeyframe(3,osg::PI_2));
-        keys0->push_back(osgAnimation::FloatKeyframe(6,osg::PI_2));
+        keys0->push_back(osgAnimation::FloatKeyframe(0.0,0.0f));
+        keys0->push_back(osgAnimation::FloatKeyframe(3.0,osg::PI_2));
+        keys0->push_back(osgAnimation::FloatKeyframe(6.0,osg::PI_2));
         osgAnimation::FloatLinearSampler* sampler = new osgAnimation::FloatLinearSampler;
         sampler->setKeyframeContainer(keys0);
         osgAnimation::FloatLinearChannel* channel = new osgAnimation::FloatLinearChannel(sampler);
@@ -217,9 +217,9 @@ int main (int argc, char* argv[])
 
     {
         osgAnimation::FloatKeyframeContainer* keys1 = new osgAnimation::FloatKeyframeContainer;
-        keys1->push_back(osgAnimation::FloatKeyframe(0,0));
-        keys1->push_back(osgAnimation::FloatKeyframe(3,0));
-        keys1->push_back(osgAnimation::FloatKeyframe(6,osg::PI_2));
+        keys1->push_back(osgAnimation::FloatKeyframe(0.0,0.0f));
+        keys1->push_back(osgAnimation::FloatKeyframe(3.0,0.0f));
+        keys1->push_back(osgAnimation::FloatKeyframe(6.0,osg::PI_2));
         osgAnimation::FloatLinearSampler* sampler = new osgAnimation::FloatLinearSampler;
         sampler->setKeyframeContainer(keys1);
         osgAnimation::FloatLinearChannel* channel = new osgAnimation::FloatLinearChannel(sampler);
@@ -235,7 +235,7 @@ int main (int argc, char* argv[])
 
     // we will use local data from the skeleton
     osg::MatrixTransform* rootTransform = new osg::MatrixTransform;
-    rootTransform->setMatrix(osg::Matrix::rotate(osg::PI_2,osg::Vec3(1,0,0)));
+    rootTransform->setMatrix(osg::Matrix::rotate(osg::PI_2,osg::Vec3(1.0f,0.0f,0.0f)));
     right0->addChild(createAxis());
     right0->setDataVariance(osg::Object::DYNAMIC);
     right1->addChild(createAxis());
@@ -248,7 +248,7 @@ int main (int argc, char* argv[])
     rootTransform->addChild(trueroot);
     scene->addChild(rootTransform);
   
-    osgAnimation::RigGeometry* geom = createTesselatedBox(4, 4.0);
+    osgAnimation::RigGeometry* geom = createTesselatedBox(4, 4.0f);
     osg::Geode* geode = new osg::Geode;
     geode->addDrawable(geom);
     skelroot->addChild(geode);

@@ -32,7 +32,7 @@ ShapeAttribute::ShapeAttribute(const char * name) :
 
 ShapeAttribute::ShapeAttribute(const char * name, int value) :
     _name(name),
-    _type(UNKNOWN),
+    _type(INTEGER),
     _integer(value)
 {}
         

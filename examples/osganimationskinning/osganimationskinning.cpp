@@ -148,11 +148,11 @@ void initVertexMap(osgAnimation::Bone* b0,
     {
         float val = (*array)[i][0];
         std::cout << val << std::endl;
-        if (val >= -1 && val <= 0)
+        if (val >= -1.0f && val <= 0.0f)
             (*vim)[b0->getName()].push_back(osgAnimation::VertexIndexWeight(i,1.0f));
-        else if ( val > 0 && val <= 1)
+        else if ( val > 0.0f && val <= 1.0f)
             (*vim)[b1->getName()].push_back(osgAnimation::VertexIndexWeight(i,1.0f));
-        else if ( val > 1)
+        else if ( val > 1.0f)
             (*vim)[b2->getName()].push_back(osgAnimation::VertexIndexWeight(i,1.0f));
     }
 

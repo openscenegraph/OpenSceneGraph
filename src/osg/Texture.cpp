@@ -414,7 +414,7 @@ void Texture::TextureObjectSet::flushDeletedTextureObjects(double currentTime, d
         }
     }
 
-    if (_parent->getCurrTexturePoolSize()<=_parent->getMaxTexturePoolSize())
+    if (_profile._size!=0 && _parent->getCurrTexturePoolSize()<=_parent->getMaxTexturePoolSize())
     {
         // OSG_NOTICE<<"Plenty of space in TextureObject pool"<<std::endl;
         return;
@@ -431,7 +431,11 @@ void Texture::TextureObjectSet::flushDeletedTextureObjects(double currentTime, d
 
     unsigned int numDeleted = 0;
     unsigned int sizeRequired = _parent->getCurrTexturePoolSize() - _parent->getMaxTexturePoolSize();
-    unsigned int maxNumObjectsToDelete = static_cast<unsigned int>(ceil(double(sizeRequired) / double(_profile._size)));
+
+    unsigned int maxNumObjectsToDelete = _profile._size!=0 ?
+        static_cast<unsigned int>(ceil(double(sizeRequired) / double(_profile._size))):
+        _orphanedTextureObjects.size();
+        
     OSG_INFO<<"_parent->getCurrTexturePoolSize()="<<_parent->getCurrTexturePoolSize() <<" _parent->getMaxTexturePoolSize()="<< _parent->getMaxTexturePoolSize()<<std::endl;
     OSG_INFO<<"Looking to reclaim "<<sizeRequired<<", going to look to remove "<<maxNumObjectsToDelete<<" from "<<_orphanedTextureObjects.size()<<" orhpans"<<std::endl;
 

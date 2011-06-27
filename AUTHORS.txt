@@ -92,6 +92,7 @@ Frederic Marmond
 David Guthrie
 Csaba Halasz
 Boris Bralo
+Andreas Ekstrand
 Yefei He
 Sondra Iverson
 Simon Julier
@@ -105,7 +106,6 @@ Gordon Tomlinson
 Cory Riddell
 Carlo Camporesi
 Ben Discoe
-Andreas Ekstrand
 Thibault Genessay
 Sasa Bistrovic
 Ravi Mathur

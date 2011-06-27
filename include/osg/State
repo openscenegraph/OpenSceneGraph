@@ -148,7 +148,7 @@ class OSG_EXPORT State : public Referenced, public Observer
          *  Note, osgViewer::GraphicsWindow will automatically set up the ContextID for you,
          *  so you will rearely need to set this yourself.
          * 
-         *  The exceptions is when creating your own graphics context, where you should set
+         *  The exception is when creating your own graphics context, where you should set
          *  the ContextID uniquely for each graphics context.
          * 
          *  Typical settings for ContextID are 0,1,2,3... up to the maximum

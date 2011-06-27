@@ -140,15 +140,20 @@ class OSG_EXPORT State : public Referenced, public Observer
 
 
         /** Set the current OpenGL context uniqueID.
-            Note, it is the application developers responsibility to
-            set up unique ID for each OpenGL context.  This value is
-            then used by osg::StateAttribute's and osg::Drawable's to
-            help manage OpenGL display list and texture binds appropriate
-            for each context, the contextID simply acts as an index in local
-            arrays that they maintain for the purpose.
-            Typical settings for contextID are 0,1,2,3... up to the maximum
-            number of graphics contexts you have set up.
-            By default contextID is 0.*/
+         *  The ContextID is used by classes like osg::StateAttribute's and osg::Drawable's to
+         *  help manage seperate OpenGL objects, such as display lists, vertex buffer objects
+         *  and texture object for each graphics context. The ContextID simply acts as an index 
+         *  into arrays that these classes maintain for the purpose of storing GL object handles.
+         * 
+         *  Note, osgViewer::GraphicsWindow will automatically set up the ContextID for you,
+         *  so you will rearely need to set this yourself.
+         * 
+         *  The exceptions is when creating your own graphics context, where you should set
+         *  the ContextID uniquely for each graphics context.
+         * 
+         *  Typical settings for ContextID are 0,1,2,3... up to the maximum
+         *  number of graphics contexts you have set up. By default contextID is 0.
+         */
         inline void setContextID(unsigned int contextID) { _contextID=contextID; }
 
         /** Get the current OpenGL context unique ID.*/

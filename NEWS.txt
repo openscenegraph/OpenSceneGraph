@@ -3,7 +3,7 @@ OSG News
 
 = !OpenSceneGraph 3.0 release adds support OpenGL ES 1.1, OpenGL ES 2.0, OpenGL 3.x to 4.0, support for Andoid and IOS platforms and much more.
 
-PERTHSHIRE, Scotland - 17th June 2011 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 3.0, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 3.0 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 3.0 runs on all Microsoft Windows platforms, Apple OS/X, IOS, GNU/Linux, Android, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
+PERTHSHIRE, Scotland - 27th June 2011 - !OpenSceneGraph Professional Services announces the release of !OpenSceneGraph 3.0, the industry's leading open-source scene graph technology, designed to accelerate application development and improve 3D graphics performance. !OpenSceneGraph 3.0 written entirely in Standard C++ and built upon OpenGL, offers developers working in the visual simulation, game development, virtual reality, scientific visualization and modeling markets - a real-time visualization tool which eclipses commercial scene graph toolkits in functionality, stability and performance. !OpenSceneGraph 3.0 runs on all Microsoft Windows platforms, Apple OS/X, IOS, GNU/Linux, Android, IRIX, Solaris, HP-UX, AIX and FreeBSD operating systems.
 
 === Open-source development delivers industry-leading features and performance ===
 The !OpenSceneGraph 3.0 release is the culmination of 12 years of work by the lead developers and the open-source community that has grown up around the project. The real-time graphics industry and academia embraced it from the very beginning, deploying it in real-world applications, and actively participating in its development, testing and refinement. The end result is a high-quality library with a feature set relevant to application developers' needs.
@@ -12,16 +12,24 @@ The !OpenSceneGraph 3.0 release is the culmination of 12 years of work by the le
 
   * OpenGL ES 1.1, and OpenGL ES 2.0 support
   * OpenGL 3.x and 4.x support along with associated OpenGL extensions
-  * Supoort for Android (versions?)
-  * Support for IOS (versions?)
-  * FBX plugin
-  * osgQt library
+  * Supoort for Android on tablets and phones
+  * Support for IOS on tablets and phones (end users applications have already been accepted on the App Store)
+  * Introduction of Present3D application for immersive 3D presentations
+  * New extensible serializers that provide new .osgb binary, .osgt ascii and .osgx xml file native formats
+  * New generalized serializable metadata architecture
+  * New osgQt library that makes it straight forward to integrate !OpenSceneGraph with Qt, including web browsing via QWebKit.
+  * New FBX plugin based on the Audodesk FBX DSK that enables reading of the the .fbx 3D authoring and interchange format
+  * New directshow plugin for handling movies under Windows
+  * New pov plugin for exporting a scene to POV-Ray format, enabling use of POV-Ray to do photo-realistic ray tracing
+  * New ply plugin for reading ply files
+  * Improvements to osgText that enable bevelling of 3D text and highter quality 2D fonts
+  * Improvements to osgVolume enabling high quality race traced volume rendering
+  * Improvements to osgManipulator making it more flexible
+  * Revamped 3ds plugin for reading and writing of .3ds files
+  * Revamped dxf plugin for reading and writing of .dxf files
   * Support for Cocoa and 64bit OSX build
-  * Volume rendering
-  * User data
-  * Serializers, .osgb binary, .osgt ascii and .osgx xml file native formats
   * Improved thread safety and efficiency of database paging
-  * Texture and buffer object pools for efficiently managing GL object resources.
+  * New Texture and buffer object pools for efficiently managing GL object resources
 
 === Downloads and Licensing ===
 !OpenSceneGraph is open-source, so full source code is provided, and can be copied, modified and used free of charge for commercial and non-commercial use. Access to the source allows end users greater flexibility in how they develop, debug and deploy their applications.  They gain productivity and freedom by being able to leverage the tool chain in accordance with their own release cycles. Downloads of binaries and source can be found in the [http://www.openscenegraph.org/projects/osg/wiki/Downloads Downloads] section of the openscenegraph.org website.
@@ -30,10 +38,10 @@ The !OpenSceneGraph 3.0 release is the culmination of 12 years of work by the le
 
 === !OpenSceneGraph Books now available ===
 
-The new book dedicated to the !OpenSceneGraph 3.0 is now available https://www.packtpub.com/openscenegraph-3-0-beginners-guide/book.
+The new book dedicated to the !OpenSceneGraph 3.0 release is now available https://www.packtpub.com/openscenegraph-3-0-beginners-guide/book.
 
 === Professional support and services ===
-!OpenSceneGraph project is backed up with professional services by [http://www.openscenegraph.com OpenSceneGraph Professional Services], based in Scotland, and [http://www.skew-matrix.com Skew-Matrix] and [http://www.blue-newt.com Blue-Newt Software] both based in the USA, and a range of [wiki:Community/Contractors Contractors] from around the world.  Services available include:
+!OpenSceneGraph project is backed up with professional services by [http://www.openscenegraph.com OpenSceneGraph Professional Services], based in Scotland, and [http://www.skew-matrix.com Skew-Matrix] and [http://www.alphapixel.com AlphaPixel] both based in the USA, and a range of [wiki:Community/Contractors Contractors] from around the world.  Services available include:
 
  * Confidential Professional Support
  * Bespoke development
@@ -43,7 +51,7 @@ The new book dedicated to the !OpenSceneGraph 3.0 is now available https://www.p
 === Community support and contributions ===
 The diverse and growing community of over 5000 developers is centred around the public osg-users mailing list/forum, where members discuss how best to use !OpenSceneGraph, provide mutual support, and coordinate development of new features and bug fixes. Members of this community come from many different countries with backgrounds ranging from some of the world's largest aerospace companies, game companies, and visual simulation specialists to university researchers, students and hobbyists.
 
-The !OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/projects/osg/wiki/Support/Contributors/ThreePointZero 463 individuals] from around the world that have directly contributed to the development and refinement of the !OpenSceneGraph code base.
+The !OpenSceneGraph project owes a great deal to the community for its development and support, in particular we wish to thank the [http://www.openscenegraph.org/projects/osg/wiki/Support/Contributors/ThreePointZero 464 individuals] from around the world that have directly contributed to the development and refinement of the !OpenSceneGraph code base.
 
 
 

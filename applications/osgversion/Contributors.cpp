@@ -437,6 +437,7 @@ TypoCorrection typoCorrections[] =
     {"Biyfarguine",    "Boufarguine"},
     {"Dickenson",       "Dickinson"},
     {"Jahannes","Johannes"},
+    {"Eskland","Ekstrand"},
     {"Baeuerele","Baeuerle"},
     {"Bauerle","Baeuerle"}
 };

@@ -1,3 +1,37 @@
+2011-06-27 10:45  robert
+
+	* CMakeLists.txt, include/osg/Version: Updated Version number to
+	  final 3.0.0 configuration.
+
+2011-06-27 10:22  robert
+
+	* include/osg/State: Merged doxygen comment improvement from
+	  svn/trunk.
+
+2011-06-25 20:55  robert
+
+	* src/osgPlugins/pnm/ReaderWriterPNM.cpp: Merged from svn/trunk
+	  changeset 12656. From Andreas Eskland, "I found that a binary PNM
+	  file couldn't be read by the PNM plugin in the 3.0 branch.
+	  Attached is a small fix in ReaderWriterPNM.cpp, simply opening
+	  the file in binary mode."
+
+2011-06-25 11:02  robert
+
+	* src/osg/Texture.cpp: Merged from svn/trunk changset 12654. Fixed
+	  memory growth issue when using Texture2D::SubloadCallbacks that
+	  don't set the TextureObjects sizes.
+
+2011-06-25 07:07  robert
+
+	* examples/osganimationskinning/osganimationskinning.cpp: Merged
+	  from svn/trunk changeset 12652, Tighten up float usage
+
+2011-06-24 19:45  robert
+
+	* AUTHORS.txt, ChangeLog: Updated ChangeLog and AUTHORS file for
+	  3.0.0-rc5
+
 2011-06-24 19:18  robert
 
 	* examples/osganimationskinning/osganimationskinning.cpp: Merged

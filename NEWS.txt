@@ -14,12 +14,19 @@ The !OpenSceneGraph 3.0 release is the culmination of 12 years of work by the le
   * OpenGL 3.x and 4.x support along with associated OpenGL extensions
   * Supoort for Android on tablets and phones
   * Support for IOS on tablets and phones (end users applications have already been accepted on the App Store)
+  * Introduction of Present3D application for immersive 3D presentations
   * New extensible serializers that provide new .osgb binary, .osgt ascii and .osgx xml file native formats
   * New generalized serializable metadata architecture
-  * New osgQt library that makes it straight forward to integrate !OpenSceneGraph with Qt
-  * new FBX plugin
+  * New osgQt library that makes it straight forward to integrate !OpenSceneGraph with Qt, including web browsing via QWebKit.
+  * New FBX plugin based on the Audodesk FBX DSK that enables reading of the the .fbx 3D authoring and interchange format
+  * New directshow plugin for handling movies under Windows
+  * New pov plugin for exporting a scene to POV-Ray format, enabling use of POV-Ray to do photo-realistic ray tracing
+  * New ply plugin for reading ply files
+  * Improvements to osgText that enable bevelling of 3D text and highter quality 2D fonts
   * Improvements to osgVolume enabling high quality race traced volume rendering
   * Improvements to osgManipulator making it more flexible
+  * Revamped 3ds plugin for reading and writing of .3ds files
+  * Revamped dxf plugin for reading and writing of .dxf files
   * Support for Cocoa and 64bit OSX build
   * Improved thread safety and efficiency of database paging
   * New Texture and buffer object pools for efficiently managing GL object resources

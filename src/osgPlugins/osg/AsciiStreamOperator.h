@@ -278,7 +278,15 @@ public:
     {
         std::string s; readString(s);
         if ( s==str ) return true;
-        else _in->seekg( -(int)(s.length()), std::ios::cur );
+        else 
+        {
+            // originally "_in->seekg( -(int)(s.length()), std::ios::cur );" was used below but
+            // problems under windows occurred when reading ascii files with unix line endings.
+            // The workaround for this problem was to unget each of the characters in term,
+            // hacky yes, but at least it works!
+            for (unsigned int i = 0; i < s.length(); ++i)
+                _in->unget();
+        }
         return false;
     }
     

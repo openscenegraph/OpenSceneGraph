@@ -1,3 +1,50 @@
+2011-06-28 07:37  robert
+
+	* NEWS.txt: Fixed typo and added entry about osgParticle.
+
+2011-06-28 07:28  robert
+
+	* src/osgPlugins/3ds/ReaderWriter3DS.cpp: From Wang Rui, merged
+	  from changeset 12674. "I've found a small problem which causes
+	  crashes in the 3ds plugin
+	  while trying to load a model. The fix here will ensure that the
+	  texture map is valid and everything could work well then."
+
+2011-06-28 07:25  robert
+
+	* src/osgPlugins/curl/ReaderWriterCURL.cpp: Merged from svn/trunk
+	  changeset 12675, "Added #if lib curl version check around
+	  #include <curl/types.h> as this header was deprecated and now
+	  removed entirely from libcurl-7.21.7."
+
+2011-06-27 22:04  robert
+
+	* NEWS.txt, README.txt: Updated dates in prep for release.
+
+2011-06-27 21:36  robert
+
+	* src/osgPlugins/osg/AsciiStreamOperator.h: From Jean-Sebestien
+	  Guay, merged from svn/trunk changeset 12669/12670 - fix for
+	  windows bug when reading ascii files with unix file endings.
+
+2011-06-27 13:42  robert
+
+	* NEWS.txt: Updated NEWS
+
+2011-06-27 13:16  robert
+
+	* NEWS.txt: Updated NEWS for 3.0.0
+
+2011-06-27 12:59  robert
+
+	* AUTHORS.txt, applications/osgversion/Contributors.cpp: Update
+	  AUTHORS file for 3.0.0.
+
+2011-06-27 12:08  robert
+
+	* ChangeLog, NEWS.txt, README.txt: Updated ChangeLOG, NEWS and
+	  READE for 3.0.0 release
+
 2011-06-27 10:45  robert
 
 	* CMakeLists.txt, include/osg/Version: Updated Version number to

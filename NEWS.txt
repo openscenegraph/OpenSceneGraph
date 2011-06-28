@@ -23,8 +23,9 @@ The !OpenSceneGraph 3.0 release is the culmination of 12 years of work by the le
   * New pov plugin for exporting a scene to POV-Ray format, enabling use of POV-Ray to do photo-realistic ray tracing
   * New ply plugin for reading ply files
   * Improvements to osgText that enable bevelling of 3D text and highter quality 2D fonts
-  * Improvements to osgVolume enabling high quality race traced volume rendering
+  * Improvements to osgVolume enabling high quality ray traced volume rendering
   * Improvements to osgManipulator making it more flexible
+  * Improvements to osgParticle to support shader based particle effects
   * Revamped 3ds plugin for reading and writing of .3ds files
   * Revamped dxf plugin for reading and writing of .dxf files
   * Support for Cocoa and 64bit OSX build

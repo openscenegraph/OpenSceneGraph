@@ -321,6 +321,7 @@ TypoCorrection typoCorrections[] =
     {"Jea-Sebastien",  "Jean-Sébastien"},
     {"Jean-Sebasien",  "Jean-Sébastien"},
     {"Jean-Sebastien", "Jean-Sébastien"},
+    {"Jean-Sebestien", "Jean-Sébastien"},
     {"Johhansen",      "Johansen"},
     {"Johnansen",      "Johansen"},
     {"Johnasen",       "Johansen"},

@@ -21,7 +21,14 @@
 #include <fstream>
 
 #include <curl/curl.h>
-#include <curl/types.h>
+
+#if LIBCURL_VERSION_NUM < 0x071503
+    // types.h has been removed in 7.21.7 so have to protect with version guard
+    // it may be possible to remove it completely but can't yet work out when
+    // types.h was deprecated so will assume it's still needed in older libcurl versions
+    // that OSG users are using.
+    #include <curl/types.h>
+#endif
 
 #include "ReaderWriterCURL.h"
 

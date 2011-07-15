@@ -1,4 +1,3 @@
-#pragma once 
 #include <osg/GL>
 #include <osg/Notify>
 #include <osg/Image>
@@ -163,50 +162,70 @@ osg::Image* ReadCoreGraphicsImageFromFile(std::string file)
 {
     NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
     //chop the extension off
-    std::string strExt = osgDB::getFileExtension(file);
-    std::string strPath = osgDB::getFilePath(file);
-    std::string strName = osgDB::getStrippedName(file);
-    std::string strFile = strPath+"/"+strName;
+    //std::string strExt = osgDB::getFileExtension(file);
+    //std::string strPath = osgDB::getFilePath(file);
+    //std::string strName = osgDB::getStrippedName(file);
+    //std::string strFile = strPath + "/" + strName;
     
-    NSString* path = [NSString stringWithCString:strName.c_str() length:strlen(strName.c_str())];
-    NSString* ext = [NSString stringWithCString:strExt.c_str() length:strlen(strExt.c_str())];
+    //NSString* path = [NSString stringWithCString:strName.c_str() encoding:NSUTF8StringEncoding]; 
+    //NSString* ext = [NSString stringWithCString:strExt.c_str() encoding:NSUTF8StringEncoding]; 
     
     //CGImageRef textureImage = [UIImage imageNamed:path].CGImage;
-    CGImageRef textureImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:path ofType:ext]].CGImage;
-    
-    if (textureImage == nil) {
-    
-        NSLog(@"imageio: failed to load CGImageRef image '%@'", path );
+    //CGImageRef textureImage = [UIImage imageWithContentsOfFile:[[NSBundle mainBundle] pathForResource:path ofType:ext]].CGImage;
+    NSString* path = [NSString stringWithCString:file.c_str() encoding:NSUTF8StringEncoding];
+    //NSLog(@"imageio: About to open %@.\n", path);
+    UIImage *img = [UIImage imageWithContentsOfFile:path];
+    if (!img) {
+        NSLog(@"imageio: failed to load UIImage image '%@'.\n", path);
+        [pool release];
+        return NULL;
+    }
+    CGImageRef textureImage = img.CGImage;
+    if (!textureImage) {
+        NSLog(@"imageio: failed to create CGImageRef.\n");
+        [pool release];
+        return NULL;
+    }
+        
+    size_t texWidth = CGImageGetWidth(textureImage);    
+    size_t texHeight = CGImageGetHeight(textureImage);
+    GLubyte *textureData = (GLubyte *)malloc(texWidth * texHeight * 4);
+    if (!textureData) {
+        NSLog(@"imageio: out of memory.\n");
+        [pool release];
+        return NULL;
+    }
+
+    CGColorSpaceRef csref = CGColorSpaceCreateDeviceRGB();
+    if (!csref) {
+        NSLog(@"imageio: failed to create CGColorSpaceRef.\n");
+        free(textureData);
+        [pool release];
+        return NULL;
+    }
+
+    CGContextRef textureContext = CGBitmapContextCreate(textureData, 
+                                                        texWidth, texHeight,
+                                                        8, texWidth * 4,
+                                                        csref,
+                                                        kCGImageAlphaPremultipliedLast);
+    CGColorSpaceRelease(csref);
+    if (!textureContext) {
+        NSLog(@"imageio: failed to create CGContextRef.\n");
+        free(textureData);
         [pool release];
         return NULL;
     }
     
-    
-    NSInteger texWidth = CGImageGetWidth(textureImage);
-    NSInteger texHeight = CGImageGetHeight(textureImage);
-    
-    GLubyte *textureData = (GLubyte *)malloc(texWidth * texHeight * 4);
-    
-    CGContextRef textureContext = CGBitmapContextCreate(textureData, 
-                                                        texWidth, texHeight,
-                                                        8, texWidth * 4,
-                                                        CGColorSpaceCreateDeviceRGB(),
-                                                        kCGImageAlphaPremultipliedLast);
-    
     //copy into texturedata
     CGContextDrawImage(textureContext,
-                       CGRectMake(0.0, 0.0, (float)texWidth, (float)texHeight),
+                       CGRectMake(0.0f, 0.0f, (float)texWidth, (float)texHeight),
                        textureImage);
-    
     CGContextRelease(textureContext);
     
-    
     //create the osg image
-    unsigned int dataType = GL_UNSIGNED_BYTE;
     int s = texWidth;
     int t = texHeight;
-    
-    
     osg::Image* image = new osg::Image();
     image->setImage(s, t, 1,
                     GL_RGBA,
@@ -223,12 +242,10 @@ osg::Image* ReadCoreGraphicsImageFromFile(std::string file)
     // by Tatsuhiro Nishioka (based on SDL's workaround on the similar issue)
     // http://bugzilla.libsdl.org/show_bug.cgi?id=868
     // 
-    
-    
     int i, j;
     GLubyte *pixels = (GLubyte *)image->data();
     for (i = image->t() * image->s(); i--; ) {
- 
+        
         GLubyte alpha = pixels[3];
         if (alpha && (alpha < 255)) {
             for (j = 0; j < 3; ++j) {
@@ -237,12 +254,9 @@ osg::Image* ReadCoreGraphicsImageFromFile(std::string file)
         }
         pixels += 4;
     }
-    
-    
+
     [pool release];
     return image;
-    
-    
 }
 
 osg::Image* CreateOSGImageFromCGImage(CGImageRef textureImage)
@@ -253,35 +267,49 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef textureImage)
         NSLog(@"imageio: failed to load CGImageRef image");
         return NULL;
     }
-    
-    
-    
-    NSInteger texWidth = CGImageGetWidth(textureImage);
-    NSInteger texHeight = CGImageGetHeight(textureImage);
-    
+
+    size_t texWidth = CGImageGetWidth(textureImage);    
+    size_t texHeight = CGImageGetHeight(textureImage);
+
     GLubyte *textureData = (GLubyte *)malloc(texWidth * texHeight * 4);
+    if (!textureData) {
+        NSLog(@"imageio: out of memory.\n");
+        [pool release];
+        return NULL;
+    }
     
+    CGColorSpaceRef csref = CGColorSpaceCreateDeviceRGB();
+    if (!csref) {
+        NSLog(@"imageio: failed to create CGColorSpaceRef.\n");
+        free(textureData);
+        [pool release];
+        return NULL;
+    }
+
     CGContextRef textureContext = CGBitmapContextCreate(textureData, 
                                                         texWidth, texHeight,
                                                         8, texWidth * 4,
-                                                        CGColorSpaceCreateDeviceRGB(),
+                                                        csref,
                                                         kCGImageAlphaPremultipliedLast);
-
+    CGColorSpaceRelease(csref);
+    if (!textureContext) {
+        NSLog(@"imageio: failed to create CGContextRef.\n");
+        free(textureData);
+        [pool release];
+        return NULL;
+    }
     
     //copy into texturedata
     CGContextDrawImage(textureContext,
-                       CGRectMake(0.0, 0.0, (float)texWidth, (float)texHeight),
+                       CGRectMake(0.0f, 0.0f, (float)texWidth, (float)texHeight),
                        textureImage);
-    CGContextFlush(textureContext);
+    CGContextFlush(textureContext);    
     CGContextRelease(textureContext);
     
     
     //create the osg image
-    unsigned int dataType = GL_UNSIGNED_BYTE;
     int s = texWidth;
     int t = texHeight;
-    
-    
     osg::Image* image = new osg::Image();
     image->setImage(s, t, 1,
                     GL_RGBA,
@@ -303,7 +331,7 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef textureImage)
     int i, j;
     GLubyte *pixels = (GLubyte *)image->data();
     for (i = image->t() * image->s(); i--; ) {
-    
+        
         GLubyte alpha = pixels[3];
         if (alpha && (alpha < 255)) {
             for (j = 0; j < 3; ++j) {
@@ -312,13 +340,9 @@ osg::Image* CreateOSGImageFromCGImage(CGImageRef textureImage)
         }
         pixels += 4;
     }
-    
-    
+
     [pool release];
     return image;
-    
-    
-    
 }
 
 class ReaderWriterImageIO : public osgDB::ReaderWriter
@@ -327,13 +351,13 @@ class ReaderWriterImageIO : public osgDB::ReaderWriter
 public:
     ReaderWriterImageIO()
     {
-    
-        supportsExtension("jpg",   "jpg image file");
+        
+        supportsExtension("jpg",   "jpg image file"); 
         supportsExtension("jpeg",  "jpeg image file");
         supportsExtension("jpe",   "jpe image file");
         supportsExtension("jp2",   "jp2 image file");
-        supportsExtension("tiff",  "tiff image file");
-        supportsExtension("tif",   "tif image file");
+        supportsExtension("tiff",  "tiff image file"); 
+        supportsExtension("tif",   "tif image file");               
         supportsExtension("gif",   "gif image file");
         supportsExtension("png",   "png image file");
         supportsExtension("pict",  "pict image file");
@@ -346,14 +370,14 @@ public:
         supportsExtension("tga",   "tga image file");
         supportsExtension("targa", "targa image file");
         supportsExtension("psd",   "psd image file");
-    
+        
         supportsExtension("pdf",   "pdf image file");
         supportsExtension("eps",   "eps image file");
         supportsExtension("epi",   "epi image file");
         supportsExtension("epsf",  "epsf image file");
         supportsExtension("epsi",  "epsi image file");
         supportsExtension("ps",    "postscript image file");
-    
+        
         supportsExtension("dng",   "dng image file");
         supportsExtension("cr2",   "cr2 image file");
         supportsExtension("crw",   "crw image file");
@@ -375,7 +399,7 @@ public:
         supportsExtension("srf",   "srf image file");
         supportsExtension("cur",   "cur image file");
         supportsExtension("xbm",   "xbm image file");
-    
+        
         supportsExtension("raw",   "raw image file");
     }
     
@@ -452,10 +476,10 @@ public:
         // Call ImageIO to load the image.
         CGImageRef cg_image_ref = CreateCGImageFromDataStream(fin);
         if (NULL == cg_image_ref) return ReadResult::FILE_NOT_FOUND;
-    
+        
         // Create an osg::Image from the CGImageRef.
         osg::Image* osg_image = CreateOSGImageFromCGImage(cg_image_ref);
-    
+        
         CFRelease(cg_image_ref);
         return osg_image;
     }
@@ -487,7 +511,7 @@ public:
 #if 1
         ReadResult read_result = readImageFile(full_file_name);
 #else
-        // Only here to help test istream backend. The file version is better because
+        // Only here to help test istream backend. The file version is better because 
         // the filenname.extension could potentially be used by ImageIO to hint what the format type is.
         std::ifstream istream(full_file_name.c_str(), std::ios::in | std::ios::binary);
         if(!istream) return ReadResult::FILE_NOT_HANDLED;
@@ -506,7 +530,7 @@ public:
     {
         WriteResult ret_val = WriteResult::ERROR_IN_WRITING_FILE;
 
-        return WriteResult::FILE_SAVED;
+        return WriteResult::FILE_SAVED;    
     }
 
     virtual WriteResult writeImage(const osg::Image& osg_image, std::ostream& fout, const osgDB::ReaderWriter::Options* the_options) const
@@ -518,7 +542,7 @@ public:
     WriteResult writeImageFile(const osg::Image& osg_image, const std::string& full_file_name, const osgDB::ReaderWriter::Options* the_options) const
     {
         WriteResult ret_val = WriteResult::ERROR_IN_WRITING_FILE;
-    
+        
         return WriteResult::FILE_SAVED;
     }
 
@@ -533,12 +557,12 @@ public:
         full_file_name = file_name;
         return writeImageFile(osg_image, full_file_name, the_options);
 #else
-        // Only here to help test ostream backend. The file version is better because
+        // Only here to help test ostream backend. The file version is better because 
         // the filenname.extension could potentially be used by ImageIO to hint what the format type is.
         std::ofstream fout(file_name.c_str(), std::ios::out | std::ios::binary);
         if(!fout) return WriteResult::ERROR_IN_WRITING_FILE;
         return writeImage(osg_image, fout, the_options);
-#endif    
+#endif        
     }
 
 };

@@ -22,10 +22,20 @@ static bool readLightPointList( osgDB::InputStream& is, osgSim::LightPointNode& 
         is >> osgDB::PROPERTY("Attributes") >> pt._on >> blendingMode >> pt._intensity >> pt._radius;
         pt._blendingMode = (osgSim::LightPoint::BlendingMode)blendingMode;
         
-        is >> osgDB::PROPERTY("Sector");
-        pt._sector = dynamic_cast<osgSim::Sector*>( is.readObject() );
-        is >> osgDB::PROPERTY("BlinkSequence");
-        pt._blinkSequence = dynamic_cast<osgSim::BlinkSequence*>( is.readObject() );
+        bool hasObject = false; is >> osgDB::PROPERTY("Sector") >> hasObject;
+        if ( hasObject )
+        {
+            is >> osgDB::BEGIN_BRACKET;
+            pt._sector = dynamic_cast<osgSim::Sector*>( is.readObject() );
+            is >> osgDB::END_BRACKET;
+        }
+        hasObject = false; is >> osgDB::PROPERTY("BlinkSequence") >> hasObject;
+        if ( hasObject )
+        {
+            is >> osgDB::BEGIN_BRACKET;
+            pt._blinkSequence = dynamic_cast<osgSim::BlinkSequence*>( is.readObject() );
+            is >> osgDB::END_BRACKET;
+        }
         is >> osgDB::END_BRACKET;
         node.addLightPoint( pt );
     }
@@ -45,8 +55,20 @@ static bool writeLightPointList( osgDB::OutputStream& os, const osgSim::LightPoi
         os << osgDB::PROPERTY("Color") << pt._color << std::endl;
         os << osgDB::PROPERTY("Attributes") << pt._on << (int)pt._blendingMode
                                             << pt._intensity << pt._radius << std::endl;
-        os << osgDB::PROPERTY("Sector"); os.writeObject( pt._sector.get() );
-        os << osgDB::PROPERTY("BlinkSequence"); os.writeObject( pt._blinkSequence.get() );
+        os << osgDB::PROPERTY("Sector") << (pt._sector!=NULL);
+        if ( pt._sector!=NULL )
+        {
+            os << osgDB::BEGIN_BRACKET << std::endl;
+            os.writeObject( pt._sector.get() );
+            os << osgDB::END_BRACKET << std::endl;
+        }
+        os << osgDB::PROPERTY("BlinkSequence") << (pt._blinkSequence!=NULL);
+        if ( pt._blinkSequence!=NULL )
+        {
+            os << osgDB::BEGIN_BRACKET << std::endl;
+            os.writeObject( pt._blinkSequence.get() );
+            os << osgDB::END_BRACKET << std::endl;
+        }
         os << osgDB::END_BRACKET << std::endl;
     }
     os << osgDB::END_BRACKET << std::endl;

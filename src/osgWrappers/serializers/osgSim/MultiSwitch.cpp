@@ -23,6 +23,7 @@ static bool readValues( osgDB::InputStream& is, osgSim::MultiSwitch& node )
             values.push_back( value );
         }
         node.setValueList( i, values );
+        is >> osgDB::END_BRACKET;
     }
     is >> osgDB::END_BRACKET;
     return true;
@@ -40,7 +41,7 @@ static bool writeValues( osgDB::OutputStream& os, const osgSim::MultiSwitch& nod
         for ( osgSim::MultiSwitch::ValueList::const_iterator itr=values.begin();
               itr!=values.end(); ++itr )
         {
-            os << *itr;
+            os << *itr << std::endl;
         }
         os << osgDB::END_BRACKET << std::endl;
     }

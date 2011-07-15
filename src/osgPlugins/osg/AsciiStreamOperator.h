@@ -139,7 +139,7 @@ public:
     virtual void readBool( bool& b )
     {
         std::string boolString;
-        *_in >> boolString;
+        readString( boolString );
         if ( boolString=="TRUE" ) b = true;
         else b = false;
     }
@@ -147,50 +147,58 @@ public:
     virtual void readChar( char& c )
     {
         short s = 0;
-        *_in >> s;
+        readShort( s );
         c = (char)s;
     }
     
     virtual void readSChar( signed char& c )
     {
         short s = 0;
-        *_in >> s;
+        readShort( s );
         c = (signed char)s;
     }
     
     virtual void readUChar( unsigned char& c )
     {
         short s = 0;
-        *_in >> s;
+        readShort( s );
         c = (unsigned char)s;
     }
     
     virtual void readShort( short& s )
-    { std::string str; *_in >> str; s = static_cast<short>(strtol(str.c_str(), NULL, 0)); }
+    { std::string str; readString(str); s = static_cast<short>(strtol(str.c_str(), NULL, 0)); }
     
     virtual void readUShort( unsigned short& s )
-    { std::string str; *_in >> str; s = static_cast<unsigned short>(strtoul(str.c_str(), NULL, 0)); }
+    { std::string str; readString(str); s = static_cast<unsigned short>(strtoul(str.c_str(), NULL, 0)); }
     
     virtual void readInt( int& i )
-    { std::string str; *_in >> str; i = static_cast<int>(strtol(str.c_str(), NULL, 0)); }
+    { std::string str; readString(str); i = static_cast<int>(strtol(str.c_str(), NULL, 0)); }
     
     virtual void readUInt( unsigned int& i )
-    { std::string str; *_in >> str; i = static_cast<unsigned int>(strtoul(str.c_str(), NULL, 0)); }
+    { std::string str; readString(str); i = static_cast<unsigned int>(strtoul(str.c_str(), NULL, 0)); }
     
     virtual void readLong( long& l )
-    { std::string str; *_in >> str; l = strtol(str.c_str(), NULL, 0); }
+    { std::string str; readString(str); l = strtol(str.c_str(), NULL, 0); }
     
     virtual void readULong( unsigned long& l )
-    { std::string str; *_in >> str; l = strtoul(str.c_str(), NULL, 0); }
+    { std::string str; readString(str); l = strtoul(str.c_str(), NULL, 0); }
     
     virtual void readFloat( float& f )
-    { std::string str; *_in >> str; f = osg::asciiToFloat(str.c_str()); }
+    { std::string str; readString(str); f = osg::asciiToFloat(str.c_str()); }
     
     virtual void readDouble( double& d )
-    { std::string str; *_in >> str; d = osg::asciiToDouble(str.c_str()); }
+    { std::string str; readString(str); d = osg::asciiToDouble(str.c_str()); }
     
     virtual void readString( std::string& s )
-    { *_in >> s; }
+    {
+        if ( _preReadString.empty() )
+            *_in >> s;
+        else
+        {
+            s = _preReadString;
+            _preReadString.clear();
+        }
+    }
     
     virtual void readStream( std::istream& (*fn)(std::istream&) )
     { *_in >> fn; }
@@ -202,7 +210,7 @@ public:
     {
         GLenum e = 0;
         std::string enumString;
-        *_in >> enumString;
+        readString( enumString );
         e = osgDB::Registry::instance()->getObjectWrapperManager()->getValue("GL", enumString);
         value.set( e );
     }
@@ -211,7 +219,7 @@ public:
     {
         int value = 0;
         std::string enumString;
-        *_in >> enumString;
+        readString( enumString );
         if ( prop._mapProperty )
         {
             value = osgDB::Registry::instance()->getObjectWrapperManager()->getValue(prop._name, enumString);
@@ -231,13 +239,19 @@ public:
     virtual void readMark( osgDB::ObjectMark& mark )
     {
         std::string markString;
-        *_in >> markString;
+        readString( markString );
     }
     
     virtual void readCharArray( char* s, unsigned int size ) {}
     
     virtual void readWrappedString( std::string& str )
     {
+        if ( !_preReadString.empty() )
+        {
+            str = _preReadString;
+            return;
+        }
+        
         char ch;
         _in->get( ch ); checkStream();
 
@@ -276,16 +290,13 @@ public:
 
     virtual bool matchString( const std::string& str )
     {
-        std::string s; readString(s);
-        if ( s==str ) return true;
-        else 
+        if ( _preReadString.empty() )
+            *_in >> _preReadString;
+        
+        if ( _preReadString==str )
         {
-            // originally "_in->seekg( -(int)(s.length()), std::ios::cur );" was used below but
-            // problems under windows occurred when reading ascii files with unix line endings.
-            // The workaround for this problem was to unget each of the characters in term,
-            // hacky yes, but at least it works!
-            for (unsigned int i = 0; i < s.length(); ++i)
-                _in->unget();
+            _preReadString.clear();
+            return true;
         }
         return false;
     }
@@ -308,6 +319,9 @@ public:
                 blocks++;
         }
     }
+    
+protected:
+    std::string _preReadString;
 };
 
 #endif

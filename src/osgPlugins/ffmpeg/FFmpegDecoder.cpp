@@ -11,6 +11,20 @@
 #include <string.h>
 #include <iostream>
 
+// Changes for FFMpeg version greater than 0.6
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 64, 0)
+#define CODEC_TYPE_AUDIO AVMEDIA_TYPE_AUDIO
+#define CODEC_TYPE_VIDEO AVMEDIA_TYPE_VIDEO
+#endif
+
+#ifdef AVERROR
+#define AVERROR_IO AVERROR(EIO)
+#define AVERROR_NUMEXPECTED AVERROR(EDOM)
+#define AVERROR_NOMEM AVERROR(ENOMEM)
+#define AVERROR_NOFMT AVERROR(EILSEQ)
+#define AVERROR_NOTSUPP AVERROR(ENOSYS)
+#define AVERROR_NOENT AVERROR(ENOENT)
+#endif
 
 namespace osgFFmpeg {
 

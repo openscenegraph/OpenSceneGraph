@@ -5,6 +5,15 @@
 #include <iostream>
 #include <sstream>
 
+#if LIBAVCODEC_VERSION_MAJOR >= 53
+extern "C"
+{
+    #include <parseutils.h>
+}
+#define av_parse_video_frame_size av_parse_video_size
+#define av_parse_video_frame_rate av_parse_video_rate
+#endif
+
 #if LIBAVCODEC_VERSION_MAJOR >= 53 || \
     (LIBAVCODEC_VERSION_MAJOR==52 && LIBAVCODEC_VERSION_MINOR>=49)
 

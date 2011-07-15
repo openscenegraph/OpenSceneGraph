@@ -98,11 +98,8 @@ class ValueObject : public Object
 template< typename T >
 struct ValueObjectClassNameTrait
 {
-    static const char* s_className;
+    static const char* className() { return "TemplateValueObject"; }
 };
-
-template< typename T >
-const char* ValueObjectClassNameTrait<T>::s_className = "TemplateValueObject";
 
 
 template< typename T >
@@ -126,7 +123,7 @@ class TemplateValueObject : public ValueObject
         virtual Object* clone(const CopyOp& copyop) const { return new TemplateValueObject(*this, copyop); }
         virtual bool isSameKindAs(const Object* obj) const { return dynamic_cast<const TemplateValueObject*>(obj)!=NULL; }
         virtual const char* libraryName() const { return "osg"; }
-        virtual const char* className() const { return ValueObjectClassNameTrait<T>::s_className; }
+        virtual const char* className() const { return ValueObjectClassNameTrait<T>::className(); }
 
         void setValue(const T& value) { _value = value; }
         const T& getValue() const { return _value; }
@@ -142,8 +139,7 @@ protected:
 };
 
 #define META_ValueObject(TYPE,NAME) \
-    template<> struct ValueObjectClassNameTrait<TYPE> { static const char* s_className; }; \
-    const char* ValueObjectClassNameTrait<TYPE>::s_className = #NAME; \
+    template<> struct ValueObjectClassNameTrait<TYPE> { static const char* className() { return #NAME; } }; \
     typedef TemplateValueObject<TYPE> NAME;
 
 META_ValueObject(std::string, StringValueObject)

@@ -66,16 +66,16 @@ namespace osgAnimation
             return _keyframes.get();
         }
 
-        double getStartTime() const 
+        double getStartTime() const
         {
-            if (!_keyframes)
+            if (!_keyframes || _keyframes->empty())
                 return 0.0;
             return _keyframes->front().getTime();
         }
 
         double getEndTime() const 
         {
-            if (!_keyframes)
+            if (!_keyframes || _keyframes->empty())
                 return 0.0;
             return _keyframes->back().getTime();
         }

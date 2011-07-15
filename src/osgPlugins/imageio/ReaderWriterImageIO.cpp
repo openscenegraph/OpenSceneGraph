@@ -1285,7 +1285,3 @@ public:
 // now register with Registry to instantiate the above
 // reader/writer.
 REGISTER_OSGPLUGIN(imageio, ReaderWriterImageIO)
-
-
-
-

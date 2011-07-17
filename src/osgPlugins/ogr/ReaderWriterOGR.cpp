@@ -102,7 +102,7 @@ public:
     {
         supportsExtension("ogr","OGR file reader");
         supportsOption("useRandomColorByFeature", "Assign a random color to each feature.");
-        supportsOption("addGroupPerFeature", "Places each feature in a seperate group.");
+        supportsOption("addGroupPerFeature", "Places each feature in a separate group.");
         oldHandler = CPLSetErrorHandler(CPLOSGErrorHandler);
     }
 

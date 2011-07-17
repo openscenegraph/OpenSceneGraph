@@ -134,11 +134,11 @@ public:
 
         if (_imageProcessor.valid())
         {
-            OSG_NOTICE<<"Will be using ImageProcessor to proces image "<<image->getFileName()<<std::endl;
+            OSG_NOTICE<<"Will be using ImageProcessor to process image "<<image->getFileName()<<std::endl;
         }
         else
         {
-            OSG_NOTICE<<"No ImageProcessor to proces image "<<image->getFileName()<<std::endl;
+            OSG_NOTICE<<"No ImageProcessor to process image "<<image->getFileName()<<std::endl;
         }
             OSG_NOTICE<<"   compressImage "<<_compressImages<<std::endl;
             OSG_NOTICE<<"   generateMipmaps "<<_generateMipmaps<<std::endl;

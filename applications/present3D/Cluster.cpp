@@ -240,7 +240,7 @@ void CameraPacket::readEventQueue(osgViewer::Viewer& viewer)
 
 void CameraPacket::writeEventQueue(osgViewer::Viewer& viewer)
 {
-    osg::notify(osg::INFO)<<"recieved events = "<<_events.size()<<std::endl;
+    osg::notify(osg::INFO)<<"received events = "<<_events.size()<<std::endl;
 
     // copy the events to osgProducer style events.
     viewer.getEventQueue()->appendEvents(_events);

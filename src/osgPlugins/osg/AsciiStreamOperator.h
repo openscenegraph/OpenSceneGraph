@@ -246,35 +246,29 @@ public:
     
     virtual void readWrappedString( std::string& str )
     {
-        if ( !_preReadString.empty() )
-        {
-            str = _preReadString;
-            return;
-        }
-        
         char ch;
-        _in->get( ch ); checkStream();
+        getCharacter( ch );
 
         // skip white space
         while ( ch==' ' || (ch=='\n') || (ch=='\r'))
         {
-            _in->get( ch ); checkStream();
+            getCharacter( ch );
         }
 
         if (ch=='"')
         {
             // we have an "wrapped string"
-            _in->get( ch ); checkStream();
+            getCharacter( ch );
             while ( ch!='"' )
             {
                 if (ch=='\\')
                 {
-                    _in->get( ch ); checkStream();
+                    getCharacter( ch );
                     str += ch;
                 }
                 else str += ch;
 
-                _in->get( ch ); checkStream();
+                getCharacter( ch );
             }
         }
         else
@@ -283,7 +277,7 @@ public:
             while ( (ch!=' ') && (ch!=0) && (ch!='\n') )
             {
                 str += ch;
-                _in->get( ch ); checkStream();
+                getCharacter( ch );
             }
         }
     }
@@ -321,6 +315,20 @@ public:
     }
     
 protected:
+    void getCharacter( char& ch )
+    {
+        if ( !_preReadString.empty() )
+        {
+            ch = _preReadString[0];
+            _preReadString.erase( _preReadString.begin() );
+        }
+        else
+        {
+            _in->get( ch );
+            checkStream();
+        }
+    }
+    
     std::string _preReadString;
 };
 

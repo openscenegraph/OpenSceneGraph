@@ -326,7 +326,7 @@ public:
          
          // note from Robert Osfield when integrating, we should probably have so
          // error handling mechanism here.  Possibly move the load from
-         // the constructor to a seperate load method, and have a valid
+         // the constructor to a separate load method, and have a valid
          // state on the ImageStream... will integrated as is right now
          // to get things off the ground.
          QuicktimeImageStream* moov = new QuicktimeImageStream(fileName);

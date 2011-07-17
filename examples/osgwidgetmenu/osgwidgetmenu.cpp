@@ -112,7 +112,7 @@ int main(int argc, char** argv) {
 
     menu->addWidget(new ColorLabelMenu("Pick me!"));
     menu->addWidget(new ColorLabelMenu("No, wait, pick me!"));
-    menu->addWidget(new ColorLabelMenu("Dont pick them..."));
+    menu->addWidget(new ColorLabelMenu("Don't pick them..."));
     menu->addWidget(new ColorLabelMenu("Grarar!?!"));
 
     wm->addChild(menu);

@@ -451,7 +451,7 @@ int main( int argc, char **argv )
     
     // set up the usage document, in case we need to print out how to use this program.
     arguments.getApplicationUsage()->setApplicationName(arguments.getApplicationName());
-    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is an application for collecting a set of seperate files into a single archive file that can be later read in OSG applications..");
+    arguments.getApplicationUsage()->setDescription(arguments.getApplicationName()+" is an application for collecting a set of separate files into a single archive file that can be later read in OSG applications..");
     arguments.getApplicationUsage()->setCommandLineUsage(arguments.getApplicationName()+" [options] filename ...");
     arguments.getApplicationUsage()->addCommandLineOption("-l level","Read down to level across the whole database.");
     arguments.getApplicationUsage()->addCommandLineOption("-e level minX minY maxX maxY","Read down to <level> across the extents minX, minY to maxY, maxY.  Note, for geocentric datase X and Y are longitude and latitude respectively.");

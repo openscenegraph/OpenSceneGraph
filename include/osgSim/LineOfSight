@@ -44,7 +44,13 @@ class OSGSIM_EXPORT DatabaseCacheReadCallback : public osgUtil::IntersectionVisi
 };
 
 /** Helper class for setting up and acquiring line of sight intersections with terrain.
-  * Supports automatic paging in of PagedLOD tiles. */
+  * By default assigns a osgSim::DatabaseCacheReadCallback that enables automatic loading 
+  * of external PagedLOD tiles to ensure that the highest level of detail is used in intersections.
+  * This automatic loading of tiles is done by the intersection traversal that is done within
+  * the computeIntersections(..) method, so can result in long intersection times when external
+  * tiles have to be loaded.
+  * The external loading of tiles can be disabled by removing the read callback, this is done by
+  * calling the setDatabaseCacheReadCallback(DatabaseCacheReadCallback*) method with a value of 0.*/
 class OSGSIM_EXPORT LineOfSight
 {
     public :

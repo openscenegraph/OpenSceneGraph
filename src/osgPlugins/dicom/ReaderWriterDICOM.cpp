@@ -19,7 +19,7 @@
 #include <osgVolume/RayTracedTechnique>
 
 #ifdef  USE_DCMTK
-    #ifndef _WIN32
+    #ifndef _MSC_VER
         #define HAVE_CONFIG_H
     #endif
 

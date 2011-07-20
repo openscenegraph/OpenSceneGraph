@@ -287,11 +287,17 @@ osg::BoundingBox TextBase::computeBound() const
 
         if (!bbox.valid())
         {
-            // provide a fallback in cases where no bounding box has been been setup so far
-            if (_characterSizeMode!=OBJECT_COORDS || _autoRotateToScreen)
+            // Provide a fallback in cases where no bounding box has been been setup so far.
+            // Note, assume a scaling of 1.0 for _characterSizeMode!=OBJECT_COORDS as the
+            // for screen space coordinates size modes we don't know what scale will be used until
+            // the text is actually rendered, but we haven't to assume something otherwise the
+            // text label will be culled by view or small feature culling on first frame.
+            if (_autoRotateToScreen)
             {
-                // default to a zero size.
-                bbox.set(_position, _position);
+                // use bounding sphere encompassing the maximum size of the text centered on the _position
+                double radius = _textBB.radius();
+                osg::Vec3 diagonal(radius, radius, radius);
+                bbox.set(_position-diagonal, _position+diagonal);
             }
             else
             {

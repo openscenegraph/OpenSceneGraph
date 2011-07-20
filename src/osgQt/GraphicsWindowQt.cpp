@@ -288,7 +288,9 @@ void GLWidget::wheelEvent( QWheelEvent* event )
 {
     setKeyboardModifiers( event );
     _gw->getEventQueue()->mouseScroll(
-        event->delta()>0 ? osgGA::GUIEventAdapter::SCROLL_UP : osgGA::GUIEventAdapter::SCROLL_DOWN );
+        event->orientation() == Qt::Vertical ?
+            (event->delta()>0 ? osgGA::GUIEventAdapter::SCROLL_UP : osgGA::GUIEventAdapter::SCROLL_DOWN) :
+            (event->delta()>0 ? osgGA::GUIEventAdapter::SCROLL_LEFT : osgGA::GUIEventAdapter::SCROLL_RIGHT) );
 }
 
 

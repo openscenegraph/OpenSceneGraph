@@ -178,33 +178,26 @@ osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string& f
     if (fileName.empty())
         return ReadResult::FILE_NOT_FOUND;
 
-    // convert possible Windows backslashes to Unix slashes
-    // OpenVRML doesn't like backslashes, even on Windows
-    std::string unixFileName = osgDB::convertFileNameToUnixStyle(fileName);
-
-#ifdef WIN32
-    if(unixFileName[1] == ':') // absolute path
-    fileName = "file:///" + unixFileName;
-#else
-    if (unixFileName[0] == '/') // absolute path
-        fileName = "file://" + unixFileName;
-#endif
-    else
-        // relative path
-        fileName = unixFileName;
-
     std::fstream null;
     resource_fetcher fetcher;
     openvrml::browser *b = new openvrml::browser(fetcher, null, null);
 
     osgDB::ifstream vrml_stream(fileName.c_str());
+    if (!vrml_stream.is_open())
+    {
+        OSG_INFO << "ReaderWriterVRML2: Could not open \"" << fileName << "\"" << std::endl;
+        return ReadResult::FILE_NOT_FOUND;
+    }
 
     try
     {
         const std::vector< boost::intrusive_ptr< openvrml::node > > & mfn = b->create_vrml_from_stream(vrml_stream);
 
         if(mfn.empty())
+        {
+            OSG_INFO << "ReaderWriterVRML2: OpenVRML library did not return any vrml nodes." << std::endl;
             return ReadResult::FILE_NOT_HANDLED;
+        }
         else
         {
             osg::ref_ptr<osg::MatrixTransform> osg_root = new osg::MatrixTransform(osg::Matrix( 1, 0, 0, 0,
@@ -212,7 +205,7 @@ osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string& f
                                                                                                 0, -1, 0, 0,
                                                                                                 0, 0, 0, 1));
 
-            osgDB::getDataFilePathList().push_front(osgDB::getFilePath(unixFileName));
+            osgDB::getDataFilePathList().push_front(osgDB::getFilePath(fileName));
             for (unsigned i = 0; i < mfn.size(); i++)
             {
                 openvrml::node *vrml_node = mfn[i].get();
@@ -223,8 +216,16 @@ osgDB::ReaderWriter::ReadResult ReaderWriterVRML2::readNode(const std::string& f
         }
     }
 
-    catch (openvrml::invalid_vrml) { return ReadResult::FILE_NOT_HANDLED; }
-    catch (std::invalid_argument)  { return ReadResult::FILE_NOT_HANDLED; }
+    catch (const openvrml::invalid_vrml& e)
+    {
+        OSG_INFO << "ReaderWriterVRML2: Invalid VRML in line " << e.line << " at column " << e.column << ": \"" << e.what() << "\"" << std::endl;
+        return ReadResult::FILE_NOT_HANDLED;
+    }
+    catch (const std::invalid_argument& e)
+    {
+        OSG_INFO << "ReaderWriterVRML2: Invalid argument: \"" << e.what() << "\"" << std::endl;
+        return ReadResult::FILE_NOT_HANDLED;
+    }
 }
 
 osgDB::ReaderWriter::WriteResult ReaderWriterVRML2::writeNode(const osg::Node& root,const std::string& filename, const osgDB::ReaderWriter::Options *options) const

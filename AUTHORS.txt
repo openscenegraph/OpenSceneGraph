@@ -1,6 +1,6 @@
-OpenSceneGraph Library 3.0.0
+OpenSceneGraph Library 3.0.1
 
-464 Contributors:
+466 Contributors:
 
 Firstname Surname
 -----------------
@@ -14,9 +14,9 @@ Mike Weiblen
 Jean-Sébastien Guay
 Farshid Lashkari
 Eric Wing
+Wang Rui
 Ulrich Hertlein
 Cedric Pinson
-Wang Rui
 Brede Johansen
 Sukender 
 Michael Platings
@@ -46,11 +46,11 @@ David Fries
 Tom Jolley
 Pavel Moloshtan
 Jason Daly
+Alberto Luaces
 Philip Lowman
 Per Fahlberg
 Norman Vine
 Art Tevs
-Alberto Luaces
 Serge Lages
 Magnus Kessler
 Laurens Voerman
@@ -172,6 +172,7 @@ Thomas Hogarth
 Sohey Yamamoto
 Sergey Leontyev
 Santosh Gaikwad
+Ryan Pavlik
 Rudolf Wiedemann
 Rene Molenaar
 Phil Atkin
@@ -217,7 +218,6 @@ Stephane Simon
 Stephan Eilemann
 Stanislav Blinov
 Sebastian Messerschmidt
-Ryan Pavlik
 Raymond de Vries
 Ralf Kern
 Piotr Gwiazdowski
@@ -326,6 +326,7 @@ Pierre Bourdin
 Philipp Svehla
 Philipp Siemoleit
 Philipp Mächler
+Philip Lamb
 Petr Salinger
 Peter Bear
 Peter Amstutz
@@ -434,6 +435,7 @@ Dan Minor
 César L. B. Silveira
 Cyril Brulebois
 Clay Fowler
+Claus Scheiblauer
 Chuck Sembroski
 Christopher Blaesius
 Christian Kaser

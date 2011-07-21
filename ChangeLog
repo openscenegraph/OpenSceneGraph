@@ -1,3 +1,152 @@
+2011-07-21 09:19  robert
+
+	* src/osgText/TextBase.cpp: Merged from svn/trunk, workaround to
+	  culling issues assocaited with text that is set to scale relative
+	  to screen coords or is rotated to the screen.
+
+2011-07-21 09:10  robert
+
+	* src/osgPlugins/vrml/ReaderWriterVRML2.cpp: From Mathias
+	  Froehlich, merged from svn/trunk revision 12708, "I have attached
+	  an updated version of the VRML2 loader.
+	  That change is the result of the '[osgPlugins] VRML plugin -
+	  "file" url'
+	  discussion on osg-users.
+	  
+	  The attached change avoids rewriting file names into some kind of
+	  file urls
+	  and then use the url for opening an fstream. Instead just use the
+	  given file
+	  name to open the stream.
+	  Also this change adds some Notify output for the error paths."
+
+2011-07-21 08:53  robert
+
+	* CMakeModules/FindFBX.cmake: From Wang Rui, merged from svn/trunk
+	  revision 12706, "This fixes a small problem in the FindFBX file.
+	  In CMake scripts,
+	  VS2010 is not marked as MSVC100 but MSVC10. And CMake defines
+	  MSVC_VERSION instead of MSVC_VER to indicate the version number.
+	  The
+	  modification can find fbx sdk for VS2010 automatically now.
+	  "
+
+2011-07-20 10:18  robert
+
+	* src/osgQt/GraphicsWindowQt.cpp: From Claus Scheiblauer, merged
+	  from svn/trunk revision 12704, fixed handling of horizontal mouse
+	  wheel event
+
+2011-07-18 12:44  robert
+
+	* include/osgSim/ElevationSlice, include/osgSim/HeightAboveTerrain,
+	  include/osgSim/LineOfSight: Merged from svn/trunk revision 12701.
+	  Added doxygen comments explain read file callback functionality.
+
+2011-07-18 09:42  robert
+
+	* src/osgPlugins/dicom/ReaderWriterDICOM.cpp: Merged from svn/trunk
+	  revision, 12699, build fix for Cygwin/Mingw builds of DCMTK.
+
+2011-07-17 16:26  robert
+
+	* applications/osgarchive/osgarchive.cpp,
+	  applications/osgfilecache/osgfilecache.cpp,
+	  applications/present3D/Cluster.cpp,
+	  examples/osganalysis/osganalysis.cpp,
+	  examples/osgpagedlod/osgpagedlod.cpp,
+	  examples/osgparticleeffects/osgparticleeffects.cpp,
+	  examples/osgwidgetmenu/osgwidgetmenu.cpp,
+	  src/osgPlugins/ogr/ReaderWriterOGR.cpp,
+	  src/osgPlugins/quicktime/ReaderWriterQT.cpp,
+	  src/osgPlugins/stl/ReaderWriterSTL.cpp,
+	  src/osgPlugins/txp/trpage_header.cpp: From Alberto Luaces, merged
+	  from svn/trunk revision 12697, typo fixes
+
+2011-07-17 10:33  robert
+
+	* src/osgPlugins/osg/AsciiStreamOperator.h: From Wang Rui, merged
+	  from svn/trunk revision 12695. "improved the handling of the
+	  _preReadString within the readWrappedString method by factoring
+	  the
+	  reading of the next character into a dedicated getCharacter(..)
+	  method."
+
+2011-07-15 10:25  robert
+
+	* src/osgPlugins/ffmpeg/FFmpegDecoder.cpp,
+	  src/osgPlugins/ffmpeg/FFmpegParameters.cpp: From Wang Rui, merged
+	  from svn/trunk revision 12693, "I've found that the latest ffmpeg
+	  made some functions and macros
+	  deprecated, which led to compilation errors in the OSG plugin. I
+	  tried
+	  fixing them and tested with the version ffmpeg-git-5d4fd1d
+	  (ffmpeg
+	  version > 0.8, libavcodec = 53.7.0) under Windows."
+
+2011-07-15 09:48  robert
+
+	* include/osg/ValueObject: From Sukender, merged from svn/trunk
+	  revision 12690. Fixed compiler error "public: static char const *
+	  const osg::ValueObjectClassNameTrait< xxx >::s_className" already
+	  defined in xxx.obj"
+
+2011-07-15 09:16  robert
+
+	* src/osgPlugins/osg/AsciiStreamOperator.h,
+	  src/osgWrappers/serializers/osgSim/LightPointNode.cpp,
+	  src/osgWrappers/serializers/osgSim/MultiSwitch.cpp: From Wang
+	  Rui, merged from svn/trunk revision 12688. "The files attached
+	  should be separately put into the directories
+	  src/osgPlugins/osg and src/osgWrappers/serializers/osgSim. They
+	  fix a
+	  serious infinite loop problem that may be caused by the stream
+	  buffer
+	  mechanism under Windows and some osgSim wrapper bugs pointed by
+	  Andreas. I've asked the community to help test them and hope now
+	  we
+	  can solve these recent .osgt file reading issues."
+
+2011-07-15 08:45  robert
+
+	* src/osgPlugins/Inventor/ConvertToInventor.h: From Ryan Pavlik,
+	  Merged from svn/trunk revision 12686. "Fix inventor state copy
+	  constructor.
+	  
+	  Clang warning:
+	  In file included from
+	  src/osgPlugins/Inventor/ConvertToInventor.cpp:80:
+	  src/osgPlugins/Inventor/ConvertToInventor.h:117:71: warning:
+	  field is uninitialized when used here [-Wuninitialized]
+	  osgTexGenS(s.osgTexGenS), osgTexGenT(s.osgTexGenT),
+	  osgTexGen(osgTexGen),
+	  ^"
+
+2011-07-15 08:37  robert
+
+	* src/osgPlugins/imageio/ReaderWriterImageIO_IOS.cpp: From Philip
+	  Lamp, Merged from svn/trunk revision 12683. "Modify the
+	  ReaderWriteImageIO_IOS to correctly handle relative paths
+	  when reading from a file. This means that no longer do all image
+	  files
+	  have to live at the root of the Resources folder inside the app
+	  bundle,
+	  but can now be organized inside folders. Also improved error
+	  handling
+	  and fixed a potential leak of a CGColorSpaceRef each once per
+	  image load."
+
+2011-07-15 08:35  robert
+
+	* src/osgPlugins/imageio/ReaderWriterImageIO.cpp,
+	  src/osgPlugins/imageio/ReaderWriterImageIO_IOS.cpp: Removed
+	  redudent lines and changes tabs to four spaces
+
+2011-06-28 07:52  robert
+
+	* ChangeLog, applications/osgversion/Contributors.cpp: Updated
+	  ChangeLog and add fix for typo of name
+
 2011-06-28 07:37  robert
 
 	* NEWS.txt: Fixed typo and added entry about osgParticle.

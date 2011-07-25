@@ -544,6 +544,44 @@ void Renderer::compile()
     sceneView->getState()->checkGLErrors("After Renderer::compile");
 }
 
+static void collectSceneViewStats(unsigned int frameNumber, osgUtil::SceneView* sceneView, osg::Stats* stats)
+{
+    osgUtil::Statistics sceneStats;
+    sceneView->getStats(sceneStats);
+
+    stats->setAttribute(frameNumber, "Visible vertex count", static_cast<double>(sceneStats._vertexCount));
+    stats->setAttribute(frameNumber, "Visible number of drawables", static_cast<double>(sceneStats.numDrawables));
+    stats->setAttribute(frameNumber, "Visible number of fast drawables", static_cast<double>(sceneStats.numFastDrawables));
+    stats->setAttribute(frameNumber, "Visible number of lights", static_cast<double>(sceneStats.nlights));
+    stats->setAttribute(frameNumber, "Visible number of render bins", static_cast<double>(sceneStats.nbins));
+    stats->setAttribute(frameNumber, "Visible depth", static_cast<double>(sceneStats.depth));
+    stats->setAttribute(frameNumber, "Number of StateGraphs", static_cast<double>(sceneStats.numStateGraphs));
+    stats->setAttribute(frameNumber, "Visible number of impostors", static_cast<double>(sceneStats.nimpostor));
+    stats->setAttribute(frameNumber, "Number of ordered leaves", static_cast<double>(sceneStats.numOrderedLeaves));
+
+    unsigned int totalNumPrimitiveSets = 0;
+    const osgUtil::Statistics::PrimitiveValueMap& pvm = sceneStats.getPrimitiveValueMap();
+    for(osgUtil::Statistics::PrimitiveValueMap::const_iterator pvm_itr = pvm.begin();
+        pvm_itr != pvm.end();
+        ++pvm_itr)
+    {
+        totalNumPrimitiveSets += pvm_itr->second.first;
+    }
+    stats->setAttribute(frameNumber, "Visible number of PrimitiveSets", static_cast<double>(totalNumPrimitiveSets));
+
+    osgUtil::Statistics::PrimitiveCountMap& pcm = sceneStats.getPrimitiveCountMap();
+    stats->setAttribute(frameNumber, "Visible number of GL_POINTS", static_cast<double>(pcm[GL_POINTS]));
+    stats->setAttribute(frameNumber, "Visible number of GL_LINES", static_cast<double>(pcm[GL_LINES]));
+    stats->setAttribute(frameNumber, "Visible number of GL_LINE_STRIP", static_cast<double>(pcm[GL_LINE_STRIP]));
+    stats->setAttribute(frameNumber, "Visible number of GL_LINE_LOOP", static_cast<double>(pcm[GL_LINE_LOOP]));
+    stats->setAttribute(frameNumber, "Visible number of GL_TRIANGLES", static_cast<double>(pcm[GL_TRIANGLES]));
+    stats->setAttribute(frameNumber, "Visible number of GL_TRIANGLE_STRIP", static_cast<double>(pcm[GL_TRIANGLE_STRIP]));
+    stats->setAttribute(frameNumber, "Visible number of GL_TRIANGLE_FAN", static_cast<double>(pcm[GL_TRIANGLE_FAN]));
+    stats->setAttribute(frameNumber, "Visible number of GL_QUADS", static_cast<double>(pcm[GL_QUADS]));
+    stats->setAttribute(frameNumber, "Visible number of GL_QUAD_STRIP", static_cast<double>(pcm[GL_QUAD_STRIP]));
+    stats->setAttribute(frameNumber, "Visible number of GL_POLYGON", static_cast<double>(pcm[GL_POLYGON]));
+}
+
 void Renderer::cull()
 {
     DEBUG_MESSAGE<<"cull()"<<std::endl;
@@ -596,41 +634,7 @@ void Renderer::cull()
 
         if (stats && stats->collectStats("scene"))
         {
-            osgUtil::Statistics sceneStats;
-            sceneView->getStats(sceneStats);
-
-            stats->setAttribute(frameNumber, "Visible vertex count", static_cast<double>(sceneStats._vertexCount));
-            stats->setAttribute(frameNumber, "Visible number of drawables", static_cast<double>(sceneStats.numDrawables));
-            stats->setAttribute(frameNumber, "Visible number of fast drawables", static_cast<double>(sceneStats.numFastDrawables));
-            stats->setAttribute(frameNumber, "Visible number of lights", static_cast<double>(sceneStats.nlights));
-            stats->setAttribute(frameNumber, "Visible number of render bins", static_cast<double>(sceneStats.nbins));
-            stats->setAttribute(frameNumber, "Visible depth", static_cast<double>(sceneStats.depth));
-            stats->setAttribute(frameNumber, "Number of StateGraphs", static_cast<double>(sceneStats.numStateGraphs));
-            stats->setAttribute(frameNumber, "Visible number of impostors", static_cast<double>(sceneStats.nimpostor));
-            stats->setAttribute(frameNumber, "Number of ordered leaves", static_cast<double>(sceneStats.numOrderedLeaves));
-
-            unsigned int totalNumPrimitiveSets = 0;
-            const osgUtil::Statistics::PrimitiveValueMap& pvm = sceneStats.getPrimitiveValueMap();
-            for(osgUtil::Statistics::PrimitiveValueMap::const_iterator pvm_itr = pvm.begin();
-                pvm_itr != pvm.end();
-                ++pvm_itr)
-            {
-                totalNumPrimitiveSets += pvm_itr->second.first;
-            }
-            stats->setAttribute(frameNumber, "Visible number of PrimitiveSets", static_cast<double>(totalNumPrimitiveSets));
-
-            osgUtil::Statistics::PrimitiveCountMap& pcm = sceneStats.getPrimitiveCountMap();
-            stats->setAttribute(frameNumber, "Visible number of GL_POINTS", static_cast<double>(pcm[GL_POINTS]));
-            stats->setAttribute(frameNumber, "Visible number of GL_LINES", static_cast<double>(pcm[GL_LINES]));
-            stats->setAttribute(frameNumber, "Visible number of GL_LINE_STRIP", static_cast<double>(pcm[GL_LINE_STRIP]));
-            stats->setAttribute(frameNumber, "Visible number of GL_LINE_LOOP", static_cast<double>(pcm[GL_LINE_LOOP]));
-            stats->setAttribute(frameNumber, "Visible number of GL_TRIANGLES", static_cast<double>(pcm[GL_TRIANGLES]));
-            stats->setAttribute(frameNumber, "Visible number of GL_TRIANGLE_STRIP", static_cast<double>(pcm[GL_TRIANGLE_STRIP]));
-            stats->setAttribute(frameNumber, "Visible number of GL_TRIANGLE_FAN", static_cast<double>(pcm[GL_TRIANGLE_FAN]));
-            stats->setAttribute(frameNumber, "Visible number of GL_QUADS", static_cast<double>(pcm[GL_QUADS]));
-            stats->setAttribute(frameNumber, "Visible number of GL_QUAD_STRIP", static_cast<double>(pcm[GL_QUAD_STRIP]));
-            stats->setAttribute(frameNumber, "Visible number of GL_POLYGON", static_cast<double>(pcm[GL_POLYGON]));
-
+            collectSceneViewStats(frameNumber, sceneView, stats);
         }
 
         _drawQueue.add(sceneView);
@@ -808,17 +812,7 @@ void Renderer::cull_draw()
 
     if (stats && stats->collectStats("scene"))
     {
-        osgUtil::Statistics sceneStats;
-        sceneView->getStats(sceneStats);
-
-        stats->setAttribute(frameNumber, "Visible vertex count", static_cast<double>(sceneStats._vertexCount));
-        stats->setAttribute(frameNumber, "Visible number of drawables", static_cast<double>(sceneStats.numDrawables));
-        stats->setAttribute(frameNumber, "Visible number of lights", static_cast<double>(sceneStats.nlights));
-        stats->setAttribute(frameNumber, "Visible number of render bins", static_cast<double>(sceneStats.nbins));
-        stats->setAttribute(frameNumber, "Visible depth", static_cast<double>(sceneStats.depth));
-        stats->setAttribute(frameNumber, "Number of StateGraphs", static_cast<double>(sceneStats.numStateGraphs));
-        stats->setAttribute(frameNumber, "Visible number of impostors", static_cast<double>(sceneStats.nimpostor));
-        stats->setAttribute(frameNumber, "Number of ordered leaves", static_cast<double>(sceneStats.numOrderedLeaves));
+        collectSceneViewStats(frameNumber, sceneView, stats);
     }
 
 #if 0

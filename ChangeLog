@@ -1,3 +1,39 @@
+2011-07-25 18:39  robert
+
+	* CMakeLists.txt: Updated release candidate number
+
+2011-07-25 17:08  robert
+
+	* src/osgViewer/Renderer.cpp: Merged from svn/trunk revision 12818,
+	  "Fixed stats bug where not all stats fields were being collected
+	  by the cull_draw() method used in the SingleThreaded and
+	  CullDrawThreadPerContext threading models."
+
+2011-07-22 09:28  robert
+
+	* src/osg/Texture.cpp: From Alexander Irion, merged from svn/trunk
+	  revision 12716, "Texture borders are not supported in ES.
+	  
+	  _isTextureBorderClampSupported is set to "TRUE" in Texture.cpp,
+	  because of the version number check (GL VERSION >= 1.3).
+	  
+	  This leads to an invalid enum error, when GL_TEXTURE_BORDER_COLOR
+	  is tried to set."
+
+2011-07-22 08:26  robert
+
+	* src/osgViewer/ViewerEventHandlers.cpp: Merged from svn/trunk
+	  revision 12714, "In the RecordCameraPathhandler fixed the
+	  handling of pressing 'Z' before 'z' which was causing the view
+	  to be reset to 0,0,0 by AnimationPathManipualtor with an empty
+	  AnimationPath."
+
+2011-07-21 09:54  robert
+
+	* AUTHORS.txt, CMakeLists.txt, ChangeLog,
+	  applications/osgversion/Contributors.cpp, include/osg/Version:
+	  Updated ChangeLog, Version and AUTHORS file for 3.0.1-rc1
+
 2011-07-21 09:19  robert
 
 	* src/osgText/TextBase.cpp: Merged from svn/trunk, workaround to

@@ -163,6 +163,7 @@ Bruce Clay
 Bradley Anderegg
 Andreas Goebel
 Alok Priyadarshi
+Alexander Irion
 Alberto Barbati
 Alan Dickinson
 Vladimir Shabanov
@@ -205,7 +206,6 @@ Andrew Bettison
 Anders Backman
 Ali Botorabi
 Alexander Wiebel
-Alexander Irion
 Zach Deedler
 Yuzhong Shen
 Warren Macchi

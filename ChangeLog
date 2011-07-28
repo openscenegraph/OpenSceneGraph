@@ -1,3 +1,48 @@
+2011-07-28 16:41  robert
+
+	* src/osgPlugins/dicom/ReaderWriterDICOM.cpp: Improved the handling
+	  of scaling of dicom imagery.
+
+2011-07-28 12:08  robert
+
+	* src/osgViewer/GraphicsWindowX11.cpp: Merged from svn/trunk
+	  revision 12722. Refectored the EGL setup so that it's honours the
+	  Traits values.
+
+2011-07-28 11:05  robert
+
+	* src/osg/Texture.cpp, src/osgWrappers/serializers/osg/Texture.cpp:
+	  Merged from svn/trunk, revision 12727, Reverted the change to the
+	  default setting of _resizeNonPowerOfTwoHint back to true for all
+	  platforms to ensure the
+	  same behaivour across platforms, something that can be achieved
+	  now thanks to the integrated GLU library.
+	  
+	  Corrected the default of the ResizeNonPowerOfTwoHint to true to
+	  reflect the actual default setting set by the
+	  Texture default constructor.
+
+2011-07-28 08:19  robert
+
+	* src/osgDB/ObjectWrapper.cpp: From Johannes Baeuerle, merged from
+	  svn/trunk revision 12725, "in the file
+	  src/osgDB/ObjectWrapper.cpp, where the GlobalLookupTable for gl
+	  enums for serialization purposes is defined, some of the
+	  compressed texture formats are missing. I added enums for the pvr
+	  and etc formats."
+
+2011-07-28 07:47  robert
+
+	* src/osgViewer/View.cpp: From Jason Beverage, merged from
+	  svn/trunk revision 12723, "Here is a small fix for
+	  getCameraContainingPosition. getXMin was
+	  being used in a case where getYMin should be used instead."
+
+2011-07-25 19:28  robert
+
+	* AUTHORS.txt, ChangeLog: Updated ChangeLog and AUTHORS file for
+	  3.0.1-rc2
+
 2011-07-25 18:39  robert
 
 	* CMakeLists.txt: Updated release candidate number

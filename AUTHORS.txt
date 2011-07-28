@@ -36,8 +36,8 @@ Roland Smeenk
 Roger James
 Jeremy Moles
 Chris Hanson
-Mattias Helsing
 Jason Beverage
+Mattias Helsing
 Jan Peciva
 Andy Skinner
 Paul Melis
@@ -116,6 +116,7 @@ Loic Dachary
 Joseph Steel
 Jorge Izquierdo
 John Shue
+Johannes Baeuerle
 Chuck Seberino
 Brad Colbert
 Vivek Rajan
@@ -133,7 +134,6 @@ Mihai Radu
 Michael Hartman
 Martins Innus
 Maciej Krol
-Johannes Baeuerle
 Johan Nouvel
 Hartwig Wiesmann
 Frederic Bouvier

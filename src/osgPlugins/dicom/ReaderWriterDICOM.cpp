@@ -559,8 +559,6 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             osg::ref_ptr<osgVolume::ImageDetails> details = new osgVolume::ImageDetails;
             details->setMatrix(new osg::RefMatrix);
 
-            osg::ref_ptr<osg::Image> image;
-
             unsigned int imageNum = 0;
             EP_Representation pixelRep = EPR_Uint8;
             int numPlanes = 0;
@@ -574,8 +572,6 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
             typedef std::map<double, FileInfo> DistanceFileInfoMap;
             typedef std::map<osg::Vec3d, DistanceFileInfoMap> OrientationFileInfoMap;
             OrientationFileInfoMap orientationFileInfoMap;
-
-            unsigned int totalNumSlices = 0;
 
             typedef std::map<std::string, ReadResult> ErrorMap;
             ErrorMap errorMap;
@@ -595,13 +591,6 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
 
                 FileInfo fileInfo;
                 fileInfo.filename = *itr;
-
-                double pixelSize_y = 1.0;
-                double pixelSize_x = 1.0;
-                double sliceThickness = 1.0;
-                double imagePositionPatient[3] = {0, 0, 0};
-                double imageOrientationPatient[6] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0 };
-                Uint16 numOfSlices = 1;
 
                 // code for reading the intercept and scale that is required to convert to Hounsfield units.
                 bool rescaling = false;
@@ -632,28 +621,33 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 double value = 0.0;
                 if (fileformat.getDataset()->findAndGetFloat64(DCM_PixelSpacing, value,0).good())
                 {
-                    pixelSize_y = value;
-                    fileInfo.matrix(1,1) = pixelSize_y;
+                    fileInfo.pixelSize_x = value;
                 }
 
                 if (fileformat.getDataset()->findAndGetFloat64(DCM_PixelSpacing, value,1).good())
                 {
-                    pixelSize_x = value;
-                    fileInfo.matrix(0,0) = pixelSize_x;
+                    fileInfo.pixelSize_y = value;
                 }
+
+                if (fileformat.getDataset()->findAndGetFloat64(DCM_SpacingBetweenSlices, value,0).good())
+                {
+                    info()<<"DCM_SpacingBetweenSlices = "<<value<<std::endl;
+                    fileInfo.sliceThickness = value;
+                }
+
 
                 // Get slice thickness
                 if (fileformat.getDataset()->findAndGetFloat64(DCM_SliceThickness, value).good())
                 {
-                    sliceThickness = value;
-                    info()<<"sliceThickness = "<<sliceThickness<<std::endl;
-                    fileInfo.sliceThickness = sliceThickness;
+                    info()<<"DCM_SliceThickness = "<<value<<std::endl;
+                    fileInfo.sliceThickness = value;
                 }
 
                 info()<<"tagExistsWithValue(DCM_NumberOfFrames)="<<fileformat.getDataset()->tagExistsWithValue(DCM_NumberOfFrames)<<std::endl;
                 info()<<"tagExistsWithValue(DCM_NumberOfSlices)="<<fileformat.getDataset()->tagExistsWithValue(DCM_NumberOfSlices)<<std::endl;
 
-                Uint32 numFrames;
+                Uint16 numOfSlices = 1;
+                Uint32 numFrames = 1;
                 if (fileformat.getDataset()->findAndGetUint32(DCM_NumberOfFrames, numFrames).good())
                 {
                     fileInfo.numSlices = numFrames;
@@ -681,8 +675,8 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 }
 
 
-
                 // patient position
+                double imagePositionPatient[3] = {0.0, 0.0, 0.0};
                 for(int i=0; i<3; ++i)
                 {
                     if (fileformat.getDataset()->findAndGetFloat64(DCM_ImagePositionPatient, imagePositionPatient[i],i).good())
@@ -694,10 +688,9 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                         info()<<"Have not read DCM_ImagePositionPatient["<<i<<"]"<<std::endl;
                     }
                 }
-                //info()<<"imagePositionPatient[2]="<<imagePositionPatient[2]<<std::endl;
+                fileInfo.position.set(imagePositionPatient[0],imagePositionPatient[1],imagePositionPatient[2]);
 
-                fileInfo.matrix.setTrans(imagePositionPatient[0],imagePositionPatient[1],imagePositionPatient[2]);
-
+                double imageOrientationPatient[6] = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0 };
                 for(int i=0; i<6; ++i)
                 {
                     double value = 0.0;
@@ -712,232 +705,240 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                     }
                 }
 
-                osg::Vec3d dirX(imageOrientationPatient[0],imageOrientationPatient[1],imageOrientationPatient[2]);
-                osg::Vec3d dirY(imageOrientationPatient[3],imageOrientationPatient[4],imageOrientationPatient[5]);
-                osg::Vec3d dirZ = dirX ^ dirY;
-                dirZ.normalize();
+                fileInfo.dirX.set(imageOrientationPatient[0],imageOrientationPatient[1],imageOrientationPatient[2]);
+                fileInfo.dirY.set(imageOrientationPatient[3],imageOrientationPatient[4],imageOrientationPatient[5]);
+                fileInfo.dirZ = fileInfo.dirX ^ fileInfo.dirY;
+                fileInfo.dirZ.normalize();
+                fileInfo.distance = fileInfo.dirZ * fileInfo.position;
 
-                dirX *= pixelSize_x;
-                dirY *= pixelSize_y;
 
-                fileInfo.matrix(0,0) = dirX[0];
-                fileInfo.matrix(1,0) = dirX[1];
-                fileInfo.matrix(2,0) = dirX[2];
+                info()<<"pixelSize_x="<<fileInfo.pixelSize_x<<std::endl;
+                info()<<"pixelSize_y="<<fileInfo.pixelSize_x<<std::endl;
 
-                fileInfo.matrix(0,1) = dirY[0];
-                fileInfo.matrix(1,1) = dirY[1];
-                fileInfo.matrix(2,1) = dirY[2];
-
-                fileInfo.matrix(0,2) = dirZ[0];
-                fileInfo.matrix(1,2) = dirZ[1];
-                fileInfo.matrix(2,2) = dirZ[2];
-
-                fileInfo.distance = dirZ * (osg::Vec3d(0.0,0.0,0.0)*fileInfo.matrix);
-
-                info()<<"dirX = "<<dirX<<std::endl;
-                info()<<"dirY = "<<dirY<<std::endl;
-                info()<<"dirZ = "<<dirZ<<std::endl;
-                info()<<"matrix = "<<fileInfo.matrix<<std::endl;
-                info()<<"pos = "<<osg::Vec3d(0.0,0.0,0.0)*fileInfo.matrix<<std::endl;
+                info()<<"dirX.length() = "<<fileInfo.dirX.length()<<std::endl;
+                info()<<"dirY.length() = "<<fileInfo.dirY.length()<<std::endl;
+                info()<<"dot_product = "<<fileInfo.dirX*fileInfo.dirY<<std::endl;
+                info()<<"dirX = "<<fileInfo.dirX<<std::endl;
+                info()<<"dirY = "<<fileInfo.dirY<<std::endl;
+                info()<<"dirZ = "<<fileInfo.dirZ<<std::endl;
+                info()<<"pos = "<<fileInfo.position<<std::endl;
                 info()<<"dist = "<<fileInfo.distance<<std::endl;
                 info()<<std::endl;
 
-                (orientationFileInfoMap[dirZ])[fileInfo.distance] = fileInfo;
-
-                totalNumSlices += fileInfo.numSlices;
+                (orientationFileInfoMap[fileInfo.dirZ])[fileInfo.distance] = fileInfo;
 
             }
 
             if (orientationFileInfoMap.empty()) return 0;
 
-            typedef std::map<double, FileInfo> DistanceFileInfoMap;
-            typedef std::map<osg::Vec3d, DistanceFileInfoMap> OrientationFileInfoMap;
             for(OrientationFileInfoMap::iterator itr = orientationFileInfoMap.begin();
                 itr != orientationFileInfoMap.end();
                 ++itr)
             {
                 info()<<"Orientation = "<<itr->first<<std::endl;
+
+                unsigned int totalNumSlices = 0;
+
                 DistanceFileInfoMap& dfim = itr->second;
                 for(DistanceFileInfoMap::iterator ditr = dfim.begin();
                     ditr != dfim.end();
                     ++ditr)
                 {
                     FileInfo& fileInfo = ditr->second;
+                    totalNumSlices += fileInfo.numSlices;
                     info()<<"   d = "<<fileInfo.distance<<" "<<fileInfo.filename<<std::endl;
                 }
-            }
 
+                if (dfim.empty()) continue;
 
-            DistanceFileInfoMap& dfim = orientationFileInfoMap.begin()->second;
-            if (dfim.empty()) return 0;
+                osg::ref_ptr<osg::Image> image;
 
-            double totalDistance = 0.0;
-            if (dfim.size()>1)
-            {
-                totalDistance = fabs(dfim.rbegin()->first - dfim.begin()->first);
-            }
-            else
-            {
-                totalDistance = dfim.begin()->second.sliceThickness * double(dfim.begin()->second.numSlices);
-            }
-
-            info()<<"Total Distance including ends "<<totalDistance<<std::endl;
-
-            double averageThickness = totalNumSlices<=1 ? 1.0 : totalDistance / double(totalNumSlices-1);
-
-            info()<<"Average thickness "<<averageThickness<<std::endl;
-
-            for(DistanceFileInfoMap::iterator ditr = dfim.begin();
-                ditr != dfim.end();
-                ++ditr)
-            {
-                FileInfo& fileInfo = ditr->second;
-
-                std::auto_ptr<DicomImage> dcmImage(new DicomImage(fileInfo.filename.c_str()));
-                if (dcmImage.get())
+                double totalDistance = 0.0;
+                if (dfim.size()>1)
                 {
-                    if (dcmImage->getStatus()==EIS_Normal)
+                    totalDistance = fabs(dfim.rbegin()->first - dfim.begin()->first);
+                }
+                else
+                {
+                    totalDistance = dfim.begin()->second.sliceThickness * double(dfim.begin()->second.numSlices);
+                }
+
+                info()<<"Total Number slices "<<totalNumSlices<<std::endl;
+                info()<<"Total Distance including ends "<<totalDistance<<std::endl;
+
+                double averageThickness = totalNumSlices<=1 ? 1.0 : totalDistance / double(totalNumSlices-1);
+
+                info()<<"Average thickness "<<averageThickness<<std::endl;
+
+                for(DistanceFileInfoMap::iterator ditr = dfim.begin();
+                    ditr != dfim.end();
+                    ++ditr)
+                {
+                    FileInfo& fileInfo = ditr->second;
+
+                    std::auto_ptr<DicomImage> dcmImage(new DicomImage(fileInfo.filename.c_str()));
+                    if (dcmImage.get())
                     {
-
-                        EP_Representation curr_pixelRep;
-                        int curr_numPlanes;
-                        GLenum curr_pixelFormat;
-                        GLenum curr_dataType;
-                        unsigned int curr_pixelSize;
-
-                        // get the pixel data
-                        const DiPixel* pixelData = dcmImage->getInterData();
-                        if(!pixelData)
+                        if (dcmImage->getStatus()==EIS_Normal)
                         {
-                            warning()<<"Error: no data in DicomImage object."<<std::endl;
-                            return ReadResult::ERROR_IN_READING_FILE;
-                        }
 
-                        // create the new image
-                        convertPixelTypes(pixelData,
-                                        curr_pixelRep, curr_numPlanes,
-                                        curr_dataType, curr_pixelFormat, curr_pixelSize);
+                            EP_Representation curr_pixelRep;
+                            int curr_numPlanes;
+                            GLenum curr_pixelFormat;
+                            GLenum curr_dataType;
+                            unsigned int curr_pixelSize;
 
-                        // dcmImage->getFrameCount()
-
-                        osg::ref_ptr<osg::Image> imageAdapter = new osg::Image;
-
-                        if (dcmImage->isMonochrome())
-                        {
-                            imageAdapter->setImage(dcmImage->getWidth(), dcmImage->getHeight(), dcmImage->getFrameCount(),
-                                                curr_pixelFormat,
-                                                curr_pixelFormat,
-                                                curr_dataType,
-                                                (unsigned char*)(pixelData->getData()),
-                                                osg::Image::NO_DELETE);
-
-                        }
-                        else
-                        {
-                            imageAdapter->allocateImage(dcmImage->getWidth(), dcmImage->getHeight(), dcmImage->getFrameCount(),
-                                            curr_pixelFormat, curr_dataType);
-
-                            void* data = imageAdapter->data(0,0,0);
-                            unsigned long size = dcmImage->createWindowsDIB( data,
-                                                                             imageAdapter->getTotalDataSize(),
-                                                                             0,
-                                                                             imageAdapter->getPixelSizeInBits(),
-                                                                             0,
-                                                                             0);
-
-                            if (size==0)
+                            // get the pixel data
+                            const DiPixel* pixelData = dcmImage->getInterData();
+                            if(!pixelData)
                             {
-                                 info()<<"  dcmImage->createWindowsDIB() failed to create required imagery."<<std::endl;
-                                 continue;
+                                warning()<<"Error: no data in DicomImage object."<<std::endl;
+                                return ReadResult::ERROR_IN_READING_FILE;
                             }
-                        }
-
-                        if (!image)
-                        {
-                            pixelRep = curr_pixelRep;
-                            numPlanes = curr_numPlanes;
-                            dataType = curr_dataType;
-                            pixelFormat = curr_pixelFormat;
-                            pixelSize = curr_pixelSize;
-
-                            osg::RefMatrix* matrix = details->getMatrix();
-
-                            (*matrix)(0,0) = fileInfo.matrix(0,0);
-                            (*matrix)(1,0) = fileInfo.matrix(1,0);
-                            (*matrix)(2,0) = fileInfo.matrix(2,0);
-                            (*matrix)(0,1) = fileInfo.matrix(0,1);
-                            (*matrix)(1,1) = fileInfo.matrix(1,1);
-                            (*matrix)(2,1) = fileInfo.matrix(2,1);
-                            (*matrix)(0,2) = fileInfo.matrix(0,2) * averageThickness;
-                            (*matrix)(1,2) = fileInfo.matrix(1,2) * averageThickness;
-                            (*matrix)(2,2) = fileInfo.matrix(2,2) * averageThickness;
-
-                            // note from Robert Osfield, testing various dicom files I have found that the rescaleIntercept
-                            // for CT data doesn't look to be applicable as an straight value offset, so we'll ignore for now.
-                            // details->setTexelOffset(fileInfo.rescaleIntercept);
-                            double s = fileInfo.rescaleSlope;
-                            switch(dataType)
-                            {
-                                case(GL_BYTE): s *= 128.0; break;
-                                case(GL_UNSIGNED_BYTE): s *= 255.0; break;
-                                case(GL_SHORT): s *= 32768.0; break;
-                                case(GL_UNSIGNED_SHORT): s *= 65535.0; break;
-                                case(GL_INT): s *= 2147483648.0; break;
-                                case(GL_UNSIGNED_INT): s *= 4294967295.0; break;
-                                default: break;
-                            }
-
-                            details->setTexelScale(osg::Vec4(s,s,s,s));
-
-                            image = new osg::Image;
-                            image->setUserData(details.get());
-                            image->setFileName(fileName.c_str());
-                            image->allocateImage(dcmImage->getWidth(), dcmImage->getHeight(), totalNumSlices,
-                                                pixelFormat, dataType);
-
-
-                            matrix->preMult(osg::Matrix::scale(double(image->s()), double(image->t()), double(image->r())));
-
-                            info()<<"Image dimensions = "<<image->s()<<", "<<image->t()<<", "<<image->r()<<" pixelFormat=0x"<<std::hex<<pixelFormat<<" dataType=0x"<<std::hex<<dataType<<std::dec<<std::endl;
-                        }
-                        else if (pixelData->getPlanes()>numPlanes ||
-                                pixelData->getRepresentation()>pixelRep)
-                        {
-                            info()<<"Need to reallocated "<<image->s()<<", "<<image->t()<<", "<<image->r()<<std::endl;
-
-                            // record the previous image settings to use when we copy back the content.
-                            osg::ref_ptr<osg::Image> previous_image = image;
 
                             // create the new image
                             convertPixelTypes(pixelData,
-                                            pixelRep, numPlanes,
-                                            dataType, pixelFormat, pixelSize);
+                                            curr_pixelRep, curr_numPlanes,
+                                            curr_dataType, curr_pixelFormat, curr_pixelSize);
 
-                            image = new osg::Image;
-                            image->setUserData(previous_image->getUserData());
-                            image->setFileName(fileName.c_str());
-                            image->allocateImage(dcmImage->getWidth(), dcmImage->getHeight(), totalNumSlices,
-                                                pixelFormat, dataType);
+                            // dcmImage->getFrameCount()
 
-                            osg::copyImage(previous_image.get(), 0,0,0, previous_image->s(), previous_image->t(), imageNum,
-                                        image.get(), 0, 0, 0,
+                            osg::ref_ptr<osg::Image> imageAdapter = new osg::Image;
+
+                            if (dcmImage->isMonochrome())
+                            {
+                                imageAdapter->setImage(dcmImage->getWidth(), dcmImage->getHeight(), dcmImage->getFrameCount(),
+                                                    curr_pixelFormat,
+                                                    curr_pixelFormat,
+                                                    curr_dataType,
+                                                    (unsigned char*)(pixelData->getData()),
+                                                    osg::Image::NO_DELETE);
+
+                            }
+                            else
+                            {
+                                imageAdapter->allocateImage(dcmImage->getWidth(), dcmImage->getHeight(), dcmImage->getFrameCount(),
+                                                curr_pixelFormat, curr_dataType);
+
+                                void* data = imageAdapter->data(0,0,0);
+                                unsigned long size = dcmImage->createWindowsDIB( data,
+                                                                                imageAdapter->getTotalDataSize(),
+                                                                                0,
+                                                                                imageAdapter->getPixelSizeInBits(),
+                                                                                0,
+                                                                                0);
+
+                                if (size==0)
+                                {
+                                    info()<<"  dcmImage->createWindowsDIB() failed to create required imagery."<<std::endl;
+                                    continue;
+                                }
+                            }
+
+                            if (!image)
+                            {
+                                pixelRep = curr_pixelRep;
+                                numPlanes = curr_numPlanes;
+                                dataType = curr_dataType;
+                                pixelFormat = curr_pixelFormat;
+                                pixelSize = curr_pixelSize;
+
+                                osg::RefMatrix* matrix = details->getMatrix();
+
+                                (*matrix)(0,0) = fileInfo.dirX.x();
+                                (*matrix)(1,0) = fileInfo.dirX.y();
+                                (*matrix)(2,0) = fileInfo.dirX.z();
+
+                                (*matrix)(0,1) = fileInfo.dirY.x();
+                                (*matrix)(1,1) = fileInfo.dirY.y();
+                                (*matrix)(2,1) = fileInfo.dirY.z();
+
+                                (*matrix)(0,2) = fileInfo.dirZ.x();
+                                (*matrix)(1,2) = fileInfo.dirZ.y();
+                                (*matrix)(2,2) = fileInfo.dirZ.z();
+
+                                matrix->preMultScale(osg::Vec3d(
+                                    fileInfo.pixelSize_x * dcmImage->getWidth(),
+                                    fileInfo.pixelSize_y * dcmImage->getHeight(),
+                                    averageThickness * totalNumSlices));
+
+                                (*matrix)(3,0) = fileInfo.position.x();
+                                (*matrix)(3,1) = fileInfo.position.y();
+                                (*matrix)(3,2) = fileInfo.position.z();
+
+                                (*matrix)(3,3) = 1.0;
+
+                                // note from Robert Osfield, testing various dicom files I have found that the rescaleIntercept
+                                // for CT data doesn't look to be applicable as an straight value offset, so we'll ignore for now.
+                                // details->setTexelOffset(fileInfo.rescaleIntercept);
+                                double s = fileInfo.rescaleSlope;
+                                switch(dataType)
+                                {
+                                    case(GL_BYTE): s *= 128.0; break;
+                                    case(GL_UNSIGNED_BYTE): s *= 255.0; break;
+                                    case(GL_SHORT): s *= 32768.0; break;
+                                    case(GL_UNSIGNED_SHORT): s *= 65535.0; break;
+                                    case(GL_INT): s *= 2147483648.0; break;
+                                    case(GL_UNSIGNED_INT): s *= 4294967295.0; break;
+                                    default: break;
+                                }
+
+                                details->setTexelScale(osg::Vec4(s,s,s,s));
+
+                                image = new osg::Image;
+                                image->setUserData(details.get());
+                                image->setFileName(fileName.c_str());
+                                image->allocateImage(dcmImage->getWidth(), dcmImage->getHeight(), totalNumSlices,
+                                                    pixelFormat, dataType);
+
+
+                                //matrix->preMult(osg::Matrix::scale(double(image->s()), double(image->t()), double(image->r())));
+
+                                info()<<"Image dimensions = "<<image->s()<<", "<<image->t()<<", "<<image->r()<<" pixelFormat=0x"<<std::hex<<pixelFormat<<" dataType=0x"<<std::hex<<dataType<<std::dec<<std::endl;
+                            }
+                            else if (pixelData->getPlanes()>numPlanes ||
+                                    pixelData->getRepresentation()>pixelRep)
+                            {
+                                info()<<"Need to reallocated "<<image->s()<<", "<<image->t()<<", "<<image->r()<<std::endl;
+
+                                // record the previous image settings to use when we copy back the content.
+                                osg::ref_ptr<osg::Image> previous_image = image;
+
+                                // create the new image
+                                convertPixelTypes(pixelData,
+                                                pixelRep, numPlanes,
+                                                dataType, pixelFormat, pixelSize);
+
+                                image = new osg::Image;
+                                image->setUserData(previous_image->getUserData());
+                                image->setFileName(fileName.c_str());
+                                image->allocateImage(dcmImage->getWidth(), dcmImage->getHeight(), totalNumSlices,
+                                                    pixelFormat, dataType);
+                                osg::copyImage(previous_image.get(), 0,0,0, previous_image->s(), previous_image->t(), imageNum,
+                                            image.get(), 0, 0, 0,
+                                            false);
+                            }
+
+                            info()<<"copyImage(, fileInfo.distance"<<fileInfo.distance<<", imageNum="<<imageNum<<std::endl;
+
+                            osg::copyImage(imageAdapter.get(), 0,0,0, imageAdapter->s(), imageAdapter->t(), imageAdapter->r(),
+                                        image.get(), 0, 0, imageNum,
                                         false);
 
+                            imageNum += dcmImage->getFrameCount();
                         }
-
-                        osg::copyImage(imageAdapter.get(), 0,0,0, imageAdapter->s(), imageAdapter->t(), imageAdapter->r(),
-                                    image.get(), 0, 0, imageNum,
-                                    false);
-
-                        imageNum += dcmImage->getFrameCount();
-                    }
-                    else
-                    {
-                        warning()<<"Error in reading dicom file "<<fileInfo.filename<<", error = "<<DicomImage::getString(dcmImage->getStatus())<<std::endl;
-                        info()<<"    dcmImage->getPhotometricInterpretation()="<<DicomImage::getString(dcmImage->getPhotometricInterpretation())<<std::endl;
-                        info()<<"    dcmImage->width="<<dcmImage->getWidth()<<", height="<<dcmImage->getHeight()<<" FrameCount="<< dcmImage->getFrameCount()<<std::endl;
+                        else
+                        {
+                            warning()<<"Error in reading dicom file "<<fileInfo.filename<<", error = "<<DicomImage::getString(dcmImage->getStatus())<<std::endl;
+                            info()<<"    dcmImage->getPhotometricInterpretation()="<<DicomImage::getString(dcmImage->getPhotometricInterpretation())<<std::endl;
+                            info()<<"    dcmImage->width="<<dcmImage->getWidth()<<", height="<<dcmImage->getHeight()<<" FrameCount="<< dcmImage->getFrameCount()<<std::endl;
+                        }
                     }
                 }
+
+                info()<<"Image matrix = "<<*(details->getMatrix())<<std::endl;
+
+                return image.get();
             }
 
             if (!errorMap.empty())
@@ -950,14 +951,7 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 }
             }
 
-            if (!image)
-            {
-                return ReadResult::ERROR_IN_READING_FILE;
-            }
-
-            info()<<"Spacing = "<<*(details->getMatrix())<<std::endl;
-
-            return image.get();
+            return ReadResult::ERROR_IN_READING_FILE;
         }
 #endif
 
@@ -969,46 +963,67 @@ class ReaderWriterDICOM : public osgDB::ReaderWriter
                 numX(0),
                 numY(0),
                 numSlices(1),
+                pixelSize_x(0.0),
+                pixelSize_y(0.0),
                 sliceThickness(0.0),
-                distance(0.0) {}
+                distance(0.0),
+                position(0.0,0.0,0.0),
+                dirX(1.0,0.0,0.0),
+                dirY(0.0,1.0,0.0),
+                dirZ(0.0,0.0,1.0) {}
 
             FileInfo(const FileInfo& rhs):
                 filename(rhs.filename),
-                matrix(rhs.matrix),
                 rescaleIntercept(rhs.rescaleIntercept),
                 rescaleSlope(rhs.rescaleSlope),
                 numX(rhs.numX),
                 numY(rhs.numY),
                 numSlices(rhs.numSlices),
+                pixelSize_x(rhs.pixelSize_x),
+                pixelSize_y(rhs.pixelSize_y),
                 sliceThickness(rhs.sliceThickness),
-                distance(distance) {}
+                distance(distance),
+                position(rhs.position),
+                dirX(rhs.dirX),
+                dirY(rhs.dirY),
+                dirZ(rhs.dirZ) {}
 
             FileInfo& operator = (const FileInfo& rhs)
             {
                 if (&rhs == this) return *this;
 
                 filename = rhs.filename;
-                matrix = rhs.matrix;
                 rescaleIntercept = rhs.rescaleIntercept;
                 rescaleSlope = rhs.rescaleSlope;
                 numX = rhs.numX;
                 numY = rhs.numY;
+                pixelSize_x = rhs.pixelSize_x;
+                pixelSize_y = rhs.pixelSize_y;
                 sliceThickness = rhs.sliceThickness;
                 numSlices = rhs.numSlices;
                 distance = rhs.distance;
+                position = rhs.position;
+                dirX = rhs.dirX;
+                dirY = rhs.dirY;
+                dirZ = rhs.dirZ;
 
                 return *this;
             }
 
             std::string     filename;
-            osg::Matrixd    matrix;
             double          rescaleIntercept;
             double          rescaleSlope;
             unsigned int    numX;
             unsigned int    numY;
             unsigned int    numSlices;
+            double          pixelSize_x;
+            double          pixelSize_y;
             double          sliceThickness;
             double          distance;
+            osg::Vec3d      position;
+            osg::Vec3d      dirX;
+            osg::Vec3d      dirY;
+            osg::Vec3d      dirZ;
         };
 
 };

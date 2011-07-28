@@ -341,15 +341,13 @@ bool GraphicsWindowX11::createVisualInfo()
         #if defined(GLX_SAMPLE_BUFFERS) && defined (GLX_SAMPLES)
 
             if (_traits->sampleBuffers) { attributes.push_back(GLX_SAMPLE_BUFFERS); attributes.push_back(_traits->sampleBuffers); }
-            if (_traits->sampleBuffers) { attributes.push_back(GLX_SAMPLES); attributes.push_back(_traits->samples); }
+            if (_traits->samples) { attributes.push_back(GLX_SAMPLES); attributes.push_back(_traits->samples); }
 
         #endif
         // TODO
         //  GLX_AUX_BUFFERS
         //  GLX_ACCUM_RED_SIZE
         //  GLX_ACCUM_GREEN_SIZE
-        //  GLX_SAMPLE_BUFFERS
-        //  GLX_SAMPLES
 
         attributes.push_back(None);
 
@@ -730,6 +728,8 @@ void GraphicsWindowX11::init()
 
         OSG_NOTICE<<"GraphicsWindowX11::init() - window created ="<<_valid<<std::endl;
 
+        eglBindAPI(EGL_OPENGL_ES_API);
+
         EGLConfig eglConfig = 0;
 
         #if defined(OSG_GLES2_AVAILABLE)
@@ -738,19 +738,27 @@ void GraphicsWindowX11::init()
             #define OSG_EGL_OPENGL_TARGET_BIT EGL_OPENGL_ES_BIT
         #endif
 
-        EGLint configAttribs[] = {
-                EGL_SAMPLE_BUFFERS, 0,
-                EGL_SAMPLES, 0,
-                EGL_RED_SIZE, 1,
-                EGL_GREEN_SIZE, 1,
-                EGL_BLUE_SIZE, 1,
-                EGL_DEPTH_SIZE, 1,
-                EGL_RENDERABLE_TYPE, OSG_EGL_OPENGL_TARGET_BIT,
-                EGL_NONE
-        };
+        typedef std::vector<EGLint> Attributes;
+        Attributes attributes;
+
+        attributes.push_back(EGL_RED_SIZE); attributes.push_back(_traits->red);
+        attributes.push_back(EGL_GREEN_SIZE); attributes.push_back(_traits->green);
+        attributes.push_back(EGL_BLUE_SIZE); attributes.push_back(_traits->blue);
+        attributes.push_back(EGL_DEPTH_SIZE); attributes.push_back(_traits->depth);
+
+        if (_traits->alpha) { attributes.push_back(EGL_ALPHA_SIZE); attributes.push_back(_traits->alpha); }
+        if (_traits->stencil) { attributes.push_back(EGL_STENCIL_SIZE); attributes.push_back(_traits->stencil); }
+
+        if (_traits->sampleBuffers) { attributes.push_back(EGL_SAMPLE_BUFFERS); attributes.push_back(_traits->sampleBuffers); }
+        if (_traits->samples) { attributes.push_back(EGL_SAMPLES); attributes.push_back(_traits->samples); }
+
+        attributes.push_back(EGL_RENDERABLE_TYPE); attributes.push_back(OSG_EGL_OPENGL_TARGET_BIT);
+        
+        attributes.push_back(EGL_NONE);
+        attributes.push_back(EGL_NONE);
 
         int numConfigs;
-        if (!eglChooseConfig(_eglDisplay, configAttribs, &eglConfig, 1, &numConfigs) || (numConfigs != 1))
+        if (!eglChooseConfig(_eglDisplay, &(attributes.front()), &eglConfig, 1, &numConfigs) || (numConfigs != 1))
         {
             OSG_NOTICE<<"GraphicsWindowX11::init() - eglChooseConfig() failed."<<std::endl;
             XCloseDisplay( _display );
@@ -759,7 +767,6 @@ void GraphicsWindowX11::init()
             return;
         }
 
-        eglBindAPI(EGL_OPENGL_ES_API);
 
         _eglSurface = eglCreateWindowSurface(_eglDisplay, eglConfig, (EGLNativeWindowType)_window, NULL);
         if (_eglSurface == EGL_NO_SURFACE)

@@ -84,7 +84,7 @@ REGISTER_OBJECT_WRAPPER( Texture,
     ADD_BOOL_SERIALIZER( UseHardwareMipMapGeneration, true );  // _useHardwareMipMapGeneration
     ADD_BOOL_SERIALIZER( UnRefImageDataAfterApply, false );  // _unrefImageDataAfterApply
     ADD_BOOL_SERIALIZER( ClientStorageHint, false );  // _clientStorageHint
-    ADD_BOOL_SERIALIZER( ResizeNonPowerOfTwoHint, false );  // _resizeNonPowerOfTwoHint
+    ADD_BOOL_SERIALIZER( ResizeNonPowerOfTwoHint, true );  // _resizeNonPowerOfTwoHint
     ADD_VEC4D_SERIALIZER( BorderColor, osg::Vec4d(0.0,0.0,0.0,0.0) );  // _borderColor
     ADD_GLINT_SERIALIZER( BorderWidth, 0 );  // _borderWidth
     

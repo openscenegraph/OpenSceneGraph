@@ -377,11 +377,11 @@ bool ThreadingHandler::handle(const osgGA::GUIEventAdapter &ea, osgGA::GUIAction
                 {
                 case(osgViewer::Viewer::BeforeSwapBuffers):
                     viewer->setEndBarrierPosition(osgViewer::Viewer::AfterSwapBuffers);
-                    OSG_NOTICE<<"Threading model 'AfterSwapBuffers' selected."<<std::endl;
+                    OSG_NOTICE<<"Threading end of frame barrier position 'AfterSwapBuffers' selected."<<std::endl;
                     break;
                 case(osgViewer::Viewer::AfterSwapBuffers):
                     viewer->setEndBarrierPosition(osgViewer::Viewer::BeforeSwapBuffers);
-                    OSG_NOTICE<<"Threading model 'BeforeSwapBuffers' selected."<<std::endl;
+                    OSG_NOTICE<<"Threading end of frame barrier position 'BeforeSwapBuffers' selected."<<std::endl;
                     break;
                 }
 

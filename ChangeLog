@@ -1,3 +1,25 @@
+2011-07-31 07:50  robert
+
+	* CMakeLists.txt: Changed release candidate numbe for 3.0.1
+	  release.
+
+2011-07-31 07:48  robert
+
+	* src/osgShadow/StandardShadowMap.cpp: Changed the handling of the
+	  ambient contribution of light to avoid lighting errors in the
+	  shadowed region outside a spointlight.
+
+2011-07-29 07:44  robert
+
+	* src/osgViewer/ViewerEventHandlers.cpp: Merged from svn/trunk
+	  revision 12735, fixed console output of end of frame barrier
+	  position.
+
+2011-07-28 16:59  robert
+
+	* AUTHORS.txt, CMakeLists.txt, ChangeLog: Updated ChangeLog and
+	  release candidate number for 3.0.1-rc3
+
 2011-07-28 16:41  robert
 
 	* src/osgPlugins/dicom/ReaderWriterDICOM.cpp: Improved the handling

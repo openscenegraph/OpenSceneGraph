@@ -27,6 +27,7 @@ SET(TARGET_H
     ${HEADER_PATH}/ProjectionShadowMap
     ${HEADER_PATH}/StandardShadowMap
     ${HEADER_PATH}/ViewDependentShadowTechnique
+    ${HEADER_PATH}/ViewDependentShadowMap
 )
 
 # FIXME: For OS X, need flag for Framework or dylib
@@ -48,6 +49,7 @@ SET(TARGET_SRC
     MinimalShadowMap.cpp
     StandardShadowMap.cpp
     ViewDependentShadowTechnique.cpp
+    ViewDependentShadowMap.cpp
     ${OPENSCENEGRAPH_VERSIONINFO_RC}
 )
 

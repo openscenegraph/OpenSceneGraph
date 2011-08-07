@@ -1,0 +1,107 @@
+/* -*-c++-*- OpenSceneGraph - Copyright (C) 1998-2006 Robert Osfield
+ *
+ * This library is open source and may be redistributed and/or modified under
+ * the terms of the OpenSceneGraph Public License (OSGPL) version 0.0 or
+ * (at your option) any later version.  The full license is in LICENSE file
+ * included with this distribution, and on the openscenegraph.org website.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OpenSceneGraph Public License for more details.
+*/
+
+#ifndef OSGSHADOW_VIEWDEPENDENTSHADOWMAP
+#define OSGSHADOW_VIEWDEPENDENTSHADOWMAP 1
+
+#include <osg/Camera>
+#include <osg/Material>
+#include <osg/MatrixTransform>
+#include <osg/LightSource>
+
+#include <osgShadow/ShadowTechnique>
+
+namespace osgShadow {
+
+/** ViewDependentShadowMap provides an base implementation of view dependent shadow mapping techniques.*/
+class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
+{
+    public :
+        ViewDependentShadowMap();
+
+        ViewDependentShadowMap(const ViewDependentShadowMap& vdsm, const osg::CopyOp& copyop=osg::CopyOp::SHALLOW_COPY);
+
+        META_Object(osgShadow, ViewDependentShadowMap);
+
+        /** initialize the ShadowedScene and local cached data structures.*/
+        virtual void init();
+
+        /** run the update traversal of the ShadowedScene and update any loca chached data structures.*/
+        virtual void update(osg::NodeVisitor& nv);
+
+        /** run the cull traversal of the ShadowedScene and set up the rendering for this ShadowTechnique.*/
+        virtual void cull(osgUtil::CullVisitor& cv);
+
+        /** Clean scene graph from any shadow technique specific nodes, state and drawables.*/
+        virtual void cleanSceneGraph();
+
+        struct OSGSHADOW_EXPORT LightShadowData : public osg::Referenced
+        {
+            unsigned int                _textureUnit;
+            osg::ref_ptr<osg::Texture>  _texture;
+            osg::ref_ptr<osg::TexGen>   _texgen;
+
+            osg::ref_ptr<osg::Light>    _light;
+            osg::ref_ptr<osg::Camera>   _camera;
+        };
+        
+        class OSGSHADOW_EXPORT ViewDependentData : public osg::Referenced
+        {
+        public:
+            ViewDependentData(ViewDependentShadowMap* vdsm, osgUtil::CullVisitor* cv);
+
+            
+            
+            void cullShadowCastingScene(osgUtil::CullVisitor* cv);
+            
+            void cull(osgUtil::CullVisitor*);
+            
+        protected:
+            virtual ~ViewDependentData() {}
+
+            osg::ref_ptr<osg::StateSet> _stateset;
+        };
+        
+        virtual ViewDependentData* createViewDependentData(osgUtil::CullVisitor* cv);
+
+        ViewDependentData* getViewDependentData(osgUtil::CullVisitor* cv);
+
+
+        typedef std::pair< osg::ref_ptr<osg::RefMatrix>, osg::ref_ptr<const osg::Light> > PositionedLight;
+        typedef std::list< PositionedLight > PositionedLightList;
+
+        virtual bool selectActiveLights(osgUtil::CullVisitor* cv, PositionedLightList& pll) const;
+
+        virtual osg::Polytope computeLightViewFrustumPolytope(osgUtil::CullVisitor* cv, PositionedLight& positionedLight);
+
+        virtual bool computeShadowCameraSettings(PositionedLight& positionedLight, osg::Polytope& polytope, osg::Camera* camera);
+
+        virtual bool assignTexGenSettings(osgUtil::CullVisitor* cv, osg::Camera* camera, unsigned int textureUnit, osg::TexGen* texgen);
+
+        virtual void cullShadowReceivingScene(osgUtil::CullVisitor* cv, osg::StateSet* stateset) const;
+
+        virtual void cullShadowCastingScene(osgUtil::CullVisitor* cv, osg::Camera* camera) const;
+
+
+protected:
+        virtual ~ViewDependentShadowMap();
+
+        typedef std::map< osgUtil::CullVisitor*, osg::ref_ptr<ViewDependentData> >  ViewDependentDataMap;
+        OpenThreads::Mutex   _viewDependentDataMapMutex;
+        ViewDependentDataMap _viewDependentDataMap;
+        
+};
+
+}
+
+#endif

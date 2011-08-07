@@ -43,6 +43,7 @@
 #include <osgShadow/ParallelSplitShadowMap>
 #include <osgShadow/LightSpacePerspectiveShadowMap>
 #include <osgShadow/StandardShadowMap>
+#include <osgShadow/ViewDependentShadowMap>
 
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
@@ -650,12 +651,17 @@ int main(int argc, char** argv)
     while (arguments.read("--fov",fov)) {}
 
     osg::Vec4 lightpos(0.0,0.0,1,0.0);
+    bool spotlight = false;
     while (arguments.read("--positionalLight")) { lightpos.set(0.5,0.5,1.5,1.0); }
     while (arguments.read("--directionalLight")) { lightpos.set(0.0,0.0,1,0.0); }
+    while (arguments.read("--spotLight")) { lightpos.set(0.5,0.5,1.5,1.0); spotlight = true; }
 
-    while ( arguments.read("--light-pos", lightpos.x(), lightpos.y(), lightpos.z(), lightpos.w())) {}
-    while ( arguments.read("--light-pos", lightpos.x(), lightpos.y(), lightpos.z())) { lightpos.w()=1.0; }
-    while ( arguments.read("--light-dir", lightpos.x(), lightpos.y(), lightpos.z())) { lightpos.w()=0.0; }
+    bool keepLightPos = false;
+    osg::Vec3 spotLookat(0.0,0.0,0.0);
+    while ( arguments.read("--light-pos", lightpos.x(), lightpos.y(), lightpos.z(), lightpos.w())) { keepLightPos = true; }
+    while ( arguments.read("--light-pos", lightpos.x(), lightpos.y(), lightpos.z())) { lightpos.w()=1.0; keepLightPos = true; }
+    while ( arguments.read("--light-dir", lightpos.x(), lightpos.y(), lightpos.z())) { lightpos.w()=0.0; keepLightPos = true; }
+    while ( arguments.read("--spot-lookat", spotLookat.x(), spotLookat.y(), spotLookat.z())) { }
 
 
     while (arguments.read("--castsShadowMask", CastsShadowTraversalMask ));
@@ -805,6 +811,11 @@ int main(int argc, char** argv)
        else // if( arguments.read( "--DrawBounds" ) ) // default
             msm = new osgShadow::MinimalDrawBoundsShadowMap;
     }
+    else if( arguments.read("--vdsm") )
+    {
+        osg::ref_ptr<osgShadow::ViewDependentShadowMap> vdsm = new osgShadow::ViewDependentShadowMap;
+        shadowedScene->setShadowTechnique(vdsm.get());
+    }
     else /* if (arguments.read("--sm")) */
     {
         osg::ref_ptr<osgShadow::ShadowMap> sm = new osgShadow::ShadowMap;
@@ -860,7 +871,7 @@ int main(int argc, char** argv)
     model->accept(cbbv);
     osg::BoundingBox bb = cbbv.getBoundingBox();
 
-    if (lightpos.w()==1.0)
+    if (lightpos.w()==1.0 && !keepLightPos)
     {
         lightpos.x() = bb.xMin()+(bb.xMax()-bb.xMin())*lightpos.x();
         lightpos.y() = bb.yMin()+(bb.yMax()-bb.yMin())*lightpos.y();
@@ -889,12 +900,9 @@ int main(int argc, char** argv)
     osg::ref_ptr<osg::LightSource> ls = new osg::LightSource;
     ls->getLight()->setPosition(lightpos);
 
-    bool spotlight = false;
-    if (arguments.read("--spotLight"))
+    if (spotlight)
     {
-        spotlight = true;
-
-        osg::Vec3 center = bb.center();
+        osg::Vec3 center = spotLookat;
         osg::Vec3 lightdir = center - osg::Vec3(lightpos.x(), lightpos.y(), lightpos.z());
         lightdir.normalize();
         ls->getLight()->setDirection(lightdir);

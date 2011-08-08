@@ -76,15 +76,52 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
 
         ViewDependentData* getViewDependentData(osgUtil::CullVisitor* cv);
 
+        struct OSGSHADOW_EXPORT Frustum
+        {
+            Frustum(osgUtil::CullVisitor* cv);
 
-        typedef std::pair< osg::ref_ptr<osg::RefMatrix>, osg::ref_ptr<const osg::Light> > PositionedLight;
+            osg::Matrixd projectionMatrix;
+            osg::Matrixd modelViewMatrix;
+            
+            typedef std::vector<osg::Vec3d> Vertices;
+            Vertices corners;
+            
+            typedef std::vector<unsigned int> Indices;
+            typedef std::vector<Indices> Faces;
+            Faces faces;
+
+            typedef std::vector<Indices> Edges;
+            Edges edges;
+
+            osg::Vec3d centerNearPlane;
+            osg::Vec3d centerFarPlane;
+            osg::Vec3d center;
+            osg::Vec3d frustumCenterLine;
+        };
+
+        struct OSGSHADOW_EXPORT PositionedLight
+        {
+            PositionedLight(osg::RefMatrix* lm, const osg::Light* l, const osg::Matrixd& modelViewMatrix);
+            
+            osg::ref_ptr<osg::RefMatrix>        lightMatrix;
+            osg::ref_ptr<const osg::Light>      light;
+
+            osg::Vec4d                          lightPos;
+            osg::Vec3d                          lightPos3;
+            osg::Vec3d                          lightDir;
+            bool                                directionalLight;
+
+            typedef std::vector<unsigned int> ActiveTextureUnits;
+            ActiveTextureUnits                   textureUnits;
+        };
+        
         typedef std::list< PositionedLight > PositionedLightList;
 
         virtual bool selectActiveLights(osgUtil::CullVisitor* cv, PositionedLightList& pll) const;
 
-        virtual osg::Polytope computeLightViewFrustumPolytope(osgUtil::CullVisitor* cv, PositionedLight& positionedLight);
+        virtual osg::Polytope computeLightViewFrustumPolytope(Frustum& frustum, PositionedLight& positionedLight);
 
-        virtual bool computeShadowCameraSettings(PositionedLight& positionedLight, osg::Polytope& polytope, osg::Camera* camera);
+        virtual bool computeShadowCameraSettings(Frustum& frustum, PositionedLight& positionedLight, osg::Camera* camera);
 
         virtual bool assignTexGenSettings(osgUtil::CullVisitor* cv, osg::Camera* camera, unsigned int textureUnit, osg::TexGen* texgen);
 

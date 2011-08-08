@@ -144,7 +144,8 @@ class OSG_EXPORT Polytope
                 itr->flip();
             }
         }
-
+        
+        inline bool empty() const { return _planeList.empty(); }
 
         inline PlaneList& getPlaneList() { return _planeList; }
 

@@ -17,6 +17,97 @@
 
 using namespace osgShadow;
 
+class VDSMCameraCullCallback : public osg::NodeCallback
+{
+    public:
+
+        VDSMCameraCullCallback(ViewDependentShadowMap* vdsm, osg::Polytope& polytope);
+
+        virtual void operator()(osg::Node*, osg::NodeVisitor* nv);
+
+    protected:
+
+        ViewDependentShadowMap* _vdsm;
+        osg::Polytope           _polytope;
+};
+
+VDSMCameraCullCallback::VDSMCameraCullCallback(ViewDependentShadowMap* vdsm, osg::Polytope& polytope):
+    _vdsm(vdsm),
+    _polytope(polytope)
+{
+}
+
+void VDSMCameraCullCallback::operator()(osg::Node* node, osg::NodeVisitor* nv)
+{
+    osgUtil::CullVisitor* cv = dynamic_cast<osgUtil::CullVisitor*>(nv);
+    osg::Camera* camera = dynamic_cast<osg::Camera*>(node);
+    OSG_NOTICE<<"VDSMCameraCullCallback::operator()(osg::Node* "<<camera<<", osg::NodeVisitor* "<<cv<<")"<<std::endl;
+
+    if (!_polytope.empty())
+    {
+        OSG_NOTICE<<"Pushing custom Polytope"<<std::endl;
+        
+        osg::CullingSet& cs = cv->getProjectionCullingStack().back();
+
+        cs.setFrustum(_polytope);
+
+        cv->pushCullingSet();
+    }
+    
+    if (_vdsm->getShadowedScene())
+    {
+        _vdsm->getShadowedScene()->osg::Group::traverse(*nv);
+    }
+
+    if (!_polytope.empty())
+    {
+        OSG_NOTICE<<"Popping custom Polytope"<<std::endl;
+        cv->popCullingSet();
+    }
+
+    if (cv->getComputeNearFarMode() != osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR)        
+    {
+        osg::Matrixd projection = *(cv->getProjectionMatrix());
+
+        OSG_NOTICE<<"RTT Projection matrix "<<projection<<std::endl;
+
+        double left, right, bottom, top, zNear, zFar;
+        double epsilon = 1e-6;
+        if (fabs(projection(0,3))<epsilon  && fabs(projection(1,3))<epsilon  && fabs(projection(2,3))<epsilon )
+        {
+            projection.getOrtho(left, right,
+                                bottom, top,
+                                zNear,  zFar);
+
+            OSG_NOTICE<<"Ortho zNear="<<zNear<<", zFar="<<zFar<<std::endl;
+        }
+        else
+        {
+            projection.getFrustum(left, right,
+                                bottom, top,
+                                zNear,  zFar);
+
+            OSG_NOTICE<<"Frustum zNear="<<zNear<<", zFar="<<zFar<<std::endl;
+        }
+
+        OSG_NOTICE<<"Calculated zNear = "<<cv->getCalculatedNearPlane()<<", zFar = "<<cv->getCalculatedFarPlane()<<std::endl;
+
+        zNear = osg::maximum(zNear, cv->getCalculatedNearPlane());
+        zFar = osg::minimum(zFar, cv->getCalculatedFarPlane());
+
+        cv->setCalculatedNearPlane(zNear);
+        cv->setCalculatedFarPlane(zFar);
+
+        cv->clampProjectionMatrix(projection, zNear, zFar);
+
+        //OSG_NOTICE<<"RTT zNear = "<<zNear<<", zFar = "<<zFar<<std::endl;
+        OSG_NOTICE<<"RTT Projection matrix after clamping "<<projection<<std::endl;
+
+        camera->setProjectionMatrix(projection);
+    }
+    
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //
 // ViewDependentShadowMap
@@ -76,15 +167,22 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
 {
     OSG_NOTICE<<"ViewDependentShadowMap::cull(osg::CullVisitor&"<<&cv<<")"<<std::endl;
 
-    osg::StateSet* stateset = 0;
+    osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
     
     // 1. Traverse main scene graph
-    cullShadowReceivingScene(&cv, stateset);
+    cullShadowReceivingScene(&cv, stateset.get());
 
     // 2. select active light sources
     //    create a list of light sources + their matrices to place them
     PositionedLightList pll;
     selectActiveLights(&cv, pll);
+
+    unsigned int pos_x = 0;
+    unsigned int baseTextureUnit = 1;
+    unsigned int textureUnit = baseTextureUnit;
+    unsigned int numValidShadows = 0;
+
+    Frustum frustum(&cv);
 
     for(PositionedLightList::iterator itr = pll.begin();
         itr != pll.end();
@@ -97,30 +195,119 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
 
         // 4. For each light/shadow map
         {
-            osg::Camera* camera = 0;
-            osg::TexGen* texgen = 0;
-            unsigned int textureUnit = 0;
+            osg::ref_ptr<osg::Camera> camera;
+
+            {
+                camera = new osg::Camera;
+
+                camera->ref();
+
+                camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF_INHERIT_VIEWPOINT);
+
+                camera->setClearMask(GL_DEPTH_BUFFER_BIT);
+                //_camera->setClearMask(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+                camera->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+                //camera->setComputeNearFarMode(osg::Camera::DO_NOT_COMPUTE_NEAR_FAR);
+
+                // set viewport
+                //camera->setViewport(0,0,_textureSize.x(),_textureSize.y());
+                camera->setViewport(pos_x,0,400,400);
+
+                pos_x += 440;
+
+                // set the camera to render before the main camera.
+                //camera->setRenderOrder(osg::Camera::PRE_RENDER);
+                camera->setRenderOrder(osg::Camera::POST_RENDER);
+
+                // tell the camera to use OpenGL frame buffer object where supported.
+                //camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
+                //camera->setRenderTargetImplementation(osg::Camera::SEPERATE_WINDOW);
+
+                // attach the texture and use it as the color buffer.
+                // camera->attach(osg::Camera::DEPTH_BUFFER, texture.get());
+            }
+
+            osg::ref_ptr<osg::TexGen> texgen = new osg::TexGen;
 
             // 4.1 compute light space polytope
             //
 
-            osg::Polytope polytope = computeLightViewFrustumPolytope(&cv, pl);
+            osg::Polytope polytope = computeLightViewFrustumPolytope(frustum, pl);
+
+            // if polytope is empty then no rendering.
+            if (polytope.empty())
+            {
+                OSG_NOTICE<<"Polytope empty no shadow to render"<<std::endl;
+                continue;
+            }
 
             // 4.2 compute RTT camera view+projection matrix settings
             //
 
-            computeShadowCameraSettings(pl, polytope, camera);
+            if (!computeShadowCameraSettings(frustum, pl, camera.get()))
+            {
+                OSG_NOTICE<<"No valid Camera settings, no shadow to render"<<std::endl;
+                continue;
+            }
+
+            // transform polytope in model coords into light spaces eye coords.
+            osg::Matrixd invertModelView;
+            invertModelView.invert(camera->getViewMatrix());
+
+            polytope.transformProvidingInverse(invertModelView);
+
+            camera->setCullCallback(new VDSMCameraCullCallback(this, polytope));
 
             // 4.3 traverse RTT camera
             //
 
-            cullShadowCastingScene(&cv, camera);
+            cullShadowCastingScene(&cv, camera.get());
 
             // 4.4 compute main scene graph TexGen + uniform settings + setup state
             //
 
-            assignTexGenSettings(&cv, camera, textureUnit, texgen);
+            assignTexGenSettings(&cv, camera.get(), textureUnit, texgen);
+
+
+            // mark the light as one that has active shadows and requires shaders
+            pl.textureUnits.push_back(textureUnit);
+
+            
+            // increment counters.
+            ++textureUnit;
+            ++numValidShadows ;
         }
+    }
+
+    if (numValidShadows>0)
+    {
+        OSG_NOTICE<<"Need to assign "<<numValidShadows<<" shadows"<<std::endl;
+
+        for(PositionedLightList::iterator itr = pll.begin();
+            itr != pll.end();
+            ++itr)
+        {
+            // 3. create per light/per shadow map division of lightspace/frustum
+            //    create a list of light/shadow map data structures
+
+            PositionedLight& pl = *itr;
+
+            // if no texture units have been activated for this light then no shadow state required.
+            if (pl.textureUnits.empty()) continue;
+
+            for(PositionedLight::ActiveTextureUnits::iterator atu_itr = pl.textureUnits.begin();
+                atu_itr != pl.textureUnits.end();
+                ++atu_itr)
+            {
+                OSG_NOTICE<<"   Need to assign state for "<<*atu_itr<<std::endl;
+            }
+            
+        }
+        
+    }
+    else
+    {
+        stateset->clear();
     }
    
 }
@@ -132,32 +319,86 @@ bool ViewDependentShadowMap::selectActiveLights(osgUtil::CullVisitor* cv, Positi
     //MR testing giving a specific light
     osgUtil::RenderStage * rs = cv->getRenderStage();
 
+    osg::Matrixd modelViewMatrix = *(cv->getModelViewMatrix());
+    
     osgUtil::PositionalStateContainer::AttrMatrixList& aml =
         rs->getPositionalStateContainer()->getAttrMatrixList();
 
-    for(osgUtil::PositionalStateContainer::AttrMatrixList::iterator itr = aml.begin();
-        itr != aml.end();
+    for(osgUtil::PositionalStateContainer::AttrMatrixList::reverse_iterator itr = aml.rbegin();
+        itr != aml.rend();
         ++itr)
     {
         const osg::Light* light = dynamic_cast<const osg::Light*>(itr->first.get());
         if (light)
         {
-            pll.push_back(PositionedLight(itr->second, light));
+            PositionedLightList::iterator pll_itr = pll.begin();
+            for(; pll_itr != pll.end(); ++pll_itr)
+            {
+                if (pll_itr->light->getLightNum()==light->getLightNum()) break;
+            }
+
+            if (pll_itr==pll.end())
+            {
+                OSG_NOTICE<<"Light num "<<light->getLightNum()<<std::endl;
+                pll.push_back(PositionedLight(itr->second, light, modelViewMatrix));
+            }
+            else
+            {
+                OSG_NOTICE<<"Light num "<<light->getLightNum()<<" already used, ignore light"<<std::endl;
+            }            
         }
     }
     
     return !pll.empty();
 }
 
-osg::Polytope ViewDependentShadowMap::computeLightViewFrustumPolytope(osgUtil::CullVisitor* cv, PositionedLight& positionedLight)
+ViewDependentShadowMap::PositionedLight::PositionedLight(osg::RefMatrix* lm, const osg::Light* l, const osg::Matrixd& modelViewMatrix):
+    lightMatrix(lm),
+    light(l)
 {
-    OSG_NOTICE<<"computeLightViewFrustumPolytope()"<<std::endl;
+    lightPos = light->getPosition();
+    directionalLight = (light->getPosition().w()== 0.0);
+    if (directionalLight)
+    {
+        lightPos3.set(0.0, 0.0, 0.0); // directional light has no destinct position
+        lightDir.set(-lightPos.x(), -lightPos.y(), -lightPos.z());
+        lightDir.normalize();
+        OSG_NOTICE<<"   Directional light, lightPos="<<lightPos<<", lightDir="<<lightDir<<std::endl;
+        if (lightMatrix.valid())
+        {
+            OSG_NOTICE<<"   Light matrix "<<*lightMatrix<<std::endl;
+            osg::Matrix lightToLocalMatrix(*lightMatrix * osg::Matrix::inverse(modelViewMatrix) );
+            lightDir = osg::Matrix::transform3x3( lightDir, lightToLocalMatrix );
+            lightDir.normalize();
+            OSG_NOTICE<<"   new LightDir ="<<lightDir<<std::endl;
+        }
+    }
+    else
+    {
+        OSG_NOTICE<<"   Positional light, lightPos="<<lightPos<<std::endl;
+        lightDir = light->getDirection();
+        lightDir.normalize();
+        if (lightMatrix.valid())
+        {
+            OSG_NOTICE<<"   Light matrix "<<*lightMatrix<<std::endl;
+            osg::Matrix lightToLocalMatrix(*lightMatrix * osg::Matrix::inverse(modelViewMatrix) );
+            lightPos = lightPos * lightToLocalMatrix;
+            lightDir = osg::Matrix::transform3x3( lightDir, lightToLocalMatrix );
+            lightDir.normalize();
+            OSG_NOTICE<<"   new LightPos ="<<lightPos<<std::endl;
+            OSG_NOTICE<<"   new LightDir ="<<lightDir<<std::endl;
+        }
+        lightPos3.set(lightPos.x()/lightPos.w(), lightPos.y()/lightPos.w(), lightPos.z()/lightPos.w());
+    }
+}
 
-    const osg::RefMatrix* lightMatrix = positionedLight.first.get();
-    const osg::Light* light = positionedLight.second.get();
-
-    osg::Matrix projectionMatrix( *(cv->getProjectionMatrix()) );
-    osg::Matrix modelViewMatrix( *(cv->getModelViewMatrix()) );
+ViewDependentShadowMap::Frustum::Frustum(osgUtil::CullVisitor* cv):
+    corners(8),
+    faces(6),
+    edges(12)
+{
+    projectionMatrix = *(cv->getProjectionMatrix());
+    modelViewMatrix = *(cv->getModelViewMatrix());
 
     OSG_NOTICE<<"Projection matrix "<<projectionMatrix<<std::endl;
 
@@ -168,9 +409,6 @@ osg::Polytope ViewDependentShadowMap::computeLightViewFrustumPolytope(osgUtil::C
 
     OSG_NOTICE<<"zNear = "<<zNear<<", zFar = "<<zFar<<std::endl;
     OSG_NOTICE<<"Projection matrix after clamping "<<projectionMatrix<<std::endl;
-
-    typedef std::vector<osg::Vec3d> Vertices;
-    Vertices corners(8);
 
     corners[0].set(-1.0,-1.0,-1.0);
     corners[1].set(1.0,-1.0,-1.0);
@@ -184,19 +422,24 @@ osg::Polytope ViewDependentShadowMap::computeLightViewFrustumPolytope(osgUtil::C
     osg::Matrixd clipToWorld;
     clipToWorld.invert(modelViewMatrix * projectionMatrix);
 
-    osg::Vec3d center( osg::Vec3d(0.0,0.0,0.0) * clipToWorld );
-
+    // transform frustum corners from clipspace to world coords, and compute center
     for(Vertices::iterator itr = corners.begin();
         itr != corners.end();
         ++itr)
     {
         *itr = (*itr) * clipToWorld;
+
         OSG_NOTICE<<"   corner "<<*itr<<std::endl;
     }
 
-    typedef std::vector<unsigned int> Indices;
-    typedef std::vector<Indices> Faces;
-    Faces faces(6);
+    // compute center and the frustumCenterLine
+    centerNearPlane = (corners[0]+corners[1]+corners[5]+corners[4])*0.25;
+    centerFarPlane = (corners[3]+corners[2]+corners[6]+corners[7])*0.25;
+    center = (centerNearPlane+centerNearPlane)*0.5;
+    frustumCenterLine = centerFarPlane-centerNearPlane;
+    frustumCenterLine.normalize();
+
+    OSG_NOTICE<<"   center "<<center<<std::endl;
 
     faces[0].push_back(0);
     faces[0].push_back(3);
@@ -228,8 +471,6 @@ osg::Polytope ViewDependentShadowMap::computeLightViewFrustumPolytope(osgUtil::C
     faces[5].push_back(7);
     faces[5].push_back(3);
 
-    typedef std::vector<Indices> Edges;
-    Edges edges(12);
     edges[0].push_back(0); edges[0].push_back(1); // corner points on edge
     edges[0].push_back(2); edges[0].push_back(4); // faces on edge
 
@@ -267,42 +508,30 @@ osg::Polytope ViewDependentShadowMap::computeLightViewFrustumPolytope(osgUtil::C
 
     edges[11].push_back(7); edges[11].push_back(4); // corner points on edge
     edges[11].push_back(3); edges[11].push_back(0); // faces on edge
+}
 
+
+osg::Polytope ViewDependentShadowMap::computeLightViewFrustumPolytope(Frustum& frustum, PositionedLight& positionedLight)
+{
+    OSG_NOTICE<<"computeLightViewFrustumPolytope()"<<std::endl;
 
     osg::Polytope polytope;
     polytope.setToUnitFrustum();
 
-    polytope.transformProvidingInverse( projectionMatrix );
-    polytope.transformProvidingInverse( modelViewMatrix );
+    polytope.transformProvidingInverse( frustum.projectionMatrix );
+    polytope.transformProvidingInverse( frustum.modelViewMatrix );
 
     osg::Polytope lightVolumePolytope;
 
-
-    osg::Vec4d lightPos = positionedLight.second->getPosition();
-    osg::Vec3d lightPos3(lightPos.x(), lightPos.y(), lightPos.z());
-    osg::Vec3d lightDir;
-    bool directionalLight = (lightPos.w()== 0.0);
-    if (directionalLight)
+    if (positionedLight.directionalLight)
     {
-        lightDir.set(-lightPos.x(), -lightPos.y(), -lightPos.z());
-        lightDir.normalize();
-        OSG_NOTICE<<"   Directional light, lightPos="<<lightPos<<", lightDir="<<lightDir<<std::endl;
-        if (lightMatrix)
-        {
-            OSG_NOTICE<<"   Light matrix "<<*lightMatrix<<std::endl;
-            osg::Matrix lightToLocalMatrix(*lightMatrix * osg::Matrix::inverse(modelViewMatrix) );
-            lightDir = osg::Matrix::transform3x3( lightDir, lightToLocalMatrix );
-            lightDir.normalize();
-            OSG_NOTICE<<"   new LightDir ="<<lightDir<<std::endl;
-        }
-
         osg::Polytope::PlaneList& planes = polytope.getPlaneList();
         osg::Polytope::ClippingMask selector_mask = 0x1;
         osg::Polytope::ClippingMask result_mask = 0x0;
         for(unsigned int i=0; i<planes.size(); ++i, selector_mask <<= 1)
         {
-            OSG_NOTICE<<"      plane "<<planes[i]<<"  planes["<<i<<"].dotProductNormal(lightDir)="<<planes[i].dotProductNormal(lightDir);
-            if (planes[i].dotProductNormal(lightDir)>=0.0)
+            OSG_NOTICE<<"      plane "<<planes[i]<<"  planes["<<i<<"].dotProductNormal(lightDir)="<<planes[i].dotProductNormal(positionedLight.lightDir);
+            if (planes[i].dotProductNormal(positionedLight.lightDir)>=0.0)
             {
                 OSG_NOTICE<<"     Need remove side "<<i<<std::endl;
             }
@@ -321,28 +550,13 @@ osg::Polytope ViewDependentShadowMap::computeLightViewFrustumPolytope(osgUtil::C
     }
     else
     {
-        OSG_NOTICE<<"   Positional light, lightPos="<<lightPos<<std::endl;
-        lightDir = light->getDirection();
-        lightDir.normalize();
-        if (lightMatrix)
-        {
-            OSG_NOTICE<<"   Light matrix "<<*lightMatrix<<std::endl;
-            osg::Matrix lightToLocalMatrix(*lightMatrix * osg::Matrix::inverse(modelViewMatrix) );
-            lightPos = lightPos * lightToLocalMatrix;
-            lightDir = osg::Matrix::transform3x3( lightDir, lightToLocalMatrix );
-            lightDir.normalize();
-            OSG_NOTICE<<"   new LightPos ="<<lightPos<<std::endl;
-            OSG_NOTICE<<"   new LightDir ="<<lightDir<<std::endl;
-        }
-        lightPos3.set(lightPos.x()/lightPos.w(), lightPos.y()/lightPos.w(), lightPos.z()/lightPos.w());
-        OSG_NOTICE<<"   LightPos3 ="<<lightPos3<<std::endl;
         const osg::Polytope::PlaneList& planes = polytope.getPlaneList();
         osg::Polytope::ClippingMask selector_mask = 0x1;
         osg::Polytope::ClippingMask result_mask = 0x0;
         for(unsigned int i=0; i<planes.size(); ++i, selector_mask <<= 1)
         {
 
-            double d = planes[i].distance(lightPos3);
+            double d = planes[i].distance(positionedLight.lightPos3);
             OSG_NOTICE<<"      plane "<<planes[i]<<"  planes["<<i<<"].distance(lightPos3)="<<d;
             if (d<0.0)
             {
@@ -364,7 +578,7 @@ osg::Polytope ViewDependentShadowMap::computeLightViewFrustumPolytope(osgUtil::C
     OSG_NOTICE<<"Which frustum edges are active?"<<std::endl;
     for(unsigned int i=0; i<12; ++i)
     {
-        Indices& indices = edges[i];
+        Frustum::Indices& indices = frustum.edges[i];
 
         unsigned int corner_a = indices[0];
         unsigned int corner_b = indices[1];
@@ -380,19 +594,19 @@ osg::Polytope ViewDependentShadowMap::computeLightViewFrustumPolytope(osgUtil::C
 
             osg::Plane boundaryPlane;
 
-            if (directionalLight)
+            if (positionedLight.directionalLight)
             {
-                osg::Vec3d normal = (corners[corner_b]-corners[corner_a])^lightDir;
+                osg::Vec3d normal = (frustum.corners[corner_b]-frustum.corners[corner_a])^positionedLight.lightDir;
                 normal.normalize();
-                boundaryPlane.set(normal, corners[corner_a]);
+                boundaryPlane.set(normal, frustum.corners[corner_a]);
             }
             else
             {
-                boundaryPlane.set(lightPos3, corners[corner_a], corners[corner_b]);
+                boundaryPlane.set(positionedLight.lightPos3, frustum.corners[corner_a], frustum.corners[corner_b]);
             }
 
             OSG_NOTICE<<"Boundary Edge "<<i<<", corner_a="<<corner_a<<", corner_b="<<corner_b<<", face_a_active="<<face_a_active<<", face_b_active="<<face_b_active;
-            if (boundaryPlane.distance(center)<0.0)
+            if (boundaryPlane.distance(frustum.center)<0.0)
             {
                 boundaryPlane.flip();
                 OSG_NOTICE<<", flipped boundary edge "<<boundaryPlane<<std::endl;
@@ -406,27 +620,181 @@ osg::Polytope ViewDependentShadowMap::computeLightViewFrustumPolytope(osgUtil::C
         else OSG_NOTICE<<"Internal Edge "<<i<<", corner_a="<<corner_a<<", corner_b="<<corner_b<<", face_a_active="<<face_a_active<<", face_b_active="<<face_b_active<<std::endl;
     }
 
-    return lightVolumePolytope;   
+
+    const osg::Polytope::PlaneList& planes = lightVolumePolytope.getPlaneList();
+    for(unsigned int i=0; i<planes.size(); ++i)
+    {
+        OSG_NOTICE<<"      plane "<<planes[i]<<"  "<<((lightVolumePolytope.getResultMask() & (0x1<<i))?"on":"off")<<std::endl;
+    }
+
+    return lightVolumePolytope;
 }
 
-bool ViewDependentShadowMap::computeShadowCameraSettings(PositionedLight& positionedLight, osg::Polytope& polytope, osg::Camera* camera)
+bool ViewDependentShadowMap::computeShadowCameraSettings(Frustum& frustum, PositionedLight& positionedLight, osg::Camera* camera)
 {
     OSG_NOTICE<<"computeShadowCameraSettings()"<<std::endl;
 
-    const osg::Polytope::PlaneList& planes = polytope.getPlaneList();
-    for(unsigned int i=0; i<planes.size(); ++i)
-    {
-        OSG_NOTICE<<"      plane "<<planes[i]<<"  "<<((polytope.getResultMask() & (0x1<<i))?"on":"off")<<std::endl;
-    }
-   
+    // compute the basis vectors for the light coordinate frame
+    osg::Vec3d lightSide_y = positionedLight.lightDir ^ osg::Vec3d(0.0,1.0,0.0);
+    osg::Vec3d lightSide_z = positionedLight.lightDir ^ osg::Vec3d(0.0,0.0,1.0);
+    osg::Vec3d lightSide = (lightSide_y.length() > lightSide_z.length()) ? lightSide_y : lightSide_z;
+    lightSide.normalize();
 
-    return false;
+    //osg::Vec3d lightSide = positionedLight.lightDir ^ frustum.frustumCenterLine; lightSide.normalize();
+    osg::Vec3d lightUp = lightSide ^ positionedLight.lightDir;
+
+    if (positionedLight.directionalLight)
+    {
+        double xMin=0.0, xMax=0.0;
+        double yMin=0.0, yMax=0.0;
+        double zMin=0.0, zMax=0.0;
+
+        for(Frustum::Vertices::iterator itr = frustum.corners.begin();
+            itr != frustum.corners.end();
+            ++itr)
+        {
+            osg::Vec3d cornerDelta(*itr - frustum.center);
+            osg::Vec3d cornerInLightCoords(cornerDelta*lightSide,
+                                           cornerDelta*lightUp,
+                                           cornerDelta*positionedLight.lightDir);
+
+            xMin = osg::minimum( xMin, cornerInLightCoords.x());
+            xMax = osg::maximum( xMax, cornerInLightCoords.x());
+            yMin = osg::minimum( yMin, cornerInLightCoords.y());
+            yMax = osg::maximum( yMax, cornerInLightCoords.y());
+            zMin = osg::minimum( zMin, cornerInLightCoords.z());
+            zMax = osg::maximum( zMax, cornerInLightCoords.z());
+        }
+
+        OSG_NOTICE<<"before bs xMin="<<xMin<<", xMax="<<xMax<<", yMin="<<yMin<<", yMax="<<yMax<<", zMin="<<zMin<<", zMax="<<zMax<<std::endl;
+
+        osg::BoundingSphere bs = _shadowedScene->getBound();
+        osg::Vec3d modelCenterRelativeFrustumCenter(bs.center()-frustum.center);
+        osg::Vec3d modelCenterInLightCoords(modelCenterRelativeFrustumCenter*lightSide,
+                                            modelCenterRelativeFrustumCenter*lightUp,
+                                            modelCenterRelativeFrustumCenter*positionedLight.lightDir);
+
+        OSG_NOTICE<<"modelCenterInLight="<<modelCenterInLightCoords<<" radius="<<bs.radius()<<std::endl;
+        double radius(bs.radius());
+
+        xMin = osg::maximum(xMin, modelCenterInLightCoords.x()-radius);
+        xMax = osg::minimum(xMax, modelCenterInLightCoords.x()+radius);
+        yMin = osg::maximum(yMin, modelCenterInLightCoords.y()-radius);
+        yMax = osg::minimum(yMax, modelCenterInLightCoords.y()+radius);
+        zMin = modelCenterInLightCoords.z()-radius;
+        zMax = osg::minimum(zMax, modelCenterInLightCoords.z()+radius);
+
+        OSG_NOTICE<<"after bs xMin="<<xMin<<", xMax="<<xMax<<", yMin="<<yMin<<", yMax="<<yMax<<", zMin="<<zMin<<", zMax="<<zMax<<std::endl;
+
+        if (xMin>=xMax || yMin>=yMax || zMin>=zMax)
+        {
+            OSG_NOTICE<<"Warning nothing available to create shadows"<<zMax<<std::endl;
+            return false;
+        }
+        else
+        {
+            camera->setProjectionMatrixAsOrtho(xMin,xMax, yMin, yMax,0.0,zMax-zMin);
+            camera->setViewMatrixAsLookAt(frustum.center+positionedLight.lightDir*zMin, frustum.center, lightUp);
+        }
+    }
+    else
+    {
+        double zMax=-DBL_MAX;
+
+        OSG_NOTICE<<"lightDir = "<<positionedLight.lightDir<<std::endl;
+        OSG_NOTICE<<"lightPos3 = "<<positionedLight.lightPos3<<std::endl;
+        for(Frustum::Vertices::iterator itr = frustum.corners.begin();
+            itr != frustum.corners.end();
+            ++itr)
+        {
+            osg::Vec3d cornerDelta(*itr - positionedLight.lightPos3);
+            osg::Vec3d cornerInLightCoords(cornerDelta*lightSide,
+                                           cornerDelta*lightUp,
+                                           cornerDelta*positionedLight.lightDir);
+
+            OSG_NOTICE<<"   cornerInLightCoords= "<<cornerInLightCoords<<std::endl;
+            
+            zMax = osg::maximum( zMax, cornerInLightCoords.z());
+        }
+
+        OSG_NOTICE<<"zMax = "<<zMax<<std::endl;
+
+        if (zMax<0.0)
+        {
+            // view frustum entirely behind light
+            return false;
+        }
+
+        double minRatio = 0.0001;
+        double zMin=zMax*minRatio;
+
+        double fov = positionedLight.light->getSpotCutoff() * 2.0;
+        if(fov < 180.0)   // spotlight
+        {
+            camera->setProjectionMatrixAsPerspective(fov, 1.0, zMin, zMax);
+            camera->setViewMatrixAsLookAt(positionedLight.lightPos3,
+                                          positionedLight.lightPos3+positionedLight.lightDir, lightUp);
+        }
+        else
+        {
+            double fovMAX = 160.0f;
+            fov = 0.0;
+
+            // calculate the max FOV from the corners of the frustum relative to the light position
+            for(Frustum::Vertices::iterator itr = frustum.corners.begin();
+                itr != frustum.corners.end();
+                ++itr)
+            {
+                osg::Vec3d cornerDelta(*itr - positionedLight.lightPos3);
+                double length = cornerDelta.length();
+
+                if (length==0.0) fov = osg::minimum(fov, 180.0);
+                else
+                {
+                    double dotProduct = cornerDelta*positionedLight.lightDir;
+                    double angle = 2.0*osg::RadiansToDegrees( acos(dotProduct/length) );
+                    fov = osg::maximum(fov, angle);
+                }
+            }
+
+            OSG_NOTICE<<"Computed fov = "<<fov<<std::endl;
+
+            if (fov>fovMAX)
+            {
+                OSG_NOTICE<<"Clampping fov = "<<fov<<std::endl;
+                fov=fovMAX;
+            }
+
+            camera->setProjectionMatrixAsPerspective(fov, 1.0, zMin, zMax);
+            camera->setViewMatrixAsLookAt(positionedLight.lightPos3,
+                                          positionedLight.lightPos3+positionedLight.lightDir, lightUp);
+
+        }
+    }
+    return true;
 }
 
 bool ViewDependentShadowMap::assignTexGenSettings(osgUtil::CullVisitor* cv, osg::Camera* camera, unsigned int textureUnit, osg::TexGen* texgen)
 {
     OSG_NOTICE<<"assignTexGenSettings()"<<std::endl;
-    return false;
+
+    texgen->setMode(osg::TexGen::EYE_LINEAR);
+
+    // compute the matrix which takes a vertex from local coords into tex coords
+    // We actually use two matrices one used to define texgen
+    // and second that will be used as modelview when appling to OpenGL
+    texgen->setPlanesFromMatrix( camera->getProjectionMatrix() *
+                                 osg::Matrix::translate(1.0,1.0,1.0) *
+                                 osg::Matrix::scale(0.5f,0.5f,0.5f) );
+
+    // Place texgen with modelview which removes big offsets (making it float friendly)
+    osg::ref_ptr<osg::RefMatrix> refMatrix =
+        new osg::RefMatrix( camera->getInverseViewMatrix() * (*(cv->getModelViewMatrix())) );
+
+    cv->getRenderStage()->getPositionalStateContainer()->addPositionedTextureAttribute( textureUnit, refMatrix.get(), texgen );
+
+
+    return true;
 }
 
 void ViewDependentShadowMap::cullShadowReceivingScene(osgUtil::CullVisitor* cv, osg::StateSet* stateset) const

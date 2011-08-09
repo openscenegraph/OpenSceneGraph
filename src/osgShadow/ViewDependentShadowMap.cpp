@@ -182,10 +182,17 @@ ViewDependentShadowMap::ShadowData::ShadowData():
     unsigned int textureSize = debug ? 512 : 2048;
     
     _texture->setTextureSize(textureSize, textureSize);
-    //_texture->setInternalFormat(GL_DEPTH_COMPONENT);
-    _texture->setInternalFormat(GL_RGB);
-    //_texture->setShadowComparison(true);
-    //_texture->setShadowTextureMode(osg::Texture2D::LUMINANCE);
+    if (debug)
+    {
+        _texture->setInternalFormat(GL_RGB);
+    }
+    else
+    {
+        _texture->setInternalFormat(GL_DEPTH_COMPONENT);
+        _texture->setShadowComparison(true);
+        _texture->setShadowTextureMode(osg::Texture2D::LUMINANCE);
+    }
+    
     _texture->setFilter(osg::Texture2D::MIN_FILTER,osg::Texture2D::LINEAR);
     _texture->setFilter(osg::Texture2D::MAG_FILTER,osg::Texture2D::LINEAR);
 
@@ -213,6 +220,10 @@ ViewDependentShadowMap::ShadowData::ShadowData():
 
         // render after the main camera
         _camera->setRenderOrder(osg::Camera::POST_RENDER);
+
+        // attach the texture and use it as the color buffer.
+        //_camera->attach(osg::Camera::DEPTH_BUFFER, _texture.get());
+        _camera->attach(osg::Camera::COLOR_BUFFER, _texture.get());
     }
     else
     {
@@ -226,8 +237,8 @@ ViewDependentShadowMap::ShadowData::ShadowData():
         _camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
 
         // attach the texture and use it as the color buffer.
-        //_camera->attach(osg::Camera::DEPTH_BUFFER, _texture.get());
-        _camera->attach(osg::Camera::COLOR_BUFFER, _texture.get());
+        _camera->attach(osg::Camera::DEPTH_BUFFER, _texture.get());
+        //_camera->attach(osg::Camera::COLOR_BUFFER, _texture.get());
     }   
 }
 

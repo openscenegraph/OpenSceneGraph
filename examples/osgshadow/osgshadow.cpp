@@ -814,6 +814,7 @@ int main(int argc, char** argv)
     else if( arguments.read("--vdsm") )
     {
         osg::ref_ptr<osgShadow::ViewDependentShadowMap> vdsm = new osgShadow::ViewDependentShadowMap;
+        while( arguments.read("--debugHUD") ) vdsm->setDebugDraw( true );
         shadowedScene->setShadowTechnique(vdsm.get());
     }
     else /* if (arguments.read("--sm")) */
@@ -829,8 +830,7 @@ int main(int argc, char** argv)
     if( msm )// Set common MSM & LISPSM arguments
     {
         shadowedScene->setShadowTechnique( msm.get() );
-        while( arguments.read("--debugHUD") )           
-            msm->setDebugDraw( true );
+        while( arguments.read("--debugHUD") ) msm->setDebugDraw( true );
 
         float minLightMargin = 10.f;
         float maxFarPlane = 0;

@@ -116,8 +116,8 @@ void VDSMCameraCullCallback::operator()(osg::Node* node, osg::NodeVisitor* nv)
 //
 // LightData
 //
-ViewDependentShadowMap::LightData::LightData():
-    active(false),
+ViewDependentShadowMap::LightData::LightData(ViewDependentShadowMap::ViewDependentData* vdd):
+    _viewDependentData(vdd),
     directionalLight(false)
 {
 }
@@ -167,11 +167,11 @@ void ViewDependentShadowMap::LightData::setLightData(osg::RefMatrix* lm, const o
 //
 // ShadowData
 //
-ViewDependentShadowMap::ShadowData::ShadowData():
-    _active(false),
+ViewDependentShadowMap::ShadowData::ShadowData(ViewDependentShadowMap::ViewDependentData* vdd):
+    _viewDependentData(vdd),
     _textureUnit(0)
 {
-    bool debug = false;
+    bool debug = vdd->getViewDependentShadowMap()->getDebugDraw();
 
     // set up texgen
     _texgen = new osg::TexGen;
@@ -199,14 +199,17 @@ ViewDependentShadowMap::ShadowData::ShadowData():
     // the shadow comparison should fail if object is outside the texture
     _texture->setWrap(osg::Texture2D::WRAP_S,osg::Texture2D::CLAMP_TO_BORDER);
     _texture->setWrap(osg::Texture2D::WRAP_T,osg::Texture2D::CLAMP_TO_BORDER);
-    _texture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+    //_texture->setBorderColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+    _texture->setBorderColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
     
     // set up the camera
     _camera = new osg::Camera;
 
     _camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF_INHERIT_VIEWPOINT);
 
-    _camera->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+    //_camera->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
+    _camera->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
+
     //camera->setComputeNearFarMode(osg::Camera::DO_NOT_COMPUTE_NEAR_FAR);
 
     // set viewport
@@ -216,7 +219,7 @@ ViewDependentShadowMap::ShadowData::ShadowData():
     if (debug)
     {
         // clear just the depth buffer
-        _camera->setClearMask(GL_DEPTH_BUFFER_BIT);
+        _camera->setClearMask(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
         // render after the main camera
         _camera->setRenderOrder(osg::Camera::POST_RENDER);
@@ -369,7 +372,8 @@ ViewDependentShadowMap::Frustum::Frustum(osgUtil::CullVisitor* cv):
 //
 // ViewDependentData
 //
-ViewDependentShadowMap::ViewDependentData::ViewDependentData()
+ViewDependentShadowMap::ViewDependentData::ViewDependentData(ViewDependentShadowMap* vdsm):
+    _viewDependentShadowMap(vdsm)
 {
     OSG_NOTICE<<"ViewDependentData::ViewDependentData()"<<this<<std::endl;
     _stateset = new osg::StateSet;
@@ -381,13 +385,15 @@ ViewDependentShadowMap::ViewDependentData::ViewDependentData()
 // ViewDependentShadowMap
 //
 ViewDependentShadowMap::ViewDependentShadowMap():
-    ShadowTechnique()
+    ShadowTechnique(),
+    _debugDraw(false)
 {
     _shadowRecievingPlaceholderStateSet = new osg::StateSet;
 }
 
 ViewDependentShadowMap::ViewDependentShadowMap(const ViewDependentShadowMap& vdsm, const osg::CopyOp& copyop):
-    ShadowTechnique(vdsm,copyop)
+    ShadowTechnique(vdsm,copyop),
+    _debugDraw(vdsm._debugDraw)
 {
     _shadowRecievingPlaceholderStateSet = new osg::StateSet;
 }
@@ -415,7 +421,7 @@ void ViewDependentShadowMap::cleanSceneGraph()
 
 ViewDependentShadowMap::ViewDependentData* ViewDependentShadowMap::createViewDependentData(osgUtil::CullVisitor* cv)
 {
-    return new ViewDependentData();
+    return new ViewDependentData(this);
 }
 
 ViewDependentShadowMap::ViewDependentData* ViewDependentShadowMap::getViewDependentData(osgUtil::CullVisitor* cv)
@@ -461,15 +467,12 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
     
     // 2. select active light sources
     //    create a list of light sources + their matrices to place them
-    LightDataList& pll = vdd->getLightDataList();
-    selectActiveLights(&cv, pll);
+    selectActiveLights(&cv, vdd);
 
     unsigned int pos_x = 0;
     unsigned int baseTextureUnit = 0;
     unsigned int textureUnit = baseTextureUnit;
     unsigned int numValidShadows = 0;
-
-    bool debug = false;
 
     Frustum frustum(&cv);
 
@@ -477,6 +480,7 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
     ShadowDataList previous_sdl;
     previous_sdl.swap(sdl);
     
+    LightDataList& pll = vdd->getLightDataList();
     for(LightDataList::iterator itr = pll.begin();
         itr != pll.end();
         ++itr)
@@ -493,7 +497,7 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
             if (previous_sdl.empty())
             {
                 OSG_NOTICE<<"Create new ShadowData"<<std::endl;
-                sd = new ShadowData;
+                sd = new ShadowData(vdd);
             }
             else
             {
@@ -504,10 +508,10 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
 
             osg::ref_ptr<osg::Camera> camera = sd->_camera;
 
-            if (debug)
+            if (_debugDraw)
             {
-                camera->setViewport(pos_x,0,400,400);
-                pos_x += 440;
+                camera->getViewport()->x() = pos_x;
+                pos_x += camera->getViewport()->width() + 40;
             }
 
             osg::ref_ptr<osg::TexGen> texgen = sd->_texgen;
@@ -575,10 +579,12 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
    
 }
 
-bool ViewDependentShadowMap::selectActiveLights(osgUtil::CullVisitor* cv, LightDataList& pll) const
+bool ViewDependentShadowMap::selectActiveLights(osgUtil::CullVisitor* cv, ViewDependentData* vdd) const
 {
     OSG_NOTICE<<"selectActiveLights"<<std::endl;
 
+    LightDataList& pll = vdd->getLightDataList();
+    
     LightDataList previous_ldl;
     previous_ldl.swap(pll);
 
@@ -606,7 +612,7 @@ bool ViewDependentShadowMap::selectActiveLights(osgUtil::CullVisitor* cv, LightD
             if (pll_itr==pll.end())
             {
                 OSG_NOTICE<<"Light num "<<light->getLightNum()<<std::endl;
-                LightData* ld = new LightData();
+                LightData* ld = new LightData(vdd);
                 ld->setLightData(itr->second, light, modelViewMatrix);
                 pll.push_back(ld);
             }

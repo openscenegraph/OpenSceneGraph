@@ -115,11 +115,13 @@ void VDSMCameraCullCallback::operator()(osg::Node* node, osg::NodeVisitor* nv)
 ViewDependentShadowMap::ViewDependentShadowMap():
     ShadowTechnique()
 {
+    _shadowRecievingPlaceholderStateSet = new osg::StateSet;
 }
 
 ViewDependentShadowMap::ViewDependentShadowMap(const ViewDependentShadowMap& vdsm, const osg::CopyOp& copyop):
     ShadowTechnique(vdsm,copyop)
 {
+    _shadowRecievingPlaceholderStateSet = new osg::StateSet;
 }
 
 ViewDependentShadowMap::~ViewDependentShadowMap()
@@ -165,13 +167,18 @@ void ViewDependentShadowMap::update(osg::NodeVisitor& nv)
 
 void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
 {
-    OSG_NOTICE<<"ViewDependentShadowMap::cull(osg::CullVisitor&"<<&cv<<")"<<std::endl;
+    OSG_NOTICE<<std::endl<<std::endl<<"ViewDependentShadowMap::cull(osg::CullVisitor&"<<&cv<<")"<<std::endl;
 
-    osg::ref_ptr<osg::StateSet> stateset = new osg::StateSet;
-    
     // 1. Traverse main scene graph
-    cullShadowReceivingScene(&cv, stateset.get());
+    cv.pushStateSet( _shadowRecievingPlaceholderStateSet.get() );
 
+    osg::ref_ptr<osgUtil::StateGraph> decoratorStateGraph = cv.getCurrentStateGraph();
+
+    cullShadowReceivingScene(&cv);
+
+    cv.popStateSet();
+
+    
     // 2. select active light sources
     //    create a list of light sources + their matrices to place them
     PositionedLightList pll;
@@ -283,31 +290,8 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
     {
         OSG_NOTICE<<"Need to assign "<<numValidShadows<<" shadows"<<std::endl;
 
-        for(PositionedLightList::iterator itr = pll.begin();
-            itr != pll.end();
-            ++itr)
-        {
-            // 3. create per light/per shadow map division of lightspace/frustum
-            //    create a list of light/shadow map data structures
-
-            PositionedLight& pl = *itr;
-
-            // if no texture units have been activated for this light then no shadow state required.
-            if (pl.textureUnits.empty()) continue;
-
-            for(PositionedLight::ActiveTextureUnits::iterator atu_itr = pl.textureUnits.begin();
-                atu_itr != pl.textureUnits.end();
-                ++atu_itr)
-            {
-                OSG_NOTICE<<"   Need to assign state for "<<*atu_itr<<std::endl;
-            }
-            
-        }
+        decoratorStateGraph->setStateSet(selectStateSetForRenderingShadow(pll));
         
-    }
-    else
-    {
-        stateset->clear();
     }
    
 }
@@ -797,7 +781,7 @@ bool ViewDependentShadowMap::assignTexGenSettings(osgUtil::CullVisitor* cv, osg:
     return true;
 }
 
-void ViewDependentShadowMap::cullShadowReceivingScene(osgUtil::CullVisitor* cv, osg::StateSet* stateset) const
+void ViewDependentShadowMap::cullShadowReceivingScene(osgUtil::CullVisitor* cv) const
 {
     OSG_NOTICE<<"cullShadowReceivingScene()"<<std::endl;
 
@@ -806,11 +790,7 @@ void ViewDependentShadowMap::cullShadowReceivingScene(osgUtil::CullVisitor* cv, 
 
     cv->setTraversalMask( traversalMask & _shadowedScene->getReceivesShadowTraversalMask() );
 
-    if (stateset) cv->pushStateSet( stateset );
-
-        _shadowedScene->osg::Group::traverse(*cv);
-
-    if (stateset) cv->popStateSet();
+    _shadowedScene->osg::Group::traverse(*cv);
 
     cv->setTraversalMask( traversalMask );
 
@@ -831,6 +811,35 @@ void ViewDependentShadowMap::cullShadowCastingScene(osgUtil::CullVisitor* cv, os
     cv->setTraversalMask( traversalMask );
 
     return;
+}
+
+osg::StateSet* ViewDependentShadowMap::selectStateSetForRenderingShadow(PositionedLightList& pll) const
+{
+    osg::ref_ptr<osg::StateSet> newStateSet = new osg::StateSet;
+
+    newStateSet->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);
+
+    for(PositionedLightList::iterator itr = pll.begin();
+        itr != pll.end();
+        ++itr)
+    {
+        // 3. create per light/per shadow map division of lightspace/frustum
+        //    create a list of light/shadow map data structures
+
+        PositionedLight& pl = *itr;
+
+        // if no texture units have been activated for this light then no shadow state required.
+        if (pl.textureUnits.empty()) continue;
+
+        for(PositionedLight::ActiveTextureUnits::iterator atu_itr = pl.textureUnits.begin();
+            atu_itr != pl.textureUnits.end();
+            ++atu_itr)
+        {
+            OSG_NOTICE<<"   Need to assign state for "<<*atu_itr<<std::endl;
+        }
+
+    }
+    return newStateSet.release();
 }
 
 

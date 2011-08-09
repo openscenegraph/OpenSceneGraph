@@ -125,10 +125,11 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
 
         virtual bool assignTexGenSettings(osgUtil::CullVisitor* cv, osg::Camera* camera, unsigned int textureUnit, osg::TexGen* texgen);
 
-        virtual void cullShadowReceivingScene(osgUtil::CullVisitor* cv, osg::StateSet* stateset) const;
+        virtual void cullShadowReceivingScene(osgUtil::CullVisitor* cv) const;
 
         virtual void cullShadowCastingScene(osgUtil::CullVisitor* cv, osg::Camera* camera) const;
 
+        virtual osg::StateSet* selectStateSetForRenderingShadow(PositionedLightList& pll) const;
 
 protected:
         virtual ~ViewDependentShadowMap();
@@ -136,6 +137,8 @@ protected:
         typedef std::map< osgUtil::CullVisitor*, osg::ref_ptr<ViewDependentData> >  ViewDependentDataMap;
         OpenThreads::Mutex   _viewDependentDataMapMutex;
         ViewDependentDataMap _viewDependentDataMap;
+
+        osg::ref_ptr<osg::StateSet> _shadowRecievingPlaceholderStateSet;
         
 };
 

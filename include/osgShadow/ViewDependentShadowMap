@@ -45,36 +45,6 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
         /** Clean scene graph from any shadow technique specific nodes, state and drawables.*/
         virtual void cleanSceneGraph();
 
-        struct OSGSHADOW_EXPORT LightShadowData : public osg::Referenced
-        {
-            unsigned int                _textureUnit;
-            osg::ref_ptr<osg::Texture>  _texture;
-            osg::ref_ptr<osg::TexGen>   _texgen;
-
-            osg::ref_ptr<osg::Light>    _light;
-            osg::ref_ptr<osg::Camera>   _camera;
-        };
-        
-        class OSGSHADOW_EXPORT ViewDependentData : public osg::Referenced
-        {
-        public:
-            ViewDependentData(ViewDependentShadowMap* vdsm, osgUtil::CullVisitor* cv);
-
-            
-            
-            void cullShadowCastingScene(osgUtil::CullVisitor* cv);
-            
-            void cull(osgUtil::CullVisitor*);
-            
-        protected:
-            virtual ~ViewDependentData() {}
-
-            osg::ref_ptr<osg::StateSet> _stateset;
-        };
-        
-        virtual ViewDependentData* createViewDependentData(osgUtil::CullVisitor* cv);
-
-        ViewDependentData* getViewDependentData(osgUtil::CullVisitor* cv);
 
         struct OSGSHADOW_EXPORT Frustum
         {
@@ -99,10 +69,13 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
             osg::Vec3d frustumCenterLine;
         };
 
-        struct OSGSHADOW_EXPORT PositionedLight
+        struct OSGSHADOW_EXPORT LightData : public osg::Referenced
         {
-            PositionedLight(osg::RefMatrix* lm, const osg::Light* l, const osg::Matrixd& modelViewMatrix);
+            LightData();
+
+            virtual void setLightData(osg::RefMatrix* lm, const osg::Light* l, const osg::Matrixd& modelViewMatrix);
             
+            bool                                active;
             osg::ref_ptr<osg::RefMatrix>        lightMatrix;
             osg::ref_ptr<const osg::Light>      light;
 
@@ -115,13 +88,54 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
             ActiveTextureUnits                   textureUnits;
         };
         
-        typedef std::list< PositionedLight > PositionedLightList;
+        typedef std::list< osg::ref_ptr<LightData> > LightDataList;
 
-        virtual bool selectActiveLights(osgUtil::CullVisitor* cv, PositionedLightList& pll) const;
+        struct OSGSHADOW_EXPORT ShadowData : public osg::Referenced
+        {
+            ShadowData();
 
-        virtual osg::Polytope computeLightViewFrustumPolytope(Frustum& frustum, PositionedLight& positionedLight);
+            bool                                _active;
+            unsigned int                        _textureUnit;
+            osg::ref_ptr<osg::Texture2D>        _texture;
+            osg::ref_ptr<osg::TexGen>           _texgen;
+            osg::ref_ptr<osg::Camera>           _camera;
+        };
 
-        virtual bool computeShadowCameraSettings(Frustum& frustum, PositionedLight& positionedLight, osg::Camera* camera);
+        typedef std::list< osg::ref_ptr<ShadowData> > ShadowDataList;
+        
+
+        class OSGSHADOW_EXPORT ViewDependentData : public osg::Referenced
+        {
+        public:
+            ViewDependentData();
+
+            LightDataList& getLightDataList() { return _lightDataList; }
+
+            ShadowDataList& getShadowDataList() { return _shadowDataList; }
+
+            osg::StateSet* getStateSet() { return _stateset.get(); }
+            
+        protected:
+            virtual ~ViewDependentData() {}
+
+            osg::ref_ptr<osg::StateSet> _stateset;
+
+            LightDataList         _lightDataList;
+            ShadowDataList        _shadowDataList;
+        };
+
+        virtual ViewDependentData* createViewDependentData(osgUtil::CullVisitor* cv);
+
+        ViewDependentData* getViewDependentData(osgUtil::CullVisitor* cv);
+
+
+        virtual void createShaders();
+
+        virtual bool selectActiveLights(osgUtil::CullVisitor* cv, LightDataList& pll) const;
+
+        virtual osg::Polytope computeLightViewFrustumPolytope(Frustum& frustum, LightData& positionedLight);
+
+        virtual bool computeShadowCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Camera* camera);
 
         virtual bool assignTexGenSettings(osgUtil::CullVisitor* cv, osg::Camera* camera, unsigned int textureUnit, osg::TexGen* texgen);
 
@@ -129,7 +143,7 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
 
         virtual void cullShadowCastingScene(osgUtil::CullVisitor* cv, osg::Camera* camera) const;
 
-        virtual osg::StateSet* selectStateSetForRenderingShadow(PositionedLightList& pll) const;
+        virtual osg::StateSet* selectStateSetForRenderingShadow(ViewDependentData& vdd) const;
 
 protected:
         virtual ~ViewDependentShadowMap();

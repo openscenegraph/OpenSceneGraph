@@ -145,7 +145,21 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
 
         virtual osg::Polytope computeLightViewFrustumPolytope(Frustum& frustum, LightData& positionedLight);
 
+        enum ShadowMapProjectionHint
+        {
+            STANDARD_SHADOW_MAP,
+            PERSPECTIVE_SHADOW_MAP,
+            LIGHT_SPACE_PERSPECTIVE_SHADOW_MAP
+        };
+        
+        void setShadowMapProjectionHint(ShadowMapProjectionHint hint) { _shadowMapProjectionHint = hint; }
+        ShadowMapProjectionHint getShadowMapProjectionHint() const { return _shadowMapProjectionHint; }
+        
         virtual bool computeShadowCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Camera* camera);
+
+        virtual bool standardShadowMapCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Camera* camera);
+        virtual bool perspectiveShadowMapCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Camera* camera);
+        virtual bool lightSpacePerspectiveShadowMapCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Camera* camera);
 
         virtual bool assignTexGenSettings(osgUtil::CullVisitor* cv, osg::Camera* camera, unsigned int textureUnit, osg::TexGen* texgen);
 
@@ -175,8 +189,9 @@ protected:
         typedef std::vector< osg::ref_ptr<osg::Uniform> > Uniforms;
         Uniforms                                _uniforms;
         osg::ref_ptr<osg::Program>              _program;
-        
-        bool _debugDraw;
+
+        ShadowMapProjectionHint                 _shadowMapProjectionHint;
+        bool                                    _debugDraw;
         
 };
 

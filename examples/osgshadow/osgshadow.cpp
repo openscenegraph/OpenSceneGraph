@@ -793,6 +793,16 @@ int main(int argc, char** argv)
         osg::ref_ptr<osgShadow::SoftShadowMap> sm = new osgShadow::SoftShadowMap;
         shadowedScene->setShadowTechnique(sm.get());
     }
+    else if( arguments.read("--vdsm") )
+    {
+        osg::ref_ptr<osgShadow::ViewDependentShadowMap> vdsm = new osgShadow::ViewDependentShadowMap;
+        while( arguments.read("--debugHUD") ) vdsm->setDebugDraw( true );
+
+        if (arguments.read("--persp")) vdsm->setShadowMapProjectionHint(osgShadow::ViewDependentShadowMap::PERSPECTIVE_SHADOW_MAP);
+        if (arguments.read("--lispsm")) vdsm->setShadowMapProjectionHint(osgShadow::ViewDependentShadowMap::LIGHT_SPACE_PERSPECTIVE_SHADOW_MAP);
+        
+        shadowedScene->setShadowTechnique(vdsm.get());
+    }
     else if ( arguments.read("--lispsm") ) 
     {
         if( arguments.read( "--ViewBounds" ) )
@@ -810,12 +820,6 @@ int main(int argc, char** argv)
             msm = new osgShadow::MinimalCullBoundsShadowMap;
        else // if( arguments.read( "--DrawBounds" ) ) // default
             msm = new osgShadow::MinimalDrawBoundsShadowMap;
-    }
-    else if( arguments.read("--vdsm") )
-    {
-        osg::ref_ptr<osgShadow::ViewDependentShadowMap> vdsm = new osgShadow::ViewDependentShadowMap;
-        while( arguments.read("--debugHUD") ) vdsm->setDebugDraw( true );
-        shadowedScene->setShadowTechnique(vdsm.get());
     }
     else /* if (arguments.read("--sm")) */
     {

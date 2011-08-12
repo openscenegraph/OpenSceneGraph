@@ -18,6 +18,7 @@
 #include <osg/Material>
 #include <osg/MatrixTransform>
 #include <osg/LightSource>
+#include <osg/PolygonOffset>
 
 #include <osgShadow/ShadowTechnique>
 
@@ -166,8 +167,15 @@ protected:
         OpenThreads::Mutex   _viewDependentDataMapMutex;
         ViewDependentDataMap _viewDependentDataMap;
 
-        osg::ref_ptr<osg::StateSet> _shadowRecievingPlaceholderStateSet;
+        osg::ref_ptr<osg::StateSet>             _shadowRecievingPlaceholderStateSet;
 
+        osg::ref_ptr<osg::StateSet>             _shadowCastingStateSet;
+        osg::ref_ptr<osg::PolygonOffset>        _polygonOffset;
+        
+        typedef std::vector< osg::ref_ptr<osg::Uniform> > Uniforms;
+        Uniforms                                _uniforms;
+        osg::ref_ptr<osg::Program>              _program;
+        
         bool _debugDraw;
         
 };

@@ -13,9 +13,26 @@
 
 #include <osgShadow/ViewDependentShadowMap>
 #include <osgShadow/ShadowedScene>
+#include <osg/CullFace>
 #include <osg/io_utils>
 
 using namespace osgShadow;
+
+//////////////////////////////////////////////////////////////////
+// fragment shader
+//
+
+static const char fragmentShaderSource_withBaseTexture[] =
+        "uniform sampler2D baseTexture;                                          \n"
+        "uniform sampler2DShadow shadowTexture;                                  \n"
+        "                                                                        \n"
+        "void main(void)                                                         \n"
+        "{                                                                       \n"
+        "  vec4 colorAmbientEmissive = gl_FrontLightModelProduct.sceneColor;     \n"
+        "  vec4 color = texture2D( baseTexture, gl_TexCoord[0].xy );                                            \n"
+        "  color *= mix( colorAmbientEmissive, gl_Color, shadow2DProj( shadowTexture, gl_TexCoord[1] ).r );     \n"
+        "  gl_FragColor = color;                                                                                \n"
+        "} \n";
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -471,7 +488,7 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
 
     unsigned int pos_x = 0;
     unsigned int baseTextureUnit = 0;
-    unsigned int textureUnit = baseTextureUnit;
+    unsigned int textureUnit = baseTextureUnit+1;
     unsigned int numValidShadows = 0;
 
     Frustum frustum(&cv);
@@ -548,7 +565,11 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
             // 4.3 traverse RTT camera
             //
 
+            cv.pushStateSet(_shadowCastingStateSet.get());
+
             cullShadowCastingScene(&cv, camera.get());
+
+            cv.popStateSet();
 
             // 4.4 compute main scene graph TexGen + uniform settings + setup state
             //
@@ -629,6 +650,41 @@ bool ViewDependentShadowMap::selectActiveLights(osgUtil::CullVisitor* cv, ViewDe
 void ViewDependentShadowMap::createShaders()
 {
     OSG_NOTICE<<"ViewDependentShadowMap::createShaders()"<<std::endl;
+
+    unsigned int _baseTextureUnit = 0;
+    unsigned int _shadowTextureUnit = 1;
+
+    _shadowCastingStateSet = new osg::StateSet;
+    
+    // cull front faces so that only backfaces contribute to depth map
+#if 0
+    osg::ref_ptr<osg::CullFace> cull_face = new osg::CullFace;
+    cull_face->setMode(osg::CullFace::FRONT);
+    _shadowCastingStateSet->setAttribute(cull_face.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+    _shadowCastingStateSet->setMode(GL_CULL_FACE, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+#endif
+
+#if 1
+    float factor = 1.1;
+    float units =  4.0;
+    _polygonOffset = new osg::PolygonOffset(factor, units);
+    _shadowCastingStateSet->setAttribute(_polygonOffset.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+    _shadowCastingStateSet->setMode(GL_POLYGON_OFFSET_FILL, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
+#endif
+
+    _uniforms.clear();
+    osg::ref_ptr<osg::Uniform> baseTextureSampler = new osg::Uniform("baseTexture",(int)_baseTextureUnit);
+    _uniforms.push_back(baseTextureSampler.get());
+
+    osg::ref_ptr<osg::Uniform> shadowTextureSampler = new osg::Uniform("shadowTexture",(int)_shadowTextureUnit);
+    _uniforms.push_back(shadowTextureSampler.get());
+
+    //osg::ref_ptr<osg::Shader> fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource_noBaseTexture);
+    osg::ref_ptr<osg::Shader> fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource_withBaseTexture);
+
+    _program = new osg::Program;
+    _program->addShader(fragment_shader.get());
+   
 }
 
 osg::Polytope ViewDependentShadowMap::computeLightViewFrustumPolytope(Frustum& frustum, LightData& positionedLight)
@@ -957,6 +1013,15 @@ osg::StateSet* ViewDependentShadowMap::selectStateSetForRenderingShadow(ViewDepe
     
     vdd.getStateSet()->clear();
     //vdd.getStateSet()->setTextureMode(0, GL_TEXTURE_2D, osg::StateAttribute::OFF | osg::StateAttribute::OVERRIDE);
+
+    for(Uniforms::const_iterator itr=_uniforms.begin();
+        itr!=_uniforms.end();
+        ++itr)
+    {
+        stateset->addUniform(itr->get());
+    }
+
+    stateset->setAttribute(_program.get());
 
     LightDataList& pll = vdd.getLightDataList();
     for(LightDataList::iterator itr = pll.begin();

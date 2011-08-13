@@ -576,7 +576,7 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
             // 4.4 compute main scene graph TexGen + uniform settings + setup state
             //
 
-            assignTexGenSettings(&cv, camera.get(), textureUnit, texgen);
+            assignTexGenSettings(&cv, camera.get(), textureUnit, texgen.get());
 
 
             // mark the light as one that has active shadows and requires shaders
@@ -636,7 +636,7 @@ bool ViewDependentShadowMap::selectActiveLights(osgUtil::CullVisitor* cv, ViewDe
             {
                 OSG_INFO<<"Light num "<<light->getLightNum()<<std::endl;
                 LightData* ld = new LightData(vdd);
-                ld->setLightData(itr->second, light, modelViewMatrix);
+                ld->setLightData(itr->second.get(), light, modelViewMatrix);
                 pll.push_back(ld);
             }
             else

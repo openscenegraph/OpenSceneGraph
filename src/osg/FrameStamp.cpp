@@ -58,6 +58,7 @@ FrameStamp& FrameStamp::operator = (const FrameStamp& fs)
 
     _frameNumber = fs._frameNumber;
     _referenceTime = fs._referenceTime;
+    _simulationTime = fs._simulationTime;
     
     tm_sec = fs.tm_sec;            /* Seconds.    [0-60] (1 leap second) */
     tm_min = fs.tm_min;            /* Minutes.    [0-59] */

@@ -701,7 +701,7 @@ void ViewDependentShadowMap::createShaders()
 
     _shadowCastingStateSet = new osg::StateSet;
 
-#if 0
+#if 1
     // note soft (attribute only no mode override) setting. When this works ?
     // 1. for objects prepared for backface culling
     //    because they usually also set CullFace and CullMode on in their state

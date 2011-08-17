@@ -46,8 +46,11 @@ class VDSMCameraCullCallback : public osg::NodeCallback
 
         virtual void operator()(osg::Node*, osg::NodeVisitor* nv);
 
+        osg::RefMatrix* getProjectionMatrix() { return _projectionMatrix.get(); }
+
     protected:
 
+        osg::ref_ptr<osg::RefMatrix> _projectionMatrix;
         ViewDependentShadowMap* _vdsm;
         osg::Polytope           _polytope;
 };
@@ -88,6 +91,9 @@ void VDSMCameraCullCallback::operator()(osg::Node* node, osg::NodeVisitor* nv)
 
     if (cv->getComputeNearFarMode() != osg::CullSettings::DO_NOT_COMPUTE_NEAR_FAR)        
     {
+        // make sure that the near plane is computed correctly.
+        cv->computeNearPlane();
+
         osg::Matrixd projection = *(cv->getProjectionMatrix());
 
         OSG_INFO<<"RTT Projection matrix "<<projection<<std::endl;
@@ -125,8 +131,9 @@ void VDSMCameraCullCallback::operator()(osg::Node* node, osg::NodeVisitor* nv)
         OSG_INFO<<"RTT Projection matrix after clamping "<<projection<<std::endl;
 
         camera->setProjectionMatrix(projection);
+
+        _projectionMatrix = cv->getProjectionMatrix();
     }
-    
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -168,7 +175,7 @@ void ViewDependentShadowMap::LightData::setLightData(osg::RefMatrix* lm, const o
         lightDir.normalize();
         if (lightMatrix.valid())
         {
-            OSG_NOTICE<<"   Light matrix "<<*lightMatrix<<std::endl;
+            OSG_INFO<<"   Light matrix "<<*lightMatrix<<std::endl;
             osg::Matrix lightToLocalMatrix(*lightMatrix * osg::Matrix::inverse(modelViewMatrix) );
             lightPos = lightPos * lightToLocalMatrix;
             lightDir = osg::Matrix::transform3x3( lightDir, lightToLocalMatrix );
@@ -227,7 +234,7 @@ ViewDependentShadowMap::ShadowData::ShadowData(ViewDependentShadowMap::ViewDepen
     //_camera->setClearColor(osg::Vec4(1.0f,1.0f,1.0f,1.0f));
     _camera->setClearColor(osg::Vec4(0.0f,0.0f,0.0f,0.0f));
 
-    //camera->setComputeNearFarMode(osg::Camera::DO_NOT_COMPUTE_NEAR_FAR);
+    //_camera->setComputeNearFarMode(osg::Camera::DO_NOT_COMPUTE_NEAR_FAR);
 
     // set viewport
     _camera->setViewport(0,0,textureSize,textureSize);
@@ -306,10 +313,13 @@ ViewDependentShadowMap::Frustum::Frustum(osgUtil::CullVisitor* cv):
         OSG_INFO<<"   corner "<<*itr<<std::endl;
     }
 
+    // compute eye point
+    eye = osg::Vec3d(0.0,0.0,0.0) * osg::Matrix::inverse(modelViewMatrix);
+
     // compute center and the frustumCenterLine
     centerNearPlane = (corners[0]+corners[1]+corners[5]+corners[4])*0.25;
     centerFarPlane = (corners[3]+corners[2]+corners[6]+corners[7])*0.25;
-    center = (centerNearPlane+centerNearPlane)*0.5;
+    center = (centerNearPlane+centerFarPlane)*0.5;
     frustumCenterLine = centerFarPlane-centerNearPlane;
     frustumCenterLine.normalize();
 
@@ -462,7 +472,7 @@ void ViewDependentShadowMap::update(osg::NodeVisitor& nv)
 
 void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
 {
-    OSG_INFO<<std::endl<<std::endl<<"ViewDependentShadowMap::cull(osg::CullVisitor&"<<&cv<<")"<<std::endl;
+    OSG_NOTICE<<std::endl<<std::endl<<"ViewDependentShadowMap::cull(osg::CullVisitor&"<<&cv<<")"<<std::endl;
 
     ViewDependentData* vdd = getViewDependentData(&cv);
 
@@ -472,7 +482,8 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
         _shadowedScene->osg::Group::traverse(cv);
         return;
     }
-    
+
+    OSG_INFO<<"cv->getProjectionMatrix()="<<*cv.getProjectionMatrix()<<std::endl;
 
     // 1. Traverse main scene graph
     cv.pushStateSet( _shadowRecievingPlaceholderStateSet.get() );
@@ -482,6 +493,10 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
     cullShadowReceivingScene(&cv);
 
     cv.popStateSet();
+
+    // make sure that the near plane is computed correctly so that any projection matrix computations
+    // are all done correctly.
+    cv.computeNearPlane();
 
     
     // 2. select active light sources
@@ -549,20 +564,29 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
 
             // 4.2 compute RTT camera view+projection matrix settings
             //
+#define NEW_ADJUST
 
+#ifdef NEW_ADJUST
+            if (!standardShadowMapCameraSettings(frustum, pl, camera.get()))
+            {
+                OSG_NOTICE<<"No valid Camera settings, no shadow to render"<<std::endl;
+                continue;
+            }
+#else
             if (!computeShadowCameraSettings(frustum, pl, camera.get()))
             {
                 OSG_NOTICE<<"No valid Camera settings, no shadow to render"<<std::endl;
                 continue;
             }
-
+#endif
             // transform polytope in model coords into light spaces eye coords.
             osg::Matrixd invertModelView;
             invertModelView.invert(camera->getViewMatrix());
 
             polytope.transformProvidingInverse(invertModelView);
 
-            camera->setCullCallback(new VDSMCameraCullCallback(this, polytope));
+            osg::ref_ptr<VDSMCameraCullCallback> vdsmCallback = new VDSMCameraCullCallback(this, polytope);
+            camera->setCullCallback(vdsmCallback.get());
 
             // 4.3 traverse RTT camera
             //
@@ -572,6 +596,24 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
             cullShadowCastingScene(&cv, camera.get());
 
             cv.popStateSet();
+
+#ifdef NEW_ADJUST
+            switch(_shadowMapProjectionHint)
+            {
+                case(PERSPECTIVE_SHADOW_MAP):
+                {
+                    OSG_NOTICE<<"******************New adjustment of shadow"<<std::endl;
+                    adjustPerspectiveShadowMapCameraSettings(frustum, pl, camera.get());
+                    if (vdsmCallback->getProjectionMatrix())
+                    {
+                        vdsmCallback->getProjectionMatrix()->set(camera->getProjectionMatrix());
+                    }
+                    break;
+                }
+                case(LIGHT_SPACE_PERSPECTIVE_SHADOW_MAP): break;
+                default: break;
+            }
+#endif
 
             // 4.4 compute main scene graph TexGen + uniform settings + setup state
             //
@@ -600,6 +642,7 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
         decoratorStateGraph->setStateSet(selectStateSetForRenderingShadow(*vdd));        
     }
    
+    OSG_NOTICE<<"End of shadow setup Projection matrix "<<*cv.getProjectionMatrix()<<std::endl;
 }
 
 bool ViewDependentShadowMap::selectActiveLights(osgUtil::CullVisitor* cv, ViewDependentData* vdd) const
@@ -657,23 +700,37 @@ void ViewDependentShadowMap::createShaders()
     unsigned int _shadowTextureUnit = 1;
 
     _shadowCastingStateSet = new osg::StateSet;
-    
-    // cull front faces so that only backfaces contribute to depth map
-#if 0
-    osg::ref_ptr<osg::CullFace> cull_face = new osg::CullFace;
-    cull_face->setMode(osg::CullFace::FRONT);
-    _shadowCastingStateSet->setAttribute(cull_face.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-    _shadowCastingStateSet->setMode(GL_CULL_FACE, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-#endif
 
+#if 0
+    // note soft (attribute only no mode override) setting. When this works ?
+    // 1. for objects prepared for backface culling
+    //    because they usually also set CullFace and CullMode on in their state
+    //    For them we override CullFace but CullMode remains set by them
+    // 2. For one faced, trees, and similar objects which cannot use
+    //    backface nor front face so they usually use CullMode off set here.
+    //    In this case we will draw them in their entirety.
+
+    _shadowCastingStateSet->setAttribute( new osg::CullFace( osg::CullFace::FRONT ),
+            osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE );
+
+    // make sure GL_CULL_FACE is off by default
+    // we assume that if object has cull face attribute set to back
+    // it will also set cull face mode ON so no need for override
+    _shadowCastingStateSet->setMode( GL_CULL_FACE, osg::StateAttribute::OFF );
+#endif
+    
 #if 1
     float factor = 1.1;
     float units =  4.0;
+#else
+    float factor = -1.1;
+    float units =  -4.0;
+#endif
     _polygonOffset = new osg::PolygonOffset(factor, units);
     _shadowCastingStateSet->setAttribute(_polygonOffset.get(), osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
     _shadowCastingStateSet->setMode(GL_POLYGON_OFFSET_FILL, osg::StateAttribute::ON | osg::StateAttribute::OVERRIDE);
-#endif
 
+    
     _uniforms.clear();
     osg::ref_ptr<osg::Uniform> baseTextureSampler = new osg::Uniform("baseTexture",(int)_baseTextureUnit);
     _uniforms.push_back(baseTextureSampler.get());
@@ -824,14 +881,20 @@ bool ViewDependentShadowMap::standardShadowMapCameraSettings(Frustum& frustum, L
 {
     OSG_INFO<<"standardShadowMapCameraSettings()"<<std::endl;
 
+#if 0
     // compute the basis vectors for the light coordinate frame
     osg::Vec3d lightSide_y = positionedLight.lightDir ^ osg::Vec3d(0.0,1.0,0.0);
     osg::Vec3d lightSide_z = positionedLight.lightDir ^ osg::Vec3d(0.0,0.0,1.0);
     osg::Vec3d lightSide = (lightSide_y.length() > lightSide_z.length()) ? lightSide_y : lightSide_z;
     lightSide.normalize();
-
-    //osg::Vec3d lightSide = positionedLight.lightDir ^ frustum.frustumCenterLine; lightSide.normalize();
+#else
+    osg::Vec3d lightSide = positionedLight.lightDir ^ frustum.frustumCenterLine; lightSide.normalize();
+#endif
     osg::Vec3d lightUp = lightSide ^ positionedLight.lightDir;
+
+    OSG_NOTICE<<"positionedLight.lightDir="<<positionedLight.lightDir<<std::endl;
+    OSG_NOTICE<<"lightSide="<<lightSide<<std::endl;
+    OSG_NOTICE<<"lightUp="<<lightUp<<std::endl;
 
     if (positionedLight.directionalLight)
     {
@@ -847,6 +910,8 @@ bool ViewDependentShadowMap::standardShadowMapCameraSettings(Frustum& frustum, L
             osg::Vec3d cornerInLightCoords(cornerDelta*lightSide,
                                            cornerDelta*lightUp,
                                            cornerDelta*positionedLight.lightDir);
+
+            OSG_INFO<<"    corner ="<<*itr<<" in lightcoords "<<cornerInLightCoords<<std::endl;
 
             xMin = osg::minimum( xMin, cornerInLightCoords.x());
             xMax = osg::maximum( xMax, cornerInLightCoords.x());
@@ -966,8 +1031,155 @@ bool ViewDependentShadowMap::standardShadowMapCameraSettings(Frustum& frustum, L
 
 bool ViewDependentShadowMap::perspectiveShadowMapCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Camera* camera)
 {
-    OSG_NOTICE<<"ViewDependentShadowMap::perspectiveShadowMapCameraSettings()"<<std::endl;
-    return standardShadowMapCameraSettings(frustum, positionedLight, camera);
+   OSG_NOTICE<<"ViewDependentShadowMap::perspectiveShadowMapCameraSettings()"<<std::endl;
+    if (!standardShadowMapCameraSettings(frustum, positionedLight, camera)) return false;
+    return adjustPerspectiveShadowMapCameraSettings(frustum, positionedLight, camera);
+}
+
+bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Camera* camera)
+{   
+    //frustum.projectionMatrix;
+    //frustum.modelViewMatrix;
+
+    osg::Matrixd light_p = camera->getProjectionMatrix();
+    osg::Matrixd light_v = camera->getViewMatrix();
+    osg::Matrixd light_vp = light_v * light_p;
+    osg::Vec3d lightdir(0.0,0.0,-1.0);
+
+    OSG_NOTICE<<"light_v="<<light_v<<std::endl;
+    OSG_NOTICE<<"light_p="<<light_p<<std::endl;
+    
+    osg::Vec3d eye_v = frustum.eye * light_v;
+    osg::Vec3d centerNearPlane_v = frustum.centerNearPlane * light_v;
+    osg::Vec3d center_v = frustum.center * light_v;
+    osg::Vec3d viewdir_v = center_v-eye_v; viewdir_v.normalize();
+
+    double dotProduct_v = lightdir * viewdir_v;
+    double gamma_v = acos(dotProduct_v);
+    double standardShadowMapToleranceAngle = 0.0;
+    if (gamma_v<osg::DegreesToRadians(standardShadowMapToleranceAngle) || gamma_v>osg::DegreesToRadians(180-standardShadowMapToleranceAngle))
+    {
+        OSG_NOTICE<<"Light and view vectors near parrallel - use standard shadow map."<<std::endl;
+        return true;
+    }
+
+    OSG_NOTICE<<"eye_v="<<eye_v<<std::endl;
+    OSG_NOTICE<<"viewdir_v="<<viewdir_v<<std::endl;
+    
+    osg::Vec3d eye_ls = frustum.eye * light_vp;
+    osg::Vec3d centerNearPlane_ls = frustum.centerNearPlane * light_vp;
+    osg::Vec3d center_ls = frustum.center * light_vp;
+    osg::Vec3d viewdir_ls = center_ls-eye_ls; viewdir_ls.normalize();
+
+
+    
+    double dotProduct = (-lightdir) * viewdir_ls;
+    double gamma = acos(dotProduct);
+
+    double sinGamma = sin(gamma_v);
+
+    osg::Vec3d side = lightdir ^ viewdir_ls; side.normalize();
+    osg::Vec3d up = side ^ lightdir;
+    
+    double nearDist = (centerNearPlane_ls - eye_ls).length();
+
+    double min_y = DBL_MAX;
+    double max_y = -DBL_MAX;
+    for(unsigned int i=0;i<8;++i)
+    {
+        osg::Vec3d c_ls = frustum.corners[i] * light_vp;
+
+        if (c_ls.y()<min_y) min_y = c_ls.y();
+        if (c_ls.y()>max_y) max_y = c_ls.y();
+        OSG_NOTICE<<"   corner light space "<<c_ls<<std::endl;
+    }
+
+    double d = (max_y-min_y);
+
+    const double factor = 1.0/sinGamma;
+    const double z_n = factor*nearDist;
+    
+    //perspective transform depth light space y extents
+    const double z_f = z_n + d*sinGamma;
+    double n = (z_n+sqrt(z_f*z_n))/sinGamma;
+    double f = n+d;
+
+    double a = (f+n)/(f-n);
+    double b = -2*f*n/(f-n);
+
+    double shift = n-nearDist;
+    osg::Vec3d virtual_eye = eye_ls - up*shift;
+
+    osg::Matrixd lightView;
+    lightView.makeLookAt(virtual_eye, virtual_eye+lightdir, up);
+
+
+
+    OSG_NOTICE<<"Eye world "<<frustum.eye<<std::endl;
+    OSG_NOTICE<<"Eye light space "<<eye_ls<<std::endl;
+    OSG_NOTICE<<"Center light space "<<center_ls<<std::endl;
+    OSG_NOTICE<<"Viewdir light space "<<viewdir_ls<<std::endl;
+    OSG_NOTICE<<"gamma_v "<<osg::RadiansToDegrees(gamma_v)<<std::endl;
+    OSG_NOTICE<<"gamma "<<osg::RadiansToDegrees(gamma)<<std::endl;
+    OSG_NOTICE<<"side "<<side<<std::endl;
+    OSG_NOTICE<<"up "<<up<<std::endl;
+    OSG_NOTICE<<"min_y = "<<min_y<<std::endl;
+    OSG_NOTICE<<"max_y = "<<max_y<<std::endl;
+    OSG_NOTICE<<"d = "<<d<<std::endl;
+    OSG_NOTICE<<"n = "<<n<<std::endl;
+    OSG_NOTICE<<"z_n = "<<z_n<<std::endl;
+    OSG_NOTICE<<"z_f = "<<z_f<<std::endl;
+    OSG_NOTICE<<"nearDist = "<<nearDist<<std::endl;
+    OSG_NOTICE<<"shift = "<<shift<<std::endl;
+#if 0
+    osg::Matrixd lightPerspective( 1.0,  0.0, 0.0,  0.0,
+                                   0.0,  a,   0.0,  1.0,
+                                   0.0,  0.0, 1.0,  0.0,
+                                   0.0,  b,   0.0,  0.0 );
+#else
+    osg::Matrixd lightPerspective( 1.0,  0.0, 0.0,  0.0,
+                                   0.0,  a,   0.0,  1.0,
+                                   0.0,  0.0, 1.0,  0.0,
+                                   0.0,  b,   0.0,  0.0 );
+#endif
+    osg::Matrixd light_persp = light_p * lightView * lightPerspective;
+    osg::Matrixd light_view_persp = light_v * light_persp;
+
+    double min_x = DBL_MAX;
+    double max_x = -DBL_MAX;
+    double min_z = DBL_MAX;
+    double max_z = -DBL_MAX;
+    min_y = DBL_MAX;
+    max_y = -DBL_MAX;
+    for(unsigned int i=0;i<8;++i)
+    {
+        osg::Vec3d c_lvp = frustum.corners[i] * light_view_persp;
+
+        if (c_lvp.x()<min_x) min_x = c_lvp.x();
+        if (c_lvp.x()>max_x) max_x = c_lvp.x();
+        if (c_lvp.y()<min_y) min_y = c_lvp.y();
+        if (c_lvp.y()>max_y) max_y = c_lvp.y();
+        if (c_lvp.z()<min_z) min_z = c_lvp.z();
+        if (c_lvp.z()>max_z) max_z = c_lvp.z();
+        OSG_NOTICE<<"   corner light perspective space "<<c_lvp<<std::endl;
+    }
+
+    OSG_NOTICE<<"  min_x="<<min_x<<", max_x="<<max_x<<std::endl;
+    OSG_NOTICE<<"  min_y="<<min_y<<", max_y="<<max_y<<std::endl;
+    OSG_NOTICE<<"  min_z="<<min_z<<", max_z="<<max_z<<std::endl;
+
+#if 0
+    osg::Matrix fitToUnitFrustum;
+    fitToUnitFrustum.makeOrtho( min_x,  max_x,
+                                min_y,  max_y,
+                                min_z,  max_z );
+
+    camera->setProjectionMatrix(light_persp * fitToUnitFrustum);
+#else
+    camera->setProjectionMatrix(light_persp);
+#endif
+
+    return true;
 }
 
 bool ViewDependentShadowMap::lightSpacePerspectiveShadowMapCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Camera* camera)
@@ -978,7 +1190,7 @@ bool ViewDependentShadowMap::lightSpacePerspectiveShadowMapCameraSettings(Frustu
 
 bool ViewDependentShadowMap::assignTexGenSettings(osgUtil::CullVisitor* cv, osg::Camera* camera, unsigned int textureUnit, osg::TexGen* texgen)
 {
-    OSG_INFO<<"assignTexGenSettings()"<<std::endl;
+        OSG_INFO<<"assignTexGenSettings()"<<std::endl;
 
     texgen->setMode(osg::TexGen::EYE_LINEAR);
 

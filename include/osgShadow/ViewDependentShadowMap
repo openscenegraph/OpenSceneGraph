@@ -64,6 +64,7 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
             typedef std::vector<Indices> Edges;
             Edges edges;
 
+            osg::Vec3d eye;
             osg::Vec3d centerNearPlane;
             osg::Vec3d centerFarPlane;
             osg::Vec3d center;
@@ -161,6 +162,9 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
         virtual bool perspectiveShadowMapCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Camera* camera);
         virtual bool lightSpacePerspectiveShadowMapCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Camera* camera);
 
+        virtual bool adjustPerspectiveShadowMapCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Camera* camera);
+
+        
         virtual bool assignTexGenSettings(osgUtil::CullVisitor* cv, osg::Camera* camera, unsigned int textureUnit, osg::TexGen* texgen);
 
         virtual void cullShadowReceivingScene(osgUtil::CullVisitor* cv) const;

@@ -1056,7 +1056,7 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(Frustum& f
 
     double dotProduct_v = lightdir * viewdir_v;
     double gamma_v = acos(dotProduct_v);
-    double standardShadowMapToleranceAngle = 0.0;
+    double standardShadowMapToleranceAngle = 2.0;
     if (gamma_v<osg::DegreesToRadians(standardShadowMapToleranceAngle) || gamma_v>osg::DegreesToRadians(180-standardShadowMapToleranceAngle))
     {
         OSG_NOTICE<<"Light and view vectors near parrallel - use standard shadow map."<<std::endl;
@@ -1068,6 +1068,7 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(Frustum& f
     
     osg::Vec3d eye_ls = frustum.eye * light_vp;
     osg::Vec3d centerNearPlane_ls = frustum.centerNearPlane * light_vp;
+    osg::Vec3d centerFarPlane_ls = frustum.centerFarPlane * light_vp;
     osg::Vec3d center_ls = frustum.center * light_vp;
     osg::Vec3d viewdir_ls = center_ls-eye_ls; viewdir_ls.normalize();
 
@@ -1081,7 +1082,10 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(Frustum& f
     osg::Vec3d side = lightdir ^ viewdir_ls; side.normalize();
     osg::Vec3d up = side ^ lightdir;
     
-    double nearDist = (centerNearPlane_ls - eye_ls).length();
+//    double nearDist = (centerNearPlane_ls - eye_ls).length();
+    double nearDist = (centerNearPlane_ls - eye_ls).y();
+    double farDist = (centerFarPlane_ls - eye_ls).y();
+    double nearFarRatio = nearDist/(farDist-nearDist);
 
     double min_y = DBL_MAX;
     double max_y = -DBL_MAX;
@@ -1096,18 +1100,25 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(Frustum& f
 
     double d = (max_y-min_y);
 
-    const double factor = 1.0/sinGamma;
-    const double z_n = factor*nearDist;
+    OSG_NOTICE<<"nearDist before = "<<nearDist<<", nearFarRatio = "<<nearFarRatio<<std::endl;
+    
+    double factor = 1.0/sinGamma;
+    //double z_n = factor*nearDist;
+    double z_n = d * nearFarRatio;
     
     //perspective transform depth light space y extents
-    const double z_f = z_n + d*sinGamma;
+    double z_f = z_n + d;
     double n = (z_n+sqrt(z_f*z_n))/sinGamma;
+
+    double min_n = 0.0;
+    if (n<min_n) n = min_n;
+    
     double f = n+d;
 
     double a = (f+n)/(f-n);
-    double b = -2*f*n/(f-n);
+    double b = -2.0*f*n/(f-n);
 
-    double shift = n-nearDist;
+    double shift = n - (min_y - eye_ls.y());
     osg::Vec3d virtual_eye = eye_ls - up*shift;
 
     osg::Matrixd lightView;
@@ -1131,43 +1142,91 @@ bool ViewDependentShadowMap::adjustPerspectiveShadowMapCameraSettings(Frustum& f
     OSG_NOTICE<<"z_f = "<<z_f<<std::endl;
     OSG_NOTICE<<"nearDist = "<<nearDist<<std::endl;
     OSG_NOTICE<<"shift = "<<shift<<std::endl;
+
+    double min_x = -1.0 - virtual_eye.x();
+    double max_x = 1.0 - virtual_eye.x();
+    double min_z = -1.0 - virtual_eye.z();
+    double max_z = 1.0 - virtual_eye.z();
+
+    OSG_NOTICE<<"min_x = "<<min_x<<std::endl;
+    OSG_NOTICE<<"max_x = "<<max_x<<std::endl;
+    OSG_NOTICE<<"min_z = "<<min_z<<std::endl;
+    OSG_NOTICE<<"max_z = "<<max_z<<std::endl;
+    
+    double min_x_ratio = 0.0;
+    double max_x_ratio = 0.0;
+    double min_z_ratio = FLT_MAX;
+    double max_z_ratio = -FLT_MAX;
+    for(unsigned int i=0;i<8;++i)
+    {
+        osg::Vec3d c_ve = frustum.corners[i] * light_vp - virtual_eye;
+
+        double x = c_ve.x();
+        if (x<min_x) x=min_x;
+        if (x>max_x) x=max_x;
+        
+        double x_ratio = x/c_ve.y();
+        if (x_ratio<min_x_ratio) min_x_ratio = x_ratio;
+        if (x_ratio>max_x_ratio) max_x_ratio = x_ratio;
+
+        double z = c_ve.z();
+        if (z<min_z) z=min_z;
+        if (z>max_z) z=max_z;
+
+        double z_ratio = c_ve.z()/c_ve.y();
+        if (z_ratio<min_z_ratio) min_z_ratio = z_ratio;
+        if (z_ratio>max_z_ratio) max_z_ratio = z_ratio;
+    }
+
+    double best_x_ratio = osg::maximum(fabs(min_x_ratio),fabs(max_x_ratio));
+    double best_z_ratio = osg::maximum(fabs(min_z_ratio),fabs(max_z_ratio));
+
+    OSG_NOTICE<<"min_x_ratio = "<<min_x_ratio<<std::endl;
+    OSG_NOTICE<<"max_x_ratio = "<<max_x_ratio<<std::endl;
+    OSG_NOTICE<<"best_x_ratio = "<<best_x_ratio<<std::endl;
+    OSG_NOTICE<<"min_z_ratio = "<<min_z_ratio<<std::endl;
+    OSG_NOTICE<<"max_z_ratio = "<<max_z_ratio<<std::endl;
+    OSG_NOTICE<<"best_z_ratio = "<<best_z_ratio<<std::endl;
+
+    
 #if 0
     osg::Matrixd lightPerspective( 1.0,  0.0, 0.0,  0.0,
                                    0.0,  a,   0.0,  1.0,
                                    0.0,  0.0, 1.0,  0.0,
                                    0.0,  b,   0.0,  0.0 );
 #else
-    osg::Matrixd lightPerspective( 1.0,  0.0, 0.0,  0.0,
+    osg::Matrixd lightPerspective( 1.0/best_x_ratio,  0.0, 0.0,  0.0,
                                    0.0,  a,   0.0,  1.0,
-                                   0.0,  0.0, 1.0,  0.0,
+                                   0.0,  0.0, 1.0/best_z_ratio,  0.0,
                                    0.0,  b,   0.0,  0.0 );
 #endif
     osg::Matrixd light_persp = light_p * lightView * lightPerspective;
     osg::Matrixd light_view_persp = light_v * light_persp;
 
-    double min_x = DBL_MAX;
-    double max_x = -DBL_MAX;
-    double min_z = DBL_MAX;
-    double max_z = -DBL_MAX;
-    min_y = DBL_MAX;
-    max_y = -DBL_MAX;
-    for(unsigned int i=0;i<8;++i)
-    {
-        osg::Vec3d c_lvp = frustum.corners[i] * light_view_persp;
+    {    
+        double min_x = DBL_MAX;
+        double max_x = -DBL_MAX;
+        double min_z = DBL_MAX;
+        double max_z = -DBL_MAX;
+        min_y = DBL_MAX;
+        max_y = -DBL_MAX;
+        for(unsigned int i=0;i<8;++i)
+        {
+            osg::Vec3d c_lvp = frustum.corners[i] * light_view_persp;
 
-        if (c_lvp.x()<min_x) min_x = c_lvp.x();
-        if (c_lvp.x()>max_x) max_x = c_lvp.x();
-        if (c_lvp.y()<min_y) min_y = c_lvp.y();
-        if (c_lvp.y()>max_y) max_y = c_lvp.y();
-        if (c_lvp.z()<min_z) min_z = c_lvp.z();
-        if (c_lvp.z()>max_z) max_z = c_lvp.z();
-        OSG_NOTICE<<"   corner light perspective space "<<c_lvp<<std::endl;
+            if (c_lvp.x()<min_x) min_x = c_lvp.x();
+            if (c_lvp.x()>max_x) max_x = c_lvp.x();
+            if (c_lvp.y()<min_y) min_y = c_lvp.y();
+            if (c_lvp.y()>max_y) max_y = c_lvp.y();
+            if (c_lvp.z()<min_z) min_z = c_lvp.z();
+            if (c_lvp.z()>max_z) max_z = c_lvp.z();
+            OSG_NOTICE<<"   corner light perspective space "<<c_lvp<<std::endl;
+        }
+
+        OSG_NOTICE<<"  min_x="<<min_x<<", max_x="<<max_x<<std::endl;
+        OSG_NOTICE<<"  min_y="<<min_y<<", max_y="<<max_y<<std::endl;
+        OSG_NOTICE<<"  min_z="<<min_z<<", max_z="<<max_z<<std::endl;
     }
-
-    OSG_NOTICE<<"  min_x="<<min_x<<", max_x="<<max_x<<std::endl;
-    OSG_NOTICE<<"  min_y="<<min_y<<", max_y="<<max_y<<std::endl;
-    OSG_NOTICE<<"  min_z="<<min_z<<", max_z="<<max_z<<std::endl;
-
 #if 0
     osg::Matrix fitToUnitFrustum;
     fitToUnitFrustum.makeOrtho( min_x,  max_x,

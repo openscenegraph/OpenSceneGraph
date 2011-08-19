@@ -162,7 +162,7 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
         virtual bool perspectiveShadowMapCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Camera* camera);
         virtual bool lightSpacePerspectiveShadowMapCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Camera* camera);
 
-        virtual bool adjustPerspectiveShadowMapCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Camera* camera);
+        virtual bool adjustPerspectiveShadowMapCameraSettings(osgUtil::RenderStage* renderStage, Frustum& frustum, LightData& positionedLight, osg::Camera* camera);
 
         
         virtual bool assignTexGenSettings(osgUtil::CullVisitor* cv, osg::Camera* camera, unsigned int textureUnit, osg::TexGen* texgen);

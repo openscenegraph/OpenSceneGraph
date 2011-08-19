@@ -1399,8 +1399,8 @@ void CullVisitor::apply(osg::Camera& camera)
     if (camera.getViewport()) pushViewport(camera.getViewport());
 
     // record previous near and far values.
-    float previous_znear = _computed_znear;
-    float previous_zfar = _computed_zfar;
+    value_type previous_znear = _computed_znear;
+    value_type previous_zfar = _computed_zfar;
     
     // take a copy of the current near plane candidates
     DistanceMatrixDrawableMap  previousNearPlaneCandidateMap;

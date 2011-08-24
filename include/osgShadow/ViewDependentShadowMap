@@ -140,21 +140,29 @@ class OSGSHADOW_EXPORT ViewDependentShadowMap : public ShadowTechnique
         ViewDependentData* getViewDependentData(osgUtil::CullVisitor* cv);
 
 
-        virtual void createShaders();
-
-        virtual bool selectActiveLights(osgUtil::CullVisitor* cv, ViewDependentData* vdd) const;
-
-        virtual osg::Polytope computeLightViewFrustumPolytope(Frustum& frustum, LightData& positionedLight);
+        /** Set the texture unit that the first shadow map will be placed on, if mulitple shadow maps are
+         * required then each shadow map will use a allocated a unit relative to this base texture unit.*/
+        void setBaseShadowTextureUnit(unsigned int unit) { _baseShadowTextureUnit = unit; }
+        
+        /** Get the texture unit that the first shadow map will be placed on.*/
+        unsigned int getBaseShadowTextureUnit() const { return _baseShadowTextureUnit; }
 
         enum ShadowMapProjectionHint
         {
             ORTHOGRAPHIC_SHADOW_MAP,
             PERSPECTIVE_SHADOW_MAP
         };
-        
+
         void setShadowMapProjectionHint(ShadowMapProjectionHint hint) { _shadowMapProjectionHint = hint; }
         ShadowMapProjectionHint getShadowMapProjectionHint() const { return _shadowMapProjectionHint; }
-        
+
+
+virtual void createShaders();
+
+        virtual bool selectActiveLights(osgUtil::CullVisitor* cv, ViewDependentData* vdd) const;
+
+        virtual osg::Polytope computeLightViewFrustumPolytope(Frustum& frustum, LightData& positionedLight);
+
         virtual bool computeShadowCameraSettings(Frustum& frustum, LightData& positionedLight, osg::Camera* camera);
 
         virtual bool adjustPerspectiveShadowMapCameraSettings(osgUtil::RenderStage* renderStage, Frustum& frustum, LightData& positionedLight, osg::Camera* camera);
@@ -178,6 +186,8 @@ protected:
         typedef std::map< osgUtil::CullVisitor*, osg::ref_ptr<ViewDependentData> >  ViewDependentDataMap;
         OpenThreads::Mutex   _viewDependentDataMapMutex;
         ViewDependentDataMap _viewDependentDataMap;
+
+        unsigned int                            _baseShadowTextureUnit;
 
         osg::ref_ptr<osg::StateSet>             _shadowRecievingPlaceholderStateSet;
 

@@ -21,7 +21,7 @@ using namespace osgShadow;
 //////////////////////////////////////////////////////////////////
 // fragment shader
 //
-
+#if 0
 static const char fragmentShaderSource_withBaseTexture[] =
         "uniform sampler2D baseTexture;                                          \n"
         "uniform sampler2DShadow shadowTexture;                                  \n"
@@ -33,7 +33,21 @@ static const char fragmentShaderSource_withBaseTexture[] =
         "  color *= mix( colorAmbientEmissive, gl_Color, shadow2DProj( shadowTexture, gl_TexCoord[1] ).r );     \n"
         "  gl_FragColor = color;                                                                                \n"
         "} \n";
-
+#else
+static const char fragmentShaderSource_withBaseTexture[] =
+        "uniform sampler2D baseTexture;                                          \n"
+        "uniform int baseTextureUnit;                                          \n"
+        "uniform sampler2DShadow shadowTexture;                                  \n"
+        "uniform int shadowTextureUnit;                                          \n"
+        "                                                                        \n"
+        "void main(void)                                                         \n"
+        "{                                                                       \n"
+        "  vec4 colorAmbientEmissive = gl_FrontLightModelProduct.sceneColor;     \n"
+        "  vec4 color = texture2D( baseTexture, gl_TexCoord[baseTextureUnit].xy );                                                            \n"
+        "  color *= mix( colorAmbientEmissive, gl_Color, shadow2DProj( shadowTexture, gl_TexCoord[shadowTextureUnit] ).r );     \n"
+        "  gl_FragColor = color;                                                                                                \n"
+        "} \n";
+#endif
 
 template<class T>
 class RenderLeafTraverser : public T
@@ -485,6 +499,7 @@ ViewDependentShadowMap::ViewDependentData::ViewDependentData(ViewDependentShadow
 //
 ViewDependentShadowMap::ViewDependentShadowMap():
     ShadowTechnique(),
+    _baseShadowTextureUnit(1),
     _shadowMapProjectionHint(PERSPECTIVE_SHADOW_MAP),
     _debugDraw(false)
 {
@@ -493,6 +508,7 @@ ViewDependentShadowMap::ViewDependentShadowMap():
 
 ViewDependentShadowMap::ViewDependentShadowMap(const ViewDependentShadowMap& vdsm, const osg::CopyOp& copyop):
     ShadowTechnique(vdsm,copyop),
+    _baseShadowTextureUnit(vdsm._baseShadowTextureUnit),
     _shadowMapProjectionHint(vdsm._shadowMapProjectionHint),
     _debugDraw(vdsm._debugDraw)
 {
@@ -583,8 +599,7 @@ void ViewDependentShadowMap::cull(osgUtil::CullVisitor& cv)
     selectActiveLights(&cv, vdd);
 
     unsigned int pos_x = 0;
-    unsigned int baseTextureUnit = 0;
-    unsigned int textureUnit = baseTextureUnit+1;
+    unsigned int textureUnit = _baseShadowTextureUnit;
     unsigned int numValidShadows = 0;
 
     Frustum frustum(&cv);
@@ -756,7 +771,6 @@ void ViewDependentShadowMap::createShaders()
     OSG_NOTICE<<"ViewDependentShadowMap::createShaders()"<<std::endl;
 
     unsigned int _baseTextureUnit = 0;
-    unsigned int _shadowTextureUnit = 1;
 
     _shadowCastingStateSet = new osg::StateSet;
 
@@ -795,8 +809,14 @@ void ViewDependentShadowMap::createShaders()
     osg::ref_ptr<osg::Uniform> baseTextureSampler = new osg::Uniform("baseTexture",(int)_baseTextureUnit);
     _uniforms.push_back(baseTextureSampler.get());
 
-    osg::ref_ptr<osg::Uniform> shadowTextureSampler = new osg::Uniform("shadowTexture",(int)_shadowTextureUnit);
+    osg::ref_ptr<osg::Uniform> baseTextureUnit = new osg::Uniform("baseTextureUnit",(int)_baseTextureUnit);
+    _uniforms.push_back(baseTextureUnit.get());
+
+    osg::ref_ptr<osg::Uniform> shadowTextureSampler = new osg::Uniform("shadowTexture",(int)_baseShadowTextureUnit);
     _uniforms.push_back(shadowTextureSampler.get());
+
+    osg::ref_ptr<osg::Uniform> shadowTextureUnit = new osg::Uniform("shadowTextureUnit",(int)_baseShadowTextureUnit);
+    _uniforms.push_back(shadowTextureUnit.get());
 
     //osg::ref_ptr<osg::Shader> fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource_noBaseTexture);
     osg::ref_ptr<osg::Shader> fragment_shader = new osg::Shader(osg::Shader::FRAGMENT, fragmentShaderSource_withBaseTexture);
